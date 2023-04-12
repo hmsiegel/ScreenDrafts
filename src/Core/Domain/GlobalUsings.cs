@@ -1,0 +1,1 @@
+﻿global using ScreenDrafts.Domain.Common.Contracts;
