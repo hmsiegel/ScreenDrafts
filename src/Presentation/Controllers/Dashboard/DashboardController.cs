@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Host.Controllers.Dashboard;
+namespace ScreenDrafts.Presentation.Controllers.Dashboard;
 
 public class DashboardController : VersionedApiController
 {

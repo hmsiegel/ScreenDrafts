@@ -1,9 +1,4 @@
-using ScreenDrafts.Application.Auditing;
-using ScreenDrafts.Application.Identity.Users;
-using ScreenDrafts.Application.Identity.Users.Password;
-using System.Security.Claims;
-
-namespace ScreenDrafts.Host.Controllers.Identity;
+namespace ScreenDrafts.Presentation.Controllers.Personal;
 
 public class PersonalController : VersionNeutralApiController
 {

@@ -1,8 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.ApiExplorer;
-
-using ScreenDrafts.Infrastructure.Middleware;
-
-namespace ScreenDrafts.Host.Controllers;
+﻿namespace ScreenDrafts.Presentation.Controllers;
 
 #nullable disable
 #pragma warning disable RCS1163, IDE0060

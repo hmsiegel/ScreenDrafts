@@ -1,4 +1,4 @@
-﻿namespace ScreenDrafts.Host.Controllers.Catalog;
+﻿namespace ScreenDrafts.Presentation.Controllers.Catalog;
 
 public class BrandsController : VersionedApiController
 {
@@ -13,7 +13,7 @@ public class BrandsController : VersionedApiController
     [HttpGet("{id:guid}")]
     [MustHavePermission(FSHAction.View, FSHResource.Brands)]
     [OpenApiOperation("Get brand details.", "")]
-    public Task<BrandDto> GetAsync(Guid id)
+    public Task<BrandDto> GetAsync(DefaultIdType id)
     {
         return Mediator.Send(new GetBrandRequest(id));
     }
@@ -21,7 +21,7 @@ public class BrandsController : VersionedApiController
     [HttpPost]
     [MustHavePermission(FSHAction.Create, FSHResource.Brands)]
     [OpenApiOperation("Create a new brand.", "")]
-    public Task<Guid> CreateAsync(CreateBrandRequest request)
+    public Task<DefaultIdType> CreateAsync(CreateBrandRequest request)
     {
         return Mediator.Send(request);
     }
@@ -29,7 +29,7 @@ public class BrandsController : VersionedApiController
     [HttpPut("{id:guid}")]
     [MustHavePermission(FSHAction.Update, FSHResource.Brands)]
     [OpenApiOperation("Update a brand.", "")]
-    public async Task<ActionResult<Guid>> UpdateAsync(UpdateBrandRequest request, Guid id)
+    public async Task<ActionResult<DefaultIdType>> UpdateAsync(UpdateBrandRequest request, DefaultIdType id)
     {
         return id != request.Id
             ? BadRequest()
@@ -39,7 +39,7 @@ public class BrandsController : VersionedApiController
     [HttpDelete("{id:guid}")]
     [MustHavePermission(FSHAction.Delete, FSHResource.Brands)]
     [OpenApiOperation("Delete a brand.", "")]
-    public Task<Guid> DeleteAsync(Guid id)
+    public Task<DefaultIdType> DeleteAsync(DefaultIdType id)
     {
         return Mediator.Send(new DeleteBrandRequest(id));
     }

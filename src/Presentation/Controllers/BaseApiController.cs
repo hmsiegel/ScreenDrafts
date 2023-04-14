@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Host.Controllers;
+namespace ScreenDrafts.Presentation.Controllers;
 
 [ApiController]
 public class BaseApiController : ControllerBase

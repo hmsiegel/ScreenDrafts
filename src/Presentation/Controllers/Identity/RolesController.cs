@@ -1,6 +1,4 @@
-using ScreenDrafts.Application.Identity.Roles;
-
-namespace ScreenDrafts.Host.Controllers.Identity;
+namespace ScreenDrafts.Presentation.Controllers.Identity;
 
 public class RolesController : VersionNeutralApiController
 {

@@ -1,15 +1,14 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
+
 using ScreenDrafts.Application.Common.Persistence;
 using ScreenDrafts.Domain.Common.Contracts;
-using ScreenDrafts.Infrastructure.Common;
 using ScreenDrafts.Infrastructure.Persistence.ConnectionString;
 using ScreenDrafts.Infrastructure.Persistence.Context;
-using ScreenDrafts.Infrastructure.Persistence.Initialization;
 using ScreenDrafts.Infrastructure.Persistence.Repository;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
+
 using Serilog;
 
 namespace ScreenDrafts.Infrastructure.Persistence;

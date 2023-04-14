@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Infrastructure.Multitenancy;
-
-namespace ScreenDrafts.Infrastructure.Persistence.Initialization;
+﻿namespace ScreenDrafts.Infrastructure.Persistence.Initialization;
 
 internal interface IDatabaseInitializer
 {

@@ -1,9 +1,9 @@
 ﻿using Finbuckle.MultiTenant;
-using ScreenDrafts.Infrastructure.Multitenancy;
-using ScreenDrafts.Shared.Multitenancy;
+
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+
+using ScreenDrafts.Shared.Multitenancy;
 
 namespace ScreenDrafts.Infrastructure.Persistence.Initialization;
 

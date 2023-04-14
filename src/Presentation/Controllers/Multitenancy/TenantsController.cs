@@ -1,6 +1,4 @@
-using ScreenDrafts.Application.Multitenancy;
-
-namespace ScreenDrafts.Host.Controllers.Multitenancy;
+namespace ScreenDrafts.Presentation.Controllers.Multitenancy;
 
 public class TenantsController : VersionNeutralApiController
 {

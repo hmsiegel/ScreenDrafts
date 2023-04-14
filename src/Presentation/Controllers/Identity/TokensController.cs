@@ -1,6 +1,4 @@
-using ScreenDrafts.Application.Identity.Tokens;
-
-namespace ScreenDrafts.Host.Controllers.Identity;
+namespace ScreenDrafts.Presentation.Controllers.Identity;
 
 public sealed class TokensController : VersionNeutralApiController
 {

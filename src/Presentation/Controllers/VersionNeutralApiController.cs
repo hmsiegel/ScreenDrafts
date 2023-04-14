@@ -1,4 +1,4 @@
-﻿namespace ScreenDrafts.Host.Controllers;
+﻿namespace ScreenDrafts.Presentation.Controllers;
 
 [Route("api/[controller]")]
 [ApiVersionNeutral]

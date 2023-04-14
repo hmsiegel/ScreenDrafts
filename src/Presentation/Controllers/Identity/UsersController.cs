@@ -1,7 +1,4 @@
-using ScreenDrafts.Application.Identity.Users;
-using ScreenDrafts.Application.Identity.Users.Password;
-
-namespace ScreenDrafts.Host.Controllers.Identity;
+namespace ScreenDrafts.Presentation.Controllers.Identity;
 
 public class UsersController : VersionNeutralApiController
 {
