@@ -12,6 +12,8 @@ global using ScreenDrafts.Application.Common.Models;
 global using ScreenDrafts.Application.Dashboard;
 global using ScreenDrafts.Host.Configurations;
 global using ScreenDrafts.Host.Controllers;
+global using ScreenDrafts.Host.DependencyInjection;
+global using ScreenDrafts.Host.ServiceConfigurations;
 global using ScreenDrafts.Infrastructure;
 global using ScreenDrafts.Infrastructure.Auth.Permissions;
 global using ScreenDrafts.Infrastructure.Common;
@@ -20,3 +22,5 @@ global using ScreenDrafts.Infrastructure.OpenApi;
 global using ScreenDrafts.Shared.Authorization;
 
 global using Serilog;
+
+global using System.Reflection;
