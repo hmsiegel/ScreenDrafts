@@ -1,6 +1,6 @@
-﻿using System.Reflection;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+
 using NSwag;
 using NSwag.Generation.AspNetCore;
 using NSwag.Generation.Processors;

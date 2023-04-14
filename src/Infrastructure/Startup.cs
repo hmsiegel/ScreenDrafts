@@ -1,29 +1,3 @@
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using ScreenDrafts.Infrastructure.Auth;
-using ScreenDrafts.Infrastructure.BackgroundJobs;
-using ScreenDrafts.Infrastructure.Caching;
-using ScreenDrafts.Infrastructure.Common;
-using ScreenDrafts.Infrastructure.Cors;
-using ScreenDrafts.Infrastructure.FileStorage;
-using ScreenDrafts.Infrastructure.Localization;
-using ScreenDrafts.Infrastructure.Mailing;
-using ScreenDrafts.Infrastructure.Mapping;
-using ScreenDrafts.Infrastructure.Middleware;
-using ScreenDrafts.Infrastructure.Multitenancy;
-using ScreenDrafts.Infrastructure.Notifications;
-using ScreenDrafts.Infrastructure.OpenApi;
-using ScreenDrafts.Infrastructure.Persistence;
-using ScreenDrafts.Infrastructure.Persistence.Initialization;
-using ScreenDrafts.Infrastructure.SecurityHeaders;
-using ScreenDrafts.Infrastructure.Validations;
-using MediatR;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-
 [assembly: InternalsVisibleTo("Infrastructure.Test")]
 
 namespace ScreenDrafts.Infrastructure;
@@ -32,7 +6,7 @@ public static class Startup
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration config)
     {
-        var applicationAssembly = typeof(ScreenDrafts.Application.Startup).GetTypeInfo().Assembly;
+        var applicationAssembly = typeof(Application.Startup).GetTypeInfo().Assembly;
         MapsterSettings.Configure();
         return services
             .AddApiVersioning()

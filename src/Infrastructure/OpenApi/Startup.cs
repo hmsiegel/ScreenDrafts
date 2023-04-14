@@ -1,12 +1,12 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+
 using NJsonSchema.Generation.TypeMappers;
+
 using NSwag;
 using NSwag.AspNetCore;
 using NSwag.Generation.Processors.Security;
+
 using ZymLabs.NSwag.FluentValidation;
 
 namespace ScreenDrafts.Infrastructure.OpenApi;
@@ -119,7 +119,7 @@ internal static class Startup
                 {
                     options.OAuth2Client = new OAuth2ClientSettings
                     {
-                        AppName = "Full Stack Hero Api Client",
+                        AppName = "Screen Drafts Api Client",
                         ClientId = config["SecuritySettings:Swagger:OpenIdClientId"],
                         ClientSecret = string.Empty,
                         UsePkceWithAuthorizationCodeGrant = true,
