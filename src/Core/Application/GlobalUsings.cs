@@ -19,6 +19,7 @@ global using ScreenDrafts.Application.Common.Validation;
 global using ScreenDrafts.Domain.Catalog;
 global using ScreenDrafts.Domain.Common;
 global using ScreenDrafts.Domain.Common.Contracts;
+global using ScreenDrafts.Domain.Common.Shared;
 global using ScreenDrafts.Shared.Notifications;
 
 global using System.Reflection;

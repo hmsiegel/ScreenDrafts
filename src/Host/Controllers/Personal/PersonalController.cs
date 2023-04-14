@@ -1,7 +1,7 @@
-using System.Security.Claims;
 using ScreenDrafts.Application.Auditing;
 using ScreenDrafts.Application.Identity.Users;
 using ScreenDrafts.Application.Identity.Users.Password;
+using System.Security.Claims;
 
 namespace ScreenDrafts.Host.Controllers.Identity;
 

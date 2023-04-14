@@ -1,5 +1,6 @@
-﻿using ScreenDrafts.Infrastructure.Middleware;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
+﻿using Microsoft.AspNetCore.Mvc.ApiExplorer;
+
+using ScreenDrafts.Infrastructure.Middleware;
 
 namespace ScreenDrafts.Host.Controllers;
 
