@@ -1,5 +1,5 @@
 version: '3.8'
-name: fullstackhero
+name: screendrafts
 services:
   dotnet-webapi:
     image: iammukeshm/dotnet-webapi:latest
@@ -12,8 +12,8 @@ services:
       - ASPNETCORE_HTTPS_PORT=5100
       - ASPNETCORE_Kestrel__Certificates__Default__Password=password!
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/cert.pfx
-      - DatabaseSettings__ConnectionString=server=mysql;uid=root;pwd=root;database=fshdb;Allow User Variables=True
-      - HangfireSettings__Storage__ConnectionString=server=mysql;uid=root;pwd=root;database=fshdb;Allow User Variables=True
+      - DatabaseSettings__ConnectionString=server=mysql;uid=root;pwd=root;database=screendraftsdb;Allow User Variables=True
+      - HangfireSettings__Storage__ConnectionString=server=mysql;uid=root;pwd=root;database=screendraftsdb;Allow User Variables=True
       - DatabaseSettings__DBProvider=mysql
       - HangfireSettings__Storage__StorageProvider=mysql
     volumes:
@@ -28,7 +28,7 @@ services:
   mysql:
     image: mysql:latest
     networks:
-      - fullstackhero
+      - screendrafts
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_PASSWORD=root
@@ -43,5 +43,5 @@ services:
 volumes:
   mysql-data:
 networks:
-  fullstackhero:
-    name: fullstackhero
+  screendrafts:
+    name: screendrafts

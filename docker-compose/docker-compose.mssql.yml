@@ -1,5 +1,5 @@
 version: '3.8'
-name: fullstackhero
+name: screendrafts
 services:
   dotnet-webapi:
     image: iammukeshm/dotnet-webapi:latest
@@ -12,8 +12,8 @@ services:
       - ASPNETCORE_HTTPS_PORT=5100
       - ASPNETCORE_Kestrel__Certificates__Default__Password=password!
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/cert.pfx
-      - DatabaseSettings__ConnectionString=Server=mssql;Database=fshdb;User=sa;Password=123Pa$$word!;MultipleActiveResultSets=true;Encrypt=false
-      - HangfireSettings__Storage__ConnectionString=Server=mssql;Database=fshdb;User=sa;Password=123Pa$$word!;MultipleActiveResultSets=true;Encrypt=false
+      - DatabaseSettings__ConnectionString=Server=mssql;Database=screendraftsdb;User=sa;Password=123Pa$$word!;MultipleActiveResultSets=true;Encrypt=false
+      - HangfireSettings__Storage__ConnectionString=Server=mssql;Database=screendraftsdb;User=sa;Password=123Pa$$word!;MultipleActiveResultSets=true;Encrypt=false
       - DatabaseSettings__DBProvider=mssql
       - HangfireSettings__Storage__StorageProvider=mssql
     volumes:
@@ -34,7 +34,7 @@ services:
     volumes:
       - mssql-data:/data/db
     networks:
-      - fullstackhero
+      - screendrafts
     healthcheck:
       test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "$$SA_PASSWORD" -Q
         "SELECT 1" || exit 1
@@ -45,5 +45,5 @@ services:
 volumes:
   mssql-data:
 networks:
-  fullstackhero:
-    name:  fullstackhero
+  screendrafts:
+    name:  screendrafts
