@@ -1,14 +1,14 @@
 {
   "SwaggerSettings": {
     "Enable": true,
-    "Title": ".NET 7 WebAPI - Clean Architecture",
+    "Title": "Screen Drafts API",
     "Version": "1.0.0",
-    "Description": "Clean Architecture Template for .NET 7 WebApi built with Multitenancy Support.",
-    "ContactName": "Mukesh Murugan",
-    "ContactEmail": "hello@codewithmukesh.com",
-    "ContactUrl": "https://linkedin.com/in/iammukeshm",
+    "Description": "Web API for the Screen Drafts Web Application",
+    "ContactName": "Harlan Siegel",
+    "ContactEmail": "hmsiegel@gmail.com",
+    "ContactUrl": "https://github.com/hmsiegel",
     "License": true,
     "LicenseName": "MIT License",
-    "LicenseUrl": "https://github.com/fullstackhero/dotnet-webapi-boilerplate/blob/main/LICENSE"
+    "LicenseUrl": "https://github.com/hmsiegel/ScreenDrafts/blob/main/LICENSE"
   }
 }
