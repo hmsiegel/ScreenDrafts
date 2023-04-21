@@ -1,5 +1,3 @@
-using ScreenDrafts.Shared.Events;
-
 namespace ScreenDrafts.Domain.Common.Contracts;
 
 public abstract class DomainEvent : IEvent
