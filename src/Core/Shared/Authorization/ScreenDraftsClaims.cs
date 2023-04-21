@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Shared.Authorization;
 
-public static class FSHClaims
+public static class ScreenDraftsClaims
 {
     public const string Tenant = "tenant";
     public const string Fullname = "fullName";
