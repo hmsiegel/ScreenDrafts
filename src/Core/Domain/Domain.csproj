@@ -5,6 +5,8 @@
         <AssemblyName>ScreenDrafts.Domain</AssemblyName>
     </PropertyGroup>
     <ItemGroup>
+        <PackageReference Include="Ardalis.SmartEnum" Version="7.0.0" />
+        <PackageReference Include="ErrorOr" Version="1.2.1" />
         <PackageReference Include="NewId" Version="4.0.1" />
     </ItemGroup>
     <ItemGroup>
@@ -15,5 +17,9 @@
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="DrafterAggregate\Entities\" />
+      <Folder Include="MovieAggregate\Entities\" />
     </ItemGroup>
 </Project>
