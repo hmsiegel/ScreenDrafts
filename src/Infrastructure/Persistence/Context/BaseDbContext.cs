@@ -1,25 +1,26 @@
-using System.Data;
-using Finbuckle.MultiTenant;
-using ScreenDrafts.Application.Common.Events;
-using ScreenDrafts.Application.Common.Interfaces;
-using ScreenDrafts.Domain.Common.Contracts;
-using ScreenDrafts.Infrastructure.Auditing;
-using ScreenDrafts.Infrastructure.Identity;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.Extensions.Options;
-
 namespace ScreenDrafts.Infrastructure.Persistence.Context;
 
-public abstract class BaseDbContext : MultiTenantIdentityDbContext<ApplicationUser, ApplicationRole, string, IdentityUserClaim<string>, IdentityUserRole<string>, IdentityUserLogin<string>, ApplicationRoleClaim, IdentityUserToken<string>>
+public abstract class BaseDbContext : MultiTenantIdentityDbContext<ApplicationUser,
+    ApplicationRole,
+    string,
+    IdentityUserClaim<string>,
+    IdentityUserRole<string>,
+    IdentityUserLogin<string>,
+    ApplicationRoleClaim,
+    IdentityUserToken<string>>
 {
     protected readonly ICurrentUser _currentUser;
     private readonly ISerializerService _serializer;
     private readonly DatabaseSettings _dbSettings;
     private readonly IEventPublisher _events;
 
-    protected BaseDbContext(ITenantInfo currentTenant, DbContextOptions options, ICurrentUser currentUser, ISerializerService serializer, IOptions<DatabaseSettings> dbSettings, IEventPublisher events)
+    protected BaseDbContext(
+        ITenantInfo currentTenant,
+        DbContextOptions options,
+        ICurrentUser currentUser,
+        ISerializerService serializer,
+        IOptions<DatabaseSettings> dbSettings,
+        IEventPublisher events)
         : base(currentTenant, options)
     {
         _currentUser = currentUser;

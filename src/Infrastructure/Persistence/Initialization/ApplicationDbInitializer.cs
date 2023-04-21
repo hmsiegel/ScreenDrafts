@@ -1,8 +1,3 @@
-using Finbuckle.MultiTenant;
-using ScreenDrafts.Infrastructure.Persistence.Context;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-
 namespace ScreenDrafts.Infrastructure.Persistence.Initialization;
 
 internal class ApplicationDbInitializer
@@ -12,7 +7,11 @@ internal class ApplicationDbInitializer
     private readonly ApplicationDbSeeder _dbSeeder;
     private readonly ILogger<ApplicationDbInitializer> _logger;
 
-    public ApplicationDbInitializer(ApplicationDbContext dbContext, ITenantInfo currentTenant, ApplicationDbSeeder dbSeeder, ILogger<ApplicationDbInitializer> logger)
+    public ApplicationDbInitializer(
+        ApplicationDbContext dbContext,
+        ITenantInfo currentTenant,
+        ApplicationDbSeeder dbSeeder,
+        ILogger<ApplicationDbInitializer> logger)
     {
         _dbContext = dbContext;
         _currentTenant = currentTenant;

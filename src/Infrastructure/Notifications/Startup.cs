@@ -1,8 +1,4 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Serilog;
+using ILogger = Serilog.ILogger;
 
 namespace ScreenDrafts.Infrastructure.Notifications;
 
@@ -20,8 +16,8 @@ internal static class Startup
         }
         else
         {
-            var backplaneSettings = config.GetSection("SignalRSettings:Backplane").Get<SignalRSettings.Backplane>();
-            if (backplaneSettings is null) throw new InvalidOperationException("Backplane enabled, but no backplane settings in config.");
+            var backplaneSettings = config.GetSection("SignalRSettings:Backplane").Get<SignalRSettings.Backplane>()
+                ?? throw new InvalidOperationException("Backplane enabled, but no backplane settings in config.");
             switch (backplaneSettings.Provider)
             {
                 case "redis":

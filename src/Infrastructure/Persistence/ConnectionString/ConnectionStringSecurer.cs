@@ -1,18 +1,8 @@
-using System.Data.SqlClient;
-using System.Runtime.InteropServices;
-using ScreenDrafts.Application.Common.Persistence;
-using ScreenDrafts.Infrastructure.Common;
-using Microsoft.Data.Sqlite;
-using Microsoft.Extensions.Options;
-using MySqlConnector;
-using Npgsql;
-using Oracle.ManagedDataAccess.Client;
-
 namespace ScreenDrafts.Infrastructure.Persistence.ConnectionString;
 
 public class ConnectionStringSecurer : IConnectionStringSecurer
 {
-    private const string HiddenValueDefault = "*******";
+    private const string _hiddenValueDefault = "*******";
     private readonly DatabaseSettings _dbSettings;
 
     public ConnectionStringSecurer(IOptions<DatabaseSettings> dbSettings) =>
@@ -47,12 +37,12 @@ public class ConnectionStringSecurer : IConnectionStringSecurer
 
         if (!string.IsNullOrEmpty(builder.Password))
         {
-            builder.Password = HiddenValueDefault;
+            builder.Password = _hiddenValueDefault;
         }
 
         if (!string.IsNullOrEmpty(builder.UserID))
         {
-            builder.UserID = HiddenValueDefault;
+            builder.UserID = _hiddenValueDefault;
         }
 
         return builder.ToString();
@@ -64,12 +54,12 @@ public class ConnectionStringSecurer : IConnectionStringSecurer
 
         if (!string.IsNullOrEmpty(builder.Password))
         {
-            builder.Password = HiddenValueDefault;
+            builder.Password = _hiddenValueDefault;
         }
 
         if (!string.IsNullOrEmpty(builder.UserID))
         {
-            builder.UserID = HiddenValueDefault;
+            builder.UserID = _hiddenValueDefault;
         }
 
         return builder.ToString();
@@ -81,12 +71,12 @@ public class ConnectionStringSecurer : IConnectionStringSecurer
 
         if (!string.IsNullOrEmpty(builder.Password) || !builder.IntegratedSecurity)
         {
-            builder.Password = HiddenValueDefault;
+            builder.Password = _hiddenValueDefault;
         }
 
         if (!string.IsNullOrEmpty(builder.UserID) || !builder.IntegratedSecurity)
         {
-            builder.UserID = HiddenValueDefault;
+            builder.UserID = _hiddenValueDefault;
         }
 
         return builder.ToString();
@@ -105,12 +95,12 @@ public class ConnectionStringSecurer : IConnectionStringSecurer
 
         if (!string.IsNullOrEmpty(builder.Password) || !builder.IntegratedSecurity)
         {
-            builder.Password = HiddenValueDefault;
+            builder.Password = _hiddenValueDefault;
         }
 
         if (!string.IsNullOrEmpty(builder.Username) || !builder.IntegratedSecurity)
         {
-            builder.Username = HiddenValueDefault;
+            builder.Username = _hiddenValueDefault;
         }
 
         return builder.ToString();

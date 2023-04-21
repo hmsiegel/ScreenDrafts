@@ -1,13 +1,4 @@
-﻿using ScreenDrafts.Application.Common.Persistence;
-using ScreenDrafts.Infrastructure.Common;
-using Microsoft.Data.Sqlite;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using MySqlConnector;
-using Npgsql;
-using System.Data.SqlClient;
-
-namespace ScreenDrafts.Infrastructure.Persistence.ConnectionString;
+﻿namespace ScreenDrafts.Infrastructure.Persistence.ConnectionString;
 
 internal class ConnectionStringValidator : IConnectionStringValidator
 {

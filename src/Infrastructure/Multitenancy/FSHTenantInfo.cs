@@ -1,7 +1,4 @@
-﻿using Finbuckle.MultiTenant;
-using ScreenDrafts.Shared.Multitenancy;
-
-namespace ScreenDrafts.Infrastructure.Multitenancy;
+﻿namespace ScreenDrafts.Infrastructure.Multitenancy;
 
 public class FSHTenantInfo : ITenantInfo
 {

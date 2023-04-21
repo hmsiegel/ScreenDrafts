@@ -1,16 +1,12 @@
-﻿using System.Security.Claims;
-using Finbuckle.MultiTenant;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Identity.Web;
+
 using ScreenDrafts.Application.Common.Exceptions;
 using ScreenDrafts.Application.Identity.Users;
-using ScreenDrafts.Infrastructure.Multitenancy;
-using ScreenDrafts.Shared.Authorization;
-using ScreenDrafts.Shared.Multitenancy;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Identity.Web;
-using Serilog;
+
+using System.Security.Claims;
+
+using ILogger = Serilog.ILogger;
 
 namespace ScreenDrafts.Infrastructure.Auth.AzureAd;
 
@@ -71,7 +67,7 @@ internal class AzureAdJwtBearerEvents : JwtBearerEvents
         var identity = principal.Identities.First();
 
         // Adding tenant claim.
-        identity.AddClaim(new Claim(FSHClaims.Tenant, tenant.Id));
+        identity.AddClaim(new Claim(ScreenDraftsClaims.Tenant, tenant.Id));
 
         // Set new tenant info to the HttpContext so the right connectionstring is used.
         context.HttpContext.TrySetTenantInfo(tenant, false);

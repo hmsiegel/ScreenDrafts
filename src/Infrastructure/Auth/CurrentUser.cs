@@ -1,5 +1,4 @@
 using System.Security.Claims;
-using ScreenDrafts.Application.Common.Interfaces;
 
 namespace ScreenDrafts.Infrastructure.Auth;
 

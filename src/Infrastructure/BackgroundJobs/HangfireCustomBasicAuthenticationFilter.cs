@@ -1,15 +1,18 @@
-using System.Net.Http.Headers;
 using Hangfire.Dashboard;
+
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Primitives;
+
+using System.Net.Http.Headers;
+
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace ScreenDrafts.Infrastructure.BackgroundJobs;
 
 public class HangfireCustomBasicAuthenticationFilter : IDashboardAuthorizationFilter
 {
-    private const string _AuthenticationScheme = "Basic";
+    private const string _authenticationScheme = "Basic";
     private readonly ILogger _logger;
     public string User { get; set; } = default!;
     public string Pass { get; set; } = default!;
@@ -77,7 +80,7 @@ public class HangfireCustomBasicAuthenticationFilter : IDashboardAuthorizationFi
 
     private static bool NotBasicAuthentication(AuthenticationHeaderValue authValues)
     {
-        return !_AuthenticationScheme.Equals(authValues.Scheme, StringComparison.InvariantCultureIgnoreCase);
+        return !_authenticationScheme.Equals(authValues.Scheme, StringComparison.InvariantCultureIgnoreCase);
     }
 
     private static void SetChallengeResponse(HttpContext httpContext)

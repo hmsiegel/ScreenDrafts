@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace ScreenDrafts.Infrastructure.Persistence;
 
 public class DatabaseSettings : IValidatableObject

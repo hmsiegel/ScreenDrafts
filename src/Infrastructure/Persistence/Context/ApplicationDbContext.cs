@@ -1,11 +1,3 @@
-using Finbuckle.MultiTenant;
-using ScreenDrafts.Application.Common.Events;
-using ScreenDrafts.Application.Common.Interfaces;
-using ScreenDrafts.Domain.Catalog;
-using ScreenDrafts.Infrastructure.Persistence.Configuration;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-
 namespace ScreenDrafts.Infrastructure.Persistence.Context;
 
 public class ApplicationDbContext : BaseDbContext

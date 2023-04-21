@@ -1,24 +1,18 @@
 using Ardalis.Specification;
 using Ardalis.Specification.EntityFrameworkCore;
-using Finbuckle.MultiTenant;
+
+using Mapster;
+
+using Microsoft.Extensions.Localization;
+
 using ScreenDrafts.Application.Common.Caching;
-using ScreenDrafts.Application.Common.Events;
 using ScreenDrafts.Application.Common.Exceptions;
 using ScreenDrafts.Application.Common.FileStorage;
-using ScreenDrafts.Application.Common.Interfaces;
 using ScreenDrafts.Application.Common.Mailing;
 using ScreenDrafts.Application.Common.Models;
 using ScreenDrafts.Application.Common.Specification;
 using ScreenDrafts.Application.Identity.Users;
 using ScreenDrafts.Domain.Identity;
-using ScreenDrafts.Infrastructure.Auth;
-using ScreenDrafts.Infrastructure.Persistence.Context;
-using ScreenDrafts.Shared.Authorization;
-using Mapster;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Localization;
-using Microsoft.Extensions.Options;
 
 namespace ScreenDrafts.Infrastructure.Identity;
 
@@ -138,7 +132,7 @@ internal partial class UserService : IUserService
 
         _ = user ?? throw new NotFoundException(_t["User Not Found."]);
 
-        bool isAdmin = await _userManager.IsInRoleAsync(user, FSHRoles.Admin);
+        bool isAdmin = await _userManager.IsInRoleAsync(user, ScreenDraftsRoles.Admin);
         if (isAdmin)
         {
             throw new ConflictException(_t["Administrators Profile's Status cannot be toggled"]);

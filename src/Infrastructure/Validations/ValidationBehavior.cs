@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
-using MediatR;
+
+using ValidationException = FluentValidation.ValidationException;
 
 namespace ScreenDrafts.Infrastructure.Validations;
 

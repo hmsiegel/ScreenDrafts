@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Identity;
-
 namespace ScreenDrafts.Infrastructure.Identity;
 
 public class ApplicationUser : IdentityUser
