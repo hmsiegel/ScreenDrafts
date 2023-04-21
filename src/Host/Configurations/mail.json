@@ -1,10 +1,10 @@
 {
   "MailSettings": {
-    "DisplayName": "Mukesh Murugan",
-    "From": "mukesh@fullstackhero.net",
+    "DisplayName": "Harlan Siegel",
+    "From": "hmsiegel@gmail.com",
     "Host": "smtp.ethereal.email",
-    "Password": "AdEqEKB4QwWX9Xey82",
+    "Password": "pJ8Ubqqnd7BPrg75hR",
     "Port": 587,
-    "UserName": "nestor91@ethereal.email"
+    "UserName": "ramona.kohler@ethereal.email"
   }
 }
