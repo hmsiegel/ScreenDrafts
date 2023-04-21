@@ -1,4 +1,6 @@
-﻿global using MediatR;
+﻿global using Contracts.Drafts;
+
+global using MediatR;
 
 global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.Http;

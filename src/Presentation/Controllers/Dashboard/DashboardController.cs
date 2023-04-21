@@ -3,7 +3,7 @@ namespace ScreenDrafts.Presentation.Controllers.Dashboard;
 public class DashboardController : VersionedApiController
 {
     [HttpGet]
-    [MustHavePermission(FSHAction.View, FSHResource.Dashboard)]
+    [MustHavePermission(ScreenDraftsAction.View, ScreenDraftsResource.Dashboard)]
     [OpenApiOperation("Get statistics for the dashboard.", "")]
     public Task<StatsDto> GetAsync()
     {

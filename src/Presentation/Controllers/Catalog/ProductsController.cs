@@ -3,7 +3,7 @@
 public class ProductsController : VersionedApiController
 {
     [HttpPost("search")]
-    [MustHavePermission(FSHAction.Search, FSHResource.Products)]
+    [MustHavePermission(ScreenDraftsAction.Search, ScreenDraftsResource.Products)]
     [OpenApiOperation("Search products using available filters.", "")]
     public Task<PaginationResponse<ProductDto>> SearchAsync(SearchProductsRequest request)
     {
@@ -11,7 +11,7 @@ public class ProductsController : VersionedApiController
     }
 
     [HttpGet("{id:guid}")]
-    [MustHavePermission(FSHAction.View, FSHResource.Products)]
+    [MustHavePermission(ScreenDraftsAction.View, ScreenDraftsResource.Products)]
     [OpenApiOperation("Get product details.", "")]
     public Task<ProductDetailsDto> GetAsync(DefaultIdType id)
     {
@@ -19,7 +19,7 @@ public class ProductsController : VersionedApiController
     }
 
     [HttpGet("dapper")]
-    [MustHavePermission(FSHAction.View, FSHResource.Products)]
+    [MustHavePermission(ScreenDraftsAction.View, ScreenDraftsResource.Products)]
     [OpenApiOperation("Get product details via dapper.", "")]
     public Task<ProductDto> GetDapperAsync(DefaultIdType id)
     {
@@ -27,7 +27,7 @@ public class ProductsController : VersionedApiController
     }
 
     [HttpPost]
-    [MustHavePermission(FSHAction.Create, FSHResource.Products)]
+    [MustHavePermission(ScreenDraftsAction.Create, ScreenDraftsResource.Products)]
     [OpenApiOperation("Create a new product.", "")]
     public Task<DefaultIdType> CreateAsync(CreateProductRequest request)
     {
@@ -35,7 +35,7 @@ public class ProductsController : VersionedApiController
     }
 
     [HttpPut("{id:guid}")]
-    [MustHavePermission(FSHAction.Update, FSHResource.Products)]
+    [MustHavePermission(ScreenDraftsAction.Update, ScreenDraftsResource.Products)]
     [OpenApiOperation("Update a product.", "")]
     public async Task<ActionResult<DefaultIdType>> UpdateAsync(UpdateProductRequest request, DefaultIdType id)
     {
@@ -45,7 +45,7 @@ public class ProductsController : VersionedApiController
     }
 
     [HttpDelete("{id:guid}")]
-    [MustHavePermission(FSHAction.Delete, FSHResource.Products)]
+    [MustHavePermission(ScreenDraftsAction.Delete, ScreenDraftsResource.Products)]
     [OpenApiOperation("Delete a product.", "")]
     public Task<DefaultIdType> DeleteAsync(DefaultIdType id)
     {
@@ -53,7 +53,7 @@ public class ProductsController : VersionedApiController
     }
 
     [HttpPost("export")]
-    [MustHavePermission(FSHAction.Export, FSHResource.Products)]
+    [MustHavePermission(ScreenDraftsAction.Export, ScreenDraftsResource.Products)]
     [OpenApiOperation("Export a products.", "")]
     public async Task<FileResult> ExportAsync(ExportProductsRequest filter)
     {
