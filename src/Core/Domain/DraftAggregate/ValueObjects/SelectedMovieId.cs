@@ -2,19 +2,19 @@
 
 public sealed class SelectedMovieId : ValueObject
 {
-    public Guid Value { get; private set; }
+    public DefaultIdType Value { get; private set; }
 
-    private SelectedMovieId(Guid value)
+    private SelectedMovieId(DefaultIdType value)
     {
         Value = value;
     }
 
     public static SelectedMovieId CreateUnique()
     {
-        return new SelectedMovieId(Guid.NewGuid());
+        return new SelectedMovieId(DefaultIdType.NewGuid());
     }
 
-    public static SelectedMovieId Create(Guid value)
+    public static SelectedMovieId Create(DefaultIdType value)
     {
         return new SelectedMovieId(value);
     }

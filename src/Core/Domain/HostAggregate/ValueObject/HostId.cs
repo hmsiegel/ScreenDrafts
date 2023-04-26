@@ -5,7 +5,8 @@ public sealed class HostId : AggregateRootId<DefaultIdType>
 
     private HostId(DefaultIdType value) => Value = value;
 
-    public static HostId Create() => new(DefaultIdType.NewGuid());
+    public static HostId CreateUnique() => new(DefaultIdType.NewGuid());
+    public static HostId Create(DefaultIdType value) => new(value);
 
     public override IEnumerable<object?> GetAtomicValues()
     {

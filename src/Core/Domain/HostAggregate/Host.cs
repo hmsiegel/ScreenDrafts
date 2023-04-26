@@ -1,25 +1,24 @@
 ﻿namespace ScreenDrafts.Domain.CommissionerAggregate;
-public sealed class Host : AggregateRoot<HostId, DefaultIdType>, IAuditableEntity
+public sealed class Host : AuditableEntity, IAggregateRoot
 {
-    private Host(HostId id, string? userId)
-        : base(id ?? HostId.Create())
+    private Host(
+        UserId userId)
     {
         UserId = userId;
     }
 
-    public string? UserId { get; private set; }
+    public UserId UserId { get; private set; }
     public int PredictionPoints { get; private set; }
 
-    public DefaultIdType CreatedBy { get; set; }
-    public DateTime CreatedOn { get; }
-    public DefaultIdType LastModifiedBy { get; set; }
-    public DateTime? LastModifiedOn { get; set; }
-
-    public static Host Create(string? userId) => new(HostId.Create(), userId);
+    public static Host Create(UserId userId) => new(userId);
 
     public void AddPredictionPoints(int points) => PredictionPoints += points;
 
+    public void ResetPredictionPoints() => PredictionPoints = 0;
+
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     private Host()
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     {
     }
 }

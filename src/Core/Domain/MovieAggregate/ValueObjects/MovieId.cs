@@ -5,7 +5,8 @@ public sealed class MovieId : AggregateRootId<DefaultIdType>
 
     private MovieId(DefaultIdType value) => Value = value;
 
-    public static MovieId Create() => new(DefaultIdType.NewGuid());
+    public static MovieId CreateUnique() => new(DefaultIdType.NewGuid());
+    public static MovieId Create(DefaultIdType value) => new(value);
 
     public override IEnumerable<object?> GetAtomicValues()
     {

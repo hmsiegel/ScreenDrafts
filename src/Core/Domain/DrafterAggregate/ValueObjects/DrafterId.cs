@@ -5,7 +5,8 @@ public sealed class DrafterId : AggregateRootId<DefaultIdType>
 
     private DrafterId(DefaultIdType value) => Value = value;
 
-    public static DrafterId Create() => new(DefaultIdType.NewGuid());
+    public static DrafterId Create(DefaultIdType value) => new(value);
+    public static DrafterId CreateUnique() => new(DefaultIdType.NewGuid());
 
     public override IEnumerable<object?> GetAtomicValues()
     {

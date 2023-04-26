@@ -1,45 +1,43 @@
-﻿namespace ScreenDrafts.Domain.DraftersAggregate;
-public sealed class Drafter : AggregateRoot<DrafterId, DefaultIdType>, IAuditableEntity
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace ScreenDrafts.Domain.DraftersAggregate;
+public sealed class Drafter : AuditableEntity, IAggregateRoot
 {
-    private readonly List<Draft> _particpatedDrafts = new();
+    private readonly List<DraftId> _particpatedDrafts = new();
+    private readonly List<MovieToDraft> _moviesToDraft = new();
 
     private Drafter(
-        DrafterId drafterId,
-        string? userId,
+        UserId? userId,
         bool hasRolloverVeto,
         bool hasRolloverVetoOverride)
-        : base(drafterId ?? DrafterId.Create())
     {
         UserId = userId;
         HasRolloverVeto = hasRolloverVeto;
         HasRolloverVetoOverride = hasRolloverVetoOverride;
     }
 
-    public string? UserId { get; private set; }
-    public bool HasRolloverVeto { get; private set; } = false;
-    public bool HasRolloverVetoOverride { get; private set; } = false;
-    public IReadOnlyCollection<Draft> ParticipatedDrafts => _particpatedDrafts;
+    public UserId? UserId { get; private set; }
+    public bool HasRolloverVeto { get; private set; }
+    public bool HasRolloverVetoOverride { get; private set; }
 
-    public DefaultIdType CreatedBy { get; set; }
-    public DateTime CreatedOn { get; }
-    public DefaultIdType LastModifiedBy { get; set; }
-    public DateTime? LastModifiedOn { get; set; }
+    [BackingField(nameof(_particpatedDrafts))]
+    public IReadOnlyList<DraftId> ParticipatedDrafts => _particpatedDrafts.AsReadOnly();
+    public IReadOnlyList<MovieToDraft> MoviesToDraft => _moviesToDraft.AsReadOnly();
 
     public static Drafter Create(
-        string userId,
+        UserId? userId,
         bool hasRolloverVeto,
         bool hasRolloverVetoOverride)
     {
         return new Drafter(
-            DrafterId.Create(),
             userId,
             hasRolloverVeto,
             hasRolloverVetoOverride);
     }
 
-    public void AddParticipatedDraft(Draft draft)
+    public void AddParticipatedDraft(DraftId draftId)
     {
-        _particpatedDrafts.Add(draft);
+        _particpatedDrafts.Add(draftId);
     }
 
     public void UpdateRolloverVeto(bool hasRolloverVeto)
@@ -50,6 +48,11 @@ public sealed class Drafter : AggregateRoot<DrafterId, DefaultIdType>, IAuditabl
     public void UpdateRolloverVetoOverride(bool hasRolloverVetoOverride)
     {
         HasRolloverVetoOverride = hasRolloverVetoOverride;
+    }
+
+    public void AddMovieToDraft(MovieId movieId, DraftId draftId)
+    {
+        _moviesToDraft.Add(MovieToDraft.Create(movieId, draftId));
     }
 
     private Drafter()

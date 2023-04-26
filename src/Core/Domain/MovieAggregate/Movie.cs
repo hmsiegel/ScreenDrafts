@@ -1,18 +1,16 @@
 ﻿namespace ScreenDrafts.Domain.MovieAggregate;
-public sealed class Movie : AggregateRoot<MovieId, DefaultIdType>, IAuditableEntity
+public sealed class Movie : AuditableEntity, IAggregateRoot
 {
     private readonly List<string?> _writers = new();
-    private readonly List<Draft> _draftsSelectedIn = new();
-    private readonly List<Draft> _draftsVetoedIn = new();
+    private readonly List<DraftId> _draftsSelectedIn = new();
+    private readonly List<DraftId> _draftsVetoedIn = new();
 
     private Movie(
-        MovieId movieId,
         string? title,
         string? year,
         string? director,
         string? imageUrl,
         string? imdbUrl)
-        : base(movieId ?? MovieId.Create())
     {
         Title = title;
         Year = year;
@@ -28,13 +26,8 @@ public sealed class Movie : AggregateRoot<MovieId, DefaultIdType>, IAuditableEnt
     public string? ImdbUrl { get; private set; }
     public bool IsInMarqueeOfFame { get; private set; } = false;
     public IReadOnlyCollection<string?> Writers => _writers;
-    public IReadOnlyCollection<Draft> DraftsSelectedIn => _draftsSelectedIn;
-    public IReadOnlyCollection<Draft> DraftsVetoedIn => _draftsVetoedIn;
-
-    public DefaultIdType CreatedBy { get; set; }
-    public DateTime CreatedOn { get; set; }
-    public DefaultIdType LastModifiedBy { get; set; }
-    public DateTime? LastModifiedOn { get; set; }
+    public IReadOnlyCollection<DraftId> DraftsSelectedIn => _draftsSelectedIn.AsReadOnly();
+    public IReadOnlyCollection<DraftId> DraftsVetoedIn => _draftsVetoedIn.AsReadOnly();
 
     public static Movie Create(
         string title,
@@ -44,7 +37,6 @@ public sealed class Movie : AggregateRoot<MovieId, DefaultIdType>, IAuditableEnt
         string imdbUrl)
     {
         return new Movie(
-            MovieId.Create(),
             title,
             year,
             director,
@@ -57,18 +49,17 @@ public sealed class Movie : AggregateRoot<MovieId, DefaultIdType>, IAuditableEnt
         _writers.Add(writer);
     }
 
-    public void AddDraftSelectedIn(Draft draft)
+    public void AddDraftSelectedIn(DraftId draftId)
     {
-        _draftsSelectedIn.Add(draft);
+        _draftsSelectedIn.Add(draftId);
     }
 
-    public void AddDraftVetoedIn(Draft draft)
+    public void AddDraftVetoedIn(DraftId draftId)
     {
-        _draftsVetoedIn.Add(draft);
+        _draftsVetoedIn.Add(draftId);
     }
 
     private Movie()
     {
-
     }
 }

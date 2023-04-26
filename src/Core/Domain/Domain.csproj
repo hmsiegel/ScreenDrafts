@@ -7,19 +7,24 @@
     <ItemGroup>
         <PackageReference Include="Ardalis.SmartEnum" Version="7.0.0" />
         <PackageReference Include="ErrorOr" Version="1.2.1" />
+        <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.5" />
         <PackageReference Include="NewId" Version="4.0.1" />
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\Shared\Shared.csproj" />
     </ItemGroup>
     <ItemGroup>
-      <PackageReference Update="Roslynator.Analyzers" Version="4.2.0">
+      <PackageReference Update="Roslynator.Analyzers" Version="4.3.0">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+      <PackageReference Update="StyleCop.Analyzers" Version="1.1.118">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
     </ItemGroup>
     <ItemGroup>
-      <Folder Include="DrafterAggregate\Entities\" />
       <Folder Include="MovieAggregate\Entities\" />
     </ItemGroup>
 </Project>
