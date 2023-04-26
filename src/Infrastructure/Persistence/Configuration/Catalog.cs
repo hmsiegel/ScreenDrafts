@@ -1,9 +1,4 @@
-﻿using Finbuckle.MultiTenant.EntityFrameworkCore;
-using ScreenDrafts.Domain.Catalog;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-
-namespace ScreenDrafts.Infrastructure.Persistence.Configuration;
+﻿namespace ScreenDrafts.Infrastructure.Persistence.Configuration;
 
 public class BrandConfig : IEntityTypeConfiguration<Brand>
 {

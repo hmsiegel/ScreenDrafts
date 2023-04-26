@@ -1,8 +1,6 @@
 ﻿using Ardalis.Specification;
 using Ardalis.Specification.EntityFrameworkCore;
-using ScreenDrafts.Application.Common.Persistence;
-using ScreenDrafts.Domain.Common.Contracts;
-using ScreenDrafts.Infrastructure.Persistence.Context;
+
 using Mapster;
 
 namespace ScreenDrafts.Infrastructure.Persistence.Repository;

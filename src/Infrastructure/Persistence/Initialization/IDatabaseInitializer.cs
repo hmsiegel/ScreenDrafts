@@ -3,5 +3,5 @@
 internal interface IDatabaseInitializer
 {
     Task InitializeDatabasesAsync(CancellationToken cancellationToken);
-    Task InitializeApplicationDbForTenantAsync(FSHTenantInfo tenant, CancellationToken cancellationToken);
+    Task InitializeApplicationDbForTenantAsync(ScreenDraftsTenantInfo tenant, CancellationToken cancellationToken);
 }

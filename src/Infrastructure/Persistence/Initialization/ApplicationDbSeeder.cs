@@ -2,14 +2,14 @@
 
 internal class ApplicationDbSeeder
 {
-    private readonly FSHTenantInfo _currentTenant;
+    private readonly ScreenDraftsTenantInfo _currentTenant;
     private readonly RoleManager<ApplicationRole> _roleManager;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly CustomSeederRunner _seederRunner;
     private readonly ILogger<ApplicationDbSeeder> _logger;
 
     public ApplicationDbSeeder(
-        FSHTenantInfo currentTenant,
+        ScreenDraftsTenantInfo currentTenant,
         RoleManager<ApplicationRole> roleManager,
         UserManager<ApplicationUser> userManager,
         CustomSeederRunner seederRunner,

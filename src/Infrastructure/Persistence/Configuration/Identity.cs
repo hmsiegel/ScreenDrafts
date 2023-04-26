@@ -1,10 +1,4 @@
-﻿using Finbuckle.MultiTenant.EntityFrameworkCore;
-using ScreenDrafts.Infrastructure.Identity;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-
-namespace ScreenDrafts.Infrastructure.Persistence.Configuration;
+﻿namespace ScreenDrafts.Infrastructure.Persistence.Configuration;
 
 public class ApplicationUserConfig : IEntityTypeConfiguration<ApplicationUser>
 {
