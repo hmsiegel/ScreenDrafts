@@ -1,19 +1,10 @@
-﻿using Finbuckle.MultiTenant;
-using ScreenDrafts.Infrastructure.Auth;
-using ScreenDrafts.Infrastructure.Common;
-using ScreenDrafts.Infrastructure.Multitenancy;
-using ScreenDrafts.Shared.Multitenancy;
-using Hangfire;
-using Hangfire.Server;
-using Microsoft.Extensions.DependencyInjection;
+﻿namespace ScreenDrafts.Infrastructure.BackgroundJobs;
 
-namespace ScreenDrafts.Infrastructure.BackgroundJobs;
-
-public class FSHJobActivator : JobActivator
+public class ScreenDraftsJobActivator : JobActivator
 {
     private readonly IServiceScopeFactory _scopeFactory;
 
-    public FSHJobActivator(IServiceScopeFactory scopeFactory) =>
+    public ScreenDraftsJobActivator(IServiceScopeFactory scopeFactory) =>
         _scopeFactory = scopeFactory ?? throw new ArgumentNullException(nameof(scopeFactory));
 
     public override JobActivatorScope BeginScope(PerformContext context) =>
@@ -34,11 +25,11 @@ public class FSHJobActivator : JobActivator
 
         private void ReceiveParameters()
         {
-            var tenantInfo = _context.GetJobParameter<FSHTenantInfo>(MultitenancyConstants.TenantIdName);
+            var tenantInfo = _context.GetJobParameter<ScreenDraftsTenantInfo>(MultitenancyConstants.TenantIdName);
             if (tenantInfo is not null)
             {
                 _scope.ServiceProvider.GetRequiredService<IMultiTenantContextAccessor>()
-                    .MultiTenantContext = new MultiTenantContext<FSHTenantInfo>
+                    .MultiTenantContext = new MultiTenantContext<ScreenDraftsTenantInfo>
                     {
                         TenantInfo = tenantInfo
                     };

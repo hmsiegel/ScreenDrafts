@@ -1,13 +1,6 @@
-﻿using System.Security.Claims;
-using ScreenDrafts.Application.Common.Exceptions;
-using ScreenDrafts.Application.Common.Mailing;
-using ScreenDrafts.Application.Identity.Users;
+﻿using Microsoft.Identity.Web;
+
 using ScreenDrafts.Domain.Common;
-using ScreenDrafts.Domain.Identity;
-using ScreenDrafts.Shared.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Web;
 
 namespace ScreenDrafts.Infrastructure.Identity;
 

@@ -1,21 +1,14 @@
-using ScreenDrafts.Infrastructure.Common.Extensions;
-using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Localization;
-using Microsoft.Extensions.Options;
-using OrchardCore.Localization;
-
 namespace ScreenDrafts.Infrastructure.Localization;
 
 /// <summary>
 /// Provides PO files for FSH Localization.
 /// </summary>
-public class FSHPoFileLocationProvider : ILocalizationFileLocationProvider
+public class ScreenDraftsPoFileLocationProvider : ILocalizationFileLocationProvider
 {
     private readonly IFileProvider _fileProvider;
     private readonly string _resourcesContainer;
 
-    public FSHPoFileLocationProvider(IHostEnvironment hostingEnvironment, IOptions<LocalizationOptions> localizationOptions)
+    public ScreenDraftsPoFileLocationProvider(IHostEnvironment hostingEnvironment, IOptions<LocalizationOptions> localizationOptions)
     {
         _fileProvider = hostingEnvironment.ContentRootFileProvider;
         _resourcesContainer = localizationOptions.Value.ResourcesPath;

@@ -1,15 +1,12 @@
 ﻿using Ardalis.Specification;
-using ScreenDrafts.Application.Catalog.Brands;
-using ScreenDrafts.Application.Common.Interfaces;
-using ScreenDrafts.Application.Common.Persistence;
-using ScreenDrafts.Domain.Catalog;
-using ScreenDrafts.Shared.Notifications;
+
 using Hangfire;
 using Hangfire.Console.Extensions;
 using Hangfire.Console.Progress;
 using Hangfire.Server;
-using MediatR;
-using Microsoft.Extensions.Logging;
+
+using ScreenDrafts.Application.Catalog.Brands;
+using ScreenDrafts.Shared.Notifications;
 
 namespace ScreenDrafts.Infrastructure.Catalog;
 

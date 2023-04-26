@@ -1,12 +1,12 @@
 ﻿namespace ScreenDrafts.Infrastructure.Multitenancy;
 
-public class FSHTenantInfo : ITenantInfo
+public class ScreenDraftsTenantInfo : ITenantInfo
 {
-    public FSHTenantInfo()
+    public ScreenDraftsTenantInfo()
     {
     }
 
-    public FSHTenantInfo(string id, string name, string? connectionString, string adminEmail, string? issuer = null)
+    public ScreenDraftsTenantInfo(string id, string name, string? connectionString, string adminEmail, string? issuer = null)
     {
         Id = id;
         Identifier = id;

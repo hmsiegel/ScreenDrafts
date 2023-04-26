@@ -1,11 +1,4 @@
-﻿using ScreenDrafts.Application.Common.Exceptions;
-using ScreenDrafts.Application.Identity.Users;
-using ScreenDrafts.Domain.Identity;
-using ScreenDrafts.Shared.Authorization;
-using ScreenDrafts.Shared.Multitenancy;
-using Microsoft.EntityFrameworkCore;
-
-namespace ScreenDrafts.Infrastructure.Identity;
+﻿namespace ScreenDrafts.Infrastructure.Identity;
 
 internal partial class UserService
 {

@@ -1,6 +1,4 @@
-﻿using System.Security.Claims;
-
-namespace ScreenDrafts.Infrastructure.Auth;
+﻿namespace ScreenDrafts.Infrastructure.Auth;
 
 public interface ICurrentUserInitializer
 {

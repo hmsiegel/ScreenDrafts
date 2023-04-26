@@ -1,5 +1,3 @@
-using System.Security.Claims;
-
 namespace ScreenDrafts.Infrastructure.Auth;
 
 public class CurrentUser : ICurrentUser, ICurrentUserInitializer

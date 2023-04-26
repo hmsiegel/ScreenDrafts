@@ -1,19 +1,3 @@
-using Ardalis.Specification;
-using Ardalis.Specification.EntityFrameworkCore;
-
-using Mapster;
-
-using Microsoft.Extensions.Localization;
-
-using ScreenDrafts.Application.Common.Caching;
-using ScreenDrafts.Application.Common.Exceptions;
-using ScreenDrafts.Application.Common.FileStorage;
-using ScreenDrafts.Application.Common.Mailing;
-using ScreenDrafts.Application.Common.Models;
-using ScreenDrafts.Application.Common.Specification;
-using ScreenDrafts.Application.Identity.Users;
-using ScreenDrafts.Domain.Identity;
-
 namespace ScreenDrafts.Infrastructure.Identity;
 
 internal partial class UserService : IUserService

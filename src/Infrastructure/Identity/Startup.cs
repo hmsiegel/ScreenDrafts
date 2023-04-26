@@ -1,7 +1,3 @@
-using ScreenDrafts.Infrastructure.Persistence.Context;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.DependencyInjection;
-
 namespace ScreenDrafts.Infrastructure.Identity;
 
 internal static class Startup
