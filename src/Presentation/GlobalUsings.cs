@@ -1,5 +1,9 @@
 ﻿global using Contracts.Drafts;
 
+global using Mapster;
+
+global using MapsterMapper;
+
 global using MediatR;
 
 global using Microsoft.AspNetCore.Authorization;
@@ -15,6 +19,7 @@ global using ScreenDrafts.Application.Catalog.Brands;
 global using ScreenDrafts.Application.Catalog.Products;
 global using ScreenDrafts.Application.Common.Models;
 global using ScreenDrafts.Application.Dashboard;
+global using ScreenDrafts.Application.Drafts.Commands.CreateDraft;
 global using ScreenDrafts.Application.Identity.Roles;
 global using ScreenDrafts.Application.Identity.Tokens;
 global using ScreenDrafts.Application.Identity.Users;

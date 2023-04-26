@@ -55,7 +55,7 @@ public class BrandsController : VersionedApiController
     [HttpDelete("delete-random")]
     [MustHavePermission(ScreenDraftsAction.Clean, ScreenDraftsResource.Brands)]
     [OpenApiOperation("Delete the brands generated with the generate-random call.", "")]
-    [ApiConventionMethod(typeof(FSHApiConventions), nameof(FSHApiConventions.Search))]
+    [ApiConventionMethod(typeof(ScreenDraftsApiConvention), nameof(ScreenDraftsApiConvention.Search))]
     public Task<string> DeleteRandomAsync()
     {
         return Mediator.Send(new DeleteRandomBrandRequest());
