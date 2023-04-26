@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Application.Common.Messaging;
+﻿using Result = ScreenDrafts.Domain.Common.Shared.Result;
+
+namespace ScreenDrafts.Application.Common.Messaging;
 
 /// <summary>
 /// Represents the command interface.

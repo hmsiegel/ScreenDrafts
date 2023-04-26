@@ -1,5 +1,6 @@
-using System.Security.Claims;
 using ScreenDrafts.Application.Identity.Users.Password;
+
+using System.Security.Claims;
 
 namespace ScreenDrafts.Application.Identity.Users;
 
