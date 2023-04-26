@@ -1,4 +1,4 @@
-[assembly: ApiConventionType(typeof(FSHApiConventions))]
+[assembly: ApiConventionType(typeof(ScreenDraftsApiConvention))]
 
 StaticLogger.EnsureInitialized();
 Log.Information("Server Booting Up...");
@@ -9,10 +9,7 @@ try
     builder.AddConfigurations().RegisterSerilog();
     builder.Services.AddInfrastructure(builder.Configuration);
     builder.Services.AddApplication();
-    builder.Services
-        .InstallServices(
-            builder.Configuration,
-            typeof(IServiceInstaller).Assembly);
+    builder.Services.AddPresentation();
 
     var app = builder.Build();
 

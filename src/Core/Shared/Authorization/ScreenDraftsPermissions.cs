@@ -60,6 +60,7 @@ public static class ScreenDraftsPermissions
         new("Delete Brands", ScreenDraftsAction.Delete, ScreenDraftsResource.Brands),
         new("Generate Brands", ScreenDraftsAction.Generate, ScreenDraftsResource.Brands),
         new("Clean Brands", ScreenDraftsAction.Clean, ScreenDraftsResource.Brands),
+        new("Create Drafts", ScreenDraftsAction.Create, ScreenDraftsResource.Drafts),
         new("View Tenants", ScreenDraftsAction.View, ScreenDraftsResource.Tenants, IsRoot: true),
         new("Create Tenants", ScreenDraftsAction.Create, ScreenDraftsResource.Tenants, IsRoot: true),
         new("Update Tenants", ScreenDraftsAction.Update, ScreenDraftsResource.Tenants, IsRoot: true),

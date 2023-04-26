@@ -5,7 +5,7 @@
         <AssemblyName>ScreenDrafts.Host</AssemblyName>
     </PropertyGroup>
     <PropertyGroup>
-        <ContainerImageName>dotnet-webapi</ContainerImageName>
+        <ContainerImageName>screendrafts-api</ContainerImageName>
         <ContainerImageTags>1.0.0;latest</ContainerImageTags>
         <PublishProfile>DefaultContainer</PublishProfile>
         <UserSecretsId>b44a7f77-c67f-4722-8301-904d2d082207</UserSecretsId>
@@ -60,6 +60,10 @@
     </ItemGroup>
     <ItemGroup>
       <PackageReference Update="Roslynator.Analyzers" Version="4.2.0">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+      <PackageReference Update="StyleCop.Analyzers" Version="1.1.118">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
