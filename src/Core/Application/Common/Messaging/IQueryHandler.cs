@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Application.Common.Messaging;
+﻿using ScreenDrafts.Domain.Common.Shared;
+
+namespace ScreenDrafts.Application.Common.Messaging;
 
 /// <summary>
 /// Represents the query handler interface.

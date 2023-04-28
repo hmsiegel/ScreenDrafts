@@ -74,4 +74,41 @@ public sealed class Draft : AuditableEntity, IAggregateRoot
     {
         EpisodeNumber = episodeNumber;
     }
+
+    public void UpdateDraftName(string draftName)
+    {
+        DraftName = draftName;
+    }
+
+    public void UpdateDraftType(DraftType draftType)
+    {
+        DraftType = draftType;
+    }
+
+    public void UpdateNumberOfDrafters(int numberOfDrafters)
+    {
+        NumberOfDrafters = numberOfDrafters;
+    }
+
+    public void UpdateSelectedMovies(List<SelectedMovie> selectedMovies)
+    {
+        _selectedMovies.Clear();
+        _selectedMovies.AddRange(selectedMovies);
+    }
+
+    public void UpdateHosts(List<HostId> hosts)
+    {
+        _hosts.Clear();
+        _hosts.AddRange(hosts);
+    }
+
+    public void UpdateReleaseDate(DateOnly episodeReleaseDate)
+    {
+        EpisodeReleaseDate = episodeReleaseDate;
+    }
+
+    public void UpdateRuntimeInMinutes(int runtimeInMinutes)
+    {
+        RuntimeInMinutes = runtimeInMinutes;
+    }
 }

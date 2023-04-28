@@ -1,6 +1,6 @@
 ﻿global using Ardalis.SmartEnum;
 
-global using Microsoft.AspNetCore.Identity;
+global using ErrorOr;
 
 global using ScreenDrafts.Domain.Common.Contracts;
 global using ScreenDrafts.Domain.DraftAggregate.Entities;

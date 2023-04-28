@@ -1,4 +1,3 @@
-using ScreenDrafts.Shared.Authorization;
 using Microsoft.AspNetCore.Authorization;
 
 namespace ScreenDrafts.Infrastructure.Auth.Permissions;

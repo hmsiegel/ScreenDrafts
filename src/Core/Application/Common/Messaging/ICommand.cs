@@ -1,4 +1,6 @@
-﻿using Result = ScreenDrafts.Domain.Common.Shared.Result;
+﻿using ScreenDrafts.Domain.Common.Shared;
+
+using Result = ScreenDrafts.Domain.Common.Shared.Result;
 
 namespace ScreenDrafts.Application.Common.Messaging;
 

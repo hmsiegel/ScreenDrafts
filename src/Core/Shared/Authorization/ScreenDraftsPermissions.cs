@@ -25,6 +25,7 @@ public static class ScreenDraftsResource
     public const string Products = nameof(Products);
     public const string Brands = nameof(Brands);
     public const string Drafts = nameof(Drafts);
+    public const string Drafters = nameof(Drafters);
 }
 
 public static class ScreenDraftsPermissions
@@ -60,7 +61,14 @@ public static class ScreenDraftsPermissions
         new("Delete Brands", ScreenDraftsAction.Delete, ScreenDraftsResource.Brands),
         new("Generate Brands", ScreenDraftsAction.Generate, ScreenDraftsResource.Brands),
         new("Clean Brands", ScreenDraftsAction.Clean, ScreenDraftsResource.Brands),
-        new("Create Drafts", ScreenDraftsAction.Create, ScreenDraftsResource.Drafts),
+        new("Create Drafts", ScreenDraftsAction.Create, ScreenDraftsResource.Drafts, IsHost: true),
+        new("View Drafts", ScreenDraftsAction.View, ScreenDraftsResource.Drafts),
+        new("Update Drafts", ScreenDraftsAction.Update, ScreenDraftsResource.Drafts, IsHost: true),
+        new("Search Drafts", ScreenDraftsAction.Search, ScreenDraftsResource.Drafts),
+        new("Create Drafters", ScreenDraftsAction.Create, ScreenDraftsResource.Drafters),
+        new("View Drafters", ScreenDraftsAction.View, ScreenDraftsResource.Drafters),
+        new("Update Drafters", ScreenDraftsAction.Update, ScreenDraftsResource.Drafters),
+        new("Search Drafters", ScreenDraftsAction.Search, ScreenDraftsResource.Drafters),
         new("View Tenants", ScreenDraftsAction.View, ScreenDraftsResource.Tenants, IsRoot: true),
         new("Create Tenants", ScreenDraftsAction.Create, ScreenDraftsResource.Tenants, IsRoot: true),
         new("Update Tenants", ScreenDraftsAction.Update, ScreenDraftsResource.Tenants, IsRoot: true),
@@ -71,9 +79,11 @@ public static class ScreenDraftsPermissions
     public static IReadOnlyList<ScreenDraftsPermission> Root { get; } = new ReadOnlyCollection<ScreenDraftsPermission>(_all.Where(p => p.IsRoot).ToArray());
     public static IReadOnlyList<ScreenDraftsPermission> Admin { get; } = new ReadOnlyCollection<ScreenDraftsPermission>(_all.Where(p => !p.IsRoot).ToArray());
     public static IReadOnlyList<ScreenDraftsPermission> Basic { get; } = new ReadOnlyCollection<ScreenDraftsPermission>(_all.Where(p => p.IsBasic).ToArray());
+    public static IReadOnlyList<ScreenDraftsPermission> Host { get; } = new ReadOnlyCollection<ScreenDraftsPermission>(_all.Where(p => p.IsHost).ToArray());
+    public static IReadOnlyList<ScreenDraftsPermission> Drafter { get; } = new ReadOnlyCollection<ScreenDraftsPermission>(_all.Where(p => p.IsDrafter).ToArray());
 }
 
-public record ScreenDraftsPermission(string Description, string Action, string Resource, bool IsBasic = false, bool IsRoot = false)
+public record ScreenDraftsPermission(string Description, string Action, string Resource, bool IsBasic = false, bool IsRoot = false, bool IsHost = false, bool IsDrafter = false)
 {
     public string Name => NameFor(Action, Resource);
     public static string NameFor(string action, string resource) => $"Permissions.{resource}.{action}";

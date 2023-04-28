@@ -1,6 +1,4 @@
-﻿using ErrorOr;
-
-namespace ScreenDrafts.Domain.Common.Errors;
+﻿namespace ScreenDrafts.Domain.Common.DomainErrors;
 public partial class Errors
 {
     public static class Draft
@@ -9,5 +7,4 @@ public partial class Errors
             "Draft.Validation",
             "The provided draft id is invalid.");
     }
-
 }

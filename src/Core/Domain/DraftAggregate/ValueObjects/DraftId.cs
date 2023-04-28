@@ -1,6 +1,6 @@
 ﻿using ErrorOr;
 
-using ScreenDrafts.Domain.Common.Errors;
+using ScreenDrafts.Domain.Common.DomainErrors;
 
 namespace ScreenDrafts.Domain.DraftAggregate.ValueObjects;
 public sealed class DraftId : AggregateRootId<DefaultIdType>

@@ -8,8 +8,8 @@ public sealed class Drafter : AuditableEntity, IAggregateRoot
 
     private Drafter(
         UserId? userId,
-        bool hasRolloverVeto,
-        bool hasRolloverVetoOverride)
+        bool hasRolloverVeto = false,
+        bool hasRolloverVetoOverride = false)
     {
         UserId = userId;
         HasRolloverVeto = hasRolloverVeto;
@@ -25,14 +25,10 @@ public sealed class Drafter : AuditableEntity, IAggregateRoot
     public IReadOnlyList<MovieToDraft> MoviesToDraft => _moviesToDraft.AsReadOnly();
 
     public static Drafter Create(
-        UserId? userId,
-        bool hasRolloverVeto,
-        bool hasRolloverVetoOverride)
+        UserId? userId)
     {
         return new Drafter(
-            userId,
-            hasRolloverVeto,
-            hasRolloverVetoOverride);
+            userId);
     }
 
     public void AddParticipatedDraft(DraftId draftId)
