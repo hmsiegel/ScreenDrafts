@@ -8,7 +8,7 @@ internal sealed class CreateDraftCommandValidator : AbstractValidator<CreateDraf
             .MaximumLength(100);
         RuleFor(x => x.DraftType)
             .NotEmpty();
-        RuleFor(x => x.EpisodeNumber)
+        RuleFor(x => x.NumberOfDrafters)
             .NotEmpty()
             .GreaterThan(0);
     }

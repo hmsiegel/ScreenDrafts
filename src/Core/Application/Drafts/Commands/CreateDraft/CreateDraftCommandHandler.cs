@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Domain.DraftAggregate.Enums;
-
-namespace ScreenDrafts.Application.Drafts.Commands.CreateDraft;
+﻿namespace ScreenDrafts.Application.Drafts.Commands.CreateDraft;
 internal sealed class CreateDraftCommandHandler : IRequestHandler<CreateDraftCommand, DefaultIdType>
 {
     private readonly IRepositoryWithEvents<Draft> _draftRepository;
@@ -12,9 +10,11 @@ internal sealed class CreateDraftCommandHandler : IRequestHandler<CreateDraftCom
 
     public async Task<DefaultIdType> Handle(CreateDraftCommand request, CancellationToken cancellationToken)
     {
-        var draft = Draft.Create(request.Name!, (DraftType)request.DraftType, request.EpisodeNumber);
+        var draft = Draft.Create(request.Name!, (DraftType)request.DraftType, request.NumberOfDrafters);
 
         await _draftRepository.AddAsync(draft, cancellationToken);
+
+        await _draftRepository.SaveChangesAsync(cancellationToken);
 
         return default;
     }

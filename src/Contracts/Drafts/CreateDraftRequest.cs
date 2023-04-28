@@ -2,4 +2,4 @@
 public sealed record CreateDraftRequest(
     string? Name,
     int DraftType,
-    int EpisodeNumber);
+    int NumberOfDrafters);

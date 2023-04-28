@@ -2,4 +2,4 @@
 public sealed record CreateDraftCommand(
     string? Name,
     int DraftType,
-    int EpisodeNumber) : IRequest<DefaultIdType>;
+    int NumberOfDrafters) : IRequest<DefaultIdType>;

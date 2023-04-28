@@ -6,6 +6,8 @@ public sealed class DraftMappingConfig : IRegister
         config.NewConfig<CreateDraftRequest, CreateDraftCommand>()
             .Map(dest => dest.Name, src => src.Name)
             .Map(dest => dest.DraftType, src => src.DraftType)
-            .Map(dest => dest.EpisodeNumber, src => src.EpisodeNumber);
+            .Map(dest => dest.NumberOfDrafters, src => src.NumberOfDrafters);
+
+        config.NewConfig<AddDrafterRequest, AddDrafterToDraftCommand>();
     }
 }
