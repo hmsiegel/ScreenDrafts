@@ -1,0 +1,6 @@
+services:
+  screendrafts.web:
+    image: ${DOCKER_REGISTRY-}screendraftsweb
+    build:
+      context: .
+      dockerfile: src/api/ScreenDrafts.Web/Dockerfile
