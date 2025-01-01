@@ -1,14 +1,14 @@
 
-![Logo](https://res.cloudinary.com/teepublic/image/private/s--dTcbW-q9--/t_Preview/b_rgb:ffffff,c_limit,f_auto,h_630,q_90,w_630/v1565144669/production/designs/5533689_0.jpg)
+![Logo](./res/screen-drafts.jpg)
 
 
-# Screen Drafts
+<h1 style="text-align: center;">Screen Drafts</h1>
 
-Screen Drafts is a podcast where experts and enthusiasts competitively collaborate in the creation of screen-centric "Best Of" lists.
+### Screen Drafts is a podcast where experts and enthusiasts competitively collaborate in the creation of screen-centric "Best Of" lists.
 
-This website application is being written to assist with the game format of the podcast. It will also act as a compendium to the [Screen Drafts Wiki](https://screendrafts.fandom.com/wiki/Screen_Drafts).
+### This website application is being written to assist with the game format of the podcast. It will also act as a compendium to the [Screen Drafts Wiki](https://screendrafts.fandom.com/wiki/Screen_Drafts).
 
-It will be written in two parts: the front-end will use [Next.JS](https://nextjs.org/), while the back-end API will use [.NET](https://github.com/dotnet/core).
+### It will be written in two parts: the front-end will use [Next.JS](https://nextjs.org/), while the back-end API will use [.NET](https://github.com/dotnet/core).
 
 
 
