@@ -1,14 +1,14 @@
 
-![Logo](./res/screen-drafts.jpg)
+![Logo](./res/screen-drafts-small.jpg)
 
 
-<h1 style="text-align: center;">Screen Drafts</h1>
+# Screen Drafts
 
-### Screen Drafts is a podcast where experts and enthusiasts competitively collaborate in the creation of screen-centric "Best Of" lists.
+Screen Drafts is a podcast where experts and enthusiasts competitively collaborate in the creation of screen-centric "Best Of" lists.
 
-### This website application is being written to assist with the game format of the podcast. It will also act as a compendium to the [Screen Drafts Wiki](https://screendrafts.fandom.com/wiki/Screen_Drafts).
+This website application is being written to assist with the game format of the podcast. It will also act as a compendium to the [Screen Drafts Wiki](https://screendrafts.fandom.com/wiki/Screen_Drafts).
 
-### It will be written in two parts: the front-end will use [Next.JS](https://nextjs.org/), while the back-end API will use [.NET](https://github.com/dotnet/core).
+It will be written in two parts: the front-end will use [Next.JS](https://nextjs.org/), while the back-end API will use [.NET](https://github.com/dotnet/core).
 
 
 
