@@ -1,4 +1,4 @@
-import { oswald, roboto } from "./ui/fonts";
+import { oswald, roboto } from "@/app/ui/fonts";
 
 export default function Home() {
   return (
@@ -15,13 +15,6 @@ export default function Home() {
           height={400}
           width={400}
         />
-
-        <div className="w-72 text-center ">
-          <p className={`${roboto.className} font-bold`} >
-            Where Experts And Enthusiasts Competitively Collaborate On The
-            Creation Of Screen-centric Best-of Lists
-          </p>
-        </div>
 
         <div className="flex-row items-center justify-center">
           <div className="btn hover:bg-blue-400 hover:text-black transition ease-out duration-500">

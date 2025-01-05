@@ -10,6 +10,11 @@ This website application is being written to assist with the game format of the 
 
 It will be written in two parts: the front-end will use [Next.JS](https://nextjs.org/), while the back-end API will use [.NET](https://github.com/dotnet/core).
 
+## Screenshots
+
+![Home Page](./res/home-page.png)
+![Guest](./res/guest-landing.png)
+
 
 
 ## Author
