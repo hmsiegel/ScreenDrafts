@@ -1,4 +1,6 @@
+import Link from "next/link";
 import { oswald, roboto } from "./ui/fonts";
+import Image from "next/image";
 
 export default function Home() {
   return (
@@ -8,8 +10,8 @@ export default function Home() {
           SCREEN DRAFTS
         </h1>
 
-        <img
-          className="mb-10"
+        <Image
+          className="mb-5"
           src="/screen-drafts.jpg"
           alt="ScreenDrafts logo"
           height={400}
@@ -24,13 +26,17 @@ export default function Home() {
         </div>
 
         <div className="flex-row items-center justify-center">
-          <div className="btn hover:bg-blue-400 hover:text-black transition ease-out duration-500">
-            SIGN IN
-          </div>
+          <Link href="/signin">
+            <div className="btn-blue hover:bg-blue-400 hover:text-black transition ease-out duration-500">
+              SIGN IN
+            </div>
+          </Link>
 
-          <div className="btn hover:bg-blue-400 hover:text-black transition ease-out duration-500">
-            REGISTER
-          </div>
+          <Link href="/register">
+            <div className="btn-blue hover:bg-blue-400 hover:text-black transition ease-out duration-500">
+              REGISTER
+            </div>
+          </Link>
         </div>
       </div>
     </div>
