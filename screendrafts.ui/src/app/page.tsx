@@ -4,7 +4,7 @@ import Image from "next/image";
 
 export default function Home() {
   return (
-    <div className="flex items-center justify-center min-h-screen ">
+    <main className="flex items-center justify-center min-h-screen ">
       <div className="bg-[#fffdfd] rounded-lg shadow-lg py-5 px-28 flex flex-col items-center justify-center">
         <h1 className={`${oswald.className} text-6xl font-bold text-black mb-10`}>
           SCREEN DRAFTS
@@ -39,6 +39,6 @@ export default function Home() {
           </Link>
         </div>
       </div>
-    </div>
+    </main>
   )
 }

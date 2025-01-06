@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
-import {roboto} from "@/app/ui/fonts";
+import { roboto } from "@/app/ui/fonts";
 import "@/app/ui/global.css";
+import Footer from "./ui/footer";
 
 export const metadata: Metadata = {
   title: {
@@ -19,9 +20,11 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={`${roboto.className} antialiased bg-gradient-to-t from-background via-slate-400 to-sd-blue text-foreground`}
+
       >
         {children}
+        <Footer />
       </body>
     </html>
-  );
+  )
 }
