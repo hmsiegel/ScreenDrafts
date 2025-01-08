@@ -1,5 +1,10 @@
 import { oswald, inter } from "@/app/ui/fonts";
+import { Metadata } from "next";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+   title: 'Sign In',
+};
 
 export default function Home() {
   return (

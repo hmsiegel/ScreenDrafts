@@ -1,6 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Noto+Sans:ital,wdth,wght@0,62.5..100,100..900;1,62.5..100,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 
 :root {
   --background: #88ADD0;
@@ -20,6 +23,26 @@ input[type='number']::-webkit-inner-spin-button {
 input[type='number']::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+
+@layer base {
+  @font-face {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 100 900;
+    font-display: swap;
+    src: url('https://fonts.gstatic.com/s/inter/v3/U4UJrUEJq6VrC3S2lQEjvZbd9NUM7f4.woff2') format('woff2');
+  }
+}
+
+@layer base {
+  @font-face {
+    font-family: 'Nunito';
+    font-style: normal;
+    font-weight: 200 900;
+    font-display: swap;
+    src: url('https://fonts.gstatic.com/s/nunito/v16/XqVU3e9PnpM7J0j1sIbNjROd3hzP.woff2') format('woff2');
+  }
 }
 
 .btn-blue {
@@ -78,4 +101,11 @@ leading-tight
 focus:outline-none
 focus:bg-white
 focus:border-sd-blue
+}
+
+.table-data {
+  @apply
+  text-lg
+  px-4
+  py-2
 }
