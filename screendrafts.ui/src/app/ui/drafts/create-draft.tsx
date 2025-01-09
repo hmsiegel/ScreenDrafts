@@ -9,11 +9,13 @@ import {
    UserCircleIcon,
 } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
-import { useActionState } from 'react';
+import { useState } from 'react';
 import { inter } from '../fonts';
 import { Tooltip } from '../tooltip';
 
 export default function Form() {
+   const [draftType, setDraftType] = useState('regular');
+
    return (
       <form >
          <div className="bg-[#fffdfd] rounded-lg shadow-lg py-5 px-28 flex flex-col items-center justify-center my-4">
@@ -47,7 +49,8 @@ export default function Form() {
                         id="draft-type"
                         name="draft-type"
                         className="peer block w-96 rounded-md border border-gray-200 py-2 pl-2 text-sm outline-2 placeholder:text-gray-500"
-                        aria-describedby="draft-type-error">
+                        aria-describedby="draft-type-error"
+                        onChange={(e) => setDraftType(e.target.value)}>
                         <option value="regular">Regular</option>
                         <option value="expanded">Expanded</option>
                      </select>
@@ -58,7 +61,7 @@ export default function Form() {
             </div>
 
             {/*  Expanded Draft Type */}
-            <div className="mb-4 hidden">
+            <div className={`mb-4 ${draftType === 'expanded' ? '' : 'hidden'}`}>
                <label htmlFor="expanded-draft-type" className="mb-2 block text-sm font-medium">
                   Expanded Draft Type
                </label>
