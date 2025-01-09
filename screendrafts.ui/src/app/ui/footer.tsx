@@ -13,7 +13,7 @@ export default function Footer() {
         to-sd-blue">
          <div className="p-2">
             <p>
-               &copy; ${new Date().getFullYear()} ScreenDrafts. All rights reserved.
+               &copy; {new Date().getFullYear()} Screen Drafts. All rights reserved.
             </p>
          </div>
       </footer>

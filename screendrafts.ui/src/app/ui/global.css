@@ -105,7 +105,6 @@ focus:border-sd-blue
 
 .table-data {
   @apply
-  text-lg
   px-4
   py-2
 }

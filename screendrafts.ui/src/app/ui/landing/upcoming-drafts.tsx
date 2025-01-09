@@ -7,12 +7,12 @@ export default function UpcomingDrafts() {
    return (
       <div className="bg-[#fffdfd] rounded-lg shadow-lg py-5 px-28 flex flex-col items-center justify-center my-4">
          <div className="flex items-center justify-center border-b-2 border-slate-900">
-            <h1 className={`${inter.className} text-4xl text-black uppercase  mr-6`}>
+            <h1 className={`${inter.className} text-2xl text-black uppercase`}>
                Upcoming Drafts
             </h1>
          </div>
          <div className="flex items-center justify-center">
-            <Link href="/drafts/create" className="flex items-center justify-center btn-red hover:bg-red-400 hover:text-black transition ease-out duration-500">
+            <Link href="/landing/drafts/create" className="flex items-center justify-center btn-red hover:bg-red-400 hover:text-black transition ease-out duration-500">
                create draft
                <PlusIcon className="w-5 ml-2" />
             </Link>

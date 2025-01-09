@@ -3,8 +3,8 @@ import Link from "next/link";
 
 export default function MostRecentDrafts() {
    return (
-      <div className="bg-[#fffdfd] rounded-lg shadow-lg py-4 px-28 flex flex-col items-center justify-center my-8">
-         <h1 className={`${inter.className} text-4xl text-black mb-5 uppercase border-b-2 border-slate-900 pb-2`}>
+      <div className="bg-[#fffdfd] rounded-lg shadow-lg py-4 px-28 flex flex-col items-center justify-center my-4">
+         <h1 className={`${inter.className} text-2xl text-black mb-5 uppercase border-b-2 border-slate-900 pb-2`}>
             Most Recent Drafts
          </h1>
          <div className="table w-max">
