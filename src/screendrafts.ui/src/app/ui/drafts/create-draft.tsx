@@ -2,19 +2,25 @@
 
 import Link from 'next/link';
 import {
-   CheckIcon,
-   ClockIcon,
-   CurrencyDollarIcon,
-   PlusIcon,
    UserCircleIcon,
 } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
 import { useState } from 'react';
-import { inter } from '../fonts';
 import { Tooltip } from '../tooltip';
+import DrafterDropdown from './drafter-dropdown';
 
 export default function Form() {
    const [draftType, setDraftType] = useState('regular');
+   const numberOfDrafters = [2, 3, 4, 5, 6];
+   const [drafters, setDrafters] = useState([1, 2]);
+
+   function handleDrafterDropdownChange(e: any) {
+
+   }
+
+   function addDrafter() {
+
+   }
 
    return (
       <form >
@@ -135,12 +141,29 @@ export default function Form() {
                <h2 className="text-base font-medium text-gray-600 pr-4">Drafters</h2>
             </div>
 
-            <div className="flex items-center justify-between pb-2">
-               <AddDrafter />
+            <div className="flex items-center justify-between pb-4 gap-4 align-middle">
+               <div className={`${draftType === 'expanded' ? 'flex' : 'hidden'} items-center gap-4`}>
+                  <label htmlFor="number-of drafters" className="block text-sm font-medium">
+                     Number of Drafters
+                  </label>
+                  <div className="relative rounded-md">
+                     <div className="relative">
+                        <select
+                           id="number-of-drafters"
+                           name="number-of-drafters"
+                           className="peer block w-full rounded-md border border-gray-200 py-2 pl-2 text-sm outline-2 placeholder:text-gray-500"
+                           >
+                           {numberOfDrafters.map((num) => (
+                              <option key={num} value={num}>{num}</option>
+                           ))}
+                        </select>
+                     </div>
+                  </div>
+               </div>
                <Tooltip content="Create a new drafter">
                   <Link
                      href="drafters"
-                     className="flex items-center rounded-lg bg-sd-blue ml-4 h-8 px-4 text-sm font-medium text-gray-100 transition-colors hover:bg-blue-400"
+                     className="flex items-center rounded-lg bg-sd-blue h-8 px-4 text-sm font-medium text-gray-100 transition-colors hover:bg-blue-400"
                   >
                      <UserCircleIcon className="w-5 mr-2" />
                      Create Drafter
@@ -149,64 +172,10 @@ export default function Form() {
             </div>
 
             {/*  Drafter 1 */}
-            <div className="mb-4">
-               <label htmlFor="drafter-1" className="mb-2 block text-sm font-medium">
-                  Drafter #1
-               </label>
-               <div className="relative mt-2 rounded-md">
-                  <div className="relative">
-                     <select
-                        id="drafter-1"
-                        name="drafter-1"
-                        className="peer block w-96 rounded-md border border-gray-200 py-2 pl-2 text-sm outline-2 placeholder:text-gray-500"
-                        aria-describedby="drafter-1-error">
-                        <option value="">Select a drafter</option>
-                     </select>
-                  </div>
-                  <div id="drafter-1-error" aria-live="polite" aria-atomic="true">
-                  </div>
-               </div>
-            </div>
+            <DrafterDropdown drafterNumber={1} />
 
             {/*  Drafter 2 */}
-            <div className="mb-4">
-               <label htmlFor="drafter-2" className="mb-2 block text-sm font-medium">
-                  Drafter #2
-               </label>
-               <div className="relative mt-2 rounded-md">
-                  <div className="relative">
-                     <select
-                        id="drafter-2"
-                        name="drafter-2"
-                        className="peer block w-96 rounded-md border border-gray-200 py-2 pl-2 text-sm outline-2 placeholder:text-gray-500"
-                        aria-describedby="drafter-2-error">
-                        <option value="">Select a drafter</option>
-                     </select>
-                  </div>
-                  <div id="drafter-2-error" aria-live="polite" aria-atomic="true">
-                  </div>
-               </div>
-            </div>
-
-            {/*  Drafter 3 */}
-            <div className="mb-4 hidden">
-               <label htmlFor="drafter-3" className="mb-2 block text-sm font-medium">
-                  Drafter #3
-               </label>
-               <div className="relative mt-2 rounded-md">
-                  <div className="relative">
-                     <select
-                        id="drafter-3"
-                        name="drafter-3"
-                        className="peer block w-96 rounded-md border border-gray-200 py-2 pl-2 text-sm outline-2 placeholder:text-gray-500"
-                        aria-describedby="drafter-3-error">
-                        <option value="">Select a drafter</option>
-                     </select>
-                  </div>
-                  <div id="drafter-3-error" aria-live="polite" aria-atomic="true">
-                  </div>
-               </div>
-            </div>
+            <DrafterDropdown drafterNumber={2} />
 
          </div>
          <div className="mt-6 flex justify-end gap-4">
@@ -220,14 +189,4 @@ export default function Form() {
          </div>
       </form>
    );
-}
-
-export function AddDrafter() {
-   return (
-      <Tooltip content="Add Drafter to Draft">
-         <button className="rounded-md border p-2 hover:bg-gray-200">
-            <PlusIcon className="w-5" />
-         </button>
-      </Tooltip>
-   )
 }

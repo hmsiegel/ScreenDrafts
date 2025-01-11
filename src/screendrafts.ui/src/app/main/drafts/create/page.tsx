@@ -1,5 +1,5 @@
 import CreateDraft from "@/app/ui/drafts/create-draft";
-import Breadcrumbs from "@/app/ui/landing/breadcrumbs";
+import Breadcrumbs from "@/app/ui/main/breadcrumbs";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
