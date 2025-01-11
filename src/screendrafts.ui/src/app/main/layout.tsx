@@ -1,5 +1,5 @@
-import NavMenu from "@/app/ui/landing/navmenu";
-import Heading from "@/app/ui/landing/heading";
+import NavMenu from "@/app/ui/main/navmenu";
+import Heading from "@/app/ui/main/heading";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
    return (
