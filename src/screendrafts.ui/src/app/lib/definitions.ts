@@ -31,11 +31,12 @@ export type RolePermission = {
 export type Draft = {
    id: string;
    title: string;
+   episode: number;
    type: DraftType;
    expandedDraft?: ExpandedDraftType;
    commissioners: Commissioners[];
    drafters: Drafter[];
-   date: Date;
+   draft_dates: Date[];
    picks: DraftPick[];
 }
 
