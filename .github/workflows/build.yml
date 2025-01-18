@@ -19,7 +19,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: screendrafts.api
+        working-directory: screendrafts.web
 
     steps:
       - uses: actions/checkout@v4
