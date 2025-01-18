@@ -1,6 +1,0 @@
-@ScreenDrafts.Web_HostAddress = http://localhost:5180
-
-GET {{ScreenDrafts.Web_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
