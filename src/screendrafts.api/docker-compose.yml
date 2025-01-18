@@ -1,6 +1,26 @@
+version: '3.9'
+
 services:
   screendrafts.web:
     image: ${DOCKER_REGISTRY-}screendraftsweb
+    container_name: ScreenDrafts.Api
     build:
       context: .
       dockerfile: src/api/ScreenDrafts.Web/Dockerfile
+    ports:
+      - 5000:8080
+      - 5001:8081
+
+  screendrafts.database:
+    image: postgres:latest
+    container_name: ScreenDrafts.Database
+    environment:
+      - POSTGRES_DB=screendrafts
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - ./.containers/db:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+  
+  
