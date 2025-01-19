@@ -19,7 +19,7 @@ public class GetDraftEndpoint(ISender sender) : EndpointWithoutRequest<DraftResp
 
     var draft = await _sender.Send(query, ct);
 
-    await SendOkAsync(draft, ct);
+    await SendOkAsync(draft.Value!, ct);
   }
 }
 

@@ -2,10 +2,11 @@
 
 global using FastEndpoints;
 
+global using FluentResults;
+
 global using MediatR;
 
 global using Microsoft.AspNetCore.Http;
-global using Microsoft.AspNetCore.Http.HttpResults;
 
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.CreateDraft;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Queries.GetDraft;

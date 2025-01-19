@@ -184,8 +184,11 @@ dotnet_diagnostic.CA2007.severity = none
 # CA1030: Use events where appropriate
 dotnet_diagnostic.CA1030.severity = none
 
-# CA1812:
+# CA1812: Avoid uninstantiated internal classes
 dotnet_diagnostic.CA1812.severity = none
+
+# CA1040: Avoid empty interfaces
+dotnet_diagnostic.CA1040.severity = none
 
 
 [*.vb]

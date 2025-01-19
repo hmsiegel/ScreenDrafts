@@ -1,11 +1,13 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Application.Drafts.Queries.ListDrafts;
 
 internal sealed class ListDraftsQueryHandler(IDbConnectionFactory dbConnectionFactory)
-  : IRequestHandler<ListDraftsQuery, IEnumerable<DraftResponse>>
+  : IQueryHandler<ListDraftsQuery, IReadOnlyCollection<DraftResponse>>
 {
   private readonly IDbConnectionFactory _dbConnectionFactory = dbConnectionFactory;
 
-  public async Task<IEnumerable<DraftResponse>> Handle(ListDraftsQuery request, CancellationToken cancellationToken)
+  public async Task<Result<IReadOnlyCollection<DraftResponse>>> Handle(
+    ListDraftsQuery request,
+    CancellationToken cancellationToken)
   {
     await using var connection = await _dbConnectionFactory.OpenConnectionAsync();
 
@@ -21,7 +23,7 @@ internal sealed class ListDraftsQueryHandler(IDbConnectionFactory dbConnectionFa
         FROM drafts.drafts
         """;
 
-    IEnumerable<DraftResponse> drafts = await connection.QueryAsync<DraftResponse>(sql);
+    List<DraftResponse> drafts = (await connection.QueryAsync<DraftResponse>(sql, request)).AsList();
 
     return drafts;
   }

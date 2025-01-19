@@ -24,7 +24,7 @@ public class CreateDraftEndpoint(ISender sender) : Endpoint<DraftRequest, Guid>
 
     var draftId = await _sender.Send(command, ct);
 
-    await SendOkAsync(draftId, ct);
+    await SendOkAsync(draftId.Value, ct);
   }
 }
 

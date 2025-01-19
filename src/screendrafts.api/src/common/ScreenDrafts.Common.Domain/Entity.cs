@@ -1,4 +1,4 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Domain.Abstractions;
+﻿namespace ScreenDrafts.Common.Domain;
 
 public abstract class Entity
 {

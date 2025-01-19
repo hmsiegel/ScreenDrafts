@@ -1,11 +1,13 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Application.Drafts.Queries.GetDraft;
+﻿using FluentResults;
+
+namespace ScreenDrafts.Modules.Drafts.Application.Drafts.Queries.GetDraft;
 
 internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFactory)
-  : IRequestHandler<GetDraftQuery, DraftResponse?>
+  : IQueryHandler<GetDraftQuery, DraftResponse?>
 {
   private readonly IDbConnectionFactory _dbConnectionFactory = dbConnectionFactory;
 
-  public async Task<DraftResponse?> Handle(GetDraftQuery request, CancellationToken cancellationToken)
+  public async Task<Result<DraftResponse?>> Handle(GetDraftQuery request, CancellationToken cancellationToken)
   {
     await using var connection = await _dbConnectionFactory.OpenConnectionAsync();
 

@@ -1,4 +1,4 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Application.Abstractions.Data;
+﻿namespace ScreenDrafts.Common.Application.Data;
 
 public interface IDbConnectionFactory
 {

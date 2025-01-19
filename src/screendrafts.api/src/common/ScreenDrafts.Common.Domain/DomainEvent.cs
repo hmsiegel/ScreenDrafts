@@ -1,4 +1,4 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Domain.Abstractions;
+﻿namespace ScreenDrafts.Common.Domain;
 
 public abstract class DomainEvent : IDomainEvent
 {
@@ -15,5 +15,6 @@ public abstract class DomainEvent : IDomainEvent
   }
 
   public Guid Id { get; init; }
+
   public DateTime OccurredOnUtc { get; init; }
 }

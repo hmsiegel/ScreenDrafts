@@ -5,4 +5,4 @@ public sealed record CreateDraftCommand(
   DraftType DraftType,
   int NumberOfDrafters,
   int NumberOfCommissioners,
-  int NumberOfMovies) : IRequest<Guid>;
+  int NumberOfMovies) : ICommand<Guid>;

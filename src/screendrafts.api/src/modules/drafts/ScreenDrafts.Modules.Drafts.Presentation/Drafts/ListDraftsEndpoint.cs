@@ -1,7 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Presentation.Drafts;
 
-public class ListDraftsEndpoint(ISender sender) : EndpointWithoutRequest<Results<Ok<List<DraftResponse>>, NoContent>>
-
+public class ListDraftsEndpoint(ISender sender) : EndpointWithoutRequest<Result<List<DraftResponse>>>
 {
   private readonly ISender _sender = sender;
 
@@ -12,21 +11,19 @@ public class ListDraftsEndpoint(ISender sender) : EndpointWithoutRequest<Results
     AllowAnonymous();
   }
 
-
-  public override async Task<Results<Ok<List<DraftResponse>>, NoContent>> ExecuteAsync(CancellationToken ct)
+  public override async Task HandleAsync(CancellationToken ct)
   {
-
     var query = new ListDraftsQuery();
 
-    var drafts = await _sender.Send(query, ct);
+    var drafts = (await _sender.Send(query, ct)).Value.ToList();
 
-    if (drafts.Any())
+    if (drafts.Count != 0)
     {
-      return TypedResults.Ok(drafts.ToList());
+      await SendOkAsync(Result.Ok(drafts), ct);
     }
     else
     {
-      return TypedResults.NoContent();
+      await SendNoContentAsync(ct);
     }
   }
 }
