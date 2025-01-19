@@ -1,4 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
-
+  <ItemGroup>
+    <PackageReference Include="Ardalis.SmartEnum.Efcore" />
+    <PackageReference Include="EFCore.NamingConventions" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ScreenDrafts.Modules.Drafts.Application\ScreenDrafts.Modules.Drafts.Application.csproj" />
+    <ProjectReference Include="..\ScreenDrafts.Modules.Drafts.Presentation\ScreenDrafts.Modules.Drafts.Presentation.csproj" />
+  </ItemGroup>
 </Project>

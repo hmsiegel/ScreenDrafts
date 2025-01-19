@@ -1,7 +1,7 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Domain.Database;
+﻿namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database;
 
-public sealed class DraftsDbContext(DbContextOptions<DraftsDbContext> options) 
-  : DbContext(options)
+public sealed class DraftsDbContext(DbContextOptions<DraftsDbContext> options)
+  : DbContext(options), IUnitOfWork
 {
   internal DbSet<Draft> Drafts { get; set; }
 

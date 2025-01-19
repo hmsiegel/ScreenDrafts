@@ -1,3 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <ItemGroup>
+    <ProjectReference Include="..\ScreenDrafts.Modules.Drafts.Contracts\ScreenDrafts.Modules.Drafts.Contracts.csproj" />
+    <ProjectReference Include="..\ScreenDrafts.Modules.Drafts.Domain\ScreenDrafts.Modules.Drafts.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dapper" />
+    <PackageReference Include="FluentValidation" />
+    <PackageReference Include="MediatR" />
+  </ItemGroup>
+
 </Project>

@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using ScreenDrafts.Modules.Drafts.Domain.Database;
+using ScreenDrafts.Modules.Drafts.Infrastructure.Database;
 
 #nullable disable
 
-namespace ScreenDrafts.Modules.Drafts.Domain.Database.Migrations
+namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
 {
     [DbContext(typeof(DraftsDbContext))]
     partial class DraftsDbContextModelSnapshot : ModelSnapshot
@@ -30,7 +30,7 @@ namespace ScreenDrafts.Modules.Drafts.Domain.Database.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<int>("DraftType")
+                    b.Property<int?>("DraftType")
                         .HasColumnType("integer")
                         .HasColumnName("draft_type");
 
@@ -47,7 +47,6 @@ namespace ScreenDrafts.Modules.Drafts.Domain.Database.Migrations
                         .HasColumnName("number_of_movies");
 
                     b.Property<string>("Title")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("title");
 

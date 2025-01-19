@@ -1,4 +1,4 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts;
+﻿namespace ScreenDrafts.Modules.Drafts.Contracts;
 
 public sealed record DraftRequest(
   string Title,
