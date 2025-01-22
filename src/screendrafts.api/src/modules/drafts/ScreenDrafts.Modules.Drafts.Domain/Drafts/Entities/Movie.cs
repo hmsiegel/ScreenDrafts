@@ -1,4 +1,4 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.Movies;
+﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities;
 
 public sealed class Movie(
   MovieTitle movieTitle,

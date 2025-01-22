@@ -20,11 +20,11 @@ public sealed class Veto : Entity<VetoId>
   {
     if (IsUsed)
     {
-      return Result.Fail(VetoErrors.VetoAlreadyUsed);
+      return Result.Failure(VetoErrors.VetoAlreadyUsed);
     }
 
     IsUsed = true;
 
-    return Result.Ok();
+    return Result.Success();
   }
 }

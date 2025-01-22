@@ -1,0 +1,113 @@
+﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.Errors;
+
+public static class DraftErrors
+{
+  public static SDError NotFound(Ulid draftId) =>
+    SDError.NotFound(
+      "Drafts.NotFound",
+      $"Draft with id {draftId} was not found.");
+
+  public static readonly SDError TooManyDrafters =
+    SDError.Problem(
+      "Drafts.TooManyDrafters",
+      "Cannot add more drafters than the total allowed.");
+
+  public static SDError DrafterAlreadyAdded(Ulid drafterId) =>
+    SDError.Conflict(
+      "Drafts.DrafterAlreadyAdded",
+      $"Drafter with id {drafterId} is already added to the draft.");
+
+  public static SDError PickPositionAlreadyTaken(int position) =>
+   SDError.Conflict(
+     "Drafts.PickPositionAlreadyTaken",
+     $"Pick position {position} is already taken.");
+
+  public static SDError HostAlreadyAdded(Ulid hostId) =>
+    SDError.Conflict(
+      "Drafts.HostAlreadyTaken",
+      $"Host with id {hostId} is already added to the draft.");
+
+  public static readonly SDError DraftNotStarted =
+    SDError.Problem(
+      "Drafts.DraftNotStarted",
+      "Cannot add picks unless the draft has started.");
+
+  public static readonly SDError TooManyHosts =
+    SDError.Conflict(
+      "Drafts.TooManyHosts",
+      "Cannot add more hosts than the total allowed.");
+
+  public static readonly SDError CannotVetoUnlessTheDraftIsStarted =
+    SDError.Problem(
+      "Drafts.CannotVetoUnlessTheDraftIsStarted",
+      "Cannot veto a pick unless the draft has started.");
+
+  public static readonly SDError CannotVetoAPickThatDoesNotExist =
+    SDError.Problem(
+      "Drafts.CannotVetoAPickThatDoesNotExist",
+      "Cannot veto a pick that does not exist.");
+
+  public static readonly SDError CannotVetoAPickThatIsNotYours =
+    SDError.Conflict(
+      "Drafts.CannotVetoAPickThatIsNotYours",
+      "Cannot veto a pick that is not yours.");
+
+  public static readonly SDError CannotVetoAPickThatIsAlreadyVetoed =
+    SDError.Conflict(
+      "Drafts.CannotVetoAPickThatIsAlreadyVetoed",
+      "Cannot veto a pick that is already vetoed.");
+
+  public static readonly SDError OnlyDraftersInTheDraftCanUseAVeto =
+    SDError.Problem(
+      "Drafts.OnlyDraftersInTheDraftCanUseAVeto",
+      "Only drafters in the draft can use a veto.");
+
+  public static readonly SDError DraftCanOnlyBeStartedIfItIsCreated =
+    SDError.Problem(
+      "Drafts.DraftCanOnlyBeStartedIfItIsCreated",
+      "Draft can only be started if it is created.");
+
+  public static readonly SDError CannotStartDraftWithoutAllDrafters =
+    SDError.Problem(
+      "Drafts.CannotStartDraftWithoutAllDrafters",
+      "Cannot start the draft without all drafters.");
+
+  public static readonly SDError CannotStartDraftWithoutAllHosts =
+    SDError.Problem(
+      "Drafts.CannotStartDraftWithoutAllHosts",
+      "Cannot readonly start the draft without all hosts.");
+
+  public static readonly SDError CannotCompleteDraftIfItIsNotInProgress =
+    SDError.Problem(
+      "Drafts.CannotCompleteDraftIfItIsNotInProgress",
+      "Cannot readonly complete the draft if it is not in progress.");
+
+  public static readonly SDError CannotCompleteDraftWithoutAllPicks =
+    SDError.Problem(
+      "Drafts.CannotCompleteDraftWithoutAllPicks",
+      "Cannot readonly complete the draft without all picks.");
+
+  public static readonly SDError CannotVetoOverrideAVetoThatDoesNotExist =
+    SDError.Problem(
+      "Drafts.CannotVetoOverrideAVetoThatDoesNotExist",
+      "Cannot readonly veto override a veto that does not exist.");
+
+  public static readonly SDError OnlyDraftersInTheDraftCanUseAVetoOverride =
+    SDError.Problem(
+      "Drafts.OnlyDraftersInTheDraftCanUseAVetoOverride",
+      "Only drafters in the draft can use a veto override.");
+
+  public static readonly SDError ADrafterCanOnlyHaveOneRolloverVeto =
+    SDError.Problem(
+      "Drafts.ADrafterCanOnlyHaveOneRolloverVeto",
+      "A drafter can only have one rollover veto.");
+
+  public static readonly SDError ADrafterCanOnlyHaveOneRolloverVetoOverride =
+    SDError.Problem(
+      "Drafts.ADrafterCanOnlyHaveOneRolloverVetoOverride",
+      "A drafter can only have one rollover veto override.");
+
+  public static readonly SDError DraftMustHaveAtLeastTwoDrafters = SDError.Problem(
+    "Drafts.DraftMustHaveAtLeastTwoDrafters",
+    "Draft must have at least two drafters.");
+}

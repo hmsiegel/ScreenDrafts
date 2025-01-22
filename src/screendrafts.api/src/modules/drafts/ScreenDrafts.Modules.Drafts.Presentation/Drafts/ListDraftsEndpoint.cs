@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Presentation.Drafts;
+﻿using ScreenDrafts.Common.Domain;
+
+namespace ScreenDrafts.Modules.Drafts.Presentation.Drafts;
 
 public class ListDraftsEndpoint(ISender sender) : EndpointWithoutRequest<Result<List<DraftResponse>>>
 {
@@ -19,7 +21,7 @@ public class ListDraftsEndpoint(ISender sender) : EndpointWithoutRequest<Result<
 
     if (drafts.Count != 0)
     {
-      await SendOkAsync(Result.Ok(drafts), ct);
+      await SendOkAsync(Result.Success(drafts), ct);
     }
     else
     {

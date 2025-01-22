@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Common.Domain;
 
-public abstract class Entity<TEntityId>
+public abstract class Entity<TEntityId> : Entity
   where TEntityId : class
 {
   protected Entity(TEntityId id)
@@ -12,5 +12,5 @@ public abstract class Entity<TEntityId>
   {
   }
 
-  public TEntityId Id { get; init; } = default!;
+  public new TEntityId Id { get; init; } = default!;
 }

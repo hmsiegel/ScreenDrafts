@@ -1,20 +1,22 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Contracts;
 
 public sealed record DraftResponse(
-  Guid Id,
+  Ulid Id,
   string Title,
   string DraftType,
-  int NumberOfDrafters,
-  int NumberOfCommissioners,
-  int NumberOfMovies)
+  int TotalPicks,
+  int TotalDrafters,
+  int TotalHosts,
+  string DraftStatus)
 {
   public DraftResponse() : this(
-    Guid.Empty,
+    Ulid.Empty,
     string.Empty,
     string.Empty,
     default,
     default,
-    default)
+    default,
+    string.Empty)
   {
   }
 }

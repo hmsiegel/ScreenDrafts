@@ -3,6 +3,7 @@
 public sealed record CreateDraftCommand(
   string Title,
   DraftType DraftType,
-  int NumberOfDrafters,
-  int NumberOfCommissioners,
-  int NumberOfMovies) : ICommand<Guid>;
+  int TotalPicks,
+  int TotalDrafters,
+  int TotalHosts,
+  DraftStatus DraftStatus) : ICommand<Ulid>;

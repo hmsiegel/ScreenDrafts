@@ -2,14 +2,14 @@
 
 public sealed class ScreenDraftsException : Exception
 {
-    public ScreenDraftsException(string requestName, Error? error, Exception? innerException)
+    public ScreenDraftsException(string requestName, SDError? error, Exception? innerException)
         : base("Application exception", innerException)
     {
         RequestName = requestName;
-        Error = error;
+        SDError = error;
     }
 
-    public ScreenDraftsException(string requestName, Error? error)
+    public ScreenDraftsException(string requestName, SDError? error)
         : this(requestName, error, null)
     {
     }
@@ -29,6 +29,6 @@ public sealed class ScreenDraftsException : Exception
 
     public string? RequestName { get; }
 
-    public Error? Error { get; }
+    public SDError? SDError { get; }
 
 }

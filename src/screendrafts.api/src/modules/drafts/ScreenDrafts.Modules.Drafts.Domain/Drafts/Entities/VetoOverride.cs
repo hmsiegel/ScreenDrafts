@@ -20,11 +20,11 @@ public sealed class VetoOverride : Entity<VetoOverrideId>
   {
     if (IsUsed)
     {
-      return Result.Fail(VetoOverrideErrors.VetoOverrideAlreadyUsed);
+      return Result.Failure(VetoOverrideErrors.VetoOverrideAlreadyUsed);
     }
 
     IsUsed = true;
 
-    return Result.Ok();
+    return Result.Success();
   }
 }
