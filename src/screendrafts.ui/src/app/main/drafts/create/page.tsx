@@ -1,3 +1,4 @@
+import InitialDraftContextProvider from "@/app/contexts/initial-draft-context";
 import CreateDraft from "@/app/ui/drafts/create-draft";
 import Breadcrumbs from "@/app/ui/main/breadcrumbs";
 import { Metadata } from "next";
@@ -10,14 +11,17 @@ export const metadata: Metadata = {
 export default function Page() {
    return (
       <main className="flex flex-col items-center justify-center md:h-screen">
-         <Breadcrumbs
-            breadcrumbs={[
-               { label: "Home", href: "/" },
-               { label: "Drafts", href: "/drafts" },
-               { label: "Create Draft", href: "/drafts/create", active: true },
-            ]}
-         />
-         <CreateDraft />
+         <InitialDraftContextProvider>
+            <Breadcrumbs
+               breadcrumbs={[
+                  { label: "Home", href: "/" },
+                  { label: "Main", href: "/main" },
+                  { label: "Drafts", href: "/main/drafts" },
+                  { label: "Create Draft", href: "/main/drafts/create", active: true },
+               ]}
+            />
+            <CreateDraft />
+         </InitialDraftContextProvider>
       </main>
    )
 }

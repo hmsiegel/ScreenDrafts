@@ -17,14 +17,23 @@ public class CreateDraftEndpoint(ISender sender) : Endpoint<DraftRequest, Guid>
 
     var command = new CreateDraftCommand(
       req.Title,
-      DraftType.FromValue(req.DraftType),
-      req.NumberOfDrafters,
-      req.NumberOfCommissioners,
-      req.NumberOfMovies);
+      DraftType.FromName(req.DraftType),
+      req.TotalPicks,
+      req.TotalDrafters,
+      req.TotalHosts,
+      DraftStatus.FromName(req.DraftStatus));
 
     var draftId = await _sender.Send(command, ct);
 
     await SendOkAsync(draftId.Value, ct);
   }
+
 }
 
+  public sealed record DraftRequest(
+    string Title,
+    string DraftType,
+    int TotalPicks,
+    int TotalDrafters,
+    int TotalHosts,
+    string DraftStatus);

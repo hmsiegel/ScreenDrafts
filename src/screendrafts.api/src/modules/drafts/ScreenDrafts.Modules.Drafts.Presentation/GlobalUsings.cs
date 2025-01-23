@@ -2,8 +2,6 @@
 
 global using FastEndpoints;
 
-global using FluentResults;
-
 global using MediatR;
 
 global using Microsoft.AspNetCore.Http;
@@ -11,5 +9,4 @@ global using Microsoft.AspNetCore.Http;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.CreateDraft;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Queries.GetDraft;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Queries.ListDrafts;
-global using ScreenDrafts.Modules.Drafts.Contracts;
-global using ScreenDrafts.Modules.Drafts.Domain.Drafts;
+global using ScreenDrafts.Modules.Drafts.Domain.Drafts.Enums;

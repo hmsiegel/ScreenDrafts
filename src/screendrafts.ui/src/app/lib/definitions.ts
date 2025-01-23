@@ -34,7 +34,7 @@ export type Draft = {
    episode: number;
    type: DraftType;
    expandedDraft?: ExpandedDraftType;
-   commissioners: Commissioners[];
+   commissioners: Commissioner[];
    drafters: Drafter[];
    draft_dates: Date[];
    picks: DraftPick[];
@@ -46,14 +46,24 @@ export type DraftType = {
    numberOfPicks: number;
 }
 
-export type Commissioners = {
-   user: User;
+export type Commissioner = {
+   primary_id: number;
+   id: string;
+   first_name: string;
+   middle: string;
+   last_name: string;
+   full_name: string;
+   image_url: string;
 }
 
 export type Drafter = {
-   user: User;
-   hasRolloverVeto: boolean;
-   hasRolloverVetoOverride: boolean;
+   primary_id: number;
+   id: string;
+   first_name: string;
+   middle: string;
+   last_name: string;
+   full_name: string;
+   image_url: string;
 }
 
 export type ExpandedDraftType = {

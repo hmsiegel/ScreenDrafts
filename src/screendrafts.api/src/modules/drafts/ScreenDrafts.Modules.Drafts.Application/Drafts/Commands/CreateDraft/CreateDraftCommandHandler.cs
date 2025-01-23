@@ -1,6 +1,4 @@
-﻿using FluentResults;
-
-namespace ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.CreateDraft;
+﻿namespace ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.CreateDraft;
 
 internal sealed class CreateDraftCommandHandler(IDraftsRepository draftsRepository, IUnitOfWork unitOfWork)
   : ICommandHandler<CreateDraftCommand, Guid>
@@ -11,14 +9,20 @@ internal sealed class CreateDraftCommandHandler(IDraftsRepository draftsReposito
   public async Task<Result<Guid>> Handle(CreateDraftCommand request, CancellationToken cancellationToken)
   {
     var draft = Draft.Create(
-      request.Title,
+      new Title(request.Title),
       request.DraftType,
-      request.NumberOfDrafters,
-      request.NumberOfCommissioners,
-      request.NumberOfMovies);
+      request.TotalPicks,
+      request.TotalDrafters,
+      request.TotalHosts,
+      request.DraftStatus);
 
-    _draftsRepository.Add(draft);
+    if (draft.IsFailure)
+    {
+      return Result.Failure<Guid>(draft.Error);
+    }
+
+    _draftsRepository.Add(draft.Value);
     await _unitOfWork.SaveChangesAsync(cancellationToken);
-    return draft.Id;
+    return draft.Value.Id.Value;
   }
 }

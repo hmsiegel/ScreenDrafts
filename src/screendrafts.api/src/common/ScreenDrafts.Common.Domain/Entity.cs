@@ -4,11 +4,16 @@ public abstract class Entity
 {
   private readonly List<IDomainEvent> _domainEvents = [];
 
+  protected Entity(Guid id)
+  {
+    Id = id;
+  }
+
   protected Entity()
   {
   }
 
-  public IReadOnlyCollection<IDomainEvent> DomainEvents => [.. _domainEvents];
+  public Guid Id { get; init; } = Guid.Empty;
 
   public void ClearDomainEvents()
   {

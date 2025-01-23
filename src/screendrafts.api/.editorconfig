@@ -62,10 +62,13 @@ dotnet_naming_style.pascal_case_style.capitalization             = pascal_case
 dotnet_naming_rule.constant_fields_should_be_pascal_case.severity = suggestion
 dotnet_naming_rule.constant_fields_should_be_pascal_case.symbols  = constant_fields
 dotnet_naming_rule.constant_fields_should_be_pascal_case.style = pascal_case_style
+dotnet_naming_rule.properties_should_be_uppercase.severity = suggestion
+dotnet_naming_rule.properties_should_be_uppercase.symbols  = properties
+dotnet_naming_rule.properties_should_be_uppercase.style = uppercase_style
 dotnet_naming_symbols.constant_fields.applicable_kinds            = field
 dotnet_naming_symbols.constant_fields.applicable_accessibilities  = *
 dotnet_naming_symbols.constant_fields.required_modifiers          = const
-tab_width= 2
+tab_width = 2
 dotnet_naming_rule.private_members_with_underscore.symbols  = private_fields
 dotnet_naming_rule.private_members_with_underscore.style = prefix_underscore
 dotnet_naming_rule.private_members_with_underscore.severity = suggestion
@@ -190,6 +193,15 @@ dotnet_diagnostic.CA1812.severity = none
 # CA1040: Avoid empty interfaces
 dotnet_diagnostic.CA1040.severity = none
 
+
+# S2094: Classes should not be empty
+dotnet_diagnostic.S2094.severity = none
+
+# CA2225: Operator overloads have named alternates
+dotnet_diagnostic.CA2225.severity = none
+
+# CA1000: Do not declare static members on generic types
+dotnet_diagnostic.CA1000.severity = none
 
 [*.vb]
 # Modifier preferences

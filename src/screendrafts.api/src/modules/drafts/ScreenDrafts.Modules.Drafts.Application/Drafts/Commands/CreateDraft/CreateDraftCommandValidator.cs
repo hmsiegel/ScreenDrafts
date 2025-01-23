@@ -6,8 +6,8 @@ internal sealed class CreateDraftCommandValidator : AbstractValidator<CreateDraf
   {
     RuleFor(x => x.Title).NotEmpty();
     RuleFor(x => x.DraftType).NotNull();
-    RuleFor(x => x.NumberOfDrafters).GreaterThan(0);
-    RuleFor(x => x.NumberOfCommissioners).GreaterThan(0);
-    RuleFor(x => x.NumberOfMovies).GreaterThan(0);
+    RuleFor(x => x.TotalPicks).GreaterThan(3);
+    RuleFor(x => x.TotalDrafters).GreaterThan(1);
+    RuleFor(x => x.TotalHosts).GreaterThan(0);
   }
 }

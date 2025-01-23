@@ -17,14 +17,15 @@ internal sealed class ListDraftsQueryHandler(IDbConnectionFactory dbConnectionFa
           id AS {nameof(DraftResponse.Id)},
           title AS {nameof(DraftResponse.Title)},
           draft_type AS {nameof(DraftResponse.DraftType)},
-          number_of_drafters AS {nameof(DraftResponse.NumberOfDrafters)},
-          number_of_commissioners AS {nameof(DraftResponse.NumberOfCommissioners)},
-          number_of_movies AS {nameof(DraftResponse.NumberOfMovies)}
+          total_picks AS {nameof(DraftResponse.TotalPicks)},
+          total_drafters AS {nameof(DraftResponse.TotalDrafters)},
+          total_hosts AS {nameof(DraftResponse.TotalHosts)},
+          draft_status AS {nameof(DraftResponse.DraftStatus)}
         FROM drafts.drafts
         """;
 
     List<DraftResponse> drafts = (await connection.QueryAsync<DraftResponse>(sql, request)).AsList();
 
-    return drafts;
+    return Result.Success<IReadOnlyCollection<DraftResponse>>(drafts);
   }
 }

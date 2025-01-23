@@ -12,7 +12,7 @@ export default function UpcomingDrafts() {
             </h1>
          </div>
          <div className="flex items-center justify-center">
-            <Link href="/landing/drafts/create" className="flex items-center justify-center btn-red hover:bg-red-400 hover:text-black transition ease-out duration-500">
+            <Link href="/main/drafts/create" className="flex items-center justify-center btn-red hover:bg-red-400 hover:text-black transition ease-out duration-500">
                create draft
                <PlusIcon className="w-5 ml-2" />
             </Link>
