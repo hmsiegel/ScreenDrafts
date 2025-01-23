@@ -4,16 +4,35 @@ import Link from 'next/link';
 import { useContext, useState } from 'react';
 import { ArrowRightIcon } from '@heroicons/react/24/outline';
 import { InitialDraftContext } from '@/app/contexts/initial-draft-context';
-
+import CommissionerDropdown from './commissioner-dropdown';
+import DrafterDropdown from './drafter-dropdown';
+import { Button } from '../button';
 
 export default function Form() {
+   const { initialDraftData } = useContext(InitialDraftContext);
    const [draftType, setDraftType] = useState('regular');
-   const { initialDraftData, setInitialDraftData} = useContext(InitialDraftContext);
+
+   function createCommissionerComponent() {
+      const arr = [];
+      for (let i = 0; i < 3; i++) {
+         arr.push(<CommissionerDropdown key={i} commissionerNumber={i + 1} />);
+      }
+      return arr;
+   }
+
+   function createDrafterComponent() {
+      const arr = [];
+      for (let i = 0; i < 3; i++) {
+         arr.push(<DrafterDropdown key={i} drafterNumber={i + 1} />);
+      }
+      return arr;
+   }
+
 
    return (
       <form >
          <div className="bg-[#fffdfd] rounded-lg shadow-lg py-5 px-28 flex flex-col items-center justify-center my-4">
-            <h1 className="text-3xl font-bold mb-6">Create Draft</h1>
+            <h1 className="text-3xl font-bold mb-6">Update Draft</h1>
             {/* Title */}
             <div className="mb-4">
                <label htmlFor="draft-title" className="mb-2 block text-sm font-medium">
@@ -23,11 +42,9 @@ export default function Form() {
                   <input
                      id="draft-title"
                      name="title"
-                     type="text"
-                     onChange={(e) => setInitialDraftData({ ...initialDraftData, title: e.target.value }) }
                      className="peer block w-96 cursor-pointer rounded-md border border-gray-200 py-2 pl-2 text-sm outline-2 placeholder:text-gray-500"
-                     placeholder="Please enter a title"
-                     aria-describedby="title-error"
+                     defaultValue={initialDraftData.title}
+                     aria-describedby="customer-error"
                   />
                </div>
                <div id="title-error" aria-live="polite" aria-atomic="true">
@@ -44,6 +61,7 @@ export default function Form() {
                      <select
                         id="draft-type"
                         name="draft-type"
+                        defaultValue={initialDraftData.draftType}
                         className="peer block w-96 rounded-md border border-gray-200 py-2 pl-2 text-sm outline-2 placeholder:text-gray-500"
                         aria-describedby="draft-type-error"
                         onChange={(e) => setDraftType(e.target.value)}>
@@ -66,7 +84,7 @@ export default function Form() {
                      <select
                         id="expanded-draft-type"
                         name="expanded-draft-type"
-                        onChange={(e) => setInitialDraftData({ ...initialDraftData, expandedDraftType: e.target.value }) }
+                        defaultValue={initialDraftData.expandedDraftType}
                         className="peer block w-96 rounded-md border border-gray-200 py-2 pl-2 text-sm outline-2 placeholder:text-gray-500"
                         aria-describedby="draft-type-error">
                         <option value="mini-mega">Mini-Mega</option>
@@ -83,46 +101,15 @@ export default function Form() {
             <div className="border-b border-gray-200 w-full my-4"></div>
 
             {/*  Commissioner */}
-            <div className="mb-4">
-               <label htmlFor="commissioner" className="mb-2 block text-sm font-medium">
-                  Number of Commissioners
-               </label>
-               <div className="relative mt-2 rounded-md">
-                  <div className="relative">
-                     <input
-                        id="no-of-commissioners"
-                        name="no-of-commissioners"
-                        type='number'
-                        onChange={(e) => setInitialDraftData({ ...initialDraftData, noOfCommissioners: parseInt(e.target.value) }) }
-                        className="peer block w-96 rounded-md border border-gray-200 py-2 pl-2 text-sm outline-2 placeholder:text-gray-500"
-                        aria-describedby="no-of-commissioners-error">
-                     </input>
-                  </div>
-                  <div id="no-of-commissioners-error" aria-live="polite" aria-atomic="true">
-                  </div>
-               </div>
-            </div>
+            {createCommissionerComponent()}
 
-            {/*  Number of Drafters */}
-            <div className="mb-4">
-               <label htmlFor="commissioner" className="mb-2 block text-sm font-medium">
-                  Number of Drafters
-               </label>
-               <div className="relative mt-2 rounded-md">
-                  <div className="relative">
-                     <input
-                        id="no-of-drafters"
-                        type='number'
-                        name="no-of-drafters"
-                        onChange={(e) => setInitialDraftData({ ...initialDraftData, noOfDrafters: parseInt(e.target.value) }) }
-                        className="peer block w-96 rounded-md border border-gray-200 py-2 pl-2 text-sm outline-2 placeholder:text-gray-500"
-                        aria-describedby="no-of-drafters-error">
-                     </input>
-                  </div>
-                  <div id="no-of-drafters-error" aria-live="polite" aria-atomic="true">
-                  </div>
-               </div>
-            </div>
+            <div className="border-b border-gray-200 w-full my-4"></div>
+
+            {/*  Drafter */}
+            {createDrafterComponent()}
+
+
+            <div className="border-b border-gray-200 w-full my-4"></div>
 
             {/*  Number of Movies */}
             <div className="mb-4">
@@ -135,7 +122,6 @@ export default function Form() {
                         id="no-of-movies"
                         type='number'
                         name="no-of-movies"
-                        onChange={(e) => setInitialDraftData({ ...initialDraftData, noOfMovies: parseInt(e.target.value) }) }
                         className="peer block w-96 rounded-md border border-gray-200 py-2 pl-2 text-sm outline-2 placeholder:text-gray-500"
                         aria-describedby="no-of-movies-error">
                      </input>
@@ -146,20 +132,19 @@ export default function Form() {
             </div>
             <div className="mt-6 flex gap-4">
                <Link
-                  href="/main/"
+                  href="/main/drafts/create"
                   className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
                >
                   Cancel
                </Link>
-               <Link
-                  href='/main/drafts/update'
+               <Button
+                  type="submit"
                   className="flex h-10 items-center rounded-lg bg-sd-blue px-4 text-sm font-medium text-white transition-colors hover:bg-blue-400"
-                  onClick={() => setInitialDraftData(initialDraftData)}
-               >
-                  <span>Next</span><ArrowRightIcon className="w-5 h-5 ml-2" />
-               </Link>
-            </div>
+                  >
+                  <span>Save</span>
+            </Button>
          </div>
+      </div>
       </form >
    );
 }

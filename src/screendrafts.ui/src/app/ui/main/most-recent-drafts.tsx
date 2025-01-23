@@ -2,6 +2,7 @@ import { inter, roboto } from "@/app/ui/fonts";
 import { getLatestDrafts } from "@/app/lib/data";
 import Link from "next/link";
 import { Draft } from "@/app/lib/definitions";
+import React from "react";
 
 export default async function MostRecentDrafts() {
    const latestDrafts = await getLatestDrafts();
@@ -19,16 +20,17 @@ export default async function MostRecentDrafts() {
                </div>
             </div>
             <div className={`${roboto.className} table-row-group bg-white`}>
-               {latestDrafts.map((draft:Draft ) => {
+               {latestDrafts.map((draft: Draft) => {
                   return (
-                     <Link
-                        key={draft.id}
-                        href={`/draft/${draft.episode}`}
-                        className="table-row">
-                        <div className="whitespace-nowrap table-cell table-data py-3 pl-6 pr-3">{draft.episode}.</div>
-                        <div className="whitespace-nowrap table-cell table-data py-3 pl-6 pr-3">{draft.title}</div>
-                        <div className="whitespace-nowrap table-cell table-data text-right py-3 pl-6 pr-3">{draft.draft_dates.toString()}</div>
-                     </Link>
+                     <React.Fragment key={draft.id}>
+                        <Link
+                           href={`/draft/${draft.episode}`}
+                           className="table-row">
+                           <div className="whitespace-nowrap table-cell table-data py-3 pl-6 pr-3">{draft.episode}.</div>
+                           <div className="whitespace-nowrap table-cell table-data py-3 pl-6 pr-3">{draft.title}</div>
+                           <div className="whitespace-nowrap table-cell table-data text-right py-3 pl-6 pr-3">{draft.draft_dates.toString()}</div>
+                        </Link>
+                     </React.Fragment>
                   );
                })}
             </div>
