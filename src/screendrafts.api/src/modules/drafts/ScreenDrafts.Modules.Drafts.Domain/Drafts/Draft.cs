@@ -1,23 +1,38 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts;
 
-public sealed class Draft
+public sealed class Draft : Entity
 {
-  public Guid Id { get; set; }
+  private Draft()
+  {
+  }
 
-  public required string Title { get; set; }
+  public Guid Id { get; private set; }
 
-  public required DraftType DraftType { get; set; }
+  public string? Title { get; private set; }
 
-  public required int NumberOfDrafters { get; set; }
+  public DraftType? DraftType { get; private set; }
 
-  public required int NumberOfCommissioners { get; set; }
+  public int NumberOfDrafters { get; private set; }
 
-  public required int NumberOfMovies { get; set; }
-}
+  public int NumberOfCommissioners { get; private set; }
 
-public sealed class DraftType(string name, int value) 
-  : SmartEnum<DraftType>(name, value)
-{
-  public static readonly DraftType Regular = new(nameof(Regular), 0);
-  public static readonly DraftType Expanded = new(nameof(Expanded), 1);
+  public int NumberOfMovies { get; private set; }
+
+  public static Draft Create(
+    string title,
+    DraftType draftType,
+    int numberOfDrafters,
+    int numberOfCommissioners,
+    int numberOfMovies)
+  {
+    return new Draft
+    {
+      Id = Guid.NewGuid(),
+      Title = title,
+      DraftType = draftType,
+      NumberOfDrafters = numberOfDrafters,
+      NumberOfCommissioners = numberOfCommissioners,
+      NumberOfMovies = numberOfMovies
+    };
+  }
 }

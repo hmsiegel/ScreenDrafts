@@ -16,10 +16,12 @@
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" />
     <PackageReference Include="Scalar.AspNetCore" />
+    <PackageReference Include="FastEndpoints" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\modules\drafts\ScreenDrafts.Modules.Drafts.Domain\ScreenDrafts.Modules.Drafts.Domain.csproj" />
+    <ProjectReference Include="..\..\modules\drafts\ScreenDrafts.Modules.Drafts.Infrastructure\ScreenDrafts.Modules.Drafts.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\modules\users\ScreenDrafts.Modules.Users.Infrastructure\ScreenDrafts.Modules.Users.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
