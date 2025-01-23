@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Infrastructure.Drafts;
+﻿using ScreenDrafts.Modules.Drafts.Domain.Drafters.Entities;
+
+namespace ScreenDrafts.Modules.Drafts.Infrastructure.Drafts;
 
 internal sealed class RolloverVetoOverrideCongiguration : IEntityTypeConfiguration<RolloverVetoOverride>
 {

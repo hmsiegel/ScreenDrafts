@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Infrastructure.Drafters;
+﻿using ScreenDrafts.Modules.Drafts.Domain.Drafters.Entities;
+
+namespace ScreenDrafts.Modules.Drafts.Infrastructure.Drafters;
 internal sealed class VetoConfiguration : IEntityTypeConfiguration<Veto>
 {
   public void Configure(EntityTypeBuilder<Veto> builder)

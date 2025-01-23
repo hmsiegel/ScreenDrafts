@@ -1,4 +1,4 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities;
+﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafters.Entities;
 
 public sealed class RolloverVeto : Entity<RolloverVetoId>
 {
@@ -29,7 +29,7 @@ public sealed class RolloverVeto : Entity<RolloverVetoId>
 
   public static RolloverVeto Create(Guid drafterId, Guid fromDraftId)
   {
-    var rolloverVeto =  new RolloverVeto(drafterId, fromDraftId);
+    var rolloverVeto = new RolloverVeto(drafterId, fromDraftId);
 
     rolloverVeto.Raise(new RolloverVetoCreatedDomainEvent(rolloverVeto.Id.Value));
 

@@ -1,4 +1,4 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.DomainEvents;
+﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafters.DomainEvents;
 
 public sealed class RolloverVetoOverrideCreatedDomainEvent(Guid rolloverVetoOverrideId) : DomainEvent
 {

@@ -1,4 +1,4 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.ValueObjects;
+﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafters.ValueObjects;
 
 public sealed record RolloverVetoId(Guid Value)
 {

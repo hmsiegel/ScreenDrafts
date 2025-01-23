@@ -1,5 +1,7 @@
 ﻿using System.Reflection;
 
+using ScreenDrafts.Modules.Drafts.Domain.Drafters.Entities;
+
 namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database;
 
 public sealed class DraftsDbContext(DbContextOptions<DraftsDbContext> options)

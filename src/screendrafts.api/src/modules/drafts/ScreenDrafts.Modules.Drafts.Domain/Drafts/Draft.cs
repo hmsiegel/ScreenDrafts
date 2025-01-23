@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts;
+﻿using ScreenDrafts.Modules.Drafts.Domain.Drafters.Entities;
+
+namespace ScreenDrafts.Modules.Drafts.Domain.Drafts;
 
 public sealed class Draft : AggrgateRoot<DraftId, Guid>
 {

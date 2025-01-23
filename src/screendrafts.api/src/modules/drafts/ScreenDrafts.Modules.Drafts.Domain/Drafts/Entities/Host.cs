@@ -1,4 +1,4 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafters;
+﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities;
 
 public sealed class Host : Entity
 {

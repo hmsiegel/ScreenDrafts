@@ -1,4 +1,4 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities;
+﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafters.Entities;
 
 public sealed class Veto : Entity<VetoId>
 {
