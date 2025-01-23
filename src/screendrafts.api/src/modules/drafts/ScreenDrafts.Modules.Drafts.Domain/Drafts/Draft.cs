@@ -48,6 +48,8 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
 
   public string? EpisodeNumber { get; private set; } = default!;
 
+  public GameBoard? GameBoard { get; private set; } = default!;
+
   public DraftStatus DraftStatus { get; private set; } = default!;
 
   public DateTime CreatedAtUtc { get; private set; }
@@ -198,7 +200,7 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
       return Result.Failure(DraftErrors.OnlyDraftersInTheDraftCanUseAVeto);
     }
 
-    drafter.AddVeto(Veto.Create(drafter.Id.Value, pick.Id));
+    drafter.AddVeto(pick.Id);
 
     UpdatedAtUtc = DateTime.UtcNow;
 
@@ -222,7 +224,7 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
       return Result.Failure(DraftErrors.OnlyDraftersInTheDraftCanUseAVetoOverride);
     }
 
-    drafter.AddVetoOverride(VetoOverride.Create(drafter.Id.Value, veto.Id.Value));
+    drafter.AddVetoOverride(veto.Id.Value);
 
     UpdatedAtUtc = DateTime.UtcNow;
 

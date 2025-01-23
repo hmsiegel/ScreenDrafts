@@ -34,9 +34,9 @@ public sealed class Drafter : AggrgateRoot<DrafterId, Guid>
 
   public Draft Draft { get; private set; } = default!;
 
-  public RolloverVeto RolloverVeto { get; private set; } = default!;
+  public RolloverVeto? RolloverVeto { get; private set; } = default!;
 
-  public RolloverVetoOverride RolloverVetoOverride { get; private set; } = default!;
+  public RolloverVetoOverride? RolloverVetoOverride { get; private set; } = default!;
 
   public IReadOnlyCollection<Veto> Vetoes => _vetoes.AsReadOnly();
 
@@ -61,27 +61,38 @@ public sealed class Drafter : AggrgateRoot<DrafterId, Guid>
     return drafter;
   }
 
-  public void AddVeto(Veto veto)
+  public void AddVeto(Guid pickId)
   {
-    Guard.Against.Null(veto);
-    _vetoes.Add(veto);
+    Guard.Against.Null(pickId);
+    _vetoes.Add(Veto.Create(Id.Value, pickId));
   }
 
-  public void AddVetoOverride(VetoOverride vetoOverride)
+  public void AddVetoOverride(Guid vetoId)
   {
-    Guard.Against.Null(vetoOverride);
-    _vetoOverrides.Add(vetoOverride);
+    Guard.Against.Null(vetoId);
+    _vetoOverrides.Add(VetoOverride.Create(Id.Value, vetoId));
   }
 
-  public void SetRolloverVeto(RolloverVeto rolloverVeto)
+  public Result SetRolloverVeto()
   {
-    Guard.Against.Null(rolloverVeto);
-    RolloverVeto = rolloverVeto;
+    if (RolloverVeto != null)
+    {
+      return Result.Failure(DrafterErrors.RolloverVetoAlreadyExists);
+    }
+
+    RolloverVeto = RolloverVeto.Create(Id.Value, DraftId);
+
+    return Result.Success();
   }
 
-  public void SetRolloverVetoOverride(RolloverVetoOverride rolloverVetoOverride)
+  public Result SetRolloverVetoOverride()
   {
-    Guard.Against.Null(rolloverVetoOverride);
-    RolloverVetoOverride = rolloverVetoOverride;
+    if (RolloverVetoOverride != null)
+    {
+      return Result.Failure(DrafterErrors.RolloverVetoOverrideAlreadyExists);
+    }
+    RolloverVetoOverride = RolloverVetoOverride.Create(Id.Value, DraftId);
+
+    return Result.Success();
   }
 }
