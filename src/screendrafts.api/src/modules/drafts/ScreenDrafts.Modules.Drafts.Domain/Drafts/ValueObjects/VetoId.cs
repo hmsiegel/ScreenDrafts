@@ -2,7 +2,7 @@
 
 public sealed record VetoId(Guid Value)
 {
-  public Guid Value { get; } = Value;
+  public Guid Value { get; init; } = Value;
 
   public static VetoId CreateUnique() => new(Guid.NewGuid());
 

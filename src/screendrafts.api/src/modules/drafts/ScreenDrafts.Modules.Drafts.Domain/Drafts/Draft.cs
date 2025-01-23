@@ -44,7 +44,7 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
 
   public int TotalHosts { get; private set; }
 
-  public string EpisodeNumber { get; private set; } = default!;
+  public string? EpisodeNumber { get; private set; } = default!;
 
   public DraftStatus DraftStatus { get; private set; } = default!;
 
