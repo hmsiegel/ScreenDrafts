@@ -2,9 +2,11 @@
 
 public sealed class Host : Entity
 {
+  private readonly List<Draft> _hostedDrafts = [];
+
   public Host(
-    Ulid id,
-    Ulid userId,
+    Guid id,
+    Guid userId,
     string hostName)
     : base(id)
   {
@@ -18,8 +20,10 @@ public sealed class Host : Entity
   }
 
 
-  public Ulid UserId { get; private set; }
+  public Guid UserId { get; private set; }
 
   public string HostName { get; private set; } = default!;
+
+  public IReadOnlyCollection<Draft> HostedDrafts => _hostedDrafts.AsReadOnly();
 }
 

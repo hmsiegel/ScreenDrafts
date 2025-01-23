@@ -4,7 +4,7 @@ public abstract class Entity
 {
   private readonly List<IDomainEvent> _domainEvents = [];
 
-  protected Entity(Ulid id)
+  protected Entity(Guid id)
   {
     Id = id;
   }
@@ -13,7 +13,7 @@ public abstract class Entity
   {
   }
 
-  public Ulid Id { get; init; } = default!;
+  public Guid Id { get; init; } = Guid.Empty;
 
   public void ClearDomainEvents()
   {

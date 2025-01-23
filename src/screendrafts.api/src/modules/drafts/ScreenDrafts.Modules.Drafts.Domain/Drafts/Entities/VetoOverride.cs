@@ -2,19 +2,41 @@
 
 public sealed class VetoOverride : Entity<VetoOverrideId>
 {
-  public VetoOverride(DrafterId drafterId, VetoId vetoId)
+  private VetoOverride(
+    VetoOverrideId id,
+    Guid drafterId,
+    Guid vetoId)
+    : base(id)
   {
-    Id = VetoOverrideId.CreateUnique();
-    DrafterId = Guard.Against.Null(drafterId);
-    VetoId = Guard.Against.Null(vetoId);
+    DrafterId = drafterId;
+    VetoId = vetoId;
     IsUsed = false;
   }
 
-  public DrafterId DrafterId { get; private set; }
+  private VetoOverride()
+  {
+  }
 
-  public VetoId VetoId { get; private set; }
+  public Guid DrafterId { get; private set; }
+
+  public Drafter Drafter { get; private set; } = default!;
+
+  public Guid VetoId { get; private set; }
+
+  public Veto Veto { get; private set; } = default!;
 
   public bool IsUsed { get; private set; }
+
+  public static VetoOverride Create(
+    Guid drafterId,
+    Guid vetoId,
+    VetoOverrideId? id = null)
+  {
+    return new VetoOverride(
+      id: id ?? VetoOverrideId.CreateUnique(),
+      drafterId: drafterId,
+      vetoId: vetoId);
+  }
 
   public Result Use()
   {

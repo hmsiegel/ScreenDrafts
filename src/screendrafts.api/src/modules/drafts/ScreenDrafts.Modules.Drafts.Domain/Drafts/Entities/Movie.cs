@@ -1,9 +1,14 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities;
 
-public sealed class Movie(
-  MovieTitle movieTitle,
-  MovieId? id = null)
-  : Entity<MovieId>(id ?? MovieId.CreateUnique())
+public sealed class Movie : Entity<MovieId>
 {
-  public MovieTitle MovieTitle { get; private set; } = movieTitle;
+  public Movie(
+    MovieTitle movieTitle,
+    MovieId? id = null) 
+    : base(id ?? MovieId.CreateUnique())
+  {
+    MovieTitle = movieTitle;
+  }
+
+  public MovieTitle MovieTitle { get; private set; }
 }

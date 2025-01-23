@@ -6,4 +6,4 @@ public sealed record CreateDraftCommand(
   int TotalPicks,
   int TotalDrafters,
   int TotalHosts,
-  DraftStatus DraftStatus) : ICommand<Ulid>;
+  DraftStatus DraftStatus) : ICommand<Guid>;

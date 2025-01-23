@@ -1,8 +1,8 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.DomainEvents;
 
-public sealed class DrafterAddedDomainEvent(Ulid draftId, Ulid drafterId) : DomainEvent
+public sealed class DrafterAddedDomainEvent(Guid draftId, Guid drafterId) : DomainEvent
 {
-  public Ulid DraftId { get; init; } = draftId;
+  public Guid DraftId { get; init; } = draftId;
 
-  public Ulid DrafterId { get; init; } = drafterId;
+  public Guid DrafterId { get; init; } = drafterId;
 }

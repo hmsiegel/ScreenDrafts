@@ -1,12 +1,12 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.ValueObjects;
 
-public sealed record RolloverVetoId(Ulid Value)
+public sealed record RolloverVetoId(Guid Value)
 {
-  public Ulid Value { get; } = Value;
+  public Guid Value { get; } = Value;
 
-  public static RolloverVetoId CreateUnique() => new(Ulid.NewUlid());
+  public static RolloverVetoId CreateUnique() => new(Guid.NewGuid());
 
-  public static RolloverVetoId FromString(string value) => new(Ulid.Parse(value, CultureInfo.InvariantCulture));
+  public static RolloverVetoId FromString(string value) => new(Guid.Parse(value, CultureInfo.InvariantCulture));
 
-  public static RolloverVetoId Create(Ulid value) => new(value);
+  public static RolloverVetoId Create(Guid value) => new(value);
 }

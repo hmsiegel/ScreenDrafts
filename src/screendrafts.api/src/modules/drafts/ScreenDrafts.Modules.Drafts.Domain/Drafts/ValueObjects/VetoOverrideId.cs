@@ -1,12 +1,12 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.ValueObjects;
 
-public sealed record VetoOverrideId(Ulid Value)
+public sealed record VetoOverrideId(Guid Value)
 {
-  public Ulid Value { get; } = Value;
+  public Guid Value { get; } = Value;
 
-  public static VetoOverrideId CreateUnique() => new(Ulid.NewUlid());
+  public static VetoOverrideId CreateUnique() => new(Guid.NewGuid());
 
-  public static VetoOverrideId FromString(string value) => new(Ulid.Parse(value, CultureInfo.InvariantCulture));
+  public static VetoOverrideId FromString(string value) => new(Guid.Parse(value, CultureInfo.InvariantCulture));
 
-  public static VetoOverrideId Create(Ulid value) => new(value);
+  public static VetoOverrideId Create(Guid value) => new(value);
 }

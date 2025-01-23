@@ -3,8 +3,8 @@
 public sealed class RolloverVetoOverride : Entity<RolloverVetoOverrideId>
 {
   private RolloverVetoOverride(
-    Ulid drafterId,
-    Ulid fromDraftId,
+    Guid drafterId,
+    Guid fromDraftId,
     RolloverVetoOverrideId? id = null)
   {
     Id = id ?? RolloverVetoOverrideId.CreateUnique();
@@ -17,15 +17,17 @@ public sealed class RolloverVetoOverride : Entity<RolloverVetoOverrideId>
   {
   }
 
-  public Ulid DrafterId { get; private set; }
+  public Guid DrafterId { get; private set; }
 
-  public Ulid FromDraftId { get; private set; }
+  public Drafter Drafter { get; private set; } = default!;
 
-  public Ulid? ToDraftId { get; private set; }
+  public Guid FromDraftId { get; private set; }
+
+  public Guid? ToDraftId { get; private set; }
 
   public bool IsUsed { get; private set; }
 
-  public static RolloverVetoOverride Create(Ulid drafterId, Ulid fromDraftId)
+  public static RolloverVetoOverride Create(Guid drafterId, Guid fromDraftId)
   {
     var rolloverVeto =  new RolloverVetoOverride(drafterId, fromDraftId);
 
@@ -34,7 +36,7 @@ public sealed class RolloverVetoOverride : Entity<RolloverVetoOverrideId>
     return rolloverVeto;
   }
 
-  public Result Use(Ulid toDraftId)
+  public Result Use(Guid toDraftId)
   {
     if (IsUsed)
     {

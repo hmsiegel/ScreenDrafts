@@ -13,7 +13,7 @@ public class GetDraftEndpoint(ISender sender) : EndpointWithoutRequest<DraftResp
 
   public override async Task HandleAsync(CancellationToken ct)
   {
-    var id = Route<Ulid>("id");
+    var id = Route<Guid>("id");
 
     var query = new GetDraftQuery(id);
 

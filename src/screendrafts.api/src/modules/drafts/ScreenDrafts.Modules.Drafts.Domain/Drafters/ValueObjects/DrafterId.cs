@@ -1,9 +1,9 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafters.ValueObjects;
 
-public sealed record DrafterId(Ulid Value) : AggregateRootId<Ulid>
+public sealed record DrafterId(Guid Value) : AggregateRootId<Guid>
 {
-  public override Ulid Value { get; protected set; } = Value;
-  public static DrafterId CreateUnique() => new(Ulid.NewUlid());
-  public static DrafterId FromString(string value) => new(Ulid.Parse(value, CultureInfo.InvariantCulture));
-  public static DrafterId Create(Ulid value) => new(value);
+  public override Guid Value { get; protected set; } = Value;
+  public static DrafterId CreateUnique() => new(Guid.NewGuid());
+  public static DrafterId FromString(string value) => new(Guid.Parse(value, CultureInfo.InvariantCulture));
+  public static DrafterId Create(Guid value) => new(value);
 }

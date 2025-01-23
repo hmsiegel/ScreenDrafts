@@ -1,8 +1,7 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.Errors;
 
-public static class DraftErrors
-{
-  public static SDError NotFound(Ulid draftId) =>
+public static class DraftErrors {
+  public static SDError NotFound(Guid draftId) =>
     SDError.NotFound(
       "Drafts.NotFound",
       $"Draft with id {draftId} was not found.");
@@ -12,7 +11,7 @@ public static class DraftErrors
       "Drafts.TooManyDrafters",
       "Cannot add more drafters than the total allowed.");
 
-  public static SDError DrafterAlreadyAdded(Ulid drafterId) =>
+  public static SDError DrafterAlreadyAdded(Guid drafterId) =>
     SDError.Conflict(
       "Drafts.DrafterAlreadyAdded",
       $"Drafter with id {drafterId} is already added to the draft.");
@@ -22,7 +21,7 @@ public static class DraftErrors
      "Drafts.PickPositionAlreadyTaken",
      $"Pick position {position} is already taken.");
 
-  public static SDError HostAlreadyAdded(Ulid hostId) =>
+  public static SDError HostAlreadyAdded(Guid hostId) =>
     SDError.Conflict(
       "Drafts.HostAlreadyTaken",
       $"Host with id {hostId} is already added to the draft.");
@@ -110,4 +109,40 @@ public static class DraftErrors
   public static readonly SDError DraftMustHaveAtLeastTwoDrafters = SDError.Problem(
     "Drafts.DraftMustHaveAtLeastTwoDrafters",
     "Draft must have at least two drafters.");
+
+  public static readonly SDError PickPositionIsOutOfRange = SDError.Conflict(
+    "Drafts.PickPositionIsOutOfRange",
+    "Pick position is out of range.");
+
+  public static readonly SDError DraftMustHaveAtLeastFivePicks = SDError.Problem(
+    "Drafts.DraftMustHaveAtLeastFivePicks",
+    "Draft must have at least five picks.");
+
+  public static readonly SDError CannotPauseDraftIfItIsNotInProgress = SDError.Problem(
+    "Drafts.CannotPauseDraftIfItIsNotInProgress",
+    "Cannot pause the draft if it is not in progress.");
+
+  public static readonly SDError CannotResumeDraftIfItIsNotPaused = SDError.Problem(
+    "Drafts.CannotResumeDraftIfItIsNotPaused",
+    "Cannot resume the draft if it is not paused.");
+
+  public static readonly SDError CannotPauseDraftIfItIsAlreadyPaused = SDError.Problem(
+    "Drafts.CannotPauseDraftIfItIsAlreadyPaused",
+    "Cannot pause the draft if it is already paused.");
+
+  public static readonly SDError CannotResumeDraftIfItIsAlreadyInProgress = SDError.Problem(
+    "Drafts.CannotResumeDraftIfItIsAlreadyInProgress",
+    "Cannot resume the draft if it is already in progress.");
+
+  public static readonly SDError CannotPauseDraftIfItIsCompleted = SDError.Problem(
+    "Drafts.CannotPauseDraftIfItIsCompleted",
+    "Cannot pause the draft if it is completed.");
+
+  public static readonly SDError CannotResumeDraftIfItIsCompleted = SDError.Problem(
+    "Drafts.CannotResumeDraftIfItIsCompleted",
+    "Cannot resume the draft if it is completed.");
+
+  public static readonly SDError InvalidPickPosition = SDError.Problem(
+    "Drafts.InvalidPickPosition",
+    "Invalid pick position.");
 }

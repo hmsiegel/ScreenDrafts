@@ -1,9 +1,9 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.DomainEvents;
 
-public sealed class RolloverVetoUsedDomainEvent(Ulid rolloverVetoId, Ulid toDraftId) : DomainEvent
+public sealed class RolloverVetoUsedDomainEvent(Guid rolloverVetoId, Guid toDraftId) : DomainEvent
 {
-  public Ulid RolloverVetoId { get; init; } = rolloverVetoId;
+  public Guid RolloverVetoId { get; init; } = rolloverVetoId;
 
-  public Ulid ToDraftId { get; init; } = toDraftId;
+  public Guid ToDraftId { get; init; } = toDraftId;
 }
 

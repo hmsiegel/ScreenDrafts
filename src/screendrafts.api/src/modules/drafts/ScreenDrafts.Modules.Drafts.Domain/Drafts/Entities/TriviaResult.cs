@@ -2,9 +2,9 @@
 
 public sealed class TriviaResult : Entity<TriviaResultId>
 {
-  public TriviaResult(
-    Ulid draftId,
-    Ulid drafterId,
+  private TriviaResult(
+    Guid draftId,
+    Guid drafterId,
     bool awardIsVetoed,
     int positeon,
     TriviaResultId? id = null)
@@ -12,7 +12,7 @@ public sealed class TriviaResult : Entity<TriviaResultId>
     Id = id ?? TriviaResultId.CreateUnique();
     DraftId = draftId;
     DrafterId = drafterId;
-    AwardIsVetoed = awardIsVetoed;
+    AwardIsVeto = awardIsVetoed;
     Position = positeon;
   }
 
@@ -20,8 +20,24 @@ public sealed class TriviaResult : Entity<TriviaResultId>
   {
   }
 
-  public Ulid DraftId { get; private set; }
-  public Ulid DrafterId { get; private set; }
-  public bool AwardIsVetoed { get; private set; } // True if veto, false if veto override
+  public Guid DraftId { get; private set; }
+  public Guid DrafterId { get; private set; }
+  public bool AwardIsVeto { get; private set; } // True if veto, false if veto override
   public int Position { get; private set; }
+
+  public static Result<TriviaResult> Create(
+    Guid draftId,
+    Guid drafterId,
+    bool awardIsVetoed,
+    int position,
+    TriviaResultId? id = null)
+  {
+    var triviaResult = new TriviaResult(
+      draftId: draftId,
+      drafterId: drafterId,
+      awardIsVetoed: awardIsVetoed,
+      positeon: position,
+      id: id);
+    return triviaResult;
+  }
 }

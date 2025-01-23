@@ -3,8 +3,8 @@
 public sealed class DrafterDraftStats : Entity<DrafterDraftStatsId>
 {
   private DrafterDraftStats(
-    Ulid drafterId,
-    Ulid draftId,
+    Guid drafterId,
+    Guid draftId,
     DrafterDraftStatsId? id = null)
   {
     Id = id ?? DrafterDraftStatsId.CreateUnique();
@@ -16,9 +16,9 @@ public sealed class DrafterDraftStats : Entity<DrafterDraftStatsId>
   {
   }
 
-  public Ulid DrafterId { get; private set; }
+  public Guid DrafterId { get; private set; }
 
-  public Ulid DraftId { get; private set; }
+  public Guid DraftId { get; private set; }
 
 
   public int StartingVetoes { get; private set; } = 1;
@@ -35,7 +35,7 @@ public sealed class DrafterDraftStats : Entity<DrafterDraftStatsId>
 
   public int TotalVetoOverrides => StartingVetoOverrides + TriviaVetoOverrides;
 
-  public static DrafterDraftStats Create(Ulid drafterId, Ulid draftId) => new(drafterId, draftId);
+  public static DrafterDraftStats Create(Guid drafterId, Guid draftId) => new(drafterId, draftId);
 
   public void AddRollover(bool isVeto)
   {

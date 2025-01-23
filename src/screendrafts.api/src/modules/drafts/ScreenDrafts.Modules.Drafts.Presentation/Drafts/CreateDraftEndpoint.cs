@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Presentation.Drafts;
 
-public class CreateDraftEndpoint(ISender sender) : Endpoint<DraftRequest, Ulid>
+public class CreateDraftEndpoint(ISender sender) : Endpoint<DraftRequest, Guid>
 {
   private readonly ISender _sender = sender;
 

@@ -1,12 +1,10 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts;
 
-public sealed class Draft : AggrgateRoot<DraftId, Ulid>
+public sealed class Draft : AggrgateRoot<DraftId, Guid>
 {
   private readonly List<Drafter> _drafters = [];
   private readonly List<Pick> _picks = [];
   private readonly List<Host> _hosts = [];
-  private readonly List<Veto> _vetoes = [];
-  private readonly List<VetoOverride> _vetoOverrides = [];
   private readonly List<DrafterDraftStats> _drafterDraftStats = [];
   private readonly List<TriviaResult> _triviaResults = [];
 
@@ -46,6 +44,8 @@ public sealed class Draft : AggrgateRoot<DraftId, Ulid>
 
   public int TotalHosts { get; private set; }
 
+  public string EpisodeNumber { get; private set; } = default!;
+
   public DraftStatus DraftStatus { get; private set; } = default!;
 
   public DateTime CreatedAtUtc { get; private set; }
@@ -57,10 +57,6 @@ public sealed class Draft : AggrgateRoot<DraftId, Ulid>
   public IReadOnlyCollection<Pick> Picks => _picks.AsReadOnly();
 
   public IReadOnlyCollection<Host> Hosts => _hosts.AsReadOnly();
-
-  public IReadOnlyCollection<Veto> Vetoes => _vetoes.AsReadOnly();
-
-  public IReadOnlyCollection<VetoOverride> VetoOverrides => _vetoOverrides.AsReadOnly();
 
   public IReadOnlyCollection<DrafterDraftStats> DrafterStats => _drafterDraftStats.AsReadOnly();
 
@@ -78,6 +74,11 @@ public sealed class Draft : AggrgateRoot<DraftId, Ulid>
     if (totalDrafters < 2)
     {
       return Result.Failure<Draft>(DraftErrors.DraftMustHaveAtLeastTwoDrafters);
+    }
+
+    if (totalPicks < 4)
+    {
+      return Result.Failure<Draft>(DraftErrors.DraftMustHaveAtLeastFivePicks);
     }
 
     var draft = new Draft(
@@ -124,6 +125,9 @@ public sealed class Draft : AggrgateRoot<DraftId, Ulid>
 
   public Result AddPick(int position, Movie movie, Drafter drafter)
   {
+    ArgumentNullException.ThrowIfNull(movie);
+    ArgumentNullException.ThrowIfNull(drafter);
+
     if (DraftStatus != DraftStatus.InProgress)
     {
       return Result.Failure(DraftErrors.DraftNotStarted);
@@ -134,7 +138,14 @@ public sealed class Draft : AggrgateRoot<DraftId, Ulid>
       return Result.Failure(DraftErrors.PickPositionAlreadyTaken(position));
     }
 
-    _picks.Add(new Pick(position, movie, drafter));
+    if (position <= 0 || position > TotalPicks)
+    {
+      return Result.Failure(DraftErrors.PickPositionIsOutOfRange);
+    }
+
+    var pick = Pick.Create(position, movie, drafter);
+
+    _picks.Add(pick.Value);
 
     UpdatedAtUtc = DateTime.UtcNow;
 
@@ -172,23 +183,20 @@ public sealed class Draft : AggrgateRoot<DraftId, Ulid>
   public Result AddVeto(Drafter drafter, Pick pick)
   {
     ArgumentNullException.ThrowIfNull(drafter);
+    ArgumentNullException.ThrowIfNull(pick);
+
 
     if (DraftStatus != DraftStatus.InProgress)
     {
       return Result.Failure(DraftErrors.CannotVetoUnlessTheDraftIsStarted);
     }
 
-    if (!_drafters.Contains(drafter))
+    if (!_drafters.Any(d => d.Id.Value == drafter.Id.Value))
     {
       return Result.Failure(DraftErrors.OnlyDraftersInTheDraftCanUseAVeto);
     }
 
-    if (!_picks.Contains(pick))
-    {
-      return Result.Failure(DraftErrors.CannotVetoAPickThatDoesNotExist);
-    }
-
-    _vetoes.Add(new Veto(drafter.Id, pick));
+    drafter.AddVeto(Veto.Create(drafter.Id.Value, pick.Id));
 
     UpdatedAtUtc = DateTime.UtcNow;
 
@@ -212,12 +220,7 @@ public sealed class Draft : AggrgateRoot<DraftId, Ulid>
       return Result.Failure(DraftErrors.OnlyDraftersInTheDraftCanUseAVetoOverride);
     }
 
-    if (!_vetoes.Contains(veto))
-    {
-      return Result.Failure(DraftErrors.CannotVetoOverrideAVetoThatDoesNotExist);
-    }
-
-    _vetoOverrides.Add(new VetoOverride(drafter.Id, veto.Id));
+    drafter.AddVetoOverride(VetoOverride.Create(drafter.Id.Value, veto.Id.Value));
 
     UpdatedAtUtc = DateTime.UtcNow;
 
@@ -269,16 +272,16 @@ public sealed class Draft : AggrgateRoot<DraftId, Ulid>
     return Result.Success();
   }
 
-  public void AddTriviaResult(Ulid drafterId, bool awardIsVeto, int position)
+  public void AddTriviaResult(Guid drafterId, bool awardIsVeto, int position)
   {
-    var triviaResult = new TriviaResult(Id.Value, drafterId, awardIsVeto, position);
-    _triviaResults.Add(triviaResult);
+    var triviaResult = TriviaResult.Create(Id.Value, drafterId, awardIsVeto, position);
+    _triviaResults.Add(triviaResult.Value);
 
     var drafterStats = _drafterDraftStats.FirstOrDefault(d => d.DrafterId == drafterId);
     drafterStats?.AddTriviaAward(awardIsVeto);
   }
 
-  public Result ApplyRollover(Ulid drafterId, bool isVeto)
+  public Result ApplyRollover(Guid drafterId, bool isVeto)
   {
     var drafterStats = _drafterDraftStats.FirstOrDefault(d => d.DrafterId == drafterId);
 
@@ -287,13 +290,31 @@ public sealed class Draft : AggrgateRoot<DraftId, Ulid>
       return Result.Failure(DraftErrors.ADrafterCanOnlyHaveOneRolloverVeto);
     }
 
-    if (!isVeto && drafterStats?.StartingVetoOverrides >=1)
+    if (!isVeto && drafterStats?.StartingVetoOverrides >= 1)
     {
       return Result.Failure(DraftErrors.ADrafterCanOnlyHaveOneRolloverVetoOverride);
     }
 
     drafterStats?.AddRollover(isVeto);
 
+    return Result.Success();
+  }
+
+  public Result SetEpisodeNumber(string episodeNumber)
+  {
+    Guard.Against.NullOrEmpty(episodeNumber);
+    EpisodeNumber = episodeNumber;
+    return Result.Success();
+  }
+
+  public Result PauseDraft()
+  {
+    if (DraftStatus != DraftStatus.InProgress)
+    {
+      return Result.Failure(DraftErrors.CannotPauseDraftIfItIsNotInProgress);
+    }
+    DraftStatus = DraftStatus.Paused;
+    Raise(new DraftPausedDomainEvent(Id.Value));
     return Result.Success();
   }
 }

@@ -1,7 +1,7 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Application.Drafts.Queries.GetDraft;
 
 public sealed record DraftResponse(
-    Ulid Id,
+    Guid Id,
     string Title,
     string DraftType,
     int TotalPicks,

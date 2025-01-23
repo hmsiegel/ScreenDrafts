@@ -1,14 +1,14 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.DomainEvents;
 
 public sealed class VetoOverrideAddedDomainEvent(
-  Ulid draftId,
-  Ulid drafterId,
-  Ulid vetoId)
+  Guid draftId,
+  Guid drafterId,
+  Guid vetoId)
   : DomainEvent
 {
-  public Ulid DraftId { get; init; } = draftId;
+  public Guid DraftId { get; init; } = draftId;
 
-  public Ulid DrafterId { get; init; } = drafterId;
+  public Guid DrafterId { get; init; } = drafterId;
 
-  public Ulid VetoId { get; init; } = vetoId;
+  public Guid VetoId { get; init; } = vetoId;
 }
