@@ -26,5 +26,10 @@ public static class DraftsModule
     services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<DraftsDbContext>());
 
     services.AddScoped<IDraftsRepository, DraftsRepository>();
+    services.AddScoped<IDraftersRepository, DraftersRepository>();
+    services.AddScoped<IGameBoardRepository, GameBoardRepository>();
+    services.AddScoped<IHostsRepository, HostsRepository>();
+    services.AddScoped<IPicksRepository, PicksRepository>();
+    services.AddScoped<IVetoRepository, VetoRepository>();
   }
 }

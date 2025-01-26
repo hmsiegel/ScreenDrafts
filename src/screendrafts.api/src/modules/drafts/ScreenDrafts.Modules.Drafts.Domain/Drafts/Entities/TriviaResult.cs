@@ -3,40 +3,35 @@
 public sealed class TriviaResult : Entity<TriviaResultId>
 {
   private TriviaResult(
-    Guid draftId,
-    Guid drafterId,
-    bool awardIsVetoed,
     int positeon,
+    Drafter drafter,
+    BlessingType blessingType,
     TriviaResultId? id = null)
   {
     Id = id ?? TriviaResultId.CreateUnique();
-    DraftId = draftId;
-    DrafterId = drafterId;
-    AwardIsVeto = awardIsVetoed;
     Position = positeon;
+    BlessingType = blessingType;
+    Drafter = drafter;
   }
 
   private TriviaResult()
   {
   }
 
-  public Guid DraftId { get; private set; }
-  public Guid DrafterId { get; private set; }
-  public bool AwardIsVeto { get; private set; } // True if veto, false if veto override
+  public Drafter Drafter { get; private set; } = default!;
+  public BlessingType BlessingType { get; private set; } = default!;
   public int Position { get; private set; }
 
   public static Result<TriviaResult> Create(
-    Guid draftId,
-    Guid drafterId,
-    bool awardIsVetoed,
     int position,
+    Drafter drafter,
+    BlessingType blessingType,
     TriviaResultId? id = null)
   {
     var triviaResult = new TriviaResult(
-      draftId: draftId,
-      drafterId: drafterId,
-      awardIsVetoed: awardIsVetoed,
       positeon: position,
+      drafter: drafter,
+      blessingType: blessingType,
       id: id);
     return triviaResult;
   }

@@ -48,9 +48,15 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
 
   public DraftStatus DraftStatus { get; private set; } = default!;
 
+  public DateOnly? ReleaseDate { get; private set; } = default!;
+
   public DateTime CreatedAtUtc { get; private set; }
 
   public DateTime? UpdatedAtUtc { get; private set; }
+
+  // Relationships
+
+  public GameBoard? GameBoard { get; private set; } = default!;
 
   public IReadOnlyCollection<Drafter> Drafters => _drafters.AsReadOnly();
 
@@ -61,6 +67,7 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
   public IReadOnlyCollection<DrafterDraftStats> DrafterStats => _drafterDraftStats.AsReadOnly();
 
   public IReadOnlyCollection<TriviaResult> TriviaResults => _triviaResults.AsReadOnly();
+
 
   public static Result<Draft> Create(
   Title title,
@@ -112,7 +119,7 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
 
     _drafters.Add(drafter);
 
-    var stats = DrafterDraftStats.Create(Id.Value, drafter.Id.Value);
+    var stats = DrafterDraftStats.Create(drafter, this);
 
     _drafterDraftStats.Add(stats);
 
@@ -196,7 +203,7 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
       return Result.Failure(DraftErrors.OnlyDraftersInTheDraftCanUseAVeto);
     }
 
-    drafter.AddVeto(Veto.Create(drafter.Id.Value, pick.Id));
+    drafter.AddVeto(pick);
 
     UpdatedAtUtc = DateTime.UtcNow;
 
@@ -220,7 +227,7 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
       return Result.Failure(DraftErrors.OnlyDraftersInTheDraftCanUseAVetoOverride);
     }
 
-    drafter.AddVetoOverride(VetoOverride.Create(drafter.Id.Value, veto.Id.Value));
+    drafter.AddVetoOverride(veto);
 
     UpdatedAtUtc = DateTime.UtcNow;
 
@@ -272,18 +279,18 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
     return Result.Success();
   }
 
-  public void AddTriviaResult(Guid drafterId, bool awardIsVeto, int position)
+  public void AddTriviaResult(Drafter drafter, bool awardIsVeto, int position)
   {
-    var triviaResult = TriviaResult.Create(Id.Value, drafterId, awardIsVeto, position);
+    var triviaResult = TriviaResult.Create(position, drafter, awardIsVeto ? BlessingType.Veto : BlessingType.VetoOverride);
     _triviaResults.Add(triviaResult.Value);
 
-    var drafterStats = _drafterDraftStats.FirstOrDefault(d => d.DrafterId == drafterId);
+    var drafterStats = _drafterDraftStats.FirstOrDefault(d => d.DrafterId.Value == drafter.Id.Value);
     drafterStats?.AddTriviaAward(awardIsVeto);
   }
 
   public Result ApplyRollover(Guid drafterId, bool isVeto)
   {
-    var drafterStats = _drafterDraftStats.FirstOrDefault(d => d.DrafterId == drafterId);
+    var drafterStats = _drafterDraftStats.FirstOrDefault(d => d.DrafterId.Value == drafterId);
 
     if (isVeto && drafterStats?.RolloversApplied >= 1)
     {
@@ -315,6 +322,24 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
     }
     DraftStatus = DraftStatus.Paused;
     Raise(new DraftPausedDomainEvent(Id.Value));
+    return Result.Success();
+  }
+
+  public Result SetDraftReleaseDate(DateOnly releaseDate)
+  {
+    ReleaseDate = releaseDate;
+    return Result.Success();
+  }
+
+  public Result SetDraftStatus(DraftStatus draftStatus)
+  {
+    DraftStatus = draftStatus;
+    return Result.Success();
+  }
+
+  public Result SetGameBoard(GameBoard gameBoard)
+  {
+    GameBoard = gameBoard;
     return Result.Success();
   }
 }

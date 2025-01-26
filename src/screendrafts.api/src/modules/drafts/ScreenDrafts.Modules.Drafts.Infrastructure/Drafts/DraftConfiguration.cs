@@ -43,19 +43,8 @@ internal sealed class DraftConfiguration : IEntityTypeConfiguration<Draft>
             draftStatus => draftStatus.Value,
             value => DraftStatus.FromValue(value));
 
-    builder.HasMany(d => d.Picks)
-          .WithOne()
-          .HasForeignKey("draftId")
-          .OnDelete(DeleteBehavior.Cascade);
-
-    builder.HasMany(d => d.DrafterStats)
-          .WithOne()
-          .HasForeignKey("draftId")
-          .OnDelete(DeleteBehavior.Cascade);
-
-    builder.HasMany(d => d.TriviaResults)
-          .WithOne()
-          .HasForeignKey("draftId")
-          .OnDelete(DeleteBehavior.Cascade);
+    builder.HasOne(d => d.GameBoard)
+      .WithOne(gb => gb.Draft)
+      .HasForeignKey<GameBoard>(gb => gb.Id);
   }
 }

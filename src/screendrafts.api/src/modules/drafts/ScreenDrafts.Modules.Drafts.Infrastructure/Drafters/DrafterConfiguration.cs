@@ -18,9 +18,18 @@ internal sealed class DrafterConfiguration : IEntityTypeConfiguration<Drafter>
       .IsRequired()
       .HasMaxLength(100);
 
-    builder.HasOne(d => d.Draft)
-      .WithMany(d => d.Drafters)
-      .HasForeignKey("draftId")
+    builder.HasOne(d => d.Pick)
+      .WithOne(p => p.Drafter)
+      .HasForeignKey<Pick>(d => d.DrafterId);
+
+    builder.HasOne(d => d.RolloverVeto)
+      .WithOne(rv => rv.Drafter)
+      .HasForeignKey<RolloverVeto>(rv => rv.DrafterId)
+      .OnDelete(DeleteBehavior.Cascade);
+
+    builder.HasOne(d => d.RolloverVetoOverride)
+      .WithOne(rv => rv.Drafter)
+      .HasForeignKey<RolloverVetoOverride>(rv => rv.DrafterId)
       .OnDelete(DeleteBehavior.Cascade);
   }
 }

@@ -1,21 +1,22 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafters;
+﻿using ScreenDrafts.Modules.Drafts.Domain.Drafters.Errors;
+
+namespace ScreenDrafts.Modules.Drafts.Domain.Drafters;
 
 public sealed class Drafter : AggrgateRoot<DrafterId, Guid>
 {
   private readonly List<Veto> _vetoes = [];
   private readonly List<VetoOverride> _vetoOverrides = [];
+  private readonly List<DrafterDraftStats> _draftStats = [];
 
 
   private Drafter(
     DrafterId id,
     Guid userId,
-    string name,
-    Guid draftId)
+    string name)
     : base(id)
   {
     UserId = userId;
     Name = Guard.Against.NullOrEmpty(name);
-    DraftId = draftId;
   }
 
   private Drafter()
@@ -28,22 +29,22 @@ public sealed class Drafter : AggrgateRoot<DrafterId, Guid>
 
   public string Name { get; private set; } = default!;
 
-  public Guid DraftId { get; private set; }
 
-  public Draft Draft { get; private set; } = default!;
+  public Pick Pick { get; private set; } = default!;
 
-  public RolloverVeto RolloverVeto { get; private set; } = default!;
+  public RolloverVeto? RolloverVeto { get; private set; } = default!;
 
-  public RolloverVetoOverride RolloverVetoOverride { get; private set; } = default!;
+  public RolloverVetoOverride? RolloverVetoOverride { get; private set; } = default!;
 
   public IReadOnlyCollection<Veto> Vetoes => _vetoes.AsReadOnly();
 
   public IReadOnlyCollection<VetoOverride> VetoOverrides => _vetoOverrides.AsReadOnly();
 
+  public IReadOnlyCollection<DrafterDraftStats> DraftStats => _draftStats.AsReadOnly();
+
   public static Result<Drafter> Create(
     string name,
     Guid userId,
-    Guid draftId,
     DrafterId? id = null)
   {
     Guard.Against.Null(id);
@@ -51,7 +52,6 @@ public sealed class Drafter : AggrgateRoot<DrafterId, Guid>
     var drafter = new Drafter(
       id: id ?? DrafterId.CreateUnique(),
       userId: userId,
-      draftId: draftId,
       name: name);
 
     drafter.Raise(new DrafterCreatedDomainEvent(drafter.Id.Value));
@@ -59,27 +59,32 @@ public sealed class Drafter : AggrgateRoot<DrafterId, Guid>
     return drafter;
   }
 
-  public void AddVeto(Veto veto)
+  public void AddVeto(Pick pick)
   {
-    Guard.Against.Null(veto);
-    _vetoes.Add(veto);
+    _vetoes.Add(Veto.Create(pick));
   }
 
-  public void AddVetoOverride(VetoOverride vetoOverride)
+  public void AddVetoOverride(Veto veto)
   {
-    Guard.Against.Null(vetoOverride);
-    _vetoOverrides.Add(vetoOverride);
+    _vetoOverrides.Add(VetoOverride.Create(veto));
   }
 
-  public void SetRolloverVeto(RolloverVeto rolloverVeto)
+  public Result SetRolloverVeto()
   {
-    Guard.Against.Null(rolloverVeto);
-    RolloverVeto = rolloverVeto;
+    if (RolloverVeto != null)
+    {
+      return Result.Failure(DrafterErrors.RolloverVetoAlreadyExists);
+    }
+
+    return Result.Success();
   }
 
-  public void SetRolloverVetoOverride(RolloverVetoOverride rolloverVetoOverride)
+  public Result SetRolloverVetoOverride()
   {
-    Guard.Against.Null(rolloverVetoOverride);
-    RolloverVetoOverride = rolloverVetoOverride;
+    if (RolloverVetoOverride != null)
+    {
+      return Result.Failure(DrafterErrors.RolloverVetoOverrideAlreadyExists);
+    }
+    return Result.Success();
   }
 }
