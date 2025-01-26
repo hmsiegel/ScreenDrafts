@@ -22,5 +22,14 @@ services:
       - ./.containers/db:/var/lib/postgresql/data
     ports:
       - 5432:5432
+
+  screendrafts.seq:
+    image: datalust/seq:latest
+    container_name: ScreenDrafts.Seq
+    environment:
+      - ACCEPT_EULA=Y
+    ports:
+      - 5341:5341
+      - 8081:80
   
   

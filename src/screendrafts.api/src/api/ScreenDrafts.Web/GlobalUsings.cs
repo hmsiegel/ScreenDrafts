@@ -11,3 +11,5 @@ global using ScreenDrafts.Common.Infrastructure;
 global using ScreenDrafts.Modules.Drafts.Infrastructure;
 global using ScreenDrafts.Modules.Drafts.Infrastructure.Database;
 global using ScreenDrafts.Web.Extensions;
+
+global using Serilog;

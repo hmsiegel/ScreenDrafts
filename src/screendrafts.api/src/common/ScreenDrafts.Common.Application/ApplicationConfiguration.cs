@@ -7,6 +7,7 @@ public static class ApplicationConfiguration
     services.AddMediatR(config =>
     {
       config.RegisterServicesFromAssemblies(moduleAssemblies);
+      config.AddOpenBehavior(typeof(RequestLoggingPipelineBehavior<,>));
     });
 
     services.AddValidatorsFromAssemblies(moduleAssemblies);
