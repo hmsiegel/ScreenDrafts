@@ -10,6 +10,9 @@ Assembly[] applicationAssembles = [
 
 builder.Host.UseSerilog((context, config) => config.ReadFrom.Configuration(context.Configuration));
 
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
+
 builder.Services.AddOpenApi();
 builder.Services.AddFastEndpoints(opt =>
 {
@@ -36,6 +39,8 @@ if (app.Environment.IsDevelopment())
 app.UseFastEndpoints();
 
 app.UseSerilogRequestLogging();
+
+app.UseExceptionHandler();
 
 await app.RunAsync();
 
