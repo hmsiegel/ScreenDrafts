@@ -17,6 +17,8 @@ builder.Services.AddFastEndpoints(opt =>
 builder.Services.AddApplication(applicationAssembles);
 builder.Services.AddInfrastructure(builder.Configuration.GetConnectionString("Database")!);
 
+builder.Configuration.AddModuleConfiguration(["drafts"]);
+
 builder.Services.AddDraftsModule(builder.Configuration);
 
 var app = builder.Build();
