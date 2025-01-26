@@ -1,58 +1,39 @@
-﻿using System.Collections.ObjectModel;
-
-namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities;
+﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities;
 
 public sealed class GameBoard : Entity<GameBoardId>
 {
-  private readonly List<PickAssignment> _pickAssignments = [];
-
   private GameBoard(
-    Guid draftId,
+    Draft draft,
     GameBoardId? id = null) :
     base(id ?? GameBoardId.CreateUnique())
   {
-    DraftId = draftId;
+    Draft = draft;
   }
 
   private GameBoard()
   {
   }
 
-  public Guid DraftId { get; private set; }
+  public DraftId DraftId { get; private set; } = default!;
 
   public Draft Draft { get; private set; } = default!;
 
-  public IReadOnlyCollection<PickAssignment> PickAssignments => _pickAssignments.AsReadOnly();
+  public ICollection<DraftPosition> DraftPositions { get; private set; } = [];
 
-  public static GameBoard CreateStandardGameBoard(
-    Guid draftId,
-    Guid drafterAId,
-    Guid drafterBId)
+  public static Result<GameBoard> Create(
+    Draft draft,
+    Collection<DraftPosition> draftPositions)
   {
-    var gameBoard = new GameBoard(draftId);
+    ArgumentNullException.ThrowIfNull(draftPositions);
 
-    gameBoard._pickAssignments.Add(new PickAssignment(7, drafterAId));
-    gameBoard._pickAssignments.Add(new PickAssignment(6, drafterAId));
-    gameBoard._pickAssignments.Add(new PickAssignment(5, drafterBId));
-    gameBoard._pickAssignments.Add(new PickAssignment(4, drafterAId));
-    gameBoard._pickAssignments.Add(new PickAssignment(3, drafterBId));
-    gameBoard._pickAssignments.Add(new PickAssignment(2, drafterAId));
-    gameBoard._pickAssignments.Add(new PickAssignment(1, drafterBId));
+    var gameBoard = new GameBoard(draft);
 
-    return gameBoard;
-  }
-
-  public static GameBoard CreateExpandedGameBoard(Guid draftId, Collection<PickAssignment> pickAssignments)
-  {
-    ArgumentNullException.ThrowIfNull(pickAssignments);
-
-    var gameBoard = new GameBoard(draftId);
-
-    foreach (var pickAssignment in pickAssignments)
+    foreach (var position in draftPositions)
     {
-      gameBoard._pickAssignments.Add(pickAssignment);
+      gameBoard.DraftPositions.Add(position);
     }
 
-    return gameBoard;
+    return Result.Success(gameBoard);
   }
+
 }

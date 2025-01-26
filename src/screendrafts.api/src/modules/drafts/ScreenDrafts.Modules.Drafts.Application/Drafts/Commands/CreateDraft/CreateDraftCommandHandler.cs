@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.CreateDraft;
+﻿using ScreenDrafts.Modules.Drafts.Domain.Drafts.Repositories;
+
+namespace ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.CreateDraft;
 
 internal sealed class CreateDraftCommandHandler(IDraftsRepository draftsRepository, IUnitOfWork unitOfWork)
   : ICommandHandler<CreateDraftCommand, Guid>
@@ -8,7 +10,7 @@ internal sealed class CreateDraftCommandHandler(IDraftsRepository draftsReposito
 
   public async Task<Result<Guid>> Handle(CreateDraftCommand request, CancellationToken cancellationToken)
   {
-    var draft = Draft.Create(
+    var result = Draft.Create(
       new Title(request.Title),
       request.DraftType,
       request.TotalPicks,
@@ -16,13 +18,15 @@ internal sealed class CreateDraftCommandHandler(IDraftsRepository draftsReposito
       request.TotalHosts,
       request.DraftStatus);
 
-    if (draft.IsFailure)
+    if (result.IsFailure)
     {
-      return Result.Failure<Guid>(draft.Error);
+      return Result.Failure<Guid>(result.Error);
     }
 
-    _draftsRepository.Add(draft.Value);
+    var draft = result.Value;
+
+    _draftsRepository.Add(draft);
     await _unitOfWork.SaveChangesAsync(cancellationToken);
-    return draft.Value.Id.Value;
+    return draft.Id.Value;
   }
 }

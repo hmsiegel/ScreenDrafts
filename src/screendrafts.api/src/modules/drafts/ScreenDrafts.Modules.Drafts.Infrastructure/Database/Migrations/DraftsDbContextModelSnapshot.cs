@@ -48,7 +48,7 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<Guid>("DraftId")
+                    b.Property<Guid?>("DraftId")
                         .HasColumnType("uuid")
                         .HasColumnName("draft_id");
 
@@ -66,21 +66,13 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("user_id");
 
-                    b.Property<Guid>("draftId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("draft_id");
-
                     b.HasKey("Id")
                         .HasName("pk_drafters");
 
-                    b.HasIndex("draftId")
+                    b.HasIndex("DraftId")
                         .HasDatabaseName("ix_drafters_draft_id");
 
-                    b.ToTable("drafters", "drafts", t =>
-                        {
-                            t.Property("draftId")
-                                .HasColumnName("draft_id1");
-                        });
+                    b.ToTable("drafters", "drafts");
                 });
 
             modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Drafters.Entities.RolloverVeto", b =>
@@ -105,22 +97,14 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("to_draft_id");
 
-                    b.Property<Guid?>("drafterId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("drafter_id");
-
                     b.HasKey("Id")
                         .HasName("pk_rollover_vetoes");
 
-                    b.HasIndex("drafterId")
+                    b.HasIndex("DrafterId")
                         .IsUnique()
                         .HasDatabaseName("ix_rollover_vetoes_drafter_id");
 
-                    b.ToTable("rollover_vetoes", "drafts", t =>
-                        {
-                            t.Property("drafterId")
-                                .HasColumnName("drafter_id1");
-                        });
+                    b.ToTable("rollover_vetoes", "drafts");
                 });
 
             modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Drafters.Entities.RolloverVetoOverride", b =>
@@ -145,22 +129,14 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("to_draft_id");
 
-                    b.Property<Guid?>("drafterId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("drafter_id");
-
                     b.HasKey("Id")
                         .HasName("pk_rollover_veto_overrides");
 
-                    b.HasIndex("drafterId")
+                    b.HasIndex("DrafterId")
                         .IsUnique()
                         .HasDatabaseName("ix_rollover_veto_overrides_drafter_id");
 
-                    b.ToTable("rollover_veto_overrides", "drafts", t =>
-                        {
-                            t.Property("drafterId")
-                                .HasColumnName("drafter_id1");
-                        });
+                    b.ToTable("rollover_veto_overrides", "drafts");
                 });
 
             modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Drafters.Entities.Veto", b =>
@@ -169,7 +145,7 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<Guid>("DrafterId")
+                    b.Property<Guid?>("DrafterId")
                         .HasColumnType("uuid")
                         .HasColumnName("drafter_id");
 
@@ -177,35 +153,13 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("is_used");
 
-                    b.Property<Guid>("PickId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("pick_id");
-
-                    b.Property<Guid?>("drafterId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("drafter_id");
-
-                    b.Property<Guid>("pickId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("pick_id");
-
                     b.HasKey("Id")
                         .HasName("pk_vetoes");
 
-                    b.HasIndex("drafterId")
+                    b.HasIndex("DrafterId")
                         .HasDatabaseName("ix_vetoes_drafter_id");
 
-                    b.HasIndex("pickId")
-                        .HasDatabaseName("ix_vetoes_pick_id");
-
-                    b.ToTable("vetoes", "drafts", t =>
-                        {
-                            t.Property("drafterId")
-                                .HasColumnName("drafter_id1");
-
-                            t.Property("pickId")
-                                .HasColumnName("pick_id1");
-                        });
+                    b.ToTable("vetoes", "drafts");
                 });
 
             modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Drafters.Entities.VetoOverride", b =>
@@ -214,7 +168,7 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<Guid>("DrafterId")
+                    b.Property<Guid?>("DrafterId")
                         .HasColumnType("uuid")
                         .HasColumnName("drafter_id");
 
@@ -226,32 +180,17 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("veto_id");
 
-                    b.Property<Guid?>("drafterId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("drafter_id");
-
-                    b.Property<Guid?>("vetoId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("veto_id");
-
                     b.HasKey("Id")
                         .HasName("pk_veto_overrides");
 
-                    b.HasIndex("drafterId")
+                    b.HasIndex("DrafterId")
                         .HasDatabaseName("ix_veto_overrides_drafter_id");
 
-                    b.HasIndex("vetoId")
+                    b.HasIndex("VetoId")
                         .IsUnique()
                         .HasDatabaseName("ix_veto_overrides_veto_id");
 
-                    b.ToTable("veto_overrides", "drafts", t =>
-                        {
-                            t.Property("drafterId")
-                                .HasColumnName("drafter_id1");
-
-                            t.Property("vetoId")
-                                .HasColumnName("veto_id1");
-                        });
+                    b.ToTable("veto_overrides", "drafts");
                 });
 
             modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Drafts.Draft", b =>
@@ -283,6 +222,10 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ReadableId"));
 
+                    b.Property<DateOnly?>("ReleaseDate")
+                        .HasColumnType("date")
+                        .HasColumnName("release_date");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(255)
@@ -309,6 +252,44 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasName("pk_drafts");
 
                     b.ToTable("drafts", "drafts");
+                });
+
+            modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities.DraftPosition", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("GameBoardId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("game_board_id");
+
+                    b.Property<bool>("HasBonusVeto")
+                        .HasColumnType("boolean")
+                        .HasColumnName("has_bonus_veto");
+
+                    b.Property<bool>("HasBonusVetoOverride")
+                        .HasColumnType("boolean")
+                        .HasColumnName("has_bonus_veto_override");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("name");
+
+                    b.Property<string>("Picks")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("picks");
+
+                    b.HasKey("Id")
+                        .HasName("pk_draft_positions");
+
+                    b.HasIndex("GameBoardId")
+                        .HasDatabaseName("ix_draft_positions_game_board_id");
+
+                    b.ToTable("draft_positions", "drafts");
                 });
 
             modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities.DrafterDraftStats", b =>
@@ -353,21 +334,16 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasDefaultValue(0)
                         .HasColumnName("trivia_vetoes");
 
-                    b.Property<Guid?>("draftId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("draft_id");
-
                     b.HasKey("Id", "DrafterId", "DraftId")
                         .HasName("pk_drafter_draft_stats");
 
-                    b.HasIndex("draftId")
+                    b.HasIndex("DraftId")
                         .HasDatabaseName("ix_drafter_draft_stats_draft_id");
 
-                    b.ToTable("drafter_draft_stats", "drafts", t =>
-                        {
-                            t.Property("draftId")
-                                .HasColumnName("draft_id1");
-                        });
+                    b.HasIndex("DrafterId")
+                        .HasDatabaseName("ix_drafter_draft_stats_drafter_id");
+
+                    b.ToTable("drafter_draft_stats", "drafts");
                 });
 
             modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities.GameBoard", b =>
@@ -380,22 +356,14 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("draft_id");
 
-                    b.Property<Guid?>("draftId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("draft_id");
-
                     b.HasKey("Id")
                         .HasName("pk_game_boards");
 
-                    b.HasIndex("draftId")
+                    b.HasIndex("DraftId")
                         .IsUnique()
                         .HasDatabaseName("ix_game_boards_draft_id");
 
-                    b.ToTable("game_boards", "drafts", t =>
-                        {
-                            t.Property("draftId")
-                                .HasColumnName("draft_id1");
-                        });
+                    b.ToTable("game_boards", "drafts");
                 });
 
             modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities.Host", b =>
@@ -441,7 +409,11 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
-                        .HasColumnName("pickId");
+                        .HasColumnName("id");
+
+                    b.Property<Guid?>("DraftId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("draft_id");
 
                     b.Property<Guid>("DrafterId")
                         .HasColumnType("uuid")
@@ -451,35 +423,29 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("movie_id");
 
-                    b.Property<Guid?>("draftId")
+                    b.Property<Guid?>("VetoId")
                         .HasColumnType("uuid")
-                        .HasColumnName("draft_id");
-
-                    b.Property<Guid?>("drafterId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("drafter_id");
-
-                    b.Property<Guid?>("pickId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("pick_id");
+                        .HasColumnName("veto_id");
 
                     b.HasKey("Id")
                         .HasName("pk_picks");
 
-                    b.HasIndex("draftId")
+                    b.HasIndex("DraftId")
                         .HasDatabaseName("ix_picks_draft_id");
 
-                    b.HasIndex("drafterId")
+                    b.HasIndex("DrafterId")
+                        .IsUnique()
                         .HasDatabaseName("ix_picks_drafter_id");
 
-                    b.HasIndex("pickId")
-                        .HasDatabaseName("ix_picks_pick_id");
+                    b.HasIndex("MovieId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_picks_movie_id");
 
-                    b.ToTable("picks", "drafts", t =>
-                        {
-                            t.Property("drafterId")
-                                .HasColumnName("drafter_id1");
-                        });
+                    b.HasIndex("VetoId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_picks_veto_id");
+
+                    b.ToTable("picks", "drafts");
                 });
 
             modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities.TriviaResult", b =>
@@ -488,7 +454,11 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<Guid>("DraftId")
+                    b.Property<int>("BlessingType")
+                        .HasColumnType("integer")
+                        .HasColumnName("blessing_type");
+
+                    b.Property<Guid?>("DraftId")
                         .HasColumnType("uuid")
                         .HasColumnName("draft_id");
 
@@ -500,64 +470,16 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("position");
 
-                    b.Property<bool>("AwardIsVeto")
-                        .HasColumnType("boolean")
-                        .HasColumnName("award_is_veto");
-
-                    b.Property<Guid?>("draftId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("draft_id");
-
-                    b.HasKey("Id", "DraftId", "DrafterId", "Position")
+                    b.HasKey("Id")
                         .HasName("pk_trivia_results");
 
-                    b.HasIndex("draftId")
+                    b.HasIndex("DraftId")
                         .HasDatabaseName("ix_trivia_results_draft_id");
 
-                    b.ToTable("trivia_results", "drafts", t =>
-                        {
-                            t.Property("draftId")
-                                .HasColumnName("draft_id1");
-                        });
-                });
+                    b.HasIndex("DrafterId")
+                        .HasDatabaseName("ix_trivia_results_drafter_id");
 
-            modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Drafts.ValueObjects.PickAssignment", b =>
-                {
-                    b.Property<Guid>("GameBoardId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("game_board_id");
-
-                    b.Property<int>("Position")
-                        .HasColumnType("integer")
-                        .HasColumnName("position");
-
-                    b.Property<Guid>("DrafterId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("drafter_id");
-
-                    b.Property<bool>("ExtraVeto")
-                        .HasColumnType("boolean")
-                        .HasColumnName("extra_veto");
-
-                    b.Property<bool>("ExtraVetoOverride")
-                        .HasColumnType("boolean")
-                        .HasColumnName("extra_veto_override");
-
-                    b.Property<Guid?>("gameBoardId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("game_board_id");
-
-                    b.HasKey("GameBoardId", "Position")
-                        .HasName("pk_pick_assignments");
-
-                    b.HasIndex("gameBoardId")
-                        .HasDatabaseName("ix_pick_assignments_game_board_id");
-
-                    b.ToTable("pick_assignments", "drafts", t =>
-                        {
-                            t.Property("gameBoardId")
-                                .HasColumnName("game_board_id1");
-                        });
+                    b.ToTable("trivia_results", "drafts");
                 });
 
             modelBuilder.Entity("DraftHost", b =>
@@ -579,22 +501,19 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
 
             modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Drafters.Drafter", b =>
                 {
-                    b.HasOne("ScreenDrafts.Modules.Drafts.Domain.Drafts.Draft", "Draft")
+                    b.HasOne("ScreenDrafts.Modules.Drafts.Domain.Drafts.Draft", null)
                         .WithMany("Drafters")
-                        .HasForeignKey("draftId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
+                        .HasForeignKey("DraftId")
                         .HasConstraintName("fk_drafters_drafts_draft_id");
-
-                    b.Navigation("Draft");
                 });
 
             modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Drafters.Entities.RolloverVeto", b =>
                 {
                     b.HasOne("ScreenDrafts.Modules.Drafts.Domain.Drafters.Drafter", "Drafter")
                         .WithOne("RolloverVeto")
-                        .HasForeignKey("ScreenDrafts.Modules.Drafts.Domain.Drafters.Entities.RolloverVeto", "drafterId")
+                        .HasForeignKey("ScreenDrafts.Modules.Drafts.Domain.Drafters.Entities.RolloverVeto", "DrafterId")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
                         .HasConstraintName("fk_rollover_vetoes_drafters_drafter_id");
 
                     b.Navigation("Drafter");
@@ -604,8 +523,9 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                 {
                     b.HasOne("ScreenDrafts.Modules.Drafts.Domain.Drafters.Drafter", "Drafter")
                         .WithOne("RolloverVetoOverride")
-                        .HasForeignKey("ScreenDrafts.Modules.Drafts.Domain.Drafters.Entities.RolloverVetoOverride", "drafterId")
+                        .HasForeignKey("ScreenDrafts.Modules.Drafts.Domain.Drafters.Entities.RolloverVetoOverride", "DrafterId")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
                         .HasConstraintName("fk_rollover_veto_overrides_drafters_drafter_id");
 
                     b.Navigation("Drafter");
@@ -613,57 +533,69 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
 
             modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Drafters.Entities.Veto", b =>
                 {
-                    b.HasOne("ScreenDrafts.Modules.Drafts.Domain.Drafters.Drafter", "Drafter")
+                    b.HasOne("ScreenDrafts.Modules.Drafts.Domain.Drafters.Drafter", null)
                         .WithMany("Vetoes")
-                        .HasForeignKey("drafterId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasForeignKey("DrafterId")
                         .HasConstraintName("fk_vetoes_drafters_drafter_id");
-
-                    b.HasOne("ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities.Pick", "Pick")
-                        .WithMany()
-                        .HasForeignKey("pickId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_vetoes_picks_pick_id");
-
-                    b.Navigation("Drafter");
-
-                    b.Navigation("Pick");
                 });
 
             modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Drafters.Entities.VetoOverride", b =>
                 {
-                    b.HasOne("ScreenDrafts.Modules.Drafts.Domain.Drafters.Drafter", "Drafter")
+                    b.HasOne("ScreenDrafts.Modules.Drafts.Domain.Drafters.Drafter", null)
                         .WithMany("VetoOverrides")
-                        .HasForeignKey("drafterId")
+                        .HasForeignKey("DrafterId")
                         .HasConstraintName("fk_veto_overrides_drafters_drafter_id");
 
                     b.HasOne("ScreenDrafts.Modules.Drafts.Domain.Drafters.Entities.Veto", "Veto")
                         .WithOne("VetoOverride")
-                        .HasForeignKey("ScreenDrafts.Modules.Drafts.Domain.Drafters.Entities.VetoOverride", "vetoId")
+                        .HasForeignKey("ScreenDrafts.Modules.Drafts.Domain.Drafters.Entities.VetoOverride", "VetoId")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
                         .HasConstraintName("fk_veto_overrides_vetoes_veto_id");
-
-                    b.Navigation("Drafter");
 
                     b.Navigation("Veto");
                 });
 
+            modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities.DraftPosition", b =>
+                {
+                    b.HasOne("ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities.GameBoard", "GameBoard")
+                        .WithMany("DraftPositions")
+                        .HasForeignKey("GameBoardId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_draft_positions_game_boards_game_board_id");
+
+                    b.Navigation("GameBoard");
+                });
+
             modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities.DrafterDraftStats", b =>
                 {
-                    b.HasOne("ScreenDrafts.Modules.Drafts.Domain.Drafts.Draft", null)
+                    b.HasOne("ScreenDrafts.Modules.Drafts.Domain.Drafts.Draft", "Draft")
                         .WithMany("DrafterStats")
-                        .HasForeignKey("draftId")
+                        .HasForeignKey("DraftId")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
                         .HasConstraintName("fk_drafter_draft_stats_drafts_draft_id");
+
+                    b.HasOne("ScreenDrafts.Modules.Drafts.Domain.Drafters.Drafter", "Drafter")
+                        .WithMany("DraftStats")
+                        .HasForeignKey("DrafterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_drafter_draft_stats_drafters_drafter_id");
+
+                    b.Navigation("Draft");
+
+                    b.Navigation("Drafter");
                 });
 
             modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities.GameBoard", b =>
                 {
                     b.HasOne("ScreenDrafts.Modules.Drafts.Domain.Drafts.Draft", "Draft")
                         .WithOne("GameBoard")
-                        .HasForeignKey("ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities.GameBoard", "draftId")
+                        .HasForeignKey("ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities.GameBoard", "DraftId")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
                         .HasConstraintName("fk_game_boards_drafts_draft_id");
 
                     b.Navigation("Draft");
@@ -673,45 +605,59 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                 {
                     b.HasOne("ScreenDrafts.Modules.Drafts.Domain.Drafts.Draft", null)
                         .WithMany("Picks")
-                        .HasForeignKey("draftId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("DraftId")
                         .HasConstraintName("fk_picks_drafts_draft_id");
 
                     b.HasOne("ScreenDrafts.Modules.Drafts.Domain.Drafters.Drafter", "Drafter")
-                        .WithMany()
-                        .HasForeignKey("drafterId")
+                        .WithOne("Pick")
+                        .HasForeignKey("ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities.Pick", "DrafterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
                         .HasConstraintName("fk_picks_drafters_drafter_id");
 
                     b.HasOne("ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities.Movie", "Movie")
-                        .WithMany()
-                        .HasForeignKey("pickId")
-                        .HasConstraintName("fk_picks_movies_pick_id");
+                        .WithOne("Pick")
+                        .HasForeignKey("ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities.Pick", "MovieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_picks_movies_movie_id");
+
+                    b.HasOne("ScreenDrafts.Modules.Drafts.Domain.Drafters.Entities.Veto", "Veto")
+                        .WithOne("Pick")
+                        .HasForeignKey("ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities.Pick", "VetoId")
+                        .HasConstraintName("fk_picks_vetoes_veto_id");
 
                     b.Navigation("Drafter");
 
                     b.Navigation("Movie");
+
+                    b.Navigation("Veto");
                 });
 
             modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities.TriviaResult", b =>
                 {
                     b.HasOne("ScreenDrafts.Modules.Drafts.Domain.Drafts.Draft", null)
                         .WithMany("TriviaResults")
-                        .HasForeignKey("draftId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("DraftId")
                         .HasConstraintName("fk_trivia_results_drafts_draft_id");
-                });
 
-            modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Drafts.ValueObjects.PickAssignment", b =>
-                {
-                    b.HasOne("ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities.GameBoard", null)
-                        .WithMany("PickAssignments")
-                        .HasForeignKey("gameBoardId")
+                    b.HasOne("ScreenDrafts.Modules.Drafts.Domain.Drafters.Drafter", "Drafter")
+                        .WithMany()
+                        .HasForeignKey("DrafterId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .HasConstraintName("fk_pick_assignments_game_boards_game_board_id");
+                        .IsRequired()
+                        .HasConstraintName("fk_trivia_results_drafters_drafter_id");
+
+                    b.Navigation("Drafter");
                 });
 
             modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Drafters.Drafter", b =>
                 {
+                    b.Navigation("DraftStats");
+
+                    b.Navigation("Pick")
+                        .IsRequired();
+
                     b.Navigation("RolloverVeto");
 
                     b.Navigation("RolloverVetoOverride");
@@ -723,6 +669,9 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
 
             modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Drafters.Entities.Veto", b =>
                 {
+                    b.Navigation("Pick")
+                        .IsRequired();
+
                     b.Navigation("VetoOverride")
                         .IsRequired();
                 });
@@ -742,7 +691,12 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
 
             modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities.GameBoard", b =>
                 {
-                    b.Navigation("PickAssignments");
+                    b.Navigation("DraftPositions");
+                });
+
+            modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities.Movie", b =>
+                {
+                    b.Navigation("Pick");
                 });
 #pragma warning restore 612, 618
         }

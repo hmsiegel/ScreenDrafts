@@ -14,5 +14,5 @@ internal static class Tables
   internal const string RolloverVetoOverrides = "rollover_veto_overrides";
   internal const string Movies = "movies";
   internal const string GameBoards = "game_boards";
-  internal const string PickAssignments = "pick_assignments";
+  internal const string DraftPositions = "draft_positions";
 }

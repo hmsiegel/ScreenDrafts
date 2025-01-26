@@ -1,8 +1,4 @@
-﻿using System.Reflection;
-
-using ScreenDrafts.Modules.Drafts.Domain.Drafters.Entities;
-
-namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database;
+﻿namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database;
 
 public sealed class DraftsDbContext(DbContextOptions<DraftsDbContext> options)
   : DbContext(options), IUnitOfWork
@@ -28,6 +24,10 @@ public sealed class DraftsDbContext(DbContextOptions<DraftsDbContext> options)
   internal DbSet<RolloverVetoOverride> RolloverVetoOverrides { get; set; }
 
   internal DbSet<Movie> Movies { get; set; }
+
+  internal DbSet<GameBoard> GameBoards { get; set; }
+
+  internal DbSet<DraftPosition> DraftPositions { get; set; }
 
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -20,14 +20,21 @@ public sealed class Pick
   }
 
   public Guid Id { get; init; }
+
   public int Position { get; }
 
+  public MovieId MovieId { get; } = default!;
+
   public Movie Movie { get; } = default!;
-  public Guid MovieId { get; private set; } = Guid.Empty;
+
+  public VetoId? VetoId { get; private set; } = default!;
+
+  public Veto? Veto { get; private set; } = default!;
+
+  public DrafterId DrafterId { get; } = default!;
 
   public Drafter Drafter { get; } = default!;
 
-  public Guid DrafterId { get; private set; } = Guid.Empty;
 
   public static Result<Pick> Create(
     int position,

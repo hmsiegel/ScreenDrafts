@@ -11,4 +11,5 @@ public sealed class Movie : Entity<MovieId>
   }
 
   public MovieTitle MovieTitle { get; private set; }
+  public Pick? Pick { get; private set; } = default!;
 }

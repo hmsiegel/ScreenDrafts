@@ -145,4 +145,9 @@ public static class DraftErrors {
   public static readonly SDError InvalidPickPosition = SDError.Problem(
     "Drafts.InvalidPickPosition",
     "Invalid pick position.");
+
+  public static SDError MovieNotFound(Guid movieId) =>
+    SDError.NotFound(
+      "Drafts.MovieNotFound",
+      $"Movie with id {movieId} was not found.");
 }

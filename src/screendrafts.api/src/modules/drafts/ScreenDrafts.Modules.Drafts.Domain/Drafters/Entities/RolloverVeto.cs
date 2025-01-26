@@ -3,7 +3,7 @@
 public sealed class RolloverVeto : Entity<RolloverVetoId>
 {
   private RolloverVeto(
-    Guid drafterId,
+    DrafterId drafterId,
     Guid fromDraftId,
     RolloverVetoId? id = null)
   {
@@ -17,7 +17,7 @@ public sealed class RolloverVeto : Entity<RolloverVetoId>
   {
   }
 
-  public Guid DrafterId { get; private set; }
+  public DrafterId DrafterId { get; private set; } = default!;
 
   public Drafter Drafter { get; private set; } = default!;
 
@@ -27,9 +27,11 @@ public sealed class RolloverVeto : Entity<RolloverVetoId>
 
   public bool IsUsed { get; private set; }
 
-  public static RolloverVeto Create(Guid drafterId, Guid fromDraftId)
+  public static RolloverVeto Create(Drafter drafter,Guid fromDraftId)
   {
-    var rolloverVeto = new RolloverVeto(drafterId, fromDraftId);
+    ArgumentNullException.ThrowIfNull(drafter);
+
+    var rolloverVeto = new RolloverVeto(drafter.Id, fromDraftId);
 
     rolloverVeto.Raise(new RolloverVetoCreatedDomainEvent(rolloverVeto.Id.Value));
 

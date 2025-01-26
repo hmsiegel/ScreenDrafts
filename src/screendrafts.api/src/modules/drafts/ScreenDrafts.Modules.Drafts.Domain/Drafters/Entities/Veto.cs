@@ -1,44 +1,34 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafters.Entities;
+﻿using ScreenDrafts.Modules.Drafts.Domain.Drafters.Errors;
+
+namespace ScreenDrafts.Modules.Drafts.Domain.Drafters.Entities;
 
 public sealed class Veto : Entity<VetoId>
 {
-
-
   private Veto(
     VetoId id,
-    Guid drafterId,
-    Guid pickId)
+    Pick pick)
     : base(id)
   {
     IsUsed = false;
-    DrafterId = drafterId;
-    PickId = pickId;
+    Pick = pick;
   }
 
   private Veto()
   {
   }
 
-  public Guid DrafterId { get; private set; }
-
-  public Drafter Drafter { get; private set; } = default!;
-
   public VetoOverride VetoOverride { get; private set; } = default!;
-
-  public Guid PickId { get; private set; }
 
   public Pick Pick { get; private set; } = default!;
 
   public bool IsUsed { get; private set; }
 
   public static Veto Create(
-    Guid drafterId,
-    Guid pickId,
+    Pick pick,
     VetoId? id = null)
   {
     return new Veto(
-      drafterId: drafterId,
-      pickId: pickId,
+      pick: pick,
       id: id ?? VetoId.CreateUnique());
   }
 
