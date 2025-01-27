@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Presentation.Drafts;
 
-public class GetDraftEndpoint(ISender sender) : EndpointWithoutRequest<DraftResponse>
+internal sealed class GetDraft(ISender sender) : EndpointWithoutRequest<DraftResponse>
 {
   private readonly ISender _sender = sender;
 

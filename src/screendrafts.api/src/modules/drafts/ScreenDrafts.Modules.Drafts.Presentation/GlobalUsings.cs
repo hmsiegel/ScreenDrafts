@@ -6,6 +6,7 @@ global using MediatR;
 
 global using Microsoft.AspNetCore.Http;
 
+global using ScreenDrafts.Common.Domain;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.CreateDraft;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.CreateGameBoard;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Queries.GetDraft;

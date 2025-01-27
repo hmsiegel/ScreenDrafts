@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Presentation.Drafts;
 
-public class CreateGameBoardEndpoint(ISender sender) : Endpoint<GameBoardRequest, Guid>
+internal sealed class CreateGameBoard(ISender sender) : Endpoint<GameBoardRequest, Guid>
 {
   private readonly ISender _sender = sender;
 
