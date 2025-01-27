@@ -20,11 +20,19 @@ builder.Services.AddFastEndpoints(opt =>
 });
 
 builder.Services.AddApplication(applicationAssembles);
+
+var databaseConnectionString = builder.Configuration.GetConnectionString("Database")!;
+var redisConnectionString = builder.Configuration.GetConnectionString("Cache")!;
+
 builder.Services.AddInfrastructure(
-  builder.Configuration.GetConnectionString("Database")!,
-  builder.Configuration.GetConnectionString("Cache")!);
+  databaseConnectionString,
+  redisConnectionString);
 
 builder.Configuration.AddModuleConfiguration(["drafts"]);
+
+builder.Services.AddHealthChecks()
+  .AddNpgSql(databaseConnectionString)
+  .AddRedis(redisConnectionString);
 
 builder.Services.AddDraftsModule(builder.Configuration);
 
@@ -39,6 +47,11 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseFastEndpoints();
+
+app.MapHealthChecks("health", new HealthCheckOptions
+{
+  ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
 
 app.UseSerilogRequestLogging();
 

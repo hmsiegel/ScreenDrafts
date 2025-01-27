@@ -2,7 +2,10 @@
 
 global using FastEndpoints;
 
+global using HealthChecks.UI.Client;
+
 global using Microsoft.AspNetCore.Diagnostics;
+global using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 global using Microsoft.EntityFrameworkCore;
 
 global using Scalar.AspNetCore;
