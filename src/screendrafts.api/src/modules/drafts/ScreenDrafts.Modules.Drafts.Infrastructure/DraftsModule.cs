@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Infrastructure;
+﻿using ScreenDrafts.Common.Infrastructure.Interceptors;
+
+namespace ScreenDrafts.Modules.Drafts.Infrastructure;
 
 public static class DraftsModule
 {
@@ -16,12 +18,13 @@ public static class DraftsModule
   {
     var connectionString = configuration.GetConnectionString("Database")!;
 
-    services.AddDbContext<DraftsDbContext>(options =>
+    services.AddDbContext<DraftsDbContext>((sp, options) =>
       options.UseNpgsql(
         connectionString,
         npgsqlOptions =>
         npgsqlOptions.MigrationsHistoryTable(HistoryRepository.DefaultTableName, Schemas.Drafts))
-      .UseSnakeCaseNamingConvention());
+      .UseSnakeCaseNamingConvention()
+      .AddInterceptors(sp.GetRequiredService<PublishDomainEventsInterceptor>()));
 
     services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<DraftsDbContext>());
 
