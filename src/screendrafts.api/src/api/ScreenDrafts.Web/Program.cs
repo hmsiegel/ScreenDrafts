@@ -20,7 +20,9 @@ builder.Services.AddFastEndpoints(opt =>
 });
 
 builder.Services.AddApplication(applicationAssembles);
-builder.Services.AddInfrastructure(builder.Configuration.GetConnectionString("Database")!);
+builder.Services.AddInfrastructure(
+  builder.Configuration.GetConnectionString("Database")!,
+  builder.Configuration.GetConnectionString("Cache")!);
 
 builder.Configuration.AddModuleConfiguration(["drafts"]);
 
