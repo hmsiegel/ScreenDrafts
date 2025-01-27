@@ -8,6 +8,11 @@ Assembly[] applicationAssembles = [
   ScreenDrafts.Modules.Drafts.Application.AssemblyReference.Assembly
   ];
 
+builder.Host.UseSerilog((context, config) => config.ReadFrom.Configuration(context.Configuration));
+
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
+
 builder.Services.AddOpenApi();
 builder.Services.AddFastEndpoints(opt =>
 {
@@ -15,7 +20,19 @@ builder.Services.AddFastEndpoints(opt =>
 });
 
 builder.Services.AddApplication(applicationAssembles);
-builder.Services.AddInfrastructure(builder.Configuration.GetConnectionString("Database")!);
+
+var databaseConnectionString = builder.Configuration.GetConnectionString("Database")!;
+var redisConnectionString = builder.Configuration.GetConnectionString("Cache")!;
+
+builder.Services.AddInfrastructure(
+  databaseConnectionString,
+  redisConnectionString);
+
+builder.Configuration.AddModuleConfiguration(["drafts"]);
+
+builder.Services.AddHealthChecks()
+  .AddNpgSql(databaseConnectionString)
+  .AddRedis(redisConnectionString);
 
 builder.Services.AddDraftsModule(builder.Configuration);
 
@@ -30,6 +47,15 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseFastEndpoints();
+
+app.MapHealthChecks("health", new HealthCheckOptions
+{
+  ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
+
+app.UseSerilogRequestLogging();
+
+app.UseExceptionHandler();
 
 await app.RunAsync();
 

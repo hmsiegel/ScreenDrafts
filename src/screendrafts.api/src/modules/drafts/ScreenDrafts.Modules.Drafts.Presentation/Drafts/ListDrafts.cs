@@ -1,8 +1,6 @@
-﻿using ScreenDrafts.Common.Domain;
+﻿namespace ScreenDrafts.Modules.Drafts.Presentation.Drafts;
 
-namespace ScreenDrafts.Modules.Drafts.Presentation.Drafts;
-
-public class ListDraftsEndpoint(ISender sender) : EndpointWithoutRequest<Result<List<DraftResponse>>>
+internal sealed class ListDrafts(ISender sender) : EndpointWithoutRequest<Result<List<DraftResponse>>>
 {
   private readonly ISender _sender = sender;
 
