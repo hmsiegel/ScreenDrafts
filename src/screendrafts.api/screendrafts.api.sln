@@ -43,7 +43,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScreenDrafts.Modules.Drafts
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScreenDrafts.Modules.Drafts.Infrastructure", "src\modules\drafts\ScreenDrafts.Modules.Drafts.Infrastructure\ScreenDrafts.Modules.Drafts.Infrastructure.csproj", "{3B232DC9-0E08-4F7A-8525-3215044DF327}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScreenDrafts.Modules.Drafts.Integration", "src\modules\drafts\ScreenDrafts.Modules.Drafts.Integration\ScreenDrafts.Modules.Drafts.Integration.csproj", "{8B4ADDE5-88B4-46EA-A6C3-43C381BA06C4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScreenDrafts.Modules.Drafts.IntegrationEvents", "src\modules\drafts\ScreenDrafts.Modules.Drafts.IntegrationEvents\ScreenDrafts.Modules.Drafts.IntegrationEvents.csproj", "{8B4ADDE5-88B4-46EA-A6C3-43C381BA06C4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScreenDrafts.Modules.Drafts.Presentation", "src\modules\drafts\ScreenDrafts.Modules.Drafts.Presentation\ScreenDrafts.Modules.Drafts.Presentation.csproj", "{4A6EAAA9-0114-495E-ABBB-172A2BA16CAA}"
 EndProject
@@ -56,6 +56,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Directory.Build.targets = Directory.Build.targets
 		Directory.Packages.props = Directory.Packages.props
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "movies", "movies", "{E75B37D5-DA66-4F50-8AA3-E048B202E88D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "communications", "communications", "{981082CB-752A-4FC4-9EFA-31C444DB20CB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "reporting", "reporting", "{08F35243-3F56-408F-A78D-B8C0533C511A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -284,5 +290,8 @@ Global
 		{3B232DC9-0E08-4F7A-8525-3215044DF327} = {C7AB4FC4-C6C2-4B45-AF5A-4FCE62B9604A}
 		{8B4ADDE5-88B4-46EA-A6C3-43C381BA06C4} = {C7AB4FC4-C6C2-4B45-AF5A-4FCE62B9604A}
 		{4A6EAAA9-0114-495E-ABBB-172A2BA16CAA} = {C7AB4FC4-C6C2-4B45-AF5A-4FCE62B9604A}
+		{E75B37D5-DA66-4F50-8AA3-E048B202E88D} = {81AF7435-4DB7-45A2-B079-F3BA4EBBC850}
+		{981082CB-752A-4FC4-9EFA-31C444DB20CB} = {81AF7435-4DB7-45A2-B079-F3BA4EBBC850}
+		{08F35243-3F56-408F-A78D-B8C0533C511A} = {81AF7435-4DB7-45A2-B079-F3BA4EBBC850}
 	EndGlobalSection
 EndGlobal

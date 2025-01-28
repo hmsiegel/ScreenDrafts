@@ -15,7 +15,6 @@ global using ScreenDrafts.Common.Infrastructure;
 global using ScreenDrafts.Modules.Drafts.Infrastructure;
 global using ScreenDrafts.Modules.Drafts.Infrastructure.Database;
 global using ScreenDrafts.Modules.Users.Infrastructure;
-global using ScreenDrafts.Modules.Users.Infrastructure.Database;
 global using ScreenDrafts.Web.Extensions;
 global using ScreenDrafts.Web.Logging;
 global using ScreenDrafts.Web.Middleware;
