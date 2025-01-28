@@ -12,9 +12,17 @@ global using Scalar.AspNetCore;
 
 global using ScreenDrafts.Common.Application;
 global using ScreenDrafts.Common.Infrastructure;
+global using ScreenDrafts.Modules.Administration.Infrastructure;
+global using ScreenDrafts.Modules.Audit.Infrastructure;
+global using ScreenDrafts.Modules.Communications.Infrastructure;
 global using ScreenDrafts.Modules.Drafts.Infrastructure;
 global using ScreenDrafts.Modules.Drafts.Infrastructure.Database;
+global using ScreenDrafts.Modules.Integrations.Infrastructure;
+global using ScreenDrafts.Modules.Movies.Infrastructure;
+global using ScreenDrafts.Modules.RealTimeUpdates.Infrastructure;
+global using ScreenDrafts.Modules.Reporting.Infrastructure;
 global using ScreenDrafts.Modules.Users.Infrastructure;
+global using ScreenDrafts.Modules.Users.Infrastructure.Database;
 global using ScreenDrafts.Web.Extensions;
 global using ScreenDrafts.Web.Logging;
 global using ScreenDrafts.Web.Middleware;
