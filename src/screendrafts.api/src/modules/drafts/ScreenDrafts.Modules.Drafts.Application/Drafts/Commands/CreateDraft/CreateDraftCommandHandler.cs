@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Modules.Drafts.Domain.Drafts.Repositories;
-
-namespace ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.CreateDraft;
+﻿namespace ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.CreateDraft;
 
 internal sealed class CreateDraftCommandHandler(IDraftsRepository draftsRepository, IUnitOfWork unitOfWork)
   : ICommandHandler<CreateDraftCommand, Guid>
@@ -20,7 +18,7 @@ internal sealed class CreateDraftCommandHandler(IDraftsRepository draftsReposito
 
     if (result.IsFailure)
     {
-      return Result.Failure<Guid>(result.Error);
+      return Result.Failure<Guid>(result.Error!);
     }
 
     var draft = result.Value;

@@ -2,7 +2,7 @@
 
 public sealed record ValidationError : SDError
 {
-    public ValidationError(IReadOnlyList<SDError> errors)
+    public ValidationError(SDError[] errors)
         : base(
             "General.Validation",
             "One or more validation errors occurred",
@@ -11,8 +11,8 @@ public sealed record ValidationError : SDError
         Errors = errors;
     }
 
-    public IReadOnlyList<SDError> Errors { get; }
+    public SDError[] Errors { get; }
 
     public static ValidationError FromResults(IEnumerable<Result> results) =>
-        new(results.Where(r => r.IsFailure).Select(r => r.Error).ToList());
+        new(results.Where(r => r.IsFailure).Select(r => r.Errors[0]).ToArray());
 }

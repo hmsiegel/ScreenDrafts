@@ -206,6 +206,9 @@ dotnet_diagnostic.CA1000.severity = none
 # CA1711: Identifiers should not have incorrect suffix
 dotnet_diagnostic.CA1711.severity = none
 
+# CA1819: Properties should not return arrays
+dotnet_diagnostic.CA1819.severity = none
+
 [*.vb]
 # Modifier preferences
 visual_basic_preferred_modifier_order = Partial,Default,Private,Protected,Public,Friend,NotOverridable,Overridable,MustOverride,Overloads,Overrides,MustInherit,NotInheritable,Static,Shared,Shadows,ReadOnly,WriteOnly,Dim,Const,WithEvents,Widening,Narrowing,Custom,Async:suggestion

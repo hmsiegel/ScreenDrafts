@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Common.Infrastructure.Interceptors;
-
-namespace ScreenDrafts.Modules.Drafts.Infrastructure;
+﻿namespace ScreenDrafts.Modules.Drafts.Infrastructure;
 
 public static class DraftsModule
 {

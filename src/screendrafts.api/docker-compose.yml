@@ -33,9 +33,9 @@ services:
       - 8081:80
 
   screendrafts.redis:
-   image: redis:latest
-   container_name: ScreenDrafts.Redis
-   restart: always
-   ports:
-     - 6379:6379 
+    image: redis:latest
+    container_name: ScreenDrafts.Redis
+    restart: always
+    ports:
+      - 6379:6379 
   

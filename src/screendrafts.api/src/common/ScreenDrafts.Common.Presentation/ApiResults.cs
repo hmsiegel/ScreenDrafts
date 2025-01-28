@@ -12,9 +12,9 @@ public static class ApiResults
     }
 
     return Results.Problem(
-        title: GetTitle(result.Error),
-        detail: GetDetail(result.Error),
-        type: GetType(result.Error.Type),
+        title: GetTitle(result.Error!),
+        detail: GetDetail(result.Error!),
+        type: GetType(result.Error!.Type),
         statusCode: GetStatusCode(result.Error.Type),
         extensions: GetErrors(result));
 
