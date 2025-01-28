@@ -24,7 +24,14 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\modules\drafts\ScreenDrafts.Modules.Drafts.Infrastructure\ScreenDrafts.Modules.Drafts.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\modules\movies\ScreenDrafts.Modules.Movies.Infrastructure\ScreenDrafts.Modules.Movies.Infrastructure.csproj" />
     <ProjectReference Include="..\..\modules\users\ScreenDrafts.Modules.Users.Infrastructure\ScreenDrafts.Modules.Users.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\modules\administration\ScreenDrafts.Modules.Administration.Infrastructure\ScreenDrafts.Modules.Administration.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\modules\audit\ScreenDrafts.Modules.Audit.Infrastructure\ScreenDrafts.Modules.Audit.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\modules\communications\ScreenDrafts.Modules.Communications.Infrastructure\ScreenDrafts.Modules.Communications.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\modules\integrations\ScreenDrafts.Modules.Integrations.Infrastructure\ScreenDrafts.Modules.Integrations.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\modules\real-time-updates\ScreenDrafts.Modules.RealTimeUpdates.Infrastructure\ScreenDrafts.Modules.RealTimeUpdates.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\modules\reporting\ScreenDrafts.Modules.Reporting.Infrastructure\ScreenDrafts.Modules.Reporting.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
