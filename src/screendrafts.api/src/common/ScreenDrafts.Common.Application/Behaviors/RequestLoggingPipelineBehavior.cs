@@ -28,7 +28,7 @@ internal sealed class RequestLoggingPipelineBehavior<TRequest, TResponse>
       }
       else
       {
-        using (LogContext.PushProperty("Error", result.Error, true))
+        using (LogContext.PushProperty("Error", result.Errors, true))
         {
           BehaviorMessages.RequestProcessedWithError(_logger, requsestName);
         }

@@ -13,6 +13,7 @@ global using Microsoft.Extensions.DependencyInjection;
 global using Npgsql;
 
 global using ScreenDrafts.Common.Application.Data;
+global using ScreenDrafts.Common.Infrastructure.Interceptors;
 global using ScreenDrafts.Modules.Drafts.Application.Abstractions.Data;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafters;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafters.Entities;
