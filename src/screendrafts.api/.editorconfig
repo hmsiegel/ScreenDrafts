@@ -193,7 +193,6 @@ dotnet_diagnostic.CA1812.severity = none
 # CA1040: Avoid empty interfaces
 dotnet_diagnostic.CA1040.severity = none
 
-
 # S2094: Classes should not be empty
 dotnet_diagnostic.S2094.severity = none
 
@@ -208,6 +207,12 @@ dotnet_diagnostic.CA1711.severity = none
 
 # CA1819: Properties should not return arrays
 dotnet_diagnostic.CA1819.severity = none
+
+# CA1707: Identifiers should not contain underscores
+dotnet_diagnostic.CA1707.severity = none
+
+# CA1515: Override method should call base method
+dotnet_diagnostic.CA1515.severity = none
 
 [*.vb]
 # Modifier preferences
