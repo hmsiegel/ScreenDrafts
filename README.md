@@ -1,6 +1,8 @@
 
 ![Logo](./res/screen-drafts-small.jpg)
 
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/hmsiegel/ScreenDrafts/build.yml)
+
 
 # Screen Drafts
 

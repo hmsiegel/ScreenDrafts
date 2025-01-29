@@ -43,7 +43,7 @@ public sealed class User : AggrgateRoot<UserId, Guid>
       middleName: middleName,
       id: id ?? UserId.CreateUnique());
 
-    user.Raise(new UserCreatedDomainEvent(user.Id.Value));
+    user.Raise(new UserRegisteredDomainEvent(user.Id.Value));
 
     return user;
   }
@@ -53,6 +53,9 @@ public sealed class User : AggrgateRoot<UserId, Guid>
     LastName lastName,
     string? middleName = null)
   {
+    ArgumentNullException.ThrowIfNull(firstName);
+    ArgumentNullException.ThrowIfNull(lastName);
+
     if (FirstName == firstName && LastName == lastName && MiddleName == middleName)
     {
       return;
@@ -62,6 +65,9 @@ public sealed class User : AggrgateRoot<UserId, Guid>
     LastName = lastName;
     MiddleName = middleName;
 
-    Raise(new UserUpdatedDomainEvent(Id.Value));
+    Raise(new UserProfileUpdatedDomainEvent(
+      Id.Value,
+      firstName.Value!,
+      lastName.Value!));
   }
 }

@@ -2,7 +2,7 @@
 
 public sealed class Movie : Entity<MovieId>
 {
-  public Movie(
+  private Movie(
     MovieTitle movieTitle,
     MovieId? id = null) 
     : base(id ?? MovieId.CreateUnique())
@@ -10,6 +10,24 @@ public sealed class Movie : Entity<MovieId>
     MovieTitle = movieTitle;
   }
 
-  public MovieTitle MovieTitle { get; private set; }
+  private Movie()
+  {
+  }
+
+  public MovieTitle MovieTitle { get; private set; } = default!;
   public Pick? Pick { get; private set; } = default!;
+
+  public static Result<Movie> Create(
+    MovieTitle movieTitle,
+    MovieId? id = null)
+  {
+    if (movieTitle is null)
+    {
+      return Result.Failure<Movie>(MovieErrors.InvalidMovieTitle);
+    }
+    var movie = new Movie(
+      movieTitle: movieTitle,
+      id: id);
+    return movie;
+  }
 }
