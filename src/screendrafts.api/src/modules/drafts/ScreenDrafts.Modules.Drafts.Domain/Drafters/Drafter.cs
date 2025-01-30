@@ -1,4 +1,5 @@
 ﻿using ScreenDrafts.Modules.Drafts.Domain.Drafters.Errors;
+using ScreenDrafts.Modules.Drafts.Domain.Drafts;
 
 namespace ScreenDrafts.Modules.Drafts.Domain.Drafters;
 
@@ -86,5 +87,15 @@ public sealed class Drafter : AggrgateRoot<DrafterId, Guid>
       return Result.Failure(DrafterErrors.RolloverVetoOverrideAlreadyExists);
     }
     return Result.Success();
+  }
+
+  public void AddDraftStats(Draft draft)
+  {
+    _draftStats.Add(DrafterDraftStats.Create(this, draft));
+  }
+
+  public void SetDrafterName(string firstName, string lastName, string? middleName)
+  {
+    Name = $"{firstName} {middleName} {lastName}";
   }
 }

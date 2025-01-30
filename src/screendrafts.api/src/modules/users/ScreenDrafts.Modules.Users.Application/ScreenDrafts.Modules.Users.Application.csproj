@@ -5,5 +5,6 @@
   <ItemGroup>
     <ProjectReference Include="..\ScreenDrafts.Modules.Users.Domain\ScreenDrafts.Modules.Users.Domain.csproj" />
     <ProjectReference Include="..\..\..\common\ScreenDrafts.Common.Application\ScreenDrafts.Common.Application.csproj" />
+    <ProjectReference Include="..\ScreenDrafts.Modules.Users.IntegrationEvents\ScreenDrafts.Modules.Users.IntegrationEvents.csproj" />
   </ItemGroup>
 </Project>

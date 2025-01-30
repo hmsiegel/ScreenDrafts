@@ -1,16 +1,15 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities;
 
-public sealed class Host : Entity
+public sealed class Host : Entity<HostId>
 {
   private readonly List<Draft> _hostedDrafts = [];
 
   private Host(
-    Guid id,
     Guid userId,
-    string hostName)
-    : base(id)
+    string hostName,
+    HostId? id = null)
+    : base(id ?? HostId.CreateUnique())
   {
-    Id = id;
     UserId = userId;
     HostName = hostName;
   }
@@ -26,9 +25,9 @@ public sealed class Host : Entity
   public IReadOnlyCollection<Draft> HostedDrafts => _hostedDrafts.AsReadOnly();
 
   public static Result<Host> Create(
-    Guid id,
     Guid userId,
-    string hostName)
+    string hostName,
+    HostId? id = null)
   {
     if (string.IsNullOrWhiteSpace(hostName))
     {
@@ -45,5 +44,14 @@ public sealed class Host : Entity
   {
     _hostedDrafts.Add(draft);
   }
-}
 
+  public void RemoveDraft(Draft draft)
+  {
+    _hostedDrafts.Remove(draft);
+  }
+
+  public void UpdateHostName(string firstName, string lastName, string? middleName = null)
+  {
+    HostName = $"{firstName} {middleName} {lastName}";
+  }
+}

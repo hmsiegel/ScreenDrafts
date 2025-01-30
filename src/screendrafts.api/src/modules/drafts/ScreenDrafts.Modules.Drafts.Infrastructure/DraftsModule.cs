@@ -12,6 +12,13 @@ public static class DraftsModule
     return services;
   }
 
+  public static void ConfigureConsumers(IRegistrationConfigurator registrationConfigurator)
+  {
+    ArgumentNullException.ThrowIfNull(registrationConfigurator);
+
+    registrationConfigurator.AddConsumer<UserRegisteredIntegrationEventConsumer>();
+  }
+
   private static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
   {
     var connectionString = configuration.GetConnectionString("Database")!;
