@@ -175,14 +175,14 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
 
     if (_hosts.Any(h => h.Id == host.Id))
     {
-      return Result.Failure(DraftErrors.HostAlreadyAdded(host.Id));
+      return Result.Failure(DraftErrors.HostAlreadyAdded(host.Id.Value));
     }
 
     _hosts.Add(host);
 
     UpdatedAtUtc = DateTime.UtcNow;
 
-    Raise(new HostAddedDomainEvent(Id.Value, host.Id));
+    Raise(new HostAddedDomainEvent(Id.Value, host.Id.Value));
 
     return Result.Success();
   }
