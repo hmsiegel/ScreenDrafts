@@ -4,13 +4,14 @@ public static class InfrastructureConfiguration
 {
   public static IServiceCollection AddInfrastructure(
       this IServiceCollection services,
+      Action<IRegistrationConfigurator>[] moduleConfigureConsumers,
       string databaseConnectionString,
       string redisConnectionString)
   {
     var npgsqlDataSource = new NpgsqlDataSourceBuilder(databaseConnectionString).Build();
     services.TryAddSingleton(npgsqlDataSource);
 
-    services.AddScoped<IDbConnectionFactory, DbConnectionFactory>();
+    services.TryAddScoped<IDbConnectionFactory, DbConnectionFactory>();
 
     services.TryAddSingleton<PublishDomainEventsInterceptor>();
 
@@ -26,7 +27,24 @@ public static class InfrastructureConfiguration
     services.AddStackExchangeRedisCache(opt =>
       opt.ConnectionMultiplexerFactory = () => Task.FromResult(connectionMultiplexer));
 
-    services.AddScoped<ICacheService, CacheService>();
+    services.TryAddSingleton<ICacheService, CacheService>();
+
+    services.TryAddSingleton<IEventBus, EventBus.EventBus>();
+
+    services.AddMassTransit(config =>
+    {
+      foreach (var configureConsumer in moduleConfigureConsumers)
+      {
+        configureConsumer(config);
+      }
+
+      config.SetKebabCaseEndpointNameFormatter();
+
+      config.UsingInMemory((context, cfg) =>
+      {
+        cfg.ConfigureEndpoints(context);
+      });
+    });
 
     return services;
   }

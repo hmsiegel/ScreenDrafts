@@ -9,7 +9,10 @@ internal sealed class HostConfiguration : IEntityTypeConfiguration<Host>
     builder.HasKey(x => x.Id);
 
     builder.Property(x => x.Id)
-      .ValueGeneratedNever();
+      .ValueGeneratedNever()
+      .HasConversion(
+      h => h.Value,
+      value => HostId.Create(value));
 
     builder.HasMany(h => h.HostedDrafts)
       .WithMany(d => d.Hosts);

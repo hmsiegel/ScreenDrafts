@@ -2,6 +2,8 @@
 global using System.Data.Common;
 global using System.Reflection;
 
+global using MassTransit;
+
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.EntityFrameworkCore.ChangeTracking;
 global using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -31,5 +33,6 @@ global using ScreenDrafts.Modules.Drafts.Infrastructure.GameBoards;
 global using ScreenDrafts.Modules.Drafts.Infrastructure.Hosts;
 global using ScreenDrafts.Modules.Drafts.Infrastructure.Picks;
 global using ScreenDrafts.Modules.Drafts.Infrastructure.Vetoes;
+global using ScreenDrafts.Modules.Drafts.Presentation.Drafters;
 
 global using SmartEnum.EFCore;

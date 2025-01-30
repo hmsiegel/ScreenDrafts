@@ -451,5 +451,16 @@ FodyWeavers.xsd
 ### VisualStudio Patch ###
 # Additional files built by Visual Studio
 
+# Development.json files
+
+
 # End of https://www.toptal.com/developers/gitignore/api/nextjs,visualstudiocode,visualstudio
-;
+/src/screendrafts.api/src/api/ScreenDrafts.Web/appsettings.Development.json
+/src/screendrafts.api/src/api/ScreenDrafts.Web/modules.administration.Development.json
+/src/screendrafts.api/src/api/ScreenDrafts.Web/modules.communications.Development.json
+/src/screendrafts.api/src/api/ScreenDrafts.Web/modules.drafts.Development.json
+/src/screendrafts.api/src/api/ScreenDrafts.Web/modules.integrations.Development.json
+/src/screendrafts.api/src/api/ScreenDrafts.Web/modules.movies.Development.json
+/src/screendrafts.api/src/api/ScreenDrafts.Web/modules.realtimeupdates.Development.json
+/src/screendrafts.api/src/api/ScreenDrafts.Web/modules.reporting.Development.json
+/src/screendrafts.api/src/api/ScreenDrafts.Web/modules.users.Development.json
