@@ -8,7 +8,7 @@ internal sealed class CreateDraft(ISender sender) : Endpoint<DraftRequest, Guid>
   {
     Post("/drafts");
     Description(x => x.WithTags(Presentation.Tags.Drafts));
-    AllowAnonymous();
+    Policies(Presentation.Permissions.CreateDraft);
   }
 
   public override async Task HandleAsync(DraftRequest req, CancellationToken ct)

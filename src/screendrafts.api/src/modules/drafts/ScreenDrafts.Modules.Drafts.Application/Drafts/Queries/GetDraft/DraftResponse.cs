@@ -7,4 +7,18 @@ public sealed record DraftResponse(
     int TotalPicks,
     int TotalDrafters,
     int TotalHosts,
-    string DraftStatus);
+    string DraftStatus)
+{
+  public DraftResponse()
+    : this(
+        Guid.Empty,
+        string.Empty,
+        string.Empty,
+        default,
+        default,
+        default,
+        string.Empty)
+  {
+
+  }
+}

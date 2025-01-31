@@ -23,6 +23,7 @@ global using ScreenDrafts.Modules.RealTimeUpdates.Infrastructure;
 global using ScreenDrafts.Modules.Reporting.Infrastructure;
 global using ScreenDrafts.Modules.Users.Infrastructure;
 global using ScreenDrafts.Modules.Users.Infrastructure.Database;
+global using ScreenDrafts.Web.Abstractions;
 global using ScreenDrafts.Web.Extensions;
 global using ScreenDrafts.Web.Logging;
 global using ScreenDrafts.Web.Middleware;

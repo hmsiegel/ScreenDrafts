@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Web.Abstractions;
-
-var builder = WebApplication.CreateBuilder(args);
+﻿var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog((context, config) =>
   config.ReadFrom.Configuration(context.Configuration));
@@ -9,10 +7,6 @@ builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 
 builder.Services.AddOpenApi();
-builder.Services.AddFastEndpoints(opt =>
-{
-  opt.Assemblies = AssemblyReferences.PresentationAssemblies;
-});
 
 var databaseConnectionString = builder.Configuration.GetConnectionString("Database")!;
 var redisConnectionString = builder.Configuration.GetConnectionString("Cache")!;
@@ -23,12 +17,17 @@ builder.Services.AddInfrastructure(
   databaseConnectionString,
   redisConnectionString);
 
-builder.Configuration.AddModuleConfiguration(ModuleReferences.Modules);
+builder.Services.AddFastEndpoints(opt =>
+{
+  opt.Assemblies = AssemblyReferences.PresentationAssemblies;
+});
 
+builder.Configuration.AddModuleConfiguration(ModuleReferences.Modules);
 
 builder.Services.AddHealthChecks()
   .AddNpgSql(databaseConnectionString)
-  .AddRedis(redisConnectionString);
+  .AddRedis(redisConnectionString)
+  .AddUrlGroup(new Uri(builder.Configuration.GetValue<string>("KeyCloak:HealthUrl")!), HttpMethod.Get, "keycloak");
 
 ModuleServiceExtensions.AddModules(builder.Services, builder.Configuration);
 
@@ -42,7 +41,6 @@ if (app.Environment.IsDevelopment())
   app.ApplyMigrations();
 }
 
-app.UseFastEndpoints();
 
 app.MapHealthChecks("health", new HealthCheckOptions
 {
@@ -52,6 +50,10 @@ app.MapHealthChecks("health", new HealthCheckOptions
 app.UseSerilogRequestLogging();
 
 app.UseExceptionHandler();
+
+app.UseAuthentication();
+app.UseAuthorization();
+app.UseFastEndpoints();
 
 await app.RunAsync();
 

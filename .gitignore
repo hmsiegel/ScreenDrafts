@@ -464,3 +464,4 @@ FodyWeavers.xsd
 /src/screendrafts.api/src/api/ScreenDrafts.Web/modules.realtimeupdates.Development.json
 /src/screendrafts.api/src/api/ScreenDrafts.Web/modules.reporting.Development.json
 /src/screendrafts.api/src/api/ScreenDrafts.Web/modules.users.Development.json
+/src/screendrafts.api/.files/screendrafts.realm-export.json

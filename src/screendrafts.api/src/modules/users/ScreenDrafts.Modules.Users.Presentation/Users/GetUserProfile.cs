@@ -5,14 +5,14 @@ internal sealed class GetUserProfile(ISender sender) : EndpointWithoutRequest<Us
 
   public override void Configure()
   {
-    Get("/users/{userId}/profile");
+    Get("/users/profile");
     Description(x => x.WithTags(Presentation.Tags.Users));
-    AllowAnonymous();
+    Policies( Presentation.Permissions.GetUser);
   }
 
   public override async Task HandleAsync(CancellationToken ct)
   {
-    var userId = Route<Guid>("userId");
+    var userId = User.GetUserId();
 
     var query = new GetUserQuery(userId);
 

@@ -8,7 +8,7 @@ internal sealed class CreateGameBoard(ISender sender) : Endpoint<GameBoardReques
   {
     Post("/gameboards");
     Description(x => x.WithTags(Presentation.Tags.GameBoards));
-    AllowAnonymous();
+    Policies(Presentation.Permissions.CreateGameBoard);
   }
 
   public override async Task HandleAsync(GameBoardRequest req, CancellationToken ct)
