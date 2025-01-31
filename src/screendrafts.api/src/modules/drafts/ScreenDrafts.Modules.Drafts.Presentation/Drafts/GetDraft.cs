@@ -7,8 +7,8 @@ internal sealed class GetDraft(ISender sender) : EndpointWithoutRequest<DraftRes
   public override void Configure()
   {
     Get("/drafts/{id}");
-    AllowAnonymous();
     Description(x => x.WithTags(Presentation.Tags.Drafts));
+    Policies(Presentation.Permissions.GetDrafts);
   }
 
   public override async Task HandleAsync(CancellationToken ct)

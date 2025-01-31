@@ -8,7 +8,7 @@ internal sealed class ListDrafts(ISender sender) : EndpointWithoutRequest<Result
   {
     Get("/drafts");
     Description(x => x.WithTags(Presentation.Tags.Drafts));
-    AllowAnonymous();
+    Policies( Presentation.Permissions.GetDrafts);
   }
 
   public override async Task HandleAsync(CancellationToken ct)

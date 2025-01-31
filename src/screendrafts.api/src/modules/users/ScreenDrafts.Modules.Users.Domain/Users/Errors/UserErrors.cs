@@ -11,4 +11,9 @@ public static class UserErrors
     SDError.NotFound(
       "UserErrors.NotFound",
       $"The user with id {userId} was not found.");
+
+  public static SDError NotFound(string identityId) =>
+    SDError.NotFound(
+      "UserErrors.NotFound",
+      $"The user with the IDP identity {identityId} was not found.");
 }

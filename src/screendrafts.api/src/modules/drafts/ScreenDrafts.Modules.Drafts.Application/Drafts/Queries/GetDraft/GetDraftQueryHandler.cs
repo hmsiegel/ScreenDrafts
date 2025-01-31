@@ -30,6 +30,6 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
       return Result.Failure<DraftResponse>(DraftErrors.NotFound(request.DraftId));
     }
 
-    return Result.Success(draft);
+    return draft;
   }
 }

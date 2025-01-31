@@ -2,19 +2,23 @@
 
 public sealed class User : AggrgateRoot<UserId, Guid>
 {
+  private readonly List<Role> _roles = [];
+
   private User(
     UserId id,
     Email email,
     FirstName firstName,
     LastName lastName,
+    string identityId,
     string? middleName = null)
-    : base (id)
+    : base(id)
   {
-    Id = id; 
+    Id = id;
     Email = email;
     FirstName = firstName;
     MiddleName = middleName;
     LastName = lastName;
+    IdentityId = identityId;
   }
 
   private User()
@@ -29,10 +33,15 @@ public sealed class User : AggrgateRoot<UserId, Guid>
 
   public LastName LastName { get; private set; } = default!;
 
+  public string IdentityId { get; private set; } = default!;
+
+  public IReadOnlyCollection<Role> Roles => _roles.AsReadOnly();
+
   public static User Create(
     Email email,
     FirstName firstName,
     LastName lastName,
+    string identityId,
     string? middleName = null,
     UserId? id = null)
   {
@@ -41,7 +50,10 @@ public sealed class User : AggrgateRoot<UserId, Guid>
       firstName: firstName,
       lastName: lastName,
       middleName: middleName,
+      identityId: identityId,
       id: id ?? UserId.CreateUnique());
+
+    user._roles.Add(Role.Guest);
 
     user.Raise(new UserRegisteredDomainEvent(user.Id.Value));
 

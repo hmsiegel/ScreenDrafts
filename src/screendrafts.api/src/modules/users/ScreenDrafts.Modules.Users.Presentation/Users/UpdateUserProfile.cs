@@ -1,18 +1,18 @@
 ﻿namespace ScreenDrafts.Modules.Users.Presentation.Users;
 
-internal sealed class UpdateUserProfile : Endpoint<UpdateUserRequest>
+internal sealed class UpdateUserProfile(ISender sender) : Endpoint<UpdateUserRequest>
 {
-  private readonly ISender _sender;
-  public UpdateUserProfile(ISender sender) => _sender = sender;
+  private readonly ISender _sender = sender;
+
   public override void Configure()
   {
-    Put("/users/{userId}/profile");
+    Put("/users/profile");
     Description(x => x.WithTags(Presentation.Tags.Users));
-    AllowAnonymous();
+    Policies(Presentation.Permissions.ModifyUser);
   }
   public override async Task HandleAsync(UpdateUserRequest req, CancellationToken ct)
   {
-    var userId = Route<Guid>("userId");
+    var userId = User.GetUserId();
 
     var command = new UpdateUserCommand(
       userId,

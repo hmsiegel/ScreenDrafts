@@ -5,6 +5,11 @@ internal sealed class UserRepository(UsersDbContext dbContext) : IUserRepository
 
   public void Add(User user)
   {
+    foreach (var role in user.Roles)
+    {
+      _dbContext.Attach(role);
+    }
+
     _dbContext.Users.Add(user);
   }
 
@@ -18,7 +23,7 @@ internal sealed class UserRepository(UsersDbContext dbContext) : IUserRepository
     return await _dbContext.Users.SingleOrDefaultAsync(x => x.Email == email, cancellationToken);
   }
 
-  public async Task<bool> IsEmailUniqueAsynk(Email email, CancellationToken cancellationToken = default)
+  public async Task<bool> IsEmailUniqueAsync(Email email, CancellationToken cancellationToken = default)
   {
     return !await _dbContext.Users.AnyAsync(x => x.Email == email, cancellationToken);
   }
