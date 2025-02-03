@@ -159,7 +159,7 @@ public class ApplicationTests : BaseTest
   [Fact]
   public void DomainEventHandler_Should_NotBePublic()
   {
-    Types.InAssembly(InfrastructureAssembly)
+    Types.InAssembly(ApplicationAssembly)
       .That()
       .ImplementInterface(typeof(IDomainEventHandler<>))
       .Or()
@@ -173,7 +173,7 @@ public class ApplicationTests : BaseTest
   [Fact]
   public void DomainEventHandler_ShouldHave_NameEndingWith_DomainEventHandler()
   {
-    Types.InAssembly(InfrastructureAssembly)
+    Types.InAssembly(ApplicationAssembly)
       .That()
       .ImplementInterface(typeof(IDomainEventHandler<>))
       .Or()
@@ -187,7 +187,7 @@ public class ApplicationTests : BaseTest
   [Fact]
   public void DomainEventHandler_Should_BeSealed()
   {
-    Types.InAssembly(InfrastructureAssembly)
+    Types.InAssembly(ApplicationAssembly)
       .That()
       .ImplementInterface(typeof(IDomainEventHandler<>))
       .Or()
