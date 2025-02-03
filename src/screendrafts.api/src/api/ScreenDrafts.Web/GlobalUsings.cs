@@ -18,6 +18,7 @@ global using ScreenDrafts.Modules.Administration.Infrastructure.Database;
 global using ScreenDrafts.Modules.Audit.Infrastructure;
 global using ScreenDrafts.Modules.Audit.Infrastructure.Database;
 global using ScreenDrafts.Modules.Communications.Infrastructure;
+global using ScreenDrafts.Modules.Communications.Infrastructure.Database;
 global using ScreenDrafts.Modules.Drafts.Infrastructure;
 global using ScreenDrafts.Modules.Drafts.Infrastructure.Database;
 global using ScreenDrafts.Modules.Integrations.Infrastructure;

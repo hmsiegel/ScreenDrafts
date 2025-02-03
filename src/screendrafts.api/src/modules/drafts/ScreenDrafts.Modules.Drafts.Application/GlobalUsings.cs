@@ -20,3 +20,4 @@ global using ScreenDrafts.Modules.Drafts.Domain.Drafts.Enums;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafts.Errors;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafts.Repositories;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafts.ValueObjects;
+global using ScreenDrafts.Modules.Users.PublicApi;

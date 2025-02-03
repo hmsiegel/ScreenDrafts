@@ -7,6 +7,7 @@ internal static class MigrationsExtensions
     using var scope = app.ApplicationServices.CreateScope();
     ApplyMigration<AdministrationDbContext>(scope);
     ApplyMigration<AuditDbContext>(scope);
+    ApplyMigration<CommunicationsDbContext>(scope);
     ApplyMigration<DraftsDbContext>(scope);
     ApplyMigration<IntegrationsDbContext>(scope);
     ApplyMigration<MoviesDbContext>(scope);

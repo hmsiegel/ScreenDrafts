@@ -10,6 +10,7 @@ global using ScreenDrafts.Modules.Drafts.Domain.Drafters.DomainEvents;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafters.Entities;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafters.Errors;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafters.ValueObjects;
+global using ScreenDrafts.Modules.Drafts.Domain.Drafts;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafts.DomainEvents;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafts.Enums;

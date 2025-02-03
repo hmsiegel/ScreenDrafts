@@ -35,6 +35,8 @@ public static class UsersModule
 
     services.AddScoped<IUserRepository, UserRepository>();
 
+    services.AddScoped<IUsersApi, UsersApi>();
+
     services.Configure<OutboxOptions>(configuration.GetSection("Users:Outbox"));
 
     services.ConfigureOptions<ConfigureProcessOutboxJob>();
