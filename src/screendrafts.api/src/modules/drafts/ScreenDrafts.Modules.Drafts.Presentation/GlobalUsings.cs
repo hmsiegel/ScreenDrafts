@@ -14,5 +14,5 @@ global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.CreateGameB
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Queries.GetDraft;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Queries.ListDrafts;
 global using ScreenDrafts.Modules.Drafts.Application.Hosts.Commands.CreateHost;
-global using ScreenDrafts.Modules.Drafts.Application.Hosts.CreateHostWithoutUser;
+global using ScreenDrafts.Modules.Drafts.Application.Hosts.Commands.CreateHostWithoutUser;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafts.Enums;

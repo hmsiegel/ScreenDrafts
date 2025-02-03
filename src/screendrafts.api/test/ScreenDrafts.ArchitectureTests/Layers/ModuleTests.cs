@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Modules.Administration.Infrastructure;
-
-namespace ScreenDrafts.ArchitectureTests.Layers;
+﻿namespace ScreenDrafts.ArchitectureTests.Layers;
 
 public class ModuleTests : BaseTest
 {
@@ -157,7 +155,8 @@ public class ModuleTests : BaseTest
       MoviesIntegrationEventsNamespace,
       RealTimeUpdatesIntegrationEventsNamespace,
       ReportingIntegrationEventsNamespace,
-      UsersIntegrationEventsNamespace
+      UsersIntegrationEventsNamespace,
+      UsersPublicApiNameSpace
     ];
 
     List<Assembly> draftsAssemblies =

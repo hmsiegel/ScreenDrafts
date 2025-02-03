@@ -1,6 +1,4 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Application.Hosts.CreateHostWithoutUser;
-
-public sealed record CreateHostWithoutUserCommand(string Name) : ICommand<Guid>;
+﻿namespace ScreenDrafts.Modules.Drafts.Application.Hosts.Commands.CreateHostWithoutUser;
 
 internal sealed class CreateHostWithoutUserCommandHandler(
   IHostsRepository hostRepository,

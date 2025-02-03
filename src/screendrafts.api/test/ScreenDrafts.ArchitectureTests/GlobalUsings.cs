@@ -5,6 +5,7 @@ global using FluentAssertions;
 global using NetArchTest.Rules;
 
 global using ScreenDrafts.ArchitectureTests.Abstractions;
+global using ScreenDrafts.Modules.Administration.Infrastructure;
 global using ScreenDrafts.Modules.Audit.Infrastructure;
 global using ScreenDrafts.Modules.Communications.Infrastructure;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafts;
