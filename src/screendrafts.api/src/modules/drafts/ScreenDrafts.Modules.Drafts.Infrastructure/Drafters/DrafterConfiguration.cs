@@ -14,6 +14,9 @@ internal sealed class DrafterConfiguration : IEntityTypeConfiguration<Drafter>
       id => id.Value,
       value => DrafterId.Create(value));
 
+    builder.Property(d => d.ReadableId)
+      .ValueGeneratedOnAdd();
+
     builder.Property(drafter => drafter.Name)
       .IsRequired()
       .HasMaxLength(100);
@@ -31,5 +34,8 @@ internal sealed class DrafterConfiguration : IEntityTypeConfiguration<Drafter>
       .WithOne(rv => rv.Drafter)
       .HasForeignKey<RolloverVetoOverride>(rv => rv.DrafterId)
       .OnDelete(DeleteBehavior.Cascade);
+
+    builder.HasMany(d => d.Drafts)
+      .WithMany(d => d.Drafters);
   }
 }

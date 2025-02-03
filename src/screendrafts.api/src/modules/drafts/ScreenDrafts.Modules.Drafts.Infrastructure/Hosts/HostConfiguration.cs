@@ -8,6 +8,9 @@ internal sealed class HostConfiguration : IEntityTypeConfiguration<Host>
 
     builder.HasKey(x => x.Id);
 
+    builder.Property(h => h.ReadableId)
+      .ValueGeneratedOnAdd();
+
     builder.Property(x => x.Id)
       .ValueGeneratedNever()
       .HasConversion(

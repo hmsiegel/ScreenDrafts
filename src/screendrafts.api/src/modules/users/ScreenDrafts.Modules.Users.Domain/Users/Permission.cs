@@ -12,6 +12,7 @@ public sealed class Permission(string code)
   public static readonly Permission VetoPicks = new("picks:veto");
   public static readonly Permission VetoOverride = new("picks:veto-override");
   public static readonly Permission AddDrafters = new("drafters:add");
+  public static readonly Permission CreateDrafters = new("drafters:create");
   public static readonly Permission RemoveDrafters = new("drafters:remove");
   public static readonly Permission ModifyDrafters = new("drafters:update");
   public static readonly Permission GetDrafters = new("drafters:read");
@@ -20,6 +21,7 @@ public sealed class Permission(string code)
   public static readonly Permission GetPermissions = new("permissions:read");
   public static readonly Permission ModifyPermissions = new("permissions:update");
   public static readonly Permission AddHosts = new("hosts:add");
+  public static readonly Permission CreateHosts = new("hosts:create");
   public static readonly Permission RemoveHosts = new("hosts:remove");
   public static readonly Permission ModifyHosts = new("hosts:update");
   public static readonly Permission GetHosts = new("hosts:read");

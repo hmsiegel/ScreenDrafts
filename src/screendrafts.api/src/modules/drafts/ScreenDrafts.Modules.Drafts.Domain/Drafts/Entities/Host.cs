@@ -5,8 +5,8 @@ public sealed class Host : Entity<HostId>
   private readonly List<Draft> _hostedDrafts = [];
 
   private Host(
-    Guid userId,
     string hostName,
+    Guid? userId = null,
     HostId? id = null)
     : base(id ?? HostId.CreateUnique())
   {
@@ -18,15 +18,17 @@ public sealed class Host : Entity<HostId>
   {
   }
 
-  public Guid UserId { get; private set; }
+  public int ReadableId { get; init; }
+
+  public Guid? UserId { get; private set; }
 
   public string HostName { get; private set; } = default!;
 
   public IReadOnlyCollection<Draft> HostedDrafts => _hostedDrafts.AsReadOnly();
 
   public static Result<Host> Create(
-    Guid userId,
     string hostName,
+    Guid? userId = null,
     HostId? id = null)
   {
     if (string.IsNullOrWhiteSpace(hostName))

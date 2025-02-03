@@ -1,2 +1,2 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Application.Drafters.Commands.CreateDrafter;
-public sealed record CreateDrafterCommand(string Name, Guid UserId) : ICommand;
+public sealed record CreateDrafterCommand(Guid UserId) : ICommand<Guid>;

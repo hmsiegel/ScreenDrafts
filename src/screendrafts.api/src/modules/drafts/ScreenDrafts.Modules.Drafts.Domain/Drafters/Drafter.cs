@@ -1,20 +1,18 @@
-﻿using ScreenDrafts.Modules.Drafts.Domain.Drafters.Errors;
-using ScreenDrafts.Modules.Drafts.Domain.Drafts;
-
-namespace ScreenDrafts.Modules.Drafts.Domain.Drafters;
+﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafters;
 
 public sealed class Drafter : AggrgateRoot<DrafterId, Guid>
 {
   private readonly List<Veto> _vetoes = [];
   private readonly List<VetoOverride> _vetoOverrides = [];
   private readonly List<DrafterDraftStats> _draftStats = [];
+  private readonly List<Draft> _drafts = [];
 
 
   private Drafter(
-    DrafterId id,
-    Guid userId,
-    string name)
-    : base(id)
+    string name,
+    DrafterId? id = null,
+    Guid? userId = null)
+    : base(id ?? DrafterId.CreateUnique())
   {
     UserId = userId;
     Name = Guard.Against.NullOrEmpty(name);
@@ -26,7 +24,7 @@ public sealed class Drafter : AggrgateRoot<DrafterId, Guid>
 
   public int ReadableId { get; init; }
 
-  public Guid UserId { get; private set; }
+  public Guid? UserId { get; private set; }
 
   public string Name { get; private set; } = default!;
 
@@ -43,15 +41,15 @@ public sealed class Drafter : AggrgateRoot<DrafterId, Guid>
 
   public IReadOnlyCollection<DrafterDraftStats> DraftStats => _draftStats.AsReadOnly();
 
+  public IReadOnlyCollection<Draft> Drafts => _drafts.AsReadOnly();
+
   public static Result<Drafter> Create(
     string name,
-    Guid userId,
+    Guid? userId = null,
     DrafterId? id = null)
   {
-    Guard.Against.Null(id);
-
     var drafter = new Drafter(
-      id: id ?? DrafterId.CreateUnique(),
+      id: id,
       userId: userId,
       name: name);
 
@@ -70,22 +68,28 @@ public sealed class Drafter : AggrgateRoot<DrafterId, Guid>
     _vetoOverrides.Add(VetoOverride.Create(veto));
   }
 
-  public Result SetRolloverVeto()
+  public Result SetRolloverVeto(RolloverVeto rolloverVeto)
   {
     if (RolloverVeto != null)
     {
       return Result.Failure(DrafterErrors.RolloverVetoAlreadyExists);
     }
 
+    RolloverVeto = rolloverVeto;
+
     return Result.Success();
   }
 
-  public Result SetRolloverVetoOverride()
+  public Result SetRolloverVetoOverride(RolloverVetoOverride rolloverVetoOverride)
   {
+
     if (RolloverVetoOverride != null)
     {
       return Result.Failure(DrafterErrors.RolloverVetoOverrideAlreadyExists);
     }
+
+    RolloverVetoOverride = rolloverVetoOverride; 
+
     return Result.Success();
   }
 

@@ -15,4 +15,6 @@ internal static class Permissions
   internal const string GetDrafters = "drafters:read";
   internal const string CreateGameBoard = "game-boards:create";
   internal const string ModifyGameBoard = "game-boards:update";
+  internal const string CreateDrafter = "drafters:create";
+  internal const string CreateHost = "host:create";
 }
