@@ -35,6 +35,7 @@ public sealed class DraftsDbContext(DbContextOptions<DraftsDbContext> options)
     ArgumentNullException.ThrowIfNull(modelBuilder);
 
     modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+    modelBuilder.ApplyConfigurationsFromAssembly(typeof(InfrastructureConfiguration).Assembly);
 
     modelBuilder.HasDefaultSchema(Schemas.Drafts);
 

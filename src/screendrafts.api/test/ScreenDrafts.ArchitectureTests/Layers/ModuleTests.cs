@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.ArchitectureTests.Layers;
+﻿using ScreenDrafts.Modules.Administration.Infrastructure;
+
+namespace ScreenDrafts.ArchitectureTests.Layers;
 
 public class ModuleTests : BaseTest
 {

@@ -2,12 +2,11 @@
 
 global using FastEndpoints;
 
-global using MassTransit;
-
 global using MediatR;
 
 global using Microsoft.AspNetCore.Http;
 
+global using ScreenDrafts.Common.Application.EventBus;
 global using ScreenDrafts.Common.Application.Exceptions;
 global using ScreenDrafts.Common.Domain;
 global using ScreenDrafts.Modules.Drafts.Application.Drafters.Commands.CreateDrafter;

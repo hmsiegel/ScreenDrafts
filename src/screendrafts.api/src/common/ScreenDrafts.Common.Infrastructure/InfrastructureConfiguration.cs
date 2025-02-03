@@ -12,14 +12,22 @@ public static class InfrastructureConfiguration
 
     services.AddAuthorizationInternal();
 
+    services.TryAddSingleton<IDateTimeProvider, DateTimeProvider>();
+
+    services.TryAddSingleton<IEventBus, EventBus.EventBus>();
+
+    services.TryAddSingleton<InsertOutboxMessagesInterceptor>();
+
     var npgsqlDataSource = new NpgsqlDataSourceBuilder(databaseConnectionString).Build();
     services.TryAddSingleton(npgsqlDataSource);
 
     services.TryAddScoped<IDbConnectionFactory, DbConnectionFactory>();
 
-    services.TryAddSingleton<PublishDomainEventsInterceptor>();
+    SqlMapper.AddTypeHandler(new GeneciArrayHandler<string>());
 
-    services.TryAddSingleton<IDateTimeProvider, DateTimeProvider>();
+    services.AddQuartz();
+
+    services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);
 
     IConnectionMultiplexer connectionMultiplexer = ConnectionMultiplexer.Connect(redisConnectionString, opt =>
     {
@@ -32,8 +40,6 @@ public static class InfrastructureConfiguration
       opt.ConnectionMultiplexerFactory = () => Task.FromResult(connectionMultiplexer));
 
     services.TryAddSingleton<ICacheService, CacheService>();
-
-    services.TryAddSingleton<IEventBus, EventBus.EventBus>();
 
     services.AddMassTransit(config =>
     {
