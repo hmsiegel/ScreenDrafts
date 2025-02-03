@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Common.Infrastructure.Caching;
+﻿using JsonSerializer = System.Text.Json.JsonSerializer;
+
+namespace ScreenDrafts.Common.Infrastructure.Caching;
 
 internal sealed class CacheService(IDistributedCache cache) : ICacheService
 {

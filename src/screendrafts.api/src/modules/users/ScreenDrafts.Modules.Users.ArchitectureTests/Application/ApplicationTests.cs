@@ -155,4 +155,46 @@ public class ApplicationTests : BaseTest
       .GetResult()
       .ShouldBeSuccessful();
   }
+
+  [Fact]
+  public void DomainEventHandler_Should_NotBePublic()
+  {
+    Types.InAssembly(ApplicationAssembly)
+      .That()
+      .ImplementInterface(typeof(IDomainEventHandler<>))
+      .Or()
+      .Inherit(typeof(DomainEventHandler<>))
+      .Should()
+      .NotBePublic()
+      .GetResult()
+      .ShouldBeSuccessful();
+  }
+
+  [Fact]
+  public void DomainEventHandler_ShouldHave_NameEndingWith_DomainEventHandler()
+  {
+    Types.InAssembly(ApplicationAssembly)
+      .That()
+      .ImplementInterface(typeof(IDomainEventHandler<>))
+      .Or()
+      .Inherit(typeof(DomainEventHandler<>))
+      .Should()
+      .HaveNameEndingWith("DomainEventHandler", StringComparison.InvariantCulture)
+      .GetResult()
+      .ShouldBeSuccessful();
+  }
+
+  [Fact]
+  public void DomainEventHandler_Should_BeSealed()
+  {
+    Types.InAssembly(ApplicationAssembly)
+      .That()
+      .ImplementInterface(typeof(IDomainEventHandler<>))
+      .Or()
+      .Inherit(typeof(DomainEventHandler<>))
+      .Should()
+      .BeSealed()
+      .GetResult()
+      .ShouldBeSuccessful();
+  }
 }

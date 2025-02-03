@@ -8,8 +8,8 @@ builder.Services.AddProblemDetails();
 
 builder.Services.AddOpenApi();
 
-var databaseConnectionString = builder.Configuration.GetConnectionString("Database")!;
-var redisConnectionString = builder.Configuration.GetConnectionString("Cache")!;
+var databaseConnectionString = builder.Configuration.GetConnectionStringOrThrow("Database")!;
+var redisConnectionString = builder.Configuration.GetConnectionStringOrThrow("Cache")!;
 
 builder.Services.AddApplication(AssemblyReferences.ApplicationAssemblies);
 builder.Services.AddInfrastructure(
@@ -24,10 +24,12 @@ builder.Services.AddFastEndpoints(opt =>
 
 builder.Configuration.AddModuleConfiguration(ModuleReferences.Modules);
 
+var keyCloakHealthUrl = builder.Configuration.GetKeyCloakHealthUrl();
+
 builder.Services.AddHealthChecks()
   .AddNpgSql(databaseConnectionString)
   .AddRedis(redisConnectionString)
-  .AddUrlGroup(new Uri(builder.Configuration.GetValue<string>("KeyCloak:HealthUrl")!), HttpMethod.Get, "keycloak");
+  .AddKeyCloak(keyCloakHealthUrl);
 
 ModuleServiceExtensions.AddModules(builder.Services, builder.Configuration);
 

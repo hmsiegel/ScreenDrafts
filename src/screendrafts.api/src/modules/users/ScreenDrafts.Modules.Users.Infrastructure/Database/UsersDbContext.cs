@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Users.Infrastructure.Database;
+﻿using ScreenDrafts.Common.Infrastructure;
+
+namespace ScreenDrafts.Modules.Users.Infrastructure.Database;
 
 public sealed class UsersDbContext(DbContextOptions<UsersDbContext> options)
   : DbContext(options), IUnitOfWork
@@ -10,6 +12,7 @@ public sealed class UsersDbContext(DbContextOptions<UsersDbContext> options)
     ArgumentNullException.ThrowIfNull(modelBuilder);
 
     modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+    modelBuilder.ApplyConfigurationsFromAssembly(typeof(InfrastructureConfiguration).Assembly);
 
     modelBuilder.HasDefaultSchema(Schemas.Users);
   }
