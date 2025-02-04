@@ -16,6 +16,7 @@ global using ScreenDrafts.Modules.Drafts.Application.Hosts.Queries.GetHost;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafters;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafters.Errors;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafters.Repositories;
+global using ScreenDrafts.Modules.Drafts.Domain.Drafters.ValueObjects;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafts;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafts.Enums;

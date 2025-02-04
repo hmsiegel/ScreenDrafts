@@ -11,6 +11,8 @@ global using ScreenDrafts.Modules.Drafts.Application.Drafters.Commands.CreateDra
 global using ScreenDrafts.Modules.Drafts.Application.Drafters.Commands.CreateDrafterWithoutUser;
 global using ScreenDrafts.Modules.Drafts.Application.Drafters.Queries.GetDrafter;
 global using ScreenDrafts.Modules.Drafts.Application.Drafters.Queries.ListDrafters;
+global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.AddDrafterToDraft;
+global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.AddHostToDraft;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.CreateDraft;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.CreateGameBoard;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Queries.GetDraft;

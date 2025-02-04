@@ -21,7 +21,9 @@ internal sealed class AddDrafterToDraftCommandHandler(
       return Result.Failure<Draft>(DraftErrors.NotFound(request.DraftId));
     }
 
-    var drafter = await _drafterRepository.GetByIdAsync(request.DrafterId, cancellationToken);
+    var drafterId = DrafterId.Create(request.DrafterId);
+
+    var drafter = await _drafterRepository.GetByIdAsync(drafterId, cancellationToken);
 
     if (drafter is null)
     {
