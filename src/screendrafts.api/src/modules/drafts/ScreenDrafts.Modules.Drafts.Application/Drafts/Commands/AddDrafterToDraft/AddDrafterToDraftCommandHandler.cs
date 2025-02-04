@@ -1,8 +1,4 @@
-﻿using ScreenDrafts.Modules.Drafts.Domain.Drafters.Errors;
-using ScreenDrafts.Modules.Drafts.Domain.Drafters.Repositories;
-using ScreenDrafts.Modules.Drafts.Domain.Drafts.Repositories;
-
-namespace ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.AddDrafterToDraft;
+﻿namespace ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.AddDrafterToDraft;
 
 internal sealed class AddDrafterToDraftCommandHandler(
   IDraftsRepository draftRepository,
@@ -16,7 +12,9 @@ internal sealed class AddDrafterToDraftCommandHandler(
 
   public async Task<Result> Handle(AddDrafterToDraftCommand request, CancellationToken cancellationToken)
   {
-    var draft = await _draftRepository.GetByIdAsync(request.DraftId, cancellationToken);
+    var draftId = DraftId.Create(request.DraftId);
+
+    var draft = await _draftRepository.GetByIdAsync(draftId, cancellationToken);
 
     if (draft is null)
     {

@@ -9,10 +9,10 @@ internal sealed class DraftsRepository(DraftsDbContext dbContext) : IDraftsRepos
     _dbContext.Drafts.Add(draft);
   }
 
-  public async Task<Draft?> GetByIdAsync(Guid draftId, CancellationToken cancellationToken)
+  public async Task<Draft?> GetByIdAsync(DraftId draftId, CancellationToken cancellationToken)
   {
     var draft = await _dbContext.Drafts
-      .FirstOrDefaultAsync(d => d.Id.Value == draftId, cancellationToken);
+      .FirstOrDefaultAsync(d => d.Id == draftId, cancellationToken);
 
     return draft;
   }

@@ -13,7 +13,9 @@ internal sealed class AddHostToDraftCommandHandler(
 
   public async Task<Result> Handle(AddHostToDraftCommand request, CancellationToken cancellationToken)
   {
-    var draft = await _draftsRepository.GetByIdAsync(request.DraftId, cancellationToken);
+    var draftId = DraftId.Create(request.DraftId);
+
+    var draft = await _draftsRepository.GetByIdAsync(draftId, cancellationToken);
 
     if (draft is null)
     {

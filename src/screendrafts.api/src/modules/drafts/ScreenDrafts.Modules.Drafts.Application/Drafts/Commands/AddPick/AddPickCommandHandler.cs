@@ -1,7 +1,4 @@
-﻿using ScreenDrafts.Modules.Drafts.Domain.Drafters.Errors;
-using ScreenDrafts.Modules.Drafts.Domain.Drafts.Repositories;
-
-namespace ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.AddPick;
+﻿namespace ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.AddPick;
 
 internal sealed class AddPickCommandHandler(
   IDraftsRepository draftsRepository,
@@ -12,7 +9,9 @@ internal sealed class AddPickCommandHandler(
   private readonly IUnitOfWork _unitOfWork = unitOfWork;
   public async Task<Result> Handle(AddPickCommand request, CancellationToken cancellationToken)
   {
-    var draft = await _draftsRepository.GetByIdAsync(request.DraftId, cancellationToken);
+    var draftId = DraftId.Create(request.DraftId);
+
+    var draft = await _draftsRepository.GetByIdAsync(draftId, cancellationToken);
 
     if (draft is null)
     {
