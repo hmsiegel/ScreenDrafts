@@ -1,6 +1,4 @@
-﻿using Dapper;
-
-namespace ScreenDrafts.Modules.Drafts.Application.Drafts.Queries.ListDrafts;
+﻿namespace ScreenDrafts.Modules.Drafts.Application.Drafts.Queries.ListDrafts;
 
 internal sealed class ListDraftsQueryHandler(IDbConnectionFactory dbConnectionFactory)
   : IQueryHandler<ListDraftsQuery, IReadOnlyCollection<DraftResponse>>

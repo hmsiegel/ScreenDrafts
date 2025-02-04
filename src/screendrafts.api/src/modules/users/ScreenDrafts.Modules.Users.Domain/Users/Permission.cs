@@ -33,6 +33,5 @@ public sealed class Permission(string code)
   public static readonly Permission CreateGameBoard = new("game-boards:create");
   public static readonly Permission ModifyGameBoard = new("game-boards:update");
 
-
   public string Code { get; } = code;
 }
