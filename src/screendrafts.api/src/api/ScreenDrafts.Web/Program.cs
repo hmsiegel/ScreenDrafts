@@ -6,7 +6,7 @@ builder.Host.UseSerilog((context, config) =>
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 
-builder.Services.AddOpenApi();
+builder.Services.ConfigureOpenApi(builder.Configuration);
 
 var databaseConnectionString = builder.Configuration.GetConnectionStringOrThrow("Database")!;
 var redisConnectionString = builder.Configuration.GetConnectionStringOrThrow("Cache")!;

@@ -9,10 +9,10 @@ internal sealed class GameBoardRepository(DraftsDbContext dbContext) : IGameBoar
     _dbContext.GameBoards.Add(gameBoard);
   }
 
-  public async Task<GameBoard> GetByDraftIdAsync(Guid draftId)
+  public async Task<GameBoard> GetByDraftIdAsync(DraftId draftId)
   {
     var gameBoard = await _dbContext.GameBoards
-      .SingleOrDefaultAsync(g => g.Draft.Id.Value == draftId);
+      .SingleOrDefaultAsync(g => g.Draft.Id == draftId);
 
     return gameBoard!;
   }

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ScreenDrafts.Modules.Drafts.Infrastructure.Database;
@@ -11,9 +12,11 @@ using ScreenDrafts.Modules.Drafts.Infrastructure.Database;
 namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
 {
     [DbContext(typeof(DraftsDbContext))]
-    partial class DraftsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250204175930_Update_DraftPositionsAndTriviaResults")]
+    partial class Update_DraftPositionsAndTriviaResults
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -589,6 +592,10 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
+                    b.Property<int?>("BlessingType")
+                        .HasColumnType("integer")
+                        .HasColumnName("blessing_type");
+
                     b.Property<Guid>("DraftId")
                         .HasColumnType("uuid")
                         .HasColumnName("draft_id");
@@ -600,10 +607,6 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                     b.Property<int>("Position")
                         .HasColumnType("integer")
                         .HasColumnName("position");
-
-                    b.Property<int>("QuestionsWon")
-                        .HasColumnType("integer")
-                        .HasColumnName("questions_won");
 
                     b.HasKey("Id")
                         .HasName("pk_trivia_results");

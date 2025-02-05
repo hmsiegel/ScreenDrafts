@@ -3,5 +3,5 @@ public interface IGameBoardRepository
 {
   void Add(GameBoard gameBoard);
 
-  Task<GameBoard> GetByDraftIdAsync(Guid draftId);
+  Task<GameBoard> GetByDraftIdAsync(DraftId draftId);
 }

@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Modules.Drafts.Infrastructure.Converters;
-
-namespace ScreenDrafts.Modules.Drafts.Infrastructure.GameBoards;
+﻿namespace ScreenDrafts.Modules.Drafts.Infrastructure.GameBoards;
 
 internal sealed class DraftPositionConfiguration : IEntityTypeConfiguration<DraftPosition>
 {
@@ -28,5 +26,15 @@ internal sealed class DraftPositionConfiguration : IEntityTypeConfiguration<Draf
 
     builder.Property(dp => dp.Picks)
       .HasListOfPicksConverter();
+
+    builder.HasOne(dp => dp.GameBoard)
+      .WithMany(gb => gb.DraftPositions)
+      .HasForeignKey(dp => dp.GameBoardId)
+      .OnDelete(DeleteBehavior.Cascade);
+
+    builder.HasOne(dp => dp.Drafter)
+      .WithMany()
+      .HasForeignKey(dp => dp.DrafterId)
+      .OnDelete(DeleteBehavior.Restrict);
   }
 }

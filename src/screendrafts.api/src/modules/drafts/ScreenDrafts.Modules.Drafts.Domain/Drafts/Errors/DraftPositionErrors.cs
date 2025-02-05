@@ -11,4 +11,9 @@ public static class DraftPositionErrors
     SDError.Failure(
       "DraftPosition.PicksAreRequired",
       "The picks of the draft position are required.");
+
+  public static readonly SDError DrafterAlreadyAssigned =
+    SDError.Failure(
+      "DraftPosition.DrafterAlreadyAssigned",
+      "This draft position has already been assigned a drafter.");
 }
