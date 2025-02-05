@@ -13,7 +13,9 @@ internal sealed class CreateGameBoardCommandHandler(
   {
     GameBoard gameBoard;
 
-    var draft = await _draftsRepository.GetByIdAsync(request.DraftId, cancellationToken);
+    var draftId = DraftId.Create(request.DraftId);
+
+    var draft = await _draftsRepository.GetByIdAsync(draftId, cancellationToken);
 
     if (draft is null)
     {

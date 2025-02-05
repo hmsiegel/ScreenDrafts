@@ -3,5 +3,9 @@ public interface IGameBoardRepository
 {
   void Add(GameBoard gameBoard);
 
-  Task<GameBoard> GetByDraftIdAsync(Guid draftId);
+  void Update(GameBoard gameBoard);
+
+  Task<GameBoard> GetByDraftIdAsync(DraftId draftId, CancellationToken cancellationToken = default);
+
+  Task<List<DraftPosition>> ListDraftPositionsByGameBoardIdAsync(GameBoardId gameBoardId, CancellationToken cancellationToken = default);
 }

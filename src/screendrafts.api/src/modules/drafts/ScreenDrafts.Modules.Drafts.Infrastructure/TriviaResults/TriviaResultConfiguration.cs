@@ -18,6 +18,13 @@ internal sealed class TriviaResultConfiguration : IEntityTypeConfiguration<Trivi
       .IsRequired();
 
     builder.HasOne(tr => tr.Drafter)
-      .WithMany();
+      .WithMany()
+      .HasForeignKey(tr => tr.DrafterId)
+      .OnDelete(DeleteBehavior.Cascade);
+
+    builder.HasOne(tr => tr.Draft)
+      .WithMany(d => d.TriviaResults)
+      .HasForeignKey(tr => tr.DraftId)
+      .OnDelete(DeleteBehavior.Cascade);
   }
 }

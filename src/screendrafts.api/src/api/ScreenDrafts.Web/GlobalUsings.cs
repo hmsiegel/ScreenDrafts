@@ -4,9 +4,12 @@ global using FastEndpoints;
 
 global using HealthChecks.UI.Client;
 
+global using Microsoft.AspNetCore.Authentication;
 global using Microsoft.AspNetCore.Diagnostics;
 global using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+global using Microsoft.AspNetCore.OpenApi;
 global using Microsoft.EntityFrameworkCore;
+global using Microsoft.OpenApi.Models;
 
 global using Scalar.AspNetCore;
 

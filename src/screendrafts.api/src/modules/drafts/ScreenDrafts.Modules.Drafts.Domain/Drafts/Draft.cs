@@ -279,13 +279,14 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
     return Result.Success();
   }
 
-  public void AddTriviaResult(Drafter drafter, bool awardIsVeto, int position)
+  public void AddTriviaResult(Drafter drafter, int position, int questionsWon)
   {
-    var triviaResult = TriviaResult.Create(position, drafter, awardIsVeto ? BlessingType.Veto : BlessingType.VetoOverride);
+    var triviaResult = TriviaResult.Create(
+      questionsWon: questionsWon,
+      position: position,
+      draft: this,
+      drafter: drafter);
     _triviaResults.Add(triviaResult.Value);
-
-    var drafterStats = _drafterDraftStats.FirstOrDefault(d => d.DrafterId.Value == drafter.Id.Value);
-    drafterStats?.AddTriviaAward(awardIsVeto);
   }
 
   public Result ApplyRollover(Guid drafterId, bool isVeto)

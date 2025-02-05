@@ -381,6 +381,10 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
+                    b.Property<Guid?>("DrafterId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("drafter_id");
+
                     b.Property<Guid>("GameBoardId")
                         .HasColumnType("uuid")
                         .HasColumnName("game_board_id");
@@ -406,6 +410,9 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_draft_positions");
+
+                    b.HasIndex("DrafterId")
+                        .HasDatabaseName("ix_draft_positions_drafter_id");
 
                     b.HasIndex("GameBoardId")
                         .HasDatabaseName("ix_draft_positions_game_board_id");
@@ -582,11 +589,7 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<int>("BlessingType")
-                        .HasColumnType("integer")
-                        .HasColumnName("blessing_type");
-
-                    b.Property<Guid?>("DraftId")
+                    b.Property<Guid>("DraftId")
                         .HasColumnType("uuid")
                         .HasColumnName("draft_id");
 
@@ -597,6 +600,10 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                     b.Property<int>("Position")
                         .HasColumnType("integer")
                         .HasColumnName("position");
+
+                    b.Property<int>("QuestionsWon")
+                        .HasColumnType("integer")
+                        .HasColumnName("questions_won");
 
                     b.HasKey("Id")
                         .HasName("pk_trivia_results");
@@ -695,12 +702,20 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
 
             modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities.DraftPosition", b =>
                 {
+                    b.HasOne("ScreenDrafts.Modules.Drafts.Domain.Drafters.Drafter", "Drafter")
+                        .WithMany()
+                        .HasForeignKey("DrafterId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("fk_draft_positions_drafters_drafter_id");
+
                     b.HasOne("ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities.GameBoard", "GameBoard")
                         .WithMany("DraftPositions")
                         .HasForeignKey("GameBoardId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_draft_positions_game_boards_game_board_id");
+
+                    b.Navigation("Drafter");
 
                     b.Navigation("GameBoard");
                 });
@@ -773,9 +788,11 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
 
             modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities.TriviaResult", b =>
                 {
-                    b.HasOne("ScreenDrafts.Modules.Drafts.Domain.Drafts.Draft", null)
+                    b.HasOne("ScreenDrafts.Modules.Drafts.Domain.Drafts.Draft", "Draft")
                         .WithMany("TriviaResults")
                         .HasForeignKey("DraftId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
                         .HasConstraintName("fk_trivia_results_drafts_draft_id");
 
                     b.HasOne("ScreenDrafts.Modules.Drafts.Domain.Drafters.Drafter", "Drafter")
@@ -784,6 +801,8 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_trivia_results_drafters_drafter_id");
+
+                    b.Navigation("Draft");
 
                     b.Navigation("Drafter");
                 });

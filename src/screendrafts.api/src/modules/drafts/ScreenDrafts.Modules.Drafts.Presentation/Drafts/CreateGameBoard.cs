@@ -6,9 +6,9 @@ internal sealed class CreateGameBoard(ISender sender) : Endpoint<GameBoardReques
 
   public override void Configure()
   {
-    Post("/gameboards");
+    Post("/drafts/gameboard");
     Description(x => x.WithTags(Presentation.Tags.GameBoards));
-    Policies(Presentation.Permissions.CreateGameBoard);
+    Policies(Presentation.Permissions.ModifyDraft);
   }
 
   public override async Task HandleAsync(GameBoardRequest req, CancellationToken ct)
@@ -34,4 +34,4 @@ internal sealed class CreateGameBoard(ISender sender) : Endpoint<GameBoardReques
 public sealed record GameBoardRequest(
   Guid DraftId,
   string DraftType,
-  IEnumerable<DraftPositionDto> DraftPositions);
+  IEnumerable<DraftPositionDto>? DraftPositions = null);

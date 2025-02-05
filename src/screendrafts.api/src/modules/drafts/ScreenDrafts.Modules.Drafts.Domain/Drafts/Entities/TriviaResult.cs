@@ -3,35 +3,48 @@
 public sealed class TriviaResult : Entity<TriviaResultId>
 {
   private TriviaResult(
-    int positeon,
+    int position,
+    int questionsWon,
+    Draft draft,
     Drafter drafter,
-    BlessingType blessingType,
     TriviaResultId? id = null)
   {
     Id = id ?? TriviaResultId.CreateUnique();
-    Position = positeon;
-    BlessingType = blessingType;
+    Position = position;
+    QuestionsWon = questionsWon;
+    Draft = draft;
     Drafter = drafter;
+    QuestionsWon = questionsWon;
   }
 
   private TriviaResult()
   {
   }
 
+  public DraftId DraftId { get; private set; } = default!;
+
+  public Draft Draft { get; private set; } = default!;
+
   public Drafter Drafter { get; private set; } = default!;
-  public BlessingType BlessingType { get; private set; } = default!;
+
+  public DrafterId DrafterId { get; private set; } = default!;
+
   public int Position { get; private set; }
+
+  public int QuestionsWon { get; private set; }
 
   public static Result<TriviaResult> Create(
     int position,
+    int questionsWon,
+    Draft draft,
     Drafter drafter,
-    BlessingType blessingType,
     TriviaResultId? id = null)
   {
     var triviaResult = new TriviaResult(
-      positeon: position,
+      position: position,
+      questionsWon: questionsWon,
       drafter: drafter,
-      blessingType: blessingType,
+      draft: draft,
       id: id);
     return triviaResult;
   }

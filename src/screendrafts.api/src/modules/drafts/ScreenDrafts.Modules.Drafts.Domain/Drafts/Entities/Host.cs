@@ -54,6 +54,12 @@ public sealed class Host : Entity<HostId>
 
   public void UpdateHostName(string firstName, string lastName, string? middleName = null)
   {
+    if (middleName is null)
+    {
+      HostName = $"{firstName} {lastName}";
+      return;
+    }
+
     HostName = $"{firstName} {middleName} {lastName}";
   }
 }

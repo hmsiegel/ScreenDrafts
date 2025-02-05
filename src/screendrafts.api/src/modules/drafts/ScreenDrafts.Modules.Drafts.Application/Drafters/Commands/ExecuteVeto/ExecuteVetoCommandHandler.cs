@@ -11,7 +11,9 @@ internal sealed class ExecuteVetoCommandHandler(
 
   public async Task<Result> Handle(ExecuteVetoCommand request, CancellationToken cancellationToken)
   {
-    var drafter = await _draftersRepository.GetByIdAsync(request.DrafterId, cancellationToken);
+    var drafterId = DrafterId.Create(request.DrafterId);
+
+    var drafter = await _draftersRepository.GetByIdAsync(drafterId, cancellationToken);
 
     if (drafter is null)
     {

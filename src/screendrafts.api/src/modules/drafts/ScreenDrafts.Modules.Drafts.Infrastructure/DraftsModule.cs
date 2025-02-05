@@ -44,6 +44,7 @@ public static class DraftsModule
     services.AddScoped<IHostsRepository, HostsRepository>();
     services.AddScoped<IPicksRepository, PicksRepository>();
     services.AddScoped<IVetoRepository, VetoRepository>();
+    services.AddScoped<ITriviaResultsRepository, TriviaResultsRepository>();
 
     services.Configure<OutboxOptions>(configuration.GetSection("Drafts:Outbox"));
 
