@@ -1,21 +1,18 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Presentation.Drafters;
 
-internal sealed class CreateDrafter(ISender sender) : EndpointWithoutRequest<Guid>
+internal sealed class CreateDrafter(ISender sender) : Endpoint<CreateDrafterRequest, Guid>
 {
   private readonly ISender _sender = sender;
 
   public override void Configure()
   {
-    Post("/drafters/{id:guid}");
+    Post("/drafters/create");
     Description(x => x.WithTags(Presentation.Tags.Drafters));
     AllowAnonymous();
   }
-  public override async Task HandleAsync(CancellationToken ct)
+  public override async Task HandleAsync(CreateDrafterRequest req, CancellationToken ct)
   {
-    var userId = Route<Guid>("id");
-
-
-    var command = new CreateDrafterCommand(userId);
+    var command = new CreateDrafterCommand(req.UserId, req.Name);
 
     var drafterId = await _sender.Send(command, ct);
 
@@ -30,3 +27,4 @@ internal sealed class CreateDrafter(ISender sender) : EndpointWithoutRequest<Gui
   }
 }
 
+public sealed record CreateDrafterRequest(Guid? UserId, string? Name);

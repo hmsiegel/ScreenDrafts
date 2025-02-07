@@ -16,4 +16,9 @@ public static class DrafterErrors
     SDError.NotFound(
       "Drafters.NotFound",
       $"Drafter with ID {drafterId} not found.");
+
+  public static readonly SDError CannotCreatDrafter =
+    SDError.Failure(
+      "Drafters.CannotCreatDrafter",
+      "Cannot create drafter without user ID or name.");
 }

@@ -8,7 +8,6 @@ global using Microsoft.AspNetCore.Http;
 
 global using ScreenDrafts.Common.Domain;
 global using ScreenDrafts.Modules.Drafts.Application.Drafters.Commands.CreateDrafter;
-global using ScreenDrafts.Modules.Drafts.Application.Drafters.Commands.CreateDrafterWithoutUser;
 global using ScreenDrafts.Modules.Drafts.Application.Drafters.Queries.GetDrafter;
 global using ScreenDrafts.Modules.Drafts.Application.Drafters.Queries.ListDrafters;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.AddDrafterToDraft;
