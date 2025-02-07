@@ -2,15 +2,15 @@
 internal static class ModuleReferences
 {
   private static readonly string[] _modules = [
-    "Administration",
-    "Audit",
-    "Communications",
-    "Drafts",
-    "Integrations",
-    "Movies",
-    "RealTimeUpdates",
-    "Reporting",
-    "Users",
+    "administration",
+    "audit",
+    "communications",
+    "drafts",
+    "integrations",
+    "movies",
+    "realtimeupdates",
+    "reporting",
+    "users",
   ];
 
   public static string[] Modules => _modules;
