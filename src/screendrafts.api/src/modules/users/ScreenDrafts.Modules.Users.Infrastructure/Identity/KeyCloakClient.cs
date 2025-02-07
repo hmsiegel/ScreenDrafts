@@ -1,6 +1,4 @@
-﻿using System.Net.Http.Json;
-
-namespace ScreenDrafts.Modules.Users.Infrastructure.Identity;
+﻿namespace ScreenDrafts.Modules.Users.Infrastructure.Identity;
 
 internal sealed class KeyCloakClient(HttpClient httpClient)
 {
@@ -33,7 +31,7 @@ internal sealed class KeyCloakClient(HttpClient httpClient)
       usersSegmentName,
       StringComparison.InvariantCultureIgnoreCase);
 
-    var identityId = locationHeader.Substring(userSegmentValueIndex + usersSegmentName.Length);
+    var identityId = locationHeader[(userSegmentValueIndex + usersSegmentName.Length)..];
 
     return identityId;
   }

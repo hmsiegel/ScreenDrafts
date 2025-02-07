@@ -5,4 +5,9 @@
     <ProjectReference Include="..\..\..\common\ScreenDrafts.Common.Infrastructure\ScreenDrafts.Common.Infrastructure.csproj" />
     <ProjectReference Include="..\ScreenDrafts.Modules.Users.PublicApi\ScreenDrafts.Modules.Users.PublicApi.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="ScreenDrafts.Modules.Users.IntegrationTests"/>
+    <InternalsVisibleTo Include="ScreenDrafts.IntegrationTests"/>
+  </ItemGroup>
 </Project>

@@ -11,7 +11,6 @@ public sealed class TriviaResult : Entity<TriviaResultId>
   {
     Id = id ?? TriviaResultId.CreateUnique();
     Position = position;
-    QuestionsWon = questionsWon;
     Draft = draft;
     Drafter = drafter;
     QuestionsWon = questionsWon;

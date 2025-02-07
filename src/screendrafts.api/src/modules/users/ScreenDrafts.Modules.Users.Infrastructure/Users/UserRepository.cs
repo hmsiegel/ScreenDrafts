@@ -13,9 +13,9 @@ internal sealed class UserRepository(UsersDbContext dbContext) : IUserRepository
     _dbContext.Users.Add(user);
   }
 
-  public async Task<User?> GetAsync(Guid id, CancellationToken cancellationToken = default)
+  public async Task<User?> GetAsync(UserId id, CancellationToken cancellationToken = default)
   {
-    return await _dbContext.Users.SingleOrDefaultAsync(x => x.Id.Value == id, cancellationToken);
+    return await _dbContext.Users.SingleOrDefaultAsync(x => x.Id == id, cancellationToken);
   }
 
   public async Task<User?> GetByEmailAsync(Email email, CancellationToken cancellationToken = default)

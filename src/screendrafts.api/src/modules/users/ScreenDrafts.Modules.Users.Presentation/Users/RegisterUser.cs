@@ -22,7 +22,14 @@ internal sealed class RegisterUser(ISender sender) : Endpoint<RegisterUserReques
 
     var result = await _sender.Send(command, ct);
 
-    await SendOkAsync(result.Value, ct);
+    if (result.IsFailure)
+    {
+      await SendErrorsAsync(StatusCodes.Status400BadRequest, ct);
+    }
+    else
+    {
+      await SendOkAsync(result.Value, ct);
+    }
   }
 }
 

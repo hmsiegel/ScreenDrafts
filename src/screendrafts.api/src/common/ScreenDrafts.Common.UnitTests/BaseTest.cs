@@ -1,4 +1,8 @@
-﻿namespace ScreenDrafts.Modules.Drafts.UnitTests.Abstractions;
+﻿using Bogus;
+
+using ScreenDrafts.Common.Domain;
+
+namespace ScreenDrafts.Common.UnitTests;
 
 public abstract class BaseTest
 {

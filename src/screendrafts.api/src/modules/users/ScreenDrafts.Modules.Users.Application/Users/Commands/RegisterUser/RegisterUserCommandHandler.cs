@@ -12,6 +12,31 @@ internal sealed class RegisterUserCommandHandler(
 
   public async Task<Result<Guid>> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
   {
+    if (request.Password.Length < 6)
+    {
+      return Result.Failure<Guid>(UserErrors.PasswordTooShort);
+    }
+
+    var emailResult = Email.Create(request.Email);
+
+    if (emailResult.IsFailure)
+    {
+      return Result.Failure<Guid>(emailResult.Errors[0]);
+    }
+
+    if (!await _userRepository.IsEmailUniqueAsync(emailResult.Value, cancellationToken))
+    {
+      return Result.Failure<Guid>(UserErrors.EmailInUse);
+    }
+
+    var firstNameResult = FirstName.Create(request.FirstName);
+    var lastNameResult = LastName.Create(request.LastName);
+
+    if (firstNameResult.IsFailure || lastNameResult.IsFailure)
+    {
+      return Result.Failure<Guid>(UserErrors.InvalidName);
+    }
+
     var result = await _identityProviderService.RegisterUserAsync(
       new UserModel(
         request.Email,
@@ -22,23 +47,8 @@ internal sealed class RegisterUserCommandHandler(
 
     if (result.IsFailure)
     {
-      return Result.Failure<Guid>(result.Error!);
+      return Result.Failure<Guid>(result.Errors[0]);
     }
-
-    var emailResult = Email.Create(request.Email);
-
-    if (emailResult.IsFailure)
-    {
-      return Result.Failure<Guid>(emailResult.Errors);
-    }
-
-    if (!await _userRepository.IsEmailUniqueAsync(emailResult.Value, cancellationToken))
-    {
-      return Result.Failure<Guid>(UserErrors.EmailInUse);
-    }
-
-    var firstNameResult = FirstName.Create(request.FirstName);
-    var lastNameResult = LastName.Create(request.LastName);
 
     var user = User.Create(
       emailResult.Value,
