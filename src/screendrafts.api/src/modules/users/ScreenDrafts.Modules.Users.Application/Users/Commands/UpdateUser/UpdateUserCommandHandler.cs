@@ -8,7 +8,7 @@ internal sealed class UpdateUserCommandHandler(IUnitOfWork unitOfWork, IUserRepo
 
   public async Task<Result> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
   {
-    var user = await _userRepository.GetAsync(request.UserId, cancellationToken);
+    var user = await _userRepository.GetAsync(UserId.Create(request.UserId), cancellationToken);
 
     if (user is null)
     {

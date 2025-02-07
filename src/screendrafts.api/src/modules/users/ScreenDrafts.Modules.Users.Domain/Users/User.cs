@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Users.Domain.Users;
+﻿using Ardalis.GuardClauses;
+
+namespace ScreenDrafts.Modules.Users.Domain.Users;
 
 public sealed class User : AggrgateRoot<UserId, Guid>
 {
@@ -14,10 +16,10 @@ public sealed class User : AggrgateRoot<UserId, Guid>
     : base(id)
   {
     Id = id;
-    Email = email;
-    FirstName = firstName;
+    Email = Guard.Against.Null(email);
+    FirstName = Guard.Against.Null(firstName);
     MiddleName = middleName;
-    LastName = lastName;
+    LastName = Guard.Against.Null(lastName);
     IdentityId = identityId;
   }
 

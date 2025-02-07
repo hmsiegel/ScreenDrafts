@@ -1,0 +1,19 @@
+{
+  "Users": {
+    "Outbox": {
+      "IntervalInSeconds": 15,
+      "BatchSize": 20
+    },
+    "Inbox": {
+      "IntervalInSeconds": 15,
+      "BatchSize": 20
+    },
+    "KeyCloak": {
+      "AdminUrl": "http://screendrafts.identity:8080/admin/realms/screendrafts/",
+      "TokenUrl": "http://screendrafts.identity:8080/realms/screendrafts/protocol/openid-connect/token",
+      "ConfidentialClientId": "screendrafts-confidential-client",
+      "ConfidentialClientSecret": "oRL4la55pi1uMlJMKSlg3hrhLfvKrZsg",
+      "PublicClientId": "screendrafts-public-client"
+    }
+  }
+}

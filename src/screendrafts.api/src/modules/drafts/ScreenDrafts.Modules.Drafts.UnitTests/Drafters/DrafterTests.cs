@@ -6,24 +6,22 @@ public class DrafterTests : BaseTest
   public void Create_ShouldReturnSuccessResult_WhenValidParametersAreProvided()
   {
     // Arrange
-    var name = Faker.Person.FullName;
-    var userId = Guid.NewGuid();
 
     // Act
-    var result = Drafter.Create(name, userId);
+    var result = DrafterFactory.CreateDrafterWithUserId();
 
     // Assert
     result.IsSuccess.Should().BeTrue();
-    result.Value.Name.Should().Be(name);
-    result.Value.UserId.Should().Be(userId);
+    result.Value.Name.Should().Be(result.Value.Name);
+    result.Value.UserId.Should().Be(result.Value.UserId);
   }
 
   [Fact]
   public void AddVeto_ShouldAddVetoToList()
   {
     // Arrange
-    var movie = Movie.Create(new MovieTitle(Faker.Lorem.Word()), MovieId.CreateUnique()).Value;
-    var drafter = Drafter.Create(Faker.Person.FullName).Value;
+    var movie = MovieFactory.CreateMovie().Value;
+    var drafter = DrafterFactory.CreateDrafterWithUserId().Value;
     var pick = Pick.Create(Faker.Random.Number(1, 7), movie, drafter).Value;
 
     // Act
@@ -37,8 +35,8 @@ public class DrafterTests : BaseTest
   public void AddVetoOverride_ShouldAddVetoOverrideToList()
   {
     // Arrange
-    var movie = Movie.Create(new MovieTitle(Faker.Lorem.Word()), MovieId.CreateUnique()).Value;
-    var drafter = Drafter.Create(Faker.Person.FullName).Value;
+    var movie = MovieFactory.CreateMovie().Value;
+    var drafter = DrafterFactory.CreateDrafter();
     var pick = Pick.Create(Faker.Random.Number(1, 7), movie, drafter).Value;
     var veto = Veto.Create(pick);
 
@@ -53,17 +51,11 @@ public class DrafterTests : BaseTest
   public void SetRolloverVeto_ShouldReturnSuccess_WhenRolloverVetoIsSet()
   {
     // Arrange
-    var drafter = Drafter.Create(Faker.Person.FullName).Value;
-    var draft = Draft.Create(
-      Title.Create(Faker.Lorem.Word()),
-      DraftType.Standard,
-      7,
-      2,
-      2,
-      DraftStatus.Created);
+    var drafter = DrafterFactory.CreateDrafter();
+    var draft = DraftFactory.CreateStandardDraft().Value;
 
     // Act
-    var result = drafter.SetRolloverVeto(RolloverVeto.Create(drafter, draft.Value.Id.Value));
+    var result = drafter.SetRolloverVeto(RolloverVeto.Create(drafter, draft.Id.Value));
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -73,18 +65,12 @@ public class DrafterTests : BaseTest
   public void SetRolloverVeto_ShouldReturnFailure_WhenRolloverVetoIsAlreadySet()
   {
     // Arrange
-    var drafter = Drafter.Create(Faker.Person.FullName).Value;
-    var draft = Draft.Create(
-      Title.Create(Faker.Lorem.Word()),
-      DraftType.Standard,
-      7,
-      2,
-      2,
-      DraftStatus.Created);
-    drafter.SetRolloverVeto(RolloverVeto.Create(drafter, draft.Value.Id.Value));
+    var drafter = DrafterFactory.CreateDrafter();
+    var draft = DraftFactory.CreateStandardDraft().Value;
+    drafter.SetRolloverVeto(RolloverVeto.Create(drafter, draft.Id.Value));
 
     // Act
-    var result = drafter.SetRolloverVeto(RolloverVeto.Create(drafter, draft.Value.Id.Value));
+    var result = drafter.SetRolloverVeto(RolloverVeto.Create(drafter, draft.Id.Value));
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -94,16 +80,10 @@ public class DrafterTests : BaseTest
   public void SetRolloverVetoOverride_ShouldReturnSuccess_WhenRolloverVetoOverrideIsNotSet()
   {
     // Arrange
-    var drafter = Drafter.Create(Faker.Person.FullName).Value;
-    var draft = Draft.Create(
-      Title.Create(Faker.Lorem.Word()),
-      DraftType.Standard,
-      7,
-      2,
-      2,
-      DraftStatus.Created);
+    var drafter = DrafterFactory.CreateDrafter();
+    var draft = DraftFactory.CreateStandardDraft().Value;
     // Act
-    var result = drafter.SetRolloverVetoOverride(RolloverVetoOverride.Create(drafter, draft.Value.Id.Value));
+    var result = drafter.SetRolloverVetoOverride(RolloverVetoOverride.Create(drafter, draft.Id.Value));
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -113,18 +93,12 @@ public class DrafterTests : BaseTest
   public void SetRolloverVetoOverride_ShouldReturnFailure_WhenRolloverVetoOverrideIsAlreadySet()
   {
     // Arrange
-    var drafter = Drafter.Create(Faker.Person.FullName).Value;
-    var draft = Draft.Create(
-      Title.Create(Faker.Lorem.Word()),
-      DraftType.Standard,
-      7,
-      2,
-      2,
-      DraftStatus.Created);
-    drafter.SetRolloverVetoOverride(RolloverVetoOverride.Create(drafter, draft.Value.Id.Value));
+    var drafter = DrafterFactory.CreateDrafter();
+    var draft = DraftFactory.CreateStandardDraft().Value;
+    drafter.SetRolloverVetoOverride(RolloverVetoOverride.Create(drafter, draft.Id.Value));
 
     // Act
-    var result = drafter.SetRolloverVetoOverride(RolloverVetoOverride.Create(drafter, draft.Value.Id.Value));
+    var result = drafter.SetRolloverVetoOverride(RolloverVetoOverride.Create(drafter, draft.Id.Value));
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -134,17 +108,11 @@ public class DrafterTests : BaseTest
   public void AddDraftStats_ShouldAddDraftStatsToList()
   {
     // Arrange
-    var drafter = Drafter.Create(Faker.Person.FullName).Value;
-    var draft = Draft.Create(
-      Title.Create(Faker.Lorem.Word()),
-      DraftType.Standard,
-      7,
-      2,
-      2,
-      DraftStatus.Created);
+    var drafter = DrafterFactory.CreateDrafter();
+    var draft = DraftFactory.CreateStandardDraft().Value;
 
     // Act
-    drafter.AddDraftStats(draft.Value);
+    drafter.AddDraftStats(draft);
 
     // Assert
     drafter.DraftStats.Should().ContainSingle();
@@ -154,7 +122,7 @@ public class DrafterTests : BaseTest
   public void SetDrafterName_ShouldSetNameCorrectly()
   {
     // Arrange
-    var drafter = Drafter.Create(Faker.Person.FullName).Value;
+    var drafter = DrafterFactory.CreateDrafter();
     var firstName = Faker.Person.FirstName;
     var lastName = Faker.Person.LastName;
     var middleName = Faker.Person.FirstName;

@@ -291,7 +291,7 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
 
   public Result ApplyRollover(Guid drafterId, bool isVeto)
   {
-    var drafterStats = _drafterDraftStats.FirstOrDefault(d => d.DrafterId.Value == drafterId);
+    var drafterStats = _drafterDraftStats.FirstOrDefault(d => d.Drafter.Id.Value == drafterId);
 
     if (isVeto && drafterStats?.RolloversApplied >= 1)
     {

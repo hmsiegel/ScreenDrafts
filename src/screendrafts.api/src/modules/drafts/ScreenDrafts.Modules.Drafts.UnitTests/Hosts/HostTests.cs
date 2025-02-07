@@ -37,36 +37,22 @@ public class HostTests : BaseTest
   public void AddDraft_ValidDraft_AddsDraftToHostedDrafts()
   {
     // Arrange
-    var hostName = Faker.Name.FullName();
-    var host = Host.Create(hostName).Value;
-    var draft = Draft.Create(
-      Title. Create(Faker.Lorem.Word()),
-      DraftType.Standard,
-      7,
-      2,
-      2,
-      DraftStatus.Created).Value;
+    var host = HostsFactory.CreateHost().Value;
+    var draft = DraftFactory.CreateStandardDraft();
 
     // Act
-    host.AddDraft(draft);
+    host.AddDraft(draft.Value);
 
     // Assert
-    Assert.Contains(draft, host.HostedDrafts);
+    Assert.Contains(draft.Value, host.HostedDrafts);
   }
 
   [Fact]
   public void RemoveDraft_ValidDraft_RemovesDraftFromHostedDrafts()
   {
     // Arrange
-    var hostName = Faker.Name.FullName();
-    var host = Host.Create(hostName).Value;
-    var draft = Draft.Create(
-      Title. Create(Faker.Lorem.Word()),
-      DraftType.Standard,
-      7,
-      2,
-      2,
-      DraftStatus.Created).Value;
+    var host = HostsFactory.CreateHost().Value;
+    var draft = DraftFactory.CreateStandardDraft().Value;
     host.AddDraft(draft);
 
     // Act
@@ -80,8 +66,7 @@ public class HostTests : BaseTest
   public void UpdateHostName_ValidNames_UpdatesHostName()
   {
     // Arrange
-    var hostName = Faker.Name.FullName();
-    var host = Host.Create(hostName).Value;
+    var host = HostsFactory.CreateHost().Value;
     var firstName = Faker.Name.FirstName();
     var lastName = Faker.Name.LastName();
     var middleName = Faker.Name.FirstName();
@@ -97,8 +82,7 @@ public class HostTests : BaseTest
   public void UpdateHostName_WithoutMiddleName_UpdatesHostName()
   {
     // Arrange
-    var hostName = Faker.Name.FullName();
-    var host = Host.Create(hostName).Value;
+    var host = HostsFactory.CreateHost().Value;
     var firstName = Faker.Name.FirstName();
     var lastName = Faker.Name.LastName();
 

@@ -16,4 +16,14 @@ public static class UserErrors
     SDError.NotFound(
       "UserErrors.NotFound",
       $"The user with the IDP identity {identityId} was not found.");
+
+  public static readonly SDError InvalidName =
+    SDError.Failure(
+      "UserErrors.InvalidName",
+      "The first name and last name must be at least 2 characters long.");
+
+  public static readonly SDError PasswordTooShort =
+    SDError.Failure(
+      "UserErrors.PasswordTooShort",
+      "The password must be at least 6 characters long.");
 }
