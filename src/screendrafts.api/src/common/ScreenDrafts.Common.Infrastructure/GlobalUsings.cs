@@ -26,6 +26,9 @@ global using Newtonsoft.Json;
 
 global using Npgsql;
 
+global using OpenTelemetry.Resources;
+global using OpenTelemetry.Trace;
+
 global using Quartz;
 
 global using ScreenDrafts.Common.Application.Authorization;

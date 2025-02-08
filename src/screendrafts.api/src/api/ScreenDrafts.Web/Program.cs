@@ -1,4 +1,6 @@
-﻿var builder = WebApplication.CreateBuilder(args);
+﻿using ScreenDrafts.Web.Middleware;
+
+var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog((context, config) =>
   config.ReadFrom.Configuration(context.Configuration));
@@ -13,6 +15,7 @@ var redisConnectionString = builder.Configuration.GetConnectionStringOrThrow("Ca
 
 builder.Services.AddApplication(AssemblyReferences.ApplicationAssemblies);
 builder.Services.AddInfrastructure(
+  DiagnosticsConfig.ServiceName,
   [DraftsModule.ConfigureConsumers],
   databaseConnectionString,
   redisConnectionString);
@@ -49,6 +52,7 @@ app.MapHealthChecks("health", new HealthCheckOptions
   ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
 });
 
+app.UseLogContextTraceLogging();
 app.UseSerilogRequestLogging();
 
 app.UseExceptionHandler();
