@@ -12,11 +12,14 @@ global using Microsoft.AspNetCore.OpenApi;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.OpenApi.Models;
 
+global using RabbitMQ.Client;
+
 global using Scalar.AspNetCore;
 
 global using ScreenDrafts.Common.Application;
 global using ScreenDrafts.Common.Infrastructure;
 global using ScreenDrafts.Common.Infrastructure.Configuration;
+global using ScreenDrafts.Common.Infrastructure.EventBus;
 global using ScreenDrafts.Modules.Administration.Infrastructure;
 global using ScreenDrafts.Modules.Administration.Infrastructure.Database;
 global using ScreenDrafts.Modules.Audit.Infrastructure;
