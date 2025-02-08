@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Web.Middleware;
-
-var builder = WebApplication.CreateBuilder(args);
+﻿var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog((context, config) =>
   config.ReadFrom.Configuration(context.Configuration));
@@ -12,11 +10,13 @@ builder.Services.ConfigureOpenApi(builder.Configuration);
 
 var databaseConnectionString = builder.Configuration.GetConnectionStringOrThrow("Database")!;
 var redisConnectionString = builder.Configuration.GetConnectionStringOrThrow("Cache")!;
+var rabbitMqSettings = new RabbitMqSettings(builder.Configuration.GetConnectionStringOrThrow("Queue"));
 
 builder.Services.AddApplication(AssemblyReferences.ApplicationAssemblies);
 builder.Services.AddInfrastructure(
   DiagnosticsConfig.ServiceName,
   [DraftsModule.ConfigureConsumers],
+  rabbitMqSettings,
   databaseConnectionString,
   redisConnectionString);
 
@@ -29,9 +29,19 @@ builder.Configuration.AddModuleConfiguration(ModuleReferences.Modules);
 
 var keyCloakHealthUrl = builder.Configuration.GetKeyCloakHealthUrl();
 
-builder.Services.AddHealthChecks()
+builder.Services
+  .AddSingleton(sp =>
+  {
+    var factory = new ConnectionFactory
+    {
+      Uri = new Uri(rabbitMqSettings.Host)
+    };
+    return factory.CreateConnectionAsync().GetAwaiter().GetResult();
+  })
+  .AddHealthChecks()
   .AddNpgSql(databaseConnectionString)
   .AddRedis(redisConnectionString)
+  .AddRabbitMQ()
   .AddKeyCloak(keyCloakHealthUrl);
 
 ModuleServiceExtensions.AddModules(builder.Services, builder.Configuration);

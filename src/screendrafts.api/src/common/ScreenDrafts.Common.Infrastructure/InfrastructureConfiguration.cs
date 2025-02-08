@@ -1,11 +1,14 @@
-﻿namespace ScreenDrafts.Common.Infrastructure;
+﻿using ScreenDrafts.Common.Infrastructure.EventBus;
+
+namespace ScreenDrafts.Common.Infrastructure;
 
 public static class InfrastructureConfiguration
 {
   public static IServiceCollection AddInfrastructure(
       this IServiceCollection services,
       string serviceName,
-      Action<IRegistrationConfigurator>[] moduleConfigureConsumers,
+      Action<IRegistrationConfigurator, string>[] moduleConfigureConsumers,
+      RabbitMqSettings rabbitMqSettings,
       string databaseConnectionString,
       string redisConnectionString)
   {
@@ -44,15 +47,21 @@ public static class InfrastructureConfiguration
 
     services.AddMassTransit(config =>
     {
-      foreach (var configureConsumer in moduleConfigureConsumers)
+      string instanceId = serviceName.ToUpperInvariant().Replace(" ", "-", StringComparison.InvariantCultureIgnoreCase);
+      foreach (Action<IRegistrationConfigurator, string> configureConsumer in moduleConfigureConsumers)
       {
-        configureConsumer(config);
+        configureConsumer(config, instanceId);
       }
 
       config.SetKebabCaseEndpointNameFormatter();
 
-      config.UsingInMemory((context, cfg) =>
+      config.UsingRabbitMq((context, cfg) =>
       {
+        cfg.Host(new Uri(rabbitMqSettings.Host), h =>
+        {
+          h.Username(rabbitMqSettings.UserName);
+          h.Password(rabbitMqSettings.Password);
+        });
         cfg.ConfigureEndpoints(context);
       });
     });

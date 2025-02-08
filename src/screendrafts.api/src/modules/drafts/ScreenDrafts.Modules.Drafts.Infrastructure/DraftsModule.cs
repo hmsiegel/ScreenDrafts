@@ -17,11 +17,12 @@ public static class DraftsModule
     return services;
   }
 
-  public static void ConfigureConsumers(IRegistrationConfigurator registrationConfigurator)
+  public static void ConfigureConsumers(IRegistrationConfigurator registrationConfigurator, string instanceId)
   {
     ArgumentNullException.ThrowIfNull(registrationConfigurator);
 
-    registrationConfigurator.AddConsumer<IntegrationEventConsumer<UserRegisteredIntegrationEvent>>();
+    registrationConfigurator.AddConsumer<IntegrationEventConsumer<UserRegisteredIntegrationEvent>>()
+      .Endpoint(c => c.InstanceId = instanceId);
   }
 
   private static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
