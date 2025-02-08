@@ -1,4 +1,5 @@
-﻿global using System.Reflection;
+﻿global using System.Diagnostics;
+global using System.Reflection;
 
 global using FastEndpoints;
 
@@ -38,5 +39,7 @@ global using ScreenDrafts.Web.Abstractions;
 global using ScreenDrafts.Web.Extensions;
 global using ScreenDrafts.Web.Logging;
 global using ScreenDrafts.Web.Middleware;
+global using ScreenDrafts.Web.OpenTelemetry;
 
 global using Serilog;
+global using Serilog.Context;
