@@ -84,6 +84,37 @@ services:
     ports:
       - 5672:5672
       - 15672:15672
+
+  screendrafts.mongo:
+    image: mongo:latest
+    container_name: ScreenDrafts.Mongo
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=admin
+    volumes:
+      - ./.containers/mongo:/data/db
+    ports:
+      - 27017:27017
+
+  screendrafts.email:
+    image: changemakerstudiosus/papercut-smtp:latest
+    container_name: ScreenDrafts.Email
+    ports:
+      - "8085:80"
+      - "25:25"
+
+  screendrafts.elk:
+    image: sebp/elk
+    container_name: ScreenDrafts.Elk
+    volumes:
+      - ./.containers/elk:/usr/share/elk/data
+    ports:
+      - "5601:5601"
+      - "9200:9200"
+      - "5044:5044"
+
+  
   
 
+    
 
