@@ -1,4 +1,6 @@
-﻿var builder = WebApplication.CreateBuilder(args);
+﻿using MongoDB.Driver;
+
+var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog((context, config) =>
   config.ReadFrom.Configuration(context.Configuration));
@@ -11,6 +13,7 @@ builder.Services.ConfigureOpenApi(builder.Configuration);
 var databaseConnectionString = builder.Configuration.GetConnectionStringOrThrow("Database")!;
 var redisConnectionString = builder.Configuration.GetConnectionStringOrThrow("Cache")!;
 var rabbitMqSettings = new RabbitMqSettings(builder.Configuration.GetConnectionStringOrThrow("Queue"));
+var mongoConnectionString = builder.Configuration.GetConnectionStringOrThrow("Mongo")!;
 
 builder.Services.AddApplication(AssemblyReferences.ApplicationAssemblies);
 builder.Services.AddInfrastructure(
@@ -18,7 +21,8 @@ builder.Services.AddInfrastructure(
   [DraftsModule.ConfigureConsumers],
   rabbitMqSettings,
   databaseConnectionString,
-  redisConnectionString);
+  redisConnectionString,
+  mongoConnectionString);
 
 builder.Services.AddFastEndpoints(opt =>
 {
@@ -38,10 +42,12 @@ builder.Services
     };
     return factory.CreateConnectionAsync().GetAwaiter().GetResult();
   })
+  .AddSingleton(sp => new MongoClient(mongoConnectionString))
   .AddHealthChecks()
   .AddNpgSql(databaseConnectionString)
   .AddRedis(redisConnectionString)
   .AddRabbitMQ()
+  .AddMongoDb()
   .AddKeyCloak(keyCloakHealthUrl);
 
 ModuleServiceExtensions.AddModules(builder.Services, builder.Configuration);

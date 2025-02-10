@@ -1,87 +1,110 @@
-﻿using ScreenDrafts.Common.Infrastructure.EventBus;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Serializers;
+using MongoDB.Driver;
+using MongoDB.Driver.Core.Extensions.DiagnosticSources;
+
+using ScreenDrafts.Common.Infrastructure.EventBus;
 
 namespace ScreenDrafts.Common.Infrastructure;
 
 public static class InfrastructureConfiguration
 {
-  public static IServiceCollection AddInfrastructure(
-      this IServiceCollection services,
-      string serviceName,
-      Action<IRegistrationConfigurator, string>[] moduleConfigureConsumers,
-      RabbitMqSettings rabbitMqSettings,
-      string databaseConnectionString,
-      string redisConnectionString)
-  {
-    services.AddAuthenticationInternal();
+  private const string MongoDbDiagnosticSource = "MongoDB.Driver.Core.Extensions.DiagnosticSources";
 
-    services.AddAuthorizationInternal();
-
-    services.TryAddSingleton<IDateTimeProvider, DateTimeProvider>();
-
-    services.TryAddSingleton<IEventBus, EventBus.EventBus>();
-
-    services.TryAddSingleton<InsertOutboxMessagesInterceptor>();
-
-    var npgsqlDataSource = new NpgsqlDataSourceBuilder(databaseConnectionString).Build();
-    services.TryAddSingleton(npgsqlDataSource);
-
-    services.TryAddScoped<IDbConnectionFactory, DbConnectionFactory>();
-
-    SqlMapper.AddTypeHandler(new GeneciArrayHandler<string>());
-
-    services.AddQuartz();
-
-    services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);
-
-    IConnectionMultiplexer connectionMultiplexer = ConnectionMultiplexer.Connect(redisConnectionString, opt =>
+    public static IServiceCollection AddInfrastructure(
+        this IServiceCollection services,
+        string serviceName,
+        Action<IRegistrationConfigurator, string>[] moduleConfigureConsumers,
+        RabbitMqSettings rabbitMqSettings,
+        string databaseConnectionString,
+        string redisConnectionString,
+        string mongoConnectionString)
     {
-      opt.AbortOnConnectFail = false;
-    });
+        services.AddAuthenticationInternal();
 
-    services.TryAddSingleton(connectionMultiplexer);
+        services.AddAuthorizationInternal();
 
-    services.AddStackExchangeRedisCache(opt =>
-      opt.ConnectionMultiplexerFactory = () => Task.FromResult(connectionMultiplexer));
+        services.TryAddSingleton<IDateTimeProvider, DateTimeProvider>();
 
-    services.TryAddSingleton<ICacheService, CacheService>();
+        services.TryAddSingleton<IEventBus, EventBus.EventBus>();
 
-    services.AddMassTransit(config =>
-    {
-      string instanceId = serviceName.ToUpperInvariant().Replace(" ", "-", StringComparison.InvariantCultureIgnoreCase);
-      foreach (Action<IRegistrationConfigurator, string> configureConsumer in moduleConfigureConsumers)
-      {
-        configureConsumer(config, instanceId);
-      }
+        services.TryAddSingleton<InsertOutboxMessagesInterceptor>();
 
-      config.SetKebabCaseEndpointNameFormatter();
+        var npgsqlDataSource = new NpgsqlDataSourceBuilder(databaseConnectionString).Build();
+        services.TryAddSingleton(npgsqlDataSource);
 
-      config.UsingRabbitMq((context, cfg) =>
-      {
-        cfg.Host(new Uri(rabbitMqSettings.Host), h =>
+        services.TryAddScoped<IDbConnectionFactory, DbConnectionFactory>();
+
+        SqlMapper.AddTypeHandler(new GeneciArrayHandler<string>());
+
+        services.AddQuartz();
+
+        services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);
+
+        IConnectionMultiplexer connectionMultiplexer = ConnectionMultiplexer.Connect(redisConnectionString, opt =>
         {
-          h.Username(rabbitMqSettings.UserName);
-          h.Password(rabbitMqSettings.Password);
+            opt.AbortOnConnectFail = false;
         });
-        cfg.ConfigureEndpoints(context);
-      });
-    });
 
-    services
-      .AddOpenTelemetry()
-      .ConfigureResource(resource => resource.AddService(serviceName))
-      .WithTracing(tracing =>
-      {
-        tracing
-          .AddAspNetCoreInstrumentation()
-          .AddHttpClientInstrumentation()
-          .AddEntityFrameworkCoreInstrumentation()
-          .AddRedisInstrumentation()
-          .AddNpgsql()
-          .AddSource(MassTransit.Logging.DiagnosticHeaders.DefaultListenerName);
+        services.TryAddSingleton(connectionMultiplexer);
 
-        tracing.AddOtlpExporter();
-      });
+        services.AddStackExchangeRedisCache(opt =>
+            opt.ConnectionMultiplexerFactory = () => Task.FromResult(connectionMultiplexer));
 
-    return services;
-  }
+        services.TryAddSingleton<ICacheService, CacheService>();
+
+        services.AddMassTransit(config =>
+        {
+            string instanceId = serviceName.ToUpperInvariant().Replace(" ", "-", StringComparison.InvariantCultureIgnoreCase);
+            foreach (Action<IRegistrationConfigurator, string> configureConsumer in moduleConfigureConsumers)
+            {
+                configureConsumer(config, instanceId);
+            }
+
+            config.SetKebabCaseEndpointNameFormatter();
+
+            config.UsingRabbitMq((context, cfg) =>
+            {
+                cfg.Host(new Uri(rabbitMqSettings.Host), h =>
+                {
+                    h.Username(rabbitMqSettings.UserName);
+                    h.Password(rabbitMqSettings.Password);
+                });
+                cfg.ConfigureEndpoints(context);
+            });
+        });
+
+        services
+            .AddOpenTelemetry()
+            .ConfigureResource(resource => resource.AddService(serviceName))
+            .WithTracing(tracing =>
+            {
+                tracing
+                    .AddAspNetCoreInstrumentation()
+                    .AddHttpClientInstrumentation()
+                    .AddEntityFrameworkCoreInstrumentation()
+                    .AddRedisInstrumentation()
+                    .AddNpgsql()
+                    .AddSource(MassTransit.Logging.DiagnosticHeaders.DefaultListenerName)
+                    .AddSource(MongoDbDiagnosticSource);
+
+                tracing.AddOtlpExporter();
+            });
+
+        var mongoClientSettings = MongoClientSettings.FromConnectionString(mongoConnectionString);
+
+        mongoClientSettings.ClusterConfigurator = c => c.Subscribe(
+            new DiagnosticsActivityEventSubscriber(
+                new InstrumentationOptions
+                {
+                    CaptureCommandText = true,
+                }));
+
+        services.AddSingleton<IMongoClient>(sp => new MongoClient(mongoClientSettings));
+
+        BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.Standard));
+
+        return services;
+    }
 }
