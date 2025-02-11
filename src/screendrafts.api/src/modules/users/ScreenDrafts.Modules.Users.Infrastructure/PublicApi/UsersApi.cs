@@ -24,4 +24,32 @@ internal sealed class UsersApi(ISender sender) : IUsersApi
       LastName: result.Value.LastName,
       MiddleName: result.Value.MiddleName);
   }
+
+  public async Task<Result> AddUserRoleAsync(Guid userId, string Role)
+  {
+    var command = new AddUserRoleCommand(userId, Role);
+
+    var result = await _sender.Send(command);
+
+    if (result.IsFailure)
+    {
+      return Result.Failure(result.Errors[0]);
+    }
+
+    return Result.Success();
+  }
+
+  public async Task<Result> RemoveUserRoleAsync(Guid userId, string Role)
+  {
+    var command = new RemoveUserRoleCommand(userId, Role);
+
+    var result = await _sender.Send(command);
+
+    if (result.IsFailure)
+    {
+      return Result.Failure(result.Errors[0]);
+    }
+
+    return Result.Success();
+  }
 }
