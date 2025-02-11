@@ -26,7 +26,8 @@ public class ModuleTests : BaseTest
       MoviesIntegrationEventsNamespace,
       RealTimeUpdatesIntegrationEventsNamespace,
       ReportingIntegrationEventsNamespace,
-      UsersIntegrationEventsNamespace
+      UsersIntegrationEventsNamespace,
+      UsersPublicApiNameSpace
     ];
 
     List<Assembly> administrationAssemblies =

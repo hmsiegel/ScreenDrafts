@@ -26,4 +26,29 @@ public static class UserErrors
     SDError.Failure(
       "UserErrors.PasswordTooShort",
       "The password must be at least 6 characters long.");
+
+  public static SDError RoleAlreadyExists(Guid userId, string role) =>
+    SDError.Problem(
+      "UserErrors.RoleAlreadyExists",
+      $"The user with id {userId} already has the role {role}.");
+
+  public static readonly SDError RoleDoesNotExist =
+    SDError.NotFound(
+      "UserErrors.RoleDoesNotExist",
+      "The role does not exist.");
+
+  public static readonly SDError CannotRemoveLastRole =
+    SDError.Problem(
+      "UserErrors.CannotRemoveLastRole",
+      "The user must have at least one role.");
+
+  public static SDError PermissionAlreadyExists(string code) =>
+    SDError.Problem(
+      "UserErrors.PermissionAlreadyExists",
+      $"The permission with code {code} already exists.");
+
+  public static SDError PermissionNotFound(string code) =>
+    SDError.NotFound(
+      "UserErrors.PermissionNotFound",
+      $"The permission with code {code} was not found.");
 }
