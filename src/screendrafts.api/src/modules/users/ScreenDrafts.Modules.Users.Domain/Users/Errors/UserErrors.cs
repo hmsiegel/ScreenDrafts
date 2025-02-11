@@ -41,4 +41,14 @@ public static class UserErrors
     SDError.Problem(
       "UserErrors.CannotRemoveLastRole",
       "The user must have at least one role.");
+
+  public static SDError PermissionAlreadyExists(string code) =>
+    SDError.Problem(
+      "UserErrors.PermissionAlreadyExists",
+      $"The permission with code {code} already exists.");
+
+  public static SDError PermissionNotFound(string code) =>
+    SDError.NotFound(
+      "UserErrors.PermissionNotFound",
+      $"The permission with code {code} was not found.");
 }

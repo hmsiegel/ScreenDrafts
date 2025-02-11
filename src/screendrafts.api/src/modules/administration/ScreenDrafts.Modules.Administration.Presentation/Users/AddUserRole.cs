@@ -7,7 +7,7 @@ internal sealed class AddUserRole(IUsersApi usersApi) : Endpoint<AddUserRoleRequ
   public override void Configure()
   {
     Post("administation/users/{userId:guid}/roles");
-    AllowAnonymous();
+    Policies(Presentation.Permissions.ModifyUser);
     Description(x => x.WithTags(Presentation.Tags.Administration));
   }
 

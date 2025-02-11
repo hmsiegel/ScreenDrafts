@@ -52,4 +52,18 @@ internal sealed class UsersApi(ISender sender) : IUsersApi
 
     return Result.Success();
   }
+
+  public async Task<Result> AddPermissionToRoleAsync(string Role, string Permission)
+  {
+    var command = new AddPermissionToRoleCommand(Role, Permission);
+
+    var result = await _sender.Send(command);
+
+    if (result.IsFailure)
+    {
+      return Result.Failure(result.Errors[0]);
+    }
+
+    return Result.Success();
+  }
 }

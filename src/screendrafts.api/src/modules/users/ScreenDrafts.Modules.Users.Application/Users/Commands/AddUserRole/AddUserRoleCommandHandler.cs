@@ -1,6 +1,9 @@
 ﻿namespace ScreenDrafts.Modules.Users.Application.Users.Commands.AddUserRole;
 
-internal sealed class AddUserRoleCommandHandler(IDbConnectionFactory connectionFactory, IUserRepository userRepository) : ICommandHandler<AddUserRoleCommand, bool>
+internal sealed class AddUserRoleCommandHandler(
+  IDbConnectionFactory connectionFactory,
+  IUserRepository userRepository) 
+  : ICommandHandler<AddUserRoleCommand, bool>
 {
     private readonly IDbConnectionFactory _connectionFactory = connectionFactory;
     private readonly IUserRepository _userRepository = userRepository;

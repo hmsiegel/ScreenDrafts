@@ -37,6 +37,7 @@ global using ScreenDrafts.Common.Infrastructure.Outbox;
 global using ScreenDrafts.Common.Infrastructure.Serialization;
 global using ScreenDrafts.Modules.Users.Application.Abstractions.Data;
 global using ScreenDrafts.Modules.Users.Application.Abstractions.Identity;
+global using ScreenDrafts.Modules.Users.Application.Users.Commands.AddPermissionToRole;
 global using ScreenDrafts.Modules.Users.Application.Users.Commands.AddUserRole;
 global using ScreenDrafts.Modules.Users.Application.Users.Commands.RemoveUserRole;
 global using ScreenDrafts.Modules.Users.Application.Users.Queries.GetUser;

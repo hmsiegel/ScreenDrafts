@@ -8,7 +8,7 @@ internal sealed class CreateDrafter(ISender sender) : Endpoint<CreateDrafterRequ
   {
     Post("/drafters/create");
     Description(x => x.WithTags(Presentation.Tags.Drafters));
-    AllowAnonymous();
+    Policies(Presentation.Permissions.CreateDrafter);
   }
   public override async Task HandleAsync(CreateDrafterRequest req, CancellationToken ct)
   {

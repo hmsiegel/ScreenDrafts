@@ -7,7 +7,7 @@ internal sealed class RemoveUserRole(IUsersApi usersApi) : Endpoint<RemoveUserRo
   public override void Configure()
   {
     Delete("administation/users/{userId:guid}/roles");
-    AllowAnonymous();
+    Policies(Presentation.Permissions.ModifyUser);
     Description(x => x.WithTags(Presentation.Tags.Administration));
   }
 

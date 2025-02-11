@@ -1,5 +1,4 @@
 ﻿global using System.Net;
-global using ScreenDrafts.Modules.Users.Application.Users.Commands.AddUserRole;
 global using System.Net.Http.Headers;
 global using System.Net.Http.Json;
 global using System.Text.Json.Serialization;
@@ -19,8 +18,12 @@ global using Microsoft.Extensions.Options;
 
 global using ScreenDrafts.Common.Application.Authorization;
 global using ScreenDrafts.Common.Domain;
+global using ScreenDrafts.Modules.Users.Application.Users.Commands.AddPermission;
+global using ScreenDrafts.Modules.Users.Application.Users.Commands.AddPermissionToRole;
+global using ScreenDrafts.Modules.Users.Application.Users.Commands.AddUserRole;
 global using ScreenDrafts.Modules.Users.Application.Users.Commands.RegisterUser;
 global using ScreenDrafts.Modules.Users.Application.Users.Commands.UpdateUser;
+global using ScreenDrafts.Modules.Users.Application.Users.Queries.GetPermissionByCode;
 global using ScreenDrafts.Modules.Users.Application.Users.Queries.GetUser;
 global using ScreenDrafts.Modules.Users.Application.Users.Queries.GetUserPermissions;
 global using ScreenDrafts.Modules.Users.Domain.Users.Errors;

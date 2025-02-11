@@ -8,4 +8,6 @@ public interface IUsersApi
   Task<Result> AddUserRoleAsync(Guid userId, string Role);
 
   Task<Result> RemoveUserRoleAsync(Guid userId, string Role);
+
+  Task<Result> AddPermissionToRoleAsync(string Role, string Permission);
 }
