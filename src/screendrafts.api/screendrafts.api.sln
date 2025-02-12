@@ -56,6 +56,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Directory.Build.props = Directory.Build.props
 		Directory.Build.targets = Directory.Build.targets
 		Directory.Packages.props = Directory.Packages.props
+		..\..\README.md = ..\..\README.md
 		.files\screendrafts-realm-export.json = .files\screendrafts-realm-export.json
 	EndProjectSection
 EndProject
