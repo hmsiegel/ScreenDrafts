@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Modules.Movies.Infrastructure.Inbox;
-
-namespace ScreenDrafts.Modules.Movies.Infrastructure;
+﻿namespace ScreenDrafts.Modules.Movies.Infrastructure;
 
 public static class MoviesModule
 {

@@ -30,4 +30,5 @@ global using ScreenDrafts.Common.Infrastructure.Outbox;
 global using ScreenDrafts.Common.Infrastructure.Serialization;
 global using ScreenDrafts.Modules.Movies.Application.Abstractions.Data;
 global using ScreenDrafts.Modules.Movies.Infrastructure.Database;
+global using ScreenDrafts.Modules.Movies.Infrastructure.Inbox;
 global using ScreenDrafts.Modules.Movies.Infrastructure.Outbox;

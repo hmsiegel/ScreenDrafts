@@ -56,6 +56,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Directory.Build.props = Directory.Build.props
 		Directory.Build.targets = Directory.Build.targets
 		Directory.Packages.props = Directory.Packages.props
+		global.json = global.json
 		..\..\README.md = ..\..\README.md
 		.files\screendrafts-realm-export.json = .files\screendrafts-realm-export.json
 	EndProjectSection
@@ -1328,5 +1329,8 @@ Global
 		{34C5B4D3-711D-4775-9786-E66B3A0D7441} = {05878CE6-D6E2-4C29-A0AD-2A0D49261A85}
 		{71CC9F96-D7F0-4D0F-B4D8-742031D53B97} = {05878CE6-D6E2-4C29-A0AD-2A0D49261A85}
 		{240C9CF4-3496-46EA-B293-977FA968419E} = {8EA69CB1-DDAE-45B5-906C-9EE588B0A5B1}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6C333748-554D-4FAB-9275-1017471227E1}
 	EndGlobalSection
 EndGlobal

@@ -38,13 +38,16 @@ public static class IntegrationsModule
     services.Configure<InboxOptions>(configuration.GetSection("Integrations:Inbox"));
 
     services.ConfigureOptions<ConfigureProcessInboxJob>();
+
+    services.AddOptions<ImdbSettings>()
+      .Bind(configuration.GetSection("Integrations:Imdb"))
+      .ValidateDataAnnotations();
   }
   private static void AddDomainEventHandlers(this IServiceCollection services)
   {
-    Type[] domainEventHandlers = Application.AssemblyReference.Assembly
+    Type[] domainEventHandlers = [.. Application.AssemblyReference.Assembly
         .GetTypes()
-        .Where(t => t.IsAssignableTo(typeof(IDomainEventHandler)))
-        .ToArray();
+        .Where(t => t.IsAssignableTo(typeof(IDomainEventHandler)))];
 
     foreach (Type domainEventHandler in domainEventHandlers)
     {
@@ -64,10 +67,9 @@ public static class IntegrationsModule
 
   private static void AddIntegrationEventHandlers(this IServiceCollection services)
   {
-    Type[] integrationEventHandlers = Presentation.AssemblyReference.Assembly
+    Type[] integrationEventHandlers = [.. Presentation.AssemblyReference.Assembly
         .GetTypes()
-        .Where(t => t.IsAssignableTo(typeof(IIntegrationEventHandler)))
-        .ToArray();
+        .Where(t => t.IsAssignableTo(typeof(IIntegrationEventHandler)))];
 
     foreach (Type integrationEventHandler in integrationEventHandlers)
     {

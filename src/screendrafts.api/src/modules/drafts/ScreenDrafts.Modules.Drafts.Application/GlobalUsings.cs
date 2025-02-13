@@ -6,6 +6,8 @@ global using Dapper;
 
 global using FluentValidation;
 
+global using Microsoft.Extensions.Logging;
+
 global using ScreenDrafts.Common.Application.Data;
 global using ScreenDrafts.Common.Application.Messaging;
 global using ScreenDrafts.Common.Domain;

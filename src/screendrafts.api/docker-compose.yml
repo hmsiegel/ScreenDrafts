@@ -5,6 +5,11 @@ services:
     build:
       context: .
       dockerfile: src/api/ScreenDrafts.Web/Dockerfile
+    volumes:
+      - ./data:/app/data
+    environment:
+      - DATA_PATH=/app/data
+    
     ports:
       - 5000:8080
       - 5001:8081

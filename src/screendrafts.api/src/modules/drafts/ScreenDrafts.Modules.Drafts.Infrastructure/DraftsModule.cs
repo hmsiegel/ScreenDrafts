@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Infrastructure;
+﻿using ScreenDrafts.Modules.Drafts.Infrastructure.Database.DatabaseSeeders;
+
+namespace ScreenDrafts.Modules.Drafts.Infrastructure;
 
 public static class DraftsModule
 {
@@ -15,6 +17,15 @@ public static class DraftsModule
     services.AddInfrastructure(configuration);
 
     return services;
+  }
+
+  public static async Task<IApplicationBuilder> UseDraftsModuleAsync(this IApplicationBuilder app)
+  {
+    ArgumentNullException.ThrowIfNull(app);
+
+    await app.UseSeedersAsync();
+
+    return app;
   }
 
   public static void ConfigureConsumers(IRegistrationConfigurator registrationConfigurator, string instanceId)
@@ -39,6 +50,19 @@ public static class DraftsModule
 
     services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<DraftsDbContext>());
 
+    services.RegisterRepositories();
+
+    services.AddScoped<ICustomSeeder, DrafterSeeder>();
+    services.AddScoped<ICustomSeeder, HostsSeeder>();
+
+    services.Configure<OutboxOptions>(configuration.GetSection("Drafts:Outbox"));
+    services.ConfigureOptions<ConfigureProcessOutboxJob>();
+    services.Configure<InboxOptions>(configuration.GetSection("Drafts:Inbox"));
+    services.ConfigureOptions<ConfigureProcessInboxJob>();
+  }
+
+  private static void RegisterRepositories(this IServiceCollection services)
+  {
     services.AddScoped<IDraftsRepository, DraftsRepository>();
     services.AddScoped<IDraftersRepository, DraftersRepository>();
     services.AddScoped<IGameBoardRepository, GameBoardRepository>();
@@ -46,22 +70,13 @@ public static class DraftsModule
     services.AddScoped<IPicksRepository, PicksRepository>();
     services.AddScoped<IVetoRepository, VetoRepository>();
     services.AddScoped<ITriviaResultsRepository, TriviaResultsRepository>();
-
-    services.Configure<OutboxOptions>(configuration.GetSection("Drafts:Outbox"));
-
-    services.ConfigureOptions<ConfigureProcessOutboxJob>();
-
-    services.Configure<InboxOptions>(configuration.GetSection("Drafts:Inbox"));
-
-    services.ConfigureOptions<ConfigureProcessInboxJob>();
   }
 
   private static void AddDomainEventHandlers(this IServiceCollection services)
   {
-    Type[] domainEventHandlers = Application.AssemblyReference.Assembly
+    Type[] domainEventHandlers = [.. Application.AssemblyReference.Assembly
         .GetTypes()
-        .Where(t => t.IsAssignableTo(typeof(IDomainEventHandler)))
-        .ToArray();
+        .Where(t => t.IsAssignableTo(typeof(IDomainEventHandler)))];
 
     foreach (Type domainEventHandler in domainEventHandlers)
     {
@@ -81,10 +96,9 @@ public static class DraftsModule
 
   private static void AddIntegrationEventHandlers(this IServiceCollection services)
   {
-    Type[] integrationEventHandlers = Presentation.AssemblyReference.Assembly
+    Type[] integrationEventHandlers = [.. Presentation.AssemblyReference.Assembly
         .GetTypes()
-        .Where(t => t.IsAssignableTo(typeof(IIntegrationEventHandler)))
-        .ToArray();
+        .Where(t => t.IsAssignableTo(typeof(IIntegrationEventHandler)))];
 
     foreach (Type integrationEventHandler in integrationEventHandlers)
     {
@@ -101,4 +115,5 @@ public static class DraftsModule
       services.Decorate(integrationEventHandler, closedIdempotentHandler);
     }
   }
+
 }
