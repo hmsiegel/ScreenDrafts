@@ -32,6 +32,7 @@ public sealed class Permission(string code)
   public static readonly Permission SearchStudios = new("studios:search");
   public static readonly Permission CreateGameBoard = new("game-boards:create");
   public static readonly Permission ModifyGameBoard = new("game-boards:update");
+  public static readonly Permission SearchPatreonDrafts = new("patreon:search");
 
   public string Code { get; } = code;
 }

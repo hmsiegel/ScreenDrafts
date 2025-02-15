@@ -54,6 +54,7 @@ public static class DraftsModule
 
     services.AddScoped<ICustomSeeder, DrafterSeeder>();
     services.AddScoped<ICustomSeeder, HostsSeeder>();
+    services.AddScoped<ICustomSeeder, DraftSeeder>();
 
     services.Configure<OutboxOptions>(configuration.GetSection("Drafts:Outbox"));
     services.ConfigureOptions<ConfigureProcessOutboxJob>();

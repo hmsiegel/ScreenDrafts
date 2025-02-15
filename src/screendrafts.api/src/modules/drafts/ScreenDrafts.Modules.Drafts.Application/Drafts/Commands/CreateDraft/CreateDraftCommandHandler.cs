@@ -14,7 +14,8 @@ internal sealed class CreateDraftCommandHandler(IDraftsRepository draftsReposito
       request.TotalPicks,
       request.TotalDrafters,
       request.TotalHosts,
-      request.DraftStatus);
+      request.DraftStatus,
+      request.EpisodeType);
 
     if (result.IsFailure)
     {

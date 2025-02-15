@@ -12,9 +12,17 @@ public class DraftTests : BaseTest
     var totalDrafters = 2;
     var totalHosts = 2;
     var draftStatus = DraftStatus.Created;
+    var episodeType = EpisodeType.MainFeed;
 
     // Act
-    var result = Draft.Create(title, draftType, totalPicks, totalDrafters, totalHosts, draftStatus);
+    var result = Draft.Create(
+      title,
+      draftType,
+      totalPicks,
+      totalDrafters,
+      totalHosts,
+      draftStatus,
+      episodeType);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -24,6 +32,7 @@ public class DraftTests : BaseTest
     result.Value.TotalDrafters.Should().Be(totalDrafters);
     result.Value.TotalHosts.Should().Be(totalHosts);
     result.Value.DraftStatus.Should().Be(draftStatus);
+    result.Value.EpisodeType.Should().Be(episodeType);
   }
 
   [Fact]
@@ -46,9 +55,17 @@ public class DraftTests : BaseTest
     var totalDrafters = 1;
     var totalHosts = 2;
     var draftStatus = DraftStatus.Created;
+    var episodeType = EpisodeType.MainFeed;
 
     // Act
-    var result = Draft.Create(title, draftType, totalPicks, totalDrafters, totalHosts, draftStatus);
+    var result = Draft.Create(
+      title,
+      draftType,
+      totalPicks,
+      totalDrafters,
+      totalHosts,
+      draftStatus,
+      episodeType);
 
     // Assert
     result.IsSuccess.Should().BeFalse();
@@ -65,9 +82,17 @@ public class DraftTests : BaseTest
     var totalDrafters = 3;
     var totalHosts = 2;
     var draftStatus = DraftStatus.Created;
+    var episodeType = EpisodeType.MainFeed;
 
     // Act
-    var result = Draft.Create(title, draftType, totalPicks, totalDrafters, totalHosts, draftStatus);
+    var result = Draft.Create(
+      title,
+      draftType,
+      totalPicks,
+      totalDrafters,
+      totalHosts,
+      draftStatus,
+      episodeType);
 
     // Assert
     result.IsSuccess.Should().BeFalse();
@@ -439,10 +464,9 @@ public class DraftTests : BaseTest
     var episodeNumber = "S01E01";
 
     // Act
-    var result = draft.SetEpisodeNumber(episodeNumber);
+    draft.SetEpisodeNumber(episodeNumber);
 
     // Assert
-    result.IsSuccess.Should().BeTrue();
     draft.EpisodeNumber.Should().Be(episodeNumber);
   }
 
@@ -461,7 +485,7 @@ public class DraftTests : BaseTest
   }
 
   [Fact]
-  public void SetDraftReleaseDate_ShouldReturnSuccessResult_WhenReleaseDateIsValid()
+  public void AddDraftReleaseDate_ShouldReturnSuccessResult_WhenReleaseDateIsValid()
   {
     // Arrange
     var draft = DraftFactory.CreateStandardDraft().Value;
@@ -471,11 +495,10 @@ public class DraftTests : BaseTest
       Faker.Date.Past(1).Day);
 
     // Act
-    var result = draft.SetDraftReleaseDate(releaseDate);
+    draft.AddReleaseDate(DraftReleaseDate.Create(draft.Id, releaseDate));
 
     // Assert
-    result.IsSuccess.Should().BeTrue();
-    draft.ReleaseDate.Should().Be(releaseDate);
+    draft.ReleaseDates.Should().Contain(rd => rd.ReleaseDate == releaseDate);
   }
 
   [Fact]
@@ -486,10 +509,9 @@ public class DraftTests : BaseTest
     var draftStatus = DraftStatus.Completed;
 
     // Act
-    var result = draft.SetDraftStatus(draftStatus);
+    draft.SetDraftStatus(draftStatus);
 
     // Assert
-    result.IsSuccess.Should().BeTrue();
     draft.DraftStatus.Should().Be(draftStatus);
   }
 
@@ -502,10 +524,9 @@ public class DraftTests : BaseTest
     var gameBoard = GameBoard.Create(draft, picks).Value;
 
     // Act
-    var result = draft.SetGameBoard(gameBoard);
+    draft.SetGameBoard(gameBoard);
 
     // Assert
-    result.IsSuccess.Should().BeTrue();
     draft.GameBoard.Should().Be(gameBoard);
   }
 

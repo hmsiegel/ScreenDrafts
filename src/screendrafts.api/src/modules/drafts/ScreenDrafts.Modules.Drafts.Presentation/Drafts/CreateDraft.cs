@@ -21,6 +21,7 @@ internal sealed class CreateDraft(ISender sender) : Endpoint<DraftRequest, Guid>
       req.TotalPicks,
       req.TotalDrafters,
       req.TotalHosts,
+      EpisodeType.FromName(req.EpisodeType),
       DraftStatus.FromName(req.DraftStatus));
 
     var draftId = await _sender.Send(command, ct);
@@ -36,4 +37,5 @@ internal sealed class CreateDraft(ISender sender) : Endpoint<DraftRequest, Guid>
     int TotalPicks,
     int TotalDrafters,
     int TotalHosts,
+    string EpisodeType,
     string DraftStatus);

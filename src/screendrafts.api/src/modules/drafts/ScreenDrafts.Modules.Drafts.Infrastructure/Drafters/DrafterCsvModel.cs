@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace ScreenDrafts.Modules.Drafts.Infrastructure.Drafters;
+﻿namespace ScreenDrafts.Modules.Drafts.Infrastructure.Drafters;
 
 public sealed class DrafterCsvModel
 {

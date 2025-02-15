@@ -25,7 +25,8 @@ internal sealed class RoleConfiguration : IEntityTypeConfiguration<Role>
       Role.Administrator,
       Role.Guest,
       Role.Host,
-      Role.Drafter
+      Role.Drafter,
+      Role.Patreon
     );
   }
 }

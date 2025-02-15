@@ -7,6 +7,7 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
   private readonly List<Host> _hosts = [];
   private readonly List<DrafterDraftStats> _drafterDraftStats = [];
   private readonly List<TriviaResult> _triviaResults = [];
+  private readonly List<DraftReleaseDate> _releaseDates = [];
 
   private Draft(
   DraftId id,
@@ -16,6 +17,7 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
   int totalDrafters,
   int totalHosts,
   DraftStatus draftStatus,
+  EpisodeType episodeType,
   DateTime createdAtUtc)
   : base(id)
   {
@@ -25,6 +27,7 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
     TotalDrafters = totalDrafters;
     TotalHosts = totalHosts;
     DraftStatus = draftStatus;
+    EpisodeType = episodeType;
     CreatedAtUtc = createdAtUtc;
   }
 
@@ -38,6 +41,8 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
 
   public DraftType DraftType { get; private set; } = default!;
 
+  public EpisodeType EpisodeType { get; private set; } = default!;
+
   public int TotalPicks { get; private set; }
 
   public int TotalDrafters { get; private set; }
@@ -48,11 +53,11 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
 
   public DraftStatus DraftStatus { get; private set; } = default!;
 
-  public DateOnly? ReleaseDate { get; private set; } = default!;
-
   public DateTime CreatedAtUtc { get; private set; }
 
   public DateTime? UpdatedAtUtc { get; private set; }
+
+  public bool IsPatreonOnly { get; private set; }
 
   // Relationships
 
@@ -68,6 +73,8 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
 
   public IReadOnlyCollection<TriviaResult> TriviaResults => _triviaResults.AsReadOnly();
 
+  public IReadOnlyCollection<DraftReleaseDate> ReleaseDates => _releaseDates.AsReadOnly();
+
 
   public static Result<Draft> Create(
   Title title,
@@ -76,6 +83,7 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
   int totalDrafters,
   int totalHosts,
   DraftStatus draftStatus,
+  EpisodeType episodeType,
   DraftId? id = null)
   {
     if (totalDrafters < 2)
@@ -95,6 +103,7 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
       totalDrafters: totalDrafters,
       totalHosts: totalHosts,
       draftStatus: draftStatus,
+      episodeType: episodeType,
       createdAtUtc: DateTime.UtcNow,
       id: id ?? DraftId.CreateUnique());
 
@@ -308,11 +317,10 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
     return Result.Success();
   }
 
-  public Result SetEpisodeNumber(string episodeNumber)
+  public void SetEpisodeNumber(string episodeNumber)
   {
     Guard.Against.NullOrEmpty(episodeNumber);
     EpisodeNumber = episodeNumber;
-    return Result.Success();
   }
 
   public Result PauseDraft()
@@ -326,21 +334,23 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
     return Result.Success();
   }
 
-  public Result SetDraftReleaseDate(DateOnly releaseDate)
+  public void AddReleaseDate(DraftReleaseDate releaseDate)
   {
-    ReleaseDate = releaseDate;
-    return Result.Success();
+    _releaseDates.Add(releaseDate);
   }
 
-  public Result SetDraftStatus(DraftStatus draftStatus)
+  public void SetDraftStatus(DraftStatus draftStatus)
   {
     DraftStatus = draftStatus;
-    return Result.Success();
   }
 
-  public Result SetGameBoard(GameBoard gameBoard)
+  public void SetGameBoard(GameBoard gameBoard)
   {
     GameBoard = gameBoard;
-    return Result.Success();
+  }
+
+  public void SetPatreonOnly(bool isPatreonOnly)
+  {
+    IsPatreonOnly = isPatreonOnly;
   }
 }
