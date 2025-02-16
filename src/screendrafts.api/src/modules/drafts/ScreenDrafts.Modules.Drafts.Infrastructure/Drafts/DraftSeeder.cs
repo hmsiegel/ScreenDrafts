@@ -1,10 +1,4 @@
-﻿using System.Text.Json;
-
-using Quartz.Util;
-
-using ScreenDrafts.Modules.Drafts.Infrastructure.Serialization;
-
-using JsonSerializer = System.Text.Json.JsonSerializer;
+﻿using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace ScreenDrafts.Modules.Drafts.Infrastructure.Drafts;
 
@@ -46,48 +40,51 @@ internal sealed class DraftSeeder(
       return;
     }
 
-    foreach (var draft in drafts)
+    if (!await _dbContext.Drafts.AnyAsync(cancellationToken))
     {
-      var currentDraft = await _draftsRepository.GetByIdAsync(DraftId.Create(draft.Id), cancellationToken);
-      if (currentDraft is null)
+      foreach (var draft in drafts)
       {
-        currentDraft = Draft.Create(
-          id: DraftId.Create(draft.Id),
-          title: Title.Create(draft.Title),
-          draftType: DraftType.FromValue(draft.DraftType),
-          totalPicks: draft.TotalPicks,
-          totalDrafters: draft.TotalDrafters,
-          totalHosts: draft.TotalHosts,
-          episodeType: EpisodeType.FromValue(draft.EpisodeType),
-          draftStatus: DraftStatus.FromValue(draft.DraftStatus)).Value;
+        var currentDraft = await _draftsRepository.GetByIdAsync(DraftId.Create(draft.Id), cancellationToken);
+        if (currentDraft is null)
+        {
+          currentDraft = Draft.Create(
+            id: DraftId.Create(draft.Id),
+            title: Title.Create(draft.Title),
+            draftType: DraftType.FromValue(draft.DraftType),
+            totalPicks: draft.TotalPicks,
+            totalDrafters: draft.TotalDrafters,
+            totalHosts: draft.TotalHosts,
+            episodeType: EpisodeType.FromValue(draft.EpisodeType),
+            draftStatus: DraftStatus.FromValue(draft.DraftStatus)).Value;
 
-        _draftsRepository.Add(currentDraft);
+          _draftsRepository.Add(currentDraft);
+        }
+
+        var existingDates = currentDraft.ReleaseDates.Select(rd => rd.ReleaseDate).ToHashSet();
+        var newDates = draft.ReleaseDates
+          .Where(date => !existingDates.Contains(date))
+          .Select(date => DraftReleaseDate.Create(currentDraft.Id, date))
+          .ToList();
+
+        foreach (var date in newDates)
+        {
+          currentDraft.AddReleaseDate(date);
+        }
+
+        if (draft.IsPatreonOnly)
+        {
+          currentDraft.SetPatreonOnly(draft.IsPatreonOnly);
+        }
+
+        if (!draft.EpisodeNumber.IsNullOrWhiteSpace())
+        {
+          currentDraft.SetEpisodeNumber(draft.EpisodeNumber!);
+        }
       }
 
-      var existingDates = currentDraft.ReleaseDates.Select(rd => rd.ReleaseDate).ToHashSet();
-      var newDates = draft.ReleaseDates
-        .Where(date => !existingDates.Contains(date))
-        .Select(date => DraftReleaseDate.Create(currentDraft.Id, date))
-        .ToList();
+      DatabaseLoggingMessages.BulkInsertMessage(_logger, drafts.Count, filePath);
 
-      foreach (var date in newDates)
-      {
-        currentDraft.AddReleaseDate(date);
-      }
-
-      if (draft.IsPatreonOnly)
-      {
-        currentDraft.SetPatreonOnly(draft.IsPatreonOnly);
-      }
-
-      if (!draft.EpisodeNumber.IsNullOrWhiteSpace())
-      {
-        currentDraft.SetEpisodeNumber(draft.EpisodeNumber!);
-      }
+      await _dbContext.SaveChangesAsync(cancellationToken);
     }
-    DatabaseLoggingMessages.BulkInsertMessage(_logger, drafts.Count, filePath);
-
-    await _dbContext.SaveChangesAsync(cancellationToken);
-
   }
 }

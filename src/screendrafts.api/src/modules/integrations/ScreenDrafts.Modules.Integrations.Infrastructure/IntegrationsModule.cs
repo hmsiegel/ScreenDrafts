@@ -42,6 +42,8 @@ public static class IntegrationsModule
     services.AddOptions<ImdbSettings>()
       .Bind(configuration.GetSection("Integrations:Imdb"))
       .ValidateDataAnnotations();
+
+    services.AddScoped<IImdbService, ImdbService>();
   }
   private static void AddDomainEventHandlers(this IServiceCollection services)
   {

@@ -25,6 +25,7 @@ global using Newtonsoft.Json;
 global using Npgsql;
 
 global using Quartz;
+global using Quartz.Util;
 
 global using ScreenDrafts.Common.Application.Clock;
 global using ScreenDrafts.Common.Application.CsvFiles;
@@ -51,15 +52,13 @@ global using ScreenDrafts.Modules.Drafts.Domain.Drafts.Repositories;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafts.ValueObjects;
 global using ScreenDrafts.Modules.Drafts.Infrastructure.Converters;
 global using ScreenDrafts.Modules.Drafts.Infrastructure.Database;
+global using ScreenDrafts.Modules.Drafts.Infrastructure.Database.DatabaseSeeders;
 global using ScreenDrafts.Modules.Drafts.Infrastructure.Drafters;
 global using ScreenDrafts.Modules.Drafts.Infrastructure.Drafts;
-global using ScreenDrafts.Modules.Drafts.Infrastructure.GameBoards;
 global using ScreenDrafts.Modules.Drafts.Infrastructure.Hosts;
 global using ScreenDrafts.Modules.Drafts.Infrastructure.Inbox;
 global using ScreenDrafts.Modules.Drafts.Infrastructure.Outbox;
-global using ScreenDrafts.Modules.Drafts.Infrastructure.Picks;
-global using ScreenDrafts.Modules.Drafts.Infrastructure.TriviaResults;
-global using ScreenDrafts.Modules.Drafts.Infrastructure.Vetoes;
+global using ScreenDrafts.Modules.Drafts.Infrastructure.Serialization;
 global using ScreenDrafts.Modules.Users.IntegrationEvents;
 
 global using SmartEnum.EFCore;

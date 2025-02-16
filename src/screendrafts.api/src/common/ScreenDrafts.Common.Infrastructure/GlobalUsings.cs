@@ -56,7 +56,10 @@ global using ScreenDrafts.Common.Infrastructure.Caching;
 global using ScreenDrafts.Common.Infrastructure.Clock;
 global using ScreenDrafts.Common.Infrastructure.CsvFiles;
 global using ScreenDrafts.Common.Infrastructure.Data;
+global using ScreenDrafts.Common.Infrastructure.Database.MongoDb;
 global using ScreenDrafts.Common.Infrastructure.EventBus;
+global using ScreenDrafts.Common.Infrastructure.OpenTelemetry;
 global using ScreenDrafts.Common.Infrastructure.Outbox;
+global using ScreenDrafts.Common.Infrastructure.Quartz;
 
 global using StackExchange.Redis;

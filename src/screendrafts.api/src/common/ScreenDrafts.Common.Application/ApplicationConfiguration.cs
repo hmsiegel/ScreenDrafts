@@ -1,4 +1,5 @@
 ﻿namespace ScreenDrafts.Common.Application;
+
 public static class ApplicationConfiguration
 {
   public static IServiceCollection AddApplication(this IServiceCollection services, Assembly[] moduleAssemblies)

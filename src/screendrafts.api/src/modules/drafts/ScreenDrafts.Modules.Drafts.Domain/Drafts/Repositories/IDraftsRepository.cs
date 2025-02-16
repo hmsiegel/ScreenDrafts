@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.Repositories;
 
-public interface IDraftsRepository
+public interface IDraftsRepository : IRepository
 {
   void Add(Draft draft);
 

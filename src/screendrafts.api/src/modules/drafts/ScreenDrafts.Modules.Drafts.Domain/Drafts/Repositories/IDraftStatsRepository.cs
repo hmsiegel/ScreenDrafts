@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.Repositories;
 
-public interface IDraftStatsRepository
+public interface IDraftStatsRepository : IRepository
 {
   Task<DrafterDraftStats?> GetByDrafterAndDraftAsync(
     DrafterId drafterId,

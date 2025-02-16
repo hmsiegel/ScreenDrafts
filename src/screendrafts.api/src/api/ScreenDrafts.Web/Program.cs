@@ -1,6 +1,4 @@
-﻿using MongoDB.Driver;
-
-var builder = WebApplication.CreateBuilder(args);
+﻿var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog((context, config) =>
   config.ReadFrom.Configuration(context.Configuration));
@@ -22,7 +20,8 @@ builder.Services.AddInfrastructure(
   rabbitMqSettings,
   databaseConnectionString,
   redisConnectionString,
-  mongoConnectionString);
+  mongoConnectionString,
+  AssemblyReferences.InfrastructureAssemblies);
 
 builder.Services.AddFastEndpoints(opt =>
 {
@@ -58,10 +57,8 @@ if (app.Environment.IsDevelopment())
 {
   app.MapOpenApi();
   app.MapScalarApiReference();
-
   app.ApplyMigrations();
 }
-
 
 app.MapHealthChecks("health", new HealthCheckOptions
 {
@@ -72,9 +69,7 @@ await app.UseDraftsModuleAsync();
 
 app.UseLogContextTraceLogging();
 app.UseSerilogRequestLogging();
-
 app.UseExceptionHandler();
-
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseFastEndpoints();

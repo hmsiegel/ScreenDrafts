@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Modules.Drafts.Infrastructure.Database.DatabaseSeeders;
-
-namespace ScreenDrafts.Modules.Drafts.Infrastructure;
+﻿namespace ScreenDrafts.Modules.Drafts.Infrastructure;
 
 public static class DraftsModule
 {
@@ -50,8 +48,6 @@ public static class DraftsModule
 
     services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<DraftsDbContext>());
 
-    services.RegisterRepositories();
-
     services.AddScoped<ICustomSeeder, DrafterSeeder>();
     services.AddScoped<ICustomSeeder, HostsSeeder>();
     services.AddScoped<ICustomSeeder, DraftSeeder>();
@@ -60,17 +56,6 @@ public static class DraftsModule
     services.ConfigureOptions<ConfigureProcessOutboxJob>();
     services.Configure<InboxOptions>(configuration.GetSection("Drafts:Inbox"));
     services.ConfigureOptions<ConfigureProcessInboxJob>();
-  }
-
-  private static void RegisterRepositories(this IServiceCollection services)
-  {
-    services.AddScoped<IDraftsRepository, DraftsRepository>();
-    services.AddScoped<IDraftersRepository, DraftersRepository>();
-    services.AddScoped<IGameBoardRepository, GameBoardRepository>();
-    services.AddScoped<IHostsRepository, HostsRepository>();
-    services.AddScoped<IPicksRepository, PicksRepository>();
-    services.AddScoped<IVetoRepository, VetoRepository>();
-    services.AddScoped<ITriviaResultsRepository, TriviaResultsRepository>();
   }
 
   private static void AddDomainEventHandlers(this IServiceCollection services)

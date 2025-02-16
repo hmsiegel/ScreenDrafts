@@ -12,6 +12,8 @@ global using Microsoft.AspNetCore.OpenApi;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.OpenApi.Models;
 
+global using MongoDB.Driver;
+
 global using RabbitMQ.Client;
 
 global using Scalar.AspNetCore;

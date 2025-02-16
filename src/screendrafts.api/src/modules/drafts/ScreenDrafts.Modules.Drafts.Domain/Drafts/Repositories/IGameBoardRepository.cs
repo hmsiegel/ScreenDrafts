@@ -1,5 +1,5 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.Repositories;
-public interface IGameBoardRepository
+public interface IGameBoardRepository : IRepository
 {
   void Add(GameBoard gameBoard);
 

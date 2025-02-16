@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Users.Domain.Users;
 
-public interface IUserRepository
+public interface IUserRepository : IRepository
 {
   Task<User?> GetAsync(UserId id, CancellationToken cancellationToken = default);
 

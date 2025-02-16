@@ -2,24 +2,23 @@
 
 public static class InfrastructureConfiguration
 {
-  private const string MongoDbDiagnosticSource = "MongoDB.Driver.Core.Extensions.DiagnosticSources";
-
   public static IServiceCollection AddInfrastructure(
-      this IServiceCollection services,
-      string serviceName,
-      Action<IRegistrationConfigurator, string>[] moduleConfigureConsumers,
-      RabbitMqSettings rabbitMqSettings,
-      string databaseConnectionString,
-      string redisConnectionString,
-      string mongoConnectionString)
+    this IServiceCollection services,
+    string serviceName,
+    Action<IRegistrationConfigurator, string>[] moduleConfigureConsumers,
+    RabbitMqSettings rabbitMqSettings,
+    string databaseConnectionString,
+    string redisConnectionString,
+    string mongoConnectionString,
+    Assembly[] infrastructureAssemblies)
   {
     services.AddAuthenticationInternal();
 
     services.AddAuthorizationInternal();
 
-    services.TryAddSingleton<IDateTimeProvider, DateTimeProvider>();
+    services.AddRepositoriesFromModules(infrastructureAssemblies);
 
-    services.TryAddSingleton<IEventBus, EventBus.EventBus>();
+    services.TryAddSingleton<IDateTimeProvider, DateTimeProvider>();
 
     services.TryAddSingleton<InsertOutboxMessagesInterceptor>();
 
@@ -32,72 +31,26 @@ public static class InfrastructureConfiguration
 
     SqlMapper.AddTypeHandler(new GeneciArrayHandler<string>());
 
-    services.AddQuartz();
+    services.AddQuartzService();
 
-    services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);
+    services.AddCaching(redisConnectionString);
 
-    IConnectionMultiplexer connectionMultiplexer = ConnectionMultiplexer.Connect(redisConnectionString, opt =>
-    {
-      opt.AbortOnConnectFail = false;
-    });
+    services.AddEventBus(serviceName, moduleConfigureConsumers, rabbitMqSettings);
 
-    services.TryAddSingleton(connectionMultiplexer);
+    services.ConfigureOpenTelemetry(serviceName);
 
-    services.AddStackExchangeRedisCache(opt =>
-        opt.ConnectionMultiplexerFactory = () => Task.FromResult(connectionMultiplexer));
+    services.AddMongoDb(mongoConnectionString);
 
-    services.TryAddSingleton<ICacheService, CacheService>();
+    return services;
+  }
 
-    services.AddMassTransit(config =>
-    {
-      string instanceId = serviceName.ToUpperInvariant().Replace(" ", "-", StringComparison.InvariantCultureIgnoreCase);
-      foreach (Action<IRegistrationConfigurator, string> configureConsumer in moduleConfigureConsumers)
-      {
-        configureConsumer(config, instanceId);
-      }
-
-      config.SetKebabCaseEndpointNameFormatter();
-
-      config.UsingRabbitMq((context, cfg) =>
-          {
-          cfg.Host(new Uri(rabbitMqSettings.Host), h =>
-              {
-              h.Username(rabbitMqSettings.UserName);
-              h.Password(rabbitMqSettings.Password);
-            });
-          cfg.ConfigureEndpoints(context);
-        });
-    });
-
-    services
-        .AddOpenTelemetry()
-        .ConfigureResource(resource => resource.AddService(serviceName))
-        .WithTracing(tracing =>
-        {
-          tracing
-                  .AddAspNetCoreInstrumentation()
-                  .AddHttpClientInstrumentation()
-                  .AddEntityFrameworkCoreInstrumentation()
-                  .AddRedisInstrumentation()
-                  .AddNpgsql()
-                  .AddSource(MassTransit.Logging.DiagnosticHeaders.DefaultListenerName)
-                  .AddSource(MongoDbDiagnosticSource);
-
-          tracing.AddOtlpExporter();
-        });
-
-    var mongoClientSettings = MongoClientSettings.FromConnectionString(mongoConnectionString);
-
-    mongoClientSettings.ClusterConfigurator = c => c.Subscribe(
-        new DiagnosticsActivityEventSubscriber(
-            new InstrumentationOptions
-            {
-              CaptureCommandText = true,
-            }));
-
-    services.AddSingleton<IMongoClient>(sp => new MongoClient(mongoClientSettings));
-
-    BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.Standard));
+  private static IServiceCollection AddRepositoriesFromModules(this IServiceCollection services, Assembly[] infrastructureAssemblies)
+  {
+    services.Scan(scan => scan
+        .FromAssemblies(infrastructureAssemblies)
+        .AddClasses(classes => classes.AssignableTo<IRepository>(), false)
+        .AsImplementedInterfaces()
+        .WithScopedLifetime());
 
     return services;
   }
