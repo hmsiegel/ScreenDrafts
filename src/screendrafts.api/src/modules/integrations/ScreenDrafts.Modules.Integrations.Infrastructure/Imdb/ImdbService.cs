@@ -1,9 +1,4 @@
-﻿using IMDbApiLib;
-using IMDbApiLib.Models;
-using ScreenDrafts.Modules.Integrations.Application.Imdb;
-using ScreenDrafts.Modules.Integrations.Domain.Enums;
-
-namespace ScreenDrafts.Modules.Integrations.Infrastructure.Imdb;
+﻿namespace ScreenDrafts.Modules.Integrations.Infrastructure.Imdb;
 
 internal sealed class ImdbService(IOptions<ImdbSettings> imdbSettings) : IImdbService
 {
@@ -29,12 +24,21 @@ internal sealed class ImdbService(IOptions<ImdbSettings> imdbSettings) : IImdbSe
   public async Task<SearchData> SearchByKeyword(string searchExpression) =>
     await ApiLib.SearchKeywordAsync(searchExpression);
 
+  public async Task<SearchData> SearchByName(string searchExpression) =>
+    await ApiLib.SearchNameAsync(searchExpression);
+
   public async Task<SearchData> SearchByTitle(string searchExpression) =>
     await ApiLib.SearchTitleAsync(searchExpression);
 
   public async Task<SearchData> SearchForMovie(string searchExpression) =>
     await ApiLib.SearchMovieAsync(searchExpression);
 
+  public async Task<PosterData> SearchForPoster(string id) =>
+    await ApiLib.PostersAsync(id);
+
   public async Task<SearchData> SearchForSeries(string searchExpression) =>
     await ApiLib.SearchSeriesAsync(searchExpression);
+
+  public async Task<YouTubeTrailerData> SearchForYouTubeTrailer(string id) =>
+    await ApiLib.YouTubeTrailerAsync(id);
 }

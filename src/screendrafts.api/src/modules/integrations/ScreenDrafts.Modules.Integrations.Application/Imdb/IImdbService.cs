@@ -10,4 +10,7 @@ public interface IImdbService
   Task<SearchData> SearchByTitle(string searchExpression);
   Task<SearchData> SearchForMovie(string searchExpression);
   Task<SearchData> SearchForSeries(string searchExpression);
+  Task<YouTubeTrailerData> SearchForYouTubeTrailer(string id);
+  Task<SearchData> SearchByName(string searchExpression);
+  Task<PosterData> SearchForPoster(string id);
 }

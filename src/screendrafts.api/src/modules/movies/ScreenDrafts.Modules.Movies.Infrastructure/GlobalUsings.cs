@@ -7,6 +7,7 @@ global using Dapper;
 global using MassTransit;
 
 global using Microsoft.EntityFrameworkCore;
+global using Microsoft.EntityFrameworkCore.Metadata.Builders;
 global using Microsoft.EntityFrameworkCore.Migrations;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
@@ -29,6 +30,9 @@ global using ScreenDrafts.Common.Infrastructure.Inbox;
 global using ScreenDrafts.Common.Infrastructure.Outbox;
 global using ScreenDrafts.Common.Infrastructure.Serialization;
 global using ScreenDrafts.Modules.Movies.Application.Abstractions.Data;
+global using ScreenDrafts.Modules.Movies.Domain.Movies;
+global using ScreenDrafts.Modules.Movies.Domain.Movies.Entities;
+global using ScreenDrafts.Modules.Movies.Domain.Movies.ValueObjects;
 global using ScreenDrafts.Modules.Movies.Infrastructure.Database;
 global using ScreenDrafts.Modules.Movies.Infrastructure.Inbox;
 global using ScreenDrafts.Modules.Movies.Infrastructure.Outbox;
