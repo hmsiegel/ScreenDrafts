@@ -1,4 +1,4 @@
-﻿namespace ScreenDrafts.Modules.Movies.Infrastructure.Movies;
+﻿namespace ScreenDrafts.Modules.Movies.Infrastructure.People;
 
 internal sealed class MovieActorConfiguration : IEntityTypeConfiguration<MovieActor>
 {

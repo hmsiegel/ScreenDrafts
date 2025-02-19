@@ -7,6 +7,7 @@ public sealed class Movie : AggrgateRoot<MovieId, Guid>
   private readonly List<MovieDirector> _movieDirectors = [];
   private readonly List<MovieWriter> _movieWriters = [];
   private readonly List<MovieProducer> _movieProducers = [];
+  private readonly List<MovieProductionCompany> _movieProductionCompanies = [];
 
   private Movie(
     string title,
@@ -56,6 +57,8 @@ public sealed class Movie : AggrgateRoot<MovieId, Guid>
 
   public IReadOnlyCollection<MovieProducer> MovieProducers => _movieProducers.AsReadOnly();
 
+  public IReadOnlyCollection<MovieProductionCompany> MovieProductionCompanies => _movieProductionCompanies.AsReadOnly();
+
   public void AddGenre(MovieGenre genre)
   {
     _movieGenres.Add(genre);
@@ -79,6 +82,11 @@ public sealed class Movie : AggrgateRoot<MovieId, Guid>
   public void AddProducer(MovieProducer producer)
   {
     _movieProducers.Add(producer);
+  }
+
+  public void AddProductionCompany(MovieProductionCompany productionCompany)
+  {
+    _movieProductionCompanies.Add(productionCompany);
   }
 
   public static Result<Movie> Create(

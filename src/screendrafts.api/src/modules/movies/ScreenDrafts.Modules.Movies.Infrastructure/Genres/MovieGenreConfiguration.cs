@@ -1,4 +1,4 @@
-﻿namespace ScreenDrafts.Modules.Movies.Infrastructure.Movies;
+﻿namespace ScreenDrafts.Modules.Movies.Infrastructure.Genres;
 
 internal sealed class MovieGenreConfiguration : IEntityTypeConfiguration<MovieGenre>
 {

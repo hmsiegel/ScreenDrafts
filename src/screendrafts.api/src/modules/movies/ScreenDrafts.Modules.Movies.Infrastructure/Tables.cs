@@ -13,5 +13,8 @@ internal static class Tables
   internal const string MovieWriters = "movie_writers";
   internal const string MovieDirectors = "movie_directors";
   internal const string MovieProducers = "movie_producers";
+  internal const string MovieProductionCompanies = "movie_production_comapanies";
+  internal const string ProductionCompanies = "production_comapanies";
   internal const string People = "people";
+
 }
