@@ -1,4 +1,4 @@
-﻿namespace ScreenDrafts.Modules.Movies.Domain.Movies;
+﻿namespace ScreenDrafts.Modules.Movies.Domain.Movies.ValueObjects;
 
 public sealed record PersonId(Guid Value) : AggregateRootId<Guid>
 {

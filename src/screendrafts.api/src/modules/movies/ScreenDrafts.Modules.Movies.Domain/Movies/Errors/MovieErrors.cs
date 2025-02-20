@@ -6,4 +6,9 @@ public static class MovieErrors
     SDError.Conflict(
       "Movie.MovieAlreadyExists",
       $"The movie with the IMDB ID '{imdbId}' already exists.");
+
+  public static SDError MovieNotFound(string imdbId) =>
+    SDError.NotFound(
+      "Movie.MovieNotFound",
+      $"The movie with the IMDB ID '{imdbId}' was not found.");
 }

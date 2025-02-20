@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Movies.Domain.Movies.Repositories;
 
-public interface IGenreRepository
+public interface IGenreRepository : IRepository
 {
   Task<Genre?> FindByNameAsync(string name, CancellationToken cancellationToken = default);
 

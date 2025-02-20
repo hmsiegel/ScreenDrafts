@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Movies.Domain.Movies.Repositories;
 
-public interface IPersonRepository
+public interface IPersonRepository : IRepository
 {
   Task<Person?> FindByImdbIdAsync(string imdbId, CancellationToken cancellationToken = default);
 

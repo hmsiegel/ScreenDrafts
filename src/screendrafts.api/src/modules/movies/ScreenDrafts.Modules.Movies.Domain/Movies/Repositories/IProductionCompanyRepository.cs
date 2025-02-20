@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Movies.Domain.Movies.Repositories;
 
-public interface IProductionCompanyRepository
+public interface IProductionCompanyRepository : IRepository
 {
   Task<ProductionCompany?> FindByNameAsync(string name, CancellationToken cancellationToken = default);
 

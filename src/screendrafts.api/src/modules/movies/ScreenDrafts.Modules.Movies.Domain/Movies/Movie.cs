@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Movies.Domain.Movies;
+﻿using ScreenDrafts.Modules.Movies.Domain.Movies.Errors;
+
+namespace ScreenDrafts.Modules.Movies.Domain.Movies;
 
 public sealed class Movie : AggrgateRoot<MovieId, Guid>
 {
@@ -108,7 +110,7 @@ public sealed class Movie : AggrgateRoot<MovieId, Guid>
       youtubeTrailerUrl: youtubeTrailerUrl,
       imdbId: imdbId,
       id: id);
-    
+
     movie.Raise(new MovieCreatedDomainEvent(movie.Id.Value));
 
     return Result.Success(movie);

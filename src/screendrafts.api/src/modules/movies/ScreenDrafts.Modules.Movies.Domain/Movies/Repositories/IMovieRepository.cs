@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Movies.Domain.Movies.Repositories;
 
-public interface IMovieRepository
+public interface IMovieRepository : IRepository
 {
   void Add(Movie movie);
 

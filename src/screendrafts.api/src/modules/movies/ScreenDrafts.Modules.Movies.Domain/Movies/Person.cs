@@ -13,8 +13,8 @@ public sealed class Person : AggrgateRoot<PersonId, Guid>
     PersonId? id = null)
   {
     Id = id ?? PersonId.CreateUnique();
-    ImdbId = imdbId;
-    Name = name;
+    ImdbId = Guard.Against.NullOrWhiteSpace(imdbId);
+    Name = Guard.Against.NullOrWhiteSpace(name);
   }
 
   private Person()
