@@ -12,7 +12,8 @@ internal sealed class GetDrafterQueryHandler(IDbConnectionFactory dbConnectionFa
       $"""
           SELECT
             id AS {nameof(Drafter.Id)},
-            name AS {nameof(Drafter.Name)}
+            name AS {nameof(Drafter.Name)},
+            user_id AS {nameof(Drafter.UserId)}
           FROM drafts.drafters
           WHERE id = @DrafterId
          """;
