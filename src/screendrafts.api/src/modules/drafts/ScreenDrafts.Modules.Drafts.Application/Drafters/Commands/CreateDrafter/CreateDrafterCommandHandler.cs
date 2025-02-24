@@ -29,8 +29,6 @@ internal sealed class CreateDrafterCommandHandler(
     if (request.UserId is null)
     {
       drafter = Drafter.Create(request.Name!);
-
-      _drafterRepository.Add(drafter.Value);
     }
 
     if (request.Name is null)
@@ -49,9 +47,9 @@ internal sealed class CreateDrafterCommandHandler(
       drafter = Drafter.Create(
         drafterName,
         user.UserId);
-
-      _drafterRepository.Add(drafter.Value);
     }
+
+    _drafterRepository.Add(drafter!.Value);
 
     await _unitOfWork.SaveChangesAsync(cancellationToken);
 
