@@ -23,7 +23,7 @@ public sealed class Pick
 
   public int Position { get; }
 
-  public MovieId MovieId { get; } = default!;
+  public Guid MovieId { get; }
 
   public Movie Movie { get; } = default!;
 
