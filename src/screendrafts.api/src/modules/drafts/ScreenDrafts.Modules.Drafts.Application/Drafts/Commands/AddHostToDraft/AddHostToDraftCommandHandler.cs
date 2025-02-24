@@ -4,13 +4,13 @@ internal sealed class AddHostToDraftCommandHandler(
   IDraftsRepository draftsRepository,
   IUnitOfWork unitOfWork,
   IHostsRepository hostsRepository)
-  : ICommandHandler<AddHostToDraftCommand>
+  : ICommandHandler<AddHostToDraftCommand, Guid>
 {
   private readonly IDraftsRepository _draftsRepository = draftsRepository;
   private readonly IUnitOfWork _unitOfWork = unitOfWork;
   private readonly IHostsRepository _hostsRepository = hostsRepository;
 
-  public async Task<Result> Handle(AddHostToDraftCommand request, CancellationToken cancellationToken)
+  public async Task<Result<Guid>> Handle(AddHostToDraftCommand request, CancellationToken cancellationToken)
   {
     var draftId = DraftId.Create(request.DraftId);
 
@@ -18,7 +18,7 @@ internal sealed class AddHostToDraftCommandHandler(
 
     if (draft is null)
     {
-      return Result.Failure<Draft>(DraftErrors.NotFound(request.DraftId));
+      return Result.Failure<Guid>(DraftErrors.NotFound(request.DraftId));
     }
 
     var hostId = HostId.Create(request.HostId);
@@ -27,7 +27,7 @@ internal sealed class AddHostToDraftCommandHandler(
 
     if (host is null)
     {
-      return Result.Failure<Host>(HostErrors.NotFound(request.HostId));
+      return Result.Failure<Guid>(HostErrors.NotFound(request.HostId));
     }
 
     draft.AddHost(host);
@@ -36,6 +36,6 @@ internal sealed class AddHostToDraftCommandHandler(
 
     await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-    return Result.Success();
+    return Result.Success(host.Id.Value);
   }
 }
