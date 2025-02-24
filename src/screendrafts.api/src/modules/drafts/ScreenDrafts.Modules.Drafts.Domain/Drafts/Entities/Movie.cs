@@ -1,11 +1,11 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities;
 
-public sealed class Movie : Entity<MovieId>
+public sealed class Movie : Entity
 {
   private Movie(
-    MovieTitle movieTitle,
-    MovieId? id = null) 
-    : base(id ?? MovieId.CreateUnique())
+    string movieTitle,
+    Guid? id = null) 
+    : base(id ?? Guid.NewGuid())
   {
     MovieTitle = movieTitle;
   }
@@ -14,12 +14,12 @@ public sealed class Movie : Entity<MovieId>
   {
   }
 
-  public MovieTitle MovieTitle { get; private set; } = default!;
+  public string MovieTitle { get; private set; } = default!;
   public Pick? Pick { get; private set; } = default!;
 
   public static Result<Movie> Create(
-    MovieTitle movieTitle,
-    MovieId? id = null)
+    string movieTitle,
+    Guid? id = null)
   {
     if (movieTitle is null)
     {

@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.UnitTests.Drafts;
+﻿using ScreenDrafts.Modules.Drafts.UnitTests.TestUtils;
+
+namespace ScreenDrafts.Modules.Drafts.UnitTests.Drafts;
 
 public class DraftTests : BaseTest
 {
