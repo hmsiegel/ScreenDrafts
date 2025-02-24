@@ -6,7 +6,11 @@ public interface IDraftsRepository : IRepository
 
   void Update(Draft draft);
 
+  void AddMovie(Movie movie);
+
   Task<Draft?> GetByIdAsync(DraftId draftId, CancellationToken cancellationToken);
 
   Task<Movie?> GetMovieByIdAsync(Guid movieId, CancellationToken cancellationToken);
+
+  Task<Draft?> GetDraftWithDetailsAsync(DraftId draftId, CancellationToken cancellationToken);
 }
