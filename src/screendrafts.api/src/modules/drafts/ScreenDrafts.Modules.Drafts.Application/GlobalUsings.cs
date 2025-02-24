@@ -1,10 +1,11 @@
-﻿global using System.Collections.ObjectModel;
-global using System.Data.Common;
+﻿global using System.Data.Common;
 global using System.Reflection;
 
 global using Dapper;
 
 global using FluentValidation;
+
+global using Microsoft.Extensions.Logging;
 
 global using ScreenDrafts.Common.Application.Data;
 global using ScreenDrafts.Common.Application.Messaging;
@@ -12,6 +13,7 @@ global using ScreenDrafts.Common.Domain;
 global using ScreenDrafts.Modules.Drafts.Application.Abstractions.Data;
 global using ScreenDrafts.Modules.Drafts.Application.Drafters.Queries.GetDrafter;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Queries.GetDraft;
+global using ScreenDrafts.Modules.Drafts.Application.Drafts.Queries.GetDraftPositionsByGameBoard;
 global using ScreenDrafts.Modules.Drafts.Application.Hosts.Queries.GetHost;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafters;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafters.Errors;

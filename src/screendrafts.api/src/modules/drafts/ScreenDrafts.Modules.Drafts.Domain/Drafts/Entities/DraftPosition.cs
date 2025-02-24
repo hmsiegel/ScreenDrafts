@@ -13,7 +13,7 @@ public sealed class DraftPosition : Entity<DraftPositionId>
   {
     Id = id ?? DraftPositionId.CreateUnique();
     Name = name;
-    Picks = new List<int>(picks);
+    Picks = [.. picks];
     HasBonusVeto = hasBonusVeto;
     HasBonusVetoOverride = hasBonusVetoOverride;
   }

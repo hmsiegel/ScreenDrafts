@@ -20,5 +20,8 @@ internal sealed class PickConfiguration : IEntityTypeConfiguration<Pick>
       .WithOne(d => d.Pick)
       .HasForeignKey<Pick>(rv => rv.DrafterId)
       .OnDelete(DeleteBehavior.Cascade);
+
+    builder.Property(p => p.Position)
+      .IsRequired();
   }
 }

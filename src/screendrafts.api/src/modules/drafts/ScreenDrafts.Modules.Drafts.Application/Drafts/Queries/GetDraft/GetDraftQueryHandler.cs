@@ -1,35 +1,35 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Application.Drafts.Queries.GetDraft;
 
-internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFactory)
+internal sealed class GetDraftQueryHandler(IDraftsRepository draftsRepository)
   : IQueryHandler<GetDraftQuery, DraftResponse>
 {
-  private readonly IDbConnectionFactory _dbConnectionFactory = dbConnectionFactory;
+  private readonly IDraftsRepository _draftsRepository = draftsRepository;
 
   public async Task<Result<DraftResponse>> Handle(GetDraftQuery request, CancellationToken cancellationToken)
   {
-    await using DbConnection connection = await _dbConnectionFactory.OpenConnectionAsync();
-
-    const string sql =
-      $"""
-            SELECT
-              id AS {nameof(Draft.Id)},
-              title AS {nameof(Draft.Title)},
-              draft_type AS {nameof(Draft.DraftType)},
-              total_picks AS {nameof(Draft.TotalPicks)},
-              total_drafters AS {nameof(Draft.TotalDrafters)},
-              total_hosts AS {nameof(Draft.TotalHosts)},
-              draft_status AS {nameof(Draft.DraftStatus)}
-            FROM drafts.drafts
-            WHERE id = @DraftId
-            """;
-
-    DraftResponse? draft = await connection.QuerySingleOrDefaultAsync<DraftResponse>(sql, request);
+    var draft = await _draftsRepository.GetDraftWithDetailsAsync(DraftId.Create(request.DraftId), cancellationToken);
 
     if (draft is null)
     {
       return Result.Failure<DraftResponse>(DraftErrors.NotFound(request.DraftId));
     }
 
-    return draft;
+    List<DrafterResponse> drafters = [.. draft.Drafters.Select(d => new DrafterResponse(d.Id.Value, d.Name))];
+    List<HostResponse> hosts = [.. draft.Hosts.Select(h => new HostResponse(h.Id.Value, h.HostName))];
+
+    var draftResponse = new DraftResponse(
+      draft.Id.Value,
+      draft.Title.Value,
+      draft.DraftType,
+      draft.TotalPicks,
+      draft.TotalDrafters,
+      draft.TotalHosts,
+      draft.EpisodeType,
+      draft.DraftStatus);
+
+    drafters.ForEach(d => draftResponse.AddDrafter(d));
+    hosts.ForEach(h => draftResponse.AddHost(h));
+
+    return draftResponse;
   }
 }

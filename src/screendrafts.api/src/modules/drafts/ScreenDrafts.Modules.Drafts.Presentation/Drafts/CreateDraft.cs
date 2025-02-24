@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Presentation.Drafts;
 
-internal sealed class CreateDraft(ISender sender) : Endpoint<DraftRequest, Guid>
+internal sealed class CreateDraft(ISender sender) : Endpoint<CreateDraftRequest, Guid>
 {
   private readonly ISender _sender = sender;
 
@@ -11,7 +11,7 @@ internal sealed class CreateDraft(ISender sender) : Endpoint<DraftRequest, Guid>
     Policies(Presentation.Permissions.CreateDraft);
   }
 
-  public override async Task HandleAsync(DraftRequest req, CancellationToken ct)
+  public override async Task HandleAsync(CreateDraftRequest req, CancellationToken ct)
   {
     ArgumentNullException.ThrowIfNull(req);
 
@@ -21,6 +21,7 @@ internal sealed class CreateDraft(ISender sender) : Endpoint<DraftRequest, Guid>
       req.TotalPicks,
       req.TotalDrafters,
       req.TotalHosts,
+      EpisodeType.FromName(req.EpisodeType),
       DraftStatus.FromName(req.DraftStatus));
 
     var draftId = await _sender.Send(command, ct);
@@ -30,10 +31,11 @@ internal sealed class CreateDraft(ISender sender) : Endpoint<DraftRequest, Guid>
 
 }
 
-  public sealed record DraftRequest(
+  public sealed record CreateDraftRequest(
     string Title,
     string DraftType,
     int TotalPicks,
     int TotalDrafters,
     int TotalHosts,
+    string EpisodeType,
     string DraftStatus);

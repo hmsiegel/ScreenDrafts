@@ -1,5 +1,5 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.Repositories;
-public interface IHostsRepository
+public interface IHostsRepository : IRepository
 {
   void AddHost(Host host);
 

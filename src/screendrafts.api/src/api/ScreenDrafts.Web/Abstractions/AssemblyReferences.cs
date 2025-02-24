@@ -25,7 +25,21 @@ internal static class AssemblyReferences
   Modules.Users.Application.AssemblyReference.Assembly
     ];
 
+  private static readonly Assembly[] _infrastructureAssemblies = [
+    typeof(AdministrationModule).Assembly,
+    typeof(AuditModule).Assembly,
+    typeof(CommunicationsModule).Assembly,
+    typeof(DraftsModule).Assembly,
+    typeof(IntegrationsModule).Assembly,
+    typeof(MoviesModule).Assembly,
+    typeof(RealTimeUpdatesModule).Assembly,
+    typeof(ReportingModule).Assembly,
+    typeof(UsersModule).Assembly,
+    ];
+
   public static Assembly[] ApplicationAssemblies => _applicationAssemblies;
 
   public static Assembly[] PresentationAssemblies => _presentationAssemblies;
+
+  public static Assembly[] InfrastructureAssemblies => _infrastructureAssemblies;
 }

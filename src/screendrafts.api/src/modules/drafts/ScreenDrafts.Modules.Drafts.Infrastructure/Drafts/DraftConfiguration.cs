@@ -43,8 +43,16 @@ internal sealed class DraftConfiguration : IEntityTypeConfiguration<Draft>
             draftStatus => draftStatus.Value,
             value => DraftStatus.FromValue(value));
 
+    builder.Property(d => d.EpisodeType)
+          .HasConversion(
+            episodeType => episodeType.Value,
+            value => EpisodeType.FromValue(value));
+
     builder.HasOne(d => d.GameBoard)
       .WithOne(gb => gb.Draft)
       .HasForeignKey<GameBoard>(gb => gb.Id);
+
+    builder.HasIndex(d => d.ReadableId)
+      .IsUnique();
   }
 }

@@ -56,6 +56,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Directory.Build.props = Directory.Build.props
 		Directory.Build.targets = Directory.Build.targets
 		Directory.Packages.props = Directory.Packages.props
+		global.json = global.json
 		..\..\README.md = ..\..\README.md
 		.files\screendrafts-realm-export.json = .files\screendrafts-realm-export.json
 	EndProjectSection
@@ -209,6 +210,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScreenDrafts.Common.UnitTests", "src\common\ScreenDrafts.Common.UnitTests\ScreenDrafts.Common.UnitTests.csproj", "{71CC9F96-D7F0-4D0F-B4D8-742031D53B97}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScreenDrafts.Gateway", "src\api\ScreenDrafts.Gateway\ScreenDrafts.Gateway.csproj", "{240C9CF4-3496-46EA-B293-977FA968419E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScreenDrafts.Modules.Integrations.PublicApi", "src\modules\integrations\ScreenDrafts.Modules.Integrations.PublicApi\ScreenDrafts.Modules.Integrations.PublicApi.csproj", "{3B2CF7C6-152F-4029-90FD-E6C696824D40}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -1228,6 +1231,18 @@ Global
 		{240C9CF4-3496-46EA-B293-977FA968419E}.Release|x64.Build.0 = Release|Any CPU
 		{240C9CF4-3496-46EA-B293-977FA968419E}.Release|x86.ActiveCfg = Release|Any CPU
 		{240C9CF4-3496-46EA-B293-977FA968419E}.Release|x86.Build.0 = Release|Any CPU
+		{3B2CF7C6-152F-4029-90FD-E6C696824D40}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B2CF7C6-152F-4029-90FD-E6C696824D40}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B2CF7C6-152F-4029-90FD-E6C696824D40}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{3B2CF7C6-152F-4029-90FD-E6C696824D40}.Debug|x64.Build.0 = Debug|Any CPU
+		{3B2CF7C6-152F-4029-90FD-E6C696824D40}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3B2CF7C6-152F-4029-90FD-E6C696824D40}.Debug|x86.Build.0 = Debug|Any CPU
+		{3B2CF7C6-152F-4029-90FD-E6C696824D40}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B2CF7C6-152F-4029-90FD-E6C696824D40}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B2CF7C6-152F-4029-90FD-E6C696824D40}.Release|x64.ActiveCfg = Release|Any CPU
+		{3B2CF7C6-152F-4029-90FD-E6C696824D40}.Release|x64.Build.0 = Release|Any CPU
+		{3B2CF7C6-152F-4029-90FD-E6C696824D40}.Release|x86.ActiveCfg = Release|Any CPU
+		{3B2CF7C6-152F-4029-90FD-E6C696824D40}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1328,5 +1343,9 @@ Global
 		{34C5B4D3-711D-4775-9786-E66B3A0D7441} = {05878CE6-D6E2-4C29-A0AD-2A0D49261A85}
 		{71CC9F96-D7F0-4D0F-B4D8-742031D53B97} = {05878CE6-D6E2-4C29-A0AD-2A0D49261A85}
 		{240C9CF4-3496-46EA-B293-977FA968419E} = {8EA69CB1-DDAE-45B5-906C-9EE588B0A5B1}
+		{3B2CF7C6-152F-4029-90FD-E6C696824D40} = {B219376F-9C6B-4936-855A-4A92FF89B496}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6C333748-554D-4FAB-9275-1017471227E1}
 	EndGlobalSection
 EndGlobal

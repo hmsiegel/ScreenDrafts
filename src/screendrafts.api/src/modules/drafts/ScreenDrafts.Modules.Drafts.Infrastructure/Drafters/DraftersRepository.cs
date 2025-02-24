@@ -9,6 +9,13 @@ internal sealed class DraftersRepository(DraftsDbContext dbContext) : IDraftersR
     _dbContext.Drafters.Add(drafter);
   }
 
+  public async Task<List<Drafter>> GetAll(CancellationToken cancellationToken = default)
+  {
+    return await _dbContext.Drafters
+      .ToListAsync(cancellationToken);
+
+  }
+
   public Task<Drafter?> GetByIdAsync(DrafterId drafterId, CancellationToken cancellationToken)
   {
     var drafter = _dbContext.Drafters

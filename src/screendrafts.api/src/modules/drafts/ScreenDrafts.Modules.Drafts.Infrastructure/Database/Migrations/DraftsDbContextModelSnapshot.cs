@@ -336,16 +336,20 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasColumnType("text")
                         .HasColumnName("episode_number");
 
+                    b.Property<int>("EpisodeType")
+                        .HasColumnType("integer")
+                        .HasColumnName("episode_type");
+
+                    b.Property<bool>("IsPatreonOnly")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_patreon_only");
+
                     b.Property<int>("ReadableId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasColumnName("readable_id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ReadableId"));
-
-                    b.Property<DateOnly?>("ReleaseDate")
-                        .HasColumnType("date")
-                        .HasColumnName("release_date");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -371,6 +375,10 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_drafts");
+
+                    b.HasIndex("ReadableId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_drafts_readable_id");
 
                     b.ToTable("drafts", "drafts");
                 });
@@ -418,6 +426,22 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasDatabaseName("ix_draft_positions_game_board_id");
 
                     b.ToTable("draft_positions", "drafts");
+                });
+
+            modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities.DraftReleaseDate", b =>
+                {
+                    b.Property<Guid>("DraftId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("draft_id");
+
+                    b.Property<DateOnly>("ReleaseDate")
+                        .HasColumnType("date")
+                        .HasColumnName("release_date");
+
+                    b.HasKey("DraftId", "ReleaseDate")
+                        .HasName("pk_draft_release_date");
+
+                    b.ToTable("draft_release_date", "drafts");
                 });
 
             modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities.DrafterDraftStats", b =>
@@ -525,6 +549,7 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
             modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities.Movie", b =>
                 {
                     b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
@@ -557,6 +582,10 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                     b.Property<Guid>("MovieId")
                         .HasColumnType("uuid")
                         .HasColumnName("movie_id");
+
+                    b.Property<int>("Position")
+                        .HasColumnType("integer")
+                        .HasColumnName("position");
 
                     b.Property<Guid?>("VetoId")
                         .HasColumnType("uuid")
@@ -720,6 +749,18 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                     b.Navigation("GameBoard");
                 });
 
+            modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities.DraftReleaseDate", b =>
+                {
+                    b.HasOne("ScreenDrafts.Modules.Drafts.Domain.Drafts.Draft", "Draft")
+                        .WithMany("ReleaseDates")
+                        .HasForeignKey("DraftId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_draft_release_date_drafts_draft_id");
+
+                    b.Navigation("Draft");
+                });
+
             modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities.DrafterDraftStats", b =>
                 {
                     b.HasOne("ScreenDrafts.Modules.Drafts.Domain.Drafts.Draft", "Draft")
@@ -839,6 +880,8 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                     b.Navigation("GameBoard");
 
                     b.Navigation("Picks");
+
+                    b.Navigation("ReleaseDates");
 
                     b.Navigation("TriviaResults");
                 });

@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.Repositories;
 
-public interface ITriviaResultsRepository
+public interface ITriviaResultsRepository : IRepository
 {
   void Add(TriviaResult triviaResult);
 

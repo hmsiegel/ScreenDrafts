@@ -12,6 +12,8 @@ public sealed class Role
 
   public static readonly Role Drafter = new("Drafter");
 
+  public static readonly Role Patreon = new("Patreon");
+
   private Role(string name) => Name = name;
 
   private Role() { }

@@ -40,7 +40,8 @@ internal sealed class PermissionConfiguration : IEntityTypeConfiguration<Permiss
       Permission.SearchActors,
       Permission.SearchCrew,
       Permission.SearchGenres,
-      Permission.SearchStudios);
+      Permission.SearchStudios,
+      Permission.SearchPatreonDrafts);
 
     builder.HasMany<Role>()
       .WithMany()
@@ -135,7 +136,10 @@ internal sealed class PermissionConfiguration : IEntityTypeConfiguration<Permiss
           CreateRolePermission(Role.SuperAdministrator, Permission.GetRoles),
           CreateRolePermission(Role.SuperAdministrator, Permission.ModifyRoles),
           CreateRolePermission(Role.SuperAdministrator, Permission.GetPermissions),
-          CreateRolePermission(Role.SuperAdministrator, Permission.ModifyPermissions)
+          CreateRolePermission(Role.SuperAdministrator, Permission.ModifyPermissions),
+
+          // Patreon Permissions
+          CreateRolePermission(Role.Patreon, Permission.SearchPatreonDrafts)
           );
       });
   }

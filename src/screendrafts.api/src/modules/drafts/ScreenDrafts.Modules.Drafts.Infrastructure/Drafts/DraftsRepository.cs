@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Infrastructure.Drafts;
+﻿using ZstdSharp.Unsafe;
+
+namespace ScreenDrafts.Modules.Drafts.Infrastructure.Drafts;
 
 internal sealed class DraftsRepository(DraftsDbContext dbContext) : IDraftsRepository
 {
@@ -20,7 +22,7 @@ internal sealed class DraftsRepository(DraftsDbContext dbContext) : IDraftsRepos
   public async Task<Movie?> GetMovieByIdAsync(Guid movieId, CancellationToken cancellationToken)
   {
     var movie = await _dbContext.Movies
-      .FirstOrDefaultAsync(m => m.Id.Value == movieId, cancellationToken);
+      .FirstOrDefaultAsync(m => m.Id == movieId, cancellationToken);
 
     return movie;
   }
@@ -28,5 +30,20 @@ internal sealed class DraftsRepository(DraftsDbContext dbContext) : IDraftsRepos
   public void Update(Draft draft)
   {
     _dbContext.Drafts.Update(draft);
+  }
+
+  public void AddMovie(Movie movie)
+  {
+    _dbContext.Movies.Add(movie);
+  }
+
+  public async Task<Draft?> GetDraftWithDetailsAsync(DraftId draftId, CancellationToken cancellationToken)
+  {
+    var draftWithDetails = await  _dbContext.Drafts
+      .Include(d => d.Drafters)
+      .Include(d => d.Hosts)
+      .FirstOrDefaultAsync(d => d.Id == draftId, cancellationToken);
+
+    return draftWithDetails;
   }
 }

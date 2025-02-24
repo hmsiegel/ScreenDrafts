@@ -4,6 +4,9 @@ global using System.Reflection;
 
 global using Dapper;
 
+global using IMDbApiLib;
+global using IMDbApiLib.Models;
+
 global using MassTransit;
 
 global using Microsoft.EntityFrameworkCore;
@@ -29,6 +32,10 @@ global using ScreenDrafts.Common.Infrastructure.Inbox;
 global using ScreenDrafts.Common.Infrastructure.Outbox;
 global using ScreenDrafts.Common.Infrastructure.Serialization;
 global using ScreenDrafts.Modules.Integrations.Application.Abstractions.Data;
+global using ScreenDrafts.Modules.Integrations.Application.Imdb;
+global using ScreenDrafts.Modules.Integrations.Domain.Enums;
 global using ScreenDrafts.Modules.Integrations.Infrastructure.Database;
+global using ScreenDrafts.Modules.Integrations.Infrastructure.Imdb;
 global using ScreenDrafts.Modules.Integrations.Infrastructure.Inbox;
 global using ScreenDrafts.Modules.Integrations.Infrastructure.Outbox;
+global using ScreenDrafts.Modules.Integrations.PublicApi;

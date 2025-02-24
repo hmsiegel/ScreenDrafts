@@ -150,4 +150,19 @@ public static class DraftErrors {
     SDError.NotFound(
       "Drafts.MovieNotFound",
       $"Movie with id {movieId} was not found.");
+
+  public static SDError MovieAlreadyAdded(Guid movieId) =>
+    SDError.Conflict(
+      "Drafts.MovieAlreadyAdded",
+      $"Movie with id {movieId} is already added to the draft.");
+
+  public static SDError MovieAlreadyPicked(Guid movieId) =>
+    SDError.Conflict(
+      "Drafts.MovieAlreadyPicked",
+      $"Movie with id {movieId} is already picked.");
+
+  public static SDError InvalidNumberOfPicks(int totalPicks, int numberOfDraftPositionPicks) =>
+    SDError.Problem(
+      "Drafts.InvalidNumberOfPicks",
+      $"Total picks {totalPicks} does not match the number of picks {numberOfDraftPositionPicks}.");
 }

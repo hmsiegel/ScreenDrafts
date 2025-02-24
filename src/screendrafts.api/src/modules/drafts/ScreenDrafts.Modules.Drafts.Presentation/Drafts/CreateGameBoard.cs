@@ -16,7 +16,6 @@ internal sealed class CreateGameBoard(ISender sender) : Endpoint<GameBoardReques
     ArgumentNullException.ThrowIfNull(req);
     var command = new CreateGameBoardCommand(
       req.DraftId,
-      req.DraftType,
       req.DraftPositions);
     var result = await _sender.Send(command, ct);
 
@@ -26,12 +25,11 @@ internal sealed class CreateGameBoard(ISender sender) : Endpoint<GameBoardReques
     }
     else
     {
-      await SendOkAsync(ct);
+      await SendOkAsync(result.Value, ct);
     }
   }
 }
 
 public sealed record GameBoardRequest(
   Guid DraftId,
-  string DraftType,
   IEnumerable<DraftPositionDto>? DraftPositions = null);

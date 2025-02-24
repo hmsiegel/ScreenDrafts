@@ -431,6 +431,11 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                         {
                             PermissionCode = "permissions:update",
                             RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "patreon:search",
+                            RoleName = "Patreon"
                         });
                 });
 
@@ -683,6 +688,10 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                         new
                         {
                             Code = "studios:search"
+                        },
+                        new
+                        {
+                            Code = "patreon:search"
                         });
                 });
 
@@ -718,6 +727,10 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                         new
                         {
                             Name = "Drafter"
+                        },
+                        new
+                        {
+                            Name = "Patreon"
                         });
                 });
 

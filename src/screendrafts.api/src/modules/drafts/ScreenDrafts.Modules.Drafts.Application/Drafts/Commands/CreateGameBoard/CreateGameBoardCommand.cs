@@ -2,5 +2,4 @@
 
 public sealed record CreateGameBoardCommand(
     Guid DraftId,
-    string DraftType,
-    IEnumerable<DraftPositionDto>? DraftPositions = null) : ICommand;
+    IEnumerable<DraftPositionDto>? DraftPositions = null) : ICommand<Guid>;

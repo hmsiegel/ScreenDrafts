@@ -1,15 +1,16 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.CreateGameBoard;
+﻿
+namespace ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.CreateGameBoard;
 
 internal sealed class CreateGameBoardCommandHandler(
   IGameBoardRepository gameBoardRepository,
   IUnitOfWork unitOfWork,
-  IDraftsRepository draftsRepository) : ICommandHandler<CreateGameBoardCommand>
+  IDraftsRepository draftsRepository) : ICommandHandler<CreateGameBoardCommand, Guid>
 {
   private readonly IGameBoardRepository _gameBoardRepository = gameBoardRepository;
   private readonly IDraftsRepository _draftsRepository = draftsRepository;
   private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-  public async Task<Result> Handle(CreateGameBoardCommand request, CancellationToken cancellationToken)
+  public async Task<Result<Guid>> Handle(CreateGameBoardCommand request, CancellationToken cancellationToken)
   {
     GameBoard gameBoard;
 
@@ -19,10 +20,10 @@ internal sealed class CreateGameBoardCommandHandler(
 
     if (draft is null)
     {
-      return Result.Failure<GameBoard>(DraftErrors.NotFound(request.DraftId));
+      return Result.Failure<Guid>(DraftErrors.NotFound(request.DraftId));
     }
 
-    if (request.DraftType == "Standard")
+    if (draft.DraftType.Name == "Standard")
     {
       var positions = new List<DraftPosition>
           {
@@ -30,29 +31,75 @@ internal sealed class CreateGameBoardCommandHandler(
             DraftPosition.Create("Drafter B", [5, 3, 1]).Value
           };
 
-      gameBoard = GameBoard.Create(draft, new Collection<DraftPosition>(positions)).Value;
+      if (draft.TotalPicks != NumberOfDraftPositionPicks(positions))
+      {
+        return Result.Failure<Guid>(DraftErrors.InvalidNumberOfPicks(
+          draft.TotalPicks,
+          NumberOfDraftPositionPicks(positions)));
+      }
+
+      if (draft.TotalDrafters != NumberOfDrafters(positions))
+      {
+        return Result.Failure<Guid>(GameBoardErrors.InvalidNumberOfDrafters);
+      }
+
+      gameBoard = GameBoard.Create(draft, [.. positions]).Value;
     }
-    else if (request.DraftType != "Standard" && request.DraftPositions is not null)
+    else if (draft.DraftType.Name != "Standard" && request.DraftPositions is not null)
     {
       var positions = request.DraftPositions.Select(dp => DraftPosition.Create(
         name: dp.Name,
-        picks: new Collection<int>(dp.Picks.ToList()),
+        picks: [.. dp.Picks.ToList()],
         hasBonusVeto: dp.HasBonusVeto,
         hasBonusVetoOverride: dp.HasBonusVetoOverride).Value)
         .ToList();
 
-      gameBoard = GameBoard.Create(draft, new Collection<DraftPosition>(positions)).Value;
+      if (draft.TotalPicks != NumberOfDraftPositionPicks(positions))
+      {
+        return Result.Failure<Guid>(DraftErrors.InvalidNumberOfPicks(
+          draft.TotalPicks,
+          NumberOfDraftPositionPicks(positions)));
+      }
+
+      if (draft.TotalDrafters != NumberOfDrafters(positions))
+      {
+        return Result.Failure<Guid>(GameBoardErrors.InvalidNumberOfDrafters);
+      }
+
+      gameBoard = GameBoard.Create(draft, [.. positions]).Value;
     }
     else
     {
-      return Result.Failure<GameBoard>(GameBoardErrors.DraftPositionsMissing);
+      return Result.Failure<Guid>(GameBoardErrors.DraftPositionsMissing);
     }
 
     _gameBoardRepository.Add(gameBoard);
 
     await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-    return Result.Success();
+    return Result.Success(gameBoard.Id.Value);
+  }
+
+  private static int NumberOfDrafters(List<DraftPosition> positions)
+  {
+    var totalDrafters = 0;
+    foreach (var position in positions)
+    {
+      totalDrafters++;
+    }
+
+    return totalDrafters;
+  }
+
+  private static int NumberOfDraftPositionPicks(List<DraftPosition> positions)
+  {
+    var totalPicks = 0;
+    foreach (var position in positions)
+    {
+      totalPicks += position.Picks.Count;
+    }
+
+    return totalPicks;
   }
 }
 

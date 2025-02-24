@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Modules.Movies.Infrastructure.Inbox;
-
-namespace ScreenDrafts.Modules.Movies.Infrastructure;
+﻿namespace ScreenDrafts.Modules.Movies.Infrastructure;
 
 public static class MoviesModule
 {
@@ -44,10 +42,9 @@ public static class MoviesModule
 
   private static void AddDomainEventHandlers(this IServiceCollection services)
   {
-    Type[] domainEventHandlers = Application.AssemblyReference.Assembly
+    Type[] domainEventHandlers = [.. Application.AssemblyReference.Assembly
         .GetTypes()
-        .Where(t => t.IsAssignableTo(typeof(IDomainEventHandler)))
-        .ToArray();
+        .Where(t => t.IsAssignableTo(typeof(IDomainEventHandler)))];
 
     foreach (Type domainEventHandler in domainEventHandlers)
     {
@@ -67,10 +64,9 @@ public static class MoviesModule
 
   private static void AddIntegrationEventHandlers(this IServiceCollection services)
   {
-    Type[] integrationEventHandlers = Presentation.AssemblyReference.Assembly
+    Type[] integrationEventHandlers = [.. Presentation.AssemblyReference.Assembly
         .GetTypes()
-        .Where(t => t.IsAssignableTo(typeof(IIntegrationEventHandler)))
-        .ToArray();
+        .Where(t => t.IsAssignableTo(typeof(IIntegrationEventHandler)))];
 
     foreach (Type integrationEventHandler in integrationEventHandlers)
     {
