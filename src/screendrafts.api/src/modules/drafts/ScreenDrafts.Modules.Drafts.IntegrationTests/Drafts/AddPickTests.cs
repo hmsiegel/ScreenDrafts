@@ -6,6 +6,174 @@ public class AddPickTests(IntegrationTestWebAppFactory factory) : BaseIntegratio
   public async Task AddPick_ShouldAddPickToDraftAsync()
   {
     // Arrange
+    var (draftId, drafters) = await SetupDraftAndDraftersAsync();
+
+    var movie = MovieFactory.CreateMovie().Value;
+    var movieId = await Sender.Send(new AddMovieCommand(movie.Id, movie.MovieTitle));
+
+    var reloadedDraftResult = await Sender.Send(new GetDraftQuery(draftId.Value));
+
+    await Sender.Send(new StartDraftCommand(reloadedDraftResult.Value.Id));
+
+    var addPickCommand = new AddPickCommand(
+      reloadedDraftResult.Value.Id,
+      1,
+      movieId.Value,
+     drafters[0].Id.Value);
+
+    // Act
+    var result = await Sender.Send(addPickCommand);
+
+    // Assert
+    result.IsSuccess.Should().BeTrue();
+
+    var getDraftPicksQuery = new GetDraftPicksByDraftQuery(reloadedDraftResult.Value.Id);
+    var draftPicks = await Sender.Send(getDraftPicksQuery);
+
+    draftPicks.Value.Should().HaveCount(1);
+    draftPicks.Value.First().Position.Should().Be(1);
+    draftPicks.Value.First().MovieId.Should().Be(movieId.Value);
+    draftPicks.Value.First().DrafterId.Should().Be(drafters[0].Id.Value);
+  }
+
+
+  [Fact]
+  public async Task AddPick_ShouldNotAddPickToDraft_WhenDrafterIsNotAssignedToDraftAsync()
+  {
+    // Arrange
+    var (draftId, _) = await SetupDraftAndDraftersAsync();
+
+    var drafter = DrafterFactory.CreateDrafter();
+
+    var movie = MovieFactory.CreateMovie().Value;
+    var movieId = await Sender.Send(new AddMovieCommand(movie.Id, movie.MovieTitle));
+
+    var reloadedDraftResult = await Sender.Send(new GetDraftQuery(draftId.Value));
+
+    await Sender.Send(new StartDraftCommand(reloadedDraftResult.Value.Id));
+
+    var addPickCommand = new AddPickCommand(
+      reloadedDraftResult.Value.Id,
+      1,
+      movieId.Value,
+     drafter.Id.Value);
+
+    // Act
+    var result = await Sender.Send(addPickCommand);
+
+    // Assert
+    result.IsSuccess.Should().BeFalse();
+    result.Errors[0].Should().Be(DrafterErrors.NotFound(drafter.Id.Value));
+  }
+
+  [Fact]
+  public async Task AddPick_ShouldNotAddPickToDraft_WhenMovieIsNotInDatabaseAsync()
+  {
+    var (draftId, drafters) = await SetupDraftAndDraftersAsync();
+
+    var movie = MovieFactory.CreateMovie().Value;
+
+    var reloadedDraftResult = await Sender.Send(new GetDraftQuery(draftId.Value));
+
+    await Sender.Send(new StartDraftCommand(reloadedDraftResult.Value.Id));
+
+    var addPickCommand = new AddPickCommand(
+      reloadedDraftResult.Value.Id,
+      1,
+      movie.Id,
+     drafters[0].Id.Value);
+
+    // Act
+    var result = await Sender.Send(addPickCommand);
+
+    // Assert
+    result.IsSuccess.Should().BeFalse();
+    result.Errors[0].Should().Be(DraftErrors.MovieNotFound(movie.Id));
+  }
+
+  [Fact]
+  public async Task AddPick_ShouldNotAddPickToDraft_WhenDraftIsNotStartedAsync()
+  {
+    // Arrange
+    var (draftId, drafters) = await SetupDraftAndDraftersAsync();
+
+    var movie = MovieFactory.CreateMovie().Value;
+    var movieId = await Sender.Send(new AddMovieCommand(movie.Id, movie.MovieTitle));
+    var addPickCommand = new AddPickCommand(
+      draftId.Value,
+      1,
+      movieId.Value,
+      drafters[0].Id.Value);
+    // Act
+    var result = await Sender.Send(addPickCommand);
+    // Assert
+    result.IsSuccess.Should().BeFalse();
+    result.Errors[0].Should().Be(DraftErrors.DraftNotStarted);
+  }
+
+  [Fact]
+  public async Task AddPick_ShouldNotAddPickToDraft_WhenPickPositionIsOutOfRangeAsync()
+  {
+    // Arrange
+    var (draftId, drafters) = await SetupDraftAndDraftersAsync();
+
+    var movie = MovieFactory.CreateMovie().Value;
+    var movieId = await Sender.Send(new AddMovieCommand(movie.Id, movie.MovieTitle));
+
+    var reloadedDraftResult = await Sender.Send(new GetDraftQuery(draftId.Value));
+
+    await Sender.Send(new StartDraftCommand(reloadedDraftResult.Value.Id));
+
+    var addPickCommand = new AddPickCommand(
+      reloadedDraftResult.Value.Id,
+      0,
+      movieId.Value,
+      drafters[0].Id.Value);
+
+    // Act
+    var result = await Sender.Send(addPickCommand);
+
+    // Assert
+    result.IsSuccess.Should().BeFalse();
+    result.Errors[0].Should().Be(DraftErrors.PickPositionIsOutOfRange);
+  }
+
+  [Fact]
+  public async Task AddPick_ShouldNotAddPickToDraft_WhenPickPositionIsAlreadyTakenAsync()
+  {
+    // Arrange
+    var (draftId, drafters) = await SetupDraftAndDraftersAsync();
+
+    var movie = MovieFactory.CreateMovie().Value;
+    var movieId = await Sender.Send(new AddMovieCommand(movie.Id, movie.MovieTitle));
+
+    var reloadedDraftResult = await Sender.Send(new GetDraftQuery(draftId.Value));
+
+    await Sender.Send(new StartDraftCommand(reloadedDraftResult.Value.Id));
+
+    var addPickCommand = new AddPickCommand(
+      reloadedDraftResult.Value.Id,
+      1,
+      movieId.Value,
+      drafters[0].Id.Value);
+    await Sender.Send(addPickCommand);
+
+    var addPickCommand2 = new AddPickCommand(
+      reloadedDraftResult.Value.Id,
+      1,
+      movieId.Value,
+      drafters[1].Id.Value);
+
+    // Act
+    var result = await Sender.Send(addPickCommand2);
+
+    // Assert
+    result.IsSuccess.Should().BeFalse();
+    result.Errors[0].Should().Be(DraftErrors.PickPositionAlreadyTaken(1));
+  }
+
+  private async Task<(Result<Guid> draftId, List<Drafter> drafters)> SetupDraftAndDraftersAsync()
+  {
     var draft = DraftFactory.CreateStandardDraft().Value;
     var draftId = await Sender.Send(new CreateDraftCommand(
       draft.Title.Value,
@@ -67,31 +235,6 @@ public class AddPickTests(IntegrationTestWebAppFactory factory) : BaseIntegratio
       await Sender.Send(command);
     }
 
-    var movie = MovieFactory.CreateMovie().Value;
-    var movieId = await Sender.Send(new AddMovieCommand(movie.Id, movie.MovieTitle));
-
-    var reloadedDraftResult = await Sender.Send(new GetDraftQuery(draftId.Value));
-
-    await Sender.Send(new StartDraftCommand(reloadedDraftResult.Value.Id));
-
-    var addPickCommand = new AddPickCommand(
-      reloadedDraftResult.Value.Id,
-      1,
-      movieId.Value,
-     drafters[0].Id.Value);
-
-    // Act
-    var result = await Sender.Send(addPickCommand);
-
-    // Assert
-    result.IsSuccess.Should().BeTrue();
-
-    var getDraftPicksQuery = new GetDraftPicksByDraftQuery(reloadedDraftResult.Value.Id);
-    var draftPicks = await Sender.Send(getDraftPicksQuery);
-
-    draftPicks.Value.Should().HaveCount(1);
-    draftPicks.Value.First().Position.Should().Be(1);
-    draftPicks.Value.First().MovieId.Should().Be(movieId.Value);
-    draftPicks.Value.First().DrafterId.Should().Be(drafters[0].Id.Value);
+    return (draftId, drafters);
   }
 }
