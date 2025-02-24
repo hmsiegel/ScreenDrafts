@@ -16,4 +16,9 @@ public static class DraftPositionErrors
     SDError.Failure(
       "DraftPosition.DrafterAlreadyAssigned",
       "This draft position has already been assigned a drafter.");
+
+  public static SDError NotFound(Guid id) =>
+    SDError.NotFound(
+      "DraftPosition.NotFound",
+      $"Draft position with ID {id} was not found.");
 }

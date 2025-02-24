@@ -15,4 +15,14 @@ public static class GameBoardErrors
     SDError.NotFound(
       "GameBoard.DraftPositionNotFound",
       $"The draft position with Id {id} was not found.");
+
+  public static readonly SDError InvalidNumberOfDrafters =
+    SDError.Problem(
+      "GameBoard.InvalidNumberOfDrafters",
+      "The number of drafters does not match the number of draft positions.");
+
+  public static SDError DraftPositionAlreadyAssigned(Guid id) =>
+    SDError.Conflict(
+      "GameBoard.DraftPositionAlreadyAssigned",
+      $"The draft position with Id {id} is already assigned to a drafter.");
 }
