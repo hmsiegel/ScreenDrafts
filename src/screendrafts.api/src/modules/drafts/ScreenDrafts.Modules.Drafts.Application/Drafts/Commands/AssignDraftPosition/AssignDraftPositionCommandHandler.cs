@@ -26,6 +26,11 @@ internal sealed class AssignDraftPositionCommandHandler(
       return Result.Failure(GameBoardErrors.DraftPositionNotFound(request.PositionId));
     }
 
+    if (draftPosition.Drafter is not null)
+    {
+      return Result.Failure(GameBoardErrors.DraftPositionAlreadyAssigned(request.PositionId));
+    }
+
     var drafter = await _draftersRepository.GetByIdAsync(DrafterId.Create(request.DrafterId), cancellationToken);
 
     if (drafter is null)
