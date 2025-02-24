@@ -168,7 +168,7 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
     Raise(new PickAddedDomainEvent(
       Id.Value,
       position,
-      movie.Id.Value,
+      movie.Id,
       drafter.Id.Value));
 
     return Result.Success();
