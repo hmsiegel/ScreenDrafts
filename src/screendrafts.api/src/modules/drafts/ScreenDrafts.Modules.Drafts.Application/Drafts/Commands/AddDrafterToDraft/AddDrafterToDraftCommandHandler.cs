@@ -4,21 +4,21 @@ internal sealed class AddDrafterToDraftCommandHandler(
   IDraftsRepository draftRepository,
   IDraftersRepository drafterRepository,
   IUnitOfWork unitOfWork)
-  : ICommandHandler<AddDrafterToDraftCommand>
+  : ICommandHandler<AddDrafterToDraftCommand, Guid>
 {
-  private readonly IDraftsRepository _draftRepository = draftRepository;
+  private readonly IDraftsRepository _draftsRepository = draftRepository;
   private readonly IDraftersRepository _drafterRepository = drafterRepository;
   private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-  public async Task<Result> Handle(AddDrafterToDraftCommand request, CancellationToken cancellationToken)
+  public async Task<Result<Guid>> Handle(AddDrafterToDraftCommand request, CancellationToken cancellationToken)
   {
     var draftId = DraftId.Create(request.DraftId);
 
-    var draft = await _draftRepository.GetByIdAsync(draftId, cancellationToken);
+    var draft = await _draftsRepository.GetByIdAsync(draftId, cancellationToken);
 
     if (draft is null)
     {
-      return Result.Failure<Draft>(DraftErrors.NotFound(request.DraftId));
+      return Result.Failure<Guid>(DraftErrors.NotFound(request.DraftId));
     }
 
     var drafterId = DrafterId.Create(request.DrafterId);
@@ -27,11 +27,12 @@ internal sealed class AddDrafterToDraftCommandHandler(
 
     if (drafter is null)
     {
-      return Result.Failure<Drafter>(DrafterErrors.NotFound(request.DrafterId));
+      return Result.Failure<Guid>(DrafterErrors.NotFound(request.DrafterId));
     }
 
     draft.AddDrafter(drafter);
+    _draftsRepository.Update(draft);
     await _unitOfWork.SaveChangesAsync(cancellationToken);
-    return Result.Success();
+    return Result.Success(drafter.Id.Value);
   }
 }

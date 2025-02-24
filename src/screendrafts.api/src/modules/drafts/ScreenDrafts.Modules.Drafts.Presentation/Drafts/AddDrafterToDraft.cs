@@ -25,7 +25,7 @@ internal sealed class AddDrafterToDraft(ISender sender) : EndpointWithoutRequest
     }
     else
     {
-      await SendOkAsync(ct);
+      await SendOkAsync(result.Value, ct);
     }
   }
 }
