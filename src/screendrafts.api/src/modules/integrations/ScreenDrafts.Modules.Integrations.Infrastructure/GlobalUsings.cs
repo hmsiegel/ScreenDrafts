@@ -38,3 +38,4 @@ global using ScreenDrafts.Modules.Integrations.Infrastructure.Database;
 global using ScreenDrafts.Modules.Integrations.Infrastructure.Imdb;
 global using ScreenDrafts.Modules.Integrations.Infrastructure.Inbox;
 global using ScreenDrafts.Modules.Integrations.Infrastructure.Outbox;
+global using ScreenDrafts.Modules.Integrations.PublicApi;
