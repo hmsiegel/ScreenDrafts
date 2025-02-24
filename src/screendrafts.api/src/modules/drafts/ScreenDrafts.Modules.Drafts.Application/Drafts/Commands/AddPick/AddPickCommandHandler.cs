@@ -2,10 +2,12 @@
 
 internal sealed class AddPickCommandHandler(
   IDraftsRepository draftsRepository,
+  IPicksRepository picksRepository,
   IUnitOfWork unitOfWork) 
   : ICommandHandler<AddPickCommand>
 {
   private readonly IDraftsRepository _draftsRepository = draftsRepository;
+  private readonly IPicksRepository _picksRepository = picksRepository;
   private readonly IUnitOfWork _unitOfWork = unitOfWork;
   public async Task<Result> Handle(AddPickCommand request, CancellationToken cancellationToken)
   {
@@ -29,10 +31,11 @@ internal sealed class AddPickCommandHandler(
 
     if (movie is null)
     {
-      return Result.Failure<Guid>(DraftErrors.MovieNotFound(movie!.Id.Value));
+      return Result.Failure<Guid>(DraftErrors.MovieNotFound(movie!.Id));
     }
 
     draft.AddPick(request.Position, movie, drafter);
+    _picksRepository.Add(draft.Picks.Last());
     await _unitOfWork.SaveChangesAsync(cancellationToken);
 
     return Result.Success();
