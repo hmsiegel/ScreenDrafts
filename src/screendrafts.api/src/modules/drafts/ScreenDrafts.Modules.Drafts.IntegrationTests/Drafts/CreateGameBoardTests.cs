@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafts;
 
-public class CreateGameBoardTests(IntegrationTestWebAppFactory factory) : BaseIntegrationTest(factory)
+public sealed class CreateGameBoardTests(IntegrationTestWebAppFactory factory) : BaseIntegrationTest(factory)
 {
   public static readonly TheoryData<string, string, int, int, int, string, string, Collection<DraftPosition>> ValidDraftPositionData = new()
   {

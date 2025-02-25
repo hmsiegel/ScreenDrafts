@@ -28,11 +28,30 @@ internal sealed class AssignTriviaResultsCommandHandler(
       return Result.Failure<TriviaResult>(DraftErrors.NotFound(request.DraftId));
     }
 
+    if (request.QuestionsWon < 0)
+    {
+      return Result.Failure<TriviaResult>(DrafterErrors.InvalidQuestionsWon);
+    }
+
+    if (request.Position < 0 || request.Position > draft.TotalDrafters)
+    {
+      return Result.Failure<TriviaResult>(DrafterErrors.InvalidPosition);
+    }
+
     var triviaResult = TriviaResult.Create(
       request.Position,
       request.QuestionsWon,
       draft,
       drafter).Value;
+
+    var result = draft.AddTriviaResult(drafter, request.Position, request.QuestionsWon);
+
+    if (result.IsFailure)
+    {
+      return Result.Failure(result.Errors);
+    }
+
+    _draftsRepository.Update(draft);
 
     _triviaResultsRepository.Add(triviaResult);
 

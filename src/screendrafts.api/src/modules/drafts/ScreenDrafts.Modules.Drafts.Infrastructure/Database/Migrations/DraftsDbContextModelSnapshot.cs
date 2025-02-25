@@ -571,7 +571,7 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<Guid?>("DraftId")
+                    b.Property<Guid>("DraftId")
                         .HasColumnType("uuid")
                         .HasColumnName("draft_id");
 
@@ -598,11 +598,9 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasDatabaseName("ix_picks_draft_id");
 
                     b.HasIndex("DrafterId")
-                        .IsUnique()
                         .HasDatabaseName("ix_picks_drafter_id");
 
                     b.HasIndex("MovieId")
-                        .IsUnique()
                         .HasDatabaseName("ix_picks_movie_id");
 
                     b.HasIndex("VetoId")
@@ -796,21 +794,23 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
 
             modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities.Pick", b =>
                 {
-                    b.HasOne("ScreenDrafts.Modules.Drafts.Domain.Drafts.Draft", null)
+                    b.HasOne("ScreenDrafts.Modules.Drafts.Domain.Drafts.Draft", "Draft")
                         .WithMany("Picks")
                         .HasForeignKey("DraftId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
                         .HasConstraintName("fk_picks_drafts_draft_id");
 
                     b.HasOne("ScreenDrafts.Modules.Drafts.Domain.Drafters.Drafter", "Drafter")
-                        .WithOne("Pick")
-                        .HasForeignKey("ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities.Pick", "DrafterId")
+                        .WithMany("Picks")
+                        .HasForeignKey("DrafterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_picks_drafters_drafter_id");
 
                     b.HasOne("ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities.Movie", "Movie")
-                        .WithOne("Pick")
-                        .HasForeignKey("ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities.Pick", "MovieId")
+                        .WithMany("Picks")
+                        .HasForeignKey("MovieId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_picks_movies_movie_id");
@@ -819,6 +819,8 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .WithOne("Pick")
                         .HasForeignKey("ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities.Pick", "VetoId")
                         .HasConstraintName("fk_picks_vetoes_veto_id");
+
+                    b.Navigation("Draft");
 
                     b.Navigation("Drafter");
 
@@ -852,8 +854,7 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                 {
                     b.Navigation("DraftStats");
 
-                    b.Navigation("Pick")
-                        .IsRequired();
+                    b.Navigation("Picks");
 
                     b.Navigation("RolloverVeto");
 
@@ -893,7 +894,7 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
 
             modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities.Movie", b =>
                 {
-                    b.Navigation("Pick");
+                    b.Navigation("Picks");
                 });
 #pragma warning restore 612, 618
         }

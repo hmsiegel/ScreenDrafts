@@ -12,6 +12,11 @@ internal sealed class CreateHostWithoutUserCommandHandler(
   {
     var host = Host.Create(request.Name);
 
+    if (host.IsFailure)
+    {
+      return Result.Failure<Guid>(HostErrors.CannotCreateHost);
+    }
+
     _hostRepository.AddHost(host.Value);
 
     await _unitOfWork.SaveChangesAsync(cancellationToken);

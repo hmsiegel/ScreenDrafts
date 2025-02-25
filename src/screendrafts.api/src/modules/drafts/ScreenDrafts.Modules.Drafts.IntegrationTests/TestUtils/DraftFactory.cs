@@ -45,8 +45,8 @@ public static class DraftFactory
   ];
   public static Collection<DraftPosition> CreateMiniMegaDraftPositions() =>
   [
-      DraftPosition.Create("Drafter A", [14,10,6,1], true).Value,
-      DraftPosition.Create("Drafter B", [19,18,15,11,7,2]).Value,
-      DraftPosition.Create("Drafter C", [20,16,12,8,3], false, true).Value,
+      DraftPosition.Create("Drafter A", [11, 10, 6, 3], false, true).Value,
+      DraftPosition.Create("Drafter B", [9, 8, 5, 2]).Value,
+      DraftPosition.Create("Drafter C", [7, 4, 1], true, false).Value,
   ];
 }

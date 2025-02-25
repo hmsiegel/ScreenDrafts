@@ -1,7 +1,4 @@
-﻿using ScreenDrafts.Common.Infrastructure.Serialization;
-using ScreenDrafts.Common.Infrastructure.Inbox;
-
-namespace ScreenDrafts.Common.Infrastructure.Outbox;
+﻿namespace ScreenDrafts.Common.Infrastructure.Outbox;
 
 public sealed class InsertOutboxMessagesInterceptor : SaveChangesInterceptor
 {

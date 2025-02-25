@@ -29,7 +29,7 @@ public static class InfrastructureConfiguration
 
     services.TryAddScoped<ICsvFileService, CsvFileService>();
 
-    SqlMapper.AddTypeHandler(new GeneciArrayHandler<string>());
+    SqlMapper.AddTypeHandler(new GenericArrayHandler<string>());
 
     services.AddQuartzService();
 

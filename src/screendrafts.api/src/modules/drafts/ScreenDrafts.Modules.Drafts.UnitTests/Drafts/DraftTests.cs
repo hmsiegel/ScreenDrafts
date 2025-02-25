@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Modules.Drafts.UnitTests.TestUtils;
-
-namespace ScreenDrafts.Modules.Drafts.UnitTests.Drafts;
+﻿namespace ScreenDrafts.Modules.Drafts.UnitTests.Drafts;
 
 public class DraftTests : BaseTest
 {
@@ -192,8 +190,10 @@ public class DraftTests : BaseTest
 
     var drafter = draft.Drafters.FirstOrDefault();
 
+    var pick = Pick.Create(position, movie, drafter!, draft).Value;
+
     // Act
-    var result = draft.AddPick(position, movie, drafter!);
+    var result = draft.AddPick(pick);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -211,16 +211,18 @@ public class DraftTests : BaseTest
 
     var drafter = draft.Drafters.FirstOrDefault();
 
+    var pick = Pick.Create(position, movie, drafter!, draft).Value;
+
     // Act
-    draft.AddPick(position, movie, drafter!);
+    draft.AddPick(pick);
 
     var domainEvent = AssertDomainEventWasPublished<PickAddedDomainEvent>(draft);
 
-    var pick = draft.Picks.FirstOrDefault(p => p.Position == position)!;
+    var firstPick = draft.Picks.FirstOrDefault(p => p.Position == position)!;
 
     // Assert
-    domainEvent.DrafterId.Should().Be(pick.Drafter.Id.Value);
-    domainEvent.DraftId.Should().Be(draft.Id.Value);
+    domainEvent.DrafterId.Should().Be(firstPick.Drafter.Id.Value);
+    domainEvent.DraftId.Should().Be(firstPick.Draft.Id.Value);
   }
 
 
@@ -235,8 +237,10 @@ public class DraftTests : BaseTest
 
     var drafter = draft.Drafters.FirstOrDefault();
 
+    var pick = Pick.Create(position, movie, drafter!, draft).Value;
+
     // Act
-    var result = draft.AddPick(position, movie, drafter!);
+    var result = draft.AddPick(pick);
 
     // Assert
     result.IsSuccess.Should().BeFalse();
@@ -252,13 +256,16 @@ public class DraftTests : BaseTest
     var movie = MovieFactory.CreateMovie().Value;
 
     var drafter = draft.Drafters.FirstOrDefault();
-    
+
     var position = 1;
     draft.AddDrafter(drafter!);
-    draft.AddPick(position, movie, drafter!);
+
+    var pick = Pick.Create(position, movie, drafter!, draft).Value;
+
+    draft.AddPick(pick);
 
     // Act
-    var result = draft.AddPick(position, movie, drafter!);
+    var result = draft.AddPick(pick);
 
     // Assert
     result.IsSuccess.Should().BeFalse();
@@ -399,10 +406,13 @@ public class DraftTests : BaseTest
     var draft = SetupAndStartDraft();
     for (int i = 0; i < draft.TotalPicks; i++)
     {
-      draft.AddPick(
+      var pick = Pick.Create(
         i + 1,
         MovieFactory.CreateMovie().Value,
-        DrafterFactory.CreateDrafter());
+        DrafterFactory.CreateDrafter(),
+        draft).Value;
+
+      draft.AddPick(pick);
     }
 
     // Act
@@ -432,15 +442,36 @@ public class DraftTests : BaseTest
   {
     // Arrange
     var draft = DraftFactory.CreateStandardDraft().Value;
-    var drafter = DrafterFactory.CreateDrafter();
+    List<Drafter> drafters = [];
+    List<Host> hosts = [];
+
+    for (int i = 0; i < draft.TotalDrafters; i++)
+    {
+      var drafter = DrafterFactory.CreateDrafter();
+      drafters.Add(drafter);
+      draft.AddDrafter(drafter);
+    }
+
+    for (int i = 0; i < draft.TotalHosts; i++)
+    {
+      var host = HostsFactory.CreateHost().Value;
+      hosts.Add(host);
+      draft.AddHost(host);
+    }
+
+    draft.StartDraft();
     var position = 1;
     var questionsWon = 3;
 
+    var usedDrafter =
+      drafters.FirstOrDefault()
+      ?? throw new InvalidOperationException("Drafter is null");
+
     // Act
-    draft.AddTriviaResult(drafter, position, questionsWon);
+    draft.AddTriviaResult(usedDrafter, position, questionsWon);
 
     // Assert
-    draft.TriviaResults.Should().Contain(tr => tr.Drafter == drafter && tr.Position == position && tr.QuestionsWon == questionsWon);
+    draft.TriviaResults.Should().Contain(tr => tr.Drafter == usedDrafter && tr.Position == position && tr.QuestionsWon == questionsWon);
   }
 
   [Fact]

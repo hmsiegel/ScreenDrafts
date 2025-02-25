@@ -61,5 +61,6 @@ global using ScreenDrafts.Common.Infrastructure.EventBus;
 global using ScreenDrafts.Common.Infrastructure.OpenTelemetry;
 global using ScreenDrafts.Common.Infrastructure.Outbox;
 global using ScreenDrafts.Common.Infrastructure.Quartz;
+global using ScreenDrafts.Common.Infrastructure.Serialization;
 
 global using StackExchange.Redis;

@@ -21,9 +21,9 @@ internal sealed class DrafterConfiguration : IEntityTypeConfiguration<Drafter>
       .IsRequired()
       .HasMaxLength(100);
 
-    builder.HasOne(d => d.Pick)
+    builder.HasMany(d => d.Picks)
       .WithOne(p => p.Drafter)
-      .HasForeignKey<Pick>(d => d.DrafterId);
+      .HasForeignKey(d => d.DrafterId);
 
     builder.HasOne(d => d.RolloverVeto)
       .WithOne(rv => rv.Drafter)

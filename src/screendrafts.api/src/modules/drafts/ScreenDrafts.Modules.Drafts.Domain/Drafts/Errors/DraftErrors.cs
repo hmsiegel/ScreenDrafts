@@ -74,7 +74,7 @@ public static class DraftErrors {
   public static readonly SDError CannotStartDraftWithoutAllHosts =
     SDError.Problem(
       "Drafts.CannotStartDraftWithoutAllHosts",
-      "Cannot readonly start the draft without all hosts.");
+      "Cannot start the draft without all hosts.");
 
   public static readonly SDError CannotCompleteDraftIfItIsNotInProgress =
     SDError.Problem(
@@ -165,4 +165,24 @@ public static class DraftErrors {
     SDError.Problem(
       "Drafts.InvalidNumberOfPicks",
       $"Total picks {totalPicks} does not match the number of picks {numberOfDraftPositionPicks}.");
+
+  public static readonly SDError CannotAddPickIfDraftIsNotStarted = SDError.Problem(
+    "Drafts.CannotAddPickIfDraftIsNotStarted",
+    "Cannot add a pick if the draft is not started.");
+
+  public static readonly SDError CannotAddPickIfDraftIsCompleted = SDError.Problem(
+    "Drafts.CannotAddPickIfDraftIsCompleted",
+    "Cannot add a pick if the draft is completed.");
+
+  public static readonly SDError CannotAddPickIfDraftIsPaused = SDError.Problem(
+    "Drafts.CannotAddPickIfDraftIsPaused",
+    "Cannot add a pick if the draft is paused.");
+
+  public static readonly SDError CannotAddTriviaResultIfDraftIsNotStarted = SDError.Problem(
+    "Drafts.CannotAddTriviaResultIfDraftIsNotStarted",
+    "Cannot add a trivia result if the draft is not started.");
+
+  public static readonly SDError PicksNotFound = SDError.NotFound(
+    "Drafts.PicksNotFound",
+    "No draft picks were found.");
 }

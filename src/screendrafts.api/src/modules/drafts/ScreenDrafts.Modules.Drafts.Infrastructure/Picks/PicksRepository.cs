@@ -14,4 +14,9 @@ internal sealed class PicksRepository(DraftsDbContext dbContext) : IPicksReposit
     return await _dbContext.Picks
       .SingleOrDefaultAsync(p => p.Id == id, cancellationToken);
   }
+
+  public void Update(Pick pick)
+  {
+    _dbContext.Picks.Update(pick);
+  }
 }

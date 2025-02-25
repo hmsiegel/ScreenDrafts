@@ -15,4 +15,6 @@ public sealed record Title(string Value)
     }
     return new Title(value);
   }
+
+  public static Title Empty => new(string.Empty);
 }

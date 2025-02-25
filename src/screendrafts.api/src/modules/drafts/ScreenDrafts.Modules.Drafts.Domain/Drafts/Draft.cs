@@ -139,37 +139,34 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
     return Result.Success();
   }
 
-  public Result AddPick(int position, Movie movie, Drafter drafter)
+  public Result AddPick(Pick pick)
   {
-    ArgumentNullException.ThrowIfNull(movie);
-    ArgumentNullException.ThrowIfNull(drafter);
+    Guard.Against.Null(pick);
 
     if (DraftStatus != DraftStatus.InProgress)
     {
       return Result.Failure(DraftErrors.DraftNotStarted);
     }
 
-    if (_picks.Any(p => p.Position == position))
+    if (_picks.Any(p => p.Position == pick.Position))
     {
-      return Result.Failure(DraftErrors.PickPositionAlreadyTaken(position));
+      return Result.Failure(DraftErrors.PickPositionAlreadyTaken(pick.Position));
     }
 
-    if (position <= 0 || position > TotalPicks)
+    if (pick.Position <= 0 || pick.Position > TotalPicks)
     {
       return Result.Failure(DraftErrors.PickPositionIsOutOfRange);
     }
 
-    var pick = Pick.Create(position, movie, drafter);
-
-    _picks.Add(pick.Value);
+    _picks.Add(pick);
 
     UpdatedAtUtc = DateTime.UtcNow;
 
     Raise(new PickAddedDomainEvent(
       Id.Value,
-      position,
-      movie.Id,
-      drafter.Id.Value));
+      pick.Position,
+      pick.Movie.Id,
+      pick.Drafter.Id.Value));
 
     return Result.Success();
   }
@@ -192,55 +189,6 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
     UpdatedAtUtc = DateTime.UtcNow;
 
     Raise(new HostAddedDomainEvent(Id.Value, host.Id.Value));
-
-    return Result.Success();
-  }
-
-  public Result AddVeto(Drafter drafter, Pick pick)
-  {
-    ArgumentNullException.ThrowIfNull(drafter);
-    ArgumentNullException.ThrowIfNull(pick);
-
-
-    if (DraftStatus != DraftStatus.InProgress)
-    {
-      return Result.Failure(DraftErrors.CannotVetoUnlessTheDraftIsStarted);
-    }
-
-    if (!_drafters.Any(d => d.Id.Value == drafter.Id.Value))
-    {
-      return Result.Failure(DraftErrors.OnlyDraftersInTheDraftCanUseAVeto);
-    }
-
-    drafter.AddVeto(pick);
-
-    UpdatedAtUtc = DateTime.UtcNow;
-
-    Raise(new VetoAddedDomainEvent(Id.Value, drafter.Id.Value, pick.Position));
-
-    return Result.Success();
-  }
-
-  public Result AddVetoOverride(Drafter drafter, Veto veto)
-  {
-    ArgumentNullException.ThrowIfNull(drafter);
-    ArgumentNullException.ThrowIfNull(veto);
-
-    if (DraftStatus != DraftStatus.InProgress)
-    {
-      return Result.Failure(DraftErrors.CannotVetoUnlessTheDraftIsStarted);
-    }
-
-    if (!_drafters.Contains(drafter))
-    {
-      return Result.Failure(DraftErrors.OnlyDraftersInTheDraftCanUseAVetoOverride);
-    }
-
-    drafter.AddVetoOverride(veto);
-
-    UpdatedAtUtc = DateTime.UtcNow;
-
-    Raise(new VetoOverrideAddedDomainEvent(Id.Value, drafter.Id.Value, veto.Id.Value));
 
     return Result.Success();
   }
@@ -269,6 +217,7 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
     return Result.Success();
   }
 
+
   public Result CompleteDraft()
   {
     if (DraftStatus != DraftStatus.InProgress)
@@ -288,14 +237,31 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
     return Result.Success();
   }
 
-  public void AddTriviaResult(Drafter drafter, int position, int questionsWon)
+  public Result AddTriviaResult(Drafter drafter, int position, int questionsWon)
   {
+    Guard.Against.Null(drafter);
+
+    if (DraftStatus != DraftStatus.InProgress)
+    {
+      return Result.Failure(DraftErrors.CannotAddTriviaResultIfDraftIsNotStarted);
+    }
+
+    if (!_drafters.Contains(drafter))
+    {
+      return Result.Failure(DrafterErrors.NotFound(drafter.Id.Value));
+    }
+
     var triviaResult = TriviaResult.Create(
       questionsWon: questionsWon,
       position: position,
       draft: this,
-      drafter: drafter);
-    _triviaResults.Add(triviaResult.Value);
+      drafter: drafter).Value;
+
+    _triviaResults.Add(triviaResult);
+
+    Raise(new TriviaResultAddedDomainEvent(Id.Value, drafter.Id.Value, position, questionsWon));
+
+    return Result.Success();
   }
 
   public Result ApplyRollover(Guid drafterId, bool isVeto)
@@ -352,5 +318,38 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
   public void SetPatreonOnly(bool isPatreonOnly)
   {
     IsPatreonOnly = isPatreonOnly;
+  }
+
+  public Result RemoveDrafter(Drafter drafter)
+  {
+    Guard.Against.Null(drafter);
+    if (!_drafters.Contains(drafter))
+    {
+      return Result.Failure(DrafterErrors.NotFound(drafter.Id.Value));
+    }
+
+    _drafters.Remove(drafter);
+
+    UpdatedAtUtc = DateTime.UtcNow;
+    Raise(new DrafterRemovedDomainEvent(Id.Value, drafter.Id.Value));
+    return Result.Success();
+  }
+
+  public Result RemoveHost(Host host)
+  {
+    Guard.Against.Null(host);
+
+    if (!_hosts.Contains(host))
+    {
+      return Result.Failure(HostErrors.NotFound(host.Id.Value));
+    }
+
+    _hosts.Remove(host);
+
+    UpdatedAtUtc = DateTime.UtcNow;
+
+    Raise(new HostRemovedDomainEvent(Id.Value, host.Id.Value));
+
+    return Result.Success();
   }
 }
