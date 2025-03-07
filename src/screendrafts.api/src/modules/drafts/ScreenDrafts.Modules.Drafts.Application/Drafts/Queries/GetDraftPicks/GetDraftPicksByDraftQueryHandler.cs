@@ -12,12 +12,16 @@ internal sealed class GetDraftPicksByDraftQueryHandler(IDbConnectionFactory dbCo
     const string sql =
       $"""
         SELECT
-          position AS {nameof(DraftPickResponse.Position)},
-          movie_id AS {nameof(DraftPickResponse.MovieId)},
-          drafter_id AS {nameof(DraftPickResponse.DrafterId)},
-          draft_id AS {nameof(DraftPickResponse.DraftId)}
-          FROM drafts.picks
-          WHERE draft_id = @DraftId
+          p.position AS {nameof(DraftPickResponse.Position)},
+          p.movie_id AS {nameof(DraftPickResponse.MovieId)},
+          m.movie_title AS {nameof(DraftPickResponse.MovieTitle)},
+          p.drafter_id AS {nameof(DraftPickResponse.DrafterId)},
+          d.name AS {nameof(DraftPickResponse.DrafterName)}
+          FROM drafts.picks p
+          INNER JOIN drafts.movies m ON p.movie_id = m.id
+          INNER JOIN drafts.drafters d ON p.drafter_id = d.id
+          WHERE p.draft_id = @DraftId
+          ORDER BY p.position DESC
       """;
 
     List<DraftPickResponse> draftPicks = [.. await connection.QueryAsync<DraftPickResponse>(sql, request)];

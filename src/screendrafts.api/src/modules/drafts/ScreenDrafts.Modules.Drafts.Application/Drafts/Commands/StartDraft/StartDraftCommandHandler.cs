@@ -10,7 +10,7 @@ internal sealed class StartDraftCommandHandler(
   public async Task<Result> Handle(StartDraftCommand request, CancellationToken cancellationToken)
   {
     var draftId = DraftId.Create(request.DraftId);
-    var draft = await _draftsRepository.GetByIdAsync(draftId, cancellationToken);
+    var draft = await _draftsRepository.GetDraftWithDetailsAsync(draftId, cancellationToken);
     if (draft is null)
     {
       return Result.Failure<Guid>(DraftErrors.NotFound(request.DraftId));

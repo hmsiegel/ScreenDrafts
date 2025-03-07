@@ -2,16 +2,18 @@
 
 public sealed record DraftPickResponse(
   int Position,
-  Guid DraftId,
   Guid MovieId,
-  Guid DrafterId)
+  string MovieTitle,
+  Guid DrafterId,
+  string DrafterName)
 {
   public DraftPickResponse()
     : this(
         Position: 0,
-        DraftId: Guid.Empty,
         MovieId: Guid.Empty,
-        DrafterId: Guid.Empty)
+        MovieTitle: string.Empty,
+        DrafterId: Guid.Empty,
+        DrafterName: string.Empty)
   {
   }
 }

@@ -225,9 +225,10 @@ public class AddPickTests(IntegrationTestWebAppFactory factory) : BaseIntegratio
 
       picks.Add(new DraftPickResponse(
         currentPickNumber,
-        reloadedDraftResult.Value.Id,
         movieId.Value,
-        currentDrafter.Id.Value));
+        movie.MovieTitle,
+        currentDrafter.Id.Value,
+        currentDrafter.Name));
     }
 
     var getDraftPicksQuery = new GetDraftPicksByDraftQuery(reloadedDraftResult.Value.Id);

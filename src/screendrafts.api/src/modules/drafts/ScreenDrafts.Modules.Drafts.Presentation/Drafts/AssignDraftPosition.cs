@@ -7,7 +7,7 @@ internal sealed class AssignDraftPosition(ISender sender) : Endpoint<AssignDraft
   public override void Configure()
   {
     Post("/drafts/{draftId:guid}/position/{drafterId:guid}");
-    Description(x => x. WithTags(Presentation.Tags.Drafts));
+    Description(x => x. WithTags(Presentation.Tags.DraftPositions));
     Policies(Presentation.Permissions.ModifyDraft);
   }
 

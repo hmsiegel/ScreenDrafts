@@ -1,4 +1,4 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Presentation.Drafts;
+﻿namespace ScreenDrafts.Modules.Drafts.Presentation.Drafters;
 internal sealed class AssignTriviaResults(ISender sender) : Endpoint<TriviaResultRequest>
 {
   private readonly ISender _sender = sender;
@@ -6,7 +6,7 @@ internal sealed class AssignTriviaResults(ISender sender) : Endpoint<TriviaResul
   public override void Configure()
   {
     Post("drafts/{draftId:guid}/trivia/{drafterId:guid}");
-    Description(x => x.WithTags("Drafts"));
+    Description(x => x.WithTags(Presentation.Tags.Trivia));
     Policies(Presentation.Permissions.ModifyDraft);
   }
 
@@ -19,7 +19,7 @@ internal sealed class AssignTriviaResults(ISender sender) : Endpoint<TriviaResul
     var command = new AssignTriviaResultsCommand(
       drafterId,
       draftId,
-      req.QuestionWon,
+      req.QuestionsWon,
       req.Position);
 
     var result = await _sender.Send(command, ct);
@@ -35,4 +35,4 @@ internal sealed class AssignTriviaResults(ISender sender) : Endpoint<TriviaResul
   }
 }
 
-public sealed record TriviaResultRequest(int Position, int QuestionWon);
+public sealed record TriviaResultRequest(int Position, int QuestionsWon);
