@@ -1,28 +1,32 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Application.Drafts.Queries.GetLatestDrafts;
 
 internal sealed class GetLatestDraftsQueryHandler(IDbConnectionFactory dbConnectionFactory)
-  : IQueryHandler<GetLatestDraftsQuery, IReadOnlyList<LatestDraftResponse>>
+  : IQueryHandler<GetLatestDraftsQuery, IReadOnlyList<DraftResponse>>
 {
   private readonly IDbConnectionFactory _dbConnectionFactory = dbConnectionFactory;
-  public async Task<Result<IReadOnlyList<LatestDraftResponse>>> Handle(GetLatestDraftsQuery request, CancellationToken cancellationToken)
+  public async Task<Result<IReadOnlyList<DraftResponse>>> Handle(GetLatestDraftsQuery request, CancellationToken cancellationToken)
   {
     await using DbConnection connection = await _dbConnectionFactory.OpenConnectionAsync();
 
     const string sql =
-      $@"
+          $"""
             SELECT
-              id AS {nameof(Draft.Id)},
-              title AS {nameof(Draft.Title)},
-              episode_number AS {nameof(Draft.EpisodeNumber)},
-              release_date AS {nameof(DraftReleaseDate.ReleaseDate)}
+              d.id AS {nameof(DraftResponse.Id)},
+              d.title AS {nameof(DraftResponse.Title)},
+              array_agg(rd.release_date ORDER BY rd.release_date) AS {nameof(DraftResponse.RawReleaseDates)}
             FROM drafts.drafts d
-            JOIN draft_release_dates drd ON d.id = drd.draft_id
-            WHERE d.draft_status = 'Completed'
-            ORDER BY drd.release_date DESC
+            JOIN drafts.draft_release_date rd ON d.id = rd.draft_id
+            WHERE d.draft_status = 3
+            GROUP BY d.id, d.title
+            ORDER BY MAX(rd.release_date) DESC
             LIMIT 5
-            ";
+            """;
 
-    List<LatestDraftResponse> drafts = [.. (await connection.QueryAsync<LatestDraftResponse>(sql))];
+    List<DraftResponse> drafts = [.. await connection.QueryAsync<DraftResponse>(sql)];
+    foreach (var draft in drafts)
+    {
+      draft.PopulateReleaseDatesFromRaw();
+    }
 
     return drafts;
   }

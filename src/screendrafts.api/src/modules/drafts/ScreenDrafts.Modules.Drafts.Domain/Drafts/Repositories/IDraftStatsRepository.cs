@@ -6,4 +6,10 @@ public interface IDraftStatsRepository : IRepository
     DrafterId drafterId,
     DraftId draftId,
     CancellationToken cancellationToken);
+
+  void Update(DrafterDraftStats drafterDraftStats);
+
+  void Add(DrafterDraftStats drafterDraftStats);
+
+  void Delete(DrafterDraftStats drafterDraftStats);
 }

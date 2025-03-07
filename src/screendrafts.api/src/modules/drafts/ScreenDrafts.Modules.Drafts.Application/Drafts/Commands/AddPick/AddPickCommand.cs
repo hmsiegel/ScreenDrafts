@@ -4,4 +4,4 @@ public sealed record AddPickCommand(
   Guid DraftId,
   int Position,
   Guid MovieId,
-  Guid DrafterId) : ICommand;
+  Guid DrafterId) : ICommand<Guid>;

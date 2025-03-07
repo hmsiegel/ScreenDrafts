@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Infrastructure;
+﻿using ScreenDrafts.Modules.Drafts.Infrastructure.Data;
+
+namespace ScreenDrafts.Modules.Drafts.Infrastructure;
 
 public static class DraftsModule
 {
@@ -45,6 +47,8 @@ public static class DraftsModule
         npgsqlOptions.MigrationsHistoryTable(HistoryRepository.DefaultTableName, Schemas.Drafts))
       .UseSnakeCaseNamingConvention()
       .AddInterceptors(sp.GetRequiredService<InsertOutboxMessagesInterceptor>()));
+
+    SqlMapper.AddTypeHandler(new DraftPositionsTypeHandler());
 
     services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<DraftsDbContext>());
 

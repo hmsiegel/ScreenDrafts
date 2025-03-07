@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Infrastructure.Drafts;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+
+namespace ScreenDrafts.Modules.Drafts.Infrastructure.Drafts;
 
 internal sealed class DraftConfiguration : IEntityTypeConfiguration<Draft>
 {
@@ -54,5 +56,14 @@ internal sealed class DraftConfiguration : IEntityTypeConfiguration<Draft>
 
     builder.HasIndex(d => d.ReadableId)
       .IsUnique();
+
+    builder.HasMany(d => d.Picks)
+      .WithOne(p => p.Draft)
+      .HasForeignKey(p => p.DraftId);
+
+    builder
+      .Metadata
+      .FindNavigation(nameof(Draft.Picks))!
+      .SetPropertyAccessMode(PropertyAccessMode.Field);
   }
 }

@@ -6,6 +6,7 @@ public sealed class Drafter : AggrgateRoot<DrafterId, Guid>
   private readonly List<VetoOverride> _vetoOverrides = [];
   private readonly List<DrafterDraftStats> _draftStats = [];
   private readonly List<Draft> _drafts = [];
+  private readonly List<Pick> _picks = [];
 
 
   private Drafter(
@@ -29,8 +30,6 @@ public sealed class Drafter : AggrgateRoot<DrafterId, Guid>
   public string Name { get; private set; } = default!;
 
 
-  public Pick Pick { get; private set; } = default!;
-
   public RolloverVeto? RolloverVeto { get; private set; } = default!;
 
   public RolloverVetoOverride? RolloverVetoOverride { get; private set; } = default!;
@@ -42,6 +41,8 @@ public sealed class Drafter : AggrgateRoot<DrafterId, Guid>
   public IReadOnlyCollection<DrafterDraftStats> DraftStats => _draftStats.AsReadOnly();
 
   public IReadOnlyCollection<Draft> Drafts => _drafts.AsReadOnly();
+
+  public IReadOnlyCollection<Pick> Picks => _picks.AsReadOnly();
 
   public static Result<Drafter> Create(
     string name,
@@ -58,14 +59,14 @@ public sealed class Drafter : AggrgateRoot<DrafterId, Guid>
     return drafter;
   }
 
-  public void AddVeto(Pick pick)
+  public void AddVeto(Veto veto)
   {
-    _vetoes.Add(Veto.Create(pick));
+    _vetoes.Add(veto);
   }
 
-  public void AddVetoOverride(Veto veto)
+  public void AddVetoOverride(VetoOverride vetoOverride)
   {
-    _vetoOverrides.Add(VetoOverride.Create(veto));
+    _vetoOverrides.Add(vetoOverride);
   }
 
   public Result SetRolloverVeto(RolloverVeto rolloverVeto)
@@ -101,5 +102,15 @@ public sealed class Drafter : AggrgateRoot<DrafterId, Guid>
   public void SetDrafterName(string firstName, string lastName, string? middleName)
   {
     Name = $"{firstName} {middleName} {lastName}";
+  }
+
+  public void AddDraft(Draft draft)
+  {
+    _drafts.Add(draft);
+  }
+
+  public void AddPick(Pick pick)
+  {
+    _picks.Add(pick);
   }
 }

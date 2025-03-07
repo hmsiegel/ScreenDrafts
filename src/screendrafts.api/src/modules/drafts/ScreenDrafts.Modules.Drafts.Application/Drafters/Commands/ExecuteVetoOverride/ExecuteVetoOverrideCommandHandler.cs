@@ -4,13 +4,13 @@ internal sealed class ExecuteVetoOverrideCommandHandler(
   IDraftersRepository draftersRepository,
   IUnitOfWork unitOfWork,
   IVetoRepository vetoRepository)
-  : ICommandHandler<ExecuteVetoOverrideCommand>
+  : ICommandHandler<ExecuteVetoOverrideCommand, Guid>
 {
   private readonly IDraftersRepository _draftersRepository = draftersRepository;
   private readonly IVetoRepository _vetoRepository = vetoRepository;
   private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-  public async Task<Result> Handle(ExecuteVetoOverrideCommand request, CancellationToken cancellationToken)
+  public async Task<Result<Guid>> Handle(ExecuteVetoOverrideCommand request, CancellationToken cancellationToken)
   {
     var drafterId = DrafterId.Create(request.DrafterId);
 
@@ -18,20 +18,29 @@ internal sealed class ExecuteVetoOverrideCommandHandler(
 
     if (drafter is null)
     {
-      return Result.Failure<Drafter>(DrafterErrors.NotFound(request.DrafterId));
+      return Result.Failure<Guid>(DrafterErrors.NotFound(request.DrafterId));
     }
 
-    var veto = await _vetoRepository.GetByIdAsync(request.VetoId, cancellationToken);
+    var veto = await _vetoRepository.GetByIdAsync(VetoId.Create(request.VetoId), cancellationToken);
 
     if (veto is null)
     {
-      return Result.Failure<Drafter>(VetoErrors.NotFound(request.VetoId));
+      return Result.Failure<Guid>(VetoErrors.NotFound(request.VetoId));
     }
 
-    drafter.AddVetoOverride(veto);
+    var vetoOverride = await _vetoRepository.GetVetoOverrideByVetoIdAsync(veto.Id, cancellationToken);
+
+    if (vetoOverride is not null)
+    {
+      return Result.Failure<Guid>(VetoErrors.VetoOverrideAlreadyUsed);
+    }
+
+    var vetoOverrideResult = VetoOverride.Create(veto);
+
+    drafter.AddVetoOverride(vetoOverrideResult);
 
     await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-    return Result.Success();
+    return Result.Success(vetoOverrideResult.Id.Value);
   }
 }

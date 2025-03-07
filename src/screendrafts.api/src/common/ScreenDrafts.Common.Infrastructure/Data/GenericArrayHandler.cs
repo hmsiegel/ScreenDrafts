@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Common.Infrastructure.Data;
 
-internal sealed class GeneciArrayHandler<T> : SqlMapper.TypeHandler<T[]>
+internal sealed class GenericArrayHandler<T> : SqlMapper.TypeHandler<T[]>
 {
   public override T[]? Parse(object value)
   {

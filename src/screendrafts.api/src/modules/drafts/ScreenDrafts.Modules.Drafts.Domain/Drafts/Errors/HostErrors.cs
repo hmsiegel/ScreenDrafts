@@ -10,4 +10,9 @@ public static class HostErrors
     SDError.NotFound(
       "HostError.NotFound",
       $"Host with id {hostId} was not found.");
+
+  public static readonly SDError CannotCreateHost =
+    SDError.Failure(
+      "HostError.CannotCreateHost",
+      "Cannot create host.");
 }

@@ -2,6 +2,7 @@
 
 public sealed class Movie : Entity
 {
+  private readonly List<Pick> _picks = [];
   private Movie(
     string movieTitle,
     Guid? id = null) 
@@ -14,8 +15,9 @@ public sealed class Movie : Entity
   {
   }
 
+  public IReadOnlyCollection<Pick> Picks => _picks.AsReadOnly();
+
   public string MovieTitle { get; private set; } = default!;
-  public Pick? Pick { get; private set; } = default!;
 
   public static Result<Movie> Create(
     string movieTitle,

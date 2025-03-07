@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafts;
 
-public class CreateDraftTests(IntegrationTestWebAppFactory factory)
+public sealed class CreateDraftTests(IntegrationTestWebAppFactory factory)
   : BaseIntegrationTest(factory)
 {
   public static readonly TheoryData<string, string, int, int, int, string, string> ValidRequests = new()

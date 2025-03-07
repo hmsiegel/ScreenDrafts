@@ -16,6 +16,7 @@ internal sealed class GetDraftQueryHandler(IDraftsRepository draftsRepository)
 
     List<DrafterResponse> drafters = [.. draft.Drafters.Select(d => new DrafterResponse(d.Id.Value, d.Name))];
     List<HostResponse> hosts = [.. draft.Hosts.Select(h => new HostResponse(h.Id.Value, h.HostName))];
+    List<ReleaseDateResponse> releaseDates = [.. draft.ReleaseDates.Select(r => new ReleaseDateResponse(r.ReleaseDate))];
 
     var draftResponse = new DraftResponse(
       draft.Id.Value,
@@ -29,6 +30,7 @@ internal sealed class GetDraftQueryHandler(IDraftsRepository draftsRepository)
 
     drafters.ForEach(d => draftResponse.AddDrafter(d));
     hosts.ForEach(h => draftResponse.AddHost(h));
+    releaseDates.ForEach(rd => draftResponse.AddReleaseDate(rd));
 
     return draftResponse;
   }

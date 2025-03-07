@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Modules.Drafts.Domain.Drafters.Errors;
-
-namespace ScreenDrafts.Modules.Drafts.Domain.Drafters.Entities;
+﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafters.Entities;
 
 public sealed class Veto : Entity<VetoId>
 {
@@ -9,7 +7,7 @@ public sealed class Veto : Entity<VetoId>
     Pick pick)
     : base(id)
   {
-    IsUsed = false;
+    IsUsed = true;
     Pick = pick;
   }
 
@@ -23,24 +21,12 @@ public sealed class Veto : Entity<VetoId>
 
   public bool IsUsed { get; private set; }
 
-  public static Veto Create(
+  public static Result<Veto> Create(
     Pick pick,
     VetoId? id = null)
   {
     return new Veto(
       pick: pick,
       id: id ?? VetoId.CreateUnique());
-  }
-
-  public Result Use()
-  {
-    if (IsUsed)
-    {
-      return Result.Failure(VetoErrors.VetoAlreadyUsed);
-    }
-
-    IsUsed = true;
-
-    return Result.Success();
   }
 }

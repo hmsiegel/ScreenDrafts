@@ -9,7 +9,7 @@ public sealed class VetoOverride : Entity<VetoOverrideId>
     Veto veto)
     : base(id)
   {
-    IsUsed = false;
+    IsUsed = true;
     Veto = veto;
   }
 
@@ -30,17 +30,5 @@ public sealed class VetoOverride : Entity<VetoOverrideId>
     return new VetoOverride(
       id: id ?? VetoOverrideId.CreateUnique(),
       veto: veto);
-  }
-
-  public Result Use()
-  {
-    if (IsUsed)
-    {
-      return Result.Failure(VetoOverrideErrors.VetoOverrideAlreadyUsed);
-    }
-
-    IsUsed = true;
-
-    return Result.Success();
   }
 }

@@ -1,6 +1,4 @@
-﻿using ZstdSharp.Unsafe;
-
-namespace ScreenDrafts.Modules.Drafts.Infrastructure.Drafts;
+﻿namespace ScreenDrafts.Modules.Drafts.Infrastructure.Drafts;
 
 internal sealed class DraftsRepository(DraftsDbContext dbContext) : IDraftsRepository
 {
@@ -42,6 +40,8 @@ internal sealed class DraftsRepository(DraftsDbContext dbContext) : IDraftsRepos
     var draftWithDetails = await  _dbContext.Drafts
       .Include(d => d.Drafters)
       .Include(d => d.Hosts)
+      .Include(d => d.ReleaseDates)
+      .Include(d => d.Picks)
       .FirstOrDefaultAsync(d => d.Id == draftId, cancellationToken);
 
     return draftWithDetails;

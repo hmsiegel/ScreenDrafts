@@ -20,12 +20,19 @@ public class DrafterTests : BaseTest
   public void AddVeto_ShouldAddVetoToList()
   {
     // Arrange
+    var draft = DraftFactory.CreateStandardDraft().Value;
     var movie = MovieFactory.CreateMovie().Value;
     var drafter = DrafterFactory.CreateDrafterWithUserId().Value;
-    var pick = Pick.Create(Faker.Random.Number(1, 7), movie, drafter).Value;
+    var pick = Pick.Create(
+      Faker.Random.Number(1, 7),
+      movie,
+      drafter,
+      draft).Value;
+
+    var veto = Veto.Create(pick).Value;
 
     // Act
-    drafter.AddVeto(pick);
+    drafter.AddVeto(veto);
 
     // Assert
     drafter.Vetoes.Should().ContainSingle();
@@ -35,13 +42,21 @@ public class DrafterTests : BaseTest
   public void AddVetoOverride_ShouldAddVetoOverrideToList()
   {
     // Arrange
+    var draft = DraftFactory.CreateStandardDraft().Value;
     var movie = MovieFactory.CreateMovie().Value;
     var drafter = DrafterFactory.CreateDrafter();
-    var pick = Pick.Create(Faker.Random.Number(1, 7), movie, drafter).Value;
-    var veto = Veto.Create(pick);
+    var pick = Pick.Create(
+      Faker.Random.Number(1, 7),
+      movie,
+      drafter,
+      draft).Value;
+
+    var veto = Veto.Create(pick).Value;
+
+    var vetoOverride = VetoOverride.Create(veto);
 
     // Act
-    drafter.AddVetoOverride(veto);
+    drafter.AddVetoOverride(vetoOverride);
 
     // Assert
     drafter.VetoOverrides.Should().ContainSingle();

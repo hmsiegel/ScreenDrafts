@@ -9,4 +9,6 @@ public sealed record DraftId(Guid Value) : AggregateRootId<Guid>
   public static DraftId FromString(string value) => new(Guid.Parse(value, CultureInfo.InvariantCulture));
 
   public static DraftId Create(Guid value) => new(value);
+
+  public static DraftId Empty => new(Guid.Empty);
 }

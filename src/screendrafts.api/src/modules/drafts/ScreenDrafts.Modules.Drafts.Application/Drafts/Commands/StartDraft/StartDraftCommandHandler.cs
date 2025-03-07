@@ -15,7 +15,14 @@ internal sealed class StartDraftCommandHandler(
     {
       return Result.Failure<Guid>(DraftErrors.NotFound(request.DraftId));
     }
-    draft.StartDraft();
+
+    var result = draft.StartDraft();
+
+    if (result.IsFailure)
+    {
+      return Result.Failure(result.Errors);
+    }
+
     _draftsRepository.Update(draft);
     await _unitOfWork.SaveChangesAsync(cancellationToken);
     return Result.Success();

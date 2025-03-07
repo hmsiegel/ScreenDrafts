@@ -23,4 +23,9 @@ internal sealed class DraftersRepository(DraftsDbContext dbContext) : IDraftersR
 
     return drafter;
   }
+
+  public void Update(Drafter drafter)
+  {
+    _dbContext.Drafters.Update(drafter);
+  }
 }
