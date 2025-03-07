@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Modules.Drafts.Application.Hosts.Queries.ListHosts;
-
-namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Hosts;
+﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Hosts;
 
 public sealed class ListHostsTests(IntegrationTestWebAppFactory factory) 
   : BaseIntegrationTest(factory)

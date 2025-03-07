@@ -8,6 +8,7 @@ global using MediatR;
 
 global using Microsoft.AspNetCore.Hosting;
 global using Microsoft.AspNetCore.Mvc.Testing;
+global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.DependencyInjection;
 
 global using ScreenDrafts.Common.Domain;
@@ -41,9 +42,9 @@ global using ScreenDrafts.Modules.Drafts.Application.Drafts.Queries.GetLatestDra
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Queries.GetTriviaResultsForDrafter;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Queries.ListDrafts;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Queries.ListUpcomingDrafts;
-global using ScreenDrafts.Modules.Drafts.Application.Hosts.Commands.CreateHost;
 global using ScreenDrafts.Modules.Drafts.Application.Hosts.Commands.CreateHostWithoutUser;
 global using ScreenDrafts.Modules.Drafts.Application.Hosts.Queries.GetHost;
+global using ScreenDrafts.Modules.Drafts.Application.Hosts.Queries.ListHosts;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafters;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafters.Errors;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafters.ValueObjects;

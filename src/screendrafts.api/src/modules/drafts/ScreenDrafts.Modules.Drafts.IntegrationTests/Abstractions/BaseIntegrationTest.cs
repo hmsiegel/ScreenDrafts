@@ -2,7 +2,7 @@
 
 [Collection(nameof(IntegrationTestCollection))]
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1051:Do not declare visible instance fields", Justification = "Reviewed")]
-public class BaseIntegrationTest : IDisposable
+public class BaseIntegrationTest : IDisposable, IAsyncLifetime
 {
   private bool _disposedValue;
   protected static readonly Faker Faker = new();
@@ -36,10 +36,21 @@ public class BaseIntegrationTest : IDisposable
     }
   }
 
+  public async Task InitializeAsync()
+  {
+    await ClearDatabaseAsync();
+  }
+
   public void Dispose()
   {
     Dispose(disposing: true);
     GC.SuppressFinalize(this);
+  }
+
+  public async Task DisposeAsync()
+  {
+    await ClearDatabaseAsync();
+    Dispose();
   }
 
   public async Task<(Result<Guid> draftId, List<Drafter> drafters, List<Host> hosts)> SetupDraftAndDraftersAsync()
@@ -106,5 +117,30 @@ public class BaseIntegrationTest : IDisposable
     }
 
     return (draftId, drafters, hosts);
+  }
+
+  private async Task ClearDatabaseAsync()
+  {
+    await DbContext.Database.ExecuteSqlRawAsync(
+      $"""
+      TRUNCATE TABLE 
+        drafts.drafts,
+        drafts.drafters,
+        drafts.hosts,
+        drafts.drafter_draft_stats,
+        drafts.draft_positions,
+        drafts.picks,
+        drafts.game_boards,
+        drafts.draft_drafter,
+        drafts.draft_host,
+        drafts.draft_release_date,
+        drafts.movies,
+        drafts.trivia_results,
+        drafts.rollover_veto_overrides,
+        drafts.rollover_vetoes,
+        drafts.vetoes,
+        drafts.veto_overrides
+      RESTART IDENTITY CASCADE;
+      """);
   }
 }
