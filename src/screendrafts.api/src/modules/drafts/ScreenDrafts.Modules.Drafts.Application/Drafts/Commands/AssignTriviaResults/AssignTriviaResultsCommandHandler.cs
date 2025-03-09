@@ -2,12 +2,10 @@
 
 internal sealed class AssignTriviaResultsCommandHandler(
   IUnitOfWork unitOfWork,
-  ITriviaResultsRepository triviaResultsRepository,
   IDraftersRepository draftersRepository,
   IDraftsRepository draftsRepository)
   : ICommandHandler<AssignTriviaResultsCommand>
 {
-  private readonly ITriviaResultsRepository _triviaResultsRepository = triviaResultsRepository;
   private readonly IDraftersRepository _draftersRepository = draftersRepository;
   private readonly IDraftsRepository _draftsRepository = draftsRepository;
   private readonly IUnitOfWork _unitOfWork = unitOfWork;
@@ -21,7 +19,7 @@ internal sealed class AssignTriviaResultsCommandHandler(
       return Result.Failure<TriviaResult>(DrafterErrors.NotFound(request.DrafterId));
     }
 
-    var draft = await _draftsRepository.GetByIdAsync(DraftId.Create(request.DraftId), cancellationToken);
+    var draft = await _draftsRepository.GetDraftWithDetailsAsync(DraftId.Create(request.DraftId), cancellationToken);
 
     if (draft is null)
     {
@@ -38,12 +36,6 @@ internal sealed class AssignTriviaResultsCommandHandler(
       return Result.Failure<TriviaResult>(DrafterErrors.InvalidPosition);
     }
 
-    var triviaResult = TriviaResult.Create(
-      request.Position,
-      request.QuestionsWon,
-      draft,
-      drafter).Value;
-
     var result = draft.AddTriviaResult(drafter, request.Position, request.QuestionsWon);
 
     if (result.IsFailure)
@@ -52,8 +44,6 @@ internal sealed class AssignTriviaResultsCommandHandler(
     }
 
     _draftsRepository.Update(draft);
-
-    _triviaResultsRepository.Add(triviaResult);
 
     await _unitOfWork.SaveChangesAsync(cancellationToken);
 

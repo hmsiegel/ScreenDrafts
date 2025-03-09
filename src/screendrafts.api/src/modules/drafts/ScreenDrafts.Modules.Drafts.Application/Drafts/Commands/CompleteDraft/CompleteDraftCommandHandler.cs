@@ -10,7 +10,7 @@ internal sealed class CompleteDraftCommandHandler(
 
   public async Task<Result> Handle(CompleteDraftCommand request, CancellationToken cancellationToken)
   {
-    var draft = await _draftsRepository.GetByIdAsync(DraftId.Create(request.DraftId), cancellationToken);
+    var draft = await _draftsRepository.GetDraftWithDetailsAsync(DraftId.Create(request.DraftId), cancellationToken);
 
     if (draft is null)
     {
