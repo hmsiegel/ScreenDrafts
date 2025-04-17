@@ -96,7 +96,7 @@ public sealed class Drafter : AggrgateRoot<DrafterId, Guid>
 
   public void AddDraftStats(Draft draft)
   {
-    _draftStats.Add(DrafterDraftStats.Create(this, draft));
+    _draftStats.Add(DrafterDraftStats.Create(this, null, draft));
   }
 
   public void SetDrafterName(string firstName, string lastName, string? middleName)

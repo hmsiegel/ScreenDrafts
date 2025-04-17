@@ -17,6 +17,14 @@ public static class MoviesModule
     return services;
   }
 
+  public static void ConfigureConsumers(IRegistrationConfigurator registrationConfigurator, string instanceId)
+  {
+    ArgumentNullException.ThrowIfNull(registrationConfigurator);
+
+    registrationConfigurator.AddConsumer<IntegrationEventConsumer<MovieFetchedIntegrationEvent>>()
+      .Endpoint(x => x.InstanceId = instanceId);
+  }
+
   private static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
   {
     var connectionString = configuration.GetConnectionString("Database")!;
@@ -42,9 +50,10 @@ public static class MoviesModule
 
   private static void AddDomainEventHandlers(this IServiceCollection services)
   {
-    Type[] domainEventHandlers = [.. Application.AssemblyReference.Assembly
+    Type[] domainEventHandlers = Application.AssemblyReference.Assembly
         .GetTypes()
-        .Where(t => t.IsAssignableTo(typeof(IDomainEventHandler)))];
+        .Where(t => t.IsAssignableTo(typeof(IDomainEventHandler)))
+        .ToArray();
 
     foreach (Type domainEventHandler in domainEventHandlers)
     {

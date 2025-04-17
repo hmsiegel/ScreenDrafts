@@ -17,8 +17,8 @@ public static class GameBoardFactory
     }
 
     var gameBoard = GameBoard.Create(
-      draft,
-      draftPositions);
+      draft);
+    gameBoard.Value.AssignDraftPositions(draftPositions);
     return gameBoard;
   }
 
@@ -37,8 +37,8 @@ public static class GameBoardFactory
     }
 
     var gameBoard = GameBoard.Create(
-      draft,
-      draftPositions);
+      draft);
+    gameBoard.Value.AssignDraftPositions(draftPositions);
     return gameBoard;
   }
 
@@ -57,8 +57,8 @@ public static class GameBoardFactory
     }
 
     var gameBoard = GameBoard.Create(
-      draft,
-      draftPositions);
+      draft);
+    gameBoard.Value.AssignDraftPositions(draftPositions);
     return gameBoard;
   }
 }

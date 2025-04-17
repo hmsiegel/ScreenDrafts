@@ -21,4 +21,9 @@ public static class DraftPositionErrors
     SDError.NotFound(
       "DraftPosition.NotFound",
       $"Draft position with ID {id} was not found.");
+
+  public static readonly SDError DrafterTeamAlreadyAssigned =
+    SDError.Failure(
+      "DraftPosition.DrafterTeamAlreadyAssigned",
+      "This draft position has already been assigned a drafter team.");
 }

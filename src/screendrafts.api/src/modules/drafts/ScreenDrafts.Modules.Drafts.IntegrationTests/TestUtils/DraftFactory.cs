@@ -9,6 +9,7 @@ public static class DraftFactory
       DraftType.Standard,
       7,
       2,
+      0,
       2,
       DraftStatus.Created,
       EpisodeType.MainFeed);
@@ -18,6 +19,7 @@ public static class DraftFactory
       DraftType.MiniMega,
       11,
       3,
+      0,
       2,
       DraftStatus.Created,
       EpisodeType.MainFeed);
@@ -27,6 +29,7 @@ public static class DraftFactory
       DraftType.Mega,
       20,
       4,
+      0,
       2,
       DraftStatus.Created,
       EpisodeType.MainFeed);

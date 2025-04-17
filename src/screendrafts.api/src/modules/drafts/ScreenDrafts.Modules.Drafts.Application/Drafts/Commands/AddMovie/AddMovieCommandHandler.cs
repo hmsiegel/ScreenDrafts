@@ -7,7 +7,14 @@ internal sealed class AddMovieCommandHandler(IDraftsRepository draftsRepository,
 
   public async Task<Result<Guid>> Handle(AddMovieCommand request, CancellationToken cancellationToken)
   {
-    var result = Movie.Create(request.Title, request.Id);
+    var movieExists = await _draftsRepository.MovieExistsAsync(request.ImdbId, cancellationToken);
+
+    if (movieExists)
+    {
+      return Result.Failure<Guid>(DraftErrors.MovieAlreadyExists(request.ImdbId));
+    }
+
+    var result = Movie.Create(request.Title, request.ImdbId, request.Id);
 
     if (result.IsFailure)
     {

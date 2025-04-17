@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Modules.Drafts.Domain.Drafters.Entities;
-
-namespace ScreenDrafts.Modules.Drafts.Application.Drafters.Commands.ExecuteVeto;
+﻿namespace ScreenDrafts.Modules.Drafts.Application.Drafters.Commands.ExecuteVeto;
 
 internal sealed class ExecuteVetoCommandHandler(
   IDraftersRepository draftersRepository,
@@ -18,16 +16,38 @@ internal sealed class ExecuteVetoCommandHandler(
 
   public async Task<Result<Guid>> Handle(ExecuteVetoCommand request, CancellationToken cancellationToken)
   {
-    var drafterId = DrafterId.Create(request.DrafterId);
+    var hasDrafter = request.DrafterId.HasValue;
+    var hasDrafterTeam = request.DrafterTeamId.HasValue;
 
-    var drafter = await _draftersRepository.GetByIdAsync(drafterId, cancellationToken);
-
-    if (drafter is null)
+    if (!BlessingValidation.IsValidBlessingRequest(request.DrafterId, request.DrafterTeamId))
     {
-      return Result.Failure<Guid>(DrafterErrors.NotFound(request.DrafterId));
+      return Result.Failure<Guid>(DrafterErrors.InvalidBlessingRequest);
     }
 
-    var pick = await _picksRepository.GetByIdAsync(request.PickId, cancellationToken);
+    DrafterId? drafterId = hasDrafter 
+      ? DrafterId.Create(request.DrafterId!.Value)
+      : null;
+
+    DrafterTeamId? drafterTeamId = hasDrafterTeam 
+      ? DrafterTeamId.Create(request.DrafterTeamId!.Value) 
+      : null;
+
+    var drafter = await _draftersRepository.GetByIdAsync(drafterId!, cancellationToken);
+    var drafterTeam = await _draftersRepository.GetByIdAsync(drafterTeamId!, cancellationToken);
+
+    if (drafter is null && hasDrafter)
+    {
+      return Result.Failure<Guid>(DrafterErrors.NotFound(drafterId!.Value));
+    }
+
+    if (drafterTeam is null && hasDrafterTeam)
+    {
+      return Result.Failure<Guid>(DrafterErrors.NotFound(drafterTeamId!.Value));
+    }
+
+    var pickId = PickId.Create(request.PickId);
+
+    var pick = await _picksRepository.GetByIdAsync(pickId, cancellationToken);
 
     if (pick is null)
     {
@@ -48,23 +68,34 @@ internal sealed class ExecuteVetoCommandHandler(
       return Result.Failure<Guid>(DraftErrors.CannotVetoUnlessTheDraftIsStarted);
     }
 
-    var veto = await _vetoRepository.GetByPickAsync(request.PickId, cancellationToken);
+    var veto = await _vetoRepository.GetByPickAsync(PickId.Create(request.PickId), cancellationToken);
 
     if (veto is not null)
     {
       return Result.Failure<Guid>(VetoErrors.VetoAlreadyUsed);
     }
 
-    var result = Veto.Create(pick);
+    var result = Veto.Create(pick, drafter, drafterTeam);
 
     if (result.IsFailure)
     {
       return Result.Failure<Guid>(result.Errors);
     }
 
-    drafter.AddVeto(result.Value);
+    if (hasDrafter && !hasDrafterTeam)
+    {
+      drafter!.AddVeto(result.Value);
+    }
+    else if (hasDrafterTeam && !hasDrafter)
+    {
+      drafterTeam!.AddVeto(result.Value);
+    }
+    else
+    {
+      return Result.Failure<Guid>(DrafterErrors.InvalidBlessingRequest);
+    }
 
-    _draftersRepository.Update(drafter);
+    _draftersRepository.Update(drafter!);
 
     await _unitOfWork.SaveChangesAsync(cancellationToken);
 

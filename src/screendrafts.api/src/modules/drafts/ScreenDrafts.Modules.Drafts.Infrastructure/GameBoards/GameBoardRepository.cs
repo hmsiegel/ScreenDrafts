@@ -1,5 +1,4 @@
-﻿
-namespace ScreenDrafts.Modules.Drafts.Infrastructure.GameBoards;
+﻿namespace ScreenDrafts.Modules.Drafts.Infrastructure.GameBoards;
 
 internal sealed class GameBoardRepository(DraftsDbContext dbContext) : IGameBoardRepository
 {
@@ -32,5 +31,14 @@ internal sealed class GameBoardRepository(DraftsDbContext dbContext) : IGameBoar
       .ToListAsync(cancellationToken);
 
     return draftPositions;
+  }
+
+  public async Task<GameBoard> GetByGameBoardId(GameBoardId gameBoardId, CancellationToken cancellationToken = default)
+  {
+    var gameBoard = await _dbContext.GameBoards
+      .Where(g => g.Id == gameBoardId)
+      .FirstOrDefaultAsync(cancellationToken);
+
+    return gameBoard!;
   }
 }

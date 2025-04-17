@@ -23,7 +23,6 @@ public sealed class DraftPosition : Entity<DraftPositionId>
   }
 
   public GameBoardId GameBoardId { get; private set; } = default!;
-
   public GameBoard GameBoard { get; private set; } = default!;
 
   public string Name { get; private set; } = string.Empty;
@@ -35,8 +34,10 @@ public sealed class DraftPosition : Entity<DraftPositionId>
   public bool HasBonusVetoOverride { get; private set; }
 
   public DrafterId? DrafterId { get; private set; } = default!;
-
   public Drafter? Drafter { get; private set; } = default!;
+
+  public DrafterTeam? DrafterTeam { get; private set; } = default!;
+  public DrafterTeamId? DrafterTeamId { get; private set; } = default!;
 
   public static Result<DraftPosition> Create(
     string name,
@@ -79,6 +80,31 @@ public sealed class DraftPosition : Entity<DraftPositionId>
     Drafter = drafter;
     DrafterId = drafter.Id;
 
+    return Result.Success();
+  }
+
+  public Result RemoveDrafter()
+  {
+    if (Drafter is null)
+    {
+      return Result.Success();
+    }
+    Drafter = null;
+    DrafterId = null;
+    return Result.Success();
+  }
+
+  public Result AssignDrafterTeam(DrafterTeam drafterTeam)
+  {
+    ArgumentNullException.ThrowIfNull(drafterTeam);
+
+    if (DrafterTeam is not null)
+    {
+      return Result.Failure<DrafterTeam>(DraftPositionErrors.DrafterTeamAlreadyAssigned);
+    }
+
+    DrafterTeam = drafterTeam;
+    DrafterTeamId = drafterTeam.Id;
     return Result.Success();
   }
 }

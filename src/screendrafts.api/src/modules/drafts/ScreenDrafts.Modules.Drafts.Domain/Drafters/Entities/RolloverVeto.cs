@@ -18,7 +18,6 @@ public sealed class RolloverVeto : Entity<RolloverVetoId>
   }
 
   public DrafterId DrafterId { get; private set; } = default!;
-
   public Drafter Drafter { get; private set; } = default!;
 
   public Guid FromDraftId { get; private set; }

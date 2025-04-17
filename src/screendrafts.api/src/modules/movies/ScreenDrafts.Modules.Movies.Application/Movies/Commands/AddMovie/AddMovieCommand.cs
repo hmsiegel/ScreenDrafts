@@ -6,11 +6,12 @@ public sealed record AddMovieCommand(
   string Year,
   string Plot,
   string Image,
-  string ReleaseDate,
-  Uri YouTubeTrailerUrl,
+  string? ReleaseDate,
+  Uri? YouTubeTrailerUrl,
   IReadOnlyCollection<string> Genres,
   IReadOnlyCollection<PersonRequest> Directors,
   IReadOnlyCollection<PersonRequest> Actors,
   IReadOnlyCollection<PersonRequest> Writers,
   IReadOnlyCollection<PersonRequest> Producers,
-  IReadOnlyCollection<ProductionCompanyRequest> ProductionCompanies) : ICommand<Guid>;
+  IReadOnlyCollection<ProductionCompanyRequest> ProductionCompanies)
+  : ICommand<Guid>;

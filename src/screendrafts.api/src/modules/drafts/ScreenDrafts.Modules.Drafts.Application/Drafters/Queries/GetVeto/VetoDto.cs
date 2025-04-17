@@ -3,5 +3,4 @@
 public sealed record VetoDto(
   Guid Id,
   Guid PickId,
-  Guid DrafterId,
-  bool IsUsed);
+  Guid DrafterId);

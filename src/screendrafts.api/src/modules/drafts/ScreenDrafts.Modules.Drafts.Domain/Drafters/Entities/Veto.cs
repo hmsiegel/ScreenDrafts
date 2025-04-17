@@ -4,11 +4,19 @@ public sealed class Veto : Entity<VetoId>
 {
   private Veto(
     VetoId id,
-    Pick pick)
+    Pick pick,
+    Drafter? drafter,
+    DrafterTeam? drafterTeam)
     : base(id)
   {
-    IsUsed = true;
     Pick = pick;
+    PickId = pick.Id;
+
+    Drafter = drafter;
+    DrafterId = drafter?.Id;
+
+    DrafterTeam = drafterTeam;
+    DrafterTeamId = drafterTeam?.Id;
   }
 
   private Veto()
@@ -18,15 +26,26 @@ public sealed class Veto : Entity<VetoId>
   public VetoOverride VetoOverride { get; private set; } = default!;
 
   public Pick Pick { get; private set; } = default!;
+  public PickId PickId { get; private set; } = default!;
 
-  public bool IsUsed { get; private set; }
+  public Drafter? Drafter { get; private set; } = default!;
+  public DrafterId? DrafterId { get; private set; } = default!;
+
+  public DrafterTeam? DrafterTeam { get; private set; } = default!;
+  public DrafterTeamId? DrafterTeamId { get; private set; } = default!;
 
   public static Result<Veto> Create(
     Pick pick,
+    Drafter? drafter,
+    DrafterTeam? drafterTeam,
     VetoId? id = null)
   {
+    ArgumentNullException.ThrowIfNull(pick);
+
     return new Veto(
       pick: pick,
+      drafter: drafter,
+      drafterTeam: drafterTeam,
       id: id ?? VetoId.CreateUnique());
   }
 }

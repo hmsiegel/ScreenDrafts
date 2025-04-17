@@ -1,6 +1,7 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.Errors;
 
-public static class DraftErrors {
+public static class DraftErrors
+{
   public static SDError NotFound(Guid draftId) =>
     SDError.NotFound(
       "Drafts.NotFound",
@@ -106,9 +107,9 @@ public static class DraftErrors {
       "Drafts.ADrafterCanOnlyHaveOneRolloverVetoOverride",
       "A drafter can only have one rollover veto override.");
 
-  public static readonly SDError DraftMustHaveAtLeastTwoDrafters = SDError.Problem(
-    "Drafts.DraftMustHaveAtLeastTwoDrafters",
-    "Draft must have at least two drafters.");
+  public static readonly SDError DraftMustHaveAtLeastTwoParticipants = SDError.Problem(
+    "Drafts.DraftMustHaveAtLeastTwoParticipants",
+    "Draft must have at least two participants (drafters or drafter teams).");
 
   public static readonly SDError PickPositionIsOutOfRange = SDError.Conflict(
     "Drafts.PickPositionIsOutOfRange",
@@ -185,4 +186,54 @@ public static class DraftErrors {
   public static readonly SDError PicksNotFound = SDError.NotFound(
     "Drafts.PicksNotFound",
     "No draft picks were found.");
+
+  public static SDError MovieAlreadyExists(string imdbId) =>
+    SDError.Conflict(
+      "Drafts.MovieAlreadyExists",
+      $"Movie with IMDB id {imdbId} already exists.");
+
+  public static SDError PickNotFound(Guid id) =>
+    SDError.NotFound(
+      "Drafts.PickNotFound",
+      $"Pick with id {id} was not found.");
+
+  public static readonly SDError CommissionerOverridesNotFound =
+    SDError.NotFound(
+      "Drafts.CommissionerOverridesNotFound",
+      "No commissioner overrides were found.");
+
+  public static readonly SDError CommissionerOverrideCannotBeApplied =
+    SDError.Problem(
+      "Drafts.CommissionerOverrideCannotBeApplied",
+      "Commissioner override cannot be applied.");
+
+  public static readonly SDError TooManyDrafterTeams =
+    SDError.Problem(
+      "Drafts.TooManyDrafterTeams",
+      "Cannot add more drafter teams than the total allowed.");
+
+  public static SDError DrafterTeamAlreadyAdded(Guid id) =>
+    SDError.Conflict(
+      "Drafts.DrafterTeamAlreadyAdded",
+      $"Drafter team with id {id} is already added to the draft.");
+
+  public static SDError DrafterTeamContainsOverlappingDrafters(IEnumerable<Guid> ids) =>
+    SDError.Conflict(
+      "Drafts.DrafterTeamContainsOverlappingDrafters",
+      $"Drafter team contains overlapping drafters: {ids}.");
+
+  public static SDError AlreadyAdded(Guid id) =>
+    SDError.Conflict(
+      "Drafts.AlreadyAdded",
+      $"Team with id {id} is already added to the draft.");
+
+  public static readonly SDError PickAlreadyVetoed =
+    SDError.Conflict(
+      "Drafts.PickAlreadyVetoed",
+      "This pick has been vetoed and cannot be vetoed again.");
+
+  public static readonly SDError CannotAddTriviaResultWithoutDrafterOrDrafterTeam =
+    SDError.Problem(
+      "Drafts.CannotAddTriviaResultWithoutDrafterOrDrafterTeam",
+      "Cannot add a trivia result without a drafter or drafter team.");
 }

@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Movies.UnitTests.Movies;
+﻿using ScreenDrafts.Modules.Movies.Domain.Movies.Errors;
+
+namespace ScreenDrafts.Modules.Movies.UnitTests.Movies;
 
 public sealed class MovieTests : BaseTest
 {
@@ -20,7 +22,7 @@ public sealed class MovieTests : BaseTest
   }
 
   [Fact]
-  public void Create_ShouldThrowException_WhenTitleIsNull()
+  public void Create_ShouldReturnFailure_WhenTitleIsNull()
   {
     // Arrange
     var title = string.Empty;
@@ -32,17 +34,18 @@ public sealed class MovieTests : BaseTest
     var imdbId = Faker.Random.AlphaNumeric(9);
 
     // Act
-    var exception = Assert.Throws<ArgumentException>(() => Movie.Create(
+    var result = Movie.Create(
       title,
       year,
       plot,
       image,
       releaseDate,
       youtubeTrailerUrl,
-      imdbId));
+      imdbId);
 
     // Assert
-    Assert.Equal(ExceptionMessage("title"), exception.Message);
+    result.IsFailure.Should().BeTrue();
+    result.Error.Should().Be(MovieErrors.RequiredFieldsMissing);
   }
 
   [Fact]
@@ -72,32 +75,6 @@ public sealed class MovieTests : BaseTest
   }
 
   [Fact]
-  public void Create_ShouldThrowException_WhenPlotIsNull()
-  {
-    // Arrange
-    var title = Faker.Company.CompanyName();
-    var year = Faker.Date.Past().Year.ToString(CultureInfo.InvariantCulture);
-    var plot = string.Empty;
-    var image = Faker.Image.PicsumUrl();
-    var releaseDate = Faker.Date.Past().ToString(CultureInfo.InvariantCulture);
-    var youtubeTrailerUrl = new Uri(Faker.Internet.Url());
-    var imdbId = Faker.Random.AlphaNumeric(9);
-
-    // Act
-    var exception = Assert.Throws<ArgumentException>(() => Movie.Create(
-      title,
-      year,
-      plot,
-      image,
-      releaseDate,
-      youtubeTrailerUrl,
-      imdbId));
-
-    // Assert
-    Assert.Equal(ExceptionMessage("plot"), exception.Message);
-  }
-
-  [Fact]
   public void Create_ShouldThrowException_WhenImageIsNull()
   {
     // Arrange
@@ -124,32 +101,6 @@ public sealed class MovieTests : BaseTest
   }
 
   [Fact]
-  public void Create_ShouldThrowException_WhenReleaseDateIsNull()
-  {
-    // Arrange
-    var title = Faker.Company.CompanyName();
-    var year = Faker.Date.Past().Year.ToString(CultureInfo.InvariantCulture);
-    var plot = Faker.Lorem.Paragraph();
-    var image = Faker.Image.PicsumUrl();
-    var releaseDate = string.Empty;
-    var youtubeTrailerUrl = new Uri(Faker.Internet.Url());
-    var imdbId = Faker.Random.AlphaNumeric(9);
-
-    // Act
-    var exception = Assert.Throws<ArgumentException>(() => Movie.Create(
-      title,
-      year,
-      plot,
-      image,
-      releaseDate,
-      youtubeTrailerUrl,
-      imdbId));
-
-    // Assert
-    Assert.Equal(ExceptionMessage("releaseDate"), exception.Message);
-  }
-
-  [Fact]
   public void Create_ShouldThrowException_WhenYouTubeTrailerUrlIsNull()
   {
     // Arrange
@@ -160,7 +111,7 @@ public sealed class MovieTests : BaseTest
   }
 
   [Fact]
-  public void Create_ShouldThrowException_WhenImdbIdIsNull()
+  public void Create_ShouldReturnFailure_WhenImdbIdIsNull()
   {
     // Arrange
     var title = Faker.Company.CompanyName();
@@ -172,17 +123,18 @@ public sealed class MovieTests : BaseTest
     var imdbId = string.Empty;
 
     // Act
-    var exception = Assert.Throws<ArgumentException>(() => Movie.Create(
+    var result = Movie.Create(
       title,
       year,
       plot,
       image,
       releaseDate,
       youtubeTrailerUrl,
-      imdbId));
+      imdbId);
 
     // Assert
-    Assert.Equal(ExceptionMessage("imdbId"), exception.Message);
+    result.IsFailure.Should().BeTrue();
+    result.Error.Should().Be(MovieErrors.RequiredFieldsMissing);
   }
 
   [Fact]

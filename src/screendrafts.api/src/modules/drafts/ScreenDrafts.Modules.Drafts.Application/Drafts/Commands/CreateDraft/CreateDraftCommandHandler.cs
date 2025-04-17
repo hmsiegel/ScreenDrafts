@@ -13,6 +13,7 @@ internal sealed class CreateDraftCommandHandler(IDraftsRepository draftsReposito
       request.DraftType,
       request.TotalPicks,
       request.TotalDrafters,
+      request.TotalDrafterTeams,
       request.TotalHosts,
       request.DraftStatus,
       request.EpisodeType);

@@ -13,6 +13,7 @@ public class AssignDraftPositionTests(IntegrationTestWebAppFactory factory)
       draft.DraftType,
       draft.TotalPicks,
       draft.TotalDrafters,
+      draft.TotalDrafterTeams,
       draft.TotalHosts,
       draft.EpisodeType,
       draft.DraftStatus));
@@ -56,6 +57,7 @@ public class AssignDraftPositionTests(IntegrationTestWebAppFactory factory)
       draft.DraftType,
       draft.TotalPicks,
       draft.TotalDrafters,
+      draft.TotalDrafterTeams,
       draft.TotalHosts,
       draft.EpisodeType,
       draft.DraftStatus));
@@ -92,6 +94,7 @@ public class AssignDraftPositionTests(IntegrationTestWebAppFactory factory)
       draft.DraftType,
       draft.TotalPicks,
       draft.TotalDrafters,
+      draft.TotalDrafterTeams,
       draft.TotalHosts,
       draft.EpisodeType,
       draft.DraftStatus));
@@ -128,6 +131,7 @@ public class AssignDraftPositionTests(IntegrationTestWebAppFactory factory)
       draft.DraftType,
       draft.TotalPicks,
       draft.TotalDrafters,
+      draft.TotalDrafterTeams,
       draft.TotalHosts,
       draft.EpisodeType,
       draft.DraftStatus));
@@ -157,6 +161,7 @@ public class AssignDraftPositionTests(IntegrationTestWebAppFactory factory)
       draft.DraftType,
       draft.TotalPicks,
       draft.TotalDrafters,
+      draft.TotalDrafterTeams,
       draft.TotalHosts,
       draft.EpisodeType,
       draft.DraftStatus));

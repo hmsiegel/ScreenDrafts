@@ -13,6 +13,7 @@ public class AddDrafterToDraftTests(IntegrationTestWebAppFactory factory)
       draft.DraftType,
       draft.TotalPicks,
       draft.TotalDrafters,
+      draft.TotalDrafterTeams,
       draft.TotalHosts,
       draft.EpisodeType,
       draft.DraftStatus));
@@ -61,6 +62,7 @@ public class AddDrafterToDraftTests(IntegrationTestWebAppFactory factory)
       draft.DraftType,
       draft.TotalPicks,
       draft.TotalDrafters,
+      draft.TotalDrafterTeams,
       draft.TotalHosts,
       draft.EpisodeType,
       draft.DraftStatus));

@@ -22,6 +22,7 @@ internal sealed class IntegrationEventConsumer<TIntegrationEvent>(IDbConnectionF
         """
             INSERT INTO movies.inbox_messages(id, type, content, occurred_on_utc)
             VALUES (@Id, @Type, @Content::json, @OccurredOnUtc)
+            ON CONFLICT (id) DO NOTHING
             """;
 
     await connection.ExecuteAsync(sql, inboxMessage);

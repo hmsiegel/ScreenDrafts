@@ -11,4 +11,9 @@ public static class MovieErrors
     SDError.NotFound(
       "Movie.MovieNotFound",
       $"The movie with the IMDB ID '{imdbId}' was not found.");
+
+  public static readonly SDError RequiredFieldsMissing =
+    SDError.Failure(
+      "Movie.RequiredFieldsMissing",
+      "The title and IMDB ID are required fields.");
 }

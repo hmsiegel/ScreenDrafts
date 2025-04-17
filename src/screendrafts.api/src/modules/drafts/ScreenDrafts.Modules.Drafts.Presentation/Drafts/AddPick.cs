@@ -6,21 +6,22 @@ internal sealed class AddPick(ISender sender) : Endpoint<AddPickRequest, Guid>
 
   public override void Configure()
   {
-    Post("/drafts/{draftId:guid}/picks/{drafterId:guid}");
+    Post("/drafts/{draftId:guid}/picks");
     Description(x => x.WithTags(Presentation.Tags.Picks));
     Policies(Presentation.Permissions.ModifyDraft);
   }
   public override async Task HandleAsync(AddPickRequest req, CancellationToken ct)
   {
     var draftId = Route<Guid>("draftId");
-    var drafterId = Route<Guid>("drafterId");
 
     ArgumentNullException.ThrowIfNull(req);
     var command = new AddPickCommand(
       DraftId: draftId,
       Position: req.Position,
       MovieId: req.MovieId,
-      DrafterId: drafterId);
+      DrafterId: req.DrafterId,
+      DrafterTeamId: req.DrafterTeamId, 
+      PlayOrder: req.PlayOrder);
 
     var pickId = await _sender.Send(command, ct);
 
@@ -36,5 +37,8 @@ internal sealed class AddPick(ISender sender) : Endpoint<AddPickRequest, Guid>
 }
 
 public sealed record AddPickRequest(
+  Guid? DrafterId,
+  Guid? DrafterTeamId,
   int Position,
+  int PlayOrder,
   Guid MovieId);

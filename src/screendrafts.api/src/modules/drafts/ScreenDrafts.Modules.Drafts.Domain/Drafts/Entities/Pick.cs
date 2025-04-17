@@ -1,53 +1,65 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities;
 
-public sealed class Pick
+public sealed class Pick : Entity<PickId>
 {
   private Pick(
     int position,
     Movie movie,
-    Drafter drafter,
+    Drafter? drafter,
+    DrafterTeam? drafterTeam,
     Draft draft,
-    Guid? id = null)
+    int playOrder = 0,
+    PickId? id = null)
+    : base(id ?? PickId.CreateUnique())
   {
-
     Position = position;
-    Draft = Guard.Against.Null(draft);
+    PlayOrder = playOrder;
+
     Movie = Guard.Against.Null(movie);
-    Drafter = Guard.Against.Null(drafter);
-    Id = id ?? Guid.NewGuid();
+    MovieId = movie.Id;
+
+    Draft = Guard.Against.Null(draft);
+    DraftId = draft.Id;
+
+    Drafter = drafter;
+    DrafterId = drafter?.Id;
+
+    DrafterTeam = drafterTeam;
+    DrafterTeamId = drafterTeam?.Id;
   }
 
   private Pick()
   {
   }
 
-  public Guid Id { get; init; }
-
   public int Position { get; }
+  public int PlayOrder { get; }
 
   public Guid MovieId { get; }
-
   public Movie Movie { get; } = default!;
 
-  public VetoId? VetoId { get; private set; } = default!;
+  public DrafterId? DrafterId { get; } = default!;
+  public Drafter? Drafter { get; } = default!;
+
+  public DrafterTeamId? DrafterTeamId { get; } = default!;
+  public DrafterTeam? DrafterTeam { get; } = default!;
+
+  public DraftId DraftId { get; } = default!;
+  public Draft Draft { get; } = default!;
 
   public Veto? Veto { get; private set; } = default!;
 
-  public DrafterId DrafterId { get; } = default!;
-
-  public Drafter Drafter { get; } = default!;
-
-  public DraftId DraftId { get; } = default!;
-
-  public Draft Draft { get; } = default!;
-
+  [NotMapped]
+  public bool IsVetoed => Veto is not null;
 
   public static Result<Pick> Create(
     int position,
     Movie movie,
-    Drafter drafter,
+    Drafter? drafter,
+    DrafterTeam? drafterTeam,
     Draft draft,
-    Guid? id = null)
+    int playOrder,
+    PickId? id = null)
   {
     if (position <= 0)
     {
@@ -58,9 +70,25 @@ public sealed class Pick
       position: position,
       movie: movie,
       drafter: drafter,
+      drafterTeam: drafterTeam,
       draft: draft,
+      playOrder: playOrder,
       id: id);
 
     return pick;
+  }
+
+  public Result VetoPick(Veto veto)
+  {
+    Guard.Against.Null(veto);
+
+    if (IsVetoed)
+    {
+      return Result.Failure(DraftErrors.PickAlreadyVetoed);
+    }
+
+    Veto = veto;
+
+    return Result.Success();
   }
 }

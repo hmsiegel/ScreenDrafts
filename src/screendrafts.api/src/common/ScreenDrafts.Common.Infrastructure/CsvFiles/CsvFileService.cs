@@ -8,6 +8,7 @@ public sealed class CsvFileService : ICsvFileService
     using var csv = new CsvReader(
       reader,
       new CsvConfiguration(CultureInfo.InvariantCulture));
-    return [.. csv.GetRecords<T>()];
+    var records = csv.GetRecords<T>();
+    return [.. records];
   }
 }

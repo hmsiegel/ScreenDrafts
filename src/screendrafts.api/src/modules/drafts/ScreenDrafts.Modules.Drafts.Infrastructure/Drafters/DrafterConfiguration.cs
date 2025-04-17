@@ -36,6 +36,15 @@ internal sealed class DrafterConfiguration : IEntityTypeConfiguration<Drafter>
       .OnDelete(DeleteBehavior.Cascade);
 
     builder.HasMany(d => d.Drafts)
-      .WithMany(d => d.Drafters);
+      .WithMany(d => d.Drafters)
+      .UsingEntity<Dictionary<string, string>>(
+      Tables.DraftsDrafters,
+      x => x.HasOne<Draft>().WithMany().HasForeignKey("draft_id").OnDelete(DeleteBehavior.Cascade),
+      x => x.HasOne<Drafter>().WithMany().HasForeignKey("drafter_id").OnDelete(DeleteBehavior.Cascade),
+      x =>
+      {
+        x.HasKey("draft_id", "drafter_id");
+        x.ToTable(Tables.DraftsDrafters);
+      });
   }
 }

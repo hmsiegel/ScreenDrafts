@@ -6,10 +6,12 @@
     "EpisodeNumber": "1",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2018-08-18"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "ea8a8ef5-6372-4faf-a73f-eb0512abef2e",
@@ -18,10 +20,12 @@
     "EpisodeNumber": "2",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 1,
     "EpisodeType": 0,
     "ReleaseDates": ["2018-09-04"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "302b2148-cc0f-4e7e-8f3b-b2ef762dab74",
@@ -30,10 +34,12 @@
     "EpisodeNumber": "3",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2018-09-18"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "5c9b1a87-8a97-49d6-b24a-eec66c9e45fb",
@@ -42,10 +48,12 @@
     "EpisodeNumber": "4",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2018-10-02"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "53ca0528-d400-4006-b085-bb611e964d43",
@@ -54,10 +62,12 @@
     "EpisodeNumber": "5",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2018-10-18"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "9e7dece2-c9d3-4756-9126-1a9beeba7d4b",
@@ -66,10 +76,12 @@
     "EpisodeNumber": "6",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2018-10-30"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "3ae28710-af89-4d61-8e1b-d5d252e166b1",
@@ -78,10 +90,12 @@
     "EpisodeNumber": "7",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 0,
     "ReleaseDates": ["2018-11-15"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "1bde2149-1f79-4e9d-b90c-150789c1a2c8",
@@ -90,10 +104,12 @@
     "EpisodeNumber": "8",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2018-11-27"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "18b37052-4535-4649-8fcd-4eacf8603385",
@@ -102,10 +118,12 @@
     "EpisodeNumber": "9",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2018-12-12"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "0e7390a6-cfe1-4564-b522-6494497000cc",
@@ -114,10 +132,12 @@
     "EpisodeNumber": "10",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2018-12-21"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "e5be71cf-d991-41ac-996a-f88db567c5f2",
@@ -126,10 +146,12 @@
     "EpisodeNumber": "11",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2019-01-08"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "3588e7c1-42ed-4cee-b83e-9cf014309b10",
@@ -138,10 +160,12 @@
     "EpisodeNumber": "12",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2019-01-17"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "1c87ea9e-6023-4c78-8ca8-e1348dc51818",
@@ -150,10 +174,12 @@
     "EpisodeNumber": "14",
     "TotalPicks": 17,
     "TotalDrafters": 3,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 0,
     "ReleaseDates": ["2019-01-29"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "fac8db87-2002-430e-8540-9e9d25df31aa",
@@ -162,10 +188,12 @@
     "EpisodeNumber": "15",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2019-02-12"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "49ec3cfd-da6e-4f56-bd05-0ac67cfc4f34",
@@ -174,10 +202,12 @@
     "EpisodeNumber": "16",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2019-02-26"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "3e787702-e24f-4a0d-b2b4-4ee9b284f102",
@@ -186,10 +216,12 @@
     "EpisodeNumber": "17",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2019-03-05"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "f4eff735-1f2c-46ed-aca5-d9c3b0d0de91",
@@ -198,10 +230,12 @@
     "EpisodeNumber": "18",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2019-03-13"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "16f220f1-c7ff-4628-997e-2e31e31d79a7",
@@ -210,10 +244,12 @@
     "EpisodeNumber": "19",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 0,
     "ReleaseDates": ["2019-03-20"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "7579285a-3b28-4f08-8acd-f2e70d4d547e",
@@ -222,10 +258,12 @@
     "EpisodeNumber": "20",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2019-03-27"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "a469a0bb-b5e5-44cd-b6e1-5a6f5c48feb9",
@@ -234,10 +272,12 @@
     "EpisodeNumber": "21",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2019-04-04"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "0f480291-42cd-4de7-8477-7d8dd6e713cd",
@@ -246,10 +286,12 @@
     "EpisodeNumber": "22",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 0,
     "ReleaseDates": ["2019-04-15"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "4a20dafc-cb75-4858-b938-b16b406af897",
@@ -258,10 +300,12 @@
     "EpisodeNumber": "23",
     "TotalPicks": 21,
     "TotalDrafters": 4,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 0,
     "ReleaseDates": ["2019-04-23"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "07a15e33-ffca-4224-87e8-46073efec33a",
@@ -270,10 +314,12 @@
     "EpisodeNumber": "24",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 1,
     "EpisodeType": 0,
     "ReleaseDates": ["2019-05-01"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "5c1326ed-7fa1-4cd0-b336-a8a968c69b70",
@@ -282,10 +328,12 @@
     "EpisodeNumber": "25",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2019-05-07"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "910e76dd-4f7c-449d-8769-a815ae6041a9",
@@ -294,10 +342,12 @@
     "EpisodeNumber": "26",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2019-05-14"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "43dc286a-6f65-4714-9259-ef910ad269a6",
@@ -306,10 +356,12 @@
     "EpisodeNumber": "27",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2019-05-22"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "2d9e2836-39fb-47ed-9ab6-d40a08c4c1a8",
@@ -318,10 +370,12 @@
     "EpisodeNumber": "28",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2019-06-01"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "9f2425ed-17fc-4746-b4a4-9073251b2f57",
@@ -330,10 +384,12 @@
     "EpisodeNumber": "29",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2019-06-05"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "d7ab4637-8376-491f-8f1a-c8a3651405d1",
@@ -342,10 +398,12 @@
     "EpisodeNumber": "30",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 1,
     "EpisodeType": 0,
     "ReleaseDates": ["2019-06-12"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "f88a3cde-d149-4e94-92ef-953dc03edbe3",
@@ -354,10 +412,12 @@
     "EpisodeNumber": "31",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2019-06-18"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "84f92d8c-a6b2-4e94-ab3d-6b7b0fcc0a9e",
@@ -366,10 +426,12 @@
     "EpisodeNumber": "32",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2019-06-25"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "fe8d1f9c-c915-498a-8ce8-089383df55a5",
@@ -378,10 +440,12 @@
     "EpisodeNumber": "33",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2019-07-02"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "c06430fd-2ba2-4a28-91b9-7896650899a6",
@@ -390,10 +454,12 @@
     "EpisodeNumber": "34",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2019-07-09"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "30340497-be6a-4b4c-8026-6274e4e1c8ff",
@@ -402,10 +468,12 @@
     "EpisodeNumber": "35",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2019-07-16"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "fd794b27-df5c-4ea8-93e2-72e27d4e0756",
@@ -414,10 +482,12 @@
     "EpisodeNumber": "36",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2019-07-23"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "83bb9106-d6d0-446d-b344-8c597c0b5b09",
@@ -426,10 +496,12 @@
     "EpisodeNumber": "37",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 1,
     "EpisodeType": 0,
     "ReleaseDates": ["2019-07-30"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "503706f4-7184-4dce-89ef-05c2ba9eaf6b",
@@ -438,10 +510,12 @@
     "EpisodeNumber": "38",
     "TotalPicks": 20,
     "TotalDrafters": 4,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2019-08-07"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "73c2ebbd-4005-4aa5-bbb0-d5c71a62f530",
@@ -450,10 +524,12 @@
     "EpisodeNumber": "39",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 0,
     "ReleaseDates": ["2019-08-17"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "74df5527-3e9e-4b83-bd6d-a0de06e7a476",
@@ -462,10 +538,12 @@
     "EpisodeNumber": "40",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2019-08-21"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "c0044d5c-39d0-4826-a9ff-ae6d4cd04ac1",
@@ -474,10 +552,12 @@
     "EpisodeNumber": "41",
     "TotalPicks": 20,
     "TotalDrafters": 4,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2019-08-27"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "6b3cb308-838d-4e13-952f-7d422278c069",
@@ -486,10 +566,12 @@
     "EpisodeNumber": "42",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 1,
     "EpisodeType": 0,
     "ReleaseDates": ["2019-09-10"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "249b6e36-93ac-4544-a09c-09e467efa20a",
@@ -498,10 +580,12 @@
     "EpisodeNumber": "43",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2019-09-17"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "1ae73670-c26c-48e3-bcee-ed881a66cd9c",
@@ -510,10 +594,12 @@
     "EpisodeNumber": "44",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2019-09-24"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "3c09fb5c-8108-4b4c-9b08-77a836814ac6",
@@ -522,10 +608,12 @@
     "EpisodeNumber": "45",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2019-10-01"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "09df42df-0b32-4201-9725-526aee897927",
@@ -534,10 +622,12 @@
     "EpisodeNumber": "46",
     "TotalPicks": 20,
     "TotalDrafters": 4,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2019-10-08"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "85523722-f66d-4be0-97b5-38d144bdfb64",
@@ -546,10 +636,12 @@
     "EpisodeNumber": "47",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2019-10-19"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "d6a42926-2d01-4af1-a136-d2250789c800",
@@ -558,10 +650,12 @@
     "EpisodeNumber": "48",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 1,
     "EpisodeType": 0,
     "ReleaseDates": ["2019-10-23"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "29139dcb-b4be-4319-b626-e03584d3537d",
@@ -570,10 +664,12 @@
     "EpisodeNumber": "49",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2019-10-29"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "60842e15-04d9-4808-b655-09175f439903",
@@ -582,10 +678,12 @@
     "EpisodeNumber": "50",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2019-11-05"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "a9074f10-3a23-4a59-a634-a0f64f1dd988",
@@ -594,10 +692,12 @@
     "EpisodeNumber": "51",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2019-11-12"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "d28b3def-2d8a-4148-b663-6062bfdeeb23",
@@ -606,10 +706,12 @@
     "EpisodeNumber": "52",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2019-11-19"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "10eeea71-24ef-4542-a47d-8bf190c3e939",
@@ -618,10 +720,12 @@
     "EpisodeNumber": "53",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2019-11-26"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "7012cec0-8ca3-4f3d-8900-4bc3c8a24aa1",
@@ -630,10 +734,12 @@
     "EpisodeNumber": "54",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2019-12-03"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "8e616bc9-1d1c-49e4-9c68-d033faaa28d6",
@@ -642,10 +748,12 @@
     "EpisodeNumber": "55",
     "TotalPicks": 20,
     "TotalDrafters": 4,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2019-12-10"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "0b064375-dddb-425b-85e5-4d4db36cb3ff",
@@ -654,10 +762,12 @@
     "EpisodeNumber": "56",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2019-12-18"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "f14a2717-31fa-4246-9a94-286812c79122",
@@ -666,10 +776,12 @@
     "EpisodeNumber": "57",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 0,
     "ReleaseDates": ["2019-12-25"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "53fddd02-54ca-478a-930c-f069b30cf9c9",
@@ -678,10 +790,12 @@
     "EpisodeNumber": "58",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 1,
     "EpisodeType": 0,
     "ReleaseDates": ["2019-12-31"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "19965126-7d2f-424c-90d1-c315f5080c99",
@@ -690,10 +804,12 @@
     "EpisodeNumber": "59",
     "TotalPicks": 11,
     "TotalDrafters": 3,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2020-01-09"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "5a3ab606-4e9a-4990-9a24-237e731b4c20",
@@ -702,10 +818,12 @@
     "EpisodeNumber": "60",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2020-01-16"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "6214e864-de17-4b4b-a357-a7b461fe8658",
@@ -714,10 +832,12 @@
     "EpisodeNumber": "61",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2020-01-21"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "f45ccefe-c158-4bd1-8803-31a229f78c10",
@@ -726,10 +846,12 @@
     "EpisodeNumber": "62",
     "TotalPicks": 13,
     "TotalDrafters": 4,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2020-01-31"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "6eec7b4d-06e0-4916-a091-da264eb57133",
@@ -738,10 +860,12 @@
     "EpisodeNumber": "63",
     "TotalPicks": 20,
     "TotalDrafters": 4,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 1,
     "EpisodeType": 0,
     "ReleaseDates": ["2020-02-06"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "10aa256c-6a5f-4270-b825-660d2807d30a",
@@ -750,10 +874,12 @@
     "EpisodeNumber": "64",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2020-02-11"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "e4b1f984-84e5-41ca-bea9-16d93fb97fdc",
@@ -762,10 +888,12 @@
     "EpisodeNumber": "65",
     "TotalPicks": 11,
     "TotalDrafters": 3,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2020-02-20"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "d9bd3ac3-0b83-4fd9-9d52-f12549d418c2",
@@ -774,10 +902,12 @@
     "EpisodeNumber": "66",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2020-02-25"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "98c98d68-702e-41cd-8fa4-c8e212a68546",
@@ -786,10 +916,12 @@
     "EpisodeNumber": "67",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2020-03-03"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "6921db42-e5a1-4f6b-9fd3-eea25d0ca633",
@@ -798,10 +930,12 @@
     "EpisodeNumber": "68",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 1,
     "EpisodeType": 0,
     "ReleaseDates": ["2020-03-10"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "1ccd634c-66e7-41ee-a07c-920a48b17423",
@@ -810,10 +944,12 @@
     "EpisodeNumber": "69",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 1,
     "EpisodeType": 0,
     "ReleaseDates": ["2020-03-19"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "f8d983c0-4d4f-4fa3-aa7b-42ab877bf01c",
@@ -822,10 +958,12 @@
     "EpisodeNumber": "70",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 1,
     "EpisodeType": 0,
     "ReleaseDates": ["2020-03-24"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "850d1e28-39fb-46e2-b286-ccdcedb2399a",
@@ -834,10 +972,12 @@
     "EpisodeNumber": "71",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2020-03-30"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "916cd2f3-b603-4d2b-94b8-5fc5f66ce9fe",
@@ -846,10 +986,12 @@
     "EpisodeNumber": "72",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2020-04-05"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "9d5d0738-21f6-40f1-a51d-a8d913d8646f",
@@ -858,10 +1000,12 @@
     "EpisodeNumber": "73",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2020-04-08"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "7d513d21-73f2-4db0-8c9d-44f44f02d90d",
@@ -870,10 +1014,12 @@
     "EpisodeNumber": "74",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2020-04-13"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "b7f59742-f51f-4dd0-b08c-ac3091ad7802",
@@ -882,10 +1028,12 @@
     "EpisodeNumber": "75",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2020-04-20"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "56d6fc65-4a4f-4a16-b746-b8ec56d6c837",
@@ -894,10 +1042,12 @@
     "EpisodeNumber": "76",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2020-04-27"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "c7b2f9fe-e314-461a-a7d6-f47a7dc1cc91",
@@ -906,10 +1056,12 @@
     "EpisodeNumber": "77",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2020-05-04"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "b2a8ab4c-494f-42cc-8531-8c2583ac4a67",
@@ -918,10 +1070,12 @@
     "EpisodeNumber": "78",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2020-05-10"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "54fb4fc9-4d9b-422a-8241-9644e740e59c",
@@ -930,10 +1084,12 @@
     "EpisodeNumber": "79",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2020-05-18"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "323e4bd2-a468-49b5-b4a5-0fbe17d50244",
@@ -942,10 +1098,12 @@
     "EpisodeNumber": "80",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2020-05-25"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "dc8964c5-6650-438b-bdb3-24012b9c6ca1",
@@ -954,10 +1112,12 @@
     "EpisodeNumber": "81",
     "TotalPicks": 13,
     "TotalDrafters": 3,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2020-06-02"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "a422f5f7-7b4f-41cf-b825-e91299695fa0",
@@ -966,10 +1126,12 @@
     "EpisodeNumber": "82",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2020-06-09"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "11be3620-da93-41ac-bf36-1ac52855a154",
@@ -978,10 +1140,12 @@
     "EpisodeNumber": "83",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2020-06-16"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "50ea7a7b-798e-4ab3-8b45-2593e6a740b9",
@@ -990,10 +1154,12 @@
     "EpisodeNumber": "84",
     "TotalPicks": 18,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 1,
     "EpisodeType": 0,
     "ReleaseDates": ["2022-06-22"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "1a069714-7e86-49bc-8eee-2460a510fd1b",
@@ -1002,10 +1168,12 @@
     "EpisodeNumber": "85",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2020-07-01"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "f6c55a58-801e-4e32-81e2-b98c4e4ba58b",
@@ -1014,10 +1182,12 @@
     "EpisodeNumber": "86",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2020-07-07"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "144ae507-96d4-424b-a098-8bf38741e7ba",
@@ -1026,10 +1196,12 @@
     "EpisodeNumber": "87",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2020-07-13"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "96dc67f2-011a-4ae6-ae2c-59f15336d97c",
@@ -1038,10 +1210,12 @@
     "EpisodeNumber": "88",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2020-07-21"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "fdab7eef-e486-4c11-bcff-a7f37874bab7",
@@ -1050,10 +1224,12 @@
     "EpisodeNumber": "89",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2020-07-29"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "c30d08cb-6799-4c01-843f-357c6157be5b",
@@ -1062,10 +1238,12 @@
     "EpisodeNumber": "90",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2020-08-04"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "80393bb3-d348-4476-b5db-decad580de5f",
@@ -1074,10 +1252,12 @@
     "EpisodeNumber": "91",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2020-08-11"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "a0414bd9-b808-4b72-8f73-de2a6e0bf9dd",
@@ -1086,10 +1266,12 @@
     "EpisodeNumber": "92",
     "TotalPicks": 13,
     "TotalDrafters": 3,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2020-08-18"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "42cc56ac-a9ae-41bd-9745-68a2bf9362fb",
@@ -1098,10 +1280,12 @@
     "EpisodeNumber": "93",
     "TotalPicks": 20,
     "TotalDrafters": 4,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2020-08-30", "2020-09-02"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "cc8a3dd8-f1e4-4bf0-890f-afb463cbed84",
@@ -1110,10 +1294,12 @@
     "EpisodeNumber": "94",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2020-09-09"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "5befc72f-0d6e-4aea-addc-be50b6c1a02e",
@@ -1122,10 +1308,12 @@
     "EpisodeNumber": "95",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2020-09-14"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "ff363d88-a497-4362-804b-a2c9511d666f",
@@ -1134,10 +1322,12 @@
     "EpisodeNumber": "96",
     "TotalPicks": 11,
     "TotalDrafters": 3,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2020-09-21"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "b7d6ff6f-2dd3-4363-adef-5bf2e8fe6256",
@@ -1146,10 +1336,12 @@
     "EpisodeNumber": "97",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2020-09-29"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "ac8f6ef4-3223-4226-b358-b6cd3a3b8e33",
@@ -1158,10 +1350,12 @@
     "EpisodeNumber": "98",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2020-10-06"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "0579ebca-89d5-4fd4-8158-34561a0adc27",
@@ -1170,10 +1364,12 @@
     "EpisodeNumber": "99",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2020-10-13"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "c5d06d78-f98b-4352-829c-7ac5510a1d3a",
@@ -1182,10 +1378,12 @@
     "EpisodeNumber": "100",
     "TotalPicks": 12,
     "TotalDrafters": 3,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2020-10-20"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "a4bd3e53-80c8-4614-b5ff-06480eeed4fa",
@@ -1194,10 +1392,12 @@
     "EpisodeNumber": "101",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2020-10-27"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "627ce97d-3895-42f5-ad4c-8d0a750f81aa",
@@ -1206,10 +1406,12 @@
     "EpisodeNumber": "102",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 1,
     "EpisodeType": 0,
     "ReleaseDates": ["2020-11-01"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "8f1ca106-4b3a-4f62-82df-a1a847053299",
@@ -1218,10 +1420,12 @@
     "EpisodeNumber": "103",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2020-11-10"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "caf63b0d-df86-4ce6-91cf-b71190ec6db0",
@@ -1230,10 +1434,12 @@
     "EpisodeNumber": "104",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2020-11-17"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "33ce92e4-4a86-4c67-b75d-79f6f1380867",
@@ -1242,10 +1448,12 @@
     "EpisodeNumber": "105",
     "TotalPicks": 22,
     "TotalDrafters": 4,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2020-11-22"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "c9ef9714-4e55-45a7-add3-b03b7b59179f",
@@ -1254,10 +1462,12 @@
     "EpisodeNumber": "106",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2020-12-01"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "49a051d0-1af5-4601-96c9-73a6309781ad",
@@ -1266,10 +1476,12 @@
     "EpisodeNumber": "107",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2020-12-07"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "9d907787-44de-4239-9a5a-b978486bc4b8",
@@ -1278,10 +1490,12 @@
     "EpisodeNumber": "108",
     "TotalPicks": 13,
     "TotalDrafters": 3,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2020-12-15"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "617a280b-ec34-4329-a405-83ea9a748c53",
@@ -1290,10 +1504,12 @@
     "EpisodeNumber": "109",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 1,
     "EpisodeType": 0,
     "ReleaseDates": ["2020-12-21"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "a7634dfd-371f-4b23-a358-a92e5bfa858f",
@@ -1302,10 +1518,12 @@
     "EpisodeNumber": "110",
     "TotalPicks": 16,
     "TotalDrafters": 3,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 1,
     "EpisodeType": 0,
     "ReleaseDates": ["2020-12-25"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "b1fddc5e-57fb-468c-a972-1bf05664b36b",
@@ -1314,10 +1532,12 @@
     "EpisodeNumber": "111",
     "TotalPicks": 11,
     "TotalDrafters": 3,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2021-01-05"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "e9466fe6-83c1-4e20-a875-a92d18092cf2",
@@ -1326,10 +1546,12 @@
     "EpisodeNumber": "112",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2021-01-12"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "dada16ee-59cd-4d63-bc5d-47491aef571f",
@@ -1338,10 +1560,12 @@
     "EpisodeNumber": "113",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2021-01-19"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "5e2157bf-fdd5-4fe1-9cf1-0d92a3037178",
@@ -1350,10 +1574,12 @@
     "EpisodeNumber": "114",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2021-01-26"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "6af38676-d011-4ba9-830d-427b4278dcbc",
@@ -1362,10 +1588,12 @@
     "EpisodeNumber": "115",
     "TotalPicks": 11,
     "TotalDrafters": 3,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2021-02-02"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "8a437997-f5e0-4f89-a691-fd8457422337",
@@ -1374,10 +1602,12 @@
     "EpisodeNumber": "116",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2021-02-09"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "68e35ab4-4a07-4179-883f-6fe9ce3a0f1d",
@@ -1385,11 +1615,13 @@
     "DraftType": 0,
     "EpisodeNumber": "117",
     "TotalPicks": 7,
-    "TotalDrafters": 4,
+    "TotalDrafters": 0,
+    "TotalDrafterTeams": 2,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2021-02-14"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "88a1fdc5-1551-4354-83de-cbb45eed125c",
@@ -1398,10 +1630,12 @@
     "EpisodeNumber": "118",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2021-02-16"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "a91a6e7e-d2bc-44f8-bbc3-f4dc57127910",
@@ -1410,10 +1644,12 @@
     "EpisodeNumber": "119",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2021-02-24"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "dce54f7e-bddd-41b8-90eb-4c68d47f5f80",
@@ -1422,10 +1658,12 @@
     "EpisodeNumber": "120",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2021-03-02"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "47aa102a-71e4-49c7-8d98-db0c0904dde3",
@@ -1434,10 +1672,12 @@
     "EpisodeNumber": "121",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2021-03-09"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "451f5dd2-6d01-4a34-a05d-9c569a9a03de",
@@ -1446,10 +1686,12 @@
     "EpisodeNumber": "122",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2021-03-14"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "600b2796-0f03-4eca-84f0-a696a4da0729",
@@ -1458,10 +1700,12 @@
     "EpisodeNumber": "123",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2021-03-16"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "8615b1eb-5e08-4018-be57-49dea1724315",
@@ -1470,10 +1714,12 @@
     "EpisodeNumber": "124",
     "TotalPicks": 7,
     "TotalDrafters": 3,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2021-03-23"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "b345decb-a7e5-4d0b-ba7d-5f2c521f93a0",
@@ -1482,10 +1728,12 @@
     "EpisodeNumber": "125",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2021-03-30"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "0754606f-4e74-4655-b3e8-ff567481e294",
@@ -1494,10 +1742,12 @@
     "EpisodeNumber": "126",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 1,
     "EpisodeType": 0,
     "ReleaseDates": ["2021-04-06"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "6a26d062-d3c5-4436-bee6-b64603a6940a",
@@ -1506,10 +1756,12 @@
     "EpisodeNumber": "127",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2021-04-13"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "a11b7caf-c1ed-4353-9534-f546410b8bfc",
@@ -1518,10 +1770,12 @@
     "EpisodeNumber": "128",
     "TotalPicks": 20,
     "TotalDrafters": 4,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 1,
     "EpisodeType": 0,
     "ReleaseDates": ["2021-04-21"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "e85554eb-016c-4011-b736-d8dde5be866e",
@@ -1530,10 +1784,12 @@
     "EpisodeNumber": "129",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2021-04-27"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "de0a36c2-4fae-404d-ad19-5d00f23e6989",
@@ -1542,10 +1798,12 @@
     "EpisodeNumber": "130",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2021-05-04"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "af726a83-173b-4c09-9d45-e8253f9de0e9",
@@ -1554,10 +1812,12 @@
     "EpisodeNumber": "131",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2021-05-11"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "39eac0ae-a206-4fd4-beee-f9d6b257dfc0",
@@ -1566,10 +1826,12 @@
     "EpisodeNumber": "132",
     "TotalPicks": 13,
     "TotalDrafters": 4,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2021-05-18"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "eadc2778-07d3-45db-9e19-65b52a2e3234",
@@ -1578,10 +1840,12 @@
     "EpisodeNumber": "133",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2021-05-25"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "b1626d79-83a0-4ba6-8fad-e390820d072d",
@@ -1590,10 +1854,12 @@
     "EpisodeNumber": "134",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2021-06-01"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "d0113431-158d-4b47-8a85-c8d273dab112",
@@ -1602,10 +1868,12 @@
     "EpisodeNumber": "135",
     "TotalPicks": 13,
     "TotalDrafters": 3,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2021-06-08"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "b32b2777-584f-4b90-9af6-e3a327631c52",
@@ -1614,10 +1882,12 @@
     "EpisodeNumber": "136",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2021-06-15"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "253b856d-459e-44da-afeb-a1b03ee53a43",
@@ -1626,10 +1896,12 @@
     "EpisodeNumber": "137",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2021-06-22"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "aec7bb37-72ec-4a6e-9cb5-387978576fe7",
@@ -1638,10 +1910,12 @@
     "EpisodeNumber": "138",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2021-06-29"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "b05fb914-d305-4307-90fd-5d7fe6b471ce",
@@ -1650,10 +1924,12 @@
     "EpisodeNumber": "139",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2021-07-01"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "2f0b45bf-e1f4-45cb-944e-fccee2d0dcdb",
@@ -1662,10 +1938,12 @@
     "EpisodeNumber": "140",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2021-07-13"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "50f9b683-a1cc-4737-8a78-8dbadacb2db5",
@@ -1674,10 +1952,12 @@
     "EpisodeNumber": "141",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2021-07-20"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "56416e2b-bae6-469a-b6eb-4fe5909ae1c8",
@@ -1686,10 +1966,12 @@
     "EpisodeNumber": "142",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2021-07-27"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "c669c00a-0ad1-4ea7-8011-ec7ce1cc3ef5",
@@ -1698,10 +1980,12 @@
     "EpisodeNumber": "143",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2021-08-03"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "efb7cf0f-e8ff-49c1-80ee-8392a7bb83ea",
@@ -1710,10 +1994,12 @@
     "EpisodeNumber": "144",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 1,
     "EpisodeType": 0,
     "ReleaseDates": ["2021-08-10"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "bf9d9ebf-a513-480b-85b7-94c448b1b689",
@@ -1722,10 +2008,12 @@
     "EpisodeNumber": "145",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2021-08-16"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "783cd350-251b-40d2-a82a-1e19530e3ac4",
@@ -1734,10 +2022,12 @@
     "EpisodeNumber": "146",
     "TotalPicks": 20,
     "TotalDrafters": 4,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2021-08-23"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "faab1d5b-7e9a-41ac-a0fc-aa7f3a5f7fc2",
@@ -1746,10 +2036,12 @@
     "EpisodeNumber": "147",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2021-08-31"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "697fbe03-80e3-4abb-a833-6ae90ec62ec2",
@@ -1758,10 +2050,12 @@
     "EpisodeNumber": "148",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2021-09-07"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "2d2d935b-6173-430e-9fbd-2a4e8645b823",
@@ -1770,10 +2064,12 @@
     "EpisodeNumber": "149",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2021-09-14"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "77c28491-cb2f-4f02-8731-a2dbcd344918",
@@ -1782,10 +2078,12 @@
     "EpisodeNumber": "150",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2021-09-22"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "bed16451-5501-4af8-9497-770383430bb5",
@@ -1794,10 +2092,12 @@
     "EpisodeNumber": "151",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2021-09-28"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "e1647c90-8118-4c32-8ace-3af5f395be35",
@@ -1806,10 +2106,12 @@
     "EpisodeNumber": "152",
     "TotalPicks": 11,
     "TotalDrafters": 3,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2021-10-05"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "91a4ffcf-2c95-4563-90f1-2769f72c575c",
@@ -1818,10 +2120,12 @@
     "EpisodeNumber": "153",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2021-10-12"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "d6b22e85-139b-40ee-a152-d0ae2f3ce226",
@@ -1830,10 +2134,12 @@
     "EpisodeNumber": "154",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2021-10-18"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "9cb66ce6-348c-4be8-ab7d-ad3bf2ee101a",
@@ -1842,10 +2148,12 @@
     "EpisodeNumber": "155",
     "TotalPicks": 13,
     "TotalDrafters": 3,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2021-10-27"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "d8f91d3d-d590-4bec-9db0-9acbc6718888",
@@ -1854,10 +2162,12 @@
     "EpisodeNumber": "156",
     "TotalPicks": 26,
     "TotalDrafters": 5,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates":["2021-11-02","2021-11-03"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "f3f8f799-d395-4e53-97f2-7514d0daf536",
@@ -1866,10 +2176,12 @@
     "EpisodeNumber": "157",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2021-11-05"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "26b1018c-10cc-444a-996c-d7a50fceb2f8",
@@ -1878,10 +2190,12 @@
     "EpisodeNumber": "158",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2021-11-16"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "4a518229-113a-4f2f-a687-1678c1b8bab2",
@@ -1890,10 +2204,12 @@
     "EpisodeNumber": "159",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2021-11-23"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "c48d94a8-10d6-4a98-8b0e-cfb9f0be67ff",
@@ -1902,10 +2218,12 @@
     "EpisodeNumber": "160",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2021-11-30"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "22052206-bc08-4dc7-aba7-a10bf5b5f7ce",
@@ -1914,10 +2232,12 @@
     "EpisodeNumber": "161",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2021-12-08"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "e21637af-828a-4793-9ae0-1ebb8122c11f",
@@ -1926,10 +2246,12 @@
     "EpisodeNumber": "162",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2021-12-14"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "23dc7540-0b19-42f0-9471-479332a585a5",
@@ -1938,10 +2260,12 @@
     "EpisodeNumber": "163",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2021-12-21"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "d36f97b6-d6a0-4741-b06e-bccfbfdb621e",
@@ -1950,10 +2274,12 @@
     "EpisodeNumber": "164",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 1,
     "EpisodeType": 0,
     "ReleaseDates": ["2021-12-24"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "df598849-e608-45e2-a21f-5f64272a783c",
@@ -1962,10 +2288,12 @@
     "EpisodeNumber": "165",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 1,
     "EpisodeType": 0,
     "ReleaseDates": ["2022-01-04"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "fe602d29-5351-41ff-9ee4-589051c13728",
@@ -1974,10 +2302,12 @@
     "EpisodeNumber": "166",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2022-01-11"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "0baf1697-4f58-476e-8c6e-fed56dd63109",
@@ -1986,10 +2316,12 @@
     "EpisodeNumber": "167",
     "TotalPicks": 11,
     "TotalDrafters": 3,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 1,
     "EpisodeType": 0,
     "ReleaseDates": ["2022-01-18"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "4e8b675c-a2d6-4611-a6ce-850710482afb",
@@ -1998,10 +2330,12 @@
     "EpisodeNumber": "168",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2022-01-22"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "8c757241-8b40-4e21-8335-e66507ab3849",
@@ -2010,10 +2344,12 @@
     "EpisodeNumber": "169",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2022-01-25"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "677c1b04-67be-4e08-b35a-8e92105e77fe",
@@ -2022,10 +2358,12 @@
     "EpisodeNumber": "170",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2022-02-01"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "c3deb2bf-e222-4850-a561-903b9e0affc2",
@@ -2034,10 +2372,12 @@
     "EpisodeNumber": "171",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2022-02-08"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "4a7db6e5-4876-4d77-8ceb-145405bfdfe6",
@@ -2046,10 +2386,12 @@
     "EpisodeNumber": "172",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2022-02-15"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "69951fdc-89e4-4d4f-90e1-a37afb8db8d7",
@@ -2058,10 +2400,12 @@
     "EpisodeNumber": "173",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2022-02-22"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "323f3d10-46aa-4b02-b415-b2c78ffedc35",
@@ -2070,10 +2414,12 @@
     "EpisodeNumber": "174",
     "TotalPicks": 18,
     "TotalDrafters": 4,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2022-03-01"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "a99a2240-6c8a-4ebf-8b02-78ba9d57178a",
@@ -2082,10 +2428,12 @@
     "EpisodeNumber": "175",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2022-03-08"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "5738014a-5108-4f0b-8598-c50c37a324cd",
@@ -2094,10 +2442,12 @@
     "EpisodeNumber": "176",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2022-03-15"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "63388810-2643-41d2-9a69-1c93651bf3e4",
@@ -2106,10 +2456,12 @@
     "EpisodeNumber": "177",
     "TotalPicks": 20,
     "TotalDrafters": 4,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2022-03-22"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "defa306e-1bd4-440a-9ff5-1d9af35cbe9d",
@@ -2118,10 +2470,12 @@
     "EpisodeNumber": "178",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2022-03-29"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "c7321f65-ffc3-431e-88cb-339b7a79b841",
@@ -2130,10 +2484,12 @@
     "EpisodeNumber": "179",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2022-04-05"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "c25dd6a1-0ee3-4334-833c-7952bcfb78fe",
@@ -2142,10 +2498,12 @@
     "EpisodeNumber": "180",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2022-04-12"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "85efd689-b8d0-48d7-a7c9-39f1814d38ee",
@@ -2154,10 +2512,12 @@
     "EpisodeNumber": "181",
     "TotalPicks": 7,
     "TotalDrafters": 4,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2022-04-19"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "72eba291-b6fe-4e1c-aa0d-faa5384b467b",
@@ -2166,10 +2526,12 @@
     "EpisodeNumber": "182",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2022-04-26"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "6f6ebb18-1b60-4027-bc68-3d4403b05e2f",
@@ -2178,10 +2540,12 @@
     "EpisodeNumber": "183",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2022-05-02"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "63627fba-b871-4640-88df-4edde83984e6",
@@ -2190,10 +2554,12 @@
     "EpisodeNumber": "184",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2022-05-09"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "8a3d1569-fde9-45a8-96e9-414343cd9204",
@@ -2202,10 +2568,12 @@
     "EpisodeNumber": "185",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2022-05-16"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "ec526468-89f5-4b7c-bd21-ecce07853220",
@@ -2214,10 +2582,12 @@
     "EpisodeNumber": "186",
     "TotalPicks": 13,
     "TotalDrafters": 4,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2022-05-23"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "3eacfbe9-0089-48bd-90cb-a8ce1bb72f16",
@@ -2226,10 +2596,12 @@
     "EpisodeNumber": "187",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2022-05-30"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "f6cd9fef-24ad-41a7-911d-e1f6067d56b7",
@@ -2238,10 +2610,12 @@
     "EpisodeNumber": "188",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2022-06-06"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "aaf198a2-dd51-4c9f-a0e5-32e8053ae22f",
@@ -2250,10 +2624,12 @@
     "EpisodeNumber": "189",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2022-06-13"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "80d44691-eb10-4d66-93a0-749294f77c07",
@@ -2262,10 +2638,12 @@
     "EpisodeNumber": "190",
     "TotalPicks": 21,
     "TotalDrafters": 4,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2022-06-20"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "ef933e38-5df1-4197-8075-1f64b1a46871",
@@ -2274,10 +2652,12 @@
     "EpisodeNumber": "191",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2022-06-27"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "f980e0d9-2ecc-4352-8198-6875f836fec5",
@@ -2286,10 +2666,12 @@
     "EpisodeNumber": "192",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2022-07-05"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "8220f8d0-5cde-40e3-b1a1-b1609e453d3a",
@@ -2298,10 +2680,12 @@
     "EpisodeNumber": "193",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2022-07-11"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "9f720d3d-2b15-43b3-ab81-a3aafa8d9603",
@@ -2310,10 +2694,12 @@
     "EpisodeNumber": "194",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2022-07-18"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "ebefe012-413c-4685-b9d1-70256a142d17",
@@ -2322,10 +2708,12 @@
     "EpisodeNumber": "195",
     "TotalPicks": 12,
     "TotalDrafters": 4,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2022-07-25"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "46c5bad0-f057-4dfe-aa9c-9ee63a594ce2",
@@ -2334,10 +2722,12 @@
     "EpisodeNumber": "196",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2022-08-01"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "d586fc24-6291-4521-a29b-fc6852e088a7",
@@ -2346,10 +2736,12 @@
     "EpisodeNumber": "197",
     "TotalPicks": 11,
     "TotalDrafters": 3,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2022-08-08"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "f592eefe-cca9-47be-b89a-bd28c20ec5c0",
@@ -2358,10 +2750,12 @@
     "EpisodeNumber": "198",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 3,
     "EpisodeType": 0,
     "ReleaseDates": ["2022-08-15"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "7216c2d5-e176-4382-b048-10ac7ad25e1f",
@@ -2370,10 +2764,12 @@
     "EpisodeNumber": "199",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2022-08-29"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "0474d3c0-268d-47fc-9a29-44314c3e6480",
@@ -2382,10 +2778,12 @@
     "EpisodeNumber": "200",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 1,
     "EpisodeType": 0,
     "ReleaseDates": ["2022-09-06"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "1e598182-5797-48f3-a7fd-6262fd0d5a44",
@@ -2393,11 +2791,13 @@
     "DraftType": 1,
     "EpisodeNumber": "201",
     "TotalPicks": 13,
-    "TotalDrafters": 4,
+    "TotalDrafters": 2,
+    "TotalDrafterTeams": 1,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2022-09-12"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "8cfedb6b-38b2-4d7a-ba6f-13ce1e8be7d7",
@@ -2406,10 +2806,12 @@
     "EpisodeNumber": "202",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2022-09-19"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "8e7e454e-4acf-4d48-a57a-9b4427d00b83",
@@ -2418,10 +2820,12 @@
     "EpisodeNumber": "203",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2022-09-27"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "ebd431a3-7bec-4ae9-90aa-c25a7acd2891",
@@ -2430,10 +2834,12 @@
     "EpisodeNumber": "204",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2022-10-03"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "99b55149-adb7-4ebd-becf-23959e854640",
@@ -2442,10 +2848,12 @@
     "EpisodeNumber": "205",
     "TotalPicks": 11,
     "TotalDrafters": 3,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2022-10-10"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "03f83e2c-3925-41bd-90be-e8bb60dde23c",
@@ -2454,10 +2862,12 @@
     "EpisodeNumber": "206",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2022-10-17"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "fff98f66-b2ec-495b-a49b-9d5a671e8c24",
@@ -2466,10 +2876,12 @@
     "EpisodeNumber": "207",
     "TotalPicks": 13,
     "TotalDrafters": 4,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 1,
     "EpisodeType": 0,
     "ReleaseDates": ["2022-10-31"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "922208d2-4f92-45a9-abac-113b2171e5c3",
@@ -2478,10 +2890,12 @@
     "EpisodeNumber": "208",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2022-11-07"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "dc9415c5-7cdc-48e9-9bd8-0c3f41d59a60",
@@ -2490,10 +2904,12 @@
     "EpisodeNumber": "209",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2022-11-14"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "40536309-f349-44cc-ac31-88b11b218225",
@@ -2502,10 +2918,12 @@
     "EpisodeNumber": "210",
     "TotalPicks": 11,
     "TotalDrafters": 3,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2022-11-21"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "636c615a-3ae5-4045-930d-bea21f4b8dc7",
@@ -2514,10 +2932,12 @@
     "EpisodeNumber": "211",
     "TotalPicks": 16,
     "TotalDrafters": 4,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2022-11-28"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "e529f6ed-1e70-4d50-b89e-61e1d9d5fff0",
@@ -2526,10 +2946,12 @@
     "EpisodeNumber": "212",
     "TotalPicks": 13,
     "TotalDrafters": 3,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2022-12-05"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "98f7d2c8-4acb-44d5-97cc-16ae7046b746",
@@ -2538,10 +2960,12 @@
     "EpisodeNumber": "213",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2022-12-12"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "d055c8f0-c2d4-48b8-a4d1-f2e188186528",
@@ -2550,10 +2974,12 @@
     "EpisodeNumber": "214",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2022-12-19"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "78b3013f-6bce-404d-96c3-f23bc45d1ac9",
@@ -2562,10 +2988,12 @@
     "EpisodeNumber": "215",
     "TotalPicks": 9,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 0,
     "ReleaseDates": ["2022-12-24"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "a5aae4d9-2ec3-4fae-a77a-a863f2c718f8",
@@ -2574,10 +3002,12 @@
     "EpisodeNumber": "216",
     "TotalPicks": 34,
     "TotalDrafters": 10,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates":[ "2023-01-02", "2023-01-17", "2023-01-31"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "06083dda-00ab-4215-a597-ff70227c0bd2",
@@ -2585,11 +3015,13 @@
     "DraftType": 2,
     "EpisodeNumber": "217",
     "TotalPicks": 20,
-    "TotalDrafters": 6,
+    "TotalDrafters": 0,
+    "TotalDrafterTeams": 3,
     "TotalHosts": 1,
     "EpisodeType": 0,
     "ReleaseDates": [ "2023-01-10", "2023-01-24"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "99b67ad5-767d-4d2e-937b-6396413811cc",
@@ -2598,10 +3030,12 @@
     "EpisodeNumber": "218",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2023-02-06"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "138c61c1-b50e-4541-b232-0f3690b9f864",
@@ -2610,10 +3044,12 @@
     "EpisodeNumber": "219",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2023-02-13"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "db9d722a-619e-4257-b594-e6e79941eae9",
@@ -2622,10 +3058,12 @@
     "EpisodeNumber": "220",
     "TotalPicks": 8,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2023-02-20"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "aa038bb4-4b29-4e36-9138-5560b19b6d7b",
@@ -2634,10 +3072,12 @@
     "EpisodeNumber": "221",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2023-02-27"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "3d39537e-9cb8-4946-8f66-c65c5642756c",
@@ -2646,10 +3086,12 @@
     "EpisodeNumber": "222",
     "TotalPicks": 20,
     "TotalDrafters": 4,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 0,
     "ReleaseDates": ["2023-03-06"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "90368a14-f377-4dbf-82a9-d150c098a18e",
@@ -2658,10 +3100,12 @@
     "EpisodeNumber": "223",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2023-03-13"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "8d05e361-a381-453b-b5f1-a5a0dce736dd",
@@ -2670,10 +3114,12 @@
     "EpisodeNumber": "224",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2023-03-20"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "f2fc3063-21a8-4e8c-878a-a9177e25b593",
@@ -2682,10 +3128,12 @@
     "EpisodeNumber": "225",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 1,
     "EpisodeType": 0,
     "ReleaseDates": ["2023-03-27"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "e043ebdb-0bd7-4de7-92e6-03a93485d2de",
@@ -2694,10 +3142,12 @@
     "EpisodeNumber": "226",
     "TotalPicks": 9,
     "TotalDrafters": 3,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2023-04-03"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "a03f6f2d-f505-4051-ab29-a059bbe7564f",
@@ -2706,10 +3156,12 @@
     "EpisodeNumber": "227",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2023-04-10"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "cf30c944-0e91-448b-92f0-628293dce8a0",
@@ -2718,10 +3170,12 @@
     "EpisodeNumber": "228",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2023-04-17"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "4d9b9db2-917c-4fe4-9f72-3b8dc6650874",
@@ -2730,10 +3184,12 @@
     "EpisodeNumber": "229",
     "TotalPicks": 11,
     "TotalDrafters": 3,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2023-04-26"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "25952d95-6ddf-421d-af78-9e68cf93e922",
@@ -2742,10 +3198,12 @@
     "EpisodeNumber": "230",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2023-05-02"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "c3b498e9-a239-4122-a1e4-dc69a2e829ae",
@@ -2754,10 +3212,12 @@
     "EpisodeNumber": "231",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2023-05-09"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "555bd336-219b-4d34-8987-591e9db89ecd",
@@ -2766,10 +3226,12 @@
     "EpisodeNumber": "232",
     "TotalPicks": 13,
     "TotalDrafters": 3,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2023-05-16"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "fe806757-3b4e-49d0-98ac-12970faffa7c",
@@ -2778,10 +3240,12 @@
     "EpisodeNumber": "233",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2023-05-23"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "46271d68-2d03-4d7d-92b8-9bfd8d076e4c",
@@ -2790,10 +3254,12 @@
     "EpisodeNumber": "235",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2023-06-06"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "4a244445-1e66-4789-9a49-5aba6b56d596",
@@ -2802,10 +3268,12 @@
     "EpisodeNumber": "236",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2023-06-13"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "d8e6f551-acf7-4fc5-897a-260b010a45a9",
@@ -2814,10 +3282,12 @@
     "EpisodeNumber": "237",
     "TotalPicks": 13,
     "TotalDrafters": 3,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2023-06-27"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "8a762c79-147d-4633-a96a-1307abf923bb",
@@ -2826,10 +3296,12 @@
     "EpisodeNumber": "238",
     "TotalPicks": 9,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2023-07-03"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "4e54656c-9a28-4d31-9021-ad28ebca8824",
@@ -2838,10 +3310,12 @@
     "EpisodeNumber": "239",
     "TotalPicks": 11,
     "TotalDrafters": 3,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2023-07-11"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "9f6851bb-6275-4835-ab81-ca0dcb28ffd4",
@@ -2850,10 +3324,12 @@
     "EpisodeNumber": "240",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 1,
     "EpisodeType": 0,
     "ReleaseDates": ["2023-07-18"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "dbed636d-8e7f-496c-907e-8b012649ad8e",
@@ -2862,10 +3338,12 @@
     "EpisodeNumber": "241",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2023-07-25"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "87f97803-50f7-4785-89bd-0b93ea3d0333",
@@ -2874,10 +3352,12 @@
     "EpisodeNumber": "242",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2023-08-01"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "4d8c1fc2-5d64-4009-942e-8f4881561ed2",
@@ -2886,10 +3366,12 @@
     "EpisodeNumber": "243",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2023-08-08"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "faf5fb50-3452-4aa6-8517-7629ec5846ed",
@@ -2898,10 +3380,12 @@
     "EpisodeNumber": "244",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2023-08-15"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "1ddb44ea-7598-4d19-a6ca-0605192cd76f",
@@ -2910,10 +3394,12 @@
     "EpisodeNumber": "245",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2023-08-22"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "af5fd1ec-65d3-42fc-9f02-e82dd069a8c9",
@@ -2922,10 +3408,12 @@
     "EpisodeNumber": "246",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2023-08-29"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "38ab5f31-064f-4038-994a-40d5befd8572",
@@ -2934,10 +3422,12 @@
     "EpisodeNumber": "247",
     "TotalPicks": 11,
     "TotalDrafters": 3,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 3,
     "EpisodeType": 0,
     "ReleaseDates": ["2023-09-11"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "c93ef049-aeca-4112-baf1-8ffe36152d57",
@@ -2946,10 +3436,12 @@
     "EpisodeNumber": "248",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2023-09-18"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "f87ee4f2-ccf1-4969-9eac-7dc9be5dce62",
@@ -2958,10 +3450,12 @@
     "EpisodeNumber": "249",
     "TotalPicks": 13,
     "TotalDrafters": 4,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 1,
     "EpisodeType": 0,
     "ReleaseDates": ["2023-09-25"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "021d8222-b169-4f9b-8cfa-0163d08a6b62",
@@ -2970,10 +3464,12 @@
     "EpisodeNumber": "250",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2023-10-02"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "32386f43-e767-4268-830d-cdd11b1ffae5",
@@ -2982,10 +3478,12 @@
     "EpisodeNumber": "251",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2023-10-09"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "76966fee-5797-4ed9-8a60-73d79df4c269",
@@ -2994,10 +3492,12 @@
     "EpisodeNumber": "252",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2023-10-16"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "812b0ef8-7124-470d-8acd-aee50fc8202f",
@@ -3006,10 +3506,12 @@
     "EpisodeNumber": "253",
     "TotalPicks": 10,
     "TotalDrafters": 3,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2023-10-23"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "b2c197ca-a269-498f-a7dc-5642cd5825ee",
@@ -3018,10 +3520,12 @@
     "EpisodeNumber": "254",
     "TotalPicks": 13,
     "TotalDrafters": 4,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2023-10-30"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "a06df285-e5e0-4dd9-a5ff-2a9881d9198d",
@@ -3030,10 +3534,12 @@
     "EpisodeNumber": "255",
     "TotalPicks": 10,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2023-11-06"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "d295a410-df94-4687-b78c-bb3ed5e294a9",
@@ -3042,10 +3548,12 @@
     "EpisodeNumber": "256",
     "TotalPicks": 26,
     "TotalDrafters": 4,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2023-11-13"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "28ead34f-1422-4b3b-a35f-39b4d213987a",
@@ -3054,10 +3562,12 @@
     "EpisodeNumber": "257",
     "TotalPicks": 10,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2023-11-20"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "6d250ee7-39ec-41b5-bc46-1c6575c61416",
@@ -3066,10 +3576,12 @@
     "EpisodeNumber": "258",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2023-12-05"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "b5aedaca-4697-4139-b3d5-077941abd9a2",
@@ -3078,10 +3590,12 @@
     "EpisodeNumber": "259",
     "TotalPicks": 11,
     "TotalDrafters": 3,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2023-12-11"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "e7619aca-74ec-4ca7-99e0-7217583faa25",
@@ -3090,10 +3604,12 @@
     "EpisodeNumber": "260",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2023-12-18"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "315c10c7-981b-430c-a4b1-f1b2b37233bf",
@@ -3102,10 +3618,12 @@
     "EpisodeNumber": "261",
     "TotalPicks": 13,
     "TotalDrafters": 3,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 0,
     "ReleaseDates": ["2023-12-24"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "6c28036b-2896-438f-8f82-5e97a7c827c7",
@@ -3114,10 +3632,12 @@
     "EpisodeNumber": "262",
     "TotalPicks": 30,
     "TotalDrafters": 9,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 3,
     "EpisodeType": 0,
     "ReleaseDates":[ "2024-01-01", "2024-01-15", "2024-01-29"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "297da054-5c5a-450d-a077-433c6cd0c118",
@@ -3126,10 +3646,12 @@
     "EpisodeNumber": "263",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2024-01-08"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "7f4b5b4c-066f-4199-a0ba-ab23fc434c8a",
@@ -3138,10 +3660,12 @@
     "EpisodeNumber": "264",
     "TotalPicks": 11,
     "TotalDrafters": 3,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2024-01-22"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "3077ea32-3625-4710-a209-255dfed11a1c",
@@ -3150,10 +3674,12 @@
     "EpisodeNumber": "265",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2024-02-05"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "c24f0ae3-7360-4f16-b1b1-3e61b27ea81d",
@@ -3162,10 +3688,12 @@
     "EpisodeNumber": "266",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 3,
     "EpisodeType": 0,
     "ReleaseDates": ["2024-02-12"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "6b925ced-9f3d-4016-adce-d102351d9e2c",
@@ -3174,10 +3702,12 @@
     "EpisodeNumber": "267",
     "TotalPicks": 13,
     "TotalDrafters": 4,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2024-02-19"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "3e32b2e2-448a-4baf-864a-750cd7dbf505",
@@ -3186,10 +3716,12 @@
     "EpisodeNumber": "268",
     "TotalPicks": 20,
     "TotalDrafters": 4,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 1,
     "EpisodeType": 0,
     "ReleaseDates": ["2024-03-04"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "f2491ed0-eb3a-451b-8bae-83a2adea7e81",
@@ -3198,10 +3730,12 @@
     "EpisodeNumber": "269",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 3,
     "EpisodeType": 0,
     "ReleaseDates": ["2024-03-12"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "8cbce425-f4d3-4386-a9b5-e6cb4b9f2605",
@@ -3210,10 +3744,12 @@
     "EpisodeNumber": "270",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2024-03-18"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "713d68ff-f402-4601-9c0b-c614ed4def0e",
@@ -3222,10 +3758,12 @@
     "EpisodeNumber": "271",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2024-03-26"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "0333905c-04f1-41ef-8bc2-8524b7fc40a2",
@@ -3234,10 +3772,12 @@
     "EpisodeNumber": "272",
     "TotalPicks": 8,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2024-04-03"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "a903b13e-9bd4-4e80-8fc7-f1727e81caac",
@@ -3246,10 +3786,12 @@
     "EpisodeNumber": "273",
     "TotalPicks": 10,
     "TotalDrafters": 3,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2024-04-10"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "bd99691c-fa85-4a0f-985b-9656fda72e25",
@@ -3258,10 +3800,12 @@
     "EpisodeNumber": "274",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2024-04-15"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "9dbc1993-41b6-48a4-aef9-4414d8cfc1d0",
@@ -3270,10 +3814,12 @@
     "EpisodeNumber": "275",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2024-04-22"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "8366838a-29b4-4fa7-9b33-5e82c655a65f",
@@ -3282,10 +3828,12 @@
     "EpisodeNumber": "276",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2024-04-29"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "547b404c-ae95-432c-bf3e-589a2f888c91",
@@ -3294,10 +3842,12 @@
     "EpisodeNumber": "277",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 3,
     "EpisodeType": 0,
     "ReleaseDates": ["2024-05-06"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "d2405792-9185-4316-b906-9c7b5cc883af",
@@ -3306,10 +3856,12 @@
     "EpisodeNumber": "278",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2024-05-13"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "7dac10ab-502e-4c25-8962-dd3bf22b3f41",
@@ -3318,10 +3870,12 @@
     "EpisodeNumber": "279",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2024-05-20"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "bfa97ed2-edb1-4f7d-bec8-d2575a689ac1",
@@ -3330,10 +3884,12 @@
     "EpisodeNumber": "280",
     "TotalPicks": 10,
     "TotalDrafters": 3,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2024-05-27"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "97c3343e-3faa-4b10-807d-46e05892ccd5",
@@ -3342,10 +3898,12 @@
     "EpisodeNumber": "281",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2024-06-03"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "81afadb4-7416-40ec-9e01-adc4bd6eebfb",
@@ -3354,10 +3912,12 @@
     "EpisodeNumber": "282",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2024-06-10"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "b3c06513-ee8a-4e66-9374-9910c815ce2e",
@@ -3366,10 +3926,12 @@
     "EpisodeNumber": "283",
     "TotalPicks": 9,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2024-06-17"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "d47c10da-441a-447e-8702-6b658d29bf7a",
@@ -3378,10 +3940,12 @@
     "EpisodeNumber": "284",
     "TotalPicks": 11,
     "TotalDrafters": 3,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2024-06-24"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "c5261d95-0487-4bd6-82f6-a21f982eb92f",
@@ -3390,10 +3954,12 @@
     "EpisodeNumber": "285",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2024-07-01"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "cfefffc4-377f-4034-972e-c36acdfe4e7d",
@@ -3402,10 +3968,12 @@
     "EpisodeNumber": "286",
     "TotalPicks": 13,
     "TotalDrafters": 3,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2024-07-08"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "918d5de8-bfa6-4050-a34b-36ed89a847e1",
@@ -3414,10 +3982,12 @@
     "EpisodeNumber": "287",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2024-07-15"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "d3d45e54-dec3-4cc4-ba3c-6bcc9e4bbe13",
@@ -3426,10 +3996,12 @@
     "EpisodeNumber": "288",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2024-07-22"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "896d0371-4ef7-4d42-bee4-3922ca33f575",
@@ -3438,10 +4010,12 @@
     "EpisodeNumber": "289",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2024-08-05"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "cace339d-5195-4fe6-8f55-a61b4f5fe67a",
@@ -3450,10 +4024,12 @@
     "EpisodeNumber": "290",
     "TotalPicks": 13,
     "TotalDrafters": 3,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 3,
     "EpisodeType": 0,
     "ReleaseDates": ["2024-08-12"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "3dfa5437-fafc-4180-9c22-8d542d6915dc",
@@ -3462,10 +4038,12 @@
     "EpisodeNumber": "291",
     "TotalPicks": 13,
     "TotalDrafters": 3,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2024-08-20"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "117cdc3b-394d-4860-9c66-96ef8f087005",
@@ -3474,10 +4052,12 @@
     "EpisodeNumber": "292",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2024-08-26"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "a16a1d3d-d722-4faf-b3e7-61a4105df705",
@@ -3486,10 +4066,12 @@
     "EpisodeNumber": "293",
     "TotalPicks": 22,
     "TotalDrafters": 3,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 1,
     "EpisodeType": 0,
     "ReleaseDates": ["2024-09-02"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "951669da-7574-45e4-b137-5d3e5c223732",
@@ -3498,10 +4080,12 @@
     "EpisodeNumber": "294",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2024-09-09"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "0ec35dc6-3ec6-4285-a4e3-914afe3b656d",
@@ -3510,10 +4094,12 @@
     "EpisodeNumber": "295",
     "TotalPicks": 13,
     "TotalDrafters": 4,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2024-09-16"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "d5b4c009-4aaf-4c9f-b7e2-735630e94e9b",
@@ -3522,10 +4108,12 @@
     "EpisodeNumber": "296",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2024-09-23"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "d3cc9324-7fc4-4801-8b2c-4dc583bfecdb",
@@ -3533,11 +4121,13 @@
     "DraftType": 0,
     "EpisodeNumber": "297",
     "TotalPicks": 7,
-    "TotalDrafters": 4,
+    "TotalDrafters": 0,
+    "TotalDrafterTeams": 2,
     "TotalHosts": 1,
     "EpisodeType": 0,
     "ReleaseDates": ["2024-09-30"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "a4546d89-01f7-4c4c-8e93-84c0b2582616",
@@ -3546,10 +4136,12 @@
     "EpisodeNumber": "298",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2024-10-08"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "eeef2600-15d1-416e-afcd-5d1c0e57617e",
@@ -3558,10 +4150,12 @@
     "EpisodeNumber": "299",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2024-10-14"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "d072c1ff-c9fb-4de5-84be-ea96abc7e22b",
@@ -3570,10 +4164,12 @@
     "EpisodeNumber": "300",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2024-10-21"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "830e5494-852d-4027-bf31-ade4d9a155b9",
@@ -3582,10 +4178,12 @@
     "EpisodeNumber": "301",
     "TotalPicks": 13,
     "TotalDrafters": 3,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2024-10-28"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "6f00ca47-189f-4268-adf6-e87cb8d9bc57",
@@ -3594,10 +4192,12 @@
     "EpisodeNumber": "302",
     "TotalPicks": 30,
     "TotalDrafters": 9,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 3,
     "EpisodeType": 0,
     "ReleaseDates":["2024-11-01", "2024-11-11", "2024-11-25"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "d2b290e0-71b3-4b6b-8e29-f8a89798f60d",
@@ -3606,10 +4206,12 @@
     "EpisodeNumber": "303",
     "TotalPicks": 22,
     "TotalDrafters": 3,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 1,
     "EpisodeType": 0,
     "ReleaseDates":["2024-11-04", "2024-11-18"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "bd10427f-c065-4db0-92a9-9e4282b03630",
@@ -3618,10 +4220,12 @@
     "EpisodeNumber": "304",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2024-12-02"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "5da29ec2-275a-486c-8fae-badab3ac8f47",
@@ -3630,10 +4234,12 @@
     "EpisodeNumber": "305",
     "TotalPicks": 9,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 3,
     "EpisodeType": 0,
     "ReleaseDates": ["2024-12-09"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "a11830de-769b-459e-af87-808650614a87",
@@ -3642,10 +4248,12 @@
     "EpisodeNumber": "306",
     "TotalPicks": 5,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 1,
     "EpisodeType": 0,
     "ReleaseDates": ["2024-12-24"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "8a631c4b-916b-4723-8bfa-c4ab2baa2617",
@@ -3654,10 +4262,12 @@
     "EpisodeNumber": "307",
     "TotalPicks": 13,
     "TotalDrafters": 4,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2024-12-30"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "450121bd-52cf-4602-93fb-ec0e45189ab6",
@@ -3666,10 +4276,12 @@
     "EpisodeNumber": "308",
     "TotalPicks": 8,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
     "ReleaseDates": ["2025-01-06"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "e8249396-1a1a-4aa1-a062-45bf923a793b",
@@ -3678,10 +4290,12 @@
     "EpisodeNumber": "309",
     "TotalPicks": 24,
     "TotalDrafters": 6,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 3,
     "EpisodeType": 0,
     "ReleaseDates":[ "2025-01-21", "2025-02-04"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "67039917-4e60-4d8c-8e59-c66238201d88",
@@ -3690,10 +4304,12 @@
     "EpisodeNumber": "310",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 1,
     "EpisodeType": 0,
     "ReleaseDates": ["2025-01-28"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "9b8bcd27-dd4d-4461-baff-cc3cd6941b4c",
@@ -3702,10 +4318,12 @@
     "EpisodeNumber": "311",
     "TotalPicks": 7,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 3,
     "EpisodeType": 0,
     "ReleaseDates": ["2025-02-10"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   },
   {
     "Id": "f3185436-63da-46e3-84e6-aad5c0cc300c",
@@ -3714,10 +4332,12 @@
     "EpisodeNumber": "1",
     "TotalPicks": 5,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 1,
     "ReleaseDates": ["2020-04-04"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "d957a8c4-c2d0-4cbb-898b-5ca199fdef1f",
@@ -3726,10 +4346,12 @@
     "EpisodeNumber": "2",
     "TotalPicks": 5,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 1,
     "ReleaseDates": ["2020-04-24"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "fc029407-d1a4-4962-bc96-9a28cd93c173",
@@ -3738,10 +4360,12 @@
     "EpisodeNumber": "3",
     "TotalPicks": 5,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 1,
     "EpisodeType": 1,
     "ReleaseDates": ["2020-05-26"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": true
   },
   {
     "Id": "81bf79f6-72b1-4264-bbc0-84b610abc69b",
@@ -3750,10 +4374,12 @@
     "EpisodeNumber": "4",
     "TotalPicks": 5,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 1,
     "ReleaseDates": ["2020-07-06"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "948d154e-363f-4677-95cb-6fe0260049b7",
@@ -3762,10 +4388,12 @@
     "EpisodeNumber": "5",
     "TotalPicks": 5,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 1,
     "ReleaseDates": ["2020-07-26"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": true
   },
   {
     "Id": "9bf34cbc-51b7-4153-8c38-ce7910c230a2",
@@ -3774,10 +4402,12 @@
     "EpisodeNumber": "6",
     "TotalPicks": 5,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 1,
     "ReleaseDates": ["2020-08-24"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "6787d46f-10c5-4b97-9d60-4091b1653e23",
@@ -3786,10 +4416,12 @@
     "EpisodeNumber": "7",
     "TotalPicks": 5,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 1,
     "ReleaseDates": ["2020-09-27"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "55687878-d913-4caa-a21d-54c983743d42",
@@ -3798,10 +4430,12 @@
     "EpisodeNumber": "8",
     "TotalPicks": 5,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 1,
     "ReleaseDates": ["2020-10-30"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "375e1dea-ec7c-40c4-b631-fe87b9382bb7",
@@ -3810,10 +4444,12 @@
     "EpisodeNumber": "9",
     "TotalPicks": 5,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 1,
     "ReleaseDates": ["2020-11-30"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "8386ca20-6b09-4b77-811f-893fdbd19a66",
@@ -3822,10 +4458,12 @@
     "EpisodeNumber": "10",
     "TotalPicks": 5,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 1,
     "ReleaseDates": ["2021-01-06"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "af4b7064-b86a-4104-aced-e91ba03da82a",
@@ -3834,10 +4472,12 @@
     "EpisodeNumber": "11",
     "TotalPicks": 5,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 1,
     "ReleaseDates": ["2021-02-28"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "162887bc-9c5d-4e2b-9aca-8ed2e58ab670",
@@ -3846,10 +4486,12 @@
     "EpisodeNumber": "12",
     "TotalPicks": 5,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 1,
     "ReleaseDates": ["2021-03-27"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "b75bc471-101c-4a39-a519-41f3efccaf10",
@@ -3858,10 +4500,12 @@
     "EpisodeNumber": "13",
     "TotalPicks": 5,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 1,
     "ReleaseDates": ["2021-05-31"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": false
   },
   {
     "Id": "c568c601-c594-4d09-aefd-60835fffc5e7",
@@ -3870,10 +4514,12 @@
     "EpisodeNumber": "14",
     "TotalPicks": 5,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 1,
     "ReleaseDates": ["2021-07-01"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "68bd0b9d-f928-47c7-be5f-94c18d34f014",
@@ -3882,10 +4528,12 @@
     "EpisodeNumber": "15",
     "TotalPicks": 5,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 1,
     "ReleaseDates": ["2021-07-31"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "995994e0-3786-4dd5-9c7b-0a7300ce8589",
@@ -3894,10 +4542,12 @@
     "EpisodeNumber": "16",
     "TotalPicks": 5,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 1,
     "ReleaseDates": ["2021-09-08"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "595023b6-d236-467a-83d9-1f07cebb6b6e",
@@ -3906,10 +4556,12 @@
     "EpisodeNumber": "17",
     "TotalPicks": 5,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 1,
     "ReleaseDates": ["2021-10-03"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "acbb20fe-1d7f-4a81-a64c-109f961aa445",
@@ -3918,10 +4570,12 @@
     "EpisodeNumber": "18",
     "TotalPicks": 5,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 1,
     "ReleaseDates": ["2021-10-29"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "28bc7cc2-5e42-43ab-b1c6-288e686f7cd1",
@@ -3930,10 +4584,12 @@
     "EpisodeNumber": "19",
     "TotalPicks": 5,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 1,
     "ReleaseDates": ["2021-11-30"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "ba19277d-c847-45be-bd75-b4cd2455116c",
@@ -3942,10 +4598,12 @@
     "EpisodeNumber": "20",
     "TotalPicks": 5,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 1,
     "ReleaseDates": ["2021-12-31"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "3be7fbc9-64d8-476b-b4c3-58c632b08f67",
@@ -3954,10 +4612,12 @@
     "EpisodeNumber": "21",
     "TotalPicks": 5,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 1,
     "ReleaseDates": ["2022-01-31"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "f1a9f3e1-1ecb-4bec-b389-b3b5e59b05a9",
@@ -3966,10 +4626,12 @@
     "EpisodeNumber": "22",
     "TotalPicks": 5,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 1,
     "ReleaseDates": ["2022-03-31"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "099d28dd-26f3-4074-98ad-620975a0f920",
@@ -3978,10 +4640,12 @@
     "EpisodeNumber": "23",
     "TotalPicks": 5,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 1,
     "ReleaseDates": ["2022-04-30"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "9abceeb1-0d25-47b8-a67b-e9aae978a7d9",
@@ -3990,10 +4654,12 @@
     "EpisodeNumber": "24",
     "TotalPicks": 5,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 1,
     "ReleaseDates": ["2022-01-01"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "5b34604a-404a-4951-92e0-7b117b48e707",
@@ -4002,10 +4668,12 @@
     "EpisodeNumber": "25",
     "TotalPicks": 5,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 1,
     "ReleaseDates": ["2022-07-29"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "e6b48aec-647b-4557-b6a0-e9f76b8fbc98",
@@ -4014,10 +4682,12 @@
     "EpisodeNumber": "26",
     "TotalPicks": 5,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 1,
     "ReleaseDates": ["2022-08-31"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "e62241ad-e76b-47ee-855c-041a5e753a11",
@@ -4026,10 +4696,12 @@
     "EpisodeNumber": "27",
     "TotalPicks": 5,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 1,
     "ReleaseDates": ["2022-10-01"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "e6c00d50-f4ba-4b71-b5c1-3a75969dd094",
@@ -4038,10 +4710,12 @@
     "EpisodeNumber": "28",
     "TotalPicks": 5,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 1,
     "ReleaseDates": ["2022-10-31"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "9f69bd23-a2d2-4d18-be11-72a61c35cdb9",
@@ -4050,10 +4724,12 @@
     "EpisodeNumber": "29",
     "TotalPicks": 5,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 1,
     "ReleaseDates": ["2022-12-01"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "a53e93ad-d781-44ee-95b5-4c4768387ff3",
@@ -4062,10 +4738,12 @@
     "EpisodeNumber": "30",
     "TotalPicks": 5,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 1,
     "ReleaseDates": ["2023-01-15"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "400d5869-fc99-4f88-9dd6-fbbe4b3a67e5",
@@ -4074,10 +4752,12 @@
     "EpisodeNumber": "31",
     "TotalPicks": 5,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 1,
     "ReleaseDates": ["2023-02-01"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "5122b935-c03b-4df7-ab07-b97f68b7ce45",
@@ -4086,10 +4766,12 @@
     "EpisodeNumber": "32",
     "TotalPicks": 5,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 1,
     "ReleaseDates": ["2023-02-28"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "52b183af-f695-4198-b932-1a23e8eb6ec0",
@@ -4098,10 +4780,12 @@
     "EpisodeNumber": "33",
     "TotalPicks": 5,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 1,
     "ReleaseDates": ["2023-03-31"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "38468ccc-3fe8-475d-99ef-75c587bd6969",
@@ -4110,10 +4794,12 @@
     "EpisodeNumber": "34",
     "TotalPicks": 5,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 1,
     "ReleaseDates": ["2023-04-27"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "77216d25-4a74-4b3a-82c8-516999fe711b",
@@ -4122,10 +4808,12 @@
     "EpisodeNumber": "35",
     "TotalPicks": 5,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 1,
     "ReleaseDates": ["2023-05-30"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "486148f6-b0a2-409b-960f-275277d2bf65",
@@ -4134,10 +4822,12 @@
     "EpisodeNumber": "36",
     "TotalPicks": 5,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 1,
     "ReleaseDates": ["2023-06-30"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "2a7c0d23-0c89-4f5b-9c41-f77ab1702250",
@@ -4146,10 +4836,12 @@
     "EpisodeNumber": "37",
     "TotalPicks": 5,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 1,
     "ReleaseDates": ["2023-08-01"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "4010b329-c2b6-4217-8718-94dcd7d74764",
@@ -4158,10 +4850,12 @@
     "EpisodeNumber": "38",
     "TotalPicks": 5,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 1,
     "ReleaseDates": ["2023-08-31"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "d51b1e43-4121-4de2-863c-cf3853187f20",
@@ -4170,10 +4864,12 @@
     "EpisodeNumber": "39",
     "TotalPicks": 5,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 1,
     "ReleaseDates": ["2023-09-29"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "e341c35f-08c8-40e5-81d8-3db30014cefe",
@@ -4182,10 +4878,12 @@
     "EpisodeNumber": "40",
     "TotalPicks": 5,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 1,
     "ReleaseDates": ["2023-10-29"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "9ed444d6-0938-43a8-97da-8d11b863f1bb",
@@ -4194,10 +4892,12 @@
     "EpisodeNumber": "41",
     "TotalPicks": 5,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 1,
     "ReleaseDates": ["2023-11-30"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "94cda846-7f1c-48a6-9b83-74300bc58bb6",
@@ -4206,10 +4906,12 @@
     "EpisodeNumber": "42",
     "TotalPicks": 5,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 1,
     "ReleaseDates": ["2023-12-31"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "974ba839-38bf-4035-a761-f250ef007a40",
@@ -4218,10 +4920,12 @@
     "EpisodeNumber": "43",
     "TotalPicks": 5,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 1,
     "ReleaseDates": ["2024-01-31"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "ea8171f0-bd2e-44c8-beb5-d632e611ed5f",
@@ -4230,10 +4934,12 @@
     "EpisodeNumber": "44",
     "TotalPicks": 5,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 1,
     "ReleaseDates": ["2024-03-01"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "cb21e476-29ec-4b96-aced-9901772256e0",
@@ -4242,10 +4948,12 @@
     "EpisodeNumber": "45",
     "TotalPicks": 5,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 1,
     "ReleaseDates": ["2024-04-30"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "55a81771-c33e-427b-bbaa-a2f7c190926d",
@@ -4254,10 +4962,12 @@
     "EpisodeNumber": "46",
     "TotalPicks": 5,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 1,
     "ReleaseDates": ["2024-06-08"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "6ce3836c-02a9-4a99-8b28-5cda096790b0",
@@ -4266,10 +4976,12 @@
     "EpisodeNumber": "47",
     "TotalPicks": 5,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 1,
     "ReleaseDates": ["2024-06-30"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "9b58438c-832e-4ca5-a5d8-e89c7d6f7764",
@@ -4278,10 +4990,12 @@
     "EpisodeNumber": "48",
     "TotalPicks": 5,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 1,
     "ReleaseDates": ["2024-07-31"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "647bbe5d-5873-436d-b0d9-20fe9455c240",
@@ -4290,10 +5004,12 @@
     "EpisodeNumber": "49",
     "TotalPicks": 5,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 1,
     "ReleaseDates": ["2024-09-07"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "598aa07f-5b44-4577-a39f-6491ab844a8a",
@@ -4302,10 +5018,12 @@
     "EpisodeNumber": "50",
     "TotalPicks": 5,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 1,
     "ReleaseDates": ["2024-10-02"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "ce63d118-38af-442f-b245-be645b796226",
@@ -4314,10 +5032,12 @@
     "EpisodeNumber": "51",
     "TotalPicks": 5,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 1,
     "ReleaseDates": ["2024-11-03"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "ed884257-7f7d-432a-a905-6ad222242247",
@@ -4326,10 +5046,12 @@
     "EpisodeNumber": "52",
     "TotalPicks": 5,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 1,
     "ReleaseDates": ["2024-11-30"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "7f6461c3-e316-4d17-b10a-fe4ddf5a435e",
@@ -4338,10 +5060,12 @@
     "EpisodeNumber": "53",
     "TotalPicks": 5,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 1,
     "ReleaseDates": ["2025-01-09"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "425d40c8-892c-479e-b3aa-88cde6ba7357",
@@ -4350,10 +5074,12 @@
     "EpisodeNumber": "54",
     "TotalPicks": 5,
     "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 1,
     "ReleaseDates": ["2025-02-06"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "67d674bd-4862-4513-93de-b2223240ed2d",
@@ -4362,9 +5088,11 @@
     "TotalPicks": 25,
     "TotalDrafters": 6,
     "TotalHosts": 0,
+    "TotalDrafterTeams": 0,
     "EpisodeType": 3,
     "ReleaseDates": ["2023-08-18"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "7feeeced-1ab9-421a-819b-69ec76deb3ba",
@@ -4374,8 +5102,10 @@
     "TotalDrafters": 6,
     "TotalHosts": 0,
     "EpisodeType": 3,
+    "TotalDrafterTeams": 0,
     "ReleaseDates": ["2024-08-19"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "e1a97f66-d36e-4190-a0bf-2ff3eb823389",
@@ -4386,8 +5116,10 @@
     "TotalDrafters": 2,
     "TotalHosts": 0,
     "EpisodeType": 2,
+    "TotalDrafterTeams": 0,
     "ReleaseDates": ["2021-02-20"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "ea28379e-8b51-4d8c-ba30-d327cac1af05",
@@ -4398,8 +5130,10 @@
     "TotalDrafters": 2,
     "TotalHosts": 2,
     "EpisodeType": 2,
+    "TotalDrafterTeams": 0,
     "ReleaseDates": ["2021-08-08"],
-    "IsPatreonOnly": false
+    "IsPatreonOnly": false,
+    "NonCanonical": true
   },
   {
     "Id": "71cf5c14-7ffc-440d-b643-c2ecd92969b5",
@@ -4410,8 +5144,10 @@
     "TotalDrafters": 2,
     "TotalHosts": 0,
     "EpisodeType": 2,
+    "TotalDrafterTeams": 0,
     "ReleaseDates": ["2022-01-26"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "526ad671-8154-4ec4-b6fd-a85f178f1aa1",
@@ -4422,8 +5158,10 @@
     "TotalDrafters": 2,
     "TotalHosts": 0,
     "EpisodeType": 2,
+    "TotalDrafterTeams": 0,
     "ReleaseDates": ["2022-02-18"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "c75efe9f-05ce-400b-a59b-9002a167204a",
@@ -4434,8 +5172,10 @@
     "TotalDrafters": 2,
     "TotalHosts": 0,
     "EpisodeType": 2,
+    "TotalDrafterTeams": 0,
     "ReleaseDates": ["2022-08-11"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "cf5a3ba4-44aa-4f76-86d9-737725f30284",
@@ -4446,8 +5186,10 @@
     "TotalDrafters": 2,
     "TotalHosts": 0,
     "EpisodeType": 2,
+    "TotalDrafterTeams": 0,
     "ReleaseDates": ["2022-10-17"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "74d7f307-a872-49da-bb03-83df1bbe0e00",
@@ -4458,8 +5200,10 @@
     "TotalDrafters": 2,
     "TotalHosts": 0,
     "EpisodeType": 2,
+    "TotalDrafterTeams": 0,
     "ReleaseDates": ["2022-12-17"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "8878e7b7-f07b-46bc-91ad-0706addcfce6",
@@ -4470,8 +5214,10 @@
     "TotalDrafters": 2,
     "TotalHosts": 0,
     "EpisodeType": 2,
+    "TotalDrafterTeams": 0,
     "ReleaseDates": ["2023-07-28"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "a232e557-62f2-4122-ab57-327978c936bb",
@@ -4482,8 +5228,10 @@
     "TotalDrafters": 2,
     "TotalHosts": 0,
     "EpisodeType": 2,
+    "TotalDrafterTeams": 0,
     "ReleaseDates": ["2024-04-01"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "1c07172a-d0fc-46b7-a599-8d1289d02128",
@@ -4494,18 +5242,261 @@
     "TotalDrafters": 2,
     "TotalHosts": 0,
     "EpisodeType": 2,
+    "TotalDrafterTeams": 0,
     "ReleaseDates": ["2024-12-16"],
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   },
   {
     "Id": "93582b7e-da97-46a3-a1fb-773845af3a96",
     "Title": "1975 Best Picture",
     "DraftType": 4,
+    "EpisodeNumber": "1",
     "TotalPicks": 5,
     "TotalDrafters": 2,
     "TotalHosts": 0,
     "ReleaseDates": ["2024-03-31"],
+    "TotalDrafterTeams": 0,
     "EpisodeType": 4,
-    "IsPatreonOnly": true
+    "IsPatreonOnly": true,
+    "NonCanonical": true
+  },
+  {
+    "Id": "2bba3076-b4e3-4249-b610-45e6b94d7de6",
+    "Title": "Vincente Minnelli",
+    "DraftType": 0,
+    "EpisodeNumber": "312",
+    "TotalPicks": 7,
+    "TotalDrafters": 2,
+    "TotalHosts": 2,
+    "ReleaseDates": ["2025-02-18"],
+    "TotalDrafterTeams": 0,
+    "EpisodeType": 0,
+    "IsPatreonOnly": false,
+    "NonCanonical": false
+  },
+  {
+    "Id": "33697c54-2e50-4c21-80e0-d679cc83bb5b",
+    "Title": "2024 Mega Draft",
+    "DraftType": 2,
+    "EpisodeNumber": "313",
+    "TotalPicks": 20,
+    "TotalDrafters": 4,
+    "TotalHosts": 1,
+    "ReleaseDates": ["2025-02-24"],
+    "TotalDrafterTeams": 0,
+    "EpisodeType": 0,
+    "IsPatreonOnly": false,
+    "NonCanonical": false
+  },
+  {
+    "Id": "be9d72df-8d9f-4707-8ff2-8f899379c360",
+    "Title": "Vacation Horror",
+    "DraftType": 0,
+    "EpisodeNumber": "314",
+    "TotalPicks": 7,
+    "TotalDrafters": 2,
+    "TotalHosts": 2 ,
+    "ReleaseDates": ["2025-03-03"],
+    "TotalDrafterTeams": 0,
+    "EpisodeType": 0,
+    "IsPatreonOnly": false,
+    "NonCanonical": false
+  },
+  {
+    "Id": "357ca841-6152-4baf-b38c-a98b1feed053",
+    "Title": "1950 Best Picture",
+    "DraftType": 4,
+    "EpisodeNumber": "2",
+    "TotalPicks": 5,
+    "TotalDrafters": 2,
+    "TotalHosts": 0,
+    "ReleaseDates": ["2025-03-02"],
+    "TotalDrafterTeams": 0,
+    "EpisodeType": 4,
+    "IsPatreonOnly": true,
+    "NonCanonical": true
+  },
+  {
+    "Id": "5fe78b83-894a-4001-8384-c8ae57fd8c5d",
+    "Title": "Summer Camp",
+    "DraftType": 0,
+    "EpisodeNumber": "1",
+    "TotalPicks": 7,
+    "TotalDrafters": 2,
+    "TotalHosts": 2,
+    "ReleaseDates": ["2021-01-31"],
+    "TotalDrafterTeams": 0,
+    "EpisodeType": 5,
+    "IsPatreonOnly": true,
+    "NonCanonical": true
+  },
+  {
+    "Id": "31e8bae2-02fc-44a7-9832-92420205e3eb",
+    "Title": "Comedians First Dramas",
+    "DraftType": 0,
+    "EpisodeNumber": "2",
+    "TotalPicks": 7,
+    "TotalDrafters": 2,
+    "TotalHosts": 2,
+    "ReleaseDates": ["2021-04-30"],
+    "TotalDrafterTeams": 0,
+    "EpisodeType": 5,
+    "IsPatreonOnly": true,
+    "NonCanonical": true
+  },
+  {
+    "Id": "e9cdc2ee-e320-4457-a966-903c406ac74a",
+    "Title": "Summer '82",
+    "DraftType": 0,
+    "EpisodeNumber": "3",
+    "TotalPicks": 7,
+    "TotalDrafters": 2,
+    "TotalHosts": 2,
+    "ReleaseDates": ["2022-02-27"],
+    "TotalDrafterTeams": 0,
+    "EpisodeType": 5,
+    "IsPatreonOnly": true,
+    "NonCanonical": true
+  },
+  {
+    "Id": "300d1a69-7bfe-4d5c-927f-e2efa08ff742",
+    "Title": "Parker Posey",
+    "DraftType": 0,
+    "EpisodeNumber": "4",
+    "TotalPicks": 7,
+    "TotalDrafters": 2,
+    "TotalHosts": 2,
+    "ReleaseDates": ["2022-06-30"],
+    "TotalDrafterTeams": 0,
+    "EpisodeType": 5,
+    "IsPatreonOnly": false,
+    "NonCanonical": true
+  },
+  {
+    "Id": "a01bc796-e43b-41a2-a762-e516814c1841",
+    "Title": "Texas Chainsaw Massacre Super Draft",
+    "DraftType": 3,
+    "EpisodeNumber": "315",
+    "TotalPicks": 9,
+    "TotalDrafters": 2,
+    "TotalHosts": 3,
+    "ReleaseDates": ["2025-03-17"],
+    "TotalDrafterTeams": 0,
+    "EpisodeType": 0,
+    "IsPatreonOnly": false,
+    "NonCanonical": false
+  },
+  {
+    "Id": "47218f20-ce24-4fbc-9ec2-5a303335cece",
+    "Title": "Timothée Chalamet",
+    "DraftType": 0,
+    "EpisodeNumber": "316",
+    "TotalPicks": 7,
+    "TotalDrafters": 2,
+    "TotalHosts": 2,
+    "ReleaseDates": ["2025-03-24"],
+    "TotalDrafterTeams": 0,
+    "EpisodeType": 0,
+    "IsPatreonOnly": false,
+    "NonCanonical": false
+  },
+  {
+    "Id": "26f0c3a2-e6ec-44ac-ac56-275f0ff94f8e",
+    "Title": "James Earl Jones",
+    "DraftType": 0,
+    "EpisodeNumber": "12",
+    "TotalPicks": 7,
+    "TotalDrafters": 2,
+    "TotalHosts": 2,
+    "ReleaseDates": ["2025-03-29"],
+    "TotalDrafterTeams": 0,
+    "EpisodeType": 2,
+    "IsPatreonOnly": true,
+    "NonCanonical": true
+  },
+  {
+    "Id": "b2dbed71-fc6e-4b22-bfce-6ce382cb0459",
+    "Title": "True Crime Documentaries",
+    "DraftType": 0,
+    "EpisodeNumber": "317",
+    "TotalPicks": 7,
+    "TotalDrafters": 2,
+    "TotalHosts": 2,
+    "ReleaseDates": ["2025-03-31"],
+    "TotalDrafterTeams": 0,
+    "EpisodeType": 0,
+    "IsPatreonOnly": false,
+    "NonCanonical": false
+  },
+  {
+    "Id": "c6fa1762-d5f4-4cd1-87b6-ca78d5f4d6c3",
+    "Title": "Dracula mini-Mega Live",
+    "DraftType": 1,
+    "EpisodeNumber": null,
+    "TotalPicks": 9,
+    "TotalDrafters": 3,
+    "TotalHosts": 2,
+    "ReleaseDates": ["2023-05-07"],
+    "TotalDrafterTeams": 0,
+    "EpisodeType": 6,
+    "IsPatreonOnly": true,
+    "NonCanonical": true
+  },
+  {
+    "Id": "65ad8d3c-f62c-4fff-ba8c-cdc48d1f3f25",
+    "Title": "Woods Horror mini-Mega Live",
+    "DraftType": 1,
+    "EpisodeNumber": null,
+    "TotalPicks": 13,
+    "TotalDrafters": 4,
+    "TotalHosts": 2,
+    "ReleaseDates": ["2023-03-28"],
+    "TotalDrafterTeams": 0,
+    "EpisodeType": 6,
+    "IsPatreonOnly": true,
+    "NonCanonical": true
+  },
+  {
+    "Id": "3eb452f6-037d-4cb9-b0d3-15a96d391adc",
+    "Title": "DC Berlantiverse Super Draft",
+    "DraftType": 3,
+    "EpisodeNumber": "318",
+    "TotalPicks": 11,
+    "TotalDrafters": 3,
+    "TotalHosts": 2,
+    "ReleaseDates": ["2025-04-07"],
+    "TotalDrafterTeams": 0,
+    "EpisodeType": 0,
+    "IsPatreonOnly": false,
+    "NonCanonical": false
+  },
+  {
+    "Id": "2cf6a05f-855b-4275-bf04-be17158325ee",
+    "Title": "Tony/ Dan Gilroy",
+    "DraftType": 0,
+    "EpisodeNumber": "319",
+    "TotalPicks": 7,
+    "TotalDrafters": 2,
+    "TotalHosts": 2,
+    "ReleaseDates": ["2025-04-14"],
+    "TotalDrafterTeams": 0,
+    "EpisodeType": 0,
+    "IsPatreonOnly": false,
+    "NonCanonical": false
+  },
+  {
+    "Id": "cdc1b36c-e73d-4e7e-a85d-16c4f05dcc2f",
+    "Title": "Eddie Egan Franchise mini-Super Draft",
+    "DraftType": 4,
+    "EpisodeNumber": "55",
+    "TotalPicks": 5,
+    "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
+    "TotalHosts": 0,
+    "EpisodeType": 1,
+    "ReleaseDates": ["2025-04-10"],
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   }
 ]

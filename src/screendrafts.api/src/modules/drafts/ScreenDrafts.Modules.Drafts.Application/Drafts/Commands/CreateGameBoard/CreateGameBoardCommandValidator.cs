@@ -6,7 +6,5 @@ internal sealed class CreateGameBoardCommandValidator : AbstractValidator<Create
   {
     RuleFor(x => x.DraftId)
       .NotEmpty();
-    RuleFor(x => x.DraftPositions)
-      .NotEmpty();
   }
 }

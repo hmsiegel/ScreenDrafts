@@ -7,7 +7,8 @@ public sealed record DraftPositionResponse(
   string Picks,
   bool HasBonusVeto,
   bool HasBonusVetoOveride,
-  Guid DrafterId)
+  Guid? DrafterId,
+  Guid? DrafterTeamId)
 {
   public DraftPositionResponse()
     : this(
@@ -16,7 +17,8 @@ public sealed record DraftPositionResponse(
         Picks: string.Empty,
         HasBonusVeto: false,
         HasBonusVetoOveride: false,
-        DrafterId: Guid.Empty)
+        DrafterId: Guid.Empty,
+        DrafterTeamId: Guid.Empty)
   {
   }
 }

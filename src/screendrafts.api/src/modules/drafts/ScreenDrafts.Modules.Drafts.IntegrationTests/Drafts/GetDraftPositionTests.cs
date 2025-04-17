@@ -13,6 +13,7 @@ public sealed class GetDraftPositionTests(IntegrationTestWebAppFactory factory)
       draft.DraftType,
       draft.TotalPicks,
       draft.TotalDrafters,
+      draft.TotalDrafterTeams,
       draft.TotalHosts,
       draft.EpisodeType,
       draft.DraftStatus));
@@ -55,6 +56,7 @@ public sealed class GetDraftPositionTests(IntegrationTestWebAppFactory factory)
       draft.DraftType,
       draft.TotalPicks,
       draft.TotalDrafters,
+      draft.TotalDrafterTeams,
       draft.TotalHosts,
       draft.EpisodeType,
       draft.DraftStatus));
@@ -65,14 +67,18 @@ public sealed class GetDraftPositionTests(IntegrationTestWebAppFactory factory)
       Name: drafter.Name));
 
     var createdDraftPositions = DraftFactory.CreateMegaDraftPositions();
-    var sentDraftPositions = createdDraftPositions.Select(dp => new DraftPositionDto(
-      dp.Name,
-      dp.Picks,
-      dp.HasBonusVeto,
-      dp.HasBonusVetoOverride)).ToList();
+    var draftPositionsRequests = new Collection<DraftPositionRequst>(
+        [.. createdDraftPositions.Select(dp => new DraftPositionRequst(
+            dp.Name,
+            dp.Picks,
+            dp.HasBonusVeto,
+            dp.HasBonusVetoOverride))]);
 
     var gameBoardId = await Sender.Send(new CreateGameBoardCommand(
-      draftId.Value, sentDraftPositions));
+      draftId.Value));
+
+    await Sender.Send(new AddDraftPositionsToGameBoardCommand(gameBoardId.Value, draftPositionsRequests));
+
     var query = new GetDraftPositionsByGameBoardQuery(gameBoardId.Value);
     var updatedDraftPositions = await Sender.Send(query);
     var draftPositionId = updatedDraftPositions.Value.First().Id;
@@ -103,6 +109,7 @@ public sealed class GetDraftPositionTests(IntegrationTestWebAppFactory factory)
       draft.DraftType,
       draft.TotalPicks,
       draft.TotalDrafters,
+      draft.TotalDrafterTeams,
       draft.TotalHosts,
       draft.EpisodeType,
       draft.DraftStatus));
@@ -111,14 +118,18 @@ public sealed class GetDraftPositionTests(IntegrationTestWebAppFactory factory)
       drafter.UserId,
       Name: drafter.Name));
     var createdDraftPositions = DraftFactory.CreateMiniMegaDraftPositions();
-    var sentDraftPositions = createdDraftPositions.Select(dp => new DraftPositionDto(
-      dp.Name,
-      dp.Picks,
-      dp.HasBonusVeto,
-      dp.HasBonusVetoOverride)).ToList();
+    var draftPositionsRequests = new Collection<DraftPositionRequst>(
+        [.. createdDraftPositions.Select(dp => new DraftPositionRequst(
+            dp.Name,
+            dp.Picks,
+            dp.HasBonusVeto,
+            dp.HasBonusVetoOverride))]);
 
     var gameBoardId = await Sender.Send(new CreateGameBoardCommand(
-      draftId.Value, sentDraftPositions));
+      draftId.Value));
+
+    await Sender.Send(new AddDraftPositionsToGameBoardCommand(gameBoardId.Value, draftPositionsRequests));
+
     var query = new GetDraftPositionsByGameBoardQuery(gameBoardId.Value);
     var updatedDraftPositions = await Sender.Send(query);
     var draftPositionId = updatedDraftPositions.Value.First().Id;
@@ -148,6 +159,7 @@ public sealed class GetDraftPositionTests(IntegrationTestWebAppFactory factory)
       draft.DraftType,
       draft.TotalPicks,
       draft.TotalDrafters,
+      draft.TotalDrafterTeams,
       draft.TotalHosts,
       draft.EpisodeType,
       draft.DraftStatus));

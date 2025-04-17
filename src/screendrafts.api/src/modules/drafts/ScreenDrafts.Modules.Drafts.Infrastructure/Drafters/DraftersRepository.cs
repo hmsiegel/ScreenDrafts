@@ -24,6 +24,13 @@ internal sealed class DraftersRepository(DraftsDbContext dbContext) : IDraftersR
     return drafter;
   }
 
+  public Task<DrafterTeam?> GetByIdAsync(DrafterTeamId drafterTeamId, CancellationToken cancellationToken)
+  {
+    return _dbContext.DrafterTeams
+      .Include(x => x.Drafters)
+      .SingleOrDefaultAsync(d => d.Id == drafterTeamId, cancellationToken);
+  }
+
   public void Update(Drafter drafter)
   {
     _dbContext.Drafters.Update(drafter);

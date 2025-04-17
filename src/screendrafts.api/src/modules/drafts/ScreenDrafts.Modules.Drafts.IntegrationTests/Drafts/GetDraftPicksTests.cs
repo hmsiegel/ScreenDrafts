@@ -16,13 +16,14 @@ public sealed class GetDraftPicksTests(IntegrationTestWebAppFactory factory)
     for (int i = 0; i < reloadedDraftResult.Value.TotalDrafters - 1; i++)
     {
       var movie = MovieFactory.CreateMovie().Value;
-      var movieId = await Sender.Send(new AddMovieCommand(movie.Id, movie.MovieTitle));
+      var movieId = await Sender.Send(new AddMovieCommand(movie.Id, movie.ImdbId, movie.MovieTitle));
 
       var addPickCommand = new AddPickCommand(
         reloadedDraftResult.Value.Id,
         Faker.Random.Int(1, reloadedDraftResult.Value.TotalPicks),
         movieId.Value,
-       drafters[i].Id.Value);
+        1,
+       drafters[i].Id.Value, null);
 
       await Sender.Send(addPickCommand);
     }
@@ -47,6 +48,7 @@ public sealed class GetDraftPicksTests(IntegrationTestWebAppFactory factory)
       draft.DraftType,
       draft.TotalPicks,
       draft.TotalDrafters,
+      draft.TotalDrafterTeams,
       draft.TotalHosts,
       draft.EpisodeType,
       draft.DraftStatus));

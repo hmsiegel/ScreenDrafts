@@ -23,13 +23,16 @@ public class DrafterTests : BaseTest
     var draft = DraftFactory.CreateStandardDraft().Value;
     var movie = MovieFactory.CreateMovie().Value;
     var drafter = DrafterFactory.CreateDrafterWithUserId().Value;
+    var drafterTeam = DrafterFactory.CreateDrafterTeam();
     var pick = Pick.Create(
       Faker.Random.Number(1, 7),
       movie,
       drafter,
-      draft).Value;
+      null,
+      draft,
+      Faker.Random.Number(1,9)).Value;
 
-    var veto = Veto.Create(pick).Value;
+    var veto = Veto.Create(pick, drafter, drafterTeam).Value;
 
     // Act
     drafter.AddVeto(veto);
@@ -45,15 +48,18 @@ public class DrafterTests : BaseTest
     var draft = DraftFactory.CreateStandardDraft().Value;
     var movie = MovieFactory.CreateMovie().Value;
     var drafter = DrafterFactory.CreateDrafter();
+    var drafterTeam = DrafterFactory.CreateDrafterTeam();
     var pick = Pick.Create(
       Faker.Random.Number(1, 7),
       movie,
       drafter,
-      draft).Value;
+      null,
+      draft,
+      Faker.Random.Number(1,9)).Value;
 
-    var veto = Veto.Create(pick).Value;
+    var veto = Veto.Create(pick, drafter, drafterTeam).Value;
 
-    var vetoOverride = VetoOverride.Create(veto);
+    var vetoOverride = VetoOverride.Create(veto, drafter, drafterTeam);
 
     // Act
     drafter.AddVetoOverride(vetoOverride);

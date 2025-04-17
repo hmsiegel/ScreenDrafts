@@ -24,8 +24,8 @@ internal sealed class GetDraftQueryHandler(IDraftsRepository draftsRepository, I
       p.Position,
       p.MovieId,
       p.Movie.MovieTitle,
-      p.DrafterId.Value,
-      p.Drafter.Name))];
+      p.DrafterId!.Value,
+      p.Drafter!.Name))];
 
     var draftResponse = new DraftResponse(
       draft.Id.Value,

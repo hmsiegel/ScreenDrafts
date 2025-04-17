@@ -3,7 +3,7 @@ public interface IVetoRepository : IRepository
 {
   Task<Veto?> GetByIdAsync(VetoId id, CancellationToken cancellationToken);
 
-  Task<Veto?> GetByPickAsync(Guid pickId, CancellationToken cancellationToken);
+  Task<Veto?> GetByPickAsync(PickId pickId, CancellationToken cancellationToken);
 
   Task<VetoOverride?> GetVetoOverrideByIdAsync(VetoOverrideId id, CancellationToken cancellationToken);
 

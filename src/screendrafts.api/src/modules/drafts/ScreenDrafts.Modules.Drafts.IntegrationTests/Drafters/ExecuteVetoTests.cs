@@ -14,17 +14,19 @@ public class ExecuteVetoTests(IntegrationTestWebAppFactory factory)
     var drafter = drafters[Faker.Random.Int(0, draft.Value.TotalDrafters - 1)];
 
     var movie = MovieFactory.CreateMovie().Value;
-    var movieId = await Sender.Send(new AddMovieCommand(movie.Id, movie.MovieTitle));
+    var movieId = await Sender.Send(new AddMovieCommand(movie.Id, movie.ImdbId, movie.MovieTitle));
 
     var pickId = await Sender.Send(new AddPickCommand(
-      draftId.Value,
-      7,
-      movieId.Value,
-      drafter.Id.Value));
+      DraftId: draftId.Value,
+      DrafterTeamId: null,
+      Position: 7,
+      MovieId: movieId.Value,
+      DrafterId: drafter.Id.Value, PlayOrder: 1));
 
     pickId.IsSuccess.Should().BeTrue();
 
     var command = new ExecuteVetoCommand(
+      null,
       drafter.Id.Value,
       pickId.Value,
       draft.Value.Id);
@@ -40,7 +42,6 @@ public class ExecuteVetoTests(IntegrationTestWebAppFactory factory)
     veto.Value.Id.Should().Be(result.Value);
     veto.Value.PickId.Should().Be(pickId.Value);
     veto.Value.DrafterId.Should().Be(drafter.Id.Value);
-    veto.Value.IsUsed.Should().BeTrue();
   }
 
   [Fact]
@@ -54,17 +55,19 @@ public class ExecuteVetoTests(IntegrationTestWebAppFactory factory)
     var drafter = drafters[Faker.Random.Int(0, draft.Value.TotalDrafters - 1)];
 
     var movie = MovieFactory.CreateMovie().Value;
-    var movieId = await Sender.Send(new AddMovieCommand(movie.Id, movie.MovieTitle));
+    var movieId = await Sender.Send(new AddMovieCommand(movie.Id, movie.ImdbId, movie.MovieTitle));
 
     var pickId = await Sender.Send(new AddPickCommand(
-      draftId.Value,
-      7,
-      movieId.Value,
-      drafter.Id.Value));
+      DraftId: draftId.Value,
+      DrafterTeamId: null,
+      Position: 7,
+      MovieId: movieId.Value,
+      DrafterId: drafter.Id.Value, PlayOrder: 1));
 
     var drafterId = DrafterId.Create(Guid.NewGuid()).Value;
 
     var command = new ExecuteVetoCommand(
+      null,
       drafterId,
       pickId.Value,
       draft.Value.Id);
@@ -90,6 +93,7 @@ public class ExecuteVetoTests(IntegrationTestWebAppFactory factory)
     var invalidPickId = Guid.NewGuid();
 
     var command = new ExecuteVetoCommand(
+      null,
       drafter.Id.Value,
       invalidPickId,
       draft.Value.Id);
@@ -107,7 +111,7 @@ public class ExecuteVetoTests(IntegrationTestWebAppFactory factory)
   {
     // Arrange
     var (draftId, drafters, _) = await SetupDraftAndDraftersAsync();
-    
+
     await Sender.Send(new StartDraftCommand(draftId.Value));
 
     var draft = await Sender.Send(new GetDraftQuery(draftId.Value));
@@ -115,17 +119,19 @@ public class ExecuteVetoTests(IntegrationTestWebAppFactory factory)
     var drafter = drafters[Faker.Random.Int(0, draft.Value.TotalDrafters - 1)];
 
     var movie = MovieFactory.CreateMovie().Value;
-    var movieId = await Sender.Send(new AddMovieCommand(movie.Id, movie.MovieTitle));
+    var movieId = await Sender.Send(new AddMovieCommand(movie.Id, movie.ImdbId, movie.MovieTitle));
 
     var pickId = await Sender.Send(new AddPickCommand(
-      draftId.Value,
-      7,
-      movieId.Value,
-      drafter.Id.Value));
+      DraftId: draftId.Value,
+      DrafterTeamId: null,
+      Position: 7,
+      MovieId: movieId.Value,
+      DrafterId: drafter.Id.Value, PlayOrder: 1));
 
     var invalidDraftId = Guid.NewGuid();
 
     var command = new ExecuteVetoCommand(
+      null,
       drafter.Id.Value,
       pickId.Value,
       invalidDraftId);
@@ -150,15 +156,17 @@ public class ExecuteVetoTests(IntegrationTestWebAppFactory factory)
     var drafter = drafters[Faker.Random.Int(0, draft.Value.TotalDrafters - 1)];
 
     var movie = MovieFactory.CreateMovie().Value;
-    var movieId = await Sender.Send(new AddMovieCommand(movie.Id, movie.MovieTitle));
+    var movieId = await Sender.Send(new AddMovieCommand(movie.Id, movie.ImdbId, movie.MovieTitle));
 
     var pickId = await Sender.Send(new AddPickCommand(
-      draftId.Value,
-      7,
-      movieId.Value,
-      drafter.Id.Value));
+      DraftId: draftId.Value,
+      DrafterTeamId: null,
+      Position: 7,
+      MovieId: movieId.Value,
+      DrafterId: drafter.Id.Value, PlayOrder: 1));
 
     var command = new ExecuteVetoCommand(
+      null,
       drafter.Id.Value,
       pickId.Value,
       draft.Value.Id);
@@ -185,17 +193,19 @@ public class ExecuteVetoTests(IntegrationTestWebAppFactory factory)
     var drafter = drafters[Faker.Random.Int(0, draft.Value.TotalDrafters - 1)];
 
     var movie = MovieFactory.CreateMovie().Value;
-    var movieId = await Sender.Send(new AddMovieCommand(movie.Id, movie.MovieTitle));
+    var movieId = await Sender.Send(new AddMovieCommand(movie.Id, movie.ImdbId, movie.MovieTitle));
 
     var pickId = await Sender.Send(new AddPickCommand(
-      draftId.Value,
-      7,
-      movieId.Value,
-      drafter.Id.Value));
+      DraftId: draftId.Value,
+      DrafterTeamId: null,
+      Position: 7,
+      MovieId: movieId.Value,
+      DrafterId: drafter.Id.Value, PlayOrder: 1));
 
     await Sender.Send(new PauseDraftCommand(draftId.Value));
 
     var command = new ExecuteVetoCommand(
+      null,
       drafter.Id.Value,
       pickId.Value,
       draft.Value.Id);

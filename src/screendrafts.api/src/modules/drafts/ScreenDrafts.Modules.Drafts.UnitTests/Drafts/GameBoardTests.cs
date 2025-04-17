@@ -11,8 +11,9 @@ public class GameBoardTests : BaseTest
 
     // Act
     var result = GameBoard.Create(
-      draft,
-      new Collection<DraftPosition>(draftPositions));
+      draft);
+
+    result.Value.AssignDraftPositions(draftPositions);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -30,25 +31,12 @@ public class GameBoardTests : BaseTest
 
     // Act
     var result = GameBoard.Create(
-      draft,
-      new Collection<DraftPosition>(draftPositions));
+      draft);
+    result.Value.AssignDraftPositions(draftPositions);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
     result.Value.Draft.Should().Be(draft);
     result.Value.DraftPositions.Should().BeEquivalentTo(draftPositions);
-  }
-
-  [Fact]
-  public void CreateStandardDraft_ShouldThrowArgumentNullException_WhenDraftPositionsIsNull()
-  {
-    // Arrange
-    var draft = DraftFactory.CreateStandardDraft();
-
-    // Act
-    Action act = () => GameBoard.Create(draft.Value, new Collection<DraftPosition>(null!));
-
-    // Assert
-    act.Should().Throw<ArgumentNullException>();
   }
 }

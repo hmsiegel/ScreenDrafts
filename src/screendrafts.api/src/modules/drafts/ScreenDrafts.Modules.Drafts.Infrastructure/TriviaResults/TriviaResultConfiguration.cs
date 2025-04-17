@@ -22,9 +22,26 @@ internal sealed class TriviaResultConfiguration : IEntityTypeConfiguration<Trivi
       .HasForeignKey(tr => tr.DrafterId)
       .OnDelete(DeleteBehavior.Cascade);
 
+    builder.HasOne(tr => tr.DrafterTeam)
+      .WithMany()
+      .HasForeignKey(tr => tr.DrafterTeamId)
+      .OnDelete(DeleteBehavior.Cascade);
+
     builder.HasOne(tr => tr.Draft)
       .WithMany(d => d.TriviaResults)
       .HasForeignKey(tr => tr.DraftId)
       .OnDelete(DeleteBehavior.Cascade);
+
+    builder.Property(tr => tr.DrafterId)
+      .IsRequired(false)
+      .HasConversion(
+        id => id!.Value,
+        value => DrafterId.Create(value));
+
+    builder.Property(tr => tr.DrafterTeamId)
+      .IsRequired(false)
+      .HasConversion(
+        id => id!.Value,
+        value => DrafterTeamId.Create(value));
   }
 }

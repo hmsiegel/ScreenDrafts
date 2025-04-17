@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Common.Domain;
-
-namespace ScreenDrafts.Modules.Movies.UnitTests.TestUtils;
+﻿namespace ScreenDrafts.Modules.Movies.UnitTests.TestUtils;
 
 public static class MovieFactory
 {

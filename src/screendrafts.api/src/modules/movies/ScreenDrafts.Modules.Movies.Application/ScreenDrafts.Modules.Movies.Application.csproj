@@ -2,5 +2,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\common\ScreenDrafts.Common.Application\ScreenDrafts.Common.Application.csproj" />
     <ProjectReference Include="..\ScreenDrafts.Modules.Movies.Domain\ScreenDrafts.Modules.Movies.Domain.csproj" />
+    <ProjectReference Include="..\ScreenDrafts.Modules.Movies.IntegrationEvents\ScreenDrafts.Modules.Movies.IntegrationEvents.csproj" />
   </ItemGroup>
 </Project>

@@ -22,10 +22,11 @@ internal sealed class AddPickCommandHandler(
     }
 
     var drafter = draft.Drafters.FirstOrDefault(d => d.Id.Value == request.DrafterId);
+    var drafterTeam = draft.DrafterTeams.FirstOrDefault(dt => dt.Id.Value == request.DrafterId);
 
-    if (drafter is null)
+    if (drafter is null && drafterTeam is null)
     {
-      return Result.Failure<Guid>(DrafterErrors.NotFound(request.DrafterId));
+      return Result.Failure<Guid>(DrafterErrors.NotFound(request.DrafterId, request.DrafterTeamId));
     }
 
     var movie = await _draftsRepository.GetMovieByIdAsync(request.MovieId, cancellationToken);
@@ -35,7 +36,7 @@ internal sealed class AddPickCommandHandler(
       return Result.Failure<Guid>(DraftErrors.MovieNotFound(request.MovieId));
     }
 
-    var pick = Pick.Create(request.Position, movie, drafter, draft);
+    var pick = Pick.Create(request.Position, movie, drafter, drafterTeam, draft, request.PlayOrder);
 
     if (pick.IsFailure)
     {
@@ -53,6 +54,6 @@ internal sealed class AddPickCommandHandler(
 
     await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-    return Result.Success(pick.Value.Id);
+    return Result.Success(pick.Value.Id.Value);
   }
 }

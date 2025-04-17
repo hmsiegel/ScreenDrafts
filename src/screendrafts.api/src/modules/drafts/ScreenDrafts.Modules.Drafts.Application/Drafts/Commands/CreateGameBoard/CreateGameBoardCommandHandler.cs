@@ -1,5 +1,4 @@
-﻿
-namespace ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.CreateGameBoard;
+﻿namespace ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.CreateGameBoard;
 
 internal sealed class CreateGameBoardCommandHandler(
   IGameBoardRepository gameBoardRepository,
@@ -12,8 +11,6 @@ internal sealed class CreateGameBoardCommandHandler(
 
   public async Task<Result<Guid>> Handle(CreateGameBoardCommand request, CancellationToken cancellationToken)
   {
-    GameBoard gameBoard;
-
     var draftId = DraftId.Create(request.DraftId);
 
     var draft = await _draftsRepository.GetByIdAsync(draftId, cancellationToken);
@@ -23,54 +20,23 @@ internal sealed class CreateGameBoardCommandHandler(
       return Result.Failure<Guid>(DraftErrors.NotFound(request.DraftId));
     }
 
-    if (draft.DraftType.Name == "Standard")
+    var gameBoard = GameBoard.Create(draft).Value;
+
+    switch (draft.DraftType.Value)
     {
-      var positions = new List<DraftPosition>
-          {
-            DraftPosition.Create("Drafter A", [7, 6, 4, 2]).Value,
-            DraftPosition.Create("Drafter B", [5, 3, 1]).Value
-          };
-
-      if (draft.TotalPicks != NumberOfDraftPositionPicks(positions))
-      {
-        return Result.Failure<Guid>(DraftErrors.InvalidNumberOfPicks(
-          draft.TotalPicks,
-          NumberOfDraftPositionPicks(positions)));
-      }
-
-      if (draft.TotalDrafters != NumberOfDrafters(positions))
-      {
-        return Result.Failure<Guid>(GameBoardErrors.InvalidNumberOfDrafters);
-      }
-
-      gameBoard = GameBoard.Create(draft, [.. positions]).Value;
+      case 0:
+        AssignStandardDraftPositions(gameBoard);
+        break;
+      case 4:
+        AssignMiniSuperDraftPositions(gameBoard);
+        break;
+      default:
+        break;
     }
-    else if (draft.DraftType.Name != "Standard" && request.DraftPositions is not null)
+
+    if (gameBoard is null) // Ensure gameBoard is not null before proceeding
     {
-      var positions = request.DraftPositions.Select(dp => DraftPosition.Create(
-        name: dp.Name,
-        picks: [.. dp.Picks.ToList()],
-        hasBonusVeto: dp.HasBonusVeto,
-        hasBonusVetoOverride: dp.HasBonusVetoOverride).Value)
-        .ToList();
-
-      if (draft.TotalPicks != NumberOfDraftPositionPicks(positions))
-      {
-        return Result.Failure<Guid>(DraftErrors.InvalidNumberOfPicks(
-          draft.TotalPicks,
-          NumberOfDraftPositionPicks(positions)));
-      }
-
-      if (draft.TotalDrafters != NumberOfDrafters(positions))
-      {
-        return Result.Failure<Guid>(GameBoardErrors.InvalidNumberOfDrafters);
-      }
-
-      gameBoard = GameBoard.Create(draft, [.. positions]).Value;
-    }
-    else
-    {
-      return Result.Failure<Guid>(GameBoardErrors.DraftPositionsMissing);
+      return Result.Failure<Guid>(GameBoardErrors.GameBoardCreationFailed);
     }
 
     _gameBoardRepository.Add(gameBoard);
@@ -80,26 +46,26 @@ internal sealed class CreateGameBoardCommandHandler(
     return Result.Success(gameBoard.Id.Value);
   }
 
-  private static int NumberOfDrafters(List<DraftPosition> positions)
+  private static void AssignMiniSuperDraftPositions(GameBoard gameBoard)
   {
-    var totalDrafters = 0;
-    foreach (var position in positions)
+    var positions = new List<DraftPosition>
     {
-      totalDrafters++;
-    }
+      DraftPosition.Create("Drafter A", [5, 3, 1]).Value,
+      DraftPosition.Create("Drafter B", [4, 2]).Value
+    };
 
-    return totalDrafters;
+    gameBoard.AssignDraftPositions(positions);
   }
 
-  private static int NumberOfDraftPositionPicks(List<DraftPosition> positions)
+  private static void AssignStandardDraftPositions(GameBoard gameBoard)
   {
-    var totalPicks = 0;
-    foreach (var position in positions)
+    var positions = new List<DraftPosition>
     {
-      totalPicks += position.Picks.Count;
-    }
+      DraftPosition.Create("Drafter A", [7, 6, 4, 2]).Value,
+      DraftPosition.Create("Drafter B", [5, 3, 1]).Value
+    };
 
-    return totalPicks;
+    gameBoard.AssignDraftPositions(positions);
   }
 }
 

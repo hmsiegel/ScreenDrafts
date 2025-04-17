@@ -17,6 +17,14 @@ public static class IntegrationsModule
     return services;
   }
 
+  public static void ConfigureConsumers(IRegistrationConfigurator registrationConfigurator, string instanceId)
+  {
+    ArgumentNullException.ThrowIfNull(registrationConfigurator);
+
+    registrationConfigurator.AddConsumer<IntegrationEventConsumer<FetchMovieRequestedIntegrationEvent>>()
+      .Endpoint(x => x.InstanceId = instanceId);
+  }
+
   private static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
   {
     var connectionString = configuration.GetConnectionString("Database")!;
@@ -44,6 +52,12 @@ public static class IntegrationsModule
       .ValidateDataAnnotations();
 
     services.AddScoped<IImdbService, ImdbService>();
+
+    services.AddOptions<OmdbSettings>()
+      .Bind(configuration.GetSection("Integrations:Omdb"))
+      .ValidateDataAnnotations();
+
+    services.AddScoped<IOmdbService, OmdbService>();
   }
   private static void AddDomainEventHandlers(this IServiceCollection services)
   {

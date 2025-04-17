@@ -25,4 +25,9 @@ public static class GameBoardErrors
     SDError.Conflict(
       "GameBoard.DraftPositionAlreadyAssigned",
       $"The draft position with Id {id} is already assigned to a drafter.");
+
+  public static readonly SDError GameBoardCreationFailed =
+    SDError.Problem(
+      "GameBoard.GameBoardCreationFailed",
+      "There was a problem creating the gameboard.");
 }

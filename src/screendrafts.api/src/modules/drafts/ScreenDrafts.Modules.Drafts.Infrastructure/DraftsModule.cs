@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Modules.Drafts.Infrastructure.Data;
-
-namespace ScreenDrafts.Modules.Drafts.Infrastructure;
+﻿namespace ScreenDrafts.Modules.Drafts.Infrastructure;
 
 public static class DraftsModule
 {
@@ -19,20 +17,14 @@ public static class DraftsModule
     return services;
   }
 
-  public static async Task<IApplicationBuilder> UseDraftsModuleAsync(this IApplicationBuilder app)
-  {
-    ArgumentNullException.ThrowIfNull(app);
-
-    await app.UseSeedersAsync();
-
-    return app;
-  }
-
   public static void ConfigureConsumers(IRegistrationConfigurator registrationConfigurator, string instanceId)
   {
     ArgumentNullException.ThrowIfNull(registrationConfigurator);
 
     registrationConfigurator.AddConsumer<IntegrationEventConsumer<UserRegisteredIntegrationEvent>>()
+      .Endpoint(c => c.InstanceId = instanceId);
+
+    registrationConfigurator.AddConsumer<IntegrationEventConsumer<MovieAddedIntegrationEvent>>()
       .Endpoint(c => c.InstanceId = instanceId);
   }
 
@@ -51,10 +43,6 @@ public static class DraftsModule
     SqlMapper.AddTypeHandler(new DraftPositionsTypeHandler());
 
     services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<DraftsDbContext>());
-
-    services.AddScoped<ICustomSeeder, DrafterSeeder>();
-    services.AddScoped<ICustomSeeder, HostsSeeder>();
-    services.AddScoped<ICustomSeeder, DraftSeeder>();
 
     services.Configure<OutboxOptions>(configuration.GetSection("Drafts:Outbox"));
     services.ConfigureOptions<ConfigureProcessOutboxJob>();

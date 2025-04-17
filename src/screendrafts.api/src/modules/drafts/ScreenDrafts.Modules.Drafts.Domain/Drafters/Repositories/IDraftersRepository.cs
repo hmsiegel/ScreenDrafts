@@ -8,5 +8,7 @@ public interface IDraftersRepository : IRepository
 
   Task<Drafter?> GetByIdAsync(DrafterId drafterId, CancellationToken cancellationToken);
 
+  Task<DrafterTeam?> GetByIdAsync(DrafterTeamId drafterTeamId, CancellationToken cancellationToken);
+
   Task<List<Drafter>> GetAll(CancellationToken cancellationToken = default);
 }

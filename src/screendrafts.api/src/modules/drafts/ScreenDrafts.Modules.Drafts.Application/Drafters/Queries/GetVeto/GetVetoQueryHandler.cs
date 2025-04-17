@@ -15,9 +15,8 @@ internal sealed class GetVetoQueryHandler(IVetoRepository vetoRepository) : IQue
     
     var vetoDto = new VetoDto(
       Id: veto.Id.Value,
-      PickId: veto.Pick.Id,
-      DrafterId: veto.Pick.Drafter.Id.Value,
-      IsUsed: veto.IsUsed);
+      PickId: veto.Pick.Id.Value,
+      DrafterId: veto.Pick.Drafter!.Id.Value);
 
     return Result.Success(vetoDto);
   }

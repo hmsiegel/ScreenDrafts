@@ -3,11 +3,13 @@
 public sealed class Draft : AggrgateRoot<DraftId, Guid>
 {
   private readonly List<Drafter> _drafters = [];
+  private readonly List<DrafterTeam> _drafterTeams = [];
   private readonly List<Pick> _picks = [];
   private readonly List<Host> _hosts = [];
   private readonly List<DrafterDraftStats> _drafterDraftStats = [];
   private readonly List<TriviaResult> _triviaResults = [];
   private readonly List<DraftReleaseDate> _releaseDates = [];
+  private readonly List<CommissionerOverride> _commissionerOverrides = [];
 
   private Draft(
   DraftId id,
@@ -15,6 +17,7 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
   DraftType draftType,
   int totalPicks,
   int totalDrafters,
+  int totalDrafterTeams,
   int totalHosts,
   DraftStatus draftStatus,
   EpisodeType episodeType,
@@ -25,6 +28,7 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
     DraftType = draftType;
     TotalPicks = totalPicks;
     TotalDrafters = totalDrafters;
+    TotalDrafterTeams = totalDrafterTeams;
     TotalHosts = totalHosts;
     DraftStatus = draftStatus;
     EpisodeType = episodeType;
@@ -47,6 +51,8 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
 
   public int TotalDrafters { get; private set; }
 
+  public int TotalDrafterTeams { get; private set; }
+
   public int TotalHosts { get; private set; }
 
   public string? EpisodeNumber { get; private set; } = default!;
@@ -59,11 +65,15 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
 
   public bool IsPatreonOnly { get; private set; }
 
+  public bool NonCanonical { get; private set; }
+
   // Relationships
 
   public GameBoard? GameBoard { get; private set; } = default!;
 
   public IReadOnlyCollection<Drafter> Drafters => _drafters.AsReadOnly();
+
+  public IReadOnlyCollection<DrafterTeam> DrafterTeams => _drafterTeams.AsReadOnly();
 
   public IReadOnlyCollection<Pick> Picks => _picks.AsReadOnly();
 
@@ -75,20 +85,23 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
 
   public IReadOnlyCollection<DraftReleaseDate> ReleaseDates => _releaseDates.AsReadOnly();
 
+  public IReadOnlyCollection<CommissionerOverride> CommissionerOverrides => _commissionerOverrides.AsReadOnly();
+
 
   public static Result<Draft> Create(
   Title title,
   DraftType draftType,
   int totalPicks,
   int totalDrafters,
+  int totalDrafterTeams,
   int totalHosts,
   DraftStatus draftStatus,
   EpisodeType episodeType,
   DraftId? id = null)
   {
-    if (totalDrafters < 2)
+    if (totalDrafters + totalDrafterTeams < 2)
     {
-      return Result.Failure<Draft>(DraftErrors.DraftMustHaveAtLeastTwoDrafters);
+      return Result.Failure<Draft>(DraftErrors.DraftMustHaveAtLeastTwoParticipants);
     }
 
     if (totalPicks < 4)
@@ -101,6 +114,7 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
       draftType: draftType,
       totalPicks: totalPicks,
       totalDrafters: totalDrafters,
+      totalDrafterTeams: totalDrafterTeams,
       totalHosts: totalHosts,
       draftStatus: draftStatus,
       episodeType: episodeType,
@@ -128,7 +142,7 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
 
     _drafters.Add(drafter);
 
-    var stats = DrafterDraftStats.Create(drafter, this);
+    var stats = DrafterDraftStats.Create(drafter: drafter, null, this);
 
     _drafterDraftStats.Add(stats);
 
@@ -136,6 +150,41 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
 
     Raise(new DrafterAddedDomainEvent(Id.Value, drafter.Id.Value));
 
+    return Result.Success();
+  }
+
+  public Result AddDrafterTeam(DrafterTeam drafterTeam)
+  {
+    Guard.Against.Null(drafterTeam);
+
+    if (_drafterTeams.Count >= TotalDrafterTeams)
+    {
+      return Result.Failure(DraftErrors.TooManyDrafterTeams);
+    }
+
+    if (_drafterTeams.Any(d => d.Id == drafterTeam.Id))
+    {
+      return Result.Failure(DraftErrors.DrafterTeamAlreadyAdded(drafterTeam.Id.Value));
+    }
+
+    var existingDrafterIds = _drafterTeams.SelectMany(x => x.Drafters).Select(d => d.Id);
+
+    var overlapping = drafterTeam.Drafters.Where(d => existingDrafterIds.Contains(d.Id)).ToList();
+
+    var overlappingDrafterIds = overlapping.Select(d => d.Id.Value);
+
+    if (overlapping.Count != 0)
+    {
+      return Result.Failure(DraftErrors.DrafterTeamContainsOverlappingDrafters(overlappingDrafterIds));
+    }
+
+    _drafterTeams.Add(drafterTeam);
+
+    var stats = DrafterDraftStats.Create(null, drafterTeam, this);
+    _drafterDraftStats.Add(stats);
+
+    UpdatedAtUtc = DateTime.UtcNow;
+    Raise(new DrafterTeamAddedDomainEvent(Id.Value, drafterTeam.Id.Value));
     return Result.Success();
   }
 
@@ -166,7 +215,8 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
       Id.Value,
       pick.Position,
       pick.Movie.Id,
-      pick.Drafter.Id.Value));
+      pick.Drafter!.Id.Value,
+      null));
 
     return Result.Success();
   }
@@ -237,36 +287,53 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
     return Result.Success();
   }
 
-  public Result AddTriviaResult(Drafter drafter, int position, int questionsWon)
+  public Result AddTriviaResult(Drafter? drafter, DrafterTeam? drafterTeam, int position, int questionsWon)
   {
-    Guard.Against.Null(drafter);
+    if (drafter is null && drafterTeam is null)
+    {
+      return Result.Failure(DraftErrors.CannotAddTriviaResultWithoutDrafterOrDrafterTeam);
+    }
 
     if (DraftStatus != DraftStatus.InProgress)
     {
       return Result.Failure(DraftErrors.CannotAddTriviaResultIfDraftIsNotStarted);
     }
 
-    if (!_drafters.Contains(drafter))
+    if (drafter is not null && !_drafters.Contains(drafter))
     {
       return Result.Failure(DrafterErrors.NotFound(drafter.Id.Value));
+    }
+
+    if (drafterTeam is not null && !_drafterTeams.Contains(drafterTeam))
+    {
+      return Result.Failure(DrafterErrors.NotFound(drafterTeamId: drafterTeam.Id.Value));
     }
 
     var triviaResult = TriviaResult.Create(
       questionsWon: questionsWon,
       position: position,
       draft: this,
-      drafter: drafter).Value;
+      drafter: drafter,
+      drafterTeam: drafterTeam).Value;
 
     _triviaResults.Add(triviaResult);
 
-    Raise(new TriviaResultAddedDomainEvent(Id.Value, drafter.Id.Value, position, questionsWon));
+    Raise(new TriviaResultAddedDomainEvent(
+      Id.Value,
+      drafter?.Id.Value,
+      position,
+      questionsWon,
+      drafterTeam?.Id.Value));
 
     return Result.Success();
   }
 
-  public Result ApplyRollover(Guid drafterId, bool isVeto)
+  public Result ApplyRollover(Guid? drafterId, Guid? drafterTeamId, bool isVeto)
   {
-    var drafterStats = _drafterDraftStats.FirstOrDefault(d => d.Drafter.Id.Value == drafterId);
+    var drafterStats = 
+       _drafterDraftStats.FirstOrDefault(d => d.Drafter?.Id.Value == drafterId)
+       ?? _drafterDraftStats.FirstOrDefault(d => d.DrafterTeam?.Id.Value == drafterTeamId);
+
 
     if (isVeto && drafterStats?.RolloversApplied >= 1)
     {
@@ -279,6 +346,23 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
     }
 
     drafterStats?.AddRollover(isVeto);
+
+    return Result.Success();
+  }
+
+  public Result ApplyCommissionerOverride(CommissionerOverride commissionerOverride)
+  {
+    if (_commissionerOverrides.Any(x => x.Id == commissionerOverride.Id))
+    {
+      return Result.Failure(DraftErrors.CommissionerOverrideCannotBeApplied);
+    }
+
+    _commissionerOverrides.Add(commissionerOverride);
+
+    var drafterStats = _drafterDraftStats
+      .FirstOrDefault(d => d.Drafter?.Id.Value == commissionerOverride.Pick.Drafter!.Id.Value);
+
+    drafterStats?.AddCommissionerOverride();
 
     return Result.Success();
   }
@@ -318,6 +402,11 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
   public void SetPatreonOnly(bool isPatreonOnly)
   {
     IsPatreonOnly = isPatreonOnly;
+  }
+
+  public void SetNonCanonical(bool nonCanonical)
+  {
+    NonCanonical = nonCanonical;
   }
 
   public Result RemoveDrafter(Drafter drafter)

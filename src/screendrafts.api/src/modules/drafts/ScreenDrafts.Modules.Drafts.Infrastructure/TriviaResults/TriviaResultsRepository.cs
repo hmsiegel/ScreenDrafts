@@ -12,6 +12,6 @@ internal sealed class TriviaResultsRepository(DraftsDbContext dbContext) : ITriv
   public async Task<TriviaResult?> GetByDrafterIdAsync(DrafterId drafterId, DraftId draftId)
   {
     return await _dbContext.TriviaResults
-      .SingleOrDefaultAsync(t => t.Drafter.Id == drafterId && t.Draft.Id == draftId);
+      .SingleOrDefaultAsync(t => t.Drafter!.Id == drafterId && t.Draft.Id == draftId);
   }
 }

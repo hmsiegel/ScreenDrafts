@@ -30,20 +30,20 @@ internal sealed class ProcessInboxJob(
       Exception? exception = null;
       try
       {
-        IDomainEvent domainEvent = JsonConvert.DeserializeObject<IDomainEvent>(
+        IIntegrationEvent integrationEvent = JsonConvert.DeserializeObject<IIntegrationEvent>(
             inboxMessage.Content,
             SerializerSettings.Instance)!;
 
         using var scope = _serviceScopeFactory.CreateScope();
 
-        IEnumerable<IDomainEventHandler> domainEventHandlers = DomainEventHandlersFactory.GetHandlers(
-            domainEvent.GetType(),
+        IEnumerable<IIntegrationEventHandler> integrationEventHandlers = IntegrationEventHandlersFactory.GetHandlers(
+            integrationEvent.GetType(),
             scope.ServiceProvider,
             Presentation.AssemblyReference.Assembly);
 
-        foreach (IDomainEventHandler domainEventHandler in domainEventHandlers)
+        foreach (IIntegrationEventHandler integrationEventHandler in integrationEventHandlers)
         {
-          await domainEventHandler.Handle(domainEvent);
+          await integrationEventHandler.Handle(integrationEvent);
         }
       }
       catch (InvalidOperationException caughtException)
