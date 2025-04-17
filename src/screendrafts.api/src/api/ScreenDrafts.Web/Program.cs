@@ -16,7 +16,11 @@ var mongoConnectionString = builder.Configuration.GetConnectionStringOrThrow("Mo
 builder.Services.AddApplication(AssemblyReferences.ApplicationAssemblies);
 builder.Services.AddInfrastructure(
   DiagnosticsConfig.ServiceName,
-  [DraftsModule.ConfigureConsumers],
+  [
+    DraftsModule.ConfigureConsumers,
+    IntegrationsModule.ConfigureConsumers,
+    MoviesModule.ConfigureConsumers
+  ],
   rabbitMqSettings,
   databaseConnectionString,
   redisConnectionString,
@@ -65,7 +69,7 @@ app.MapHealthChecks("health", new HealthCheckOptions
   ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
 });
 
-await app.UseDraftsModuleAsync();
+await app.UseInfrastructureAsync();
 
 app.UseLogContextTraceLogging();
 app.UseSerilogRequestLogging();

@@ -19,7 +19,8 @@ internal sealed class GetDraftPositionsByGameBoardQueryHandler(IDbConnectionFact
           picks AS {nameof(DraftPositionResponse.Picks)},
           has_bonus_veto AS {nameof(DraftPositionResponse.HasBonusVeto)},
           has_bonus_veto_override AS {nameof(DraftPositionResponse.HasBonusVetoOveride)},
-          drafter_id AS {nameof(DraftPositionResponse.DrafterId)}
+          drafter_id AS {nameof(DraftPositionResponse.DrafterId)},
+          drafter_team_id AS {nameof(DraftPositionResponse.DrafterTeamId)}
         FROM drafts.draft_positions
         WHERE game_board_id = @GameBoardId
         """;

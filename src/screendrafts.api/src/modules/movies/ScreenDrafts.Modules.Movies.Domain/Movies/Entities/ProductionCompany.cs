@@ -3,7 +3,6 @@
 public sealed class ProductionCompany : Entity
 {
   private readonly List<MovieProductionCompany> _movieProductionCompanies = [];
-  public const int MaxLength = 100;
 
   private ProductionCompany(
     string name,
@@ -25,8 +24,11 @@ public sealed class ProductionCompany : Entity
 
   public string ImdbId { get; private set; } = default!;
 
-  public static ProductionCompany Create(string name, string imdbid)
+  public static ProductionCompany Create(string name, string imdbId, Guid? id = null)
   {
-    return new ProductionCompany(name, imdbid);
+    return new ProductionCompany(
+      name: name,
+      imdbId: imdbId,
+      id: id);
   }
 }

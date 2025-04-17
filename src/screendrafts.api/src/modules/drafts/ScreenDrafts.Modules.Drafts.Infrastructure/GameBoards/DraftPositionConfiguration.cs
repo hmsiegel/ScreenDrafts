@@ -36,5 +36,22 @@ internal sealed class DraftPositionConfiguration : IEntityTypeConfiguration<Draf
       .WithMany()
       .HasForeignKey(dp => dp.DrafterId)
       .OnDelete(DeleteBehavior.Restrict);
+
+    builder.HasOne(dp => dp.DrafterTeam)
+      .WithMany()
+      .HasForeignKey(dp => dp.DrafterTeamId)
+      .OnDelete(DeleteBehavior.Restrict);
+
+    builder.Property(dp => dp.DrafterId)
+      .IsRequired(false)
+      .HasConversion(
+        id => id!.Value,
+        value => DrafterId.Create(value));
+
+    builder.Property(dp => dp.DrafterTeamId)
+      .IsRequired(false)
+      .HasConversion(
+        id => id!.Value,
+        value => DrafterTeamId.Create(value));
   }
 }

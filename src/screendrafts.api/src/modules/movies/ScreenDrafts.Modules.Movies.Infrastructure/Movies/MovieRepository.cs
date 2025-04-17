@@ -1,4 +1,5 @@
-﻿namespace ScreenDrafts.Modules.Movies.Infrastructure.Movies;
+﻿
+namespace ScreenDrafts.Modules.Movies.Infrastructure.Movies;
 
 internal sealed class MovieRepository(MoviesDbContext context) : IMovieRepository
 {
@@ -54,5 +55,13 @@ internal sealed class MovieRepository(MoviesDbContext context) : IMovieRepositor
       .Include(m => m.MovieProducers)
       .Include(m => m.MovieProductionCompanies)
       .SingleOrDefaultAsync(m => m.ImdbId == imdbId, cancellationToken);
+  }
+
+  public async Task<HashSet<string>> GetExistingMovieImdbsAsync(IEnumerable<string> imdbIds, CancellationToken cancellationToken = default)
+  {
+    return await _context.Movies
+      .Where(m => imdbIds.Contains(m.ImdbId))
+      .Select(m => m.ImdbId)
+      .ToHashSetAsync(cancellationToken);
   }
 }

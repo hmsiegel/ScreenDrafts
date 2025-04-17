@@ -1,22 +1,22 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Presentation.Drafts;
 
-internal sealed class CreateGameBoard(ISender sender) : Endpoint<GameBoardRequest, Guid>
+internal sealed class CreateGameBoard(ISender sender) : EndpointWithoutRequest<Guid>
 {
   private readonly ISender _sender = sender;
 
   public override void Configure()
   {
-    Post("/drafts/gameboard");
+    Post("/drafts/gameboard/{draftId:guid}");
     Description(x => x.WithTags(Presentation.Tags.GameBoards));
     Policies(Presentation.Permissions.ModifyDraft);
   }
 
-  public override async Task HandleAsync(GameBoardRequest req, CancellationToken ct)
+  public override async Task HandleAsync(CancellationToken ct)
   {
-    ArgumentNullException.ThrowIfNull(req);
+    var draftId = Route<Guid>("draftId");
     var command = new CreateGameBoardCommand(
-      req.DraftId,
-      req.DraftPositions);
+      draftId);
+
     var result = await _sender.Send(command, ct);
 
     if (result.IsFailure)
@@ -30,6 +30,3 @@ internal sealed class CreateGameBoard(ISender sender) : Endpoint<GameBoardReques
   }
 }
 
-public sealed record GameBoardRequest(
-  Guid DraftId,
-  IEnumerable<DraftPositionDto>? DraftPositions = null);

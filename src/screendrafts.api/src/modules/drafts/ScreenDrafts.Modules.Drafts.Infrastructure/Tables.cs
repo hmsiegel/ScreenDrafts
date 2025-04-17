@@ -15,4 +15,10 @@ internal static class Tables
   internal const string Movies = "movies";
   internal const string GameBoards = "game_boards";
   internal const string DraftPositions = "draft_positions";
+  internal const string DraftReleaseDates = "draft_release_dates";
+  internal const string CommissionerOverrides = "commissioner_overrides";
+  internal const string DrafterTeams = "drafter_teams";
+  internal const string DrafterTeamDrafter = "drafter_team_drafter";
+  internal const string DraftsDrafters = "drafts_drafters";
+  internal const string DrafterTeamsDrafts = "drafts_drafter_teams";
 }

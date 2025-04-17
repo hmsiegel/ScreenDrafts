@@ -16,6 +16,7 @@ public sealed class ListDraftsTests(IntegrationTestWebAppFactory factory)
         draft.DraftType,
         draft.TotalPicks,
         draft.TotalDrafters,
+      draft.TotalDrafterTeams,
         draft.TotalHosts,
         draft.EpisodeType,
         draft.DraftStatus));

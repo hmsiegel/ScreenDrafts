@@ -246,12 +246,12 @@ namespace ScreenDrafts.Modules.Movies.Infrastructure.Database.Migrations
                         .HasColumnName("production_company_id");
 
                     b.HasKey("MovieId", "ProductionCompanyId")
-                        .HasName("pk_movie_production_comapanies");
+                        .HasName("pk_movie_production_companies");
 
                     b.HasIndex("ProductionCompanyId")
-                        .HasDatabaseName("ix_movie_production_comapanies_production_company_id");
+                        .HasDatabaseName("ix_movie_production_companies_production_company_id");
 
-                    b.ToTable("movie_production_comapanies", "movies");
+                    b.ToTable("movie_production_companies", "movies");
                 });
 
             modelBuilder.Entity("ScreenDrafts.Modules.Movies.Domain.Movies.Entities.MovieWriter", b =>
@@ -291,17 +291,16 @@ namespace ScreenDrafts.Modules.Movies.Infrastructure.Database.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
+                        .HasColumnType("text")
                         .HasColumnName("name");
 
                     b.HasKey("Id")
-                        .HasName("pk_production_comapanies");
+                        .HasName("pk_production_companies");
 
                     b.HasIndex("ImdbId")
-                        .HasDatabaseName("ix_production_comapanies_imdb_id");
+                        .HasDatabaseName("ix_production_companies_imdb_id");
 
-                    b.ToTable("production_comapanies", "movies");
+                    b.ToTable("production_companies", "movies");
                 });
 
             modelBuilder.Entity("ScreenDrafts.Modules.Movies.Domain.Movies.Movie", b =>
@@ -321,12 +320,10 @@ namespace ScreenDrafts.Modules.Movies.Infrastructure.Database.Migrations
                         .HasColumnName("imdb_id");
 
                     b.Property<string>("Plot")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("plot");
 
                     b.Property<string>("ReleaseDate")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("release_date");
 
@@ -341,7 +338,6 @@ namespace ScreenDrafts.Modules.Movies.Infrastructure.Database.Migrations
                         .HasColumnName("year");
 
                     b.Property<string>("YoutubeTrailerUrl")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("youtube_trailer_url");
 
@@ -468,14 +464,14 @@ namespace ScreenDrafts.Modules.Movies.Infrastructure.Database.Migrations
                         .HasForeignKey("MovieId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_movie_production_comapanies_movies_movie_id");
+                        .HasConstraintName("fk_movie_production_companies_movies_movie_id");
 
                     b.HasOne("ScreenDrafts.Modules.Movies.Domain.Movies.Entities.ProductionCompany", "ProductionCompany")
                         .WithMany("MovieProductionCompanies")
                         .HasForeignKey("ProductionCompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_movie_production_comapanies_production_companies_production");
+                        .HasConstraintName("fk_movie_production_companies_production_companies_production_");
 
                     b.Navigation("Movie");
 

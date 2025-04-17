@@ -1,0 +1,387 @@
+"id","readable_id","title","draft_type","episode_type","total_picks","total_drafters","total_drafter_teams","total_hosts","episode_number","draft_status","created_at_utc","updated_at_utc","is_patreon_only","non_canonical"
+"021d8222-b169-4f9b-8cfa-0163d08a6b62",1,Blumhouse,0,0,7,2,0,2,"250",3,2025-03-28 07:16:16.588 -0400,,false,false
+"0333905c-04f1-41ef-8bc2-8524b7fc40a2",2,Lynn Shelton Super Draft,3,0,8,2,0,2,"272",3,2025-03-28 07:16:16.592 -0400,,false,false
+"03f83e2c-3925-41bd-90be-e8bb60dde23c",3,Tobe Hooper,0,0,7,2,0,2,"206",3,2025-03-28 07:16:16.580 -0400,,false,false
+"0474d3c0-268d-47fc-9a29-44314c3e6480",4,Agnès Varda,0,0,7,2,0,1,"200",3,2025-03-28 07:16:16.579 -0400,,false,false
+"0579ebca-89d5-4fd4-8158-34561a0adc27",5,Horror Remakes,0,0,7,2,0,2,"99",3,2025-03-28 07:16:16.560 -0400,,false,false
+"06083dda-00ab-4215-a597-ff70227c0bd2",6,Spielberg Produced Mega Draft,2,0,20,0,3,1,"217",3,2025-03-28 07:16:16.582 -0400,,false,false
+"0754606f-4e74-4655-b3e8-ff567481e294",7,Kelly Reichardt Super Draft,0,0,7,2,0,1,"126",3,2025-03-28 07:16:16.565 -0400,,false,false
+"07a15e33-ffca-4224-87e8-46073efec33a",8,Dog Movies,0,0,7,2,0,1,"24",3,2025-03-28 07:16:16.545 -0400,,false,false
+"099d28dd-26f3-4074-98ad-620975a0f920",9,Jacques Demy Connected Universe mini-Super Draft,4,1,5,2,0,0,"23",3,2025-03-28 07:16:16.603 -0400,,true,false
+"09df42df-0b32-4201-9725-526aee897927",10,'90s Action Mega Draft,2,0,20,4,0,2,"46",3,2025-03-28 07:16:16.550 -0400,,false,false
+"0b064375-dddb-425b-85e5-4d4db36cb3ff",11,Arthouse Christmas,0,0,7,2,0,2,"56",3,2025-03-28 07:16:16.552 -0400,,false,false
+"0baf1697-4f58-476e-8c6e-fed56dd63109",12,Alien Invasion Mini-Mega,1,0,11,3,0,1,"167",3,2025-03-28 07:16:16.574 -0400,,false,false
+"0e7390a6-cfe1-4564-b522-6494497000cc",13,Dark Christmas,0,0,7,2,0,2,"10",3,2025-03-28 07:16:16.543 -0400,,false,false
+"0ec35dc6-3ec6-4285-a4e3-914afe3b656d",14,'90s Sports mini-Mega,1,0,13,4,0,2,"295",3,2025-03-28 07:16:16.596 -0400,,false,false
+"0f480291-42cd-4de7-8477-7d8dd6e713cd",15,A24,0,0,7,2,0,0,"22",3,2025-03-28 07:16:16.545 -0400,,false,false
+"10aa256c-6a5f-4270-b825-660d2807d30a",16,European Vacation,0,0,7,2,0,2,"64",3,2025-03-28 07:16:16.554 -0400,,false,false
+"10eeea71-24ef-4542-a47d-8bf190c3e939",17,Sword & Sorcery,0,0,7,2,0,2,"53",3,2025-03-28 07:16:16.552 -0400,,false,false
+"117cdc3b-394d-4860-9c66-96ef8f087005",18,Castaways,0,0,7,2,0,2,"292",3,2025-03-28 07:16:16.596 -0400,,false,false
+"11be3620-da93-41ac-bf36-1ac52855a154",19,Mistaken Identity,0,0,7,2,0,2,"83",3,2025-03-28 07:16:16.558 -0400,,false,false
+"138c61c1-b50e-4541-b232-0f3690b9f864",20,Obsession Thrillers,0,0,7,2,0,2,"219",3,2025-03-28 07:16:16.582 -0400,,false,false
+"144ae507-96d4-424b-a098-8bf38741e7ba",21,Animals Attack!,0,0,7,2,0,2,"87",3,2025-03-28 07:16:16.558 -0400,,false,false
+"162887bc-9c5d-4e2b-9aca-8ed2e58ab670",22,Tom Ripley mini-Super Draft,4,1,5,2,0,0,"12",3,2025-03-28 07:16:16.601 -0400,,true,false
+"16f220f1-c7ff-4628-997e-2e31e31d79a7",23,Amnesia,0,0,7,2,0,0,"19",3,2025-03-28 07:16:16.544 -0400,,false,false
+"18b37052-4535-4649-8fcd-4eacf8603385",24,Sports,0,0,7,2,0,2,"9",3,2025-03-28 07:16:16.543 -0400,,false,false
+"19965126-7d2f-424c-90d1-c315f5080c99",25,Star Wars Super Draft,3,0,11,3,0,2,"59",3,2025-03-28 07:16:16.553 -0400,,false,false
+"1a069714-7e86-49bc-8eee-2460a510fd1b",26,July 4th Weekend,0,0,7,2,0,2,"85",3,2025-03-28 07:16:16.558 -0400,,false,false
+"1ae73670-c26c-48e3-bcee-ed881a66cd9c",27,Almodóvar,0,0,7,2,0,2,"44",3,2025-03-28 07:16:16.550 -0400,,false,false
+"1bde2149-1f79-4e9d-b90c-150789c1a2c8",28,Classic Christmas,0,0,7,2,0,2,"8",3,2025-03-28 07:16:16.542 -0400,,false,false
+"1c07172a-d0fc-46b7-a599-8d1289d02128",29,Gena Rowlands,0,2,7,2,0,0,"11",3,2025-03-28 07:16:16.613 -0400,,true,false
+"1c87ea9e-6023-4c78-8ca8-e1348dc51818",30,"2018 Mega Draft",2,0,17,3,0,0,"14",3,2025-03-28 07:16:16.543 -0400,,false,false
+"1ccd634c-66e7-41ee-a07c-920a48b17423",31,Max von Sydow,0,0,7,2,0,1,"69",3,2025-03-28 07:16:16.555 -0400,,false,false
+"1ddb44ea-7598-4d19-a6ca-0605192cd76f",32,Country Music,0,0,7,2,0,2,"245",3,2025-03-28 07:16:16.587 -0400,,false,false
+"1e598182-5797-48f3-a7fd-6262fd0d5a44",33,Godzilla mini-Mega,1,0,13,2,1,2,"201",3,2025-03-28 07:16:16.580 -0400,,false,false
+"22052206-bc08-4dc7-aba7-a10bf5b5f7ce",34,Razzie Worst Picture Winners,0,0,7,2,0,2,"161",3,2025-03-28 07:16:16.573 -0400,,false,false
+"23dc7540-0b19-42f0-9471-479332a585a5",35,British Royal Family,0,0,7,2,0,2,"163",3,2025-03-28 07:16:16.573 -0400,,false,false
+"249b6e36-93ac-4544-a09c-09e467efa20a",36,Original Movie Musicals - American,0,0,7,2,0,2,"43",3,2025-03-28 07:16:16.549 -0400,,false,false
+"253b856d-459e-44da-afeb-a1b03ee53a43",37,TV Continuations,0,0,7,2,0,2,"137",3,2025-03-28 07:16:16.568 -0400,,false,false
+"25952d95-6ddf-421d-af78-9e68cf93e922",38,"2012",0,0,7,2,0,2,"230",3,2025-03-28 07:16:16.584 -0400,,false,false
+"26b1018c-10cc-444a-996c-d7a50fceb2f8",39,Oscar Winning Queer Films,0,0,7,2,0,2,"158",3,2025-03-28 07:16:16.572 -0400,,false,false
+"28bc7cc2-5e42-43ab-b1c6-288e686f7cd1",40,Herbie mini-Super Draft,4,1,5,2,0,0,"19",3,2025-03-28 07:16:16.602 -0400,,true,false
+"28ead34f-1422-4b3b-a35f-39b4d213987a",41,Ralph Bakshi Super Draft,3,0,10,2,0,2,"257",3,2025-03-28 07:16:16.589 -0400,,false,false
+"29139dcb-b4be-4319-b626-e03584d3537d",42,Halloween Movies,0,0,7,2,0,2,"49",3,2025-03-28 07:16:16.551 -0400,,false,false
+"297da054-5c5a-450d-a077-433c6cd0c118",43,Criterion World Cinema Project,0,0,7,2,0,2,"263",3,2025-03-28 07:16:16.590 -0400,,false,false
+"2a7c0d23-0c89-4f5b-9c41-f77ab1702250",44,Insidious mini-Super Draft w/Billy Ray Brewton,4,1,5,2,0,0,"37",3,2025-03-28 07:16:16.606 -0400,,true,false
+"2bba3076-b4e3-4249-b610-45e6b94d7de6",45,Vincente Minnelli,0,0,7,2,0,2,"312",3,2025-03-28 07:16:16.613 -0400,,false,false
+"2d2d935b-6173-430e-9fbd-2a4e8645b823",46,Dinosaurs,0,0,7,2,0,2,"149",3,2025-03-28 07:16:16.570 -0400,,false,false
+"2d9e2836-39fb-47ed-9ab6-d40a08c4c1a8",47,Punksploitation,0,0,7,2,0,2,"28",3,2025-03-28 07:16:16.546 -0400,,false,false
+"2f0b45bf-e1f4-45cb-944e-fccee2d0dcdb",48,Legacy Sequels,0,0,7,2,0,2,"140",3,2025-03-28 07:16:16.568 -0400,,false,false
+"302b2148-cc0f-4e7e-8f3b-b2ef762dab74",49,Audrey Hepburn,0,0,7,2,0,2,"3",3,2025-03-28 07:16:16.541 -0400,,false,false
+"30340497-be6a-4b4c-8026-6274e4e1c8ff",50,Queer Romance,0,0,7,2,0,2,"35",3,2025-03-28 07:16:16.547 -0400,,false,false
+"3077ea32-3625-4710-a209-255dfed11a1c",51,Queer Comedy,0,0,7,2,0,2,"265",3,2025-03-28 07:16:16.591 -0400,,false,false
+"315c10c7-981b-430c-a4b1-f1b2b37233bf",52,Juliette Binoche mini-Mega,1,0,13,3,0,0,"261",3,2025-03-28 07:16:16.590 -0400,,false,false
+"31e8bae2-02fc-44a7-9832-92420205e3eb",53,Comedians First Dramas,0,5,7,2,0,2,"2",3,2025-03-28 07:16:16.614 -0400,,true,false
+"32386f43-e767-4268-830d-cdd11b1ffae5",54,Home Invasion,0,0,7,2,0,2,"251",3,2025-03-28 07:16:16.588 -0400,,false,false
+"323e4bd2-a468-49b5-b4a5-0fbe17d50244",55,David Cronenberg,0,0,7,2,0,2,"80",3,2025-03-28 07:16:16.557 -0400,,false,false
+"323f3d10-46aa-4b02-b415-b2c78ffedc35",56,Batman vs. Superman Super Draft,3,0,18,4,0,2,"174",3,2025-03-28 07:16:16.575 -0400,,false,false
+"33697c54-2e50-4c21-80e0-d679cc83bb5b",57,"2024 Mega Draft",2,0,20,4,0,1,"313",3,2025-03-28 07:16:16.613 -0400,,false,false
+"33ce92e4-4a86-4c67-b75d-79f6f1380867",58,Pixar Super Draft,3,0,22,4,0,2,"105",3,2025-03-28 07:16:16.562 -0400,,false,false
+"357ca841-6152-4baf-b38c-a98b1feed053",59,"1950 Best Picture",4,4,5,2,0,0,"2",3,2025-03-28 07:16:16.613 -0400,,true,false
+"3588e7c1-42ed-4cee-b83e-9cf014309b10",60,Christopher Lee,0,0,7,2,0,2,"12",3,2025-03-28 07:16:16.543 -0400,,false,false
+"375e1dea-ec7c-40c4-b631-fe87b9382bb7",61,Underworld mini-Super Draft,4,1,5,2,0,0,"9",3,2025-03-28 07:16:16.601 -0400,,true,false
+"38468ccc-3fe8-475d-99ef-75c587bd6969",62,"The ""Modern"" Mummy mini-Super Draft",4,1,5,2,0,0,"34",3,2025-03-28 07:16:16.606 -0400,,true,false
+"38ab5f31-064f-4038-994a-40d5befd8572",63,Vietnam War mini-Mega,1,0,11,3,0,3,"247",3,2025-03-28 07:16:16.587 -0400,,false,false
+"39eac0ae-a206-4fd4-beee-f9d6b257dfc0",64,Shakespeare: Part III Mini-Mega,1,0,13,4,0,2,"132",3,2025-03-28 07:16:16.566 -0400,,false,false
+"3ae28710-af89-4d61-8e1b-d5d252e166b1",65,Time Travel,0,0,7,2,0,0,"7",3,2025-03-28 07:16:16.542 -0400,,false,false
+"3be7fbc9-64d8-476b-b4c3-58c632b08f67",66,The Karate Kid mini-Super Draft,4,1,5,2,0,0,"21",3,2025-03-28 07:16:16.603 -0400,,true,false
+"3c09fb5c-8108-4b4c-9b08-77a836814ac6",67,Ensemble Casts,0,0,7,2,0,2,"45",3,2025-03-28 07:16:16.550 -0400,,false,false
+"3d39537e-9cb8-4946-8f66-c65c5642756c",68,"2022 Mega Draft",2,0,20,4,0,0,"222",3,2025-03-28 07:16:16.583 -0400,,false,false
+"3dfa5437-fafc-4180-9c22-8d542d6915dc",69,Michael Mann Super Draft,3,0,13,3,0,2,"291",3,2025-03-28 07:16:16.595 -0400,,false,false
+"3e32b2e2-448a-4baf-864a-750cd7dbf505",70,"2023 Mega Draft",2,0,20,4,0,1,"268",3,2025-03-28 07:16:16.591 -0400,,false,false
+"3e787702-e24f-4a0d-b2b4-4ee9b284f102",71,Quentin Tarantino,0,0,7,2,0,2,"17",3,2025-03-28 07:16:16.544 -0400,,false,false
+"3eacfbe9-0089-48bd-90cb-a8ce1bb72f16",72,Hotels & Motels,0,0,7,2,0,2,"187",3,2025-03-28 07:16:16.577 -0400,,false,false
+"400d5869-fc99-4f88-9dd6-fbbe4b3a67e5",73,Scream mini-Super Draft,4,1,5,2,0,0,"31",3,2025-03-28 07:16:16.605 -0400,,true,false
+"4010b329-c2b6-4217-8718-94dcd7d74764",74,Indiana Jones mini-Super Draft,4,1,5,2,0,0,"38",3,2025-03-28 07:16:16.606 -0400,,true,false
+"40536309-f349-44cc-ac31-88b11b218225",75,Paul Newman mini-Mega,1,0,11,3,0,2,"210",3,2025-03-28 07:16:16.581 -0400,,false,false
+"425d40c8-892c-479e-b3aa-88cde6ba7357",76,Allan Quatermain mini-Super Draft,4,1,5,2,0,0,"54",3,2025-03-28 07:16:16.610 -0400,,true,false
+"42cc56ac-a9ae-41bd-9745-68a2bf9362fb",77,"70's Horror Mega Part I",2,0,20,4,0,2,"93",3,2025-03-28 07:16:16.559 -0400,,false,false
+"43dc286a-6f65-4714-9259-ef910ad269a6",78,Remakes,0,0,7,2,0,2,"27",3,2025-03-28 07:16:16.546 -0400,,false,false
+"450121bd-52cf-4602-93fb-ec0e45189ab6",79,Sofia Coppola Super Draft,3,0,8,2,0,2,"308",3,2025-03-28 07:16:16.598 -0400,,false,false
+"451f5dd2-6d01-4a34-a05d-9c569a9a03de",80,George Lucas,0,0,7,2,0,2,"122",3,2025-03-28 07:16:16.565 -0400,,false,false
+"46271d68-2d03-4d7d-92b8-9bfd8d076e4c",81,Merchant / Ivory,0,0,7,2,0,2,"235",3,2025-03-28 07:16:16.585 -0400,,false,false
+"46c5bad0-f057-4dfe-aa9c-9ee63a594ce2",82,Agatha Christie,0,0,7,2,0,2,"196",3,2025-03-28 07:16:16.579 -0400,,false,false
+"47218f20-ce24-4fbc-9ec2-5a303335cece",83,Timothée Chalamet,0,0,7,2,0,2,"316",3,2025-03-28 07:16:16.615 -0400,,false,false
+"47aa102a-71e4-49c7-8d98-db0c0904dde3",84,Godzilla vs. Kong,0,0,7,2,0,2,"121",3,2025-03-28 07:16:16.564 -0400,,false,false
+"486148f6-b0a2-409b-960f-275277d2bf65",85,REC mini-Super Draft,4,1,5,2,0,0,"36",3,2025-03-28 07:16:16.606 -0400,,true,false
+"49a051d0-1af5-4601-96c9-73a6309781ad",86,TV Adaptations,0,0,7,2,0,2,"107",3,2025-03-28 07:16:16.562 -0400,,false,false
+"49ec3cfd-da6e-4f56-bd05-0ac67cfc4f34",87,Films About Filmmakers,0,0,7,2,0,2,"16",3,2025-03-28 07:16:16.544 -0400,,false,false
+"4a20dafc-cb75-4858-b938-b16b406af897",88,MCU Super Draft,3,0,21,4,0,0,"23",3,2025-03-28 07:16:16.545 -0400,,false,false
+"4a244445-1e66-4789-9a49-5aba6b56d596",89,Queer Studio Movies,0,0,7,2,0,2,"236",3,2025-03-28 07:16:16.585 -0400,,false,false
+"4a518229-113a-4f2f-a687-1678c1b8bab2",90,Thanksgiving Weekend,0,0,7,2,0,2,"159",3,2025-03-28 07:16:16.572 -0400,,false,false
+"4a7db6e5-4876-4d77-8ceb-145405bfdfe6",91,Will Smith,0,0,7,2,0,2,"172",3,2025-03-28 07:16:16.575 -0400,,false,false
+"4d8c1fc2-5d64-4009-942e-8f4881561ed2",92,George Clooney,0,0,7,2,0,2,"243",3,2025-03-28 07:16:16.586 -0400,,false,false
+"4d9b9db2-917c-4fe4-9f72-3b8dc6650874",93,John Grisham Super Draft,3,0,11,3,0,2,"229",3,2025-03-28 07:16:16.584 -0400,,false,false
+"4e54656c-9a28-4d31-9021-ad28ebca8824",94,Screwball Comedy mini-Mega,1,0,11,3,0,2,"239",3,2025-03-28 07:16:16.586 -0400,,false,false
+"4e8b675c-a2d6-4611-a6ce-850710482afb",95,Movies About Screenwriters,0,0,7,2,0,2,"168",3,2025-03-28 07:16:16.574 -0400,,false,false
+"503706f4-7184-4dce-89ef-05c2ba9eaf6b",96,Freddy vs. Jason Super Draft,3,0,20,4,0,2,"38",3,2025-03-28 07:16:16.548 -0400,,false,false
+"50ea7a7b-798e-4ab3-8b45-2593e6a740b9",97,Coen Brothers Super Draft,3,0,18,2,0,1,"84",3,2025-03-28 07:16:16.558 -0400,,false,false
+"50f9b683-a1cc-4737-8a78-8dbadacb2db5",98,Video Game Adaptations,0,0,7,2,0,2,"141",3,2025-03-28 07:16:16.569 -0400,,false,false
+"5122b935-c03b-4df7-ab07-b97f68b7ce45",99,Dragonheart mini-Super Draft,4,1,5,2,0,0,"32",3,2025-03-28 07:16:16.605 -0400,,true,false
+"526ad671-8154-4ec4-b6fd-a85f178f1aa1",100,Betty White,0,2,7,2,0,0,"5",3,2025-03-28 07:16:16.611 -0400,,true,false
+"52b183af-f695-4198-b932-1a23e8eb6ec0",101,Harry Palmer mini-Super Draft,4,1,5,2,0,0,"33",3,2025-03-28 07:16:16.605 -0400,,true,false
+"53ca0528-d400-4006-b085-bb611e964d43",102,Teen Horror (Millennial Edition),0,0,7,2,0,2,"5",3,2025-03-28 07:16:16.542 -0400,,false,false
+"53fddd02-54ca-478a-930c-f069b30cf9c9",103,"2009",0,0,7,2,0,1,"58",3,2025-03-28 07:16:16.553 -0400,,false,false
+"547b404c-ae95-432c-bf3e-589a2f888c91",104,Vinegar Syndrome,0,0,7,2,0,3,"277",3,2025-03-28 07:16:16.593 -0400,,false,false
+"54fb4fc9-4d9b-422a-8241-9644e740e59c",105,Jim Henson,0,0,7,2,0,2,"79",3,2025-03-28 07:16:16.557 -0400,,false,false
+"555bd336-219b-4d34-8987-591e9db89ecd",106,Rock vs. Diesel mini-Mega,1,0,13,3,0,2,"232",3,2025-03-28 07:16:16.584 -0400,,false,false
+"55687878-d913-4caa-a21d-54c983743d42",107,Psycho mini-Super Draft,4,1,5,2,0,0,"8",3,2025-03-28 07:16:16.601 -0400,,true,false
+"55a81771-c33e-427b-bbaa-a2f7c190926d",108,Mad Max mini-Super Draft,4,1,5,2,0,0,"46",3,2025-03-28 07:16:16.608 -0400,,true,false
+"56416e2b-bae6-469a-b6eb-4fe5909ae1c8",109,"2007",0,0,7,2,0,2,"142",3,2025-03-28 07:16:16.569 -0400,,false,false
+"56d6fc65-4a4f-4a16-b746-b8ec56d6c837",110,New Camp Classics,0,0,7,2,0,2,"76",3,2025-03-28 07:16:16.556 -0400,,false,false
+"5738014a-5108-4f0b-8598-c50c37a324cd",111,Happy Madison Productions,0,0,7,2,0,2,"176",3,2025-03-28 07:16:16.575 -0400,,false,false
+"595023b6-d236-467a-83d9-1f07cebb6b6e",112,Police Story mini-Super Draft,4,1,5,2,0,0,"17",3,2025-03-28 07:16:16.602 -0400,,true,false
+"598aa07f-5b44-4577-a39f-6491ab844a8a",113,The Gambler mini-Super Draft,4,1,5,2,0,0,"50",3,2025-03-28 07:16:16.609 -0400,,true,false
+"5a3ab606-4e9a-4990-9a24-237e731b4c20",114,Laura Dern,0,0,7,2,0,2,"60",3,2025-03-28 07:16:16.553 -0400,,false,false
+"5b34604a-404a-4951-92e0-7b117b48e707",115,The Minions mini-Super Draft w/Graham Skipper,4,1,5,2,0,0,"25",3,2025-03-28 07:16:16.604 -0400,,true,false
+"5befc72f-0d6e-4aea-addc-be50b6c1a02e",116,Wesley Snipes,0,0,7,2,0,2,"95",3,2025-03-28 07:16:16.560 -0400,,false,false
+"5c1326ed-7fa1-4cd0-b336-a8a968c69b70",117,Amy Adams,0,0,7,2,0,2,"25",3,2025-03-28 07:16:16.545 -0400,,false,false
+"5c9b1a87-8a97-49d6-b24a-eec66c9e45fb",118,Horror Sequels,0,0,7,2,0,2,"4",3,2025-03-28 07:16:16.542 -0400,,false,false
+"5da29ec2-275a-486c-8fae-badab3ac8f47",119,Charlie Kaufman Super Draft,3,0,9,2,0,3,"305",3,2025-03-28 07:16:16.598 -0400,,false,false
+"5e2157bf-fdd5-4fe1-9cf1-0d92a3037178",120,Aquatic Horror,0,0,7,2,0,2,"114",3,2025-03-28 07:16:16.563 -0400,,false,false
+"5fe78b83-894a-4001-8384-c8ae57fd8c5d",121,Summer Camp,0,5,7,2,0,2,"1",3,2025-03-28 07:16:16.614 -0400,,true,false
+"600b2796-0f03-4eca-84f0-a696a4da0729",122,Jerry Bruckheimer,0,0,7,2,0,2,"123",3,2025-03-28 07:16:16.565 -0400,,false,false
+"60842e15-04d9-4808-b655-09175f439903",123,Found Footage,0,0,7,2,0,2,"50",3,2025-03-28 07:16:16.551 -0400,,false,false
+"617a280b-ec34-4329-a405-83ea9a748c53",124,A Christmas Carol,0,0,7,2,0,1,"109",3,2025-03-28 07:16:16.562 -0400,,false,false
+"6214e864-de17-4b4b-a357-a7b461fe8658",125,Giallo,0,0,7,2,0,2,"61",3,2025-03-28 07:16:16.554 -0400,,false,false
+"627ce97d-3895-42f5-ad4c-8d0a750f81aa",126,The American President,0,0,7,2,0,1,"102",3,2025-03-28 07:16:16.561 -0400,,false,false
+"63388810-2643-41d2-9a69-1c93651bf3e4",127,"2021 Mega Draft",2,0,20,4,0,2,"177",3,2025-03-28 07:16:16.576 -0400,,false,false
+"63627fba-b871-4640-88df-4edde83984e6",128,'70s Sports,0,0,7,2,0,2,"184",3,2025-03-28 07:16:16.577 -0400,,false,false
+"636c615a-3ae5-4045-930d-bea21f4b8dc7",129,MCU Phase 4 Super Draft,3,0,16,4,0,2,"211",3,2025-03-28 07:16:16.581 -0400,,false,false
+"647bbe5d-5873-436d-b0d9-20fe9455c240",130,Highlander mini-Super Draft,4,1,5,2,0,0,"49",3,2025-03-28 07:16:16.609 -0400,,true,false
+"67039917-4e60-4d8c-8e59-c66238201d88",131,American Zoetrope,0,0,7,2,0,1,"310",3,2025-03-28 07:16:16.599 -0400,,false,false
+"677c1b04-67be-4e08-b35a-8e92105e77fe",132,Whoopi Goldberg,0,0,7,2,0,2,"170",3,2025-03-28 07:16:16.574 -0400,,false,false
+"6787d46f-10c5-4b97-9d60-4091b1653e23",133,Jack Ryan mini-Super Draft,4,1,5,2,0,0,"7",3,2025-03-28 07:16:16.600 -0400,,true,false
+"67d674bd-4862-4513-93de-b2223240ed2d",134,Movies Mega Draft,2,3,25,6,0,0,,3,2025-03-28 07:16:16.610 -0400,,true,false
+"68bd0b9d-f928-47c7-be5f-94c18d34f014",135,The Purge mini-Super Draft,4,1,5,2,0,0,"15",3,2025-03-28 07:16:16.602 -0400,,true,false
+"68e35ab4-4a07-4179-883f-6fe9ce3a0f1d",136,Relationship Horror,0,0,7,0,2,2,"117",3,2025-03-28 07:16:16.563 -0400,,false,false
+"6921db42-e5a1-4f6b-9fd3-eea25d0ca633",137,The Cold War,0,0,7,2,0,1,"68",3,2025-03-28 07:16:16.555 -0400,,false,false
+"697fbe03-80e3-4abb-a833-6ae90ec62ec2",138,"21st Century Australian",0,0,7,2,0,2,"148",3,2025-03-28 07:16:16.570 -0400,,false,false
+"69951fdc-89e4-4d4f-90e1-a37afb8db8d7",139,Courtroom Movies,0,0,7,2,0,2,"173",3,2025-03-28 07:16:16.575 -0400,,false,false
+"6a26d062-d3c5-4436-bee6-b64603a6940a",140,BFFFs,0,0,7,2,0,2,"127",3,2025-03-28 07:16:16.566 -0400,,false,false
+"6af38676-d011-4ba9-830d-427b4278dcbc",141,Fictional Musicians Mini-Mega,1,0,11,3,0,2,"115",3,2025-03-28 07:16:16.563 -0400,,false,false
+"6b3cb308-838d-4e13-952f-7d422278c069",142,Actor's Directorial Debuts,0,0,7,2,0,1,"42",3,2025-03-28 07:16:16.549 -0400,,false,false
+"6b925ced-9f3d-4016-adce-d102351d9e2c",143,Stephen King mini-Mega,1,0,13,4,0,2,"267",3,2025-03-28 07:16:16.591 -0400,,false,false
+"6c28036b-2896-438f-8f82-5e97a7c827c7",144,Martin Scorsese Super Draft,3,0,30,9,0,3,"262",3,2025-03-28 07:16:16.590 -0400,,false,false
+"6ce3836c-02a9-4a99-8b28-5cda096790b0",145,The Predator mini-Super Draft,4,1,5,2,0,0,"47",3,2025-03-28 07:16:16.609 -0400,,true,false
+"6d250ee7-39ec-41b5-bc46-1c6575c61416",146,Judy Garland,0,0,7,2,0,2,"258",3,2025-03-28 07:16:16.589 -0400,,false,false
+"6eec7b4d-06e0-4916-a091-da264eb57133",147,"2019 Mega Draft",2,0,20,4,0,1,"63",3,2025-03-28 07:16:16.554 -0400,,false,false
+"6f00ca47-189f-4268-adf6-e87cb8d9bc57",148,Alfred Hitchcock Mega Draft,2,0,30,9,0,3,"302",3,2025-03-28 07:16:16.597 -0400,,false,false
+"6f6ebb18-1b60-4027-bc68-3d4403b05e2f",149,Space Horror,0,0,7,2,0,2,"183",3,2025-03-28 07:16:16.577 -0400,,false,false
+"7012cec0-8ca3-4f3d-8900-4bc3c8a24aa1",150,Game Movies,0,0,7,2,0,2,"54",3,2025-03-28 07:16:16.552 -0400,,false,false
+"713d68ff-f402-4601-9c0b-c614ed4def0e",151,Jodie Foster,0,0,7,2,0,2,"271",3,2025-03-28 07:16:16.592 -0400,,false,false
+"71cf5c14-7ffc-440d-b643-c2ecd92969b5",152,Stephen Sondheim,0,2,7,2,0,0,"4",3,2025-03-28 07:16:16.611 -0400,,true,false
+"7216c2d5-e176-4382-b048-10ac7ad25e1f",153,Sam Peckinpah,0,0,7,2,0,2,"199",3,2025-03-28 07:16:16.579 -0400,,false,false
+"72eba291-b6fe-4e1c-aa0d-faa5384b467b",154,Orson Welles,0,0,7,2,0,2,"182",3,2025-03-28 07:16:16.576 -0400,,false,false
+"73c2ebbd-4005-4aa5-bbb0-d5c71a62f530",155,"2019 (so far)",0,0,7,2,0,0,"39",3,2025-03-28 07:16:16.548 -0400,,false,false
+"74d7f307-a872-49da-bb03-83df1bbe0e00",156,Angela Lansbury,0,2,7,2,0,0,"8",3,2025-03-28 07:16:16.612 -0400,,true,false
+"74df5527-3e9e-4b83-bd6d-a0de06e7a476",157,Serious Kids,0,0,7,2,0,2,"40",3,2025-03-28 07:16:16.548 -0400,,false,false
+"7579285a-3b28-4f08-8acd-f2e70d4d547e",158,Kubrick,0,0,7,2,0,2,"20",3,2025-03-28 07:16:16.545 -0400,,false,false
+"76966fee-5797-4ed9-8a60-73d79df4c269",159,Two Thumbs Down,0,0,7,2,0,2,"252",3,2025-03-28 07:16:16.588 -0400,,false,false
+"77216d25-4a74-4b3a-82c8-516999fe711b",160,Evil Dead mini-Super Draft,4,1,5,2,0,0,"35",3,2025-03-28 07:16:16.606 -0400,,true,false
+"77c28491-cb2f-4f02-8731-a2dbcd344918",161,Canuxploitation,0,0,7,2,0,2,"150",3,2025-03-28 07:16:16.570 -0400,,false,false
+"783cd350-251b-40d2-a82a-1e19530e3ac4",162,Planet Hollywood Mega Draft,2,0,20,4,0,2,"146",3,2025-03-28 07:16:16.570 -0400,,false,false
+"78b3013f-6bce-404d-96c3-f23bc45d1ac9",163,Colin Farrell mini-Mega,1,0,9,2,0,0,"215",3,2025-03-28 07:16:16.582 -0400,,false,false
+"7d513d21-73f2-4db0-8c9d-44f44f02d90d",164,Kidventure,0,0,7,2,0,2,"74",3,2025-03-28 07:16:16.556 -0400,,false,false
+"7dac10ab-502e-4c25-8962-dd3bf22b3f41",165,Natalie Portman,0,0,7,2,0,2,"279",3,2025-03-28 07:16:16.593 -0400,,false,false
+"7f4b5b4c-066f-4199-a0ba-ab23fc434c8a",166,Scorsese Produced mini-Mega,1,0,11,3,0,2,"264",3,2025-03-28 07:16:16.591 -0400,,false,false
+"7f6461c3-e316-4d17-b10a-fe4ddf5a435e",167,Oz (Live Action) mini-Super Draft,4,1,5,2,0,0,"53",3,2025-03-28 07:16:16.610 -0400,,true,false
+"7feeeced-1ab9-421a-819b-69ec76deb3ba",168,TV Shows Mega Draft,2,3,25,6,0,0,,3,2025-03-28 07:16:16.610 -0400,,true,false
+"80393bb3-d348-4476-b5db-decad580de5f",169,Winona Ryder,0,0,7,2,0,2,"91",3,2025-03-28 07:16:16.559 -0400,,false,false
+"80d44691-eb10-4d66-93a0-749294f77c07",170,F Cinemascore Super Draft,3,0,21,4,0,2,"190",3,2025-03-28 07:16:16.578 -0400,,false,false
+"812b0ef8-7124-470d-8acd-aee50fc8202f",171,Saw Super Draft,3,0,10,3,0,2,"253",3,2025-03-28 07:16:16.588 -0400,,false,false
+"81afadb4-7416-40ec-9e01-adc4bd6eebfb",172,Geena Davis,0,0,7,2,0,2,"282",3,2025-03-28 07:16:16.594 -0400,,false,false
+"81bf79f6-72b1-4264-bbc0-84b610abc69b",173,Final Destination mini-Super Draft,4,1,5,2,0,0,"4",3,2025-03-28 07:16:16.600 -0400,,true,false
+"8220f8d0-5cde-40e3-b1a1-b1609e453d3a",174,X / NC-17 / Unrated,0,0,7,2,0,2,"193",3,2025-03-28 07:16:16.578 -0400,,false,false
+"830e5494-852d-4027-bf31-ade4d9a155b9",175,Classic Hammer Horror mini-Mega,1,0,13,3,0,2,"301",3,2025-03-28 07:16:16.597 -0400,,false,false
+"8366838a-29b4-4fa7-9b33-5e82c655a65f",176,Horror Anthologies,0,0,7,2,0,2,"276",3,2025-03-28 07:16:16.593 -0400,,false,false
+"8386ca20-6b09-4b77-811f-893fdbd19a66",177,Home Alone mini-Super Draft,4,1,5,2,0,0,"10",3,2025-03-28 07:16:16.601 -0400,,true,false
+"83bb9106-d6d0-446d-b344-8c597c0b5b09",178,"1999",0,0,7,2,0,1,"37",3,2025-03-28 07:16:16.547 -0400,,false,false
+"84f92d8c-a6b2-4e94-ab3d-6b7b0fcc0a9e",179,Creature Features,0,0,7,2,0,2,"32",3,2025-03-28 07:16:16.547 -0400,,false,false
+"850d1e28-39fb-46e2-b286-ccdcedb2399a",180,Lorne Michaels,0,0,7,2,0,2,"71",3,2025-03-28 07:16:16.556 -0400,,false,false
+"85523722-f66d-4be0-97b5-38d144bdfb64",181,John Carpenter Live,0,0,7,2,0,2,"47",3,2025-03-28 07:16:16.550 -0400,,false,false
+"85efd689-b8d0-48d7-a7c9-39f1814d38ee",182,M. Night Shyamalan Super Draft,0,0,7,4,0,2,"181",3,2025-03-28 07:16:16.576 -0400,,false,false
+"8615b1eb-5e08-4018-be57-49dea1724315",183,Minnesota Mini-Mega,0,0,7,3,0,2,"124",3,2025-03-28 07:16:16.565 -0400,,false,false
+"878eb446-72a0-4b08-aa9d-a165ae0ec6c1",184,Threequels,0,0,7,2,0,2,"1",3,2025-03-28 07:16:16.450 -0400,,false,false
+"87f97803-50f7-4785-89bd-0b93ea3d0333",185,'90s Superhero,0,0,7,2,0,2,"242",3,2025-03-28 07:16:16.586 -0400,,false,false
+"8878e7b7-f07b-46bc-91ad-0706addcfce6",186,Harry Belafonte,0,2,7,2,0,0,"9",3,2025-03-28 07:16:16.612 -0400,,true,false
+"88a1fdc5-1551-4354-83de-cbb45eed125c",187,Hugh Grant,0,0,7,2,0,2,"118",3,2025-03-28 07:16:16.564 -0400,,false,false
+"896d0371-4ef7-4d42-bee4-3922ca33f575",188,Retail Hell,0,0,7,2,0,2,"289",3,2025-03-28 07:16:16.595 -0400,,false,false
+"8a3d1569-fde9-45a8-96e9-414343cd9204",189,Dance,0,0,7,2,0,2,"185",3,2025-03-28 07:16:16.577 -0400,,false,false
+"8a437997-f5e0-4f89-a691-fd8457422337",190,Cannon,0,0,7,2,0,2,"116",3,2025-03-28 07:16:16.563 -0400,,false,false
+"8a631c4b-916b-4723-8bfa-c4ab2baa2617",191,"1999 mini-Mega",1,0,13,4,0,2,"307",3,2025-03-28 07:16:16.598 -0400,,false,false
+"8a762c79-147d-4633-a96a-1307abf923bb",192,Rocky/Creed Super Draft,3,0,9,2,0,2,"238",3,2025-03-28 07:16:16.585 -0400,,false,false
+"8c757241-8b40-4e21-8335-e66507ab3849",193,NASA,0,0,7,2,0,2,"169",3,2025-03-28 07:16:16.574 -0400,,false,false
+"8cbce425-f4d3-4386-a9b5-e6cb4b9f2605",194,"2009 Horror",0,0,7,2,0,2,"270",3,2025-03-28 07:16:16.592 -0400,,false,false
+"8cfedb6b-38b2-4d7a-ba6f-13ce1e8be7d7",195,Vintage Con Artist,0,0,7,2,0,2,"202",3,2025-03-28 07:16:16.580 -0400,,false,false
+"8d05e361-a381-453b-b5f1-a5a0dce736dd",196,Train Movies,0,0,7,2,0,2,"224",3,2025-03-28 07:16:16.583 -0400,,false,false
+"8e616bc9-1d1c-49e4-9c68-d033faaa28d6",197,"2010s Decade Mega Draft",2,0,20,4,0,2,"55",3,2025-03-28 07:16:16.552 -0400,,false,false
+"8e7e454e-4acf-4d48-a57a-9b4427d00b83",198,Kirsten Dunst,0,0,7,2,0,2,"203",3,2025-03-28 07:16:16.580 -0400,,false,false
+"8f1ca106-4b3a-4f62-82df-a1a847053299",199,Drag,0,0,7,2,0,2,"103",3,2025-03-28 07:16:16.561 -0400,,false,false
+"90368a14-f377-4dbf-82a9-d150c098a18e",200,Cults,0,0,7,2,0,2,"223",3,2025-03-28 07:16:16.583 -0400,,false,false
+"910e76dd-4f7c-449d-8769-a815ae6041a9",201,Multiple Roles,0,0,7,2,0,2,"26",3,2025-03-28 07:16:16.546 -0400,,false,false
+"916cd2f3-b603-4d2b-94b8-5fc5f66ce9fe",202,Stuart Gordon,0,0,7,2,0,2,"72",3,2025-03-28 07:16:16.556 -0400,,false,false
+"918d5de8-bfa6-4050-a34b-36ed89a847e1",203,Supernatural Kids,0,0,7,2,0,2,"287",3,2025-03-28 07:16:16.595 -0400,,false,false
+"91a4ffcf-2c95-4563-90f1-2769f72c575c",204,Dimension Films,0,0,7,2,0,2,"153",3,2025-03-28 07:16:16.571 -0400,,false,false
+"922208d2-4f92-45a9-abac-113b2171e5c3",205,Akira Kurosawa,0,0,7,2,0,2,"208",3,2025-03-28 07:16:16.581 -0400,,false,false
+"93582b7e-da97-46a3-a1fb-773845af3a96",206,"1975 Best Picture",4,4,5,2,0,0,"1",3,2025-03-28 07:16:16.613 -0400,,true,false
+"948d154e-363f-4677-95cb-6fe0260049b7",207,Jurassic Park / World mini-Super Draft,4,1,5,2,0,2,"5",3,2025-03-28 07:16:16.600 -0400,,false,false
+"94cda846-7f1c-48a6-9b83-74300bc58bb6",208,The Transporter mini-Super Draft,4,1,5,2,0,0,"42",3,2025-03-28 07:16:16.607 -0400,,true,false
+"951669da-7574-45e4-b137-5d3e5c223732",209,Elmore Leonard,0,0,7,2,0,2,"294",3,2025-03-28 07:16:16.596 -0400,,false,false
+"96dc67f2-011a-4ae6-ae2c-59f15336d97c",210,Sketch Comedy Anthologies,0,0,7,2,0,2,"88",3,2025-03-28 07:16:16.559 -0400,,false,false
+"974ba839-38bf-4035-a761-f250ef007a40",211,Mike Hammer mini-Super Draft,4,1,5,2,0,0,"43",3,2025-03-28 07:16:16.608 -0400,,true,false
+"97c3343e-3faa-4b10-807d-46e05892ccd5",212,MTV Movie Awards Best Kiss Winners,0,0,7,2,0,2,"281",3,2025-03-28 07:16:16.594 -0400,,false,false
+"98c98d68-702e-41cd-8fa4-c8e212a68546",213,"1992 Horror",0,0,7,2,0,2,"67",3,2025-03-28 07:16:16.555 -0400,,false,false
+"98f7d2c8-4acb-44d5-97cc-16ae7046b746",214,Arthurian Legend,0,0,7,2,0,2,"213",3,2025-03-28 07:16:16.581 -0400,,false,false
+"995994e0-3786-4dd5-9c7b-0a7300ce8589",215,Rambo mini-Super Draft,4,1,5,2,0,0,"16",3,2025-03-28 07:16:16.602 -0400,,true,false
+"99b55149-adb7-4ebd-becf-23959e854640",216,Horror Comedy mini-Mega,1,0,11,3,0,2,"205",3,2025-03-28 07:16:16.580 -0400,,false,false
+"99b67ad5-767d-4d2e-937b-6396413811cc",217,Black Queer Films,0,0,7,2,0,2,"218",3,2025-03-28 07:16:16.582 -0400,,false,false
+"9abceeb1-0d25-47b8-a67b-e9aae978a7d9",218,The Yakuza Papers mini-Super Draft,4,1,5,2,0,0,"24",3,2025-03-28 07:16:16.603 -0400,,true,false
+"9b58438c-832e-4ca5-a5d8-e89c7d6f7764",219,Flashpoint: Batman (Franchise mini-Super Draft),4,1,5,2,0,0,"48",3,2025-03-28 07:16:16.609 -0400,,true,false
+"9b8bcd27-dd4d-4461-baff-cc3cd6941b4c",220,Internet Horror,0,0,7,2,0,3,"311",3,2025-03-28 07:16:16.599 -0400,,false,false
+"9bf34cbc-51b7-4153-8c38-ce7910c230a2",221,Hannibal mini-Super Draft,4,1,5,2,0,0,"6",3,2025-03-28 07:16:16.600 -0400,,true,false
+"9cb66ce6-348c-4be8-ab7d-ad3bf2ee101a",222,Zombie Mini-Mega,1,0,13,3,0,2,"155",3,2025-03-28 07:16:16.572 -0400,,false,false
+"9d5d0738-21f6-40f1-a51d-a8d913d8646f",223,'30s Warner Bros,0,0,7,2,0,2,"73",3,2025-03-28 07:16:16.556 -0400,,false,false
+"9d907787-44de-4239-9a5a-b978486bc4b8",224,Westerns: Part III Mini-Mega,1,0,13,3,0,2,"108",3,2025-03-28 07:16:16.562 -0400,,false,false
+"9dbc1993-41b6-48a4-aef9-4414d8cfc1d0",225,The Afterlife,0,0,7,2,0,2,"275",3,2025-03-28 07:16:16.593 -0400,,false,false
+"9e7dece2-c9d3-4756-9126-1a9beeba7d4b",226,Stephen King Horror Adaptations,0,0,7,2,0,2,"6",3,2025-03-28 07:16:16.542 -0400,,false,false
+"9ed444d6-0938-43a8-97da-8d11b863f1bb",227,The Girl with the Dragon Tattoo/Millennium mini-Super Draft,4,1,5,2,0,0,"41",3,2025-03-28 07:16:16.607 -0400,,true,false
+"9f2425ed-17fc-4746-b4a4-9073251b2f57",228,"Apatow, Producer",0,0,7,2,0,2,"29",3,2025-03-28 07:16:16.546 -0400,,false,false
+"9f6851bb-6275-4835-ab81-ca0dcb28ffd4",229,Union Movies,0,0,7,2,0,1,"240",3,2025-03-28 07:16:16.586 -0400,,false,false
+"9f69bd23-a2d2-4d18-be11-72a61c35cdb9",230,Monty Python mini-Super Draft,4,1,5,2,0,0,"29",3,2025-03-28 07:16:16.605 -0400,,true,false
+"9f720d3d-2b15-43b3-ab81-a3aafa8d9603",231,The Beatles,0,0,7,2,0,2,"194",3,2025-03-28 07:16:16.579 -0400,,false,false
+a03f6f2d-f505-4051-ab29-a059bbe7564f,232,Anne Hathaway,0,0,7,2,0,2,"227",3,2025-03-28 07:16:16.584 -0400,,false,false
+a0414bd9-b808-4b72-8f73-de2a6e0bf9dd,233,Westerns: Part II Mini-Mega,1,0,13,3,0,2,"92",3,2025-03-28 07:16:16.559 -0400,,false,false
+a06df285-e5e0-4dd9-a5ff-2a9881d9198d,234,Don Bluth Super Draft,3,0,10,2,0,2,"255",3,2025-03-28 07:16:16.589 -0400,,false,false
+a11830de-769b-459e-af87-808650614a87,235,Whit Stillman mini-Super Draft,3,0,5,2,0,1,"306",3,2025-03-28 07:16:16.598 -0400,,false,false
+a11b7caf-c1ed-4353-9534-f546410b8bfc,236,"2020 Mega Draft",2,0,20,4,0,1,"128",3,2025-03-28 07:16:16.566 -0400,,false,false
+a16a1d3d-d722-4faf-b3e7-61a4105df705,237,Michael Crichton Super Draft,3,0,22,3,0,1,"293",3,2025-03-28 07:16:16.596 -0400,,false,false
+a232e557-62f2-4122-ab57-327978c936bb,238,Norman Jewison,0,2,7,2,0,0,"10",3,2025-03-28 07:16:16.612 -0400,,true,false
+a422f5f7-7b4f-41cf-b825-e91299695fa0,239,’60s Musicals,0,0,7,2,0,2,"82",3,2025-03-28 07:16:16.558 -0400,,false,false
+a4546d89-01f7-4c4c-8e93-84c0b2582616,240,"1977 Horror",0,0,7,2,0,2,"298",3,2025-03-28 07:16:16.597 -0400,,false,false
+a469a0bb-b5e5-44cd-b6e1-5a6f5c48feb9,241,British Rom-Coms,0,0,7,2,0,2,"21",3,2025-03-28 07:16:16.545 -0400,,false,false
+a4bd3e53-80c8-4614-b5ff-06480eeed4fa,242,Video Nasties - Prosecuted Films,0,0,7,2,0,2,"101",3,2025-03-28 07:16:16.561 -0400,,false,false
+a53e93ad-d781-44ee-95b5-4c4768387ff3,243,Barry Levinson's Baltimore mini-Super Draft,4,1,5,2,0,0,"30",3,2025-03-28 07:16:16.605 -0400,,true,false
+a5aae4d9-2ec3-4fae-a77a-a863f2c718f8,244,Steven Spielberg Super Draft,3,0,34,10,0,2,"216",3,2025-03-28 07:16:16.582 -0400,,false,false
+a7634dfd-371f-4b23-a358-a92e5bfa858f,245,Oliver Assayas Super Draft,3,0,16,3,0,1,"110",3,2025-03-28 07:16:16.562 -0400,,false,false
+a903b13e-9bd4-4e80-8fc7-f1727e81caac,246,Aaron Sorkin Super Draft,3,0,10,3,0,2,"273",3,2025-03-28 07:16:16.592 -0400,,false,false
+a9074f10-3a23-4a59-a634-a0f64f1dd988,247,Heist Movies,0,0,7,2,0,2,"51",3,2025-03-28 07:16:16.551 -0400,,false,false
+a91a6e7e-d2bc-44f8-bbc3-f4dc57127910,248,Eddie Murphy,0,0,7,2,0,2,"119",3,2025-03-28 07:16:16.564 -0400,,false,false
+a99a2240-6c8a-4ebf-8b02-78ba9d57178a,249,Gators & Crocs,0,0,7,2,0,2,"175",3,2025-03-28 07:16:16.575 -0400,,false,false
+aa038bb4-4b29-4e36-9138-5560b19b6d7b,250,Independent Spirit Best First Feature Award Winners,0,0,7,2,0,2,"221",3,2025-03-28 07:16:16.583 -0400,,false,false
+aaf198a2-dd51-4c9f-a0e5-32e8053ae22f,251,'90s Directorial Debuts,0,0,7,2,0,2,"189",3,2025-03-28 07:16:16.578 -0400,,false,false
+ac8f6ef4-3223-4226-b358-b6cd3a3b8e33,252,Lucio Fulci,0,0,7,2,0,2,"98",3,2025-03-28 07:16:16.560 -0400,,false,false
+acbb20fe-1d7f-4a81-a64c-109f961aa445,253,Phantasm mini-Super Draft,4,1,5,2,0,0,"18",3,2025-03-28 07:16:16.602 -0400,,true,false
+aec7bb37-72ec-4a6e-9cb5-387978576fe7,254,Hellraiser,0,0,7,2,0,2,"138",3,2025-03-28 07:16:16.568 -0400,,false,false
+af4b7064-b86a-4104-aced-e91ba03da82a,255,Die Hard mini-Super Draft,4,1,5,2,0,0,"11",3,2025-03-28 07:16:16.601 -0400,,true,false
+af5fd1ec-65d3-42fc-9f02-e82dd069a8c9,256,Queer Crime,0,0,7,2,0,2,"246",3,2025-03-28 07:16:16.587 -0400,,false,false
+af726a83-173b-4c09-9d45-e8253f9de0e9,257,Movies About Television,0,0,7,2,0,2,"131",3,2025-03-28 07:16:16.566 -0400,,false,false
+b05fb914-d305-4307-90fd-5d7fe6b471ce,258,Natalie Wood,0,0,7,2,0,2,"139",3,2025-03-28 07:16:16.568 -0400,,false,false
+b1626d79-83a0-4ba6-8fad-e390820d072d,259,James Spader,0,0,7,2,0,2,"134",3,2025-03-28 07:16:16.567 -0400,,false,false
+b1fddc5e-57fb-468c-a972-1bf05664b36b,260,Shakespeare: Part II Mini-Mega,1,0,11,3,0,2,"111",3,2025-03-28 07:16:16.563 -0400,,false,false
+b2a8ab4c-494f-42cc-8531-8c2583ac4a67,261,Mothers & Daughters,0,0,7,2,0,2,"78",3,2025-03-28 07:16:16.557 -0400,,false,false
+b2c197ca-a269-498f-a7dc-5642cd5825ee,262,Halloween Super Draft,3,0,13,4,0,2,"254",3,2025-03-28 07:16:16.588 -0400,,false,false
+b32b2777-584f-4b90-9af6-e3a327631c52,263,The Internet,0,0,7,2,0,2,"136",3,2025-03-28 07:16:16.567 -0400,,false,false
+b345decb-a7e5-4d0b-ba7d-5f2c521f93a0,264,Private Eyes,0,0,7,2,0,2,"125",3,2025-03-28 07:16:16.565 -0400,,false,false
+b3c06513-ee8a-4e66-9374-9910c815ce2e,265,Joel Schumacher mini-Mega,1,0,9,2,0,2,"283",3,2025-03-28 07:16:16.594 -0400,,false,false
+b5aedaca-4697-4139-b3d5-077941abd9a2,266,'80s Sports mini-Mega,1,0,11,3,0,2,"259",3,2025-03-28 07:16:16.590 -0400,,false,false
+b75bc471-101c-4a39-a519-41f3efccaf10,267,Antoine Doinel mini-Super Draft,4,1,5,2,0,0,"13",3,2025-03-28 07:16:16.601 -0400,,true,false
+b7d6ff6f-2dd3-4363-adef-5bf2e8fe6256,268,Florida Crime,0,0,7,2,0,2,"97",3,2025-03-28 07:16:16.560 -0400,,false,false
+b7f59742-f51f-4dd0-b08c-ac3091ad7802,269,Steven Soderbergh,0,0,7,2,0,2,"75",3,2025-03-28 07:16:16.556 -0400,,false,false
+ba19277d-c847-45be-bd75-b4cd2455116c,270,"Silent Night, Deadly Night mini-Super Draft",4,1,5,2,0,0,"20",3,2025-03-28 07:16:16.603 -0400,,true,false
+bd10427f-c065-4db0-92a9-9e4282b03630,271,Holiday Horror (Non Christmas & Halloween),0,0,7,2,0,2,"304",3,2025-03-28 07:16:16.598 -0400,,false,false
+bd99691c-fa85-4a0f-985b-9656fda72e25,272,Action Sequels,0,0,7,2,0,2,"274",3,2025-03-28 07:16:16.592 -0400,,false,false
+be9d72df-8d9f-4707-8ff2-8f899379c360,273,Vacation Horror,0,0,7,2,0,2,"314",3,2025-03-28 07:16:16.613 -0400,,false,false
+bed16451-5501-4af8-9497-770383430bb5,274,Body Horror,0,0,7,2,0,2,"151",3,2025-03-28 07:16:16.571 -0400,,false,false
+bf9d9ebf-a513-480b-85b7-94c448b1b689,275,Tremors Super Draft,0,0,7,2,0,2,"145",3,2025-03-28 07:16:16.569 -0400,,false,false
+bfa97ed2-edb1-4f7d-bec8-d2575a689ac1,276,Planet of the Apes Super Draft,3,0,10,3,0,2,"280",3,2025-03-28 07:16:16.594 -0400,,false,false
+c0044d5c-39d0-4826-a9ff-ae6d4cd04ac1,277,Nicolas Cage Mega Draft,2,0,20,4,0,2,"41",3,2025-03-28 07:16:16.549 -0400,,false,false
+c06430fd-2ba2-4a28-91b9-7896650899a6,278,Disney Animation Studios 2D,0,0,7,2,0,2,"34",3,2025-03-28 07:16:16.547 -0400,,false,false
+c24f0ae3-7360-4f16-b1b1-3e61b27ea81d,279,Ozploitation,0,0,7,2,0,3,"266",3,2025-03-28 07:16:16.591 -0400,,false,false
+c25dd6a1-0ee3-4334-833c-7952bcfb78fe,280,Ray Harryhausen,0,0,7,2,0,2,"180",3,2025-03-28 07:16:16.576 -0400,,false,false
+c30d08cb-6799-4c01-843f-357c6157be5b,281,Comic Book (Non-Superhero),0,0,7,2,0,2,"90",3,2025-03-28 07:16:16.559 -0400,,false,false
+c3b498e9-a239-4122-a1e4-dc69a2e829ae,282,Bong Joon-ho Super Draft,0,0,7,2,0,2,"231",3,2025-03-28 07:16:16.584 -0400,,false,false
+c3deb2bf-e222-4850-a561-903b9e0affc2,283,Black Love,0,0,7,2,0,2,"171",3,2025-03-28 07:16:16.575 -0400,,false,false
+c4222bb1-0262-4c39-b4cb-03590dad10cc,284,Parker Posey,0,5,7,2,0,2,"4",3,2025-03-28 07:16:16.614 -0400,,false,false
+c48d94a8-10d6-4a98-8b0e-cfb9f0be67ff,285,Disney Channel Original Movies,0,0,7,2,0,2,"160",3,2025-03-28 07:16:16.573 -0400,,false,false
+c5261d95-0487-4bd6-82f6-a21f982eb92f,286,Angela Bassett,0,0,7,2,0,2,"285",3,2025-03-28 07:16:16.594 -0400,,false,false
+c568c601-c594-4d09-aefd-60835fffc5e7,287,Shaft mini-Super Draft,4,1,5,2,0,0,"14",3,2025-03-28 07:16:16.602 -0400,,true,false
+c5d06d78-f98b-4352-829c-7ac5510a1d3a,288,Alien vs. Predator Super Draft,3,0,12,3,0,2,"100",3,2025-03-28 07:16:16.561 -0400,,false,false
+c669c00a-0ad1-4ea7-8011-ec7ce1cc3ef5,289,Wes Craven,0,0,7,2,0,2,"143",3,2025-03-28 07:16:16.569 -0400,,false,false
+c7321f65-ffc3-431e-88cb-339b7a79b841,290,Penelope Spheeris,0,0,7,2,0,2,"179",3,2025-03-28 07:16:16.576 -0400,,false,false
+c75efe9f-05ce-400b-a59b-9002a167204a,291,Philip Baker Hall,0,2,7,2,0,0,"6",3,2025-03-28 07:16:16.611 -0400,,true,false
+c7b2f9fe-e314-461a-a7d6-f47a7dc1cc91,292,Brief Encounters,0,0,7,2,0,2,"77",3,2025-03-28 07:16:16.557 -0400,,false,false
+c93ef049-aeca-4112-baf1-8ffe36152d57,293,Greta Gerwig,0,0,7,2,0,2,"248",3,2025-03-28 07:16:16.587 -0400,,false,false
+c9ef9714-4e55-45a7-add3-b03b7b59179f,294,Friends,0,0,7,2,0,2,"106",3,2025-03-28 07:16:16.562 -0400,,false,false
+cace339d-5195-4fe6-8f55-a61b4f5fe67a,295,"1994 mini-Mega",1,0,13,3,0,3,"290",3,2025-03-28 07:16:16.595 -0400,,false,false
+caf63b0d-df86-4ce6-91cf-b71190ec6db0,296,'50s Sci-Fi,0,0,7,2,0,2,"104",3,2025-03-28 07:16:16.561 -0400,,false,false
+cb21e476-29ec-4b96-aced-9901772256e0,297,The Parent Trap mini-Super Draft,4,1,5,2,0,0,"45",3,2025-03-28 07:16:16.608 -0400,,true,false
+cc8a3dd8-f1e4-4bf0-890f-afb463cbed84,298,Road Trip,0,0,7,2,0,2,"94",3,2025-03-28 07:16:16.560 -0400,,false,false
+ce63d118-38af-442f-b245-be645b796226,299,Abbott and Costello Meet the Monsters mini-Super Draft,4,1,5,2,0,0,"51",3,2025-03-28 07:16:16.609 -0400,,true,false
+cf30c944-0e91-448b-92f0-628293dce8a0,300,Music Docs,0,0,7,2,0,2,"228",3,2025-03-28 07:16:16.584 -0400,,false,false
+cf5a3ba4-44aa-4f76-86d9-737725f30284,301,Clu Gulager,0,2,7,2,0,0,"7",3,2025-03-28 07:16:16.612 -0400,,true,false
+cfefffc4-377f-4034-972e-c36acdfe4e7d,302,"1939 mini-Mega",1,0,13,3,0,2,"286",3,2025-03-28 07:16:16.595 -0400,,false,false
+d0113431-158d-4b47-8a85-c8d273dab112,303,X-Men Super Draft,3,0,13,3,0,2,"135",3,2025-03-28 07:16:16.567 -0400,,false,false
+d055c8f0-c2d4-48b8-a4d1-f2e188186528,304,Christmas Horror,0,0,7,2,0,2,"214",3,2025-03-28 07:16:16.582 -0400,,false,false
+d072c1ff-c9fb-4de5-84be-ea96abc7e22b,305,Rural Horror,0,0,7,2,0,2,"300",3,2025-03-28 07:16:16.597 -0400,,false,false
+d2405792-9185-4316-b906-9c7b5cc883af,306,Booed at Cannes,0,0,7,2,0,2,"278",3,2025-03-28 07:16:16.593 -0400,,false,false
+d28b3def-2d8a-4148-b663-6062bfdeeb23,307,Philip Seymour Hoffman,0,0,7,2,0,2,"52",3,2025-03-28 07:16:16.551 -0400,,false,false
+d295a410-df94-4687-b78c-bb3ed5e294a9,308,Disney Animation Studios Mega Draft,2,0,26,4,0,2,"256",3,2025-03-28 07:16:16.589 -0400,,false,false
+d2b290e0-71b3-4b6b-8e29-f8a89798f60d,309,François Truffaut Super Draft Part I,3,0,22,3,0,1,"303",3,2025-03-28 07:16:16.597 -0400,,false,false
+d36f97b6-d6a0-4741-b06e-bccfbfdb621e,310,Rebecca Hall,0,0,7,2,0,1,"164",3,2025-03-28 07:16:16.573 -0400,,false,false
+d3cc9324-7fc4-4801-8b2c-4dc583bfecdb,311,Bookstore & Library Movies,0,0,7,0,2,1,"297",3,2025-03-28 07:16:16.596 -0400,,false,false
+d3d45e54-dec3-4cc4-ba3c-6bcc9e4bbe13,312,Jean-Claude Van Damme,0,0,7,2,0,2,"288",3,2025-03-28 07:16:16.595 -0400,,false,false
+d47c10da-441a-447e-8702-6b658d29bf7a,313,Lesbians mini-Mega,1,0,11,3,0,2,"284",3,2025-03-28 07:16:16.594 -0400,,false,false
+d51b1e43-4121-4de2-863c-cf3853187f20,314,Peanuts mini-Super Draft w/Bryan Cogman,4,1,5,2,0,0,"39",3,2025-03-28 07:16:16.607 -0400,,true,false
+d586fc24-6291-4521-a29b-fc6852e088a7,315,Denzel Washington Mini-Mega,1,0,11,3,0,2,"197",3,2025-03-28 07:16:16.579 -0400,,false,false
+d5b4c009-4aaf-4c9f-b7e2-735630e94e9b,316,Patricia Highsmith,0,0,7,2,0,2,"296",3,2025-03-28 07:16:16.596 -0400,,false,false
+d6a42926-2d01-4af1-a136-d2250789c800,317,Horror Prequels,0,0,7,2,0,1,"48",3,2025-03-28 07:16:16.551 -0400,,false,false
+d6b22e85-139b-40ee-a152-d0ae2f3ce226,318,Mad Scientist,0,0,7,2,0,2,"154",3,2025-03-28 07:16:16.571 -0400,,false,false
+d7ab4637-8376-491f-8f1a-c8a3651405d1,319,Erotic Thrillers,0,0,7,2,0,1,"30",3,2025-03-28 07:16:16.546 -0400,,false,false
+d8e6f551-acf7-4fc5-897a-260b010a45a9,320,Harrison Ford mini-Mega,1,0,13,3,0,2,"237",3,2025-03-28 07:16:16.585 -0400,,false,false
+d8f91d3d-d590-4bec-9db0-9acbc6718888,321,James Bond Super Draft,3,0,26,5,0,2,"156",3,2025-03-28 07:16:16.572 -0400,,false,false
+d957a8c4-c2d0-4cbb-898b-5ca199fdef1f,322,Pirates of the Caribbean mini-Super Draft,4,1,5,2,0,0,"2",3,2025-03-28 07:16:16.599 -0400,,true,false
+d9bd3ac3-0b83-4fd9-9d52-f12549d418c2,323,One Crazy Night,0,0,7,2,0,2,"66",3,2025-03-28 07:16:16.555 -0400,,false,false
+dada16ee-59cd-4d63-bc5d-47491aef571f,324,John Woo,0,0,7,2,0,2,"113",3,2025-03-28 07:16:16.563 -0400,,false,false
+db9d722a-619e-4257-b594-e6e79941eae9,325,Chucky Super Draft,3,0,8,2,0,2,"220",3,2025-03-28 07:16:16.583 -0400,,false,false
+dbed636d-8e7f-496c-907e-8b012649ad8e,326,Fivequels,0,0,7,2,0,2,"241",3,2025-03-28 07:16:16.586 -0400,,false,false
+dc8964c5-6650-438b-bdb3-24012b9c6ca1,327,Westerns: Part I Mini-Mega,1,0,13,3,0,2,"81",3,2025-03-28 07:16:16.557 -0400,,false,false
+dc9415c5-7cdc-48e9-9bd8-0c3f41d59a60,328,Teacher Movies,0,0,7,2,0,2,"209",3,2025-03-28 07:16:16.581 -0400,,false,false
+dce54f7e-bddd-41b8-90eb-4c68d47f5f80,329,Classic Disney Live Action Adventure,0,0,7,2,0,2,"120",3,2025-03-28 07:16:16.564 -0400,,false,false
+de0a36c2-4fae-404d-ad19-5d00f23e6989,330,"21st Century Best Actress Winning Films",0,0,7,2,0,2,"130",3,2025-03-28 07:16:16.566 -0400,,false,false
+defa306e-1bd4-440a-9ff5-1d9af35cbe9d,331,"21st Century Female Action",0,0,7,2,0,2,"178",3,2025-03-28 07:16:16.576 -0400,,false,false
+df598849-e608-45e2-a21f-5f64272a783c,332,Billy Wilder,0,0,7,2,0,1,"165",3,2025-03-28 07:16:16.574 -0400,,false,false
+e043ebdb-0bd7-4de7-92e6-03a93485d2de,333,Robots mini-Mega Live,1,0,9,3,0,2,"226",3,2025-03-28 07:16:16.583 -0400,,false,false
+e1647c90-8118-4c32-8ace-3af5f395be35,334,Baseball Mini-Mega,1,0,11,3,0,2,"152",3,2025-03-28 07:16:16.571 -0400,,false,false
+e1a97f66-d36e-4190-a0bf-2ff3eb823389,335,Christopher Plummer,0,2,7,2,0,0,"2",3,2025-03-28 07:16:16.611 -0400,,true,false
+e21637af-828a-4793-9ae0-1ebb8122c11f,336,Christmas-Adjacent,0,0,7,2,0,2,"162",3,2025-03-28 07:16:16.573 -0400,,false,false
+e341c35f-08c8-40e5-81d8-3db30014cefe,337,The Invisible Man ('30s/'40s) mini-Super Draft,4,1,5,2,0,0,"40",3,2025-03-28 07:16:16.607 -0400,,true,false
+e4b1f984-84e5-41ca-bea9-16d93fb97fdc,338,Universal Classic Monsters Mini-Mega,1,0,11,3,0,2,"65",3,2025-03-28 07:16:16.554 -0400,,false,false
+e529f6ed-1e70-4d50-b89e-61e1d9d5fff0,339,Best Picture Follow-ups mini-Mega,1,0,13,3,0,2,"212",3,2025-03-28 07:16:16.581 -0400,,false,false
+e5be71cf-d991-41ac-996a-f88db567c5f2,340,Notable Nudes,0,0,7,2,0,2,"11",3,2025-03-28 07:16:16.543 -0400,,false,false
+e62241ad-e76b-47ee-855c-041a5e753a11,341,Teenage Mutant Ninja Turtles mini-Super Draft,4,1,5,2,0,0,"27",3,2025-03-28 07:16:16.604 -0400,,true,false
+e6b48aec-647b-4557-b6a0-e9f76b8fbc98,342,Dirty Harry mini-Super Draft,4,1,5,2,0,0,"26",3,2025-03-28 07:16:16.604 -0400,,true,false
+e6c00d50-f4ba-4b71-b5c1-3a75969dd094,343,The Exorcist mini-Super Draft,4,1,5,2,0,0,"28",3,2025-03-28 07:16:16.604 -0400,,true,false
+e7619aca-74ec-4ca7-99e0-7217583faa25,344,AARP Action,0,0,7,2,0,2,"260",3,2025-03-28 07:16:16.590 -0400,,false,false
+e8249396-1a1a-4aa1-a062-45bf923a793b,345,Francis Ford Coppola Super Draft,3,0,24,6,0,3,"309",3,2025-03-28 07:16:16.598 -0400,,false,false
+e85554eb-016c-4011-b736-d8dde5be866e,346,'00 Slashers,0,0,7,2,0,2,"129",3,2025-03-28 07:16:16.566 -0400,,false,false
+e9466fe6-83c1-4e20-a875-a92d18092cf2,347,Tony Scott,0,0,7,2,0,2,"112",3,2025-03-28 07:16:16.563 -0400,,false,false
+e9cdc2ee-e320-4457-a966-903c406ac74a,348,Summer '82,0,5,7,2,0,2,"3",3,2025-03-28 07:16:16.614 -0400,,true,false
+ea28379e-8b51-4d8c-ba30-d327cac1af05,349,Richard Donner,0,2,7,2,0,2,"3",3,2025-03-28 07:16:16.611 -0400,,false,false
+ea8171f0-bd2e-44c8-beb5-d632e611ed5f,350,The Omen mini-Super Draft,4,1,5,2,0,0,"44",3,2025-03-28 07:16:16.608 -0400,,true,false
+ea8a8ef5-6372-4faf-a73f-eb0512abef2e,351,Visitors From Another Planet,0,0,7,2,0,1,"2",3,2025-03-28 07:16:16.540 -0400,,false,false
+eadc2778-07d3-45db-9e19-65b52a2e3234,352,"2010s Directorial Debuts",0,0,7,2,0,2,"133",3,2025-03-28 07:16:16.567 -0400,,false,false
+ebd431a3-7bec-4ae9-90aa-c25a7acd2891,353,A24 Horror,0,0,7,2,0,2,"204",3,2025-03-28 07:16:16.580 -0400,,false,false
+ebefe012-413c-4685-b9d1-70256a142d17,354,Hallmark Christmas Mini-Mega,1,0,12,4,0,2,"195",3,2025-03-28 07:16:16.579 -0400,,false,false
+ec526468-89f5-4b7c-bd21-ecce07853220,355,"1997 Mini-Mega",1,0,13,4,0,2,"186",3,2025-03-28 07:16:16.577 -0400,,false,false
+ed884257-7f7d-432a-a905-6ad222242247,356,Sony Spider-man Adjacent (NoVENOMber),4,1,5,2,0,0,"52",3,2025-03-28 07:16:16.610 -0400,,true,false
+eeef2600-15d1-416e-afcd-5d1c0e57617e,357,Erotic Horror,0,0,7,2,0,2,"299",3,2025-03-28 07:16:16.597 -0400,,false,false
+ef933e38-5df1-4197-8075-1f64b1a46871,358,Ryan Gosling,0,0,7,2,0,2,"191",3,2025-03-28 07:16:16.578 -0400,,false,false
+efb7cf0f-e8ff-49c1-80ee-8392a7bb83ea,359,Bob Dylan,0,0,7,2,0,1,"144",3,2025-03-28 07:16:16.569 -0400,,false,false
+f14a2717-31fa-4246-9a94-286812c79122,360,Kristen Stewart,0,0,7,2,0,0,"57",3,2025-03-28 07:16:16.553 -0400,,false,false
+f1a9f3e1-1ecb-4bec-b389-b3b5e59b05a9,361,Ocean's mini-Super Draft,4,1,5,2,0,0,"22",3,2025-03-28 07:16:16.603 -0400,,true,false
+f2491ed0-eb3a-451b-8bae-83a2adea7e81,362,Horror Musicals,0,0,7,2,0,3,"269",3,2025-03-28 07:16:16.592 -0400,,false,false
+f2fc3063-21a8-4e8c-878a-a9177e25b593,363,'70s Conspiracy Thrillers,0,0,7,2,0,1,"225",3,2025-03-28 07:16:16.583 -0400,,false,false
+f3185436-63da-46e3-84e6-aad5c0cc300c,364,Bourne mini-Super Draft,4,1,5,2,0,0,"1",3,2025-03-28 07:16:16.599 -0400,,true,false
+f3f8f799-d395-4e53-97f2-7514d0daf536,365,Serial Killer,0,0,7,2,0,2,"157",3,2025-03-28 07:16:16.572 -0400,,false,false
+f45ccefe-c158-4bd1-8803-31a229f78c10,366,Star Trek Super Draft,3,0,13,4,0,2,"62",3,2025-03-28 07:16:16.554 -0400,,false,false
+f4eff735-1f2c-46ed-aca5-d9c3b0d0de91,367,'80s Fantasy,0,0,7,2,0,2,"18",3,2025-03-28 07:16:16.544 -0400,,false,false
+f592eefe-cca9-47be-b89a-bd28c20ec5c0,368,Directors' Final Films,0,0,7,2,0,3,"198",3,2025-03-28 07:16:16.579 -0400,,false,false
+f6c55a58-801e-4e32-81e2-b98c4e4ba58b,369,Heavy Metal,0,0,7,2,0,2,"86",3,2025-03-28 07:16:16.558 -0400,,false,false
+f6cd9fef-24ad-41a7-911d-e1f6067d56b7,370,John Waters,0,0,7,2,0,2,"188",3,2025-03-28 07:16:16.577 -0400,,false,false
+f87ee4f2-ccf1-4969-9eac-7dc9be5dce62,371,"1998 mini-Mega Draft",1,0,13,4,0,1,"249",3,2025-03-28 07:16:16.587 -0400,,false,false
+f88a3cde-d149-4e94-92ef-953dc03edbe3,372,Mixtape Movies,0,0,7,2,0,2,"31",3,2025-03-28 07:16:16.546 -0400,,false,false
+f8d983c0-4d4f-4fa3-aa7b-42ab877bf01c,373,Post-Apocalypse,0,0,7,2,0,1,"70",3,2025-03-28 07:16:16.555 -0400,,false,false
+f980e0d9-2ecc-4352-8198-6875f836fec5,374,"Retired"" Soderbergh Super Draft",0,0,7,2,0,2,"192",3,2025-03-28 07:16:16.578 -0400,,false,false
+faab1d5b-7e9a-41ac-a0fc-aa7f3a5f7fc2,375,Jane Austen,0,0,7,2,0,2,"147",3,2025-03-28 07:16:16.570 -0400,,false,false
+fac8db87-2002-430e-8540-9e9d25df31aa,376,Twist Endings,0,0,7,2,0,2,"15",3,2025-03-28 07:16:16.544 -0400,,false,false
+faf5fb50-3452-4aa6-8517-7629ec5846ed,377,Screenwriters' Directorial Debuts,0,0,7,2,0,2,"244",3,2025-03-28 07:16:16.586 -0400,,false,false
+fc029407-d1a4-4962-bc96-9a28cd93c173,378,Twilight mini-Super Draft,4,1,5,2,0,1,"3",3,2025-03-28 07:16:16.600 -0400,,false,false
+fd794b27-df5c-4ea8-93e2-72e27d4e0756,379,Spoofs,0,0,7,2,0,2,"36",3,2025-03-28 07:16:16.547 -0400,,false,false
+fdab7eef-e486-4c11-bcff-a7f37874bab7,380,Con Artist,0,0,7,2,0,2,"89",3,2025-03-28 07:16:16.559 -0400,,false,false
+fe026bfc-6e2c-493d-9197-497d1288161c,381,Texas Chainsaw Massacre Super Draft,3,0,9,2,0,3,"315",3,2025-03-28 07:16:16.615 -0400,,false,false
+fe602d29-5351-41ff-9ee4-589051c13728,382,Adult Animation,0,0,7,2,0,2,"166",3,2025-03-28 07:16:16.574 -0400,,false,false
+fe806757-3b4e-49d0-98ac-12970faffa7c,383,Jukebox Musicals,0,0,7,2,0,2,"233",3,2025-03-28 07:16:16.585 -0400,,false,false
+fe8d1f9c-c915-498a-8ce8-089383df55a5,384,Humphrey Bogart,0,0,7,2,0,2,"33",3,2025-03-28 07:16:16.547 -0400,,false,false
+ff363d88-a497-4362-804b-a2c9511d666f,385,Shakespeare: Part I Mini-Mega,1,0,11,3,0,2,"96",3,2025-03-28 07:16:16.560 -0400,,false,false
+fff98f66-b2ec-495b-a49b-9d5a671e8c24,386,High School Horror mini-Mega,1,0,13,4,0,1,"207",3,2025-03-28 07:16:16.581 -0400,,false,false

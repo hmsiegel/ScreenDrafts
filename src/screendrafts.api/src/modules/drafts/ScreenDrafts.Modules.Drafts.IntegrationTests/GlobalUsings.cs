@@ -1,4 +1,5 @@
-﻿global using System.Collections.ObjectModel;
+﻿global using System.Collections;
+global using System.Collections.ObjectModel;
 
 global using Bogus;
 
@@ -20,9 +21,11 @@ global using ScreenDrafts.Modules.Drafts.Application.Drafters.Queries.GetVeto;
 global using ScreenDrafts.Modules.Drafts.Application.Drafters.Queries.GetVetoOverride;
 global using ScreenDrafts.Modules.Drafts.Application.Drafters.Queries.ListDrafters;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.AddDrafterToDraft;
+global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.AddDraftPositionsToGameBoard;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.AddHostToDraft;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.AddMovie;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.AddPick;
+global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.ApplyCommissionerOverride;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.AssignDraftPosition;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.AssignTriviaResults;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.CompleteDraft;
@@ -33,11 +36,12 @@ global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.RemoveDraft
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.RemoveHostFromDraft;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.StartDraft;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.UpdateReleaseDate;
+global using ScreenDrafts.Modules.Drafts.Application.Drafts.Queries.GetCommissionerOverridesByDraft;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Queries.GetDraft;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Queries.GetDraftPicks;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Queries.GetDraftPosition;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Queries.GetDraftPositionsByGameBoard;
-global using ScreenDrafts.Modules.Drafts.Application.Drafts.Queries.GetGameBoard;
+global using ScreenDrafts.Modules.Drafts.Application.Drafts.Queries.GetGameBoardWithDraftPositions;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Queries.GetLatestDrafts;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Queries.GetTriviaResultsForDrafter;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Queries.ListDrafts;

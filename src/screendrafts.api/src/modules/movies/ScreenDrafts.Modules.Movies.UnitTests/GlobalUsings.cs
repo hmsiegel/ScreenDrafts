@@ -4,6 +4,7 @@ global using Bogus;
 
 global using FluentAssertions;
 
+global using ScreenDrafts.Common.Domain;
 global using ScreenDrafts.Common.UnitTests;
 global using ScreenDrafts.Modules.Movies.Domain.Movies;
 global using ScreenDrafts.Modules.Movies.Domain.Movies.DomainEvents;

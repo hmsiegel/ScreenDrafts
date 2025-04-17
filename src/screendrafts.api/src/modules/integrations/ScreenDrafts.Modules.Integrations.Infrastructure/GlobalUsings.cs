@@ -19,6 +19,9 @@ global using Microsoft.Extensions.Options;
 
 global using Newtonsoft.Json;
 
+global using OMDbApiNet;
+global using OMDbApiNet.Model;
+
 global using Quartz;
 
 global using ScreenDrafts.Common.Application.Clock;
@@ -38,4 +41,4 @@ global using ScreenDrafts.Modules.Integrations.Infrastructure.Database;
 global using ScreenDrafts.Modules.Integrations.Infrastructure.Imdb;
 global using ScreenDrafts.Modules.Integrations.Infrastructure.Inbox;
 global using ScreenDrafts.Modules.Integrations.Infrastructure.Outbox;
-global using ScreenDrafts.Modules.Integrations.PublicApi;
+global using ScreenDrafts.Modules.Movies.IntegrationEvents;

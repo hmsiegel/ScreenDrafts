@@ -2,8 +2,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\common\ScreenDrafts.Common.Application\ScreenDrafts.Common.Application.csproj" />
     <ProjectReference Include="..\ScreenDrafts.Modules.Integrations.Domain\ScreenDrafts.Modules.Integrations.Domain.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="IMDbApiLib" />
+    <ProjectReference Include="..\ScreenDrafts.Modules.Integrations.IntegrationEvents\ScreenDrafts.Modules.Integrations.IntegrationEvents.csproj" />
   </ItemGroup>
 </Project>

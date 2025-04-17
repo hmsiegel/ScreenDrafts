@@ -8,9 +8,13 @@ public interface IDraftsRepository : IRepository
 
   void AddMovie(Movie movie);
 
+  void AddCommissionerOverride(CommissionerOverride commissionerOverride);
+
   Task<Draft?> GetByIdAsync(DraftId draftId, CancellationToken cancellationToken);
 
   Task<Movie?> GetMovieByIdAsync(Guid movieId, CancellationToken cancellationToken);
 
   Task<Draft?> GetDraftWithDetailsAsync(DraftId draftId, CancellationToken cancellationToken);
+
+  Task<bool> MovieExistsAsync(string imdbId, CancellationToken cancellationToken);
 }

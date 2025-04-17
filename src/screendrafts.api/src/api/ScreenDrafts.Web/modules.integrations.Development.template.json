@@ -1,0 +1,19 @@
+{
+  "Integrations": {
+    "Outbox": {
+      "IntervalInSeconds": 15,
+      "BatchSize": 20
+    },
+    "Inbox": {
+      "IntervalInSeconds": 15,
+      "BatchSize": 20
+    },
+    "Imdb": {
+      "Key": "YOUR_IMDB_KEY_HERE"
+    },
+    "Omdb": {
+      "Key": "YOUR_OMDB_KEY_HERE"
+    }
+  }
+}
+

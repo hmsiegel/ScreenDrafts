@@ -12,10 +12,15 @@ public static class DrafterErrors
       "Drafters.RolloverVetoOverrideAlreadyExists",
       "A rollover veto override already exists for this drafter.");
 
+  public static SDError NotFound(Guid? drafterId = null, Guid? drafterTeamId = null) =>
+    SDError.NotFound(
+      "Drafters.NotFound",
+      $"Unable to find a drafter with Id {drafterId} or a drafter team with Id {drafterTeamId}.");
+
   public static SDError NotFound(Guid drafterId) =>
     SDError.NotFound(
       "Drafters.NotFound",
-      $"Drafter with ID {drafterId} not found.");
+      $"Unable to find a drafter with Id {drafterId}.");
 
   public static SDError VetoNotFound(Guid vetoId) =>
     SDError.NotFound(
@@ -41,4 +46,19 @@ public static class DrafterErrors
     SDError.NotFound(
       "Drafters.VetoOverrideNotFound",
       $"Veto override with ID {vetoOverrideId} not found.");
+
+  public static SDError AlreadyAdded(Guid drafterId) =>
+    SDError.Conflict(
+      "Drafters.AlreadyAdded",
+      $"Drafter with ID {drafterId} already added to the team.");
+
+  public static readonly SDError NotEnoughDrafters =
+    SDError.Failure(
+      "Drafters.NotEnoughDrafters",
+      "There must be at least two drafters on a team.");
+
+  public static readonly SDError InvalidBlessingRequest =
+    SDError.Failure(
+      "Drafters.InvalidBlessingRequest",
+      "Invalid blessing request. You must specity either a drafter or a drafter team, but not both.");
 }

@@ -11,7 +11,7 @@ internal sealed class VetoRepository(DraftsDbContext dbContext) : IVetoRepositor
       .SingleOrDefaultAsync(v => v.Id == id, cancellationToken);
   }
 
-  public async Task<Veto?> GetByPickAsync(Guid pickId, CancellationToken cancellationToken)
+  public async Task<Veto?> GetByPickAsync(PickId pickId, CancellationToken cancellationToken)
   {
     return await _dbContext.Vetoes
       .SingleOrDefaultAsync(v => v.Pick.Id == pickId, cancellationToken);

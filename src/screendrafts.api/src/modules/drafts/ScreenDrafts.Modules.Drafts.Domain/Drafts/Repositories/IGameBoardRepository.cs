@@ -7,5 +7,7 @@ public interface IGameBoardRepository : IRepository
 
   Task<GameBoard> GetByDraftIdAsync(DraftId draftId, CancellationToken cancellationToken = default);
 
+  Task<GameBoard> GetByGameBoardId(GameBoardId gameBoardId, CancellationToken cancellationToken = default);
+
   Task<List<DraftPosition>> ListDraftPositionsByGameBoardIdAsync(GameBoardId gameBoardId, CancellationToken cancellationToken = default);
 }

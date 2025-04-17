@@ -13,6 +13,7 @@ public sealed class GetDraftPositionsByGameBoardTests(IntegrationTestWebAppFacto
       draft.DraftType,
       draft.TotalPicks,
       draft.TotalDrafters,
+      draft.TotalDrafterTeams,
       draft.TotalHosts,
       draft.EpisodeType,
       draft.DraftStatus));
@@ -49,17 +50,27 @@ public sealed class GetDraftPositionsByGameBoardTests(IntegrationTestWebAppFacto
       draft.DraftType,
       draft.TotalPicks,
       draft.TotalDrafters,
+      draft.TotalDrafterTeams,
       draft.TotalHosts,
       draft.EpisodeType,
       draft.DraftStatus));
     var positions = DraftFactory.CreateMegaDraftPositions();
-    var draftPositions = positions.Select(x => new DraftPositionDto(
-     x.Name,
-      x.Picks,
-      x.HasBonusVeto,
-      x.HasBonusVetoOverride));
+
+    var draftPositionsRequests = new Collection<DraftPositionRequst>(
+        [.. positions.Select(dp => new DraftPositionRequst(
+            dp.Name,
+            dp.Picks,
+            dp.HasBonusVeto,
+            dp.HasBonusVetoOverride))]);
+
     var gameBoardId = await Sender.Send(new CreateGameBoardCommand(
-      draftId.Value, draftPositions));
+      draftId.Value));
+
+
+    await Sender.Send(new AddDraftPositionsToGameBoardCommand(
+        gameBoardId.Value,
+        draftPositionsRequests));
+
     // Act
     var query = new GetDraftPositionsByGameBoardQuery(gameBoardId.Value);
     var result = await Sender.Send(query);
@@ -78,17 +89,26 @@ public sealed class GetDraftPositionsByGameBoardTests(IntegrationTestWebAppFacto
       draft.DraftType,
       draft.TotalPicks,
       draft.TotalDrafters,
+      draft.TotalDrafterTeams,
       draft.TotalHosts,
       draft.EpisodeType,
       draft.DraftStatus));
     var positions = DraftFactory.CreateMiniMegaDraftPositions();
-    var draftPositions = positions.Select(x => new DraftPositionDto(
-      x.Name,
-      x.Picks,
-      x.HasBonusVeto,
-      x.HasBonusVetoOverride));
+
+    var draftPositionsRequests = new Collection<DraftPositionRequst>(
+        [.. positions.Select(dp => new DraftPositionRequst(
+            dp.Name,
+            dp.Picks,
+            dp.HasBonusVeto,
+            dp.HasBonusVetoOverride))]);
+
     var gameBoardId = await Sender.Send(new CreateGameBoardCommand(
-      draftId.Value, draftPositions));
+      draftId.Value));
+
+    await Sender.Send(new AddDraftPositionsToGameBoardCommand(
+        gameBoardId.Value,
+        draftPositionsRequests));
+
     // Act
     var query = new GetDraftPositionsByGameBoardQuery(gameBoardId.Value);
     var result = await Sender.Send(query);

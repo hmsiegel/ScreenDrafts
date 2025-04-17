@@ -23,6 +23,8 @@ internal sealed class ProcessInboxJob(
     await using DbConnection connection = await _dbConnectionFactory.OpenConnectionAsync();
     await using DbTransaction transaction = await connection.BeginTransactionAsync();
 
+    await CleanupInvalidInboxMessagesAsync(connection, transaction);
+
     IReadOnlyList<InboxMessageResponse> inboxMessages = await GetInboxMessagesAsync(connection, transaction);
 
     foreach (var inboxMessage in inboxMessages)
@@ -30,9 +32,37 @@ internal sealed class ProcessInboxJob(
       Exception? exception = null;
       try
       {
-        IIntegrationEvent integrationEvent = JsonConvert.DeserializeObject<IIntegrationEvent>(
-            inboxMessage.Content,
-            SerializerSettings.Instance)!;
+        if (string.IsNullOrWhiteSpace(inboxMessage.Content))
+        {
+          InboxLoggingMessages.EmptyContent(_logger, ModuleName, inboxMessage.Id);
+          continue;
+        }
+
+        IIntegrationEvent? integrationEvent = null;
+        try
+        {
+          integrationEvent = JsonConvert.DeserializeObject<IIntegrationEvent>(
+              inboxMessage.Content,
+              SerializerSettings.Instance)!;
+        }
+        catch (JsonException jsonException)
+        {
+          InboxLoggingMessages.FailedToDeserialize(
+              _logger,
+              inboxMessage.Id,
+              ModuleName,
+              jsonException.Message,
+              jsonException);
+          exception = jsonException;
+        }
+
+        if (integrationEvent is null)
+        {
+          InboxLoggingMessages.MarkingAsFailed(_logger, inboxMessage.Id, ModuleName);
+          await UpdateInboxMessageAsync(connection, transaction, inboxMessage, exception);
+          continue;
+        }
+
 
         using var scope = _serviceScopeFactory.CreateScope();
 
@@ -85,7 +115,7 @@ internal sealed class ProcessInboxJob(
         sql,
         transaction: transaction);
 
-    return inboxMessages.ToList();
+    return [.. inboxMessages];
   }
 
   private async Task UpdateInboxMessageAsync(
@@ -111,6 +141,24 @@ internal sealed class ProcessInboxJob(
           Error = exception?.ToString()
         },
         transaction: transaction);
+  }
+
+  private async Task CleanupInvalidInboxMessagesAsync(IDbConnection connection, IDbTransaction transaction)
+  {
+    const string sql =
+      $"""
+      DELETE FROM movies.inbox_messages
+      WHERE "content"::text LIKE '%"Title": null%'
+      """;
+
+    var deletedCount = await connection.ExecuteAsync(
+      sql,
+      transaction: transaction);
+
+    if (deletedCount > 0)
+    {
+      InboxLoggingMessages.DeletedInboxMessages(_logger, deletedCount,  ModuleName);
+    }
   }
 
   internal sealed record InboxMessageResponse(Guid Id, string Content);

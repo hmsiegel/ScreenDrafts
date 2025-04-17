@@ -6,9 +6,10 @@ global using Dapper;
 
 global using FluentValidation;
 
-global using Microsoft.Extensions.Logging;
+global using MediatR;
 
 global using ScreenDrafts.Common.Application.Data;
+global using ScreenDrafts.Common.Application.Exceptions;
 global using ScreenDrafts.Common.Application.Messaging;
 global using ScreenDrafts.Common.Domain;
 global using ScreenDrafts.Modules.Drafts.Application.Abstractions.Data;
@@ -23,8 +24,10 @@ global using ScreenDrafts.Modules.Drafts.Domain.Drafters;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafters.Entities;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafters.Errors;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafters.Repositories;
+global using ScreenDrafts.Modules.Drafts.Domain.Drafters.Validation;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafters.ValueObjects;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafts;
+global using ScreenDrafts.Modules.Drafts.Domain.Drafts.DomainEvents;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafts.Enums;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafts.Errors;

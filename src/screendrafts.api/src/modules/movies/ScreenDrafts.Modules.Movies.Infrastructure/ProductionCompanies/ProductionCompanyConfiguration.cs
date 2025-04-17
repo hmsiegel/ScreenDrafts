@@ -11,7 +11,6 @@ internal sealed class ProductionCompanyConfiguration : IEntityTypeConfiguration<
     builder.HasIndex(pc => pc.ImdbId);
 
     builder.Property(pc => pc.Name)
-      .IsRequired()
-      .HasMaxLength(ProductionCompany.MaxLength);
+      .IsRequired();
   }
 }

@@ -18,6 +18,8 @@ public static class InfrastructureConfiguration
 
     services.AddRepositoriesFromModules(infrastructureAssemblies);
 
+    services.AddSeedersFromModules(infrastructureAssemblies);
+
     services.TryAddSingleton<IDateTimeProvider, DateTimeProvider>();
 
     services.TryAddSingleton<InsertOutboxMessagesInterceptor>();
@@ -41,6 +43,23 @@ public static class InfrastructureConfiguration
 
     services.AddMongoDb(mongoConnectionString);
 
+    return services;
+  }
+
+  public static async Task<IApplicationBuilder> UseInfrastructureAsync(this IApplicationBuilder app)
+  {
+    ArgumentNullException.ThrowIfNull(app);
+    await app.UseSeedersAsync();
+    return app;
+  }
+
+  private static IServiceCollection AddSeedersFromModules(this IServiceCollection services, Assembly[] infrastructureAssemblies)
+  {
+    services.Scan(scan => scan
+        .FromAssemblies(infrastructureAssemblies)
+        .AddClasses(classes => classes.AssignableTo<ICustomSeeder>(), false)
+        .AsImplementedInterfaces()
+        .WithScopedLifetime());
     return services;
   }
 

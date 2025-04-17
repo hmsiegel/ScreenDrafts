@@ -2,12 +2,15 @@
 
 public sealed class GameBoard : Entity<GameBoardId>
 {
+  private readonly Collection<DraftPosition> _draftPositions = [];
+
   private GameBoard(
     Draft draft,
     GameBoardId? id = null) :
     base(id ?? GameBoardId.CreateUnique())
   {
     Draft = draft;
+    DraftId = draft.Id;
   }
 
   private GameBoard()
@@ -18,22 +21,32 @@ public sealed class GameBoard : Entity<GameBoardId>
 
   public Draft Draft { get; private set; } = default!;
 
-  public ICollection<DraftPosition> DraftPositions { get; private set; } = [];
+  public ICollection<DraftPosition> DraftPositions => _draftPositions.AsReadOnly();
 
   public static Result<GameBoard> Create(
-    Draft draft,
-    Collection<DraftPosition> draftPositions)
+    Draft draft)
   {
-    ArgumentNullException.ThrowIfNull(draftPositions);
+    ArgumentNullException.ThrowIfNull(draft);
 
     var gameBoard = new GameBoard(draft);
-
-    foreach (var position in draftPositions)
-    {
-      gameBoard.DraftPositions.Add(position);
-    }
 
     return Result.Success(gameBoard);
   }
 
+  public Result AssignDraftPositions(ICollection<DraftPosition> draftPositions)
+  {
+    ArgumentNullException.ThrowIfNull(draftPositions);
+
+    if (draftPositions is null)
+    {
+      return Result.Failure(GameBoardErrors.DraftPositionsMissing);
+    }
+
+    foreach (var position in draftPositions)
+    {
+      _draftPositions.Add(position);
+    }
+
+    return Result.Success();
+  }
 }

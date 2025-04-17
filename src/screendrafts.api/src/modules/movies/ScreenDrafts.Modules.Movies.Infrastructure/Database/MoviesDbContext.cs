@@ -3,8 +3,6 @@
 public sealed class MoviesDbContext(DbContextOptions<MoviesDbContext> options)
   : DbContext(options), IUnitOfWork
 {
-  private IDbContextTransaction? _currentTransaction;
-
   internal DbSet<Movie> Movies { get; set; }
 
   internal DbSet<Genre> Genres { get; set; }
@@ -35,32 +33,10 @@ public sealed class MoviesDbContext(DbContextOptions<MoviesDbContext> options)
     modelBuilder.HasDefaultSchema(Schemas.Movies);
   }
 
-  public async Task BeginTransactionAsync(CancellationToken cancellationToken = default)
+  protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
   {
-    _currentTransaction = await Database.BeginTransactionAsync(cancellationToken);
-  }
+    ArgumentNullException.ThrowIfNull(optionsBuilder);
 
-  public async Task CommitTransactionAsync(CancellationToken cancellationToken = default)
-  {
-    try
-    {
-      await SaveChangesAsync(cancellationToken);
-    }
-    catch
-    {
-      await RollbackTransactionAsync(cancellationToken);
-      throw;
-    }
+    optionsBuilder.EnableSensitiveDataLogging();
   }
-
-  public async Task RollbackTransactionAsync(CancellationToken cancellationToken = default)
-  {
-    if (_currentTransaction is not null)
-    {
-      await _currentTransaction.RollbackAsync(cancellationToken);
-      await _currentTransaction.DisposeAsync();
-      _currentTransaction = null;
-    }
-  }
-
 }

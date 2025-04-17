@@ -3,30 +3,30 @@
 public sealed class CreateDraftTests(IntegrationTestWebAppFactory factory)
   : BaseIntegrationTest(factory)
 {
-  public static readonly TheoryData<string, string, int, int, int, string, string> ValidRequests = new()
+  public static readonly TheoryData<string, string, int, int, int, int, string, string> ValidRequests = new()
   {
-    { Faker.Company.CompanyName(), DraftType.Standard.Name, 7, 2, 2, EpisodeType.MainFeed.Name, DraftStatus.Created.Name  },
-    { Faker.Company.CompanyName(), DraftType.Super.Name, 18, 4, 2, EpisodeType.MainFeed.Name, DraftStatus.Created.Name  },
-    { Faker.Company.CompanyName(), DraftType.Mega.Name, 20, 4, 2, EpisodeType.MainFeed.Name, DraftStatus.Created.Name  },
-    { Faker.Company.CompanyName(), DraftType.MiniMega.Name, 11, 3, 2, EpisodeType.MainFeed.Name, DraftStatus.Created.Name  },
-    { Faker.Company.CompanyName(), DraftType.MiniSuper.Name, 5, 2, 2, EpisodeType.FranchiseMiniSuper.Name, DraftStatus.Created.Name  },
-    { Faker.Company.CompanyName(), DraftType.Mega.Name, 25, 6, 2, EpisodeType.Legends.Name, DraftStatus.Created.Name  },
+    { Faker.Company.CompanyName(), DraftType.Standard.Name, 7, 2, 0, 2, EpisodeType.MainFeed.Name, DraftStatus.Created.Name  },
+    { Faker.Company.CompanyName(), DraftType.Super.Name, 18, 4, 0, 2, EpisodeType.MainFeed.Name, DraftStatus.Created.Name  },
+    { Faker.Company.CompanyName(), DraftType.Mega.Name, 20, 4, 0, 2, EpisodeType.MainFeed.Name, DraftStatus.Created.Name },
+    { Faker.Company.CompanyName(), DraftType.MiniMega.Name, 11, 3, 0, 2, EpisodeType.MainFeed.Name, DraftStatus.Created.Name },
+    { Faker.Company.CompanyName(), DraftType.MiniSuper.Name, 5, 2, 0, 2, EpisodeType.FranchiseMiniSuper.Name, DraftStatus.Created.Name },
+    { Faker.Company.CompanyName(), DraftType.Mega.Name, 25, 6, 0, 2, EpisodeType.Legends.Name, DraftStatus.Created.Name },
   };
 
-  public static readonly TheoryData<string, string, int, int, int, string, string> InvalidRequests = new()
+  public static readonly TheoryData<string, string, int, int, int, int, string, string> InvalidRequests = new()
   {
-    { string.Empty, DraftType.Standard.Name, 7, 2, 2, EpisodeType.MainFeed.Name, DraftStatus.Created.Name  },
-    { Faker.Company.CompanyName(), DraftType.Mega.Name, 0, 4, 2, EpisodeType.MainFeed.Name, DraftStatus.Created.Name  },
-    { Faker.Company.CompanyName(), DraftType.MiniMega.Name, 11, 0, 2, EpisodeType.MainFeed.Name, DraftStatus.Created.Name  },
-    { Faker.Company.CompanyName(), DraftType.MiniSuper.Name, 5, 2, 0, EpisodeType.FranchiseMiniSuper.Name, DraftStatus.Created.Name  },
-    { Faker.Company.CompanyName(), DraftType.Standard.Name, 7, 2, 2, EpisodeType.MainFeed.Name, DraftStatus.Completed.Name  },
+    { string.Empty, DraftType.Standard.Name, 7, 2, 0, 2, EpisodeType.MainFeed.Name, DraftStatus.Created.Name  },
+    { Faker.Company.CompanyName(), DraftType.Mega.Name, 0, 4, 0, 2, EpisodeType.MainFeed.Name, DraftStatus.Created.Name },
+    { Faker.Company.CompanyName(), DraftType.MiniMega.Name, 11, 0, 0, 2, EpisodeType.MainFeed.Name, DraftStatus.Created.Name },
+    { Faker.Company.CompanyName(), DraftType.MiniSuper.Name, 5, 2, 0, 0, EpisodeType.FranchiseMiniSuper.Name, DraftStatus.Created.Name },
+    { Faker.Company.CompanyName(), DraftType.Standard.Name, 7, 2, 0, 2, EpisodeType.MainFeed.Name, DraftStatus.Completed.Name },
   };
 
-  public static readonly TheoryData<string, string, int, int, int, string, string> EmptyEnumRequests = new()
+  public static readonly TheoryData<string, string, int, int, int, int, string, string> EmptyEnumRequests = new()
   {
-    { Faker.Company.CompanyName(), string.Empty, 18, 4, 2, EpisodeType.MainFeed.Name, DraftStatus.Created.Name  },
-    { Faker.Company.CompanyName(), DraftType.Mega.Name, 25, 6, 2, string.Empty, DraftStatus.Created.Name  },
-    { Faker.Company.CompanyName(), DraftType.Standard.Name, 7, 2, 2, EpisodeType.MainFeed.Name, string.Empty },
+    { Faker.Company.CompanyName(), string.Empty, 18, 4, 0, 2, EpisodeType.MainFeed.Name, DraftStatus.Created.Name  },
+    { Faker.Company.CompanyName(), DraftType.Mega.Name, 25, 6, 0, 2, string.Empty, DraftStatus.Created.Name  },
+    { Faker.Company.CompanyName(), DraftType.Standard.Name, 7, 2, 0, 2, EpisodeType.MainFeed.Name, string.Empty },
   };
 
   [Theory]
@@ -36,6 +36,7 @@ public sealed class CreateDraftTests(IntegrationTestWebAppFactory factory)
     string draftType,
     int totalPicks,
     int totalDrafters,
+    int totalDrafterTeames,
     int totalHosts,
     string episodeType,
     string draftStatus)
@@ -46,6 +47,7 @@ public sealed class CreateDraftTests(IntegrationTestWebAppFactory factory)
      draftType,
       totalPicks,
       totalDrafters,
+      totalDrafterTeames,
       totalHosts,
       episodeType,
       draftStatus);
@@ -56,6 +58,7 @@ public sealed class CreateDraftTests(IntegrationTestWebAppFactory factory)
       DraftType.FromName(request.DraftType),
       request.TotalPicks,
       request.TotalDrafters,
+      request.TotalDrafterTeams,
       request.TotalHosts,
       EpisodeType.FromName(request.EpisodeType),
       DraftStatus.FromName(request.DraftStatus));
@@ -74,6 +77,7 @@ public sealed class CreateDraftTests(IntegrationTestWebAppFactory factory)
     string draftType,
     int totalPicks,
     int totalDrafters,
+    int totalDrafterTeams,
     int totalHosts,
     string episodeType,
     string draftStatus)
@@ -84,6 +88,7 @@ public sealed class CreateDraftTests(IntegrationTestWebAppFactory factory)
      draftType,
       totalPicks,
       totalDrafters,
+      totalDrafterTeams,
       totalHosts,
       episodeType,
       draftStatus);
@@ -94,6 +99,7 @@ public sealed class CreateDraftTests(IntegrationTestWebAppFactory factory)
       DraftType.FromName(request.DraftType),
       request.TotalPicks,
       request.TotalDrafters,
+      request.TotalDrafterTeams,
       request.TotalHosts,
       EpisodeType.FromName(request.EpisodeType),
       DraftStatus.FromName(request.DraftStatus));
@@ -111,6 +117,7 @@ public sealed class CreateDraftTests(IntegrationTestWebAppFactory factory)
     string draftType,
     int totalPicks,
     int totalDrafters,
+    int totalDrafterTeams,
     int totalHosts,
     string episodeType,
     string draftStatus)
@@ -121,6 +128,7 @@ public sealed class CreateDraftTests(IntegrationTestWebAppFactory factory)
      draftType,
       totalPicks,
       totalDrafters,
+      totalDrafterTeams,
       totalHosts,
       episodeType,
       draftStatus);
@@ -132,6 +140,7 @@ public sealed class CreateDraftTests(IntegrationTestWebAppFactory factory)
         DraftType.FromName(request.DraftType),
         request.TotalPicks,
         request.TotalDrafters,
+        request.TotalDrafterTeams,
         request.TotalHosts,
         EpisodeType.FromName(request.EpisodeType),
         DraftStatus.FromName(request.DraftStatus)));

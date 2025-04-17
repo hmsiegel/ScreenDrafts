@@ -10,6 +10,7 @@ public class DraftTests : BaseTest
     var draftType = DraftType.Standard;
     var totalPicks = 7;
     var totalDrafters = 2;
+    var totalDrafterTeams = 0;
     var totalHosts = 2;
     var draftStatus = DraftStatus.Created;
     var episodeType = EpisodeType.MainFeed;
@@ -20,6 +21,7 @@ public class DraftTests : BaseTest
       draftType,
       totalPicks,
       totalDrafters,
+      totalDrafterTeams,
       totalHosts,
       draftStatus,
       episodeType);
@@ -53,6 +55,7 @@ public class DraftTests : BaseTest
     var draftType = DraftType.Standard;
     var totalPicks = 5;
     var totalDrafters = 1;
+    var totalDrafterTeams = 0;
     var totalHosts = 2;
     var draftStatus = DraftStatus.Created;
     var episodeType = EpisodeType.MainFeed;
@@ -63,13 +66,14 @@ public class DraftTests : BaseTest
       draftType,
       totalPicks,
       totalDrafters,
+      totalDrafterTeams,
       totalHosts,
       draftStatus,
       episodeType);
 
     // Assert
     result.IsSuccess.Should().BeFalse();
-    result.Errors[0].Should().Be(DraftErrors.DraftMustHaveAtLeastTwoDrafters);
+    result.Errors[0].Should().Be(DraftErrors.DraftMustHaveAtLeastTwoParticipants);
   }
 
   [Fact]
@@ -80,6 +84,7 @@ public class DraftTests : BaseTest
     var draftType = DraftType.Standard;
     var totalPicks = 3;
     var totalDrafters = 3;
+    var totalDrafterTeams = 0;
     var totalHosts = 2;
     var draftStatus = DraftStatus.Created;
     var episodeType = EpisodeType.MainFeed;
@@ -90,6 +95,7 @@ public class DraftTests : BaseTest
       draftType,
       totalPicks,
       totalDrafters,
+      totalDrafterTeams,
       totalHosts,
       draftStatus,
       episodeType);
@@ -186,11 +192,12 @@ public class DraftTests : BaseTest
     var draft = SetupAndStartDraft();
 
     var position = 1;
+    var playOrder = 1;
     var movie = MovieFactory.CreateMovie().Value;
 
     var drafter = draft.Drafters.FirstOrDefault();
 
-    var pick = Pick.Create(position, movie, drafter!, draft).Value;
+    var pick = Pick.Create(position, movie, drafter!, null, draft, playOrder).Value;
 
     // Act
     var result = draft.AddPick(pick);
@@ -207,11 +214,12 @@ public class DraftTests : BaseTest
     var draft = SetupAndStartDraft();
 
     var position = 1;
+    var playOrder = 1;
     var movie = MovieFactory.CreateMovie().Value;
 
     var drafter = draft.Drafters.FirstOrDefault();
 
-    var pick = Pick.Create(position, movie, drafter!, draft).Value;
+    var pick = Pick.Create(position, movie, drafter!, null, draft, playOrder).Value;
 
     // Act
     draft.AddPick(pick);
@@ -221,7 +229,7 @@ public class DraftTests : BaseTest
     var firstPick = draft.Picks.FirstOrDefault(p => p.Position == position)!;
 
     // Assert
-    domainEvent.DrafterId.Should().Be(firstPick.Drafter.Id.Value);
+    domainEvent.DrafterId.Should().Be(firstPick.Drafter!.Id.Value);
     domainEvent.DraftId.Should().Be(firstPick.Draft.Id.Value);
   }
 
@@ -233,11 +241,12 @@ public class DraftTests : BaseTest
     var draft = SetupAndStartDraft();
 
     var position = draft.TotalPicks + 1;
+    var playOrder = 1;
     var movie = MovieFactory.CreateMovie().Value;
 
     var drafter = draft.Drafters.FirstOrDefault();
 
-    var pick = Pick.Create(position, movie, drafter!, draft).Value;
+    var pick = Pick.Create(position, movie, drafter!, null, draft, playOrder).Value;
 
     // Act
     var result = draft.AddPick(pick);
@@ -258,9 +267,10 @@ public class DraftTests : BaseTest
     var drafter = draft.Drafters.FirstOrDefault();
 
     var position = 1;
+    var playOrder = 1;
     draft.AddDrafter(drafter!);
 
-    var pick = Pick.Create(position, movie, drafter!, draft).Value;
+    var pick = Pick.Create(position, movie, drafter!, null, draft, playOrder).Value;
 
     draft.AddPick(pick);
 
@@ -410,7 +420,9 @@ public class DraftTests : BaseTest
         i + 1,
         MovieFactory.CreateMovie().Value,
         DrafterFactory.CreateDrafter(),
-        draft).Value;
+        null,
+        draft, 
+        i + 1).Value;
 
       draft.AddPick(pick);
     }
@@ -468,7 +480,7 @@ public class DraftTests : BaseTest
       ?? throw new InvalidOperationException("Drafter is null");
 
     // Act
-    draft.AddTriviaResult(usedDrafter, position, questionsWon);
+    draft.AddTriviaResult(usedDrafter, null, position, questionsWon);
 
     // Assert
     draft.TriviaResults.Should().Contain(tr => tr.Drafter == usedDrafter && tr.Position == position && tr.QuestionsWon == questionsWon);
@@ -483,7 +495,7 @@ public class DraftTests : BaseTest
     var drafter = draft.Drafters.FirstOrDefault();
 
     // Act
-    var result = draft.ApplyRollover(drafter!.Id.Value, true);
+    var result = draft.ApplyRollover(drafter!.Id.Value, null, true);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -553,8 +565,7 @@ public class DraftTests : BaseTest
   {
     // Arrange
     var draft = DraftFactory.CreateStandardDraft().Value;
-    var picks = DraftFactory.CreateStandardDraftPositions();
-    var gameBoard = GameBoard.Create(draft, picks).Value;
+    var gameBoard = GameBoard.Create(draft).Value;
 
     // Act
     draft.SetGameBoard(gameBoard);
@@ -578,6 +589,5 @@ public class DraftTests : BaseTest
     draft.StartDraft();
     return draft;
   }
-
 }
 

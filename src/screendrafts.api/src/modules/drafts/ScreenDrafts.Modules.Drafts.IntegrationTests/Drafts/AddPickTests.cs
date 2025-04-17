@@ -11,7 +11,7 @@ public class AddPickTests(IntegrationTestWebAppFactory factory) : BaseIntegratio
     await Sender.Send(new StartDraftCommand(draftId.Value));
 
     var movie = MovieFactory.CreateMovie().Value;
-    var movieId = await Sender.Send(new AddMovieCommand(movie.Id, movie.MovieTitle));
+    var movieId = await Sender.Send(new AddMovieCommand(movie.Id, movie.ImdbId, movie.MovieTitle));
 
     var reloadedDraftResult = await Sender.Send(new GetDraftQuery(draftId.Value));
 
@@ -21,7 +21,9 @@ public class AddPickTests(IntegrationTestWebAppFactory factory) : BaseIntegratio
       reloadedDraftResult.Value.Id,
       Faker.Random.Int(1, reloadedDraftResult.Value.TotalPicks),
       movieId.Value,
-     drafters[0].Id.Value);
+      1,
+     drafters[0].Id.Value,
+     null);
 
     // Act
     var result = await Sender.Send(addPickCommand);
@@ -50,7 +52,7 @@ public class AddPickTests(IntegrationTestWebAppFactory factory) : BaseIntegratio
     var drafter = DrafterFactory.CreateDrafter();
 
     var movie = MovieFactory.CreateMovie().Value;
-    var movieId = await Sender.Send(new AddMovieCommand(movie.Id, movie.MovieTitle));
+    var movieId = await Sender.Send(new AddMovieCommand(movie.Id, movie.ImdbId, movie.MovieTitle));
 
     var reloadedDraftResult = await Sender.Send(new GetDraftQuery(draftId.Value));
 
@@ -60,14 +62,17 @@ public class AddPickTests(IntegrationTestWebAppFactory factory) : BaseIntegratio
       reloadedDraftResult.Value.Id,
       1,
       movieId.Value,
-     drafter.Id.Value);
+      1,
+     drafter.Id.Value,
+     null);
 
     // Act
     var result = await Sender.Send(addPickCommand);
 
     // Assert
+    var drafterId = drafter.Id.Value;
     result.IsSuccess.Should().BeFalse();
-    result.Errors[0].Should().Be(DrafterErrors.NotFound(drafter.Id.Value));
+    result.Errors[0].Should().Be(DrafterErrors.NotFound(drafterId, null));
   }
 
   [Fact]
@@ -87,7 +92,9 @@ public class AddPickTests(IntegrationTestWebAppFactory factory) : BaseIntegratio
       reloadedDraftResult.Value.Id,
       1,
       movie.Id,
-     drafters[0].Id.Value);
+      1,
+     drafters[0].Id.Value,
+     null);
 
     // Act
     var result = await Sender.Send(addPickCommand);
@@ -104,12 +111,14 @@ public class AddPickTests(IntegrationTestWebAppFactory factory) : BaseIntegratio
     var (draftId, drafters, _) = await SetupDraftAndDraftersAsync();
 
     var movie = MovieFactory.CreateMovie().Value;
-    var movieId = await Sender.Send(new AddMovieCommand(movie.Id, movie.MovieTitle));
+    var movieId = await Sender.Send(new AddMovieCommand(movie.Id, movie.ImdbId, movie.MovieTitle));
     var addPickCommand = new AddPickCommand(
       draftId.Value,
       1,
       movieId.Value,
-      drafters[0].Id.Value);
+      1,
+      drafters[0].Id.Value,
+      null);
     // Act
     var result = await Sender.Send(addPickCommand);
     // Assert
@@ -126,7 +135,7 @@ public class AddPickTests(IntegrationTestWebAppFactory factory) : BaseIntegratio
     await Sender.Send(new StartDraftCommand(draftId.Value));
 
     var movie = MovieFactory.CreateMovie().Value;
-    var movieId = await Sender.Send(new AddMovieCommand(movie.Id, movie.MovieTitle));
+    var movieId = await Sender.Send(new AddMovieCommand(movie.Id, movie.ImdbId, movie.MovieTitle));
 
     var reloadedDraftResult = await Sender.Send(new GetDraftQuery(draftId.Value));
 
@@ -136,7 +145,8 @@ public class AddPickTests(IntegrationTestWebAppFactory factory) : BaseIntegratio
       reloadedDraftResult.Value.Id,
       0,
       movieId.Value,
-      drafters[0].Id.Value);
+      1,
+      drafters[0].Id.Value, null);
 
     // Act
     var result = await Sender.Send(addPickCommand);
@@ -155,7 +165,7 @@ public class AddPickTests(IntegrationTestWebAppFactory factory) : BaseIntegratio
     await Sender.Send(new StartDraftCommand(draftId.Value));
 
     var movie = MovieFactory.CreateMovie().Value;
-    var movieId = await Sender.Send(new AddMovieCommand(movie.Id, movie.MovieTitle));
+    var movieId = await Sender.Send(new AddMovieCommand(movie.Id, movie.ImdbId, movie.MovieTitle));
 
     var reloadedDraftResult = await Sender.Send(new GetDraftQuery(draftId.Value));
 
@@ -165,14 +175,16 @@ public class AddPickTests(IntegrationTestWebAppFactory factory) : BaseIntegratio
       reloadedDraftResult.Value.Id,
       1,
       movieId.Value,
-      drafters[0].Id.Value);
+      1,
+      drafters[0].Id.Value, null);
     await Sender.Send(addPickCommand);
 
     var addPickCommand2 = new AddPickCommand(
       reloadedDraftResult.Value.Id,
       1,
       movieId.Value,
-      drafters[1].Id.Value);
+      1,
+      drafters[1].Id.Value, null);
 
     // Act
     var result = await Sender.Send(addPickCommand2);
@@ -191,7 +203,7 @@ public class AddPickTests(IntegrationTestWebAppFactory factory) : BaseIntegratio
 
     var reloadedDraftResult = await Sender.Send(new GetDraftQuery(draftId.Value));
 
-    var gameBoard = await Sender.Send(new GetGameBoardQuery(draftId.Value));
+    var gameBoard = await Sender.Send(new GetGameBoardWithDraftPositionsQuery(draftId.Value));
 
     var draftPositions = await Sender.Send(new GetDraftPositionsByGameBoardQuery(gameBoard.Value.Id));
 
@@ -214,13 +226,14 @@ public class AddPickTests(IntegrationTestWebAppFactory factory) : BaseIntegratio
       }
 
       var movie = MovieFactory.CreateMovie().Value;
-      var movieId = await Sender.Send(new AddMovieCommand(movie.Id, movie.MovieTitle));
+    var movieId = await Sender.Send(new AddMovieCommand(movie.Id, movie.ImdbId, movie.MovieTitle));
 
       var addPickCommand = new AddPickCommand(
         reloadedDraftResult.Value.Id,
         currentPickNumber,
         movieId.Value,
-        currentDrafter!.Id.Value);
+        1,
+        currentDrafter!.Id.Value, null);
        await Sender.Send(addPickCommand);
 
       picks.Add(new DraftPickResponse(

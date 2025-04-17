@@ -14,20 +14,20 @@ public sealed class Movie : AggrgateRoot<MovieId, Guid>
   private Movie(
     string title,
     string year,
-    string plot,
+    string? plot,
     string image,
-    string releaseDate,
-    Uri youtubeTrailerUrl,
+    string? releaseDate,
+    Uri? youtubeTrailerUrl,
     string imdbId,
     MovieId? id = null)
     : base(id ?? MovieId.CreateUnique())
   {
     Title = Guard.Against.NullOrWhiteSpace(title);
     Year = Guard.Against.NullOrWhiteSpace(year);
-    Plot = Guard.Against.NullOrWhiteSpace(plot);
+    Plot = plot;
     Image = Guard.Against.NullOrWhiteSpace(image);
-    ReleaseDate = Guard.Against.NullOrWhiteSpace(releaseDate);
-    YoutubeTrailerUrl = Guard.Against.Null(youtubeTrailerUrl);
+    ReleaseDate = releaseDate;
+    YoutubeTrailerUrl = youtubeTrailerUrl;
     ImdbId = Guard.Against.NullOrWhiteSpace(imdbId);
   }
 
@@ -41,13 +41,13 @@ public sealed class Movie : AggrgateRoot<MovieId, Guid>
 
   public string Year { get; private set; } = default!;
 
-  public string Plot { get; private set; } = default!;
+  public string? Plot { get; private set; } = default!;
 
   public string Image { get; private set; } = default!;
 
-  public string ReleaseDate { get; private set; } = default!;
+  public string? ReleaseDate { get; private set; } = default!;
 
-  public Uri YoutubeTrailerUrl { get; private set; } = default!;
+  public Uri? YoutubeTrailerUrl { get; private set; } = default!;
 
   public IReadOnlyCollection<MovieGenre> MovieGenres => _movieGenres.AsReadOnly();
 
@@ -94,13 +94,18 @@ public sealed class Movie : AggrgateRoot<MovieId, Guid>
   public static Result<Movie> Create(
     string title,
     string year,
-    string plot,
+    string? plot,
     string image,
-    string releaseDate,
-    Uri youtubeTrailerUrl,
+    string? releaseDate,
+    Uri? youtubeTrailerUrl,
     string imdbId,
     MovieId? id = null)
   {
+    if (string.IsNullOrWhiteSpace(title) || string.IsNullOrWhiteSpace(imdbId))
+    {
+      return Result.Failure<Movie>(MovieErrors.RequiredFieldsMissing);
+    }
+
     var movie = new Movie(
       title: title,
       year: year,
@@ -111,7 +116,7 @@ public sealed class Movie : AggrgateRoot<MovieId, Guid>
       imdbId: imdbId,
       id: id);
 
-    movie.Raise(new MovieCreatedDomainEvent(movie.Id.Value));
+    movie.Raise(new MovieCreatedDomainEvent(movie.Id.Value, imdbId));
 
     return Result.Success(movie);
   }

@@ -12,4 +12,8 @@ public static class DrafterFactory
   public static Drafter CreateDrafter() =>
     Drafter.Create(
       _faker.Name.FullName()).Value;
+
+  public static DrafterTeam CreateDrafterTeam() =>
+    DrafterTeam.Create(
+      _faker.Company.CompanyName()).Value;
 }

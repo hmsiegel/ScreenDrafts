@@ -36,7 +36,7 @@ internal sealed class AssignTriviaResultsCommandHandler(
       return Result.Failure<TriviaResult>(DrafterErrors.InvalidPosition);
     }
 
-    var result = draft.AddTriviaResult(drafter, request.Position, request.QuestionsWon);
+    var result = draft.AddTriviaResult(drafter, null, request.Position, request.QuestionsWon);
 
     if (result.IsFailure)
     {

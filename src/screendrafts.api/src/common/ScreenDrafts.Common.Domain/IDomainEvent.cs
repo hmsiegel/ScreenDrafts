@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Common.Domain;
 
-public interface IDomainEvent : INotification
+public interface IDomainEvent
 {
   Guid Id { get; }
 

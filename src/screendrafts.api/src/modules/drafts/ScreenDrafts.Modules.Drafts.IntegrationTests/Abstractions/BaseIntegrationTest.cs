@@ -61,6 +61,7 @@ public class BaseIntegrationTest : IDisposable, IAsyncLifetime
       draft.DraftType,
       draft.TotalPicks,
       draft.TotalDrafters,
+      draft.TotalDrafterTeams,
       draft.TotalHosts,
       draft.EpisodeType,
       draft.DraftStatus));
@@ -131,7 +132,7 @@ public class BaseIntegrationTest : IDisposable, IAsyncLifetime
         drafts.draft_positions,
         drafts.picks,
         drafts.game_boards,
-        drafts.draft_drafter,
+        drafts.drafts_drafters,
         drafts.draft_host,
         drafts.draft_release_date,
         drafts.movies,

@@ -31,9 +31,13 @@ public sealed class Person : AggrgateRoot<PersonId, Guid>
 
   public static Person Create(
     string imdbId,
-    string name)
+    string name,
+    PersonId? id = null)
   {
-    return new Person(imdbId, name);
+    return new Person(
+      imdbId: imdbId,
+      name: name,
+      id: id);
   }
 
   public void AddMovieActor(MovieActor movieActor)

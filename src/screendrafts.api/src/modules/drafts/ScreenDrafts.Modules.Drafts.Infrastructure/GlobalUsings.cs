@@ -8,7 +8,6 @@ global using Dapper;
 
 global using MassTransit;
 
-global using Microsoft.AspNetCore.Builder;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.EntityFrameworkCore.ChangeTracking;
 global using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -41,7 +40,6 @@ global using ScreenDrafts.Common.Infrastructure.Outbox;
 global using ScreenDrafts.Common.Infrastructure.Serialization;
 global using ScreenDrafts.Modules.Drafts.Application.Abstractions.Data;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Queries.GetDraftPositionsByGameBoard;
-global using ScreenDrafts.Modules.Drafts.Application.Logging;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafters;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafters.Entities;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafters.Repositories;
@@ -52,14 +50,13 @@ global using ScreenDrafts.Modules.Drafts.Domain.Drafts.Enums;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafts.Repositories;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafts.ValueObjects;
 global using ScreenDrafts.Modules.Drafts.Infrastructure.Converters;
+global using ScreenDrafts.Modules.Drafts.Infrastructure.Data;
 global using ScreenDrafts.Modules.Drafts.Infrastructure.Database;
-global using ScreenDrafts.Modules.Drafts.Infrastructure.Database.DatabaseSeeders;
-global using ScreenDrafts.Modules.Drafts.Infrastructure.Drafters;
-global using ScreenDrafts.Modules.Drafts.Infrastructure.Drafts;
-global using ScreenDrafts.Modules.Drafts.Infrastructure.Hosts;
+global using ScreenDrafts.Modules.Drafts.Infrastructure.Database.Seeding.Models;
 global using ScreenDrafts.Modules.Drafts.Infrastructure.Inbox;
 global using ScreenDrafts.Modules.Drafts.Infrastructure.Outbox;
 global using ScreenDrafts.Modules.Drafts.Infrastructure.Serialization;
+global using ScreenDrafts.Modules.Movies.IntegrationEvents;
 global using ScreenDrafts.Modules.Users.IntegrationEvents;
 
 global using SmartEnum.EFCore;

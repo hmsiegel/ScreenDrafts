@@ -22,6 +22,19 @@
 	<img src="./res/guest-landing.png" alt="Guest Landing">
 </p>
 
+## Development Setup
+
+### Configuration Files
+Development configuration files (*.Development.json) are ignored by git to protect sensitive data. Follow these steps to set up your development environment:
+
+1. IMDB Integration Setup:
+   - Locate the template file at `src/screendrafts.api/src/api/ScreenDrafts.Web/modules.integrations.Development.template.json`
+   - Create a copy named `modules.integrations.Development.json` in the same directory
+   - Replace the `{{IMDB_API_KEY}}` placeholder with your IMDB API key
+
+To obtain an IMDB API key, visit [IMDB API Documentation](https://imdb-api.com/api)
+
+Note: Other *.Development.json files follow a similar pattern. Check the templates provided for each module.
 
 ## Author
 

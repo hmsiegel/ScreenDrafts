@@ -25,7 +25,7 @@ internal sealed class PicksRepository(DraftsDbContext dbContext) : IPicksReposit
     return query.ToListAsync(cancellationToken);
   }
 
-  public async Task<Pick?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+  public async Task<Pick?> GetByIdAsync(PickId id, CancellationToken cancellationToken)
   {
     return await _dbContext.Picks
       .SingleOrDefaultAsync(p => p.Id == id, cancellationToken);

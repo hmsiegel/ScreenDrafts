@@ -1,4 +1,5 @@
 ﻿global using System.Collections.ObjectModel;
+global using System.ComponentModel.DataAnnotations.Schema;
 global using System.Globalization;
 
 global using Ardalis.GuardClauses;

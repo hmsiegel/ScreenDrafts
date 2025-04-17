@@ -13,7 +13,7 @@ public sealed class GetLatestDraftsTests(IntegrationTestWebAppFactory factory)
 
       var reloadedDraft = await Sender.Send(new GetDraftQuery(draftId.Value));
 
-      var gameBoard = await Sender.Send(new GetGameBoardQuery(draftId.Value));
+      var gameBoard = await Sender.Send(new GetGameBoardWithDraftPositionsQuery(draftId.Value));
 
       var draftPositions = await Sender.Send(new GetDraftPositionsByGameBoardQuery(gameBoard.Value.Id));
 
@@ -40,20 +40,26 @@ public sealed class GetLatestDraftsTests(IntegrationTestWebAppFactory factory)
         }
 
         var movie = MovieFactory.CreateMovie().Value;
-        var movieId = await Sender.Send(new AddMovieCommand(movie.Id, movie.MovieTitle));
+        var movieId = await Sender.Send(new AddMovieCommand(movie.Id, movie.ImdbId, movie.MovieTitle));
+
+        if (movieId.IsFailure)
+        {
+          throw new InvalidOperationException("Could not add movie");
+        }
 
         var addPickCommand = new AddPickCommand(
           draftId.Value,
           currentPickNumber,
           movieId.Value,
-          currentDrafter!.Id.Value);
+          1,
+          currentDrafter!.Id.Value, null);
         await Sender.Send(addPickCommand);
       }
       await Sender.Send(new CompleteDraftCommand(draftId.Value));
 
       var draftReleaseDate = DraftReleaseDate.Create(DraftId.Create(draftId.Value), Faker.Date.PastDateOnly());
 
-      var updatedReleaseDate = 
+      var updatedReleaseDate =
         await Sender.Send(new UpdateReleaseDateCommand(draftReleaseDate.DraftId.Value, draftReleaseDate.ReleaseDate));
 
       updatedReleaseDate.IsSuccess.Should().BeTrue();

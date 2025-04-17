@@ -16,21 +16,24 @@ public class ExecuteVetoOverrideTests(IntegrationTestWebAppFactory factory)
     var drafter = drafters[Faker.Random.Int(0, draft.Value.TotalDrafters - 1)];
 
     var movie = MovieFactory.CreateMovie().Value;
-    var movieId = await Sender.Send(new AddMovieCommand(movie.Id, movie.MovieTitle));
+    var movieId = await Sender.Send(new AddMovieCommand(movie.Id, movie.ImdbId, movie.MovieTitle));
 
     var pickId = await Sender.Send(new AddPickCommand(
-      draftId.Value,
-      7,
-      movieId.Value,
-      drafter.Id.Value));
+      DraftId: draftId.Value,
+      DrafterTeamId: null,
+      Position: 7,
+      MovieId: movieId.Value,
+      DrafterId: drafter.Id.Value,
+      PlayOrder: 1));
 
     // Act
     var vetoId = await Sender.Send(new ExecuteVetoCommand(
+      null,
       drafter.Id.Value,
       pickId.Value,
       draft.Value.Id));
 
-    var command = new ExecuteVetoOverrideCommand(drafter.Id.Value, vetoId.Value);
+    var command = new ExecuteVetoOverrideCommand(drafter.Id.Value, null, vetoId.Value);
 
     var result = await Sender.Send(command);
 
@@ -51,18 +54,21 @@ public class ExecuteVetoOverrideTests(IntegrationTestWebAppFactory factory)
     var draft = await Sender.Send(new GetDraftQuery(draftId.Value));
     var drafter = drafters[Faker.Random.Int(0, draft.Value.TotalDrafters - 1)];
     var movie = MovieFactory.CreateMovie().Value;
-    var movieId = await Sender.Send(new AddMovieCommand(movie.Id, movie.MovieTitle));
+    var movieId = await Sender.Send(new AddMovieCommand(movie.Id, movie.ImdbId, movie.MovieTitle));
     var pickId = await Sender.Send(new AddPickCommand(
-      draftId.Value,
-      7,
-      movieId.Value,
-      drafter.Id.Value));
+      DraftId: draftId.Value,
+      DrafterTeamId: null,
+      Position: 7,
+      MovieId: movieId.Value,
+      DrafterId: drafter.Id.Value,
+      PlayOrder: 1));
     var vetoId = await Sender.Send(new ExecuteVetoCommand(
+      null,
       drafter.Id.Value,
       pickId.Value,
       draft.Value.Id));
     var drafterId = DrafterId.Create(Guid.NewGuid());
-    var command = new ExecuteVetoOverrideCommand(drafterId.Value, vetoId.Value);
+    var command = new ExecuteVetoOverrideCommand(drafterId.Value, null, vetoId.Value);
     // Act
     var result = await Sender.Send(command);
     // Assert
@@ -82,7 +88,7 @@ public class ExecuteVetoOverrideTests(IntegrationTestWebAppFactory factory)
     var drafter = drafters[Faker.Random.Int(0, draft.Value.TotalDrafters - 1)];
 
     var vetoId = VetoId.Create(Guid.NewGuid());
-    var command = new ExecuteVetoOverrideCommand(drafter.Id.Value, vetoId.Value);
+    var command = new ExecuteVetoOverrideCommand(drafter.Id.Value, null, vetoId.Value);
 
     // Act
     var result = await Sender.Send(command);
@@ -103,20 +109,23 @@ public class ExecuteVetoOverrideTests(IntegrationTestWebAppFactory factory)
     var drafter = drafters[Faker.Random.Int(0, draft.Value.TotalDrafters - 1)];
 
     var movie = MovieFactory.CreateMovie().Value;
-    var movieId = await Sender.Send(new AddMovieCommand(movie.Id, movie.MovieTitle));
+    var movieId = await Sender.Send(new AddMovieCommand(movie.Id, movie.ImdbId, movie.MovieTitle));
 
     var pickId = await Sender.Send(new AddPickCommand(
-      draftId.Value,
-      7,
-      movieId.Value,
-      drafter.Id.Value));
+      DraftId: draftId.Value,
+      DrafterTeamId: null,
+      Position: 7,
+      MovieId: movieId.Value,
+      DrafterId: drafter.Id.Value,
+      PlayOrder: 1));
 
     var vetoId = await Sender.Send(new ExecuteVetoCommand(
+      null,
       drafter.Id.Value,
       pickId.Value,
       draft.Value.Id));
 
-    var command = new ExecuteVetoOverrideCommand(drafter.Id.Value, vetoId.Value);
+    var command = new ExecuteVetoOverrideCommand(drafter.Id.Value, null, vetoId.Value);
     await Sender.Send(command);
 
     // Act

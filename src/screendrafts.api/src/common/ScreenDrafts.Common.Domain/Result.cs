@@ -26,7 +26,7 @@ public class Result
 
   public SDError[] Errors { get; }
 
-  public SDError?  Error { get; }
+  public SDError? Error => IsFailure ? Errors[0] : null;
 
   public static Result Success() => new(true, SDError.None);
 

@@ -19,4 +19,8 @@ public interface IMovieRepository : IRepository
   void AddMovieGenre(Movie movie, Genre genre);
 
   void AddMovieProductionCompany(Movie movie, ProductionCompany productionCompany);
+
+  Task<HashSet<string>> GetExistingMovieImdbsAsync(IEnumerable<string> imdbIds, CancellationToken cancellationToken = default);
 }
+
+
