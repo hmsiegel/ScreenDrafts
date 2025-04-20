@@ -48,6 +48,11 @@ public sealed class Pick : Entity<PickId>
   public Draft Draft { get; } = default!;
 
   public Veto? Veto { get; private set; } = default!;
+  public VetoId? VetoId => Veto?.Id;
+
+  public CommissionerOverride CommissionerOverride { get; private set; } = default!;
+  public Guid? CommissionerOverrideId => CommissionerOverride?.Id;
+
 
   [NotMapped]
   public bool IsVetoed => Veto is not null;
@@ -61,10 +66,36 @@ public sealed class Pick : Entity<PickId>
     int playOrder,
     PickId? id = null)
   {
-    if (position <= 0)
+    if (draft is null)
     {
-      return Result.Failure<Pick>(DraftErrors.PickPositionIsOutOfRange);
+      return Result.Failure<Pick>(PickErrors.DraftMustBeProvided);
     }
+
+    if (position <= 0 || position > draft.TotalPicks)
+    {
+      return Result.Failure<Pick>(PickErrors.PickPositionIsOutOfRange);
+    }
+
+    if (playOrder < 1)
+    {
+      return Result.Failure<Pick>(PickErrors.InvalidPlayOrder);
+    }
+
+    if (movie is null)
+    {
+      return Result.Failure<Pick>(PickErrors.MovieMustBeProvided);
+    }
+
+    if (drafter is null && drafterTeam is null)
+    {
+      return Result.Failure<Pick>(PickErrors.DrafterOrTeamMustBeProvided);
+    }
+
+    if (drafter is not null && drafterTeam is not null)
+    {
+      return Result.Failure<Pick>(PickErrors.DrafterAndTeamCannotBeProvided);
+    }
+
 
     var pick = new Pick(
       position: position,
@@ -75,19 +106,53 @@ public sealed class Pick : Entity<PickId>
       playOrder: playOrder,
       id: id);
 
+    pick.Raise(new PickCreatedDomainEvent(
+      pick.Id.Value,
+      drafter?.Id.Value,
+      drafterTeam?.Id.Value,
+      draft.Id.Value,
+      position,
+      playOrder,
+      movie.Id));
+
     return pick;
   }
 
   public Result VetoPick(Veto veto)
   {
+    if (veto is null)
+    {
+      return Result.Failure(PickErrors.VetoMustBeProvided);
+    }
+
     Guard.Against.Null(veto);
 
     if (IsVetoed)
     {
-      return Result.Failure(DraftErrors.PickAlreadyVetoed);
+      return Result.Failure(PickErrors.PickAlreadyVetoed);
     }
 
     Veto = veto;
+
+    return Result.Success();
+  }
+
+  public Result ApplyCommissionerOverride(
+    CommissionerOverride commissionerOverride)
+  {
+    Guard.Against.Null(commissionerOverride);
+
+    if (CommissionerOverride is not null)
+    {
+      return Result.Failure(PickErrors.CommissionerOverrideAlreadyApplied);
+    }
+
+    CommissionerOverride = commissionerOverride;
+
+    Raise(
+      new CommissionerOverrideAppliedDomainEvent(
+        commissionerOverrideId: commissionerOverride.Id,
+        pickId: Id.Value));
 
     return Result.Success();
   }

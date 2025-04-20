@@ -23,16 +23,15 @@ public class DrafterTests : BaseTest
     var draft = DraftFactory.CreateStandardDraft().Value;
     var movie = MovieFactory.CreateMovie().Value;
     var drafter = DrafterFactory.CreateDrafterWithUserId().Value;
-    var drafterTeam = DrafterFactory.CreateDrafterTeam();
     var pick = Pick.Create(
       Faker.Random.Number(1, 7),
       movie,
       drafter,
       null,
       draft,
-      Faker.Random.Number(1,9)).Value;
+      Faker.Random.Number(1, 9)).Value;
 
-    var veto = Veto.Create(pick, drafter, drafterTeam).Value;
+    var veto = Veto.Create(pick, drafter, null).Value;
 
     // Act
     drafter.AddVeto(veto);
@@ -48,21 +47,20 @@ public class DrafterTests : BaseTest
     var draft = DraftFactory.CreateStandardDraft().Value;
     var movie = MovieFactory.CreateMovie().Value;
     var drafter = DrafterFactory.CreateDrafter();
-    var drafterTeam = DrafterFactory.CreateDrafterTeam();
     var pick = Pick.Create(
       Faker.Random.Number(1, 7),
       movie,
       drafter,
       null,
       draft,
-      Faker.Random.Number(1,9)).Value;
+      Faker.Random.Number(1, 9)).Value;
 
-    var veto = Veto.Create(pick, drafter, drafterTeam).Value;
+    var veto = Veto.Create(pick, drafter, null).Value;
 
-    var vetoOverride = VetoOverride.Create(veto, drafter, drafterTeam);
+    var vetoOverride = VetoOverride.Create(veto, drafter, null);
 
     // Act
-    drafter.AddVetoOverride(vetoOverride);
+    drafter.AddVetoOverride(vetoOverride.Value);
 
     // Assert
     drafter.VetoOverrides.Should().ContainSingle();
@@ -76,7 +74,10 @@ public class DrafterTests : BaseTest
     var draft = DraftFactory.CreateStandardDraft().Value;
 
     // Act
-    var result = drafter.SetRolloverVeto(RolloverVeto.Create(drafter, draft.Id.Value));
+    var result = drafter.SetRolloverVeto(RolloverVeto.Create(
+      drafter,
+      null,
+      draft.Id.Value).Value);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -88,11 +89,16 @@ public class DrafterTests : BaseTest
     // Arrange
     var drafter = DrafterFactory.CreateDrafter();
     var draft = DraftFactory.CreateStandardDraft().Value;
-    drafter.SetRolloverVeto(RolloverVeto.Create(drafter, draft.Id.Value));
+    drafter.SetRolloverVeto(RolloverVeto.Create(
+          drafter,
+          null,
+          draft.Id.Value).Value);
 
     // Act
-    var result = drafter.SetRolloverVeto(RolloverVeto.Create(drafter, draft.Id.Value));
-
+    var result = drafter.SetRolloverVeto(RolloverVeto.Create(
+      drafter,
+      null,
+      draft.Id.Value).Value);
     // Assert
     result.IsFailure.Should().BeTrue();
   }
@@ -104,7 +110,10 @@ public class DrafterTests : BaseTest
     var drafter = DrafterFactory.CreateDrafter();
     var draft = DraftFactory.CreateStandardDraft().Value;
     // Act
-    var result = drafter.SetRolloverVetoOverride(RolloverVetoOverride.Create(drafter, draft.Id.Value));
+    var result = drafter.SetRolloverVetoOverride(RolloverVetoOverride.Create(
+      drafter,
+      null,
+      draft.Id.Value).Value);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -116,10 +125,16 @@ public class DrafterTests : BaseTest
     // Arrange
     var drafter = DrafterFactory.CreateDrafter();
     var draft = DraftFactory.CreateStandardDraft().Value;
-    drafter.SetRolloverVetoOverride(RolloverVetoOverride.Create(drafter, draft.Id.Value));
+    drafter.SetRolloverVetoOverride(RolloverVetoOverride.Create(
+          drafter,
+          null,
+          draft.Id.Value).Value);
 
     // Act
-    var result = drafter.SetRolloverVetoOverride(RolloverVetoOverride.Create(drafter, draft.Id.Value));
+    var result = drafter.SetRolloverVetoOverride(RolloverVetoOverride.Create(
+      drafter,
+      null,
+      draft.Id.Value).Value);
 
     // Assert
     result.IsFailure.Should().BeTrue();

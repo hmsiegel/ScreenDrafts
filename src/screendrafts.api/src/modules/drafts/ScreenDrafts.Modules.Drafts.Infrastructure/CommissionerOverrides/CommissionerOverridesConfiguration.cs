@@ -1,5 +1,4 @@
-﻿
-namespace ScreenDrafts.Modules.Drafts.Infrastructure.CommissionerOverrides;
+﻿namespace ScreenDrafts.Modules.Drafts.Infrastructure.CommissionerOverrides;
 
 internal sealed class CommissionerOverridesConfiguration : IEntityTypeConfiguration<CommissionerOverride>
 {
@@ -9,15 +8,15 @@ internal sealed class CommissionerOverridesConfiguration : IEntityTypeConfigurat
 
     builder.HasKey(co => co.Id);
 
-    builder.HasOne(co => co.Pick)
-      .WithOne()
-      .HasForeignKey<CommissionerOverride>(co => co.PickId)
-      .OnDelete(DeleteBehavior.Cascade);
-
     builder.Property(co => co.PickId)
       .IsRequired()
       .HasConversion(
         pickId => pickId.Value,
         value => PickId.Create(value));
+
+    builder.HasOne(co => co.Pick)
+      .WithOne(p => p.CommissionerOverride)
+      .HasForeignKey<CommissionerOverride>(co => co.PickId)
+      .OnDelete(DeleteBehavior.Cascade);
   }
 }

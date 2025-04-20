@@ -3,12 +3,19 @@
 public sealed class RolloverVeto : Entity<RolloverVetoId>
 {
   private RolloverVeto(
-    DrafterId drafterId,
+    Drafter? drafter,
+    DrafterTeam? drafterTeam,
     Guid fromDraftId,
     RolloverVetoId? id = null)
   {
     Id = id ?? RolloverVetoId.CreateUnique();
-    DrafterId = drafterId;
+
+    Drafter = drafter;
+    DrafterId = drafter?.Id;
+
+    DrafterTeam = drafterTeam;
+    DrafterTeamId = drafterTeam?.Id;
+
     FromDraftId = fromDraftId;
     IsUsed = false;
   }
@@ -17,22 +24,47 @@ public sealed class RolloverVeto : Entity<RolloverVetoId>
   {
   }
 
-  public DrafterId DrafterId { get; private set; } = default!;
-  public Drafter Drafter { get; private set; } = default!;
+  public DrafterId? DrafterId { get; private set; } = default!;
+  public Drafter? Drafter { get; private set; } = default!;
+
+  public DrafterTeam? DrafterTeam { get; private set; } = default!;
+  public DrafterTeamId? DrafterTeamId { get; private set; } = default!;
 
   public Guid FromDraftId { get; private set; }
-
   public Guid? ToDraftId { get; private set; }
 
   public bool IsUsed { get; private set; }
 
-  public static RolloverVeto Create(Drafter drafter,Guid fromDraftId)
+  public static Result<RolloverVeto> Create(
+    Drafter? drafter,
+    DrafterTeam? drafterTeam,
+    Guid fromDraftId)
   {
-    ArgumentNullException.ThrowIfNull(drafter);
+    if (fromDraftId == Guid.Empty)
+    {
+      return Result.Failure<RolloverVeto>(RolloverVetoErrors.InvalidDraftId);
+    }
 
-    var rolloverVeto = new RolloverVeto(drafter.Id, fromDraftId);
+    if (drafter is null && drafterTeam is null)
+    {
+      return Result.Failure<RolloverVeto>(RolloverVetoErrors.InvalidDrafterOrTeam);
+    }
 
-    rolloverVeto.Raise(new RolloverVetoCreatedDomainEvent(rolloverVeto.Id.Value));
+    if (drafter is not null && drafterTeam is not null)
+    {
+      return Result.Failure<RolloverVeto>(RolloverVetoErrors.InvalidDrafterAndTeam);
+    }
+
+    var rolloverVeto = new RolloverVeto(
+      drafter,
+      drafterTeam,
+      fromDraftId);
+
+    rolloverVeto.Raise(new RolloverVetoCreatedDomainEvent(
+      rolloverVeto.Id.Value,
+      drafter?.Id.Value,
+      drafterTeam?.Id.Value,
+      fromDraftId));
 
     return rolloverVeto;
   }
@@ -51,4 +83,3 @@ public sealed class RolloverVeto : Entity<RolloverVetoId>
     return Result.Success();
   }
 }
-

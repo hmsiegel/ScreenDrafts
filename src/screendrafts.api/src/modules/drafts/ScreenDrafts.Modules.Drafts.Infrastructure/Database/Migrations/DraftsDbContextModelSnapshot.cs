@@ -189,6 +189,10 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasColumnType("character varying(100)")
                         .HasColumnName("name");
 
+                    b.Property<int>("NumberOfDrafters")
+                        .HasColumnType("integer")
+                        .HasColumnName("number_of_drafters");
+
                     b.HasKey("Id")
                         .HasName("pk_drafter_teams");
 
@@ -201,9 +205,13 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<Guid>("DrafterId")
+                    b.Property<Guid?>("DrafterId")
                         .HasColumnType("uuid")
                         .HasColumnName("drafter_id");
+
+                    b.Property<Guid?>("DrafterTeamId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("drafter_team_id");
 
                     b.Property<Guid>("FromDraftId")
                         .HasColumnType("uuid")
@@ -224,6 +232,10 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .IsUnique()
                         .HasDatabaseName("ix_rollover_vetoes_drafter_id");
 
+                    b.HasIndex("DrafterTeamId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_rollover_vetoes_drafter_team_id");
+
                     b.ToTable("rollover_vetoes", "drafts");
                 });
 
@@ -233,9 +245,13 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<Guid>("DrafterId")
+                    b.Property<Guid?>("DrafterId")
                         .HasColumnType("uuid")
                         .HasColumnName("drafter_id");
+
+                    b.Property<Guid?>("DrafterTeamId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("drafter_team_id");
 
                     b.Property<Guid>("FromDraftId")
                         .HasColumnType("uuid")
@@ -255,6 +271,10 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                     b.HasIndex("DrafterId")
                         .IsUnique()
                         .HasDatabaseName("ix_rollover_veto_overrides_drafter_id");
+
+                    b.HasIndex("DrafterTeamId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_rollover_veto_overrides_drafter_team_id");
 
                     b.ToTable("rollover_veto_overrides", "drafts");
                 });
@@ -411,19 +431,12 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<Guid?>("DraftId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("draft_id");
-
                     b.Property<Guid>("PickId")
                         .HasColumnType("uuid")
                         .HasColumnName("pick_id");
 
                     b.HasKey("Id")
                         .HasName("pk_commissioner_overrides");
-
-                    b.HasIndex("DraftId")
-                        .HasDatabaseName("ix_commissioner_overrides_draft_id");
 
                     b.HasIndex("PickId")
                         .IsUnique()
@@ -809,10 +822,17 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .WithOne("RolloverVeto")
                         .HasForeignKey("ScreenDrafts.Modules.Drafts.Domain.Drafters.Entities.RolloverVeto", "DrafterId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
                         .HasConstraintName("fk_rollover_vetoes_drafters_drafter_id");
 
+                    b.HasOne("ScreenDrafts.Modules.Drafts.Domain.Drafters.DrafterTeam", "DrafterTeam")
+                        .WithOne("RolloverVeto")
+                        .HasForeignKey("ScreenDrafts.Modules.Drafts.Domain.Drafters.Entities.RolloverVeto", "DrafterTeamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasConstraintName("fk_rollover_vetoes_drafter_teams_drafter_team_id");
+
                     b.Navigation("Drafter");
+
+                    b.Navigation("DrafterTeam");
                 });
 
             modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Drafters.Entities.RolloverVetoOverride", b =>
@@ -821,10 +841,17 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .WithOne("RolloverVetoOverride")
                         .HasForeignKey("ScreenDrafts.Modules.Drafts.Domain.Drafters.Entities.RolloverVetoOverride", "DrafterId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
                         .HasConstraintName("fk_rollover_veto_overrides_drafters_drafter_id");
 
+                    b.HasOne("ScreenDrafts.Modules.Drafts.Domain.Drafters.DrafterTeam", "DrafterTeam")
+                        .WithOne("RolloverVetoOverride")
+                        .HasForeignKey("ScreenDrafts.Modules.Drafts.Domain.Drafters.Entities.RolloverVetoOverride", "DrafterTeamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasConstraintName("fk_rollover_veto_overrides_drafter_teams_drafter_team_id");
+
                     b.Navigation("Drafter");
+
+                    b.Navigation("DrafterTeam");
                 });
 
             modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Drafters.Entities.Veto", b =>
@@ -885,13 +912,8 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
 
             modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities.CommissionerOverride", b =>
                 {
-                    b.HasOne("ScreenDrafts.Modules.Drafts.Domain.Drafts.Draft", null)
-                        .WithMany("CommissionerOverrides")
-                        .HasForeignKey("DraftId")
-                        .HasConstraintName("fk_commissioner_overrides_drafts_draft_id");
-
                     b.HasOne("ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities.Pick", "Pick")
-                        .WithOne()
+                        .WithOne("CommissionerOverride")
                         .HasForeignKey("ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities.CommissionerOverride", "PickId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
@@ -1115,6 +1137,10 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
 
                     b.Navigation("Picks");
 
+                    b.Navigation("RolloverVeto");
+
+                    b.Navigation("RolloverVetoOverride");
+
                     b.Navigation("VetoOverrides");
 
                     b.Navigation("Vetoes");
@@ -1128,8 +1154,6 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
 
             modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Drafts.Draft", b =>
                 {
-                    b.Navigation("CommissionerOverrides");
-
                     b.Navigation("DrafterStats");
 
                     b.Navigation("GameBoard");
@@ -1153,6 +1177,9 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
 
             modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities.Pick", b =>
                 {
+                    b.Navigation("CommissionerOverride")
+                        .IsRequired();
+
                     b.Navigation("Veto");
                 });
 #pragma warning restore 612, 618

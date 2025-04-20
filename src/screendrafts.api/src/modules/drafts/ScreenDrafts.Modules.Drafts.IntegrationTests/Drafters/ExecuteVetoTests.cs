@@ -7,7 +7,7 @@ public class ExecuteVetoTests(IntegrationTestWebAppFactory factory)
   public async Task ExecuteVeto_WhenValidData_ShouldExecuteVetoAsync()
   {
     // Arrange
-    var (draftId, drafters, _) = await SetupDraftAndDraftersAsync();
+    var (draftId, drafters, _) = await SetupDraftAndDraftersAsync(DraftType.Standard);
     await Sender.Send(new StartDraftCommand(draftId.Value));
     var draft = await Sender.Send(new GetDraftQuery(draftId.Value));
 
@@ -48,7 +48,7 @@ public class ExecuteVetoTests(IntegrationTestWebAppFactory factory)
   public async Task ExecuteVeto_WhenInvalidDrafterId_ShouldReturnFailureAsync()
   {
     // Arrange
-    var (draftId, drafters, _) = await SetupDraftAndDraftersAsync();
+    var (draftId, drafters, _) = await SetupDraftAndDraftersAsync(DraftType.Standard);
     await Sender.Send(new StartDraftCommand(draftId.Value));
     var draft = await Sender.Send(new GetDraftQuery(draftId.Value));
 
@@ -84,7 +84,7 @@ public class ExecuteVetoTests(IntegrationTestWebAppFactory factory)
   public async Task ExecuteVeto_WhenInvalidPickId_ShouldReturnFailureAsync()
   {
     // Arrange
-    var (draftId, drafters, _) = await SetupDraftAndDraftersAsync();
+    var (draftId, drafters, _) = await SetupDraftAndDraftersAsync(DraftType.Standard);
     await Sender.Send(new StartDraftCommand(draftId.Value));
     var draft = await Sender.Send(new GetDraftQuery(draftId.Value));
 
@@ -110,7 +110,7 @@ public class ExecuteVetoTests(IntegrationTestWebAppFactory factory)
   public async Task ExecuteVeto_WhenInvalidDraftId_ShouldReturnFailureAsync()
   {
     // Arrange
-    var (draftId, drafters, _) = await SetupDraftAndDraftersAsync();
+    var (draftId, drafters, _) = await SetupDraftAndDraftersAsync(DraftType.Standard);
 
     await Sender.Send(new StartDraftCommand(draftId.Value));
 
@@ -148,7 +148,7 @@ public class ExecuteVetoTests(IntegrationTestWebAppFactory factory)
   public async Task ExecuteVeto_WhenVetoAlreadyExists_ShouldReturnFailureAsync()
   {
     // Arrange
-    var (draftId, drafters, _) = await SetupDraftAndDraftersAsync();
+    var (draftId, drafters, _) = await SetupDraftAndDraftersAsync(DraftType.Standard);
 
     await Sender.Send(new StartDraftCommand(draftId.Value));
 
@@ -185,7 +185,7 @@ public class ExecuteVetoTests(IntegrationTestWebAppFactory factory)
   public async Task ExecuteVeto_WhenDraftIsNotStarted_ShouldReturnFailureAsync()
   {
     // Arrange
-    var (draftId, drafters, _) = await SetupDraftAndDraftersAsync();
+    var (draftId, drafters, _) = await SetupDraftAndDraftersAsync(DraftType.Standard);
 
     await Sender.Send(new StartDraftCommand(draftId.Value));
 

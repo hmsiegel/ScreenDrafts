@@ -62,8 +62,8 @@ public sealed class CreateGameBoardTests(IntegrationTestWebAppFactory factory) :
         EpisodeType.FromName(episodeType),
         DraftStatus.FromName(draftStatus)));
 
-    var draftPositionsRequests = new Collection<DraftPositionRequst>(
-        [.. draftPositions.Select(dp => new DraftPositionRequst(
+    var draftPositionsRequests = new Collection<DraftPositionRequest>(
+        [.. draftPositions.Select(dp => new DraftPositionRequest(
             dp.Name,
             dp.Picks,
             dp.HasBonusVeto,
@@ -104,8 +104,8 @@ public sealed class CreateGameBoardTests(IntegrationTestWebAppFactory factory) :
         EpisodeType.FromName(episodeType),
         DraftStatus.FromName(draftStatus)));
 
-    var draftPositionsRequests = new Collection<DraftPositionRequst>(
-        [.. draftPositions.Select(dp => new DraftPositionRequst(
+    var draftPositionsRequests = new Collection<DraftPositionRequest>(
+        [.. draftPositions.Select(dp => new DraftPositionRequest(
             dp.Name,
             dp.Picks,
             dp.HasBonusVeto,

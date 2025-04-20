@@ -67,8 +67,8 @@ public sealed class GetDraftPositionTests(IntegrationTestWebAppFactory factory)
       Name: drafter.Name));
 
     var createdDraftPositions = DraftFactory.CreateMegaDraftPositions();
-    var draftPositionsRequests = new Collection<DraftPositionRequst>(
-        [.. createdDraftPositions.Select(dp => new DraftPositionRequst(
+    var draftPositionsRequests = new Collection<DraftPositionRequest>(
+        [.. createdDraftPositions.Select(dp => new DraftPositionRequest(
             dp.Name,
             dp.Picks,
             dp.HasBonusVeto,
@@ -118,8 +118,8 @@ public sealed class GetDraftPositionTests(IntegrationTestWebAppFactory factory)
       drafter.UserId,
       Name: drafter.Name));
     var createdDraftPositions = DraftFactory.CreateMiniMegaDraftPositions();
-    var draftPositionsRequests = new Collection<DraftPositionRequst>(
-        [.. createdDraftPositions.Select(dp => new DraftPositionRequst(
+    var draftPositionsRequests = new Collection<DraftPositionRequest>(
+        [.. createdDraftPositions.Select(dp => new DraftPositionRequest(
             dp.Name,
             dp.Picks,
             dp.HasBonusVeto,

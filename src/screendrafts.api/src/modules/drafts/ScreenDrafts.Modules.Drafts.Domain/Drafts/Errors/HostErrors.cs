@@ -15,4 +15,14 @@ public static class HostErrors
     SDError.Failure(
       "HostError.CannotCreateHost",
       "Cannot create host.");
+
+  public static readonly SDError DraftCannotBeNull =
+    SDError.Failure(
+      "HostError.DraftCannotBeNull",
+      "Draft cannot be null.");
+
+  public static readonly SDError UserIdCannotBeEmpty =
+    SDError.Failure(
+      "HostError.UserIdCannotBeEmpty",
+      "User ID cannot be empty.");
 }

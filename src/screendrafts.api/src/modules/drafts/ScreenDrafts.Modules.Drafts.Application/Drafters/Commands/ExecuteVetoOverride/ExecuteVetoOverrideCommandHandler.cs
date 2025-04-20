@@ -55,7 +55,7 @@ internal sealed class ExecuteVetoOverrideCommandHandler(
       return Result.Failure<Guid>(VetoErrors.VetoOverrideAlreadyUsed);
     }
 
-    var vetoOverrideResult = VetoOverride.Create(veto, drafter, drafterTeam);
+    var vetoOverrideResult = VetoOverride.Create(veto, drafter, drafterTeam).Value;
 
     if (hasDrafter && !hasDrafterTeam)
     {

@@ -22,16 +22,6 @@ internal sealed class VetoConfiguration : IEntityTypeConfiguration<Veto>
       .HasForeignKey<Veto>(v => v.PickId)
       .OnDelete(DeleteBehavior.Cascade);
 
-    builder.HasOne(v => v.Drafter)
-      .WithMany(d => d.Vetoes)
-      .HasForeignKey(v => v.DrafterId)
-      .OnDelete(DeleteBehavior.Cascade);
-
-    builder.HasOne(v => v.DrafterTeam)
-      .WithMany(dt => dt.Vetoes)
-      .HasForeignKey(v => v.DrafterTeamId)
-      .OnDelete(DeleteBehavior.Cascade);
-
     builder.Property(v => v.DrafterTeamId)
       .IsRequired(false)
       .HasConversion(
@@ -43,5 +33,15 @@ internal sealed class VetoConfiguration : IEntityTypeConfiguration<Veto>
       .HasConversion(
       id => id!.Value,
       value => DrafterId.Create(value));
+
+    builder.HasOne(v => v.Drafter)
+      .WithMany(d => d.Vetoes)
+      .HasForeignKey(v => v.DrafterId)
+      .OnDelete(DeleteBehavior.Cascade);
+
+    builder.HasOne(v => v.DrafterTeam)
+      .WithMany(dt => dt.Vetoes)
+      .HasForeignKey(v => v.DrafterTeamId)
+      .OnDelete(DeleteBehavior.Cascade);
   }
 }

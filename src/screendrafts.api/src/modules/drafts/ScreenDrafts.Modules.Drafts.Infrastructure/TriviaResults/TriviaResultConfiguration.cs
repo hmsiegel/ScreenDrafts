@@ -17,6 +17,18 @@ internal sealed class TriviaResultConfiguration : IEntityTypeConfiguration<Trivi
     builder.Property(tr => tr.Position)
       .IsRequired();
 
+    builder.Property(tr => tr.DrafterId)
+      .IsRequired(false)
+      .HasConversion(
+        id => id!.Value,
+        value => DrafterId.Create(value));
+
+    builder.Property(tr => tr.DrafterTeamId)
+      .IsRequired(false)
+      .HasConversion(
+        id => id!.Value,
+        value => DrafterTeamId.Create(value));
+
     builder.HasOne(tr => tr.Drafter)
       .WithMany()
       .HasForeignKey(tr => tr.DrafterId)
@@ -31,17 +43,5 @@ internal sealed class TriviaResultConfiguration : IEntityTypeConfiguration<Trivi
       .WithMany(d => d.TriviaResults)
       .HasForeignKey(tr => tr.DraftId)
       .OnDelete(DeleteBehavior.Cascade);
-
-    builder.Property(tr => tr.DrafterId)
-      .IsRequired(false)
-      .HasConversion(
-        id => id!.Value,
-        value => DrafterId.Create(value));
-
-    builder.Property(tr => tr.DrafterTeamId)
-      .IsRequired(false)
-      .HasConversion(
-        id => id!.Value,
-        value => DrafterTeamId.Create(value));
   }
 }

@@ -9,7 +9,7 @@ public sealed class GetLatestDraftsTests(IntegrationTestWebAppFactory factory)
     List<DraftResponse> drafts = [];
     do
     {
-      var (draftId, drafters, _) = await SetupDraftAndDraftersAsync();
+      var (draftId, drafters, _) = await SetupDraftAndDraftersAsync(DraftType.Standard);
 
       var reloadedDraft = await Sender.Send(new GetDraftQuery(draftId.Value));
 

@@ -7,7 +7,7 @@ public sealed class AssignTriviaResultsTests(IntegrationTestWebAppFactory factor
   public async Task AssignTriviaResults_ValidRequest_ReturnsSuccessAsync()
   {
     // Arrange
-    var (draftId, drafters, _) = await SetupDraftAndDraftersAsync();
+    var (draftId, drafters, _) = await SetupDraftAndDraftersAsync(DraftType.Standard);
 
     await Sender.Send(new StartDraftCommand(draftId.Value));
 
@@ -35,7 +35,7 @@ public sealed class AssignTriviaResultsTests(IntegrationTestWebAppFactory factor
   public async Task AssignTriviaResults_InvalidDrafterId_ReturnsFailureAsync()
   {
     // Arrange
-    var (draftId, _, _) = await SetupDraftAndDraftersAsync();
+    var (draftId, _, _) = await SetupDraftAndDraftersAsync(DraftType.Standard);
 
     await Sender.Send(new StartDraftCommand(draftId.Value));
     var drafterId = DrafterId.Create(Guid.NewGuid()).Value;
@@ -51,7 +51,7 @@ public sealed class AssignTriviaResultsTests(IntegrationTestWebAppFactory factor
   public async Task AssignTriviaResults_InvalidDraftId_ReturnsFailureAsync()
   {
     // Arrange
-    var (draftId, drafters, _) = await SetupDraftAndDraftersAsync();
+    var (draftId, drafters, _) = await SetupDraftAndDraftersAsync(DraftType.Standard);
     await Sender.Send(new StartDraftCommand(draftId.Value));
     var draft = await Sender.Send(new GetDraftQuery(draftId.Value));
     var drafter = drafters[Faker.Random.Int(0, draft.Value.TotalDrafters - 1)];
@@ -74,7 +74,7 @@ public sealed class AssignTriviaResultsTests(IntegrationTestWebAppFactory factor
   public async Task AssignTriviaResults_InvalidQuestionsWon_ReturnsFailureAsync()
   {
     // Arrange
-    var (draftId, drafters, _) = await SetupDraftAndDraftersAsync();
+    var (draftId, drafters, _) = await SetupDraftAndDraftersAsync(DraftType.Standard);
     await Sender.Send(new StartDraftCommand(draftId.Value));
     var drafter = drafters[0];
     var command = new AssignTriviaResultsCommand(
@@ -93,7 +93,7 @@ public sealed class AssignTriviaResultsTests(IntegrationTestWebAppFactory factor
   public async Task AssignTriviaResults_InvalidPosition_ReturnsFailureAsync()
   {
     // Arrange
-    var (draftId, drafters, _) = await SetupDraftAndDraftersAsync();
+    var (draftId, drafters, _) = await SetupDraftAndDraftersAsync(DraftType.Standard);
     await Sender.Send(new StartDraftCommand(draftId.Value));
     var drafter = drafters[0];
     var command = new AssignTriviaResultsCommand(

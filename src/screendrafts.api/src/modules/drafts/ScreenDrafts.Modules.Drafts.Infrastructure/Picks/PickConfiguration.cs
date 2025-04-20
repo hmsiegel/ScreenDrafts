@@ -18,6 +18,18 @@ internal sealed class PickConfiguration : IEntityTypeConfiguration<Pick>
       .WithMany(m => m.Picks)
       .HasForeignKey(p => p.MovieId);
 
+    builder.Property(p => p.DrafterId)
+      .ValueGeneratedNever()
+      .HasConversion(drafterId => drafterId!.Value,
+      value => DrafterId.Create(value))
+      .IsRequired(false);
+
+    builder.Property(p => p.DrafterTeamId)
+      .ValueGeneratedNever()
+      .HasConversion(drafterTeamId => drafterTeamId!.Value,
+      value => DrafterTeamId.Create(value))
+      .IsRequired(false);
+
     builder.HasOne(p => p.Drafter)
       .WithMany(d => d.Picks)
       .HasForeignKey(rv => rv.DrafterId)
@@ -39,18 +51,6 @@ internal sealed class PickConfiguration : IEntityTypeConfiguration<Pick>
       .HasConversion(
         draftId => draftId.Value,
         value => DraftId.Create(value));
-
-    builder.Property(p => p.DrafterId)
-      .ValueGeneratedNever()
-      .HasConversion(drafterId => drafterId!.Value,
-      value => DrafterId.Create(value))
-      .IsRequired(false);
-
-    builder.Property(p => p.DrafterTeamId)
-      .ValueGeneratedNever()
-      .HasConversion(drafterTeamId => drafterTeamId!.Value,
-      value => DrafterTeamId.Create(value))
-      .IsRequired(false);
 
     builder.Property(p => p.Position)
       .IsRequired();

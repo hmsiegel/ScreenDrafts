@@ -165,7 +165,7 @@ internal sealed class PicksSeeder(
         continue;
       }
 
-      var pick = await _dbContext.Picks.FindAsync([resolvedPickId.Value], cancellationToken: cancellationToken);
+      var pick = await _dbContext.Picks.FindAsync([PickId.Create(resolvedPickId.Value)], cancellationToken: cancellationToken);
 
       if (pick is null)
       {
@@ -278,19 +278,19 @@ internal sealed class PicksSeeder(
       }
 
       var vetoOverride = VetoOverride.Create(veto, drafter!, drafterTeam!);
-      vetoOverrides.Add(vetoOverride);
+      vetoOverrides.Add(vetoOverride.Value);
 
       if (drafter is null && drafterTeam is not null)
       {
-        drafterTeam.AddVetoOverride(vetoOverride);
+        drafterTeam.AddVetoOverride(vetoOverride.Value);
       }
 
       if (drafter is not null && drafterTeam is null)
       {
-        drafter.AddVetoOverride(vetoOverride);
+        drafter.AddVetoOverride(vetoOverride.Value);
       }
 
-      DatabaseSeedingLoggingMessages.ItemAddedToDatabase(_logger, vetoOverride.Id.ToString());
+      DatabaseSeedingLoggingMessages.ItemAddedToDatabase(_logger, vetoOverride.Value.Id.ToString());
     }
 
     DatabaseSeedingLoggingMessages.BulkInsertMessage(_logger, vetoOverrides.Count, filePath, TableName);

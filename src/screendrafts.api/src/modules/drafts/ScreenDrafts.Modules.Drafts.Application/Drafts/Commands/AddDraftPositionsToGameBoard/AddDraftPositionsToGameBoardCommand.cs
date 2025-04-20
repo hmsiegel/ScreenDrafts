@@ -2,4 +2,4 @@
 
 public sealed record AddDraftPositionsToGameBoardCommand(
   Guid GameBoardId,
-  Collection<DraftPositionRequst> DraftPositionRequests) : ICommand;
+  Collection<DraftPositionRequest> DraftPositionRequests) : ICommand;

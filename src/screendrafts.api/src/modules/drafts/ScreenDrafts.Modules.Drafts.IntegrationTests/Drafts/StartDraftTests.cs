@@ -7,7 +7,7 @@ public sealed class StartDraftTests(IntegrationTestWebAppFactory factory)
   public async Task StartDraft_WithValidDraftId_ShouldStartDraftAsync()
   {
     // Arrange
-    var (draftId, _, _) = await SetupDraftAndDraftersAsync();
+    var (draftId, _, _) = await SetupDraftAndDraftersAsync(DraftType.Standard);
 
     // Act
     var command = new StartDraftCommand(draftId.Value);
@@ -38,7 +38,7 @@ public sealed class StartDraftTests(IntegrationTestWebAppFactory factory)
   public async Task StartDraft_WithDraftAlreadyStarted_ShouldNotStartDraftAsync()
   {
     // Arrange
-    var (draftId, _, _) = await SetupDraftAndDraftersAsync();
+    var (draftId, _, _) = await SetupDraftAndDraftersAsync(DraftType.Standard);
     var startDraftCommand = new StartDraftCommand(draftId.Value);
     await Sender.Send(startDraftCommand);
     // Act
@@ -52,7 +52,7 @@ public sealed class StartDraftTests(IntegrationTestWebAppFactory factory)
   public async Task StartDraft_WithDraftAlreadyCompleted_ShouldNotStartDraftAsync()
   {
     // Arrange
-    var (draftId, _, _) = await SetupDraftAndDraftersAsync();
+    var (draftId, _, _) = await SetupDraftAndDraftersAsync(DraftType.Standard);
     var startDraftCommand = new StartDraftCommand(draftId.Value);
     await Sender.Send(startDraftCommand);
     var completeDraftCommand = new CompleteDraftCommand(draftId.Value);
@@ -68,7 +68,7 @@ public sealed class StartDraftTests(IntegrationTestWebAppFactory factory)
   public async Task StartDraft_ShouldFail_WhenNotAllDraftersAreAddedAsync()
   {
     // Arrange
-    var (draftId, drafters, _) = await SetupDraftAndDraftersAsync();
+    var (draftId, drafters, _) = await SetupDraftAndDraftersAsync(DraftType.Standard);
     var drafterId = drafters[0].Id;
     await Sender.Send(new RemoveDrafterFromDraftCommand(draftId.Value, drafterId.Value));
     // Act
@@ -83,7 +83,7 @@ public sealed class StartDraftTests(IntegrationTestWebAppFactory factory)
   public async Task StartDraft_ShouldFail_WhenNotAllHostsAreAddedAsync()
   {
     // Arrange
-    var (draftId, _, hosts) = await SetupDraftAndDraftersAsync();
+    var (draftId, _, hosts) = await SetupDraftAndDraftersAsync(DraftType.Standard);
     var hostId = hosts[0].Id;
     await Sender.Send(new RemoveHostFromDraftCommand(draftId.Value, hostId.Value));
 

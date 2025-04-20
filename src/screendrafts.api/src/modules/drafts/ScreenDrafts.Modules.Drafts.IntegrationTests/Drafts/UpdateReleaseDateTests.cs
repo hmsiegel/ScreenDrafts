@@ -7,7 +7,7 @@ public sealed class UpdateReleaseDateTests(IntegrationTestWebAppFactory factory)
   public async Task UpdateReleaseDate_WhenDraftExists_ShouldUpdateReleaseDateAsync()
   {
     // Arrange
-    var (draftId, _, _) = await SetupDraftAndDraftersAsync();
+    var (draftId, _, _) = await SetupDraftAndDraftersAsync(DraftType.Standard);
     var releaseDate = DraftReleaseDate.Create(DraftId.Create(draftId.Value), Faker.Date.PastDateOnly());
 
     // Act

@@ -42,24 +42,56 @@ public sealed class Host : Entity<HostId>
     return host;
   }
 
-  public void AddDraft(Draft draft)
+  public Result AssignUserId(Guid userId)
   {
-    _hostedDrafts.Add(draft);
-  }
-
-  public void RemoveDraft(Draft draft)
-  {
-    _hostedDrafts.Remove(draft);
-  }
-
-  public void UpdateHostName(string firstName, string lastName, string? middleName = null)
-  {
-    if (middleName is null)
+    if (userId == Guid.Empty)
     {
-      HostName = $"{firstName} {lastName}";
-      return;
+      return Result.Failure(HostErrors.UserIdCannotBeEmpty);
     }
 
-    HostName = $"{firstName} {middleName} {lastName}";
+    UserId = userId;
+    return Result.Success();
+  }
+
+  public Result AddDraft(Draft draft)
+  {
+    if (draft is null)
+    {
+      return Result.Failure(HostErrors.DraftCannotBeNull);
+    }
+
+    ArgumentNullException.ThrowIfNull(draft);
+
+    _hostedDrafts.Add(draft);
+
+    return Result.Success();
+  }
+
+  public Result RemoveDraft(Draft draft)
+  {
+    if (draft is null)
+    {
+      return Result.Failure(HostErrors.DraftCannotBeNull);
+    }
+
+    if (!_hostedDrafts.Contains(draft))
+    {
+      return Result.Failure(HostErrors.DraftCannotBeNull);
+    }
+
+    ArgumentNullException.ThrowIfNull(draft);
+    _hostedDrafts.Remove(draft);
+    return Result.Success();
+  }
+
+  public Result UpdateHostName(string newName)
+  {
+    if (string.IsNullOrWhiteSpace(newName))
+    {
+      return Result.Failure(HostErrors.InvalidHostName);
+    }
+
+    HostName = newName;
+    return Result.Success();
   }
 }

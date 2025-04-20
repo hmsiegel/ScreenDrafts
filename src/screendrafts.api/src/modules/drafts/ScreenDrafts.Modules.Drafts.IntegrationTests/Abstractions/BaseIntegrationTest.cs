@@ -53,9 +53,25 @@ public class BaseIntegrationTest : IDisposable, IAsyncLifetime
     Dispose();
   }
 
-  public async Task<(Result<Guid> draftId, List<Drafter> drafters, List<Host> hosts)> SetupDraftAndDraftersAsync()
+  public async Task<(Result<Guid> draftId, List<Drafter> drafters, List<Host> hosts)> SetupDraftAndDraftersAsync(DraftType draftType)
   {
-    var draft = DraftFactory.CreateStandardDraft().Value;
+    ArgumentNullException.ThrowIfNull(draftType);
+
+    Draft? draft = null!;
+    switch (draftType.Value)
+    {
+      case 0: 
+        draft = DraftFactory.CreateStandardDraft().Value;
+        break;
+      case 1:
+        draft = DraftFactory.CreateMiniMegaDraft().Value;
+        break;
+      case 2:
+        draft = DraftFactory.CreateMegaDraft().Value;
+        break;
+      default:
+        break;
+    }
     var draftId = await Sender.Send(new CreateDraftCommand(
       draft.Title.Value,
       draft.DraftType,
@@ -99,12 +115,31 @@ public class BaseIntegrationTest : IDisposable, IAsyncLifetime
         id: HostId.Create(addedHost.Value.Id)).Value);
     }
 
+    Collection<DraftPosition> draftPositions = [];
+    if (draftType.Value == 1)
+    {
+      draftPositions = DraftFactory.CreateMiniMegaDraftPositions();
+    }
+    else if (draftType.Value == 2)
+    {
+      draftPositions = DraftFactory.CreateMegaDraftPositions();
+    }
+    var draftPositionsRequests = new Collection<DraftPositionRequest>(
+      [.. draftPositions.Select(dp => new DraftPositionRequest(
+        dp.Name,
+        dp.Picks,
+        dp.HasBonusVeto,
+        dp.HasBonusVetoOverride))]);
+
     var gameBoardId = await Sender.Send(new CreateGameBoardCommand(
       draftId.Value));
 
+    await Sender.Send(new AddDraftPositionsToGameBoardCommand(gameBoardId.Value, draftPositionsRequests));
+
+
     var query = new GetDraftPositionsByGameBoardQuery(gameBoardId.Value);
-    var draftPositions = await Sender.Send(query);
-    var draftPositionsList = draftPositions.Value.ToList();
+    var draftPositionsResponse = await Sender.Send(query);
+    var draftPositionsList = draftPositionsResponse.Value.ToList();
 
     for (var i = 0; i < draft.TotalDrafters; i++)
     {

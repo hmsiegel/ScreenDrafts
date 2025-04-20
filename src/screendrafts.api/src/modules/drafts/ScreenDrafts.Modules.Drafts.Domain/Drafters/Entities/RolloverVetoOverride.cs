@@ -3,12 +3,19 @@
 public sealed class RolloverVetoOverride : Entity<RolloverVetoOverrideId>
 {
   private RolloverVetoOverride(
-    DrafterId drafterId,
+    Drafter? drafter,
+    DrafterTeam? drafterTeam,
     Guid fromDraftId,
     RolloverVetoOverrideId? id = null)
   {
     Id = id ?? RolloverVetoOverrideId.CreateUnique();
-    DrafterId = drafterId;
+
+    Drafter = drafter;
+    DrafterId = drafter?.Id;
+
+    DrafterTeam = drafterTeam;
+    DrafterTeamId = drafterTeam?.Id;
+
     FromDraftId = fromDraftId;
     IsUsed = false;
   }
@@ -17,9 +24,12 @@ public sealed class RolloverVetoOverride : Entity<RolloverVetoOverrideId>
   {
   }
 
-  public DrafterId DrafterId { get; private set; } = default!;
+  public Drafter? Drafter { get; private set; } = default!;
+  public DrafterId? DrafterId { get; private set; } = default!;
 
-  public Drafter Drafter { get; private set; } = default!;
+  public DrafterTeam? DrafterTeam { get; private set; } = default!;
+  public DrafterTeamId? DrafterTeamId { get; private set; } = default!;
+
 
   public Guid FromDraftId { get; private set; }
 
@@ -27,13 +37,30 @@ public sealed class RolloverVetoOverride : Entity<RolloverVetoOverrideId>
 
   public bool IsUsed { get; private set; }
 
-  public static RolloverVetoOverride Create(Drafter drafter, Guid fromDraftId)
+  public static Result<RolloverVetoOverride> Create(
+    Drafter? drafter,
+    DrafterTeam? drafterTeam,
+    Guid fromDraftId)
   {
-    ArgumentNullException.ThrowIfNull(drafter);
+    if (drafter is not null && drafterTeam is not null)
+    {
+      return Result.Failure<RolloverVetoOverride>(
+        RolloverVetoOverrideErrors.DrafterAndDrafterTeamCannotBeBothSet);
+    }
 
-    var rolloverVeto = new RolloverVetoOverride(drafter.Id, fromDraftId);
+    if (drafter is null && drafterTeam is null)
+    {
+      return Result.Failure<RolloverVetoOverride>(
+        RolloverVetoOverrideErrors.DrafterAndDrafterTeamCannotBeNull);
+    }
 
-    rolloverVeto.Raise(new RolloverVetoOverrideCreatedDomainEvent(rolloverVeto.Id.Value));
+    var rolloverVeto = new RolloverVetoOverride(drafter, drafterTeam, fromDraftId);
+
+    rolloverVeto.Raise(new RolloverVetoOverrideCreatedDomainEvent(
+      rolloverVeto.Id.Value,
+      drafter?.Id.Value,
+      drafterTeam?.Id.Value,
+      fromDraftId));
 
     return rolloverVeto;
   }
