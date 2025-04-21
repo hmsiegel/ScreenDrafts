@@ -7,7 +7,7 @@ public sealed class GetDraftPicksTests(IntegrationTestWebAppFactory factory)
   public async Task GetDraftPicks_ReturnsDraftPicksAsync()
   {
     // Arrange
-    var (draftId, drafters, _) = await SetupDraftAndDraftersAsync();
+    var (draftId, drafters, _) = await SetupDraftAndDraftersAsync(DraftType.Standard);
 
     var reloadedDraftResult = await Sender.Send(new GetDraftQuery(draftId.Value));
 

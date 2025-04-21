@@ -33,18 +33,41 @@ public sealed class VetoOverride : Entity<VetoOverrideId>
   public DrafterTeamId? DrafterTeamId { get; private set; } = default!;
 
 
-  public static VetoOverride Create(
+  public static Result<VetoOverride> Create(
     Veto veto,
     Drafter? drafter,
     DrafterTeam? drafterTeam,
     VetoOverrideId? id = null)
   {
+    if (drafter is null && drafterTeam is null)
+    {
+      return Result.Failure<VetoOverride>(VetoOverrideErrors.DrafterOrTeamMustBeProvided);
+    }
+
+    if (veto is null)
+    {
+      return Result.Failure<VetoOverride>(VetoOverrideErrors.VetoMustBeProvided);
+    }
+
+    if (drafter is not null && drafterTeam is not null)
+    {
+      return Result.Failure<VetoOverride>(VetoOverrideErrors.DrafterAndTeamCannotBeProvided);
+    }
+
     ArgumentNullException.ThrowIfNull(veto);
 
-    return new VetoOverride(
+    var vetoOverride = new VetoOverride(
       id: id ?? VetoOverrideId.CreateUnique(),
       veto: veto,
       drafter: drafter,
       drafterTeam: drafterTeam);
+
+    vetoOverride.Raise(new VetoOverrideCreatedDomainEvent(
+      vetoOverride.Id.Value,
+      drafter?.Id.Value,
+      drafterTeam?.Id.Value,
+      veto.Id.Value));
+
+    return vetoOverride;
   }
 }

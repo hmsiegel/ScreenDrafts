@@ -7,7 +7,7 @@ public class ExecuteVetoOverrideTests(IntegrationTestWebAppFactory factory)
   public async Task ExecuteVetoOverride_WhenValidData_ShouldExecuteVetoOverrideAsync()
   {
     // Arrange
-    var (draftId, drafters, _) = await SetupDraftAndDraftersAsync();
+    var (draftId, drafters, _) = await SetupDraftAndDraftersAsync(DraftType.MiniMega);
 
     await Sender.Send(new StartDraftCommand(draftId.Value));
 
@@ -49,7 +49,7 @@ public class ExecuteVetoOverrideTests(IntegrationTestWebAppFactory factory)
   public async Task ExecuteVetoOverride_WhenInvalidDrafterId_ShouldReturnFailureAsync()
   {
     // Arrange
-    var (draftId, drafters, _) = await SetupDraftAndDraftersAsync();
+    var (draftId, drafters, _) = await SetupDraftAndDraftersAsync(DraftType.MiniMega);
     await Sender.Send(new StartDraftCommand(draftId.Value));
     var draft = await Sender.Send(new GetDraftQuery(draftId.Value));
     var drafter = drafters[Faker.Random.Int(0, draft.Value.TotalDrafters - 1)];
@@ -80,7 +80,7 @@ public class ExecuteVetoOverrideTests(IntegrationTestWebAppFactory factory)
   public async Task ExecuteVetoOverride_WhenInvalidVetoId_ShouldReturnFailureAsync()
   {
     // Arrange
-    var (draftId, drafters, _) = await SetupDraftAndDraftersAsync();
+    var (draftId, drafters, _) = await SetupDraftAndDraftersAsync(DraftType.MiniMega);
 
     await Sender.Send(new StartDraftCommand(draftId.Value));
 
@@ -102,7 +102,7 @@ public class ExecuteVetoOverrideTests(IntegrationTestWebAppFactory factory)
   public async Task ExecuteVetoOverride_WhenVetoOverrideAlreadyExists_ShouldReturnFailureAsync()
   {
     // Arrange
-    var (draftId, drafters, _) = await SetupDraftAndDraftersAsync();
+    var (draftId, drafters, _) = await SetupDraftAndDraftersAsync(DraftType.MiniMega);
     await Sender.Send(new StartDraftCommand(draftId.Value));
     var draft = await Sender.Send(new GetDraftQuery(draftId.Value));
 

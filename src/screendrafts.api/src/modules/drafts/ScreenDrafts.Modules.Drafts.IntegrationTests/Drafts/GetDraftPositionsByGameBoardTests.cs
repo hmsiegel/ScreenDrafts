@@ -56,8 +56,8 @@ public sealed class GetDraftPositionsByGameBoardTests(IntegrationTestWebAppFacto
       draft.DraftStatus));
     var positions = DraftFactory.CreateMegaDraftPositions();
 
-    var draftPositionsRequests = new Collection<DraftPositionRequst>(
-        [.. positions.Select(dp => new DraftPositionRequst(
+    var draftPositionsRequests = new Collection<DraftPositionRequest>(
+        [.. positions.Select(dp => new DraftPositionRequest(
             dp.Name,
             dp.Picks,
             dp.HasBonusVeto,
@@ -95,8 +95,8 @@ public sealed class GetDraftPositionsByGameBoardTests(IntegrationTestWebAppFacto
       draft.DraftStatus));
     var positions = DraftFactory.CreateMiniMegaDraftPositions();
 
-    var draftPositionsRequests = new Collection<DraftPositionRequst>(
-        [.. positions.Select(dp => new DraftPositionRequst(
+    var draftPositionsRequests = new Collection<DraftPositionRequest>(
+        [.. positions.Select(dp => new DraftPositionRequest(
             dp.Name,
             dp.Picks,
             dp.HasBonusVeto,

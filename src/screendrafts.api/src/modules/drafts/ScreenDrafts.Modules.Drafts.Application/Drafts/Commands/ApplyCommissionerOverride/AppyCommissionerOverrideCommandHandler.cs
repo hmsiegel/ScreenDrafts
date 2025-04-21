@@ -21,19 +21,12 @@ internal sealed class AppyCommissionerOverrideCommandHandler(
       return Result.Failure<Guid>(PickErrors.NotFound(request.PickId));
     }
 
-    var draft = await _draftRepository.GetByIdAsync(pick.DraftId, cancellationToken);
-
-    if (draft is null)
-    {
-      return Result.Failure<Guid>(DraftErrors.NotFound(pick.DraftId.Value));
-    }
-
     var commissionerOverride = CommissionerOverride.Create(pick).Value;
 
-    draft.ApplyCommissionerOverride(commissionerOverride);
+    pick.ApplyCommissionerOverride(commissionerOverride);
 
     _draftRepository.AddCommissionerOverride(commissionerOverride);
-    _draftRepository.Update(draft);
+    _picksRepository.Update(pick);
 
     await _unitOfWork.SaveChangesAsync(cancellationToken);
 

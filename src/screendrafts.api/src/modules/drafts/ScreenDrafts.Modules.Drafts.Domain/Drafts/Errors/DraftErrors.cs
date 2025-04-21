@@ -227,11 +227,6 @@ public static class DraftErrors
       "Drafts.AlreadyAdded",
       $"Team with id {id} is already added to the draft.");
 
-  public static readonly SDError PickAlreadyVetoed =
-    SDError.Conflict(
-      "Drafts.PickAlreadyVetoed",
-      "This pick has been vetoed and cannot be vetoed again.");
-
   public static readonly SDError CannotAddTriviaResultWithoutDrafterOrDrafterTeam =
     SDError.Problem(
       "Drafts.CannotAddTriviaResultWithoutDrafterOrDrafterTeam",

@@ -22,6 +22,16 @@ internal sealed class DrafterTeamConfiguration : IEntityTypeConfiguration<Drafte
       .WithOne(p => p.DrafterTeam)
       .HasForeignKey(p => p.DrafterTeamId);
 
+    builder.HasOne(dt => dt.RolloverVeto)
+      .WithOne(rv => rv.DrafterTeam)
+      .HasForeignKey<RolloverVeto>(rv => rv.DrafterTeamId)
+      .OnDelete(DeleteBehavior.Cascade);
+
+    builder.HasOne(dt => dt.RolloverVetoOverride)
+      .WithOne(rv => rv.DrafterTeam)
+      .HasForeignKey<RolloverVetoOverride>(rv => rv.DrafterTeamId)
+      .OnDelete(DeleteBehavior.Cascade);
+
     builder.HasMany(dt => dt.Drafts)
       .WithMany(d => d.DrafterTeams)
       .UsingEntity<Dictionary<string, string>>(

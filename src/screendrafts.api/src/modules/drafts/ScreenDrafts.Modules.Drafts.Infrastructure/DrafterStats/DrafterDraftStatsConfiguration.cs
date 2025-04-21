@@ -18,15 +18,15 @@ internal sealed class DrafterDraftStatsConfiguration : IEntityTypeConfiguration<
       .WithMany(d => d.DraftStats)
       .IsRequired(false);
 
+    builder.HasOne(ds => ds.DrafterTeam)
+      .WithMany(dt => dt.DraftStats)
+      .IsRequired(false);
+
     builder.Property(ds => ds.DrafterId)
       .IsRequired(false)
       .HasConversion(
         id => id!.Value,
         value => DrafterId.Create(value));
-
-    builder.HasOne(ds => ds.DrafterTeam)
-      .WithMany(dt => dt.DraftStats)
-      .IsRequired(false);
 
     builder.Property(ds => ds.DrafterTeamId)
       .IsRequired(false)

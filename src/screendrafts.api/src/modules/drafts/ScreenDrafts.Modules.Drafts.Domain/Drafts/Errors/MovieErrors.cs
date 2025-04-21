@@ -6,4 +6,9 @@ public static class MovieErrors
     SDError.Failure(
       "MovieErrors.InvalidMovieTitle",
       "The movie title is invalid.");
+
+  public static readonly SDError InvalidImdbId =
+    SDError.Failure(
+      "MovieErrors.InvalidImdbId",
+      "The IMDb ID is invalid.");
 }

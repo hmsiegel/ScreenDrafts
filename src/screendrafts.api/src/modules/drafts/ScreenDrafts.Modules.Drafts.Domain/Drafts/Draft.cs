@@ -9,7 +9,6 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
   private readonly List<DrafterDraftStats> _drafterDraftStats = [];
   private readonly List<TriviaResult> _triviaResults = [];
   private readonly List<DraftReleaseDate> _releaseDates = [];
-  private readonly List<CommissionerOverride> _commissionerOverrides = [];
 
   private Draft(
   DraftId id,
@@ -84,8 +83,6 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
   public IReadOnlyCollection<TriviaResult> TriviaResults => _triviaResults.AsReadOnly();
 
   public IReadOnlyCollection<DraftReleaseDate> ReleaseDates => _releaseDates.AsReadOnly();
-
-  public IReadOnlyCollection<CommissionerOverride> CommissionerOverrides => _commissionerOverrides.AsReadOnly();
 
 
   public static Result<Draft> Create(
@@ -350,17 +347,16 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
     return Result.Success();
   }
 
-  public Result ApplyCommissionerOverride(CommissionerOverride commissionerOverride)
+  public Result ApplyCommissionerOverride(Pick pick)
   {
-    if (_commissionerOverrides.Any(x => x.Id == commissionerOverride.Id))
-    {
-      return Result.Failure(DraftErrors.CommissionerOverrideCannotBeApplied);
-    }
+    ArgumentNullException.ThrowIfNull(pick);
 
-    _commissionerOverrides.Add(commissionerOverride);
+    var overrideEntry = CommissionerOverride.Create(pick).Value;
+
+    pick.ApplyCommissionerOverride(overrideEntry);
 
     var drafterStats = _drafterDraftStats
-      .FirstOrDefault(d => d.Drafter?.Id.Value == commissionerOverride.Pick.Drafter!.Id.Value);
+      .FirstOrDefault(d => d.Drafter?.Id.Value == pick.DrafterId?.Value);
 
     drafterStats?.AddCommissionerOverride();
 

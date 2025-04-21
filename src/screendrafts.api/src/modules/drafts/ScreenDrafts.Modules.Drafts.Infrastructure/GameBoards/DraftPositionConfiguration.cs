@@ -32,16 +32,6 @@ internal sealed class DraftPositionConfiguration : IEntityTypeConfiguration<Draf
       .HasForeignKey(dp => dp.GameBoardId)
       .OnDelete(DeleteBehavior.Cascade);
 
-    builder.HasOne(dp => dp.Drafter)
-      .WithMany()
-      .HasForeignKey(dp => dp.DrafterId)
-      .OnDelete(DeleteBehavior.Restrict);
-
-    builder.HasOne(dp => dp.DrafterTeam)
-      .WithMany()
-      .HasForeignKey(dp => dp.DrafterTeamId)
-      .OnDelete(DeleteBehavior.Restrict);
-
     builder.Property(dp => dp.DrafterId)
       .IsRequired(false)
       .HasConversion(
@@ -53,5 +43,15 @@ internal sealed class DraftPositionConfiguration : IEntityTypeConfiguration<Draf
       .HasConversion(
         id => id!.Value,
         value => DrafterTeamId.Create(value));
+
+    builder.HasOne(dp => dp.Drafter)
+      .WithMany()
+      .HasForeignKey(dp => dp.DrafterId)
+      .OnDelete(DeleteBehavior.Restrict);
+
+    builder.HasOne(dp => dp.DrafterTeam)
+      .WithMany()
+      .HasForeignKey(dp => dp.DrafterTeamId)
+      .OnDelete(DeleteBehavior.Restrict);
   }
 }

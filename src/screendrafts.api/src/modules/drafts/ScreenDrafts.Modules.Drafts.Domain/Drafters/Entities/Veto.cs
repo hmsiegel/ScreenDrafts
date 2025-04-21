@@ -40,12 +40,35 @@ public sealed class Veto : Entity<VetoId>
     DrafterTeam? drafterTeam,
     VetoId? id = null)
   {
+    if (drafter is null && drafterTeam is null)
+    {
+      return Result.Failure<Veto>(VetoErrors.DrafterOrTeamMustBeProvided);
+    }
+
+    if (pick is null)
+    {
+      return Result.Failure<Veto>(VetoErrors.PickMustBeProvided);
+    }
+
+    if (drafter is not null && drafterTeam is not null)
+    {
+      return Result.Failure<Veto>(VetoErrors.DrafterAndTeamCannotBeProvided);
+    }
+
     ArgumentNullException.ThrowIfNull(pick);
 
-    return new Veto(
+    var veto = new Veto(
       pick: pick,
       drafter: drafter,
       drafterTeam: drafterTeam,
       id: id ?? VetoId.CreateUnique());
+
+    veto.Raise(new VetoCreatedDomainEvent(
+      veto.Id.Value,
+      drafter?.Id.Value,
+      drafterTeam?.Id.Value,
+      pick.Id.Value));
+
+    return veto;
   }
 }

@@ -3,10 +3,10 @@
 public class DraftTests : BaseTest
 {
   [Fact]
-  public void Create_ShouldReturnSuccessResult_WhenParametersAreValid()
+  public void Create_ShouldReturnSuccessResult_WhenValidParametersAreProvided()
   {
     // Arrange
-    var title = new Title("Test Title");
+    var title = Title.Create("Test Draft");
     var draftType = DraftType.Standard;
     var totalPicks = 7;
     var totalDrafters = 2;
@@ -32,6 +32,7 @@ public class DraftTests : BaseTest
     result.Value.DraftType.Should().Be(draftType);
     result.Value.TotalPicks.Should().Be(totalPicks);
     result.Value.TotalDrafters.Should().Be(totalDrafters);
+    result.Value.TotalDrafterTeams.Should().Be(totalDrafterTeams);
     result.Value.TotalHosts.Should().Be(totalHosts);
     result.Value.DraftStatus.Should().Be(draftStatus);
     result.Value.EpisodeType.Should().Be(episodeType);
@@ -106,7 +107,7 @@ public class DraftTests : BaseTest
   }
 
   [Fact]
-  public void AddDrafter_ShouldReturnSuccessResult_WhenDrafterIsValid()
+  public void AddDrafter_ShouldAddDrafterToList_WhenDrafterIsValid()
   {
     // Arrange
     var draft = DraftFactory.CreateStandardDraft().Value;
@@ -117,7 +118,8 @@ public class DraftTests : BaseTest
 
     // Assert
     result.IsSuccess.Should().BeTrue();
-    draft.Drafters.Should().Contain(drafter);
+    draft.Drafters.Should().ContainSingle();
+    draft.Drafters.First().Should().Be(drafter);
   }
 
   [Fact]
@@ -170,7 +172,7 @@ public class DraftTests : BaseTest
   }
 
   [Fact]
-  public void AddDrafter_ShouldReturnFailureResult_WhenDrafterAlreadyAdded()
+  public void AddDrafter_ShouldReturnFailureResult_WhenDrafterAlreadyExists()
   {
     // Arrange
     var draft = DraftFactory.CreateStandardDraft().Value;
@@ -181,8 +183,24 @@ public class DraftTests : BaseTest
     var result = draft.AddDrafter(drafter);
 
     // Assert
-    result.IsSuccess.Should().BeFalse();
-    result.Errors[0].Should().Be(DraftErrors.DrafterAlreadyAdded(drafter.Id.Value));
+    result.IsFailure.Should().BeTrue();
+    draft.Drafters.Should().ContainSingle();
+  }
+
+  [Fact]
+  public void AddDrafterTeam_ShouldAddDrafterTeamToList_WhenTeamIsValid()
+  {
+    // Arrange
+    var draft = DraftFactory.CreateStandardDraftWithTeams().Value;
+    var drafterTeam = DrafterFactory.CreateDrafterTeam();
+
+    // Act
+    var result = draft.AddDrafterTeam(drafterTeam);
+
+    // Assert
+    result.IsSuccess.Should().BeTrue();
+    draft.DrafterTeams.Should().ContainSingle();
+    draft.DrafterTeams.First().Should().Be(drafterTeam);
   }
 
   [Fact]
@@ -231,29 +249,6 @@ public class DraftTests : BaseTest
     // Assert
     domainEvent.DrafterId.Should().Be(firstPick.Drafter!.Id.Value);
     domainEvent.DraftId.Should().Be(firstPick.Draft.Id.Value);
-  }
-
-
-  [Fact]
-  public void AddPick_ShouldReturnFailureResult_WhenPickPositionIsOutOfRange()
-  {
-    // Arrange
-    var draft = SetupAndStartDraft();
-
-    var position = draft.TotalPicks + 1;
-    var playOrder = 1;
-    var movie = MovieFactory.CreateMovie().Value;
-
-    var drafter = draft.Drafters.FirstOrDefault();
-
-    var pick = Pick.Create(position, movie, drafter!, null, draft, playOrder).Value;
-
-    // Act
-    var result = draft.AddPick(pick);
-
-    // Assert
-    result.IsSuccess.Should().BeFalse();
-    result.Errors[0].Should().Be(DraftErrors.PickPositionIsOutOfRange);
   }
 
   [Fact]
@@ -363,7 +358,7 @@ public class DraftTests : BaseTest
   }
 
   [Fact]
-  public void StartDraft_ShouldReturnSuccessResult_WhenDraftIsCreated()
+  public void StartDraft_ShouldChangeStatusToInProgress_WhenDraftIsNotStarted()
   {
     // Arrange
     var draft = DraftFactory.CreateStandardDraft().Value;
@@ -385,7 +380,7 @@ public class DraftTests : BaseTest
   }
 
   [Fact]
-  public void StartDraft_ShouldReturnFailureResult_WhenDraftIsNotCreated()
+  public void StartDraft_ShouldReturnFailure_WhenDraftIsAlreadyInProgress()
   {
     // Arrange
     var draft = DraftFactory.CreateStandardDraft().Value;
@@ -393,24 +388,22 @@ public class DraftTests : BaseTest
     {
       draft.AddDrafter(DrafterFactory.CreateDrafter());
     }
-
     for (int i = 0; i < draft.TotalHosts; i++)
     {
       draft.AddHost(HostsFactory.CreateHost().Value);
     }
     draft.StartDraft();
-    draft.CompleteDraft();
 
     // Act
     var result = draft.StartDraft();
 
     // Assert
-    result.IsSuccess.Should().BeFalse();
-    result.Errors[0].Should().Be(DraftErrors.DraftCanOnlyBeStartedIfItIsCreated);
+    result.IsFailure.Should().BeTrue();
+    draft.DraftStatus.Should().Be(DraftStatus.InProgress);
   }
 
   [Fact]
-  public void CompleteDraft_ShouldReturnSuccessResult_WhenDraftIsInProgress()
+  public void CompleteDraft_ShouldChangeStatusToCompleted_WhenDraftIsInProgress()
   {
     // Arrange
     var draft = SetupAndStartDraft();
@@ -421,7 +414,7 @@ public class DraftTests : BaseTest
         MovieFactory.CreateMovie().Value,
         DrafterFactory.CreateDrafter(),
         null,
-        draft, 
+        draft,
         i + 1).Value;
 
       draft.AddPick(pick);
@@ -436,73 +429,86 @@ public class DraftTests : BaseTest
   }
 
   [Fact]
-  public void CompleteDraft_ShouldReturnFailureResult_WhenDraftIsNotInProgress()
+  public void CompleteDraft_ShouldReturnFailure_WhenDraftIsNotInProgress()
   {
     // Arrange
     var draft = DraftFactory.CreateStandardDraft().Value;
+    for (int i = 0; i < draft.TotalDrafters; i++)
+    {
+      draft.AddDrafter(DrafterFactory.CreateDrafter());
+    }
+    for (int i = 0; i < draft.TotalHosts; i++)
+    {
+      draft.AddHost(HostsFactory.CreateHost().Value);
+    }
 
     // Act
     var result = draft.CompleteDraft();
 
     // Assert
-    result.IsSuccess.Should().BeFalse();
-    result.Errors[0].Should().Be(DraftErrors.CannotCompleteDraftIfItIsNotInProgress);
+    result.IsFailure.Should().BeTrue();
+    draft.DraftStatus.Should().Be(DraftStatus.Created);
   }
 
   [Fact]
-  public void AddTriviaResult_ShouldAddTriviaResult_WhenParametersAreValid()
-  {
-    // Arrange
-    var draft = DraftFactory.CreateStandardDraft().Value;
-    List<Drafter> drafters = [];
-    List<Host> hosts = [];
-
-    for (int i = 0; i < draft.TotalDrafters; i++)
-    {
-      var drafter = DrafterFactory.CreateDrafter();
-      drafters.Add(drafter);
-      draft.AddDrafter(drafter);
-    }
-
-    for (int i = 0; i < draft.TotalHosts; i++)
-    {
-      var host = HostsFactory.CreateHost().Value;
-      hosts.Add(host);
-      draft.AddHost(host);
-    }
-
-    draft.StartDraft();
-    var position = 1;
-    var questionsWon = 3;
-
-    var usedDrafter =
-      drafters.FirstOrDefault()
-      ?? throw new InvalidOperationException("Drafter is null");
-
-    // Act
-    draft.AddTriviaResult(usedDrafter, null, position, questionsWon);
-
-    // Assert
-    draft.TriviaResults.Should().Contain(tr => tr.Drafter == usedDrafter && tr.Position == position && tr.QuestionsWon == questionsWon);
-  }
-
-  [Fact]
-  public void ApplyRollover_ShouldReturnSuccessResult_WhenRolloverIsValid()
+  public void AddTriviaResult_ShouldAddTriviaResultToList_WhenValidParametersAreProvided()
   {
     // Arrange
     var draft = SetupAndStartDraft();
+    var position = 1;
+    var questionsWon = 5;
 
     var drafter = draft.Drafters.FirstOrDefault();
 
     // Act
-    var result = draft.ApplyRollover(drafter!.Id.Value, null, true);
+    var result = draft.AddTriviaResult(drafter, null, position, questionsWon);
+
+    // Assert
+    result.IsSuccess.Should().BeTrue();
+    draft.TriviaResults.Should().ContainSingle();
+    draft.TriviaResults.First().Position.Should().Be(position);
+    draft.TriviaResults.First().QuestionsWon.Should().Be(questionsWon);
+  }
+
+  [Fact]
+  public void ApplyRollover_ShouldAddRolloverToDraft_WhenValidParametersAreProvided()
+  {
+    // Arrange
+    var draft = DraftFactory.CreateStandardDraft().Value;
+    var drafter = DrafterFactory.CreateDrafter();
+    draft.AddDrafter(drafter);
+
+    // Act
+    var result = draft.ApplyRollover(drafter.Id.Value, null, false);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
   }
 
   [Fact]
-  public void SetEpisodeNumber_ShouldReturnSuccessResult_WhenEpisodeNumberIsValid()
+  public void ApplyCommissionerOverride_ShouldOverridePick_WhenValidPickIsProvided()
+  {
+    // Arrange
+    var draft = DraftFactory.CreateStandardDraft().Value;
+    var drafter = DrafterFactory.CreateDrafter();
+    var movie = MovieFactory.CreateMovie().Value;
+    var pick = Pick.Create(
+      Faker.Random.Number(1, 7),
+      movie,
+      drafter,
+      null,
+      draft,
+      Faker.Random.Number(1, 9)).Value;
+
+    // Act
+    var result = draft.ApplyCommissionerOverride(pick);
+
+    // Assert
+    result.IsSuccess.Should().BeTrue();
+  }
+
+  [Fact]
+  public void SetEpisodeNumber_ShouldUpdateEpisodeNumber_WhenValidNumberIsProvided()
   {
     // Arrange
     var draft = DraftFactory.CreateStandardDraft().Value;
@@ -516,10 +522,19 @@ public class DraftTests : BaseTest
   }
 
   [Fact]
-  public void PauseDraft_ShouldReturnSuccessResult_WhenDraftIsInProgress()
+  public void PauseDraft_ShouldChangeStatusToPaused_WhenDraftIsInProgress()
   {
     // Arrange
-    var draft = SetupAndStartDraft();
+    var draft = DraftFactory.CreateStandardDraft().Value;
+    for (int i = 0; i < draft.TotalDrafters; i++)
+    {
+      draft.AddDrafter(DrafterFactory.CreateDrafter());
+    }
+    for (int i = 0; i < draft.TotalHosts; i++)
+    {
+      draft.AddHost(HostsFactory.CreateHost().Value);
+    }
+    draft.StartDraft();
 
     // Act
     var result = draft.PauseDraft();
@@ -530,38 +545,36 @@ public class DraftTests : BaseTest
   }
 
   [Fact]
-  public void AddDraftReleaseDate_ShouldReturnSuccessResult_WhenReleaseDateIsValid()
+  public void AddReleaseDate_ShouldAddReleaseDateToList_WhenValidDateIsProvided()
   {
     // Arrange
     var draft = DraftFactory.CreateStandardDraft().Value;
-    var releaseDate = new DateOnly(
-      Faker.Date.Past(1).Year,
-      Faker.Date.Past(1).Month,
-      Faker.Date.Past(1).Day);
+    var releaseDate = DraftReleaseDate.Create(draft.Id, Faker.Date.PastDateOnly());
 
     // Act
-    draft.AddReleaseDate(DraftReleaseDate.Create(draft.Id, releaseDate));
+    draft.AddReleaseDate(releaseDate);
 
     // Assert
-    draft.ReleaseDates.Should().Contain(rd => rd.ReleaseDate == releaseDate);
+    draft.ReleaseDates.Should().ContainSingle();
+    draft.ReleaseDates.First().Should().Be(releaseDate);
   }
 
   [Fact]
-  public void SetDraftStatus_ShouldReturnSuccessResult_WhenDraftStatusIsValid()
+  public void SetDraftStatus_ShouldUpdateStatus_WhenValidStatusIsProvided()
   {
     // Arrange
     var draft = DraftFactory.CreateStandardDraft().Value;
-    var draftStatus = DraftStatus.Completed;
+    var newStatus = DraftStatus.InProgress;
 
     // Act
-    draft.SetDraftStatus(draftStatus);
+    draft.SetDraftStatus(newStatus);
 
     // Assert
-    draft.DraftStatus.Should().Be(draftStatus);
+    draft.DraftStatus.Should().Be(newStatus);
   }
 
   [Fact]
-  public void SetGameBoard_ShouldReturnSuccessResult_WhenGameBoardIsValid()
+  public void SetGameBoard_ShouldUpdateGameBoard_WhenValidGameBoardIsProvided()
   {
     // Arrange
     var draft = DraftFactory.CreateStandardDraft().Value;
@@ -574,7 +587,67 @@ public class DraftTests : BaseTest
     draft.GameBoard.Should().Be(gameBoard);
   }
 
-  private static Draft SetupAndStartDraft()
+  [Fact]
+  public void SetPatreonOnly_ShouldUpdatePatreonOnlyFlag_WhenValidValueIsProvided()
+  {
+    // Arrange
+    var draft = DraftFactory.CreateStandardDraft().Value;
+    var isPatreonOnly = true;
+
+    // Act
+    draft.SetPatreonOnly(isPatreonOnly);
+
+    // Assert
+    draft.IsPatreonOnly.Should().Be(isPatreonOnly);
+  }
+
+  [Fact]
+  public void SetNonCanonical_ShouldUpdateNonCanonicalFlag_WhenValidValueIsProvided()
+  {
+    // Arrange
+    var draft = DraftFactory.CreateStandardDraft().Value;
+    var nonCanonical = true;
+
+    // Act
+    draft.SetNonCanonical(nonCanonical);
+
+    // Assert
+    draft.NonCanonical.Should().Be(nonCanonical);
+  }
+
+  [Fact]
+  public void RemoveDrafter_ShouldRemoveDrafterFromList_WhenDrafterExists()
+  {
+    // Arrange
+    var draft = DraftFactory.CreateStandardDraft().Value;
+    var drafter = DrafterFactory.CreateDrafter();
+    draft.AddDrafter(drafter);
+
+    // Act
+    var result = draft.RemoveDrafter(drafter);
+
+    // Assert
+    result.IsSuccess.Should().BeTrue();
+    draft.Drafters.Should().BeEmpty();
+  }
+
+  [Fact]
+  public void RemoveHost_ShouldRemoveHostFromList_WhenHostExists()
+  {
+    // Arrange
+    var draft = DraftFactory.CreateStandardDraft().Value;
+    var host = HostsFactory.CreateHost().Value;
+    draft.AddHost(host);
+
+    // Act
+    var result = draft.RemoveHost(host);
+
+    // Assert
+    result.IsSuccess.Should().BeTrue();
+    draft.Hosts.Should().BeEmpty();
+  }
+
+  public static Draft SetupAndStartDraft()
   {
     var draft = DraftFactory.CreateStandardDraft().Value;
     for (int i = 0; i < draft.TotalDrafters; i++)

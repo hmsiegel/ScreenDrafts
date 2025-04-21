@@ -27,10 +27,16 @@ public sealed class Movie : Entity
     string imdbId,
     Guid id)
   {
-    if (movieTitle is null)
+    if (string.IsNullOrWhiteSpace(movieTitle))
     {
       return Result.Failure<Movie>(MovieErrors.InvalidMovieTitle);
     }
+
+    if (string.IsNullOrWhiteSpace(imdbId))
+    {
+      return Result.Failure<Movie>(MovieErrors.InvalidImdbId);
+    }
+
     var movie = new Movie(
       movieTitle: movieTitle,
       imdbId: imdbId,

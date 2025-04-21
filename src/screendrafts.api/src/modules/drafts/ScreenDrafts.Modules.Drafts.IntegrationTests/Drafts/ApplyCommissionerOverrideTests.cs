@@ -7,7 +7,7 @@ public sealed class ApplyCommissionerOverrideTests(IntegrationTestWebAppFactory 
   public async Task ApplyCommissionerOverride_WhenValidPick_ShouldApplyCommissionerOverrideAsync()
   {
     // Arrange
-    var (draftId, drafters, _) = await SetupDraftAndDraftersAsync();
+    var (draftId, drafters, _) = await SetupDraftAndDraftersAsync(DraftType.Standard);
     await Sender.Send(new StartDraftCommand(draftId.Value));
     var draft = await Sender.Send(new GetDraftQuery(draftId.Value));
 

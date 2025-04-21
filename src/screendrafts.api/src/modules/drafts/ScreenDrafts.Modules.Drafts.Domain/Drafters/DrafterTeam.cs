@@ -22,7 +22,11 @@ public sealed class DrafterTeam : Entity<DrafterTeamId>
   }
 
   public string Name { get; private set; } = default!;
+  public int NumberOfDrafters { get; private set; } = 2;
 
+  public RolloverVeto? RolloverVeto { get; private set; } = default!;
+
+  public RolloverVetoOverride? RolloverVetoOverride { get; private set; } = default!;
 
   public IReadOnlyCollection<Drafter> Drafters => _drafters.AsReadOnly();
 
@@ -40,6 +44,11 @@ public sealed class DrafterTeam : Entity<DrafterTeamId>
     string name,
     DrafterTeamId? id = null)
   {
+    if (string.IsNullOrWhiteSpace(name))
+    {
+      return Result.Failure<DrafterTeam>(DrafterTeamErrors.InvalidName);
+    }
+
     var drafterTeam = new DrafterTeam(
       id: id,
       name: name);
@@ -54,11 +63,6 @@ public sealed class DrafterTeam : Entity<DrafterTeamId>
     if (_drafters.Any(x => x.Id == drafter.Id))
     {
       return Result.Failure(DrafterErrors.AlreadyAdded(drafter.Id.Value));
-    }
-
-    if (_drafters.Count < 2)
-    {
-      return Result.Failure(DrafterErrors.NotEnoughDrafters);
     }
 
     _drafters.Add(drafter);
@@ -106,9 +110,45 @@ public sealed class DrafterTeam : Entity<DrafterTeamId>
     return Result.Success();
   }
 
+  public Result SetRolloverVeto(RolloverVeto rolloverVeto)
+  {
+    if (RolloverVeto != null)
+    {
+      return Result.Failure(DrafterErrors.RolloverVetoAlreadyExists);
+    }
+
+    RolloverVeto = rolloverVeto;
+
+    return Result.Success();
+  }
+
+  public Result SetRolloverVetoOverride(RolloverVetoOverride rolloverVetoOverride)
+  {
+
+    if (RolloverVetoOverride != null)
+    {
+      return Result.Failure(DrafterErrors.RolloverVetoOverrideAlreadyExists);
+    }
+
+    RolloverVetoOverride = rolloverVetoOverride; 
+
+    return Result.Success();
+  }
+
   public Result RemoveDrafter(Drafter drafter)
   {
     Guard.Against.Null(drafter);
+
+    if (!_drafters.Contains(drafter))
+    {
+      return Result.Failure(DrafterErrors.NotFound(drafter.Id.Value));
+    }
+
+    if (_drafters.Count == 1)
+    {
+      return Result.Failure(DrafterTeamErrors.NotEnoughDrafters);
+    }
+
     _drafters.Remove(drafter);
     return Result.Success();
   }
@@ -143,7 +183,13 @@ public sealed class DrafterTeam : Entity<DrafterTeamId>
 
   public Result UpdateName(string name)
   {
-    Name = Guard.Against.NullOrEmpty(name);
+    if (string.IsNullOrWhiteSpace(name))
+    {
+      return Result.Failure(DrafterTeamErrors.InvalidName);
+    }
+
+    Name = name;
+
     return Result.Success();
   }
 
@@ -157,6 +203,16 @@ public sealed class DrafterTeam : Entity<DrafterTeamId>
     }
     _drafters.Remove(existingDrafter);
     _drafters.Add(drafter);
+    return Result.Success();
+  }
+
+  public Result UpdateNumberOfDrafters(int numberOfDrafters)
+  {
+    if (numberOfDrafters < 1)
+    {
+      return Result.Failure(DrafterTeamErrors.InvalidNumberOfDrafters);
+    }
+    NumberOfDrafters = numberOfDrafters;
     return Result.Success();
   }
 }

@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.UnitTests.TestUtils;
 
-public static class DraftFactory 
+public static class DraftFactory
 {
   private static readonly Faker _faker = new();
 
@@ -10,6 +10,17 @@ public static class DraftFactory
       7,
       2,
       0,
+      2,
+      DraftStatus.Created,
+      EpisodeType.MainFeed);
+
+  public static Result<Draft> CreateStandardDraftWithTeams() =>
+    Draft.Create(
+      Title.Create(_faker.Lorem.Word()),
+      DraftType.Standard,
+      7,
+      0,
+      2,
       2,
       DraftStatus.Created,
       EpisodeType.MainFeed);
@@ -33,6 +44,15 @@ public static class DraftFactory
       2,
       DraftStatus.Created,
       EpisodeType.MainFeed);
+
+  public static Result<GameBoard> CreateStandardGameBoard() =>
+    GameBoard.Create(CreateStandardDraft().Value);
+
+  public static Result<GameBoard> CreateMiniMegaGameBoard() =>
+    GameBoard.Create(CreateMiniMegaDraft().Value);
+
+  public static Result<GameBoard> CreateMegaGameBoard() =>
+    GameBoard.Create(CreateMegaDraft().Value);
 
   public static Collection<DraftPosition> CreateStandardDraftPositions() =>
   [

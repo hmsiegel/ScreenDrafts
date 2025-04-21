@@ -6,7 +6,7 @@ public class AddPickTests(IntegrationTestWebAppFactory factory) : BaseIntegratio
   public async Task AddPick_ShouldAddPickToDraftAsync()
   {
     // Arrange
-    var (draftId, drafters, _) = await SetupDraftAndDraftersAsync();
+    var (draftId, drafters, _) = await SetupDraftAndDraftersAsync(DraftType.Standard);
 
     await Sender.Send(new StartDraftCommand(draftId.Value));
 
@@ -14,8 +14,6 @@ public class AddPickTests(IntegrationTestWebAppFactory factory) : BaseIntegratio
     var movieId = await Sender.Send(new AddMovieCommand(movie.Id, movie.ImdbId, movie.MovieTitle));
 
     var reloadedDraftResult = await Sender.Send(new GetDraftQuery(draftId.Value));
-
-    await Sender.Send(new StartDraftCommand(reloadedDraftResult.Value.Id));
 
     var addPickCommand = new AddPickCommand(
       reloadedDraftResult.Value.Id,
@@ -45,7 +43,7 @@ public class AddPickTests(IntegrationTestWebAppFactory factory) : BaseIntegratio
   public async Task AddPick_ShouldNotAddPickToDraft_WhenDrafterIsNotAssignedToDraftAsync()
   {
     // Arrange
-    var (draftId, _, _) = await SetupDraftAndDraftersAsync();
+    var (draftId, _, _) = await SetupDraftAndDraftersAsync(DraftType.Standard);
 
     await Sender.Send(new StartDraftCommand(draftId.Value));
 
@@ -78,7 +76,7 @@ public class AddPickTests(IntegrationTestWebAppFactory factory) : BaseIntegratio
   [Fact]
   public async Task AddPick_ShouldNotAddPickToDraft_WhenMovieIsNotInDatabaseAsync()
   {
-    var (draftId, drafters, _) = await SetupDraftAndDraftersAsync();
+    var (draftId, drafters, _) = await SetupDraftAndDraftersAsync(DraftType.Standard);
 
     await Sender.Send(new StartDraftCommand(draftId.Value));
 
@@ -108,7 +106,7 @@ public class AddPickTests(IntegrationTestWebAppFactory factory) : BaseIntegratio
   public async Task AddPick_ShouldNotAddPickToDraft_WhenDraftIsNotStartedAsync()
   {
     // Arrange
-    var (draftId, drafters, _) = await SetupDraftAndDraftersAsync();
+    var (draftId, drafters, _) = await SetupDraftAndDraftersAsync(DraftType.Standard);
 
     var movie = MovieFactory.CreateMovie().Value;
     var movieId = await Sender.Send(new AddMovieCommand(movie.Id, movie.ImdbId, movie.MovieTitle));
@@ -130,7 +128,7 @@ public class AddPickTests(IntegrationTestWebAppFactory factory) : BaseIntegratio
   public async Task AddPick_ShouldNotAddPickToDraft_WhenPickPositionIsOutOfRangeAsync()
   {
     // Arrange
-    var (draftId, drafters, _) = await SetupDraftAndDraftersAsync();
+    var (draftId, drafters, _) = await SetupDraftAndDraftersAsync(DraftType.Standard);
 
     await Sender.Send(new StartDraftCommand(draftId.Value));
 
@@ -153,14 +151,14 @@ public class AddPickTests(IntegrationTestWebAppFactory factory) : BaseIntegratio
 
     // Assert
     result.IsSuccess.Should().BeFalse();
-    result.Errors[0].Should().Be(DraftErrors.PickPositionIsOutOfRange);
+    result.Errors[0].Should().Be(PickErrors.PickPositionIsOutOfRange);
   }
 
   [Fact]
   public async Task AddPick_ShouldNotAddPickToDraft_WhenPickPositionIsAlreadyTakenAsync()
   {
     // Arrange
-    var (draftId, drafters, _) = await SetupDraftAndDraftersAsync();
+    var (draftId, drafters, _) = await SetupDraftAndDraftersAsync(DraftType.Standard);
 
     await Sender.Send(new StartDraftCommand(draftId.Value));
 
@@ -197,7 +195,7 @@ public class AddPickTests(IntegrationTestWebAppFactory factory) : BaseIntegratio
   [Fact]
   public async Task AddMultiplePicks_ShouldAddMultiplePicksToDraftAsync()
   {
-    var (draftId, drafters, _) = await SetupDraftAndDraftersAsync();
+    var (draftId, drafters, _) = await SetupDraftAndDraftersAsync(DraftType.Standard);
 
     await Sender.Send(new StartDraftCommand(draftId.Value));
 
