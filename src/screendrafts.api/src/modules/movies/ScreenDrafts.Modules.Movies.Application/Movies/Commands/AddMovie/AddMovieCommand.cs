@@ -9,9 +9,9 @@ public sealed record AddMovieCommand(
   string? ReleaseDate,
   Uri? YouTubeTrailerUrl,
   IReadOnlyCollection<string> Genres,
-  IReadOnlyCollection<PersonRequest> Directors,
-  IReadOnlyCollection<PersonRequest> Actors,
-  IReadOnlyCollection<PersonRequest> Writers,
-  IReadOnlyCollection<PersonRequest> Producers,
-  IReadOnlyCollection<ProductionCompanyRequest> ProductionCompanies)
+  IReadOnlyCollection<PersonRequest>? Directors,
+  IReadOnlyCollection<PersonRequest>? Actors,
+  IReadOnlyCollection<PersonRequest>? Writers,
+  IReadOnlyCollection<PersonRequest>? Producers,
+  IReadOnlyCollection<ProductionCompanyRequest>? ProductionCompanies)
   : ICommand<Guid>;

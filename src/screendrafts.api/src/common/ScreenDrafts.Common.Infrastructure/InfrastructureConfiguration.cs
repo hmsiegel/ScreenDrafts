@@ -16,10 +16,36 @@ public static class InfrastructureConfiguration
 
     services.AddAuthorizationInternal();
 
+    services.AddCoreInfrastructure(databaseConnectionString);
+
     services.AddRepositoriesFromModules(infrastructureAssemblies);
 
-    services.AddSeedersFromModules(infrastructureAssemblies);
+    services.TryAddScoped<IDbConnectionFactory, DbConnectionFactory>();
 
+    SqlMapper.AddTypeHandler(new GenericArrayHandler<string>());
+
+    services.AddCaching(redisConnectionString);
+
+    services.ConfigureOpenTelemetry(serviceName);
+
+    services.AddMongoDb(mongoConnectionString);
+
+    services.AddEventBus(serviceName, moduleConfigureConsumers, rabbitMqSettings);
+
+    return services;
+  }
+
+  public static IServiceCollection AddSeedingInfrastructure(
+    this IServiceCollection services,
+    string databaseConnectionString)
+  {
+    services.AddCoreInfrastructure(databaseConnectionString);
+    return services;
+  }
+
+  private static IServiceCollection AddCoreInfrastructure(this IServiceCollection services, string databaseConnectionString)
+  {
+    // Add core infrastructure services here
     services.TryAddSingleton<IDateTimeProvider, DateTimeProvider>();
 
     services.TryAddSingleton<InsertOutboxMessagesInterceptor>();
@@ -27,43 +53,17 @@ public static class InfrastructureConfiguration
     var npgsqlDataSource = new NpgsqlDataSourceBuilder(databaseConnectionString).Build();
     services.TryAddSingleton(npgsqlDataSource);
 
-    services.TryAddScoped<IDbConnectionFactory, DbConnectionFactory>();
-
     services.TryAddScoped<ICsvFileService, CsvFileService>();
-
-    SqlMapper.AddTypeHandler(new GenericArrayHandler<string>());
 
     services.AddQuartzService();
 
-    services.AddCaching(redisConnectionString);
-
-    services.AddEventBus(serviceName, moduleConfigureConsumers, rabbitMqSettings);
-
-    services.ConfigureOpenTelemetry(serviceName);
-
-    services.AddMongoDb(mongoConnectionString);
-
     return services;
   }
 
-  public static async Task<IApplicationBuilder> UseInfrastructureAsync(this IApplicationBuilder app)
-  {
-    ArgumentNullException.ThrowIfNull(app);
-    await app.UseSeedersAsync();
-    return app;
-  }
 
-  private static IServiceCollection AddSeedersFromModules(this IServiceCollection services, Assembly[] infrastructureAssemblies)
-  {
-    services.Scan(scan => scan
-        .FromAssemblies(infrastructureAssemblies)
-        .AddClasses(classes => classes.AssignableTo<ICustomSeeder>(), false)
-        .AsImplementedInterfaces()
-        .WithScopedLifetime());
-    return services;
-  }
-
-  private static IServiceCollection AddRepositoriesFromModules(this IServiceCollection services, Assembly[] infrastructureAssemblies)
+  private static IServiceCollection AddRepositoriesFromModules(
+    this IServiceCollection services,
+    Assembly[] infrastructureAssemblies)
   {
     services.Scan(scan => scan
         .FromAssemblies(infrastructureAssemblies)

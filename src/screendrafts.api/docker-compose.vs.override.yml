@@ -1,0 +1,6 @@
+﻿services:
+  screendrafts.seeding.movies:
+    profiles: ["manual"]
+
+  screendrafts.seeding.drafts:
+    profiles: ["manual"]

@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Movies.Infrastructure.Database;
 
-public abstract class MoviesRepositoryBase<TEntity>(MoviesDbContext dbContext)
+internal abstract class MoviesRepositoryBase<TEntity>(MoviesDbContext dbContext)
   where TEntity : class
 {
     private readonly MoviesDbContext _dbContext = dbContext;

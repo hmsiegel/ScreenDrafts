@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
-
-namespace ScreenDrafts.Modules.Drafts.Infrastructure.Drafts;
+﻿namespace ScreenDrafts.Modules.Drafts.Infrastructure.Drafts;
 
 internal sealed class DraftConfiguration : IEntityTypeConfiguration<Draft>
 {

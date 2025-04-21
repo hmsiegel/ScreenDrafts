@@ -32,11 +32,4 @@ public sealed class MoviesDbContext(DbContextOptions<MoviesDbContext> options)
 
     modelBuilder.HasDefaultSchema(Schemas.Movies);
   }
-
-  protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-  {
-    ArgumentNullException.ThrowIfNull(optionsBuilder);
-
-    optionsBuilder.EnableSensitiveDataLogging();
-  }
 }

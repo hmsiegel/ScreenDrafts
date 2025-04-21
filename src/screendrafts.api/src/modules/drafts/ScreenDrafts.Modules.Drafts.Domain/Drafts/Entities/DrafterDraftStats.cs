@@ -36,20 +36,22 @@ public sealed class DrafterDraftStats : Entity<DrafterDraftStatsId>
 
   public int StartingVetoes { get; private set; } = 1;
 
-  public int StartingVetoOverrides { get; private set; }
+  public int RolloverVeto { get; private set; }
+  public int? RolloverVetoOverride { get; private set; }
+
+  public int TriviaVetoes { get; private set; }
+  public int? TriviaVetoOverrides { get; private set; }
+
+  public int TotalVetoes => StartingVetoes + RolloverVeto + TriviaVetoes;
+  public int TotalVetoOverrides => (RolloverVetoOverride ?? 0) + (TriviaVetoOverrides ?? 0);
 
   public int CommissionerOverrides { get; private set; }
 
-  public int RolloversApplied { get; private set; }
+  public int VetoesUsed { get; private set; }
+  public int? VetoOverridesUsed { get; private set; }
 
-  public int TriviaVetoes { get; private set; }
-
-  public int TriviaVetoOverrides { get; private set; }
-
-
-  public int TotalVetoes => StartingVetoes + RolloversApplied + TriviaVetoes;
-
-  public int TotalVetoOverrides => StartingVetoOverrides + TriviaVetoOverrides;
+  public int VetoesRollingOver => TotalVetoes - VetoesUsed >= 1 ? 1 : 0;
+  public int VetoOverridesRollingOver => TotalVetoOverrides - VetoOverridesUsed >=1 ? 1 : 0;
 
 
   public static DrafterDraftStats Create(
@@ -66,11 +68,11 @@ public sealed class DrafterDraftStats : Entity<DrafterDraftStatsId>
   {
     if (isVeto)
     {
-      RolloversApplied++;
+      RolloverVeto++;
     }
     else
     {
-      StartingVetoOverrides++;
+      RolloverVetoOverride++;
     }
   }
 
@@ -89,5 +91,17 @@ public sealed class DrafterDraftStats : Entity<DrafterDraftStatsId>
   public void AddCommissionerOverride()
   {
     CommissionerOverrides++;
+  }
+
+  public void SetUsedBlessing(int numberOfBlessingsUsed, bool isVeto)
+  {
+    if (isVeto)
+    {
+      VetoesUsed += numberOfBlessingsUsed;
+    }
+    else
+    {
+      VetoOverridesUsed += numberOfBlessingsUsed;
+    }
   }
 }

@@ -1,0 +1,13 @@
+{
+  "profiles": {
+    "ScreenDrafts.Seeding.Movies": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DATA_PATH": "C:\\Repos\\ScreenDrafts\\src\\screendrafts.api\\data"
+      }
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}

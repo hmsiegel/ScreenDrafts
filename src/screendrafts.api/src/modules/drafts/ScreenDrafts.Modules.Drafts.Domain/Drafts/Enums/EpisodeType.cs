@@ -9,4 +9,5 @@ public sealed class EpisodeType(string name, int value) : SmartEnum<EpisodeType>
   public static readonly EpisodeType BestPictureNominee = new(nameof(BestPictureNominee), 4);
   public static readonly EpisodeType PatreonsVs = new(nameof(PatreonsVs), 5);
   public static readonly EpisodeType LiveDraft = new(nameof(LiveDraft), 6);
+  public static readonly EpisodeType Special = new(nameof(Special), 7);
 }

@@ -15,7 +15,7 @@ public static class MovieLoggingMessages
   private static readonly Action<ILogger, string, string, Exception?> _movieAddedToDatabase = LoggerMessage.Define<string, string>(
     LogLevel.Information,
     new EventId(3, nameof(MovieAddedToDatabase)),
-    "Movie added to database: {Title} (IMDB Id: {ImdbId}");
+    "Movie added to database: {Title} (IMDB Id: {ImdbId})");
 
   private static readonly Action<ILogger, string, Exception?> _fetchedMovieFromImdb = LoggerMessage.Define<string>(
     LogLevel.Information,

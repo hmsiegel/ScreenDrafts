@@ -1,0 +1,34 @@
+﻿services:
+  screendrafts.seeding.movies:
+    build:
+      context: .
+      dockerfile: tools/ScreenDrafts.Seeding.Movies/Dockerfile
+    depends_on:
+      - screendrafts.database
+    networks:
+      - screendrafts
+    volumes:
+      - ./data:/app/data
+    environment:
+      - DATA_PATH=/app/data
+      - ConnectionStrings__Database=Host=screendrafts.database;Port=5432;Database=screendrafts;Username=postgres;Password=postgres
+    profiles: ["manual"]
+
+  screendrafts.seeding.drafts:
+    build:
+      context: .
+      dockerfile: tools/ScreenDrafts.Seeding.Drafts/Dockerfile
+    depends_on:
+      - screendrafts.database
+    volumes:
+      - ./data:/app/data
+    environment:
+      - DATA_PATH=/app/data
+      - ConnectionStrings__Database=Host=screendrafts.database;Port=5432;Database=screendrafts;Username=postgres;Password=postgres
+    profiles: ["manual"]
+    networks:
+      - screendrafts
+
+networks:
+  screendrafts:
+    external: true

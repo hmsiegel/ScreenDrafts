@@ -331,13 +331,12 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
        _drafterDraftStats.FirstOrDefault(d => d.Drafter?.Id.Value == drafterId)
        ?? _drafterDraftStats.FirstOrDefault(d => d.DrafterTeam?.Id.Value == drafterTeamId);
 
-
-    if (isVeto && drafterStats?.RolloversApplied >= 1)
+    if (isVeto && drafterStats?.RolloverVeto >= 1)
     {
       return Result.Failure(DraftErrors.ADrafterCanOnlyHaveOneRolloverVeto);
     }
 
-    if (!isVeto && drafterStats?.StartingVetoOverrides >= 1)
+    if (!isVeto && drafterStats?.RolloverVetoOverride >= 1)
     {
       return Result.Failure(DraftErrors.ADrafterCanOnlyHaveOneRolloverVetoOverride);
     }

@@ -1,5 +1,4 @@
-﻿global using System.ComponentModel.DataAnnotations.Schema;
-global using System.Data;
+﻿global using System.Data;
 global using System.Data.Common;
 global using System.Reflection;
 
@@ -21,12 +20,10 @@ global using Newtonsoft.Json;
 global using Quartz;
 
 global using ScreenDrafts.Common.Application.Clock;
-global using ScreenDrafts.Common.Application.CsvFiles;
 global using ScreenDrafts.Common.Application.Data;
 global using ScreenDrafts.Common.Application.EventBus;
 global using ScreenDrafts.Common.Application.Logging;
 global using ScreenDrafts.Common.Application.Messaging;
-global using ScreenDrafts.Common.Application.Seeding;
 global using ScreenDrafts.Common.Domain;
 global using ScreenDrafts.Common.Infrastructure;
 global using ScreenDrafts.Common.Infrastructure.Inbox;
@@ -39,7 +36,5 @@ global using ScreenDrafts.Modules.Movies.Domain.Movies.Entities;
 global using ScreenDrafts.Modules.Movies.Domain.Movies.Repositories;
 global using ScreenDrafts.Modules.Movies.Domain.Movies.ValueObjects;
 global using ScreenDrafts.Modules.Movies.Infrastructure.Database;
-global using ScreenDrafts.Modules.Movies.Infrastructure.Database.Seeding.Models;
 global using ScreenDrafts.Modules.Movies.Infrastructure.Inbox;
 global using ScreenDrafts.Modules.Movies.Infrastructure.Outbox;
-global using ScreenDrafts.Modules.Movies.IntegrationEvents;

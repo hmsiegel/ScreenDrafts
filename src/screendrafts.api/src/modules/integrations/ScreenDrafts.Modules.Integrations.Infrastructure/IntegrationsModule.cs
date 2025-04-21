@@ -59,6 +59,7 @@ public static class IntegrationsModule
 
     services.AddScoped<IOmdbService, OmdbService>();
   }
+
   private static void AddDomainEventHandlers(this IServiceCollection services)
   {
     Type[] domainEventHandlers = [.. Application.AssemblyReference.Assembly

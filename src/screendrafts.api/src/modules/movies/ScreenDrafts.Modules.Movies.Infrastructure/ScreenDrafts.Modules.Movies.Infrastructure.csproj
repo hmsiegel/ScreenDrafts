@@ -4,4 +4,8 @@
     <ProjectReference Include="..\ScreenDrafts.Modules.Movies.Application\ScreenDrafts.Modules.Movies.Application.csproj" />
     <ProjectReference Include="..\ScreenDrafts.Modules.Movies.Presentation\ScreenDrafts.Modules.Movies.Presentation.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="ScreenDrafts.Seeding.Movies"/>
+  </ItemGroup>
 </Project>

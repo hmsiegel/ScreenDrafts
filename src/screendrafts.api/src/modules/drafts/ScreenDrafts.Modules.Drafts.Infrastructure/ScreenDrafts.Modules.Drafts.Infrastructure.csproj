@@ -6,4 +6,8 @@
     <ProjectReference Include="..\ScreenDrafts.Modules.Drafts.Presentation\ScreenDrafts.Modules.Drafts.Presentation.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="ScreenDrafts.Seeding.Drafts"/>
+  </ItemGroup>
+
 </Project>

@@ -16,9 +16,10 @@ internal sealed class AddMovieCommandHandler(
   private readonly IUnitOfWork _unitOfWork = unitOfWork;
   private readonly ILogger<AddMovieCommandHandler> _logger = logger;
 
+  [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1848:Use the LoggerMessage delegates", Justification = "<Pending>")]
   public async Task<Result<Guid>> Handle(AddMovieCommand request, CancellationToken cancellationToken)
   {
-    // Check if the movie exeists in the database
+    // Check if the movie exists in the database
     var movieExists = await _movieRepository.ExistsAsync(request.ImdbId, cancellationToken);
 
     if (movieExists)
@@ -91,62 +92,76 @@ internal sealed class AddMovieCommandHandler(
     }
 
     // Add the directors
-    foreach (var director in request.Directors)
+    if (request.Directors is not null)
     {
-      var person = await GetOrCreatePerson(director.Name, director.ImdbId);
-      _movieRepository.AddMovieDirector(movie.Value, person);
+      foreach (var director in request.Directors)
+      {
+        var person = await GetOrCreatePerson(director.Name, director.ImdbId);
+        _movieRepository.AddMovieDirector(movie.Value, person);
+      }
     }
 
     // Add the actors
-    foreach (var actor in request.Actors)
+    if (request.Actors is not null)
     {
-      var person = await GetOrCreatePerson(actor.Name, actor.ImdbId);
-      _movieRepository.AddMovieActor(movie.Value, person);
+      foreach (var actor in request.Actors)
+      {
+        var person = await GetOrCreatePerson(actor.Name, actor.ImdbId);
+        _movieRepository.AddMovieActor(movie.Value, person);
+      }
     }
 
     // Add the writers
-    foreach (var writer in request.Writers)
+    if (request.Writers is not null)
     {
-      var person = await GetOrCreatePerson(writer.Name, writer.ImdbId);
-      _movieRepository.AddMovieWriter(movie.Value, person);
+      foreach (var writer in request.Writers)
+      {
+        var person = await GetOrCreatePerson(writer.Name, writer.ImdbId);
+        _movieRepository.AddMovieWriter(movie.Value, person);
+      }
     }
 
     // Add the producers
-    foreach (var producer in request.Producers)
+    if (request.Producers is not null)
     {
-      var person = await GetOrCreatePerson(producer.Name, producer.ImdbId);
-      _movieRepository.AddMovieProducer(movie.Value, person);
+      foreach (var producer in request.Producers)
+      {
+        var person = await GetOrCreatePerson(producer.Name, producer.ImdbId);
+        _movieRepository.AddMovieProducer(movie.Value, person);
+      }
     }
 
     // Add the production companies
-    foreach (var company in request.ProductionCompanies)
+    if (request.ProductionCompanies is not null)
     {
-      var productionCompany = await _productionCompanyRepository.FindByImdbIdAsync(company.ImdbId, cancellationToken);
-
-      if (productionCompany is null)
+      foreach (var company in request.ProductionCompanies)
       {
-        productionCompany = ProductionCompany.Create(company.Name, company.ImdbId);
-        _productionCompanyRepository.Add(productionCompany);
-      }
-      else
-      {
-        var existingEntity = _productionCompanyRepository.FindExistingEntity(company.ImdbId, cancellationToken);
+        var productionCompany = await _productionCompanyRepository.FindByImdbIdAsync(company.ImdbId, cancellationToken);
 
-        if (existingEntity is not null)
+        if (productionCompany is null)
         {
-          productionCompany = existingEntity;
+          productionCompany = ProductionCompany.Create(company.Name, company.ImdbId);
+          _productionCompanyRepository.Add(productionCompany);
         }
         else
         {
-          _productionCompanyRepository.Attach(productionCompany);
+          var existingEntity = _productionCompanyRepository.FindExistingEntity(company.ImdbId, cancellationToken);
+
+          if (existingEntity is not null)
+          {
+            productionCompany = existingEntity;
+          }
+          else
+          {
+            _productionCompanyRepository.Attach(productionCompany);
+          }
+        }
+
+        if (!await _productionCompanyRepository.RelationshipExistsAsync(movie.Value.Id.Value, productionCompany.Id, cancellationToken))
+        {
+          _movieRepository.AddMovieProductionCompany(movie.Value, productionCompany);
         }
       }
-
-      if (!await _productionCompanyRepository.RelationshipExistsAsync(movie.Value.Id.Value, productionCompany.Id, cancellationToken))
-      {
-        _movieRepository.AddMovieProductionCompany(movie.Value, productionCompany);
-      }
-
     }
 
     await _unitOfWork.SaveChangesAsync(cancellationToken);

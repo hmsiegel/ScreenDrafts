@@ -5,16 +5,19 @@ EXPOSE 8080
 EXPOSE 8081
 
 
-# This stage is used to build the service project
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["src/api/ScreenDrafts.Gateway/ScreenDrafts.Gateway.csproj", "src/api/ScreenDrafts.Gateway"]
-RUN dotnet restore ".src/api/ScreenDrafts.Gateway.csproj"
+COPY ["Directory.Packages.props", "."]
+COPY ["Directory.Build.props", "."]
+COPY ["Directory.Build.targets", "."]
+COPY ["src/api/ScreenDrafts.Gateway/ScreenDrafts.Gateway.csproj", "src/api/ScreenDrafts.Gateway/"]
+RUN dotnet restore "./src/api/ScreenDrafts.Gateway/ScreenDrafts.Gateway.csproj"
 COPY . .
 WORKDIR "/src/src/api/ScreenDrafts.Gateway"
 RUN dotnet build "./ScreenDrafts.Gateway.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
+# This stage is used to publish the service project to be copied to the final stage
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "./ScreenDrafts.Gateway.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
