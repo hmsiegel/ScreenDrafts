@@ -12,10 +12,10 @@ internal sealed class DraftPositionCsvModel
   public string DraftPicks { get; set; } = string.Empty;
 
   [Column("has_bonus_veto")]
-  public bool HasBonusVeto { get; set; } = false;
+  public bool? HasBonusVeto { get; set; } = false;
 
   [Column("has_bonus_veto_override")]
-  public bool HasBonusVetoOverride { get; set; } = false;
+  public bool? HasBonusVetoOverride { get; set; } = false;
 
   [Column("drafter_id")]
   public Guid? DrafterId { get; set; } = null;

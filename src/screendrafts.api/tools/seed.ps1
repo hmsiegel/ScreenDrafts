@@ -3,7 +3,9 @@ param(
    [ValidateSet("movies", "drafts")]
    [string]$Seeder,
 
-   [string]$Module
+   [string]$Module,
+
+   [switch]$Rebuild
 )
 
 $ErrorActionPreference = "Stop"
@@ -15,6 +17,19 @@ $rootDir = Resolve-Path "$scriptDir/.."
 $composeBase = "$rootDir/docker-compose.yml"
 $composeSeeding = "$rootDir/docker-compose.seeding.yml"
 $seederService = "screendrafts.seeding.$Seeder"
+
+# -- Wait fos docker to be ready ---
+function Wait-ForPostgres {
+    Write-Host "`n⏳ Waiting for PostgreSQL to be ready..." -ForegroundColor Cyan
+    do {
+        $ready = docker exec screendraftsapi-screendrafts.database-1 pg_isready -U postgres 2>$null
+        if ($LASTEXITCODE -ne 0) {
+            Start-Sleep -Seconds 1
+        }
+    } while ($LASTEXITCODE -ne 0)
+    Write-Host "✅ PostgreSQL is ready." -ForegroundColor Green
+}
+
 
 # --- Build optional module argument ---
 $moduleArg = ""
@@ -30,7 +45,9 @@ if ($Rebuild) {
 
 # --- Start DB container only ---
 Write-Host "`n🔄 Starting database container..." -ForegroundColor Cyan
-docker compose -f $composeBase -f $composeSeeding up -d screendrafts.database
+docker compose -f $composeBase up -d screendrafts.database
+
+Wait-ForPostgres
 
 # --- Run Seeder ---
 Write-Host "`n🚀 Running $seederService $moduleArg..." -ForegroundColor Cyan

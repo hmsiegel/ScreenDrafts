@@ -68,7 +68,8 @@ internal sealed class CommissionerOverrideSeeder(
         continue;
       }
 
-      var pick = await _dbContext.Picks.FindAsync([resolvedPickId.Value], cancellationToken: cancellationToken);
+      var pickId = PickId.Create(resolvedPickId.Value);
+      var pick = await _dbContext.Picks.FindAsync([pickId], cancellationToken: cancellationToken);
 
       if (pick is null)
       {

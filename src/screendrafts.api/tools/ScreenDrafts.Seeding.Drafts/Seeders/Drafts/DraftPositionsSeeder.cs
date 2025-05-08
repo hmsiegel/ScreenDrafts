@@ -51,8 +51,8 @@ internal sealed class DraftPositionsSeeder(
       var draftPosition = DraftPosition.Create(
         name: record.PositionName,
         picks: new Collection<int>([.. record.DraftPicks.Split(',').Select(int.Parse)]),
-        hasBonusVeto: record.HasBonusVeto,
-        hasBonusVetoOverride: record.HasBonusVetoOverride).Value;
+        hasBonusVeto: record.HasBonusVeto ?? false,
+        hasBonusVetoOverride: record.HasBonusVetoOverride ?? false).Value;
 
       var drafterId = record.DrafterId.HasValue ? DrafterId.Create(record.DrafterId.Value) : null;
       var drafterTeamId = record.DrafterTeamId.HasValue ? DrafterTeamId.Create(record.DrafterTeamId.Value) : null;
