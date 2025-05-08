@@ -535,17 +535,13 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("drafter_team_id");
 
-                    b.Property<int>("RolloversApplied")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("RolloverVeto")
                         .HasColumnType("integer")
-                        .HasDefaultValue(0)
-                        .HasColumnName("rollovers_applied");
+                        .HasColumnName("rollover_veto");
 
-                    b.Property<int>("StartingVetoOverrides")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int?>("RolloverVetoOverride")
                         .HasColumnType("integer")
-                        .HasDefaultValue(0)
-                        .HasColumnName("starting_veto_overrides");
+                        .HasColumnName("rollover_veto_override");
 
                     b.Property<int>("StartingVetoes")
                         .ValueGeneratedOnAdd()
@@ -553,15 +549,21 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasDefaultValue(1)
                         .HasColumnName("starting_vetoes");
 
-                    b.Property<int>("TriviaVetoOverrides")
+                    b.Property<int?>("TriviaVetoOverrides")
                         .HasColumnType("integer")
                         .HasColumnName("trivia_veto_overrides");
 
                     b.Property<int>("TriviaVetoes")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasDefaultValue(0)
                         .HasColumnName("trivia_vetoes");
+
+                    b.Property<int?>("VetoOverridesUsed")
+                        .HasColumnType("integer")
+                        .HasColumnName("veto_overrides_used");
+
+                    b.Property<int>("VetoesUsed")
+                        .HasColumnType("integer")
+                        .HasColumnName("vetoes_used");
 
                     b.HasKey("Id", "DraftId")
                         .HasName("pk_drafter_draft_stats");

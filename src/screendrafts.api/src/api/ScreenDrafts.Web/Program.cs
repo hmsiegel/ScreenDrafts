@@ -69,8 +69,6 @@ app.MapHealthChecks("health", new HealthCheckOptions
   ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
 });
 
-await app.UseInfrastructureAsync();
-
 app.UseLogContextTraceLogging();
 app.UseSerilogRequestLogging();
 app.UseExceptionHandler();

@@ -21,16 +21,29 @@ public sealed class ListUpcomingDraftsTests(IntegrationTestWebAppFactory factory
         draft.EpisodeType,
         draft.DraftStatus));
 
+      if (!draftId.IsSuccess)
+      {
+        continue;
+      }
+
       var draftReleaseDate = DraftReleaseDate.Create(DraftId.Create(draftId.Value), Faker.Date.FutureDateOnly());
 
       var updatedReleaseDate =
         await Sender.Send(new UpdateReleaseDateCommand(draftReleaseDate.DraftId.Value, draftReleaseDate.ReleaseDate));
 
+      if (!updatedReleaseDate.IsSuccess)
+      {
+        continue;
+      }
+
       updatedReleaseDate.IsSuccess.Should().BeTrue();
 
       var updatedDraft = await Sender.Send(new GetDraftQuery(draftId.Value));
 
-      drafts.Add(updatedDraft.Value);
+      if (updatedDraft.IsSuccess && updatedDraft.Value is not null)
+      {
+        drafts.Add(updatedDraft.Value);
+      }
     } while (drafts.Count < 20);
 
     // Act

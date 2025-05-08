@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Common.Infrastructure.CsvFiles;
 
-public sealed class CsvFileService : ICsvFileService
+internal sealed class CsvFileService : ICsvFileService
 {
   public IEnumerable<T> ReadCsvFile<T>(string filePath)
   {

@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "ScreenDrafts.Seeding.Drafts": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}

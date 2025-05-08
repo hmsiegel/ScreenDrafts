@@ -93,5 +93,4 @@ public static class DraftsModule
       services.Decorate(integrationEventHandler, closedIdempotentHandler);
     }
   }
-
 }

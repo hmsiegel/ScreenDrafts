@@ -14,47 +14,57 @@ internal sealed class DrafterDraftStatsConfiguration : IEntityTypeConfiguration<
         id => id.Value,
         value => DrafterDraftStatsId.Create(value));
 
-    builder.HasOne(ds => ds.Drafter)
-      .WithMany(d => d.DraftStats)
-      .IsRequired(false);
+    // --- DraftId (required) ---
+    builder.Property(ds => ds.DraftId)
+      .HasConversion(
+        id => id.Value,
+        value => DraftId.Create(value));
 
-    builder.HasOne(ds => ds.DrafterTeam)
-      .WithMany(dt => dt.DraftStats)
-      .IsRequired(false);
+    builder.HasOne(ds => ds.Draft)
+      .WithMany(d => d.DrafterStats)
+      .HasForeignKey(d => d.DraftId)
+      .IsRequired();
 
+    // --- DrafterId (optional) ---
     builder.Property(ds => ds.DrafterId)
       .IsRequired(false)
       .HasConversion(
         id => id!.Value,
         value => DrafterId.Create(value));
 
+    builder.HasOne(ds => ds.Drafter)
+      .WithMany(d => d.DraftStats)
+      .HasForeignKey(builder => builder.DrafterId)
+      .IsRequired(false);
+
+    // --- DrafterTeamId (optional) ---
     builder.Property(ds => ds.DrafterTeamId)
       .IsRequired(false)
       .HasConversion(
         id => id!.Value,
         value => DrafterTeamId.Create(value));
 
-    builder.HasOne(ds => ds.Draft)
-      .WithMany(d => d.DrafterStats);
+    builder.HasOne(ds => ds.DrafterTeam)
+      .WithMany(dt => dt.DraftStats)
+      .HasForeignKey(builder => builder.DrafterTeamId)
+      .IsRequired(false);
 
+    // --- Scalar Properties ---
     builder.Property(ds => ds.StartingVetoes)
       .IsRequired()
       .HasDefaultValue(1);
+    builder.Property(ds => ds.RolloverVeto).IsRequired();
+    builder.Property(ds => ds.RolloverVetoOverride).IsRequired(false);
+    builder.Property(ds => ds.TriviaVetoes).IsRequired();
+    builder.Property(ds => ds.TriviaVetoOverrides).IsRequired(false);
+    builder.Property(ds => ds.CommissionerOverrides).IsRequired();
+    builder.Property(ds => ds.VetoesUsed).IsRequired();
+    builder.Property(ds => ds.VetoOverridesUsed).IsRequired(false);
 
-    builder.Property(ds => ds.RolloversApplied)
-      .IsRequired()
-      .HasDefaultValue(0);
-
-    builder.Property(ds => ds.TriviaVetoes)
-      .IsRequired()
-      .HasDefaultValue(0);
-
-    builder.Property(ds => ds.StartingVetoOverrides)
-      .IsRequired()
-      .HasDefaultValue(0);
-
-    builder.Property(ds => ds.RolloversApplied)
-      .IsRequired()
-      .HasDefaultValue(0);
+    // --- Ignore computed properties ---
+    builder.Ignore(ds => ds.TotalVetoes);
+    builder.Ignore(ds => ds.TotalVetoOverrides);
+    builder.Ignore(ds => ds.VetoesRollingOver);
+    builder.Ignore(ds => ds.VetoOverridesRollingOver);
   }
 }
