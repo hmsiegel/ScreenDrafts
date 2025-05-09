@@ -2,7 +2,6 @@
 
 internal sealed class ExecuteVetoCommandHandler(
   IDraftersRepository draftersRepository,
-  IUnitOfWork unitOfWork,
   IPicksRepository picksRepository,
   IDraftsRepository draftsRepository,
   IVetoRepository vetoRepository)
@@ -11,7 +10,6 @@ internal sealed class ExecuteVetoCommandHandler(
   private readonly IDraftersRepository _draftersRepository = draftersRepository;
   private readonly IDraftsRepository _draftsRepository = draftsRepository;
   private readonly IPicksRepository _picksRepository = picksRepository;
-  private readonly IUnitOfWork _unitOfWork = unitOfWork;
   private readonly IVetoRepository _vetoRepository = vetoRepository;
 
   public async Task<Result<Guid>> Handle(ExecuteVetoCommand request, CancellationToken cancellationToken)
@@ -96,8 +94,6 @@ internal sealed class ExecuteVetoCommandHandler(
     }
 
     _draftersRepository.Update(drafter!);
-
-    await _unitOfWork.SaveChangesAsync(cancellationToken);
 
     return Result.Success(result.Value.Id.Value);
   }

@@ -1,12 +1,10 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.AssignDraftPosition;
 
 internal sealed class AssignDraftPositionCommandHandler(
-  IUnitOfWork unitOfWork,
   IGameBoardRepository gameBoardRepository,
   IDraftersRepository draftersRepository)
   : ICommandHandler<AssignDraftPositionCommand>
 {
-  private readonly IUnitOfWork _unitOfWork = unitOfWork;
   private readonly IGameBoardRepository _gameBoardRepository = gameBoardRepository;
   private readonly IDraftersRepository _draftersRepository = draftersRepository;
 
@@ -41,8 +39,6 @@ internal sealed class AssignDraftPositionCommandHandler(
     draftPosition.AssignDrafter(drafter);
 
     _gameBoardRepository.Update(gameBoard);
-
-    await _unitOfWork.SaveChangesAsync(cancellationToken);
 
     return Result.Success();
   }

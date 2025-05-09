@@ -1,15 +1,12 @@
-﻿
-namespace ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.ApplyCommissionerOverride;
+﻿namespace ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.ApplyCommissionerOverride;
 
 internal sealed class AppyCommissionerOverrideCommandHandler(
   IDraftsRepository draftRepository,
-  IUnitOfWork unitOfWork,
   IPicksRepository picksRepository)
   : ICommandHandler<ApplyCommissionerOverrideCommand, Guid>
 {
   private readonly IDraftsRepository _draftRepository = draftRepository;
   private readonly IPicksRepository _picksRepository = picksRepository;
-  private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
   public async Task<Result<Guid>> Handle(ApplyCommissionerOverrideCommand request, CancellationToken cancellationToken)
   {
@@ -27,8 +24,6 @@ internal sealed class AppyCommissionerOverrideCommandHandler(
 
     _draftRepository.AddCommissionerOverride(commissionerOverride);
     _picksRepository.Update(pick);
-
-    await _unitOfWork.SaveChangesAsync(cancellationToken);
 
     return Result.Success(pick.Id.Value);
   }

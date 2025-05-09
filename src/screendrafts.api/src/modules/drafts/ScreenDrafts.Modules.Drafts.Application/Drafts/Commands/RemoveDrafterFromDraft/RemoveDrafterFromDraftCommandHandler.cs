@@ -2,7 +2,6 @@
 
 internal sealed class RemoveDrafterFromDraftCommandHandler(
   IDraftsRepository draftsRepository,
-  IUnitOfWork unitOfWork,
   IDraftersRepository draftersRepository,
   IDraftStatsRepository draftStatsRepository)
   : ICommandHandler<RemoveDrafterFromDraftCommand, Guid>
@@ -10,7 +9,6 @@ internal sealed class RemoveDrafterFromDraftCommandHandler(
   private readonly IDraftsRepository _draftsRepository = draftsRepository;
   private readonly IDraftersRepository _draftersRepository = draftersRepository;
   private readonly IDraftStatsRepository _draftStatsRepository = draftStatsRepository;
-  private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
   public async Task<Result<Guid>> Handle(RemoveDrafterFromDraftCommand request, CancellationToken cancellationToken)
   {
@@ -46,7 +44,6 @@ internal sealed class RemoveDrafterFromDraftCommandHandler(
     }
 
     _draftsRepository.Update(draft);
-    await _unitOfWork.SaveChangesAsync(cancellationToken);
     return Result.Success(drafterId.Value);
   }
 }

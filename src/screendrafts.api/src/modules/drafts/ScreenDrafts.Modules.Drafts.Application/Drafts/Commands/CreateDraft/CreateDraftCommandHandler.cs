@@ -1,32 +1,30 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.CreateDraft;
 
-internal sealed class CreateDraftCommandHandler(IDraftsRepository draftsRepository, IUnitOfWork unitOfWork)
+internal sealed class CreateDraftCommandHandler(IDraftsRepository draftsRepository)
   : ICommandHandler<CreateDraftCommand, Guid>
 {
-  private readonly IDraftsRepository _draftsRepository = draftsRepository;
-  private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly IDraftsRepository _draftsRepository = draftsRepository;
 
-  public async Task<Result<Guid>> Handle(CreateDraftCommand request, CancellationToken cancellationToken)
-  {
-    var result = Draft.Create(
-      new Title(request.Title),
-      request.DraftType,
-      request.TotalPicks,
-      request.TotalDrafters,
-      request.TotalDrafterTeams,
-      request.TotalHosts,
-      request.DraftStatus,
-      request.EpisodeType);
-
-    if (result.IsFailure)
+    public async Task<Result<Guid>> Handle(CreateDraftCommand request, CancellationToken cancellationToken)
     {
-      return Result.Failure<Guid>(result.Error!);
+        var result = Draft.Create(
+          new Title(request.Title),
+          request.DraftType,
+          request.TotalPicks,
+          request.TotalDrafters,
+          request.TotalDrafterTeams,
+          request.TotalHosts,
+          request.DraftStatus,
+          request.EpisodeType);
+
+        if (result.IsFailure)
+        {
+            return await Task.FromResult(Result.Failure<Guid>(result.Error!));
+        }
+
+        var draft = result.Value;
+
+        _draftsRepository.Add(draft);
+        return draft.Id.Value;
     }
-
-    var draft = result.Value;
-
-    _draftsRepository.Add(draft);
-    await _unitOfWork.SaveChangesAsync(cancellationToken);
-    return draft.Id.Value;
-  }
 }

@@ -1,4 +1,5 @@
-﻿global using System.Reflection;
+﻿global using System.Collections.ObjectModel;
+global using System.Reflection;
 
 global using FastEndpoints;
 
@@ -10,15 +11,18 @@ global using Microsoft.Extensions.Logging;
 global using ScreenDrafts.Common.Application.EventBus;
 global using ScreenDrafts.Common.Application.Logging;
 global using ScreenDrafts.Common.Domain;
+global using ScreenDrafts.Common.Presentation;
 global using ScreenDrafts.Modules.Drafts.Application.Drafters.Commands.CreateDrafter;
 global using ScreenDrafts.Modules.Drafts.Application.Drafters.Commands.ExecuteVeto;
 global using ScreenDrafts.Modules.Drafts.Application.Drafters.Commands.ExecuteVetoOverride;
 global using ScreenDrafts.Modules.Drafts.Application.Drafters.Queries.GetDrafter;
 global using ScreenDrafts.Modules.Drafts.Application.Drafters.Queries.ListDrafters;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.AddDrafterToDraft;
+global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.AddDraftPositionsToGameBoard;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.AddHostToDraft;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.AddMovie;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.AddPick;
+global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.ApplyCommissionerOverride;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.AssignDraftPosition;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.AssignTriviaResults;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.CompleteDraft;
@@ -26,6 +30,7 @@ global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.CreateDraft
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.CreateGameBoard;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.PauseDraft;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.RemoveDrafterFromDraft;
+global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.RemoveHostFromDraft;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.StartDraft;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.UpdateReleaseDate;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Queries.GetDraft;

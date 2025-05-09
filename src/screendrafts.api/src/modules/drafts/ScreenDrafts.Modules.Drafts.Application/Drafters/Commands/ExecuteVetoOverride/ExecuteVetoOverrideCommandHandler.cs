@@ -2,13 +2,11 @@
 
 internal sealed class ExecuteVetoOverrideCommandHandler(
   IDraftersRepository draftersRepository,
-  IUnitOfWork unitOfWork,
   IVetoRepository vetoRepository)
   : ICommandHandler<ExecuteVetoOverrideCommand, Guid>
 {
   private readonly IDraftersRepository _draftersRepository = draftersRepository;
   private readonly IVetoRepository _vetoRepository = vetoRepository;
-  private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
   public async Task<Result<Guid>> Handle(ExecuteVetoOverrideCommand request, CancellationToken cancellationToken)
   {
@@ -69,8 +67,6 @@ internal sealed class ExecuteVetoOverrideCommandHandler(
     {
       return Result.Failure<Guid>(DrafterErrors.InvalidBlessingRequest);
     }
-
-    await _unitOfWork.SaveChangesAsync(cancellationToken);
 
     return Result.Success(vetoOverrideResult.Id.Value);
   }
