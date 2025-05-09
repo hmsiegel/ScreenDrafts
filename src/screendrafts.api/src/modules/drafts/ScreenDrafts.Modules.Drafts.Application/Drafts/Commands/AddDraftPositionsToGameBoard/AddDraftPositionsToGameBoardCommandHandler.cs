@@ -1,12 +1,10 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.AddDraftPositionsToGameBoard;
 
 internal sealed class AddDraftPositionsToGameBoardCommandHandler(
-  IUnitOfWork unitOfWork,
   IGameBoardRepository gameBoardRepository)
   : ICommandHandler<AddDraftPositionsToGameBoardCommand>
 {
   private readonly IGameBoardRepository _gameBoardRepository = gameBoardRepository;
-  private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
   public async Task<Result> Handle(AddDraftPositionsToGameBoardCommand request, CancellationToken cancellationToken)
   {
@@ -41,7 +39,6 @@ internal sealed class AddDraftPositionsToGameBoardCommandHandler(
 
     _gameBoardRepository.Update(gameBoard);
 
-    await _unitOfWork.SaveChangesAsync(cancellationToken);
     return Result.Success();
   }
 

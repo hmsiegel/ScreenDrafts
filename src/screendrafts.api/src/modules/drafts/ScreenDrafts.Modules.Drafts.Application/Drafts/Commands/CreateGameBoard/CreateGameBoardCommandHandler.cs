@@ -2,12 +2,10 @@
 
 internal sealed class CreateGameBoardCommandHandler(
   IGameBoardRepository gameBoardRepository,
-  IUnitOfWork unitOfWork,
   IDraftsRepository draftsRepository) : ICommandHandler<CreateGameBoardCommand, Guid>
 {
   private readonly IGameBoardRepository _gameBoardRepository = gameBoardRepository;
   private readonly IDraftsRepository _draftsRepository = draftsRepository;
-  private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
   public async Task<Result<Guid>> Handle(CreateGameBoardCommand request, CancellationToken cancellationToken)
   {
@@ -40,8 +38,6 @@ internal sealed class CreateGameBoardCommandHandler(
     }
 
     _gameBoardRepository.Add(gameBoard);
-
-    await _unitOfWork.SaveChangesAsync(cancellationToken);
 
     return Result.Success(gameBoard.Id.Value);
   }

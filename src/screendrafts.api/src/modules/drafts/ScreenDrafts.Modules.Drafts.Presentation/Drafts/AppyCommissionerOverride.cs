@@ -1,21 +1,21 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Presentation.Drafts;
-internal sealed class AddDrafterToDraft(ISender sender) : EndpointWithoutRequest
+
+internal sealed class AppyCommissionerOverride(ISender sender) : EndpointWithoutRequest
 {
   private readonly ISender _sender = sender;
 
   public override void Configure()
   {
-    Post("/drafts/{draftId:guid}/drafters/{drafterId:guid}");
+    Post("/drafts/{draftId:guid}/commissioner-override/{pickId:guid}");
     Description(x => x.WithTags(Presentation.Tags.Drafts));
     Policies(Presentation.Permissions.ModifyDraft);
   }
 
   public override async Task HandleAsync(CancellationToken ct)
   {
-    var draftId = Route<Guid>("draftId");
-    var drafterId = Route<Guid>("drafterId");
+    var pickId = Route<Guid>("pickId");
 
-    var command = new AddDrafterToDraftCommand(draftId, drafterId);
+    var command = new ApplyCommissionerOverrideCommand(pickId);
 
     var result = await _sender.Send(command, ct);
 

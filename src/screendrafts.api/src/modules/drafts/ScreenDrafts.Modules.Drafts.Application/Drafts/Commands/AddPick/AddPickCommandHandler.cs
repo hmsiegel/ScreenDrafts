@@ -2,13 +2,11 @@
 
 internal sealed class AddPickCommandHandler(
   IDraftsRepository draftsRepository,
-  IPicksRepository picksRepository,
-  IUnitOfWork unitOfWork)
+  IPicksRepository picksRepository)
   : ICommandHandler<AddPickCommand, Guid>
 {
   private readonly IDraftsRepository _draftsRepository = draftsRepository;
   private readonly IPicksRepository _picksRepository = picksRepository;
-  private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
   public async Task<Result<Guid>> Handle(AddPickCommand request, CancellationToken cancellationToken)
   {
@@ -51,8 +49,6 @@ internal sealed class AddPickCommandHandler(
     }
 
     _picksRepository.Add(pick.Value);
-
-    await _unitOfWork.SaveChangesAsync(cancellationToken);
 
     return Result.Success(pick.Value.Id.Value);
   }

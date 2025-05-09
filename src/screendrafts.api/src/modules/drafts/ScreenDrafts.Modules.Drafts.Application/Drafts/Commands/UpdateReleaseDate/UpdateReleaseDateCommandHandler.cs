@@ -1,12 +1,10 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.UpdateReleaseDate;
 
 internal sealed class UpdateReleaseDateCommandHandler(
-  IDraftsRepository draftsRepository,
-  IUnitOfWork unitOfWork)
+  IDraftsRepository draftsRepository)
   : ICommandHandler<UpdateReleaseDateCommand>
 {
   private readonly IDraftsRepository _draftsRepository = draftsRepository;
-  private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
   public async Task<Result> Handle(UpdateReleaseDateCommand request, CancellationToken cancellationToken)
   {
@@ -23,7 +21,6 @@ internal sealed class UpdateReleaseDateCommandHandler(
     draft.AddReleaseDate(releaseDate);
 
     _draftsRepository.Update(draft);
-    await _unitOfWork.SaveChangesAsync(cancellationToken);
 
     return Result.Success();
   }

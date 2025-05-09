@@ -1,12 +1,11 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.StartDraft;
 
 internal sealed class StartDraftCommandHandler(
-  IDraftsRepository draftsRepository,
-  IUnitOfWork unitOfWork)
+  IDraftsRepository draftsRepository)
   : ICommandHandler<StartDraftCommand>
 {
   private readonly IDraftsRepository _draftsRepository = draftsRepository;
-  private readonly IUnitOfWork _unitOfWork = unitOfWork;
+
   public async Task<Result> Handle(StartDraftCommand request, CancellationToken cancellationToken)
   {
     var draftId = DraftId.Create(request.DraftId);
@@ -24,7 +23,6 @@ internal sealed class StartDraftCommandHandler(
     }
 
     _draftsRepository.Update(draft);
-    await _unitOfWork.SaveChangesAsync(cancellationToken);
     return Result.Success();
   }
 }

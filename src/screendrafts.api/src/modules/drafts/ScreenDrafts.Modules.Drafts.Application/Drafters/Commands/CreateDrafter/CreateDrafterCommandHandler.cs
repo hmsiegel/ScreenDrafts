@@ -2,13 +2,11 @@
 
 internal sealed class CreateDrafterCommandHandler(
   IDraftersRepository drafterRepository,
-  IUnitOfWork unitOfWork,
   IUsersApi usersApi)
   : ICommandHandler<CreateDrafterCommand, Guid>
 {
   private readonly IDraftersRepository _drafterRepository = drafterRepository;
   private readonly IUsersApi _usersApi = usersApi;
-  private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
   public async Task<Result<Guid>> Handle(CreateDrafterCommand request, CancellationToken cancellationToken)
   {
@@ -50,8 +48,6 @@ internal sealed class CreateDrafterCommandHandler(
     }
 
     _drafterRepository.Add(drafter!.Value);
-
-    await _unitOfWork.SaveChangesAsync(cancellationToken);
 
     return drafter!.Value.Id.Value;
   }

@@ -8,6 +8,8 @@ public static class DraftsModule
   {
     ArgumentNullException.ThrowIfNull(configuration);
 
+    services.AddDraftsApplication();
+
     services.AddDomainEventHandlers();
 
     services.AddIntegrationEventHandlers();
@@ -48,6 +50,12 @@ public static class DraftsModule
     services.ConfigureOptions<ConfigureProcessOutboxJob>();
     services.Configure<InboxOptions>(configuration.GetSection("Drafts:Inbox"));
     services.ConfigureOptions<ConfigureProcessInboxJob>();
+  }
+
+  private static IServiceCollection AddDraftsApplication(this IServiceCollection services)
+  {
+    services.AddScoped(typeof(IPipelineBehavior<,>), typeof(DraftsUnitOfWorkBehavior<,>));
+    return services;
   }
 
   private static void AddDomainEventHandlers(this IServiceCollection services)
