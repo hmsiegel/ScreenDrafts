@@ -1,0 +1,21 @@
+meta {
+  name: Create Host (name)
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{url}}/hosts
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+      "name" : "Billy Ray Brewton"
+  }
+}

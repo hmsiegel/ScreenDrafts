@@ -1,0 +1,27 @@
+meta {
+  name: Create Draft
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{url}}/drafts
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "title": "Parker Posey",
+    "draftType": "Standard",
+    "totalPicks": 7,
+    "totalDrafters": 2,
+    "totalHosts": 2,
+    "episodeType": "MainFeed",
+    "draftStatus": "Created"
+  }
+}

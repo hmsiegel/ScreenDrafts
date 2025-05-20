@@ -1,0 +1,15 @@
+meta {
+  name: Get Upcoming Drafts
+  type: http
+  seq: 11
+}
+
+get {
+  url: {{url}}/drafts/upcoming
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

@@ -1,0 +1,15 @@
+meta {
+  name: Get Host
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{url}}/hosts/eb90362c-ac23-4aaf-82bb-cf691ccc6622
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

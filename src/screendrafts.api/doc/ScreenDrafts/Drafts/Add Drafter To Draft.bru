@@ -1,0 +1,15 @@
+meta {
+  name: Add Drafter To Draft
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{url}}/drafts/6dd82ffb-657f-4ae9-adb3-99132a6dd9d6/drafters/3c07306e-ef9a-4d13-8eba-6e97ae3743a0
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

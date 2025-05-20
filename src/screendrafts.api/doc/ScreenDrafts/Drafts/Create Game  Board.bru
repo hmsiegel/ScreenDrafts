@@ -1,0 +1,22 @@
+meta {
+  name: Create Game  Board
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{url}}/drafts/gameboard
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "draftId": "6dd82ffb-657f-4ae9-adb3-99132a6dd9d6",
+    "draftType": "Standard"
+  }
+}

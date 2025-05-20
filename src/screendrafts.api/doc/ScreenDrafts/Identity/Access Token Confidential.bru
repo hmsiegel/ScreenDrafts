@@ -1,0 +1,22 @@
+meta {
+  name: Access Token Confidential
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:18080/realms/screendrafts/protocol/openid-connect/token
+  body: formUrlEncoded
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:form-urlencoded {
+  grant_type: client_credentials
+  client_id: screendrafts-confidential-client
+  client_secret: oRL4la55pi1uMlJMKSlg3hrhLfvKrZsg
+  scope: openid
+}

@@ -1,0 +1,26 @@
+meta {
+  name: Refresh Token
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:18080/realms/screendrafts/protocol/openid-connect/token
+  body: formUrlEncoded
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:form-urlencoded {
+  grant_type: refresh_token
+  client_id: screendrafts-public-client
+  refresh_token: eyJhbGciOiJIUzUxMiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICI0ODE3ZWYyOC1jMjI5LTRjYzQtYjQ5MC1lOGM0YjgxNGY1NmQifQ.eyJleHAiOjE3Mzg2NzcyODEsImlhdCI6MTczODY3NTQ4MSwianRpIjoiNzVmZGE2MzAtMmJmZS00MTk4LThmZmYtZDUyMzdhODIxOTIwIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDoxODA4MC9yZWFsbXMvc2NyZWVuZHJhZnRzIiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDoxODA4MC9yZWFsbXMvc2NyZWVuZHJhZnRzIiwic3ViIjoiNzQyNTc3OGQtYjMyYi00MmRmLTk4MzctZjI4ZTFkZjQxYmFiIiwidHlwIjoiUmVmcmVzaCIsImF6cCI6InNjcmVlbmRyYWZ0cy1wdWJsaWMtY2xpZW50Iiwic2lkIjoiMzQ1OGRhMjgtNGJkZS00ZGY2LWIyMWItYzY4YzBiM2U2OWI0Iiwic2NvcGUiOiJvcGVuaWQgYWNyIGVtYWlsIHJvbGVzIHdlYi1vcmlnaW5zIHByb2ZpbGUgYmFzaWMifQ.fKtT4IDZaiJHeIpc0cjNq7F4Q4ext_OcnphC_rvnzL9Zt17q70g7KWCj7KRdrvW045P9gMcARt0HaWkRi2G27w
+}
+
+tests {
+  var jsonData = res.getBody();
+  bru.setVar("token", jsonData.token);
+}
