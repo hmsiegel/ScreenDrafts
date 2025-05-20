@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Integrations.Infrastructure;
+﻿using ScreenDrafts.Common.Infrastructure.Cors;
+
+namespace ScreenDrafts.Modules.Integrations.Infrastructure;
 
 public static class IntegrationsModule
 {

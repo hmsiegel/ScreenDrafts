@@ -4,6 +4,7 @@ public static class InfrastructureConfiguration
 {
   public static IServiceCollection AddInfrastructure(
     this IServiceCollection services,
+    IConfiguration configuration,
     string serviceName,
     Action<IRegistrationConfigurator, string>[] moduleConfigureConsumers,
     RabbitMqSettings rabbitMqSettings,
@@ -15,6 +16,8 @@ public static class InfrastructureConfiguration
     services.AddAuthenticationInternal();
 
     services.AddAuthorizationInternal();
+
+    services.AddCorsPolicy(configuration);
 
     services.AddCoreInfrastructure(databaseConnectionString);
 

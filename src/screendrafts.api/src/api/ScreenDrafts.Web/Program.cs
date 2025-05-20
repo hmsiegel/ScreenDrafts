@@ -13,8 +13,11 @@ var redisConnectionString = builder.Configuration.GetConnectionStringOrThrow("Ca
 var rabbitMqSettings = new RabbitMqSettings(builder.Configuration.GetConnectionStringOrThrow("Queue"));
 var mongoConnectionString = builder.Configuration.GetConnectionStringOrThrow("Mongo")!;
 
+var configuration = builder.Configuration;
+
 builder.Services.AddApplication(AssemblyReferences.ApplicationAssemblies);
 builder.Services.AddInfrastructure(
+  configuration,
   DiagnosticsConfig.ServiceName,
   [
     DraftsModule.ConfigureConsumers,
@@ -75,6 +78,7 @@ app.UseExceptionHandler();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseFastEndpoints();
+app.UseCors("AllowUI");
 
 await app.RunAsync();
 
