@@ -1,0 +1,1089 @@
+{
+	"info": {
+		"_postman_id": "ee2f4d58-d18e-44a6-a160-81a00ac1ff64",
+		"name": "ScreenDrafts",
+		"description": "API for ScreenDrafts\n\nContact Support:  \nName: Harlan Siegel  \nEmail: [hmsiegel@gmail.com](https://mailto:hmsiegel@gmail.com)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "13705859"
+	},
+	"item": [
+		{
+			"name": "Identity",
+			"item": [
+				{
+					"name": "Access Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"pm.collectionVariables.set(\"token\", jsonData.access_token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "password",
+									"type": "text"
+								},
+								{
+									"key": "client_id",
+									"value": "screendrafts-public-client",
+									"type": "text"
+								},
+								{
+									"key": "scope",
+									"value": "email openid",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "harlan@siegel.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "password",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:18080/realms/screendrafts/protocol/openid-connect/token",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "18080",
+							"path": [
+								"realms",
+								"screendrafts",
+								"protocol",
+								"openid-connect",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"pm.collectionVariables.set(\"token\", jsonData.token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "refresh_token",
+									"type": "text"
+								},
+								{
+									"key": "client_id",
+									"value": "screendrafts-public-client",
+									"type": "text"
+								},
+								{
+									"key": "refresh_token",
+									"value": "eyJhbGciOiJIUzUxMiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICI0ODE3ZWYyOC1jMjI5LTRjYzQtYjQ5MC1lOGM0YjgxNGY1NmQifQ.eyJleHAiOjE3Mzg2NzcyODEsImlhdCI6MTczODY3NTQ4MSwianRpIjoiNzVmZGE2MzAtMmJmZS00MTk4LThmZmYtZDUyMzdhODIxOTIwIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDoxODA4MC9yZWFsbXMvc2NyZWVuZHJhZnRzIiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDoxODA4MC9yZWFsbXMvc2NyZWVuZHJhZnRzIiwic3ViIjoiNzQyNTc3OGQtYjMyYi00MmRmLTk4MzctZjI4ZTFkZjQxYmFiIiwidHlwIjoiUmVmcmVzaCIsImF6cCI6InNjcmVlbmRyYWZ0cy1wdWJsaWMtY2xpZW50Iiwic2lkIjoiMzQ1OGRhMjgtNGJkZS00ZGY2LWIyMWItYzY4YzBiM2U2OWI0Iiwic2NvcGUiOiJvcGVuaWQgYWNyIGVtYWlsIHJvbGVzIHdlYi1vcmlnaW5zIHByb2ZpbGUgYmFzaWMifQ.fKtT4IDZaiJHeIpc0cjNq7F4Q4ext_OcnphC_rvnzL9Zt17q70g7KWCj7KRdrvW045P9gMcARt0HaWkRi2G27w",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:18080/realms/screendrafts/protocol/openid-connect/token",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "18080",
+							"path": [
+								"realms",
+								"screendrafts",
+								"protocol",
+								"openid-connect",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Access Token Confidential",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "client_credentials",
+									"type": "text"
+								},
+								{
+									"key": "client_id",
+									"value": "screendrafts-confidential-client",
+									"type": "text"
+								},
+								{
+									"key": "client_secret",
+									"value": "oRL4la55pi1uMlJMKSlg3hrhLfvKrZsg",
+									"type": "text"
+								},
+								{
+									"key": "scope",
+									"value": "openid",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:18080/realms/screendrafts/protocol/openid-connect/token",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "18080",
+							"path": [
+								"realms",
+								"screendrafts",
+								"protocol",
+								"openid-connect",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Health",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:18080/health",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "18080",
+							"path": [
+								"health"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Administation",
+			"item": [
+				{
+					"name": "Add User Role",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"role\": \"Host\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/administation/users/e30b92bf-7a25-4096-9bdb-4d10cf00e921/roles",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"administation",
+								"users",
+								"e30b92bf-7a25-4096-9bdb-4d10cf00e921",
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove User Role",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"role\": \"Host\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/administation/users/e30b92bf-7a25-4096-9bdb-4d10cf00e921/roles",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"administation",
+								"users",
+								"e30b92bf-7a25-4096-9bdb-4d10cf00e921",
+								"roles"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Drafts",
+			"item": [
+				{
+					"name": "Create Draft",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"title\": \"Parker Posey\",\r\n  \"draftType\": \"Standard\",\r\n  \"totalPicks\": 7,\r\n  \"totalDrafters\": 2,\r\n  \"totalHosts\": 2,\r\n  \"episodeType\": \"MainFeed\",\r\n  \"draftStatus\": \"Created\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/drafts",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"drafts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Draft",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/drafts/6dd82ffb-657f-4ae9-adb3-99132a6dd9d6",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"drafts",
+								"6dd82ffb-657f-4ae9-adb3-99132a6dd9d6"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Drafts",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/drafts",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"drafts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Game  Board",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"draftId\": \"6dd82ffb-657f-4ae9-adb3-99132a6dd9d6\",\r\n  \"draftType\": \"Standard\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/drafts/gameboard",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"drafts",
+								"gameboard"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Drafter To Draft",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/drafts/6dd82ffb-657f-4ae9-adb3-99132a6dd9d6/drafters/3c07306e-ef9a-4d13-8eba-6e97ae3743a0",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"drafts",
+								"6dd82ffb-657f-4ae9-adb3-99132a6dd9d6",
+								"drafters",
+								"3c07306e-ef9a-4d13-8eba-6e97ae3743a0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Host To Draft",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/drafts/6dd82ffb-657f-4ae9-adb3-99132a6dd9d6/hosts/27038fdf-2c78-4f8d-978e-47d60ee254ac",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"drafts",
+								"6dd82ffb-657f-4ae9-adb3-99132a6dd9d6",
+								"hosts",
+								"27038fdf-2c78-4f8d-978e-47d60ee254ac"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Assign Trivia Results",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"position\" : 2,\r\n    \"questionsWon\" : 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/drafts/6dd82ffb-657f-4ae9-adb3-99132a6dd9d6/trivia/85cf9842-6abe-4e64-8ed4-e6a4f40ecb03",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"drafts",
+								"6dd82ffb-657f-4ae9-adb3-99132a6dd9d6",
+								"trivia",
+								"85cf9842-6abe-4e64-8ed4-e6a4f40ecb03"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Assign Draft Position",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"positionId\" : \"b7753053-f245-4c66-a952-cdd0a759eb9f\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/drafts/6dd82ffb-657f-4ae9-adb3-99132a6dd9d6/position/85cf9842-6abe-4e64-8ed4-e6a4f40ecb03",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"drafts",
+								"6dd82ffb-657f-4ae9-adb3-99132a6dd9d6",
+								"position",
+								"85cf9842-6abe-4e64-8ed4-e6a4f40ecb03"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Complete Draft",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/drafts/6dd82ffb-657f-4ae9-adb3-99132a6dd9d6/complete",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"drafts",
+								"6dd82ffb-657f-4ae9-adb3-99132a6dd9d6",
+								"complete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Latest Drafts",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/drafts/latest",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"drafts",
+								"latest"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Upcoming Drafts",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/drafts/upcoming",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"drafts",
+								"upcoming"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Pause Draft",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/drafts/{draftId}/pause",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"drafts",
+								"{draftId}",
+								"pause"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Drafter From Draft",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/drafts/{draftId}/drafters/{drafterId}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"drafts",
+								"{draftId}",
+								"drafters",
+								"{drafterId}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Start Draft",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/drafts/6dd82ffb-657f-4ae9-adb3-99132a6dd9d6/start",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"drafts",
+								"6dd82ffb-657f-4ae9-adb3-99132a6dd9d6",
+								"start"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Release Date",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"releasedate\": \"2025-03-03\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/drafts/6dd82ffb-657f-4ae9-adb3-99132a6dd9d6/release-date",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"drafts",
+								"6dd82ffb-657f-4ae9-adb3-99132a6dd9d6",
+								"release-date"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Register user",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"scott@siegel.com\",\r\n  \"password\": \"password\",\r\n  \"firstName\": \"Scott\",\r\n  \"lastName\": \"Siegel\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/users/register",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get user profile",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/users/profile",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update user profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICIzRVMtbS1DYVd5eHdUSnJMcklUMWZ2LWJPQ2pyQi1vN1dBYUJYSER2LThzIn0.eyJleHAiOjE3MTY3MzM3OTQsImlhdCI6MTcxNjczMDE5NCwianRpIjoiZDkzNGYzZmItYTlhZC00ZjdhLTgxN2ItZWIwZjk3Yjc4NWU5IiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDoxODA4MC9yZWFsbXMvZXZlbnRseSIsImF1ZCI6ImFjY291bnQiLCJzdWIiOiI3NzRmMjRiMS04NTIzLTQ4N2MtYmYxNC0yNDYxMWVjYjJmNzgiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJldmVudGx5LXB1YmxpYy1jbGllbnQiLCJzZXNzaW9uX3N0YXRlIjoiYWM5Mjk0ZTAtOThjZC00NDQ2LTk5ZTAtNmNmZDY1NjY1NGUzIiwiYWNyIjoiMSIsImFsbG93ZWQtb3JpZ2lucyI6WyIvKiJdLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsib2ZmbGluZV9hY2Nlc3MiLCJkZWZhdWx0LXJvbGVzLWV2ZW50bHkiLCJ1bWFfYXV0aG9yaXphdGlvbiJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoib3BlbmlkIGVtYWlsIHByb2ZpbGUiLCJzaWQiOiJhYzkyOTRlMC05OGNkLTQ0NDYtOTllMC02Y2ZkNjU2NjU0ZTMiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwibmFtZSI6IkhhcmxhbiBTaWVnZWwiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJobXNpZWdlbEBnbWFpbC5jb20iLCJnaXZlbl9uYW1lIjoiSGFybGFuIiwiZmFtaWx5X25hbWUiOiJTaWVnZWwiLCJlbWFpbCI6Imhtc2llZ2VsQGdtYWlsLmNvbSJ9.ClqXLhvUbDKfOjWa7wQWiTwSX1pK1zy2Ei3sTKKUDfsjRWlOGdXvIux_K6syqmJ5tXb97JkSRecZZ5jxvTj7hWwDFLNMPRfgL-rPWneq34OmlZ42p46GX9ebYRQOFEN7o6cfW9rlX_bvKYErEOaOXIHZ9vhsBuRXynjxWSvgOHGgytkRuCXb15jiw_OrG1oZvGSL80LFJV2uBzM5o9XHJNsRvlExTo-tBQOgkipJGU9-TB7SOuy5_srV53T8Hn7g_HyVI2Ml7MgitX9GztJQb7T1sQ14QBu3BXh7Do6yNltlLxGcsa_LNaWErOm8rFd37mf20ELdbQZ1FXVujNp4tQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"firstName\": \"Harlan M\",\r\n  \"lastName\": \"Siegel\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/users/profile",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Drafters",
+			"item": [
+				{
+					"name": "Create Drafter (id)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/drafters/10bba4f9-e0a5-40ed-a2fc-4b2d29a677c9",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"drafters",
+								"10bba4f9-e0a5-40ed-a2fc-4b2d29a677c9"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Drafter (name)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\" : \"Josh Larsen\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/drafters",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"drafters"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Drafter",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/drafters/c2495a46-d6ba-428f-94bb-41a4ad91f7b7",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"drafters",
+								"c2495a46-d6ba-428f-94bb-41a4ad91f7b7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Drafters",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/drafters/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"drafters",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Assign Trivia Results",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"position\" : 1,\r\n    \"questionsWon\" : 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/drafts/{draftId}/trivia/{drafterId}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"drafts",
+								"{draftId}",
+								"trivia",
+								"{drafterId}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Hosts",
+			"item": [
+				{
+					"name": "Create Host (id)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/hosts/10bba4f9-e0a5-40ed-a2fc-4b2d29a677c9",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"hosts",
+								"10bba4f9-e0a5-40ed-a2fc-4b2d29a677c9"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Host (name)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\" : \"Billy Ray Brewton\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/hosts",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"hosts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Host",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/hosts/eb90362c-ac23-4aaf-82bb-cf691ccc6622",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"hosts",
+								"eb90362c-ac23-4aaf-82bb-cf691ccc6622"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Hosts",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/hosts",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"hosts"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Picks",
+			"item": [
+				{
+					"name": "Add Draft Pick",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"position\" : 1,\r\n    \"movieId\" : \"ff4c3d82-d125-47f3-844a-d548aebc6074\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/drafts/6dd82ffb-657f-4ae9-adb3-99132a6dd9d6/picks/85cf9842-6abe-4e64-8ed4-e6a4f40ecb03",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"drafts",
+								"6dd82ffb-657f-4ae9-adb3-99132a6dd9d6",
+								"picks",
+								"85cf9842-6abe-4e64-8ed4-e6a4f40ecb03"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Draft Picks",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/drafts/{draftId}/picks",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"drafts",
+								"{draftId}",
+								"picks"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Draft Positions",
+			"item": [
+				{
+					"name": "Assign Draft Positions",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"positionId\" : \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/drafts/{draftId}/position/{drafterId}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"drafts",
+								"{draftId}",
+								"position",
+								"{drafterId}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Draft Positions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/drafts/{gameboardId}/positions",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"drafts",
+								"{gameboardId}",
+								"positions"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Movies",
+			"item": [
+				{
+					"name": "Search for Movie",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"imdbId\": \"tt0124288\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/movies/search",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"movies",
+								"search"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Health",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/health",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"health"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": "https://localhost:5001",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": ""
+		}
+	]
+}

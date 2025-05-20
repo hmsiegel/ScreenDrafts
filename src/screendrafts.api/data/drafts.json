@@ -5568,5 +5568,19 @@
     "ReleaseDates": ["2023-12-09"],
     "IsPatreonOnly": true,
     "NonCanonical": true
+  },
+  {
+    "Id": "9bcd5fcb-f349-4c0d-9351-b360edf3350e",
+    "Title": "90's School Rom-Coms",
+    "DraftType": 0,
+    "EpisodeNumber": "322",
+    "TotalPicks": 7,
+    "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
+    "TotalHosts": 2,
+    "EpisodeType": 0,
+    "ReleaseDates": ["2025-05-12"],
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   }
 ]
