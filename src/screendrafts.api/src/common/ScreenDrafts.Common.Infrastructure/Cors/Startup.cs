@@ -26,8 +26,9 @@ internal static class Startup
         {
           builder
             .WithOrigins(origins!)
+            .AllowAnyHeader()
             .AllowAnyMethod()
-            .AllowAnyHeader();
+            .AllowCredentials();
         });
     });
     return services;
