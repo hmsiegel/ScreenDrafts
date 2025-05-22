@@ -7,15 +7,16 @@ builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 
 builder.Services.ConfigureOpenApi(builder.Configuration);
+var configuration = builder.Configuration;
 
-var databaseConnectionString = builder.Configuration.GetConnectionStringOrThrow("Database")!;
+var databaseConnectionString = builder.Services.AddPostgresDatabase(configuration);
 var redisConnectionString = builder.Configuration.GetConnectionStringOrThrow("Cache")!;
 var rabbitMqSettings = new RabbitMqSettings(builder.Configuration.GetConnectionStringOrThrow("Queue"));
 var mongoConnectionString = builder.Configuration.GetConnectionStringOrThrow("Mongo")!;
 
-var configuration = builder.Configuration;
 
 builder.Services.AddApplication(AssemblyReferences.ApplicationAssemblies);
+
 builder.Services.AddInfrastructure(
   configuration,
   DiagnosticsConfig.ServiceName,
@@ -25,7 +26,6 @@ builder.Services.AddInfrastructure(
     MoviesModule.ConfigureConsumers
   ],
   rabbitMqSettings,
-  databaseConnectionString,
   redisConnectionString,
   mongoConnectionString,
   AssemblyReferences.InfrastructureAssemblies);
@@ -62,6 +62,8 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
+  app.UseOpenApi();
+  app.UseSwaggerUi();
   app.MapOpenApi();
   app.MapScalarApiReference();
   app.ApplyMigrations();
@@ -72,13 +74,15 @@ app.MapHealthChecks("health", new HealthCheckOptions
   ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
 });
 
+app.UseOpenApi();
+app.UseSwaggerUi();
 app.UseLogContextTraceLogging();
 app.UseSerilogRequestLogging();
 app.UseExceptionHandler();
+app.UseCors("AllowUI");
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseFastEndpoints();
-app.UseCors("AllowUI");
 
 await app.RunAsync();
 

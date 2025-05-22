@@ -3,6 +3,16 @@ internal static class OpenApiExtensions
 {
   internal static IServiceCollection ConfigureOpenApi(this IServiceCollection services, IConfiguration configuration)
   {
+    services.AddOpenApiDocument(config =>
+    {
+      config.Title = configuration.GetValueOrThrow<string>("OpenApi:Title");
+      config.Description = configuration.GetValueOrThrow<string>("OpenApi:Description");
+      config.Version = configuration.GetValueOrThrow<string>("OpenApi:Version");
+
+      config.SchemaSettings.GenerateKnownTypes = true;
+
+    });
+
     services.AddOpenApi(options =>
     {
       options.AddDocumentTransformer((document, context, cancellationToken) =>

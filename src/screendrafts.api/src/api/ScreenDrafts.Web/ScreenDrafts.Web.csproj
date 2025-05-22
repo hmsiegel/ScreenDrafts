@@ -17,6 +17,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" />
+    <PackageReference Include="NSwag.AspNetCore" />
     <PackageReference Include="Scalar.AspNetCore" />
     <PackageReference Include="FastEndpoints" />
     <PackageReference Include="Serilog.AspNetCore" />
