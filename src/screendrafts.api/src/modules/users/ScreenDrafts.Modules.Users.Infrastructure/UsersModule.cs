@@ -19,17 +19,19 @@ public static class UsersModule
 
   private static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
   {
-    var connectionString = configuration.GetConnectionString("Database")!;
-
     services.AddIdentity(configuration);
 
     services.AddDbContext<UsersDbContext>((sp, options) =>
+    {
+      var database = sp.GetRequiredService<IOptions<DatabaseSettings>>().Value;
+
       options.UseNpgsql(
-        connectionString,
+        database.ConnectionString,
         npgsqlOptions =>
         npgsqlOptions.MigrationsHistoryTable(HistoryRepository.DefaultTableName, Schemas.Users))
       .UseSnakeCaseNamingConvention()
-      .AddInterceptors(sp.GetRequiredService<InsertOutboxMessagesInterceptor>()));
+      .AddInterceptors(sp.GetRequiredService<InsertOutboxMessagesInterceptor>());
+    });
 
     services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<UsersDbContext>());
 

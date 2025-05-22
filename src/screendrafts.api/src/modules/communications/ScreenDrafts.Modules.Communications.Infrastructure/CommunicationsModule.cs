@@ -19,15 +19,18 @@ public static class CommunicationsModule
 
   private static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
   {
-    var connectionString = configuration.GetConnectionString("Database")!;
-
     services.AddDbContext<CommunicationsDbContext>((sp, options) =>
+    {
+      var database = sp.GetRequiredService<IOptions<DatabaseSettings>>().Value;
+
       options.UseNpgsql(
-        connectionString,
+        database.ConnectionString,
         npgsqlOptions =>
         npgsqlOptions.MigrationsHistoryTable(HistoryRepository.DefaultTableName, Schemas.Communications))
       .UseSnakeCaseNamingConvention()
-      .AddInterceptors(sp.GetRequiredService<InsertOutboxMessagesInterceptor>()));
+      .AddInterceptors(sp.GetRequiredService<InsertOutboxMessagesInterceptor>());
+    });
+
 
     services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<CommunicationsDbContext>());
 
@@ -42,10 +45,9 @@ public static class CommunicationsModule
 
   private static void AddDomainEventHandlers(this IServiceCollection services)
   {
-    Type[] domainEventHandlers = Application.AssemblyReference.Assembly
+    Type[] domainEventHandlers = [.. Application.AssemblyReference.Assembly
         .GetTypes()
-        .Where(t => t.IsAssignableTo(typeof(IDomainEventHandler)))
-        .ToArray();
+        .Where(t => t.IsAssignableTo(typeof(IDomainEventHandler)))];
 
     foreach (Type domainEventHandler in domainEventHandlers)
     {
@@ -65,10 +67,9 @@ public static class CommunicationsModule
 
   private static void AddIntegrationEventHandlers(this IServiceCollection services)
   {
-    Type[] integrationEventHandlers = Presentation.AssemblyReference.Assembly
+    Type[] integrationEventHandlers = [.. Presentation.AssemblyReference.Assembly
         .GetTypes()
-        .Where(t => t.IsAssignableTo(typeof(IIntegrationEventHandler)))
-        .ToArray();
+        .Where(t => t.IsAssignableTo(typeof(IIntegrationEventHandler)))];
 
     foreach (Type integrationEventHandler in integrationEventHandlers)
     {

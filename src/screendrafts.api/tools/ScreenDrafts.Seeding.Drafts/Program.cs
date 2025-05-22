@@ -15,8 +15,6 @@ Log.Logger = new LoggerConfiguration()
     .WriteTo.Console(formatProvider: CultureInfo.InvariantCulture)
     .CreateLogger();
 
-var databaseConnectionString = configuration.GetConnectionStringOrThrow("Database")!;
-
 try
 {
   Log.Information("Starting seeding application...");
@@ -26,8 +24,7 @@ try
       {
         var configuration = hostContext.Configuration;
         services.AddDraftsModule(configuration);
-        services.AddSeedingInfrastructure(
-              databaseConnectionString);
+        services.AddSeedingInfrastructure();
         services.AddDraftSeeders();
         services.TryAddScoped<SqlInsertHelper>();
         services.AddLogging(builder =>

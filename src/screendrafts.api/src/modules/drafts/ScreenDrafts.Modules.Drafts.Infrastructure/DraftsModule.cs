@@ -32,15 +32,17 @@ public static class DraftsModule
 
   private static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
   {
-    var connectionString = configuration.GetConnectionString("Database")!;
-
     services.AddDbContext<DraftsDbContext>((sp, options) =>
+    {
+      var database = sp.GetRequiredService<IOptions<DatabaseSettings>>().Value;
+
       options.UseNpgsql(
-        connectionString,
+        database.ConnectionString,
         npgsqlOptions =>
         npgsqlOptions.MigrationsHistoryTable(HistoryRepository.DefaultTableName, Schemas.Drafts))
       .UseSnakeCaseNamingConvention()
-      .AddInterceptors(sp.GetRequiredService<InsertOutboxMessagesInterceptor>()));
+      .AddInterceptors(sp.GetRequiredService<InsertOutboxMessagesInterceptor>());
+    });
 
     SqlMapper.AddTypeHandler(new DraftPositionsTypeHandler());
 

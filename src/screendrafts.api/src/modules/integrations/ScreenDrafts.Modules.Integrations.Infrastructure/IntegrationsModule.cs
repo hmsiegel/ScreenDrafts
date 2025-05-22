@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Common.Infrastructure.Cors;
-
-namespace ScreenDrafts.Modules.Integrations.Infrastructure;
+﻿namespace ScreenDrafts.Modules.Integrations.Infrastructure;
 
 public static class IntegrationsModule
 {
@@ -29,15 +27,17 @@ public static class IntegrationsModule
 
   private static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
   {
-    var connectionString = configuration.GetConnectionString("Database")!;
-
     services.AddDbContext<IntegrationsDbContext>((sp, options) =>
+    {
+      var database = sp.GetRequiredService<IOptions<DatabaseSettings>>().Value;
+
       options.UseNpgsql(
-        connectionString,
+        database.ConnectionString,
         npgsqlOptions =>
         npgsqlOptions.MigrationsHistoryTable(HistoryRepository.DefaultTableName, Schemas.Integrations))
       .UseSnakeCaseNamingConvention()
-      .AddInterceptors(sp.GetRequiredService<InsertOutboxMessagesInterceptor>()));
+      .AddInterceptors(sp.GetRequiredService<InsertOutboxMessagesInterceptor>());
+    });
 
     services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<IntegrationsDbContext>());
 
