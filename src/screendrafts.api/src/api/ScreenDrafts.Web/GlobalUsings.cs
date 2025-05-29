@@ -2,6 +2,7 @@
 global using System.Reflection;
 
 global using FastEndpoints;
+global using FastEndpoints.Swagger;
 
 global using HealthChecks.UI.Client;
 

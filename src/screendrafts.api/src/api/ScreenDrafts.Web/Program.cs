@@ -6,14 +6,12 @@ builder.Host.UseSerilog((context, config) =>
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 
-builder.Services.ConfigureOpenApi(builder.Configuration);
 var configuration = builder.Configuration;
 
 var databaseConnectionString = builder.Services.AddPostgresDatabase(configuration);
 var redisConnectionString = builder.Configuration.GetConnectionStringOrThrow("Cache")!;
 var rabbitMqSettings = new RabbitMqSettings(builder.Configuration.GetConnectionStringOrThrow("Queue"));
 var mongoConnectionString = builder.Configuration.GetConnectionStringOrThrow("Mongo")!;
-
 
 builder.Services.AddApplication(AssemblyReferences.ApplicationAssemblies);
 
@@ -33,7 +31,10 @@ builder.Services.AddInfrastructure(
 builder.Services.AddFastEndpoints(opt =>
 {
   opt.Assemblies = AssemblyReferences.PresentationAssemblies;
-});
+})
+  .SwaggerDocument(o => o.ShortSchemaNames = true);
+
+builder.Services.ConfigureOpenApi(builder.Configuration);
 
 builder.Configuration.AddModuleConfiguration(ModuleReferences.Modules);
 
@@ -60,9 +61,14 @@ ModuleServiceExtensions.AddModules(builder.Services, builder.Configuration);
 
 var app = builder.Build();
 
+app.UseFastEndpoints(c =>
+{
+  c.Endpoints.ShortNames = true;
+});
+
 if (app.Environment.IsDevelopment())
 {
-  app.UseOpenApi();
+  app.UseOpenApi(c => c.Path = "/openapi/{documentname}.json");
   app.UseSwaggerUi();
   app.MapOpenApi();
   app.MapScalarApiReference();
@@ -74,15 +80,12 @@ app.MapHealthChecks("health", new HealthCheckOptions
   ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
 });
 
-app.UseOpenApi();
-app.UseSwaggerUi();
 app.UseLogContextTraceLogging();
 app.UseSerilogRequestLogging();
 app.UseExceptionHandler();
 app.UseCors("AllowUI");
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseFastEndpoints();
 
 await app.RunAsync();
 
