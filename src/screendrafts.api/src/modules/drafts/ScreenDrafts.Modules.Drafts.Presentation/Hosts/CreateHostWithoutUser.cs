@@ -6,7 +6,12 @@ internal sealed class CreateHostWithoutUser(ISender sender) : Endpoint<HostReque
   public override void Configure()
   {
     Post("/hosts");
-    Description(x => x.WithTags(Presentation.Tags.Hosts));
+    Description(x =>
+    {
+      x.WithTags(Presentation.Tags.Hosts)
+      .WithDescription("Create a host without user")
+      .WithName(nameof(CreateHostWithoutUser));
+    });
     AllowAnonymous();
   }
 
@@ -16,15 +21,20 @@ internal sealed class CreateHostWithoutUser(ISender sender) : Endpoint<HostReque
 
     var result = await _sender.Send(command, ct);
 
-    if (result.IsFailure)
-    {
-      await SendErrorsAsync(StatusCodes.Status400BadRequest, ct);
-    }
-    else
-    {
-      await SendOkAsync(result.Value, ct);
-    }
+    await this.MapResultsAsync(result, ct);
   }
 }
 
 public sealed record HostRequest(string Name);
+
+internal sealed class  CreateHostWithoutUserSummary : Summary<CreateHostWithoutUser>
+{
+  public CreateHostWithoutUserSummary()
+  {
+    Summary = "Create a host without user";
+    Description = "Create a host without user";
+    Response<Guid>(StatusCodes.Status200OK, "Host created successfully");
+    Response<ValidationProblemDetails>(StatusCodes.Status400BadRequest, "Invalid request data");
+    Response<FastEndpoints.ProblemDetails>(StatusCodes.Status500InternalServerError, "Internal server error");
+  }
+}

@@ -7,7 +7,12 @@ internal sealed class ListHosts(ISender sender) : EndpointWithoutRequest<Result<
   public override void Configure()
   {
     Get("/hosts");
-    Description(x => x.WithTags(Presentation.Tags.Hosts));
+    Description(x =>
+    {
+      x.WithTags(Presentation.Tags.Hosts)
+      .WithDescription("Get all hosts")
+      .WithName(nameof(ListHosts));
+    });
     Policies(Presentation.Permissions.GetHosts);
   }
   public override async Task HandleAsync(CancellationToken ct)
@@ -24,5 +29,15 @@ internal sealed class ListHosts(ISender sender) : EndpointWithoutRequest<Result<
     {
       await SendNoContentAsync(ct);
     }
+  }
+}
+
+internal sealed class ListHostsSummary : Summary<ListHosts>
+{
+  public ListHostsSummary()
+  {
+    Description = "Get all hosts";
+    Response<List<HostResponse>>(200, "List of hosts");
+    Response(204, "No content");
   }
 }
