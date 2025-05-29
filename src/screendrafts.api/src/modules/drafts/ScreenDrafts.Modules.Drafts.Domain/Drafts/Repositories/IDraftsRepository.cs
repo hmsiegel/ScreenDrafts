@@ -8,6 +8,8 @@ public interface IDraftsRepository : IRepository
 
   void AddMovie(Movie movie);
 
+  void Delete(Draft draft);
+
   void AddCommissionerOverride(CommissionerOverride commissionerOverride);
 
   Task<Draft?> GetByIdAsync(DraftId draftId, CancellationToken cancellationToken);

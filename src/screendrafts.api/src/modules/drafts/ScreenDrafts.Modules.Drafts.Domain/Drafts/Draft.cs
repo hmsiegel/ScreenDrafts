@@ -123,6 +123,50 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
     return draft;
   }
 
+  public Result EditDraft(
+    Title title,
+    DraftType draftType,
+    int totalPicks,
+    int totalDrafters,
+    int totalDrafterTeams,
+    int totalHosts,
+    EpisodeType episodeType,
+    DraftStatus draftStatus)
+  {
+    Guard.Against.Null(title);
+    Guard.Against.Null(draftType);
+    Guard.Against.Null(episodeType);
+
+    if (totalDrafters + totalDrafterTeams < 2)
+    {
+      return Result.Failure(DraftErrors.DraftMustHaveAtLeastTwoParticipants);
+    }
+
+    if (totalPicks < 4)
+    {
+      return Result.Failure(DraftErrors.DraftMustHaveAtLeastFivePicks);
+    }
+
+    if (draftStatus != DraftStatus.Created)
+    {
+      return Result.Failure(DraftErrors.CannotEditADraftAfterItHasBeenStarted);
+    }
+
+    Title = title;
+    DraftType = draftType;
+    TotalPicks = totalPicks;
+    TotalDrafters = totalDrafters;
+    TotalDrafterTeams = totalDrafterTeams;
+    TotalHosts = totalHosts;
+    EpisodeType = episodeType;
+    DraftStatus = draftStatus;
+    UpdatedAtUtc = DateTime.UtcNow;
+
+    Raise(new DraftEditedDomainEvent(Id.Value, title.Value));
+
+    return Result.Success();
+  }
+
   public Result AddDrafter(Drafter drafter)
   {
     Guard.Against.Null(drafter);
@@ -327,7 +371,7 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
 
   public Result ApplyRollover(Guid? drafterId, Guid? drafterTeamId, bool isVeto)
   {
-    var drafterStats = 
+    var drafterStats =
        _drafterDraftStats.FirstOrDefault(d => d.Drafter?.Id.Value == drafterId)
        ?? _drafterDraftStats.FirstOrDefault(d => d.DrafterTeam?.Id.Value == drafterTeamId);
 
@@ -376,6 +420,17 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
     }
     DraftStatus = DraftStatus.Paused;
     Raise(new DraftPausedDomainEvent(Id.Value));
+    return Result.Success();
+  }
+
+  public Result ContinueDraft()
+  {
+    if (DraftStatus != DraftStatus.Paused)
+    {
+      return Result.Failure(DraftErrors.CannotContinueDraftIfItIsNotPaused);
+    }
+    DraftStatus = DraftStatus.InProgress;
+    Raise(new DraftContinuedDomainEvent(Id.Value));
     return Result.Success();
   }
 

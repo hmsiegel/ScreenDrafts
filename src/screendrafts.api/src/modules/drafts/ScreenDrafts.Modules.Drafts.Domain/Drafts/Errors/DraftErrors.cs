@@ -231,4 +231,13 @@ public static class DraftErrors
     SDError.Problem(
       "Drafts.CannotAddTriviaResultWithoutDrafterOrDrafterTeam",
       "Cannot add a trivia result without a drafter or drafter team.");
+
+  public static readonly SDError CannotContinueDraftIfItIsNotPaused = 
+    SDError.Problem(
+      "Drafts.CannotContinueDraftIfItIsNotPaused",
+      "Cannot continue the draft if it is not paused.");
+
+  public static readonly SDError CannotEditADraftAfterItHasBeenStarted = SDError.Problem(
+    "Drafts.CannotEditADraftAfterItHasBeenStarted",
+    "Cannot edit a draft after it has been started.");
 }

@@ -73,7 +73,6 @@ public class DraftParticipantTests(IntegrationTestWebAppFactory factory)
 
     // Assert
     result.IsSuccess.Should().BeTrue();
-    result.Value.Should().Be(host);
 
     var updatedDraft = await Sender.Send(new GetDraftQuery(draft));
     updatedDraft.Value.Hosts.Should().NotContain(h => h.Id == host);

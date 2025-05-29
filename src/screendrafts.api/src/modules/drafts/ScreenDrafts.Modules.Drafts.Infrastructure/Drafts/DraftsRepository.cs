@@ -65,4 +65,8 @@ internal sealed class DraftsRepository(DraftsDbContext dbContext) : IDraftsRepos
     return _dbContext.Movies.AnyAsync(m => m.ImdbId == imdbId, cancellationToken);
   }
 
+  public void Delete(Draft draft)
+  {
+    _dbContext.Drafts.Remove(draft);
+  }
 }
