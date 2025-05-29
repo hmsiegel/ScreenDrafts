@@ -5,7 +5,9 @@ global using FastEndpoints;
 
 global using MediatR;
 
+global using Microsoft.AspNetCore.Builder;
 global using Microsoft.AspNetCore.Http;
+global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.Extensions.Logging;
 
 global using ScreenDrafts.Common.Application.EventBus;
@@ -26,8 +28,11 @@ global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.ApplyCommis
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.AssignDraftPosition;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.AssignTriviaResults;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.CompleteDraft;
+global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.ContinueDraft;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.CreateDraft;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.CreateGameBoard;
+global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.DeleteDraft;
+global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.EditDraft;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.PauseDraft;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.RemoveDrafterFromDraft;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.RemoveHostFromDraft;

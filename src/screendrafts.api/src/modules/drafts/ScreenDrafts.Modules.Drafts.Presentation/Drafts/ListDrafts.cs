@@ -7,8 +7,13 @@ internal sealed class ListDrafts(ISender sender) : EndpointWithoutRequest<Result
   public override void Configure()
   {
     Get("/drafts");
-    Description(x => x.WithTags(Presentation.Tags.Drafts));
-    Policies( Presentation.Permissions.GetDrafts);
+    Description(x =>
+    {
+      x.WithTags(Presentation.Tags.Drafts)
+      .WithDescription("Get all drafts")
+      .WithName(nameof(ListDrafts));
+    });
+    Policies(Presentation.Permissions.GetDrafts);
   }
 
   public override async Task HandleAsync(CancellationToken ct)
@@ -25,5 +30,17 @@ internal sealed class ListDrafts(ISender sender) : EndpointWithoutRequest<Result
     {
       await SendNoContentAsync(ct);
     }
+  }
+}
+
+internal sealed class ListDraftsSummary : Summary<ListDrafts>
+{
+  public ListDraftsSummary()
+  {
+    Summary = "Get all drafts";
+    Description = "Get all drafts. This endpoint returns a list of all drafts in the system.";
+    Response<List<DraftResponse>>(StatusCodes.Status200OK, "List of drafts.");
+    Response(StatusCodes.Status204NoContent, "No drafts found.");
+    Response(StatusCodes.Status403Forbidden, "You do not have permission to access this resource.");
   }
 }

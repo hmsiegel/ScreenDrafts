@@ -7,7 +7,12 @@ internal sealed class GetLatestDrafts(ISender sender) : EndpointWithoutRequest<L
   public override void Configure()
   {
     Get("/drafts/latest");
-    Description(x => x.WithTags(Presentation.Tags.Drafts));
+    Description(x =>
+    {
+      x.WithTags(Presentation.Tags.Drafts)
+      .WithDescription("Gets the last five completed drafts.")
+      .WithName(nameof(GetLatestDrafts));
+    });
     Policies(Presentation.Permissions.GetDrafts);
   }
 
@@ -24,5 +29,18 @@ internal sealed class GetLatestDrafts(ISender sender) : EndpointWithoutRequest<L
       var draftList = result.Value.ToList();
       await SendOkAsync(draftList, ct);
     }
+  }
+}
+
+internal sealed class GetLatestDraftsSummary : Summary<GetLatestDrafts>
+{
+  public GetLatestDraftsSummary()
+  {
+    Description = "Gets the last five completed drafts.";
+    Summary = "Gets the last five completed drafts.";
+    Response<List<DraftResponse>>(StatusCodes.Status200OK, "List of the last five completed drafts.");
+    Response(StatusCodes.Status400BadRequest, "Invalid request.");
+    Response(StatusCodes.Status403Forbidden, "You do not have permission to access this resource.");
+    Response(StatusCodes.Status404NotFound, "Draft not found.");
   }
 }

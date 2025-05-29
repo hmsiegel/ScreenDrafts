@@ -7,7 +7,15 @@ internal sealed class CreateDraft(ISender sender) : Endpoint<CreateDraftRequest,
   public override void Configure()
   {
     Post("/drafts");
-    Description(x => x.WithTags(Presentation.Tags.Drafts));
+    Description(x =>
+    {
+      x.WithTags(Presentation.Tags.Drafts)
+        .WithName(nameof(CreateDraft))
+        .Produces<Guid>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status400BadRequest)
+        .Produces(StatusCodes.Status403Forbidden)
+        .Produces(StatusCodes.Status404NotFound);
+    });
     Policies(Presentation.Permissions.CreateDraft);
   }
 
@@ -32,12 +40,24 @@ internal sealed class CreateDraft(ISender sender) : Endpoint<CreateDraftRequest,
 
 }
 
-  public sealed record CreateDraftRequest(
-    string Title,
-    string DraftType,
-    int TotalPicks,
-    int TotalDrafters,
-    int TotalDrafterTeams,
-    int TotalHosts,
-    string EpisodeType,
-    string DraftStatus);
+public sealed record CreateDraftRequest(
+  string Title,
+  string DraftType,
+  int TotalPicks,
+  int TotalDrafters,
+  int TotalDrafterTeams,
+  int TotalHosts,
+  string EpisodeType,
+  string DraftStatus);
+
+internal sealed class CreateDraftSummary : Summary<CreateDraft>
+{
+  public CreateDraftSummary()
+  {
+    Summary = "Create a new draft";
+    Description = "Creates a new draft with the specified parameters.";
+    Response<Guid>(StatusCodes.Status200OK, "The ID of the created draft.");
+    Response(StatusCodes.Status400BadRequest, "Invalid request.");
+    Response(StatusCodes.Status403Forbidden, "You do not have permission to create a draft.");
+  }
+}
