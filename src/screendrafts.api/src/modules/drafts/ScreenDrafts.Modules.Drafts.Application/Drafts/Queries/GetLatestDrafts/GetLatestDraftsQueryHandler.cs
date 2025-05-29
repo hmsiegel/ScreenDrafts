@@ -12,6 +12,7 @@ internal sealed class GetLatestDraftsQueryHandler(IDbConnectionFactory dbConnect
           $"""
             SELECT
               d.id AS {nameof(DraftResponse.Id)},
+              d.episode_number AS {nameof(DraftResponse.EpisodeNumber)},
               d.title AS {nameof(DraftResponse.Title)},
               array_agg(rd.release_date ORDER BY rd.release_date) AS {nameof(DraftResponse.RawReleaseDates)}
             FROM drafts.drafts d

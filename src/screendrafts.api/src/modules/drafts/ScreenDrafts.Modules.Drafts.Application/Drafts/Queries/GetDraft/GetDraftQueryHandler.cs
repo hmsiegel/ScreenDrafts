@@ -30,6 +30,7 @@ internal sealed class GetDraftQueryHandler(IDraftsRepository draftsRepository, I
     var draftResponse = new DraftResponse(
       draft.Id.Value,
       draft.Title.Value,
+      draft.EpisodeNumber!,
       draft.DraftType,
       draft.TotalPicks,
       draft.TotalDrafters,

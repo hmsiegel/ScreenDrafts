@@ -3,6 +3,7 @@
 public sealed record DraftResponse(
     Guid Id,
     string Title,
+    string EpisodeNumber,
     int DraftType,
     int TotalPicks,
     int TotalDrafters,
@@ -18,6 +19,7 @@ public sealed record DraftResponse(
   public DraftResponse()
     : this(
         Guid.Empty,
+        string.Empty,
         string.Empty,
         default,
         default,
