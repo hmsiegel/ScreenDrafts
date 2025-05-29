@@ -5,6 +5,7 @@ internal sealed class PauseDraftCommandHandler(
   : ICommandHandler<PauseDraftCommand>
 {
   private readonly IDraftsRepository _draftsRepository = draftsRepository;
+
   public async Task<Result> Handle(PauseDraftCommand request, CancellationToken cancellationToken)
   {
     var draftId = DraftId.Create(request.DraftId);
@@ -22,6 +23,7 @@ internal sealed class PauseDraftCommandHandler(
     }
 
     _draftsRepository.Update(draft);
+
     return Result.Success();
   }
 }

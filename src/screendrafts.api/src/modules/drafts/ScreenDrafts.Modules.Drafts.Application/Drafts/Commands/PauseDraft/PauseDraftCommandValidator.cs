@@ -5,6 +5,7 @@ internal sealed class PauseDraftCommandValidator : AbstractValidator<PauseDraftC
   public PauseDraftCommandValidator()
   {
     RuleFor(x => x.DraftId)
-      .NotEmpty();
-  }
+      .NotEmpty().WithMessage("Draft Id cannot be empty.")
+      .Must(id => id.BeValidGuid()).WithMessage("Draft Id needs to be a valid GUID.");
+      }
 }
