@@ -6,26 +6,37 @@ internal sealed class AddUserRole(IUsersApi usersApi) : Endpoint<AddUserRoleRequ
 
   public override void Configure()
   {
-    Post("administation/users/{userId:guid}/roles");
+    Post("administration/users/{userId:guid}/roles");
     Policies(Presentation.Permissions.ModifyUser);
-    Description(x => x.WithTags(Presentation.Tags.Administration));
+    Description(x =>
+    {
+      x.WithTags(Presentation.Tags.Administration)
+      .WithName(nameof(AddUserRole))
+      .WithDescription("Add user role");
+    });
   }
 
   public override async Task HandleAsync(AddUserRoleRequest req, CancellationToken ct)
   {
-    var userId = Route<Guid>("userId");
+    var result = await _usersApi.AddUserRoleAsync(req.UserId, req.Role);
 
-    var result = await _usersApi.AddUserRoleAsync(userId, req.Role);
-
-    if (result.IsFailure)
-    {
-      await SendErrorsAsync(StatusCodes.Status400BadRequest, ct);
-    }
-    else
-    {
-      await SendOkAsync(StatusCodes.Status200OK, ct);
-    }
+    await this.MapResultsAsync(result, ct);
   }
 }
 
-public record AddUserRoleRequest(string Role);
+public record AddUserRoleRequest(
+  string Role,
+  [FromRoute(Name = "userId")] Guid UserId);
+
+internal sealed class AddUserRoleSummary : Summary<AddUserRole>
+{
+  public AddUserRoleSummary()
+  {
+    Summary = "Add user role";
+    Description = "Add user role";
+    Response<ErrorResponse>(StatusCodes.Status400BadRequest, "Bad request");
+    Response<ErrorResponse>(StatusCodes.Status403Forbidden, "Forbidden");
+    Response<ErrorResponse>(StatusCodes.Status404NotFound, "Not found");
+    Response<ErrorResponse>(StatusCodes.Status500InternalServerError, "Internal server error");
+  }
+}

@@ -8,24 +8,34 @@ internal sealed class AddPermissionToRole(IUsersApi usersApi) : Endpoint<AddPerm
   {
     Post("administration/roles/{role}/permissions");
     Policies(Presentation.Permissions.ModifyRole);
-    Description(x => x.WithTags(Presentation.Tags.Administration));
+    Description(x =>
+    {
+      x.WithTags(Presentation.Tags.Administration)
+      .WithDescription("Add permission to role")
+      .WithName(nameof(AddPermissionToRole));
+    });
   }
 
   public override async Task HandleAsync(AddPermissionToRoleRequest req, CancellationToken ct)
   {
-    var role = Route<string>("role");
+    var result = await _usersApi.AddPermissionToRoleAsync(req.Role!, req.Permission);
 
-    var result = await _usersApi.AddPermissionToRoleAsync(role!, req.Permission);
-
-    if (result.IsFailure)
-    {
-      await SendErrorsAsync(StatusCodes.Status400BadRequest, ct);
-    }
-    else
-    {
-      await SendOkAsync(StatusCodes.Status200OK, ct);
-    }
+    await this.MapResultsAsync(result, ct);
   }
 }
 
-internal sealed record AddPermissionToRoleRequest(string Permission);
+internal sealed record AddPermissionToRoleRequest(
+  string Permission,
+  [FromRoute(Name = "role")] string Role);
+
+internal sealed class AddPermissionToRoleSummary : Summary<AddPermissionToRole>
+{
+  public AddPermissionToRoleSummary()
+  {
+    Summary = "Add permission to role";
+    Description = "Add permission to role";
+    Response<ErrorResponse>(StatusCodes.Status400BadRequest, "Bad request");
+    Response<ErrorResponse>(StatusCodes.Status404NotFound, "Not found");
+    Response<ErrorResponse>(StatusCodes.Status500InternalServerError, "Internal server error");
+  }
+}
