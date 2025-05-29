@@ -7,27 +7,43 @@ internal sealed class ExecuteVetoOverride(ISender sender) : Endpoint<VetoOverrid
   public override void Configure()
   {
     Post("/drafts/{vetoId:guid}/vetooveride");
-    Description(x => x.WithTags(Presentation.Tags.Drafters));
+    Description(x =>
+    {
+      x.WithTags(Presentation.Tags.Drafters)
+      .WithName(nameof(ExecuteVetoOverride))
+      .WithDescription("Override a veto on a pick.");
+    });
     Policies(Presentation.Permissions.VetoOverride);
   }
 
   public override async Task HandleAsync(VetoOverrideRequest req, CancellationToken ct)
   {
-    var vetoId = Route<Guid>("vetoId");
-
-    var command = new ExecuteVetoOverrideCommand(req.DrafterId, req.DrafterTeamId, vetoId);
+    var command = new ExecuteVetoOverrideCommand(
+      req.DrafterId,
+      req.DrafterTeamId,
+      req.VetoId);
 
     var result = await _sender.Send(command, ct);
 
-    if (result.IsFailure)
-    {
-      await SendErrorsAsync(StatusCodes.Status400BadRequest, ct);
-    }
-    else
-    {
-      await SendOkAsync(result.Value, ct);
-    }
+    await this.MapResultsAsync(result, ct);
   }
 }
 
-public sealed record VetoOverrideRequest(Guid? DrafterId, Guid? DrafterTeamId, Guid VetoId); 
+public sealed record VetoOverrideRequest(
+  Guid? DrafterId,
+  Guid? DrafterTeamId,
+  [FromRoute(Name = "vetoId")] Guid VetoId);
+
+
+internal sealed class ExecuteVetoOverrideSummary : Summary<ExecuteVetoOverride>
+{
+  public ExecuteVetoOverrideSummary()
+  {
+    Summary = "Override a veto on a pick.";
+    Description = "Override a veto on a pick. This endpoint allows a drafter to override a veto on a specific pick in the draft.";
+    Response<Guid>(StatusCodes.Status200OK, "The ID of the veto that was overridden.");
+    Response(StatusCodes.Status404NotFound, "Veto not found.");
+    Response(StatusCodes.Status400BadRequest, "Invalid request.");
+    Response(StatusCodes.Status403Forbidden, "You do not have permission to access this resource.");
+  }
+}

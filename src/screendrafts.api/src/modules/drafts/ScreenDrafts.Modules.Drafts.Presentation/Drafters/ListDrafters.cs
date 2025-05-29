@@ -7,7 +7,12 @@ internal sealed class ListDrafters(ISender sender) : EndpointWithoutRequest<Resu
   public override void Configure()
   {
     Get("/drafters");
-    Description(x => x.WithTags(Presentation.Tags.Drafters));
+    Description(x =>
+    {
+      x.WithTags(Presentation.Tags.Drafters)
+      .WithDescription("Get all drafters")
+      .WithName(nameof(ListDrafters));
+    });
     Policies(Presentation.Permissions.GetDrafters);
   }
   public override async Task HandleAsync(CancellationToken ct)
@@ -24,5 +29,16 @@ internal sealed class ListDrafters(ISender sender) : EndpointWithoutRequest<Resu
     {
       await SendNoContentAsync(ct);
     }
+  }
+}
+
+internal sealed class ListDrafterrSummary : Summary<ListDrafters>
+{
+  public ListDrafterrSummary()
+  {
+    Summary = "Get all drafters";
+    Description = "Get all drafters";
+    Response<List<DrafterResponse>>(200, "List of drafters");
+    Response(204, "No content");
   }
 }
