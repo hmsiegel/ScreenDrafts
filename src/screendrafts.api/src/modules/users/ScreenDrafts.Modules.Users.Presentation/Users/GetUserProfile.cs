@@ -1,4 +1,5 @@
 ﻿namespace ScreenDrafts.Modules.Users.Presentation.Users;
+
 internal sealed class GetUserProfile(ISender sender) : EndpointWithoutRequest<UserResponse>
 {
   private readonly ISender _sender = sender;
@@ -6,8 +7,13 @@ internal sealed class GetUserProfile(ISender sender) : EndpointWithoutRequest<Us
   public override void Configure()
   {
     Get("/users/profile");
-    Description(x => x.WithTags(Presentation.Tags.Users));
-    Policies( Presentation.Permissions.GetUser);
+    Description(x =>
+    {
+      x.WithTags(Presentation.Tags.Users)
+      .WithName(nameof(GetUserProfile))
+      .WithDescription("Get user profile");
+    });
+    Policies(Presentation.Permissions.GetUser);
   }
 
   public override async Task HandleAsync(CancellationToken ct)
@@ -18,6 +24,17 @@ internal sealed class GetUserProfile(ISender sender) : EndpointWithoutRequest<Us
 
     var result = await _sender.Send(query, ct);
 
-    await SendOkAsync(result.Value, ct);
+    await this.MapResultsAsync(result, ct);
+  }
+}
+
+internal sealed class GetUserProfileSummary : Summary<GetUserProfile>
+{
+  public GetUserProfileSummary()
+  {
+    Description = "Get user profile";
+    Response<UserResponse>(StatusCodes.Status200OK, "User profile retrieved successfully.");
+    Response(StatusCodes.Status401Unauthorized, "Unauthorized");
+    Response(StatusCodes.Status403Forbidden, "Forbidden");
   }
 }

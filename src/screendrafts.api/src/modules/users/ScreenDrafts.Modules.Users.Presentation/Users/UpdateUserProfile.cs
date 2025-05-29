@@ -7,7 +7,12 @@ internal sealed class UpdateUserProfile(ISender sender) : Endpoint<UpdateUserReq
   public override void Configure()
   {
     Put("/users/profile");
-    Description(x => x.WithTags(Presentation.Tags.Users));
+    Description(x =>
+    {
+      x.WithTags(Presentation.Tags.Users)
+      .WithName(nameof(UpdateUserProfile))
+      .WithDescription("Updates the current user's profile information.");
+    });
     Policies(Presentation.Permissions.ModifyUser);
   }
   public override async Task HandleAsync(UpdateUserRequest req, CancellationToken ct)
@@ -20,9 +25,9 @@ internal sealed class UpdateUserProfile(ISender sender) : Endpoint<UpdateUserReq
       req.LastName,
       req.MiddleName);
 
-    await _sender.Send(command, ct);
+    var result = await _sender.Send(command, ct);
 
-    await SendOkAsync(ct);
+    await this.MapResultsAsync(result, ct);
   }
 }
 
@@ -30,3 +35,15 @@ public sealed record UpdateUserRequest(
   string FirstName,
   string LastName,
   string? MiddleName = null);
+
+internal sealed class UpdateUserProfileSummary : Summary<UpdateUserProfile>
+{
+  public UpdateUserProfileSummary()
+  {
+    Summary = "Updates the current user's profile information.";
+    Description = "Updates the current user's profile information.";
+    Response(StatusCodes.Status200OK, "The user profile was updated successfully.");
+    Response(StatusCodes.Status400BadRequest, "The request was invalid.");
+    Response(StatusCodes.Status404NotFound, "The user was not found.");
+  }
+}

@@ -7,7 +7,12 @@ internal sealed class RegisterUser(ISender sender) : Endpoint<RegisterUserReques
   public override void Configure()
   {
     Post("/users/register");
-    Description(x => x.WithTags(Presentation.Tags.Users));
+    Description(x =>
+    {
+      x.WithTags(Presentation.Tags.Users)
+      .WithDescription("Register a new user")
+      .WithName(nameof(RegisterUser));
+    });
     AllowAnonymous();
   }
 
@@ -22,14 +27,7 @@ internal sealed class RegisterUser(ISender sender) : Endpoint<RegisterUserReques
 
     var result = await _sender.Send(command, ct);
 
-    if (result.IsFailure)
-    {
-      await SendErrorsAsync(StatusCodes.Status400BadRequest, ct);
-    }
-    else
-    {
-      await SendOkAsync(result.Value, ct);
-    }
+    await this.MapResultsAsync(result, ct);
   }
 }
 
@@ -39,3 +37,16 @@ public sealed record RegisterUserRequest(
   string FirstName,
   string LastName,
   string? MiddleName = null);
+
+
+internal sealed class RegisterUserSummary : Summary<RegisterUser>
+{
+  public RegisterUserSummary()
+  {
+    Summary = "Register a new user";
+    Description = "Register a new user";
+    Response<Guid>(StatusCodes.Status200OK, "User registered successfully");
+    Response(StatusCodes.Status400BadRequest, "Invalid request data");
+    Response<ProblemDetails>(StatusCodes.Status500InternalServerError, "Internal server error");
+  }
+}
