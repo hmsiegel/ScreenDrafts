@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Presentation.Drafts;
 
-internal sealed class ListUpcomingDrafts(ISender sender) : EndpointWithoutRequest<List<DraftResponse>>
+internal sealed class ListUpcomingDrafts(ISender sender) : EndpointWithoutRequest<List<UpcomingDraftResponse>>
 {
   private readonly ISender _sender = sender;
 
@@ -26,11 +26,17 @@ internal sealed class ListUpcomingDrafts(ISender sender) : EndpointWithoutReques
     {
       await SendErrorsAsync(StatusCodes.Status400BadRequest, ct);
     }
-    else
-    {
-      var draftList = result.Value.ToList();
-      await SendOkAsync(draftList, ct);
-    }
+
+    var response = result.Value
+      .Select(draft => new UpcomingDraftResponse
+      {
+        Id = draft.Id,
+        Title = draft.Title,
+        ReleaseDates = [.. draft.ReleaseDates.Select(d => DateOnly.FromDateTime(d))],
+      })
+      .ToList();
+
+    await SendOkAsync(response, ct);
   }
 }
 
@@ -40,8 +46,18 @@ internal sealed class ListUpcomingDraftsSummary : Summary<ListUpcomingDrafts>
   {
     Summary = "Get all upcoming drafts";
     Description = "Get all upcoming drafts. This endpoint returns a list of all upcoming drafts.";
-    Response<List<DraftResponse>>(StatusCodes.Status200OK, "List of all upcoming drafts.");
+    Response<List<UpcomingDraftDto>>(StatusCodes.Status200OK, "List of all upcoming drafts.");
     Response(StatusCodes.Status400BadRequest, "Invalid request.");
     Response(StatusCodes.Status403Forbidden, "You do not have permission to access this resource.");
   }
+}
+
+public sealed record UpcomingDraftResponse
+{
+  public Guid Id { get; init; }
+  public string Title { get; init; } = string.Empty;
+  public DateOnly[] ReleaseDates { get; init; } = [];
+  public string DisplayNextReleaseDate => ReleaseDates.Length == 0
+    ? "TBD"
+    : ReleaseDates.Min().ToString("MM-dd-yyyy", CultureInfo.InvariantCulture);
 }

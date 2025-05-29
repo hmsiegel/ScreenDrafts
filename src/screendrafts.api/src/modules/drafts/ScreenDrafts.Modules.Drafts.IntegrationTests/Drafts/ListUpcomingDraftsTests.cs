@@ -60,7 +60,6 @@ public sealed class ListUpcomingDraftsTests(IntegrationTestWebAppFactory factory
     var upcomingReleaseDates = upcomingDrafts
       .Select(d => d.ReleaseDates!)
       .SelectMany(r => r)
-      .Select(r => r.ReleaseDate)
       .ToList();
 
     upcomingReleaseDates.Should().BeInAscendingOrder();
