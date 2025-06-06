@@ -14,6 +14,7 @@ internal sealed class ListUpcomingDraftsQueryHandler(IDbConnectionFactory dbConn
             SELECT
               d.id AS {nameof(UpcomingDraftDto.Id)},
               d.title AS {nameof(UpcomingDraftDto.Title)},
+              d.draft_status AS {nameof(UpcomingDraftDto.DraftStatus)},
               COALESCE(
                 array_agg(rd.release_date ORDER BY rd.release_date)
                 FILTER (WHERE rd.release_date IS NOT NULL
@@ -23,7 +24,7 @@ internal sealed class ListUpcomingDraftsQueryHandler(IDbConnectionFactory dbConn
             FROM drafts.drafts d
             LEFT JOIN drafts.draft_release_date rd ON d.id = rd.draft_id
             WHERE rd.release_date > @Today OR rd.release_date IS NULL
-            GROUP BY d.id, d.title
+            GROUP BY d.id, d.title, d.draft_status
             ORDER BY MIN(rd.release_date) NULLS LAST;
             """;
 

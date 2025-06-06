@@ -32,6 +32,7 @@ internal sealed class ListUpcomingDrafts(ISender sender) : EndpointWithoutReques
       {
         Id = draft.Id,
         Title = draft.Title,
+        DraftStatus = draft.DraftStatus,
         ReleaseDates = [.. draft.ReleaseDates.Select(d => DateOnly.FromDateTime(d))],
       })
       .ToList();
@@ -57,6 +58,7 @@ public sealed record UpcomingDraftResponse
   public Guid Id { get; init; }
   public string Title { get; init; } = string.Empty;
   public DateOnly[] ReleaseDates { get; init; } = [];
+  public int DraftStatus { get; init; }
   public string DisplayNextReleaseDate => ReleaseDates.Length == 0
     ? "TBD"
     : ReleaseDates.Min().ToString("MM-dd-yyyy", CultureInfo.InvariantCulture);
