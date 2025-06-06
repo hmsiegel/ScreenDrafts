@@ -1,11 +1,40 @@
 import { inter, roboto } from "@/app/ui/fonts";
-import { getLatestDrafts } from "@/app/lib/data";
 import Link from "next/link";
-import { Draft } from "@/app/lib/definitions";
 import React from "react";
+import type { DraftResponse } from "@/app/lib/dto";
+import { getLatestDrafts } from "@/app/lib/fetch-drafts";
+import { format } from "date-fns/format";
 
 export default async function MostRecentDrafts() {
-   const latestDrafts = await getLatestDrafts();
+   let latestDrafts: DraftResponse[] = [];
+   let debug: { step: string; info: unknown } | null = null;
+
+   try {
+      debug = { step: "calling getLatestDrafts()", info: null };
+
+      latestDrafts = await getLatestDrafts();
+
+      debug = { step: "fetch OK", info: latestDrafts.length + " drafts" };
+   } catch (error: any) {
+      debug = { step: "catch()", info: String(error) };
+
+      if (error?.response)
+         debug.info = {
+            url: error.response.url,
+            status: error.response.status,
+            body: await error.response.text().catch(() => "<body unreadable>"),
+         };
+   }
+
+   if (debug?.step !== "fetch OK") {
+      return(
+         <pre style={{ whiteSpace: "pre-wrap", color: "#dc2626" }}>
+            MostRecentDrafts Debug
+            {JSON.stringify(debug, null, 2)}
+            </pre>
+      );
+   }
+
    return (
       <div className="bg-[#fffdfd] rounded-lg shadow-lg py-4 px-28 flex flex-col items-center justify-center my-4">
          <h1 className={`${inter.className} text-2xl text-black mb-5 uppercase border-b-2 border-slate-900 pb-2`}>
@@ -20,15 +49,20 @@ export default async function MostRecentDrafts() {
                </div>
             </div>
             <div className={`${roboto.className} table-row-group bg-white`}>
-               {latestDrafts.map((draft: Draft) => {
+               {latestDrafts.map((draft: DraftResponse) => {
                   return (
                      <React.Fragment key={draft.id}>
                         <Link
-                           href={`/draft/${draft.episode}`}
+                           key={draft.id}
+                           href={`/drafts/${draft.id}`}
                            className="table-row">
-                           <div className="whitespace-nowrap table-cell table-data py-3 pl-6 pr-3">{draft.episode}.</div>
+                           <div className="whitespace-nowrap table-cell table-data py-3 pl-6 pr-3">{draft.episodeNumber}</div>
                            <div className="whitespace-nowrap table-cell table-data py-3 pl-6 pr-3">{draft.title}</div>
-                           <div className="whitespace-nowrap table-cell table-data text-right py-3 pl-6 pr-3">{draft.draft_dates.toString()}</div>
+                           <div className="whitespace-nowrap table-cell table-data text-right py-3 pl-6 pr-3">
+                              {draft.rawReleaseDates?.[0]
+                                 ? format(new Date(draft.rawReleaseDates[0]), "MM/dd/yyyy")
+                                 : "N/A"}
+                           </div>
                         </Link>
                      </React.Fragment>
                   );
