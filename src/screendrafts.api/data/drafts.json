@@ -5598,35 +5598,35 @@
     "NonCanonical": false
   },
   {
-    "Id": null,
+    "Id": "317b0b9a-e523-4ebd-98a9-98918095d88d",
     "Title": "Mission Impossible Super Draft",
     "DraftType": 3,
-    "EpisodeNumber": null,
+    "EpisodeNumber": "325",
     "TotalPicks": 8,
     "TotalDrafters": 7,
     "TotalDrafterTeams": 0,
     "TotalHosts": 0,
     "EpisodeType": 0,
-    "ReleaseDates": [],
+    "ReleaseDates": ["2025-06-02"],
     "IsPatreonOnly": false,
     "NonCanonical": false
   },
   {
-    "Id": null,
-    "Title": "The Coreys",
+    "Id": "13397a29-c491-4052-809c-2c793c2b4f64",
+    "Title": "The Two Coreys",
     "DraftType": 0,
-    "EpisodeNumber": null,
+    "EpisodeNumber": "326",
     "TotalPicks": 7,
     "TotalDrafters": 2,
     "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
-    "ReleaseDates": [],
+    "ReleaseDates": ["2025-06-09"],
     "IsPatreonOnly": false,
     "NonCanonical": false
   },
   {
-    "Id": null,
+    "Id": "dde4bf07-2b1c-47d9-8595-c1840ff175a5",
     "Title": "Time Loop",
     "DraftType": 0,
     "EpisodeNumber": null,
@@ -5640,7 +5640,7 @@
     "NonCanonical": false
   },
   {
-    "Id": null,
+    "Id": "35f894e9-642d-44d9-adce-8c16fa69992a",
     "Title": "Cameron Crowe",
     "DraftType": 0,
     "EpisodeNumber": null,
@@ -5654,7 +5654,7 @@
     "NonCanonical": false
   },
   {
-    "Id": null,
+    "Id": "5ed8392a-b17c-4d68-8580-79a59e53d59f",
     "Title": "John Patrick Shanley",
     "DraftType": 0,
     "EpisodeNumber": null,
@@ -5666,5 +5666,47 @@
     "ReleaseDates": [],
     "IsPatreonOnly": false,
     "NonCanonical": false
+  },
+  {
+    "Id": "25bb2b67-3d7f-4871-baf4-51ffa3d77a63",
+    "Title": "SyFy Chanel Original Movies",
+    "DraftType": 0,
+    "EpisodeNumber": null,
+    "TotalPicks": 7,
+    "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
+    "TotalHosts": 2,
+    "EpisodeType": 0,
+    "ReleaseDates": [],
+    "IsPatreonOnly": false,
+    "NonCanonical": false
+  },
+  {
+    "Id": "5cb30946-79ef-4dc5-8ca8-fa83ddd6286f",
+    "Title": "Kathryn Bigelow Super Draft",
+    "DraftType": 3,
+    "EpisodeNumber": "324",
+    "TotalPicks": 10,
+    "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
+    "TotalHosts": 1,
+    "EpisodeType": 0,
+    "ReleaseDates": ["2025-05-29"],
+    "IsPatreonOnly": false,
+    "NonCanonical": false
+  },
+  {
+    "Id": null,
+    "Title": "The Hunger Games mini-Super Draft",
+    "DraftType": 4,
+    "EpisodeNumber": "57",
+    "TotalPicks": 5,
+    "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
+    "TotalHosts": 1,
+    "EpisodeType": 1,
+    "ReleaseDates": ["2025-06-12"],
+    "IsPatreonOnly": true,
+    "NonCanonical": true
   }
 ]
