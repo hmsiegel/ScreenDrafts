@@ -1,7 +1,6 @@
 'use client'
 
 import {
-   ArrowRightCircleIcon,
    PencilIcon,
    PlayPauseIcon,
    TrashIcon
@@ -10,7 +9,6 @@ import { Tooltip } from "@/app/ui/tooltip";
 import Link from "next/link";
 import clsx from "clsx";
 import { useTransition } from "react";
-import exp from "constants";
 
 type MutateFn = () => Promise<void> | void;
 
