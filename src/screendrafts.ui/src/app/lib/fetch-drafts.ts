@@ -59,8 +59,21 @@ export async function getUpcomingDrafts(): Promise<DraftResponse[]> {
    return response.json() as Promise<DraftResponse[]>;
 }
 
-export async function listDrafts(): Promise<DraftResponse[]> {
-   const url = `${apiBase}/drafts`;
+export async function listDrafts(params: {
+   fromDate?: string,
+   toDate?: string,
+   minDrafters?: number,
+   maxDrafters?: number,
+   minPicks?: number,
+   maxPicks?: number,
+   draftType?: number[]
+} = {}): Promise<DraftResponse[]> {
+   const url = new URL(`${apiBase}/drafts`);
+   Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && value !== "") {
+         url.searchParams.set(key, String(value));
+      }
+   });
 
    const session = await getServerSession(authOptions);
    const headers: HeadersInit = {};

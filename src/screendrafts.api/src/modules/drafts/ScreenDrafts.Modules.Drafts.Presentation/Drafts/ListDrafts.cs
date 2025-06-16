@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Presentation.Drafts;
 
-internal sealed class ListDrafts(ISender sender) : EndpointWithoutRequest<Result<List<DraftResponse>>>
+internal sealed class ListDrafts(ISender sender) : Endpoint<ListDraftsRequest, Result<List<DraftResponse>>>
 {
   private readonly ISender _sender = sender;
 
@@ -16,9 +16,16 @@ internal sealed class ListDrafts(ISender sender) : EndpointWithoutRequest<Result
     Policies(Presentation.Permissions.GetDrafts);
   }
 
-  public override async Task HandleAsync(CancellationToken ct)
+  public override async Task HandleAsync(ListDraftsRequest req, CancellationToken ct)
   {
-    var query = new ListDraftsQuery();
+    var query = new ListDraftsQuery(
+      FromDate: req.FromDate,
+      ToDate: req.ToDate,
+      DraftType: req.DraftType,
+      MinDrafters: req.MinDrafters,
+      MaxDrafters: req.MaxDrafters,
+      MinPicks: req.MinPicks,
+      MaxPicks: req.MaxPicks);
 
     var drafts = (await _sender.Send(query, ct)).Value.ToList();
 
@@ -32,6 +39,15 @@ internal sealed class ListDrafts(ISender sender) : EndpointWithoutRequest<Result
     }
   }
 }
+
+public sealed record ListDraftsRequest(
+  DateOnly? FromDate = null,
+  DateOnly? ToDate = null,
+  IEnumerable<int>? DraftType = null,
+  int? MinDrafters = null,
+  int? MaxDrafters = null,
+  int? MinPicks = null,
+  int? MaxPicks = null);
 
 internal sealed class ListDraftsSummary : Summary<ListDrafts>
 {

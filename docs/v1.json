@@ -772,6 +772,21 @@
         ],
         "description": "Get all drafts",
         "operationId": "ListDrafts",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/ListDraftsRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ListDraftsRequest"
+              }
+            }
+          },
+          "required": true
+        },
         "responses": {
           "200": {
             "description": "OK",
@@ -1104,7 +1119,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/DraftResponse"
+                    "$ref": "#/components/schemas/UpcomingDraftDto"
                   }
                 }
               }
@@ -2376,7 +2391,8 @@
             "type": "string"
           },
           "episodeNumber": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "draftType": {
             "type": "integer",
@@ -2597,6 +2613,52 @@
           },
           "name": {
             "type": "string"
+          }
+        }
+      },
+      "ListDraftsRequest": {
+        "type": "object",
+        "properties": {
+          "fromDate": {
+            "type": "string",
+            "format": "date",
+            "default": null,
+            "nullable": true
+          },
+          "toDate": {
+            "type": "string",
+            "format": "date",
+            "default": null,
+            "nullable": true
+          },
+          "draftType": {
+            "type": "string",
+            "default": null,
+            "nullable": true
+          },
+          "minDrafters": {
+            "type": "integer",
+            "format": "int32",
+            "default": null,
+            "nullable": true
+          },
+          "maxDrafters": {
+            "type": "integer",
+            "format": "int32",
+            "default": null,
+            "nullable": true
+          },
+          "minPicks": {
+            "type": "integer",
+            "format": "int32",
+            "default": null,
+            "nullable": true
+          },
+          "maxPicks": {
+            "type": "integer",
+            "format": "int32",
+            "default": null,
+            "nullable": true
           }
         }
       },
@@ -2948,6 +3010,29 @@
           "drafterId": {
             "type": "string",
             "format": "uuid"
+          }
+        }
+      },
+      "UpcomingDraftDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string"
+          },
+          "draftStatus": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "releaseDates": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "date-time"
+            }
           }
         }
       },

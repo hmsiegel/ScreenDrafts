@@ -98,7 +98,7 @@ export interface IClient {
     /**
      * @return OK
      */
-    listDrafts(): Promise<DraftResponse[]>;
+    listDrafts(body: ListDraftsRequest): Promise<DraftResponse[]>;
 
     /**
      * @return OK
@@ -133,7 +133,7 @@ export interface IClient {
     /**
      * @return OK
      */
-    listUpcomingDrafts(): Promise<DraftResponse[]>;
+    listUpcomingDrafts(): Promise<UpcomingDraftDto[]>;
 
     /**
      * @return OK
@@ -1119,14 +1119,18 @@ export class DraftsClient implements IClient {
     /**
      * @return OK
      */
-    listDrafts(signal?: AbortSignal): Promise<DraftResponse[]> {
+    listDrafts(body: ListDraftsRequest, signal?: AbortSignal): Promise<DraftResponse[]> {
         let url_ = this.baseUrl + "/drafts";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(body);
+
         let options_: RequestInit = {
+            body: content_,
             method: "GET",
             signal,
             headers: {
+                "Content-Type": "*/*",
                 "Accept": "application/json"
             }
         };
@@ -1495,7 +1499,7 @@ export class DraftsClient implements IClient {
     /**
      * @return OK
      */
-    listUpcomingDrafts(signal?: AbortSignal): Promise<DraftResponse[]> {
+    listUpcomingDrafts(signal?: AbortSignal): Promise<UpcomingDraftDto[]> {
         let url_ = this.baseUrl + "/drafts/upcoming";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1512,13 +1516,13 @@ export class DraftsClient implements IClient {
         });
     }
 
-    protected processListUpcomingDrafts(response: Response): Promise<DraftResponse[]> {
+    protected processListUpcomingDrafts(response: Response): Promise<UpcomingDraftDto[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as DraftResponse[];
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as UpcomingDraftDto[];
             return result200;
             });
         } else if (status === 400) {
@@ -1538,7 +1542,7 @@ export class DraftsClient implements IClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<DraftResponse[]>(null as any);
+        return Promise.resolve<UpcomingDraftDto[]>(null as any);
     }
 
     /**
@@ -2622,7 +2626,7 @@ export interface DraftPositionResponse {
 export interface DraftResponse {
     id?: string;
     title?: string;
-    episodeNumber?: string;
+    episodeNumber?: string | undefined;
     draftType?: number;
     totalPicks?: number;
     totalDrafters?: number;
@@ -2700,6 +2704,18 @@ export interface HostRequest {
 export interface HostResponse {
     id?: string;
     name?: string;
+
+    [key: string]: any;
+}
+
+export interface ListDraftsRequest {
+    fromDate?: Date | undefined;
+    toDate?: Date | undefined;
+    draftType?: string | undefined;
+    minDrafters?: number | undefined;
+    maxDrafters?: number | undefined;
+    minPicks?: number | undefined;
+    maxPicks?: number | undefined;
 
     [key: string]: any;
 }
@@ -2834,6 +2850,15 @@ export interface TriviaResultRequest {
 export interface TriviaResultsRequest {
     draftId: string;
     drafterId: string;
+
+    [key: string]: any;
+}
+
+export interface UpcomingDraftDto {
+    id?: string;
+    title?: string;
+    draftStatus?: number;
+    releaseDates?: Date[];
 
     [key: string]: any;
 }
