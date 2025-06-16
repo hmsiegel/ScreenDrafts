@@ -3,24 +3,54 @@ import { inter, roboto } from "../fonts";
 import React from "react";
 import Link from "next/link";
 import { format } from "date-fns/format";
+import { SortableTableHeader } from "../sortable-table-header";
 
 interface DraftsTableProps {
    drafts: DraftResponse[];
+   sort?: string | undefined;
+   dir: string | undefined;
 }
 
-
-export function DraftsTable({ drafts }: DraftsTableProps) {
+export function DraftsTable({ drafts, sort, dir }: DraftsTableProps) {
    return (
       <div className="overflow-x-auto max-h-[900px]">
          <div className="table w-full border-collapse bg-[#fffdfd]">
             <div className={`${inter.className} text-center text-lg font-black table-header-group bg-slate-900 text-white sticky top-0`}>
                <div className="table-row">
-                  <div className="table-cell align-middle x-4 py-2 font-medium">No.</div>
-                  <div className="table-cell align-middle x-4 py-2 font-medium">Title</div>
-                  <div className="table-cell align-middle x-4 py-2 font-medium">Drafters</div>
-                  <div className="table-cell align-middle x-4 py-2 font-medium">Hosts</div>
-                  <div className="table-cell align-middle x-4 py-2 font-medium">No. of Titles</div>
-                  <div className="table-cell align-middle x-4 py-2 font-medium">Date(s)</div>
+                  <div className="table-cell align-middle px-4 py-2 font-medium">
+                     <SortableTableHeader
+                        field="episodeNumber"
+                        label="No."
+                        currentSort={sort}
+                        dir={dir}
+                        />
+                     </div>
+                  <div className="table-cell align-middle px-6 py-2 font-medium text-left">
+                     <SortableTableHeader
+                        field="title"
+                        label="Title"
+                        currentSort={sort}
+                        dir={dir}
+                     />
+                  </div>
+                  <div className="table-cell align-middle px-6 py-2 font-medium text-left">Drafters</div>
+                  <div className="table-cell align-middle px-6 py-2 font-medium text-left">Hosts</div>
+                  <div className="table-cell align-middle px-4 py-2 font-medium">
+                     <SortableTableHeader
+                        field="totalPicks"
+                        label="# of Titles"
+                        currentSort={sort}
+                        dir={dir}
+                     />
+                  </div>
+                  <div className="table-cell align-middle px-6 text-left py-2 font-medium">
+                     <SortableTableHeader
+                        field="date"
+                        label="Date (s)"
+                        currentSort={sort}
+                        dir={dir}
+                     />
+                  </div>
                </div>
             </div>
             <div className={`${roboto.className} table-row-group bg-white`}>

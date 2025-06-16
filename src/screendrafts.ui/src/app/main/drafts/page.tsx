@@ -9,24 +9,27 @@ export const metadata: Metadata = {
   description: "List of drafts"
 }
 
+export const dynamic = "force-dynamic"; // Disable caching for this page
 
-export default async function Page({ searchParams, }: { searchParams: { [key: string]: string | string[] | undefined} }) {
+export default async function Page({ searchParams: qp, }: { searchParams: { [key: string]: string | string[] | undefined} }) {
    const draftTypes =
-      Array.isArray(searchParams.draftType)
-      ? searchParams.draftType.map(Number)
-      : searchParams.draftType
-        ? [Number(searchParams.draftType)]
+      Array.isArray(qp.draftType)
+      ? qp.draftType.map(Number)
+      : qp.draftType
+        ? [Number(qp.draftType)]
         : undefined;
 
 
    const drafts = await listDrafts({
-      fromDate: searchParams.fromDate as string | undefined,
-      toDate: searchParams.toDate as string | undefined,
+      fromDate: qp.fromDate as string | undefined,
+      toDate: qp.toDate as string | undefined,
       draftType: draftTypes,
-      minDrafters: asNumber(searchParams.minDrafters),
-      maxDrafters: asNumber(searchParams.maxDrafters),
-      minPicks: asNumber(searchParams.minPicks),
-      maxPicks: asNumber(searchParams.maxPicks),
+      minDrafters: asNumber(qp.minDrafters),
+      maxDrafters: asNumber(qp.maxDrafters),
+      minPicks: asNumber(qp.minPicks),
+      maxPicks: asNumber(qp.maxPicks),
+      sort: qp.sort as string | undefined,
+      dir: qp.dir as "asc" | "desc" | undefined,
    });
    return (
       <main className="flex flex-col items-center justify-center md:h-screen">
@@ -42,7 +45,11 @@ export default async function Page({ searchParams, }: { searchParams: { [key: st
                ]}
             />
             <DraftsFilter />
-            <DraftsTable drafts={drafts}/>
+            <DraftsTable
+               drafts={drafts}
+               sort={qp.sort as string | undefined}
+               dir={qp.dir as string | undefined}
+            />
          </div>
       </main>
    );

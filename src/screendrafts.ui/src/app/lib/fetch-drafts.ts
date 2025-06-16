@@ -66,7 +66,9 @@ export async function listDrafts(params: {
    maxDrafters?: number,
    minPicks?: number,
    maxPicks?: number,
-   draftType?: number[]
+   draftType?: number[],
+   sort?: string | undefined,
+   dir?: "asc" | "desc"
 } = {}): Promise<DraftResponse[]> {
    const url = new URL(`${apiBase}/drafts`);
    Object.entries(params).forEach(([key, value]) => {

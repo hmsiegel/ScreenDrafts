@@ -25,7 +25,9 @@ internal sealed class ListDrafts(ISender sender) : Endpoint<ListDraftsRequest, R
       MinDrafters: req.MinDrafters,
       MaxDrafters: req.MaxDrafters,
       MinPicks: req.MinPicks,
-      MaxPicks: req.MaxPicks);
+      MaxPicks: req.MaxPicks,
+      Sort: req.Sort,
+      Dir: req.Dir);
 
     var drafts = (await _sender.Send(query, ct)).Value.ToList();
 
@@ -47,7 +49,9 @@ public sealed record ListDraftsRequest(
   int? MinDrafters = null,
   int? MaxDrafters = null,
   int? MinPicks = null,
-  int? MaxPicks = null);
+  int? MaxPicks = null,
+  string? Sort = null,
+  string? Dir = null);
 
 internal sealed class ListDraftsSummary : Summary<ListDrafts>
 {

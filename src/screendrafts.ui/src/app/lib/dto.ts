@@ -2711,11 +2711,13 @@ export interface HostResponse {
 export interface ListDraftsRequest {
     fromDate?: Date | undefined;
     toDate?: Date | undefined;
-    draftType?: string | undefined;
+    draftType?: number[] | undefined;
     minDrafters?: number | undefined;
     maxDrafters?: number | undefined;
     minPicks?: number | undefined;
     maxPicks?: number | undefined;
+    sort?: string | undefined;
+    dir?: string | undefined;
 
     [key: string]: any;
 }

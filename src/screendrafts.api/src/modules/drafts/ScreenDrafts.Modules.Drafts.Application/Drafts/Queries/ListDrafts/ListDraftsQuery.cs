@@ -7,4 +7,6 @@ public sealed record ListDraftsQuery(
   int? MinDrafters = null,
   int? MaxDrafters = null,
   int? MinPicks = null,
-  int? MaxPicks = null) : IQuery<IReadOnlyCollection<DraftResponse>>;
+  int? MaxPicks = null,
+  string? Sort = null,
+  string? Dir = null) : IQuery<IReadOnlyCollection<DraftResponse>>;

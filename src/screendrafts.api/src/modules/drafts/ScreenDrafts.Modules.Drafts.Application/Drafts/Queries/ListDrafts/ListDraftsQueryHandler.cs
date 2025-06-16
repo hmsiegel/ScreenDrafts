@@ -14,49 +14,49 @@ internal sealed class ListDraftsQueryHandler(IDbConnectionFactory dbConnectionFa
 
     const string baseSql =
       $"""
-            SELECT
-              d.id AS {nameof(DraftResponse.Id)},
-              d.title AS {nameof(DraftResponse.Title)},
-              d.episode_number AS {nameof(DraftResponse.EpisodeNumber)},
-              d.draft_type AS {nameof(DraftResponse.DraftType)},
-              d.total_picks AS {nameof(DraftResponse.TotalPicks)},
-              d.total_drafters AS {nameof(DraftResponse.TotalDrafters)},
-              d.total_hosts AS {nameof(DraftResponse.TotalHosts)},
-              d.draft_status AS {nameof(DraftResponse.DraftStatus)}
-            FROM drafts.drafts d
-            WHERE 1 = 1
-            """;
+                SELECT
+                  d.id AS {nameof(DraftResponse.Id)},
+                  d.title AS {nameof(DraftResponse.Title)},
+                  d.episode_number AS {nameof(DraftResponse.EpisodeNumber)},
+                  d.draft_type AS {nameof(DraftResponse.DraftType)},
+                  d.total_picks AS {nameof(DraftResponse.TotalPicks)},
+                  d.total_drafters AS {nameof(DraftResponse.TotalDrafters)},
+                  d.total_hosts AS {nameof(DraftResponse.TotalHosts)},
+                  d.draft_status AS {nameof(DraftResponse.DraftStatus)}
+                FROM drafts.drafts d
+                WHERE 1 = 1
+                """;
 
     const string draftersSql =
       $"""
-            SELECT
-              dd.draft_id,
-              d.id AS {nameof(DrafterResponse.Id)},
-              d.name AS {nameof(DrafterResponse.Name)}
-            FROM drafts.drafts_drafters dd
-            JOIN drafts.drafters d ON dd.drafter_id = d.id
-            WHERE dd.draft_id = ANY(@ids);
-            """;
+                SELECT
+                  dd.draft_id,
+                  d.id AS {nameof(DrafterResponse.Id)},
+                  d.name AS {nameof(DrafterResponse.Name)}
+                FROM drafts.drafts_drafters dd
+                JOIN drafts.drafters d ON dd.drafter_id = d.id
+                WHERE dd.draft_id = ANY(@ids);
+                """;
 
     const string hostsSql =
       $"""
-            SELECT
-              dh.hosted_drafts_id,
-              h.id AS {nameof(HostResponse.Id)},
-              h.host_name AS {nameof(HostResponse.Name)}
-            FROM drafts.draft_host dh
-            JOIN drafts.hosts h ON dh.hosts_id = h.id
-            WHERE dh.hosted_drafts_id = ANY(@ids);
-            """;
+                SELECT
+                  dh.hosted_drafts_id,
+                  h.id AS {nameof(HostResponse.Id)},
+                  h.host_name AS {nameof(HostResponse.Name)}
+                FROM drafts.draft_host dh
+                JOIN drafts.hosts h ON dh.hosts_id = h.id
+                WHERE dh.hosted_drafts_id = ANY(@ids);
+                """;
 
     const string releaseDatesSql =
       $"""
-            SELECT
-              rd.draft_id,
-              rd.release_date AS {nameof(ReleaseDateResponse.ReleaseDate)}
-            FROM drafts.draft_release_date rd
-            WHERE rd.draft_id = ANY(@ids);
-            """;
+                SELECT
+                  rd.draft_id,
+                  rd.release_date AS {nameof(ReleaseDateResponse.ReleaseDate)}
+                FROM drafts.draft_release_date rd
+                WHERE rd.draft_id = ANY(@ids);
+                """;
 
     var sql = new StringBuilder(baseSql);
     var p = new DynamicParameters();
@@ -65,27 +65,27 @@ internal sealed class ListDraftsQueryHandler(IDbConnectionFactory dbConnectionFa
     // Date Range
     if (request.FromDate.HasValue)
     {
-      sql.Append("""
-         AND EXISTS (
-            SELECT 1
-            FROM drafts.draft_release_date rd
-            WHERE rd.draft_id = d.id
-              AND rd.release_date >= @fromDate
-        )
-        """);
+      sql.Append(""" 
+             AND EXISTS (
+                SELECT 1
+                FROM drafts.draft_release_date rd
+                WHERE rd.draft_id = d.id
+                  AND rd.release_date >= @fromDate
+            )
+            """);
       p.Add("fromDate", request.FromDate.Value.ToDateTime(TimeOnly.MinValue));
     }
 
     if (request.ToDate.HasValue)
     {
-      sql.Append("""
-         AND EXISTS (
-            SELECT 1
-            FROM drafts.draft_release_date rd
-            WHERE rd.draft_id = d.id
-              AND rd.release_date <= @toDate
-        )
-        """);
+      sql.Append(""" 
+             AND EXISTS (
+                SELECT 1
+                FROM drafts.draft_release_date rd
+                WHERE rd.draft_id = d.id
+                  AND rd.release_date <= @toDate
+            )
+            """);
       p.Add("toDate", request.ToDate.Value.ToDateTime(TimeOnly.MaxValue));
     }
 
@@ -122,6 +122,20 @@ internal sealed class ListDraftsQueryHandler(IDbConnectionFactory dbConnectionFa
       p.Add("maxPicks", request.MaxPicks);
     }
 
+    // Sorting
+    var sortColumn = request.Sort?.ToLowerInvariant() switch
+    {
+      "title" => "d.title",
+      "episodenumber" => "d.episode_number",
+      "totalpicks" => "d.total_picks",
+      "date" => "(SELECT MIN(rd.release_date) FROM drafts.draft_release_date rd WHERE rd.draft_id = d.id)",
+      _ => "(SELECT MIN(rd.release_date) FROM drafts.draft_release_date rd WHERE rd.draft_id = d.id)"
+    };
+
+    var dir = request.Dir?.ToLowerInvariant() == "desc" ? "DESC" : "ASC";
+
+    sql.AppendFormat(CultureInfo.InvariantCulture, " ORDER BY {0} {1}", sortColumn, dir);
+
     var drafts = (await connection.QueryAsync<DraftResponse>(sql.ToString(), p)).ToList();
     var draftIds = drafts.Select(d => d.Id).ToArray();
 
@@ -144,7 +158,7 @@ internal sealed class ListDraftsQueryHandler(IDbConnectionFactory dbConnectionFa
       }
     }
 
-    foreach(var (draftId, hostId, name) in hosts)
+    foreach (var (draftId, hostId, name) in hosts)
     {
       if (draftMap.TryGetValue(draftId, out var draft))
       {
@@ -152,7 +166,7 @@ internal sealed class ListDraftsQueryHandler(IDbConnectionFactory dbConnectionFa
       }
     }
 
-    foreach(var (draftId, date) in releaseDates)
+    foreach (var (draftId, date) in releaseDates)
     {
       if (draftMap.TryGetValue(draftId, out var draft))
       {
