@@ -1,3 +1,3 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Application.Drafts.Queries.ListUpcomingDrafts;
-public sealed record ListUpcomingDraftsQuery() : IQuery<IReadOnlyList<UpcomingDraftDto>>;
+public sealed record ListUpcomingDraftsQuery(bool IsPatreonOnly) : IQuery<IReadOnlyList<UpcomingDraftDto>>;
 

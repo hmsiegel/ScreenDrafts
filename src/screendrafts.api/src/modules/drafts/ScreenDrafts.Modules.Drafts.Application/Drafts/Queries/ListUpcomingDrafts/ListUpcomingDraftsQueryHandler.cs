@@ -9,7 +9,7 @@ internal sealed class ListUpcomingDraftsQueryHandler(IDbConnectionFactory dbConn
   {
     await using DbConnection connection = await _dbConnectionFactory.OpenConnectionAsync();
 
-    const string sql =
+    const string baseSql =
       $"""
             SELECT
               d.id AS {nameof(UpcomingDraftDto.Id)},
@@ -24,11 +24,23 @@ internal sealed class ListUpcomingDraftsQueryHandler(IDbConnectionFactory dbConn
             FROM drafts.drafts d
             LEFT JOIN drafts.draft_release_date rd ON d.id = rd.draft_id
             WHERE rd.release_date > @Today OR rd.release_date IS NULL
-            GROUP BY d.id, d.title, d.draft_status
-            ORDER BY MIN(rd.release_date) NULLS LAST;
             """;
 
-    var drafts = (await connection.QueryAsync<UpcomingDraftDto>(sql, new { DateTime.Today })).ToList();
+    var sql = new StringBuilder(baseSql);
+
+    if (!request.IsPatreonOnly)
+    {
+      sql.Append(" AND d.is_patreon_only = FALSE");
+    }
+
+    sql.Append(
+      """
+        GROUP BY d.id, d.title, d.draft_status
+        ORDER BY MIN(rd.release_date) NULLS LAST;
+      """
+      );
+
+    var drafts = (await connection.QueryAsync<UpcomingDraftDto>(sql.ToString(), new { DateTime.Today })).ToList();
 
     return drafts;
   }

@@ -13,7 +13,7 @@ internal sealed class ListDrafts(ISender sender) : Endpoint<ListDraftsRequest, R
       .WithDescription("Get all drafts")
       .WithName(nameof(ListDrafts));
     });
-    Policies(Presentation.Permissions.SearchDrafts, Presentation.Permissions.GetDrafts);
+    Policies(Presentation.Permissions.SearchDrafts);
   }
 
   public override async Task HandleAsync(ListDraftsRequest req, CancellationToken ct)

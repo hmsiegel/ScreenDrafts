@@ -13,12 +13,15 @@ internal sealed class GetLatestDrafts(ISender sender) : EndpointWithoutRequest<L
       .WithDescription("Gets the last five completed drafts.")
       .WithName(nameof(GetLatestDrafts));
     });
-    Policies(Presentation.Permissions.GetDrafts);
+    Policies(Presentation.Permissions.SearchDrafts);
   }
 
   public override async Task HandleAsync(CancellationToken ct)
   {
-    var query = new GetLatestDraftsQuery();
+    var canViewPatreon = User.HasClaim(c => c.Type == "permission"
+      && c.Value == Presentation.Permissions.PatronSearchDrafts);
+
+    var query = new GetLatestDraftsQuery(IsPatreonOnly: canViewPatreon);
     var result = await _sender.Send(query, ct);
     if (result.IsFailure)
     {

@@ -14,12 +14,14 @@ internal sealed class ListUpcomingDrafts(ISender sender) : EndpointWithoutReques
       .WithDescription("Get all upcoming drafts");
     });
 
-    Policies(Presentation.Permissions.GetDrafts);
+    Policies(Presentation.Permissions.SearchDrafts);
   }
 
   public override async Task HandleAsync(CancellationToken ct)
   {
-    var query = new ListUpcomingDraftsQuery();
+    var canViewPatreon = User.HasClaim(p => p.Type == "permission" && p.Value == Presentation.Permissions.PatronSearchDrafts);
+
+    var query = new ListUpcomingDraftsQuery(canViewPatreon);
     var result = await _sender.Send(query, ct);
 
     if (result.IsFailure)
