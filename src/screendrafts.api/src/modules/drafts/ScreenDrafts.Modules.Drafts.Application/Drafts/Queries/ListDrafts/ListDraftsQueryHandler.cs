@@ -122,6 +122,11 @@ internal sealed class ListDraftsQueryHandler(IDbConnectionFactory dbConnectionFa
       p.Add("maxPicks", request.MaxPicks);
     }
 
+    if (!request.IsPatreonOnly)
+    {
+      sql.Append(" AND d.is_patreon_only = FALSE");
+    }
+
     // Sorting
     var sortColumn = request.Sort?.ToLowerInvariant() switch
     {
@@ -188,6 +193,7 @@ internal sealed class ListDraftsQueryHandler(IDbConnectionFactory dbConnectionFa
       if (draftMap.TryGetValue(draftId, out var draft))
       {
         draft.AddReleaseDate(new ReleaseDateResponse(DateOnly.FromDateTime(date)));
+        draft.PopulateReleaseDatesFromRaw();
       }
     }
 

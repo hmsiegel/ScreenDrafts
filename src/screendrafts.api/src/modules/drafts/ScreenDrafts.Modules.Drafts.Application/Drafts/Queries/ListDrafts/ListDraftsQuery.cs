@@ -3,6 +3,7 @@
 public sealed record ListDraftsQuery(
   int Page,
   int PageSize,
+  bool IsPatreonOnly,
   DateOnly? FromDate = null,
   DateOnly? ToDate = null,
   IEnumerable<int>? DraftType = null,

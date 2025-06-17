@@ -13,11 +13,14 @@ internal sealed class ListDrafts(ISender sender) : Endpoint<ListDraftsRequest, R
       .WithDescription("Get all drafts")
       .WithName(nameof(ListDrafts));
     });
-    Policies(Presentation.Permissions.GetDrafts);
+    Policies(Presentation.Permissions.SearchDrafts, Presentation.Permissions.GetDrafts);
   }
 
   public override async Task HandleAsync(ListDraftsRequest req, CancellationToken ct)
   {
+    bool canViewPatreon = User.HasClaim(c => c.Type == "permission"
+      && c.Value == Presentation.Permissions.PatronSearchDrafts);
+
     var query = new ListDraftsQuery(
       FromDate: req.FromDate,
       ToDate: req.ToDate,
@@ -29,7 +32,8 @@ internal sealed class ListDrafts(ISender sender) : Endpoint<ListDraftsRequest, R
       Sort: req.Sort,
       Dir: req.Dir,
       Page: req.Page,
-      PageSize: req.PageSize);
+      PageSize: req.PageSize,
+      IsPatreonOnly: canViewPatreon);
 
     var result = (await _sender.Send(query, ct));
 
