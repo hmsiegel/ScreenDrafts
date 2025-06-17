@@ -1,7 +1,8 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/route";
-import { DraftResponse } from "./dto";
+import { DraftResponse, PagedResultOfDraftResponse } from "./dto";
 import { env } from "./env";
+import { PagedResult, toPagedDraftResult } from "./types/paged-result";
 
 const apiBase = env.apiUrl;
 
@@ -68,8 +69,10 @@ export async function listDrafts(params: {
    maxPicks?: number,
    draftType?: number[],
    sort?: string | undefined,
-   dir?: "asc" | "desc"
-} = {}): Promise<DraftResponse[]> {
+   dir?: "asc" | "desc",
+   page?: number,
+   pageSize?: number,
+} = {}): Promise<PagedResult<DraftResponse>> {
    const url = new URL(`${apiBase}/drafts`);
    Object.entries(params).forEach(([key, value]) => {
       if (value !== undefined && value !== null && value !== "") {
@@ -100,6 +103,6 @@ export async function listDrafts(params: {
 
    //return response.json() as Promise<DraftResponse[]>;
    const data = await response.json();
-   console.log("Fetched drafts:", data);
-   return data.value;
+   const apiPaged = data.value as PagedResultOfDraftResponse;
+   return toPagedDraftResult(apiPaged);
 }

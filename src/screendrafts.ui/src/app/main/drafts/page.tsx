@@ -2,6 +2,7 @@ import { listDrafts } from "@/app/lib/fetch-drafts";
 import DraftsFilter from "@/app/ui/drafts/drafts-filter";
 import { DraftsTable } from "@/app/ui/drafts/drafts-table";
 import Breadcrumbs from "@/app/ui/main/breadcrumbs";
+import Pager from "@/app/ui/pager";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -19,6 +20,8 @@ export default async function Page({ searchParams: qp, }: { searchParams: { [key
         ? [Number(qp.draftType)]
         : undefined;
 
+   const page = Number(qp.page ?? 1);
+   const pageSize = Number(qp.pageSize ?? 10);
 
    const drafts = await listDrafts({
       fromDate: qp.fromDate as string | undefined,
@@ -28,6 +31,8 @@ export default async function Page({ searchParams: qp, }: { searchParams: { [key
       maxDrafters: asNumber(qp.maxDrafters),
       minPicks: asNumber(qp.minPicks),
       maxPicks: asNumber(qp.maxPicks),
+      page,
+      pageSize,
       sort: qp.sort as string | undefined,
       dir: qp.dir as "asc" | "desc" | undefined,
    });
@@ -46,10 +51,14 @@ export default async function Page({ searchParams: qp, }: { searchParams: { [key
             />
             <DraftsFilter />
             <DraftsTable
-               drafts={drafts}
+               drafts={drafts.items}
                sort={qp.sort as string | undefined}
                dir={qp.dir as string | undefined}
             />
+            <Pager
+               total={drafts.total}
+               page={drafts.page}
+               pageSize={drafts.pageSize} />
          </div>
       </main>
    );

@@ -13,6 +13,7 @@ global using Microsoft.Extensions.Logging;
 
 global using ScreenDrafts.Common.Application.EventBus;
 global using ScreenDrafts.Common.Application.Logging;
+global using ScreenDrafts.Common.Application.Paging;
 global using ScreenDrafts.Common.Domain;
 global using ScreenDrafts.Common.Presentation;
 global using ScreenDrafts.Modules.Drafts.Application.Drafters.Commands.CreateDrafter;

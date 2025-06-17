@@ -1,12 +1,12 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Application.Drafts.Queries.ListDrafts;
 
 internal sealed class ListDraftsQueryHandler(IDbConnectionFactory dbConnectionFactory)
-  : IQueryHandler<ListDraftsQuery, IReadOnlyCollection<DraftResponse>>
+  : IQueryHandler<ListDraftsQuery, PagedResult<DraftResponse>>
 {
   private readonly IDbConnectionFactory _dbConnectionFactory = dbConnectionFactory;
 
   [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1308:Normalize strings to uppercase", Justification = "Reviewed")]
-  public async Task<Result<IReadOnlyCollection<DraftResponse>>> Handle(
+  public async Task<Result<PagedResult<DraftResponse>>> Handle(
     ListDraftsQuery request,
     CancellationToken cancellationToken)
   {
@@ -136,12 +136,29 @@ internal sealed class ListDraftsQueryHandler(IDbConnectionFactory dbConnectionFa
 
     sql.AppendFormat(CultureInfo.InvariantCulture, " ORDER BY {0} {1}", sortColumn, dir);
 
+    var baseSqlWithFilters = sql.ToString();
+
+    var totalCount = await connection.ExecuteScalarAsync<int>($"""
+      SELECT COUNT(*)
+      FROM ({baseSqlWithFilters})
+      """, p);
+
+    var skip = (request.Page <= 1 ? 0 : request.Page - 1) * request.PageSize;
+    p.Add("pageSize", request.PageSize > 100 ? 100 : request.PageSize); // Limit to 100 for performance
+    p.Add("skip", skip);
+
+    sql.Append(" LIMIT @pageSize OFFSET @skip");
+
     var drafts = (await connection.QueryAsync<DraftResponse>(sql.ToString(), p)).ToList();
     var draftIds = drafts.Select(d => d.Id).ToArray();
 
     if (draftIds.Length == 0)
     {
-      return drafts;
+      return new PagedResult<DraftResponse>(
+        Items: drafts,
+        Total: totalCount,
+        Page: request.Page,
+        PageSize: request.PageSize);
     }
 
     var drafters = await connection.QueryAsync<(Guid draft_id, Guid drafter_id, string drafter_name)>(draftersSql, new { ids = draftIds });
@@ -174,6 +191,10 @@ internal sealed class ListDraftsQueryHandler(IDbConnectionFactory dbConnectionFa
       }
     }
 
-    return draftMap.Values.ToList();
+    return new PagedResult<DraftResponse>(
+      Items: [.. draftMap.Values],
+      Total: totalCount,
+      Page: request.Page,
+      PageSize: request.PageSize);
   }
 }

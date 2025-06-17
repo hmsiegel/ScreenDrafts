@@ -13,6 +13,7 @@ global using MediatR;
 global using ScreenDrafts.Common.Application.Data;
 global using ScreenDrafts.Common.Application.Extensions;
 global using ScreenDrafts.Common.Application.Messaging;
+global using ScreenDrafts.Common.Application.Paging;
 global using ScreenDrafts.Common.Domain;
 global using ScreenDrafts.Modules.Drafts.Application.Abstractions.Data;
 global using ScreenDrafts.Modules.Drafts.Application.Drafters.Queries.GetDrafter;

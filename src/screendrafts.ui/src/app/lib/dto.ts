@@ -98,7 +98,7 @@ export interface IClient {
     /**
      * @return OK
      */
-    listDrafts(body: ListDraftsRequest): Promise<DraftResponse[]>;
+    listDrafts(body: ListDraftsRequest): Promise<PagedResultOfDraftResponse>;
 
     /**
      * @return OK
@@ -1119,7 +1119,7 @@ export class DraftsClient implements IClient {
     /**
      * @return OK
      */
-    listDrafts(body: ListDraftsRequest, signal?: AbortSignal): Promise<DraftResponse[]> {
+    listDrafts(body: ListDraftsRequest, signal?: AbortSignal): Promise<PagedResultOfDraftResponse> {
         let url_ = this.baseUrl + "/drafts";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1140,13 +1140,13 @@ export class DraftsClient implements IClient {
         });
     }
 
-    protected processListDrafts(response: Response): Promise<DraftResponse[]> {
+    protected processListDrafts(response: Response): Promise<PagedResultOfDraftResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as DraftResponse[];
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as PagedResultOfDraftResponse;
             return result200;
             });
         } else if (status === 204) {
@@ -1166,7 +1166,7 @@ export class DraftsClient implements IClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<DraftResponse[]>(null as any);
+        return Promise.resolve<PagedResultOfDraftResponse>(null as any);
     }
 
     /**
@@ -2718,6 +2718,8 @@ export interface ListDraftsRequest {
     maxPicks?: number | undefined;
     sort?: string | undefined;
     dir?: string | undefined;
+    page?: number;
+    pageSize?: number;
 
     [key: string]: any;
 }
@@ -2742,6 +2744,15 @@ export interface MovieResponse {
     writers: WriterModel[];
     producers: ProducerModel[];
     productionCompanies: ProductionCompanyModel[];
+
+    [key: string]: any;
+}
+
+export interface PagedResultOfDraftResponse {
+    items: DraftResponse[];
+    total: number;
+    page: number;
+    pageSize: number;
 
     [key: string]: any;
 }

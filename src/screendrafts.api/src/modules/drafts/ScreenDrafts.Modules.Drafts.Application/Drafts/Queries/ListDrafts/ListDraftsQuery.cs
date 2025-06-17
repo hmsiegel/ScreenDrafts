@@ -1,6 +1,8 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Application.Drafts.Queries.ListDrafts;
 
 public sealed record ListDraftsQuery(
+  int Page,
+  int PageSize,
   DateOnly? FromDate = null,
   DateOnly? ToDate = null,
   IEnumerable<int>? DraftType = null,
@@ -9,4 +11,4 @@ public sealed record ListDraftsQuery(
   int? MinPicks = null,
   int? MaxPicks = null,
   string? Sort = null,
-  string? Dir = null) : IQuery<IReadOnlyCollection<DraftResponse>>;
+  string? Dir = null) : IQuery<PagedResult<DraftResponse>>;

@@ -28,11 +28,12 @@ public sealed class ListDraftsTests(IntegrationTestWebAppFactory factory)
     } while (drafts.Count < 20);
 
     // Act
-    var allDrafts = await Sender.Send(new ListDraftsQuery());
+    var query = new ListDraftsQuery(Page: 1, PageSize: 20);
+    var allDrafts = await Sender.Send(query);
 
     allDrafts.IsSuccess.Should().BeTrue();
 
-    var allDraftsList = allDrafts.Value.ToList();
+    var allDraftsList = allDrafts.Value.Items.ToList();
 
     // Assert
     allDraftsList.Count.Should().Be(20);
@@ -43,9 +44,11 @@ public sealed class ListDraftsTests(IntegrationTestWebAppFactory factory)
   public async Task ShouldReturn_EmptyList_WhenNoDraftsExistAsync()
   {
     // Act
-    var allDrafts = await Sender.Send(new ListDraftsQuery());
+    var query = new ListDraftsQuery(Page: 1, PageSize: 20);
+    var allDrafts = await Sender.Send(query);
     // Assert
+    var allDraftsList = allDrafts.Value.Items.ToList();
     allDrafts.IsSuccess.Should().BeTrue();
-    allDrafts.Value.Should().BeEmpty();
+    allDraftsList.Should().BeEmpty();
   }
 }

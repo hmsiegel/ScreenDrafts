@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Presentation.Drafts;
 
-internal sealed class ListDrafts(ISender sender) : Endpoint<ListDraftsRequest, Result<List<DraftResponse>>>
+internal sealed class ListDrafts(ISender sender) : Endpoint<ListDraftsRequest, Result<PagedResult<DraftResponse>>>
 {
   private readonly ISender _sender = sender;
 
@@ -27,13 +27,15 @@ internal sealed class ListDrafts(ISender sender) : Endpoint<ListDraftsRequest, R
       MinPicks: req.MinPicks,
       MaxPicks: req.MaxPicks,
       Sort: req.Sort,
-      Dir: req.Dir);
+      Dir: req.Dir,
+      Page: req.Page,
+      PageSize: req.PageSize);
 
-    var drafts = (await _sender.Send(query, ct)).Value.ToList();
+    var result = (await _sender.Send(query, ct));
 
-    if (drafts.Count != 0)
+    if (result.IsSuccess && result.Value.Items.Count != 0)
     {
-      await SendOkAsync(Result.Success(drafts), ct);
+      await SendOkAsync(result, ct);
     }
     else
     {
@@ -51,7 +53,9 @@ public sealed record ListDraftsRequest(
   int? MinPicks = null,
   int? MaxPicks = null,
   string? Sort = null,
-  string? Dir = null);
+  string? Dir = null,
+  int Page = 1,
+  int PageSize = 5);
 
 internal sealed class ListDraftsSummary : Summary<ListDrafts>
 {
@@ -59,7 +63,7 @@ internal sealed class ListDraftsSummary : Summary<ListDrafts>
   {
     Summary = "Get all drafts";
     Description = "Get all drafts. This endpoint returns a list of all drafts in the system.";
-    Response<List<DraftResponse>>(StatusCodes.Status200OK, "List of drafts.");
+    Response<PagedResult<DraftResponse>>(StatusCodes.Status200OK, "List of drafts.");
     Response(StatusCodes.Status204NoContent, "No drafts found.");
     Response(StatusCodes.Status403Forbidden, "You do not have permission to access this resource.");
   }

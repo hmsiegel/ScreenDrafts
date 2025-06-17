@@ -1,6 +1,6 @@
 'use client';
 
-import { DRAFT_TYPES } from "@/app/lib/draft-types";
+import { DRAFT_TYPES } from "@/app/lib/types/draft-types";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 

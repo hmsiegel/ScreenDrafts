@@ -793,10 +793,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/DraftResponse"
-                  }
+                  "$ref": "#/components/schemas/PagedResultOfDraftResponse"
                 }
               }
             }
@@ -2632,7 +2629,11 @@
             "nullable": true
           },
           "draftType": {
-            "type": "string",
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
             "default": null,
             "nullable": true
           },
@@ -2659,6 +2660,26 @@
             "format": "int32",
             "default": null,
             "nullable": true
+          },
+          "sort": {
+            "type": "string",
+            "default": null,
+            "nullable": true
+          },
+          "dir": {
+            "type": "string",
+            "default": null,
+            "nullable": true
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32",
+            "default": 1
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32",
+            "default": 5
           }
         }
       },
@@ -2750,6 +2771,35 @@
             "items": {
               "$ref": "#/components/schemas/ProductionCompanyModel"
             }
+          }
+        }
+      },
+      "PagedResultOfDraftResponse": {
+        "required": [
+          "items",
+          "total",
+          "page",
+          "pageSize"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DraftResponse"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       },
