@@ -10,4 +10,6 @@ public interface IUsersApi
   Task<Result> RemoveUserRoleAsync(Guid userId, string Role);
 
   Task<Result> AddPermissionToRoleAsync(string Role, string Permission);
+
+  Task<IReadOnlyCollection<string>> GetUserRolesAsync(Guid userId, CancellationToken cancellationToken);
 }

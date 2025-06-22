@@ -66,4 +66,18 @@ internal sealed class UsersApi(ISender sender) : IUsersApi
 
     return Result.Success();
   }
+
+  public async Task<IReadOnlyCollection<string>> GetUserRolesAsync(Guid userId, CancellationToken cancellationToken)
+  {
+    var query = new GetUserRolesQuery(userId);
+
+    var result = await _sender.Send(query, cancellationToken);
+
+    if (result.IsFailure)
+    {
+      return [];
+    }
+
+    return result.Value;
+  }
 }

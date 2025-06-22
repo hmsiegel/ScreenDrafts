@@ -43,6 +43,7 @@ global using ScreenDrafts.Modules.Users.Application.Users.Commands.AddUserRole;
 global using ScreenDrafts.Modules.Users.Application.Users.Commands.RemoveUserRole;
 global using ScreenDrafts.Modules.Users.Application.Users.Queries.GetUser;
 global using ScreenDrafts.Modules.Users.Application.Users.Queries.GetUserPermissions;
+global using ScreenDrafts.Modules.Users.Application.Users.Queries.GetUserRoles;
 global using ScreenDrafts.Modules.Users.Domain.Users;
 global using ScreenDrafts.Modules.Users.Domain.Users.ValueObjects;
 global using ScreenDrafts.Modules.Users.Infrastructure.Authorization;
