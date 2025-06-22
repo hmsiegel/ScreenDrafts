@@ -1,8 +1,11 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Presentation.Drafts;
+﻿using ScreenDrafts.Common.Infrastructure.Authentication;
 
-internal sealed class ListUpcomingDrafts(ISender sender) : EndpointWithoutRequest<List<UpcomingDraftResponse>>
+namespace ScreenDrafts.Modules.Drafts.Presentation.Drafts;
+
+internal sealed class ListUpcomingDrafts(ISender sender, IUsersApi usersApi) : EndpointWithoutRequest<List<UpcomingDraftResponse>>
 {
   private readonly ISender _sender = sender;
+  private readonly IUsersApi _usersApi = usersApi;
 
   public override void Configure()
   {
@@ -19,9 +22,22 @@ internal sealed class ListUpcomingDrafts(ISender sender) : EndpointWithoutReques
 
   public override async Task HandleAsync(CancellationToken ct)
   {
+    var user = await _usersApi.GetUserByIdAsync(User.GetUserId(), ct);
+
+    if (user is null)
+    {
+      await SendErrorsAsync(StatusCodes.Status403Forbidden, ct);
+      return;
+    }
+
+    var userRoles = await _usersApi.GetUserRolesAsync(user.UserId, ct);
+    var isAdmin = userRoles.Contains(Presentation.Roles.Admin, StringComparer.OrdinalIgnoreCase) || userRoles.Contains(Presentation.Roles.SuperAdmin, StringComparer.OrdinalIgnoreCase);
     var canViewPatreon = User.HasClaim(p => p.Type == "permission" && p.Value == Presentation.Permissions.PatronSearchDrafts);
 
-    var query = new ListUpcomingDraftsQuery(canViewPatreon);
+    var query = new ListUpcomingDraftsQuery(
+      IsPatreonOnly: canViewPatreon,
+      UserId: user.UserId,
+      IsAdmin: isAdmin);
     var result = await _sender.Send(query, ct);
 
     if (result.IsFailure)
@@ -36,6 +52,7 @@ internal sealed class ListUpcomingDrafts(ISender sender) : EndpointWithoutReques
         Title = draft.Title,
         DraftStatus = draft.DraftStatus,
         ReleaseDates = [.. draft.ReleaseDates.Select(d => DateOnly.FromDateTime(d))],
+        Capabilities = draft.Capabilities,
       })
       .ToList();
 
@@ -64,4 +81,5 @@ public sealed record UpcomingDraftResponse
   public string DisplayNextReleaseDate => ReleaseDates.Length == 0
     ? "TBD"
     : ReleaseDates.Min().ToString("MM-dd-yyyy", CultureInfo.InvariantCulture);
+  public DraftUserCapabilities Capabilities { get; init; } = default!;
 }

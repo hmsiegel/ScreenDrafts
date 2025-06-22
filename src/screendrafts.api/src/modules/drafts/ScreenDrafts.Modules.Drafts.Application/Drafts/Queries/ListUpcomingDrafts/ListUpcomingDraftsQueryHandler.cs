@@ -9,7 +9,7 @@ internal sealed class ListUpcomingDraftsQueryHandler(IDbConnectionFactory dbConn
   {
     await using DbConnection connection = await _dbConnectionFactory.OpenConnectionAsync();
 
-    const string baseSql =
+    var sql = new StringBuilder(
       $"""
             SELECT
               d.id AS {nameof(UpcomingDraftDto.Id)},
@@ -24,9 +24,7 @@ internal sealed class ListUpcomingDraftsQueryHandler(IDbConnectionFactory dbConn
             FROM drafts.drafts d
             LEFT JOIN drafts.draft_release_date rd ON d.id = rd.draft_id
             WHERE rd.release_date > @Today OR rd.release_date IS NULL
-            """;
-
-    var sql = new StringBuilder(baseSql);
+            """);
 
     if (!request.IsPatreonOnly)
     {
@@ -41,6 +39,79 @@ internal sealed class ListUpcomingDraftsQueryHandler(IDbConnectionFactory dbConn
       );
 
     var drafts = (await connection.QueryAsync<UpcomingDraftDto>(sql.ToString(), new { DateTime.Today })).ToList();
+
+    if (drafts.Count == 0)
+    {
+      return drafts;
+    }
+
+    var userId = request.UserId;
+    var hostDraftIds = await connection.QueryAsync<Guid>(
+      """
+        SELECT dh.hosted_drafts_id
+        FROM drafts.draft_host dh
+        JOIN drafts.hosts h ON h.id = dh.hosts_id
+        WHERE h.user_id = @userId
+      """,
+      new { userId });
+
+    var drafterDraftIds = await connection.QueryAsync<Guid>(
+      """
+        SELECT dd.draft_id
+        FROM drafts.drafts_drafters dd
+        JOIN drafts.drafters d ON d.id = dd.drafter_id
+        WHERE d.user_id = @userId
+      """,
+      new { userId });
+
+    var isAdmin = request.IsAdmin;
+
+    foreach (var draft in drafts)
+    {
+      var capabilities = new DraftUserCapabilities(
+        Role: null,
+        CanEdit: false,
+        CanDelete: false,
+        CanStart: false,
+        CanPlay: false);
+
+      if (isAdmin)
+      {
+        capabilities = capabilities with
+        {
+          Role = Roles.Admin,
+          CanEdit = true,
+          CanDelete = true,
+          CanStart = true
+        };
+      }
+      else if (hostDraftIds.Contains(draft.Id))
+      {
+
+        capabilities = capabilities with
+        {
+          Role = Roles.Commissioner,
+          CanEdit = true,
+          CanStart = true
+        };
+      }
+      else if (drafterDraftIds.Contains(draft.Id))
+      {
+        capabilities = capabilities with
+        {
+          Role = Roles.Drafter,
+          CanPlay = true
+        };
+      }
+
+      draft.SetCapabilities(
+        role: capabilities.Role,
+        canEdit: capabilities.CanEdit,
+        canDelete: capabilities.CanDelete,
+        canStart: capabilities.CanStart,
+        canPlay: capabilities.CanPlay);
+
+    }
 
     return drafts;
   }

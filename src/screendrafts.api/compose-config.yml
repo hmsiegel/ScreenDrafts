@@ -1,0 +1,322 @@
+name: screendraftsapi
+services:
+  keycloak-db:
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_PASSWORD: keycloakpass
+      POSTGRES_USER: keycloak
+    image: postgres:15
+    networks:
+      screendrafts: null
+    ports:
+      - mode: ingress
+        target: 5432
+        published: "5433"
+        protocol: tcp
+    restart: always
+    volumes:
+      - type: volume
+        source: keycloak-db-data
+        target: /var/lib/postgresql/data
+        volume: {}
+  screendrafts.database:
+    environment:
+      POSTGRES_DB: screendrafts
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+    image: postgres:latest
+    networks:
+      screendrafts: null
+    ports:
+      - mode: ingress
+        target: 5432
+        published: "5432"
+        protocol: tcp
+    volumes:
+      - type: bind
+        source: C:\Repos\ScreenDrafts\src\screendrafts.api\.containers\db
+        target: /var/lib/postgresql/data
+        bind:
+          create_host_path: true
+  screendrafts.elk:
+    image: sebp/elk
+    networks:
+      screendrafts: null
+    ports:
+      - mode: ingress
+        target: 5601
+        published: "5601"
+        protocol: tcp
+      - mode: ingress
+        target: 9200
+        published: "9200"
+        protocol: tcp
+      - mode: ingress
+        target: 5044
+        published: "5044"
+        protocol: tcp
+    volumes:
+      - type: bind
+        source: C:\Repos\ScreenDrafts\src\screendrafts.api\.containers\elk
+        target: /usr/share/elk/data
+        bind:
+          create_host_path: true
+  screendrafts.email:
+    image: changemakerstudiosus/papercut-smtp:latest
+    networks:
+      screendrafts: null
+    ports:
+      - mode: ingress
+        target: 80
+        published: "8085"
+        protocol: tcp
+      - mode: ingress
+        target: 25
+        published: "25"
+        protocol: tcp
+  screendrafts.gateway:
+    build:
+      context: C:\Repos\ScreenDrafts\src\screendrafts.api
+      dockerfile: src/api/ScreenDrafts.Gateway/Dockerfile
+    image: screendraftsgateway
+    networks:
+      screendrafts: null
+    ports:
+      - mode: ingress
+        target: 8080
+        published: "3000"
+        protocol: tcp
+      - mode: ingress
+        target: 8081
+        published: "3001"
+        protocol: tcp
+  screendrafts.identity:
+    command:
+      - start-dev
+      - --import-realm
+    depends_on:
+      keycloak-db:
+        condition: service_started
+        required: true
+    environment:
+      KC_DB: postgres
+      KC_DB_PASSWORD: keycloakpass
+      KC_DB_URL: jdbc:postgresql://keycloak-db:5432/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_HEALTH_ENABLED: "true"
+      KC_LEGACY_OBSERVABILITY_INTERFACE: "true"
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    image: quay.io/keycloak/keycloak:latest
+    networks:
+      screendrafts: null
+    ports:
+      - mode: ingress
+        target: 8080
+        published: "18080"
+        protocol: tcp
+    volumes:
+      - type: bind
+        source: C:\Repos\ScreenDrafts\src\screendrafts.api\.files
+        target: /opt/keycloak/data/import
+        bind:
+          create_host_path: true
+      - type: bind
+        source: C:\Repos\ScreenDrafts\src\screendrafts.api\res\keycloak-theme-screendrafts.jar
+        target: /opt/keycloak/providers/keycloak-theme-screendrafts.jar
+        bind:
+          create_host_path: true
+  screendrafts.jaeger:
+    container_name: ScreenDrafts.Jaeger
+    image: jaegertracing/all-in-one:latest
+    networks:
+      screendrafts: null
+    ports:
+      - mode: ingress
+        target: 4317
+        published: "4317"
+        protocol: tcp
+      - mode: ingress
+        target: 4318
+        published: "4318"
+        protocol: tcp
+      - mode: ingress
+        target: 16686
+        published: "16686"
+        protocol: tcp
+  screendrafts.mongo:
+    environment:
+      MONGO_INITDB_ROOT_PASSWORD: admin
+      MONGO_INITDB_ROOT_USERNAME: admin
+    image: mongo:latest
+    networks:
+      screendrafts: null
+    ports:
+      - mode: ingress
+        target: 27017
+        published: "27017"
+        protocol: tcp
+    volumes:
+      - type: bind
+        source: C:\Repos\ScreenDrafts\src\screendrafts.api\.containers\mongo
+        target: /data/db
+        bind:
+          create_host_path: true
+  screendrafts.queue:
+    environment:
+      RABBITMQ_DEFAULT_PASS: guest
+      RABBITMQ_DEFAULT_USER: guest
+    hostname: screendrafts-queue
+    image: rabbitmq:management-alpine
+    networks:
+      screendrafts: null
+    ports:
+      - mode: ingress
+        target: 5672
+        published: "5672"
+        protocol: tcp
+      - mode: ingress
+        target: 15672
+        published: "15672"
+        protocol: tcp
+    volumes:
+      - type: bind
+        source: C:\Repos\ScreenDrafts\src\screendrafts.api\.containers\queue\data
+        target: /var/lib/rabbitmq
+        bind:
+          create_host_path: true
+      - type: bind
+        source: C:\Repos\ScreenDrafts\src\screendrafts.api\.containers\queue\log
+        target: /var/log/rabbitmq
+        bind:
+          create_host_path: true
+  screendrafts.redis:
+    image: redis:latest
+    networks:
+      screendrafts: null
+    ports:
+      - mode: ingress
+        target: 6379
+        published: "6379"
+        protocol: tcp
+    restart: always
+  screendrafts.seeding.drafts:
+    profiles:
+      - manual
+    build:
+      context: C:\Repos\ScreenDrafts\src\screendrafts.api
+      dockerfile: tools/ScreenDrafts.Seeding.Drafts/Dockerfile
+    depends_on:
+      screendrafts.database:
+        condition: service_started
+        required: true
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__Database: Host=screendrafts.database;Port=5432;Database=screendrafts;Username=postgres;Password=postgres;Include Error Detail=true
+      DATA_PATH: /app/data
+    networks:
+      screendrafts: null
+    volumes:
+      - type: bind
+        source: C:\Repos\ScreenDrafts\src\screendrafts.api\data
+        target: /app/data
+        bind:
+          create_host_path: true
+  screendrafts.seeding.movies:
+    profiles:
+      - manual
+    build:
+      context: C:\Repos\ScreenDrafts\src\screendrafts.api
+      dockerfile: tools/ScreenDrafts.Seeding.Movies/Dockerfile
+    depends_on:
+      screendrafts.database:
+        condition: service_started
+        required: true
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__Database: Host=screendrafts.database;Port=5432;Database=screendrafts;Username=postgres;Password=postgres;Include Error Detail=true
+      DATA_PATH: /app/data
+    networks:
+      screendrafts: null
+    volumes:
+      - type: bind
+        source: C:\Repos\ScreenDrafts\src\screendrafts.api\data
+        target: /app/data
+        bind:
+          create_host_path: true
+  screendrafts.seq:
+    environment:
+      ACCEPT_EULA: "Y"
+      SEQ_FIRSTRUN_ADMINPASSWORD: admin
+    image: datalust/seq:latest
+    networks:
+      screendrafts: null
+    ports:
+      - mode: ingress
+        target: 5341
+        published: "5341"
+        protocol: tcp
+      - mode: ingress
+        target: 80
+        published: "8081"
+        protocol: tcp
+  screendrafts.web:
+    build:
+      context: C:\Repos\ScreenDrafts\src\screendrafts.api
+      dockerfile: src/api/ScreenDrafts.Web/Dockerfile
+    depends_on:
+      screendrafts.database:
+        condition: service_started
+        required: true
+      screendrafts.elk:
+        condition: service_started
+        required: true
+      screendrafts.email:
+        condition: service_started
+        required: true
+      screendrafts.identity:
+        condition: service_started
+        required: true
+      screendrafts.jaeger:
+        condition: service_started
+        required: true
+      screendrafts.mongo:
+        condition: service_started
+        required: true
+      screendrafts.queue:
+        condition: service_started
+        required: true
+      screendrafts.redis:
+        condition: service_started
+        required: true
+      screendrafts.seq:
+        condition: service_started
+        required: true
+    environment:
+      DATA_PATH: /app/data
+    image: screendraftsweb
+    networks:
+      screendrafts: null
+    ports:
+      - mode: ingress
+        target: 8080
+        published: "5000"
+        protocol: tcp
+      - mode: ingress
+        target: 8081
+        published: "5001"
+        protocol: tcp
+    volumes:
+      - type: bind
+        source: C:\Repos\ScreenDrafts\src\screendrafts.api\data
+        target: /app/data
+        bind:
+          create_host_path: true
+networks:
+  screendrafts:
+    name: screendrafts
+    driver: bridge
+    external: true
+volumes:
+  keycloak-db-data:
+    name: screendraftsapi_keycloak-db-data

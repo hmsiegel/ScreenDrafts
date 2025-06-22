@@ -1,5 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <ProjectReference Include="..\..\..\common\ScreenDrafts.Common.Infrastructure\ScreenDrafts.Common.Infrastructure.csproj" />
     <ProjectReference Include="..\..\..\common\ScreenDrafts.Common.Presentation\ScreenDrafts.Common.Presentation.csproj" />
     <ProjectReference Include="..\..\administration\ScreenDrafts.Modules.Administration.IntegrationEvents\ScreenDrafts.Modules.Administration.IntegrationEvents.csproj" />
     <ProjectReference Include="..\..\audit\ScreenDrafts.Modules.Audit.IntegrationEvents\ScreenDrafts.Modules.Audit.IntegrationEvents.csproj" />
@@ -9,6 +10,7 @@
     <ProjectReference Include="..\..\real-time-updates\ScreenDrafts.Modules.RealTimeUpdates.IntegrationEvents\ScreenDrafts.Modules.RealTimeUpdates.IntegrationEvents.csproj" />
     <ProjectReference Include="..\..\reporting\ScreenDrafts.Modules.Reporting.IntegrationEvents\ScreenDrafts.Modules.Reporting.IntegrationEvents.csproj" />
     <ProjectReference Include="..\..\users\ScreenDrafts.Modules.Users.IntegrationEvents\ScreenDrafts.Modules.Users.IntegrationEvents.csproj" />
+    <ProjectReference Include="..\..\users\ScreenDrafts.Modules.Users.PublicApi\ScreenDrafts.Modules.Users.PublicApi.csproj" />
     <ProjectReference Include="..\ScreenDrafts.Modules.Drafts.Application\ScreenDrafts.Modules.Drafts.Application.csproj" />
   </ItemGroup>
 </Project>

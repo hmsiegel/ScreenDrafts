@@ -1,6 +1,7 @@
 ﻿global using System.Collections.ObjectModel;
 global using System.Globalization;
 global using System.Reflection;
+global using System.Security.Claims;
 
 global using FastEndpoints;
 
@@ -53,3 +54,4 @@ global using ScreenDrafts.Modules.Drafts.Application.Hosts.Queries.GetHost;
 global using ScreenDrafts.Modules.Drafts.Application.Hosts.Queries.ListHosts;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafts.Enums;
 global using ScreenDrafts.Modules.Movies.IntegrationEvents;
+global using ScreenDrafts.Modules.Users.PublicApi;

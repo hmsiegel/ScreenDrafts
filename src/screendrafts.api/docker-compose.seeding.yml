@@ -10,8 +10,9 @@
     volumes:
       - ./data:/app/data
     environment:
+      - ASPNETCORE_ENVIRONMENT=Development
       - DATA_PATH=/app/data
-      - ConnectionStrings__Database=Host=screendrafts.database;Port=5432;Database=screendrafts;Username=postgres;Password=postgres
+      - ConnectionStrings__Database=Host=screendrafts.database;Port=5432;Database=screendrafts;Username=postgres;Password=postgres;Include Error Detail=true
     profiles: ["manual"]
 
   screendrafts.seeding.drafts:
@@ -23,8 +24,9 @@
     volumes:
       - ./data:/app/data
     environment:
+      - ASPNETCORE_ENVIRONMENT=Development
       - DATA_PATH=/app/data
-      - ConnectionStrings__Database=Host=screendrafts.database;Port=5432;Database=screendrafts;Username=postgres;Password=postgres
+      - ConnectionStrings__Database=Host=screendrafts.database;Port=5432;Database=screendrafts;Username=postgres;Password=postgres;Include Error Detail=true
     profiles: ["manual"]
     networks:
       - screendrafts
