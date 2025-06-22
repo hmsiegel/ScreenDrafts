@@ -2642,6 +2642,16 @@ export interface DraftResponse {
     [key: string]: any;
 }
 
+export interface DraftUserCapabilities {
+    role: string | undefined;
+    canEdit: boolean;
+    canDelete: boolean;
+    canStart: boolean;
+    canPlay: boolean;
+
+    [key: string]: any;
+}
+
 export interface EditDraftRequest {
     draftId: string;
     title: string;
@@ -2872,6 +2882,7 @@ export interface UpcomingDraftDto {
     title?: string;
     draftStatus?: number;
     releaseDates?: Date[];
+    capabilities: DraftUserCapabilities;
 
     [key: string]: any;
 }
