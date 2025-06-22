@@ -27,6 +27,10 @@ try
       {
         services.AddSingleton(configuration);
 
+        // Configure DatabaseSettings for MoviesModule
+        services.Configure<DatabaseSettings>(o => 
+          o.ConnectionString = configuration.GetConnectionStringOrThrow("Database"));
+
         services.AddMoviesModule(configuration);
 
         services.AddRepositoriesFromModules([typeof(MoviesModule).Assembly]);

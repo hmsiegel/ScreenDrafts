@@ -27,6 +27,7 @@ global using ScreenDrafts.Common.Application.Seeding;
 global using ScreenDrafts.Common.Domain;
 global using ScreenDrafts.Common.Infrastructure;
 global using ScreenDrafts.Common.Infrastructure.Configuration;
+global using ScreenDrafts.Common.Infrastructure.Database;
 global using ScreenDrafts.Common.Infrastructure.Database.DatabaseSeeders;
 global using ScreenDrafts.Modules.Movies.Application;
 global using ScreenDrafts.Modules.Movies.Application.Movies.Commands.AddMovie;

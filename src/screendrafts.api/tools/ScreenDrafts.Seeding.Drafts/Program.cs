@@ -23,6 +23,11 @@ try
       .ConfigureServices((hostContext, services) =>
       {
         var configuration = hostContext.Configuration;
+        
+        // Configure DatabaseSettings for DraftsModule
+        services.Configure<DatabaseSettings>(o => 
+          o.ConnectionString = configuration.GetConnectionStringOrThrow("Database"));
+        
         services.AddDraftsModule(configuration);
         services.AddSeedingInfrastructure();
         services.AddDraftSeeders();

@@ -18,6 +18,7 @@ global using ScreenDrafts.Common.Application.Seeding;
 global using ScreenDrafts.Common.Infrastructure;
 global using ScreenDrafts.Common.Infrastructure.Configuration;
 global using ScreenDrafts.Common.Infrastructure.Converters;
+global using ScreenDrafts.Common.Infrastructure.Database;
 global using ScreenDrafts.Common.Infrastructure.Database.DatabaseSeeders;
 global using ScreenDrafts.Common.Infrastructure.EventBus;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafters;
