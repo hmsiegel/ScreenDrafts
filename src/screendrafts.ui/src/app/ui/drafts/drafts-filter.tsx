@@ -14,6 +14,7 @@ export default function DraftsFilter() {
   const [maxDrafters, setMaxDrafters] = useState(params.get("maxDrafters") ?? "");
   const [minPicks, setMinPicks] = useState(params.get("minPicks") ?? "");
   const [maxPicks, setMaxPicks] = useState(params.get("maxPicks") ?? "");
+  const [search, setSearch] = useState(params.get("q") ?? "");
 
   const initialTypes = params.getAll("draftType").map(Number);
   const [draftType, setDraftType] = useState<Set<number>>(new Set(initialTypes));
@@ -41,6 +42,7 @@ export default function DraftsFilter() {
     if (maxDrafters) qs.set("maxDrafters", maxDrafters);
     if (minPicks) qs.set("minPicks", minPicks);
     if (maxPicks) qs.set("maxPicks", maxPicks);
+    if (search) qs.set("q", search);
 
     draftType.forEach(type => qs.append("draftType", String(type)));
 
@@ -88,6 +90,17 @@ export default function DraftsFilter() {
                 </label>
               ))}
             </fieldset>
+            {/* search input */}
+            <div className="flex flex-col col-span-2">
+              <label className="text-sm">Search</label>
+              <input
+                type="text"
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                className="input input-bordered w-full"
+                placeholder="Search by title"
+              />
+            </div>
             {/* apply button */}
             <div className="col-span-3 flex justify-center">
               <button onClick={apply} className="btn btn-primary bg-sd-blue items-center rounded-lg text-lg px-4 text-white h-10">

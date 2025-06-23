@@ -31,6 +31,7 @@ export default async function Page({ searchParams: qp, }: { searchParams: { [key
       maxDrafters: asNumber(qp.maxDrafters),
       minPicks: asNumber(qp.minPicks),
       maxPicks: asNumber(qp.maxPicks),
+      q: qp.q as string | undefined,
       page,
       pageSize,
       sort: qp.sort as string | undefined,

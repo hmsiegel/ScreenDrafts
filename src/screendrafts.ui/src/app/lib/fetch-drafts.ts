@@ -74,6 +74,7 @@ export async function listDrafts(params: {
    maxPicks?: number,
    draftType?: number[],
    sort?: string | undefined,
+   q?: string | undefined,
    dir?: "asc" | "desc",
    page?: number,
    pageSize?: number,

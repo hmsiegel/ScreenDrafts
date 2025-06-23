@@ -122,6 +122,17 @@ internal sealed class ListDraftsQueryHandler(IDbConnectionFactory dbConnectionFa
       p.Add("maxPicks", request.MaxPicks);
     }
 
+    // Search Query
+    if (!string.IsNullOrWhiteSpace(request.Q))
+    {
+      sql.Append(
+        """
+         AND (
+           d.title ILIKE '%' || @q || '%')
+        """);
+      p.Add("q", request.Q);
+    }
+
     if (!request.IsPatreonOnly)
     {
       sql.Append(" AND d.is_patreon_only = FALSE");

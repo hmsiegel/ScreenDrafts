@@ -2728,6 +2728,7 @@ export interface ListDraftsRequest {
     maxPicks?: number | undefined;
     sort?: string | undefined;
     dir?: string | undefined;
+    q?: string | undefined;
     page?: number;
     pageSize?: number;
 

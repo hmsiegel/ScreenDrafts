@@ -2453,6 +2453,34 @@
           }
         }
       },
+      "DraftUserCapabilities": {
+        "required": [
+          "role",
+          "canEdit",
+          "canDelete",
+          "canStart",
+          "canPlay"
+        ],
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "string",
+            "nullable": true
+          },
+          "canEdit": {
+            "type": "boolean"
+          },
+          "canDelete": {
+            "type": "boolean"
+          },
+          "canStart": {
+            "type": "boolean"
+          },
+          "canPlay": {
+            "type": "boolean"
+          }
+        }
+      },
       "EditDraftRequest": {
         "required": [
           "draftId",
@@ -2667,6 +2695,11 @@
             "nullable": true
           },
           "dir": {
+            "type": "string",
+            "default": null,
+            "nullable": true
+          },
+          "q": {
             "type": "string",
             "default": null,
             "nullable": true
@@ -3064,6 +3097,9 @@
         }
       },
       "UpcomingDraftDto": {
+        "required": [
+          "capabilities"
+        ],
         "type": "object",
         "properties": {
           "id": {
@@ -3083,6 +3119,9 @@
               "type": "string",
               "format": "date-time"
             }
+          },
+          "capabilities": {
+            "$ref": "#/components/schemas/DraftUserCapabilities"
           }
         }
       },

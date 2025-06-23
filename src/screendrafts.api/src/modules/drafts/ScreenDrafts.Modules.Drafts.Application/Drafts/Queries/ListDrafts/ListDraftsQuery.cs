@@ -11,5 +11,6 @@ public sealed record ListDraftsQuery(
   int? MaxDrafters = null,
   int? MinPicks = null,
   int? MaxPicks = null,
+  string? Q = null,
   string? Sort = null,
   string? Dir = null) : IQuery<PagedResult<DraftResponse>>;

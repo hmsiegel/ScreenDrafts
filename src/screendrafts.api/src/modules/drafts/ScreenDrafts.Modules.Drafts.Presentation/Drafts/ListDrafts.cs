@@ -31,6 +31,7 @@ internal sealed class ListDrafts(ISender sender) : Endpoint<ListDraftsRequest, R
       MaxPicks: req.MaxPicks,
       Sort: req.Sort,
       Dir: req.Dir,
+      Q: req.Q?.Trim(),
       Page: req.Page,
       PageSize: req.PageSize,
       IsPatreonOnly: canViewPatreon);
@@ -58,6 +59,7 @@ public sealed record ListDraftsRequest(
   int? MaxPicks = null,
   string? Sort = null,
   string? Dir = null,
+  string? Q = null,
   int Page = 1,
   int PageSize = 5);
 
