@@ -5635,7 +5635,7 @@
     "TotalDrafterTeams": 0,
     "TotalHosts": 2,
     "EpisodeType": 0,
-    "ReleaseDates": [],
+    "ReleaseDates": ["2025-06-16"],
     "IsPatreonOnly": false,
     "NonCanonical": false
   },
@@ -5696,7 +5696,7 @@
     "NonCanonical": false
   },
   {
-    "Id": null,
+    "Id": "db4f2e2a-90f3-4003-a7a5-b2403140cfa0",
     "Title": "The Hunger Games mini-Super Draft",
     "DraftType": 4,
     "EpisodeNumber": "57",
@@ -5708,5 +5708,47 @@
     "ReleaseDates": ["2025-06-12"],
     "IsPatreonOnly": true,
     "NonCanonical": true
+  },
+  {
+    "Id": null,
+    "Title": "Action Comedy",
+    "DraftType": 0,
+    "EpisodeNumber": null,
+    "TotalPicks": 7,
+    "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
+    "TotalHosts": 2,
+    "EpisodeType": 0,
+    "ReleaseDates": [],
+    "IsPatreonOnly": false,
+    "NonCanonical": false
+  },
+  {
+    "Id": null,
+    "Title": "Standalone (non-franchise) Sci-Fi",
+    "DraftType": 0,
+    "EpisodeNumber": null,
+    "TotalPicks": 7,
+    "TotalDrafters": 2,
+    "TotalDrafterTeams": 0,
+    "TotalHosts": 2,
+    "EpisodeType": 0,
+    "ReleaseDates": [],
+    "IsPatreonOnly": false,
+    "NonCanonical": false
+  },
+  {
+    "Id": null,
+    "Title": "2000's Sports mini-Mega",
+    "DraftType": 1,
+    "EpisodeNumber": null,
+    "TotalPicks": 13,
+    "TotalDrafters": 4,
+    "TotalDrafterTeams": 0,
+    "TotalHosts": 2,
+    "EpisodeType": 0,
+    "ReleaseDates": [],
+    "IsPatreonOnly": false,
+    "NonCanonical": false
   }
 ]
