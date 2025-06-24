@@ -18,6 +18,8 @@ global using ScreenDrafts.Common.Domain;
 global using ScreenDrafts.Modules.Drafts.Application.Abstractions.Data;
 global using ScreenDrafts.Modules.Drafts.Application.Drafters.Queries.GetDrafter;
 global using ScreenDrafts.Modules.Drafts.Application.Drafters.Queries.GetVeto;
+global using ScreenDrafts.Modules.Drafts.Application.Drafters.Queries.GetVetoOverride;
+global using ScreenDrafts.Modules.Drafts.Application.Drafts.Queries.GetCommissionerOverridesByDraft;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Queries.GetDraft;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Queries.GetDraftPicks;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Queries.GetDraftPositionsByGameBoard;

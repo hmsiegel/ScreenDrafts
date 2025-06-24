@@ -7,6 +7,7 @@ public sealed record DraftPickResponse(
   string MovieTitle,
   Guid? DrafterId,
   string? DrafterName,
+  bool IsVetoed = false,
   Guid? DrafterTeamId = null,
   string? DrafterTeamName = null)
 {
@@ -17,6 +18,7 @@ public sealed record DraftPickResponse(
         MovieId: Guid.Empty,
         MovieTitle: string.Empty,
         DrafterId: Guid.Empty,
+        IsVetoed: false,
         DrafterName: string.Empty,
         DrafterTeamId: Guid.Empty,
         DrafterTeamName: string.Empty)

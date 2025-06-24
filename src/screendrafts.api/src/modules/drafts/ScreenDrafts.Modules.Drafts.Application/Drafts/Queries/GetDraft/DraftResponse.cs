@@ -15,6 +15,9 @@ public sealed record DraftResponse(
   private readonly List<HostResponse> _hosts = [];
   private readonly List<ReleaseDateResponse>? _releaseDates = [];
   private readonly List<DraftPickResponse>? _draftPicks = [];
+  private readonly List<VetoResponse>? _vetoes = [];
+  private readonly List<VetoOverrideResponse>? _vetoOverrides = [];
+  private readonly List<CommissionerOverrideResponse>? _commissionerOverrides = [];
 
   public DraftResponse()
     : this(
@@ -36,11 +39,18 @@ public sealed record DraftResponse(
   public ReadOnlyCollection<HostResponse> Hosts => _hosts.AsReadOnly();
   public ReadOnlyCollection<ReleaseDateResponse>? ReleaseDates => _releaseDates!.AsReadOnly();
   public ReadOnlyCollection<DraftPickResponse>? DraftPicks => _draftPicks!.AsReadOnly();
+  public ReadOnlyCollection<VetoResponse>? Vetoes => _vetoes?.AsReadOnly();
+  public ReadOnlyCollection<VetoOverrideResponse>? VetoOverrides => _vetoOverrides?.AsReadOnly();
+  public ReadOnlyCollection<CommissionerOverrideResponse>? CommissionerOverrides => _commissionerOverrides?.AsReadOnly();
+
 
   public void AddDrafter(DrafterResponse drafter) => _drafters.Add(drafter);
   public void AddHost(HostResponse host) => _hosts.Add(host);
   public void AddDraftPick(DraftPickResponse draftPick) => _draftPicks!.Add(draftPick);
   public void AddReleaseDate(ReleaseDateResponse releaseDate) => _releaseDates!.Add(releaseDate);
+  public void AddVeto(VetoResponse veto) => _vetoes!.Add(veto);
+  public void AddVetoOverride(VetoOverrideResponse vetoOverride) => _vetoOverrides!.Add(vetoOverride);
+  public void AddCommissionerOverride(CommissionerOverrideResponse commissionerOverride) => _commissionerOverrides!.Add(commissionerOverride);
 
 
   public void PopulateReleaseDatesFromRaw()

@@ -1,4 +1,5 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Infrastructure.Drafts;
+﻿
+namespace ScreenDrafts.Modules.Drafts.Infrastructure.Drafts;
 
 internal sealed class DraftsRepository(DraftsDbContext dbContext) : IDraftsRepository
 {
@@ -68,5 +69,14 @@ internal sealed class DraftsRepository(DraftsDbContext dbContext) : IDraftsRepos
   public void Delete(Draft draft)
   {
     _dbContext.Drafts.Remove(draft);
+  }
+
+  public Task<List<CommissionerOverride?>> GetCommissionerOverridesByDraftIdAsync(DraftId draftId, CancellationToken cancellationToken)
+  {
+    var commissionerOverrides = _dbContext.CommissionerOverrides
+      .Where(co => co.Pick.Draft.Id == draftId)
+      .ToListAsync(cancellationToken);
+
+    return commissionerOverrides!;
   }
 }

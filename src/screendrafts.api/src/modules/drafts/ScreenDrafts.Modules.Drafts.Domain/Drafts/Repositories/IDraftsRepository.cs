@@ -19,4 +19,7 @@ public interface IDraftsRepository : IRepository
   Task<Draft?> GetDraftWithDetailsAsync(DraftId draftId, CancellationToken cancellationToken);
 
   Task<bool> MovieExistsAsync(string imdbId, CancellationToken cancellationToken);
+
+  Task<List<CommissionerOverride?>> GetCommissionerOverridesByDraftIdAsync(
+    DraftId draftId, CancellationToken cancellationToken);
 }
