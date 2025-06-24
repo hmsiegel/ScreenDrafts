@@ -55,6 +55,8 @@ internal sealed class DraftConfiguration : IEntityTypeConfiguration<Draft>
     builder.HasIndex(d => d.ReadableId)
       .IsUnique();
 
+    builder.Property(d => d.Description);
+
     builder.HasMany(d => d.Picks)
       .WithOne(p => p.Draft)
       .HasForeignKey(p => p.DraftId);

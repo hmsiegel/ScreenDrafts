@@ -24,7 +24,8 @@ internal sealed class EditDraftCommandHandler(
       request.TotalDrafterTeams,
       request.TotalHosts,
       request.EpisodeType,
-      request.DraftStatus);
+      request.DraftStatus,
+      request.Description);
 
     if (result.IsFailure)
     {

@@ -66,6 +66,8 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
 
   public bool NonCanonical { get; private set; }
 
+  public string? Description { get; private set; }
+
   // Relationships
 
   public GameBoard? GameBoard { get; private set; } = default!;
@@ -131,11 +133,13 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
     int totalDrafterTeams,
     int totalHosts,
     EpisodeType episodeType,
-    DraftStatus draftStatus)
+    DraftStatus draftStatus,
+    string? description)
   {
     Guard.Against.Null(title);
     Guard.Against.Null(draftType);
     Guard.Against.Null(episodeType);
+    Guard.Against.NullOrWhiteSpace(description);
 
     if (totalDrafters + totalDrafterTeams < 2)
     {
@@ -161,6 +165,7 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
     EpisodeType = episodeType;
     DraftStatus = draftStatus;
     UpdatedAtUtc = DateTime.UtcNow;
+    Description = description;
 
     Raise(new DraftEditedDomainEvent(Id.Value, title.Value));
 
@@ -489,6 +494,19 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
 
     Raise(new HostRemovedDomainEvent(Id.Value, host.Id.Value));
 
+    return Result.Success();
+  }
+
+  public Result RemoveDrafterTeam(DrafterTeam drafterTeam)
+  {
+    Guard.Against.Null(drafterTeam);
+    if (!_drafterTeams.Contains(drafterTeam))
+    {
+      return Result.Failure(DrafterErrors.NotFound(drafterTeamId: drafterTeam.Id.Value));
+    }
+    _drafterTeams.Remove(drafterTeam);
+    UpdatedAtUtc = DateTime.UtcNow;
+    Raise(new DrafterTeamRemovedDomainEvent(Id.Value, drafterTeam.Id.Value));
     return Result.Success();
   }
 }
