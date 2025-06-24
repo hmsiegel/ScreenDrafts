@@ -17,17 +17,22 @@ Log.Logger = new LoggerConfiguration()
 
 try
 {
-  Log.Information("Starting seeding application...");
-
   var builder = Host.CreateDefaultBuilder(args) // Ensure the correct namespace is used
+      .UseSerilog((context, services, configuration) =>
+      {
+        configuration
+          .ReadFrom.Configuration(context.Configuration)
+          .ReadFrom.Services(services)
+          .Enrich.FromLogContext();
+      })
       .ConfigureServices((hostContext, services) =>
       {
-        var configuration = hostContext.Configuration;
-        
+        services.AddSingleton(configuration);
+
         // Configure DatabaseSettings for DraftsModule
-        services.Configure<DatabaseSettings>(o => 
+        services.Configure<DatabaseSettings>(o =>
           o.ConnectionString = configuration.GetConnectionStringOrThrow("Database"));
-        
+
         services.AddDraftsModule(configuration);
         services.AddSeedingInfrastructure();
         services.AddDraftSeeders();
