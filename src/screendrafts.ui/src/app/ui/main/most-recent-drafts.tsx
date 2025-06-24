@@ -54,7 +54,7 @@ export default async function MostRecentDrafts() {
                      <React.Fragment key={draft.id}>
                         <Link
                            key={draft.id}
-                           href={`/drafts/${draft.id}`}
+                           href={`/main/drafts/${draft.id}`}
                            className="table-row">
                            <div className="whitespace-nowrap table-cell table-data py-3 pl-6 pr-3">{draft.episodeNumber}</div>
                            <div className="whitespace-nowrap table-cell table-data py-3 pl-6 pr-3">{draft.title}</div>

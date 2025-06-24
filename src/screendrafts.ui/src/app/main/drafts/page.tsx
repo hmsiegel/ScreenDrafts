@@ -12,7 +12,10 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic"; // Disable caching for this page
 
-export default async function Page({ searchParams: qp, }: { searchParams: { [key: string]: string | string[] | undefined} }) {
+export default async function Page(
+   props: { searchParams: Promise<{ [key: string]: string | string[] | undefined}> }
+) {
+   const qp = await props.searchParams;
    const draftTypes =
       Array.isArray(qp.draftType)
       ? qp.draftType.map(Number)
