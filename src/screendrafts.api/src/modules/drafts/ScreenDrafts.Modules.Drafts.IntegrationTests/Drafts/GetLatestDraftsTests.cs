@@ -69,7 +69,9 @@ public sealed class GetLatestDraftsTests(IntegrationTestWebAppFactory factory)
       drafts.Add(updatedDraft.Value);
     } while (drafts.Count < 10);
 
-    var query = new GetLatestDraftsQuery();
+    var isPatreonOnly = true;
+
+    var query = new GetLatestDraftsQuery(isPatreonOnly);
     var latestDraftsQueryResponse = await Sender.Send(query);
 
     var latestDrafts = latestDraftsQueryResponse.Value.ToList();
@@ -87,7 +89,8 @@ public sealed class GetLatestDraftsTests(IntegrationTestWebAppFactory factory)
   [Fact]
   public async Task GetLatestDrafts_WhenNoDrafts_ReturnsEmptyListAsync()
   {
-    var query = new GetLatestDraftsQuery();
+    var isPatreonOnly = true;
+    var query = new GetLatestDraftsQuery(isPatreonOnly);
     var latestDraftsQueryResponse = await Sender.Send(query);
     latestDraftsQueryResponse.Value.Should().BeEmpty();
   }

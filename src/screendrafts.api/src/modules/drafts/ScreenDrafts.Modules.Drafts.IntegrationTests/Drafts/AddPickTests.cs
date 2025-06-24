@@ -212,6 +212,7 @@ public class AddPickTests(IntegrationTestWebAppFactory factory) : BaseIntegratio
     for (int i = 0; i < reloadedDraftResult.Value.TotalPicks; i++)
     {
       var currentPickNumber = reloadedDraftResult.Value.TotalPicks - i;
+      var currentPlayOrder = reloadedDraftResult.Value.TotalPicks - reloadedDraftResult.Value.TotalPicks + 1;
       Drafter? currentDrafter = null;
 
       foreach (var draftPosition in draftPositionsList)
@@ -224,7 +225,7 @@ public class AddPickTests(IntegrationTestWebAppFactory factory) : BaseIntegratio
       }
 
       var movie = MovieFactory.CreateMovie().Value;
-    var movieId = await Sender.Send(new AddMovieCommand(movie.Id, movie.ImdbId, movie.MovieTitle));
+      var movieId = await Sender.Send(new AddMovieCommand(movie.Id, movie.ImdbId, movie.MovieTitle));
 
       var addPickCommand = new AddPickCommand(
         reloadedDraftResult.Value.Id,
@@ -232,10 +233,11 @@ public class AddPickTests(IntegrationTestWebAppFactory factory) : BaseIntegratio
         movieId.Value,
         1,
         currentDrafter!.Id.Value, null);
-       await Sender.Send(addPickCommand);
+      await Sender.Send(addPickCommand);
 
       picks.Add(new DraftPickResponse(
         currentPickNumber,
+        currentPlayOrder,
         movieId.Value,
         movie.MovieTitle,
         currentDrafter.Id.Value,

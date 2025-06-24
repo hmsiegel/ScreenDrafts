@@ -27,8 +27,10 @@ public sealed class ListDraftsTests(IntegrationTestWebAppFactory factory)
 
     } while (drafts.Count < 20);
 
+    var isPatreonOnly = true;
+
     // Act
-    var query = new ListDraftsQuery(Page: 1, PageSize: 20);
+    var query = new ListDraftsQuery(Page: 1, PageSize: 20, IsPatreonOnly: isPatreonOnly);
     var allDrafts = await Sender.Send(query);
 
     allDrafts.IsSuccess.Should().BeTrue();
@@ -43,8 +45,9 @@ public sealed class ListDraftsTests(IntegrationTestWebAppFactory factory)
   [Fact]
   public async Task ShouldReturn_EmptyList_WhenNoDraftsExistAsync()
   {
+    var isPatreonOnly = true;
     // Act
-    var query = new ListDraftsQuery(Page: 1, PageSize: 20);
+    var query = new ListDraftsQuery(Page: 1, PageSize: 20, IsPatreonOnly: isPatreonOnly);
     var allDrafts = await Sender.Send(query);
     // Assert
     var allDraftsList = allDrafts.Value.Items.ToList();

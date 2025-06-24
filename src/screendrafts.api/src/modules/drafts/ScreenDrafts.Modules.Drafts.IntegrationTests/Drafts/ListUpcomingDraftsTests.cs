@@ -46,8 +46,13 @@ public sealed class ListUpcomingDraftsTests(IntegrationTestWebAppFactory factory
       }
     } while (drafts.Count < 20);
 
+    var isPatreonOnly = true;
+    var isAdmin = true;
+
+    var userId = Guid.NewGuid();
+
     // Act
-    var query = new ListUpcomingDraftsQuery();
+    var query = new ListUpcomingDraftsQuery(isPatreonOnly, userId, isAdmin);
     var response = await Sender.Send(query);
 
     response.Should().NotBeNull();
@@ -68,8 +73,12 @@ public sealed class ListUpcomingDraftsTests(IntegrationTestWebAppFactory factory
   [Fact]
   public async Task ListUpcomingDrafts_ShouldReturnEmptyList_WhenNoUpcomingDraftsExistAsync()
   {
+    var isPatreonOnly = true;
+    var isAdmin = true;
+
+    var userId = Guid.NewGuid();
     // Act
-    var query = new ListUpcomingDraftsQuery();
+    var query = new ListUpcomingDraftsQuery(isPatreonOnly, userId, isAdmin);
     var response = await Sender.Send(query);
     // Assert
     response.IsSuccess.Should().BeTrue();

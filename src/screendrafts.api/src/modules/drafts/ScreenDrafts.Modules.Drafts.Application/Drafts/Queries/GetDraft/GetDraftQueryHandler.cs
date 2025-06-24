@@ -22,10 +22,13 @@ internal sealed class GetDraftQueryHandler(IDraftsRepository draftsRepository, I
     List<ReleaseDateResponse> releaseDates = [.. draft.ReleaseDates.Select(r => new ReleaseDateResponse(r.ReleaseDate))];
     List<DraftPickResponse> draftPickResponses = [.. picks.Select(p => new DraftPickResponse(
       p.Position,
+      p.PlayOrder,
       p.MovieId,
       p.Movie.MovieTitle,
       p.DrafterId!.Value,
-      p.Drafter!.Name))];
+      p.Drafter!.Name,
+      p.DrafterTeamId!.Value,
+      p.DrafterTeam!.Name))];
 
     var draftResponse = new DraftResponse(
       draft.Id.Value,
