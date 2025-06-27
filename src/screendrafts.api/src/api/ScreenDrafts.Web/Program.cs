@@ -69,6 +69,7 @@ app.UseFastEndpoints(c =>
 if (app.Environment.IsDevelopment())
 {
   app.UseOpenApi(c => c.Path = "/openapi/{documentname}.json");
+  app.UseSwaggerGen();
   app.UseSwaggerUi();
   app.MapOpenApi();
   app.MapScalarApiReference();
