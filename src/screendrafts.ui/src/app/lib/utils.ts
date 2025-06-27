@@ -1,3 +1,5 @@
+import { CommissionerOverrideResponse, VetoOverrideResponse, VetoResponse } from "./dto";
+
 export const generatePagination = (currentPage: number, totalPages: number) => {
      // If the total number of pages is 7 or less,
   // display all pages without any ellipsis.
@@ -37,4 +39,35 @@ export const formatDate = (date: string) => {
     month: 'short',
     day: 'numeric',
   });
+}
+
+export function blessingsMap(
+  vetoes: VetoResponse[],
+  vetoesOverrides: VetoOverrideResponse[],
+  commissionerOverrides: CommissionerOverrideResponse[]
+) {
+  const vetoBySlot = new Map<number, VetoResponse>();
+  const vetoOverrideBySlot = new Map<number, VetoOverrideResponse>();
+  const commissionerOverrideBySlot = new Map<number, CommissionerOverrideResponse>();
+
+  vetoes.forEach(veto => {
+      vetoBySlot.set(veto.pickPlayOrder, veto);
+    }
+  );
+
+  vetoesOverrides.forEach(vetoOverride => {
+      vetoOverrideBySlot.set(vetoOverride.veto.pickPlayOrder, vetoOverride);
+    }
+  );
+
+  commissionerOverrides.forEach(commissionerOverride => {
+      commissionerOverrideBySlot.set(commissionerOverride.playOrder, commissionerOverride);
+    }
+  );
+
+  return {
+    vetoBySlot,
+    vetoOverrideBySlot,
+    commissionerOverrideBySlot
+  };
 }

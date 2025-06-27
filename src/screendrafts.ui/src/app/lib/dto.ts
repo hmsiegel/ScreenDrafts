@@ -2527,6 +2527,21 @@ export interface AssignDraftPositionRequest {
     [key: string]: any;
 }
 
+export interface CommissionerOverrideResponse {
+    id: string;
+    pickId: string;
+    position: number;
+    playOrder: number;
+    movieId: string;
+    movieTitle: string;
+    drafterId: string | undefined;
+    drafterName: string | undefined;
+    drafterTeamId?: string | undefined;
+    drafterTeamName?: string | undefined;
+
+    [key: string]: any;
+}
+
 export interface CompleteDraftRequest {
     draftId: string;
 
@@ -2594,10 +2609,14 @@ export interface DrafterResponse {
 
 export interface DraftPickResponse {
     position?: number;
+    playOrder?: number;
     movieId?: string;
     movieTitle?: string;
-    drafterId?: string;
-    drafterName?: string;
+    drafterId?: string | undefined;
+    drafterName?: string | undefined;
+    isVetoed?: boolean;
+    drafterTeamId?: string | undefined;
+    drafterTeamName?: string | undefined;
 
     [key: string]: any;
 }
@@ -2626,18 +2645,25 @@ export interface DraftPositionResponse {
 export interface DraftResponse {
     id?: string;
     title?: string;
-    episodeNumber?: string | undefined;
+    episodeNumber?: number | undefined;
     draftType?: number;
     totalPicks?: number;
     totalDrafters?: number;
     totalHosts?: number;
     episodeType?: number;
     draftStatus?: number;
+    previousDraftId?: string | undefined;
+    previousDraftTitle?: string | undefined;
+    nextDraftId?: string | undefined;
+    nextDraftTitle?: string | undefined;
     rawReleaseDates?: Date[] | undefined;
     drafters?: DrafterResponse[] | undefined;
     hosts?: HostResponse[] | undefined;
     releaseDates?: ReleaseDateResponse[] | undefined;
     draftPicks?: DraftPickResponse[] | undefined;
+    vetoes?: VetoResponse[] | undefined;
+    vetoOverrides?: VetoOverrideResponse[] | undefined;
+    commissionerOverrides?: CommissionerOverrideResponse[] | undefined;
 
     [key: string]: any;
 }
@@ -2662,6 +2688,7 @@ export interface EditDraftRequest {
     totalHosts: number;
     episodeType: string;
     draftStatus: string;
+    description: string | undefined;
 
     [key: string]: any;
 }
@@ -2921,6 +2948,31 @@ export interface VetoOverrideRequest {
     drafterId: string | undefined;
     drafterTeamId: string | undefined;
     vetoId: string;
+
+    [key: string]: any;
+}
+
+export interface VetoOverrideResponse {
+    id: string;
+    veto: VetoResponse;
+    drafterId: string | undefined;
+    drafterName: string | undefined;
+    drafterTeamId?: string | undefined;
+    drafterTeamName?: string | undefined;
+
+    [key: string]: any;
+}
+
+export interface VetoResponse {
+    id: string;
+    pickId: string;
+    pickPosition: number;
+    pickPlayOrder: number;
+    movieTitle: string;
+    drafterId: string | undefined;
+    drafterName: string | undefined;
+    drafterTeamId?: string | undefined;
+    drafterTeamName?: string | undefined;
 
     [key: string]: any;
 }

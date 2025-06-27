@@ -112,3 +112,30 @@ export async function listDrafts(params: {
    const apiPaged = data.value as PagedResultOfDraftResponse;
    return toPagedDraftResult(apiPaged);
 }
+
+export async function getDraftDetails(id: string): Promise<DraftResponse[]> {
+   const url = `${apiBase}/drafts/${id}`;
+
+   const session = await getServerSession(authOptions);
+   const headers: HeadersInit = {};
+
+   if (session?.accessToken) {
+      headers["Authorization"] = `Bearer ${session.accessToken}`;
+   }
+
+   const response = await fetch(url, {
+      method: "GET",
+      headers,
+      credentials: "include",
+      next: { revalidate: 0 }, // Disable caching
+   });
+
+   if (!response.ok) {
+      const body = await response.text();
+      throw new Error(
+         `Request failed with status ${response.status}: ${response.statusText} - ${body}`
+      );
+   }
+
+   return response.json() as Promise<DraftResponse[]>;
+}
