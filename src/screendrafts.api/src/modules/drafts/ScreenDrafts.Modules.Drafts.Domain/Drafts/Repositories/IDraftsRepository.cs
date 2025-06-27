@@ -22,4 +22,7 @@ public interface IDraftsRepository : IRepository
 
   Task<List<CommissionerOverride?>> GetCommissionerOverridesByDraftIdAsync(
     DraftId draftId, CancellationToken cancellationToken);
+
+  Task<Draft?> GetPreviousDraftAsync(int? episodeNumber, EpisodeType episodeType, CancellationToken cancellationToken);
+  Task<Draft?> GetNextDraftAsync(int? episodeNumber, EpisodeType episodeType, CancellationToken cancellationToken);
 }

@@ -3,13 +3,18 @@
 public sealed record DraftResponse(
     Guid Id,
     string Title,
-    string? EpisodeNumber,
+    int? EpisodeNumber,
     int DraftType,
     int TotalPicks,
     int TotalDrafters,
     int TotalHosts,
     int EpisodeType,
-    int DraftStatus)
+    int DraftStatus,
+    string? Description,
+    Guid? PreviousDraftId,
+    string? PreviousDraftTitle,
+    Guid? NextDraftId, 
+    string? NextDraftTitle)
 {
   private readonly List<DrafterResponse> _drafters = [];
   private readonly List<HostResponse> _hosts = [];
@@ -29,7 +34,12 @@ public sealed record DraftResponse(
         default,
         default,
         default,
-        default)
+        default,
+        string.Empty,
+        Guid.Empty,
+        string.Empty,
+        Guid.Empty,
+        string.Empty)
   {
   }
 

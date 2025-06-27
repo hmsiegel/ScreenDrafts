@@ -54,7 +54,7 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
 
   public int TotalHosts { get; private set; }
 
-  public string? EpisodeNumber { get; private set; } = default!;
+  public int? EpisodeNumber { get; private set; } = default!;
 
   public DraftStatus DraftStatus { get; private set; } = default!;
 
@@ -411,9 +411,9 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
     return Result.Success();
   }
 
-  public void SetEpisodeNumber(string episodeNumber)
+  public void SetEpisodeNumber(int episodeNumber)
   {
-    Guard.Against.NullOrEmpty(episodeNumber);
+    Guard.Against.Zero(episodeNumber);
     EpisodeNumber = episodeNumber;
   }
 

@@ -512,7 +512,7 @@ public class DraftTests : BaseTest
   {
     // Arrange
     var draft = DraftFactory.CreateStandardDraft().Value;
-    var episodeNumber = "S01E01";
+    var episodeNumber = Faker.Random.Number(1, 100);
 
     // Act
     draft.SetEpisodeNumber(episodeNumber);

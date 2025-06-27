@@ -80,9 +80,9 @@ internal sealed class DraftSeeder(
         currentDraft.SetPatreonOnly(draft.IsPatreonOnly);
       }
 
-      if (!string.IsNullOrWhiteSpace(draft.EpisodeNumber))
+      if (draft.EpisodeNumber is not null)
       {
-        currentDraft.SetEpisodeNumber(draft.EpisodeNumber);
+        currentDraft.SetEpisodeNumber((int)draft.EpisodeNumber);
       }
 
       if (draft.IsNonCanonical)

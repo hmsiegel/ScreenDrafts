@@ -18,7 +18,7 @@ internal sealed class DraftsModel
 
   public int DraftStatus { get; set; } = Modules.Drafts.Domain.Drafts.Enums.DraftStatus.Created;
 
-  public string? EpisodeNumber { get; set; } = string.Empty;
+  public int? EpisodeNumber { get; set; }
 
   public int EpisodeType { get; set; }
 

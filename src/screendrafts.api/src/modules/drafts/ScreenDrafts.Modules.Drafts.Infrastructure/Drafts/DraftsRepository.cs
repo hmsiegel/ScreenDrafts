@@ -1,5 +1,4 @@
-﻿
-namespace ScreenDrafts.Modules.Drafts.Infrastructure.Drafts;
+﻿namespace ScreenDrafts.Modules.Drafts.Infrastructure.Drafts;
 
 internal sealed class DraftsRepository(DraftsDbContext dbContext) : IDraftsRepository
 {
@@ -78,5 +77,57 @@ internal sealed class DraftsRepository(DraftsDbContext dbContext) : IDraftsRepos
       .ToListAsync(cancellationToken);
 
     return commissionerOverrides!;
+  }
+
+  public async Task<Draft?> GetPreviousDraftAsync(int? episodeNumber, EpisodeType episodeType, CancellationToken cancellationToken)
+  {
+    if (episodeNumber <= 0)
+    {
+      throw new ArgumentOutOfRangeException(nameof(episodeNumber), "Episode number must be greater than zero.");
+    }
+
+    if (episodeType is null)
+    {
+      throw new ArgumentNullException(nameof(episodeType), "Episode type cannot be null.");
+    }
+
+    var previousDraft = await _dbContext.Drafts
+      .Where(d => d.EpisodeNumber < episodeNumber && d.EpisodeType == episodeType)
+      .OrderByDescending(d => d.EpisodeNumber)
+      .ThenByDescending(d => d.Id) // Ensure consistent ordering
+      .FirstOrDefaultAsync(cancellationToken);
+
+    if (previousDraft is null)
+    {
+      return null;
+    }
+
+    return previousDraft;
+  }
+
+  public async Task<Draft?> GetNextDraftAsync(int? episodeNumber, EpisodeType episodeType, CancellationToken cancellationToken)
+  {
+    if (episodeNumber <= 0)
+    {
+      throw new ArgumentOutOfRangeException(nameof(episodeNumber), "Episode number must be greater than zero.");
+    }
+
+    if (episodeType is null)
+    {
+      throw new ArgumentNullException(nameof(episodeType), "Episode type cannot be null.");
+    }
+
+    var nextDraft = await _dbContext.Drafts
+      .Where(d => d.EpisodeNumber > episodeNumber && d.EpisodeType == episodeType)
+      .OrderBy(d => d.EpisodeNumber)
+      .ThenBy(d => d.Id) // Ensure consistent ordering
+      .FirstOrDefaultAsync(cancellationToken);
+
+    if (nextDraft is null)
+    {
+      return null;
+    }
+
+    return nextDraft;
   }
 }

@@ -2143,6 +2143,64 @@
           }
         }
       },
+      "CommissionerOverrideResponse": {
+        "required": [
+          "id",
+          "pickId",
+          "position",
+          "playOrder",
+          "movieId",
+          "movieTitle",
+          "drafterId",
+          "drafterName"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "pickId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "position": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "playOrder": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "movieId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "movieTitle": {
+            "type": "string"
+          },
+          "drafterId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "drafterName": {
+            "type": "string",
+            "nullable": true
+          },
+          "drafterTeamId": {
+            "type": "string",
+            "format": "uuid",
+            "default": null,
+            "nullable": true
+          },
+          "drafterTeamName": {
+            "type": "string",
+            "default": null,
+            "nullable": true
+          }
+        }
+      },
       "CompleteDraftRequest": {
         "required": [
           "draftId"
@@ -2303,6 +2361,10 @@
             "type": "integer",
             "format": "int32"
           },
+          "playOrder": {
+            "type": "integer",
+            "format": "int32"
+          },
           "movieId": {
             "type": "string",
             "format": "uuid"
@@ -2312,10 +2374,24 @@
           },
           "drafterId": {
             "type": "string",
-            "format": "uuid"
+            "format": "uuid",
+            "nullable": true
           },
           "drafterName": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
+          },
+          "isVetoed": {
+            "type": "boolean"
+          },
+          "drafterTeamId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "drafterTeamName": {
+            "type": "string",
+            "nullable": true
           }
         }
       },
@@ -2388,7 +2464,8 @@
             "type": "string"
           },
           "episodeNumber": {
-            "type": "string",
+            "type": "integer",
+            "format": "int32",
             "nullable": true
           },
           "draftType": {
@@ -2414,6 +2491,24 @@
           "draftStatus": {
             "type": "integer",
             "format": "int32"
+          },
+          "previousDraftId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "previousDraftTitle": {
+            "type": "string",
+            "nullable": true
+          },
+          "nextDraftId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "nextDraftTitle": {
+            "type": "string",
+            "nullable": true
           },
           "rawReleaseDates": {
             "type": "array",
@@ -2448,6 +2543,27 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/DraftPickResponse"
+            },
+            "nullable": true
+          },
+          "vetoes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VetoResponse"
+            },
+            "nullable": true
+          },
+          "vetoOverrides": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VetoOverrideResponse"
+            },
+            "nullable": true
+          },
+          "commissionerOverrides": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CommissionerOverrideResponse"
             },
             "nullable": true
           }
@@ -2491,7 +2607,8 @@
           "totalDrafterTeams",
           "totalHosts",
           "episodeType",
-          "draftStatus"
+          "draftStatus",
+          "description"
         ],
         "type": "object",
         "properties": {
@@ -2526,6 +2643,10 @@
           },
           "draftStatus": {
             "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
           }
         }
       },
@@ -3229,6 +3350,97 @@
           "vetoId": {
             "type": "string",
             "format": "uuid"
+          }
+        }
+      },
+      "VetoOverrideResponse": {
+        "required": [
+          "id",
+          "veto",
+          "drafterId",
+          "drafterName"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "veto": {
+            "$ref": "#/components/schemas/VetoResponse"
+          },
+          "drafterId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "drafterName": {
+            "type": "string",
+            "nullable": true
+          },
+          "drafterTeamId": {
+            "type": "string",
+            "format": "uuid",
+            "default": null,
+            "nullable": true
+          },
+          "drafterTeamName": {
+            "type": "string",
+            "default": null,
+            "nullable": true
+          }
+        }
+      },
+      "VetoResponse": {
+        "required": [
+          "id",
+          "pickId",
+          "pickPosition",
+          "pickPlayOrder",
+          "movieTitle",
+          "drafterId",
+          "drafterName"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "pickId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "pickPosition": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pickPlayOrder": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "movieTitle": {
+            "type": "string"
+          },
+          "drafterId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "drafterName": {
+            "type": "string",
+            "nullable": true
+          },
+          "drafterTeamId": {
+            "type": "string",
+            "format": "uuid",
+            "default": null,
+            "nullable": true
+          },
+          "drafterTeamName": {
+            "type": "string",
+            "default": null,
+            "nullable": true
           }
         }
       },

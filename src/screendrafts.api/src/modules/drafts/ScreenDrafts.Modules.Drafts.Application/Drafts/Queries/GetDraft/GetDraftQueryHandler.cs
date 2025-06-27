@@ -20,6 +20,9 @@ internal sealed class GetDraftQueryHandler(
       return Result.Failure<DraftResponse>(DraftErrors.NotFound(request.DraftId));
     }
 
+    var episodeNumber = draft.EpisodeNumber;
+    var episodeType = draft.EpisodeType;
+
     var picks = await _picksRepository.GetByDraftIdAsync(DraftId.Create(request.DraftId), cancellationToken);
     var vetoes = await _vetoRepository.GetVetoesByDraftId(DraftId.Create(request.DraftId), cancellationToken);
     var vetoOverrides = await _vetoRepository.GetVetoOverridesByDraftId(DraftId.Create(request.DraftId), cancellationToken);
@@ -75,6 +78,9 @@ internal sealed class GetDraftQueryHandler(
       co.Pick.DrafterTeamId?.Value,
       co.Pick.DrafterTeam?.Name))];
 
+    var previousDraft = await _draftsRepository.GetPreviousDraftAsync(episodeNumber, episodeType, cancellationToken);
+    var nextDraft = await _draftsRepository.GetNextDraftAsync(episodeNumber, episodeType, cancellationToken);
+
     var draftResponse = new DraftResponse(
       draft.Id.Value,
       draft.Title.Value,
@@ -84,7 +90,15 @@ internal sealed class GetDraftQueryHandler(
       draft.TotalDrafters,
       draft.TotalHosts,
       draft.EpisodeType,
-      draft.DraftStatus);
+      draft.DraftStatus,
+      draft?.Description,
+      previousDraft?.Id.Value,
+      previousDraft?.Title.Value,
+      nextDraft?.Id.Value,
+      nextDraft?.Title.Value)
+    {
+      RawReleaseDates = [.. draft!.ReleaseDates.Select(r => r.ReleaseDate.ToDateTime(TimeOnly.MinValue))]
+    };
 
     drafters.ForEach(d => draftResponse.AddDrafter(d));
     hosts.ForEach(h => draftResponse.AddHost(h));
@@ -93,7 +107,6 @@ internal sealed class GetDraftQueryHandler(
     vetoResponses.ForEach(v => draftResponse.AddVeto(v));
     vetoOverrideResponses.ForEach(vo => draftResponse.AddVetoOverride(vo));
     commissionerOverrideResponses.ForEach(co => draftResponse.AddCommissionerOverride(co));
-
 
     return draftResponse;
   }
