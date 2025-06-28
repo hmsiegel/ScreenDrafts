@@ -55,7 +55,7 @@ export default async function MostRecentDrafts() {
                         <Link
                            key={draft.id}
                            href={`/main/drafts/${draft.id}`}
-                           className="table-row">
+                           className="table-row hover:bg-gray-200">
                            <div className="whitespace-nowrap table-cell table-data py-3 pl-6 pr-3">{draft.episodeNumber}</div>
                            <div className="whitespace-nowrap table-cell table-data py-3 pl-6 pr-3">{draft.title}</div>
                            <div className="whitespace-nowrap table-cell table-data text-right py-3 pl-6 pr-3">

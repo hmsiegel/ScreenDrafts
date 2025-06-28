@@ -1,4 +1,5 @@
 import { CommissionerOverrideResponse, DraftPickResponse, VetoOverrideResponse, VetoResponse } from "@/app/lib/dto";
+import Link from "next/link";
 
 export function PickRow({
    pick,
@@ -22,8 +23,12 @@ export function PickRow({
    const line = (
       <>
          <span className="font-semibold">{pick.position}.</span>{" "}
-         {pick.movieTitle || "N/A"}{" "}
-         <span className="text-slate-600">by {pick.drafterName ?? "-"}</span>
+         <MovieLink href={`/main/movies/${pick.movieId}`}>
+            {pick.movieTitle ? pick.movieTitle : "N/A"}
+         </MovieLink>{" by "}
+         <DrafterLink href={`/main/drafters/${pick.drafterId}`}>
+            {getName(pick.drafterId ?? "")}
+         </DrafterLink>{" "}
       </>
    );
 
@@ -40,7 +45,10 @@ export function PickRow({
    if (veto && !vetoOverride) {
       return (
          <li className="line-through">
-            {line}{" "} <span className="font-medium italic text-red-600">(vetoed by &nbsp;{getName(veto.drafterId ?? "")})</span>
+            {line}{" "}
+            <DrafterVetoLink href={`/main/drafters/${veto.drafterId}`}>
+               (vetoed by &nbsp;{getName(veto.drafterId ?? "")})
+            </DrafterVetoLink>
          </li>
       );
    }
@@ -52,7 +60,7 @@ export function PickRow({
             {line}{" "}
             <span className="font-medium italic line-through">
                (vetoed by &nbsp;{getName(veto.drafterId ?? "")})
-            </span>{", "}
+            </span>
             <span className="font-medium italic">
                (veto overridden by &nbsp;{getName(vetoOverride.drafterId ?? "")})
             </span>
@@ -61,4 +69,28 @@ export function PickRow({
    }
 
    return <li className={base}>{line}</li>
+}
+
+function DrafterLink({ href, children }: { href: string; children: React.ReactNode }) {
+   return (
+      <Link href={href} className="font-medium text-sd-blue hover:underline">
+         {children}
+      </Link>
+   );
+}
+
+function DrafterVetoLink({ href, children }: { href: string; children: React.ReactNode }) {
+   return (
+      <Link href={href} className="font-medium italic text-sd-red hover:underline">
+         {children}
+      </Link>
+   );
+}
+
+function MovieLink({ href, children }: { href: string; children: React.ReactNode }) {
+   return (
+      <Link href={href} className="text-sd-blue hover:underline">
+         {children}
+      </Link>
+   );
 }

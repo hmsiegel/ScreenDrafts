@@ -24,7 +24,7 @@ export default function PicksList({
    const rows = [...picks].sort((a, b) => (a.playOrder ?? 0) - (b.playOrder ?? 0));
 
    return(
-      <ul className="space-y-3">
+      <ul className="space-y-4 mb-2">
          {rows.map(p => (
             <PickRow
                key={p.playOrder}
