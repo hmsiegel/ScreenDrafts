@@ -5,6 +5,7 @@ public static class SerializerOptions
   public static readonly JsonSerializerOptions Instance = new()
   {
     PropertyNameCaseInsensitive = true,
-    Converters = { new DateOnlyJsonConverter() }
+    Converters = { new DateOnlyJsonConverter() },
+    NumberHandling = JsonNumberHandling.AllowReadingFromString
   };
 }

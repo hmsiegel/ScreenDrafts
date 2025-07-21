@@ -8,7 +8,7 @@ internal sealed class GetUserRolesQueryHandler(IDbConnectionFactory dbConnection
 
   public async Task<Result<IReadOnlyCollection<string>>> Handle(GetUserRolesQuery request, CancellationToken cancellationToken)
   {
-    await using var connection = await _dbConnectionFactory.OpenConnectionAsync();
+    await using var connection = await _dbConnectionFactory.OpenConnectionAsync(cancellationToken);
 
     const string sql =
       $@"

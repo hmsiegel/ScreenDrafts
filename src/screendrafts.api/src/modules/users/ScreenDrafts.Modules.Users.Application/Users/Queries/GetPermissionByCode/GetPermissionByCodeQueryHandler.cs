@@ -5,7 +5,7 @@ internal sealed class GetPermissionByCodeQueryHandler(IDbConnectionFactory dbCon
   private readonly IDbConnectionFactory _dbConnectionFactory = dbConnectionFactory;
   public async Task<Result<PermissionResponse>> Handle(GetPermissionByCodeQuery query, CancellationToken cancellationToken)
   {
-    await using var connection = await _dbConnectionFactory.OpenConnectionAsync();
+    await using var connection = await _dbConnectionFactory.OpenConnectionAsync(cancellationToken);
     const string sql =
       $@"
       SELECT DISTINCT 

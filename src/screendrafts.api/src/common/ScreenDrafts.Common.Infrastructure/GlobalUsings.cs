@@ -1,4 +1,5 @@
 ﻿global using System.Buffers;
+global using System.Text.Json.Serialization;
 global using System.Collections.Concurrent;
 global using System.Data;
 global using System.Data.Common;

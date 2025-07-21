@@ -7,7 +7,7 @@ internal sealed class GetMovieQueryHandler(IDbConnectionFactory dbConnectionFact
 
   public async Task<Result<MovieResponse>> Handle(GetMovieQuery request, CancellationToken cancellationToken)
   {
-    await using var connection = await _dbConnectionFactory.OpenConnectionAsync();
+    await using var connection = await _dbConnectionFactory.OpenConnectionAsync(cancellationToken);
 
     const string sql =
       $"""

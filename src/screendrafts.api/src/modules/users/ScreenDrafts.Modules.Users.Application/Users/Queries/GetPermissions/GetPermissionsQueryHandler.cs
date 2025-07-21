@@ -5,7 +5,7 @@ internal sealed class GetPermissionsQueryHandler(IDbConnectionFactory dbConnecti
   private readonly IDbConnectionFactory _dbConnectionFactory = dbConnectionFactory;
   public async Task<Result<List<string>>> Handle(GetPermissionsQuery query, CancellationToken cancellationToken)
   {
-    await using var connection = await _dbConnectionFactory.OpenConnectionAsync();
+    await using var connection = await _dbConnectionFactory.OpenConnectionAsync(cancellationToken);
 
     const string sql =
       $@"
