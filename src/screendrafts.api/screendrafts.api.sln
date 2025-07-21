@@ -218,6 +218,37 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScreenDrafts.Seeding.Drafts
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScreenDrafts.Seeding.Movies", "tools\ScreenDrafts.Seeding.Movies\ScreenDrafts.Seeding.Movies.csproj", "{13660653-76F9-ECF2-4519-35455411F70B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "seed_data", "seed_data", "{687A63CD-3CA1-46E5-99F6-A1235C297A45}"
+	ProjectSection(SolutionItems) = preProject
+		data\commissioner_overrides.csv = data\commissioner_overrides.csv
+		data\drafters.csv = data\drafters.csv
+		data\drafter_teams.csv = data\drafter_teams.csv
+		data\drafter_teams_drafter.csv = data\drafter_teams_drafter.csv
+		data\drafts.csv = data\drafts.csv
+		data\drafts.json = data\drafts.json
+		data\drafts_hosts.csv = data\drafts_hosts.csv
+		data\drafts_movies.csv = data\drafts_movies.csv
+		data\drafts_teams.csv = data\drafts_teams.csv
+		data\draft_drafters.csv = data\draft_drafters.csv
+		data\draft_picks.csv = data\draft_picks.csv
+		data\draft_positions.csv = data\draft_positions.csv
+		data\genres.csv = data\genres.csv
+		data\hosts.csv = data\hosts.csv
+		data\movies.csv = data\movies.csv
+		data\movies_export.csv = data\movies_export.csv
+		data\movie_actors.csv = data\movie_actors.csv
+		data\movie_directors.csv = data\movie_directors.csv
+		data\movie_genres.csv = data\movie_genres.csv
+		data\movie_producers.csv = data\movie_producers.csv
+		data\movie_production_companies.csv = data\movie_production_companies.csv
+		data\movie_writers.csv = data\movie_writers.csv
+		data\people.csv = data\people.csv
+		data\screendrafts.xlsm = data\screendrafts.xlsm
+		data\screendrafts.xlsx = data\screendrafts.xlsx
+		data\vetoes.csv = data\vetoes.csv
+		data\veto_overrides.csv = data\veto_overrides.csv
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
