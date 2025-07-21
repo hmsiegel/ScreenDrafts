@@ -16,17 +16,17 @@ internal sealed class DraftersRepository(DraftsDbContext dbContext) : IDraftersR
 
   }
 
-  public Task<Drafter?> GetByIdAsync(DrafterId drafterId, CancellationToken cancellationToken)
+  public async Task<Drafter?> GetByIdAsync(DrafterId drafterId, CancellationToken cancellationToken)
   {
-    var drafter = _dbContext.Drafters
+    var drafter = await _dbContext.Drafters
       .SingleOrDefaultAsync(d => d.Id == drafterId, cancellationToken);
 
     return drafter;
   }
 
-  public Task<DrafterTeam?> GetByIdAsync(DrafterTeamId drafterTeamId, CancellationToken cancellationToken)
+  public async Task<DrafterTeam?> GetByIdAsync(DrafterTeamId drafterTeamId, CancellationToken cancellationToken)
   {
-    return _dbContext.DrafterTeams
+    return await _dbContext.DrafterTeams
       .Include(x => x.Drafters)
       .SingleOrDefaultAsync(d => d.Id == drafterTeamId, cancellationToken);
   }

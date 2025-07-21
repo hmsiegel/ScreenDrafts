@@ -5,6 +5,8 @@ public sealed class DraftsDbContext(DbContextOptions<DraftsDbContext> options)
 {
   internal DbSet<Draft> Drafts { get; set; }
 
+  internal DbSet<Person> People { get; set; }
+
   internal DbSet<Drafter> Drafters { get; set; }
 
   internal DbSet<Host> Hosts { get; set; }

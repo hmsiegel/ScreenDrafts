@@ -6,6 +6,7 @@ internal static class Tables
   internal const string DrafterDraftStats = "drafter_draft_stats";
   internal const string Drafters = "drafters";
   internal const string Hosts = "hosts";
+  internal const string People = "people";
   internal const string Picks = "picks";
   internal const string TriviaResults = "trivia_results";
   internal const string Vetoes = "vetoes";

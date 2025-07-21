@@ -14,12 +14,12 @@ internal sealed class DrafterConfiguration : IEntityTypeConfiguration<Drafter>
       id => id.Value,
       value => DrafterId.Create(value));
 
+    builder.HasOne(d => d.Person)
+      .WithOne(p => p.DrafterProfile)
+      .HasForeignKey<Drafter>(d => d.PersonId);
+
     builder.Property(d => d.ReadableId)
       .ValueGeneratedOnAdd();
-
-    builder.Property(drafter => drafter.Name)
-      .IsRequired()
-      .HasMaxLength(100);
 
     builder.HasMany(d => d.Picks)
       .WithOne(p => p.Drafter)
