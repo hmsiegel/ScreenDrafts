@@ -10,13 +10,12 @@ public sealed class Drafter : AggrgateRoot<DrafterId, Guid>
 
 
   private Drafter(
-    string name,
-    DrafterId? id = null,
-    Guid? userId = null)
+    Person person,
+    DrafterId? id = null)
     : base(id ?? DrafterId.CreateUnique())
   {
-    UserId = userId;
-    Name = Guard.Against.NullOrEmpty(name);
+    Person = person;
+    PersonId = person.Id;
   }
 
   private Drafter()
@@ -25,10 +24,9 @@ public sealed class Drafter : AggrgateRoot<DrafterId, Guid>
 
   public int ReadableId { get; init; }
 
-  public Guid? UserId { get; private set; }
+  public Person Person { get; private set; } = default!;
 
-  public string Name { get; private set; } = default!;
-
+  public PersonId PersonId { get; private set; } = default!;
 
   public RolloverVeto? RolloverVeto { get; private set; } = default!;
 
@@ -45,14 +43,14 @@ public sealed class Drafter : AggrgateRoot<DrafterId, Guid>
   public IReadOnlyCollection<Pick> Picks => _picks.AsReadOnly();
 
   public static Result<Drafter> Create(
-    string name,
-    Guid? userId = null,
+    Person person,
     DrafterId? id = null)
   {
+    ArgumentNullException.ThrowIfNull(person);
+
     var drafter = new Drafter(
       id: id,
-      userId: userId,
-      name: name);
+      person: person);
 
     drafter.Raise(new DrafterCreatedDomainEvent(drafter.Id.Value));
 
@@ -97,11 +95,6 @@ public sealed class Drafter : AggrgateRoot<DrafterId, Guid>
   public void AddDraftStats(Draft draft)
   {
     _draftStats.Add(DrafterDraftStats.Create(this, null, draft));
-  }
-
-  public void SetDrafterName(string firstName, string lastName, string? middleName)
-  {
-    Name = $"{firstName} {middleName} {lastName}";
   }
 
   public void AddDraft(Draft draft)

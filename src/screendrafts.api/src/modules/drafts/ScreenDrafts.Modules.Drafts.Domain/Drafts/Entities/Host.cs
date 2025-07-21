@@ -5,13 +5,12 @@ public sealed class Host : Entity<HostId>
   private readonly List<Draft> _hostedDrafts = [];
 
   private Host(
-    string hostName,
-    Guid? userId = null,
+    Person person,
     HostId? id = null)
     : base(id ?? HostId.CreateUnique())
   {
-    UserId = userId;
-    HostName = hostName;
+    Person = person;
+    PersonId = person.Id;
   }
 
   private Host()
@@ -20,37 +19,22 @@ public sealed class Host : Entity<HostId>
 
   public int ReadableId { get; init; }
 
-  public Guid? UserId { get; private set; }
+  public Person Person { get; private set; } = default!;
 
-  public string HostName { get; private set; } = default!;
+  public PersonId PersonId { get; private set; } = default!;
 
   public IReadOnlyCollection<Draft> HostedDrafts => _hostedDrafts.AsReadOnly();
 
   public static Result<Host> Create(
-    string hostName,
-    Guid? userId = null,
+    Person person,
     HostId? id = null)
   {
-    if (string.IsNullOrWhiteSpace(hostName))
-    {
-      return Result.Failure<Host>(HostErrors.InvalidHostName);
-    }
+    ArgumentNullException.ThrowIfNull(person);
+
     var host = new Host(
       id: id,
-      userId: userId,
-      hostName: hostName);
+      person: person);
     return host;
-  }
-
-  public Result AssignUserId(Guid userId)
-  {
-    if (userId == Guid.Empty)
-    {
-      return Result.Failure(HostErrors.UserIdCannotBeEmpty);
-    }
-
-    UserId = userId;
-    return Result.Success();
   }
 
   public Result AddDraft(Draft draft)
@@ -81,17 +65,6 @@ public sealed class Host : Entity<HostId>
 
     ArgumentNullException.ThrowIfNull(draft);
     _hostedDrafts.Remove(draft);
-    return Result.Success();
-  }
-
-  public Result UpdateHostName(string newName)
-  {
-    if (string.IsNullOrWhiteSpace(newName))
-    {
-      return Result.Failure(HostErrors.InvalidHostName);
-    }
-
-    HostName = newName;
     return Result.Success();
   }
 }
