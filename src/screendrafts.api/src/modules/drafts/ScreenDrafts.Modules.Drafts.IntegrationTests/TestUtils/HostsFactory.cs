@@ -1,11 +1,29 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.TestUtils;
 
-public static class HostsFactory
+public class HostsFactory(ISender sender, Faker faker)
 {
-  private static readonly Faker _faker = new();
+  private readonly ISender _sender = sender;
+  private readonly Faker _faker = faker;
 
-  public static Result<Host> CreateHost() =>
-    Host.Create(
-      _faker.Name.FullName(),
-      TestConstants.Constants.User.Id);
+  public Result<Host> CreateHost()
+  {
+    var peopleFactory = new PeopleFactory(_sender, _faker);
+
+    return Host.Create(peopleFactory.CreatePerson());
+  }
+
+  public async Task<Guid> CreateAndSaveHostAsync()
+  {
+    var peopleFactory = new PeopleFactory(_sender, _faker);
+    var personId = await peopleFactory.CreateAndSavePersonAsync();
+
+    var command = new CreateHostCommand(personId);
+    var hostId = await _sender.Send(command);
+    
+    var query = new GetHostQuery(hostId.Value);
+    
+    var createdHost = await _sender.Send(query);
+    
+    return createdHost.Value.Id;
+  }
 }

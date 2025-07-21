@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafts;
 
-public sealed class ListDraftsTests(IntegrationTestWebAppFactory factory) 
+public sealed class ListDraftsTests(IntegrationTestWebAppFactory factory)
   : BaseIntegrationTest(factory)
 {
   [Fact]
@@ -11,17 +11,20 @@ public sealed class ListDraftsTests(IntegrationTestWebAppFactory factory)
     do
     {
       var draft = DraftFactory.CreateStandardDraft().Value;
+
+      draft.AddReleaseDate(DraftReleaseDate.Create(draft.Id, Faker.Date.FutureDateOnly()));
       var draftId = await Sender.Send(new CreateDraftCommand(
         draft.Title.Value,
         draft.DraftType,
         draft.TotalPicks,
         draft.TotalDrafters,
-      draft.TotalDrafterTeams,
+        draft.TotalDrafterTeams,
         draft.TotalHosts,
         draft.EpisodeType,
         draft.DraftStatus));
 
-      var updatedDraft = await Sender.Send(new GetDraftQuery(draftId.Value)); 
+
+      var updatedDraft = await Sender.Send(new GetDraftQuery(draftId.Value));
 
       drafts.Add(updatedDraft.Value);
 
@@ -36,6 +39,8 @@ public sealed class ListDraftsTests(IntegrationTestWebAppFactory factory)
     allDrafts.IsSuccess.Should().BeTrue();
 
     var allDraftsList = allDrafts.Value.Items.ToList();
+    allDraftsList.ForEach(d => d.RawReleaseDates = d.ReleaseDates?.Select(rd => rd.ReleaseDate.ToDateTime(TimeOnly.MinValue)).ToArray());
+
 
     // Assert
     allDraftsList.Count.Should().Be(20);

@@ -55,8 +55,9 @@ public class AddHostToDraftTests(IntegrationTestWebAppFactory factory) : BaseInt
         draft.TotalHosts,
         draft.EpisodeType,
         draft.DraftStatus));
-    var host = HostsFactory.CreateHost();
-    var createdHostId = await Sender.Send(new CreateHostWithoutUserCommand(host.Value.HostName));
+    var personFactory = new PeopleFactory(Sender, Faker);
+    var personId = await personFactory.CreateAndSavePersonAsync();
+    var createdHostId = await Sender.Send(new CreateHostCommand(personId));
         
     // Act
     Result result = await Sender.Send(new AddHostToDraftCommand(

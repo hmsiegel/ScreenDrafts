@@ -60,7 +60,7 @@ public class BaseIntegrationTest : IDisposable, IAsyncLifetime
     Draft? draft = null!;
     switch (draftType.Value)
     {
-      case 0: 
+      case 0:
         draft = DraftFactory.CreateStandardDraft().Value;
         break;
       case 1:
@@ -87,31 +87,40 @@ public class BaseIntegrationTest : IDisposable, IAsyncLifetime
 
     for (var i = 0; i < draft.TotalDrafters; i++)
     {
-      var drafter = DrafterFactory.CreateDrafter();
-      var drafterId = await Sender.Send(new CreateDrafterCommand(
-        drafter.UserId,
-        Name: drafter.Name));
+      var drafterFactory = new DrafterFactory(Sender, Faker);
+      var drafterId = await drafterFactory.CreateAndSaveDrafterAsync();
       var addedDrafterId = await Sender.Send(new AddDrafterToDraftCommand(
         draftId.Value,
-        drafterId.Value));
+        drafterId));
       var addedDrafter = await Sender.Send(new GetDrafterQuery(addedDrafterId.Value));
 
+      var addedPerson = await Sender.Send(new GetPersonQuery(addedDrafter.Value.PersonId));
+      var addedPersonResult = Domain.People.Person.Create(
+        addedPerson.Value.FirstName,
+        addedPerson.Value.LastName,
+        id: addedDrafter.Value.PersonId);
       drafters.Add(Drafter.Create(
-        name: addedDrafter.Value.Name,
+        person: addedPersonResult.Value,
         id: DrafterId.Create(addedDrafter.Value.Id)).Value);
     }
 
     for (var i = 0; i < draft.TotalHosts; i++)
     {
-      var host = HostsFactory.CreateHost().Value;
-      var hostId = await Sender.Send(new CreateHostWithoutUserCommand(
-        host.HostName));
+      var hostFactory = new HostsFactory(Sender, Faker);
+      var hostId = await hostFactory.CreateAndSaveHostAsync();
       var addedHostId = await Sender.Send(new AddHostToDraftCommand(
         draftId.Value,
-        hostId.Value));
+        hostId));
       var addedHost = await Sender.Send(new GetHostQuery(addedHostId.Value));
+
+      var addedPerson = await Sender.Send(new GetPersonQuery(addedHost.Value.PersonId));
+      var addedPersonResult = Domain.People.Person.Create(
+        addedPerson.Value.FirstName,
+        addedPerson.Value.LastName,
+        id: addedHost.Value.PersonId);
+
       hosts.Add(Host.Create(
-        addedHost.Value.Name,
+        addedPersonResult.Value,
         id: HostId.Create(addedHost.Value.Id)).Value);
     }
 
@@ -160,6 +169,7 @@ public class BaseIntegrationTest : IDisposable, IAsyncLifetime
     await DbContext.Database.ExecuteSqlRawAsync(
       $"""
       TRUNCATE TABLE 
+        drafts.people,
         drafts.drafts,
         drafts.drafters,
         drafts.hosts,

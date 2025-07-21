@@ -15,7 +15,7 @@ public class DrafterQueryTests(IntegrationTestWebAppFactory factory)
     // Assert
     result.IsSuccess.Should().BeTrue();
     result.Value.Id.Should().Be(drafter);
-    result.Value.Name.Should().Be("Test Drafter");
+    result.Value.DisplayName.Should().NotBeNullOrEmpty();
   }
 
   [Fact]
@@ -81,7 +81,9 @@ public class DrafterQueryTests(IntegrationTestWebAppFactory factory)
 
   private async Task<Guid> CreateDrafterAsync()
   {
-    var command = new CreateDrafterCommand(null, "Test Drafter");
+    var personFactory = new PeopleFactory(Sender, Faker);
+    var personId = await personFactory.CreateAndSavePersonAsync();
+    var command = new CreateDrafterCommand(personId);
     var result = await Sender.Send(command);
     return result.Value;
   }

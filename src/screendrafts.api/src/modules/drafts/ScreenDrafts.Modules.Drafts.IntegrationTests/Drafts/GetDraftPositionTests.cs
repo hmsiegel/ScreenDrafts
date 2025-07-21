@@ -18,10 +18,8 @@ public sealed class GetDraftPositionTests(IntegrationTestWebAppFactory factory)
       draft.EpisodeType,
       draft.DraftStatus));
 
-    var drafter = DrafterFactory.CreateDrafter();
-    var drafterId = await Sender.Send(new CreateDrafterCommand(
-      drafter.UserId,
-      Name: drafter.Name));
+    var drafterFactory = new DrafterFactory(Sender, Faker);
+    var drafterId = await drafterFactory.CreateAndSaveDrafterAsync();
 
     var gameBoardId = await Sender.Send(new CreateGameBoardCommand(
       draftId.Value));
@@ -33,7 +31,7 @@ public sealed class GetDraftPositionTests(IntegrationTestWebAppFactory factory)
 
     var command = new AssignDraftPositionCommand(
       draftId.Value,
-      drafterId.Value,
+      drafterId,
       draftPositionId);
 
     // Act
@@ -43,7 +41,7 @@ public sealed class GetDraftPositionTests(IntegrationTestWebAppFactory factory)
     var getDraftPositionsQuery = new GetDraftPositionQuery(gameBoardId.Value, draftPositionId);
     var updatedPositionResult = await Sender.Send(getDraftPositionsQuery);
     updatedPositionResult.IsSuccess.Should().BeTrue();
-    updatedPositionResult.Value.DrafterId.Should().Be(drafterId.Value);
+    updatedPositionResult.Value.DrafterId.Should().Be(drafterId);
   }
 
   [Fact]
@@ -61,10 +59,8 @@ public sealed class GetDraftPositionTests(IntegrationTestWebAppFactory factory)
       draft.EpisodeType,
       draft.DraftStatus));
 
-    var drafter = DrafterFactory.CreateDrafter();
-    var drafterId = await Sender.Send(new CreateDrafterCommand(
-      drafter.UserId,
-      Name: drafter.Name));
+    var drafterFactory = new DrafterFactory(Sender, Faker);
+    var drafterId = await drafterFactory.CreateAndSaveDrafterAsync();
 
     var createdDraftPositions = DraftFactory.CreateMegaDraftPositions();
     var draftPositionsRequests = new Collection<DraftPositionRequest>(
@@ -84,7 +80,7 @@ public sealed class GetDraftPositionTests(IntegrationTestWebAppFactory factory)
     var draftPositionId = updatedDraftPositions.Value.First().Id;
     var command = new AssignDraftPositionCommand(
       draftId.Value,
-      drafterId.Value,
+      drafterId,
       draftPositionId);
 
     // Act
@@ -95,7 +91,7 @@ public sealed class GetDraftPositionTests(IntegrationTestWebAppFactory factory)
     var updatedPositionResult = await Sender.Send(getDraftPositionsQuery);
 
     updatedPositionResult.IsSuccess.Should().BeTrue();
-    updatedPositionResult.Value.DrafterId.Should().Be(drafterId.Value);
+    updatedPositionResult.Value.DrafterId.Should().Be(drafterId);
   }
 
 
@@ -113,10 +109,8 @@ public sealed class GetDraftPositionTests(IntegrationTestWebAppFactory factory)
       draft.TotalHosts,
       draft.EpisodeType,
       draft.DraftStatus));
-    var drafter = DrafterFactory.CreateDrafter();
-    var drafterId = await Sender.Send(new CreateDrafterCommand(
-      drafter.UserId,
-      Name: drafter.Name));
+    var drafterFactory = new DrafterFactory(Sender, Faker);
+    var drafterId = await drafterFactory.CreateAndSaveDrafterAsync();
     var createdDraftPositions = DraftFactory.CreateMiniMegaDraftPositions();
     var draftPositionsRequests = new Collection<DraftPositionRequest>(
         [.. createdDraftPositions.Select(dp => new DraftPositionRequest(
@@ -135,7 +129,7 @@ public sealed class GetDraftPositionTests(IntegrationTestWebAppFactory factory)
     var draftPositionId = updatedDraftPositions.Value.First().Id;
     var command = new AssignDraftPositionCommand(
       draftId.Value,
-      drafterId.Value,
+      drafterId,
       draftPositionId);
 
     // Act
@@ -146,7 +140,7 @@ public sealed class GetDraftPositionTests(IntegrationTestWebAppFactory factory)
     var updatedPositionResult = await Sender.Send(getDraftPositionsQuery);
 
     updatedPositionResult.IsSuccess.Should().BeTrue();
-    updatedPositionResult.Value.DrafterId.Should().Be(drafterId.Value);
+    updatedPositionResult.Value.DrafterId.Should().Be(drafterId);
   }
 
   [Fact]

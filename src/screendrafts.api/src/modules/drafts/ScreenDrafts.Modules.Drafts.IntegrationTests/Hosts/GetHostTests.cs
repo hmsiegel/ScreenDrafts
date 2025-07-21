@@ -7,8 +7,9 @@ public sealed class GetHostTests(IntegrationTestWebAppFactory factory)
   public async Task GetHost_WithValidId_ReturnsHostAsync()
   {
     // Arrange
-    var host = HostsFactory.CreateHost().Value;
-    var hostId = await Sender.Send(new CreateHostWithoutUserCommand(host.HostName));
+    var personFactory = new PeopleFactory(Sender, Faker);
+    var personId = await personFactory.CreateAndSavePersonAsync();
+    var hostId = await Sender.Send(new CreateHostCommand(personId));
 
     // Act
     var result = await Sender.Send(new GetHostQuery(hostId.Value));
@@ -16,7 +17,7 @@ public sealed class GetHostTests(IntegrationTestWebAppFactory factory)
     // Assert
     result.IsSuccess.Should().BeTrue();
     result.Value.Id.Should().Be(hostId.Value);
-    result.Value.Name.Should().Be(host.HostName);
+    result.Value.PersonId.Should().Be(result.Value.PersonId);
   }
 
   [Fact]

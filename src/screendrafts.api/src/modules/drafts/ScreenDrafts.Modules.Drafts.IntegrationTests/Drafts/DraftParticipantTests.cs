@@ -96,14 +96,18 @@ public class DraftParticipantTests(IntegrationTestWebAppFactory factory)
 
   private async Task<Guid> CreateDrafterAsync()
   {
-    var command = new CreateDrafterCommand(null,Faker.Name.FullName());
+    var personFactory = new PeopleFactory(Sender, Faker);
+    var personId = await personFactory.CreateAndSavePersonAsync();
+    var command = new CreateDrafterCommand(personId);
     var result = await Sender.Send(command);
     return result.Value;
   }
 
   private async Task<Guid> CreateHostAsync()
   {
-    var command = new CreateHostWithoutUserCommand(Faker.Name.FullName());
+    var personFactory = new PeopleFactory(Sender, Faker);
+    var personId = await personFactory.CreateAndSavePersonAsync();
+    var command = new CreateHostCommand(personId);
     var result = await Sender.Send(command);
     return result.Value;
   }

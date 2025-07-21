@@ -7,7 +7,9 @@ public class HostTests(IntegrationTestWebAppFactory factory)
   public async Task CreateHostWithoutUser_WithValidData_ShouldReturnHostIdAsync()
   {
     // Arrange
-    var command = new CreateHostWithoutUserCommand(Faker.Name.FullName());
+    var personFactory = new PeopleFactory(Sender, Faker);
+    var personId = await personFactory.CreateAndSavePersonAsync();
+    var command = new CreateHostCommand(personId);
 
     // Act
     var result = await Sender.Send(command);
@@ -21,7 +23,7 @@ public class HostTests(IntegrationTestWebAppFactory factory)
   public async Task CreateHostWithoutUser_WithInvalidData_ShouldReturnErrorAsync()
   {
     // Arrange
-    var command = new CreateHostWithoutUserCommand(string.Empty);
+    var command = new CreateHostCommand(Guid.Empty);
 
     // Act
     var result = await Sender.Send(command);

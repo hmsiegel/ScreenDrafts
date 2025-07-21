@@ -18,10 +18,9 @@ public class AddDrafterToDraftTests(IntegrationTestWebAppFactory factory)
       draft.EpisodeType,
       draft.DraftStatus));
 
-    var drafter = DrafterFactory.CreateDrafter();
-    var createdDrafterId = await Sender.Send(new CreateDrafterCommand(
-      drafter.Id.Value,
-      drafter.Name));
+    var personFactory = new PeopleFactory(Sender, Faker);
+    var personId = await personFactory.CreateAndSavePersonAsync();
+    var createdDrafterId = await Sender.Send(new CreateDrafterCommand(personId));
 
     var command = new AddDrafterToDraftCommand(
       createdDraftId.Value,
@@ -37,10 +36,9 @@ public class AddDrafterToDraftTests(IntegrationTestWebAppFactory factory)
   public async Task AddDrafterToDraft_WithInvalidDraftId_ShouldReturnFailureAsync()
   {
     // Arrange
-    var drafter = DrafterFactory.CreateDrafter();
-    var createdDrafterId = await Sender.Send(new CreateDrafterCommand(
-      drafter.Id.Value,
-      drafter.Name));
+    var personFactory = new PeopleFactory(Sender, Faker);
+    var personId = await personFactory.CreateAndSavePersonAsync();
+    var createdDrafterId = await Sender.Send(new CreateDrafterCommand(personId));
     var draftId = Guid.NewGuid();
     var command = new AddDrafterToDraftCommand(
       draftId,
