@@ -17,14 +17,14 @@ internal sealed class CreateHost(ISender sender) : Endpoint<CreateHostRequest, G
   }
   public override async Task HandleAsync(CreateHostRequest req, CancellationToken ct)
   {
-    var command = new CreateHostCommand(req.Id);
+    var command = new CreateHostCommand(req.PersonId);
     var hostId = await _sender.Send(command, ct);
     await this.MapResultsAsync(hostId, ct);
   }
 }
 
 public sealed record CreateHostRequest(
-    [FromRoute(Name = "id")] Guid Id);
+    [FromRoute(Name = "id")] Guid PersonId);
 
 internal sealed class CreateHostSummary : Summary<CreateHost>
 {

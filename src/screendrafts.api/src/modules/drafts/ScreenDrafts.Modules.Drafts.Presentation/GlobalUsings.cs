@@ -1,7 +1,6 @@
 ﻿global using System.Collections.ObjectModel;
 global using System.Globalization;
 global using System.Reflection;
-global using System.Security.Claims;
 
 global using FastEndpoints;
 
@@ -17,11 +16,6 @@ global using ScreenDrafts.Common.Application.Logging;
 global using ScreenDrafts.Common.Application.Paging;
 global using ScreenDrafts.Common.Domain;
 global using ScreenDrafts.Common.Presentation;
-global using ScreenDrafts.Modules.Drafts.Application.Drafters.Commands.CreateDrafter;
-global using ScreenDrafts.Modules.Drafts.Application.Drafters.Commands.ExecuteVeto;
-global using ScreenDrafts.Modules.Drafts.Application.Drafters.Commands.ExecuteVetoOverride;
-global using ScreenDrafts.Modules.Drafts.Application.Drafters.Queries.GetDrafter;
-global using ScreenDrafts.Modules.Drafts.Application.Drafters.Queries.ListDrafters;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.AddDrafterToDraft;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.AddDraftPositionsToGameBoard;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.AddHostToDraft;
@@ -48,10 +42,17 @@ global using ScreenDrafts.Modules.Drafts.Application.Drafts.Queries.GetLatestDra
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Queries.GetTriviaResultsForDrafter;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Queries.ListDrafts;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Queries.ListUpcomingDrafts;
+global using ScreenDrafts.Modules.Drafts.Application.People.Commands.CreatePerson;
+global using ScreenDrafts.Modules.Drafts.Application.Drafters.Commands.CreateDrafter;
+global using ScreenDrafts.Modules.Drafts.Application.Drafters.Commands.ExecuteVeto;
+global using ScreenDrafts.Modules.Drafts.Application.Drafters.Commands.ExecuteVetoOverride;
+global using ScreenDrafts.Modules.Drafts.Application.Drafters.Queries.GetDrafter;
+global using ScreenDrafts.Modules.Drafts.Application.Drafters.Queries.ListDrafters;
 global using ScreenDrafts.Modules.Drafts.Application.Hosts.Commands.CreateHost;
-global using ScreenDrafts.Modules.Drafts.Application.Hosts.Commands.CreateHostWithoutUser;
 global using ScreenDrafts.Modules.Drafts.Application.Hosts.Queries.GetHost;
 global using ScreenDrafts.Modules.Drafts.Application.Hosts.Queries.ListHosts;
+global using ScreenDrafts.Modules.Drafts.Application.People.Queries.GetPerson;
+global using ScreenDrafts.Modules.Drafts.Application.People.Queries.ListPeople;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafts.Enums;
 global using ScreenDrafts.Modules.Movies.IntegrationEvents;
 global using ScreenDrafts.Modules.Users.PublicApi;

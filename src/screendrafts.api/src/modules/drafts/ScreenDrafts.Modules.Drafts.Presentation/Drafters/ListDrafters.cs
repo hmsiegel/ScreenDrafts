@@ -1,6 +1,8 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Presentation.Drafters;
+﻿using ScreenDrafts.Modules.Drafts.Application.Drafters.Queries.GetDrafter;
 
-internal sealed class ListDrafters(ISender sender) : EndpointWithoutRequest<Result<List<DrafterResponse>>>
+namespace ScreenDrafts.Modules.Drafts.Presentation.Drafters;
+
+internal sealed class ListDrafters(ISender sender) : Endpoint<ListDraftersRequest, Result<PagedResult<DrafterResponse>>>
 {
   private readonly ISender _sender = sender;
 
@@ -15,15 +17,20 @@ internal sealed class ListDrafters(ISender sender) : EndpointWithoutRequest<Resu
     });
     Policies(Presentation.Permissions.GetDrafters);
   }
-  public override async Task HandleAsync(CancellationToken ct)
+  public override async Task HandleAsync(ListDraftersRequest req, CancellationToken ct)
   {
-    var query = new ListDraftersQuery();
+    var query = new ListDraftersQuery(
+      Page: req.Page,
+      PageSize: req.PageSize,
+      Search: req.Search,
+      Sort: req.Sort,
+      Dir: req.Sort);
 
-    var drafters = (await _sender.Send(query, ct)).Value.ToList();
+    var result = await _sender.Send(query, ct);
 
-    if (drafters.Count != 0)
+    if (result.IsSuccess && result.Value.Items.Count != 0)
     {
-      await SendOkAsync(Result.Success(drafters), ct);
+      await SendOkAsync(result, ct);
     }
     else
     {
@@ -31,6 +38,13 @@ internal sealed class ListDrafters(ISender sender) : EndpointWithoutRequest<Resu
     }
   }
 }
+
+public sealed record ListDraftersRequest(
+  int Page = 1,
+  int PageSize = 25,
+  string? Search = null,
+  string? Sort = null,
+  string? Dir = null);
 
 internal sealed class ListDrafterrSummary : Summary<ListDrafters>
 {

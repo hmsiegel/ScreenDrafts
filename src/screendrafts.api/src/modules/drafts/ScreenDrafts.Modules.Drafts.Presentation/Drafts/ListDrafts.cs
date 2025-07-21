@@ -36,7 +36,7 @@ internal sealed class ListDrafts(ISender sender) : Endpoint<ListDraftsRequest, R
       PageSize: req.PageSize,
       IsPatreonOnly: canViewPatreon);
 
-    var result = (await _sender.Send(query, ct));
+    var result = await _sender.Send(query, ct);
 
     if (result.IsSuccess && result.Value.Items.Count != 0)
     {

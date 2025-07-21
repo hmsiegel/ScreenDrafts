@@ -17,7 +17,7 @@ internal sealed class CreateDrafter(ISender sender) : Endpoint<CreateDrafterRequ
   }
   public override async Task HandleAsync(CreateDrafterRequest req, CancellationToken ct)
   {
-    var command = new CreateDrafterCommand(req.UserId, req.Name);
+    var command = new CreateDrafterCommand(req.PersonId);
 
     var drafterId = await _sender.Send(command, ct);
 
@@ -25,7 +25,8 @@ internal sealed class CreateDrafter(ISender sender) : Endpoint<CreateDrafterRequ
   }
 }
 
-public sealed record CreateDrafterRequest(Guid? UserId, string? Name);
+public sealed record CreateDrafterRequest(
+  [FromRoute(Name = "id")] Guid PersonId);
 
 internal sealed class CreateDrafterSummary : Summary<CreateDrafter>
 {

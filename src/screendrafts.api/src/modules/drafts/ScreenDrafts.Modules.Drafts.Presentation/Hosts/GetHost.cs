@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Presentation.Hosts;
+﻿using ScreenDrafts.Modules.Drafts.Application.Hosts.Queries.GetHost;
+
+namespace ScreenDrafts.Modules.Drafts.Presentation.Hosts;
 
 internal sealed class GetHost(ISender sender) : Endpoint<GetHostRequest, HostResponse>
 {
