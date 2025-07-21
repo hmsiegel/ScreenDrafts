@@ -23,20 +23,48 @@ internal sealed class DrafterSeeder(
       new SeedFile(FileNames.DraftersSeeder, SeedFileType.Csv),
       TableName);
 
+
     if (csvDrafters.Count == 0)
     {
       return;
     }
 
-    await InsertIfNotExistsAsync(
-      csvDrafters,
-      d => DrafterId.Create(d.Id),
-      d => d.Id,
-      d => Drafter.Create(
-        name: d.Name,
-        id: DrafterId.Create(d.Id)).Value,
-      _dbContext.Drafters,
-      TableName,
-      cancellationToken);
+    var existingDrafterKeys = await _dbContext.Drafters
+      .Select(d => new { d.PersonId })
+      .ToListAsync(cancellationToken);
+
+    var existingSet = existingDrafterKeys
+      .Select(p => (p.PersonId).Value)
+      .ToHashSet();
+
+    // Replace the foreach loop with LINQ to simplify the loop as per S3267
+    var drafters = csvDrafters
+        .Where(record =>
+        {
+          var personId = PersonId.Create(record.PersonId);
+          var key = record.PersonId;
+          if (existingSet.Contains(key))
+          {
+            return false;
+          }
+          var person = personId is not null
+                  ? _dbContext.People.Find(personId)
+                  : null;
+          return person is not null;
+        })
+        .Select(record =>
+        {
+          var personId = PersonId.Create(record.PersonId);
+          var person = _dbContext.People.Find(personId);
+          var drafter = Drafter.Create(person!).Value;
+          DatabaseSeedingLoggingMessages.ItemAddedToDatabase(_logger, drafter.Id.ToString());
+          return drafter;
+        })
+        .ToList();
+
+    _dbContext.Drafters.AddRange(drafters);
+
+    await SaveAndLogAsync(TableName, drafters.Count);
+
   }
 }
