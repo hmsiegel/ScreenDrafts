@@ -6,58 +6,15 @@ public class HostTests : BaseTest
   public void Create_ShouldReturnSuccessResult_WhenValidParametersAreProvided()
   {
     // Arrange
-    var name = "Test Host";
-    var userId = Guid.NewGuid();
+    var person = PersonFactory.CreatePerson().Value;
 
     // Act
-    var result = Host.Create(name, userId);
+    var result = Host.Create(person);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
-    result.Value.HostName.Should().Be(name);
-    result.Value.UserId.Should().Be(userId);
-  }
-
-  [Fact]
-  public void Create_ShouldReturnFailure_WhenNameIsEmpty()
-  {
-    // Arrange
-    var name = string.Empty;
-    var userId = Guid.NewGuid();
-
-    // Act
-    var result = Host.Create(name, userId);
-
-    // Assert
-    result.IsFailure.Should().BeTrue();
-  }
-
-  [Fact]
-  public void UpdateName_ShouldUpdateName_WhenValidNameIsProvided()
-  {
-    // Arrange
-    var host = HostsFactory.CreateHost().Value;
-    var newName = Faker.Name.FullName();
-
-    // Act
-    host.UpdateHostName(newName);
-
-    // Assert
-    host.HostName.Should().Be(newName);
-  }
-
-  [Fact]
-  public void UpdateName_ShouldReturnFailure_WhenNameIsEmpty()
-  {
-    // Arrange
-    var host = HostsFactory.CreateHost().Value;
-    var newName = string.Empty;
-
-    // Act
-    var result = host.UpdateHostName(newName);
-
-    // Assert
-    result.IsFailure.Should().BeTrue();
+    result.Value.Person.Should().Be(person);
+    result.Value.Person.FirstName.Should().Be(person.FirstName);
   }
 
   [Fact]
