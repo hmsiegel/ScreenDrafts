@@ -41,7 +41,11 @@ internal sealed class PermissionConfiguration : IEntityTypeConfiguration<Permiss
       Permission.SearchCrew,
       Permission.SearchGenres,
       Permission.SearchStudios,
-      Permission.SearchPatreonDrafts);
+      Permission.SearchPatreonDrafts,
+      Permission.CreatePeople,
+      Permission.GetPeople,
+      Permission.UpdatePerson,
+      Permission.SearchPeople);
 
     builder.HasMany<Role>()
       .WithMany()
@@ -109,6 +113,10 @@ internal sealed class PermissionConfiguration : IEntityTypeConfiguration<Permiss
           CreateRolePermission(Role.Administrator, Permission.SearchCrew),
           CreateRolePermission(Role.Administrator, Permission.SearchGenres),
           CreateRolePermission(Role.Administrator, Permission.SearchStudios),
+          CreateRolePermission(Role.Administrator, Permission.CreatePeople),
+          CreateRolePermission(Role.Administrator, Permission.GetPeople),
+          CreateRolePermission(Role.Administrator, Permission.UpdatePerson),
+          CreateRolePermission(Role.Administrator, Permission.SearchPeople),
 
           // Super Administrator Permissions
           CreateRolePermission(Role.SuperAdministrator, Permission.GetUser),
@@ -137,6 +145,10 @@ internal sealed class PermissionConfiguration : IEntityTypeConfiguration<Permiss
           CreateRolePermission(Role.SuperAdministrator, Permission.ModifyRoles),
           CreateRolePermission(Role.SuperAdministrator, Permission.GetPermissions),
           CreateRolePermission(Role.SuperAdministrator, Permission.ModifyPermissions),
+          CreateRolePermission(Role.SuperAdministrator, Permission.CreatePeople),
+          CreateRolePermission(Role.SuperAdministrator, Permission.GetPeople),
+          CreateRolePermission(Role.SuperAdministrator, Permission.UpdatePerson),
+          CreateRolePermission(Role.SuperAdministrator, Permission.SearchPeople),
 
           // Patreon Permissions
           CreateRolePermission(Role.Patreon, Permission.SearchPatreonDrafts)
