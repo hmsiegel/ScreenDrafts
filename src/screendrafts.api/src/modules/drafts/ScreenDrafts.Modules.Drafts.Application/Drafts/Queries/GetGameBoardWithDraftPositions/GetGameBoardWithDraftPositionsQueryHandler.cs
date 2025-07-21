@@ -7,7 +7,7 @@ internal sealed class GetGameBoardWithDraftPositionsQueryHandler(IDbConnectionFa
 
   public async Task<Result<GetGameBoardWithDraftPositionsResponse>> Handle(GetGameBoardWithDraftPositionsQuery request, CancellationToken cancellationToken)
   {
-    await using var connection = await _dbConnectionFactory.OpenConnectionAsync();
+    await using var connection = await _dbConnectionFactory.OpenConnectionAsync(cancellationToken);
 
     const string sql =
       $@"

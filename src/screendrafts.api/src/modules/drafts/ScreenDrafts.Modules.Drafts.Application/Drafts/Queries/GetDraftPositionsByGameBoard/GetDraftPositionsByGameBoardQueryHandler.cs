@@ -9,7 +9,7 @@ internal sealed class GetDraftPositionsByGameBoardQueryHandler(IDbConnectionFact
     GetDraftPositionsByGameBoardQuery request,
     CancellationToken cancellationToken)
   {
-    await using DbConnection connection = await _dbConnectionFactory.OpenConnectionAsync();
+    await using DbConnection connection = await _dbConnectionFactory.OpenConnectionAsync(cancellationToken);
 
     const string sql =
       $"""

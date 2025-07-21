@@ -10,7 +10,7 @@ internal sealed class ListDraftsQueryHandler(IDbConnectionFactory dbConnectionFa
     ListDraftsQuery request,
     CancellationToken cancellationToken)
   {
-    await using var connection = await _dbConnectionFactory.OpenConnectionAsync();
+    await using var connection = await _dbConnectionFactory.OpenConnectionAsync(cancellationToken);
 
     const string baseSql =
       $"""
@@ -31,10 +31,12 @@ internal sealed class ListDraftsQueryHandler(IDbConnectionFactory dbConnectionFa
       $"""
                 SELECT
                   dd.draft_id,
-                  d.id AS {nameof(DrafterResponse.Id)},
-                  d.name AS {nameof(DrafterResponse.Name)}
+                  d.id AS {nameof(DrafterDraftResponse.Id)},
+                  d.person_id AS {nameof(DrafterDraftResponse.PersonId)},
+                  p.display_name AS {nameof(DrafterDraftResponse.DisplayName)}
                 FROM drafts.drafts_drafters dd
                 JOIN drafts.drafters d ON dd.drafter_id = d.id
+                INNER JOIN drafts.people p ON d.person_id = p.id
                 WHERE dd.draft_id = ANY(@ids);
                 """;
 
@@ -42,10 +44,12 @@ internal sealed class ListDraftsQueryHandler(IDbConnectionFactory dbConnectionFa
       $"""
                 SELECT
                   dh.hosted_drafts_id,
-                  h.id AS {nameof(HostResponse.Id)},
-                  h.host_name AS {nameof(HostResponse.Name)}
+                  h.id AS {nameof(HostDraftResponse.Id)},
+                  h.person_id AS {nameof(HostDraftResponse.PersonId)},
+                  p.display_name AS {nameof(HostDraftResponse.DisplayName)}
                 FROM drafts.draft_host dh
                 JOIN drafts.hosts h ON dh.hosts_id = h.id
+                INNER JOIN drafts.people p ON h.person_id = p.id
                 WHERE dh.hosted_drafts_id = ANY(@ids);
                 """;
 
@@ -177,25 +181,25 @@ internal sealed class ListDraftsQueryHandler(IDbConnectionFactory dbConnectionFa
         PageSize: request.PageSize);
     }
 
-    var drafters = await connection.QueryAsync<(Guid draft_id, Guid drafter_id, string drafter_name)>(draftersSql, new { ids = draftIds });
-    var hosts = await connection.QueryAsync<(Guid draft_id, Guid host_id, string host_name)>(hostsSql, new { ids = draftIds });
+    var drafters = await connection.QueryAsync<(Guid draft_id, Guid drafter_id, Guid person_id, string display_name)>(draftersSql, new { ids = draftIds });
+    var hosts = await connection.QueryAsync<(Guid draft_id, Guid host_id, Guid person_id, string display_namef)>(hostsSql, new { ids = draftIds });
     var releaseDates = await connection.QueryAsync<(Guid draft_id, DateTime release_date)>(releaseDatesSql, new { ids = draftIds });
 
     var draftMap = drafts.ToDictionary(d => d.Id);
 
-    foreach (var (draftId, drafterId, name) in drafters)
+    foreach (var (draftId, drafterId, personId, displayName) in drafters)
     {
       if (draftMap.TryGetValue(draftId, out var draft))
       {
-        draft.AddDrafter(new DrafterResponse(drafterId, name));
+        draft.AddDrafter(new DrafterDraftResponse(drafterId, personId, displayName));
       }
     }
 
-    foreach (var (draftId, hostId, name) in hosts)
+    foreach (var (draftId, hostId, personId, displayName) in hosts)
     {
       if (draftMap.TryGetValue(draftId, out var draft))
       {
-        draft.AddHost(new HostResponse(hostId, name));
+        draft.AddHost(new HostDraftResponse(hostId, personId, displayName));
       }
     }
 

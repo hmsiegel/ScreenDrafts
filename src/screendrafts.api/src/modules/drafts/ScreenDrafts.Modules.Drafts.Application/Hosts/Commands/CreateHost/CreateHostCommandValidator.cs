@@ -4,7 +4,7 @@ internal sealed class CreateHostCommandValidator : AbstractValidator<CreateHostC
 {
   public CreateHostCommandValidator()
   {
-    RuleFor(x => x.UserId)
+    RuleFor(x => x.PersonId)
       .NotEmpty();
   }
 }

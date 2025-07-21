@@ -20,8 +20,8 @@ public sealed record DraftPickResponse(
         DrafterId: Guid.Empty,
         IsVetoed: false,
         DrafterName: string.Empty,
-        DrafterTeamId: Guid.Empty,
-        DrafterTeamName: string.Empty)
+        DrafterTeamId: null,
+        DrafterTeamName: null)
   {
   }
 }

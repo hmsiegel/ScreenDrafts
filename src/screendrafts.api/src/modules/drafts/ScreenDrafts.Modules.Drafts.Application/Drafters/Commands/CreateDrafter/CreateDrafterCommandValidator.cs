@@ -4,6 +4,6 @@ internal sealed class CreateDrafterCommandValidator : AbstractValidator<CreateDr
 {
   public CreateDrafterCommandValidator()
   {
-    RuleFor(x => x.Name).NotEmpty();
+    RuleFor(x => x.PersonId).NotEmpty();
   }
 }

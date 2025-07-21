@@ -6,7 +6,7 @@ internal sealed class GetLatestDraftsQueryHandler(IDbConnectionFactory dbConnect
   private readonly IDbConnectionFactory _dbConnectionFactory = dbConnectionFactory;
   public async Task<Result<IReadOnlyList<DraftResponse>>> Handle(GetLatestDraftsQuery request, CancellationToken cancellationToken)
   {
-    await using DbConnection connection = await _dbConnectionFactory.OpenConnectionAsync();
+    await using DbConnection connection = await _dbConnectionFactory.OpenConnectionAsync(cancellationToken);
 
     const string baseSql =
           $"""

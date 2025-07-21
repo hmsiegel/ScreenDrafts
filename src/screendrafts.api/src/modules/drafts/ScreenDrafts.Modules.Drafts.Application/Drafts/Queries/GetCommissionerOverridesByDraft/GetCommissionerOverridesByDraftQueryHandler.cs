@@ -7,7 +7,7 @@ internal sealed class GetCommissionerOverridesByDraftQueryHandler(IDbConnectionF
 
   public async Task<Result<List<CommissionerOverrideResponse>>> Handle(GetCommissionerOverridesByDraftQuery request, CancellationToken cancellationToken)
   {
-    await using var connection = await _dbConnectionFactory.OpenConnectionAsync();
+    await using var connection = await _dbConnectionFactory.OpenConnectionAsync(cancellationToken);
 
     const string sql = $"""
       SELECT

@@ -7,7 +7,7 @@ internal sealed class ListUpcomingDraftsQueryHandler(IDbConnectionFactory dbConn
 
   public async Task<Result<IReadOnlyList<UpcomingDraftDto>>> Handle(ListUpcomingDraftsQuery request, CancellationToken cancellationToken)
   {
-    await using DbConnection connection = await _dbConnectionFactory.OpenConnectionAsync();
+    await using DbConnection connection = await _dbConnectionFactory.OpenConnectionAsync(cancellationToken);
 
     var sql = new StringBuilder(
       $"""
@@ -48,10 +48,12 @@ internal sealed class ListUpcomingDraftsQueryHandler(IDbConnectionFactory dbConn
     var userId = request.UserId;
     var hostDraftIds = await connection.QueryAsync<Guid>(
       """
-        SELECT dh.hosted_drafts_id
+        SELECT 
+          dh.hosted_drafts_id
         FROM drafts.draft_host dh
         JOIN drafts.hosts h ON h.id = dh.hosts_id
-        WHERE h.user_id = @userId
+        JOIN drafts.people p ON p.id = h.person_id
+        WHERE p.user_id = @userId
       """,
       new { userId });
 
@@ -60,7 +62,8 @@ internal sealed class ListUpcomingDraftsQueryHandler(IDbConnectionFactory dbConn
         SELECT dd.draft_id
         FROM drafts.drafts_drafters dd
         JOIN drafts.drafters d ON d.id = dd.drafter_id
-        WHERE d.user_id = @userId
+        JOIN drafts.people p ON p.id = d.person_id
+        WHERE p.user_id = @userId
       """,
       new { userId });
 

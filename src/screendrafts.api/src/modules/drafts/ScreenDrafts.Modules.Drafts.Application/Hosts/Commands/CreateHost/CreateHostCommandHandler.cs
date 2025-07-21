@@ -2,23 +2,23 @@
 
 internal sealed class CreateHostCommandHandler(
   IHostsRepository hostRepository,
-  IUsersApi usersApi) : ICommandHandler<CreateHostCommand, Guid>
+  IPersonRepository personRepository) : ICommandHandler<CreateHostCommand, Guid>
 {
   private readonly IHostsRepository _hostRepository = hostRepository;
-  private readonly IUsersApi _usersApi = usersApi;
+  private readonly IPersonRepository _personRepository = personRepository;
 
   public async Task<Result<Guid>> Handle(CreateHostCommand request, CancellationToken cancellationToken)
   {
-    var user = await _usersApi.GetUserByIdAsync(request.UserId, cancellationToken);
+    var persondId = PersonId.Create(request.PersonId);
 
-    if (user is null)
+    var person = await _personRepository.GetByIdAsync(persondId, cancellationToken);
+
+    if (person is null)
     {
-      return Result.Failure<Guid>(HostErrors.NotFound(user!.UserId));
+      return Result.Failure<Guid>(PersonErrors.NotFound(request.PersonId));
     }
 
-    var hostName = $"{user.FirstName} {user.MiddleName} {user.LastName}";
-
-    var host = Host.Create(hostName, user.UserId);
+    var host = Host.Create(person);
 
     _hostRepository.AddHost(host.Value);
 

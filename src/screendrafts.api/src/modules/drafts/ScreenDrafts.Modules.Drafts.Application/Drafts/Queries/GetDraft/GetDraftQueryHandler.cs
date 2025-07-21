@@ -28,8 +28,8 @@ internal sealed class GetDraftQueryHandler(
     var vetoOverrides = await _vetoRepository.GetVetoOverridesByDraftId(DraftId.Create(request.DraftId), cancellationToken);
     var commissionerOverrides = await _draftsRepository.GetCommissionerOverridesByDraftIdAsync(DraftId.Create(request.DraftId), cancellationToken);
 
-    List<DrafterResponse> drafters = [.. draft.Drafters.Select(d => new DrafterResponse(d.Id.Value, d.Name))];
-    List<HostResponse> hosts = [.. draft.Hosts.Select(h => new HostResponse(h.Id.Value, h.HostName))];
+    List<DrafterDraftResponse> drafters = [.. draft.Drafters.Select(d => new DrafterDraftResponse(d.Id.Value, d.PersonId.Value, d.Person.DisplayName!))];
+    List<HostDraftResponse> hosts = [.. draft.Hosts.Select(h => new HostDraftResponse(h.Id.Value, h.PersonId.Value, h.Person.DisplayName!))];
     List<ReleaseDateResponse> releaseDates = [.. draft.ReleaseDates.Select(r => new ReleaseDateResponse(r.ReleaseDate))];
     List<DraftPickResponse> draftPickResponses = [.. picks.Select(p => new DraftPickResponse(
       p.Position,
@@ -37,7 +37,7 @@ internal sealed class GetDraftQueryHandler(
       p.MovieId,
       p.Movie.MovieTitle,
       p.DrafterId?.Value,
-      p.Drafter?.Name,
+      p.Drafter?.Person.DisplayName!,
       p.IsVetoed,
       p.DrafterTeamId?.Value,
       p.DrafterTeam?.Name))];
@@ -49,7 +49,7 @@ internal sealed class GetDraftQueryHandler(
       v.Pick.PlayOrder,
       v.Pick.Movie.MovieTitle,
       v.DrafterId?.Value,
-      v.Drafter?.Name,
+      v.Drafter?.Person.DisplayName!,
       v.DrafterTeamId?.Value,
       v.DrafterTeam?.Name))];
     List<VetoOverrideResponse> vetoOverrideResponses = [.. vetoOverrides.Select(vo => new VetoOverrideResponse(
@@ -61,11 +61,11 @@ internal sealed class GetDraftQueryHandler(
         vo.Veto.Pick.PlayOrder,
         vo.Veto.Pick.Movie.MovieTitle,
         vo.Veto.DrafterId?.Value,
-        vo.Veto.Drafter?.Name,
+        vo.Veto.Drafter?.Person.DisplayName!,
         vo.Veto.DrafterTeamId?.Value,
         vo.Veto.DrafterTeam?.Name),
       vo.DrafterId?.Value,
-      vo.Drafter?.Name))];
+      vo.Drafter ?.Person.DisplayName!))];
     List<CommissionerOverrideResponse> commissionerOverrideResponses = [.. commissionerOverrides.Select(co => new CommissionerOverrideResponse(
       co!.Id,
       co.PickId.Value,
@@ -74,7 +74,7 @@ internal sealed class GetDraftQueryHandler(
       co.Pick.MovieId,
       co.Pick.Movie.MovieTitle,
       co.Pick.DrafterId?.Value,
-      co.Pick.Drafter?.Name,
+      co.Pick.Drafter?.Person.DisplayName!,
       co.Pick.DrafterTeamId?.Value,
       co.Pick.DrafterTeam?.Name))];
 

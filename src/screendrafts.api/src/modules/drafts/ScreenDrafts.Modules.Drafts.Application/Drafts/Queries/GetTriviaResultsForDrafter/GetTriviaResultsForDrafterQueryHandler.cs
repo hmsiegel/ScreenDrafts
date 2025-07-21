@@ -7,7 +7,7 @@ internal sealed class GetTriviaResultsForDrafterQueryHandler(IDbConnectionFactor
 
   public async Task<Result<TriviaResultDto>> Handle(GetTriviaResultsForDrafterQuery request, CancellationToken cancellationToken)
   {
-    await using var connection = await _dbConnectionFactory.OpenConnectionAsync();
+    await using var connection = await _dbConnectionFactory.OpenConnectionAsync(cancellationToken);
 
     var query = $"""
         SELECT

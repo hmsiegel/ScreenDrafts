@@ -20,7 +20,7 @@ internal sealed class GetVetoQueryHandler(IVetoRepository vetoRepository) : IQue
       PickPlayOrder: veto.Pick.PlayOrder,
       MovieTitle: veto.Pick.Movie.MovieTitle,
       DrafterId: veto.Drafter?.Id.Value,
-      DrafterName: veto.Drafter?.Name);
+      DrafterName: veto.Drafter?.Person.DisplayName);
 
     return Result.Success(vetoDto);
   }

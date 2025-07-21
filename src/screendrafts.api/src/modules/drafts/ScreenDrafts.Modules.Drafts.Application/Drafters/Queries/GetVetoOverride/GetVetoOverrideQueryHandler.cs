@@ -23,11 +23,11 @@ internal sealed class GetVetoOverrideQueryHandler(IVetoRepository vetoRepository
         PickPlayOrder: vetooverride.Veto.Pick.PlayOrder,
         MovieTitle: vetooverride.Veto.Pick.Movie.MovieTitle,
         DrafterId: vetooverride.Veto.Drafter?.Id.Value,
-        DrafterName: vetooverride.Veto.Drafter?.Name,
+        DrafterName: vetooverride.Veto.Drafter?.Person.DisplayName,
         DrafterTeamId: vetooverride.Veto.DrafterTeam?.Id.Value,
         DrafterTeamName: vetooverride.Veto.Pick.DrafterTeam?.Name),
       DrafterId: vetooverride.DrafterId?.Value,
-      DrafterName: vetooverride.Drafter?.Name,
+      DrafterName: vetooverride.Drafter?.Person.DisplayName,
       DrafterTeamId: vetooverride.DrafterTeamId?.Value,
       DrafterTeamName: vetooverride.DrafterTeam?.Name);
 
