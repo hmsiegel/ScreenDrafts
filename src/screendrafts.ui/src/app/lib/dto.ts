@@ -28,6 +28,21 @@ export interface IClient {
     /**
      * @return OK
      */
+    createPerson(body: CreatePersonRequest): Promise<string>;
+
+    /**
+     * @return OK
+     */
+    getPerson(body: GetPersonRequest): Promise<PersonResponse>;
+
+    /**
+     * @return OK
+     */
+    listPeople(body: ListPeopleRequest): Promise<PagedResultOfPersonResponse>;
+
+    /**
+     * @return OK
+     */
     createHost(body: CreateHostRequest): Promise<string>;
 
     /**
@@ -38,12 +53,7 @@ export interface IClient {
     /**
      * @return OK
      */
-    createHostWithoutUser(body: HostRequest): Promise<string>;
-
-    /**
-     * @return OK
-     */
-    listHosts(): Promise<HostResponse[]>;
+    listHosts(body: ListHostsRequest): Promise<HostResponse[]>;
 
     /**
      * @return OK
@@ -193,7 +203,7 @@ export interface IClient {
     /**
      * @return OK
      */
-    listDrafters(): Promise<DrafterResponse[]>;
+    listDrafters(body: ListDraftersRequest): Promise<DrafterResponse[]>;
 
     /**
      * @return OK
@@ -228,7 +238,7 @@ export class DraftsClient implements IClient {
 
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
         this.http = http ? http : window as any;
-        this.baseUrl = baseUrl ?? "http://[::]:8080";
+        this.baseUrl = baseUrl ?? "https://localhost:5001/";
     }
 
     /**
@@ -345,25 +355,25 @@ export class DraftsClient implements IClient {
     protected processRemoveUserRole(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 400) {
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
             return response.text().then((_responseText) => {
             return throwException("Bad Request", status, _responseText, _headers);
             });
-        } else if (status === 404) {
+        } else if (status === 401) {
             return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
             });
-        } else if (status === 204) {
+        } else if (status === 404) {
             return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
+            return throwException("Not Found", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -371,6 +381,177 @@ export class DraftsClient implements IClient {
             });
         }
         return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    createPerson(body: CreatePersonRequest, signal?: AbortSignal): Promise<string> {
+        let url_ = this.baseUrl + "/people/create";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreatePerson(_response);
+        });
+    }
+
+    protected processCreatePerson(response: Response): Promise<string> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as string;
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<string>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    getPerson(body: GetPersonRequest, signal?: AbortSignal): Promise<PersonResponse> {
+        let url_ = this.baseUrl + "/people/{id}";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetPerson(_response);
+        });
+    }
+
+    protected processGetPerson(response: Response): Promise<PersonResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as PersonResponse;
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<PersonResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    listPeople(body: ListPeopleRequest, signal?: AbortSignal): Promise<PagedResultOfPersonResponse> {
+        let url_ = this.baseUrl + "/people";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processListPeople(_response);
+        });
+    }
+
+    protected processListPeople(response: Response): Promise<PagedResultOfPersonResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as PagedResultOfPersonResponse;
+            return result200;
+            });
+        } else if (status === 204) {
+            return response.text().then((_responseText) => {
+            return throwException("No Content", status, _responseText, _headers);
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 500) {
+            return response.text().then((_responseText) => {
+            return throwException("Internal Server Error", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<PagedResultOfPersonResponse>(null as any);
     }
 
     /**
@@ -455,10 +636,6 @@ export class DraftsClient implements IClient {
             result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as HostResponse;
             return result200;
             });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
-            });
         } else if (status === 401) {
             return response.text().then((_responseText) => {
             return throwException("Unauthorized", status, _responseText, _headers);
@@ -466,6 +643,10 @@ export class DraftsClient implements IClient {
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -478,7 +659,7 @@ export class DraftsClient implements IClient {
     /**
      * @return OK
      */
-    createHostWithoutUser(body: HostRequest, signal?: AbortSignal): Promise<string> {
+    listHosts(body: ListHostsRequest, signal?: AbortSignal): Promise<HostResponse[]> {
         let url_ = this.baseUrl + "/hosts";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -486,53 +667,10 @@ export class DraftsClient implements IClient {
 
         let options_: RequestInit = {
             body: content_,
-            method: "POST",
-            signal,
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreateHostWithoutUser(_response);
-        });
-    }
-
-    protected processCreateHostWithoutUser(response: Response): Promise<string> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as string;
-            return result200;
-            });
-        } else if (status === 400) {
-            return response.text().then((_responseText) => {
-            let result400: any = null;
-            result400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ValidationProblemDetails;
-            return throwException("Bad Request", status, _responseText, _headers, result400);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<string>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    listHosts(signal?: AbortSignal): Promise<HostResponse[]> {
-        let url_ = this.baseUrl + "/hosts";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
             method: "GET",
             signal,
             headers: {
+                "Content-Type": "*/*",
                 "Accept": "application/json"
             }
         };
@@ -608,17 +746,17 @@ export class DraftsClient implements IClient {
             return response.text().then((_responseText) => {
             return throwException("Bad Request", status, _responseText, _headers);
             });
-        } else if (status === 404) {
+        } else if (status === 401) {
             return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
             });
-        } else if (status === 401) {
+        } else if (status === 404) {
             return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
+            return throwException("Not Found", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -699,21 +837,21 @@ export class DraftsClient implements IClient {
             result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as string;
             return result200;
             });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
-            });
         } else if (status === 400) {
             return response.text().then((_responseText) => {
             return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
             });
-        } else if (status === 401) {
+        } else if (status === 404) {
             return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
+            return throwException("Not Found", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -756,21 +894,21 @@ export class DraftsClient implements IClient {
             result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as string;
             return result200;
             });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
-            });
         } else if (status === 400) {
             return response.text().then((_responseText) => {
             return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
             });
-        } else if (status === 401) {
+        } else if (status === 404) {
             return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
+            return throwException("Not Found", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -813,21 +951,21 @@ export class DraftsClient implements IClient {
             result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as DraftPickResponse[];
             return result200;
             });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
-            });
         } else if (status === 400) {
             return response.text().then((_responseText) => {
             return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
             });
-        } else if (status === 401) {
+        } else if (status === 404) {
             return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
+            return throwException("Not Found", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -870,21 +1008,21 @@ export class DraftsClient implements IClient {
             result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as string;
             return result200;
             });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
-            });
         } else if (status === 400) {
             return response.text().then((_responseText) => {
             return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
             });
-        } else if (status === 401) {
+        } else if (status === 404) {
             return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
+            return throwException("Not Found", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -927,21 +1065,21 @@ export class DraftsClient implements IClient {
             result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as string;
             return result200;
             });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
-            });
         } else if (status === 400) {
             return response.text().then((_responseText) => {
             return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
             });
-        } else if (status === 401) {
+        } else if (status === 404) {
             return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
+            return throwException("Not Found", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -981,21 +1119,21 @@ export class DraftsClient implements IClient {
             return response.text().then((_responseText) => {
             return;
             });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
-            });
         } else if (status === 400) {
             return response.text().then((_responseText) => {
             return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
             });
-        } else if (status === 401) {
+        } else if (status === 404) {
             return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
+            return throwException("Not Found", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -1035,21 +1173,21 @@ export class DraftsClient implements IClient {
             return response.text().then((_responseText) => {
             return;
             });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
-            });
         } else if (status === 400) {
             return response.text().then((_responseText) => {
             return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
             });
-        } else if (status === 401) {
+        } else if (status === 404) {
             return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
+            return throwException("Not Found", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -1096,6 +1234,10 @@ export class DraftsClient implements IClient {
             return response.text().then((_responseText) => {
             return throwException("Bad Request", status, _responseText, _headers);
             });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
@@ -1103,10 +1245,6 @@ export class DraftsClient implements IClient {
         } else if (status === 404) {
             return response.text().then((_responseText) => {
             return throwException("Not Found", status, _responseText, _headers);
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -1153,13 +1291,13 @@ export class DraftsClient implements IClient {
             return response.text().then((_responseText) => {
             return throwException("No Content", status, _responseText, _headers);
             });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
         } else if (status === 401) {
             return response.text().then((_responseText) => {
             return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -1202,21 +1340,21 @@ export class DraftsClient implements IClient {
             result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as string;
             return result200;
             });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
-            });
         } else if (status === 400) {
             return response.text().then((_responseText) => {
             return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
             });
-        } else if (status === 401) {
+        } else if (status === 404) {
             return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
+            return throwException("Not Found", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -1256,17 +1394,17 @@ export class DraftsClient implements IClient {
             return response.text().then((_responseText) => {
             return;
             });
-        } else if (status === 404) {
+        } else if (status === 401) {
             return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
             });
-        } else if (status === 401) {
+        } else if (status === 404) {
             return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
+            return throwException("Not Found", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -1313,17 +1451,17 @@ export class DraftsClient implements IClient {
             return response.text().then((_responseText) => {
             return throwException("Bad Request", status, _responseText, _headers);
             });
-        } else if (status === 404) {
+        } else if (status === 401) {
             return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
             });
-        } else if (status === 401) {
+        } else if (status === 404) {
             return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
+            return throwException("Not Found", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -1366,17 +1504,17 @@ export class DraftsClient implements IClient {
             result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as DraftResponse;
             return result200;
             });
-        } else if (status === 404) {
+        } else if (status === 401) {
             return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
             });
-        } else if (status === 401) {
+        } else if (status === 404) {
             return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
+            return throwException("Not Found", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -1419,21 +1557,21 @@ export class DraftsClient implements IClient {
             result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as DraftPositionResponse[];
             return result200;
             });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
-            });
         } else if (status === 400) {
             return response.text().then((_responseText) => {
             return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
             });
-        } else if (status === 401) {
+        } else if (status === 404) {
             return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
+            return throwException("Not Found", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -1476,6 +1614,10 @@ export class DraftsClient implements IClient {
             return response.text().then((_responseText) => {
             return throwException("Bad Request", status, _responseText, _headers);
             });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
@@ -1483,10 +1625,6 @@ export class DraftsClient implements IClient {
         } else if (status === 404) {
             return response.text().then((_responseText) => {
             return throwException("Not Found", status, _responseText, _headers);
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -1529,13 +1667,13 @@ export class DraftsClient implements IClient {
             return response.text().then((_responseText) => {
             return throwException("Bad Request", status, _responseText, _headers);
             });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
         } else if (status === 401) {
             return response.text().then((_responseText) => {
             return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -1575,21 +1713,21 @@ export class DraftsClient implements IClient {
             return response.text().then((_responseText) => {
             return;
             });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
-            });
         } else if (status === 400) {
             return response.text().then((_responseText) => {
             return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
             });
-        } else if (status === 401) {
+        } else if (status === 404) {
             return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
+            return throwException("Not Found", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -1629,21 +1767,21 @@ export class DraftsClient implements IClient {
             return response.text().then((_responseText) => {
             return;
             });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
-            });
         } else if (status === 400) {
             return response.text().then((_responseText) => {
             return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
             });
-        } else if (status === 401) {
+        } else if (status === 404) {
             return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
+            return throwException("Not Found", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -1686,21 +1824,21 @@ export class DraftsClient implements IClient {
             result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as string;
             return result200;
             });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
-            });
         } else if (status === 400) {
             return response.text().then((_responseText) => {
             return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
             });
-        } else if (status === 401) {
+        } else if (status === 404) {
             return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
+            return throwException("Not Found", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -1744,6 +1882,10 @@ export class DraftsClient implements IClient {
             return response.text().then((_responseText) => {
             return throwException("Bad Request", status, _responseText, _headers);
             });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
@@ -1751,10 +1893,6 @@ export class DraftsClient implements IClient {
         } else if (status === 404) {
             return response.text().then((_responseText) => {
             return throwException("Not Found", status, _responseText, _headers);
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -1798,13 +1936,13 @@ export class DraftsClient implements IClient {
             return response.text().then((_responseText) => {
             return throwException("Bad Request", status, _responseText, _headers);
             });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
         } else if (status === 401) {
             return response.text().then((_responseText) => {
             return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -1848,13 +1986,13 @@ export class DraftsClient implements IClient {
             return response.text().then((_responseText) => {
             return throwException("Bad Request", status, _responseText, _headers);
             });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
         } else if (status === 401) {
             return response.text().then((_responseText) => {
             return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -1901,17 +2039,17 @@ export class DraftsClient implements IClient {
             return response.text().then((_responseText) => {
             return throwException("Bad Request", status, _responseText, _headers);
             });
-        } else if (status === 404) {
+        } else if (status === 401) {
             return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
             });
-        } else if (status === 401) {
+        } else if (status === 404) {
             return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
+            return throwException("Not Found", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -1958,13 +2096,13 @@ export class DraftsClient implements IClient {
             return response.text().then((_responseText) => {
             return throwException("Bad Request", status, _responseText, _headers);
             });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
         } else if (status === 401) {
             return response.text().then((_responseText) => {
             return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -2007,21 +2145,21 @@ export class DraftsClient implements IClient {
             result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as string;
             return result200;
             });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
-            });
         } else if (status === 400) {
             return response.text().then((_responseText) => {
             return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
             });
-        } else if (status === 401) {
+        } else if (status === 404) {
             return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
+            return throwException("Not Found", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -2064,21 +2202,21 @@ export class DraftsClient implements IClient {
             result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as string;
             return result200;
             });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
-            });
         } else if (status === 400) {
             return response.text().then((_responseText) => {
             return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
             });
-        } else if (status === 401) {
+        } else if (status === 404) {
             return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
+            return throwException("Not Found", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -2121,21 +2259,21 @@ export class DraftsClient implements IClient {
             result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as DrafterResponse;
             return result200;
             });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
-            });
         } else if (status === 400) {
             return response.text().then((_responseText) => {
             return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
             });
-        } else if (status === 401) {
+        } else if (status === 404) {
             return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
+            return throwException("Not Found", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -2148,14 +2286,18 @@ export class DraftsClient implements IClient {
     /**
      * @return OK
      */
-    listDrafters(signal?: AbortSignal): Promise<DrafterResponse[]> {
+    listDrafters(body: ListDraftersRequest, signal?: AbortSignal): Promise<DrafterResponse[]> {
         let url_ = this.baseUrl + "/drafters";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(body);
+
         let options_: RequestInit = {
+            body: content_,
             method: "GET",
             signal,
             headers: {
+                "Content-Type": "*/*",
                 "Accept": "application/json"
             }
         };
@@ -2375,10 +2517,6 @@ export class DraftsClient implements IClient {
             return response.text().then((_responseText) => {
             return throwException("Bad Request", status, _responseText, _headers);
             });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
-            });
         } else if (status === 401) {
             return response.text().then((_responseText) => {
             return throwException("Unauthorized", status, _responseText, _headers);
@@ -2386,6 +2524,10 @@ export class DraftsClient implements IClient {
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -2479,9 +2621,9 @@ export interface AddMovieRequest {
     youtubeTrailer: string;
     genres: string[];
     actors: PersonRequest[];
-    directors: PersonRequest[];
-    writers: PersonRequest[];
-    producers: PersonRequest[];
+    directors: any[];
+    writers: any[];
+    producers: any[];
     productionCompanies: ProductionCompanyRequest[];
 
     [key: string]: any;
@@ -2528,14 +2670,14 @@ export interface AssignDraftPositionRequest {
 }
 
 export interface CommissionerOverrideResponse {
-    id: string;
-    pickId: string;
-    position: number;
-    playOrder: number;
-    movieId: string;
-    movieTitle: string;
-    drafterId: string | undefined;
-    drafterName: string | undefined;
+    id?: string;
+    pickId?: string;
+    position?: number;
+    playOrder?: number;
+    movieId?: string;
+    movieTitle?: string;
+    drafterId?: string | undefined;
+    drafterName?: string | undefined;
     drafterTeamId?: string | undefined;
     drafterTeamName?: string | undefined;
 
@@ -2555,8 +2697,7 @@ export interface ContinueDraftRequest {
 }
 
 export interface CreateDrafterRequest {
-    userId: string | undefined;
-    name: string | undefined;
+    personId: string;
 
     [key: string]: any;
 }
@@ -2581,7 +2722,15 @@ export interface CreateGameBoardRequest {
 }
 
 export interface CreateHostRequest {
-    id: string;
+    personId: string;
+
+    [key: string]: any;
+}
+
+export interface CreatePersonRequest {
+    userId: string | undefined;
+    firstName: string;
+    lastName: string;
 
     [key: string]: any;
 }
@@ -2599,10 +2748,20 @@ export interface DirectorModel {
     [key: string]: any;
 }
 
+export interface DrafterDraftResponse {
+    id?: string;
+    personId?: string;
+    displayName?: string;
+
+    [key: string]: any;
+}
+
 export interface DrafterResponse {
     id?: string;
-    name?: string;
-    userId?: string | undefined;
+    personId?: string;
+    firstName?: string;
+    lastName?: string;
+    displayName?: string;
 
     [key: string]: any;
 }
@@ -2652,13 +2811,14 @@ export interface DraftResponse {
     totalHosts?: number;
     episodeType?: number;
     draftStatus?: number;
+    description?: string | undefined;
     previousDraftId?: string | undefined;
     previousDraftTitle?: string | undefined;
     nextDraftId?: string | undefined;
     nextDraftTitle?: string | undefined;
     rawReleaseDates?: Date[] | undefined;
-    drafters?: DrafterResponse[] | undefined;
-    hosts?: HostResponse[] | undefined;
+    drafters?: DrafterDraftResponse[] | undefined;
+    hosts?: HostDraftResponse[] | undefined;
     releaseDates?: ReleaseDateResponse[] | undefined;
     draftPicks?: DraftPickResponse[] | undefined;
     vetoes?: VetoResponse[] | undefined;
@@ -2732,15 +2892,36 @@ export interface GetHostRequest {
     [key: string]: any;
 }
 
-export interface HostRequest {
-    name: string;
+export interface GetPersonRequest {
+    id: string;
+
+    [key: string]: any;
+}
+
+export interface HostDraftResponse {
+    id?: string;
+    personId?: string;
+    displayName?: string;
 
     [key: string]: any;
 }
 
 export interface HostResponse {
     id?: string;
-    name?: string;
+    personId?: string;
+    firstName?: string;
+    lastName?: string;
+    displayName?: string;
+
+    [key: string]: any;
+}
+
+export interface ListDraftersRequest {
+    page?: number;
+    pageSize?: number;
+    search?: string | undefined;
+    sort?: string | undefined;
+    dir?: string | undefined;
 
     [key: string]: any;
 }
@@ -2758,6 +2939,31 @@ export interface ListDraftsRequest {
     q?: string | undefined;
     page?: number;
     pageSize?: number;
+
+    [key: string]: any;
+}
+
+export interface ListHostsRequest {
+    page: number;
+    pageSize: number;
+    search?: string | undefined;
+    sort?: string | undefined;
+    dir?: string | undefined;
+
+    [key: string]: any;
+}
+
+export interface ListPeopleRequest {
+    page: number;
+    pageSize: number;
+    firstName?: string | undefined;
+    lastName?: string | undefined;
+    displayName?: string | undefined;
+    isDrafter?: boolean | undefined;
+    isHost?: boolean | undefined;
+    sort?: string | undefined;
+    dir?: string | undefined;
+    q?: string | undefined;
 
     [key: string]: any;
 }
@@ -2795,6 +3001,15 @@ export interface PagedResultOfDraftResponse {
     [key: string]: any;
 }
 
+export interface PagedResultOfPersonResponse {
+    items: PersonResponse[];
+    total: number;
+    page: number;
+    pageSize: number;
+
+    [key: string]: any;
+}
+
 export interface PauseDraftRequest {
     draftId: string;
 
@@ -2804,6 +3019,17 @@ export interface PauseDraftRequest {
 export interface PersonRequest {
     name: string;
     imdbId: string;
+
+    [key: string]: any;
+}
+
+export interface PersonResponse {
+    id?: string;
+    firstName?: string;
+    lastName?: string;
+    displayName?: string;
+    isDrafter?: boolean;
+    isHost?: boolean;
 
     [key: string]: any;
 }
@@ -2929,17 +3155,6 @@ export interface UserResponse {
     firstName: string;
     middleName: string;
     lastName: string;
-
-    [key: string]: any;
-}
-
-export interface ValidationProblemDetails {
-    type?: string | undefined;
-    title?: string | undefined;
-    status?: number | undefined;
-    detail?: string | undefined;
-    instance?: string | undefined;
-    errors?: { [key: string]: string[]; };
 
     [key: string]: any;
 }

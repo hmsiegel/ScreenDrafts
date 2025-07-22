@@ -66,14 +66,14 @@ export function DraftsTable({ drafts, sort, dir }: DraftsTableProps) {
                            <div className="whitespace-nowrap align-middle table-cell py-3 pl-6 pr-3">
                               <div className="flex flex-col items-start">
                                  {draft.drafters?.map((d, index) => (
-                                    <span key={index} className="text-sm">{d.name}</span>
+                                    <span key={index} className="text-sm">{d.displayName}</span>
                                  ))}
                               </div>
                            </div>
                            <div className="whitespace-nowrap align-middle table-cell py-3 pl-6 pr-3">
                               <div className="flex flex-col items-start">
                                  {draft.hosts?.map((d, index) => (
-                                    <span key={index} className="text-sm">{d.name}</span>
+                                    <span key={index} className="text-sm">{d.displayName}</span>
                                  ))}
                               </div>
                            </div>

@@ -45,9 +45,9 @@ export function PickRow({
    if (veto && !vetoOverride) {
       return (
          <li className="line-through">
-            {line}{" "}
+            {line}{" "}(vetoed by
             <DrafterVetoLink href={`/main/drafters/${veto.drafterId}`}>
-               (vetoed by &nbsp;{getName(veto.drafterId ?? "")})
+               &nbsp;{getName(veto.drafterId ?? "")})
             </DrafterVetoLink>
          </li>
       );
@@ -58,12 +58,16 @@ export function PickRow({
       return (
          <li >
             {line}{" "}
-            <span className="font-medium italic line-through">
-               (vetoed by &nbsp;{getName(veto.drafterId ?? "")})
+            <span className="line-through">
+               {"(vetoed by "}
+               <DrafterVetoLink href={`/main/drafters/${veto.drafterId}`}>
+                  {getName(veto.drafterId ?? "")})
+               </DrafterVetoLink>
             </span>
-            <span className="font-medium italic">
-               (veto overridden by &nbsp;{getName(vetoOverride.drafterId ?? "")})
-            </span>
+            {" (veto overridden by "}
+            <DrafterLink href={`/main/drafters/${pick.drafterId}`}>
+               {getName(pick.drafterId ?? "")}
+            </DrafterLink>{") "}
          </li>
       );
    }

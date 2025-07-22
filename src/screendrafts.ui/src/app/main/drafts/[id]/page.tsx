@@ -33,8 +33,8 @@ export default async function Page(
 
    const drafterMap = new Map(
       (draft.drafters ?? [])
-         .filter((d): d is { id: string; name: string } => typeof d.id === "string" && typeof d.name === "string")
-         .map(d => [d.id, d.name])
+         .filter((d): d is { id: string; displayName: string } => typeof d.id === "string" && typeof d.displayName === "string")
+         .map(d => [d.id, d.displayName])
    );
 
    return (

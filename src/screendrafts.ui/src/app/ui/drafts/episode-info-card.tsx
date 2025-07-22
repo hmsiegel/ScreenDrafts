@@ -40,7 +40,7 @@ export default function EpisodeInfoCard({ draft }: { draft: DraftResponse }) {
                   <div className="flex flex-col">
                      {draft.drafters.map((d, index) => (
                         <DrafterLink key={index} href={`/main/drafters/${d.id}`}>
-                           {d.name}
+                           {d.displayName}
                         </DrafterLink>
                      ))}
                   </div>
@@ -54,7 +54,7 @@ export default function EpisodeInfoCard({ draft }: { draft: DraftResponse }) {
                   <div className="flex flex-col">
                      {draft.hosts.map((h, index) => (
                         <HostLink key={index} href={`/main/hosts/${h.id}`}>
-                           {h.name}
+                           {h.displayName}
                         </HostLink>
                      ))}
                   </div>

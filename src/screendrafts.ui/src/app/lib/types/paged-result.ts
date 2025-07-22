@@ -1,4 +1,4 @@
-import { DraftResponse, PagedResultOfDraftResponse } from "../dto";
+import { DraftResponse, PagedResultOfDraftResponse, PagedResultOfPersonResponse, PersonResponse } from "../dto";
 
 export interface PagedResult<T> {
    items: T[];
@@ -10,5 +10,11 @@ export interface PagedResult<T> {
 export function toPagedDraftResult(
    api: PagedResultOfDraftResponse
 ) : PagedResult<DraftResponse> {
+   return api;
+}
+
+export function toPagedPeopleResult(
+   api: PagedResultOfPersonResponse
+) : PagedResult<PersonResponse> {
    return api;
 }

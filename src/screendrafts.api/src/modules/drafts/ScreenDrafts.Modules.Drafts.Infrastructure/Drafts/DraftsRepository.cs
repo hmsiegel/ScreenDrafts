@@ -52,7 +52,9 @@ internal sealed class DraftsRepository(DraftsDbContext dbContext) : IDraftsRepos
   {
     var draftWithDetails = await _dbContext.Drafts
       .Include(d => d.Drafters)
+      .ThenInclude(dr => dr.Person)
       .Include(d => d.Hosts)
+      .ThenInclude(h => h.Person)
       .Include(d => d.ReleaseDates)
       .Include(d => d.Picks)
       .FirstOrDefaultAsync(d => d.Id == draftId, cancellationToken);
