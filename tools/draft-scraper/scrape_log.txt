@@ -1,0 +1,1028 @@
+[2025-07-23T16:56:49.309Z] Fetching: https://screendrafts.fandom.com/wiki/Category:Episodes
+[2025-07-23T16:56:49.773Z] Fetching: https://screendrafts.fandom.com/wiki/Category:Episodes?from=Lesbians+mini-Mega
+[2025-07-23T16:56:50.151Z] Error fetching https://screendrafts.fandom.com/wiki/Category:Episodes?from=Lesbians+mini-Mega: Cannot read properties of undefined (reading 'length')
+[2025-07-23T16:56:50.253Z] Found 341 episode URLs
+[2025-07-23T16:56:50.255Z] Scraping profile: https://screendrafts.fandom.com/wiki/%22Retired%22_Soderbergh_Super_Draft
+[2025-07-23T16:56:50.338Z] Scraped: "Retired" Soderbergh Super Draft - https://screendrafts.fandom.com/wiki/%22Retired%22_Soderbergh_Super_Draft
+[2025-07-23T16:56:50.343Z] Successfully scraped: https://screendrafts.fandom.com/wiki/%22Retired%22_Soderbergh_Super_Draft
+[2025-07-23T16:56:50.447Z] Scraping profile: https://screendrafts.fandom.com/wiki/%2700_Slashers
+[2025-07-23T16:56:50.535Z] Scraped: '00 Slashers - https://screendrafts.fandom.com/wiki/%2700_Slashers
+[2025-07-23T16:56:50.545Z] Successfully scraped: https://screendrafts.fandom.com/wiki/%2700_Slashers
+[2025-07-23T16:56:50.657Z] Scraping profile: https://screendrafts.fandom.com/wiki/%2730s_Warner_Bros
+[2025-07-23T16:56:50.726Z] Scraped: '30s Warner Bros - https://screendrafts.fandom.com/wiki/%2730s_Warner_Bros
+[2025-07-23T16:56:50.728Z] Successfully scraped: https://screendrafts.fandom.com/wiki/%2730s_Warner_Bros
+[2025-07-23T16:56:50.829Z] Scraping profile: https://screendrafts.fandom.com/wiki/%2750s_Sci-Fi
+[2025-07-23T16:56:50.888Z] Scraped: '50s Sci-Fi - https://screendrafts.fandom.com/wiki/%2750s_Sci-Fi
+[2025-07-23T16:56:50.897Z] Successfully scraped: https://screendrafts.fandom.com/wiki/%2750s_Sci-Fi
+[2025-07-23T16:56:51.012Z] Scraping profile: https://screendrafts.fandom.com/wiki/%2760s_Musicals
+[2025-07-23T16:56:51.060Z] Scraped: '60s Musicals - https://screendrafts.fandom.com/wiki/%2760s_Musicals
+[2025-07-23T16:56:51.069Z] Successfully scraped: https://screendrafts.fandom.com/wiki/%2760s_Musicals
+[2025-07-23T16:56:51.182Z] Scraping profile: https://screendrafts.fandom.com/wiki/%2770s_Conspiracy_Thrillers
+[2025-07-23T16:56:51.238Z] Scraped: '70s Conspiracy Thrillers - https://screendrafts.fandom.com/wiki/%2770s_Conspiracy_Thrillers
+[2025-07-23T16:56:51.240Z] Successfully scraped: https://screendrafts.fandom.com/wiki/%2770s_Conspiracy_Thrillers
+[2025-07-23T16:56:51.353Z] Scraping profile: https://screendrafts.fandom.com/wiki/%2770s_Horror_Mega
+[2025-07-23T16:56:51.603Z] Scraped: '70s Horror Mega - https://screendrafts.fandom.com/wiki/%2770s_Horror_Mega
+[2025-07-23T16:56:51.606Z] Successfully scraped: https://screendrafts.fandom.com/wiki/%2770s_Horror_Mega
+[2025-07-23T16:56:51.719Z] Scraping profile: https://screendrafts.fandom.com/wiki/%2770s_Sports
+[2025-07-23T16:56:51.772Z] Scraped: '70s Sports - https://screendrafts.fandom.com/wiki/%2770s_Sports
+[2025-07-23T16:56:51.773Z] Successfully scraped: https://screendrafts.fandom.com/wiki/%2770s_Sports
+[2025-07-23T16:56:51.881Z] Scraping profile: https://screendrafts.fandom.com/wiki/%2780s_Fantasy
+[2025-07-23T16:56:51.933Z] Scraped: '80s Fantasy - https://screendrafts.fandom.com/wiki/%2780s_Fantasy
+[2025-07-23T16:56:51.936Z] Successfully scraped: https://screendrafts.fandom.com/wiki/%2780s_Fantasy
+[2025-07-23T16:56:52.055Z] Scraping profile: https://screendrafts.fandom.com/wiki/%2780s_Sports_mini-Mega
+[2025-07-23T16:56:52.101Z] Scraped: '80s Sports mini-Mega - https://screendrafts.fandom.com/wiki/%2780s_Sports_mini-Mega
+[2025-07-23T16:56:52.103Z] Successfully scraped: https://screendrafts.fandom.com/wiki/%2780s_Sports_mini-Mega
+[2025-07-23T16:56:52.216Z] Scraping profile: https://screendrafts.fandom.com/wiki/%2790s_Action_Mega_Draft
+[2025-07-23T16:56:52.266Z] Scraped: '90s Action Mega Draft - https://screendrafts.fandom.com/wiki/%2790s_Action_Mega_Draft
+[2025-07-23T16:56:52.275Z] Successfully scraped: https://screendrafts.fandom.com/wiki/%2790s_Action_Mega_Draft
+[2025-07-23T16:56:52.382Z] Scraping profile: https://screendrafts.fandom.com/wiki/%2790s_Directorial_Debuts
+[2025-07-23T16:56:52.424Z] Scraped: '90s Directorial Debuts - https://screendrafts.fandom.com/wiki/%2790s_Directorial_Debuts
+[2025-07-23T16:56:52.432Z] Successfully scraped: https://screendrafts.fandom.com/wiki/%2790s_Directorial_Debuts
+[2025-07-23T16:56:52.544Z] Scraping profile: https://screendrafts.fandom.com/wiki/%2790s_School_Rom-Coms
+[2025-07-23T16:56:52.596Z] Scraped: '90s School Rom-Coms - https://screendrafts.fandom.com/wiki/%2790s_School_Rom-Coms
+[2025-07-23T16:56:52.598Z] Successfully scraped: https://screendrafts.fandom.com/wiki/%2790s_School_Rom-Coms
+[2025-07-23T16:56:52.712Z] Scraping profile: https://screendrafts.fandom.com/wiki/%2790s_Sports_mini-Mega
+[2025-07-23T16:56:52.762Z] Scraped: '90s Sports mini-Mega - https://screendrafts.fandom.com/wiki/%2790s_Sports_mini-Mega
+[2025-07-23T16:56:52.764Z] Successfully scraped: https://screendrafts.fandom.com/wiki/%2790s_Sports_mini-Mega
+[2025-07-23T16:56:52.881Z] Scraping profile: https://screendrafts.fandom.com/wiki/%2790s_Superhero
+[2025-07-23T16:56:52.933Z] Scraped: '90s Superhero - https://screendrafts.fandom.com/wiki/%2790s_Superhero
+[2025-07-23T16:56:52.935Z] Successfully scraped: https://screendrafts.fandom.com/wiki/%2790s_Superhero
+[2025-07-23T16:56:53.047Z] Scraping profile: https://screendrafts.fandom.com/wiki/1939_mini-Mega
+[2025-07-23T16:56:53.104Z] Scraped: 1939 mini-Mega - https://screendrafts.fandom.com/wiki/1939_mini-Mega
+[2025-07-23T16:56:53.106Z] Successfully scraped: https://screendrafts.fandom.com/wiki/1939_mini-Mega
+[2025-07-23T16:56:53.213Z] Scraping profile: https://screendrafts.fandom.com/wiki/1975_Best_Picture_Nominees_mini-Super_Draft
+[2025-07-23T16:56:53.260Z] Scraped: 1975 Best Picture Nominees mini-Super Draft - https://screendrafts.fandom.com/wiki/1975_Best_Picture_Nominees_mini-Super_Draft
+[2025-07-23T16:56:53.263Z] Successfully scraped: https://screendrafts.fandom.com/wiki/1975_Best_Picture_Nominees_mini-Super_Draft
+[2025-07-23T16:56:53.379Z] Scraping profile: https://screendrafts.fandom.com/wiki/1977_Horror
+[2025-07-23T16:56:53.426Z] Scraped: 1977 Horror - https://screendrafts.fandom.com/wiki/1977_Horror
+[2025-07-23T16:56:53.429Z] Successfully scraped: https://screendrafts.fandom.com/wiki/1977_Horror
+[2025-07-23T16:56:53.547Z] Scraping profile: https://screendrafts.fandom.com/wiki/1992_Horror
+[2025-07-23T16:56:53.599Z] Scraped: 1992 Horror - https://screendrafts.fandom.com/wiki/1992_Horror
+[2025-07-23T16:56:53.607Z] Successfully scraped: https://screendrafts.fandom.com/wiki/1992_Horror
+[2025-07-23T16:56:53.712Z] Scraping profile: https://screendrafts.fandom.com/wiki/1994_mini-Mega
+[2025-07-23T16:56:53.759Z] Scraped: 1994 mini-Mega - https://screendrafts.fandom.com/wiki/1994_mini-Mega
+[2025-07-23T16:56:53.767Z] Successfully scraped: https://screendrafts.fandom.com/wiki/1994_mini-Mega
+[2025-07-23T16:56:53.880Z] Scraping profile: https://screendrafts.fandom.com/wiki/1997_Mini-Mega
+[2025-07-23T16:56:53.928Z] Scraped: 1997 Mini-Mega - https://screendrafts.fandom.com/wiki/1997_Mini-Mega
+[2025-07-23T16:56:53.930Z] Successfully scraped: https://screendrafts.fandom.com/wiki/1997_Mini-Mega
+[2025-07-23T16:56:54.039Z] Scraping profile: https://screendrafts.fandom.com/wiki/1998_mini-Mega
+[2025-07-23T16:56:54.090Z] Scraped: 1998 mini-Mega - https://screendrafts.fandom.com/wiki/1998_mini-Mega
+[2025-07-23T16:56:54.092Z] Successfully scraped: https://screendrafts.fandom.com/wiki/1998_mini-Mega
+[2025-07-23T16:56:54.197Z] Scraping profile: https://screendrafts.fandom.com/wiki/1999_(episode)
+[2025-07-23T16:56:54.247Z] Scraped: 1999 (episode) - https://screendrafts.fandom.com/wiki/1999_(episode)
+[2025-07-23T16:56:54.249Z] Successfully scraped: https://screendrafts.fandom.com/wiki/1999_(episode)
+[2025-07-23T16:56:54.364Z] Scraping profile: https://screendrafts.fandom.com/wiki/1999_mini-Mega
+[2025-07-23T16:56:54.415Z] Scraped: 1999 mini-Mega - https://screendrafts.fandom.com/wiki/1999_mini-Mega
+[2025-07-23T16:56:54.417Z] Successfully scraped: https://screendrafts.fandom.com/wiki/1999_mini-Mega
+[2025-07-23T16:56:54.527Z] Scraping profile: https://screendrafts.fandom.com/wiki/2007
+[2025-07-23T16:56:54.575Z] Scraped: 2007 - https://screendrafts.fandom.com/wiki/2007
+[2025-07-23T16:56:54.577Z] Successfully scraped: https://screendrafts.fandom.com/wiki/2007
+[2025-07-23T16:56:54.682Z] Scraping profile: https://screendrafts.fandom.com/wiki/2009
+[2025-07-23T16:56:54.725Z] Scraped: 2009 - https://screendrafts.fandom.com/wiki/2009
+[2025-07-23T16:56:54.727Z] Successfully scraped: https://screendrafts.fandom.com/wiki/2009
+[2025-07-23T16:56:54.845Z] Scraping profile: https://screendrafts.fandom.com/wiki/2009_Horror
+[2025-07-23T16:56:54.893Z] Scraped: 2009 Horror - https://screendrafts.fandom.com/wiki/2009_Horror
+[2025-07-23T16:56:54.902Z] Successfully scraped: https://screendrafts.fandom.com/wiki/2009_Horror
+[2025-07-23T16:56:55.012Z] Scraping profile: https://screendrafts.fandom.com/wiki/2010s_Decade_Mega_Draft
+[2025-07-23T16:56:55.059Z] Scraped: 2010s Decade Mega Draft - https://screendrafts.fandom.com/wiki/2010s_Decade_Mega_Draft
+[2025-07-23T16:56:55.067Z] Successfully scraped: https://screendrafts.fandom.com/wiki/2010s_Decade_Mega_Draft
+[2025-07-23T16:56:55.174Z] Scraping profile: https://screendrafts.fandom.com/wiki/2010s_Directorial_Debuts
+[2025-07-23T16:56:55.227Z] Scraped: 2010s Directorial Debuts - https://screendrafts.fandom.com/wiki/2010s_Directorial_Debuts
+[2025-07-23T16:56:55.229Z] Successfully scraped: https://screendrafts.fandom.com/wiki/2010s_Directorial_Debuts
+[2025-07-23T16:56:55.347Z] Scraping profile: https://screendrafts.fandom.com/wiki/2012
+[2025-07-23T16:56:55.398Z] Scraped: 2012 - https://screendrafts.fandom.com/wiki/2012
+[2025-07-23T16:56:55.400Z] Successfully scraped: https://screendrafts.fandom.com/wiki/2012
+[2025-07-23T16:56:55.513Z] Scraping profile: https://screendrafts.fandom.com/wiki/Best_of_2018_Mega_Draft
+[2025-07-23T16:56:55.564Z] Scraped: Best of 2018 Mega Draft - https://screendrafts.fandom.com/wiki/Best_of_2018_Mega_Draft
+[2025-07-23T16:56:55.567Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Best_of_2018_Mega_Draft
+[2025-07-23T16:56:55.670Z] Scraping profile: https://screendrafts.fandom.com/wiki/2019_(so_far)
+[2025-07-23T16:56:55.719Z] Scraped: 2019 (so far) - https://screendrafts.fandom.com/wiki/2019_(so_far)
+[2025-07-23T16:56:55.721Z] Successfully scraped: https://screendrafts.fandom.com/wiki/2019_(so_far)
+[2025-07-23T16:56:55.829Z] Scraping profile: https://screendrafts.fandom.com/wiki/2019_Mega_Draft
+[2025-07-23T16:56:55.877Z] Scraped: 2019 Mega Draft - https://screendrafts.fandom.com/wiki/2019_Mega_Draft
+[2025-07-23T16:56:55.880Z] Successfully scraped: https://screendrafts.fandom.com/wiki/2019_Mega_Draft
+[2025-07-23T16:56:55.995Z] Scraping profile: https://screendrafts.fandom.com/wiki/2020_Mega_Draft
+[2025-07-23T16:56:56.040Z] Scraped: 2020 Mega Draft - https://screendrafts.fandom.com/wiki/2020_Mega_Draft
+[2025-07-23T16:56:56.042Z] Successfully scraped: https://screendrafts.fandom.com/wiki/2020_Mega_Draft
+[2025-07-23T16:56:56.148Z] Scraping profile: https://screendrafts.fandom.com/wiki/2021_Mega_Draft
+[2025-07-23T16:56:56.197Z] Scraped: 2021 Mega Draft - https://screendrafts.fandom.com/wiki/2021_Mega_Draft
+[2025-07-23T16:56:56.206Z] Successfully scraped: https://screendrafts.fandom.com/wiki/2021_Mega_Draft
+[2025-07-23T16:56:56.310Z] Scraping profile: https://screendrafts.fandom.com/wiki/2022_Mega_Draft
+[2025-07-23T16:56:56.356Z] Scraped: 2022 Mega Draft - https://screendrafts.fandom.com/wiki/2022_Mega_Draft
+[2025-07-23T16:56:56.363Z] Successfully scraped: https://screendrafts.fandom.com/wiki/2022_Mega_Draft
+[2025-07-23T16:56:56.468Z] Scraping profile: https://screendrafts.fandom.com/wiki/2023_Mega_Draft
+[2025-07-23T16:56:56.515Z] Scraped: 2023 Mega Draft - https://screendrafts.fandom.com/wiki/2023_Mega_Draft
+[2025-07-23T16:56:56.517Z] Successfully scraped: https://screendrafts.fandom.com/wiki/2023_Mega_Draft
+[2025-07-23T16:56:56.632Z] Scraping profile: https://screendrafts.fandom.com/wiki/2024_Mega_Draft
+[2025-07-23T16:56:56.682Z] Scraped: 2024 Mega Draft - https://screendrafts.fandom.com/wiki/2024_Mega_Draft
+[2025-07-23T16:56:56.684Z] Successfully scraped: https://screendrafts.fandom.com/wiki/2024_Mega_Draft
+[2025-07-23T16:56:56.795Z] Scraping profile: https://screendrafts.fandom.com/wiki/21st_Century_Australian
+[2025-07-23T16:56:56.842Z] Scraped: 21st Century Australian - https://screendrafts.fandom.com/wiki/21st_Century_Australian
+[2025-07-23T16:56:56.844Z] Successfully scraped: https://screendrafts.fandom.com/wiki/21st_Century_Australian
+[2025-07-23T16:56:56.957Z] Scraping profile: https://screendrafts.fandom.com/wiki/21st_Century_Best_Actress_Winning_Films
+[2025-07-23T16:56:57.010Z] Scraped: 21st Century Best Actress Winning Films - https://screendrafts.fandom.com/wiki/21st_Century_Best_Actress_Winning_Films
+[2025-07-23T16:56:57.013Z] Successfully scraped: https://screendrafts.fandom.com/wiki/21st_Century_Best_Actress_Winning_Films
+[2025-07-23T16:56:57.128Z] Scraping profile: https://screendrafts.fandom.com/wiki/21st_Century_Female_Action
+[2025-07-23T16:56:57.173Z] Scraped: 21st Century Female Action - https://screendrafts.fandom.com/wiki/21st_Century_Female_Action
+[2025-07-23T16:56:57.175Z] Successfully scraped: https://screendrafts.fandom.com/wiki/21st_Century_Female_Action
+[2025-07-23T16:56:57.280Z] Scraping profile: https://screendrafts.fandom.com/wiki/A24
+[2025-07-23T16:56:57.332Z] Scraped: A24 - https://screendrafts.fandom.com/wiki/A24
+[2025-07-23T16:56:57.340Z] Successfully scraped: https://screendrafts.fandom.com/wiki/A24
+[2025-07-23T16:56:57.444Z] Scraping profile: https://screendrafts.fandom.com/wiki/A24_Horror
+[2025-07-23T16:56:57.488Z] Scraped: A24 Horror - https://screendrafts.fandom.com/wiki/A24_Horror
+[2025-07-23T16:56:57.495Z] Successfully scraped: https://screendrafts.fandom.com/wiki/A24_Horror
+[2025-07-23T16:56:57.610Z] Scraping profile: https://screendrafts.fandom.com/wiki/Aaron_Sorkin_Super_Draft
+[2025-07-23T16:56:57.659Z] Scraped: Aaron Sorkin Super Draft - https://screendrafts.fandom.com/wiki/Aaron_Sorkin_Super_Draft
+[2025-07-23T16:56:57.661Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Aaron_Sorkin_Super_Draft
+[2025-07-23T16:56:57.770Z] Scraping profile: https://screendrafts.fandom.com/wiki/AARP_Action
+[2025-07-23T16:56:57.815Z] Scraped: AARP Action - https://screendrafts.fandom.com/wiki/AARP_Action
+[2025-07-23T16:56:57.817Z] Successfully scraped: https://screendrafts.fandom.com/wiki/AARP_Action
+[2025-07-23T16:56:57.927Z] Scraping profile: https://screendrafts.fandom.com/wiki/Action_Comedy
+[2025-07-23T16:56:57.976Z] Scraped: Action Comedy - https://screendrafts.fandom.com/wiki/Action_Comedy
+[2025-07-23T16:56:57.978Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Action_Comedy
+[2025-07-23T16:56:58.095Z] Scraping profile: https://screendrafts.fandom.com/wiki/Action_Sequels
+[2025-07-23T16:56:58.144Z] Scraped: Action Sequels - https://screendrafts.fandom.com/wiki/Action_Sequels
+[2025-07-23T16:56:58.147Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Action_Sequels
+[2025-07-23T16:56:58.257Z] Scraping profile: https://screendrafts.fandom.com/wiki/Actor%27s_Directorial_Debuts
+[2025-07-23T16:56:58.476Z] Scraped: Actor's Directorial Debuts - https://screendrafts.fandom.com/wiki/Actor%27s_Directorial_Debuts
+[2025-07-23T16:56:58.478Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Actor%27s_Directorial_Debuts
+[2025-07-23T16:56:58.580Z] Scraping profile: https://screendrafts.fandom.com/wiki/Adult_Animation
+[2025-07-23T16:56:58.620Z] Scraped: Adult Animation - https://screendrafts.fandom.com/wiki/Adult_Animation
+[2025-07-23T16:56:58.625Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Adult_Animation
+[2025-07-23T16:56:58.726Z] Scraping profile: https://screendrafts.fandom.com/wiki/Agatha_Christie
+[2025-07-23T16:56:58.755Z] Scraped: Agatha Christie - https://screendrafts.fandom.com/wiki/Agatha_Christie
+[2025-07-23T16:56:58.760Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Agatha_Christie
+[2025-07-23T16:56:58.862Z] Scraping profile: https://screendrafts.fandom.com/wiki/Agn%C3%A8s_Varda
+[2025-07-23T16:56:58.898Z] Scraped: Agnès Varda - https://screendrafts.fandom.com/wiki/Agn%C3%A8s_Varda
+[2025-07-23T16:56:58.900Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Agn%C3%A8s_Varda
+[2025-07-23T16:56:59.012Z] Scraping profile: https://screendrafts.fandom.com/wiki/Akira_Kurosawa
+[2025-07-23T16:56:59.043Z] Scraped: Akira Kurosawa - https://screendrafts.fandom.com/wiki/Akira_Kurosawa
+[2025-07-23T16:56:59.044Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Akira_Kurosawa
+[2025-07-23T16:56:59.148Z] Scraping profile: https://screendrafts.fandom.com/wiki/Alfred_Hitchcock_Mega_Draft
+[2025-07-23T16:56:59.203Z] Scraped: Alfred Hitchcock Mega Draft - https://screendrafts.fandom.com/wiki/Alfred_Hitchcock_Mega_Draft
+[2025-07-23T16:56:59.205Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Alfred_Hitchcock_Mega_Draft
+[2025-07-23T16:56:59.314Z] Scraping profile: https://screendrafts.fandom.com/wiki/Alien_Invasion_Mini-Mega
+[2025-07-23T16:56:59.364Z] Scraped: Alien Invasion Mini-Mega - https://screendrafts.fandom.com/wiki/Alien_Invasion_Mini-Mega
+[2025-07-23T16:56:59.367Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Alien_Invasion_Mini-Mega
+[2025-07-23T16:56:59.482Z] Scraping profile: https://screendrafts.fandom.com/wiki/Alien_vs._Predator_Super_Draft
+[2025-07-23T16:56:59.537Z] Scraped: Alien vs. Predator Super Draft - https://screendrafts.fandom.com/wiki/Alien_vs._Predator_Super_Draft
+[2025-07-23T16:56:59.539Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Alien_vs._Predator_Super_Draft
+[2025-07-23T16:56:59.644Z] Scraping profile: https://screendrafts.fandom.com/wiki/Almod%C3%B3var
+[2025-07-23T16:56:59.695Z] Scraped: Almodóvar - https://screendrafts.fandom.com/wiki/Almod%C3%B3var
+[2025-07-23T16:56:59.704Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Almod%C3%B3var
+[2025-07-23T16:56:59.814Z] Scraping profile: https://screendrafts.fandom.com/wiki/The_American_President
+[2025-07-23T16:56:59.856Z] Scraped: The American President - https://screendrafts.fandom.com/wiki/The_American_President
+[2025-07-23T16:56:59.862Z] Successfully scraped: https://screendrafts.fandom.com/wiki/The_American_President
+[2025-07-23T16:56:59.965Z] Scraping profile: https://screendrafts.fandom.com/wiki/American_Zoetrope
+[2025-07-23T16:57:00.018Z] Scraped: American Zoetrope - https://screendrafts.fandom.com/wiki/American_Zoetrope
+[2025-07-23T16:57:00.020Z] Successfully scraped: https://screendrafts.fandom.com/wiki/American_Zoetrope
+[2025-07-23T16:57:00.132Z] Scraping profile: https://screendrafts.fandom.com/wiki/Amnesia
+[2025-07-23T16:57:00.180Z] Scraped: Amnesia - https://screendrafts.fandom.com/wiki/Amnesia
+[2025-07-23T16:57:00.182Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Amnesia
+[2025-07-23T16:57:00.298Z] Scraping profile: https://screendrafts.fandom.com/wiki/Amy_Adams
+[2025-07-23T16:57:00.345Z] Scraped: Amy Adams - https://screendrafts.fandom.com/wiki/Amy_Adams
+[2025-07-23T16:57:00.347Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Amy_Adams
+[2025-07-23T16:57:00.463Z] Scraping profile: https://screendrafts.fandom.com/wiki/Angela_Bassett
+[2025-07-23T16:57:00.514Z] Scraped: Angela Bassett - https://screendrafts.fandom.com/wiki/Angela_Bassett
+[2025-07-23T16:57:00.517Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Angela_Bassett
+[2025-07-23T16:57:00.631Z] Scraping profile: https://screendrafts.fandom.com/wiki/Animals_Attack!
+[2025-07-23T16:57:00.679Z] Scraped: Animals Attack! - https://screendrafts.fandom.com/wiki/Animals_Attack!
+[2025-07-23T16:57:00.681Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Animals_Attack!
+[2025-07-23T16:57:00.795Z] Scraping profile: https://screendrafts.fandom.com/wiki/Anne_Hathaway
+[2025-07-23T16:57:00.843Z] Scraped: Anne Hathaway - https://screendrafts.fandom.com/wiki/Anne_Hathaway
+[2025-07-23T16:57:00.852Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Anne_Hathaway
+[2025-07-23T16:57:00.966Z] Scraping profile: https://screendrafts.fandom.com/wiki/Apatow,_Producer
+[2025-07-23T16:57:01.008Z] Scraped: Apatow, Producer - https://screendrafts.fandom.com/wiki/Apatow,_Producer
+[2025-07-23T16:57:01.017Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Apatow,_Producer
+[2025-07-23T16:57:01.132Z] Scraping profile: https://screendrafts.fandom.com/wiki/Aquatic_Horror
+[2025-07-23T16:57:01.180Z] Scraped: Aquatic Horror - https://screendrafts.fandom.com/wiki/Aquatic_Horror
+[2025-07-23T16:57:01.182Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Aquatic_Horror
+[2025-07-23T16:57:01.291Z] Scraping profile: https://screendrafts.fandom.com/wiki/Arthouse_Christmas
+[2025-07-23T16:57:01.338Z] Scraped: Arthouse Christmas - https://screendrafts.fandom.com/wiki/Arthouse_Christmas
+[2025-07-23T16:57:01.340Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Arthouse_Christmas
+[2025-07-23T16:57:01.448Z] Scraping profile: https://screendrafts.fandom.com/wiki/Arthurian_Legend
+[2025-07-23T16:57:01.500Z] Scraped: Arthurian Legend - https://screendrafts.fandom.com/wiki/Arthurian_Legend
+[2025-07-23T16:57:01.503Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Arthurian_Legend
+[2025-07-23T16:57:01.618Z] Scraping profile: https://screendrafts.fandom.com/wiki/Audrey_Hepburn
+[2025-07-23T16:57:01.672Z] Scraped: Audrey Hepburn - https://screendrafts.fandom.com/wiki/Audrey_Hepburn
+[2025-07-23T16:57:01.675Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Audrey_Hepburn
+[2025-07-23T16:57:01.782Z] Scraping profile: https://screendrafts.fandom.com/wiki/Baseball_Mini-Mega
+[2025-07-23T16:57:01.825Z] Scraped: Baseball Mini-Mega - https://screendrafts.fandom.com/wiki/Baseball_Mini-Mega
+[2025-07-23T16:57:01.827Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Baseball_Mini-Mega
+[2025-07-23T16:57:01.932Z] Scraping profile: https://screendrafts.fandom.com/wiki/Batman_vs._Superman_Super_Draft
+[2025-07-23T16:57:01.989Z] Scraped: Batman vs. Superman Super Draft - https://screendrafts.fandom.com/wiki/Batman_vs._Superman_Super_Draft
+[2025-07-23T16:57:02.000Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Batman_vs._Superman_Super_Draft
+[2025-07-23T16:57:02.115Z] Scraping profile: https://screendrafts.fandom.com/wiki/Best_Picture_Follow-ups_mini-Mega
+[2025-07-23T16:57:02.158Z] Scraped: Best Picture Follow-ups mini-Mega - https://screendrafts.fandom.com/wiki/Best_Picture_Follow-ups_mini-Mega
+[2025-07-23T16:57:02.166Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Best_Picture_Follow-ups_mini-Mega
+[2025-07-23T16:57:02.282Z] Scraping profile: https://screendrafts.fandom.com/wiki/BFFFs
+[2025-07-23T16:57:02.550Z] Scraped: BFFFs - https://screendrafts.fandom.com/wiki/BFFFs
+[2025-07-23T16:57:02.552Z] Successfully scraped: https://screendrafts.fandom.com/wiki/BFFFs
+[2025-07-23T16:57:02.655Z] Scraping profile: https://screendrafts.fandom.com/wiki/Billy_Wilder
+[2025-07-23T16:57:02.708Z] Scraped: Billy Wilder - https://screendrafts.fandom.com/wiki/Billy_Wilder
+[2025-07-23T16:57:02.710Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Billy_Wilder
+[2025-07-23T16:57:02.825Z] Scraping profile: https://screendrafts.fandom.com/wiki/Black_Love
+[2025-07-23T16:57:02.871Z] Scraped: Black Love - https://screendrafts.fandom.com/wiki/Black_Love
+[2025-07-23T16:57:02.873Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Black_Love
+[2025-07-23T16:57:02.976Z] Scraping profile: https://screendrafts.fandom.com/wiki/Black_Queer_Films
+[2025-07-23T16:57:03.028Z] Scraped: Black Queer Films - https://screendrafts.fandom.com/wiki/Black_Queer_Films
+[2025-07-23T16:57:03.031Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Black_Queer_Films
+[2025-07-23T16:57:03.145Z] Scraping profile: https://screendrafts.fandom.com/wiki/Blumhouse
+[2025-07-23T16:57:03.190Z] Scraped: Blumhouse - https://screendrafts.fandom.com/wiki/Blumhouse
+[2025-07-23T16:57:03.192Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Blumhouse
+[2025-07-23T16:57:03.309Z] Scraping profile: https://screendrafts.fandom.com/wiki/Bob_Dylan
+[2025-07-23T16:57:03.357Z] Scraped: Bob Dylan - https://screendrafts.fandom.com/wiki/Bob_Dylan
+[2025-07-23T16:57:03.365Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Bob_Dylan
+[2025-07-23T16:57:03.473Z] Scraping profile: https://screendrafts.fandom.com/wiki/Body_Horror
+[2025-07-23T16:57:03.516Z] Scraped: Body Horror - https://screendrafts.fandom.com/wiki/Body_Horror
+[2025-07-23T16:57:03.524Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Body_Horror
+[2025-07-23T16:57:03.634Z] Scraping profile: https://screendrafts.fandom.com/wiki/Body_Swap
+[2025-07-23T16:57:03.682Z] Scraped: Body Swap - https://screendrafts.fandom.com/wiki/Body_Swap
+[2025-07-23T16:57:03.684Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Body_Swap
+[2025-07-23T16:57:03.794Z] Scraping profile: https://screendrafts.fandom.com/wiki/Bong_Joon-ho_Super_Draft
+[2025-07-23T16:57:03.846Z] Scraped: Bong Joon-ho Super Draft - https://screendrafts.fandom.com/wiki/Bong_Joon-ho_Super_Draft
+[2025-07-23T16:57:03.848Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Bong_Joon-ho_Super_Draft
+[2025-07-23T16:57:03.964Z] Scraping profile: https://screendrafts.fandom.com/wiki/Booed_at_Cannes
+[2025-07-23T16:57:04.011Z] Scraped: Booed at Cannes - https://screendrafts.fandom.com/wiki/Booed_at_Cannes
+[2025-07-23T16:57:04.013Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Booed_at_Cannes
+[2025-07-23T16:57:04.120Z] Scraping profile: https://screendrafts.fandom.com/wiki/Bookstore_%26_Library_Movies
+[2025-07-23T16:57:04.175Z] Scraped: Bookstore & Library Movies - https://screendrafts.fandom.com/wiki/Bookstore_%26_Library_Movies
+[2025-07-23T16:57:04.178Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Bookstore_%26_Library_Movies
+[2025-07-23T16:57:04.280Z] Scraping profile: https://screendrafts.fandom.com/wiki/Brief_Encounters
+[2025-07-23T16:57:04.326Z] Scraped: Brief Encounters - https://screendrafts.fandom.com/wiki/Brief_Encounters
+[2025-07-23T16:57:04.328Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Brief_Encounters
+[2025-07-23T16:57:04.434Z] Scraping profile: https://screendrafts.fandom.com/wiki/British_Rom-Coms
+[2025-07-23T16:57:04.480Z] Scraped: British Rom-Coms - https://screendrafts.fandom.com/wiki/British_Rom-Coms
+[2025-07-23T16:57:04.489Z] Successfully scraped: https://screendrafts.fandom.com/wiki/British_Rom-Coms
+[2025-07-23T16:57:04.598Z] Scraping profile: https://screendrafts.fandom.com/wiki/British_Royal_Family
+[2025-07-23T16:57:04.636Z] Scraped: British Royal Family - https://screendrafts.fandom.com/wiki/British_Royal_Family
+[2025-07-23T16:57:04.644Z] Successfully scraped: https://screendrafts.fandom.com/wiki/British_Royal_Family
+[2025-07-23T16:57:04.749Z] Scraping profile: https://screendrafts.fandom.com/wiki/Cameron_Crowe
+[2025-07-23T16:57:04.804Z] Scraped: Cameron Crowe - https://screendrafts.fandom.com/wiki/Cameron_Crowe
+[2025-07-23T16:57:04.806Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Cameron_Crowe
+[2025-07-23T16:57:04.916Z] Scraping profile: https://screendrafts.fandom.com/wiki/Cannon
+[2025-07-23T16:57:04.974Z] Scraped: Cannon - https://screendrafts.fandom.com/wiki/Cannon
+[2025-07-23T16:57:04.976Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Cannon
+[2025-07-23T16:57:05.082Z] Scraping profile: https://screendrafts.fandom.com/wiki/Canuxploitation
+[2025-07-23T16:57:05.134Z] Scraped: Canuxploitation - https://screendrafts.fandom.com/wiki/Canuxploitation
+[2025-07-23T16:57:05.137Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Canuxploitation
+[2025-07-23T16:57:05.247Z] Scraping profile: https://screendrafts.fandom.com/wiki/Castaways
+[2025-07-23T16:57:05.294Z] Scraped: Castaways - https://screendrafts.fandom.com/wiki/Castaways
+[2025-07-23T16:57:05.296Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Castaways
+[2025-07-23T16:57:05.398Z] Scraping profile: https://screendrafts.fandom.com/wiki/Charlie_Kaufman_Super_Draft
+[2025-07-23T16:57:05.443Z] Scraped: Charlie Kaufman Super Draft - https://screendrafts.fandom.com/wiki/Charlie_Kaufman_Super_Draft
+[2025-07-23T16:57:05.445Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Charlie_Kaufman_Super_Draft
+[2025-07-23T16:57:05.555Z] Scraping profile: https://screendrafts.fandom.com/wiki/A_Christmas_Carol
+[2025-07-23T16:57:05.605Z] Scraped: A Christmas Carol - https://screendrafts.fandom.com/wiki/A_Christmas_Carol
+[2025-07-23T16:57:05.613Z] Successfully scraped: https://screendrafts.fandom.com/wiki/A_Christmas_Carol
+[2025-07-23T16:57:05.722Z] Scraping profile: https://screendrafts.fandom.com/wiki/Christmas_Horror
+[2025-07-23T16:57:05.763Z] Scraped: Christmas Horror - https://screendrafts.fandom.com/wiki/Christmas_Horror
+[2025-07-23T16:57:05.771Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Christmas_Horror
+[2025-07-23T16:57:05.887Z] Scraping profile: https://screendrafts.fandom.com/wiki/Christmas-Adjacent
+[2025-07-23T16:57:05.936Z] Scraped: Christmas-Adjacent - https://screendrafts.fandom.com/wiki/Christmas-Adjacent
+[2025-07-23T16:57:05.938Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Christmas-Adjacent
+[2025-07-23T16:57:06.045Z] Scraping profile: https://screendrafts.fandom.com/wiki/Christopher_Lee
+[2025-07-23T16:57:06.095Z] Scraped: Christopher Lee - https://screendrafts.fandom.com/wiki/Christopher_Lee
+[2025-07-23T16:57:06.097Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Christopher_Lee
+[2025-07-23T16:57:06.210Z] Scraping profile: https://screendrafts.fandom.com/wiki/Chucky_Super_Draft
+[2025-07-23T16:57:06.259Z] Scraped: Chucky Super Draft - https://screendrafts.fandom.com/wiki/Chucky_Super_Draft
+[2025-07-23T16:57:06.261Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Chucky_Super_Draft
+[2025-07-23T16:57:06.372Z] Scraping profile: https://screendrafts.fandom.com/wiki/Classic_Christmas
+[2025-07-23T16:57:06.430Z] Scraped: Classic Christmas - https://screendrafts.fandom.com/wiki/Classic_Christmas
+[2025-07-23T16:57:06.432Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Classic_Christmas
+[2025-07-23T16:57:06.548Z] Scraping profile: https://screendrafts.fandom.com/wiki/Classic_Disney_Live_Action_Adventure
+[2025-07-23T16:57:06.593Z] Scraped: Classic Disney Live Action Adventure - https://screendrafts.fandom.com/wiki/Classic_Disney_Live_Action_Adventure
+[2025-07-23T16:57:06.595Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Classic_Disney_Live_Action_Adventure
+[2025-07-23T16:57:06.711Z] Scraping profile: https://screendrafts.fandom.com/wiki/Classic_Hammer_Horror_mini-Mega
+[2025-07-23T16:57:06.760Z] Scraped: Classic Hammer Horror mini-Mega - https://screendrafts.fandom.com/wiki/Classic_Hammer_Horror_mini-Mega
+[2025-07-23T16:57:06.769Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Classic_Hammer_Horror_mini-Mega
+[2025-07-23T16:57:06.876Z] Scraping profile: https://screendrafts.fandom.com/wiki/Coen_Brothers_Super_Draft
+[2025-07-23T16:57:06.923Z] Scraped: Coen Brothers Super Draft - https://screendrafts.fandom.com/wiki/Coen_Brothers_Super_Draft
+[2025-07-23T16:57:06.930Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Coen_Brothers_Super_Draft
+[2025-07-23T16:57:07.037Z] Scraping profile: https://screendrafts.fandom.com/wiki/The_Cold_War
+[2025-07-23T16:57:07.098Z] Scraped: The Cold War - https://screendrafts.fandom.com/wiki/The_Cold_War
+[2025-07-23T16:57:07.100Z] Successfully scraped: https://screendrafts.fandom.com/wiki/The_Cold_War
+[2025-07-23T16:57:07.211Z] Scraping profile: https://screendrafts.fandom.com/wiki/Colin_Farrell_mini-Mega
+[2025-07-23T16:57:07.459Z] Scraped: Colin Farrell mini-Mega - https://screendrafts.fandom.com/wiki/Colin_Farrell_mini-Mega
+[2025-07-23T16:57:07.461Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Colin_Farrell_mini-Mega
+[2025-07-23T16:57:07.562Z] Scraping profile: https://screendrafts.fandom.com/wiki/Comic_Book_(Non-Superhero)
+[2025-07-23T16:57:07.613Z] Scraped: Comic Book (Non-Superhero) - https://screendrafts.fandom.com/wiki/Comic_Book_(Non-Superhero)
+[2025-07-23T16:57:07.615Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Comic_Book_(Non-Superhero)
+[2025-07-23T16:57:07.718Z] Scraping profile: https://screendrafts.fandom.com/wiki/Con_Artist
+[2025-07-23T16:57:07.767Z] Scraped: Con Artist - https://screendrafts.fandom.com/wiki/Con_Artist
+[2025-07-23T16:57:07.769Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Con_Artist
+[2025-07-23T16:57:07.875Z] Scraping profile: https://screendrafts.fandom.com/wiki/Country_Music
+[2025-07-23T16:57:07.924Z] Scraped: Country Music - https://screendrafts.fandom.com/wiki/Country_Music
+[2025-07-23T16:57:07.927Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Country_Music
+[2025-07-23T16:57:08.029Z] Scraping profile: https://screendrafts.fandom.com/wiki/Courtroom_Movies
+[2025-07-23T16:57:08.084Z] Scraped: Courtroom Movies - https://screendrafts.fandom.com/wiki/Courtroom_Movies
+[2025-07-23T16:57:08.095Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Courtroom_Movies
+[2025-07-23T16:57:08.210Z] Scraping profile: https://screendrafts.fandom.com/wiki/Creature_Features
+[2025-07-23T16:57:08.257Z] Scraped: Creature Features - https://screendrafts.fandom.com/wiki/Creature_Features
+[2025-07-23T16:57:08.267Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Creature_Features
+[2025-07-23T16:57:08.384Z] Scraping profile: https://screendrafts.fandom.com/wiki/Criterion_World_Cinema_Project
+[2025-07-23T16:57:08.439Z] Scraped: Criterion World Cinema Project - https://screendrafts.fandom.com/wiki/Criterion_World_Cinema_Project
+[2025-07-23T16:57:08.441Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Criterion_World_Cinema_Project
+[2025-07-23T16:57:08.545Z] Scraping profile: https://screendrafts.fandom.com/wiki/Crocs_%26_Gators
+[2025-07-23T16:57:08.607Z] Scraped: Crocs & Gators - https://screendrafts.fandom.com/wiki/Crocs_%26_Gators
+[2025-07-23T16:57:08.609Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Crocs_%26_Gators
+[2025-07-23T16:57:08.719Z] Scraping profile: https://screendrafts.fandom.com/wiki/Cults
+[2025-07-23T16:57:08.771Z] Scraped: Cults - https://screendrafts.fandom.com/wiki/Cults
+[2025-07-23T16:57:08.773Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Cults
+[2025-07-23T16:57:08.878Z] Scraping profile: https://screendrafts.fandom.com/wiki/Dance
+[2025-07-23T16:57:08.940Z] Scraped: Dance - https://screendrafts.fandom.com/wiki/Dance
+[2025-07-23T16:57:08.943Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Dance
+[2025-07-23T16:57:09.050Z] Scraping profile: https://screendrafts.fandom.com/wiki/Dark_Christmas
+[2025-07-23T16:57:09.104Z] Scraped: Dark Christmas - https://screendrafts.fandom.com/wiki/Dark_Christmas
+[2025-07-23T16:57:09.106Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Dark_Christmas
+[2025-07-23T16:57:09.209Z] Scraping profile: https://screendrafts.fandom.com/wiki/David_Cronenberg
+[2025-07-23T16:57:09.278Z] Scraped: David Cronenberg - https://screendrafts.fandom.com/wiki/David_Cronenberg
+[2025-07-23T16:57:09.290Z] Successfully scraped: https://screendrafts.fandom.com/wiki/David_Cronenberg
+[2025-07-23T16:57:09.394Z] Scraping profile: https://screendrafts.fandom.com/wiki/DC_Berlantiverse_Super_Draft
+[2025-07-23T16:57:09.456Z] Scraped: DC Berlantiverse Super Draft - https://screendrafts.fandom.com/wiki/DC_Berlantiverse_Super_Draft
+[2025-07-23T16:57:09.467Z] Successfully scraped: https://screendrafts.fandom.com/wiki/DC_Berlantiverse_Super_Draft
+[2025-07-23T16:57:09.585Z] Scraping profile: https://screendrafts.fandom.com/wiki/Denzel_Washington_Mini-Mega
+[2025-07-23T16:57:09.640Z] Scraped: Denzel Washington Mini-Mega - https://screendrafts.fandom.com/wiki/Denzel_Washington_Mini-Mega
+[2025-07-23T16:57:09.643Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Denzel_Washington_Mini-Mega
+[2025-07-23T16:57:09.747Z] Scraping profile: https://screendrafts.fandom.com/wiki/Dimension_Films
+[2025-07-23T16:57:09.802Z] Scraped: Dimension Films - https://screendrafts.fandom.com/wiki/Dimension_Films
+[2025-07-23T16:57:09.804Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Dimension_Films
+[2025-07-23T16:57:09.915Z] Scraping profile: https://screendrafts.fandom.com/wiki/Dinosaurs
+[2025-07-23T16:57:09.965Z] Scraped: Dinosaurs - https://screendrafts.fandom.com/wiki/Dinosaurs
+[2025-07-23T16:57:09.967Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Dinosaurs
+[2025-07-23T16:57:10.076Z] Scraping profile: https://screendrafts.fandom.com/wiki/Directors%27_Final_Films
+[2025-07-23T16:57:10.128Z] Scraped: Directors' Final Films - https://screendrafts.fandom.com/wiki/Directors%27_Final_Films
+[2025-07-23T16:57:10.131Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Directors%27_Final_Films
+[2025-07-23T16:57:10.248Z] Scraping profile: https://screendrafts.fandom.com/wiki/Disney_Animation_Studios_2D
+[2025-07-23T16:57:10.301Z] Scraped: Disney Animation Studios 2D - https://screendrafts.fandom.com/wiki/Disney_Animation_Studios_2D
+[2025-07-23T16:57:10.303Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Disney_Animation_Studios_2D
+[2025-07-23T16:57:10.413Z] Scraping profile: https://screendrafts.fandom.com/wiki/Disney_Animation_Studios_Mega_Draft
+[2025-07-23T16:57:10.483Z] Scraped: Disney Animation Studios Mega Draft - https://screendrafts.fandom.com/wiki/Disney_Animation_Studios_Mega_Draft
+[2025-07-23T16:57:10.495Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Disney_Animation_Studios_Mega_Draft
+[2025-07-23T16:57:10.612Z] Scraping profile: https://screendrafts.fandom.com/wiki/Disney_Attraction_Adaptations_Super_Draft
+[2025-07-23T16:57:10.659Z] Scraped: Disney Attraction Adaptations Super Draft - https://screendrafts.fandom.com/wiki/Disney_Attraction_Adaptations_Super_Draft
+[2025-07-23T16:57:10.668Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Disney_Attraction_Adaptations_Super_Draft
+[2025-07-23T16:57:10.779Z] Scraping profile: https://screendrafts.fandom.com/wiki/Disney_Channel_Original_Movies
+[2025-07-23T16:57:10.837Z] Scraped: Disney Channel Original Movies - https://screendrafts.fandom.com/wiki/Disney_Channel_Original_Movies
+[2025-07-23T16:57:10.839Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Disney_Channel_Original_Movies
+[2025-07-23T16:57:10.957Z] Scraping profile: https://screendrafts.fandom.com/wiki/Dog_Movies
+[2025-07-23T16:57:11.011Z] Scraped: Dog Movies - https://screendrafts.fandom.com/wiki/Dog_Movies
+[2025-07-23T16:57:11.013Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Dog_Movies
+[2025-07-23T16:57:11.115Z] Scraping profile: https://screendrafts.fandom.com/wiki/Don_Bluth_Super_Draft
+[2025-07-23T16:57:11.170Z] Scraped: Don Bluth Super Draft - https://screendrafts.fandom.com/wiki/Don_Bluth_Super_Draft
+[2025-07-23T16:57:11.173Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Don_Bluth_Super_Draft
+[2025-07-23T16:57:11.290Z] Scraping profile: https://screendrafts.fandom.com/wiki/Drag
+[2025-07-23T16:57:11.344Z] Scraped: Drag - https://screendrafts.fandom.com/wiki/Drag
+[2025-07-23T16:57:11.347Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Drag
+[2025-07-23T16:57:11.465Z] Scraping profile: https://screendrafts.fandom.com/wiki/Eddie_Murphy
+[2025-07-23T16:57:11.513Z] Scraped: Eddie Murphy - https://screendrafts.fandom.com/wiki/Eddie_Murphy
+[2025-07-23T16:57:11.515Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Eddie_Murphy
+[2025-07-23T16:57:11.632Z] Scraping profile: https://screendrafts.fandom.com/wiki/Elmore_Leonard
+[2025-07-23T16:57:11.704Z] Scraped: Elmore Leonard - https://screendrafts.fandom.com/wiki/Elmore_Leonard
+[2025-07-23T16:57:11.715Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Elmore_Leonard
+[2025-07-23T16:57:11.826Z] Scraping profile: https://screendrafts.fandom.com/wiki/Ensemble_Casts
+[2025-07-23T16:57:11.878Z] Scraped: Ensemble Casts - https://screendrafts.fandom.com/wiki/Ensemble_Casts
+[2025-07-23T16:57:11.890Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Ensemble_Casts
+[2025-07-23T16:57:12.007Z] Scraping profile: https://screendrafts.fandom.com/wiki/Erotic_Horror
+[2025-07-23T16:57:12.063Z] Scraped: Erotic Horror - https://screendrafts.fandom.com/wiki/Erotic_Horror
+[2025-07-23T16:57:12.065Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Erotic_Horror
+[2025-07-23T16:57:12.178Z] Scraping profile: https://screendrafts.fandom.com/wiki/Erotic_Thrillers
+[2025-07-23T16:57:12.402Z] Scraped: Erotic Thrillers - https://screendrafts.fandom.com/wiki/Erotic_Thrillers
+[2025-07-23T16:57:12.411Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Erotic_Thrillers
+[2025-07-23T16:57:12.515Z] Scraping profile: https://screendrafts.fandom.com/wiki/European_Vacation
+[2025-07-23T16:57:12.573Z] Scraped: European Vacation - https://screendrafts.fandom.com/wiki/European_Vacation
+[2025-07-23T16:57:12.576Z] Successfully scraped: https://screendrafts.fandom.com/wiki/European_Vacation
+[2025-07-23T16:57:12.686Z] Scraping profile: https://screendrafts.fandom.com/wiki/F_Cinemascore_Super_Draft
+[2025-07-23T16:57:12.753Z] Scraped: F Cinemascore Super Draft - https://screendrafts.fandom.com/wiki/F_Cinemascore_Super_Draft
+[2025-07-23T16:57:12.756Z] Successfully scraped: https://screendrafts.fandom.com/wiki/F_Cinemascore_Super_Draft
+[2025-07-23T16:57:12.863Z] Scraping profile: https://screendrafts.fandom.com/wiki/Fictional_Musicians_Mini-Mega
+[2025-07-23T16:57:12.927Z] Scraped: Fictional Musicians Mini-Mega - https://screendrafts.fandom.com/wiki/Fictional_Musicians_Mini-Mega
+[2025-07-23T16:57:12.930Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Fictional_Musicians_Mini-Mega
+[2025-07-23T16:57:13.032Z] Scraping profile: https://screendrafts.fandom.com/wiki/Films_About_Filmmakers
+[2025-07-23T16:57:13.087Z] Scraped: Films About Filmmakers - https://screendrafts.fandom.com/wiki/Films_About_Filmmakers
+[2025-07-23T16:57:13.099Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Films_About_Filmmakers
+[2025-07-23T16:57:13.201Z] Scraping profile: https://screendrafts.fandom.com/wiki/Fivequels
+[2025-07-23T16:57:13.457Z] Scraped: Fivequels - https://screendrafts.fandom.com/wiki/Fivequels
+[2025-07-23T16:57:13.467Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Fivequels
+[2025-07-23T16:57:13.578Z] Scraping profile: https://screendrafts.fandom.com/wiki/Florida_Crime
+[2025-07-23T16:57:13.636Z] Scraped: Florida Crime - https://screendrafts.fandom.com/wiki/Florida_Crime
+[2025-07-23T16:57:13.638Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Florida_Crime
+[2025-07-23T16:57:13.750Z] Scraping profile: https://screendrafts.fandom.com/wiki/Found_Footage
+[2025-07-23T16:57:13.808Z] Scraped: Found Footage - https://screendrafts.fandom.com/wiki/Found_Footage
+[2025-07-23T16:57:13.810Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Found_Footage
+[2025-07-23T16:57:13.915Z] Scraping profile: https://screendrafts.fandom.com/wiki/Francis_Ford_Coppola_Super_Draft
+[2025-07-23T16:57:13.983Z] Scraped: Francis Ford Coppola Super Draft - https://screendrafts.fandom.com/wiki/Francis_Ford_Coppola_Super_Draft
+[2025-07-23T16:57:13.985Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Francis_Ford_Coppola_Super_Draft
+[2025-07-23T16:57:14.087Z] Scraping profile: https://screendrafts.fandom.com/wiki/Fran%C3%A7ois_Truffaut_Super_Draft
+[2025-07-23T16:57:14.153Z] Scraped: François Truffaut Super Draft - https://screendrafts.fandom.com/wiki/Fran%C3%A7ois_Truffaut_Super_Draft
+[2025-07-23T16:57:14.158Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Fran%C3%A7ois_Truffaut_Super_Draft
+[2025-07-23T16:57:14.266Z] Scraping profile: https://screendrafts.fandom.com/wiki/Freddy_vs._Jason_Super_Draft
+[2025-07-23T16:57:14.319Z] Scraped: Freddy vs. Jason Super Draft - https://screendrafts.fandom.com/wiki/Freddy_vs._Jason_Super_Draft
+[2025-07-23T16:57:14.321Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Freddy_vs._Jason_Super_Draft
+[2025-07-23T16:57:14.437Z] Scraping profile: https://screendrafts.fandom.com/wiki/Friends
+[2025-07-23T16:57:14.489Z] Scraped: Friends - https://screendrafts.fandom.com/wiki/Friends
+[2025-07-23T16:57:14.500Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Friends
+[2025-07-23T16:57:14.615Z] Scraping profile: https://screendrafts.fandom.com/wiki/Game_Movies
+[2025-07-23T16:57:14.668Z] Scraped: Game Movies - https://screendrafts.fandom.com/wiki/Game_Movies
+[2025-07-23T16:57:14.678Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Game_Movies
+[2025-07-23T16:57:14.780Z] Scraping profile: https://screendrafts.fandom.com/wiki/Geena_Davis
+[2025-07-23T16:57:14.835Z] Scraped: Geena Davis - https://screendrafts.fandom.com/wiki/Geena_Davis
+[2025-07-23T16:57:14.837Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Geena_Davis
+[2025-07-23T16:57:14.948Z] Scraping profile: https://screendrafts.fandom.com/wiki/Gene_Hackman_mini-Mega
+[2025-07-23T16:57:15.011Z] Scraped: Gene Hackman mini-Mega - https://screendrafts.fandom.com/wiki/Gene_Hackman_mini-Mega
+[2025-07-23T16:57:15.013Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Gene_Hackman_mini-Mega
+[2025-07-23T16:57:15.120Z] Scraping profile: https://screendrafts.fandom.com/wiki/George_Clooney
+[2025-07-23T16:57:15.183Z] Scraped: George Clooney - https://screendrafts.fandom.com/wiki/George_Clooney
+[2025-07-23T16:57:15.185Z] Successfully scraped: https://screendrafts.fandom.com/wiki/George_Clooney
+[2025-07-23T16:57:15.292Z] Scraping profile: https://screendrafts.fandom.com/wiki/George_Lucas
+[2025-07-23T16:57:15.348Z] Scraped: George Lucas - https://screendrafts.fandom.com/wiki/George_Lucas
+[2025-07-23T16:57:15.351Z] Successfully scraped: https://screendrafts.fandom.com/wiki/George_Lucas
+[2025-07-23T16:57:15.463Z] Scraping profile: https://screendrafts.fandom.com/wiki/Giallo
+[2025-07-23T16:57:15.516Z] Scraped: Giallo - https://screendrafts.fandom.com/wiki/Giallo
+[2025-07-23T16:57:15.518Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Giallo
+[2025-07-23T16:57:15.632Z] Scraping profile: https://screendrafts.fandom.com/wiki/Godzilla_mini-Mega
+[2025-07-23T16:57:15.700Z] Scraped: Godzilla mini-Mega - https://screendrafts.fandom.com/wiki/Godzilla_mini-Mega
+[2025-07-23T16:57:15.712Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Godzilla_mini-Mega
+[2025-07-23T16:57:15.818Z] Scraping profile: https://screendrafts.fandom.com/wiki/Godzilla_vs._Kong
+[2025-07-23T16:57:15.866Z] Scraped: Godzilla vs. Kong - https://screendrafts.fandom.com/wiki/Godzilla_vs._Kong
+[2025-07-23T16:57:15.876Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Godzilla_vs._Kong
+[2025-07-23T16:57:15.986Z] Scraping profile: https://screendrafts.fandom.com/wiki/Greta_Gerwig
+[2025-07-23T16:57:16.045Z] Scraped: Greta Gerwig - https://screendrafts.fandom.com/wiki/Greta_Gerwig
+[2025-07-23T16:57:16.047Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Greta_Gerwig
+[2025-07-23T16:57:16.153Z] Scraping profile: https://screendrafts.fandom.com/wiki/Hallmark_Christmas_Mini-Mega
+[2025-07-23T16:57:16.212Z] Scraped: Hallmark Christmas Mini-Mega - https://screendrafts.fandom.com/wiki/Hallmark_Christmas_Mini-Mega
+[2025-07-23T16:57:16.214Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Hallmark_Christmas_Mini-Mega
+[2025-07-23T16:57:16.324Z] Scraping profile: https://screendrafts.fandom.com/wiki/Halloween_Movies
+[2025-07-23T16:57:16.385Z] Scraped: Halloween Movies - https://screendrafts.fandom.com/wiki/Halloween_Movies
+[2025-07-23T16:57:16.387Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Halloween_Movies
+[2025-07-23T16:57:16.496Z] Scraping profile: https://screendrafts.fandom.com/wiki/Halloween_Super_Draft
+[2025-07-23T16:57:16.746Z] Scraped: Halloween Super Draft - https://screendrafts.fandom.com/wiki/Halloween_Super_Draft
+[2025-07-23T16:57:16.748Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Halloween_Super_Draft
+[2025-07-23T16:57:16.851Z] Scraping profile: https://screendrafts.fandom.com/wiki/Hannibal_mini-Super_Draft
+[2025-07-23T16:57:16.905Z] Scraped: Hannibal mini-Super Draft - https://screendrafts.fandom.com/wiki/Hannibal_mini-Super_Draft
+[2025-07-23T16:57:16.907Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Hannibal_mini-Super_Draft
+[2025-07-23T16:57:17.020Z] Scraping profile: https://screendrafts.fandom.com/wiki/Happy_Madison_Productions
+[2025-07-23T16:57:17.072Z] Scraped: Happy Madison Productions - https://screendrafts.fandom.com/wiki/Happy_Madison_Productions
+[2025-07-23T16:57:17.083Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Happy_Madison_Productions
+[2025-07-23T16:57:17.188Z] Scraping profile: https://screendrafts.fandom.com/wiki/Harrison_Ford_mini-Mega
+[2025-07-23T16:57:17.236Z] Scraped: Harrison Ford mini-Mega - https://screendrafts.fandom.com/wiki/Harrison_Ford_mini-Mega
+[2025-07-23T16:57:17.244Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Harrison_Ford_mini-Mega
+[2025-07-23T16:57:17.360Z] Scraping profile: https://screendrafts.fandom.com/wiki/Heavy_Metal
+[2025-07-23T16:57:17.419Z] Scraped: Heavy Metal - https://screendrafts.fandom.com/wiki/Heavy_Metal
+[2025-07-23T16:57:17.421Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Heavy_Metal
+[2025-07-23T16:57:17.531Z] Scraping profile: https://screendrafts.fandom.com/wiki/Heist_Movies
+[2025-07-23T16:57:17.798Z] Scraped: Heist Movies - https://screendrafts.fandom.com/wiki/Heist_Movies
+[2025-07-23T16:57:17.800Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Heist_Movies
+[2025-07-23T16:57:17.903Z] Scraping profile: https://screendrafts.fandom.com/wiki/Hellraiser_(episode)
+[2025-07-23T16:57:17.985Z] Scraped: Hellraiser (episode) - https://screendrafts.fandom.com/wiki/Hellraiser_(episode)
+[2025-07-23T16:57:17.988Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Hellraiser_(episode)
+[2025-07-23T16:57:18.100Z] Scraping profile: https://screendrafts.fandom.com/wiki/High_School_Horror_mini-Mega
+[2025-07-23T16:57:18.168Z] Scraped: High School Horror mini-Mega - https://screendrafts.fandom.com/wiki/High_School_Horror_mini-Mega
+[2025-07-23T16:57:18.171Z] Successfully scraped: https://screendrafts.fandom.com/wiki/High_School_Horror_mini-Mega
+[2025-07-23T16:57:18.281Z] Scraping profile: https://screendrafts.fandom.com/wiki/Holiday_Horror_(Non_Christmas_%26_Halloween)
+[2025-07-23T16:57:18.331Z] Scraped: Holiday Horror (Non Christmas & Halloween) - https://screendrafts.fandom.com/wiki/Holiday_Horror_(Non_Christmas_%26_Halloween)
+[2025-07-23T16:57:18.333Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Holiday_Horror_(Non_Christmas_%26_Halloween)
+[2025-07-23T16:57:18.450Z] Scraping profile: https://screendrafts.fandom.com/wiki/Home_Invasion
+[2025-07-23T16:57:18.515Z] Scraped: Home Invasion - https://screendrafts.fandom.com/wiki/Home_Invasion
+[2025-07-23T16:57:18.527Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Home_Invasion
+[2025-07-23T16:57:18.631Z] Scraping profile: https://screendrafts.fandom.com/wiki/Horror_Anthologies
+[2025-07-23T16:57:18.680Z] Scraped: Horror Anthologies - https://screendrafts.fandom.com/wiki/Horror_Anthologies
+[2025-07-23T16:57:18.689Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Horror_Anthologies
+[2025-07-23T16:57:18.795Z] Scraping profile: https://screendrafts.fandom.com/wiki/Horror_Comedy_mini-Mega
+[2025-07-23T16:57:18.855Z] Scraped: Horror Comedy mini-Mega - https://screendrafts.fandom.com/wiki/Horror_Comedy_mini-Mega
+[2025-07-23T16:57:18.857Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Horror_Comedy_mini-Mega
+[2025-07-23T16:57:18.967Z] Scraping profile: https://screendrafts.fandom.com/wiki/Horror_Musicals
+[2025-07-23T16:57:19.025Z] Scraped: Horror Musicals - https://screendrafts.fandom.com/wiki/Horror_Musicals
+[2025-07-23T16:57:19.027Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Horror_Musicals
+[2025-07-23T16:57:19.144Z] Scraping profile: https://screendrafts.fandom.com/wiki/Horror_Prequels
+[2025-07-23T16:57:19.202Z] Scraped: Horror Prequels - https://screendrafts.fandom.com/wiki/Horror_Prequels
+[2025-07-23T16:57:19.204Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Horror_Prequels
+[2025-07-23T16:57:19.311Z] Scraping profile: https://screendrafts.fandom.com/wiki/Horror_Remakes
+[2025-07-23T16:57:19.368Z] Scraped: Horror Remakes - https://screendrafts.fandom.com/wiki/Horror_Remakes
+[2025-07-23T16:57:19.371Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Horror_Remakes
+[2025-07-23T16:57:19.480Z] Scraping profile: https://screendrafts.fandom.com/wiki/Horror_Sequels
+[2025-07-23T16:57:19.530Z] Scraped: Horror Sequels - https://screendrafts.fandom.com/wiki/Horror_Sequels
+[2025-07-23T16:57:19.532Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Horror_Sequels
+[2025-07-23T16:57:19.638Z] Scraping profile: https://screendrafts.fandom.com/wiki/Hotels_%26_Motels
+[2025-07-23T16:57:19.694Z] Scraped: Hotels & Motels - https://screendrafts.fandom.com/wiki/Hotels_%26_Motels
+[2025-07-23T16:57:19.705Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Hotels_%26_Motels
+[2025-07-23T16:57:19.818Z] Scraping profile: https://screendrafts.fandom.com/wiki/Hugh_Grant
+[2025-07-23T16:57:19.865Z] Scraped: Hugh Grant - https://screendrafts.fandom.com/wiki/Hugh_Grant
+[2025-07-23T16:57:19.873Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Hugh_Grant
+[2025-07-23T16:57:19.979Z] Scraping profile: https://screendrafts.fandom.com/wiki/Humphrey_Bogart
+[2025-07-23T16:57:20.037Z] Scraped: Humphrey Bogart - https://screendrafts.fandom.com/wiki/Humphrey_Bogart
+[2025-07-23T16:57:20.039Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Humphrey_Bogart
+[2025-07-23T16:57:20.145Z] Scraping profile: https://screendrafts.fandom.com/wiki/Independent_Spirit_Best_First_Feature_Award_Winners
+[2025-07-23T16:57:20.208Z] Scraped: Independent Spirit Best First Feature Award Winners - https://screendrafts.fandom.com/wiki/Independent_Spirit_Best_First_Feature_Award_Winners
+[2025-07-23T16:57:20.210Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Independent_Spirit_Best_First_Feature_Award_Winners
+[2025-07-23T16:57:20.314Z] Scraping profile: https://screendrafts.fandom.com/wiki/Indiana_Jones_mini-Super_Draft
+[2025-07-23T16:57:20.377Z] Scraped: Indiana Jones mini-Super Draft - https://screendrafts.fandom.com/wiki/Indiana_Jones_mini-Super_Draft
+[2025-07-23T16:57:20.380Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Indiana_Jones_mini-Super_Draft
+[2025-07-23T16:57:20.490Z] Scraping profile: https://screendrafts.fandom.com/wiki/Internet_Horror
+[2025-07-23T16:57:20.547Z] Scraped: Internet Horror - https://screendrafts.fandom.com/wiki/Internet_Horror
+[2025-07-23T16:57:20.549Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Internet_Horror
+[2025-07-23T16:57:20.666Z] Scraping profile: https://screendrafts.fandom.com/wiki/The_Internet
+[2025-07-23T16:57:20.726Z] Scraped: The Internet - https://screendrafts.fandom.com/wiki/The_Internet
+[2025-07-23T16:57:20.728Z] Successfully scraped: https://screendrafts.fandom.com/wiki/The_Internet
+[2025-07-23T16:57:20.831Z] Scraping profile: https://screendrafts.fandom.com/wiki/James_Bond_Super_Draft
+[2025-07-23T16:57:20.903Z] Scraped: James Bond Super Draft - https://screendrafts.fandom.com/wiki/James_Bond_Super_Draft
+[2025-07-23T16:57:20.913Z] Successfully scraped: https://screendrafts.fandom.com/wiki/James_Bond_Super_Draft
+[2025-07-23T16:57:21.032Z] Scraping profile: https://screendrafts.fandom.com/wiki/James_Spader
+[2025-07-23T16:57:21.075Z] Scraped: James Spader - https://screendrafts.fandom.com/wiki/James_Spader
+[2025-07-23T16:57:21.085Z] Successfully scraped: https://screendrafts.fandom.com/wiki/James_Spader
+[2025-07-23T16:57:21.191Z] Scraping profile: https://screendrafts.fandom.com/wiki/Jane_Austen
+[2025-07-23T16:57:21.251Z] Scraped: Jane Austen - https://screendrafts.fandom.com/wiki/Jane_Austen
+[2025-07-23T16:57:21.254Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Jane_Austen
+[2025-07-23T16:57:21.356Z] Scraping profile: https://screendrafts.fandom.com/wiki/Jean-Claude_Van_Damme
+[2025-07-23T16:57:21.429Z] Scraped: Jean-Claude Van Damme - https://screendrafts.fandom.com/wiki/Jean-Claude_Van_Damme
+[2025-07-23T16:57:21.432Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Jean-Claude_Van_Damme
+[2025-07-23T16:57:21.539Z] Scraping profile: https://screendrafts.fandom.com/wiki/Jerry_Bruckheimer
+[2025-07-23T16:57:21.788Z] Scraped: Jerry Bruckheimer - https://screendrafts.fandom.com/wiki/Jerry_Bruckheimer
+[2025-07-23T16:57:21.790Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Jerry_Bruckheimer
+[2025-07-23T16:57:21.900Z] Scraping profile: https://screendrafts.fandom.com/wiki/Jim_Henson
+[2025-07-23T16:57:21.956Z] Scraped: Jim Henson - https://screendrafts.fandom.com/wiki/Jim_Henson
+[2025-07-23T16:57:21.959Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Jim_Henson
+[2025-07-23T16:57:22.070Z] Scraping profile: https://screendrafts.fandom.com/wiki/Jodie_Foster
+[2025-07-23T16:57:22.118Z] Scraped: Jodie Foster - https://screendrafts.fandom.com/wiki/Jodie_Foster
+[2025-07-23T16:57:22.120Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Jodie_Foster
+[2025-07-23T16:57:22.232Z] Scraping profile: https://screendrafts.fandom.com/wiki/Joel_Schumacher_mini-Mega
+[2025-07-23T16:57:22.288Z] Scraped: Joel Schumacher mini-Mega - https://screendrafts.fandom.com/wiki/Joel_Schumacher_mini-Mega
+[2025-07-23T16:57:22.298Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Joel_Schumacher_mini-Mega
+[2025-07-23T16:57:22.407Z] Scraping profile: https://screendrafts.fandom.com/wiki/John_Carpenter_Live
+[2025-07-23T16:57:22.451Z] Scraped: John Carpenter Live - https://screendrafts.fandom.com/wiki/John_Carpenter_Live
+[2025-07-23T16:57:22.460Z] Successfully scraped: https://screendrafts.fandom.com/wiki/John_Carpenter_Live
+[2025-07-23T16:57:22.573Z] Scraping profile: https://screendrafts.fandom.com/wiki/John_Grisham_Super_Draft
+[2025-07-23T16:57:22.626Z] Scraped: John Grisham Super Draft - https://screendrafts.fandom.com/wiki/John_Grisham_Super_Draft
+[2025-07-23T16:57:22.629Z] Successfully scraped: https://screendrafts.fandom.com/wiki/John_Grisham_Super_Draft
+[2025-07-23T16:57:22.737Z] Scraping profile: https://screendrafts.fandom.com/wiki/John_Patrick_Shanley_Super_Draft
+[2025-07-23T16:57:22.799Z] Scraped: John Patrick Shanley Super Draft - https://screendrafts.fandom.com/wiki/John_Patrick_Shanley_Super_Draft
+[2025-07-23T16:57:22.801Z] Successfully scraped: https://screendrafts.fandom.com/wiki/John_Patrick_Shanley_Super_Draft
+[2025-07-23T16:57:22.913Z] Scraping profile: https://screendrafts.fandom.com/wiki/John_Waters
+[2025-07-23T16:57:22.972Z] Scraped: John Waters - https://screendrafts.fandom.com/wiki/John_Waters
+[2025-07-23T16:57:22.974Z] Successfully scraped: https://screendrafts.fandom.com/wiki/John_Waters
+[2025-07-23T16:57:23.080Z] Scraping profile: https://screendrafts.fandom.com/wiki/John_Woo
+[2025-07-23T16:57:23.136Z] Scraped: John Woo - https://screendrafts.fandom.com/wiki/John_Woo
+[2025-07-23T16:57:23.139Z] Successfully scraped: https://screendrafts.fandom.com/wiki/John_Woo
+[2025-07-23T16:57:23.249Z] Scraping profile: https://screendrafts.fandom.com/wiki/Judy_Garland
+[2025-07-23T16:57:23.294Z] Scraped: Judy Garland - https://screendrafts.fandom.com/wiki/Judy_Garland
+[2025-07-23T16:57:23.297Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Judy_Garland
+[2025-07-23T16:57:23.413Z] Scraping profile: https://screendrafts.fandom.com/wiki/Jukebox_Musicals
+[2025-07-23T16:57:23.468Z] Scraped: Jukebox Musicals - https://screendrafts.fandom.com/wiki/Jukebox_Musicals
+[2025-07-23T16:57:23.480Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Jukebox_Musicals
+[2025-07-23T16:57:23.597Z] Scraping profile: https://screendrafts.fandom.com/wiki/Juliette_Binoche_mini-Mega
+[2025-07-23T16:57:23.649Z] Scraped: Juliette Binoche mini-Mega - https://screendrafts.fandom.com/wiki/Juliette_Binoche_mini-Mega
+[2025-07-23T16:57:23.659Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Juliette_Binoche_mini-Mega
+[2025-07-23T16:57:23.765Z] Scraping profile: https://screendrafts.fandom.com/wiki/July_4th_Weekend
+[2025-07-23T16:57:23.820Z] Scraped: July 4th Weekend - https://screendrafts.fandom.com/wiki/July_4th_Weekend
+[2025-07-23T16:57:23.823Z] Successfully scraped: https://screendrafts.fandom.com/wiki/July_4th_Weekend
+[2025-07-23T16:57:23.934Z] Scraping profile: https://screendrafts.fandom.com/wiki/Jurassic_Park_/_World_mini-Super_Draft
+[2025-07-23T16:57:23.998Z] Scraped: Jurassic Park / World mini-Super Draft - https://screendrafts.fandom.com/wiki/Jurassic_Park_/_World_mini-Super_Draft
+[2025-07-23T16:57:24.000Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Jurassic_Park_/_World_mini-Super_Draft
+[2025-07-23T16:57:24.114Z] Scraping profile: https://screendrafts.fandom.com/wiki/Kathryn_Bigelow_Super_Draft
+[2025-07-23T16:57:24.180Z] Scraped: Kathryn Bigelow Super Draft - https://screendrafts.fandom.com/wiki/Kathryn_Bigelow_Super_Draft
+[2025-07-23T16:57:24.183Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Kathryn_Bigelow_Super_Draft
+[2025-07-23T16:57:24.296Z] Scraping profile: https://screendrafts.fandom.com/wiki/Kelly_Reichardt_Super_Draft
+[2025-07-23T16:57:24.360Z] Scraped: Kelly Reichardt Super Draft - https://screendrafts.fandom.com/wiki/Kelly_Reichardt_Super_Draft
+[2025-07-23T16:57:24.363Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Kelly_Reichardt_Super_Draft
+[2025-07-23T16:57:24.474Z] Scraping profile: https://screendrafts.fandom.com/wiki/Kidventure
+[2025-07-23T16:57:24.529Z] Scraped: Kidventure - https://screendrafts.fandom.com/wiki/Kidventure
+[2025-07-23T16:57:24.531Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Kidventure
+[2025-07-23T16:57:24.647Z] Scraping profile: https://screendrafts.fandom.com/wiki/Kirsten_Dunst
+[2025-07-23T16:57:24.711Z] Scraped: Kirsten Dunst - https://screendrafts.fandom.com/wiki/Kirsten_Dunst
+[2025-07-23T16:57:24.721Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Kirsten_Dunst
+[2025-07-23T16:57:24.833Z] Scraping profile: https://screendrafts.fandom.com/wiki/Kristen_Stewart
+[2025-07-23T16:57:24.889Z] Scraped: Kristen Stewart - https://screendrafts.fandom.com/wiki/Kristen_Stewart
+[2025-07-23T16:57:24.900Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Kristen_Stewart
+[2025-07-23T16:57:25.005Z] Scraping profile: https://screendrafts.fandom.com/wiki/Kubrick
+[2025-07-23T16:57:25.070Z] Scraped: Kubrick - https://screendrafts.fandom.com/wiki/Kubrick
+[2025-07-23T16:57:25.072Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Kubrick
+[2025-07-23T16:57:25.190Z] Scraping profile: https://screendrafts.fandom.com/wiki/Laura_Dern
+[2025-07-23T16:57:25.261Z] Scraped: Laura Dern - https://screendrafts.fandom.com/wiki/Laura_Dern
+[2025-07-23T16:57:25.264Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Laura_Dern
+[2025-07-23T16:57:25.374Z] Scraping profile: https://screendrafts.fandom.com/wiki/Legacy_Sequels
+[2025-07-23T16:57:25.491Z] Scraped: Legacy Sequels - https://screendrafts.fandom.com/wiki/Legacy_Sequels
+[2025-07-23T16:57:25.494Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Legacy_Sequels
+[2025-07-23T16:57:25.609Z] Scraping profile: https://screendrafts.fandom.com/wiki/Lesbians_mini-Mega
+[2025-07-23T16:57:25.664Z] Scraped: Lesbians mini-Mega - https://screendrafts.fandom.com/wiki/Lesbians_mini-Mega
+[2025-07-23T16:57:25.667Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Lesbians_mini-Mega
+[2025-07-23T16:57:25.781Z] Scraping profile: https://screendrafts.fandom.com/wiki/Lorne_Michaels
+[2025-07-23T16:57:25.828Z] Scraped: Lorne Michaels - https://screendrafts.fandom.com/wiki/Lorne_Michaels
+[2025-07-23T16:57:25.830Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Lorne_Michaels
+[2025-07-23T16:57:25.937Z] Scraping profile: https://screendrafts.fandom.com/wiki/Lucio_Fulci
+[2025-07-23T16:57:25.994Z] Scraped: Lucio Fulci - https://screendrafts.fandom.com/wiki/Lucio_Fulci
+[2025-07-23T16:57:26.005Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Lucio_Fulci
+[2025-07-23T16:57:26.121Z] Scraping profile: https://screendrafts.fandom.com/wiki/Lynn_Shelton_Super_Draft
+[2025-07-23T16:57:26.178Z] Scraped: Lynn Shelton Super Draft - https://screendrafts.fandom.com/wiki/Lynn_Shelton_Super_Draft
+[2025-07-23T16:57:26.189Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Lynn_Shelton_Super_Draft
+[2025-07-23T16:57:26.293Z] Scraping profile: https://screendrafts.fandom.com/wiki/M._Night_Shyamalan_Super_Draft
+[2025-07-23T16:57:26.350Z] Scraped: M. Night Shyamalan Super Draft - https://screendrafts.fandom.com/wiki/M._Night_Shyamalan_Super_Draft
+[2025-07-23T16:57:26.352Z] Successfully scraped: https://screendrafts.fandom.com/wiki/M._Night_Shyamalan_Super_Draft
+[2025-07-23T16:57:26.464Z] Scraping profile: https://screendrafts.fandom.com/wiki/Mad_Scientist
+[2025-07-23T16:57:26.519Z] Scraped: Mad Scientist - https://screendrafts.fandom.com/wiki/Mad_Scientist
+[2025-07-23T16:57:26.521Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Mad_Scientist
+[2025-07-23T16:57:26.636Z] Scraping profile: https://screendrafts.fandom.com/wiki/Martin_Scorsese_Super_Draft
+[2025-07-23T16:57:26.694Z] Scraped: Martin Scorsese Super Draft - https://screendrafts.fandom.com/wiki/Martin_Scorsese_Super_Draft
+[2025-07-23T16:57:26.696Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Martin_Scorsese_Super_Draft
+[2025-07-23T16:57:26.809Z] Scraping profile: https://screendrafts.fandom.com/wiki/Max_von_Sydow
+[2025-07-23T16:57:26.869Z] Scraped: Max von Sydow - https://screendrafts.fandom.com/wiki/Max_von_Sydow
+[2025-07-23T16:57:26.872Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Max_von_Sydow
+[2025-07-23T16:57:26.974Z] Scraping profile: https://screendrafts.fandom.com/wiki/MCU_Phase_4_Super_Draft
+[2025-07-23T16:57:27.033Z] Scraped: MCU Phase 4 Super Draft - https://screendrafts.fandom.com/wiki/MCU_Phase_4_Super_Draft
+[2025-07-23T16:57:27.035Z] Successfully scraped: https://screendrafts.fandom.com/wiki/MCU_Phase_4_Super_Draft
+[2025-07-23T16:57:27.138Z] Scraping profile: https://screendrafts.fandom.com/wiki/MCU_Super_Draft
+[2025-07-23T16:57:27.195Z] Scraped: MCU Super Draft - https://screendrafts.fandom.com/wiki/MCU_Super_Draft
+[2025-07-23T16:57:27.207Z] Successfully scraped: https://screendrafts.fandom.com/wiki/MCU_Super_Draft
+[2025-07-23T16:57:27.315Z] Scraping profile: https://screendrafts.fandom.com/wiki/Merchant_/_Ivory
+[2025-07-23T16:57:27.361Z] Scraped: Merchant / Ivory - https://screendrafts.fandom.com/wiki/Merchant_/_Ivory
+[2025-07-23T16:57:27.372Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Merchant_/_Ivory
+[2025-07-23T16:57:27.485Z] Scraping profile: https://screendrafts.fandom.com/wiki/Michael_Crichton_Super_Draft
+[2025-07-23T16:57:27.551Z] Scraped: Michael Crichton Super Draft - https://screendrafts.fandom.com/wiki/Michael_Crichton_Super_Draft
+[2025-07-23T16:57:27.553Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Michael_Crichton_Super_Draft
+[2025-07-23T16:57:27.668Z] Scraping profile: https://screendrafts.fandom.com/wiki/Michael_Mann_Super_Draft
+[2025-07-23T16:57:27.735Z] Scraped: Michael Mann Super Draft - https://screendrafts.fandom.com/wiki/Michael_Mann_Super_Draft
+[2025-07-23T16:57:27.737Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Michael_Mann_Super_Draft
+[2025-07-23T16:57:27.840Z] Scraping profile: https://screendrafts.fandom.com/wiki/Minnesota_Mini-Mega
+[2025-07-23T16:57:27.904Z] Scraped: Minnesota Mini-Mega - https://screendrafts.fandom.com/wiki/Minnesota_Mini-Mega
+[2025-07-23T16:57:27.907Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Minnesota_Mini-Mega
+[2025-07-23T16:57:28.013Z] Scraping profile: https://screendrafts.fandom.com/wiki/Mission:_Impossible_Super_Draft
+[2025-07-23T16:57:28.072Z] Scraped: Mission: Impossible Super Draft - https://screendrafts.fandom.com/wiki/Mission:_Impossible_Super_Draft
+[2025-07-23T16:57:28.075Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Mission:_Impossible_Super_Draft
+[2025-07-23T16:57:28.186Z] Scraping profile: https://screendrafts.fandom.com/wiki/Mistaken_Identity
+[2025-07-23T16:57:28.234Z] Scraped: Mistaken Identity - https://screendrafts.fandom.com/wiki/Mistaken_Identity
+[2025-07-23T16:57:28.237Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Mistaken_Identity
+[2025-07-23T16:57:28.342Z] Scraping profile: https://screendrafts.fandom.com/wiki/Mixtape_Movies
+[2025-07-23T16:57:28.400Z] Scraped: Mixtape Movies - https://screendrafts.fandom.com/wiki/Mixtape_Movies
+[2025-07-23T16:57:28.411Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Mixtape_Movies
+[2025-07-23T16:57:28.526Z] Scraping profile: https://screendrafts.fandom.com/wiki/Mothers_%26_Daughters
+[2025-07-23T16:57:28.578Z] Scraped: Mothers & Daughters - https://screendrafts.fandom.com/wiki/Mothers_%26_Daughters
+[2025-07-23T16:57:28.589Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Mothers_%26_Daughters
+[2025-07-23T16:57:28.697Z] Scraping profile: https://screendrafts.fandom.com/wiki/Movies_About_Screenwriters
+[2025-07-23T16:57:28.754Z] Scraped: Movies About Screenwriters - https://screendrafts.fandom.com/wiki/Movies_About_Screenwriters
+[2025-07-23T16:57:28.756Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Movies_About_Screenwriters
+[2025-07-23T16:57:28.872Z] Scraping profile: https://screendrafts.fandom.com/wiki/Movies_About_Television
+[2025-07-23T16:57:28.936Z] Scraped: Movies About Television - https://screendrafts.fandom.com/wiki/Movies_About_Television
+[2025-07-23T16:57:28.938Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Movies_About_Television
+[2025-07-23T16:57:29.044Z] Scraping profile: https://screendrafts.fandom.com/wiki/MTV_Movie_Awards_Best_Kiss_Winners
+[2025-07-23T16:57:29.102Z] Scraped: MTV Movie Awards Best Kiss Winners - https://screendrafts.fandom.com/wiki/MTV_Movie_Awards_Best_Kiss_Winners
+[2025-07-23T16:57:29.104Z] Successfully scraped: https://screendrafts.fandom.com/wiki/MTV_Movie_Awards_Best_Kiss_Winners
+[2025-07-23T16:57:29.215Z] Scraping profile: https://screendrafts.fandom.com/wiki/Multiple_Roles
+[2025-07-23T16:57:29.272Z] Scraped: Multiple Roles - https://screendrafts.fandom.com/wiki/Multiple_Roles
+[2025-07-23T16:57:29.274Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Multiple_Roles
+[2025-07-23T16:57:29.383Z] Scraping profile: https://screendrafts.fandom.com/wiki/Music_Docs
+[2025-07-23T16:57:29.433Z] Scraped: Music Docs - https://screendrafts.fandom.com/wiki/Music_Docs
+[2025-07-23T16:57:29.435Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Music_Docs
+[2025-07-23T16:57:29.542Z] Scraping profile: https://screendrafts.fandom.com/wiki/NASA
+[2025-07-23T16:57:29.595Z] Scraped: NASA - https://screendrafts.fandom.com/wiki/NASA
+[2025-07-23T16:57:29.606Z] Successfully scraped: https://screendrafts.fandom.com/wiki/NASA
+[2025-07-23T16:57:29.718Z] Scraping profile: https://screendrafts.fandom.com/wiki/Natalie_Portman
+[2025-07-23T16:57:29.770Z] Scraped: Natalie Portman - https://screendrafts.fandom.com/wiki/Natalie_Portman
+[2025-07-23T16:57:29.780Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Natalie_Portman
+[2025-07-23T16:57:29.886Z] Scraping profile: https://screendrafts.fandom.com/wiki/Natalie_Wood
+[2025-07-23T16:57:29.941Z] Scraped: Natalie Wood - https://screendrafts.fandom.com/wiki/Natalie_Wood
+[2025-07-23T16:57:29.943Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Natalie_Wood
+[2025-07-23T16:57:30.053Z] Scraping profile: https://screendrafts.fandom.com/wiki/New_Camp_Classics
+[2025-07-23T16:57:30.107Z] Scraped: New Camp Classics - https://screendrafts.fandom.com/wiki/New_Camp_Classics
+[2025-07-23T16:57:30.110Z] Successfully scraped: https://screendrafts.fandom.com/wiki/New_Camp_Classics
+[2025-07-23T16:57:30.222Z] Scraping profile: https://screendrafts.fandom.com/wiki/Nicolas_Cage_Mega_Draft
+[2025-07-23T16:57:30.282Z] Scraped: Nicolas Cage Mega Draft - https://screendrafts.fandom.com/wiki/Nicolas_Cage_Mega_Draft
+[2025-07-23T16:57:30.285Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Nicolas_Cage_Mega_Draft
+[2025-07-23T16:57:30.393Z] Scraping profile: https://screendrafts.fandom.com/wiki/Notable_Nudes
+[2025-07-23T16:57:30.446Z] Scraped: Notable Nudes - https://screendrafts.fandom.com/wiki/Notable_Nudes
+[2025-07-23T16:57:30.449Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Notable_Nudes
+[2025-07-23T16:57:30.565Z] Scraping profile: https://screendrafts.fandom.com/wiki/Obsession_Thrillers
+[2025-07-23T16:57:30.626Z] Scraped: Obsession Thrillers - https://screendrafts.fandom.com/wiki/Obsession_Thrillers
+[2025-07-23T16:57:30.629Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Obsession_Thrillers
+[2025-07-23T16:57:30.734Z] Scraping profile: https://screendrafts.fandom.com/wiki/Oliver_Assayas_Super_Draft
+[2025-07-23T16:57:30.807Z] Scraped: Oliver Assayas Super Draft - https://screendrafts.fandom.com/wiki/Oliver_Assayas_Super_Draft
+[2025-07-23T16:57:30.819Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Oliver_Assayas_Super_Draft
+[2025-07-23T16:57:30.932Z] Scraping profile: https://screendrafts.fandom.com/wiki/One_Crazy_Night
+[2025-07-23T16:57:30.992Z] Scraped: One Crazy Night - https://screendrafts.fandom.com/wiki/One_Crazy_Night
+[2025-07-23T16:57:31.003Z] Successfully scraped: https://screendrafts.fandom.com/wiki/One_Crazy_Night
+[2025-07-23T16:57:31.114Z] Scraping profile: https://screendrafts.fandom.com/wiki/Original_Movie_Musicals_-_American
+[2025-07-23T16:57:31.175Z] Scraped: Original Movie Musicals - American - https://screendrafts.fandom.com/wiki/Original_Movie_Musicals_-_American
+[2025-07-23T16:57:31.178Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Original_Movie_Musicals_-_American
+[2025-07-23T16:57:31.283Z] Scraping profile: https://screendrafts.fandom.com/wiki/Orson_Welles
+[2025-07-23T16:57:31.337Z] Scraped: Orson Welles - https://screendrafts.fandom.com/wiki/Orson_Welles
+[2025-07-23T16:57:31.339Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Orson_Welles
+[2025-07-23T16:57:31.455Z] Scraping profile: https://screendrafts.fandom.com/wiki/Oscar_Noms_2019
+[2025-07-23T16:57:31.509Z] Scraped: Oscar Noms 2019 - https://screendrafts.fandom.com/wiki/Oscar_Noms_2019
+[2025-07-23T16:57:31.511Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Oscar_Noms_2019
+[2025-07-23T16:57:31.625Z] Scraping profile: https://screendrafts.fandom.com/wiki/Oscar_Winning_Queer_Films
+[2025-07-23T16:57:31.689Z] Scraped: Oscar Winning Queer Films - https://screendrafts.fandom.com/wiki/Oscar_Winning_Queer_Films
+[2025-07-23T16:57:31.692Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Oscar_Winning_Queer_Films
+[2025-07-23T16:57:31.795Z] Scraping profile: https://screendrafts.fandom.com/wiki/Ozploitation
+[2025-07-23T16:57:31.846Z] Scraped: Ozploitation - https://screendrafts.fandom.com/wiki/Ozploitation
+[2025-07-23T16:57:31.849Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Ozploitation
+[2025-07-23T16:57:31.963Z] Scraping profile: https://screendrafts.fandom.com/wiki/Parker_Posey
+[2025-07-23T16:57:32.027Z] Scraped: Parker Posey - https://screendrafts.fandom.com/wiki/Parker_Posey
+[2025-07-23T16:57:32.039Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Parker_Posey
+[2025-07-23T16:57:32.150Z] Scraping profile: https://screendrafts.fandom.com/wiki/Patricia_Highsmith
+[2025-07-23T16:57:32.200Z] Scraped: Patricia Highsmith - https://screendrafts.fandom.com/wiki/Patricia_Highsmith
+[2025-07-23T16:57:32.212Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Patricia_Highsmith
+[2025-07-23T16:57:32.321Z] Scraping profile: https://screendrafts.fandom.com/wiki/Paul_Newman_mini-Mega
+[2025-07-23T16:57:32.382Z] Scraped: Paul Newman mini-Mega - https://screendrafts.fandom.com/wiki/Paul_Newman_mini-Mega
+[2025-07-23T16:57:32.385Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Paul_Newman_mini-Mega
+[2025-07-23T16:57:32.495Z] Scraping profile: https://screendrafts.fandom.com/wiki/Penelope_Spheeris
+[2025-07-23T16:57:32.558Z] Scraped: Penelope Spheeris - https://screendrafts.fandom.com/wiki/Penelope_Spheeris
+[2025-07-23T16:57:32.560Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Penelope_Spheeris
+[2025-07-23T16:57:32.673Z] Scraping profile: https://screendrafts.fandom.com/wiki/Philip_Seymour_Hoffman
+[2025-07-23T16:57:32.745Z] Scraped: Philip Seymour Hoffman - https://screendrafts.fandom.com/wiki/Philip_Seymour_Hoffman
+[2025-07-23T16:57:32.747Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Philip_Seymour_Hoffman
+[2025-07-23T16:57:32.857Z] Scraping profile: https://screendrafts.fandom.com/wiki/Pixar_Super_Draft
+[2025-07-23T16:57:32.911Z] Scraped: Pixar Super Draft - https://screendrafts.fandom.com/wiki/Pixar_Super_Draft
+[2025-07-23T16:57:32.914Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Pixar_Super_Draft
+[2025-07-23T16:57:33.028Z] Scraping profile: https://screendrafts.fandom.com/wiki/Planet_Hollywood_Mega_Draft
+[2025-07-23T16:57:33.079Z] Scraped: Planet Hollywood Mega Draft - https://screendrafts.fandom.com/wiki/Planet_Hollywood_Mega_Draft
+[2025-07-23T16:57:33.081Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Planet_Hollywood_Mega_Draft
+[2025-07-23T16:57:33.184Z] Scraping profile: https://screendrafts.fandom.com/wiki/Planet_of_the_Apes_Super_Draft
+[2025-07-23T16:57:33.239Z] Scraped: Planet of the Apes Super Draft - https://screendrafts.fandom.com/wiki/Planet_of_the_Apes_Super_Draft
+[2025-07-23T16:57:33.248Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Planet_of_the_Apes_Super_Draft
+[2025-07-23T16:57:33.355Z] Scraping profile: https://screendrafts.fandom.com/wiki/Post-Apocalypse
+[2025-07-23T16:57:33.409Z] Scraped: Post-Apocalypse - https://screendrafts.fandom.com/wiki/Post-Apocalypse
+[2025-07-23T16:57:33.419Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Post-Apocalypse
+[2025-07-23T16:57:33.526Z] Scraping profile: https://screendrafts.fandom.com/wiki/Private_Eyes
+[2025-07-23T16:57:33.587Z] Scraped: Private Eyes - https://screendrafts.fandom.com/wiki/Private_Eyes
+[2025-07-23T16:57:33.589Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Private_Eyes
+[2025-07-23T16:57:33.696Z] Scraping profile: https://screendrafts.fandom.com/wiki/Punksploitation
+[2025-07-23T16:57:33.764Z] Scraped: Punksploitation - https://screendrafts.fandom.com/wiki/Punksploitation
+[2025-07-23T16:57:33.767Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Punksploitation
+[2025-07-23T16:57:33.870Z] Scraping profile: https://screendrafts.fandom.com/wiki/Queer_Comedy
+[2025-07-23T16:57:33.924Z] Scraped: Queer Comedy - https://screendrafts.fandom.com/wiki/Queer_Comedy
+[2025-07-23T16:57:33.927Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Queer_Comedy
+[2025-07-23T16:57:34.041Z] Scraping profile: https://screendrafts.fandom.com/wiki/Queer_Crime
+[2025-07-23T16:57:34.097Z] Scraped: Queer Crime - https://screendrafts.fandom.com/wiki/Queer_Crime
+[2025-07-23T16:57:34.100Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Queer_Crime
+[2025-07-23T16:57:34.212Z] Scraping profile: https://screendrafts.fandom.com/wiki/Queer_Romance
+[2025-07-23T16:57:34.271Z] Scraped: Queer Romance - https://screendrafts.fandom.com/wiki/Queer_Romance
+[2025-07-23T16:57:34.273Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Queer_Romance
+[2025-07-23T16:57:34.381Z] Scraping profile: https://screendrafts.fandom.com/wiki/Queer_Studio_Movies
+[2025-07-23T16:57:34.436Z] Scraped: Queer Studio Movies - https://screendrafts.fandom.com/wiki/Queer_Studio_Movies
+[2025-07-23T16:57:34.446Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Queer_Studio_Movies
+[2025-07-23T16:57:34.551Z] Scraping profile: https://screendrafts.fandom.com/wiki/Quentin_Tarantino
+[2025-07-23T16:57:34.600Z] Scraped: Quentin Tarantino - https://screendrafts.fandom.com/wiki/Quentin_Tarantino
+[2025-07-23T16:57:34.609Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Quentin_Tarantino
+[2025-07-23T16:57:34.721Z] Scraping profile: https://screendrafts.fandom.com/wiki/Ralph_Bakshi_Super_Draft
+[2025-07-23T16:57:34.777Z] Scraped: Ralph Bakshi Super Draft - https://screendrafts.fandom.com/wiki/Ralph_Bakshi_Super_Draft
+[2025-07-23T16:57:34.779Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Ralph_Bakshi_Super_Draft
+[2025-07-23T16:57:34.889Z] Scraping profile: https://screendrafts.fandom.com/wiki/Ray_Harryhausen
+[2025-07-23T16:57:34.946Z] Scraped: Ray Harryhausen - https://screendrafts.fandom.com/wiki/Ray_Harryhausen
+[2025-07-23T16:57:34.948Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Ray_Harryhausen
+[2025-07-23T16:57:35.058Z] Scraping profile: https://screendrafts.fandom.com/wiki/Razzie_Worst_Picture_Winners
+[2025-07-23T16:57:35.112Z] Scraped: Razzie Worst Picture Winners - https://screendrafts.fandom.com/wiki/Razzie_Worst_Picture_Winners
+[2025-07-23T16:57:35.115Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Razzie_Worst_Picture_Winners
+[2025-07-23T16:57:35.228Z] Scraping profile: https://screendrafts.fandom.com/wiki/Rebecca_Hall
+[2025-07-23T16:57:35.279Z] Scraped: Rebecca Hall - https://screendrafts.fandom.com/wiki/Rebecca_Hall
+[2025-07-23T16:57:35.282Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Rebecca_Hall
+[2025-07-23T16:57:35.390Z] Scraping profile: https://screendrafts.fandom.com/wiki/Relationship_Horror
+[2025-07-23T16:57:35.440Z] Scraped: Relationship Horror - https://screendrafts.fandom.com/wiki/Relationship_Horror
+[2025-07-23T16:57:35.443Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Relationship_Horror
+[2025-07-23T16:57:35.545Z] Scraping profile: https://screendrafts.fandom.com/wiki/Remakes
+[2025-07-23T16:57:35.604Z] Scraped: Remakes - https://screendrafts.fandom.com/wiki/Remakes
+[2025-07-23T16:57:35.613Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Remakes
+[2025-07-23T16:57:35.715Z] Scraping profile: https://screendrafts.fandom.com/wiki/Retail_Hell
+[2025-07-23T16:57:35.764Z] Scraped: Retail Hell - https://screendrafts.fandom.com/wiki/Retail_Hell
+[2025-07-23T16:57:35.775Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Retail_Hell
+[2025-07-23T16:57:35.886Z] Scraping profile: https://screendrafts.fandom.com/wiki/Richard_Donner_Nonagenarian_In-Memoriam_Draft
+[2025-07-23T16:57:35.940Z] Scraped: Richard Donner Nonagenarian In-Memoriam Draft - https://screendrafts.fandom.com/wiki/Richard_Donner_Nonagenarian_In-Memoriam_Draft
+[2025-07-23T16:57:35.942Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Richard_Donner_Nonagenarian_In-Memoriam_Draft
+[2025-07-23T16:57:36.055Z] Scraping profile: https://screendrafts.fandom.com/wiki/Road_Trip
+[2025-07-23T16:57:36.121Z] Scraped: Road Trip - https://screendrafts.fandom.com/wiki/Road_Trip
+[2025-07-23T16:57:36.123Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Road_Trip
+[2025-07-23T16:57:36.240Z] Scraping profile: https://screendrafts.fandom.com/wiki/Robots_mini-Mega_Live
+[2025-07-23T16:57:36.297Z] Scraped: Robots mini-Mega Live - https://screendrafts.fandom.com/wiki/Robots_mini-Mega_Live
+[2025-07-23T16:57:36.300Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Robots_mini-Mega_Live
+[2025-07-23T16:57:36.411Z] Scraping profile: https://screendrafts.fandom.com/wiki/Rock_vs._Diesel_mini-Mega
+[2025-07-23T16:57:36.466Z] Scraped: Rock vs. Diesel mini-Mega - https://screendrafts.fandom.com/wiki/Rock_vs._Diesel_mini-Mega
+[2025-07-23T16:57:36.469Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Rock_vs._Diesel_mini-Mega
+[2025-07-23T16:57:36.583Z] Scraping profile: https://screendrafts.fandom.com/wiki/Rocky/Creed_Super_Draft
+[2025-07-23T16:57:36.642Z] Scraped: Rocky/Creed Super Draft - https://screendrafts.fandom.com/wiki/Rocky/Creed_Super_Draft
+[2025-07-23T16:57:36.645Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Rocky/Creed_Super_Draft
+[2025-07-23T16:57:36.749Z] Scraping profile: https://screendrafts.fandom.com/wiki/Rural_Horror
+[2025-07-23T16:57:36.808Z] Scraped: Rural Horror - https://screendrafts.fandom.com/wiki/Rural_Horror
+[2025-07-23T16:57:36.819Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Rural_Horror
+[2025-07-23T16:57:36.938Z] Scraping profile: https://screendrafts.fandom.com/wiki/Ryan_Gosling
+[2025-07-23T16:57:36.982Z] Scraped: Ryan Gosling - https://screendrafts.fandom.com/wiki/Ryan_Gosling
+[2025-07-23T16:57:36.993Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Ryan_Gosling
+[2025-07-23T16:57:37.108Z] Scraping profile: https://screendrafts.fandom.com/wiki/Sam_Peckinpah
+[2025-07-23T16:57:37.159Z] Scraped: Sam Peckinpah - https://screendrafts.fandom.com/wiki/Sam_Peckinpah
+[2025-07-23T16:57:37.161Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Sam_Peckinpah
+[2025-07-23T16:57:37.273Z] Scraping profile: https://screendrafts.fandom.com/wiki/Saw_Super_Draft
+[2025-07-23T16:57:37.337Z] Scraped: Saw Super Draft - https://screendrafts.fandom.com/wiki/Saw_Super_Draft
+[2025-07-23T16:57:37.339Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Saw_Super_Draft
+[2025-07-23T16:57:37.443Z] Scraping profile: https://screendrafts.fandom.com/wiki/Scorsese_Produced_mini-Mega
+[2025-07-23T16:57:37.499Z] Scraped: Scorsese Produced mini-Mega - https://screendrafts.fandom.com/wiki/Scorsese_Produced_mini-Mega
+[2025-07-23T16:57:37.502Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Scorsese_Produced_mini-Mega
+[2025-07-23T16:57:37.611Z] Scraping profile: https://screendrafts.fandom.com/wiki/Screenwriters%27_Directorial_Debuts
+[2025-07-23T16:57:37.665Z] Scraped: Screenwriters' Directorial Debuts - https://screendrafts.fandom.com/wiki/Screenwriters%27_Directorial_Debuts
+[2025-07-23T16:57:37.668Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Screenwriters%27_Directorial_Debuts
+[2025-07-23T16:57:37.779Z] Scraping profile: https://screendrafts.fandom.com/wiki/Screwball_Comedy_mini-Mega
+[2025-07-23T16:57:37.831Z] Scraped: Screwball Comedy mini-Mega - https://screendrafts.fandom.com/wiki/Screwball_Comedy_mini-Mega
+[2025-07-23T16:57:37.834Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Screwball_Comedy_mini-Mega
+[2025-07-23T16:57:37.952Z] Scraping profile: https://screendrafts.fandom.com/wiki/Serial_Killer
+[2025-07-23T16:57:38.023Z] Scraped: Serial Killer - https://screendrafts.fandom.com/wiki/Serial_Killer
+[2025-07-23T16:57:38.036Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Serial_Killer
+[2025-07-23T16:57:38.153Z] Scraping profile: https://screendrafts.fandom.com/wiki/Serious_Kids
+[2025-07-23T16:57:38.203Z] Scraped: Serious Kids - https://screendrafts.fandom.com/wiki/Serious_Kids
+[2025-07-23T16:57:38.213Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Serious_Kids
+[2025-07-23T16:57:38.324Z] Scraping profile: https://screendrafts.fandom.com/wiki/Shakespeare:_Part_I_Mini-Mega
+[2025-07-23T16:57:38.386Z] Scraped: Shakespeare: Part I Mini-Mega - https://screendrafts.fandom.com/wiki/Shakespeare:_Part_I_Mini-Mega
+[2025-07-23T16:57:38.388Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Shakespeare:_Part_I_Mini-Mega
+[2025-07-23T16:57:38.502Z] Scraping profile: https://screendrafts.fandom.com/wiki/Shakespeare:_Part_II_Mini-Mega
+[2025-07-23T16:57:38.564Z] Scraped: Shakespeare: Part II Mini-Mega - https://screendrafts.fandom.com/wiki/Shakespeare:_Part_II_Mini-Mega
+[2025-07-23T16:57:38.567Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Shakespeare:_Part_II_Mini-Mega
+[2025-07-23T16:57:38.674Z] Scraping profile: https://screendrafts.fandom.com/wiki/Shakespeare:_Part_III_Mini-Mega
+[2025-07-23T16:57:38.728Z] Scraped: Shakespeare: Part III Mini-Mega - https://screendrafts.fandom.com/wiki/Shakespeare:_Part_III_Mini-Mega
+[2025-07-23T16:57:38.731Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Shakespeare:_Part_III_Mini-Mega
+[2025-07-23T16:57:38.843Z] Scraping profile: https://screendrafts.fandom.com/wiki/Sketch_Comedy_Anthologies
+[2025-07-23T16:57:38.907Z] Scraped: Sketch Comedy Anthologies - https://screendrafts.fandom.com/wiki/Sketch_Comedy_Anthologies
+[2025-07-23T16:57:38.910Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Sketch_Comedy_Anthologies
+[2025-07-23T16:57:39.014Z] Scraping profile: https://screendrafts.fandom.com/wiki/Sofia_Coppola_Super_Draft
+[2025-07-23T16:57:39.065Z] Scraped: Sofia Coppola Super Draft - https://screendrafts.fandom.com/wiki/Sofia_Coppola_Super_Draft
+[2025-07-23T16:57:39.067Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Sofia_Coppola_Super_Draft
+[2025-07-23T16:57:39.183Z] Scraping profile: https://screendrafts.fandom.com/wiki/Sony_Spidey-Adjacent_mini-Super_Draft
+[2025-07-23T16:57:39.248Z] Scraped: Sony Spidey-Adjacent mini-Super Draft - https://screendrafts.fandom.com/wiki/Sony_Spidey-Adjacent_mini-Super_Draft
+[2025-07-23T16:57:39.259Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Sony_Spidey-Adjacent_mini-Super_Draft
+[2025-07-23T16:57:39.367Z] Scraping profile: https://screendrafts.fandom.com/wiki/Space_Horror
+[2025-07-23T16:57:39.425Z] Scraped: Space Horror - https://screendrafts.fandom.com/wiki/Space_Horror
+[2025-07-23T16:57:39.435Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Space_Horror
+[2025-07-23T16:57:39.537Z] Scraping profile: https://screendrafts.fandom.com/wiki/Speed_Drafts_No._1
+[2025-07-23T16:57:39.593Z] Scraped: Speed Drafts No. 1 - https://screendrafts.fandom.com/wiki/Speed_Drafts_No._1
+[2025-07-23T16:57:39.596Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Speed_Drafts_No._1
+[2025-07-23T16:57:39.709Z] Scraping profile: https://screendrafts.fandom.com/wiki/Spielberg_Produced_Mega_Draft
+[2025-07-23T16:57:39.773Z] Scraped: Spielberg Produced Mega Draft - https://screendrafts.fandom.com/wiki/Spielberg_Produced_Mega_Draft
+[2025-07-23T16:57:39.776Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Spielberg_Produced_Mega_Draft
+[2025-07-23T16:57:39.878Z] Scraping profile: https://screendrafts.fandom.com/wiki/Spoofs
+[2025-07-23T16:57:39.930Z] Scraped: Spoofs - https://screendrafts.fandom.com/wiki/Spoofs
+[2025-07-23T16:57:39.932Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Spoofs
+[2025-07-23T16:57:40.036Z] Scraping profile: https://screendrafts.fandom.com/wiki/Sports
+[2025-07-23T16:57:40.098Z] Scraped: Sports - https://screendrafts.fandom.com/wiki/Sports
+[2025-07-23T16:57:40.102Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Sports
+[2025-07-23T16:57:40.216Z] Scraping profile: https://screendrafts.fandom.com/wiki/Star_Trek_Super_Draft
+[2025-07-23T16:57:40.261Z] Scraped: Star Trek Super Draft - https://screendrafts.fandom.com/wiki/Star_Trek_Super_Draft
+[2025-07-23T16:57:40.264Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Star_Trek_Super_Draft
+[2025-07-23T16:57:40.375Z] Scraping profile: https://screendrafts.fandom.com/wiki/Star_Wars_Super_Draft
+[2025-07-23T16:57:40.433Z] Scraped: Star Wars Super Draft - https://screendrafts.fandom.com/wiki/Star_Wars_Super_Draft
+[2025-07-23T16:57:40.444Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Star_Wars_Super_Draft
+[2025-07-23T16:57:40.559Z] Scraping profile: https://screendrafts.fandom.com/wiki/Stephen_King_Horror_Adaptations
+[2025-07-23T16:57:40.607Z] Scraped: Stephen King Horror Adaptations - https://screendrafts.fandom.com/wiki/Stephen_King_Horror_Adaptations
+[2025-07-23T16:57:40.616Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Stephen_King_Horror_Adaptations
+[2025-07-23T16:57:40.719Z] Scraping profile: https://screendrafts.fandom.com/wiki/Stephen_King_mini-Mega
+[2025-07-23T16:57:40.776Z] Scraped: Stephen King mini-Mega - https://screendrafts.fandom.com/wiki/Stephen_King_mini-Mega
+[2025-07-23T16:57:40.778Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Stephen_King_mini-Mega
+[2025-07-23T16:57:40.880Z] Scraping profile: https://screendrafts.fandom.com/wiki/Steven_Soderbergh
+[2025-07-23T16:57:40.936Z] Scraped: Steven Soderbergh - https://screendrafts.fandom.com/wiki/Steven_Soderbergh
+[2025-07-23T16:57:40.938Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Steven_Soderbergh
+[2025-07-23T16:57:41.050Z] Scraping profile: https://screendrafts.fandom.com/wiki/Steven_Spielberg_Super_Draft
+[2025-07-23T16:57:41.111Z] Scraped: Steven Spielberg Super Draft - https://screendrafts.fandom.com/wiki/Steven_Spielberg_Super_Draft
+[2025-07-23T16:57:41.113Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Steven_Spielberg_Super_Draft
+[2025-07-23T16:57:41.222Z] Scraping profile: https://screendrafts.fandom.com/wiki/Stuart_Gordon
+[2025-07-23T16:57:41.281Z] Scraped: Stuart Gordon - https://screendrafts.fandom.com/wiki/Stuart_Gordon
+[2025-07-23T16:57:41.284Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Stuart_Gordon
+[2025-07-23T16:57:41.393Z] Scraping profile: https://screendrafts.fandom.com/wiki/Summer_%2782
+[2025-07-23T16:57:41.442Z] Scraped: Summer '82 - https://screendrafts.fandom.com/wiki/Summer_%2782
+[2025-07-23T16:57:41.444Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Summer_%2782
+[2025-07-23T16:57:41.548Z] Scraping profile: https://screendrafts.fandom.com/wiki/Supernatural_Kids
+[2025-07-23T16:57:41.606Z] Scraped: Supernatural Kids - https://screendrafts.fandom.com/wiki/Supernatural_Kids
+[2025-07-23T16:57:41.618Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Supernatural_Kids
+[2025-07-23T16:57:41.734Z] Scraping profile: https://screendrafts.fandom.com/wiki/Sword_%26_Sorcery
+[2025-07-23T16:57:41.789Z] Scraped: Sword & Sorcery - https://screendrafts.fandom.com/wiki/Sword_%26_Sorcery
+[2025-07-23T16:57:41.798Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Sword_%26_Sorcery
+[2025-07-23T16:57:41.914Z] Scraping profile: https://screendrafts.fandom.com/wiki/Syfy_Original_Movies
+[2025-07-23T16:57:41.971Z] Scraped: Syfy Original Movies - https://screendrafts.fandom.com/wiki/Syfy_Original_Movies
+[2025-07-23T16:57:41.973Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Syfy_Original_Movies
+[2025-07-23T16:57:42.083Z] Scraping profile: https://screendrafts.fandom.com/wiki/Teacher_Movies
+[2025-07-23T16:57:42.136Z] Scraped: Teacher Movies - https://screendrafts.fandom.com/wiki/Teacher_Movies
+[2025-07-23T16:57:42.138Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Teacher_Movies
+[2025-07-23T16:57:42.253Z] Scraping profile: https://screendrafts.fandom.com/wiki/Teen_Horror_(Millennial_Edition)
+[2025-07-23T16:57:42.313Z] Scraped: Teen Horror (Millennial Edition) - https://screendrafts.fandom.com/wiki/Teen_Horror_(Millennial_Edition)
+[2025-07-23T16:57:42.316Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Teen_Horror_(Millennial_Edition)
+[2025-07-23T16:57:42.423Z] Scraping profile: https://screendrafts.fandom.com/wiki/Texas_Chainsaw_Massacre_Super_Draft
+[2025-07-23T16:57:42.478Z] Scraped: Texas Chainsaw Massacre Super Draft - https://screendrafts.fandom.com/wiki/Texas_Chainsaw_Massacre_Super_Draft
+[2025-07-23T16:57:42.481Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Texas_Chainsaw_Massacre_Super_Draft
+[2025-07-23T16:57:42.593Z] Scraping profile: https://screendrafts.fandom.com/wiki/Thanksgiving_Weekend
+[2025-07-23T16:57:42.646Z] Scraped: Thanksgiving Weekend - https://screendrafts.fandom.com/wiki/Thanksgiving_Weekend
+[2025-07-23T16:57:42.648Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Thanksgiving_Weekend
+[2025-07-23T16:57:42.765Z] Scraping profile: https://screendrafts.fandom.com/wiki/The_%22Modern%22_Mummy_mini-Super_Draft
+[2025-07-23T16:57:42.826Z] Scraped: The "Modern" Mummy mini-Super Draft - https://screendrafts.fandom.com/wiki/The_%22Modern%22_Mummy_mini-Super_Draft
+[2025-07-23T16:57:42.828Z] Successfully scraped: https://screendrafts.fandom.com/wiki/The_%22Modern%22_Mummy_mini-Super_Draft
+[2025-07-23T16:57:42.937Z] Scraping profile: https://screendrafts.fandom.com/wiki/The_Afterlife
+[2025-07-23T16:57:42.992Z] Scraped: The Afterlife - https://screendrafts.fandom.com/wiki/The_Afterlife
+[2025-07-23T16:57:42.994Z] Successfully scraped: https://screendrafts.fandom.com/wiki/The_Afterlife
+[2025-07-23T16:57:43.108Z] Scraping profile: https://screendrafts.fandom.com/wiki/The_Beatles
+[2025-07-23T16:57:43.165Z] Scraped: The Beatles - https://screendrafts.fandom.com/wiki/The_Beatles
+[2025-07-23T16:57:43.174Z] Successfully scraped: https://screendrafts.fandom.com/wiki/The_Beatles
+[2025-07-23T16:57:43.277Z] Scraping profile: https://screendrafts.fandom.com/wiki/The_Marathon
+[2025-07-23T16:57:43.331Z] Scraped: The Marathon - https://screendrafts.fandom.com/wiki/The_Marathon
+[2025-07-23T16:57:43.342Z] Successfully scraped: https://screendrafts.fandom.com/wiki/The_Marathon
+[2025-07-23T16:57:43.445Z] Scraping profile: https://screendrafts.fandom.com/wiki/The_Two_Coreys
+[2025-07-23T16:57:43.503Z] Scraped: The Two Coreys - https://screendrafts.fandom.com/wiki/The_Two_Coreys
+[2025-07-23T16:57:43.506Z] Successfully scraped: https://screendrafts.fandom.com/wiki/The_Two_Coreys
+[2025-07-23T16:57:43.612Z] Scraping profile: https://screendrafts.fandom.com/wiki/Threequels
+[2025-07-23T16:57:43.666Z] Scraped: Threequels - https://screendrafts.fandom.com/wiki/Threequels
+[2025-07-23T16:57:43.669Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Threequels
+[2025-07-23T16:57:43.782Z] Scraping profile: https://screendrafts.fandom.com/wiki/Time_Loop
+[2025-07-23T16:57:43.831Z] Scraped: Time Loop - https://screendrafts.fandom.com/wiki/Time_Loop
+[2025-07-23T16:57:43.834Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Time_Loop
+[2025-07-23T16:57:43.937Z] Scraping profile: https://screendrafts.fandom.com/wiki/Time_Travel
+[2025-07-23T16:57:43.989Z] Scraped: Time Travel - https://screendrafts.fandom.com/wiki/Time_Travel
+[2025-07-23T16:57:44.001Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Time_Travel
+[2025-07-23T16:57:44.108Z] Scraping profile: https://screendrafts.fandom.com/wiki/Timoth%C3%A9e_Chalamet
+[2025-07-23T16:57:44.164Z] Scraped: Timothée Chalamet - https://screendrafts.fandom.com/wiki/Timoth%C3%A9e_Chalamet
+[2025-07-23T16:57:44.174Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Timoth%C3%A9e_Chalamet
+[2025-07-23T16:57:44.277Z] Scraping profile: https://screendrafts.fandom.com/wiki/Tobe_Hooper
+[2025-07-23T16:57:44.337Z] Scraped: Tobe Hooper - https://screendrafts.fandom.com/wiki/Tobe_Hooper
+[2025-07-23T16:57:44.339Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Tobe_Hooper
+[2025-07-23T16:57:44.442Z] Scraping profile: https://screendrafts.fandom.com/wiki/Tony_%26_Dan_Gilroy
+[2025-07-23T16:57:44.505Z] Scraped: Tony & Dan Gilroy - https://screendrafts.fandom.com/wiki/Tony_%26_Dan_Gilroy
+[2025-07-23T16:57:44.507Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Tony_%26_Dan_Gilroy
+[2025-07-23T16:57:44.612Z] Scraping profile: https://screendrafts.fandom.com/wiki/Tony_Scott
+[2025-07-23T16:57:44.670Z] Scraped: Tony Scott - https://screendrafts.fandom.com/wiki/Tony_Scott
+[2025-07-23T16:57:44.672Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Tony_Scott
+[2025-07-23T16:57:44.780Z] Scraping profile: https://screendrafts.fandom.com/wiki/Train_Movies
+[2025-07-23T16:57:44.839Z] Scraped: Train Movies - https://screendrafts.fandom.com/wiki/Train_Movies
+[2025-07-23T16:57:44.842Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Train_Movies
+[2025-07-23T16:57:44.954Z] Scraping profile: https://screendrafts.fandom.com/wiki/Tremors_Super_Draft
+[2025-07-23T16:57:45.011Z] Scraped: Tremors Super Draft - https://screendrafts.fandom.com/wiki/Tremors_Super_Draft
+[2025-07-23T16:57:45.013Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Tremors_Super_Draft
+[2025-07-23T16:57:45.123Z] Scraping profile: https://screendrafts.fandom.com/wiki/True_Crime_Documentaries
+[2025-07-23T16:57:45.182Z] Scraped: True Crime Documentaries - https://screendrafts.fandom.com/wiki/True_Crime_Documentaries
+[2025-07-23T16:57:45.195Z] Successfully scraped: https://screendrafts.fandom.com/wiki/True_Crime_Documentaries
+[2025-07-23T16:57:45.309Z] Scraping profile: https://screendrafts.fandom.com/wiki/TV_Adaptations
+[2025-07-23T16:57:45.369Z] Scraped: TV Adaptations - https://screendrafts.fandom.com/wiki/TV_Adaptations
+[2025-07-23T16:57:45.378Z] Successfully scraped: https://screendrafts.fandom.com/wiki/TV_Adaptations
+[2025-07-23T16:57:45.492Z] Scraping profile: https://screendrafts.fandom.com/wiki/TV_Continuations
+[2025-07-23T16:57:45.545Z] Scraped: TV Continuations - https://screendrafts.fandom.com/wiki/TV_Continuations
+[2025-07-23T16:57:45.548Z] Successfully scraped: https://screendrafts.fandom.com/wiki/TV_Continuations
+[2025-07-23T16:57:45.662Z] Scraping profile: https://screendrafts.fandom.com/wiki/Twist_Endings
+[2025-07-23T16:57:45.724Z] Scraped: Twist Endings - https://screendrafts.fandom.com/wiki/Twist_Endings
+[2025-07-23T16:57:45.727Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Twist_Endings
+[2025-07-23T16:57:45.832Z] Scraping profile: https://screendrafts.fandom.com/wiki/Two_Thumbs_Down
+[2025-07-23T16:57:45.891Z] Scraped: Two Thumbs Down - https://screendrafts.fandom.com/wiki/Two_Thumbs_Down
+[2025-07-23T16:57:45.893Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Two_Thumbs_Down
+[2025-07-23T16:57:45.998Z] Scraping profile: https://screendrafts.fandom.com/wiki/Union_Movies
+[2025-07-23T16:57:46.055Z] Scraped: Union Movies - https://screendrafts.fandom.com/wiki/Union_Movies
+[2025-07-23T16:57:46.058Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Union_Movies
+[2025-07-23T16:57:46.168Z] Scraping profile: https://screendrafts.fandom.com/wiki/Universal_Classic_Monsters_Mini-Mega
+[2025-07-23T16:57:46.229Z] Scraped: Universal Classic Monsters Mini-Mega - https://screendrafts.fandom.com/wiki/Universal_Classic_Monsters_Mini-Mega
+[2025-07-23T16:57:46.232Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Universal_Classic_Monsters_Mini-Mega
+[2025-07-23T16:57:46.349Z] Scraping profile: https://screendrafts.fandom.com/wiki/Vacation_Horror
+[2025-07-23T16:57:46.404Z] Scraped: Vacation Horror - https://screendrafts.fandom.com/wiki/Vacation_Horror
+[2025-07-23T16:57:46.417Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Vacation_Horror
+[2025-07-23T16:57:46.521Z] Scraping profile: https://screendrafts.fandom.com/wiki/Video_Game_Adaptations
+[2025-07-23T16:57:46.578Z] Scraped: Video Game Adaptations - https://screendrafts.fandom.com/wiki/Video_Game_Adaptations
+[2025-07-23T16:57:46.592Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Video_Game_Adaptations
+[2025-07-23T16:57:46.705Z] Scraping profile: https://screendrafts.fandom.com/wiki/Video_Nasties_-_Prosecuted_Films
+[2025-07-23T16:57:46.762Z] Scraped: Video Nasties - Prosecuted Films - https://screendrafts.fandom.com/wiki/Video_Nasties_-_Prosecuted_Films
+[2025-07-23T16:57:46.764Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Video_Nasties_-_Prosecuted_Films
+[2025-07-23T16:57:46.872Z] Scraping profile: https://screendrafts.fandom.com/wiki/Vietnam_War_mini-Mega
+[2025-07-23T16:57:46.935Z] Scraped: Vietnam War mini-Mega - https://screendrafts.fandom.com/wiki/Vietnam_War_mini-Mega
+[2025-07-23T16:57:46.937Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Vietnam_War_mini-Mega
+[2025-07-23T16:57:47.043Z] Scraping profile: https://screendrafts.fandom.com/wiki/Vincente_Minnelli
+[2025-07-23T16:57:47.098Z] Scraped: Vincente Minnelli - https://screendrafts.fandom.com/wiki/Vincente_Minnelli
+[2025-07-23T16:57:47.100Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Vincente_Minnelli
+[2025-07-23T16:57:47.213Z] Scraping profile: https://screendrafts.fandom.com/wiki/Vinegar_Syndrome
+[2025-07-23T16:57:47.276Z] Scraped: Vinegar Syndrome - https://screendrafts.fandom.com/wiki/Vinegar_Syndrome
+[2025-07-23T16:57:47.279Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Vinegar_Syndrome
+[2025-07-23T16:57:47.383Z] Scraping profile: https://screendrafts.fandom.com/wiki/Vintage_Con_Artist
+[2025-07-23T16:57:47.435Z] Scraped: Vintage Con Artist - https://screendrafts.fandom.com/wiki/Vintage_Con_Artist
+[2025-07-23T16:57:47.437Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Vintage_Con_Artist
+[2025-07-23T16:57:47.554Z] Scraping profile: https://screendrafts.fandom.com/wiki/Visitors_From_Another_Planet
+[2025-07-23T16:57:47.620Z] Scraped: Visitors From Another Planet - https://screendrafts.fandom.com/wiki/Visitors_From_Another_Planet
+[2025-07-23T16:57:47.630Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Visitors_From_Another_Planet
+[2025-07-23T16:57:47.741Z] Scraping profile: https://screendrafts.fandom.com/wiki/Wes_Craven
+[2025-07-23T16:57:47.797Z] Scraped: Wes Craven - https://screendrafts.fandom.com/wiki/Wes_Craven
+[2025-07-23T16:57:47.810Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Wes_Craven
+[2025-07-23T16:57:47.924Z] Scraping profile: https://screendrafts.fandom.com/wiki/Wesley_Snipes
+[2025-07-23T16:57:47.992Z] Scraped: Wesley Snipes - https://screendrafts.fandom.com/wiki/Wesley_Snipes
+[2025-07-23T16:57:47.994Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Wesley_Snipes
+[2025-07-23T16:57:48.109Z] Scraping profile: https://screendrafts.fandom.com/wiki/Westerns:_Part_I_Mini-Mega
+[2025-07-23T16:57:48.173Z] Scraped: Westerns: Part I Mini-Mega - https://screendrafts.fandom.com/wiki/Westerns:_Part_I_Mini-Mega
+[2025-07-23T16:57:48.175Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Westerns:_Part_I_Mini-Mega
+[2025-07-23T16:57:48.277Z] Scraping profile: https://screendrafts.fandom.com/wiki/Westerns:_Part_II_Mini-Mega
+[2025-07-23T16:57:48.339Z] Scraped: Westerns: Part II Mini-Mega - https://screendrafts.fandom.com/wiki/Westerns:_Part_II_Mini-Mega
+[2025-07-23T16:57:48.342Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Westerns:_Part_II_Mini-Mega
+[2025-07-23T16:57:48.453Z] Scraping profile: https://screendrafts.fandom.com/wiki/Westerns:_Part_III_Mini-Mega
+[2025-07-23T16:57:48.528Z] Scraped: Westerns: Part III Mini-Mega - https://screendrafts.fandom.com/wiki/Westerns:_Part_III_Mini-Mega
+[2025-07-23T16:57:48.533Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Westerns:_Part_III_Mini-Mega
+[2025-07-23T16:57:48.637Z] Scraping profile: https://screendrafts.fandom.com/wiki/Whit_Stillman_mini-Super_Draft
+[2025-07-23T16:57:48.693Z] Scraped: Whit Stillman mini-Super Draft - https://screendrafts.fandom.com/wiki/Whit_Stillman_mini-Super_Draft
+[2025-07-23T16:57:48.695Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Whit_Stillman_mini-Super_Draft
+[2025-07-23T16:57:48.811Z] Scraping profile: https://screendrafts.fandom.com/wiki/Whoopi_Goldberg
+[2025-07-23T16:57:48.864Z] Scraped: Whoopi Goldberg - https://screendrafts.fandom.com/wiki/Whoopi_Goldberg
+[2025-07-23T16:57:48.877Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Whoopi_Goldberg
+[2025-07-23T16:57:48.993Z] Scraping profile: https://screendrafts.fandom.com/wiki/Will_Smith
+[2025-07-23T16:57:49.040Z] Scraped: Will Smith - https://screendrafts.fandom.com/wiki/Will_Smith
+[2025-07-23T16:57:49.049Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Will_Smith
+[2025-07-23T16:57:49.163Z] Scraping profile: https://screendrafts.fandom.com/wiki/Winona_Ryder
+[2025-07-23T16:57:49.217Z] Scraped: Winona Ryder - https://screendrafts.fandom.com/wiki/Winona_Ryder
+[2025-07-23T16:57:49.219Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Winona_Ryder
+[2025-07-23T16:57:49.332Z] Scraping profile: https://screendrafts.fandom.com/wiki/X_/_NC-17_/_Unrated
+[2025-07-23T16:57:49.390Z] Scraped: X / NC-17 / Unrated - https://screendrafts.fandom.com/wiki/X_/_NC-17_/_Unrated
+[2025-07-23T16:57:49.392Z] Successfully scraped: https://screendrafts.fandom.com/wiki/X_/_NC-17_/_Unrated
+[2025-07-23T16:57:49.501Z] Scraping profile: https://screendrafts.fandom.com/wiki/X-Men_Super_Draft
+[2025-07-23T16:57:49.565Z] Scraped: X-Men Super Draft - https://screendrafts.fandom.com/wiki/X-Men_Super_Draft
+[2025-07-23T16:57:49.568Z] Successfully scraped: https://screendrafts.fandom.com/wiki/X-Men_Super_Draft
+[2025-07-23T16:57:49.672Z] Scraping profile: https://screendrafts.fandom.com/wiki/Zombie_Mini-Mega
+[2025-07-23T16:57:49.742Z] Scraped: Zombie Mini-Mega - https://screendrafts.fandom.com/wiki/Zombie_Mini-Mega
+[2025-07-23T16:57:49.745Z] Successfully scraped: https://screendrafts.fandom.com/wiki/Zombie_Mini-Mega
+[2025-07-23T16:57:49.857Z] Scraping completed. Total episodes scraped: 341
