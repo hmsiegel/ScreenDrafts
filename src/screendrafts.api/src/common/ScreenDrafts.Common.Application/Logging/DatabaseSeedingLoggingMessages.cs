@@ -77,6 +77,16 @@ public static class DatabaseSeedingLoggingMessages
     new EventId(14, nameof(RunningSeeder)),
     "Running seeder: {Seeder}");
 
+  private static readonly Action<ILogger, int, int, int, int, Exception?> _batchProcessed = LoggerMessage.Define<int, int, int, int>(
+    LogLevel.Information,
+    new EventId(15, nameof(BatchProcessed)),
+    "Processed batch {CurrentBatch}/{TotalBatches} ({ProcessedUsers}/{TotalUsers} users)");
+
+  private static readonly Action<ILogger, string, Exception?> _adminUrl = LoggerMessage.Define<string>(
+    LogLevel.Information,
+    new EventId(16, nameof(AdminUrl)),
+    "Admin URL: {Url}");
+
   public static void StartingSeeding(ILogger logger, string tableName) => _startingSeeding(logger, tableName, null);
 
   public static void StartingSeedingProcess(ILogger logger) => _startingSeedingProcess(logger, null);
@@ -106,4 +116,8 @@ public static class DatabaseSeedingLoggingMessages
   public static void NotFound(ILogger logger, string item, string blessing, string record) => _notFound(logger, item, blessing, record, null);
 
   public static void RunningSeeder(ILogger logger, string seeder) => _runningSeeder(logger, seeder, null);
+
+  public static void BatchProcessed(ILogger logger, int currentBatch, int totalBatches, int processedUsers, int totalUsers) => _batchProcessed(logger, currentBatch, totalBatches, processedUsers, totalUsers, null);
+
+  public static void AdminUrl(ILogger logger, string admin) => _adminUrl(logger, admin, null);
 }
