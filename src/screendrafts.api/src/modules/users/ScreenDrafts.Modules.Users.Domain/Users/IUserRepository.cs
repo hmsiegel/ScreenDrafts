@@ -9,4 +9,6 @@ public interface IUserRepository : IRepository
   Task<User?> GetByEmailAsync(Email email, CancellationToken cancellationToken = default);
 
   void Add(User user);
+
+  void Update(User user);
 }
