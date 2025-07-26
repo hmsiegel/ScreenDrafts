@@ -231,7 +231,7 @@ export interface IClient {
     registerUser(body: RegisterUserRequest): Promise<string>;
 }
 
-export class DraftsClient implements IClient {
+export class Client implements IClient {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
@@ -3145,6 +3145,11 @@ export interface UpdateUserRequest {
     firstName: string;
     lastName: string;
     middleName?: string | undefined;
+    profilePicture?: string | undefined;
+    twitterHandle?: string | undefined;
+    instagramHandle?: string | undefined;
+    letterboxdHandle?: string | undefined;
+    blueskyHandle?: string | undefined;
 
     [key: string]: any;
 }
@@ -3155,6 +3160,11 @@ export interface UserResponse {
     firstName: string;
     middleName: string;
     lastName: string;
+    profilePictureUri: string | undefined;
+    twitterHandle: string | undefined;
+    instagramHandle: string | undefined;
+    letterboxdHandle: string | undefined;
+    blueskyHandle: string | undefined;
 
     [key: string]: any;
 }

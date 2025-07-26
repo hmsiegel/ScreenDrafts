@@ -31,6 +31,28 @@
     networks:
       - screendrafts
 
+  screendrafts.seeding.users:
+    build:
+      context: .
+      dockerfile: tools/ScreenDrafts.Seeding.Users/Dockerfile
+    depends_on:
+      - screendrafts.database
+      - screendrafts.identity
+    networks:
+      - screendrafts
+    volumes:
+      - ./data:/app/data
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - DATA_PATH=/app/data
+      - ConnectionStrings__Database=Host=screendrafts.database;Port=5432;Database=screendrafts;Username=postgres;Password=postgres;Include Error Detail=true
+      - Users__Keycloak__AdminUrl=http://screendrafts.identity:8080/admin/realms/screendrafts/
+      - Users__Keycloak__TokenUrl=http://screendrafts.identity:8080/realms/screendrafts/protocol/openid-connect/token
+      - Users__Keycloak__ConfidentialClientId=screendrafts-confidential-client
+      - Users__Keycloak__ConfidentialClientSecret=oRL4la55pi1uMlJMKSlg3hrhLfvKrZsg
+      - Users__Keycloak__PublicClientId=screendrafts-public-client
+    profiles: ["manual"]
+
 networks:
   screendrafts:
     external: true

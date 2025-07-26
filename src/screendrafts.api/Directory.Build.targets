@@ -1,6 +1,15 @@
 <Project>
-  <!-- See https://aka.ms/dotnet/msbuild/customize for more details on customizing your build -->
-  <Target Name="CustomAfterBuildTarget" AfterTargets="Build">
-      <Message Text="Hello from CustomAfterBuildTarget" Importance="high" />
-  </Target>
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsAsErrors>$(WarningsAsErrors);CS8618</WarningsAsErrors>
+
+    <!-- Common output directory for all builds-->
+    <OutputPath>$(SolutionDir)artifacts\$(MSBuildProjectName)\</OutputPath>
+
+    <!-- Embed source files for debugging -->
+    <EmbedAllSources>true</EmbedAllSources>
+    <IncludeSourceRevisionInInformationalVersion>true</IncludeSourceRevisionInInformationalVersion>
+  </PropertyGroup>
 </Project>

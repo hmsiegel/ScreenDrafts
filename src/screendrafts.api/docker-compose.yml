@@ -57,6 +57,7 @@ services:
   screendrafts.identity:
     image: quay.io/keycloak/keycloak:latest
     command: start-dev --import-realm
+    container_name: screendrafts.identity
     environment:
       - KC_DB=postgres
       - KC_DB_URL=jdbc:postgresql://keycloak-db:5432/keycloak
@@ -76,8 +77,6 @@ services:
     networks:
       - screendrafts
 
-  # Keycloak DB
-  # Postgres for Keycloak
   keycloak-db:
     image: postgres:15
     restart: always
@@ -119,7 +118,6 @@ services:
   # Tracing server
   screendrafts.jaeger:
     image: jaegertracing/all-in-one:latest
-    container_name: ScreenDrafts.Jaeger
     ports:
       - 4317:4317
       - 4318:4318
