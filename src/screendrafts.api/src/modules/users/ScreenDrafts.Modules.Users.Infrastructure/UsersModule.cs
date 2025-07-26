@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Users.Infrastructure;
+﻿using Serilog;
+
+namespace ScreenDrafts.Modules.Users.Infrastructure;
 
 public static class UsersModule
 {
@@ -103,7 +105,11 @@ public static class UsersModule
       {
         var keyCloakOptions = sp.GetRequiredService<IOptions<KeyCloakOptions>>().Value;
 
+        Log.Information("Admin URL for KeyCloak: {AdminUrl}", keyCloakOptions.AdminUrl);
+
         client.BaseAddress = new Uri(keyCloakOptions.AdminUrl);
+
+        Log.Information("KeyCloak Client Base Address: {BaseAddress}", client.BaseAddress);
       })
       .AddHttpMessageHandler<KeyCloakAuthDelegatingHandler>();
 

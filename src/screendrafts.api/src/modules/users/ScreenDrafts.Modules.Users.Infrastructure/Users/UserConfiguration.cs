@@ -14,25 +14,42 @@ internal sealed class UserConfiguration : IEntityTypeConfiguration<User>
       value => UserId.Create(value));
 
     builder.Property(u => u.FirstName)
-      .HasMaxLength( FirstName.MaxLength)
+      .HasMaxLength(FirstName.MaxLength)
       .HasConversion(
       u => u.Value,
       value => FirstName.Create(value!).Value);
 
     builder.Property(u => u.LastName)
-      .HasMaxLength( LastName.MaxLength)
+      .HasMaxLength(LastName.MaxLength)
       .HasConversion(
       u => u.Value,
       value => LastName.Create(value!).Value);
 
     builder.Property(u => u.Email)
-      .HasMaxLength( Email.MaxLength)
+      .HasMaxLength(Email.MaxLength)
       .HasConversion(
       u => u.Value,
       value => Email.Create(value!).Value);
 
+    builder.Property(u => u.ProfilePicturePath)
+      .HasMaxLength(2048);
+
+    builder.Property(u => u.TwitterHandle)
+      .HasMaxLength(100);
+
+    builder.Property(u => u.InstagramHandle)
+      .HasMaxLength(100);
+
+    builder.Property(u => u.LetterboxdHandle)
+      .HasMaxLength(100);
+
+    builder.Property(u => u.BlueskyHandle)
+      .HasMaxLength(100);
+
     builder.HasIndex(u => u.Email).IsUnique();
 
     builder.HasIndex(u => u.IdentityId).IsUnique();
+
+    builder.HasIndex(u => u.PersonId).IsUnique();
   }
 }

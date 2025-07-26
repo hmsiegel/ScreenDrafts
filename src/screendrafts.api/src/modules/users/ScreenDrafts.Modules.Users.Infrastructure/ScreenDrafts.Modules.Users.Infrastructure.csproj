@@ -9,5 +9,6 @@
   <ItemGroup>
     <InternalsVisibleTo Include="ScreenDrafts.Modules.Users.IntegrationTests"/>
     <InternalsVisibleTo Include="ScreenDrafts.IntegrationTests"/>
+    <InternalsVisibleTo Include="ScreenDrafts.Seeding.Users"/>
   </ItemGroup>
 </Project>

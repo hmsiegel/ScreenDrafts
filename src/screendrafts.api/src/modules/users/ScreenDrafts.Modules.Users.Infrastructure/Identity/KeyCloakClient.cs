@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Users.Infrastructure.Identity;
+﻿using Serilog;
+
+namespace ScreenDrafts.Modules.Users.Infrastructure.Identity;
 
 internal sealed class KeyCloakClient(HttpClient httpClient)
 {
@@ -6,14 +8,31 @@ internal sealed class KeyCloakClient(HttpClient httpClient)
 
   internal async Task<string> RegisterUserAsync(UserRepresentation user, CancellationToken cancellationToken = default)
   {
-    var httpResposeMessage = await _httpClient.PostAsJsonAsync(
+    Log.Information("HttpClient Base Address: {BaseAddress}", _httpClient.BaseAddress);
+    Log.Information(
+      "Registering user with the following values: Username: {Username}, First Name: {FirstName}, LastName: {LastName}, Email: {Email}",
+      user.Username,
+      user.FirstName,
+      user.LastName,
+      user.Email);
+
+    var httpResponseMessage = await _httpClient.PostAsJsonAsync(
       "users",
       user,
       cancellationToken);
 
-    httpResposeMessage.EnsureSuccessStatusCode();
+    if (!httpResponseMessage.IsSuccessStatusCode)
+    {
+      var body = await httpResponseMessage.Content.ReadAsStringAsync(cancellationToken);
+      Log.Error(
+        "Failed to register user. Status Code: {StatusCode}, Body: {Body}",
+        httpResponseMessage.StatusCode,
+        body);
+    }
 
-    return ExtractIdentityIdFromLocationHeader(httpResposeMessage);
+    httpResponseMessage.EnsureSuccessStatusCode();
+
+    return ExtractIdentityIdFromLocationHeader(httpResponseMessage);
   }
 
   private static string ExtractIdentityIdFromLocationHeader(HttpResponseMessage httpResponseMessage)

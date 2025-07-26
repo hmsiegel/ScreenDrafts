@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ScreenDrafts.Modules.Users.Infrastructure.Database;
@@ -11,9 +12,11 @@ using ScreenDrafts.Modules.Users.Infrastructure.Database;
 namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
 {
     [DbContext(typeof(UsersDbContext))]
-    partial class UsersDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250722165044_Add_UserProfile_SocialLinks")]
+    partial class Add_UserProfile_SocialLinks
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -796,11 +799,6 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<string>("BlueskyHandle")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("bluesky_handle");
-
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(255)
@@ -838,14 +836,10 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                         .HasColumnType("text")
                         .HasColumnName("middle_name");
 
-                    b.Property<Guid?>("PersonId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("person_id");
-
-                    b.Property<string>("ProfilePicturePath")
+                    b.Property<string>("ProfilePictureUrl")
                         .HasMaxLength(2048)
                         .HasColumnType("character varying(2048)")
-                        .HasColumnName("profile_picture_path");
+                        .HasColumnName("profile_picture_url");
 
                     b.Property<string>("TwitterHandle")
                         .HasMaxLength(100)
@@ -862,10 +856,6 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                     b.HasIndex("IdentityId")
                         .IsUnique()
                         .HasDatabaseName("ix_users_identity_id");
-
-                    b.HasIndex("PersonId")
-                        .IsUnique()
-                        .HasDatabaseName("ix_users_person_id");
 
                     b.ToTable("users", "users");
                 });

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ScreenDrafts.Modules.Users.Infrastructure.Database;
@@ -11,9 +12,11 @@ using ScreenDrafts.Modules.Users.Infrastructure.Database;
 namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
 {
     [DbContext(typeof(UsersDbContext))]
-    partial class UsersDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250724013116_Add_PersonId")]
+    partial class Add_PersonId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -842,10 +845,10 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("person_id");
 
-                    b.Property<string>("ProfilePicturePath")
+                    b.Property<string>("ProfilePictureUrl")
                         .HasMaxLength(2048)
                         .HasColumnType("character varying(2048)")
-                        .HasColumnName("profile_picture_path");
+                        .HasColumnName("profile_picture_url");
 
                     b.Property<string>("TwitterHandle")
                         .HasMaxLength(100)
