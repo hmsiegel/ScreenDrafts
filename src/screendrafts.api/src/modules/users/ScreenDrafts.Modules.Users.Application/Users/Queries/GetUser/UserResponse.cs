@@ -5,4 +5,9 @@ public sealed record UserResponse(
     string Email,
     string FirstName,
     string MiddleName,
-    string LastName);
+    string LastName,
+    Uri? ProfilePictureUri,
+    string? TwitterHandle,
+    string? InstagramHandle,
+    string? LetterboxdHandle,
+    string? BlueskyHandle);

@@ -23,7 +23,12 @@ internal sealed class UpdateUserProfile(ISender sender) : Endpoint<UpdateUserReq
       userId,
       req.FirstName,
       req.LastName,
-      req.MiddleName);
+      req.MiddleName,
+      req.ProfilePicture,
+      req.TwitterHandle,
+      req.InstagramHandle,
+      req.LetterboxdHandle,
+      req.BlueskyHandle);
 
     var result = await _sender.Send(command, ct);
 
@@ -34,7 +39,12 @@ internal sealed class UpdateUserProfile(ISender sender) : Endpoint<UpdateUserReq
 public sealed record UpdateUserRequest(
   string FirstName,
   string LastName,
-  string? MiddleName = null);
+  string? MiddleName = null,
+  string? ProfilePicture = null,
+  string? TwitterHandle = null,
+  string? InstagramHandle = null,
+  string? LetterboxdHandle = null,
+  string? BlueskyHandle = null);
 
 internal sealed class UpdateUserProfileSummary : Summary<UpdateUserProfile>
 {
