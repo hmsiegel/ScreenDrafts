@@ -6,7 +6,7 @@
     <WarningsAsErrors>$(WarningsAsErrors);CS8618</WarningsAsErrors>
 
     <!-- Common output directory for all builds-->
-    <OutputPath>$(SolutionDir)artifacts\$(MSBuildProjectName)\</OutputPath>
+    <!--<OutputPath>$(SolutionDir)artifacts\$(MSBuildProjectName)\</OutputPath>-->
 
     <!-- Embed source files for debugging -->
     <EmbedAllSources>true</EmbedAllSources>
