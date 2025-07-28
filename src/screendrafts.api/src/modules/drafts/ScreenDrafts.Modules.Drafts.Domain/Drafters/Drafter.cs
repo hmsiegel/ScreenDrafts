@@ -92,9 +92,11 @@ public sealed class Drafter : AggrgateRoot<DrafterId, Guid>
     return Result.Success();
   }
 
-  public void AddDraftStats(Draft draft)
+  public Result AddDraftStats(DrafterDraftStats draftStats)
   {
-    _draftStats.Add(DrafterDraftStats.Create(this, null, draft));
+    Guard.Against.Null(draftStats);
+    _draftStats.Add(draftStats);
+    return Result.Success();
   }
 
   public void AddDraft(Draft draft)

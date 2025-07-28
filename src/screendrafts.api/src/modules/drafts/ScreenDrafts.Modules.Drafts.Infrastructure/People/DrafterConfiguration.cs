@@ -46,5 +46,14 @@ internal sealed class DrafterConfiguration : IEntityTypeConfiguration<Drafter>
         x.HasKey("draft_id", "drafter_id");
         x.ToTable(Tables.DraftsDrafters);
       });
+
+    builder.HasMany(d => d.DraftStats)
+      .WithOne(ds => ds.Drafter)
+      .HasForeignKey(ds => ds.DrafterId)
+      .OnDelete(DeleteBehavior.Cascade);
+
+    builder.Navigation(d => d.DraftStats)
+      .HasField("_draftStats")
+      .UsePropertyAccessMode(PropertyAccessMode.Field);
   }
 }

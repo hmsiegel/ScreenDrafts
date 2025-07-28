@@ -65,5 +65,14 @@ internal sealed class DraftConfiguration : IEntityTypeConfiguration<Draft>
       .Metadata
       .FindNavigation(nameof(Draft.Picks))!
       .SetPropertyAccessMode(PropertyAccessMode.Field);
+
+    builder.HasMany(d => d.DrafterStats)
+      .WithOne(ds => ds.Draft)
+      .HasForeignKey(ds => ds.DraftId)
+      .OnDelete(DeleteBehavior.Cascade);
+
+    builder.Navigation(d => d.DrafterStats)
+      .HasField("_drafterDraftStats")
+      .UsePropertyAccessMode(PropertyAccessMode.Field);
   }
 }

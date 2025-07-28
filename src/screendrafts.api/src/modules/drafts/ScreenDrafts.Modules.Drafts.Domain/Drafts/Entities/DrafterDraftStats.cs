@@ -104,4 +104,13 @@ public sealed class DrafterDraftStats : Entity<DrafterDraftStatsId>
       VetoOverridesUsed += numberOfBlessingsUsed;
     }
   }
+
+  public void SetStartingVetoes(int startingVetoes)
+  {
+    if (startingVetoes < 0)
+    {
+      throw new ArgumentOutOfRangeException(nameof(startingVetoes), "Starting vetoes cannot be negative.");
+    }
+    StartingVetoes = startingVetoes;
+  }
 }

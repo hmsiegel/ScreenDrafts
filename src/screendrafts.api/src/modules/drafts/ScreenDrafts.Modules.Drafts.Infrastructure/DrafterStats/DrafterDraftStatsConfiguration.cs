@@ -33,7 +33,7 @@ internal sealed class DrafterDraftStatsConfiguration : IEntityTypeConfiguration<
         value => DrafterId.Create(value));
 
     builder.HasOne(ds => ds.Drafter)
-      .WithMany(d => d.DraftStats)
+      .WithMany()
       .HasForeignKey(builder => builder.DrafterId)
       .IsRequired(false);
 
@@ -45,7 +45,7 @@ internal sealed class DrafterDraftStatsConfiguration : IEntityTypeConfiguration<
         value => DrafterTeamId.Create(value));
 
     builder.HasOne(ds => ds.DrafterTeam)
-      .WithMany(dt => dt.DraftStats)
+      .WithMany()
       .HasForeignKey(builder => builder.DrafterTeamId)
       .IsRequired(false);
 

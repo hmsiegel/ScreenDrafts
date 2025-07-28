@@ -148,9 +148,13 @@ public class DrafterTests : BaseTest
     // Arrange
     var drafter = DrafterFactory.CreateDrafter();
     var draft = DraftFactory.CreateStandardDraft().Value;
+    var drafterDraftStats = DrafterDraftStats.Create(
+      drafter,
+      null,
+      draft);
 
     // Act
-    drafter.AddDraftStats(draft);
+    drafter.AddDraftStats(drafterDraftStats);
 
     // Assert
     drafter.DraftStats.Should().ContainSingle();
