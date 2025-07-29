@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Modules.Drafts.Application.Drafters.Queries.GetDrafter;
-
-namespace ScreenDrafts.Modules.Drafts.Presentation.Drafters;
+﻿namespace ScreenDrafts.Modules.Drafts.Presentation.Drafters;
 
 internal sealed class GetDrafter(ISender sender) : Endpoint<GetDrafterRequest, DrafterResponse>
 {
