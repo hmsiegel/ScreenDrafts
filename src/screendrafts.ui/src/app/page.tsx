@@ -1,7 +1,7 @@
 'use client';
 
 import Link from "next/link";
-import { oswald, roboto } from "./ui/fonts";
+import { oswald, roboto } from "../styles/fonts";
 import Image from "next/image";
 import { signIn } from "next-auth/react";
 
