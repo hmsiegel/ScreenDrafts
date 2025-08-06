@@ -1767,6 +1767,59 @@
         ]
       }
     },
+    "/drafters/{drafterId}/profile": {
+      "get": {
+        "tags": [
+          "Drafters"
+        ],
+        "description": "Get a drafter's profile by ID",
+        "operationId": "GetDrafterProfile",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/GetDrafterProfileRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetDrafterProfileRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DrafterProfileResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
     "/drafters": {
       "get": {
         "tags": [
@@ -2471,6 +2524,55 @@
           }
         }
       },
+      "DraftBrief": {
+        "required": [
+          "draftId",
+          "title",
+          "draftDates"
+        ],
+        "type": "object",
+        "properties": {
+          "draftId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string"
+          },
+          "draftDates": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        },
+        "nullable": true
+      },
+      "DraftBrief2": {
+        "required": [
+          "draftId",
+          "title",
+          "draftDates"
+        ],
+        "type": "object",
+        "properties": {
+          "draftId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string"
+          },
+          "draftDates": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        }
+      },
       "DrafterDraftResponse": {
         "type": "object",
         "properties": {
@@ -2484,6 +2586,101 @@
           },
           "displayName": {
             "type": "string"
+          }
+        }
+      },
+      "DrafterProfileResponse": {
+        "required": [
+          "drafterId",
+          "personId",
+          "displayName",
+          "totalDrafts",
+          "firstDraft",
+          "mostRecentDraft",
+          "filmsDrafted",
+          "vetoesUsed",
+          "vetoOverridesUsed",
+          "commissionerOverrides",
+          "timesVetoed",
+          "timesVetoOverridesAgainst",
+          "hasRolloverVeto",
+          "hasRolloverVetoOverride",
+          "socialHandles",
+          "draftHistory",
+          "vetoHistory"
+        ],
+        "type": "object",
+        "properties": {
+          "drafterId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "personId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "totalDrafts": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "firstDraft": {
+            "$ref": "#/components/schemas/DraftBrief"
+          },
+          "mostRecentDraft": {
+            "$ref": "#/components/schemas/DraftBrief"
+          },
+          "filmsDrafted": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "vetoesUsed": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "vetoOverridesUsed": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "commissionerOverrides": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "timesVetoed": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "timesVetoOverridesAgainst": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "hasRolloverVeto": {
+            "type": "boolean"
+          },
+          "hasRolloverVetoOverride": {
+            "type": "boolean"
+          },
+          "socialHandles": {
+            "$ref": "#/components/schemas/SocialHandles"
+          },
+          "draftHistory": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DraftHistoryItem"
+            }
+          },
+          "vetoHistory": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VetoHistoryItem"
+            }
           }
         }
       },
@@ -2506,6 +2703,24 @@
           },
           "displayName": {
             "type": "string"
+          }
+        }
+      },
+      "DraftHistoryItem": {
+        "required": [
+          "draft",
+          "picks"
+        ],
+        "type": "object",
+        "properties": {
+          "draft": {
+            "$ref": "#/components/schemas/DraftBrief2"
+          },
+          "picks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PickItem"
+            }
           }
         }
       },
@@ -2833,6 +3048,18 @@
             "format": "uuid"
           },
           "pickId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "GetDrafterProfileRequest": {
+        "required": [
+          "drafterId"
+        ],
+        "type": "object",
+        "properties": {
+          "drafterId": {
             "type": "string",
             "format": "uuid"
           }
@@ -3334,11 +3561,84 @@
           "displayName": {
             "type": "string"
           },
+          "drafterId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "hostId": {
+            "type": "string",
+            "format": "uuid"
+          },
           "isDrafter": {
             "type": "boolean"
           },
           "isHost": {
             "type": "boolean"
+          }
+        }
+      },
+      "PickItem": {
+        "required": [
+          "pickId",
+          "position",
+          "playOrder",
+          "movieId",
+          "movieTitle",
+          "wasVetoed",
+          "wasVetoOverride",
+          "wasCommissionerOverride",
+          "vetoedById",
+          "vetoedByName",
+          "vetoOverrideById",
+          "vetoOverrideByName"
+        ],
+        "type": "object",
+        "properties": {
+          "pickId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "position": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "playOrder": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "movieId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "movieTitle": {
+            "type": "string"
+          },
+          "wasVetoed": {
+            "type": "boolean"
+          },
+          "wasVetoOverride": {
+            "type": "boolean"
+          },
+          "wasCommissionerOverride": {
+            "type": "boolean"
+          },
+          "vetoedById": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "vetoedByName": {
+            "type": "string",
+            "nullable": true
+          },
+          "vetoOverrideById": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "vetoOverrideByName": {
+            "type": "string",
+            "nullable": true
           }
         }
       },
@@ -3493,6 +3793,32 @@
             "format": "uuid"
           }
         }
+      },
+      "SocialHandles": {
+        "type": "object",
+        "properties": {
+          "twitter": {
+            "type": "string",
+            "nullable": true
+          },
+          "instagram": {
+            "type": "string",
+            "nullable": true
+          },
+          "letterboxd": {
+            "type": "string",
+            "nullable": true
+          },
+          "bluesky": {
+            "type": "string",
+            "nullable": true
+          },
+          "profilePicturePath": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "nullable": true
       },
       "StartDraftRequest": {
         "required": [
@@ -3656,7 +3982,7 @@
           "firstName",
           "middleName",
           "lastName",
-          "profilePictureUri",
+          "profilePicturePath",
           "twitterHandle",
           "instagramHandle",
           "letterboxdHandle",
@@ -3680,9 +4006,8 @@
           "lastName": {
             "type": "string"
           },
-          "profilePictureUri": {
+          "profilePicturePath": {
             "type": "string",
-            "format": "uri",
             "nullable": true
           },
           "twitterHandle": {
@@ -3698,6 +4023,70 @@
             "nullable": true
           },
           "blueskyHandle": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "VetoHistoryItem": {
+        "required": [
+          "draft",
+          "vetoId",
+          "targetPickId",
+          "position",
+          "playOrder",
+          "movieId",
+          "movieTitle",
+          "targetDrafterId",
+          "targetDrafterDisplayName",
+          "wasVetoOverride",
+          "overrideById",
+          "overrideByName"
+        ],
+        "type": "object",
+        "properties": {
+          "draft": {
+            "$ref": "#/components/schemas/DraftBrief2"
+          },
+          "vetoId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "targetPickId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "position": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "playOrder": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "movieId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "movieTitle": {
+            "type": "string"
+          },
+          "targetDrafterId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "targetDrafterDisplayName": {
+            "type": "string"
+          },
+          "wasVetoOverride": {
+            "type": "boolean"
+          },
+          "overrideById": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "overrideByName": {
             "type": "string",
             "nullable": true
           }
