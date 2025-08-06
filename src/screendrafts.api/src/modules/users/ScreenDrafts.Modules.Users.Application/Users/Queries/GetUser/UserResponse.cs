@@ -6,7 +6,7 @@ public sealed record UserResponse(
     string FirstName,
     string MiddleName,
     string LastName,
-    Uri? ProfilePictureUri,
+    string? ProfilePicturePath,
     string? TwitterHandle,
     string? InstagramHandle,
     string? LetterboxdHandle,

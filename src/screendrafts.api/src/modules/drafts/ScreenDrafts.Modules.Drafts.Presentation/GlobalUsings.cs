@@ -56,4 +56,5 @@ global using ScreenDrafts.Modules.Drafts.Application.People.Queries.GetPerson;
 global using ScreenDrafts.Modules.Drafts.Application.People.Queries.ListPeople;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafts.Enums;
 global using ScreenDrafts.Modules.Movies.IntegrationEvents;
+global using ScreenDrafts.Modules.Users.IntegrationEvents;
 global using ScreenDrafts.Modules.Users.PublicApi;

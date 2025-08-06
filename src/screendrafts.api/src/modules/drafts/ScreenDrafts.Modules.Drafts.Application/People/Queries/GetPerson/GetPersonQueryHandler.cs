@@ -15,8 +15,14 @@ internal sealed class GetPersonQueryHandler(IDbConnectionFactory dbConnectionFac
         p.id AS {nameof(PersonResponse.Id)},
         p.first_name AS {nameof(PersonResponse.FirstName)},
         p.last_name AS {nameof(PersonResponse.LastName)},
-        p.display_name AS {nameof(PersonResponse.DisplayName)}
+        p.display_name AS {nameof(PersonResponse.DisplayName)},
+        d.id AS {nameof(PersonResponse.DrafterId)},
+        h.id AS {nameof(PersonResponse.HostId)},
+        CASE WHEN d.id IS NOT NULL THEN TRUE ELSE FALSE END AS {nameof(PersonResponse.IsDrafter)},
+        CASE WHEN h.id IS NOT NULL THEN TRUE ELSE FALSE END AS {nameof(PersonResponse.IsHost)}
       FROM drafts.people p
+      LEFT JOIN drafts.drafters d ON p.id = d.person_id
+      LEFT JOIN drafts.hosts h ON p.id = h.person_id
       WHERE p.id = @PersonId
       """;
 

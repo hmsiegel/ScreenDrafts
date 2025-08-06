@@ -12,4 +12,6 @@ public interface IUsersApi
   Task<Result> AddPermissionToRoleAsync(string Role, string Permission);
 
   Task<IReadOnlyCollection<string>> GetUserRolesAsync(Guid userId, CancellationToken cancellationToken);
+
+  Task<UserSocialResponse?> GetUserSocialsAsync(Guid userId, CancellationToken cancellationToken);
 }

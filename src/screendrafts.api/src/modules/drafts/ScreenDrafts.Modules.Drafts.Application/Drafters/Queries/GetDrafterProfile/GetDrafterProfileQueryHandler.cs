@@ -1,9 +1,10 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Application.Drafters.Queries.GetDrafterProfile;
 
-internal sealed class GetDrafterProfileQueryHandler(IDbConnectionFactory dbConnectionFactory)
+internal sealed class GetDrafterProfileQueryHandler(IDbConnectionFactory dbConnectionFactory, IUsersApi usersApi)
   : IQueryHandler<GetDrafterProfileQuery, DrafterProfileResponse>
 {
   private readonly IDbConnectionFactory _dbConnectionFactory = dbConnectionFactory;
+  private readonly IUsersApi _usersApi = usersApi;
 
   public async Task<Result<DrafterProfileResponse>> Handle(
     GetDrafterProfileQuery request,
@@ -14,6 +15,7 @@ internal sealed class GetDrafterProfileQueryHandler(IDbConnectionFactory dbConne
     const string personSql = $"""
       select
         p.id as {nameof(PersonResponse.Id)},
+        p.user_id as {nameof(PersonResponse.UserId)},
         p.display_name as {nameof(PersonResponse.DisplayName)}
       from drafts.people p
       join drafts.drafters d on d.person_id = p.id
@@ -270,44 +272,50 @@ internal sealed class GetDrafterProfileQueryHandler(IDbConnectionFactory dbConne
       })
       .ToList();
 
-    const string social = $"""
-      select
-        u.twitter_handle as {nameof(SocialHandles.Twitter)},
-        u.instagram_handle as {nameof(SocialHandles.Instagram)},
-        u.letterboxd_handle as {nameof(SocialHandles.Letterboxd)},
-        u.bluesky_handle as {nameof(SocialHandles.Bluesky)},
-        u.profile_picture_path as {nameof(SocialHandles.ProfilePicturePath)}
-        from users.users u
-        join drafts.people p on p.user_id = u.id
-        join drafts.drafters d on d.person_id = p.id
-        where d.id = @DrafterId;
-      """;
+    var socialHandles = new SocialHandles(
+      Twitter: null,
+      Instagram: null,
+      Bluesky: null,
+      Letterboxd: null,
+      ProfilePicturePath: null
+    );
 
-    var socialHandles = await connection.QuerySingleOrDefaultAsync<SocialHandles>(
-      social,
-      new { request.DrafterId });
+    var userSocials = await _usersApi.GetUserSocialsAsync(
+      person.UserId,
+      cancellationToken);
+
+    if (userSocials is not null)
+    {
+      socialHandles = new SocialHandles(
+        Twitter: userSocials.Twitter,
+        Instagram: userSocials.Instagram,
+        Bluesky: userSocials.Bluesky,
+        Letterboxd: userSocials.Letterboxd,
+        ProfilePicturePath: userSocials.ProfilePicturePath
+      );
+    }
 
     var totalDrafts = totals.total_drafts is not null
-      ? (int) totals.total_drafts
+      ? (int)totals.total_drafts
       : 0;
     var filmsDrafted = totalFilmsDrafted.total_films_drafted is not null
-      ? (int) totalFilmsDrafted.total_films_drafted
+      ? (int)totalFilmsDrafted.total_films_drafted
       : 0;
     var vetoesUsed = blessingCounts.total_vetoes_used is not null ? (int?)blessingCounts.total_vetoes_used : 0;
     var vetoOverridesUsed = blessingCounts.total_veto_overrides_used is not null
-      ? (int?) blessingCounts.total_veto_overrides_used
+      ? (int?)blessingCounts.total_veto_overrides_used
       : 0;
     var commissionerOverrides = blessingCounts.total_commissioner_overrides is not null
-      ? (int?) blessingCounts.total_commissioner_overrides
+      ? (int?)blessingCounts.total_commissioner_overrides
       : 0;
     var timesVetoedAgainst = timesVetoed.times_vetoed is not null
-      ? (int?) timesVetoed.times_vetoed
+      ? (int?)timesVetoed.times_vetoed
       : 0;
     var timesVetoOverridden = timesVetoedOverrides.times_veto_overrides_against is not null
-      ? (int?) timesVetoedOverrides.times_veto_overrides_against
+      ? (int?)timesVetoedOverrides.times_veto_overrides_against
       : 0;
-    var hasRolloverVeto = rollover.has_rollover_veto is not null && (bool) rollover.has_rollover_veto;
-    var hasRolloverVetoOverride = rollover.has_rollover_veto_overrides is not null && (bool) rollover.has_rollover_veto_overrides;
+    var hasRolloverVeto = rollover.has_rollover_veto is not null && (bool)rollover.has_rollover_veto;
+    var hasRolloverVetoOverride = rollover.has_rollover_veto_overrides is not null && (bool)rollover.has_rollover_veto_overrides;
 
 
     var response = new DrafterProfileResponse(
