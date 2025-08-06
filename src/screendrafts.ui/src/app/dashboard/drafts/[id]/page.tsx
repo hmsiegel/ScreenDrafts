@@ -1,5 +1,5 @@
 import { DraftResponse } from "@/lib/dto";
-import { getDraftDetails } from "@/app/lib/fetch-drafts";
+import { getDraftDetails } from "@features/drafts/api/fetch-drafts";
 import { DraftDetails } from "@/features/drafts/components/draft-details";
 import Breadcrumbs from "@/components/ui/breadcrumbs";
 import { Metadata, ResolvingMetadata } from "next";
@@ -17,7 +17,7 @@ export async function generateMetadata(
       openGraph: {
          title: `${draft.title}`,
          description: `Episode details for ${draft.title}`,
-         url: `/main/drafts/${draft.id}`,
+         url: `/dashboard/drafts/${draft.id}`,
       },
    };
 }

@@ -34,7 +34,7 @@ export default function Home() {
             <button
               className="btn-blue hover:bg-blue-400 hover:text-black transition ease-out duration-500"
               onClick={() => signIn('keycloak', {
-                callbackUrl: '/main'})}
+                callbackUrl: '/dashboard'})}
             >
               <span>SIGN IN</span>
             </button>

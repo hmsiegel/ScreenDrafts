@@ -17,8 +17,8 @@ export default function NavMenu() {
             </Link>
          </div>
          <div className="flex items-center text-lg">
-            <Link href="/main/drafts" className="mr-4">Drafts</Link>
-            <Link href="/main/guests" className="mr-4">Guests</Link>
+            <Link href="/dashboard/drafts" className="mr-4">Drafts</Link>
+            <Link href="/dashboard/guests" className="mr-4">Guests</Link>
             <Link href="/stats" className="mr-4">Statistics</Link>
             <Link href="/profile" className="mr-4">Profile</Link>
          </div>

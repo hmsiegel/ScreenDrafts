@@ -58,7 +58,7 @@ export function DraftsTable({ drafts, sort, dir }: DraftsTableProps) {
                   .map((draft: DraftResponse) => (
                      <div key={draft.id} className="table-row border-2 hover:bg-gray-200">
                         <Link
-                           href={`/main/drafts/${draft.id}`}
+                           href={`/dashboard/drafts/${draft.id}`}
                            className="contents"
                         >
                            <div className="whitespace-nowrap align-middle table-cell py-3 pl-6 pr-3">{draft.episodeNumber || "N/A"}</div>

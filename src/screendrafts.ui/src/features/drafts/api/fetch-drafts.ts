@@ -1,8 +1,8 @@
 import { getServerSession } from "next-auth";
-import { authOptions } from "../api/auth/[...nextauth]/route";
-import { DraftResponse, PagedResultOfDraftResponse, UpcomingDraftDto } from "./dto";
-import { env } from "./env";
-import { PagedResult, toPagedDraftResult } from "./types/paged-result";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { DraftResponse, PagedResultOfDraftResponse, UpcomingDraftDto } from "@/lib/dto";
+import { env } from "@/lib/env";
+import { PagedResult, toPagedDraftResult } from "@/types/paged-result";
 
 const apiBase = env.apiUrl;
 

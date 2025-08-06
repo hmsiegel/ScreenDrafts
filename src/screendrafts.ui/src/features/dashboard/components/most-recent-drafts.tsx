@@ -2,7 +2,7 @@ import { inter, roboto } from "@/styles/fonts";
 import Link from "next/link";
 import React from "react";
 import type { DraftResponse } from "@/lib/dto";
-import { getLatestDrafts } from "@/app/lib/fetch-drafts";
+import { getLatestDrafts } from "@features/drafts/api/fetch-drafts";
 import { format } from "date-fns/format";
 
 export default async function MostRecentDrafts() {
@@ -54,7 +54,7 @@ export default async function MostRecentDrafts() {
                      <React.Fragment key={draft.id}>
                         <Link
                            key={draft.id}
-                           href={`/main/drafts/${draft.id}`}
+                           href={`/dashboard/drafts/${draft.id}`}
                            className="table-row hover:bg-gray-200">
                            <div className="whitespace-nowrap table-cell table-data py-3 pl-6 pr-3">{draft.episodeNumber}</div>
                            <div className="whitespace-nowrap table-cell table-data py-3 pl-6 pr-3">{draft.title}</div>

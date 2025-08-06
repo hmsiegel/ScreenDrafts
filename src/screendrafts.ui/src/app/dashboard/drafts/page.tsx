@@ -1,4 +1,4 @@
-import { listDrafts } from "@/app/lib/fetch-drafts";
+import { listDrafts } from "@features/drafts/api/fetch-drafts";
 import DraftsFilter from "@/features/drafts/components/drafts-filter";
 import { DraftsTable } from "@/features/drafts/components/drafts-table";
 import Breadcrumbs from "@/components/ui/breadcrumbs";

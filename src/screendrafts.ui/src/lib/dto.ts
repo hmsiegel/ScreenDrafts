@@ -203,6 +203,11 @@ export interface IClient {
     /**
      * @return OK
      */
+    getDrafterProfile(body: GetDrafterProfileRequest): Promise<DrafterProfileResponse>;
+
+    /**
+     * @return OK
+     */
     listDrafters(body: ListDraftersRequest): Promise<DrafterResponse[]>;
 
     /**
@@ -2286,6 +2291,63 @@ export class DraftsClient implements IClient {
     /**
      * @return OK
      */
+    getDrafterProfile(body: GetDrafterProfileRequest, signal?: AbortSignal): Promise<DrafterProfileResponse> {
+        let url_ = this.baseUrl + "/drafters/{drafterId}/profile";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetDrafterProfile(_response);
+        });
+    }
+
+    protected processGetDrafterProfile(response: Response): Promise<DrafterProfileResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as DrafterProfileResponse;
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<DrafterProfileResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
     listDrafters(body: ListDraftersRequest, signal?: AbortSignal): Promise<DrafterResponse[]> {
         let url_ = this.baseUrl + "/drafters";
         url_ = url_.replace(/[?&]$/, "");
@@ -2748,10 +2810,48 @@ export interface DirectorModel {
     [key: string]: any;
 }
 
+export interface DraftBrief {
+    draftId: string;
+    title: string;
+    draftDates: Date[];
+
+    [key: string]: any;
+}
+
+export interface DraftBrief2 {
+    draftId: string;
+    title: string;
+    draftDates: Date[];
+
+    [key: string]: any;
+}
+
 export interface DrafterDraftResponse {
     id?: string;
     personId?: string;
     displayName?: string;
+
+    [key: string]: any;
+}
+
+export interface DrafterProfileResponse {
+    drafterId: string;
+    personId: string;
+    displayName: string;
+    totalDrafts: number;
+    firstDraft: DraftBrief | undefined;
+    mostRecentDraft: DraftBrief | undefined;
+    filmsDrafted: number;
+    vetoesUsed: number | undefined;
+    vetoOverridesUsed: number | undefined;
+    commissionerOverrides: number | undefined;
+    timesVetoed: number | undefined;
+    timesVetoOverridesAgainst: number | undefined;
+    hasRolloverVeto: boolean;
+    hasRolloverVetoOverride: boolean;
+    socialHandles: SocialHandles | undefined;
+    draftHistory: DraftHistoryItem[];
+    vetoHistory: VetoHistoryItem[];
 
     [key: string]: any;
 }
@@ -2762,6 +2862,13 @@ export interface DrafterResponse {
     firstName?: string;
     lastName?: string;
     displayName?: string;
+
+    [key: string]: any;
+}
+
+export interface DraftHistoryItem {
+    draft: DraftBrief2;
+    picks: PickItem[];
 
     [key: string]: any;
 }
@@ -2858,6 +2965,12 @@ export interface ExecuteVetoRequest {
     drafterTeamId: string | undefined;
     draftId: string;
     pickId: string;
+
+    [key: string]: any;
+}
+
+export interface GetDrafterProfileRequest {
+    drafterId: string;
 
     [key: string]: any;
 }
@@ -3028,8 +3141,27 @@ export interface PersonResponse {
     firstName?: string;
     lastName?: string;
     displayName?: string;
+    drafterId?: string;
+    hostId?: string;
     isDrafter?: boolean;
     isHost?: boolean;
+
+    [key: string]: any;
+}
+
+export interface PickItem {
+    pickId: string;
+    position: number;
+    playOrder: number;
+    movieId: string;
+    movieTitle: string;
+    wasVetoed: boolean;
+    wasVetoOverride: boolean;
+    wasCommissionerOverride: boolean;
+    vetoedById: string | undefined;
+    vetoedByName: string | undefined;
+    vetoOverrideById: string | undefined;
+    vetoOverrideByName: string | undefined;
 
     [key: string]: any;
 }
@@ -3099,6 +3231,16 @@ export interface RemoveUserRoleRequest {
     [key: string]: any;
 }
 
+export interface SocialHandles {
+    twitter?: string | undefined;
+    instagram?: string | undefined;
+    letterboxd?: string | undefined;
+    bluesky?: string | undefined;
+    profilePicturePath?: string | undefined;
+
+    [key: string]: any;
+}
+
 export interface StartDraftRequest {
     draftId: string;
 
@@ -3160,11 +3302,28 @@ export interface UserResponse {
     firstName: string;
     middleName: string;
     lastName: string;
-    profilePictureUri: string | undefined;
+    profilePicturePath: string | undefined;
     twitterHandle: string | undefined;
     instagramHandle: string | undefined;
     letterboxdHandle: string | undefined;
     blueskyHandle: string | undefined;
+
+    [key: string]: any;
+}
+
+export interface VetoHistoryItem {
+    draft: DraftBrief2;
+    vetoId: string;
+    targetPickId: string;
+    position: number;
+    playOrder: number;
+    movieId: string;
+    movieTitle: string;
+    targetDrafterId: string;
+    targetDrafterDisplayName: string;
+    wasVetoOverride: boolean;
+    overrideById: string | undefined;
+    overrideByName: string | undefined;
 
     [key: string]: any;
 }

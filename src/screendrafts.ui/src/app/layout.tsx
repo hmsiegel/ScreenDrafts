@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { roboto } from "@/styles/fonts";
-import "@/app/ui/global.css";
-import Footer from "../components/layout/footer/footer";
+import "@/styles/global.css";
+import Footer from "@/components/layout/footer/footer";
 import Providers from "./providers";
 
 export const metadata: Metadata = {

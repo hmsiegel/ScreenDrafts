@@ -1,14 +1,15 @@
-import { DrafterResponse, DraftResponse } from "@/lib/dto";
-import { getDrafterDetails } from "@/app/lib/fetch-people";
+import { getDrafterProfile } from "@features/guests/api/fetch-people";
 import Breadcrumbs from "@/components/ui/breadcrumbs";
 import { Metadata, ResolvingMetadata } from "next";
+import { DrafterProfileResponse } from "@/lib/dto";
+import { DrafterProfile } from "@/features/drafters/components/drafter-profile";
 
 export async function generateMetadata(
    props: { params: Promise<{ id: string }> },
    _parent: ResolvingMetadata
 ): Promise<Metadata> {
    const { id } = await props.params;
-   const drafter = await getDrafterDetails(id) as DrafterResponse;
+   const drafter = await getDrafterProfile(id) as DrafterProfileResponse;
 
    return {
       title: `${drafter.displayName}`,
@@ -16,7 +17,7 @@ export async function generateMetadata(
       openGraph: {
          title: `${drafter.displayName}`,
          description: `Drafter details for ${drafter.displayName}`,
-         url: `/main/drafters/${drafter.id}`,
+         url: `/dashboard/drafters/${drafter.id}/profile`,
       },
    };
 }
@@ -28,7 +29,7 @@ export default async function Page(
 ) {
    const { id } = await props.params;
 
-   const drafter = await getDrafterDetails(id) as DrafterResponse;
+   const drafter = await getDrafterProfile(id) as DrafterProfileResponse;
 
    return (
       <main className="flex flex-col items-center justify-center md:h-screen">
@@ -37,12 +38,12 @@ export default async function Page(
             <Breadcrumbs
                breadcrumbs={[
                   { label: "Home", href: "/" },
-                  { label: "Main", href: "/main" },
-                  { label: "Drafters", href: "/main/drafters" },
-                  { label: `${drafter.displayName}`, href: `/main/drafters/${drafter.id}`, active: true },
+                  { label: "Dashboard", href: "/dashboard" },
+                  { label: "Drafters", href: "/dashboard/drafters" },
+                  { label: `${drafter.displayName}`, href: `/dashboard/drafters/${drafter.id}`, active: true },
                ]}
             />
-
+            <DrafterProfile drafter={drafter} />
          </div>
       </main>
    );

@@ -38,8 +38,8 @@ export default async function Page(
             <Breadcrumbs
                breadcrumbs={[
                   { label: "Home", href: "/" },
-                  { label: "Main", href: "/main" },
-                  { label: "Guest", href: "/main/guests", active: true },
+                  { label: "Dashboard", href: "/dashboard" },
+                  { label: "Guest", href: "/dashboard/guests", active: true },
                ]}
             />
             <GuestsFilter />

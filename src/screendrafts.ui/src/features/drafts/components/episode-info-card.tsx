@@ -39,7 +39,7 @@ export default function EpisodeInfoCard({ draft }: { draft: DraftResponse }) {
                {draft.drafters && draft.drafters.length > 0 ? (
                   <div className="flex flex-col">
                      {draft.drafters.map((d, index) => (
-                        <DrafterLink key={index} href={`/main/drafters/${d.id}`}>
+                        <DrafterLink key={index} href={`/dashboard/drafters/${d.id}`}>
                            {d.displayName}
                         </DrafterLink>
                      ))}
@@ -53,7 +53,7 @@ export default function EpisodeInfoCard({ draft }: { draft: DraftResponse }) {
                {draft.hosts && draft.hosts.length > 0 ? (
                   <div className="flex flex-col">
                      {draft.hosts.map((h, index) => (
-                        <HostLink key={index} href={`/main/hosts/${h.id}`}>
+                        <HostLink key={index} href={`/dashboard/hosts/${h.id}`}>
                            {h.displayName}
                         </HostLink>
                      ))}
@@ -71,13 +71,13 @@ export default function EpisodeInfoCard({ draft }: { draft: DraftResponse }) {
                         <div className="pr-2">
                            <NavItem
                               label="Previous"
-                              href={`/main/drafts/${draft.previousDraftId}`} >
+                              href={`/dashboard/drafts/${draft.previousDraftId}`} >
                               {draft.previousDraftTitle ?? "View"}
                            </NavItem>
                         </div>
                         <div className="pl-2 border-l border-slate-500">
                            <NavItem label="Next"
-                              href={`/main/drafts/${draft.nextDraftId}`}>
+                              href={`/dashboard/drafts/${draft.nextDraftId}`}>
                               {draft.nextDraftTitle ?? ""}
                            </NavItem>
                         </div>
@@ -88,7 +88,7 @@ export default function EpisodeInfoCard({ draft }: { draft: DraftResponse }) {
                      <div className="col-span-2 flex justify-center pt-2">
                         <NavItem
                            label="Previous"
-                           href={`/main/drafts/${draft.previousDraftId}`} >
+                           href={`/dashboard/drafts/${draft.previousDraftId}`} >
                            {draft.previousDraftTitle ?? "View"}
                         </NavItem>
                      </div>
@@ -98,7 +98,7 @@ export default function EpisodeInfoCard({ draft }: { draft: DraftResponse }) {
                      <div className="col-span-2 flex justify-center pt-2">
                         <NavItem
                            label="Next"
-                           href={`/main/drafts/${draft.nextDraftId}`} >
+                           href={`/dashboard/drafts/${draft.nextDraftId}`} >
                            {draft.nextDraftTitle ?? "View"}
                         </NavItem>
                      </div>

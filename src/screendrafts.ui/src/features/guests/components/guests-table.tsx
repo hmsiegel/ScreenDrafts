@@ -46,7 +46,7 @@ export function GuestsTable({ guests, sort, dir }: GuestsTableProps) {
                         </div>
                         <div className="table-cell align-middle px-6 py-2">
                            {guest.isDrafter ? (
-                              <a href={`/main/drafters/${guest.id}`} className="text-blue-500 hover:underline">
+                              <a href={`/dashboard/drafters/${guest.drafterId}`} className="text-blue-500 hover:underline">
                                  View Profile
                               </a>
                            ) : (
@@ -55,7 +55,7 @@ export function GuestsTable({ guests, sort, dir }: GuestsTableProps) {
                         </div>
                         <div className="table-cell align-middle px-6 py-2">
                            {guest.isHost ? (
-                              <a href={`/main/hosts/${guest.id}`} className="text-blue-500 hover:underline">
+                              <a href={`/dashboard/hosts/${guest.hostId}`} className="text-blue-500 hover:underline">
                                  View Profile
                               </a>
                            ) : (

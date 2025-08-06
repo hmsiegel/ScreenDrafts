@@ -1,8 +1,8 @@
 import { getServerSession } from "next-auth";
-import { DrafterResponse, DraftResponse, PagedResultOfPersonResponse, PersonResponse } from "./dto";
-import { env } from "./env";
-import { PagedResult, toPagedPeopleResult } from "./types/paged-result";
-import { authOptions } from "../api/auth/[...nextauth]/route";
+import { DrafterProfileResponse, PagedResultOfPersonResponse, PersonResponse } from "@/lib/dto";
+import { env } from "@lib/env";
+import { PagedResult, toPagedPeopleResult } from "@/types/paged-result";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 const apiBase = env.apiUrl;
 
@@ -47,8 +47,8 @@ export async function listGuests(params: {
    return toPagedPeopleResult(apiPaged);
 }
 
-export async function getDrafterDetails(id: string): Promise<DrafterResponse[]> {
-   const url = `${apiBase}/drafters/${id}`;
+export async function getDrafterProfile(id: string): Promise<DrafterProfileResponse> {
+   const url = `${apiBase}/drafters/${id}/profile`;
 
    const session = await getServerSession(authOptions);
    const headers: HeadersInit = {};
@@ -71,5 +71,5 @@ export async function getDrafterDetails(id: string): Promise<DrafterResponse[]> 
       );
    }
 
-   return response.json() as Promise<DrafterResponse[]>;
+   return response.json() as Promise<DrafterProfileResponse>;
 }
