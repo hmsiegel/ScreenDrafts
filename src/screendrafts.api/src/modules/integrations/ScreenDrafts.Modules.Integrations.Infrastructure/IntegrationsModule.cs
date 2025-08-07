@@ -2,6 +2,7 @@
 
 public static class IntegrationsModule
 {
+  private const string ModuleName = "Integrations";
   public static IServiceCollection AddIntegrationsModule(
     this IServiceCollection services,
     IConfiguration configuration)
@@ -29,14 +30,7 @@ public static class IntegrationsModule
   {
     services.AddDbContext<IntegrationsDbContext>((sp, options) =>
     {
-      var database = sp.GetRequiredService<IOptions<DatabaseSettings>>().Value;
-
-      options.UseNpgsql(
-        database.ConnectionString,
-        npgsqlOptions =>
-        npgsqlOptions.MigrationsHistoryTable(HistoryRepository.DefaultTableName, Schemas.Integrations))
-      .UseSnakeCaseNamingConvention()
-      .AddInterceptors(sp.GetRequiredService<InsertOutboxMessagesInterceptor>());
+      options.UseModuleDefaults(ModuleName, Schemas.Integrations, sp);
     });
 
     services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<IntegrationsDbContext>());

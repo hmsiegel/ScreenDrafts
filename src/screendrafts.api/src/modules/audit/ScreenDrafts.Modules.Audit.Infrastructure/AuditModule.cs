@@ -2,6 +2,7 @@
 
 public static class AuditModule
 {
+  private const string ModuleName = "Audit";
   public static IServiceCollection AddAuditModule(
     this IServiceCollection services,
     IConfiguration configuration)
@@ -21,14 +22,7 @@ public static class AuditModule
   {
     services.AddDbContext<AuditDbContext>((sp, options) =>
     {
-      var database = sp.GetRequiredService<IOptions<DatabaseSettings>>().Value;
-
-      options.UseNpgsql(
-        database.ConnectionString,
-        npgsqlOptions =>
-        npgsqlOptions.MigrationsHistoryTable(HistoryRepository.DefaultTableName, Schemas.Audit))
-      .UseSnakeCaseNamingConvention()
-      .AddInterceptors(sp.GetRequiredService<InsertOutboxMessagesInterceptor>());
+      options.UseModuleDefaults(ModuleName, Schemas.Audit, sp);
     });
 
     services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<AuditDbContext>());

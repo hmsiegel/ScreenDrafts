@@ -1,9 +1,8 @@
-﻿using Serilog;
-
-namespace ScreenDrafts.Modules.Users.Infrastructure;
+﻿namespace ScreenDrafts.Modules.Users.Infrastructure;
 
 public static class UsersModule
 {
+  private const string ModuleName = "Users";
   public static IServiceCollection AddUsersModule(
     this IServiceCollection services,
     IConfiguration configuration)
@@ -25,14 +24,7 @@ public static class UsersModule
 
     services.AddDbContext<UsersDbContext>((sp, options) =>
     {
-      var database = sp.GetRequiredService<IOptions<DatabaseSettings>>().Value;
-
-      options.UseNpgsql(
-        database.ConnectionString,
-        npgsqlOptions =>
-        npgsqlOptions.MigrationsHistoryTable(HistoryRepository.DefaultTableName, Schemas.Users))
-      .UseSnakeCaseNamingConvention()
-      .AddInterceptors(sp.GetRequiredService<InsertOutboxMessagesInterceptor>());
+      options.UseModuleDefaults(ModuleName, Schemas.Users, sp);
     });
 
     services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<UsersDbContext>());

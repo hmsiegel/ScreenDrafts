@@ -2,6 +2,8 @@
 
 public static class RealTimeUpdatesModule
 {
+  private const string ModuleName = "RealTimeUpdates";
+
   public static IServiceCollection AddRealTimeUpdatesModule(
     this IServiceCollection services,
     IConfiguration configuration)
@@ -21,14 +23,7 @@ public static class RealTimeUpdatesModule
   {
     services.AddDbContext<RealTimeUpdatesDbContext>((sp, options) =>
     {
-      var database = sp.GetRequiredService<IOptions<DatabaseSettings>>().Value;
-
-      options.UseNpgsql(
-        database.ConnectionString,
-        npgsqlOptions =>
-        npgsqlOptions.MigrationsHistoryTable(HistoryRepository.DefaultTableName, Schemas.RealTimeUpdates))
-      .UseSnakeCaseNamingConvention()
-      .AddInterceptors(sp.GetRequiredService<InsertOutboxMessagesInterceptor>());
+      options.UseModuleDefaults(ModuleName, Schemas.RealTimeUpdates, sp);
     });
 
     services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<RealTimeUpdatesDbContext>());

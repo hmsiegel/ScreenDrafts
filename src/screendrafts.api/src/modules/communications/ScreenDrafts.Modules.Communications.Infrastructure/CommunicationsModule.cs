@@ -2,6 +2,8 @@
 
 public static class CommunicationsModule
 {
+  private const string ModuleName = "Communications";
+
   public static IServiceCollection AddCommunicationsModule(
     this IServiceCollection services,
     IConfiguration configuration)
@@ -21,14 +23,7 @@ public static class CommunicationsModule
   {
     services.AddDbContext<CommunicationsDbContext>((sp, options) =>
     {
-      var database = sp.GetRequiredService<IOptions<DatabaseSettings>>().Value;
-
-      options.UseNpgsql(
-        database.ConnectionString,
-        npgsqlOptions =>
-        npgsqlOptions.MigrationsHistoryTable(HistoryRepository.DefaultTableName, Schemas.Communications))
-      .UseSnakeCaseNamingConvention()
-      .AddInterceptors(sp.GetRequiredService<InsertOutboxMessagesInterceptor>());
+      options.UseModuleDefaults(ModuleName, Schemas.Communications, sp);
     });
 
 

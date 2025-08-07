@@ -2,6 +2,8 @@
 
 public static class AdministrationModule
 {
+  private const string ModuleName = "Administration";
+
   public static IServiceCollection AddAdministrationModule(
     this IServiceCollection services,
     IConfiguration configuration)
@@ -21,14 +23,7 @@ public static class AdministrationModule
   {
     services.AddDbContext<AdministrationDbContext>((sp, options) =>
     {
-      var database = sp.GetRequiredService<IOptions<DatabaseSettings>>().Value;
-
-      options.UseNpgsql(
-        database.ConnectionString,
-        npgsqlOptions =>
-        npgsqlOptions.MigrationsHistoryTable(HistoryRepository.DefaultTableName, Schemas.Administration))
-      .UseSnakeCaseNamingConvention()
-      .AddInterceptors(sp.GetRequiredService<InsertOutboxMessagesInterceptor>());
+      options.UseModuleDefaults(ModuleName,Schemas.Administration, sp);
     });
 
     services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<AdministrationDbContext>());

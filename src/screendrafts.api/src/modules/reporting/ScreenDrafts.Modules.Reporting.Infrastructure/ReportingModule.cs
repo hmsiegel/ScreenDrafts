@@ -2,6 +2,8 @@
 
 public static class ReportingModule
 {
+  private const string ModuleName = "Reporting";
+
   public static IServiceCollection AddReportingModule(
     this IServiceCollection services,
     IConfiguration configuration)
@@ -21,14 +23,7 @@ public static class ReportingModule
   {
     services.AddDbContext<ReportingDbContext>((sp, options) =>
     {
-      var database = sp.GetRequiredService<IOptions<DatabaseSettings>>().Value;
-
-      options.UseNpgsql(
-        database.ConnectionString,
-        npgsqlOptions =>
-        npgsqlOptions.MigrationsHistoryTable(HistoryRepository.DefaultTableName, Schemas.Reporting))
-      .UseSnakeCaseNamingConvention()
-      .AddInterceptors(sp.GetRequiredService<InsertOutboxMessagesInterceptor>());
+      options.UseModuleDefaults(ModuleName, Schemas.Reporting, sp);
     });
 
     services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<ReportingDbContext>());

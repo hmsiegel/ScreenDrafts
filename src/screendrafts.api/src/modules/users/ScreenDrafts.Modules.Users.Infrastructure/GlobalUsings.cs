@@ -53,3 +53,5 @@ global using ScreenDrafts.Modules.Users.Infrastructure.Inbox;
 global using ScreenDrafts.Modules.Users.Infrastructure.Outbox;
 global using ScreenDrafts.Modules.Users.Infrastructure.PublicApi;
 global using ScreenDrafts.Modules.Users.PublicApi;
+
+global using Serilog;
