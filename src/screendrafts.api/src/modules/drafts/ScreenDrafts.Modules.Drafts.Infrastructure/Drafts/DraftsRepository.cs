@@ -53,7 +53,8 @@ internal sealed class DraftsRepository(DraftsDbContext dbContext) : IDraftsRepos
     var draftWithDetails = await _dbContext.Drafts
       .Include(d => d.Drafters)
       .ThenInclude(dr => dr.Person)
-      .Include(d => d.Hosts)
+      .Include(d => d.DraftHosts)
+      .ThenInclude(ph => ph!.Host)
       .ThenInclude(h => h.Person)
       .Include(d => d.ReleaseDates)
       .Include(d => d.Picks)

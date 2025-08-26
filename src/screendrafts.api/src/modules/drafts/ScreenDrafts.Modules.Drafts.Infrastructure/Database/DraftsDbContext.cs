@@ -43,7 +43,6 @@ public sealed class DraftsDbContext(DbContextOptions<DraftsDbContext> options)
     modelBuilder.ApplyConfigurationsFromAssembly(typeof(InfrastructureConfiguration).Assembly);
 
     modelBuilder.HasDefaultSchema(Schemas.Drafts);
-
   }
 
   protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)

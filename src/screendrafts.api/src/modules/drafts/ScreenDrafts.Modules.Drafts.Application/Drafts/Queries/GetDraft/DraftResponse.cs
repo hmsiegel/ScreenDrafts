@@ -17,7 +17,8 @@ public sealed record DraftResponse(
     string? NextDraftTitle)
 {
   private readonly List<DrafterDraftResponse> _drafters = [];
-  private readonly List<HostDraftResponse> _hosts = [];
+  private HostDraftResponse? _primaryHost;
+  private readonly List<HostDraftResponse> _coHosts = [];
   private readonly List<ReleaseDateResponse>? _releaseDates = [];
   private readonly List<DraftPickResponse>? _draftPicks = [];
   private readonly List<VetoResponse>? _vetoes = [];
@@ -46,7 +47,8 @@ public sealed record DraftResponse(
   public DateTime[]? RawReleaseDates { get; set; }
 
   public ReadOnlyCollection<DrafterDraftResponse> Drafters => _drafters.AsReadOnly();
-  public ReadOnlyCollection<HostDraftResponse> Hosts => _hosts.AsReadOnly();
+  public HostDraftResponse? PrimaryHost => _primaryHost;
+  public ReadOnlyCollection<HostDraftResponse> CoHosts => _coHosts.AsReadOnly();
   public ReadOnlyCollection<ReleaseDateResponse>? ReleaseDates => _releaseDates!.AsReadOnly();
   public ReadOnlyCollection<DraftPickResponse>? DraftPicks => _draftPicks!.AsReadOnly();
   public ReadOnlyCollection<VetoResponse>? Vetoes => _vetoes?.AsReadOnly();
@@ -55,7 +57,8 @@ public sealed record DraftResponse(
 
 
   public void AddDrafter(DrafterDraftResponse drafter) => _drafters.Add(drafter);
-  public void AddHost(HostDraftResponse host) => _hosts.Add(host);
+  public void SetPrimaryHost(HostDraftResponse primaryHost) => _primaryHost = primaryHost;
+  public void AddCoHost(HostDraftResponse host) => _coHosts.Add(host);
   public void AddDraftPick(DraftPickResponse draftPick) => _draftPicks!.Add(draftPick);
   public void AddReleaseDate(ReleaseDateResponse releaseDate) => _releaseDates!.Add(releaseDate);
   public void AddVeto(VetoResponse veto) => _vetoes!.Add(veto);

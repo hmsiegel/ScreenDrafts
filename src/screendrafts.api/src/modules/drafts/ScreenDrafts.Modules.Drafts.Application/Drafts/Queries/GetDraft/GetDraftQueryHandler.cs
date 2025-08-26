@@ -29,7 +29,10 @@ internal sealed class GetDraftQueryHandler(
     var commissionerOverrides = await _draftsRepository.GetCommissionerOverridesByDraftIdAsync(DraftId.Create(request.DraftId), cancellationToken);
 
     List<DrafterDraftResponse> drafters = [.. draft.Drafters.Select(d => new DrafterDraftResponse(d.Id.Value, d.PersonId.Value, d.Person.DisplayName!))];
-    List<HostDraftResponse> hosts = [.. draft.Hosts.Select(h => new HostDraftResponse(h.Id.Value, h.PersonId.Value, h.Person.DisplayName!))];
+    var primaryHostLink = draft.DraftHosts.FirstOrDefault(h => h.Role.Value == 0);
+    var coHostLinks = draft.DraftHosts
+      .Where(h => h.Role.Value == 1)
+      .OrderBy(h => h.Host.Person.DisplayName);
     List<ReleaseDateResponse> releaseDates = [.. draft.ReleaseDates.Select(r => new ReleaseDateResponse(r.ReleaseDate))];
     List<DraftPickResponse> draftPickResponses = [.. picks.Select(p => new DraftPickResponse(
       p.Position,
@@ -101,7 +104,21 @@ internal sealed class GetDraftQueryHandler(
     };
 
     drafters.ForEach(d => draftResponse.AddDrafter(d));
-    hosts.ForEach(h => draftResponse.AddHost(h));
+
+    if (primaryHostLink is not null)
+    {
+      var primaryHost = new HostDraftResponse(
+        primaryHostLink.Host.Id.Value,
+        primaryHostLink.Host.PersonId.Value,
+        primaryHostLink.Host.Person.DisplayName!);
+      draftResponse.SetPrimaryHost(primaryHost);
+    }
+
+    coHostLinks.ToList().ForEach(h => draftResponse.AddCoHost(new HostDraftResponse(
+      h.Host.Id.Value,
+      h.Host.PersonId.Value,
+      h.Host.Person.DisplayName!)));
+
     releaseDates.ForEach(rd => draftResponse.AddReleaseDate(rd));
     draftPickResponses.ForEach(p => draftResponse.AddDraftPick(p));
     vetoResponses.ForEach(v => draftResponse.AddVeto(v));

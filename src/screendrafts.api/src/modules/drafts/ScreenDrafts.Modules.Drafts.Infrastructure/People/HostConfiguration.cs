@@ -17,9 +17,6 @@ internal sealed class HostConfiguration : IEntityTypeConfiguration<Host>
       h => h.Value,
       value => HostId.Create(value));
 
-    builder.HasMany(h => h.HostedDrafts)
-      .WithMany(d => d.Hosts);
-
     builder.HasOne(h => h.Person)
       .WithOne(p => p.HostProfile)
       .HasForeignKey<Host>(h => h.PersonId);

@@ -74,5 +74,8 @@ internal sealed class DraftConfiguration : IEntityTypeConfiguration<Draft>
     builder.Navigation(d => d.DrafterStats)
       .HasField("_drafterDraftStats")
       .UsePropertyAccessMode(PropertyAccessMode.Field);
+
+    builder.Ignore(d => d.PrimaryHost);
+    builder.Ignore(d => d.CoHosts);
   }
 }

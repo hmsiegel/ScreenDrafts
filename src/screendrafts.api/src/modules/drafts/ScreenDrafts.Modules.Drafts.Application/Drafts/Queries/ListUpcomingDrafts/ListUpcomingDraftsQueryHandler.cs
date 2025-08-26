@@ -49,9 +49,9 @@ internal sealed class ListUpcomingDraftsQueryHandler(IDbConnectionFactory dbConn
     var hostDraftIds = await connection.QueryAsync<Guid>(
       """
         SELECT 
-          dh.hosted_drafts_id
-        FROM drafts.draft_host dh
-        JOIN drafts.hosts h ON h.id = dh.hosts_id
+          dh.draft_id
+        FROM drafts.draft_hosts dh
+        JOIN drafts.hosts h ON h.id = dh.host_id
         JOIN drafts.people p ON p.id = h.person_id
         WHERE p.user_id = @userId
       """,

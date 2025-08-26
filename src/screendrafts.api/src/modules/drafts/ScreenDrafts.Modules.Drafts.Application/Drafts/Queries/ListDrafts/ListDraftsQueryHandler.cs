@@ -40,17 +40,30 @@ internal sealed class ListDraftsQueryHandler(IDbConnectionFactory dbConnectionFa
                 WHERE dd.draft_id = ANY(@ids);
                 """;
 
-    const string hostsSql =
+    const string primaryHostSql =
       $"""
                 SELECT
-                  dh.hosted_drafts_id,
+                  dh.draft_id,
                   h.id AS {nameof(HostDraftResponse.Id)},
                   h.person_id AS {nameof(HostDraftResponse.PersonId)},
                   p.display_name AS {nameof(HostDraftResponse.DisplayName)}
-                FROM drafts.draft_host dh
-                JOIN drafts.hosts h ON dh.hosts_id = h.id
-                INNER JOIN drafts.people p ON h.person_id = p.id
-                WHERE dh.hosted_drafts_id = ANY(@ids);
+                FROM drafts.draft_hosts dh
+                JOIN drafts.hosts h ON dh.host_id = h.id
+                JOIN drafts.people p ON h.person_id = p.id
+                WHERE dh.draft_id = ANY(@ids) AND dh.role = 0;
+                """;
+
+    const string coHostsSql =
+      $"""
+                SELECT
+                  dh.draft_id,
+                  h.id AS {nameof(HostDraftResponse.Id)},
+                  h.person_id AS {nameof(HostDraftResponse.PersonId)},
+                  p.display_name AS {nameof(HostDraftResponse.DisplayName)}
+                FROM drafts.draft_hosts dh
+                JOIN drafts.hosts h ON dh.host_id = h.id
+                JOIN drafts.people p ON h.person_id = p.id
+                WHERE dh.draft_id = ANY(@ids) AND dh.role = 1;
                 """;
 
     const string releaseDatesSql =
@@ -182,7 +195,8 @@ internal sealed class ListDraftsQueryHandler(IDbConnectionFactory dbConnectionFa
     }
 
     var drafters = await connection.QueryAsync<(Guid draft_id, Guid drafter_id, Guid person_id, string display_name)>(draftersSql, new { ids = draftIds });
-    var hosts = await connection.QueryAsync<(Guid draft_id, Guid host_id, Guid person_id, string display_namef)>(hostsSql, new { ids = draftIds });
+    var primaryHost = await connection.QueryAsync<(Guid draft_id, Guid host_id, Guid person_id, string display_name)>(primaryHostSql, new { ids = draftIds });
+    var coHosts = await connection.QueryAsync<(Guid draft_id, Guid host_id, Guid person_id, string display_name)>(coHostsSql, new { ids = draftIds });
     var releaseDates = await connection.QueryAsync<(Guid draft_id, DateTime release_date)>(releaseDatesSql, new { ids = draftIds });
 
     var draftMap = drafts.ToDictionary(d => d.Id);
@@ -195,11 +209,19 @@ internal sealed class ListDraftsQueryHandler(IDbConnectionFactory dbConnectionFa
       }
     }
 
-    foreach (var (draftId, hostId, personId, displayName) in hosts)
+    foreach (var (draftId, hostId, personId, displayName) in primaryHost)
     {
       if (draftMap.TryGetValue(draftId, out var draft))
       {
-        draft.AddHost(new HostDraftResponse(hostId, personId, displayName));
+        draft.SetPrimaryHost(new HostDraftResponse(hostId, personId, displayName));
+      }
+    }
+
+    foreach (var (draftId, hostId, personId, displayName) in coHosts)
+    {
+      if (draftMap.TryGetValue(draftId, out var draft))
+      {
+        draft.AddCoHost(new HostDraftResponse(hostId, personId, displayName));
       }
     }
 
