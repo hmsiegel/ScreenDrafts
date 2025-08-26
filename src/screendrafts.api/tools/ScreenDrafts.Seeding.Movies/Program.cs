@@ -39,7 +39,8 @@ try
         [
           AssemblyReference.Assembly,
           ScreenDrafts.Seeding.Movies.AssemblyReference.Assembly
-        ]);
+        ],
+        configuration);
 
         services.AddSeedingInfrastructure();
         services.AddMovieSeeders();
