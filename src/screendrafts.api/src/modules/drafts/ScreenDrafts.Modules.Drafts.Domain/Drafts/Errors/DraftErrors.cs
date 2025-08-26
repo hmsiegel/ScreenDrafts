@@ -227,12 +227,22 @@ public static class DraftErrors
       "Drafts.AlreadyAdded",
       $"Team with id {id} is already added to the draft.");
 
+  public static SDError PrimaryHostAlreadySet(Guid id) =>
+    SDError.Failure(
+      "Drafts.PrimaryHostAlreadySet",
+      $"Primary host with id {id} is already set for the draft.");
+
+  public static SDError InvalidHostRole(string role) =>
+    SDError.Problem(
+      "Drafts.InvalidHostRole",
+      $"Invalid host role: {role}. Valid roles are 'Primary' and 'CoHost'.");
+
   public static readonly SDError CannotAddTriviaResultWithoutDrafterOrDrafterTeam =
     SDError.Problem(
       "Drafts.CannotAddTriviaResultWithoutDrafterOrDrafterTeam",
       "Cannot add a trivia result without a drafter or drafter team.");
 
-  public static readonly SDError CannotContinueDraftIfItIsNotPaused = 
+  public static readonly SDError CannotContinueDraftIfItIsNotPaused =
     SDError.Problem(
       "Drafts.CannotContinueDraftIfItIsNotPaused",
       "Cannot continue the draft if it is not paused.");

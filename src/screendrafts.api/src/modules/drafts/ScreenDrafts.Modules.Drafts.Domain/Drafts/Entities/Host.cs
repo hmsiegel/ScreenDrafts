@@ -2,7 +2,7 @@
 
 public sealed class Host : Entity<HostId>
 {
-  private readonly List<Draft> _hostedDrafts = [];
+  private readonly List<DraftHost> _drafts = [];
 
   private Host(
     Person person,
@@ -23,7 +23,7 @@ public sealed class Host : Entity<HostId>
 
   public PersonId PersonId { get; private set; } = default!;
 
-  public IReadOnlyCollection<Draft> HostedDrafts => _hostedDrafts.AsReadOnly();
+  public IReadOnlyCollection<DraftHost> Drafts => _drafts.AsReadOnly();
 
   public static Result<Host> Create(
     Person person,
@@ -35,36 +35,5 @@ public sealed class Host : Entity<HostId>
       id: id,
       person: person);
     return host;
-  }
-
-  public Result AddDraft(Draft draft)
-  {
-    if (draft is null)
-    {
-      return Result.Failure(HostErrors.DraftCannotBeNull);
-    }
-
-    ArgumentNullException.ThrowIfNull(draft);
-
-    _hostedDrafts.Add(draft);
-
-    return Result.Success();
-  }
-
-  public Result RemoveDraft(Draft draft)
-  {
-    if (draft is null)
-    {
-      return Result.Failure(HostErrors.DraftCannotBeNull);
-    }
-
-    if (!_hostedDrafts.Contains(draft))
-    {
-      return Result.Failure(HostErrors.DraftCannotBeNull);
-    }
-
-    ArgumentNullException.ThrowIfNull(draft);
-    _hostedDrafts.Remove(draft);
-    return Result.Success();
   }
 }

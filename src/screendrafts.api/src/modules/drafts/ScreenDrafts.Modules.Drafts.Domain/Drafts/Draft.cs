@@ -5,7 +5,7 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
   private readonly List<Drafter> _drafters = [];
   private readonly List<DrafterTeam> _drafterTeams = [];
   private readonly List<Pick> _picks = [];
-  private readonly List<Host> _hosts = [];
+  private readonly List<DraftHost> _draftHosts = [];
   private readonly List<DrafterDraftStats> _drafterDraftStats = [];
   private readonly List<TriviaResult> _triviaResults = [];
   private readonly List<DraftReleaseDate> _releaseDates = [];
@@ -78,13 +78,17 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
 
   public IReadOnlyCollection<Pick> Picks => _picks.AsReadOnly();
 
-  public IReadOnlyCollection<Host> Hosts => _hosts.AsReadOnly();
+  public IReadOnlyCollection<DraftHost> DraftHosts => _draftHosts.AsReadOnly();
 
   public IReadOnlyCollection<DrafterDraftStats> DrafterStats => _drafterDraftStats.AsReadOnly();
 
   public IReadOnlyCollection<TriviaResult> TriviaResults => _triviaResults.AsReadOnly();
 
   public IReadOnlyCollection<DraftReleaseDate> ReleaseDates => _releaseDates.AsReadOnly();
+
+  public DraftHost? PrimaryHost => _draftHosts.FirstOrDefault(h => h.Role == HostRole.Primary);
+
+  public IEnumerable<DraftHost> CoHosts => _draftHosts.Where(h => h.Role == HostRole.CoHost);
 
 
   public static Result<Draft> Create(
@@ -267,25 +271,45 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
     return Result.Success();
   }
 
-  public Result AddHost(Host host)
+  public Result SetPrimaryHost(Host host)
   {
     Guard.Against.Null(host);
-    if (_hosts.Count >= TotalHosts)
+
+    if (PrimaryHost is not null && PrimaryHost.HostId == host.Id)
     {
-      return Result.Failure(DraftErrors.TooManyHosts);
+      return Result.Success();
     }
 
-    if (_hosts.Any(h => h.Id == host.Id))
+    if (PrimaryHost is not null)
     {
-      return Result.Failure(DraftErrors.HostAlreadyAdded(host.Id.Value));
+      return Result.Failure(DraftErrors.PrimaryHostAlreadySet(PrimaryHost.HostId.Value));
     }
 
-    _hosts.Add(host);
+    _draftHosts.Add(DraftHost.CreatePrimary(this, host));
 
     UpdatedAtUtc = DateTime.UtcNow;
 
     Raise(new HostAddedDomainEvent(Id.Value, host.Id.Value));
 
+    return Result.Success();
+  }
+
+  public Result AddCoHost(Host host)
+  {
+    Guard.Against.Null(host);
+    if (_draftHosts.Any(h => h.HostId == host.Id && h.Role == HostRole.CoHost))
+    {
+      return Result.Failure(DraftErrors.HostAlreadyAdded(host.Id.Value));
+    }
+
+    if (_draftHosts.Count >= TotalHosts)
+    {
+      return Result.Failure(DraftErrors.TooManyHosts);
+    }
+
+    _draftHosts.Add(DraftHost.CreateCoHost(this, host));
+    UpdatedAtUtc = DateTime.UtcNow;
+    Raise(new HostAddedDomainEvent(Id.Value, host.Id.Value));
     return Result.Success();
   }
 
@@ -301,7 +325,12 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
       return Result.Failure(DraftErrors.CannotStartDraftWithoutAllDrafters);
     }
 
-    if (_hosts.Count != TotalHosts)
+    if (PrimaryHost is null)
+    {
+      return Result.Failure(DraftErrors.CannotStartDraftWithoutAllHosts);
+    }
+
+    if (_draftHosts.Count != TotalHosts)
     {
       return Result.Failure(DraftErrors.CannotStartDraftWithoutAllHosts);
     }
@@ -483,12 +512,14 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
   {
     Guard.Against.Null(host);
 
-    if (!_hosts.Contains(host))
+    var link = _draftHosts.FirstOrDefault(h => h.HostId == host.Id);
+
+    if (link is null)
     {
       return Result.Failure(HostErrors.NotFound(host.Id.Value));
     }
 
-    _hosts.Remove(host);
+    _draftHosts.Remove(link);
 
     UpdatedAtUtc = DateTime.UtcNow;
 
