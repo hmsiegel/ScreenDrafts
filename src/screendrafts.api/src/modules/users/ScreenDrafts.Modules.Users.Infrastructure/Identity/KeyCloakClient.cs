@@ -1,6 +1,4 @@
-﻿using Serilog;
-
-namespace ScreenDrafts.Modules.Users.Infrastructure.Identity;
+﻿namespace ScreenDrafts.Modules.Users.Infrastructure.Identity;
 
 internal sealed class KeyCloakClient(HttpClient httpClient)
 {

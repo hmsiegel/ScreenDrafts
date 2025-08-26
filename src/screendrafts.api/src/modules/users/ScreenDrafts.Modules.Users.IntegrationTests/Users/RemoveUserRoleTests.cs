@@ -1,8 +1,8 @@
 ﻿using ScreenDrafts.Modules.Users.Application.Users.Commands.RemoveUserRole;
 
 namespace ScreenDrafts.Modules.Users.IntegrationTests.Users;
-public class RemoveUserRoleTests(IntegrationTestWebAppFactory factory)
-  : BaseIntegrationTest(factory)
+public class RemoveUserRoleTests(UsersIntegrationTestWebAppFactory factory)
+  : UsersIntegrationTest(factory)
 {
   [Fact]
   public async Task Should_ReturnSuccess_WhenRoleIsRemovedAsync()
