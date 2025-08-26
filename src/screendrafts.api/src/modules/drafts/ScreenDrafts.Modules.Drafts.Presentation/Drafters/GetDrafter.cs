@@ -20,7 +20,7 @@ internal sealed class GetDrafter(ISender sender) : Endpoint<GetDrafterRequest, D
   {
     var query = new GetDrafterQuery(req.Id);
     var drafter = await _sender.Send(query, ct);
-    await SendOkAsync(drafter.Value!, ct);
+    await Send.OkAsync(drafter.Value!, ct);
   }
 }
 

@@ -23,11 +23,11 @@ internal sealed class UpdateReleaseDate(ISender sender) : Endpoint<ReleaseDateRe
 
     if (result.IsFailure)
     {
-      await SendErrorsAsync(StatusCodes.Status400BadRequest, ct);
+      await Send.ErrorsAsync(StatusCodes.Status400BadRequest, ct);
     }
     else
     {
-      await SendNoContentAsync(ct);
+      await Send.NoContentAsync(ct);
     }
   }
 }

@@ -23,11 +23,11 @@ internal sealed class GetDraftPicks(ISender sender) : Endpoint<GetDraftPicksRequ
 
     if (result.IsFailure)
     {
-      await SendErrorsAsync(StatusCodes.Status400BadRequest, ct);
+      await Send.ErrorsAsync(StatusCodes.Status400BadRequest, ct);
     }
     else
     {
-      await SendOkAsync(result.Value, ct);
+      await Send.OkAsync(result.Value, ct);
     }
   }
 }

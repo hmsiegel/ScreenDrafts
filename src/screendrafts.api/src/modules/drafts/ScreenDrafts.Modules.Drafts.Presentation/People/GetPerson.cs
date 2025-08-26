@@ -20,7 +20,7 @@ internal sealed class GetPerson(ISender sender) : Endpoint<GetPersonRequest, Per
   {
     var query = new GetPersonQuery(req.Id);
     var person = await _sender.Send(query, ct);
-    await SendOkAsync(person.Value!, ct);
+    await Send.OkAsync(person.Value!, ct);
   }
 }
 

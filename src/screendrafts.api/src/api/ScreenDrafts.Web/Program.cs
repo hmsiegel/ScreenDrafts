@@ -13,7 +13,7 @@ var redisConnectionString = builder.Configuration.GetConnectionStringOrThrow("Ca
 var rabbitMqSettings = new RabbitMqSettings(builder.Configuration.GetConnectionStringOrThrow("Queue"));
 var mongoConnectionString = builder.Configuration.GetConnectionStringOrThrow("Mongo")!;
 
-builder.Services.AddApplication(AssemblyReferences.ApplicationAssemblies);
+builder.Services.AddApplication(AssemblyReferences.ApplicationAssemblies, configuration);
 
 builder.Services.AddInfrastructure(
   configuration,

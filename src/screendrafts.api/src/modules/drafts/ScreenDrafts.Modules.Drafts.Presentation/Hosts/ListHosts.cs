@@ -28,11 +28,11 @@ internal sealed class ListHosts(ISender sender) : Endpoint<ListHostsRequest, Res
 
     if (hosts.Items.Count != 0)
     {
-      await SendOkAsync(Result.Success(hosts), ct);
+      await Send.OkAsync(Result.Success(hosts), ct);
     }
     else
     {
-      await SendNoContentAsync(ct);
+      await Send.NoContentAsync(ct);
     }
   }
 }

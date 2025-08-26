@@ -19,7 +19,7 @@ internal sealed class GetDraft(ISender sender) : Endpoint<GetDraftRequest, Draft
   {
     var query = new GetDraftQuery(req.Id);
     var draft = await _sender.Send(query, ct);
-    await SendOkAsync(draft.Value!, ct);
+    await Send.OkAsync(draft.Value!, ct);
   }
 }
 public sealed record GetDraftRequest(

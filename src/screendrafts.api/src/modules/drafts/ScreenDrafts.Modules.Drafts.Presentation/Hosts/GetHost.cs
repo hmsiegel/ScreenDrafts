@@ -22,7 +22,7 @@ internal sealed class GetHost(ISender sender) : Endpoint<GetHostRequest, HostRes
   {
     var query = new GetHostQuery(req.Id);
     var drafter = await _sender.Send(query, ct);
-    await SendOkAsync(drafter.Value!, ct);
+    await Send.OkAsync(drafter.Value!, ct);
   }
 }
 

@@ -26,7 +26,7 @@ internal sealed class ListUpcomingDrafts(ISender sender, IUsersApi usersApi) : E
 
     if (user is null)
     {
-      await SendErrorsAsync(StatusCodes.Status403Forbidden, ct);
+      await Send.ErrorsAsync(StatusCodes.Status403Forbidden, ct);
       return;
     }
 
@@ -42,7 +42,7 @@ internal sealed class ListUpcomingDrafts(ISender sender, IUsersApi usersApi) : E
 
     if (result.IsFailure)
     {
-      await SendErrorsAsync(StatusCodes.Status400BadRequest, ct);
+      await Send.ErrorsAsync(StatusCodes.Status400BadRequest, ct);
     }
 
     var response = result.Value
@@ -56,7 +56,7 @@ internal sealed class ListUpcomingDrafts(ISender sender, IUsersApi usersApi) : E
       })
       .ToList();
 
-    await SendOkAsync(response, ct);
+    await Send.OkAsync(response, ct);
   }
 }
 

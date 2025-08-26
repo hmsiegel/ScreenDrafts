@@ -24,12 +24,12 @@ internal sealed class GetDraftPositions(ISender sender) : Endpoint<GetDraftPosit
 
     if (result.IsFailure)
     {
-      await SendErrorsAsync(StatusCodes.Status400BadRequest, ct);
+      await Send.ErrorsAsync(StatusCodes.Status400BadRequest, ct);
     }
     else
     {
       var positionList = result.Value.ToList();
-      await SendOkAsync(positionList, ct);
+      await Send.OkAsync(positionList, ct);
     }
   }
 }

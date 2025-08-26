@@ -34,11 +34,11 @@ internal sealed class ListPeople(ISender sender) : Endpoint<ListPeopleRequest, R
 
     if (result.IsSuccess && result.Value.Items.Count != 0)
     {
-      await SendOkAsync(result, ct);
+      await Send.OkAsync(result, ct);
     }
     else
     {
-      await SendNoContentAsync(ct);
+      await Send.NoContentAsync(ct);
     }
   }
 }

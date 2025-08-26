@@ -25,12 +25,12 @@ internal sealed class GetLatestDrafts(ISender sender) : EndpointWithoutRequest<L
     var result = await _sender.Send(query, ct);
     if (result.IsFailure)
     {
-      await SendErrorsAsync(StatusCodes.Status400BadRequest, ct);
+      await Send.ErrorsAsync(StatusCodes.Status400BadRequest, ct);
     }
     else
     {
       var draftList = result.Value.ToList();
-      await SendOkAsync(draftList, ct);
+      await Send.OkAsync(draftList, ct);
     }
   }
 }

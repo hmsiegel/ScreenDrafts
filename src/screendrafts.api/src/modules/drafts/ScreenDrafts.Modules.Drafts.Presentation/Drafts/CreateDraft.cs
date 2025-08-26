@@ -35,7 +35,7 @@ internal sealed class CreateDraft(ISender sender) : Endpoint<CreateDraftRequest,
 
     var draftId = await _sender.Send(command, ct);
 
-    await SendOkAsync(draftId.Value, ct);
+    await Send.OkAsync(draftId.Value, ct);
   }
 
 }

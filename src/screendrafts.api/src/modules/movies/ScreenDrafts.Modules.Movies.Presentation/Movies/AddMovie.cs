@@ -37,7 +37,7 @@ internal sealed class AddMovie(ISender sender) : Endpoint<AddMovieRequest, Guid>
 
     var movieId = await _sender.Send(command, ct);
 
-    await SendOkAsync(movieId.Value, ct);
+    await Send.OkAsync(movieId.Value, ct);
   }
 }
 
