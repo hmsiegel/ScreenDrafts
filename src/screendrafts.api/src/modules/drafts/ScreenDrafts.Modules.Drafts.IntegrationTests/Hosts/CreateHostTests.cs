@@ -1,7 +1,7 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Hosts;
 
-public sealed class CreateHostTests(IntegrationTestWebAppFactory factory)
-  : BaseIntegrationTest(factory)
+public sealed class CreateHostTests(DraftsIntegrationTestWebAppFactory factory)
+  : DraftsIntegrationTest(factory)
 {
   [Fact]
   public async Task CreateHost_WithValidRequest_ShouldReturnHostAsync()

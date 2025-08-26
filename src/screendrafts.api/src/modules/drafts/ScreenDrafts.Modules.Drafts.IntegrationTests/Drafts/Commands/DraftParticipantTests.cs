@@ -1,9 +1,7 @@
-﻿using ScreenDrafts.Modules.Drafts.Application.Hosts.Commands.CreateHost;
+﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafts.Commands;
 
-namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafts;
-
-public class DraftParticipantTests(IntegrationTestWebAppFactory factory)
-  : BaseIntegrationTest(factory)
+public class DraftParticipantTests(DraftsIntegrationTestWebAppFactory factory)
+  : DraftsIntegrationTest(factory)
 {
   [Fact]
   public async Task AddDrafterToDraft_WithValidData_ShouldSucceedAsync()
@@ -43,39 +41,74 @@ public class DraftParticipantTests(IntegrationTestWebAppFactory factory)
   }
 
   [Fact]
-  public async Task AddHostToDraft_WithValidData_ShouldSucceedAsync()
+  public async Task AddHostToDraft_AsPrimary_ShouldSucceedAsync()
   {
     // Arrange
     var draft = await CreateDraftAsync();
     var host = await CreateHostAsync();
 
     // Act
-    var result = await Sender.Send(new AddHostToDraftCommand(draft, host));
+    var result = await Sender.Send(new AddHostToDraftCommand(
+      draft,
+      host,
+      HostRole.Primary.Name));
 
     // Assert
     result.IsSuccess.Should().BeTrue();
     result.Value.Should().Be(host);
 
     var updatedDraft = await Sender.Send(new GetDraftQuery(draft));
-    updatedDraft.Value.Hosts.Should().Contain(h => h.Id == host);
+    updatedDraft.Value.PrimaryHost.Should().NotBeNull();
+    updatedDraft.Value.PrimaryHost!.Id.Should().Be(host);
+    updatedDraft.Value.CoHosts.Should().BeEmpty();
   }
 
   [Fact]
-  public async Task RemoveHostFromDraft_WithValidData_ShouldSucceedAsync()
+  public async Task AddHostToDraft_AsCoHost_ShouldSucceedAsync()
   {
     // Arrange
     var draft = await CreateDraftAsync();
-    var host = await CreateHostAsync();
-    await Sender.Send(new AddHostToDraftCommand(draft, host));
+    var primary = await CreateHostAsync();
+    var coHost = await CreateHostAsync();
 
     // Act
-    var result = await Sender.Send(new RemoveHostFromDraftCommand(draft, host));
+    await Sender.Send(new AddHostToDraftCommand(
+      draft,
+      primary,
+      HostRole.Primary.Name));
+
+    var result = await Sender.Send(new AddHostToDraftCommand(
+      draft,
+      coHost,
+      HostRole.CoHost.Name));
+
+    // Assert
+    result.IsSuccess.Should().BeTrue();
+    result.Value.Should().Be(coHost);
+    var updatedDraft = await Sender.Send(new GetDraftQuery(draft));
+    updatedDraft.Value.PrimaryHost!.Id.Should().Be(primary);
+    updatedDraft.Value.CoHosts.Should().Contain(h => h.Id == coHost);
+  }
+
+  [Fact]
+  public async Task RemoveCoHostFromDraft_WithValidData_ShouldSucceedAsync()
+  {
+    // Arrange
+    var draft = await CreateDraftAsync();
+    var primary = await CreateHostAsync();
+    await Sender.Send(new AddHostToDraftCommand(draft, primary, HostRole.Primary.Name));
+    var cohost = await CreateHostAsync();
+    await Sender.Send(new AddHostToDraftCommand(draft, cohost, HostRole.CoHost.Name));
+
+    // Act
+    var result = await Sender.Send(new RemoveHostFromDraftCommand(draft, cohost));
 
     // Assert
     result.IsSuccess.Should().BeTrue();
 
     var updatedDraft = await Sender.Send(new GetDraftQuery(draft));
-    updatedDraft.Value.Hosts.Should().NotContain(h => h.Id == host);
+    updatedDraft.Value.CoHosts.Should().NotContain(h => h.Id == cohost);
+    updatedDraft.Value.PrimaryHost!.Id.Should().Be(primary);
   }
 
   private async Task<Guid> CreateDraftAsync()
@@ -83,10 +116,10 @@ public class DraftParticipantTests(IntegrationTestWebAppFactory factory)
     var command = new CreateDraftCommand(
       "Test Draft",
       DraftType.Standard,
-      10,
-      5,
+      7,
       2,
-      1,
+      0,
+      2,
       EpisodeType.MainFeed,
       DraftStatus.Created);
 

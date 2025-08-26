@@ -1,7 +1,7 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafters;
 
-public class CreateDrafterTests(IntegrationTestWebAppFactory factory) 
-  : BaseIntegrationTest(factory)
+public class CreateDrafterTests(DraftsIntegrationTestWebAppFactory factory) 
+  : DraftsIntegrationTest(factory)
 {
   [Fact]
   public async Task CreateDrafter_WithValidData_ShouldReturnDrafterIdAsync()

@@ -1,7 +1,7 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Hosts;
 
-public class HostTests(IntegrationTestWebAppFactory factory)
-  : BaseIntegrationTest(factory)
+public class HostTests(DraftsIntegrationTestWebAppFactory factory)
+  : DraftsIntegrationTest(factory)
 {
   [Fact]
   public async Task CreateHostWithoutUser_WithValidData_ShouldReturnHostIdAsync()

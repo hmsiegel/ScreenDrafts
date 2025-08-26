@@ -1,7 +1,7 @@
-﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafts;
+﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafts.Commands;
 
-public sealed class StartDraftTests(IntegrationTestWebAppFactory factory)
-  : BaseIntegrationTest(factory)
+public sealed class StartDraftTests(DraftsIntegrationTestWebAppFactory factory)
+  : DraftsIntegrationTest(factory)
 {
   [Fact]
   public async Task StartDraft_WithValidDraftId_ShouldStartDraftAsync()

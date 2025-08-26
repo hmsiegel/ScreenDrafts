@@ -1,7 +1,7 @@
-﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafts;
+﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafts.Commands;
 
-public sealed class AssignTriviaResultsTests(IntegrationTestWebAppFactory factory) 
-  : BaseIntegrationTest(factory)
+public sealed class AssignTriviaResultsTests(DraftsIntegrationTestWebAppFactory factory) 
+  : DraftsIntegrationTest(factory)
 {
   [Fact]
   public async Task AssignTriviaResults_ValidRequest_ReturnsSuccessAsync()

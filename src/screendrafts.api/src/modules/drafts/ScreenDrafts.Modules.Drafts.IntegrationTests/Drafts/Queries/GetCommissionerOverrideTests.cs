@@ -1,7 +1,7 @@
-﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafts;
+﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafts.Queries;
 
-public class GetCommissionerOverrideTests(IntegrationTestWebAppFactory factory)
-  : BaseIntegrationTest(factory)
+public class GetCommissionerOverrideTests(DraftsIntegrationTestWebAppFactory factory)
+  : DraftsIntegrationTest(factory)
 {
   [Fact]
   public async Task GetCommissionerOverridesByDraft_WithValidDraft_ShouldReturnOverridesAsync()

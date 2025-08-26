@@ -1,7 +1,7 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafters;
 
-public sealed class ListDraftersTest(IntegrationTestWebAppFactory factory)
-  : BaseIntegrationTest(factory)
+public sealed class ListDraftersTest(DraftsIntegrationTestWebAppFactory factory)
+  : DraftsIntegrationTest(factory)
 {
   [Fact]
   public async Task Should_ReturnEmptyList_WhenNoDraftersExistAsync()

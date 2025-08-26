@@ -1,7 +1,7 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Hosts;
 
-public sealed class GetHostTests(IntegrationTestWebAppFactory factory)
-  : BaseIntegrationTest(factory)
+public sealed class GetHostTests(DraftsIntegrationTestWebAppFactory factory)
+  : DraftsIntegrationTest(factory)
 {
   [Fact]
   public async Task GetHost_WithValidId_ReturnsHostAsync()
@@ -28,7 +28,7 @@ public sealed class GetHostTests(IntegrationTestWebAppFactory factory)
     // Act
     var result = await Sender.Send(new GetHostQuery(hostId.Value));
 
-      
+
     // Assert
     result.IsSuccess.Should().BeFalse();
     result.Errors[0].Should().Be(HostErrors.NotFound(hostId.Value));

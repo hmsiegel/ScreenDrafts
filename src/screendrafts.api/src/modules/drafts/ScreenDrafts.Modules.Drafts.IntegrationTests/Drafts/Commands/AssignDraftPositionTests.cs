@@ -1,7 +1,7 @@
-﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafts;
+﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafts.Commands;
 
-public class AssignDraftPositionTests(IntegrationTestWebAppFactory factory)
-  : BaseIntegrationTest(factory)
+public class AssignDraftPositionTests(DraftsIntegrationTestWebAppFactory factory)
+  : DraftsIntegrationTest(factory)
 {
   [Fact]
   public async Task AssignDraftPosition_ShouldAssignDrafterToDraftPositionAsync()

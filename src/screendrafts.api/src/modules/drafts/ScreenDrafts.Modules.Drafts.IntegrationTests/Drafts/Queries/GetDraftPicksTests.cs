@@ -1,7 +1,7 @@
-﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafts;
+﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafts.Queries;
 
-public sealed class GetDraftPicksTests(IntegrationTestWebAppFactory factory)
-  : BaseIntegrationTest(factory)
+public sealed class GetDraftPicksTests(DraftsIntegrationTestWebAppFactory factory)
+  : DraftsIntegrationTest(factory)
 {
   [Fact]
   public async Task GetDraftPicks_ReturnsDraftPicksAsync()
@@ -13,7 +13,7 @@ public sealed class GetDraftPicksTests(IntegrationTestWebAppFactory factory)
 
     await Sender.Send(new StartDraftCommand(reloadedDraftResult.Value.Id));
 
-    for (int i = 0; i < reloadedDraftResult.Value.TotalDrafters - 1; i++)
+    for (var i = 0; i < reloadedDraftResult.Value.TotalDrafters - 1; i++)
     {
       var movie = MovieFactory.CreateMovie().Value;
       var movieId = await Sender.Send(new AddMovieCommand(movie.Id, movie.ImdbId, movie.MovieTitle));

@@ -1,7 +1,7 @@
-﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafts;
+﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafts.Queries;
 
-public sealed class GetDraftTests(IntegrationTestWebAppFactory factory) 
-  : BaseIntegrationTest(factory)
+public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory) 
+  : DraftsIntegrationTest(factory)
 {
   [Fact]
   public async Task Should_ReturnError_WhenDraftDoesNotExistAsync()

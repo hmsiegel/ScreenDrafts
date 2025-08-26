@@ -1,6 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafts;
+﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafts.Commands;
 
-public sealed class CreateGameBoardTests(IntegrationTestWebAppFactory factory) : BaseIntegrationTest(factory)
+public sealed class CreateGameBoardTests(DraftsIntegrationTestWebAppFactory factory) : DraftsIntegrationTest(factory)
 {
 
   [Fact]

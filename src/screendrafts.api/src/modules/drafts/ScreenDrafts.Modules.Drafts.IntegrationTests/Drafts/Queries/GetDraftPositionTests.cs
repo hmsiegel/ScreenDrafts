@@ -1,7 +1,7 @@
-﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafts;
+﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafts.Queries;
 
-public sealed class GetDraftPositionTests(IntegrationTestWebAppFactory factory) 
-  : BaseIntegrationTest(factory)
+public sealed class GetDraftPositionTests(DraftsIntegrationTestWebAppFactory factory) 
+  : DraftsIntegrationTest(factory)
 {
   [Fact]
   public async Task GetDraftPositionForStandardDraft_WhenDraftPositionExists_ShouldReturnDraftPositionAsync()

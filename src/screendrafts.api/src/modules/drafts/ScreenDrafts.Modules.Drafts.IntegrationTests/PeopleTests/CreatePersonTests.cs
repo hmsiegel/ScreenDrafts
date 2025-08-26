@@ -1,7 +1,7 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.PeopleTests;
 
-public class CreatePersonTests(IntegrationTestWebAppFactory factory) 
-  : BaseIntegrationTest(factory)
+public class CreatePersonTests(DraftsIntegrationTestWebAppFactory factory) 
+  : DraftsIntegrationTest(factory)
 {
   [Fact]
   public async Task CreatePerson_WithValidData_ShouldReturnPersonIdAsync()

@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.PeopleTests;
-public sealed class ListPeopleTests(IntegrationTestWebAppFactory factory)
-  : BaseIntegrationTest(factory)
+public sealed class ListPeopleTests(DraftsIntegrationTestWebAppFactory factory)
+  : DraftsIntegrationTest(factory)
 {
   [Fact]
   public async Task Should_ReturnEmptyList_WhenNoPeopleExistAsync()

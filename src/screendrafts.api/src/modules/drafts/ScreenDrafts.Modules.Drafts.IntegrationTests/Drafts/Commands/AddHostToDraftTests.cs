@@ -1,6 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafts;
+﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafts.Commands;
 
-public class AddHostToDraftTests(IntegrationTestWebAppFactory factory) : BaseIntegrationTest(factory)
+public class AddHostToDraftTests(DraftsIntegrationTestWebAppFactory factory) : DraftsIntegrationTest(factory)
 {
   [Fact]
   public async Task Should_ReturnError_WhenDraftDoesNotExistAsync()
@@ -11,7 +11,8 @@ public class AddHostToDraftTests(IntegrationTestWebAppFactory factory) : BaseInt
     // Act
     Result result = await Sender.Send(new AddHostToDraftCommand(
         draftId,
-        hostId));
+        hostId,
+        HostRole.Primary.Name));
     // Assert
     result.IsFailure.Should().BeTrue();
     result.Errors[0].Should().Be(DraftErrors.NotFound(draftId));
@@ -35,7 +36,8 @@ public class AddHostToDraftTests(IntegrationTestWebAppFactory factory) : BaseInt
     // Act
     Result result = await Sender.Send(new AddHostToDraftCommand(
         createdDraftId.Value,
-        hostId));
+        hostId,
+        HostRole.Primary.Name));
     // Assert
     result.IsFailure.Should().BeTrue();
     result.Errors[0].Should().Be(HostErrors.NotFound(hostId));
@@ -62,7 +64,8 @@ public class AddHostToDraftTests(IntegrationTestWebAppFactory factory) : BaseInt
     // Act
     Result result = await Sender.Send(new AddHostToDraftCommand(
         createdDraftId.Value,
-        createdHostId.Value));
+        createdHostId.Value,
+        HostRole.Primary.Name));
     // Assert
     result.IsSuccess.Should().BeTrue();
   }

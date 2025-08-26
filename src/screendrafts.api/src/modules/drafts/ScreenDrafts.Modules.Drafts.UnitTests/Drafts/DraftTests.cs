@@ -278,29 +278,29 @@ public class DraftTests : BaseTest
   }
 
   [Fact]
-  public void AddHost_ShouldReturnSuccessResult_WhenHostIsValid()
+  public void SetPrimaryHost_ShouldReturnSuccessResult_WhenHostIsValid()
   {
     // Arrange
     var draft = DraftFactory.CreateStandardDraft().Value;
     var host = HostsFactory.CreateHost().Value;
 
     // Act
-    var result = draft.AddHost(host);
+    var result = draft.SetPrimaryHost(host);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
-    draft.Hosts.Should().Contain(host);
+    draft.PrimaryHost!.HostId.Value.Should().Be(host.Id.Value);
   }
 
   [Fact]
-  public void AddHost_ShouldRaiseDomainEvent_WhenHostIsAdded()
+  public void SetPrimaryHost_ShouldRaiseDomainEvent_WhenHostIsAdded()
   {
     // Arrange
     var draft = DraftFactory.CreateStandardDraft().Value;
     var host = HostsFactory.CreateHost().Value;
 
     // Act
-    draft.AddHost(host);
+    draft.SetPrimaryHost(host);
 
     var domainEvent = AssertDomainEventWasPublished<HostAddedDomainEvent>(draft);
 
@@ -310,51 +310,68 @@ public class DraftTests : BaseTest
   }
 
   [Fact]
-  public void AddHost_ShouldReturnFailureResult_WhenHostIsNull()
+  public void SetPrimaryHost_ShouldReturnFailureResult_WhenHostIsNull()
   {
     // Arrange
     var draft = DraftFactory.CreateStandardDraft().Value;
 
     // Act
-    Action act = () => draft.AddHost(null!);
+    Action act = () => draft.SetPrimaryHost(null!);
 
     // Assert
     act.Should().Throw<ArgumentNullException>();
   }
 
   [Fact]
-  public void AddHost_ShouldReturnFailureResult_WhenTooManyHosts()
+  public void SetPrimaryHost_ShouldReturnFailureResult_WhenPrimaryAlreadySet()
   {
     // Arrange
     var draft = DraftFactory.CreateStandardDraft().Value;
-    for (int i = 0; i < draft.TotalHosts; i++)
-    {
-      draft.AddHost(HostsFactory.CreateHost().Value);
-    }
+    var primaryHost = HostsFactory.CreateHost().Value;
     var extraHost = HostsFactory.CreateHost().Value;
+    draft.SetPrimaryHost(primaryHost);
 
     // Act
-    var result = draft.AddHost(extraHost);
+    var result = draft.SetPrimaryHost(extraHost);
 
     // Assert
     result.IsSuccess.Should().BeFalse();
-    result.Errors[0].Should().Be(DraftErrors.TooManyHosts);
+    result.IsFailure.Should().BeTrue();
+    result.Errors[0].Should().Be(DraftErrors.PrimaryHostAlreadySet(primaryHost.Id.Value));
   }
 
   [Fact]
-  public void AddHost_ShouldReturnFailureResult_WhenHostAlreadyAdded()
+  public void AddCoHost_ShouldSucceed_WhenValidCoHostProvided()
   {
     // Arrange
     var draft = DraftFactory.CreateStandardDraft().Value;
-    var host = HostsFactory.CreateHost().Value;
-    draft.AddHost(host);
+    var primary = HostsFactory.CreateHost().Value;
+    var co1 = HostsFactory.CreateHost().Value;
+    draft.SetPrimaryHost(primary);
 
     // Act
-    var result = draft.AddHost(host);
+    var r1 = draft.AddCoHost(co1);
 
     // Assert
-    result.IsSuccess.Should().BeFalse();
-    result.Errors[0].Should().Be(DraftErrors.HostAlreadyAdded(host.Id.Value));
+    r1.IsSuccess.Should().BeTrue();
+    draft.CoHosts.Select(h => h.Host).Should().BeEquivalentTo([co1]);
+  }
+
+  [Fact]
+  public void AddCoHost_ShouldFail_WhenSameHostAlreadyOnDraft()
+  {
+    // Arrange
+    var draft = DraftFactory.CreateStandardDraft().Value;
+    var primary = HostsFactory.CreateHost().Value;
+    var co = HostsFactory.CreateHost().Value;
+    draft.SetPrimaryHost(primary);
+    draft.AddCoHost(co);
+
+    // Act
+    var result = draft.AddCoHost(co);
+
+    // Assert
+    result.IsFailure.Should().BeTrue();
   }
 
   [Fact]
@@ -366,9 +383,13 @@ public class DraftTests : BaseTest
     {
       draft.AddDrafter(DrafterFactory.CreateDrafter());
     }
-    for (int i = 0; i < draft.TotalHosts; i++)
+
+    var primaryHost = HostsFactory.CreateHost().Value;
+    draft.SetPrimaryHost(primaryHost);
+
+    for (int i = 0; i < draft.TotalHosts - 1; i++)
     {
-      draft.AddHost(HostsFactory.CreateHost().Value);
+      draft.AddCoHost(HostsFactory.CreateHost().Value);
     }
 
     // Act
@@ -388,9 +409,13 @@ public class DraftTests : BaseTest
     {
       draft.AddDrafter(DrafterFactory.CreateDrafter());
     }
-    for (int i = 0; i < draft.TotalHosts; i++)
+
+    var primaryHost = HostsFactory.CreateHost().Value;
+    draft.SetPrimaryHost(primaryHost);
+
+    for (int i = 0; i < draft.TotalHosts - 1; i++)
     {
-      draft.AddHost(HostsFactory.CreateHost().Value);
+      draft.AddCoHost(HostsFactory.CreateHost().Value);
     }
     draft.StartDraft();
 
@@ -437,9 +462,12 @@ public class DraftTests : BaseTest
     {
       draft.AddDrafter(DrafterFactory.CreateDrafter());
     }
-    for (int i = 0; i < draft.TotalHosts; i++)
+    var primaryHost = HostsFactory.CreateHost().Value;
+    draft.SetPrimaryHost(primaryHost);
+
+    for (int i = 0; i < draft.TotalHosts - 1; i++)
     {
-      draft.AddHost(HostsFactory.CreateHost().Value);
+      draft.AddCoHost(HostsFactory.CreateHost().Value);
     }
 
     // Act
@@ -530,9 +558,12 @@ public class DraftTests : BaseTest
     {
       draft.AddDrafter(DrafterFactory.CreateDrafter());
     }
-    for (int i = 0; i < draft.TotalHosts; i++)
+    var primaryHost = HostsFactory.CreateHost().Value;
+    draft.SetPrimaryHost(primaryHost);
+
+    for (int i = 0; i < draft.TotalHosts - 1; i++)
     {
-      draft.AddHost(HostsFactory.CreateHost().Value);
+      draft.AddCoHost(HostsFactory.CreateHost().Value);
     }
     draft.StartDraft();
 
@@ -632,19 +663,60 @@ public class DraftTests : BaseTest
   }
 
   [Fact]
-  public void RemoveHost_ShouldRemoveHostFromList_WhenHostExists()
+  public void RemoveCoHost_ShouldRemoveCoHostFromList_WhenHostExists()
   {
     // Arrange
     var draft = DraftFactory.CreateStandardDraft().Value;
     var host = HostsFactory.CreateHost().Value;
-    draft.AddHost(host);
+    draft.AddCoHost(host);
 
     // Act
     var result = draft.RemoveHost(host);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
-    draft.Hosts.Should().BeEmpty();
+    draft.CoHosts.Should().BeEmpty();
+  }
+
+  [Fact]
+  public void StartDraft_ShouldFail_WhenNoPrimaryHost()
+  {
+    var draft = DraftFactory.CreateStandardDraft().Value;
+    for (int i = 0; i < draft.TotalDrafters; i++)
+    {
+      draft.AddDrafter(DrafterFactory.CreateDrafter());
+    }
+    // Intentionally add only cohosts
+    for (int i = 0; i < draft.TotalHosts; i++)
+    {
+      draft.AddCoHost(HostsFactory.CreateHost().Value);
+    }
+
+    var result = draft.StartDraft();
+
+    result.IsFailure.Should().BeTrue();
+  }
+
+  [Fact]
+  public void StartDraft_ShouldFail_WhenHostCountDoesNotMatchTotalHosts()
+  {
+    var draft = DraftFactory.CreateStandardDraft().Value;
+    for (int i = 0; i < draft.TotalDrafters; i++)
+    {
+      draft.AddDrafter(DrafterFactory.CreateDrafter());
+    }
+    draft.SetPrimaryHost(HostsFactory.CreateHost().Value);
+    // Add fewer cohosts than required
+    // Required = TotalHosts - 1
+    var requiredCoHosts = draft.TotalHosts - 1;
+    for (int i = 0; i < requiredCoHosts - 1; i++)
+    {
+      draft.AddCoHost(HostsFactory.CreateHost().Value);
+    }
+
+    var result = draft.StartDraft();
+
+    result.IsFailure.Should().BeTrue();
   }
 
   public static Draft SetupAndStartDraft()
@@ -655,10 +727,14 @@ public class DraftTests : BaseTest
       draft.AddDrafter(DrafterFactory.CreateDrafter());
     }
 
-    for (int i = 0; i < draft.TotalHosts; i++)
+    var primaryHost = HostsFactory.CreateHost().Value;
+    draft.SetPrimaryHost(primaryHost);
+
+    for (int i = 0; i < draft.TotalHosts - 1; i++)
     {
-      draft.AddHost(HostsFactory.CreateHost().Value);
+      draft.AddCoHost(HostsFactory.CreateHost().Value);
     }
+
     draft.StartDraft();
     return draft;
   }

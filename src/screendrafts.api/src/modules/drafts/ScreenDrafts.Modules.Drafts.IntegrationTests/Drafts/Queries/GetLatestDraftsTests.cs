@@ -1,7 +1,7 @@
-﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafts;
+﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafts.Queries;
 
-public sealed class GetLatestDraftsTests(IntegrationTestWebAppFactory factory)
-  : BaseIntegrationTest(factory)
+public sealed class GetLatestDraftsTests(DraftsIntegrationTestWebAppFactory factory)
+  : DraftsIntegrationTest(factory)
 {
   [Fact]
   public async Task GetLatestDrafts_ReturnsLatestDraftsAsync()
@@ -20,7 +20,7 @@ public sealed class GetLatestDraftsTests(IntegrationTestWebAppFactory factory)
       var draftPositionsList = draftPositions.Value.ToList();
       await Sender.Send(new StartDraftCommand(draftId.Value));
 
-      for (int j = 0; j < reloadedDraft.Value.TotalPicks; j++)
+      for (var j = 0; j < reloadedDraft.Value.TotalPicks; j++)
       {
         var currentPickNumber = reloadedDraft.Value.TotalPicks - j;
         Drafter? currentDrafter = null;

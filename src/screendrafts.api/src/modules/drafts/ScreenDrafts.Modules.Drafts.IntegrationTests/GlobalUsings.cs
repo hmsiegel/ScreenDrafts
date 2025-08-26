@@ -7,12 +7,11 @@ global using FluentAssertions;
 
 global using MediatR;
 
-global using Microsoft.AspNetCore.Hosting;
-global using Microsoft.AspNetCore.Mvc.Testing;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.DependencyInjection;
 
 global using ScreenDrafts.Common.Domain;
+global using ScreenDrafts.Common.IntegrationTests.Abstractions;
 global using ScreenDrafts.Modules.Drafts.Application.Drafters.Commands.CreateDrafter;
 global using ScreenDrafts.Modules.Drafts.Application.Drafters.Commands.ExecuteVeto;
 global using ScreenDrafts.Modules.Drafts.Application.Drafters.Commands.ExecuteVetoOverride;
@@ -65,6 +64,3 @@ global using ScreenDrafts.Modules.Drafts.Infrastructure.Database;
 global using ScreenDrafts.Modules.Drafts.IntegrationTests.Abstractions;
 global using ScreenDrafts.Modules.Drafts.IntegrationTests.TestUtils;
 global using ScreenDrafts.Modules.Drafts.Presentation.Drafts;
-
-global using Testcontainers.PostgreSql;
-global using Testcontainers.Redis;

@@ -1,6 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafts;
+﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafts.Commands;
 
-public class AddPickTests(IntegrationTestWebAppFactory factory) : BaseIntegrationTest(factory)
+public class AddPickTests(DraftsIntegrationTestWebAppFactory factory) : DraftsIntegrationTest(factory)
 {
   [Fact]
   public async Task AddPick_ShouldAddPickToDraftAsync()
@@ -209,7 +209,7 @@ public class AddPickTests(IntegrationTestWebAppFactory factory) : BaseIntegratio
 
     List<DraftPickResponse> picks = [];
 
-    for (int i = 0; i < reloadedDraftResult.Value.TotalPicks; i++)
+    for (var i = 0; i < reloadedDraftResult.Value.TotalPicks; i++)
     {
       var currentPickNumber = reloadedDraftResult.Value.TotalPicks - i;
       var currentPlayOrder = reloadedDraftResult.Value.TotalPicks - reloadedDraftResult.Value.TotalPicks + 1;

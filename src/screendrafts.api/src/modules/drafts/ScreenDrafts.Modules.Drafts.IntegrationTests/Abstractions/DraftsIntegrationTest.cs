@@ -1,59 +1,10 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Abstractions;
 
-[Collection(nameof(IntegrationTestCollection))]
+[Collection(nameof(DraftsIntegrationTestCollection))]
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1051:Do not declare visible instance fields", Justification = "Reviewed")]
-public class BaseIntegrationTest : IDisposable, IAsyncLifetime
+public abstract class DraftsIntegrationTest(DraftsIntegrationTestWebAppFactory factory) : BaseIntegrationTest<DraftsDbContext>(factory)
 {
-  private bool _disposedValue;
-  protected static readonly Faker Faker = new();
-  private readonly IServiceScope _serviceScope;
-  protected readonly ISender Sender;
-  protected readonly HttpClient HttpClient;
-  protected readonly DraftsDbContext DbContext;
-
-  public BaseIntegrationTest(IntegrationTestWebAppFactory factory)
-  {
-    ArgumentNullException.ThrowIfNull(factory);
-
-    _serviceScope = factory.Services.CreateScope();
-    Sender = _serviceScope.ServiceProvider.GetRequiredService<ISender>();
-    HttpClient = factory.CreateClient();
-    DbContext = _serviceScope.ServiceProvider.GetRequiredService<DraftsDbContext>();
-  }
-
-  protected virtual void Dispose(bool disposing)
-  {
-    if (!_disposedValue)
-    {
-      if (disposing)
-      {
-        _serviceScope.Dispose();
-        HttpClient.Dispose();
-        DbContext.Dispose();
-      }
-
-      _disposedValue = true;
-    }
-  }
-
-  public async Task InitializeAsync()
-  {
-    await ClearDatabaseAsync();
-  }
-
-  public void Dispose()
-  {
-    Dispose(disposing: true);
-    GC.SuppressFinalize(this);
-  }
-
-  public async Task DisposeAsync()
-  {
-    await ClearDatabaseAsync();
-    Dispose();
-  }
-
-  public async Task<(Result<Guid> draftId, List<Drafter> drafters, List<Host> hosts)> SetupDraftAndDraftersAsync(DraftType draftType)
+  protected async Task<(Result<Guid> draftId, List<Drafter> drafters, List<Host> hosts)> SetupDraftAndDraftersAsync(DraftType draftType)
   {
     ArgumentNullException.ThrowIfNull(draftType);
 
@@ -108,9 +59,11 @@ public class BaseIntegrationTest : IDisposable, IAsyncLifetime
     {
       var hostFactory = new HostsFactory(Sender, Faker);
       var hostId = await hostFactory.CreateAndSaveHostAsync();
+      var role = i == 0 ? HostRole.Primary.Name : HostRole.CoHost.Name;
       var addedHostId = await Sender.Send(new AddHostToDraftCommand(
         draftId.Value,
-        hostId));
+        hostId,
+        role));
       var addedHost = await Sender.Send(new GetHostQuery(addedHostId.Value));
 
       var addedPerson = await Sender.Send(new GetPersonQuery(addedHost.Value.PersonId));
@@ -164,7 +117,7 @@ public class BaseIntegrationTest : IDisposable, IAsyncLifetime
     return (draftId, drafters, hosts);
   }
 
-  private async Task ClearDatabaseAsync()
+  protected override async Task ClearDatabaseAsync()
   {
     await DbContext.Database.ExecuteSqlRawAsync(
       $"""
@@ -178,7 +131,7 @@ public class BaseIntegrationTest : IDisposable, IAsyncLifetime
         drafts.picks,
         drafts.game_boards,
         drafts.drafts_drafters,
-        drafts.draft_host,
+        drafts.draft_hosts,
         drafts.draft_release_date,
         drafts.movies,
         drafts.trivia_results,

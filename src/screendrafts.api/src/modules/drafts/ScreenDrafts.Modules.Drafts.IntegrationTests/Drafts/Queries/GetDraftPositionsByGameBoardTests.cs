@@ -1,7 +1,7 @@
-﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafts;
+﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafts.Queries;
 
-public sealed class GetDraftPositionsByGameBoardTests(IntegrationTestWebAppFactory factory) 
-  : BaseIntegrationTest(factory)
+public sealed class GetDraftPositionsByGameBoardTests(DraftsIntegrationTestWebAppFactory factory) 
+  : DraftsIntegrationTest(factory)
 {
   [Fact]
   public async Task GetDraftPositionsByStandardGameBoard_WhenGameBoardExists_ShouldReturnDraftPositionsAsync()

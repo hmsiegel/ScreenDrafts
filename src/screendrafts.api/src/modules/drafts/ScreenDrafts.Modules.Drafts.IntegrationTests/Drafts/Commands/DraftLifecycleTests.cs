@@ -1,7 +1,7 @@
-﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafts;
+﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafts.Commands;
 
-public class DraftLifecycleTests(IntegrationTestWebAppFactory factory)
-  : BaseIntegrationTest(factory)
+public class DraftLifecycleTests(DraftsIntegrationTestWebAppFactory factory)
+  : DraftsIntegrationTest(factory)
 {
   [Fact]
   public async Task PauseDraft_WithValidDraft_ShouldSucceedAsync()
@@ -45,7 +45,7 @@ public class DraftLifecycleTests(IntegrationTestWebAppFactory factory)
 
     var reloadedDraftResult = await Sender.Send(new GetDraftQuery(draftId.Value));
 
-    for (int i = 0; i < reloadedDraftResult.Value.TotalPicks; i++)
+    for (var i = 0; i < reloadedDraftResult.Value.TotalPicks; i++)
     {
       var movie = MovieFactory.CreateMovie().Value;
       var movieId = await Sender.Send(new AddMovieCommand(movie.Id, movie.ImdbId, movie.MovieTitle));
@@ -81,7 +81,7 @@ public class DraftLifecycleTests(IntegrationTestWebAppFactory factory)
 
     var reloadedDraftResult = await Sender.Send(new GetDraftQuery(draftId.Value));
 
-    for (int i = 0; i < reloadedDraftResult.Value.TotalPicks; i++)
+    for (var i = 0; i < reloadedDraftResult.Value.TotalPicks; i++)
     {
       var movie = MovieFactory.CreateMovie().Value;
       var movieId = await Sender.Send(new AddMovieCommand(movie.Id, movie.ImdbId, movie.MovieTitle));

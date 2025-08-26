@@ -1,7 +1,7 @@
-﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafts;
+﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafts.Commands;
 
-public class AddDrafterToDraftTests(IntegrationTestWebAppFactory factory) 
-  : BaseIntegrationTest(factory)
+public class AddDrafterToDraftTests(DraftsIntegrationTestWebAppFactory factory) 
+  : DraftsIntegrationTest(factory)
 {
   [Fact]
   public async Task AddDrafterToDraft_WithValidData_ShouldReturnSuccessAsync()
