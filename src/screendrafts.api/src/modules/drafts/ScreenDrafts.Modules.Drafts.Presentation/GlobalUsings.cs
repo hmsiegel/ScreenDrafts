@@ -41,6 +41,7 @@ global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.RemoveDraft
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.RemoveHostFromDraft;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.StartDraft;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.UpdateReleaseDate;
+global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.UpdateScreamDrafts;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Queries.GetDraft;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Queries.GetDraftPicks;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Queries.GetDraftPositionsByGameBoard;

@@ -66,6 +66,8 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
 
   public bool NonCanonical { get; private set; }
 
+  public bool IsScreamDrafts { get; private set; }
+
   public string? Description { get; private set; }
 
   // Relationships
@@ -491,6 +493,11 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
   public void SetNonCanonical(bool nonCanonical)
   {
     NonCanonical = nonCanonical;
+  }
+
+  public void SetScreamDrafts(bool screamDrafts)
+  {
+    IsScreamDrafts = screamDrafts;
   }
 
   public Result RemoveDrafter(Drafter drafter)

@@ -95,6 +95,7 @@ internal sealed class GetDraftQueryHandler(
       draft.EpisodeType,
       draft.DraftStatus,
       draft?.Description,
+      draft!.IsScreamDrafts,
       previousDraft?.Id.Value,
       previousDraft?.Title.Value,
       nextDraft?.Id.Value,
