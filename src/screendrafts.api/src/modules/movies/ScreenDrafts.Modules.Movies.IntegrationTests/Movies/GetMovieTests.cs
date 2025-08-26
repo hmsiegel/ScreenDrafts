@@ -1,10 +1,7 @@
-﻿using ScreenDrafts.Modules.Movies.Application.Movies.Queries.GetMovie;
-using ScreenDrafts.Modules.Movies.Domain.Movies.Errors;
+﻿namespace ScreenDrafts.Modules.Movies.IntegrationTests.Movies;
 
-namespace ScreenDrafts.Modules.Movies.IntegrationTests.Movies;
-
-public sealed class GetMovieTests(IntegrationTestWebAppFactory factory)
-  : BaseIntegrationTest(factory)
+public sealed class GetMovieTests(MoviesIntegrationTestWebAppFactory factory)
+  : MoviesIntegrationTest(factory)
 {
   [Fact]
   public async Task Should_ReturnError_WhenMovieDoesNotExistAsync()
