@@ -71,6 +71,11 @@ internal sealed class DraftConfiguration : IEntityTypeConfiguration<Draft>
       .HasForeignKey(ds => ds.DraftId)
       .OnDelete(DeleteBehavior.Cascade);
 
+    builder.HasMany(d => d.DraftCategories)
+      .WithOne(dc => dc.Draft)
+      .HasForeignKey(dc => dc.DraftId)
+      .OnDelete(DeleteBehavior.Cascade);
+
     builder.Navigation(d => d.DrafterStats)
       .HasField("_drafterDraftStats")
       .UsePropertyAccessMode(PropertyAccessMode.Field);
