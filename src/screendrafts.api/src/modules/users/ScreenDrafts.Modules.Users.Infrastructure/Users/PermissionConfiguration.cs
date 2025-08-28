@@ -45,7 +45,14 @@ internal sealed class PermissionConfiguration : IEntityTypeConfiguration<Permiss
       Permission.CreatePeople,
       Permission.GetPeople,
       Permission.UpdatePerson,
-      Permission.SearchPeople);
+      Permission.SearchPeople,
+      Permission.CreateMovies,
+      Permission.GetMovies,
+      Permission.CreateCategories,
+      Permission.UpdateCategories,
+      Permission.GetCategories,
+      Permission.SearchCategories,
+      Permission.DeleteCategories);
 
     builder.HasMany<Role>()
       .WithMany()
@@ -63,6 +70,8 @@ internal sealed class PermissionConfiguration : IEntityTypeConfiguration<Permiss
           CreateRolePermission(Role.Guest, Permission.SearchCrew),
           CreateRolePermission(Role.Guest, Permission.SearchGenres),
           CreateRolePermission(Role.Guest, Permission.SearchStudios),
+          CreateRolePermission(Role.Guest, Permission.SearchPeople),
+          CreateRolePermission(Role.Guest, Permission.SearchCategories),
 
           // Host Permissions
           CreateRolePermission(Role.Host, Permission.GetUser),
@@ -74,6 +83,8 @@ internal sealed class PermissionConfiguration : IEntityTypeConfiguration<Permiss
           CreateRolePermission(Role.Host, Permission.SearchCrew),
           CreateRolePermission(Role.Host, Permission.SearchGenres),
           CreateRolePermission(Role.Host, Permission.SearchStudios),
+          CreateRolePermission(Role.Host, Permission.SearchPeople),
+          CreateRolePermission(Role.Host, Permission.SearchCategories),
 
           // Drafter Permissions
           CreateRolePermission(Role.Drafter, Permission.GetUser),
@@ -87,6 +98,8 @@ internal sealed class PermissionConfiguration : IEntityTypeConfiguration<Permiss
           CreateRolePermission(Role.Drafter, Permission.SearchCrew),
           CreateRolePermission(Role.Drafter, Permission.SearchGenres),
           CreateRolePermission(Role.Drafter, Permission.SearchStudios),
+          CreateRolePermission(Role.Drafter, Permission.SearchPeople),
+          CreateRolePermission(Role.Drafter, Permission.SearchCategories),
 
           // Administrator Permissions
           CreateRolePermission(Role.Administrator, Permission.GetUser),
@@ -117,6 +130,13 @@ internal sealed class PermissionConfiguration : IEntityTypeConfiguration<Permiss
           CreateRolePermission(Role.Administrator, Permission.GetPeople),
           CreateRolePermission(Role.Administrator, Permission.UpdatePerson),
           CreateRolePermission(Role.Administrator, Permission.SearchPeople),
+          CreateRolePermission(Role.Administrator, Permission.CreateCategories),
+          CreateRolePermission(Role.Administrator, Permission.UpdateCategories),
+          CreateRolePermission(Role.Administrator, Permission.GetCategories),
+          CreateRolePermission(Role.Administrator, Permission.SearchCategories),
+          CreateRolePermission(Role.Administrator, Permission.DeleteCategories),
+          CreateRolePermission(Role.Administrator, Permission.CreateMovies),
+          CreateRolePermission(Role.Administrator, Permission.GetMovies),
 
           // Super Administrator Permissions
           CreateRolePermission(Role.SuperAdministrator, Permission.GetUser),
@@ -149,6 +169,13 @@ internal sealed class PermissionConfiguration : IEntityTypeConfiguration<Permiss
           CreateRolePermission(Role.SuperAdministrator, Permission.GetPeople),
           CreateRolePermission(Role.SuperAdministrator, Permission.UpdatePerson),
           CreateRolePermission(Role.SuperAdministrator, Permission.SearchPeople),
+          CreateRolePermission(Role.SuperAdministrator, Permission.CreateCategories),
+          CreateRolePermission(Role.SuperAdministrator, Permission.UpdateCategories),
+          CreateRolePermission(Role.SuperAdministrator, Permission.GetCategories),
+          CreateRolePermission(Role.SuperAdministrator, Permission.SearchCategories),
+          CreateRolePermission(Role.SuperAdministrator, Permission.DeleteCategories),
+          CreateRolePermission(Role.SuperAdministrator, Permission.CreateMovies),
+          CreateRolePermission(Role.SuperAdministrator, Permission.GetMovies),
 
           // Patreon Permissions
           CreateRolePermission(Role.Patreon, Permission.SearchPatreonDrafts)

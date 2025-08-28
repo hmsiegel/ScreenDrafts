@@ -37,6 +37,13 @@ public sealed class Permission(string code)
   public static readonly Permission GetPeople = new( "people:read");
   public static readonly Permission UpdatePerson = new("people:update");
   public static readonly Permission SearchPeople = new("people:search");
+  public static readonly Permission CreateMovies = new("movies:create");
+  public static readonly Permission GetMovies = new("movies:read");
+  public static readonly Permission CreateCategories = new("categories:create");
+  public static readonly Permission UpdateCategories = new("categories:update");
+  public static readonly Permission GetCategories = new("categories:read");
+  public static readonly Permission SearchCategories = new("categories:search");
+  public static readonly Permission DeleteCategories = new("categories:delete");
 
   public string Code { get; } = code;
 }
