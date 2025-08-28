@@ -1,4 +1,4 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Presentation.Drafts;
+﻿namespace ScreenDrafts.Modules.Drafts.Presentation.Drafts.Posts;
 internal sealed class ContinueDraft(ISender sender) : Endpoint<ContinueDraftRequest>
 {
   private readonly ISender _sender = sender;

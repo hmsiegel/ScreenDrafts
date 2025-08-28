@@ -1,6 +1,6 @@
 ﻿using ScreenDrafts.Common.Infrastructure.Authentication;
 
-namespace ScreenDrafts.Modules.Drafts.Presentation.Drafts;
+namespace ScreenDrafts.Modules.Drafts.Presentation.Drafts.Gets;
 
 internal sealed class ListUpcomingDrafts(ISender sender, IUsersApi usersApi) : EndpointWithoutRequest<List<UpcomingDraftResponse>>
 {

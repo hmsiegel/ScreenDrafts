@@ -1,4 +1,4 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Presentation.Drafts;
+﻿namespace ScreenDrafts.Modules.Drafts.Presentation.Drafts.Gets;
 
 internal sealed class GetDraftPicks(ISender sender) : Endpoint<GetDraftPicksRequest, List<DraftPickResponse>>
 {

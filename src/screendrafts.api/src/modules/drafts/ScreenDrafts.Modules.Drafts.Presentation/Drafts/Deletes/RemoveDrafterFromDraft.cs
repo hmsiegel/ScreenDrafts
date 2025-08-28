@@ -1,4 +1,4 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Presentation.Drafts;
+﻿namespace ScreenDrafts.Modules.Drafts.Presentation.Drafts.Deletes;
 
 internal sealed class RemoveDrafterFromDraft(ISender sender) : Endpoint<RemoveDrafterFromDraftRequest>
 {

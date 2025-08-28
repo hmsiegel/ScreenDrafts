@@ -1,4 +1,4 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Presentation.Drafts;
+﻿namespace ScreenDrafts.Modules.Drafts.Presentation.Drafts.Gets;
 
 internal sealed class GetLatestDrafts(ISender sender) : EndpointWithoutRequest<List<DraftResponse>>
 {

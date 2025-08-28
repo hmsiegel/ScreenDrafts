@@ -16,7 +16,7 @@ internal sealed class UserRegisteredIntegrationEventConsumer(
       new CreatePersonCommand(
         integrationEvent.FirstName,
         integrationEvent.LastName,
-        integrationEvent.Id),
+        integrationEvent.UserId),
             cancellationToken);
 
     if (result.IsFailure)

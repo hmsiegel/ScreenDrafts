@@ -1,6 +1,6 @@
 ﻿using FromQueryAttribute = Microsoft.AspNetCore.Mvc.FromQueryAttribute;
 
-namespace ScreenDrafts.Modules.Drafts.Presentation.Drafts;
+namespace ScreenDrafts.Modules.Drafts.Presentation.Drafts.Posts;
 
 internal sealed class AddHostToDraft(ISender sender) : Endpoint<AddHostToDraftRequest, Guid>
 {

@@ -1,4 +1,4 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Presentation.Drafts;
+﻿namespace ScreenDrafts.Modules.Drafts.Presentation.Drafts.Gets;
 
 internal sealed class GetDraftPositions(ISender sender) : Endpoint<GetDraftPositionsRequest, List<DraftPositionResponse>>
 {

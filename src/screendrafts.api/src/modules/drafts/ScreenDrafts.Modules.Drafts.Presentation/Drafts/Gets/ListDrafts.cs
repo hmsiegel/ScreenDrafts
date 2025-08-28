@@ -1,4 +1,4 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Presentation.Drafts;
+﻿namespace ScreenDrafts.Modules.Drafts.Presentation.Drafts.Gets;
 
 internal sealed class ListDrafts(ISender sender) : Endpoint<ListDraftsRequest, Result<PagedResult<DraftResponse>>>
 {
@@ -18,7 +18,7 @@ internal sealed class ListDrafts(ISender sender) : Endpoint<ListDraftsRequest, R
 
   public override async Task HandleAsync(ListDraftsRequest req, CancellationToken ct)
   {
-    bool canViewPatreon = User.HasClaim(c => c.Type == "permission"
+    var canViewPatreon = User.HasClaim(c => c.Type == "permission"
       && c.Value == Presentation.Permissions.PatronSearchDrafts);
 
     var query = new ListDraftsQuery(

@@ -1,4 +1,4 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Presentation.Drafts;
+﻿namespace ScreenDrafts.Modules.Drafts.Presentation.Drafts.Updates;
 
 internal sealed class UpdateReleaseDate(ISender sender) : Endpoint<ReleaseDateRequest>
 {
