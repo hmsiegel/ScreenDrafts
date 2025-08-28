@@ -9,6 +9,7 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
   private readonly List<DrafterDraftStats> _drafterDraftStats = [];
   private readonly List<TriviaResult> _triviaResults = [];
   private readonly List<DraftReleaseDate> _releaseDates = [];
+  private readonly List<DraftCategory> _draftCategories = [];
 
   private Draft(
   DraftId id,
@@ -91,6 +92,8 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
   public DraftHost? PrimaryHost => _draftHosts.FirstOrDefault(h => h.Role == HostRole.Primary);
 
   public IEnumerable<DraftHost> CoHosts => _draftHosts.Where(h => h.Role == HostRole.CoHost);
+
+  public IReadOnlyCollection<DraftCategory> DraftCategories => _draftCategories.AsReadOnly();
 
 
   public static Result<Draft> Create(
@@ -545,6 +548,46 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
     _drafterTeams.Remove(drafterTeam);
     UpdatedAtUtc = DateTime.UtcNow;
     Raise(new DrafterTeamRemovedDomainEvent(Id.Value, drafterTeam.Id.Value));
+    return Result.Success();
+  }
+
+  public Result AddCategory(Category category)
+  {
+    Guard.Against.Null(category);
+
+    if (_draftCategories.Any(dc => dc.CategoryId == category.Id))
+    {
+      return Result.Failure(CategoryErrors.CategoryAlreadyAdded(category.Id.Value));
+    }
+
+    var draftCategory = DraftCategory.Create(this, category);
+
+    _draftCategories.Add(draftCategory);
+
+    UpdatedAtUtc = DateTime.UtcNow;
+
+    Raise(new CategoryAddedDomainEvent(Id.Value, category.Id.Value));
+    return Result.Success();
+  }
+
+  public Result RemoveCategory(Category category)
+  {
+    Guard.Against.Null(category);
+
+    if (!_draftCategories.Any(dc => dc.CategoryId == category.Id))
+    {
+      return Result.Failure(CategoryErrors.CannotRemoveACategoryThatIsNotAdded(category.Id.Value));
+    }
+
+    var draftCategory = _draftCategories.FirstOrDefault(dc => dc.CategoryId == category.Id) ?? null;
+
+    if (draftCategory != null)
+    {
+      _draftCategories.Remove(draftCategory);
+    }
+
+    UpdatedAtUtc = DateTime.UtcNow;
+
     return Result.Success();
   }
 }
