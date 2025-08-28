@@ -10,4 +10,5 @@ internal static class Tags
   internal const string Picks = "Picks";
   internal const string Trivia = "Trivia";
   internal const string DraftPositions = "DraftPositions";
+  internal const string Categories = "Categories";
 }
