@@ -9,6 +9,11 @@ internal sealed class DraftersRepository(DraftsDbContext dbContext) : IDraftersR
     _dbContext.Drafters.Add(drafter);
   }
 
+  public void AddDrafterTeam(DrafterTeam drafterTeam)
+  {
+    _dbContext.DrafterTeams.Add(drafterTeam);
+  }
+
   public async Task<List<Drafter>> GetAll(CancellationToken cancellationToken = default)
   {
     return await _dbContext.Drafters
@@ -34,5 +39,10 @@ internal sealed class DraftersRepository(DraftsDbContext dbContext) : IDraftersR
   public void Update(Drafter drafter)
   {
     _dbContext.Drafters.Update(drafter);
+  }
+
+  public void UpdateDrafterTeam(DrafterTeam drafterTeam)
+  {
+    _dbContext.DrafterTeams.Update(drafterTeam);
   }
 }

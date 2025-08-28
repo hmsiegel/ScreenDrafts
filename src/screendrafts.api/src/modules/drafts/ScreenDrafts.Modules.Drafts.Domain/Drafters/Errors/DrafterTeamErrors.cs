@@ -20,4 +20,14 @@ public static class DrafterTeamErrors
     SDError.Failure(
       "DrafterTeam.NotEnoughDrafters",
       "Cannot remove the last drafter from the team.");
+
+  public static SDError NotFound(Guid drafterTeamId) =>
+    SDError.NotFound(
+      "DrafterTeam.NotFound",
+      $"Drafter team with ID '{drafterTeamId}' was not found.");
+
+  public static readonly SDError TeamIsFull =
+    SDError.Failure(
+      "DrafterTeam.TeamIsFull",
+      "The drafter team is already full.");
 }

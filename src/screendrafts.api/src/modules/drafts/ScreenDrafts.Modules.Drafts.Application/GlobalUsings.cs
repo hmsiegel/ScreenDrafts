@@ -24,6 +24,7 @@ global using ScreenDrafts.Modules.Drafts.Application.Drafts.Queries.GetCommissio
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Queries.GetDraft;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Queries.GetDraftPicks;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Queries.GetDraftPositionsByGameBoard;
+global using ScreenDrafts.Modules.Drafts.Application.Drafts.Queries.ListCategories;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Queries.ListDrafts;
 global using ScreenDrafts.Modules.Drafts.Application.Hosts.Queries.GetHost;
 global using ScreenDrafts.Modules.Drafts.Application.People;

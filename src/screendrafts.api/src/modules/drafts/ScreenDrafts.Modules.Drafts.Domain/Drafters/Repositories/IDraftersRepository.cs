@@ -6,6 +6,10 @@ public interface IDraftersRepository : IRepository
 
   void Update(Drafter drafter);
 
+  void AddDrafterTeam(DrafterTeam drafterTeam);
+
+  void UpdateDrafterTeam(DrafterTeam drafterTeam);
+
   Task<Drafter?> GetByIdAsync(DrafterId drafterId, CancellationToken cancellationToken);
 
   Task<DrafterTeam?> GetByIdAsync(DrafterTeamId drafterTeamId, CancellationToken cancellationToken);

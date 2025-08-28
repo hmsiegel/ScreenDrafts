@@ -9,6 +9,8 @@ public sealed class DrafterTeam : Entity<DrafterTeamId>
   private readonly List<DrafterDraftStats> _draftStats = [];
   private readonly List<Pick> _picks = [];
 
+  public const int TeamNameMaxLength = 100;
+
   private DrafterTeam(
     string name,
     DrafterTeamId? id = null)
