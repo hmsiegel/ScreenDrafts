@@ -13,7 +13,6 @@ public class DraftTests : BaseTest
     var totalDrafterTeams = 0;
     var totalHosts = 2;
     var draftStatus = DraftStatus.Created;
-    var episodeType = EpisodeType.MainFeed;
 
     // Act
     var result = Draft.Create(
@@ -23,8 +22,7 @@ public class DraftTests : BaseTest
       totalDrafters,
       totalDrafterTeams,
       totalHosts,
-      draftStatus,
-      episodeType);
+      draftStatus);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -35,7 +33,6 @@ public class DraftTests : BaseTest
     result.Value.TotalDrafterTeams.Should().Be(totalDrafterTeams);
     result.Value.TotalHosts.Should().Be(totalHosts);
     result.Value.DraftStatus.Should().Be(draftStatus);
-    result.Value.EpisodeType.Should().Be(episodeType);
   }
 
   [Fact]
@@ -59,7 +56,6 @@ public class DraftTests : BaseTest
     var totalDrafterTeams = 0;
     var totalHosts = 2;
     var draftStatus = DraftStatus.Created;
-    var episodeType = EpisodeType.MainFeed;
 
     // Act
     var result = Draft.Create(
@@ -69,8 +65,7 @@ public class DraftTests : BaseTest
       totalDrafters,
       totalDrafterTeams,
       totalHosts,
-      draftStatus,
-      episodeType);
+      draftStatus);
 
     // Assert
     result.IsSuccess.Should().BeFalse();
@@ -88,7 +83,6 @@ public class DraftTests : BaseTest
     var totalDrafterTeams = 0;
     var totalHosts = 2;
     var draftStatus = DraftStatus.Created;
-    var episodeType = EpisodeType.MainFeed;
 
     // Act
     var result = Draft.Create(
@@ -98,8 +92,7 @@ public class DraftTests : BaseTest
       totalDrafters,
       totalDrafterTeams,
       totalHosts,
-      draftStatus,
-      episodeType);
+      draftStatus);
 
     // Assert
     result.IsSuccess.Should().BeFalse();
@@ -576,21 +569,6 @@ public class DraftTests : BaseTest
   }
 
   [Fact]
-  public void AddReleaseDate_ShouldAddReleaseDateToList_WhenValidDateIsProvided()
-  {
-    // Arrange
-    var draft = DraftFactory.CreateStandardDraft().Value;
-    var releaseDate = DraftReleaseDate.Create(draft.Id, Faker.Date.PastDateOnly());
-
-    // Act
-    draft.AddReleaseDate(releaseDate);
-
-    // Assert
-    draft.ReleaseDates.Should().ContainSingle();
-    draft.ReleaseDates.First().Should().Be(releaseDate);
-  }
-
-  [Fact]
   public void SetDraftStatus_ShouldUpdateStatus_WhenValidStatusIsProvided()
   {
     // Arrange
@@ -616,34 +594,6 @@ public class DraftTests : BaseTest
 
     // Assert
     draft.GameBoard.Should().Be(gameBoard);
-  }
-
-  [Fact]
-  public void SetPatreonOnly_ShouldUpdatePatreonOnlyFlag_WhenValidValueIsProvided()
-  {
-    // Arrange
-    var draft = DraftFactory.CreateStandardDraft().Value;
-    var isPatreonOnly = true;
-
-    // Act
-    draft.SetPatreonOnly(isPatreonOnly);
-
-    // Assert
-    draft.IsPatreonOnly.Should().Be(isPatreonOnly);
-  }
-
-  [Fact]
-  public void SetNonCanonical_ShouldUpdateNonCanonicalFlag_WhenValidValueIsProvided()
-  {
-    // Arrange
-    var draft = DraftFactory.CreateStandardDraft().Value;
-    var nonCanonical = true;
-
-    // Act
-    draft.SetNonCanonical(nonCanonical);
-
-    // Assert
-    draft.NonCanonical.Should().Be(nonCanonical);
   }
 
   [Fact]
