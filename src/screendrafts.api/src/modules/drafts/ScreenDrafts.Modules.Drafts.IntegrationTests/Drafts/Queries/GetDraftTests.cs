@@ -26,7 +26,6 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
       draft.TotalDrafters,
       draft.TotalDrafterTeams,
       draft.TotalHosts,
-      draft.EpisodeType,
       draft.DraftStatus));
 
     // Act

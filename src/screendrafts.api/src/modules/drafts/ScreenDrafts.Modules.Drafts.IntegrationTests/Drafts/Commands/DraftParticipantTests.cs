@@ -120,7 +120,6 @@ public class DraftParticipantTests(DraftsIntegrationTestWebAppFactory factory)
       2,
       0,
       2,
-      EpisodeType.MainFeed,
       DraftStatus.Created);
 
     var result = await Sender.Send(command);

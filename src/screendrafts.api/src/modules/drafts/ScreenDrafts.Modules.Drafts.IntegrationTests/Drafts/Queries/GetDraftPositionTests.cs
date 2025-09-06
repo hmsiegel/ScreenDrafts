@@ -15,7 +15,6 @@ public sealed class GetDraftPositionTests(DraftsIntegrationTestWebAppFactory fac
       draft.TotalDrafters,
       draft.TotalDrafterTeams,
       draft.TotalHosts,
-      draft.EpisodeType,
       draft.DraftStatus));
 
     var drafterFactory = new DrafterFactory(Sender, Faker);
@@ -56,7 +55,6 @@ public sealed class GetDraftPositionTests(DraftsIntegrationTestWebAppFactory fac
       draft.TotalDrafters,
       draft.TotalDrafterTeams,
       draft.TotalHosts,
-      draft.EpisodeType,
       draft.DraftStatus));
 
     var drafterFactory = new DrafterFactory(Sender, Faker);
@@ -107,7 +105,6 @@ public sealed class GetDraftPositionTests(DraftsIntegrationTestWebAppFactory fac
       draft.TotalDrafters,
       draft.TotalDrafterTeams,
       draft.TotalHosts,
-      draft.EpisodeType,
       draft.DraftStatus));
     var drafterFactory = new DrafterFactory(Sender, Faker);
     var drafterId = await drafterFactory.CreateAndSaveDrafterAsync();
@@ -155,7 +152,6 @@ public sealed class GetDraftPositionTests(DraftsIntegrationTestWebAppFactory fac
       draft.TotalDrafters,
       draft.TotalDrafterTeams,
       draft.TotalHosts,
-      draft.EpisodeType,
       draft.DraftStatus));
     var gameBoardId = await Sender.Send(new CreateGameBoardCommand(
       draftId.Value));

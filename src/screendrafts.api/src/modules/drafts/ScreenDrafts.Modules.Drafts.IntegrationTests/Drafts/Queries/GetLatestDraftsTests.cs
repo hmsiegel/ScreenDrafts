@@ -57,13 +57,6 @@ public sealed class GetLatestDraftsTests(DraftsIntegrationTestWebAppFactory fact
       }
       await Sender.Send(new CompleteDraftCommand(draftId.Value));
 
-      var draftReleaseDate = DraftReleaseDate.Create(DraftId.Create(draftId.Value), Faker.Date.PastDateOnly());
-
-      var updatedReleaseDate =
-        await Sender.Send(new UpdateReleaseDateCommand(draftReleaseDate.DraftId.Value, draftReleaseDate.ReleaseDate));
-
-      updatedReleaseDate.IsSuccess.Should().BeTrue();
-
       var updatedDraft = await Sender.Send(new GetDraftQuery(draftId.Value));
 
       drafts.Add(updatedDraft.Value);
@@ -77,13 +70,6 @@ public sealed class GetLatestDraftsTests(DraftsIntegrationTestWebAppFactory fact
     var latestDrafts = latestDraftsQueryResponse.Value.ToList();
 
     latestDrafts.Should().HaveCount(5);
-    var latestReleaseDates = latestDrafts
-      .Select(d => d.ReleaseDates!)
-      .SelectMany(r => r)
-      .Select(r => r.ReleaseDate)
-      .ToList();
-
-    latestReleaseDates.Should().BeInDescendingOrder();
   }
 
   [Fact]

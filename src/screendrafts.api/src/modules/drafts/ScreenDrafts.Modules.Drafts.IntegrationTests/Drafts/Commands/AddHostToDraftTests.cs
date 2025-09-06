@@ -30,7 +30,6 @@ public class AddHostToDraftTests(DraftsIntegrationTestWebAppFactory factory) : D
         draft.TotalDrafters,
         draft.TotalDrafterTeams,
         draft.TotalHosts,
-        draft.EpisodeType,
         draft.DraftStatus));
     var hostId = Guid.NewGuid();
     // Act
@@ -55,7 +54,6 @@ public class AddHostToDraftTests(DraftsIntegrationTestWebAppFactory factory) : D
         draft.TotalDrafters,
         draft.TotalDrafterTeams,
         draft.TotalHosts,
-        draft.EpisodeType,
         draft.DraftStatus));
     var personFactory = new PeopleFactory(Sender, Faker);
     var personId = await personFactory.CreateAndSavePersonAsync();

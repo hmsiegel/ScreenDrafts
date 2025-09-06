@@ -28,7 +28,6 @@ public sealed class CreateGameBoardTests(DraftsIntegrationTestWebAppFactory fact
         draft.TotalDrafters,
         draft.TotalDrafterTeams,
         draft.TotalHosts,
-        draft.EpisodeType,
         draft.DraftStatus));
     // Act
     Result result = await Sender.Send(new CreateGameBoardCommand(
@@ -47,7 +46,6 @@ public sealed class CreateGameBoardTests(DraftsIntegrationTestWebAppFactory fact
         int totalDrafters,
         int totalDrafterTeams,
         int totalHosts,
-        string episodeType,
         string draftStatus,
         IReadOnlyCollection<DraftPosition> draftPositions)
   {
@@ -59,7 +57,6 @@ public sealed class CreateGameBoardTests(DraftsIntegrationTestWebAppFactory fact
         totalDrafters,
         totalDrafterTeams,
         totalHosts,
-        EpisodeType.FromName(episodeType),
         DraftStatus.FromName(draftStatus)));
 
     var draftPositionsRequests = new Collection<DraftPositionRequest>(
@@ -89,7 +86,6 @@ public sealed class CreateGameBoardTests(DraftsIntegrationTestWebAppFactory fact
     int totalDrafters,
     int totalDrafterTeams,
     int totalHosts,
-    string episodeType,
     string draftStatus,
     IReadOnlyCollection<DraftPosition> draftPositions)
   {
@@ -101,7 +97,6 @@ public sealed class CreateGameBoardTests(DraftsIntegrationTestWebAppFactory fact
         totalDrafters,
         totalDrafterTeams,
         totalHosts,
-        EpisodeType.FromName(episodeType),
         DraftStatus.FromName(draftStatus)));
 
     var draftPositionsRequests = new Collection<DraftPositionRequest>(

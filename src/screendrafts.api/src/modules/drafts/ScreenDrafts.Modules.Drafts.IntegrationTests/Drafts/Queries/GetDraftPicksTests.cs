@@ -50,7 +50,6 @@ public sealed class GetDraftPicksTests(DraftsIntegrationTestWebAppFactory factor
       draft.TotalDrafters,
       draft.TotalDrafterTeams,
       draft.TotalHosts,
-      draft.EpisodeType,
       draft.DraftStatus));
     var reloadedDraftResult = await Sender.Send(new GetDraftQuery(draftId.Value));
     // Act

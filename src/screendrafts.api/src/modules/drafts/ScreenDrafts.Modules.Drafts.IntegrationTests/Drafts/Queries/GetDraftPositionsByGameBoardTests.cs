@@ -15,7 +15,6 @@ public sealed class GetDraftPositionsByGameBoardTests(DraftsIntegrationTestWebAp
       draft.TotalDrafters,
       draft.TotalDrafterTeams,
       draft.TotalHosts,
-      draft.EpisodeType,
       draft.DraftStatus));
     var gameBoardId = await Sender.Send(new CreateGameBoardCommand(
       draftId.Value));
@@ -52,7 +51,6 @@ public sealed class GetDraftPositionsByGameBoardTests(DraftsIntegrationTestWebAp
       draft.TotalDrafters,
       draft.TotalDrafterTeams,
       draft.TotalHosts,
-      draft.EpisodeType,
       draft.DraftStatus));
     var positions = DraftFactory.CreateMegaDraftPositions();
 
@@ -91,7 +89,6 @@ public sealed class GetDraftPositionsByGameBoardTests(DraftsIntegrationTestWebAp
       draft.TotalDrafters,
       draft.TotalDrafterTeams,
       draft.TotalHosts,
-      draft.EpisodeType,
       draft.DraftStatus));
     var positions = DraftFactory.CreateMiniMegaDraftPositions();
 

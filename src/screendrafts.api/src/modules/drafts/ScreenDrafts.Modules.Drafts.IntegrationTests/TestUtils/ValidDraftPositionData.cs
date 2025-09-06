@@ -12,7 +12,6 @@ internal sealed class ValidDraftPositionData : IEnumerable<object[]>
       3,
       0,
       2,
-      EpisodeType.MainFeed.Name,
       DraftStatus.Created.Name,
       new List<DraftPosition>
       {
@@ -30,7 +29,6 @@ internal sealed class ValidDraftPositionData : IEnumerable<object[]>
       4,
       0,
       2,
-      EpisodeType.MainFeed.Name,
       DraftStatus.Created.Name,
       new List<DraftPosition>
       {
@@ -49,7 +47,6 @@ internal sealed class ValidDraftPositionData : IEnumerable<object[]>
       9,
       0,
       2,
-      EpisodeType.MainFeed.Name,
       DraftStatus.Created.Name,
       new List<DraftPosition>
       {

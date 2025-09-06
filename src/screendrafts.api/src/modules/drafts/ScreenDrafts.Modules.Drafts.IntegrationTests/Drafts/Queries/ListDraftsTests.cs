@@ -12,7 +12,6 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
     {
       var draft = DraftFactory.CreateStandardDraft().Value;
 
-      draft.AddReleaseDate(DraftReleaseDate.Create(draft.Id, Faker.Date.FutureDateOnly()));
       var draftId = await Sender.Send(new CreateDraftCommand(
         draft.Title.Value,
         draft.DraftType,
@@ -20,7 +19,6 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
         draft.TotalDrafters,
         draft.TotalDrafterTeams,
         draft.TotalHosts,
-        draft.EpisodeType,
         draft.DraftStatus));
 
 
@@ -39,7 +37,6 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
     allDrafts.IsSuccess.Should().BeTrue();
 
     var allDraftsList = allDrafts.Value.Items.ToList();
-    allDraftsList.ForEach(d => d.RawReleaseDates = d.ReleaseDates?.Select(rd => rd.ReleaseDate.ToDateTime(TimeOnly.MinValue)).ToArray());
 
 
     // Assert

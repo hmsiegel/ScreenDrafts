@@ -11,8 +11,7 @@ public static class DraftFactory
       2,
       0,
       2,
-      DraftStatus.Created,
-      EpisodeType.MainFeed);
+      DraftStatus.Created);
 
   public static Result<Draft> CreateMiniMegaDraft() => Draft.Create(
       Title.Create(_faker.Lorem.Word()),
@@ -21,8 +20,7 @@ public static class DraftFactory
       3,
       0,
       2,
-      DraftStatus.Created,
-      EpisodeType.MainFeed);
+      DraftStatus.Created);
 
   public static Result<Draft> CreateMegaDraft() => Draft.Create(
       Title.Create(_faker.Lorem.Word()),
@@ -31,8 +29,7 @@ public static class DraftFactory
       4,
       0,
       2,
-      DraftStatus.Created,
-      EpisodeType.MainFeed);
+      DraftStatus.Created);
 
   public static Collection<DraftPosition> CreateStandardDraftPositions() =>
   [

@@ -15,7 +15,6 @@ public class AddDrafterToDraftTests(DraftsIntegrationTestWebAppFactory factory)
       draft.TotalDrafters,
       draft.TotalDrafterTeams,
       draft.TotalHosts,
-      draft.EpisodeType,
       draft.DraftStatus));
 
     var personFactory = new PeopleFactory(Sender, Faker);
@@ -62,7 +61,6 @@ public class AddDrafterToDraftTests(DraftsIntegrationTestWebAppFactory factory)
       draft.TotalDrafters,
       draft.TotalDrafterTeams,
       draft.TotalHosts,
-      draft.EpisodeType,
       draft.DraftStatus));
     var drafterId = Guid.NewGuid();
     var command = new AddDrafterToDraftCommand(

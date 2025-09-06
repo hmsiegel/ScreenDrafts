@@ -18,7 +18,6 @@ public sealed class ListUpcomingDraftsTests(DraftsIntegrationTestWebAppFactory f
         draft.TotalDrafters,
         draft.TotalDrafterTeams,
         draft.TotalHosts,
-        draft.EpisodeType,
         draft.DraftStatus));
 
       if (!draftId.IsSuccess)
@@ -26,17 +25,6 @@ public sealed class ListUpcomingDraftsTests(DraftsIntegrationTestWebAppFactory f
         continue;
       }
 
-      var draftReleaseDate = DraftReleaseDate.Create(DraftId.Create(draftId.Value), Faker.Date.FutureDateOnly());
-
-      var updatedReleaseDate =
-        await Sender.Send(new UpdateReleaseDateCommand(draftReleaseDate.DraftId.Value, draftReleaseDate.ReleaseDate));
-
-      if (!updatedReleaseDate.IsSuccess)
-      {
-        continue;
-      }
-
-      updatedReleaseDate.IsSuccess.Should().BeTrue();
 
       var updatedDraft = await Sender.Send(new GetDraftQuery(draftId.Value));
 

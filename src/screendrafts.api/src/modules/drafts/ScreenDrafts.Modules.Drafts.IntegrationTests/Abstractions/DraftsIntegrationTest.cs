@@ -30,7 +30,6 @@ public abstract class DraftsIntegrationTest(DraftsIntegrationTestWebAppFactory f
       draft.TotalDrafters,
       draft.TotalDrafterTeams,
       draft.TotalHosts,
-      draft.EpisodeType,
       draft.DraftStatus));
 
     var drafters = new List<Drafter>();
