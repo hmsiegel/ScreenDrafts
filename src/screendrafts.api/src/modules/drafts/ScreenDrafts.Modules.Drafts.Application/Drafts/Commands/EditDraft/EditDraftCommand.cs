@@ -8,6 +8,5 @@ public sealed record EditDraftCommand(
   int TotalDrafters,
   int TotalDrafterTeams,
   int TotalHosts,
-  EpisodeType EpisodeType,
   DraftStatus DraftStatus,
   string? Description) : ICommand;

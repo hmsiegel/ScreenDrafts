@@ -23,7 +23,6 @@ internal sealed class EditDraftCommandHandler(
       request.TotalDrafters,
       request.TotalDrafterTeams,
       request.TotalHosts,
-      request.EpisodeType,
       request.DraftStatus,
       request.Description);
 

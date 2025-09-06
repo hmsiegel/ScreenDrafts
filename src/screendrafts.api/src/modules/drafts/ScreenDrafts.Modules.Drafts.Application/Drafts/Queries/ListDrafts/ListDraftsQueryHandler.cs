@@ -66,51 +66,32 @@ internal sealed class ListDraftsQueryHandler(IDbConnectionFactory dbConnectionFa
                 WHERE dh.draft_id = ANY(@ids) AND dh.role = 1;
                 """;
 
-    const string releaseDatesSql =
-      $"""
-                SELECT
-                  rd.draft_id,
-                  rd.release_date AS {nameof(ReleaseDateResponse.ReleaseDate)}
-                FROM drafts.draft_release_date rd
-                WHERE rd.draft_id = ANY(@ids);
-                """;
 
     var sql = new StringBuilder(baseSql);
     var p = new DynamicParameters();
 
     // Apply filters based on the request parameters
     // Date Range
-    if (request.FromDate.HasValue)
-    {
-      sql.Append(""" 
-             AND EXISTS (
-                SELECT 1
-                FROM drafts.draft_release_date rd
-                WHERE rd.draft_id = d.id
-                  AND rd.release_date >= @fromDate
-            )
-            """);
-      p.Add("fromDate", request.FromDate.Value.ToDateTime(TimeOnly.MinValue));
-    }
-
-    if (request.ToDate.HasValue)
-    {
-      sql.Append(""" 
-             AND EXISTS (
-                SELECT 1
-                FROM drafts.draft_release_date rd
-                WHERE rd.draft_id = d.id
-                  AND rd.release_date <= @toDate
-            )
-            """);
-      p.Add("toDate", request.ToDate.Value.ToDateTime(TimeOnly.MaxValue));
-    }
 
     // Draft Type
     if (request.DraftType?.Any() == true)
     {
       sql.Append(" AND d.draft_type = ANY(@draftTypes)");
       p.Add("draftTypes", request.DraftType!.ToArray());
+    }
+
+    // Category
+    if (request.CategoryId.HasValue)
+    {
+      sql.Append("""
+        AND EXISTS (
+          SELECT 1
+          FROM drafts.drafts_categories dc
+          WHERE dc.draft_id = d.id
+            AND dc.category_id = @categoryId
+            )
+        """);
+      p.Add("categoryId", request.CategoryId.Value);
     }
 
     // Drafters Count
@@ -197,7 +178,6 @@ internal sealed class ListDraftsQueryHandler(IDbConnectionFactory dbConnectionFa
     var drafters = await connection.QueryAsync<(Guid draft_id, Guid drafter_id, Guid person_id, string display_name)>(draftersSql, new { ids = draftIds });
     var primaryHost = await connection.QueryAsync<(Guid draft_id, Guid host_id, Guid person_id, string display_name)>(primaryHostSql, new { ids = draftIds });
     var coHosts = await connection.QueryAsync<(Guid draft_id, Guid host_id, Guid person_id, string display_name)>(coHostsSql, new { ids = draftIds });
-    var releaseDates = await connection.QueryAsync<(Guid draft_id, DateTime release_date)>(releaseDatesSql, new { ids = draftIds });
 
     var draftMap = drafts.ToDictionary(d => d.Id);
 
@@ -222,15 +202,6 @@ internal sealed class ListDraftsQueryHandler(IDbConnectionFactory dbConnectionFa
       if (draftMap.TryGetValue(draftId, out var draft))
       {
         draft.AddCoHost(new HostDraftResponse(hostId, personId, displayName));
-      }
-    }
-
-    foreach (var (draftId, date) in releaseDates)
-    {
-      if (draftMap.TryGetValue(draftId, out var draft))
-      {
-        draft.AddReleaseDate(new ReleaseDateResponse(DateOnly.FromDateTime(date)));
-        draft.PopulateReleaseDatesFromRaw();
       }
     }
 

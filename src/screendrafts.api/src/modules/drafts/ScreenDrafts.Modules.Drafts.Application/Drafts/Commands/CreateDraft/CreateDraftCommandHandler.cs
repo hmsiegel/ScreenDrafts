@@ -7,15 +7,14 @@ internal sealed class CreateDraftCommandHandler(IDraftsRepository draftsReposito
 
     public async Task<Result<Guid>> Handle(CreateDraftCommand request, CancellationToken cancellationToken)
     {
-        var result = Draft.Create(
-          new Title(request.Title),
-          request.DraftType,
-          request.TotalPicks,
-          request.TotalDrafters,
-          request.TotalDrafterTeams,
-          request.TotalHosts,
-          request.DraftStatus,
-          request.EpisodeType);
+    var result = Draft.Create(
+      new Title(request.Title),
+      request.DraftType,
+      request.TotalPicks,
+      request.TotalDrafters,
+      request.TotalDrafterTeams,
+      request.TotalHosts,
+      request.DraftStatus);
 
         if (result.IsFailure)
         {

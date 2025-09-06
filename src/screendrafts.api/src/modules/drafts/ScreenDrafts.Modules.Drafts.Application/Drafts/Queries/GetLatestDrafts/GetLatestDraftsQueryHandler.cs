@@ -36,7 +36,6 @@ internal sealed class GetLatestDraftsQueryHandler(IDbConnectionFactory dbConnect
       );
 
     List<DraftResponse> drafts = [.. await connection.QueryAsync<DraftResponse>(sql.ToString())];
-    drafts.ForEach(draft => draft.PopulateReleaseDatesFromRaw());
 
     return drafts;
   }

@@ -7,6 +7,7 @@ public sealed record ListDraftsQuery(
   DateOnly? FromDate = null,
   DateOnly? ToDate = null,
   IEnumerable<int>? DraftType = null,
+  Guid? CategoryId = null,
   int? MinDrafters = null,
   int? MaxDrafters = null,
   int? MinPicks = null,

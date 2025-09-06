@@ -21,7 +21,6 @@ internal sealed class GetDraftQueryHandler(
     }
 
     var episodeNumber = draft.EpisodeNumber;
-    var episodeType = draft.EpisodeType;
 
     var picks = await _picksRepository.GetByDraftIdAsync(DraftId.Create(request.DraftId), cancellationToken);
     var vetoes = await _vetoRepository.GetVetoesByDraftId(DraftId.Create(request.DraftId), cancellationToken);
@@ -33,7 +32,6 @@ internal sealed class GetDraftQueryHandler(
     var coHostLinks = draft.DraftHosts
       .Where(h => h.Role.Value == 1)
       .OrderBy(h => h.Host.Person.DisplayName);
-    List<ReleaseDateResponse> releaseDates = [.. draft.ReleaseDates.Select(r => new ReleaseDateResponse(r.ReleaseDate))];
     List<DraftPickResponse> draftPickResponses = [.. picks.Select(p => new DraftPickResponse(
       p.Position,
       p.PlayOrder,
@@ -81,8 +79,8 @@ internal sealed class GetDraftQueryHandler(
       co.Pick.DrafterTeamId?.Value,
       co.Pick.DrafterTeam?.Name))];
 
-    var previousDraft = await _draftsRepository.GetPreviousDraftAsync(episodeNumber, episodeType, cancellationToken);
-    var nextDraft = await _draftsRepository.GetNextDraftAsync(episodeNumber, episodeType, cancellationToken);
+    var previousDraft = await _draftsRepository.GetPreviousDraftAsync(episodeNumber, cancellationToken);
+    var nextDraft = await _draftsRepository.GetNextDraftAsync(episodeNumber, cancellationToken);
 
     var draftResponse = new DraftResponse(
       draft.Id.Value,
@@ -92,17 +90,13 @@ internal sealed class GetDraftQueryHandler(
       draft.TotalPicks,
       draft.TotalDrafters,
       draft.TotalHosts,
-      draft.EpisodeType,
       draft.DraftStatus,
       draft?.Description,
       draft!.IsScreamDrafts,
       previousDraft?.Id.Value,
       previousDraft?.Title.Value,
       nextDraft?.Id.Value,
-      nextDraft?.Title.Value)
-    {
-      RawReleaseDates = [.. draft!.ReleaseDates.Select(r => r.ReleaseDate.ToDateTime(TimeOnly.MinValue))]
-    };
+      nextDraft?.Title.Value);
 
     drafters.ForEach(d => draftResponse.AddDrafter(d));
 
@@ -120,7 +114,6 @@ internal sealed class GetDraftQueryHandler(
       h.Host.PersonId.Value,
       h.Host.Person.DisplayName!)));
 
-    releaseDates.ForEach(rd => draftResponse.AddReleaseDate(rd));
     draftPickResponses.ForEach(p => draftResponse.AddDraftPick(p));
     vetoResponses.ForEach(v => draftResponse.AddVeto(v));
     vetoOverrideResponses.ForEach(vo => draftResponse.AddVetoOverride(vo));

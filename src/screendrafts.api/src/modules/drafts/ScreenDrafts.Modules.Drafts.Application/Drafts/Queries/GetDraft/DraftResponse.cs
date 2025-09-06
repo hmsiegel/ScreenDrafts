@@ -8,7 +8,6 @@ public sealed record DraftResponse(
     int TotalPicks,
     int TotalDrafters,
     int TotalHosts,
-    int EpisodeType,
     int DraftStatus,
     string? Description,
     bool IsScreamDrafts,
@@ -20,7 +19,6 @@ public sealed record DraftResponse(
   private readonly List<DrafterDraftResponse> _drafters = [];
   private HostDraftResponse? _primaryHost;
   private readonly List<HostDraftResponse> _coHosts = [];
-  private readonly List<ReleaseDateResponse>? _releaseDates = [];
   private readonly List<DraftPickResponse>? _draftPicks = [];
   private readonly List<VetoResponse>? _vetoes = [];
   private readonly List<VetoOverrideResponse>? _vetoOverrides = [];
@@ -31,7 +29,6 @@ public sealed record DraftResponse(
         Guid.Empty,
         string.Empty,
         null!,
-        default,
         default,
         default,
         default,
@@ -51,7 +48,6 @@ public sealed record DraftResponse(
   public ReadOnlyCollection<DrafterDraftResponse> Drafters => _drafters.AsReadOnly();
   public HostDraftResponse? PrimaryHost => _primaryHost;
   public ReadOnlyCollection<HostDraftResponse> CoHosts => _coHosts.AsReadOnly();
-  public ReadOnlyCollection<ReleaseDateResponse>? ReleaseDates => _releaseDates!.AsReadOnly();
   public ReadOnlyCollection<DraftPickResponse>? DraftPicks => _draftPicks!.AsReadOnly();
   public ReadOnlyCollection<VetoResponse>? Vetoes => _vetoes?.AsReadOnly();
   public ReadOnlyCollection<VetoOverrideResponse>? VetoOverrides => _vetoOverrides?.AsReadOnly();
@@ -62,18 +58,7 @@ public sealed record DraftResponse(
   public void SetPrimaryHost(HostDraftResponse primaryHost) => _primaryHost = primaryHost;
   public void AddCoHost(HostDraftResponse host) => _coHosts.Add(host);
   public void AddDraftPick(DraftPickResponse draftPick) => _draftPicks!.Add(draftPick);
-  public void AddReleaseDate(ReleaseDateResponse releaseDate) => _releaseDates!.Add(releaseDate);
   public void AddVeto(VetoResponse veto) => _vetoes!.Add(veto);
   public void AddVetoOverride(VetoOverrideResponse vetoOverride) => _vetoOverrides!.Add(vetoOverride);
   public void AddCommissionerOverride(CommissionerOverrideResponse commissionerOverride) => _commissionerOverrides!.Add(commissionerOverride);
-
-
-  public void PopulateReleaseDatesFromRaw()
-  {
-    if (RawReleaseDates is not null)
-    {
-      _releaseDates?.Clear();
-      _releaseDates?.AddRange(RawReleaseDates!.Select(rd => new ReleaseDateResponse(DateOnly.FromDateTime(rd))));
-    }
-  }
 }

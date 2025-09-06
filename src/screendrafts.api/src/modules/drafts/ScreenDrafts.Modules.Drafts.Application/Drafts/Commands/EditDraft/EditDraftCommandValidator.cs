@@ -20,8 +20,6 @@ internal sealed class EditDraftCommandValidator : AbstractValidator<EditDraftCom
       .GreaterThan(0).WithMessage("Total drafter teams must be greater than zero.");
     RuleFor(x => x.TotalHosts)
       .GreaterThanOrEqualTo(0).WithMessage("Total hosts must be zero or greater.");
-    RuleFor(x => x.EpisodeType)
-      .IsInEnum().WithMessage("Invalid episode type.");
     RuleFor(x => x.DraftStatus)
       .IsInEnum().WithMessage("Invalid draft status.");
   }
