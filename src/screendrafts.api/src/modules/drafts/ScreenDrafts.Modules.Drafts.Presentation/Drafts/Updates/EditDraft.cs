@@ -25,7 +25,6 @@ internal sealed class EditDraft(ISender sender) : Endpoint<EditDraftRequest>
       req.TotalDrafters,
       req.TotalDrafterTeams,
       req.TotalHosts,
-      EpisodeType.FromName(req.EpisodeType),
       DraftStatus.FromName(req.DraftStatus),
       req.Description);
 
@@ -43,7 +42,6 @@ public sealed record EditDraftRequest(
   int TotalDrafters,
   int TotalDrafterTeams,
   int TotalHosts,
-  string EpisodeType,
   string DraftStatus,
   string? Description);
 

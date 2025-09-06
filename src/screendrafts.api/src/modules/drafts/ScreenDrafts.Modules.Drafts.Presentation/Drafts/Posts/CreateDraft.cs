@@ -30,7 +30,6 @@ internal sealed class CreateDraft(ISender sender) : Endpoint<CreateDraftRequest,
       req.TotalDrafters,
       req.TotalDrafterTeams,
       req.TotalHosts,
-      EpisodeType.FromName(req.EpisodeType),
       DraftStatus.FromName(req.DraftStatus));
 
     var draftId = await _sender.Send(command, ct);
@@ -47,7 +46,6 @@ public sealed record CreateDraftRequest(
   int TotalDrafters,
   int TotalDrafterTeams,
   int TotalHosts,
-  string EpisodeType,
   string DraftStatus);
 
 internal sealed class CreateDraftSummary : Summary<CreateDraft>
