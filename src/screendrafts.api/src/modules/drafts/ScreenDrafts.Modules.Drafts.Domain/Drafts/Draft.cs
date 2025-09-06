@@ -8,7 +8,8 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
   private readonly List<DraftHost> _draftHosts = [];
   private readonly List<DrafterDraftStats> _drafterDraftStats = [];
   private readonly List<TriviaResult> _triviaResults = [];
-  private readonly List<DraftReleaseDate> _releaseDates = [];
+  private readonly List<DraftPart> _parts = [];
+  private readonly List<Campaign> _campaigns = [];
   private readonly List<DraftCategory> _draftCategories = [];
 
   private Draft(
@@ -20,7 +21,6 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
   int totalDrafterTeams,
   int totalHosts,
   DraftStatus draftStatus,
-  EpisodeType episodeType,
   DateTime createdAtUtc)
   : base(id)
   {
@@ -31,7 +31,6 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
     TotalDrafterTeams = totalDrafterTeams;
     TotalHosts = totalHosts;
     DraftStatus = draftStatus;
-    EpisodeType = episodeType;
     CreatedAtUtc = createdAtUtc;
   }
 
@@ -44,8 +43,6 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
   public Title Title { get; private set; } = default!;
 
   public DraftType DraftType { get; private set; } = default!;
-
-  public EpisodeType EpisodeType { get; private set; } = default!;
 
   public int TotalPicks { get; private set; }
 
@@ -63,13 +60,13 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
 
   public DateTime? UpdatedAtUtc { get; private set; }
 
-  public bool IsPatreonOnly { get; private set; }
-
-  public bool NonCanonical { get; private set; }
-
-  public bool IsScreamDrafts { get; private set; }
+  public bool IsScreamDrafts => _campaigns.Any(c => c.Slug == CampaignSlugs.ScreamDrafts);
 
   public string? Description { get; private set; }
+
+  public SeriesId? SeriesId { get; private set; } = default!;
+
+  public Series? Series { get; private set; } = default!;
 
   // Relationships
 
@@ -87,7 +84,9 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
 
   public IReadOnlyCollection<TriviaResult> TriviaResults => _triviaResults.AsReadOnly();
 
-  public IReadOnlyCollection<DraftReleaseDate> ReleaseDates => _releaseDates.AsReadOnly();
+  public IReadOnlyCollection<DraftPart> Parts => _parts.AsReadOnly();
+
+  public IReadOnlyCollection<Campaign> Campaigns => _campaigns.AsReadOnly();
 
   public DraftHost? PrimaryHost => _draftHosts.FirstOrDefault(h => h.Role == HostRole.Primary);
 
@@ -104,7 +103,6 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
   int totalDrafterTeams,
   int totalHosts,
   DraftStatus draftStatus,
-  EpisodeType episodeType,
   DraftId? id = null)
   {
     if (totalDrafters + totalDrafterTeams < 2)
@@ -125,7 +123,6 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
       totalDrafterTeams: totalDrafterTeams,
       totalHosts: totalHosts,
       draftStatus: draftStatus,
-      episodeType: episodeType,
       createdAtUtc: DateTime.UtcNow,
       id: id ?? DraftId.CreateUnique());
 
@@ -141,13 +138,11 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
     int totalDrafters,
     int totalDrafterTeams,
     int totalHosts,
-    EpisodeType episodeType,
     DraftStatus draftStatus,
     string? description)
   {
     Guard.Against.Null(title);
     Guard.Against.Null(draftType);
-    Guard.Against.Null(episodeType);
     Guard.Against.NullOrWhiteSpace(description);
 
     if (totalDrafters + totalDrafterTeams < 2)
@@ -171,7 +166,6 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
     TotalDrafters = totalDrafters;
     TotalDrafterTeams = totalDrafterTeams;
     TotalHosts = totalHosts;
-    EpisodeType = episodeType;
     DraftStatus = draftStatus;
     UpdatedAtUtc = DateTime.UtcNow;
     Description = description;
@@ -473,11 +467,6 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
     return Result.Success();
   }
 
-  public void AddReleaseDate(DraftReleaseDate releaseDate)
-  {
-    _releaseDates.Add(releaseDate);
-  }
-
   public void SetDraftStatus(DraftStatus draftStatus)
   {
     DraftStatus = draftStatus;
@@ -486,21 +475,6 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
   public void SetGameBoard(GameBoard gameBoard)
   {
     GameBoard = gameBoard;
-  }
-
-  public void SetPatreonOnly(bool isPatreonOnly)
-  {
-    IsPatreonOnly = isPatreonOnly;
-  }
-
-  public void SetNonCanonical(bool nonCanonical)
-  {
-    NonCanonical = nonCanonical;
-  }
-
-  public void SetScreamDrafts(bool screamDrafts)
-  {
-    IsScreamDrafts = screamDrafts;
   }
 
   public Result RemoveDrafter(Drafter drafter)
@@ -589,5 +563,54 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
     UpdatedAtUtc = DateTime.UtcNow;
 
     return Result.Success();
+  }
+
+  public void AddCampaign(Campaign campaign)
+  {
+    Guard.Against.Null(campaign);
+    if (_campaigns.Any(c => c.Id == campaign.Id))
+    {
+      return;
+    }
+    _campaigns.Add(campaign);
+  }
+
+  public void RemoveCampaign(Campaign campaign) {
+    Guard.Against.Null(campaign);
+    if (!_campaigns.Any(c => c.Id == campaign.Id))
+    {
+      return;
+    }
+    _campaigns.Remove(campaign);
+  }
+
+  public Result<DraftPart> AddPart(int partIndex)
+  {
+    if (partIndex <= 0)
+    {
+      return Result.Failure<DraftPart>(DraftErrors.PartIndexMustBeGreaterThanZero);
+    }
+
+    if (_parts.Any(p => p.PartIndex == partIndex))
+    {
+      return Result.Failure<DraftPart>(DraftErrors.DraftPartWithIndexAlreadyExists(partIndex));
+    }
+
+    var part = DraftPart.Create(this, partIndex).Value;
+    _parts.Add(part);
+    return part;
+  }
+
+  public Result<DraftRelease> AddRelease(DraftPart part, ReleaseChannel channel, DateOnly date)
+  {
+    ArgumentNullException.ThrowIfNull(part);
+
+    if (part.DraftId != Id)
+    {
+      return Result.Failure<DraftRelease>(DraftErrors.DraftPartDoesNotBelongToThisDraft);
+    }
+
+    UpdatedAtUtc = DateTime.UtcNow;
+    return part.AddRelease(channel, date);
   }
 }

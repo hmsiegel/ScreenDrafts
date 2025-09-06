@@ -237,6 +237,11 @@ public static class DraftErrors
       "Drafts.InvalidHostRole",
       $"Invalid host role: {role}. Valid roles are 'Primary' and 'CoHost'.");
 
+  public static SDError DraftPartWithIndexAlreadyExists(int partIndex) =>
+    SDError.Conflict(
+      "Drafts.DraftPartWithIndexAlreadyExists",
+      $"Draft part with index {partIndex} already exists.");
+
   public static readonly SDError CannotAddTriviaResultWithoutDrafterOrDrafterTeam =
     SDError.Problem(
       "Drafts.CannotAddTriviaResultWithoutDrafterOrDrafterTeam",
@@ -250,4 +255,30 @@ public static class DraftErrors
   public static readonly SDError CannotEditADraftAfterItHasBeenStarted = SDError.Problem(
     "Drafts.CannotEditADraftAfterItHasBeenStarted",
     "Cannot edit a draft after it has been started.");
+
+  public static readonly SDError SeriesNameIsRequired = SDError.Problem(
+    "Drafts.SeriesNameIsRequired",
+    "Series name is required.");
+
+  public static readonly SDError DraftIsRequired = SDError.Problem(
+    "Drafts.DraftIsRequired",
+    "Draft is required.");
+
+  public static readonly SDError PartIndexMustBeGreaterThanZero = SDError.Problem(
+    "Drafts.PartIndexMustBeGreaterThanZero",
+    "Part index must be greater than zero.");
+
+  public static readonly SDError ReleaseDateIsRequired = SDError.Problem(
+    "Drafts.ReleaseDateIsRequired",
+    "Release date is required.");
+
+  public static readonly SDError DraftPartIsRequired = 
+    SDError.Problem(
+      "Drafts.ReleaseDateIsRequired",
+      "Release date is required.");
+
+  public static readonly SDError DraftPartDoesNotBelongToThisDraft =
+    SDError.Problem(
+      "Drafts.DraftPartDoesNotBelongToThisDraft",
+      "Draft part does not belong to this draft.");
 }
