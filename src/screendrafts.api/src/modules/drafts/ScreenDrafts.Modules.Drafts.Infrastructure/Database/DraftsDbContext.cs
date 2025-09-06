@@ -37,6 +37,14 @@ public sealed class DraftsDbContext(DbContextOptions<DraftsDbContext> options)
 
   internal DbSet<Category> Categories { get; set; }
 
+  internal DbSet<Series> Series { get; set; }
+
+  internal DbSet<Campaign> Campaigns { get; set; }
+
+  internal DbSet<DraftPart> DraftParts { get; set; }
+
+  internal DbSet<DraftRelease> DraftReleases { get; set; }
+
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
     ArgumentNullException.ThrowIfNull(modelBuilder);

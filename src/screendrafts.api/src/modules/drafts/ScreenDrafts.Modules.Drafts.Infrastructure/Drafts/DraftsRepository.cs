@@ -56,7 +56,6 @@ internal sealed class DraftsRepository(DraftsDbContext dbContext) : IDraftsRepos
       .Include(d => d.DraftHosts)
       .ThenInclude(ph => ph!.Host)
       .ThenInclude(h => h.Person)
-      .Include(d => d.ReleaseDates)
       .Include(d => d.Picks)
       .FirstOrDefaultAsync(d => d.Id == draftId, cancellationToken);
 
@@ -82,20 +81,15 @@ internal sealed class DraftsRepository(DraftsDbContext dbContext) : IDraftsRepos
     return commissionerOverrides!;
   }
 
-  public async Task<Draft?> GetPreviousDraftAsync(int? episodeNumber, EpisodeType episodeType, CancellationToken cancellationToken)
+  public async Task<Draft?> GetPreviousDraftAsync(int? episodeNumber, CancellationToken cancellationToken)
   {
     if (episodeNumber <= 0)
     {
       throw new ArgumentOutOfRangeException(nameof(episodeNumber), "Episode number must be greater than zero.");
     }
 
-    if (episodeType is null)
-    {
-      throw new ArgumentNullException(nameof(episodeType), "Episode type cannot be null.");
-    }
-
     var previousDraft = await _dbContext.Drafts
-      .Where(d => d.EpisodeNumber < episodeNumber && d.EpisodeType == episodeType)
+      .Where(d => d.EpisodeNumber < episodeNumber)
       .OrderByDescending(d => d.EpisodeNumber)
       .ThenByDescending(d => d.Id) // Ensure consistent ordering
       .FirstOrDefaultAsync(cancellationToken);
@@ -108,20 +102,15 @@ internal sealed class DraftsRepository(DraftsDbContext dbContext) : IDraftsRepos
     return previousDraft;
   }
 
-  public async Task<Draft?> GetNextDraftAsync(int? episodeNumber, EpisodeType episodeType, CancellationToken cancellationToken)
+  public async Task<Draft?> GetNextDraftAsync(int? episodeNumber, CancellationToken cancellationToken)
   {
     if (episodeNumber <= 0)
     {
       throw new ArgumentOutOfRangeException(nameof(episodeNumber), "Episode number must be greater than zero.");
     }
 
-    if (episodeType is null)
-    {
-      throw new ArgumentNullException(nameof(episodeType), "Episode type cannot be null.");
-    }
-
     var nextDraft = await _dbContext.Drafts
-      .Where(d => d.EpisodeNumber > episodeNumber && d.EpisodeType == episodeType)
+      .Where(d => d.EpisodeNumber > episodeNumber)
       .OrderBy(d => d.EpisodeNumber)
       .ThenBy(d => d.Id) // Ensure consistent ordering
       .FirstOrDefaultAsync(cancellationToken);

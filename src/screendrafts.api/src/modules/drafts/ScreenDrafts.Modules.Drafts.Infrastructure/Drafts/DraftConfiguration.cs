@@ -43,11 +43,6 @@ internal sealed class DraftConfiguration : IEntityTypeConfiguration<Draft>
             draftStatus => draftStatus.Value,
             value => DraftStatus.FromValue(value));
 
-    builder.Property(d => d.EpisodeType)
-          .HasConversion(
-            episodeType => episodeType.Value,
-            value => EpisodeType.FromValue(value));
-
     builder.HasOne(d => d.GameBoard)
       .WithOne(gb => gb.Draft)
       .HasForeignKey<GameBoard>(gb => gb.Id);
@@ -75,6 +70,42 @@ internal sealed class DraftConfiguration : IEntityTypeConfiguration<Draft>
       .WithOne(dc => dc.Draft)
       .HasForeignKey(dc => dc.DraftId)
       .OnDelete(DeleteBehavior.Cascade);
+
+    builder.HasMany(d => d.Parts)
+      .WithOne(dp => dp.Draft)
+      .HasForeignKey(dp => dp.DraftId)
+      .OnDelete(DeleteBehavior.Cascade);
+
+    builder.HasMany(d => d.Campaigns)
+      .WithMany()
+      .UsingEntity<Dictionary<string, object>>(
+      "drafts_campaigns",
+        j => j
+          .HasOne<Campaign>()
+          .WithMany()
+          .HasForeignKey("campaign_id")
+          .HasConstraintName("fk_drafts_campaigns_campaign_id"),
+        j => j
+          .HasOne<Draft>()
+          .WithMany()
+          .HasForeignKey("draft_id")
+          .HasConstraintName("fk_drafts_campaigns_draft_id"),
+        j =>
+        {
+          j.ToTable(Tables.DraftCampaigns);
+        });
+
+    builder.HasOne(d => d.Series)
+      .WithMany()
+      .HasForeignKey(d => d.SeriesId);
+
+    builder.Navigation(x => x.Parts)
+      .HasField("_parts")
+      .UsePropertyAccessMode(PropertyAccessMode.Field);
+
+    builder.Navigation(x => x.Campaigns)
+      .HasField("_campaigns")
+      .UsePropertyAccessMode(PropertyAccessMode.Field);
 
     builder.Navigation(d => d.DrafterStats)
       .HasField("_drafterDraftStats")
