@@ -58,36 +58,14 @@ internal sealed class DraftSeeder(
         totalDrafters: draft.TotalDrafters,
         totalDrafterTeams: draft.TotalDrafterTeams,
         totalHosts: draft.TotalHosts,
-        episodeType: EpisodeType.FromValue(draft.EpisodeType),
         draftStatus: DraftStatus.FromValue(draft.DraftStatus),
         id: id).Value;
 
       _dbContext.Drafts.Add(currentDraft);
 
-      var existingDates = currentDraft.ReleaseDates.Select(rd => rd.ReleaseDate).ToHashSet();
-      var newDates = draft.ReleaseDates
-        .Where(date => !existingDates.Contains(date))
-        .Select(date => DraftReleaseDate.Create(currentDraft.Id, date))
-        .ToList();
-
-      foreach (var date in newDates)
-      {
-        currentDraft.AddReleaseDate(date);
-      }
-
-      if (draft.IsPatreonOnly)
-      {
-        currentDraft.SetPatreonOnly(draft.IsPatreonOnly);
-      }
-
       if (draft.EpisodeNumber.HasValue)
       {
         currentDraft.SetEpisodeNumber(draft.EpisodeNumber.Value);
-      }
-
-      if (draft.IsNonCanonical)
-      {
-        currentDraft.SetNonCanonical(draft.IsNonCanonical);
       }
 
       AddGameBoard(currentDraft);
