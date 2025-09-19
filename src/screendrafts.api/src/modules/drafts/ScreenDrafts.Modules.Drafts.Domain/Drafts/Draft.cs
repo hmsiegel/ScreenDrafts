@@ -562,6 +562,8 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
 
     UpdatedAtUtc = DateTime.UtcNow;
 
+    Raise(new CategoryRemovedDomainEvent(Id.Value, category.Id.Value));
+
     return Result.Success();
   }
 
@@ -575,7 +577,8 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
     _campaigns.Add(campaign);
   }
 
-  public void RemoveCampaign(Campaign campaign) {
+  public void RemoveCampaign(Campaign campaign)
+  {
     Guard.Against.Null(campaign);
     if (!_campaigns.Any(c => c.Id == campaign.Id))
     {
@@ -598,6 +601,7 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
 
     var part = DraftPart.Create(this, partIndex).Value;
     _parts.Add(part);
+    Raise(new DraftPartAddedDomainEvent(Id.Value, part.Id.Value));
     return part;
   }
 
@@ -611,6 +615,24 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
     }
 
     UpdatedAtUtc = DateTime.UtcNow;
+
     return part.AddRelease(channel, date);
+  }
+
+  public Result<Series> LinkSeries(Series series)
+  {
+    Guard.Against.Null(series);
+
+    if (SeriesId == series.Id)
+    {
+      return Result.Failure<Series>(DraftErrors.SeriesAlreadyLinked(SeriesId.Value));
+    }
+
+    Series = series;
+    SeriesId = series.Id;
+    UpdatedAtUtc = DateTime.UtcNow;
+
+    Raise(new SeriesLinkedDomainEvent(Id.Value, series.Id.Value));
+    return Result.Success(series);
   }
 }

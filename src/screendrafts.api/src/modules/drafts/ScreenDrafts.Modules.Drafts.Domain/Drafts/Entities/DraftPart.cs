@@ -53,6 +53,7 @@ public sealed class DraftPart : Entity<DraftPartId>
   {
     var release = DraftRelease.Create(Id, channel, date).Value;
     _releases.Add(release);
+    Raise(new ReleaseAddedDomainEvent(Draft.Id.Value, Id.Value));
     return release;
   }
 }

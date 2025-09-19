@@ -58,6 +58,7 @@ public sealed class TriviaResult : Entity<TriviaResultId>
       draft: draft,
       drafterTeam: drafterTeam,
       id: id);
+
     return triviaResult;
   }
 }

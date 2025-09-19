@@ -1,5 +1,4 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.Errors;
-
 public static class DraftErrors
 {
   public static SDError NotFound(Guid draftId) =>
@@ -281,4 +280,15 @@ public static class DraftErrors
     SDError.Problem(
       "Drafts.DraftPartDoesNotBelongToThisDraft",
       "Draft part does not belong to this draft.");
+
+  public static SDError DraftPartNotFound(Guid draftPartId) =>
+    SDError.NotFound(
+      "Drafts.DraftPartNotFound",
+      $"Draft part with id {draftPartId} was not found.");
+
+  public static SDError SeriesAlreadyLinked(Guid seriesId) =>
+    SDError.Conflict(
+      "Drafts.SeriesAlreadyLinked",
+      $"Series with id {seriesId} is already linked to the draft.");
+
 }
