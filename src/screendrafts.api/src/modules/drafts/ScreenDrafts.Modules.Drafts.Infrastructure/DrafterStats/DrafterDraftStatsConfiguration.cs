@@ -6,7 +6,7 @@ internal sealed class DrafterDraftStatsConfiguration : IEntityTypeConfiguration<
   {
     builder.ToTable(Tables.DrafterDraftStats);
 
-    builder.HasKey(ds => new { ds.Id, ds.DraftId });
+    builder.HasKey(ds => new { ds.Id, ds.DraftPartId });
 
     builder.Property(ds => ds.Id)
       .ValueGeneratedNever()
@@ -15,14 +15,14 @@ internal sealed class DrafterDraftStatsConfiguration : IEntityTypeConfiguration<
         value => DrafterDraftStatsId.Create(value));
 
     // --- DraftId (required) ---
-    builder.Property(ds => ds.DraftId)
+    builder.Property(ds => ds.DraftPartId)
       .HasConversion(
         id => id.Value,
-        value => DraftId.Create(value));
+        value => DraftPartId.Create(value));
 
-    builder.HasOne(ds => ds.Draft)
+    builder.HasOne(ds => ds.DraftPart)
       .WithMany(d => d.DrafterStats)
-      .HasForeignKey(d => d.DraftId)
+      .HasForeignKey(d => d.DraftPartId)
       .IsRequired();
 
     // --- DrafterId (optional) ---

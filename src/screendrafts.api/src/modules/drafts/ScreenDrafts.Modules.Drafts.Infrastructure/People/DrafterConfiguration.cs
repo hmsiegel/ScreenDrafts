@@ -35,16 +35,16 @@ internal sealed class DrafterConfiguration : IEntityTypeConfiguration<Drafter>
       .HasForeignKey<RolloverVetoOverride>(rv => rv.DrafterId)
       .OnDelete(DeleteBehavior.Cascade);
 
-    builder.HasMany(d => d.Drafts)
+    builder.HasMany(d => d.DraftParts)
       .WithMany(d => d.Drafters)
       .UsingEntity<Dictionary<string, string>>(
-      Tables.DraftsDrafters,
-      x => x.HasOne<Draft>().WithMany().HasForeignKey("draft_id").OnDelete(DeleteBehavior.Cascade),
+      Tables.DraftPartsDrafters,
+      x => x.HasOne<DraftPart>().WithMany().HasForeignKey("draftPart_id").OnDelete(DeleteBehavior.Cascade),
       x => x.HasOne<Drafter>().WithMany().HasForeignKey("drafter_id").OnDelete(DeleteBehavior.Cascade),
       x =>
       {
-        x.HasKey("draft_id", "drafter_id");
-        x.ToTable(Tables.DraftsDrafters);
+        x.HasKey("draftPart_id", "drafter_id");
+        x.ToTable(Tables.DraftPartsDrafters);
       });
 
     builder.HasMany(d => d.DraftStats)

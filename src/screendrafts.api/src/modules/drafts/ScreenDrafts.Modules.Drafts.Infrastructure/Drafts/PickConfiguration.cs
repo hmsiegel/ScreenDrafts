@@ -40,7 +40,7 @@ internal sealed class PickConfiguration : IEntityTypeConfiguration<Pick>
       .HasForeignKey(p => p.DrafterTeamId)
       .OnDelete(DeleteBehavior.Cascade);
 
-    builder.HasOne(p => p.Draft)
+    builder.HasOne(p => p.DraftPart)
       .WithMany(d => d.Picks)
       .HasForeignKey(p => p.DraftId)
       .OnDelete(DeleteBehavior.Cascade);

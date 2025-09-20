@@ -29,42 +29,15 @@ internal sealed class DraftConfiguration : IEntityTypeConfiguration<Draft>
             draftType => draftType.Value,
             value => DraftType.FromValue(value));
 
-    builder.Property(d => d.TotalPicks)
-          .IsRequired();
-
-    builder.Property(d => d.TotalDrafters)
-          .IsRequired();
-
-    builder.Property(d => d.TotalHosts)
-          .IsRequired();
-
     builder.Property(d => d.DraftStatus)
           .HasConversion(
             draftStatus => draftStatus.Value,
             value => DraftStatus.FromValue(value));
 
-    builder.HasOne(d => d.GameBoard)
-      .WithOne(gb => gb.Draft)
-      .HasForeignKey<GameBoard>(gb => gb.Id);
-
     builder.HasIndex(d => d.ReadableId)
       .IsUnique();
 
     builder.Property(d => d.Description);
-
-    builder.HasMany(d => d.Picks)
-      .WithOne(p => p.Draft)
-      .HasForeignKey(p => p.DraftId);
-
-    builder
-      .Metadata
-      .FindNavigation(nameof(Draft.Picks))!
-      .SetPropertyAccessMode(PropertyAccessMode.Field);
-
-    builder.HasMany(d => d.DrafterStats)
-      .WithOne(ds => ds.Draft)
-      .HasForeignKey(ds => ds.DraftId)
-      .OnDelete(DeleteBehavior.Cascade);
 
     builder.HasMany(d => d.DraftCategories)
       .WithOne(dc => dc.Draft)
@@ -106,12 +79,5 @@ internal sealed class DraftConfiguration : IEntityTypeConfiguration<Draft>
     builder.Navigation(x => x.Campaigns)
       .HasField("_campaigns")
       .UsePropertyAccessMode(PropertyAccessMode.Field);
-
-    builder.Navigation(d => d.DrafterStats)
-      .HasField("_drafterDraftStats")
-      .UsePropertyAccessMode(PropertyAccessMode.Field);
-
-    builder.Ignore(d => d.PrimaryHost);
-    builder.Ignore(d => d.CoHosts);
   }
 }

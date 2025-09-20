@@ -18,9 +18,9 @@ internal sealed class GameBoardConfiguration : IEntityTypeConfiguration<GameBoar
       .WithOne(dp => dp.GameBoard)
       .OnDelete(DeleteBehavior.Cascade);
 
-    builder.HasOne(gb => gb.Draft)
+    builder.HasOne(gb => gb.DraftPart)
       .WithOne(d => d.GameBoard)
-      .HasForeignKey<GameBoard>(gb => gb.DraftId)
+      .HasForeignKey<GameBoard>(gb => gb.DraftPartId)
       .OnDelete(deleteBehavior: DeleteBehavior.Cascade);
   }
 }

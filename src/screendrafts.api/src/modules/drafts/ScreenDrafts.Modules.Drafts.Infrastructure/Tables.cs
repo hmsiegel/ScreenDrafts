@@ -21,6 +21,8 @@ internal static class Tables
   internal const string DrafterTeams = "drafter_teams";
   internal const string DrafterTeamDrafter = "drafter_team_drafter";
   internal const string DraftsDrafters = "drafts_drafters";
+  internal const string DraftPartsDrafters = "draft_parts_drafters";
+  internal const string DraftPartsDrafterTeams = "draft_parts_drafter_teams";
   internal const string DrafterTeamsDrafts = "drafts_drafter_teams";
   internal const string DraftsHosts = "draft_hosts";
   internal const string Categories = "categories";

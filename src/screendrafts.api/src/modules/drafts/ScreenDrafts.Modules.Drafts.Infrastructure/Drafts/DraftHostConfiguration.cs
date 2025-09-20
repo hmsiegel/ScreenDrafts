@@ -6,13 +6,13 @@ internal sealed class DraftHostConfiguration : IEntityTypeConfiguration<DraftHos
   {
     builder.ToTable(Tables.DraftsHosts);
 
-    builder.HasKey(dh => new { dh.DraftId, dh.HostId });
+    builder.HasKey(dh => new { dh.DraftPartId, dh.HostId });
 
-    builder.Property(dh => dh.DraftId)
+    builder.Property(dh => dh.DraftPartId)
       .IsRequired()
       .HasConversion(
         id => id.Value,
-        value => DraftId.Create(value));
+        value => DraftPartId.Create(value));
 
     builder.Property(dh => dh.HostId)
       .IsRequired()
@@ -26,9 +26,9 @@ internal sealed class DraftHostConfiguration : IEntityTypeConfiguration<DraftHos
         value => HostRole.FromValue(value))
       .IsRequired();
 
-    builder.HasOne(dh => dh.Draft)
+    builder.HasOne(dh => dh.DraftPart)
       .WithMany(d => d.DraftHosts)
-      .HasForeignKey(x => x.DraftId)
+      .HasForeignKey(x => x.DraftPartId)
       .HasPrincipalKey(d => d.Id)
       .OnDelete(DeleteBehavior.Cascade);
 
@@ -38,7 +38,7 @@ internal sealed class DraftHostConfiguration : IEntityTypeConfiguration<DraftHos
       .HasPrincipalKey(h => h.Id)
       .OnDelete(DeleteBehavior.Restrict);
 
-    builder.HasIndex(x => x.DraftId)
+    builder.HasIndex(x => x.DraftPartId)
       .HasDatabaseName("ux_draft_hosts_one_primary_per_draft")
       .HasFilter("role = 0")
       .IsUnique();
