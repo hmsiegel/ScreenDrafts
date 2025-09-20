@@ -5,7 +5,7 @@ public sealed class DrafterDraftStats : Entity<DrafterDraftStatsId>
   private DrafterDraftStats(
     Drafter? drafter,
     DrafterTeam? drafterTeam,
-    Draft draft,
+    DraftPart draftPart,
     DrafterDraftStatsId? id = null)
   {
     Id = id ?? DrafterDraftStatsId.CreateUnique();
@@ -16,16 +16,16 @@ public sealed class DrafterDraftStats : Entity<DrafterDraftStatsId>
     DrafterTeam = drafterTeam;
     DrafterTeamId = drafterTeam?.Id;
 
-    Draft = draft;
-    DraftId = draft.Id;
+    DraftPart = draftPart;
+    DraftPartId = draftPart.Id;
   }
 
   private DrafterDraftStats()
   {
   }
 
-  public DraftId DraftId { get; private set; } = default!;
-  public Draft Draft { get; private set; } = default!;
+  public DraftPartId DraftPartId { get; private set; } = default!;
+  public DraftPart DraftPart { get; private set; } = default!;
 
   public DrafterId? DrafterId { get; private set; } = default!;
   public Drafter? Drafter { get; private set; } = default!;
@@ -57,10 +57,10 @@ public sealed class DrafterDraftStats : Entity<DrafterDraftStatsId>
   public static DrafterDraftStats Create(
     Drafter? drafter,
     DrafterTeam? drafterTeam,
-    Draft draft)
+    DraftPart draftPart)
   {
-    ArgumentNullException.ThrowIfNull(draft);
-    var drafterDraftStats = new DrafterDraftStats(drafter, drafterTeam, draft);
+    ArgumentNullException.ThrowIfNull(draftPart);
+    var drafterDraftStats = new DrafterDraftStats(drafter, drafterTeam, draftPart);
     return drafterDraftStats;
   }
 

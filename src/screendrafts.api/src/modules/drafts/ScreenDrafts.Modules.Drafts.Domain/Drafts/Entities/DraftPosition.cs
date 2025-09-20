@@ -80,7 +80,10 @@ public sealed class DraftPosition : Entity<DraftPositionId>
     Drafter = drafter;
     DrafterId = drafter.Id;
 
-    Raise(new DraftPositionAssignedDomainEvent(draftId: GameBoard.Draft.Id.Value, draftPositionId: Id.Value, drafterId: drafter.Id.Value));
+    Raise(new DraftPositionAssignedDomainEvent(
+      draftPartId: GameBoard.DraftPart.Id.Value,
+      draftPositionId: Id.Value,
+      drafterId: drafter.Id.Value));
 
     return Result.Success();
   }
@@ -108,7 +111,10 @@ public sealed class DraftPosition : Entity<DraftPositionId>
     DrafterTeam = drafterTeam;
     DrafterTeamId = drafterTeam.Id;
 
-    Raise(new DraftPositionAssignedDomainEvent(draftId: GameBoard.Draft.Id.Value, draftPositionId: Id.Value, drafterTeamId: drafterTeam.Id.Value));
+    Raise(new DraftPositionAssignedDomainEvent(
+      draftPartId: GameBoard.DraftPart.Id.Value,
+      draftPositionId: Id.Value,
+      drafterTeamId: drafterTeam.Id.Value));
     return Result.Success();
   }
 }

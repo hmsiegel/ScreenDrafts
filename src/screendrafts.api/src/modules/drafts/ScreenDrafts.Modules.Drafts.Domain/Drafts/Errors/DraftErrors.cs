@@ -291,4 +291,13 @@ public static class DraftErrors
       "Drafts.SeriesAlreadyLinked",
       $"Series with id {seriesId} is already linked to the draft.");
 
+  public static readonly SDError EpisodeNumberMustBeGreaterThanZero =
+    SDError.Problem(
+      "Drafts.EpisodeNumberMustBeGreaterThanZero",
+      "Episode number must be greater than zero.");
+
+  public static readonly SDError NoSeriesLinked = 
+    SDError.Problem(
+      "Drafts.NoSeriesLinked",
+      "No series is linked to the draft.");
 }

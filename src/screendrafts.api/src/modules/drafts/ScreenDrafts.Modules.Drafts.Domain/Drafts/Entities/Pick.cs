@@ -7,7 +7,7 @@ public sealed class Pick : Entity<PickId>
     Movie movie,
     Drafter? drafter,
     DrafterTeam? drafterTeam,
-    Draft draft,
+    DraftPart draftPart,
     int playOrder = 0,
     PickId? id = null)
     : base(id ?? PickId.CreateUnique())
@@ -18,8 +18,8 @@ public sealed class Pick : Entity<PickId>
     Movie = Guard.Against.Null(movie);
     MovieId = movie.Id;
 
-    Draft = Guard.Against.Null(draft);
-    DraftId = draft.Id;
+    DraftPart = Guard.Against.Null(draftPart);
+    DraftPartId = draftPart.Id;
 
     Drafter = drafter;
     DrafterId = drafter?.Id;
@@ -44,6 +44,9 @@ public sealed class Pick : Entity<PickId>
   public DrafterTeamId? DrafterTeamId { get; } = default!;
   public DrafterTeam? DrafterTeam { get; } = default!;
 
+  public DraftPartId DraftPartId { get; } = default!;
+  public DraftPart DraftPart { get; } = default!;
+
   public DraftId DraftId { get; } = default!;
   public Draft Draft { get; } = default!;
 
@@ -62,16 +65,16 @@ public sealed class Pick : Entity<PickId>
     Movie movie,
     Drafter? drafter,
     DrafterTeam? drafterTeam,
-    Draft draft,
+    DraftPart draftPart,
     int playOrder,
     PickId? id = null)
   {
-    if (draft is null)
+    if (draftPart is null)
     {
       return Result.Failure<Pick>(PickErrors.DraftMustBeProvided);
     }
 
-    if (position <= 0 || position > draft.TotalPicks)
+    if (position <= 0 || position > draftPart.Draft.TotalPicks)
     {
       return Result.Failure<Pick>(PickErrors.PickPositionIsOutOfRange);
     }
@@ -102,7 +105,7 @@ public sealed class Pick : Entity<PickId>
       movie: movie,
       drafter: drafter,
       drafterTeam: drafterTeam,
-      draft: draft,
+      draftPart: draftPart,
       playOrder: playOrder,
       id: id);
 
@@ -110,7 +113,7 @@ public sealed class Pick : Entity<PickId>
       pick.Id.Value,
       drafter?.Id.Value,
       drafterTeam?.Id.Value,
-      draft.Id.Value,
+      draftPart.Id.Value,
       position,
       playOrder,
       movie.Id));

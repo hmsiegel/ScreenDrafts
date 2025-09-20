@@ -5,7 +5,7 @@ public sealed class TriviaResult : Entity<TriviaResultId>
   private TriviaResult(
     int position,
     int questionsWon,
-    Draft draft,
+    DraftPart draftPart,
     Drafter? drafter,
     DrafterTeam? drafterTeam,
     TriviaResultId? id = null)
@@ -14,8 +14,8 @@ public sealed class TriviaResult : Entity<TriviaResultId>
     Position = position;
     QuestionsWon = questionsWon;
 
-    Draft = draft;
-    DraftId = draft.Id;
+    DraftPart = draftPart;
+    DraftPartId = draftPart.Id;
 
     Drafter = drafter;
     DrafterId = drafter?.Id;
@@ -28,8 +28,8 @@ public sealed class TriviaResult : Entity<TriviaResultId>
   {
   }
 
-  public DraftId DraftId { get; private set; } = default!;
-  public Draft Draft { get; private set; } = default!;
+  public DraftPartId DraftPartId { get; private set; } = default!;
+  public DraftPart DraftPart { get; private set; } = default!;
 
   public Drafter? Drafter { get; private set; } = default!;
   public DrafterId? DrafterId { get; private set; } = default!;
@@ -44,18 +44,18 @@ public sealed class TriviaResult : Entity<TriviaResultId>
   public static Result<TriviaResult> Create(
     int position,
     int questionsWon,
-    Draft draft,
+    DraftPart draftPart,
     Drafter? drafter,
     DrafterTeam? drafterTeam,
     TriviaResultId? id = null)
   {
-    ArgumentNullException.ThrowIfNull(draft);
+    ArgumentNullException.ThrowIfNull(draftPart);
 
     var triviaResult = new TriviaResult(
       position: position,
       questionsWon: questionsWon,
       drafter: drafter,
-      draft: draft,
+      draftPart: draftPart,
       drafterTeam: drafterTeam,
       id: id);
 

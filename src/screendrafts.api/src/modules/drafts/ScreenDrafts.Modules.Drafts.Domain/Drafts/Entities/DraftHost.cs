@@ -3,12 +3,12 @@
 public sealed class DraftHost
 {
   private DraftHost(
-    Draft draft,
+    DraftPart draftPart,
     Host host,
     HostRole role)
   {
-    DraftId = draft.Id;
-    Draft = draft;
+    DraftPartId = draftPart.Id;
+    DraftPart = draftPart;
     HostId = host.Id;
     Host = host;
     Role = role;
@@ -19,26 +19,26 @@ public sealed class DraftHost
     // EF Core
   }
 
-  public DraftId DraftId { get; private set; } = default!;
-  public Draft Draft { get; private set; } = default!;
+  public DraftPartId DraftPartId { get; private set; } = default!;
+  public DraftPart DraftPart { get; private set; } = default!;
 
   public HostId HostId { get; private set; } = default!;
   public Host Host { get; private set; } = default!;
 
   public HostRole Role { get; private set; } = default!;
 
-  public static DraftHost CreatePrimary(Draft draft, Host host)
+  public static DraftHost CreatePrimary(DraftPart draftPart, Host host)
   {
-    ArgumentNullException.ThrowIfNull(draft);
+    ArgumentNullException.ThrowIfNull(draftPart);
     ArgumentNullException.ThrowIfNull(host);
 
-    return new DraftHost(draft, host, HostRole.Primary);
+    return new DraftHost(draftPart, host, HostRole.Primary);
   }
 
-  public static DraftHost CreateCoHost(Draft draft, Host host)
+  public static DraftHost CreateCoHost(DraftPart draftPart, Host host)
   {
-    ArgumentNullException.ThrowIfNull(draft);
+    ArgumentNullException.ThrowIfNull(draftPart);
     ArgumentNullException.ThrowIfNull(host);
-    return new DraftHost(draft, host, HostRole.CoHost);
+    return new DraftHost(draftPart, host, HostRole.CoHost);
   }
 }

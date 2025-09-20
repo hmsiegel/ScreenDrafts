@@ -5,35 +5,34 @@ public sealed class GameBoard : Entity<GameBoardId>
   private readonly Collection<DraftPosition> _draftPositions = [];
 
   private GameBoard(
-    Draft draft,
+    DraftPart draftPart,
     GameBoardId? id = null) :
     base(id ?? GameBoardId.CreateUnique())
   {
-    Draft = draft;
-    DraftId = draft.Id;
+    DraftPart = draftPart;
+    DraftPartId = draftPart.Id;
   }
 
   private GameBoard()
   {
   }
 
-  public DraftId DraftId { get; private set; } = default!;
-
-  public Draft Draft { get; private set; } = default!;
+  public DraftPart DraftPart { get; private set; } = default!;
+  public DraftPartId DraftPartId { get; private set; } = default!;
 
   public ICollection<DraftPosition> DraftPositions => _draftPositions.AsReadOnly();
 
   public static Result<GameBoard> Create(
-    Draft draft)
+    DraftPart draftPart)
   {
-    if (draft is null)
+    if (draftPart is null)
     {
       return Result.Failure<GameBoard>(GameBoardErrors.GameBoardCreationFailed);
     }
 
-    ArgumentNullException.ThrowIfNull(draft);
+    ArgumentNullException.ThrowIfNull(draftPart);
 
-    var gameBoard = new GameBoard(draft);
+    var gameBoard = new GameBoard(draftPart);
 
     return Result.Success(gameBoard);
   }
@@ -45,12 +44,7 @@ public sealed class GameBoard : Entity<GameBoardId>
       return Result.Failure(GameBoardErrors.DraftPositionsMissing);
     }
 
-    if (draftPositions.Count < 1)
-    {
-      return Result.Failure(GameBoardErrors.InvalidNumberOfDrafters);
-    }
-
-    if (draftPositions.Count != Draft.TotalDrafters)
+    if (draftPositions.Count < 1 || draftPositions.Count != DraftPart.TotalDrafters)
     {
       return Result.Failure(GameBoardErrors.InvalidNumberOfDrafters);
     }
