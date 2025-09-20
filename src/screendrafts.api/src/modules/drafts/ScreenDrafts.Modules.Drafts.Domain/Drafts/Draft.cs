@@ -28,6 +28,7 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
 
   public DraftType DraftType { get; private set; } = default!;
 
+  public DraftStatus DraftStatus => DeriveDraftStatus();
 
   public DateTime CreatedAtUtc { get; private set; }
 
@@ -226,9 +227,9 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
       return DraftStatus.Completed;
     }
 
-    if (_parts.All(p => p.DraftStatus == DraftStatus.InProgress))
+    if (_parts.All(p => p.DraftStatus == DraftStatus.Paused))
     {
-      return DraftStatus.InProgress;
+      return DraftStatus.Paused;
     }
 
     if (_parts.All(p => p.DraftStatus == DraftStatus.Created))

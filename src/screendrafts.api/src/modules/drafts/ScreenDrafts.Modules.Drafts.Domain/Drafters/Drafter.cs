@@ -5,7 +5,7 @@ public sealed class Drafter : AggrgateRoot<DrafterId, Guid>
   private readonly List<Veto> _vetoes = [];
   private readonly List<VetoOverride> _vetoOverrides = [];
   private readonly List<DrafterDraftStats> _draftStats = [];
-  private readonly List<Draft> _drafts = [];
+  private readonly List<DraftPart> _draftParts = [];
   private readonly List<Pick> _picks = [];
 
 
@@ -38,7 +38,7 @@ public sealed class Drafter : AggrgateRoot<DrafterId, Guid>
 
   public IReadOnlyCollection<DrafterDraftStats> DraftStats => _draftStats.AsReadOnly();
 
-  public IReadOnlyCollection<Draft> Drafts => _drafts.AsReadOnly();
+  public IReadOnlyCollection<DraftPart> DraftParts => _draftParts.AsReadOnly();
 
   public IReadOnlyCollection<Pick> Picks => _picks.AsReadOnly();
 
@@ -99,9 +99,30 @@ public sealed class Drafter : AggrgateRoot<DrafterId, Guid>
     return Result.Success();
   }
 
-  public void AddDraft(Draft draft)
+  public void AddDraftPart(DraftPart draftPart)
   {
-    _drafts.Add(draft);
+    ArgumentNullException.ThrowIfNull(draftPart);
+    _draftParts.Add(draftPart);
+  }
+
+  public void ClearDraftParts()
+  {
+    _draftParts.Clear();
+  }
+
+  public void ClearPicks()
+  {
+    _picks.Clear();
+  }
+
+  public void RemovePick(Pick pick)
+  {
+    _picks.Remove(pick);
+  }
+
+  public void RemoveDraftPart(DraftPart draftPart)
+  {
+    _draftParts.Remove(draftPart);
   }
 
   public void AddPick(Pick pick)
