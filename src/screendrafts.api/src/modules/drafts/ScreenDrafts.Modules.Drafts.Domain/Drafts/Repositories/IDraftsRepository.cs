@@ -24,7 +24,18 @@ public interface IDraftsRepository : IRepository
     DraftId draftId, CancellationToken cancellationToken);
 
   Task<Draft?> GetPreviousDraftAsync(int? episodeNumber, CancellationToken cancellationToken);
+
   Task<Draft?> GetNextDraftAsync(int? episodeNumber, CancellationToken cancellationToken);
 
   Task<Draft?> GetByDraftPartIdAsync(DraftPartId draftPartId, CancellationToken cancellationToken);
+
+  Task<Series?> GetSeriesByIdAsync(SeriesId seriesId, CancellationToken cancellationToken);
+
+  Task<bool> SeriesExistsAsync(string name, CancellationToken cancellationToken);
+
+  Task<DraftPart?> GetDraftPartByIdAsync(DraftPartId draftPartId, CancellationToken cancellationToken);
+
+  Task<List<DraftPart>> GetDraftPartsByDraftIdAsync(DraftId draftId, CancellationToken cancellationToken);
+
+  Task<Draft?> GetDraftByDraftPartId(DraftPartId draftPartId, CancellationToken cancellationToken);
 }

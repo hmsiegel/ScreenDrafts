@@ -1,5 +1,10 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.Enums;
 
+/// <summary>
+/// The continuity policy for rollover vetoes and veto overrides.
+/// </summary>
+/// <param name="name">The name.</param>
+/// <param name="value">The value.</param>
 public sealed class ContinuityScope(string name, int value)
   : SmartEnum<ContinuityScope>(name, value)
 {

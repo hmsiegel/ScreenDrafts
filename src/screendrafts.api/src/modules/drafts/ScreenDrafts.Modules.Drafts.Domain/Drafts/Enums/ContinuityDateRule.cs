@@ -1,5 +1,11 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.Enums;
 
+/// <summary>
+/// Defines how to determine the continuity scope for a draft.
+/// </summary>
+/// <param name="name">The name.</param>
+/// <param name="value">The value.</param>
+
 public sealed class ContinuityDateRule(string name, int value)
   : SmartEnum<ContinuityDateRule>(name, value)
 {

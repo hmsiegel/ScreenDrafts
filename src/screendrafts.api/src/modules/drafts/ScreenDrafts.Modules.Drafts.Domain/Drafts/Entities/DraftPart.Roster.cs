@@ -9,6 +9,8 @@ public sealed partial class DraftPart
   public int TotalDrafterTeams { get; private set; }
   public int TotalHosts { get; private set; }
 
+  public int TotalParticipants => _drafters.Count + _drafterTeams.Count;
+
   public IReadOnlyCollection<Drafter> Drafters => _drafters.AsReadOnly();
   public IReadOnlyCollection<DrafterTeam> DrafterTeams => _drafterTeams.AsReadOnly();
   public IReadOnlyCollection<DraftHost> DraftHosts => _draftHosts.AsReadOnly();
@@ -16,7 +18,7 @@ public sealed partial class DraftPart
   public IEnumerable<DraftHost> CoHosts => _draftHosts.Where(h => h.Role == HostRole.CoHost);
 
   // Drafters
-  public Result AddDrafter(Drafter drafter)
+  internal Result AddDrafter(Drafter drafter)
   {
     Guard.Against.Null(drafter);
 
@@ -32,7 +34,7 @@ public sealed partial class DraftPart
 
     _drafters.Add(drafter);
 
-    var stats = DrafterDraftStats.Create(drafter: drafter, null, Draft);
+    var stats = DrafterDraftStats.Create(drafter: drafter, null, this);
 
     _drafterDraftStats.Add(stats);
 
@@ -43,7 +45,7 @@ public sealed partial class DraftPart
     return Result.Success();
   }
 
-  public Result RemoveDrafter(Drafter drafter)
+  internal Result RemoveDrafter(Drafter drafter)
   {
     Guard.Against.Null(drafter);
     if (!_drafters.Contains(drafter))
@@ -58,8 +60,16 @@ public sealed partial class DraftPart
     return Result.Success();
   }
 
+  internal Result SetDrafters(IReadOnlyList<ParticipantId> participants)
+  {
+    Guard.Against.Null(participants);
+    _participants.Clear();
+    _participants.AddRange(participants);
+    return Result.Success();
+  }
+
   // Drafter Teams
-  public Result AddDrafterTeam(DrafterTeam drafterTeam)
+  internal Result AddDrafterTeam(DrafterTeam drafterTeam)
   {
     Guard.Against.Null(drafterTeam);
 
@@ -86,7 +96,7 @@ public sealed partial class DraftPart
 
     _drafterTeams.Add(drafterTeam);
 
-    var stats = DrafterDraftStats.Create(null, drafterTeam, Draft);
+    var stats = DrafterDraftStats.Create(null, drafterTeam, this);
     _drafterDraftStats.Add(stats);
 
     UpdatedAtUtc = DateTime.UtcNow;
@@ -94,7 +104,7 @@ public sealed partial class DraftPart
     return Result.Success();
   }
 
-  public Result RemoveDrafterTeam(DrafterTeam drafterTeam)
+  internal Result RemoveDrafterTeam(DrafterTeam drafterTeam)
   {
     Guard.Against.Null(drafterTeam);
     if (!_drafterTeams.Contains(drafterTeam))
@@ -108,7 +118,7 @@ public sealed partial class DraftPart
   }
 
   // Hosts
-  public Result SetPrimaryHost(Host host)
+  internal Result SetPrimaryHost(Host host)
   {
     Guard.Against.Null(host);
 
@@ -122,7 +132,7 @@ public sealed partial class DraftPart
       return Result.Failure(DraftErrors.PrimaryHostAlreadySet(PrimaryHost.HostId.Value));
     }
 
-    _draftHosts.Add(DraftHost.CreatePrimary(Draft, host));
+    _draftHosts.Add(DraftHost.CreatePrimary(this, host));
 
     UpdatedAtUtc = DateTime.UtcNow;
 
@@ -131,7 +141,7 @@ public sealed partial class DraftPart
     return Result.Success();
   }
 
-  public Result AddCoHost(Host host)
+  internal Result AddCoHost(Host host)
   {
     Guard.Against.Null(host);
     if (_draftHosts.Any(h => h.HostId == host.Id && h.Role == HostRole.CoHost))
@@ -144,13 +154,13 @@ public sealed partial class DraftPart
       return Result.Failure(DraftErrors.TooManyHosts);
     }
 
-    _draftHosts.Add(DraftHost.CreateCoHost(Draft, host));
+    _draftHosts.Add(DraftHost.CreateCoHost(this, host));
     UpdatedAtUtc = DateTime.UtcNow;
     Raise(new HostAddedDomainEvent(Id.Value, host.Id.Value));
     return Result.Success();
   }
 
-  public Result RemoveHost(Host host)
+  internal Result RemoveHost(Host host)
   {
     Guard.Against.Null(host);
 

@@ -4,7 +4,7 @@ internal sealed class AddDrafterToDraftCommandValidator : AbstractValidator<AddD
 {
   public AddDrafterToDraftCommandValidator()
   {
-    RuleFor(x => x.DraftId).NotEmpty();
     RuleFor(x => x.DrafterId).NotEmpty();
+    RuleFor(x => x.DraftPartId).NotEmpty();
   }
 }

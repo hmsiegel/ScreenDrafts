@@ -10,13 +10,20 @@ internal sealed class AddDrafterToDraftCommandHandler(
 
   public async Task<Result<Guid>> Handle(AddDrafterToDraftCommand request, CancellationToken cancellationToken)
   {
-    var draftId = DraftId.Create(request.DraftId);
+    var draftPartId = DraftPartId.Create(request.DraftPartId);
 
-    var draft = await _draftsRepository.GetByIdAsync(draftId, cancellationToken);
+    var draft = await _draftsRepository.GetDraftByDraftPartId(draftPartId, cancellationToken);
 
     if (draft is null)
     {
-      return Result.Failure<Guid>(DraftErrors.NotFound(request.DraftId));
+      return Result.Failure<Guid>(DraftErrors.NotFound(request.DraftPartId));
+    }
+
+    var draftPart = await _draftsRepository.GetDraftPartByIdAsync(draftPartId, cancellationToken);
+
+    if (draftPart is null)
+    {
+      return Result.Failure<Guid>(DraftErrors.DraftPartNotFound(request.DraftPartId));
     }
 
     var drafterId = DrafterId.Create(request.DrafterId);
@@ -28,7 +35,7 @@ internal sealed class AddDrafterToDraftCommandHandler(
       return Result.Failure<Guid>(DrafterErrors.NotFound(request.DrafterId));
     }
 
-    draft.AddDrafter(drafter);
+    draftPart.AddDrafter(drafter);
     _draftsRepository.Update(draft);
     return Result.Success(drafter.Id.Value);
   }

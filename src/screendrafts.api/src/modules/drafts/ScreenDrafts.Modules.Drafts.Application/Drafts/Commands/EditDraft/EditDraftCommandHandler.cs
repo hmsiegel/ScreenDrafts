@@ -19,11 +19,6 @@ internal sealed class EditDraftCommandHandler(
     var result = draft.EditDraft(
       Title.Create(request.Title),
       request.DraftType,
-      request.TotalPicks,
-      request.TotalDrafters,
-      request.TotalDrafterTeams,
-      request.TotalHosts,
-      request.DraftStatus,
       request.Description);
 
     if (result.IsFailure)

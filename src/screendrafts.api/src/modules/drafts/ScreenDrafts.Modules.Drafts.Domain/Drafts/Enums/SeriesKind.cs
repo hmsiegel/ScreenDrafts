@@ -11,4 +11,5 @@ public sealed class SeriesKind(string name, int value) : SmartEnum<SeriesKind>(n
   public static readonly SeriesKind LiveDraft = new(nameof(LiveDraft), 6);
   public static readonly SeriesKind Special = new(nameof(Special), 7);
   public static readonly SeriesKind SpeedDrafts = new(nameof(SpeedDrafts), 8);
+  public static readonly SeriesKind MissionImpossibleSuperDraft = new(nameof(MissionImpossibleSuperDraft), 9);
 }

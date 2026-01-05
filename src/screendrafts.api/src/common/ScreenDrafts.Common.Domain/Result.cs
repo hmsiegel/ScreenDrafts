@@ -96,6 +96,7 @@ public class Result
 
     return Success((result1.Value, result2.Value));
   }
+
 }
 
 public class Result<TValue> : Result

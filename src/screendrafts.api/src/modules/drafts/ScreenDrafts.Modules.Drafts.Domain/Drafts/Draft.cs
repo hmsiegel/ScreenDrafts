@@ -1,20 +1,23 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts;
 
-public sealed class Draft : AggrgateRoot<DraftId, Guid>
+public sealed partial class Draft : AggrgateRoot<DraftId, Guid>
 {
   private readonly List<DraftPart> _parts = [];
-  private readonly List<Campaign> _campaigns = [];
   private readonly List<DraftCategory> _draftCategories = [];
+  private readonly Dictionary<ParticipantId, DrafterVetoAccount> _accounts = [];
 
   private Draft(
   DraftId id,
   Title title,
   DraftType draftType,
+  Series series,
   DateTime createdAtUtc)
   : base(id)
   {
     Title = title;
     DraftType = draftType;
+    Series = series;
+    SeriesId = series.Id;
     CreatedAtUtc = createdAtUtc;
   }
 
@@ -22,43 +25,52 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
   {
   }
 
+  // Identity and Metadata
   public int ReadableId { get; init; }
-
   public Title Title { get; private set; } = default!;
-
-  public DraftType DraftType { get; private set; } = default!;
-
-  public DraftStatus DraftStatus => DeriveDraftStatus();
-
+  public string? Description { get; private set; }
   public DateTime CreatedAtUtc { get; private set; }
-
   public DateTime? UpdatedAtUtc { get; private set; }
 
-  public bool IsScreamDrafts => _campaigns.Any(c => c.Slug == CampaignSlugs.ScreamDrafts);
-
-  public string? Description { get; private set; }
-
-  public SeriesId? SeriesId { get; private set; } = default!;
-
+  // Policy Snapshots
   public Series? Series { get; private set; } = default!;
+  public SeriesId? SeriesId { get; private set; } = default!;
+  public DraftType DraftType { get; private set; } = default!;
+
+  public DraftStatus DraftStatus { get; private set; } = DraftStatus.Created;
+
 
   // Relationships
   public IReadOnlyCollection<DraftPart> Parts => _parts.AsReadOnly();
-
-  public IReadOnlyCollection<Campaign> Campaigns => _campaigns.AsReadOnly();
-
+  public Campaign? Campaign { get; private set; } = default!;
   public IReadOnlyCollection<DraftCategory> DraftCategories => _draftCategories.AsReadOnly();
+
+  // Rollups
+  public int TotalParts => _parts.Count;
+  public int TotalPicks => _parts.Sum(p => p.Picks.Count);
+  public int TotalDrafters => _parts.Sum(p => p.TotalDrafters) + _parts.Sum(p => p.TotalDrafterTeams);
+  public int TotalHosts => _parts.Sum(p => p.TotalHosts);
+
+
 
   public static Result<Draft> Create(
   Title title,
   DraftType draftType,
+  Series series,
   DraftId? id = null)
   {
+    ArgumentNullException.ThrowIfNull(series);
+
     var draft = new Draft(
       title: title,
       draftType: draftType,
+      series: series,
       createdAtUtc: DateTime.UtcNow,
-      id: id ?? DraftId.CreateUnique());
+      id: id ?? DraftId.CreateUnique())
+    {
+      Series = series,
+      SeriesId = series.Id
+    };
 
     draft.Raise(new DraftCreatedDomainEvent(draft.Id.Value));
 
@@ -130,46 +142,15 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
   // Campaigns
   public void AddCampaign(Campaign campaign)
   {
-    Guard.Against.Null(campaign);
-    if (_campaigns.Any(c => c.Id == campaign.Id))
-    {
-      return;
-    }
-    _campaigns.Add(campaign);
+    ArgumentNullException.ThrowIfNull(campaign);
+    Campaign = campaign;
+    UpdatedAtUtc = DateTime.UtcNow;
   }
 
-  public void RemoveCampaign(Campaign campaign)
+  public void RemoveCampaign()
   {
-    Guard.Against.Null(campaign);
-    if (!_campaigns.Any(c => c.Id == campaign.Id))
-    {
-      return;
-    }
-    _campaigns.Remove(campaign);
-  }
-
-  public Result<DraftPart> AddPart(int partIndex, int totalPicks, int totalDrafters, int totalDrafterTeams, int totalHosts)
-  {
-    if (partIndex <= 0)
-    {
-      return Result.Failure<DraftPart>(DraftErrors.PartIndexMustBeGreaterThanZero);
-    }
-
-    if (_parts.Any(p => p.PartIndex == partIndex))
-    {
-      return Result.Failure<DraftPart>(DraftErrors.DraftPartWithIndexAlreadyExists(partIndex));
-    }
-
-    var part = DraftPart.Create(
-      draft: this,
-      partIndex: partIndex,
-      totalPicks: totalPicks,
-      totalDrafters: totalDrafters,
-      totalDrafterTeams: totalDrafterTeams,
-      totalHosts: totalHosts).Value;
-    _parts.Add(part);
-    Raise(new DraftPartAddedDomainEvent(Id.Value, part.Id.Value));
-    return part;
+    Campaign = null;
+    UpdatedAtUtc = DateTime.UtcNow;
   }
 
   // Releases
@@ -220,23 +201,32 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
     return Result.Success();
   }
 
-  public DraftStatus DeriveDraftStatus()
+  public void DeriveDraftStatus()
   {
-    if (_parts.All(p => p.DraftStatus == DraftStatus.Completed))
+    if (_parts.Any(p => p.Status == DraftPartStatus.InProgress))
     {
-      return DraftStatus.Completed;
+      DraftStatus = DraftStatus.InProgress;
+      return;
     }
 
-    if (_parts.All(p => p.DraftStatus == DraftStatus.Paused))
+    if (_parts.Count > 0 && _parts.All(p => p.Status == DraftPartStatus.Completed))
     {
-      return DraftStatus.Paused;
+      DraftStatus = DraftStatus.Completed;
+      return;
     }
 
-    if (_parts.All(p => p.DraftStatus == DraftStatus.Created))
+    if (_parts[0].Status == DraftPartStatus.Completed && _parts.Skip(1).Any(p => p.Status == DraftPartStatus.Scheduled))
     {
-      return DraftStatus.Created;
+      DraftStatus = DraftStatus.Paused;
+      return;
     }
 
-    return DraftStatus.InProgress;
+
+    if (_parts.All(p => p.Status == DraftPartStatus.Created))
+    {
+      DraftStatus = DraftStatus.Created;
+    }
+
+    DraftStatus = DraftStatus.Scheduled;
   }
 }

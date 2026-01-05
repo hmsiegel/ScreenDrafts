@@ -9,13 +9,20 @@ internal sealed class AddDrafterTeamToDraftCommandHandler(
   private readonly IDraftersRepository _draftersRepository = draftersRepository;
   public async Task<Result> Handle(AddDrafterTeamToDraftCommand request, CancellationToken cancellationToken)
   {
-    var draftId = DraftId.Create(request.DraftId);
+    var draftPartId = DraftPartId.Create(request.DraftPartId);
 
-    var draft = await _draftsRepository.GetByIdAsync(draftId, cancellationToken);
+    var draft = await _draftsRepository.GetDraftByDraftPartId(draftPartId, cancellationToken);
 
     if (draft is null)
     {
-      return Result.Failure<Guid>(DraftErrors.NotFound(request.DraftId));
+      return Result.Failure<Guid>(DraftErrors.NotFound(draft!.Id.Value));
+    }
+
+    var draftPart = await _draftsRepository.GetDraftPartByIdAsync(draftPartId, cancellationToken);
+
+    if (draftPart is null)
+    {
+      return Result.Failure<Guid>(DraftErrors.DraftPartNotFound(request.DraftPartId));
     }
 
     var drafterTeamId = DrafterTeamId.Create(request.DrafterTeamId);
@@ -27,7 +34,7 @@ internal sealed class AddDrafterTeamToDraftCommandHandler(
       return Result.Failure<Guid>(DrafterTeamErrors.NotFound(request.DrafterTeamId));
     }
 
-    draft.AddDrafterTeam(drafterTeam);
+    draftPart.AddDrafterTeam(drafterTeam);
 
     _draftsRepository.Update(draft);
 

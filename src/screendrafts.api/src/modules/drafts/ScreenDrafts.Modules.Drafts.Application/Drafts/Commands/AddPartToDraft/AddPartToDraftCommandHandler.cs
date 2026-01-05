@@ -15,7 +15,12 @@ internal sealed class AddPartToDraftCommandHandler(IDraftsRepository draftsRepos
       return Result.Failure(DraftErrors.NotFound(request.DraftId));
     }
 
-    draft.AddPart(request.PartIndex);
+    draft.AddPart(
+      partIndex: request.PartIndex,
+      totalPicks: request.TotalPicks,
+      totalDrafters: request.TotalDrafters,
+      totalDrafterTeams: request.TotalDrafterTeams,
+      totalHosts: request.TotalHosts);
 
     _draftsRepository.Update(draft);
 

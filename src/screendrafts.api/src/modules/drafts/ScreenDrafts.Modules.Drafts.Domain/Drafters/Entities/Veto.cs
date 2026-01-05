@@ -5,70 +5,85 @@ public sealed class Veto : Entity<VetoId>
   private Veto(
     VetoId id,
     Pick pick,
-    Drafter? drafter,
-    DrafterTeam? drafterTeam)
+    ParticipantId? issuedBy,
+    VetoIssuerKind issuerKind,
+    string? note = null)
     : base(id)
   {
     Pick = pick;
     PickId = pick.Id;
-
-    Drafter = drafter;
-    DrafterId = drafter?.Id;
-
-    DrafterTeam = drafterTeam;
-    DrafterTeamId = drafterTeam?.Id;
+    IssuedBy = issuedBy;
+    IssuerKind = issuerKind;
+    Note = note;
   }
 
   private Veto()
   {
   }
 
-  public VetoOverride VetoOverride { get; private set; } = default!;
-
   public Pick Pick { get; private set; } = default!;
   public PickId PickId { get; private set; } = default!;
 
-  public Drafter? Drafter { get; private set; } = default!;
-  public DrafterId? DrafterId { get; private set; } = default!;
+  public Draft Draft => Pick.Draft;
+  public DraftId DraftId => Pick.DraftId;
 
-  public DrafterTeam? DrafterTeam { get; private set; } = default!;
-  public DrafterTeamId? DrafterTeamId { get; private set; } = default!;
+  public DraftPart draftPart => Pick.DraftPart;
+  public DraftPartId DraftPartId => Pick.DraftPartId;
+
+  public ParticipantId? IssuedBy { get; private set; }
+  public VetoIssuerKind IssuerKind { get; private set; } = default!;
+
+  public bool IsOverridden { get; private set; }
+  public ParticipantId? OverriddenBy { get; private set; }
+
+  public DateTime OccuredOn { get; private set; } = DateTime.UtcNow;
+  public string? Note { get; private set; } = default!;
+
 
   public static Result<Veto> Create(
     Pick pick,
-    Drafter? drafter,
-    DrafterTeam? drafterTeam,
-    VetoId? id = null)
+    VetoIssuerKind issuerKind,
+    ParticipantId? by,
+    VetoId? id = null,
+    string? note = null)
   {
-    if (drafter is null && drafterTeam is null)
-    {
-      return Result.Failure<Veto>(VetoErrors.DrafterOrTeamMustBeProvided);
-    }
-
     if (pick is null)
     {
       return Result.Failure<Veto>(VetoErrors.PickMustBeProvided);
-    }
-
-    if (drafter is not null && drafterTeam is not null)
-    {
-      return Result.Failure<Veto>(VetoErrors.DrafterAndTeamCannotBeProvided);
     }
 
     ArgumentNullException.ThrowIfNull(pick);
 
     var veto = new Veto(
       pick: pick,
-      drafter: drafter,
-      drafterTeam: drafterTeam,
+      issuerKind: issuerKind,
+      issuedBy: by,
+      note: note,
       id: id ?? VetoId.CreateUnique());
 
     veto.Raise(new VetoCreatedDomainEvent(
       veto.Id.Value,
-      drafter?.Id.Value,
-      drafterTeam?.Id.Value,
-      pick.Id.Value));
+      pick.Id.Value,
+      by));
 
     return veto;
+  }
+
+  public Result Override(ParticipantId? by)
+  {
+    if (IsOverridden)
+    {
+      return Result.Failure(VetoErrors.VetoOverrideAlreadyUsed);
+    }
+
+    IsOverridden = true;
+    OverriddenBy = by;
+
+    Raise(new VetoOverriddenDomainEvent(
+      Id.Value,
+      Pick.Id.Value,
+      by));
+
+    return Result.Success();
   }
 }

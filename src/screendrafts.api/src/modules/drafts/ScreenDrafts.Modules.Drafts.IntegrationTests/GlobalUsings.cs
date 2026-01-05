@@ -31,7 +31,6 @@ global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.CompleteDra
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.CreateDraft;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.CreateGameBoard;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.PauseDraft;
-global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.RemoveDrafterFromDraft;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.RemoveHostFromDraft;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.StartDraft;
 global using ScreenDrafts.Modules.Drafts.Application.Drafts.Queries.GetCommissionerOverridesByDraft;

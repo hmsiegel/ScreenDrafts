@@ -23,14 +23,14 @@ internal sealed class AddDraftPositionsToGameBoardCommandHandler(
         hasBonusVeto: x.hasBonusVeto,
         hasBonusVetoOverride: x.hasBonusVetoOverride).Value).ToList();
 
-    if (gameBoard.Draft.TotalPicks != NumberOfDraftPositionPicks(draftPositions))
+    if (gameBoard.DraftPart.TotalPicks != NumberOfDraftPositionPicks(draftPositions))
     {
       return Result.Failure(DraftErrors.InvalidNumberOfPicks(
-        gameBoard.Draft.TotalPicks,
+        gameBoard.DraftPart.TotalPicks,
         NumberOfDraftPositionPicks(draftPositions)));
     }
 
-    if (gameBoard.Draft.TotalDrafters != NumberOfDrafters(draftPositions))
+    if (gameBoard.DraftPart.TotalDrafters != NumberOfDrafters(draftPositions))
     {
       return Result.Failure(GameBoardErrors.InvalidNumberOfDrafters);
     }

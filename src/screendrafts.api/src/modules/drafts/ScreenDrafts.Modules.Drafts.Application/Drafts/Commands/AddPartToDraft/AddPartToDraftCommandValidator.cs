@@ -11,5 +11,11 @@ internal sealed class AddPartToDraftCommandValidator : AbstractValidator<AddPart
 
     RuleFor(x => x.PartIndex)
       .GreaterThan(0).WithMessage("PartIndex must be greater than zero.");
+
+    RuleFor(x => x.TotalPicks).GreaterThan(0).WithMessage("TotalPicks must be greater than zero.");
+
+    RuleFor(x => x)
+      .Must(x => x.TotalDrafters + x.TotalDrafterTeams >= 2)
+      .WithMessage("The sum of TotalDrafters and TotalDrafterTeams must be at least 2.");
   }
 }

@@ -6,6 +6,8 @@ public sealed partial class DraftPart : Entity<DraftPartId>
   private readonly List<TriviaResult> _triviaResults = [];
   private readonly List<Pick> _picks = [];
   private readonly List<DrafterDraftStats> _drafterDraftStats = [];
+  private readonly List<ParticipantId> _participants = [];
+  private int _communityPicksUsed;
 
   private DraftPart(
     Draft draft,
@@ -36,22 +38,24 @@ public sealed partial class DraftPart : Entity<DraftPartId>
   public Draft Draft { get; private set; } = default!;
 
   public int TotalPicks { get; private set; }
-
+ 
   public int PartIndex { get; private set; }
 
-  public DraftStatus DraftStatus { get; private set; } = default!;
+  public DraftPartStatus Status { get; private set; } = default!;
 
   public GameBoard? GameBoard { get; private set; } = default!;
+  
+  public int CommunityPicksUsed => _communityPicksUsed;
+
 
   public DateTime? UpdatedAtUtc { get; private set; }
 
   public IReadOnlyCollection<DraftRelease> Releases => _releases.AsReadOnly();
-
   public IReadOnlyCollection<TriviaResult> TriviaResults => _triviaResults.AsReadOnly();
-
   public IReadOnlyCollection<Pick> Picks => _picks.AsReadOnly();
-
   public IReadOnlyCollection<DrafterDraftStats> DrafterStats => _drafterDraftStats.AsReadOnly();
+  public IReadOnlyCollection<ParticipantId> Participants => _participants.AsReadOnly();
+
 
 
   public static Result<DraftPart> Create(
@@ -84,38 +88,6 @@ public sealed partial class DraftPart : Entity<DraftPartId>
   }
 
 
-  public Result AddPick(Pick pick)
-  {
-    Guard.Against.Null(pick);
-
-    if (DraftStatus != DraftStatus.InProgress)
-    {
-      return Result.Failure(DraftErrors.DraftNotStarted);
-    }
-
-    if (_picks.Any(p => p.Position == pick.Position))
-    {
-      return Result.Failure(DraftErrors.PickPositionAlreadyTaken(pick.Position));
-    }
-
-    if (pick.Position <= 0 || pick.Position > TotalPicks)
-    {
-      return Result.Failure(DraftErrors.PickPositionIsOutOfRange);
-    }
-
-    _picks.Add(pick);
-
-    UpdatedAtUtc = DateTime.UtcNow;
-
-    Raise(new PickAddedDomainEvent(
-      Id.Value,
-      pick.Position,
-      pick.Movie.Id,
-      pick.Drafter!.Id.Value,
-      null));
-
-    return Result.Success();
-  }
 
   public Result ApplyRollover(Guid? drafterId, Guid? drafterTeamId, bool isVeto)
   {
@@ -138,21 +110,6 @@ public sealed partial class DraftPart : Entity<DraftPartId>
     return Result.Success();
   }
 
-  public Result ApplyCommissionerOverride(Pick pick)
-  {
-    ArgumentNullException.ThrowIfNull(pick);
-
-    var overrideEntry = CommissionerOverride.Create(pick).Value;
-
-    pick.ApplyCommissionerOverride(overrideEntry);
-
-    var drafterStats = _drafterDraftStats
-      .FirstOrDefault(d => d.Drafter?.Id.Value == pick.DrafterId?.Value);
-
-    drafterStats?.AddCommissionerOverride();
-
-    return Result.Success();
-  }
 
   public DraftRelease AddRelease(ReleaseChannel channel, DateOnly date, int? episodeNumber = null)
   {
@@ -173,7 +130,7 @@ public sealed partial class DraftPart : Entity<DraftPartId>
       return Result.Failure(DraftErrors.CannotAddTriviaResultWithoutDrafterOrDrafterTeam);
     }
 
-    if (DraftStatus != DraftStatus.InProgress)
+    if (Status != DraftStatus.InProgress)
     {
       return Result.Failure(DraftErrors.CannotAddTriviaResultIfDraftIsNotStarted);
     }
@@ -212,4 +169,6 @@ public sealed partial class DraftPart : Entity<DraftPartId>
   {
     GameBoard = gameBoard;
   }
+
+  internal void IncrementCommunityPicksUsed() => _communityPicksUsed++;
 }

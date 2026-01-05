@@ -1,9 +1,9 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities;
 public sealed partial class DraftPart
 {
-  public Result StartDraft()
+  internal Result Start()
   {
-    if (DraftStatus != DraftStatus.Created)
+    if (Status != DraftPartStatus.Created)
     {
       return Result.Failure(DraftErrors.DraftCanOnlyBeStartedIfItIsCreated);
     }
@@ -23,16 +23,19 @@ public sealed partial class DraftPart
       return Result.Failure(DraftErrors.CannotStartDraftWithoutAllHosts);
     }
 
-    DraftStatus = DraftStatus.InProgress;
+    Status = DraftPartStatus.InProgress;
 
-    Raise(new DraftStartedDomainEvent(Id.Value));
+    Raise(new DraftPartStartedDomainEvent(
+      Id.Value,
+      Draft.Id.Value,
+      PartIndex));
 
     return Result.Success();
   }
 
-  public Result CompleteDraft()
+  internal Result Complete()
   {
-    if (DraftStatus != DraftStatus.InProgress)
+    if (Status != DraftPartStatus.InProgress)
     {
       return Result.Failure(DraftErrors.CannotCompleteDraftIfItIsNotInProgress);
     }
@@ -42,38 +45,15 @@ public sealed partial class DraftPart
       return Result.Failure(DraftErrors.CannotCompleteDraftWithoutAllPicks);
     }
 
-    DraftStatus = DraftStatus.Completed;
+    Status = DraftPartStatus.Completed;
+    UpdatedAtUtc = DateTime.UtcNow;
 
-    Raise(new DraftCompletedDomainEvent(Id.Value));
 
     return Result.Success();
   }
 
-  public Result PauseDraft()
+  public void SetDraftStatus(DraftPartStatus draftStatus)
   {
-    if (DraftStatus != DraftStatus.InProgress)
-    {
-      return Result.Failure(DraftErrors.CannotPauseDraftIfItIsNotInProgress);
-    }
-    DraftStatus = DraftStatus.Paused;
-    Raise(new DraftPausedDomainEvent(Id.Value));
-    return Result.Success();
+    Status = draftStatus;
   }
-
-  public Result ContinueDraft()
-  {
-    if (DraftStatus != DraftStatus.Paused)
-    {
-      return Result.Failure(DraftErrors.CannotContinueDraftIfItIsNotPaused);
-    }
-    DraftStatus = DraftStatus.InProgress;
-    Raise(new DraftContinuedDomainEvent(Id.Value));
-    return Result.Success();
-  }
-
-  public void SetDraftStatus(DraftStatus draftStatus)
-  {
-    DraftStatus = draftStatus;
-  }
-
 }

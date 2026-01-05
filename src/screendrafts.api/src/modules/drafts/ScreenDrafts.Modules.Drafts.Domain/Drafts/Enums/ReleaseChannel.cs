@@ -1,5 +1,10 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.Enums;
 
+/// <summary>
+/// Where a draft or part was released.
+/// </summary>
+/// <param name="name">The name.</param>
+/// <param name="value">The value.</param>
 public sealed class ReleaseChannel(string name, int value)
   : SmartEnum<ReleaseChannel>(name, value)
 {

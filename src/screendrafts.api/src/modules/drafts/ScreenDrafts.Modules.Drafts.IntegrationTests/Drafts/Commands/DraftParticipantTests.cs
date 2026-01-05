@@ -22,25 +22,6 @@ public class DraftParticipantTests(DraftsIntegrationTestWebAppFactory factory)
   }
 
   [Fact]
-  public async Task RemoveDrafterFromDraft_WithValidData_ShouldSucceedAsync()
-  {
-    // Arrange
-    var draft = await CreateDraftAsync();
-    var drafter = await CreateDrafterAsync();
-    await Sender.Send(new AddDrafterToDraftCommand(draft, drafter));
-
-    // Act
-    var result = await Sender.Send(new RemoveDrafterFromDraftCommand(draft, drafter));
-
-    // Assert
-    result.IsSuccess.Should().BeTrue();
-    result.Value.Should().Be(drafter);
-
-    var updatedDraft = await Sender.Send(new GetDraftQuery(draft));
-    updatedDraft.Value.Drafters.Should().NotContain(d => d.Id == drafter);
-  }
-
-  [Fact]
   public async Task AddHostToDraft_AsPrimary_ShouldSucceedAsync()
   {
     // Arrange
@@ -116,11 +97,12 @@ public class DraftParticipantTests(DraftsIntegrationTestWebAppFactory factory)
     var command = new CreateDraftCommand(
       "Test Draft",
       DraftType.Standard,
+      Guid.NewGuid(),
       7,
       2,
       0,
       2,
-      DraftStatus.Created);
+      true);
 
     var result = await Sender.Send(command);
     return result.Value;

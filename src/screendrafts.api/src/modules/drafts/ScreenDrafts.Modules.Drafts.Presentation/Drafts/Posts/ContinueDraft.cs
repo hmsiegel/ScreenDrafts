@@ -17,7 +17,7 @@ internal sealed class ContinueDraft(ISender sender) : Endpoint<ContinueDraftRequ
 
   public override async Task HandleAsync(ContinueDraftRequest req, CancellationToken ct)
   {
-    var command = new ContinueDraftCommand(req.DraftId);
+    var command = new ContinueDraftPartCommand(req.DraftId);
 
     var result = await _sender.Send(command, ct);
 

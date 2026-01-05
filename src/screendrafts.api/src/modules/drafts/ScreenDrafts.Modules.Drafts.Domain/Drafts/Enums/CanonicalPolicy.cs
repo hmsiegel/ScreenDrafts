@@ -1,5 +1,11 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.Enums;
 
+/// <summary>
+/// When a draft becomes canon, meaning the picks and drafters are
+/// eligible for honorifics (i.e. Marquee of Fame and drafter honors).
+/// </summary>
+/// <param name="name">The name of the enum.</param>
+/// <param name="value">The value of the enum.</param>
 public sealed class CanonicalPolicy(string name, int value)
   : SmartEnum<CanonicalPolicy>(name, value)
 {

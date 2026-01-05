@@ -4,9 +4,4 @@ public sealed record EditDraftCommand(
   Guid DraftId,
   string Title,
   DraftType DraftType,
-  int TotalPicks,
-  int TotalDrafters,
-  int TotalDrafterTeams,
-  int TotalHosts,
-  DraftStatus DraftStatus,
   string? Description) : ICommand;

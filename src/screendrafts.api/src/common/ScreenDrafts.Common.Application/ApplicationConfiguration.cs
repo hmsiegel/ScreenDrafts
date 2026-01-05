@@ -8,8 +8,6 @@ public static class ApplicationConfiguration
     IConfiguration configuration)
   {
     ArgumentNullException.ThrowIfNull(configuration);
-    // Fix: Use the correct extension method 'Get<T>()' from Microsoft.Extensions.Configuration.Binder
-    // Ensure the NuGet package 'Microsoft.Extensions.Configuration.Binder' is referenced in your project.
     var mediatrSettings = configuration.GetSection("MediatR").Get<MediatRSettings>();
 
     services.AddMediatR(config =>

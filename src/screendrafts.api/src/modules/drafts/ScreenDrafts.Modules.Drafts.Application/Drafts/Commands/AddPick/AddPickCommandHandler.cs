@@ -10,17 +10,24 @@ internal sealed class AddPickCommandHandler(
 
   public async Task<Result<Guid>> Handle(AddPickCommand request, CancellationToken cancellationToken)
   {
-    var draftId = DraftId.Create(request.DraftId);
+    var draftPartId = DraftPartId.Create(request.DraftPartId);
 
-    var draft = await _draftsRepository.GetDraftWithDetailsAsync(draftId, cancellationToken);
+    var draftPart = await _draftsRepository.GetDraftPartByIdAsync(draftPartId, cancellationToken);
+
+    if (draftPart is null)
+    {
+      return Result.Failure<Guid>(DraftErrors.DraftPartNotFound(request.DraftPartId));
+    }
+
+    var draft = await _draftsRepository.GetDraftByDraftPartId(draftPartId, cancellationToken);
 
     if (draft is null)
     {
-      return Result.Failure<Guid>(DraftErrors.NotFound(request.DraftId));
+      return Result.Failure<Guid>(DraftErrors.NotFound(draft!.Id.Value));
     }
 
-    var drafter = draft.Drafters.FirstOrDefault(d => d.Id.Value == request.DrafterId);
-    var drafterTeam = draft.DrafterTeams.FirstOrDefault(dt => dt.Id.Value == request.DrafterId);
+    var drafter = draftPart.Drafters.FirstOrDefault(d => d.Id.Value == request.DrafterId);
+    var drafterTeam = draftPart.DrafterTeams.FirstOrDefault(dt => dt.Id.Value == request.DrafterId);
 
     if (drafter is null && drafterTeam is null)
     {
@@ -34,14 +41,14 @@ internal sealed class AddPickCommandHandler(
       return Result.Failure<Guid>(DraftErrors.MovieNotFound(request.MovieId));
     }
 
-    var pick = Pick.Create(request.Position, movie, drafter, drafterTeam, draft, request.PlayOrder);
+    var pick = Pick.Create(request.Position, movie, drafter, drafterTeam, draftPart, request.PlayOrder);
 
     if (pick.IsFailure)
     {
       return Result.Failure<Guid>(pick.Errors);
     }
 
-    var result = draft.AddPick(pick.Value);
+    var result = draftPart.AddPick(pick.Value);
 
     if (result.IsFailure)
     {

@@ -94,6 +94,7 @@
     <Project Path="src/modules/drafts/ScreenDrafts.Modules.Drafts.Application/ScreenDrafts.Modules.Drafts.Application.csproj" />
     <Project Path="src/modules/drafts/ScreenDrafts.Modules.Drafts.ArchitectureTests/ScreenDrafts.Modules.Drafts.ArchitectureTests.csproj" />
     <Project Path="src/modules/drafts/ScreenDrafts.Modules.Drafts.Domain/ScreenDrafts.Modules.Drafts.Domain.csproj" />
+    <Project Path="src/modules/drafts/ScreenDrafts.Modules.Drafts.Features/ScreenDrafts.Modules.Drafts.Features.csproj" />
     <Project Path="src/modules/drafts/ScreenDrafts.Modules.Drafts.Infrastructure/ScreenDrafts.Modules.Drafts.Infrastructure.csproj" />
     <Project Path="src/modules/drafts/ScreenDrafts.Modules.Drafts.IntegrationEvents/ScreenDrafts.Modules.Drafts.IntegrationEvents.csproj" />
     <Project Path="src/modules/drafts/ScreenDrafts.Modules.Drafts.IntegrationTests/ScreenDrafts.Modules.Drafts.IntegrationTests.csproj" />

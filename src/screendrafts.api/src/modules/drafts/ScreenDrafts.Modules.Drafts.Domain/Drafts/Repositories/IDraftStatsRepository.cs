@@ -2,9 +2,9 @@
 
 public interface IDraftStatsRepository : IRepository
 {
-  Task<DrafterDraftStats?> GetByDrafterAndDraftAsync(
+  Task<DrafterDraftStats?> GetByDrafterAndDraftPartAsync(
     DrafterId drafterId,
-    DraftId draftId,
+    DraftPartId draftPartId,
     CancellationToken cancellationToken);
 
   void Update(DrafterDraftStats drafterDraftStats);

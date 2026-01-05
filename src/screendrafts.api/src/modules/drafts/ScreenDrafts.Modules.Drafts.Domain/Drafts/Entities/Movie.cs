@@ -3,10 +3,12 @@
 public sealed class Movie : Entity
 {
   private readonly List<Pick> _picks = [];
+  private readonly List<MovieVersion> _versions = [];
+
   private Movie(
     string movieTitle,
     string imdbId,
-    Guid id) 
+    Guid id)
     : base(id)
   {
     MovieTitle = movieTitle;
@@ -21,6 +23,7 @@ public sealed class Movie : Entity
 
   public string MovieTitle { get; private set; } = default!;
   public string ImdbId { get; private set; } = default!;
+  public IReadOnlyCollection<MovieVersion> Versions => _versions.AsReadOnly();
 
   public static Result<Movie> Create(
     string movieTitle,
@@ -42,5 +45,15 @@ public sealed class Movie : Entity
       imdbId: imdbId,
       id: id);
     return movie;
+  }
+
+  public void AddVersion(MovieVersion version)
+  {
+    if (!_versions.Any(v => v.Name.Equals(
+      version.Name,
+      StringComparison.OrdinalIgnoreCase)))
+    {
+      _versions.Add(version);
+    }
   }
 }

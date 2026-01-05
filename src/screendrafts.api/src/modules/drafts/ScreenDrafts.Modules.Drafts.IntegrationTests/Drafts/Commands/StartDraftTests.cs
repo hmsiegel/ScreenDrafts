@@ -49,37 +49,6 @@ public sealed class StartDraftTests(DraftsIntegrationTestWebAppFactory factory)
   }
 
   [Fact]
-  public async Task StartDraft_WithDraftAlreadyCompleted_ShouldNotStartDraftAsync()
-  {
-    // Arrange
-    var (draftId, _, _) = await SetupDraftAndDraftersAsync(DraftType.Standard);
-    var startDraftCommand = new StartDraftCommand(draftId.Value);
-    await Sender.Send(startDraftCommand);
-    var completeDraftCommand = new CompleteDraftCommand(draftId.Value);
-    await Sender.Send(completeDraftCommand);
-    // Act
-    var result = await Sender.Send(startDraftCommand);
-    // Assert
-    result.IsSuccess.Should().BeFalse();
-    result.Errors[0].Should().Be(DraftErrors.DraftCanOnlyBeStartedIfItIsCreated);
-  }
-
-  [Fact]
-  public async Task StartDraft_ShouldFail_WhenNotAllDraftersAreAddedAsync()
-  {
-    // Arrange
-    var (draftId, drafters, _) = await SetupDraftAndDraftersAsync(DraftType.Standard);
-    var drafterId = drafters[0].Id;
-    await Sender.Send(new RemoveDrafterFromDraftCommand(draftId.Value, drafterId.Value));
-    // Act
-    var command = new StartDraftCommand(draftId.Value);
-    var result = await Sender.Send(command);
-    // Assert
-    result.IsSuccess.Should().BeFalse();
-    result.Errors[0].Should().Be(DraftErrors.CannotStartDraftWithoutAllDrafters);
-  }
-
-  [Fact]
   public async Task StartDraft_ShouldFail_WhenNotAllHostsAreAddedAsync()
   {
     // Arrange

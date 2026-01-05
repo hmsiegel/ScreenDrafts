@@ -12,15 +12,5 @@ internal sealed class EditDraftCommandValidator : AbstractValidator<EditDraftCom
       .MaximumLength(Title.MaxLength).WithMessage($"Title cannot exceed {Title.MaxLength} characters.");
     RuleFor(x => x.DraftType)
       .IsInEnum().WithMessage("Invalid draft type.");
-    RuleFor(x => x.TotalPicks)
-      .GreaterThan(0).WithMessage("Total picks must be greater than zero.");
-    RuleFor(x => x.TotalDrafters)
-      .GreaterThan(0).WithMessage("Total drafters must be greater than zero.");
-    RuleFor(x => x.TotalDrafterTeams)
-      .GreaterThan(0).WithMessage("Total drafter teams must be greater than zero.");
-    RuleFor(x => x.TotalHosts)
-      .GreaterThanOrEqualTo(0).WithMessage("Total hosts must be zero or greater.");
-    RuleFor(x => x.DraftStatus)
-      .IsInEnum().WithMessage("Invalid draft status.");
   }
 }
