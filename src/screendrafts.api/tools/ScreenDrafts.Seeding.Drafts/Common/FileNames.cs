@@ -18,4 +18,5 @@ internal static class FileNames
   internal const string MoviesSeeder = "drafts_movies.csv";
   internal const string DraftPositionsSeeder = "draft_positions.csv";
   internal const string DraftStatsSeeder = "draft_stats.csv";
+  internal const string PeopleSeeder = "people.csv";
 }

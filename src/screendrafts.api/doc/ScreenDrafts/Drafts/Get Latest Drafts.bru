@@ -1,0 +1,15 @@
+meta {
+  name: Get Latest Drafts
+  type: http
+  seq: 10
+}
+
+get {
+  url: {{url}}/drafts/latest
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

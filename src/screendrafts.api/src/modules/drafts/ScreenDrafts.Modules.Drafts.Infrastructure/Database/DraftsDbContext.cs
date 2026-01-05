@@ -5,6 +5,8 @@ public sealed class DraftsDbContext(DbContextOptions<DraftsDbContext> options)
 {
   internal DbSet<Draft> Drafts { get; set; }
 
+  internal DbSet<Person> People { get; set; }
+
   internal DbSet<Drafter> Drafters { get; set; }
 
   internal DbSet<Host> Hosts { get; set; }
@@ -33,6 +35,16 @@ public sealed class DraftsDbContext(DbContextOptions<DraftsDbContext> options)
 
   internal DbSet<DrafterTeam> DrafterTeams { get; set; }
 
+  internal DbSet<Category> Categories { get; set; }
+
+  internal DbSet<Series> Series { get; set; }
+
+  internal DbSet<Campaign> Campaigns { get; set; }
+
+  internal DbSet<DraftPart> DraftParts { get; set; }
+
+  internal DbSet<DraftRelease> DraftReleases { get; set; }
+
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
     ArgumentNullException.ThrowIfNull(modelBuilder);
@@ -41,7 +53,6 @@ public sealed class DraftsDbContext(DbContextOptions<DraftsDbContext> options)
     modelBuilder.ApplyConfigurationsFromAssembly(typeof(InfrastructureConfiguration).Assembly);
 
     modelBuilder.HasDefaultSchema(Schemas.Drafts);
-
   }
 
   protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)

@@ -1,7 +1,7 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.AddPick;
 
 public sealed record AddPickCommand(
-  Guid DraftId,
+  Guid DraftPartId,
   int Position,
   Guid MovieId,
   int PlayOrder,

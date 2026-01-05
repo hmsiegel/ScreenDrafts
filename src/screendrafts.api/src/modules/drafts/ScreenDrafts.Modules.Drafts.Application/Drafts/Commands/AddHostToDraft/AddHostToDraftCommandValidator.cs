@@ -4,7 +4,7 @@ internal sealed class AddHostToDraftCommandValidator : AbstractValidator<AddHost
 {
   public AddHostToDraftCommandValidator()
   {
-    RuleFor(x => x.DraftId).NotEmpty();
     RuleFor(x => x.HostId).NotEmpty();
+    RuleFor(x => x.DraftPartId).NotNull();
   }
 }

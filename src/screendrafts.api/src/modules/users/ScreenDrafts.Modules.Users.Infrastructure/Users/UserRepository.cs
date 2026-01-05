@@ -13,6 +13,11 @@ internal sealed class UserRepository(UsersDbContext dbContext) : IUserRepository
     _dbContext.Users.Add(user);
   }
 
+  public void Update(User user)
+  {
+    _dbContext.Users.Update(user);
+  }
+
   public async Task<User?> GetAsync(UserId id, CancellationToken cancellationToken = default)
   {
     return await _dbContext.Users

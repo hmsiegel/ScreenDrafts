@@ -1,4 +1,6 @@
-﻿using UserResponse = ScreenDrafts.Modules.Users.PublicApi.UserResponse;
+﻿using ScreenDrafts.Modules.Users.Application.Users.Queries.GetUserSocials;
+
+using UserResponse = ScreenDrafts.Modules.Users.PublicApi.UserResponse;
 
 namespace ScreenDrafts.Modules.Users.Infrastructure.PublicApi;
 internal sealed class UsersApi(ISender sender) : IUsersApi
@@ -65,5 +67,39 @@ internal sealed class UsersApi(ISender sender) : IUsersApi
     }
 
     return Result.Success();
+  }
+
+  public async Task<IReadOnlyCollection<string>> GetUserRolesAsync(Guid userId, CancellationToken cancellationToken)
+  {
+    var query = new GetUserRolesQuery(userId);
+
+    var result = await _sender.Send(query, cancellationToken);
+
+    if (result.IsFailure)
+    {
+      return [];
+    }
+
+    return result.Value;
+  }
+
+  public async Task<UserSocialResponse?> GetUserSocialsAsync(Guid userId, CancellationToken cancellationToken)
+  {
+    var query = new GetUserSocialsQuery(userId);
+
+    var result = await _sender.Send(query, cancellationToken);
+
+    if (result.IsFailure)
+    {
+      return null;
+    }
+
+    return new UserSocialResponse(
+      UserId: userId,
+      Twitter: result.Value?.Twitter,
+      Instagram: result.Value?.Instagram,
+      Letterboxd: result.Value?.Letterboxd,
+      Bluesky: result.Value?.Bluesky,
+      ProfilePicturePath: result.Value?.ProfilePicturePath);
   }
 }

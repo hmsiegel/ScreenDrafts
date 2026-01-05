@@ -1,5 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Users.IntegrationTests.Users;
-public class RegisterUserTests(IntegrationTestWebAppFactory factory) : BaseIntegrationTest(factory)
+
+public class RegisterUserTests(UsersIntegrationTestWebAppFactory factory) : UsersIntegrationTest(factory)
 {
   public static readonly TheoryData<string, string, string, string> InvalidRequests = new()
     {

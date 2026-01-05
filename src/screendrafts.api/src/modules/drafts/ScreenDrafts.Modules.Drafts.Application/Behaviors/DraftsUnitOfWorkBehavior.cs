@@ -14,7 +14,7 @@ public sealed class DraftsUnitOfWorkBehavior<TRequest, TResponse>
   {
     ArgumentNullException.ThrowIfNull(next);
 
-    var response = await next();
+    var response = await next(cancellationToken);
 
     await _unitOfWork.SaveChangesAsync(cancellationToken);
 

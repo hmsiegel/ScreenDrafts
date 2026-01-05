@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Common.Infrastructure.Database.DatabaseSeeders;
+﻿using System.Linq;
+
+namespace ScreenDrafts.Common.Infrastructure.Database.DatabaseSeeders;
 
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1308:Normalize strings to uppercase", Justification = "<Pending>")]
 public static class SeedingHelper
@@ -14,12 +16,11 @@ public static class SeedingHelper
       var parts = arg.Split('=');
       if (parts.Length == 2)
       {
-        foreach (var module in parts[1].Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries))
+        foreach (var module in parts[1]
+          .Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
+          .Where(module => allowAll || !string.Equals(module, "all", StringComparison.OrdinalIgnoreCase)))
         {
-          if (allowAll || !string.Equals(module, "all", StringComparison.OrdinalIgnoreCase))
-          {
-            selectedModules.Add(module.ToLowerInvariant());
-          }
+          selectedModules.Add(module.ToLowerInvariant());
         }
       }
     }

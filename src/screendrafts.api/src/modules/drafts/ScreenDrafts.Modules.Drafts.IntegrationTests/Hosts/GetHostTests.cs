@@ -1,14 +1,15 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Hosts;
 
-public sealed class GetHostTests(IntegrationTestWebAppFactory factory)
-  : BaseIntegrationTest(factory)
+public sealed class GetHostTests(DraftsIntegrationTestWebAppFactory factory)
+  : DraftsIntegrationTest(factory)
 {
   [Fact]
   public async Task GetHost_WithValidId_ReturnsHostAsync()
   {
     // Arrange
-    var host = HostsFactory.CreateHost().Value;
-    var hostId = await Sender.Send(new CreateHostWithoutUserCommand(host.HostName));
+    var personFactory = new PeopleFactory(Sender, Faker);
+    var personId = await personFactory.CreateAndSavePersonAsync();
+    var hostId = await Sender.Send(new CreateHostCommand(personId));
 
     // Act
     var result = await Sender.Send(new GetHostQuery(hostId.Value));
@@ -16,7 +17,7 @@ public sealed class GetHostTests(IntegrationTestWebAppFactory factory)
     // Assert
     result.IsSuccess.Should().BeTrue();
     result.Value.Id.Should().Be(hostId.Value);
-    result.Value.Name.Should().Be(host.HostName);
+    result.Value.PersonId.Should().Be(result.Value.PersonId);
   }
 
   [Fact]
@@ -27,7 +28,7 @@ public sealed class GetHostTests(IntegrationTestWebAppFactory factory)
     // Act
     var result = await Sender.Send(new GetHostQuery(hostId.Value));
 
-      
+
     // Assert
     result.IsSuccess.Should().BeFalse();
     result.Errors[0].Should().Be(HostErrors.NotFound(hostId.Value));

@@ -1,0 +1,21 @@
+meta {
+  name: Search for Movie
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{url}}/movies/search
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "imdbId": "tt0124288"
+  }
+}

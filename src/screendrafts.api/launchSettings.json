@@ -5,7 +5,17 @@
       "commandVersion": "1.0",
       "serviceActions": {
         "screendrafts.web": "StartDebugging",
-        "screendrafts.gateway": "StartDebugging"
+        "screendrafts.gateway": "StartDebugging",
+        "keycloak-db": "StartWithoutDebugging",
+        "screendrafts.database": "StartWithoutDebugging",
+        "screendrafts.elk": "StartWithoutDebugging",
+        "screendrafts.email": "StartWithoutDebugging",
+        "screendrafts.identity": "StartWithoutDebugging",
+        "screendrafts.jaeger": "StartWithoutDebugging",
+        "screendrafts.mongo": "StartWithoutDebugging",
+        "screendrafts.queue": "StartWithoutDebugging",
+        "screendrafts.redis": "StartWithoutDebugging",
+        "screendrafts.seq": "StartWithoutDebugging"
       }
     }
   }

@@ -1,2 +1,2 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Application.Drafts.Commands.AddDrafterToDraft;
-public sealed record AddDrafterToDraftCommand(Guid DraftId, Guid DrafterId) : ICommand<Guid>;
+public sealed record AddDrafterToDraftCommand(Guid DraftPartId, Guid DrafterId) : ICommand<Guid>;

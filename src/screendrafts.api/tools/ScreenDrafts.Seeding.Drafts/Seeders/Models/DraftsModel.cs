@@ -6,7 +6,7 @@ internal sealed class DraftsModel
 
   public string Title { get; set; } = string.Empty;
 
-  public int DraftType { get; set; } 
+  public int DraftType { get; set; }
 
   public int TotalPicks { get; set; }
 
@@ -16,9 +16,9 @@ internal sealed class DraftsModel
 
   public int TotalHosts { get; set; }
 
-  public int DraftStatus { get; set; } = Modules.Drafts.Domain.Drafts.Enums.DraftStatus.Completed;
+  public int DraftStatus { get; set; } = Modules.Drafts.Domain.Drafts.Enums.DraftStatus.Created;
 
-  public string? EpisodeNumber { get; set; } = string.Empty;
+  public int? EpisodeNumber { get; set; }
 
   public int EpisodeType { get; set; }
 

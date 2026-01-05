@@ -3,12 +3,12 @@
 internal sealed class RemoveHostFromDraftCommandHandler(
   IDraftsRepository draftsRepository,
   IHostsRepository hostsRepository)
-  : ICommandHandler<RemoveHostFromDraftCommand, Guid>
+  : ICommandHandler<RemoveHostFromDraftCommand>
 {
   private readonly IDraftsRepository _draftsRepository = draftsRepository;
   private readonly IHostsRepository _hostsRepository = hostsRepository;
 
-  public async Task<Result<Guid>> Handle(RemoveHostFromDraftCommand request, CancellationToken cancellationToken)
+  public async Task<Result> Handle(RemoveHostFromDraftCommand request, CancellationToken cancellationToken)
   {
     var draftId = DraftId.Create(request.DraftId);
     var hostId = HostId.Create(request.HostId);

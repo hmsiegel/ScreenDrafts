@@ -1,6 +1,9 @@
+'use client';
+
 import Link from "next/link";
-import { oswald, roboto } from "./ui/fonts";
+import { oswald, roboto } from "../styles/fonts";
 import Image from "next/image";
+import { signIn } from "next-auth/react";
 
 export default function Home() {
   return (
@@ -25,12 +28,16 @@ export default function Home() {
           </p>
         </div>
 
-        <div className="flex-row items-center justify-center">
-          <Link href="/signin">
-            <div className="btn-blue hover:bg-blue-400 hover:text-black transition ease-out duration-500">
-              SIGN IN
-            </div>
-          </Link>
+        <div className="flex-row items-center justify-center mt-4">
+
+
+            <button
+              className="btn-blue hover:bg-blue-400 hover:text-black transition ease-out duration-500"
+              onClick={() => signIn('keycloak', {
+                callbackUrl: '/dashboard'})}
+            >
+              <span>SIGN IN</span>
+            </button>
 
           <Link href="/register">
             <div className="btn-blue hover:bg-blue-400 hover:text-black transition ease-out duration-500">

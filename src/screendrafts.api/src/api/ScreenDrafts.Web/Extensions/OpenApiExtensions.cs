@@ -3,6 +3,31 @@ internal static class OpenApiExtensions
 {
   internal static IServiceCollection ConfigureOpenApi(this IServiceCollection services, IConfiguration configuration)
   {
+    services.AddOpenApiDocument(config =>
+    {
+      config.PostProcess = document =>
+      {
+        document.Info = new NSwag.OpenApiInfo
+        {
+          Version = configuration.GetValueOrThrow<string>("OpenApi:Version"),
+          Title = configuration.GetValueOrThrow<string>("OpenApi:Title"),
+          Description = configuration.GetValueOrThrow<string>("OpenApi:Description"),
+          TermsOfService = configuration.GetValueOrThrow<string>("OpenApi:TermsOfServiceUri"),
+          Contact = new NSwag.OpenApiContact
+          {
+            Name = configuration.GetValueOrThrow<string>("OpenApi:Contact:Name"),
+            Email = configuration.GetValueOrThrow<string>("OpenApi:Contact:Email"),
+            Url = configuration.GetValueOrThrow<string>("OpenApi:Contact:Url")
+          },
+          License = new NSwag.OpenApiLicense
+          {
+            Name = configuration.GetValueOrThrow<string>("OpenApi:License:Name"),
+            Url = configuration.GetValueOrThrow<string>("OpenApi:License:Url")
+          }
+        };
+      };
+    });
+
     services.AddOpenApi(options =>
     {
       options.AddDocumentTransformer((document, context, cancellationToken) =>

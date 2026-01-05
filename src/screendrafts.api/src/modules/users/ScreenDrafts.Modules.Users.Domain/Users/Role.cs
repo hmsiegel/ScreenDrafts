@@ -29,6 +29,7 @@ public sealed class Role
       "Guest" => Guest,
       "Host" => Host,
       "Drafter" => Drafter,
+      "Patreon" => Patreon,
       _ => throw new ArgumentException($"The role {name} is not supported.")
     };
   }

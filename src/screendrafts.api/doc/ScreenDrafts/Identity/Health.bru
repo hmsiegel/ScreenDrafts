@@ -1,0 +1,15 @@
+meta {
+  name: Health
+  type: http
+  seq: 4
+}
+
+get {
+  url: http://localhost:18080/health
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

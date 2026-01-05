@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Movies.IntegrationTests.Movies;
 
-public sealed class AddMovieTests(IntegrationTestWebAppFactory factory) : BaseIntegrationTest(factory)
+public sealed class AddMovieTests(MoviesIntegrationTestWebAppFactory factory) : MoviesIntegrationTest(factory)
 {
   [Fact]
   public async Task Should_ReturnSuccess_WhenDataIsValidAsync()

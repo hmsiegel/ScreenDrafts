@@ -1,2 +1,2 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Application.Drafts.Queries.GetLatestDrafts;
-public sealed record GetLatestDraftsQuery() : IQuery<IReadOnlyList<DraftResponse>>;
+public sealed record GetLatestDraftsQuery(bool IsPatreonOnly) : IQuery<IReadOnlyList<DraftResponse>>;

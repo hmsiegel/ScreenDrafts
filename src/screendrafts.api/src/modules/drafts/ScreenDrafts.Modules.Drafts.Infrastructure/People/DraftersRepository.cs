@@ -9,6 +9,11 @@ internal sealed class DraftersRepository(DraftsDbContext dbContext) : IDraftersR
     _dbContext.Drafters.Add(drafter);
   }
 
+  public void AddDrafterTeam(DrafterTeam drafterTeam)
+  {
+    _dbContext.DrafterTeams.Add(drafterTeam);
+  }
+
   public async Task<List<Drafter>> GetAll(CancellationToken cancellationToken = default)
   {
     return await _dbContext.Drafters
@@ -16,17 +21,17 @@ internal sealed class DraftersRepository(DraftsDbContext dbContext) : IDraftersR
 
   }
 
-  public Task<Drafter?> GetByIdAsync(DrafterId drafterId, CancellationToken cancellationToken)
+  public async Task<Drafter?> GetByIdAsync(DrafterId drafterId, CancellationToken cancellationToken)
   {
-    var drafter = _dbContext.Drafters
+    var drafter = await _dbContext.Drafters
       .SingleOrDefaultAsync(d => d.Id == drafterId, cancellationToken);
 
     return drafter;
   }
 
-  public Task<DrafterTeam?> GetByIdAsync(DrafterTeamId drafterTeamId, CancellationToken cancellationToken)
+  public async Task<DrafterTeam?> GetByIdAsync(DrafterTeamId drafterTeamId, CancellationToken cancellationToken)
   {
-    return _dbContext.DrafterTeams
+    return await _dbContext.DrafterTeams
       .Include(x => x.Drafters)
       .SingleOrDefaultAsync(d => d.Id == drafterTeamId, cancellationToken);
   }
@@ -34,5 +39,10 @@ internal sealed class DraftersRepository(DraftsDbContext dbContext) : IDraftersR
   public void Update(Drafter drafter)
   {
     _dbContext.Drafters.Update(drafter);
+  }
+
+  public void UpdateDrafterTeam(DrafterTeam drafterTeam)
+  {
+    _dbContext.DrafterTeams.Update(drafterTeam);
   }
 }

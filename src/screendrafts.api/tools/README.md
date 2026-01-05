@@ -133,6 +133,6 @@ screendrafts.api/
 - On Windows, Docker Desktop is recommended for running Linux containers.
   - PowerShell 7+ is recommended for running the PowerShell script.
 - On macOS/ Linux
-- Bash is required for running the Bash script.
+  - Bash is required for running the Bash script.
 - Seeder containers expect `.csv` files to be present in the `data` directory. Ensure that the data files are available before running the seeders.
 

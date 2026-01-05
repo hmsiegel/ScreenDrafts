@@ -15,11 +15,6 @@ Log.Logger = new LoggerConfiguration()
 
 try
 {
-  var databaseConnectionString = configuration.GetConnectionStringOrThrow("Database")!;
-
-  Log.Information("Starting seeding application...");
-  Log.Information("Using database connection string: {DatabaseConnectionString}", databaseConnectionString);
-
   var builder = Host.CreateDefaultBuilder(args)
       .UseSerilog((context, services, configuration) =>
       {
@@ -32,6 +27,10 @@ try
       {
         services.AddSingleton(configuration);
 
+        // Configure DatabaseSettings for MoviesModule
+        services.Configure<DatabaseSettings>(o => 
+          o.ConnectionString = configuration.GetConnectionStringOrThrow("Database"));
+
         services.AddMoviesModule(configuration);
 
         services.AddRepositoriesFromModules([typeof(MoviesModule).Assembly]);
@@ -40,11 +39,10 @@ try
         [
           AssemblyReference.Assembly,
           ScreenDrafts.Seeding.Movies.AssemblyReference.Assembly
-        ]);
+        ],
+        configuration);
 
-        services.AddSeedingInfrastructure(
-            databaseConnectionString);
-
+        services.AddSeedingInfrastructure();
         services.AddMovieSeeders();
 
         services.TryAddScoped<SqlInsertHelper>();

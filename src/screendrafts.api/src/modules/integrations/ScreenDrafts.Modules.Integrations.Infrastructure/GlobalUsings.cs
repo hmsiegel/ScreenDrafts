@@ -31,6 +31,7 @@ global using ScreenDrafts.Common.Application.Logging;
 global using ScreenDrafts.Common.Application.Messaging;
 global using ScreenDrafts.Common.Domain;
 global using ScreenDrafts.Common.Infrastructure;
+global using ScreenDrafts.Common.Infrastructure.Database;
 global using ScreenDrafts.Common.Infrastructure.Inbox;
 global using ScreenDrafts.Common.Infrastructure.Outbox;
 global using ScreenDrafts.Common.Infrastructure.Serialization;

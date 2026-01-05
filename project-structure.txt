@@ -1,0 +1,99 @@
+screendrafts.ui/
+├── src/
+│   ├── app/
+│   │   ├── dashboard/
+│   │   │   ├── api/
+│   │   │   │   └── auth/
+│   │   │   │       └── [...nextauth]/
+│   │   │   │           └── route.ts
+│   │   │   ├── drafts/
+│   │   │   │   ├── create/
+│   │   │   │   │   └── page.tsx
+│   │   │   │   ├── update/
+│   │   │   │   │   └── [id]/
+│   │   │   │   │       └── page.tsx
+│   │   │   │   ├── [id]/
+│   │   │   │   │   └── page.tsx
+│   │   │   │   └── page.tsx
+│   │   │   ├── (people)/
+│   │   │   │   ├── drafters/
+│   │   │   │   │   ├── [id]
+│   │   │   │   │   └── page.tsx
+│   │   │   │   └── hosts/
+│   │   │   │       ├── [id]
+│   │   │   │       └── page.tsx
+│   │   │   ├── movies/
+│   │   │   │   ├── people/
+│   │   │   │   │   └── [id]/
+│   │   │   │   │       └── page.tsx
+│   │   │   │   ├── [id]/
+│   │   │   │   │   └── page.tsx
+│   │   │   │   └── page.tsx
+│   │   │   ├── layout.tsx
+│   │   │   └── page.tsx
+│   │   ├── page.tsx
+│   │   └── layout.tsx
+│   ├── components/
+│   │   ├── ui/
+│   │   │   ├── pager.tsx
+│   │   │   ├── sortable-table-header.tsx
+│   │   │   └── button/
+│   │   │       └── button.tsx
+│   │   ├── layout/
+│   │   │   ├── header/
+│   │   │   │   ├── heading.tsx
+│   │   │   │   └── nav-menu.tsx
+│   │   │   ├── footer/
+│   │   │   │   └── footer.tsx
+│   │   │   └── menu/
+│   │   │       └── hamburger-menu.tsx
+│   │   └── features/
+│   │       ├── dashboard/
+│   │       │   ├── upcoming-drafts/
+│   │       │   │   ├── section-wrapper.tsx
+│   │       │   │   └── upcoming-drafts-table-body.tsx
+│   │       │   ├── most-recent-drafts/
+│   │       │   │   └── most-recent-drafts.tsx
+│   │       │   └── predictions/
+│   │       │       └── current-predictions.tsx
+│   │       ├── drafters/
+│   │       │   ├── drafter-details.tsx
+│   │       │   └── trivia-results
+│   │       ├── drafts/
+│   │       │   ├── episode-info-card.tsx
+│   │       │   ├── pick-row.tsx
+│   │       │   ├── picks-list.tsx
+│   │       │   ├── drafts-table.tsx
+│   │       │   ├── drafts-filter.stx
+│   │       │   ├── draft-details.tsx
+│   │       │   ├── create/
+│   │       │   │   └── create-draft.tsx
+│   │       │   └── update/
+│   │       │       ├── update-draft.tsx
+│   │       │       ├── drafter-dropdown.tsx
+│   │       │       └── commissioner-dropdown.tsx
+│   │       ├── guests/
+│   │       │   ├── guests-filter.tsx
+│   │       │   └── guests-table.tsx
+│   │       ├── hosts
+│   │       ├── movies
+│   │       ├── register/
+│   │       │   └── register-form.tsx
+│   │       └── login/
+│   │           └── login-form.tsx
+│   ├── lib
+│   ├── hook
+│   ├── styles/
+│   │   ├── global.css
+│   │   └── fonts.ts
+│   ├── types/
+│   │   ├── draft-types.ts
+│   │   └── paged-results.ts
+│   └── services/
+│       ├── drafts/
+│       │   └── fetch-drafts.ts
+│       └── people/
+│           └── fetch-people.ts
+├── public
+├── package.json
+└── .env.local

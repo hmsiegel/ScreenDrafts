@@ -1,0 +1,15 @@
+meta {
+  name: Get Drafter
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{url}}/drafters/c2495a46-d6ba-428f-94bb-41a4ad91f7b7
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

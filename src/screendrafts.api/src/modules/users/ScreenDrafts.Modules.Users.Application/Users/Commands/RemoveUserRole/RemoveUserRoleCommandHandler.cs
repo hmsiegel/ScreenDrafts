@@ -10,7 +10,7 @@ internal sealed class RemoveUserRoleCommandHandler(
 
   public async Task<Result<bool>> Handle(RemoveUserRoleCommand request, CancellationToken cancellationToken)
   {
-    await using var connection = await _dbConnectionFactory.OpenConnectionAsync();
+    await using var connection = await _dbConnectionFactory.OpenConnectionAsync(cancellationToken);
 
     var user = await _userRepository.GetAsync(UserId.Create(request.UserId), cancellationToken);
 

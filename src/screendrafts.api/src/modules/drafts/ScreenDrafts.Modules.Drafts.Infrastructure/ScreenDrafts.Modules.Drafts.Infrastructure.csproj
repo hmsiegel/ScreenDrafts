@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="ScreenDrafts.Seeding.Drafts"/>
+    <InternalsVisibleTo Include="ScreenDrafts.Seeding.Users"/>
   </ItemGroup>
 
 </Project>

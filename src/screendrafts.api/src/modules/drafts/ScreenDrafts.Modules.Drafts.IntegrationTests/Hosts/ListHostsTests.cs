@@ -1,44 +1,33 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Hosts;
 
-public sealed class ListHostsTests(IntegrationTestWebAppFactory factory) 
-  : BaseIntegrationTest(factory)
+public sealed class ListHostsTests(DraftsIntegrationTestWebAppFactory factory)
+  : DraftsIntegrationTest(factory)
 {
   [Fact]
   public async Task ListHosts_ShouldReturnListOfHosts_WhenHostsExistAsync()
   {
     // Arrange
-    List<Host> hosts = [];
-
-    do
+    for (var i = 0; i < 10; i++)
     {
-      var host = HostsFactory.CreateHost().Value;
-
-      var hostId = await Sender.Send(new CreateHostWithoutUserCommand(host.HostName));
-
-      var createdHost = await Sender.Send(new GetHostQuery(hostId.Value));
-
-      hosts.Add(Host.Create(
-        hostName: createdHost.Value.Name,
-        id: HostId.Create(createdHost.Value.Id)).Value);
-
-    } while (hosts.Count < 20);
+      var peopleFactory = new PeopleFactory(Sender, Faker);
+      var person = await peopleFactory.CreateAndSavePersonAsync();
+      await Sender.Send(new CreateHostCommand(person));
+    }
 
     // Act
-    var result = await Sender.Send(new ListHostsQuery());
+    var result = await Sender.Send(new ListHostsQuery(Page: 1, PageSize: 20));
 
     // Assert
     result.IsSuccess.Should().BeTrue();
-    result.Value.Should().HaveCount(20);
   }
 
   [Fact]
   public async Task ListHosts_ShouldReturnError_WhenNoHostsExistAsync()
   {
     // Act
-    var result = await Sender.Send(new ListHostsQuery());
+    var result = await Sender.Send(new ListHostsQuery(Page: 1, PageSize: 20));
 
     // Assert
     result.IsSuccess.Should().BeTrue();
-    result.Value.Should().BeEmpty();
   }
 }

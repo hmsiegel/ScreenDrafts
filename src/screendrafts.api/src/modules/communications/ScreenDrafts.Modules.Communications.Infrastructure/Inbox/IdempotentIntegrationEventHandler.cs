@@ -8,7 +8,8 @@ internal sealed class IdempotentIntegrationEventHandler<TIntegrationEvent>(
 {
   public override async Task Handle(TIntegrationEvent integrationEvent, CancellationToken cancellationToken = default)
   {
-    await using var connection = await dbConnectionFactory.OpenConnectionAsync();
+    await using var connection = await dbConnectionFactory.OpenConnectionAsync(cancellationToken);
+
 
     var inboxMessageConsumer = new InboxMessageConsumer(integrationEvent.Id, decorated.GetType().Name);
 

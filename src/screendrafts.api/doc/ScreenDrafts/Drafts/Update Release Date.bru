@@ -1,0 +1,21 @@
+meta {
+  name: Update Release Date
+  type: http
+  seq: 15
+}
+
+put {
+  url: {{url}}/drafts/6dd82ffb-657f-4ae9-adb3-99132a6dd9d6/release-date
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+      "releasedate": "2025-03-03"
+  }
+}

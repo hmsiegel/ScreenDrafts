@@ -4,4 +4,10 @@
     <ProjectReference Include="..\..\..\common\ScreenDrafts.Common.Domain\ScreenDrafts.Common.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Predictions\DomainEvents\" />
+    <Folder Include="Predictions\Errors\" />
+    <Folder Include="Predictions\Repositories\" />
+  </ItemGroup>
+
 </Project>

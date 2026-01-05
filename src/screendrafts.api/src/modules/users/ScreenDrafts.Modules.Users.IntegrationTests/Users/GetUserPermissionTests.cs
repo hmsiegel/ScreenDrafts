@@ -1,7 +1,7 @@
 ﻿namespace ScreenDrafts.Modules.Users.IntegrationTests.Users;
 
-public class GetUserPermissionTests(IntegrationTestWebAppFactory factory)
-  : BaseIntegrationTest(factory)
+public class GetUserPermissionTests(UsersIntegrationTestWebAppFactory factory)
+  : UsersIntegrationTest(factory)
 {
   [Fact]
   public async Task Should_ReturnError_WhenUserDoesNotExistAsync()
@@ -26,7 +26,7 @@ public class GetUserPermissionTests(IntegrationTestWebAppFactory factory)
         Faker.Name.FirstName(),
         Faker.Name.LastName()));
 
-    var users = DbContext.Users.ToList();
+    var users = await DbContext.Users.ToListAsync();
 
     var identityId = users.FirstOrDefault(x => x.Id.Value == result.Value)!.IdentityId;
 

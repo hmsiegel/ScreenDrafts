@@ -4,3 +4,6 @@
 
   screendrafts.seeding.drafts:
     profiles: ["manual"]
+
+  screendrafts.seeding.users:
+    profiles: ["manual"]

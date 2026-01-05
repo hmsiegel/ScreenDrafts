@@ -1,0 +1,73 @@
+import { listDrafts } from "@features/drafts/api/fetch-drafts";
+import DraftsFilter from "@/features/drafts/components/drafts-filter";
+import { DraftsTable } from "@/features/drafts/components/drafts-table";
+import Breadcrumbs from "@/components/ui/breadcrumbs";
+import Pager from "@/components/ui/pager";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Drafts",
+  description: "List of drafts"
+}
+
+export const dynamic = "force-dynamic"; // Disable caching for this page
+
+export default async function Page(
+   props: { searchParams: Promise<{ [key: string]: string | string[] | undefined}> }
+) {
+   const qp = await props.searchParams;
+   const draftTypes =
+      Array.isArray(qp.draftType)
+      ? qp.draftType.map(Number)
+      : qp.draftType
+        ? [Number(qp.draftType)]
+        : undefined;
+
+   const page = Number(qp.page ?? 1);
+   const pageSize = Number(qp.pageSize ?? 10);
+
+   const drafts = await listDrafts({
+      fromDate: qp.fromDate as string | undefined,
+      toDate: qp.toDate as string | undefined,
+      draftType: draftTypes,
+      minDrafters: asNumber(qp.minDrafters),
+      maxDrafters: asNumber(qp.maxDrafters),
+      minPicks: asNumber(qp.minPicks),
+      maxPicks: asNumber(qp.maxPicks),
+      q: qp.q as string | undefined,
+      page,
+      pageSize,
+      sort: qp.sort as string | undefined,
+      dir: qp.dir as "asc" | "desc" | undefined,
+   });
+   return (
+      <main className="flex flex-col items-center justify-center md:h-screen">
+         <div className="bg-[#fffdfd] rounded-lg shadow-lg py-4 px-28 flex flex-col items-center justify-center my-4">
+            <h1 className="text-2xl text-black mb-5 uppercase border-b-2 border-slate-900 pb-2">
+               Drafts
+            </h1>
+            <Breadcrumbs
+               breadcrumbs={[
+                  { label: "Home", href: "/" },
+                  { label: "Main", href: "/main" },
+                  { label: "Drafts", href: "/main/drafts", active: true },
+               ]}
+            />
+            <DraftsFilter />
+            <DraftsTable
+               drafts={drafts.items}
+               sort={qp.sort as string | undefined}
+               dir={qp.dir as string | undefined}
+            />
+            <Pager
+               total={drafts.total}
+               page={drafts.page}
+               pageSize={drafts.pageSize} />
+         </div>
+      </main>
+   );
+
+   function asNumber(value: string | string[] | undefined): number | undefined {
+      return value ? Number(Array.isArray(value) ? value[0] : value) : undefined;
+   }
+}

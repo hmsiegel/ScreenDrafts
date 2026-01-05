@@ -32,16 +32,16 @@ internal sealed class DrafterTeamConfiguration : IEntityTypeConfiguration<Drafte
       .HasForeignKey<RolloverVetoOverride>(rv => rv.DrafterTeamId)
       .OnDelete(DeleteBehavior.Cascade);
 
-    builder.HasMany(dt => dt.Drafts)
+    builder.HasMany(dt => dt.DraftPart)
       .WithMany(d => d.DrafterTeams)
       .UsingEntity<Dictionary<string, string>>(
-        Tables.DrafterTeamsDrafts,
-        x => x.HasOne<Draft>().WithMany().HasForeignKey("draft_id").OnDelete(DeleteBehavior.Cascade),
+        Tables.DraftPartsDrafterTeams,
+        x => x.HasOne<DraftPart>().WithMany().HasForeignKey("draftPart_id").OnDelete(DeleteBehavior.Cascade),
         x => x.HasOne<DrafterTeam>().WithMany().HasForeignKey("drafter_team_id").OnDelete(DeleteBehavior.Cascade),
         x =>
         {
-          x.HasKey("draft_id", "drafter_team_id");
-          x.ToTable(Tables.DrafterTeamsDrafts);
+          x.HasKey("draftPart_id", "drafter_team_id");
+          x.ToTable(Tables.DraftPartsDrafterTeams);
         });
 
     builder.HasMany(dt => dt.Drafters)
@@ -55,5 +55,14 @@ internal sealed class DrafterTeamConfiguration : IEntityTypeConfiguration<Drafte
           x.HasKey("drafter_id", "drafter_team_id");
           x.ToTable(Tables.DrafterTeamDrafter);
         });
+
+    builder.HasMany(d => d.DraftStats)
+      .WithOne(ds => ds.DrafterTeam)
+      .HasForeignKey(ds => ds.DrafterTeamId)
+      .OnDelete(DeleteBehavior.Cascade);
+
+    builder.Navigation(d => d.DraftStats)
+      .HasField("_draftStats")
+      .UsePropertyAccessMode(PropertyAccessMode.Field);
   }
 }

@@ -6,6 +6,8 @@ internal sealed class AddPickCommandValidator : AbstractValidator<AddPickCommand
   {
     RuleFor(x => x.DraftId)
       .NotEmpty();
+    RuleFor(x => x.DraftPartId)
+      .NotEmpty();
     RuleFor(x => x.Position)
       .NotEmpty();
     RuleFor(x => x.MovieId)

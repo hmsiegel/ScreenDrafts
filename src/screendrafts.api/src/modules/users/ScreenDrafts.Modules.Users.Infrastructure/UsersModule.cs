@@ -2,6 +2,7 @@
 
 public static class UsersModule
 {
+  private const string ModuleName = "Users";
   public static IServiceCollection AddUsersModule(
     this IServiceCollection services,
     IConfiguration configuration)
@@ -19,17 +20,12 @@ public static class UsersModule
 
   private static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
   {
-    var connectionString = configuration.GetConnectionString("Database")!;
-
     services.AddIdentity(configuration);
 
     services.AddDbContext<UsersDbContext>((sp, options) =>
-      options.UseNpgsql(
-        connectionString,
-        npgsqlOptions =>
-        npgsqlOptions.MigrationsHistoryTable(HistoryRepository.DefaultTableName, Schemas.Users))
-      .UseSnakeCaseNamingConvention()
-      .AddInterceptors(sp.GetRequiredService<InsertOutboxMessagesInterceptor>()));
+    {
+      options.UseModuleDefaults(ModuleName, Schemas.Users, sp);
+    });
 
     services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<UsersDbContext>());
 
@@ -101,7 +97,11 @@ public static class UsersModule
       {
         var keyCloakOptions = sp.GetRequiredService<IOptions<KeyCloakOptions>>().Value;
 
+        Log.Information("Admin URL for KeyCloak: {AdminUrl}", keyCloakOptions.AdminUrl);
+
         client.BaseAddress = new Uri(keyCloakOptions.AdminUrl);
+
+        Log.Information("KeyCloak Client Base Address: {BaseAddress}", client.BaseAddress);
       })
       .AddHttpMessageHandler<KeyCloakAuthDelegatingHandler>();
 

@@ -5,6 +5,6 @@ public sealed class HostsCsvModel
   [Column("id")]
   public Guid? Id { get; set; }
 
-  [Column("name")]
-  public string Name { get; set; } = default!;
+  [Column("person_id")]
+  public Guid PersonId { get; set; }
 }

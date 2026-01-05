@@ -8,7 +8,7 @@ internal sealed class GetDraftPositionQueryHandler(IDbConnectionFactory dbConnec
       GetDraftPositionQuery request,
       CancellationToken cancellationToken)
   {
-    await using var connection = await _dbConnectionFactory.OpenConnectionAsync();
+    await using var connection = await _dbConnectionFactory.OpenConnectionAsync(cancellationToken);
     const string sql =
         $"""
           SELECT

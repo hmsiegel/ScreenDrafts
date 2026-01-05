@@ -1,9 +1,19 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Application.Drafters.Queries.GetDrafter;
 
-public sealed record DrafterResponse(Guid Id, string Name, Guid? UserId = null)
+public sealed record DrafterResponse(
+  Guid Id,
+  Guid PersonId,
+  string FirstName,
+  string LastName,
+  string DisplayName)
 {
   public DrafterResponse()
-      : this(Guid.Empty, string.Empty)
+      : this(
+          Guid.Empty,
+          Guid.Empty,
+          string.Empty,
+          string.Empty,
+          string.Empty)
   {
   }
 }

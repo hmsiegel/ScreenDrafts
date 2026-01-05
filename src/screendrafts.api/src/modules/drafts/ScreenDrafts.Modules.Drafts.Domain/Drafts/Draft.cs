@@ -1,36 +1,23 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts;
 
-public sealed class Draft : AggrgateRoot<DraftId, Guid>
+public sealed partial class Draft : AggrgateRoot<DraftId, Guid>
 {
-  private readonly List<Drafter> _drafters = [];
-  private readonly List<DrafterTeam> _drafterTeams = [];
-  private readonly List<Pick> _picks = [];
-  private readonly List<Host> _hosts = [];
-  private readonly List<DrafterDraftStats> _drafterDraftStats = [];
-  private readonly List<TriviaResult> _triviaResults = [];
-  private readonly List<DraftReleaseDate> _releaseDates = [];
+  private readonly List<DraftPart> _parts = [];
+  private readonly List<DraftCategory> _draftCategories = [];
+  private readonly Dictionary<ParticipantId, DrafterVetoAccount> _accounts = [];
 
   private Draft(
   DraftId id,
   Title title,
   DraftType draftType,
-  int totalPicks,
-  int totalDrafters,
-  int totalDrafterTeams,
-  int totalHosts,
-  DraftStatus draftStatus,
-  EpisodeType episodeType,
+  Series series,
   DateTime createdAtUtc)
   : base(id)
   {
     Title = title;
     DraftType = draftType;
-    TotalPicks = totalPicks;
-    TotalDrafters = totalDrafters;
-    TotalDrafterTeams = totalDrafterTeams;
-    TotalHosts = totalHosts;
-    DraftStatus = draftStatus;
-    EpisodeType = episodeType;
+    Series = series;
+    SeriesId = series.Id;
     CreatedAtUtc = createdAtUtc;
   }
 
@@ -38,402 +25,208 @@ public sealed class Draft : AggrgateRoot<DraftId, Guid>
   {
   }
 
+  // Identity and Metadata
   public int ReadableId { get; init; }
-
   public Title Title { get; private set; } = default!;
-
-  public DraftType DraftType { get; private set; } = default!;
-
-  public EpisodeType EpisodeType { get; private set; } = default!;
-
-  public int TotalPicks { get; private set; }
-
-  public int TotalDrafters { get; private set; }
-
-  public int TotalDrafterTeams { get; private set; }
-
-  public int TotalHosts { get; private set; }
-
-  public string? EpisodeNumber { get; private set; } = default!;
-
-  public DraftStatus DraftStatus { get; private set; } = default!;
-
+  public string? Description { get; private set; }
   public DateTime CreatedAtUtc { get; private set; }
-
   public DateTime? UpdatedAtUtc { get; private set; }
 
-  public bool IsPatreonOnly { get; private set; }
+  // Policy Snapshots
+  public Series? Series { get; private set; } = default!;
+  public SeriesId? SeriesId { get; private set; } = default!;
+  public DraftType DraftType { get; private set; } = default!;
 
-  public bool NonCanonical { get; private set; }
+  public DraftStatus DraftStatus { get; private set; } = DraftStatus.Created;
+
 
   // Relationships
+  public IReadOnlyCollection<DraftPart> Parts => _parts.AsReadOnly();
+  public Campaign? Campaign { get; private set; } = default!;
+  public IReadOnlyCollection<DraftCategory> DraftCategories => _draftCategories.AsReadOnly();
 
-  public GameBoard? GameBoard { get; private set; } = default!;
+  // Rollups
+  public int TotalParts => _parts.Count;
+  public int TotalPicks => _parts.Sum(p => p.Picks.Count);
+  public int TotalDrafters => _parts.Sum(p => p.TotalDrafters) + _parts.Sum(p => p.TotalDrafterTeams);
+  public int TotalHosts => _parts.Sum(p => p.TotalHosts);
 
-  public IReadOnlyCollection<Drafter> Drafters => _drafters.AsReadOnly();
-
-  public IReadOnlyCollection<DrafterTeam> DrafterTeams => _drafterTeams.AsReadOnly();
-
-  public IReadOnlyCollection<Pick> Picks => _picks.AsReadOnly();
-
-  public IReadOnlyCollection<Host> Hosts => _hosts.AsReadOnly();
-
-  public IReadOnlyCollection<DrafterDraftStats> DrafterStats => _drafterDraftStats.AsReadOnly();
-
-  public IReadOnlyCollection<TriviaResult> TriviaResults => _triviaResults.AsReadOnly();
-
-  public IReadOnlyCollection<DraftReleaseDate> ReleaseDates => _releaseDates.AsReadOnly();
 
 
   public static Result<Draft> Create(
   Title title,
   DraftType draftType,
-  int totalPicks,
-  int totalDrafters,
-  int totalDrafterTeams,
-  int totalHosts,
-  DraftStatus draftStatus,
-  EpisodeType episodeType,
+  Series series,
   DraftId? id = null)
   {
-    if (totalDrafters + totalDrafterTeams < 2)
-    {
-      return Result.Failure<Draft>(DraftErrors.DraftMustHaveAtLeastTwoParticipants);
-    }
-
-    if (totalPicks < 4)
-    {
-      return Result.Failure<Draft>(DraftErrors.DraftMustHaveAtLeastFivePicks);
-    }
+    ArgumentNullException.ThrowIfNull(series);
 
     var draft = new Draft(
       title: title,
       draftType: draftType,
-      totalPicks: totalPicks,
-      totalDrafters: totalDrafters,
-      totalDrafterTeams: totalDrafterTeams,
-      totalHosts: totalHosts,
-      draftStatus: draftStatus,
-      episodeType: episodeType,
+      series: series,
       createdAtUtc: DateTime.UtcNow,
-      id: id ?? DraftId.CreateUnique());
+      id: id ?? DraftId.CreateUnique())
+    {
+      Series = series,
+      SeriesId = series.Id
+    };
 
     draft.Raise(new DraftCreatedDomainEvent(draft.Id.Value));
 
     return draft;
   }
 
-  public Result AddDrafter(Drafter drafter)
+  public Result EditDraft(
+    Title title,
+    DraftType draftType,
+    string? description)
   {
-    Guard.Against.Null(drafter);
+    Guard.Against.Null(title);
+    Guard.Against.Null(draftType);
+    Guard.Against.NullOrWhiteSpace(description);
 
-    if (_drafters.Count >= TotalDrafters)
+    Title = title;
+    DraftType = draftType;
+    UpdatedAtUtc = DateTime.UtcNow;
+    Description = description;
+
+    Raise(new DraftEditedDomainEvent(Id.Value, title.Value));
+
+    return Result.Success();
+  }
+
+  // Categories
+  public Result AddCategory(Category category)
+  {
+    Guard.Against.Null(category);
+
+    if (_draftCategories.Any(dc => dc.CategoryId == category.Id))
     {
-      return Result.Failure(DraftErrors.TooManyDrafters);
+      return Result.Failure(CategoryErrors.CategoryAlreadyAdded(category.Id.Value));
     }
 
-    if (_drafters.Any(d => d.Id == drafter.Id))
-    {
-      return Result.Failure(DraftErrors.DrafterAlreadyAdded(drafter.Id.Value));
-    }
+    var draftCategory = DraftCategory.Create(this, category);
 
-    _drafters.Add(drafter);
-
-    var stats = DrafterDraftStats.Create(drafter: drafter, null, this);
-
-    _drafterDraftStats.Add(stats);
+    _draftCategories.Add(draftCategory);
 
     UpdatedAtUtc = DateTime.UtcNow;
 
-    Raise(new DrafterAddedDomainEvent(Id.Value, drafter.Id.Value));
-
+    Raise(new CategoryAddedDomainEvent(Id.Value, category.Id.Value));
     return Result.Success();
   }
 
-  public Result AddDrafterTeam(DrafterTeam drafterTeam)
+  public Result RemoveCategory(Category category)
   {
-    Guard.Against.Null(drafterTeam);
+    Guard.Against.Null(category);
 
-    if (_drafterTeams.Count >= TotalDrafterTeams)
+    if (!_draftCategories.Any(dc => dc.CategoryId == category.Id))
     {
-      return Result.Failure(DraftErrors.TooManyDrafterTeams);
+      return Result.Failure(CategoryErrors.CannotRemoveACategoryThatIsNotAdded(category.Id.Value));
     }
 
-    if (_drafterTeams.Any(d => d.Id == drafterTeam.Id))
+    var draftCategory = _draftCategories.FirstOrDefault(dc => dc.CategoryId == category.Id) ?? null;
+
+    if (draftCategory != null)
     {
-      return Result.Failure(DraftErrors.DrafterTeamAlreadyAdded(drafterTeam.Id.Value));
+      _draftCategories.Remove(draftCategory);
     }
-
-    var existingDrafterIds = _drafterTeams.SelectMany(x => x.Drafters).Select(d => d.Id);
-
-    var overlapping = drafterTeam.Drafters.Where(d => existingDrafterIds.Contains(d.Id)).ToList();
-
-    var overlappingDrafterIds = overlapping.Select(d => d.Id.Value);
-
-    if (overlapping.Count != 0)
-    {
-      return Result.Failure(DraftErrors.DrafterTeamContainsOverlappingDrafters(overlappingDrafterIds));
-    }
-
-    _drafterTeams.Add(drafterTeam);
-
-    var stats = DrafterDraftStats.Create(null, drafterTeam, this);
-    _drafterDraftStats.Add(stats);
-
-    UpdatedAtUtc = DateTime.UtcNow;
-    Raise(new DrafterTeamAddedDomainEvent(Id.Value, drafterTeam.Id.Value));
-    return Result.Success();
-  }
-
-  public Result AddPick(Pick pick)
-  {
-    Guard.Against.Null(pick);
-
-    if (DraftStatus != DraftStatus.InProgress)
-    {
-      return Result.Failure(DraftErrors.DraftNotStarted);
-    }
-
-    if (_picks.Any(p => p.Position == pick.Position))
-    {
-      return Result.Failure(DraftErrors.PickPositionAlreadyTaken(pick.Position));
-    }
-
-    if (pick.Position <= 0 || pick.Position > TotalPicks)
-    {
-      return Result.Failure(DraftErrors.PickPositionIsOutOfRange);
-    }
-
-    _picks.Add(pick);
 
     UpdatedAtUtc = DateTime.UtcNow;
 
-    Raise(new PickAddedDomainEvent(
-      Id.Value,
-      pick.Position,
-      pick.Movie.Id,
-      pick.Drafter!.Id.Value,
-      null));
+    Raise(new CategoryRemovedDomainEvent(Id.Value, category.Id.Value));
 
     return Result.Success();
   }
 
-  public Result AddHost(Host host)
+  // Campaigns
+  public void AddCampaign(Campaign campaign)
   {
-    Guard.Against.Null(host);
-    if (_hosts.Count >= TotalHosts)
-    {
-      return Result.Failure(DraftErrors.TooManyHosts);
-    }
+    ArgumentNullException.ThrowIfNull(campaign);
+    Campaign = campaign;
+    UpdatedAtUtc = DateTime.UtcNow;
+  }
 
-    if (_hosts.Any(h => h.Id == host.Id))
-    {
-      return Result.Failure(DraftErrors.HostAlreadyAdded(host.Id.Value));
-    }
+  public void RemoveCampaign()
+  {
+    Campaign = null;
+    UpdatedAtUtc = DateTime.UtcNow;
+  }
 
-    _hosts.Add(host);
+  // Releases
+  public Result<DraftRelease> AddRelease(DraftPart part, ReleaseChannel channel, DateOnly date)
+  {
+    ArgumentNullException.ThrowIfNull(part);
+
+    if (part.DraftId != Id)
+    {
+      return Result.Failure<DraftRelease>(DraftErrors.DraftPartDoesNotBelongToThisDraft);
+    }
 
     UpdatedAtUtc = DateTime.UtcNow;
 
-    Raise(new HostAddedDomainEvent(Id.Value, host.Id.Value));
-
-    return Result.Success();
+    return part.AddRelease(channel, date);
   }
 
-  public Result StartDraft()
+  // Series
+  public Result<Series> LinkSeries(Series series)
   {
-    if (DraftStatus != DraftStatus.Created)
+    Guard.Against.Null(series);
+
+    if (SeriesId == series.Id)
     {
-      return Result.Failure(DraftErrors.DraftCanOnlyBeStartedIfItIsCreated);
+      return Result.Failure<Series>(DraftErrors.SeriesAlreadyLinked(SeriesId.Value));
     }
 
-    if (_drafters.Count != TotalDrafters)
-    {
-      return Result.Failure(DraftErrors.CannotStartDraftWithoutAllDrafters);
-    }
-
-    if (_hosts.Count != TotalHosts)
-    {
-      return Result.Failure(DraftErrors.CannotStartDraftWithoutAllHosts);
-    }
-
-    DraftStatus = DraftStatus.InProgress;
-
-    Raise(new DraftStartedDomainEvent(Id.Value));
-
-    return Result.Success();
-  }
-
-
-  public Result CompleteDraft()
-  {
-    if (DraftStatus != DraftStatus.InProgress)
-    {
-      return Result.Failure(DraftErrors.CannotCompleteDraftIfItIsNotInProgress);
-    }
-
-    if (_picks.Count != TotalPicks)
-    {
-      return Result.Failure(DraftErrors.CannotCompleteDraftWithoutAllPicks);
-    }
-
-    DraftStatus = DraftStatus.Completed;
-
-    Raise(new DraftCompletedDomainEvent(Id.Value));
-
-    return Result.Success();
-  }
-
-  public Result AddTriviaResult(Drafter? drafter, DrafterTeam? drafterTeam, int position, int questionsWon)
-  {
-    if (drafter is null && drafterTeam is null)
-    {
-      return Result.Failure(DraftErrors.CannotAddTriviaResultWithoutDrafterOrDrafterTeam);
-    }
-
-    if (DraftStatus != DraftStatus.InProgress)
-    {
-      return Result.Failure(DraftErrors.CannotAddTriviaResultIfDraftIsNotStarted);
-    }
-
-    if (drafter is not null && !_drafters.Contains(drafter))
-    {
-      return Result.Failure(DrafterErrors.NotFound(drafter.Id.Value));
-    }
-
-    if (drafterTeam is not null && !_drafterTeams.Contains(drafterTeam))
-    {
-      return Result.Failure(DrafterErrors.NotFound(drafterTeamId: drafterTeam.Id.Value));
-    }
-
-    var triviaResult = TriviaResult.Create(
-      questionsWon: questionsWon,
-      position: position,
-      draft: this,
-      drafter: drafter,
-      drafterTeam: drafterTeam).Value;
-
-    _triviaResults.Add(triviaResult);
-
-    Raise(new TriviaResultAddedDomainEvent(
-      Id.Value,
-      drafter?.Id.Value,
-      position,
-      questionsWon,
-      drafterTeam?.Id.Value));
-
-    return Result.Success();
-  }
-
-  public Result ApplyRollover(Guid? drafterId, Guid? drafterTeamId, bool isVeto)
-  {
-    var drafterStats = 
-       _drafterDraftStats.FirstOrDefault(d => d.Drafter?.Id.Value == drafterId)
-       ?? _drafterDraftStats.FirstOrDefault(d => d.DrafterTeam?.Id.Value == drafterTeamId);
-
-    if (isVeto && drafterStats?.RolloverVeto >= 1)
-    {
-      return Result.Failure(DraftErrors.ADrafterCanOnlyHaveOneRolloverVeto);
-    }
-
-    if (!isVeto && drafterStats?.RolloverVetoOverride >= 1)
-    {
-      return Result.Failure(DraftErrors.ADrafterCanOnlyHaveOneRolloverVetoOverride);
-    }
-
-    drafterStats?.AddRollover(isVeto);
-
-    return Result.Success();
-  }
-
-  public Result ApplyCommissionerOverride(Pick pick)
-  {
-    ArgumentNullException.ThrowIfNull(pick);
-
-    var overrideEntry = CommissionerOverride.Create(pick).Value;
-
-    pick.ApplyCommissionerOverride(overrideEntry);
-
-    var drafterStats = _drafterDraftStats
-      .FirstOrDefault(d => d.Drafter?.Id.Value == pick.DrafterId?.Value);
-
-    drafterStats?.AddCommissionerOverride();
-
-    return Result.Success();
-  }
-
-  public void SetEpisodeNumber(string episodeNumber)
-  {
-    Guard.Against.NullOrEmpty(episodeNumber);
-    EpisodeNumber = episodeNumber;
-  }
-
-  public Result PauseDraft()
-  {
-    if (DraftStatus != DraftStatus.InProgress)
-    {
-      return Result.Failure(DraftErrors.CannotPauseDraftIfItIsNotInProgress);
-    }
-    DraftStatus = DraftStatus.Paused;
-    Raise(new DraftPausedDomainEvent(Id.Value));
-    return Result.Success();
-  }
-
-  public void AddReleaseDate(DraftReleaseDate releaseDate)
-  {
-    _releaseDates.Add(releaseDate);
-  }
-
-  public void SetDraftStatus(DraftStatus draftStatus)
-  {
-    DraftStatus = draftStatus;
-  }
-
-  public void SetGameBoard(GameBoard gameBoard)
-  {
-    GameBoard = gameBoard;
-  }
-
-  public void SetPatreonOnly(bool isPatreonOnly)
-  {
-    IsPatreonOnly = isPatreonOnly;
-  }
-
-  public void SetNonCanonical(bool nonCanonical)
-  {
-    NonCanonical = nonCanonical;
-  }
-
-  public Result RemoveDrafter(Drafter drafter)
-  {
-    Guard.Against.Null(drafter);
-    if (!_drafters.Contains(drafter))
-    {
-      return Result.Failure(DrafterErrors.NotFound(drafter.Id.Value));
-    }
-
-    _drafters.Remove(drafter);
-
-    UpdatedAtUtc = DateTime.UtcNow;
-    Raise(new DrafterRemovedDomainEvent(Id.Value, drafter.Id.Value));
-    return Result.Success();
-  }
-
-  public Result RemoveHost(Host host)
-  {
-    Guard.Against.Null(host);
-
-    if (!_hosts.Contains(host))
-    {
-      return Result.Failure(HostErrors.NotFound(host.Id.Value));
-    }
-
-    _hosts.Remove(host);
-
+    Series = series;
+    SeriesId = series.Id;
     UpdatedAtUtc = DateTime.UtcNow;
 
-    Raise(new HostRemovedDomainEvent(Id.Value, host.Id.Value));
+    Raise(new SeriesLinkedDomainEvent(Id.Value, series.Id.Value));
+    return Result.Success(series);
+  }
 
+  public Result UnlinkSeries()
+  {
+    if (SeriesId == null)
+    {
+      return Result.Failure(DraftErrors.NoSeriesLinked);
+    }
+
+    var oldSeriesId = SeriesId.Value;
+    Series = null;
+    SeriesId = null;
+    UpdatedAtUtc = DateTime.UtcNow;
+    Raise(new SeriesUnlinkedDomainEvent(Id.Value, oldSeriesId));
     return Result.Success();
+  }
+
+  public void DeriveDraftStatus()
+  {
+    if (_parts.Any(p => p.Status == DraftPartStatus.InProgress))
+    {
+      DraftStatus = DraftStatus.InProgress;
+      return;
+    }
+
+    if (_parts.Count > 0 && _parts.All(p => p.Status == DraftPartStatus.Completed))
+    {
+      DraftStatus = DraftStatus.Completed;
+      return;
+    }
+
+    if (_parts[0].Status == DraftPartStatus.Completed && _parts.Skip(1).Any(p => p.Status == DraftPartStatus.Scheduled))
+    {
+      DraftStatus = DraftStatus.Paused;
+      return;
+    }
+
+
+    if (_parts.All(p => p.Status == DraftPartStatus.Created))
+    {
+      DraftStatus = DraftStatus.Created;
+    }
+
+    DraftStatus = DraftStatus.Scheduled;
   }
 }

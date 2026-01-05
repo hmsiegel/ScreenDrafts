@@ -4,19 +4,21 @@ public static class InfrastructureConfiguration
 {
   public static IServiceCollection AddInfrastructure(
     this IServiceCollection services,
+    IConfiguration configuration,
     string serviceName,
     Action<IRegistrationConfigurator, string>[] moduleConfigureConsumers,
     RabbitMqSettings rabbitMqSettings,
-    string databaseConnectionString,
     string redisConnectionString,
     string mongoConnectionString,
     Assembly[] infrastructureAssemblies)
   {
+    services.AddCorsPolicy(configuration);
+
     services.AddAuthenticationInternal();
 
     services.AddAuthorizationInternal();
 
-    services.AddCoreInfrastructure(databaseConnectionString);
+    services.AddCoreInfrastructure();
 
     services.AddRepositoriesFromModules(infrastructureAssemblies);
 
@@ -36,22 +38,18 @@ public static class InfrastructureConfiguration
   }
 
   public static IServiceCollection AddSeedingInfrastructure(
-    this IServiceCollection services,
-    string databaseConnectionString)
+    this IServiceCollection services)
   {
-    services.AddCoreInfrastructure(databaseConnectionString);
+    services.AddCoreInfrastructure();
     return services;
   }
 
-  private static IServiceCollection AddCoreInfrastructure(this IServiceCollection services, string databaseConnectionString)
+  private static IServiceCollection AddCoreInfrastructure(this IServiceCollection services)
   {
     // Add core infrastructure services here
     services.TryAddSingleton<IDateTimeProvider, DateTimeProvider>();
 
     services.TryAddSingleton<InsertOutboxMessagesInterceptor>();
-
-    var npgsqlDataSource = new NpgsqlDataSourceBuilder(databaseConnectionString).Build();
-    services.TryAddSingleton(npgsqlDataSource);
 
     services.TryAddScoped<ICsvFileService, CsvFileService>();
 

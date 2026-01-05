@@ -1,0 +1,22 @@
+meta {
+  name: Add Draft Pick
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{url}}/drafts/6dd82ffb-657f-4ae9-adb3-99132a6dd9d6/picks/85cf9842-6abe-4e64-8ed4-e6a4f40ecb03
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+      "position" : 1,
+      "movieId" : "ff4c3d82-d125-47f3-844a-d548aebc6074"
+  }
+}

@@ -1,0 +1,21 @@
+meta {
+  name: Create Drafter (name)
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{url}}/drafters
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+      "name" : "Josh Larsen"
+  }
+}

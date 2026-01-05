@@ -4,5 +4,10 @@ public sealed record UpdateUserCommand(
   Guid UserId,
   string FirstName,
   string LastName,
-  string? MiddleName = null) : ICommand;
+  string? MiddleName = null,
+  string? ProfilePicturePath = null,
+  string? TwitterHandle = null,
+  string? InstagramHandle = null,
+  string? LetterboxdHandles = null,
+  string? BlueskyHandle = null) : ICommand;
 

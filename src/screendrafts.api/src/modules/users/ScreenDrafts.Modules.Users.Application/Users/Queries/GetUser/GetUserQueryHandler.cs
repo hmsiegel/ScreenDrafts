@@ -7,7 +7,7 @@ internal sealed class GetUserQueryHandler(IDbConnectionFactory dbConnectionFacto
 
   public async Task<Result<UserResponse>> Handle(GetUserQuery request, CancellationToken cancellationToken)
   {
-    await using var connection = await _dbConnectionFactory.OpenConnectionAsync();
+    await using var connection = await _dbConnectionFactory.OpenConnectionAsync(cancellationToken);
 
     var query = $"""
       SELECT
@@ -15,7 +15,12 @@ internal sealed class GetUserQueryHandler(IDbConnectionFactory dbConnectionFacto
         email As {nameof(UserResponse.Email)},
         first_name As {nameof(UserResponse.FirstName)},
         middle_name As {nameof(UserResponse.MiddleName)},
-        last_name As {nameof(UserResponse.LastName)}
+        last_name As {nameof(UserResponse.LastName)},
+        profile_picture_path As {nameof(UserResponse.ProfilePicturePath)},
+        twitter_handle As {nameof(UserResponse.TwitterHandle)},
+        instagram_handle As {nameof(UserResponse.InstagramHandle)},
+        letterboxd_handle As {nameof(UserResponse.LetterboxdHandle)},
+        bluesky_handle As {nameof(UserResponse.BlueskyHandle)}
       FROM users.users
       WHERE id = @UserId
       """;

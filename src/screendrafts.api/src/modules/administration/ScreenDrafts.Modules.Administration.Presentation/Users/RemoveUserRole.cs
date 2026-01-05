@@ -6,26 +6,36 @@ internal sealed class RemoveUserRole(IUsersApi usersApi) : Endpoint<RemoveUserRo
 
   public override void Configure()
   {
-    Delete("administation/users/{userId:guid}/roles");
+    Delete("administration/users/{userId:guid}/roles");
     Policies(Presentation.Permissions.ModifyUser);
-    Description(x => x.WithTags(Presentation.Tags.Administration));
+    Description(x =>
+    {
+      x.WithTags(Presentation.Tags.Administration)
+      .WithDescription("Remove user role")
+      .WithName(nameof(RemoveUserRole));
+    });
   }
 
   public override async Task HandleAsync(RemoveUserRoleRequest req, CancellationToken ct)
   {
-    var userId = Route<Guid>("userId");
+    var result = await _usersApi.RemoveUserRoleAsync(req.UserId, req.Role);
 
-    var result = await _usersApi.RemoveUserRoleAsync(userId, req.Role);
-
-    if (result.IsFailure)
-    {
-      await SendErrorsAsync(StatusCodes.Status400BadRequest, ct);
-    }
-    else
-    {
-      await SendOkAsync(StatusCodes.Status200OK, ct);
-    }
+    await this.MapResultsAsync(result, ct);
   }
 }
 
-public record RemoveUserRoleRequest(string Role);
+public record RemoveUserRoleRequest(
+  string Role,
+  [FromRoute(Name = "userId")] Guid UserId);
+
+internal sealed class RemoveUserRoleSummary : Summary<RemoveUserRole>
+{
+  public RemoveUserRoleSummary()
+  {
+    Summary = "Remove user role";
+    Description = "Remove user role";
+    Response(StatusCodes.Status400BadRequest, "Bad request");
+    Response(StatusCodes.Status404NotFound, "User not found");
+    Response(StatusCodes.Status403Forbidden, "Forbidden");
+  }
+}

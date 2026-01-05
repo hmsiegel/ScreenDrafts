@@ -18,4 +18,14 @@ internal static class Permissions
   internal const string CreateDrafter = "drafters:create";
   internal const string CreateHost = "host:create";
   internal const string GetHosts = "hosts:read";
+  internal const string PatronSearchDrafts = "patreon:search";
+  internal const string CreatePeople = "people:create";
+  internal const string GetPeople = "people:read";
+  internal const string UpdatePerson = "people:update";
+  internal const string SearchPeople = "people:search";
+  internal const string CreateCategories = "categories:create";
+  internal const string GetCategories = "categories:read";
+  internal const string UpdateCategories = "categories:update";
+  internal const string DeleteCategories = "categories:delete";
+  internal const string SearchCategories = "categories:search";
 }

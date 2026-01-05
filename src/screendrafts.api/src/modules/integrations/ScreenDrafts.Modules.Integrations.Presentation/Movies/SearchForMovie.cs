@@ -19,12 +19,12 @@ internal sealed class SearchForMovie(ISender sender) : Endpoint<MovieRequest,Mov
 
     if (result.IsFailure)
     {
-      await SendErrorsAsync(StatusCodes.Status400BadRequest, ct);
+      await Send.ErrorsAsync(StatusCodes.Status400BadRequest, ct);
     }
     else
     {
       var movie = result.Value;
-      await SendOkAsync(movie, ct);
+      await Send.OkAsync(movie, ct);
     }
   }
 }

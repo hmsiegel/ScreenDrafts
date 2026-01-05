@@ -39,9 +39,9 @@ internal sealed class TriviaResultConfiguration : IEntityTypeConfiguration<Trivi
       .HasForeignKey(tr => tr.DrafterTeamId)
       .OnDelete(DeleteBehavior.Cascade);
 
-    builder.HasOne(tr => tr.Draft)
+    builder.HasOne(tr => tr.DraftPart)
       .WithMany(d => d.TriviaResults)
-      .HasForeignKey(tr => tr.DraftId)
+      .HasForeignKey(tr => tr.DraftPartId)
       .OnDelete(DeleteBehavior.Cascade);
   }
 }

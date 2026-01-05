@@ -22,11 +22,11 @@ internal sealed class ExecuteVetoCommandHandler(
       return Result.Failure<Guid>(DrafterErrors.InvalidBlessingRequest);
     }
 
-    DrafterId? drafterId = hasDrafter 
+    var drafterId = hasDrafter 
       ? DrafterId.Create(request.DrafterId!.Value)
       : null;
 
-    DrafterTeamId? drafterTeamId = hasDrafterTeam 
+    var drafterTeamId = hasDrafterTeam 
       ? DrafterTeamId.Create(request.DrafterTeamId!.Value) 
       : null;
 

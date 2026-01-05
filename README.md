@@ -36,6 +36,37 @@ To obtain an IMDB API key, visit [IMDB API Documentation](https://imdb-api.com/a
 
 Note: Other *.Development.json files follow a similar pattern. Check the templates provided for each module.
 
+## Technologies Used
+
+### Frontend
+- [Next.js](https://nextjs.org/) - Frontend framework
+- [React](https://reactjs.org/) - JavaScript library for building user interfaces
+- [TypeScript](https://www.typescriptlang.org/) - Typed superset of JavaScript
+- [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS framework
+- [Keycloakify](https://keycloakify.dev/) - Library for building Keycloak themes
+
+### Backend
+- [C#](https://docs.microsoft.com/en-us/dotnet/csharp/) - Programming language for backend development
+- [.NET](https://dotnet.microsoft.com/) - Framework for building and running applications
+- [Entity Framework Core](https://docs.microsoft.com/en-us/ef/core/) - Object-relational mapper for .NET
+- [PostgreSQL](https://www.postgresql.org/) - Open-source relational database management system
+- [Docker](https://www.docker.com/) - Platform for developing, shipping, and running applications in containers
+- [Redis](https://redis.io/) - In-memory data structure store, used as a database, cache, and message broker
+- [Keycloak](https://www.keycloak.org/) - Open-source identity and access management solution
+- [RabbitMQ](https://www.rabbitmq.com/) - Open-source message broker software
+- [Ardalis.GuardClauses](https://github.com/ardalis/GuardClauses) - Library for guard clauses in C#
+- [Ardalis.SmartEnum](https://github.com/ardalis/SmartEnum) - Library for creating smart enums in C#
+- [Bogus](https://github.com/bchavez/Bogus) - Library for generating fake data
+- [FluentValidation](https://fluentvalidation.net/) - Library for building strongly-typed validation rules
+- [MediatR](https://github.com/jbogard/MediatR) - Library for implementing the mediator pattern
+- [FastEndpoints](https://fast-endpoints.com/) - Library for building fast and efficient endpoints in .NET
+- [ImdbApi](https://tv-api.com/) - API for accessing IMDB data
+- [OmdbApi](https://www.omdbapi.com/) - API for accessing movie and TV show data
+- [Serilog](https://serilog.net/) - Diagnostic logging library for .NET
+- [MassTransit](https://masstransit-project.com/) - Distributed application framework for .NET
+- [YARP] (https://microsoft.github.io/yarb/) - Reverse proxy for ASP.NET Core
+
+
 ## Author
 
 - [@hmsiegel](https://www.github.com/hmsiegel)

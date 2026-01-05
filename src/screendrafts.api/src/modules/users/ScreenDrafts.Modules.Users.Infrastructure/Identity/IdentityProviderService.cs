@@ -8,7 +8,7 @@ internal sealed class IdentityProviderService(
   private readonly KeyCloakClient _keyCloakClient = keyCloakClient;
   private readonly ILogger<IdentityProviderService> _logger = logger;
 
-  private const string PasswordCredentialType = "Password";
+  private const string PasswordCredentialType = "password";
 
   // POST /admin/realms/{realm}/users
   public async Task<Result<string>> RegisterUserAsync(UserModel user, CancellationToken cancellationToken = default)

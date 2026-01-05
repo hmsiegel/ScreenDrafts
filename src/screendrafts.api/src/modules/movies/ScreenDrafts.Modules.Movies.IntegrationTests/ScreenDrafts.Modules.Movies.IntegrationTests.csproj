@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\api\ScreenDrafts.Web\ScreenDrafts.Web.csproj" />
+    <ProjectReference Include="..\..\..\common\ScreenDrafts.Common.IntegrationTests\ScreenDrafts.Common.IntegrationTests.csproj" />
   </ItemGroup>
 
 </Project>

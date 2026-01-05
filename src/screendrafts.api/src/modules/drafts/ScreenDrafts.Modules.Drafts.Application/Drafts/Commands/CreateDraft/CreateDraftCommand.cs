@@ -3,9 +3,9 @@
 public sealed record CreateDraftCommand(
   string Title,
   DraftType DraftType,
+  Guid SeriesId,
   int TotalPicks,
   int TotalDrafters,
   int TotalDrafterTeams,
   int TotalHosts,
-  EpisodeType EpisodeType,
-  DraftStatus DraftStatus) : ICommand<Guid>;
+  bool AutoCreateFirstPart = true) : ICommand<Guid>;

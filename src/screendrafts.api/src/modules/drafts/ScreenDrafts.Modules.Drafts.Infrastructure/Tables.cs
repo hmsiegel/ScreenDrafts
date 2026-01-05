@@ -6,6 +6,7 @@ internal static class Tables
   internal const string DrafterDraftStats = "drafter_draft_stats";
   internal const string Drafters = "drafters";
   internal const string Hosts = "hosts";
+  internal const string People = "people";
   internal const string Picks = "picks";
   internal const string TriviaResults = "trivia_results";
   internal const string Vetoes = "vetoes";
@@ -20,6 +21,15 @@ internal static class Tables
   internal const string DrafterTeams = "drafter_teams";
   internal const string DrafterTeamDrafter = "drafter_team_drafter";
   internal const string DraftsDrafters = "drafts_drafters";
+  internal const string DraftPartsDrafters = "draft_parts_drafters";
+  internal const string DraftPartsDrafterTeams = "draft_parts_drafter_teams";
   internal const string DrafterTeamsDrafts = "drafts_drafter_teams";
-  internal const string DraftsHosts = "draft_host";
+  internal const string DraftsHosts = "draft_hosts";
+  internal const string Categories = "categories";
+  internal const string DraftCategories = "draft_categories";
+  internal const string Series = "series";
+  internal const string Campaigns = "campaigns";
+  internal const string DraftParts = "draft_parts";
+  internal const string DraftReleases = "draft_releases";
+  internal const string DraftCampaigns = "drafts_campaigns";
 }

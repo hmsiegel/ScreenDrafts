@@ -1,0 +1,22 @@
+meta {
+  name: Assign Trivia Results
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{url}}/drafts/6dd82ffb-657f-4ae9-adb3-99132a6dd9d6/trivia/85cf9842-6abe-4e64-8ed4-e6a4f40ecb03
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+      "position" : 2,
+      "questionsWon" : 2
+  }
+}

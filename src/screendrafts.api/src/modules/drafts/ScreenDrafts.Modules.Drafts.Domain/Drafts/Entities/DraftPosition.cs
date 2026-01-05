@@ -22,16 +22,16 @@ public sealed class DraftPosition : Entity<DraftPositionId>
   {
   }
 
-  public GameBoardId GameBoardId { get; private set; } = default!;
-  public GameBoard GameBoard { get; private set; } = default!;
+  public GameBoardId GameBoardId { get; init; } = default!;
+  public GameBoard GameBoard { get; init; } = default!;
 
-  public string Name { get; private set; } = string.Empty;
+  public string Name { get; init; } = string.Empty;
 
-  public ICollection<int> Picks { get; private set; } = [];
+  public ICollection<int> Picks { get; init; } = [];
 
-  public bool HasBonusVeto { get; private set; }
+  public bool HasBonusVeto { get; init; }
 
-  public bool HasBonusVetoOverride { get; private set; }
+  public bool HasBonusVetoOverride { get; init; }
 
   public DrafterId? DrafterId { get; private set; } = default!;
   public Drafter? Drafter { get; private set; } = default!;
@@ -80,6 +80,11 @@ public sealed class DraftPosition : Entity<DraftPositionId>
     Drafter = drafter;
     DrafterId = drafter.Id;
 
+    Raise(new DraftPositionAssignedDomainEvent(
+      draftPartId: GameBoard.DraftPart.Id.Value,
+      draftPositionId: Id.Value,
+      drafterId: drafter.Id.Value));
+
     return Result.Success();
   }
 
@@ -105,6 +110,11 @@ public sealed class DraftPosition : Entity<DraftPositionId>
 
     DrafterTeam = drafterTeam;
     DrafterTeamId = drafterTeam.Id;
+
+    Raise(new DraftPositionAssignedDomainEvent(
+      draftPartId: GameBoard.DraftPart.Id.Value,
+      draftPositionId: Id.Value,
+      drafterTeamId: drafterTeam.Id.Value));
     return Result.Success();
   }
 }

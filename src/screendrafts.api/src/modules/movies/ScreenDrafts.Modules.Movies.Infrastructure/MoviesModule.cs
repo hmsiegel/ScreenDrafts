@@ -2,6 +2,8 @@
 
 public static class MoviesModule
 {
+  private const string ModuleName = "Movies";
+
   public static IServiceCollection AddMoviesModule(
     this IServiceCollection services,
     IConfiguration configuration)
@@ -27,15 +29,10 @@ public static class MoviesModule
 
   private static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
   {
-    var connectionString = configuration.GetConnectionString("Database")!;
-
     services.AddDbContext<MoviesDbContext>((sp, options) =>
-      options.UseNpgsql(
-        connectionString,
-        npgsqlOptions =>
-        npgsqlOptions.MigrationsHistoryTable(HistoryRepository.DefaultTableName, Schemas.Movies))
-      .UseSnakeCaseNamingConvention()
-      .AddInterceptors(sp.GetRequiredService<InsertOutboxMessagesInterceptor>()));
+    {
+      options.UseModuleDefaults(ModuleName, Schemas.Movies, sp);
+    });
 
     services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<MoviesDbContext>());
 

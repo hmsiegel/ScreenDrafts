@@ -14,8 +14,8 @@ internal static class ColumnNames
   internal const string HostedDraftsId = "hosted_drafts_id";
   internal const string HostsId = "hosts_id";
   internal const string StartingVetoes = "starting_vetoes";
-  internal const string RolloverVetoes = "rollover_vetoes";
-  internal const string RolloverVetoOverrides = "rollover_veto_overrides";
+  internal const string RolloverVetoes = "rollover_veto";
+  internal const string RolloverVetoOverrides = "rollover_veto_override";
   internal const string TriviaVetoes = "trivia_vetoes";
   internal const string TriviaVetoOverrides = "trivia_veto_overrides";
   internal const string CommissionerOverrides = "commissioner_overrides";

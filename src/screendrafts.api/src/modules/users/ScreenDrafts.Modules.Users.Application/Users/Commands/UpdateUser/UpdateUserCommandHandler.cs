@@ -20,6 +20,25 @@ internal sealed class UpdateUserCommandHandler(IUnitOfWork unitOfWork, IUserRepo
       lastName: LastName.Create(request.LastName).Value,
       middleName: request.MiddleName is not null ? request.MiddleName : null);
 
+    if (!string.IsNullOrWhiteSpace(request.ProfilePicturePath))
+    {
+      user.UpdateProfilePicture(request.ProfilePicturePath);
+    }
+
+    if (!string.IsNullOrWhiteSpace(request.TwitterHandle)
+      || !string.IsNullOrWhiteSpace(request.InstagramHandle)
+      || !string.IsNullOrWhiteSpace(request.LetterboxdHandles)
+      || !string.IsNullOrWhiteSpace(request.BlueskyHandle))
+    {
+      user.UpdateSocialHandles(
+        twitterHandle: request.TwitterHandle,
+        instagramHandle: request.InstagramHandle,
+        letterboxdHandle: request.LetterboxdHandles,
+        blueskyHandle: request.BlueskyHandle);
+    }
+
+    _userRepository.Update(user);
+
     await _unitOfWork.SaveChangesAsync(cancellationToken);
 
     return Result.Success();

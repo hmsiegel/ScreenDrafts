@@ -6,8 +6,9 @@ internal sealed class CreateDraftCommandValidator : AbstractValidator<CreateDraf
   {
     RuleFor(x => x.Title).NotEmpty();
     RuleFor(x => x.DraftType).NotNull();
-    RuleFor(x => x.TotalPicks).GreaterThan(3);
-    RuleFor(x => x.TotalDrafters).GreaterThan(1);
-    RuleFor(x => x.TotalHosts).GreaterThan(0);
+    RuleFor(x => x.TotalPicks).GreaterThanOrEqualTo(5);
+    RuleFor(x => x)
+      .Must(x => x.TotalDrafters + x.TotalDrafterTeams >= 2)
+      .WithMessage("The sum of TotalDrafters and TotalDrafterTeams must be at least 2.");
   }
 }

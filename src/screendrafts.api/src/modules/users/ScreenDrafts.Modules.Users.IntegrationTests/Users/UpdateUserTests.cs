@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Users.IntegrationTests.Users;
 
-public class UpdateUserTests(IntegrationTestWebAppFactory factory) : BaseIntegrationTest(factory)
+public class UpdateUserTests(UsersIntegrationTestWebAppFactory factory) : UsersIntegrationTest(factory)
 {
   public static readonly TheoryData<Guid, string, string> InvalidCommands =
     new()

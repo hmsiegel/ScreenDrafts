@@ -50,12 +50,19 @@ internal sealed class RegisterUserCommandHandler(
       return Result.Failure<Guid>(result.Errors[0]);
     }
 
-    var user = User.Create(
+    var userResult = User.Create(
       emailResult.Value,
       firstNameResult.Value,
       lastNameResult.Value,
       result.Value,
       request.MiddleName);
+
+    if (userResult.IsFailure)
+    {
+      return Result.Failure<Guid>(userResult.Errors[0]);
+    }
+
+    var user = userResult.Value;
 
     _userRepository.Add(user);
 

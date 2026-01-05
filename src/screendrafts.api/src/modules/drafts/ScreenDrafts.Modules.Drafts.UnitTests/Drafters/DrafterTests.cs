@@ -6,14 +6,16 @@ public class DrafterTests : BaseTest
   public void Create_ShouldReturnSuccessResult_WhenValidParametersAreProvided()
   {
     // Arrange
+    var person = PersonFactory.CreatePerson().Value;
 
     // Act
-    var result = DrafterFactory.CreateDrafterWithUserId();
+    var result = Drafter.Create(person);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
-    result.Value.Name.Should().Be(result.Value.Name);
-    result.Value.UserId.Should().Be(result.Value.UserId);
+    result.Value.Person.Should().Be(person);
+    result.Value.Person.FirstName.Should().Be(person.FirstName);
+    result.Value.Person.LastName.Should().Be(person.LastName);
   }
 
   [Fact]
@@ -22,7 +24,7 @@ public class DrafterTests : BaseTest
     // Arrange
     var draft = DraftFactory.CreateStandardDraft().Value;
     var movie = MovieFactory.CreateMovie().Value;
-    var drafter = DrafterFactory.CreateDrafterWithUserId().Value;
+    var drafter = DrafterFactory.CreateDrafter();
     var pick = Pick.Create(
       Faker.Random.Number(1, 7),
       movie,
@@ -146,27 +148,15 @@ public class DrafterTests : BaseTest
     // Arrange
     var drafter = DrafterFactory.CreateDrafter();
     var draft = DraftFactory.CreateStandardDraft().Value;
+    var drafterDraftStats = DrafterDraftStats.Create(
+      drafter,
+      null,
+      draft);
 
     // Act
-    drafter.AddDraftStats(draft);
+    drafter.AddDraftStats(drafterDraftStats);
 
     // Assert
     drafter.DraftStats.Should().ContainSingle();
-  }
-
-  [Fact]
-  public void SetDrafterName_ShouldSetNameCorrectly()
-  {
-    // Arrange
-    var drafter = DrafterFactory.CreateDrafter();
-    var firstName = Faker.Person.FirstName;
-    var lastName = Faker.Person.LastName;
-    var middleName = Faker.Person.FirstName;
-
-    // Act
-    drafter.SetDrafterName(firstName, lastName, middleName);
-
-    // Assert
-    drafter.Name.Should().Be($"{firstName} {middleName} {lastName}");
   }
 }

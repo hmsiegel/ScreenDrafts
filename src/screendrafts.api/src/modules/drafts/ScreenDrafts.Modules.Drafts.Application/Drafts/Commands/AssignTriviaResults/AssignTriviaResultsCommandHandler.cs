@@ -17,11 +17,13 @@ internal sealed class AssignTriviaResultsCommandHandler(
       return Result.Failure<TriviaResult>(DrafterErrors.NotFound(request.DrafterId));
     }
 
-    var draft = await _draftsRepository.GetDraftWithDetailsAsync(DraftId.Create(request.DraftId), cancellationToken);
+    var draftPartId = DraftPartId.Create(request.DraftPartId);
 
-    if (draft is null)
+    var draftPart = await _draftsRepository.GetDraftPartByIdAsync(draftPartId, cancellationToken);
+
+    if (draftPart is null)
     {
-      return Result.Failure<TriviaResult>(DraftErrors.NotFound(request.DraftId));
+      return Result.Failure<TriviaResult>(DraftErrors.DraftPartNotFound(request.DraftPartId));
     }
 
     if (request.QuestionsWon < 0)
@@ -29,19 +31,19 @@ internal sealed class AssignTriviaResultsCommandHandler(
       return Result.Failure<TriviaResult>(DrafterErrors.InvalidQuestionsWon);
     }
 
-    if (request.Position < 0 || request.Position > draft.TotalDrafters)
+    if (request.Position < 0 || request.Position > draftPart.TotalDrafters)
     {
       return Result.Failure<TriviaResult>(DrafterErrors.InvalidPosition);
     }
 
-    var result = draft.AddTriviaResult(drafter, null, request.Position, request.QuestionsWon);
+    var result = draftPart.AddTriviaResult(drafter, null, request.Position, request.QuestionsWon);
 
     if (result.IsFailure)
     {
       return Result.Failure(result.Errors);
     }
 
-    _draftsRepository.Update(draft);
+    _draftsRepository.Update(draftPart.Draft);
 
     return Result.Success();
   }

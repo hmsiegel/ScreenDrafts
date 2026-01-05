@@ -11,16 +11,25 @@ internal sealed class CreateGameBoardCommandHandler(
   {
     var draftId = DraftId.Create(request.DraftId);
 
-    var draft = await _draftsRepository.GetByIdAsync(draftId, cancellationToken);
+    var draftParts = await _draftsRepository.GetDraftPartsByDraftIdAsync(draftId, cancellationToken);
 
-    if (draft is null)
+    if (draftParts.Count == 0)
     {
-      return Result.Failure<Guid>(DraftErrors.NotFound(request.DraftId));
+      return Result.Failure<Guid>(DraftErrors.NoDraftPartsFound(request.DraftId));
     }
 
-    var gameBoard = GameBoard.Create(draft).Value;
+    var draftPartId = DraftPartId.Create(request.DraftPartId);
 
-    switch (draft.DraftType.Value)
+    var draftPart = draftParts.FirstOrDefault(dp => dp.Id == draftPartId);
+
+    if (draftPart is null)
+    {
+      return Result.Failure<Guid>(DraftErrors.DraftPartNotFound(request.DraftPartId));
+    }
+
+    var gameBoard = GameBoard.Create(draftPart).Value;
+
+    switch (draftPart.Draft.DraftType.Value)
     {
       case 0:
         AssignStandardDraftPositions(gameBoard);

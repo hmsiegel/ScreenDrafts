@@ -1,0 +1,21 @@
+meta {
+  name: Assign Draft Positions
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{url}}/drafts/{draftId}/position/{drafterId}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+      "positionId" : ""
+  }
+}

@@ -13,7 +13,7 @@ public class UserTests : BaseTest
         Guid.NewGuid().ToString());
 
     // Assert
-    user.Should().NotBeNull();
+    user.Value.Should().NotBeNull();
   }
 
   [Fact]
@@ -28,9 +28,9 @@ public class UserTests : BaseTest
 
     // Assert
     UserRegisteredDomainEvent domainEvent =
-        AssertDomainEventWasPublished<UserRegisteredDomainEvent>(user);
+        AssertDomainEventWasPublished<UserRegisteredDomainEvent>(user.Value);
 
-    domainEvent.UserId.Should().Be(user.Id.Value);
+    domainEvent.UserId.Should().Be(user.Value.Id.Value);
   }
 
   [Fact]
@@ -47,15 +47,15 @@ public class UserTests : BaseTest
     var lastName = LastName.Create(Faker.Name.LastName()).Value;
 
     // Act
-    user.Update(firstName, lastName);
+    user.Value.Update(firstName, lastName);
 
     // Assert
     UserProfileUpdatedDomainEvent domainEvent =
-        AssertDomainEventWasPublished<UserProfileUpdatedDomainEvent>(user);
+        AssertDomainEventWasPublished<UserProfileUpdatedDomainEvent>(user.Value);
 
-    domainEvent.UserId.Should().Be(user.Id.Value);
-    domainEvent.FirstName.Should().Be(user.FirstName.Value);
-    domainEvent.LastName.Should().Be(user.LastName.Value);
+    domainEvent.UserId.Should().Be(user.Value.Id.Value);
+    domainEvent.FirstName.Should().Be(user.Value.FirstName.Value);
+    domainEvent.LastName.Should().Be(user.Value.LastName.Value);
   }
 
   [Fact]
@@ -68,12 +68,12 @@ public class UserTests : BaseTest
         LastName.Create(Faker.Name.LastName()).Value,
         Guid.NewGuid().ToString());
 
-    user.ClearDomainEvents();
+    user.Value.ClearDomainEvents();
 
     // Act
-    user.Update(user.FirstName, user.LastName);
+    user.Value.Update(user.Value.FirstName, user.Value.LastName);
 
     // Assert
-    user.DomainEvents.Should().BeEmpty();
+    user.Value.DomainEvents.Should().BeEmpty();
   }
 }

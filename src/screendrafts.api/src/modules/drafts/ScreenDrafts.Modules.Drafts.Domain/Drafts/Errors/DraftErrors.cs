@@ -1,66 +1,16 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.Errors;
-
-public static class DraftErrors
+﻿
+namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.Errors;
+public static partial class DraftErrors
 {
   public static SDError NotFound(Guid draftId) =>
     SDError.NotFound(
       "Drafts.NotFound",
       $"Draft with id {draftId} was not found.");
 
-  public static readonly SDError TooManyDrafters =
-    SDError.Problem(
-      "Drafts.TooManyDrafters",
-      "Cannot add more drafters than the total allowed.");
-
-  public static SDError DrafterAlreadyAdded(Guid drafterId) =>
-    SDError.Conflict(
-      "Drafts.DrafterAlreadyAdded",
-      $"Drafter with id {drafterId} is already added to the draft.");
-
-  public static SDError PickPositionAlreadyTaken(int position) =>
-   SDError.Conflict(
-     "Drafts.PickPositionAlreadyTaken",
-     $"Pick position {position} is already taken.");
-
-  public static SDError HostAlreadyAdded(Guid hostId) =>
-    SDError.Conflict(
-      "Drafts.HostAlreadyTaken",
-      $"Host with id {hostId} is already added to the draft.");
-
   public static readonly SDError DraftNotStarted =
     SDError.Problem(
       "Drafts.DraftNotStarted",
       "Cannot add picks unless the draft has started.");
-
-  public static readonly SDError TooManyHosts =
-    SDError.Conflict(
-      "Drafts.TooManyHosts",
-      "Cannot add more hosts than the total allowed.");
-
-  public static readonly SDError CannotVetoUnlessTheDraftIsStarted =
-    SDError.Problem(
-      "Drafts.CannotVetoUnlessTheDraftIsStarted",
-      "Cannot veto a pick unless the draft has started.");
-
-  public static readonly SDError CannotVetoAPickThatDoesNotExist =
-    SDError.Problem(
-      "Drafts.CannotVetoAPickThatDoesNotExist",
-      "Cannot veto a pick that does not exist.");
-
-  public static readonly SDError CannotVetoAPickThatIsNotYours =
-    SDError.Conflict(
-      "Drafts.CannotVetoAPickThatIsNotYours",
-      "Cannot veto a pick that is not yours.");
-
-  public static readonly SDError CannotVetoAPickThatIsAlreadyVetoed =
-    SDError.Conflict(
-      "Drafts.CannotVetoAPickThatIsAlreadyVetoed",
-      "Cannot veto a pick that is already vetoed.");
-
-  public static readonly SDError OnlyDraftersInTheDraftCanUseAVeto =
-    SDError.Problem(
-      "Drafts.OnlyDraftersInTheDraftCanUseAVeto",
-      "Only drafters in the draft can use a veto.");
 
   public static readonly SDError DraftCanOnlyBeStartedIfItIsCreated =
     SDError.Problem(
@@ -80,44 +30,16 @@ public static class DraftErrors
   public static readonly SDError CannotCompleteDraftIfItIsNotInProgress =
     SDError.Problem(
       "Drafts.CannotCompleteDraftIfItIsNotInProgress",
-      "Cannot readonly complete the draft if it is not in progress.");
+      "Cannot complete the draft if it is not in progress.");
 
   public static readonly SDError CannotCompleteDraftWithoutAllPicks =
     SDError.Problem(
       "Drafts.CannotCompleteDraftWithoutAllPicks",
-      "Cannot readonly complete the draft without all picks.");
-
-  public static readonly SDError CannotVetoOverrideAVetoThatDoesNotExist =
-    SDError.Problem(
-      "Drafts.CannotVetoOverrideAVetoThatDoesNotExist",
-      "Cannot readonly veto override a veto that does not exist.");
-
-  public static readonly SDError OnlyDraftersInTheDraftCanUseAVetoOverride =
-    SDError.Problem(
-      "Drafts.OnlyDraftersInTheDraftCanUseAVetoOverride",
-      "Only drafters in the draft can use a veto override.");
-
-  public static readonly SDError ADrafterCanOnlyHaveOneRolloverVeto =
-    SDError.Problem(
-      "Drafts.ADrafterCanOnlyHaveOneRolloverVeto",
-      "A drafter can only have one rollover veto.");
-
-  public static readonly SDError ADrafterCanOnlyHaveOneRolloverVetoOverride =
-    SDError.Problem(
-      "Drafts.ADrafterCanOnlyHaveOneRolloverVetoOverride",
-      "A drafter can only have one rollover veto override.");
+      "Cannot complete the draft without all picks.");
 
   public static readonly SDError DraftMustHaveAtLeastTwoParticipants = SDError.Problem(
     "Drafts.DraftMustHaveAtLeastTwoParticipants",
     "Draft must have at least two participants (drafters or drafter teams).");
-
-  public static readonly SDError PickPositionIsOutOfRange = SDError.Conflict(
-    "Drafts.PickPositionIsOutOfRange",
-    "Pick position is out of range.");
-
-  public static readonly SDError DraftMustHaveAtLeastFivePicks = SDError.Problem(
-    "Drafts.DraftMustHaveAtLeastFivePicks",
-    "Draft must have at least five picks.");
 
   public static readonly SDError CannotPauseDraftIfItIsNotInProgress = SDError.Problem(
     "Drafts.CannotPauseDraftIfItIsNotInProgress",
@@ -143,59 +65,7 @@ public static class DraftErrors
     "Drafts.CannotResumeDraftIfItIsCompleted",
     "Cannot resume the draft if it is completed.");
 
-  public static readonly SDError InvalidPickPosition = SDError.Problem(
-    "Drafts.InvalidPickPosition",
-    "Invalid pick position.");
 
-  public static SDError MovieNotFound(Guid movieId) =>
-    SDError.NotFound(
-      "Drafts.MovieNotFound",
-      $"Movie with id {movieId} was not found.");
-
-  public static SDError MovieAlreadyAdded(Guid movieId) =>
-    SDError.Conflict(
-      "Drafts.MovieAlreadyAdded",
-      $"Movie with id {movieId} is already added to the draft.");
-
-  public static SDError MovieAlreadyPicked(Guid movieId) =>
-    SDError.Conflict(
-      "Drafts.MovieAlreadyPicked",
-      $"Movie with id {movieId} is already picked.");
-
-  public static SDError InvalidNumberOfPicks(int totalPicks, int numberOfDraftPositionPicks) =>
-    SDError.Problem(
-      "Drafts.InvalidNumberOfPicks",
-      $"Total picks {totalPicks} does not match the number of picks {numberOfDraftPositionPicks}.");
-
-  public static readonly SDError CannotAddPickIfDraftIsNotStarted = SDError.Problem(
-    "Drafts.CannotAddPickIfDraftIsNotStarted",
-    "Cannot add a pick if the draft is not started.");
-
-  public static readonly SDError CannotAddPickIfDraftIsCompleted = SDError.Problem(
-    "Drafts.CannotAddPickIfDraftIsCompleted",
-    "Cannot add a pick if the draft is completed.");
-
-  public static readonly SDError CannotAddPickIfDraftIsPaused = SDError.Problem(
-    "Drafts.CannotAddPickIfDraftIsPaused",
-    "Cannot add a pick if the draft is paused.");
-
-  public static readonly SDError CannotAddTriviaResultIfDraftIsNotStarted = SDError.Problem(
-    "Drafts.CannotAddTriviaResultIfDraftIsNotStarted",
-    "Cannot add a trivia result if the draft is not started.");
-
-  public static readonly SDError PicksNotFound = SDError.NotFound(
-    "Drafts.PicksNotFound",
-    "No draft picks were found.");
-
-  public static SDError MovieAlreadyExists(string imdbId) =>
-    SDError.Conflict(
-      "Drafts.MovieAlreadyExists",
-      $"Movie with IMDB id {imdbId} already exists.");
-
-  public static SDError PickNotFound(Guid id) =>
-    SDError.NotFound(
-      "Drafts.PickNotFound",
-      $"Pick with id {id} was not found.");
 
   public static readonly SDError CommissionerOverridesNotFound =
     SDError.NotFound(
@@ -207,28 +77,73 @@ public static class DraftErrors
       "Drafts.CommissionerOverrideCannotBeApplied",
       "Commissioner override cannot be applied.");
 
-  public static readonly SDError TooManyDrafterTeams =
+  public static readonly SDError CannotContinueDraftIfItIsNotPaused =
     SDError.Problem(
-      "Drafts.TooManyDrafterTeams",
-      "Cannot add more drafter teams than the total allowed.");
+      "Drafts.CannotContinueDraftIfItIsNotPaused",
+      "Cannot continue the draft if it is not paused.");
 
-  public static SDError DrafterTeamAlreadyAdded(Guid id) =>
+  public static readonly SDError CannotEditADraftAfterItHasBeenStarted = SDError.Problem(
+    "Drafts.CannotEditADraftAfterItHasBeenStarted",
+    "Cannot edit a draft after it has been started.");
+
+  public static readonly SDError SeriesNameIsRequired = SDError.Problem(
+    "Drafts.SeriesNameIsRequired",
+    "Series name is required.");
+
+  public static readonly SDError DraftIsRequired = SDError.Problem(
+    "Drafts.DraftIsRequired",
+    "Draft is required.");
+
+  public static readonly SDError ReleaseDateIsRequired = SDError.Problem(
+    "Drafts.ReleaseDateIsRequired",
+    "Release date is required.");
+
+  public static SDError SeriesAlreadyLinked(Guid seriesId) =>
     SDError.Conflict(
-      "Drafts.DrafterTeamAlreadyAdded",
-      $"Drafter team with id {id} is already added to the draft.");
+      "Drafts.SeriesAlreadyLinked",
+      $"Series with id {seriesId} is already linked to the draft.");
 
-  public static SDError DrafterTeamContainsOverlappingDrafters(IEnumerable<Guid> ids) =>
-    SDError.Conflict(
-      "Drafts.DrafterTeamContainsOverlappingDrafters",
-      $"Drafter team contains overlapping drafters: {ids}.");
+  public static SDError SeriesNotFound(Guid seriesId) =>
+    SDError.NotFound(
+      "Drafts.SeriesNotFound",
+      $"Series with id {seriesId} was not found.");
 
-  public static SDError AlreadyAdded(Guid id) =>
-    SDError.Conflict(
-      "Drafts.AlreadyAdded",
-      $"Team with id {id} is already added to the draft.");
+  public static SDError CampaignNotFound(Guid campaignId) =>
+    SDError.NotFound(
+      "Drafts.CampaignNotFound",
+      $"Campaign with id {campaignId} was not found.");
 
-  public static readonly SDError CannotAddTriviaResultWithoutDrafterOrDrafterTeam =
+  public static SDError MovieAlreadyPickedInDraft(Movie movie)
+  {
+    ArgumentNullException.ThrowIfNull(movie);
+
+    return SDError.Problem(
+      "Drafts.MovieAlreadyPickedInDraft",
+      $"Movie '{movie.MovieTitle}' (ID: {movie.Id}) has already been picked in this draft.");
+  }
+
+  public static readonly SDError EpisodeNumberMustBeGreaterThanZero =
     SDError.Problem(
-      "Drafts.CannotAddTriviaResultWithoutDrafterOrDrafterTeam",
-      "Cannot add a trivia result without a drafter or drafter team.");
+      "Drafts.EpisodeNumberMustBeGreaterThanZero",
+      "Episode number must be greater than zero.");
+
+  public static readonly SDError NoSeriesLinked = 
+    SDError.Problem(
+      "Drafts.NoSeriesLinked",
+      "No series is linked to the draft.");
+
+  public static readonly SDError CommunityPicksNotAllowedInThisDraftPart =
+    SDError.Problem(
+      "Drafts.CommunityPicksNotAllowedInThisDraftPart",
+      "Community picks are not allowed in this draft part.");
+
+  public static readonly SDError NoRemainingCommunityPicks =
+    SDError.Problem(
+      "Drafts.NoRemainingCommunityPicks",
+      "No remaining community picks are available in this draft part.");
+
+  public static readonly SDError NoRemainingVetoes =
+    SDError.Problem(
+      "Drafts.NoRemainingCommunityPicks",
+      "No remaining community picks are available in this draft part.");
 }

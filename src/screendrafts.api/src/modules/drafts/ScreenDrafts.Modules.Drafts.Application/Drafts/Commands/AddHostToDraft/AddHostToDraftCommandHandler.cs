@@ -10,13 +10,20 @@ internal sealed class AddHostToDraftCommandHandler(
 
   public async Task<Result<Guid>> Handle(AddHostToDraftCommand request, CancellationToken cancellationToken)
   {
-    var draftId = DraftId.Create(request.DraftId);
+    var draftPartId = DraftPartId.Create(request.DraftPartId);
 
-    var draft = await _draftsRepository.GetByIdAsync(draftId, cancellationToken);
+    var draftPart = await _draftsRepository.GetDraftPartByIdAsync(draftPartId, cancellationToken);
 
+    if (draftPart is null)
+    {
+      return Result.Failure<Guid>(DraftErrors.DraftPartNotFound(request.DraftPartId));
+    }
+
+    var draft = await _draftsRepository.GetDraftByDraftPartId(draftPartId, cancellationToken);
+ 
     if (draft is null)
     {
-      return Result.Failure<Guid>(DraftErrors.NotFound(request.DraftId));
+      return Result.Failure<Guid>(DraftErrors.NotFound(draft!.Id.Value));
     }
 
     var hostId = HostId.Create(request.HostId);
@@ -28,7 +35,17 @@ internal sealed class AddHostToDraftCommandHandler(
       return Result.Failure<Guid>(HostErrors.NotFound(request.HostId));
     }
 
-    draft.AddHost(host);
+    var result = request.Role.ToUpperInvariant() switch
+    {
+      "PRIMARY" => draftPart.SetPrimaryHost(host),
+      "CO-HOST" => draftPart.AddCoHost(host),
+      _ => Result.Failure<Guid>(DraftErrors.InvalidHostRole(request.Role))
+    };
+
+    if (result.IsFailure)
+    {
+      return Result.Failure<Guid>(result.Errors);
+    }
 
     _draftsRepository.Update(draft);
 

@@ -29,39 +29,55 @@ internal sealed class DraftConfiguration : IEntityTypeConfiguration<Draft>
             draftType => draftType.Value,
             value => DraftType.FromValue(value));
 
-    builder.Property(d => d.TotalPicks)
-          .IsRequired();
-
-    builder.Property(d => d.TotalDrafters)
-          .IsRequired();
-
-    builder.Property(d => d.TotalHosts)
-          .IsRequired();
-
     builder.Property(d => d.DraftStatus)
           .HasConversion(
             draftStatus => draftStatus.Value,
             value => DraftStatus.FromValue(value));
 
-    builder.Property(d => d.EpisodeType)
-          .HasConversion(
-            episodeType => episodeType.Value,
-            value => EpisodeType.FromValue(value));
-
-    builder.HasOne(d => d.GameBoard)
-      .WithOne(gb => gb.Draft)
-      .HasForeignKey<GameBoard>(gb => gb.Id);
-
     builder.HasIndex(d => d.ReadableId)
       .IsUnique();
 
-    builder.HasMany(d => d.Picks)
-      .WithOne(p => p.Draft)
-      .HasForeignKey(p => p.DraftId);
+    builder.Property(d => d.Description);
 
-    builder
-      .Metadata
-      .FindNavigation(nameof(Draft.Picks))!
-      .SetPropertyAccessMode(PropertyAccessMode.Field);
+    builder.HasMany(d => d.DraftCategories)
+      .WithOne(dc => dc.Draft)
+      .HasForeignKey(dc => dc.DraftId)
+      .OnDelete(DeleteBehavior.Cascade);
+
+    builder.HasMany(d => d.Parts)
+      .WithOne(dp => dp.Draft)
+      .HasForeignKey(dp => dp.DraftId)
+      .OnDelete(DeleteBehavior.Cascade);
+
+    builder.HasMany(d => d.Campaigns)
+      .WithMany()
+      .UsingEntity<Dictionary<string, object>>(
+      "drafts_campaigns",
+        j => j
+          .HasOne<Campaign>()
+          .WithMany()
+          .HasForeignKey("campaign_id")
+          .HasConstraintName("fk_drafts_campaigns_campaign_id"),
+        j => j
+          .HasOne<Draft>()
+          .WithMany()
+          .HasForeignKey("draft_id")
+          .HasConstraintName("fk_drafts_campaigns_draft_id"),
+        j =>
+        {
+          j.ToTable(Tables.DraftCampaigns);
+        });
+
+    builder.HasOne(d => d.Series)
+      .WithMany()
+      .HasForeignKey(d => d.SeriesId);
+
+    builder.Navigation(x => x.Parts)
+      .HasField("_parts")
+      .UsePropertyAccessMode(PropertyAccessMode.Field);
+
+    builder.Navigation(x => x.Campaigns)
+      .HasField("_campaigns")
+      .UsePropertyAccessMode(PropertyAccessMode.Field);
   }
 }

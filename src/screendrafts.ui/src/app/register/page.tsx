@@ -1,5 +1,5 @@
-import { oswald, inter } from "@/app/ui/fonts";
-import RegisterForm from "@/app/ui/register-form";
+import { oswald, inter } from "@/styles/fonts";
+import RegisterForm from "@/features/register/components/register-form";
 
 export default function Home() {
    return (

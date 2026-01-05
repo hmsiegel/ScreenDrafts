@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Users.Infrastructure.Identity;
+﻿using Serilog;
+
+namespace ScreenDrafts.Modules.Users.Infrastructure.Identity;
 internal sealed class KeyCloakAuthDelegatingHandler(IOptions<KeyCloakOptions> options) : DelegatingHandler
 {
   private readonly KeyCloakOptions _options = options.Value;
@@ -12,6 +14,16 @@ internal sealed class KeyCloakAuthDelegatingHandler(IOptions<KeyCloakOptions> op
     request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", authorizationToken.AccessToken);
 
     var httpResponseMessage = await base.SendAsync(request, cancellationToken);
+
+    if (!httpResponseMessage.IsSuccessStatusCode)
+    {
+      var body = await httpResponseMessage.Content.ReadAsStringAsync(cancellationToken);
+      Log.Error(
+        "Failed to register user. Status Code: {StatusCode}, Body: {Body}, Request: {Request}",
+        httpResponseMessage.StatusCode,
+        body,
+        request);
+    }
 
     httpResponseMessage.EnsureSuccessStatusCode();
 

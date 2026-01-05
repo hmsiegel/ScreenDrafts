@@ -2,5 +2,5 @@
 
 public interface IDbConnectionFactory
 {
-  ValueTask<DbConnection> OpenConnectionAsync();
+  ValueTask<DbConnection> OpenConnectionAsync(CancellationToken cancellationToken = default);
 }

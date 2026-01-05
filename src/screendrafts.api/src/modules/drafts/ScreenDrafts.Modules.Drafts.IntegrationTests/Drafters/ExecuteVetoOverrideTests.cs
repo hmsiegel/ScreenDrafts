@@ -1,7 +1,7 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafters;
 
-public class ExecuteVetoOverrideTests(IntegrationTestWebAppFactory factory)
-  : BaseIntegrationTest(factory)
+public class ExecuteVetoOverrideTests(DraftsIntegrationTestWebAppFactory factory)
+  : DraftsIntegrationTest(factory)
 {
   [Fact]
   public async Task ExecuteVetoOverride_WhenValidData_ShouldExecuteVetoOverrideAsync()

@@ -23,16 +23,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\common\ScreenDrafts.Common.IntegrationTests\ScreenDrafts.Common.IntegrationTests.csproj" />
     <ProjectReference Include="..\..\..\api\ScreenDrafts.Web\ScreenDrafts.Web.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Using Include="Xunit" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Drafts\Commands\" />
-    <Folder Include="Drafts\Queries\" />
   </ItemGroup>
 
 </Project>

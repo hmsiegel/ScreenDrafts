@@ -2,6 +2,7 @@
 
 public static class DraftsModule
 {
+  private const string ModuleName = "Drafts";
   public static IServiceCollection AddDraftsModule(
     this IServiceCollection services,
     IConfiguration configuration)
@@ -32,15 +33,10 @@ public static class DraftsModule
 
   private static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
   {
-    var connectionString = configuration.GetConnectionString("Database")!;
-
     services.AddDbContext<DraftsDbContext>((sp, options) =>
-      options.UseNpgsql(
-        connectionString,
-        npgsqlOptions =>
-        npgsqlOptions.MigrationsHistoryTable(HistoryRepository.DefaultTableName, Schemas.Drafts))
-      .UseSnakeCaseNamingConvention()
-      .AddInterceptors(sp.GetRequiredService<InsertOutboxMessagesInterceptor>()));
+    {
+      options.UseModuleDefaults(ModuleName, Schemas.Drafts, sp);
+    });
 
     SqlMapper.AddTypeHandler(new DraftPositionsTypeHandler());
 

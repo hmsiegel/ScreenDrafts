@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Users.IntegrationTests.Users;
 
-public class GetUserTests(IntegrationTestWebAppFactory factory) : BaseIntegrationTest(factory)
+public class GetUserTests(UsersIntegrationTestWebAppFactory factory) : UsersIntegrationTest(factory)
 {
   [Fact]
   public async Task Should_ReturnError_WhenUserDoesNotExistAsync()

@@ -9,6 +9,7 @@ services:
       - ./data:/app/data
     environment:
       - DATA_PATH=/app/data
+      - ASPNETCORE_ENVIRONMENT=Development
     ports:
       - 5000:8080
       - 5001:8081
@@ -51,9 +52,12 @@ services:
     networks:
       - screendrafts
 
+  # Identity Server
+  # Keycloak
   screendrafts.identity:
     image: quay.io/keycloak/keycloak:latest
     command: start-dev --import-realm
+    container_name: screendrafts.identity
     environment:
       - KC_DB=postgres
       - KC_DB_URL=jdbc:postgresql://keycloak-db:5432/keycloak
@@ -65,6 +69,7 @@ services:
       - KEYCLOAK_ADMIN_PASSWORD=admin
     volumes:
       - ./.files:/opt/keycloak/data/import
+      - ./res/keycloak-theme-screendrafts.jar:/opt/keycloak/providers/keycloak-theme-screendrafts.jar
     ports:
       - 18080:8080
     depends_on:
@@ -86,16 +91,21 @@ services:
     networks:
       - screendrafts
 
+  # Seq
+  # Log server
   screendrafts.seq:
     image: datalust/seq:latest
     environment:
       - ACCEPT_EULA=Y
+      - SEQ_FIRSTRUN_ADMINPASSWORD=admin
     ports:
       - 5341:5341
       - 8081:80
     networks:
       - screendrafts
 
+  # Redis
+  # Cache server
   screendrafts.redis:
     image: redis:latest
     restart: always
@@ -104,9 +114,10 @@ services:
     networks:
       - screendrafts
 
+  # Jaeger
+  # Tracing server
   screendrafts.jaeger:
     image: jaegertracing/all-in-one:latest
-    container_name: ScreenDrafts.Jaeger
     ports:
       - 4317:4317
       - 4318:4318
@@ -114,6 +125,9 @@ services:
     networks:
       - screendrafts
 
+  # RabbitMQ
+  # Message broker
+  # For background tasks
   screendrafts.queue:
     image: rabbitmq:management-alpine
     hostname: screendrafts-queue
@@ -129,6 +143,8 @@ services:
     networks:
       - screendrafts
 
+  # MongoDB
+  # For storing user data
   screendrafts.mongo:
     image: mongo:latest
     environment:
@@ -141,6 +157,8 @@ services:
     networks:
       - screendrafts
 
+  # Papercut SMTP
+  # For testing email sending
   screendrafts.email:
     image: changemakerstudiosus/papercut-smtp:latest
     ports:
@@ -149,6 +167,8 @@ services:
     networks:
       - screendrafts
 
+  # ELK Stack
+  # For logging and monitoring
   screendrafts.elk:
     image: sebp/elk
     volumes:

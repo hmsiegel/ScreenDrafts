@@ -17,7 +17,7 @@ REBUILD=false
 # --- Argument parsing ---
 while [[ $# -gt 0 ]]; do
   case $1 in
-    movies|drafts)
+    movies|drafts|users)
       SEEDER=$1
       ;;
     --module=*)

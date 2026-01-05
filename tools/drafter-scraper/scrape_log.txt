@@ -1,0 +1,1024 @@
+[2025-07-23T01:17:59.847Z] Fetching page: https://screendrafts.fandom.com/wiki/Category:Drafters
+[2025-07-23T01:18:01.271Z] Fetching page: https://screendrafts.fandom.comhttps://screendrafts.fandom.com/wiki/Category:Drafters?from=Singer%2C+Matt%0AMatt+Singer
+[2025-07-23T01:23:48.137Z] Fetching page: https://screendrafts.fandom.com/wiki/Category:Drafters
+[2025-07-23T01:23:49.801Z] Fetching page: https://screendrafts.fandom.com/wiki/Category:Drafters?from=Singer%2C+Matt%0AMatt+Singer
+[2025-07-23T01:23:51.117Z] Found 249 drafter profiles.
+[2025-07-23T01:23:51.119Z] Scraping profile: https://screendrafts.fandom.com/wiki/Simon_Abrams
+[2025-07-23T01:23:51.399Z] Successfully scraped: Simon Abrams (https://screendrafts.fandom.com/wiki/Simon_Abrams)
+[2025-07-23T01:23:52.414Z] Scraping profile: https://screendrafts.fandom.com/wiki/Beth_Accomando
+[2025-07-23T01:23:52.643Z] Successfully scraped: Beth Accomando (https://screendrafts.fandom.com/wiki/Beth_Accomando)
+[2025-07-23T01:23:53.647Z] Scraping profile: https://screendrafts.fandom.com/wiki/Demi_Adejuyigbe
+[2025-07-23T01:23:53.936Z] Successfully scraped: Demi Adejuyigbe (https://screendrafts.fandom.com/wiki/Demi_Adejuyigbe)
+[2025-07-23T01:23:54.942Z] Scraping profile: https://screendrafts.fandom.com/wiki/Chancellor_Agard
+[2025-07-23T01:23:55.197Z] Successfully scraped: Chancellor Agard (https://screendrafts.fandom.com/wiki/Chancellor_Agard)
+[2025-07-23T01:23:56.219Z] Scraping profile: https://screendrafts.fandom.com/wiki/J.D._Amato
+[2025-07-23T01:23:56.462Z] Successfully scraped: J.D. Amato (https://screendrafts.fandom.com/wiki/J.D._Amato)
+[2025-07-23T01:23:57.478Z] Scraping profile: https://screendrafts.fandom.com/wiki/Chris_Amick
+[2025-07-23T01:23:57.728Z] Successfully scraped: Chris Amick (https://screendrafts.fandom.com/wiki/Chris_Amick)
+[2025-07-23T01:23:58.740Z] Scraping profile: https://screendrafts.fandom.com/wiki/Megan_Amram
+[2025-07-23T01:23:58.829Z] Successfully scraped: Megan Amram (https://screendrafts.fandom.com/wiki/Megan_Amram)
+[2025-07-23T01:23:59.835Z] Scraping profile: https://screendrafts.fandom.com/wiki/Erik_Anderson
+[2025-07-23T01:24:00.121Z] Successfully scraped: Erik Anderson (https://screendrafts.fandom.com/wiki/Erik_Anderson)
+[2025-07-23T01:24:01.128Z] Scraping profile: https://screendrafts.fandom.com/wiki/Eva_Anderson
+[2025-07-23T01:24:01.402Z] Successfully scraped: Eva Anderson (https://screendrafts.fandom.com/wiki/Eva_Anderson)
+[2025-07-23T01:24:02.414Z] Scraping profile: https://screendrafts.fandom.com/wiki/Kyle_Anderson
+[2025-07-23T01:24:02.654Z] Successfully scraped: Kyle Anderson (https://screendrafts.fandom.com/wiki/Kyle_Anderson)
+[2025-07-23T01:24:03.665Z] Scraping profile: https://screendrafts.fandom.com/wiki/Tre%27vell_Anderson
+[2025-07-23T01:24:03.948Z] Successfully scraped: Tre'vell Anderson (https://screendrafts.fandom.com/wiki/Tre%27vell_Anderson)
+[2025-07-23T01:24:04.960Z] Scraping profile: https://screendrafts.fandom.com/wiki/Kevin_Avery
+[2025-07-23T01:24:05.200Z] Successfully scraped: Kevin Avery (https://screendrafts.fandom.com/wiki/Kevin_Avery)
+[2025-07-23T01:24:06.204Z] Scraping profile: https://screendrafts.fandom.com/wiki/Jonathan_Baker
+[2025-07-23T01:24:06.481Z] Successfully scraped: Jonathan Baker (https://screendrafts.fandom.com/wiki/Jonathan_Baker)
+[2025-07-23T01:24:07.498Z] Scraping profile: https://screendrafts.fandom.com/wiki/Josh_Baker
+[2025-07-23T01:24:07.767Z] Successfully scraped: Josh Baker (https://screendrafts.fandom.com/wiki/Josh_Baker)
+[2025-07-23T01:24:08.784Z] Scraping profile: https://screendrafts.fandom.com/wiki/Vince_Balzano
+[2025-07-23T01:24:09.049Z] Successfully scraped: Vince Balzano (https://screendrafts.fandom.com/wiki/Vince_Balzano)
+[2025-07-23T01:24:10.052Z] Scraping profile: https://screendrafts.fandom.com/wiki/Juan_Barquin
+[2025-07-23T01:24:10.315Z] Successfully scraped: Juan Barquin (https://screendrafts.fandom.com/wiki/Juan_Barquin)
+[2025-07-23T01:24:11.331Z] Scraping profile: https://screendrafts.fandom.com/wiki/Clem_Bastow
+[2025-07-23T01:24:11.582Z] Successfully scraped: Clem Bastow (https://screendrafts.fandom.com/wiki/Clem_Bastow)
+[2025-07-23T01:24:12.602Z] Scraping profile: https://screendrafts.fandom.com/wiki/Mitchell_Beaupre
+[2025-07-23T01:24:12.903Z] Successfully scraped: Mitchell Beaupre (https://screendrafts.fandom.com/wiki/Mitchell_Beaupre)
+[2025-07-23T01:24:13.911Z] Scraping profile: https://screendrafts.fandom.com/wiki/Scott_Beck
+[2025-07-23T01:24:14.180Z] Successfully scraped: Scott Beck (https://screendrafts.fandom.com/wiki/Scott_Beck)
+[2025-07-23T01:24:15.191Z] Scraping profile: https://screendrafts.fandom.com/wiki/Joe_Begos
+[2025-07-23T01:24:15.454Z] Successfully scraped: Joe Begos (https://screendrafts.fandom.com/wiki/Joe_Begos)
+[2025-07-23T01:24:16.464Z] Scraping profile: https://screendrafts.fandom.com/wiki/Milla_Bell-Hart
+[2025-07-23T01:24:16.698Z] Successfully scraped: Milla Bell-Hart (https://screendrafts.fandom.com/wiki/Milla_Bell-Hart)
+[2025-07-23T01:24:17.709Z] Scraping profile: https://screendrafts.fandom.com/wiki/Dory_Benford
+[2025-07-23T01:24:17.965Z] Successfully scraped: Dory Benford (https://screendrafts.fandom.com/wiki/Dory_Benford)
+[2025-07-23T01:24:18.968Z] Scraping profile: https://screendrafts.fandom.com/wiki/Steve_Berg
+[2025-07-23T01:24:19.238Z] Successfully scraped: Steve Berg (https://screendrafts.fandom.com/wiki/Steve_Berg)
+[2025-07-23T01:24:20.249Z] Scraping profile: https://screendrafts.fandom.com/wiki/Marc_Bernardin
+[2025-07-23T01:24:20.608Z] Successfully scraped: Marc Bernardin (https://screendrafts.fandom.com/wiki/Marc_Bernardin)
+[2025-07-23T01:24:21.615Z] Scraping profile: https://screendrafts.fandom.com/wiki/Nay_Bever
+[2025-07-23T01:24:21.813Z] Successfully scraped: Nay Bever (https://screendrafts.fandom.com/wiki/Nay_Bever)
+[2025-07-23T01:24:22.818Z] Scraping profile: https://screendrafts.fandom.com/wiki/William_Bibbiani
+[2025-07-23T01:24:23.077Z] Successfully scraped: William Bibbiani (https://screendrafts.fandom.com/wiki/William_Bibbiani)
+[2025-07-23T01:24:24.087Z] Scraping profile: https://screendrafts.fandom.com/wiki/Anna_Bogutskaya
+[2025-07-23T01:24:24.315Z] Successfully scraped: Anna Bogutskaya (https://screendrafts.fandom.com/wiki/Anna_Bogutskaya)
+[2025-07-23T01:24:25.324Z] Scraping profile: https://screendrafts.fandom.com/wiki/John_Bradley
+[2025-07-23T01:24:25.636Z] Successfully scraped: John Bradley (https://screendrafts.fandom.com/wiki/John_Bradley)
+[2025-07-23T01:24:26.649Z] Scraping profile: https://screendrafts.fandom.com/wiki/Jim_Branscome
+[2025-07-23T01:24:26.873Z] Successfully scraped: Jim Branscome (https://screendrafts.fandom.com/wiki/Jim_Branscome)
+[2025-07-23T01:24:27.881Z] Scraping profile: https://screendrafts.fandom.com/wiki/Guy_Branum
+[2025-07-23T01:24:28.140Z] Successfully scraped: Guy Branum (https://screendrafts.fandom.com/wiki/Guy_Branum)
+[2025-07-23T01:24:29.159Z] Scraping profile: https://screendrafts.fandom.com/wiki/Billy_Ray_Brewton
+[2025-07-23T01:24:29.445Z] Successfully scraped: Billy Ray Brewton (https://screendrafts.fandom.com/wiki/Billy_Ray_Brewton)
+[2025-07-23T01:24:30.462Z] Scraping profile: https://screendrafts.fandom.com/wiki/Patrick_Bromley
+[2025-07-23T01:24:30.708Z] Successfully scraped: Patrick Bromley (https://screendrafts.fandom.com/wiki/Patrick_Bromley)
+[2025-07-23T01:24:31.726Z] Scraping profile: https://screendrafts.fandom.com/wiki/Morgan_Peter_Brown
+[2025-07-23T01:24:32.053Z] Successfully scraped: Morgan Peter Brown (https://screendrafts.fandom.com/wiki/Morgan_Peter_Brown)
+[2025-07-23T01:24:33.065Z] Scraping profile: https://screendrafts.fandom.com/wiki/Robert_Butler_III
+[2025-07-23T01:24:33.348Z] Successfully scraped: Robert Butler III (https://screendrafts.fandom.com/wiki/Robert_Butler_III)
+[2025-07-23T01:24:34.353Z] Scraping profile: https://screendrafts.fandom.com/wiki/Andres_Cabrera
+[2025-07-23T01:24:34.676Z] Successfully scraped: Andres Cabrera (https://screendrafts.fandom.com/wiki/Andres_Cabrera)
+[2025-07-23T01:24:35.692Z] Scraping profile: https://screendrafts.fandom.com/wiki/Marc_Calderaro
+[2025-07-23T01:24:35.998Z] Successfully scraped: Marc Calderaro (https://screendrafts.fandom.com/wiki/Marc_Calderaro)
+[2025-07-23T01:24:37.004Z] Scraping profile: https://screendrafts.fandom.com/wiki/Jeff_Cannata
+[2025-07-23T01:24:37.285Z] Successfully scraped: Jeff Cannata (https://screendrafts.fandom.com/wiki/Jeff_Cannata)
+[2025-07-23T01:24:38.300Z] Scraping profile: https://screendrafts.fandom.com/wiki/Ricky_Carmona
+[2025-07-23T01:24:38.530Z] Successfully scraped: Ricky Carmona (https://screendrafts.fandom.com/wiki/Ricky_Carmona)
+[2025-07-23T01:24:39.541Z] Scraping profile: https://screendrafts.fandom.com/wiki/Alfonso_Carrillo
+[2025-07-23T01:24:39.829Z] Successfully scraped: Alfonso Carrillo (https://screendrafts.fandom.com/wiki/Alfonso_Carrillo)
+[2025-07-23T01:24:40.851Z] Scraping profile: https://screendrafts.fandom.com/wiki/Tom_Cendejas
+[2025-07-23T01:24:41.094Z] Successfully scraped: Tom Cendejas (https://screendrafts.fandom.com/wiki/Tom_Cendejas)
+[2025-07-23T01:24:42.113Z] Scraping profile: https://screendrafts.fandom.com/wiki/Walter_Chaw
+[2025-07-23T01:24:42.413Z] Successfully scraped: Walter Chaw (https://screendrafts.fandom.com/wiki/Walter_Chaw)
+[2025-07-23T01:24:43.431Z] Scraping profile: https://screendrafts.fandom.com/wiki/David_Chen
+[2025-07-23T01:24:43.684Z] Successfully scraped: David Chen (https://screendrafts.fandom.com/wiki/David_Chen)
+[2025-07-23T01:24:44.694Z] Scraping profile: https://screendrafts.fandom.com/wiki/Drea_Clark
+[2025-07-23T01:24:44.940Z] Successfully scraped: Drea Clark (https://screendrafts.fandom.com/wiki/Drea_Clark)
+[2025-07-23T01:24:45.946Z] Scraping profile: https://screendrafts.fandom.com/wiki/Jocey_Coffman
+[2025-07-23T01:24:46.298Z] Successfully scraped: Jocey Coffman (https://screendrafts.fandom.com/wiki/Jocey_Coffman)
+[2025-07-23T01:24:47.304Z] Scraping profile: https://screendrafts.fandom.com/wiki/Devan_Coggan
+[2025-07-23T01:24:47.630Z] Successfully scraped: Devan Coggan (https://screendrafts.fandom.com/wiki/Devan_Coggan)
+[2025-07-23T01:24:48.639Z] Scraping profile: https://screendrafts.fandom.com/wiki/Bryan_Cogman
+[2025-07-23T01:24:48.939Z] Successfully scraped: Bryan Cogman (https://screendrafts.fandom.com/wiki/Bryan_Cogman)
+[2025-07-23T01:24:49.943Z] Scraping profile: https://screendrafts.fandom.com/wiki/B.J._Colangelo
+[2025-07-23T01:24:50.183Z] Successfully scraped: B.J. Colangelo (https://screendrafts.fandom.com/wiki/B.J._Colangelo)
+[2025-07-23T01:24:51.188Z] Scraping profile: https://screendrafts.fandom.com/wiki/Harmony_Colangelo
+[2025-07-23T01:24:51.526Z] Successfully scraped: Harmony Colangelo (https://screendrafts.fandom.com/wiki/Harmony_Colangelo)
+[2025-07-23T01:24:52.530Z] Scraping profile: https://screendrafts.fandom.com/wiki/Jacqueline_Coley
+[2025-07-23T01:24:52.771Z] Successfully scraped: Jacqueline Coley (https://screendrafts.fandom.com/wiki/Jacqueline_Coley)
+[2025-07-23T01:24:53.789Z] Scraping profile: https://screendrafts.fandom.com/wiki/Brian_Collins
+[2025-07-23T01:24:54.013Z] Successfully scraped: Brian Collins (https://screendrafts.fandom.com/wiki/Brian_Collins)
+[2025-07-23T01:24:55.020Z] Scraping profile: https://screendrafts.fandom.com/wiki/Rance_Collins
+[2025-07-23T01:24:55.292Z] Successfully scraped: Rance Collins (https://screendrafts.fandom.com/wiki/Rance_Collins)
+[2025-07-23T01:24:56.308Z] Scraping profile: https://screendrafts.fandom.com/wiki/Clark_Collis
+[2025-07-23T01:24:56.640Z] Successfully scraped: Clark Collis (https://screendrafts.fandom.com/wiki/Clark_Collis)
+[2025-07-23T01:24:57.660Z] Scraping profile: https://screendrafts.fandom.com/wiki/Kevin_Costello
+[2025-07-23T01:24:57.981Z] Successfully scraped: Kevin Costello (https://screendrafts.fandom.com/wiki/Kevin_Costello)
+[2025-07-23T01:24:58.988Z] Scraping profile: https://screendrafts.fandom.com/wiki/Patrick_Cotnoir
+[2025-07-23T01:24:59.228Z] Successfully scraped: Patrick Cotnoir (https://screendrafts.fandom.com/wiki/Patrick_Cotnoir)
+[2025-07-23T01:25:00.255Z] Scraping profile: https://screendrafts.fandom.com/wiki/Penny_Cox
+[2025-07-23T01:25:00.495Z] Successfully scraped: Penny Cox (https://screendrafts.fandom.com/wiki/Penny_Cox)
+[2025-07-23T01:25:01.508Z] Scraping profile: https://screendrafts.fandom.com/wiki/Daniel_Crooke
+[2025-07-23T01:25:01.826Z] Successfully scraped: Daniel Crooke (https://screendrafts.fandom.com/wiki/Daniel_Crooke)
+[2025-07-23T01:25:02.852Z] Scraping profile: https://screendrafts.fandom.com/wiki/Ash_Crossan
+[2025-07-23T01:25:03.087Z] Successfully scraped: Ash Crossan (https://screendrafts.fandom.com/wiki/Ash_Crossan)
+[2025-07-23T01:25:04.103Z] Scraping profile: https://screendrafts.fandom.com/wiki/Jordan_Crucchiola
+[2025-07-23T01:25:04.430Z] Successfully scraped: Jordan Crucchiola (https://screendrafts.fandom.com/wiki/Jordan_Crucchiola)
+[2025-07-23T01:25:05.448Z] Scraping profile: https://screendrafts.fandom.com/wiki/Beth_Crudele
+[2025-07-23T01:25:05.723Z] Successfully scraped: Beth Crudele (https://screendrafts.fandom.com/wiki/Beth_Crudele)
+[2025-07-23T01:25:06.741Z] Scraping profile: https://screendrafts.fandom.com/wiki/Zed_Cutsinger
+[2025-07-23T01:25:06.978Z] Successfully scraped: Zed Cutsinger (https://screendrafts.fandom.com/wiki/Zed_Cutsinger)
+[2025-07-23T01:25:07.988Z] Scraping profile: https://screendrafts.fandom.com/wiki/Samm_Deighan
+[2025-07-23T01:25:08.266Z] Successfully scraped: Samm Deighan (https://screendrafts.fandom.com/wiki/Samm_Deighan)
+[2025-07-23T01:25:09.276Z] Scraping profile: https://screendrafts.fandom.com/wiki/Chris_Thomas_Devlin
+[2025-07-23T01:25:09.543Z] Successfully scraped: Chris Thomas Devlin (https://screendrafts.fandom.com/wiki/Chris_Thomas_Devlin)
+[2025-07-23T01:25:10.564Z] Scraping profile: https://screendrafts.fandom.com/wiki/Anthony_DiBlasi
+[2025-07-23T01:25:10.849Z] Successfully scraped: Anthony DiBlasi (https://screendrafts.fandom.com/wiki/Anthony_DiBlasi)
+[2025-07-23T01:25:11.863Z] Scraping profile: https://screendrafts.fandom.com/wiki/Evan_Dickson
+[2025-07-23T01:25:12.139Z] Successfully scraped: Evan Dickson (https://screendrafts.fandom.com/wiki/Evan_Dickson)
+[2025-07-23T01:25:13.159Z] Scraping profile: https://screendrafts.fandom.com/wiki/Frank_Dietz
+[2025-07-23T01:25:13.424Z] Successfully scraped: Frank Dietz (https://screendrafts.fandom.com/wiki/Frank_Dietz)
+[2025-07-23T01:25:14.433Z] Scraping profile: https://screendrafts.fandom.com/wiki/Mike_Dougherty
+[2025-07-23T01:25:14.728Z] Successfully scraped: Mike Dougherty (https://screendrafts.fandom.com/wiki/Mike_Dougherty)
+[2025-07-23T01:25:15.746Z] Scraping profile: https://screendrafts.fandom.com/wiki/Jason_Shawhan
+[2025-07-23T01:25:16.054Z] Successfully scraped: Jason Shawhan (https://screendrafts.fandom.com/wiki/Jason_Shawhan)
+[2025-07-23T01:25:17.064Z] Scraping profile: https://screendrafts.fandom.com/wiki/Pat_Driscoll
+[2025-07-23T01:25:17.343Z] Successfully scraped: Pat Driscoll (https://screendrafts.fandom.com/wiki/Pat_Driscoll)
+[2025-07-23T01:25:18.362Z] Scraping profile: https://screendrafts.fandom.com/wiki/Brian_Duffield
+[2025-07-23T01:25:18.607Z] Successfully scraped: Brian Duffield (https://screendrafts.fandom.com/wiki/Brian_Duffield)
+[2025-07-23T01:25:19.616Z] Scraping profile: https://screendrafts.fandom.com/wiki/Alonso_Duralde
+[2025-07-23T01:25:19.877Z] Successfully scraped: Alonso Duralde (https://screendrafts.fandom.com/wiki/Alonso_Duralde)
+[2025-07-23T01:25:20.894Z] Scraping profile: https://screendrafts.fandom.com/wiki/Bilge_Ebiri
+[2025-07-23T01:25:21.146Z] Successfully scraped: Bilge Ebiri (https://screendrafts.fandom.com/wiki/Bilge_Ebiri)
+[2025-07-23T01:25:22.163Z] Scraping profile: https://screendrafts.fandom.com/wiki/Ryan_Estrada
+[2025-07-23T01:25:22.460Z] Successfully scraped: Ryan Estrada (https://screendrafts.fandom.com/wiki/Ryan_Estrada)
+[2025-07-23T01:25:23.475Z] Scraping profile: https://screendrafts.fandom.com/wiki/Chris_Feil
+[2025-07-23T01:25:23.770Z] Successfully scraped: Chris Feil (https://screendrafts.fandom.com/wiki/Chris_Feil)
+[2025-07-23T01:25:24.787Z] Scraping profile: https://screendrafts.fandom.com/wiki/Daniel_Fienberg
+[2025-07-23T01:25:25.086Z] Successfully scraped: Daniel Fienberg (https://screendrafts.fandom.com/wiki/Daniel_Fienberg)
+[2025-07-23T01:25:26.103Z] Scraping profile: https://screendrafts.fandom.com/wiki/Darren_Franich
+[2025-07-23T01:25:26.409Z] Successfully scraped: Darren Franich (https://screendrafts.fandom.com/wiki/Darren_Franich)
+[2025-07-23T01:25:27.419Z] Scraping profile: https://screendrafts.fandom.com/wiki/John_Freiler
+[2025-07-23T01:25:27.741Z] Successfully scraped: John Freiler (https://screendrafts.fandom.com/wiki/John_Freiler)
+[2025-07-23T01:25:28.759Z] Scraping profile: https://screendrafts.fandom.com/wiki/Kate_Freund
+[2025-07-23T01:25:29.071Z] Successfully scraped: Kate Freund (https://screendrafts.fandom.com/wiki/Kate_Freund)
+[2025-07-23T01:25:30.075Z] Scraping profile: https://screendrafts.fandom.com/wiki/Andrew_Furtado
+[2025-07-23T01:25:30.376Z] Successfully scraped: Andrew Furtado (https://screendrafts.fandom.com/wiki/Andrew_Furtado)
+[2025-07-23T01:25:31.399Z] Scraping profile: https://screendrafts.fandom.com/wiki/Jon_Gabrus
+[2025-07-23T01:25:31.653Z] Successfully scraped: Jon Gabrus (https://screendrafts.fandom.com/wiki/Jon_Gabrus)
+[2025-07-23T01:25:32.675Z] Scraping profile: https://screendrafts.fandom.com/wiki/Marya_Gates
+[2025-07-23T01:25:32.979Z] Successfully scraped: Marya Gates (https://screendrafts.fandom.com/wiki/Marya_Gates)
+[2025-07-23T01:25:33.989Z] Scraping profile: https://screendrafts.fandom.com/wiki/Max_Genecov
+[2025-07-23T01:25:34.281Z] Successfully scraped: Max Genecov (https://screendrafts.fandom.com/wiki/Max_Genecov)
+[2025-07-23T01:25:35.311Z] Scraping profile: https://screendrafts.fandom.com/wiki/Joe_George
+[2025-07-23T01:25:35.584Z] Successfully scraped: Joe George (https://screendrafts.fandom.com/wiki/Joe_George)
+[2025-07-23T01:25:36.591Z] Scraping profile: https://screendrafts.fandom.com/wiki/Jill_Gevargizian
+[2025-07-23T01:25:36.895Z] Successfully scraped: Jill Gevargizian (https://screendrafts.fandom.com/wiki/Jill_Gevargizian)
+[2025-07-23T01:25:37.919Z] Scraping profile: https://screendrafts.fandom.com/wiki/Brian_Gillespie
+[2025-07-23T01:25:38.211Z] Successfully scraped: Brian Gillespie (https://screendrafts.fandom.com/wiki/Brian_Gillespie)
+[2025-07-23T01:25:39.234Z] Scraping profile: https://screendrafts.fandom.com/wiki/Dave_Gonzales
+[2025-07-23T01:25:39.473Z] Successfully scraped: Dave Gonzales (https://screendrafts.fandom.com/wiki/Dave_Gonzales)
+[2025-07-23T01:25:40.479Z] Scraping profile: https://screendrafts.fandom.com/wiki/BenDavid_Grabinski
+[2025-07-23T01:25:40.772Z] Successfully scraped: BenDavid Grabinski (https://screendrafts.fandom.com/wiki/BenDavid_Grabinski)
+[2025-07-23T01:25:41.780Z] Scraping profile: https://screendrafts.fandom.com/wiki/Thomas_Grabinski
+[2025-07-23T01:25:42.089Z] Successfully scraped: Thomas Grabinski (https://screendrafts.fandom.com/wiki/Thomas_Grabinski)
+[2025-07-23T01:25:43.106Z] Scraping profile: https://screendrafts.fandom.com/wiki/Brea_Grant
+[2025-07-23T01:25:43.377Z] Successfully scraped: Brea Grant (https://screendrafts.fandom.com/wiki/Brea_Grant)
+[2025-07-23T01:25:44.395Z] Scraping profile: https://screendrafts.fandom.com/wiki/Dylan_Guerra
+[2025-07-23T01:25:44.739Z] Successfully scraped: Dylan Guerra (https://screendrafts.fandom.com/wiki/Dylan_Guerra)
+[2025-07-23T01:25:45.755Z] Scraping profile: https://screendrafts.fandom.com/wiki/Roxana_Hadadi
+[2025-07-23T01:25:46.036Z] Successfully scraped: Roxana Hadadi (https://screendrafts.fandom.com/wiki/Roxana_Hadadi)
+[2025-07-23T01:25:47.064Z] Scraping profile: https://screendrafts.fandom.com/wiki/Kate_Hagen
+[2025-07-23T01:25:47.345Z] Successfully scraped: Kate Hagen (https://screendrafts.fandom.com/wiki/Kate_Hagen)
+[2025-07-23T01:25:48.363Z] Scraping profile: https://screendrafts.fandom.com/wiki/Patrick_Hamilton
+[2025-07-23T01:25:48.595Z] Successfully scraped: Patrick Hamilton (https://screendrafts.fandom.com/wiki/Patrick_Hamilton)
+[2025-07-23T01:25:49.603Z] Scraping profile: https://screendrafts.fandom.com/wiki/Angie_Han
+[2025-07-23T01:25:49.861Z] Successfully scraped: Angie Han (https://screendrafts.fandom.com/wiki/Angie_Han)
+[2025-07-23T01:25:50.871Z] Scraping profile: https://screendrafts.fandom.com/wiki/Kay_Hanley
+[2025-07-23T01:25:51.147Z] Successfully scraped: Kay Hanley (https://screendrafts.fandom.com/wiki/Kay_Hanley)
+[2025-07-23T01:25:52.167Z] Scraping profile: https://screendrafts.fandom.com/wiki/Liz_Hannah
+[2025-07-23T01:25:52.444Z] Successfully scraped: Liz Hannah (https://screendrafts.fandom.com/wiki/Liz_Hannah)
+[2025-07-23T01:25:53.461Z] Scraping profile: https://screendrafts.fandom.com/wiki/Mark_Harris
+[2025-07-23T01:25:53.734Z] Successfully scraped: Mark Harris (https://screendrafts.fandom.com/wiki/Mark_Harris)
+[2025-07-23T01:25:54.741Z] Scraping profile: https://screendrafts.fandom.com/wiki/Alison_Herman
+[2025-07-23T01:25:55.026Z] Successfully scraped: Alison Herman (https://screendrafts.fandom.com/wiki/Alison_Herman)
+[2025-07-23T01:25:56.045Z] Scraping profile: https://screendrafts.fandom.com/wiki/Ben_Hethcoat
+[2025-07-23T01:25:56.397Z] Successfully scraped: Ben Hethcoat (https://screendrafts.fandom.com/wiki/Ben_Hethcoat)
+[2025-07-23T01:25:57.413Z] Scraping profile: https://screendrafts.fandom.com/wiki/Chris_Hewitt
+[2025-07-23T01:25:57.657Z] Successfully scraped: Chris Hewitt (https://screendrafts.fandom.com/wiki/Chris_Hewitt)
+[2025-07-23T01:25:58.673Z] Scraping profile: https://screendrafts.fandom.com/wiki/Libby_Hill
+[2025-07-23T01:25:58.897Z] Successfully scraped: Libby Hill (https://screendrafts.fandom.com/wiki/Libby_Hill)
+[2025-07-23T01:25:59.901Z] Scraping profile: https://screendrafts.fandom.com/wiki/Jordan_Hoffman
+[2025-07-23T01:26:00.191Z] Successfully scraped: Jordan Hoffman (https://screendrafts.fandom.com/wiki/Jordan_Hoffman)
+[2025-07-23T01:26:01.204Z] Scraping profile: https://screendrafts.fandom.com/wiki/Walter_Hollmann
+[2025-07-23T01:26:01.446Z] Successfully scraped: Walter Hollmann (https://screendrafts.fandom.com/wiki/Walter_Hollmann)
+[2025-07-23T01:26:02.462Z] Scraping profile: https://screendrafts.fandom.com/wiki/Dave_Holmes
+[2025-07-23T01:26:02.767Z] Successfully scraped: Dave Holmes (https://screendrafts.fandom.com/wiki/Dave_Holmes)
+[2025-07-23T01:26:03.776Z] Scraping profile: https://screendrafts.fandom.com/wiki/Linda_Holmes
+[2025-07-23T01:26:04.101Z] Successfully scraped: Linda Holmes (https://screendrafts.fandom.com/wiki/Linda_Holmes)
+[2025-07-23T01:26:05.113Z] Scraping profile: https://screendrafts.fandom.com/wiki/Christian_Holub
+[2025-07-23T01:26:05.364Z] Successfully scraped: Christian Holub (https://screendrafts.fandom.com/wiki/Christian_Holub)
+[2025-07-23T01:26:06.386Z] Scraping profile: https://screendrafts.fandom.com/wiki/Heidi_Honeycutt
+[2025-07-23T01:26:06.618Z] Successfully scraped: Heidi Honeycutt (https://screendrafts.fandom.com/wiki/Heidi_Honeycutt)
+[2025-07-23T01:26:07.633Z] Scraping profile: https://screendrafts.fandom.com/wiki/Blake_Howard
+[2025-07-23T01:26:07.924Z] Successfully scraped: Blake Howard (https://screendrafts.fandom.com/wiki/Blake_Howard)
+[2025-07-23T01:26:08.942Z] Scraping profile: https://screendrafts.fandom.com/wiki/Gina_Ippolito
+[2025-07-23T01:26:09.268Z] Successfully scraped: Gina Ippolito (https://screendrafts.fandom.com/wiki/Gina_Ippolito)
+[2025-07-23T01:26:10.284Z] Scraping profile: https://screendrafts.fandom.com/wiki/Phil_Iscove
+[2025-07-23T01:26:10.539Z] Successfully scraped: Phil Iscove (https://screendrafts.fandom.com/wiki/Phil_Iscove)
+[2025-07-23T01:26:11.547Z] Scraping profile: https://screendrafts.fandom.com/wiki/Angelique_Jackson
+[2025-07-23T01:26:11.811Z] Successfully scraped: Angelique Jackson (https://screendrafts.fandom.com/wiki/Angelique_Jackson)
+[2025-07-23T01:26:12.820Z] Scraping profile: https://screendrafts.fandom.com/wiki/Cameron_James
+[2025-07-23T01:26:13.097Z] Successfully scraped: Cameron James (https://screendrafts.fandom.com/wiki/Cameron_James)
+[2025-07-23T01:26:14.112Z] Scraping profile: https://screendrafts.fandom.com/wiki/Jeff_Jensen
+[2025-07-23T01:26:14.357Z] Successfully scraped: Jeff Jensen (https://screendrafts.fandom.com/wiki/Jeff_Jensen)
+[2025-07-23T01:26:15.374Z] Scraping profile: https://screendrafts.fandom.com/wiki/Jen_Johans
+[2025-07-23T01:26:15.639Z] Successfully scraped: Jen Johans (https://screendrafts.fandom.com/wiki/Jen_Johans)
+[2025-07-23T01:26:16.651Z] Scraping profile: https://screendrafts.fandom.com/wiki/Sean_Jordan
+[2025-07-23T01:26:16.912Z] Successfully scraped: Sean Jordan (https://screendrafts.fandom.com/wiki/Sean_Jordan)
+[2025-07-23T01:26:17.928Z] Scraping profile: https://screendrafts.fandom.com/wiki/Elliott_Kalan
+[2025-07-23T01:26:18.235Z] Successfully scraped: Elliott Kalan (https://screendrafts.fandom.com/wiki/Elliott_Kalan)
+[2025-07-23T01:26:19.251Z] Scraping profile: https://screendrafts.fandom.com/wiki/Elric_Kane
+[2025-07-23T01:26:19.568Z] Successfully scraped: Elric Kane (https://screendrafts.fandom.com/wiki/Elric_Kane)
+[2025-07-23T01:26:20.581Z] Scraping profile: https://screendrafts.fandom.com/wiki/Inkoo_Kang
+[2025-07-23T01:26:20.823Z] Successfully scraped: Inkoo Kang (https://screendrafts.fandom.com/wiki/Inkoo_Kang)
+[2025-07-23T01:26:21.842Z] Scraping profile: https://screendrafts.fandom.com/wiki/Ian_Karmel
+[2025-07-23T01:26:22.097Z] Successfully scraped: Ian Karmel (https://screendrafts.fandom.com/wiki/Ian_Karmel)
+[2025-07-23T01:26:23.112Z] Scraping profile: https://screendrafts.fandom.com/wiki/Clay_Keller
+[2025-07-23T01:26:23.376Z] Successfully scraped: Clay Keller (https://screendrafts.fandom.com/wiki/Clay_Keller)
+[2025-07-23T01:26:24.393Z] Scraping profile: https://screendrafts.fandom.com/wiki/Sean_Keller
+[2025-07-23T01:26:24.635Z] Successfully scraped: Sean Keller (https://screendrafts.fandom.com/wiki/Sean_Keller)
+[2025-07-23T01:26:25.645Z] Scraping profile: https://screendrafts.fandom.com/wiki/Halle_Kiefer
+[2025-07-23T01:26:25.861Z] Successfully scraped: Halle Kiefer (https://screendrafts.fandom.com/wiki/Halle_Kiefer)
+[2025-07-23T01:26:26.866Z] Scraping profile: https://screendrafts.fandom.com/wiki/David_Kittredge
+[2025-07-23T01:26:27.140Z] Successfully scraped: David Kittredge (https://screendrafts.fandom.com/wiki/David_Kittredge)
+[2025-07-23T01:26:28.149Z] Scraping profile: https://screendrafts.fandom.com/wiki/Jesse_Knight
+[2025-07-23T01:26:28.389Z] Successfully scraped: Jesse Knight (https://screendrafts.fandom.com/wiki/Jesse_Knight)
+[2025-07-23T01:26:29.406Z] Scraping profile: https://screendrafts.fandom.com/wiki/Matthew_Krol
+[2025-07-23T01:26:29.502Z] Successfully scraped: Matthew Krol (https://screendrafts.fandom.com/wiki/Matthew_Krol)
+[2025-07-23T01:26:30.516Z] Scraping profile: https://screendrafts.fandom.com/wiki/Justin_LaLiberty
+[2025-07-23T01:26:30.798Z] Successfully scraped: Justin LaLiberty (https://screendrafts.fandom.com/wiki/Justin_LaLiberty)
+[2025-07-23T01:26:31.806Z] Scraping profile: https://screendrafts.fandom.com/wiki/Aaron_LaPlante
+[2025-07-23T01:26:32.065Z] Successfully scraped: Aaron LaPlante (https://screendrafts.fandom.com/wiki/Aaron_LaPlante)
+[2025-07-23T01:26:33.077Z] Scraping profile: https://screendrafts.fandom.com/wiki/Josh_Larsen
+[2025-07-23T01:26:33.336Z] Successfully scraped: Josh Larsen (https://screendrafts.fandom.com/wiki/Josh_Larsen)
+[2025-07-23T01:26:34.353Z] Scraping profile: https://screendrafts.fandom.com/wiki/Derek_Lawrence
+[2025-07-23T01:26:34.628Z] Successfully scraped: Derek Lawrence (https://screendrafts.fandom.com/wiki/Derek_Lawrence)
+[2025-07-23T01:26:35.653Z] Scraping profile: https://screendrafts.fandom.com/wiki/Alison_Leiby
+[2025-07-23T01:26:35.888Z] Successfully scraped: Alison Leiby (https://screendrafts.fandom.com/wiki/Alison_Leiby)
+[2025-07-23T01:26:36.897Z] Scraping profile: https://screendrafts.fandom.com/wiki/Maureen_Lee_Lenker
+[2025-07-23T01:26:37.164Z] Successfully scraped: Maureen Lee Lenker (https://screendrafts.fandom.com/wiki/Maureen_Lee_Lenker)
+[2025-07-23T01:26:38.180Z] Scraping profile: https://screendrafts.fandom.com/wiki/Samm_Levine
+[2025-07-23T01:26:38.480Z] Successfully scraped: Samm Levine (https://screendrafts.fandom.com/wiki/Samm_Levine)
+[2025-07-23T01:26:39.486Z] Scraping profile: https://screendrafts.fandom.com/wiki/Andy_Levy
+[2025-07-23T01:26:39.804Z] Successfully scraped: Andy Levy (https://screendrafts.fandom.com/wiki/Andy_Levy)
+[2025-07-23T01:26:40.819Z] Scraping profile: https://screendrafts.fandom.com/wiki/Maria_Lewis
+[2025-07-23T01:26:41.139Z] Successfully scraped: Maria Lewis (https://screendrafts.fandom.com/wiki/Maria_Lewis)
+[2025-07-23T01:26:42.143Z] Scraping profile: https://screendrafts.fandom.com/wiki/Nichol_Lovett
+[2025-07-23T01:26:42.396Z] Successfully scraped: Nichol Lovett (https://screendrafts.fandom.com/wiki/Nichol_Lovett)
+[2025-07-23T01:26:43.417Z] Scraping profile: https://screendrafts.fandom.com/wiki/Alicia_Lutes
+[2025-07-23T01:26:43.722Z] Successfully scraped: Alicia Lutes (https://screendrafts.fandom.com/wiki/Alicia_Lutes)
+[2025-07-23T01:26:44.724Z] Scraping profile: https://screendrafts.fandom.com/wiki/Joe_Lynch
+[2025-07-23T01:26:45.056Z] Successfully scraped: Joe Lynch (https://screendrafts.fandom.com/wiki/Joe_Lynch)
+[2025-07-23T01:26:46.070Z] Scraping profile: https://screendrafts.fandom.com/wiki/Mike_Makowsky
+[2025-07-23T01:26:46.324Z] Successfully scraped: Mike Makowsky (https://screendrafts.fandom.com/wiki/Mike_Makowsky)
+[2025-07-23T01:26:47.341Z] Scraping profile: https://screendrafts.fandom.com/wiki/Ben_Mankiewicz
+[2025-07-23T01:26:47.611Z] Successfully scraped: Ben Mankiewicz (https://screendrafts.fandom.com/wiki/Ben_Mankiewicz)
+[2025-07-23T01:26:48.629Z] Scraping profile: https://screendrafts.fandom.com/wiki/Ryan_Marker
+[2025-07-23T01:26:48.918Z] Successfully scraped: Ryan Marker (https://screendrafts.fandom.com/wiki/Ryan_Marker)
+[2025-07-23T01:26:49.943Z] Scraping profile: https://screendrafts.fandom.com/wiki/Blake_Masters
+[2025-07-23T01:26:50.177Z] Successfully scraped: Blake Masters (https://screendrafts.fandom.com/wiki/Blake_Masters)
+[2025-07-23T01:26:51.184Z] Scraping profile: https://screendrafts.fandom.com/wiki/Angela_Matano
+[2025-07-23T01:26:51.424Z] Successfully scraped: Angela Matano (https://screendrafts.fandom.com/wiki/Angela_Matano)
+[2025-07-23T01:26:52.447Z] Scraping profile: https://screendrafts.fandom.com/wiki/Dane_McDonald
+[2025-07-23T01:26:52.696Z] Successfully scraped: Dane McDonald (https://screendrafts.fandom.com/wiki/Dane_McDonald)
+[2025-07-23T01:26:53.702Z] Scraping profile: https://screendrafts.fandom.com/wiki/David_Ian_McKendry
+[2025-07-23T01:26:53.964Z] Successfully scraped: David Ian McKendry (https://screendrafts.fandom.com/wiki/David_Ian_McKendry)
+[2025-07-23T01:26:54.977Z] Scraping profile: https://screendrafts.fandom.com/wiki/Rebekah_McKendry
+[2025-07-23T01:26:55.230Z] Successfully scraped: Rebekah McKendry (https://screendrafts.fandom.com/wiki/Rebekah_McKendry)
+[2025-07-23T01:26:56.239Z] Scraping profile: https://screendrafts.fandom.com/wiki/Drew_McWeeny
+[2025-07-23T01:26:56.521Z] Successfully scraped: Drew McWeeny (https://screendrafts.fandom.com/wiki/Drew_McWeeny)
+[2025-07-23T01:26:57.530Z] Scraping profile: https://screendrafts.fandom.com/wiki/Ben_Mekler
+[2025-07-23T01:26:57.808Z] Successfully scraped: Ben Mekler (https://screendrafts.fandom.com/wiki/Ben_Mekler)
+[2025-07-23T01:26:58.813Z] Scraping profile: https://screendrafts.fandom.com/wiki/Matt_Mercer
+[2025-07-23T01:26:59.107Z] Successfully scraped: Matt Mercer (https://screendrafts.fandom.com/wiki/Matt_Mercer)
+[2025-07-23T01:27:00.114Z] Scraping profile: https://screendrafts.fandom.com/wiki/Andrew_Merrill
+[2025-07-23T01:27:00.379Z] Successfully scraped: Andrew Merrill (https://screendrafts.fandom.com/wiki/Andrew_Merrill)
+[2025-07-23T01:27:01.384Z] Scraping profile: https://screendrafts.fandom.com/wiki/Gavin_Mevius
+[2025-07-23T01:27:01.654Z] Successfully scraped: Gavin Mevius (https://screendrafts.fandom.com/wiki/Gavin_Mevius)
+[2025-07-23T01:27:02.670Z] Scraping profile: https://screendrafts.fandom.com/wiki/Liz_Shannon_Miller
+[2025-07-23T01:27:02.928Z] Successfully scraped: Liz Shannon Miller (https://screendrafts.fandom.com/wiki/Liz_Shannon_Miller)
+[2025-07-23T01:27:03.951Z] Scraping profile: https://screendrafts.fandom.com/wiki/Neil_Miller
+[2025-07-23T01:27:04.247Z] Successfully scraped: Neil Miller (https://screendrafts.fandom.com/wiki/Neil_Miller)
+[2025-07-23T01:27:05.251Z] Scraping profile: https://screendrafts.fandom.com/wiki/Wynter_Mitchell
+[2025-07-23T01:27:05.491Z] Successfully scraped: Wynter Mitchell (https://screendrafts.fandom.com/wiki/Wynter_Mitchell)
+[2025-07-23T01:27:06.508Z] Scraping profile: https://screendrafts.fandom.com/wiki/Grant_Moninger
+[2025-07-23T01:27:06.750Z] Successfully scraped: Grant Moninger (https://screendrafts.fandom.com/wiki/Grant_Moninger)
+[2025-07-23T01:27:07.757Z] Scraping profile: https://screendrafts.fandom.com/wiki/Eric_Moore
+[2025-07-23T01:27:08.029Z] Successfully scraped: Eric Moore (https://screendrafts.fandom.com/wiki/Eric_Moore)
+[2025-07-23T01:27:09.044Z] Scraping profile: https://screendrafts.fandom.com/wiki/Jordan_Morris
+[2025-07-23T01:27:09.326Z] Successfully scraped: Jordan Morris (https://screendrafts.fandom.com/wiki/Jordan_Morris)
+[2025-07-23T01:27:10.343Z] Scraping profile: https://screendrafts.fandom.com/wiki/Steven_Ray_Morris
+[2025-07-23T01:27:10.635Z] Successfully scraped: Steven Ray Morris (https://screendrafts.fandom.com/wiki/Steven_Ray_Morris)
+[2025-07-23T01:27:11.649Z] Scraping profile: https://screendrafts.fandom.com/wiki/Jared_Moshe
+[2025-07-23T01:27:11.868Z] Successfully scraped: Jared Moshe (https://screendrafts.fandom.com/wiki/Jared_Moshe)
+[2025-07-23T01:27:12.886Z] Scraping profile: https://screendrafts.fandom.com/wiki/Jarrod_Murray
+[2025-07-23T01:27:13.166Z] Successfully scraped: Jarrod Murray (https://screendrafts.fandom.com/wiki/Jarrod_Murray)
+[2025-07-23T01:27:14.185Z] Scraping profile: https://screendrafts.fandom.com/wiki/Noel_Murray
+[2025-07-23T01:27:14.449Z] Successfully scraped: Noel Murray (https://screendrafts.fandom.com/wiki/Noel_Murray)
+[2025-07-23T01:27:15.460Z] Scraping profile: https://screendrafts.fandom.com/wiki/Darrin_Navarro
+[2025-07-23T01:27:15.715Z] Successfully scraped: Darrin Navarro (https://screendrafts.fandom.com/wiki/Darrin_Navarro)
+[2025-07-23T01:27:16.724Z] Scraping profile: https://screendrafts.fandom.com/wiki/Kenny_Neibart
+[2025-07-23T01:27:16.983Z] Successfully scraped: Kenny Neibart (https://screendrafts.fandom.com/wiki/Kenny_Neibart)
+[2025-07-23T01:27:17.996Z] Scraping profile: https://screendrafts.fandom.com/wiki/Griffin_Newman
+[2025-07-23T01:27:18.308Z] Successfully scraped: Griffin Newman (https://screendrafts.fandom.com/wiki/Griffin_Newman)
+[2025-07-23T01:27:19.320Z] Scraping profile: https://screendrafts.fandom.com/wiki/Amy_Nicholson
+[2025-07-23T01:27:19.567Z] Successfully scraped: Amy Nicholson (https://screendrafts.fandom.com/wiki/Amy_Nicholson)
+[2025-07-23T01:27:20.586Z] Scraping profile: https://screendrafts.fandom.com/wiki/Phil_Nobile_Jr.
+[2025-07-23T01:27:20.839Z] Successfully scraped: Phil Nobile Jr. (https://screendrafts.fandom.com/wiki/Phil_Nobile_Jr.)
+[2025-07-23T01:27:21.842Z] Scraping profile: https://screendrafts.fandom.com/wiki/Oriana_Nudo
+[2025-07-23T01:27:22.187Z] Successfully scraped: Oriana Nudo (https://screendrafts.fandom.com/wiki/Oriana_Nudo)
+[2025-07-23T01:27:23.191Z] Scraping profile: https://screendrafts.fandom.com/wiki/Ify_Nwadiwe
+[2025-07-23T01:27:23.446Z] Successfully scraped: Ify Nwadiwe (https://screendrafts.fandom.com/wiki/Ify_Nwadiwe)
+[2025-07-23T01:27:24.461Z] Scraping profile: https://screendrafts.fandom.com/wiki/Mallory_O%27Meara
+[2025-07-23T01:27:24.711Z] Successfully scraped: Mallory O'Meara (https://screendrafts.fandom.com/wiki/Mallory_O%27Meara)
+[2025-07-23T01:27:25.725Z] Scraping profile: https://screendrafts.fandom.com/wiki/Dave_Parker
+[2025-07-23T01:27:25.991Z] Successfully scraped: Dave Parker (https://screendrafts.fandom.com/wiki/Dave_Parker)
+[2025-07-23T01:27:27.007Z] Scraping profile: https://screendrafts.fandom.com/wiki/Patreon_Members
+[2025-07-23T01:27:27.245Z] Successfully scraped: Patreon Members (https://screendrafts.fandom.com/wiki/Patreon_Members)
+[2025-07-23T01:27:28.263Z] Scraping profile: https://screendrafts.fandom.com/wiki/Louis_Peitzman
+[2025-07-23T01:27:28.575Z] Successfully scraped: Louis Peitzman (https://screendrafts.fandom.com/wiki/Louis_Peitzman)
+[2025-07-23T01:27:29.587Z] Scraping profile: https://screendrafts.fandom.com/wiki/Eric_Pennycoff
+[2025-07-23T01:27:29.849Z] Successfully scraped: Eric Pennycoff (https://screendrafts.fandom.com/wiki/Eric_Pennycoff)
+[2025-07-23T01:27:30.866Z] Scraping profile: https://screendrafts.fandom.com/wiki/Matt_Perez-Mora
+[2025-07-23T01:27:31.186Z] Successfully scraped: Matt Perez-Mora (https://screendrafts.fandom.com/wiki/Matt_Perez-Mora)
+[2025-07-23T01:27:32.207Z] Scraping profile: https://screendrafts.fandom.com/wiki/Eric_Plese
+[2025-07-23T01:27:32.422Z] Successfully scraped: Eric Plese (https://screendrafts.fandom.com/wiki/Eric_Plese)
+[2025-07-23T01:27:33.431Z] Scraping profile: https://screendrafts.fandom.com/wiki/James_Ponsoldt
+[2025-07-23T01:27:33.680Z] Successfully scraped: James Ponsoldt (https://screendrafts.fandom.com/wiki/James_Ponsoldt)
+[2025-07-23T01:27:34.695Z] Scraping profile: https://screendrafts.fandom.com/wiki/Kristy_Puchko
+[2025-07-23T01:27:35.018Z] Successfully scraped: Kristy Puchko (https://screendrafts.fandom.com/wiki/Kristy_Puchko)
+[2025-07-23T01:27:36.035Z] Scraping profile: https://screendrafts.fandom.com/wiki/Connor_Ratliff
+[2025-07-23T01:27:36.259Z] Successfully scraped: Connor Ratliff (https://screendrafts.fandom.com/wiki/Connor_Ratliff)
+[2025-07-23T01:27:37.277Z] Scraping profile: https://screendrafts.fandom.com/wiki/Joe_Reid
+[2025-07-23T01:27:37.633Z] Successfully scraped: Joe Reid (https://screendrafts.fandom.com/wiki/Joe_Reid)
+[2025-07-23T01:27:38.643Z] Scraping profile: https://screendrafts.fandom.com/wiki/Carla_Renata
+[2025-07-23T01:27:38.954Z] Successfully scraped: Carla Renata (https://screendrafts.fandom.com/wiki/Carla_Renata)
+[2025-07-23T01:27:39.959Z] Scraping profile: https://screendrafts.fandom.com/wiki/Luis_Rendon
+[2025-07-23T01:27:40.199Z] Successfully scraped: Luis Rendon (https://screendrafts.fandom.com/wiki/Luis_Rendon)
+[2025-07-23T01:27:41.216Z] Scraping profile: https://screendrafts.fandom.com/wiki/Scott_Reynolds
+[2025-07-23T01:27:41.530Z] Successfully scraped: Scott Reynolds (https://screendrafts.fandom.com/wiki/Scott_Reynolds)
+[2025-07-23T01:27:42.547Z] Scraping profile: https://screendrafts.fandom.com/wiki/Katey_Rich
+[2025-07-23T01:27:42.797Z] Successfully scraped: Katey Rich (https://screendrafts.fandom.com/wiki/Katey_Rich)
+[2025-07-23T01:27:43.817Z] Scraping profile: https://screendrafts.fandom.com/wiki/Jenelle_Riley
+[2025-07-23T01:27:44.110Z] Successfully scraped: Jenelle Riley (https://screendrafts.fandom.com/wiki/Jenelle_Riley)
+[2025-07-23T01:27:45.118Z] Scraping profile: https://screendrafts.fandom.com/wiki/Joanna_Robinson
+[2025-07-23T01:27:45.386Z] Successfully scraped: Joanna Robinson (https://screendrafts.fandom.com/wiki/Joanna_Robinson)
+[2025-07-23T01:27:46.399Z] Scraping profile: https://screendrafts.fandom.com/wiki/Jonah_Ray_Rodrigues
+[2025-07-23T01:27:46.642Z] Successfully scraped: Jonah Ray Rodrigues (https://screendrafts.fandom.com/wiki/Jonah_Ray_Rodrigues)
+[2025-07-23T01:27:47.646Z] Scraping profile: https://screendrafts.fandom.com/wiki/Miguel_Rodriguez
+[2025-07-23T01:27:47.927Z] Successfully scraped: Miguel Rodriguez (https://screendrafts.fandom.com/wiki/Miguel_Rodriguez)
+[2025-07-23T01:27:48.952Z] Scraping profile: https://screendrafts.fandom.com/wiki/Andrew_Roebuck
+[2025-07-23T01:27:49.237Z] Successfully scraped: Andrew Roebuck (https://screendrafts.fandom.com/wiki/Andrew_Roebuck)
+[2025-07-23T01:27:50.246Z] Scraping profile: https://screendrafts.fandom.com/wiki/Mallory_Rubin
+[2025-07-23T01:27:50.483Z] Successfully scraped: Mallory Rubin (https://screendrafts.fandom.com/wiki/Mallory_Rubin)
+[2025-07-23T01:27:51.503Z] Scraping profile: https://screendrafts.fandom.com/wiki/Mike_Ryan
+[2025-07-23T01:27:51.767Z] Successfully scraped: Mike Ryan (https://screendrafts.fandom.com/wiki/Mike_Ryan)
+[2025-07-23T01:27:52.778Z] Scraping profile: https://screendrafts.fandom.com/wiki/Fayna_Sanchez
+[2025-07-23T01:27:53.053Z] Successfully scraped: Fayna Sanchez (https://screendrafts.fandom.com/wiki/Fayna_Sanchez)
+[2025-07-23T01:27:54.071Z] Scraping profile: https://screendrafts.fandom.com/wiki/Brian_Saur
+[2025-07-23T01:27:54.543Z] Successfully scraped: Brian Saur (https://screendrafts.fandom.com/wiki/Brian_Saur)
+[2025-07-23T01:27:55.559Z] Scraping profile: https://screendrafts.fandom.com/wiki/Dave_Schilling
+[2025-07-23T01:27:55.869Z] Successfully scraped: Dave Schilling (https://screendrafts.fandom.com/wiki/Dave_Schilling)
+[2025-07-23T01:27:56.881Z] Scraping profile: https://screendrafts.fandom.com/wiki/Dana_Schwartz
+[2025-07-23T01:27:57.096Z] Successfully scraped: Dana Schwartz (https://screendrafts.fandom.com/wiki/Dana_Schwartz)
+[2025-07-23T01:27:58.112Z] Scraping profile: https://screendrafts.fandom.com/wiki/Chris_Scleicher
+[2025-07-23T01:27:58.394Z] Successfully scraped: Chris Scleicher (https://screendrafts.fandom.com/wiki/Chris_Scleicher)
+[2025-07-23T01:27:59.410Z] Scraping profile: https://screendrafts.fandom.com/wiki/Mike_Scollins
+[2025-07-23T01:27:59.691Z] Successfully scraped: Mike Scollins (https://screendrafts.fandom.com/wiki/Mike_Scollins)
+[2025-07-23T01:28:00.703Z] Scraping profile: https://screendrafts.fandom.com/wiki/Witney_Seibold
+[2025-07-23T01:28:00.993Z] Successfully scraped: Witney Seibold (https://screendrafts.fandom.com/wiki/Witney_Seibold)
+[2025-07-23T01:28:02.023Z] Scraping profile: https://screendrafts.fandom.com/wiki/Nick_de_Semlyen
+[2025-07-23T01:28:02.320Z] Successfully scraped: Nick de Semlyen (https://screendrafts.fandom.com/wiki/Nick_de_Semlyen)
+[2025-07-23T01:28:03.325Z] Scraping profile: https://screendrafts.fandom.com/wiki/Alan_Sepinwall
+[2025-07-23T01:28:03.691Z] Successfully scraped: Alan Sepinwall (https://screendrafts.fandom.com/wiki/Alan_Sepinwall)
+[2025-07-23T01:28:04.709Z] Scraping profile: https://screendrafts.fandom.com/wiki/Helen_Shang
+[2025-07-23T01:28:05.003Z] Successfully scraped: Helen Shang (https://screendrafts.fandom.com/wiki/Helen_Shang)
+[2025-07-23T01:28:06.006Z] Scraping profile: https://screendrafts.fandom.com/wiki/Jason_Sheridan
+[2025-07-23T01:28:06.266Z] Successfully scraped: Jason Sheridan (https://screendrafts.fandom.com/wiki/Jason_Sheridan)
+[2025-07-23T01:28:07.285Z] Scraping profile: https://screendrafts.fandom.com/wiki/Kimmy_Shields
+[2025-07-23T01:28:07.577Z] Successfully scraped: Kimmy Shields (https://screendrafts.fandom.com/wiki/Kimmy_Shields)
+[2025-07-23T01:28:08.604Z] Scraping profile: https://screendrafts.fandom.com/wiki/Matt_Singer
+[2025-07-23T01:28:08.836Z] Successfully scraped: Matt Singer (https://screendrafts.fandom.com/wiki/Matt_Singer)
+[2025-07-23T01:28:09.842Z] Scraping profile: https://screendrafts.fandom.com/wiki/Piya_Sinha-Roy
+[2025-07-23T01:28:10.079Z] Successfully scraped: Piya Sinha-Roy (https://screendrafts.fandom.com/wiki/Piya_Sinha-Roy)
+[2025-07-23T01:28:11.104Z] Scraping profile: https://screendrafts.fandom.com/wiki/Graham_Skipper
+[2025-07-23T01:28:11.386Z] Successfully scraped: Graham Skipper (https://screendrafts.fandom.com/wiki/Graham_Skipper)
+[2025-07-23T01:28:12.393Z] Scraping profile: https://screendrafts.fandom.com/wiki/Slim
+[2025-07-23T01:28:12.697Z] Successfully scraped: Slim (https://screendrafts.fandom.com/wiki/Slim)
+[2025-07-23T01:28:13.715Z] Scraping profile: https://screendrafts.fandom.com/wiki/Amanda_Smith
+[2025-07-23T01:28:14.027Z] Successfully scraped: Amanda Smith (https://screendrafts.fandom.com/wiki/Amanda_Smith)
+[2025-07-23T01:28:15.039Z] Scraping profile: https://screendrafts.fandom.com/wiki/Bethy_Squires
+[2025-07-23T01:28:15.331Z] Successfully scraped: Bethy Squires (https://screendrafts.fandom.com/wiki/Bethy_Squires)
+[2025-07-23T01:28:16.347Z] Scraping profile: https://screendrafts.fandom.com/wiki/Emily_St._James
+[2025-07-23T01:28:16.592Z] Successfully scraped: Emily St. James (https://screendrafts.fandom.com/wiki/Emily_St._James)
+[2025-07-23T01:28:17.595Z] Scraping profile: https://screendrafts.fandom.com/wiki/Ryan_Stanger
+[2025-07-23T01:28:17.887Z] Successfully scraped: Ryan Stanger (https://screendrafts.fandom.com/wiki/Ryan_Stanger)
+[2025-07-23T01:28:18.890Z] Scraping profile: https://screendrafts.fandom.com/wiki/Chelsea_Stardust
+[2025-07-23T01:28:19.158Z] Successfully scraped: Chelsea Stardust (https://screendrafts.fandom.com/wiki/Chelsea_Stardust)
+[2025-07-23T01:28:20.175Z] Scraping profile: https://screendrafts.fandom.com/wiki/Riley_Stearns
+[2025-07-23T01:28:20.428Z] Successfully scraped: Riley Stearns (https://screendrafts.fandom.com/wiki/Riley_Stearns)
+[2025-07-23T01:28:21.441Z] Scraping profile: https://screendrafts.fandom.com/wiki/Sarah_Sterling
+[2025-07-23T01:28:21.687Z] Successfully scraped: Sarah Sterling (https://screendrafts.fandom.com/wiki/Sarah_Sterling)
+[2025-07-23T01:28:22.696Z] Scraping profile: https://screendrafts.fandom.com/wiki/Mikelle_Street
+[2025-07-23T01:28:22.950Z] Successfully scraped: Mikelle Street (https://screendrafts.fandom.com/wiki/Mikelle_Street)
+[2025-07-23T01:28:23.966Z] Scraping profile: https://screendrafts.fandom.com/wiki/Brandon_Streussnig
+[2025-07-23T01:28:24.189Z] Successfully scraped: Brandon Streussnig (https://screendrafts.fandom.com/wiki/Brandon_Streussnig)
+[2025-07-23T01:28:25.191Z] Scraping profile: https://screendrafts.fandom.com/wiki/Anam_Syed
+[2025-07-23T01:28:25.454Z] Successfully scraped: Anam Syed (https://screendrafts.fandom.com/wiki/Anam_Syed)
+[2025-07-23T01:28:26.481Z] Scraping profile: https://screendrafts.fandom.com/wiki/Kris_Tapley
+[2025-07-23T01:28:26.716Z] Successfully scraped: Kris Tapley (https://screendrafts.fandom.com/wiki/Kris_Tapley)
+[2025-07-23T01:28:27.728Z] Scraping profile: https://screendrafts.fandom.com/wiki/Alex_Terapane
+[2025-07-23T01:28:27.985Z] Successfully scraped: Alex Terapane (https://screendrafts.fandom.com/wiki/Alex_Terapane)
+[2025-07-23T01:28:28.997Z] Scraping profile: https://screendrafts.fandom.com/wiki/Daniel_Thompson
+[2025-07-23T01:28:29.257Z] Successfully scraped: Daniel Thompson (https://screendrafts.fandom.com/wiki/Daniel_Thompson)
+[2025-07-23T01:28:30.272Z] Scraping profile: https://screendrafts.fandom.com/wiki/Holly_Thompson
+[2025-07-23T01:28:30.528Z] Successfully scraped: Holly Thompson (https://screendrafts.fandom.com/wiki/Holly_Thompson)
+[2025-07-23T01:28:31.544Z] Scraping profile: https://screendrafts.fandom.com/wiki/Alec_Tibaldi
+[2025-07-23T01:28:31.818Z] Successfully scraped: Alec Tibaldi (https://screendrafts.fandom.com/wiki/Alec_Tibaldi)
+[2025-07-23T01:28:32.823Z] Scraping profile: https://screendrafts.fandom.com/wiki/Alexei_Toliopoulos
+[2025-07-23T01:28:33.105Z] Successfully scraped: Alexei Toliopoulos (https://screendrafts.fandom.com/wiki/Alexei_Toliopoulos)
+[2025-07-23T01:28:34.130Z] Scraping profile: https://screendrafts.fandom.com/wiki/Luc%C3%A9_Tomlin-Brenner
+[2025-07-23T01:28:34.367Z] Successfully scraped: Lucé Tomlin-Brenner (https://screendrafts.fandom.com/wiki/Luc%C3%A9_Tomlin-Brenner)
+[2025-07-23T01:28:35.385Z] Scraping profile: https://screendrafts.fandom.com/wiki/Karen_Tongson
+[2025-07-23T01:28:35.604Z] Successfully scraped: Karen Tongson (https://screendrafts.fandom.com/wiki/Karen_Tongson)
+[2025-07-23T01:28:36.610Z] Scraping profile: https://screendrafts.fandom.com/wiki/Dan_Trachtenberg
+[2025-07-23T01:28:36.891Z] Successfully scraped: Dan Trachtenberg (https://screendrafts.fandom.com/wiki/Dan_Trachtenberg)
+[2025-07-23T01:28:37.900Z] Scraping profile: https://screendrafts.fandom.com/wiki/Kevin_Tully
+[2025-07-23T01:28:38.182Z] Successfully scraped: Kevin Tully (https://screendrafts.fandom.com/wiki/Kevin_Tully)
+[2025-07-23T01:28:39.193Z] Scraping profile: https://screendrafts.fandom.com/wiki/Kyle_Turner
+[2025-07-23T01:28:39.449Z] Successfully scraped: Kyle Turner (https://screendrafts.fandom.com/wiki/Kyle_Turner)
+[2025-07-23T01:28:40.452Z] Scraping profile: https://screendrafts.fandom.com/wiki/Adam_B._Vary
+[2025-07-23T01:28:40.696Z] Successfully scraped: Adam B. Vary (https://screendrafts.fandom.com/wiki/Adam_B._Vary)
+[2025-07-23T01:28:41.713Z] Scraping profile: https://screendrafts.fandom.com/wiki/Eric_Vespe
+[2025-07-23T01:28:42.006Z] Successfully scraped: Eric Vespe (https://screendrafts.fandom.com/wiki/Eric_Vespe)
+[2025-07-23T01:28:43.014Z] Scraping profile: https://screendrafts.fandom.com/wiki/Mia_Lee_Vicino
+[2025-07-23T01:28:43.227Z] Successfully scraped: Mia Lee Vicino (https://screendrafts.fandom.com/wiki/Mia_Lee_Vicino)
+[2025-07-23T01:28:44.235Z] Scraping profile: https://screendrafts.fandom.com/wiki/Thomas_Vitale
+[2025-07-23T01:28:44.529Z] Successfully scraped: Thomas Vitale (https://screendrafts.fandom.com/wiki/Thomas_Vitale)
+[2025-07-23T01:28:45.546Z] Scraping profile: https://screendrafts.fandom.com/wiki/Rachel_Wagner
+[2025-07-23T01:28:45.788Z] Successfully scraped: Rachel Wagner (https://screendrafts.fandom.com/wiki/Rachel_Wagner)
+[2025-07-23T01:28:46.800Z] Scraping profile: https://screendrafts.fandom.com/wiki/Rachel_Walker
+[2025-07-23T01:28:47.093Z] Successfully scraped: Rachel Walker (https://screendrafts.fandom.com/wiki/Rachel_Walker)
+[2025-07-23T01:28:48.109Z] Scraping profile: https://screendrafts.fandom.com/wiki/Katie_Walsh
+[2025-07-23T01:28:48.346Z] Successfully scraped: Katie Walsh (https://screendrafts.fandom.com/wiki/Katie_Walsh)
+[2025-07-23T01:28:49.361Z] Scraping profile: https://screendrafts.fandom.com/wiki/Scott_Wampler
+[2025-07-23T01:28:49.616Z] Successfully scraped: Scott Wampler (https://screendrafts.fandom.com/wiki/Scott_Wampler)
+[2025-07-23T01:28:50.623Z] Scraping profile: https://screendrafts.fandom.com/wiki/Breanna_Whipple
+[2025-07-23T01:28:50.885Z] Successfully scraped: Breanna Whipple (https://screendrafts.fandom.com/wiki/Breanna_Whipple)
+[2025-07-23T01:28:51.898Z] Scraping profile: https://screendrafts.fandom.com/wiki/Dave_White
+[2025-07-23T01:28:52.143Z] Successfully scraped: Dave White (https://screendrafts.fandom.com/wiki/Dave_White)
+[2025-07-23T01:28:53.159Z] Scraping profile: https://screendrafts.fandom.com/wiki/Patrick_Willems
+[2025-07-23T01:28:53.425Z] Successfully scraped: Patrick Willems (https://screendrafts.fandom.com/wiki/Patrick_Willems)
+[2025-07-23T01:28:54.446Z] Scraping profile: https://screendrafts.fandom.com/wiki/Alison_Willmore
+[2025-07-23T01:28:54.700Z] Successfully scraped: Alison Willmore (https://screendrafts.fandom.com/wiki/Alison_Willmore)
+[2025-07-23T01:28:55.708Z] Scraping profile: https://screendrafts.fandom.com/wiki/Jenn_Wilson
+[2025-07-23T01:28:55.919Z] Successfully scraped: Jenn Wilson (https://screendrafts.fandom.com/wiki/Jenn_Wilson)
+[2025-07-23T01:28:56.938Z] Scraping profile: https://screendrafts.fandom.com/wiki/Sam_Wineman
+[2025-07-23T01:28:57.177Z] Successfully scraped: Sam Wineman (https://screendrafts.fandom.com/wiki/Sam_Wineman)
+[2025-07-23T01:28:58.195Z] Scraping profile: https://screendrafts.fandom.com/wiki/Carrie_Wittmer
+[2025-07-23T01:28:58.528Z] Successfully scraped: Carrie Wittmer (https://screendrafts.fandom.com/wiki/Carrie_Wittmer)
+[2025-07-23T01:28:59.538Z] Scraping profile: https://screendrafts.fandom.com/wiki/April_Wolfe
+[2025-07-23T01:28:59.835Z] Successfully scraped: April Wolfe (https://screendrafts.fandom.com/wiki/April_Wolfe)
+[2025-07-23T01:29:00.847Z] Scraping profile: https://screendrafts.fandom.com/wiki/Clarke_Wolfe
+[2025-07-23T01:29:01.120Z] Successfully scraped: Clarke Wolfe (https://screendrafts.fandom.com/wiki/Clarke_Wolfe)
+[2025-07-23T01:29:02.135Z] Scraping profile: https://screendrafts.fandom.com/wiki/Bryan_Woods
+[2025-07-23T01:29:02.548Z] Successfully scraped: Bryan Woods (https://screendrafts.fandom.com/wiki/Bryan_Woods)
+[2025-07-23T01:29:03.552Z] Scraping profile: https://screendrafts.fandom.com/wiki/Frank_H._Woodward
+[2025-07-23T01:29:03.864Z] Successfully scraped: Frank H. Woodward (https://screendrafts.fandom.com/wiki/Frank_H._Woodward)
+[2025-07-23T01:29:04.879Z] Scraping profile: https://screendrafts.fandom.com/wiki/Jen_Yamato
+[2025-07-23T01:29:05.123Z] Successfully scraped: Jen Yamato (https://screendrafts.fandom.com/wiki/Jen_Yamato)
+[2025-07-23T01:29:06.128Z] Scraping profile: https://screendrafts.fandom.com/wiki/Henry_Zebrowski
+[2025-07-23T01:29:06.417Z] Successfully scraped: Henry Zebrowski (https://screendrafts.fandom.com/wiki/Henry_Zebrowski)
+[2025-07-23T01:29:07.425Z] Scraping profile: https://screendrafts.fandom.com/wiki/Zoe_Zelkind
+[2025-07-23T01:29:07.720Z] Successfully scraped: Zoe Zelkind (https://screendrafts.fandom.com/wiki/Zoe_Zelkind)
+[2025-07-23T01:29:08.744Z] Scraping profile: https://screendrafts.fandom.com/wiki/Larry_Zerner
+[2025-07-23T01:29:08.978Z] Successfully scraped: Larry Zerner (https://screendrafts.fandom.com/wiki/Larry_Zerner)
+[2025-07-23T01:29:09.983Z] Scraping profile: https://screendrafts.fandom.com/wiki/Esther_Zuckerman
+[2025-07-23T01:29:10.254Z] Successfully scraped: Esther Zuckerman (https://screendrafts.fandom.com/wiki/Esther_Zuckerman)
+[2025-07-23T01:29:11.285Z] Scraping completed. Total profiles scraped: 249
+[2025-07-23T01:47:18.961Z] Fetching page: https://screendrafts.fandom.com/wiki/Category:Drafters
+[2025-07-23T01:47:20.404Z] Fetching page: https://screendrafts.fandom.com/wiki/Category:Drafters?from=Singer%2C+Matt%0AMatt+Singer
+[2025-07-23T01:47:21.699Z] Found 249 drafter profiles.
+[2025-07-23T01:47:21.701Z] Scraping profile: https://screendrafts.fandom.com/wiki/Simon_Abrams
+[2025-07-23T01:47:21.959Z] Error scraping https://screendrafts.fandom.com/wiki/Simon_Abrams: twitter is not defined. Retrying... (1/3)
+[2025-07-23T01:47:23.962Z] Scraping profile: https://screendrafts.fandom.com/wiki/Simon_Abrams
+[2025-07-23T01:47:24.033Z] Error scraping https://screendrafts.fandom.com/wiki/Simon_Abrams: twitter is not defined. Retrying... (2/3)
+[2025-07-23T01:47:26.038Z] Scraping profile: https://screendrafts.fandom.com/wiki/Simon_Abrams
+[2025-07-23T01:47:26.108Z] Error scraping https://screendrafts.fandom.com/wiki/Simon_Abrams: twitter is not defined. Retrying... (3/3)
+[2025-07-23T01:47:28.122Z] Scraping profile: https://screendrafts.fandom.com/wiki/Simon_Abrams
+[2025-07-23T01:47:28.184Z] Failed to scrape https://screendrafts.fandom.com/wiki/Simon_Abrams after 3 attempts.
+[2025-07-23T01:47:28.185Z] Failed to scrape profile at https://screendrafts.fandom.com/wiki/Simon_Abrams
+[2025-07-23T01:47:29.194Z] Scraping profile: https://screendrafts.fandom.com/wiki/Beth_Accomando
+[2025-07-23T01:47:29.425Z] Error scraping https://screendrafts.fandom.com/wiki/Beth_Accomando: twitter is not defined. Retrying... (1/3)
+[2025-07-23T01:47:31.433Z] Scraping profile: https://screendrafts.fandom.com/wiki/Beth_Accomando
+[2025-07-23T01:47:31.626Z] Error scraping https://screendrafts.fandom.com/wiki/Beth_Accomando: twitter is not defined. Retrying... (2/3)
+[2025-07-23T01:47:33.632Z] Scraping profile: https://screendrafts.fandom.com/wiki/Beth_Accomando
+[2025-07-23T01:47:33.685Z] Error scraping https://screendrafts.fandom.com/wiki/Beth_Accomando: twitter is not defined. Retrying... (3/3)
+[2025-07-23T01:49:12.280Z] Fetching page: https://screendrafts.fandom.com/wiki/Category:Drafters
+[2025-07-23T01:49:13.651Z] Fetching page: https://screendrafts.fandom.com/wiki/Category:Drafters?from=Singer%2C+Matt%0AMatt+Singer
+[2025-07-23T01:49:14.748Z] Found 249 drafter profiles.
+[2025-07-23T01:49:14.749Z] Scraping profile: https://screendrafts.fandom.com/wiki/Simon_Abrams
+[2025-07-23T01:49:14.844Z] Successfully scraped: Simon Abrams (https://screendrafts.fandom.com/wiki/Simon_Abrams)
+[2025-07-23T01:49:15.857Z] Scraping profile: https://screendrafts.fandom.com/wiki/Beth_Accomando
+[2025-07-23T01:49:15.925Z] Successfully scraped: Beth Accomando (https://screendrafts.fandom.com/wiki/Beth_Accomando)
+[2025-07-23T01:49:16.929Z] Scraping profile: https://screendrafts.fandom.com/wiki/Demi_Adejuyigbe
+[2025-07-23T01:49:17.173Z] Successfully scraped: Demi Adejuyigbe (https://screendrafts.fandom.com/wiki/Demi_Adejuyigbe)
+[2025-07-23T01:49:18.178Z] Scraping profile: https://screendrafts.fandom.com/wiki/Chancellor_Agard
+[2025-07-23T01:49:18.451Z] Successfully scraped: Chancellor Agard (https://screendrafts.fandom.com/wiki/Chancellor_Agard)
+[2025-07-23T01:49:19.474Z] Scraping profile: https://screendrafts.fandom.com/wiki/J.D._Amato
+[2025-07-23T01:49:19.548Z] Successfully scraped: J.D. Amato (https://screendrafts.fandom.com/wiki/J.D._Amato)
+[2025-07-23T01:49:20.571Z] Scraping profile: https://screendrafts.fandom.com/wiki/Chris_Amick
+[2025-07-23T01:49:20.797Z] Successfully scraped: Chris Amick (https://screendrafts.fandom.com/wiki/Chris_Amick)
+[2025-07-23T01:49:21.807Z] Scraping profile: https://screendrafts.fandom.com/wiki/Megan_Amram
+[2025-07-23T01:49:21.864Z] Successfully scraped: Megan Amram (https://screendrafts.fandom.com/wiki/Megan_Amram)
+[2025-07-23T01:49:22.869Z] Scraping profile: https://screendrafts.fandom.com/wiki/Erik_Anderson
+[2025-07-23T01:49:23.081Z] Successfully scraped: Erik Anderson (https://screendrafts.fandom.com/wiki/Erik_Anderson)
+[2025-07-23T01:49:24.094Z] Scraping profile: https://screendrafts.fandom.com/wiki/Eva_Anderson
+[2025-07-23T01:49:24.336Z] Successfully scraped: Eva Anderson (https://screendrafts.fandom.com/wiki/Eva_Anderson)
+[2025-07-23T01:49:25.346Z] Scraping profile: https://screendrafts.fandom.com/wiki/Kyle_Anderson
+[2025-07-23T01:49:25.393Z] Successfully scraped: Kyle Anderson (https://screendrafts.fandom.com/wiki/Kyle_Anderson)
+[2025-07-23T01:49:26.414Z] Scraping profile: https://screendrafts.fandom.com/wiki/Tre%27vell_Anderson
+[2025-07-23T01:49:26.487Z] Successfully scraped: Tre'vell Anderson (https://screendrafts.fandom.com/wiki/Tre%27vell_Anderson)
+[2025-07-23T01:49:27.506Z] Scraping profile: https://screendrafts.fandom.com/wiki/Kevin_Avery
+[2025-07-23T01:49:27.555Z] Successfully scraped: Kevin Avery (https://screendrafts.fandom.com/wiki/Kevin_Avery)
+[2025-07-23T01:49:28.567Z] Scraping profile: https://screendrafts.fandom.com/wiki/Jonathan_Baker
+[2025-07-23T01:49:28.608Z] Successfully scraped: Jonathan Baker (https://screendrafts.fandom.com/wiki/Jonathan_Baker)
+[2025-07-23T01:49:29.618Z] Scraping profile: https://screendrafts.fandom.com/wiki/Josh_Baker
+[2025-07-23T01:49:29.669Z] Successfully scraped: Josh Baker (https://screendrafts.fandom.com/wiki/Josh_Baker)
+[2025-07-23T01:49:30.683Z] Scraping profile: https://screendrafts.fandom.com/wiki/Vince_Balzano
+[2025-07-23T01:49:30.886Z] Successfully scraped: Vince Balzano (https://screendrafts.fandom.com/wiki/Vince_Balzano)
+[2025-07-23T01:49:31.893Z] Scraping profile: https://screendrafts.fandom.com/wiki/Juan_Barquin
+[2025-07-23T01:49:32.140Z] Successfully scraped: Juan Barquin (https://screendrafts.fandom.com/wiki/Juan_Barquin)
+[2025-07-23T01:49:33.162Z] Scraping profile: https://screendrafts.fandom.com/wiki/Clem_Bastow
+[2025-07-23T01:49:33.213Z] Successfully scraped: Clem Bastow (https://screendrafts.fandom.com/wiki/Clem_Bastow)
+[2025-07-23T01:49:34.222Z] Scraping profile: https://screendrafts.fandom.com/wiki/Mitchell_Beaupre
+[2025-07-23T01:49:34.470Z] Successfully scraped: Mitchell Beaupre (https://screendrafts.fandom.com/wiki/Mitchell_Beaupre)
+[2025-07-23T01:49:35.492Z] Scraping profile: https://screendrafts.fandom.com/wiki/Scott_Beck
+[2025-07-23T01:49:35.752Z] Successfully scraped: Scott Beck (https://screendrafts.fandom.com/wiki/Scott_Beck)
+[2025-07-23T01:49:36.760Z] Scraping profile: https://screendrafts.fandom.com/wiki/Joe_Begos
+[2025-07-23T01:49:36.980Z] Successfully scraped: Joe Begos (https://screendrafts.fandom.com/wiki/Joe_Begos)
+[2025-07-23T01:49:37.998Z] Scraping profile: https://screendrafts.fandom.com/wiki/Milla_Bell-Hart
+[2025-07-23T01:49:38.048Z] Successfully scraped: Milla Bell-Hart (https://screendrafts.fandom.com/wiki/Milla_Bell-Hart)
+[2025-07-23T01:49:39.062Z] Scraping profile: https://screendrafts.fandom.com/wiki/Dory_Benford
+[2025-07-23T01:49:39.265Z] Successfully scraped: Dory Benford (https://screendrafts.fandom.com/wiki/Dory_Benford)
+[2025-07-23T01:49:40.277Z] Scraping profile: https://screendrafts.fandom.com/wiki/Steve_Berg
+[2025-07-23T01:49:40.470Z] Successfully scraped: Steve Berg (https://screendrafts.fandom.com/wiki/Steve_Berg)
+[2025-07-23T01:49:41.481Z] Scraping profile: https://screendrafts.fandom.com/wiki/Marc_Bernardin
+[2025-07-23T01:49:41.705Z] Successfully scraped: Marc Bernardin (https://screendrafts.fandom.com/wiki/Marc_Bernardin)
+[2025-07-23T01:49:42.730Z] Scraping profile: https://screendrafts.fandom.com/wiki/Nay_Bever
+[2025-07-23T01:49:42.773Z] Successfully scraped: Nay Bever (https://screendrafts.fandom.com/wiki/Nay_Bever)
+[2025-07-23T01:49:43.775Z] Scraping profile: https://screendrafts.fandom.com/wiki/William_Bibbiani
+[2025-07-23T01:49:44.002Z] Successfully scraped: William Bibbiani (https://screendrafts.fandom.com/wiki/William_Bibbiani)
+[2025-07-23T01:49:45.021Z] Scraping profile: https://screendrafts.fandom.com/wiki/Anna_Bogutskaya
+[2025-07-23T01:49:45.249Z] Successfully scraped: Anna Bogutskaya (https://screendrafts.fandom.com/wiki/Anna_Bogutskaya)
+[2025-07-23T01:49:46.257Z] Scraping profile: https://screendrafts.fandom.com/wiki/John_Bradley
+[2025-07-23T01:49:46.499Z] Successfully scraped: John Bradley (https://screendrafts.fandom.com/wiki/John_Bradley)
+[2025-07-23T01:49:47.513Z] Scraping profile: https://screendrafts.fandom.com/wiki/Jim_Branscome
+[2025-07-23T01:49:47.761Z] Successfully scraped: Jim Branscome (https://screendrafts.fandom.com/wiki/Jim_Branscome)
+[2025-07-23T01:49:48.769Z] Scraping profile: https://screendrafts.fandom.com/wiki/Guy_Branum
+[2025-07-23T01:49:48.833Z] Successfully scraped: Guy Branum (https://screendrafts.fandom.com/wiki/Guy_Branum)
+[2025-07-23T01:49:49.844Z] Scraping profile: https://screendrafts.fandom.com/wiki/Billy_Ray_Brewton
+[2025-07-23T01:49:50.128Z] Successfully scraped: Billy Ray Brewton (https://screendrafts.fandom.com/wiki/Billy_Ray_Brewton)
+[2025-07-23T01:49:51.145Z] Scraping profile: https://screendrafts.fandom.com/wiki/Patrick_Bromley
+[2025-07-23T01:49:51.404Z] Successfully scraped: Patrick Bromley (https://screendrafts.fandom.com/wiki/Patrick_Bromley)
+[2025-07-23T01:49:52.409Z] Scraping profile: https://screendrafts.fandom.com/wiki/Morgan_Peter_Brown
+[2025-07-23T01:49:52.688Z] Successfully scraped: Morgan Peter Brown (https://screendrafts.fandom.com/wiki/Morgan_Peter_Brown)
+[2025-07-23T01:49:53.697Z] Scraping profile: https://screendrafts.fandom.com/wiki/Robert_Butler_III
+[2025-07-23T01:49:53.940Z] Successfully scraped: Robert Butler III (https://screendrafts.fandom.com/wiki/Robert_Butler_III)
+[2025-07-23T01:49:54.961Z] Scraping profile: https://screendrafts.fandom.com/wiki/Andres_Cabrera
+[2025-07-23T01:49:55.170Z] Successfully scraped: Andres Cabrera (https://screendrafts.fandom.com/wiki/Andres_Cabrera)
+[2025-07-23T01:49:56.177Z] Scraping profile: https://screendrafts.fandom.com/wiki/Marc_Calderaro
+[2025-07-23T01:49:56.475Z] Successfully scraped: Marc Calderaro (https://screendrafts.fandom.com/wiki/Marc_Calderaro)
+[2025-07-23T01:49:57.494Z] Scraping profile: https://screendrafts.fandom.com/wiki/Jeff_Cannata
+[2025-07-23T01:49:57.541Z] Successfully scraped: Jeff Cannata (https://screendrafts.fandom.com/wiki/Jeff_Cannata)
+[2025-07-23T01:49:58.552Z] Scraping profile: https://screendrafts.fandom.com/wiki/Ricky_Carmona
+[2025-07-23T01:49:58.601Z] Successfully scraped: Ricky Carmona (https://screendrafts.fandom.com/wiki/Ricky_Carmona)
+[2025-07-23T01:49:59.619Z] Scraping profile: https://screendrafts.fandom.com/wiki/Alfonso_Carrillo
+[2025-07-23T01:49:59.663Z] Successfully scraped: Alfonso Carrillo (https://screendrafts.fandom.com/wiki/Alfonso_Carrillo)
+[2025-07-23T01:50:00.668Z] Scraping profile: https://screendrafts.fandom.com/wiki/Tom_Cendejas
+[2025-07-23T01:50:00.897Z] Successfully scraped: Tom Cendejas (https://screendrafts.fandom.com/wiki/Tom_Cendejas)
+[2025-07-23T01:50:01.900Z] Scraping profile: https://screendrafts.fandom.com/wiki/Walter_Chaw
+[2025-07-23T01:50:02.147Z] Successfully scraped: Walter Chaw (https://screendrafts.fandom.com/wiki/Walter_Chaw)
+[2025-07-23T01:50:03.176Z] Scraping profile: https://screendrafts.fandom.com/wiki/David_Chen
+[2025-07-23T01:50:03.383Z] Successfully scraped: David Chen (https://screendrafts.fandom.com/wiki/David_Chen)
+[2025-07-23T01:50:04.395Z] Scraping profile: https://screendrafts.fandom.com/wiki/Drea_Clark
+[2025-07-23T01:50:04.668Z] Successfully scraped: Drea Clark (https://screendrafts.fandom.com/wiki/Drea_Clark)
+[2025-07-23T01:50:05.681Z] Scraping profile: https://screendrafts.fandom.com/wiki/Jocey_Coffman
+[2025-07-23T01:50:05.729Z] Successfully scraped: Jocey Coffman (https://screendrafts.fandom.com/wiki/Jocey_Coffman)
+[2025-07-23T01:50:06.736Z] Scraping profile: https://screendrafts.fandom.com/wiki/Devan_Coggan
+[2025-07-23T01:50:06.786Z] Successfully scraped: Devan Coggan (https://screendrafts.fandom.com/wiki/Devan_Coggan)
+[2025-07-23T01:50:07.812Z] Scraping profile: https://screendrafts.fandom.com/wiki/Bryan_Cogman
+[2025-07-23T01:50:08.044Z] Successfully scraped: Bryan Cogman (https://screendrafts.fandom.com/wiki/Bryan_Cogman)
+[2025-07-23T01:50:09.067Z] Scraping profile: https://screendrafts.fandom.com/wiki/B.J._Colangelo
+[2025-07-23T01:50:09.316Z] Successfully scraped: B.J. Colangelo (https://screendrafts.fandom.com/wiki/B.J._Colangelo)
+[2025-07-23T01:50:10.324Z] Scraping profile: https://screendrafts.fandom.com/wiki/Harmony_Colangelo
+[2025-07-23T01:50:10.376Z] Successfully scraped: Harmony Colangelo (https://screendrafts.fandom.com/wiki/Harmony_Colangelo)
+[2025-07-23T01:50:11.393Z] Scraping profile: https://screendrafts.fandom.com/wiki/Jacqueline_Coley
+[2025-07-23T01:50:11.444Z] Successfully scraped: Jacqueline Coley (https://screendrafts.fandom.com/wiki/Jacqueline_Coley)
+[2025-07-23T01:50:12.460Z] Scraping profile: https://screendrafts.fandom.com/wiki/Brian_Collins
+[2025-07-23T01:50:12.707Z] Successfully scraped: Brian Collins (https://screendrafts.fandom.com/wiki/Brian_Collins)
+[2025-07-23T01:50:13.716Z] Scraping profile: https://screendrafts.fandom.com/wiki/Rance_Collins
+[2025-07-23T01:50:13.960Z] Successfully scraped: Rance Collins (https://screendrafts.fandom.com/wiki/Rance_Collins)
+[2025-07-23T01:50:14.974Z] Scraping profile: https://screendrafts.fandom.com/wiki/Clark_Collis
+[2025-07-23T01:50:15.180Z] Successfully scraped: Clark Collis (https://screendrafts.fandom.com/wiki/Clark_Collis)
+[2025-07-23T01:50:16.196Z] Scraping profile: https://screendrafts.fandom.com/wiki/Kevin_Costello
+[2025-07-23T01:50:16.430Z] Successfully scraped: Kevin Costello (https://screendrafts.fandom.com/wiki/Kevin_Costello)
+[2025-07-23T01:50:17.455Z] Scraping profile: https://screendrafts.fandom.com/wiki/Patrick_Cotnoir
+[2025-07-23T01:50:17.672Z] Successfully scraped: Patrick Cotnoir (https://screendrafts.fandom.com/wiki/Patrick_Cotnoir)
+[2025-07-23T01:50:18.683Z] Scraping profile: https://screendrafts.fandom.com/wiki/Penny_Cox
+[2025-07-23T01:50:18.930Z] Successfully scraped: Penny Cox (https://screendrafts.fandom.com/wiki/Penny_Cox)
+[2025-07-23T01:50:19.951Z] Scraping profile: https://screendrafts.fandom.com/wiki/Daniel_Crooke
+[2025-07-23T01:50:19.999Z] Successfully scraped: Daniel Crooke (https://screendrafts.fandom.com/wiki/Daniel_Crooke)
+[2025-07-23T01:50:21.003Z] Scraping profile: https://screendrafts.fandom.com/wiki/Ash_Crossan
+[2025-07-23T01:50:21.218Z] Successfully scraped: Ash Crossan (https://screendrafts.fandom.com/wiki/Ash_Crossan)
+[2025-07-23T01:50:22.242Z] Scraping profile: https://screendrafts.fandom.com/wiki/Jordan_Crucchiola
+[2025-07-23T01:50:22.491Z] Successfully scraped: Jordan Crucchiola (https://screendrafts.fandom.com/wiki/Jordan_Crucchiola)
+[2025-07-23T01:50:23.504Z] Scraping profile: https://screendrafts.fandom.com/wiki/Beth_Crudele
+[2025-07-23T01:50:23.554Z] Successfully scraped: Beth Crudele (https://screendrafts.fandom.com/wiki/Beth_Crudele)
+[2025-07-23T01:50:24.574Z] Scraping profile: https://screendrafts.fandom.com/wiki/Zed_Cutsinger
+[2025-07-23T01:50:24.826Z] Successfully scraped: Zed Cutsinger (https://screendrafts.fandom.com/wiki/Zed_Cutsinger)
+[2025-07-23T01:50:25.829Z] Scraping profile: https://screendrafts.fandom.com/wiki/Samm_Deighan
+[2025-07-23T01:50:25.883Z] Successfully scraped: Samm Deighan (https://screendrafts.fandom.com/wiki/Samm_Deighan)
+[2025-07-23T01:50:26.909Z] Scraping profile: https://screendrafts.fandom.com/wiki/Chris_Thomas_Devlin
+[2025-07-23T01:50:27.120Z] Successfully scraped: Chris Thomas Devlin (https://screendrafts.fandom.com/wiki/Chris_Thomas_Devlin)
+[2025-07-23T01:50:28.140Z] Scraping profile: https://screendrafts.fandom.com/wiki/Anthony_DiBlasi
+[2025-07-23T01:50:28.366Z] Successfully scraped: Anthony DiBlasi (https://screendrafts.fandom.com/wiki/Anthony_DiBlasi)
+[2025-07-23T01:50:29.382Z] Scraping profile: https://screendrafts.fandom.com/wiki/Evan_Dickson
+[2025-07-23T01:50:29.665Z] Successfully scraped: Evan Dickson (https://screendrafts.fandom.com/wiki/Evan_Dickson)
+[2025-07-23T01:50:30.673Z] Scraping profile: https://screendrafts.fandom.com/wiki/Frank_Dietz
+[2025-07-23T01:50:30.726Z] Successfully scraped: Frank Dietz (https://screendrafts.fandom.com/wiki/Frank_Dietz)
+[2025-07-23T01:50:31.733Z] Scraping profile: https://screendrafts.fandom.com/wiki/Mike_Dougherty
+[2025-07-23T01:50:31.792Z] Successfully scraped: Mike Dougherty (https://screendrafts.fandom.com/wiki/Mike_Dougherty)
+[2025-07-23T01:50:32.807Z] Scraping profile: https://screendrafts.fandom.com/wiki/Jason_Shawhan
+[2025-07-23T01:50:33.078Z] Successfully scraped: Jason Shawhan (https://screendrafts.fandom.com/wiki/Jason_Shawhan)
+[2025-07-23T01:50:34.087Z] Scraping profile: https://screendrafts.fandom.com/wiki/Pat_Driscoll
+[2025-07-23T01:50:34.300Z] Successfully scraped: Pat Driscoll (https://screendrafts.fandom.com/wiki/Pat_Driscoll)
+[2025-07-23T01:50:35.311Z] Scraping profile: https://screendrafts.fandom.com/wiki/Brian_Duffield
+[2025-07-23T01:50:35.531Z] Successfully scraped: Brian Duffield (https://screendrafts.fandom.com/wiki/Brian_Duffield)
+[2025-07-23T01:50:36.548Z] Scraping profile: https://screendrafts.fandom.com/wiki/Alonso_Duralde
+[2025-07-23T01:50:36.787Z] Successfully scraped: Alonso Duralde (https://screendrafts.fandom.com/wiki/Alonso_Duralde)
+[2025-07-23T01:50:37.804Z] Scraping profile: https://screendrafts.fandom.com/wiki/Bilge_Ebiri
+[2025-07-23T01:50:37.865Z] Successfully scraped: Bilge Ebiri (https://screendrafts.fandom.com/wiki/Bilge_Ebiri)
+[2025-07-23T01:50:38.878Z] Scraping profile: https://screendrafts.fandom.com/wiki/Ryan_Estrada
+[2025-07-23T01:50:38.936Z] Successfully scraped: Ryan Estrada (https://screendrafts.fandom.com/wiki/Ryan_Estrada)
+[2025-07-23T01:50:39.943Z] Scraping profile: https://screendrafts.fandom.com/wiki/Chris_Feil
+[2025-07-23T01:50:40.161Z] Successfully scraped: Chris Feil (https://screendrafts.fandom.com/wiki/Chris_Feil)
+[2025-07-23T01:50:41.193Z] Scraping profile: https://screendrafts.fandom.com/wiki/Daniel_Fienberg
+[2025-07-23T01:50:41.443Z] Successfully scraped: Daniel Fienberg (https://screendrafts.fandom.com/wiki/Daniel_Fienberg)
+[2025-07-23T01:50:42.450Z] Scraping profile: https://screendrafts.fandom.com/wiki/Darren_Franich
+[2025-07-23T01:50:42.535Z] Successfully scraped: Darren Franich (https://screendrafts.fandom.com/wiki/Darren_Franich)
+[2025-07-23T01:50:43.541Z] Scraping profile: https://screendrafts.fandom.com/wiki/John_Freiler
+[2025-07-23T01:50:43.787Z] Successfully scraped: John Freiler (https://screendrafts.fandom.com/wiki/John_Freiler)
+[2025-07-23T01:50:44.805Z] Scraping profile: https://screendrafts.fandom.com/wiki/Kate_Freund
+[2025-07-23T01:50:45.021Z] Successfully scraped: Kate Freund (https://screendrafts.fandom.com/wiki/Kate_Freund)
+[2025-07-23T01:50:46.027Z] Scraping profile: https://screendrafts.fandom.com/wiki/Andrew_Furtado
+[2025-07-23T01:50:46.238Z] Successfully scraped: Andrew Furtado (https://screendrafts.fandom.com/wiki/Andrew_Furtado)
+[2025-07-23T01:50:47.260Z] Scraping profile: https://screendrafts.fandom.com/wiki/Jon_Gabrus
+[2025-07-23T01:50:47.508Z] Successfully scraped: Jon Gabrus (https://screendrafts.fandom.com/wiki/Jon_Gabrus)
+[2025-07-23T01:50:48.516Z] Scraping profile: https://screendrafts.fandom.com/wiki/Marya_Gates
+[2025-07-23T01:50:48.572Z] Successfully scraped: Marya Gates (https://screendrafts.fandom.com/wiki/Marya_Gates)
+[2025-07-23T01:50:49.597Z] Scraping profile: https://screendrafts.fandom.com/wiki/Max_Genecov
+[2025-07-23T01:50:49.817Z] Successfully scraped: Max Genecov (https://screendrafts.fandom.com/wiki/Max_Genecov)
+[2025-07-23T01:50:50.824Z] Scraping profile: https://screendrafts.fandom.com/wiki/Joe_George
+[2025-07-23T01:50:51.058Z] Successfully scraped: Joe George (https://screendrafts.fandom.com/wiki/Joe_George)
+[2025-07-23T01:50:52.063Z] Scraping profile: https://screendrafts.fandom.com/wiki/Jill_Gevargizian
+[2025-07-23T01:50:52.277Z] Successfully scraped: Jill Gevargizian (https://screendrafts.fandom.com/wiki/Jill_Gevargizian)
+[2025-07-23T01:50:53.292Z] Scraping profile: https://screendrafts.fandom.com/wiki/Brian_Gillespie
+[2025-07-23T01:50:53.344Z] Successfully scraped: Brian Gillespie (https://screendrafts.fandom.com/wiki/Brian_Gillespie)
+[2025-07-23T01:50:54.357Z] Scraping profile: https://screendrafts.fandom.com/wiki/Dave_Gonzales
+[2025-07-23T01:50:54.606Z] Successfully scraped: Dave Gonzales (https://screendrafts.fandom.com/wiki/Dave_Gonzales)
+[2025-07-23T01:50:55.618Z] Scraping profile: https://screendrafts.fandom.com/wiki/BenDavid_Grabinski
+[2025-07-23T01:50:55.908Z] Successfully scraped: BenDavid Grabinski (https://screendrafts.fandom.com/wiki/BenDavid_Grabinski)
+[2025-07-23T01:50:56.917Z] Scraping profile: https://screendrafts.fandom.com/wiki/Thomas_Grabinski
+[2025-07-23T01:50:57.147Z] Successfully scraped: Thomas Grabinski (https://screendrafts.fandom.com/wiki/Thomas_Grabinski)
+[2025-07-23T01:50:58.167Z] Scraping profile: https://screendrafts.fandom.com/wiki/Brea_Grant
+[2025-07-23T01:50:58.396Z] Successfully scraped: Brea Grant (https://screendrafts.fandom.com/wiki/Brea_Grant)
+[2025-07-23T01:50:59.408Z] Scraping profile: https://screendrafts.fandom.com/wiki/Dylan_Guerra
+[2025-07-23T01:50:59.624Z] Successfully scraped: Dylan Guerra (https://screendrafts.fandom.com/wiki/Dylan_Guerra)
+[2025-07-23T01:51:00.638Z] Scraping profile: https://screendrafts.fandom.com/wiki/Roxana_Hadadi
+[2025-07-23T01:51:00.870Z] Successfully scraped: Roxana Hadadi (https://screendrafts.fandom.com/wiki/Roxana_Hadadi)
+[2025-07-23T01:51:01.890Z] Scraping profile: https://screendrafts.fandom.com/wiki/Kate_Hagen
+[2025-07-23T01:51:02.162Z] Successfully scraped: Kate Hagen (https://screendrafts.fandom.com/wiki/Kate_Hagen)
+[2025-07-23T01:51:03.176Z] Scraping profile: https://screendrafts.fandom.com/wiki/Patrick_Hamilton
+[2025-07-23T01:51:03.228Z] Successfully scraped: Patrick Hamilton (https://screendrafts.fandom.com/wiki/Patrick_Hamilton)
+[2025-07-23T01:51:04.246Z] Scraping profile: https://screendrafts.fandom.com/wiki/Angie_Han
+[2025-07-23T01:51:04.299Z] Successfully scraped: Angie Han (https://screendrafts.fandom.com/wiki/Angie_Han)
+[2025-07-23T01:51:05.316Z] Scraping profile: https://screendrafts.fandom.com/wiki/Kay_Hanley
+[2025-07-23T01:51:05.544Z] Successfully scraped: Kay Hanley (https://screendrafts.fandom.com/wiki/Kay_Hanley)
+[2025-07-23T01:51:06.563Z] Scraping profile: https://screendrafts.fandom.com/wiki/Liz_Hannah
+[2025-07-23T01:51:06.813Z] Successfully scraped: Liz Hannah (https://screendrafts.fandom.com/wiki/Liz_Hannah)
+[2025-07-23T01:51:07.825Z] Scraping profile: https://screendrafts.fandom.com/wiki/Mark_Harris
+[2025-07-23T01:51:07.902Z] Successfully scraped: Mark Harris (https://screendrafts.fandom.com/wiki/Mark_Harris)
+[2025-07-23T01:51:08.934Z] Scraping profile: https://screendrafts.fandom.com/wiki/Alison_Herman
+[2025-07-23T01:51:09.160Z] Successfully scraped: Alison Herman (https://screendrafts.fandom.com/wiki/Alison_Herman)
+[2025-07-23T01:51:10.178Z] Scraping profile: https://screendrafts.fandom.com/wiki/Ben_Hethcoat
+[2025-07-23T01:51:10.390Z] Successfully scraped: Ben Hethcoat (https://screendrafts.fandom.com/wiki/Ben_Hethcoat)
+[2025-07-23T01:51:11.417Z] Scraping profile: https://screendrafts.fandom.com/wiki/Chris_Hewitt
+[2025-07-23T01:51:11.643Z] Successfully scraped: Chris Hewitt (https://screendrafts.fandom.com/wiki/Chris_Hewitt)
+[2025-07-23T01:51:12.659Z] Scraping profile: https://screendrafts.fandom.com/wiki/Libby_Hill
+[2025-07-23T01:51:12.876Z] Successfully scraped: Libby Hill (https://screendrafts.fandom.com/wiki/Libby_Hill)
+[2025-07-23T01:51:13.896Z] Scraping profile: https://screendrafts.fandom.com/wiki/Jordan_Hoffman
+[2025-07-23T01:51:14.113Z] Successfully scraped: Jordan Hoffman (https://screendrafts.fandom.com/wiki/Jordan_Hoffman)
+[2025-07-23T01:51:15.117Z] Scraping profile: https://screendrafts.fandom.com/wiki/Walter_Hollmann
+[2025-07-23T01:51:15.183Z] Successfully scraped: Walter Hollmann (https://screendrafts.fandom.com/wiki/Walter_Hollmann)
+[2025-07-23T01:51:16.202Z] Scraping profile: https://screendrafts.fandom.com/wiki/Dave_Holmes
+[2025-07-23T01:51:16.406Z] Successfully scraped: Dave Holmes (https://screendrafts.fandom.com/wiki/Dave_Holmes)
+[2025-07-23T01:51:17.412Z] Scraping profile: https://screendrafts.fandom.com/wiki/Linda_Holmes
+[2025-07-23T01:51:17.679Z] Successfully scraped: Linda Holmes (https://screendrafts.fandom.com/wiki/Linda_Holmes)
+[2025-07-23T01:51:18.696Z] Scraping profile: https://screendrafts.fandom.com/wiki/Christian_Holub
+[2025-07-23T01:51:18.741Z] Successfully scraped: Christian Holub (https://screendrafts.fandom.com/wiki/Christian_Holub)
+[2025-07-23T01:51:19.748Z] Scraping profile: https://screendrafts.fandom.com/wiki/Heidi_Honeycutt
+[2025-07-23T01:51:19.963Z] Successfully scraped: Heidi Honeycutt (https://screendrafts.fandom.com/wiki/Heidi_Honeycutt)
+[2025-07-23T01:51:20.992Z] Scraping profile: https://screendrafts.fandom.com/wiki/Blake_Howard
+[2025-07-23T01:51:21.042Z] Successfully scraped: Blake Howard (https://screendrafts.fandom.com/wiki/Blake_Howard)
+[2025-07-23T01:51:22.057Z] Scraping profile: https://screendrafts.fandom.com/wiki/Gina_Ippolito
+[2025-07-23T01:51:22.285Z] Successfully scraped: Gina Ippolito (https://screendrafts.fandom.com/wiki/Gina_Ippolito)
+[2025-07-23T01:51:23.307Z] Scraping profile: https://screendrafts.fandom.com/wiki/Phil_Iscove
+[2025-07-23T01:51:23.359Z] Successfully scraped: Phil Iscove (https://screendrafts.fandom.com/wiki/Phil_Iscove)
+[2025-07-23T01:51:24.372Z] Scraping profile: https://screendrafts.fandom.com/wiki/Angelique_Jackson
+[2025-07-23T01:51:24.617Z] Successfully scraped: Angelique Jackson (https://screendrafts.fandom.com/wiki/Angelique_Jackson)
+[2025-07-23T01:51:25.627Z] Scraping profile: https://screendrafts.fandom.com/wiki/Cameron_James
+[2025-07-23T01:51:25.682Z] Successfully scraped: Cameron James (https://screendrafts.fandom.com/wiki/Cameron_James)
+[2025-07-23T01:51:26.698Z] Scraping profile: https://screendrafts.fandom.com/wiki/Jeff_Jensen
+[2025-07-23T01:51:26.931Z] Successfully scraped: Jeff Jensen (https://screendrafts.fandom.com/wiki/Jeff_Jensen)
+[2025-07-23T01:51:27.941Z] Scraping profile: https://screendrafts.fandom.com/wiki/Jen_Johans
+[2025-07-23T01:51:27.993Z] Successfully scraped: Jen Johans (https://screendrafts.fandom.com/wiki/Jen_Johans)
+[2025-07-23T01:51:28.999Z] Scraping profile: https://screendrafts.fandom.com/wiki/Sean_Jordan
+[2025-07-23T01:51:29.255Z] Successfully scraped: Sean Jordan (https://screendrafts.fandom.com/wiki/Sean_Jordan)
+[2025-07-23T01:51:30.280Z] Scraping profile: https://screendrafts.fandom.com/wiki/Elliott_Kalan
+[2025-07-23T01:51:30.518Z] Successfully scraped: Elliott Kalan (https://screendrafts.fandom.com/wiki/Elliott_Kalan)
+[2025-07-23T01:51:31.522Z] Scraping profile: https://screendrafts.fandom.com/wiki/Elric_Kane
+[2025-07-23T01:51:31.730Z] Successfully scraped: Elric Kane (https://screendrafts.fandom.com/wiki/Elric_Kane)
+[2025-07-23T01:51:32.751Z] Scraping profile: https://screendrafts.fandom.com/wiki/Inkoo_Kang
+[2025-07-23T01:51:32.991Z] Successfully scraped: Inkoo Kang (https://screendrafts.fandom.com/wiki/Inkoo_Kang)
+[2025-07-23T01:51:33.999Z] Scraping profile: https://screendrafts.fandom.com/wiki/Ian_Karmel
+[2025-07-23T01:51:34.235Z] Successfully scraped: Ian Karmel (https://screendrafts.fandom.com/wiki/Ian_Karmel)
+[2025-07-23T01:51:35.252Z] Scraping profile: https://screendrafts.fandom.com/wiki/Clay_Keller
+[2025-07-23T01:51:35.598Z] Successfully scraped: Clay Keller (https://screendrafts.fandom.com/wiki/Clay_Keller)
+[2025-07-23T01:51:36.602Z] Scraping profile: https://screendrafts.fandom.com/wiki/Sean_Keller
+[2025-07-23T01:51:36.843Z] Successfully scraped: Sean Keller (https://screendrafts.fandom.com/wiki/Sean_Keller)
+[2025-07-23T01:51:37.846Z] Scraping profile: https://screendrafts.fandom.com/wiki/Halle_Kiefer
+[2025-07-23T01:51:38.063Z] Successfully scraped: Halle Kiefer (https://screendrafts.fandom.com/wiki/Halle_Kiefer)
+[2025-07-23T01:51:39.094Z] Scraping profile: https://screendrafts.fandom.com/wiki/David_Kittredge
+[2025-07-23T01:51:39.298Z] Successfully scraped: David Kittredge (https://screendrafts.fandom.com/wiki/David_Kittredge)
+[2025-07-23T01:51:40.306Z] Scraping profile: https://screendrafts.fandom.com/wiki/Jesse_Knight
+[2025-07-23T01:51:40.538Z] Successfully scraped: Jesse Knight (https://screendrafts.fandom.com/wiki/Jesse_Knight)
+[2025-07-23T01:51:41.543Z] Scraping profile: https://screendrafts.fandom.com/wiki/Matthew_Krol
+[2025-07-23T01:51:41.788Z] Successfully scraped: Matthew Krol (https://screendrafts.fandom.com/wiki/Matthew_Krol)
+[2025-07-23T01:51:42.805Z] Scraping profile: https://screendrafts.fandom.com/wiki/Justin_LaLiberty
+[2025-07-23T01:51:43.018Z] Successfully scraped: Justin LaLiberty (https://screendrafts.fandom.com/wiki/Justin_LaLiberty)
+[2025-07-23T01:51:44.034Z] Scraping profile: https://screendrafts.fandom.com/wiki/Aaron_LaPlante
+[2025-07-23T01:51:44.268Z] Successfully scraped: Aaron LaPlante (https://screendrafts.fandom.com/wiki/Aaron_LaPlante)
+[2025-07-23T01:51:45.277Z] Scraping profile: https://screendrafts.fandom.com/wiki/Josh_Larsen
+[2025-07-23T01:51:45.524Z] Successfully scraped: Josh Larsen (https://screendrafts.fandom.com/wiki/Josh_Larsen)
+[2025-07-23T01:51:46.540Z] Scraping profile: https://screendrafts.fandom.com/wiki/Derek_Lawrence
+[2025-07-23T01:51:46.829Z] Successfully scraped: Derek Lawrence (https://screendrafts.fandom.com/wiki/Derek_Lawrence)
+[2025-07-23T01:51:47.843Z] Scraping profile: https://screendrafts.fandom.com/wiki/Alison_Leiby
+[2025-07-23T01:51:48.050Z] Successfully scraped: Alison Leiby (https://screendrafts.fandom.com/wiki/Alison_Leiby)
+[2025-07-23T01:51:49.061Z] Scraping profile: https://screendrafts.fandom.com/wiki/Maureen_Lee_Lenker
+[2025-07-23T01:51:49.333Z] Successfully scraped: Maureen Lee Lenker (https://screendrafts.fandom.com/wiki/Maureen_Lee_Lenker)
+[2025-07-23T01:51:50.339Z] Scraping profile: https://screendrafts.fandom.com/wiki/Samm_Levine
+[2025-07-23T01:51:50.592Z] Successfully scraped: Samm Levine (https://screendrafts.fandom.com/wiki/Samm_Levine)
+[2025-07-23T01:51:51.602Z] Scraping profile: https://screendrafts.fandom.com/wiki/Andy_Levy
+[2025-07-23T01:51:51.855Z] Successfully scraped: Andy Levy (https://screendrafts.fandom.com/wiki/Andy_Levy)
+[2025-07-23T01:51:52.859Z] Scraping profile: https://screendrafts.fandom.com/wiki/Maria_Lewis
+[2025-07-23T01:51:53.180Z] Successfully scraped: Maria Lewis (https://screendrafts.fandom.com/wiki/Maria_Lewis)
+[2025-07-23T01:51:54.190Z] Scraping profile: https://screendrafts.fandom.com/wiki/Nichol_Lovett
+[2025-07-23T01:51:54.421Z] Successfully scraped: Nichol Lovett (https://screendrafts.fandom.com/wiki/Nichol_Lovett)
+[2025-07-23T01:51:55.430Z] Scraping profile: https://screendrafts.fandom.com/wiki/Alicia_Lutes
+[2025-07-23T01:51:55.480Z] Successfully scraped: Alicia Lutes (https://screendrafts.fandom.com/wiki/Alicia_Lutes)
+[2025-07-23T01:51:56.496Z] Scraping profile: https://screendrafts.fandom.com/wiki/Joe_Lynch
+[2025-07-23T01:51:56.736Z] Successfully scraped: Joe Lynch (https://screendrafts.fandom.com/wiki/Joe_Lynch)
+[2025-07-23T01:51:57.741Z] Scraping profile: https://screendrafts.fandom.com/wiki/Mike_Makowsky
+[2025-07-23T01:51:58.037Z] Successfully scraped: Mike Makowsky (https://screendrafts.fandom.com/wiki/Mike_Makowsky)
+[2025-07-23T01:51:59.058Z] Scraping profile: https://screendrafts.fandom.com/wiki/Ben_Mankiewicz
+[2025-07-23T01:51:59.111Z] Successfully scraped: Ben Mankiewicz (https://screendrafts.fandom.com/wiki/Ben_Mankiewicz)
+[2025-07-23T01:52:00.118Z] Scraping profile: https://screendrafts.fandom.com/wiki/Ryan_Marker
+[2025-07-23T01:52:00.404Z] Successfully scraped: Ryan Marker (https://screendrafts.fandom.com/wiki/Ryan_Marker)
+[2025-07-23T01:52:01.414Z] Scraping profile: https://screendrafts.fandom.com/wiki/Blake_Masters
+[2025-07-23T01:52:01.614Z] Successfully scraped: Blake Masters (https://screendrafts.fandom.com/wiki/Blake_Masters)
+[2025-07-23T01:52:02.617Z] Scraping profile: https://screendrafts.fandom.com/wiki/Angela_Matano
+[2025-07-23T01:52:02.838Z] Successfully scraped: Angela Matano (https://screendrafts.fandom.com/wiki/Angela_Matano)
+[2025-07-23T01:52:03.859Z] Scraping profile: https://screendrafts.fandom.com/wiki/Dane_McDonald
+[2025-07-23T01:52:04.183Z] Successfully scraped: Dane McDonald (https://screendrafts.fandom.com/wiki/Dane_McDonald)
+[2025-07-23T01:52:05.207Z] Scraping profile: https://screendrafts.fandom.com/wiki/David_Ian_McKendry
+[2025-07-23T01:52:05.435Z] Successfully scraped: David Ian McKendry (https://screendrafts.fandom.com/wiki/David_Ian_McKendry)
+[2025-07-23T01:52:06.454Z] Scraping profile: https://screendrafts.fandom.com/wiki/Rebekah_McKendry
+[2025-07-23T01:52:06.690Z] Successfully scraped: Rebekah McKendry (https://screendrafts.fandom.com/wiki/Rebekah_McKendry)
+[2025-07-23T01:52:07.701Z] Scraping profile: https://screendrafts.fandom.com/wiki/Drew_McWeeny
+[2025-07-23T01:52:08.164Z] Successfully scraped: Drew McWeeny (https://screendrafts.fandom.com/wiki/Drew_McWeeny)
+[2025-07-23T01:52:09.177Z] Scraping profile: https://screendrafts.fandom.com/wiki/Ben_Mekler
+[2025-07-23T01:52:09.406Z] Successfully scraped: Ben Mekler (https://screendrafts.fandom.com/wiki/Ben_Mekler)
+[2025-07-23T01:52:10.410Z] Scraping profile: https://screendrafts.fandom.com/wiki/Matt_Mercer
+[2025-07-23T01:52:10.467Z] Successfully scraped: Matt Mercer (https://screendrafts.fandom.com/wiki/Matt_Mercer)
+[2025-07-23T01:52:11.491Z] Scraping profile: https://screendrafts.fandom.com/wiki/Andrew_Merrill
+[2025-07-23T01:52:11.708Z] Successfully scraped: Andrew Merrill (https://screendrafts.fandom.com/wiki/Andrew_Merrill)
+[2025-07-23T01:52:12.739Z] Scraping profile: https://screendrafts.fandom.com/wiki/Gavin_Mevius
+[2025-07-23T01:52:12.964Z] Successfully scraped: Gavin Mevius (https://screendrafts.fandom.com/wiki/Gavin_Mevius)
+[2025-07-23T01:52:13.970Z] Scraping profile: https://screendrafts.fandom.com/wiki/Liz_Shannon_Miller
+[2025-07-23T01:52:14.023Z] Successfully scraped: Liz Shannon Miller (https://screendrafts.fandom.com/wiki/Liz_Shannon_Miller)
+[2025-07-23T01:52:15.041Z] Scraping profile: https://screendrafts.fandom.com/wiki/Neil_Miller
+[2025-07-23T01:52:15.250Z] Successfully scraped: Neil Miller (https://screendrafts.fandom.com/wiki/Neil_Miller)
+[2025-07-23T01:52:16.260Z] Scraping profile: https://screendrafts.fandom.com/wiki/Wynter_Mitchell
+[2025-07-23T01:52:16.493Z] Successfully scraped: Wynter Mitchell (https://screendrafts.fandom.com/wiki/Wynter_Mitchell)
+[2025-07-23T01:52:17.508Z] Scraping profile: https://screendrafts.fandom.com/wiki/Grant_Moninger
+[2025-07-23T01:52:17.730Z] Successfully scraped: Grant Moninger (https://screendrafts.fandom.com/wiki/Grant_Moninger)
+[2025-07-23T01:52:18.738Z] Scraping profile: https://screendrafts.fandom.com/wiki/Eric_Moore
+[2025-07-23T01:52:18.944Z] Successfully scraped: Eric Moore (https://screendrafts.fandom.com/wiki/Eric_Moore)
+[2025-07-23T01:52:19.951Z] Scraping profile: https://screendrafts.fandom.com/wiki/Jordan_Morris
+[2025-07-23T01:52:20.208Z] Successfully scraped: Jordan Morris (https://screendrafts.fandom.com/wiki/Jordan_Morris)
+[2025-07-23T01:52:21.224Z] Scraping profile: https://screendrafts.fandom.com/wiki/Steven_Ray_Morris
+[2025-07-23T01:52:21.439Z] Successfully scraped: Steven Ray Morris (https://screendrafts.fandom.com/wiki/Steven_Ray_Morris)
+[2025-07-23T01:52:22.447Z] Scraping profile: https://screendrafts.fandom.com/wiki/Jared_Moshe
+[2025-07-23T01:52:22.658Z] Successfully scraped: Jared Moshe (https://screendrafts.fandom.com/wiki/Jared_Moshe)
+[2025-07-23T01:52:23.664Z] Scraping profile: https://screendrafts.fandom.com/wiki/Jarrod_Murray
+[2025-07-23T01:52:23.729Z] Successfully scraped: Jarrod Murray (https://screendrafts.fandom.com/wiki/Jarrod_Murray)
+[2025-07-23T01:52:24.744Z] Scraping profile: https://screendrafts.fandom.com/wiki/Noel_Murray
+[2025-07-23T01:52:24.800Z] Successfully scraped: Noel Murray (https://screendrafts.fandom.com/wiki/Noel_Murray)
+[2025-07-23T01:52:25.803Z] Scraping profile: https://screendrafts.fandom.com/wiki/Darrin_Navarro
+[2025-07-23T01:52:26.071Z] Successfully scraped: Darrin Navarro (https://screendrafts.fandom.com/wiki/Darrin_Navarro)
+[2025-07-23T01:52:27.075Z] Scraping profile: https://screendrafts.fandom.com/wiki/Kenny_Neibart
+[2025-07-23T01:52:27.312Z] Successfully scraped: Kenny Neibart (https://screendrafts.fandom.com/wiki/Kenny_Neibart)
+[2025-07-23T01:52:28.329Z] Scraping profile: https://screendrafts.fandom.com/wiki/Griffin_Newman
+[2025-07-23T01:52:28.649Z] Successfully scraped: Griffin Newman (https://screendrafts.fandom.com/wiki/Griffin_Newman)
+[2025-07-23T01:52:29.662Z] Scraping profile: https://screendrafts.fandom.com/wiki/Amy_Nicholson
+[2025-07-23T01:52:29.925Z] Successfully scraped: Amy Nicholson (https://screendrafts.fandom.com/wiki/Amy_Nicholson)
+[2025-07-23T01:52:30.939Z] Scraping profile: https://screendrafts.fandom.com/wiki/Phil_Nobile_Jr.
+[2025-07-23T01:52:31.002Z] Successfully scraped: Phil Nobile Jr. (https://screendrafts.fandom.com/wiki/Phil_Nobile_Jr.)
+[2025-07-23T01:52:32.019Z] Scraping profile: https://screendrafts.fandom.com/wiki/Oriana_Nudo
+[2025-07-23T01:52:32.072Z] Successfully scraped: Oriana Nudo (https://screendrafts.fandom.com/wiki/Oriana_Nudo)
+[2025-07-23T01:52:33.094Z] Scraping profile: https://screendrafts.fandom.com/wiki/Ify_Nwadiwe
+[2025-07-23T01:52:33.145Z] Successfully scraped: Ify Nwadiwe (https://screendrafts.fandom.com/wiki/Ify_Nwadiwe)
+[2025-07-23T01:52:34.164Z] Scraping profile: https://screendrafts.fandom.com/wiki/Mallory_O%27Meara
+[2025-07-23T01:52:34.394Z] Successfully scraped: Mallory O'Meara (https://screendrafts.fandom.com/wiki/Mallory_O%27Meara)
+[2025-07-23T01:52:35.411Z] Scraping profile: https://screendrafts.fandom.com/wiki/Dave_Parker
+[2025-07-23T01:52:35.635Z] Successfully scraped: Dave Parker (https://screendrafts.fandom.com/wiki/Dave_Parker)
+[2025-07-23T01:52:36.643Z] Scraping profile: https://screendrafts.fandom.com/wiki/Patreon_Members
+[2025-07-23T01:52:36.892Z] Successfully scraped: Patreon Members (https://screendrafts.fandom.com/wiki/Patreon_Members)
+[2025-07-23T01:52:37.916Z] Scraping profile: https://screendrafts.fandom.com/wiki/Louis_Peitzman
+[2025-07-23T01:52:38.158Z] Successfully scraped: Louis Peitzman (https://screendrafts.fandom.com/wiki/Louis_Peitzman)
+[2025-07-23T01:52:39.173Z] Scraping profile: https://screendrafts.fandom.com/wiki/Eric_Pennycoff
+[2025-07-23T01:52:39.449Z] Successfully scraped: Eric Pennycoff (https://screendrafts.fandom.com/wiki/Eric_Pennycoff)
+[2025-07-23T01:52:40.476Z] Scraping profile: https://screendrafts.fandom.com/wiki/Matt_Perez-Mora
+[2025-07-23T01:52:40.710Z] Successfully scraped: Matt Perez-Mora (https://screendrafts.fandom.com/wiki/Matt_Perez-Mora)
+[2025-07-23T01:52:41.714Z] Scraping profile: https://screendrafts.fandom.com/wiki/Eric_Plese
+[2025-07-23T01:52:41.939Z] Successfully scraped: Eric Plese (https://screendrafts.fandom.com/wiki/Eric_Plese)
+[2025-07-23T01:52:42.957Z] Scraping profile: https://screendrafts.fandom.com/wiki/James_Ponsoldt
+[2025-07-23T01:52:43.161Z] Successfully scraped: James Ponsoldt (https://screendrafts.fandom.com/wiki/James_Ponsoldt)
+[2025-07-23T01:52:44.169Z] Scraping profile: https://screendrafts.fandom.com/wiki/Kristy_Puchko
+[2025-07-23T01:52:44.445Z] Successfully scraped: Kristy Puchko (https://screendrafts.fandom.com/wiki/Kristy_Puchko)
+[2025-07-23T01:52:45.448Z] Scraping profile: https://screendrafts.fandom.com/wiki/Connor_Ratliff
+[2025-07-23T01:52:45.514Z] Successfully scraped: Connor Ratliff (https://screendrafts.fandom.com/wiki/Connor_Ratliff)
+[2025-07-23T01:52:46.532Z] Scraping profile: https://screendrafts.fandom.com/wiki/Joe_Reid
+[2025-07-23T01:52:46.586Z] Successfully scraped: Joe Reid (https://screendrafts.fandom.com/wiki/Joe_Reid)
+[2025-07-23T01:52:47.590Z] Scraping profile: https://screendrafts.fandom.com/wiki/Carla_Renata
+[2025-07-23T01:52:47.826Z] Successfully scraped: Carla Renata (https://screendrafts.fandom.com/wiki/Carla_Renata)
+[2025-07-23T01:52:48.842Z] Scraping profile: https://screendrafts.fandom.com/wiki/Luis_Rendon
+[2025-07-23T01:52:49.097Z] Successfully scraped: Luis Rendon (https://screendrafts.fandom.com/wiki/Luis_Rendon)
+[2025-07-23T01:52:50.116Z] Scraping profile: https://screendrafts.fandom.com/wiki/Scott_Reynolds
+[2025-07-23T01:52:50.181Z] Successfully scraped: Scott Reynolds (https://screendrafts.fandom.com/wiki/Scott_Reynolds)
+[2025-07-23T01:52:51.199Z] Scraping profile: https://screendrafts.fandom.com/wiki/Katey_Rich
+[2025-07-23T01:52:51.405Z] Successfully scraped: Katey Rich (https://screendrafts.fandom.com/wiki/Katey_Rich)
+[2025-07-23T01:52:52.413Z] Scraping profile: https://screendrafts.fandom.com/wiki/Jenelle_Riley
+[2025-07-23T01:52:52.636Z] Successfully scraped: Jenelle Riley (https://screendrafts.fandom.com/wiki/Jenelle_Riley)
+[2025-07-23T01:52:53.657Z] Scraping profile: https://screendrafts.fandom.com/wiki/Joanna_Robinson
+[2025-07-23T01:52:53.889Z] Successfully scraped: Joanna Robinson (https://screendrafts.fandom.com/wiki/Joanna_Robinson)
+[2025-07-23T01:52:54.899Z] Scraping profile: https://screendrafts.fandom.com/wiki/Jonah_Ray_Rodrigues
+[2025-07-23T01:52:55.118Z] Successfully scraped: Jonah Ray Rodrigues (https://screendrafts.fandom.com/wiki/Jonah_Ray_Rodrigues)
+[2025-07-23T01:52:56.138Z] Scraping profile: https://screendrafts.fandom.com/wiki/Miguel_Rodriguez
+[2025-07-23T01:52:56.196Z] Successfully scraped: Miguel Rodriguez (https://screendrafts.fandom.com/wiki/Miguel_Rodriguez)
+[2025-07-23T01:52:57.205Z] Scraping profile: https://screendrafts.fandom.com/wiki/Andrew_Roebuck
+[2025-07-23T01:52:57.262Z] Successfully scraped: Andrew Roebuck (https://screendrafts.fandom.com/wiki/Andrew_Roebuck)
+[2025-07-23T01:52:58.269Z] Scraping profile: https://screendrafts.fandom.com/wiki/Mallory_Rubin
+[2025-07-23T01:52:58.537Z] Successfully scraped: Mallory Rubin (https://screendrafts.fandom.com/wiki/Mallory_Rubin)
+[2025-07-23T01:52:59.542Z] Scraping profile: https://screendrafts.fandom.com/wiki/Mike_Ryan
+[2025-07-23T01:52:59.746Z] Successfully scraped: Mike Ryan (https://screendrafts.fandom.com/wiki/Mike_Ryan)
+[2025-07-23T01:53:00.763Z] Scraping profile: https://screendrafts.fandom.com/wiki/Fayna_Sanchez
+[2025-07-23T01:53:00.999Z] Successfully scraped: Fayna Sanchez (https://screendrafts.fandom.com/wiki/Fayna_Sanchez)
+[2025-07-23T01:53:02.009Z] Scraping profile: https://screendrafts.fandom.com/wiki/Brian_Saur
+[2025-07-23T01:53:02.076Z] Successfully scraped: Brian Saur (https://screendrafts.fandom.com/wiki/Brian_Saur)
+[2025-07-23T01:53:03.091Z] Scraping profile: https://screendrafts.fandom.com/wiki/Dave_Schilling
+[2025-07-23T01:53:03.327Z] Successfully scraped: Dave Schilling (https://screendrafts.fandom.com/wiki/Dave_Schilling)
+[2025-07-23T01:53:04.332Z] Scraping profile: https://screendrafts.fandom.com/wiki/Dana_Schwartz
+[2025-07-23T01:53:04.581Z] Successfully scraped: Dana Schwartz (https://screendrafts.fandom.com/wiki/Dana_Schwartz)
+[2025-07-23T01:53:05.603Z] Scraping profile: https://screendrafts.fandom.com/wiki/Chris_Scleicher
+[2025-07-23T01:53:05.821Z] Successfully scraped: Chris Scleicher (https://screendrafts.fandom.com/wiki/Chris_Scleicher)
+[2025-07-23T01:53:06.835Z] Scraping profile: https://screendrafts.fandom.com/wiki/Mike_Scollins
+[2025-07-23T01:53:06.900Z] Successfully scraped: Mike Scollins (https://screendrafts.fandom.com/wiki/Mike_Scollins)
+[2025-07-23T01:53:07.918Z] Scraping profile: https://screendrafts.fandom.com/wiki/Witney_Seibold
+[2025-07-23T01:53:08.139Z] Successfully scraped: Witney Seibold (https://screendrafts.fandom.com/wiki/Witney_Seibold)
+[2025-07-23T01:53:09.143Z] Scraping profile: https://screendrafts.fandom.com/wiki/Nick_de_Semlyen
+[2025-07-23T01:53:09.204Z] Successfully scraped: Nick de Semlyen (https://screendrafts.fandom.com/wiki/Nick_de_Semlyen)
+[2025-07-23T01:53:10.226Z] Scraping profile: https://screendrafts.fandom.com/wiki/Alan_Sepinwall
+[2025-07-23T01:53:10.326Z] Successfully scraped: Alan Sepinwall (https://screendrafts.fandom.com/wiki/Alan_Sepinwall)
+[2025-07-23T01:53:11.339Z] Scraping profile: https://screendrafts.fandom.com/wiki/Helen_Shang
+[2025-07-23T01:53:11.391Z] Successfully scraped: Helen Shang (https://screendrafts.fandom.com/wiki/Helen_Shang)
+[2025-07-23T01:53:12.411Z] Scraping profile: https://screendrafts.fandom.com/wiki/Jason_Sheridan
+[2025-07-23T01:53:12.475Z] Successfully scraped: Jason Sheridan (https://screendrafts.fandom.com/wiki/Jason_Sheridan)
+[2025-07-23T01:53:13.487Z] Scraping profile: https://screendrafts.fandom.com/wiki/Kimmy_Shields
+[2025-07-23T01:53:13.546Z] Successfully scraped: Kimmy Shields (https://screendrafts.fandom.com/wiki/Kimmy_Shields)
+[2025-07-23T01:53:14.555Z] Scraping profile: https://screendrafts.fandom.com/wiki/Matt_Singer
+[2025-07-23T01:53:14.658Z] Successfully scraped: Matt Singer (https://screendrafts.fandom.com/wiki/Matt_Singer)
+[2025-07-23T01:53:15.667Z] Scraping profile: https://screendrafts.fandom.com/wiki/Piya_Sinha-Roy
+[2025-07-23T01:53:15.737Z] Successfully scraped: Piya Sinha-Roy (https://screendrafts.fandom.com/wiki/Piya_Sinha-Roy)
+[2025-07-23T01:53:16.741Z] Scraping profile: https://screendrafts.fandom.com/wiki/Graham_Skipper
+[2025-07-23T01:53:17.066Z] Successfully scraped: Graham Skipper (https://screendrafts.fandom.com/wiki/Graham_Skipper)
+[2025-07-23T01:53:18.077Z] Scraping profile: https://screendrafts.fandom.com/wiki/Slim
+[2025-07-23T01:53:18.136Z] Successfully scraped: Slim (https://screendrafts.fandom.com/wiki/Slim)
+[2025-07-23T01:53:19.142Z] Scraping profile: https://screendrafts.fandom.com/wiki/Amanda_Smith
+[2025-07-23T01:53:19.420Z] Successfully scraped: Amanda Smith (https://screendrafts.fandom.com/wiki/Amanda_Smith)
+[2025-07-23T01:53:20.446Z] Scraping profile: https://screendrafts.fandom.com/wiki/Bethy_Squires
+[2025-07-23T01:53:20.649Z] Successfully scraped: Bethy Squires (https://screendrafts.fandom.com/wiki/Bethy_Squires)
+[2025-07-23T01:53:21.663Z] Scraping profile: https://screendrafts.fandom.com/wiki/Emily_St._James
+[2025-07-23T01:53:21.961Z] Successfully scraped: Emily St. James (https://screendrafts.fandom.com/wiki/Emily_St._James)
+[2025-07-23T01:53:22.975Z] Scraping profile: https://screendrafts.fandom.com/wiki/Ryan_Stanger
+[2025-07-23T01:53:23.190Z] Successfully scraped: Ryan Stanger (https://screendrafts.fandom.com/wiki/Ryan_Stanger)
+[2025-07-23T01:53:24.206Z] Scraping profile: https://screendrafts.fandom.com/wiki/Chelsea_Stardust
+[2025-07-23T01:53:24.429Z] Successfully scraped: Chelsea Stardust (https://screendrafts.fandom.com/wiki/Chelsea_Stardust)
+[2025-07-23T01:53:25.439Z] Scraping profile: https://screendrafts.fandom.com/wiki/Riley_Stearns
+[2025-07-23T01:53:25.668Z] Successfully scraped: Riley Stearns (https://screendrafts.fandom.com/wiki/Riley_Stearns)
+[2025-07-23T01:53:26.680Z] Scraping profile: https://screendrafts.fandom.com/wiki/Sarah_Sterling
+[2025-07-23T01:53:26.889Z] Successfully scraped: Sarah Sterling (https://screendrafts.fandom.com/wiki/Sarah_Sterling)
+[2025-07-23T01:53:27.892Z] Scraping profile: https://screendrafts.fandom.com/wiki/Mikelle_Street
+[2025-07-23T01:53:28.156Z] Successfully scraped: Mikelle Street (https://screendrafts.fandom.com/wiki/Mikelle_Street)
+[2025-07-23T01:53:29.161Z] Scraping profile: https://screendrafts.fandom.com/wiki/Brandon_Streussnig
+[2025-07-23T01:53:29.357Z] Successfully scraped: Brandon Streussnig (https://screendrafts.fandom.com/wiki/Brandon_Streussnig)
+[2025-07-23T01:53:30.362Z] Scraping profile: https://screendrafts.fandom.com/wiki/Anam_Syed
+[2025-07-23T01:53:30.419Z] Successfully scraped: Anam Syed (https://screendrafts.fandom.com/wiki/Anam_Syed)
+[2025-07-23T01:53:31.428Z] Scraping profile: https://screendrafts.fandom.com/wiki/Kris_Tapley
+[2025-07-23T01:53:31.481Z] Successfully scraped: Kris Tapley (https://screendrafts.fandom.com/wiki/Kris_Tapley)
+[2025-07-23T01:53:32.497Z] Scraping profile: https://screendrafts.fandom.com/wiki/Alex_Terapane
+[2025-07-23T01:53:32.770Z] Successfully scraped: Alex Terapane (https://screendrafts.fandom.com/wiki/Alex_Terapane)
+[2025-07-23T01:53:33.793Z] Scraping profile: https://screendrafts.fandom.com/wiki/Daniel_Thompson
+[2025-07-23T01:53:34.065Z] Successfully scraped: Daniel Thompson (https://screendrafts.fandom.com/wiki/Daniel_Thompson)
+[2025-07-23T01:53:35.081Z] Scraping profile: https://screendrafts.fandom.com/wiki/Holly_Thompson
+[2025-07-23T01:53:35.131Z] Successfully scraped: Holly Thompson (https://screendrafts.fandom.com/wiki/Holly_Thompson)
+[2025-07-23T01:53:36.140Z] Scraping profile: https://screendrafts.fandom.com/wiki/Alec_Tibaldi
+[2025-07-23T01:53:36.369Z] Successfully scraped: Alec Tibaldi (https://screendrafts.fandom.com/wiki/Alec_Tibaldi)
+[2025-07-23T01:53:37.384Z] Scraping profile: https://screendrafts.fandom.com/wiki/Alexei_Toliopoulos
+[2025-07-23T01:53:37.603Z] Successfully scraped: Alexei Toliopoulos (https://screendrafts.fandom.com/wiki/Alexei_Toliopoulos)
+[2025-07-23T01:53:38.608Z] Scraping profile: https://screendrafts.fandom.com/wiki/Luc%C3%A9_Tomlin-Brenner
+[2025-07-23T01:53:38.660Z] Successfully scraped: Lucé Tomlin-Brenner (https://screendrafts.fandom.com/wiki/Luc%C3%A9_Tomlin-Brenner)
+[2025-07-23T01:53:39.681Z] Scraping profile: https://screendrafts.fandom.com/wiki/Karen_Tongson
+[2025-07-23T01:53:39.736Z] Successfully scraped: Karen Tongson (https://screendrafts.fandom.com/wiki/Karen_Tongson)
+[2025-07-23T01:53:40.751Z] Scraping profile: https://screendrafts.fandom.com/wiki/Dan_Trachtenberg
+[2025-07-23T01:53:40.975Z] Successfully scraped: Dan Trachtenberg (https://screendrafts.fandom.com/wiki/Dan_Trachtenberg)
+[2025-07-23T01:53:41.989Z] Scraping profile: https://screendrafts.fandom.com/wiki/Kevin_Tully
+[2025-07-23T01:53:42.039Z] Successfully scraped: Kevin Tully (https://screendrafts.fandom.com/wiki/Kevin_Tully)
+[2025-07-23T01:53:43.046Z] Scraping profile: https://screendrafts.fandom.com/wiki/Kyle_Turner
+[2025-07-23T01:53:43.262Z] Successfully scraped: Kyle Turner (https://screendrafts.fandom.com/wiki/Kyle_Turner)
+[2025-07-23T01:53:44.288Z] Scraping profile: https://screendrafts.fandom.com/wiki/Adam_B._Vary
+[2025-07-23T01:53:44.572Z] Successfully scraped: Adam B. Vary (https://screendrafts.fandom.com/wiki/Adam_B._Vary)
+[2025-07-23T01:53:45.591Z] Scraping profile: https://screendrafts.fandom.com/wiki/Eric_Vespe
+[2025-07-23T01:53:45.857Z] Successfully scraped: Eric Vespe (https://screendrafts.fandom.com/wiki/Eric_Vespe)
+[2025-07-23T01:53:46.861Z] Scraping profile: https://screendrafts.fandom.com/wiki/Mia_Lee_Vicino
+[2025-07-23T01:53:47.077Z] Successfully scraped: Mia Lee Vicino (https://screendrafts.fandom.com/wiki/Mia_Lee_Vicino)
+[2025-07-23T01:53:48.095Z] Scraping profile: https://screendrafts.fandom.com/wiki/Thomas_Vitale
+[2025-07-23T01:53:48.316Z] Successfully scraped: Thomas Vitale (https://screendrafts.fandom.com/wiki/Thomas_Vitale)
+[2025-07-23T01:53:49.327Z] Scraping profile: https://screendrafts.fandom.com/wiki/Rachel_Wagner
+[2025-07-23T01:53:49.385Z] Successfully scraped: Rachel Wagner (https://screendrafts.fandom.com/wiki/Rachel_Wagner)
+[2025-07-23T01:53:50.409Z] Scraping profile: https://screendrafts.fandom.com/wiki/Rachel_Walker
+[2025-07-23T01:53:50.626Z] Successfully scraped: Rachel Walker (https://screendrafts.fandom.com/wiki/Rachel_Walker)
+[2025-07-23T01:53:51.629Z] Scraping profile: https://screendrafts.fandom.com/wiki/Katie_Walsh
+[2025-07-23T01:53:51.866Z] Successfully scraped: Katie Walsh (https://screendrafts.fandom.com/wiki/Katie_Walsh)
+[2025-07-23T01:53:52.892Z] Scraping profile: https://screendrafts.fandom.com/wiki/Scott_Wampler
+[2025-07-23T01:53:52.942Z] Successfully scraped: Scott Wampler (https://screendrafts.fandom.com/wiki/Scott_Wampler)
+[2025-07-23T01:53:53.946Z] Scraping profile: https://screendrafts.fandom.com/wiki/Breanna_Whipple
+[2025-07-23T01:53:54.158Z] Successfully scraped: Breanna Whipple (https://screendrafts.fandom.com/wiki/Breanna_Whipple)
+[2025-07-23T01:53:55.182Z] Scraping profile: https://screendrafts.fandom.com/wiki/Dave_White
+[2025-07-23T01:53:55.227Z] Successfully scraped: Dave White (https://screendrafts.fandom.com/wiki/Dave_White)
+[2025-07-23T01:53:56.236Z] Scraping profile: https://screendrafts.fandom.com/wiki/Patrick_Willems
+[2025-07-23T01:53:56.303Z] Successfully scraped: Patrick Willems (https://screendrafts.fandom.com/wiki/Patrick_Willems)
+[2025-07-23T01:53:57.325Z] Scraping profile: https://screendrafts.fandom.com/wiki/Alison_Willmore
+[2025-07-23T01:53:57.374Z] Successfully scraped: Alison Willmore (https://screendrafts.fandom.com/wiki/Alison_Willmore)
+[2025-07-23T01:53:58.382Z] Scraping profile: https://screendrafts.fandom.com/wiki/Jenn_Wilson
+[2025-07-23T01:53:58.650Z] Successfully scraped: Jenn Wilson (https://screendrafts.fandom.com/wiki/Jenn_Wilson)
+[2025-07-23T01:53:59.656Z] Scraping profile: https://screendrafts.fandom.com/wiki/Sam_Wineman
+[2025-07-23T01:53:59.712Z] Successfully scraped: Sam Wineman (https://screendrafts.fandom.com/wiki/Sam_Wineman)
+[2025-07-23T01:54:00.729Z] Scraping profile: https://screendrafts.fandom.com/wiki/Carrie_Wittmer
+[2025-07-23T01:54:00.944Z] Successfully scraped: Carrie Wittmer (https://screendrafts.fandom.com/wiki/Carrie_Wittmer)
+[2025-07-23T01:54:01.967Z] Scraping profile: https://screendrafts.fandom.com/wiki/April_Wolfe
+[2025-07-23T01:54:02.034Z] Successfully scraped: April Wolfe (https://screendrafts.fandom.com/wiki/April_Wolfe)
+[2025-07-23T01:54:03.048Z] Scraping profile: https://screendrafts.fandom.com/wiki/Clarke_Wolfe
+[2025-07-23T01:54:03.152Z] Successfully scraped: Clarke Wolfe (https://screendrafts.fandom.com/wiki/Clarke_Wolfe)
+[2025-07-23T01:54:04.172Z] Scraping profile: https://screendrafts.fandom.com/wiki/Bryan_Woods
+[2025-07-23T01:54:04.382Z] Successfully scraped: Bryan Woods (https://screendrafts.fandom.com/wiki/Bryan_Woods)
+[2025-07-23T01:54:05.401Z] Scraping profile: https://screendrafts.fandom.com/wiki/Frank_H._Woodward
+[2025-07-23T01:54:05.613Z] Successfully scraped: Frank H. Woodward (https://screendrafts.fandom.com/wiki/Frank_H._Woodward)
+[2025-07-23T01:54:06.629Z] Scraping profile: https://screendrafts.fandom.com/wiki/Jen_Yamato
+[2025-07-23T01:54:06.835Z] Successfully scraped: Jen Yamato (https://screendrafts.fandom.com/wiki/Jen_Yamato)
+[2025-07-23T01:54:07.847Z] Scraping profile: https://screendrafts.fandom.com/wiki/Henry_Zebrowski
+[2025-07-23T01:54:08.092Z] Successfully scraped: Henry Zebrowski (https://screendrafts.fandom.com/wiki/Henry_Zebrowski)
+[2025-07-23T01:54:09.109Z] Scraping profile: https://screendrafts.fandom.com/wiki/Zoe_Zelkind
+[2025-07-23T01:54:09.355Z] Successfully scraped: Zoe Zelkind (https://screendrafts.fandom.com/wiki/Zoe_Zelkind)
+[2025-07-23T01:54:10.373Z] Scraping profile: https://screendrafts.fandom.com/wiki/Larry_Zerner
+[2025-07-23T01:54:10.591Z] Successfully scraped: Larry Zerner (https://screendrafts.fandom.com/wiki/Larry_Zerner)
+[2025-07-23T01:54:11.621Z] Scraping profile: https://screendrafts.fandom.com/wiki/Esther_Zuckerman
+[2025-07-23T01:54:11.831Z] Successfully scraped: Esther Zuckerman (https://screendrafts.fandom.com/wiki/Esther_Zuckerman)
+[2025-07-23T01:54:12.842Z] Scraping completed. Total profiles scraped: 249

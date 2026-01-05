@@ -1,7 +1,7 @@
 ﻿namespace ScreenDrafts.Modules.Users.IntegrationTests.Users;
 
-public class AddPermissionTests(IntegrationTestWebAppFactory factory)
-  : BaseIntegrationTest(factory)
+public class AddPermissionTests(UsersIntegrationTestWebAppFactory factory)
+  : UsersIntegrationTest(factory)
 {
   [Fact]
   public async Task Should_ReturnSuccess_WhenPermissionIsAddedAsync()

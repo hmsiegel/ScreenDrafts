@@ -5,18 +5,17 @@ public sealed class Drafter : AggrgateRoot<DrafterId, Guid>
   private readonly List<Veto> _vetoes = [];
   private readonly List<VetoOverride> _vetoOverrides = [];
   private readonly List<DrafterDraftStats> _draftStats = [];
-  private readonly List<Draft> _drafts = [];
+  private readonly List<DraftPart> _draftParts = [];
   private readonly List<Pick> _picks = [];
 
 
   private Drafter(
-    string name,
-    DrafterId? id = null,
-    Guid? userId = null)
+    Person person,
+    DrafterId? id = null)
     : base(id ?? DrafterId.CreateUnique())
   {
-    UserId = userId;
-    Name = Guard.Against.NullOrEmpty(name);
+    Person = person;
+    PersonId = person.Id;
   }
 
   private Drafter()
@@ -25,10 +24,9 @@ public sealed class Drafter : AggrgateRoot<DrafterId, Guid>
 
   public int ReadableId { get; init; }
 
-  public Guid? UserId { get; private set; }
+  public Person Person { get; private set; } = default!;
 
-  public string Name { get; private set; } = default!;
-
+  public PersonId PersonId { get; private set; } = default!;
 
   public RolloverVeto? RolloverVeto { get; private set; } = default!;
 
@@ -40,19 +38,19 @@ public sealed class Drafter : AggrgateRoot<DrafterId, Guid>
 
   public IReadOnlyCollection<DrafterDraftStats> DraftStats => _draftStats.AsReadOnly();
 
-  public IReadOnlyCollection<Draft> Drafts => _drafts.AsReadOnly();
+  public IReadOnlyCollection<DraftPart> DraftParts => _draftParts.AsReadOnly();
 
   public IReadOnlyCollection<Pick> Picks => _picks.AsReadOnly();
 
   public static Result<Drafter> Create(
-    string name,
-    Guid? userId = null,
+    Person person,
     DrafterId? id = null)
   {
+    ArgumentNullException.ThrowIfNull(person);
+
     var drafter = new Drafter(
       id: id,
-      userId: userId,
-      name: name);
+      person: person);
 
     drafter.Raise(new DrafterCreatedDomainEvent(drafter.Id.Value));
 
@@ -94,19 +92,37 @@ public sealed class Drafter : AggrgateRoot<DrafterId, Guid>
     return Result.Success();
   }
 
-  public void AddDraftStats(Draft draft)
+  public Result AddDraftStats(DrafterDraftStats draftStats)
   {
-    _draftStats.Add(DrafterDraftStats.Create(this, null, draft));
+    Guard.Against.Null(draftStats);
+    _draftStats.Add(draftStats);
+    return Result.Success();
   }
 
-  public void SetDrafterName(string firstName, string lastName, string? middleName)
+  public void AddDraftPart(DraftPart draftPart)
   {
-    Name = $"{firstName} {middleName} {lastName}";
+    ArgumentNullException.ThrowIfNull(draftPart);
+    _draftParts.Add(draftPart);
   }
 
-  public void AddDraft(Draft draft)
+  public void ClearDraftParts()
   {
-    _drafts.Add(draft);
+    _draftParts.Clear();
+  }
+
+  public void ClearPicks()
+  {
+    _picks.Clear();
+  }
+
+  public void RemovePick(Pick pick)
+  {
+    _picks.Remove(pick);
+  }
+
+  public void RemoveDraftPart(DraftPart draftPart)
+  {
+    _draftParts.Remove(draftPart);
   }
 
   public void AddPick(Pick pick)

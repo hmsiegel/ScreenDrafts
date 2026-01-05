@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Movies.Presentation.Movies;
+﻿using Microsoft.AspNetCore.Builder;
+
+namespace ScreenDrafts.Modules.Movies.Presentation.Movies;
 
 internal sealed class AddMovie(ISender sender) : Endpoint<AddMovieRequest, Guid>
 {
@@ -7,7 +9,12 @@ internal sealed class AddMovie(ISender sender) : Endpoint<AddMovieRequest, Guid>
   public override void Configure()
   {
     Post("/movies");
-    Description(x => x.WithTags(Presentation.Tags.Movies));
+    Description(x =>
+    {
+      x.WithTags(Presentation.Tags.Movies)
+      .WithDescription("Add a new movie")
+      .WithName(nameof(AddMovie));
+    });
     Policies(Presentation.Permissions.AddMovie);
   }
 
@@ -30,7 +37,7 @@ internal sealed class AddMovie(ISender sender) : Endpoint<AddMovieRequest, Guid>
 
     var movieId = await _sender.Send(command, ct);
 
-    await SendOkAsync(movieId.Value, ct);
+    await Send.OkAsync(movieId.Value, ct);
   }
 }
 
@@ -48,3 +55,16 @@ public sealed record AddMovieRequest(
   IReadOnlyCollection<PersonRequest> Writers,
   IReadOnlyCollection<PersonRequest> Producers,
   IReadOnlyCollection<ProductionCompanyRequest> ProductionCompanies);
+
+internal sealed class AddMovieSummary : Summary<AddMovie>
+{
+  public AddMovieSummary()
+  {
+    Summary = "Add a new movie";
+    Description = "Add a new movie to the database";
+    Response<Guid>(StatusCodes.Status200OK, "The ID of the newly created movie");
+    Response(StatusCodes.Status400BadRequest, "Invalid request data");
+    Response(StatusCodes.Status401Unauthorized, "Unauthorized request");
+    Response(StatusCodes.Status403Forbidden, "Forbidden request");
+  }
+}

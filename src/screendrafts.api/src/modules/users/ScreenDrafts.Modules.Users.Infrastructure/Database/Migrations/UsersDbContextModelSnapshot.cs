@@ -18,7 +18,7 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("users")
-                .HasAnnotation("ProductVersion", "9.0.1")
+                .HasAnnotation("ProductVersion", "9.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -84,6 +84,16 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                         },
                         new
                         {
+                            PermissionCode = "people:search",
+                            RoleName = "Guest"
+                        },
+                        new
+                        {
+                            PermissionCode = "categories:search",
+                            RoleName = "Guest"
+                        },
+                        new
+                        {
                             PermissionCode = "users:read",
                             RoleName = "Host"
                         },
@@ -125,6 +135,16 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                         new
                         {
                             PermissionCode = "studios:search",
+                            RoleName = "Host"
+                        },
+                        new
+                        {
+                            PermissionCode = "people:search",
+                            RoleName = "Host"
+                        },
+                        new
+                        {
+                            PermissionCode = "categories:search",
                             RoleName = "Host"
                         },
                         new
@@ -180,6 +200,16 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                         new
                         {
                             PermissionCode = "studios:search",
+                            RoleName = "Drafter"
+                        },
+                        new
+                        {
+                            PermissionCode = "people:search",
+                            RoleName = "Drafter"
+                        },
+                        new
+                        {
+                            PermissionCode = "categories:search",
                             RoleName = "Drafter"
                         },
                         new
@@ -300,6 +330,61 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                         new
                         {
                             PermissionCode = "studios:search",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "people:create",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "people:read",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "people:update",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "people:search",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "categories:create",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "categories:update",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "categories:read",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "categories:search",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "categories:delete",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "movies:create",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "movies:read",
                             RoleName = "Administrator"
                         },
                         new
@@ -430,6 +515,61 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                         new
                         {
                             PermissionCode = "permissions:update",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "people:create",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "people:read",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "people:update",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "people:search",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "categories:create",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "categories:update",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "categories:read",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "categories:search",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "categories:delete",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "movies:create",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "movies:read",
                             RoleName = "SuperAdministrator"
                         },
                         new
@@ -692,6 +832,50 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                         new
                         {
                             Code = "patreon:search"
+                        },
+                        new
+                        {
+                            Code = "people:create"
+                        },
+                        new
+                        {
+                            Code = "people:read"
+                        },
+                        new
+                        {
+                            Code = "people:update"
+                        },
+                        new
+                        {
+                            Code = "people:search"
+                        },
+                        new
+                        {
+                            Code = "movies:create"
+                        },
+                        new
+                        {
+                            Code = "movies:read"
+                        },
+                        new
+                        {
+                            Code = "categories:create"
+                        },
+                        new
+                        {
+                            Code = "categories:update"
+                        },
+                        new
+                        {
+                            Code = "categories:read"
+                        },
+                        new
+                        {
+                            Code = "categories:search"
+                        },
+                        new
+                        {
+                            Code = "categories:delete"
                         });
                 });
 
@@ -740,6 +924,11 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
+                    b.Property<string>("BlueskyHandle")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("bluesky_handle");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(255)
@@ -757,15 +946,39 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                         .HasColumnType("text")
                         .HasColumnName("identity_id");
 
+                    b.Property<string>("InstagramHandle")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("instagram_handle");
+
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)")
                         .HasColumnName("last_name");
 
+                    b.Property<string>("LetterboxdHandle")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("letterboxd_handle");
+
                     b.Property<string>("MiddleName")
                         .HasColumnType("text")
                         .HasColumnName("middle_name");
+
+                    b.Property<Guid?>("PersonId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("person_id");
+
+                    b.Property<string>("ProfilePicturePath")
+                        .HasMaxLength(2048)
+                        .HasColumnType("character varying(2048)")
+                        .HasColumnName("profile_picture_path");
+
+                    b.Property<string>("TwitterHandle")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("twitter_handle");
 
                     b.HasKey("Id")
                         .HasName("pk_users");
@@ -777,6 +990,10 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                     b.HasIndex("IdentityId")
                         .IsUnique()
                         .HasDatabaseName("ix_users_identity_id");
+
+                    b.HasIndex("PersonId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_users_person_id");
 
                     b.ToTable("users", "users");
                 });

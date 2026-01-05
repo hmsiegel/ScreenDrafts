@@ -2,12 +2,14 @@
 
 public sealed class Pick : Entity<PickId>
 {
+  private readonly List<PickEvent> _history = [];
+
   private Pick(
     int position,
     Movie movie,
     Drafter? drafter,
     DrafterTeam? drafterTeam,
-    Draft draft,
+    DraftPart draftPart,
     int playOrder = 0,
     PickId? id = null)
     : base(id ?? PickId.CreateUnique())
@@ -18,8 +20,8 @@ public sealed class Pick : Entity<PickId>
     Movie = Guard.Against.Null(movie);
     MovieId = movie.Id;
 
-    Draft = Guard.Against.Null(draft);
-    DraftId = draft.Id;
+    DraftPart = Guard.Against.Null(draftPart);
+    DraftPartId = draftPart.Id;
 
     Drafter = drafter;
     DrafterId = drafter?.Id;
@@ -44,6 +46,9 @@ public sealed class Pick : Entity<PickId>
   public DrafterTeamId? DrafterTeamId { get; } = default!;
   public DrafterTeam? DrafterTeam { get; } = default!;
 
+  public DraftPartId DraftPartId { get; } = default!;
+  public DraftPart DraftPart { get; } = default!;
+
   public DraftId DraftId { get; } = default!;
   public Draft Draft { get; } = default!;
 
@@ -57,21 +62,26 @@ public sealed class Pick : Entity<PickId>
   [NotMapped]
   public bool IsVetoed => Veto is not null;
 
+  [NotMapped]
+  public bool IsComissionerOverridden => CommissionerOverride is not null;
+
+  public IReadOnlyCollection<PickEvent> History => _history.AsReadOnly();
+
   public static Result<Pick> Create(
     int position,
     Movie movie,
     Drafter? drafter,
     DrafterTeam? drafterTeam,
-    Draft draft,
+    DraftPart draftPart,
     int playOrder,
     PickId? id = null)
   {
-    if (draft is null)
+    if (draftPart is null)
     {
       return Result.Failure<Pick>(PickErrors.DraftMustBeProvided);
     }
 
-    if (position <= 0 || position > draft.TotalPicks)
+    if (position <= 0 || position > draftPart.Draft.TotalPicks)
     {
       return Result.Failure<Pick>(PickErrors.PickPositionIsOutOfRange);
     }
@@ -102,7 +112,7 @@ public sealed class Pick : Entity<PickId>
       movie: movie,
       drafter: drafter,
       drafterTeam: drafterTeam,
-      draft: draft,
+      draftPart: draftPart,
       playOrder: playOrder,
       id: id);
 
@@ -110,7 +120,7 @@ public sealed class Pick : Entity<PickId>
       pick.Id.Value,
       drafter?.Id.Value,
       drafterTeam?.Id.Value,
-      draft.Id.Value,
+      draftPart.Id.Value,
       position,
       playOrder,
       movie.Id));
@@ -118,7 +128,7 @@ public sealed class Pick : Entity<PickId>
     return pick;
   }
 
-  public Result VetoPick(Veto veto)
+  internal Result ApplyVeto(Veto veto)
   {
     if (veto is null)
     {
@@ -134,10 +144,16 @@ public sealed class Pick : Entity<PickId>
 
     Veto = veto;
 
+    _history.Add(
+      PickEvent.Veto(
+        issuerKind: veto.IssuerKind,
+        issuerId: veto.IssuedBy,
+        note: veto.Note));
+
     return Result.Success();
   }
 
-  public Result ApplyCommissionerOverride(
+  internal Result ApplyCommissionerOverride(
     CommissionerOverride commissionerOverride)
   {
     Guard.Against.Null(commissionerOverride);
@@ -156,4 +172,67 @@ public sealed class Pick : Entity<PickId>
 
     return Result.Success();
   }
+
+  internal Result ApplyVetoOverride(Veto veto, ParticipantId by)
+  {
+    if (veto is null)
+    {
+      return Result.Failure(PickErrors.VetoMustBeProvided);
+    }
+
+    Guard.Against.Null(veto);
+
+    if (IsVetoed)
+    {
+      return Result.Failure(PickErrors.PickAlreadyVetoed);
+    }
+
+    Veto = veto;
+
+    _history.Add(
+      PickEvent.VetoOverride(
+        by: by,
+        note: veto.Note));
+
+    return Result.Success();
+  }
+}
+
+public sealed record PickEvent(
+  string Kind,
+  VetoIssuerKind? IssuerKind,
+  ParticipantId? IssuerId,
+  string? Note,
+  DateTime OccurredOnUtc)
+{
+  public static PickEvent Veto(
+    VetoIssuerKind issuerKind,
+    ParticipantId? issuerId,
+    string? note) =>
+    new(
+      Kind: "Veto",
+      IssuerKind: issuerKind,
+      IssuerId: issuerId,
+      Note: note,
+      OccurredOnUtc: DateTime.UtcNow);
+
+  public static PickEvent VetoOverride(
+    ParticipantId by,
+    string? note) =>
+    new(
+      Kind: "VetoOverride",
+      IssuerKind: null,
+      IssuerId: by,
+      Note: note,
+      OccurredOnUtc: DateTime.UtcNow);
+
+  public static PickEvent CommissionerOverride(
+    ParticipantId by,
+    string? note) =>
+    new(
+      Kind: "CommissionerOverride",
+      IssuerKind: null,
+      IssuerId: by,
+      Note: note,
+      OccurredOnUtc: DateTime.UtcNow);
 }

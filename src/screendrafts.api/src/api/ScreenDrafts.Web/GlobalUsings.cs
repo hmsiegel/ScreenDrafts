@@ -2,6 +2,7 @@
 global using System.Reflection;
 
 global using FastEndpoints;
+global using FastEndpoints.Swagger;
 
 global using HealthChecks.UI.Client;
 
@@ -14,6 +15,8 @@ global using Microsoft.OpenApi.Models;
 
 global using MongoDB.Driver;
 
+global using Npgsql;
+
 global using RabbitMQ.Client;
 
 global using Scalar.AspNetCore;
@@ -21,6 +24,7 @@ global using Scalar.AspNetCore;
 global using ScreenDrafts.Common.Application;
 global using ScreenDrafts.Common.Infrastructure;
 global using ScreenDrafts.Common.Infrastructure.Configuration;
+global using ScreenDrafts.Common.Infrastructure.Database;
 global using ScreenDrafts.Common.Infrastructure.EventBus;
 global using ScreenDrafts.Modules.Administration.Infrastructure;
 global using ScreenDrafts.Modules.Administration.Infrastructure.Database;

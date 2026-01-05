@@ -1,0 +1,4269 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "ScreenDrafts API",
+    "description": "API for ScreenDrafts",
+    "termsOfService": "https://www.screendrafts.com/terms",
+    "contact": {
+      "name": "Harlan Siegel",
+      "url": "https://www.github.com/hmsiegel/screendrafts",
+      "email": "hmsiegel@gmail.com"
+    },
+    "license": {
+      "name": "GNU General Public License v3",
+      "url": "https://opensource.org/licenses/gpl-3-0"
+    },
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "https://localhost:5001/"
+    }
+  ],
+  "paths": {
+    "/administration/roles/{role}/permissions": {
+      "post": {
+        "tags": [
+          "Administration"
+        ],
+        "description": "Add permission to role",
+        "operationId": "AddPermissionToRole",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddPermissionToRoleRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/administration/users/{userId}/roles": {
+      "post": {
+        "tags": [
+          "Administration"
+        ],
+        "description": "Add user role",
+        "operationId": "AddUserRole",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddUserRoleRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Administration"
+        ],
+        "description": "Remove user role",
+        "operationId": "RemoveUserRole",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/RemoveUserRoleRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RemoveUserRoleRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/people/create": {
+      "post": {
+        "tags": [
+          "People"
+        ],
+        "description": "Create a new person",
+        "operationId": "CreatePerson",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePersonRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/people/{id}": {
+      "get": {
+        "tags": [
+          "People"
+        ],
+        "description": "Get a person by ID",
+        "operationId": "GetPerson",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/GetPersonRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetPersonRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/people": {
+      "get": {
+        "tags": [
+          "People"
+        ],
+        "description": "Get all people",
+        "operationId": "ListPeople",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/ListPeopleRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ListPeopleRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultOfPersonResponse"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/hosts/{id}": {
+      "post": {
+        "tags": [
+          "Hosts"
+        ],
+        "description": "Create a new host",
+        "operationId": "CreateHost",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateHostRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "get": {
+        "tags": [
+          "Hosts"
+        ],
+        "description": "Get a host by ID",
+        "operationId": "GetHost",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/GetHostRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetHostRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HostResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/hosts": {
+      "get": {
+        "tags": [
+          "Hosts"
+        ],
+        "description": "Get all hosts",
+        "operationId": "ListHosts",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/ListHostsRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ListHostsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HostResponse"
+                  }
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/drafts/{draftId}/drafters/{drafterId}": {
+      "post": {
+        "tags": [
+          "Drafts"
+        ],
+        "description": "Add Drafter to Draft",
+        "operationId": "AddDrafterToDraft",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddDrafterToDraftRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/drafts/{gameBoardId}/positions": {
+      "post": {
+        "tags": [
+          "Drafts"
+        ],
+        "description": "Add Draft Positions to GameBoard",
+        "operationId": "AddDraftPositionsToGameBoard",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddDraftPositionsToGameBoardRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/drafts/{draftId}/hosts/{hostId}": {
+      "post": {
+        "tags": [
+          "Drafts"
+        ],
+        "description": "Add a host to a draft.",
+        "operationId": "AddHostToDraft",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddHostToDraftRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/drafts/{draftId}/picks": {
+      "post": {
+        "tags": [
+          "Picks"
+        ],
+        "description": "Add a pick to a draft",
+        "operationId": "AddPick",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddPickRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "get": {
+        "tags": [
+          "Picks"
+        ],
+        "description": "Get all picks for a draft",
+        "operationId": "GetDraftPicks",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/GetDraftPicksRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetDraftPicksRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DraftPickResponse"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/drafts/{draftId}/commissioner-override/{pickId}": {
+      "post": {
+        "tags": [
+          "Drafts"
+        ],
+        "description": "Applies a Commissioner Override to a draft pick.",
+        "operationId": "ApplyCommissionerOverride",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApplyCommissionerOverrideRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/drafts/{draftId}/position/{drafterId}": {
+      "post": {
+        "tags": [
+          "DraftPositions"
+        ],
+        "description": "Assign a position to a drafter in a draft.",
+        "operationId": "AssignDraftPosition",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssignDraftPositionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/drafts/{draftId}/complete": {
+      "post": {
+        "tags": [
+          "Drafts"
+        ],
+        "description": "Completes a draft. The draft will be marked as complete and cannot be modified anymore.",
+        "operationId": "CompleteDraft",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompleteDraftRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/drafts/{draftId}/continue": {
+      "patch": {
+        "tags": [
+          "Drafts"
+        ],
+        "description": "Continue a draft",
+        "operationId": "ContinueDraft",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContinueDraftRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/drafts": {
+      "post": {
+        "tags": [
+          "Drafts"
+        ],
+        "operationId": "CreateDraft",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateDraftRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "get": {
+        "tags": [
+          "Drafts"
+        ],
+        "description": "Get all drafts",
+        "operationId": "ListDrafts",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/ListDraftsRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ListDraftsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultOfDraftResponse"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/drafts/gameboard/{draftId}": {
+      "post": {
+        "tags": [
+          "GameBoards"
+        ],
+        "description": "Creates a game board for the draft.",
+        "operationId": "CreateGameBoard",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateGameBoardRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/drafts/{draftId}": {
+      "delete": {
+        "tags": [
+          "Drafts"
+        ],
+        "description": "Delete a draft",
+        "operationId": "DeleteDraft",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteDraftRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteDraftRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Drafts"
+        ],
+        "description": "Edit a draft",
+        "operationId": "EditDraft",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EditDraftRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/drafts/{id}": {
+      "get": {
+        "tags": [
+          "Drafts"
+        ],
+        "description": "Gets a draft by it's Id.",
+        "operationId": "GetDraft",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/GetDraftRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetDraftRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DraftResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/drafts/{gameboardId}/positions": {
+      "get": {
+        "tags": [
+          "DraftPositions"
+        ],
+        "description": "Get all draft positions for a gameboard",
+        "operationId": "GetDraftPositions",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/GetDraftPositionsRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetDraftPositionsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DraftPositionResponse"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/drafts/latest": {
+      "get": {
+        "tags": [
+          "Drafts"
+        ],
+        "description": "Gets the last five completed drafts.",
+        "operationId": "GetLatestDrafts",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DraftResponse"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/drafts/upcoming": {
+      "get": {
+        "tags": [
+          "Drafts"
+        ],
+        "description": "Get all upcoming drafts",
+        "operationId": "ListUpcomingDrafts",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UpcomingDraftDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/drafts/{draftId}/pause": {
+      "patch": {
+        "tags": [
+          "Drafts"
+        ],
+        "description": "Pause a draft",
+        "operationId": "PauseDraft",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PauseDraftRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/drafts/{draftId}/drafter/{drafterId}": {
+      "delete": {
+        "tags": [
+          "Drafts"
+        ],
+        "description": "Remove a drafter from a draft",
+        "operationId": "RemoveDrafterFromDraft",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/RemoveDrafterFromDraftRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RemoveDrafterFromDraftRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/drafts/{draftId}/remove-host/{hostId}": {
+      "delete": {
+        "tags": [
+          "Drafts"
+        ],
+        "description": "Remove a host from a draft",
+        "operationId": "RemoveHostFromDraft",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/RemoveHostFromDraftRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RemoveHostFromDraftRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/drafts/{draftId}/start": {
+      "post": {
+        "tags": [
+          "Drafts"
+        ],
+        "description": "Starts a draft.",
+        "operationId": "StartDraft",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StartDraftRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/drafts/{draftId}/release-date": {
+      "put": {
+        "tags": [
+          "Drafts"
+        ],
+        "description": "Update the release date of a draft",
+        "operationId": "UpdateReleaseDate",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReleaseDateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/drafts/{draftId}/trivia/{drafterId}": {
+      "post": {
+        "tags": [
+          "Trivia"
+        ],
+        "description": "Assign trivia results to a drafter",
+        "operationId": "AssignTriviaResults",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TriviaResultRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "get": {
+        "tags": [
+          "Trivia"
+        ],
+        "description": "Get trivia results for a drafter in a draft.",
+        "operationId": "GetTriviaResults",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/TriviaResultsRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TriviaResultsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TriviaResultDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/drafters/create": {
+      "post": {
+        "tags": [
+          "Drafters"
+        ],
+        "description": "Create a new drafter",
+        "operationId": "CreateDrafter",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateDrafterRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/drafts/{draftId}/veto/{pickId}": {
+      "post": {
+        "tags": [
+          "Drafters"
+        ],
+        "description": "Execute a veto on a pick in a draft",
+        "operationId": "ExecuteVeto",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExecuteVetoRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/drafts/{vetoId}/vetooveride": {
+      "post": {
+        "tags": [
+          "Drafters"
+        ],
+        "description": "Override a veto on a pick.",
+        "operationId": "ExecuteVetoOverride",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VetoOverrideRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/drafters/{id}": {
+      "get": {
+        "tags": [
+          "Drafters"
+        ],
+        "description": "Get a drafter by ID",
+        "operationId": "GetDrafter",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/GetDrafterRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetDrafterRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DrafterResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/drafters/{drafterId}/profile": {
+      "get": {
+        "tags": [
+          "Drafters"
+        ],
+        "description": "Get a drafter's profile by ID",
+        "operationId": "GetDrafterProfile",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/GetDrafterProfileRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetDrafterProfileRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DrafterProfileResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/drafters": {
+      "get": {
+        "tags": [
+          "Drafters"
+        ],
+        "description": "Get all drafters",
+        "operationId": "ListDrafters",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/ListDraftersRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ListDraftersRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DrafterResponse"
+                  }
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/movies/search": {
+      "get": {
+        "tags": [
+          "Movies"
+        ],
+        "operationId": "SearchForMovie",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/MovieRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MovieRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MovieResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/movies": {
+      "post": {
+        "tags": [
+          "Movies"
+        ],
+        "description": "Add a new movie",
+        "operationId": "AddMovie",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddMovieRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/users/profile": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Get user profile",
+        "operationId": "GetUserProfile",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Updates the current user's profile information.",
+        "operationId": "UpdateUserProfile",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/users/register": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Register a new user",
+        "operationId": "RegisterUser",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterUserRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ActorModel": {
+        "required": [
+          "imdbId",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "imdbId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "AddDrafterToDraftRequest": {
+        "required": [
+          "draftId",
+          "drafterId"
+        ],
+        "type": "object",
+        "properties": {
+          "draftId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "drafterId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "AddDraftPositionsToGameBoardRequest": {
+        "required": [
+          "gameBoardId",
+          "draftPositions"
+        ],
+        "type": "object",
+        "properties": {
+          "gameBoardId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "draftPositions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DraftPositionRequest"
+            }
+          }
+        }
+      },
+      "AddHostToDraftRequest": {
+        "required": [
+          "draftId",
+          "hostId"
+        ],
+        "type": "object",
+        "properties": {
+          "draftId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "hostId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "AddMovieRequest": {
+        "required": [
+          "imdbId",
+          "title",
+          "year",
+          "plot",
+          "image",
+          "releaseDate",
+          "youtubeTrailer",
+          "genres",
+          "actors",
+          "directors",
+          "writers",
+          "producers",
+          "productionCompanies"
+        ],
+        "type": "object",
+        "properties": {
+          "imdbId": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "year": {
+            "type": "string"
+          },
+          "plot": {
+            "type": "string"
+          },
+          "image": {
+            "type": "string"
+          },
+          "releaseDate": {
+            "type": "string"
+          },
+          "youtubeTrailer": {
+            "type": "string"
+          },
+          "genres": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "actors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PersonRequest"
+            }
+          },
+          "directors": {
+            "type": "array",
+            "items": {}
+          },
+          "writers": {
+            "type": "array",
+            "items": {}
+          },
+          "producers": {
+            "type": "array",
+            "items": {}
+          },
+          "productionCompanies": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductionCompanyRequest"
+            }
+          }
+        }
+      },
+      "AddPermissionToRoleRequest": {
+        "required": [
+          "permission",
+          "role"
+        ],
+        "type": "object",
+        "properties": {
+          "permission": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string"
+          }
+        }
+      },
+      "AddPickRequest": {
+        "required": [
+          "draftId",
+          "drafterId",
+          "drafterTeamId",
+          "position",
+          "playOrder",
+          "movieId"
+        ],
+        "type": "object",
+        "properties": {
+          "draftId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "drafterId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "drafterTeamId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "position": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "playOrder": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "movieId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "AddUserRoleRequest": {
+        "required": [
+          "role",
+          "userId"
+        ],
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "ApplyCommissionerOverrideRequest": {
+        "required": [
+          "draftId",
+          "pickId"
+        ],
+        "type": "object",
+        "properties": {
+          "draftId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "pickId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "AssignDraftPositionRequest": {
+        "required": [
+          "positionId",
+          "draftId",
+          "drafterId"
+        ],
+        "type": "object",
+        "properties": {
+          "positionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "draftId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "drafterId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "CommissionerOverrideResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "pickId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "position": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "playOrder": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "movieId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "movieTitle": {
+            "type": "string"
+          },
+          "drafterId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "drafterName": {
+            "type": "string",
+            "nullable": true
+          },
+          "drafterTeamId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "drafterTeamName": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "CompleteDraftRequest": {
+        "required": [
+          "draftId"
+        ],
+        "type": "object",
+        "properties": {
+          "draftId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "ContinueDraftRequest": {
+        "required": [
+          "draftId"
+        ],
+        "type": "object",
+        "properties": {
+          "draftId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "CreateDrafterRequest": {
+        "required": [
+          "personId"
+        ],
+        "type": "object",
+        "properties": {
+          "personId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "CreateDraftRequest": {
+        "required": [
+          "title",
+          "draftType",
+          "totalPicks",
+          "totalDrafters",
+          "totalDrafterTeams",
+          "totalHosts",
+          "episodeType",
+          "draftStatus"
+        ],
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "draftType": {
+            "type": "string"
+          },
+          "totalPicks": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalDrafters": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalDrafterTeams": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalHosts": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "episodeType": {
+            "type": "string"
+          },
+          "draftStatus": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateGameBoardRequest": {
+        "required": [
+          "draftId"
+        ],
+        "type": "object",
+        "properties": {
+          "draftId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "CreateHostRequest": {
+        "required": [
+          "personId"
+        ],
+        "type": "object",
+        "properties": {
+          "personId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "CreatePersonRequest": {
+        "required": [
+          "userId",
+          "firstName",
+          "lastName"
+        ],
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          }
+        }
+      },
+      "DeleteDraftRequest": {
+        "required": [
+          "draftId"
+        ],
+        "type": "object",
+        "properties": {
+          "draftId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "DirectorModel": {
+        "required": [
+          "imdbId",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "imdbId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "DraftBrief": {
+        "required": [
+          "draftId",
+          "title",
+          "draftDates"
+        ],
+        "type": "object",
+        "properties": {
+          "draftId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string"
+          },
+          "draftDates": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        },
+        "nullable": true
+      },
+      "DraftBrief2": {
+        "required": [
+          "draftId",
+          "title",
+          "draftDates"
+        ],
+        "type": "object",
+        "properties": {
+          "draftId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string"
+          },
+          "draftDates": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        }
+      },
+      "DrafterDraftResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "personId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "displayName": {
+            "type": "string"
+          }
+        }
+      },
+      "DrafterProfileResponse": {
+        "required": [
+          "drafterId",
+          "personId",
+          "displayName",
+          "totalDrafts",
+          "firstDraft",
+          "mostRecentDraft",
+          "filmsDrafted",
+          "vetoesUsed",
+          "vetoOverridesUsed",
+          "commissionerOverrides",
+          "timesVetoed",
+          "timesVetoOverridesAgainst",
+          "hasRolloverVeto",
+          "hasRolloverVetoOverride",
+          "socialHandles",
+          "draftHistory",
+          "vetoHistory"
+        ],
+        "type": "object",
+        "properties": {
+          "drafterId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "personId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "totalDrafts": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "firstDraft": {
+            "$ref": "#/components/schemas/DraftBrief"
+          },
+          "mostRecentDraft": {
+            "$ref": "#/components/schemas/DraftBrief"
+          },
+          "filmsDrafted": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "vetoesUsed": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "vetoOverridesUsed": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "commissionerOverrides": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "timesVetoed": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "timesVetoOverridesAgainst": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "hasRolloverVeto": {
+            "type": "boolean"
+          },
+          "hasRolloverVetoOverride": {
+            "type": "boolean"
+          },
+          "socialHandles": {
+            "$ref": "#/components/schemas/SocialHandles"
+          },
+          "draftHistory": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DraftHistoryItem"
+            }
+          },
+          "vetoHistory": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VetoHistoryItem"
+            }
+          }
+        }
+      },
+      "DrafterResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "personId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "displayName": {
+            "type": "string"
+          }
+        }
+      },
+      "DraftHistoryItem": {
+        "required": [
+          "draft",
+          "picks"
+        ],
+        "type": "object",
+        "properties": {
+          "draft": {
+            "$ref": "#/components/schemas/DraftBrief2"
+          },
+          "picks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PickItem"
+            }
+          }
+        }
+      },
+      "DraftPickResponse": {
+        "type": "object",
+        "properties": {
+          "position": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "playOrder": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "movieId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "movieTitle": {
+            "type": "string"
+          },
+          "drafterId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "drafterName": {
+            "type": "string",
+            "nullable": true
+          },
+          "isVetoed": {
+            "type": "boolean"
+          },
+          "drafterTeamId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "drafterTeamName": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "DraftPositionRequest": {
+        "required": [
+          "name",
+          "picks"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "picks": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "hasBonusVeto": {
+            "type": "boolean",
+            "default": false
+          },
+          "hasBonusVetoOverride": {
+            "type": "boolean",
+            "default": false
+          }
+        }
+      },
+      "DraftPositionResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "picks": {
+            "type": "string"
+          },
+          "hasBonusVeto": {
+            "type": "boolean"
+          },
+          "hasBonusVetoOveride": {
+            "type": "boolean"
+          },
+          "drafterId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "drafterTeamId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          }
+        }
+      },
+      "DraftResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string"
+          },
+          "episodeNumber": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "draftType": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPicks": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalDrafters": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalHosts": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "episodeType": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "draftStatus": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "previousDraftId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "previousDraftTitle": {
+            "type": "string",
+            "nullable": true
+          },
+          "nextDraftId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "nextDraftTitle": {
+            "type": "string",
+            "nullable": true
+          },
+          "rawReleaseDates": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "nullable": true
+          },
+          "drafters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DrafterDraftResponse"
+            },
+            "nullable": true
+          },
+          "hosts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HostDraftResponse"
+            },
+            "nullable": true
+          },
+          "releaseDates": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReleaseDateResponse"
+            },
+            "nullable": true
+          },
+          "draftPicks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DraftPickResponse"
+            },
+            "nullable": true
+          },
+          "vetoes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VetoResponse"
+            },
+            "nullable": true
+          },
+          "vetoOverrides": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VetoOverrideResponse"
+            },
+            "nullable": true
+          },
+          "commissionerOverrides": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CommissionerOverrideResponse"
+            },
+            "nullable": true
+          }
+        }
+      },
+      "DraftUserCapabilities": {
+        "required": [
+          "role",
+          "canEdit",
+          "canDelete",
+          "canStart",
+          "canPlay"
+        ],
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "string",
+            "nullable": true
+          },
+          "canEdit": {
+            "type": "boolean"
+          },
+          "canDelete": {
+            "type": "boolean"
+          },
+          "canStart": {
+            "type": "boolean"
+          },
+          "canPlay": {
+            "type": "boolean"
+          }
+        }
+      },
+      "EditDraftRequest": {
+        "required": [
+          "draftId",
+          "title",
+          "draftType",
+          "totalPicks",
+          "totalDrafters",
+          "totalDrafterTeams",
+          "totalHosts",
+          "episodeType",
+          "draftStatus",
+          "description"
+        ],
+        "type": "object",
+        "properties": {
+          "draftId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string"
+          },
+          "draftType": {
+            "type": "string"
+          },
+          "totalPicks": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalDrafters": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalDrafterTeams": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalHosts": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "episodeType": {
+            "type": "string"
+          },
+          "draftStatus": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "ExecuteVetoRequest": {
+        "required": [
+          "drafterId",
+          "drafterTeamId",
+          "draftId",
+          "pickId"
+        ],
+        "type": "object",
+        "properties": {
+          "drafterId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "drafterTeamId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "draftId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "pickId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "GetDrafterProfileRequest": {
+        "required": [
+          "drafterId"
+        ],
+        "type": "object",
+        "properties": {
+          "drafterId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "GetDrafterRequest": {
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "GetDraftPicksRequest": {
+        "required": [
+          "draftId"
+        ],
+        "type": "object",
+        "properties": {
+          "draftId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "GetDraftPositionsRequest": {
+        "required": [
+          "gameboardId"
+        ],
+        "type": "object",
+        "properties": {
+          "gameboardId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "GetDraftRequest": {
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "GetHostRequest": {
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "GetPersonRequest": {
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "HostDraftResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "personId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "displayName": {
+            "type": "string"
+          }
+        }
+      },
+      "HostResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "personId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "displayName": {
+            "type": "string"
+          }
+        }
+      },
+      "ListDraftersRequest": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "format": "int32",
+            "default": 1
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32",
+            "default": 25
+          },
+          "search": {
+            "type": "string",
+            "default": null,
+            "nullable": true
+          },
+          "sort": {
+            "type": "string",
+            "default": null,
+            "nullable": true
+          },
+          "dir": {
+            "type": "string",
+            "default": null,
+            "nullable": true
+          }
+        }
+      },
+      "ListDraftsRequest": {
+        "type": "object",
+        "properties": {
+          "fromDate": {
+            "type": "string",
+            "format": "date",
+            "default": null,
+            "nullable": true
+          },
+          "toDate": {
+            "type": "string",
+            "format": "date",
+            "default": null,
+            "nullable": true
+          },
+          "draftType": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "default": null,
+            "nullable": true
+          },
+          "minDrafters": {
+            "type": "integer",
+            "format": "int32",
+            "default": null,
+            "nullable": true
+          },
+          "maxDrafters": {
+            "type": "integer",
+            "format": "int32",
+            "default": null,
+            "nullable": true
+          },
+          "minPicks": {
+            "type": "integer",
+            "format": "int32",
+            "default": null,
+            "nullable": true
+          },
+          "maxPicks": {
+            "type": "integer",
+            "format": "int32",
+            "default": null,
+            "nullable": true
+          },
+          "sort": {
+            "type": "string",
+            "default": null,
+            "nullable": true
+          },
+          "dir": {
+            "type": "string",
+            "default": null,
+            "nullable": true
+          },
+          "q": {
+            "type": "string",
+            "default": null,
+            "nullable": true
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32",
+            "default": 1
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32",
+            "default": 5
+          }
+        }
+      },
+      "ListHostsRequest": {
+        "required": [
+          "page",
+          "pageSize"
+        ],
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "search": {
+            "type": "string",
+            "default": null,
+            "nullable": true
+          },
+          "sort": {
+            "type": "string",
+            "default": null,
+            "nullable": true
+          },
+          "dir": {
+            "type": "string",
+            "default": null,
+            "nullable": true
+          }
+        }
+      },
+      "ListPeopleRequest": {
+        "required": [
+          "page",
+          "pageSize"
+        ],
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "firstName": {
+            "type": "string",
+            "default": null,
+            "nullable": true
+          },
+          "lastName": {
+            "type": "string",
+            "default": null,
+            "nullable": true
+          },
+          "displayName": {
+            "type": "string",
+            "default": null,
+            "nullable": true
+          },
+          "isDrafter": {
+            "type": "boolean",
+            "default": null,
+            "nullable": true
+          },
+          "isHost": {
+            "type": "boolean",
+            "default": null,
+            "nullable": true
+          },
+          "sort": {
+            "type": "string",
+            "default": null,
+            "nullable": true
+          },
+          "dir": {
+            "type": "string",
+            "default": null,
+            "nullable": true
+          },
+          "q": {
+            "type": "string",
+            "default": null,
+            "nullable": true
+          }
+        }
+      },
+      "MovieRequest": {
+        "required": [
+          "imdbId"
+        ],
+        "type": "object",
+        "properties": {
+          "imdbId": {
+            "type": "string"
+          }
+        }
+      },
+      "MovieResponse": {
+        "required": [
+          "imdbId",
+          "title",
+          "year",
+          "plot",
+          "image",
+          "releaseDate",
+          "youTubeTrailerUri",
+          "genres",
+          "actors",
+          "directors",
+          "writers",
+          "producers",
+          "productionCompanies"
+        ],
+        "type": "object",
+        "properties": {
+          "imdbId": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "year": {
+            "type": "string"
+          },
+          "plot": {
+            "type": "string"
+          },
+          "image": {
+            "type": "string"
+          },
+          "releaseDate": {
+            "type": "string",
+            "nullable": true
+          },
+          "youTubeTrailerUri": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          },
+          "genres": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "actors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ActorModel"
+            }
+          },
+          "directors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DirectorModel"
+            }
+          },
+          "writers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WriterModel"
+            }
+          },
+          "producers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProducerModel"
+            }
+          },
+          "productionCompanies": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductionCompanyModel"
+            }
+          }
+        }
+      },
+      "PagedResultOfDraftResponse": {
+        "required": [
+          "items",
+          "total",
+          "page",
+          "pageSize"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DraftResponse"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "PagedResultOfPersonResponse": {
+        "required": [
+          "items",
+          "total",
+          "page",
+          "pageSize"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PersonResponse"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "PauseDraftRequest": {
+        "required": [
+          "draftId"
+        ],
+        "type": "object",
+        "properties": {
+          "draftId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "PersonRequest": {
+        "required": [
+          "name",
+          "imdbId"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "imdbId": {
+            "type": "string"
+          }
+        }
+      },
+      "PersonResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "drafterId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "hostId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "isDrafter": {
+            "type": "boolean"
+          },
+          "isHost": {
+            "type": "boolean"
+          }
+        }
+      },
+      "PickItem": {
+        "required": [
+          "pickId",
+          "position",
+          "playOrder",
+          "movieId",
+          "movieTitle",
+          "wasVetoed",
+          "wasVetoOverride",
+          "wasCommissionerOverride",
+          "vetoedById",
+          "vetoedByName",
+          "vetoOverrideById",
+          "vetoOverrideByName"
+        ],
+        "type": "object",
+        "properties": {
+          "pickId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "position": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "playOrder": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "movieId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "movieTitle": {
+            "type": "string"
+          },
+          "wasVetoed": {
+            "type": "boolean"
+          },
+          "wasVetoOverride": {
+            "type": "boolean"
+          },
+          "wasCommissionerOverride": {
+            "type": "boolean"
+          },
+          "vetoedById": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "vetoedByName": {
+            "type": "string",
+            "nullable": true
+          },
+          "vetoOverrideById": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "vetoOverrideByName": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "ProducerModel": {
+        "required": [
+          "imdbId",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "imdbId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "ProductionCompanyModel": {
+        "required": [
+          "imdbId",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "imdbId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "ProductionCompanyRequest": {
+        "required": [
+          "name",
+          "imdbId"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "imdbId": {
+            "type": "string"
+          }
+        }
+      },
+      "RegisterUserRequest": {
+        "required": [
+          "email",
+          "password",
+          "firstName",
+          "lastName"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "middleName": {
+            "type": "string",
+            "default": null,
+            "nullable": true
+          }
+        }
+      },
+      "ReleaseDateRequest": {
+        "required": [
+          "releaseDate",
+          "draftId"
+        ],
+        "type": "object",
+        "properties": {
+          "releaseDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "draftId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "ReleaseDateResponse": {
+        "required": [
+          "releaseDate"
+        ],
+        "type": "object",
+        "properties": {
+          "releaseDate": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      },
+      "RemoveDrafterFromDraftRequest": {
+        "required": [
+          "draftId",
+          "drafterId"
+        ],
+        "type": "object",
+        "properties": {
+          "draftId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "drafterId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "RemoveHostFromDraftRequest": {
+        "required": [
+          "draftId",
+          "hostId"
+        ],
+        "type": "object",
+        "properties": {
+          "draftId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "hostId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "RemoveUserRoleRequest": {
+        "required": [
+          "role",
+          "userId"
+        ],
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "SocialHandles": {
+        "type": "object",
+        "properties": {
+          "twitter": {
+            "type": "string",
+            "nullable": true
+          },
+          "instagram": {
+            "type": "string",
+            "nullable": true
+          },
+          "letterboxd": {
+            "type": "string",
+            "nullable": true
+          },
+          "bluesky": {
+            "type": "string",
+            "nullable": true
+          },
+          "profilePicturePath": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "nullable": true
+      },
+      "StartDraftRequest": {
+        "required": [
+          "draftId"
+        ],
+        "type": "object",
+        "properties": {
+          "draftId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "TriviaResultDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "position": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "questionsWon": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "draftId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "drafterId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "TriviaResultRequest": {
+        "required": [
+          "position",
+          "questionsWon",
+          "draftId",
+          "drafterId"
+        ],
+        "type": "object",
+        "properties": {
+          "position": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "questionsWon": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "draftId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "drafterId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "TriviaResultsRequest": {
+        "required": [
+          "draftId",
+          "drafterId"
+        ],
+        "type": "object",
+        "properties": {
+          "draftId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "drafterId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "UpcomingDraftDto": {
+        "required": [
+          "capabilities"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string"
+          },
+          "draftStatus": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "releaseDates": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          "capabilities": {
+            "$ref": "#/components/schemas/DraftUserCapabilities"
+          }
+        }
+      },
+      "UpdateUserRequest": {
+        "required": [
+          "firstName",
+          "lastName"
+        ],
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "middleName": {
+            "type": "string",
+            "default": null,
+            "nullable": true
+          },
+          "profilePicture": {
+            "type": "string",
+            "default": null,
+            "nullable": true
+          },
+          "twitterHandle": {
+            "type": "string",
+            "default": null,
+            "nullable": true
+          },
+          "instagramHandle": {
+            "type": "string",
+            "default": null,
+            "nullable": true
+          },
+          "letterboxdHandle": {
+            "type": "string",
+            "default": null,
+            "nullable": true
+          },
+          "blueskyHandle": {
+            "type": "string",
+            "default": null,
+            "nullable": true
+          }
+        }
+      },
+      "UserResponse": {
+        "required": [
+          "userId",
+          "email",
+          "firstName",
+          "middleName",
+          "lastName",
+          "profilePicturePath",
+          "twitterHandle",
+          "instagramHandle",
+          "letterboxdHandle",
+          "blueskyHandle"
+        ],
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "email": {
+            "type": "string"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "middleName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "profilePicturePath": {
+            "type": "string",
+            "nullable": true
+          },
+          "twitterHandle": {
+            "type": "string",
+            "nullable": true
+          },
+          "instagramHandle": {
+            "type": "string",
+            "nullable": true
+          },
+          "letterboxdHandle": {
+            "type": "string",
+            "nullable": true
+          },
+          "blueskyHandle": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "VetoHistoryItem": {
+        "required": [
+          "draft",
+          "vetoId",
+          "targetPickId",
+          "position",
+          "playOrder",
+          "movieId",
+          "movieTitle",
+          "targetDrafterId",
+          "targetDrafterDisplayName",
+          "wasVetoOverride",
+          "overrideById",
+          "overrideByName"
+        ],
+        "type": "object",
+        "properties": {
+          "draft": {
+            "$ref": "#/components/schemas/DraftBrief2"
+          },
+          "vetoId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "targetPickId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "position": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "playOrder": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "movieId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "movieTitle": {
+            "type": "string"
+          },
+          "targetDrafterId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "targetDrafterDisplayName": {
+            "type": "string"
+          },
+          "wasVetoOverride": {
+            "type": "boolean"
+          },
+          "overrideById": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "overrideByName": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "VetoOverrideRequest": {
+        "required": [
+          "drafterId",
+          "drafterTeamId",
+          "vetoId"
+        ],
+        "type": "object",
+        "properties": {
+          "drafterId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "drafterTeamId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "vetoId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "VetoOverrideResponse": {
+        "required": [
+          "id",
+          "veto",
+          "drafterId",
+          "drafterName"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "veto": {
+            "$ref": "#/components/schemas/VetoResponse"
+          },
+          "drafterId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "drafterName": {
+            "type": "string",
+            "nullable": true
+          },
+          "drafterTeamId": {
+            "type": "string",
+            "format": "uuid",
+            "default": null,
+            "nullable": true
+          },
+          "drafterTeamName": {
+            "type": "string",
+            "default": null,
+            "nullable": true
+          }
+        }
+      },
+      "VetoResponse": {
+        "required": [
+          "id",
+          "pickId",
+          "pickPosition",
+          "pickPlayOrder",
+          "movieTitle",
+          "drafterId",
+          "drafterName"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "pickId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "pickPosition": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pickPlayOrder": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "movieTitle": {
+            "type": "string"
+          },
+          "drafterId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "drafterName": {
+            "type": "string",
+            "nullable": true
+          },
+          "drafterTeamId": {
+            "type": "string",
+            "format": "uuid",
+            "default": null,
+            "nullable": true
+          },
+          "drafterTeamName": {
+            "type": "string",
+            "default": null,
+            "nullable": true
+          }
+        }
+      },
+      "WriterModel": {
+        "required": [
+          "imdbId",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "imdbId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Administration"
+    },
+    {
+      "name": "People"
+    },
+    {
+      "name": "Hosts"
+    },
+    {
+      "name": "Drafts"
+    },
+    {
+      "name": "Picks"
+    },
+    {
+      "name": "DraftPositions"
+    },
+    {
+      "name": "GameBoards"
+    },
+    {
+      "name": "Trivia"
+    },
+    {
+      "name": "Drafters"
+    },
+    {
+      "name": "Movies"
+    },
+    {
+      "name": "Users"
+    }
+  ]
+}

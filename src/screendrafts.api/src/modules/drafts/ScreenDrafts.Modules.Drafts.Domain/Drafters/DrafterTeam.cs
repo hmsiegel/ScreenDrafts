@@ -3,11 +3,13 @@
 public sealed class DrafterTeam : Entity<DrafterTeamId>
 {
   private readonly List<Drafter> _drafters = [];
-  private readonly List<Draft> _drafts = [];
+  private readonly List<DraftPart> _draftParts = [];
   private readonly List<Veto> _vetoes = [];
   private readonly List<VetoOverride> _vetoOverrides = [];
   private readonly List<DrafterDraftStats> _draftStats = [];
   private readonly List<Pick> _picks = [];
+
+  public const int TeamNameMaxLength = 100;
 
   private DrafterTeam(
     string name,
@@ -38,7 +40,7 @@ public sealed class DrafterTeam : Entity<DrafterTeamId>
 
   public IReadOnlyCollection<Pick> Picks => _picks.AsReadOnly();
 
-  public IReadOnlyCollection<Draft> Drafts => _drafts.AsReadOnly();
+  public IReadOnlyCollection<DraftPart> DraftPart => _draftParts.AsReadOnly();
 
   public static Result<DrafterTeam> Create(
     string name,
@@ -66,19 +68,6 @@ public sealed class DrafterTeam : Entity<DrafterTeamId>
     }
 
     _drafters.Add(drafter);
-    return Result.Success();
-  }
-
-  public Result AddDraft(Draft draft)
-  {
-    Guard.Against.Null(draft);
-
-    if (_drafts.Any(x => x.Id == draft.Id))
-    {
-      return Result.Failure(DraftErrors.AlreadyAdded(draft.Id.Value));
-    }
-
-    _drafts.Add(draft);
     return Result.Success();
   }
 

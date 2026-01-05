@@ -25,24 +25,47 @@ internal sealed class HostsSeeder(
       new SeedFile(FileNames.HostsSeeder, SeedFileType.Csv),
       TableName);
 
+
     if (csvHosts.Count == 0)
     {
       return;
     }
 
-    await InsertIfNotExistsAsync(
-      csvHosts,
-      h => h.Id.HasValue ? HostId.Create(h.Id.Value) : HostId.CreateUnique(),
-      h => h.Id,
-      h =>
-      {
-        var id = h.Id.HasValue ? HostId.Create(h.Id.Value) : HostId.CreateUnique();
-        return Host.Create(
-          hostName: h.Name,
-          id: id).Value;
-      },
-      _dbContext.Hosts,
-      TableName,
-      cancellationToken);
+    var existingHostKeys = await _dbContext.Hosts
+      .Select(d => new { d.PersonId })
+      .ToListAsync(cancellationToken);
+
+    var existingSet = existingHostKeys
+      .Select(p => (p.PersonId).Value)
+      .ToHashSet();
+
+    // Replace the foreach loop with LINQ to simplify the loop as per S3267
+    var hosts = csvHosts
+        .Where(record =>
+        {
+          var personId = PersonId.Create(record.PersonId);
+          var key = record.PersonId;
+          if (existingSet.Contains(key))
+          {
+            return false;
+          }
+          var person = personId is not null
+                  ? _dbContext.People.Find(personId)
+                  : null;
+          return person is not null;
+        })
+        .Select(record =>
+        {
+          var personId = PersonId.Create(record.PersonId);
+          var person = _dbContext.People.Find(personId);
+          var host = Host.Create(person!).Value;
+          DatabaseSeedingLoggingMessages.ItemAddedToDatabase(_logger, host.Id.ToString());
+          return host;
+        })
+        .ToList();
+
+    _dbContext.Hosts.AddRange(hosts);
+
+    await SaveAndLogAsync(TableName, hosts.Count);
   }
 }

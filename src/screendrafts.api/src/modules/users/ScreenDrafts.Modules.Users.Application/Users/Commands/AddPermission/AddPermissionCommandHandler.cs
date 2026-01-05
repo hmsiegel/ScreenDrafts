@@ -7,7 +7,7 @@ internal sealed class AddPermissionCommandHandler(IDbConnectionFactory dbConnect
 
   public async Task<Result<bool>> Handle(AddPermissionCommand request, CancellationToken cancellationToken)
   {
-    await using var connection = await _dbConnectionFactory.OpenConnectionAsync();
+    await using var connection = await _dbConnectionFactory.OpenConnectionAsync(cancellationToken);
 
     const string getSql =
       $"""
