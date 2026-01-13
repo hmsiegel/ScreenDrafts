@@ -7,10 +7,10 @@ public static class GameBoardFactory
     var draft = DraftFactory.CreateStandardDraft().Value;
     Collection<DraftPosition> draftPositions = [];
 
-    for (int i = 0; i < draft.TotalDrafters; i++)
+    for (int i = 0; i < draft.TotalParticipants; i++)
     {
       var draftPosition = DraftPositionFactory.CreateDraftPositions(
-        draft.TotalDrafters,
+        draft.TotalParticipants,
         draft.TotalPicks)[i];
 
       draftPositions.Add(draftPosition);
@@ -27,10 +27,10 @@ public static class GameBoardFactory
     var draft = DraftFactory.CreateMiniMegaDraft().Value;
     Collection<DraftPosition> draftPositions = [];
 
-    for (int i = 0; i < draft.TotalDrafters; i++)
+    for (int i = 0; i < draft.TotalParticipants; i++)
     {
       var draftPosition = DraftPositionFactory.CreateDraftPositions(
-        draft.TotalDrafters,
+        draft.TotalParticipants,
         draft.TotalPicks)[i];
 
       draftPositions.Add(draftPosition);
@@ -47,10 +47,10 @@ public static class GameBoardFactory
     var draft = DraftFactory.CreateMegaDraft().Value;
     Collection<DraftPosition> draftPositions = [];
 
-    for (int i = 0; i < draft.TotalDrafters; i++)
+    for (int i = 0; i < draft.TotalParticipants; i++)
     {
       var draftPosition = DraftPositionFactory.CreateDraftPositions(
-        draft.TotalDrafters,
+        draft.TotalParticipants,
         draft.TotalPicks)[i];
 
       draftPositions.Add(draftPosition);

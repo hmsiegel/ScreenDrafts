@@ -15,7 +15,7 @@ public sealed class ListUpcomingDraftsTests(DraftsIntegrationTestWebAppFactory f
         draft.Title.Value,
         draft.DraftType,
         draft.TotalPicks,
-        draft.TotalDrafters,
+        draft.TotalParticipants,
         draft.TotalDrafterTeams,
         draft.TotalHosts,
         draft.DraftStatus));

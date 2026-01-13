@@ -93,7 +93,7 @@ public class GameBoardTests : BaseTest
     // Arrange
     var draft = DraftFactory.CreateStandardDraft().Value;
 
-    for (int i = 0; i < draft.TotalDrafters; i++)
+    for (int i = 0; i < draft.TotalParticipants; i++)
     {
       draft.AddDrafter(DrafterFactory.CreateDrafter());
     }
@@ -118,7 +118,7 @@ public class GameBoardTests : BaseTest
     // Arrange
     var draft = DraftFactory.CreateMegaDraft().Value;
 
-    for (int i = 0; i < draft.TotalDrafters; i++)
+    for (int i = 0; i < draft.TotalParticipants; i++)
     {
       draft.AddDrafter(DrafterFactory.CreateDrafter());
     }

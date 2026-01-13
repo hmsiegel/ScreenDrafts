@@ -12,7 +12,7 @@ public sealed class GetDraftPositionTests(DraftsIntegrationTestWebAppFactory fac
       draft.Title.Value,
       draft.DraftType,
       draft.TotalPicks,
-      draft.TotalDrafters,
+      draft.TotalParticipants,
       draft.TotalDrafterTeams,
       draft.TotalHosts,
       draft.DraftStatus));
@@ -52,7 +52,7 @@ public sealed class GetDraftPositionTests(DraftsIntegrationTestWebAppFactory fac
       draft.Title.Value,
       draft.DraftType,
       draft.TotalPicks,
-      draft.TotalDrafters,
+      draft.TotalParticipants,
       draft.TotalDrafterTeams,
       draft.TotalHosts,
       draft.DraftStatus));
@@ -102,7 +102,7 @@ public sealed class GetDraftPositionTests(DraftsIntegrationTestWebAppFactory fac
       draft.Title.Value,
       draft.DraftType,
       draft.TotalPicks,
-      draft.TotalDrafters,
+      draft.TotalParticipants,
       draft.TotalDrafterTeams,
       draft.TotalHosts,
       draft.DraftStatus));
@@ -149,7 +149,7 @@ public sealed class GetDraftPositionTests(DraftsIntegrationTestWebAppFactory fac
       draft.Title.Value,
       draft.DraftType,
       draft.TotalPicks,
-      draft.TotalDrafters,
+      draft.TotalParticipants,
       draft.TotalDrafterTeams,
       draft.TotalHosts,
       draft.DraftStatus));

@@ -12,7 +12,7 @@ public class AssignDraftPositionTests(DraftsIntegrationTestWebAppFactory factory
       draft.Title.Value,
       draft.DraftType,
       draft.TotalPicks,
-      draft.TotalDrafters,
+      draft.TotalParticipants,
       draft.TotalDrafterTeams,
       draft.TotalHosts,
       draft.DraftStatus));
@@ -53,7 +53,7 @@ public class AssignDraftPositionTests(DraftsIntegrationTestWebAppFactory factory
       draft.Title.Value,
       draft.DraftType,
       draft.TotalPicks,
-      draft.TotalDrafters,
+      draft.TotalParticipants,
       draft.TotalDrafterTeams,
       draft.TotalHosts,
       draft.DraftStatus));
@@ -87,7 +87,7 @@ public class AssignDraftPositionTests(DraftsIntegrationTestWebAppFactory factory
       draft.Title.Value,
       draft.DraftType,
       draft.TotalPicks,
-      draft.TotalDrafters,
+      draft.TotalParticipants,
       draft.TotalDrafterTeams,
       draft.TotalHosts,
       draft.DraftStatus));
@@ -123,7 +123,7 @@ public class AssignDraftPositionTests(DraftsIntegrationTestWebAppFactory factory
       draft.Title.Value,
       draft.DraftType,
       draft.TotalPicks,
-      draft.TotalDrafters,
+      draft.TotalParticipants,
       draft.TotalDrafterTeams,
       draft.TotalHosts,
       draft.DraftStatus));
@@ -150,7 +150,7 @@ public class AssignDraftPositionTests(DraftsIntegrationTestWebAppFactory factory
       draft.Title.Value,
       draft.DraftType,
       draft.TotalPicks,
-      draft.TotalDrafters,
+      draft.TotalParticipants,
       draft.TotalDrafterTeams,
       draft.TotalHosts,
       draft.DraftStatus));

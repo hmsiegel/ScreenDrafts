@@ -4,8 +4,6 @@ internal sealed class AddPickCommandValidator : AbstractValidator<AddPickCommand
 {
   public AddPickCommandValidator()
   {
-    RuleFor(x => x.DraftId)
-      .NotEmpty();
     RuleFor(x => x.DraftPartId)
       .NotEmpty();
     RuleFor(x => x.Position)

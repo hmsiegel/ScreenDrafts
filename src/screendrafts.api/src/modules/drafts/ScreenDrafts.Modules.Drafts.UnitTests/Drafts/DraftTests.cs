@@ -29,7 +29,7 @@ public class DraftTests : BaseTest
     result.Value.Title.Should().Be(title);
     result.Value.DraftType.Should().Be(draftType);
     result.Value.TotalPicks.Should().Be(totalPicks);
-    result.Value.TotalDrafters.Should().Be(totalDrafters);
+    result.Value.TotalParticipants.Should().Be(totalDrafters);
     result.Value.TotalDrafterTeams.Should().Be(totalDrafterTeams);
     result.Value.TotalHosts.Should().Be(totalHosts);
     result.Value.DraftStatus.Should().Be(draftStatus);
@@ -150,7 +150,7 @@ public class DraftTests : BaseTest
   {
     // Arrange
     var draft = DraftFactory.CreateStandardDraft().Value;
-    for (int i = 0; i < draft.TotalDrafters; i++)
+    for (int i = 0; i < draft.TotalParticipants; i++)
     {
       draft.AddDrafter(DrafterFactory.CreateDrafter());
     }
@@ -372,7 +372,7 @@ public class DraftTests : BaseTest
   {
     // Arrange
     var draft = DraftFactory.CreateStandardDraft().Value;
-    for (int i = 0; i < draft.TotalDrafters; i++)
+    for (int i = 0; i < draft.TotalParticipants; i++)
     {
       draft.AddDrafter(DrafterFactory.CreateDrafter());
     }
@@ -398,7 +398,7 @@ public class DraftTests : BaseTest
   {
     // Arrange
     var draft = DraftFactory.CreateStandardDraft().Value;
-    for (int i = 0; i < draft.TotalDrafters; i++)
+    for (int i = 0; i < draft.TotalParticipants; i++)
     {
       draft.AddDrafter(DrafterFactory.CreateDrafter());
     }
@@ -451,7 +451,7 @@ public class DraftTests : BaseTest
   {
     // Arrange
     var draft = DraftFactory.CreateStandardDraft().Value;
-    for (int i = 0; i < draft.TotalDrafters; i++)
+    for (int i = 0; i < draft.TotalParticipants; i++)
     {
       draft.AddDrafter(DrafterFactory.CreateDrafter());
     }
@@ -547,7 +547,7 @@ public class DraftTests : BaseTest
   {
     // Arrange
     var draft = DraftFactory.CreateStandardDraft().Value;
-    for (int i = 0; i < draft.TotalDrafters; i++)
+    for (int i = 0; i < draft.TotalParticipants; i++)
     {
       draft.AddDrafter(DrafterFactory.CreateDrafter());
     }
@@ -632,7 +632,7 @@ public class DraftTests : BaseTest
   public void StartDraft_ShouldFail_WhenNoPrimaryHost()
   {
     var draft = DraftFactory.CreateStandardDraft().Value;
-    for (int i = 0; i < draft.TotalDrafters; i++)
+    for (int i = 0; i < draft.TotalParticipants; i++)
     {
       draft.AddDrafter(DrafterFactory.CreateDrafter());
     }
@@ -651,7 +651,7 @@ public class DraftTests : BaseTest
   public void StartDraft_ShouldFail_WhenHostCountDoesNotMatchTotalHosts()
   {
     var draft = DraftFactory.CreateStandardDraft().Value;
-    for (int i = 0; i < draft.TotalDrafters; i++)
+    for (int i = 0; i < draft.TotalParticipants; i++)
     {
       draft.AddDrafter(DrafterFactory.CreateDrafter());
     }
@@ -672,7 +672,7 @@ public class DraftTests : BaseTest
   public static Draft SetupAndStartDraft()
   {
     var draft = DraftFactory.CreateStandardDraft().Value;
-    for (int i = 0; i < draft.TotalDrafters; i++)
+    for (int i = 0; i < draft.TotalParticipants; i++)
     {
       draft.AddDrafter(DrafterFactory.CreateDrafter());
     }

@@ -27,7 +27,7 @@ public abstract class DraftsIntegrationTest(DraftsIntegrationTestWebAppFactory f
       draft.Title.Value,
       draft.DraftType,
       draft.TotalPicks,
-      draft.TotalDrafters,
+      draft.TotalParticipants,
       draft.TotalDrafterTeams,
       draft.TotalHosts,
       draft.DraftStatus));
@@ -35,7 +35,7 @@ public abstract class DraftsIntegrationTest(DraftsIntegrationTestWebAppFactory f
     var drafters = new List<Drafter>();
     var hosts = new List<Host>();
 
-    for (var i = 0; i < draft.TotalDrafters; i++)
+    for (var i = 0; i < draft.TotalParticipants; i++)
     {
       var drafterFactory = new DrafterFactory(Sender, Faker);
       var drafterId = await drafterFactory.CreateAndSaveDrafterAsync();
@@ -102,7 +102,7 @@ public abstract class DraftsIntegrationTest(DraftsIntegrationTestWebAppFactory f
     var draftPositionsResponse = await Sender.Send(query);
     var draftPositionsList = draftPositionsResponse.Value.ToList();
 
-    for (var i = 0; i < draft.TotalDrafters; i++)
+    for (var i = 0; i < draft.TotalParticipants; i++)
     {
       var drafterId = drafters[i].Id;
       var draftPositionId = draftPositionsList[i].Id;

@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.ArchitectureTests.Presentation;
+﻿using ScreenDrafts.Common.Features.Abstractions.EventBus;
+
+namespace ScreenDrafts.Modules.Drafts.ArchitectureTests.Presentation;
 public class PresentationTests : BaseTest
 {
   [Fact]

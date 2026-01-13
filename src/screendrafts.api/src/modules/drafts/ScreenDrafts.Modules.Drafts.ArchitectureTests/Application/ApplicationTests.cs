@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.ArchitectureTests.Application;
+﻿using ScreenDrafts.Common.Features.Abstractions.Messaging;
+
+namespace ScreenDrafts.Modules.Drafts.ArchitectureTests.Application;
 
 public class ApplicationTests : BaseTest
 {

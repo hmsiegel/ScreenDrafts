@@ -12,7 +12,7 @@ public sealed class GetDraftPositionsByGameBoardTests(DraftsIntegrationTestWebAp
       draft.Title.Value,
       draft.DraftType,
       draft.TotalPicks,
-      draft.TotalDrafters,
+      draft.TotalParticipants,
       draft.TotalDrafterTeams,
       draft.TotalHosts,
       draft.DraftStatus));
@@ -48,7 +48,7 @@ public sealed class GetDraftPositionsByGameBoardTests(DraftsIntegrationTestWebAp
       draft.Title.Value,
       draft.DraftType,
       draft.TotalPicks,
-      draft.TotalDrafters,
+      draft.TotalParticipants,
       draft.TotalDrafterTeams,
       draft.TotalHosts,
       draft.DraftStatus));
@@ -86,7 +86,7 @@ public sealed class GetDraftPositionsByGameBoardTests(DraftsIntegrationTestWebAp
       draft.Title.Value,
       draft.DraftType,
       draft.TotalPicks,
-      draft.TotalDrafters,
+      draft.TotalParticipants,
       draft.TotalDrafterTeams,
       draft.TotalHosts,
       draft.DraftStatus));

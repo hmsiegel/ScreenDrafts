@@ -47,7 +47,7 @@ public sealed class GetDraftPicksTests(DraftsIntegrationTestWebAppFactory factor
       draft.Title.Value,
       draft.DraftType,
       draft.TotalPicks,
-      draft.TotalDrafters,
+      draft.TotalParticipants,
       draft.TotalDrafterTeams,
       draft.TotalHosts,
       draft.DraftStatus));

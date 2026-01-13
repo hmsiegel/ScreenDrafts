@@ -27,7 +27,7 @@ public class AddHostToDraftTests(DraftsIntegrationTestWebAppFactory factory) : D
         draft.Title.Value,
         draft.DraftType,
         draft.TotalPicks,
-        draft.TotalDrafters,
+        draft.TotalParticipants,
         draft.TotalDrafterTeams,
         draft.TotalHosts,
         draft.DraftStatus));
@@ -51,7 +51,7 @@ public class AddHostToDraftTests(DraftsIntegrationTestWebAppFactory factory) : D
         draft.Title.Value,
         draft.DraftType,
         draft.TotalPicks,
-        draft.TotalDrafters,
+        draft.TotalParticipants,
         draft.TotalDrafterTeams,
         draft.TotalHosts,
         draft.DraftStatus));

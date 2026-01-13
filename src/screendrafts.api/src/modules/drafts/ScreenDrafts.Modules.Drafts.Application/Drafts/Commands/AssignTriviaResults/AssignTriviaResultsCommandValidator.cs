@@ -6,8 +6,6 @@ internal sealed class AssignTriviaResultsCommandValidator : AbstractValidator<As
   {
     RuleFor(x => x.DrafterId)
       .NotEmpty();
-    RuleFor(x => x.DraftId)
-      .NotEmpty();
     RuleFor(x => x.Position)
       .GreaterThan(0);
   }
