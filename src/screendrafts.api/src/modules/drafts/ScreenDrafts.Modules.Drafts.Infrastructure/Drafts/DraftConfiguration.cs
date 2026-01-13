@@ -11,11 +11,9 @@ internal sealed class DraftConfiguration : IEntityTypeConfiguration<Draft>
     builder.Property(d => d.Id)
           .ValueGeneratedNever()
           .HasColumnName("id")
-          .HasConversion(
-            id => id.Value,
-            value => DraftId.Create(value));
+          .HasConversion(IdConverters.DraftIdConverter);
 
-    builder.Property(d => d.ReadableId)
+    builder.Property(d => d.PublicId)
           .ValueGeneratedOnAdd();
 
     builder.Property(d => d.Title)
@@ -34,9 +32,6 @@ internal sealed class DraftConfiguration : IEntityTypeConfiguration<Draft>
             draftStatus => draftStatus.Value,
             value => DraftStatus.FromValue(value));
 
-    builder.HasIndex(d => d.ReadableId)
-      .IsUnique();
-
     builder.Property(d => d.Description);
 
     builder.HasMany(d => d.DraftCategories)
@@ -49,24 +44,9 @@ internal sealed class DraftConfiguration : IEntityTypeConfiguration<Draft>
       .HasForeignKey(dp => dp.DraftId)
       .OnDelete(DeleteBehavior.Cascade);
 
-    builder.HasMany(d => d.Campaigns)
-      .WithMany()
-      .UsingEntity<Dictionary<string, object>>(
-      "drafts_campaigns",
-        j => j
-          .HasOne<Campaign>()
-          .WithMany()
-          .HasForeignKey("campaign_id")
-          .HasConstraintName("fk_drafts_campaigns_campaign_id"),
-        j => j
-          .HasOne<Draft>()
-          .WithMany()
-          .HasForeignKey("draft_id")
-          .HasConstraintName("fk_drafts_campaigns_draft_id"),
-        j =>
-        {
-          j.ToTable(Tables.DraftCampaigns);
-        });
+    builder.HasOne(d => d.Campaign)
+      .WithMany(c => c.Drafts)
+      .HasForeignKey(d => d.CampaignId);
 
     builder.HasOne(d => d.Series)
       .WithMany()
@@ -76,8 +56,6 @@ internal sealed class DraftConfiguration : IEntityTypeConfiguration<Draft>
       .HasField("_parts")
       .UsePropertyAccessMode(PropertyAccessMode.Field);
 
-    builder.Navigation(x => x.Campaigns)
-      .HasField("_campaigns")
-      .UsePropertyAccessMode(PropertyAccessMode.Field);
+    builder.HasIndex(x => x.SeriesId).HasDatabaseName("ix_drafts_series_id");
   }
 }

@@ -1,5 +1,4 @@
-﻿
-namespace ScreenDrafts.Modules.Drafts.Infrastructure.Drafts;
+﻿namespace ScreenDrafts.Modules.Drafts.Infrastructure.Campaigns;
 
 internal sealed class CampaignConfiguration : IEntityTypeConfiguration<Campaign>
 {

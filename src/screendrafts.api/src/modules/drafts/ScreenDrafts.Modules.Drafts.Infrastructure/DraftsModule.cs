@@ -1,4 +1,7 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Infrastructure;
+﻿using ScreenDrafts.Common.Features.Abstractions.EventBus;
+using ScreenDrafts.Common.Features.Abstractions.Messaging;
+
+namespace ScreenDrafts.Modules.Drafts.Infrastructure;
 
 public static class DraftsModule
 {

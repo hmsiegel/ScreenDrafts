@@ -4,11 +4,12 @@
     <ProjectReference Include="..\..\..\common\ScreenDrafts.Common.Infrastructure\ScreenDrafts.Common.Infrastructure.csproj" />
     <ProjectReference Include="..\ScreenDrafts.Modules.Drafts.Application\ScreenDrafts.Modules.Drafts.Application.csproj" />
     <ProjectReference Include="..\ScreenDrafts.Modules.Drafts.Presentation\ScreenDrafts.Modules.Drafts.Presentation.csproj" />
+    <ProjectReference Include="..\ScreenDrafts.Modules.Drafts.Features\ScreenDrafts.Modules.Drafts.Features.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="ScreenDrafts.Seeding.Drafts"/>
-    <InternalsVisibleTo Include="ScreenDrafts.Seeding.Users"/>
+    <InternalsVisibleTo Include="ScreenDrafts.Seeding.Drafts" />
+    <InternalsVisibleTo Include="ScreenDrafts.Seeding.Users" />
   </ItemGroup>
 
 </Project>

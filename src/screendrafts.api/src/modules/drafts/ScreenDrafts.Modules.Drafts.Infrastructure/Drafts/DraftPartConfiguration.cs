@@ -11,9 +11,7 @@ internal sealed class DraftPartConfiguration : IEntityTypeConfiguration<DraftPar
     builder.Property(x => x.Id)
       .IsRequired()
       .ValueGeneratedNever()
-      .HasConversion(
-      x => x.Value,
-      value => DraftPartId.Create(value));
+      .HasConversion(IdConverters.DraftPartIdConverter);
 
     builder.Property(x => x.PartIndex)
       .IsRequired();
@@ -32,7 +30,7 @@ internal sealed class DraftPartConfiguration : IEntityTypeConfiguration<DraftPar
     builder.Property(d => d.TotalPicks)
           .IsRequired();
 
-    builder.Property(d => d.TotalDrafters)
+    builder.Property(d => d.TotalParticipants)
           .IsRequired();
 
     builder.Property(d => d.TotalHosts)

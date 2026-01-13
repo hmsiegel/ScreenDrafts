@@ -1,4 +1,7 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Infrastructure.Inbox;
+﻿using ScreenDrafts.Common.Features.Abstractions.Data;
+using ScreenDrafts.Common.Features.Abstractions.EventBus;
+
+namespace ScreenDrafts.Modules.Drafts.Infrastructure.Inbox;
 
 internal sealed class IntegrationEventConsumer<TIntegrationEvent>(IDbConnectionFactory dbConnectionFactory)
     : IConsumer<TIntegrationEvent>

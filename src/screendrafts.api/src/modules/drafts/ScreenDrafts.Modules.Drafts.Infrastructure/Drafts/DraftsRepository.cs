@@ -51,6 +51,7 @@ internal sealed class DraftsRepository(DraftsDbContext dbContext) : IDraftsRepos
   public async Task<Draft?> GetDraftWithDetailsAsync(DraftId draftId, CancellationToken cancellationToken)
   {
     var draftWithDetails = await _dbContext.Drafts
+      .Include(d => d.D)
       .Include(d => d.Drafters)
       .ThenInclude(dr => dr.Person)
       .Include(d => d.DraftHosts)
@@ -121,5 +122,35 @@ internal sealed class DraftsRepository(DraftsDbContext dbContext) : IDraftsRepos
     }
 
     return nextDraft;
+  }
+
+  public Task<Draft?> GetByDraftPartIdAsync(DraftPartId draftPartId, CancellationToken cancellationToken)
+  {
+    throw new NotImplementedException();
+  }
+
+  public Task<Series?> GetSeriesByIdAsync(SeriesId seriesId, CancellationToken cancellationToken)
+  {
+    throw new NotImplementedException();
+  }
+
+  public Task<bool> SeriesExistsAsync(string name, CancellationToken cancellationToken)
+  {
+    throw new NotImplementedException();
+  }
+
+  public Task<DraftPart?> GetDraftPartByIdAsync(DraftPartId draftPartId, CancellationToken cancellationToken)
+  {
+    throw new NotImplementedException();
+  }
+
+  public Task<List<DraftPart>> GetDraftPartsByDraftIdAsync(DraftId draftId, CancellationToken cancellationToken)
+  {
+    throw new NotImplementedException();
+  }
+
+  public Task<Draft?> GetDraftByDraftPartId(DraftPartId draftPartId, CancellationToken cancellationToken)
+  {
+    throw new NotImplementedException();
   }
 }

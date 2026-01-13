@@ -5,7 +5,7 @@ internal sealed class CategoriesRepository(DraftsDbContext dbContext) : ICategor
 {
   private readonly DraftsDbContext _dbContext = dbContext;
 
-  public void AddCategory(Category category)
+  public void Add(Category category)
   {
     _dbContext.Categories.Add(category);
   }
