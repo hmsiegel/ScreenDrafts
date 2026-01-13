@@ -1,4 +1,6 @@
-﻿var builder = WebApplication.CreateBuilder(args);
+﻿using ScreenDrafts.Common.Features;
+
+var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog((context, config) =>
   config.ReadFrom.Configuration(context.Configuration));

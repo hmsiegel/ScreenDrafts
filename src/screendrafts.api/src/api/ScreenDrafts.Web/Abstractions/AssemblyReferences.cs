@@ -1,11 +1,17 @@
 ﻿namespace ScreenDrafts.Web.Abstractions;
+
 internal static class AssemblyReferences
 {
+  private static readonly Assembly[] _featureAssemblies = [
+    Modules.Drafts.Features.AssemblyReference.Assembly,
+    ];
+
   private static readonly Assembly[] _presentationAssemblies = [
     Modules.Administration.Presentation.AssemblyReference.Assembly,
   Modules.Audit.Presentation.AssemblyReference.Assembly,
   Modules.Communications.Presentation.AssemblyReference.Assembly,
   Modules.Drafts.Presentation.AssemblyReference.Assembly,
+  Modules.Drafts.Features.AssemblyReference.Assembly,
   Modules.Integrations.Presentation.AssemblyReference.Assembly,
   Modules.Movies.Presentation.AssemblyReference.Assembly,
   Modules.RealTimeUpdates.Presentation.AssemblyReference.Assembly,
@@ -18,6 +24,7 @@ internal static class AssemblyReferences
   Modules.Audit.Application.AssemblyReference.Assembly,
   Modules.Communications.Application.AssemblyReference.Assembly,
   Modules.Drafts.Application.AssemblyReference.Assembly,
+  Modules.Drafts.Features.AssemblyReference.Assembly,
   Modules.Integrations.Application.AssemblyReference.Assembly,
   Modules.Movies.Application.AssemblyReference.Assembly,
   Modules.RealTimeUpdates.Application.AssemblyReference.Assembly,
@@ -42,4 +49,6 @@ internal static class AssemblyReferences
   public static Assembly[] PresentationAssemblies => _presentationAssemblies;
 
   public static Assembly[] InfrastructureAssemblies => _infrastructureAssemblies;
+
+  public static Assembly[] FeatureAssemblies => _featureAssemblies;
 }
