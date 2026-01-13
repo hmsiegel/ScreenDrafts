@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Users.IntegrationTests.Users;
+﻿using ScreenDrafts.Common.Features.Abstractions.Authorization;
+
+namespace ScreenDrafts.Modules.Users.IntegrationTests.Users;
 
 public class GetUserPermissionTests(UsersIntegrationTestWebAppFactory factory)
   : UsersIntegrationTest(factory)

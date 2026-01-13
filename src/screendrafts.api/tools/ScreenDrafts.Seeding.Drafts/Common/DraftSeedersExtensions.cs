@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Seeding.Drafts.Common;
+﻿using ScreenDrafts.Common.Features.Abstractions.Seeding;
+
+namespace ScreenDrafts.Seeding.Drafts.Common;
 
 internal static class DraftSeedersExtensions
 {

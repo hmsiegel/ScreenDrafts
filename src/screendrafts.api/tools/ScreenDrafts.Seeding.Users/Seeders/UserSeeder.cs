@@ -1,4 +1,8 @@
-﻿namespace ScreenDrafts.Seeding.Users.Seeders;
+﻿using ScreenDrafts.Common.Features.Abstractions.CsvFiles;
+using ScreenDrafts.Common.Features.Abstractions.Logging;
+using ScreenDrafts.Common.Features.Abstractions.Seeding;
+
+namespace ScreenDrafts.Seeding.Users.Seeders;
 
 internal sealed class UserSeeder(
   ILogger<UserSeeder> logger,

@@ -1,4 +1,6 @@
-﻿var basePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
+﻿using ScreenDrafts.Common.Features.Abstractions.Exceptions;
+
+var basePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
 
 var configuration = new ConfigurationBuilder()
     .SetBasePath(basePath)

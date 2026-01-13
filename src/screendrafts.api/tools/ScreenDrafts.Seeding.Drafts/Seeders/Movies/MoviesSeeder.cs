@@ -1,4 +1,8 @@
-﻿namespace ScreenDrafts.Seeding.Drafts.Seeders.Movies;
+﻿using ScreenDrafts.Common.Features.Abstractions.CsvFiles;
+using ScreenDrafts.Common.Features.Abstractions.Logging;
+using ScreenDrafts.Common.Features.Abstractions.Seeding;
+
+namespace ScreenDrafts.Seeding.Drafts.Seeders.Movies;
 
 internal sealed class MoviesSeeder(
   DraftsDbContext dbContext,

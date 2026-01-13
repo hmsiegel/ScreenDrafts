@@ -1,4 +1,8 @@
-﻿namespace ScreenDrafts.Seeding.Drafts.Seeders.Picks;
+﻿using ScreenDrafts.Common.Features.Abstractions.CsvFiles;
+using ScreenDrafts.Common.Features.Abstractions.Logging;
+using ScreenDrafts.Common.Features.Abstractions.Seeding;
+
+namespace ScreenDrafts.Seeding.Drafts.Seeders.Picks;
 
 internal sealed class VetoSeeder(
   DraftsDbContext dbContext,
