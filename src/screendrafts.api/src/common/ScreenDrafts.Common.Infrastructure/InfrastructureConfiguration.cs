@@ -49,6 +49,8 @@ public static class InfrastructureConfiguration
     // Add core infrastructure services here
     services.TryAddSingleton<IDateTimeProvider, DateTimeProvider>();
 
+    services.TryAddSingleton<IPublicIdGenerator, NanoPublicIdGenerator>();
+
     services.TryAddSingleton<InsertOutboxMessagesInterceptor>();
 
     services.TryAddScoped<ICsvFileService, CsvFileService>();

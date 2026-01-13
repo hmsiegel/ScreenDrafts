@@ -26,7 +26,7 @@ internal sealed class ValidationPipelineBehavior<TRequest, TResponse>(
 
       MethodInfo? failureMethod = typeof(Result<>)
         .MakeGenericType(resultType)
-        .GetMethod(nameof(Result<object>.ValidationFailure));
+        .GetMethod(nameof(Result<>.ValidationFailure));
 
       if (failureMethod is not null)
       {

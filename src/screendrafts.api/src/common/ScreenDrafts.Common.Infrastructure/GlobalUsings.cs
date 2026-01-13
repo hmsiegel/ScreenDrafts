@@ -37,6 +37,8 @@ global using MongoDB.Bson.Serialization.Serializers;
 global using MongoDB.Driver;
 global using MongoDB.Driver.Core.Extensions.DiagnosticSources;
 
+global using NanoidDotNet;
+
 global using Newtonsoft.Json;
 
 global using Npgsql;
@@ -56,6 +58,7 @@ global using ScreenDrafts.Common.Application.Exceptions;
 global using ScreenDrafts.Common.Application.Logging;
 global using ScreenDrafts.Common.Application.Messaging;
 global using ScreenDrafts.Common.Application.Seeding;
+global using ScreenDrafts.Common.Application.Services;
 global using ScreenDrafts.Common.Domain;
 global using ScreenDrafts.Common.Infrastructure.Authentication;
 global using ScreenDrafts.Common.Infrastructure.Authorization;
@@ -72,5 +75,6 @@ global using ScreenDrafts.Common.Infrastructure.OpenTelemetry;
 global using ScreenDrafts.Common.Infrastructure.Outbox;
 global using ScreenDrafts.Common.Infrastructure.Quartz;
 global using ScreenDrafts.Common.Infrastructure.Serialization;
+global using ScreenDrafts.Common.Infrastructure.Services;
 
 global using StackExchange.Redis;

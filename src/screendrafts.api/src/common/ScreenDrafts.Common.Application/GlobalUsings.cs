@@ -1,4 +1,5 @@
-﻿global using System.Data.Common;
+﻿global using System.Collections.ObjectModel;
+global using System.Data.Common;
 global using System.Diagnostics;
 global using System.Reflection;
 
