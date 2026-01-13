@@ -4,6 +4,9 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
+  <Folder Name="/docs/">
+    <File Path="doc/api-contracts-drafts.md" />
+  </Folder>
   <Folder Name="/seed_data/">
     <File Path="data/commissioner_overrides.csv" />
     <File Path="data/drafters.csv" />
@@ -54,6 +57,7 @@
     <Project Path="src/common/ScreenDrafts.Common.Application/ScreenDrafts.Common.Application.csproj" />
     <Project Path="src/common/ScreenDrafts.Common.ArchitectureTests/ScreenDrafts.Common.ArchitectureTests.csproj" />
     <Project Path="src/common/ScreenDrafts.Common.Domain/ScreenDrafts.Common.Domain.csproj" />
+    <Project Path="src/common/ScreenDrafts.Common.Features/ScreenDrafts.Common.Features.csproj" Id="f5110848-937b-4b0a-8e21-f5aeae61378b" />
     <Project Path="src/common/ScreenDrafts.Common.Infrastructure/ScreenDrafts.Common.Infrastructure.csproj" />
     <Project Path="src/common/ScreenDrafts.Common.IntegrationTests/ScreenDrafts.Common.IntegrationTests.csproj" />
     <Project Path="src/common/ScreenDrafts.Common.Presentation/ScreenDrafts.Common.Presentation.csproj" />
