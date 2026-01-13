@@ -7,9 +7,8 @@ public sealed class Pick : Entity<PickId>
   private Pick(
     int position,
     Movie movie,
-    Drafter? drafter,
-    DrafterTeam? drafterTeam,
     DraftPart draftPart,
+    ParticipantId playedBy,
     int playOrder = 0,
     PickId? id = null)
     : base(id ?? PickId.CreateUnique())
@@ -23,31 +22,30 @@ public sealed class Pick : Entity<PickId>
     DraftPart = Guard.Against.Null(draftPart);
     DraftPartId = draftPart.Id;
 
-    Drafter = drafter;
-    DrafterId = drafter?.Id;
-
-    DrafterTeam = drafterTeam;
-    DrafterTeamId = drafterTeam?.Id;
+    PlayedById = playedBy.Value;
+    PlayedByKind = playedBy.Kind;
   }
 
   private Pick()
   {
   }
 
-  public int Position { get; }
-  public int PlayOrder { get; }
+  public string ReadableId { get; private set; } = default!;
 
-  public Guid MovieId { get; }
-  public Movie Movie { get; } = default!;
+  public int Position { get; private set; }
+  public int PlayOrder { get; private set; }
 
-  public DrafterId? DrafterId { get; } = default!;
-  public Drafter? Drafter { get; } = default!;
+  public Guid MovieId { get; private set; }
+  public Movie Movie { get; private set; } = default!;
 
-  public DrafterTeamId? DrafterTeamId { get; } = default!;
-  public DrafterTeam? DrafterTeam { get; } = default!;
+  public DraftPartId DraftPartId { get; private set; } = default!;
+  public DraftPart DraftPart { get; private set; } = default!;
 
-  public DraftPartId DraftPartId { get; } = default!;
-  public DraftPart DraftPart { get; } = default!;
+  public Guid PlayedById { get; private set; } 
+  public ParticipantKind PlayedByKind { get; private set; } = default!;
+
+  public ParticipantId PlayedBy => new(PlayedById, PlayedByKind);
+
 
   public DraftId DraftId { get; } = default!;
   public Draft Draft { get; } = default!;
@@ -55,8 +53,11 @@ public sealed class Pick : Entity<PickId>
   public Veto? Veto { get; private set; } = default!;
   public VetoId? VetoId => Veto?.Id;
 
+  public bool IsCommissionerOverridden => CommissionerOverride is not null;
   public CommissionerOverride CommissionerOverride { get; private set; } = default!;
   public Guid? CommissionerOverrideId => CommissionerOverride?.Id;
+
+  public bool IsActiveOnFinalBoard => !IsVetoed && !IsComissionerOverridden;
 
 
   [NotMapped]
@@ -67,11 +68,10 @@ public sealed class Pick : Entity<PickId>
 
   public IReadOnlyCollection<PickEvent> History => _history.AsReadOnly();
 
-  public static Result<Pick> Create(
+  internal static Result<Pick> Create(
     int position,
     Movie movie,
-    Drafter? drafter,
-    DrafterTeam? drafterTeam,
+    ParticipantId playedBy,
     DraftPart draftPart,
     int playOrder,
     PickId? id = null)
@@ -96,34 +96,27 @@ public sealed class Pick : Entity<PickId>
       return Result.Failure<Pick>(PickErrors.MovieMustBeProvided);
     }
 
-    if (drafter is null && drafterTeam is null)
+    if (playedBy.Kind is null)
     {
       return Result.Failure<Pick>(PickErrors.DrafterOrTeamMustBeProvided);
     }
 
-    if (drafter is not null && drafterTeam is not null)
-    {
-      return Result.Failure<Pick>(PickErrors.DrafterAndTeamCannotBeProvided);
-    }
-
-
     var pick = new Pick(
       position: position,
       movie: movie,
-      drafter: drafter,
-      drafterTeam: drafterTeam,
+      playedBy: playedBy,
       draftPart: draftPart,
       playOrder: playOrder,
       id: id);
 
     pick.Raise(new PickCreatedDomainEvent(
-      pick.Id.Value,
-      drafter?.Id.Value,
-      drafterTeam?.Id.Value,
-      draftPart.Id.Value,
-      position,
-      playOrder,
-      movie.Id));
+      pickId: pick.Id.Value,
+      participantId: playedBy.Value,
+      participantKind: playedBy.Kind.Name,
+      draftPartId: draftPart.Id.Value,
+      position: position,
+      playOrder: playOrder,
+      movieId: movie.Id));
 
     return pick;
   }

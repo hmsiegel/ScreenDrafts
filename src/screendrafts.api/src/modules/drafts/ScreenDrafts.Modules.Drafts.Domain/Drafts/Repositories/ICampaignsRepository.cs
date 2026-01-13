@@ -1,5 +1,5 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.Repositories;
-public interface ICampaignRepository
+public interface ICampaignsRepository
 {
   void Add(Campaign campaign);
 
@@ -8,4 +8,8 @@ public interface ICampaignRepository
   void Delete(Campaign campaign);
 
   Task<Campaign?> GetByIdAsync(Guid campaignId, CancellationToken cancellationToken);
+
+  Task<Campaign?> GetByPublicIdAsync(string publicId, CancellationToken cancellationToken);
+
+  bool ExistsBySlug(string slug);
 }

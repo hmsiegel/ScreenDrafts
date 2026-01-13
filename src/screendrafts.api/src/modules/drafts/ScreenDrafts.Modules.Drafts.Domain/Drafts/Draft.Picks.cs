@@ -30,37 +30,40 @@ public sealed partial class Draft
       return Result.Failure(DraftErrors.DraftPartDoesNotBelongToThisDraft);
     }
 
-    if (participantId.Kind == ParticipantKind.Community)
+    switch (participantId.Kind)
     {
-      var budget = ResolvePartBudget(seriesPolicyProvider, part);
-      if (budget.MaxCommunityPicks <= 0)
-      {
-        return Result.Failure(DraftErrors.CommunityPicksNotAllowedInThisDraftPart);
-      }
+      case 0:
+        DrafterId drafterId = participantId.AsDrafterId();
 
-      if (part.CommunityPicksUsed >= budget.MaxCommunityPicks)
-      {
-        return Result.Failure(DraftErrors.NoRemainingCommunityPicks);
-      }
-    }
+        if (!part.Drafters.Any(d => d.Id == drafterId))
+        {
+          return Result.Failure(DraftErrors.DrafterDoesNotBelongToThisDraft);
+        }
+        break;
 
-    if (participantId.Kind == ParticipantKind.Drafter)
-    {
-      DrafterId drafterId = participantId.AsDrafterId();
+      case 1:
+        var drafterTeamId = participantId.AsDrafterTeamId();
+        if (!part.DrafterTeams.Any(dt => dt.Id == drafterTeamId))
+        {
+          return Result.Failure(DraftErrors.DrafterTeamDoesNotBelongToThisDraft);
+        }
+        break;
 
-      if (!part.Drafters.Any(d => d.Id == drafterId))
-      {
-        return Result.Failure(DraftErrors.DrafterDoesNotBelongToThisDraft);
-      }
-    }
-    else
-    {
-      DrafterTeamId drafterTeamId = participantId.AsDrafterTeamId();
+      case 2:
+        var budget = ResolvePartBudget(seriesPolicyProvider, part);
+        if (budget.MaxCommunityPicks <= 0)
+        {
+          return Result.Failure(DraftErrors.CommunityPicksNotAllowedInThisDraftPart);
+        }
 
-      if (!part.DrafterTeams.Any(dt => dt.Id == drafterTeamId))
-      {
-        return Result.Failure(DraftErrors.DrafterTeamDoesNotBelongToThisDraft);
-      }
+        if (part.CommunityPicksUsed >= budget.MaxCommunityPicks)
+        {
+          return Result.Failure(DraftErrors.NoRemainingCommunityPicks);
+        }
+        break;
+
+      default:
+        break;
     }
 
     // Validate that the movie has not already been picked in this draft
@@ -72,8 +75,7 @@ public sealed partial class Draft
     var pick = Pick.Create(
       position: draftPosition,
       movie: movie,
-      drafter: participantId.IsDrafter ? part.Drafters.First(d => d.Id == participantId.AsDrafterId()) : null,
-      drafterTeam: participantId.IsTeam ? part.DrafterTeams.First(dt => dt.Id == participantId.AsDrafterTeamId()) : null,
+      playedBy: participantId,
       draftPart: part,
       playOrder: playOrder).Value;
 
@@ -106,6 +108,7 @@ public sealed partial class Draft
     ArgumentNullException.ThrowIfNull(draftPartId);
     ArgumentNullException.ThrowIfNull(seriesPolicyProvider);
     ArgumentNullException.ThrowIfNull(pick);
+    ArgumentNullException.ThrowIfNull(issuerKind);
 
     var part = FindPart(draftPartId);
 
@@ -136,7 +139,8 @@ public sealed partial class Draft
 
     Raise(new VetoAddedDomainEvent(
       draftId: Id.Value,
-      drafterId: pick.DrafterId!.Value,
+      participantId: issuerId.Value,
+      participantKind: issuerKind.Name,
       pick.Position));
 
     return Result.Success();

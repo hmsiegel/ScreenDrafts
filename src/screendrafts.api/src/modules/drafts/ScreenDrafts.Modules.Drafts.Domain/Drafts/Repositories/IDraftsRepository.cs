@@ -38,4 +38,6 @@ public interface IDraftsRepository : IRepository
   Task<List<DraftPart>> GetDraftPartsByDraftIdAsync(DraftId draftId, CancellationToken cancellationToken);
 
   Task<Draft?> GetDraftByDraftPartId(DraftPartId draftPartId, CancellationToken cancellationToken);
+
+  Task<Draft?> GetDraftByPublicId(string publicId, CancellationToken cancellationToken);
 }

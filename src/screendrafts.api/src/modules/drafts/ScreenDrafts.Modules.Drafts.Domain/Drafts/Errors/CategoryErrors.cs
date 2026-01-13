@@ -5,10 +5,24 @@ public static class CategoryErrors
     "Categories.CategoryNameIsRequired",
     "Category name is required.");
 
+  public static readonly SDError CategoryDescriptionIsRequired = SDError.Problem(
+    "Categories.CategoryDescriptionIsRequired",
+    "Category description is required.");
+
+  public static SDError DuplicateName(string name) =>
+    SDError.Conflict(
+      "Categories.DuplicateName",
+      $"A category with the name '{name}' already exists.");
+
   public static SDError NotFound(Guid categoryId) =>
     SDError.NotFound(
       "Categories.NotFound",
       $"Category with id {categoryId} was not found.");
+
+  public static SDError NotFound(string publicId) =>
+    SDError.NotFound(
+      "Categories.NotFound",
+      $"Category with public id {publicId} was not found.");
 
   public static SDError CategoryAlreadyAdded(Guid categoryId) =>
     SDError.Conflict(

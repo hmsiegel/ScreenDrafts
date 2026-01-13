@@ -160,22 +160,22 @@ public sealed partial class DraftPart
     return Result.Success();
   }
 
-  internal Result RemoveHost(Host host)
+  public Result RemoveHost(HostId hostId)
   {
-    Guard.Against.Null(host);
+    Guard.Against.Null(hostId);
 
-    var link = _draftHosts.FirstOrDefault(h => h.HostId == host.Id);
+    var link = _draftHosts.FirstOrDefault(h => h.HostId == hostId);
 
     if (link is null)
     {
-      return Result.Failure(HostErrors.NotFound(host.Id.Value));
+      return Result.Failure(HostErrors.NotFound(hostId.Value));
     }
 
     _draftHosts.Remove(link);
 
     UpdatedAtUtc = DateTime.UtcNow;
 
-    Raise(new HostRemovedDomainEvent(Id.Value, host.Id.Value));
+    Raise(new HostRemovedDomainEvent(Id.Value, hostId.Value));
 
     return Result.Success();
   }

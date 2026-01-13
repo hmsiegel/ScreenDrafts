@@ -118,6 +118,14 @@ public sealed partial class Draft
   private DraftPart? FindPart(DraftPartId partId) =>
     _parts.FirstOrDefault(p => p.Id == partId);
 
+  private Host? FindHost(HostId hostId, DraftPartId draftPartId)
+  {
+    var part = FindPart(draftPartId);
+    var host = part?.DraftHosts.FirstOrDefault(h => h.HostId == hostId);
+
+    return host?.Host;
+  }
+
   private void RenumberContiguousParts()
   {
     for (int i = 0; i < _parts.Count; i++)

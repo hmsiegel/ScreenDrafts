@@ -8,12 +8,14 @@ public sealed partial class Draft : AggrgateRoot<DraftId, Guid>
 
   private Draft(
   DraftId id,
+  string publicId,
   Title title,
   DraftType draftType,
   Series series,
   DateTime createdAtUtc)
   : base(id)
   {
+    PublicId = publicId;
     Title = title;
     DraftType = draftType;
     Series = series;
@@ -26,15 +28,15 @@ public sealed partial class Draft : AggrgateRoot<DraftId, Guid>
   }
 
   // Identity and Metadata
-  public int ReadableId { get; init; }
+  public string PublicId { get; private set; } = default!;
   public Title Title { get; private set; } = default!;
   public string? Description { get; private set; }
   public DateTime CreatedAtUtc { get; private set; }
   public DateTime? UpdatedAtUtc { get; private set; }
 
   // Policy Snapshots
-  public Series? Series { get; private set; } = default!;
-  public SeriesId? SeriesId { get; private set; } = default!;
+  public Series Series { get; private set; } = default!;
+  public SeriesId SeriesId { get; private set; } = default!;
   public DraftType DraftType { get; private set; } = default!;
 
   public DraftStatus DraftStatus { get; private set; } = DraftStatus.Created;
@@ -42,19 +44,22 @@ public sealed partial class Draft : AggrgateRoot<DraftId, Guid>
 
   // Relationships
   public IReadOnlyCollection<DraftPart> Parts => _parts.AsReadOnly();
-  public Campaign? Campaign { get; private set; } = default!;
   public IReadOnlyCollection<DraftCategory> DraftCategories => _draftCategories.AsReadOnly();
+
+  public Guid? CampaignId { get; private set; } = default!;
+  public Campaign? Campaign { get; private set; } = default!;
 
   // Rollups
   public int TotalParts => _parts.Count;
   public int TotalPicks => _parts.Sum(p => p.Picks.Count);
-  public int TotalDrafters => _parts.Sum(p => p.TotalDrafters) + _parts.Sum(p => p.TotalDrafterTeams);
+  public int TotalParticipants => _parts.Sum(p => p.TotalDrafters) + _parts.Sum(p => p.TotalDrafterTeams);
   public int TotalHosts => _parts.Sum(p => p.TotalHosts);
 
 
 
   public static Result<Draft> Create(
   Title title,
+  string publicId,
   DraftType draftType,
   Series series,
   DraftId? id = null)
@@ -62,15 +67,12 @@ public sealed partial class Draft : AggrgateRoot<DraftId, Guid>
     ArgumentNullException.ThrowIfNull(series);
 
     var draft = new Draft(
+      id: id ?? DraftId.CreateUnique(),
       title: title,
+      publicId: publicId,
       draftType: draftType,
       series: series,
-      createdAtUtc: DateTime.UtcNow,
-      id: id ?? DraftId.CreateUnique())
-    {
-      Series = series,
-      SeriesId = series.Id
-    };
+      createdAtUtc: DateTime.UtcNow);
 
     draft.Raise(new DraftCreatedDomainEvent(draft.Id.Value));
 
@@ -140,17 +142,21 @@ public sealed partial class Draft : AggrgateRoot<DraftId, Guid>
   }
 
   // Campaigns
-  public void AddCampaign(Campaign campaign)
+  public Result SetCampaign(Campaign campaign)
   {
     ArgumentNullException.ThrowIfNull(campaign);
     Campaign = campaign;
+    CampaignId = campaign.Id;
     UpdatedAtUtc = DateTime.UtcNow;
+    return Result.Success();
   }
 
-  public void RemoveCampaign()
+  public Result ClearCampaign()
   {
     Campaign = null;
+    CampaignId = null;
     UpdatedAtUtc = DateTime.UtcNow;
+    return Result.Success();
   }
 
   // Releases
@@ -186,23 +192,13 @@ public sealed partial class Draft : AggrgateRoot<DraftId, Guid>
     return Result.Success(series);
   }
 
-  public Result UnlinkSeries()
-  {
-    if (SeriesId == null)
-    {
-      return Result.Failure(DraftErrors.NoSeriesLinked);
-    }
-
-    var oldSeriesId = SeriesId.Value;
-    Series = null;
-    SeriesId = null;
-    UpdatedAtUtc = DateTime.UtcNow;
-    Raise(new SeriesUnlinkedDomainEvent(Id.Value, oldSeriesId));
-    return Result.Success();
-  }
-
   public void DeriveDraftStatus()
   {
+    if (_parts.Count == 0)
+    {
+      return;
+    }
+
     if (_parts.Any(p => p.Status == DraftPartStatus.InProgress))
     {
       DraftStatus = DraftStatus.InProgress;
@@ -225,6 +221,7 @@ public sealed partial class Draft : AggrgateRoot<DraftId, Guid>
     if (_parts.All(p => p.Status == DraftPartStatus.Created))
     {
       DraftStatus = DraftStatus.Created;
+      return;
     }
 
     DraftStatus = DraftStatus.Scheduled;

@@ -21,7 +21,7 @@ public sealed partial class Draft
       return Result.Failure(DraftErrors.DraftPartDoesNotBelongToThisDraft);
     }
 
-    if (drafterIds.Count > part.Draft.TotalDrafters)
+    if (drafterIds.Count > part.Draft.TotalParticipants)
     {
       return Result.Failure(DraftErrors.TooManyDrafters);
     }
@@ -54,7 +54,7 @@ public sealed partial class Draft
       return Result.Failure(DraftErrors.DraftPartDoesNotBelongToThisDraft);
     }
 
-    if (drafterTeamIds.Count > part.Draft.TotalDrafters)
+    if (drafterTeamIds.Count > part.Draft.TotalParticipants)
     {
       return Result.Failure(DraftErrors.TooManyDrafterTeams);
     }

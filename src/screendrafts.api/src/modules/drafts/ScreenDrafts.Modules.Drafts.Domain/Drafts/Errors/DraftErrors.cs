@@ -7,6 +7,11 @@ public static partial class DraftErrors
       "Drafts.NotFound",
       $"Draft with id {draftId} was not found.");
 
+  public static SDError NotFound(string publicId) =>
+    SDError.NotFound(
+      "Drafts.NotFound",
+      $"Draft with public id {publicId} was not found.");
+
   public static readonly SDError DraftNotStarted =
     SDError.Problem(
       "Drafts.DraftNotStarted",
@@ -113,6 +118,11 @@ public static partial class DraftErrors
       "Drafts.CampaignNotFound",
       $"Campaign with id {campaignId} was not found.");
 
+  public static SDError CampaignNotFound(string publicId) =>
+    SDError.NotFound(
+      "Drafts.CampaignNotFound",
+      $"Campaign with public id {publicId} was not found.");
+
   public static SDError MovieAlreadyPickedInDraft(Movie movie)
   {
     ArgumentNullException.ThrowIfNull(movie);
@@ -146,4 +156,9 @@ public static partial class DraftErrors
     SDError.Problem(
       "Drafts.NoRemainingCommunityPicks",
       "No remaining community picks are available in this draft part.");
+
+  public static SDError CampaignDoesNotBelongToThisDraft(string publicId) =>
+    SDError.Problem(
+      "Drafts.CampaignDoesNotBelongToThisDraft",
+      $"Campaign with public id {publicId} does not belong to this draft.");
 }

@@ -2,16 +2,16 @@
 
 public sealed class PickCreatedDomainEvent(
   Guid pickId,
-  Guid? drafterId,
-  Guid? drafterTeamId,
+  Guid participantId,
+  string participantKind,
   Guid draftPartId,
   int position,
   int playOrder,
   Guid movieId) : DomainEvent
 {
   public Guid PickId { get; init; } = pickId;
-  public Guid? DrafterId { get; init; } = drafterId;
-  public Guid? DrafterTeamId { get; init; } = drafterTeamId;
+  public Guid ParticipantId { get; init; } = participantId;
+  public string ParticipantKind { get; init; } = participantKind;
   public Guid DraftPartId { get; init; } = draftPartId;
   public int Position { get; init; } = position;
   public int PlayOrder { get; init; } = playOrder;
