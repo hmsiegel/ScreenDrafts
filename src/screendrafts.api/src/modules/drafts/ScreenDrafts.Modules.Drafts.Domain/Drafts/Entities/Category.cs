@@ -78,7 +78,7 @@ public sealed class Category : Entity<CategoryId>
     return Result.Success();
   }
 
-  public Result Delete()
+  public Result SoftDelete()
   {
     if (IsDeleted)
     {

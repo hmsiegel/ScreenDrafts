@@ -28,6 +28,7 @@ internal static class Permissions
   internal const string PersonList = "person:list";
   internal const string PersonCreate = "person:create";
   internal const string PersonUpdate = "person:update";
+  internal const string PersonSearch = "person:search";
 
   internal const string DrafterRead = "drafter:read";
   internal const string DrafterList = "drafter:list";
@@ -68,6 +69,7 @@ internal static class Permissions
   internal const string CampaignCreate = "campaign:create";
   internal const string CampaignUpdate = "campaign:update";
   internal const string CampaignDelete = "campaign:delete";
+  internal const string CampaignRestore = "campaign:restore";
 
   internal const string DraftReadPatreon = "draft:read-patreon";
 

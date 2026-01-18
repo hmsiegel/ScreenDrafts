@@ -13,7 +13,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<Request, CreatedResponse>
       .Produces(StatusCodes.Status400BadRequest)
       .Produces(StatusCodes.Status403Forbidden);
     });
-    Permissions(Features.Permissions.CampaignCreate);
+    Policies(Features.Permissions.CampaignCreate);
   }
 
   public override async Task HandleAsync(Request req, CancellationToken ct)

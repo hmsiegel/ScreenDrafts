@@ -13,6 +13,13 @@ internal sealed class PersonConfiguration : IEntityTypeConfiguration<Person>
         id => id.Value,
         value => PersonId.Create(value));
 
+    builder.Property(p => p.PublicId)
+      .ValueGeneratedOnAdd();
+
+    builder.HasIndex(p => p.PublicId)
+      .IsUnique()
+      .HasDatabaseName("ix_people_public_id");
+
     builder.HasOne(p => p.DrafterProfile)
       .WithOne(d => d.Person)
       .HasForeignKey<Drafter>(d => d.PersonId);

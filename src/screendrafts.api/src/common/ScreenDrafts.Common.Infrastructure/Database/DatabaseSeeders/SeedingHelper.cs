@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-namespace ScreenDrafts.Common.Infrastructure.Database.DatabaseSeeders;
+﻿namespace ScreenDrafts.Common.Infrastructure.Database.DatabaseSeeders;
 
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1308:Normalize strings to uppercase", Justification = "<Pending>")]
 public static class SeedingHelper

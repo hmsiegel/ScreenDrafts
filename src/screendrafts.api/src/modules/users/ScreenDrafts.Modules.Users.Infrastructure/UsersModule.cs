@@ -9,6 +9,8 @@ public static class UsersModule
   {
     ArgumentNullException.ThrowIfNull(configuration);
 
+    services.AddUsersApplication();
+
     services.AddDomainEventHandlers();
 
     services.AddIntegrationEventHandlers();
@@ -40,9 +42,15 @@ public static class UsersModule
     services.ConfigureOptions<ConfigureProcessInboxJob>();
   }
 
+  private static IServiceCollection AddUsersApplication(this IServiceCollection services)
+  {
+    services.AddScoped(typeof(IPipelineBehavior<,>), typeof(UsersUnitOfWorkBehavior<,>));
+    return services;
+  }
+
   private static void AddDomainEventHandlers(this IServiceCollection services)
   {
-    Type[] domainEventHandlers = [.. Application.AssemblyReference.Assembly
+    Type[] domainEventHandlers = [.. Features.AssemblyReference.Assembly
         .GetTypes()
         .Where(t => t.IsAssignableTo(typeof(IDomainEventHandler)))];
 
@@ -64,7 +72,7 @@ public static class UsersModule
 
   private static void AddIntegrationEventHandlers(this IServiceCollection services)
   {
-    Type[] integrationEventHandlers = [.. Presentation.AssemblyReference.Assembly
+    Type[] integrationEventHandlers = [.. Features.AssemblyReference.Assembly
         .GetTypes()
         .Where(t => t.IsAssignableTo(typeof(IIntegrationEventHandler)))];
 

@@ -1,4 +1,4 @@
-﻿using ScreenDrafts.Common.Application.EventBus;
+﻿using ScreenDrafts.Common.Features.Abstractions.EventBus;
 
 namespace ScreenDrafts.Modules.Users.IntegrationEvents;
 

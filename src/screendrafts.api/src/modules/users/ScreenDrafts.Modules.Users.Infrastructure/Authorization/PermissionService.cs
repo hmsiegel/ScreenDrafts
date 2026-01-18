@@ -6,6 +6,6 @@ internal sealed class PermissionService(ISender sender) : IPermissionService
 
   public async Task<Result<PermissionsResponse>> GetUserPermissionsAsync(string identityId)
   {
-    return await _sender.Send(new GetUserPermissionsQuery(identityId));
+    return await _sender.Send(new Features.Users.GetUserPermissions.Query(identityId));
   }
 }

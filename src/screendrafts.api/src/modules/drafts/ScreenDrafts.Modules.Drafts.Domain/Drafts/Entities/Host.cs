@@ -6,10 +6,12 @@ public sealed class Host : Entity<HostId>
 
   private Host(
     Person person,
+    string publicId,
     HostId? id = null)
     : base(id ?? HostId.CreateUnique())
   {
     Person = person;
+    PublicId = publicId;
     PersonId = person.Id;
   }
 
@@ -17,7 +19,7 @@ public sealed class Host : Entity<HostId>
   {
   }
 
-  public int ReadableId { get; init; }
+  public string PublicId { get; private set; } = default!;
 
   public Person Person { get; private set; } = default!;
 
@@ -27,12 +29,14 @@ public sealed class Host : Entity<HostId>
 
   public static Result<Host> Create(
     Person person,
+    string publicId,
     HostId? id = null)
   {
     ArgumentNullException.ThrowIfNull(person);
 
     var host = new Host(
       id: id,
+      publicId: publicId,
       person: person);
     return host;
   }

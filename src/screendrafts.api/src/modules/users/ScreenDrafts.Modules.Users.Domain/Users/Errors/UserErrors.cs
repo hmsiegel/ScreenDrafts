@@ -17,6 +17,11 @@ public static class UserErrors
       "UserErrors.NotFound",
       $"The user with the IDP identity {identityId} was not found.");
 
+  public static SDError PublicIdNotFound (string publicId) =>
+    SDError.NotFound(
+      "UserErrors.PublicIdNotFound",
+      $"The user with public id {publicId} was not found.");
+
   public static readonly SDError InvalidName =
     SDError.Failure(
       "UserErrors.InvalidName",

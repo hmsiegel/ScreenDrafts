@@ -16,4 +16,14 @@ public static class CampaignErrors
     SDError.NotFound(
       "CampaignNotFound",
       $"The campaign with public ID '{publicId}' was not found.");
+
+  public static SDError CampaignNotFound(Guid campaignId) =>
+    SDError.NotFound(
+      "Drafts.CampaignNotFound",
+      $"Campaign with id {campaignId} was not found.");
+
+  public static SDError CampaignNotFound(string publicId) =>
+    SDError.NotFound(
+      "Drafts.CampaignNotFound",
+      $"Campaign with public id {publicId} was not found.");
 }

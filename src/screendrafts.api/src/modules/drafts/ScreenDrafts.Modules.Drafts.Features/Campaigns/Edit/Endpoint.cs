@@ -16,7 +16,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<Request>
       .Produces(StatusCodes.Status403Forbidden)
       .Produces(StatusCodes.Status404NotFound);
     });
-    Permissions(Features.Permissions.CampaignUpdate);
+    Policies(Features.Permissions.CampaignUpdate);
   }
 
   public override async Task HandleAsync(Request req, CancellationToken ct)

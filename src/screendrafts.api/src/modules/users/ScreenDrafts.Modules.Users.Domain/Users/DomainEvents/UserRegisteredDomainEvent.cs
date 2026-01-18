@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Users.Domain.Users.DomainEvents;
 
-public sealed class UserRegisteredDomainEvent(Guid userId) : DomainEvent
+public sealed class UserRegisteredDomainEvent(Guid UserId) : DomainEvent
 {
-  public Guid UserId { get; } = userId;
+  public Guid UserId { get; } = UserId;
 }

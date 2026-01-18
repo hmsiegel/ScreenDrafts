@@ -52,5 +52,22 @@ internal static class DraftsOpenApi
     public const string Series_ListSeries = "Series.ListSeries";
     public const string Series_GetSeriesById = "Series.GetSeriesById";
     public const string Series_DeleteSeries = "Series.DeleteSeries";
+    public const string Series_GetSeriesMetadata = "Series.GetSeriesMetadata";
+
+    // People
+    public const string People_CreatePerson = "People.CreatePerson";
+    public const string People_EditPerson = "People.EditPerson";
+    public const string People_ListPeople = "People.ListPeople";
+    public const string People_GetPersonById = "People.GetPersonById";
+    public const string People_DeletePerson = "People.DeletePerson";
+    public const string People_RestorePerson = "People.RestorePerson";
+    public const string People_SearchPeople = "People.SearchPeople";
+    public const string People_LinkUser = "People.LinkUser";
+
+    // Drafters
+    public const string Drafters_CreateDrafter = "Drafters.CreateDrafter";
+    public const string Drafters_RetireDrafter = "Drafters.RetireDrafter";
+    public const string Drafters_GetDrafterById = "Drafters.GetDrafterById";
+    public const string Drafters_ListDrafters = "Drafters.ListDrafters";
   }
 }

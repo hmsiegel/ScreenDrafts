@@ -11,10 +11,12 @@ public sealed class Drafter : AggrgateRoot<DrafterId, Guid>
 
   private Drafter(
     Person person,
+    string publicId,
     DrafterId? id = null)
     : base(id ?? DrafterId.CreateUnique())
   {
     Person = person;
+    PublicId = publicId;
     PersonId = person.Id;
   }
 
@@ -22,11 +24,15 @@ public sealed class Drafter : AggrgateRoot<DrafterId, Guid>
   {
   }
 
-  public int ReadableId { get; init; }
+  public string PublicId { get; init; } = default!;
 
   public Person Person { get; private set; } = default!;
 
   public PersonId PersonId { get; private set; } = default!;
+
+  public bool IsRetired { get; private set; } = default!;
+
+  public DateTime? RetiredAtUtc { get; private set; } = default!;
 
   public RolloverVeto? RolloverVeto { get; private set; } = default!;
 
@@ -44,12 +50,14 @@ public sealed class Drafter : AggrgateRoot<DrafterId, Guid>
 
   public static Result<Drafter> Create(
     Person person,
+    string publicId,
     DrafterId? id = null)
   {
     ArgumentNullException.ThrowIfNull(person);
 
     var drafter = new Drafter(
       id: id,
+      publicId: publicId,
       person: person);
 
     drafter.Raise(new DrafterCreatedDomainEvent(drafter.Id.Value));
@@ -87,7 +95,7 @@ public sealed class Drafter : AggrgateRoot<DrafterId, Guid>
       return Result.Failure(DrafterErrors.RolloverVetoOverrideAlreadyExists);
     }
 
-    RolloverVetoOverride = rolloverVetoOverride; 
+    RolloverVetoOverride = rolloverVetoOverride;
 
     return Result.Success();
   }
@@ -128,5 +136,18 @@ public sealed class Drafter : AggrgateRoot<DrafterId, Guid>
   public void AddPick(Pick pick)
   {
     _picks.Add(pick);
+  }
+
+  public Result RetireDrafter()
+  {
+    if (IsRetired)
+    {
+      return Result.Failure(DrafterErrors.AlreadyRetired);
+    }
+
+    IsRetired = true;
+    RetiredAtUtc = DateTime.UtcNow;
+
+    return Result.Success();
   }
 }

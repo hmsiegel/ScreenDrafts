@@ -50,17 +50,7 @@ internal sealed class DraftsRepository(DraftsDbContext dbContext) : IDraftsRepos
 
   public async Task<Draft?> GetDraftWithDetailsAsync(DraftId draftId, CancellationToken cancellationToken)
   {
-    var draftWithDetails = await _dbContext.Drafts
-      .Include(d => d.D)
-      .Include(d => d.Drafters)
-      .ThenInclude(dr => dr.Person)
-      .Include(d => d.DraftHosts)
-      .ThenInclude(ph => ph!.Host)
-      .ThenInclude(h => h.Person)
-      .Include(d => d.Picks)
-      .FirstOrDefaultAsync(d => d.Id == draftId, cancellationToken);
-
-    return draftWithDetails;
+    throw new NotImplementedException();
   }
 
   public Task<bool> MovieExistsAsync(string imdbId, CancellationToken cancellationToken)
@@ -84,57 +74,15 @@ internal sealed class DraftsRepository(DraftsDbContext dbContext) : IDraftsRepos
 
   public async Task<Draft?> GetPreviousDraftAsync(int? episodeNumber, CancellationToken cancellationToken)
   {
-    if (episodeNumber <= 0)
-    {
-      throw new ArgumentOutOfRangeException(nameof(episodeNumber), "Episode number must be greater than zero.");
-    }
-
-    var previousDraft = await _dbContext.Drafts
-      .Where(d => d.EpisodeNumber < episodeNumber)
-      .OrderByDescending(d => d.EpisodeNumber)
-      .ThenByDescending(d => d.Id) // Ensure consistent ordering
-      .FirstOrDefaultAsync(cancellationToken);
-
-    if (previousDraft is null)
-    {
-      return null;
-    }
-
-    return previousDraft;
+    throw new NotImplementedException();
   }
 
   public async Task<Draft?> GetNextDraftAsync(int? episodeNumber, CancellationToken cancellationToken)
   {
-    if (episodeNumber <= 0)
-    {
-      throw new ArgumentOutOfRangeException(nameof(episodeNumber), "Episode number must be greater than zero.");
-    }
-
-    var nextDraft = await _dbContext.Drafts
-      .Where(d => d.EpisodeNumber > episodeNumber)
-      .OrderBy(d => d.EpisodeNumber)
-      .ThenBy(d => d.Id) // Ensure consistent ordering
-      .FirstOrDefaultAsync(cancellationToken);
-
-    if (nextDraft is null)
-    {
-      return null;
-    }
-
-    return nextDraft;
+    throw new NotImplementedException();
   }
 
   public Task<Draft?> GetByDraftPartIdAsync(DraftPartId draftPartId, CancellationToken cancellationToken)
-  {
-    throw new NotImplementedException();
-  }
-
-  public Task<Series?> GetSeriesByIdAsync(SeriesId seriesId, CancellationToken cancellationToken)
-  {
-    throw new NotImplementedException();
-  }
-
-  public Task<bool> SeriesExistsAsync(string name, CancellationToken cancellationToken)
   {
     throw new NotImplementedException();
   }
@@ -150,6 +98,16 @@ internal sealed class DraftsRepository(DraftsDbContext dbContext) : IDraftsRepos
   }
 
   public Task<Draft?> GetDraftByDraftPartId(DraftPartId draftPartId, CancellationToken cancellationToken)
+  {
+    throw new NotImplementedException();
+  }
+
+  public Task<Draft?> GetDraftByPublicId(string publicId, CancellationToken cancellationToken)
+  {
+    throw new NotImplementedException();
+  }
+
+  public Task<bool> ExistsAsync(DraftId id, CancellationToken cancellationToken)
   {
     throw new NotImplementedException();
   }

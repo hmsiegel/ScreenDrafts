@@ -22,7 +22,6 @@ global using ScreenDrafts.Modules.Drafts.Domain.People;
 global using ScreenDrafts.Modules.Drafts.Domain.People.ValueObjects;
 global using ScreenDrafts.Modules.Drafts.Infrastructure;
 global using ScreenDrafts.Modules.Drafts.Infrastructure.Database;
-global using ScreenDrafts.Modules.Users.Application.Abstractions.Identity;
 global using ScreenDrafts.Modules.Users.Domain.Users;
 global using ScreenDrafts.Modules.Users.Domain.Users.ValueObjects;
 global using ScreenDrafts.Modules.Users.Infrastructure;

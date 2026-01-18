@@ -1,7 +1,9 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Features.Categories.List;
 
-internal sealed class Endpoint : ScreenDraftsEndpointWithoutRequest<CategoryCollectionResponse>
+internal sealed class Endpoint(IUsersApi usersApi) : ScreenDraftsEndpoint<Request, CategoryCollectionResponse>
 {
+  private readonly IUsersApi _usersApi = usersApi;
+
   public override void Configure()
   {
     Get(CategoryRoutes.Category);
@@ -16,12 +18,24 @@ internal sealed class Endpoint : ScreenDraftsEndpointWithoutRequest<CategoryColl
     Permissions(Features.Permissions.CampaignList);
   }
 
-  public override async Task HandleAsync(CancellationToken ct)
+  public override async Task HandleAsync(Request req, CancellationToken ct)
   {
-    var query = new Query();
+    var userRoles = await _usersApi.GetUserRolesAsync(User.GetUserId(), ct);
+
+    var isAdmin = userRoles.Contains(Features.Roles.Admin, StringComparer.OrdinalIgnoreCase) || 
+      userRoles.Contains(Features.Roles.SuperAdmin, StringComparer.OrdinalIgnoreCase);
+
+    if (!isAdmin && req.IncludeDeleted)
+    {
+      await Send.ErrorsAsync(StatusCodes.Status403Forbidden, ct);
+      return;
+    }
+
+    var query = new Query(IncludeDeleted: req.IncludeDeleted);
 
     var result = await Sender.Send(query, ct);
 
     await this.SendOkAsync(result, ct);
   }
 }
+

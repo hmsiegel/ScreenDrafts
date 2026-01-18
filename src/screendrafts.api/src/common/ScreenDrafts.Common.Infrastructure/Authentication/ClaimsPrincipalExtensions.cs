@@ -22,6 +22,12 @@ public static class ClaimsPrincipalExtensions
     IEnumerable<Claim> permissionClaims = principal?.FindAll(CustomClaims.Permission) ??
                                           throw new ScreenDraftsException("Permissions are unavailable");
 
-    return permissionClaims.Select(c => c.Value).ToHashSet();
+    return [.. permissionClaims.Select(c => c.Value)];
+  }
+
+  public static string GetPublicId(this ClaimsPrincipal? principal)
+  {
+    return principal?.FindFirst(CustomClaims.PublicId)?.Value ??
+           throw new ScreenDraftsException("User public identifier is unavailable");
   }
 }

@@ -37,7 +37,7 @@ public sealed class DraftsDbContext(DbContextOptions<DraftsDbContext> options)
 
   internal DbSet<Category> Categories { get; set; }
 
-  internal DbSet<Series> Series { get; set; }
+  internal DbSet<Domain.Drafts.Entities.Series> Series { get; set; }
 
   internal DbSet<Campaign> Campaigns { get; set; }
 

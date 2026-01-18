@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Common.Infrastructure;
-
-namespace ScreenDrafts.Modules.Users.Infrastructure.Database;
+﻿namespace ScreenDrafts.Modules.Users.Infrastructure.Database;
 
 public sealed class UsersDbContext(DbContextOptions<UsersDbContext> options)
   : DbContext(options), IUnitOfWork

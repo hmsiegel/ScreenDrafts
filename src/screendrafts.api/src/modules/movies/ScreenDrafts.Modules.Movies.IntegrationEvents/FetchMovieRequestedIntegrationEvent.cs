@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Movies.IntegrationEvents;
+﻿using ScreenDrafts.Common.Features.Abstractions.EventBus;
+
+namespace ScreenDrafts.Modules.Movies.IntegrationEvents;
 
 public sealed class FetchMovieRequestedIntegrationEvent(
   Guid id,

@@ -1,35 +1,36 @@
-﻿using ScreenDrafts.Modules.Users.Application.Users.Queries.GetUserSocials;
-
-using UserResponse = ScreenDrafts.Modules.Users.PublicApi.UserResponse;
+﻿using UserResponse = ScreenDrafts.Modules.Users.PublicApi.UserResponse;
 
 namespace ScreenDrafts.Modules.Users.Infrastructure.PublicApi;
+
 internal sealed class UsersApi(ISender sender) : IUsersApi
 {
   private readonly ISender _sender = sender;
 
-  public async Task<UserResponse?> GetUserByIdAsync(
+  public async Task<UserResponse?> GetUserById(
     Guid userId,
     CancellationToken cancellationToken)
   {
-    var query = new GetUserQuery(userId);
+    var query = new Features.Users.GetByUserId.Query(userId);
 
-    var result = await _sender.Send(query, cancellationToken);
+    var result = await _sender.Send(query, cancellationToken: cancellationToken);
 
     if (result.IsFailure)
     {
       return null;
     }
 
-    return new UserResponse(
-      UserId: result.Value.UserId,
-      FirstName: result.Value.FirstName,
-      LastName: result.Value.LastName,
-      MiddleName: result.Value.MiddleName);
+    return new UserResponse
+    {
+      UserId = result.Value.UserId,
+      FirstName = result.Value.FirstName,
+      LastName = result.Value.LastName,
+      MiddleName = result.Value.MiddleName
+    };
   }
 
-  public async Task<Result> AddUserRoleAsync(Guid userId, string Role)
+  public async Task<Result> AddUserRoleAsync(Guid userId, string role)
   {
-    var command = new AddUserRoleCommand(userId, Role);
+    var command = new Features.Admin.AddRoleToUser.Command(userId, role);
 
     var result = await _sender.Send(command);
 
@@ -41,9 +42,9 @@ internal sealed class UsersApi(ISender sender) : IUsersApi
     return Result.Success();
   }
 
-  public async Task<Result> RemoveUserRoleAsync(Guid userId, string Role)
+  public async Task<Result> RemoveUserRoleAsync(Guid userId, string role)
   {
-    var command = new RemoveUserRoleCommand(userId, Role);
+    var command = new Features.Admin.RemoveRoleFromUser.Command(userId, role);
 
     var result = await _sender.Send(command);
 
@@ -55,9 +56,9 @@ internal sealed class UsersApi(ISender sender) : IUsersApi
     return Result.Success();
   }
 
-  public async Task<Result> AddPermissionToRoleAsync(string Role, string Permission)
+  public async Task<Result> AddPermissionToRoleAsync(string role, string permission)
   {
-    var command = new AddPermissionToRoleCommand(Role, Permission);
+    var command = new Features.Admin.AddPermissionToRole.Command(role, permission);
 
     var result = await _sender.Send(command);
 
@@ -71,7 +72,7 @@ internal sealed class UsersApi(ISender sender) : IUsersApi
 
   public async Task<IReadOnlyCollection<string>> GetUserRolesAsync(Guid userId, CancellationToken cancellationToken)
   {
-    var query = new GetUserRolesQuery(userId);
+    var query = new Features.Admin.GetUserRoles.Query(userId);
 
     var result = await _sender.Send(query, cancellationToken);
 
@@ -83,9 +84,9 @@ internal sealed class UsersApi(ISender sender) : IUsersApi
     return result.Value;
   }
 
-  public async Task<UserSocialResponse?> GetUserSocialsAsync(Guid userId, CancellationToken cancellationToken)
+  public async Task<UserSocialResponse?> GetUserSocialsAsync(string publicId, CancellationToken cancellationToken)
   {
-    var query = new GetUserSocialsQuery(userId);
+    var query = new Features.Users.GetUserSocials.Query(publicId);
 
     var result = await _sender.Send(query, cancellationToken);
 
@@ -95,7 +96,7 @@ internal sealed class UsersApi(ISender sender) : IUsersApi
     }
 
     return new UserSocialResponse(
-      UserId: userId,
+      PublicId: publicId,
       Twitter: result.Value?.Twitter,
       Instagram: result.Value?.Instagram,
       Letterboxd: result.Value?.Letterboxd,

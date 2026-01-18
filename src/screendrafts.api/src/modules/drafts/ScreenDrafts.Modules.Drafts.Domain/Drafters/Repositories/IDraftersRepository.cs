@@ -15,4 +15,6 @@ public interface IDraftersRepository : IRepository
   Task<DrafterTeam?> GetByIdAsync(DrafterTeamId drafterTeamId, CancellationToken cancellationToken);
 
   Task<List<Drafter>> GetAll(CancellationToken cancellationToken = default);
+
+  Task<bool> ExistsForPersonAsync(string personPublicId, CancellationToken cancellationToken);
 }

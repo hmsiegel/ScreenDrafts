@@ -1,9 +1,11 @@
-﻿namespace ScreenDrafts.Common.Features.Mediation.Behaviors;
+﻿using IBaseRequest = ScreenDrafts.Common.Features.Abstractions.Messaging.IBaseRequest;
+
+namespace ScreenDrafts.Common.Features.Mediation.Behaviors;
 
 internal sealed class ValidationPipelineBehavior<TRequest, TResponse>(
   IEnumerable<IValidator<TRequest>> validators)
   : IPipelineBehavior<TRequest, TResponse>
-  where TRequest : IBaseCommand
+  where TRequest : IBaseRequest
 {
   private readonly IEnumerable<IValidator<TRequest>> _validators = validators;
 

@@ -1,7 +1,4 @@
-﻿using ScreenDrafts.Common.Infrastructure.Authentication;
-using ScreenDrafts.Modules.Users.PublicApi;
-
-namespace ScreenDrafts.Modules.Drafts.Features.Campaigns.List;
+﻿namespace ScreenDrafts.Modules.Drafts.Features.Campaigns.List;
 
 internal sealed class Endpoint(IUsersApi usersApi) : ScreenDraftsEndpoint<Request, CampaignCollectionResponse>
 {
@@ -18,20 +15,13 @@ internal sealed class Endpoint(IUsersApi usersApi) : ScreenDraftsEndpoint<Reques
       .Produces(StatusCodes.Status401Unauthorized)
       .Produces(StatusCodes.Status403Forbidden);
     });
-    Permissions(Features.Permissions.CampaignList);
+    Policies(Features.Permissions.CampaignList);
   }
 
   public override async Task HandleAsync(Request req, CancellationToken ct)
   {
-    var user = await _usersApi.GetUserByIdAsync(User.GetUserId(), ct);
+    var userRoles = await _usersApi.GetUserRolesAsync(User.GetUserId(), ct);
 
-    if (user is null)
-    {
-      await Send.ErrorsAsync(StatusCodes.Status403Forbidden, ct);
-      return;
-    }
-
-    var userRoles = await _usersApi.GetUserRolesAsync(user.UserId, ct);
     var isAdmin = userRoles.Contains(Features.Roles.Admin, StringComparer.OrdinalIgnoreCase) || 
       userRoles.Contains(Features.Roles.SuperAdmin, StringComparer.OrdinalIgnoreCase);
 

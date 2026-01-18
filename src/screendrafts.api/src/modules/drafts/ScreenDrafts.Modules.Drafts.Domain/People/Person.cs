@@ -3,6 +3,7 @@
 public sealed class Person : AggrgateRoot<PersonId, Guid>
 {
   private Person(
+    string publicId,
     string firstName,
     string lastName,
     PersonId? id = null,
@@ -11,9 +12,12 @@ public sealed class Person : AggrgateRoot<PersonId, Guid>
     : base(id ?? PersonId.CreateUnique())
   {
     UserId = userId;
-    FirstName = Guard.Against.NullOrWhiteSpace(firstName);
-    LastName = Guard.Against.NullOrWhiteSpace(lastName);
-    DisplayName = displayName ?? FullName;
+    FirstName = firstName;
+    LastName = lastName;
+    PublicId = publicId;
+    DisplayName = string.IsNullOrWhiteSpace(displayName)
+      ? FullName
+      : displayName;
   }
 
   private Person()
@@ -22,11 +26,13 @@ public sealed class Person : AggrgateRoot<PersonId, Guid>
 
   public Guid? UserId { get; private set; }
 
+  public string PublicId { get; private set; } = default!;
+
   public string FirstName { get; private set; } = default!;
 
   public string LastName { get; private set; } = default!;
 
-  public string? DisplayName { get; set; }
+  public string? DisplayName { get; private set; }
 
   public Drafter? DrafterProfile { get; private set; } = default!;
   public Host? HostProfile { get; private set; } = default!;
@@ -34,6 +40,7 @@ public sealed class Person : AggrgateRoot<PersonId, Guid>
   public string FullName => $"{FirstName} {LastName}".Trim();
 
   public static Result<Person> Create(
+    string publicId,
     string firstName,
     string lastName,
     Guid? userId = null,
@@ -50,12 +57,13 @@ public sealed class Person : AggrgateRoot<PersonId, Guid>
     }
     var person = new Person(
       id: id is not null ? PersonId.Create(id.Value) : null,
+      publicId: publicId,
       userId: userId,
       firstName: firstName,
       lastName: lastName,
       displayName: displayName);
 
-    person.Raise(new PersonCreatedDomainEvent(person.Id.Value));
+    person.Raise(new PersonCreatedDomainEvent(person.Id.Value, publicId));
 
     return person;
   }
@@ -74,6 +82,40 @@ public sealed class Person : AggrgateRoot<PersonId, Guid>
 
     UserId = userId;
 
+    return Result.Success();
+  }
+
+  public Result Update(
+    string firstName,
+    string lastName,
+    string? displayName = null)
+  {
+    if (string.IsNullOrWhiteSpace(firstName))
+    {
+      return Result.Failure(PersonErrors.InvalidFirstName);
+    }
+
+    if (string.IsNullOrWhiteSpace(lastName))
+    {
+      return Result.Failure(PersonErrors.InvalidLastName);
+    }
+
+    var normalizdDisplayName =
+      string.IsNullOrWhiteSpace(displayName)
+      ? $"{firstName} {lastName}".Trim()
+      : displayName;
+
+    if (FirstName == firstName &&
+      LastName == lastName &&
+      DisplayName == normalizdDisplayName)
+    {
+      return Result.Success();
+    }
+
+    FirstName = firstName;
+    LastName = lastName;
+    DisplayName = normalizdDisplayName;
+    Raise(new PersonUpdatedDomainEvent(Id.Value));
     return Result.Success();
   }
 }

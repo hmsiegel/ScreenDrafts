@@ -40,7 +40,7 @@ internal sealed class ProcessOutboxJob(
         IEnumerable<IDomainEventHandler> domainEventHandlers = DomainEventHandlersFactory.GetHandlers(
             domainEvent.GetType(),
             scope.ServiceProvider,
-            Application.AssemblyReference.Assembly);
+            Features.AssemblyReference.Assembly);
 
         foreach (IDomainEventHandler domainEventHandler in domainEventHandlers)
         {

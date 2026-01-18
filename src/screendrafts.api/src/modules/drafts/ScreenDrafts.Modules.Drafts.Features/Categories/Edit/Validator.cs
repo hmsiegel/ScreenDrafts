@@ -5,7 +5,9 @@ internal sealed class Validator : AbstractValidator<Command>
   public Validator()
   {
     RuleFor(x => x.PublicId)
-      .NotEmpty().WithMessage("Campaign ID must be provided.");
+      .NotEmpty()
+      .Must(publicId => PublicIdGuards.IsValidWithPrefix(publicId, PublicIdPrefixes.Category))
+      .WithMessage("Campaign ID must be provided.");
 
     RuleFor(x => x.Name)
       .MaximumLength(100).WithMessage("Campaign name must not exceed 100 characters.")

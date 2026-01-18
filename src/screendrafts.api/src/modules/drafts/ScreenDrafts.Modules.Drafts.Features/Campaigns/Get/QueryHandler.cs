@@ -1,4 +1,7 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.Campaigns.Get;
+﻿using ScreenDrafts.Modules.Drafts.Features.Series;
+using ScreenDrafts.Modules.Drafts.Features.Series.Get;
+
+namespace ScreenDrafts.Modules.Drafts.Features.Campaigns.Get;
 
 internal sealed class QueryHandler(IDbConnectionFactory dbConnectionFactory) : IQueryHandler<Query, CampaignResponse>
 {

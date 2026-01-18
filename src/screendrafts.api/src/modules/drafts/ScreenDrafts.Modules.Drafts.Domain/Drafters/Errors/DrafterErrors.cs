@@ -22,6 +22,11 @@ public static class DrafterErrors
       "Drafters.NotFound",
       $"Unable to find a drafter with Id {drafterId}.");
 
+  public static SDError NotFound(string publicId) =>
+    SDError.NotFound(
+      "Drafters.NotFound",
+      $"Unable to find a drafter with Id {publicId}.");
+
   public static SDError VetoNotFound(Guid vetoId) =>
     SDError.NotFound(
       "Drafters.VetoNotFound",
@@ -52,6 +57,12 @@ public static class DrafterErrors
       "Drafters.AlreadyAdded",
       $"Drafter with ID {drafterId} already added to the team.");
 
+  public static SDError AlreadyExistsForPerson(string personId) =>
+    SDError.Conflict(
+      "Drafters.AlreadyExistsForPerson",
+      $"A drafter already exists for person with ID {personId}.");
+
+
   public static readonly SDError NotEnoughDrafters =
     SDError.Failure(
       "Drafters.NotEnoughDrafters",
@@ -61,4 +72,9 @@ public static class DrafterErrors
     SDError.Failure(
       "Drafters.InvalidBlessingRequest",
       "Invalid blessing request. You must specity either a drafter or a drafter team, but not both.");
+
+  public static readonly SDError AlreadyRetired =
+    SDError.Conflict(
+      "Drafters.AlreadyRetired",
+      "The drafter is already retired.");
 }

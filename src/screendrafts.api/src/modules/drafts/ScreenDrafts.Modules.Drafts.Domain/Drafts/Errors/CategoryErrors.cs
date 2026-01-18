@@ -48,4 +48,10 @@ public static class CategoryErrors
     SDError.Conflict(
       "Categories.CategoryInUse",
       $"Category with id {categoryId} is still in use by one or more drafts and cannot be removed.");
+
+  public static SDError DeletionFailed(string publicId) =>
+    SDError.Problem(
+      "Categories.DeletionFailed",
+      $"Deletion of category with public id {publicId} failed.");
+
 }

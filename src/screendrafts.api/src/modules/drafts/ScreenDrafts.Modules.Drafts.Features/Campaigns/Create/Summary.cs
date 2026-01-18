@@ -1,4 +1,5 @@
 ﻿using ScreenDrafts.Common.Features.Http.Responses;
+using ScreenDrafts.Modules.Drafts.Features.Series.Create;
 
 namespace ScreenDrafts.Modules.Drafts.Features.Campaigns.Create;
 

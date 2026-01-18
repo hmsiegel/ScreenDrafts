@@ -91,9 +91,6 @@ public static partial class DraftErrors
     "Drafts.CannotEditADraftAfterItHasBeenStarted",
     "Cannot edit a draft after it has been started.");
 
-  public static readonly SDError SeriesNameIsRequired = SDError.Problem(
-    "Drafts.SeriesNameIsRequired",
-    "Series name is required.");
 
   public static readonly SDError DraftIsRequired = SDError.Problem(
     "Drafts.DraftIsRequired",
@@ -107,21 +104,6 @@ public static partial class DraftErrors
     SDError.Conflict(
       "Drafts.SeriesAlreadyLinked",
       $"Series with id {seriesId} is already linked to the draft.");
-
-  public static SDError SeriesNotFound(Guid seriesId) =>
-    SDError.NotFound(
-      "Drafts.SeriesNotFound",
-      $"Series with id {seriesId} was not found.");
-
-  public static SDError CampaignNotFound(Guid campaignId) =>
-    SDError.NotFound(
-      "Drafts.CampaignNotFound",
-      $"Campaign with id {campaignId} was not found.");
-
-  public static SDError CampaignNotFound(string publicId) =>
-    SDError.NotFound(
-      "Drafts.CampaignNotFound",
-      $"Campaign with public id {publicId} was not found.");
 
   public static SDError MovieAlreadyPickedInDraft(Movie movie)
   {

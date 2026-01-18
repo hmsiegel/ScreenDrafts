@@ -22,7 +22,7 @@ internal sealed class ListUpcomingDrafts(ISender sender, IUsersApi usersApi) : E
 
   public override async Task HandleAsync(CancellationToken ct)
   {
-    var user = await _usersApi.GetUserByIdAsync(User.GetUserId(), ct);
+    var user = await _usersApi.GetUserByPublicId(User.GetUserId(), ct);
 
     if (user is null)
     {

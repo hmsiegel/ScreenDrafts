@@ -9,7 +9,8 @@ public enum DraftTypeMask
   Mega = 1 << DraftTypeValue.Mega,
   Super = 1 << DraftTypeValue.Super,
   MiniSuper = 1 << DraftTypeValue.MiniSuper,
-  All = Standard | MiniMega | Mega | Super | MiniSuper
+  SpeedDraft = 1 << DraftTypeValue.SpeedDraft,
+  All = Standard | MiniMega | Mega | Super | MiniSuper | SpeedDraft
 }
 
 internal static class DraftTypeValue
@@ -19,4 +20,5 @@ internal static class DraftTypeValue
   public const int Mega = 2;
   public const int Super = 3;
   public const int MiniSuper = 4;
+  public const int SpeedDraft = 5;
 }

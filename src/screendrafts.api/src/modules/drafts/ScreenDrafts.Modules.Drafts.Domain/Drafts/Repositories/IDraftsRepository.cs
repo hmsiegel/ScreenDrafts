@@ -1,18 +1,10 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.Repositories;
 
-public interface IDraftsRepository : IRepository
+public interface IDraftsRepository : IRepository<Draft, DraftId>
 {
-  void Add(Draft draft);
-
-  void Update(Draft draft);
-
   void AddMovie(Movie movie);
 
-  void Delete(Draft draft);
-
   void AddCommissionerOverride(CommissionerOverride commissionerOverride);
-
-  Task<Draft?> GetByIdAsync(DraftId draftId, CancellationToken cancellationToken);
 
   Task<Movie?> GetMovieByIdAsync(Guid movieId, CancellationToken cancellationToken);
 
@@ -28,10 +20,6 @@ public interface IDraftsRepository : IRepository
   Task<Draft?> GetNextDraftAsync(int? episodeNumber, CancellationToken cancellationToken);
 
   Task<Draft?> GetByDraftPartIdAsync(DraftPartId draftPartId, CancellationToken cancellationToken);
-
-  Task<Series?> GetSeriesByIdAsync(SeriesId seriesId, CancellationToken cancellationToken);
-
-  Task<bool> SeriesExistsAsync(string name, CancellationToken cancellationToken);
 
   Task<DraftPart?> GetDraftPartByIdAsync(DraftPartId draftPartId, CancellationToken cancellationToken);
 

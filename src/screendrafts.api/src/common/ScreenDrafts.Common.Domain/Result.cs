@@ -97,6 +97,10 @@ public class Result
     return Success((result1.Value, result2.Value));
   }
 
+  public static Result Failure(object alreadyRetired)
+  {
+    throw new NotImplementedException();
+  }
 }
 
 public class Result<TValue> : Result

@@ -218,6 +218,10 @@ dotnet_diagnostic.CA1707.severity = none
 
 # CA1515: Override method should call base method
 dotnet_diagnostic.CA1515.severity = none
+
+# CA1308: Normalize strings to uppercase
+dotnet_diagnostic.CA1308.severity = none
+
 csharp_style_prefer_null_check_over_type_check = true:suggestion
 csharp_style_prefer_index_operator = true:suggestion
 csharp_style_prefer_local_over_anonymous_function = true:suggestion

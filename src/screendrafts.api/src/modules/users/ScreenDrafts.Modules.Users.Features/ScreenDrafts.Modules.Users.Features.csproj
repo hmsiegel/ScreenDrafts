@@ -1,0 +1,11 @@
+﻿
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\common\ScreenDrafts.Common.Infrastructure\ScreenDrafts.Common.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\..\common\ScreenDrafts.Common.Features\ScreenDrafts.Common.Features.csproj" />
+    <ProjectReference Include="..\..\drafts\ScreenDrafts.Modules.Drafts.IntegrationEvents\ScreenDrafts.Modules.Drafts.IntegrationEvents.csproj" />
+    <ProjectReference Include="..\ScreenDrafts.Modules.Users.Domain\ScreenDrafts.Modules.Users.Domain.csproj" />
+    <ProjectReference Include="..\ScreenDrafts.Modules.Users.IntegrationEvents\ScreenDrafts.Modules.Users.IntegrationEvents.csproj" />
+  </ItemGroup>
+</Project>
+

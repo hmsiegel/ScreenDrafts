@@ -1,4 +1,7 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.Campaigns.List;
+﻿using ScreenDrafts.Modules.Drafts.Features.Series;
+using ScreenDrafts.Modules.Drafts.Features.Series.List;
+
+namespace ScreenDrafts.Modules.Drafts.Features.Campaigns.List;
 
 internal sealed class QueryHandler(IDbConnectionFactory dbConnectionFactory)
   : IQueryHandler<Query, CampaignCollectionResponse>
@@ -16,7 +19,8 @@ internal sealed class QueryHandler(IDbConnectionFactory dbConnectionFactory)
         SELECT
           c.publicId AS {nameof(CampaignResponse.PublicId)},
           c.name AS {nameof(CampaignResponse.Name)},
-          c.slug AS {nameof(CampaignResponse.Slug)}
+          c.slug AS {nameof(CampaignResponse.Slug)},
+          c.is_deleted AS {nameof(CampaignResponse.IsDeleted)}
         FROM
           drafts.campaigns c
         WHERE
@@ -26,7 +30,10 @@ internal sealed class QueryHandler(IDbConnectionFactory dbConnectionFactory)
       """;
 
     var campaigns = (await connection.QueryAsync<CampaignResponse>(
-      new CommandDefinition(sql, cancellationToken: cancellationToken)
+      new CommandDefinition(
+        sql,
+        parameters: new { request.IncludeDeleted },
+        cancellationToken: cancellationToken)
     )).ToList();
 
     var response = new CampaignCollectionResponse(campaigns);

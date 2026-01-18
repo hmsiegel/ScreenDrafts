@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Common.Features.Abstractions.Messaging;
-
-namespace ScreenDrafts.Modules.Drafts.Features.Behaviors;
+﻿namespace ScreenDrafts.Modules.Drafts.Features.Behaviors;
 
 public sealed class DraftsUnitOfWorkBehavior<TRequest, TResponse>
   (IUnitOfWork unitOfWork)

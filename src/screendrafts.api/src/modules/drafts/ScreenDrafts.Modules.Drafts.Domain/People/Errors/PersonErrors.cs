@@ -27,6 +27,11 @@ public static class PersonErrors
       "PersonError.NotFound",
       $"Unable to find a person with user ID {userId}.");
 
+  public static SDError NotFound(string publicId) =>
+    SDError.NotFound(
+      "PersonError.NotFound",
+      $"Unable to find a person with public ID {publicId}.");
+
   public static SDError UserAlreadyAssigned(Guid userId) =>
     SDError.Conflict(
       "PersonError.UserAlreadyAssigned",

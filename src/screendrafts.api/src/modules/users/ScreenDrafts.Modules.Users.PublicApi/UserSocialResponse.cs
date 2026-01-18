@@ -1,7 +1,7 @@
 ﻿namespace ScreenDrafts.Modules.Users.PublicApi;
 
 public sealed record UserSocialResponse(
-  Guid UserId,
+  string PublicId,
   string? Twitter = null,
   string? Instagram = null,
   string? Letterboxd = null,

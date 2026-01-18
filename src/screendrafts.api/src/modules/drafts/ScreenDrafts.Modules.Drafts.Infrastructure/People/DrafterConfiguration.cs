@@ -16,14 +16,18 @@ internal sealed class DrafterConfiguration : IEntityTypeConfiguration<Drafter>
 
     builder.HasOne(d => d.Person)
       .WithOne(p => p.DrafterProfile)
-      .HasForeignKey<Drafter>(d => d.PersonId);
+      .HasForeignKey<Drafter>(d => d.PersonId)
+      .IsRequired()
+      .OnDelete(DeleteBehavior.Restrict);
 
-    builder.Property(d => d.ReadableId)
+    builder.HasIndex(d => d.PersonId)
+      .IsUnique();
+
+    builder.HasIndex(d => d.PublicId)
+      .IsUnique();
+
+    builder.Property(d => d.PublicId)
       .ValueGeneratedOnAdd();
-
-    builder.HasMany(d => d.Picks)
-      .WithOne(p => p.Drafter)
-      .HasForeignKey(d => d.DrafterId);
 
     builder.HasOne(d => d.RolloverVeto)
       .WithOne(rv => rv.Drafter)

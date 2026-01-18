@@ -1,5 +1,4 @@
-﻿
-namespace ScreenDrafts.Modules.Drafts.Infrastructure.Campaigns;
+﻿namespace ScreenDrafts.Modules.Drafts.Infrastructure.Campaigns;
 
 internal sealed class CampaignsRepository(DraftsDbContext dbContext) : ICampaignsRepository
 {

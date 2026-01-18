@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
-    <ProjectReference Include="..\..\..\common\ScreenDrafts.Common.Application\ScreenDrafts.Common.Application.csproj" />
+    <ProjectReference Include="..\..\..\common\ScreenDrafts.Common.Features\ScreenDrafts.Common.Features.csproj" />
   </ItemGroup>
 </Project>

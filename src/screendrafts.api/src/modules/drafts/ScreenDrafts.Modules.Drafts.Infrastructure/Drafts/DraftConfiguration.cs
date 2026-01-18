@@ -16,6 +16,10 @@ internal sealed class DraftConfiguration : IEntityTypeConfiguration<Draft>
     builder.Property(d => d.PublicId)
           .ValueGeneratedOnAdd();
 
+    builder.HasIndex(d => d.PublicId)
+          .IsUnique()
+          .HasDatabaseName("ix_drafts_public_id");
+
     builder.Property(d => d.Title)
           .HasMaxLength(Title.MaxLength)
           .HasConversion(

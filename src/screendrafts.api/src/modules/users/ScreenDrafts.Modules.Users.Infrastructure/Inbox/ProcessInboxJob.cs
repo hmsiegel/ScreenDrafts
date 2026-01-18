@@ -39,7 +39,7 @@ internal sealed class ProcessInboxJob(
         IEnumerable<IIntegrationEventHandler> integrationEventHandlers = IntegrationEventHandlersFactory.GetHandlers(
             integrationEvent.GetType(),
             scope.ServiceProvider,
-           Presentation.AssemblyReference.Assembly);
+           Features.AssemblyReference.Assembly);
 
         foreach (IIntegrationEventHandler integrationEventHandler in integrationEventHandlers)
         {

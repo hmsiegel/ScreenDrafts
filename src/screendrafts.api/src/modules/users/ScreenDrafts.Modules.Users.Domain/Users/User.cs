@@ -9,7 +9,9 @@ public sealed class User : AggrgateRoot<UserId, Guid>
     FirstName firstName,
     LastName lastName,
     string identityId,
+    string publicId,
     Guid? personId,
+    string? personPublicId,
     string? middleName = null)
     : base(id)
   {
@@ -19,13 +21,16 @@ public sealed class User : AggrgateRoot<UserId, Guid>
     MiddleName = middleName;
     LastName = Guard.Against.Null(lastName);
     IdentityId = identityId;
+    PublicId = publicId;
     PersonId = personId;
+    PersonPublicId = personPublicId;
   }
 
   private User()
   {
   }
 
+  public string PublicId { get; private set; } = default!;
   public Email Email { get; private set; } = default!;
 
   public FirstName FirstName { get; private set; } = default!;
@@ -37,6 +42,8 @@ public sealed class User : AggrgateRoot<UserId, Guid>
   public string IdentityId { get; private set; } = default!;
 
   public Guid? PersonId { get; private set; } = default!;
+
+  public string? PersonPublicId { get; private set; } = default!;
 
   public string? ProfilePicturePath { get; private set; } = default!;
 
@@ -55,9 +62,11 @@ public sealed class User : AggrgateRoot<UserId, Guid>
     FirstName firstName,
     LastName lastName,
     string identityId,
+    string publicId,
     string? middleName = null,
     UserId? id = null,
-    Guid? personId = null)
+    Guid? personId = null,
+    string? personPublicId = null)
   {
     var user = new User(
       email: email,
@@ -66,11 +75,13 @@ public sealed class User : AggrgateRoot<UserId, Guid>
       middleName: middleName,
       identityId: identityId,
       personId: personId,
+      personPublicId: personPublicId,
+      publicId: publicId,
       id: id ?? UserId.CreateUnique());
 
     user._roles.Add(Role.Guest);
 
-    user.Raise(new UserRegisteredDomainEvent(user.Id.Value));
+    user.Raise(new UserRegisteredDomainEvent(id!.Value));
 
     return user;
   }
@@ -139,4 +150,18 @@ public sealed class User : AggrgateRoot<UserId, Guid>
   }
 
   public void ClearRoles() => _roles.Clear();
+
+  public void LinkPerson(Guid personId, string personPublicId)
+  {
+    if (PersonId == personId &&
+      PersonPublicId == personPublicId)
+    {
+      return;
+    }
+    PersonId = personId;
+    PersonPublicId = personPublicId;
+
+    Raise(new UserLinkedToPersonDomainEvent(Id.Value, personId, personPublicId));
+  }
 }
+

@@ -19,12 +19,17 @@ internal sealed class QueryHandler(IDbConnectionFactory dbConnectionFactory)
           c.description AS {nameof(CategoryResponse.Description)}
         FROM
           drafts.categories c
+        WHERE
+          (c.is_deleted = FALSE OR @IncludeDeleted = TRUE)
         ORDER BY
           c.name ASC
       """;
 
     var categories = (await connection.QueryAsync<CategoryResponse>(
-      new CommandDefinition(sql, cancellationToken: cancellationToken)
+      new CommandDefinition(
+        sql,
+        new { request.IncludeDeleted },
+        cancellationToken: cancellationToken)
     )).ToList();
 
     var response = new CategoryCollectionResponse(categories);

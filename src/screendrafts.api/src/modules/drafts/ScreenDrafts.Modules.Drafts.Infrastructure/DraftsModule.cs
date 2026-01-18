@@ -1,7 +1,4 @@
-﻿using ScreenDrafts.Common.Features.Abstractions.EventBus;
-using ScreenDrafts.Common.Features.Abstractions.Messaging;
-
-namespace ScreenDrafts.Modules.Drafts.Infrastructure;
+﻿namespace ScreenDrafts.Modules.Drafts.Infrastructure;
 
 public static class DraftsModule
 {
@@ -59,7 +56,7 @@ public static class DraftsModule
 
   private static void AddDomainEventHandlers(this IServiceCollection services)
   {
-    Type[] domainEventHandlers = [.. Application.AssemblyReference.Assembly
+    Type[] domainEventHandlers = [.. Features.AssemblyReference.Assembly
         .GetTypes()
         .Where(t => t.IsAssignableTo(typeof(IDomainEventHandler)))];
 
@@ -81,7 +78,7 @@ public static class DraftsModule
 
   private static void AddIntegrationEventHandlers(this IServiceCollection services)
   {
-    Type[] integrationEventHandlers = [.. Presentation.AssemblyReference.Assembly
+    Type[] integrationEventHandlers = [.. Features.AssemblyReference.Assembly
         .GetTypes()
         .Where(t => t.IsAssignableTo(typeof(IIntegrationEventHandler)))];
 

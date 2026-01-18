@@ -11,4 +11,6 @@ public interface IPersonRepository : IRepository
   Task<Person?> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken);
 
   Task<List<Person>> GetAllAsync(CancellationToken cancellationToken = default);
+
+  Task<Person?> GetByPublicIdAsync(string publicId, CancellationToken cancellationToken);
 }

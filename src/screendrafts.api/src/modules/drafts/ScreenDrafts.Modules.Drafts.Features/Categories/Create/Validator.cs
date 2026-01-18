@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Features.Categories.Create;
 
-internal sealed class Validator : AbstractValidator<Request>
+internal sealed class Validator : AbstractValidator<Command>
 {
   public Validator()
   {
