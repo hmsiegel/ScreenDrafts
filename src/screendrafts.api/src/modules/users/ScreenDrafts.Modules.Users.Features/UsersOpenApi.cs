@@ -5,13 +5,16 @@ internal static class UsersOpenApi
   public static class Tags
   {
     public const string Users = "Users";
+    public const string Admin = "Admin";
   }
 
   public static class  Names
   {
+    // Users
     public const string Users_RegisterUser = "Users.RegisterUser";
     public const string Users_GetUserById = "Users.GetUserById";
     public const string Users_UpdateUserProfile = "Users.UpdateUserProfile";
     public const string Users_GetUserProfile = "Users.GetUserProfile";
+    public const string Users_GetUsersProfiles = "Users.GetUsersProfiles";
   }
 }

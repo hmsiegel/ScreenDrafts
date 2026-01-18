@@ -2,7 +2,9 @@
 
 internal static class UserRoutes
 {
-  public const string Register = "/users/register";
-  public const string GetById = "/users/{userId:string}";
-  public const string Profile = "/users/profile";
+  public const string Base = "/users";
+  public const string Register = Base + "/register";
+  public const string GetById = Base + "/{userId:string}";
+  public const string Profile = Base + "/profile";
+  public const string PublicProfiles = Base + "/public-profiles/by-person-ids";
 }
