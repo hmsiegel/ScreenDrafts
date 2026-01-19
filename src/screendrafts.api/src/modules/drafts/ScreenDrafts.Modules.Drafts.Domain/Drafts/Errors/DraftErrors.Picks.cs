@@ -59,11 +59,6 @@ public static partial class DraftErrors
     "Drafts.PicksNotFound",
     "No draft picks were found.");
 
-  public static SDError MovieAlreadyExists(string imdbId) =>
-    SDError.Conflict(
-      "Drafts.MovieAlreadyExists",
-      $"Movie with IMDB id {imdbId} already exists.");
-
   public static SDError PickNotFound(Guid id) =>
     SDError.NotFound(
       "Drafts.PickNotFound",

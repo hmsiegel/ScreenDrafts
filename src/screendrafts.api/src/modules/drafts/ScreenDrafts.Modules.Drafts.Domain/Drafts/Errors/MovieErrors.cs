@@ -11,4 +11,9 @@ public static class MovieErrors
     SDError.Failure(
       "MovieErrors.InvalidImdbId",
       "The IMDb ID is invalid.");
+
+  public static SDError MovieAlreadyExists(string imdbId) =>
+    SDError.Conflict(
+      "Drafts.MovieAlreadyExists",
+      $"Movie with IMDB id {imdbId} already exists.");
 }

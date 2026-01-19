@@ -1,7 +1,5 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.Repositories;
-public interface IHostsRepository : IRepository
+public interface IHostsRepository : IRepository<Host, HostId>
 {
-  void AddHost(Host host);
-
-  Task<Host?> GetHostByIdAsync(HostId hostId, CancellationToken cancellationToken);
+  Task<bool> HostExistsAsync(string personPublicId, CancellationToken cancellationToken);
 }

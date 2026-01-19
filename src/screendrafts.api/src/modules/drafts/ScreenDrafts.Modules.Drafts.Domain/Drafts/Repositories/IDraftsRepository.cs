@@ -2,15 +2,12 @@
 
 public interface IDraftsRepository : IRepository<Draft, DraftId>
 {
-  void AddMovie(Movie movie);
 
   void AddCommissionerOverride(CommissionerOverride commissionerOverride);
 
   Task<Movie?> GetMovieByIdAsync(Guid movieId, CancellationToken cancellationToken);
 
   Task<Draft?> GetDraftWithDetailsAsync(DraftId draftId, CancellationToken cancellationToken);
-
-  Task<bool> MovieExistsAsync(string imdbId, CancellationToken cancellationToken);
 
   Task<List<CommissionerOverride?>> GetCommissionerOverridesByDraftIdAsync(
     DraftId draftId, CancellationToken cancellationToken);

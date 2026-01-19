@@ -25,4 +25,9 @@ public static class HostErrors
     SDError.Failure(
       "HostError.UserIdCannotBeEmpty",
       "User ID cannot be empty.");
+
+  public static SDError AlreadyExists(string personPublicId) =>
+    SDError.Failure(
+      "HostError.AlreadyExists",
+      $"Host with person ID {personPublicId} already exists.");
 }

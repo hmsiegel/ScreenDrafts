@@ -69,5 +69,11 @@ internal static class DraftsOpenApi
     public const string Drafters_RetireDrafter = "Drafters.RetireDrafter";
     public const string Drafters_GetDrafterById = "Drafters.GetDrafterById";
     public const string Drafters_ListDrafters = "Drafters.ListDrafters";
+
+    // Hosts
+    public const string Hosts_CreateHost = "Hosts.CreateHost";
+    public const string Hosts_RetireHost = "Hosts.RetireHost";
+    public const string Hosts_GetHostById = "Hosts.GetHostById";
+    public const string Hosts_ListHosts = "Hosts.ListHosts";
   }
 }
