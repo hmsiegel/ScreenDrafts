@@ -31,4 +31,8 @@ internal sealed class SeriesRepository(DraftsDbContext dbContext) : ISeriesRepos
     return _dbContext.Series.FirstOrDefaultAsync(s => s.Id == id, cancellationToken);
   }
 
+  public Task<Series?> GetByPublicIdAsync(string publicId, CancellationToken cancellationToken = default)
+  {
+    return _dbContext.Series.FirstOrDefaultAsync(s => s.PublicId == publicId, cancellationToken);
+  }
 }

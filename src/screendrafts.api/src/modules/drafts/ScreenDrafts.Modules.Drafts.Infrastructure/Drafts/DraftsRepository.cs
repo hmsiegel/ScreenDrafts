@@ -22,9 +22,9 @@ internal sealed class DraftsRepository(DraftsDbContext dbContext) : IDraftsRepos
     _dbContext.Drafts.Update(draft);
   }
 
-  public void AddMovie(Movie movie)
+  public void Delete(Draft draft)
   {
-    _dbContext.Movies.Add(movie);
+    _dbContext.Drafts.Remove(draft);
   }
 
   public void AddCommissionerOverride(CommissionerOverride commissionerOverride)
@@ -40,27 +40,9 @@ internal sealed class DraftsRepository(DraftsDbContext dbContext) : IDraftsRepos
     return draft;
   }
 
-  public async Task<Movie?> GetMovieByIdAsync(Guid movieId, CancellationToken cancellationToken)
-  {
-    var movie = await _dbContext.Movies
-      .FirstOrDefaultAsync(m => m.Id == movieId, cancellationToken);
-
-    return movie;
-  }
-
   public async Task<Draft?> GetDraftWithDetailsAsync(DraftId draftId, CancellationToken cancellationToken)
   {
     throw new NotImplementedException();
-  }
-
-  public Task<bool> MovieExistsAsync(string imdbId, CancellationToken cancellationToken)
-  {
-    return _dbContext.Movies.AnyAsync(m => m.ImdbId == imdbId, cancellationToken);
-  }
-
-  public void Delete(Draft draft)
-  {
-    _dbContext.Drafts.Remove(draft);
   }
 
   public Task<List<CommissionerOverride?>> GetCommissionerOverridesByDraftIdAsync(DraftId draftId, CancellationToken cancellationToken)
@@ -110,5 +92,20 @@ internal sealed class DraftsRepository(DraftsDbContext dbContext) : IDraftsRepos
   public Task<bool> ExistsAsync(DraftId id, CancellationToken cancellationToken)
   {
     throw new NotImplementedException();
+  }
+
+  public async Task<Draft?> GetDraftByPublicIdWithPartsAsNoTrackingAsync(string publicId, CancellationToken cancellationToken)
+  {
+    return await _dbContext.Drafts
+      .AsNoTracking()
+      .Include(d => d.Parts)
+      .FirstOrDefaultAsync(d => d.PublicId == publicId, cancellationToken);
+  }
+
+  public async Task<Draft?> GetDraftByPublicIdWithPartsAsync(string publicId, CancellationToken cancellationToken)
+  {
+    return await _dbContext.Drafts
+      .Include(d => d.Parts)
+      .FirstOrDefaultAsync(d => d.PublicId == publicId, cancellationToken);
   }
 }

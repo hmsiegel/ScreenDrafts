@@ -1,7 +1,4 @@
-﻿using ScreenDrafts.Common.Features.Abstractions.Services;
-using ScreenDrafts.Modules.Drafts.Features.Series.Create;
-
-namespace ScreenDrafts.Modules.Drafts.Features.Campaigns.Create;
+﻿namespace ScreenDrafts.Modules.Drafts.Features.Campaigns.Create;
 
 internal sealed class CommandHandler(ICampaignsRepository campaignRepository, IPublicIdGenerator publicIdGenerator)
   : Common.Features.Abstractions.Messaging.ICommandHandler<Command, string>

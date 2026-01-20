@@ -6,7 +6,7 @@ public sealed partial class Draft
   /// </summary>
   /// <param name="partId">The part Id.</param>
   /// <returns>A result object.</returns>
-  public Result CompletePart(DraftPartId partId)
+  public Result CompletePart(DraftPartId partId, DateTime utcNow)
   {
     ArgumentNullException.ThrowIfNull(partId);
 
@@ -24,7 +24,7 @@ public sealed partial class Draft
       return result;
     }
 
-    DeriveDraftStatus();
+    DeriveDraftStatus(utcNow);
 
     UpdatedAtUtc = DateTime.UtcNow;
     Raise(new DraftPartCompletedDomainEvent(
@@ -39,7 +39,7 @@ public sealed partial class Draft
     return Result.Success();
   }
 
-  public Result StartPart(DraftPartId partId)
+  public Result StartPart(DraftPartId partId, DateTime utcNow)
   {
     ArgumentNullException.ThrowIfNull(partId);
     var part = FindPart(partId);
@@ -52,12 +52,26 @@ public sealed partial class Draft
     {
       return result;
     }
-    DeriveDraftStatus();
+    DeriveDraftStatus(utcNow);
     UpdatedAtUtc = DateTime.UtcNow;
     Raise(new DraftPartStartedDomainEvent(
       draftId: Id.Value,
       draftPartId: part.Id.Value,
       index: part.PartIndex));
     return Result.Success();
+  }
+
+  public Result Continue(DateTime utcNow)
+  {
+    var next = _parts
+      .Where(p => p.IsScheduled(utcNow))
+      .OrderBy(p => p.PartIndex)
+      .FirstOrDefault();
+
+    if (next is null)
+    {
+      return Result.Failure(DraftErrors.NoScheduledDraftPartToContinue);
+    }
+    return StartPart(next.Id, utcNow);
   }
 }

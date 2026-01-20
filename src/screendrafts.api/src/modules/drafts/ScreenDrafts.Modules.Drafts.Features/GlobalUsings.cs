@@ -17,6 +17,7 @@ global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.Extensions.Logging;
 
 global using ScreenDrafts.Common.Domain;
+global using ScreenDrafts.Common.Features.Abstractions.Clock;
 global using ScreenDrafts.Common.Features.Abstractions.Data;
 global using ScreenDrafts.Common.Features.Abstractions.EventBus;
 global using ScreenDrafts.Common.Features.Abstractions.Logging;
@@ -34,6 +35,7 @@ global using ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafts.Enums;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafts.Errors;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafts.Helpers;
+global using ScreenDrafts.Modules.Drafts.Domain.Drafts.Lifecycles;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafts.Repositories;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafts.ValueObjects;
 global using ScreenDrafts.Modules.Drafts.Domain.People;

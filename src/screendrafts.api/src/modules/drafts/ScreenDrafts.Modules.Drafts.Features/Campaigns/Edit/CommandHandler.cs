@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Modules.Drafts.Features.Series.Edit;
-
-namespace ScreenDrafts.Modules.Drafts.Features.Campaigns.Edit;
+﻿namespace ScreenDrafts.Modules.Drafts.Features.Campaigns.Edit;
 
 internal sealed class CommandHandler(ICampaignsRepository campaignRepository)
   : Common.Features.Abstractions.Messaging.ICommandHandler<Command>

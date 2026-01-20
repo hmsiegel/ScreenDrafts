@@ -1,5 +1,7 @@
 ﻿namespace ScreenDrafts.Modules.Movies.Application.Movies.Commands.AddMovie;
 
+using ScreenDrafts.Common.Features.Abstractions.EventBus;
+
 internal sealed class MovieAddedDomainEventHandler(ISender sender, IEventBus eventBus)
   : DomainEventHandler<MovieCreatedDomainEvent>
 {

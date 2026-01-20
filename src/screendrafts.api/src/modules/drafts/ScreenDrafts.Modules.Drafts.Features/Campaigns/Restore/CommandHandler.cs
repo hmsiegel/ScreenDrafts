@@ -1,7 +1,4 @@
-﻿using ScreenDrafts.Modules.Drafts.Features.Categories.Restore;
-using ScreenDrafts.Modules.Drafts.Features.Series.Restore;
-
-namespace ScreenDrafts.Modules.Drafts.Features.Campaigns.Restore;
+﻿namespace ScreenDrafts.Modules.Drafts.Features.Campaigns.Restore;
 
 internal sealed class CommandHandler(ICampaignsRepository campaignsRepository)
   : Common.Features.Abstractions.Messaging.ICommandHandler<Command>

@@ -139,8 +139,24 @@ public static partial class DraftErrors
       "Drafts.NoRemainingCommunityPicks",
       "No remaining community picks are available in this draft part.");
 
+  public static readonly SDError NoScheduledDraftPartToContinue =
+    SDError.Problem(
+      "Drafts.NoScheduledDraftPartToContinue",
+      "There is no scheduled draft part to continue at this time.");
+
+  public static readonly SDError InvalidDraftPartStatusAction =
+    SDError.Problem(
+      "Drafts.InvalidDraftPartStatusAction",
+      "The requested draft part status action is invalid.");
+
   public static SDError CampaignDoesNotBelongToThisDraft(string publicId) =>
     SDError.Problem(
       "Drafts.CampaignDoesNotBelongToThisDraft",
       $"Campaign with public id {publicId} does not belong to this draft.");
+
+  public static SDError DraftPartNotFoundByIndex(string draftPublicId, int partIndex) =>
+    SDError.NotFound(
+      "Drafts.DraftPartNotFoundByIndex",
+      $"Draft part with index {partIndex} was not found in draft with public id {draftPublicId}.");
+
 }

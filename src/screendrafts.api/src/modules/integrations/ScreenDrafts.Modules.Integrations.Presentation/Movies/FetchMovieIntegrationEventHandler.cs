@@ -1,5 +1,7 @@
 ﻿namespace ScreenDrafts.Modules.Integrations.Presentation.Movies;
 
+using ScreenDrafts.Common.Features.Abstractions.EventBus;
+
 internal sealed class FetchMovieIntegrationEventHandler(
   ISender sender,
   ILogger<FetchMovieIntegrationEventHandler> logger)

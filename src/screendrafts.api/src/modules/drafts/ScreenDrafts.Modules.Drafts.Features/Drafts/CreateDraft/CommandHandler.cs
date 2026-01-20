@@ -1,13 +1,13 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Features.Drafts.CreateDraft;
 
-using ScreenDrafts.Common.Application.Messaging;
 using ScreenDrafts.Common.Features.Abstractions.Messaging;
 using ScreenDrafts.Common.Features.Abstractions.Services;
 
-internal sealed class CommandHandler(IDraftsRepository draftsRepository, IPublicIdGenerator publicIdGenerator)
+internal sealed class CommandHandler(IDraftsRepository draftsRepository, IPublicIdGenerator publicIdGenerator, ISeriesRepository seriesRepository)
   : ICommandHandler<Command, string>
 {
   private readonly IDraftsRepository _draftsRepository = draftsRepository;
+  private readonly ISeriesRepository _seriesRepository = seriesRepository;
   private readonly IPublicIdGenerator _publicIdGenerator = publicIdGenerator;
 
   public async Task<Result<string>> Handle(Command request, CancellationToken cancellationToken)
@@ -15,11 +15,11 @@ internal sealed class CommandHandler(IDraftsRepository draftsRepository, IPublic
     var publicId = _publicIdGenerator.GeneratePublicId(PublicIdPrefixes.Draft);
     var seriesId = SeriesId.Create(request.SeriesId);
 
-    var series = await _draftsRepository.GetSeriesByIdAsync(seriesId, cancellationToken);
+    var series = await _seriesRepository.GetByIdAsync(seriesId, cancellationToken);
 
     if (series is null)
     {
-      return Result.Failure<string>(DraftErrors.SeriesNotFound(request.SeriesId));
+      return Result.Failure<string>(SeriesErrors.SeriesNotFound(request.SeriesId));
     }
 
     var result = Draft.Create(

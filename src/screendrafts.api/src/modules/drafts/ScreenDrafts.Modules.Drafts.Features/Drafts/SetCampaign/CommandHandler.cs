@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Features.Drafts.SetCampaign;
 
-internal sealed class Handler(IDraftsRepository draftRepository, ICampaignsRepository campaignRepository) : Common.Features.Abstractions.Messaging.ICommandHandler<Command>
+internal sealed class CommandHandler(IDraftsRepository draftRepository, ICampaignsRepository campaignRepository) : Common.Features.Abstractions.Messaging.ICommandHandler<Command>
 {
   private readonly IDraftsRepository _draftsRepository = draftRepository;
   private readonly ICampaignsRepository _campaignRepository = campaignRepository;
@@ -18,7 +18,7 @@ internal sealed class Handler(IDraftsRepository draftRepository, ICampaignsRepos
 
     if (campaign is null)
     {
-      return Result.Failure(DraftErrors.CampaignNotFound(request.CampaignId));
+      return Result.Failure(CampaignErrors.CampaignNotFound(request.CampaignId));
     }
 
     draft.SetCampaign(campaign);

@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Users.Features.Users.Register;
+﻿using IEventBus = ScreenDrafts.Common.Features.Abstractions.EventBus.IEventBus;
+
+namespace ScreenDrafts.Modules.Users.Features.Users.Register;
 
 internal sealed class UserRegisteredDomainEventHandler(ISender sender, IEventBus eventBus)
   : DomainEventHandler<UserRegisteredDomainEvent>
@@ -28,6 +30,6 @@ internal sealed class UserRegisteredDomainEventHandler(ISender sender, IEventBus
         result.Value.FirstName,
         result.Value.LastName,
         result.Value.MiddleName),
-      cancellation: cancellationToken);
+      cancellationToken: cancellationToken);
   }
 }

@@ -192,10 +192,11 @@ public sealed partial class Draft : AggrgateRoot<DraftId, Guid>
     return Result.Success(series);
   }
 
-  public void DeriveDraftStatus()
+  public void DeriveDraftStatus(DateTime utcNow)
   {
-    if (_parts.Count == 0)
+    if (_parts.Count > 0 && _parts.All(p => p.Status == DraftPartStatus.Cancelled))
     {
+      DraftStatus = DraftStatus.Cancelled;
       return;
     }
 
@@ -205,25 +206,58 @@ public sealed partial class Draft : AggrgateRoot<DraftId, Guid>
       return;
     }
 
-    if (_parts.Count > 0 && _parts.All(p => p.Status == DraftPartStatus.Completed))
-    {
-      DraftStatus = DraftStatus.Completed;
-      return;
-    }
+    var anyCompleted = _parts.Any(p => p.Status == DraftPartStatus.Completed);
+    var anyScheduled = _parts.Any(p => p.IsScheduled(utcNow));
 
-    if (_parts[0].Status == DraftPartStatus.Completed && _parts.Skip(1).Any(p => p.Status == DraftPartStatus.Scheduled))
+    if (anyCompleted && anyScheduled)
     {
       DraftStatus = DraftStatus.Paused;
       return;
     }
 
-
-    if (_parts.All(p => p.Status == DraftPartStatus.Created))
+    if (anyScheduled)
     {
       DraftStatus = DraftStatus.Created;
       return;
     }
 
-    DraftStatus = DraftStatus.Scheduled;
+    if (_parts.Count > 0 && 
+        _parts.All(p => p.Status == DraftPartStatus.Completed || 
+                          p.Status == DraftPartStatus.Cancelled))
+    {
+      DraftStatus = DraftStatus.Completed;
+      return;
+    }
+
+    DraftStatus = DraftStatus.Created;
+
   }
+
+  public DraftLifecycleView GetLifecycleView(DateTime utcNow)
+  {
+    if (DraftStatus == DraftStatus.InProgress)
+    {
+      return DraftLifecycleView.InProgress;
+    }
+
+    if (DraftStatus == DraftStatus.Paused)
+    {
+      return DraftLifecycleView.Paused;
+    }
+
+    if (DraftStatus == DraftStatus.Completed)
+    {
+      return DraftLifecycleView.Completed;
+    }
+
+    if (DraftStatus == DraftStatus.Cancelled)
+    {
+      return DraftLifecycleView.Cancelled;
+    }
+
+    return _parts.Any(p => p.IsScheduled(utcNow))
+      ? DraftLifecycleView.Scheduled
+      : DraftLifecycleView.Created;
+  }
+
 }

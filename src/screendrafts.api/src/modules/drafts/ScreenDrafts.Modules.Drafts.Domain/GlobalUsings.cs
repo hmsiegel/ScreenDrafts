@@ -18,6 +18,7 @@ global using ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafts.Enums;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafts.Errors;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafts.Helpers;
+global using ScreenDrafts.Modules.Drafts.Domain.Drafts.Lifecycles;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafts.ValueObjects;
 global using ScreenDrafts.Modules.Drafts.Domain.People;
 global using ScreenDrafts.Modules.Drafts.Domain.People.DomainEvents;

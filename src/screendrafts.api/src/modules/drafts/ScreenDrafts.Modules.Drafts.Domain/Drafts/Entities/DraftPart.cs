@@ -44,7 +44,9 @@ public sealed partial class DraftPart : Entity<DraftPartId>
   public DraftPartStatus Status { get; private set; } = default!;
 
   public GameBoard? GameBoard { get; private set; } = default!;
-  
+
+  public DateTime? ScheduledForUtc { get; private set; } = default!;
+
   public int CommunityPicksUsed => _communityPicksUsed;
 
 

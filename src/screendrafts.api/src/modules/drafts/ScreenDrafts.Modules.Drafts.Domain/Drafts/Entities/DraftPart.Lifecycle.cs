@@ -1,6 +1,21 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities;
 public sealed partial class DraftPart
 {
+  public bool IsScheduled(DateTime utcNow) =>
+    Status == DraftPartStatus.Created &&
+     ScheduledForUtc.HasValue &&
+      ScheduledForUtc.Value > utcNow;
+
+  public DraftPartLifecycleView GetLifecycleView(DateTime utcNow) =>
+    Status switch
+    {
+      _ when IsScheduled(utcNow) => DraftPartLifecycleView.Scheduled,
+      _ when Status == DraftPartStatus.Created => DraftPartLifecycleView.Created,
+      _ when Status == DraftPartStatus.InProgress => DraftPartLifecycleView.InProgress,
+      _ when Status == DraftPartStatus.Completed => DraftPartLifecycleView.Completed,
+      _ => DraftPartLifecycleView.Cancelled
+    };
+
   internal Result Start()
   {
     if (Status != DraftPartStatus.Created)

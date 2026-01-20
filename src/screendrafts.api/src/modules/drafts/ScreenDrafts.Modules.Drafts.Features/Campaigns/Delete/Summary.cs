@@ -1,7 +1,4 @@
-﻿using ScreenDrafts.Modules.Drafts.Features.Categories.Delete;
-using ScreenDrafts.Modules.Drafts.Features.Series.Delete;
-
-namespace ScreenDrafts.Modules.Drafts.Features.Campaigns.Delete;
+﻿namespace ScreenDrafts.Modules.Drafts.Features.Campaigns.Delete;
 
 internal sealed class Summary : Summary<Endpoint>
 {

@@ -1,6 +1,5 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Features.Drafts.CreateDraft;
 
-using ScreenDrafts.Common.Application.Messaging;
 using ScreenDrafts.Common.Features.Abstractions.Messaging;
 
 public sealed record Command : ICommand<string>
