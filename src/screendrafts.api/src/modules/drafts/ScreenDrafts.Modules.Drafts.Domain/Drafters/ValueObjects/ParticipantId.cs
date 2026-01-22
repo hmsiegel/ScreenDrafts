@@ -22,6 +22,8 @@ public readonly record struct ParticipantId(Guid Value, ParticipantKind Kind)
   public bool IsDrafter => Kind == ParticipantKind.Drafter;
   public bool IsTeam => Kind == ParticipantKind.Team;
 
+  public bool HasNoValue => Value == Guid.Empty;
+
   public DrafterId AsDrafterId() => !IsDrafter 
     ? throw new InvalidOperationException("Participant is not a Drafter.") 
     : DrafterId.Create(Value);

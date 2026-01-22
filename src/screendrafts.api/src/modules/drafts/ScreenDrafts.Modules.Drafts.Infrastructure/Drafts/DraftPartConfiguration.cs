@@ -25,7 +25,12 @@ internal sealed class DraftPartConfiguration : IEntityTypeConfiguration<DraftPar
     builder.HasMany(x => x.Releases)
       .WithOne(r => r.DraftPart)
       .HasForeignKey(r => r.PartId)
-      .OnDelete(DeleteBehavior.Restrict);
+      .OnDelete(DeleteBehavior.Cascade);
+
+    builder.Property(d => d.Status)
+      .HasConversion(
+        dps => dps.Value,
+        value => DraftPartStatus.FromValue(value));
 
     builder.Property(d => d.TotalPicks)
           .IsRequired();
@@ -35,6 +40,11 @@ internal sealed class DraftPartConfiguration : IEntityTypeConfiguration<DraftPar
 
     builder.Property(d => d.TotalHosts)
           .IsRequired();
+
+    builder.Property(d => d.CreatedAtUtc)
+      .IsRequired();
+
+    builder.Property(d => d.UpdatedAtUtc);
 
     builder.HasOne(d => d.GameBoard)
       .WithOne(gb => gb.DraftPart)

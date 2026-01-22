@@ -26,4 +26,9 @@ public static class CampaignErrors
     SDError.NotFound(
       "Drafts.CampaignNotFound",
       $"Campaign with public id {publicId} was not found.");
+
+  public static SDError CampaignIdIsInvalid(string? campaignPublicId) =>
+    SDError.Problem(
+      "Drafts.CampaignIdIsInvalid",
+      $"Campaign public id '{campaignPublicId}' is invalid.");
 }

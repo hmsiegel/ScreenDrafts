@@ -16,6 +16,7 @@ public sealed partial class DraftPart : Entity<DraftPartId>
     int totalDrafters,
     int totalDrafterTeams,
     int totalHosts,
+    DateTime createdAtUtc,
     DraftPartId? id = null)
     : base(id ?? DraftPartId.CreateUnique())
   {
@@ -26,6 +27,7 @@ public sealed partial class DraftPart : Entity<DraftPartId>
     TotalDrafters = totalDrafters;
     TotalDrafterTeams = totalDrafterTeams;
     TotalHosts = totalHosts;
+    CreatedAtUtc = createdAtUtc;
   }
 
   private DraftPart()
@@ -49,7 +51,7 @@ public sealed partial class DraftPart : Entity<DraftPartId>
 
   public int CommunityPicksUsed => _communityPicksUsed;
 
-
+  public DateTime CreatedAtUtc { get; private set; }
   public DateTime? UpdatedAtUtc { get; private set; }
 
   public IReadOnlyCollection<DraftRelease> Releases => _releases.AsReadOnly();
@@ -84,7 +86,8 @@ public sealed partial class DraftPart : Entity<DraftPartId>
       totalPicks: totalPicks,
       totalDrafters: totalDrafters,
       totalDrafterTeams: totalDrafterTeams,
-      totalHosts: totalHosts);
+      totalHosts: totalHosts,
+      createdAtUtc: DateTime.UtcNow);
 
     return Result.Success(draftPart);
   }
@@ -132,7 +135,7 @@ public sealed partial class DraftPart : Entity<DraftPartId>
       return Result.Failure(DraftErrors.CannotAddTriviaResultWithoutDrafterOrDrafterTeam);
     }
 
-    if (Status != DraftStatus.InProgress)
+    if (Status != DraftPartStatus.InProgress)
     {
       return Result.Failure(DraftErrors.CannotAddTriviaResultIfDraftIsNotStarted);
     }

@@ -2,6 +2,7 @@
 
 public static class PublicIdPrefixes
 {
+  public const int MaxPublicIdLength = 3 + 1 + 15; // prefix + '_' + nanoid
   public const string Draft = "d";
   public const string Campaign = "c";
   public const string Category = "cat";

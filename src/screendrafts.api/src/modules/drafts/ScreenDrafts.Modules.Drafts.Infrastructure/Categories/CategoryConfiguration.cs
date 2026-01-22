@@ -11,9 +11,7 @@ internal sealed class CategoryConfiguration : IEntityTypeConfiguration<Category>
     builder.Property(c => c.Id)
           .ValueGeneratedNever()
           .HasColumnName("id")
-          .HasConversion(
-            id => id.Value,
-            value => CategoryId.Create(value));
+          .HasConversion(IdConverters.CategoryIdConverter);
 
     builder.Property(c => c.Name)
       .IsRequired()
@@ -24,6 +22,25 @@ internal sealed class CategoryConfiguration : IEntityTypeConfiguration<Category>
 
     builder.HasMany(c => c.DraftCategories)
       .WithOne(dc => dc.Category)
-      .HasForeignKey(dc => dc.CategoryId);
+      .HasForeignKey(dc => dc.CategoryId)
+      .OnDelete(DeleteBehavior.Restrict);
+
+    builder.Navigation(c => c.DraftCategories)
+      .UsePropertyAccessMode(PropertyAccessMode.Field);
+
+    builder.Property(x => x.PublicId)
+      .IsRequired()
+      .HasMaxLength(PublicIdPrefixes.MaxPublicIdLength);
+
+    builder.HasIndex(x => x.PublicId)
+      .IsUnique();
+
+    builder.Property(x => x.CreatedOnUtc)
+      .IsRequired();
+
+    builder.Property(x => x.ModifiedOnUtc);
+
+    builder.Property(x => x.IsDeleted)
+      .IsRequired();
   }
 }

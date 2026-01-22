@@ -108,4 +108,12 @@ internal sealed class DraftsRepository(DraftsDbContext dbContext) : IDraftsRepos
       .Include(d => d.Parts)
       .FirstOrDefaultAsync(d => d.PublicId == publicId, cancellationToken);
   }
+
+  public Task<Draft?> GetDraftByPublicIdForUpdateAsync(string publicId, CancellationToken cancellationToken)
+  {
+    return _dbContext.Drafts
+      .Include(d => d.Parts)
+      .Include(d => d.DraftCategories)
+      .FirstOrDefaultAsync(d => d.PublicId == publicId, cancellationToken);
+  }
 }

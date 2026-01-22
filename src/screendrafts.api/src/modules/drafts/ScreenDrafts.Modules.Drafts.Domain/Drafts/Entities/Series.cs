@@ -2,6 +2,8 @@
 
 public sealed class Series : Entity<SeriesId>
 {
+  public const int MaxNameLength = 200;
+
   private Series(
     string name,
     string publicId,

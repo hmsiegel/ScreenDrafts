@@ -1,4 +1,5 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Infrastructure.Categories;
+﻿
+namespace ScreenDrafts.Modules.Drafts.Infrastructure.Categories;
 
 internal sealed class CategoriesRepository(DraftsDbContext dbContext) : ICategoriesRepository
 {
@@ -48,6 +49,31 @@ internal sealed class CategoriesRepository(DraftsDbContext dbContext) : ICategor
 
   public Task<bool> ExistsByNameAsync(string name, CancellationToken cancellationToken)
   {
-    return _dbContext.Categories.AnyAsync(c => c.Name == name, cancellationToken);
+    return _dbContext.Categories.AnyAsync(c => c.Name == name && !c.IsDeleted, cancellationToken);
+  }
+
+  public async Task<bool> AllExistByPublicIdsAsync(IReadOnlyList<string> publicCategoryIds, CancellationToken cancellationToken)
+  {
+    if (publicCategoryIds.Count == 0)
+    {
+      return true;
+    }
+
+    var count = await _dbContext.Categories
+      .CountAsync(c => publicCategoryIds.Contains(c.PublicId) && !c.IsDeleted, cancellationToken);
+
+    return count == publicCategoryIds.Count;
+  }
+
+  public async Task<IReadOnlyList<Category>> GetByPublicIdsAsync(IReadOnlyCollection<string> publicCategoryIds, CancellationToken cancellationToken)
+  {
+    if (publicCategoryIds.Count == 0)
+    {
+      return [];
+    }
+
+    return await _dbContext.Categories
+      .Where(c => publicCategoryIds.Contains(c.PublicId) && !c.IsDeleted)
+      .ToListAsync(cancellationToken);
   }
 }

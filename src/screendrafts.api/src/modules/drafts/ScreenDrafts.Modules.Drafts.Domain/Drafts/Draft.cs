@@ -46,8 +46,10 @@ public sealed partial class Draft : AggrgateRoot<DraftId, Guid>
   public IReadOnlyCollection<DraftPart> Parts => _parts.AsReadOnly();
   public IReadOnlyCollection<DraftCategory> DraftCategories => _draftCategories.AsReadOnly();
 
-  public Guid? CampaignId { get; private set; } = default!;
-  public Campaign? Campaign { get; private set; } = default!;
+  public Guid? CampaignId { get; private set; }
+  public Campaign? Campaign { get; private set; }
+
+  public uint Version { get; private set; } = default!;
 
   // Rollups
   public int TotalParts => _parts.Count;
@@ -79,23 +81,28 @@ public sealed partial class Draft : AggrgateRoot<DraftId, Guid>
     return draft;
   }
 
-  public Result EditDraft(
-    Title title,
-    DraftType draftType,
-    string? description)
+  public void Update(
+    string? title,
+    string? description,
+    int draftTypeValue)
   {
-    Guard.Against.Null(title);
-    Guard.Against.Null(draftType);
-    Guard.Against.NullOrWhiteSpace(description);
+    // Update the draft's title if provided
+    if (!string.IsNullOrEmpty(title))
+    {
+      Title = new Title(title);
+    }
 
-    Title = title;
-    DraftType = draftType;
+    // Update the draft's description if provided
+    if (description != null)
+    {
+      Description = description;
+    }
+
+    // Update the draft type
+    DraftType = DraftType.FromValue(draftTypeValue);
+
+    // Update the updated timestamp
     UpdatedAtUtc = DateTime.UtcNow;
-    Description = description;
-
-    Raise(new DraftEditedDomainEvent(Id.Value, title.Value));
-
-    return Result.Success();
   }
 
   // Categories
@@ -139,6 +146,35 @@ public sealed partial class Draft : AggrgateRoot<DraftId, Guid>
     Raise(new CategoryRemovedDomainEvent(Id.Value, category.Id.Value));
 
     return Result.Success();
+  }
+
+  public void ClearDraftCategories()
+  {
+    _draftCategories.Clear();
+    UpdatedAtUtc = DateTime.UtcNow;
+  }
+
+  public void ReplaceCategories(IReadOnlyList<Category> categories)
+  {
+    Guard.Against.Null(categories);
+
+    var desiredIds = categories.Select(c => c.Id).ToHashSet();
+    var existingIds = _draftCategories.Select(dc => dc.CategoryId).ToHashSet();
+
+    _draftCategories.RemoveAll(dc => !desiredIds.Contains(dc.CategoryId));
+
+    // Add new categoried
+    foreach (var category in categories)
+    {
+      if (existingIds.Contains(category.Id))
+      {
+        continue;
+      }
+
+      _draftCategories.Add(DraftCategory.Create(this, category));
+    }
+
+    UpdatedAtUtc = DateTime.UtcNow;
   }
 
   // Campaigns

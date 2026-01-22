@@ -2,12 +2,10 @@
 
 public sealed class VetoOverrideCreatedDomainEvent(
   Guid vetoOverrideId,
-  Guid? drafterId,
-  Guid? drafterTeamId,
-  Guid vetoId) : DomainEvent
+  Guid vetoId,
+  ParticipantId issuedBy) : DomainEvent
 {
   public Guid VetoOverrideId { get; init; } = vetoOverrideId;
-  public Guid? DrafterId { get; init; } = drafterId;
-  public Guid? DrafterTeamId { get; init; } = drafterTeamId;
+  public ParticipantId IssuedBy { get; init; } = issuedBy;
   public Guid VetoId { get; init; } = vetoId;
 }

@@ -12,12 +12,17 @@ internal sealed class SeriesConfiguration : IEntityTypeConfiguration<Series>
 
     builder.Property(x => x.Id)
         .ValueGeneratedNever()
-        .HasConversion(
-            id => id.Value,
-            value => SeriesId.Create(value));
+        .HasConversion(IdConverters.SeriesIdConverter);
 
     builder.Property(x => x.Name)
-      .IsRequired();
+      .IsRequired()
+      .HasMaxLength(Series.MaxNameLength);
+
+    builder.Property(x => x.PublicId)
+      .IsRequired()
+      .HasMaxLength(PublicIdPrefixes.MaxPublicIdLength);
+    builder.HasIndex(x => x.PublicId)
+      .IsUnique();
 
     builder.Property(x => x.Kind)
       .IsRequired()
@@ -53,5 +58,10 @@ internal sealed class SeriesConfiguration : IEntityTypeConfiguration<Series>
       .HasConversion(
         x => (int)x,
         value => (DraftTypeMask)value);
+
+    builder.Property(x => x.CreatedAtUtc)
+      .IsRequired();
+
+    builder.Property(x => x.UpdatedAtUtc);
   }
 }

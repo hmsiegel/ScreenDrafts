@@ -14,7 +14,8 @@ internal sealed class DraftConfiguration : IEntityTypeConfiguration<Draft>
           .HasConversion(IdConverters.DraftIdConverter);
 
     builder.Property(d => d.PublicId)
-          .ValueGeneratedOnAdd();
+          .IsRequired()
+          .HasMaxLength(PublicIdPrefixes.MaxPublicIdLength);
 
     builder.HasIndex(d => d.PublicId)
           .IsUnique()
@@ -48,9 +49,15 @@ internal sealed class DraftConfiguration : IEntityTypeConfiguration<Draft>
       .HasForeignKey(dp => dp.DraftId)
       .OnDelete(DeleteBehavior.Cascade);
 
+    builder.Property(d => d.SeriesId)
+      .HasConversion(IdConverters.SeriesIdConverter);
+
+    builder.Property(d => d.CampaignId);
+
     builder.HasOne(d => d.Campaign)
       .WithMany(c => c.Drafts)
-      .HasForeignKey(d => d.CampaignId);
+      .HasForeignKey(d => d.CampaignId)
+      .OnDelete(DeleteBehavior.SetNull);
 
     builder.HasOne(d => d.Series)
       .WithMany()
@@ -60,6 +67,16 @@ internal sealed class DraftConfiguration : IEntityTypeConfiguration<Draft>
       .HasField("_parts")
       .UsePropertyAccessMode(PropertyAccessMode.Field);
 
+    builder.Navigation(x => x.DraftCategories)
+      .HasField("_draftCategories")
+      .UsePropertyAccessMode(PropertyAccessMode.Field);
+
     builder.HasIndex(x => x.SeriesId).HasDatabaseName("ix_drafts_series_id");
+
+    builder.Property(x => x.Version)
+      .HasColumnName("xmin")
+      .HasColumnType("xid")
+      .ValueGeneratedOnAddOrUpdate()
+      .IsConcurrencyToken();
   }
 }

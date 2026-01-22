@@ -24,10 +24,7 @@ public sealed class Veto : Entity<VetoId>
   public Pick Pick { get; private set; } = default!;
   public PickId PickId { get; private set; } = default!;
 
-  public Draft Draft => Pick.Draft;
-  public DraftId DraftId => Pick.DraftId;
-
-  public DraftPart draftPart => Pick.DraftPart;
+  public DraftPart DraftPart => Pick.DraftPart;
   public DraftPartId DraftPartId => Pick.DraftPartId;
 
   public ParticipantId? IssuedBy { get; private set; }

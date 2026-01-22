@@ -133,4 +133,5 @@ public sealed partial class Draft
       _parts[i].SetPartIndex(i + 1);
     }
   }
+
 }

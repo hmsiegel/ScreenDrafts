@@ -17,6 +17,11 @@ public static class SeriesErrors
       "Series.SeriesNotFound",
       $"Series with public id '{publicId}' was not found.");
 
+  public static SDError SeriesIdIsInvalid(string? seriesPublicId) =>
+    SDError.Problem(
+      "Series.SeriesIdIsInvalid",
+      $"Series public id '{seriesPublicId}' is invalid.");
+
   public static readonly SDError AllowedDraftTypesCannotBeNone = SDError.Problem(
     "Series.AllowedDraftTypesCannotBeNone",
     "Allowed draft types cannot be none.");

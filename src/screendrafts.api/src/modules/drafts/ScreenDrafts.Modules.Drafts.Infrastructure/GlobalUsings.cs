@@ -29,6 +29,7 @@ global using Quartz;
 global using ScreenDrafts.Common.Domain;
 global using ScreenDrafts.Common.Features.Abstractions.EventBus;
 global using ScreenDrafts.Common.Features.Abstractions.Messaging;
+global using ScreenDrafts.Common.Features.Abstractions.Services;
 global using ScreenDrafts.Common.Infrastructure;
 global using ScreenDrafts.Common.Infrastructure.Database;
 global using ScreenDrafts.Common.Infrastructure.Inbox;

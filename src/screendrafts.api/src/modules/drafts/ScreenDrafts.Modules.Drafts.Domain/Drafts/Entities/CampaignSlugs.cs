@@ -2,6 +2,7 @@
 
 public static class CampaignSlugs
 {
+  public const int MaxSlugLength = 100;
   public const string ScreamDrafts = "scream-drafts";
   public const string BillyRayVsKyle = "billy-ray-vs-kyle";
   public const string KristmasEve = "kristmas-eve";

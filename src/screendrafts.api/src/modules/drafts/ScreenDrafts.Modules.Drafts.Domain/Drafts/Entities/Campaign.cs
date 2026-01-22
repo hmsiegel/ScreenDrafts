@@ -2,6 +2,7 @@
 
 public sealed class Campaign : Entity
 {
+  public const int MaxNameLength = 200;
   private readonly List<Draft> _drafts = [];
   private Campaign(
     string slug,

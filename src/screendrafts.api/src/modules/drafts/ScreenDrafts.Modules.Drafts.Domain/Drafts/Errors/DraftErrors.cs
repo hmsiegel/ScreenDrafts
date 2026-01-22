@@ -149,6 +149,15 @@ public static partial class DraftErrors
       "Drafts.InvalidDraftPartStatusAction",
       "The requested draft part status action is invalid.");
 
+  public static readonly SDError CannotChangeASeriesAfterADraftPartHasStarted =
+    SDError.Conflict(
+      "Drafts.CannotChangeASeriesAfterADraftPartHasStarted",
+      "Cannot change a series after a draft part has started.");
+
+  public static readonly SDError CannotChangeDraftTypeAfterADraftPartHasStarted = SDError.Conflict(
+      "Drafts.CannotChangeDraftTypeAfterADraftPartHasStarted",
+      "Cannot change a draft type after a draft part has started.");
+
   public static SDError CampaignDoesNotBelongToThisDraft(string publicId) =>
     SDError.Problem(
       "Drafts.CampaignDoesNotBelongToThisDraft",
@@ -159,4 +168,8 @@ public static partial class DraftErrors
       "Drafts.DraftPartNotFoundByIndex",
       $"Draft part with index {partIndex} was not found in draft with public id {draftPublicId}.");
 
+  public static SDError CannotUpdateCompletedOrCancelledDraft(string publicId) =>
+        SDError.Conflict(
+          "Drafts.CannotUpdateCompletedOrCancelledDraft",
+          $"Cannot update draft with public id {publicId} because it is completed or cancelled.");
 }

@@ -11,7 +11,7 @@ internal sealed class CommandHandler(ICategoriesRepository categoryRepository, I
     var publicId = _publicIdGenerator.GeneratePublicId(PublicIdPrefixes.Category);
 
     // Check for uniqueness of slug
-    if (await _categoryRepository.ExistsAsync(command.Name, cancellationToken))
+    if (await _categoryRepository.ExistsByNameAsync(command.Name, cancellationToken))
     {
       return Result.Failure<string>(CategoryErrors.DuplicateName(command.Name));
     }

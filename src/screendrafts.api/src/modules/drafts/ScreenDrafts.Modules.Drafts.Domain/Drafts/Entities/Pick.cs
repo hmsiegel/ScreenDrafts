@@ -9,6 +9,7 @@ public sealed class Pick : Entity<PickId>
     Movie movie,
     DraftPart draftPart,
     ParticipantId playedBy,
+    string publicId,
     int playOrder = 0,
     PickId? id = null)
     : base(id ?? PickId.CreateUnique())
@@ -30,7 +31,7 @@ public sealed class Pick : Entity<PickId>
   {
   }
 
-  public string ReadableId { get; private set; } = default!;
+  public string PublicId { get; private set; } = default!;
 
   public int Position { get; private set; }
   public int PlayOrder { get; private set; }
@@ -47,13 +48,10 @@ public sealed class Pick : Entity<PickId>
   public ParticipantId PlayedBy => new(PlayedById, PlayedByKind);
 
 
-  public DraftId DraftId { get; } = default!;
-  public Draft Draft { get; } = default!;
-
   public Veto? Veto { get; private set; } = default!;
   public VetoId? VetoId => Veto?.Id;
 
-  public bool IsCommissionerOverridden => CommissionerOverride is not null;
+
   public CommissionerOverride CommissionerOverride { get; private set; } = default!;
   public Guid? CommissionerOverrideId => CommissionerOverride?.Id;
 
@@ -74,6 +72,7 @@ public sealed class Pick : Entity<PickId>
     ParticipantId playedBy,
     DraftPart draftPart,
     int playOrder,
+    string publicId,
     PickId? id = null)
   {
     if (draftPart is null)
@@ -107,6 +106,7 @@ public sealed class Pick : Entity<PickId>
       playedBy: playedBy,
       draftPart: draftPart,
       playOrder: playOrder,
+      publicId: publicId,
       id: id);
 
     pick.Raise(new PickCreatedDomainEvent(

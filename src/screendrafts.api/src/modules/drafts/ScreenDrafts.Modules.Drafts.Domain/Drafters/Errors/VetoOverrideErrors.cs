@@ -21,4 +21,9 @@ public static class VetoOverrideErrors
     SDError.Problem(
       "Drafts.DrafterAndTeamCannotBeProvided",
       "Both a drafter and a team cannot be provided.");
+
+  public static readonly SDError IssuedByMustBeProvided =
+    SDError.Problem(
+      "Drafts.IssuedByMustBeProvided",
+      "The issuer of the veto override must be provided.");
 }

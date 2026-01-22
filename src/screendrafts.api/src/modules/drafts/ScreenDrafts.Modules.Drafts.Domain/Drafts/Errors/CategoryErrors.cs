@@ -1,4 +1,5 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.Errors;
+﻿
+namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.Errors;
 public static class CategoryErrors
 {
   public static readonly SDError CategoryNameIsRequired = SDError.Problem(
@@ -54,4 +55,8 @@ public static class CategoryErrors
       "Categories.DeletionFailed",
       $"Deletion of category with public id {publicId} failed.");
 
+  public static SDError OneOrMoreCategoryIdsAreInvalid(IReadOnlyList<string> publicCategoryIds) =>
+    SDError.Problem(
+      "Categories.OneOrMoreCategoryIdsAreInvalid",
+      $"One or more category IDs are invalid: {string.Join(", ", publicCategoryIds)}.");
 }
