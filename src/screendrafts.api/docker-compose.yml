@@ -1,4 +1,18 @@
 services:
+  # Migrator
+  screendrafts.migrator:
+    image: ${DOCKER_REGISTRY-}screendraftsmigrator
+    build:
+      context: .
+      dockerfile: src/tools/ScreenDrafts.Tools.DbMigrator/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    networks:
+      - screendrafts
+    depends_on:
+      - screendrafts.database
+    restart: "no"
+
   # Backend API
   screendrafts.web:
     image: ${DOCKER_REGISTRY-}screendraftsweb
@@ -25,6 +39,7 @@ services:
       - screendrafts.mongo
       - screendrafts.email
       - screendrafts.elk
+      - screendrafts.migrator
 
   # YARP Gateway
   screendrafts.gateway:

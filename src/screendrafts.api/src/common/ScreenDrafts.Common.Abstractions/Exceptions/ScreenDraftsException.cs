@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Common.Abstractions.Errors;
-
-namespace ScreenDrafts.Common.Abstractions.Exceptions;
+﻿namespace ScreenDrafts.Common.Abstractions.Exceptions;
 
 public sealed class ScreenDraftsException : Exception
 {

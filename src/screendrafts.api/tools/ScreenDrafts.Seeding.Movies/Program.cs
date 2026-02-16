@@ -1,8 +1,4 @@
-﻿using ScreenDrafts.Common.Abstractions.Exceptions;
-using ScreenDrafts.Modules.Movies.Composition;
-using ScreenDrafts.Modules.Movies.Features;
-
-var basePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
+﻿var basePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
 
 var configuration = new ConfigurationBuilder()
     .SetBasePath(basePath)

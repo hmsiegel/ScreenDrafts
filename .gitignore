@@ -470,3 +470,4 @@ FodyWeavers.xsd
 /src/screendrafts.api/tools/ScreenDrafts.Seeding.Movies/appsettings.Development.json
 /src/screendrafts.api/tools/ScreenDrafts.Seeding.Users/appsettings.Development.json
 /src/screendrafts.api/tools/ScreenDrafts.Seeding.Users/modules.users.Development.json
+/src/screendrafts.api/tools/ScreenDrafts.Tools.DbMigrator/appsettings.Development.json

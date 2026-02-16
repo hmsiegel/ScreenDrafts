@@ -18,11 +18,6 @@
     <None Include="docker-compose.vs.override.yml" />
     <None Include="docker-compose.yml" />
     <None Include=".dockerignore" />
-    <None Include="tests\integration\ScreenDrafts.IntegrationTests\People\CreatePersonTests.cs" />
-    <None Include="tests\integration\ScreenDrafts.IntegrationTests\People\EditPersonTests.cs" />
-    <None Include="tests\integration\ScreenDrafts.IntegrationTests\People\GetPersonTests.cs" />
-    <None Include="tests\integration\ScreenDrafts.IntegrationTests\People\LinkUserPersonTests.cs" />
-    <None Include="tests\integration\ScreenDrafts.IntegrationTests\People\ListPeopleTests.cs" />
-    <None Include="tests\integration\ScreenDrafts.IntegrationTests\People\SearchPeopleTests.cs" />
+    <None Include="editorconfig .editorconfig" />
   </ItemGroup>
 </Project>
