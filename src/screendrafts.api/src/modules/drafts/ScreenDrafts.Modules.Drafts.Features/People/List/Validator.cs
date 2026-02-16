@@ -1,6 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.People.List;
+namespace ScreenDrafts.Modules.Drafts.Features.People.List;
 
-internal sealed class Validator : AbstractValidator<Request>
+internal sealed class Validator : AbstractValidator<ListPeopleRequest>
 {
   private static readonly HashSet<string> _allowedSorts =
   [
@@ -37,3 +37,4 @@ internal sealed class Validator : AbstractValidator<Request>
       .When(x => !string.IsNullOrWhiteSpace(x.Name));
   }
 }
+

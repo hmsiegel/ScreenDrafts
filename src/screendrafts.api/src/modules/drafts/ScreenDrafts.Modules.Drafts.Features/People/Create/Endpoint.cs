@@ -1,6 +1,8 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.People.Create;
+using ScreenDrafts.Common.Abstractions.Results;
 
-internal sealed class Endpoint : ScreenDraftsEndpoint<Request, string>
+namespace ScreenDrafts.Modules.Drafts.Features.People.Create;
+
+internal sealed class Endpoint : ScreenDraftsEndpoint<CreatePersonRequest, string>
 {
   public override void Configure()
   {
@@ -14,19 +16,20 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<Request, string>
        .Produces(StatusCodes.Status401Unauthorized)
        .Produces(StatusCodes.Status403Forbidden);
     });
-    Permissions(Features.Permissions.PersonCreate);
+    Permissions(DraftsAuth.Permissions.PersonCreate);
   }
 
-  public override async Task HandleAsync(Request req, CancellationToken ct)
+  public override async Task HandleAsync(CreatePersonRequest req, CancellationToken ct)
   {
-    var command = new Command
+    var CreatePersonCommand = new CreatePersonCommand
     {
       UserId = req.UserId,
       FirstName = req.FirstName,
-      LastName = req.LastName
+      LastName = req.LastName,
+      PublicId = req.PublicId
     };
 
-    var result = await Sender.Send(command, ct);
+    var result = await Sender.Send(CreatePersonCommand, ct);
 
     await this.SendCreatedAsync(
       result.Map(id => id.ToString()),
@@ -34,3 +37,5 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<Request, string>
       ct);
   }
 }
+
+

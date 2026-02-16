@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Users.Domain.Users.ValueObjects;
+﻿using ScreenDrafts.Common.Abstractions.Results;
+
+namespace ScreenDrafts.Modules.Users.Domain.Users.ValueObjects;
 
 public sealed record Email(string? Value)
 {

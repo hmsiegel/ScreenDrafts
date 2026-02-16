@@ -1,11 +1,23 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
-    <ProjectReference Include="..\..\..\common\ScreenDrafts.Common.Features\ScreenDrafts.Common.Features.csproj" />
-    <ProjectReference Include="..\..\..\common\ScreenDrafts.Common.Infrastructure\ScreenDrafts.Common.Infrastructure.csproj" />
+    <InternalsVisibleTo Include="ScreenDrafts.Modules.Drafts.IntegrationTests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\common\ScreenDrafts.Common.Application\ScreenDrafts.Common.Application.csproj" />
+    <ProjectReference Include="..\..\..\common\ScreenDrafts.Common.Presentation\ScreenDrafts.Common.Presentation.csproj" />
+
+    <ProjectReference Include="..\..\audit\ScreenDrafts.Modules.Audit.IntegrationEvents\ScreenDrafts.Modules.Audit.IntegrationEvents.csproj" />
+    <ProjectReference Include="..\..\communications\ScreenDrafts.Modules.Communications.IntegrationEvents\ScreenDrafts.Modules.Communications.IntegrationEvents.csproj" />
+    <ProjectReference Include="..\..\integrations\ScreenDrafts.Modules.Integrations.IntegrationEvents\ScreenDrafts.Modules.Integrations.IntegrationEvents.csproj" />
     <ProjectReference Include="..\..\movies\ScreenDrafts.Modules.Movies.IntegrationEvents\ScreenDrafts.Modules.Movies.IntegrationEvents.csproj" />
+    <ProjectReference Include="..\..\reporting\ScreenDrafts.Modules.Reporting.IntegrationEvents\ScreenDrafts.Modules.Reporting.IntegrationEvents.csproj" />
     <ProjectReference Include="..\..\users\ScreenDrafts.Modules.Users.IntegrationEvents\ScreenDrafts.Modules.Users.IntegrationEvents.csproj" />
     <ProjectReference Include="..\..\users\ScreenDrafts.Modules.Users.PublicApi\ScreenDrafts.Modules.Users.PublicApi.csproj" />
+
     <ProjectReference Include="..\ScreenDrafts.Modules.Drafts.Domain\ScreenDrafts.Modules.Drafts.Domain.csproj" />
     <ProjectReference Include="..\ScreenDrafts.Modules.Drafts.IntegrationEvents\ScreenDrafts.Modules.Drafts.IntegrationEvents.csproj" />
+
+    <!-- Optional but recommended -->
   </ItemGroup>
 </Project>

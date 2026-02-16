@@ -17,7 +17,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ScreenDrafts.Modules.Audit.Infrastructure\ScreenDrafts.Modules.Audit.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\..\common\ScreenDrafts.Common.ArchitectureTests\ScreenDrafts.Common.ArchitectureTests.csproj" />
+    <ProjectReference Include="..\ScreenDrafts.Modules.Audit.Composition\ScreenDrafts.Modules.Audit.Composition.csproj" />
   </ItemGroup>
 
   <ItemGroup>

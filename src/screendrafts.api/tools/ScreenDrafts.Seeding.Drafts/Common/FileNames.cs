@@ -2,7 +2,7 @@
 
 internal static class FileNames
 {
-  internal const string DraftSeeder = "drafts.json";
+  internal const string DraftSeeder = "drafts2.json";
   internal const string DraftersSeeder = "drafters.csv";
   internal const string DraftDraftersSeeder = "draft_drafters.csv";
   internal const string HostsSeeder = "hosts.csv";
@@ -19,4 +19,10 @@ internal static class FileNames
   internal const string DraftPositionsSeeder = "draft_positions.csv";
   internal const string DraftStatsSeeder = "draft_stats.csv";
   internal const string PeopleSeeder = "people.csv";
+  internal const string SeriesSeeder = "series.csv";
+  internal const string CategoriesSeeder = "categories.csv";
+  internal const string CampaignSeeder = "campaigns.csv";
+  internal const string DraftPartsSeeder = "draft_parts.csv";
+  internal const string DraftReleasesSeeder = "draft_releases.csv";
+  internal const string DraftPartParticipants = "draft_part_participants.csv";
 }

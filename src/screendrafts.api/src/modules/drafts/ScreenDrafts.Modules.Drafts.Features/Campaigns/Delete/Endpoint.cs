@@ -1,6 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.Campaigns.Delete;
+namespace ScreenDrafts.Modules.Drafts.Features.Campaigns.Delete;
 
-internal sealed class Endpoint : ScreenDraftsEndpoint<Request>
+internal sealed class Endpoint : ScreenDraftsEndpoint<DeleteCampaignRequest>
 {
   public override void Configure()
   {
@@ -14,15 +14,17 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<Request>
       .Produces(StatusCodes.Status403Forbidden)
       .Produces(StatusCodes.Status404NotFound);
     });
-    Policies(Features.Permissions.CampaignDelete);
+    Policies(DraftsAuth.Permissions.CampaignDelete);
   }
 
-  public override async Task HandleAsync(Request req, CancellationToken ct)
+  public override async Task HandleAsync(DeleteCampaignRequest req, CancellationToken ct)
   {
-    var command = new Command(req.PublicId);
+    var DeleteCampaignCommand = new DeleteCampaignCommand(req.PublicId);
 
-    var result = await Sender.Send(command, ct);
+    var result = await Sender.Send(DeleteCampaignCommand, ct);
 
     await this.SendNoContentAsync(result, ct);
   }
 }
+
+

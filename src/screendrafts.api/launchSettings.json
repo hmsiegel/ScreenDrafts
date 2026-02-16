@@ -3,6 +3,8 @@
     "Docker Compose": {
       "commandName": "DockerCompose",
       "commandVersion": "1.0",
+      "composeLaunchAction": "None",
+      "composeLaunchServiceName": "screendrafts.web",
       "serviceActions": {
         "screendrafts.web": "StartDebugging",
         "screendrafts.gateway": "StartDebugging",

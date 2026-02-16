@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Common.Features;
-
-var builder = WebApplication.CreateBuilder(args);
+﻿var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog((context, config) =>
   config.ReadFrom.Configuration(context.Configuration));
@@ -15,7 +13,7 @@ var redisConnectionString = builder.Configuration.GetConnectionStringOrThrow("Ca
 var rabbitMqSettings = new RabbitMqSettings(builder.Configuration.GetConnectionStringOrThrow("Queue"));
 var mongoConnectionString = builder.Configuration.GetConnectionStringOrThrow("Mongo")!;
 
-builder.Services.AddApplication(AssemblyReferences.ApplicationAssemblies, configuration);
+builder.Services.AddApplication(AssemblyReferences.FeatureAssemblies, configuration);
 
 builder.Services.AddInfrastructure(
   configuration,
@@ -24,15 +22,16 @@ builder.Services.AddInfrastructure(
     DraftsModule.ConfigureConsumers,
     IntegrationsModule.ConfigureConsumers,
     MoviesModule.ConfigureConsumers
-  ],
+    ],
   rabbitMqSettings,
   redisConnectionString,
   mongoConnectionString,
   AssemblyReferences.InfrastructureAssemblies);
+builder.Services.AddPresentation();
 
 builder.Services.AddFastEndpoints(opt =>
 {
-  opt.Assemblies = AssemblyReferences.PresentationAssemblies;
+  opt.Assemblies = AssemblyReferences.FeatureAssemblies;
 })
   .SwaggerDocument(o => o.ShortSchemaNames = true);
 

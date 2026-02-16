@@ -1,6 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.Drafters.Get;
+namespace ScreenDrafts.Modules.Drafts.Features.Drafters.Get;
 
-internal sealed class Validator : AbstractValidator<Query>
+internal sealed class Validator : AbstractValidator<GetDrafterQuery>
 {
   public Validator()
   {
@@ -10,3 +10,4 @@ internal sealed class Validator : AbstractValidator<Query>
       .WithMessage($"DrafterId must start with the '{PublicIdPrefixes.Drafter}' prefix.");
   }
 }
+

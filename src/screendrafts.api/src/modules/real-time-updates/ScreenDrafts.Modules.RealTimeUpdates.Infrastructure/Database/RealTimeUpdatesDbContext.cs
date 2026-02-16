@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.RealTimeUpdates.Infrastructure.Database;
+﻿using ScreenDrafts.Modules.RealTimeUpdates.Domain.Abstractions.Data;
+
+namespace ScreenDrafts.Modules.RealTimeUpdates.Infrastructure.Database;
 
 public sealed class RealTimeUpdatesDbContext(DbContextOptions<RealTimeUpdatesDbContext> options)
   : DbContext(options), IUnitOfWork

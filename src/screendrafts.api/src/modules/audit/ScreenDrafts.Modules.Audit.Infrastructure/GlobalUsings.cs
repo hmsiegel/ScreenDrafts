@@ -10,7 +10,6 @@ global using Microsoft.EntityFrameworkCore;
 global using Microsoft.EntityFrameworkCore.Migrations;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
-global using Microsoft.Extensions.DependencyInjection.Extensions;
 global using Microsoft.Extensions.Logging;
 global using Microsoft.Extensions.Options;
 
@@ -29,7 +28,7 @@ global using ScreenDrafts.Common.Infrastructure.Database;
 global using ScreenDrafts.Common.Infrastructure.Inbox;
 global using ScreenDrafts.Common.Infrastructure.Outbox;
 global using ScreenDrafts.Common.Infrastructure.Serialization;
-global using ScreenDrafts.Modules.Audit.Application.Abstractions.Data;
+global using ScreenDrafts.Modules.Audit.Domain.Abstractions.Data;
 global using ScreenDrafts.Modules.Audit.Infrastructure.Database;
 global using ScreenDrafts.Modules.Audit.Infrastructure.Inbox;
 global using ScreenDrafts.Modules.Audit.Infrastructure.Outbox;

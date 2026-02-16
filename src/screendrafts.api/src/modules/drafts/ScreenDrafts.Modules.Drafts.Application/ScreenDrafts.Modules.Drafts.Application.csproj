@@ -6,4 +6,8 @@
     <ProjectReference Include="..\ScreenDrafts.Modules.Drafts.Domain\ScreenDrafts.Modules.Drafts.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="_Legacy\**\*.cs" />
+  </ItemGroup>
+
 </Project>

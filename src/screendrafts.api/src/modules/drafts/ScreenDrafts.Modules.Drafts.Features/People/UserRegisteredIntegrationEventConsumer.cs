@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.People;
+﻿using ScreenDrafts.Modules.Drafts.Features.People.Create;
+
+namespace ScreenDrafts.Modules.Drafts.Features.People;
 
 internal sealed class UserRegisteredIntegrationEventConsumer(
   ISender sender,
@@ -13,7 +15,7 @@ internal sealed class UserRegisteredIntegrationEventConsumer(
     CancellationToken cancellationToken = default)
   {
     var result = await _sender.Send(
-      new Create.Command
+      new CreatePersonCommand
       {
         FirstName = integrationEvent.FirstName,
         LastName = integrationEvent.LastName,

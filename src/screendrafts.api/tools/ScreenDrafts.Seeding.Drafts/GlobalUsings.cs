@@ -2,6 +2,9 @@
 global using System.ComponentModel.DataAnnotations.Schema;
 global using System.Globalization;
 global using System.Reflection;
+global using System.Security.Cryptography;
+global using System.Text;
+global using System.Text.Json.Serialization;
 
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Configuration;
@@ -9,26 +12,29 @@ global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.DependencyInjection.Extensions;
 global using Microsoft.Extensions.Logging;
 
-global using Newtonsoft.Json;
-
 global using ScreenDrafts.Common.Application.CsvFiles;
-global using ScreenDrafts.Common.Application.Exceptions;
 global using ScreenDrafts.Common.Application.Logging;
 global using ScreenDrafts.Common.Application.Seeding;
+global using ScreenDrafts.Common.Application.Services;
 global using ScreenDrafts.Common.Infrastructure;
 global using ScreenDrafts.Common.Infrastructure.Configuration;
-global using ScreenDrafts.Common.Infrastructure.Converters;
 global using ScreenDrafts.Common.Infrastructure.Database;
 global using ScreenDrafts.Common.Infrastructure.Database.DatabaseSeeders;
+global using ScreenDrafts.Modules.Drafts.Composition;
+global using ScreenDrafts.Modules.Drafts.Domain.Campaigns;
+global using ScreenDrafts.Modules.Drafts.Domain.Categories;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafters;
-global using ScreenDrafts.Modules.Drafts.Domain.Drafters.Entities;
+global using ScreenDrafts.Modules.Drafts.Domain.Drafters.Enums;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafters.ValueObjects;
+global using ScreenDrafts.Modules.Drafts.Domain.DraftParts;
+global using ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities;
+global using ScreenDrafts.Modules.Drafts.Domain.DraftParts.Enums;
+global using ScreenDrafts.Modules.Drafts.Domain.DraftParts.ValueObjects;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafts;
-global using ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities;
-global using ScreenDrafts.Modules.Drafts.Domain.Drafts.Enums;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafts.ValueObjects;
 global using ScreenDrafts.Modules.Drafts.Domain.People;
 global using ScreenDrafts.Modules.Drafts.Domain.People.ValueObjects;
+global using ScreenDrafts.Modules.Drafts.Domain.SeriesAggregate.Enums;
 global using ScreenDrafts.Modules.Drafts.Infrastructure;
 global using ScreenDrafts.Modules.Drafts.Infrastructure.Database;
 global using ScreenDrafts.Seeding.Drafts.Common;

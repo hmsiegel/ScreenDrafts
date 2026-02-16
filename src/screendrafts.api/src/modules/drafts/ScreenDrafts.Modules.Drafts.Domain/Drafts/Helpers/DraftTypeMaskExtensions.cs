@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.Helpers;
+﻿using ScreenDrafts.Modules.Drafts.Domain.SeriesAggregate.Enums;
+
+namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.Helpers;
 
 public static class DraftTypeMaskExtensions
 {
@@ -8,7 +10,7 @@ public static class DraftTypeMaskExtensions
     {
       return false;
     }
-    return (mask & (DraftTypeMask)(1 << (draftType.Value - 1))) != 0;
+    return (mask & (DraftTypeMask)(1 << (draftType.Value))) != 0;
   }
 
   public static bool IsSingleFlag(this DraftTypeMask mask)

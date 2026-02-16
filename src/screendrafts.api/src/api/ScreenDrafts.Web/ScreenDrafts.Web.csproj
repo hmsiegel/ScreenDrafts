@@ -30,15 +30,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\modules\drafts\ScreenDrafts.Modules.Drafts.Infrastructure\ScreenDrafts.Modules.Drafts.Infrastructure.csproj" />
-    <ProjectReference Include="..\..\modules\movies\ScreenDrafts.Modules.Movies.Infrastructure\ScreenDrafts.Modules.Movies.Infrastructure.csproj" />
-    <ProjectReference Include="..\..\modules\users\ScreenDrafts.Modules.Users.Infrastructure\ScreenDrafts.Modules.Users.Infrastructure.csproj" />
-    <ProjectReference Include="..\..\modules\administration\ScreenDrafts.Modules.Administration.Infrastructure\ScreenDrafts.Modules.Administration.Infrastructure.csproj" />
-    <ProjectReference Include="..\..\modules\audit\ScreenDrafts.Modules.Audit.Infrastructure\ScreenDrafts.Modules.Audit.Infrastructure.csproj" />
-    <ProjectReference Include="..\..\modules\communications\ScreenDrafts.Modules.Communications.Infrastructure\ScreenDrafts.Modules.Communications.Infrastructure.csproj" />
-    <ProjectReference Include="..\..\modules\integrations\ScreenDrafts.Modules.Integrations.Infrastructure\ScreenDrafts.Modules.Integrations.Infrastructure.csproj" />
-    <ProjectReference Include="..\..\modules\real-time-updates\ScreenDrafts.Modules.RealTimeUpdates.Infrastructure\ScreenDrafts.Modules.RealTimeUpdates.Infrastructure.csproj" />
-    <ProjectReference Include="..\..\modules\reporting\ScreenDrafts.Modules.Reporting.Infrastructure\ScreenDrafts.Modules.Reporting.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\modules\administration\ScreenDrafts.Modules.Administration.Composition\ScreenDrafts.Modules.Administration.Composition.csproj" />
+    <ProjectReference Include="..\..\modules\audit\ScreenDrafts.Modules.Audit.Composition\ScreenDrafts.Modules.Audit.Composition.csproj" />
+    <ProjectReference Include="..\..\modules\communications\ScreenDrafts.Modules.Communications.Composition\ScreenDrafts.Modules.Communications.Composition.csproj" />
+    <ProjectReference Include="..\..\modules\drafts\ScreenDrafts.Modules.Drafts.Composition\ScreenDrafts.Modules.Drafts.Composition.csproj" />
+    <ProjectReference Include="..\..\modules\integrations\ScreenDrafts.Modules.Integrations.Composition\ScreenDrafts.Modules.Integrations.Composition.csproj" />
+    <ProjectReference Include="..\..\modules\movies\ScreenDrafts.Modules.Movies.Composition\ScreenDrafts.Modules.Movies.Composition.csproj" />
+    <ProjectReference Include="..\..\modules\real-time-updates\ScreenDrafts.Modules.RealTimeUpdates.Composition\ScreenDrafts.Modules.RealTimeUpdates.Composition.csproj" />
+    <ProjectReference Include="..\..\modules\reporting\ScreenDrafts.Modules.Reporting.Composition\ScreenDrafts.Modules.Reporting.Composition.csproj" />
+    <ProjectReference Include="..\..\modules\users\ScreenDrafts.Modules.Users.Composition\ScreenDrafts.Modules.Users.Composition.csproj" />
   </ItemGroup>
 
   <ItemGroup>

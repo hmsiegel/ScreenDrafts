@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Domain.Predictions.Entities;
+﻿using ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities;
+
+namespace ScreenDrafts.Modules.Drafts.Domain.Predictions.Entities;
 
 public sealed class PredictionEntry : Entity<PredictionEntryId>
 {

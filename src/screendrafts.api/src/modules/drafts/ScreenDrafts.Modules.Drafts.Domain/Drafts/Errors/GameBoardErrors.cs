@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.Errors;
+﻿using ScreenDrafts.Common.Abstractions.Errors;
+
+namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.Errors;
 public static class GameBoardErrors
 {
   public static readonly SDError DraftPositionsMissing =
@@ -16,15 +18,15 @@ public static class GameBoardErrors
       "GameBoard.DraftPositionNotFound",
       $"The draft position with Id {id} was not found.");
 
-  public static readonly SDError InvalidNumberOfDrafters =
+  public static readonly SDError InvalidNumberOfParticipants =
     SDError.Problem(
-      "GameBoard.InvalidNumberOfDrafters",
-      "The number of drafters does not match the number of draft positions.");
+      "GameBoard.InvalidNumberOfParticipants",
+      "The number of participants does not match the number of draft positions.");
 
   public static SDError DraftPositionAlreadyAssigned(Guid id) =>
     SDError.Conflict(
       "GameBoard.DraftPositionAlreadyAssigned",
-      $"The draft position with Id {id} is already assigned to a drafter.");
+      $"The draft position with Id {id} is already assigned to a participant.");
 
   public static readonly SDError GameBoardCreationFailed =
     SDError.Problem(

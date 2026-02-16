@@ -1,9 +1,6 @@
-﻿using ScreenDrafts.Common.Features.Http;
-using ScreenDrafts.Common.Features.Http.Responses;
+﻿namespace ScreenDrafts.Modules.Drafts.Features.Drafts.CreateDraft;
 
-namespace ScreenDrafts.Modules.Drafts.Features.Drafts.CreateDraft;
-
-internal sealed class Endpoint : ScreenDraftsEndpoint<Request, CreatedResponse>
+internal sealed class Endpoint : ScreenDraftsEndpoint<CreateDraftRequest, CreatedResponse>
 {
   public override void Configure()
   {
@@ -16,30 +13,30 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<Request, CreatedResponse>
         .Produces(StatusCodes.Status400BadRequest)
         .Produces(StatusCodes.Status403Forbidden);
     });
-    Policies(Features.Permissions.DraftCreate);
+    Policies(DraftsAuth.Permissions.DraftCreate);
   }
 
-  public override async Task HandleAsync(Request req, CancellationToken ct)
+  public override async Task HandleAsync(CreateDraftRequest req, CancellationToken ct)
   {
     ArgumentNullException.ThrowIfNull(req);
 
-    var command = new Command
+    var CreateDraftCommand = new CreateDraftCommand
     {
       DraftType = req.DraftType,
       Title = req.Title,
       SeriesId = req.SeriesId,
-      TotalPicks = req.TotalPicks,
-      TotalDrafters = req.TotalDrafters,
-      TotalDrafterTeams = req.TotalDrafterTeams,
-      TotalHosts = req.TotalHosts,
+      MinPosition = req.MinPosition,
+      MaxPosition = req.MaxPosition,
       AutoCreateFirstPart = req.AutoCreateFirstPart
     };
 
-    var result = await Sender.Send(command, ct);
+    var result = await Sender.Send(CreateDraftCommand, ct);
 
-    await this.MapCreatedResultsAsync(
+    await this.SendCreatedAsync(
       result.Map(id => new CreatedResponse(id)),
       created => DraftLocations.ById(created.PublicId),
       ct);
   }
 }
+
+

@@ -1,7 +1,4 @@
-﻿using ScreenDrafts.Common.Features.Abstractions.CsvFiles;
-using ScreenDrafts.Common.Features.Abstractions.Seeding;
-
-namespace ScreenDrafts.Seeding.Drafts.Seeders.People;
+﻿namespace ScreenDrafts.Seeding.Drafts.Seeders.People;
 
 internal sealed class DrafterTeamsSeeder(
   ILogger<DrafterTeamsSeeder> logger,
@@ -34,7 +31,7 @@ internal sealed class DrafterTeamsSeeder(
       csvDrafterTeams,
       drafterTeam => drafterTeam.Name,
       drafterTeam => drafterTeam.Name,
-      drafterTeam => DrafterTeam.Create(name: drafterTeam.Name).Value,
+      drafterTeam => DrafterTeam.Create(id: DrafterTeamId.Create(drafterTeam.Id!.Value), name: drafterTeam.Name).Value,
       _dbContext.DrafterTeams,
       TableName,
       cancellationToken);

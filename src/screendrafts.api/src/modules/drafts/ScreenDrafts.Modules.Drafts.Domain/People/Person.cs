@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Domain.People;
 
-public sealed class Person : AggrgateRoot<PersonId, Guid>
+public sealed class Person : AggregateRoot<PersonId, Guid>
 {
   private Person(
     string publicId,

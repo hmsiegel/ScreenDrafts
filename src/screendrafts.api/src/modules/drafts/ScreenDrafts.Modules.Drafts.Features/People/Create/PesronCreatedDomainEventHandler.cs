@@ -1,8 +1,8 @@
-﻿using IEventBus = ScreenDrafts.Common.Features.Abstractions.EventBus.IEventBus;
+﻿using ScreenDrafts.Modules.Drafts.Features.People.Get;
 
 namespace ScreenDrafts.Modules.Drafts.Features.People.Create;
 
-internal sealed class PesronCreatedDomainEventHandler(
+internal sealed class PersonCreatedDomainEventHandler(
   ISender sender,
   IEventBus eventBus)
   : DomainEventHandler<PersonCreatedDomainEvent>
@@ -12,7 +12,7 @@ internal sealed class PesronCreatedDomainEventHandler(
 
   public override async Task Handle(PersonCreatedDomainEvent domainEvent, CancellationToken cancellationToken = default)
   {
-    var query = new Features.People.Get.Query(domainEvent.PublicId);
+    var query = new GetPersonQuery(domainEvent.PublicId);
 
     var result = await _sender.Send(query, cancellationToken);
 

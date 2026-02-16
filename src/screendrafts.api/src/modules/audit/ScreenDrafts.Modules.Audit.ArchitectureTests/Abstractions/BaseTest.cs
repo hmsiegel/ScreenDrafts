@@ -2,9 +2,7 @@
 
 public abstract class BaseTest
 {
-  protected static readonly Assembly ApplicationAssembly = typeof(Audit.Application.AssemblyReference).Assembly;
+  protected static readonly Assembly FeaturesAssembly = Audit.Features.AssemblyReference.Assembly;
 
-  protected static readonly Assembly InfrastructureAssembly = typeof(AuditModule).Assembly;
-
-  protected static readonly Assembly PresentationAssembly = typeof(Audit.Presentation.AssemblyReference).Assembly;
+  protected static readonly Assembly InfrastructureAssembly = typeof(AuditInfrastructure).Assembly;
 }

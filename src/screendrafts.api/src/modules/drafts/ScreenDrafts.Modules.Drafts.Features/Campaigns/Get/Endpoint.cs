@@ -1,6 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.Campaigns.Get;
+namespace ScreenDrafts.Modules.Drafts.Features.Campaigns.Get;
 
-internal sealed class Endpoint : ScreenDraftsEndpoint<Request, CampaignResponse>
+internal sealed class Endpoint : ScreenDraftsEndpoint<GetCampaignRequest, CampaignResponse>
 {
   public override void Configure()
   {
@@ -13,15 +13,17 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<Request, CampaignResponse>
       .Produces(StatusCodes.Status401Unauthorized)
       .Produces(StatusCodes.Status403Forbidden);
     });
-    Policies(Features.Permissions.CampaignRead);
+    Policies(DraftsAuth.Permissions.CampaignRead);
   }
 
-  public override async Task HandleAsync(Request req, CancellationToken ct)
+  public override async Task HandleAsync(GetCampaignRequest req, CancellationToken ct)
   {
-    var query = new Query(req.PublicId);
+    var GetCampaignQuery = new GetCampaignQuery(req.PublicId);
 
-    var result = await Sender.Send(query, ct);
+    var result = await Sender.Send(GetCampaignQuery, ct);
 
     await this.SendOkAsync(result, ct);
   }
 }
+
+

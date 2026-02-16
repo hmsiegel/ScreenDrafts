@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Common.Application.Messaging;
+﻿using ScreenDrafts.Common.Application.Messaging;
+
+namespace ScreenDrafts.Common.Application.Messaging;
 
 public interface IDomainEventHandler<in TDomainEvent> : IDomainEventHandler
     where TDomainEvent : IDomainEvent

@@ -2,7 +2,10 @@
 
 public static class HostsFactory
 {
+  private static readonly Faker _faker = new();
+
   public static Result<Host> CreateHost() =>
     Host.Create(
-      PersonFactory.CreatePerson().Value);
+      person: PersonFactory.CreatePerson().Value,
+      publicId: _faker.Random.AlphaNumeric(10));
 }

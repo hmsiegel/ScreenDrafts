@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Users.Features.Admin.AddPermission;
 
-internal sealed class Validator : AbstractValidator<Command>
+internal sealed class Validator : AbstractValidator<AddPermissionCommand>
 {
   public Validator()
   {

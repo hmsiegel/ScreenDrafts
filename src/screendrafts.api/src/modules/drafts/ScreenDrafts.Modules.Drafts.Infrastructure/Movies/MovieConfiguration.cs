@@ -13,5 +13,29 @@ internal sealed class MovieConfiguration : IEntityTypeConfiguration<Movie>
 
     builder.Property(x => x.ImdbId)
       .IsRequired();
+
+    builder.OwnsMany(x => x.Versions, mvb =>
+    {
+      mvb.ToTable(Tables.MovieVersions);
+
+      mvb.WithOwner().HasForeignKey("movie_id");
+
+      mvb.Property<Guid>("id")
+      .ValueGeneratedNever();
+
+      mvb.HasKey("id");
+
+      mvb.Property(v => v.Name)
+      .IsRequired()
+      .HasMaxLength(100)
+      .HasColumnName("name");
+
+      mvb.HasIndex("movie_id", nameof(MovieVersion.Name))
+      .IsUnique();
+    });
+
+    builder.Navigation(x => x.Versions)
+      .HasField("_versions")
+      .UsePropertyAccessMode(PropertyAccessMode.Field);
   }
 }

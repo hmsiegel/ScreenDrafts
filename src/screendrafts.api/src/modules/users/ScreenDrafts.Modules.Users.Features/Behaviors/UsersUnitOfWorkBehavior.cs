@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Users.Features.Behaviors;
+﻿using ScreenDrafts.Modules.Users.Domain.Abstractions.Data;
+
+namespace ScreenDrafts.Modules.Users.Features.Behaviors;
 
 public sealed class UsersUnitOfWorkBehavior<TRequest, TResponse>
   (IUnitOfWork unitOfWork)

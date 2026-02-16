@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Users.Features.Users.Update;
 
-internal sealed class Validator : AbstractValidator<Command>
+internal sealed class Validator : AbstractValidator<UpdateUserCommand>
 {
   public Validator()
   {

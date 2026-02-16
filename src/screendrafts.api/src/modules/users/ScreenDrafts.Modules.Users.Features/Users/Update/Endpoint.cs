@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Users.Features.Users.Update;
+﻿using ScreenDrafts.Common.Presentation.Http.Authentication;
+
+namespace ScreenDrafts.Modules.Users.Features.Users.Update;
 
 internal sealed class Endpoint : ScreenDraftsEndpoint<Request>
 {
@@ -20,7 +22,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<Request>
   public override async Task HandleAsync(Request req, CancellationToken ct)
   {
     var userId = User.GetPublicId()!;
-    var command = new Command(
+    var command = new UpdateUserCommand(
       userId,
       req.FirstName,
       req.LastName,

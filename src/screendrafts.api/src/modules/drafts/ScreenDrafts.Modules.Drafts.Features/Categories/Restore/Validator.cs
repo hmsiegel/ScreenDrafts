@@ -1,6 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.Categories.Restore;
+namespace ScreenDrafts.Modules.Drafts.Features.Categories.Restore;
 
-internal sealed class Validator : AbstractValidator<Command>
+internal sealed class Validator : AbstractValidator<RestoreCategoryCommand>
 {
   public Validator()
   {
@@ -10,3 +10,4 @@ internal sealed class Validator : AbstractValidator<Command>
       .WithMessage("PublicId is required.");
   }
 }
+

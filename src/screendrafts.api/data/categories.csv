@@ -1,0 +1,17 @@
+﻿Id,Name,Description
+904a0966-b791-4d1f-9c1d-44e735472029,Director Drafts,Episodes of Screen Drafts that focus on the output of a single director.
+deda9b13-2a05-4bbb-a96e-d12d3f1202e1,Genre Drafts,"Genre Drafts are drafts that are restricted by a large, overreaching genre. Many of these drafts may have other modifiers to further narrow down the selection, including Topic, Decade or Studio."
+a2390c01-ad19-46e7-9ffe-8a4f0dde2720,Producer Drafts,Episodes of Screen Drafts where the eligibility is limited to a single producer.
+6b9912a0-a5ca-47ec-9377-6295d448f77d,Christmas Drafts,Episodes of Screen Drafts featuring a topic centered around Christmas. Typically (but not always) released in the weeks proceeding Christmas.
+,Documentary Drafts,Episodes of Screen Drafts where the eligibility pool is restricted solely to documentary films.
+,Franchise Drafts,Episodes of Screen Drafts where films from a single or multiple franchises are drafted.
+,LGBTQ Drafts,Drafts that delve into the LGBTQ+ topics.
+,Live Drafts,"Drafts that were recorded live, often as part of film festivals."
+,Studio Drafts,Studio Drafts are drafts where the eligibility pool is restricted to a single production studio.
+,Topic Drafts,"Drafts that focus on a certain topic, rather than an individual or genre."
+,Verses Drafts,Drafts where titles from different series or starring different actors that share a common link are combined for a single eligibility pool.
+,Year Drafts,Drafts where the eligibility pool is limited to a single U.S. release year.
+,Writer Drafts,"Drafters based on the screenwriter of the motion picture. For drafts based on the shared creator of the source material, see Author Drafts."
+,Author Drafts,"Episodes of Screen Drafts where the eligibility pool is limited to a single creator of the source material. For episodes that share a single screenwriter, see Writer Drafts."
+,Series Drafts,"Episodes of Screen Drafts where titles from a single series of films or multiple series of films sharing a thematic link are drafted. Typically, but not always, presented as Super Drafts."
+,Award Drafts,Episodes where titles come from a specific award.

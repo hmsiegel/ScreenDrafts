@@ -1,8 +1,4 @@
-﻿using ScreenDrafts.Common.Features.Abstractions.CsvFiles;
-using ScreenDrafts.Common.Features.Abstractions.Logging;
-using ScreenDrafts.Common.Features.Abstractions.Seeding;
-
-namespace ScreenDrafts.Seeding.Drafts.Seeders.Picks;
+﻿namespace ScreenDrafts.Seeding.Drafts.Seeders.Picks;
 
 internal sealed class PicksSeeder(
   ILogger<PicksSeeder> logger,
@@ -15,9 +11,7 @@ internal sealed class PicksSeeder(
   public string Name => "picks";
 
   public async Task InitializeAsync(CancellationToken cancellationToken = default)
-  {
-    await SeedDraftPicksAsync(cancellationToken);
-  }
+    => await SeedDraftPicksAsync(cancellationToken);
 
   private async Task SeedDraftPicksAsync(CancellationToken cancellationToken)
   {
@@ -33,62 +27,115 @@ internal sealed class PicksSeeder(
     }
 
     var exisitingPickKeys = await _dbContext.Picks
-        .Select(p => new { p.DraftId, p.DrafterId, p.DrafterTeamId, p.MovieId, p.Position })
+        .Select(p => new { p.DraftPartId, p.PlayOrder })
         .ToListAsync(cancellationToken);
 
     var existingSet = exisitingPickKeys
         .Select(p =>
-          (p.DraftId.Value, p.DrafterId, p.DrafterTeamId, p.MovieId, p.Position))
+          (p.DraftPartId.Value, p.PlayOrder))
         .ToHashSet();
 
-    var draftPicks = new List<Pick>();
+    var partIds = csvPicks.Select(r => DraftPartId.Create(r.DraftPartId))
+      .Distinct()
+      .ToList();
+
+    var movieIds = csvPicks.Select(x => x.MovieId)
+      .Distinct()
+      .ToList();
+
+    var parts = await _dbContext.DraftParts
+      .Where(dp => partIds.Contains(dp.Id))
+      .ToDictionaryAsync(dp => dp.Id.Value, cancellationToken);
+
+    var movies = await _dbContext.Movies
+      .Where(m => movieIds.Contains(m.Id))
+      .ToDictionaryAsync(m => m.Id, cancellationToken);
+
+    var participantsForParts = await _dbContext.DraftPartParticipants
+      .Where(p => partIds.Contains(p.DraftPartId))
+      .ToListAsync(cancellationToken);
+
+    var participantLookup = participantsForParts.ToDictionary(
+      p => (p.DraftPartId.Value, p.ParticipantId.Value, (int)p.ParticipantId.Kind),
+      p => p);
+
+    var newPicks = new List<Pick>();
 
     foreach (var record in csvPicks)
     {
-      var drafterId = record.DrafterId.HasValue ? DrafterId.Create(record.DrafterId.Value) : null;
-      var drafterTeamId = record.DrafterTeamId.HasValue ? DrafterTeamId.Create(record.DrafterTeamId.Value) : null;
-
-      var key = (
-        record.DraftId,
-        drafterId,
-        drafterTeamId,
-        record.MovieId,
-        record.PickNumber);
+      var key = (record.DraftPartId, record.PlayOrder);
 
       if (existingSet.Contains(key))
       {
         continue;
       }
 
-      var draft = await _dbContext.Drafts.FindAsync([DraftId.Create(record.DraftId)], cancellationToken: cancellationToken);
-      var drafter = drafterId is not null 
-        ? await _dbContext.Drafters.FindAsync([drafterId], cancellationToken: cancellationToken)
-        : null;
-      var drafterTeam = drafterTeamId is not null
-        ? await _dbContext.DrafterTeams.FindAsync([drafterTeamId], cancellationToken: cancellationToken)
-        : null;
-      var movie = await _dbContext.Movies.FindAsync([record.MovieId], cancellationToken: cancellationToken);
-
-      if (draft is null || movie is null)
+      if (!parts.TryGetValue(record.DraftPartId, out var draftPart))
       {
+        DatabaseSeedingLoggingMessages.RecordMissing(_logger, nameof(DraftPart), TableName, $"Id: {record.DraftPartId}");
         continue;
       }
 
-      var pick = Pick.Create(
-          record.PickNumber,
-          movie,
-          drafter,
-          drafterTeam,
-          draft,
-          record.PlayOrder).Value;
+      if (!movies.TryGetValue(record.MovieId, out var movie))
+      {
+        DatabaseSeedingLoggingMessages.RecordMissing(_logger, nameof(Movie), TableName, $"Id: {record.MovieId}");
+        continue;
+      }
 
-      draftPicks.Add(pick);
+      var lookupKey = (
+        record.DraftPartId,
+        record.PlayedByParticipantIdValue,
+        record.PlayedByParticipantKindValue
+      );
+      var kindValue = record.PlayedByParticipantKindValue;
+
+      if (!participantLookup.TryGetValue(lookupKey, out var playedByParticipant))
+      {
+        DatabaseSeedingLoggingMessages.RecordMissing(
+          _logger,
+          nameof(DraftPartParticipant),
+          TableName,
+          $"DraftPartId: {record.DraftPartId}, ParticipantIdValue: {record.PlayedByParticipantIdValue}, Kind: {kindValue}");
+        continue;
+      }
+
+      var deterministicPickGuid = DeterministicIds.PickIdFromDraftPart(record.DraftPartId, record.PlayOrder);
+      var pickId = PickId.Create(deterministicPickGuid);
+
+      var pickResult = Pick.SeedCreate(
+        position: record.Position,
+        movie: movie,
+        draftPart: draftPart,
+        playedByParticipant: playedByParticipant,
+        playOrder: record.PlayOrder,
+        movieVersionName: record.MovieVersionName,
+        id: pickId);
+
+      if (pickResult.IsFailure)
+      {
+        DatabaseSeedingLoggingMessages.RecordMissing(
+          _logger,
+          nameof(Pick),
+          TableName,
+          $"Position: {record.Position}, MovieId: {record.MovieId}, DraftPartId: {record.DraftPartId}, PlayedByParticipantIdValue: {record.PlayedByParticipantIdValue}, PlayedByParticipantKindValue: {kindValue}, PlayOrder: {record.PlayOrder}, Error: {pickResult.Errors[0].Description}");
+        continue;
+      }
+
+      var pick = pickResult.Value;
+
+      newPicks.Add(pick);
 
       DatabaseSeedingLoggingMessages.ItemAddedToDatabase(_logger, pick.Id.ToString());
     }
 
-    _dbContext.Picks.AddRange(draftPicks);
+    if (newPicks.Count == 0)
+    {
+      DatabaseSeedingLoggingMessages.AlreadySeeded(_logger, TableName);
+      return;
+    }
 
-    await SaveAndLogAsync(TableName, draftPicks.Count);
+    _dbContext.Picks.AddRange(newPicks);
+
+    await SaveAndLogAsync(TableName, newPicks.Count);
   }
 }

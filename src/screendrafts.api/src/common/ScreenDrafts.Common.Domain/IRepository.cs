@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Common.Domain;
 
-public interface IRepository<T, TId>
+public interface IRepository<T, TId> : IRepository
 {
   void Add(T entity);
   void Update(T entity);
@@ -11,7 +11,7 @@ public interface IRepository<T, TId>
 
 public interface IRepository;
 
-public interface IRepository<in T>
+public interface IRepository<in T> : IRepository
 {
   void Add(T entity);
   void Update(T entity);

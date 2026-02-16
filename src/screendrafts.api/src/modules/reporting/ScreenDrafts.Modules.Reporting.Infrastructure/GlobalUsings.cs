@@ -1,6 +1,7 @@
 ﻿global using System.Data;
 global using System.Data.Common;
 global using System.Reflection;
+global using System.Runtime.CompilerServices;
 
 global using Dapper;
 
@@ -10,7 +11,6 @@ global using Microsoft.EntityFrameworkCore;
 global using Microsoft.EntityFrameworkCore.Migrations;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
-global using Microsoft.Extensions.DependencyInjection.Extensions;
 global using Microsoft.Extensions.Logging;
 global using Microsoft.Extensions.Options;
 
@@ -29,7 +29,7 @@ global using ScreenDrafts.Common.Infrastructure.Database;
 global using ScreenDrafts.Common.Infrastructure.Inbox;
 global using ScreenDrafts.Common.Infrastructure.Outbox;
 global using ScreenDrafts.Common.Infrastructure.Serialization;
-global using ScreenDrafts.Modules.Reporting.Application.Abstractions.Data;
+global using ScreenDrafts.Modules.Reporting.Domain.Abstractions.Data;
 global using ScreenDrafts.Modules.Reporting.Infrastructure.Database;
 global using ScreenDrafts.Modules.Reporting.Infrastructure.Inbox;
 global using ScreenDrafts.Modules.Reporting.Infrastructure.Outbox;

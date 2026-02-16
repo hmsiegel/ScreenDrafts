@@ -4,7 +4,7 @@
     <ProjectReference Include="..\..\..\common\ScreenDrafts.Common.Infrastructure\ScreenDrafts.Common.Infrastructure.csproj" />
     <ProjectReference Include="..\..\movies\ScreenDrafts.Modules.Movies.IntegrationEvents\ScreenDrafts.Modules.Movies.IntegrationEvents.csproj" />
     <ProjectReference Include="..\..\users\ScreenDrafts.Modules.Users.IntegrationEvents\ScreenDrafts.Modules.Users.IntegrationEvents.csproj" />
-    <ProjectReference Include="..\ScreenDrafts.Modules.Drafts.Features\ScreenDrafts.Modules.Drafts.Features.csproj" />
+    <ProjectReference Include="..\ScreenDrafts.Modules.Drafts.Domain\ScreenDrafts.Modules.Drafts.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>

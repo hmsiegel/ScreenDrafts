@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Users.Features.Admin.RemoveRoleFromUser;
 
-internal sealed class Validator : AbstractValidator<Command>
+internal sealed class Validator : AbstractValidator<RemoveRoleFromUserCommand>
 {
   public Validator()
   {

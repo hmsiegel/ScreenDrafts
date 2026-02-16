@@ -1,14 +1,13 @@
-﻿using ScreenDrafts.Common.Features.Abstractions.CsvFiles;
-using ScreenDrafts.Common.Features.Abstractions.Seeding;
-
-namespace ScreenDrafts.Seeding.Drafts.Seeders.People;
+﻿namespace ScreenDrafts.Seeding.Drafts.Seeders.People;
 
 internal sealed class PersonSeeder(
   ILogger<PersonSeeder> logger,
   ICsvFileService csvFileService,
+  IPublicIdGenerator publicIdGenerator,
   DraftsDbContext dbContext) 
   : DraftBaseSeeder(dbContext, logger, csvFileService), ICustomSeeder
 {
+  private readonly IPublicIdGenerator _publicIdGenerator = publicIdGenerator;
   public int Order { get; }
   public string Name => "people";
 
@@ -35,6 +34,7 @@ internal sealed class PersonSeeder(
       p => PersonId.Create(p.Id),
       p => p.Id,
       p => Person.Create(
+        publicId: _publicIdGenerator.GeneratePublicId(PublicIdPrefixes.Person),
         firstName: p.FirstName,
         lastName: p.LastName,
         displayName: p.DisplayName).Value,

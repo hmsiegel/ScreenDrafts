@@ -1,7 +1,0 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\common\ScreenDrafts.Common.Features\ScreenDrafts.Common.Features.csproj" />
-    <ProjectReference Include="..\ScreenDrafts.Modules.Administration.Domian\ScreenDrafts.Modules.Administration.Domian.csproj" />
-    <ProjectReference Include="..\ScreenDrafts.Modules.Administration.IntegrationEvents\ScreenDrafts.Modules.Administration.IntegrationEvents.csproj" />
-  </ItemGroup>
-</Project>

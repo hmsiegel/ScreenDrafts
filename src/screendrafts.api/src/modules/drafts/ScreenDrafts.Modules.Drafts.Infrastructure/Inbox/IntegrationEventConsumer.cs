@@ -1,14 +1,13 @@
-﻿using ScreenDrafts.Common.Features.Abstractions.Data;
-using ScreenDrafts.Common.Features.Abstractions.EventBus;
+﻿namespace ScreenDrafts.Modules.Drafts.Infrastructure.Inbox;
 
-namespace ScreenDrafts.Modules.Drafts.Infrastructure.Inbox;
-
-internal sealed class IntegrationEventConsumer<TIntegrationEvent>(IDbConnectionFactory dbConnectionFactory)
+public sealed class IntegrationEventConsumer<TIntegrationEvent>(IDbConnectionFactory dbConnectionFactory)
     : IConsumer<TIntegrationEvent>
     where TIntegrationEvent : IntegrationEvent
 {
   public async Task Consume(ConsumeContext<TIntegrationEvent> context)
   {
+    ArgumentNullException.ThrowIfNull(context);
+
     await using var connection = await dbConnectionFactory.OpenConnectionAsync();
 
     var integrationEvent = context.Message;

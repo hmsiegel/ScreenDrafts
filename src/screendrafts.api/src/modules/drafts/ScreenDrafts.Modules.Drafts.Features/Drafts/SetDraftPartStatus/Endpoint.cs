@@ -1,6 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.Drafts.SetDraftPartStatus;
+namespace ScreenDrafts.Modules.Drafts.Features.Drafts.SetDraftPartStatus;
 
-internal sealed class Endpoint : ScreenDraftsEndpoint<Request, Response>
+internal sealed class Endpoint : ScreenDraftsEndpoint<SetDraftPartStatusRequest, Response>
 {
   public override void Configure()
   {
@@ -15,19 +15,21 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<Request, Response>
       .Produces(StatusCodes.Status403Forbidden)
       .Produces(StatusCodes.Status404NotFound);
     });
-    Policies(Features.Permissions.DraftPartStatus);
+    Policies(DraftsAuth.Permissions.DraftPartStatus);
   }
 
-  public override async Task HandleAsync(Request req, CancellationToken ct)
+  public override async Task HandleAsync(SetDraftPartStatusRequest req, CancellationToken ct)
   {
-    var command = new Command
+    var SetDraftPartStatusCommand = new SetDraftPartStatusCommand
     {
-      Request = req
+      SetDraftPartStatusRequest = req
     };
 
-    var result = await Sender.Send(command, ct);
+    var result = await Sender.Send(SetDraftPartStatusCommand, ct);
 
     await this.SendOkAsync(result, ct);
 
   }
 }
+
+

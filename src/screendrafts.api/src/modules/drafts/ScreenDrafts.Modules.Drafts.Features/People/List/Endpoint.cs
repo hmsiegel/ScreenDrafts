@@ -1,6 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.People.List;
+namespace ScreenDrafts.Modules.Drafts.Features.People.List;
 
-internal sealed class Endpoint : ScreenDraftsEndpoint<Request, PeopleCollectionResponse>
+internal sealed class Endpoint : ScreenDraftsEndpoint<ListPeopleRequest, PeopleCollectionResponse>
 {
   public override void Configure()
   {
@@ -13,15 +13,17 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<Request, PeopleCollectionR
       .Produces(StatusCodes.Status401Unauthorized)
       .Produces(StatusCodes.Status403Forbidden);
     });
-    Permissions(Features.Permissions.PersonList);
+    Permissions(DraftsAuth.Permissions.PersonList);
   }
 
-  public override async Task HandleAsync(Request req, CancellationToken ct)
+  public override async Task HandleAsync(ListPeopleRequest req, CancellationToken ct)
   {
-    var query = new Query(req);
+    var ListPeopleQuery = new ListPeopleQuery(req);
 
-    var result = await Sender.Send(query, ct);
+    var result = await Sender.Send(ListPeopleQuery, ct);
 
     await this.SendOkAsync(result, ct);
   }
 }
+
+

@@ -1,4 +1,7 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.Helpers;
+﻿using ScreenDrafts.Modules.Drafts.Features.SeriesFeatures;
+using ScreenDrafts.Modules.Drafts.Domain.SeriesAggregate.Enums;
+
+namespace ScreenDrafts.Modules.Drafts.Features.Helpers;
 
 internal static class QueryMapping
 {

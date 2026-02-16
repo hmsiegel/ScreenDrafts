@@ -1,6 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.Movies.Add;
+namespace ScreenDrafts.Modules.Drafts.Features.Movies.Add;
 
-internal sealed class Validator : AbstractValidator<Command>
+internal sealed class Validator : AbstractValidator<AddMovieCommand>
 {
   public Validator()
   {
@@ -14,3 +14,4 @@ internal sealed class Validator : AbstractValidator<Command>
       .MaximumLength(200).WithMessage("The movie title must not exceed 200 characters.");
   }
 }
+

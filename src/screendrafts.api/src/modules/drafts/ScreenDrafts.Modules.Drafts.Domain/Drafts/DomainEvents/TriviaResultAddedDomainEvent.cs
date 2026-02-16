@@ -2,16 +2,13 @@
 
 public sealed class TriviaResultAddedDomainEvent(
   Guid draftId,
-  Guid? drafterId,
+  Guid participantId,
   int position,
-  int questionsWon,
-  Guid? drafterTeamId) : DomainEvent
+  int questionsWon) : DomainEvent
 {
   public Guid DraftId { get; init; } = draftId;
 
-  public Guid? DrafterId { get; init; } = drafterId;
-
-  public Guid? DrafterTeamId { get; init; } = drafterTeamId;
+  public Guid ParticipantId { get; init; } = participantId;
 
   public int Position { get; init; } = position;
 

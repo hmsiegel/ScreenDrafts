@@ -1,0 +1,8 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\common\ScreenDrafts.Common.Application\ScreenDrafts.Common.Application.csproj" />
+    <ProjectReference Include="..\..\..\common\ScreenDrafts.Common.Presentation\ScreenDrafts.Common.Presentation.csproj" />
+    <ProjectReference Include="..\ScreenDrafts.Modules.RealTimeUpdates.Domain\ScreenDrafts.Modules.RealTimeUpdates.Domain.csproj" />
+    <ProjectReference Include="..\ScreenDrafts.Modules.RealTimeUpdates.IntegrationEvents\ScreenDrafts.Modules.RealTimeUpdates.IntegrationEvents.csproj" />
+  </ItemGroup>
+</Project>

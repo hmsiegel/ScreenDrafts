@@ -6,9 +6,10 @@ public static class DrafterFactory
 
   public static Drafter CreateDrafter() =>
     Drafter.Create(
-      PersonFactory.CreatePerson().Value).Value;
+      person: PersonFactory.CreatePerson().Value,
+      publicId: _faker.Random.AlphaNumeric(10)).Value;
 
   public static DrafterTeam CreateDrafterTeam() =>
     DrafterTeam.Create(
-      _faker.Company.CompanyName()).Value;
+      name: _faker.Company.CompanyName()).Value;
 }

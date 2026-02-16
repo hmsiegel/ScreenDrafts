@@ -1,6 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.People.Edit;
+namespace ScreenDrafts.Modules.Drafts.Features.People.Edit;
 
-internal sealed class Endpoint : ScreenDraftsEndpoint<Request>
+internal sealed class Endpoint : ScreenDraftsEndpoint<EditPersonRequest>
 {
   public override void Configure()
   {
@@ -15,12 +15,12 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<Request>
       .Produces(StatusCodes.Status403Forbidden)
       .Produces(StatusCodes.Status404NotFound);
     });
-    Permissions(Features.Permissions.PersonUpdate);
+    Permissions(DraftsAuth.Permissions.PersonUpdate);
   }
 
-  public override async Task HandleAsync(Request req, CancellationToken ct)
+  public override async Task HandleAsync(EditPersonRequest req, CancellationToken ct)
   {
-    var command = new Command
+    var EditPersonCommand = new EditPersonCommand
     {
       PublicId = req.PublicId,
       FirstName = req.FirstName,
@@ -28,8 +28,10 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<Request>
       DisplayName = req.DisplayName
     };
 
-    var result = await Sender.Send(command, ct);
+    var result = await Sender.Send(EditPersonCommand, ct);
 
     await this.SendNoContentAsync(result, ct);
   }
 }
+
+

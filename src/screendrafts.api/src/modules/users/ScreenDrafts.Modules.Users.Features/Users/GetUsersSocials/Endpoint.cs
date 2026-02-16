@@ -1,5 +1,4 @@
-﻿
-namespace ScreenDrafts.Modules.Users.Features.Users.GetUsersSocials;
+﻿namespace ScreenDrafts.Modules.Users.Features.Users.GetUsersSocials;
 
 internal sealed class Endpoint : ScreenDraftsEndpoint<Request, Response>
 {
@@ -20,7 +19,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<Request, Response>
 
   public override async Task HandleAsync(Request req, CancellationToken ct)
   {
-    var query = new Query
+    var query = new GetUsersSocialsQuery
     {
       PersonIds = req.PublicIds
     };

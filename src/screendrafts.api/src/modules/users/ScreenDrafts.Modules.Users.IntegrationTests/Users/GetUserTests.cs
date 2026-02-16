@@ -9,7 +9,7 @@ public class GetUserTests(UsersIntegrationTestWebAppFactory factory) : UsersInte
     var userId = Guid.NewGuid();
 
     // Act
-    Result<UserResponse> userResult = await Sender.Send(new GetUserQuery(userId));
+    var userResult = await Sender.Send(new GetByUserIdQuery(userId));
 
     // Assert
     userResult.Errors[0].Should().Be(UserErrors.NotFound(userId));
@@ -19,15 +19,16 @@ public class GetUserTests(UsersIntegrationTestWebAppFactory factory) : UsersInte
   public async Task Should_ReturnUser_WhenUserExistsAsync()
   {
     // Arrange
-    Result<Guid> result = await Sender.Send(new RegisterUserCommand(
-        Faker.Internet.Email(),
-        Faker.Internet.Password(),
-        Faker.Name.FirstName(),
-        Faker.Name.LastName()));
+    Result<Guid> result = await Sender.Send(new RegisterUserCommand{
+        Email = Faker.Internet.Email(),
+        Password = Faker.Internet.Password(),
+        FirstName = Faker.Name.FirstName(),
+        LastName = Faker.Name.LastName()
+    });
     Guid userId = result.Value;
 
     // Act
-    Result<UserResponse> userResult = await Sender.Send(new GetUserQuery(userId));
+    var userResult = await Sender.Send(new GetByUserIdQuery(userId));
 
     // Assert
     userResult.IsSuccess.Should().BeTrue();

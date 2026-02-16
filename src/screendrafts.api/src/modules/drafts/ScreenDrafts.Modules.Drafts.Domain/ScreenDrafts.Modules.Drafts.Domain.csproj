@@ -5,6 +5,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="DrafterTeams\" />
     <Folder Include="Predictions\DomainEvents\" />
     <Folder Include="Predictions\Errors\" />
     <Folder Include="Predictions\Repositories\" />

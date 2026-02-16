@@ -8,15 +8,20 @@ internal sealed class CommissionerOverridesConfiguration : IEntityTypeConfigurat
 
     builder.HasKey(co => co.Id);
 
+    builder.Property(co => co.Id)
+      .IsRequired()
+      .ValueGeneratedNever();
+
     builder.Property(co => co.PickId)
       .IsRequired()
-      .HasConversion(
-        pickId => pickId.Value,
-        value => PickId.Create(value));
+      .ValueGeneratedNever()
+      .HasConversion(IdConverters.DraftPickIdConverter);
 
     builder.HasOne(co => co.Pick)
       .WithOne(p => p.CommissionerOverride)
       .HasForeignKey<CommissionerOverride>(co => co.PickId)
       .OnDelete(DeleteBehavior.Cascade);
+
+    builder.HasIndex(x => x.PickId).IsUnique();
   }
 }

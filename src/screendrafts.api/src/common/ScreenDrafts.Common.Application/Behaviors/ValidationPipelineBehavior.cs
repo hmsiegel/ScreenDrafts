@@ -1,9 +1,14 @@
-﻿namespace ScreenDrafts.Common.Application.Behaviors;
+﻿using IBaseRequest = ScreenDrafts.Common.Application.Messaging.IBaseRequest;
+using ScreenDrafts.Common.Application.Messaging;
+using ScreenDrafts.Common.Abstractions.Results;
+using ScreenDrafts.Common.Abstractions.Errors;
+
+namespace ScreenDrafts.Common.Application.Behaviors;
 
 internal sealed class ValidationPipelineBehavior<TRequest, TResponse>(
   IEnumerable<IValidator<TRequest>> validators)
   : IPipelineBehavior<TRequest, TResponse>
-  where TRequest : IBaseCommand
+  where TRequest : IBaseRequest
 {
   private readonly IEnumerable<IValidator<TRequest>> _validators = validators;
 
@@ -48,7 +53,7 @@ internal sealed class ValidationPipelineBehavior<TRequest, TResponse>(
       return [];
     }
 
-    var context = new ValidationContext<TRequest>(request);
+    var context = new FluentValidation.ValidationContext<TRequest>(request);
 
     var validationResults = await Task.WhenAll(
       _validators.Select(v => v.ValidateAsync(context)));

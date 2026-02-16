@@ -1,4 +1,4 @@
-﻿global using System.Collections.ObjectModel;
+﻿global using System.Collections.Concurrent;
 global using System.Data.Common;
 global using System.Diagnostics;
 global using System.Reflection;
@@ -12,8 +12,9 @@ global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Logging;
 
+global using ScreenDrafts.Common.Abstractions;
 global using ScreenDrafts.Common.Application.Behaviors;
-global using ScreenDrafts.Common.Application.Exceptions;
+global using ScreenDrafts.Common.Application.EventBus;
 global using ScreenDrafts.Common.Application.Logging;
 global using ScreenDrafts.Common.Application.Messaging;
 global using ScreenDrafts.Common.Domain;

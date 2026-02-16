@@ -1,6 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.Categories.Delete;
+namespace ScreenDrafts.Modules.Drafts.Features.Categories.Delete;
 
-internal sealed class Validator : AbstractValidator<Command>
+internal sealed class Validator : AbstractValidator<DeleteCategoryCommand>
 {
   public Validator()
   {
@@ -10,3 +10,4 @@ internal sealed class Validator : AbstractValidator<Command>
       .WithMessage("PublicId is required.");
   }
 }
+

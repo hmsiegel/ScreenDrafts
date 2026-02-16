@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Users.Features.Users.Register;
+﻿using FastEndpoints;
+
+namespace ScreenDrafts.Modules.Users.Features.Users.Register;
 
 internal sealed class Summary : Summary<Endpoint>
 {
@@ -6,8 +8,8 @@ internal sealed class Summary : Summary<Endpoint>
   {
     Summary = "Register a new user";
     Description = "Register a new user";
-    Response<string>(StatusCodes.Status200OK, "User registered successfully");
+    Response<Guid>(StatusCodes.Status200OK, "User registered successfully");
     Response(StatusCodes.Status400BadRequest, "Invalid request data");
-    Response<ProblemDetails>(StatusCodes.Status500InternalServerError, "Internal server error");
+    Response<Microsoft.AspNetCore.Mvc.ProblemDetails>(StatusCodes.Status500InternalServerError, "Internal server error");
   }
 }

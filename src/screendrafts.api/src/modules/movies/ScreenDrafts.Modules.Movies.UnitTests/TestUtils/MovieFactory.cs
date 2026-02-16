@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Movies.UnitTests.TestUtils;
+﻿using ScreenDrafts.Common.Abstractions.Results;
+
+namespace ScreenDrafts.Modules.Movies.UnitTests.TestUtils;
 
 public static class MovieFactory
 {

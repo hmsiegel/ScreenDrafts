@@ -1,5 +1,5 @@
 ﻿namespace ScreenDrafts.Modules.Users.Domain.Users;
-public sealed class User : AggrgateRoot<UserId, Guid>
+public sealed class User : AggregateRoot<UserId, Guid>
 {
   private readonly List<Role> _roles = [];
 
@@ -162,6 +162,16 @@ public sealed class User : AggrgateRoot<UserId, Guid>
     PersonPublicId = personPublicId;
 
     Raise(new UserLinkedToPersonDomainEvent(Id.Value, personId, personPublicId));
+  }
+
+  internal void SetPublicId(string publicId)
+  {
+    ArgumentNullException.ThrowIfNull(publicId);
+    if (PublicId == publicId)
+    {
+      return;
+    }
+    PublicId = publicId;
   }
 }
 

@@ -32,8 +32,7 @@ public class ModuleTests : BaseTest
 
     List<Assembly> administrationAssemblies =
       [
-      Modules.Administration.Application.AssemblyReference.Assembly,
-      Modules.Administration.Presentation.AssemblyReference.Assembly,
+      Modules.Administration.Features.AssemblyReference.Assembly,
       typeof(AdministrationModule).Assembly
       ];
 
@@ -75,8 +74,7 @@ public class ModuleTests : BaseTest
 
     List<Assembly> auditAssemblies =
       [
-      Modules.Audit.Application.AssemblyReference.Assembly,
-      Modules.Audit.Presentation.AssemblyReference.Assembly,
+      Modules.Audit.Features.AssemblyReference.Assembly,
       typeof(AuditModule).Assembly
       ];
 
@@ -118,8 +116,7 @@ public class ModuleTests : BaseTest
 
     List<Assembly> communicationsAssemblies =
       [
-      Modules.Communications.Application.AssemblyReference.Assembly,
-      Modules.Communications.Presentation.AssemblyReference.Assembly,
+      Modules.Communications.Features.AssemblyReference.Assembly,
       typeof(CommunicationsModule).Assembly
       ];
 
@@ -163,8 +160,7 @@ public class ModuleTests : BaseTest
     List<Assembly> draftsAssemblies =
       [
       typeof(Draft).Assembly,
-      Modules.Drafts.Application.AssemblyReference.Assembly,
-      Modules.Drafts.Presentation.AssemblyReference.Assembly,
+      Modules.Drafts.Features.AssemblyReference.Assembly,
       typeof(DraftsModule).Assembly
       ];
 
@@ -206,8 +202,7 @@ public class ModuleTests : BaseTest
 
     List<Assembly> integrationsAssemblies =
       [
-      Modules.Integrations.Application.AssemblyReference.Assembly,
-      Modules.Integrations.Presentation.AssemblyReference.Assembly,
+      Modules.Integrations.Features.AssemblyReference.Assembly,
       typeof(IntegrationsModule).Assembly
       ];
 
@@ -249,8 +244,7 @@ public class ModuleTests : BaseTest
 
     List<Assembly> moviesAssemblies =
       [
-      Modules.Movies.Application.AssemblyReference.Assembly,
-      Modules.Movies.Presentation.AssemblyReference.Assembly,
+      Modules.Movies.Features.AssemblyReference.Assembly,
       typeof(MoviesModule).Assembly
       ];
 
@@ -292,8 +286,7 @@ public class ModuleTests : BaseTest
 
     List<Assembly> realTimeUpdatesAssemblies =
       [
-      Modules.RealTimeUpdates.Application.AssemblyReference.Assembly,
-      Modules.RealTimeUpdates.Presentation.AssemblyReference.Assembly,
+      Modules.RealTimeUpdates.Features.AssemblyReference.Assembly,
       typeof(RealTimeUpdatesModule).Assembly
       ];
 
@@ -335,8 +328,7 @@ public class ModuleTests : BaseTest
 
     List<Assembly> reportingAssemblies =
       [
-      Modules.Reporting.Application.AssemblyReference.Assembly,
-      Modules.Reporting.Presentation.AssemblyReference.Assembly,
+      Modules.Reporting.Features.AssemblyReference.Assembly,
       typeof(ReportingModule).Assembly
       ];
 
@@ -379,8 +371,7 @@ public class ModuleTests : BaseTest
     List<Assembly> usersAssemblies =
       [
       typeof(User).Assembly,
-      Modules.Users.Application.AssemblyReference.Assembly,
-      Modules.Users.Presentation.AssemblyReference.Assembly,
+      Modules.Users.Features.AssemblyReference.Assembly,
       typeof(UsersModule).Assembly
       ];
 

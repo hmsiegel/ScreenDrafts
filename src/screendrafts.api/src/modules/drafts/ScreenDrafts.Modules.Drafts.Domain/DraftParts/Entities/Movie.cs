@@ -1,0 +1,82 @@
+﻿namespace ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities;
+
+public sealed class Movie : Entity
+{
+  private readonly List<Pick> _picks = [];
+  private readonly List<MovieVersion> _versions = [];
+
+  private Movie(
+    string movieTitle,
+    string imdbId,
+    Guid id)
+    : base(id)
+  {
+    MovieTitle = movieTitle;
+    ImdbId = imdbId;
+  }
+
+  private Movie()
+  {
+  }
+
+  public IReadOnlyCollection<Pick> Picks => _picks.AsReadOnly();
+
+  public string MovieTitle { get; private set; } = default!;
+  public string ImdbId { get; private set; } = default!;
+  public bool HasDefinedVersions => _versions.Count > 0;
+  public IReadOnlyCollection<MovieVersion> Versions => _versions.AsReadOnly();
+
+  public static Result<Movie> Create(
+    string movieTitle,
+    string imdbId,
+    Guid id)
+  {
+    if (string.IsNullOrWhiteSpace(movieTitle))
+    {
+      return Result.Failure<Movie>(MovieErrors.InvalidMovieTitle);
+    }
+
+    if (string.IsNullOrWhiteSpace(imdbId))
+    {
+      return Result.Failure<Movie>(MovieErrors.InvalidImdbId);
+    }
+
+    var movie = new Movie(
+      movieTitle: movieTitle,
+      imdbId: imdbId,
+      id: id);
+    return movie;
+  }
+
+  public void AddVersion(MovieVersion version)
+  {
+    if (!_versions.Any(v => v.Name.Equals(
+      version.Name,
+      StringComparison.OrdinalIgnoreCase)))
+    {
+      _versions.Add(version);
+    }
+  }
+
+  public bool TryNormalizeVersionName(string input, out string canonicalName)
+  {
+    canonicalName = null!;
+
+    if (string.IsNullOrWhiteSpace(input))
+    {
+      return false;
+    }
+
+    var match = _versions.FirstOrDefault(v => v.Name.Equals(
+      input.Trim(),
+      StringComparison.OrdinalIgnoreCase));
+
+    if (match is null)
+    {
+      return false;
+    }
+
+    canonicalName = match.Name;
+    return true;
+  }
+}

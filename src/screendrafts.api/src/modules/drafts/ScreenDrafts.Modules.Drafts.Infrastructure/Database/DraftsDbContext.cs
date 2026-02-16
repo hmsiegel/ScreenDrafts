@@ -11,8 +11,6 @@ public sealed class DraftsDbContext(DbContextOptions<DraftsDbContext> options)
 
   internal DbSet<Host> Hosts { get; set; }
 
-  internal DbSet<DrafterDraftStats> DrafterDraftStats { get; set; }
-
   internal DbSet<TriviaResult> TriviaResults { get; set; }
 
   internal DbSet<Pick> Picks { get; set; }
@@ -20,10 +18,6 @@ public sealed class DraftsDbContext(DbContextOptions<DraftsDbContext> options)
   internal DbSet<Veto> Vetoes { get; set; }
 
   internal DbSet<VetoOverride> VetoOverrides { get; set; }
-
-  internal DbSet<RolloverVeto> RolloverVetoes { get; set; }
-
-  internal DbSet<RolloverVetoOverride> RolloverVetoOverrides { get; set; }
 
   internal DbSet<Movie> Movies { get; set; }
 
@@ -37,13 +31,17 @@ public sealed class DraftsDbContext(DbContextOptions<DraftsDbContext> options)
 
   internal DbSet<Category> Categories { get; set; }
 
-  internal DbSet<Domain.Drafts.Entities.Series> Series { get; set; }
+  internal DbSet<Series> Series { get; set; }
 
   internal DbSet<Campaign> Campaigns { get; set; }
 
   internal DbSet<DraftPart> DraftParts { get; set; }
 
   internal DbSet<DraftRelease> DraftReleases { get; set; }
+
+  internal DbSet<DraftChannelRelease> DraftChannelReleases { get; set; }
+
+  internal DbSet<DraftPartParticipant> DraftPartParticipants { get; set; }
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {

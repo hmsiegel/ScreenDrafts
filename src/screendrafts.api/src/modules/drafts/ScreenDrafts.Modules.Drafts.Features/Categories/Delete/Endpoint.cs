@@ -1,6 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.Categories.Delete;
+namespace ScreenDrafts.Modules.Drafts.Features.Categories.Delete;
 
-internal sealed class Endpoint : ScreenDraftsEndpoint<Request>
+internal sealed class Endpoint : ScreenDraftsEndpoint<DeleteCategoryRequest>
 {
   public override void Configure()
   {
@@ -14,15 +14,17 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<Request>
       .Produces(StatusCodes.Status403Forbidden)
       .Produces(StatusCodes.Status404NotFound);
     });
-    Permissions(Features.Permissions.CampaignDelete);
+    Permissions(DraftsAuth.Permissions.CampaignDelete);
   }
 
-  public override async Task HandleAsync(Request req, CancellationToken ct)
+  public override async Task HandleAsync(DeleteCategoryRequest req, CancellationToken ct)
   {
-    var command = new Command(req.PublicId);
+    var DeleteCategoryCommand = new DeleteCategoryCommand(req.PublicId);
 
-    var result = await Sender.Send(command, ct);
+    var result = await Sender.Send(DeleteCategoryCommand, ct);
 
     await this.SendNoContentAsync(result, ct);
   }
 }
+
+

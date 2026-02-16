@@ -1,6 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.Drafts.Update;
+namespace ScreenDrafts.Modules.Drafts.Features.Drafts.Update;
 
-internal sealed class Validator : AbstractValidator<Command>
+internal sealed class Validator : AbstractValidator<UpdateDraftCommand>
 {
   public Validator()
   {
@@ -32,3 +32,4 @@ internal sealed class Validator : AbstractValidator<Command>
 
   }
 }
+

@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafters.Errors;
+﻿using ScreenDrafts.Common.Abstractions.Errors;
+
+namespace ScreenDrafts.Modules.Drafts.Domain.Drafters.Errors;
 
 public static class DrafterTeamErrors
 {

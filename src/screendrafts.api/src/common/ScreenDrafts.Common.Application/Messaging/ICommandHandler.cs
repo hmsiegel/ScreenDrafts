@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Common.Application.Messaging;
+﻿using ScreenDrafts.Common.Abstractions.Results;
+
+namespace ScreenDrafts.Common.Application.Messaging;
 
 public interface ICommandHandler<in TCommand> : IRequestHandler<TCommand, Result>
     where TCommand : ICommand;

@@ -1,10 +1,12 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts;
 
-public sealed partial class Draft : AggrgateRoot<DraftId, Guid>
+using Series = Series;
+
+public sealed partial class Draft : AggregateRoot<DraftId, Guid>
 {
   private readonly List<DraftPart> _parts = [];
   private readonly List<DraftCategory> _draftCategories = [];
-  private readonly Dictionary<ParticipantId, DrafterVetoAccount> _accounts = [];
+  private readonly List<DraftChannelRelease> _channelReleases = [];
 
   private Draft(
   DraftId id,
@@ -45,6 +47,7 @@ public sealed partial class Draft : AggrgateRoot<DraftId, Guid>
   // Relationships
   public IReadOnlyCollection<DraftPart> Parts => _parts.AsReadOnly();
   public IReadOnlyCollection<DraftCategory> DraftCategories => _draftCategories.AsReadOnly();
+  public IReadOnlyCollection<DraftChannelRelease> ChannelReleases => _channelReleases.AsReadOnly();
 
   public Guid? CampaignId { get; private set; }
   public Campaign? Campaign { get; private set; }
@@ -163,7 +166,7 @@ public sealed partial class Draft : AggrgateRoot<DraftId, Guid>
 
     _draftCategories.RemoveAll(dc => !desiredIds.Contains(dc.CategoryId));
 
-    // Add new categoried
+    // Add new categories
     foreach (var category in categories)
     {
       if (existingIds.Contains(category.Id))
@@ -195,19 +198,39 @@ public sealed partial class Draft : AggrgateRoot<DraftId, Guid>
     return Result.Success();
   }
 
-  // Releases
-  public Result<DraftRelease> AddRelease(DraftPart part, ReleaseChannel channel, DateOnly date)
+  // Channel Releases
+  public Result UpsertChannelRelease(ReleaseChannel channel, int? episodeNumber = null)
   {
-    ArgumentNullException.ThrowIfNull(part);
+    var existingRelease = _channelReleases.FirstOrDefault(cr => cr.ReleaseChannel == channel);
 
-    if (part.DraftId != Id)
+    if (existingRelease is null)
     {
-      return Result.Failure<DraftRelease>(DraftErrors.DraftPartDoesNotBelongToThisDraft);
+      var createResult = DraftChannelRelease.Create(
+        draftId: Id,
+        seriesId: SeriesId,
+        releaseChannel: channel,
+        episodeNumber: episodeNumber);
+
+      if (createResult.IsFailure)
+      {
+        return Result.Failure<DraftChannelRelease>(createResult.Errors);
+      }
+
+      _channelReleases.Add(createResult.Value);
+
+      return Result.Success();
     }
 
-    UpdatedAtUtc = DateTime.UtcNow;
+    if (episodeNumber.HasValue)
+    {
+      var setEpisodeResult = existingRelease.SetEpisodeNumber(episodeNumber.Value);
+      if (setEpisodeResult.IsFailure)
+      {
+        return Result.Failure<DraftChannelRelease>(setEpisodeResult.Errors);
+      }
+    }
 
-    return part.AddRelease(channel, date);
+    return Result.Success();
   }
 
   // Series
@@ -257,8 +280,8 @@ public sealed partial class Draft : AggrgateRoot<DraftId, Guid>
       return;
     }
 
-    if (_parts.Count > 0 && 
-        _parts.All(p => p.Status == DraftPartStatus.Completed || 
+    if (_parts.Count > 0 &&
+        _parts.All(p => p.Status == DraftPartStatus.Completed ||
                           p.Status == DraftPartStatus.Cancelled))
     {
       DraftStatus = DraftStatus.Completed;
@@ -295,5 +318,4 @@ public sealed partial class Draft : AggrgateRoot<DraftId, Guid>
       ? DraftLifecycleView.Scheduled
       : DraftLifecycleView.Created;
   }
-
 }

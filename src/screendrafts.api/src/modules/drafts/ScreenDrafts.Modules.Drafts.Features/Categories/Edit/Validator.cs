@@ -1,6 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.Categories.Edit;
+namespace ScreenDrafts.Modules.Drafts.Features.Categories.Edit;
 
-internal sealed class Validator : AbstractValidator<Command>
+internal sealed class Validator : AbstractValidator<EditCategoryCommand>
 {
   public Validator()
   {
@@ -22,3 +22,4 @@ internal sealed class Validator : AbstractValidator<Command>
       .WithMessage("At least one field (Name or Description) must be provided for update.");
   }
 }
+

@@ -10,34 +10,26 @@ internal sealed class TriviaResultConfiguration : IEntityTypeConfiguration<Trivi
 
     builder.Property(tr => tr.Id)
       .ValueGeneratedNever()
-      .HasConversion(
-        id => id.Value,
-        value => TriviaResultId.Create(value));
+      .HasConversion(IdConverters.TriviaResultsIdConverter);
 
     builder.Property(tr => tr.Position)
       .IsRequired();
 
-    builder.Property(tr => tr.DrafterId)
-      .IsRequired(false)
-      .HasConversion(
-        id => id!.Value,
-        value => DrafterId.Create(value));
+    builder.Property(tr => tr.QuestionsWon)
+      .IsRequired();
 
-    builder.Property(tr => tr.DrafterTeamId)
-      .IsRequired(false)
-      .HasConversion(
-        id => id!.Value,
-        value => DrafterTeamId.Create(value));
+    builder.ComplexProperty(tr => tr.ParticipantId, participantBuilder =>
+    {
+      participantBuilder.Property(p => p.Value)
+        .HasColumnName("participant_id")
+        .IsRequired();
 
-    builder.HasOne(tr => tr.Drafter)
-      .WithMany()
-      .HasForeignKey(tr => tr.DrafterId)
-      .OnDelete(DeleteBehavior.Cascade);
+      participantBuilder.Property(p => p.Kind)
+        .HasColumnName("participant_kind")
+        .IsRequired()
+        .HasConversion(IdConverters.ParticipantKindConverter);
+    });
 
-    builder.HasOne(tr => tr.DrafterTeam)
-      .WithMany()
-      .HasForeignKey(tr => tr.DrafterTeamId)
-      .OnDelete(DeleteBehavior.Cascade);
 
     builder.HasOne(tr => tr.DraftPart)
       .WithMany(d => d.TriviaResults)

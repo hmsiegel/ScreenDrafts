@@ -1,4 +1,4 @@
-﻿using ScreenDrafts.Common.Features.Abstractions.Exceptions;
+﻿using ScreenDrafts.Common.Abstractions.Exceptions;
 
 using Host = Microsoft.Extensions.Hosting.Host;
 
@@ -35,7 +35,7 @@ try
         services.Configure<DatabaseSettings>(o =>
           o.ConnectionString = configuration.GetConnectionStringOrThrow("Database"));
 
-        services.AddDraftsModule(configuration);
+        services.AddDraftsSeeding(configuration);
         services.AddSeedingInfrastructure();
         services.AddDraftSeeders();
         services.TryAddScoped<SqlInsertHelper>();

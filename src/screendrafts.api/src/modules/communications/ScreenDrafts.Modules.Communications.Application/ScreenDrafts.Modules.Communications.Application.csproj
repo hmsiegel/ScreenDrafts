@@ -1,6 +1,0 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\common\ScreenDrafts.Common.Application\ScreenDrafts.Common.Application.csproj" />
-    <ProjectReference Include="..\ScreenDrafts.Modules.Communications.Domain\ScreenDrafts.Modules.Communications.Domain.csproj" />
-  </ItemGroup>
-</Project>

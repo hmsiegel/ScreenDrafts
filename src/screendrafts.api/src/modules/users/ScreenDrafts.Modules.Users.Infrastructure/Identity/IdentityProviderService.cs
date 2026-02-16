@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Users.Infrastructure.Identity;
+﻿using ScreenDrafts.Common.Abstractions.Results;
+
+namespace ScreenDrafts.Modules.Users.Infrastructure.Identity;
 
 internal sealed class IdentityProviderService(
   KeyCloakClient keyCloakClient,

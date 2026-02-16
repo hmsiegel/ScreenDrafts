@@ -1,8 +1,6 @@
-﻿using ScreenDrafts.Modules.Movies.Domain.Movies.Errors;
+﻿namespace ScreenDrafts.Modules.Movies.Domain.Movies;
 
-namespace ScreenDrafts.Modules.Movies.Domain.Movies;
-
-public sealed class Movie : AggrgateRoot<MovieId, Guid>
+public sealed class Movie : AggregateRoot<MovieId, Guid>
 {
   private readonly List<MovieGenre> _movieGenres = [];
   private readonly List<MovieActor> _movieActors = [];

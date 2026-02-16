@@ -1,6 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.Hosts.Create;
+namespace ScreenDrafts.Modules.Drafts.Features.Hosts.Create;
 
-internal sealed class Validator : AbstractValidator<Command>
+internal sealed class Validator : AbstractValidator<CreateHostCommand>
 {
   public Validator()
   {
@@ -10,3 +10,4 @@ internal sealed class Validator : AbstractValidator<Command>
       .WithMessage("Person public ID is not valid.");
   }
 }
+

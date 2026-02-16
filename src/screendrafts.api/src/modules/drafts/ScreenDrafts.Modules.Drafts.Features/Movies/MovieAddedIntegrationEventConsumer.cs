@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.Movies;
+﻿using ScreenDrafts.Modules.Drafts.Features.Movies.Add;
+
+namespace ScreenDrafts.Modules.Drafts.Features.Movies;
 
 internal sealed class MovieAddedIntegrationEventConsumer(
   ISender sender,
@@ -13,7 +15,7 @@ internal sealed class MovieAddedIntegrationEventConsumer(
     CancellationToken cancellationToken = default)
   {
     var result = await _sender.Send(
-      new Add.Command
+      new AddMovieCommand
       {
         ImdbId = integrationEvent.ImdbId,
         Id = integrationEvent.MovieId,

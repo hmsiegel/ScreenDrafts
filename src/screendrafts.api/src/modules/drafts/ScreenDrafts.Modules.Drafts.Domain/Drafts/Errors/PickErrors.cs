@@ -1,4 +1,7 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.Errors;
+﻿using ScreenDrafts.Common.Abstractions.Errors;
+
+namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.Errors;
+
 public static class PickErrors
 {
   public static readonly SDError PickAlreadyExists =
@@ -54,4 +57,30 @@ public static class PickErrors
     SDError.Problem(
       "Picks.InvalidPlayOrder",
       "Play order must be greater than 0.");
+
+  public static readonly SDError CannotOverrideAPickThatHasNotBeenVetoed =
+    SDError.Conflict(
+      "Picks.CannotOverrideAPickThatHasNotBeenVetoed",
+      "Cannot override a pick that has not been vetoed.");
+
+  public static readonly SDError ParticipantNotInDraftPart =
+      SDError.Conflict(
+      "Picks.ParticipantNotInDraftPart",
+      "The participant making the pick is not part of the draft part.");
+
+  public static readonly SDError PickCreationFailed =
+      SDError.Problem(
+      "Picks.PickCreationFailed",
+      "Failed to create the pick.");
+
+  public static readonly SDError PartPositionsNotSet =
+        SDError.Problem(
+          "Picks.PartPositionsNotSet",
+          "The draft part does not have valid min and max positions set.");
+
+  public static readonly SDError InvalidPartPositionRange =
+        SDError.Problem(
+          "Picks.InvalidPartPositionRange",
+          "The draft part position range is invalid."
+        );
 }

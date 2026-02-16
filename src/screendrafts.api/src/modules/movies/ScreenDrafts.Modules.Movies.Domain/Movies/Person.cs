@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Movies.Domain.Movies;
 
-public sealed class Person : AggrgateRoot<PersonId, Guid>
+public sealed class Person : AggregateRoot<PersonId, Guid>
 {
   private readonly List<MovieActor> _movieActors = [];
   private readonly List<MovieWriter> _movieWriters = [];

@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Users.Domain.Users.Errors;
+﻿using ScreenDrafts.Common.Abstractions.Errors;
+
+namespace ScreenDrafts.Modules.Users.Domain.Users.Errors;
 
 public static class UserErrors
 {

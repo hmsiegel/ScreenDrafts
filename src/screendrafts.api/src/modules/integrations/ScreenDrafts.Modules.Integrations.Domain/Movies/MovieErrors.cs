@@ -1,4 +1,4 @@
-﻿using ScreenDrafts.Common.Domain;
+﻿using ScreenDrafts.Common.Abstractions.Errors;
 
 namespace ScreenDrafts.Modules.Integrations.Domain.Movies;
 

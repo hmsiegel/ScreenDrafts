@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Common.Features.Abstractions.Authorization;
-
-namespace ScreenDrafts.Modules.Users.IntegrationTests.Users;
+﻿namespace ScreenDrafts.Modules.Users.IntegrationTests.Users;
 
 public class GetUserPermissionTests(UsersIntegrationTestWebAppFactory factory)
   : UsersIntegrationTest(factory)
@@ -12,7 +10,7 @@ public class GetUserPermissionTests(UsersIntegrationTestWebAppFactory factory)
     string identityId = Guid.NewGuid().ToString();
 
     // Act
-    Result<PermissionsResponse> permissionsResult = await Sender.Send(new GetUserPermissionsQuery(identityId));
+    Result<PermissionsResponse> permissionsResult = await Sender.Send(new Features.Users.GetUserPermissions.GetUserPermissionsQuery(identityId));
 
     // Assert
     permissionsResult.Errors[0].Should().Be(UserErrors.NotFound(identityId));
@@ -22,18 +20,20 @@ public class GetUserPermissionTests(UsersIntegrationTestWebAppFactory factory)
   public async Task Should_ReturnPermissions_WhenUserExistsAsync()
   {
     // Arrange
-    Result<Guid> result = await Sender.Send(new RegisterUserCommand(
-        Faker.Internet.Email(),
-        Faker.Internet.Password(),
-        Faker.Name.FirstName(),
-        Faker.Name.LastName()));
+    var userId = await Sender.Send(new Features.Users.Register.RegisterUserCommand
+    {
+        Email = Faker.Internet.Email(),
+        Password = Faker.Internet.Password(),
+        FirstName = Faker.Name.FirstName(),
+        LastName = Faker.Name.LastName()
+    });
 
     var users = await DbContext.Users.ToListAsync();
 
-    var identityId = users.FirstOrDefault(x => x.Id.Value == result.Value)!.IdentityId;
+    var identityId = users.FirstOrDefault(x => x.Id.Value == userId.Value)!.IdentityId;
 
     // Act
-    Result<PermissionsResponse> permissionsResult = await Sender.Send(new GetUserPermissionsQuery(identityId));
+    Result<PermissionsResponse> permissionsResult = await Sender.Send(new Features.Users.GetUserPermissions.GetUserPermissionsQuery(identityId));
 
     // Assert
     permissionsResult.IsSuccess.Should().BeTrue();

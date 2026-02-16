@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Common.Features.Abstractions.Data;
-
-namespace ScreenDrafts.Modules.Drafts.Infrastructure.Data;
+﻿namespace ScreenDrafts.Modules.Drafts.Infrastructure.Data;
 
 internal sealed class DbConnectionFactory(NpgsqlDataSource dataSource) : IDbConnectionFactory
 {

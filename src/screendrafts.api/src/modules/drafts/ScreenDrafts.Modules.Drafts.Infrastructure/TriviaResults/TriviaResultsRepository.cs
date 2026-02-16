@@ -1,17 +1,22 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Infrastructure.TriviaResults;
+﻿
+namespace ScreenDrafts.Modules.Drafts.Infrastructure.TriviaResults;
 
 internal sealed class TriviaResultsRepository(DraftsDbContext dbContext) : ITriviaResultsRepository
 {
   private readonly DraftsDbContext _dbContext = dbContext;
 
-  public void Add(TriviaResult triviaResult)
+  public void Add(TriviaResult entity)
   {
-    _dbContext.TriviaResults.Add(triviaResult);
+    _dbContext.TriviaResults.Add(entity);
   }
 
-  public async Task<TriviaResult?> GetByDrafterIdAsync(DrafterId drafterId, DraftId draftId)
+  public void Delete(TriviaResult entity)
   {
-    return await _dbContext.TriviaResults
-      .SingleOrDefaultAsync(t => t.Drafter!.Id == drafterId && t.Draft.Id == draftId);
+    _dbContext.TriviaResults.Remove(entity);
+  }
+
+  public void Update(TriviaResult entity)
+  {
+    _dbContext.TriviaResults.Update(entity);
   }
 }

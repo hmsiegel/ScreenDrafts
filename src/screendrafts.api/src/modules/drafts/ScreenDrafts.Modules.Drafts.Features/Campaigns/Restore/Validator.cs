@@ -1,6 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.Campaigns.Restore;
+namespace ScreenDrafts.Modules.Drafts.Features.Campaigns.Restore;
 
-internal sealed class Validator : AbstractValidator<Command>
+internal sealed class Validator : AbstractValidator<RestoreCampaignCommand>
 {
   public Validator()
   {
@@ -10,3 +10,4 @@ internal sealed class Validator : AbstractValidator<Command>
       .WithMessage("PublicId is required.");
   }
 }
+

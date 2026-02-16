@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Seeding.Movies.Seeders;
+﻿using ScreenDrafts.Modules.Movies.Features.Movies.AddMovie;
+
+namespace ScreenDrafts.Seeding.Movies.Seeders;
 
 internal sealed class MovieImdbSeeder(
   MoviesDbContext dbContext,
@@ -64,7 +66,7 @@ internal sealed class MovieImdbSeeder(
         .Select(company => new ProductionCompanyRequest(company.Name, company.ImdbId))
         .ToList();
 
-      var command = new AddMovieCommand(
+      var command = new Command(
         response.Value.ImdbId,
         response.Value.Title,
         response.Value.Year,

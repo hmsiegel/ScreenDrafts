@@ -12,11 +12,12 @@ internal static class Startup
 
     services.AddMassTransit(config =>
     {
-      string instanceId = serviceName.ToUpperInvariant()
-      .Replace(" ", "-", StringComparison.InvariantCultureIgnoreCase);
+      string instanceid = serviceName.ToUpperInvariant()
+        .Replace(" ", "-", StringComparison.InvariantCultureIgnoreCase);
+
       foreach (Action<IRegistrationConfigurator, string> configureConsumer in moduleConfigureConsumers)
       {
-        configureConsumer(config, instanceId);
+        configureConsumer(config, instanceid);
       }
 
       config.SetKebabCaseEndpointNameFormatter();

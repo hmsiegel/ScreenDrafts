@@ -10,6 +10,5 @@
     <ProjectReference Include="..\..\reporting\ScreenDrafts.Modules.Reporting.IntegrationEvents\ScreenDrafts.Modules.Reporting.IntegrationEvents.csproj" />
     <ProjectReference Include="..\..\users\ScreenDrafts.Modules.Users.IntegrationEvents\ScreenDrafts.Modules.Users.IntegrationEvents.csproj" />
     <ProjectReference Include="..\..\users\ScreenDrafts.Modules.Users.PublicApi\ScreenDrafts.Modules.Users.PublicApi.csproj" />
-    <ProjectReference Include="..\ScreenDrafts.Modules.Administration.Application\ScreenDrafts.Modules.Administration.Application.csproj" />
   </ItemGroup>
 </Project>

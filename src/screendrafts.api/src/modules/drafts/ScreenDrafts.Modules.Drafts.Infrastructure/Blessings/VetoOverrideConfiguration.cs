@@ -6,45 +6,30 @@ internal sealed class VetoOverrideConfiguration : IEntityTypeConfiguration<VetoO
   {
     builder.ToTable(Tables.VetoOverrides);
 
+    // Id
     builder.HasKey(v => v.Id);
 
     builder.Property(v => v.Id)
       .ValueGeneratedNever()
-      .HasConversion(
-      v => v.Value,
-      v => new VetoOverrideId(v));
+      .HasConversion(IdConverters.VetoOverrideIdConverter);
 
-    builder.Property(v => v.VetoId)
+    // Target Veto
+    builder.Property(x => x.VetoId)
       .IsRequired()
-      .HasConversion(
-      id => id.Value,
-      value => VetoId.Create(value));
+      .ValueGeneratedNever()
+      .HasConversion(IdConverters.VetoIdConverter);
 
-    builder.Property(v => v.DrafterId)
-      .IsRequired(false)
-      .HasConversion(
-      id => id!.Value,
-      value => DrafterId.Create(value));
+    // Issued By Participant
+    builder.Property(x => x.IssuedByParticipantId)
+      .IsRequired()
+      .ValueGeneratedNever()
+      .HasConversion(IdConverters.DraftPartParticipantIdConverter);
 
-    builder.HasOne(v => v.Veto)
-      .WithOne(vo => vo.VetoOverride)
-      .HasForeignKey<VetoOverride>(v => v.VetoId)
-      .OnDelete(DeleteBehavior.Cascade);
+    builder.HasOne(x => x.IssuedByParticipant)
+      .WithMany()
+      .HasForeignKey(x => x.IssuedByParticipantId)
+      .OnDelete(DeleteBehavior.Restrict);
 
-    builder.HasOne(v => v.Drafter)
-      .WithMany(d => d.VetoOverrides)
-      .HasForeignKey(v => v.DrafterId)
-      .OnDelete(DeleteBehavior.Cascade);
-
-    builder.HasOne(v => v.DrafterTeam)
-      .WithMany(dt => dt.VetoOverrides)
-      .HasForeignKey(v => v.DrafterTeamId)
-      .OnDelete(DeleteBehavior.Cascade);
-
-    builder.Property(v => v.DrafterTeamId)
-      .IsRequired(false)
-      .HasConversion(
-      id => id!.Value,
-      value => DrafterTeamId.Create(value));
+    builder.HasIndex(x => x.VetoId).IsUnique();
   }
 }

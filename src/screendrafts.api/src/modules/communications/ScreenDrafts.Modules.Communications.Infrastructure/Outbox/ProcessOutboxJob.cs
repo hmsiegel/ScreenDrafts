@@ -6,7 +6,8 @@ internal sealed class ProcessOutboxJob(
     IServiceScopeFactory serviceScopeFactory,
     IDateTimeProvider dateTimeProvider,
     IOptions<OutboxOptions> outboxOptions,
-    ILogger<ProcessOutboxJob> logger) : IJob
+    ILogger<ProcessOutboxJob> logger,
+    IDomainEventDispatcher domainEventDispatcher) : IJob
 {
   private const string ModuleName = "Administration";
 
@@ -14,6 +15,7 @@ internal sealed class ProcessOutboxJob(
   private readonly IServiceScopeFactory _serviceScopeFactory = serviceScopeFactory;
   private readonly IDateTimeProvider _dateTimeProvider = dateTimeProvider;
   private readonly ILogger<ProcessOutboxJob> _logger = logger;
+  private readonly IDomainEventDispatcher _domainEventDispatcher = domainEventDispatcher;
   private readonly OutboxOptions _outboxOptions = outboxOptions.Value;
 
   public async Task Execute(IJobExecutionContext context)
@@ -36,15 +38,9 @@ internal sealed class ProcessOutboxJob(
 
         using var scope = _serviceScopeFactory.CreateScope();
 
-        IEnumerable<IDomainEventHandler> domainEventHandlers = DomainEventHandlersFactory.GetHandlers(
-            domainEvent.GetType(),
-            scope.ServiceProvider,
-            Application.AssemblyReference.Assembly);
-
-        foreach (IDomainEventHandler domainEventHandler in domainEventHandlers)
-        {
-          await domainEventHandler.Handle(domainEvent);
-        }
+        await _domainEventDispatcher.DispatchAsync(
+          domainEvent,
+          scope.ServiceProvider);
       }
       catch (InvalidOperationException caughtException)
       {

@@ -1,6 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.Categories.Get;
+namespace ScreenDrafts.Modules.Drafts.Features.Categories.Get;
 
-internal sealed class Endpoint : ScreenDraftsEndpoint<Request, CategoryResponse>
+internal sealed class Endpoint : ScreenDraftsEndpoint<GetCategoryRequest, CategoryResponse>
 {
   public override void Configure()
   {
@@ -13,15 +13,17 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<Request, CategoryResponse>
       .Produces(StatusCodes.Status401Unauthorized)
       .Produces(StatusCodes.Status403Forbidden);
     });
-    Permissions(Features.Permissions.CategoryRead);
+    Permissions(DraftsAuth.Permissions.CategoryRead);
   }
 
-  public override async Task HandleAsync(Request req, CancellationToken ct)
+  public override async Task HandleAsync(GetCategoryRequest req, CancellationToken ct)
   {
-    var query = new Query(req.PublicId);
+    var GetCategoryQuery = new GetCategoryQuery(req.PublicId);
 
-    var result = await Sender.Send(query, ct);
+    var result = await Sender.Send(GetCategoryQuery, ct);
 
     await this.SendOkAsync(result, ct);
   }
 }
+
+

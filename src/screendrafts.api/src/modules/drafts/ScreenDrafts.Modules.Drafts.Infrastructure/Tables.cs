@@ -1,9 +1,10 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Infrastructure;
+﻿
+namespace ScreenDrafts.Modules.Drafts.Infrastructure;
 
 internal static class Tables
 {
   internal const string Drafts = "drafts";
-  internal const string DrafterDraftStats = "drafter_draft_stats";
+  internal const string ParticipantDraftStats = "participant_draft_stats";
   internal const string Drafters = "drafters";
   internal const string Hosts = "hosts";
   internal const string People = "people";
@@ -32,4 +33,9 @@ internal static class Tables
   internal const string DraftParts = "draft_parts";
   internal const string DraftReleases = "draft_releases";
   internal const string DraftCampaigns = "drafts_campaigns";
+  internal const string MovieVersions = "movie_versions";
+  internal const string RequiredMovieVersions = "required_movie_versions";
+  internal const string DraftPartRequiredMovieVersions = "draft_part_required_movie_versions";
+  internal const string DraftPartParticipants = "draft_part_participants";
+  internal const string DraftChannelReleases = "draft_channel_releases";
 }

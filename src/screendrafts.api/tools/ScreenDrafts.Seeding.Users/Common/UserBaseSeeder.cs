@@ -1,7 +1,4 @@
-﻿using ScreenDrafts.Common.Features.Abstractions.CsvFiles;
-using ScreenDrafts.Common.Features.Abstractions.Logging;
-
-using ILogger = Microsoft.Extensions.Logging.ILogger;
+﻿using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace ScreenDrafts.Seeding.Users.Common;
 internal abstract class UserBaseSeeder(

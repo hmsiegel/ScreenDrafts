@@ -1,6 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.Drafts.GetDraftStatus;
+namespace ScreenDrafts.Modules.Drafts.Features.Drafts.GetDraftStatus;
 
-internal sealed class Endpoint : ScreenDraftsEndpoint<Request, Response>
+internal sealed class Endpoint : ScreenDraftsEndpoint<GetDraftStatusRequest, Response>
 {
   public override void Configure()
   {
@@ -14,18 +14,20 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<Request, Response>
       .Produces(StatusCodes.Status401Unauthorized)
       .Produces(StatusCodes.Status403Forbidden);
     });
-    Permissions(Features.Permissions.DraftUpdate);
+    Permissions(DraftsAuth.Permissions.DraftUpdate);
   }
 
-  public override async Task HandleAsync(Request req, CancellationToken ct)
+  public override async Task HandleAsync(GetDraftStatusRequest req, CancellationToken ct)
   {
-    var query = new Query
+    var GetDraftStatusQuery = new GetDraftStatusQuery
     {
       DraftPublicId = req.PublicId
     };
 
-    var result = await Sender.Send(query, ct);
+    var result = await Sender.Send(GetDraftStatusQuery, ct);
 
     await this.SendOkAsync(result, ct);
   }
 }
+
+

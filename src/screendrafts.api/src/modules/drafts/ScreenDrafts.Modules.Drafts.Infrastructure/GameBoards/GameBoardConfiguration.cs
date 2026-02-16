@@ -10,9 +10,7 @@ internal sealed class GameBoardConfiguration : IEntityTypeConfiguration<GameBoar
 
     builder.Property(e => e.Id)
       .ValueGeneratedNever()
-      .HasConversion(
-        v => v.Value,
-        v => GameBoardId.Create(v));
+      .HasConversion(IdConverters.GameBoardIdConverter);
 
     builder.HasMany(gb => gb.DraftPositions)
       .WithOne(dp => dp.GameBoard)
@@ -25,6 +23,6 @@ internal sealed class GameBoardConfiguration : IEntityTypeConfiguration<GameBoar
 
     builder.Property(gb => gb.DraftPartId)
       .IsRequired()
-      .HasConversion(IdConverters.GameBoardIdConverter);
+      .HasConversion(IdConverters.DraftPartIdConverter);
   }
 }

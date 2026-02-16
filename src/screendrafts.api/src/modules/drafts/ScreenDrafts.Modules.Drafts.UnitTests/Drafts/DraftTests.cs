@@ -7,686 +7,676 @@ public class DraftTests : BaseTest
   {
     // Arrange
     var title = Title.Create("Test Draft");
+    var publicId = Faker.Random.AlphaNumeric(10);
     var draftType = DraftType.Standard;
-    var totalPicks = 7;
-    var totalDrafters = 2;
-    var totalDrafterTeams = 0;
-    var totalHosts = 2;
-    var draftStatus = DraftStatus.Created;
+    var series = CreateSeries();
 
     // Act
     var result = Draft.Create(
       title,
+      publicId,
       draftType,
-      totalPicks,
-      totalDrafters,
-      totalDrafterTeams,
-      totalHosts,
-      draftStatus);
+      series);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
     result.Value.Title.Should().Be(title);
+    result.Value.PublicId.Should().Be(publicId);
     result.Value.DraftType.Should().Be(draftType);
-    result.Value.TotalPicks.Should().Be(totalPicks);
-    result.Value.TotalParticipants.Should().Be(totalDrafters);
-    result.Value.TotalDrafterTeams.Should().Be(totalDrafterTeams);
-    result.Value.TotalHosts.Should().Be(totalHosts);
-    result.Value.DraftStatus.Should().Be(draftStatus);
+    result.Value.Series.Should().Be(series);
+    result.Value.SeriesId.Should().Be(series.Id);
+    result.Value.DraftStatus.Should().Be(DraftStatus.Created);
   }
 
   [Fact]
   public void Create_ShouldRaiseDomainEvent_WhenDraftIsCreated()
   {
-    var draft = SetupAndStartDraft();
+    // Arrange
+    var title = Title.Create("Test Draft");
+    var publicId = Faker.Random.AlphaNumeric(10);
+    var draftType = DraftType.Standard;
+    var series = CreateSeries();
 
+    // Act
+    var draft = Draft.Create(title, publicId, draftType, series).Value;
+
+    // Assert
     var domainEvent = AssertDomainEventWasPublished<DraftCreatedDomainEvent>(draft);
-
     domainEvent.DraftId.Should().Be(draft.Id.Value);
   }
 
   [Fact]
-  public void Create_ShouldReturnFailureResult_WhenTotalDraftersIsLessThanTwo()
+  public void Create_ShouldThrowArgumentNullException_WhenSeriesIsNull()
   {
     // Arrange
-    var title = new Title("Test Title");
+    var title = Title.Create("Test Draft");
+    var publicId = Faker.Random.AlphaNumeric(10);
     var draftType = DraftType.Standard;
-    var totalPicks = 5;
-    var totalDrafters = 1;
-    var totalDrafterTeams = 0;
-    var totalHosts = 2;
-    var draftStatus = DraftStatus.Created;
 
     // Act
-    var result = Draft.Create(
-      title,
-      draftType,
-      totalPicks,
-      totalDrafters,
-      totalDrafterTeams,
-      totalHosts,
-      draftStatus);
-
-    // Assert
-    result.IsSuccess.Should().BeFalse();
-    result.Errors[0].Should().Be(DraftErrors.DraftMustHaveAtLeastTwoParticipants);
-  }
-
-  [Fact]
-  public void Create_ShouldReturnFailureResult_WhenTotalPicksIsLessThanFour()
-  {
-    // Arrange
-    var title = new Title("Test Title");
-    var draftType = DraftType.Standard;
-    var totalPicks = 3;
-    var totalDrafters = 3;
-    var totalDrafterTeams = 0;
-    var totalHosts = 2;
-    var draftStatus = DraftStatus.Created;
-
-    // Act
-    var result = Draft.Create(
-      title,
-      draftType,
-      totalPicks,
-      totalDrafters,
-      totalDrafterTeams,
-      totalHosts,
-      draftStatus);
-
-    // Assert
-    result.IsSuccess.Should().BeFalse();
-    result.Errors[0].Should().Be(DraftErrors.DraftMustHaveAtLeastFivePicks);
-  }
-
-  [Fact]
-  public void AddDrafter_ShouldAddDrafterToList_WhenDrafterIsValid()
-  {
-    // Arrange
-    var draft = DraftFactory.CreateStandardDraft().Value;
-    var drafter = DrafterFactory.CreateDrafter();
-
-    // Act
-    var result = draft.AddDrafter(drafter);
-
-    // Assert
-    result.IsSuccess.Should().BeTrue();
-    draft.Drafters.Should().ContainSingle();
-    draft.Drafters.First().Should().Be(drafter);
-  }
-
-  [Fact]
-  public void AddDrafter_ShouldRaiseDomainEvent_WhenDrafterIsAdded()
-  {
-    // Arrange
-    var draft = DraftFactory.CreateStandardDraft().Value;
-    var drafter = DrafterFactory.CreateDrafter();
-
-    // Act
-    draft.AddDrafter(drafter);
-
-    var domainEvent = AssertDomainEventWasPublished<DrafterAddedDomainEvent>(draft);
-
-    // Assert
-    domainEvent.DraftId.Should().Be(draft.Id.Value);
-    domainEvent.DrafterId.Should().Be(drafter.Id.Value);
-  }
-
-  [Fact]
-  public void AddDrafter_ShouldReturnFailureResult_WhenDrafterIsNull()
-  {
-    // Arrange
-    var draft = DraftFactory.CreateStandardDraft().Value;
-
-    // Act
-    Action act = () => draft.AddDrafter(null!);
+    Action act = () => Draft.Create(title, publicId, draftType, null!);
 
     // Assert
     act.Should().Throw<ArgumentNullException>();
   }
 
   [Fact]
-  public void AddDrafter_ShouldReturnFailureResult_WhenTooManyDrafters()
+  public void Update_ShouldUpdateTitleDescriptionAndDraftType_WhenValidParametersProvided()
   {
     // Arrange
-    var draft = DraftFactory.CreateStandardDraft().Value;
-    for (int i = 0; i < draft.TotalParticipants; i++)
-    {
-      draft.AddDrafter(DrafterFactory.CreateDrafter());
-    }
-    var extraDrafter = DrafterFactory.CreateDrafter();
+    var draft = CreateDraft();
+    var newTitle = "Updated Title";
+    var newDescription = "Updated Description";
+    var newDraftType = DraftType.Mega;
 
     // Act
-    var result = draft.AddDrafter(extraDrafter);
+    draft.Update(newTitle, newDescription, newDraftType.Value);
 
     // Assert
-    result.IsSuccess.Should().BeFalse();
-    result.Errors[0].Should().Be(DraftErrors.TooManyDrafters);
+    draft.Title.Value.Should().Be(newTitle);
+    draft.Description.Should().Be(newDescription);
+    draft.DraftType.Should().Be(newDraftType);
+    draft.UpdatedAtUtc.Should().NotBeNull();
   }
 
   [Fact]
-  public void AddDrafter_ShouldReturnFailureResult_WhenDrafterAlreadyExists()
+  public void Update_ShouldOnlyUpdateProvidedFields_WhenSomeParametersAreNull()
   {
     // Arrange
-    var draft = DraftFactory.CreateStandardDraft().Value;
-    var drafter = DrafterFactory.CreateDrafter();
-    draft.AddDrafter(drafter);
+    var draft = CreateDraft();
+    var originalTitle = draft.Title;
+    var originalDescription = draft.Description;
+    var newDraftType = DraftType.MiniMega;
 
     // Act
-    var result = draft.AddDrafter(drafter);
+    draft.Update(null, null, newDraftType.Value);
+
+    // Assert
+    draft.Title.Should().Be(originalTitle);
+    draft.Description.Should().Be(originalDescription);
+    draft.DraftType.Should().Be(newDraftType);
+  }
+
+  [Fact]
+  public void AddCategory_ShouldSucceed_WhenCategoryIsValid()
+  {
+    // Arrange
+    var draft = CreateDraft();
+    var category = CreateCategory();
+
+    // Act
+    var result = draft.AddCategory(category);
+
+    // Assert
+    result.IsSuccess.Should().BeTrue();
+    draft.DraftCategories.Should().ContainSingle();
+    draft.DraftCategories.First().CategoryId.Should().Be(category.Id);
+    draft.UpdatedAtUtc.Should().NotBeNull();
+  }
+
+  [Fact]
+  public void AddCategory_ShouldRaiseDomainEvent_WhenCategoryIsAdded()
+  {
+    // Arrange
+    var draft = CreateDraft();
+    var category = CreateCategory();
+
+    // Act
+    draft.AddCategory(category);
+
+    // Assert
+    var domainEvent = AssertDomainEventWasPublished<CategoryAddedDomainEvent>(draft);
+    domainEvent.DraftId.Should().Be(draft.Id.Value);
+    domainEvent.CategoryId.Should().Be(category.Id.Value);
+  }
+
+  [Fact]
+  public void AddCategory_ShouldFail_WhenCategoryAlreadyAdded()
+  {
+    // Arrange
+    var draft = CreateDraft();
+    var category = CreateCategory();
+    draft.AddCategory(category);
+
+    // Act
+    var result = draft.AddCategory(category);
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    draft.Drafters.Should().ContainSingle();
+    result.Errors[0].Should().Be(CategoryErrors.CategoryAlreadyAdded(category.Id.Value));
   }
 
   [Fact]
-  public void AddDrafterTeam_ShouldAddDrafterTeamToList_WhenTeamIsValid()
+  public void AddCategory_ShouldThrowArgumentNullException_WhenCategoryIsNull()
   {
     // Arrange
-    var draft = DraftFactory.CreateStandardDraftWithTeams().Value;
-    var drafterTeam = DrafterFactory.CreateDrafterTeam();
+    var draft = CreateDraft();
 
     // Act
-    var result = draft.AddDrafterTeam(drafterTeam);
-
-    // Assert
-    result.IsSuccess.Should().BeTrue();
-    draft.DrafterTeams.Should().ContainSingle();
-    draft.DrafterTeams.First().Should().Be(drafterTeam);
-  }
-
-  [Fact]
-  public void AddPick_ShouldReturnSuccessResult_WhenPickIsValid()
-  {
-    // Arrange
-    var draft = SetupAndStartDraft();
-
-    var position = 1;
-    var playOrder = 1;
-    var movie = MovieFactory.CreateMovie().Value;
-
-    var drafter = draft.Drafters.FirstOrDefault();
-
-    var pick = Pick.Create(position, movie, drafter!, null, draft, playOrder).Value;
-
-    // Act
-    var result = draft.AddPick(pick);
-
-    // Assert
-    result.IsSuccess.Should().BeTrue();
-    draft.Picks.Should().Contain(p => p.Position == position && p.Movie == movie && p.Drafter == drafter);
-  }
-
-  [Fact]
-  public void AddPick_ShouldRaiseDomainEvent_WhenPickIsAdded()
-  {
-    // Arrange
-    var draft = SetupAndStartDraft();
-
-    var position = 1;
-    var playOrder = 1;
-    var movie = MovieFactory.CreateMovie().Value;
-
-    var drafter = draft.Drafters.FirstOrDefault();
-
-    var pick = Pick.Create(position, movie, drafter!, null, draft, playOrder).Value;
-
-    // Act
-    draft.AddPick(pick);
-
-    var domainEvent = AssertDomainEventWasPublished<PickAddedDomainEvent>(draft);
-
-    var firstPick = draft.Picks.FirstOrDefault(p => p.Position == position)!;
-
-    // Assert
-    domainEvent.DrafterId.Should().Be(firstPick.Drafter!.Id.Value);
-    domainEvent.DraftId.Should().Be(firstPick.Draft.Id.Value);
-  }
-
-  [Fact]
-  public void AddPick_ShouldReturnFailureResult_WhenPickPositionAlreadyTaken()
-  {
-    // Arrange
-    var draft = SetupAndStartDraft();
-
-    var movie = MovieFactory.CreateMovie().Value;
-
-    var drafter = draft.Drafters.FirstOrDefault();
-
-    var position = 1;
-    var playOrder = 1;
-    draft.AddDrafter(drafter!);
-
-    var pick = Pick.Create(position, movie, drafter!, null, draft, playOrder).Value;
-
-    draft.AddPick(pick);
-
-    // Act
-    var result = draft.AddPick(pick);
-
-    // Assert
-    result.IsSuccess.Should().BeFalse();
-    result.Errors[0].Should().Be(DraftErrors.PickPositionAlreadyTaken(position));
-  }
-
-  [Fact]
-  public void SetPrimaryHost_ShouldReturnSuccessResult_WhenHostIsValid()
-  {
-    // Arrange
-    var draft = DraftFactory.CreateStandardDraft().Value;
-    var host = HostsFactory.CreateHost().Value;
-
-    // Act
-    var result = draft.SetPrimaryHost(host);
-
-    // Assert
-    result.IsSuccess.Should().BeTrue();
-    draft.PrimaryHost!.HostId.Value.Should().Be(host.Id.Value);
-  }
-
-  [Fact]
-  public void SetPrimaryHost_ShouldRaiseDomainEvent_WhenHostIsAdded()
-  {
-    // Arrange
-    var draft = DraftFactory.CreateStandardDraft().Value;
-    var host = HostsFactory.CreateHost().Value;
-
-    // Act
-    draft.SetPrimaryHost(host);
-
-    var domainEvent = AssertDomainEventWasPublished<HostAddedDomainEvent>(draft);
-
-    // Assert
-    domainEvent.DraftId.Should().Be(draft.Id.Value);
-    domainEvent.HostId.Should().Be(host.Id.Value);
-  }
-
-  [Fact]
-  public void SetPrimaryHost_ShouldReturnFailureResult_WhenHostIsNull()
-  {
-    // Arrange
-    var draft = DraftFactory.CreateStandardDraft().Value;
-
-    // Act
-    Action act = () => draft.SetPrimaryHost(null!);
+    Action act = () => draft.AddCategory(null!);
 
     // Assert
     act.Should().Throw<ArgumentNullException>();
   }
 
   [Fact]
-  public void SetPrimaryHost_ShouldReturnFailureResult_WhenPrimaryAlreadySet()
+  public void RemoveCategory_ShouldSucceed_WhenCategoryExists()
   {
     // Arrange
-    var draft = DraftFactory.CreateStandardDraft().Value;
-    var primaryHost = HostsFactory.CreateHost().Value;
-    var extraHost = HostsFactory.CreateHost().Value;
-    draft.SetPrimaryHost(primaryHost);
+    var draft = CreateDraft();
+    var category = CreateCategory();
+    draft.AddCategory(category);
 
     // Act
-    var result = draft.SetPrimaryHost(extraHost);
-
-    // Assert
-    result.IsSuccess.Should().BeFalse();
-    result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(DraftErrors.PrimaryHostAlreadySet(primaryHost.Id.Value));
-  }
-
-  [Fact]
-  public void AddCoHost_ShouldSucceed_WhenValidCoHostProvided()
-  {
-    // Arrange
-    var draft = DraftFactory.CreateStandardDraft().Value;
-    var primary = HostsFactory.CreateHost().Value;
-    var co1 = HostsFactory.CreateHost().Value;
-    draft.SetPrimaryHost(primary);
-
-    // Act
-    var r1 = draft.AddCoHost(co1);
-
-    // Assert
-    r1.IsSuccess.Should().BeTrue();
-    draft.CoHosts.Select(h => h.Host).Should().BeEquivalentTo([co1]);
-  }
-
-  [Fact]
-  public void AddCoHost_ShouldFail_WhenSameHostAlreadyOnDraft()
-  {
-    // Arrange
-    var draft = DraftFactory.CreateStandardDraft().Value;
-    var primary = HostsFactory.CreateHost().Value;
-    var co = HostsFactory.CreateHost().Value;
-    draft.SetPrimaryHost(primary);
-    draft.AddCoHost(co);
-
-    // Act
-    var result = draft.AddCoHost(co);
-
-    // Assert
-    result.IsFailure.Should().BeTrue();
-  }
-
-  [Fact]
-  public void StartDraft_ShouldChangeStatusToInProgress_WhenDraftIsNotStarted()
-  {
-    // Arrange
-    var draft = DraftFactory.CreateStandardDraft().Value;
-    for (int i = 0; i < draft.TotalParticipants; i++)
-    {
-      draft.AddDrafter(DrafterFactory.CreateDrafter());
-    }
-
-    var primaryHost = HostsFactory.CreateHost().Value;
-    draft.SetPrimaryHost(primaryHost);
-
-    for (int i = 0; i < draft.TotalHosts - 1; i++)
-    {
-      draft.AddCoHost(HostsFactory.CreateHost().Value);
-    }
-
-    // Act
-    var result = draft.StartDraft();
+    var result = draft.RemoveCategory(category);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
+    draft.DraftCategories.Should().BeEmpty();
+    draft.UpdatedAtUtc.Should().NotBeNull();
+  }
+
+  [Fact]
+  public void RemoveCategory_ShouldRaiseDomainEvent_WhenCategoryIsRemoved()
+  {
+    // Arrange
+    var draft = CreateDraft();
+    var category = CreateCategory();
+    draft.AddCategory(category);
+
+    // Act
+    draft.RemoveCategory(category);
+
+    // Assert
+    var domainEvent = AssertDomainEventWasPublished<CategoryRemovedDomainEvent>(draft);
+    domainEvent.DraftId.Should().Be(draft.Id.Value);
+    domainEvent.CategoryId.Should().Be(category.Id.Value);
+  }
+
+  [Fact]
+  public void RemoveCategory_ShouldFail_WhenCategoryNotAdded()
+  {
+    // Arrange
+    var draft = CreateDraft();
+    var category = CreateCategory();
+
+    // Act
+    var result = draft.RemoveCategory(category);
+
+    // Assert
+    result.IsFailure.Should().BeTrue();
+    result.Errors[0].Should().Be(CategoryErrors.CannotRemoveACategoryThatIsNotAdded(category.Id.Value));
+  }
+
+  [Fact]
+  public void ClearDraftCategories_ShouldRemoveAllCategories()
+  {
+    // Arrange
+    var draft = CreateDraft();
+    var category1 = CreateCategory();
+    var category2 = CreateCategory();
+    draft.AddCategory(category1);
+    draft.AddCategory(category2);
+
+    // Act
+    draft.ClearDraftCategories();
+
+    // Assert
+    draft.DraftCategories.Should().BeEmpty();
+    draft.UpdatedAtUtc.Should().NotBeNull();
+  }
+
+  [Fact]
+  public void ReplaceCategories_ShouldReplaceExistingCategories_WithNewCategories()
+  {
+    // Arrange
+    var draft = CreateDraft();
+    var oldCategory1 = CreateCategory();
+    var oldCategory2 = CreateCategory();
+    draft.AddCategory(oldCategory1);
+    draft.AddCategory(oldCategory2);
+
+    var newCategory1 = CreateCategory();
+    var newCategory2 = CreateCategory();
+    var newCategories = new List<Category> { newCategory1, newCategory2 };
+
+    // Act
+    draft.ReplaceCategories(newCategories);
+
+    // Assert
+    draft.DraftCategories.Should().HaveCount(2);
+    draft.DraftCategories.Should().Contain(dc => dc.CategoryId == newCategory1.Id);
+    draft.DraftCategories.Should().Contain(dc => dc.CategoryId == newCategory2.Id);
+    draft.DraftCategories.Should().NotContain(dc => dc.CategoryId == oldCategory1.Id);
+    draft.DraftCategories.Should().NotContain(dc => dc.CategoryId == oldCategory2.Id);
+  }
+
+  [Fact]
+  public void ReplaceCategories_ShouldKeepExistingCategories_WhenTheyAreInNewList()
+  {
+    // Arrange
+    var draft = CreateDraft();
+    var category1 = CreateCategory();
+    var category2 = CreateCategory();
+    draft.AddCategory(category1);
+    draft.AddCategory(category2);
+
+    var category3 = CreateCategory();
+    var newCategories = new List<Category> { category1, category3 };
+
+    // Act
+    draft.ReplaceCategories(newCategories);
+
+    // Assert
+    draft.DraftCategories.Should().HaveCount(2);
+    draft.DraftCategories.Should().Contain(dc => dc.CategoryId == category1.Id);
+    draft.DraftCategories.Should().Contain(dc => dc.CategoryId == category3.Id);
+    draft.DraftCategories.Should().NotContain(dc => dc.CategoryId == category2.Id);
+  }
+
+  [Fact]
+  public void SetCampaign_ShouldSucceed_WhenCampaignIsValid()
+  {
+    // Arrange
+    var draft = CreateDraft();
+    var campaign = CreateCampaign();
+
+    // Act
+    var result = draft.SetCampaign(campaign);
+
+    // Assert
+    result.IsSuccess.Should().BeTrue();
+    draft.Campaign.Should().Be(campaign);
+    draft.CampaignId.Should().Be(campaign.Id);
+    draft.UpdatedAtUtc.Should().NotBeNull();
+  }
+
+  [Fact]
+  public void SetCampaign_ShouldThrowArgumentNullException_WhenCampaignIsNull()
+  {
+    // Arrange
+    var draft = CreateDraft();
+
+    // Act
+    Action act = () => draft.SetCampaign(null!);
+
+    // Assert
+    act.Should().Throw<ArgumentNullException>();
+  }
+
+  [Fact]
+  public void ClearCampaign_ShouldRemoveCampaign()
+  {
+    // Arrange
+    var draft = CreateDraft();
+    var campaign = CreateCampaign();
+    draft.SetCampaign(campaign);
+
+    // Act
+    var result = draft.ClearCampaign();
+
+    // Assert
+    result.IsSuccess.Should().BeTrue();
+    draft.Campaign.Should().BeNull();
+    draft.CampaignId.Should().BeNull();
+    draft.UpdatedAtUtc.Should().NotBeNull();
+  }
+
+  [Fact]
+  public void LinkSeries_ShouldSucceed_WhenSeriesIsValid()
+  {
+    // Arrange
+    var draft = CreateDraft();
+    var newSeries = CreateSeries();
+
+    // Act
+    var result = draft.LinkSeries(newSeries);
+
+    // Assert
+    result.IsSuccess.Should().BeTrue();
+    draft.Series.Should().Be(newSeries);
+    draft.SeriesId.Should().Be(newSeries.Id);
+    draft.UpdatedAtUtc.Should().NotBeNull();
+  }
+
+  [Fact]
+  public void LinkSeries_ShouldRaiseDomainEvent_WhenSeriesIsLinked()
+  {
+    // Arrange
+    var draft = CreateDraft();
+    var newSeries = CreateSeries();
+
+    // Act
+    draft.LinkSeries(newSeries);
+
+    // Assert
+    var domainEvent = AssertDomainEventWasPublished<SeriesLinkedDomainEvent>(draft);
+    domainEvent.DraftId.Should().Be(draft.Id.Value);
+    domainEvent.SeriesId.Should().Be(newSeries.Id.Value);
+  }
+
+  [Fact]
+  public void LinkSeries_ShouldFail_WhenSeriesIsAlreadyLinked()
+  {
+    // Arrange
+    var draft = CreateDraft();
+    var sameSeries = draft.Series;
+
+    // Act
+    var result = draft.LinkSeries(sameSeries);
+
+    // Assert
+    result.IsFailure.Should().BeTrue();
+    result.Errors[0].Should().Be(DraftErrors.SeriesAlreadyLinked(sameSeries.Id.Value));
+  }
+
+  [Fact]
+  public void LinkSeries_ShouldThrowArgumentNullException_WhenSeriesIsNull()
+  {
+    // Arrange
+    var draft = CreateDraft();
+
+    // Act
+    Action act = () => draft.LinkSeries(null!);
+
+    // Assert
+    act.Should().Throw<ArgumentNullException>();
+  }
+
+  [Fact]
+  public void AddPart_ShouldSucceed_WhenPartIndexIsValid()
+  {
+    // Arrange
+    var draft = CreateDraft();
+    var partIndex = 1;
+    var minPosition = 1;
+    var maxPosition = 7;
+
+
+    // Act
+    var result = draft.AddPart(partIndex, minPosition, maxPosition);
+
+    // Assert
+    result.IsSuccess.Should().BeTrue();
+    draft.Parts.Should().ContainSingle();
+    draft.Parts.First().PartIndex.Should().Be(partIndex);
+  }
+
+  [Fact]
+  public void AddPart_ShouldRaiseDomainEvent_WhenPartIsAdded()
+  {
+    // Arrange
+    var draft = CreateDraft();
+    var partIndex = 1;
+    var minPosition = 1;
+    var maxPosition = 7;
+
+    // Act
+    draft.AddPart(partIndex, minPosition, maxPosition);
+    // Assert
+    var domainEvent = AssertDomainEventWasPublished<DraftPartAddedDomainEvent>(draft);
+    domainEvent.DraftId.Should().Be(draft.Id.Value);
+    domainEvent.PartIndex.Should().Be(partIndex);
+  }
+
+  [Fact]
+  public void AddPart_ShouldFail_WhenPartIndexIsZeroOrNegative()
+  {
+    // Arrange
+    var draft = CreateDraft();
+    var minPosition = 1;
+    var maxPosition = 7;
+
+    // Act
+    var result = draft.AddPart(0, minPosition, maxPosition);
+
+    // Assert
+    result.IsFailure.Should().BeTrue();
+    result.Errors[0].Should().Be(DraftErrors.PartIndexMustBeGreaterThanZero);
+  }
+
+  [Fact]
+  public void AddPart_ShouldFail_WhenPartWithIndexAlreadyExists()
+  {
+    // Arrange
+    var draft = CreateDraft();
+    var partIndex = 1;
+    var minPosition = 1;
+    var maxPosition = 7;
+    draft.AddPart(partIndex, minPosition, maxPosition);
+
+    // Act
+    var result = draft.AddPart(partIndex, minPosition, maxPosition);
+
+    // Assert
+    result.IsFailure.Should().BeTrue();
+    result.Errors[0].Should().Be(DraftErrors.DraftPartWithIndexAlreadyExists(partIndex));
+  }
+
+  [Fact]
+  public void RemovePart_ShouldSucceed_WhenPartExists()
+  {
+    // Arrange
+    var draft = CreateDraft();
+    var partId = draft.AddPart(1, 1, 7).Value;
+
+    // Act
+    var result = draft.RemovePart(partId);
+
+    // Assert
+    result.IsSuccess.Should().BeTrue();
+    draft.Parts.Should().BeEmpty();
+  }
+
+  [Fact]
+  public void RemovePart_ShouldRaiseDomainEvent_WhenPartIsRemoved()
+  {
+    // Arrange
+    var draft = CreateDraft();
+    var partId = draft.AddPart(1, 1, 7).Value;
+
+    // Act
+    draft.RemovePart(partId);
+
+    // Assert
+    var domainEvent = AssertDomainEventWasPublished<DraftPartRemovedDomainEvent>(draft);
+    domainEvent.DraftId.Should().Be(draft.Id.Value);
+    domainEvent.DraftPartId.Should().Be(partId.Value);
+  }
+
+  [Fact]
+  public void RemovePart_ShouldFail_WhenPartNotFound()
+  {
+    // Arrange
+    var draft = CreateDraft();
+    var nonExistentPartId = DraftPartId.CreateUnique();
+
+    // Act
+    var result = draft.RemovePart(nonExistentPartId);
+
+    // Assert
+    result.IsFailure.Should().BeTrue();
+    result.Errors[0].Should().Be(DraftErrors.DraftPartNotFound(nonExistentPartId.Value));
+  }
+
+  [Fact]
+  public void DeriveDraftStatus_ShouldSetStatusToCancelled_WhenAllPartsAreCancelled()
+  {
+    // Arrange
+    var draft = CreateDraftWithPart();
+    var part = draft.Parts.First();
+    part.SetDraftStatus(DraftPartStatus.Cancelled);
+    var utcNow = DateTime.UtcNow;
+
+    // Act
+    draft.DeriveDraftStatus(utcNow);
+
+    // Assert
+    draft.DraftStatus.Should().Be(DraftStatus.Cancelled);
+  }
+
+  [Fact]
+  public void DeriveDraftStatus_ShouldSetStatusToInProgress_WhenAnyPartIsInProgress()
+  {
+    // Arrange
+    var draft = CreateDraftWithPart();
+    var part = draft.Parts.First();
+    part.SetDraftStatus(DraftPartStatus.InProgress);
+    var utcNow = DateTime.UtcNow;
+
+    // Act
+    draft.DeriveDraftStatus(utcNow);
+
+    // Assert
     draft.DraftStatus.Should().Be(DraftStatus.InProgress);
   }
 
   [Fact]
-  public void StartDraft_ShouldReturnFailure_WhenDraftIsAlreadyInProgress()
+  public void DeriveDraftStatus_ShouldSetStatusToCompleted_WhenAllPartsAreCompletedOrCancelled()
   {
     // Arrange
-    var draft = DraftFactory.CreateStandardDraft().Value;
-    for (int i = 0; i < draft.TotalParticipants; i++)
-    {
-      draft.AddDrafter(DrafterFactory.CreateDrafter());
-    }
-
-    var primaryHost = HostsFactory.CreateHost().Value;
-    draft.SetPrimaryHost(primaryHost);
-
-    for (int i = 0; i < draft.TotalHosts - 1; i++)
-    {
-      draft.AddCoHost(HostsFactory.CreateHost().Value);
-    }
-    draft.StartDraft();
+    var draft = CreateDraftWithPart();
+    var part = draft.Parts.First();
+    part.SetDraftStatus(DraftPartStatus.Completed);
+    var utcNow = DateTime.UtcNow;
 
     // Act
-    var result = draft.StartDraft();
+    draft.DeriveDraftStatus(utcNow);
 
     // Assert
-    result.IsFailure.Should().BeTrue();
-    draft.DraftStatus.Should().Be(DraftStatus.InProgress);
-  }
-
-  [Fact]
-  public void CompleteDraft_ShouldChangeStatusToCompleted_WhenDraftIsInProgress()
-  {
-    // Arrange
-    var draft = SetupAndStartDraft();
-    for (int i = 0; i < draft.TotalPicks; i++)
-    {
-      var pick = Pick.Create(
-        i + 1,
-        MovieFactory.CreateMovie().Value,
-        DrafterFactory.CreateDrafter(),
-        null,
-        draft,
-        i + 1).Value;
-
-      draft.AddPick(pick);
-    }
-
-    // Act
-    var result = draft.CompleteDraft();
-
-    // Assert
-    result.IsSuccess.Should().BeTrue();
     draft.DraftStatus.Should().Be(DraftStatus.Completed);
   }
 
   [Fact]
-  public void CompleteDraft_ShouldReturnFailure_WhenDraftIsNotInProgress()
+  public void GetLifecycleView_ShouldReturnInProgress_WhenStatusIsInProgress()
   {
     // Arrange
-    var draft = DraftFactory.CreateStandardDraft().Value;
-    for (int i = 0; i < draft.TotalParticipants; i++)
-    {
-      draft.AddDrafter(DrafterFactory.CreateDrafter());
-    }
-    var primaryHost = HostsFactory.CreateHost().Value;
-    draft.SetPrimaryHost(primaryHost);
-
-    for (int i = 0; i < draft.TotalHosts - 1; i++)
-    {
-      draft.AddCoHost(HostsFactory.CreateHost().Value);
-    }
+    var draft = CreateDraftWithPart();
+    var part = draft.Parts.First();
+    part.SetDraftStatus(DraftPartStatus.InProgress);
+    draft.DeriveDraftStatus(DateTime.UtcNow);
+    var utcNow = DateTime.UtcNow;
 
     // Act
-    var result = draft.CompleteDraft();
+    var view = draft.GetLifecycleView(utcNow);
 
     // Assert
-    result.IsFailure.Should().BeTrue();
-    draft.DraftStatus.Should().Be(DraftStatus.Created);
+    view.Should().Be(DraftLifecycleView.InProgress);
   }
 
   [Fact]
-  public void AddTriviaResult_ShouldAddTriviaResultToList_WhenValidParametersAreProvided()
+  public void GetLifecycleView_ShouldReturnCompleted_WhenStatusIsCompleted()
   {
     // Arrange
-    var draft = SetupAndStartDraft();
-    var position = 1;
-    var questionsWon = 5;
-
-    var drafter = draft.Drafters.FirstOrDefault();
+    var draft = CreateDraftWithPart();
+    var part = draft.Parts.First();
+    part.SetDraftStatus(DraftPartStatus.Completed);
+    draft.DeriveDraftStatus(DateTime.UtcNow);
+    var utcNow = DateTime.UtcNow;
 
     // Act
-    var result = draft.AddTriviaResult(drafter, null, position, questionsWon);
+    var view = draft.GetLifecycleView(utcNow);
 
     // Assert
-    result.IsSuccess.Should().BeTrue();
-    draft.TriviaResults.Should().ContainSingle();
-    draft.TriviaResults.First().Position.Should().Be(position);
-    draft.TriviaResults.First().QuestionsWon.Should().Be(questionsWon);
+    view.Should().Be(DraftLifecycleView.Completed);
   }
 
   [Fact]
-  public void ApplyRollover_ShouldAddRolloverToDraft_WhenValidParametersAreProvided()
+  public void GetLifecycleView_ShouldReturnCancelled_WhenStatusIsCancelled()
   {
     // Arrange
-    var draft = DraftFactory.CreateStandardDraft().Value;
-    var drafter = DrafterFactory.CreateDrafter();
-    draft.AddDrafter(drafter);
+    var draft = CreateDraftWithPart();
+    var part = draft.Parts.First();
+    part.SetDraftStatus(DraftPartStatus.Cancelled);
+    draft.DeriveDraftStatus(DateTime.UtcNow);
+    var utcNow = DateTime.UtcNow;
 
     // Act
-    var result = draft.ApplyRollover(drafter.Id.Value, null, false);
+    var view = draft.GetLifecycleView(utcNow);
 
     // Assert
-    result.IsSuccess.Should().BeTrue();
+    view.Should().Be(DraftLifecycleView.Cancelled);
   }
 
   [Fact]
-  public void ApplyCommissionerOverride_ShouldOverridePick_WhenValidPickIsProvided()
+  public void TotalParts_ShouldReturnCorrectCount()
   {
     // Arrange
-    var draft = DraftFactory.CreateStandardDraft().Value;
-    var drafter = DrafterFactory.CreateDrafter();
-    var movie = MovieFactory.CreateMovie().Value;
-    var pick = Pick.Create(
-      Faker.Random.Number(1, 7),
-      movie,
-      drafter,
-      null,
-      draft,
-      Faker.Random.Number(1, 9)).Value;
+    var draft = CreateDraft();
+    draft.AddPart(1, 15, 21);
+    draft.AddPart(2, 8, 14);
+    draft.AddPart(3, 1, 7);
 
     // Act
-    var result = draft.ApplyCommissionerOverride(pick);
+    var totalParts = draft.TotalParts;
 
     // Assert
-    result.IsSuccess.Should().BeTrue();
+    totalParts.Should().Be(3);
   }
 
   [Fact]
-  public void SetEpisodeNumber_ShouldUpdateEpisodeNumber_WhenValidNumberIsProvided()
+  public void RenumberDraftParts_ShouldRenumberPartsSequentially()
   {
     // Arrange
-    var draft = DraftFactory.CreateStandardDraft().Value;
-    var episodeNumber = Faker.Random.Number(1, 100);
+    var draft = CreateDraft();
+    draft.AddPart(1, 15, 21);
+    draft.AddPart(3, 8, 14);
+    draft.AddPart(5, 1, 7);
 
     // Act
-    draft.SetEpisodeNumber(episodeNumber);
+    draft.RenumberDraftParts();
 
     // Assert
-    draft.EpisodeNumber.Should().Be(episodeNumber);
+    var parts = draft.Parts.OrderBy(p => p.PartIndex).ToList();
+    parts[0].PartIndex.Should().Be(1);
+    parts[1].PartIndex.Should().Be(2);
+    parts[2].PartIndex.Should().Be(3);
   }
 
-  [Fact]
-  public void PauseDraft_ShouldChangeStatusToPaused_WhenDraftIsInProgress()
+  private static Draft CreateDraft()
   {
-    // Arrange
-    var draft = DraftFactory.CreateStandardDraft().Value;
-    for (int i = 0; i < draft.TotalParticipants; i++)
-    {
-      draft.AddDrafter(DrafterFactory.CreateDrafter());
-    }
-    var primaryHost = HostsFactory.CreateHost().Value;
-    draft.SetPrimaryHost(primaryHost);
+    var title = Title.Create(Faker.Lorem.Word());
+    var publicId = Faker.Random.AlphaNumeric(10);
+    var draftType = DraftType.Standard;
+    var series = CreateSeries();
 
-    for (int i = 0; i < draft.TotalHosts - 1; i++)
-    {
-      draft.AddCoHost(HostsFactory.CreateHost().Value);
-    }
-    draft.StartDraft();
-
-    // Act
-    var result = draft.PauseDraft();
-
-    // Assert
-    result.IsSuccess.Should().BeTrue();
-    draft.DraftStatus.Should().Be(DraftStatus.Paused);
+    return Draft.Create(title, publicId, draftType, series).Value;
   }
 
-  [Fact]
-  public void SetDraftStatus_ShouldUpdateStatus_WhenValidStatusIsProvided()
+  private static Draft CreateDraftWithPart()
   {
-    // Arrange
-    var draft = DraftFactory.CreateStandardDraft().Value;
-    var newStatus = DraftStatus.InProgress;
-
-    // Act
-    draft.SetDraftStatus(newStatus);
-
-    // Assert
-    draft.DraftStatus.Should().Be(newStatus);
-  }
-
-  [Fact]
-  public void SetGameBoard_ShouldUpdateGameBoard_WhenValidGameBoardIsProvided()
-  {
-    // Arrange
-    var draft = DraftFactory.CreateStandardDraft().Value;
-    var gameBoard = GameBoard.Create(draft).Value;
-
-    // Act
-    draft.SetGameBoard(gameBoard);
-
-    // Assert
-    draft.GameBoard.Should().Be(gameBoard);
-  }
-
-  [Fact]
-  public void RemoveDrafter_ShouldRemoveDrafterFromList_WhenDrafterExists()
-  {
-    // Arrange
-    var draft = DraftFactory.CreateStandardDraft().Value;
-    var drafter = DrafterFactory.CreateDrafter();
-    draft.AddDrafter(drafter);
-
-    // Act
-    var result = draft.RemoveDrafter(drafter);
-
-    // Assert
-    result.IsSuccess.Should().BeTrue();
-    draft.Drafters.Should().BeEmpty();
-  }
-
-  [Fact]
-  public void RemoveCoHost_ShouldRemoveCoHostFromList_WhenHostExists()
-  {
-    // Arrange
-    var draft = DraftFactory.CreateStandardDraft().Value;
-    var host = HostsFactory.CreateHost().Value;
-    draft.AddCoHost(host);
-
-    // Act
-    var result = draft.RemoveHost(host);
-
-    // Assert
-    result.IsSuccess.Should().BeTrue();
-    draft.CoHosts.Should().BeEmpty();
-  }
-
-  [Fact]
-  public void StartDraft_ShouldFail_WhenNoPrimaryHost()
-  {
-    var draft = DraftFactory.CreateStandardDraft().Value;
-    for (int i = 0; i < draft.TotalParticipants; i++)
-    {
-      draft.AddDrafter(DrafterFactory.CreateDrafter());
-    }
-    // Intentionally add only cohosts
-    for (int i = 0; i < draft.TotalHosts; i++)
-    {
-      draft.AddCoHost(HostsFactory.CreateHost().Value);
-    }
-
-    var result = draft.StartDraft();
-
-    result.IsFailure.Should().BeTrue();
-  }
-
-  [Fact]
-  public void StartDraft_ShouldFail_WhenHostCountDoesNotMatchTotalHosts()
-  {
-    var draft = DraftFactory.CreateStandardDraft().Value;
-    for (int i = 0; i < draft.TotalParticipants; i++)
-    {
-      draft.AddDrafter(DrafterFactory.CreateDrafter());
-    }
-    draft.SetPrimaryHost(HostsFactory.CreateHost().Value);
-    // Add fewer cohosts than required
-    // Required = TotalHosts - 1
-    var requiredCoHosts = draft.TotalHosts - 1;
-    for (int i = 0; i < requiredCoHosts - 1; i++)
-    {
-      draft.AddCoHost(HostsFactory.CreateHost().Value);
-    }
-
-    var result = draft.StartDraft();
-
-    result.IsFailure.Should().BeTrue();
-  }
-
-  public static Draft SetupAndStartDraft()
-  {
-    var draft = DraftFactory.CreateStandardDraft().Value;
-    for (int i = 0; i < draft.TotalParticipants; i++)
-    {
-      draft.AddDrafter(DrafterFactory.CreateDrafter());
-    }
-
-    var primaryHost = HostsFactory.CreateHost().Value;
-    draft.SetPrimaryHost(primaryHost);
-
-    for (int i = 0; i < draft.TotalHosts - 1; i++)
-    {
-      draft.AddCoHost(HostsFactory.CreateHost().Value);
-    }
-
-    draft.StartDraft();
+    var draft = CreateDraft();
+    draft.AddPart(1, 15, 21);
     return draft;
+  }
+
+  private static Series CreateSeries()
+  {
+    return Series.Create(
+      name: Faker.Lorem.Word(),
+      publicId: Faker.Random.AlphaNumeric(10),
+      canonicalPolicy: CanonicalPolicy.Always,
+      continuityScope: ContinuityScope.Global,
+      continuityDateRule: ContinuityDateRule.AnyChannelFirstRelease,
+      kind: SeriesKind.Regular,
+      defaultDraftType: DraftType.Standard,
+      allowedDraftTypes: DraftTypeMask.All).Value;
+  }
+
+  private static Category CreateCategory()
+  {
+    return Category.Create(
+      publicId: Faker.Random.AlphaNumeric(10),
+      name: Faker.Lorem.Word(),
+      description: Faker.Lorem.Sentence()).Value;
+  }
+
+  private static Campaign CreateCampaign()
+  {
+    return Campaign.Create(
+      slug: Faker.Internet.DomainWord(),
+      name: Faker.Lorem.Word(),
+      publicId: Faker.Random.AlphaNumeric(10)).Value;
   }
 }
 

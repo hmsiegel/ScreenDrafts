@@ -1,8 +1,4 @@
-﻿using ScreenDrafts.Common.Features.Abstractions.Data;
-using ScreenDrafts.Common.Features.Abstractions.Messaging;
-using ScreenDrafts.Common.Infrastructure.Inbox;
-
-namespace ScreenDrafts.Modules.Drafts.Infrastructure.Outbox;
+﻿namespace ScreenDrafts.Modules.Drafts.Infrastructure.Outbox;
 
 internal sealed class IdempotentDomainEventHandler<TDomainEvent>(
     IDomainEventHandler<TDomainEvent> decorated,

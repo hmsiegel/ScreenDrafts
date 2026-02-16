@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Domain.Predictions;
 
-public sealed class PredictionSeason : AggrgateRoot<PredictionSeasonId, Guid>
+public sealed class PredictionSeason : AggregateRoot<PredictionSeasonId, Guid>
 {
   private readonly List<PredictionStanding> _standings = [];
   private readonly List<PredictionCarryover> _carryovers = [];

@@ -1,6 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.Drafts.Update;
+namespace ScreenDrafts.Modules.Drafts.Features.Drafts.Update;
 
-internal sealed class Endpoint : ScreenDraftsEndpoint<Request>
+internal sealed class Endpoint : ScreenDraftsEndpoint<UpdateDraftRequest>
 {
   public override void Configure()
   {
@@ -14,12 +14,12 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<Request>
       .Produces(StatusCodes.Status401Unauthorized)
       .Produces(StatusCodes.Status403Forbidden);
     });
-    Policies(Features.Permissions.DraftUpdate);
+    Policies(DraftsAuth.Permissions.DraftUpdate);
   }
 
-  public override async Task HandleAsync(Request req, CancellationToken ct)
+  public override async Task HandleAsync(UpdateDraftRequest req, CancellationToken ct)
   {
-    var command = new Command
+    var UpdateDraftCommand = new UpdateDraftCommand
     {
       PublicId = req.PublicId,
       Title = req.Title,
@@ -30,8 +30,10 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<Request>
       DraftTypeValue = req.DraftTypeValue
     };
 
-    var result = await Sender.Send(command, ct);
+    var result = await Sender.Send(UpdateDraftCommand, ct);
 
     await this.SendNoContentAsync(result, ct);
   }
 }
+
+

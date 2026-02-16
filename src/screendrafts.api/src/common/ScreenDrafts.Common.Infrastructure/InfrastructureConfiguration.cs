@@ -16,8 +16,6 @@ public static class InfrastructureConfiguration
 
     services.AddAuthenticationInternal();
 
-    services.AddAuthorizationInternal();
-
     services.AddCoreInfrastructure();
 
     services.AddRepositoriesFromModules(infrastructureAssemblies);

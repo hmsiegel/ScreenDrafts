@@ -1,8 +1,6 @@
-﻿using ScreenDrafts.Common.Features.Http;
-
 namespace ScreenDrafts.Modules.Drafts.Features.Drafts.SetCampaign;
 
-internal sealed class Endpoint : ScreenDraftsEndpoint<Request>
+internal sealed class Endpoint : ScreenDraftsEndpoint<SetCampaignDraftRequest>
 {
   public override void Configure()
   {
@@ -15,20 +13,22 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<Request>
         .Produces(StatusCodes.Status400BadRequest)
         .Produces(StatusCodes.Status403Forbidden);
     });
-    Policies(Features.Permissions.DrafterUpdate);
+    Policies(DraftsAuth.Permissions.DrafterUpdate);
   }
 
-  public override async Task HandleAsync(Request req, CancellationToken ct)
+  public override async Task HandleAsync(SetCampaignDraftRequest req, CancellationToken ct)
   {
     ArgumentNullException.ThrowIfNull(req);
-    var command = new Command
+    var SetCampaignDraftCommand = new SetCampaignDraftCommand
     {
       DraftId = req.DraftId,
       CampaignId = req.CampaignId
     };
 
-    var result = await Sender.Send(command, ct);
+    var result = await Sender.Send(SetCampaignDraftCommand, ct);
 
-    await this.MapNoContentResultsAsync(result, ct);
+    await this.SendNoContentAsync(result, ct);
   }
 }
+
+

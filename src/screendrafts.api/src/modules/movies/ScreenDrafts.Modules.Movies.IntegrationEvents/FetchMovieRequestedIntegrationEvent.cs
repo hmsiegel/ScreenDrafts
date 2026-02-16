@@ -1,4 +1,4 @@
-﻿using ScreenDrafts.Common.Features.Abstractions.EventBus;
+﻿using ScreenDrafts.Common.Application.EventBus;
 
 namespace ScreenDrafts.Modules.Movies.IntegrationEvents;
 

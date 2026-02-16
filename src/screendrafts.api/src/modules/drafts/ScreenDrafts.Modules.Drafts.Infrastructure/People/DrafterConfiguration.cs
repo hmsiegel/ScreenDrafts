@@ -6,13 +6,25 @@ internal sealed class DrafterConfiguration : IEntityTypeConfiguration<Drafter>
   {
     builder.ToTable(Tables.Drafters);
 
+    // Id
     builder.HasKey(drafter => drafter.Id);
 
     builder.Property(drafter => drafter.Id)
       .ValueGeneratedNever()
-      .HasConversion(
-      id => id.Value,
-      value => DrafterId.Create(value));
+      .HasConversion(IdConverters.DrafterIdConverter);
+
+    // Public Id
+    builder.Property(d => d.PublicId)
+      .IsRequired()
+      .HasMaxLength(PublicIdPrefixes.MaxPublicIdLength);
+
+    builder.HasIndex(d => d.PublicId)
+      .IsUnique()
+      .HasDatabaseName("ix_drafters_public_id");
+
+    // Person Id
+    builder.HasIndex(d => d.PersonId)
+      .IsUnique();
 
     builder.HasOne(d => d.Person)
       .WithOne(p => p.DrafterProfile)
@@ -20,44 +32,7 @@ internal sealed class DrafterConfiguration : IEntityTypeConfiguration<Drafter>
       .IsRequired()
       .OnDelete(DeleteBehavior.Restrict);
 
-    builder.HasIndex(d => d.PersonId)
-      .IsUnique();
-
-    builder.HasIndex(d => d.PublicId)
-      .IsUnique();
-
-    builder.Property(d => d.PublicId)
-      .ValueGeneratedOnAdd();
-
-    builder.HasOne(d => d.RolloverVeto)
-      .WithOne(rv => rv.Drafter)
-      .HasForeignKey<RolloverVeto>(rv => rv.DrafterId)
-      .OnDelete(DeleteBehavior.Cascade);
-
-    builder.HasOne(d => d.RolloverVetoOverride)
-      .WithOne(rv => rv.Drafter)
-      .HasForeignKey<RolloverVetoOverride>(rv => rv.DrafterId)
-      .OnDelete(DeleteBehavior.Cascade);
-
-    builder.HasMany(d => d.DraftParts)
-      .WithMany(d => d.Drafters)
-      .UsingEntity<Dictionary<string, string>>(
-      Tables.DraftPartsDrafters,
-      x => x.HasOne<DraftPart>().WithMany().HasForeignKey("draftPart_id").OnDelete(DeleteBehavior.Cascade),
-      x => x.HasOne<Drafter>().WithMany().HasForeignKey("drafter_id").OnDelete(DeleteBehavior.Cascade),
-      x =>
-      {
-        x.HasKey("draftPart_id", "drafter_id");
-        x.ToTable(Tables.DraftPartsDrafters);
-      });
-
-    builder.HasMany(d => d.DraftStats)
-      .WithOne(ds => ds.Drafter)
-      .HasForeignKey(ds => ds.DrafterId)
-      .OnDelete(DeleteBehavior.Cascade);
-
-    builder.Navigation(d => d.DraftStats)
-      .HasField("_draftStats")
-      .UsePropertyAccessMode(PropertyAccessMode.Field);
+    builder.Property(d => d.IsRetired)
+      .IsRequired();
   }
 }

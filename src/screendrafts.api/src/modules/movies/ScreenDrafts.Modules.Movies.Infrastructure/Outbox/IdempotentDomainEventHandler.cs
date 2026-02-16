@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Common.Infrastructure.Inbox;
-
-namespace ScreenDrafts.Modules.Movies.Infrastructure.Outbox;
+﻿namespace ScreenDrafts.Modules.Movies.Infrastructure.Outbox;
 
 internal sealed class IdempotentDomainEventHandler<TDomainEvent>(
     IDomainEventHandler<TDomainEvent> decorated,

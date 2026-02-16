@@ -1,8 +1,4 @@
-﻿using ScreenDrafts.Common.Features.Abstractions.Data;
-using ScreenDrafts.Common.Features.Http.Responses;
-using ScreenDrafts.Modules.Drafts.Features.People;
-
-namespace ScreenDrafts.Modules.Drafts.Features.Abstractions.Data;
+﻿namespace ScreenDrafts.Modules.Drafts.Features.Abstractions.Data;
 
 internal abstract class PaginatedDapperQueryHandler<TQuery, TResult>
   (IDbConnectionFactory dbConnectionFactory)
@@ -52,11 +48,13 @@ internal abstract class PaginatedDapperQueryHandler<TQuery, TResult>
 
     if (totalCount == 0)
     {
-      return new PagedResult<TResult>(
-        [],
-        0,
-        pageNumber,
-        pageSize);
+      return new PagedResult<TResult>
+      {
+        Items = [],
+        Page = pageNumber,
+        PageSize = pageSize,
+        TotalCount = 0
+      };
     }
 
     var dataSql = GetDataSql()
@@ -78,10 +76,12 @@ internal abstract class PaginatedDapperQueryHandler<TQuery, TResult>
         Offset = offset,
       });
 
-    return new PagedResult<TResult>(
-      [.. items],
-      totalCount,
-      pageNumber,
-      pageSize);
+    return new PagedResult<TResult> 
+    {
+      Items = [.. items],
+      TotalCount = totalCount,
+      Page = pageNumber,
+      PageSize = pageSize
+    };
   }
 }

@@ -1,4 +1,7 @@
-﻿namespace ScreenDrafts.Common.Application.Behaviors;
+﻿using ScreenDrafts.Common.Abstractions.Results;
+using ScreenDrafts.Common.Application.Behaviors;
+
+namespace ScreenDrafts.Common.Application.Behaviors;
 
 internal sealed class RequestLoggingPipelineBehavior<TRequest, TResponse>
   (ILogger<RequestLoggingPipelineBehavior<TRequest, TResponse>> logger)

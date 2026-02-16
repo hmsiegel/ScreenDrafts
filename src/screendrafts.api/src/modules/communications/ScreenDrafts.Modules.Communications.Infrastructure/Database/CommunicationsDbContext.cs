@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Communications.Infrastructure.Database;
+﻿using ScreenDrafts.Modules.Communications.Domain.Abstractions.Data;
+
+namespace ScreenDrafts.Modules.Communications.Infrastructure.Database;
 
 public sealed class CommunicationsDbContext(DbContextOptions<CommunicationsDbContext> options)
   : DbContext(options), IUnitOfWork

@@ -1,6 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.Categories.Create;
+namespace ScreenDrafts.Modules.Drafts.Features.Categories.Create;
 
-internal sealed class Validator : AbstractValidator<Command>
+internal sealed class Validator : AbstractValidator<CreateCategoryCommand>
 {
   public Validator()
   {
@@ -12,3 +12,4 @@ internal sealed class Validator : AbstractValidator<Command>
       .MaximumLength(500);
   }
 }
+

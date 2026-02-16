@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Modules.Drafts.Domain.Drafters.Enums;
-
-namespace ScreenDrafts.Modules.Drafts.Infrastructure.Picks;
+﻿namespace ScreenDrafts.Modules.Drafts.Infrastructure.Picks;
 
 internal sealed class PickConfiguration : IEntityTypeConfiguration<Pick>
 {
@@ -15,17 +13,9 @@ internal sealed class PickConfiguration : IEntityTypeConfiguration<Pick>
       .ValueGeneratedNever()
       .HasConversion(IdConverters.DraftPickIdConverter);
 
-    // Public Id
-    builder.Property(p => p.PublicId)
-      .IsRequired()
-      .HasMaxLength(PublicIdPrefixes.MaxPublicIdLength);
-
-    builder.HasIndex(p => p.PublicId)
-      .IsUnique();
-
     // Draft Part
     builder.HasOne(p => p.DraftPart)
-      .WithMany(d => d.Picks)
+      .WithMany("_picks")
       .HasForeignKey(p => p.DraftPartId)
       .OnDelete(DeleteBehavior.Cascade);
 
@@ -43,6 +33,11 @@ internal sealed class PickConfiguration : IEntityTypeConfiguration<Pick>
       .HasForeignKey(p => p.MovieId)
       .OnDelete(DeleteBehavior.Restrict);
 
+    builder.Property(p => p.MovieVersionName)
+      .HasColumnName("movie_version_name")
+      .HasMaxLength(100)
+      .IsRequired(false);
+
     // Order/ Position
     builder.Property(p => p.Position)
       .IsRequired();
@@ -50,39 +45,46 @@ internal sealed class PickConfiguration : IEntityTypeConfiguration<Pick>
     builder.Property(p => p.PlayOrder)
       .IsRequired();
 
-    // Uniqueness
-    builder.HasIndex(p => new { p.DraftPartId, p.PlayOrder })
-      .IsUnique();
-
-    builder.HasIndex(p => new { p.DraftPartId, p.Position, p.PlayOrder })
-      .IsUnique();
-
     // Participant
-    builder.Property(p => p.PlayedById)
+    builder.Property(x => x.PlayedByParticipantId)
+      .IsRequired()
+      .ValueGeneratedNever()
+      .HasConversion(IdConverters.DraftPartParticipantIdConverter);
+
+    builder.HasOne(p => p.PlayedByParticipant)
+      .WithMany(p => p.Picks)
+      .HasForeignKey(p => p.PlayedByParticipantId)
+      .OnDelete(DeleteBehavior.Restrict);
+
+    builder.Property(p => p.PlayedByParticipantKindValue)
+      .IsRequired()
+      .HasConversion(IdConverters.ParticipantKindConverter);
+
+    builder.Property(p => p.PlayedByParticipantIdValue)
       .IsRequired();
 
-    builder.Property(p => p.PlayedByKind)
-      .IsRequired()
-      .HasConversion(
-        v => v.Value,
-        v => ParticipantKind.FromValue(v));
+    builder.HasIndex(x => new { x.DraftPartId, x.PlayedByParticipantIdValue, x.PlayedByParticipantKindValue });
+
 
     // Relationships
     builder.HasOne(p => p.Veto)
-      .WithOne()
-      .HasForeignKey<Veto>(v => v.PickId)
+      .WithOne(v => v.TargetPick)
+      .HasForeignKey<Veto>(v => v.TargetPickId)
       .OnDelete(DeleteBehavior.Cascade);
 
     builder.HasOne(p => p.CommissionerOverride)
-      .WithOne()
+      .WithOne(co => co.Pick)
       .HasForeignKey<CommissionerOverride>(co => co.PickId)
       .OnDelete(DeleteBehavior.Cascade);
 
     // Ignored
-    builder.Ignore(p => p.PlayedBy);
     builder.Ignore(p => p.IsVetoed);
-    builder.Ignore(p => p.IsComissionerOverridden);
+    builder.Ignore(p => p.IsCommissionerOverridden);
     builder.Ignore(p => p.IsActiveOnFinalBoard);
     builder.Ignore(p => p.History);
+
+    builder.HasIndex(x => new { x.DraftPartId, x.PlayOrder }).IsUnique();
+    builder.HasIndex(x => new { x.DraftPartId, x.Position });
+    builder.HasIndex(x => new { x.PlayedByParticipantId, x.PlayOrder });
   }
 }

@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.Errors;
+﻿using ScreenDrafts.Common.Abstractions.Errors;
+
+namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.Errors;
 
 public static class RolloverVetoErrors
 {

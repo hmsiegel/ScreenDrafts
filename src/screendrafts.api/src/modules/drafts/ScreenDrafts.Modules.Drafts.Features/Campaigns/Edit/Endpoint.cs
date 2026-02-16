@@ -1,6 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.Campaigns.Edit;
+namespace ScreenDrafts.Modules.Drafts.Features.Campaigns.Edit;
 
-internal sealed class Endpoint : ScreenDraftsEndpoint<Request>
+internal sealed class Endpoint : ScreenDraftsEndpoint<EditCampaignRequest>
 {
   public override void Configure()
   {
@@ -16,20 +16,22 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<Request>
       .Produces(StatusCodes.Status403Forbidden)
       .Produces(StatusCodes.Status404NotFound);
     });
-    Policies(Features.Permissions.CampaignUpdate);
+    Policies(DraftsAuth.Permissions.CampaignUpdate);
   }
 
-  public override async Task HandleAsync(Request req, CancellationToken ct)
+  public override async Task HandleAsync(EditCampaignRequest req, CancellationToken ct)
   {
-    var command = new Command
+    var EditCampaignCommand = new EditCampaignCommand
     {
       PublicId = req.PublicId,
       Name = req.Name,
       Slug = req.Slug
     };
 
-    var result = await Sender.Send(command, ct);
+    var result = await Sender.Send(EditCampaignCommand, ct);
 
     await this.SendNoContentAsync(result, ct);
   }
 }
+
+

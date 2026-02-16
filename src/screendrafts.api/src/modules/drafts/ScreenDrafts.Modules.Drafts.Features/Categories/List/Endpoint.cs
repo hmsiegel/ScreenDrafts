@@ -1,6 +1,8 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.Categories.List;
+using ScreenDrafts.Common.Presentation.Http.Authentication;
 
-internal sealed class Endpoint(IUsersApi usersApi) : ScreenDraftsEndpoint<Request, CategoryCollectionResponse>
+namespace ScreenDrafts.Modules.Drafts.Features.Categories.List;
+
+internal sealed class Endpoint(IUsersApi usersApi) : ScreenDraftsEndpoint<ListCategoriesRequest, CategoryCollectionResponse>
 {
   private readonly IUsersApi _usersApi = usersApi;
 
@@ -15,15 +17,15 @@ internal sealed class Endpoint(IUsersApi usersApi) : ScreenDraftsEndpoint<Reques
       .Produces(StatusCodes.Status401Unauthorized)
       .Produces(StatusCodes.Status403Forbidden);
     });
-    Permissions(Features.Permissions.CampaignList);
+    Permissions(DraftsAuth.Permissions.CampaignList);
   }
 
-  public override async Task HandleAsync(Request req, CancellationToken ct)
+  public override async Task HandleAsync(ListCategoriesRequest req, CancellationToken ct)
   {
     var userRoles = await _usersApi.GetUserRolesAsync(User.GetUserId(), ct);
 
-    var isAdmin = userRoles.Contains(Features.Roles.Admin, StringComparer.OrdinalIgnoreCase) || 
-      userRoles.Contains(Features.Roles.SuperAdmin, StringComparer.OrdinalIgnoreCase);
+    var isAdmin = userRoles.Contains(DraftsAuth.Roles.Admin, StringComparer.OrdinalIgnoreCase) || 
+      userRoles.Contains(DraftsAuth.Roles.SuperAdmin, StringComparer.OrdinalIgnoreCase);
 
     if (!isAdmin && req.IncludeDeleted)
     {
@@ -31,11 +33,13 @@ internal sealed class Endpoint(IUsersApi usersApi) : ScreenDraftsEndpoint<Reques
       return;
     }
 
-    var query = new Query(IncludeDeleted: req.IncludeDeleted);
+    var ListCategoriesQuery = new ListCategoriesQuery(IncludeDeleted: req.IncludeDeleted);
 
-    var result = await Sender.Send(query, ct);
+    var result = await Sender.Send(ListCategoriesQuery, ct);
 
     await this.SendOkAsync(result, ct);
   }
 }
+
+
 

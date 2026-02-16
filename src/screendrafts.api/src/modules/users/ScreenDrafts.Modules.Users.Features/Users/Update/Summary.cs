@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Users.Features.Users.Update;
+﻿using FastEndpoints;
+
+namespace ScreenDrafts.Modules.Users.Features.Users.Update;
 
 internal sealed class Summary : Summary<Endpoint>
 {

@@ -18,7 +18,7 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("users")
-                .HasAnnotation("ProductVersion", "9.0.8")
+                .HasAnnotation("ProductVersion", "10.0.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -943,7 +943,8 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
 
                     b.Property<string>("IdentityId")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
                         .HasColumnName("identity_id");
 
                     b.Property<string>("InstagramHandle")
@@ -970,10 +971,19 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("person_id");
 
+                    b.Property<string>("PersonPublicId")
+                        .HasColumnType("text")
+                        .HasColumnName("person_public_id");
+
                     b.Property<string>("ProfilePicturePath")
                         .HasMaxLength(2048)
                         .HasColumnType("character varying(2048)")
                         .HasColumnName("profile_picture_path");
+
+                    b.Property<string>("PublicId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("public_id");
 
                     b.Property<string>("TwitterHandle")
                         .HasMaxLength(100)
@@ -993,7 +1003,17 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
 
                     b.HasIndex("PersonId")
                         .IsUnique()
-                        .HasDatabaseName("ix_users_person_id");
+                        .HasDatabaseName("ix_users_person_id")
+                        .HasFilter("\"person_id\" IS NOT NULL");
+
+                    b.HasIndex("PersonPublicId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_users_person_public_id")
+                        .HasFilter("\"person_public_id\" IS NOT NULL");
+
+                    b.HasIndex("PublicId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_users_public_id");
 
                     b.ToTable("users", "users");
                 });

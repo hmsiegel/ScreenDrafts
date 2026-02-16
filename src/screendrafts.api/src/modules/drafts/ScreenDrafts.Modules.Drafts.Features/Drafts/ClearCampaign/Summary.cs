@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.Drafts.ClearCampaign;
+using FastEndpoints;
+
+namespace ScreenDrafts.Modules.Drafts.Features.Drafts.ClearCampaign;
 
 internal sealed class Summary : Summary<Endpoint>
 {
@@ -7,7 +9,8 @@ internal sealed class Summary : Summary<Endpoint>
     Summary = "Clears the current campaign from a draft.";
     Description = "Clears the current campaign from a draft.";
     Response(StatusCodes.Status204NoContent, "Campaign removed from draft successfully.");
-    Response(StatusCodes.Status400BadRequest, "Invalid request.");
+    Response(StatusCodes.Status400BadRequest, "Invalid ClearCampaignDraftRequest.");
     Response(StatusCodes.Status401Unauthorized, "Unauthorized.");
   }
 }
+

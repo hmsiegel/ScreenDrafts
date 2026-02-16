@@ -7,156 +7,75 @@ public class DrafterTests : BaseTest
   {
     // Arrange
     var person = PersonFactory.CreatePerson().Value;
+    var publicId = Faker.Random.AlphaNumeric(10);
 
     // Act
-    var result = Drafter.Create(person);
+    var result = Drafter.Create(person, publicId);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
     result.Value.Person.Should().Be(person);
-    result.Value.Person.FirstName.Should().Be(person.FirstName);
-    result.Value.Person.LastName.Should().Be(person.LastName);
+    result.Value.PersonId.Should().Be(person.Id);
+    result.Value.PublicId.Should().Be(publicId);
+    result.Value.IsRetired.Should().BeFalse();
   }
 
   [Fact]
-  public void AddVeto_ShouldAddVetoToList()
+  public void Create_ShouldRaiseDomainEvent_WhenDrafterIsCreated()
   {
     // Arrange
-    var draft = DraftFactory.CreateStandardDraft().Value;
-    var movie = MovieFactory.CreateMovie().Value;
-    var drafter = DrafterFactory.CreateDrafter();
-    var pick = Pick.Create(
-      Faker.Random.Number(1, 7),
-      movie,
-      drafter,
-      null,
-      draft,
-      Faker.Random.Number(1, 9)).Value;
-
-    var veto = Veto.Create(pick, drafter, null).Value;
+    var person = PersonFactory.CreatePerson().Value;
+    var publicId = Faker.Random.AlphaNumeric(10);
 
     // Act
-    drafter.AddVeto(veto);
+    var drafter = Drafter.Create(person, publicId).Value;
 
     // Assert
-    drafter.Vetoes.Should().ContainSingle();
+    var domainEvent = AssertDomainEventWasPublished<DrafterCreatedDomainEvent>(drafter);
+    domainEvent.DrafterId.Should().Be(drafter.Id.Value);
   }
 
   [Fact]
-  public void AddVetoOverride_ShouldAddVetoOverrideToList()
+  public void Create_ShouldThrowArgumentNullException_WhenPersonIsNull()
   {
     // Arrange
-    var draft = DraftFactory.CreateStandardDraft().Value;
-    var movie = MovieFactory.CreateMovie().Value;
-    var drafter = DrafterFactory.CreateDrafter();
-    var pick = Pick.Create(
-      Faker.Random.Number(1, 7),
-      movie,
-      drafter,
-      null,
-      draft,
-      Faker.Random.Number(1, 9)).Value;
-
-    var veto = Veto.Create(pick, drafter, null).Value;
-
-    var vetoOverride = VetoOverride.Create(veto, drafter, null);
+    var publicId = Faker.Random.AlphaNumeric(10);
 
     // Act
-    drafter.AddVetoOverride(vetoOverride.Value);
+    Action act = () => Drafter.Create(null!, publicId);
 
     // Assert
-    drafter.VetoOverrides.Should().ContainSingle();
+    act.Should().Throw<ArgumentNullException>();
   }
 
   [Fact]
-  public void SetRolloverVeto_ShouldReturnSuccess_WhenRolloverVetoIsSet()
+  public void RetireDrafter_ShouldReturnSuccess_WhenDrafterIsNotRetired()
   {
     // Arrange
     var drafter = DrafterFactory.CreateDrafter();
-    var draft = DraftFactory.CreateStandardDraft().Value;
 
     // Act
-    var result = drafter.SetRolloverVeto(RolloverVeto.Create(
-      drafter,
-      null,
-      draft.Id.Value).Value);
+    var result = drafter.RetireDrafter();
 
     // Assert
     result.IsSuccess.Should().BeTrue();
+    drafter.IsRetired.Should().BeTrue();
+    drafter.RetiredAtUtc.Should().NotBeNull();
   }
 
   [Fact]
-  public void SetRolloverVeto_ShouldReturnFailure_WhenRolloverVetoIsAlreadySet()
+  public void RetireDrafter_ShouldReturnFailure_WhenDrafterIsAlreadyRetired()
   {
     // Arrange
     var drafter = DrafterFactory.CreateDrafter();
-    var draft = DraftFactory.CreateStandardDraft().Value;
-    drafter.SetRolloverVeto(RolloverVeto.Create(
-          drafter,
-          null,
-          draft.Id.Value).Value);
+    drafter.RetireDrafter();
 
     // Act
-    var result = drafter.SetRolloverVeto(RolloverVeto.Create(
-      drafter,
-      null,
-      draft.Id.Value).Value);
-    // Assert
-    result.IsFailure.Should().BeTrue();
-  }
-
-  [Fact]
-  public void SetRolloverVetoOverride_ShouldReturnSuccess_WhenRolloverVetoOverrideIsNotSet()
-  {
-    // Arrange
-    var drafter = DrafterFactory.CreateDrafter();
-    var draft = DraftFactory.CreateStandardDraft().Value;
-    // Act
-    var result = drafter.SetRolloverVetoOverride(RolloverVetoOverride.Create(
-      drafter,
-      null,
-      draft.Id.Value).Value);
-
-    // Assert
-    result.IsSuccess.Should().BeTrue();
-  }
-
-  [Fact]
-  public void SetRolloverVetoOverride_ShouldReturnFailure_WhenRolloverVetoOverrideIsAlreadySet()
-  {
-    // Arrange
-    var drafter = DrafterFactory.CreateDrafter();
-    var draft = DraftFactory.CreateStandardDraft().Value;
-    drafter.SetRolloverVetoOverride(RolloverVetoOverride.Create(
-          drafter,
-          null,
-          draft.Id.Value).Value);
-
-    // Act
-    var result = drafter.SetRolloverVetoOverride(RolloverVetoOverride.Create(
-      drafter,
-      null,
-      draft.Id.Value).Value);
+    var result = drafter.RetireDrafter();
 
     // Assert
     result.IsFailure.Should().BeTrue();
-  }
-
-  [Fact]
-  public void AddDraftStats_ShouldAddDraftStatsToList()
-  {
-    // Arrange
-    var drafter = DrafterFactory.CreateDrafter();
-    var draft = DraftFactory.CreateStandardDraft().Value;
-    var drafterDraftStats = DrafterDraftStats.Create(
-      drafter,
-      null,
-      draft);
-
-    // Act
-    drafter.AddDraftStats(drafterDraftStats);
-
-    // Assert
-    drafter.DraftStats.Should().ContainSingle();
+    result.Errors[0].Should().Be(DrafterErrors.AlreadyRetired);
   }
 }
+

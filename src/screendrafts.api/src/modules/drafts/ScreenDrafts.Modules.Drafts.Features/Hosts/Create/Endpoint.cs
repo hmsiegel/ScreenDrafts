@@ -1,6 +1,8 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.Hosts.Create;
+using ScreenDrafts.Common.Abstractions.Results;
 
-internal sealed class Endpoint : ScreenDraftsEndpoint<Request, string>
+namespace ScreenDrafts.Modules.Drafts.Features.Hosts.Create;
+
+internal sealed class Endpoint : ScreenDraftsEndpoint<CreateHostRequest, string>
 {
   public override void Configure()
   {
@@ -14,17 +16,17 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<Request, string>
       .Produces(StatusCodes.Status401Unauthorized)
       .Produces(StatusCodes.Status403Forbidden);
     });
-    Policies(Features.Permissions.HostCreate);
+    Policies(DraftsAuth.Permissions.HostCreate);
   }
 
-  public override async Task HandleAsync(Request req, CancellationToken ct)
+  public override async Task HandleAsync(CreateHostRequest req, CancellationToken ct)
   {
-    var command = new Command
+    var CreateHostCommand = new CreateHostCommand
     {
       PersonPublicId = req.PersonPublicId
     };
 
-    var result = await Sender.Send(command, ct);
+    var result = await Sender.Send(CreateHostCommand, ct);
 
     await this.SendCreatedAsync(
       result.Map(id => new CreatedResponse(id)),
@@ -32,3 +34,5 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<Request, string>
       ct);
   }
 }
+
+

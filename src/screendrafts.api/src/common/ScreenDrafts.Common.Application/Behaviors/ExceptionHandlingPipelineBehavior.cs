@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Common.Application.Behaviors;
+﻿using ScreenDrafts.Common.Abstractions.Exceptions;
+
+namespace ScreenDrafts.Common.Application.Behaviors;
 
 internal sealed class ExceptionHandlingPipelineBehavior<TRequest, TResponse>(
   ILogger<ExceptionHandlingPipelineBehavior<TRequest, TResponse>> logger)
@@ -20,7 +22,7 @@ internal sealed class ExceptionHandlingPipelineBehavior<TRequest, TResponse>(
     {
       var requestName = typeof(TRequest).Name;
 
-      BehaviorMessages.UnhandledException(_logger, requestName);
+     BehaviorMessages.UnhandledException(_logger, requestName);
 
       throw new ScreenDraftsException(requestName, innerException: ex);
     }

@@ -1,11 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
     <ProjectReference Include="..\..\..\common\ScreenDrafts.Common.Infrastructure\ScreenDrafts.Common.Infrastructure.csproj" />
-    <ProjectReference Include="..\ScreenDrafts.Modules.Movies.Application\ScreenDrafts.Modules.Movies.Application.csproj" />
-    <ProjectReference Include="..\ScreenDrafts.Modules.Movies.Presentation\ScreenDrafts.Modules.Movies.Presentation.csproj" />
+    <ProjectReference Include="..\ScreenDrafts.Modules.Movies.Domain\ScreenDrafts.Modules.Movies.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="ScreenDrafts.Seeding.Movies"/>
+    <InternalsVisibleTo Include="ScreenDrafts.Seeding.Movies" />
   </ItemGroup>
 </Project>

@@ -1,7 +1,7 @@
-﻿
+
 namespace ScreenDrafts.Modules.Drafts.Features.Drafters.List;
 
-internal sealed class Validator : AbstractValidator<Query>
+internal sealed class Validator : AbstractValidator<ListDraftersQuery>
 {
   private static readonly HashSet<string> _allowedSort = new(StringComparer.OrdinalIgnoreCase)
   {
@@ -23,25 +23,27 @@ internal sealed class Validator : AbstractValidator<Query>
 
   public Validator()
   {
-    RuleFor(x => x.Request.Page)
+    RuleFor(x => x.ListDraftersRequest.Page)
         .GreaterThan(0)
-        .When(x => x.Request.Page.HasValue)
+        .When(x => x.ListDraftersRequest.Page.HasValue)
         .WithMessage("Page must be greater than 0.");
 
-    RuleFor(x => x.Request.PageSize)
+    RuleFor(x => x.ListDraftersRequest.PageSize)
         .InclusiveBetween(1, 100)
         .WithMessage("Page Size must be between 1 and 100.");
 
-    RuleFor(x => x.Request.Direction)
+    RuleFor(x => x.ListDraftersRequest.Direction)
         .Must(v => _allowedDir.Contains(v!))
         .WithMessage("Direction must be either 'asc' or 'desc' if specified.");
 
-    RuleFor(x => x.Request.Sort)
+    RuleFor(x => x.ListDraftersRequest.Sort)
       .Must(v => _allowedSort.Contains(v!))
       .WithMessage("Sort must be either 'displayName' if specified.");
 
-    RuleFor(x => x.Request.Retired)
+    RuleFor(x => x.ListDraftersRequest.Retired)
       .Must(v => _allowedRetired.Contains(v!))
       .WithMessage("Retired must be either 'all', 'active', or 'retired' if specified.");
   }
 }
+
+

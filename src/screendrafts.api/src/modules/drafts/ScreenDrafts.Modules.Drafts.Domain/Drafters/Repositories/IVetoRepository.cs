@@ -8,10 +8,4 @@ public interface IVetoRepository : IRepository
   Task<VetoOverride?> GetVetoOverrideByIdAsync(VetoOverrideId id, CancellationToken cancellationToken);
 
   Task<VetoOverride?> GetVetoOverrideByVetoIdAsync(VetoId vetoId, CancellationToken cancellationToken);
-
-  Task<List<Veto?>> GetVetoesByDraftId(DraftId draftId,
-    CancellationToken cancellationToken);
-
-  Task<List<VetoOverride?>> GetVetoOverridesByDraftId(DraftId draftId, 
-    CancellationToken cancellationToken);
 }

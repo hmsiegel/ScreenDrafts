@@ -1,4 +1,5 @@
-﻿
+﻿using FastEndpoints;
+
 namespace ScreenDrafts.Modules.Users.Features.Users.GetUsersSocials;
 
 internal sealed class Summary : Summary<Endpoint>

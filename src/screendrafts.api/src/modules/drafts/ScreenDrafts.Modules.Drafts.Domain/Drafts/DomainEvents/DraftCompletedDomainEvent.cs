@@ -1,11 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.DomainEvents;
+﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities;
 
-public sealed class DraftPartCompletedDomainEvent(
-  Guid draftId,
-  Guid draftPartId,
-  int index) : DomainEvent
+public sealed class DraftCompletedDomainEvent(Guid draftId) : DomainEvent
 {
   public Guid DraftId { get; init; } = draftId;
-  public Guid DraftPartId { get; init; } = draftPartId;
-  public int Index { get; init; } = index;
 }

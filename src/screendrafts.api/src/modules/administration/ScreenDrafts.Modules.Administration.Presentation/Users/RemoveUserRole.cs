@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Administration.Presentation.Users;
+﻿using ScreenDrafts.Common.Presentation.Results;
+
+namespace ScreenDrafts.Modules.Administration.Presentation.Users;
 
 internal sealed class RemoveUserRole(IUsersApi usersApi) : Endpoint<RemoveUserRoleRequest>
 {
@@ -20,7 +22,7 @@ internal sealed class RemoveUserRole(IUsersApi usersApi) : Endpoint<RemoveUserRo
   {
     var result = await _usersApi.RemoveUserRoleAsync(req.UserId, req.Role);
 
-    await this.MapResultsAsync(result, ct);
+    await this.SendNoContentAsync(result, ct);
   }
 }
 

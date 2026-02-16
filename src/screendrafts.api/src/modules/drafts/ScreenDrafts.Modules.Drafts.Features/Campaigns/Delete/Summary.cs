@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.Campaigns.Delete;
+﻿using FastEndpoints;
+
+namespace ScreenDrafts.Modules.Drafts.Features.Campaigns.Delete;
 
 internal sealed class Summary : Summary<Endpoint>
 {

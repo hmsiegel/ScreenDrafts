@@ -1,6 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.People.Edit;
+namespace ScreenDrafts.Modules.Drafts.Features.People.Edit;
 
-internal sealed class Validator : AbstractValidator<Command>
+internal sealed class Validator : AbstractValidator<EditPersonCommand>
 {
   public Validator()
   {
@@ -19,3 +19,4 @@ internal sealed class Validator : AbstractValidator<Command>
       .When(x => !string.IsNullOrWhiteSpace(x.DisplayName));
   }
 }
+

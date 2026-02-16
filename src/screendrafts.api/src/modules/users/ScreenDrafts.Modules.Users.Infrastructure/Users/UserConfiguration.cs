@@ -13,12 +13,14 @@ internal sealed class UserConfiguration : IEntityTypeConfiguration<User>
       x => x.Value,
       value => UserId.Create(value));
 
-    builder.Property(x => x.PersonPublicId)
-      .ValueGeneratedOnAdd();
+    builder.Property(u => u.IdentityId)
+      .IsRequired()
+      .HasMaxLength(255);
+
+    builder.Property(x => x.PersonPublicId);
 
     builder.Property(x => x.PublicId)
-      .IsRequired()
-      .ValueGeneratedOnAdd();
+      .IsRequired();
 
     builder.Property(u => u.FirstName)
       .HasMaxLength(FirstName.MaxLength)
@@ -57,9 +59,9 @@ internal sealed class UserConfiguration : IEntityTypeConfiguration<User>
 
     builder.HasIndex(u => u.IdentityId).IsUnique();
 
-    builder.HasIndex(u => u.PersonId).IsUnique();
+    builder.HasIndex(u => u.PersonId).IsUnique().HasFilter("\"person_id\" IS NOT NULL");
 
-    builder.HasIndex(u => u.PersonPublicId).IsUnique();
+    builder.HasIndex(u => u.PersonPublicId).IsUnique().HasFilter("\"person_public_id\" IS NOT NULL");
 
     builder.HasIndex(u => u.PublicId).IsUnique();
   }

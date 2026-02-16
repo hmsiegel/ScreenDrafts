@@ -32,7 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ScreenDrafts.Common.Features\ScreenDrafts.Common.Features.csproj" />
+    <ProjectReference Include="..\ScreenDrafts.Common.Application\ScreenDrafts.Common.Application.csproj" />
   </ItemGroup>
 
 </Project>

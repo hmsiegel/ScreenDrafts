@@ -42,16 +42,6 @@ internal static class IdConverters
       v => v.Value,
       v => VetoOverrideId.Create(v));
 
-  public static ValueConverter<RolloverVetoId, Guid> RolloverVetoIdConverter =>
-    new(
-      v => v.Value,
-      v => RolloverVetoId.Create(v));
-
-  public static ValueConverter<RolloverVetoOverrideId, Guid> RolloverVetoOverrideIdConverter =>
-    new(
-      v => v.Value,
-      v => RolloverVetoOverrideId.Create(v));
-
   public static ValueConverter<CategoryId, Guid> CategoryIdConverter =>
     new(
       v => v.Value,
@@ -67,4 +57,28 @@ internal static class IdConverters
       v => v.Value,
       v => GameBoardId.Create(v));
 
+  public static ValueConverter<TriviaResultId, Guid> TriviaResultsIdConverter =>
+    new(
+      v => v.Value,
+      v => TriviaResultId.Create(v));
+
+  public static ValueConverter<ParticipantKind, int> ParticipantKindConverter =>
+    new(
+      v => v.Value,
+      v => ParticipantKind.FromValue(v));
+
+  public static ValueConverter<DraftPartParticipantId, Guid> DraftPartParticipantIdConverter =>
+    new(
+      v => v.Value,
+      v => DraftPartParticipantId.Create(v));
+
+  public static ValueConverter<PersonId, Guid> PersonIdConverter =>
+    new(
+      v => v.Value,
+      v => PersonId.Create(v));
+
+  public static ValueConverter<DraftPositionId, Guid> DraftPositionIdConverter
+    => new(
+      v => v.Value,
+      v => DraftPositionId.Create(v));
 }

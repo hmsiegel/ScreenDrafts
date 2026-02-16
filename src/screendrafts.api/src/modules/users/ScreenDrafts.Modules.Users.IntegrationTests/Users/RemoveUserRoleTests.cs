@@ -1,22 +1,22 @@
-﻿using ScreenDrafts.Modules.Users.Application.Users.Commands.RemoveUserRole;
-
-namespace ScreenDrafts.Modules.Users.IntegrationTests.Users;
+﻿namespace ScreenDrafts.Modules.Users.IntegrationTests.Users;
 public class RemoveUserRoleTests(UsersIntegrationTestWebAppFactory factory)
   : UsersIntegrationTest(factory)
 {
   [Fact]
   public async Task Should_ReturnSuccess_WhenRoleIsRemovedAsync()
   {
-    var userId = await Sender.Send(new RegisterUserCommand(
-        Faker.Internet.Email(),
-        Faker.Internet.Password(),
-        Faker.Name.FirstName(),
-        Faker.Name.LastName()));
+    var userId = await Sender.Send(new Features.Users.Register.RegisterUserCommand
+    {
+        Email = Faker.Internet.Email(),
+        Password = Faker.Internet.Password(),
+        FirstName = Faker.Name.FirstName(),
+        LastName = Faker.Name.LastName()
+    });
 
-    await Sender.Send(new AddUserRoleCommand(userId.Value, "Host"));
+    await Sender.Send(new Features.Admin.AddRoleToUser.AddRoleToUserCommand(userId.Value, "Host"));
 
 
-    var command = new RemoveUserRoleCommand(userId.Value, "Host");
+    var command = new Features.Admin.RemoveRoleFromUser.RemoveRoleFromUserCommand(userId.Value, "Host");
 
     // Act
     var result = await Sender.Send(command);
@@ -31,7 +31,7 @@ public class RemoveUserRoleTests(UsersIntegrationTestWebAppFactory factory)
   {
     // Arrange
     var userId = Guid.NewGuid();
-    var command = new RemoveUserRoleCommand(userId, "Host");
+    var command = new Features.Admin.RemoveRoleFromUser.RemoveRoleFromUserCommand(userId, "Host");
     // Act
     var result = await Sender.Send(command);
     // Assert
@@ -42,12 +42,14 @@ public class RemoveUserRoleTests(UsersIntegrationTestWebAppFactory factory)
   public async Task Should_ReturnError_WhenRoleDoesNotExistAsync()
   {
     // Arrange
-    var userId = await Sender.Send(new RegisterUserCommand(
-        Faker.Internet.Email(),
-        Faker.Internet.Password(),
-        Faker.Name.FirstName(),
-        Faker.Name.LastName()));
-    var command = new RemoveUserRoleCommand(userId.Value, "Host");
+    var userId = await Sender.Send(new Features.Users.Register.RegisterUserCommand
+    {
+      Email = Faker.Internet.Email(),
+      Password = Faker.Internet.Password(),
+      FirstName = Faker.Name.FirstName(),
+      LastName = Faker.Name.LastName()
+    });
+    var command = new Features.Admin.RemoveRoleFromUser.RemoveRoleFromUserCommand(userId.Value, "Host");
     // Act
     var result = await Sender.Send(command);
     // Assert
@@ -58,12 +60,14 @@ public class RemoveUserRoleTests(UsersIntegrationTestWebAppFactory factory)
   public async Task Should_ReturnError_WhenCannotRemoveLastRoleAsync()
   {
     // Arrange
-    var userId = await Sender.Send(new RegisterUserCommand(
-        Faker.Internet.Email(),
-        Faker.Internet.Password(),
-        Faker.Name.FirstName(),
-        Faker.Name.LastName()));
-    var command = new RemoveUserRoleCommand(userId.Value, "Guest");
+    var userId = await Sender.Send(new Features.Users.Register.RegisterUserCommand
+    {
+      Email = Faker.Internet.Email(),
+      Password = Faker.Internet.Password(),
+      FirstName = Faker.Name.FirstName(),
+      LastName = Faker.Name.LastName()
+    });
+    var command = new Features.Admin.RemoveRoleFromUser.RemoveRoleFromUserCommand(userId.Value, "Guest");
     // Act
     var result = await Sender.Send(command);
     // Assert

@@ -1,15 +1,13 @@
-﻿using ScreenDrafts.Common.Features.Abstractions.CsvFiles;
-using ScreenDrafts.Common.Features.Abstractions.Logging;
-using ScreenDrafts.Common.Features.Abstractions.Seeding;
-
-namespace ScreenDrafts.Seeding.Drafts.Seeders.People;
+﻿namespace ScreenDrafts.Seeding.Drafts.Seeders.People;
 
 internal sealed class DrafterSeeder(
   ILogger<DrafterSeeder> logger,
   ICsvFileService csvFileService,
-  DraftsDbContext dbContext)
+  DraftsDbContext dbContext,
+  IPublicIdGenerator publicIdGenerator)
   : DraftBaseSeeder(dbContext, logger, csvFileService), ICustomSeeder
 {
+  private readonly IPublicIdGenerator _publicIdGenerator = publicIdGenerator;
   public int Order => 2;
 
   public string Name => "drafters";
@@ -58,9 +56,10 @@ internal sealed class DrafterSeeder(
         })
         .Select(record =>
         {
+          var publicId = _publicIdGenerator.GeneratePublicId(PublicIdPrefixes.Drafter);
           var personId = PersonId.Create(record.PersonId);
           var person = _dbContext.People.Find(personId);
-          var drafter = Drafter.Create(person!).Value;
+          var drafter = Drafter.Create(person: person!, publicId: publicId).Value;
           DatabaseSeedingLoggingMessages.ItemAddedToDatabase(_logger, drafter.Id.ToString());
           return drafter;
         })

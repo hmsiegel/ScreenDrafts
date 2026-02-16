@@ -1,6 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.RemoveHost;
+namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.RemoveHost;
 
-internal sealed class Validator : AbstractValidator<Request>
+internal sealed class Validator : AbstractValidator<RemoveHostDraftPartRequest>
 {
   public Validator()
   {
@@ -10,3 +10,4 @@ internal sealed class Validator : AbstractValidator<Request>
         .NotEmpty().WithMessage("Host ID must be provided.");
   }
 }
+

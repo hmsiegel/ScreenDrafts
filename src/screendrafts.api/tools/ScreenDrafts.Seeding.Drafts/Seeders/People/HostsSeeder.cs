@@ -1,17 +1,15 @@
-﻿using ScreenDrafts.Common.Features.Abstractions.CsvFiles;
-using ScreenDrafts.Common.Features.Abstractions.Logging;
-using ScreenDrafts.Common.Features.Abstractions.Seeding;
-
-using Host = ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities.Host;
+﻿using Host = ScreenDrafts.Modules.Drafts.Domain.Hosts.Host;
 
 namespace ScreenDrafts.Seeding.Drafts.Seeders.People;
 
 internal sealed class HostsSeeder(
   ILogger<HostsSeeder> logger,
   ICsvFileService csvFileService,
-  DraftsDbContext dbContext) : DraftBaseSeeder(
+  DraftsDbContext dbContext,
+  IPublicIdGenerator publicIdGenerator) : DraftBaseSeeder(
     dbContext, logger, csvFileService), ICustomSeeder
 {
+  private readonly IPublicIdGenerator _publicIdGenerator = publicIdGenerator;
   public int Order => 3;
 
   public string Name => "hosts";
@@ -61,8 +59,9 @@ internal sealed class HostsSeeder(
         .Select(record =>
         {
           var personId = PersonId.Create(record.PersonId);
+          var publicId = _publicIdGenerator.GeneratePublicId(PublicIdPrefixes.Host);
           var person = _dbContext.People.Find(personId);
-          var host = Host.Create(person!).Value;
+          var host = Host.Create(person: person!, publicId: publicId).Value;
           DatabaseSeedingLoggingMessages.ItemAddedToDatabase(_logger, host.Id.ToString());
           return host;
         })

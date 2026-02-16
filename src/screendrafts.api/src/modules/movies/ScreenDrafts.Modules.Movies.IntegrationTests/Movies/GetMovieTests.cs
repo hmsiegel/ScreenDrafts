@@ -1,4 +1,7 @@
-﻿namespace ScreenDrafts.Modules.Movies.IntegrationTests.Movies;
+﻿using ScreenDrafts.Modules.Movies.Features.Movies.AddMovie;
+using ScreenDrafts.Modules.Movies.Features.Movies.GetMovie;
+
+namespace ScreenDrafts.Modules.Movies.IntegrationTests.Movies;
 
 public sealed class GetMovieTests(MoviesIntegrationTestWebAppFactory factory)
   : MoviesIntegrationTest(factory)
@@ -9,7 +12,7 @@ public sealed class GetMovieTests(MoviesIntegrationTestWebAppFactory factory)
     // Arrange
     var imdbId = Faker.Random.String2(9);
     // Act
-    Result<MovieResponse> movieResult = await Sender.Send(new GetMovieQuery(imdbId));
+    Result<MovieResponse> movieResult = await Sender.Send(new Query(imdbId));
     // Assert
     movieResult.Errors[0].Should().Be(MovieErrors.MovieNotFound(imdbId));
   }
@@ -49,7 +52,7 @@ public sealed class GetMovieTests(MoviesIntegrationTestWebAppFactory factory)
     {
       productionCompanies.Add(MovieFactory.CreateProductionCompany().Value);
     }
-    var addMovieCommand = new AddMovieCommand(
+    var addMovieCommand = new Command(
       movie.ImdbId,
       movie.Title,
       movie.Year,
@@ -65,7 +68,7 @@ public sealed class GetMovieTests(MoviesIntegrationTestWebAppFactory factory)
       [.. productionCompanies.Select(x => new ProductionCompanyRequest(x.Name, x.ImdbId))]);
     await Sender.Send(addMovieCommand);
     // Act
-    Result<MovieResponse> movieResult = await Sender.Send(new GetMovieQuery(movie.ImdbId));
+    Result<MovieResponse> movieResult = await Sender.Send(new Query(movie.ImdbId));
     // Assert
     movieResult.IsSuccess.Should().BeTrue();
     movieResult.Value.Should().NotBeNull();

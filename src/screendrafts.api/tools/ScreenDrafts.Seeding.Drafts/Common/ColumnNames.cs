@@ -12,7 +12,8 @@ internal static class ColumnNames
   internal const string GameBoardId = "game_board_id";
   internal const string DrafterTeamId = "drafter_team_id";
   internal const string HostedDraftsId = "hosted_drafts_id";
-  internal const string HostsId = "hosts_id";
+  internal const string HostId = "host_id";
+  internal const string Role = "role";
   internal const string StartingVetoes = "starting_vetoes";
   internal const string RolloverVetoes = "rollover_veto";
   internal const string RolloverVetoOverrides = "rollover_veto_override";
@@ -21,4 +22,5 @@ internal static class ColumnNames
   internal const string CommissionerOverrides = "commissioner_overrides";
   internal const string VetoesUsed = "vetoes_used";
   internal const string VetoOverridesUsed = "veto_overrides_used";
+  internal const string DraftPartId = "draft_part_id";
 }

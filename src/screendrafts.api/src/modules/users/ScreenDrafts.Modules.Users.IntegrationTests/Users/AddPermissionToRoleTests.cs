@@ -17,7 +17,7 @@ public class AddPermissionToRoleTests(UsersIntegrationTestWebAppFactory factory)
     var permissionResult = await Sender.Send(query);
 
     // Act
-    var result = await Sender.Send( new AddPermissionToRoleCommand(
+    var result = await Sender.Send(new AddPermissionToRoleCommand(
       "Host",
       permissionResult.Value.Code));
 

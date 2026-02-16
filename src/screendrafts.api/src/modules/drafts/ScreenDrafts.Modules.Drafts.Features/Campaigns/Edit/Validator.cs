@@ -1,6 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.Campaigns.Edit;
+namespace ScreenDrafts.Modules.Drafts.Features.Campaigns.Edit;
 
-internal sealed class Validator : AbstractValidator<Command>
+internal sealed class Validator : AbstractValidator<EditCampaignCommand>
 {
   public Validator()
   {
@@ -23,3 +23,4 @@ internal sealed class Validator : AbstractValidator<Command>
       .WithMessage("At least one field (Name or Slug) must be provided for update.");
   }
 }
+

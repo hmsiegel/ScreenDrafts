@@ -32,6 +32,12 @@ internal sealed class PersonRepository(DraftsDbContext dbContext) : IPersonRepos
     return person;
   }
 
+  public Task<Person?> GetByPublicIdAsync(string publicId, CancellationToken cancellationToken)
+  {
+    return _dbContext.People
+      .SingleOrDefaultAsync(p => p.PublicId == publicId, cancellationToken);
+  }
+
   public async Task<Person?> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken)
   {
     var person = await _dbContext.People

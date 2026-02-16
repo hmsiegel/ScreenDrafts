@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Users.Features.Admin.AddRoleToUser;
 
-internal sealed class Validator : AbstractValidator<Command>
+internal sealed class Validator : AbstractValidator<AddRoleToUserCommand>
 {
   public Validator()
   {

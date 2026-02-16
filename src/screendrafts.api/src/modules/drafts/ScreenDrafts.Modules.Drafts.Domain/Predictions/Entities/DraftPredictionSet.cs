@@ -1,4 +1,5 @@
 ﻿using ScreenDrafts.Modules.Drafts.Domain.Predictions.Enums;
+using ScreenDrafts.Modules.Drafts.Domain.DraftParts.ValueObjects;
 
 namespace ScreenDrafts.Modules.Drafts.Domain.Predictions.Entities;
 

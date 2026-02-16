@@ -1,6 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.Campaigns.Create;
+namespace ScreenDrafts.Modules.Drafts.Features.Campaigns.Create;
 
-internal sealed class Validator : AbstractValidator<Command>
+internal sealed class Validator : AbstractValidator<CreateCampaignCommand>
 {
   public Validator()
   {
@@ -14,5 +14,6 @@ internal sealed class Validator : AbstractValidator<Command>
       .MaximumLength(100);
   }
 }
+
 
 

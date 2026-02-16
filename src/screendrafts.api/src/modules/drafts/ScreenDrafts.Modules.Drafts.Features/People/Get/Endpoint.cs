@@ -1,6 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.People.Get;
+namespace ScreenDrafts.Modules.Drafts.Features.People.Get;
 
-internal sealed class Endpoint : ScreenDraftsEndpoint<Request, PersonResponse>
+internal sealed class Endpoint : ScreenDraftsEndpoint<GetPersonRequest, PersonResponse>
 {
   public override void Configure()
   {
@@ -14,15 +14,17 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<Request, PersonResponse>
        .Produces(StatusCodes.Status401Unauthorized)
        .Produces(StatusCodes.Status403Forbidden);
     });
-    Permissions(Features.Permissions.PersonRead);
+    Permissions(DraftsAuth.Permissions.PersonRead);
   }
 
-  public override async Task HandleAsync(Request req, CancellationToken ct)
+  public override async Task HandleAsync(GetPersonRequest req, CancellationToken ct)
   {
-    var query = new Query(req.PublicId);
+    var GetPersonQuery = new GetPersonQuery(req.PublicId);
 
-    var result = await Sender.Send(query, ct);
+    var result = await Sender.Send(GetPersonQuery, ct);
 
     await this.SendOkAsync(result, ct);
   }
 }
+
+

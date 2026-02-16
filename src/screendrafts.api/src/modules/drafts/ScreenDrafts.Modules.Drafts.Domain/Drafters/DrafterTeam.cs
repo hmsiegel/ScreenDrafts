@@ -1,13 +1,10 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafters;
+﻿using ScreenDrafts.Common.Abstractions.Results;
+
+namespace ScreenDrafts.Modules.Drafts.Domain.Drafters;
 
 public sealed class DrafterTeam : Entity<DrafterTeamId>
 {
   private readonly List<Drafter> _drafters = [];
-  private readonly List<DraftPart> _draftParts = [];
-  private readonly List<Veto> _vetoes = [];
-  private readonly List<VetoOverride> _vetoOverrides = [];
-  private readonly List<DrafterDraftStats> _draftStats = [];
-  private readonly List<Pick> _picks = [];
 
   public const int TeamNameMaxLength = 100;
 
@@ -26,21 +23,7 @@ public sealed class DrafterTeam : Entity<DrafterTeamId>
   public string Name { get; private set; } = default!;
   public int NumberOfDrafters { get; private set; } = 2;
 
-  public RolloverVeto? RolloverVeto { get; private set; } = default!;
-
-  public RolloverVetoOverride? RolloverVetoOverride { get; private set; } = default!;
-
   public IReadOnlyCollection<Drafter> Drafters => _drafters.AsReadOnly();
-
-  public IReadOnlyCollection<Veto> Vetoes => _vetoes.AsReadOnly();
-
-  public IReadOnlyCollection<VetoOverride> VetoOverrides => _vetoOverrides.AsReadOnly();
-
-  public IReadOnlyCollection<DrafterDraftStats> DraftStats => _draftStats.AsReadOnly();
-
-  public IReadOnlyCollection<Pick> Picks => _picks.AsReadOnly();
-
-  public IReadOnlyCollection<DraftPart> DraftPart => _draftParts.AsReadOnly();
 
   public static Result<DrafterTeam> Create(
     string name,
@@ -71,59 +54,6 @@ public sealed class DrafterTeam : Entity<DrafterTeamId>
     return Result.Success();
   }
 
-  public Result AddVeto(Veto veto)
-  {
-    Guard.Against.Null(veto);
-    _vetoes.Add(veto);
-    return Result.Success();
-  }
-
-  public Result AddVetoOverride(VetoOverride vetoOverride)
-  {
-    Guard.Against.Null(vetoOverride);
-    _vetoOverrides.Add(vetoOverride);
-    return Result.Success();
-  }
-
-  public Result AddDrafterDraftStats(DrafterDraftStats drafterDraftStats)
-  {
-    Guard.Against.Null(drafterDraftStats);
-    _draftStats.Add(drafterDraftStats);
-    return Result.Success();
-  }
-
-  public Result AddPick(Pick pick)
-  {
-    Guard.Against.Null(pick);
-    _picks.Add(pick);
-    return Result.Success();
-  }
-
-  public Result SetRolloverVeto(RolloverVeto rolloverVeto)
-  {
-    if (RolloverVeto != null)
-    {
-      return Result.Failure(DrafterErrors.RolloverVetoAlreadyExists);
-    }
-
-    RolloverVeto = rolloverVeto;
-
-    return Result.Success();
-  }
-
-  public Result SetRolloverVetoOverride(RolloverVetoOverride rolloverVetoOverride)
-  {
-
-    if (RolloverVetoOverride != null)
-    {
-      return Result.Failure(DrafterErrors.RolloverVetoOverrideAlreadyExists);
-    }
-
-    RolloverVetoOverride = rolloverVetoOverride; 
-
-    return Result.Success();
-  }
-
   public Result RemoveDrafter(Drafter drafter)
   {
     Guard.Against.Null(drafter);
@@ -139,34 +69,6 @@ public sealed class DrafterTeam : Entity<DrafterTeamId>
     }
 
     _drafters.Remove(drafter);
-    return Result.Success();
-  }
-
-  public Result RemoveVeto(Veto veto)
-  {
-    Guard.Against.Null(veto);
-    _vetoes.Remove(veto);
-    return Result.Success();
-  }
-
-  public Result RemoveVetoOverride(VetoOverride vetoOverride)
-  {
-    Guard.Against.Null(vetoOverride);
-    _vetoOverrides.Remove(vetoOverride);
-    return Result.Success();
-  }
-
-  public Result RemoveDrafterDraftStats(DrafterDraftStats drafterDraftStats)
-  {
-    Guard.Against.Null(drafterDraftStats);
-    _draftStats.Remove(drafterDraftStats);
-    return Result.Success();
-  }
-
-  public Result RemovePick(Pick pick)
-  {
-    Guard.Against.Null(pick);
-    _picks.Remove(pick);
     return Result.Success();
   }
 

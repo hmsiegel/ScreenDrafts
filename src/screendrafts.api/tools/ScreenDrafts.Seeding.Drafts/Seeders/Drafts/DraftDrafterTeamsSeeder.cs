@@ -1,7 +1,4 @@
-﻿using ScreenDrafts.Common.Features.Abstractions.CsvFiles;
-using ScreenDrafts.Common.Features.Abstractions.Seeding;
-
-namespace ScreenDrafts.Seeding.Drafts.Seeders.Drafts;
+﻿namespace ScreenDrafts.Seeding.Drafts.Seeders.Drafts;
 
 internal sealed class DraftDrafterTeamsSeeder(
   DraftsDbContext dbContext,

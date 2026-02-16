@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.UnitTests.TestUtils;
+﻿using ScreenDrafts.Common.Abstractions.Results;
+
+namespace ScreenDrafts.Modules.Drafts.UnitTests.TestUtils;
 public static class MovieFactory
 {
   private static readonly Faker _faker = new();

@@ -4,20 +4,18 @@ global using System.Net;
 global using System.Net.Http.Headers;
 global using System.Net.Http.Json;
 global using System.Reflection;
+global using System.Runtime.CompilerServices;
 global using System.Text.Json.Serialization;
 
 global using Dapper;
 
 global using MassTransit;
 
-global using MediatR;
-
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.EntityFrameworkCore.Metadata.Builders;
 global using Microsoft.EntityFrameworkCore.Migrations;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
-global using Microsoft.Extensions.DependencyInjection.Extensions;
 global using Microsoft.Extensions.Logging;
 global using Microsoft.Extensions.Options;
 
@@ -25,29 +23,24 @@ global using Newtonsoft.Json;
 
 global using Quartz;
 
+global using ScreenDrafts.Common.Abstractions;
+global using ScreenDrafts.Common.Application.Clock;
+global using ScreenDrafts.Common.Application.Data;
+global using ScreenDrafts.Common.Application.EventBus;
+global using ScreenDrafts.Common.Application.Logging;
+global using ScreenDrafts.Common.Application.Messaging;
 global using ScreenDrafts.Common.Domain;
-global using ScreenDrafts.Common.Features.Abstractions.Authorization;
-global using ScreenDrafts.Common.Features.Abstractions.Clock;
-global using ScreenDrafts.Common.Features.Abstractions.Data;
-global using ScreenDrafts.Common.Features.Abstractions.EventBus;
-global using ScreenDrafts.Common.Features.Abstractions.Logging;
-global using ScreenDrafts.Common.Features.Abstractions.Messaging;
 global using ScreenDrafts.Common.Infrastructure;
 global using ScreenDrafts.Common.Infrastructure.Database;
 global using ScreenDrafts.Common.Infrastructure.Inbox;
 global using ScreenDrafts.Common.Infrastructure.Outbox;
 global using ScreenDrafts.Common.Infrastructure.Serialization;
+global using ScreenDrafts.Modules.Users.Domain.Abstractions.Data;
+global using ScreenDrafts.Modules.Users.Domain.Abstractions.Identity;
 global using ScreenDrafts.Modules.Users.Domain.Users;
 global using ScreenDrafts.Modules.Users.Domain.Users.ValueObjects;
-global using ScreenDrafts.Modules.Users.Features.Abstractions.Data;
-global using ScreenDrafts.Modules.Users.Features.Abstractions.Identity;
-global using ScreenDrafts.Modules.Users.Features.Behaviors;
-global using ScreenDrafts.Modules.Users.Infrastructure.Authorization;
 global using ScreenDrafts.Modules.Users.Infrastructure.Database;
-global using ScreenDrafts.Modules.Users.Infrastructure.Identity;
 global using ScreenDrafts.Modules.Users.Infrastructure.Inbox;
 global using ScreenDrafts.Modules.Users.Infrastructure.Outbox;
-global using ScreenDrafts.Modules.Users.Infrastructure.PublicApi;
-global using ScreenDrafts.Modules.Users.PublicApi;
 
 global using Serilog;

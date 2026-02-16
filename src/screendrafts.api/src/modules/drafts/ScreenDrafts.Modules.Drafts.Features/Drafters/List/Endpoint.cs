@@ -1,7 +1,6 @@
-﻿
 namespace ScreenDrafts.Modules.Drafts.Features.Drafters.List;
 
-internal sealed class Endpoint : ScreenDraftsEndpoint<Request, DrafterCollectionResponse>
+internal sealed class Endpoint : ScreenDraftsEndpoint<ListDraftersRequest, DrafterCollectionResponse>
 {
   public override void Configure()
   {
@@ -15,12 +14,14 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<Request, DrafterCollection
        .Produces(StatusCodes.Status401Unauthorized)
        .Produces(StatusCodes.Status403Forbidden);
     });
-    Policies(Features.Permissions.DrafterList);
+    Policies(DraftsAuth.Permissions.DrafterList);
   }
-  public override async Task HandleAsync(Request req, CancellationToken ct)
+  public override async Task HandleAsync(ListDraftersRequest req, CancellationToken ct)
   {
-    var query = new Query(req);
-    var result = await Sender.Send(query, ct);
+    var ListDraftersQuery = new ListDraftersQuery(req);
+    var result = await Sender.Send(ListDraftersQuery, ct);
     await this.SendOkAsync(result, ct);
   }
 }
+
+

@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.TestUtils;
+﻿using ScreenDrafts.Modules.Drafts.Features.People.Create;
+
+namespace ScreenDrafts.Modules.Drafts.IntegrationTests.TestUtils;
 
 public class PeopleFactory(ISender sender, Faker faker)
 {
@@ -7,26 +9,41 @@ public class PeopleFactory(ISender sender, Faker faker)
 
   public Domain.People.Person CreatePersonWithUserId() =>
     Domain.People.Person.Create(
+      publicId: _faker.Random.AlphaNumeric(10),
       _faker.Name.FirstName(),
       _faker.Name.LastName(),
-      Guid.NewGuid()).Value;
+      userId: Guid.NewGuid()).Value;
 
   public Domain.People.Person CreatePerson() =>
     Domain.People.Person.Create(
+      _faker.Random.AlphaNumeric(10),
       _faker.Name.FirstName(),
       _faker.Name.LastName()).Value;
 
-  public async Task<Guid> CreateAndSavePersonAsync()
+  public async Task<string> CreateAndSavePersonAsync()
   {
     var person = CreatePerson();
-    var command = new CreatePersonCommand(person.FirstName, person.LastName);
+    var command = new CreatePersonCommand
+    {
+      FirstName = person.FirstName,
+      LastName = person.LastName,
+      PublicId = person.PublicId
+    };
 
-    var personId = await _sender.Send(command);
+    var result = await _sender.Send(command);
+    return result.Value;
+  }
 
-    var query = new GetPersonQuery(personId.Value);
+  public async Task<string> CreateAndSavePersonWithNameAsync(string firstName, string lastName)
+  {
+    var command = new CreatePersonCommand
+    {
+      FirstName = firstName,
+      LastName = lastName,
+      PublicId = Guid.NewGuid().ToString()
+    };
 
-    var createdPerson = await _sender.Send(query);
-
-    return createdPerson.Value.Id;
+    var result = await _sender.Send(command);
+    return result.Value;
   }
 }

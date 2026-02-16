@@ -1,6 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.Drafts.SetCampaign;
+namespace ScreenDrafts.Modules.Drafts.Features.Drafts.SetCampaign;
 
-internal sealed class CommandValidator : AbstractValidator<Command>
+internal sealed class CommandValidator : AbstractValidator<SetCampaignDraftCommand>
 {
   public CommandValidator()
   {
@@ -10,3 +10,4 @@ internal sealed class CommandValidator : AbstractValidator<Command>
       .NotEmpty().WithMessage("Campaign ID must be provided.");
   }
 }
+

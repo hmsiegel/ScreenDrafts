@@ -1,7 +1,11 @@
-﻿namespace ScreenDrafts.Modules.Users.UnitTests.Users;
+﻿using NanoidDotNet;
+
+namespace ScreenDrafts.Modules.Users.UnitTests.Users;
 
 public class UserTests : BaseTest
 {
+  private readonly string _publicId = $"u_{Nanoid.Generate(size: 15)}";
+
   [Fact]
   public void Create_ShouldReturnUser()
   {
@@ -10,7 +14,8 @@ public class UserTests : BaseTest
         Email.Create(Faker.Internet.Email()).Value,
         FirstName.Create(Faker.Name.FirstName()).Value,
         LastName.Create(Faker.Name.LastName()).Value,
-        Guid.NewGuid().ToString());
+        Guid.NewGuid().ToString(),
+        _publicId);
 
     // Assert
     user.Value.Should().NotBeNull();
@@ -24,7 +29,8 @@ public class UserTests : BaseTest
         Email.Create(Faker.Internet.Email()).Value,
         FirstName.Create(Faker.Name.FirstName()).Value,
         LastName.Create(Faker.Name.LastName()).Value,
-        Guid.NewGuid().ToString());
+        Guid.NewGuid().ToString(),
+        _publicId);
 
     // Assert
     UserRegisteredDomainEvent domainEvent =
@@ -41,7 +47,8 @@ public class UserTests : BaseTest
         Email.Create(Faker.Internet.Email()).Value,
         FirstName.Create(Faker.Name.FirstName()).Value,
         LastName.Create(Faker.Name.LastName()).Value,
-        Guid.NewGuid().ToString());
+        Guid.NewGuid().ToString(),
+        _publicId);
 
     var firstName = FirstName.Create(Faker.Name.FirstName()).Value;
     var lastName = LastName.Create(Faker.Name.LastName()).Value;
@@ -66,7 +73,8 @@ public class UserTests : BaseTest
         Email.Create(Faker.Internet.Email()).Value,
         FirstName.Create(Faker.Name.FirstName()).Value,
         LastName.Create(Faker.Name.LastName()).Value,
-        Guid.NewGuid().ToString());
+        Guid.NewGuid().ToString(),
+        _publicId);
 
     user.Value.ClearDomainEvents();
 

@@ -1,10 +1,8 @@
 ﻿global using System.Buffers;
-global using System.Collections.Concurrent;
 global using System.Data;
 global using System.Data.Common;
 global using System.Globalization;
 global using System.Reflection;
-global using System.Security.Claims;
 global using System.Security.Cryptography;
 global using System.Text;
 global using System.Text.Json;
@@ -48,18 +46,15 @@ global using OpenTelemetry.Trace;
 
 global using Quartz;
 
+global using ScreenDrafts.Common.Application.Caching;
+global using ScreenDrafts.Common.Application.Clock;
+global using ScreenDrafts.Common.Application.CsvFiles;
+global using ScreenDrafts.Common.Application.Data;
+global using ScreenDrafts.Common.Application.EventBus;
+global using ScreenDrafts.Common.Application.Logging;
+global using ScreenDrafts.Common.Application.Seeding;
+global using ScreenDrafts.Common.Application.Services;
 global using ScreenDrafts.Common.Domain;
-global using ScreenDrafts.Common.Features.Abstractions.Authorization;
-global using ScreenDrafts.Common.Features.Abstractions.Caching;
-global using ScreenDrafts.Common.Features.Abstractions.Clock;
-global using ScreenDrafts.Common.Features.Abstractions.CsvFiles;
-global using ScreenDrafts.Common.Features.Abstractions.Data;
-global using ScreenDrafts.Common.Features.Abstractions.EventBus;
-global using ScreenDrafts.Common.Features.Abstractions.Exceptions;
-global using ScreenDrafts.Common.Features.Abstractions.Logging;
-global using ScreenDrafts.Common.Features.Abstractions.Messaging;
-global using ScreenDrafts.Common.Features.Abstractions.Seeding;
-global using ScreenDrafts.Common.Features.Abstractions.Services;
 global using ScreenDrafts.Common.Infrastructure.Authentication;
 global using ScreenDrafts.Common.Infrastructure.Authorization;
 global using ScreenDrafts.Common.Infrastructure.Caching;

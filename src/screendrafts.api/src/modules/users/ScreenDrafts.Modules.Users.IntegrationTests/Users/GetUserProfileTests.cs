@@ -1,6 +1,4 @@
-﻿using Serilog;
-
-namespace ScreenDrafts.Modules.Users.IntegrationTests.Users;
+﻿namespace ScreenDrafts.Modules.Users.IntegrationTests.Users;
 
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2234:Pass system uri objects instead of strings", Justification = "Reviewed")]
 public class GetUserProfileTests(UsersIntegrationTestWebAppFactory factory) : UsersIntegrationTest(factory)
@@ -38,11 +36,13 @@ public class GetUserProfileTests(UsersIntegrationTestWebAppFactory factory) : Us
   {
     Log.Information($"HttpClient BaseAddress: {HttpClient.BaseAddress}", HttpClient.BaseAddress);
 
-    var request = new RegisterUserRequest(
-      email,
-      password,
-      Faker.Name.FirstName(),
-      Faker.Name.LastName());
+    var request = new RegisterUserRequest
+    {
+      Email = email,
+      Password = password,
+      FirstName = Faker.Name.FirstName(),
+      LastName = Faker.Name.LastName()
+    };
 
     Log.Information($"Registering user with email: {email}", email);
     var registerResponse = await HttpClient.PostAsJsonAsync("users/register", request);

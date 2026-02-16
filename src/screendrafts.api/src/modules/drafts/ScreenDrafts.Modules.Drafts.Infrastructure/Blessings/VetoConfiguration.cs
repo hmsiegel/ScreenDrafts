@@ -1,47 +1,58 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Infrastructure.Blessings;
+
 internal sealed class VetoConfiguration : IEntityTypeConfiguration<Veto>
 {
   public void Configure(EntityTypeBuilder<Veto> builder)
   {
     builder.ToTable(Tables.Vetoes);
 
+    // Id
     builder.HasKey(veto => veto.Id);
 
     builder.Property(veto => veto.Id)
       .ValueGeneratedNever()
-      .HasConversion(
-      v => v.Value,
-      v => VetoId.Create(v));
+      .HasConversion(IdConverters.VetoIdConverter);
+
+    // IssuedBy
+    builder.Property(x => x.IssuedByParticipantId)
+      .IsRequired()
+      .ValueGeneratedNever()
+      .HasConversion(IdConverters.DraftPartParticipantIdConverter);
+
+    builder.HasOne(x => x.IssuedByParticipant)
+      .WithMany(p => p.Vetoes)
+      .HasForeignKey(x => x.IssuedByParticipantId)
+      .OnDelete(DeleteBehavior.Restrict);
+
+    // Target Pick
+    builder.Property(x => x.TargetPickId)
+      .IsRequired()
+      .ValueGeneratedNever()
+      .HasConversion(IdConverters.DraftPickIdConverter);
+
+    builder.HasOne(x => x.TargetPick)
+      .WithOne(p => p.Veto)
+      .HasForeignKey<Veto>(x => x.TargetPickId)
+      .OnDelete(DeleteBehavior.Cascade);
+
+
+    builder.Property(v => v.IsOverridden)
+      .IsRequired();
+
+    builder.Property(v => v.OccurredOn)
+      .IsRequired();
+
+    builder.Property(v => v.Note)
+      .HasMaxLength(1000);
 
     builder.HasOne(v => v.VetoOverride)
       .WithOne(vo => vo.Veto)
-      .HasForeignKey<VetoOverride>(v => v.VetoId);
-
-    builder.HasOne(v => v.Pick)
-      .WithOne(p => p.Veto)
-      .HasForeignKey<Veto>(v => v.PickId)
+      .HasForeignKey<VetoOverride>(v => v.VetoId)
       .OnDelete(DeleteBehavior.Cascade);
 
-    builder.Property(v => v.DrafterTeamId)
-      .IsRequired(false)
-      .HasConversion(
-      id => id!.Value,
-      value => DrafterTeamId.Create(value));
+    builder.Ignore(v => v.DraftPart);
+    builder.Ignore(v => v.DraftPartId);
 
-    builder.Property(v => v.DrafterId)
-      .IsRequired(false)
-      .HasConversion(
-      id => id!.Value,
-      value => DrafterId.Create(value));
-
-    builder.HasOne(v => v.Drafter)
-      .WithMany(d => d.Vetoes)
-      .HasForeignKey(v => v.DrafterId)
-      .OnDelete(DeleteBehavior.Cascade);
-
-    builder.HasOne(v => v.DrafterTeam)
-      .WithMany(dt => dt.Vetoes)
-      .HasForeignKey(v => v.DrafterTeamId)
-      .OnDelete(DeleteBehavior.Cascade);
+    builder.HasIndex(x => new {x.IssuedByParticipantId, x.TargetPickId }).IsUnique();
   }
 }

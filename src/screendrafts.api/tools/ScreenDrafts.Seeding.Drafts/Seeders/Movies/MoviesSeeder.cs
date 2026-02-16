@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Common.Features.Abstractions.CsvFiles;
-using ScreenDrafts.Common.Features.Abstractions.Logging;
-using ScreenDrafts.Common.Features.Abstractions.Seeding;
+﻿using ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities;
 
 namespace ScreenDrafts.Seeding.Drafts.Seeders.Movies;
 

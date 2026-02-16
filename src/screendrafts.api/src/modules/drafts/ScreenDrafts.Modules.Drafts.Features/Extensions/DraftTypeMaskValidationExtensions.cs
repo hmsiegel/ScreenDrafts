@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.Extensions;
+﻿using ScreenDrafts.Modules.Drafts.Domain.SeriesAggregate.Enums;
+
+namespace ScreenDrafts.Modules.Drafts.Features.Extensions;
 
 internal static class DraftTypeMaskValidationExtensions
 {

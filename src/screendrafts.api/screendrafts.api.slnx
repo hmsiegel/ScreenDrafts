@@ -54,10 +54,10 @@
     <Project Path="src/api/ScreenDrafts.Web/ScreenDrafts.Web.csproj" />
   </Folder>
   <Folder Name="/src/common/">
+    <Project Path="src/common/ScreenDrafts.Common.Abstractions/ScreenDrafts.Common.Abstractions.csproj" Id="00473449-b133-4242-bbd8-482a5dc9b288" />
     <Project Path="src/common/ScreenDrafts.Common.Application/ScreenDrafts.Common.Application.csproj" />
     <Project Path="src/common/ScreenDrafts.Common.ArchitectureTests/ScreenDrafts.Common.ArchitectureTests.csproj" />
     <Project Path="src/common/ScreenDrafts.Common.Domain/ScreenDrafts.Common.Domain.csproj" />
-    <Project Path="src/common/ScreenDrafts.Common.Features/ScreenDrafts.Common.Features.csproj" Id="f5110848-937b-4b0a-8e21-f5aeae61378b" />
     <Project Path="src/common/ScreenDrafts.Common.Infrastructure/ScreenDrafts.Common.Infrastructure.csproj" />
     <Project Path="src/common/ScreenDrafts.Common.IntegrationTests/ScreenDrafts.Common.IntegrationTests.csproj" />
     <Project Path="src/common/ScreenDrafts.Common.Presentation/ScreenDrafts.Common.Presentation.csproj" />
@@ -65,89 +65,90 @@
   </Folder>
   <Folder Name="/src/modules/" />
   <Folder Name="/src/modules/administration/">
-    <Project Path="src/modules/administration/ScreenDrafts.Modules.Administration.Application/ScreenDrafts.Modules.Administration.Application.csproj" />
     <Project Path="src/modules/administration/ScreenDrafts.Modules.Administration.ArchitectureTests/ScreenDrafts.Modules.Administration.ArchitectureTests.csproj" />
+    <Project Path="src/modules/administration/ScreenDrafts.Modules.Administration.Composition/ScreenDrafts.Modules.Administration.Composition.csproj" />
     <Project Path="src/modules/administration/ScreenDrafts.Modules.Administration.Domian/ScreenDrafts.Modules.Administration.Domian.csproj" />
+    <Project Path="src/modules/administration/ScreenDrafts.Modules.Administration.Features/ScreenDrafts.Modules.Administration.Features.csproj" />
     <Project Path="src/modules/administration/ScreenDrafts.Modules.Administration.Infrastructure/ScreenDrafts.Modules.Administration.Infrastructure.csproj" />
     <Project Path="src/modules/administration/ScreenDrafts.Modules.Administration.IntegrationEvents/ScreenDrafts.Modules.Administration.IntegrationEvents.csproj" />
     <Project Path="src/modules/administration/ScreenDrafts.Modules.Administration.IntegrationTests/ScreenDrafts.Modules.Administration.IntegrationTests.csproj" />
-    <Project Path="src/modules/administration/ScreenDrafts.Modules.Administration.Presentation/ScreenDrafts.Modules.Administration.Presentation.csproj" />
     <Project Path="src/modules/administration/ScreenDrafts.Modules.Administration.UnitTests/ScreenDrafts.Modules.Administration.UnitTests.csproj" />
   </Folder>
   <Folder Name="/src/modules/audit/">
-    <Project Path="src/modules/audit/ScreenDrafts.Modules.Audit.Application/ScreenDrafts.Modules.Audit.Application.csproj" />
     <Project Path="src/modules/audit/ScreenDrafts.Modules.Audit.ArchitectureTests/ScreenDrafts.Modules.Audit.ArchitectureTests.csproj" />
+    <Project Path="src/modules/audit/ScreenDrafts.Modules.Audit.Composition/ScreenDrafts.Modules.Audit.Composition.csproj" />
     <Project Path="src/modules/audit/ScreenDrafts.Modules.Audit.Domain/ScreenDrafts.Modules.Audit.Domain.csproj" />
+    <Project Path="src/modules/audit/ScreenDrafts.Modules.Audit.Features/ScreenDrafts.Modules.Audit.Features.csproj" />
     <Project Path="src/modules/audit/ScreenDrafts.Modules.Audit.Infrastructure/ScreenDrafts.Modules.Audit.Infrastructure.csproj" />
     <Project Path="src/modules/audit/ScreenDrafts.Modules.Audit.IntegrationEvents/ScreenDrafts.Modules.Audit.IntegrationEvents.csproj" />
     <Project Path="src/modules/audit/ScreenDrafts.Modules.Audit.IntegrationTests/ScreenDrafts.Modules.Audit.IntegrationTests.csproj" />
-    <Project Path="src/modules/audit/ScreenDrafts.Modules.Audit.Presentation/ScreenDrafts.Modules.Audit.Presentation.csproj" />
     <Project Path="src/modules/audit/ScreenDrafts.Modules.Audit.UnitTests/ScreenDrafts.Modules.Audit.UnitTests.csproj" />
   </Folder>
   <Folder Name="/src/modules/communications/">
-    <Project Path="src/modules/communications/ScreenDrafts.Modules.Communications.Application/ScreenDrafts.Modules.Communications.Application.csproj" />
     <Project Path="src/modules/communications/ScreenDrafts.Modules.Communications.ArchitectureTests/ScreenDrafts.Modules.Communications.ArchitectureTests.csproj" />
+    <Project Path="src/modules/communications/ScreenDrafts.Modules.Communications.Composition/ScreenDrafts.Modules.Communications.Composition.csproj" />
     <Project Path="src/modules/communications/ScreenDrafts.Modules.Communications.Domain/ScreenDrafts.Modules.Communications.Domain.csproj" />
+    <Project Path="src/modules/communications/ScreenDrafts.Modules.Communications.Features/ScreenDrafts.Modules.Communications.Features.csproj" />
     <Project Path="src/modules/communications/ScreenDrafts.Modules.Communications.Infrastructure/ScreenDrafts.Modules.Communications.Infrastructure.csproj" />
     <Project Path="src/modules/communications/ScreenDrafts.Modules.Communications.IntegrationEvents/ScreenDrafts.Modules.Communications.IntegrationEvents.csproj" />
     <Project Path="src/modules/communications/ScreenDrafts.Modules.Communications.IntegrationTests/ScreenDrafts.Modules.Communications.IntegrationTests.csproj" />
-    <Project Path="src/modules/communications/ScreenDrafts.Modules.Communications.Presentation/ScreenDrafts.Modules.Communications.Presentation.csproj" />
     <Project Path="src/modules/communications/ScreenDrafts.Modules.Communications.UnitTests/ScreenDrafts.Modules.Communications.UnitTests.csproj" />
   </Folder>
   <Folder Name="/src/modules/drafts/">
     <Project Path="src/modules/drafts/ScreenDrafts.Modules.Drafts.Application/ScreenDrafts.Modules.Drafts.Application.csproj" />
     <Project Path="src/modules/drafts/ScreenDrafts.Modules.Drafts.ArchitectureTests/ScreenDrafts.Modules.Drafts.ArchitectureTests.csproj" />
+    <Project Path="src/modules/drafts/ScreenDrafts.Modules.Drafts.Composition/ScreenDrafts.Modules.Drafts.Composition.csproj" Id="f7e0a4a1-ff4b-4a85-88d7-07de9c951420" />
     <Project Path="src/modules/drafts/ScreenDrafts.Modules.Drafts.Domain/ScreenDrafts.Modules.Drafts.Domain.csproj" />
     <Project Path="src/modules/drafts/ScreenDrafts.Modules.Drafts.Features/ScreenDrafts.Modules.Drafts.Features.csproj" />
     <Project Path="src/modules/drafts/ScreenDrafts.Modules.Drafts.Infrastructure/ScreenDrafts.Modules.Drafts.Infrastructure.csproj" />
     <Project Path="src/modules/drafts/ScreenDrafts.Modules.Drafts.IntegrationEvents/ScreenDrafts.Modules.Drafts.IntegrationEvents.csproj" />
     <Project Path="src/modules/drafts/ScreenDrafts.Modules.Drafts.IntegrationTests/ScreenDrafts.Modules.Drafts.IntegrationTests.csproj" />
-    <Project Path="src/modules/drafts/ScreenDrafts.Modules.Drafts.Presentation/ScreenDrafts.Modules.Drafts.Presentation.csproj" />
     <Project Path="src/modules/drafts/ScreenDrafts.Modules.Drafts.PublicApi/ScreenDrafts.Modules.Drafts.PublicApi.csproj" />
     <Project Path="src/modules/drafts/ScreenDrafts.Modules.Drafts.UnitTests/ScreenDrafts.Modules.Drafts.UnitTests.csproj" />
   </Folder>
   <Folder Name="/src/modules/integrations/">
-    <Project Path="src/modules/integrations/ScreenDrafts.Modules.Integrations.Application/ScreenDrafts.Modules.Integrations.Application.csproj" />
     <Project Path="src/modules/integrations/ScreenDrafts.Modules.Integrations.ArchitectureTests/ScreenDrafts.Modules.Integrations.ArchitectureTests.csproj" />
+    <Project Path="src/modules/integrations/ScreenDrafts.Modules.Integrations.Composition/ScreenDrafts.Modules.Integrations.Composition.csproj" />
     <Project Path="src/modules/integrations/ScreenDrafts.Modules.Integrations.Domain/ScreenDrafts.Modules.Integrations.Domain.csproj" />
+    <Project Path="src/modules/integrations/ScreenDrafts.Modules.Integrations.Features/ScreenDrafts.Modules.Integrations.Features.csproj" />
     <Project Path="src/modules/integrations/ScreenDrafts.Modules.Integrations.Infrastructure/ScreenDrafts.Modules.Integrations.Infrastructure.csproj" />
     <Project Path="src/modules/integrations/ScreenDrafts.Modules.Integrations.IntegrationEvents/ScreenDrafts.Modules.Integrations.IntegrationEvents.csproj" />
     <Project Path="src/modules/integrations/ScreenDrafts.Modules.Integrations.IntegrationTests/ScreenDrafts.Modules.Integrations.IntegrationTests.csproj" />
-    <Project Path="src/modules/integrations/ScreenDrafts.Modules.Integrations.Presentation/ScreenDrafts.Modules.Integrations.Presentation.csproj" />
     <Project Path="src/modules/integrations/ScreenDrafts.Modules.Integrations.UnitTests/ScreenDrafts.Modules.Integrations.UnitTests.csproj" />
   </Folder>
   <Folder Name="/src/modules/movies/">
-    <Project Path="src/modules/movies/ScreenDrafts.Modules.Movies.Application/ScreenDrafts.Modules.Movies.Application.csproj" />
     <Project Path="src/modules/movies/ScreenDrafts.Modules.Movies.ArchitectureTests/ScreenDrafts.Modules.Movies.ArchitectureTests.csproj" />
+    <Project Path="src/modules/movies/ScreenDrafts.Modules.Movies.Composition/ScreenDrafts.Modules.Movies.Composition.csproj" />
     <Project Path="src/modules/movies/ScreenDrafts.Modules.Movies.Domain/ScreenDrafts.Modules.Movies.Domain.csproj" />
+    <Project Path="src/modules/movies/ScreenDrafts.Modules.Movies.Features/ScreenDrafts.Modules.Movies.Features.csproj" />
     <Project Path="src/modules/movies/ScreenDrafts.Modules.Movies.Infrastructure/ScreenDrafts.Modules.Movies.Infrastructure.csproj" />
     <Project Path="src/modules/movies/ScreenDrafts.Modules.Movies.IntegrationEvents/ScreenDrafts.Modules.Movies.IntegrationEvents.csproj" />
     <Project Path="src/modules/movies/ScreenDrafts.Modules.Movies.IntegrationTests/ScreenDrafts.Modules.Movies.IntegrationTests.csproj" />
-    <Project Path="src/modules/movies/ScreenDrafts.Modules.Movies.Presentation/ScreenDrafts.Modules.Movies.Presentation.csproj" />
     <Project Path="src/modules/movies/ScreenDrafts.Modules.Movies.UnitTests/ScreenDrafts.Modules.Movies.UnitTests.csproj" />
   </Folder>
   <Folder Name="/src/modules/real-time-updates/">
-    <Project Path="src/modules/real-time-updates/ScreenDrafts.Modules.RealTimeUpdates.Application/ScreenDrafts.Modules.RealTimeUpdates.Application.csproj" />
     <Project Path="src/modules/real-time-updates/ScreenDrafts.Modules.RealTimeUpdates.ArchitectureTests/ScreenDrafts.Modules.RealTimeUpdates.ArchitectureTests.csproj" />
+    <Project Path="src/modules/real-time-updates/ScreenDrafts.Modules.RealTimeUpdates.Composition/ScreenDrafts.Modules.RealTimeUpdates.Composition.csproj" />
     <Project Path="src/modules/real-time-updates/ScreenDrafts.Modules.RealTimeUpdates.Domain/ScreenDrafts.Modules.RealTimeUpdates.Domain.csproj" />
+    <Project Path="src/modules/real-time-updates/ScreenDrafts.Modules.RealTimeUpdates.Features/ScreenDrafts.Modules.RealTimeUpdates.Features.csproj" />
     <Project Path="src/modules/real-time-updates/ScreenDrafts.Modules.RealTimeUpdates.Infrastructure/ScreenDrafts.Modules.RealTimeUpdates.Infrastructure.csproj" />
     <Project Path="src/modules/real-time-updates/ScreenDrafts.Modules.RealTimeUpdates.IntegrationEvents/ScreenDrafts.Modules.RealTimeUpdates.IntegrationEvents.csproj" />
     <Project Path="src/modules/real-time-updates/ScreenDrafts.Modules.RealTimeUpdates.IntegrationTests/ScreenDrafts.Modules.RealTimeUpdates.IntegrationTests.csproj" />
-    <Project Path="src/modules/real-time-updates/ScreenDrafts.Modules.RealTimeUpdates.Presentation/ScreenDrafts.Modules.RealTimeUpdates.Presentation.csproj" />
     <Project Path="src/modules/real-time-updates/ScreenDrafts.Modules.RealTimeUpdates.UnitTests/ScreenDrafts.Modules.RealTimeUpdates.UnitTests.csproj" />
   </Folder>
   <Folder Name="/src/modules/reporting/">
-    <Project Path="src/modules/reporting/ScreenDrafts.Modules.Reporting.Application/ScreenDrafts.Modules.Reporting.Application.csproj" />
     <Project Path="src/modules/reporting/ScreenDrafts.Modules.Reporting.ArchitectureTests/ScreenDrafts.Modules.Reporting.ArchitectureTests.csproj" />
+    <Project Path="src/modules/reporting/ScreenDrafts.Modules.Reporting.Composition/ScreenDrafts.Modules.Reporting.Composition.csproj" />
     <Project Path="src/modules/reporting/ScreenDrafts.Modules.Reporting.Domain/ScreenDrafts.Modules.Reporting.Domain.csproj" />
+    <Project Path="src/modules/reporting/ScreenDrafts.Modules.Reporting.Features/ScreenDrafts.Modules.Reporting.Features.csproj" />
     <Project Path="src/modules/reporting/ScreenDrafts.Modules.Reporting.Infrastructure/ScreenDrafts.Modules.Reporting.Infrastructure.csproj" />
     <Project Path="src/modules/reporting/ScreenDrafts.Modules.Reporting.IntegrationEvents/ScreenDrafts.Modules.Reporting.IntegrationEvents.csproj" />
     <Project Path="src/modules/reporting/ScreenDrafts.Modules.Reporting.IntegrationTests/ScreenDrafts.Modules.Reporting.IntegrationTests.csproj" />
-    <Project Path="src/modules/reporting/ScreenDrafts.Modules.Reporting.Presentation/ScreenDrafts.Modules.Reporting.Presentation.csproj" />
     <Project Path="src/modules/reporting/ScreenDrafts.Modules.Reporting.UnitTests/ScreenDrafts.Modules.Reporting.UnitTests.csproj" />
   </Folder>
   <Folder Name="/src/modules/users/">
     <Project Path="src/modules/users/ScreenDrafts.Modules.Users.ArchitectureTests/ScreenDrafts.Modules.Users.ArchitectureTests.csproj" />
+    <Project Path="src/modules/users/ScreenDrafts.Modules.Users.Composition/ScreenDrafts.Modules.Users.Composition.csproj" />
     <Project Path="src/modules/users/ScreenDrafts.Modules.Users.Domain/ScreenDrafts.Modules.Users.Domain.csproj" />
     <Project Path="src/modules/users/ScreenDrafts.Modules.Users.Features/ScreenDrafts.Modules.Users.Features.csproj" Id="6f115df8-9b17-4827-b044-e5ab34018797" />
     <Project Path="src/modules/users/ScreenDrafts.Modules.Users.Infrastructure/ScreenDrafts.Modules.Users.Infrastructure.csproj" />
@@ -164,6 +165,7 @@
     <Project Path="tools/ScreenDrafts.Seeding.Drafts/ScreenDrafts.Seeding.Drafts.csproj" />
     <Project Path="tools/ScreenDrafts.Seeding.Movies/ScreenDrafts.Seeding.Movies.csproj" />
     <Project Path="tools/ScreenDrafts.Seeding.Users/ScreenDrafts.Seeding.Users.csproj" />
+    <Project Path="tools/ScreenDrafts.Tools.EfModelDump/ScreenDrafts.Tools.EfModelDump.csproj" Id="8c85ec47-6286-444a-aa9a-8def7aac037d" />
   </Folder>
   <Project Path="docker-compose.dcproj">
     <Platform Project="AnyCPU" />

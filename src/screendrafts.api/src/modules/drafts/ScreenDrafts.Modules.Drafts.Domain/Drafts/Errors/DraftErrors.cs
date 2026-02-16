@@ -1,4 +1,5 @@
-﻿
+﻿using ScreenDrafts.Common.Abstractions.Errors;
+
 namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.Errors;
 public static partial class DraftErrors
 {
@@ -157,6 +158,25 @@ public static partial class DraftErrors
   public static readonly SDError CannotChangeDraftTypeAfterADraftPartHasStarted = SDError.Conflict(
       "Drafts.CannotChangeDraftTypeAfterADraftPartHasStarted",
       "Cannot change a draft type after a draft part has started.");
+
+  public static readonly SDError SeriesIdIsRequired = 
+    SDError.Problem(
+      "Drafts.SeriesIdIsRequired",
+      "Series id is required.");
+
+  public static readonly SDError TotalPicksIsOutOfRange =
+    SDError.Problem(
+      "Drafts.TotalPicksIsOutOfRange",
+      "Total picks is out of range.");
+
+  public static readonly SDError DraftTypeIsRequired = SDError.Problem(
+      "Drafts.DraftTypeIsRequired",
+      "Draft type is required.");
+
+  public static readonly SDError SeriesIsRequired = 
+        SDError.Problem(
+      "Drafts.SeriesIsRequired",
+      "Series is required.");
 
   public static SDError CampaignDoesNotBelongToThisDraft(string publicId) =>
     SDError.Problem(

@@ -1,6 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.Categories.Restore;
+namespace ScreenDrafts.Modules.Drafts.Features.Categories.Restore;
 
-internal sealed class Endpoint : ScreenDraftsEndpoint<Request>
+internal sealed class Endpoint : ScreenDraftsEndpoint<RestoreCategoryRequest>
 {
   public override void Configure()
   {
@@ -15,12 +15,14 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<Request>
       .Produces(StatusCodes.Status404NotFound));
   }
 
-  public override async Task HandleAsync(Request req, CancellationToken ct)
+  public override async Task HandleAsync(RestoreCategoryRequest req, CancellationToken ct)
   {
-    var command = new Command(req.PublicId);
+    var RestoreCategoryCommand = new RestoreCategoryCommand(req.PublicId);
 
-    var result = await Sender.Send(command, ct);
+    var result = await Sender.Send(RestoreCategoryCommand, ct);
 
     await this.SendNoContentAsync(result, ct);
   }
 }
+
+

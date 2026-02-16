@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.Categories.Delete;
+﻿using FastEndpoints;
+
+namespace ScreenDrafts.Modules.Drafts.Features.Categories.Delete;
 
 internal sealed class Summary : Summary<Endpoint>
 {

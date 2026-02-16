@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Common.Features.Abstractions.Seeding;
-
-namespace ScreenDrafts.Seeding.Users.Common;
+﻿namespace ScreenDrafts.Seeding.Users.Common;
 internal static class UserSeedersExtensions
 {
   public static IServiceCollection AddUserSeeders(this IServiceCollection services)

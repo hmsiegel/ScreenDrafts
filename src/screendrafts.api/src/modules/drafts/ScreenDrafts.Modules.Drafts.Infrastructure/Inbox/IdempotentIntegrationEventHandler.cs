@@ -1,7 +1,4 @@
-﻿using ScreenDrafts.Common.Features.Abstractions.Data;
-using ScreenDrafts.Common.Features.Abstractions.EventBus;
-
-namespace ScreenDrafts.Modules.Drafts.Infrastructure.Inbox;
+﻿namespace ScreenDrafts.Modules.Drafts.Infrastructure.Inbox;
 
 internal sealed class IdempotentIntegrationEventHandler<TIntegrationEvent>(
     IIntegrationEventHandler<TIntegrationEvent> decorated,

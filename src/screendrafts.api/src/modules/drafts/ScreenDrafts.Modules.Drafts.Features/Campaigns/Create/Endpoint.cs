@@ -1,6 +1,8 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.Campaigns.Create;
+using ScreenDrafts.Common.Abstractions.Results;
 
-internal sealed class Endpoint : ScreenDraftsEndpoint<Request, CreatedResponse>
+namespace ScreenDrafts.Modules.Drafts.Features.Campaigns.Create;
+
+internal sealed class Endpoint : ScreenDraftsEndpoint<CreateCampaignRequest, CreatedResponse>
 {
   public override void Configure()
   {
@@ -13,18 +15,18 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<Request, CreatedResponse>
       .Produces(StatusCodes.Status400BadRequest)
       .Produces(StatusCodes.Status403Forbidden);
     });
-    Policies(Features.Permissions.CampaignCreate);
+    Policies(DraftsAuth.Permissions.CampaignCreate);
   }
 
-  public override async Task HandleAsync(Request req, CancellationToken ct)
+  public override async Task HandleAsync(CreateCampaignRequest req, CancellationToken ct)
   {
     ArgumentNullException.ThrowIfNull(req);
-    var command = new Command
+    var CreateCampaignCommand = new CreateCampaignCommand
     {
       Name = req.Name,
       Slug = req.Slug
     };
-    var result = await Sender.Send(command, ct);
+    var result = await Sender.Send(CreateCampaignCommand, ct);
 
     await this.SendCreatedAsync(
       result.Map(id => new CreatedResponse(id)),
@@ -32,3 +34,5 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<Request, CreatedResponse>
       ct);
   }
 }
+
+

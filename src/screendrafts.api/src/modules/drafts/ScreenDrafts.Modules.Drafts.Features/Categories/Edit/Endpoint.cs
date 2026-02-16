@@ -1,6 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.Categories.Edit;
+namespace ScreenDrafts.Modules.Drafts.Features.Categories.Edit;
 
-internal sealed class Endpoint : ScreenDraftsEndpoint<Request>
+internal sealed class Endpoint : ScreenDraftsEndpoint<EditCategoryRequest>
 {
   public override void Configure()
   {
@@ -16,20 +16,22 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<Request>
       .Produces(StatusCodes.Status403Forbidden)
       .Produces(StatusCodes.Status404NotFound);
     });
-    Permissions(Features.Permissions.CategoryUpdate);
+    Permissions(DraftsAuth.Permissions.CategoryUpdate);
   }
 
-  public override async Task HandleAsync(Request req, CancellationToken ct)
+  public override async Task HandleAsync(EditCategoryRequest req, CancellationToken ct)
   {
-    var command = new Command
+    var EditCategoryCommand = new EditCategoryCommand
     {
       PublicId = req.PublicId,
       Name = req.Name,
       Description = req.Description
     };
 
-    var result = await Sender.Send(command, ct);
+    var result = await Sender.Send(EditCategoryCommand, ct);
 
     await this.SendNoContentAsync(result, ct);
   }
 }
+
+

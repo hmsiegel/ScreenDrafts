@@ -1,0 +1,656 @@
+=== EF CORE MODEL AUDIT: Drafts ===
+Generated: 2026-02-12T12:32:12.1316176Z
+
+--------------------------------------------------
+ENTITY: ScreenDrafts.Modules.Drafts.Domain.Campaigns.Campaign
+TABLE : drafts.campaigns
+PK    : Id
+PROPERTIES:
+  - CreatedAtUtc                   | DateTime     | Required=True  | MaxLen=—    | Conv=—
+  - Id                             | Guid         | Required=True  | MaxLen=—    | Conv=—
+  - IsDeleted                      | Boolean      | Required=True  | MaxLen=—    | Conv=—
+  - Name                           | String       | Required=True  | MaxLen=200  | Conv=—
+  - PublicId                       | String       | Required=True  | MaxLen=19   | Conv=—
+  - Slug                           | String       | Required=True  | MaxLen=100  | Conv=—
+  - UpdatedAtUtc                   | Nullable`1   | Required=False | MaxLen=—    | Conv=—
+FOREIGN KEYS:
+NAVIGATIONS:
+  - _drafts                   | Draft                     | Collection=True
+INDEXES:
+ - Name   : ix_campaigns_id
+   Props  : (Id)
+   Cols   : (id)
+   Unique : False
+   Filter : -
+ - Name   : ix_campaigns_public_id
+   Props  : (PublicId)
+   Cols   : (public_id)
+   Unique : True
+   Filter : -
+ - Name   : ix_campaigns_slug
+   Props  : (Slug)
+   Cols   : (slug)
+   Unique : True
+   Filter : -
+
+--------------------------------------------------
+ENTITY: ScreenDrafts.Modules.Drafts.Domain.Categories.Category
+TABLE : drafts.categories
+PK    : Id
+PROPERTIES:
+  - CreatedOnUtc                   | DateTime     | Required=True  | MaxLen=—    | Conv=—
+  - Description                    | String       | Required=False | MaxLen=500  | Conv=—
+  - Id                             | CategoryId   | Required=True  | MaxLen=—    | Conv=ValueConverter`2
+  - IsDeleted                      | Boolean      | Required=True  | MaxLen=—    | Conv=—
+  - ModifiedOnUtc                  | Nullable`1   | Required=False | MaxLen=—    | Conv=—
+  - Name                           | String       | Required=True  | MaxLen=100  | Conv=—
+  - PublicId                       | String       | Required=True  | MaxLen=19   | Conv=—
+FOREIGN KEYS:
+NAVIGATIONS:
+  - DraftCategories           | DraftCategory             | Collection=True
+INDEXES:
+ - Name   : ix_categories_public_id
+   Props  : (PublicId)
+   Cols   : (public_id)
+   Unique : True
+   Filter : -
+
+--------------------------------------------------
+ENTITY: ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities.CommissionerOverride
+TABLE : drafts.commissioner_overrides
+PK    : Id
+PROPERTIES:
+  - Id                             | Guid         | Required=True  | MaxLen=—    | Conv=—
+  - PickId                         | PickId       | Required=True  | MaxLen=—    | Conv=ValueConverter`2
+FOREIGN KEYS:
+  -> Pick [PickId] | Required=True  | Delete=Cascade
+NAVIGATIONS:
+  - Pick                      | Pick                      | Collection=False
+INDEXES:
+ - Name   : ix_commissioner_overrides_pick_id
+   Props  : (PickId)
+   Cols   : (pick_id)
+   Unique : True
+   Filter : -
+
+--------------------------------------------------
+ENTITY: ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities.DraftCategory
+TABLE : drafts.draft_categories
+PK    : DraftId, CategoryId
+PROPERTIES:
+  - CategoryId                     | CategoryId   | Required=True  | MaxLen=—    | Conv=ValueConverter`2
+  - DraftId                        | DraftId      | Required=True  | MaxLen=—    | Conv=ValueConverter`2
+FOREIGN KEYS:
+  -> Category [CategoryId] | Required=True  | Delete=Restrict
+  -> Draft [DraftId] | Required=True  | Delete=Cascade
+NAVIGATIONS:
+  - Category                  | Category                  | Collection=False
+  - Draft                     | Draft                     | Collection=False
+INDEXES:
+ - Name   : ix_draft_categories_category_id
+   Props  : (CategoryId)
+   Cols   : (category_id)
+   Unique : False
+   Filter : -
+
+--------------------------------------------------
+ENTITY: ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities.DraftHost
+TABLE : drafts.draft_hosts
+PK    : DraftPartId, HostId
+PROPERTIES:
+  - DraftPartId                    | DraftPartId  | Required=True  | MaxLen=—    | Conv=ValueConverter`2
+  - HostId                         | HostId       | Required=True  | MaxLen=—    | Conv=ValueConverter`2
+  - Role                           | HostRole     | Required=True  | MaxLen=—    | Conv=ValueConverter`2
+FOREIGN KEYS:
+  -> DraftPart [DraftPartId] | Required=True  | Delete=Cascade
+  -> Host [HostId] | Required=True  | Delete=Restrict
+NAVIGATIONS:
+  - DraftPart                 | DraftPart                 | Collection=False
+  - Host                      | Host                      | Collection=False
+INDEXES:
+ - Name   : ix_draft_hosts_host_id
+   Props  : (HostId)
+   Cols   : (host_id)
+   Unique : False
+   Filter : -
+ - Name   : ux_draft_hosts_one_primary_per_draft_part
+   Props  : (DraftPartId)
+   Cols   : (draft_part_id)
+   Unique : True
+   Filter : role = 0
+
+--------------------------------------------------
+ENTITY: ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities.DraftPartParticipant
+TABLE : drafts.draft_part_participants
+PK    : Id
+PROPERTIES:
+  - CommissionerOverrides          | Int32        | Required=True  | MaxLen=—    | Conv=—
+  - DraftPartId                    | DraftPartId  | Required=True  | MaxLen=—    | Conv=ValueConverter`2
+  - Id                             | DraftPartParticipantId | Required=True  | MaxLen=—    | Conv=ValueConverter`2
+  - ParticipantIdValue             | Guid         | Required=True  | MaxLen=—    | Conv=—
+  - ParticipantKindValue           | ParticipantKind | Required=True  | MaxLen=—    | Conv=ValueConverter`2
+  - RolloverVeto                   | Int32        | Required=True  | MaxLen=—    | Conv=—
+  - RolloverVetoOverride           | Int32        | Required=True  | MaxLen=—    | Conv=—
+  - StartingVetoes                 | Int32        | Required=True  | MaxLen=—    | Conv=—
+  - TriviaVetoes                   | Int32        | Required=True  | MaxLen=—    | Conv=—
+  - TriviaVetoOverrides            | Int32        | Required=True  | MaxLen=—    | Conv=—
+  - VetoesUsed                     | Int32        | Required=True  | MaxLen=—    | Conv=—
+  - VetoOverridesUsed              | Int32        | Required=True  | MaxLen=—    | Conv=—
+FOREIGN KEYS:
+  -> DraftPart [DraftPartId] | Required=True  | Delete=Cascade
+NAVIGATIONS:
+  - DraftPart                 | DraftPart                 | Collection=False
+  - Picks                     | Pick                      | Collection=True
+  - Vetoes                    | Veto                      | Collection=True
+  - VetoOverrides             | VetoOverride              | Collection=True
+INDEXES:
+ - Name   : ux_draft_part_participants_unique
+   Props  : (DraftPartId, ParticipantIdValue, ParticipantKindValue)
+   Cols   : (draft_part_id, participant_id_value, participant_kind_value)
+   Unique : True
+   Filter : -
+
+--------------------------------------------------
+ENTITY: ScreenDrafts.Modules.Drafts.Domain.DraftParts.ValueObjects.RequiredMovieVersion
+TABLE : drafts.draft_part_required_movie_versions
+PK    : id
+PROPERTIES:
+  - draft_part_id                  | DraftPartId  | Required=True  | MaxLen=—    | Conv=ValueConverter`2
+  - id                             | Guid         | Required=True  | MaxLen=—    | Conv=—
+  - MovieId                        | Guid         | Required=True  | MaxLen=—    | Conv=—
+  - VersionName                    | String       | Required=True  | MaxLen=100  | Conv=—
+FOREIGN KEYS:
+  -> DraftPart [draft_part_id] | Required=True  | Delete=Cascade
+NAVIGATIONS:
+INDEXES:
+ - Name   : ix_draft_part_required_movie_versions_draft_part_id_movie_id
+   Props  : (draft_part_id, MovieId)
+   Cols   : (draft_part_id, movie_id)
+   Unique : True
+   Filter : -
+
+--------------------------------------------------
+ENTITY: ScreenDrafts.Modules.Drafts.Domain.DraftParts.DraftPart
+TABLE : drafts.draft_parts
+PK    : Id
+PROPERTIES:
+  - CreatedAtUtc                   | DateTime     | Required=True  | MaxLen=—    | Conv=—
+  - DraftId                        | DraftId      | Required=True  | MaxLen=—    | Conv=ValueConverter`2
+  - DraftType                      | DraftType    | Required=True  | MaxLen=—    | Conv=ValueConverter`2
+  - Id                             | DraftPartId  | Required=True  | MaxLen=—    | Conv=ValueConverter`2
+  - MaxPosition                    | Nullable`1   | Required=False | MaxLen=—    | Conv=—
+  - MinPosition                    | Nullable`1   | Required=False | MaxLen=—    | Conv=—
+  - MovieVersionPolicyType         | DraftPartMovieVersionPolicyType | Required=True  | MaxLen=—    | Conv=—
+  - PartIndex                      | Int32        | Required=True  | MaxLen=—    | Conv=—
+  - ScheduledForUtc                | Nullable`1   | Required=False | MaxLen=—    | Conv=—
+  - SeriesId                       | SeriesId     | Required=True  | MaxLen=—    | Conv=ValueConverter`2
+  - Status                         | DraftPartStatus | Required=True  | MaxLen=—    | Conv=ValueConverter`2
+  - UpdatedAtUtc                   | Nullable`1   | Required=False | MaxLen=—    | Conv=—
+FOREIGN KEYS:
+  -> Draft [DraftId] | Required=True  | Delete=Cascade
+NAVIGATIONS:
+  - _draftHosts               | DraftHost                 | Collection=True
+  - _draftPartParticipants    | DraftPartParticipant      | Collection=True
+  - _picks                    | Pick                      | Collection=True
+  - _releases                 | DraftRelease              | Collection=True
+  - _requiredMovieVersions    | RequiredMovieVersion      | Collection=True
+  - GameBoard                 | GameBoard                 | Collection=False
+  - TriviaResults             | TriviaResult              | Collection=True
+OWNED : _requiredMovieVersions -> RequiredMovieVersion
+INDEXES:
+ - Name   : ix_draft_parts_draft_id_part_index
+   Props  : (DraftId, PartIndex)
+   Cols   : (draft_id, part_index)
+   Unique : True
+   Filter : -
+
+--------------------------------------------------
+ENTITY: ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities.DraftPosition
+TABLE : drafts.draft_positions
+PK    : Id
+PROPERTIES:
+  - AssignedToId                   | Nullable`1   | Required=False | MaxLen=—    | Conv=—
+  - AssignedToKind                 | ParticipantKind | Required=False | MaxLen=—    | Conv=SmartEnumConverter`2
+  - GameBoardId                    | GameBoardId  | Required=True  | MaxLen=—    | Conv=ValueConverter`2
+  - HasBonusVeto                   | Boolean      | Required=True  | MaxLen=—    | Conv=—
+  - HasBonusVetoOverride           | Boolean      | Required=True  | MaxLen=—    | Conv=—
+  - Id                             | DraftPositionId | Required=True  | MaxLen=—    | Conv=ValueConverter`2
+  - Name                           | String       | Required=True  | MaxLen=50   | Conv=—
+  - Picks                          | ICollection`1 | Required=True  | MaxLen=—    | Conv=ListOfPicksConverter
+FOREIGN KEYS:
+  -> GameBoard [GameBoardId] | Required=True  | Delete=Cascade
+NAVIGATIONS:
+  - GameBoard                 | GameBoard                 | Collection=False
+INDEXES:
+ - Name   : ix_draft_positions_game_board_id
+   Props  : (GameBoardId)
+   Cols   : (game_board_id)
+   Unique : False
+   Filter : -
+
+--------------------------------------------------
+ENTITY: ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities.DraftRelease
+TABLE : drafts.draft_releases
+PK    : PartId, ReleaseChannel, ReleaseDate
+PROPERTIES:
+  - CreatedOnUtc                   | DateTime     | Required=True  | MaxLen=—    | Conv=—
+  - EpisodeNumber                  | Nullable`1   | Required=False | MaxLen=—    | Conv=—
+  - PartId                         | DraftPartId  | Required=True  | MaxLen=—    | Conv=ValueConverter`2
+  - ReleaseChannel                 | ReleaseChannel | Required=True  | MaxLen=—    | Conv=ValueConverter`2
+  - ReleaseDate                    | DateOnly     | Required=True  | MaxLen=—    | Conv=ValueConverter`2
+FOREIGN KEYS:
+  -> DraftPart [PartId] | Required=True  | Delete=Cascade
+NAVIGATIONS:
+  - DraftPart                 | DraftPart                 | Collection=False
+INDEXES:
+ - Name   : ix_draft_releases_release_channel_release_date
+   Props  : (ReleaseChannel, ReleaseDate)
+   Cols   : (release_channel, release_date)
+   Unique : False
+   Filter : -
+ - Name   : ux_draft_releases_mainfeed_episode_number
+   Props  : (EpisodeNumber)
+   Cols   : (episode_number)
+   Unique : True
+   Filter : release_channel = 0 AND episode_number is not null
+
+--------------------------------------------------
+ENTITY: System.Collections.Generic.Dictionary`2[[System.String, System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Object, System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]
+TABLE : drafts.drafter_team_drafter
+PK    : drafter_id, drafter_team_id
+PROPERTIES:
+  - drafter_id                     | DrafterId    | Required=True  | MaxLen=—    | Conv=ValueConverter`2
+  - drafter_team_id                | DrafterTeamId | Required=True  | MaxLen=—    | Conv=ValueConverter`2
+FOREIGN KEYS:
+  -> Drafter [drafter_id] | Required=True  | Delete=Cascade
+  -> DrafterTeam [drafter_team_id] | Required=True  | Delete=Cascade
+NAVIGATIONS:
+INDEXES:
+ - Name   : ix_drafter_team_drafter_drafter_team_id
+   Props  : (drafter_team_id)
+   Cols   : (drafter_team_id)
+   Unique : False
+   Filter : -
+
+--------------------------------------------------
+ENTITY: ScreenDrafts.Modules.Drafts.Domain.Drafters.DrafterTeam
+TABLE : drafts.drafter_teams
+PK    : Id
+PROPERTIES:
+  - Id                             | DrafterTeamId | Required=True  | MaxLen=—    | Conv=ValueConverter`2
+  - Name                           | String       | Required=True  | MaxLen=100  | Conv=—
+  - NumberOfDrafters               | Int32        | Required=True  | MaxLen=—    | Conv=—
+FOREIGN KEYS:
+NAVIGATIONS:
+INDEXES:
+
+--------------------------------------------------
+ENTITY: ScreenDrafts.Modules.Drafts.Domain.Drafters.Drafter
+TABLE : drafts.drafters
+PK    : Id
+PROPERTIES:
+  - Id                             | DrafterId    | Required=True  | MaxLen=—    | Conv=ValueConverter`2
+  - IsRetired                      | Boolean      | Required=True  | MaxLen=—    | Conv=—
+  - PersonId                       | PersonId     | Required=True  | MaxLen=—    | Conv=ValueConverter`2
+  - PublicId                       | String       | Required=True  | MaxLen=19   | Conv=—
+  - RetiredAtUtc                   | Nullable`1   | Required=False | MaxLen=—    | Conv=—
+FOREIGN KEYS:
+  -> Person [PersonId] | Required=True  | Delete=Restrict
+NAVIGATIONS:
+  - Person                    | Person                    | Collection=False
+INDEXES:
+ - Name   : ix_drafters_person_id
+   Props  : (PersonId)
+   Cols   : (person_id)
+   Unique : True
+   Filter : -
+ - Name   : ix_drafters_public_id
+   Props  : (PublicId)
+   Cols   : (public_id)
+   Unique : True
+   Filter : -
+
+--------------------------------------------------
+ENTITY: ScreenDrafts.Modules.Drafts.Domain.Drafts.Draft
+TABLE : drafts.drafts
+PK    : Id
+PROPERTIES:
+  - CampaignId                     | Nullable`1   | Required=False | MaxLen=—    | Conv=—
+  - CreatedAtUtc                   | DateTime     | Required=True  | MaxLen=—    | Conv=—
+  - Description                    | String       | Required=False | MaxLen=—    | Conv=—
+  - DraftStatus                    | DraftStatus  | Required=True  | MaxLen=—    | Conv=ValueConverter`2
+  - DraftType                      | DraftType    | Required=True  | MaxLen=—    | Conv=ValueConverter`2
+  - Id                             | DraftId      | Required=True  | MaxLen=—    | Conv=ValueConverter`2
+  - PublicId                       | String       | Required=True  | MaxLen=19   | Conv=—
+  - SeriesId                       | SeriesId     | Required=True  | MaxLen=—    | Conv=ValueConverter`2
+  - Title                          | Title        | Required=True  | MaxLen=255  | Conv=ValueConverter`2
+  - UpdatedAtUtc                   | Nullable`1   | Required=False | MaxLen=—    | Conv=—
+  - Version                        | UInt32       | Required=True  | MaxLen=—    | Conv=—
+FOREIGN KEYS:
+  -> Campaign [CampaignId] | Required=False | Delete=SetNull
+  -> Series [SeriesId] | Required=True  | Delete=Restrict
+NAVIGATIONS:
+  - Campaign                  | Campaign                  | Collection=False
+  - DraftCategories           | DraftCategory             | Collection=True
+  - Parts                     | DraftPart                 | Collection=True
+  - Series                    | Series                    | Collection=False
+INDEXES:
+ - Name   : ix_drafts_campaign_id
+   Props  : (CampaignId)
+   Cols   : (campaign_id)
+   Unique : False
+   Filter : -
+ - Name   : ix_drafts_public_id
+   Props  : (PublicId)
+   Cols   : (public_id)
+   Unique : True
+   Filter : -
+ - Name   : ix_drafts_series_id
+   Props  : (SeriesId)
+   Cols   : (series_id)
+   Unique : False
+   Filter : -
+
+--------------------------------------------------
+ENTITY: ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities.GameBoard
+TABLE : drafts.game_boards
+PK    : Id
+PROPERTIES:
+  - DraftPartId                    | DraftPartId  | Required=True  | MaxLen=—    | Conv=ValueConverter`2
+  - Id                             | GameBoardId  | Required=True  | MaxLen=—    | Conv=ValueConverter`2
+FOREIGN KEYS:
+  -> DraftPart [DraftPartId] | Required=True  | Delete=Cascade
+NAVIGATIONS:
+  - DraftPart                 | DraftPart                 | Collection=False
+  - DraftPositions            | DraftPosition             | Collection=True
+INDEXES:
+ - Name   : ix_game_boards_draft_part_id
+   Props  : (DraftPartId)
+   Cols   : (draft_part_id)
+   Unique : True
+   Filter : -
+
+--------------------------------------------------
+ENTITY: ScreenDrafts.Modules.Drafts.Domain.Hosts.Host
+TABLE : drafts.hosts
+PK    : Id
+PROPERTIES:
+  - Id                             | HostId       | Required=True  | MaxLen=—    | Conv=ValueConverter`2
+  - PersonId                       | PersonId     | Required=True  | MaxLen=—    | Conv=ValueConverter`2
+  - PublicId                       | String       | Required=True  | MaxLen=19   | Conv=—
+FOREIGN KEYS:
+  -> Person [PersonId] | Required=True  | Delete=Cascade
+NAVIGATIONS:
+  - Drafts                    | DraftHost                 | Collection=True
+  - Person                    | Person                    | Collection=False
+INDEXES:
+ - Name   : ix_hosts_person_id
+   Props  : (PersonId)
+   Cols   : (person_id)
+   Unique : True
+   Filter : -
+ - Name   : ix_hosts_public_id
+   Props  : (PublicId)
+   Cols   : (public_id)
+   Unique : True
+   Filter : -
+
+--------------------------------------------------
+ENTITY: ScreenDrafts.Common.Infrastructure.Inbox.InboxMessageConsumer
+TABLE : drafts.inbox_message_consumers
+PK    : InboxMessageId, Name
+PROPERTIES:
+  - InboxMessageId                 | Guid         | Required=True  | MaxLen=—    | Conv=—
+  - Name                           | String       | Required=True  | MaxLen=500  | Conv=—
+FOREIGN KEYS:
+NAVIGATIONS:
+INDEXES:
+
+--------------------------------------------------
+ENTITY: ScreenDrafts.Common.Infrastructure.Inbox.InboxMessage
+TABLE : drafts.inbox_messages
+PK    : Id
+PROPERTIES:
+  - Content                        | String       | Required=True  | MaxLen=2000 | Conv=—
+  - Error                          | String       | Required=False | MaxLen=—    | Conv=—
+  - Id                             | Guid         | Required=True  | MaxLen=—    | Conv=—
+  - OccurredOnUtc                  | DateTime     | Required=True  | MaxLen=—    | Conv=—
+  - ProcessedOnUtc                 | Nullable`1   | Required=False | MaxLen=—    | Conv=—
+  - Type                           | String       | Required=True  | MaxLen=—    | Conv=—
+FOREIGN KEYS:
+NAVIGATIONS:
+INDEXES:
+
+--------------------------------------------------
+ENTITY: ScreenDrafts.Modules.Drafts.Domain.DraftParts.ValueObjects.MovieVersion
+TABLE : drafts.movie_versions
+PK    : id
+PROPERTIES:
+  - id                             | Guid         | Required=True  | MaxLen=—    | Conv=—
+  - movie_id                       | Guid         | Required=True  | MaxLen=—    | Conv=—
+  - Name                           | String       | Required=True  | MaxLen=100  | Conv=—
+FOREIGN KEYS:
+  -> Movie [movie_id] | Required=True  | Delete=Cascade
+NAVIGATIONS:
+INDEXES:
+ - Name   : ix_movie_versions_movie_id_name
+   Props  : (movie_id, Name)
+   Cols   : (movie_id, name)
+   Unique : True
+   Filter : -
+
+--------------------------------------------------
+ENTITY: ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities.Movie
+TABLE : drafts.movies
+PK    : Id
+PROPERTIES:
+  - Id                             | Guid         | Required=True  | MaxLen=—    | Conv=—
+  - ImdbId                         | String       | Required=True  | MaxLen=—    | Conv=—
+  - MovieTitle                     | String       | Required=True  | MaxLen=—    | Conv=—
+FOREIGN KEYS:
+NAVIGATIONS:
+  - Picks                     | Pick                      | Collection=True
+  - Versions                  | MovieVersion              | Collection=True
+OWNED : Versions -> MovieVersion
+INDEXES:
+
+--------------------------------------------------
+ENTITY: ScreenDrafts.Common.Infrastructure.Outbox.OutboxMessageConsumer
+TABLE : drafts.outbox_message_consumers
+PK    : OutboxMessageId, Name
+PROPERTIES:
+  - Name                           | String       | Required=True  | MaxLen=500  | Conv=—
+  - OutboxMessageId                | Guid         | Required=True  | MaxLen=—    | Conv=—
+FOREIGN KEYS:
+NAVIGATIONS:
+INDEXES:
+
+--------------------------------------------------
+ENTITY: ScreenDrafts.Common.Infrastructure.Outbox.OutboxMessage
+TABLE : drafts.outbox_messages
+PK    : Id
+PROPERTIES:
+  - Content                        | String       | Required=True  | MaxLen=2000 | Conv=—
+  - Error                          | String       | Required=False | MaxLen=—    | Conv=—
+  - Id                             | Guid         | Required=True  | MaxLen=—    | Conv=—
+  - OccurredOnUtc                  | DateTime     | Required=True  | MaxLen=—    | Conv=—
+  - ProcessedOnUtc                 | Nullable`1   | Required=False | MaxLen=—    | Conv=—
+  - Type                           | String       | Required=True  | MaxLen=—    | Conv=—
+FOREIGN KEYS:
+NAVIGATIONS:
+INDEXES:
+
+--------------------------------------------------
+ENTITY: ScreenDrafts.Modules.Drafts.Domain.People.Person
+TABLE : drafts.people
+PK    : Id
+PROPERTIES:
+  - DisplayName                    | String       | Required=False | MaxLen=—    | Conv=—
+  - FirstName                      | String       | Required=True  | MaxLen=—    | Conv=—
+  - Id                             | PersonId     | Required=True  | MaxLen=—    | Conv=ValueConverter`2
+  - LastName                       | String       | Required=True  | MaxLen=—    | Conv=—
+  - PublicId                       | String       | Required=True  | MaxLen=—    | Conv=—
+  - UserId                         | Nullable`1   | Required=False | MaxLen=—    | Conv=—
+FOREIGN KEYS:
+NAVIGATIONS:
+  - DrafterProfile            | Drafter                   | Collection=False
+  - HostProfile               | Host                      | Collection=False
+INDEXES:
+ - Name   : ix_people_public_id
+   Props  : (PublicId)
+   Cols   : (public_id)
+   Unique : True
+   Filter : -
+
+--------------------------------------------------
+ENTITY: ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities.Pick
+TABLE : drafts.picks
+PK    : Id
+PROPERTIES:
+  - DraftPartId                    | DraftPartId  | Required=True  | MaxLen=—    | Conv=ValueConverter`2
+  - Id                             | PickId       | Required=True  | MaxLen=—    | Conv=ValueConverter`2
+  - MovieId                        | Guid         | Required=True  | MaxLen=—    | Conv=—
+  - MovieVersionName               | String       | Required=False | MaxLen=100  | Conv=—
+  - PlayedByParticipantId          | DraftPartParticipantId | Required=True  | MaxLen=—    | Conv=ValueConverter`2
+  - PlayedByParticipantIdValue     | Guid         | Required=True  | MaxLen=—    | Conv=—
+  - PlayedByParticipantKindValue   | ParticipantKind | Required=True  | MaxLen=—    | Conv=ValueConverter`2
+  - PlayOrder                      | Int32        | Required=True  | MaxLen=—    | Conv=—
+  - Position                       | Int32        | Required=True  | MaxLen=—    | Conv=—
+FOREIGN KEYS:
+  -> DraftPart [DraftPartId] | Required=True  | Delete=Cascade
+  -> Movie [MovieId] | Required=True  | Delete=Restrict
+  -> DraftPartParticipant [PlayedByParticipantId] | Required=True  | Delete=Restrict
+NAVIGATIONS:
+  - CommissionerOverride      | CommissionerOverride      | Collection=False
+  - DraftPart                 | DraftPart                 | Collection=False
+  - Movie                     | Movie                     | Collection=False
+  - PlayedByParticipant       | DraftPartParticipant      | Collection=False
+  - Veto                      | Veto                      | Collection=False
+INDEXES:
+ - Name   : ix_picks_draft_part_id_play_order
+   Props  : (DraftPartId, PlayOrder)
+   Cols   : (draft_part_id, play_order)
+   Unique : True
+   Filter : -
+ - Name   : ix_picks_draft_part_id_played_by_participant_id_value_played_b
+   Props  : (DraftPartId, PlayedByParticipantIdValue, PlayedByParticipantKindValue)
+   Cols   : (draft_part_id, played_by_participant_id_value, played_by_participant_kind_value)
+   Unique : False
+   Filter : -
+ - Name   : ix_picks_draft_part_id_position
+   Props  : (DraftPartId, Position)
+   Cols   : (draft_part_id, position)
+   Unique : False
+   Filter : -
+ - Name   : ix_picks_movie_id
+   Props  : (MovieId)
+   Cols   : (movie_id)
+   Unique : False
+   Filter : -
+ - Name   : ix_picks_played_by_participant_id_play_order
+   Props  : (PlayedByParticipantId, PlayOrder)
+   Cols   : (played_by_participant_id, play_order)
+   Unique : False
+   Filter : -
+
+--------------------------------------------------
+ENTITY: ScreenDrafts.Modules.Drafts.Domain.SeriesAggregate.Series
+TABLE : drafts.series
+PK    : Id
+PROPERTIES:
+  - AllowedDraftTypes              | DraftTypeMask | Required=True  | MaxLen=—    | Conv=ValueConverter`2
+  - CanonicalPolicy                | CanonicalPolicy | Required=True  | MaxLen=—    | Conv=ValueConverter`2
+  - ContinuityDateRule             | ContinuityDateRule | Required=True  | MaxLen=—    | Conv=ValueConverter`2
+  - ContinuityScope                | ContinuityScope | Required=True  | MaxLen=—    | Conv=ValueConverter`2
+  - CreatedAtUtc                   | DateTime     | Required=True  | MaxLen=—    | Conv=—
+  - DefaultDraftType               | DraftType    | Required=False | MaxLen=—    | Conv=ValueConverter`2
+  - Id                             | SeriesId     | Required=True  | MaxLen=—    | Conv=ValueConverter`2
+  - Kind                           | SeriesKind   | Required=True  | MaxLen=—    | Conv=ValueConverter`2
+  - Name                           | String       | Required=True  | MaxLen=200  | Conv=—
+  - PublicId                       | String       | Required=True  | MaxLen=19   | Conv=—
+  - UpdatedAtUtc                   | Nullable`1   | Required=False | MaxLen=—    | Conv=—
+FOREIGN KEYS:
+NAVIGATIONS:
+INDEXES:
+ - Name   : ix_series_public_id
+   Props  : (PublicId)
+   Cols   : (public_id)
+   Unique : True
+   Filter : -
+
+--------------------------------------------------
+ENTITY: ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities.TriviaResult
+TABLE : drafts.trivia_results
+PK    : Id
+PROPERTIES:
+  - DraftPartId                    | DraftPartId  | Required=True  | MaxLen=—    | Conv=ValueConverter`2
+  - Id                             | TriviaResultId | Required=True  | MaxLen=—    | Conv=ValueConverter`2
+  - Position                       | Int32        | Required=True  | MaxLen=—    | Conv=—
+  - QuestionsWon                   | Int32        | Required=True  | MaxLen=—    | Conv=—
+FOREIGN KEYS:
+  -> DraftPart [DraftPartId] | Required=True  | Delete=Cascade
+NAVIGATIONS:
+  - DraftPart                 | DraftPart                 | Collection=False
+INDEXES:
+ - Name   : ix_trivia_results_draft_part_id
+   Props  : (DraftPartId)
+   Cols   : (draft_part_id)
+   Unique : False
+   Filter : -
+
+--------------------------------------------------
+ENTITY: ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities.VetoOverride
+TABLE : drafts.veto_overrides
+PK    : Id
+PROPERTIES:
+  - Id                             | VetoOverrideId | Required=True  | MaxLen=—    | Conv=ValueConverter`2
+  - IssuedByParticipantId          | DraftPartParticipantId | Required=True  | MaxLen=—    | Conv=ValueConverter`2
+  - VetoId                         | VetoId       | Required=True  | MaxLen=—    | Conv=ValueConverter`2
+FOREIGN KEYS:
+  -> DraftPartParticipant [IssuedByParticipantId] | Required=True  | Delete=Restrict
+  -> Veto [VetoId] | Required=True  | Delete=Cascade
+NAVIGATIONS:
+  - IssuedByParticipant       | DraftPartParticipant      | Collection=False
+  - Veto                      | Veto                      | Collection=False
+INDEXES:
+ - Name   : ix_veto_overrides_issued_by_participant_id
+   Props  : (IssuedByParticipantId)
+   Cols   : (issued_by_participant_id)
+   Unique : False
+   Filter : -
+ - Name   : ix_veto_overrides_veto_id
+   Props  : (VetoId)
+   Cols   : (veto_id)
+   Unique : True
+   Filter : -
+
+--------------------------------------------------
+ENTITY: ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities.Veto
+TABLE : drafts.vetoes
+PK    : Id
+PROPERTIES:
+  - Id                             | VetoId       | Required=True  | MaxLen=—    | Conv=ValueConverter`2
+  - IsOverridden                   | Boolean      | Required=True  | MaxLen=—    | Conv=—
+  - IssuedByParticipantId          | DraftPartParticipantId | Required=True  | MaxLen=—    | Conv=ValueConverter`2
+  - Note                           | String       | Required=False | MaxLen=1000 | Conv=—
+  - OccurredOn                     | Nullable`1   | Required=True  | MaxLen=—    | Conv=—
+  - TargetPickId                   | PickId       | Required=True  | MaxLen=—    | Conv=ValueConverter`2
+FOREIGN KEYS:
+  -> DraftPartParticipant [IssuedByParticipantId] | Required=True  | Delete=Restrict
+  -> Pick [TargetPickId] | Required=True  | Delete=Cascade
+NAVIGATIONS:
+  - IssuedByParticipant       | DraftPartParticipant      | Collection=False
+  - TargetPick                | Pick                      | Collection=False
+  - VetoOverride              | VetoOverride              | Collection=False
+INDEXES:
+ - Name   : ix_vetoes_issued_by_participant_id_target_pick_id
+   Props  : (IssuedByParticipantId, TargetPickId)
+   Cols   : (issued_by_participant_id, target_pick_id)
+   Unique : True
+   Filter : -
+ - Name   : ix_vetoes_target_pick_id
+   Props  : (TargetPickId)
+   Cols   : (target_pick_id)
+   Unique : True
+   Filter : -
+

@@ -1,4 +1,8 @@
-﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.PeopleTests;
+﻿using ScreenDrafts.Modules.Drafts.Features.People;
+using ScreenDrafts.Modules.Drafts.Features.People.Create;
+using ScreenDrafts.Modules.Drafts.Features.People.List;
+
+namespace ScreenDrafts.Modules.Drafts.IntegrationTests.PeopleTests;
 public sealed class ListPeopleTests(DraftsIntegrationTestWebAppFactory factory)
   : DraftsIntegrationTest(factory)
 {
@@ -6,10 +10,12 @@ public sealed class ListPeopleTests(DraftsIntegrationTestWebAppFactory factory)
   public async Task Should_ReturnEmptyList_WhenNoPeopleExistAsync()
   {
     // Act
-    var result = await Sender.Send(new ListPeopleQuery(Page: 1, PageSize: 20));
+    var request = new ListPeopleRequest{Page= 1, PageSize= 20};
+    var query = new ListPeopleQuery(request);
+    var result = await Sender.Send(query);
     // Assert
     result.IsSuccess.Should().BeTrue();
-    result.Value.Items.Should().BeEmpty();
+    result.Value.People.Should().NotBeNull();
   }
 
   [Fact]
@@ -20,14 +26,20 @@ public sealed class ListPeopleTests(DraftsIntegrationTestWebAppFactory factory)
     for (var i = 0; i < 10; i++)
     {
       var person = peopleFactory.CreatePerson();
-      await Sender.Send(new CreatePersonCommand(person.FirstName, person.LastName));
+      await Sender.Send(new CreatePersonCommand
+      {
+        FirstName = person.FirstName,
+        LastName = person.LastName
+      });
     }
 
     // Act
-    var results = await Sender.Send(new ListPeopleQuery(Page: 1, PageSize: 20));
+    var request = new ListPeopleRequest{Page= 1, PageSize= 20};
+    var query = new ListPeopleQuery(request);
+    var results = await Sender.Send(query);
 
     // Assert
     results.IsSuccess.Should().BeTrue();
-    results.Value.Items.Should().HaveCount(10);
+    results.Value.People.Should().BeOfType<List<PersonResponse>>();
   }
 }

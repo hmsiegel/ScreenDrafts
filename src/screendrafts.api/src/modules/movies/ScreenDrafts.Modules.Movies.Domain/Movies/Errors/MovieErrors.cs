@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Movies.Domain.Movies.Errors;
+﻿using ScreenDrafts.Common.Abstractions.Errors;
+
+namespace ScreenDrafts.Modules.Movies.Domain.Movies.Errors;
 
 public static class MovieErrors
 {

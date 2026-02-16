@@ -1,6 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.People.Create;
+namespace ScreenDrafts.Modules.Drafts.Features.People.Create;
 
-internal sealed class Validator : AbstractValidator<Command>
+internal sealed class Validator : AbstractValidator<CreatePersonCommand>
 {
   public Validator()
   {
@@ -25,3 +25,4 @@ internal sealed class Validator : AbstractValidator<Command>
       .WithMessage("Last Name must be between 1 and 100 characters.");
   }
 }
+

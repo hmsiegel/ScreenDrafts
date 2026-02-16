@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Movies.IntegrationTests.Movies;
+﻿using ScreenDrafts.Modules.Movies.Features.Movies.AddMovie;
+
+namespace ScreenDrafts.Modules.Movies.IntegrationTests.Movies;
 
 public sealed class AddMovieTests(MoviesIntegrationTestWebAppFactory factory) : MoviesIntegrationTest(factory)
 {
@@ -44,7 +46,7 @@ public sealed class AddMovieTests(MoviesIntegrationTestWebAppFactory factory) : 
       productionCompanies.Add(MovieFactory.CreateProductionCompany().Value);
     }
 
-    var request = new AddMovieCommand(
+    var request = new Command(
       movie.ImdbId,
       movie.Title,
       movie.Year,

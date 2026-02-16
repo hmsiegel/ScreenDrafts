@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities;
+﻿using ScreenDrafts.Modules.Drafts.Domain.Categories;
+
+namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities;
 
 public sealed class DraftCategory
 {

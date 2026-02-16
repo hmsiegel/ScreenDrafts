@@ -26,8 +26,7 @@ internal sealed class CampaignConfiguration : IEntityTypeConfiguration<Campaign>
       .IsRequired()
       .HasMaxLength(Campaign.MaxNameLength);
 
-    builder.Navigation(x => x.Drafts)
-      .UsePropertyAccessMode(PropertyAccessMode.Field);
+    builder.Ignore(c => c.Drafts);
 
     builder.HasMany<Draft>("_drafts")
       .WithOne(d => d.Campaign)

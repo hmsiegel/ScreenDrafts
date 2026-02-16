@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Movies.Infrastructure.Database;
+﻿using ScreenDrafts.Modules.Movies.Domain.Abstractions.Data;
+
+namespace ScreenDrafts.Modules.Movies.Infrastructure.Database;
 
 public sealed class MoviesDbContext(DbContextOptions<MoviesDbContext> options)
   : DbContext(options), IUnitOfWork

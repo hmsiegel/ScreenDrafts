@@ -1,0 +1,7 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\common\ScreenDrafts.Common.Infrastructure\ScreenDrafts.Common.Infrastructure.csproj" />
+    <ProjectReference Include="..\ScreenDrafts.Modules.Users.Features\ScreenDrafts.Modules.Users.Features.csproj" />
+    <ProjectReference Include="..\ScreenDrafts.Modules.Users.Infrastructure\ScreenDrafts.Modules.Users.Infrastructure.csproj" />
+  </ItemGroup>
+</Project>

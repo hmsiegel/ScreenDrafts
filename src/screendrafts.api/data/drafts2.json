@@ -1,0 +1,3690 @@
+[
+  {
+    "id": "878eb446-72a0-4b08-aa9d-a165ae0ec6c1",
+    "title": "Threequels",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "f3185436-63da-46e3-84e6-aad5c0cc300c",
+    "title": "Bourne mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "93582b7e-da97-46a3-a1fb-773845af3a96",
+    "title": "1975 Best Picture",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "98230a04-18a1-40d6-80cc-f04ab17eed95",
+    "campaign_id": null
+  },
+  {
+    "id": "5fe78b83-894a-4001-8384-c8ae57fd8c5d",
+    "title": "Summer Camp",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "aa752d8b-5658-42fc-877b-3de2bee2c611",
+    "campaign_id": null
+  },
+  {
+    "id": "ea8a8ef5-6372-4faf-a73f-eb0512abef2e",
+    "title": "Visitors From Another Planet",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "d957a8c4-c2d0-4cbb-898b-5ca199fdef1f",
+    "title": "Pirates of the Caribbean mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "e1a97f66-d36e-4190-a0bf-2ff3eb823389",
+    "title": "Christopher Plummer",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "73f2b38e-2c68-4c65-997d-1e7091682e34",
+    "campaign_id": null
+  },
+  {
+    "id": "357ca841-6152-4baf-b38c-a98b1feed053",
+    "title": "1950 Best Picture",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "98230a04-18a1-40d6-80cc-f04ab17eed95",
+    "campaign_id": null
+  },
+  {
+    "id": "31e8bae2-02fc-44a7-9832-92420205e3eb",
+    "title": "Comedians First Dramas",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "aa752d8b-5658-42fc-877b-3de2bee2c611",
+    "campaign_id": null
+  },
+  {
+    "id": "302b2148-cc0f-4e7e-8f3b-b2ef762dab74",
+    "title": "Audrey Hepburn",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "fc029407-d1a4-4962-bc96-9a28cd93c173",
+    "title": "Twilight mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "ea28379e-8b51-4d8c-ba30-d327cac1af05",
+    "title": "Richard Donner",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "73f2b38e-2c68-4c65-997d-1e7091682e34",
+    "campaign_id": null
+  },
+  {
+    "id": "e9cdc2ee-e320-4457-a966-903c406ac74a",
+    "title": "Summer '82",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "aa752d8b-5658-42fc-877b-3de2bee2c611",
+    "campaign_id": null
+  },
+  {
+    "id": "5c9b1a87-8a97-49d6-b24a-eec66c9e45fb",
+    "title": "Horror Sequels",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "2fc8dd91-75eb-4213-8838-a3c7f46c88f4"
+  },
+  {
+    "id": "81bf79f6-72b1-4264-bbc0-84b610abc69b",
+    "title": "Final Destination mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "71cf5c14-7ffc-440d-b643-c2ecd92969b5",
+    "title": "Stephen Sondheim",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "73f2b38e-2c68-4c65-997d-1e7091682e34",
+    "campaign_id": null
+  },
+  {
+    "id": "300d1a69-7bfe-4d5c-927f-e2efa08ff742",
+    "title": "Parker Posey",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "aa752d8b-5658-42fc-877b-3de2bee2c611",
+    "campaign_id": null
+  },
+  {
+    "id": "53ca0528-d400-4006-b085-bb611e964d43",
+    "title": "Teen Horror (Millennial Edition)",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "f832aa21-1ab3-4914-bf7e-748644ef7c0a"
+  },
+  {
+    "id": "948d154e-363f-4677-95cb-6fe0260049b7",
+    "title": "Jurassic Park / World mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "526ad671-8154-4ec4-b6fd-a85f178f1aa1",
+    "title": "Betty White",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "73f2b38e-2c68-4c65-997d-1e7091682e34",
+    "campaign_id": null
+  },
+  {
+    "id": "9e7dece2-c9d3-4756-9126-1a9beeba7d4b",
+    "title": "Stephen King Horror Adaptations",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "f832aa21-1ab3-4914-bf7e-748644ef7c0a"
+  },
+  {
+    "id": "9bf34cbc-51b7-4153-8c38-ce7910c230a2",
+    "title": "Hannibal mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "c75efe9f-05ce-400b-a59b-9002a167204a",
+    "title": "Philip Baker Hall",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "73f2b38e-2c68-4c65-997d-1e7091682e34",
+    "campaign_id": null
+  },
+  {
+    "id": "3ae28710-af89-4d61-8e1b-d5d252e166b1",
+    "title": "Time Travel",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "6787d46f-10c5-4b97-9d60-4091b1653e23",
+    "title": "Jack Ryan mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "cf5a3ba4-44aa-4f76-86d9-737725f30284",
+    "title": "Clu Gulager",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "73f2b38e-2c68-4c65-997d-1e7091682e34",
+    "campaign_id": null
+  },
+  {
+    "id": "1bde2149-1f79-4e9d-b90c-150789c1a2c8",
+    "title": "Classic Christmas",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "55687878-d913-4caa-a21d-54c983743d42",
+    "title": "Psycho mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "74d7f307-a872-49da-bb03-83df1bbe0e00",
+    "title": "Angela Lansbury",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "73f2b38e-2c68-4c65-997d-1e7091682e34",
+    "campaign_id": null
+  },
+  {
+    "id": "18b37052-4535-4649-8fcd-4eacf8603385",
+    "title": "Sports",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "375e1dea-ec7c-40c4-b631-fe87b9382bb7",
+    "title": "Underworld mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "8878e7b7-f07b-46bc-91ad-0706addcfce6",
+    "title": "Harry Belafonte",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "73f2b38e-2c68-4c65-997d-1e7091682e34",
+    "campaign_id": null
+  },
+  {
+    "id": "0e7390a6-cfe1-4564-b522-6494497000cc",
+    "title": "Dark Christmas",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "8386ca20-6b09-4b77-811f-893fdbd19a66",
+    "title": "Home Alone mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "a232e557-62f2-4122-ab57-327978c936bb",
+    "title": "Norman Jewison",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "73f2b38e-2c68-4c65-997d-1e7091682e34",
+    "campaign_id": null
+  },
+  {
+    "id": "e5be71cf-d991-41ac-996a-f88db567c5f2",
+    "title": "Notable Nudes",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "af4b7064-b86a-4104-aced-e91ba03da82a",
+    "title": "Die Hard mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "1c07172a-d0fc-46b7-a599-8d1289d02128",
+    "title": "Gena Rowlands",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "73f2b38e-2c68-4c65-997d-1e7091682e34",
+    "campaign_id": null
+  },
+  {
+    "id": "3588e7c1-42ed-4cee-b83e-9cf014309b10",
+    "title": "Christopher Lee",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "162887bc-9c5d-4e2b-9aca-8ed2e58ab670",
+    "title": "Tom Ripley mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "26f0c3a2-e6ec-44ac-ac56-275f0ff94f8e",
+    "title": "James Earl Jones",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "73f2b38e-2c68-4c65-997d-1e7091682e34",
+    "campaign_id": null
+  },
+  {
+    "id": "b75bc471-101c-4a39-a519-41f3efccaf10",
+    "title": "Antoine Doinel mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "1c87ea9e-6023-4c78-8ca8-e1348dc51818",
+    "title": "2018 Mega Draft",
+    "draft_type": 2,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "17c2bca4-4f8f-644f-b85e-f4c05fd2db06"
+  },
+  {
+    "id": "c568c601-c594-4d09-aefd-60835fffc5e7",
+    "title": "Shaft mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "fac8db87-2002-430e-8540-9e9d25df31aa",
+    "title": "Twist Endings",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "68bd0b9d-f928-47c7-be5f-94c18d34f014",
+    "title": "The Purge mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "49ec3cfd-da6e-4f56-bd05-0ac67cfc4f34",
+    "title": "Films About Filmmakers",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "995994e0-3786-4dd5-9c7b-0a7300ce8589",
+    "title": "Rambo mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "3e787702-e24f-4a0d-b2b4-4ee9b284f102",
+    "title": "Quentin Tarantino",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "595023b6-d236-467a-83d9-1f07cebb6b6e",
+    "title": "Police Story mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "f4eff735-1f2c-46ed-aca5-d9c3b0d0de91",
+    "title": "'80s Fantasy",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "acbb20fe-1d7f-4a81-a64c-109f961aa445",
+    "title": "Phantasm mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "16f220f1-c7ff-4628-997e-2e31e31d79a7",
+    "title": "Amnesia",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "28bc7cc2-5e42-43ab-b1c6-288e686f7cd1",
+    "title": "Herbie mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "7579285a-3b28-4f08-8acd-f2e70d4d547e",
+    "title": "Kubrick",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "ba19277d-c847-45be-bd75-b4cd2455116c",
+    "title": "Silent Night, Deadly Night mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "a469a0bb-b5e5-44cd-b6e1-5a6f5c48feb9",
+    "title": "British Rom-Coms",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "3be7fbc9-64d8-476b-b4c3-58c632b08f67",
+    "title": "The Karate Kid mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "0f480291-42cd-4de7-8477-7d8dd6e713cd",
+    "title": "A24",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "f1a9f3e1-1ecb-4bec-b389-b3b5e59b05a9",
+    "title": "Ocean's mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "4a20dafc-cb75-4858-b938-b16b406af897",
+    "title": "MCU Super Draft",
+    "draft_type": 3,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "099d28dd-26f3-4074-98ad-620975a0f920",
+    "title": "Jacques Demy Connected Universe mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "07a15e33-ffca-4224-87e8-46073efec33a",
+    "title": "Dog Movies",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "9abceeb1-0d25-47b8-a67b-e9aae978a7d9",
+    "title": "The Yakuza Papers mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "5c1326ed-7fa1-4cd0-b336-a8a968c69b70",
+    "title": "Amy Adams",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "5b34604a-404a-4951-92e0-7b117b48e707",
+    "title": "The Minions mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "910e76dd-4f7c-449d-8769-a815ae6041a9",
+    "title": "Multiple Roles",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "e6b48aec-647b-4557-b6a0-e9f76b8fbc98",
+    "title": "Dirty Harry mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "43dc286a-6f65-4714-9259-ef910ad269a6",
+    "title": "Remakes",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "e62241ad-e76b-47ee-855c-041a5e753a11",
+    "title": "Teenage Mutant Ninja Turtles mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "2d9e2836-39fb-47ed-9ab6-d40a08c4c1a8",
+    "title": "Punksploitation",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "e6c00d50-f4ba-4b71-b5c1-3a75969dd094",
+    "title": "The Exorcist mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "9f2425ed-17fc-4746-b4a4-9073251b2f57",
+    "title": "Apatow, Producer",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "9f69bd23-a2d2-4d18-be11-72a61c35cdb9",
+    "title": "Monty Python mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "d7ab4637-8376-491f-8f1a-c8a3651405d1",
+    "title": "Erotic Thrillers",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "a53e93ad-d781-44ee-95b5-4c4768387ff3",
+    "title": "Barry Levinson's Baltimore mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "f88a3cde-d149-4e94-92ef-953dc03edbe3",
+    "title": "Mixtape Movies",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "400d5869-fc99-4f88-9dd6-fbbe4b3a67e5",
+    "title": "Scream mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "84f92d8c-a6b2-4e94-ab3d-6b7b0fcc0a9e",
+    "title": "Creature Features",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "5122b935-c03b-4df7-ab07-b97f68b7ce45",
+    "title": "Dragonheart mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "fe8d1f9c-c915-498a-8ce8-089383df55a5",
+    "title": "Humphrey Bogart",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "52b183af-f695-4198-b932-1a23e8eb6ec0",
+    "title": "Harry Palmer mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "c06430fd-2ba2-4a28-91b9-7896650899a6",
+    "title": "Disney Animation Studios 2D",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "38468ccc-3fe8-475d-99ef-75c587bd6969",
+    "title": "The \"Modern\" Mummy mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "30340497-be6a-4b4c-8026-6274e4e1c8ff",
+    "title": "Queer Romance",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "77216d25-4a74-4b3a-82c8-516999fe711b",
+    "title": "Evil Dead mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "fd794b27-df5c-4ea8-93e2-72e27d4e0756",
+    "title": "Spoofs",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "486148f6-b0a2-409b-960f-275277d2bf65",
+    "title": "REC mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "83bb9106-d6d0-446d-b344-8c597c0b5b09",
+    "title": "1999",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "2a7c0d23-0c89-4f5b-9c41-f77ab1702250",
+    "title": "Insidious mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "503706f4-7184-4dce-89ef-05c2ba9eaf6b",
+    "title": "Freddy vs. Jason Super Draft",
+    "draft_type": 3,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "4010b329-c2b6-4217-8718-94dcd7d74764",
+    "title": "Indiana Jones mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "73c2ebbd-4005-4aa5-bbb0-d5c71a62f530",
+    "title": "2019 (so far)",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "d51b1e43-4121-4de2-863c-cf3853187f20",
+    "title": "Peanuts mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "74df5527-3e9e-4b83-bd6d-a0de06e7a476",
+    "title": "Serious Kids",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "e341c35f-08c8-40e5-81d8-3db30014cefe",
+    "title": "The Invisible Man ('30s/'40s) mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "c0044d5c-39d0-4826-a9ff-ae6d4cd04ac1",
+    "title": "Nicolas Cage Mega Draft",
+    "draft_type": 2,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "9ed444d6-0938-43a8-97da-8d11b863f1bb",
+    "title": "The Girl with the Dragon Tattoo/Millennium mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "6b3cb308-838d-4e13-952f-7d422278c069",
+    "title": "Actor's Directorial Debuts",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "94cda846-7f1c-48a6-9b83-74300bc58bb6",
+    "title": "The Transporter mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "249b6e36-93ac-4544-a09c-09e467efa20a",
+    "title": "Original Movie Musicals - American",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "974ba839-38bf-4035-a761-f250ef007a40",
+    "title": "Mike Hammer mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "1ae73670-c26c-48e3-bcee-ed881a66cd9c",
+    "title": "Almodóvar",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "ea8171f0-bd2e-44c8-beb5-d632e611ed5f",
+    "title": "The Omen mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "3c09fb5c-8108-4b4c-9b08-77a836814ac6",
+    "title": "Ensemble Casts",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "cb21e476-29ec-4b96-aced-9901772256e0",
+    "title": "The Parent Trap mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "09df42df-0b32-4201-9725-526aee897927",
+    "title": "'90s Action Mega Draft",
+    "draft_type": 2,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "55a81771-c33e-427b-bbaa-a2f7c190926d",
+    "title": "Mad Max mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "85523722-f66d-4be0-97b5-38d144bdfb64",
+    "title": "John Carpenter Live",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "14d48559-1e51-4d69-bd27-84c191d23263",
+    "campaign_id": null
+  },
+  {
+    "id": "6ce3836c-02a9-4a99-8b28-5cda096790b0",
+    "title": "The Predator mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "d6a42926-2d01-4af1-a136-d2250789c800",
+    "title": "Horror Prequels",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "2fc8dd91-75eb-4213-8838-a3c7f46c88f4"
+  },
+  {
+    "id": "9b58438c-832e-4ca5-a5d8-e89c7d6f7764",
+    "title": "Flashpoint: Batman (Franchise mini-Super Draft)",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "29139dcb-b4be-4319-b626-e03584d3537d",
+    "title": "Halloween Movies",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "f832aa21-1ab3-4914-bf7e-748644ef7c0a"
+  },
+  {
+    "id": "647bbe5d-5873-436d-b0d9-20fe9455c240",
+    "title": "Highlander mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "60842e15-04d9-4808-b655-09175f439903",
+    "title": "Found Footage",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "f832aa21-1ab3-4914-bf7e-748644ef7c0a"
+  },
+  {
+    "id": "598aa07f-5b44-4577-a39f-6491ab844a8a",
+    "title": "The Gambler mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "a9074f10-3a23-4a59-a634-a0f64f1dd988",
+    "title": "Heist Movies",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "ce63d118-38af-442f-b245-be645b796226",
+    "title": "Abbott and Costello Meet the Monsters mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "d28b3def-2d8a-4148-b663-6062bfdeeb23",
+    "title": "Philip Seymour Hoffman",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "ed884257-7f7d-432a-a905-6ad222242247",
+    "title": "Sony Spider-man Adjacent (NoVENOMber)",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "10eeea71-24ef-4542-a47d-8bf190c3e939",
+    "title": "Sword & Sorcery",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "7f6461c3-e316-4d17-b10a-fe4ddf5a435e",
+    "title": "Oz (Live Action) mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "7012cec0-8ca3-4f3d-8900-4bc3c8a24aa1",
+    "title": "Game Movies",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "425d40c8-892c-479e-b3aa-88cde6ba7357",
+    "title": "Allan Quatermain mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "8e616bc9-1d1c-49e4-9c68-d033faaa28d6",
+    "title": "2010s Decade Mega Draft",
+    "draft_type": 2,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "cdc1b36c-e73d-4e7e-a85d-16c4f05dcc2f",
+    "title": "Eddie Egan Franchise mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "0b064375-dddb-425b-85e5-4d4db36cb3ff",
+    "title": "Arthouse Christmas",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "f14a2717-31fa-4246-9a94-286812c79122",
+    "title": "Kristen Stewart",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "b8b002c3-816d-4e7c-87ea-52e2a2be931d"
+  },
+  {
+    "id": "53fddd02-54ca-478a-930c-f069b30cf9c9",
+    "title": "2009",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "19965126-7d2f-424c-90d1-c315f5080c99",
+    "title": "Star Wars Super Draft",
+    "draft_type": 3,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "5a3ab606-4e9a-4990-9a24-237e731b4c20",
+    "title": "Laura Dern",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "6214e864-de17-4b4b-a357-a7b461fe8658",
+    "title": "Giallo",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "f45ccefe-c158-4bd1-8803-31a229f78c10",
+    "title": "Star Trek Super Draft",
+    "draft_type": 3,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "6eec7b4d-06e0-4916-a091-da264eb57133",
+    "title": "2019 Mega Draft",
+    "draft_type": 2,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "17c2bca4-4f8f-644f-b85e-f4c05fd2db06"
+  },
+  {
+    "id": "10aa256c-6a5f-4270-b825-660d2807d30a",
+    "title": "European Vacation",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "e4b1f984-84e5-41ca-bea9-16d93fb97fdc",
+    "title": "Universal Classic Monsters Mini-Mega",
+    "draft_type": 1,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "d9bd3ac3-0b83-4fd9-9d52-f12549d418c2",
+    "title": "One Crazy Night",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "98c98d68-702e-41cd-8fa4-c8e212a68546",
+    "title": "1992 Horror",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "6921db42-e5a1-4f6b-9fd3-eea25d0ca633",
+    "title": "The Cold War",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "1ccd634c-66e7-41ee-a07c-920a48b17423",
+    "title": "Max von Sydow",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "f8d983c0-4d4f-4fa3-aa7b-42ab877bf01c",
+    "title": "Post-Apocalypse",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "850d1e28-39fb-46e2-b286-ccdcedb2399a",
+    "title": "Lorne Michaels",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "916cd2f3-b603-4d2b-94b8-5fc5f66ce9fe",
+    "title": "Stuart Gordon",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "9d5d0738-21f6-40f1-a51d-a8d913d8646f",
+    "title": "'30s Warner Bros",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "7d513d21-73f2-4db0-8c9d-44f44f02d90d",
+    "title": "Kidventure",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "b7f59742-f51f-4dd0-b08c-ac3091ad7802",
+    "title": "Steven Soderbergh",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "56d6fc65-4a4f-4a16-b746-b8ec56d6c837",
+    "title": "New Camp Classics",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "c7b2f9fe-e314-461a-a7d6-f47a7dc1cc91",
+    "title": "Brief Encounters",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "b2a8ab4c-494f-42cc-8531-8c2583ac4a67",
+    "title": "Mothers & Daughters",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "54fb4fc9-4d9b-422a-8241-9644e740e59c",
+    "title": "Jim Henson",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "323e4bd2-a468-49b5-b4a5-0fbe17d50244",
+    "title": "David Cronenberg",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "dc8964c5-6650-438b-bdb3-24012b9c6ca1",
+    "title": "Westerns: Part I Mini-Mega",
+    "draft_type": 1,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "a422f5f7-7b4f-41cf-b825-e91299695fa0",
+    "title": "60s Musicals",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "11be3620-da93-41ac-bf36-1ac52855a154",
+    "title": "Mistaken Identity",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "50ea7a7b-798e-4ab3-8b45-2593e6a740b9",
+    "title": "Coen Brothers Super Draft",
+    "draft_type": 3,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "1a069714-7e86-49bc-8eee-2460a510fd1b",
+    "title": "July 4th Weekend",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "f6c55a58-801e-4e32-81e2-b98c4e4ba58b",
+    "title": "Heavy Metal",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "144ae507-96d4-424b-a098-8bf38741e7ba",
+    "title": "Animals Attack!",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "96dc67f2-011a-4ae6-ae2c-59f15336d97c",
+    "title": "Sketch Comedy Anthologies",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "fdab7eef-e486-4c11-bcff-a7f37874bab7",
+    "title": "Con Artist",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "c30d08cb-6799-4c01-843f-357c6157be5b",
+    "title": "Comic Book (Non-Superhero)",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "80393bb3-d348-4476-b5db-decad580de5f",
+    "title": "Winona Ryder",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "1e6f20cd-e459-4f17-942a-a9009fec2ca5"
+  },
+  {
+    "id": "a0414bd9-b808-4b72-8f73-de2a6e0bf9dd",
+    "title": "Westerns: Part II Mini-Mega",
+    "draft_type": 1,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "42cc56ac-a9ae-41bd-9745-68a2bf9362fb",
+    "title": "70's Horror Mega",
+    "draft_type": 2,
+    "draft_status": 3,
+    "series_id": "14d48559-1e51-4d69-bd27-84c191d23263",
+    "campaign_id": null
+  },
+  {
+    "id": "cc8a3dd8-f1e4-4bf0-890f-afb463cbed84",
+    "title": "Road Trip",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "5befc72f-0d6e-4aea-addc-be50b6c1a02e",
+    "title": "Wesley Snipes",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "ff363d88-a497-4362-804b-a2c9511d666f",
+    "title": "Shakespeare: Part I Mini-Mega",
+    "draft_type": 1,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "b7d6ff6f-2dd3-4363-adef-5bf2e8fe6256",
+    "title": "Florida Crime",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "ac8f6ef4-3223-4226-b358-b6cd3a3b8e33",
+    "title": "Lucio Fulci",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "f832aa21-1ab3-4914-bf7e-748644ef7c0a"
+  },
+  {
+    "id": "0579ebca-89d5-4fd4-8158-34561a0adc27",
+    "title": "Horror Remakes",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "2fc8dd91-75eb-4213-8838-a3c7f46c88f4"
+  },
+  {
+    "id": "c5d06d78-f98b-4352-829c-7ac5510a1d3a",
+    "title": "Alien vs. Predator Super Draft",
+    "draft_type": 3,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "f832aa21-1ab3-4914-bf7e-748644ef7c0a"
+  },
+  {
+    "id": "a4bd3e53-80c8-4614-b5ff-06480eeed4fa",
+    "title": "Video Nasties - Prosecuted Films",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "f832aa21-1ab3-4914-bf7e-748644ef7c0a"
+  },
+  {
+    "id": "627ce97d-3895-42f5-ad4c-8d0a750f81aa",
+    "title": "The American President",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "8f1ca106-4b3a-4f62-82df-a1a847053299",
+    "title": "Drag",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "caf63b0d-df86-4ce6-91cf-b71190ec6db0",
+    "title": "'50s Sci-Fi",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "33ce92e4-4a86-4c67-b75d-79f6f1380867",
+    "title": "Pixar Super Draft",
+    "draft_type": 3,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "c9ef9714-4e55-45a7-add3-b03b7b59179f",
+    "title": "Friends",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "49a051d0-1af5-4601-96c9-73a6309781ad",
+    "title": "TV Adaptations",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "9d907787-44de-4239-9a5a-b978486bc4b8",
+    "title": "Westerns: Part III Mini-Mega",
+    "draft_type": 1,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "617a280b-ec34-4329-a405-83ea9a748c53",
+    "title": "A Christmas Carol",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "a7634dfd-371f-4b23-a358-a92e5bfa858f",
+    "title": "Oliver Assayas Super Draft",
+    "draft_type": 3,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "b8b002c3-816d-4e7c-87ea-52e2a2be931d"
+  },
+  {
+    "id": "b1fddc5e-57fb-468c-a972-1bf05664b36b",
+    "title": "Shakespeare: Part II Mini-Mega",
+    "draft_type": 1,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "e9466fe6-83c1-4e20-a875-a92d18092cf2",
+    "title": "Tony Scott",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "dada16ee-59cd-4d63-bc5d-47491aef571f",
+    "title": "John Woo",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "5e2157bf-fdd5-4fe1-9cf1-0d92a3037178",
+    "title": "Aquatic Horror",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "6af38676-d011-4ba9-830d-427b4278dcbc",
+    "title": "Fictional Musicians Mini-Mega",
+    "draft_type": 1,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "8a437997-f5e0-4f89-a691-fd8457422337",
+    "title": "Cannon",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "68e35ab4-4a07-4179-883f-6fe9ce3a0f1d",
+    "title": "Relationship Horror",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "88a1fdc5-1551-4354-83de-cbb45eed125c",
+    "title": "Hugh Grant",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "a91a6e7e-d2bc-44f8-bbc3-f4dc57127910",
+    "title": "Eddie Murphy",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "dce54f7e-bddd-41b8-90eb-4c68d47f5f80",
+    "title": "Classic Disney Live Action Adventure",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "47aa102a-71e4-49c7-8d98-db0c0904dde3",
+    "title": "Godzilla vs. Kong",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "451f5dd2-6d01-4a34-a05d-9c569a9a03de",
+    "title": "George Lucas",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "600b2796-0f03-4eca-84f0-a696a4da0729",
+    "title": "Jerry Bruckheimer",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "8615b1eb-5e08-4018-be57-49dea1724315",
+    "title": "Minnesota Mini-Mega",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "b345decb-a7e5-4d0b-ba7d-5f2c521f93a0",
+    "title": "Private Eyes",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "0754606f-4e74-4655-b3e8-ff567481e294",
+    "title": "Kelly Reichardt Super Draft",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "6a26d062-d3c5-4436-bee6-b64603a6940a",
+    "title": "BFFFs",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "a11b7caf-c1ed-4353-9534-f546410b8bfc",
+    "title": "2020 Mega Draft",
+    "draft_type": 2,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "17c2bca4-4f8f-644f-b85e-f4c05fd2db06"
+  },
+  {
+    "id": "e85554eb-016c-4011-b736-d8dde5be866e",
+    "title": "'00 Slashers",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "de0a36c2-4fae-404d-ad19-5d00f23e6989",
+    "title": "21st Century Best Actress Winning Films",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "af726a83-173b-4c09-9d45-e8253f9de0e9",
+    "title": "Movies About Television",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "39eac0ae-a206-4fd4-beee-f9d6b257dfc0",
+    "title": "Shakespeare: Part III Mini-Mega",
+    "draft_type": 1,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "eadc2778-07d3-45db-9e19-65b52a2e3234",
+    "title": "2010s Directorial Debuts",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "b1626d79-83a0-4ba6-8fad-e390820d072d",
+    "title": "James Spader",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "d0113431-158d-4b47-8a85-c8d273dab112",
+    "title": "X-Men Super Draft",
+    "draft_type": 3,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "b32b2777-584f-4b90-9af6-e3a327631c52",
+    "title": "The Internet",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "253b856d-459e-44da-afeb-a1b03ee53a43",
+    "title": "TV Continuations",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "aec7bb37-72ec-4a6e-9cb5-387978576fe7",
+    "title": "Hellraiser",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "14d48559-1e51-4d69-bd27-84c191d23263",
+    "campaign_id": null
+  },
+  {
+    "id": "b05fb914-d305-4307-90fd-5d7fe6b471ce",
+    "title": "Natalie Wood",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "591f095d-e4f0-4979-bb03-36e46587e5c8"
+  },
+  {
+    "id": "2f0b45bf-e1f4-45cb-944e-fccee2d0dcdb",
+    "title": "Legacy Sequels",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "50f9b683-a1cc-4737-8a78-8dbadacb2db5",
+    "title": "Video Game Adaptations",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "56416e2b-bae6-469a-b6eb-4fe5909ae1c8",
+    "title": "2007",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "c669c00a-0ad1-4ea7-8011-ec7ce1cc3ef5",
+    "title": "Wes Craven",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "efb7cf0f-e8ff-49c1-80ee-8392a7bb83ea",
+    "title": "Bob Dylan",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "bf9d9ebf-a513-480b-85b7-94c448b1b689",
+    "title": "Tremors Super Draft",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "783cd350-251b-40d2-a82a-1e19530e3ac4",
+    "title": "Planet Hollywood Mega Draft",
+    "draft_type": 2,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "faab1d5b-7e9a-41ac-a0fc-aa7f3a5f7fc2",
+    "title": "Jane Austen",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "697fbe03-80e3-4abb-a833-6ae90ec62ec2",
+    "title": "21st Century Australian",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "2d2d935b-6173-430e-9fbd-2a4e8645b823",
+    "title": "Dinosaurs",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "77c28491-cb2f-4f02-8731-a2dbcd344918",
+    "title": "Canuxploitation",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "bed16451-5501-4af8-9497-770383430bb5",
+    "title": "Body Horror",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "f832aa21-1ab3-4914-bf7e-748644ef7c0a"
+  },
+  {
+    "id": "e1647c90-8118-4c32-8ace-3af5f395be35",
+    "title": "Baseball Mini-Mega",
+    "draft_type": 1,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "91a4ffcf-2c95-4563-90f1-2769f72c575c",
+    "title": "Dimension Films",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "2fc8dd91-75eb-4213-8838-a3c7f46c88f4"
+  },
+  {
+    "id": "d6b22e85-139b-40ee-a152-d0ae2f3ce226",
+    "title": "Mad Scientist",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "f832aa21-1ab3-4914-bf7e-748644ef7c0a"
+  },
+  {
+    "id": "9cb66ce6-348c-4be8-ab7d-ad3bf2ee101a",
+    "title": "Zombie Mini-Mega",
+    "draft_type": 1,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "f832aa21-1ab3-4914-bf7e-748644ef7c0a"
+  },
+  {
+    "id": "d8f91d3d-d590-4bec-9db0-9acbc6718888",
+    "title": "James Bond Super Draft",
+    "draft_type": 3,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "f3f8f799-d395-4e53-97f2-7514d0daf536",
+    "title": "Serial Killer",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "26b1018c-10cc-444a-996c-d7a50fceb2f8",
+    "title": "Oscar Winning Queer Films",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "14d48559-1e51-4d69-bd27-84c191d23263",
+    "campaign_id": null
+  },
+  {
+    "id": "4a518229-113a-4f2f-a687-1678c1b8bab2",
+    "title": "Thanksgiving Weekend",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "c48d94a8-10d6-4a98-8b0e-cfb9f0be67ff",
+    "title": "Disney Channel Original Movies",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "22052206-bc08-4dc7-aba7-a10bf5b5f7ce",
+    "title": "Razzie Worst Picture Winners",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "e21637af-828a-4793-9ae0-1ebb8122c11f",
+    "title": "Christmas-Adjacent",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "23dc7540-0b19-42f0-9471-479332a585a5",
+    "title": "British Royal Family",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "d36f97b6-d6a0-4741-b06e-bccfbfdb621e",
+    "title": "Rebecca Hall",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "b8b002c3-816d-4e7c-87ea-52e2a2be931d"
+  },
+  {
+    "id": "df598849-e608-45e2-a21f-5f64272a783c",
+    "title": "Billy Wilder",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "fe602d29-5351-41ff-9ee4-589051c13728",
+    "title": "Adult Animation",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "0baf1697-4f58-476e-8c6e-fed56dd63109",
+    "title": "Alien Invasion Mini-Mega",
+    "draft_type": 1,
+    "draft_status": 3,
+    "series_id": "14d48559-1e51-4d69-bd27-84c191d23263",
+    "campaign_id": null
+  },
+  {
+    "id": "4e8b675c-a2d6-4611-a6ce-850710482afb",
+    "title": "Movies About Screenwriters",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "8c757241-8b40-4e21-8335-e66507ab3849",
+    "title": "NASA",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "677c1b04-67be-4e08-b35a-8e92105e77fe",
+    "title": "Whoopi Goldberg",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "c3deb2bf-e222-4850-a561-903b9e0affc2",
+    "title": "Black Love",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "4a7db6e5-4876-4d77-8ceb-145405bfdfe6",
+    "title": "Will Smith",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "69951fdc-89e4-4d4f-90e1-a37afb8db8d7",
+    "title": "Courtroom Movies",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "323f3d10-46aa-4b02-b415-b2c78ffedc35",
+    "title": "Batman vs. Superman Super Draft",
+    "draft_type": 3,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "a99a2240-6c8a-4ebf-8b02-78ba9d57178a",
+    "title": "Gators & Crocs",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "5738014a-5108-4f0b-8598-c50c37a324cd",
+    "title": "Happy Madison Productions",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "63388810-2643-41d2-9a69-1c93651bf3e4",
+    "title": "2021 Mega Draft",
+    "draft_type": 2,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "17c2bca4-4f8f-644f-b85e-f4c05fd2db06"
+  },
+  {
+    "id": "defa306e-1bd4-440a-9ff5-1d9af35cbe9d",
+    "title": "21st Century Female Action",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "c7321f65-ffc3-431e-88cb-339b7a79b841",
+    "title": "Penelope Spheeris",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "14d48559-1e51-4d69-bd27-84c191d23263",
+    "campaign_id": null
+  },
+  {
+    "id": "c25dd6a1-0ee3-4334-833c-7952bcfb78fe",
+    "title": "Ray Harryhausen",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "85efd689-b8d0-48d7-a7c9-39f1814d38ee",
+    "title": "M. Night Shyamalan Super Draft",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "72eba291-b6fe-4e1c-aa0d-faa5384b467b",
+    "title": "Orson Welles",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "6f6ebb18-1b60-4027-bc68-3d4403b05e2f",
+    "title": "Space Horror",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "63627fba-b871-4640-88df-4edde83984e6",
+    "title": "'70s Sports",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "42ea1b0b-cbdc-4c52-a663-53dc1972f4a4"
+  },
+  {
+    "id": "8a3d1569-fde9-45a8-96e9-414343cd9204",
+    "title": "Dance",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "ec526468-89f5-4b7c-bd21-ecce07853220",
+    "title": "1997 Mini-Mega",
+    "draft_type": 1,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "d10f3b6f-eacf-40fd-b479-90dc421638df"
+  },
+  {
+    "id": "3eacfbe9-0089-48bd-90cb-a8ce1bb72f16",
+    "title": "Hotels & Motels",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "f6cd9fef-24ad-41a7-911d-e1f6067d56b7",
+    "title": "John Waters",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "aaf198a2-dd51-4c9f-a0e5-32e8053ae22f",
+    "title": "'90s Directorial Debuts",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "80d44691-eb10-4d66-93a0-749294f77c07",
+    "title": "F Cinemascore Super Draft",
+    "draft_type": 3,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "ef933e38-5df1-4197-8075-1f64b1a46871",
+    "title": "Ryan Gosling",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "f980e0d9-2ecc-4352-8198-6875f836fec5",
+    "title": "Retired\" Soderbergh Super Draft",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "8220f8d0-5cde-40e3-b1a1-b1609e453d3a",
+    "title": "X / NC-17 / Unrated",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "9f720d3d-2b15-43b3-ab81-a3aafa8d9603",
+    "title": "The Beatles",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "ebefe012-413c-4685-b9d1-70256a142d17",
+    "title": "Hallmark Christmas Mini-Mega",
+    "draft_type": 1,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "46c5bad0-f057-4dfe-aa9c-9ee63a594ce2",
+    "title": "Agatha Christie",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "d586fc24-6291-4521-a29b-fc6852e088a7",
+    "title": "Denzel Washington Mini-Mega",
+    "draft_type": 1,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "f592eefe-cca9-47be-b89a-bd28c20ec5c0",
+    "title": "Directors' Final Films",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "7216c2d5-e176-4382-b048-10ac7ad25e1f",
+    "title": "Sam Peckinpah",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "0474d3c0-268d-47fc-9a29-44314c3e6480",
+    "title": "Agnès Varda",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "1e598182-5797-48f3-a7fd-6262fd0d5a44",
+    "title": "Godzilla mini-Mega",
+    "draft_type": 1,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "8cfedb6b-38b2-4d7a-ba6f-13ce1e8be7d7",
+    "title": "Vintage Con Artist",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "8e7e454e-4acf-4d48-a57a-9b4427d00b83",
+    "title": "Kirsten Dunst",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "1e6f20cd-e459-4f17-942a-a9009fec2ca5"
+  },
+  {
+    "id": "ebd431a3-7bec-4ae9-90aa-c25a7acd2891",
+    "title": "A24 Horror",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "2fc8dd91-75eb-4213-8838-a3c7f46c88f4"
+  },
+  {
+    "id": "99b55149-adb7-4ebd-becf-23959e854640",
+    "title": "Horror Comedy mini-Mega",
+    "draft_type": 1,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "f832aa21-1ab3-4914-bf7e-748644ef7c0a"
+  },
+  {
+    "id": "03f83e2c-3925-41bd-90be-e8bb60dde23c",
+    "title": "Tobe Hooper",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "f832aa21-1ab3-4914-bf7e-748644ef7c0a"
+  },
+  {
+    "id": "fff98f66-b2ec-495b-a49b-9d5a671e8c24",
+    "title": "High School Horror mini-Mega",
+    "draft_type": 1,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "f832aa21-1ab3-4914-bf7e-748644ef7c0a"
+  },
+  {
+    "id": "922208d2-4f92-45a9-abac-113b2171e5c3",
+    "title": "Akira Kurosawa",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "dc9415c5-7cdc-48e9-9bd8-0c3f41d59a60",
+    "title": "Teacher Movies",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "40536309-f349-44cc-ac31-88b11b218225",
+    "title": "Paul Newman mini-Mega",
+    "draft_type": 1,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "591f095d-e4f0-4979-bb03-36e46587e5c8"
+  },
+  {
+    "id": "636c615a-3ae5-4045-930d-bea21f4b8dc7",
+    "title": "MCU Phase 4 Super Draft",
+    "draft_type": 3,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "e529f6ed-1e70-4d50-b89e-61e1d9d5fff0",
+    "title": "Best Picture Follow-ups mini-Mega",
+    "draft_type": 1,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "98f7d2c8-4acb-44d5-97cc-16ae7046b746",
+    "title": "Arthurian Legend",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "d055c8f0-c2d4-48b8-a4d1-f2e188186528",
+    "title": "Christmas Horror",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "78b3013f-6bce-404d-96c3-f23bc45d1ac9",
+    "title": "Colin Farrell mini-Mega",
+    "draft_type": 1,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "b8b002c3-816d-4e7c-87ea-52e2a2be931d"
+  },
+  {
+    "id": "a5aae4d9-2ec3-4fae-a77a-a863f2c718f8",
+    "title": "Steven Spielberg Super Draft",
+    "draft_type": 3,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "06083dda-00ab-4215-a597-ff70227c0bd2",
+    "title": "Spielberg Produced Mega Draft",
+    "draft_type": 2,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "99b67ad5-767d-4d2e-937b-6396413811cc",
+    "title": "Black Queer Films",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "14d48559-1e51-4d69-bd27-84c191d23263",
+    "campaign_id": null
+  },
+  {
+    "id": "138c61c1-b50e-4541-b232-0f3690b9f864",
+    "title": "Obsession Thrillers",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "db9d722a-619e-4257-b594-e6e79941eae9",
+    "title": "Chucky Super Draft",
+    "draft_type": 3,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "aa038bb4-4b29-4e36-9138-5560b19b6d7b",
+    "title": "Independent Spirit Best First Feature Award Winners",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "3d39537e-9cb8-4946-8f66-c65c5642756c",
+    "title": "2022 Mega Draft",
+    "draft_type": 2,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "17c2bca4-4f8f-644f-b85e-f4c05fd2db06"
+  },
+  {
+    "id": "90368a14-f377-4dbf-82a9-d150c098a18e",
+    "title": "Cults",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "8d05e361-a381-453b-b5f1-a5a0dce736dd",
+    "title": "Train Movies",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "f2fc3063-21a8-4e8c-878a-a9177e25b593",
+    "title": "'70s Conspiracy Thrillers",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "e043ebdb-0bd7-4de7-92e6-03a93485d2de",
+    "title": "Robots mini-Mega Live",
+    "draft_type": 1,
+    "draft_status": 3,
+    "series_id": "14d48559-1e51-4d69-bd27-84c191d23263",
+    "campaign_id": null
+  },
+  {
+    "id": "a03f6f2d-f505-4051-ab29-a059bbe7564f",
+    "title": "Anne Hathaway",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "1e6f20cd-e459-4f17-942a-a9009fec2ca5"
+  },
+  {
+    "id": "cf30c944-0e91-448b-92f0-628293dce8a0",
+    "title": "Music Docs",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "4d9b9db2-917c-4fe4-9f72-3b8dc6650874",
+    "title": "John Grisham Super Draft",
+    "draft_type": 3,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "25952d95-6ddf-421d-af78-9e68cf93e922",
+    "title": "2012",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "14d48559-1e51-4d69-bd27-84c191d23263",
+    "campaign_id": null
+  },
+  {
+    "id": "c3b498e9-a239-4122-a1e4-dc69a2e829ae",
+    "title": "Bong Joon-ho Super Draft",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "555bd336-219b-4d34-8987-591e9db89ecd",
+    "title": "Rock vs. Diesel mini-Mega",
+    "draft_type": 1,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "fe806757-3b4e-49d0-98ac-12970faffa7c",
+    "title": "Jukebox Musicals",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "46271d68-2d03-4d7d-92b8-9bfd8d076e4c",
+    "title": "Merchant / Ivory",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "4a244445-1e66-4789-9a49-5aba6b56d596",
+    "title": "Queer Studio Movies",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "d8e6f551-acf7-4fc5-897a-260b010a45a9",
+    "title": "Harrison Ford mini-Mega",
+    "draft_type": 1,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "8a762c79-147d-4633-a96a-1307abf923bb",
+    "title": "Rocky/Creed Super Draft",
+    "draft_type": 3,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "4e54656c-9a28-4d31-9021-ad28ebca8824",
+    "title": "Screwball Comedy mini-Mega",
+    "draft_type": 1,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "9f6851bb-6275-4835-ab81-ca0dcb28ffd4",
+    "title": "Union Movies",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "dbed636d-8e7f-496c-907e-8b012649ad8e",
+    "title": "Fivequels",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "87f97803-50f7-4785-89bd-0b93ea3d0333",
+    "title": "'90s Superhero",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "4d8c1fc2-5d64-4009-942e-8f4881561ed2",
+    "title": "George Clooney",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "faf5fb50-3452-4aa6-8517-7629ec5846ed",
+    "title": "Screenwriters' Directorial Debuts",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "1ddb44ea-7598-4d19-a6ca-0605192cd76f",
+    "title": "Country Music",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "af5fd1ec-65d3-42fc-9f02-e82dd069a8c9",
+    "title": "Queer Crime",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "38ab5f31-064f-4038-994a-40d5befd8572",
+    "title": "Vietnam War mini-Mega",
+    "draft_type": 1,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "c93ef049-aeca-4112-baf1-8ffe36152d57",
+    "title": "Greta Gerwig",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "f87ee4f2-ccf1-4969-9eac-7dc9be5dce62",
+    "title": "1998 mini-Mega Draft",
+    "draft_type": 1,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "d10f3b6f-eacf-40fd-b479-90dc421638df"
+  },
+  {
+    "id": "021d8222-b169-4f9b-8cfa-0163d08a6b62",
+    "title": "Blumhouse",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "2fc8dd91-75eb-4213-8838-a3c7f46c88f4"
+  },
+  {
+    "id": "32386f43-e767-4268-830d-cdd11b1ffae5",
+    "title": "Home Invasion",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "f832aa21-1ab3-4914-bf7e-748644ef7c0a"
+  },
+  {
+    "id": "76966fee-5797-4ed9-8a60-73d79df4c269",
+    "title": "Two Thumbs Down",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "812b0ef8-7124-470d-8acd-aee50fc8202f",
+    "title": "Saw Super Draft",
+    "draft_type": 3,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "f832aa21-1ab3-4914-bf7e-748644ef7c0a"
+  },
+  {
+    "id": "b2c197ca-a269-498f-a7dc-5642cd5825ee",
+    "title": "Halloween Super Draft",
+    "draft_type": 3,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "f832aa21-1ab3-4914-bf7e-748644ef7c0a"
+  },
+  {
+    "id": "a06df285-e5e0-4dd9-a5ff-2a9881d9198d",
+    "title": "Don Bluth Super Draft",
+    "draft_type": 3,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "d295a410-df94-4687-b78c-bb3ed5e294a9",
+    "title": "Disney Animation Studios Mega Draft",
+    "draft_type": 2,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "28ead34f-1422-4b3b-a35f-39b4d213987a",
+    "title": "Ralph Bakshi Super Draft",
+    "draft_type": 3,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "6d250ee7-39ec-41b5-bc46-1c6575c61416",
+    "title": "Judy Garland",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "591f095d-e4f0-4979-bb03-36e46587e5c8"
+  },
+  {
+    "id": "b5aedaca-4697-4139-b3d5-077941abd9a2",
+    "title": "'80s Sports mini-Mega",
+    "draft_type": 1,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "e7619aca-74ec-4ca7-99e0-7217583faa25",
+    "title": "AARP Action",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "315c10c7-981b-430c-a4b1-f1b2b37233bf",
+    "title": "Juliette Binoche mini-Mega",
+    "draft_type": 1,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "b8b002c3-816d-4e7c-87ea-52e2a2be931d"
+  },
+  {
+    "id": "6c28036b-2896-438f-8f82-5e97a7c827c7",
+    "title": "Martin Scorsese Super Draft",
+    "draft_type": 3,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "297da054-5c5a-450d-a077-433c6cd0c118",
+    "title": "Criterion World Cinema Project",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "7f4b5b4c-066f-4199-a0ba-ab23fc434c8a",
+    "title": "Scorsese Produced mini-Mega",
+    "draft_type": 1,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "3077ea32-3625-4710-a209-255dfed11a1c",
+    "title": "Queer Comedy",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "14d48559-1e51-4d69-bd27-84c191d23263",
+    "campaign_id": null
+  },
+  {
+    "id": "c24f0ae3-7360-4f16-b1b1-3e61b27ea81d",
+    "title": "Ozploitation",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "6b925ced-9f3d-4016-adce-d102351d9e2c",
+    "title": "Stephen King mini-Mega",
+    "draft_type": 1,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "3e32b2e2-448a-4baf-864a-750cd7dbf505",
+    "title": "2023 Mega Draft",
+    "draft_type": 2,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "17c2bca4-4f8f-644f-b85e-f4c05fd2db06"
+  },
+  {
+    "id": "f2491ed0-eb3a-451b-8bae-83a2adea7e81",
+    "title": "Horror Musicals",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "8cbce425-f4d3-4386-a9b5-e6cb4b9f2605",
+    "title": "2009 Horror",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "713d68ff-f402-4601-9c0b-c614ed4def0e",
+    "title": "Jodie Foster",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "0333905c-04f1-41ef-8bc2-8524b7fc40a2",
+    "title": "Lynn Shelton Super Draft",
+    "draft_type": 3,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "a903b13e-9bd4-4e80-8fc7-f1727e81caac",
+    "title": "Aaron Sorkin Super Draft",
+    "draft_type": 3,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "bd99691c-fa85-4a0f-985b-9656fda72e25",
+    "title": "Action Sequels",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "9dbc1993-41b6-48a4-aef9-4414d8cfc1d0",
+    "title": "The Afterlife",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "8366838a-29b4-4fa7-9b33-5e82c655a65f",
+    "title": "Horror Anthologies",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "547b404c-ae95-432c-bf3e-589a2f888c91",
+    "title": "Vinegar Syndrome",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "d2405792-9185-4316-b906-9c7b5cc883af",
+    "title": "Booed at Cannes",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "7dac10ab-502e-4c25-8962-dd3bf22b3f41",
+    "title": "Natalie Portman",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "1e6f20cd-e459-4f17-942a-a9009fec2ca5"
+  },
+  {
+    "id": "bfa97ed2-edb1-4f7d-bec8-d2575a689ac1",
+    "title": "Planet of the Apes Super Draft",
+    "draft_type": 3,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "97c3343e-3faa-4b10-807d-46e05892ccd5",
+    "title": "MTV Movie Awards Best Kiss Winners",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "81afadb4-7416-40ec-9e01-adc4bd6eebfb",
+    "title": "Geena Davis",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "b3c06513-ee8a-4e66-9374-9910c815ce2e",
+    "title": "Joel Schumacher mini-Mega",
+    "draft_type": 1,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "d47c10da-441a-447e-8702-6b658d29bf7a",
+    "title": "Lesbians mini-Mega",
+    "draft_type": 1,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "c5261d95-0487-4bd6-82f6-a21f982eb92f",
+    "title": "Angela Bassett",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "cfefffc4-377f-4034-972e-c36acdfe4e7d",
+    "title": "1939 mini-Mega",
+    "draft_type": 1,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "918d5de8-bfa6-4050-a34b-36ed89a847e1",
+    "title": "Supernatural Kids",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "d3d45e54-dec3-4cc4-ba3c-6bcc9e4bbe13",
+    "title": "Jean-Claude Van Damme",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "896d0371-4ef7-4d42-bee4-3922ca33f575",
+    "title": "Retail Hell",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "cace339d-5195-4fe6-8f55-a61b4f5fe67a",
+    "title": "1994 mini-Mega",
+    "draft_type": 1,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "3dfa5437-fafc-4180-9c22-8d542d6915dc",
+    "title": "Michael Mann Super Draft",
+    "draft_type": 3,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "117cdc3b-394d-4860-9c66-96ef8f087005",
+    "title": "Castaways",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "a16a1d3d-d722-4faf-b3e7-61a4105df705",
+    "title": "Michael Crichton Super Draft",
+    "draft_type": 3,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "951669da-7574-45e4-b137-5d3e5c223732",
+    "title": "Elmore Leonard",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "0ec35dc6-3ec6-4285-a4e3-914afe3b656d",
+    "title": "'90s Sports mini-Mega",
+    "draft_type": 1,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "42ea1b0b-cbdc-4c52-a663-53dc1972f4a4"
+  },
+  {
+    "id": "d5b4c009-4aaf-4c9f-b7e2-735630e94e9b",
+    "title": "Patricia Highsmith",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "d3cc9324-7fc4-4801-8b2c-4dc583bfecdb",
+    "title": "Bookstore & Library Movies",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "a4546d89-01f7-4c4c-8e93-84c0b2582616",
+    "title": "1977 Horror",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "2fc8dd91-75eb-4213-8838-a3c7f46c88f4"
+  },
+  {
+    "id": "eeef2600-15d1-416e-afcd-5d1c0e57617e",
+    "title": "Erotic Horror",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "f832aa21-1ab3-4914-bf7e-748644ef7c0a"
+  },
+  {
+    "id": "d072c1ff-c9fb-4de5-84be-ea96abc7e22b",
+    "title": "Rural Horror",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "f832aa21-1ab3-4914-bf7e-748644ef7c0a"
+  },
+  {
+    "id": "830e5494-852d-4027-bf31-ade4d9a155b9",
+    "title": "Classic Hammer Horror mini-Mega",
+    "draft_type": 1,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "f832aa21-1ab3-4914-bf7e-748644ef7c0a"
+  },
+  {
+    "id": "6f00ca47-189f-4268-adf6-e87cb8d9bc57",
+    "title": "Alfred Hitchcock Mega Draft",
+    "draft_type": 2,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "d2b290e0-71b3-4b6b-8e29-f8a89798f60d",
+    "title": "François Truffaut Super Draft",
+    "draft_type": 3,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "bd10427f-c065-4db0-92a9-9e4282b03630",
+    "title": "Holiday Horror (Non Christmas & Halloween)",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "5da29ec2-275a-486c-8fae-badab3ac8f47",
+    "title": "Charlie Kaufman Super Draft",
+    "draft_type": 3,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "a11830de-769b-459e-af87-808650614a87",
+    "title": "Whit Stillman mini-Super Draft",
+    "draft_type": 3,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "b8b002c3-816d-4e7c-87ea-52e2a2be931d"
+  },
+  {
+    "id": "8a631c4b-916b-4723-8bfa-c4ab2baa2617",
+    "title": "1999 mini-Mega",
+    "draft_type": 1,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "d10f3b6f-eacf-40fd-b479-90dc421638df"
+  },
+  {
+    "id": "450121bd-52cf-4602-93fb-ec0e45189ab6",
+    "title": "Sofia Coppola Super Draft",
+    "draft_type": 3,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "e8249396-1a1a-4aa1-a062-45bf923a793b",
+    "title": "Francis Ford Coppola Super Draft",
+    "draft_type": 3,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "67039917-4e60-4d8c-8e59-c66238201d88",
+    "title": "American Zoetrope",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "9b8bcd27-dd4d-4461-baff-cc3cd6941b4c",
+    "title": "Internet Horror",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "2bba3076-b4e3-4249-b610-45e6b94d7de6",
+    "title": "Vincente Minnelli",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "33697c54-2e50-4c21-80e0-d679cc83bb5b",
+    "title": "2024 Mega Draft",
+    "draft_type": 2,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "17c2bca4-4f8f-644f-b85e-f4c05fd2db06"
+  },
+  {
+    "id": "be9d72df-8d9f-4707-8ff2-8f899379c360",
+    "title": "Vacation Horror",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "a01bc796-e43b-41a2-a762-e516814c1841",
+    "title": "Texas Chainsaw Massacre Super Draft",
+    "draft_type": 3,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "47218f20-ce24-4fbc-9ec2-5a303335cece",
+    "title": "Timothée Chalamet",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "b2dbed71-fc6e-4b22-bfce-6ce382cb0459",
+    "title": "True Crime Documentaries",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "3eb452f6-037d-4cb9-b0d3-15a96d391adc",
+    "title": "DC Berlantiverse Super Draft",
+    "draft_type": 3,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "67d674bd-4862-4513-93de-b2223240ed2d",
+    "title": "Movies Mega Draft",
+    "draft_type": 2,
+    "draft_status": 3,
+    "series_id": "079607f6-72f4-4eae-8d62-55a3e7c996fc",
+    "campaign_id": null
+  },
+  {
+    "id": "7feeeced-1ab9-421a-819b-69ec76deb3ba",
+    "title": "TV Shows Mega Draft",
+    "draft_type": 2,
+    "draft_status": 3,
+    "series_id": "079607f6-72f4-4eae-8d62-55a3e7c996fc",
+    "campaign_id": null
+  },
+  {
+    "id": "c6fa1762-d5f4-4cd1-87b6-ca78d5f4d6c3",
+    "title": "Dracula mini-Mega Live",
+    "draft_type": 1,
+    "draft_status": 3,
+    "series_id": "14d48559-1e51-4d69-bd27-84c191d23263",
+    "campaign_id": null
+  },
+  {
+    "id": "65ad8d3c-f62c-4fff-ba8c-cdc48d1f3f25",
+    "title": "Woods Horror mini-Mega Live",
+    "draft_type": 1,
+    "draft_status": 3,
+    "series_id": "14d48559-1e51-4d69-bd27-84c191d23263",
+    "campaign_id": null
+  },
+  {
+    "id": "2cf6a05f-855b-4275-bf04-be17158325ee",
+    "title": "Tony/ Dan Gilroy",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "a8cd488d-a7de-4b64-b26d-b0fb8d90397f",
+    "title": "Body Swap",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "0c34af1f-cdea-4733-b689-49216be2f852",
+    "title": "Disney Attractions Super Draft",
+    "draft_type": 3,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "f00bc083-4048-4d3a-8853-adaf99e0d155",
+    "title": "Stalked by My Doctor",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "2211c7d8-5482-4c5e-a814-c64260d0e438",
+    "title": "Scorsese Short Films Super Draft",
+    "draft_type": 3,
+    "draft_status": 3,
+    "series_id": "3de9d647-af48-492c-98e0-00ca3909c4d6",
+    "campaign_id": null
+  },
+  {
+    "id": "fbdb9775-3a5c-4756-a6f0-d35c83453250",
+    "title": "Scorsese Miscellaneous Documentaries",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "3de9d647-af48-492c-98e0-00ca3909c4d6",
+    "campaign_id": null
+  },
+  {
+    "id": "9bcd5fcb-f349-4c0d-9351-b360edf3350e",
+    "title": "90's School Rom-Coms",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "e0b6ece6-86fc-479a-b38a-abc145d8acef",
+    "title": "Gene Hackman mini-Mega",
+    "draft_type": 1,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "13397a29-c491-4052-809c-2c793c2b4f64",
+    "title": "The Two Coreys",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "317b0b9a-e523-4ebd-98a9-98918095d88d",
+    "title": "Mission Impossible Super Draft",
+    "draft_type": 3,
+    "draft_status": 3,
+    "series_id": "5700a8e8-9ae1-45a5-98a7-fa258facf479",
+    "campaign_id": null
+  },
+  {
+    "id": "35f894e9-642d-44d9-adce-8c16fa69992a",
+    "title": "Cameron Crowe",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "5ed8392a-b17c-4d68-8580-79a59e53d59f",
+    "title": "John Patrick Shanley",
+    "draft_type": 3,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "dde4bf07-2b1c-47d9-8595-c1840ff175a5",
+    "title": "Time Loop",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "25bb2b67-3d7f-4871-baf4-51ffa3d77a63",
+    "title": "SyFy Channel Original Movies",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "5cb30946-79ef-4dc5-8ca8-fa83ddd6286f",
+    "title": "Kathryn Bigelow Super Draft",
+    "draft_type": 3,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "db4f2e2a-90f3-4003-a7a5-b2403140cfa0",
+    "title": "The Hunger Games mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "6828cb01-0b86-4fa1-9fa6-646acc71849e",
+    "title": "Action Comedy",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "a1a0f749-0ccd-442f-ba2b-3ae571bb33c6",
+    "title": "2000's Sports mini-Mega",
+    "draft_type": 1,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "42ea1b0b-cbdc-4c52-a663-53dc1972f4a4"
+  },
+  {
+    "id": "a6a5d182-cbb7-4851-bbcd-f3b4910e7a79",
+    "title": "Standalone (non-franchise) Sci-Fi",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "fe10cf03-f9a7-48d4-9a0d-0e4642cdc61a",
+    "title": "The World of John Wick mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "3e1b0bbd-7f1f-4e62-88ee-041f94deaefb",
+    "title": "21st Century Best Supporting Actress Winning Films",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "47af1943-96ec-4d68-81b9-fb200f9a03f0",
+    "title": "Movies About Theatre mini-Mega",
+    "draft_type": 1,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "c7a21276-9981-41a0-9e12-01c48502dcc8",
+    "title": "Peter Jackson Super Draft",
+    "draft_type": 3,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "dfd8689a-fcb0-4099-96b5-90f6551c8039",
+    "title": "Car Racing",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "8f771395-1bcf-4a54-83d2-2e8c9543c18b",
+    "title": "Neon mini-Mega",
+    "draft_type": 1,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "05f5ef35-a085-4505-94fe-bd6e9b271691",
+    "title": "Bigfoot & Cryptids",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "16a24fbd-dbd2-4623-85bd-ccff53b1d175",
+    "title": "Mockumentary",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "73568f45-7b16-4dbc-9e66-b05b9f3d56d9",
+    "title": "Quatermass Franchise mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "835e78f2-4666-43d8-98df-73464feaf464",
+    "title": "70's Comedy mini-Mega",
+    "draft_type": 1,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "e5b9261f-4839-4d5e-9d49-b456bf659b11",
+    "title": "Dario Argento",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "f832aa21-1ab3-4914-bf7e-748644ef7c0a"
+  },
+  {
+    "id": "ec546253-93dd-4894-895a-166c5b2abfe7",
+    "title": "College Girls",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "355c2291-80a9-4c33-bd85-7664f9a897a8",
+    "title": "Movies II: The Undrafted",
+    "draft_type": 2,
+    "draft_status": 3,
+    "series_id": "079607f6-72f4-4eae-8d62-55a3e7c996fc",
+    "campaign_id": null
+  },
+  {
+    "id": "c23199f2-25e3-4729-8152-1e08ad48213a",
+    "title": "Summer 2025",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "39ed0c30-f242-46ca-ab35-6df1ff72617c",
+    "title": "Beverly Hills Cop mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "9d88e5a5-b183-4677-b0f4-eb992d2910bf",
+    "title": "00s Horror mini-Mega",
+    "draft_type": 1,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "f832aa21-1ab3-4914-bf7e-748644ef7c0a"
+  },
+  {
+    "id": "47aa782b-950d-4eea-a032-deeea4cc4abf",
+    "title": "Pippi Longstocking Franchise mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "208b0ba0-2265-48b5-92d4-1069e25fcdf8",
+    "title": "Paranormal Activity Super Draft",
+    "draft_type": 3,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "f832aa21-1ab3-4914-bf7e-748644ef7c0a"
+  },
+  {
+    "id": "d74c1515-07a3-4591-a8aa-37167360e62a",
+    "title": "Korean Horror",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "f832aa21-1ab3-4914-bf7e-748644ef7c0a"
+  },
+  {
+    "id": "c9d40795-fbed-4e95-9aba-dd29cfef85a2",
+    "title": "Anaconda Franchise mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "07438466-1781-409b-9c19-bd7abfac1f8b",
+    "title": "Sleepaway Camp Franchise mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": "f832aa21-1ab3-4914-bf7e-748644ef7c0a"
+  },
+  {
+    "id": "ea5afabd-674c-4d0a-89f7-4a7d168b2cf6",
+    "title": "Female Directed Horror mini-Mega",
+    "draft_type": 1,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "f832aa21-1ab3-4914-bf7e-748644ef7c0a"
+  },
+  {
+    "id": "5b2db817-b0f6-482b-a3ec-b6390dd5af25",
+    "title": "Paul Verhoeven Super Draft",
+    "draft_type": 3,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "ab3efd0d-a81e-4a68-ad3e-4fe22263365d",
+    "title": "Chess",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "8e7285fe-e747-0b46-82a3-d2d264d10a54",
+    "campaign_id": null
+  },
+  {
+    "id": "59701264-ef3c-42f7-8727-b944aac7bcac",
+    "title": "Robert Altman Super Draft",
+    "draft_type": 3,
+    "draft_status": 1,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "08a2f07c-e220-4ea7-8120-13a6cafdef6f",
+    "title": "Yorgos Lanthimos Super Draft",
+    "draft_type": 3,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "6a12749f-aa8f-4584-a188-4286caa9ec9b",
+    "title": "Errol Flynn & Olivia de Havilland Super Draft",
+    "draft_type": 3,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "9842bb4e-aa23-42a9-87b8-e7f4d93c20f7",
+    "title": "Paul W.S. Anderson Super Draft",
+    "draft_type": 3,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "bac6da16-e77e-449d-8d57-73c8a0366548",
+    "title": "Wes Anderson Super Draft",
+    "draft_type": 3,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "536b7a6e-8415-40ae-ba1a-f6aec835d7c3",
+    "title": "Brad Anderson Super Draft",
+    "draft_type": 3,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "c2b94923-e726-49b8-927d-f027b53ec61e",
+    "title": "Paul Thomas Anderson Super Draft",
+    "draft_type": 3,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "ae0d3003-196a-46aa-8009-b4a8b3797949",
+    "title": "Miriam Hopkins",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "8e7285fe-e747-0b46-82a3-d2d264d10a54",
+    "campaign_id": "b8b002c3-816d-4e7c-87ea-52e2a2be931d"
+  },
+  {
+    "id": "39caa14d-a65b-4b9b-bf5f-eac523e76039",
+    "title": "2000 mini-Mega",
+    "draft_type": 1,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "d10f3b6f-eacf-40fd-b479-90dc421638df"
+  },
+  {
+    "id": "3159cf23-57b3-4bc7-b8d4-a04d16057a01",
+    "title": "Sidney Poitier mini-Mega",
+    "draft_type": 1,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "591f095d-e4f0-4979-bb03-36e46587e5c8"
+  },
+  {
+    "id": "b90b0b93-c909-471a-b959-e5b3aaec1aa1",
+    "title": "Snowy Horror",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "d659abc2-5f5a-bd42-9fc1-889bf8c96333",
+    "title": "Speed Drafts I",
+    "draft_type": 5,
+    "draft_status": 3,
+    "series_id": "c2100630-3d3d-4d46-ac07-74a3c960c485",
+    "campaign_id": null
+  },
+  {
+    "id": "09f430cf-5488-5a42-9176-bf2eb49907ce",
+    "title": "Speed Drafts II",
+    "draft_type": 5,
+    "draft_status": 3,
+    "series_id": "c2100630-3d3d-4d46-ac07-74a3c960c485",
+    "campaign_id": null
+  },
+  {
+    "id": "58ceb2f3-6c7e-944f-acd2-0dda4cde67ed",
+    "title": "Speed Drafts III",
+    "draft_type": 5,
+    "draft_status": 3,
+    "series_id": "c2100630-3d3d-4d46-ac07-74a3c960c485",
+    "campaign_id": null
+  },
+  {
+    "id": "7d6110e2-e6b2-0e4f-8708-08f5464796eb",
+    "title": "Speed Drafts IV",
+    "draft_type": 5,
+    "draft_status": 3,
+    "series_id": "c2100630-3d3d-4d46-ac07-74a3c960c485",
+    "campaign_id": null
+  },
+  {
+    "id": "c3e63c82-c303-3c4b-9e61-dc67f30ff0e1",
+    "title": "Speed Drafts V",
+    "draft_type": 5,
+    "draft_status": 3,
+    "series_id": "c2100630-3d3d-4d46-ac07-74a3c960c485",
+    "campaign_id": null
+  },
+  {
+    "id": "5f815312-9c01-7f47-9fe3-3946333ed29d",
+    "title": "Speed Drafts VI",
+    "draft_type": 5,
+    "draft_status": 3,
+    "series_id": "c2100630-3d3d-4d46-ac07-74a3c960c485",
+    "campaign_id": null
+  },
+  {
+    "id": "ef3074aa-fd6d-5d47-9274-92b612c4e078",
+    "title": "Speed Drafts VII",
+    "draft_type": 5,
+    "draft_status": 3,
+    "series_id": "c2100630-3d3d-4d46-ac07-74a3c960c485",
+    "campaign_id": null
+  },
+  {
+    "id": "5d4cb69d-698c-6f4b-a2f7-87df6cb1b5a4",
+    "title": "Speed Drafts VIII",
+    "draft_type": 5,
+    "draft_status": 3,
+    "series_id": "c2100630-3d3d-4d46-ac07-74a3c960c485",
+    "campaign_id": null
+  },
+  {
+    "id": "996294f1-2567-cd40-9589-02856e146a5d",
+    "title": "Speed Drafts IX",
+    "draft_type": 5,
+    "draft_status": 3,
+    "series_id": "c2100630-3d3d-4d46-ac07-74a3c960c485",
+    "campaign_id": null
+  },
+  {
+    "id": "53321646-fc6e-41de-902b-33dfcf1f2fa5",
+    "title": "The Matrix Franchise mini-Super Draft",
+    "draft_type": 4,
+    "draft_status": 3,
+    "series_id": "0e8866ba-632e-4ae2-8226-d91406826dd6",
+    "campaign_id": null
+  },
+  {
+    "id": "82b7c206-a594-5f4a-b373-7fe31e602189",
+    "title": "Speed Drafts X",
+    "draft_type": 5,
+    "draft_status": 3,
+    "series_id": "c2100630-3d3d-4d46-ac07-74a3c960c485",
+    "campaign_id": null
+  },
+  {
+    "id": "86253551-683b-4623-af74-70158cb45e93",
+    "title": "Action Horror",
+    "draft_type": 0,
+    "draft_status": 0,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "cf2f98a2-86d7-45dc-80a3-89275c48c892",
+    "title": "Hawke + Linklater Super Draft",
+    "draft_type": 3,
+    "draft_status": 0,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": "6853eb01-85f7-4fe0-82b7-eb47ae563899",
+    "title": "2025 Mega Draft",
+    "draft_type": 2,
+    "draft_status": 0,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": "17c2bca4-4f8f-644f-b85e-f4c05fd2db06"
+  },
+  {
+    "id": "5d9ea70b-6803-4245-8d1b-53e74fa5616d",
+    "title": "Speed Drafts XI",
+    "draft_type": 5,
+    "draft_status": 3,
+    "series_id": "c2100630-3d3d-4d46-ac07-74a3c960c485",
+    "campaign_id": null
+  }
+]

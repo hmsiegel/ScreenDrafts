@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.Contracts;
-
-using ScreenDrafts.Common.Domain;
+﻿using ScreenDrafts.Common.Abstractions.Errors;
 
 namespace ScreenDrafts.Modules.Users.Domain.Users.Errors;
 

@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Administration.Presentation.Users;
+﻿using ScreenDrafts.Common.Presentation.Results;
+
+namespace ScreenDrafts.Modules.Administration.Presentation.Users;
 
 internal sealed class AddPermissionToRole(IUsersApi usersApi) : Endpoint<AddPermissionToRoleRequest>
 {
@@ -20,7 +22,7 @@ internal sealed class AddPermissionToRole(IUsersApi usersApi) : Endpoint<AddPerm
   {
     var result = await _usersApi.AddPermissionToRoleAsync(req.Role!, req.Permission);
 
-    await this.MapResultsAsync(result, ct);
+    await this.SendNoContentAsync(result, ct);
   }
 }
 

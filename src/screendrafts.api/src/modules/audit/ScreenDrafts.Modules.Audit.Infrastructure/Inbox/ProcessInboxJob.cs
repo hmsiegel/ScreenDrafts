@@ -6,7 +6,8 @@ internal sealed class ProcessInboxJob(
     IServiceScopeFactory serviceScopeFactory,
     IDateTimeProvider dateTimeProvider,
     IOptions<InboxOptions> inboxOptions,
-    ILogger<ProcessInboxJob> logger) : IJob
+    ILogger<ProcessInboxJob> logger,
+    IIntegrationEventDispatcher integrationEventDispatcher) : IJob
 {
   private const string ModuleName = "Audit";
 
@@ -15,6 +16,7 @@ internal sealed class ProcessInboxJob(
   private readonly IDateTimeProvider _dateTimeProvider = dateTimeProvider;
   private readonly ILogger<ProcessInboxJob> _logger = logger;
   private readonly InboxOptions _inboxOptions = inboxOptions.Value;
+  private readonly IIntegrationEventDispatcher _integrationEventDispatcher = integrationEventDispatcher;
 
   public async Task Execute(IJobExecutionContext context)
   {
@@ -36,16 +38,9 @@ internal sealed class ProcessInboxJob(
 
         using var scope = _serviceScopeFactory.CreateScope();
 
-        IEnumerable<IIntegrationEventHandler> integrationEventHandlers = IntegrationEventHandlersFactory.GetHandlers(
-            integrationEvent.GetType(),
-            scope.ServiceProvider,
-           Presentation.AssemblyReference.Assembly);
-
-        foreach (IIntegrationEventHandler integrationEventHandler in integrationEventHandlers)
-        {
-          await integrationEventHandler.Handle(integrationEvent);
-        }
-
+        await _integrationEventDispatcher.DispatchAsync(
+            integrationEvent,
+            scope.ServiceProvider);
       }
       catch (InvalidOperationException caughtException)
       {
@@ -85,7 +80,7 @@ internal sealed class ProcessInboxJob(
         sql,
         transaction: transaction);
 
-    return inboxMessages.ToList();
+    return [.. inboxMessages];
   }
 
   private async Task UpdateInboxMessageAsync(

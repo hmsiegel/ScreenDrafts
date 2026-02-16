@@ -13,21 +13,22 @@ global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Options;
 
-global using ScreenDrafts.Common.Application.Authorization;
-global using ScreenDrafts.Common.Domain;
+global using ScreenDrafts.Common.Abstractions.Authorization;
+global using ScreenDrafts.Common.Abstractions.Errors;
+global using ScreenDrafts.Common.Abstractions.Results;
 global using ScreenDrafts.Common.IntegrationTests.Abstractions;
-global using ScreenDrafts.Modules.Users.Application.Users.Commands.AddPermission;
-global using ScreenDrafts.Modules.Users.Application.Users.Commands.AddPermissionToRole;
-global using ScreenDrafts.Modules.Users.Application.Users.Commands.AddUserRole;
-global using ScreenDrafts.Modules.Users.Application.Users.Commands.RegisterUser;
-global using ScreenDrafts.Modules.Users.Application.Users.Commands.UpdateUser;
-global using ScreenDrafts.Modules.Users.Application.Users.Queries.GetPermissionByCode;
-global using ScreenDrafts.Modules.Users.Application.Users.Queries.GetUser;
-global using ScreenDrafts.Modules.Users.Application.Users.Queries.GetUserPermissions;
 global using ScreenDrafts.Modules.Users.Domain.Users.Errors;
+global using ScreenDrafts.Modules.Users.Features.Admin.AddPermission;
+global using ScreenDrafts.Modules.Users.Features.Admin.AddPermissionToRole;
+global using ScreenDrafts.Modules.Users.Features.Admin.GetPermissionByCode;
+global using ScreenDrafts.Modules.Users.Features.Users.GetByUserId;
+global using ScreenDrafts.Modules.Users.Features.Users.Register;
+global using ScreenDrafts.Modules.Users.Features.Users.Update;
 global using ScreenDrafts.Modules.Users.Infrastructure.Database;
 global using ScreenDrafts.Modules.Users.Infrastructure.Identity;
 global using ScreenDrafts.Modules.Users.IntegrationTests.Abstractions;
-global using ScreenDrafts.Modules.Users.Presentation.Users;
+global using ScreenDrafts.Modules.Users.PublicApi;
+
+global using Serilog;
 
 global using Testcontainers.Keycloak;

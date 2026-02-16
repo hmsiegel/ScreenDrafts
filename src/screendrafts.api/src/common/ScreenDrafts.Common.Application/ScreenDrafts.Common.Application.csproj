@@ -3,16 +3,15 @@
   <ItemGroup>
     <PackageReference Include="Dapper" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
-    <PackageReference Include="IMDbApiLib" />
     <PackageReference Include="MediatR" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
-    <PackageReference Include="OmdbApiNet" />
     <PackageReference Include="Serilog" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ScreenDrafts.Common.Abstractions\ScreenDrafts.Common.Abstractions.csproj" />
     <ProjectReference Include="..\ScreenDrafts.Common.Domain\ScreenDrafts.Common.Domain.csproj" />
   </ItemGroup>
 

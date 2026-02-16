@@ -2,6 +2,9 @@
 
 internal sealed class DrafterTeamsCsvModel
 {
+  [Column("id")]
+  public Guid? Id { get; set; }
+
   [Column("name")]
   public string Name { get; set; } = default!;
 }

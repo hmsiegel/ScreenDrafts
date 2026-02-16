@@ -9,6 +9,5 @@
     <ProjectReference Include="..\..\movies\ScreenDrafts.Modules.Movies.IntegrationEvents\ScreenDrafts.Modules.Movies.IntegrationEvents.csproj" />
     <ProjectReference Include="..\..\real-time-updates\ScreenDrafts.Modules.RealTimeUpdates.IntegrationEvents\ScreenDrafts.Modules.RealTimeUpdates.IntegrationEvents.csproj" />
     <ProjectReference Include="..\..\users\ScreenDrafts.Modules.Users.IntegrationEvents\ScreenDrafts.Modules.Users.IntegrationEvents.csproj" />
-    <ProjectReference Include="..\ScreenDrafts.Modules.Reporting.Application\ScreenDrafts.Modules.Reporting.Application.csproj" />
   </ItemGroup>
 </Project>

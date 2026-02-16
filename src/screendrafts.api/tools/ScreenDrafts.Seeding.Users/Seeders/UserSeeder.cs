@@ -1,18 +1,16 @@
-﻿using ScreenDrafts.Common.Features.Abstractions.CsvFiles;
-using ScreenDrafts.Common.Features.Abstractions.Logging;
-using ScreenDrafts.Common.Features.Abstractions.Seeding;
-
-namespace ScreenDrafts.Seeding.Users.Seeders;
+﻿namespace ScreenDrafts.Seeding.Users.Seeders;
 
 internal sealed class UserSeeder(
   ILogger<UserSeeder> logger,
   ICsvFileService csvFileService,
   UsersDbContext dbContext,
   IIdentityProviderService identityProviderService,
-  DraftsDbContext draftsDbContext)
+  DraftsDbContext draftsDbContext,
+  IPublicIdGenerator publicIdGenerator)
   : UserBaseSeeder(logger, csvFileService, dbContext), ICustomSeeder
 {
   private readonly IIdentityProviderService _identityProviderService = identityProviderService;
+  private readonly IPublicIdGenerator _publicIdGenerator = publicIdGenerator;
   private readonly DraftsDbContext _draftsDbContext = draftsDbContext;
 
   public int Order => 1;
@@ -85,6 +83,7 @@ internal sealed class UserSeeder(
         }
 
         var userResult = User.Create(
+                    publicId: _publicIdGenerator.GeneratePublicId(PublicIdPrefixes.User),
                     email: emailResult.Value,
                     firstName: FirstName.Create(record.FirstName).Value,
                     lastName: LastName.Create(record.LastName).Value,

@@ -3,29 +3,9 @@
 public class LayerTests : BaseTest
 {
   [Fact]
-  public void ApplicationLayer_ShouldNotHaveDependencyOn_InfrastructureLayer()
+  public void FeaturesLayer_ShouldNotHaveDependencyOn_InfrastructureLayer()
   {
-    Types.InAssembly(ApplicationAssembly)
-        .Should()
-        .NotHaveDependencyOn(InfrastructureAssembly.GetName().Name)
-        .GetResult()
-        .ShouldBeSuccessful();
-  }
-
-  [Fact]
-  public void ApplicationLayer_ShouldNotHaveDependencyOn_PresentationLayer()
-  {
-    Types.InAssembly(ApplicationAssembly)
-        .Should()
-        .NotHaveDependencyOn(PresentationAssembly.GetName().Name)
-        .GetResult()
-        .ShouldBeSuccessful();
-  }
-
-  [Fact]
-  public void PresentationLayer_ShouldNotHaveDependencyOn_InfrastructureLayer()
-  {
-    Types.InAssembly(PresentationAssembly)
+    Types.InAssembly(FeaturesAssembly)
         .Should()
         .NotHaveDependencyOn(InfrastructureAssembly.GetName().Name)
         .GetResult()

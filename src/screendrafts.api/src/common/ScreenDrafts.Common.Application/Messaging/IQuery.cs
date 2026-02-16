@@ -1,3 +1,5 @@
-﻿namespace ScreenDrafts.Common.Application.Messaging;
+﻿using ScreenDrafts.Common.Abstractions.Results;
 
-public interface IQuery<TResponse> : IRequest<Result<TResponse>>;
+namespace ScreenDrafts.Common.Application.Messaging;
+
+public interface IQuery<TResponse> : IRequest<Result<TResponse>>, IBaseRequest;

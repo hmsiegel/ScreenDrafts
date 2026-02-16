@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Common.Features.Abstractions.Exceptions;
-
-var basePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
+﻿var basePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
 
 var configuration = new ConfigurationBuilder()
     .SetBasePath(basePath)
@@ -37,8 +35,8 @@ try
 
         Log.Information("Using connection string: {ConnectionString}", configuration.GetConnectionString("Database"));
 
-        services.AddDraftsModule(configuration);
-        services.AddUsersModule(configuration);
+        services.AddDraftsSeeding(configuration);
+        services.AddUsersSeeding(configuration);
         services.AddSeedingInfrastructure();
         services.AddUserSeeders();
         services.TryAddScoped<SqlInsertHelper>();

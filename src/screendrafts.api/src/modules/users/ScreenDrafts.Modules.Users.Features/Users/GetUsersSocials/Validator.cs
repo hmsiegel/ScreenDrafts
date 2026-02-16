@@ -1,7 +1,7 @@
 ﻿
 namespace ScreenDrafts.Modules.Users.Features.Users.GetUsersSocials;
 
-internal sealed class Validator : AbstractValidator<Query>
+internal sealed class Validator : AbstractValidator<GetUsersSocialsQuery>
 {
   public Validator()
   {

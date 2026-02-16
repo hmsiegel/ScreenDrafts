@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.People.Get;
+﻿using FastEndpoints;
+
+namespace ScreenDrafts.Modules.Drafts.Features.People.Get;
 
 internal sealed class Summary : Summary<Endpoint>
 {

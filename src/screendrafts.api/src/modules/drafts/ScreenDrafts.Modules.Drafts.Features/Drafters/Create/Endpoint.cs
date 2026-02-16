@@ -1,6 +1,8 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.Drafters.Create;
+using ScreenDrafts.Common.Abstractions.Results;
 
-internal sealed class Endpoint : ScreenDraftsEndpoint<Request, string>
+namespace ScreenDrafts.Modules.Drafts.Features.Drafters.Create;
+
+internal sealed class Endpoint : ScreenDraftsEndpoint<CreateDrafterRequest, string>
 {
   public override void Configure()
   {
@@ -15,14 +17,14 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<Request, string>
       .Produces(StatusCodes.Status403Forbidden)
       .Produces(StatusCodes.Status409Conflict);
     });
-    Permissions(Features.Permissions.DrafterCreate);
+    Permissions(DraftsAuth.Permissions.DrafterCreate);
   }
 
-  public override async Task HandleAsync(Request req, CancellationToken ct)
+  public override async Task HandleAsync(CreateDrafterRequest req, CancellationToken ct)
   {
-    var command = new Command(req.PersonId);
+    var CreateDrafterCommand = new CreateDrafterCommand(req.PersonId);
 
-    var result = await Sender.Send(command, ct);
+    var result = await Sender.Send(CreateDrafterCommand, ct);
 
     await this.SendCreatedAsync(
       result.Map(id => new CreatedResponse(id)),
@@ -30,3 +32,5 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<Request, string>
       ct);
   }
 }
+
+

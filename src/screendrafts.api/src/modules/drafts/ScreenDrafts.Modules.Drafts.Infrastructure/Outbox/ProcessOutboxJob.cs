@@ -1,10 +1,4 @@
-﻿using ScreenDrafts.Common.Features.Abstractions.Clock;
-using ScreenDrafts.Common.Features.Abstractions.Data;
-using ScreenDrafts.Common.Features.Abstractions.Logging;
-using ScreenDrafts.Common.Features.Abstractions.Messaging;
-using ScreenDrafts.Modules.Drafts.Infrastructure.Inbox;
-
-namespace ScreenDrafts.Modules.Drafts.Infrastructure.Outbox;
+﻿namespace ScreenDrafts.Modules.Drafts.Infrastructure.Outbox;
 
 [DisallowConcurrentExecution]
 internal sealed class ProcessOutboxJob(
@@ -12,7 +6,8 @@ internal sealed class ProcessOutboxJob(
     IServiceScopeFactory serviceScopeFactory,
     IDateTimeProvider dateTimeProvider,
     IOptions<OutboxOptions> outboxOptions,
-    ILogger<ProcessOutboxJob> logger) : IJob
+    ILogger<ProcessOutboxJob> logger,
+    IDomainEventDispatcher domainEventDispatcher) : IJob
 {
   private const string ModuleName = "Drafts";
 
@@ -21,6 +16,7 @@ internal sealed class ProcessOutboxJob(
   private readonly IDateTimeProvider _dateTimeProvider = dateTimeProvider;
   private readonly ILogger<ProcessOutboxJob> _logger = logger;
   private readonly OutboxOptions _outboxOptions = outboxOptions.Value;
+  private readonly IDomainEventDispatcher _domainEventDispatcher = domainEventDispatcher;
 
   public async Task Execute(IJobExecutionContext context)
   {
@@ -42,15 +38,7 @@ internal sealed class ProcessOutboxJob(
 
         using var scope = _serviceScopeFactory.CreateScope();
 
-        IEnumerable<IDomainEventHandler> domainEventHandlers = DomainEventHandlersFactory.GetHandlers(
-            domainEvent.GetType(),
-            scope.ServiceProvider,
-            Application.AssemblyReference.Assembly);
-
-        foreach (IDomainEventHandler domainEventHandler in domainEventHandlers)
-        {
-          await domainEventHandler.Handle(domainEvent);
-        }
+        await _domainEventDispatcher.DispatchAsync(domainEvent, scope.ServiceProvider);
       }
       catch (InvalidOperationException caughtException)
       {

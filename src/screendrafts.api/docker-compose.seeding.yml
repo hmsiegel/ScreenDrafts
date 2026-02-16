@@ -11,6 +11,7 @@
       - ./data:/app/data
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - DOTNET_ENVIRONMENT=Development
       - DATA_PATH=/app/data
       - ConnectionStrings__Database=Host=screendrafts.database;Port=5432;Database=screendrafts;Username=postgres;Password=postgres;Include Error Detail=true
     profiles: ["manual"]
@@ -25,8 +26,10 @@
       - ./data:/app/data
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - DOTNET_ENVIRONMENT=Development
       - DATA_PATH=/app/data
       - ConnectionStrings__Database=Host=screendrafts.database;Port=5432;Database=screendrafts;Username=postgres;Password=postgres;Include Error Detail=true
+      - ConnectionStrings__Drafts=Host=screendrafts.database;Port=5432;Database=screendrafts;Username=drafts_user;Password=drafts_password;Include Error Detail=true
     profiles: ["manual"]
     networks:
       - screendrafts
@@ -44,8 +47,11 @@
       - ./data:/app/data
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - DOTNET_ENVIRONMENT=Development
       - DATA_PATH=/app/data
       - ConnectionStrings__Database=Host=screendrafts.database;Port=5432;Database=screendrafts;Username=postgres;Password=postgres;Include Error Detail=true
+      - ConnectionStrings__Users=Host=screendrafts.database;Port=5432;Database=screendrafts;Username=users_user;Password=users_password;Include Error Detail=true
+      - ConnectionStrings__Drafts=Host=screendrafts.database;Port=5432;Database=screendrafts;Username=drafts_user;Password=drafts_password;Include Error Detail=true
       - Users__Keycloak__AdminUrl=http://screendrafts.identity:8080/admin/realms/screendrafts/
       - Users__Keycloak__TokenUrl=http://screendrafts.identity:8080/realms/screendrafts/protocol/openid-connect/token
       - Users__Keycloak__ConfidentialClientId=screendrafts-confidential-client

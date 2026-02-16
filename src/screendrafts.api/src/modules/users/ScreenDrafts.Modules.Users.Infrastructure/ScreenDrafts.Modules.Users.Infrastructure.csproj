@@ -1,13 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
-    <ProjectReference Include="..\ScreenDrafts.Modules.Users.Features\ScreenDrafts.Modules.Users.Features.csproj" />
-    <ProjectReference Include="..\ScreenDrafts.Modules.Users.PublicApi\ScreenDrafts.Modules.Users.PublicApi.csproj" />
+    <ProjectReference Include="..\ScreenDrafts.Modules.Users.Domain\ScreenDrafts.Modules.Users.Domain.csproj" />
     <ProjectReference Include="..\..\..\common\ScreenDrafts.Common.Infrastructure\ScreenDrafts.Common.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="ScreenDrafts.Modules.Users.IntegrationTests"/>
-    <InternalsVisibleTo Include="ScreenDrafts.IntegrationTests"/>
-    <InternalsVisibleTo Include="ScreenDrafts.Seeding.Users"/>
+    <InternalsVisibleTo Include="ScreenDrafts.Modules.Users.IntegrationTests" />
+    <InternalsVisibleTo Include="ScreenDrafts.IntegrationTests" />
+    <InternalsVisibleTo Include="ScreenDrafts.Seeding.Users" />
   </ItemGroup>
 </Project>

@@ -6,13 +6,15 @@ internal sealed class ProcessInboxJob(
     IServiceScopeFactory serviceScopeFactory,
     IDateTimeProvider dateTimeProvider,
     IOptions<InboxOptions> inboxOptions,
-    ILogger<ProcessInboxJob> logger) : IJob
+    ILogger<ProcessInboxJob> logger,
+    IIntegrationEventDispatcher integrationEventDispatcher) : IJob
 {
   private const string ModuleName = "Movies";
 
   private readonly IDbConnectionFactory _dbConnectionFactory = dbConnectionFactory;
   private readonly IServiceScopeFactory _serviceScopeFactory = serviceScopeFactory;
   private readonly IDateTimeProvider _dateTimeProvider = dateTimeProvider;
+  private readonly IIntegrationEventDispatcher _integrationEventDispatcher = integrationEventDispatcher;
   private readonly ILogger<ProcessInboxJob> _logger = logger;
   private readonly InboxOptions _inboxOptions = inboxOptions.Value;
 
@@ -66,16 +68,9 @@ internal sealed class ProcessInboxJob(
 
         using var scope = _serviceScopeFactory.CreateScope();
 
-        IEnumerable<IIntegrationEventHandler> integrationEventHandlers = IntegrationEventHandlersFactory.GetHandlers(
-            integrationEvent.GetType(),
-            scope.ServiceProvider,
-           Presentation.AssemblyReference.Assembly);
-
-        foreach (IIntegrationEventHandler integrationEventHandler in integrationEventHandlers)
-        {
-          await integrationEventHandler.Handle(integrationEvent);
-        }
-
+        await _integrationEventDispatcher.DispatchAsync(
+          integrationEvent,
+          scope.ServiceProvider);
       }
       catch (InvalidOperationException caughtException)
       {
@@ -157,7 +152,7 @@ internal sealed class ProcessInboxJob(
 
     if (deletedCount > 0)
     {
-      InboxLoggingMessages.DeletedInboxMessages(_logger, deletedCount,  ModuleName);
+      InboxLoggingMessages.DeletedInboxMessages(_logger, deletedCount, ModuleName);
     }
   }
 

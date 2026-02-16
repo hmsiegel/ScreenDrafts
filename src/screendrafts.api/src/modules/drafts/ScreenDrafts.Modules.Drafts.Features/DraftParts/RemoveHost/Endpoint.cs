@@ -1,8 +1,6 @@
-﻿using ScreenDrafts.Common.Features.Http;
-
 namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.RemoveHost;
 
-internal sealed class Endpoint : ScreenDraftsEndpoint<Request>
+internal sealed class Endpoint : ScreenDraftsEndpoint<RemoveHostDraftPartRequest>
 {
   public override void Configure()
   {
@@ -16,16 +14,18 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<Request>
        .Produces(StatusCodes.Status403Forbidden)
        .Produces(StatusCodes.Status404NotFound);
     });
-    Policies(Features.Permissions.DraftPartUpdate);
+    Policies(DraftsAuth.Permissions.DraftPartUpdate);
   }
 
-  public override async Task HandleAsync(Request req, CancellationToken ct)
+  public override async Task HandleAsync(RemoveHostDraftPartRequest req, CancellationToken ct)
   {
     ArgumentNullException.ThrowIfNull(req);
-    var command = new Command(req.DraftPartId, req.HostId);
+    var RemoveHostDraftPartCommand = new RemoveHostDraftPartCommand(req.DraftPartId, req.HostId);
 
-    var result = await Sender.Send(command, ct);
+    var result = await Sender.Send(RemoveHostDraftPartCommand, ct);
 
-    await this.MapResultsAsync(result, ct);
+    await this.SendNoContentAsync(result, ct);
   }
 }
+
+

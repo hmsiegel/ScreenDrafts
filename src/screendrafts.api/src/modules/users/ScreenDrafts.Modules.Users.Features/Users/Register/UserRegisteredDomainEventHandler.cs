@@ -1,6 +1,4 @@
-﻿using IEventBus = ScreenDrafts.Common.Features.Abstractions.EventBus.IEventBus;
-
-namespace ScreenDrafts.Modules.Users.Features.Users.Register;
+﻿namespace ScreenDrafts.Modules.Users.Features.Users.Register;
 
 internal sealed class UserRegisteredDomainEventHandler(ISender sender, IEventBus eventBus)
   : DomainEventHandler<UserRegisteredDomainEvent>
@@ -13,12 +11,12 @@ internal sealed class UserRegisteredDomainEventHandler(ISender sender, IEventBus
     CancellationToken cancellationToken = default)
   {
     var result = await _sender.Send(
-      new GetByUserId.Query(domainEvent.UserId),
+      new GetByUserId.GetByUserIdQuery(domainEvent.UserId),
       cancellationToken);
 
     if (result.IsFailure)
     {
-      throw new ScreenDraftsException(nameof(GetByUserId.Query), result.Error);
+      throw new ScreenDraftsException(nameof(GetByUserId.GetByUserIdQuery), result.Error);
     }
 
     await _eventBus.PublishAsync(

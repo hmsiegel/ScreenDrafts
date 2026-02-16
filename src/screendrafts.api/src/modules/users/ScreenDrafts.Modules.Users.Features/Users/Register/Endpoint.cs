@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Users.Features.Users.Register;
 
-internal sealed class Endpoint : ScreenDraftsEndpoint<Request, string>
+internal sealed class Endpoint : ScreenDraftsEndpoint<RegisterUserRequest, string>
 {
   public override void Configure()
   {
@@ -16,9 +16,9 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<Request, string>
     AllowAnonymous();
   }
 
-  public override async Task HandleAsync(Request req, CancellationToken ct)
+  public override async Task HandleAsync(RegisterUserRequest req, CancellationToken ct)
   {
-    var command = new Command
+    var command = new RegisterUserCommand
     {
       Email = req.Email,
       Password = req.Password,
@@ -30,8 +30,8 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<Request, string>
     var result = await Sender.Send(command, ct);
 
     await this.SendCreatedAsync(
-      result.Map(publicId => new CreatedResponse(publicId)),
-      created => UserLocations.ById(created.PublicId),
+      result.Map(id => new CreatedIdResponse(id)),
+      created => UserLocations.ById(created.Id),
       ct);
   }
 }

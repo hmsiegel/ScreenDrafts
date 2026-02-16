@@ -13,7 +13,8 @@
     <ProjectReference Include="..\..\users\ScreenDrafts.Modules.Users.PublicApi\ScreenDrafts.Modules.Users.PublicApi.csproj" />
     <ProjectReference Include="..\ScreenDrafts.Modules.Drafts.Application\ScreenDrafts.Modules.Drafts.Application.csproj" />
   </ItemGroup>
+
   <ItemGroup>
-    <Folder Include="Drafts\Deletes\" />
+    <Compile Remove="_Legacy\**\*.cs" />
   </ItemGroup>
 </Project>
