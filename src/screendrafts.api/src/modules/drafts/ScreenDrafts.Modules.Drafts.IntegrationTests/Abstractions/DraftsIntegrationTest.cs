@@ -10,21 +10,27 @@ public abstract class DraftsIntegrationTest(DraftsIntegrationTestWebAppFactory f
     await DbContext.Database.ExecuteSqlRawAsync(
       $"""
       TRUNCATE TABLE 
+        drafts.campaigns,
+        drafts.categories,
         drafts.people,
         drafts.drafts,
+        drafts.drafter_teams,
+        drafts.drafter_team_drafter,
         drafts.drafters,
         drafts.hosts,
-        drafts.drafter_draft_stats,
         drafts.draft_positions,
+        drafts.draft_part_participants,
+        drafts.commissioner_overrides,
+        drafts.draft_categories,
+        drafts.draft_channel_releases,
+        drafts.draft_hosts,
+        drafts.draft_parts,
+        drafts.draft_releases,
+        drafts.series,
         drafts.picks,
         drafts.game_boards,
-        drafts.drafts_drafters,
-        drafts.draft_hosts,
-        drafts.draft_release_date,
         drafts.movies,
         drafts.trivia_results,
-        drafts.rollover_veto_overrides,
-        drafts.rollover_vetoes,
         drafts.vetoes,
         drafts.veto_overrides
       RESTART IDENTITY CASCADE;

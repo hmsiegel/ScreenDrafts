@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="ScreenDrafts.Modules.Users.IntegrationTests" />
+    <InternalsVisibleTo Include="ScreenDrafts.Modules.Drafts.IntegrationTests" />
     <InternalsVisibleTo Include="ScreenDrafts.IntegrationTests" />
     <InternalsVisibleTo Include="ScreenDrafts.Seeding.Users" />
   </ItemGroup>

@@ -31,7 +31,7 @@ public class GetPersonTests(DraftsIntegrationTestWebAppFactory factory)
   public async Task GetPerson_WithInvalidId_ShouldReturnErrorAsync()
   {
     // Arrange
-    var invalidId = string.Empty;
+    var invalidId = "pe_nonexistent123";
     // Act
     var result = await Sender.Send(new GetPersonQuery(invalidId));
     // Assert

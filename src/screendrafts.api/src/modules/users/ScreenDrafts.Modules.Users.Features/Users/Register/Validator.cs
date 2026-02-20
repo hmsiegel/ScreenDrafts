@@ -7,10 +7,16 @@ internal sealed class Validator : AbstractValidator<RegisterUserCommand>
     RuleFor(x => x.Email)
       .NotEmpty()
       .EmailAddress();
+    
     RuleFor(x => x.Password)
-      .MinimumLength(6);
+      .NotEmpty()
+      .MinimumLength(8)
+      .WithErrorCode("User.Password.TooShort")
+      .WithMessage("Password must be at least 8 characters long.");
+    
     RuleFor(x => x.FirstName)
       .NotEmpty();
+    
     RuleFor(x => x.LastName)
       .NotEmpty();
   }

@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities;
+﻿using ScreenDrafts.Modules.Drafts.Domain.Participants;
+
+namespace ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities;
 
 public sealed class Veto : Entity<VetoId>
 {
@@ -84,7 +86,7 @@ public sealed class Veto : Entity<VetoId>
     return veto;
   }
 
-  public Result Override(ParticipantId by)
+  public Result Override(Participant by)
   {
     if (IsOverridden)
     {

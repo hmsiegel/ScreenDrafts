@@ -15,6 +15,13 @@ internal sealed class IdentityProviderService(
   // POST /admin/realms/{realm}/users
   public async Task<Result<string>> RegisterUserAsync(UserModel user, CancellationToken cancellationToken = default)
   {
+    var attributes = user.PublicId is not null
+      ? new Dictionary<string, List<string>>
+      {
+        ["public_id"] = [user.PublicId]
+      }
+      : null;
+
     var userRepresentation = new UserRepresentation(
       user.Email,
       user.Email,
@@ -22,7 +29,8 @@ internal sealed class IdentityProviderService(
       user.LastName,
       true,
       true,
-      [new CredentialRepresentation(PasswordCredentialType, user.Password, false)]);
+      [new CredentialRepresentation(PasswordCredentialType, user.Password, false)],
+      attributes);
 
     try
     {

@@ -29,6 +29,9 @@ public sealed class DraftRelease
     ReleaseChannel releaseChannel,
     DateOnly releaseDate)
   {
+    ArgumentNullException.ThrowIfNull(releaseChannel);
+    ArgumentNullException.ThrowIfNull(partId);
+
     if (partId is null)
     {
       return Result.Failure<DraftRelease>(DraftErrors.DraftPartIsRequired);

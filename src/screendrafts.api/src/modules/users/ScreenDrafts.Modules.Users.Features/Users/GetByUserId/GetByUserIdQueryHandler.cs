@@ -15,7 +15,7 @@ internal sealed class GetByUserIdQueryHandler(IDbConnectionFactory dbConnectionF
         u.email as {nameof(GetByUserIdResponse.Email)},
         u.first_name As {nameof(GetByUserIdResponse.FirstName)},
         u.middle_name As {nameof(GetByUserIdResponse.MiddleName)},
-        u.last_name As {nameof(GetByUserIdResponse.LastName)},
+        u.last_name As {nameof(GetByUserIdResponse.LastName)}
       FROM users.users u
       WHERE id = @UserId
       """;

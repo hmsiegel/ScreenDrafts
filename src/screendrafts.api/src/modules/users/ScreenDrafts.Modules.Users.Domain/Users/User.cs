@@ -81,7 +81,7 @@ public sealed class User : AggregateRoot<UserId, Guid>
 
     user._roles.Add(Role.Guest);
 
-    user.Raise(new UserRegisteredDomainEvent(id!.Value));
+    user.Raise(new UserRegisteredDomainEvent(user.Id.Value));
 
     return user;
   }

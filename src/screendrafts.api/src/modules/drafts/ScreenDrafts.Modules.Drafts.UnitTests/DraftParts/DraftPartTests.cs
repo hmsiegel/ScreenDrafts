@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.UnitTests.DraftParts;
+﻿using ScreenDrafts.Modules.Drafts.Domain.Participants;
+
+namespace ScreenDrafts.Modules.Drafts.UnitTests.DraftParts;
 
 public class DraftPartTests : DraftsBaseTest
 {
@@ -202,7 +204,7 @@ public class DraftPartTests : DraftsBaseTest
     
     draftPart.AddParticipant(participantId1);
 
-    var newParticipants = new List<ParticipantId> { participantId2 };
+    var newParticipants = new List<Participant> { participantId2 };
 
     // Act
     var result = draftPart.SetParticipants(newParticipants);
@@ -223,7 +225,7 @@ public class DraftPartTests : DraftsBaseTest
     var participantId = CreateParticipantId(drafter);
     draftPart.AddParticipant(participantId);
 
-    var emptyList = new List<ParticipantId>();
+    var emptyList = new List<Participant>();
 
     // Act
     var result = draftPart.SetParticipants(emptyList);

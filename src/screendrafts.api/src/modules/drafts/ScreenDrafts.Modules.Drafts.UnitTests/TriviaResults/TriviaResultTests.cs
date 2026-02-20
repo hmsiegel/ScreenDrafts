@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.UnitTests.TriviaResults;
+﻿using ScreenDrafts.Modules.Drafts.Domain.Participants;
+
+namespace ScreenDrafts.Modules.Drafts.UnitTests.TriviaResults;
 
 public class TriviaResultTests : BaseTest
 {
@@ -8,7 +10,7 @@ public class TriviaResultTests : BaseTest
     // Arrange
     var position = 1;
     var questionsWon = 5;
-    var participantId = new ParticipantId(Guid.NewGuid(), ParticipantKind.Drafter);
+    var participantId = new Participant(Guid.NewGuid(), ParticipantKind.Drafter);
     var draftPart = CreateDraftPart();
 
     // Act
@@ -28,7 +30,7 @@ public class TriviaResultTests : BaseTest
     // Arrange
     var position = 0;
     var questionsWon = 5;
-    var participantId = new ParticipantId(Guid.NewGuid(), ParticipantKind.Drafter);
+    var participantId = new Participant(Guid.NewGuid(), ParticipantKind.Drafter);
     var draftPart = CreateDraftPart();
 
     // Act
@@ -45,7 +47,7 @@ public class TriviaResultTests : BaseTest
     // Arrange
     var position = 1;
     var questionsWon = -1;
-    var participantId = new ParticipantId(Guid.NewGuid(), ParticipantKind.Drafter);
+    var participantId = new Participant(Guid.NewGuid(), ParticipantKind.Drafter);
     var draftPart = CreateDraftPart();
 
     // Act
@@ -62,7 +64,7 @@ public class TriviaResultTests : BaseTest
     // Arrange
     var position = 1;
     var questionsWon = 5;
-    var participantId = new ParticipantId(Guid.NewGuid(), ParticipantKind.Drafter);
+    var participantId = new Participant(Guid.NewGuid(), ParticipantKind.Drafter);
 
     // Act
     Action act = () => TriviaResult.Create(position, questionsWon, participantId, null!);
@@ -77,7 +79,7 @@ public class TriviaResultTests : BaseTest
     // Arrange
     var position = 1;
     var questionsWon = 0;
-    var participantId = new ParticipantId(Guid.NewGuid(), ParticipantKind.Drafter);
+    var participantId = new Participant(Guid.NewGuid(), ParticipantKind.Drafter);
     var draftPart = CreateDraftPart();
 
     // Act

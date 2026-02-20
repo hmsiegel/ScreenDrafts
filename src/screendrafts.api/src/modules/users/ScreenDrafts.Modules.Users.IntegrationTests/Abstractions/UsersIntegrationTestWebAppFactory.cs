@@ -20,16 +20,36 @@ public class UsersIntegrationTestWebAppFactory : IntegrationTestWebAppFactory
 
     Console.WriteLine("Starting KeyCloak container...");
 
-    _keycloakContainer = new KeycloakBuilder()
-      .WithImage("quay.io/keycloak/keycloak:26.1.0")
-      .WithPortBinding(9000, true)
-      .WithResourceMapping(
-        new FileInfo("screendrafts-realm-export.json"),
-        new FileInfo("/opt/keycloak/data/import/realm.json"))
-      .WithCommand("--import-realm")
-      .Build();
+    // Check if realm export file exists
+    var realmFilePath = Path.Combine(AppContext.BaseDirectory, "screendrafts-realm-export.json");
+    var realmFileExists = File.Exists(realmFilePath);
 
-    _keycloakContainer.StartAsync().GetAwaiter().GetResult();
+    Console.WriteLine($"Realm file path: {realmFilePath}");
+    Console.WriteLine($"Realm file exists: {realmFileExists}");
+
+    var builder = new KeycloakBuilder()
+      .WithImage("quay.io/keycloak/keycloak:26.1.0")
+      .WithPortBinding(9000, true);
+
+    // Only configure resource mapping if the realm file exists
+    if (realmFileExists)
+    {
+      Console.WriteLine("Configuring KeyCloak with realm import...");
+      builder = builder
+        .WithResourceMapping(
+          new FileInfo(realmFilePath),
+          new FileInfo("/opt/keycloak/data/import/realm.json"))
+        .WithCommand("--import-realm");
+    }
+    else
+    {
+      Console.WriteLine("Realm file not found - starting KeyCloak without pre-configured realm.");
+      Console.WriteLine("Note: You may need to configure the realm manually or create the realm export file.");
+    }
+
+    _keycloakContainer = builder.Build();
+
+    _keycloakContainer.StartAsync().Wait();
 
     SetKeyCloakEnvironmentVariables();
     _keycloakInitialized = true;

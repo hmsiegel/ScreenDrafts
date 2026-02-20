@@ -15,7 +15,7 @@ public class DraftReleaseTests : DraftsBaseTest
 
     // Assert
     release.Should().NotBeNull();
-    release.Value.DraftPart.Id.Should().Be(draftPart.Id);
+    release.Value.PartId.Should().Be(draftPart.Id);
     release.Value.ReleaseChannel.Should().Be(channel);
     release.Value.ReleaseDate.Should().Be(releaseDate);
   }
@@ -24,12 +24,12 @@ public class DraftReleaseTests : DraftsBaseTest
   public void Create_ShouldThrowArgumentNullException_WhenDraftPartIsNull()
   {
     // Arrange
-    DraftPart? draftPart = null;
+    DraftPartId? partId = null;
     var channel = ReleaseChannel.MainFeed;
     var releaseDate = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(30));
 
     // Act
-    Action act = () => DraftRelease.Create(draftPart!.Id, channel, releaseDate);
+    Action act = () => DraftRelease.Create(partId!, channel, releaseDate);
     // Assert
     act.Should().Throw<ArgumentNullException>();
   }
@@ -61,7 +61,7 @@ public class DraftReleaseTests : DraftsBaseTest
 
     // Assert
     release.Value.ReleaseChannel.Should().Be(ReleaseChannel.MainFeed);
-    release.Value.ReleaseChannel.Name.Should().Be("Main Feed");
+    release.Value.ReleaseChannel.Name.Should().Be("MainFeed");
   }
 
   [Fact]
@@ -120,7 +120,7 @@ public class DraftReleaseTests : DraftsBaseTest
     // Act
     var release = DraftRelease.Create(draftPart.Id, channel, releaseDate);
     // Assert
-    release.Value.DraftPart.Id.Should().Be(draftPart.Id);
+    release.Value.PartId.Should().Be(draftPart.Id);
   }
 
   [Fact]
@@ -137,8 +137,8 @@ public class DraftReleaseTests : DraftsBaseTest
     var patreonRelease = DraftRelease.Create(draftPart.Id, ReleaseChannel.Patreon, patreonFeedDate);
 
     // Assert
-    mainRelease.Value.DraftPart.Id.Should().Be(draftPart.Id);
-    patreonRelease.Value.DraftPart.Id.Should().Be(draftPart.Id);
+    mainRelease.Value.PartId.Should().Be(draftPart.Id);
+    patreonRelease.Value.PartId.Should().Be(draftPart.Id);
     mainRelease.Value.ReleaseChannel.Should().NotBe(patreonRelease.Value.ReleaseChannel);
   }
 }

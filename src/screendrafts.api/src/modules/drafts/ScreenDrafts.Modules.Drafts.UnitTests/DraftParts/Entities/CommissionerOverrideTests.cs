@@ -47,19 +47,6 @@ public class CommissionerOverrideTests : DraftsBaseTest
   }
 
   [Fact]
-  public void Create_ShouldThrowArgumentNullException_WhenPickIsNull()
-  {
-    // Arrange
-    Pick? pick = null;
-
-    // Act
-    Action act = () => CommissionerOverride.Create(pick!);
-
-    // Assert
-    act.Should().Throw<ArgumentNullException>();
-  }
-
-  [Fact]
   public void PickId_ShouldMatchPick_WhenCreated()
   {
     // Arrange

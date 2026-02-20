@@ -1,11 +1,13 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities;
+﻿using ScreenDrafts.Modules.Drafts.Domain.Participants;
+
+namespace ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities;
 
 public sealed class TriviaResult : Entity<TriviaResultId>
 {
   private TriviaResult(
     int position,
     int questionsWon,
-    ParticipantId participantId,
+    Participant participantId,
     DraftPart draftPart,
     TriviaResultId? id = null)
   {
@@ -24,7 +26,7 @@ public sealed class TriviaResult : Entity<TriviaResultId>
   public DraftPartId DraftPartId { get; private set; } = default!;
   public DraftPart DraftPart { get; private set; } = default!;
 
-  public ParticipantId ParticipantId { get; private set; } = default!;
+  public Participant ParticipantId { get; private set; } = default!;
 
 
   public int Position { get; private set; }
@@ -34,7 +36,7 @@ public sealed class TriviaResult : Entity<TriviaResultId>
   public static Result<TriviaResult> Create(
     int position,
     int questionsWon,
-    ParticipantId participantId,
+    Participant participantId,
     DraftPart draftPart,
     TriviaResultId? id = null)
   {

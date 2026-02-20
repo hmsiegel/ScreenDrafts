@@ -4,7 +4,7 @@ services:
     image: ${DOCKER_REGISTRY-}screendraftsmigrator
     build:
       context: .
-      dockerfile: src/tools/ScreenDrafts.Tools.DbMigrator/Dockerfile
+      dockerfile: tools/ScreenDrafts.Tools.DbMigrator/Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     networks:

@@ -14,9 +14,10 @@ internal sealed class ListCategoriesQueryHandler(IDbConnectionFactory dbConnecti
     const string sql =
       $"""
         SELECT
-          c.publicId AS {nameof(CategoryResponse.PublicId)},
+          c.public_id AS {nameof(CategoryResponse.PublicId)},
           c.name AS {nameof(CategoryResponse.Name)},
-          c.description AS {nameof(CategoryResponse.Description)}
+          c.description AS {nameof(CategoryResponse.Description)},
+          c.is_deleted AS {nameof(CategoryResponse.IsDeleted)}
         FROM
           drafts.categories c
         WHERE

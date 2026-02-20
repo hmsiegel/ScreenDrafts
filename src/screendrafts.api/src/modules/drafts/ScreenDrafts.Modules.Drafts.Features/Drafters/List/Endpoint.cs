@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Drafts.Features.Drafters.List;
+﻿namespace ScreenDrafts.Modules.Drafts.Features.Drafters.List;
 
 internal sealed class Endpoint : ScreenDraftsEndpoint<ListDraftersRequest, DrafterCollectionResponse>
 {
@@ -18,8 +18,8 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<ListDraftersRequest, Draft
   }
   public override async Task HandleAsync(ListDraftersRequest req, CancellationToken ct)
   {
-    var ListDraftersQuery = new ListDraftersQuery(req);
-    var result = await Sender.Send(ListDraftersQuery, ct);
+    var query = new ListDraftersQuery(req);
+    var result = await Sender.Send(query, ct);
     await this.SendOkAsync(result, ct);
   }
 }

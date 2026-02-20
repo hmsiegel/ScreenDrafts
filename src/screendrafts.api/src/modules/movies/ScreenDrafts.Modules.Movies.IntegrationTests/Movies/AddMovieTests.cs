@@ -46,7 +46,7 @@ public sealed class AddMovieTests(MoviesIntegrationTestWebAppFactory factory) : 
       productionCompanies.Add(MovieFactory.CreateProductionCompany().Value);
     }
 
-    var request = new Command(
+    var request = new AddMovieCommand(
       movie.ImdbId,
       movie.Title,
       movie.Year,

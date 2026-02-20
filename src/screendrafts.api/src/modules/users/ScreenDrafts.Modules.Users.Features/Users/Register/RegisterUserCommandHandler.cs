@@ -37,12 +37,15 @@ internal sealed class RegisterUserCommandHandler(
     var firstNameValue = firstNameResult.Value.Value;
     var lastNameValue = lastNameResult.Value.Value;
 
+    var publicId = _publicIdGenerator.GeneratePublicId(PublicIdPrefixes.User);
+
     var identityResult = await _identityProviderService.RegisterUserAsync(
       new UserModel(
         emailValue!,
         request.Password,
         firstNameValue!,
-        lastNameValue!),
+        lastNameValue!,
+        publicId),
       cancellationToken);
 
     if (identityResult.IsFailure)
@@ -51,7 +54,6 @@ internal sealed class RegisterUserCommandHandler(
     }
 
     var userId = identityResult.Value;
-    var publicId = _publicIdGenerator.GeneratePublicId(PublicIdPrefixes.User);
 
     var userResult = User.Create(
       email: emailResult.Value,

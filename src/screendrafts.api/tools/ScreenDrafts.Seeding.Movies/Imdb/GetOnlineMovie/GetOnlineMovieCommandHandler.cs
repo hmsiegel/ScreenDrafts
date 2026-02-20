@@ -93,13 +93,15 @@ internal sealed class GetOnlineMovieCommandHandler(
 
     var genres = omdbData.Genre.Trim().Split(", ").ToList();
 
+    var releaseDate = ParseReleaseDate(omdbData.Released);
+
     var response = new MovieResponse(
       command.ImdbId,
       omdbData.Title,
       omdbData.Year,
       omdbData.Plot,
       omdbData.Poster,
-      omdbData.Released,
+      releaseDate,
       null,
       genres,
       null!,
@@ -109,5 +111,25 @@ internal sealed class GetOnlineMovieCommandHandler(
       null!);
 
     return response;
+  }
+
+  private static string? ParseReleaseDate(string? rawData)
+  {
+    if (string.IsNullOrWhiteSpace(rawData))
+    {
+      return null;
+    }
+
+    if (DateTime.TryParse(rawData, CultureInfo.InvariantCulture, out var releaseDate))
+    {
+      return releaseDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+    }
+
+    if (int.TryParse(rawData, out var year))
+    {
+      return $"{year}-01-01";
+    }
+
+    return null;
   }
 }

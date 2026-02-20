@@ -227,7 +227,7 @@ public class FeaturesTests : BaseTest
   }
 
   [Fact]
-  public void IntegrationEventConsumer_ShouldHave_NameEndingWith_IntegrationEventConsumer()
+  public void IntegrationEventHandler_ShouldHave_NameEndingWith_IntegrationEventHandler()
   {
     Types.InAssembly(FeaturesAssembly)
         .That()
@@ -235,7 +235,7 @@ public class FeaturesTests : BaseTest
         .Or()
         .Inherit(typeof(IntegrationEventHandler<>))
         .Should()
-        .HaveNameEndingWith("IntegrationEventConsumer", StringComparison.InvariantCultureIgnoreCase)
+        .HaveNameEndingWith("IntegrationEventHandler", StringComparison.InvariantCultureIgnoreCase)
         .GetResult()
         .ShouldBeSuccessful();
   }

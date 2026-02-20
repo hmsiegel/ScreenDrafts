@@ -1,4 +1,5 @@
-﻿using ScreenDrafts.Modules.Drafts.Features.People;
+﻿using ScreenDrafts.Common.Presentation.Responses;
+using ScreenDrafts.Modules.Drafts.Features.People;
 using ScreenDrafts.Modules.Drafts.Features.People.Create;
 using ScreenDrafts.Modules.Drafts.Features.People.List;
 
@@ -40,6 +41,8 @@ public sealed class ListPeopleTests(DraftsIntegrationTestWebAppFactory factory)
 
     // Assert
     results.IsSuccess.Should().BeTrue();
-    results.Value.People.Should().BeOfType<List<PersonResponse>>();
+    results.Value.People.Should().BeOfType<PagedResult<PersonResponse>>();
+    results.Value.People.Items.Should().HaveCount(10);
+    results.Value.People.TotalCount.Should().Be(10);
   }
 }

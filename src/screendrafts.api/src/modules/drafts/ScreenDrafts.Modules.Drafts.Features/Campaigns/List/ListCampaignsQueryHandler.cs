@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Features.Campaigns.List;
 
-internal sealed class ListCampaignsQueryHandlerb(IDbConnectionFactory dbConnectionFactory)
+internal sealed class ListCampaignsQueryHandler(IDbConnectionFactory dbConnectionFactory)
   : IQueryHandler<ListCampaignsQuery, CampaignCollectionResponse>
 {
   private readonly IDbConnectionFactory _dbConnectionFactory = dbConnectionFactory;
@@ -14,7 +14,7 @@ internal sealed class ListCampaignsQueryHandlerb(IDbConnectionFactory dbConnecti
     const string sql =
       $"""
         SELECT
-          c.publicId AS {nameof(CampaignResponse.PublicId)},
+          c.public_id AS {nameof(CampaignResponse.PublicId)},
           c.name AS {nameof(CampaignResponse.Name)},
           c.slug AS {nameof(CampaignResponse.Slug)},
           c.is_deleted AS {nameof(CampaignResponse.IsDeleted)}

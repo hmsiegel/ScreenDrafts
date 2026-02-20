@@ -3,5 +3,5 @@
 internal static class DrafterRoutes
 {
   public const string Drafters = "/drafters";
-  public const string ById = Drafters + "/{publicId:string}";
+  public const string ById = Drafters + "/{publicId}";
 }

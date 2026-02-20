@@ -21,7 +21,7 @@ internal sealed class DeleteCampaignCommandHandler(ICampaignRepository campaigns
 
     var deleteResult = campaign.SoftDelete();
 
-    if (!deleteResult.IsFailure)
+    if (deleteResult.IsFailure)
     {
       return Result.Failure(CampaignErrors.DeletionFailed(DeleteCampaignRequest.PublicId));
     }

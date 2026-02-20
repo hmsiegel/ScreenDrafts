@@ -17,7 +17,7 @@ internal sealed class GetPersonQueryHandler(IDbConnectionFactory dbConnectionFac
           p.last_name as {nameof(PersonResponse.LastName)},
           p.display_name as {nameof(PersonResponse.DisplayName)},
           d.public_id as {nameof(PersonResponse.DrafterPublicId)},
-          h.public_id as {nameof(PersonResponse.HostPublicId)},
+          h.public_id as {nameof(PersonResponse.HostPublicId)}
         FROM
            drafts.people p
         LEFT JOIN drafts.drafters d ON p.id = d.person_id

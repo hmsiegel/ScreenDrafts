@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Domain.DraftParts;
+﻿using ScreenDrafts.Modules.Drafts.Domain.Participants;
+
+namespace ScreenDrafts.Modules.Drafts.Domain.DraftParts;
 
 public sealed partial class DraftPart
 {
@@ -9,7 +11,7 @@ public sealed partial class DraftPart
     Movie movie,
     int draftPosition,
     int playOrder,
-    ParticipantId participantId,
+    Participant participantId,
     string? movieVersionName = null,
     Func<Guid, bool>? isMovieAlreadyPickedInWholeDraft = null)
   {
@@ -112,7 +114,7 @@ public sealed partial class DraftPart
     SeriesId seriesId,
     DraftType draftType,
     PickId pickId,
-    ParticipantId issuerId)
+    Participant issuerId)
   {
     ArgumentNullException.ThrowIfNull(seriesPolicyProvider);
     ArgumentNullException.ThrowIfNull(seriesId);
@@ -169,7 +171,7 @@ public sealed partial class DraftPart
     SeriesId seriesId,
     DraftType draftType,
     Veto veto,
-    ParticipantId by)
+    Participant by)
   {
     ArgumentNullException.ThrowIfNull(seriesPolicyProvider);
     ArgumentNullException.ThrowIfNull(seriesId);
@@ -334,6 +336,6 @@ public sealed partial class DraftPart
     return series.GetPartBudget(seriesId, draftType,PartIndex, totalParticipants);
   }
 
-  private bool IsParticipantInThisPart(ParticipantId participantId) =>
+  private bool IsParticipantInThisPart(Participant participantId) =>
     _draftPartParticipants.Select(p => p.ParticipantId).Contains(participantId);
 }

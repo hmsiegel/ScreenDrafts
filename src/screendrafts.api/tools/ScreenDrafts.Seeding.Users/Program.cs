@@ -15,6 +15,8 @@ Log.Logger = new LoggerConfiguration()
     .WriteTo.Console(formatProvider: CultureInfo.InvariantCulture)
     .CreateLogger();
 
+var connectionString = configuration.GetConnectionStringOrThrow("Database");
+
 try
 {
   var builder = Host.CreateDefaultBuilder(args) // Ensure the correct namespace is used
@@ -31,13 +33,13 @@ try
 
         // Configure DatabaseSettings for DraftsModule
         services.Configure<DatabaseSettings>(o =>
-          o.ConnectionString = configuration.GetConnectionStringOrThrow("Database"));
+          o.ConnectionString = connectionString);
 
-        Log.Information("Using connection string: {ConnectionString}", configuration.GetConnectionString("Database"));
+        Log.Information("Using connection string: {ConnectionString}", connectionString);
 
         services.AddDraftsSeeding(configuration);
         services.AddUsersSeeding(configuration);
-        services.AddSeedingInfrastructure();
+        services.AddSeedingInfrastructure(connectionString);
         services.AddUserSeeders();
         services.TryAddScoped<SqlInsertHelper>();
         services.AddLogging(builder =>

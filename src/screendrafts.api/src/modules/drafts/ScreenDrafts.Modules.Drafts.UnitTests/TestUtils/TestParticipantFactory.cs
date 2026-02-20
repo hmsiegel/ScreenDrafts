@@ -1,4 +1,7 @@
-﻿namespace ScreenDrafts.Modules.Drafts.UnitTests.TestUtils;
+﻿using ScreenDrafts.Modules.Drafts.Domain.DrafterTeams;
+using ScreenDrafts.Modules.Drafts.Domain.Participants;
+
+namespace ScreenDrafts.Modules.Drafts.UnitTests.TestUtils;
 
 /// <summary>
 /// Factory for creating test participants (Drafters/DrafterTeams) and DraftPartParticipants.
@@ -9,19 +12,19 @@ public static class TestParticipantFactory
   /// <summary>
   /// Creates a ParticipantId from a Drafter.
   /// </summary>
-  public static ParticipantId CreateParticipantId(Drafter drafter)
+  public static Participant CreateParticipantId(Drafter drafter)
   {
     ArgumentNullException.ThrowIfNull(drafter);
-    return new ParticipantId(drafter.Id.Value, ParticipantKind.Drafter);
+    return new Participant(drafter.Id.Value, ParticipantKind.Drafter);
   }
 
   /// <summary>
   /// Creates a ParticipantId from a DrafterTeam.
   /// </summary>
-  public static ParticipantId CreateParticipantId(DrafterTeam drafterTeam)
+  public static Participant CreateParticipantId(DrafterTeam drafterTeam)
   {
     ArgumentNullException.ThrowIfNull(drafterTeam);
-    return new ParticipantId(drafterTeam.Id.Value, ParticipantKind.Team);
+    return new Participant(drafterTeam.Id.Value, ParticipantKind.Team);
   }
 
   /// <summary>

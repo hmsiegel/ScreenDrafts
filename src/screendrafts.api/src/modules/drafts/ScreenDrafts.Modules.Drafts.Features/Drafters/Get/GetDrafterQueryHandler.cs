@@ -13,14 +13,16 @@ internal sealed class GetDrafterQueryHandler(IDbConnectionFactory dbConnectionFa
       $"""
         select
           d.public_id as {nameof(Response.DrafterId)},
-          d.person_id as {nameof(Response.PersonId)},
-          d.display_name as {nameof(Response.DisplayName)},
+          p.public_id as {nameof(Response.PersonId)},
+          p.display_name as {nameof(Response.DisplayName)},
           d.is_retired as {nameof(Response.IsRetired)},
-          d.retired_on_utc as {nameof(Response.RetiredOnUtc)}
+          d.retired_at_utc as {nameof(Response.RetiredOnUtc)}
         from
           drafts.drafters d
+        left join
+          drafts.people p on d.person_id = p.id
         where
-          d.public_id = @DrafterI d
+          d.public_id = @DrafterId
       """;
 
     var drafter = await connection.QuerySingleOrDefaultAsync<Response>(new CommandDefinition(

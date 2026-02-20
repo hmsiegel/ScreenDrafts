@@ -1,4 +1,7 @@
-﻿namespace ScreenDrafts.Seeding.Drafts.Seeders.DraftPartParticipants;
+﻿using ScreenDrafts.Modules.Drafts.Domain.DrafterTeams;
+using ScreenDrafts.Modules.Drafts.Domain.Participants;
+
+namespace ScreenDrafts.Seeding.Drafts.Seeders.DraftPartParticipants;
 
 internal sealed class DraftPartParticipantSeeder(
   DraftsDbContext dbContext,
@@ -66,7 +69,7 @@ internal sealed class DraftPartParticipantSeeder(
       {
         var draftPart = parts[draftPartId];
 
-        var participantId = new ParticipantId(participantGuid, kind);
+        var participantId = new Participant(participantGuid, kind);
 
         entity = DraftPartParticipant.Create(draftPart, participantId);
 

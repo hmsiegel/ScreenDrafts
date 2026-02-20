@@ -1,7 +1,11 @@
+﻿using ScreenDrafts.Common.Presentation.Http.Authentication;
+
 namespace ScreenDrafts.Modules.Drafts.Features.Campaigns.Get;
 
-internal sealed class Endpoint : ScreenDraftsEndpoint<GetCampaignRequest, CampaignResponse>
+internal sealed class Endpoint(IUsersApi usersApi) : ScreenDraftsEndpoint<GetCampaignRequest, CampaignResponse>
 {
+  private readonly IUsersApi _usersApi = usersApi;
+
   public override void Configure()
   {
     Get(CampaignRoutes.ById);
@@ -18,7 +22,18 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<GetCampaignRequest, Campai
 
   public override async Task HandleAsync(GetCampaignRequest req, CancellationToken ct)
   {
-    var GetCampaignQuery = new GetCampaignQuery(req.PublicId);
+    var userRoles = await _usersApi.GetUserRolesAsync(User.GetUserId(), ct);
+
+    var isAdmin = userRoles.Contains(DraftsAuth.Roles.Admin, StringComparer.OrdinalIgnoreCase) || 
+      userRoles.Contains(DraftsAuth.Roles.SuperAdmin, StringComparer.OrdinalIgnoreCase);
+
+    if (!isAdmin && req.IncludeDeleted)
+    {
+      await Send.ErrorsAsync(StatusCodes.Status403Forbidden, ct);
+      return;
+    }
+
+    var GetCampaignQuery = new GetCampaignQuery(req.PublicId, req.IncludeDeleted);
 
     var result = await Sender.Send(GetCampaignQuery, ct);
 

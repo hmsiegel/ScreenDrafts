@@ -17,13 +17,11 @@ internal sealed class KeyCloakAuthDelegatingHandler(IOptions<KeyCloakOptions> op
     {
       var body = await httpResponseMessage.Content.ReadAsStringAsync(cancellationToken);
       Log.Error(
-        "Failed to register user. Status Code: {StatusCode}, Body: {Body}, Request: {Request}",
+        "Failed to send request to KeyCloak. Status Code: {StatusCode}, Body: {Body}, RequestUri: {RequestUri}",
         httpResponseMessage.StatusCode,
         body,
-        request);
+        request.RequestUri);
     }
-
-    httpResponseMessage.EnsureSuccessStatusCode();
 
     return httpResponseMessage;
   }

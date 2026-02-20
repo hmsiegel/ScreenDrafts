@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities;
+﻿using ScreenDrafts.Modules.Drafts.Domain.Participants;
+
+namespace ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities;
 
 public sealed class DraftPosition : Entity<DraftPositionId>
 {
@@ -35,10 +37,10 @@ public sealed class DraftPosition : Entity<DraftPositionId>
   public Guid? AssignedToId { get; private set; } = default!;
   public ParticipantKind? AssignedToKind { get; private set; } = default!;
 
-  public ParticipantId? AssignedTo =>
+  public Participant? AssignedTo =>
     AssignedToId is null || AssignedToKind is null
       ? null
-      : new ParticipantId(AssignedToId.Value, AssignedToKind);
+      : new Participant(AssignedToId.Value, AssignedToKind);
 
 
   public static Result<DraftPosition> Create(
@@ -57,7 +59,7 @@ public sealed class DraftPosition : Entity<DraftPositionId>
       return Result.Failure<DraftPosition>(DraftPositionErrors.NameIsRequired);
     }
 
-    if (picks.Count < 1 && picks.All(x => x > 0) && picks.Select(x => x).Distinct().Count() != picks.Count)
+    if (picks.Count < 1)
     {
       return Result.Failure<DraftPosition>(DraftPositionErrors.PicksAreRequired);
     }
@@ -81,7 +83,7 @@ public sealed class DraftPosition : Entity<DraftPositionId>
     IReadOnlyCollection<int> picks,
     bool hasBonusVeto = false,
     bool hasBonusVetoOverride = false,
-    ParticipantId? assignedTo = null,
+    Participant? assignedTo = null,
     DraftPositionId? id = null)
   {
     if (gameBoard is null)
@@ -116,13 +118,13 @@ public sealed class DraftPosition : Entity<DraftPositionId>
     return Result.Success(entity);
   }
 
-  internal void SeedAssignedTo(ParticipantId? assignedTo)
+  internal void SeedAssignedTo(Participant? assignedTo)
   {
     AssignedToId = assignedTo!.Value.Value;
     AssignedToKind = assignedTo.Value.Kind;
   }
 
-  public Result AssignParticipant(ParticipantId participant)
+  public Result AssignParticipant(Participant participant)
   {
     if (AssignedTo is not null)
     {

@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.UnitTests.GameBoards;
+﻿using ScreenDrafts.Modules.Drafts.Domain.Participants;
+
+namespace ScreenDrafts.Modules.Drafts.UnitTests.GameBoards;
 
 public class GameBoardTests : DraftsBaseTest
 {
@@ -43,8 +45,8 @@ public class GameBoardTests : DraftsBaseTest
     var draftPart = draft.Parts.First();
     var drafter1 = DrafterFactory.CreateDrafter();
     var drafter2 = DrafterFactory.CreateDrafter();
-    draftPart.AddParticipant(ParticipantId.From(drafter1.Id));
-    draftPart.AddParticipant(ParticipantId.From(drafter2.Id));
+    draftPart.AddParticipant(Participant.From(drafter1.Id));
+    draftPart.AddParticipant(Participant.From(drafter2.Id));
 
     var gameBoard = GameBoard.Create(draftPart).Value;
 
@@ -89,8 +91,8 @@ public class GameBoardTests : DraftsBaseTest
     var draftPart = draft.Parts.First();
     var drafter1 = DrafterFactory.CreateDrafter();
     var drafter2 = DrafterFactory.CreateDrafter();
-    draftPart.AddParticipant(ParticipantId.From(drafter1.Id));
-    draftPart.AddParticipant(ParticipantId.From(drafter2.Id));
+    draftPart.AddParticipant(Participant.From(drafter1.Id));
+    draftPart.AddParticipant(Participant.From(drafter2.Id));
     var gameBoard = GameBoard.Create(draftPart).Value;
 
     var draftPositions = new List<DraftPosition>
@@ -135,9 +137,9 @@ public class GameBoardTests : DraftsBaseTest
     var drafter1 = DrafterFactory.CreateDrafter();
     var drafter2 = DrafterFactory.CreateDrafter();
     var drafter3 = DrafterFactory.CreateDrafter();
-    draftPart.AddParticipant(ParticipantId.From(drafter1.Id));
-    draftPart.AddParticipant(ParticipantId.From(drafter2.Id));
-    draftPart.AddParticipant(ParticipantId.From(drafter3.Id));
+    draftPart.AddParticipant(Participant.From(drafter1.Id));
+    draftPart.AddParticipant(Participant.From(drafter2.Id));
+    draftPart.AddParticipant(Participant.From(drafter3.Id));
     var gameBoard = GameBoard.Create(draftPart).Value;
 
     var draftPositions = new List<DraftPosition>

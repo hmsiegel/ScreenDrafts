@@ -52,7 +52,7 @@ public sealed class GetMovieTests(MoviesIntegrationTestWebAppFactory factory)
     {
       productionCompanies.Add(MovieFactory.CreateProductionCompany().Value);
     }
-    var addMovieCommand = new Command(
+    var addMovieCommand = new AddMovieCommand(
       movie.ImdbId,
       movie.Title,
       movie.Year,

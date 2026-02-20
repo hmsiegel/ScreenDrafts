@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.Drafters.ReadModel;
+﻿using ScreenDrafts.Modules.Drafts.Domain.Participants;
+
+namespace ScreenDrafts.Modules.Drafts.Features.Drafters.ReadModel;
 
 public sealed record RolloverSummaryReadModel
 {

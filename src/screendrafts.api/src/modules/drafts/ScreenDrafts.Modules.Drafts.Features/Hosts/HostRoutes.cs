@@ -3,5 +3,5 @@
 internal static class HostRoutes
 {
   public const string Base = "/hosts";
-  public const string ById = Base + "/{publicId:string}";
+  public const string ById = Base + "/{publicId}";
 }

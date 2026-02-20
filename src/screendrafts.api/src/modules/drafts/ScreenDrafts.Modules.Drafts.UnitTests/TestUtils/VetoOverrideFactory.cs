@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.UnitTests.TestUtils;
+﻿using ScreenDrafts.Modules.Drafts.Domain.Participants;
+
+namespace ScreenDrafts.Modules.Drafts.UnitTests.TestUtils;
 
 public static class VetoOverrideFactory
 {
@@ -6,7 +8,7 @@ public static class VetoOverrideFactory
   {
     var veto = VetoFactory.CreateVeto().Value;
     var drafter = DrafterFactory.CreateDrafter();
-    var participantId = ParticipantId.From(drafter.Id);
+    var participantId = Participant.From(drafter.Id);
     var draftPartParticipant = DraftPartParticipant.Create(veto.DraftPart, participantId);
 
     return VetoOverride.Create(

@@ -134,6 +134,7 @@ public sealed class ClearCampaignTests(DraftsIntegrationTestWebAppFactory factor
     };
 
     var result = await Sender.Send(command);
+    result.IsSuccess.Should().BeTrue($"CreateDraftCommand failed: {string.Join(", ", result.Errors.Select(e => e.Description))}");
     return result.Value;
   }
 
@@ -151,6 +152,7 @@ public sealed class ClearCampaignTests(DraftsIntegrationTestWebAppFactory factor
     };
 
     var result = await Sender.Send(command);
+    result.IsSuccess.Should().BeTrue($"CreateSeriesCommand failed: {string.Join(", ", result.Errors.Select(e => e.Description))}");
     return result.Value;
   }
 
@@ -163,6 +165,7 @@ public sealed class ClearCampaignTests(DraftsIntegrationTestWebAppFactory factor
     };
 
     var result = await Sender.Send(command);
+    result.IsSuccess.Should().BeTrue($"CreateCampaignCommand failed: {string.Join(", ", result.Errors.Select(e => e.Description))}");
     return result.Value;
   }
 }

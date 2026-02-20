@@ -20,8 +20,14 @@ internal sealed class DrafterTeamConfiguration : IEntityTypeConfiguration<Drafte
         .HasMaxLength(100)
         .IsRequired();
 
+    builder.Property(x => x.PublicId)
+        .HasMaxLength(100)
+        .IsRequired();
+
     builder.Property(x => x.NumberOfDrafters)
       .IsRequired();
+
+    builder.HasIndex(x => x.PublicId).IsUnique();
 
     builder.HasMany(dt => dt.Drafters)
       .WithMany()

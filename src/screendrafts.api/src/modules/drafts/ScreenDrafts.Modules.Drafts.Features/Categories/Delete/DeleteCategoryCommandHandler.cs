@@ -21,10 +21,12 @@ internal sealed class DeleteCategoryCommandHandler(ICategoryRepository categorie
 
     var deleteResult = category.SoftDelete();
 
-    if (!deleteResult.IsFailure)
+    if (deleteResult.IsFailure)
     {
       return Result.Failure(CategoryErrors.DeletionFailed(DeleteCategoryRequest.PublicId));
     }
+
+    _categoriesRepository.Update(category);
 
     return Result.Success();
   }

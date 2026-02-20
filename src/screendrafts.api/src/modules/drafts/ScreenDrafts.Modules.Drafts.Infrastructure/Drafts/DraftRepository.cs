@@ -75,9 +75,10 @@ internal sealed class DraftRepository(DraftsDbContext dbContext) : IDraftReposit
     throw new NotImplementedException();
   }
 
-  public Task<Draft?> GetDraftByPublicId(string publicId, CancellationToken cancellationToken)
+  public async Task<Draft?> GetDraftByPublicId(string publicId, CancellationToken cancellationToken)
   {
-    throw new NotImplementedException();
+    return await _dbContext.Drafts
+      .FirstOrDefaultAsync(d => d.PublicId == publicId, cancellationToken);
   }
 
   public Task<bool> ExistsAsync(DraftId id, CancellationToken cancellationToken)

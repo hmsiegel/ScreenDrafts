@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Drafts.Features.Categories.Edit;
+﻿namespace ScreenDrafts.Modules.Drafts.Features.Categories.Edit;
 
 internal sealed class Validator : AbstractValidator<EditCategoryCommand>
 {
@@ -16,10 +16,6 @@ internal sealed class Validator : AbstractValidator<EditCategoryCommand>
     RuleFor(x => x.Description)
       .MaximumLength(500).WithMessage("Category description must not exceed 500 characters.")
       .When(x => x.Description is not null);
-
-    RuleFor(x => x)
-      .Must(x => x.Name is not null || x.Description is not null)
-      .WithMessage("At least one field (Name or Description) must be provided for update.");
   }
 }
 

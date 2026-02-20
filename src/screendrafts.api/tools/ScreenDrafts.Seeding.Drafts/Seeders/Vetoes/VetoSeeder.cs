@@ -1,5 +1,6 @@
 ﻿using System.Xml;
-using ScreenDrafts.Modules.Drafts.Domain.Drafters.Constants;
+
+using ScreenDrafts.Modules.Drafts.Domain.Participants;
 
 namespace ScreenDrafts.Seeding.Drafts.Seeders.Vetoes;
 
@@ -150,7 +151,7 @@ internal sealed class VetoSeeder(
             continue;
           }
 
-          var communityParticipantId = new ParticipantId(record.IssuedByParticipantIdValue, kind);
+          var communityParticipantId = new Participant(record.IssuedByParticipantIdValue, kind);
 
           issuedByParticipant = DraftPartParticipant.Create(draftPart, communityParticipantId);
         }

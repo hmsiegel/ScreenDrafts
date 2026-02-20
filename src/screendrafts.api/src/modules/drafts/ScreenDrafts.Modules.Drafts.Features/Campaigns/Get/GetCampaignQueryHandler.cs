@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Features.Campaigns.Get;
 
-internal sealed class GetCampaignQueryHandlerb(IDbConnectionFactory dbConnectionFactory) : IQueryHandler<GetCampaignQuery, CampaignResponse>
+internal sealed class GetCampaignQueryHandler(IDbConnectionFactory dbConnectionFactory) : IQueryHandler<GetCampaignQuery, CampaignResponse>
 {
   private readonly IDbConnectionFactory _dbConnectionFactory = dbConnectionFactory;
 
@@ -11,18 +11,20 @@ internal sealed class GetCampaignQueryHandlerb(IDbConnectionFactory dbConnection
     const string sql =
       $"""
         SELECT
-          c.publicId AS {nameof(CampaignResponse.PublicId)},
+          c.public_id AS {nameof(CampaignResponse.PublicId)},
           c.name AS {nameof(CampaignResponse.Name)},
-          c.slug AS {nameof(CampaignResponse.Slug)}
+          c.slug AS {nameof(CampaignResponse.Slug)},
+          c.is_deleted AS {nameof(CampaignResponse.IsDeleted)}
         FROM
           drafts.campaigns c
         WHERE
-          c.publicId = @PublicId AND c.is_deleted = FALSE
+          c.public_id = @PublicId
+          AND (@IncludeDeleted = TRUE OR c.is_deleted = FALSE)
       """;
 
     var result = await connection.QuerySingleOrDefaultAsync<CampaignResponse>(new CommandDefinition(
       sql,
-      new { GetCampaignRequest.PublicId },
+      new { GetCampaignRequest.PublicId, GetCampaignRequest.IncludeDeleted },
       cancellationToken: cancellationToken));
 
     return result is not null

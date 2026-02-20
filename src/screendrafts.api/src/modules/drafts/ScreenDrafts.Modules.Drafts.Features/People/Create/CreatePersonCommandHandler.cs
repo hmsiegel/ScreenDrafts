@@ -17,7 +17,7 @@ internal sealed class CreatePersonCommandHandler(
     Result<Person> createResult;
     if (CreatePersonRequest.UserId is not null)
     {
-      var user = await _usersApi.GetUserByPublicId(CreatePersonRequest.PublicId, cancellationToken);
+      var user = await _usersApi.GetUserById(CreatePersonRequest.UserId.Value, cancellationToken);
 
       if (user is null)
       {

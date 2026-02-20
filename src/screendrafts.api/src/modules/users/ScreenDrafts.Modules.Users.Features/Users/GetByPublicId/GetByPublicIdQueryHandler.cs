@@ -14,9 +14,9 @@ internal sealed class GetByPublicIdQueryHandler(IDbConnectionFactory dbConnectio
         u.email as {nameof(GetByPublicIdResponse.Email)},
         u.first_name As {nameof(GetByPublicIdResponse.FirstName)},
         u.middle_name As {nameof(GetByPublicIdResponse.MiddleName)},
-        u.last_name As {nameof(GetByPublicIdResponse.LastName)},
+        u.last_name As {nameof(GetByPublicIdResponse.LastName)}
       FROM users.users u
-      WHERE id = @UserId
+      WHERE u.public_id = @PublicId
       """;
 
     var user = await connection.QuerySingleOrDefaultAsync<GetByPublicIdResponse>(new CommandDefinition(

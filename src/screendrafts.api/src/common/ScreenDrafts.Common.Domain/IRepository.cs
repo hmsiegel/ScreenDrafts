@@ -7,6 +7,8 @@ public interface IRepository<T, TId> : IRepository
   void Delete(T entity);
   Task<T?> GetByIdAsync(TId id, CancellationToken cancellationToken);
   Task<bool> ExistsAsync(TId id, CancellationToken cancellationToken);
+  Task<T?> GetByPublicIdAsync(string publicId, CancellationToken cancellationToken);
+  Task<List<T>> GetAllAsync(CancellationToken cancellationToken);
 }
 
 public interface IRepository;

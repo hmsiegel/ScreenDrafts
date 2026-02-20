@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Domain.DraftParts;
+﻿using ScreenDrafts.Modules.Drafts.Domain.Participants;
+
+namespace ScreenDrafts.Modules.Drafts.Domain.DraftParts;
 public sealed partial class DraftPart
 {
   private readonly List<DraftHost> _draftHosts = [];
@@ -12,13 +14,13 @@ public sealed partial class DraftPart
   public IReadOnlyCollection<DraftHost> DraftHosts => _draftHosts;
   public DraftHost? PrimaryHost => _draftHosts.FirstOrDefault(h => h.Role == HostRole.Primary);
   public IEnumerable<DraftHost> CoHosts => _draftHosts.Where(h => h.Role == HostRole.CoHost);
-  public IReadOnlyCollection<ParticipantId> Participants => _draftPartParticipants
+  public IReadOnlyCollection<Participant> Participants => _draftPartParticipants
     .Select(dp => dp.ParticipantId)
     .ToList()
     .AsReadOnly();
 
   // Participants
-  public Result SetParticipants(IReadOnlyList<ParticipantId> participants)
+  public Result SetParticipants(IReadOnlyList<Participant> participants)
   {
     Guard.Against.Null(participants);
     _draftPartParticipants.Clear();
@@ -28,7 +30,7 @@ public sealed partial class DraftPart
     return Result.Success();
   }
 
-  public Result AddParticipant(ParticipantId participant)
+  public Result AddParticipant(Participant participant)
   {
     Guard.Against.Null(participant);
     if (_draftPartParticipants.Any(dp => dp.ParticipantId == participant))
@@ -39,7 +41,7 @@ public sealed partial class DraftPart
     return Result.Success();
   }
 
-  public Result RemoveParticipant(ParticipantId participant)
+  public Result RemoveParticipant(Participant participant)
   {
     Guard.Against.Null(participant);
     var link = _draftPartParticipants.FirstOrDefault(dp => dp.ParticipantId == participant);
@@ -51,12 +53,12 @@ public sealed partial class DraftPart
     return Result.Success();
   }
 
-  public bool HasParticipant(ParticipantId participant)
+  public bool HasParticipant(Participant participant)
   {
     Guard.Against.Null(participant);
     return _draftPartParticipants.Any(dp => dp.ParticipantId == participant);
   }
-  private DraftPartParticipant GetParticipantRequired(ParticipantId participantId)
+  private DraftPartParticipant GetParticipantRequired(Participant participantId)
   {
     var participant = _draftPartParticipants.FirstOrDefault(dp => dp.ParticipantId == participantId);
     return participant is null
@@ -65,7 +67,7 @@ public sealed partial class DraftPart
   }
 
   // Hosts
-  internal Result SetPrimaryHost(Host host)
+  public Result SetPrimaryHost(Host host)
   {
     Guard.Against.Null(host);
 
@@ -88,7 +90,7 @@ public sealed partial class DraftPart
     return Result.Success();
   }
 
-  internal Result AddCoHost(Host host)
+  public Result AddCoHost(Host host)
   {
     Guard.Against.Null(host);
     if (_draftHosts.Any(h => h.HostId == host.Id && h.Role == HostRole.CoHost))

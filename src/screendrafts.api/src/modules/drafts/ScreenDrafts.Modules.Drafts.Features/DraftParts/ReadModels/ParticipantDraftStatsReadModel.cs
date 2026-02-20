@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.ReadModels;
+﻿using ScreenDrafts.Modules.Drafts.Domain.Participants;
+
+namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.ReadModels;
 
 public sealed record ParticipantDraftStatsReadModel
 {

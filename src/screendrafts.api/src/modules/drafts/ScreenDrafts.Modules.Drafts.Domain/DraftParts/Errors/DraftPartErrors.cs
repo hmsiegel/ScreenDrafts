@@ -1,5 +1,6 @@
 ﻿
 using ScreenDrafts.Common.Abstractions.Errors;
+using ScreenDrafts.Modules.Drafts.Domain.Participants;
 
 namespace ScreenDrafts.Modules.Drafts.Domain.DraftParts.Errors;
 
@@ -76,6 +77,21 @@ public static class DraftPartErrors
     description: "Maximum position is out of range."
   );
 
+  public static readonly SDError ParticpantPublicIdRequired = SDError.Failure(
+    code: "DraftPart.ParticpantPublicIdRequired",
+    description: "Participant public ID is required."
+  );
+
+  public static readonly SDError InvalidParticipantKind = SDError.Failure(
+    code: "DraftPart.InvalidParticipantKind",
+    description: "Invalid participant kind."
+  );
+
+  public static SDError NotFound(Guid draftPartId) => SDError.NotFound(
+    code: "DraftPart.NotFound",
+        description: $"Draft part with ID '{draftPartId}' is not found."
+  );
+
   public static SDError ParticipantAlreadyAdded(Guid participantId) =>
     SDError.Conflict(
       code: "DraftPart.ParticipantAlreadyAdded",
@@ -117,13 +133,13 @@ public static class DraftPartErrors
       description: $"Veto with ID '{value}' is not found."
     );
 
-  public static SDError ParticipantDoesNotBelongToThisDraftPart(ParticipantId playedBy) =>
+  public static SDError ParticipantDoesNotBelongToThisDraftPart(Participant playedBy) =>
     SDError.Conflict(
       code: "DraftPart.ParticipantDoesNotBelongToThisDraftPart",
       description: $"Participant with ID '{playedBy}' does not belong to this draft part."
     );
 
-  public static SDError ParticipantAlreadyHasTriviaResult(ParticipantId participantId) => SDError.Conflict(
+  public static SDError ParticipantAlreadyHasTriviaResult(Participant participantId) => SDError.Conflict(
       code: "DraftPart.ParticipantAlreadyHasTriviaResult",
       description: $"Participant with ID '{participantId}' already has a trivia result."
     );

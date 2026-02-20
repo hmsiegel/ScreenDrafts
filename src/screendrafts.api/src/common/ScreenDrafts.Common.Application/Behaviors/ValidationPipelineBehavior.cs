@@ -1,7 +1,4 @@
 ﻿using IBaseRequest = ScreenDrafts.Common.Application.Messaging.IBaseRequest;
-using ScreenDrafts.Common.Application.Messaging;
-using ScreenDrafts.Common.Abstractions.Results;
-using ScreenDrafts.Common.Abstractions.Errors;
 
 namespace ScreenDrafts.Common.Application.Behaviors;
 

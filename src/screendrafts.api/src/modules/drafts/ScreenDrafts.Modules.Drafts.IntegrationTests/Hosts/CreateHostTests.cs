@@ -167,6 +167,6 @@ public sealed class CreateHostTests(DraftsIntegrationTestWebAppFactory factory)
     result.Should().NotBeNull();
     result.IsSuccess.Should().BeTrue();
     result.Value.Should().NotBeNullOrEmpty();
-    result.Value.Should().StartWith("host_");
+    result.Value.Should().StartWith("h_");
   }
 }

@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Seeding.Drafts.Seeders.DraftPositions;
+﻿using ScreenDrafts.Modules.Drafts.Domain.Participants;
+
+namespace ScreenDrafts.Seeding.Drafts.Seeders.DraftPositions;
 
 internal sealed class DraftPositionsSeeder(
   ILogger<DraftPositionsSeeder> logger,
@@ -87,9 +89,9 @@ internal sealed class DraftPositionsSeeder(
         continue;
       }
 
-      ParticipantId? assignedTo = record.AssignedToId is null
+      Participant? assignedTo = record.AssignedToId is null
         ? null
-        : new ParticipantId(record.AssignedToId.Value, ParticipantKind.FromValue(record.AssignedToKind!.Value));
+        : new Participant(record.AssignedToId.Value, ParticipantKind.FromValue(record.AssignedToKind!.Value));
 
       var draftPositionResult = DraftPosition.SeedCreate(
         gameBoard: gameBoard,

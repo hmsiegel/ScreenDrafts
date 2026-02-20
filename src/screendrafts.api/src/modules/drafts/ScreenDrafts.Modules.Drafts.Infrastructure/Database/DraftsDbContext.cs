@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database;
+﻿using ScreenDrafts.Modules.Drafts.Domain.DrafterTeams;
+
+namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database;
 
 public sealed class DraftsDbContext(DbContextOptions<DraftsDbContext> options)
   : DbContext(options), IUnitOfWork

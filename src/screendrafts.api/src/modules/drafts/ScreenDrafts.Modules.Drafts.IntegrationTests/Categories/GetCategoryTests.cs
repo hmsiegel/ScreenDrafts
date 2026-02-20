@@ -6,7 +6,7 @@ namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Categories;
 public sealed class GetCategoryTests(DraftsIntegrationTestWebAppFactory factory) : DraftsIntegrationTest(factory)
 {
   [Fact]
-  public async Task GetCategoryAsync_ByPublicId_ShouldSucceedAsync()
+  public async Task GetCategory_ByPublicId_ShouldSucceedAsync()
   {
     // Arrange
     var name = Faker.Commerce.Categories(1)[0];
@@ -36,10 +36,10 @@ public sealed class GetCategoryTests(DraftsIntegrationTestWebAppFactory factory)
   }
 
   [Fact]
-  public async Task GetCategoryAsync_WithNonExistentPublicId_ShouldFailAsync()
+  public async Task GetCategory_WithNonExistentPublicId_ShouldFailAsync()
   {
     // Arrange
-    var nonExistentPublicId = Faker.Random.AlphaNumeric(10);
+    var nonExistentPublicId = "ca_nonexistent123";
     var query = new GetCategoryQuery(nonExistentPublicId);
 
     // Act
@@ -51,7 +51,7 @@ public sealed class GetCategoryTests(DraftsIntegrationTestWebAppFactory factory)
   }
 
   [Fact]
-  public async Task GetCategoryAsync_DeletedCategory_ShouldStillReturnAsync()
+  public async Task GetCategory_DeletedCategory_ShouldStillReturnAsync()
   {
     // Arrange
     var name = Faker.Commerce.Categories(1)[0];

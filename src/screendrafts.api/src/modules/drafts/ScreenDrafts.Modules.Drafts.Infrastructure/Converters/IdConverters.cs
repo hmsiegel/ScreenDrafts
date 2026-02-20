@@ -1,4 +1,7 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Infrastructure.Converters;
+﻿using ScreenDrafts.Modules.Drafts.Domain.DrafterTeams;
+using ScreenDrafts.Modules.Drafts.Domain.Participants;
+
+namespace ScreenDrafts.Modules.Drafts.Infrastructure.Converters;
 
 internal static class IdConverters
 {

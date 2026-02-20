@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.UnitTests.Drafters.ValueObjects;
+﻿using ScreenDrafts.Modules.Drafts.Domain.Participants;
+
+namespace ScreenDrafts.Modules.Drafts.UnitTests.Drafters.ValueObjects;
 
 public class ParticipantIdTests : DraftsBaseTest
 {
@@ -10,7 +12,7 @@ public class ParticipantIdTests : DraftsBaseTest
     var kind = ParticipantKind.Drafter;
 
     // Act
-    var participantId = new ParticipantId(id, kind);
+    var participantId = new Participant(id, kind);
 
     // Assert
     participantId.Value.Should().Be(id);
@@ -23,7 +25,7 @@ public class ParticipantIdTests : DraftsBaseTest
     // Arrange
     var id = Guid.NewGuid();
     var kind = ParticipantKind.Drafter;
-    var participantId = new ParticipantId(id, kind);
+    var participantId = new Participant(id, kind);
 
     // Act
     var hasValue = participantId.HasNoValue;
@@ -38,7 +40,7 @@ public class ParticipantIdTests : DraftsBaseTest
     // Arrange
     var id = Guid.Empty;
     var kind = ParticipantKind.Drafter;
-    var participantId = new ParticipantId(id, kind);
+    var participantId = new Participant(id, kind);
 
     // Act
     var hasNoValue = participantId.HasNoValue;
@@ -53,7 +55,7 @@ public class ParticipantIdTests : DraftsBaseTest
     // Arrange
     var id = Guid.Empty;
     var kind = ParticipantKind.Drafter;
-    var participantId = new ParticipantId(id, kind);
+    var participantId = new Participant(id, kind);
 
     // Act
     var hasValue = participantId.HasNoValue;
@@ -68,8 +70,8 @@ public class ParticipantIdTests : DraftsBaseTest
     // Arrange
     var id = Guid.NewGuid();
     var kind = ParticipantKind.Drafter;
-    var participantId1 = new ParticipantId(id, kind);
-    var participantId2 = new ParticipantId(id, kind);
+    var participantId1 = new Participant(id, kind);
+    var participantId2 = new Participant(id, kind);
 
     // Act & Assert
     participantId1.Should().Be(participantId2);
@@ -81,8 +83,8 @@ public class ParticipantIdTests : DraftsBaseTest
   {
     // Arrange
     var kind = ParticipantKind.Drafter;
-    var participantId1 = new ParticipantId(Guid.NewGuid(), kind);
-    var participantId2 = new ParticipantId(Guid.NewGuid(), kind);
+    var participantId1 = new Participant(Guid.NewGuid(), kind);
+    var participantId2 = new Participant(Guid.NewGuid(), kind);
 
     // Act & Assert
     participantId1.Should().NotBe(participantId2);
@@ -94,8 +96,8 @@ public class ParticipantIdTests : DraftsBaseTest
   {
     // Arrange
     var id = Guid.NewGuid();
-    var participantId1 = new ParticipantId(id, ParticipantKind.Drafter);
-    var participantId2 = new ParticipantId(id, ParticipantKind.Team);
+    var participantId1 = new Participant(id, ParticipantKind.Drafter);
+    var participantId2 = new Participant(id, ParticipantKind.Team);
 
     // Act & Assert
     participantId1.Should().NotBe(participantId2);
@@ -106,7 +108,7 @@ public class ParticipantIdTests : DraftsBaseTest
   public void IsDrafter_ShouldReturnTrue_WhenKindIsDrafter()
   {
     // Arrange
-    var participantId = new ParticipantId(Guid.NewGuid(), ParticipantKind.Drafter);
+    var participantId = new Participant(Guid.NewGuid(), ParticipantKind.Drafter);
 
     // Act
     var isDrafter = participantId.IsDrafter;
@@ -119,7 +121,7 @@ public class ParticipantIdTests : DraftsBaseTest
   public void IsTeam_ShouldReturnTrue_WhenKindIsTeam()
   {
     // Arrange
-    var participantId = new ParticipantId(Guid.NewGuid(), ParticipantKind.Team);
+    var participantId = new Participant(Guid.NewGuid(), ParticipantKind.Team);
 
     // Act
     var isTeam = participantId.IsTeam;

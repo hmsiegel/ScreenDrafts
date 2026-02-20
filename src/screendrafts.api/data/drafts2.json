@@ -3686,5 +3686,53 @@
     "draft_status": 3,
     "series_id": "c2100630-3d3d-4d46-ac07-74a3c960c485",
     "campaign_id": null
+  },
+  {
+    "id": null,
+    "title": "1980 mini-Mega",
+    "draft_type": 1,
+    "draft_status": 0,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": null,
+    "title": "Holly Hunter",
+    "draft_type": 0,
+    "draft_status": 0,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": null,
+    "title": "George A. Romero",
+    "draft_type": 0,
+    "draft_status": 0,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": null,
+    "title": "Diane Keaton",
+    "draft_type": 0,
+    "draft_status": 0,
+    "series_id": "ce01a65e-2290-4a9b-baeb-05a5a7445004",
+    "campaign_id": null
+  },
+  {
+    "id": null,
+    "title": "Paul Thomas Anderson Music Videos",
+    "draft_type": 0,
+    "draft_status": 3,
+    "series_id": "3de9d647-af48-492c-98e0-00ca3909c4d6",
+    "campaign_id": null
+  },
+  {
+    "id": null,
+    "title": "2025 Franchise Supplements Super Draft",
+    "draft_type": 3,
+    "draft_status": 3,
+    "series_id": "3de9d647-af48-492c-98e0-00ca3909c4d6",
+    "campaign_id": null
   }
 ]

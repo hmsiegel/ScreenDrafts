@@ -91,7 +91,7 @@ public class DraftCategoryTests : DraftsBaseTest
     var draftCategory2 = DraftCategory.Create(draft, category2);
 
     // Assert
-    draftCategory1.DraftId.Should().NotBe(draftCategory2.DraftId);
+    draftCategory1.CategoryId.Should().NotBe(draftCategory2.CategoryId);
   }
 
   [Fact]

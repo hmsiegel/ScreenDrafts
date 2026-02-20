@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Common.Abstractions.Results;
-
-namespace ScreenDrafts.Common.Application.Messaging;
+﻿namespace ScreenDrafts.Common.Application.Messaging;
 
 public interface ICommand : IRequest<Result>, IBaseCommand;
 

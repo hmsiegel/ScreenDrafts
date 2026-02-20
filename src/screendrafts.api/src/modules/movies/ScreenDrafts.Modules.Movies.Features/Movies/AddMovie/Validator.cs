@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Movies.Features.Movies.AddMovie;
 
-internal sealed class Validator : AbstractValidator<Command>
+internal sealed class Validator : AbstractValidator<AddMovieCommand>
 {
   public Validator()
   {

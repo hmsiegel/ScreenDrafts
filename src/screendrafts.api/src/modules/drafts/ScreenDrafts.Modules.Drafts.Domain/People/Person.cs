@@ -77,7 +77,7 @@ public sealed class Person : AggregateRoot<PersonId, Guid>
 
     if (UserId is not null)
     {
-      return Result.Failure(PersonErrors.UserAlreadyAssigned(userId));
+      return Result.Failure(PersonErrors.UserAlreadyAssigned(UserId.Value));
     }
 
     UserId = userId;

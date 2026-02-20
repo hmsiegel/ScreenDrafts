@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Seeding.Drafts.Seeders.People;
+﻿using ScreenDrafts.Modules.Drafts.Domain.DrafterTeams;
+
+namespace ScreenDrafts.Seeding.Drafts.Seeders.People;
 
 internal sealed class DrafterTeamsSeeder(
   ILogger<DrafterTeamsSeeder> logger,

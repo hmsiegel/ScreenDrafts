@@ -11,13 +11,14 @@ internal sealed class GetCategoryQueryHandler (IDbConnectionFactory dbConnection
     const string sql =
       $"""
         SELECT
-          c.publicId AS {nameof(CategoryResponse.PublicId)},
+          c.public_id AS {nameof(CategoryResponse.PublicId)},
           c.name AS {nameof(CategoryResponse.Name)},
-          c.description AS {nameof(CategoryResponse.Description)}
+          c.description AS {nameof(CategoryResponse.Description)},
+          c.is_deleted AS {nameof(CategoryResponse.IsDeleted)}
         FROM
           drafts.categories c
         WHERE
-          c.publicId = @PublicId;
+          c.public_id = @PublicId;
       """;
 
     var result = await connection.QuerySingleOrDefaultAsync<CategoryResponse>(new CommandDefinition(

@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Seeding.Drafts.Seeders.VetoOverrides;
+﻿using ScreenDrafts.Modules.Drafts.Domain.Participants;
+
+namespace ScreenDrafts.Seeding.Drafts.Seeders.VetoOverrides;
 
 internal sealed class VetoOverrideSeeder(
   DraftsDbContext dbContext,

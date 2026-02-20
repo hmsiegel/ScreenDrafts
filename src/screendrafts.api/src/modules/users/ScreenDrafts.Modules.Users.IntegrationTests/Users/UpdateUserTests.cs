@@ -47,7 +47,7 @@ public class UpdateUserTests(UsersIntegrationTestWebAppFactory factory) : UsersI
     // Assert
     updateResult.IsFailure.Should().BeTrue();
     updateResult.Errors[0].Type.Should().Be(ErrorType.NotFound);
-    updateResult.Errors[0].Should().Be(UserErrors.NotFound(publicId));
+    updateResult.Errors[0].Should().Be(UserErrors.PublicIdNotFound(publicId));
   }
 
   [Fact]

@@ -162,6 +162,7 @@ public sealed class UpdateDraftTests(DraftsIntegrationTestWebAppFactory factory)
     };
 
     var result = await Sender.Send(command);
+    result.IsSuccess.Should().BeTrue($"CreateDraft should succeed, but got errors: {string.Join(", ", result.Errors)}");
     return result.Value;
   }
 
@@ -179,6 +180,7 @@ public sealed class UpdateDraftTests(DraftsIntegrationTestWebAppFactory factory)
     };
 
     var result = await Sender.Send(command);
+    result.IsSuccess.Should().BeTrue($"CreateSeries should succeed, but got errors: {string.Join(", ", result.Errors)}");
     return result.Value;
   }
 
@@ -191,6 +193,7 @@ public sealed class UpdateDraftTests(DraftsIntegrationTestWebAppFactory factory)
     };
 
     var result = await Sender.Send(command);
+    result.IsSuccess.Should().BeTrue($"CreateCampaign should succeed, but got errors: {string.Join(", ", result.Errors)}");
     return result.Value;
   }
 }

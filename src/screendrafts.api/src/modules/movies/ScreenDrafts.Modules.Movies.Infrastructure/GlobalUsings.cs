@@ -17,6 +17,8 @@ global using Microsoft.Extensions.Options;
 
 global using Newtonsoft.Json;
 
+global using Npgsql;
+
 global using Quartz;
 
 global using ScreenDrafts.Common.Application.Clock;

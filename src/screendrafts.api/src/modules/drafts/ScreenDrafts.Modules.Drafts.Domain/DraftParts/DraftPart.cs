@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Domain.DraftParts;
+﻿using ScreenDrafts.Modules.Drafts.Domain.Participants;
+
+namespace ScreenDrafts.Modules.Drafts.Domain.DraftParts;
 
 public sealed partial class DraftPart : AggregateRoot<DraftPartId, Guid>
 {
@@ -23,6 +25,7 @@ public sealed partial class DraftPart : AggregateRoot<DraftPartId, Guid>
     MinPosition = minPosition;
     MaxPosition = maxPosition;
     CreatedAtUtc = createdAtUtc;
+    Status = DraftPartStatus.Created;
     MovieVersionPolicyType = DraftPartMovieVersionPolicyType.None;
   }
 
@@ -152,7 +155,7 @@ public sealed partial class DraftPart : AggregateRoot<DraftPartId, Guid>
     return draftPart;
   }
 
-  internal Result ApplyRollover(ParticipantId participantId, bool isVeto)
+  internal Result ApplyRollover(Participant participantId, bool isVeto)
   {
     if (!IsParticipantInThisPart(participantId))
     {
@@ -180,7 +183,7 @@ public sealed partial class DraftPart : AggregateRoot<DraftPartId, Guid>
     return release;
   }
 
-  internal Result AddTriviaResult(ParticipantId participantId, int position, int questionsWon, bool awardVeto, bool awardVetoOverride)
+  internal Result AddTriviaResult(Participant participantId, int position, int questionsWon, bool awardVeto, bool awardVetoOverride)
   {
     if (Status != DraftPartStatus.InProgress)
     {

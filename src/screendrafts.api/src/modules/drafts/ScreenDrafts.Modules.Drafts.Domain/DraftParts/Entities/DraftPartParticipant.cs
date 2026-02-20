@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities;
+﻿using ScreenDrafts.Modules.Drafts.Domain.Participants;
+
+namespace ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities;
 
 public sealed class DraftPartParticipant : Entity<DraftPartParticipantId>
 {
@@ -8,7 +10,7 @@ public sealed class DraftPartParticipant : Entity<DraftPartParticipantId>
 
   private DraftPartParticipant(
     DraftPart draftPart,
-    ParticipantId participantId,
+    Participant participantId,
     DraftPartParticipantId? id = null)
     : base(id ?? DraftPartParticipantId.CreateUnique())
   {
@@ -29,7 +31,7 @@ public sealed class DraftPartParticipant : Entity<DraftPartParticipantId>
   public Guid ParticipantIdValue { get; private set; }
   public ParticipantKind ParticipantKindValue { get; private set; } = default!;
 
-  public ParticipantId ParticipantId => new(ParticipantIdValue, ParticipantKindValue);
+  public Participant ParticipantId => new(ParticipantIdValue, ParticipantKindValue);
 
   public int StartingVetoes { get; private set; } = 1;
 
@@ -60,7 +62,7 @@ public sealed class DraftPartParticipant : Entity<DraftPartParticipantId>
 
   public static DraftPartParticipant Create(
     DraftPart draftPart,
-    ParticipantId participantId)
+    Participant participantId)
   {
     ArgumentNullException.ThrowIfNull(draftPart);
 

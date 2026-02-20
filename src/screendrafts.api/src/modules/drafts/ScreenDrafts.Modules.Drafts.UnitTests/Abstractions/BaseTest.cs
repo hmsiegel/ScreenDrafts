@@ -1,4 +1,6 @@
 ﻿using ScreenDrafts.Common.Abstractions.Exceptions;
+using ScreenDrafts.Modules.Drafts.Domain.DrafterTeams;
+using ScreenDrafts.Modules.Drafts.Domain.Participants;
 
 namespace ScreenDrafts.Modules.Drafts.UnitTests.Abstractions;
 
@@ -102,12 +104,12 @@ public abstract class DraftsBaseTest : BaseTest
         CreateSeries().Id).Value).Value;
   }
 
-  protected static ParticipantId CreateParticipantId(Drafter drafter)
+  protected static Participant CreateParticipantId(Drafter drafter)
   {
     return TestParticipantFactory.CreateParticipantId(drafter);
   }
 
-  protected static ParticipantId CreateParticipantId(DrafterTeam drafterTeam)
+  protected static Participant CreateParticipantId(DrafterTeam drafterTeam)
   {
     return TestParticipantFactory.CreateParticipantId(drafterTeam);
   }

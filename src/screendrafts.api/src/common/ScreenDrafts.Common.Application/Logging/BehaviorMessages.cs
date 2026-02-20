@@ -12,10 +12,10 @@ public static class BehaviorMessages
     new EventId(2, nameof(RequestProcessedSuccessfully)),
     "Completed request {RequestName} successfully");
 
-  private static readonly Action<ILogger, string, Exception?> _requestProcessedWithError = LoggerMessage.Define<string>(
+  private static readonly Action<ILogger, string, string, Exception?> _requestProcessedWithError = LoggerMessage.Define<string, string>(
     LogLevel.Error,
     new EventId(3, nameof(RequestProcessedWithError)),
-    "Completed request {RequestName} with error");
+    "Completed request {RequestName} with errors: {Errors}");
 
   private static readonly Action<ILogger, string, Exception?> _unhandledException = LoggerMessage.Define<string>(
     LogLevel.Error,
@@ -26,7 +26,7 @@ public static class BehaviorMessages
 
   public static void RequestProcessedSuccessfully(ILogger logger, string requestName) => _requestProcessedSuccessfully(logger, requestName, null);
 
-  public static void RequestProcessedWithError(ILogger logger, string requestName) => _requestProcessedWithError(logger, requestName, null);
+  public static void RequestProcessedWithError(ILogger logger, string requestName, SDError[] errors) => _requestProcessedWithError(logger, requestName, string.Join(", ", errors.Select(e => e.ToString())), null);
 
   public static void UnhandledException(ILogger logger, string requestName) => _unhandledException(logger, requestName, null);
 }

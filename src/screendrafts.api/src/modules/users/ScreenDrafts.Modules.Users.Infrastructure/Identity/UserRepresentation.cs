@@ -7,4 +7,5 @@ internal sealed record UserRepresentation(
     string LastName,
     bool Enabled,
     bool EmailVerified,
-    CredentialRepresentation[] Credentials);
+    CredentialRepresentation[] Credentials,
+    Dictionary<string, List<string>>? Attributes = null);

@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.UnitTests.DrafterTeams;
+﻿using ScreenDrafts.Modules.Drafts.Domain.DrafterTeams;
+
+namespace ScreenDrafts.Modules.Drafts.UnitTests.DrafterTeams;
 
 public class DrafterTeamTests : DraftsBaseTest
 {

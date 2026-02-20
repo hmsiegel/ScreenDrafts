@@ -49,6 +49,7 @@ internal sealed class ListPeopleQueryHandler(IDbConnectionFactory connectionFact
             FROM drafts.drafters d
             WHERE d.person_id = p.id
           )
+        )
         AND (
           @HasHost IS NULL OR
           @HasHost = EXISTS (
@@ -120,6 +121,8 @@ internal sealed class ListPeopleQueryHandler(IDbConnectionFactory connectionFact
     }));
   }
 }
+
+
 
 
 

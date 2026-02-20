@@ -13,7 +13,8 @@ public sealed class ListDraftersTests(DraftsIntegrationTestWebAppFactory factory
     var request = new ListDraftersRequest
     {
       Page = 1,
-      PageSize = 10
+      PageSize = 10,
+      Retired = "all"
     };
     var query = new ListDraftersQuery(request);
 
@@ -40,7 +41,8 @@ public sealed class ListDraftersTests(DraftsIntegrationTestWebAppFactory factory
     var request = new ListDraftersRequest
     {
       Page = 1,
-      PageSize = 10
+      PageSize = 10,
+      Retired = "all"
     };
     var query = new ListDraftersQuery(request);
 
@@ -68,7 +70,8 @@ public sealed class ListDraftersTests(DraftsIntegrationTestWebAppFactory factory
     var request = new ListDraftersRequest
     {
       Page = 1,
-      PageSize = 2
+      PageSize = 2,
+      Retired = "all"
     };
     var query = new ListDraftersQuery(request);
 
@@ -99,7 +102,8 @@ public sealed class ListDraftersTests(DraftsIntegrationTestWebAppFactory factory
     var request = new ListDraftersRequest
     {
       Page = 1,
-      PageSize = 10
+      PageSize = 10,
+      Retired = "all"
     };
     var query = new ListDraftersQuery(request);
 

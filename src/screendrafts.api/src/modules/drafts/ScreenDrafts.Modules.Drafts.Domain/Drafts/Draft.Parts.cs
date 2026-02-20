@@ -47,7 +47,7 @@ public sealed partial class Draft
     Raise(new DraftPartAddedDomainEvent(
       draftId: Id.Value,
       partId: partResult.Value.Id.Value,
-      partIndex: partIndex));
+      partIndex: partResult.Value.PartIndex));
     return Result.Success(partResult.Value.Id);
   }
 

@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.UnitTests.TestUtils;
+﻿using ScreenDrafts.Modules.Drafts.Domain.DrafterTeams;
+
+namespace ScreenDrafts.Modules.Drafts.UnitTests.TestUtils;
 
 public static class DrafterFactory
 {

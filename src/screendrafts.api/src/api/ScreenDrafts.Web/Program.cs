@@ -26,6 +26,7 @@ builder.Services.AddInfrastructure(
   rabbitMqSettings,
   redisConnectionString,
   mongoConnectionString,
+  databaseConnectionString,
   AssemblyReferences.InfrastructureAssemblies);
 builder.Services.AddPresentation();
 

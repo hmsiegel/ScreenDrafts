@@ -12,7 +12,7 @@ internal sealed class MovieFetchedIntegrationEventConsumer(ISender sender, ILogg
     MovieFetchedIntegrationEvent integrationEvent,
     CancellationToken cancellationToken = default)
   {
-    var command = new Command(
+    var command = new AddMovieCommand(
       integrationEvent.ImdbId,
       integrationEvent.Title,
       integrationEvent.Year,

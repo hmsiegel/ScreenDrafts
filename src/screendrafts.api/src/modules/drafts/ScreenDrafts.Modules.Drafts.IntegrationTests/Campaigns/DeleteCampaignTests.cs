@@ -30,7 +30,7 @@ public sealed class DeleteCampaignTests(DraftsIntegrationTestWebAppFactory facto
     result.Should().NotBeNull();
     result.IsSuccess.Should().BeTrue();
 
-    var getQuery = new GetCampaignQuery(publicId);
+    var getQuery = new GetCampaignQuery(publicId, IncludeDeleted: true);
     var campaign = await Sender.Send(getQuery);
     campaign.Value.IsDeleted.Should().BeTrue();
   }
@@ -77,7 +77,7 @@ public sealed class DeleteCampaignTests(DraftsIntegrationTestWebAppFactory facto
     result.Should().NotBeNull();
     result.IsSuccess.Should().BeTrue();
 
-    var getQuery = new GetCampaignQuery(publicId);
+    var getQuery = new GetCampaignQuery(publicId, IncludeDeleted: true);
     var campaign = await Sender.Send(getQuery);
     campaign.Value.IsDeleted.Should().BeTrue();
   }

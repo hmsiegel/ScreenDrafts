@@ -20,6 +20,12 @@ public static class MoviesModule
     return services;
   }
 
+  public static IServiceCollection AddMoviesSeeding(this IServiceCollection services, IConfiguration configuration)
+  {
+    services.AddMoviesInfrastructure(configuration);
+    return services;
+  }
+
   public static void ConfigureConsumers(IRegistrationConfigurator registrationConfigurator, string instanceId)
   {
     ArgumentNullException.ThrowIfNull(registrationConfigurator);

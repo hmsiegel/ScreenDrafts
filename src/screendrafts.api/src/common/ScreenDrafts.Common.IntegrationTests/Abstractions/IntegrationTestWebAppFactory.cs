@@ -77,14 +77,11 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
       .WithImage("mongo:latest")
       .Build();
 
-    Task.Run(async () =>
-    {
-      await _dbContainer.StartAsync();
-      await _redisContainer.StartAsync();
-      await _rabbitMqContainer.StartAsync();
-      await _mongoDbContainer.StartAsync();
-
-    }).GetAwaiter().GetResult();
+    Task.WaitAll(
+      _dbContainer.StartAsync(),
+      _redisContainer.StartAsync(),
+      _rabbitMqContainer.StartAsync(),
+      _mongoDbContainer.StartAsync());
 
     _containersInitialized = true;
   }

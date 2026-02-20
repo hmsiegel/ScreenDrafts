@@ -13,9 +13,16 @@ Log.Logger = new LoggerConfiguration()
     .WriteTo.Console(formatProvider: CultureInfo.InvariantCulture)
     .CreateLogger();
 
+var connectionString = configuration.GetConnectionStringOrThrow("Database");
+
 try
 {
   var builder = Host.CreateDefaultBuilder(args)
+      .UseDefaultServiceProvider(opt =>
+      {
+        opt.ValidateScopes = false;
+        opt.ValidateOnBuild = false;
+      })
       .UseSerilog((context, services, configuration) =>
       {
         configuration
@@ -29,11 +36,11 @@ try
 
         // Configure DatabaseSettings for MoviesModule
         services.Configure<DatabaseSettings>(o => 
-          o.ConnectionString = configuration.GetConnectionStringOrThrow("Database"));
+          o.ConnectionString = connectionString);
 
         services.AddMoviesModule(configuration);
 
-        services.AddRepositoriesFromModules([typeof(MoviesModule).Assembly]);
+        services.AddRepositoriesFromModules([typeof(MoviesInfrastructure).Assembly]);
 
         services.AddApplication(
         [
@@ -42,7 +49,7 @@ try
         ],
         configuration);
 
-        services.AddSeedingInfrastructure();
+        services.AddSeedingInfrastructure(connectionString);
         services.AddMovieSeeders();
 
         services.TryAddScoped<SqlInsertHelper>();

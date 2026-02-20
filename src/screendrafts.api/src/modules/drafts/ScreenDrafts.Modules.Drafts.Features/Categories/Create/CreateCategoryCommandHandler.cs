@@ -16,7 +16,7 @@ internal sealed class CreateCategoryCommandHandler(ICategoryRepository categoryR
       return Result.Failure<string>(CategoryErrors.DuplicateName(CreateCategoryCommand.Name));
     }
 
-    var category = Category.Create(publicId, CreateCategoryCommand.Name, publicId);
+    var category = Category.Create(publicId, CreateCategoryCommand.Name, CreateCategoryCommand.Description);
 
     _categoryRepository.Add(category.Value);
 

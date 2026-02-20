@@ -9,11 +9,6 @@ internal sealed class DrafterRepository(DraftsDbContext dbContext) : IDrafterRep
     _dbContext.Drafters.Add(drafter);
   }
 
-  public void AddDrafterTeam(DrafterTeam drafterTeam)
-  {
-    _dbContext.DrafterTeams.Add(drafterTeam);
-  }
-
   public void Delete(Drafter entity)
   {
     _dbContext.Drafters.Remove(entity);
@@ -29,7 +24,7 @@ internal sealed class DrafterRepository(DraftsDbContext dbContext) : IDrafterRep
     return _dbContext.Drafters.AnyAsync(d => d.PublicId == personPublicId, cancellationToken);
   }
 
-  public async Task<List<Drafter>> GetAll(CancellationToken cancellationToken = default)
+  public async Task<List<Drafter>> GetAllAsync(CancellationToken cancellationToken)
   {
     return await _dbContext.Drafters
       .ToListAsync(cancellationToken);
@@ -44,20 +39,16 @@ internal sealed class DrafterRepository(DraftsDbContext dbContext) : IDrafterRep
     return drafter;
   }
 
-  public async Task<DrafterTeam?> GetByIdAsync(DrafterTeamId drafterTeamId, CancellationToken cancellationToken)
+  public async Task<Drafter?> GetByPublicIdAsync(string publicId, CancellationToken cancellationToken)
   {
-    return await _dbContext.DrafterTeams
-      .Include(x => x.Drafters)
-      .SingleOrDefaultAsync(d => d.Id == drafterTeamId, cancellationToken);
+    var drafter = await _dbContext.Drafters
+      .SingleOrDefaultAsync(d => d.PublicId == publicId, cancellationToken);
+
+    return drafter;
   }
 
   public void Update(Drafter drafter)
   {
     _dbContext.Drafters.Update(drafter);
-  }
-
-  public void UpdateDrafterTeam(DrafterTeam drafterTeam)
-  {
-    _dbContext.DrafterTeams.Update(drafterTeam);
   }
 }

@@ -153,6 +153,7 @@ public sealed class ListCategoriesTests(DraftsIntegrationTestWebAppFactory facto
       Description = Faker.Lorem.Sentence()
     };
     var category1Result = await Sender.Send(category1Command);
+    category1Result.IsSuccess.Should().BeTrue();
 
     var category2Command = new CreateCategoryCommand
     {
@@ -160,6 +161,7 @@ public sealed class ListCategoriesTests(DraftsIntegrationTestWebAppFactory facto
       Description = Faker.Lorem.Sentence()
     };
     var category2Result = await Sender.Send(category2Command);
+    category2Result.IsSuccess.Should().BeTrue();
 
     await Sender.Send(new DeleteCategoryCommand(category1Result.Value));
     await Sender.Send(new DeleteCategoryCommand(category2Result.Value));

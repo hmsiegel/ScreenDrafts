@@ -20,6 +20,7 @@ internal static class DraftPartRoutes
   public const string SetPrimaryHost = "/draft-parts/{draftPartId}/hosts/{hostId}/primary";
 
   // Participants
+  public const string Participants = "/draft-parts/{draftPartId}/participants";
   public const string AddDrafterToDraftPart = "/draft-parts/{draftPartId}/drafters";
   public const string RemoveDrafterFromDraftPart = "/draft-parts/{draftPartId}/drafters/{drafterId}";
   public const string AddDrafterTeamToDraftPart = "/draft-parts/{draftPartId}/drafter-teams";

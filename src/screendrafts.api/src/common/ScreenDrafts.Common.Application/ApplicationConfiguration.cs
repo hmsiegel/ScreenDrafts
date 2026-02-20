@@ -19,7 +19,7 @@ public static class ApplicationConfiguration
       config.LicenseKey = mediatrSettings?.LicenseKey;
     });
 
-    services.AddValidatorsFromAssemblies(moduleAssemblies);
+    services.AddValidatorsFromAssemblies(moduleAssemblies, includeInternalTypes: true);
 
     return services;
   }

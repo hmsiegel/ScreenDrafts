@@ -14,6 +14,11 @@ internal sealed class HostRepository(DraftsDbContext dbContext) : IHostRepositor
     _dbContext.Hosts.Remove(entity);
   }
 
+  public void Update(Host entity)
+  {
+    _dbContext.Hosts.Update(entity);
+  }
+
   public Task<bool> ExistsAsync(HostId id, CancellationToken cancellationToken)
   {
     return _dbContext.Hosts.AnyAsync(h => h.Id == id, cancellationToken);
@@ -24,21 +29,18 @@ internal sealed class HostRepository(DraftsDbContext dbContext) : IHostRepositor
     return _dbContext.Hosts.FirstOrDefaultAsync(h => h.Id == id, cancellationToken);
   }
 
-  public async Task<Host?> GetHostByIdAsync(HostId hostId, CancellationToken cancellationToken)
+  public async Task<bool> ExistsByPublicIdAsync(string publicId, CancellationToken cancellationToken)
   {
-    var host = await _dbContext.Hosts
-      .FirstOrDefaultAsync(h => h.Id == hostId, cancellationToken);
-
-    return host;
+    return await _dbContext.Hosts.AnyAsync(h => h.PublicId == publicId, cancellationToken);
   }
 
-  public Task<bool> HostExistsAsync(string personPublicId, CancellationToken cancellationToken)
+  public async Task<Host?> GetByPublicIdAsync(string publicId, CancellationToken cancellationToken)
   {
-    return _dbContext.Hosts.AnyAsync(h => h.PublicId == personPublicId, cancellationToken);
+    return await _dbContext.Hosts.FirstOrDefaultAsync(h => h.PublicId == publicId, cancellationToken);
   }
 
-  public void Update(Host entity)
+  public async Task<List<Host>> GetAllAsync(CancellationToken cancellationToken)
   {
-    _dbContext.Hosts.Update(entity);
+    return await _dbContext.Hosts.ToListAsync(cancellationToken);
   }
 }

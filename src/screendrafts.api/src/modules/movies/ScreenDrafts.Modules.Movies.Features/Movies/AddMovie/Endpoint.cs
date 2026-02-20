@@ -27,7 +27,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<Request, Guid>
 
   public override async Task HandleAsync(Request req, CancellationToken ct)
   {
-    var command = new Command(
+    var command = new AddMovieCommand(
       req.ImdbId,
       req.Title,
       req.Year,

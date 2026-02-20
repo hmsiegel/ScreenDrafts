@@ -10,13 +10,14 @@ public static class InfrastructureConfiguration
     RabbitMqSettings rabbitMqSettings,
     string redisConnectionString,
     string mongoConnectionString,
+    string databaseConnectionString,
     Assembly[] infrastructureAssemblies)
   {
     services.AddCorsPolicy(configuration);
 
     services.AddAuthenticationInternal();
 
-    services.AddCoreInfrastructure();
+    services.AddCoreInfrastructure(databaseConnectionString);
 
     services.AddRepositoriesFromModules(infrastructureAssemblies);
 
@@ -36,13 +37,16 @@ public static class InfrastructureConfiguration
   }
 
   public static IServiceCollection AddSeedingInfrastructure(
-    this IServiceCollection services)
+    this IServiceCollection services, string databaseConnectionString)
   {
-    services.AddCoreInfrastructure();
+    services.AddCoreInfrastructure(databaseConnectionString);
+    services.TryAddScoped<IDbConnectionFactory, DbConnectionFactory>();
     return services;
   }
 
-  private static IServiceCollection AddCoreInfrastructure(this IServiceCollection services)
+  private static IServiceCollection AddCoreInfrastructure(
+    this IServiceCollection services,
+    string databaseConnectionString)
   {
     // Add core infrastructure services here
     services.TryAddSingleton<IDateTimeProvider, DateTimeProvider>();
@@ -50,6 +54,13 @@ public static class InfrastructureConfiguration
     services.TryAddSingleton<IPublicIdGenerator, NanoPublicIdGenerator>();
 
     services.TryAddSingleton<InsertOutboxMessagesInterceptor>();
+
+    if (!string.IsNullOrEmpty(databaseConnectionString))
+    {
+      var npgsqlDataSource = new NpgsqlDataSourceBuilder(databaseConnectionString)
+        .Build();
+      services.TryAddSingleton(npgsqlDataSource);
+    }
 
     services.TryAddScoped<ICsvFileService, CsvFileService>();
 

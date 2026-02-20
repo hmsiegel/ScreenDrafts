@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities;
+﻿using ScreenDrafts.Modules.Drafts.Domain.Participants;
+
+namespace ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities;
 
 public sealed class Pick : Entity<PickId>
 {
@@ -301,7 +303,7 @@ public sealed class Pick : Entity<PickId>
     return Result.Success();
   }
 
-  internal Result ApplyVetoOverride(ParticipantId by)
+  internal Result ApplyVetoOverride(Participant by)
   {
     if (Veto is null || !IsVetoed)
     {
@@ -325,12 +327,12 @@ public sealed class Pick : Entity<PickId>
 
 public sealed record PickEvent(
   string Kind,
-  ParticipantId? IssuerId,
+  Participant? IssuerId,
   string? Note,
   DateTime OccurredOnUtc)
 {
   public static PickEvent Veto(
-    ParticipantId? issuerId,
+    Participant? issuerId,
     string? note) =>
     new(
       Kind: "Veto",
@@ -339,7 +341,7 @@ public sealed record PickEvent(
       OccurredOnUtc: DateTime.UtcNow);
 
   public static PickEvent VetoOverride(
-    ParticipantId by) =>
+    Participant by) =>
     new(
       Kind: "VetoOverride",
       IssuerId: by,
@@ -347,7 +349,7 @@ public sealed record PickEvent(
       OccurredOnUtc: DateTime.UtcNow);
 
   public static PickEvent CommissionerOverride(
-    ParticipantId by,
+    Participant by,
     string? note) =>
     new(
       Kind: "CommissionerOverride",
