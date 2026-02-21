@@ -43,4 +43,9 @@ internal sealed class HostRepository(DraftsDbContext dbContext) : IHostRepositor
   {
     return await _dbContext.Hosts.ToListAsync(cancellationToken);
   }
+
+  public async Task<bool> ExistsByPersonPublicId(string personPublicId, CancellationToken cancellationToken)
+  {
+    return await _dbContext.Hosts.AnyAsync(h => h.Person.PublicId == personPublicId, cancellationToken);
+  }
 }

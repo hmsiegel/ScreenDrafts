@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Common.Abstractions.Errors;
-
-namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.Errors;
+﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.Errors;
 
 public static class MovieErrors
 {
@@ -48,4 +46,9 @@ public static class MovieErrors
     SDError.Conflict(
       "Drafts.MovieAlreadyExists",
       $"Movie with IMDB id {imdbId} already exists.");
+
+  public static SDError NotFound(Guid movieId) =>
+    SDError.Failure(
+      "MovieErrors.NotFound",
+      $"Movie with ID {movieId} was not found.");
 }

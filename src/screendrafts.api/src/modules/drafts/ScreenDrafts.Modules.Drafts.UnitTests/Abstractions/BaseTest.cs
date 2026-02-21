@@ -63,7 +63,7 @@ public abstract class DraftsBaseTest : BaseTest
 
   protected static DrafterTeam CreateDrafterTeam(Domain.People.Person? person = null, Collection<Drafter>? drafters = null)
   {
-    var team = DrafterTeam.Create(Faker.Commerce.ProductName()).Value;
+    var team = DrafterTeam.Create(Faker.Commerce.ProductName(), Faker.Random.AlphaNumeric(10)).Value;
 
     if (drafters != null)
     {

@@ -12,19 +12,19 @@ internal sealed class CreateHostCommandHandler(
   private readonly IPersonRepository _personRepository = personRepository;
   private readonly IPublicIdGenerator _publicIdGenerator = publicIdGenerator;
 
-  public async Task<Result<string>> Handle(CreateHostCommand CreateHostRequest, CancellationToken cancellationToken)
+  public async Task<Result<string>> Handle(CreateHostCommand request, CancellationToken cancellationToken)
   {
     var person = await _personRepository.GetByPublicIdAsync(
-      CreateHostRequest.PersonPublicId,
+      request.PersonPublicId,
       cancellationToken);
 
     if (person is null)
     {
-      return Result.Failure<string>(PersonErrors.NotFound(CreateHostRequest.PersonPublicId));
+      return Result.Failure<string>(PersonErrors.NotFound(request.PersonPublicId));
     }
 
     // Make sure the Host with the person Id doesn't already exist.
-    if (await _hostsRepository.HostExistsAsync(person.PublicId, cancellationToken))
+    if (await _hostsRepository.ExistsByPersonPublicId(person.PublicId, cancellationToken))
     {
       return Result.Failure<string>(HostErrors.AlreadyExists(person.PublicId));
     }

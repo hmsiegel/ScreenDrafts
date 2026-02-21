@@ -33,7 +33,7 @@ internal sealed class DrafterTeamsSeeder(
       csvDrafterTeams,
       drafterTeam => drafterTeam.Name,
       drafterTeam => drafterTeam.Name,
-      drafterTeam => DrafterTeam.Create(id: DrafterTeamId.Create(drafterTeam.Id!.Value), name: drafterTeam.Name).Value,
+      drafterTeam => DrafterTeam.Create(id: DrafterTeamId.Create(drafterTeam.Id!.Value), name: drafterTeam.Name, publicId: drafterTeam.PublicId).Value,
       _dbContext.DrafterTeams,
       TableName,
       cancellationToken);

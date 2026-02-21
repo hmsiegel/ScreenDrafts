@@ -49,6 +49,16 @@ public sealed class DrafterTeam : Entity<DrafterTeamId>
     return drafterTeam;
   }
 
+  internal Result UpdatePublicId(string publicId)
+  {
+    if (string.IsNullOrWhiteSpace(publicId))
+    {
+       return Result.Failure(DrafterTeamErrors.InvalidPublicId);
+    }
+    PublicId = publicId;
+    return Result.Success();
+  }
+
   public Result AddDrafter(Drafter drafter)
   {
     Guard.Against.Null(drafter);

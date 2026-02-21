@@ -7,7 +7,7 @@ internal sealed class AddMovieCommandHandler(IMovieRepository movieRepository)
 
   public async Task<Result<string>> Handle(AddMovieCommand request, CancellationToken cancellationToken)
   {
-    var movieExists = await _movieRepository.ExistsAsync(request.ImdbId, cancellationToken);
+    var movieExists = await _movieRepository.ExistsAsync(request.Id, cancellationToken);
 
     if (movieExists)
     {

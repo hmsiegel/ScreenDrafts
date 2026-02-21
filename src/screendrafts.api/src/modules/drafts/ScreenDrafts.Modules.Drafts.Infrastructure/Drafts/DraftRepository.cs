@@ -98,6 +98,9 @@ internal sealed class DraftRepository(DraftsDbContext dbContext) : IDraftReposit
   {
     return await _dbContext.Drafts
       .Include(d => d.Parts)
+        .ThenInclude(p => p.DraftHosts)
+      .Include(d => d.Parts)
+        .ThenInclude(p => p.Participants)
       .FirstOrDefaultAsync(d => d.PublicId == publicId, cancellationToken);
   }
 
@@ -107,5 +110,15 @@ internal sealed class DraftRepository(DraftsDbContext dbContext) : IDraftReposit
       .Include(d => d.Parts)
       .Include(d => d.DraftCategories)
       .FirstOrDefaultAsync(d => d.PublicId == publicId, cancellationToken);
+  }
+
+  public Task<Draft?> GetByPublicIdAsync(string publicId, CancellationToken cancellationToken)
+  {
+    return _dbContext.Drafts.FirstOrDefaultAsync(d => d.PublicId == publicId, cancellationToken);
+  }
+
+  public Task<List<Draft>> GetAllAsync(CancellationToken cancellationToken)
+  {
+    return _dbContext.Drafts.ToListAsync(cancellationToken);
   }
 }

@@ -19,7 +19,7 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("drafts")
-                .HasAnnotation("ProductVersion", "10.0.1")
+                .HasAnnotation("ProductVersion", "10.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -591,7 +591,7 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("questions_won");
 
-                    b.ComplexProperty(typeof(Dictionary<string, object>), "ParticipantId", "ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities.TriviaResult.ParticipantId#ParticipantId", b1 =>
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "ParticipantId", "ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities.TriviaResult.ParticipantId#Participant", b1 =>
                         {
                             b1.IsRequired();
 
@@ -681,6 +681,38 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                     b.ToTable("veto_overrides", "drafts");
                 });
 
+            modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.DrafterTeams.DrafterTeam", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("name");
+
+                    b.Property<int>("NumberOfDrafters")
+                        .HasColumnType("integer")
+                        .HasColumnName("number_of_drafters");
+
+                    b.Property<string>("PublicId")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("public_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_drafter_teams");
+
+                    b.HasIndex("PublicId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_drafter_teams_public_id");
+
+                    b.ToTable("drafter_teams", "drafts");
+                });
+
             modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Drafters.Drafter", b =>
                 {
                     b.Property<Guid>("Id")
@@ -717,28 +749,6 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasDatabaseName("ix_drafters_public_id");
 
                     b.ToTable("drafters", "drafts");
-                });
-
-            modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Drafters.DrafterTeam", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("name");
-
-                    b.Property<int>("NumberOfDrafters")
-                        .HasColumnType("integer")
-                        .HasColumnName("number_of_drafters");
-
-                    b.HasKey("Id")
-                        .HasName("pk_drafter_teams");
-
-                    b.ToTable("drafter_teams", "drafts");
                 });
 
             modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Drafts.Draft", b =>
@@ -1355,7 +1365,7 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_drafter_team_drafter_drafters_drafter_id");
 
-                    b.HasOne("ScreenDrafts.Modules.Drafts.Domain.Drafters.DrafterTeam", null)
+                    b.HasOne("ScreenDrafts.Modules.Drafts.Domain.DrafterTeams.DrafterTeam", null)
                         .WithMany()
                         .HasForeignKey("drafter_team_id")
                         .OnDelete(DeleteBehavior.Cascade)

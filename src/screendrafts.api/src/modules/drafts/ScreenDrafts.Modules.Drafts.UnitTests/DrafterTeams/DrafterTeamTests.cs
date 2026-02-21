@@ -11,7 +11,7 @@ public class DrafterTeamTests : DraftsBaseTest
     var name = "Test Team";
 
     // Act
-    var result = DrafterTeam.Create(name);
+    var result = DrafterTeam.Create(name, Faker.Random.AlphaNumeric(10));
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -25,7 +25,7 @@ public class DrafterTeamTests : DraftsBaseTest
     var name = string.Empty;
 
     // Act
-    var result = DrafterTeam.Create(name);
+    var result = DrafterTeam.Create(name, Faker.Random.AlphaNumeric(10));
 
     // Assert
     result.IsFailure.Should().BeTrue();

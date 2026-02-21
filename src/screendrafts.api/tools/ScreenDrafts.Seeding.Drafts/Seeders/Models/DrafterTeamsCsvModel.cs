@@ -7,4 +7,7 @@ internal sealed class DrafterTeamsCsvModel
 
   [Column("name")]
   public string Name { get; set; } = default!;
+
+  [Column("public_id")]
+  public string PublicId { get; set; } = default!;
 }

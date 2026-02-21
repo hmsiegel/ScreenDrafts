@@ -13,5 +13,6 @@ public static class DrafterFactory
 
   public static DrafterTeam CreateDrafterTeam() =>
     DrafterTeam.Create(
-      name: _faker.Company.CompanyName()).Value;
+      name: _faker.Company.CompanyName(),
+      publicId: _faker.Random.AlphaNumeric(10)).Value;
 }

@@ -12,6 +12,7 @@ global using ScreenDrafts.Common.Application.EventBus;
 global using ScreenDrafts.Common.Application.Messaging;
 global using ScreenDrafts.Common.Infrastructure.Data;
 global using ScreenDrafts.Modules.Drafts.Features.Behaviors;
+global using ScreenDrafts.Modules.Drafts.Features.Common;
 global using ScreenDrafts.Modules.Drafts.Features.GameBoards;
 global using ScreenDrafts.Modules.Drafts.Features.Inbox;
 global using ScreenDrafts.Modules.Drafts.Features.Outbox;

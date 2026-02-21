@@ -14,14 +14,16 @@ internal sealed class MovieRepository(DraftsDbContext dbContext) : IMovieReposit
     _dbContext.Movies.Remove(entity);
   }
 
-  public Task<bool> ExistsAsync(string id, CancellationToken cancellationToken)
+  public async Task<bool> ExistsAsync(Guid id, CancellationToken ct)
   {
-    return _dbContext.Movies.AnyAsync(m => m.ImdbId == id, cancellationToken);
+    return await _dbContext.Movies.AnyAsync(m => m.Id == id, ct);
   }
 
-  public Task<Movie?> GetByIdAsync(string id, CancellationToken cancellationToken)
+  public async Task<Movie?> GetByIdAsync(Guid id, CancellationToken ct)
   {
-    return _dbContext.Movies.FindAsync([id], cancellationToken).AsTask();
+    return await _dbContext.Movies
+      .Include(m => m.Versions)
+      .FirstOrDefaultAsync(m => m.Id == id, ct);
   }
 
   public void Update(Movie entity)

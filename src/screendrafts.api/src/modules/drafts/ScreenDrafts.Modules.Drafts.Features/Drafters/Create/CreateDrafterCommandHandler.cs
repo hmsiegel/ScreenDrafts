@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Common.Abstractions.Results;
-
-namespace ScreenDrafts.Modules.Drafts.Features.Drafters.Create;
+﻿namespace ScreenDrafts.Modules.Drafts.Features.Drafters.Create;
 
 internal sealed class CreateDrafterCommandHandler(
   IPersonRepository personRepository,

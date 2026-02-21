@@ -1,14 +1,14 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.AddParticipantToDraftPart;
+﻿using ScreenDrafts.Modules.Drafts.Features.Common;
+
+namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.AddParticipantToDraftPart;
 
 internal sealed class AddParticipantToDraftPartCommandHandler(
   IDraftPartRepository draftPartRepository,
-  IDrafterRepository drafterRepository,
-  IDrafterTeamRepository teamRepository)
+  ParticipantResolver participantResolver)
   : ICommandHandler<AddParticipantToDraftPartCommand>
 {
   private readonly IDraftPartRepository _draftPartRepository = draftPartRepository;
-  private readonly IDrafterRepository _drafterRepository = drafterRepository;
-  private readonly IDrafterTeamRepository _teamRepository = teamRepository;
+  private readonly ParticipantResolver _participantResolver = participantResolver;
 
   public async Task<Result> Handle(AddParticipantToDraftPartCommand request, CancellationToken cancellationToken)
   {
@@ -19,47 +19,17 @@ internal sealed class AddParticipantToDraftPartCommandHandler(
       return Result.Failure(DraftPartErrors.NotFound(request.DraftPartId));
     }
 
-    Participant participant;
+    var participantResult = await _participantResolver.ResolveAsync(
+      request.ParticipantPublicId,
+      request.ParticipantKind,
+      cancellationToken);
 
-    if (request.ParticipantKind == ParticipantKind.Community)
+    if (participantResult.IsFailure)
     {
-      participant = CommunityParticipants.PatreonMembers;
+      return Result.Failure(participantResult.Errors);
     }
-    else if (request.ParticipantKind == ParticipantKind.Drafter)
-    {
-      if (string.IsNullOrWhiteSpace(request.ParticipantPublicId))
-      {
-        return Result.Failure(DraftPartErrors.ParticpantPublicIdRequired);
-      }
 
-      var drafter = await _drafterRepository.GetByPublicIdAsync(request.ParticipantPublicId, cancellationToken);
-
-      if (drafter is null)
-      {
-        return Result.Failure(DrafterErrors.NotFound(request.ParticipantPublicId));
-      }
-
-      participant = Participant.From(drafter.Id);
-    }
-    else if (request.ParticipantKind == ParticipantKind.Team)
-    {
-      if (string.IsNullOrWhiteSpace(request.ParticipantPublicId))
-      {
-        return Result.Failure(DraftPartErrors.ParticpantPublicIdRequired);
-      }
-      var team = await _teamRepository.GetByPublicIdAsync(request.ParticipantPublicId, cancellationToken);
-
-      if (team is null)
-      {
-        return Result.Failure(DrafterTeamErrors.NotFound(request.ParticipantPublicId));
-      }
-
-      participant = Participant.From(team.Id);
-    }
-    else
-    {
-      return Result.Failure(DraftPartErrors.InvalidParticipantKind);
-    }
+    var participant = participantResult.Value;
 
     participant.Validate();
 

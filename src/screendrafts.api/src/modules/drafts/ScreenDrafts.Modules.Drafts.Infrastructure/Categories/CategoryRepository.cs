@@ -75,4 +75,9 @@ internal sealed class CategoryRepository(DraftsDbContext dbContext) : ICategoryR
       .Where(c => publicCategoryIds.Contains(c.PublicId) && !c.IsDeleted)
       .ToListAsync(cancellationToken);
   }
+
+  public Task<List<Category>> GetAllAsync(CancellationToken cancellationToken)
+  {
+    return _dbContext.Categories.ToListAsync(cancellationToken);
+  }
 }

@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Infrastructure;
+﻿using ScreenDrafts.Modules.Drafts.Infrastructure.SeriesInfrastructure;
+
+namespace ScreenDrafts.Modules.Drafts.Infrastructure;
 
 public static class DraftsInfrastructure
 {
@@ -13,6 +15,8 @@ public static class DraftsInfrastructure
     });
 
     services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<DraftsDbContext>());
+
+    services.AddSingleton<ISeriesPolicyProvider, NullSeriesPolicyProvider>();
 
     services.Configure<OutboxOptions>(configuration.GetSection("Drafts:Outbox"));
     services.ConfigureOptions<ConfigureProcessOutboxJob>();

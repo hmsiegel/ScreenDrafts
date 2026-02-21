@@ -72,7 +72,7 @@ public static class TestParticipantFactory
     List<Drafter>? drafters = null)
   {
 
-    var team = DrafterTeam.Create(faker.Commerce.ProductName()).Value;
+    var team = DrafterTeam.Create(faker.Commerce.ProductName(), faker.Random.AlphaNumeric(10)).Value;
 
     if (drafters != null)
     {
