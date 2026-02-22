@@ -30,13 +30,13 @@ jobs:
           dotnet-version: ${{ env.DOTNET_VERSION }}
       
       - name: Restore
-        run: dotnet restore screendrafts.api.sln
+        run: dotnet restore screendrafts.api.slnx
 
       - name: Build
-        run: dotnet build screendrafts.api.sln --configuration Release --no-restore
+        run: dotnet build screendrafts.api.slnx --configuration Release --no-restore
 
       - name: Test
-        run: dotnet test screendrafts.api.sln --configuration Release --no-restore --no-build
+        run: dotnet test screendrafts.api.slnx --configuration Release --no-restore --no-build
 
       - name: Publish
-        run: dotnet publish screendrafts.api.sln --configuration Release --no-restore --no-build
+        run: dotnet publish screendrafts.api.slnx --configuration Release --no-restore --no-build
