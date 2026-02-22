@@ -5,8 +5,11 @@ public sealed partial class Draft
   /// Adds a draft part with the specified parameters.
   /// </summary>
   /// <param name="partIndex">The draft part index.</param>
+  /// <param name="min">The minimum position for the draft part.</param>
+  /// <param name="max">The maximum position for the draft part.</param>
+  /// <param name="publicId">The public ID of the draft part.</param>
   /// <returns>The draft part.</returns>
-  public Result<DraftPartId> AddPart(int partIndex, int min, int max)
+  public Result<DraftPartId> AddPart(int partIndex, int min, int max, string publicId)
   {
     if (partIndex <= 0)
     {
@@ -32,7 +35,8 @@ public sealed partial class Draft
     var partResult = DraftPart.Create(
       draftId: Id,
       partIndex: partIndex,
-      gameplay: gameplayResult.Value);
+      gameplay: gameplayResult.Value,
+      publicId: publicId);
 
     if (partResult.IsFailure)
     {

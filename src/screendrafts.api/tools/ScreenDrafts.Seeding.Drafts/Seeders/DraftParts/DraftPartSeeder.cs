@@ -3,12 +3,14 @@
 internal sealed class DraftPartSeeder(
   DraftsDbContext dbContext,
   ILogger<DraftPartSeeder> logger,
-  ICsvFileService csvFileService)
+  ICsvFileService csvFileService,
+  IPublicIdGenerator publicIdGenerator)
   : DraftBaseSeeder(
     dbContext,
     logger,
     csvFileService), ICustomSeeder
 {
+  private readonly IPublicIdGenerator _publicIdGenerator = publicIdGenerator;
   public int Order => 5;
   public string Name => "draft_parts";
 
@@ -61,18 +63,20 @@ internal sealed class DraftPartSeeder(
     {
       var draft = draftsById[dp.DraftId];
       var draftId = DraftId.Create(dp.DraftId);
+      var publicId = _publicIdGenerator.GeneratePublicId(PublicIdPrefixes.DraftPart);
 
       var partResult = DraftPart.SeedCreate(
-        draftId,
-        dp.PartIndex,
-        dp.Min,
-        dp.Max,
-        draft.DraftType,
-        draft.SeriesId,
-        DraftPartStatus.Completed,
-        null,
-        dp.Id.HasValue ? DraftPartId.Create(dp.Id.Value) : DraftPartId.CreateUnique(),
-        draft.CreatedAtUtc);
+        draftId: draftId,
+        partIndex: dp.PartIndex,
+        minPosition: dp.Min,
+        maxPosition: dp.Max,
+        draftType: draft.DraftType,
+        seriesId: draft.SeriesId,
+        status: DraftPartStatus.Completed,
+        publicId: publicId,
+        scheduledForUtc: null,
+        id: dp.Id.HasValue ? DraftPartId.Create(dp.Id.Value) : DraftPartId.CreateUnique(),
+        createdAtUtc: draft.CreatedAtUtc);
 
       if (partResult.IsFailure)
       {

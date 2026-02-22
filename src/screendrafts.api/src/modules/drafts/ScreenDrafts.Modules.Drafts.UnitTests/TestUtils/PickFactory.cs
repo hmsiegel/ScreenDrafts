@@ -10,7 +10,7 @@ public static class PickFactory
   public static Result<Pick> CreatePick()
   {
     var draft = DraftFactory.CreateStandardDraft();
-    draft.AddPart(1, 1, 7);
+    draft.AddPart(1, 1, 7, _faker.Random.AlphaNumeric(10));
     var draftPart = draft.Parts.First();
     var drafter = DrafterFactory.CreateDrafter();
     var participantId = Participant.From(drafter.Id);

@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Modules.Drafts.Domain.Participants;
-
-namespace ScreenDrafts.Modules.Drafts.Domain.DraftParts;
+﻿namespace ScreenDrafts.Modules.Drafts.Domain.DraftParts;
 
 public sealed partial class DraftPart : AggregateRoot<DraftPartId, Guid>
 {
@@ -16,7 +14,7 @@ public sealed partial class DraftPart : AggregateRoot<DraftPartId, Guid>
     int? minPosition,
     int? maxPosition,
     DateTime createdAtUtc,
-
+    string publicId,
     DraftPartId? id = null)
     : base(id ?? DraftPartId.CreateUnique())
   {
@@ -25,6 +23,7 @@ public sealed partial class DraftPart : AggregateRoot<DraftPartId, Guid>
     MinPosition = minPosition;
     MaxPosition = maxPosition;
     CreatedAtUtc = createdAtUtc;
+    PublicId = publicId;
     Status = DraftPartStatus.Created;
     MovieVersionPolicyType = DraftPartMovieVersionPolicyType.None;
   }
@@ -52,6 +51,7 @@ public sealed partial class DraftPart : AggregateRoot<DraftPartId, Guid>
         : null;
     }
   }
+  public string PublicId { get; private set; } = default!;
   public int PartIndex { get; private set; }
   public DraftPartStatus Status { get; private set; } = default!;
   public GameBoard? GameBoard { get; private set; } = default!;
@@ -76,7 +76,8 @@ public sealed partial class DraftPart : AggregateRoot<DraftPartId, Guid>
   public static Result<DraftPart> Create(
     DraftId draftId,
     int partIndex,
-    DraftPartGamePlaySnapshot gameplay)
+    DraftPartGamePlaySnapshot gameplay,
+    string publicId)
   {
     if (draftId == null)
     {
@@ -88,12 +89,18 @@ public sealed partial class DraftPart : AggregateRoot<DraftPartId, Guid>
       return Result.Failure<DraftPart>(DraftErrors.PartIndexMustBeGreaterThanZero);
     }
 
+    if (string.IsNullOrWhiteSpace(publicId))
+    {
+      return Result.Failure<DraftPart>(DraftPartErrors.InvalidPublicId);
+    }
+
     var draftPart = new DraftPart(
       draftId: draftId,
       partIndex: partIndex,
       minPosition: gameplay.MinPosition,
       maxPosition: gameplay.MaxPosition,
-      createdAtUtc: DateTime.UtcNow)
+      createdAtUtc: DateTime.UtcNow,
+      publicId: publicId)
     {
       DraftType = gameplay.DraftType,
       SeriesId = gameplay.SeriesId
@@ -110,7 +117,8 @@ public sealed partial class DraftPart : AggregateRoot<DraftPartId, Guid>
     DraftType draftType,
     SeriesId seriesId,
     DraftPartStatus status,
-    DateTime? scheduledForUtc = null,
+    string publicId,
+    DateTime? scheduledForUtc = null, 
     DraftPartId? id = null,
     DateTime? createdAtUtc = null)
   {
@@ -144,6 +152,7 @@ public sealed partial class DraftPart : AggregateRoot<DraftPartId, Guid>
       partIndex: partIndex,
       minPosition: minPosition,
       maxPosition: maxPosition,
+      publicId: publicId,
       createdAtUtc: createdAtUtc ?? DateTime.UtcNow,
       id: id)
     {
@@ -285,6 +294,20 @@ public sealed partial class DraftPart : AggregateRoot<DraftPartId, Guid>
 
     PartIndex = partIndex;
     UpdatedAtUtc = DateTime.UtcNow;
+    return Result.Success();
+  }
+
+  internal Result UpdatePublicId(string publicId)
+  {
+    if (string.IsNullOrWhiteSpace(publicId))
+    {
+      return Result.Failure(DraftPartErrors.InvalidPublicId);
+    }
+
+    PublicId = publicId;
+
+    UpdatedAtUtc = DateTime.UtcNow;
+
     return Result.Success();
   }
 }

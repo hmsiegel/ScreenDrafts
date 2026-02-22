@@ -394,7 +394,7 @@ public class DraftTests : BaseTest
 
 
     // Act
-    var result = draft.AddPart(partIndex, minPosition, maxPosition);
+    var result = draft.AddPart(partIndex, minPosition, maxPosition, Faker.Random.AlphaNumeric(10));
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -412,7 +412,7 @@ public class DraftTests : BaseTest
     var maxPosition = 7;
 
     // Act
-    draft.AddPart(partIndex, minPosition, maxPosition);
+    draft.AddPart(partIndex, minPosition, maxPosition, Faker.Random.AlphaNumeric(10));
     // Assert
     var domainEvent = AssertDomainEventWasPublished<DraftPartAddedDomainEvent>(draft);
     domainEvent.DraftId.Should().Be(draft.Id.Value);
@@ -428,7 +428,7 @@ public class DraftTests : BaseTest
     var maxPosition = 7;
 
     // Act
-    var result = draft.AddPart(0, minPosition, maxPosition);
+    var result = draft.AddPart(0, minPosition, maxPosition, Faker.Random.AlphaNumeric(10));
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -443,10 +443,11 @@ public class DraftTests : BaseTest
     var partIndex = 1;
     var minPosition = 1;
     var maxPosition = 7;
-    draft.AddPart(partIndex, minPosition, maxPosition);
+
+    draft.AddPart(partIndex, minPosition, maxPosition, Faker.Random.AlphaNumeric(10));
 
     // Act
-    var result = draft.AddPart(partIndex, minPosition, maxPosition);
+    var result = draft.AddPart(partIndex, minPosition, maxPosition, Faker.Random.AlphaNumeric(10));
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -458,7 +459,7 @@ public class DraftTests : BaseTest
   {
     // Arrange
     var draft = CreateDraft();
-    var partId = draft.AddPart(1, 1, 7).Value;
+    var partId = draft.AddPart(1, 1, 7, Faker.Random.AlphaNumeric(10)).Value;
 
     // Act
     var result = draft.RemovePart(partId);
@@ -473,8 +474,7 @@ public class DraftTests : BaseTest
   {
     // Arrange
     var draft = CreateDraft();
-    var partId = draft.AddPart(1, 1, 7).Value;
-
+    var partId = draft.AddPart(1, 1, 7, Faker.Random.AlphaNumeric(10)).Value;
     // Act
     draft.RemovePart(partId);
 
@@ -603,9 +603,9 @@ public class DraftTests : BaseTest
   {
     // Arrange
     var draft = CreateDraft();
-    draft.AddPart(1, 15, 21);
-    draft.AddPart(2, 8, 14);
-    draft.AddPart(3, 1, 7);
+    draft.AddPart(1, 15, 21, Faker.Random.AlphaNumeric(10));
+    draft.AddPart(2, 8, 14, Faker.Random.AlphaNumeric(10));
+    draft.AddPart(3, 1, 7, Faker.Random.AlphaNumeric(10));
 
     // Act
     var totalParts = draft.TotalParts;
@@ -619,9 +619,9 @@ public class DraftTests : BaseTest
   {
     // Arrange
     var draft = CreateDraft();
-    draft.AddPart(1, 15, 21);
-    draft.AddPart(3, 8, 14);
-    draft.AddPart(5, 1, 7);
+    draft.AddPart(1, 15, 21, Faker.Random.AlphaNumeric(10));
+    draft.AddPart(3, 8, 14, Faker.Random.AlphaNumeric(10));
+    draft.AddPart(5, 1, 7, Faker.Random.AlphaNumeric(10));
 
     // Act
     draft.RenumberDraftParts();
@@ -646,7 +646,7 @@ public class DraftTests : BaseTest
   private static Draft CreateDraftWithPart()
   {
     var draft = CreateDraft();
-    draft.AddPart(1, 15, 21);
+    draft.AddPart(1, 15, 21, Faker.Random.AlphaNumeric(10));
     return draft;
   }
 

@@ -1,8 +1,4 @@
-﻿using ScreenDrafts.Common.Abstractions.Exceptions;
-using ScreenDrafts.Modules.Drafts.Domain.DrafterTeams;
-using ScreenDrafts.Modules.Drafts.Domain.Participants;
-
-namespace ScreenDrafts.Modules.Drafts.UnitTests.Abstractions;
+﻿namespace ScreenDrafts.Modules.Drafts.UnitTests.Abstractions;
 
 public abstract class DraftsBaseTest : BaseTest
 {
@@ -95,13 +91,14 @@ public abstract class DraftsBaseTest : BaseTest
     draft ??= CreateDraft();
 
     return DraftPart.Create(
-      draft.Id,
-      Faker.Random.Int(1, 10),
-      DraftPartGamePlaySnapshot.Create(
-        1,
-        7,
-        DraftType.Standard,
-        CreateSeries().Id).Value).Value;
+      draftId: draft.Id,
+      partIndex: Faker.Random.Int(1, 10),
+      gameplay: DraftPartGamePlaySnapshot.Create(
+        minPosition: 1,
+        maxPosition: 7,
+        draftType: DraftType.Standard,
+        seriesId: CreateSeries().Id).Value,
+      publicId: Faker.Random.AlphaNumeric(10)).Value;
   }
 
   protected static Participant CreateParticipantId(Drafter drafter)

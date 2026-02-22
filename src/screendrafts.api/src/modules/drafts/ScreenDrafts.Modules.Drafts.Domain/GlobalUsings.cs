@@ -29,6 +29,7 @@ global using ScreenDrafts.Modules.Drafts.Domain.Drafts.Helpers;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafts.Lifecycles;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafts.ValueObjects;
 global using ScreenDrafts.Modules.Drafts.Domain.Hosts;
+global using ScreenDrafts.Modules.Drafts.Domain.Participants;
 global using ScreenDrafts.Modules.Drafts.Domain.People;
 global using ScreenDrafts.Modules.Drafts.Domain.People.DomainEvents;
 global using ScreenDrafts.Modules.Drafts.Domain.People.Errors;

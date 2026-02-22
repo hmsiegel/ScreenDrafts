@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ScreenDrafts.Modules.Drafts.Infrastructure.Database;
@@ -12,9 +13,11 @@ using ScreenDrafts.Modules.Drafts.Infrastructure.Database;
 namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
 {
     [DbContext(typeof(DraftsDbContext))]
-    partial class DraftsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260222193556_Add_DraftPart_PublicId_Nullable")]
+    partial class Add_DraftPart_PublicId_Nullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -263,7 +266,6 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasColumnName("part_index");
 
                     b.Property<string>("PublicId")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("public_id");
 
@@ -285,10 +287,6 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_draft_parts");
-
-                    b.HasIndex("PublicId")
-                        .IsUnique()
-                        .HasDatabaseName("ix_draft_parts_public_id");
 
                     b.HasIndex("DraftId", "PartIndex")
                         .IsUnique()

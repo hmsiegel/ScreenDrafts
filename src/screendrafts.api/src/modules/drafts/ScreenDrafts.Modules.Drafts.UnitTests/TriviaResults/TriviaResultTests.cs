@@ -95,8 +95,13 @@ public class TriviaResultTests : BaseTest
     var draftId = DraftId.CreateUnique();
     var partIndex = 1;
     var gameplay = CreateGameplaySnapshot();
+    var publicId = Faker.Random.AlphaNumeric(10);
 
-    return DraftPart.Create(draftId, partIndex, gameplay).Value;
+    return DraftPart.Create(
+      draftId: draftId,
+      partIndex: partIndex,
+      gameplay: gameplay,
+      publicId: publicId).Value;
   }
 
   private static DraftPartGamePlaySnapshot CreateGameplaySnapshot()

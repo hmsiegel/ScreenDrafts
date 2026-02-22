@@ -9,7 +9,7 @@ public class GameBoardTests : DraftsBaseTest
   {
     // Arrange
     var draft = DraftFactory.CreateStandardDraft();
-    draft.AddPart(1, 1, 7);
+    draft.AddPart(1, 1, 7, Faker.Random.AlphaNumeric(10));
     var draftPart = draft.Parts.First();
 
     // Act
@@ -41,7 +41,7 @@ public class GameBoardTests : DraftsBaseTest
   {
     // Arrange
     var draft = DraftFactory.CreateStandardDraft();
-    draft.AddPart(1, 1, 7);
+    draft.AddPart(1, 1, 7, Faker.Random.AlphaNumeric(10));
     var draftPart = draft.Parts.First();
     var drafter1 = DrafterFactory.CreateDrafter();
     var drafter2 = DrafterFactory.CreateDrafter();
@@ -69,7 +69,7 @@ public class GameBoardTests : DraftsBaseTest
   {
     // Arrange
     var draft = DraftFactory.CreateStandardDraft();
-    draft.AddPart(1, 1, 7);
+    draft.AddPart(1, 1, 7, Faker.Random.AlphaNumeric(10));
     var draftPart = draft.Parts.First();
     var gameBoard = GameBoard.Create(draftPart).Value;
     ICollection<DraftPosition>? draftPositions = null;
@@ -87,7 +87,7 @@ public class GameBoardTests : DraftsBaseTest
   {
     // Arrange
     var draft = DraftFactory.CreateStandardDraft();
-    draft.AddPart(1, 1, 7);
+    draft.AddPart(1, 1, 7, Faker.Random.AlphaNumeric(10));
     var draftPart = draft.Parts.First();
     var drafter1 = DrafterFactory.CreateDrafter();
     var drafter2 = DrafterFactory.CreateDrafter();
@@ -113,7 +113,7 @@ public class GameBoardTests : DraftsBaseTest
   {
     // Arrange
     var draft = DraftFactory.CreateStandardDraft();
-    draft.AddPart(1, 1, 7);
+    draft.AddPart(1, 1, 7, Faker.Random.AlphaNumeric(10));
     var draftPart = draft.Parts.First();
     var gameBoard = GameBoard.Create(draftPart).Value;
 
@@ -132,7 +132,7 @@ public class GameBoardTests : DraftsBaseTest
   {
     // Arrange
     var draft = DraftFactory.CreateStandardDraft();
-    draft.AddPart(1, 1, 7);
+    draft.AddPart(1, 1, 7, Faker.Random.AlphaNumeric(10));
     var draftPart = draft.Parts.First();
     var drafter1 = DrafterFactory.CreateDrafter();
     var drafter2 = DrafterFactory.CreateDrafter();

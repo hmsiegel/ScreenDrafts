@@ -17,28 +17,28 @@ This document is a one-page  for refactoring the Drafts module into Vertical Sli
 ## Reference Data
 
 ### Series
-- **POST** `/series` — CreateSeries
+- **POST** `/series` — CreateSeries &#x2705;
 - **GET** `/series` — SearchSeries
-- **GET** `/series/{publicId}` — GetSeries
-- **PATCH** `/series/{publicId}` — UpdateSeries
+- **GET** `/series/{publicId}` — GetSeries &#x2705;
+- **PATCH** `/series/{publicId}` — UpdateSeries &#x2705;
 - **DELETE** `/series/{publicId}` — DeleteSeries
 - **POST** `/series/{publicId}/restore` — RestoreSeries
 
 ### Campaigns
-- **POST** `/campaigns` — CreateCampaign
-- **GET** `/campaigns` — GetCampaigns
-- **GET** `/campaigns/{publicId}` — GetCampaign
-- **PATCH** `/campaigns/{publicId}` — UpdateCampaign
-- **DELETE** `/campaigns/{publicId}` — DeleteCampaign
-- **POST** `/campaigns/{publicId}/restore` — RestoreCampaign
+- **POST** `/campaigns` — CreateCampaign &#x2705;
+- **GET** `/campaigns` — GetCampaigns &#x2705;
+- **GET** `/campaigns/{publicId}` — GetCampaign &#x2705;
+- **PATCH** `/campaigns/{publicId}` — UpdateCampaign &#x2705;
+- **DELETE** `/campaigns/{publicId}` — DeleteCampaign &#x2705;
+- **POST** `/campaigns/{publicId}/restore` — RestoreCampaign &#x2705;
 
 ### Categories
-- **POST** `/categories` — CreateCategory
-- **GET** `/categories` — GetCategories
-- **GET** `/categories/{publicId}` — GetCategory
-- **PATCH** `/categories/{publicId}` — UpdateCategory
-- **DELETE** `/categories/{publicId}` — DeleteCategory
-- **POST** `/categories/{publicId}/restore` — RestoreCategory
+- **POST** `/categories` — CreateCategory &#x2705;
+- **GET** `/categories` — GetCategories &#x2705;
+- **GET** `/categories/{publicId}` — GetCategory &#x2705;
+- **PATCH** `/categories/{publicId}` — UpdateCategory &#x2705;
+- **DELETE** `/categories/{publicId}` — DeleteCategory &#x2705;
+- **POST** `/categories/{publicId}/restore` — RestoreCategory &#x2705;
 
 ---
 
@@ -47,16 +47,17 @@ This document is a one-page  for refactoring the Drafts module into Vertical Sli
 > Users are owned by the Users module. Drafts owns People and role entities (Drafter/Host) that may link to a User.
 
 ### People
-- **POST** `/people` — CreatePerson (optionally link to User publicId)
-- **GET** `/people/{personId}` — GetPerson (optional)
-- **GET** `/people` — SearchPeople (optional)
+- **POST** `/people` — CreatePerson (optionally link to User publicId) &#x2705;
+- **GET** `/people/{personId}` — GetPerson (optional) &#x2705;
+- **GET** `/people` - ListPeople &#x2705;
+- **GET** `/people` — SearchPeople (optional) &#x2705;
 
 ### Drafters (role)
-- **POST** `/drafters` — CreateDrafter (promote Person → Drafter)  
+- **POST** `/drafters` — CreateDrafter (promote Person → Drafter) &#x2705;
   Body: `{ "personId": "p_..." }`
 
 ### Hosts (role)
-- **POST** `/hosts` — CreateHost (promote Person → Host)  
+- **POST** `/hosts` — CreateHost (promote Person → Host) &#x2705;
   Body: `{ "personId": "p_..." }`
 
 ### DrafterTeams

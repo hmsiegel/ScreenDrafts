@@ -87,6 +87,11 @@ public static class DraftPartErrors
     description: "Invalid participant kind."
   );
 
+  public static readonly SDError InvalidPublicId = SDError.Failure(
+    code: "DraftPart.InvalidPublicId",
+    description: "Invalid public ID."
+  );
+
   public static SDError NotFound(Guid draftPartId) => SDError.NotFound(
     code: "DraftPart.NotFound",
         description: $"Draft part with ID '{draftPartId}' is not found."

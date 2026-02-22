@@ -34,7 +34,8 @@ internal sealed class CreateDraftCommandHandler(IDraftRepository draftsRepositor
 
     if (request.AutoCreateFirstPart)
     {
-      var partResult = draft.AddPart(1, request.MinPosition, request.MaxPosition);
+      var partPublicId = _publicIdGenerator.GeneratePublicId(PublicIdPrefixes.DraftPart);
+      var partResult = draft.AddPart(1, request.MinPosition, request.MaxPosition, partPublicId);
 
       if (partResult.IsFailure)
       {

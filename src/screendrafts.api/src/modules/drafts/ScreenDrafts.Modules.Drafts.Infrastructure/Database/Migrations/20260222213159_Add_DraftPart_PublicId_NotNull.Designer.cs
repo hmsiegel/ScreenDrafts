@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ScreenDrafts.Modules.Drafts.Infrastructure.Database;
@@ -12,9 +13,11 @@ using ScreenDrafts.Modules.Drafts.Infrastructure.Database;
 namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
 {
     [DbContext(typeof(DraftsDbContext))]
-    partial class DraftsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260222213159_Add_DraftPart_PublicId_NotNull")]
+    partial class Add_DraftPart_PublicId_NotNull
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -19,6 +19,12 @@ internal sealed class DraftPartConfiguration : IEntityTypeConfiguration<DraftPar
     builder.HasIndex(x => new { x.DraftId, x.PartIndex })
       .IsUnique();
 
+    builder.Property(x => x.PublicId)
+      .IsRequired();
+
+    builder.HasIndex(x => x.PublicId)
+      .IsUnique();
+
     // Draft
     builder.Property(x => x.DraftId)
       .IsRequired()

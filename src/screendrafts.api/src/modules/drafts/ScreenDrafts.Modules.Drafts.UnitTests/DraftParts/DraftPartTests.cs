@@ -15,9 +15,14 @@ public class DraftPartTests : DraftsBaseTest
     var draftId = DraftId.CreateUnique();
     var partIndex = 1;
     var gameplay = CreateGameplaySnapshot();
+    var publicId = Faker.Random.AlphaNumeric(10);
 
     // Act
-    var result = DraftPart.Create(draftId, partIndex, gameplay);
+    var result = DraftPart.Create(
+      draftId: draftId,
+      partIndex: partIndex,
+      gameplay: gameplay,
+      publicId: publicId);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -33,9 +38,14 @@ public class DraftPartTests : DraftsBaseTest
     // Arrange
     var partIndex = 1;
     var gameplay = CreateGameplaySnapshot();
+    var publicId = Faker.Random.AlphaNumeric(10);
 
     // Act
-    var result = DraftPart.Create(null!, partIndex, gameplay);
+    var result = DraftPart.Create(
+      draftId: null!,
+      partIndex: partIndex,
+      gameplay: gameplay,
+      publicId: publicId);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -48,9 +58,14 @@ public class DraftPartTests : DraftsBaseTest
     // Arrange
     var draftId = DraftId.CreateUnique();
     var gameplay = CreateGameplaySnapshot();
+    var publicId = Faker.Random.AlphaNumeric(10);
 
     // Act
-    var result = DraftPart.Create(draftId, 0, gameplay);
+    var result = DraftPart.Create(
+      draftId: draftId,
+      partIndex: 0,
+      gameplay: gameplay,
+      publicId: publicId);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -201,7 +216,7 @@ public class DraftPartTests : DraftsBaseTest
     var drafter2 = CreateDrafter();
     var participantId1 = CreateParticipantId(drafter1);
     var participantId2 = CreateParticipantId(drafter2);
-    
+
     draftPart.AddParticipant(participantId1);
 
     var newParticipants = new List<Participant> { participantId2 };
@@ -244,7 +259,7 @@ public class DraftPartTests : DraftsBaseTest
     var drafter1 = CreateDrafter();
     var drafter2 = CreateDrafter();
     var team = CreateDrafterTeam();
-    
+
     var participantId1 = CreateParticipantId(drafter1);
     var participantId2 = CreateParticipantId(drafter2);
     var teamId = CreateParticipantId(team);
@@ -291,7 +306,8 @@ public class DraftPartTests : DraftsBaseTest
   {
     // Arrange
     var draft = DraftFactory.CreateStandardDraft();
-    draft.AddPart(1, 1, 7);
+    var draftPartPublicId = Faker.Random.AlphaNumeric(10);
+    draft.AddPart(1, 1, 7, draftPartPublicId);
     var draftPart = draft.Parts.First();
     var gameBoard = GameBoard.Create(draftPart).Value;
 
@@ -503,8 +519,13 @@ public class DraftPartTests : DraftsBaseTest
     var draftId = DraftId.CreateUnique();
     var partIndex = 1;
     var gameplay = CreateGameplaySnapshot();
+    var publicId = Faker.Random.AlphaNumeric(10);
 
-    return DraftPart.Create(draftId, partIndex, gameplay).Value;
+    return DraftPart.Create(
+      draftId: draftId,
+      partIndex: partIndex,
+      gameplay: gameplay,
+      publicId: publicId).Value;
   }
 
   private static DraftPartGamePlaySnapshot CreateGameplaySnapshot()
