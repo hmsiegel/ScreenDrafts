@@ -40,56 +40,62 @@ internal sealed class UpdateDraftCommandHandler(
       }
     }
 
-    if (!await _seriesRepository.ExistsByPublicIdAsync(UpdateDraftRequest.SeriesPublicId, cancellationToken))
+    if (!string.IsNullOrEmpty(UpdateDraftRequest.SeriesPublicId))
     {
-      return Result.Failure(SeriesErrors.SeriesIdIsInvalid(UpdateDraftRequest.SeriesPublicId));
+      if (!await _seriesRepository.ExistsByPublicIdAsync(UpdateDraftRequest.SeriesPublicId, cancellationToken))
+      {
+        return Result.Failure(SeriesErrors.SeriesIdIsInvalid(UpdateDraftRequest.SeriesPublicId));
+      }
+
+      var series = await _seriesRepository.GetByPublicIdAsync(UpdateDraftRequest.SeriesPublicId, cancellationToken);
+
+      if (series is null)
+      {
+        return Result.Failure(SeriesErrors.NotFound(UpdateDraftRequest.SeriesPublicId));
+      }
+
+      draft.LinkSeries(series);
     }
 
-    if (!await _campaignsRepository.ExistsByPublicIdAsync(UpdateDraftRequest.CampaignPublicId, cancellationToken))
+    if (!string.IsNullOrEmpty(UpdateDraftRequest.CampaignPublicId))
     {
-      return Result.Failure(CampaignErrors.CampaignIdIsInvalid(UpdateDraftRequest.CampaignPublicId));
+      if (!await _campaignsRepository.ExistsByPublicIdAsync(UpdateDraftRequest.CampaignPublicId, cancellationToken))
+      {
+        return Result.Failure(CampaignErrors.CampaignIdIsInvalid(UpdateDraftRequest.CampaignPublicId));
+      }
+
+      var campaign = await _campaignsRepository.GetByPublicIdAsync(UpdateDraftRequest.CampaignPublicId, cancellationToken);
+
+      if (campaign is null)
+      {
+        return Result.Failure(CampaignErrors.NotFound(UpdateDraftRequest.CampaignPublicId));
+      }
+
+      draft.SetCampaign(campaign);
     }
 
-    if (UpdateDraftRequest.PublicCategoryIds is {  Count: > 0 })
+    if (UpdateDraftRequest.PublicCategoryIds is { Count: > 0 })
     {
       var allExist = await _categoriesRepository.AllExistByPublicIdsAsync(UpdateDraftRequest.PublicCategoryIds, cancellationToken);
       if (!allExist)
       {
         return Result.Failure(CategoryErrors.OneOrMoreCategoryIdsAreInvalid(UpdateDraftRequest.PublicCategoryIds));
       }
+
+      var categories = await _categoriesRepository.GetByPublicIdsAsync(UpdateDraftRequest.PublicCategoryIds, cancellationToken);
+
+      if (categories.Count != UpdateDraftRequest.PublicCategoryIds.Count)
+      {
+        return Result.Failure(CategoryErrors.OneOrMoreCategoryIdsAreInvalid(UpdateDraftRequest.PublicCategoryIds));
+      }
+
+      draft.ReplaceCategories(categories);
     }
-
-    var series = await _seriesRepository.GetByPublicIdAsync(UpdateDraftRequest.SeriesPublicId!, cancellationToken);
-
-    if (series is null)
-    {
-      return Result.Failure(SeriesErrors.NotFound(UpdateDraftRequest.SeriesPublicId!));
-    }
-
-    draft.LinkSeries(series);
-
-    var campaign = await _campaignsRepository.GetByPublicIdAsync(UpdateDraftRequest.CampaignPublicId!, cancellationToken);
-
-    if (campaign is null)
-    {
-      return Result.Failure(CampaignErrors.NotFound(UpdateDraftRequest.CampaignPublicId!));
-    }
-
-    draft.SetCampaign(campaign);
 
     draft.Update(
       title: UpdateDraftRequest.Title,
       description: UpdateDraftRequest.Description,
       draftTypeValue: UpdateDraftRequest.DraftTypeValue);
-
-    var categories = await _categoriesRepository.GetByPublicIdsAsync(UpdateDraftRequest.PublicCategoryIds ?? [], cancellationToken);
-
-    if (categories.Count != UpdateDraftRequest.PublicCategoryIds!.Count)
-    {
-      return Result.Failure(CategoryErrors.OneOrMoreCategoryIdsAreInvalid(UpdateDraftRequest.PublicCategoryIds ?? []));
-    }
-
-    draft.ReplaceCategories(categories);
 
     _draftsRepository.Update(draft);
 

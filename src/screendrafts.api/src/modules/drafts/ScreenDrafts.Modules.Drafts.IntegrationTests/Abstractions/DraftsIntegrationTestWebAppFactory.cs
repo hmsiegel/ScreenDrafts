@@ -134,8 +134,10 @@ public class DraftsIntegrationTestWebAppFactory : IntegrationTestWebAppFactory
   {
     if (_keycloakContainer is not null && _keycloakInitialized)
     {
+      _keycloakInitialized = false;
       await _keycloakContainer.StopAsync();
       await _keycloakContainer.DisposeAsync();
+      _keycloakContainer = null;
     }
 
     await base.StopContainersAsync();

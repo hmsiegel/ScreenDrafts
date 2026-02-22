@@ -471,3 +471,4 @@ FodyWeavers.xsd
 /src/screendrafts.api/tools/ScreenDrafts.Seeding.Users/appsettings.Development.json
 /src/screendrafts.api/tools/ScreenDrafts.Seeding.Users/modules.users.Development.json
 /src/screendrafts.api/tools/ScreenDrafts.Tools.DbMigrator/appsettings.Development.json
+/src/screendrafts.api/src/modules/users/ScreenDrafts.Modules.Users.IntegrationTests/screendrafts-realm-export.json

@@ -14,6 +14,7 @@ internal sealed class GetUserPermissionsQueryHandler(IDbConnectionFactory dbConn
       $"""
       SELECT DISTINCT
         u.id AS {nameof(UserPermission.UserId)},
+        u.public_id AS {nameof(UserPermission.PublicId)},
         rp.permission_code AS {nameof(UserPermission.Permission)}
       FROM users.users u
       JOIN users.user_roles ur ON ur.user_id = u.id
@@ -28,12 +29,14 @@ internal sealed class GetUserPermissionsQueryHandler(IDbConnectionFactory dbConn
       return Result.Failure<PermissionsResponse>(UserErrors.NotFound(request.IdentityId));
     }
 
-    return new PermissionsResponse(permissions[0].UserId, permissions.Select(p => p.Permission).ToHashSet());
+    return new PermissionsResponse(permissions[0].UserId, permissions[0].PublicId, permissions.Select(p => p.Permission).ToHashSet());
   }
 
   internal sealed class UserPermission
   {
     internal Guid UserId { get; init; }
+
+    internal string PublicId { get; init; } = string.Empty;
 
     internal string Permission { get; init; } = string.Empty;
   }

@@ -1,4 +1,6 @@
-﻿using ScreenDrafts.Modules.Drafts.Features.Campaigns.Create;
+﻿using Microsoft.EntityFrameworkCore;
+using ScreenDrafts.Modules.Drafts.Domain.SeriesAggregate;
+using ScreenDrafts.Modules.Drafts.Features.Campaigns.Create;
 using ScreenDrafts.Modules.Drafts.Features.Drafts.CreateDraft;
 using ScreenDrafts.Modules.Drafts.Features.Drafts.Update;
 using ScreenDrafts.Modules.Drafts.Features.SeriesFeatures.Create;
@@ -53,11 +55,15 @@ public sealed class UpdateDraftTests(DraftsIntegrationTestWebAppFactory factory)
   {
     // Arrange
     var draftId = await CreateDraftAsync();
-    var newSeriesId = await CreateSeriesAsync();
+    var newSeriesGuid = await CreateSeriesAsync();
+    var newSeriesPublicId = await DbContext.Series
+      .Where(s => s.Id == SeriesId.Create(newSeriesGuid))
+      .Select(s => s.PublicId)
+      .FirstAsync();
     var command = new UpdateDraftCommand
     {
       PublicId = draftId,
-      SeriesPublicId = newSeriesId.ToString()
+      SeriesPublicId = newSeriesPublicId
     };
 
     // Act

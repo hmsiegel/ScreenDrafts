@@ -17,7 +17,7 @@ public static class MovieFactory
         0,
         0,
         DateTimeKind.Utc), DateTime.UtcNow).ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
-      new Uri(_faker.Internet.Url()),
+      null,
       _faker.Random.Replace("tt#######"));
 
     public static Result<Genre> CreateGenre() => Genre.Create(_faker.Music.Genre());

@@ -1,3 +1,5 @@
+using ScreenDrafts.Modules.Drafts.Domain.SeriesAggregate.Enums;
+
 namespace ScreenDrafts.Modules.Drafts.Features.Drafts.Update;
 
 internal sealed class Validator : AbstractValidator<UpdateDraftCommand>
@@ -10,6 +12,7 @@ internal sealed class Validator : AbstractValidator<UpdateDraftCommand>
       .WithMessage("PublicId is not valid.");
 
     RuleFor(x => x.Title)
+      .NotEmpty().When(x => x.Title != null).WithMessage("Title cannot be empty if provided.")
       .MaximumLength(200).WithMessage("Title must not exceed 200 characters.");
 
     RuleFor(x => x.Description)
@@ -24,10 +27,11 @@ internal sealed class Validator : AbstractValidator<UpdateDraftCommand>
       .WithMessage("CampaignPublicId is not valid.");
 
     RuleFor(x => x.DraftTypeValue)
-      .IsInEnum().WithMessage("DraftTypeValue is not valid.");
+      .Must(val => DraftType.TryFromValue(val, out _))
+      .WithMessage("DraftTypeValue is not valid.");
 
     RuleFor(x => x.PublicCategoryIds)
-      .Must(publicCategoryIds => publicCategoryIds != null && publicCategoryIds.All(id => PublicIdGuards.IsValidWithPrefix(id, PublicIdPrefixes.Category)))
+      .Must(publicCategoryIds => publicCategoryIds == null || publicCategoryIds.All(id => PublicIdGuards.IsValidWithPrefix(id, PublicIdPrefixes.Category)))
       .WithMessage("PublicCategoryIds must be valid.");
 
   }

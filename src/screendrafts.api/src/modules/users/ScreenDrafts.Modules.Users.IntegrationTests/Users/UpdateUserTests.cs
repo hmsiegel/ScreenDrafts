@@ -35,7 +35,7 @@ public class UpdateUserTests(UsersIntegrationTestWebAppFactory factory) : UsersI
   public async Task Should_ReturnError_WhenUserDoesNotExistAsync()
   {
     // Arrange
-    var publicId = "nonexistent-user-id";
+    var publicId = "u_nonexistent";
 
     // Act
     Result updateResult = await Sender.Send(

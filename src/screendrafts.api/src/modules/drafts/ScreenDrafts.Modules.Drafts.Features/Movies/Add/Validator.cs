@@ -11,7 +11,7 @@ internal sealed class Validator : AbstractValidator<AddMovieCommand>
       .MaximumLength(20).WithMessage("The IMDb ID must not exceed 20 characters.");
     RuleFor(x => x.Title)
       .NotEmpty().WithMessage("The movie title must be provided.")
-      .MaximumLength(200).WithMessage("The movie title must not exceed 200 characters.");
+      .MaximumLength(500).WithMessage("The movie title must not exceed 500 characters.");
   }
 }
 

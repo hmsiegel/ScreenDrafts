@@ -19,6 +19,11 @@ internal sealed class MovieRepository(DraftsDbContext dbContext) : IMovieReposit
     return await _dbContext.Movies.AnyAsync(m => m.Id == id, ct);
   }
 
+  public async Task<bool> ExistsByImdbIdAsync(string imdbId, CancellationToken ct)
+  {
+    return await _dbContext.Movies.AnyAsync(m => m.ImdbId == imdbId, ct);
+  }
+
   public async Task<Movie?> GetByIdAsync(Guid id, CancellationToken ct)
   {
     return await _dbContext.Movies

@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Abstractions;
+﻿using ScreenDrafts.Modules.Drafts.Domain.Drafters.ValueObjects;
+
+namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Abstractions;
 
 [Collection(nameof(DraftsIntegrationTestCollection))]
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1051:Do not declare visible instance fields", Justification = "Reviewed")]
@@ -48,17 +50,16 @@ public abstract class DraftsIntegrationTest(DraftsIntegrationTestWebAppFactory f
 
   protected async Task<string?> GetFirstParticipantPublicIdAsync(Guid draftPartId)
   {
-    var participantId = await DbContext.DraftParts
-   .Where(dp => dp.Id == DraftPartId.Create(draftPartId))
-   .SelectMany(dp => dp.Participants)
-   .Select(dpp => dpp.AsDrafterId())
-   .FirstAsync();
+    var participantIdValues = await DbContext.DraftPartParticipants
+      .Where(p => p.DraftPartId == DraftPartId.Create(draftPartId)
+               && p.ParticipantKindValue == ParticipantKind.Drafter)
+      .Select(p => p.ParticipantIdValue)
+      .ToListAsync();
 
-    var drafterPublicId = await DbContext.Drafters
-      .Where(d => d.Id == participantId)
+    return await DbContext.Drafters
+      .AsAsyncEnumerable()
+      .Where(d => participantIdValues.Contains(d.Id.Value))
       .Select(d => d.PublicId)
       .FirstAsync();
-
-    return drafterPublicId;
   }
 }

@@ -97,10 +97,8 @@ internal sealed class DraftRepository(DraftsDbContext dbContext) : IDraftReposit
   public async Task<Draft?> GetDraftByPublicIdWithPartsAsync(string publicId, CancellationToken cancellationToken)
   {
     return await _dbContext.Drafts
-      .Include(d => d.Parts)
-        .ThenInclude(p => p.DraftHosts)
-      .Include(d => d.Parts)
-        .ThenInclude(p => p.Participants)
+      .Include("Parts._draftHosts")
+      .Include("Parts._draftPartParticipants")
       .FirstOrDefaultAsync(d => d.PublicId == publicId, cancellationToken);
   }
 

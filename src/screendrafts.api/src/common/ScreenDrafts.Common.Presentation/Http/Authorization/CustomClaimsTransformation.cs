@@ -8,7 +8,7 @@ internal sealed class CustomClaimsTransformation(IServiceScopeFactory serviceSco
 
   public async Task<ClaimsPrincipal> TransformAsync(ClaimsPrincipal principal)
   {
-    if (principal.HasClaim(c => c.Type == CustomClaims.Sub))
+    if (principal.HasClaim(c => c.Type == CustomClaims.Permission))
     {
       return principal;
     }
@@ -29,6 +29,7 @@ internal sealed class CustomClaimsTransformation(IServiceScopeFactory serviceSco
     var claimsIdentity = new ClaimsIdentity();
 
     claimsIdentity.AddClaim(new Claim(CustomClaims.Sub, result.Value.UserId.ToString()));
+    claimsIdentity.AddClaim(new Claim(CustomClaims.PublicId, result.Value.PublicId));
 
     foreach (var permission in result.Value.Permissions)
     {

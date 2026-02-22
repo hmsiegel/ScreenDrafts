@@ -1,4 +1,4 @@
 ﻿namespace ScreenDrafts.Common.Abstractions.Authorization;
 
-public sealed record PermissionsResponse(Guid UserId, HashSet<string> Permissions);
+public sealed record PermissionsResponse(Guid UserId, string PublicId, HashSet<string> Permissions);
 

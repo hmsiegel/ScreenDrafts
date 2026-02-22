@@ -12,14 +12,14 @@ public sealed class ListCategoriesTests(DraftsIntegrationTestWebAppFactory facto
     // Arrange
     var category1 = new CreateCategoryCommand
     {
-      Name = Faker.Commerce.Categories(1)[0],
+      Name = $"{Faker.Commerce.Categories(1)[0]} {Faker.Random.AlphaNumeric(6)}",
       Description = Faker.Lorem.Sentence()
     };
     await Sender.Send(category1);
 
     var category2 = new CreateCategoryCommand
     {
-      Name = Faker.Commerce.Categories(1)[0],
+      Name = $"{Faker.Commerce.Categories(1)[0]} {Faker.Random.AlphaNumeric(6)}",
       Description = Faker.Lorem.Sentence()
     };
     await Sender.Send(category2);

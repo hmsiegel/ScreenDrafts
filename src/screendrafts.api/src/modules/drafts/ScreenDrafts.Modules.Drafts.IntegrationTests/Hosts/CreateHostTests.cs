@@ -1,4 +1,5 @@
-﻿using ScreenDrafts.Modules.Drafts.Domain.Hosts;
+﻿using ScreenDrafts.Common.Application.Services;
+using ScreenDrafts.Modules.Drafts.Domain.Hosts;
 using ScreenDrafts.Modules.Drafts.Features.Hosts.Create;
 
 namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Hosts;
@@ -32,7 +33,7 @@ public sealed class CreateHostTests(DraftsIntegrationTestWebAppFactory factory)
     // Arrange
     var command = new CreateHostCommand
     {
-      PersonPublicId = Faker.Random.AlphaNumeric(10)
+      PersonPublicId = $"{PublicIdPrefixes.Person}_{Faker.Random.AlphaNumeric(10)}"
     };
 
     // Act

@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Infrastructure.DraftParts;
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace ScreenDrafts.Modules.Drafts.Infrastructure.DraftParts;
 
 internal sealed class DraftPartRepository(DraftsDbContext dbContext) : IDraftPartRepository
 {
@@ -7,7 +9,6 @@ internal sealed class DraftPartRepository(DraftsDbContext dbContext) : IDraftPar
   public Task<DraftPart?> GetByIdAsync(DraftPartId draftPartId, CancellationToken cancellationToken)
   {
     var draftPart = _dbContext.DraftParts
-        .AsNoTracking()
         .FirstOrDefaultAsync(x => x.Id == draftPartId, cancellationToken);
 
     return draftPart;
@@ -15,6 +16,12 @@ internal sealed class DraftPartRepository(DraftsDbContext dbContext) : IDraftPar
 
   public void Update(DraftPart draftPart)
   {
-    _dbContext.DraftParts.Update(draftPart);
+    var entry = _dbContext.Entry(draftPart);
+
+    // Only call Update if the entity is not already being tracked
+    if (entry.State == EntityState.Detached)
+    {
+      _dbContext.DraftParts.Update(draftPart);
+    }
   }
 }
