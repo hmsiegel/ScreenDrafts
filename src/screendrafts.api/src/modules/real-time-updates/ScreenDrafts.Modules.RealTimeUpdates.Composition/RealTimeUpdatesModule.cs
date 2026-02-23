@@ -22,8 +22,8 @@ public static class RealTimeUpdatesModule
 
   private static void AddRealTimeUpdatesFeatures(this IServiceCollection services)
   {
-    services.AddScoped<IDomainEventDispatcher, DomainEventDispatcher>();
-    services.AddScoped<IIntegrationEventDispatcher, IntegrationEventDispatcher>();
+    services.AddScoped<IRealTimeUpdatesDomainEventDispatcher, RealTimeUpdatesDomainEventDispatcher>();
+    services.AddScoped<IRealTimeUpdatesIntegrationEventDispatcher, RealTimeUpdatesIntegrationEventDispatcher>();
   }
 
 

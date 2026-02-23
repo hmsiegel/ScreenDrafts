@@ -7,14 +7,14 @@ internal sealed class ProcessInboxJob(
     IDateTimeProvider dateTimeProvider,
     IOptions<InboxOptions> inboxOptions,
     ILogger<ProcessInboxJob> logger,
-    IIntegrationEventDispatcher integrationEventDispatcher) : IJob
+    IMoviesIntegrationEventDispatcher integrationEventDispatcher) : IJob
 {
   private const string ModuleName = "Movies";
 
   private readonly IDbConnectionFactory _dbConnectionFactory = dbConnectionFactory;
   private readonly IServiceScopeFactory _serviceScopeFactory = serviceScopeFactory;
   private readonly IDateTimeProvider _dateTimeProvider = dateTimeProvider;
-  private readonly IIntegrationEventDispatcher _integrationEventDispatcher = integrationEventDispatcher;
+  private readonly IMoviesIntegrationEventDispatcher _integrationEventDispatcher = integrationEventDispatcher;
   private readonly ILogger<ProcessInboxJob> _logger = logger;
   private readonly InboxOptions _inboxOptions = inboxOptions.Value;
 

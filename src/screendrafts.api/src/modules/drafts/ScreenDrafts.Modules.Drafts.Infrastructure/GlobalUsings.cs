@@ -28,6 +28,7 @@ global using ScreenDrafts.Common.Application.Data;
 global using ScreenDrafts.Common.Application.EventBus;
 global using ScreenDrafts.Common.Application.Logging;
 global using ScreenDrafts.Common.Application.Messaging;
+global using ScreenDrafts.Common.Application.Messaging.Dispatchers;
 global using ScreenDrafts.Common.Application.Services;
 global using ScreenDrafts.Common.Domain;
 global using ScreenDrafts.Common.Infrastructure;

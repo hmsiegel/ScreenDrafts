@@ -3,7 +3,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 using ScreenDrafts.Common.Application.EventBus;
+using ScreenDrafts.Common.Application.EventBus.Dispatchers;
 using ScreenDrafts.Common.Application.Messaging;
+using ScreenDrafts.Common.Application.Messaging.Dispatchers;
 using ScreenDrafts.Modules.Communications.Features;
 using ScreenDrafts.Modules.Communications.Features.Inbox;
 using ScreenDrafts.Modules.Communications.Features.Outbox;
@@ -34,8 +36,8 @@ public static class CommunicationsModule
   }
   public static void AddCommunicationsFeatures(this IServiceCollection services)
   {
-    services.AddScoped<IIntegrationEventDispatcher, IntegrationEventDispatcher>();
-    services.AddScoped<IDomainEventDispatcher, DomainEventDispatcher>();
+    services.AddScoped<ICommunicationsIntegrationEventDispatcher, CommunicationsIntegrationEventDispatcher>();
+    services.AddScoped<ICommunicationsDomainEventDispatcher, CommunicationsDomainEventDispatcher>();
   }
 
 

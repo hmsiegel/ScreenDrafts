@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Common.Abstractions.Authorization;
-
-namespace ScreenDrafts.Modules.Users.Composition;
+﻿namespace ScreenDrafts.Modules.Users.Composition;
 
 public static class UsersModule
 {
@@ -51,8 +49,8 @@ public static class UsersModule
   private static IServiceCollection AddUsersFeatures(this IServiceCollection services)
   {
     services.AddScoped<IUsersApi, UsersApi>();
-    services.AddScoped<IDomainEventDispatcher, DomainEventDispatcher>();
-    services.AddScoped<IIntegrationEventDispatcher, IntegrationEventDispatcher>();
+    services.AddScoped<IUsersDomainEventDispatcher, UsersDomainEventDispatcher>();
+    services.AddScoped<IUsersIntegrationEventDispatcher, UsersIntegrationEventDispatcher>();
     services.AddScoped(typeof(IPipelineBehavior<,>), typeof(UsersUnitOfWorkBehavior<,>));
     return services;
   }

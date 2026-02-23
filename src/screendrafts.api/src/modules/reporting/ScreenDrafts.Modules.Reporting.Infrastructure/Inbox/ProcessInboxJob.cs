@@ -7,7 +7,7 @@ internal sealed class ProcessInboxJob(
     IDateTimeProvider dateTimeProvider,
     IOptions<InboxOptions> inboxOptions,
     ILogger<ProcessInboxJob> logger,
-    IIntegrationEventDispatcher integrationEventDispatcher) : IJob
+    IReportingIntegrationEventDispatcher integrationEventDispatcher) : IJob
 {
   private const string ModuleName = "Reporting";
 
@@ -15,7 +15,7 @@ internal sealed class ProcessInboxJob(
   private readonly IServiceScopeFactory _serviceScopeFactory = serviceScopeFactory;
   private readonly IDateTimeProvider _dateTimeProvider = dateTimeProvider;
   private readonly ILogger<ProcessInboxJob> _logger = logger;
-  private readonly IIntegrationEventDispatcher _integrationEventDispatcher = integrationEventDispatcher;
+  private readonly IReportingIntegrationEventDispatcher _integrationEventDispatcher = integrationEventDispatcher;
   private readonly InboxOptions _inboxOptions = inboxOptions.Value;
 
   public async Task Execute(IJobExecutionContext context)

@@ -18,6 +18,7 @@ global using ScreenDrafts.Common.Abstractions.Results;
 global using ScreenDrafts.Common.Application.Clock;
 global using ScreenDrafts.Common.Application.Data;
 global using ScreenDrafts.Common.Application.EventBus;
+global using ScreenDrafts.Common.Application.EventBus.Dispatchers;
 global using ScreenDrafts.Common.Application.Inbox;
 global using ScreenDrafts.Common.Application.Logging;
 global using ScreenDrafts.Common.Application.Messaging;

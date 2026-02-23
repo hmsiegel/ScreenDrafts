@@ -1,6 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Users.Features.Inbox;
+﻿namespace ScreenDrafts.Modules.RealTimeUpdates.Features.Inbox;
 
-public class IntegrationEventDispatcher : IIntegrationEventDispatcher
+public class RealTimeUpdatesIntegrationEventDispatcher : IRealTimeUpdatesIntegrationEventDispatcher
 {
   public async Task DispatchAsync(IIntegrationEvent integrationEvent, IServiceProvider provider)
   {
@@ -9,7 +9,7 @@ public class IntegrationEventDispatcher : IIntegrationEventDispatcher
     var handlers = IntegrationEventHandlersFactory.GetHandlers(
       integrationEvent.GetType(),
       provider,
-      typeof(IntegrationEventDispatcher).Assembly);
+      typeof(RealTimeUpdatesIntegrationEventDispatcher).Assembly);
 
     foreach (var handler in handlers)
     {

@@ -31,8 +31,8 @@ public static class IntegrationsModule
   {
     services.AddScoped<IImdbService, ImdbService>();
     services.AddScoped<IOmdbService, OmdbService>();
-    services.AddScoped<IIntegrationEventDispatcher, IntegrationEventDispatcher>();
-    services.AddScoped<IDomainEventDispatcher, DomainEventDispatcher>();
+    services.AddScoped<IIntegrationsIntegrationEventDispatcher, IntegrationsIntegrationEventDispatcher>();
+    services.AddScoped<IIntegrationsDomainEventDispatcher, IntegrationsDomainEventDispatcher>();
   }
 
   private static void AddDomainEventHandlers(this IServiceCollection services)

@@ -25,6 +25,7 @@ internal static class DraftsOpenApi
     public const string Drafts_CreateDraft = "Drafts.CreateDraft";
     public const string Drafts_GetDraftById = "Drafts.GetDraftById";
     public const string Drafts_SetCampaign = "Drafts.SetCampaign";
+    public const string Drafts_SetCategory = "Drafts.SetCategory";
     public const string Drafts_RemoveCampaign = "Drafts.RemoveCampaign";
     public const string Drafts_GetDraftStatus = "Drafts.GetDraftStatus";
     public const string Drafts_SetDraftPartStatus = "Drafts.SetDraftPartStatus";
@@ -81,5 +82,6 @@ internal static class DraftsOpenApi
     public const string Hosts_RetireHost = "Hosts.RetireHost";
     public const string Hosts_GetHostById = "Hosts.GetHostById";
     public const string Hosts_ListHosts = "Hosts.ListHosts";
+
   }
 }

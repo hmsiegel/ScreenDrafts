@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Audit.Features.Inbox;
 
-public class IntegrationEventDispatcher : IIntegrationEventDispatcher
+public class AuditIntegrationEventDispatcher : IAuditIntegrationEventDispatcher
 {
   public async Task DispatchAsync(IIntegrationEvent integrationEvent, IServiceProvider provider)
   {
@@ -9,7 +9,7 @@ public class IntegrationEventDispatcher : IIntegrationEventDispatcher
     var handlers = IntegrationEventHandlersFactory.GetHandlers(
       integrationEvent.GetType(),
       provider,
-      typeof(IntegrationEventDispatcher).Assembly);
+      typeof(AuditIntegrationEventDispatcher).Assembly);
 
     foreach (var handler in handlers)
     {

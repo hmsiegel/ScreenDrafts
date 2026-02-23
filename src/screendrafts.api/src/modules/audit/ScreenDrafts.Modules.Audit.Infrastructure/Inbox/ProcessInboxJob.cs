@@ -7,7 +7,7 @@ internal sealed class ProcessInboxJob(
     IDateTimeProvider dateTimeProvider,
     IOptions<InboxOptions> inboxOptions,
     ILogger<ProcessInboxJob> logger,
-    IIntegrationEventDispatcher integrationEventDispatcher) : IJob
+    IAuditIntegrationEventDispatcher integrationEventDispatcher) : IJob
 {
   private const string ModuleName = "Audit";
 

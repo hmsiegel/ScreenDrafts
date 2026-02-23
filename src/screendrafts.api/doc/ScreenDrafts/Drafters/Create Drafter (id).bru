@@ -5,11 +5,17 @@ meta {
 }
 
 post {
-  url: {{url}}/drafters/10bba4f9-e0a5-40ed-a2fc-4b2d29a677c9
-  body: none
+  url: {{url}}/drafters/
+  body: json
   auth: bearer
 }
 
 auth:bearer {
-  token: {{token}}
+  token: Bearer {{token}}
+}
+
+body:json {
+  {
+    "personId": "pe_sIrsgTX0CdxfXT9"
+  }
 }

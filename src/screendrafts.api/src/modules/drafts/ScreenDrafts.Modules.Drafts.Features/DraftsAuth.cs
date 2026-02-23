@@ -37,15 +37,15 @@ internal static class DraftsAuth
     internal const string PersonUpdate = "person:update";
     internal const string PersonSearch = "person:search";
 
-    internal const string DrafterRead = "drafter:read";
-    internal const string DrafterList = "drafter:list";
-    internal const string DrafterCreate = "drafter:create";
-    internal const string DrafterUpdate = "drafter:update";
+    internal const string DrafterRead = "drafters:read";
+    internal const string DrafterList = "drafters:list";
+    internal const string DrafterCreate = "drafters:create";
+    internal const string DrafterUpdate = "drafters:update";
 
-    internal const string HostRead = "host:read";
-    internal const string HostList = "host:list";
-    internal const string HostCreate = "host:create";
-    internal const string HostUpdate = "host:update";
+    internal const string HostRead = "hosts:read";
+    internal const string HostList = "hosts:list";
+    internal const string HostCreate = "hosts:create";
+    internal const string HostUpdate = "hosts:update";
 
     // Teams
     internal const string DrafterTeamRead = "drafter-team:read";

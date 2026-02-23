@@ -7,14 +7,14 @@ internal sealed class ProcessOutboxJob(
     IDateTimeProvider dateTimeProvider,
     IOptions<OutboxOptions> outboxOptions,
     ILogger<ProcessOutboxJob> logger,
-    IDomainEventDispatcher domainEventDispatcher) : IJob
+    IMoviesDomainEventDispatcher domainEventDispatcher) : IJob
 {
   private const string ModuleName = "Movies";
 
   private readonly IDbConnectionFactory _dbConnectionFactory = dbConnectionFactory;
   private readonly IServiceScopeFactory _serviceScopeFactory = serviceScopeFactory;
   private readonly IDateTimeProvider _dateTimeProvider = dateTimeProvider;
-  private readonly IDomainEventDispatcher _domainEventDispatcher = domainEventDispatcher;
+  private readonly IMoviesDomainEventDispatcher _domainEventDispatcher = domainEventDispatcher;
   private readonly ILogger<ProcessOutboxJob> _logger = logger;
   private readonly OutboxOptions _outboxOptions = outboxOptions.Value;
 

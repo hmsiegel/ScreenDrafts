@@ -1,4 +1,4 @@
-using ScreenDrafts.Common.Abstractions.Results;
+﻿using ScreenDrafts.Common.Abstractions.Results;
 
 namespace ScreenDrafts.Modules.Drafts.Features.Drafters.Create;
 
@@ -17,7 +17,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<CreateDrafterRequest, stri
       .Produces(StatusCodes.Status403Forbidden)
       .Produces(StatusCodes.Status409Conflict);
     });
-    Permissions(DraftsAuth.Permissions.DrafterCreate);
+    Policies(DraftsAuth.Permissions.DrafterCreate);
   }
 
   public override async Task HandleAsync(CreateDrafterRequest req, CancellationToken ct)

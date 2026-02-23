@@ -7,7 +7,7 @@ internal sealed class ProcessOutboxJob(
     IDateTimeProvider dateTimeProvider,
     IOptions<OutboxOptions> outboxOptions,
     ILogger<ProcessOutboxJob> logger,
-    IDomainEventDispatcher domainEventDispatcher) : IJob
+    IReportingDomainEventDispatcher domainEventDispatcher) : IJob
 {
   private const string ModuleName = "Reporting";
 
@@ -15,7 +15,7 @@ internal sealed class ProcessOutboxJob(
   private readonly IServiceScopeFactory _serviceScopeFactory = serviceScopeFactory;
   private readonly IDateTimeProvider _dateTimeProvider = dateTimeProvider;
   private readonly ILogger<ProcessOutboxJob> _logger = logger;
-  private readonly IDomainEventDispatcher _domainEventDispatcher = domainEventDispatcher;
+  private readonly IReportingDomainEventDispatcher _domainEventDispatcher = domainEventDispatcher;
   private readonly OutboxOptions _outboxOptions = outboxOptions.Value;
 
   public async Task Execute(IJobExecutionContext context)

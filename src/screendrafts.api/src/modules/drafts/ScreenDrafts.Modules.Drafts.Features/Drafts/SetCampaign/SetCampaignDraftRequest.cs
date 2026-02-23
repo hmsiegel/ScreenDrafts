@@ -5,7 +5,7 @@ internal sealed record SetCampaignDraftRequest
   [FromRoute(Name = "draftId")]
   public string DraftId { get; init; } = default!;
 
-  [Microsoft.AspNetCore.Mvc.FromBody]
+  [FromBody]
   public string CampaignId { get; init; } = default!;
 }
 

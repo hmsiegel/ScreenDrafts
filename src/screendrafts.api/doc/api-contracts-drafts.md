@@ -74,13 +74,14 @@ This document is a one-page  for refactoring the Drafts module into Vertical Sli
 
 ## Drafts (draft-wide)
 
-- **POST** `/drafts` — CreateDraft
+- **POST** `/drafts` — CreateDraft &#x2705;
 - **GET** `/drafts/{draftId}` — GetDraft
 - **GET** `/drafts` — SearchDrafts
-- **PUT** `/drafts/{draftId}` — UpdateDraftMetadata (includes name, description, soft delete)
+- **PUT** `/drafts/{draftId}` — UpdateDraftMetadata (includes name, description, soft delete) &#x2705;
+- **PUT** `/drafts/{draftId}/category` — SetDraftCategory (single category) &#x2705;
 - **PUT** `/drafts/{draftId}/categories` — SetDraftCategories (replace list) 
-- **POST** `/drafts/{draftId}/campaign` — SetDraftCampaign
-- **DELETE** `/drafts/{draftId}/campaign` — ClearDraftCampaign
+- **POST** `/drafts/{draftId}/campaign` — SetDraftCampaign &#x2705;
+- **DELETE** `/drafts/{draftId}/campaign` — ClearDraftCampaign &#x2705;
 
 ---
 

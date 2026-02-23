@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.RealTimeUpdates.Features.Outbox;
 
-public sealed class DomainEventDispatcher : IDomainEventDispatcher
+public sealed class RealTimeUpdatesDomainEventDispatcher : IRealTimeUpdatesDomainEventDispatcher
 {
   public async Task DispatchAsync(IDomainEvent domainEvent, IServiceProvider provider)
   {
@@ -9,7 +9,7 @@ public sealed class DomainEventDispatcher : IDomainEventDispatcher
     var handlers = DomainEventHandlersFactory.GetHandlers(
       domainEvent.GetType(),
       provider,
-      typeof(DomainEventDispatcher).Assembly);
+      typeof(RealTimeUpdatesDomainEventDispatcher).Assembly);
 
     foreach (var handler in handlers)
     {

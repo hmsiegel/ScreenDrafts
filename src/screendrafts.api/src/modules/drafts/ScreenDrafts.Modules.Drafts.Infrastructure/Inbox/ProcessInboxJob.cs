@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Infrastructure.Inbox;
+﻿using ScreenDrafts.Common.Application.EventBus.Dispatchers;
+
+namespace ScreenDrafts.Modules.Drafts.Infrastructure.Inbox;
 
 [DisallowConcurrentExecution]
 internal sealed class ProcessInboxJob(
@@ -7,7 +9,7 @@ internal sealed class ProcessInboxJob(
     IDateTimeProvider dateTimeProvider,
     IOptions<InboxOptions> inboxOptions,
     ILogger<ProcessInboxJob> logger,
-    IIntegrationEventDispatcher integrationEventDispatcher) : IJob
+    IAdministrationIntegrationEventDispatcher integrationEventDispatcher) : IJob
 {
   private const string ModuleName = "Drafts";
 
@@ -16,7 +18,7 @@ internal sealed class ProcessInboxJob(
   private readonly IDateTimeProvider _dateTimeProvider = dateTimeProvider;
   private readonly ILogger<ProcessInboxJob> _logger = logger;
   private readonly InboxOptions _inboxOptions = inboxOptions.Value;
-  private readonly IIntegrationEventDispatcher _integrationEventDispatcher = integrationEventDispatcher;
+  private readonly IAdministrationIntegrationEventDispatcher _integrationEventDispatcher = integrationEventDispatcher;
 
   public async Task Execute(IJobExecutionContext context)
   {

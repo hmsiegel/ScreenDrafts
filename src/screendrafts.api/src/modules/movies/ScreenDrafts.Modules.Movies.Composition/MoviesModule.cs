@@ -2,7 +2,6 @@
 
 public static class MoviesModule
 {
-
   public static IServiceCollection AddMoviesModule(
     this IServiceCollection services,
     IConfiguration configuration)
@@ -36,8 +35,8 @@ public static class MoviesModule
 
   private static void AddMoviesFeatures(this IServiceCollection services)
   {
-    services.AddScoped<IDomainEventDispatcher, DomainEventDispatcher>();
-    services.AddScoped<IIntegrationEventDispatcher, IntegrationEventDispatcher>();
+    services.AddScoped<IMoviesDomainEventDispatcher, MoviesDomainEventDispatcher>();
+    services.AddScoped<IMoviesIntegrationEventDispatcher, MoviesIntegrationEventDispatcher>();
   }
 
 

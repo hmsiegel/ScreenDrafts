@@ -3,7 +3,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 using ScreenDrafts.Common.Application.EventBus;
+using ScreenDrafts.Common.Application.EventBus.Dispatchers;
 using ScreenDrafts.Common.Application.Messaging;
+using ScreenDrafts.Common.Application.Messaging.Dispatchers;
 using ScreenDrafts.Modules.Audit.Features;
 using ScreenDrafts.Modules.Audit.Features.Inbox;
 using ScreenDrafts.Modules.Audit.Features.Outbox;
@@ -33,8 +35,8 @@ public static class AuditModule
   }
   public static void AddAuditFeatures(this IServiceCollection services)
   {
-    services.AddScoped<IIntegrationEventDispatcher, IntegrationEventDispatcher>();
-    services.AddScoped<IDomainEventDispatcher, DomainEventDispatcher>();
+    services.AddScoped<IAuditIntegrationEventDispatcher, AuditIntegrationEventDispatcher>();
+    services.AddScoped<IAuditDomainEventDispatcher, AuditDomainEventDispatcher>();
   }
 
   private static void AddDomainEventHandlers(this IServiceCollection services)

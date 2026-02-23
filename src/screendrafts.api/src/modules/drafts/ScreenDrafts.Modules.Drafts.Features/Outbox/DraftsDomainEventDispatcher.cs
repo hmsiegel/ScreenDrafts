@@ -1,6 +1,8 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.Outbox;
+﻿using ScreenDrafts.Common.Application.Messaging.Dispatchers;
 
-public sealed class DomainEventDispatcher : IDomainEventDispatcher
+namespace ScreenDrafts.Modules.Drafts.Features.Outbox;
+
+public sealed class DraftsDomainEventDispatcher : IDraftsDomainEventDispatcher
 {
   public async Task DispatchAsync(IDomainEvent domainEvent, IServiceProvider provider)
   {
@@ -9,7 +11,7 @@ public sealed class DomainEventDispatcher : IDomainEventDispatcher
     var handlers = DomainEventHandlersFactory.GetHandlers(
       domainEvent.GetType(),
       provider,
-      typeof(DomainEventDispatcher).Assembly);
+      typeof(DraftsDomainEventDispatcher).Assembly);
 
     foreach (var handler in handlers)
     {

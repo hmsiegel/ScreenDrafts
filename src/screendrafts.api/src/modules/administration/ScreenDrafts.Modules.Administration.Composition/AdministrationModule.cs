@@ -3,7 +3,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 using ScreenDrafts.Common.Application.EventBus;
+using ScreenDrafts.Common.Application.EventBus.Dispatchers;
 using ScreenDrafts.Common.Application.Messaging;
+using ScreenDrafts.Common.Application.Messaging.Dispatchers;
 using ScreenDrafts.Modules.Administration.Features;
 using ScreenDrafts.Modules.Administration.Features.Inbox;
 using ScreenDrafts.Modules.Administration.Features.Outbox;
@@ -34,8 +36,8 @@ public static class AdministrationModule
   }
   public static void AddAdministrationFeatures(this IServiceCollection services)
   {
-    services.AddScoped<IIntegrationEventDispatcher, IntegrationEventDispatcher>();
-    services.AddScoped<IDomainEventDispatcher, DomainEventDispatcher>();
+    services.AddScoped<IAdministrationIntegrationEventDispatcher, AdministrationIntegrationEventDispatcher>();
+    services.AddScoped<IAdministrationDomainEventDispatcher, AdministrationDomainEventDispatcher>();
   }
 
 

@@ -1,6 +1,8 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.Inbox;
+﻿using Serilog;
 
-public class IntegrationEventDispatcher : IIntegrationEventDispatcher
+namespace ScreenDrafts.Modules.Drafts.Features.Inbox;
+
+public class DraftsIntegrationEventDispatcher : IAdministrationIntegrationEventDispatcher
 {
   public async Task DispatchAsync(IIntegrationEvent integrationEvent, IServiceProvider provider)
   {
@@ -9,7 +11,9 @@ public class IntegrationEventDispatcher : IIntegrationEventDispatcher
     var handlers = IntegrationEventHandlersFactory.GetHandlers(
       integrationEvent.GetType(),
       provider,
-      typeof(IntegrationEventDispatcher).Assembly);
+      AssemblyReference.Assembly);
+
+    Log.Information("Dispatching integration event {IntegrationEventType}", integrationEvent.GetType().Name);
 
     foreach (var handler in handlers)
     {

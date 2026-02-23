@@ -7,7 +7,7 @@ internal sealed class ProcessOutboxJob(
     IDateTimeProvider dateTimeProvider,
     IOptions<OutboxOptions> outboxOptions,
     ILogger<ProcessOutboxJob> logger,
-    IDomainEventDispatcher domainEventDispatcher) : IJob
+    IDraftsDomainEventDispatcher domainEventDispatcher) : IJob
 {
   private const string ModuleName = "Drafts";
 
@@ -16,7 +16,7 @@ internal sealed class ProcessOutboxJob(
   private readonly IDateTimeProvider _dateTimeProvider = dateTimeProvider;
   private readonly ILogger<ProcessOutboxJob> _logger = logger;
   private readonly OutboxOptions _outboxOptions = outboxOptions.Value;
-  private readonly IDomainEventDispatcher _domainEventDispatcher = domainEventDispatcher;
+  private readonly IDraftsDomainEventDispatcher _domainEventDispatcher = domainEventDispatcher;
 
   public async Task Execute(IJobExecutionContext context)
   {

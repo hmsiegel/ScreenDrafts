@@ -22,8 +22,8 @@ public static class ReportingModule
 
   private static void AddReportingFeatures(this IServiceCollection services)
   {
-    services.AddScoped<IIntegrationEventDispatcher, IntegrationEventDispatcher>();
-    services.AddScoped<IDomainEventDispatcher, DomainEventDispatcher>();
+    services.AddScoped<IReportingIntegrationEventDispatcher, ReportingIntegrationEventDispatcher>();
+    services.AddScoped<IReportingDomainEventDispatcher, ReportingDomainEventDispatcher>();
   }
 
   private static void AddDomainEventHandlers(this IServiceCollection services)
