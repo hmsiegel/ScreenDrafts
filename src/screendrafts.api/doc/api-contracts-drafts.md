@@ -80,6 +80,7 @@ This document is a one-page  for refactoring the Drafts module into Vertical Sli
 - **PUT** `/drafts/{draftId}` — UpdateDraftMetadata (includes name, description, soft delete) &#x2705;
 - **PUT** `/drafts/{draftId}/category` — SetDraftCategory (single category) &#x2705;
 - **PUT** `/drafts/{draftId}/categories` — SetDraftCategories (replace list) &#x2705;
+- **PUT** `/drafts/{draftId}/episode` — SetEpisodeNumber &#x2705;
 - **POST** `/drafts/{draftId}/campaign` — SetDraftCampaign &#x2705;
 - **DELETE** `/drafts/{draftId}/campaign` — ClearDraftCampaign &#x2705;
 
@@ -103,7 +104,6 @@ This document is a one-page  for refactoring the Drafts module into Vertical Sli
 
 - **POST** `/draft-parts/{draftPartId}/releases` — AddReleaseDate &#x2705;
 - **DELETE** `/draft-parts/{draftPartId}/releases/{releaseId}` — RemoveReleaseDate
-- **PUT** `/draft-parts/{draftPartId}/episode` — SetEpisodeNumber
 - **POST** `/draft-parts/{draftPartId}/publish` — PublishRelease (if applicable)
 
 ---

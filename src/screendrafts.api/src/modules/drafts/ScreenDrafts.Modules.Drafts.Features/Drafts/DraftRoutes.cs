@@ -10,4 +10,5 @@ internal static class DraftRoutes
   public const string Parts = Base + "/{publicId}/parts";
   public const string DraftStatus = Base + "/{publicId}/status";
   public const string DraftPartStatus = ById + "/parts/{partIndex:int}/status";
+  public const string Episode = ById + "/episode";
 }
