@@ -30,12 +30,15 @@ internal static class DraftsOpenApi
     public const string Drafts_GetDraftStatus = "Drafts.GetDraftStatus";
     public const string Drafts_SetDraftPartStatus = "Drafts.SetDraftPartStatus";
     public const string Drafts_UpdateDraft = "Drafts.UpdateDraft";
+    public const string Drafts_SetCategories = "Drafts.SetCategories";
+    public const string Drafts_CreateDraftPart = "Drafts.CreateDraftPart";
 
     // Draft Parts
     public const string DraftParts_RemoveHost = "DraftParts.RemoveHost";
     public const string DraftParts_AddParticipant = "DraftParts.AddParticipant";
     public const string DraftParts_AddHost = "DraftParts.AddHost";
     public const string DraftParts_PlayPick = "DraftParts.PlayPick";
+    public const string DraftParts_SetReleaseDate = "DraftParts.SetReleaseDate";
 
     // Campaigns
     public const string Campaigns_CreateCampaign = "Campaigns.CreateCampaign";

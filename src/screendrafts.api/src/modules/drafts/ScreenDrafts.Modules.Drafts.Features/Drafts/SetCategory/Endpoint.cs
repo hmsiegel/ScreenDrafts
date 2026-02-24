@@ -4,7 +4,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<SetCategoryDraftRequest>
 {
   public override void Configure()
   {
-    Put(DraftRoutes.Categories);
+    Put(DraftRoutes.Category);
     Description(x =>
     {
       x.WithTags(DraftsOpenApi.Tags.Drafts)

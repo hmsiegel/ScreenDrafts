@@ -1,4 +1,5 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts;
+
 public sealed partial class Draft
 {
   /// <summary>
@@ -120,5 +121,11 @@ public sealed partial class Draft
     {
       _parts[i].SetPartIndex(i + 1);
     }
+  }
+
+  public void SetCategories(IReadOnlyList<Category> categories)
+  {
+    _draftCategories.Clear();
+    _draftCategories.AddRange(categories.Select(c => DraftCategory.Create(this, c)));
   }
 }

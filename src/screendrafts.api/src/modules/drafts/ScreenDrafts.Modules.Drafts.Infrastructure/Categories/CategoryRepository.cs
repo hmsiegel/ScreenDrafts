@@ -76,6 +76,18 @@ internal sealed class CategoryRepository(DraftsDbContext dbContext) : ICategoryR
       .ToListAsync(cancellationToken);
   }
 
+  public async Task<IReadOnlyList<Category>> GetByPublicIdsAsync(IReadOnlyList<string> categoryIds, CancellationToken ct)
+  {
+    if (categoryIds.Count == 0)
+    {
+      return [];
+    }
+
+    return await _dbContext.Categories
+      .Where(c => categoryIds.Contains(c.PublicId) && !c.IsDeleted)
+      .ToListAsync(ct);
+  }
+
   public Task<List<Category>> GetAllAsync(CancellationToken cancellationToken)
   {
     return _dbContext.Categories.ToListAsync(cancellationToken);

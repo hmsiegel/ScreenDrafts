@@ -5,4 +5,5 @@ public interface ICategoryRepository : IRepository<Category, CategoryId>
   Task<bool> IsCategoryInUseAsync(CategoryId categoryId, CancellationToken cancellationToken);
   Task<bool> AllExistByPublicIdsAsync(IReadOnlyList<string> publicCategoryIds, CancellationToken cancellationToken);
   Task<IReadOnlyList<Category>> GetByPublicIdsAsync(IReadOnlyCollection<string> publicCategoryIds, CancellationToken cancellationToken);
+  Task<IReadOnlyList<Category>> GetByPublicIdsAsync(IReadOnlyList<string> categoryIds, CancellationToken ct);
 }

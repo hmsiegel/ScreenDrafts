@@ -79,7 +79,7 @@ This document is a one-page  for refactoring the Drafts module into Vertical Sli
 - **GET** `/drafts` — SearchDrafts
 - **PUT** `/drafts/{draftId}` — UpdateDraftMetadata (includes name, description, soft delete) &#x2705;
 - **PUT** `/drafts/{draftId}/category` — SetDraftCategory (single category) &#x2705;
-- **PUT** `/drafts/{draftId}/categories` — SetDraftCategories (replace list) 
+- **PUT** `/drafts/{draftId}/categories` — SetDraftCategories (replace list) &#x2705;
 - **POST** `/drafts/{draftId}/campaign` — SetDraftCampaign &#x2705;
 - **DELETE** `/drafts/{draftId}/campaign` — ClearDraftCampaign &#x2705;
 
@@ -88,20 +88,20 @@ This document is a one-page  for refactoring the Drafts module into Vertical Sli
 ## DraftParts (part-scoped gameplay)
 
 ### DraftParts core
-- **POST** `/drafts/{draftId}/parts` — CreateDraftPart
+- **POST** `/drafts/{draftId}/parts` — CreateDraftPart &#x2705;
 - **GET** `/draft-parts/{draftPartId}` — GetDraftPart
 - **GET** `/drafts/{draftId}/parts` — SearchDraftParts (optional/admin)
 - **PUT** `/draft-parts/{draftPartId}` — UpdateDraftPartMetadata
 
 ### DraftPart status (single endpoint)
-- **PUT** `/draft-parts/{draftPartId}/status` — SetDraftPartStatus  
+- **PUT** `/draft-parts/{draftPartId}/status` — SetDraftPartStatus &#x2705;
   Body: `{ "status": "InProgress" }`
 
 ---
 
 ## Releases (DraftPart scoped)
 
-- **POST** `/draft-parts/{draftPartId}/releases` — AddReleaseDate
+- **POST** `/draft-parts/{draftPartId}/releases` — AddReleaseDate &#x2705;
 - **DELETE** `/draft-parts/{draftPartId}/releases/{releaseId}` — RemoveReleaseDate
 - **PUT** `/draft-parts/{draftPartId}/episode` — SetEpisodeNumber
 - **POST** `/draft-parts/{draftPartId}/publish` — PublishRelease (if applicable)
@@ -110,7 +110,7 @@ This document is a one-page  for refactoring the Drafts module into Vertical Sli
 
 ## Hosts (DraftPart scoped)
 
-- **POST** `/draft-parts/{draftPartId}/hosts` — AddHost  
+- **POST** `/draft-parts/{draftPartId}/hosts` — AddHost &#x2705;
   Body: `{ "hostId": "h_...", "role": "Primary|CoHost" }`
 - **DELETE** `/draft-parts/{draftPartId}/hosts/{hostId}` — RemoveHost
 - **PUT** `/draft-parts/{draftPartId}/hosts/{hostId}/primary` — SetPrimaryHost
@@ -119,17 +119,10 @@ This document is a one-page  for refactoring the Drafts module into Vertical Sli
 ---
 
 ## Participants (DraftPart scoped)
-
-- **POST** `/draft-parts/{draftPartId}/participants/drafters` — AddDrafterToDraftPart  
-  Body: `{ "drafterId": "dr_..." }`
+- **POST** `/draft-parts/{draftPartId}/participants/` - AddParticipant (generic, if we want to avoid separate endpoints)  
+  Body: `{ "participantId": "...", "kind": "Drafter|DrafterTeam|Community" }`  &#x2705;
 - **DELETE** `/draft-parts/{draftPartId}/participants/drafters/{drafterId}` — RemoveDrafterFromDraftPart
-
-- **POST** `/draft-parts/{draftPartId}/participants/drafter-teams` — AddDrafterTeamToDraftPart  
-  Body: `{ "drafterTeamId": "dt_..." }`
 - **DELETE** `/draft-parts/{draftPartId}/participants/drafter-teams/{drafterTeamId}` — RemoveDrafterTeamFromDraftPart
-
-- **PUT** `/draft-parts/{draftPartId}/participants/community` — SetCommunityParticipant (if explicit)
-
 - **PUT** `/draft-parts/{draftPartId}/positions` — SetDraftPositions (if part-scoped)
 
 ---

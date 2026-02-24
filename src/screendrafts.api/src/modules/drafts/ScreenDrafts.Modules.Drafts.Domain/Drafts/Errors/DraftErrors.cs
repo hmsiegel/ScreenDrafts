@@ -178,6 +178,11 @@ public static partial class DraftErrors
       "Drafts.SeriesIsRequired",
       "Series is required.");
 
+  public static readonly SDError OneOrMoreCategoriesNotFound =
+    SDError.NotFound(
+      "Drafts.OneOrMoreCategoriesNotFound",
+      "One or more categories were not found.");
+
   public static SDError CampaignDoesNotBelongToThisDraft(string publicId) =>
     SDError.Problem(
       "Drafts.CampaignDoesNotBelongToThisDraft",

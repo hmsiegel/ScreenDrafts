@@ -14,6 +14,12 @@ internal sealed class DraftPartRepository(DraftsDbContext dbContext) : IDraftPar
     return draftPart;
   }
 
+  public Task<DraftPart?> GetByPublicIdAsync(string draftPartId, CancellationToken cancellationToken)
+  {
+    return _dbContext.DraftParts
+      .FirstOrDefaultAsync(x => x.PublicId == draftPartId, cancellationToken);
+  }
+
   public void Update(DraftPart draftPart)
   {
     var entry = _dbContext.Entry(draftPart);

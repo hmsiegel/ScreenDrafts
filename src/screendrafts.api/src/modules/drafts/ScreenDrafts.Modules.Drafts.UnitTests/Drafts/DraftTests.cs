@@ -633,6 +633,98 @@ public class DraftTests : BaseTest
     parts[2].PartIndex.Should().Be(3);
   }
 
+  // -------------------------------------------------------------------
+  // SetCategories
+  // -------------------------------------------------------------------
+
+  [Fact]
+  public void SetCategories_ShouldSetAllProvidedCategories_WhenDraftHasNoExistingCategories()
+  {
+    // Arrange
+    var draft = CreateDraft();
+    var category1 = CreateCategory();
+    var category2 = CreateCategory();
+    var categories = new List<Category> { category1, category2 };
+
+    // Act
+    draft.SetCategories(categories);
+
+    // Assert
+    draft.DraftCategories.Should().HaveCount(2);
+    draft.DraftCategories.Should().Contain(dc => dc.CategoryId == category1.Id);
+    draft.DraftCategories.Should().Contain(dc => dc.CategoryId == category2.Id);
+  }
+
+  [Fact]
+  public void SetCategories_ShouldReplaceAllExistingCategories_WhenCalledWithNewList()
+  {
+    // Arrange
+    var draft = CreateDraft();
+    var oldCategory = CreateCategory();
+    draft.AddCategory(oldCategory);
+
+    var newCategory1 = CreateCategory();
+    var newCategory2 = CreateCategory();
+    var newCategories = new List<Category> { newCategory1, newCategory2 };
+
+    // Act
+    draft.SetCategories(newCategories);
+
+    // Assert
+    draft.DraftCategories.Should().HaveCount(2);
+    draft.DraftCategories.Should().Contain(dc => dc.CategoryId == newCategory1.Id);
+    draft.DraftCategories.Should().Contain(dc => dc.CategoryId == newCategory2.Id);
+    draft.DraftCategories.Should().NotContain(dc => dc.CategoryId == oldCategory.Id);
+  }
+
+  [Fact]
+  public void SetCategories_ShouldClearAllCategories_WhenCalledWithEmptyList()
+  {
+    // Arrange
+    var draft = CreateDraft();
+    draft.AddCategory(CreateCategory());
+    draft.AddCategory(CreateCategory());
+
+    // Act
+    draft.SetCategories([]);
+
+    // Assert
+    draft.DraftCategories.Should().BeEmpty();
+  }
+
+  [Fact]
+  public void SetCategories_ShouldSetSingleCategory_WhenListHasOneItem()
+  {
+    // Arrange
+    var draft = CreateDraft();
+    var category = CreateCategory();
+
+    // Act
+    draft.SetCategories([category]);
+
+    // Assert
+    draft.DraftCategories.Should().ContainSingle();
+    draft.DraftCategories.First().CategoryId.Should().Be(category.Id);
+  }
+
+  [Fact]
+  public void SetCategories_WhenCalledTwice_ShouldContainOnlyLastProvidedCategories()
+  {
+    // Arrange
+    var draft = CreateDraft();
+    var firstCategory = CreateCategory();
+    var secondCategory = CreateCategory();
+
+    draft.SetCategories([firstCategory]);
+
+    // Act
+    draft.SetCategories([secondCategory]);
+
+    // Assert
+    draft.DraftCategories.Should().ContainSingle();
+    draft.DraftCategories.First().CategoryId.Should().Be(secondCategory.Id);
+  }
+
   private static Draft CreateDraft()
   {
     var title = Title.Create(Faker.Lorem.Word());

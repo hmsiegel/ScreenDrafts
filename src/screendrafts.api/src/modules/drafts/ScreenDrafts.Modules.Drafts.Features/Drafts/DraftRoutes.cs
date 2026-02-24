@@ -4,8 +4,10 @@ internal static class DraftRoutes
 {
   public const string Base = "/drafts";
   public const string ById = Base + "/{publicId}";
-  public const string Categories = Base + "/{publicId}/categorise";
+  public const string Categories = Base + "/{publicId}/categories";
+  public const string Category = Base + "/{publicId}/category";
   public const string Campaign = Base + "/{publicId}/campaign";
+  public const string Parts = Base + "/{publicId}/parts";
   public const string DraftStatus = Base + "/{publicId}/status";
   public const string DraftPartStatus = ById + "/parts/{partIndex:int}/status";
 }

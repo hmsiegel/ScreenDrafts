@@ -97,6 +97,11 @@ public static class DraftPartErrors
         description: $"Draft part with ID '{draftPartId}' is not found."
   );
 
+  public static SDError NotFound(string draftPartId) => SDError.NotFound(
+      code: "DraftPart.NotFound",
+      description: $"Draft part with ID '{draftPartId}' is not found."
+    );
+
   public static SDError ParticipantAlreadyAdded(Guid participantId) =>
     SDError.Conflict(
       code: "DraftPart.ParticipantAlreadyAdded",
