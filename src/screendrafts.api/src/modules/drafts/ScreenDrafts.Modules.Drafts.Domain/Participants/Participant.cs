@@ -39,28 +39,30 @@ public readonly record struct Participant(Guid Value, ParticipantKind Kind)
     ? throw new ScreenDraftsException("Participant is not a Team.")
     : DrafterTeamId.Create(Value);
 
-  public void Validate()
+  public Result Validate()
   {
     if (Value == Guid.Empty)
     {
-      throw new ScreenDraftsException("ParticipantId value cannot be empty.");
+      return Result.Failure(ParticipantErrors.EmptyValue);
     }
 
     var participantKind = Kind;
 
     if (!ParticipantKind.List.Any(k => k == participantKind))
     {
-      throw new ScreenDraftsException("Invalid ParticipantKind.");
+      return Result.Failure(ParticipantErrors.InvalidParticipantKind);
     }
 
     if (Kind == ParticipantKind.Community && !CommunityParticipants.IsKnownCommunity(this))
     {
-      throw new ScreenDraftsException("Unknown community participant.");
+      return Result.Failure(ParticipantErrors.UnknownCommunityParticipant);
     }
 
     if (Kind != ParticipantKind.Community && CommunityParticipants.IsCommunityId(Value))
     {
-      throw new ScreenDraftsException("Community participant ID does not match participant kind.");
+      return Result.Failure(ParticipantErrors.CommunityParticipantIdMismatch);
     }
+
+    return Result.Success();
   }
 }

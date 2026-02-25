@@ -8,4 +8,6 @@ public interface IVetoRepository : IRepository
   Task<VetoOverride?> GetVetoOverrideByIdAsync(VetoOverrideId id, CancellationToken cancellationToken);
 
   Task<VetoOverride?> GetVetoOverrideByVetoIdAsync(VetoId vetoId, CancellationToken cancellationToken);
+
+  void UpdateVeto(Veto veto);
 }

@@ -25,4 +25,10 @@ internal sealed class PickRepository(DraftsDbContext dbContext) : IPickRepositor
   {
     _dbContext.Picks.Remove(entity);
   }
+
+  public async Task<Pick?> GetByDraftPartIdAndPlayOrderAsync(DraftPartId id, int playOrder, CancellationToken cancellationToken)
+  {
+    return await _dbContext.Picks
+      .SingleOrDefaultAsync(p => p.DraftPartId == id && p.PlayOrder == playOrder, cancellationToken);
+  }
 }

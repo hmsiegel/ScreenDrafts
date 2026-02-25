@@ -1,8 +1,4 @@
-﻿
-using ScreenDrafts.Common.Abstractions.Errors;
-using ScreenDrafts.Modules.Drafts.Domain.Participants;
-
-namespace ScreenDrafts.Modules.Drafts.Domain.DraftParts.Errors;
+﻿namespace ScreenDrafts.Modules.Drafts.Domain.DraftParts.Errors;
 
 public static class DraftPartErrors
 {
@@ -138,9 +134,20 @@ public static class DraftPartErrors
       description: $"Pick with ID '{pickId}' is not found."
     );
 
+  public static SDError PickNotFound(int playOrder) =>
+    SDError.NotFound(
+      code: "DraftPart.PickNotFound",
+      description: $"Pick with playOrder '{playOrder}' is not found."
+    );
+
   public static SDError VetoNotFound(Guid value) => SDError.NotFound(
       code: "DraftPart.VetoNotFound",
       description: $"Veto with ID '{value}' is not found."
+    );
+
+  public static SDError VetoNotFound(int playOrder) => SDError.NotFound(
+      code: "DraftPart.VetoNotFound",
+      description: $"Veto with play order '{playOrder}' is not found."
     );
 
   public static SDError ParticipantDoesNotBelongToThisDraftPart(Participant playedBy) =>

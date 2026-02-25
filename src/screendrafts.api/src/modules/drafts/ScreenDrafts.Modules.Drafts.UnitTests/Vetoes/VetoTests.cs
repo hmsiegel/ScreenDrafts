@@ -91,8 +91,7 @@ public class VetoTests : DraftsBaseTest
   {
     // Arrange
     var veto = VetoFactory.CreateVeto().Value;
-    var drafter = CreateDrafter();
-    var participantId = CreateParticipantId(drafter);
+    var participantId = veto.DraftPart.Participants.First();
 
     // Act
     var result = veto.Override(participantId);
@@ -109,8 +108,7 @@ public class VetoTests : DraftsBaseTest
   {
     // Arrange
     var veto = VetoFactory.CreateVeto().Value;
-    var drafter = CreateDrafter();
-    var participantId = CreateParticipantId(drafter);
+    var participantId = veto.DraftPart.Participants.First();
     veto.Override(participantId);
 
     // Act

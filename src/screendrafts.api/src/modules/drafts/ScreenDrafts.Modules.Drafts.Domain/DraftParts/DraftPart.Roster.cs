@@ -58,9 +58,9 @@ public sealed partial class DraftPart
     Guard.Against.Null(participant);
     return _draftPartParticipants.Any(dp => dp.ParticipantId == participant);
   }
-  private DraftPartParticipant GetParticipantRequired(Participant participantId)
+  internal DraftPartParticipant GetParticipantRequired(Participant participantId)
   {
-    var participant = _draftPartParticipants.FirstOrDefault(dp => dp.ParticipantId == participantId);
+    var participant = _draftPartParticipants.FirstOrDefault(dp => dp.ParticipantIdValue == participantId.Value);
     return participant is null
       ? throw new ArgumentException($"Participant not found: {participantId}", nameof(participantId))
       : participant;

@@ -22,13 +22,20 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<PlayPickRequest, Guid>
   {
     ArgumentNullException.ThrowIfNull(req);
 
+    if (!ParticipantKind.TryFromValue(req.ParticipantKind, out var participantKind))
+    {
+      AddError(r => r.ParticipantKind, "Invalid participant kind.");
+      await Send.ErrorsAsync(StatusCodes.Status400BadRequest, cancellation: ct);
+      return;
+    }
+
     var command = new PlayPickCommand
     {
       DraftPartId = req.DraftPartId,
       Position = req.Position,
       PlayOrder = req.PlayOrder,
       ParticipantPublicId = req.ParticipantPublicId,
-      ParticipantKind = ParticipantKind.FromValue(req.ParticipantKind),
+      ParticipantKind = participantKind,
       MovieId = req.MovieId,
       MovieVersionName = req.MovieVersionName
     };

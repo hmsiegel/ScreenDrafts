@@ -15,11 +15,11 @@ internal sealed class Validator : AbstractValidator<PlayPickCommand>
 
     RuleFor(x => x.ParticipantPublicId)
       .NotEmpty()
-      .When(x => x.ParticipantKind != ParticipantKind.Community);
-
-    RuleFor(x => x.ParticipantKind)
-      .Must(x => ParticipantKind.List.Any(pk => pk.Value == x.Value))
-      .WithMessage("Invalid participant kind. Valid values are: " + string.Join(", ", SmartEnum<ParticipantKind>.List));
+      .When(x => x.ParticipantKind != ParticipantKind.Community)
+      .WithMessage("Participant public ID is required for non-community participants.")
+      .Must(id => PublicIdGuards.IsValid(id!))
+      .WithMessage("Participant ID must be a valid public ID.")
+      .When(x => x.ParticipantKind != ParticipantKind.Community.Value);
 
     RuleFor(x => x.MovieId)
       .NotEmpty();

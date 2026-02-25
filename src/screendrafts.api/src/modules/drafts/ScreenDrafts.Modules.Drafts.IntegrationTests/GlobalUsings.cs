@@ -21,6 +21,8 @@ global using ScreenDrafts.Modules.Drafts.Domain.SeriesAggregate.Enums;
 global using ScreenDrafts.Modules.Drafts.Features.Drafters.Create;
 global using ScreenDrafts.Modules.Drafts.Features.DraftParts.AddHostToDraftPart;
 global using ScreenDrafts.Modules.Drafts.Features.DraftParts.AddParticipantToDraftPart;
+global using ScreenDrafts.Modules.Drafts.Features.DraftParts.ApplyVeto;
+global using ScreenDrafts.Modules.Drafts.Features.DraftParts.ApplyVetoOverride;
 global using ScreenDrafts.Modules.Drafts.Features.DraftParts.PlayPick;
 global using ScreenDrafts.Modules.Drafts.Features.Drafts.CreateDraft;
 global using ScreenDrafts.Modules.Drafts.Features.Drafts.SetDraftPartStatus;

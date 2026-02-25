@@ -2,7 +2,7 @@
 
 internal sealed record PlayPickCommand : ICommand<PickId>
 {
-  public required Guid DraftPartId { get; init;  }
+  public required string DraftPartId { get; init;  }
   public required int Position { get; init; }
   public required int PlayOrder { get; init; }
   public string? ParticipantPublicId { get; init; } = default!;

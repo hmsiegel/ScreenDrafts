@@ -27,4 +27,9 @@ internal sealed class VetoRepository(DraftsDbContext dbContext) : IVetoRepositor
     return await _dbContext.VetoOverrides
       .SingleOrDefaultAsync(vo => vo.Veto.Id == vetoId, cancellationToken);
   }
+
+  public void UpdateVeto(Veto veto)
+  {
+    _dbContext.Vetoes.Update(veto);
+  }
 }

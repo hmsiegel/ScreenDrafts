@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Features.Drafts.CreateDraft;
 
-public sealed record CreateDraftCommand : ICommand<string>
+internal sealed record CreateDraftCommand : ICommand<string>
 {
   public required string Title { get; init; }
   public required int DraftType { get; init; }

@@ -3,6 +3,56 @@
 public class FeaturesTests : BaseTest
 {
   [Fact]
+  public void Command_Should_NotBePublic()
+  {
+    Types.InAssembly(FeaturesAssembly)
+      .That()
+      .ImplementInterface(typeof(ICommand))
+      .Or()
+      .ImplementInterface(typeof(ICommand<>))
+      .Should()
+      .NotBePublic()
+      .GetResult()
+      .ShouldBeSuccessful();
+  }
+
+  [Fact]
+  public void Endpoint_Should_NotBePublic()
+  {
+    Types.InAssembly(FeaturesAssembly)
+      .That()
+      .Inherit(typeof(ScreenDraftsEndpoint<>))
+      .Should()
+      .NotBePublic()
+      .GetResult()
+      .ShouldBeSuccessful();
+  }
+
+  [Fact]
+  public void Endpoint_ShouldHave_NameEndingWith_Endpoint()
+  {
+    Types.InAssembly(FeaturesAssembly)
+      .That()
+      .Inherit(typeof(ScreenDraftsEndpoint<>))
+      .Should()
+      .HaveNameEndingWith("Endpoint", StringComparison.InvariantCulture)
+      .GetResult()
+      .ShouldBeSuccessful();
+  }
+
+  [Fact]
+   public void Endpoint_Should_BeSealed()
+  {
+    Types.InAssembly(FeaturesAssembly)
+      .That()
+      .Inherit(typeof(ScreenDraftsEndpoint<>))
+      .Should()
+      .BeSealed()
+      .GetResult()
+      .ShouldBeSuccessful();
+  }
+
+    [Fact]
   public void Command_Should_BeSealed()
   {
     Types.InAssembly(FeaturesAssembly)

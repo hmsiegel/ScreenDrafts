@@ -143,10 +143,9 @@ This document is a one-page  for refactoring the Drafts module into Vertical Sli
 
 
 ### Vetoes & Overrides (actions on picks)
-- **POST** `/draft-parts/{draftPartId}/picks/{pickId}/veto` — ApplyVeto
-- **POST** `/draft-parts/{draftPartId}/picks/{pickId}/veto-override` — ApplyVetoOverride
-- **POST** `/draft-parts/{draftPartId}/picks/{pickId}/commissioner-override` — ApplyCommissionerOverride
-- **DELETE** `/draft-parts/{draftPartId}/picks/{pickId}/override` — UndoOverride (if allowed)
+- **POST** `/draft-parts/{draftPartId}/picks/{playOrder}/veto` — ApplyVeto &#x2705;
+- **POST** `/draft-parts/{draftPartId}/picks/{playOrder}/veto-override` — ApplyVetoOverride &#x2705;
+- **POST** `/draft-parts/{draftPartId}/picks/{playOrder}/commissioner-override` — ApplyCommissionerOverride
 
 ---
 

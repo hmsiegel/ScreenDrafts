@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Modules.Drafts.Features.Common;
-
-namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.PlayPick;
+﻿namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.PlayPick;
 
 internal sealed class PlayPickCommandHandler(
   IDraftPartRepository draftPartRepository,
@@ -16,7 +14,7 @@ internal sealed class PlayPickCommandHandler(
 
   public async Task<Result<PickId>> Handle(PlayPickCommand request, CancellationToken cancellationToken)
   {
-    var draftPart = await _draftPartRepository.GetByIdAsync(DraftPartId.Create(request.DraftPartId), cancellationToken);
+    var draftPart = await _draftPartRepository.GetByPublicIdAsync(request.DraftPartId, cancellationToken);
 
     if (draftPart is null)
     {
@@ -42,7 +40,12 @@ internal sealed class PlayPickCommandHandler(
 
     var participant = participantResult.Value;
 
-    participant.Validate();
+    var validationResult = participant.Validate();
+
+    if (validationResult.IsFailure)
+    {
+      return Result.Failure<PickId>(validationResult.Errors);
+    }
 
     var pickResult = draftPart.PlayPick(
       seriesPolicyProvider: _seriesPolicyProvider,

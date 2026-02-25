@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Modules.Drafts.Domain.Participants;
-
-namespace ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities;
+﻿namespace ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities;
 
 public sealed class Veto : Entity<VetoId>
 {
@@ -93,7 +91,7 @@ public sealed class Veto : Entity<VetoId>
       return Result.Failure(VetoErrors.VetoOverrideAlreadyUsed);
     }
 
-    var participant = DraftPartParticipant.Create(DraftPart, by);
+    var participant = DraftPart.GetParticipantRequired(by);
 
     IsOverridden = true;
     VetoOverride = VetoOverride.Create(

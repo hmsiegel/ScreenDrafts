@@ -1,26 +1,25 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.AddParticipantToDraftPart;
+﻿namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.ApplyVetoOverride;
 
-internal sealed class Endpoint : ScreenDraftsEndpoint<AddParticipantToDraftPartRequest>
+internal sealed class Endpoint : ScreenDraftsEndpoint<ApplyVetoOverrideRequest>
 {
   public override void Configure()
   {
-    Post(DraftPartRoutes.Participants);
+    Post(DraftPartRoutes.ApplyVetoOverride);
     Description(x =>
     {
       x.WithTags(DraftsOpenApi.Tags.DraftParts)
-      .WithName(DraftsOpenApi.Names.DraftParts_AddParticipant)
+      .WithName(DraftsOpenApi.Names.DraftParts_ApplyVetoOverride)
       .Produces(StatusCodes.Status204NoContent)
       .Produces(StatusCodes.Status400BadRequest)
+      .Produces(StatusCodes.Status401Unauthorized)
       .Produces(StatusCodes.Status403Forbidden)
       .Produces(StatusCodes.Status404NotFound);
     });
     Policies(DraftsAuth.Permissions.DraftPartUpdate);
   }
 
-  public override async Task HandleAsync(AddParticipantToDraftPartRequest req, CancellationToken ct)
+  public override async Task HandleAsync(ApplyVetoOverrideRequest req, CancellationToken ct)
   {
-    ArgumentNullException.ThrowIfNull(req);
-
     if (!ParticipantKind.TryFromValue(req.ParticipantKind, out var participantKind))
     {
       AddError(r => r.ParticipantKind, "Invalid participant kind.");
@@ -28,10 +27,11 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<AddParticipantToDraftPartR
       return;
     }
 
-    var command = new AddParticipantToDraftPartCommand
+    var command = new ApplyVetoOverrideCommand
     {
       DraftPartId = req.DraftPartId,
-      ParticipantPublicId = req.ParticipantPublicId,
+      PlayOrder = req.PlayOrder,
+      ParticipantIdValue = req.ParticipantIdValue,
       ParticipantKind = participantKind
     };
 

@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Modules.Drafts.Domain.Hosts;
-
-namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.AddHostToDraftPart;
+﻿namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.AddHostToDraftPart;
 
 internal sealed class AddHostToDraftPartCommandHandler(
   IDraftPartRepository draftPartRepository,

@@ -299,7 +299,7 @@ public sealed class SetDraftPartStatusTests(DraftsIntegrationTestWebAppFactory f
 
       var command = new PlayPickCommand
       {
-        DraftPartId = draftPartId,
+        DraftPartId = draftPart.PublicId,
         Position = position,
         PlayOrder = position,
         ParticipantPublicId = participantPublicId,

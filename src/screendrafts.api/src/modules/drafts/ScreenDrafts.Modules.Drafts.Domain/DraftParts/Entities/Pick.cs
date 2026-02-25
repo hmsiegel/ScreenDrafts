@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Modules.Drafts.Domain.Participants;
-
-namespace ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities;
+﻿namespace ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities;
 
 public sealed class Pick : Entity<PickId>
 {
@@ -49,7 +47,7 @@ public sealed class Pick : Entity<PickId>
   public DraftPartParticipant PlayedByParticipant { get; private set; } = default!;
   public DraftPartParticipantId PlayedByParticipantId { get; private set; } = default!;
 
-  public Guid PlayedByParticipantIdValue { get ; private set; }
+  public Guid PlayedByParticipantIdValue { get; private set; }
   public ParticipantKind PlayedByParticipantKindValue { get; private set; } = default!;
 
 
@@ -204,12 +202,12 @@ public sealed class Pick : Entity<PickId>
     }
 
     var pick = new Pick(
-      position,
-      movie,
-      draftPart,
-      playedByParticipant,
-      playOrder,
-      id);
+      position: position,
+      movie: movie,
+      draftPart: draftPart,
+      playedByParticipant: playedByParticipant,
+      playOrder: playOrder,
+      id: id);
 
     var versionResult = pick.SetMovieVersionName(movieVersionName, movie, versionPolicy: null);
 
