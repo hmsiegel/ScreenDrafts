@@ -19,6 +19,11 @@ internal sealed class DrafterTeamRepository(DraftsDbContext dbContext) : IDrafte
     return _dbContext.DrafterTeams.AnyAsync(d => d.Id == id, cancellationToken);
   }
 
+  public Task<bool> ExistsByNameAsync(string name, CancellationToken cancellationToken)
+  {
+    return _dbContext.DrafterTeams.AnyAsync(d => d.Name == name, cancellationToken);
+  }
+
   public async Task<List<DrafterTeam>> GetAllAsync(CancellationToken cancellationToken)
   {
     return await _dbContext.DrafterTeams

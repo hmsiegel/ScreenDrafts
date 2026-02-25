@@ -2,7 +2,7 @@
 
 internal sealed record SetCategoryDraftRequest
 {
-  [FromRoute(Name = "draftId")]
+  [FromRoute(Name = "publicId")]
   public string DraftId { get; init; } = default!;
 
   [FromBody]

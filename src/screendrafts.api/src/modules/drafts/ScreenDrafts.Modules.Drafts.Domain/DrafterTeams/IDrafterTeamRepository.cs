@@ -2,5 +2,5 @@
 
 public interface IDrafterTeamRepository : IRepository<DrafterTeam, DrafterTeamId>
 {
-
+  Task<bool> ExistsByNameAsync(string name, CancellationToken cancellationToken);
 }

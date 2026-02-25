@@ -33,6 +33,12 @@ public static class DrafterTeamErrors
       "DrafterTeam.NotFound",
       $"Drafter team with public ID '{publicId}' was not found.");
 
+  public static SDError NameInUse(string name) =>
+    SDError.Conflict(
+      "DrafterTeam.NameInUse",
+      $"A drafter team with the name '{name}' already exists.");
+
+
   public static readonly SDError TeamIsFull =
     SDError.Failure(
       "DrafterTeam.TeamIsFull",

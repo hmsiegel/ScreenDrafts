@@ -55,20 +55,24 @@ This document is a one-page  for refactoring the Drafts module into Vertical Sli
 ### Drafters (role)
 - **POST** `/drafters` — CreateDrafter (promote Person → Drafter) &#x2705;
   Body: `{ "personId": "p_..." }`
+- **GET** `/drafters/{drafterId}` — GetDrafter (optional) 
+- **GET** `/drafters` — SearchDrafters (optional)
 
 ### Hosts (role)
 - **POST** `/hosts` — CreateHost (promote Person → Host) &#x2705;
   Body: `{ "personId": "p_..." }`
+- **GET** `/hosts/{hostId}` — GetHost (optional)
+- **GET** `/hosts` — SearchHosts (optional)
 
 ### DrafterTeams
-- **POST** `/drafter-teams` — CreateDrafterTeam
+- **POST** `/drafter-teams` — CreateDrafterTeam &#x2705;
 - **GET** `/drafter-teams/{drafterTeamId}` — GetDrafterTeam (optional)
 - **GET** `/drafter-teams` — SearchDrafterTeams (optional)
 
 ### Team membership
 - **POST** `/drafter-teams/{drafterTeamId}/members` — AddDrafterToTeam  
-  Body: `{ "drafterId": "dr_..." }`
-- **DELETE** `/drafter-teams/{drafterTeamId}/members/{drafterId}` — RemoveDrafterFromTeam (optional)
+  Body: `{ "drafterId": "dr_..." }`   &#x2705;
+- **DELETE** `/drafter-teams/{drafterTeamId}/members/{drafterId}` — RemoveDrafterFromTeam (optional) &#x2705;
 
 ---
 
@@ -121,23 +125,22 @@ This document is a one-page  for refactoring the Drafts module into Vertical Sli
 ## Participants (DraftPart scoped)
 - **POST** `/draft-parts/{draftPartId}/participants/` - AddParticipant (generic, if we want to avoid separate endpoints)  
   Body: `{ "participantId": "...", "kind": "Drafter|DrafterTeam|Community" }`  &#x2705;
-- **DELETE** `/draft-parts/{draftPartId}/participants/drafters/{drafterId}` — RemoveDrafterFromDraftPart
-- **DELETE** `/draft-parts/{draftPartId}/participants/drafter-teams/{drafterTeamId}` — RemoveDrafterTeamFromDraftPart
+- **DELETE** `/draft-parts/{draftPartId}/participants/` — RemoveParticipant (generic, if we want to avoid separate endpoints)
+  Body: `{ "participantId": "...", "kind": "Drafter|DrafterTeam|Community" }`
 - **PUT** `/draft-parts/{draftPartId}/positions` — SetDraftPositions (if part-scoped)
 
 ---
 
 ## Picks (DraftPart scoped)
 
-- **POST** `/draft-parts/{draftPartId}/picks` — AddPick  
+- **POST** `/draft-parts/{draftPartId}/picks` — AddPick  &#x2705; 
+
   Body includes:
   - `movieId` (public id from Movies module)
   - `position` (final board position)
   - `playOrder` (sequence including vetoed picks)
   - `playedBy`: `{ "id": "...", "kind": "Drafter|DrafterTeam|Community" }`
 
-- **DELETE** `/draft-parts/{draftPartId}/picks/{pickId}` — RemovePick (if allowed)
-- **PUT** `/draft-parts/{draftPartId}/picks/{pickId}` — UpdatePick
 
 ### Vetoes & Overrides (actions on picks)
 - **POST** `/draft-parts/{draftPartId}/picks/{pickId}/veto` — ApplyVeto

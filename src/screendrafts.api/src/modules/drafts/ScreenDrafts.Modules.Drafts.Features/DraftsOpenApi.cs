@@ -17,6 +17,7 @@ internal static class DraftsOpenApi
     public const string Trivia = "Trivia";
     public const string DraftPositions = "DraftPositions";
     public const string Categories = "Categories";
+    public const string DrafterTeams = "DrafterTeams";
   }
 
   public static class Names
@@ -80,6 +81,11 @@ internal static class DraftsOpenApi
     public const string Drafters_RetireDrafter = "Drafters.RetireDrafter";
     public const string Drafters_GetDrafterById = "Drafters.GetDrafterById";
     public const string Drafters_ListDrafters = "Drafters.ListDrafters";
+
+    // Drafter Teams
+    public const string DrafterTeams_CreateDrafterTeam = "DrafterTeams.CreateDrafterTeam";
+    public const string DrafterTeams_AddDrafter = "DrafterTeams.AddDrafter";
+    public const string DrafterTeams_RemoveDrafterFromTeam = "DrafterTeams.RemoveDrafterFromTeam";
 
     // Hosts
     public const string Hosts_CreateHost = "Hosts.CreateHost";

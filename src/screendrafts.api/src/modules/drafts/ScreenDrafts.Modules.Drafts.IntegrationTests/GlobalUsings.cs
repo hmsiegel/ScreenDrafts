@@ -12,6 +12,7 @@ global using ScreenDrafts.Common.Abstractions.Results;
 global using ScreenDrafts.Common.IntegrationTests.Abstractions;
 global using ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities;
 global using ScreenDrafts.Modules.Drafts.Domain.DraftParts.ValueObjects;
+global using ScreenDrafts.Modules.Drafts.Domain.DrafterTeams;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafts.Errors;
 global using ScreenDrafts.Modules.Drafts.Domain.Hosts;
 global using ScreenDrafts.Modules.Drafts.Domain.Participants;
