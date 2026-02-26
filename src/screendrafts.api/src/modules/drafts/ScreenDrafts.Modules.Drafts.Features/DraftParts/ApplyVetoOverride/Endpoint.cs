@@ -20,6 +20,16 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<ApplyVetoOverrideRequest>
 
   public override async Task HandleAsync(ApplyVetoOverrideRequest req, CancellationToken ct)
   {
+    ArgumentNullException.ThrowIfNull(req);
+
+    var actorPublicId = User.GetPublicId();
+
+    if (string.IsNullOrWhiteSpace(actorPublicId))
+    {
+      await Send.UnauthorizedAsync(ct);
+      return;
+    }
+
     if (!ParticipantKind.TryFromValue(req.ParticipantKind, out var participantKind))
     {
       AddError(r => r.ParticipantKind, "Invalid participant kind.");
@@ -32,7 +42,8 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<ApplyVetoOverrideRequest>
       DraftPartId = req.DraftPartId,
       PlayOrder = req.PlayOrder,
       ParticipantIdValue = req.ParticipantIdValue,
-      ParticipantKind = participantKind
+      ParticipantKind = participantKind,
+      ActorPublicId = actorPublicId
     };
 
     var result = await Sender.Send(command, ct);

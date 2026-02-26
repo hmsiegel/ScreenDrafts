@@ -49,7 +49,8 @@ internal sealed class ApplyVetoCommandHandler(
       seriesId: draftPart.SeriesId,
       draftType: draftPart.DraftType,
       pickId: pickId,
-      issuerId: participant);
+      issuerId: participant,
+      actedByPublicId: request.ActorPublicId);
 
     if (pickResult.IsFailure)
     {

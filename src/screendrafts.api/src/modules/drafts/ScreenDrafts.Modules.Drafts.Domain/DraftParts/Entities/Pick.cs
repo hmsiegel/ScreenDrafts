@@ -9,6 +9,7 @@ public sealed class Pick : Entity<PickId>
     Movie movie,
     DraftPart draftPart,
     DraftPartParticipant playedByParticipant,
+    string actedByPublicId,
     int playOrder = 0,
     PickId? id = null)
     : base(id ?? PickId.CreateUnique())
@@ -27,6 +28,8 @@ public sealed class Pick : Entity<PickId>
 
     PlayedByParticipantIdValue = playedByParticipant.ParticipantIdValue;
     PlayedByParticipantKindValue = playedByParticipant.ParticipantKindValue;
+
+    ActedByPublicId = actedByPublicId;
   }
 
   private Pick()
@@ -49,6 +52,13 @@ public sealed class Pick : Entity<PickId>
 
   public Guid PlayedByParticipantIdValue { get; private set; }
   public ParticipantKind PlayedByParticipantKindValue { get; private set; } = default!;
+
+  /// <summary>
+  /// The public ID of the user who physically submitted the pick.
+  /// This may differ from the PlayedByParticipant if, for example, a commissioner is submitting a pick on behalf of a participant.
+  /// Null for system-generated community picks.
+  /// </summary>
+  public string? ActedByPublicId { get; private set; }
 
 
   public Veto? Veto { get; private set; } = default!;
@@ -79,8 +89,9 @@ public sealed class Pick : Entity<PickId>
     DraftPartParticipant playedByParticipant,
     DraftPart draftPart,
     int playOrder,
+    string? actedByPublicId = null,
     string? movieVersionName = null,
-    MovieVersionPolicy? versionPolicy = null,
+    MovieVersionPolicy? versionPolicy = null, 
     PickId? id = null)
   {
     if (draftPart is null)
@@ -129,6 +140,7 @@ public sealed class Pick : Entity<PickId>
       movie: movie,
       playedByParticipant: playedByParticipant,
       draftPart: draftPart,
+      actedByPublicId: actedByPublicId ?? string.Empty,
       playOrder: playOrder,
       id: id);
 
@@ -207,6 +219,7 @@ public sealed class Pick : Entity<PickId>
       draftPart: draftPart,
       playedByParticipant: playedByParticipant,
       playOrder: playOrder,
+      actedByPublicId: string.Empty,
       id: id);
 
     var versionResult = pick.SetMovieVersionName(movieVersionName, movie, versionPolicy: null);
@@ -276,6 +289,7 @@ public sealed class Pick : Entity<PickId>
     _history.Add(
       PickEvent.Veto(
         issuerId: veto.IssuedByParticipant.ParticipantId,
+        actedByPublicId: veto.ActedByPublicId,
         note: veto.Note));
 
     return Result.Success();
@@ -317,7 +331,8 @@ public sealed class Pick : Entity<PickId>
 
     _history.Add(
       PickEvent.VetoOverride(
-        by: by));
+        by: by,
+        actedByPublicId: Veto.ActedByPublicId));
 
     return Result.Success();
   }
@@ -326,32 +341,49 @@ public sealed class Pick : Entity<PickId>
 public sealed record PickEvent(
   string Kind,
   Participant? IssuerId,
+  string? ActedByPublicId,
   string? Note,
   DateTime OccurredOnUtc)
 {
+  public static PickEvent Played(
+    Participant? issuer,
+    string? actedByPublicId) =>
+    new(
+      Kind: "Played",
+      IssuerId: issuer,
+      ActedByPublicId: actedByPublicId,
+      Note: null,
+      OccurredOnUtc: DateTime.UtcNow);
+
   public static PickEvent Veto(
     Participant? issuerId,
+    string? actedByPublicId,
     string? note) =>
     new(
       Kind: "Veto",
       IssuerId: issuerId,
+      ActedByPublicId: actedByPublicId,
       Note: note,
       OccurredOnUtc: DateTime.UtcNow);
 
   public static PickEvent VetoOverride(
-    Participant by) =>
+    Participant by,
+    string? actedByPublicId) =>
     new(
       Kind: "VetoOverride",
       IssuerId: by,
+      ActedByPublicId: actedByPublicId,
       Note: "Veto Override",
       OccurredOnUtc: DateTime.UtcNow);
 
   public static PickEvent CommissionerOverride(
     Participant by,
+    string? actedByPublicId,
     string? note) =>
     new(
       Kind: "CommissionerOverride",
       IssuerId: by,
+      ActedByPublicId: actedByPublicId,
       Note: note,
       OccurredOnUtc: DateTime.UtcNow);
 }

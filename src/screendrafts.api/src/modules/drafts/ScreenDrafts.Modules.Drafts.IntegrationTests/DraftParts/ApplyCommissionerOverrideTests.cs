@@ -1,8 +1,6 @@
-using ScreenDrafts.Modules.Drafts.Domain.SeriesAggregate.Enums;
-
 namespace ScreenDrafts.Modules.Drafts.IntegrationTests.DraftParts;
 
-public sealed class ApplyVetoTests(DraftsIntegrationTestWebAppFactory factory)
+public sealed class ApplyCommissionerOverrideTests(DraftsIntegrationTestWebAppFactory factory)
   : DraftsIntegrationTest(factory)
 {
   // -------------------------------------------------------------------------
@@ -10,19 +8,16 @@ public sealed class ApplyVetoTests(DraftsIntegrationTestWebAppFactory factory)
   // -------------------------------------------------------------------------
 
   [Fact]
-  public async Task ApplyVeto_WithValidDrafterParticipant_ShouldSucceedAsync()
+  public async Task ApplyCommissionerOverride_WithValidData_ShouldSucceedAsync()
   {
     // Arrange
     var (draftPartPublicId, drafter1PublicId, _) = await SetupStartedDraftPartAsync();
     await PlayPickAsync(draftPartPublicId, drafter1PublicId, position: 1, playOrder: 1);
 
-    var command = new ApplyVetoCommand
+    var command = new ApplyCommissionerOverrideCommand
     {
       DraftPartId = draftPartPublicId,
-      PlayOrder = 1,
-      ParticipantPublicId = drafter1PublicId,
-      ParticipantKind = ParticipantKind.Drafter,
-      ActorPublicId = drafter1PublicId
+      PlayOrder = 1
     };
 
     // Act
@@ -34,31 +29,28 @@ public sealed class ApplyVetoTests(DraftsIntegrationTestWebAppFactory factory)
   }
 
   [Fact]
-  public async Task ApplyVeto_ShouldPersistVetoOnPickAsync()
+  public async Task ApplyCommissionerOverride_ShouldPersistOverrideInDatabaseAsync()
   {
     // Arrange
     var (draftPartPublicId, drafter1PublicId, _) = await SetupStartedDraftPartAsync();
     await PlayPickAsync(draftPartPublicId, drafter1PublicId, position: 1, playOrder: 1);
 
-    var command = new ApplyVetoCommand
+    var command = new ApplyCommissionerOverrideCommand
     {
       DraftPartId = draftPartPublicId,
-      PlayOrder = 1,
-      ParticipantPublicId = drafter1PublicId,
-      ParticipantKind = ParticipantKind.Drafter,
-      ActorPublicId = drafter1PublicId
+      PlayOrder = 1
     };
 
     // Act
     await Sender.Send(command);
 
-    // Assert — veto must be persisted in the database
+    // Assert
     var pick = await DbContext.Picks
-      .Include(p => p.Veto)
+      .Include(p => p.CommissionerOverride)
       .FirstAsync(p => p.PlayOrder == 1 && p.DraftPart.PublicId == draftPartPublicId);
 
-    pick.Veto.Should().NotBeNull();
-    pick.Veto!.IsOverridden.Should().BeFalse();
+    pick.CommissionerOverride.Should().NotBeNull();
+    pick.IsCommissionerOverridden.Should().BeTrue();
   }
 
   // -------------------------------------------------------------------------
@@ -66,19 +58,13 @@ public sealed class ApplyVetoTests(DraftsIntegrationTestWebAppFactory factory)
   // -------------------------------------------------------------------------
 
   [Fact]
-  public async Task ApplyVeto_WithNonExistentDraftPart_ShouldFailAsync()
+  public async Task ApplyCommissionerOverride_WithNonExistentDraftPart_ShouldFailAsync()
   {
     // Arrange
-    var teamFactory = new DrafterTeamFactory(Sender, Faker);
-    var drafterPublicId = await teamFactory.CreateAndSaveDrafterAsync();
-
-    var command = new ApplyVetoCommand
+    var command = new ApplyCommissionerOverrideCommand
     {
       DraftPartId = Faker.Random.AlphaNumeric(10),
-      PlayOrder = 1,
-      ParticipantPublicId = drafterPublicId,
-      ParticipantKind = ParticipantKind.Drafter,
-      ActorPublicId = drafterPublicId
+      PlayOrder = 1
     };
 
     // Act
@@ -93,19 +79,16 @@ public sealed class ApplyVetoTests(DraftsIntegrationTestWebAppFactory factory)
   // -------------------------------------------------------------------------
 
   [Fact]
-  public async Task ApplyVeto_WithNonExistentPlayOrder_ShouldFailAsync()
+  public async Task ApplyCommissionerOverride_WithNonExistentPlayOrder_ShouldFailAsync()
   {
     // Arrange
     var (draftPartPublicId, drafter1PublicId, _) = await SetupStartedDraftPartAsync();
     await PlayPickAsync(draftPartPublicId, drafter1PublicId, position: 1, playOrder: 1);
 
-    var command = new ApplyVetoCommand
+    var command = new ApplyCommissionerOverrideCommand
     {
       DraftPartId = draftPartPublicId,
-      PlayOrder = 999,
-      ParticipantPublicId = drafter1PublicId,
-      ParticipantKind = ParticipantKind.Drafter,
-      ActorPublicId = drafter1PublicId
+      PlayOrder = 999
     };
 
     // Act
@@ -116,34 +99,28 @@ public sealed class ApplyVetoTests(DraftsIntegrationTestWebAppFactory factory)
   }
 
   // -------------------------------------------------------------------------
-  // Guard — no remaining vetoes
+  // Guard — override already applied
   // -------------------------------------------------------------------------
 
   [Fact]
-  public async Task ApplyVeto_WhenDrafterHasNoRemainingVetoes_ShouldFailAsync()
+  public async Task ApplyCommissionerOverride_WhenAlreadyOverridden_ShouldFailAsync()
   {
-    // Arrange — drafter starts with 1 veto; use it on pick 1, then try pick 2
+    // Arrange
     var (draftPartPublicId, drafter1PublicId, _) = await SetupStartedDraftPartAsync();
     await PlayPickAsync(draftPartPublicId, drafter1PublicId, position: 1, playOrder: 1);
-    await PlayPickAsync(draftPartPublicId, drafter1PublicId, position: 2, playOrder: 2);
 
-    // Spend the only veto
-    await Sender.Send(new ApplyVetoCommand
+    // First override — should succeed
+    await Sender.Send(new ApplyCommissionerOverrideCommand
     {
       DraftPartId = draftPartPublicId,
-      PlayOrder = 1,
-      ParticipantPublicId = drafter1PublicId,
-      ParticipantKind = ParticipantKind.Drafter,
-      ActorPublicId = drafter1PublicId
+      PlayOrder = 1
     });
 
-    var command = new ApplyVetoCommand
+    // Second override on the same pick — should fail
+    var command = new ApplyCommissionerOverrideCommand
     {
       DraftPartId = draftPartPublicId,
-      PlayOrder = 2,
-      ParticipantPublicId = drafter1PublicId,
-      ParticipantKind = ParticipantKind.Drafter,
-      ActorPublicId = drafter1PublicId
+      PlayOrder = 1
     };
 
     // Act
@@ -215,7 +192,7 @@ public sealed class ApplyVetoTests(DraftsIntegrationTestWebAppFactory factory)
     DbContext.Movies.Add(movie);
     await DbContext.SaveChangesAsync();
 
-    var command = new PlayPickCommand
+    await Sender.Send(new PlayPickCommand
     {
       DraftPartId = draftPartPublicId,
       Position = position,
@@ -223,9 +200,7 @@ public sealed class ApplyVetoTests(DraftsIntegrationTestWebAppFactory factory)
       ParticipantPublicId = drafterPublicId,
       ParticipantKind = ParticipantKind.Drafter,
       MovieId = movie.Id
-    };
-
-    await Sender.Send(command);
+    });
   }
 
   private async Task<Guid> CreateSeriesAsync()

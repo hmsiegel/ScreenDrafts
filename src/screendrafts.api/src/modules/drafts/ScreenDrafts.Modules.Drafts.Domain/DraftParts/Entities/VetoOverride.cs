@@ -5,13 +5,17 @@ public sealed class VetoOverride : Entity<VetoOverrideId>
   private VetoOverride(
     Veto veto,
     DraftPartParticipant issuedByParticipant,
+    string actedByPublicId,
     VetoOverrideId? id = null)
     : base(id ?? VetoOverrideId.CreateUnique())
   {
     Veto = veto;
     VetoId = veto.Id;
+
     IssuedByParticipant = issuedByParticipant;
     IssuedByParticipantId = issuedByParticipant.Id;
+
+    ActedByPublicId = actedByPublicId;
   }
 
   private VetoOverride()
@@ -24,10 +28,13 @@ public sealed class VetoOverride : Entity<VetoOverrideId>
   public DraftPartParticipant IssuedByParticipant { get; private set; } = default!;
   public DraftPartParticipantId IssuedByParticipantId { get; private set; } = default!;
 
+  public string? ActedByPublicId { get; private set; }
+
 
   public static Result<VetoOverride> Create(
     Veto veto,
     DraftPartParticipant issuedByParticipant,
+    string? actedByPublicId = null,
     VetoOverrideId? id = null)
   {
     ArgumentNullException.ThrowIfNull(issuedByParticipant);
@@ -46,7 +53,8 @@ public sealed class VetoOverride : Entity<VetoOverrideId>
     var vetoOverride = new VetoOverride(
       id: id,
       veto: veto,
-    issuedByParticipant: issuedByParticipant);
+      issuedByParticipant: issuedByParticipant,
+      actedByPublicId: actedByPublicId ?? string.Empty);
 
     vetoOverride.Raise(new VetoOverrideCreatedDomainEvent(
       vetoOverride.Id.Value,
@@ -64,7 +72,8 @@ public sealed class VetoOverride : Entity<VetoOverrideId>
     var vetoOverride = new VetoOverride(
       id: id,
       veto: veto,
-    issuedByParticipant: issuedByParticipant);
+      issuedByParticipant: issuedByParticipant,
+      actedByPublicId: string.Empty);
     return vetoOverride;
   }
 }

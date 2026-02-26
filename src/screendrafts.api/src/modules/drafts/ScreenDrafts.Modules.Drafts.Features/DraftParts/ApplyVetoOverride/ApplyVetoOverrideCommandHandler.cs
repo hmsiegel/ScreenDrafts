@@ -57,7 +57,7 @@ internal sealed class ApplyVetoOverrideCommandHandler(
       return Result.Failure(validationResult.Errors);
     }
 
-    var overrideResult = veto.Override(participant);
+    var overrideResult = veto.Override(participant, request.ActorPublicId);
 
     if (overrideResult.IsFailure)
     {

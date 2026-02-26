@@ -22,6 +22,14 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<PlayPickRequest, Guid>
   {
     ArgumentNullException.ThrowIfNull(req);
 
+    var actorPublicId = User.GetPublicId();
+
+    if (string.IsNullOrWhiteSpace(actorPublicId))
+    {
+      await Send.UnauthorizedAsync(cancellation: ct);
+      return;
+    }
+
     if (!ParticipantKind.TryFromValue(req.ParticipantKind, out var participantKind))
     {
       AddError(r => r.ParticipantKind, "Invalid participant kind.");
@@ -37,7 +45,8 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<PlayPickRequest, Guid>
       ParticipantPublicId = req.ParticipantPublicId,
       ParticipantKind = participantKind,
       MovieId = req.MovieId,
-      MovieVersionName = req.MovieVersionName
+      MovieVersionName = req.MovieVersionName,
+      ActedByPublicId = actorPublicId
     };
 
     var result = await Sender.Send(command, ct);

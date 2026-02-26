@@ -20,12 +20,30 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<ApplyVetoRequest>
 
   public override async Task HandleAsync(ApplyVetoRequest req, CancellationToken ct)
   {
+    ArgumentNullException.ThrowIfNull(req);
+
+    var actorPublicId = User.GetPublicId();
+
+    if (string.IsNullOrWhiteSpace(actorPublicId))
+    {
+      await Send.UnauthorizedAsync(ct);
+      return;
+    }
+
+    if (!ParticipantKind.TryFromValue(req.ParticipantKind, out var participantKind))
+    {
+      AddError(r => r.ParticipantKind, DraftPartErrors.InvalidParticipantKind.Description);
+      await Send.ErrorsAsync(StatusCodes.Status400BadRequest, ct);
+      return;
+    }
+
     var command = new ApplyVetoCommand
     {
       DraftPartId = req.DraftPartId,
       PlayOrder = req.PlayOrder,
       ParticipantPublicId = req.ParticipantPublicId,
-      ParticipantKind = ParticipantKind.FromValue(req.ParticipantKind)
+      ParticipantKind = participantKind,
+      ActorPublicId = actorPublicId
     };
 
     var result = await Sender.Send(command, ct);

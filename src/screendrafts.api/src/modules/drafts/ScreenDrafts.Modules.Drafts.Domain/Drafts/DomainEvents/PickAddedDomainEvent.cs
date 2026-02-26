@@ -6,6 +6,7 @@ public sealed class PickAddedDomainEvent(
   Guid draftPartId,
   Guid drafterId,
   Guid drafterTeamId,
+  string actedByPublicId,
   int pickPosition,
   int playOrder)
   : DomainEvent
@@ -14,6 +15,7 @@ public sealed class PickAddedDomainEvent(
   public Guid DraftPartId { get; init; } = draftPartId;
   public Guid DrafterId { get; } = drafterId;
   public Guid DrafterTeamId { get; } = drafterTeamId;
+  public string ActedByPublicId { get; } = actedByPublicId;
   public int PickPosition { get; init; } = pickPosition;
   public int PlayOrder { get; init; } = playOrder;
   public Guid MovieId { get; init; } = movieId;

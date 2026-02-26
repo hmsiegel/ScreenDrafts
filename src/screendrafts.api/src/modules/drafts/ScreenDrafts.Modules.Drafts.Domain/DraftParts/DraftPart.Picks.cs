@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Modules.Drafts.Domain.Participants;
-
-namespace ScreenDrafts.Modules.Drafts.Domain.DraftParts;
+﻿namespace ScreenDrafts.Modules.Drafts.Domain.DraftParts;
 
 public sealed partial class DraftPart
 {
@@ -13,6 +11,7 @@ public sealed partial class DraftPart
     int playOrder,
     Participant participantId,
     string? movieVersionName = null,
+    string? actedByPublicId = null,
     Func<Guid, bool>? isMovieAlreadyPickedInWholeDraft = null)
   {
     ArgumentNullException.ThrowIfNull(seriesPolicyProvider);
@@ -76,7 +75,8 @@ public sealed partial class DraftPart
       playedByParticipant: draftPartParticipant,
       draftPart: this,
       movieVersionName: effectiveVersionName,
-      playOrder: playOrder);
+      playOrder: playOrder,
+      actedByPublicId: actedByPublicId);
 
     if (pickResult.IsFailure)
     {
@@ -99,12 +99,13 @@ public sealed partial class DraftPart
 
     Raise(new PickAddedDomainEvent(
       draftId: DraftId.Value,
-      movie.Id,
-      Id.Value,
-      participantId.IsDrafter ? participantId.AsDrafterId().Value : Guid.Empty,
-      participantId.IsTeam ? participantId.AsDrafterTeamId().Value : Guid.Empty,
-      draftPosition,
-      playOrder));
+      movieId: movie.Id,
+      draftPartId: Id.Value,
+      drafterId: participantId.IsDrafter ? participantId.AsDrafterId().Value : Guid.Empty,
+      drafterTeamId: participantId.IsTeam ? participantId.AsDrafterTeamId().Value : Guid.Empty,
+      actedByPublicId: actedByPublicId ?? string.Empty,
+      pickPosition: draftPosition,
+      playOrder: playOrder));
 
     return Result.Success(pick.Id);
   }
@@ -114,7 +115,8 @@ public sealed partial class DraftPart
     SeriesId seriesId,
     DraftType draftType,
     PickId pickId,
-    Participant issuerId)
+    Participant issuerId,
+    string? actedByPublicId = null)
   {
     ArgumentNullException.ThrowIfNull(seriesPolicyProvider);
     ArgumentNullException.ThrowIfNull(seriesId);
@@ -160,7 +162,8 @@ public sealed partial class DraftPart
       draftId: DraftId.Value,
       participantId: issuerId.Value,
       participantKind: issuerId.Kind.Name,
-      pickPosition: pick.Position));
+      pickPosition: pick.Position,
+      actedByPublicId: actedByPublicId ?? string.Empty));
 
     return Result.Success();
   }
@@ -171,7 +174,8 @@ public sealed partial class DraftPart
     SeriesId seriesId,
     DraftType draftType,
     Veto veto,
-    Participant by)
+    Participant by,
+    string? actedByPublicId = null)
   {
     ArgumentNullException.ThrowIfNull(seriesPolicyProvider);
     ArgumentNullException.ThrowIfNull(seriesId);
@@ -221,7 +225,8 @@ public sealed partial class DraftPart
     Raise(new VetoOverrideAddedDomainEvent(
       draftId: DraftId.Value,
       participantId: by.Value,
-      vetoId: veto.Id.Value));
+      vetoId: veto.Id.Value,
+      actedByPublicId: actedByPublicId ?? string.Empty));
 
     return Result.Success();
   }

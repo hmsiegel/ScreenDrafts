@@ -1,8 +1,6 @@
-using ScreenDrafts.Modules.Drafts.Domain.SeriesAggregate.Enums;
-
 namespace ScreenDrafts.Modules.Drafts.IntegrationTests.DraftParts;
 
-public sealed class ApplyVetoTests(DraftsIntegrationTestWebAppFactory factory)
+public sealed class PlayPickTests(DraftsIntegrationTestWebAppFactory factory)
   : DraftsIntegrationTest(factory)
 {
   // -------------------------------------------------------------------------
@@ -10,19 +8,20 @@ public sealed class ApplyVetoTests(DraftsIntegrationTestWebAppFactory factory)
   // -------------------------------------------------------------------------
 
   [Fact]
-  public async Task ApplyVeto_WithValidDrafterParticipant_ShouldSucceedAsync()
+  public async Task PlayPick_WithValidData_ShouldSucceedAsync()
   {
     // Arrange
     var (draftPartPublicId, drafter1PublicId, _) = await SetupStartedDraftPartAsync();
-    await PlayPickAsync(draftPartPublicId, drafter1PublicId, position: 1, playOrder: 1);
+    var movie = await CreateMovieAsync();
 
-    var command = new ApplyVetoCommand
+    var command = new PlayPickCommand
     {
       DraftPartId = draftPartPublicId,
+      Position = 1,
       PlayOrder = 1,
       ParticipantPublicId = drafter1PublicId,
       ParticipantKind = ParticipantKind.Drafter,
-      ActorPublicId = drafter1PublicId
+      MovieId = movie.Id
     };
 
     // Act
@@ -31,34 +30,36 @@ public sealed class ApplyVetoTests(DraftsIntegrationTestWebAppFactory factory)
     // Assert
     result.Should().NotBeNull();
     result.IsSuccess.Should().BeTrue();
+    result.Value.Should().NotBeNull();
   }
 
   [Fact]
-  public async Task ApplyVeto_ShouldPersistVetoOnPickAsync()
+  public async Task PlayPick_ShouldPersistPickInDatabaseAsync()
   {
     // Arrange
     var (draftPartPublicId, drafter1PublicId, _) = await SetupStartedDraftPartAsync();
-    await PlayPickAsync(draftPartPublicId, drafter1PublicId, position: 1, playOrder: 1);
+    var movie = await CreateMovieAsync();
 
-    var command = new ApplyVetoCommand
+    var command = new PlayPickCommand
     {
       DraftPartId = draftPartPublicId,
+      Position = 1,
       PlayOrder = 1,
       ParticipantPublicId = drafter1PublicId,
       ParticipantKind = ParticipantKind.Drafter,
-      ActorPublicId = drafter1PublicId
+      MovieId = movie.Id
     };
 
     // Act
     await Sender.Send(command);
 
-    // Assert — veto must be persisted in the database
+    // Assert
     var pick = await DbContext.Picks
-      .Include(p => p.Veto)
-      .FirstAsync(p => p.PlayOrder == 1 && p.DraftPart.PublicId == draftPartPublicId);
+      .FirstOrDefaultAsync(p => p.PlayOrder == 1 && p.DraftPart.PublicId == draftPartPublicId);
 
-    pick.Veto.Should().NotBeNull();
-    pick.Veto!.IsOverridden.Should().BeFalse();
+    pick.Should().NotBeNull();
+    pick!.MovieId.Should().Be(movie.Id);
+    pick.Position.Should().Be(1);
   }
 
   // -------------------------------------------------------------------------
@@ -66,19 +67,21 @@ public sealed class ApplyVetoTests(DraftsIntegrationTestWebAppFactory factory)
   // -------------------------------------------------------------------------
 
   [Fact]
-  public async Task ApplyVeto_WithNonExistentDraftPart_ShouldFailAsync()
+  public async Task PlayPick_WithNonExistentDraftPart_ShouldFailAsync()
   {
     // Arrange
+    var movie = await CreateMovieAsync();
     var teamFactory = new DrafterTeamFactory(Sender, Faker);
     var drafterPublicId = await teamFactory.CreateAndSaveDrafterAsync();
 
-    var command = new ApplyVetoCommand
+    var command = new PlayPickCommand
     {
       DraftPartId = Faker.Random.AlphaNumeric(10),
+      Position = 1,
       PlayOrder = 1,
       ParticipantPublicId = drafterPublicId,
       ParticipantKind = ParticipantKind.Drafter,
-      ActorPublicId = drafterPublicId
+      MovieId = movie.Id
     };
 
     // Act
@@ -89,23 +92,23 @@ public sealed class ApplyVetoTests(DraftsIntegrationTestWebAppFactory factory)
   }
 
   // -------------------------------------------------------------------------
-  // Guard — pick not found
+  // Guard — movie not found
   // -------------------------------------------------------------------------
 
   [Fact]
-  public async Task ApplyVeto_WithNonExistentPlayOrder_ShouldFailAsync()
+  public async Task PlayPick_WithNonExistentMovie_ShouldFailAsync()
   {
     // Arrange
     var (draftPartPublicId, drafter1PublicId, _) = await SetupStartedDraftPartAsync();
-    await PlayPickAsync(draftPartPublicId, drafter1PublicId, position: 1, playOrder: 1);
 
-    var command = new ApplyVetoCommand
+    var command = new PlayPickCommand
     {
       DraftPartId = draftPartPublicId,
-      PlayOrder = 999,
+      Position = 1,
+      PlayOrder = 1,
       ParticipantPublicId = drafter1PublicId,
       ParticipantKind = ParticipantKind.Drafter,
-      ActorPublicId = drafter1PublicId
+      MovieId = Guid.NewGuid()
     };
 
     // Act
@@ -116,34 +119,137 @@ public sealed class ApplyVetoTests(DraftsIntegrationTestWebAppFactory factory)
   }
 
   // -------------------------------------------------------------------------
-  // Guard — no remaining vetoes
+  // Guard — participant not in draft part
   // -------------------------------------------------------------------------
 
   [Fact]
-  public async Task ApplyVeto_WhenDrafterHasNoRemainingVetoes_ShouldFailAsync()
+  public async Task PlayPick_WithParticipantNotInDraftPart_ShouldFailAsync()
   {
-    // Arrange — drafter starts with 1 veto; use it on pick 1, then try pick 2
-    var (draftPartPublicId, drafter1PublicId, _) = await SetupStartedDraftPartAsync();
-    await PlayPickAsync(draftPartPublicId, drafter1PublicId, position: 1, playOrder: 1);
-    await PlayPickAsync(draftPartPublicId, drafter1PublicId, position: 2, playOrder: 2);
+    // Arrange
+    var (draftPartPublicId, _, _) = await SetupStartedDraftPartAsync();
+    var movie = await CreateMovieAsync();
 
-    // Spend the only veto
-    await Sender.Send(new ApplyVetoCommand
+    // Create a drafter who is NOT added to the draft part
+    var teamFactory = new DrafterTeamFactory(Sender, Faker);
+    var outsiderPublicId = await teamFactory.CreateAndSaveDrafterAsync();
+
+    var command = new PlayPickCommand
     {
       DraftPartId = draftPartPublicId,
+      Position = 1,
+      PlayOrder = 1,
+      ParticipantPublicId = outsiderPublicId,
+      ParticipantKind = ParticipantKind.Drafter,
+      MovieId = movie.Id
+    };
+
+    // Act
+    var result = await Sender.Send(command);
+
+    // Assert
+    result.IsFailure.Should().BeTrue();
+  }
+
+  // -------------------------------------------------------------------------
+  // Guard — draft part not started
+  // -------------------------------------------------------------------------
+
+  [Fact]
+  public async Task PlayPick_WhenDraftPartNotStarted_ShouldFailAsync()
+  {
+    // Arrange — create draft part and participant, but do NOT start the draft
+    var (draftPartPublicId, drafterPublicId) = await SetupDraftPartWithoutStartingAsync();
+    var movie = await CreateMovieAsync();
+
+    var command = new PlayPickCommand
+    {
+      DraftPartId = draftPartPublicId,
+      Position = 1,
+      PlayOrder = 1,
+      ParticipantPublicId = drafterPublicId,
+      ParticipantKind = ParticipantKind.Drafter,
+      MovieId = movie.Id
+    };
+
+    // Act
+    var result = await Sender.Send(command);
+
+    // Assert
+    result.IsFailure.Should().BeTrue();
+  }
+
+  // -------------------------------------------------------------------------
+  // Guard — duplicate position
+  // -------------------------------------------------------------------------
+
+  [Fact]
+  public async Task PlayPick_WithDuplicatePosition_ShouldFailAsync()
+  {
+    // Arrange
+    var (draftPartPublicId, drafter1PublicId, drafter2PublicId) = await SetupStartedDraftPartAsync();
+    var movie1 = await CreateMovieAsync();
+    var movie2 = await CreateMovieAsync();
+
+    // Play position 1 first time
+    await Sender.Send(new PlayPickCommand
+    {
+      DraftPartId = draftPartPublicId,
+      Position = 1,
       PlayOrder = 1,
       ParticipantPublicId = drafter1PublicId,
       ParticipantKind = ParticipantKind.Drafter,
-      ActorPublicId = drafter1PublicId
+      MovieId = movie1.Id
     });
 
-    var command = new ApplyVetoCommand
+    // Try to play position 1 again with a different movie
+    var command = new PlayPickCommand
     {
       DraftPartId = draftPartPublicId,
+      Position = 1,
       PlayOrder = 2,
+      ParticipantPublicId = drafter2PublicId,
+      ParticipantKind = ParticipantKind.Drafter,
+      MovieId = movie2.Id
+    };
+
+    // Act
+    var result = await Sender.Send(command);
+
+    // Assert
+    result.IsFailure.Should().BeTrue();
+  }
+
+  // -------------------------------------------------------------------------
+  // Guard — duplicate movie in the same part
+  // -------------------------------------------------------------------------
+
+  [Fact]
+  public async Task PlayPick_WithSameMovieTwice_ShouldFailAsync()
+  {
+    // Arrange
+    var (draftPartPublicId, drafter1PublicId, drafter2PublicId) = await SetupStartedDraftPartAsync();
+    var movie = await CreateMovieAsync();
+
+    // Play the movie at position 1
+    await Sender.Send(new PlayPickCommand
+    {
+      DraftPartId = draftPartPublicId,
+      Position = 1,
+      PlayOrder = 1,
       ParticipantPublicId = drafter1PublicId,
       ParticipantKind = ParticipantKind.Drafter,
-      ActorPublicId = drafter1PublicId
+      MovieId = movie.Id
+    });
+
+    // Try to play the same movie at position 2
+    var command = new PlayPickCommand
+    {
+      DraftPartId = draftPartPublicId,
+      Position = 2,
+      PlayOrder = 2,
+      ParticipantPublicId = drafter2PublicId,
+      ParticipantKind = ParticipantKind.Drafter,
+      MovieId = movie.Id
     };
 
     // Act
@@ -209,23 +315,35 @@ public sealed class ApplyVetoTests(DraftsIntegrationTestWebAppFactory factory)
     return (draftPartPublicId, drafter1PublicId, drafter2PublicId);
   }
 
-  private async Task PlayPickAsync(string draftPartPublicId, string drafterPublicId, int position, int playOrder)
+  private async Task<(string DraftPartPublicId, string DrafterPublicId)> SetupDraftPartWithoutStartingAsync()
+  {
+    var seriesId = await CreateSeriesAsync();
+    var draftPublicId = await CreateDraftAsync(seriesId);
+    var draftPartInternalId = await GetFirstDraftPartIdAsync(draftPublicId);
+
+    var draftPart = await DbContext.DraftParts
+      .FirstAsync(dp => dp.Id == DraftPartId.Create(draftPartInternalId));
+    var draftPartPublicId = draftPart.PublicId;
+
+    var peopleFactory = new PeopleFactory(Sender, Faker);
+    var personId = await peopleFactory.CreateAndSavePersonAsync();
+    var drafterPublicId = (await Sender.Send(new CreateDrafterCommand(personId))).Value;
+    await Sender.Send(new AddParticipantToDraftPartCommand
+    {
+      DraftPartId = draftPartInternalId,
+      ParticipantPublicId = drafterPublicId,
+      ParticipantKind = ParticipantKind.Drafter
+    });
+
+    return (draftPartPublicId, drafterPublicId);
+  }
+
+  private async Task<Movie> CreateMovieAsync()
   {
     var movie = Movie.Create(Faker.Company.CompanyName(), Faker.Random.AlphaNumeric(10), Guid.NewGuid()).Value;
     DbContext.Movies.Add(movie);
     await DbContext.SaveChangesAsync();
-
-    var command = new PlayPickCommand
-    {
-      DraftPartId = draftPartPublicId,
-      Position = position,
-      PlayOrder = playOrder,
-      ParticipantPublicId = drafterPublicId,
-      ParticipantKind = ParticipantKind.Drafter,
-      MovieId = movie.Id
-    };
-
-    await Sender.Send(command);
+    return movie;
   }
 
   private async Task<Guid> CreateSeriesAsync()

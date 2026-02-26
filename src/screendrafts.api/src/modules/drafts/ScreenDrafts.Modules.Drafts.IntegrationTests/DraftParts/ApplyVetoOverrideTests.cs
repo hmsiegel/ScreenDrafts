@@ -21,7 +21,8 @@ public sealed class ApplyVetoOverrideTests(DraftsIntegrationTestWebAppFactory fa
       DraftPartId = draftPartPublicId,
       PlayOrder = 1,
       ParticipantPublicId = drafter1PublicId,
-      ParticipantKind = ParticipantKind.Drafter
+      ParticipantKind = ParticipantKind.Drafter,
+      ActorPublicId = drafter1PublicId
     });
 
     var command = new ApplyVetoOverrideCommand
@@ -29,7 +30,8 @@ public sealed class ApplyVetoOverrideTests(DraftsIntegrationTestWebAppFactory fa
       DraftPartId = draftPartPublicId,
       PlayOrder = 1,
       ParticipantIdValue = drafter2PublicId,
-      ParticipantKind = ParticipantKind.Drafter
+      ParticipantKind = ParticipantKind.Drafter,
+      ActorPublicId = drafter2PublicId
     };
 
     // Act
@@ -52,7 +54,8 @@ public sealed class ApplyVetoOverrideTests(DraftsIntegrationTestWebAppFactory fa
       DraftPartId = draftPartPublicId,
       PlayOrder = 1,
       ParticipantPublicId = drafter1PublicId,
-      ParticipantKind = ParticipantKind.Drafter
+      ParticipantKind = ParticipantKind.Drafter,
+      ActorPublicId = drafter1PublicId
     });
 
     var command = new ApplyVetoOverrideCommand
@@ -60,7 +63,8 @@ public sealed class ApplyVetoOverrideTests(DraftsIntegrationTestWebAppFactory fa
       DraftPartId = draftPartPublicId,
       PlayOrder = 1,
       ParticipantIdValue = drafter2PublicId,
-      ParticipantKind = ParticipantKind.Drafter
+      ParticipantKind = ParticipantKind.Drafter,
+      ActorPublicId = drafter2PublicId
     };
 
     // Act
@@ -93,7 +97,8 @@ public sealed class ApplyVetoOverrideTests(DraftsIntegrationTestWebAppFactory fa
       DraftPartId = Faker.Random.AlphaNumeric(10),
       PlayOrder = 1,
       ParticipantIdValue = drafterPublicId,
-      ParticipantKind = ParticipantKind.Drafter
+      ParticipantKind = ParticipantKind.Drafter,
+      ActorPublicId = drafterPublicId
     };
 
     // Act
@@ -119,7 +124,8 @@ public sealed class ApplyVetoOverrideTests(DraftsIntegrationTestWebAppFactory fa
       DraftPartId = draftPartPublicId,
       PlayOrder = 1,
       ParticipantPublicId = drafter1PublicId,
-      ParticipantKind = ParticipantKind.Drafter
+      ParticipantKind = ParticipantKind.Drafter,
+      ActorPublicId = drafter1PublicId
     });
 
     var command = new ApplyVetoOverrideCommand
@@ -127,7 +133,8 @@ public sealed class ApplyVetoOverrideTests(DraftsIntegrationTestWebAppFactory fa
       DraftPartId = draftPartPublicId,
       PlayOrder = 999,
       ParticipantIdValue = drafter2PublicId,
-      ParticipantKind = ParticipantKind.Drafter
+      ParticipantKind = ParticipantKind.Drafter,
+      ActorPublicId = drafter2PublicId
     };
 
     // Act
@@ -153,7 +160,8 @@ public sealed class ApplyVetoOverrideTests(DraftsIntegrationTestWebAppFactory fa
       DraftPartId = draftPartPublicId,
       PlayOrder = 1,
       ParticipantIdValue = drafter2PublicId,
-      ParticipantKind = ParticipantKind.Drafter
+      ParticipantKind = ParticipantKind.Drafter,
+      ActorPublicId = drafter2PublicId
     };
 
     // Act
@@ -179,7 +187,8 @@ public sealed class ApplyVetoOverrideTests(DraftsIntegrationTestWebAppFactory fa
       DraftPartId = draftPartPublicId,
       PlayOrder = 1,
       ParticipantPublicId = drafter1PublicId,
-      ParticipantKind = ParticipantKind.Drafter
+      ParticipantKind = ParticipantKind.Drafter,
+      ActorPublicId = drafter1PublicId
     });
 
     // First override — should succeed
@@ -188,7 +197,8 @@ public sealed class ApplyVetoOverrideTests(DraftsIntegrationTestWebAppFactory fa
       DraftPartId = draftPartPublicId,
       PlayOrder = 1,
       ParticipantIdValue = drafter2PublicId,
-      ParticipantKind = ParticipantKind.Drafter
+      ParticipantKind = ParticipantKind.Drafter,
+      ActorPublicId = drafter2PublicId
     });
 
     // Second override on the same veto — should fail
@@ -197,7 +207,8 @@ public sealed class ApplyVetoOverrideTests(DraftsIntegrationTestWebAppFactory fa
       DraftPartId = draftPartPublicId,
       PlayOrder = 1,
       ParticipantIdValue = drafter2PublicId,
-      ParticipantKind = ParticipantKind.Drafter
+      ParticipantKind = ParticipantKind.Drafter,
+      ActorPublicId = drafter2PublicId
     };
 
     // Act

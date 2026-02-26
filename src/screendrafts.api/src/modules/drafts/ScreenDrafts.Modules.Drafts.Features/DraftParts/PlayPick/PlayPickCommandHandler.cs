@@ -55,7 +55,8 @@ internal sealed class PlayPickCommandHandler(
       draftPosition: request.Position,
       playOrder: request.PlayOrder,
       participantId: participant,
-      movieVersionName: request.MovieVersionName);
+      movieVersionName: request.MovieVersionName,
+      actedByPublicId: request.ActedByPublicId);
 
     if (pickResult.IsFailure)
     {

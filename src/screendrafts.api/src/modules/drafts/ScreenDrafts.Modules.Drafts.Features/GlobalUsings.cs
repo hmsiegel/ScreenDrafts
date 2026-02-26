@@ -26,6 +26,7 @@ global using ScreenDrafts.Common.Application.Outbox;
 global using ScreenDrafts.Common.Application.Services;
 global using ScreenDrafts.Common.Domain;
 global using ScreenDrafts.Common.Presentation.Http;
+global using ScreenDrafts.Common.Presentation.Http.Authentication;
 global using ScreenDrafts.Common.Presentation.Responses;
 global using ScreenDrafts.Common.Presentation.Results;
 global using ScreenDrafts.Modules.Drafts.Domain.Abstractions.Data;

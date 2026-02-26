@@ -3,7 +3,8 @@
 public sealed class VetoOverrideAddedDomainEvent(
   Guid draftId,
   Guid participantId,
-  Guid vetoId)
+  Guid vetoId,
+  string actedByPublicId)
   : DomainEvent
 {
   public Guid DraftId { get; init; } = draftId;
@@ -11,4 +12,6 @@ public sealed class VetoOverrideAddedDomainEvent(
   public Guid ParticipantId { get; init; } = participantId;
 
   public Guid VetoId { get; init; } = vetoId;
+
+  public string ActedByPublicId { get; init; } = actedByPublicId;
 }
