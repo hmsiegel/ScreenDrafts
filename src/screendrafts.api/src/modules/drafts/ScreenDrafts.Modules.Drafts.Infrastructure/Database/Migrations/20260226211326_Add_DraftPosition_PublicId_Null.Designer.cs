@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ScreenDrafts.Modules.Drafts.Infrastructure.Database;
@@ -12,9 +13,11 @@ using ScreenDrafts.Modules.Drafts.Infrastructure.Database;
 namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
 {
     [DbContext(typeof(DraftsDbContext))]
-    partial class DraftsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260226211326_Add_DraftPosition_PublicId_Null")]
+    partial class Add_DraftPosition_PublicId_Null
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -443,7 +446,6 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasColumnName("picks");
 
                     b.Property<string>("PublicId")
-                        .IsRequired()
                         .HasMaxLength(19)
                         .HasColumnType("character varying(19)")
                         .HasColumnName("public_id");
@@ -453,10 +455,6 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
 
                     b.HasIndex("GameBoardId")
                         .HasDatabaseName("ix_draft_positions_game_board_id");
-
-                    b.HasIndex("PublicId")
-                        .IsUnique()
-                        .HasDatabaseName("ix_draft_positions_public_id");
 
                     b.ToTable("draft_positions", "drafts");
                 });

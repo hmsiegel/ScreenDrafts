@@ -15,7 +15,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<ApplyVetoOverrideRequest>
       .Produces(StatusCodes.Status403Forbidden)
       .Produces(StatusCodes.Status404NotFound);
     });
-    Policies(DraftsAuth.Permissions.DraftPartUpdate);
+    Policies(DraftsAuth.Permissions.PickVetoOverride);
   }
 
   public override async Task HandleAsync(ApplyVetoOverrideRequest req, CancellationToken ct)

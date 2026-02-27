@@ -12,6 +12,12 @@ internal sealed class DraftPositionConfiguration : IEntityTypeConfiguration<Draf
       .ValueGeneratedNever()
       .HasConversion(IdConverters.DraftPositionIdConverter);
 
+    builder.Property(p => p.PublicId)
+      .HasMaxLength(PublicIdPrefixes.MaxPublicIdLength)
+      .IsRequired();
+
+    builder.HasIndex(x => x.PublicId)
+      .IsUnique();
 
     builder.Property(e => e.Name)
       .IsRequired()

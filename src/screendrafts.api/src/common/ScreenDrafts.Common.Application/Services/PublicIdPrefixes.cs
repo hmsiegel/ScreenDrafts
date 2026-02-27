@@ -11,6 +11,7 @@ public static class PublicIdPrefixes
   public const string DrafterTeam = "dt";
   public const string Host = "h";
   public const string DraftPart = "dp";
+  public const string DraftPosition = "pos";
   public const string Pick = "p";
   public const string Veto = "v";
   public const string VetoOverride = "vo";

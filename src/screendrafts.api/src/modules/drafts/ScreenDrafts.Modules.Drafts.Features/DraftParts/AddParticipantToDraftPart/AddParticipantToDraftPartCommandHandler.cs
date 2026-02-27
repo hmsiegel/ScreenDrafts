@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Modules.Drafts.Features.Common;
-
-namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.AddParticipantToDraftPart;
+﻿namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.AddParticipantToDraftPart;
 
 internal sealed class AddParticipantToDraftPartCommandHandler(
   IDraftPartRepository draftPartRepository,

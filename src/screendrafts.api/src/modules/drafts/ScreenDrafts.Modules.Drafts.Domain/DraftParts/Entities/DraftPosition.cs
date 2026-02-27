@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Modules.Drafts.Domain.Participants;
-
-namespace ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities;
+﻿namespace ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities;
 
 public sealed class DraftPosition : Entity<DraftPositionId>
 {
@@ -10,15 +8,20 @@ public sealed class DraftPosition : Entity<DraftPositionId>
     GameBoard gameBoard,
     string name,
     IEnumerable<int> picks,
+    string publicId,
     bool hasBonusVeto = false,
     bool hasBonusVetoOverride = false,
-    DraftPositionId? id = null) 
+    DraftPositionId? id = null)
     : base(id ?? DraftPositionId.CreateUnique())
   {
     GameBoard = gameBoard;
     GameBoardId = gameBoard.Id;
+
+    PublicId = publicId;
+
     Name = name;
     Picks = [.. picks];
+
     HasBonusVeto = hasBonusVeto;
     HasBonusVetoOverride = hasBonusVetoOverride;
   }
@@ -26,6 +29,8 @@ public sealed class DraftPosition : Entity<DraftPositionId>
   private DraftPosition()
   {
   }
+
+  public string PublicId { get; private set; } = default!;
 
   public GameBoardId GameBoardId { get; init; } = default!;
   public GameBoard GameBoard { get; init; } = default!;
@@ -47,6 +52,7 @@ public sealed class DraftPosition : Entity<DraftPositionId>
     GameBoard gameBoard,
     string name,
     IReadOnlyCollection<int> picks,
+    string publicId,
     bool hasBonusVeto = false,
     bool hasBonusVetoOverride = false,
     DraftPositionId? id = null)
@@ -64,15 +70,24 @@ public sealed class DraftPosition : Entity<DraftPositionId>
       return Result.Failure<DraftPosition>(DraftPositionErrors.PicksAreRequired);
     }
 
+    if (string.IsNullOrWhiteSpace(publicId))
+    {
+      return Result.Failure<DraftPosition>(DraftPositionErrors.CreationFailed);
+    }
+
     var draftPosition = new DraftPosition(
       gameBoard: gameBoard,
       name: name,
       picks: picks,
       hasBonusVeto: hasBonusVeto,
       hasBonusVetoOverride: hasBonusVetoOverride,
+      publicId: publicId,
       id: id);
 
-    draftPosition.Raise(new DraftPositionCreatedDomainEvent(draftPosition.Id));
+    draftPosition.Raise(
+      new DraftPositionCreatedDomainEvent(
+      draftPosition.Id.Value,
+      draftPosition.PublicId));
 
     return draftPosition;
   }
@@ -83,6 +98,7 @@ public sealed class DraftPosition : Entity<DraftPositionId>
     IReadOnlyCollection<int> picks,
     bool hasBonusVeto = false,
     bool hasBonusVetoOverride = false,
+    string? publicId = null,
     Participant? assignedTo = null,
     DraftPositionId? id = null)
   {
@@ -101,21 +117,27 @@ public sealed class DraftPosition : Entity<DraftPositionId>
       return Result.Failure<DraftPosition>(DraftPositionErrors.PicksAreRequired);
     }
 
-    var entity = new DraftPosition(
-      gameBoard,
-      name,
-      picks,
+    if (string.IsNullOrWhiteSpace(publicId))
+    {
+      return Result.Failure<DraftPosition>(DraftPositionErrors.CreationFailed);
+    }
+
+    var result = new DraftPosition(
+      gameBoard: gameBoard,
+      name: name,
+      picks: picks,
       hasBonusVeto: hasBonusVeto,
       hasBonusVetoOverride: hasBonusVetoOverride,
-      id);
+      publicId: publicId,
+      id: id);
 
     if (assignedTo is not null)
     {
-      entity.AssignedToId = assignedTo.Value.Value;
-      entity.AssignedToKind = assignedTo.Value.Kind;
+      result.AssignedToId = assignedTo.Value.Value;
+      result.AssignedToKind = assignedTo.Value.Kind;
     }
 
-    return Result.Success(entity);
+    return Result.Success(result);
   }
 
   internal void SeedAssignedTo(Participant? assignedTo)
@@ -157,6 +179,18 @@ public sealed class DraftPosition : Entity<DraftPositionId>
       GameBoard.DraftPart.Id.Value,
       Id.Value));
 
+    return Result.Success();
+  }
+
+  internal Result UpdatePublicId(string publicId)
+  {
+    if (string.IsNullOrWhiteSpace(publicId))
+    {
+      return Result.Failure(DraftPositionErrors.CreationFailed);
+    }
+
+    PublicId = publicId;
+    
     return Result.Success();
   }
 }

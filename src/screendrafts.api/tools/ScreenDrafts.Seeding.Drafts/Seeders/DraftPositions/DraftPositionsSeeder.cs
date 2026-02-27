@@ -1,13 +1,13 @@
-﻿using ScreenDrafts.Modules.Drafts.Domain.Participants;
-
-namespace ScreenDrafts.Seeding.Drafts.Seeders.DraftPositions;
+﻿namespace ScreenDrafts.Seeding.Drafts.Seeders.DraftPositions;
 
 internal sealed class DraftPositionsSeeder(
   ILogger<DraftPositionsSeeder> logger,
   ICsvFileService csvFileService,
-  DraftsDbContext dbContext)
+  DraftsDbContext dbContext,
+  IPublicIdGenerator publicIdGenerator)
   : DraftBaseSeeder(dbContext, logger, csvFileService), ICustomSeeder
 {
+  private readonly IPublicIdGenerator _publicIdGenerator = publicIdGenerator;
   public int Order => 9;
 
   public string Name => "draftpositions";
@@ -28,25 +28,30 @@ internal sealed class DraftPositionsSeeder(
       return;
     }
 
+    var draftPartIds = csvDraftPositions
+      .Select(r => DraftPartId.Create(r.DraftPartId))
+      .Distinct()
+      .ToList();
+
     var draftParts = await _dbContext.DraftParts
       .AsNoTracking()
-      .Where(dp => csvDraftPositions.Select(r => r.DraftPartId).Contains(dp.Id.Value))
+      .Where(dp => draftPartIds.Contains(dp.Id))
       .ToDictionaryAsync(dp => dp.Id.Value, cancellationToken);
 
     var neededBoardIds = csvDraftPositions
-      .Select(r => DeterministicIds.GameBoardIdFromDraftPartId(
+      .Select(r => GameBoardId.Create(DeterministicIds.GameBoardIdFromDraftPartId(
         r.DraftPartId,
-        draftParts[r.DraftPartId].PartIndex))
+        draftParts[r.DraftPartId].PartIndex)))
       .Distinct()
       .ToList();
 
     var boards = await _dbContext.GameBoards
-      .Where(gb => neededBoardIds.Contains(gb.Id.Value))
+      .Where(gb => neededBoardIds.Contains(gb.Id))
       .ToDictionaryAsync(gb => gb.Id.Value, cancellationToken);
 
     if (boards.Count != neededBoardIds.Count)
     {
-      var missing = neededBoardIds.Where(id => !boards.ContainsKey(id)).ToList();
+      var missing = neededBoardIds.Where(id => !boards.ContainsKey(id.Value)).ToList();
       throw new InvalidOperationException($"Missing GameBoards for DraftPositions seeding: {string.Join(", ", missing)}");
     }
 
@@ -93,13 +98,16 @@ internal sealed class DraftPositionsSeeder(
         ? null
         : new Participant(record.AssignedToId.Value, ParticipantKind.FromValue(record.AssignedToKind!.Value));
 
+      var publicId = _publicIdGenerator.GeneratePublicId(PublicIdPrefixes.DraftPosition);
+
       var draftPositionResult = DraftPosition.SeedCreate(
         gameBoard: gameBoard,
         name: name,
         picks: picks,
+        publicId: publicId,
         hasBonusVeto: record.HasBonusVeto ?? false,
         hasBonusVetoOverride: record.HasBonusVetoOverride ?? false,
-        assignedTo);
+        assignedTo: assignedTo);
 
       if (draftPositionResult.IsFailure)
       {

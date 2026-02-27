@@ -43,7 +43,6 @@ public static class DraftsModule
   private static IServiceCollection AddDraftsFeatures(this IServiceCollection services)
   {
     services.AddScoped(typeof(IPipelineBehavior<,>), typeof(DraftsUnitOfWorkBehavior<,>));
-    SqlMapper.AddTypeHandler(new JsonTypeHandler<IReadOnlyList<DraftPositionResponse>>());
     services.AddScoped<ParticipantResolver>();
     services.AddScoped<IAdministrationIntegrationEventDispatcher, DraftsIntegrationEventDispatcher>();
     services.AddScoped<IDraftsDomainEventDispatcher, DraftsDomainEventDispatcher>();

@@ -22,6 +22,8 @@ global using ScreenDrafts.Modules.Drafts.Features.Drafters.Create;
 global using ScreenDrafts.Modules.Drafts.Features.DraftParts.AddHostToDraftPart;
 global using ScreenDrafts.Modules.Drafts.Features.DraftParts.AddParticipantToDraftPart;
 global using ScreenDrafts.Modules.Drafts.Features.DraftParts.ApplyCommissionerOverride;
+global using ScreenDrafts.Modules.Drafts.Features.DraftParts.AssignParticipantToDraftPosition;
+global using ScreenDrafts.Modules.Drafts.Features.DraftParts.SetDraftPosition;
 global using ScreenDrafts.Modules.Drafts.Features.DraftParts.ApplyVeto;
 global using ScreenDrafts.Modules.Drafts.Features.DraftParts.ApplyVetoOverride;
 global using ScreenDrafts.Modules.Drafts.Features.DraftParts.PlayPick;

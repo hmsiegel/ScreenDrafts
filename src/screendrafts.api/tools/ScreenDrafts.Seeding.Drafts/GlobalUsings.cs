@@ -31,6 +31,7 @@ global using ScreenDrafts.Modules.Drafts.Domain.DraftParts.Enums;
 global using ScreenDrafts.Modules.Drafts.Domain.DraftParts.ValueObjects;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafts;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafts.ValueObjects;
+global using ScreenDrafts.Modules.Drafts.Domain.Participants;
 global using ScreenDrafts.Modules.Drafts.Domain.People;
 global using ScreenDrafts.Modules.Drafts.Domain.People.ValueObjects;
 global using ScreenDrafts.Modules.Drafts.Domain.SeriesAggregate.Enums;

@@ -88,6 +88,11 @@ public static class DraftPartErrors
     description: "Invalid public ID."
   );
 
+  public static readonly SDError GameBoardNotFound = SDError.NotFound(
+    code: "DraftPart.GameBoardNotFound",
+    description: "Game board not found."
+  );
+
   public static SDError NotFound(Guid draftPartId) => SDError.NotFound(
     code: "DraftPart.NotFound",
         description: $"Draft part with ID '{draftPartId}' is not found."

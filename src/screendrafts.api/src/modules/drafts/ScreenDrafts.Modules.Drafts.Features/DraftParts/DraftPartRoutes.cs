@@ -28,6 +28,7 @@ internal static class DraftPartRoutes
   public const string SetCommunityParticipant = "/draft-parts/{draftPartId}/participants/community";
   public const string RemoveCommunityParticipant = "/draft-parts/{draftPartId}/participants/community/{communityId}";
   public const string SetDraftPositions = "/draft-parts/{draftPartId}/positions";
+  public const string AssignParticipantToDraftPosition = "/draft-parts/{draftPartId}/positions/{positionId}/participant";
 
   // Picks
   public const string AddPick = "/draft-parts/{draftPartId}/picks";

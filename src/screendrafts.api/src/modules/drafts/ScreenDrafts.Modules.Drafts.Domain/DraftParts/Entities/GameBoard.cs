@@ -40,14 +40,14 @@ public sealed class GameBoard : Entity<GameBoardId>
     return Result.Success(gameBoard);
   }
 
-  public Result AssignDraftPositions(ICollection<DraftPosition> draftPositions)
+  public Result AssignDraftPositions(ICollection<DraftPosition> draftPositions, int participantCount)
   {
     if (draftPositions is null)
     {
       return Result.Failure(GameBoardErrors.DraftPositionsMissing);
     }
 
-    if (draftPositions.Count < 1 || draftPositions.Count != DraftPart.Participants.Count)
+    if (draftPositions.Count < 1 || draftPositions.Count != participantCount)
     {
       return Result.Failure(GameBoardErrors.InvalidNumberOfParticipants);
     }
@@ -58,5 +58,10 @@ public sealed class GameBoard : Entity<GameBoardId>
     }
 
     return Result.Success();
+  }
+
+  public void ClearPositions()
+  {
+    _draftPositions.Clear();
   }
 }

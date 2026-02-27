@@ -52,12 +52,24 @@ public class GameBoardTests : DraftsBaseTest
 
     var draftPositions = new List<DraftPosition>
     {
-        DraftPosition.Create(gameBoard,"Position A", [7, 6, 4, 2], false, false).Value,
-        DraftPosition.Create(gameBoard,"Position B", [5, 3, 1], false, false).Value
+        DraftPosition.Create(
+          gameBoard,
+          "Position A",
+          [7, 6, 4, 2],
+          Faker.Random.AlphaNumeric(15),
+          false,
+          false).Value,
+        DraftPosition.Create(
+          gameBoard,
+          "Position B",
+          [5, 3, 1],
+          Faker.Random.AlphaNumeric(15),
+          false,
+          false).Value
     };
 
     // Act
-    var result = gameBoard.AssignDraftPositions(draftPositions);
+    var result = gameBoard.AssignDraftPositions(draftPositions, draftPart.TotalParticipants);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -75,7 +87,7 @@ public class GameBoardTests : DraftsBaseTest
     ICollection<DraftPosition>? draftPositions = null;
 
     // Act
-    var result = gameBoard.AssignDraftPositions(draftPositions!);
+    var result = gameBoard.AssignDraftPositions(draftPositions!, draftPart.TotalParticipants);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -97,11 +109,11 @@ public class GameBoardTests : DraftsBaseTest
 
     var draftPositions = new List<DraftPosition>
     {
-        DraftPosition.Create(gameBoard,"Position A", [7, 6, 4, 2], false, false).Value
+        DraftPosition.Create(gameBoard,"Position A", [7, 6, 4, 2], Faker.Random.AlphaNumeric(15), false, false).Value
     };
 
     // Act
-    var result = gameBoard.AssignDraftPositions(draftPositions);
+    var result = gameBoard.AssignDraftPositions(draftPositions, draftPart.TotalParticipants);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -120,7 +132,7 @@ public class GameBoardTests : DraftsBaseTest
     var draftPositions = new List<DraftPosition>();
 
     // Act
-    var result = gameBoard.AssignDraftPositions(draftPositions);
+    var result = gameBoard.AssignDraftPositions(draftPositions, draftPart.TotalParticipants);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -144,14 +156,32 @@ public class GameBoardTests : DraftsBaseTest
 
     var draftPositions = new List<DraftPosition>
     {
-        DraftPosition.Create(gameBoard, "Position A", [9, 6, 3], true, false).Value,
-        DraftPosition.Create(gameBoard, "Position B", [8, 5, 2], false, false).Value,
-        DraftPosition.Create(gameBoard, "Position C", [7, 4, 1], false, true).Value
+        DraftPosition.Create(
+          gameBoard,
+          "Position A",
+          [9, 6, 3],
+          Faker.Random.AlphaNumeric(15),
+          true,
+          false).Value,
+        DraftPosition.Create(
+          gameBoard,
+          "Position B",
+          [8, 5, 2],
+          Faker.Random.AlphaNumeric(15),
+          false,
+          false).Value,
+        DraftPosition.Create(
+          gameBoard,
+          "Position C",
+          [7, 4, 1],
+          Faker.Random.AlphaNumeric(15),
+          false,
+          true).Value
     };
 
     // Act
     var result = GameBoard.Create(draftPart);
-    result.Value.AssignDraftPositions(draftPositions);
+    result.Value.AssignDraftPositions(draftPositions, draftPart.TotalParticipants);
 
     // Assert
     result.IsSuccess.Should().BeTrue();

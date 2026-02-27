@@ -106,6 +106,15 @@ public sealed partial class DraftPart : AggregateRoot<DraftPartId, Guid>
       SeriesId = gameplay.SeriesId
     };
 
+    var gameBoardResult = GameBoard.Create(draftPart);
+
+    if (gameBoardResult.IsFailure)
+    {
+      return Result.Failure<DraftPart>(gameBoardResult.Errors);
+    }
+
+    draftPart.GameBoard = gameBoardResult.Value;
+
     return Result.Success(draftPart);
   }
 

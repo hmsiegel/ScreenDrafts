@@ -18,6 +18,8 @@ internal sealed class DraftPartRepository(DraftsDbContext dbContext) : IDraftPar
   {
     return _dbContext.DraftParts
       .Include("_draftPartParticipants")
+      .Include(dp => dp.GameBoard!)
+        .ThenInclude(gb => gb.DraftPositions)
       .FirstOrDefaultAsync(x => x.PublicId == draftPartId, cancellationToken);
   }
 

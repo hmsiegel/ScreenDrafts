@@ -11,7 +11,7 @@ public class DraftPositionTests : DraftsBaseTest
     var picks = new Collection<int> { 1, 2, 3 };
 
     // Act
-    var result = DraftPosition.Create(gameBoard, name, picks);
+    var result = DraftPosition.Create(gameBoard, name, picks, Faker.Random.AlphaNumeric(15));
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -30,11 +30,11 @@ public class DraftPositionTests : DraftsBaseTest
     var picks = new Collection<int> { 1, 2, 3 };
 
     // Act
-    var position = DraftPosition.Create(gameBoard, name, picks).Value;
+    var position = DraftPosition.Create(gameBoard, name, picks, Faker.Random.AlphaNumeric(15)).Value;
 
     // Assert
     var domainEvent = AssertDomainEventWasPublished<DraftPositionCreatedDomainEvent>(position);
-    domainEvent.DraftPositionId.Should().Be(position.Id);
+    domainEvent.DraftPositionId.Should().Be(position.Id.Value);
   }
 
   [Fact]
@@ -45,7 +45,7 @@ public class DraftPositionTests : DraftsBaseTest
     var picks = new Collection<int> { 1, 2, 3 };
 
     // Act
-    var result = DraftPosition.Create(gameBoard, string.Empty, picks);
+    var result = DraftPosition.Create(gameBoard, string.Empty, picks, Faker.Random.AlphaNumeric(15));
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -61,7 +61,7 @@ public class DraftPositionTests : DraftsBaseTest
     var picks = new Collection<int>();
 
     // Act
-    var result = DraftPosition.Create(gameBoard, name, picks);
+    var result = DraftPosition.Create(gameBoard, name, picks, Faker.Random.AlphaNumeric(15));
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -76,7 +76,7 @@ public class DraftPositionTests : DraftsBaseTest
     var picks = new Collection<int> { 1, 2, 3 };
 
     // Act
-    Action act = () => DraftPosition.Create(null!, name, picks);
+    Action act = () => DraftPosition.Create(null!, name, picks,Faker.Random.AlphaNumeric(15) );
 
     // Assert
     act.Should().Throw<ArgumentNullException>();
@@ -93,7 +93,13 @@ public class DraftPositionTests : DraftsBaseTest
     var hasBonusVetoOverride = true;
 
     // Act
-    var result = DraftPosition.Create(gameBoard, name, picks, hasBonusVeto, hasBonusVetoOverride);
+    var result = DraftPosition.Create(
+      gameBoard,
+      name,
+      picks,
+      Faker.Random.AlphaNumeric(15),
+      hasBonusVeto,
+      hasBonusVetoOverride);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -238,7 +244,7 @@ public class DraftPositionTests : DraftsBaseTest
     var name = "Position A";
     var picks = new Collection<int> { 1, 2, 3 };
 
-    return DraftPosition.Create(gameBoard, name, picks).Value;
+    return DraftPosition.Create(gameBoard, name, picks, Faker.Random.AlphaNumeric(15)).Value;
   }
 
   private static GameBoard CreateGameBoard()

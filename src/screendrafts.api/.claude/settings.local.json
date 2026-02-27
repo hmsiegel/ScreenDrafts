@@ -7,7 +7,9 @@
       "Bash(head:*)",
       "Bash(grep:*)",
       "Bash(dotnet ef:*)",
-      "Bash(dotnet run:*)"
+      "Bash(dotnet run:*)",
+      "Bash(xargs ls:*)",
+      "Bash(find:*)"
     ]
   }
 }

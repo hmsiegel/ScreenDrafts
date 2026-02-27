@@ -44,6 +44,8 @@ internal static class DraftsOpenApi
     public const string DraftParts_ApplyVeto = "DraftParts.ApplyVeto";
     public const string DraftParts_ApplyVetoOverride = "DraftParts.ApplyVetoOverride";
     public const string DraftParts_ApplyCommissionerOverride = "DraftParts.ApplyCommissionerOverride";
+    public const string DraftParts_SetDraftPosition = "DraftParts.SetDraftPosition";
+    public const string DraftParts_AssignParticipantToPosition = "DraftParts.AssignParticipantToPosition";
 
     // Campaigns
     public const string Campaigns_CreateCampaign = "Campaigns.CreateCampaign";

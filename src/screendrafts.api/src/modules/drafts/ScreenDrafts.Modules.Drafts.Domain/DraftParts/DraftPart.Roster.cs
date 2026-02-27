@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Modules.Drafts.Domain.Participants;
-
-namespace ScreenDrafts.Modules.Drafts.Domain.DraftParts;
+﻿namespace ScreenDrafts.Modules.Drafts.Domain.DraftParts;
 public sealed partial class DraftPart
 {
   private readonly List<DraftHost> _draftHosts = [];

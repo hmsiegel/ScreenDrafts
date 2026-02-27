@@ -1,4 +1,4 @@
-﻿draft_part_id,position_name,picks,has_bonus_veto,has_bonus_veto_override,assigned_to_id,assigned_to_kind
+﻿DraftPartId,PositionName,DraftPicks,HasBonusVeto,HasBonusVetoOverride,AssignedToId,AssignedToKind
 85920bb5-1833-4239-b59d-b92f539af37d,Drafter A,"7,6,4,2",,,dde00453-0852-41eb-b978-80a39ef83ad0,0
 85920bb5-1833-4239-b59d-b92f539af37d,Drafter B,"5,3,1",,,58da69ee-15ed-46f1-a8e2-d89feccd768f,0
 edc60386-8b58-4d98-a53a-d030557bd8b3,Drafter A,"7,6,4,2",,,c1d4eec2-0cdf-4336-870c-12a4f0948fca,0
