@@ -110,6 +110,22 @@ public sealed partial class DraftPart
     return Result.Success(pick.Id);
   }
 
+  public Result UndoPick(int playOrder)
+  {
+    var pick = _picks.FirstOrDefault(p => p.PlayOrder == playOrder);
+
+    if (pick is null)
+    {
+      return Result.Success();
+    }
+
+    _picks.Remove(pick);
+
+    UpdatedAtUtc = DateTime.UtcNow;
+
+    return Result.Success();
+  }
+
   public Result ApplyVeto(
     ISeriesPolicyProvider seriesPolicyProvider,
     SeriesId seriesId,

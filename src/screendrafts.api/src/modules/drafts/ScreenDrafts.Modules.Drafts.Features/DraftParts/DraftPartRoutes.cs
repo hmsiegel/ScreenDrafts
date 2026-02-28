@@ -29,6 +29,7 @@ internal static class DraftPartRoutes
 
   // Picks
   public const string AddPick = "/draft-parts/{draftPartId}/picks";
+  public const string UndoPick = "/draft-parts/{draftPartId}/picks/{playOrder}";
 
   // Vetos and Veto Overrides
   public const string ApplyVeto = "/draft-parts/{draftPartId}/picks/{playOrder}/veto";

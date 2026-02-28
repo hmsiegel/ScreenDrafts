@@ -28,6 +28,7 @@ global using ScreenDrafts.Modules.Drafts.Features.DraftParts.SetDraftPosition;
 global using ScreenDrafts.Modules.Drafts.Features.DraftParts.ApplyVeto;
 global using ScreenDrafts.Modules.Drafts.Features.DraftParts.ApplyVetoOverride;
 global using ScreenDrafts.Modules.Drafts.Features.DraftParts.PlayPick;
+global using ScreenDrafts.Modules.Drafts.Features.DraftParts.UndoPick;
 global using ScreenDrafts.Modules.Drafts.Features.DraftParts.RemoveHost;
 global using ScreenDrafts.Modules.Drafts.Features.Drafts.CreateDraft;
 global using ScreenDrafts.Modules.Drafts.Features.Drafts.CreateDraftPart;

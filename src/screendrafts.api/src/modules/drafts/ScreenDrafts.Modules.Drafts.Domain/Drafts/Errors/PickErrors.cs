@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Common.Abstractions.Errors;
-
-namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.Errors;
+﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.Errors;
 
 public static class PickErrors
 {
@@ -13,6 +11,16 @@ public static class PickErrors
     SDError.NotFound(
       "Picks.NotFound",
       $"Pick with ID {pickId} not found.");
+
+  public static SDError CannotUndoAVetoedPick(int playOrder) =>
+    SDError.Conflict(
+      "Picks.CannotUndoAVetoedPick",
+      $"Cannot undo pick with play order {playOrder} because it has been vetoed.");
+
+  public static SDError CannotUndoACommissionerOverriddenPick(int playOrder) =>
+    SDError.Conflict(
+      "Picks.CannotUndoACommissionerOverriddenPick",
+      $"Cannot undo pick with play order {playOrder} because it has been commissioner overridden.");
 
   public static readonly SDError CommissionerOverrideAlreadyApplied =
     SDError.Problem(

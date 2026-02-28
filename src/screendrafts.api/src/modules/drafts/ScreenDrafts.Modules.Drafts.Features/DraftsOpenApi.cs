@@ -40,6 +40,7 @@ internal static class DraftsOpenApi
     public const string DraftParts_AddParticipant = "DraftParts.AddParticipant";
     public const string DraftParts_AddHost = "DraftParts.AddHost";
     public const string DraftParts_PlayPick = "DraftParts.PlayPick";
+    public const string DraftParts_UndoPick = "DraftParts.UndoPick";
     public const string DraftParts_SetReleaseDate = "DraftParts.SetReleaseDate";
     public const string DraftParts_ApplyVeto = "DraftParts.ApplyVeto";
     public const string DraftParts_ApplyVetoOverride = "DraftParts.ApplyVetoOverride";

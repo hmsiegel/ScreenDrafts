@@ -26,6 +26,7 @@ internal static class DraftsAuth
     // Picks (part-scoped, but still “pick” as resource)
     internal const string PickCreate = "pick:create";        // add pick
     internal const string PickUpdate = "pick:update";
+    internal const string PickUndo = "pick:undo";        // only if allowed
     internal const string PickVeto = "pick:veto";
     internal const string PickVetoOverride = "pick:veto-override";
     internal const string PickCommissionerOv = "pick:commissioner-override";
