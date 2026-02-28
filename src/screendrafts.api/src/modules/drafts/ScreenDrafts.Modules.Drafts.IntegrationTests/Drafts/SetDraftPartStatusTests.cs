@@ -194,18 +194,23 @@ public sealed class SetDraftPartStatusTests(DraftsIntegrationTestWebAppFactory f
   private async Task<string> CreateDraftWithAutoPartAsync()
   {
     var seriesId = await CreateSeriesAsync();
-    var command = new CreateDraftCommand
+    var draftResult = await Sender.Send(new CreateDraftCommand
     {
       Title = Faker.Company.CompanyName(),
       DraftType = DraftType.Standard.Value,
       SeriesId = seriesId,
-      MinPosition = 1,
-      MaxPosition = 7,
-      AutoCreateFirstPart = true
-    };
+    });
 
-    var result = await Sender.Send(command);
-    return result.Value;
+    var draftPublicId = draftResult.Value;
+    await Sender.Send(new CreateDraftPartCommand
+    {
+      DraftPublicId = draftPublicId,
+      PartIndex = 1,
+      MinimumPosition = 1,
+      MaximumPosition = 7,
+    });
+
+    return draftPublicId;
   }
 
   private async Task<string> CreateDraftWithParticipantsButNoHostAsync()

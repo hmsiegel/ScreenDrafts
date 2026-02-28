@@ -22,7 +22,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<CreateDraftPartRequest, st
   {
     var command = new CreateDraftPartCommand
     {
-      DraftId = req.DraftId,
+      DraftPublicId = req.DraftId,
       PartIndex = req.PartIndex,
       MaximumPosition = req.MaximumPosition,
       MinimumPosition = req.MinimumPosition

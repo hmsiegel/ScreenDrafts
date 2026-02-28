@@ -10,16 +10,20 @@ internal sealed class CreatedDraftPartCommandHandler(
 
   public async Task<Result<string>> Handle(CreateDraftPartCommand request, CancellationToken cancellationToken)
   {
-    var draft = await _draftRepository.GetByPublicIdAsync(request.DraftId, cancellationToken);
+    var draft = await _draftRepository.GetByPublicIdAsync(request.DraftPublicId, cancellationToken);
 
     if (draft is null)
     {
-      return Result.Failure<string>(DraftErrors.NotFound(request.DraftId));
+      return Result.Failure<string>(DraftErrors.NotFound(request.DraftPublicId));
     }
 
     var publicId = _publicIdGenerator.GeneratePublicId(PublicIdPrefixes.DraftPart);
 
-    var addPartResult = draft.AddPart(request.PartIndex, request.MinimumPosition, request.MaximumPosition, publicId);
+    var addPartResult = draft.AddPart(
+      request.PartIndex,
+      request.MinimumPosition,
+      request.MaximumPosition,
+      publicId);
 
     if (addPartResult.IsFailure)
     {

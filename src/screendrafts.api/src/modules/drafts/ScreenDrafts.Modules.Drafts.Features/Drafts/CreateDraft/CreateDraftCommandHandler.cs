@@ -1,6 +1,9 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Features.Drafts.CreateDraft;
 
-internal sealed class CreateDraftCommandHandler(IDraftRepository draftsRepository, IPublicIdGenerator publicIdGenerator, ISeriesRepository seriesRepository)
+internal sealed class CreateDraftCommandHandler(
+  IDraftRepository draftsRepository,
+  IPublicIdGenerator publicIdGenerator,
+  ISeriesRepository seriesRepository)
   : ICommandHandler<CreateDraftCommand, string>
 {
   private readonly IDraftRepository _draftsRepository = draftsRepository;
@@ -31,17 +34,6 @@ internal sealed class CreateDraftCommandHandler(IDraftRepository draftsRepositor
     }
 
     var draft = result.Value;
-
-    if (request.AutoCreateFirstPart)
-    {
-      var partPublicId = _publicIdGenerator.GeneratePublicId(PublicIdPrefixes.DraftPart);
-      var partResult = draft.AddPart(1, request.MinPosition, request.MaxPosition, partPublicId);
-
-      if (partResult.IsFailure)
-      {
-        return Result.Failure<string>(partResult.Error!);
-      }
-    }
 
     _draftsRepository.Add(draft);
     return draft.PublicId;

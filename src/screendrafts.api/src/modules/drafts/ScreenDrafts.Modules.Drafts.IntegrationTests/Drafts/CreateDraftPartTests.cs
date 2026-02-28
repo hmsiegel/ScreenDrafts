@@ -1,6 +1,4 @@
-using ScreenDrafts.Modules.Drafts.Features.Drafts.CreateDraftPart;
-
-namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafts;
+﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafts;
 
 public sealed class CreateDraftPartTests(DraftsIntegrationTestWebAppFactory factory)
   : DraftsIntegrationTest(factory)
@@ -12,7 +10,7 @@ public sealed class CreateDraftPartTests(DraftsIntegrationTestWebAppFactory fact
     var draftId = await CreateDraftWithoutPartAsync();
     var command = new CreateDraftPartCommand
     {
-      DraftId = draftId,
+      DraftPublicId = draftId,
       PartIndex = 1,
       MinimumPosition = 1,
       MaximumPosition = 7
@@ -34,7 +32,7 @@ public sealed class CreateDraftPartTests(DraftsIntegrationTestWebAppFactory fact
     var draftId = await CreateDraftWithoutPartAsync();
     var command = new CreateDraftPartCommand
     {
-      DraftId = draftId,
+      DraftPublicId = draftId,
       PartIndex = 1,
       MinimumPosition = 1,
       MaximumPosition = 7
@@ -56,7 +54,7 @@ public sealed class CreateDraftPartTests(DraftsIntegrationTestWebAppFactory fact
     // Arrange
     var command = new CreateDraftPartCommand
     {
-      DraftId = Faker.Random.AlphaNumeric(10),
+      DraftPublicId = Faker.Random.AlphaNumeric(10),
       PartIndex = 1,
       MinimumPosition = 1,
       MaximumPosition = 7
@@ -77,7 +75,7 @@ public sealed class CreateDraftPartTests(DraftsIntegrationTestWebAppFactory fact
     // Arrange
     var command = new CreateDraftPartCommand
     {
-      DraftId = string.Empty,
+      DraftPublicId = string.Empty,
       PartIndex = 1,
       MinimumPosition = 1,
       MaximumPosition = 7
@@ -99,7 +97,7 @@ public sealed class CreateDraftPartTests(DraftsIntegrationTestWebAppFactory fact
     var draftId = await CreateDraftWithoutPartAsync();
     var command = new CreateDraftPartCommand
     {
-      DraftId = draftId,
+      DraftPublicId = draftId,
       PartIndex = 0,
       MinimumPosition = 1,
       MaximumPosition = 7
@@ -121,7 +119,7 @@ public sealed class CreateDraftPartTests(DraftsIntegrationTestWebAppFactory fact
     var draftId = await CreateDraftWithoutPartAsync();
     var command = new CreateDraftPartCommand
     {
-      DraftId = draftId,
+      DraftPublicId = draftId,
       PartIndex = -1,
       MinimumPosition = 1,
       MaximumPosition = 7
@@ -143,7 +141,7 @@ public sealed class CreateDraftPartTests(DraftsIntegrationTestWebAppFactory fact
     var draftId = await CreateDraftWithoutPartAsync();
     var command = new CreateDraftPartCommand
     {
-      DraftId = draftId,
+      DraftPublicId = draftId,
       PartIndex = 1,
       MinimumPosition = 1,
       MaximumPosition = 7
@@ -169,14 +167,14 @@ public sealed class CreateDraftPartTests(DraftsIntegrationTestWebAppFactory fact
     // Act
     var result1 = await Sender.Send(new CreateDraftPartCommand
     {
-      DraftId = draftId,
+      DraftPublicId = draftId,
       PartIndex = 1,
       MinimumPosition = 15,
       MaximumPosition = 21
     });
     var result2 = await Sender.Send(new CreateDraftPartCommand
     {
-      DraftId = draftId,
+      DraftPublicId = draftId,
       PartIndex = 2,
       MinimumPosition = 8,
       MaximumPosition = 14
@@ -200,9 +198,6 @@ public sealed class CreateDraftPartTests(DraftsIntegrationTestWebAppFactory fact
       Title = Faker.Company.CompanyName(),
       DraftType = DraftType.Standard.Value,
       SeriesId = seriesId,
-      MinPosition = 1,
-      MaxPosition = 7,
-      AutoCreateFirstPart = false
     };
 
     var result = await Sender.Send(command);

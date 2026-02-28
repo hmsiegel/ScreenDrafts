@@ -146,8 +146,6 @@ public sealed class SetCampaignTests(DraftsIntegrationTestWebAppFactory factory)
       Title = Faker.Company.CompanyName(),
       DraftType = DraftType.Standard.Value,
       SeriesId = seriesId,
-      MinPosition = 1,
-      MaxPosition = 7
     };
 
     var result = await Sender.Send(command);

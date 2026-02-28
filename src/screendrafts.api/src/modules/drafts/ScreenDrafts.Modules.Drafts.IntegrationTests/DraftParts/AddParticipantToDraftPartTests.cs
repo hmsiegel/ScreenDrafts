@@ -160,16 +160,22 @@ public sealed class AddParticipantToDraftPartTests(DraftsIntegrationTestWebAppFa
 
   private async Task<string> CreateDraftAsync(Guid seriesId)
   {
-    var result = await Sender.Send(new CreateDraftCommand
+    var draftResult = await Sender.Send(new CreateDraftCommand
     {
       Title = Faker.Company.CompanyName(),
       DraftType = DraftType.Standard.Value,
       SeriesId = seriesId,
-      MinPosition = 1,
-      MaxPosition = 7,
-      AutoCreateFirstPart = true
     });
 
-    return result.Value;
+    var draftPublicId = draftResult.Value;
+    await Sender.Send(new CreateDraftPartCommand
+    {
+      DraftPublicId = draftPublicId,
+      PartIndex = 1,
+      MinimumPosition = 1,
+      MaximumPosition = 7,
+    });
+
+    return draftPublicId;
   }
 }

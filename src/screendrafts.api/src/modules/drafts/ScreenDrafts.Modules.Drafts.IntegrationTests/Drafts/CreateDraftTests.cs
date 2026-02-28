@@ -16,9 +16,6 @@ public sealed class CreateDraftTests(DraftsIntegrationTestWebAppFactory factory)
       Title = Faker.Company.CompanyName(),
       DraftType = DraftType.Standard.Value,
       SeriesId = seriesId,
-      MinPosition = 1,
-      MaxPosition = 7,
-      AutoCreateFirstPart = true
     };
 
     // Act
@@ -40,8 +37,6 @@ public sealed class CreateDraftTests(DraftsIntegrationTestWebAppFactory factory)
       Title = string.Empty,
       DraftType = DraftType.Standard.Value,
       SeriesId = seriesId,
-      MinPosition = 1,
-      MaxPosition = 7
     };
 
     // Act
@@ -51,59 +46,6 @@ public sealed class CreateDraftTests(DraftsIntegrationTestWebAppFactory factory)
     result.Should().NotBeNull();
     result.IsFailure.Should().BeTrue();
     result.Errors.Should().NotBeEmpty();
-  }
-
-  [Fact]
-  public async Task CreateDraft_WithInvalidTotalPicks_ShouldReturnErrorAsync()
-  {
-    // Arrange
-    var seriesId = await CreateSeriesAsync();
-    var command = new CreateDraftCommand
-    {
-      Title = Faker.Company.CompanyName(),
-      DraftType = DraftType.Standard.Value,
-      SeriesId = seriesId,
-      MinPosition = 1,
-      MaxPosition = 0  // Invalid: MaxPosition less than MinPosition
-    };
-
-    // Act
-    var result = await Sender.Send(command);
-
-    // Assert
-    result.Should().NotBeNull();
-    result.IsFailure.Should().BeTrue();
-    result.Errors.Should().NotBeEmpty();
-  }
-
-  [Theory]
-  [InlineData(1, 7)]   // Standard
-  [InlineData(1, 18)]  // Super
-  [InlineData(1, 20)]  // Mega
-  [InlineData(1, 11)]  // MiniMega
-  [InlineData(1, 5)]   // MiniSuper
-  public async Task CreateDraft_WithDifferentDraftTypes_ShouldSucceedAsync(
-    int minPosition,
-    int maxPosition)
-  {
-    // Arrange
-    var seriesId = await CreateSeriesAsync();
-    var command = new CreateDraftCommand
-    {
-      Title = Faker.Company.CompanyName(),
-      DraftType = DraftType.Standard.Value,
-      SeriesId = seriesId,
-      MinPosition = minPosition,
-      MaxPosition = maxPosition
-    };
-
-    // Act
-    var result = await Sender.Send(command);
-
-    // Assert
-    result.Should().NotBeNull();
-    result.IsSuccess.Should().BeTrue();
-    result.Value.Should().NotBeNullOrEmpty();
   }
 
   [Fact]
@@ -115,8 +57,6 @@ public sealed class CreateDraftTests(DraftsIntegrationTestWebAppFactory factory)
       Title = Faker.Company.CompanyName(),
       DraftType = DraftType.Standard.Value,
       SeriesId = Guid.NewGuid(),
-      MinPosition = 1,
-      MaxPosition = 7
     };
 
     // Act

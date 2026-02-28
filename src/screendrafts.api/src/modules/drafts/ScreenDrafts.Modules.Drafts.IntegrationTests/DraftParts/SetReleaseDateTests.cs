@@ -156,18 +156,18 @@ public sealed class SetReleaseDateTests(DraftsIntegrationTestWebAppFactory facto
       Title = Faker.Company.CompanyName(),
       DraftType = DraftType.Standard.Value,
       SeriesId = seriesId,
-      MinPosition = 1,
-      MaxPosition = 7,
-      AutoCreateFirstPart = true
     });
 
     var draftPublicId = draftResult.Value;
-    var draftPartInternalId = await GetFirstDraftPartIdAsync(draftPublicId);
+    var partResult = await Sender.Send(new CreateDraftPartCommand
+    {
+      DraftPublicId = draftPublicId,
+      PartIndex = 1,
+      MinimumPosition = 1,
+      MaximumPosition = 7,
+    });
 
-    var draftPart = await DbContext.DraftParts
-      .FirstAsync(dp => dp.Id == DraftPartId.Create(draftPartInternalId));
-
-    return (draftPublicId, draftPart.PublicId);
+    return (draftPublicId, partResult.Value);
   }
 
   private async Task<Guid> CreateSeriesAsync()

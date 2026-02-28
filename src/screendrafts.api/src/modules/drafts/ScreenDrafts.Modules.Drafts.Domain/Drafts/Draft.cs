@@ -79,7 +79,7 @@ public sealed partial class Draft : AggregateRoot<DraftId, Guid>
       series: series,
       createdAtUtc: DateTime.UtcNow);
 
-    draft.Raise(new DraftCreatedDomainEvent(draft.Id.Value));
+    draft.Raise(new DraftCreatedDomainEvent(draft.Id.Value, publicId));
 
     return draft;
   }

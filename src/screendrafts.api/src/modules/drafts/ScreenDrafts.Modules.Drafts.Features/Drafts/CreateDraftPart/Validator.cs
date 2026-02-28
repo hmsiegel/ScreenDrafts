@@ -4,7 +4,7 @@ internal sealed class Validator : AbstractValidator<CreateDraftPartCommand>
 {
   public Validator()
   {
-    RuleFor(x => x.DraftId)
+    RuleFor(x => x.DraftPublicId)
       .NotEmpty()
       .Must(x => PublicIdGuards.IsValidWithPrefix(x, PublicIdPrefixes.Draft))
       .WithMessage("Draft ID is required.");

@@ -25,9 +25,6 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<CreateDraftRequest, Create
       DraftType = req.DraftType,
       Title = req.Title,
       SeriesId = req.SeriesId,
-      MinPosition = req.MinPosition,
-      MaxPosition = req.MaxPosition,
-      AutoCreateFirstPart = req.AutoCreateFirstPart
     };
 
     var result = await Sender.Send(CreateDraftCommand, ct);
