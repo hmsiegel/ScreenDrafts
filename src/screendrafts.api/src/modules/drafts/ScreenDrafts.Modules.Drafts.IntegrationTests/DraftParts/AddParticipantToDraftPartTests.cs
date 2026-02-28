@@ -11,13 +11,13 @@ public sealed class AddParticipantToDraftPartTests(DraftsIntegrationTestWebAppFa
   public async Task AddParticipant_WithValidDrafter_ShouldSucceedAsync()
   {
     // Arrange
-    var draftPartInternalId = await CreateDraftPartAsync();
+    var (_, draftPartPublicId) = await CreateDraftPartAsync();
     var teamFactory = new DrafterTeamFactory(Sender, Faker);
     var drafterPublicId = await teamFactory.CreateAndSaveDrafterAsync();
 
     var command = new AddParticipantToDraftPartCommand
     {
-      DraftPartId = draftPartInternalId,
+      DraftPartPublicId = draftPartPublicId,
       ParticipantPublicId = drafterPublicId,
       ParticipantKind = ParticipantKind.Drafter
     };
@@ -34,13 +34,13 @@ public sealed class AddParticipantToDraftPartTests(DraftsIntegrationTestWebAppFa
   public async Task AddParticipant_ShouldPersistParticipantInDatabaseAsync()
   {
     // Arrange
-    var draftPartInternalId = await CreateDraftPartAsync();
+    var (draftPartInternalId, draftPartPublicId) = await CreateDraftPartAsync();
     var teamFactory = new DrafterTeamFactory(Sender, Faker);
     var drafterPublicId = await teamFactory.CreateAndSaveDrafterAsync();
 
     var command = new AddParticipantToDraftPartCommand
     {
-      DraftPartId = draftPartInternalId,
+      DraftPartPublicId = draftPartPublicId,
       ParticipantPublicId = drafterPublicId,
       ParticipantKind = ParticipantKind.Drafter
     };
@@ -66,7 +66,7 @@ public sealed class AddParticipantToDraftPartTests(DraftsIntegrationTestWebAppFa
 
     var command = new AddParticipantToDraftPartCommand
     {
-      DraftPartId = Guid.NewGuid(),
+      DraftPartPublicId = Faker.Random.AlphaNumeric(10),
       ParticipantPublicId = drafterPublicId,
       ParticipantKind = ParticipantKind.Drafter
     };
@@ -86,11 +86,11 @@ public sealed class AddParticipantToDraftPartTests(DraftsIntegrationTestWebAppFa
   public async Task AddParticipant_WithNonExistentDrafter_ShouldFailAsync()
   {
     // Arrange
-    var draftPartInternalId = await CreateDraftPartAsync();
+    var (_, draftPartPublicId) = await CreateDraftPartAsync();
 
     var command = new AddParticipantToDraftPartCommand
     {
-      DraftPartId = draftPartInternalId,
+      DraftPartPublicId = draftPartPublicId,
       ParticipantPublicId = Faker.Random.AlphaNumeric(10),
       ParticipantKind = ParticipantKind.Drafter
     };
@@ -110,13 +110,13 @@ public sealed class AddParticipantToDraftPartTests(DraftsIntegrationTestWebAppFa
   public async Task AddParticipant_WhenParticipantAlreadyAdded_ShouldFailAsync()
   {
     // Arrange
-    var draftPartInternalId = await CreateDraftPartAsync();
+    var (_, draftPartPublicId) = await CreateDraftPartAsync();
     var teamFactory = new DrafterTeamFactory(Sender, Faker);
     var drafterPublicId = await teamFactory.CreateAndSaveDrafterAsync();
 
     var command = new AddParticipantToDraftPartCommand
     {
-      DraftPartId = draftPartInternalId,
+      DraftPartPublicId = draftPartPublicId,
       ParticipantPublicId = drafterPublicId,
       ParticipantKind = ParticipantKind.Drafter
     };
@@ -135,11 +135,13 @@ public sealed class AddParticipantToDraftPartTests(DraftsIntegrationTestWebAppFa
   // Helpers
   // -------------------------------------------------------------------------
 
-  private async Task<Guid> CreateDraftPartAsync()
+  private async Task<(Guid InternalId, string PublicId)> CreateDraftPartAsync()
   {
     var seriesId = await CreateSeriesAsync();
     var draftPublicId = await CreateDraftAsync(seriesId);
-    return await GetFirstDraftPartIdAsync(draftPublicId);
+    var internalId = await GetFirstDraftPartIdAsync(draftPublicId);
+    var draftPart = await DbContext.DraftParts.FirstAsync(dp => dp.Id == DraftPartId.Create(internalId));
+    return (internalId, draftPart.PublicId);
   }
 
   private async Task<Guid> CreateSeriesAsync()

@@ -124,10 +124,10 @@ This document is a one-page  for refactoring the Drafts module into Vertical Sli
 
 ## Participants (DraftPart scoped)
 - **POST** `/draft-parts/{draftPartId}/participants/` - AddParticipant (generic, if we want to avoid separate endpoints)  
-  Body: `{ "participantId": "...", "kind": "Drafter|DrafterTeam|Community" }`  &#x2705;
+  Body: `{ "participantId": "...", "kind": "Drafter|DrafterTeam|Community" }` &#x2705;
 - **DELETE** `/draft-parts/{draftPartId}/participants/` — RemoveParticipant (generic, if we want to avoid separate endpoints)
-  Body: `{ "participantId": "...", "kind": "Drafter|DrafterTeam|Community" }`
-- **PUT** `/draft-parts/{draftPartId}/positions` — SetDraftPositions (if part-scoped)
+  Body: `{ "participantId": "...", "kind": "Drafter|DrafterTeam|Community" }` &#x2705;
+- **PUT** `/draft-parts/{draftPartId}/positions` — SetDraftPositions (if part-scoped) &#x2705;
 
 ---
 
@@ -146,6 +146,9 @@ This document is a one-page  for refactoring the Drafts module into Vertical Sli
 - **POST** `/draft-parts/{draftPartId}/picks/{playOrder}/veto` — ApplyVeto &#x2705;
 - **POST** `/draft-parts/{draftPartId}/picks/{playOrder}/veto-override` — ApplyVetoOverride &#x2705;
 - **POST** `/draft-parts/{draftPartId}/picks/{playOrder}/commissioner-override` — ApplyCommissionerOverride &#x2705;
+
+### Trivia Results
+- **PUT** `/draft-parts/{draftPartId}/trivia-results` - AssignTriviaResults  &#x2705;
 
 ---
 

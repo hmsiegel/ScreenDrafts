@@ -171,13 +171,16 @@ public sealed class SetDraftPositionsTests(DraftsIntegrationTestWebAppFactory fa
 
   private async Task<string> AddDrafterToPartAsync(Guid draftPartInternalId)
   {
+    var draftPart = await DbContext.DraftParts.FirstAsync(dp => dp.Id == DraftPartId.Create(draftPartInternalId));
+    var draftPartPublicId = draftPart.PublicId;
+
     var peopleFactory = new PeopleFactory(Sender, Faker);
     var personId = await peopleFactory.CreateAndSavePersonAsync();
     var drafterPublicId = (await Sender.Send(new CreateDrafterCommand(personId))).Value;
 
     await Sender.Send(new AddParticipantToDraftPartCommand
     {
-      DraftPartId = draftPartInternalId,
+      DraftPartPublicId = draftPartPublicId,
       ParticipantPublicId = drafterPublicId,
       ParticipantKind = ParticipantKind.Drafter
     });

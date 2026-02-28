@@ -93,6 +93,11 @@ public static class DraftPartErrors
     description: "Game board not found."
   );
 
+  public static readonly SDError InvalidStatusForTriviaAssignment = SDError.Conflict(
+    code: "DraftPart.InvalidStatusForTriviaAssignment",
+    description: "Invalid status for trivia assignment."
+  );
+
   public static SDError NotFound(Guid draftPartId) => SDError.NotFound(
     code: "DraftPart.NotFound",
         description: $"Draft part with ID '{draftPartId}' is not found."

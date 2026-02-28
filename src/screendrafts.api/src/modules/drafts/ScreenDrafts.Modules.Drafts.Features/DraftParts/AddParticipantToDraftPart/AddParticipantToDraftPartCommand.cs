@@ -2,7 +2,7 @@
 
 internal sealed record AddParticipantToDraftPartCommand : ICommand
 {
-  public Guid DraftPartId { get; init; }
+  public required string DraftPartPublicId { get; init; }
   public string? ParticipantPublicId { get; init; }
   public ParticipantKind ParticipantKind { get; init; } = default!;
 }

@@ -217,8 +217,10 @@ public sealed class SetDraftPartStatusTests(DraftsIntegrationTestWebAppFactory f
   {
     var draftPublicId = await CreateDraftWithAutoPartAsync();
 
-    // Get the draft part ID
+    // Get the draft part public ID
     var draftPartId = await GetFirstDraftPartIdAsync(draftPublicId);
+    var draftPart = await DbContext.DraftParts.FirstAsync(dp => dp.Id == DraftPartId.Create(draftPartId));
+    var draftPartPublicId = draftPart.PublicId;
 
     // Create and add participants (need at least 2)
     var peopleFactory = new PeopleFactory(Sender, Faker);
@@ -229,7 +231,7 @@ public sealed class SetDraftPartStatusTests(DraftsIntegrationTestWebAppFactory f
       var drafterPublicId = drafterResult.Value;
       await Sender.Send(new AddParticipantToDraftPartCommand
       {
-        DraftPartId = draftPartId,
+        DraftPartPublicId = draftPartPublicId,
         ParticipantPublicId = drafterPublicId,
         ParticipantKind = ParticipantKind.Drafter
       });
@@ -241,8 +243,10 @@ public sealed class SetDraftPartStatusTests(DraftsIntegrationTestWebAppFactory f
   {
     var draftPublicId = await CreateDraftWithAutoPartAsync();
 
-    // Get the draft part ID
+    // Get the draft part internal and public IDs
     var draftPartId = await GetFirstDraftPartIdAsync(draftPublicId);
+    var draftPart = await DbContext.DraftParts.FirstAsync(dp => dp.Id == DraftPartId.Create(draftPartId));
+    var draftPartPublicId = draftPart.PublicId;
 
     // Create and add participants (need at least 2)
     var peopleFactory = new PeopleFactory(Sender, Faker);
@@ -252,7 +256,7 @@ public sealed class SetDraftPartStatusTests(DraftsIntegrationTestWebAppFactory f
     var drafter1PublicId = drafter1Result.Value;
     await Sender.Send(new AddParticipantToDraftPartCommand
     {
-      DraftPartId = draftPartId,
+      DraftPartPublicId = draftPartPublicId,
       ParticipantPublicId = drafter1PublicId,
       ParticipantKind = ParticipantKind.Drafter
     });
@@ -262,7 +266,7 @@ public sealed class SetDraftPartStatusTests(DraftsIntegrationTestWebAppFactory f
     var drafter2PublicId = drafter2Result.Value;
     await Sender.Send(new AddParticipantToDraftPartCommand
     {
-      DraftPartId = draftPartId,
+      DraftPartPublicId = draftPartPublicId,
       ParticipantPublicId = drafter2PublicId,
       ParticipantKind = ParticipantKind.Drafter
     });

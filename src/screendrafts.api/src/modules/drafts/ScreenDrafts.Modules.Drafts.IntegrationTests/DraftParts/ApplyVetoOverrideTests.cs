@@ -238,7 +238,7 @@ public sealed class ApplyVetoOverrideTests(DraftsIntegrationTestWebAppFactory fa
     var drafter1PublicId = (await Sender.Send(new CreateDrafterCommand(person1Id))).Value;
     await Sender.Send(new AddParticipantToDraftPartCommand
     {
-      DraftPartId = draftPartInternalId,
+      DraftPartPublicId = draftPartPublicId,
       ParticipantPublicId = drafter1PublicId,
       ParticipantKind = ParticipantKind.Drafter
     });
@@ -247,7 +247,7 @@ public sealed class ApplyVetoOverrideTests(DraftsIntegrationTestWebAppFactory fa
     var drafter2PublicId = (await Sender.Send(new CreateDrafterCommand(person2Id))).Value;
     await Sender.Send(new AddParticipantToDraftPartCommand
     {
-      DraftPartId = draftPartInternalId,
+      DraftPartPublicId = draftPartPublicId,
       ParticipantPublicId = drafter2PublicId,
       ParticipantKind = ParticipantKind.Drafter
     });

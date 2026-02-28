@@ -127,7 +127,7 @@ public sealed partial class DraftPart : AggregateRoot<DraftPartId, Guid>
     SeriesId seriesId,
     DraftPartStatus status,
     string publicId,
-    DateTime? scheduledForUtc = null, 
+    DateTime? scheduledForUtc = null,
     DraftPartId? id = null,
     DateTime? createdAtUtc = null)
   {
@@ -201,60 +201,50 @@ public sealed partial class DraftPart : AggregateRoot<DraftPartId, Guid>
     return release;
   }
 
-  internal Result AddTriviaResult(Participant participantId, int position, int questionsWon, bool awardVeto, bool awardVetoOverride)
+  public Result AssignTriviaResults(IEnumerable<(Participant participant, int Position, int QuestionsWon)> results)
   {
+    ArgumentNullException.ThrowIfNull(results);
+
     if (Status != DraftPartStatus.InProgress)
     {
-      return Result.Failure(DraftErrors.CannotAddTriviaResultIfDraftIsNotStarted);
+      return Result.Failure(DraftPartErrors.InvalidStatusForTriviaAssignment);
     }
 
-    if (!IsParticipantInThisPart(participantId))
+    _triviaResults.Clear();
+
+    foreach (var (participant, position, questionsWon) in results)
     {
-      return Result.Failure(DraftPartErrors.ParticipantDoesNotBelongToThisDraftPart(participantId));
+      if (_triviaResults.Any(t => t.ParticipantId == participant))
+      {
+        return Result.Failure(DraftPartErrors.ParticipantAlreadyHasTriviaResult(participant));
+      }
+
+      var result = TriviaResult.Create(
+        participantId: participant,
+        position: position,
+        questionsWon: questionsWon,
+        draftPart: this);
+
+      if (result.IsFailure)
+      {
+        return Result.Failure(result.Errors);
+      }
+
+      _triviaResults.Add(result.Value);
     }
 
-    if (_triviaResults.Any(t => t.ParticipantId == participantId))
-    {
-      return Result.Failure(DraftPartErrors.ParticipantAlreadyHasTriviaResult(participantId));
-    }
-
-    var triviaResult = TriviaResult.Create(
-      questionsWon: questionsWon,
-      position: position,
-      draftPart: this,
-      participantId: participantId);
-
-    if (triviaResult.IsFailure)
-    {
-      return Result.Failure(triviaResult.Errors);
-    }
-
-    var trivia = triviaResult.Value;
-
-    _triviaResults.Add(trivia);
-
-    var participant = _draftPartParticipants.First(dp => dp.ParticipantId == participantId);
-
-    if (awardVeto)
-    {
-      participant.AddTriviaAward(isVeto: true);
-    }
-
-    if (awardVetoOverride)
-    {
-      participant.AddTriviaAward(isVeto: false);
-    }
-
-    Raise(new TriviaResultAddedDomainEvent(
-      Id.Value,
-      participantId.Value,
-      position,
-      questionsWon));
+    Raise(new TriviaResultsAssignedDomainEvent(
+      draftPartId: Id.Value,
+      triviaResults: _triviaResults
+        .Select(t => (t.ParticipantId.Value, t.Position))
+        .ToList()
+        .AsReadOnly()));
 
     UpdatedAtUtc = DateTime.UtcNow;
 
     return Result.Success();
   }
+
 
 
   public void SetGameBoard(GameBoard gameBoard)

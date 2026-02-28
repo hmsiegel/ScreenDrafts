@@ -21,14 +21,11 @@ internal static class DraftPartRoutes
 
   // Participants
   public const string Participants = "/draft-parts/{draftPartId}/participants";
-  public const string AddDrafterToDraftPart = "/draft-parts/{draftPartId}/drafters";
-  public const string RemoveDrafterFromDraftPart = "/draft-parts/{draftPartId}/drafters/{drafterId}";
-  public const string AddDrafterTeamToDraftPart = "/draft-parts/{draftPartId}/drafter-teams";
-  public const string RemoveDrafterTeamFromDraftPart = "/draft-parts/{draftPartId}/drafter-teams/{drafterTeamId}";
   public const string SetCommunityParticipant = "/draft-parts/{draftPartId}/participants/community";
   public const string RemoveCommunityParticipant = "/draft-parts/{draftPartId}/participants/community/{communityId}";
   public const string SetDraftPositions = "/draft-parts/{draftPartId}/positions";
   public const string AssignParticipantToDraftPosition = "/draft-parts/{draftPartId}/positions/{positionId}/participant";
+  public const string AssignTriviaResults = "/draft-parts/{draftPartId}/trivia-results";
 
   // Picks
   public const string AddPick = "/draft-parts/{draftPartId}/picks";
@@ -37,5 +34,6 @@ internal static class DraftPartRoutes
   public const string ApplyVeto = "/draft-parts/{draftPartId}/picks/{playOrder}/veto";
   public const string ApplyVetoOverride = "/draft-parts/{draftPartId}/veto-override/{pickId}";
   public const string ApplyCommissionerOverride = "/draft-parts/{draftPartId}/commissioner-override/{pickId}";
+
 }
 

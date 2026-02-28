@@ -186,7 +186,7 @@ public sealed class AssignParticipantToDraftPositionTests(DraftsIntegrationTestW
 
     await Sender.Send(new AddParticipantToDraftPartCommand
     {
-      DraftPartId = draftPartInternalId,
+      DraftPartPublicId = draftPartPublicId,
       ParticipantPublicId = drafterPublicId,
       ParticipantKind = ParticipantKind.Drafter
     });

@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Modules.Drafts.Domain.Participants;
-
-namespace ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities;
+﻿namespace ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities;
 
 public sealed class TriviaResult : Entity<TriviaResultId>
 {

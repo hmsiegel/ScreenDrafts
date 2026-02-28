@@ -279,7 +279,7 @@ public sealed class PlayPickTests(DraftsIntegrationTestWebAppFactory factory)
     var drafter1PublicId = (await Sender.Send(new CreateDrafterCommand(person1Id))).Value;
     await Sender.Send(new AddParticipantToDraftPartCommand
     {
-      DraftPartId = draftPartInternalId,
+      DraftPartPublicId = draftPartPublicId,
       ParticipantPublicId = drafter1PublicId,
       ParticipantKind = ParticipantKind.Drafter
     });
@@ -288,7 +288,7 @@ public sealed class PlayPickTests(DraftsIntegrationTestWebAppFactory factory)
     var drafter2PublicId = (await Sender.Send(new CreateDrafterCommand(person2Id))).Value;
     await Sender.Send(new AddParticipantToDraftPartCommand
     {
-      DraftPartId = draftPartInternalId,
+      DraftPartPublicId = draftPartPublicId,
       ParticipantPublicId = drafter2PublicId,
       ParticipantKind = ParticipantKind.Drafter
     });
@@ -330,7 +330,7 @@ public sealed class PlayPickTests(DraftsIntegrationTestWebAppFactory factory)
     var drafterPublicId = (await Sender.Send(new CreateDrafterCommand(personId))).Value;
     await Sender.Send(new AddParticipantToDraftPartCommand
     {
-      DraftPartId = draftPartInternalId,
+      DraftPartPublicId = draftPartPublicId,
       ParticipantPublicId = drafterPublicId,
       ParticipantKind = ParticipantKind.Drafter
     });

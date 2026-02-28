@@ -21,6 +21,7 @@ global using ScreenDrafts.Modules.Drafts.Domain.SeriesAggregate.Enums;
 global using ScreenDrafts.Modules.Drafts.Features.Drafters.Create;
 global using ScreenDrafts.Modules.Drafts.Features.DraftParts.AddHostToDraftPart;
 global using ScreenDrafts.Modules.Drafts.Features.DraftParts.AddParticipantToDraftPart;
+global using ScreenDrafts.Modules.Drafts.Features.DraftParts.AssignTriviaResults;
 global using ScreenDrafts.Modules.Drafts.Features.DraftParts.ApplyCommissionerOverride;
 global using ScreenDrafts.Modules.Drafts.Features.DraftParts.AssignParticipantToDraftPosition;
 global using ScreenDrafts.Modules.Drafts.Features.DraftParts.SetDraftPosition;
