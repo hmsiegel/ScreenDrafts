@@ -11,7 +11,7 @@ internal static class DraftsAuth
   {
     // Drafts
     internal const string DraftRead = "draft:read";
-    internal const string DraftList = "draft:list";
+    internal const string DraftsList = "draft:list";
     internal const string DraftCreate = "draft:create";
     internal const string DraftUpdate = "draft:update";
     internal const string DraftDelete = "draft:delete"; // only if allowed
@@ -80,6 +80,7 @@ internal static class DraftsAuth
     internal const string CampaignRestore = "campaign:restore";
 
     internal const string DraftReadPatreon = "draft:read-patreon";
+    internal const string PatreonSearch = "patreon:search";
 
   }
 }

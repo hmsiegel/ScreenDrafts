@@ -116,7 +116,7 @@ This document is a one-page  for refactoring the Drafts module into Vertical Sli
 
 - **POST** `/draft-parts/{draftPartId}/hosts` — AddHost &#x2705;
   Body: `{ "hostId": "h_...", "role": "Primary|CoHost" }`
-- **DELETE** `/draft-parts/{draftPartId}/hosts/{hostId}` — RemoveHost
+- **DELETE** `/draft-parts/{draftPartId}/hosts/{hostId}` — RemoveHost &#x2705;
 - **PUT** `/draft-parts/{draftPartId}/hosts/{hostId}/primary` — SetPrimaryHost
 - **PUT** `/draft-parts/{draftPartId}/hosts` — SetCoHosts (replace list, optional)
 
@@ -140,6 +140,7 @@ This document is a one-page  for refactoring the Drafts module into Vertical Sli
   - `position` (final board position)
   - `playOrder` (sequence including vetoed picks)
   - `playedBy`: `{ "id": "...", "kind": "Drafter|DrafterTeam|Community" }`
+- **DELETE** `/draft-parts/{draftPartId}/picks/{playOrder}` — UndoPick &#x2705;
 
 
 ### Vetoes & Overrides (actions on picks)

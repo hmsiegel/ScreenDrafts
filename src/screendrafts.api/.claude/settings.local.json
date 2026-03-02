@@ -9,7 +9,15 @@
       "Bash(dotnet ef:*)",
       "Bash(dotnet run:*)",
       "Bash(xargs ls:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(docker ps:*)",
+      "Bash(docker context:*)",
+      "Bash(docker:*)",
+      "Bash(Start-Process:*)",
+      "Bash(Get-Process Docker Desktop:*)",
+      "Bash(tasklist:*)",
+      "Bash(wsl:*)",
+      "Bash(DOCKER_HOST=npipe:////./pipe/docker_engine docker ps:*)"
     ]
   }
 }

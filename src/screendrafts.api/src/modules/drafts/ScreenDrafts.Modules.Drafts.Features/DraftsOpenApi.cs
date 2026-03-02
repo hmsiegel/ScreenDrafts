@@ -34,6 +34,7 @@ internal static class DraftsOpenApi
     public const string Drafts_SetCategories = "Drafts.SetCategories";
     public const string Drafts_CreateDraftPart = "Drafts.CreateDraftPart";
     public const string Drafts_SetEpisodeNumber = "Drafts.SetEpisodeNumber";
+    public const string Drafts_ListDrafts = "Drafts.ListDrafts";
 
     // Draft Parts
     public const string DraftParts_RemoveHost = "DraftParts.RemoveHost";

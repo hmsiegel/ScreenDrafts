@@ -78,7 +78,7 @@ internal sealed class ListDraftersQueryHandler(IDbConnectionFactory connectionFa
     return Result.Success(new DrafterCollectionResponse(
       new PagedResult<DrafterListItem>
       {
-        Items = new Collection<DrafterListItem>(items),
+        Items = items,
         TotalCount = total,
         Page = page,
         PageSize = pageSize
