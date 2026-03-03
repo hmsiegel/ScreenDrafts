@@ -3,6 +3,8 @@
 internal static class DrafterTeamRoutes
 {
   public const string Base = "/drafter-teams";
-  public const string Membership = Base + "{publicId}/members";
+  public const string Search = Base + "/search";
+  public const string ById = Base + "/{publicId}";
+  public const string Membership = ById + "/members";
   public const string MembershipWithDrafterId = Membership + "/{drafterId}";
 }

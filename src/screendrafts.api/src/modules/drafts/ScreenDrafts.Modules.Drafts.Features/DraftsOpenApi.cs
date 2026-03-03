@@ -95,6 +95,8 @@ internal static class DraftsOpenApi
     public const string DrafterTeams_CreateDrafterTeam = "DrafterTeams.CreateDrafterTeam";
     public const string DrafterTeams_AddDrafter = "DrafterTeams.AddDrafter";
     public const string DrafterTeams_RemoveDrafterFromTeam = "DrafterTeams.RemoveDrafterFromTeam";
+    public const string DrafterTeams_GetDrafterTeam = "DrafterTeams.GetDrafterTeam";
+    public const string DrafterTeams_SearchDrafterTeams = "DrafterTeams.SearchDrafterTeams";
 
     // Hosts
     public const string Hosts_CreateHost = "Hosts.CreateHost";
