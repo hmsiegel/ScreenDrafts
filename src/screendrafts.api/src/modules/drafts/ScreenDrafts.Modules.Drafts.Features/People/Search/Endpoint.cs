@@ -1,6 +1,6 @@
-namespace ScreenDrafts.Modules.Drafts.Features.People.Search;
+﻿namespace ScreenDrafts.Modules.Drafts.Features.People.Search;
 
-internal sealed class Endpoint : ScreenDraftsEndpoint<SearchPeopleRequest, PeopleSearchResponse>
+internal sealed class Endpoint : ScreenDraftsEndpoint<SearchPeopleRequest, PagedResult<SearchPeopleResponse>>
 {
   public override void Configure()
   {
@@ -9,7 +9,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<SearchPeopleRequest, Peopl
     {
       x.WithName(DraftsOpenApi.Names.People_SearchPeople)
       .WithTags(DraftsOpenApi.Tags.People)
-      .Produces<PeopleSearchResponse>(StatusCodes.Status200OK)
+      .Produces<PagedResult<SearchPeopleResponse>>(StatusCodes.Status200OK)
       .Produces(StatusCodes.Status401Unauthorized)
       .Produces(StatusCodes.Status403Forbidden);
     });
@@ -18,9 +18,15 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<SearchPeopleRequest, Peopl
 
   public override async Task HandleAsync(SearchPeopleRequest req, CancellationToken ct)
   {
-    var SearchPeopleQuery = new SearchPeopleQuery(req.Search, req.Limit);
+    var query = new SearchPeopleQuery
+    {
+      Name = req.Name,
+      Role = req.Role,
+      Page = req.Page,
+      PageSize = req.PageSize
+    };
 
-    var result = await Sender.Send(SearchPeopleQuery, ct);
+    var result = await Sender.Send(query, ct);
 
     await this.SendOkAsync(result, ct);
   }

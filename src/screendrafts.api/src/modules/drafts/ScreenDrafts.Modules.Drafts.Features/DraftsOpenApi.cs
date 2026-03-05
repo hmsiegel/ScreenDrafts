@@ -25,6 +25,7 @@ internal static class DraftsOpenApi
     // Drafts
     public const string Drafts_CreateDraft = "Drafts.CreateDraft";
     public const string Drafts_GetDraftById = "Drafts.GetDraftById";
+    public const string Drafts_SearchDrafts = "Drafts.SearchDrafts";
     public const string Drafts_SetCampaign = "Drafts.SetCampaign";
     public const string Drafts_SetCategory = "Drafts.SetCategory";
     public const string Drafts_RemoveCampaign = "Drafts.RemoveCampaign";

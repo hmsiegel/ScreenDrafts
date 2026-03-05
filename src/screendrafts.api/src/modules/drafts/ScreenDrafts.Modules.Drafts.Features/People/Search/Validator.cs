@@ -4,14 +4,6 @@ internal sealed class Validator : AbstractValidator<SearchPeopleQuery>
 {
   public Validator()
   {
-    RuleFor(x => x.Search)
-      .NotEmpty().WithMessage("Search SearchPeopleQuery must not be empty.")
-      .MinimumLength(2).WithMessage("Search SearchPeopleQuery must be at least 2 characters long.")
-      .MaximumLength(100).WithMessage("Search SearchPeopleQuery must not exceed 100 characters.");
-
-    RuleFor(x => x.Limit)
-      .GreaterThan(0).WithMessage("Limit must be greater than 0.")
-      .LessThanOrEqualTo(50).WithMessage("Limit must not exceed 50.");
   }
 }
 

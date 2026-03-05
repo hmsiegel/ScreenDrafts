@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Features.DrafterTeams.Search;
 
-internal sealed class Endpoint : ScreenDraftsEndpoint<SearchDrafterTeamsRequest, SearchDrafterTeamsResponse>
+internal sealed class Endpoint : ScreenDraftsEndpoint<SearchDrafterTeamsRequest, PagedResult<SearchDrafterTeamsResponse>>
 {
   public override void Configure()
   {

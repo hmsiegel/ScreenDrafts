@@ -3,6 +3,7 @@
 internal static class DraftRoutes
 {
   public const string Base = "/drafts";
+  public const string Search = Base + "/search";
   public const string ById = Base + "/{publicId}";
   public const string Categories = Base + "/{publicId}/categories";
   public const string Category = Base + "/{publicId}/category";
