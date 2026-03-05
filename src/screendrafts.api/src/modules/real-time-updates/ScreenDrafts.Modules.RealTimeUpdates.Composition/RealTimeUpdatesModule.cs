@@ -17,6 +17,8 @@ public static class RealTimeUpdatesModule
 
     services.AddRealTimeUpdatesFeatures();
 
+    services.AddSignalR();
+
     return services;
   }
 
@@ -24,6 +26,23 @@ public static class RealTimeUpdatesModule
   {
     services.AddScoped<IRealTimeUpdatesDomainEventDispatcher, RealTimeUpdatesDomainEventDispatcher>();
     services.AddScoped<IRealTimeUpdatesIntegrationEventDispatcher, RealTimeUpdatesIntegrationEventDispatcher>();
+  }
+
+  public static void ConfigureConsumers(IRegistrationConfigurator registrationConfigurator, string instanceId)
+  {
+    ArgumentNullException.ThrowIfNull(registrationConfigurator);
+
+    registrationConfigurator.AddConsumer<IntegrationEventConsumer<PickAddedIntegrationEvent>>()
+      .Endpoint(c => c.InstanceId = instanceId);
+
+    registrationConfigurator.AddConsumer<IntegrationEventConsumer<VetoAppliedIntegrationEvent>>()
+      .Endpoint(c => c.InstanceId = instanceId);
+
+    registrationConfigurator.AddConsumer<IntegrationEventConsumer<VetoOverrideAppliedIntegrationEvent>>()
+      .Endpoint(c => c.InstanceId = instanceId);
+
+    registrationConfigurator.AddConsumer<IntegrationEventConsumer<CommissionerOverrideAppliedIntegrationEvent>>()
+      .Endpoint(c => c.InstanceId = instanceId);
   }
 
 

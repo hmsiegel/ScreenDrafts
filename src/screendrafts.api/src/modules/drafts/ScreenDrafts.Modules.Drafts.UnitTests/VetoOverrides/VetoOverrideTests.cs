@@ -24,25 +24,6 @@ public class VetoOverrideTests : DraftsBaseTest
   }
 
   [Fact]
-  public void Create_ShouldRaiseDomainEvent_WhenVetoOverrideIsCreated()
-  {
-    // Arrange
-    var veto = VetoFactory.CreateVeto().Value;
-    var drafter = CreateDrafter();
-    var participantId = CreateParticipantId(drafter);
-    var draftPartParticipant = CreateDraftPartParticipant(veto.DraftPart, drafter);
-
-    // Act
-    var vetoOverride = VetoOverride.Create(veto, draftPartParticipant);
-
-    // Assert
-    var domainEvent = AssertDomainEventWasPublished<VetoOverrideCreatedDomainEvent>(vetoOverride.Value);
-    domainEvent.VetoOverrideId.Should().Be(vetoOverride.Value.Id.Value);
-    domainEvent.VetoId.Should().Be(veto.Id.Value);
-    domainEvent.IssuedBy.Should().Be(participantId);
-  }
-
-  [Fact]
   public void Create_ShouldThrowArgumentNullException_WhenVetoIsNull()
   {
     // Arrange

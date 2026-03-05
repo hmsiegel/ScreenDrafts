@@ -154,15 +154,6 @@ public sealed class Pick : Entity<PickId>
       return Result.Failure<Pick>(setVersionResult.Errors);
     }
 
-    pick.Raise(new PickCreatedDomainEvent(
-      pickId: pick.Id.Value,
-      participantId: playedByParticipant.ParticipantIdValue,
-      participantKind: playedByParticipant.ParticipantKindValue.Name,
-      draftPartId: draftPart.Id.Value,
-      position: position,
-      playOrder: playOrder,
-      movieId: movie.Id));
-
     return pick;
   }
 
@@ -307,10 +298,7 @@ public sealed class Pick : Entity<PickId>
 
     CommissionerOverride = commissionerOverride;
 
-    Raise(
-      new CommissionerOverrideAppliedDomainEvent(
-        commissionerOverrideId: commissionerOverride.Id,
-        pickId: Id.Value));
+    Raise(new CommissionerOverrideAppliedDomainEvent(DraftPart.Id.Value));
 
     return Result.Success();
   }

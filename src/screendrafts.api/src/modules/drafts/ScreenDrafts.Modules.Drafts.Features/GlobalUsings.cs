@@ -38,6 +38,7 @@ global using ScreenDrafts.Modules.Drafts.Domain.Drafters;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafters.Errors;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafters.Repositories;
 global using ScreenDrafts.Modules.Drafts.Domain.DrafterTeams;
+global using ScreenDrafts.Modules.Drafts.Domain.DraftParts.DomainEvents;
 global using ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities;
 global using ScreenDrafts.Modules.Drafts.Domain.DraftParts.Enums;
 global using ScreenDrafts.Modules.Drafts.Domain.DraftParts.Errors;

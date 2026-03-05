@@ -56,11 +56,6 @@ public sealed class VetoOverride : Entity<VetoOverrideId>
       issuedByParticipant: issuedByParticipant,
       actedByPublicId: actedByPublicId ?? string.Empty);
 
-    vetoOverride.Raise(new VetoOverrideCreatedDomainEvent(
-      vetoOverride.Id.Value,
-      veto.Id.Value,
-      issuedByParticipant.ParticipantId));
-
     return vetoOverride;
   }
 

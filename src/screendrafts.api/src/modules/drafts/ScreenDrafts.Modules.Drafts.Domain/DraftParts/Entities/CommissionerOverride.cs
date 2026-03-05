@@ -32,10 +32,6 @@ public class CommissionerOverride : Entity
       pick: pick,
       id: id);
 
-    commissionerOverride.Raise(new CommissionerOverrideCreatedDomainEvent(
-      commissionerOverride.Id,
-      pick.Id.Value));
-
     return commissionerOverride;
   }
 

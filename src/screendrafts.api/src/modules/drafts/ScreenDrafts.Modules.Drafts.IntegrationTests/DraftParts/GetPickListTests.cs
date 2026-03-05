@@ -1,7 +1,4 @@
-using ScreenDrafts.Modules.Drafts.Domain.SeriesAggregate.Enums;
-using ScreenDrafts.Modules.Drafts.Features.DraftParts.GetPickList;
-
-namespace ScreenDrafts.Modules.Drafts.IntegrationTests.DraftParts;
+﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.DraftParts;
 
 public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
   : DraftsIntegrationTest(factory)

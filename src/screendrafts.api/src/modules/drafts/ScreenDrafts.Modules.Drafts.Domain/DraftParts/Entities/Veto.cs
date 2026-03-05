@@ -69,11 +69,6 @@ public sealed class Veto : Entity<VetoId>
       note: note,
       id: id ?? VetoId.CreateUnique());
 
-    veto.Raise(new VetoCreatedDomainEvent(
-      veto.Id.Value,
-      pick.Id.Value,
-      issuedByParticipant.ParticipantId));
-
     return veto;
   }
 

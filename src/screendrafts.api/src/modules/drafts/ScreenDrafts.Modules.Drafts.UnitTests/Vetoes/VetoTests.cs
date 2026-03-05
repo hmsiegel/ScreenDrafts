@@ -22,23 +22,6 @@ public class VetoTests : DraftsBaseTest
   }
 
   [Fact]
-  public void Create_ShouldRaiseDomainEvent_WhenVetoIsCreated()
-  {
-    // Arrange
-    var pick = PickFactory.CreatePick().Value;
-    var drafter = CreateDrafter();
-    var issuedByParticipant = CreateDraftPartParticipant(pick.DraftPart, drafter);
-
-    // Act
-    var veto = Veto.Create(pick, issuedByParticipant).Value;
-
-    // Assert
-    var domainEvent = AssertDomainEventWasPublished<VetoCreatedDomainEvent>(veto);
-    domainEvent.VetoId.Should().Be(veto.Id.Value);
-    domainEvent.PickId.Should().Be(pick.Id.Value);
-  }
-
-  [Fact]
   public void Create_ShouldReturnFailure_WhenPickIsNull()
   {
     // Arrange

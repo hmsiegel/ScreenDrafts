@@ -46,6 +46,7 @@ global using ScreenDrafts.Modules.Movies.Composition;
 global using ScreenDrafts.Modules.Movies.Infrastructure;
 global using ScreenDrafts.Modules.Movies.Infrastructure.Database;
 global using ScreenDrafts.Modules.RealTimeUpdates.Composition;
+global using ScreenDrafts.Modules.RealTimeUpdates.Features;
 global using ScreenDrafts.Modules.RealTimeUpdates.Infrastructure;
 global using ScreenDrafts.Modules.RealTimeUpdates.Infrastructure.Database;
 global using ScreenDrafts.Modules.Reporting.Composition;

@@ -21,6 +21,7 @@ builder.Services.AddInfrastructure(
   [
     DraftsModule.ConfigureConsumers,
     IntegrationsModule.ConfigureConsumers,
+    RealTimeUpdatesModule.ConfigureConsumers,
     MoviesModule.ConfigureConsumers
     ],
   rabbitMqSettings,
@@ -67,6 +68,8 @@ app.UseFastEndpoints(c =>
 {
   c.Endpoints.ShortNames = true;
 });
+
+app.MapHub<DraftHub>("/drafts/hub");
 
 if (app.Environment.IsDevelopment())
 {

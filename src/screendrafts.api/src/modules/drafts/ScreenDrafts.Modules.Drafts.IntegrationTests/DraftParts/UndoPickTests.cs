@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Drafts.IntegrationTests.DraftParts;
+﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.DraftParts;
 
 public sealed class UndoPickTests(DraftsIntegrationTestWebAppFactory factory)
   : DraftsIntegrationTest(factory)

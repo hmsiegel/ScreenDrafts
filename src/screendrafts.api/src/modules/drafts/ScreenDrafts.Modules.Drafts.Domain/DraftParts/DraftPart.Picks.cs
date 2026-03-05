@@ -97,15 +97,8 @@ public sealed partial class DraftPart
       IncrementCommunityPicksUsed();
     }
 
-    Raise(new PickAddedDomainEvent(
-      draftId: DraftId.Value,
-      movieId: movie.Id,
-      draftPartId: Id.Value,
-      drafterId: participantId.IsDrafter ? participantId.AsDrafterId().Value : Guid.Empty,
-      drafterTeamId: participantId.IsTeam ? participantId.AsDrafterTeamId().Value : Guid.Empty,
-      actedByPublicId: actedByPublicId ?? string.Empty,
-      pickPosition: draftPosition,
-      playOrder: playOrder));
+    Raise(new PickAddedDomainEvent(Id.Value));
+      
 
     return Result.Success(pick.Id);
   }
@@ -174,12 +167,7 @@ public sealed partial class DraftPart
       return apply;
     }
 
-    Raise(new VetoAddedDomainEvent(
-      draftId: DraftId.Value,
-      participantId: issuerId.Value,
-      participantKind: issuerId.Kind.Name,
-      pickPosition: pick.Position,
-      actedByPublicId: actedByPublicId ?? string.Empty));
+    Raise(new VetoAddedDomainEvent(Id.Value));
 
     return Result.Success();
   }
@@ -238,11 +226,7 @@ public sealed partial class DraftPart
 
     participant.SpendVetoOverride(bugdet.MaxVetoOverrides);
 
-    Raise(new VetoOverrideAddedDomainEvent(
-      draftId: DraftId.Value,
-      participantId: by.Value,
-      vetoId: veto.Id.Value,
-      actedByPublicId: actedByPublicId ?? string.Empty));
+    Raise(new VetoOverrideAddedDomainEvent(Id.Value));
 
     return Result.Success();
   }
@@ -268,6 +252,8 @@ public sealed partial class DraftPart
     var playedBy =  GetParticipantRequired(pick.PlayedByParticipant.ParticipantId);
 
     playedBy.AddCommissionerOverride();
+
+    Raise(new CommissionerOverrideAppliedDomainEvent(Id.Value));
 
     return Result.Success();
   }

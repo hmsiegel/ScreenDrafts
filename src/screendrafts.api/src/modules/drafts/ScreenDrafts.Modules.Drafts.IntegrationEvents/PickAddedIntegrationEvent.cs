@@ -1,0 +1,12 @@
+﻿using ScreenDrafts.Common.Application.EventBus;
+
+namespace ScreenDrafts.Modules.Drafts.IntegrationEvents;
+
+public sealed class PickAddedIntegrationEvent(
+  Guid id,
+  DateTime occurredOnUtc,
+  Guid draftPartId)
+  : IntegrationEvent(id, occurredOnUtc)
+{
+  public Guid DraftPartId { get; set; } = draftPartId;
+}

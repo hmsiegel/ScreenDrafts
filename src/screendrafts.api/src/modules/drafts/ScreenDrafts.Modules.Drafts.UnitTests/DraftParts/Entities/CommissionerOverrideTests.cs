@@ -18,21 +18,6 @@ public class CommissionerOverrideTests : DraftsBaseTest
   }
 
   [Fact]
-  public void Create_ShouldRaiseDomainEvent_WhenCommissionerOverrideIsCreated()
-  {
-    // Arrange
-    var pick = PickFactory.CreatePick().Value;
-
-    // Act
-    var commissionerOverride = CommissionerOverride.Create(pick).Value;
-
-    // Assert
-    var domainEvent = AssertDomainEventWasPublished<CommissionerOverrideCreatedDomainEvent>(commissionerOverride);
-    domainEvent.CommissionerOverrideId.Should().Be(commissionerOverride.Id);
-    domainEvent.PickId.Should().Be(pick.Id.Value);
-  }
-
-  [Fact]
   public void Create_ShouldReturnFailure_WhenPickIsNull()
   {
     // Arrange

@@ -1,0 +1,241 @@
+namespace ScreenDrafts.Modules.RealTimeUpdates.IntegrationTests.DraftParts;
+
+public sealed class PickAddedConsumerTests
+{
+  // -------------------------------------------------------------------------
+  // Group routing
+  // -------------------------------------------------------------------------
+
+  [Fact]
+  public async Task Handle_ShouldNotifyCorrectHubGroupAsync()
+  {
+    // Arrange
+    var draftPartId = Guid.NewGuid();
+    var integrationEvent = new PickAddedIntegrationEvent(Guid.NewGuid(), DateTime.UtcNow, draftPartId);
+    var hubContext = new TestHubContext();
+    var consumer = new PickAddedIntegrationEventConsumer(
+      hubContext,
+      NullLogger<PickAddedIntegrationEventConsumer>.Instance);
+
+    // Act
+    await consumer.Handle(integrationEvent, CancellationToken.None);
+
+    // Assert
+    hubContext.SentMessages.Should().ContainSingle()
+      .Which.GroupName.Should().Be(DraftHub.GroupName(draftPartId.ToString()));
+  }
+
+  [Fact]
+  public async Task Handle_ShouldSendPickListUpdatedMethodAsync()
+  {
+    // Arrange
+    var integrationEvent = new PickAddedIntegrationEvent(Guid.NewGuid(), DateTime.UtcNow, Guid.NewGuid());
+    var hubContext = new TestHubContext();
+    var consumer = new PickAddedIntegrationEventConsumer(
+      hubContext,
+      NullLogger<PickAddedIntegrationEventConsumer>.Instance);
+
+    // Act
+    await consumer.Handle(integrationEvent, CancellationToken.None);
+
+    // Assert
+    hubContext.SentMessages.Single().Method.Should().Be("PickListUpdated");
+  }
+
+  [Fact]
+  public async Task Handle_ShouldPassDraftPartIdAsArgumentAsync()
+  {
+    // Arrange
+    var draftPartId = Guid.NewGuid();
+    var integrationEvent = new PickAddedIntegrationEvent(Guid.NewGuid(), DateTime.UtcNow, draftPartId);
+    var hubContext = new TestHubContext();
+    var consumer = new PickAddedIntegrationEventConsumer(
+      hubContext,
+      NullLogger<PickAddedIntegrationEventConsumer>.Instance);
+
+    // Act
+    await consumer.Handle(integrationEvent, CancellationToken.None);
+
+    // Assert
+    hubContext.SentMessages.Single().Args
+      .Should().ContainSingle()
+      .Which.Should().Be(draftPartId);
+  }
+}
+
+public sealed class VetoAppliedConsumerTests
+{
+  [Fact]
+  public async Task Handle_ShouldNotifyCorrectHubGroupAsync()
+  {
+    // Arrange
+    var draftPartId = Guid.NewGuid();
+    var integrationEvent = new VetoAppliedIntegrationEvent(Guid.NewGuid(), DateTime.UtcNow, draftPartId);
+    var hubContext = new TestHubContext();
+    var consumer = new VetoAppliedIntegrationEventConsumer(
+      hubContext,
+      NullLogger<VetoAppliedIntegrationEventConsumer>.Instance);
+
+    // Act
+    await consumer.Handle(integrationEvent, CancellationToken.None);
+
+    // Assert
+    hubContext.SentMessages.Should().ContainSingle()
+      .Which.GroupName.Should().Be(DraftHub.GroupName(draftPartId.ToString()));
+  }
+
+  [Fact]
+  public async Task Handle_ShouldSendPickListUpdatedMethodAsync()
+  {
+    // Arrange
+    var integrationEvent = new VetoAppliedIntegrationEvent(Guid.NewGuid(), DateTime.UtcNow, Guid.NewGuid());
+    var hubContext = new TestHubContext();
+    var consumer = new VetoAppliedIntegrationEventConsumer(
+      hubContext,
+      NullLogger<VetoAppliedIntegrationEventConsumer>.Instance);
+
+    // Act
+    await consumer.Handle(integrationEvent, CancellationToken.None);
+
+    // Assert
+    hubContext.SentMessages.Single().Method.Should().Be("PickListUpdated");
+  }
+
+  [Fact]
+  public async Task Handle_ShouldPassDraftPartIdAsArgumentAsync()
+  {
+    // Arrange
+    var draftPartId = Guid.NewGuid();
+    var integrationEvent = new VetoAppliedIntegrationEvent(Guid.NewGuid(), DateTime.UtcNow, draftPartId);
+    var hubContext = new TestHubContext();
+    var consumer = new VetoAppliedIntegrationEventConsumer(
+      hubContext,
+      NullLogger<VetoAppliedIntegrationEventConsumer>.Instance);
+
+    // Act
+    await consumer.Handle(integrationEvent, CancellationToken.None);
+
+    // Assert
+    hubContext.SentMessages.Single().Args
+      .Should().ContainSingle()
+      .Which.Should().Be(draftPartId);
+  }
+}
+
+public sealed class VetoOverrideAppliedConsumerTests
+{
+  [Fact]
+  public async Task Handle_ShouldNotifyCorrectHubGroupAsync()
+  {
+    // Arrange
+    var draftPartId = Guid.NewGuid();
+    var integrationEvent = new VetoOverrideAppliedIntegrationEvent(Guid.NewGuid(), DateTime.UtcNow, draftPartId);
+    var hubContext = new TestHubContext();
+    var consumer = new VetoOverrideAppliedIntegrationEventConsumer(
+      hubContext,
+      NullLogger<VetoOverrideAppliedIntegrationEventConsumer>.Instance);
+
+    // Act
+    await consumer.Handle(integrationEvent, CancellationToken.None);
+
+    // Assert
+    hubContext.SentMessages.Should().ContainSingle()
+      .Which.GroupName.Should().Be(DraftHub.GroupName(draftPartId.ToString()));
+  }
+
+  [Fact]
+  public async Task Handle_ShouldSendPickListUpdatedMethodAsync()
+  {
+    // Arrange
+    var integrationEvent = new VetoOverrideAppliedIntegrationEvent(Guid.NewGuid(), DateTime.UtcNow, Guid.NewGuid());
+    var hubContext = new TestHubContext();
+    var consumer = new VetoOverrideAppliedIntegrationEventConsumer(
+      hubContext,
+      NullLogger<VetoOverrideAppliedIntegrationEventConsumer>.Instance);
+
+    // Act
+    await consumer.Handle(integrationEvent, CancellationToken.None);
+
+    // Assert
+    hubContext.SentMessages.Single().Method.Should().Be("PickListUpdated");
+  }
+
+  [Fact]
+  public async Task Handle_ShouldPassDraftPartIdAsArgumentAsync()
+  {
+    // Arrange
+    var draftPartId = Guid.NewGuid();
+    var integrationEvent = new VetoOverrideAppliedIntegrationEvent(Guid.NewGuid(), DateTime.UtcNow, draftPartId);
+    var hubContext = new TestHubContext();
+    var consumer = new VetoOverrideAppliedIntegrationEventConsumer(
+      hubContext,
+      NullLogger<VetoOverrideAppliedIntegrationEventConsumer>.Instance);
+
+    // Act
+    await consumer.Handle(integrationEvent, CancellationToken.None);
+
+    // Assert
+    hubContext.SentMessages.Single().Args
+      .Should().ContainSingle()
+      .Which.Should().Be(draftPartId);
+  }
+}
+
+public sealed class CommissionerOverrideAppliedConsumerTests
+{
+  [Fact]
+  public async Task Handle_ShouldNotifyCorrectHubGroupAsync()
+  {
+    // Arrange
+    var draftPartId = Guid.NewGuid();
+    var integrationEvent = new CommissionerOverrideAppliedIntegrationEvent(Guid.NewGuid(), DateTime.UtcNow, draftPartId);
+    var hubContext = new TestHubContext();
+    var consumer = new CommissionerOverrideAppliedIntegrationEventConsumer(
+      hubContext,
+      NullLogger<CommissionerOverrideAppliedIntegrationEventConsumer>.Instance);
+
+    // Act
+    await consumer.Handle(integrationEvent, CancellationToken.None);
+
+    // Assert
+    hubContext.SentMessages.Should().ContainSingle()
+      .Which.GroupName.Should().Be(DraftHub.GroupName(draftPartId.ToString()));
+  }
+
+  [Fact]
+  public async Task Handle_ShouldSendPickListUpdatedMethodAsync()
+  {
+    // Arrange
+    var integrationEvent = new CommissionerOverrideAppliedIntegrationEvent(Guid.NewGuid(), DateTime.UtcNow, Guid.NewGuid());
+    var hubContext = new TestHubContext();
+    var consumer = new CommissionerOverrideAppliedIntegrationEventConsumer(
+      hubContext,
+      NullLogger<CommissionerOverrideAppliedIntegrationEventConsumer>.Instance);
+
+    // Act
+    await consumer.Handle(integrationEvent, CancellationToken.None);
+
+    // Assert
+    hubContext.SentMessages.Single().Method.Should().Be("PickListUpdated");
+  }
+
+  [Fact]
+  public async Task Handle_ShouldPassDraftPartIdAsArgumentAsync()
+  {
+    // Arrange
+    var draftPartId = Guid.NewGuid();
+    var integrationEvent = new CommissionerOverrideAppliedIntegrationEvent(Guid.NewGuid(), DateTime.UtcNow, draftPartId);
+    var hubContext = new TestHubContext();
+    var consumer = new CommissionerOverrideAppliedIntegrationEventConsumer(
+      hubContext,
+      NullLogger<CommissionerOverrideAppliedIntegrationEventConsumer>.Instance);
+
+    // Act
+    await consumer.Handle(integrationEvent, CancellationToken.None);
+
+    // Assert
+    hubContext.SentMessages.Single().Args
+      .Should().ContainSingle()
+      .Which.Should().Be(draftPartId);
+  }
+}
