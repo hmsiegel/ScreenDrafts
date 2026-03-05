@@ -28,13 +28,12 @@ internal static class DraftPartRoutes
   public const string AssignTriviaResults = "/draft-parts/{draftPartId}/trivia-results";
 
   // Picks
-  public const string AddPick = "/draft-parts/{draftPartId}/picks";
+  public const string Picks = "/draft-parts/{draftPartId}/picks";
   public const string UndoPick = "/draft-parts/{draftPartId}/picks/{playOrder}";
 
   // Vetos and Veto Overrides
   public const string ApplyVeto = "/draft-parts/{draftPartId}/picks/{playOrder}/veto";
   public const string ApplyVetoOverride = "/draft-parts/{draftPartId}/veto-override/{pickId}";
   public const string ApplyCommissionerOverride = "/draft-parts/{draftPartId}/commissioner-override/{pickId}";
-
 }
 

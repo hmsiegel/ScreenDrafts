@@ -4,7 +4,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<PlayPickRequest, Guid>
 {
   public override void Configure()
   {
-    Post(DraftPartRoutes.AddPick);
+    Post(DraftPartRoutes.Picks);
     Description(x =>
     {
       x.WithName(DraftsOpenApi.Names.DraftParts_PlayPick)
