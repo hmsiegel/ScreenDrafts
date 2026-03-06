@@ -36,6 +36,7 @@ internal static class DraftsOpenApi
     public const string Drafts_CreateDraftPart = "Drafts.CreateDraftPart";
     public const string Drafts_SetEpisodeNumber = "Drafts.SetEpisodeNumber";
     public const string Drafts_ListDrafts = "Drafts.ListDrafts";
+    public const string Drafts_RemoveCategory = "Drafts.RemoveCategory";
 
     // Draft Parts
     public const string DraftParts_RemoveHost = "DraftParts.RemoveHost";
@@ -106,5 +107,6 @@ internal static class DraftsOpenApi
     public const string Hosts_GetHostById = "Hosts.GetHostById";
     public const string Hosts_ListHosts = "Hosts.ListHosts";
     public const string Hosts_SearchHosts = "Hosts.SearchHosts";
+
   }
 }
