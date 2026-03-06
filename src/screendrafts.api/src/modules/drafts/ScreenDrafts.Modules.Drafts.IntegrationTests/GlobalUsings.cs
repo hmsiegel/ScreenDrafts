@@ -34,6 +34,8 @@ global using ScreenDrafts.Modules.Drafts.Features.Drafts.CreateDraft;
 global using ScreenDrafts.Modules.Drafts.Features.Drafts.CreateDraftPart;
 global using ScreenDrafts.Modules.Drafts.Features.Drafts.SetDraftPartStatus;
 global using ScreenDrafts.Modules.Drafts.Features.Hosts.Create;
+global using ScreenDrafts.Modules.Drafts.Features.Hosts.Get;
+global using ScreenDrafts.Modules.Drafts.Features.Hosts.Search;
 global using ScreenDrafts.Modules.Drafts.Features.SeriesFeatures.Create;
 global using ScreenDrafts.Modules.Drafts.Infrastructure.Database;
 global using ScreenDrafts.Modules.Drafts.IntegrationTests.Abstractions;

@@ -105,6 +105,6 @@ internal static class DraftsOpenApi
     public const string Hosts_RetireHost = "Hosts.RetireHost";
     public const string Hosts_GetHostById = "Hosts.GetHostById";
     public const string Hosts_ListHosts = "Hosts.ListHosts";
-
+    public const string Hosts_SearchHosts = "Hosts.SearchHosts";
   }
 }
