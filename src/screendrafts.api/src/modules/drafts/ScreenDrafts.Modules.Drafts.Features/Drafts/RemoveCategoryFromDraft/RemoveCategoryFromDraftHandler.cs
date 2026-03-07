@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Features.Drafts.RemoveCategoryFromDraft;
 
-internal sealed class RemoveCategoryFromDraftHandler(
+internal sealed class RemoveCategoryFromDraftCommandHandler(
   IDraftRepository draftRepository,
   ICategoryRepository categoryRepository)
   : ICommandHandler<RemoveCategoryFromDraftCommand>
