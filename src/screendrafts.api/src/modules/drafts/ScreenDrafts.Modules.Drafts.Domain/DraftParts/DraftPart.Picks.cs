@@ -97,7 +97,10 @@ public sealed partial class DraftPart
       IncrementCommunityPicksUsed();
     }
 
-    Raise(new PickAddedDomainEvent(Id.Value));
+    Raise(new PickAddedDomainEvent(
+      Id.Value,
+      movie.ImdbId,
+      movie.MovieTitle));
       
 
     return Result.Success(pick.Id);

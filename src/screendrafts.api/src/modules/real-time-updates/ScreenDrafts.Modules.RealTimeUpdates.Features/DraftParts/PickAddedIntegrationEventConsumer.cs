@@ -14,7 +14,12 @@ internal sealed partial class PickAddedIntegrationEventConsumer(
 
     await _hubContext.Clients
       .Group(DraftHub.GroupName(integrationEvent.DraftPartId.ToString()))
-      .SendAsync("PickListUpdated", integrationEvent.DraftPartId, cancellationToken);
+      .SendAsync(
+      "PickListUpdated",
+      integrationEvent.DraftPartId,
+      integrationEvent.ImdbId,
+      integrationEvent.MovieTitle,
+      cancellationToken);
 
   }
 

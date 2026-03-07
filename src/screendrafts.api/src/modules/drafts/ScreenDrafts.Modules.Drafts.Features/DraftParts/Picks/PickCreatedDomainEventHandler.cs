@@ -9,7 +9,9 @@ internal sealed class PickCreatedDomainEventHandler(IEventBus eventBus) : Domain
     await _eventBus.PublishAsync(new PickAddedIntegrationEvent(
       domainEvent.Id,
       domainEvent.OccurredOnUtc,
-      domainEvent.DraftPartId), 
+      domainEvent.DraftPartId,
+      domainEvent.ImdbId,
+      domainEvent.MovieTitle), 
       cancellationToken);
   }
 }

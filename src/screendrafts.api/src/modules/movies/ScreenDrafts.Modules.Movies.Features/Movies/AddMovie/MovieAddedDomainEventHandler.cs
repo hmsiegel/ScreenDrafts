@@ -10,11 +10,11 @@ internal sealed class MovieAddedDomainEventHandler(ISender sender, IEventBus eve
     MovieCreatedDomainEvent domainEvent,
     CancellationToken cancellationToken = default)
   {
-    var result = await _sender.Send(new Query(domainEvent.ImdbId), cancellationToken);
+    var result = await _sender.Send(new GetMovieQuery(domainEvent.ImdbId), cancellationToken);
 
     if (result.IsFailure)
     {
-      throw new ScreenDraftsException(nameof(Query), result.Error);
+      throw new ScreenDraftsException(nameof(GetMovieQuery), result.Error);
     }
 
     await _eventBus.PublishAsync(

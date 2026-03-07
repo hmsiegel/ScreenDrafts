@@ -1,13 +1,11 @@
-﻿using ScreenDrafts.Common.Abstractions.Results;
+﻿namespace ScreenDrafts.Modules.Movies.Features.Movies.GetMovie;
 
-namespace ScreenDrafts.Modules.Movies.Features.Movies.GetMovie;
-
-internal sealed class QueryHandler(IDbConnectionFactory dbConnectionFactory)
-  : IQueryHandler<Query, MovieResponse>
+internal sealed class GetMovieQueryHandler(IDbConnectionFactory dbConnectionFactory)
+  : IQueryHandler<GetMovieQuery, MovieResponse>
 {
   private readonly IDbConnectionFactory _dbConnectionFactory = dbConnectionFactory;
 
-  public async Task<Result<MovieResponse>> Handle(Query request, CancellationToken cancellationToken)
+  public async Task<Result<MovieResponse>> Handle(GetMovieQuery request, CancellationToken cancellationToken)
   {
     await using var connection = await _dbConnectionFactory.OpenConnectionAsync(cancellationToken);
 

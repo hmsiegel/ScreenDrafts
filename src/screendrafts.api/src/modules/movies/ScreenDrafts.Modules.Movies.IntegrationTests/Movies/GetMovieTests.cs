@@ -12,7 +12,7 @@ public sealed class GetMovieTests(MoviesIntegrationTestWebAppFactory factory)
     // Arrange
     var imdbId = Faker.Random.String2(9);
     // Act
-    Result<MovieResponse> movieResult = await Sender.Send(new Query(imdbId));
+    Result<MovieResponse> movieResult = await Sender.Send(new GetMovieQuery(imdbId));
     // Assert
     movieResult.Errors[0].Should().Be(MovieErrors.MovieNotFound(imdbId));
   }
@@ -68,7 +68,7 @@ public sealed class GetMovieTests(MoviesIntegrationTestWebAppFactory factory)
       [.. productionCompanies.Select(x => new ProductionCompanyRequest(x.Name, x.ImdbId))]);
     await Sender.Send(addMovieCommand);
     // Act
-    Result<MovieResponse> movieResult = await Sender.Send(new Query(movie.ImdbId));
+    Result<MovieResponse> movieResult = await Sender.Send(new GetMovieQuery(movie.ImdbId));
     // Assert
     movieResult.IsSuccess.Should().BeTrue();
     movieResult.Value.Should().NotBeNull();
