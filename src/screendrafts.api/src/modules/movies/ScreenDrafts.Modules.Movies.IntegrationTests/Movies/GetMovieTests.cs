@@ -54,18 +54,19 @@ public sealed class GetMovieTests(MoviesIntegrationTestWebAppFactory factory)
     }
     var addMovieCommand = new AddMovieCommand(
       movie.ImdbId,
+      movie.TmdbId,
       movie.Title,
       movie.Year,
       movie.Plot!,
       movie.Image,
       movie.ReleaseDate,
       movie.YoutubeTrailerUrl,
-      [.. genres.Select(x => x.Name)],
-      [.. actors.Select(x => new PersonRequest(x.Name, x.ImdbId))],
-      [.. directors.Select(x => new PersonRequest(x.Name, x.ImdbId))],
-      [.. writers.Select(x => new PersonRequest(x.Name, x.ImdbId))],
-      [.. producers.Select(x => new PersonRequest(x.Name, x.ImdbId))],
-      [.. productionCompanies.Select(x => new ProductionCompanyRequest(x.Name, x.ImdbId))]);
+      [.. genres.Select(x => new GenreRequest(x.TmdbId, x.Name))],
+      [.. actors.Select(x => new PersonRequest(x.Name, x.ImdbId, x.TmdbId))],
+      [.. directors.Select(x => new PersonRequest(x.Name, x.ImdbId, x.TmdbId))],
+      [.. writers.Select(x => new PersonRequest(x.Name, x.ImdbId, x.TmdbId))],
+      [.. producers.Select(x => new PersonRequest(x.Name, x.ImdbId, x.TmdbId))],
+      [.. productionCompanies.Select(x => new ProductionCompanyRequest(x.Name, x.ImdbId, x.TmdbId))]);
     await Sender.Send(addMovieCommand);
     // Act
     Result<MovieResponse> movieResult = await Sender.Send(new GetMovieQuery(movie.ImdbId));

@@ -18,15 +18,18 @@ public static class MovieFactory
         0,
         DateTimeKind.Utc), DateTime.UtcNow).ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
       null,
-      _faker.Random.Replace("tt#######"));
+      _faker.Random.Replace("tt#######"),
+      _faker.Random.Int(1, 1000));
 
-    public static Result<Genre> CreateGenre() => Genre.Create(_faker.Music.Genre());
+    public static Result<Genre> CreateGenre() => Genre.Create(_faker.Music.Genre(), _faker.Random.Int(1, 1000));
 
     public static Result<Domain.Movies.Person> CreatePerson() => Domain.Movies.Person.Create(
       _faker.Random.String2(9),
-      _faker.Name.FullName());
+      _faker.Name.FullName(),
+      _faker.Random.Int(1, 1000));
 
     public static Result<ProductionCompany> CreateProductionCompany() => ProductionCompany.Create(
       _faker.Company.CompanyName(),
-      _faker.Random.String2(9));
+      _faker.Random.String2(9),
+      _faker.Random.Int(1, 1000));
 }

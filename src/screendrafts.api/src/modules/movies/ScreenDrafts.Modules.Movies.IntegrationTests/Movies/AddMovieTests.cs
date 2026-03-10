@@ -4,8 +4,12 @@ namespace ScreenDrafts.Modules.Movies.IntegrationTests.Movies;
 
 public sealed class AddMovieTests(MoviesIntegrationTestWebAppFactory factory) : MoviesIntegrationTest(factory)
 {
+  // -------------------------------------------------------------------------
+  // Happy path
+  // -------------------------------------------------------------------------
+
   [Fact]
-  public async Task Should_ReturnSuccess_WhenDataIsValidAsync()
+  public async Task AddMovie_WithValidData_ShouldReturnImdbIdAsync()
   {
     // Arrange
     var movie = MovieFactory.CreateMovie().Value;
@@ -48,25 +52,93 @@ public sealed class AddMovieTests(MoviesIntegrationTestWebAppFactory factory) : 
 
     var request = new AddMovieCommand(
       movie.ImdbId,
+      movie.TmdbId,
       movie.Title,
       movie.Year,
       movie.Plot!,
       movie.Image,
       movie.ReleaseDate,
       movie.YoutubeTrailerUrl,
-      [.. genres.Select(x => x.Name)],
-      [.. actors.Select(x => new PersonRequest(x.Name, x.ImdbId))],
-      [.. directors.Select(x => new PersonRequest(x.Name, x.ImdbId))],
-      [.. writers.Select(x => new PersonRequest(x.Name, x.ImdbId))],
-      [.. producers.Select(x => new PersonRequest(x.Name, x.ImdbId))],
-      [.. productionCompanies.Select(x => new ProductionCompanyRequest(x.Name, x.ImdbId))]);
-
+      [.. genres.Select(x => new GenreRequest(x.TmdbId, x.Name))],
+      [.. actors.Select(x => new PersonRequest(x.Name, x.ImdbId, x.TmdbId))],
+      [.. directors.Select(x => new PersonRequest(x.Name, x.ImdbId, x.TmdbId))],
+      [.. writers.Select(x => new PersonRequest(x.Name, x.ImdbId, x.TmdbId))],
+      [.. producers.Select(x => new PersonRequest(x.Name, x.ImdbId, x.TmdbId))],
+      [.. productionCompanies.Select(x => new ProductionCompanyRequest(x.Name, x.ImdbId, x.TmdbId))]);
 
     // Act
     var result = await Sender.Send(request);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
-    result.Value.Should().NotBeEmpty();
+    result.Value.Should().Be(movie.ImdbId);
+  }
+
+  [Fact]
+  public async Task AddMovie_WithGenresOnly_ShouldReturnSuccessAsync()
+  {
+    // Arrange
+    var movie = MovieFactory.CreateMovie().Value;
+    var genre = MovieFactory.CreateGenre().Value;
+
+    var command = new AddMovieCommand(
+      movie.ImdbId,
+      movie.TmdbId,
+      movie.Title,
+      movie.Year,
+      movie.Plot!,
+      movie.Image,
+      movie.ReleaseDate,
+      movie.YoutubeTrailerUrl,
+      [new GenreRequest(genre.TmdbId, genre.Name)],
+      [],
+      [],
+      [],
+      [],
+      []);
+
+    // Act
+    var result = await Sender.Send(command);
+
+    // Assert
+    result.IsSuccess.Should().BeTrue();
+    result.Value.Should().Be(movie.ImdbId);
+  }
+
+  // -------------------------------------------------------------------------
+  // Duplicate
+  // -------------------------------------------------------------------------
+
+  [Fact]
+  public async Task AddMovie_WithDuplicateImdbId_ShouldReturnConflictErrorAsync()
+  {
+    // Arrange
+    var movie = MovieFactory.CreateMovie().Value;
+    var genre = MovieFactory.CreateGenre().Value;
+
+    var command = new AddMovieCommand(
+      movie.ImdbId,
+      movie.TmdbId,
+      movie.Title,
+      movie.Year,
+      movie.Plot!,
+      movie.Image,
+      movie.ReleaseDate,
+      movie.YoutubeTrailerUrl,
+      [new GenreRequest(genre.TmdbId, genre.Name)],
+      [],
+      [],
+      [],
+      [],
+      []);
+
+    await Sender.Send(command);
+
+    // Act
+    var result = await Sender.Send(command);
+
+    // Assert
+    result.IsFailure.Should().BeTrue();
+    result.Errors[0].Should().Be(MovieErrors.MovieAlreadyExists(movie.ImdbId));
   }
 }

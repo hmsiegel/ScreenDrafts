@@ -7,13 +7,14 @@ public sealed class MovieFetchedIntegrationEvent(
   Guid id,
   DateTime occurredOnUtc,
   string imdbId,
+  int tmdbId,
   string title,
   string year,
   string plot,
   string image,
   string? releaseDate,
   Uri? youTubeTrailerUri,
-  List<string> genres,
+  List<GenreModel> genres,
   List<ActorModel> actors,
   List<DirectorModel> directors,
   List<WriterModel> writers,
@@ -21,6 +22,8 @@ public sealed class MovieFetchedIntegrationEvent(
   List<ProductionCompanyModel> productionCompanies) : IntegrationEvent(id, occurredOnUtc)
 {
   public string ImdbId { get; init; } = imdbId;
+
+  public int TmdbId { get; init; } = tmdbId;
 
   public string Title { get; init; } = title;
 
@@ -34,7 +37,7 @@ public sealed class MovieFetchedIntegrationEvent(
 
   public Uri? YouTubeTrailerUri { get; init; } = youTubeTrailerUri;
 
-  public List<string> Genres { get; init; } = genres;
+  public List<GenreModel> Genres { get; init; } = genres;
 
   public List<ActorModel> Actors { get; init; } = actors;
 

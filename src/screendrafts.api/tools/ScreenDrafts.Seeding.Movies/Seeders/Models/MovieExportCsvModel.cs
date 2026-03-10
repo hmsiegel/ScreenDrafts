@@ -25,4 +25,7 @@ internal sealed class MovieExportCsvModel
 
   [Column("youtube_trailer_url")]
   public string YouTubeTrailerUrl { get; set; } = default!;
+
+  [Column("tmdb_id")]
+  public int TmdbId { get; set; }
 }

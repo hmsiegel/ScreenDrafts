@@ -10,4 +10,7 @@ internal sealed class ProductionCompanyExportCsvModel
 
   [Column("imdb_id")]
   public string ImdbId { get; set; } = default!;
+
+  [Column("tmdb_id")]
+  public int TmdbId { get; set; }
 }

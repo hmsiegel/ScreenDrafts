@@ -35,6 +35,7 @@ internal sealed class ProductionCompaniesSeeder(
       productionCompany => ProductionCompany.Create(
         productionCompany.Name,
         productionCompany.ImdbId,
+        productionCompany.TmdbId,
         Guid.Parse(productionCompany.Id)),
       _dbContext.ProductionCompanies,
       TableName,

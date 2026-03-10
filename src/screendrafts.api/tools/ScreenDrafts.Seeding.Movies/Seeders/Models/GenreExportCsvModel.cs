@@ -7,4 +7,7 @@ internal sealed class GenreExportCsvModel
 
   [Column("name")]
   public string Name { get; set; } = default!;
+
+  [Column("tmdb_id")]
+  public int TmdbId { get; set; }
 }

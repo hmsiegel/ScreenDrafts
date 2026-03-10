@@ -114,6 +114,7 @@
     <Project Path="src/modules/integrations/ScreenDrafts.Modules.Integrations.Infrastructure/ScreenDrafts.Modules.Integrations.Infrastructure.csproj" />
     <Project Path="src/modules/integrations/ScreenDrafts.Modules.Integrations.IntegrationEvents/ScreenDrafts.Modules.Integrations.IntegrationEvents.csproj" />
     <Project Path="src/modules/integrations/ScreenDrafts.Modules.Integrations.IntegrationTests/ScreenDrafts.Modules.Integrations.IntegrationTests.csproj" />
+    <Project Path="src/modules/integrations/ScreenDrafts.Modules.Integrations.PublicApi/ScreenDrafts.Modules.Integrations.PublicApi.csproj" Id="97fae169-3090-4e8e-9585-3920cab377c2" />
     <Project Path="src/modules/integrations/ScreenDrafts.Modules.Integrations.UnitTests/ScreenDrafts.Modules.Integrations.UnitTests.csproj" />
   </Folder>
   <Folder Name="/src/modules/movies/">

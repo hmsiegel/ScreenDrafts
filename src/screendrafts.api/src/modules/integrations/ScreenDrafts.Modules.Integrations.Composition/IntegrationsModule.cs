@@ -14,7 +14,7 @@ public static class IntegrationsModule
 
     services.AddIntegrationsInfrastructure(configuration);
 
-    services.AddIntegrationFeatures();
+    services.AddIntegrationFeatures(configuration);
 
     return services;
   }
@@ -27,10 +27,24 @@ public static class IntegrationsModule
       .Endpoint(x => x.InstanceId = instanceId);
   }
 
-  public static void AddIntegrationFeatures(this IServiceCollection services)
+  public static void AddIntegrationFeatures(this IServiceCollection services, IConfiguration configuration)
   {
+    ArgumentNullException.ThrowIfNull(configuration);
+
     services.AddScoped<IImdbService, ImdbService>();
     services.AddScoped<IOmdbService, OmdbService>();
+
+    services.Configure<TmdbSettings>(configuration.GetSection(TmdbSettings.SectionName));
+
+    services.AddHttpClient<ITmdbService, TmdbService>((sp, client) =>
+    {
+      TmdbSettings tmdbSettings = sp.GetRequiredService<IOptions<TmdbSettings>>().Value;
+      client.BaseAddress = new Uri(tmdbSettings.BaseAddress);
+      client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tmdbSettings.AccessToken);
+      client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+    });
+
+    services.AddScoped<IIntegrationsApi, IntegrationsApi>();
     services.AddScoped<IIntegrationsIntegrationEventDispatcher, IntegrationsIntegrationEventDispatcher>();
     services.AddScoped<IIntegrationsDomainEventDispatcher, IntegrationsDomainEventDispatcher>();
   }

@@ -1,12 +1,12 @@
 ﻿namespace ScreenDrafts.Modules.RealTimeUpdates.Features.DraftParts;
 
 internal sealed partial class CommissionerOverrideAppliedIntegrationEventConsumer(
-  IHubContext hubContext,
+  IHubContext<DraftHub> hubContext,
   ILogger<CommissionerOverrideAppliedIntegrationEventConsumer> logger)
   : IntegrationEventHandler<CommissionerOverrideAppliedIntegrationEvent>
 {
   private readonly ILogger<CommissionerOverrideAppliedIntegrationEventConsumer> _logger = logger;
-  private readonly IHubContext _hubContext = hubContext;
+  private readonly IHubContext<DraftHub> _hubContext = hubContext;
 
   public override async Task Handle(CommissionerOverrideAppliedIntegrationEvent integrationEvent, CancellationToken cancellationToken = default)
   {

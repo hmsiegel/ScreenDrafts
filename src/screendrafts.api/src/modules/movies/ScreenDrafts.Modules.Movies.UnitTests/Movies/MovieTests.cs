@@ -32,6 +32,7 @@ public sealed class MovieTests : BaseTest
     var releaseDate = Faker.Date.Past().ToString(CultureInfo.InvariantCulture);
     var youtubeTrailerUrl = new Uri(Faker.Internet.Url());
     var imdbId = Faker.Random.AlphaNumeric(9);
+    var tmdbId = Faker.Random.Int(1, 10000);
 
     // Act
     var result = Movie.Create(
@@ -41,7 +42,8 @@ public sealed class MovieTests : BaseTest
       image,
       releaseDate,
       youtubeTrailerUrl,
-      imdbId);
+      imdbId,
+      tmdbId);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -59,6 +61,7 @@ public sealed class MovieTests : BaseTest
     var releaseDate = Faker.Date.Past().ToString(CultureInfo.InvariantCulture);
     var youtubeTrailerUrl = new Uri(Faker.Internet.Url());
     var imdbId = Faker.Random.AlphaNumeric(9);
+    var tmdbId = Faker.Random.Int(1, 10000);
 
     // Act
     var exception = Assert.Throws<ArgumentException>(() => Movie.Create(
@@ -68,7 +71,8 @@ public sealed class MovieTests : BaseTest
       image,
       releaseDate,
       youtubeTrailerUrl,
-      imdbId));
+      imdbId,
+      tmdbId));
 
     // Assert
     Assert.Equal(ExceptionMessage("year"), exception.Message);
@@ -85,7 +89,7 @@ public sealed class MovieTests : BaseTest
     var releaseDate = Faker.Date.Past().ToString(CultureInfo.InvariantCulture);
     var youtubeTrailerUrl = new Uri(Faker.Internet.Url());
     var imdbId = Faker.Random.AlphaNumeric(9);
-
+    var tmdbId = Faker.Random.Int(1, 10000);
     // Act
     var exception = Assert.Throws<ArgumentException>(() => Movie.Create(
       title,
@@ -94,7 +98,8 @@ public sealed class MovieTests : BaseTest
       image,
       releaseDate,
       youtubeTrailerUrl,
-      imdbId));
+      imdbId,
+      tmdbId));
 
     // Assert
     Assert.Equal(ExceptionMessage("image"), exception.Message);
@@ -121,6 +126,7 @@ public sealed class MovieTests : BaseTest
     var releaseDate = Faker.Date.Past().ToString(CultureInfo.InvariantCulture);
     var youtubeTrailerUrl = new Uri(Faker.Internet.Url());
     var imdbId = string.Empty;
+    var tmdbId = Faker.Random.Int(1, 10000);
 
     // Act
     var result = Movie.Create(
@@ -130,7 +136,8 @@ public sealed class MovieTests : BaseTest
       image,
       releaseDate,
       youtubeTrailerUrl,
-      imdbId);
+      imdbId,
+      tmdbId);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -226,6 +233,9 @@ public sealed class MovieTests : BaseTest
     var releaseDate = Faker.Date.Past().ToString(CultureInfo.InvariantCulture);
     var youtubeTrailerUrl = new Uri(Faker.Internet.Url());
     var imdbId = Faker.Random.AlphaNumeric(9);
+    var tmdbId = Faker.Random.Int(1, 10000);
+
+
     // Act
     var movie = Movie.Create(
       title,
@@ -234,7 +244,8 @@ public sealed class MovieTests : BaseTest
       image,
       releaseDate,
       youtubeTrailerUrl,
-      imdbId);
+      imdbId,
+      tmdbId);
 
     var domainEvent = AssertDomainEventWasPublished<MovieCreatedDomainEvent>(movie.Value);
 

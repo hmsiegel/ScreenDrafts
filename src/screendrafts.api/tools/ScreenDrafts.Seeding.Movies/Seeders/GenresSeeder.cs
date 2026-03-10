@@ -35,6 +35,7 @@ internal sealed class GenresSeeder(
       genre => genre.Id,
       genre => Genre.Create(
         name: genre.Name,
+        tmdbId: genre.TmdbId,
         id: Guid.Parse(genre.Id)),
       _dbContext.Genres,
       TableName,

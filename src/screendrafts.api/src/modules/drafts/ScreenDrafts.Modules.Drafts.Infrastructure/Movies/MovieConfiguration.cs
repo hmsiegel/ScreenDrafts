@@ -14,6 +14,12 @@ internal sealed class MovieConfiguration : IEntityTypeConfiguration<Movie>
     builder.Property(x => x.ImdbId)
       .IsRequired();
 
+    builder.Property(x => x.TmdbId);
+
+    builder.HasIndex(x => x.TmdbId)
+      .IsUnique()
+      .HasFilter("tmdb_id IS NOT NULL");
+
     builder.OwnsMany(x => x.Versions, mvb =>
     {
       mvb.ToTable(Tables.MovieVersions);

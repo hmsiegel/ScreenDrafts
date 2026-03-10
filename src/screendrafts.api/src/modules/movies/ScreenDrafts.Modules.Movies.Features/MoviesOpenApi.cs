@@ -13,5 +13,6 @@ internal static class MoviesOpenApi
     public const string Movies_AddMovie = "Movies.AddMovie";
     public const string Movies_GetMovie = "Movies.GetMovie";
     public const string Movies_GetMovieSummary = "Movies.GetMovieSummary";
+    public const string Movies_SearchMovies = "Movies.SearchMovies";
   }
 }

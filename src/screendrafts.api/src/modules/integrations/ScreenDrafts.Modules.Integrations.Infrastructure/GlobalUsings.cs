@@ -1,6 +1,8 @@
 ﻿global using System.Data;
 global using System.Data.Common;
+global using System.Net.Http.Json;
 global using System.Reflection;
+global using System.Text.Json.Serialization;
 
 global using Dapper;
 
@@ -38,6 +40,7 @@ global using ScreenDrafts.Common.Infrastructure.Outbox;
 global using ScreenDrafts.Common.Infrastructure.Serialization;
 global using ScreenDrafts.Modules.Integrations.Domain.Abstractions.Data;
 global using ScreenDrafts.Modules.Integrations.Domain.Enums;
+global using ScreenDrafts.Modules.Integrations.Domain.Imdb;
 global using ScreenDrafts.Modules.Integrations.Infrastructure.Database;
 global using ScreenDrafts.Modules.Integrations.Infrastructure.Imdb;
 global using ScreenDrafts.Modules.Integrations.Infrastructure.Inbox;

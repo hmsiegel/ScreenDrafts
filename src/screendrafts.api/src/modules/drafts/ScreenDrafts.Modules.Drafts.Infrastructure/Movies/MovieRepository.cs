@@ -24,11 +24,30 @@ internal sealed class MovieRepository(DraftsDbContext dbContext) : IMovieReposit
     return await _dbContext.Movies.AnyAsync(m => m.ImdbId == imdbId, ct);
   }
 
+  public async Task<bool> ExistsByTmdbIdAsync(int tmdbId, CancellationToken ct)
+  {
+    return await _dbContext.Movies.AnyAsync(m => m.TmdbId == tmdbId, ct);
+  }
+
   public async Task<Movie?> GetByIdAsync(Guid id, CancellationToken ct)
   {
     return await _dbContext.Movies
       .Include(m => m.Versions)
       .FirstOrDefaultAsync(m => m.Id == id, ct);
+  }
+
+  public async Task<Movie?> GetByImdbIdAsync(string imdbId, CancellationToken ct)
+  {
+    return await _dbContext.Movies
+      .Include(m => m.Versions)
+      .FirstOrDefaultAsync(m => m.ImdbId == imdbId, ct);
+  }
+
+  public async Task<Movie?> GetByTmdbIdAsync(int tmdbId, CancellationToken ct)
+  {
+    return await _dbContext.Movies
+      .Include(m => m.Versions)
+      .FirstOrDefaultAsync(m => m.TmdbId == tmdbId, ct);
   }
 
   public void Update(Movie entity)

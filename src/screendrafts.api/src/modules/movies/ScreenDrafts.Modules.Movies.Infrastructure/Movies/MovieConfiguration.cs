@@ -16,6 +16,10 @@ internal sealed class MovieConfiguration : IEntityTypeConfiguration<Movie>
 
     builder.HasIndex(d => d.ImdbId);
 
+    builder.Property(m => m.TmdbId);
+
+    builder.HasIndex(m => m.TmdbId);
+
     builder.Property(d => d.Plot)
       .HasColumnType("text");
   }

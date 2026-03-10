@@ -10,6 +10,13 @@
     },
     "Imdb": {
       "Key" : ""
+    },
+    "Tmdb": {
+      "AccessToken": "",
+      "BaseImageAddress": "",
+      "BaseAddress": "",
+      "TrailerPlaceholder": ""
     }
+
   }
 }

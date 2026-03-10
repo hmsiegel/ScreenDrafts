@@ -1,0 +1,5 @@
+namespace ScreenDrafts.Modules.Integrations.IntegrationTests.Abstractions;
+
+[CollectionDefinition(nameof(IntegrationsIntegrationTestCollection))]
+public sealed class IntegrationsIntegrationTestCollection
+  : ICollectionFixture<IntegrationsIntegrationTestWebAppFactory>;

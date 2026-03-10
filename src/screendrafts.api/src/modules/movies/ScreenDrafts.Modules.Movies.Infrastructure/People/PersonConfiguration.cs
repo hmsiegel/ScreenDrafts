@@ -8,6 +8,10 @@ internal sealed class PersonConfiguration : IEntityTypeConfiguration<Person>
 
     builder.HasKey(x => x.Id);
 
+    builder.Property(x => x.TmdbId);
+
+    builder.HasIndex(x => x.TmdbId);
+
     builder.Property(x => x.Id)
       .ValueGeneratedNever()
       .HasConversion(

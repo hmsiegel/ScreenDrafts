@@ -67,23 +67,27 @@ internal sealed partial class MovieImdbSeeder(
           continue;
         }
 
-        var actors = response.Value.Actors?.Select(actor => new PersonRequest(actor.Name, actor.ImdbId)).ToList();
-        var directors = response.Value.Directors?.Select(director => new PersonRequest(director.Name, director.ImdbId)).ToList();
-        var writers = response.Value.Writers?.Select(writer => new PersonRequest(writer.Name, writer.ImdbId)).ToList();
-        var producers = response.Value.Producers?.Select(producer => new PersonRequest(producer.Name, producer.ImdbId)).ToList();
+        var actors = response.Value.Actors?.Select(actor => new PersonRequest(actor.Name, actor.ImdbId, 0)).ToList();
+        var directors = response.Value.Directors?.Select(director => new PersonRequest(director.Name, director.ImdbId, 0)).ToList();
+        var writers = response.Value.Writers?.Select(writer => new PersonRequest(writer.Name, writer.ImdbId, 0)).ToList();
+        var producers = response.Value.Producers?.Select(producer => new PersonRequest(producer.Name, producer.ImdbId, 0)).ToList();
         var productionCompanies = response.Value.ProductionCompanies?
-          .Select(company => new ProductionCompanyRequest(company.Name, company.ImdbId))
+          .Select(company => new ProductionCompanyRequest(company.Name, company.ImdbId, 0))
+          .ToList();
+        var genres = response.Value.Genres
+          .Select(g => new GenreRequest(0, g))
           .ToList();
 
         var command = new AddMovieCommand(
           response.Value.ImdbId,
+          0,
           response.Value.Title,
           response.Value.Year,
           response.Value.Plot,
           response.Value.Image,
           response.Value.ReleaseDate,
           response.Value.YouTubeTrailerUri,
-          response.Value.Genres,
+          genres,
           directors,
           actors,
           writers,

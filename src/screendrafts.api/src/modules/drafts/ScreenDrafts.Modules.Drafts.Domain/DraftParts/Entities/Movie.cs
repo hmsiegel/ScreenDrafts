@@ -8,11 +8,13 @@ public sealed class Movie : Entity
   private Movie(
     string movieTitle,
     string imdbId,
-    Guid id)
+    Guid id,
+    int? tmdbId)
     : base(id)
   {
     MovieTitle = movieTitle;
     ImdbId = imdbId;
+    TmdbId = tmdbId;
   }
 
   private Movie()
@@ -23,13 +25,15 @@ public sealed class Movie : Entity
 
   public string MovieTitle { get; private set; } = default!;
   public string ImdbId { get; private set; } = default!;
+  public int? TmdbId { get; private set; }
   public bool HasDefinedVersions => _versions.Count > 0;
   public IReadOnlyCollection<MovieVersion> Versions => _versions.AsReadOnly();
 
   public static Result<Movie> Create(
     string movieTitle,
     string imdbId,
-    Guid id)
+    Guid id,
+    int? tmdbId = null)
   {
     if (string.IsNullOrWhiteSpace(movieTitle))
     {
@@ -44,7 +48,8 @@ public sealed class Movie : Entity
     var movie = new Movie(
       movieTitle: movieTitle,
       imdbId: imdbId,
-      id: id);
+      id: id,
+      tmdbId: tmdbId);
     return movie;
   }
 

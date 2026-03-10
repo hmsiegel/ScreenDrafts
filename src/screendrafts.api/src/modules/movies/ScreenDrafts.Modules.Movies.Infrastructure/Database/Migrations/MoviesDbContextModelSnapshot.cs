@@ -18,7 +18,7 @@ namespace ScreenDrafts.Modules.Movies.Infrastructure.Database.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("movies")
-                .HasAnnotation("ProductVersion", "9.0.1")
+                .HasAnnotation("ProductVersion", "10.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -140,6 +140,10 @@ namespace ScreenDrafts.Modules.Movies.Infrastructure.Database.Migrations
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("name");
+
+                    b.Property<int>("TmdbId")
+                        .HasColumnType("integer")
+                        .HasColumnName("tmdb_id");
 
                     b.HasKey("Id")
                         .HasName("pk_genres");
@@ -294,6 +298,10 @@ namespace ScreenDrafts.Modules.Movies.Infrastructure.Database.Migrations
                         .HasColumnType("text")
                         .HasColumnName("name");
 
+                    b.Property<int>("TmdbId")
+                        .HasColumnType("integer")
+                        .HasColumnName("tmdb_id");
+
                     b.HasKey("Id")
                         .HasName("pk_production_companies");
 
@@ -332,6 +340,10 @@ namespace ScreenDrafts.Modules.Movies.Infrastructure.Database.Migrations
                         .HasColumnType("text")
                         .HasColumnName("title");
 
+                    b.Property<int>("TmdbId")
+                        .HasColumnType("integer")
+                        .HasColumnName("tmdb_id");
+
                     b.Property<string>("Year")
                         .IsRequired()
                         .HasColumnType("text")
@@ -346,6 +358,9 @@ namespace ScreenDrafts.Modules.Movies.Infrastructure.Database.Migrations
 
                     b.HasIndex("ImdbId")
                         .HasDatabaseName("ix_movies_imdb_id");
+
+                    b.HasIndex("TmdbId")
+                        .HasDatabaseName("ix_movies_tmdb_id");
 
                     b.ToTable("movies", "movies");
                 });
@@ -367,8 +382,15 @@ namespace ScreenDrafts.Modules.Movies.Infrastructure.Database.Migrations
                         .HasColumnType("character varying(100)")
                         .HasColumnName("name");
 
+                    b.Property<int>("TmdbId")
+                        .HasColumnType("integer")
+                        .HasColumnName("tmdb_id");
+
                     b.HasKey("Id")
                         .HasName("pk_people");
+
+                    b.HasIndex("TmdbId")
+                        .HasDatabaseName("ix_people_tmdb_id");
 
                     b.ToTable("people", "movies");
                 });

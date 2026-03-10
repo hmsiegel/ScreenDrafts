@@ -4,6 +4,7 @@
     <ProjectReference Include="..\..\..\common\ScreenDrafts.Common.Application\ScreenDrafts.Common.Application.csproj" />
     <ProjectReference Include="..\..\..\common\ScreenDrafts.Common.Presentation\ScreenDrafts.Common.Presentation.csproj" />
     <ProjectReference Include="..\..\drafts\ScreenDrafts.Modules.Drafts.IntegrationEvents\ScreenDrafts.Modules.Drafts.IntegrationEvents.csproj" />
+    <ProjectReference Include="..\..\integrations\ScreenDrafts.Modules.Integrations.PublicApi\ScreenDrafts.Modules.Integrations.PublicApi.csproj" />
     <ProjectReference Include="..\ScreenDrafts.Modules.Users.Domain\ScreenDrafts.Modules.Users.Domain.csproj" />
     <ProjectReference Include="..\ScreenDrafts.Modules.Users.IntegrationEvents\ScreenDrafts.Modules.Users.IntegrationEvents.csproj" />
     <ProjectReference Include="..\ScreenDrafts.Modules.Users.PublicApi\ScreenDrafts.Modules.Users.PublicApi.csproj" />

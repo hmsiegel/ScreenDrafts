@@ -18,4 +18,9 @@ public static class MovieErrors
     SDError.Failure(
       "Movie.RequiredFieldsMissing",
       "The title and IMDB ID are required fields.");
+
+  public static readonly SDError SearchQueryRequired =
+      SDError.Failure(
+        "Movie.SearchQueryRequired",
+        "The search query is required.");
 }

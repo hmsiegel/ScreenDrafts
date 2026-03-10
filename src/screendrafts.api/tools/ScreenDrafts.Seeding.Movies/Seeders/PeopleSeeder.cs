@@ -34,6 +34,7 @@ internal sealed class PeopleSeeder(
       person => Person.Create(
         person.ImdbId,
         person.Name,
+        person.TmdbId,
         PersonId.Create(Guid.Parse(person.Id))),
       _dbContext.People,
       TableName,

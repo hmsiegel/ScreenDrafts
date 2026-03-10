@@ -46,7 +46,8 @@ internal sealed class AddMovieCommandHandler(
       request.Image,
       releaseDate,
       youtubeTrailerUrl,
-      request.ImdbId);
+      request.ImdbId,
+      request.TmdbId);
 
     if (movie.IsFailure)
     {
@@ -59,7 +60,7 @@ internal sealed class AddMovieCommandHandler(
 
     var peopleCache = new Dictionary<string, Person>();
 
-    async Task<Person> GetOrCreatePerson(string name, string imdbId)
+    async Task<Person> GetOrCreatePerson(string name, string imdbId, int tmdbId)
     {
       if (peopleCache.TryGetValue(imdbId, out var existingPerson))
       {
@@ -70,7 +71,7 @@ internal sealed class AddMovieCommandHandler(
 
       if (person is null)
       {
-        person = Person.Create(imdbId, name);
+        person = Person.Create(imdbId, name, tmdbId);
         _personRepository.Add(person);
       }
 
@@ -81,11 +82,11 @@ internal sealed class AddMovieCommandHandler(
     // Add the genres
     foreach (var genreName in request.Genres)
     {
-      var genre = await _genreRepository.FindByNameAsync(genreName, cancellationToken);
+      var genre = await _genreRepository.FindByNameAsync(genreName.Name, cancellationToken);
 
       if (genre is null)
       {
-        genre = Genre.Create(genreName);
+        genre = Genre.Create(genreName.Name, genreName.TmdbId);
         _genreRepository.Add(genre);
       }
 
@@ -97,7 +98,7 @@ internal sealed class AddMovieCommandHandler(
     {
       foreach (var director in request.Directors)
       {
-        var person = await GetOrCreatePerson(director.Name, director.ImdbId);
+        var person = await GetOrCreatePerson(director.Name, director.ImdbId, director.TmdbId);
         _movieRepository.AddMovieDirector(movie.Value, person);
       }
     }
@@ -107,7 +108,7 @@ internal sealed class AddMovieCommandHandler(
     {
       foreach (var actor in request.Actors)
       {
-        var person = await GetOrCreatePerson(actor.Name, actor.ImdbId);
+        var person = await GetOrCreatePerson(actor.Name, actor.ImdbId, actor.TmdbId);
         _movieRepository.AddMovieActor(movie.Value, person);
       }
     }
@@ -117,7 +118,7 @@ internal sealed class AddMovieCommandHandler(
     {
       foreach (var writer in request.Writers)
       {
-        var person = await GetOrCreatePerson(writer.Name, writer.ImdbId);
+        var person = await GetOrCreatePerson(writer.Name, writer.ImdbId, writer.TmdbId);
         _movieRepository.AddMovieWriter(movie.Value, person);
       }
     }
@@ -127,7 +128,7 @@ internal sealed class AddMovieCommandHandler(
     {
       foreach (var producer in request.Producers)
       {
-        var person = await GetOrCreatePerson(producer.Name, producer.ImdbId);
+        var person = await GetOrCreatePerson(producer.Name, producer.ImdbId, producer.TmdbId);
         _movieRepository.AddMovieProducer(movie.Value, person);
       }
     }
@@ -141,7 +142,7 @@ internal sealed class AddMovieCommandHandler(
 
         if (productionCompany is null)
         {
-          productionCompany = ProductionCompany.Create(company.Name, company.ImdbId);
+          productionCompany = ProductionCompany.Create(company.Name, company.ImdbId, company.TmdbId);
           _productionCompanyRepository.Add(productionCompany);
         }
         else

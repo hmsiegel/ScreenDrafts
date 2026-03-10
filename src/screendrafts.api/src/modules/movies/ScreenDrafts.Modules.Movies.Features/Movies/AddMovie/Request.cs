@@ -2,13 +2,14 @@
 
 internal sealed record Request(
   string ImdbId,
+  int TmdbId,
   string Title,
   string Year,
   string Plot,
   string Image,
   string ReleaseDate,
   string YoutubeTrailer,
-  IReadOnlyCollection<string> Genres,
+  IReadOnlyCollection<GenreRequest> Genres,
   IReadOnlyCollection<PersonRequest> Actors,
   IReadOnlyCollection<PersonRequest> Directors,
   IReadOnlyCollection<PersonRequest> Writers,

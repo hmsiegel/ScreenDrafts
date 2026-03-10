@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Modules.Movies.Domain.Movies.Entities;
-
-namespace ScreenDrafts.Modules.Movies.UnitTests.TestUtils;
+﻿namespace ScreenDrafts.Modules.Movies.UnitTests.TestUtils;
 
 public static class ProductionCompanyFactory
 {
@@ -8,5 +6,6 @@ public static class ProductionCompanyFactory
   public static ProductionCompany CreateProductionCompany() =>
     ProductionCompany.Create(
       _faker.Company.CompanyName(),
-      _faker.Random.AlphaNumeric(9));
+      _faker.Random.AlphaNumeric(9),
+      _faker.Random.Int(1, 1000));
 }

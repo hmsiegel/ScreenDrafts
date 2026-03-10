@@ -20,4 +20,10 @@ internal sealed class PeopleRepository(MoviesDbContext dbContext)
     return await _dbContext.People
       .FirstOrDefaultAsync(p => p.ImdbId == imdbId, cancellationToken);
   }
+
+  public async Task<Person?> FindByTmdbAsync(int tmdbId, CancellationToken cancellationToken = default)
+  {
+    return await _dbContext.People
+      .FirstOrDefaultAsync(p => p.TmdbId == tmdbId, cancellationToken);
+  }
 }

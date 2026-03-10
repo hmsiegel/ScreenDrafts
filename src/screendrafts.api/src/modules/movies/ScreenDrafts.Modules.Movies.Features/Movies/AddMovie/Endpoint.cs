@@ -1,10 +1,4 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-
-using ScreenDrafts.Common.Abstractions.Results;
-using ScreenDrafts.Common.Presentation.Http;
-using ScreenDrafts.Common.Presentation.Responses;
-using ScreenDrafts.Common.Presentation.Results;
+﻿using ScreenDrafts.Common.Presentation.Responses;
 
 namespace ScreenDrafts.Modules.Movies.Features.Movies.AddMovie;
 
@@ -29,6 +23,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<Request, Guid>
   {
     var command = new AddMovieCommand(
       req.ImdbId,
+      req.TmdbId,
       req.Title,
       req.Year,
       req.Plot,

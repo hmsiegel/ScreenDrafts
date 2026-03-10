@@ -14,5 +14,6 @@ public static class MovieFactory
       _faker.Image.PicsumUrl(),
       _faker.Date.Past().ToString(CultureInfo.InvariantCulture),
       new Uri(_faker.Internet.Url()),
-      _faker.Random.AlphaNumeric(9));
+      _faker.Random.AlphaNumeric(9),
+      _faker.Random.Int(1, 10000));
 }

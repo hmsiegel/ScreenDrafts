@@ -1,12 +1,12 @@
 ﻿namespace ScreenDrafts.Modules.RealTimeUpdates.Features.DraftParts;
 
 internal sealed partial class VetoAppliedIntegrationEventConsumer(
-  IHubContext hubContext,
+  IHubContext<DraftHub> hubContext,
   ILogger<VetoAppliedIntegrationEventConsumer> logger)
   : IntegrationEventHandler<VetoAppliedIntegrationEvent>
 {
   private readonly ILogger<VetoAppliedIntegrationEventConsumer> _logger = logger;
-  private readonly IHubContext _hubContext = hubContext;
+  private readonly IHubContext<DraftHub> _hubContext = hubContext;
 
   public override async Task Handle(VetoAppliedIntegrationEvent integrationEvent, CancellationToken cancellationToken = default)
   {

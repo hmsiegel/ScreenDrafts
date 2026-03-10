@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Common.Abstractions.Results;
-
-namespace ScreenDrafts.Modules.Integrations.Features.Movies.FetchMovie;
+﻿namespace ScreenDrafts.Modules.Integrations.Features.Movies.FetchMovie;
 
 internal sealed class CommandHandler(
   IEventBus eventBus,
@@ -14,7 +12,7 @@ internal sealed class CommandHandler(
 
   public async Task<Result> Handle(Command command, CancellationToken cancellationToken)
   {
-    var response = await _sender.Send(new GetOnlineMovie.Command(command.ImdbId), cancellationToken);
+    var response = await _sender.Send(new GetOnlineMovie.GetOnlineMovieCommand(command.ImdbId), cancellationToken);
 
     if (response.IsFailure)
     {
@@ -25,6 +23,7 @@ internal sealed class CommandHandler(
       Guid.NewGuid(),
       _dateTimeProvider.UtcNow,
       command.ImdbId,
+      response.Value.TmdbId,
       response.Value.Title!,
       response.Value.Year,
       response.Value.Plot,

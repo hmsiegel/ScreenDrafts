@@ -17,6 +17,7 @@ public abstract class BaseTest
 
   protected const string IntegrationsNamespace = "ScreenDrafts.Modules.Integrations";
   protected const string IntegrationsIntegrationEventsNamespace = "ScreenDrafts.Modules.Integrations.IntegrationEvents";
+  protected const string IntegrationsPublicApiNamespace = "ScreenDrafts.Modules.Integrations.PublicApi";
 
   protected const string MoviesNamespace = "ScreenDrafts.Modules.Movies";
   protected const string MoviesIntegrationEventsNamespace = "ScreenDrafts.Modules.Movies.IntegrationEvents";

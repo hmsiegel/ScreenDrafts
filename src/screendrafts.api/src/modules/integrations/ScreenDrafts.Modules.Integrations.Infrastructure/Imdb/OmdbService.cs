@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Modules.Integrations.Domain.Imdb;
-
-namespace ScreenDrafts.Modules.Integrations.Infrastructure.Imdb;
+﻿namespace ScreenDrafts.Modules.Integrations.Infrastructure.Imdb;
 
 internal sealed class OmdbService(IOptions<OmdbSettings> omdbSettings) : IOmdbService
 {

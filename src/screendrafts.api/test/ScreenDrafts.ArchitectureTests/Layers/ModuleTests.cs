@@ -43,7 +43,7 @@ public class ModuleTests : BaseTest
       .NotHaveDependencyOnAny(otherModules)
       .GetResult()
       .ShouldBeSuccessful();
-    }
+  }
 
   [Fact]
   public void AuditModule_ShouldNotHaveDependenciesOn_OtherModules()
@@ -85,7 +85,7 @@ public class ModuleTests : BaseTest
       .NotHaveDependencyOnAny(otherModules)
       .GetResult()
       .ShouldBeSuccessful();
-    }
+  }
 
   [Fact]
   public void CommunicationsModule_ShouldNotHaveDependenciesOn_OtherModules()
@@ -127,7 +127,7 @@ public class ModuleTests : BaseTest
       .NotHaveDependencyOnAny(otherModules)
       .GetResult()
       .ShouldBeSuccessful();
-    }
+  }
 
   [Fact]
   public void DraftsModule_ShouldNotHaveDependenciesOn_OtherModules()
@@ -150,6 +150,7 @@ public class ModuleTests : BaseTest
       AuditIntegrationEventsNamespace,
       CommunicationsIntegrationEventsNamespace,
       IntegrationsIntegrationEventsNamespace,
+      IntegrationsPublicApiNamespace,
       MoviesIntegrationEventsNamespace,
       RealTimeUpdatesIntegrationEventsNamespace,
       ReportingIntegrationEventsNamespace,
@@ -171,7 +172,7 @@ public class ModuleTests : BaseTest
       .NotHaveDependencyOnAny(otherModules)
       .GetResult()
       .ShouldBeSuccessful();
-    }
+  }
 
   [Fact]
   public void IntegrationsModule_ShouldNotHaveDependenciesOn_OtherModules()
@@ -213,7 +214,7 @@ public class ModuleTests : BaseTest
       .NotHaveDependencyOnAny(otherModules)
       .GetResult()
       .ShouldBeSuccessful();
-    }
+  }
 
   [Fact]
   public void MoviesModule_ShouldNotHaveDependenciesOn_OtherModules()
@@ -237,6 +238,7 @@ public class ModuleTests : BaseTest
       CommunicationsIntegrationEventsNamespace,
       DraftsIntegrationEventsNamespace,
       IntegrationsIntegrationEventsNamespace,
+      IntegrationsPublicApiNamespace,
       RealTimeUpdatesIntegrationEventsNamespace,
       ReportingIntegrationEventsNamespace,
       UsersIntegrationEventsNamespace
@@ -255,7 +257,7 @@ public class ModuleTests : BaseTest
       .NotHaveDependencyOnAny(otherModules)
       .GetResult()
       .ShouldBeSuccessful();
-    }
+  }
 
   [Fact]
   public void RealTimeUpdatesModule_ShouldNotHaveDependenciesOn_OtherModules()
@@ -297,7 +299,7 @@ public class ModuleTests : BaseTest
       .NotHaveDependencyOnAny(otherModules)
       .GetResult()
       .ShouldBeSuccessful();
-    }
+  }
 
   [Fact]
   public void ReportingModule_ShouldNotHaveDependenciesOn_OtherModules()
@@ -339,7 +341,7 @@ public class ModuleTests : BaseTest
       .NotHaveDependencyOnAny(otherModules)
       .GetResult()
       .ShouldBeSuccessful();
-    }
+  }
 
   [Fact]
   public void UsersModule_ShouldNotHaveDependenciesOn_OtherModules()
@@ -382,5 +384,5 @@ public class ModuleTests : BaseTest
       .NotHaveDependencyOnAny(otherModules)
       .GetResult()
       .ShouldBeSuccessful();
-    }
+  }
 }

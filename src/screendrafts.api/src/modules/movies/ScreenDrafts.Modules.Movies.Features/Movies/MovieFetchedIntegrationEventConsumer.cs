@@ -14,18 +14,19 @@ internal sealed class MovieFetchedIntegrationEventConsumer(ISender sender, ILogg
   {
     var command = new AddMovieCommand(
       integrationEvent.ImdbId,
+      integrationEvent.TmdbId,
       integrationEvent.Title,
       integrationEvent.Year,
       integrationEvent.Plot,
       integrationEvent.Image,
       integrationEvent.ReleaseDate,
       integrationEvent.YouTubeTrailerUri,
-      [.. integrationEvent.Genres],
-      [.. integrationEvent.Directors.Select(d => new PersonRequest(d.Name, d.ImdbId))],
-      [.. integrationEvent.Actors.Select(d => new PersonRequest(d.Name, d.ImdbId))],
-      [.. integrationEvent.Writers.Select(d => new PersonRequest(d.Name, d.ImdbId))],
-      [.. integrationEvent.Producers.Select(d => new PersonRequest(d.Name, d.ImdbId))],
-      [.. integrationEvent.ProductionCompanies.Select(pc => new ProductionCompanyRequest(pc.Name, pc.ImdbId))]);
+      [.. integrationEvent.Genres.Select(g => new GenreRequest(g.Tmdb, g.Name))],
+      [.. integrationEvent.Directors.Select(d => new PersonRequest(d.Name, d.ImdbId, d.TmdbId))],
+      [.. integrationEvent.Actors.Select(d => new PersonRequest(d.Name, d.ImdbId, d.TmdbId))],
+      [.. integrationEvent.Writers.Select(d => new PersonRequest(d.Name, d.ImdbId, d.TmdbId))],
+      [.. integrationEvent.Producers.Select(d => new PersonRequest(d.Name, d.ImdbId, d.TmdbId))],
+      [.. integrationEvent.ProductionCompanies.Select(pc => new ProductionCompanyRequest(pc.Name, pc.ImdbId, pc.TmdbId))]);
     var result = await _sender.Send(command, cancellationToken);
 
     if (result.IsFailure)

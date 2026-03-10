@@ -9,6 +9,8 @@ public static class RealTimeUpdatesModule
   {
     ArgumentNullException.ThrowIfNull(configuration);
 
+    services.AddSignalR();
+
     services.AddDomainEventHandlers();
 
     services.AddIntegrationEventHandlers();
@@ -16,8 +18,6 @@ public static class RealTimeUpdatesModule
     services.AddRealTimeUpdatesInfrastructure(configuration);
 
     services.AddRealTimeUpdatesFeatures();
-
-    services.AddSignalR();
 
     return services;
   }

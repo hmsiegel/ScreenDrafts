@@ -1,8 +1,8 @@
-namespace ScreenDrafts.Modules.RealTimeUpdates.IntegrationTests.Doubles;
+﻿namespace ScreenDrafts.Modules.RealTimeUpdates.IntegrationTests.Doubles;
 
 internal sealed record SentMessage(string GroupName, string Method, object?[] Args);
 
-internal sealed class TestHubContext : IHubContext
+internal sealed class TestHubContext : IHubContext<DraftHub>
 {
   private readonly RecordingHubClients _clients = new();
 

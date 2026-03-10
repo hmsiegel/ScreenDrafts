@@ -17,6 +17,7 @@ public sealed class Movie : AggregateRoot<MovieId, Guid>
     string? releaseDate,
     Uri? youtubeTrailerUrl,
     string imdbId,
+    int tmdbId,
     MovieId? id = null)
     : base(id ?? MovieId.CreateUnique())
   {
@@ -26,6 +27,7 @@ public sealed class Movie : AggregateRoot<MovieId, Guid>
     Image = Guard.Against.NullOrWhiteSpace(image);
     ReleaseDate = releaseDate;
     YoutubeTrailerUrl = youtubeTrailerUrl;
+    TmdbId = tmdbId;
     ImdbId = Guard.Against.NullOrWhiteSpace(imdbId);
   }
 
@@ -34,6 +36,8 @@ public sealed class Movie : AggregateRoot<MovieId, Guid>
   }
 
   public string ImdbId { get; private set; } = default!;
+
+  public int TmdbId { get; private set; }
 
   public string Title { get; private set; } = default!;
 
@@ -97,6 +101,7 @@ public sealed class Movie : AggregateRoot<MovieId, Guid>
     string? releaseDate,
     Uri? youtubeTrailerUrl,
     string imdbId,
+    int tmdbId,
     MovieId? id = null)
   {
     if (string.IsNullOrWhiteSpace(title) || string.IsNullOrWhiteSpace(imdbId))
@@ -112,9 +117,10 @@ public sealed class Movie : AggregateRoot<MovieId, Guid>
       releaseDate: releaseDate,
       youtubeTrailerUrl: youtubeTrailerUrl,
       imdbId: imdbId,
+      tmdbId: tmdbId,
       id: id);
 
-    movie.Raise(new MovieCreatedDomainEvent(movie.Id.Value, imdbId));
+    movie.Raise(new MovieCreatedDomainEvent(movie.Id.Value, imdbId, movie.TmdbId));
 
     return Result.Success(movie);
   }

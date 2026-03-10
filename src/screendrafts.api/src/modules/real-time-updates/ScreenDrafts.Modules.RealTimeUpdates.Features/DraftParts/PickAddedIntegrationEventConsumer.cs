@@ -1,12 +1,12 @@
 ﻿namespace ScreenDrafts.Modules.RealTimeUpdates.Features.DraftParts;
 
 internal sealed partial class PickAddedIntegrationEventConsumer(
-  IHubContext hubContext,
+  IHubContext<DraftHub> hubContext,
   ILogger<PickAddedIntegrationEventConsumer> logger)
   : IntegrationEventHandler<PickAddedIntegrationEvent>
 {
   private readonly ILogger<PickAddedIntegrationEventConsumer> _logger = logger;
-  private readonly IHubContext _hubContext = hubContext;
+  private readonly IHubContext<DraftHub> _hubContext = hubContext;
 
   public override async Task Handle(PickAddedIntegrationEvent integrationEvent, CancellationToken cancellationToken = default)
   {

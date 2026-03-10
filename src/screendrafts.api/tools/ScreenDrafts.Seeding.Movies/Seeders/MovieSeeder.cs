@@ -56,6 +56,7 @@ internal sealed class MovieSeeder(
         newMovie.ReleaseDate,
         uri,
         newMovie.ImdbId,
+        newMovie.TmdbId,
         MovieId.Create(Guid.Parse(newMovie.Id))).Value;
       _dbContext.Movies.Add(movie);
     }

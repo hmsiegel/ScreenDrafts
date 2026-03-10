@@ -45,6 +45,11 @@ internal sealed class MovieRepository(MoviesDbContext context) : IMovieRepositor
     return await _context.Movies.AnyAsync(m => m.ImdbId == imdbId, cancellationToken);
   }
 
+  public async Task<bool> ExistsAsync(int tmdbId, CancellationToken cancellationToken = default)
+  {
+    return await _context.Movies.AnyAsync(m => m.TmdbId == tmdbId, cancellationToken);
+  }
+
   public async Task<Movie?> FindByImdbIdAsync(string imdbId, CancellationToken cancellationToken = default)
   {
     return await _context.Movies
@@ -57,11 +62,31 @@ internal sealed class MovieRepository(MoviesDbContext context) : IMovieRepositor
       .SingleOrDefaultAsync(m => m.ImdbId == imdbId, cancellationToken);
   }
 
+  public async Task<Movie?> FindByTmdbIdAsync(int tmdbId, CancellationToken cancellationToken = default)
+  {
+    return await _context.Movies
+      .Include(m => m.MovieGenres)
+      .Include(m => m.MovieActors)
+      .Include(m => m.MovieDirectors)
+      .Include(m => m.MovieWriters)
+      .Include(m => m.MovieProducers)
+      .Include(m => m.MovieProductionCompanies)
+      .SingleOrDefaultAsync(m => m.TmdbId == tmdbId, cancellationToken);
+  }
+
   public async Task<HashSet<string>> GetExistingMovieImdbsAsync(IEnumerable<string> imdbIds, CancellationToken cancellationToken = default)
   {
     return await _context.Movies
       .Where(m => imdbIds.Contains(m.ImdbId))
       .Select(m => m.ImdbId)
       .ToHashSetAsync(cancellationToken);
+  }
+
+  public async Task<HashSet<int>> GetExistingMovieTmdbsAsync(IEnumerable<int> tmdbIds, CancellationToken cancellationToken = default)
+  {
+    return [.. await _context.Movies
+      .Where(m => tmdbIds.Contains(m.TmdbId))
+      .Select(m => m.TmdbId)
+      .ToListAsync(cancellationToken)];
   }
 }

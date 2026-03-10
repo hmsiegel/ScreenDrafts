@@ -70,13 +70,14 @@ public sealed class GetMovieSummaryTests(MoviesIntegrationTestWebAppFactory fact
     var genre = MovieFactory.CreateGenre().Value;
     var command = new AddMovieCommand(
       movie.ImdbId,
+      movie.TmdbId,
       movie.Title,
       movie.Year,
       movie.Plot!,
       movie.Image,
       movie.ReleaseDate,
       movie.YoutubeTrailerUrl,
-      [genre.Name],
+      [new GenreRequest(genre.TmdbId, genre.Name)],
       [],
       [],
       [],

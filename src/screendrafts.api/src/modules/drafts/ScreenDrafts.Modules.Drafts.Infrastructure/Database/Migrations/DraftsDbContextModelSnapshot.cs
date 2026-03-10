@@ -525,8 +525,17 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasColumnType("text")
                         .HasColumnName("movie_title");
 
+                    b.Property<int?>("TmdbId")
+                        .HasColumnType("integer")
+                        .HasColumnName("tmdb_id");
+
                     b.HasKey("Id")
                         .HasName("pk_movies");
+
+                    b.HasIndex("TmdbId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_movies_tmdb_id")
+                        .HasFilter("tmdb_id IS NOT NULL");
 
                     b.ToTable("movies", "drafts");
                 });

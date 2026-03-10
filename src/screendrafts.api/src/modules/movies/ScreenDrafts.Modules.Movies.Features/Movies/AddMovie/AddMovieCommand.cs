@@ -2,13 +2,14 @@
 
 internal sealed record AddMovieCommand(
   string ImdbId,
+  int TmdbId,
   string Title,
   string Year,
   string Plot,
   string Image,
   string? ReleaseDate,
   Uri? YouTubeTrailerUrl,
-  IReadOnlyCollection<string> Genres,
+  IReadOnlyCollection<GenreRequest> Genres,
   IReadOnlyCollection<PersonRequest>? Directors,
   IReadOnlyCollection<PersonRequest>? Actors,
   IReadOnlyCollection<PersonRequest>? Writers,

@@ -10,11 +10,13 @@ public sealed class Person : AggregateRoot<PersonId, Guid>
   private Person(
     string imdbId,
     string name,
+    int tmdbId,
     PersonId? id = null)
   {
     Id = id ?? PersonId.CreateUnique();
     ImdbId = Guard.Against.NullOrWhiteSpace(imdbId);
     Name = Guard.Against.NullOrWhiteSpace(name);
+    TmdbId = tmdbId;
   }
 
   private Person()
@@ -22,6 +24,7 @@ public sealed class Person : AggregateRoot<PersonId, Guid>
   }
 
   public string ImdbId { get; private set; } = default!;
+  public int TmdbId { get; private set; }
   public string Name { get; private set; } = default!;
 
   public IReadOnlyList<MovieActor> MovieActors => _movieActors.AsReadOnly();
@@ -32,11 +35,13 @@ public sealed class Person : AggregateRoot<PersonId, Guid>
   public static Person Create(
     string imdbId,
     string name,
+    int tmdbId,
     PersonId? id = null)
   {
     return new Person(
       imdbId: imdbId,
       name: name,
+      tmdbId: tmdbId,
       id: id);
   }
 

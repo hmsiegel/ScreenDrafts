@@ -5,8 +5,11 @@ public interface IMovieRepository : IRepository
   void Add(Movie movie);
 
   Task<bool> ExistsAsync(string imdbId, CancellationToken cancellationToken = default);
+  Task<bool> ExistsAsync(int tmdbId, CancellationToken cancellationToken = default);
 
   Task<Movie?> FindByImdbIdAsync(string imdbId, CancellationToken cancellationToken = default);
+
+  Task<Movie?> FindByTmdbIdAsync(int tmdbId, CancellationToken cancellationToken = default);
 
   void AddMovieActor(Movie movie, Person actor);
 
@@ -21,6 +24,7 @@ public interface IMovieRepository : IRepository
   void AddMovieProductionCompany(Movie movie, ProductionCompany productionCompany);
 
   Task<HashSet<string>> GetExistingMovieImdbsAsync(IEnumerable<string> imdbIds, CancellationToken cancellationToken = default);
+  Task<HashSet<int>> GetExistingMovieTmdbsAsync(IEnumerable<int> tmdbIds, CancellationToken cancellationToken = default);
 }
 
 
