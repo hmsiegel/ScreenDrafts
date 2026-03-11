@@ -75,4 +75,14 @@ public class DomainTests : BaseTest
 
     failingTypes.Should().BeEmpty();
   }
+
+  [Fact]
+  public void DomainLayer_ShouldNotDependOn_EntityFrameworkCore()
+  {
+    Types.InAssembly(DomainAssembly)
+        .Should()
+        .NotHaveDependencyOn("Microsoft.EntityFrameworkCore")
+        .GetResult()
+        .ShouldBeSuccessful();
+  }
 }

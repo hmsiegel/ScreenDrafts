@@ -32,4 +32,14 @@ public class LayerTests : BaseTest
         .GetResult()
         .ShouldBeSuccessful();
   }
+
+  [Fact]
+  public void InfrastructureLayer_ShouldNotHaveDependencyOn_FeaturesLayer()
+  {
+    Types.InAssembly(InfrastructureAssembly)
+        .Should()
+        .NotHaveDependencyOn(FeaturesAssembly.GetName().Name)
+        .GetResult()
+        .ShouldBeSuccessful();
+  }
 }

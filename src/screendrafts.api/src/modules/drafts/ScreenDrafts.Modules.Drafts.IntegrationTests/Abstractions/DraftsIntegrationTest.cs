@@ -30,6 +30,8 @@ public abstract class DraftsIntegrationTest(DraftsIntegrationTestWebAppFactory f
         drafts.series,
         drafts.picks,
         drafts.game_boards,
+        drafts.draft_board_items,
+        drafts.draft_boards,
         drafts.movies,
         drafts.trivia_results,
         drafts.vetoes,
@@ -46,6 +48,17 @@ public abstract class DraftsIntegrationTest(DraftsIntegrationTestWebAppFactory f
       .OrderBy(p => p.PartIndex)
       .Select(p => p.Id.Value)
       .FirstAsync();
+  }
+
+  protected async Task CreateMovieInDbAsync(int tmdbId)
+  {
+    var movie = Movie.Create(
+      movieTitle: "Test Movie",
+      imdbId: $"tt{tmdbId:D7}",
+      id: Guid.NewGuid(),
+      tmdbId: tmdbId).Value;
+    DbContext.Add(movie);
+    await DbContext.SaveChangesAsync();
   }
 
   protected async Task<string?> GetFirstParticipantPublicIdAsync(Guid draftPartId)

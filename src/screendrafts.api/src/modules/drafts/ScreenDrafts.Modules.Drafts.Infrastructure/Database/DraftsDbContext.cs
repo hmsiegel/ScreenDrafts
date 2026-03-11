@@ -43,6 +43,8 @@ public sealed class DraftsDbContext(DbContextOptions<DraftsDbContext> options)
 
   internal DbSet<DraftPartParticipant> DraftPartParticipants { get; set; }
 
+  internal DbSet<DraftBoard> DraftBoards { get; set; }
+
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
     ArgumentNullException.ThrowIfNull(modelBuilder);

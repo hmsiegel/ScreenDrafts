@@ -18,4 +18,5 @@ public static class PublicIdPrefixes
   public const string CommissionerOverride = "co";
   public const string Person = "pe";
   public const string User = "u";
+  public const string DraftBoard = "db";
 }

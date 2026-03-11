@@ -10,6 +10,7 @@ global using ScreenDrafts.Common.Abstractions.Results;
 global using ScreenDrafts.Common.Domain;
 global using ScreenDrafts.Modules.Drafts.Domain.Campaigns;
 global using ScreenDrafts.Modules.Drafts.Domain.Categories;
+global using ScreenDrafts.Modules.Drafts.Domain.DraftBoards.DomainEvents;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafters;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafters.DomainEvents;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafters.Errors;

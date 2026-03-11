@@ -99,9 +99,13 @@ public sealed partial class DraftPart
 
     Raise(new PickAddedDomainEvent(
       Id.Value,
+      PublicId,
       movie.ImdbId,
-      movie.MovieTitle));
-      
+      movie.TmdbId,
+      movie.MovieTitle,
+      participantId.Value,
+      participantId.Kind.Value));
+
 
     return Result.Success(pick.Id);
   }
@@ -170,8 +174,12 @@ public sealed partial class DraftPart
       return apply;
     }
 
-    Raise(new VetoAddedDomainEvent(Id.Value));
-
+    Raise(new VetoAddedDomainEvent(
+      Id.Value,
+      PublicId,
+      pick.Movie.TmdbId,
+      participant.Id.Value,
+      participant.ParticipantKindValue.Value));
     return Result.Success();
   }
 
@@ -229,7 +237,7 @@ public sealed partial class DraftPart
 
     participant.SpendVetoOverride(bugdet.MaxVetoOverrides);
 
-    Raise(new VetoOverrideAddedDomainEvent(Id.Value));
+    Raise(new VetoOverrideAddedDomainEvent(Id.Value, PublicId));
 
     return Result.Success();
   }
@@ -256,7 +264,7 @@ public sealed partial class DraftPart
 
     playedBy.AddCommissionerOverride();
 
-    Raise(new CommissionerOverrideAppliedDomainEvent(Id.Value));
+    Raise(new CommissionerOverrideAppliedDomainEvent(Id.Value, PublicId));
 
     return Result.Success();
   }

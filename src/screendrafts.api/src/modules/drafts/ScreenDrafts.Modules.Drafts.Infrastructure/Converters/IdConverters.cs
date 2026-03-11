@@ -1,7 +1,4 @@
-﻿using ScreenDrafts.Modules.Drafts.Domain.DrafterTeams;
-using ScreenDrafts.Modules.Drafts.Domain.Participants;
-
-namespace ScreenDrafts.Modules.Drafts.Infrastructure.Converters;
+﻿namespace ScreenDrafts.Modules.Drafts.Infrastructure.Converters;
 
 internal static class IdConverters
 {
@@ -84,4 +81,9 @@ internal static class IdConverters
     => new(
       v => v.Value,
       v => DraftPositionId.Create(v));
+
+  public static ValueConverter<DraftBoardId, Guid> DraftBoardIdConverter =>
+    new(
+      v => v.Value,
+      value => DraftBoardId.Create(value));
 }

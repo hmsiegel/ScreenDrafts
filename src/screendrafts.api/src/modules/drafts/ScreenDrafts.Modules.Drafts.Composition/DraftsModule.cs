@@ -1,5 +1,6 @@
 ﻿using ScreenDrafts.Common.Application.EventBus.Dispatchers;
 using ScreenDrafts.Common.Application.Messaging.Dispatchers;
+using ScreenDrafts.Modules.Drafts.Features.Drafts.DraftBoards;
 
 namespace ScreenDrafts.Modules.Drafts.Composition;
 
@@ -44,6 +45,7 @@ public static class DraftsModule
   {
     services.AddScoped(typeof(IPipelineBehavior<,>), typeof(DraftsUnitOfWorkBehavior<,>));
     services.AddScoped<ParticipantResolver>();
+    services.AddScoped<DraftBoardParticipantResolver>();
     services.AddScoped<IAdministrationIntegrationEventDispatcher, DraftsIntegrationEventDispatcher>();
     services.AddScoped<IDraftsDomainEventDispatcher, DraftsDomainEventDispatcher>();
     return services;

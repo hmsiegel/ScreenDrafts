@@ -142,10 +142,12 @@ internal sealed class TmdbService(
       [property: JsonPropertyName("crew")] IReadOnlyList<TmdbCrewApiResponse> Crew);
 
   private sealed record TmdbCastApiResponse(
+      [property: JsonPropertyName("id")] int Id,
       [property: JsonPropertyName("name")] string Name,
       [property: JsonPropertyName("known_for_department")] string? KnownForDepartment);
 
   private sealed record TmdbCrewApiResponse(
+      [property: JsonPropertyName("id")] int Id,
       [property: JsonPropertyName("name")] string Name,
       [property: JsonPropertyName("job")] string Job,
       [property: JsonPropertyName("department")] string Department);

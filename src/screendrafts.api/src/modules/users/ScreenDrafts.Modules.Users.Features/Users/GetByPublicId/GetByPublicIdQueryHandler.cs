@@ -10,7 +10,8 @@ internal sealed class GetByPublicIdQueryHandler(IDbConnectionFactory dbConnectio
 
     const string query = $"""
       SELECT
-        u.public_id As {nameof(GetByPublicIdResponse.UserId)},
+        u.id As {nameof(GetByPublicIdResponse.UserId)},
+        u.public_id As {nameof(GetByPublicIdResponse.PublicId)},
         u.email as {nameof(GetByPublicIdResponse.Email)},
         u.first_name As {nameof(GetByPublicIdResponse.FirstName)},
         u.middle_name As {nameof(GetByPublicIdResponse.MiddleName)},

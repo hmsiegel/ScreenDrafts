@@ -11,4 +11,8 @@ public static class MovieErrors
   public static SDError NotFound(string imdbId) => SDError.NotFound(
     "Movies.NotFound",
     $"The movie with the IMDB ID {imdbId} was not found.");
+
+  public static SDError NotFound(int tmdbId) => SDError.NotFound(
+    "Movies.NotFound",
+    $"The movie with the TMDB ID {tmdbId} was not found.");
 }

@@ -42,14 +42,14 @@ public sealed class ListCategoriesTests(DraftsIntegrationTestWebAppFactory facto
     // Arrange
     var category1Command = new CreateCategoryCommand
     {
-      Name = Faker.Commerce.Categories(1)[0],
+      Name = $"{Faker.Commerce.Categories(1)[0]} {Faker.Random.AlphaNumeric(6)}",
       Description = Faker.Lorem.Sentence()
     };
     await Sender.Send(category1Command);
 
     var category2Command = new CreateCategoryCommand
     {
-      Name = Faker.Commerce.Categories(1)[0],
+      Name = $"{Faker.Commerce.Categories(1)[0]} {Faker.Random.AlphaNumeric(6)}",
       Description = Faker.Lorem.Sentence()
     };
     var category2Result = await Sender.Send(category2Command);
@@ -76,14 +76,14 @@ public sealed class ListCategoriesTests(DraftsIntegrationTestWebAppFactory facto
     // Arrange
     var category1Command = new CreateCategoryCommand
     {
-      Name = Faker.Commerce.Categories(1)[0],
+      Name = $"{Faker.Commerce.Categories(1)[0]} {Faker.Random.AlphaNumeric(6)}",
       Description = Faker.Lorem.Sentence()
     };
     await Sender.Send(category1Command);
 
     var category2Command = new CreateCategoryCommand
     {
-      Name = Faker.Commerce.Categories(1)[0],
+      Name = $"{Faker.Commerce.Categories(1)[0]} {Faker.Random.AlphaNumeric(6)}",
       Description = Faker.Lorem.Sentence()
     };
     var category2Result = await Sender.Send(category2Command);
@@ -149,7 +149,7 @@ public sealed class ListCategoriesTests(DraftsIntegrationTestWebAppFactory facto
     // Arrange
     var category1Command = new CreateCategoryCommand
     {
-      Name = Faker.Commerce.Categories(1)[0],
+      Name = $"{Faker.Commerce.Categories(1)[0]} {Faker.Random.AlphaNumeric(6)}",
       Description = Faker.Lorem.Sentence()
     };
     var category1Result = await Sender.Send(category1Command);
@@ -157,7 +157,7 @@ public sealed class ListCategoriesTests(DraftsIntegrationTestWebAppFactory facto
 
     var category2Command = new CreateCategoryCommand
     {
-      Name = Faker.Commerce.Categories(1)[0],
+      Name = $"{Faker.Commerce.Categories(1)[0]} {Faker.Random.AlphaNumeric(6)}",
       Description = Faker.Lorem.Sentence()
     };
     var category2Result = await Sender.Send(category2Command);

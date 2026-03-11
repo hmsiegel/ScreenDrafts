@@ -9,10 +9,20 @@ public static class MovieErrors
       "Movie.MovieAlreadyExists",
       $"The movie with the IMDB ID '{imdbId}' already exists.");
 
+  public static SDError MovieAlreadyExists(int tmdbId) =>
+    SDError.Conflict(
+      "Movie.MovieAlreadyExists",
+      $"The movie with the TMDB ID '{tmdbId}' already exists.");
+
   public static SDError MovieNotFound(string imdbId) =>
     SDError.NotFound(
       "Movie.MovieNotFound",
       $"The movie with the IMDB ID '{imdbId}' was not found.");
+
+  public static SDError MovieNotFound(int tmdbId) =>
+    SDError.NotFound(
+      "Movie.MovieNotFound",
+      $"The movie with the TMDB ID '{tmdbId}' was not found.");
 
   public static readonly SDError RequiredFieldsMissing =
     SDError.Failure(

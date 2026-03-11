@@ -1,18 +1,18 @@
 ﻿namespace ScreenDrafts.Modules.Integrations.Features.Movies.FetchMovie;
 
-internal sealed class CommandHandler(
+internal sealed class FetchMovieCommandHandler(
   IEventBus eventBus,
   IDateTimeProvider dateTimeProvider,
   ISender sender)
-  : ICommandHandler<Command>
+  : ICommandHandler<FetchMovieCommand>
 {
   private readonly IEventBus _eventBus = eventBus;
   private readonly IDateTimeProvider _dateTimeProvider = dateTimeProvider;
   private readonly ISender _sender = sender;
 
-  public async Task<Result> Handle(Command command, CancellationToken cancellationToken)
+  public async Task<Result> Handle(FetchMovieCommand command, CancellationToken cancellationToken)
   {
-    var response = await _sender.Send(new GetOnlineMovie.GetOnlineMovieCommand(command.ImdbId), cancellationToken);
+    var response = await _sender.Send(new GetOnlineMovieCommand(command.ImdbId), cancellationToken);
 
     if (response.IsFailure)
     {

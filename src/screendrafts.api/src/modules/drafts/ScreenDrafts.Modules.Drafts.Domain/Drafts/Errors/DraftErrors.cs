@@ -197,4 +197,9 @@ public static partial class DraftErrors
         SDError.Conflict(
           "Drafts.CannotUpdateCompletedOrCancelledDraft",
           $"Cannot update draft with public id {publicId} because it is completed or cancelled.");
+
+  public static SDError ParticipantNotFound(string userPublicId) =>
+    SDError.NotFound(
+      "DraftBoard.ParticipantNotFound",
+      $"Participant with public id {userPublicId} was not found.");
 }

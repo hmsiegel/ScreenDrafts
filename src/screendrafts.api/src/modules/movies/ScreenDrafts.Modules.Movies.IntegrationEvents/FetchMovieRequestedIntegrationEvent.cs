@@ -5,8 +5,8 @@ namespace ScreenDrafts.Modules.Movies.IntegrationEvents;
 public sealed class FetchMovieRequestedIntegrationEvent(
   Guid id,
   DateTime occurredOnUtc,
-  string imdbId)
+  int tmdbId)
   : IntegrationEvent(id, occurredOnUtc)
 {
-  public string ImdbId { get; init; } = imdbId;
+  public int TmdbId { get; init; } = tmdbId;
 }

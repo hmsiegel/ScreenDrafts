@@ -16,6 +16,13 @@ internal static class DraftsAuth
     internal const string DraftUpdate = "draft:update";
     internal const string DraftDelete = "draft:delete"; // only if allowed
 
+    // Draft Boards
+    internal const string DraftBoardRead = "draft-board:read";
+    internal const string DraftBoardList = "draft-board:list";
+    internal const string DraftBoardCreate = "draft-board:create";
+    internal const string DraftBoardUpdate = "draft-board:update";
+    internal const string DraftBoardDelete = "draft-board:delete";
+
     // Draft Parts
     internal const string DraftPartRead = "draft-part:read";
     internal const string DraftPartList = "draft-part:list";

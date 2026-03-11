@@ -1,12 +1,26 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.Picks.GetPickList;
 
-internal sealed class GetPickListQueryHandler(IDbConnectionFactory dbConnectionFactory)
+internal sealed class GetPickListQueryHandler(
+  IDbConnectionFactory dbConnectionFactory,
+  ICacheService cacheService)
   : IQueryHandler<GetPickListQuery, GetPickListResponse>
 {
   private readonly IDbConnectionFactory _dbConnectionFactory = dbConnectionFactory;
+  private readonly ICacheService _cacheService = cacheService;
+
+  private static readonly TimeSpan _cacheExpiration = TimeSpan.FromSeconds(60);
 
   public async Task<Result<GetPickListResponse>> Handle(GetPickListQuery request, CancellationToken cancellationToken)
   {
+    var cacheKey = DraftsCacheKeys.PickList(request.DraftPartId);
+
+    var cached = await _cacheService.GetAsync<GetPickListResponse>(cacheKey, cancellationToken);
+
+    if (cached is not null)
+    {
+      return Result.Success(cached);
+    }
+
     await using var connection = await _dbConnectionFactory.OpenConnectionAsync(cancellationToken);
 
     const string pickSql =
@@ -163,10 +177,14 @@ internal sealed class GetPickListQueryHandler(IDbConnectionFactory dbConnectionF
       };
     }).ToList().AsReadOnly();
 
-    return Result.Success(new GetPickListResponse
+    var response = new GetPickListResponse
     {
       Picks = picks
-    });
+    };
+
+    await _cacheService.SetAsync(cacheKey, response, _cacheExpiration, cancellationToken);
+
+    return Result.Success(response);
   }
 
   private sealed record VetoOverrideRow(

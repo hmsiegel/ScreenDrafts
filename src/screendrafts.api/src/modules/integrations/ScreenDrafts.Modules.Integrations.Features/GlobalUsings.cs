@@ -4,7 +4,6 @@ global using MediatR;
 
 global using Microsoft.AspNetCore.Builder;
 global using Microsoft.AspNetCore.Http;
-global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.Extensions.Logging;
 
 global using ScreenDrafts.Common.Abstractions.Results;
@@ -21,6 +20,7 @@ global using ScreenDrafts.Common.Presentation.Http;
 global using ScreenDrafts.Common.Presentation.Results;
 global using ScreenDrafts.Modules.Integrations.Domain.Imdb;
 global using ScreenDrafts.Modules.Integrations.Domain.Movies;
+global using ScreenDrafts.Modules.Integrations.Features.Movies.GetOnlineMovie;
 global using ScreenDrafts.Modules.Integrations.Features.Movies.SearchFoMovie;
 global using ScreenDrafts.Modules.Integrations.IntegrationEvents;
 global using ScreenDrafts.Modules.Integrations.PublicApi;

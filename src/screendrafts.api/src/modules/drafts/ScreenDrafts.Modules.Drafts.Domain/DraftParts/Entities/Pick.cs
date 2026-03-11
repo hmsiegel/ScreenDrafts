@@ -298,8 +298,6 @@ public sealed class Pick : Entity<PickId>
 
     CommissionerOverride = commissionerOverride;
 
-    Raise(new CommissionerOverrideAppliedDomainEvent(DraftPart.Id.Value));
-
     return Result.Success();
   }
 

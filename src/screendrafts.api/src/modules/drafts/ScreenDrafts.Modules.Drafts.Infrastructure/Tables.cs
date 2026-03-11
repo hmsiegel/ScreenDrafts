@@ -38,4 +38,7 @@ internal static class Tables
   internal const string DraftPartRequiredMovieVersions = "draft_part_required_movie_versions";
   internal const string DraftPartParticipants = "draft_part_participants";
   internal const string DraftChannelReleases = "draft_channel_releases";
+  internal const string DraftBoards = "draft_boards";
+  internal const string DraftBoardItems = "draft_board_items";
+
 }

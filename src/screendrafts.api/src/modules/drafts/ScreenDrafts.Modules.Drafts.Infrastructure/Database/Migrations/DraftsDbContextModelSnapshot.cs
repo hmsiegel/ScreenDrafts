@@ -228,6 +228,56 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                     b.ToTable("categories", "drafts");
                 });
 
+            modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.DraftBoards.DraftBoard", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at_utc");
+
+                    b.Property<Guid>("DraftId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("draft_id");
+
+                    b.Property<string>("PublicId")
+                        .IsRequired()
+                        .HasMaxLength(19)
+                        .HasColumnType("character varying(19)")
+                        .HasColumnName("public_id");
+
+                    b.Property<DateTime?>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at_utc");
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "Participant", "ScreenDrafts.Modules.Drafts.Domain.DraftBoards.DraftBoard.Participant#Participant", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<int>("Kind")
+                                .HasColumnType("integer")
+                                .HasColumnName("participant_kind");
+
+                            b1.Property<Guid>("Value")
+                                .HasColumnType("uuid")
+                                .HasColumnName("participant_id");
+                        });
+
+                    b.HasKey("Id")
+                        .HasName("pk_draft_boards");
+
+                    b.HasIndex("DraftId")
+                        .HasDatabaseName("ix_draft_boards_draft_id");
+
+                    b.HasIndex("PublicId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_draft_boards_public_id");
+
+                    b.ToTable("draft_boards", "drafts");
+                });
+
             modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.DraftParts.DraftPart", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1061,6 +1111,51 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasDatabaseName("ix_drafter_team_drafter_drafter_team_id");
 
                     b.ToTable("drafter_team_drafter", "drafts");
+                });
+
+            modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.DraftBoards.DraftBoard", b =>
+                {
+                    b.OwnsMany("ScreenDrafts.Modules.Drafts.Domain.DraftBoards.DraftBoardItem", "Items", b1 =>
+                        {
+                            b1.Property<Guid>("draft_board_id")
+                                .HasColumnType("uuid")
+                                .HasColumnName("draft_board_id");
+
+                            b1.Property<int>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("integer")
+                                .HasColumnName("id");
+
+                            NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b1.Property<int>("Id"));
+
+                            b1.Property<string>("Notes")
+                                .HasMaxLength(500)
+                                .HasColumnType("character varying(500)")
+                                .HasColumnName("notes");
+
+                            b1.Property<int?>("Priority")
+                                .HasColumnType("integer")
+                                .HasColumnName("priority");
+
+                            b1.Property<int>("TmdbId")
+                                .HasColumnType("integer")
+                                .HasColumnName("tmdb_id");
+
+                            b1.HasKey("draft_board_id", "Id")
+                                .HasName("pk_draft_board_items");
+
+                            b1.HasIndex("draft_board_id", "TmdbId")
+                                .IsUnique()
+                                .HasDatabaseName("ix_draft_board_items_draft_board_id_tmdb_id");
+
+                            b1.ToTable("draft_board_items", "drafts");
+
+                            b1.WithOwner()
+                                .HasForeignKey("draft_board_id")
+                                .HasConstraintName("fk_draft_board_items_draft_boards_draft_board_id");
+                        });
+
+                    b.Navigation("Items");
                 });
 
             modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.DraftParts.DraftPart", b =>

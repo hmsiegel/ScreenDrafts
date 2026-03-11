@@ -31,5 +31,4 @@ public abstract class BaseTest
   protected const string UsersNamespace = "ScreenDrafts.Modules.Users";
   protected const string UsersIntegrationEventsNamespace = "ScreenDrafts.Modules.Users.IntegrationEvents";
   protected const string UsersPublicApiNameSpace = "ScreenDrafts.Modules.Users.PublicApi";
-
 }
