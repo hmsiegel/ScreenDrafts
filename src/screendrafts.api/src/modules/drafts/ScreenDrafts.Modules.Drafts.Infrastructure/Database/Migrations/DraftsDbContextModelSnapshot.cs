@@ -292,6 +292,11 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("draft_id");
 
+                    b.Property<string>("DraftPublicId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("draft_public_id");
+
                     b.Property<int>("DraftType")
                         .HasColumnType("integer")
                         .HasColumnName("draft_type");
@@ -769,6 +774,48 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasDatabaseName("ix_veto_overrides_veto_id");
 
                     b.ToTable("veto_overrides", "drafts");
+                });
+
+            modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.DraftPools.DraftPool", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at_utc");
+
+                    b.Property<Guid>("DraftId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("draft_id");
+
+                    b.Property<bool>("IsLocked")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_locked");
+
+                    b.Property<string>("PublicId")
+                        .IsRequired()
+                        .HasMaxLength(19)
+                        .HasColumnType("character varying(19)")
+                        .HasColumnName("public_id");
+
+                    b.Property<DateTime?>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at_utc");
+
+                    b.HasKey("Id")
+                        .HasName("pk_draft_pools");
+
+                    b.HasIndex("DraftId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_draft_pools_draft_id");
+
+                    b.HasIndex("PublicId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_draft_pools_public_id");
+
+                    b.ToTable("draft_pools", "drafts");
                 });
 
             modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.DrafterTeams.DrafterTeam", b =>
@@ -1405,6 +1452,38 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                     b.Navigation("Veto");
                 });
 
+            modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.DraftPools.DraftPool", b =>
+                {
+                    b.HasOne("ScreenDrafts.Modules.Drafts.Domain.Drafts.Draft", null)
+                        .WithOne("Pool")
+                        .HasForeignKey("ScreenDrafts.Modules.Drafts.Domain.DraftPools.DraftPool", "DraftId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_draft_pools_drafts_draft_id");
+
+                    b.OwnsMany("ScreenDrafts.Modules.Drafts.Domain.DraftPools.DraftPoolItem", "TmdbIds", b1 =>
+                        {
+                            b1.Property<Guid>("DraftPoolId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("draft_pool_id");
+
+                            b1.Property<int>("TmdbId")
+                                .HasColumnType("integer")
+                                .HasColumnName("tmdb_id");
+
+                            b1.HasKey("DraftPoolId", "TmdbId")
+                                .HasName("pk_draft_pool_items");
+
+                            b1.ToTable("draft_pool_items", "drafts");
+
+                            b1.WithOwner()
+                                .HasForeignKey("DraftPoolId")
+                                .HasConstraintName("fk_draft_pool_items_draft_pools_draft_pool_id");
+                        });
+
+                    b.Navigation("TmdbIds");
+                });
+
             modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Drafters.Drafter", b =>
                 {
                     b.HasOne("ScreenDrafts.Modules.Drafts.Domain.People.Person", "Person")
@@ -1571,6 +1650,8 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                     b.Navigation("DraftCategories");
 
                     b.Navigation("Parts");
+
+                    b.Navigation("Pool");
                 });
 
             modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Hosts.Host", b =>

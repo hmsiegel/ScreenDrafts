@@ -177,6 +177,18 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
     }
 
     services.RemoveAll<IHealthCheck>();
+
+    // Replace IEventBus with a no-op: the RabbitMQ guest user has a loopback
+    // restriction and cannot connect from outside the container in tests.
+    services.RemoveAll<ScreenDrafts.Common.Application.EventBus.IEventBus>();
+    services.AddSingleton<ScreenDrafts.Common.Application.EventBus.IEventBus, NoOpEventBus>();
+  }
+
+  private sealed class NoOpEventBus : ScreenDrafts.Common.Application.EventBus.IEventBus
+  {
+    public Task PublishAsync<T>(T integrationEvent, CancellationToken cancellationToken = default)
+      where T : ScreenDrafts.Common.Application.EventBus.IIntegrationEvent
+      => Task.CompletedTask;
   }
 
   public async Task InitializeAsync()

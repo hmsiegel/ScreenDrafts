@@ -1,5 +1,7 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts;
 
+using ScreenDrafts.Modules.Drafts.Domain.DraftPools;
+
 using Series = Series;
 
 public sealed partial class Draft : AggregateRoot<DraftId, Guid>
@@ -7,6 +9,7 @@ public sealed partial class Draft : AggregateRoot<DraftId, Guid>
   private readonly List<DraftPart> _parts = [];
   private readonly List<DraftCategory> _draftCategories = [];
   private readonly List<DraftChannelRelease> _channelReleases = [];
+  private DraftPool? _pool;
 
   private Draft(
   DraftId id,
@@ -48,6 +51,10 @@ public sealed partial class Draft : AggregateRoot<DraftId, Guid>
   public IReadOnlyCollection<DraftPart> Parts => _parts.AsReadOnly();
   public IReadOnlyCollection<DraftCategory> DraftCategories => _draftCategories.AsReadOnly();
   public IReadOnlyCollection<DraftChannelRelease> ChannelReleases => _channelReleases.AsReadOnly();
+  public bool HasPool => _pool is not null;
+  public DraftPool? Pool => _pool;
+
+
 
   public Guid? CampaignId { get; private set; }
   public Campaign? Campaign { get; private set; }
@@ -178,6 +185,28 @@ public sealed partial class Draft : AggregateRoot<DraftId, Guid>
     }
 
     UpdatedAtUtc = DateTime.UtcNow;
+  }
+
+  // Pool
+  public Result CreatePool(string publicId)
+  {
+    if (_pool is not null)
+    {
+      return Result.Failure(DraftPoolErrors.PoolAlreadyExists);
+    }
+
+    var createResult = DraftPool.Create(Id, publicId);
+
+    if (createResult.IsFailure)
+    {
+      return Result.Failure(createResult.Errors);
+    }
+
+    _pool = createResult.Value;
+
+    UpdatedAtUtc = DateTime.UtcNow;
+
+    return Result.Success();
   }
 
   // Campaigns

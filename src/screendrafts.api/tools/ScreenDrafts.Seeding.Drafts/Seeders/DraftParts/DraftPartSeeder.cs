@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Seeding.Drafts.Seeders.DraftParts;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace ScreenDrafts.Seeding.Drafts.Seeders.DraftParts;
 
 internal sealed class DraftPartSeeder(
   DraftsDbContext dbContext,
@@ -34,7 +36,7 @@ internal sealed class DraftPartSeeder(
     var draftIds = knownDraftParts.Select(d => DraftId.Create(d.DraftId)).Distinct().ToList();
     var draftsById = await _dbContext.Drafts
       .Where(d => draftIds.Contains(d.Id))
-      .Select(d => new { d.Id.Value, d.SeriesId, d.DraftType, d.CreatedAtUtc })
+      .Select(d => new { d.Id.Value, d.PublicId, d.SeriesId, d.DraftType, d.CreatedAtUtc })
       .ToDictionaryAsync(x => x.Value, cancellationToken);
 
     if (draftsById.Count != draftIds.Count)
@@ -64,9 +66,11 @@ internal sealed class DraftPartSeeder(
       var draft = draftsById[dp.DraftId];
       var draftId = DraftId.Create(dp.DraftId);
       var publicId = _publicIdGenerator.GeneratePublicId(PublicIdPrefixes.DraftPart);
+      var draftPublicId = draft.PublicId;
 
       var partResult = DraftPart.SeedCreate(
         draftId: draftId,
+        draftPublicId: draftPublicId,
         partIndex: dp.PartIndex,
         minPosition: dp.Min,
         maxPosition: dp.Max,

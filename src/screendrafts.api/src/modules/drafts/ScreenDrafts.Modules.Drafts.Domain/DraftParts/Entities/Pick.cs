@@ -72,14 +72,20 @@ public sealed class Pick : Entity<PickId>
   [NotMapped]
   public Guid? CommissionerOverrideId => CommissionerOverride?.Id;
 
-  public bool IsActiveOnFinalBoard => !IsVetoed && !IsCommissionerOverridden;
-
+  public bool IsActiveOnFinalBoard => !IsVetoed && !IsCommissionerOverridden; 
 
   [NotMapped]
   public bool IsVetoed => Veto is not null && !Veto.IsOverridden;
 
   [NotMapped]
   public bool IsCommissionerOverridden => CommissionerOverride is not null;
+
+  /// <summary>
+  /// A vetoed pick can be re-picked by the same participant or another eligible participant.
+  /// A commissioner-overridden pick is permanently removed from the board and cannot be re-picked.
+  /// </summary>
+  [NotMapped]
+  public bool IsEligibleForRePick => IsVetoed && !IsCommissionerOverridden;
 
   public IReadOnlyCollection<PickEvent> History => _history.AsReadOnly();
 

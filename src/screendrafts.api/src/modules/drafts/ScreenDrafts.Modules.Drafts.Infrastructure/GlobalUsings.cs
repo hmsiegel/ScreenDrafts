@@ -49,6 +49,7 @@ global using ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities;
 global using ScreenDrafts.Modules.Drafts.Domain.DraftParts.Enums;
 global using ScreenDrafts.Modules.Drafts.Domain.DraftParts.Repositories;
 global using ScreenDrafts.Modules.Drafts.Domain.DraftParts.ValueObjects;
+global using ScreenDrafts.Modules.Drafts.Domain.DraftPools;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafts;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafts.Enums;

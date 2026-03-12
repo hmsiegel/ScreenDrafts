@@ -16,10 +16,12 @@ public class DraftPartTests : DraftsBaseTest
     var partIndex = 1;
     var gameplay = CreateGameplaySnapshot();
     var publicId = Faker.Random.AlphaNumeric(10);
+    var draftPublicId = Faker.Random.AlphaNumeric(10);
 
     // Act
     var result = DraftPart.Create(
       draftId: draftId,
+      draftPublicId: draftPublicId,
       partIndex: partIndex,
       gameplay: gameplay,
       publicId: publicId);
@@ -39,10 +41,12 @@ public class DraftPartTests : DraftsBaseTest
     var partIndex = 1;
     var gameplay = CreateGameplaySnapshot();
     var publicId = Faker.Random.AlphaNumeric(10);
+    var draftPublicId = Faker.Random.AlphaNumeric(10);
 
     // Act
     var result = DraftPart.Create(
       draftId: null!,
+      draftPublicId: draftPublicId,
       partIndex: partIndex,
       gameplay: gameplay,
       publicId: publicId);
@@ -59,10 +63,12 @@ public class DraftPartTests : DraftsBaseTest
     var draftId = DraftId.CreateUnique();
     var gameplay = CreateGameplaySnapshot();
     var publicId = Faker.Random.AlphaNumeric(10);
+    var draftPublicId = Faker.Random.AlphaNumeric(10);
 
     // Act
     var result = DraftPart.Create(
       draftId: draftId,
+      draftPublicId : draftPublicId,
       partIndex: 0,
       gameplay: gameplay,
       publicId: publicId);
@@ -520,9 +526,11 @@ public class DraftPartTests : DraftsBaseTest
     var partIndex = 1;
     var gameplay = CreateGameplaySnapshot();
     var publicId = Faker.Random.AlphaNumeric(10);
+    var draftPublicId = Faker.Random.AlphaNumeric(10);
 
     return DraftPart.Create(
       draftId: draftId,
+      draftPublicId: draftPublicId,
       partIndex: partIndex,
       gameplay: gameplay,
       publicId: publicId).Value;

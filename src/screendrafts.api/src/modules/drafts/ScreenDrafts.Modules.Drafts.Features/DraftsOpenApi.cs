@@ -19,6 +19,7 @@ internal static class DraftsOpenApi
     public const string Categories = "Categories";
     public const string DrafterTeams = "DrafterTeams";
     public const string DraftBoards = "DraftBoards";
+    public const string DraftPools = "DraftPools";
   }
 
   public static class Names
@@ -94,6 +95,13 @@ internal static class DraftsOpenApi
     public const string DraftBoards_RemoveItem = "DraftBoards.RemoveItem";
     public const string DraftBoards_UpdateItem = "DraftBoards.UpdateItem";
     public const string DraftBoards_GetBoard = "DraftBoards.GetBoard";
+
+    // Draft Pools
+    public const string DraftPools_CreatePool = "DraftPools.CreatePool";
+    public const string DraftPools_AddItem = "DraftPools.AddItem";
+    public const string DraftPools_RemoveItem = "DraftPools.RemoveItem";
+    public const string DraftPools_UpdateItem = "DraftPools.UpdateItem";
+    public const  string DraftPools_GetPool = "DraftPools.GetPool";
 
     // Drafters
     public const string Drafters_CreateDrafter = "Drafters.CreateDrafter";

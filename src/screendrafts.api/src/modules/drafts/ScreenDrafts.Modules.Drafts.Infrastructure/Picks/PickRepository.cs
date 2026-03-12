@@ -29,6 +29,7 @@ internal sealed class PickRepository(DraftsDbContext dbContext) : IPickRepositor
   public async Task<Pick?> GetByDraftPartIdAndPlayOrderAsync(DraftPartId id, int playOrder, CancellationToken cancellationToken)
   {
     return await _dbContext.Picks
+      .Include(p => p.Movie)
       .SingleOrDefaultAsync(p => p.DraftPartId == id && p.PlayOrder == playOrder, cancellationToken);
   }
 }

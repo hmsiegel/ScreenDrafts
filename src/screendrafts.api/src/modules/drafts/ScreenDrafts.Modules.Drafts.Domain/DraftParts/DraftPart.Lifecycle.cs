@@ -37,9 +37,10 @@ public sealed partial class DraftPart
     Status = DraftPartStatus.InProgress;
 
     Raise(new DraftPartStartedDomainEvent(
-      Id.Value,
-      DraftId.Value,
-      PartIndex));
+      draftPartId: Id.Value,
+      draftId: DraftId.Value,
+      draftPublicId: DraftPublicId,
+      index: PartIndex));
 
     return Result.Success();
   }

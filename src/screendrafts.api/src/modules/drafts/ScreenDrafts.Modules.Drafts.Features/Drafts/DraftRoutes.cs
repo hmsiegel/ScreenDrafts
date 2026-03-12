@@ -15,4 +15,6 @@ internal static class DraftRoutes
   public const string Episode = ById + "/episode";
   public const string Board = ById + "/board";
   public const string BoardItem = Board + "/{tmdbId}";
+  public const string Pool = ById + "/pool";
+  public const string PoolItem = Pool + "/items";
 }

@@ -35,6 +35,7 @@ public sealed partial class Draft
 
     var partResult = DraftPart.Create(
       draftId: Id,
+      draftPublicId: PublicId,
       partIndex: partIndex,
       gameplay: gameplayResult.Value,
       publicId: publicId);

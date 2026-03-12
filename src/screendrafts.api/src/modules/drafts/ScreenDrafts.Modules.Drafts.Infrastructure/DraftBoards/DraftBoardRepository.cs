@@ -26,7 +26,9 @@ internal sealed class DraftBoardRepository(DraftsDbContext dbContext) : IDraftBo
 
   public Task<DraftBoard?> GetByDraftAndParticipantAsync(DraftId draftId, Participant participantId, CancellationToken cancellationToken)
   {
-    return _dbContext.DraftBoards.FirstOrDefaultAsync(x => x.DraftId == draftId && x.Participant == participantId, cancellationToken);
+    return _dbContext.DraftBoards
+      .Include(x => x.Items)
+      .FirstOrDefaultAsync(x => x.DraftId == draftId && x.Participant == participantId, cancellationToken);
   }
 
   public Task<DraftBoard?> GetByIdAsync(DraftBoardId id, CancellationToken cancellationToken)
@@ -41,6 +43,11 @@ internal sealed class DraftBoardRepository(DraftsDbContext dbContext) : IDraftBo
 
   public void Update(DraftBoard entity)
   {
-    _dbContext.Update(entity);
+    var entry = _dbContext.Entry(entity);
+    if (entry.State == EntityState.Detached)
+    {
+      _dbContext.Attach(entity);
+      entry.State = EntityState.Modified;
+    }
   }
 }

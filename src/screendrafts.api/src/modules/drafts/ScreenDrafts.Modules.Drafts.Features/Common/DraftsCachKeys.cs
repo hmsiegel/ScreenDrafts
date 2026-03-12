@@ -7,4 +7,7 @@ internal static class DraftsCacheKeys
 
   public static string DraftBoard(string draftPublicId, Guid userId) =>
     $"draft-board:{draftPublicId}:{userId}";
+
+  public static string DraftPool(string draftPublicId) =>
+    $"draft-pool:{draftPublicId}";
 }

@@ -40,12 +40,19 @@ internal sealed class UpdateDraftBoardItemCommandHandler(
 
     var updateResult = board.UpdateItem(request.TmdbId, request.Notes, request.Priority);
 
+    if (updateResult.IsFailure)
+    {
+      return updateResult;
+    }
+
     await _cacheService.RemoveAsync(
       key: DraftsCacheKeys.DraftBoard(
         draftPublicId: request.DraftId,
         userId: participant.UserId),
       cancellationToken: cancellationToken);
 
-    return Result.Success(updateResult);
+    _draftBoardRepository.Update(board);
+
+    return Result.Success();
   }
 }

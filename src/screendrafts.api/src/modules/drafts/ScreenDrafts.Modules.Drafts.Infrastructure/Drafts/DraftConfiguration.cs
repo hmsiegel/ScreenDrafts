@@ -81,5 +81,9 @@ internal sealed class DraftConfiguration : IEntityTypeConfiguration<Draft>
       .HasColumnType("xid")
       .ValueGeneratedOnAddOrUpdate()
       .IsConcurrencyToken();
+
+    builder.HasOne(d => d.Pool)
+      .WithOne()
+      .HasForeignKey<DraftPool>(p => p.DraftId);
   }
 }

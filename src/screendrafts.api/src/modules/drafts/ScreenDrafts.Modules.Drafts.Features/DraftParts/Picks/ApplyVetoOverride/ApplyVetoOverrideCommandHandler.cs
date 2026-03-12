@@ -64,6 +64,8 @@ internal sealed class ApplyVetoOverrideCommandHandler(
       return Result.Failure(overrideResult.Errors);
     }
 
+    draftPart.NotifyVetoOverrideApplied(pick);
+
     _pickRepository.Update(pick);
     _vetoRepository.UpdateVeto(veto);
 

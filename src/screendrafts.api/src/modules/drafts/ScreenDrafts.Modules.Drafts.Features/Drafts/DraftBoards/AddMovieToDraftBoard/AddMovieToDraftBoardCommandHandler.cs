@@ -36,6 +36,11 @@ internal sealed class AddMovieToDraftBoardCommandHandler(
       return Result.Failure(DraftErrors.NotFound(request.DraftId));
     }
 
+    if (draft.HasPool)
+    {
+      return Result.Failure(DraftPoolErrors.DraftHasPool);
+    }
+
     var board = await _draftBoardRepository.GetByDraftAndParticipantAsync(
       draftId: draft.Id,
       participantId: resolved.Participant,
@@ -83,6 +88,8 @@ internal sealed class AddMovieToDraftBoardCommandHandler(
           tmdbId: request.TmdbId),
         cancellationToken: cancellationToken);
     }
+
+    _draftBoardRepository.Update(board);
 
     return Result.Success();
   }

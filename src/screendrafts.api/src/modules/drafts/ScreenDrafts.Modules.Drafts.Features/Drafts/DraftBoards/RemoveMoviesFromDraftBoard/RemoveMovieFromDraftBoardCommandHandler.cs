@@ -46,6 +46,8 @@ internal sealed class RemoveMovieFromDraftBoardCommandHandler(
         userId: resolved.UserId),
       cancellationToken: cancellationToken);
 
+    _draftBoardRepository.Update(board);
+
     return removeResult;
   }
 }

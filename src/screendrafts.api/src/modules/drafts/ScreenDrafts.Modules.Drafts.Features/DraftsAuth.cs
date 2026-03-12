@@ -23,6 +23,11 @@ internal static class DraftsAuth
     internal const string DraftBoardUpdate = "draft-board:update";
     internal const string DraftBoardDelete = "draft-board:delete";
 
+    // Draft Pools
+    internal const string DraftPoolCreate = "draft-pool:create";
+    internal const string DraftPoolUpdate = "draft-pool:update";
+    internal const string DraftPoolRead = "draft-pool:read";
+
     // Draft Parts
     internal const string DraftPartRead = "draft-part:read";
     internal const string DraftPartList = "draft-part:list";

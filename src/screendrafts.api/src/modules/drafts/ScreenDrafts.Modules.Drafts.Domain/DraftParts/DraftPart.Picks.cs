@@ -98,13 +98,15 @@ public sealed partial class DraftPart
     }
 
     Raise(new PickAddedDomainEvent(
-      Id.Value,
-      PublicId,
-      movie.ImdbId,
-      movie.TmdbId,
-      movie.MovieTitle,
-      participantId.Value,
-      participantId.Kind.Value));
+      draftPartId: Id.Value,
+      draftPartPublicId: PublicId,
+      imdbId: movie.ImdbId,
+      tmdbId: movie.TmdbId,
+      movieTitle: movie.MovieTitle,
+      participantId: participantId.Value,
+      participantKind: participantId.Kind.Value,
+      draftId: DraftId.Value,
+      draftPublicId: DraftPublicId));
 
 
     return Result.Success(pick.Id);
@@ -175,11 +177,13 @@ public sealed partial class DraftPart
     }
 
     Raise(new VetoAddedDomainEvent(
-      Id.Value,
-      PublicId,
-      pick.Movie.TmdbId,
-      participant.Id.Value,
-      participant.ParticipantKindValue.Value));
+      draftPartId: Id.Value,
+      draftPartPublicId: PublicId,
+      tmdbId: pick.Movie.TmdbId,
+      participantId: participant.Id.Value,
+      participantKind: participant.ParticipantKindValue.Value,
+      draftId: DraftId.Value,
+      draftPublicId: DraftPublicId));
     return Result.Success();
   }
 
@@ -237,9 +241,35 @@ public sealed partial class DraftPart
 
     participant.SpendVetoOverride(bugdet.MaxVetoOverrides);
 
-    Raise(new VetoOverrideAddedDomainEvent(Id.Value, PublicId));
+    Raise(new VetoOverrideAddedDomainEvent(
+      draftPartId: Id.Value,
+      draftPartPublicId: PublicId,
+      tmdbId: pick.Movie.TmdbId!.Value,
+      participantId: pick.PlayedByParticipant.ParticipantId.Value,
+      participantKind: pick.PlayedByParticipant.ParticipantKindValue.Value,
+      draftId: DraftId.Value,
+      draftPublicId: DraftPublicId));
 
     return Result.Success();
+  }
+
+  public void NotifyVetoOverrideApplied(Pick pick)
+  {
+    ArgumentNullException.ThrowIfNull(pick);
+
+    if (pick.Movie?.TmdbId is null)
+    {
+      return;
+    }
+
+    Raise(new VetoOverrideAddedDomainEvent(
+      draftPartId: Id.Value,
+      draftPartPublicId: PublicId,
+      tmdbId: pick.Movie.TmdbId.Value,
+      participantId: pick.PlayedByParticipantIdValue,
+      participantKind: pick.PlayedByParticipantKindValue.Value,
+      draftId: DraftId.Value,
+      draftPublicId: DraftPublicId));
   }
 
   public Result ApplyCommissionerOverride(Pick pick)
@@ -264,8 +294,13 @@ public sealed partial class DraftPart
 
     playedBy.AddCommissionerOverride();
 
-    Raise(new CommissionerOverrideAppliedDomainEvent(Id.Value, PublicId));
-
+    Raise(new CommissionerOverrideAppliedDomainEvent(
+      draftPartId: Id.Value,
+      draftPartPublicId: PublicId,
+      tmdbId: pick.Movie.TmdbId ?? 0,
+      participantId: pick.PlayedByParticipant.ParticipantId.Value,
+      draftId: DraftId.Value,
+      draftPublicId: DraftPublicId));
     return Result.Success();
   }
 
@@ -345,7 +380,7 @@ public sealed partial class DraftPart
   }
 
   private bool IsMovieAlreadyPickedInThisPart(Guid movieId) =>
-    _picks.Any(p => p.MovieId == movieId && p.IsActiveOnFinalBoard);
+    _picks.Any(p => p.MovieId == movieId && !p.IsEligibleForRePick);
 
 
   private PartBudget ResolvePartBudget(ISeriesPolicyProvider series, SeriesId seriesId, DraftType draftType)

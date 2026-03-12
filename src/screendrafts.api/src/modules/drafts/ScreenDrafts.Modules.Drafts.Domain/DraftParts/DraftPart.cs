@@ -10,6 +10,7 @@ public sealed partial class DraftPart : AggregateRoot<DraftPartId, Guid>
 
   private DraftPart(
     DraftId draftId,
+    string draftPublicId,
     int partIndex,
     int? minPosition,
     int? maxPosition,
@@ -18,12 +19,18 @@ public sealed partial class DraftPart : AggregateRoot<DraftPartId, Guid>
     DraftPartId? id = null)
     : base(id ?? DraftPartId.CreateUnique())
   {
+    PublicId = publicId;
+
     DraftId = draftId;
+    DraftPublicId = draftPublicId;
+
     PartIndex = partIndex;
+
     MinPosition = minPosition;
     MaxPosition = maxPosition;
+
     CreatedAtUtc = createdAtUtc;
-    PublicId = publicId;
+
     Status = DraftPartStatus.Created;
     MovieVersionPolicyType = DraftPartMovieVersionPolicyType.None;
   }
@@ -34,6 +41,7 @@ public sealed partial class DraftPart : AggregateRoot<DraftPartId, Guid>
   }
 
   public DraftId DraftId { get; private set; } = default!;
+  public string DraftPublicId { get; private set; } = default!;
   public int? TotalPicks
   {
     get
@@ -75,6 +83,7 @@ public sealed partial class DraftPart : AggregateRoot<DraftPartId, Guid>
 
   public static Result<DraftPart> Create(
     DraftId draftId,
+    string draftPublicId,
     int partIndex,
     DraftPartGamePlaySnapshot gameplay,
     string publicId)
@@ -96,6 +105,7 @@ public sealed partial class DraftPart : AggregateRoot<DraftPartId, Guid>
 
     var draftPart = new DraftPart(
       draftId: draftId,
+      draftPublicId: draftPublicId,
       partIndex: partIndex,
       minPosition: gameplay.MinPosition,
       maxPosition: gameplay.MaxPosition,
@@ -120,6 +130,7 @@ public sealed partial class DraftPart : AggregateRoot<DraftPartId, Guid>
 
   internal static Result<DraftPart> SeedCreate(
     DraftId draftId,
+    string draftPublicId,
     int partIndex,
     int minPosition,
     int maxPosition,
@@ -158,6 +169,7 @@ public sealed partial class DraftPart : AggregateRoot<DraftPartId, Guid>
 
     var draftPart = new DraftPart(
       draftId: draftId,
+      draftPublicId: draftPublicId,
       partIndex: partIndex,
       minPosition: minPosition,
       maxPosition: maxPosition,

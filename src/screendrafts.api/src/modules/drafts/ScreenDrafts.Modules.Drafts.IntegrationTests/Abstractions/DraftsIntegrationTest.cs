@@ -1,4 +1,12 @@
-﻿using ScreenDrafts.Modules.Drafts.Domain.Drafters.ValueObjects;
+﻿using Dapper;
+
+using Newtonsoft.Json;
+
+using ScreenDrafts.Common.Application.Data;
+using ScreenDrafts.Common.Application.Messaging.Dispatchers;
+using ScreenDrafts.Common.Domain;
+using ScreenDrafts.Common.Infrastructure.Serialization;
+using ScreenDrafts.Modules.Drafts.Domain.Drafters.ValueObjects;
 
 namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Abstractions;
 
@@ -10,7 +18,8 @@ public abstract class DraftsIntegrationTest(DraftsIntegrationTestWebAppFactory f
   {
     await DbContext.Database.ExecuteSqlRawAsync(
       $"""
-      TRUNCATE TABLE 
+      TRUNCATE TABLE
+        drafts.outbox_messages,
         drafts.campaigns,
         drafts.categories,
         drafts.people,
@@ -32,6 +41,8 @@ public abstract class DraftsIntegrationTest(DraftsIntegrationTestWebAppFactory f
         drafts.game_boards,
         drafts.draft_board_items,
         drafts.draft_boards,
+        drafts.draft_pool_items,
+        drafts.draft_pools,
         drafts.movies,
         drafts.trivia_results,
         drafts.vetoes,
@@ -39,6 +50,50 @@ public abstract class DraftsIntegrationTest(DraftsIntegrationTestWebAppFactory f
       RESTART IDENTITY CASCADE;
       """);
   }
+
+  /// <summary>
+  /// Manually processes pending outbox messages, dispatching any domain events
+  /// whose handlers have not yet run (Quartz is disabled in tests).
+  /// </summary>
+  protected async Task ProcessOutboxAsync()
+  {
+    var connectionFactory = ServiceScope.ServiceProvider.GetRequiredService<IDbConnectionFactory>();
+    var dispatcher = ServiceScope.ServiceProvider.GetRequiredService<IDraftsDomainEventDispatcher>();
+    var scopeFactory = ServiceScope.ServiceProvider.GetRequiredService<IServiceScopeFactory>();
+
+    await using var connection = await connectionFactory.OpenConnectionAsync();
+    await using var transaction = await connection.BeginTransactionAsync();
+
+    var outboxMessages = (await connection.QueryAsync<OutboxRow>(
+      """
+      SELECT id AS Id, content AS Content
+      FROM drafts.outbox_messages
+      WHERE processed_on_utc IS NULL
+      ORDER BY occurred_on_utc
+      FOR UPDATE
+      """,
+      transaction: transaction))
+      .ToList();
+
+    foreach (var row in outboxMessages)
+    {
+      var domainEvent = JsonConvert.DeserializeObject<IDomainEvent>(
+        row.Content,
+        SerializerSettings.Instance)!;
+
+      using var scope = scopeFactory.CreateScope();
+      await dispatcher.DispatchAsync(domainEvent, scope.ServiceProvider);
+
+      await connection.ExecuteAsync(
+        "UPDATE drafts.outbox_messages SET processed_on_utc = @Now WHERE id = @Id",
+        new { Now = DateTime.UtcNow, row.Id },
+        transaction: transaction);
+    }
+
+    await transaction.CommitAsync();
+  }
+
+  private sealed record OutboxRow(Guid Id, string Content);
 
   protected async Task<Guid> GetFirstDraftPartIdAsync(string draftPublicId)
   {

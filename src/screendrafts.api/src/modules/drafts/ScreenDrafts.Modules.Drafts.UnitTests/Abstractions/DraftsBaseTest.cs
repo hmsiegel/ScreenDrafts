@@ -92,6 +92,7 @@ public abstract class DraftsBaseTest : BaseTest
 
     return DraftPart.Create(
       draftId: draft.Id,
+      draftPublicId: draft.PublicId,
       partIndex: Faker.Random.Int(1, 10),
       gameplay: DraftPartGamePlaySnapshot.Create(
         minPosition: 1,

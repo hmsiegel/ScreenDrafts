@@ -8,6 +8,8 @@ global using ScreenDrafts.Common.Abstractions.Results;
 global using ScreenDrafts.Common.UnitTests;
 global using ScreenDrafts.Modules.Drafts.Domain.Campaigns;
 global using ScreenDrafts.Modules.Drafts.Domain.Categories;
+global using ScreenDrafts.Modules.Drafts.Domain.DraftBoards;
+global using ScreenDrafts.Modules.Drafts.Domain.DraftPools;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafters;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafters.DomainEvents;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafters.Errors;
