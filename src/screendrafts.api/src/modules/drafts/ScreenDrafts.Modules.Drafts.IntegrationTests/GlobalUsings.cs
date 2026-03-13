@@ -45,6 +45,10 @@ global using ScreenDrafts.Modules.Drafts.Features.Drafts.DraftBoards.RemoveMovie
 global using ScreenDrafts.Modules.Drafts.Features.Drafts.DraftBoards.UpdateDraftBoardItem;
 global using ScreenDrafts.Modules.Drafts.Features.People.Create;
 global using ScreenDrafts.Modules.Drafts.Features.Drafts.SetDraftPartStatus;
+global using ScreenDrafts.Modules.Drafts.Features.Drafts.ListUpcomingDrafts;
+global using ScreenDrafts.Modules.Drafts.Features.Drafts.ListLatestDrafts;
+global using ScreenDrafts.Modules.Drafts.Features.DraftParts.SetReleaseDate;
+global using ScreenDrafts.Modules.Drafts.Domain.DraftParts.Enums;
 global using ScreenDrafts.Modules.Drafts.Features.Hosts.Create;
 global using ScreenDrafts.Modules.Drafts.Features.Hosts.Get;
 global using ScreenDrafts.Modules.Drafts.Features.Hosts.Search;

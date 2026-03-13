@@ -17,4 +17,6 @@ internal static class DraftRoutes
   public const string BoardItem = Board + "/{tmdbId}";
   public const string Pool = ById + "/pool";
   public const string PoolItem = Pool + "/items";
+  public const string Latest = Base + "/latest";
+  public const string Upcoming = Base + "/upcoming";
 }

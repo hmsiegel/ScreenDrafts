@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features;
+﻿using MassTransit;
+
+namespace ScreenDrafts.Modules.Drafts.Features;
 
 internal static class DraftsOpenApi
 {
@@ -39,6 +41,8 @@ internal static class DraftsOpenApi
     public const string Drafts_SetEpisodeNumber = "Drafts.SetEpisodeNumber";
     public const string Drafts_ListDrafts = "Drafts.ListDrafts";
     public const string Drafts_RemoveCategory = "Drafts.RemoveCategory";
+    public const string Drafts_ListLatestDrafts = "Drafts.ListLatestDrafts";
+    public const string Drafts_ListUpcomingDrafts = "Drafts.ListUpcomingDrafts";
 
     // Draft Parts
     public const string DraftParts_RemoveHost = "DraftParts.RemoveHost";
