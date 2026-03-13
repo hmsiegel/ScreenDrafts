@@ -52,6 +52,8 @@ internal static class DraftsOpenApi
     public const string DraftParts_ApplyCommissionerOverride = "DraftParts.ApplyCommissionerOverride";
     public const string DraftParts_SetDraftPosition = "DraftParts.SetDraftPosition";
     public const string DraftParts_AssignParticipantToPosition = "DraftParts.AssignParticipantToPosition";
+    public const string DraftParts_ListDraftPositions = "DraftParts.ListDraftPositions";
+    public const string DraftParts_ClearDraftPositionAssignment = "DraftParts.ClearDraftPositionAssignment";
     public const string DraftParts_RemoveParticipant = "DraftParts.RemoveParticipant";
     public const string DraftParts_AssignTriviaResults = "DraftParts.AssignTriviaResults";
     public const string DraftParts_PickList = "DraftParts.GetPickList";

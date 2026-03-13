@@ -23,8 +23,8 @@ internal static class DraftPartRoutes
   public const string Participants = "/draft-parts/{draftPartId}/participants";
   public const string SetCommunityParticipant = "/draft-parts/{draftPartId}/participants/community";
   public const string RemoveCommunityParticipant = "/draft-parts/{draftPartId}/participants/community/{communityId}";
-  public const string SetDraftPositions = "/draft-parts/{draftPartId}/positions";
-  public const string AssignParticipantToDraftPosition = "/draft-parts/{draftPartId}/positions/{positionId}/participant";
+  public const string DraftPositions = "/draft-parts/{draftPartId}/positions";
+  public const string ParticipantDraftPosition = "/draft-parts/{draftPartId}/positions/{positionId}/participant";
   public const string AssignTriviaResults = "/draft-parts/{draftPartId}/trivia-results";
 
   // Picks

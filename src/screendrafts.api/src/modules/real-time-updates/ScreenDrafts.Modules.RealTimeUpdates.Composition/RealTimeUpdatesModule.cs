@@ -43,6 +43,12 @@ public static class RealTimeUpdatesModule
 
     registrationConfigurator.AddConsumer<IntegrationEventConsumer<CommissionerOverrideAppliedIntegrationEvent>>()
       .Endpoint(c => c.InstanceId = instanceId);
+
+    registrationConfigurator.AddConsumer<IntegrationEventConsumer<DraftPositionAssignedIntegrationEvent>>()
+      .Endpoint(c => c.InstanceId = instanceId);
+
+    registrationConfigurator.AddConsumer<IntegrationEventConsumer<DraftPositionUnassignedIntegrationEvent>>()
+      .Endpoint(c => c.InstanceId = instanceId);
   }
 
 
