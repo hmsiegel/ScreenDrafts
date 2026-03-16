@@ -2,6 +2,9 @@
   <ItemGroup>
     <InternalsVisibleTo Include="ScreenDrafts.Modules.Drafts.IntegrationTests" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="CsvHelper" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\common\ScreenDrafts.Common.Application\ScreenDrafts.Common.Application.csproj" />

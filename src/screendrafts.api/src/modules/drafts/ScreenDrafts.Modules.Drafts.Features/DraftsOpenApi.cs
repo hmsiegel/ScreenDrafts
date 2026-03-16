@@ -1,6 +1,4 @@
-﻿using MassTransit;
-
-namespace ScreenDrafts.Modules.Drafts.Features;
+﻿namespace ScreenDrafts.Modules.Drafts.Features;
 
 internal static class DraftsOpenApi
 {
@@ -22,6 +20,7 @@ internal static class DraftsOpenApi
     public const string DrafterTeams = "DrafterTeams";
     public const string DraftBoards = "DraftBoards";
     public const string DraftPools = "DraftPools";
+    public const string CandidateLists = "CandidateLists";
   }
 
   public static class Names
@@ -129,5 +128,10 @@ internal static class DraftsOpenApi
     public const string Hosts_ListHosts = "Hosts.ListHosts";
     public const string Hosts_SearchHosts = "Hosts.SearchHosts";
 
+    // Candidate Lists
+    public const string CandidateLists_AddEntry = "CandidateLists.AddEntry";
+    public const string CandidateLists_BulkAddEntries = "CandidateLists.BulkAddEntries";
+    public const string CandidateLists_RemoveEntry = "CandidateLists.RemoveEntry";
+    public const string CandidateLists_GetList = "CandidateLists.GetList";
   }
 }

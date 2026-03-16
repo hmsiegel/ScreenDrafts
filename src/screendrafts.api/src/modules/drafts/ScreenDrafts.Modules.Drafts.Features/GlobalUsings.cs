@@ -5,9 +5,13 @@ global using System.Text;
 
 global using Ardalis.SmartEnum;
 
+global using CsvHelper;
+
 global using Dapper;
 
 global using FluentValidation;
+
+global using MassTransit;
 
 global using MediatR;
 
@@ -69,6 +73,7 @@ global using ScreenDrafts.Modules.Drafts.Features.Extensions;
 global using ScreenDrafts.Modules.Drafts.Features.Helpers;
 global using ScreenDrafts.Modules.Drafts.Features.People;
 global using ScreenDrafts.Modules.Drafts.IntegrationEvents;
+global using ScreenDrafts.Modules.Integrations.IntegrationEvents;
 global using ScreenDrafts.Modules.Movies.IntegrationEvents;
 global using ScreenDrafts.Modules.Users.IntegrationEvents;
 global using ScreenDrafts.Modules.Users.PublicApi;

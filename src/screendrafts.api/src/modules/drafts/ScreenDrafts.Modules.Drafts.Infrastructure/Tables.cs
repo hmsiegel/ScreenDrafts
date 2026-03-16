@@ -42,4 +42,5 @@ internal static class Tables
   internal const string DraftBoardItems = "draft_board_items";
   internal const string DraftPools = "draft_pools";
   internal const string DraftPoolItems = "draft_pool_items";
+  internal const string CandidateListEntries = "candidate_list_entries";
 }

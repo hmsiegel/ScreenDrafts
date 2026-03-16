@@ -1,8 +1,4 @@
-﻿using ScreenDrafts.Common.Application.EventBus.Dispatchers;
-using ScreenDrafts.Common.Application.Messaging.Dispatchers;
-using ScreenDrafts.Modules.Drafts.Features.Drafts.DraftBoards;
-
-namespace ScreenDrafts.Modules.Drafts.Composition;
+﻿namespace ScreenDrafts.Modules.Drafts.Composition;
 
 public static class DraftsModule
 {
@@ -38,6 +34,9 @@ public static class DraftsModule
       .Endpoint(c => c.InstanceId = instanceId);
 
     registrationConfigurator.AddConsumer<IntegrationEventConsumer<MovieAddedIntegrationEvent>>()
+      .Endpoint(c => c.InstanceId = instanceId);
+
+    registrationConfigurator.AddConsumer<IntegrationEventConsumer<MovieFetchedIntegrationEvent>>()
       .Endpoint(c => c.InstanceId = instanceId);
   }
 

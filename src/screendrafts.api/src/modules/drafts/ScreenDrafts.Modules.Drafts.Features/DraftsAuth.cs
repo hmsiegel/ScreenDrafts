@@ -28,6 +28,13 @@ internal static class DraftsAuth
     internal const string DraftPoolUpdate = "draft-pool:update";
     internal const string DraftPoolRead = "draft-pool:read";
 
+    // Candidate Lists
+    internal const string CandidateListRead = "candidate-list:read";
+    internal const string CandidateListList = "candidate-list:list";
+    internal const string CandidateListCreate = "candidate-list:create";
+    internal const string CandidateListUpdate = "candidate-list:update";
+    internal const string CandidateListDelete = "candidate-list:delete";
+
     // Draft Parts
     internal const string DraftPartRead = "draft-part:read";
     internal const string DraftPartList = "draft-part:list";
@@ -93,6 +100,5 @@ internal static class DraftsAuth
 
     internal const string DraftReadPatreon = "draft:read-patreon";
     internal const string PatreonSearch = "patreon:search";
-
   }
 }

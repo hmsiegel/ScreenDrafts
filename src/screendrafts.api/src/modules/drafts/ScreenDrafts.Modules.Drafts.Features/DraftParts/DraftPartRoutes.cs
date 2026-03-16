@@ -35,5 +35,10 @@ internal static class DraftPartRoutes
   public const string ApplyVeto = "/draft-parts/{draftPartId}/picks/{playOrder}/veto";
   public const string ApplyVetoOverride = "/draft-parts/{draftPartId}/veto-override/{pickId}";
   public const string ApplyCommissionerOverride = "/draft-parts/{draftPartId}/commissioner-override/{pickId}";
+
+  // Candidate Lists
+  public const string CandidateList = "/draft-parts/{draftPartId}/candidate-list";
+  public const string CandidateListBulkAdd = "/draft-parts/{draftPartId}/candidate-list/bulk";
+  public const string CandidateListEntry = "/draft-parts/{draftPartId}/candidate-list/{tmdbid}";
 }
 

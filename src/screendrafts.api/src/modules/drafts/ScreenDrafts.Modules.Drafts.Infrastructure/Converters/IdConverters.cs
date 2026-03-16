@@ -91,4 +91,9 @@ internal static class IdConverters
     new(
       v => v.Value,
       value => DraftPoolId.Create(value));
+
+  public static ValueConverter<CandidateListEntryId, Guid> CandidateListEntryIdConverter =>
+    new(
+      v => v.Value,
+      value => CandidateListEntryId.Create(value));
 }

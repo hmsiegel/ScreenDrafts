@@ -43,6 +43,7 @@ public abstract class DraftsIntegrationTest(DraftsIntegrationTestWebAppFactory f
         drafts.draft_boards,
         drafts.draft_pool_items,
         drafts.draft_pools,
+        drafts.candidate_list_entries,
         drafts.movies,
         drafts.trivia_results,
         drafts.vetoes,
