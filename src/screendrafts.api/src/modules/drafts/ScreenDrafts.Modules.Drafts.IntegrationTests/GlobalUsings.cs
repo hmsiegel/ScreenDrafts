@@ -53,6 +53,9 @@ global using ScreenDrafts.Modules.Drafts.Features.DraftParts.CandidateLists.AddC
 global using ScreenDrafts.Modules.Drafts.Features.DraftParts.CandidateLists.BulkAddCandidateEntries;
 global using ScreenDrafts.Modules.Drafts.Features.DraftParts.CandidateLists.RemoveCandidateListEntry;
 global using ScreenDrafts.Modules.Drafts.Features.DraftParts.CandidateLists.Get;
+global using ScreenDrafts.Modules.Drafts.Features.Drafts.DraftPools.BulkAddMoviesToDraftPool;
+global using ScreenDrafts.Modules.Drafts.Features.Drafts.DraftBoards.BulkAddMoviesToDraftBoard;
+global using ScreenDrafts.Modules.Drafts.Features.Common.BulkAdd;
 global using ScreenDrafts.Modules.Drafts.Domain.DraftParts.Enums;
 global using ScreenDrafts.Modules.Drafts.Features.Hosts.Create;
 global using ScreenDrafts.Modules.Drafts.Features.Hosts.Get;

@@ -50,6 +50,17 @@ internal sealed class MovieRepository(DraftsDbContext dbContext) : IMovieReposit
       .FirstOrDefaultAsync(m => m.TmdbId == tmdbId, ct);
   }
 
+  public async Task<HashSet<int>> GetExistingTmdbIdsAsync(IReadOnlyList<int> validTmdbIds, CancellationToken cancellationToken)
+  {
+    var existingIds = await _dbContext.Movies
+      .Where(m => m.TmdbId != null && validTmdbIds.Contains(m.TmdbId!.Value))
+      .Select(m => m.TmdbId!.Value)
+      .ToListAsync(cancellationToken);
+
+    return [..existingIds];
+
+  }
+
   public void Update(Movie entity)
   {
     _dbContext.Movies.Update(entity);

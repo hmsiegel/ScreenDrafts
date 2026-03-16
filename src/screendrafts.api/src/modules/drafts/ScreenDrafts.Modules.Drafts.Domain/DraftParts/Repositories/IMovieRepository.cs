@@ -8,4 +8,5 @@ public interface IMovieRepository : IRepository<Movie>
   Task<bool> ExistsAsync(Guid id, CancellationToken ct);
   Task<bool> ExistsByImdbIdAsync(string imdbId, CancellationToken ct);
   Task<bool> ExistsByTmdbIdAsync(int tmdbId, CancellationToken ct);
+  Task<HashSet<int>> GetExistingTmdbIdsAsync(IReadOnlyList<int> validTmdbIds, CancellationToken cancellationToken);
 }

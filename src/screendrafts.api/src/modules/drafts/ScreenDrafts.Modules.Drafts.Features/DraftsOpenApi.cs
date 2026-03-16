@@ -100,13 +100,15 @@ internal static class DraftsOpenApi
     public const string DraftBoards_RemoveItem = "DraftBoards.RemoveItem";
     public const string DraftBoards_UpdateItem = "DraftBoards.UpdateItem";
     public const string DraftBoards_GetBoard = "DraftBoards.GetBoard";
+    public const string DraftBoards_BulkAddItems = "DraftBoards.BulkAddItems";
 
     // Draft Pools
     public const string DraftPools_CreatePool = "DraftPools.CreatePool";
     public const string DraftPools_AddItem = "DraftPools.AddItem";
     public const string DraftPools_RemoveItem = "DraftPools.RemoveItem";
     public const string DraftPools_UpdateItem = "DraftPools.UpdateItem";
-    public const  string DraftPools_GetPool = "DraftPools.GetPool";
+    public const string DraftPools_GetPool = "DraftPools.GetPool";
+    public const string DraftPools_BulkAddItems = "DraftPools.BulkAddItems";
 
     // Drafters
     public const string Drafters_CreateDrafter = "Drafters.CreateDrafter";

@@ -1,6 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.CandidateLists.BulkAddCandidateEntries;
+﻿namespace ScreenDrafts.Modules.Drafts.Features.Common.BulkAdd;
 
-internal sealed record BulkAddCandidateEntriesResponse
+internal sealed record BulkAddMoviesResponse
 {
   public required int TotalRows { get; init; }
   public required int AddedEntries { get; init; }

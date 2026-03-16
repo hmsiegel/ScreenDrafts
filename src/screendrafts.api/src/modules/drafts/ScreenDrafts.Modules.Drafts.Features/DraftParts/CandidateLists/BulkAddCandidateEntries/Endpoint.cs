@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.CandidateLists.BulkAddCandidateEntries;
 
-internal sealed class Endpoint : ScreenDraftsEndpoint<BulkAddCandidateEntriesRequest, BulkAddCandidateEntriesResponse>
+internal sealed class Endpoint : ScreenDraftsEndpoint<BulkAddCandidateEntriesRequest, BulkAddMoviesResponse>
 {
   public override void Configure()
   {
@@ -11,7 +11,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<BulkAddCandidateEntriesReq
       x.WithTags(DraftsOpenApi.Tags.CandidateLists)
       .WithName(DraftsOpenApi.Names.CandidateLists_BulkAddEntries)
       .Accepts<BulkAddCandidateEntriesRequest>("multipart/form-data")
-      .Produces<BulkAddCandidateEntriesResponse>(StatusCodes.Status200OK)
+      .Produces<BulkAddMoviesResponse>(StatusCodes.Status200OK)
       .Produces(StatusCodes.Status400BadRequest)
       .Produces(StatusCodes.Status401Unauthorized)
       .Produces(StatusCodes.Status403Forbidden)

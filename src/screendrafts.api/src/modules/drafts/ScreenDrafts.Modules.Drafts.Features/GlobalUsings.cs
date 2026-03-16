@@ -69,6 +69,7 @@ global using ScreenDrafts.Modules.Drafts.Domain.People.Repositories;
 global using ScreenDrafts.Modules.Drafts.Domain.SeriesAggregate;
 global using ScreenDrafts.Modules.Drafts.Domain.SeriesAggregate.Enums;
 global using ScreenDrafts.Modules.Drafts.Features.Common;
+global using ScreenDrafts.Modules.Drafts.Features.Common.BulkAdd;
 global using ScreenDrafts.Modules.Drafts.Features.Extensions;
 global using ScreenDrafts.Modules.Drafts.Features.Helpers;
 global using ScreenDrafts.Modules.Drafts.Features.People;

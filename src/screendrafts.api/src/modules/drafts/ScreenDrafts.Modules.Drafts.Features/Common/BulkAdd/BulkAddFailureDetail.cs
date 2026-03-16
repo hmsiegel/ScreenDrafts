@@ -1,4 +1,4 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.CandidateLists.BulkAddCandidateEntries;
+﻿namespace ScreenDrafts.Modules.Drafts.Features.Common.BulkAdd;
 
 internal sealed record BulkAddFailureDetail
 {
