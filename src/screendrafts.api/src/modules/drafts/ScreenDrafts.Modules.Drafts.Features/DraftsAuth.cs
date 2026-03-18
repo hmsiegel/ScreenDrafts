@@ -10,95 +10,107 @@ internal static class DraftsAuth
   internal static class Permissions
   {
     // Drafts
-    internal const string DraftRead = "draft:read";
-    internal const string DraftsList = "draft:list";
-    internal const string DraftCreate = "draft:create";
-    internal const string DraftUpdate = "draft:update";
-    internal const string DraftDelete = "draft:delete"; // only if allowed
-
-    // Draft Boards
-    internal const string DraftBoardRead = "draft-board:read";
-    internal const string DraftBoardList = "draft-board:list";
-    internal const string DraftBoardCreate = "draft-board:create";
-    internal const string DraftBoardUpdate = "draft-board:update";
-    internal const string DraftBoardDelete = "draft-board:delete";
-
-    // Draft Pools
-    internal const string DraftPoolCreate = "draft-pool:create";
-    internal const string DraftPoolUpdate = "draft-pool:update";
-    internal const string DraftPoolRead = "draft-pool:read";
-
-    // Candidate Lists
-    internal const string CandidateListRead = "candidate-list:read";
-    internal const string CandidateListList = "candidate-list:list";
-    internal const string CandidateListCreate = "candidate-list:create";
-    internal const string CandidateListUpdate = "candidate-list:update";
-    internal const string CandidateListDelete = "candidate-list:delete";
+    internal const string DraftRead = "drafts:read";
+    internal const string DraftList = "drafts:list";
+    internal const string DraftCreate = "drafts:create";
+    internal const string DraftUpdate = "drafts:update";
+    internal const string DraftDelete = "drafts:delete";
+    internal const string DraftSearch = "drafts:search";
+    internal const string DraftReadPatreon = "drafts:read-patreon";
 
     // Draft Parts
-    internal const string DraftPartRead = "draft-part:read";
-    internal const string DraftPartList = "draft-part:list";
-    internal const string DraftPartCreate = "draft-part:create";
-    internal const string DraftPartUpdate = "draft-part:update";
-    internal const string DraftPartStatus = "draft-part:set-status"; // start/pause/continue/complete
+    internal const string DraftPartRead = "draft-parts:read";
+    internal const string DraftPartList = "draft-parts:list";
+    internal const string DraftPartCreate = "draft-parts:create";
+    internal const string DraftPartUpdate = "draft-parts:update";
+    internal const string DraftPartStatus = "draft-parts:set-status";
 
-    // Picks (part-scoped, but still “pick” as resource)
-    internal const string PickCreate = "pick:create";        // add pick
-    internal const string PickUpdate = "pick:update";
-    internal const string PickUndo = "pick:undo";        // only if allowed
-    internal const string PickVeto = "pick:veto";
-    internal const string PickVetoOverride = "pick:veto-override";
-    internal const string PickCommissionerOv = "pick:commissioner-override";
+    // Draft Boards
+    internal const string DraftBoardRead = "draft-boards:read";
+    internal const string DraftBoardList = "draft-boards:list";
+    internal const string DraftBoardCreate = "draft-boards:create";
+    internal const string DraftBoardUpdate = "draft-boards:update";
+    internal const string DraftBoardDelete = "draft-boards:delete";
 
-    // People + roles
-    internal const string PersonRead = "person:read";
-    internal const string PersonList = "person:list";
-    internal const string PersonCreate = "person:create";
-    internal const string PersonUpdate = "person:update";
-    internal const string PersonSearch = "person:search";
+    // Draft Pools
+    internal const string DraftPoolCreate = "draft-pools:create";
+    internal const string DraftPoolUpdate = "draft-pools:update";
+    internal const string DraftPoolRead = "draft-pools:read";
 
+    // Picks
+    internal const string PickAdd = "picks:add";
+    internal const string PickCreate = "picks:create";
+    internal const string PickUpdate = "picks:update";
+    internal const string PickUndo = "picks:undo";
+    internal const string PickVeto = "picks:veto";
+    internal const string PickVetoOverride = "picks:veto-override";
+    internal const string PickCommissionerOverride = "picks:commissioner-override";
+
+    // People
+    internal const string PersonCreate = "people:create";
+    internal const string PersonRead = "people:read";
+    internal const string PersonList = "people:list";
+    internal const string PersonUpdate = "people:update";
+    internal const string PersonSearch = "people:search";
+
+    // Drafters
+    internal const string DrafterAdd = "drafters:add";
+    internal const string DrafterCreate = "drafters:create";
+    internal const string DrafterRemove = "drafters:remove";
+    internal const string DrafterUpdate = "drafters:update";
     internal const string DrafterRead = "drafters:read";
     internal const string DrafterList = "drafters:list";
-    internal const string DrafterCreate = "drafters:create";
-    internal const string DrafterUpdate = "drafters:update";
 
+    // Hosts
+    internal const string HostAdd = "hosts:add";
+    internal const string HostCreate = "hosts:create";
+    internal const string HostRemove = "hosts:remove";
+    internal const string HostUpdate = "hosts:update";
     internal const string HostRead = "hosts:read";
     internal const string HostList = "hosts:list";
-    internal const string HostCreate = "hosts:create";
-    internal const string HostUpdate = "hosts:update";
 
-    // Teams
-    internal const string DrafterTeamRead = "drafter-team:read";
-    internal const string DrafterTeamList = "drafter-team:list";
-    internal const string DrafterTeamCreate = "drafter-team:create";
-    internal const string DrafterTeamUpdate = "drafter-team:update";
-    internal const string DrafterTeamMembers = "drafter-team:members"; // add/remove member
+    // Drafter Teams
+    internal const string DrafterTeamRead = "drafter-teams:read";
+    internal const string DrafterTeamList = "drafter-teams:list";
+    internal const string DrafterTeamCreate = "drafter-teams:create";
+    internal const string DrafterTeamUpdate = "drafter-teams:update";
+    internal const string DrafterTeamMembers = "drafter-teams:members";
 
-    // Game Boards (if still a thing)
-    internal const string GameBoardCreate = "game-board:create";
-    internal const string GameBoardUpdate = "game-board:update";
+    // Game Boards
+    internal const string GameBoardCreate = "game-boards:create";
+    internal const string GameBoardUpdate = "game-boards:update";
 
-    // Reference data
+    // Series
     internal const string SeriesRead = "series:read";
     internal const string SeriesList = "series:list";
     internal const string SeriesCreate = "series:create";
     internal const string SeriesUpdate = "series:update";
-    internal const string SeriesDelete = "series:delete"; // if allowed
+    internal const string SeriesDelete = "series:delete";
 
-    internal const string CategoryRead = "category:read";
-    internal const string CategoryList = "category:list";
-    internal const string CategoryCreate = "category:create";
-    internal const string CategoryUpdate = "category:update";
-    internal const string CategoryDelete = "category:delete";
+    // Categories
+    internal const string CategoryCreate = "categories:create";
+    internal const string CategoryUpdate = "categories:update";
+    internal const string CategoryRead = "categories:read";
+    internal const string CategoryList = "categories:list";
+    internal const string CategorySearch = "categories:search";
+    internal const string CategoryDelete = "categories:delete";
 
-    internal const string CampaignRead = "campaign:read";
-    internal const string CampaignList = "campaign:list";
-    internal const string CampaignCreate = "campaign:create";
-    internal const string CampaignUpdate = "campaign:update";
-    internal const string CampaignDelete = "campaign:delete";
-    internal const string CampaignRestore = "campaign:restore";
+    // Campaigns
+    internal const string CampaignCreate = "campaigns:create";
+    internal const string CampaignUpdate = "campaigns:update";
+    internal const string CampaignRead = "campaigns:read";
+    internal const string CampaignList = "campaigns:list";
+    internal const string CampaignDelete = "campaigns:delete";
+    internal const string CampaignRestore = "campaigns:restore";
 
-    internal const string DraftReadPatreon = "draft:read-patreon";
+    // Candidate Lists
+    internal const string CandidateListRead = "candidate-lists:read";
+    internal const string CandidateListList = "candidate-lists:list";
+    internal const string CandidateListCreate = "candidate-lists:create";
+    internal const string CandidateListUpdate = "candidate-lists:update";
+    internal const string CandidateListDelete = "candidate-lists:delete";
+
+    // Patreon
     internal const string PatreonSearch = "patreon:search";
   }
 }

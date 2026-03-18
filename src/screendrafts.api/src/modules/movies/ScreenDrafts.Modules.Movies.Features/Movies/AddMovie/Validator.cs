@@ -61,7 +61,9 @@ internal sealed class Validator : AbstractValidator<AddMovieCommand>
 
   private static bool BeAValidTrailerUrl(Uri? url)
   {
-    return url is null || url.Host == "www.imdb.com";
+    return url is null
+      || url.Host == "www.youtube.com"
+      || url.Host == "youtu.be";
   }
 }
 

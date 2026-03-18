@@ -9,8 +9,8 @@ internal sealed class AddHostToDraftPartCommandHandler(
 
   public async Task<Result> Handle(AddHostToDraftPartCommand command, CancellationToken cancellationToken)
   {
-    var draftPart = await _draftPartRepository.GetByIdAsync(
-      DraftPartId.Create(command.DraftPartId),
+    var draftPart = await _draftPartRepository.GetByPublicIdAsync(
+      command.DraftPartId,
       cancellationToken);
 
     if (draftPart is null)

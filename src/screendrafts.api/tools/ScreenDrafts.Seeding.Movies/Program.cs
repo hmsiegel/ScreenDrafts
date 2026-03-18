@@ -1,4 +1,6 @@
-﻿var basePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
+﻿using System.Net.Http.Headers;
+
+var basePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
 
 var configuration = new ConfigurationBuilder()
     .SetBasePath(basePath)
@@ -65,6 +67,16 @@ try
           .ValidateDataAnnotations();
 
         services.AddScoped<IOmdbService, OmdbService>();
+
+        services.Configure<TmdbSettings>(configuration.GetSection(TmdbSettings.SectionName));
+
+        services.AddHttpClient<ITmdbService, TmdbService>((sp, client) =>
+        {
+          TmdbSettings tmdbSettings = sp.GetRequiredService<IOptions<TmdbSettings>>().Value;
+          client.BaseAddress = new Uri(tmdbSettings.BaseAddress);
+          client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tmdbSettings.AccessToken);
+          client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        });
       });
 
   var app = builder.Build();

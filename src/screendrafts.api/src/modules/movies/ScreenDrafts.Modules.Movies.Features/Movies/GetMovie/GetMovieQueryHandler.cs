@@ -20,6 +20,7 @@ internal sealed class GetMovieQueryHandler(IDbConnectionFactory dbConnectionFact
       	m.release_date AS {nameof(MovieResponse.ReleaseDate)},
       	m.youtube_trailer_url AS {nameof(MovieResponse.YouTubeTrailer)},
       	m.imdb_id AS {nameof(MovieResponse.ImdbId)},
+        m.tmdb_id AS {nameof(MovieResponse.TmdbId)},
       	array_remove(array_agg(distinct g.name), null) AS {nameof(MovieResponse.Genres)},
       	array_remove(array_agg(distinct a.name), null) AS {nameof(MovieResponse.Actors)},
       	array_remove(array_agg(distinct d.name), null) AS {nameof(MovieResponse.Directors)},
@@ -56,6 +57,7 @@ internal sealed class GetMovieQueryHandler(IDbConnectionFactory dbConnectionFact
           movieEntry = new MovieResponse(
             movie.Id,
             movie.ImdbId,
+            movie.TmdbId,
             movie.Title,
             movie.Year,
             movie.Plot,

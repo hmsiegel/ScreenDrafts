@@ -4,8 +4,12 @@ internal static class MoviesAuth
 {
   internal static class Permissions
   {
-    public const string MoviesAdd = "movies:add";
-    public const string MoviesRead = "movies:read";
-    public const string MoviesSearch = "movies:search";
+    internal const string MoviesCreate = "movies:create";
+    internal const string MoviesRead = "movies:read";
+    internal const string MoviesSearch = "movies:search";
+    internal const string ActorsSearch = "actors:search";
+    internal const string CrewSearch = "crew:search";
+    internal const string GenresSearch = "genres:search";
+    internal const string StudiosSearch = "studios:search";
   }
 }

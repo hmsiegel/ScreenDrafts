@@ -1,26 +1,30 @@
-﻿using ScreenDrafts.Modules.Drafts.Domain.Hosts;
-
-namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.Hosts.RemoveHost;
+﻿namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.Hosts.RemoveHost;
 
 internal sealed class RemoveHostDraftPartCommandHandler(
-  IDraftPartRepository draftPartsRepository)
+  IDraftPartRepository draftPartsRepository,
+  IHostRepository hostRepository)
     : ICommandHandler<RemoveHostDraftPartCommand>
 {
   private readonly IDraftPartRepository _draftPartsRepository = draftPartsRepository;
+  private readonly IHostRepository _hostRepository = hostRepository;
 
-  public async Task<Result> Handle(RemoveHostDraftPartCommand RemoveHostDraftPartRequest, CancellationToken cancellationToken)
+  public async Task<Result> Handle(RemoveHostDraftPartCommand request, CancellationToken cancellationToken)
   {
-    var draftPartId = DraftPartId.Create(RemoveHostDraftPartRequest.DraftPartId);
-    var hostId = HostId.Create(RemoveHostDraftPartRequest.HostId);
-
-    var draftPart = await _draftPartsRepository.GetByIdAsync(draftPartId, cancellationToken);
+    var draftPart = await _draftPartsRepository.GetByPublicIdAsync(request.DraftPartId, cancellationToken);
 
     if (draftPart is null)
     {
-      return Result.Failure(DraftErrors.DraftPartNotFound(RemoveHostDraftPartRequest.DraftPartId));
+      return Result.Failure(DraftPartErrors.NotFound(request.DraftPartId));
     }
 
-    var result = draftPart.RemoveHost(hostId);
+    var host = await _hostRepository.GetByPublicIdAsync(request.HostId, cancellationToken);
+
+    if (host is null)
+    {
+      return Result.Failure(HostErrors.NotFound(request.HostId));
+    }
+
+    var result = draftPart.RemoveHost(host.Id);
 
     if (result.IsFailure)
     {
@@ -32,6 +36,3 @@ internal sealed class RemoveHostDraftPartCommandHandler(
     return Result.Success();
   }
 }
-
-
-

@@ -11,7 +11,7 @@ internal sealed class Endpoint : ScreenDraftsEndpointWithoutRequest<ListUpcoming
       .WithTags(DraftsOpenApi.Tags.Drafts)
       .Produces<ListUpcomingDraftsResponse>(StatusCodes.Status200OK);
     });
-    Policies(DraftsAuth.Permissions.DraftsList);
+    Policies(DraftsAuth.Permissions.DraftList);
   }
 
   public override async Task HandleAsync(CancellationToken ct)

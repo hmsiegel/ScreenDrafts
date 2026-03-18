@@ -2,5 +2,5 @@
 
 internal sealed record ListDraftPositionsResponse
 {
-  public IReadOnlyCollection<DraftPositionResponse> Positions = [];
+  public IReadOnlyCollection<DraftPositionResponse> Positions { get; init; } = [];
 }

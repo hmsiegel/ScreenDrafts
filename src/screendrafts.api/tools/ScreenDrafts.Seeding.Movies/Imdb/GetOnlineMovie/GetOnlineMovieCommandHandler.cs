@@ -1,135 +1,69 @@
-﻿namespace ScreenDrafts.Seeding.Movies.Imdb.GetOnlineMovie;
+﻿using ScreenDrafts.Modules.Movies.Features.Movies.AddMovie;
 
-internal sealed class GetOnlineMovieCommandHandler(
-  IImdbService imdbService,
-  IOmdbService omdbService) 
+namespace ScreenDrafts.Seeding.Movies.Imdb.GetOnlineMovie;
+
+internal sealed class GetOnlineMovieCommandHandler(ITmdbService tmdbService)
   : ICommandHandler<GetOnlineMovieCommand, MovieResponse>
 {
-  private readonly IImdbService _imdbService = imdbService;
-  private readonly IOmdbService _omdbService = omdbService;
+  private readonly ITmdbService _tmdbService = tmdbService;
 
   public async Task<Result<MovieResponse>> Handle(GetOnlineMovieCommand command, CancellationToken cancellationToken)
   {
-    var movieData = await _imdbService.GetMovieInformation(command.ImdbId, TitleOptions.Trailer);
-    var fullCast = await _imdbService.GetFullCast(command.ImdbId);
+    var detail = await _tmdbService.GetMovieDetailsAsync(command.TmdbId, cancellationToken);
 
-    if (!string.IsNullOrEmpty(movieData.Title))
+    if (detail is null)
     {
-      if (movieData.ErrorMessage.Contains("404", StringComparison.InvariantCultureIgnoreCase))
-      {
-        return Result.Failure<MovieResponse>(MovieErrors.MovieNotFound(command.ImdbId));
-      }
-
-      Uri trailerUri = null!;
-      if (movieData.Trailer != null && !string.IsNullOrEmpty(movieData.Trailer.Link))
-      {
-        trailerUri = new Uri(movieData.Trailer.LinkEmbed);
-      }
-
-      var producerList = fullCast.Others?.Where(cast => cast.Job == "Produced by").ToList()
-        ?? [];
-      var producers = producerList.
-        SelectMany(x => x.Items.
-          Select(x => new ProducerModel(x.Name, x.Id))).ToList()
-        ?? [];
-
-      var genres = movieData.Genres.Trim().Split(", ").ToList();
-
-      var actors =
-        movieData.ActorList.Count > 0
-          ? [.. movieData.ActorList.Select(actor => new ActorModel(actor.Name, actor.Id))]
-          : new List<ActorModel>();
-
-      var directors =
-        movieData.DirectorList.Count > 0
-          ? [.. movieData.DirectorList.Select(director => new DirectorModel(director.Name, director.Id))]
-          : new List<DirectorModel>();
-
-      var writers =
-        movieData.WriterList.Count > 0
-          ? [.. movieData.WriterList.Select(writer => new WriterModel(writer.Name, writer.Id))]
-          : new List<WriterModel>();
-
-      var productionCompanies =
-        movieData.CompanyList.Count > 0
-          ? [.. movieData.CompanyList
-          .GroupBy(company => company.Id)
-          .Select(group => group.First())
-          .Select(company => new ProductionCompanyModel(company.Id, company.Name))]
-          : new List<ProductionCompanyModel>();
-
-      var response = new MovieResponse(
-        command.ImdbId,
-        movieData.Title,
-        movieData.Year,
-        movieData.Plot,
-        movieData.Image,
-        movieData.ReleaseDate,
-        trailerUri,
-        genres,
-        actors,
-        directors,
-        writers,
-        producers,
-        productionCompanies);
-
-      return response;
-    }
-    else
-    {
-      var response = await SearchOmdbAsync(command);
-
-      return response;
-    }
-  }
-  private async Task<Result<MovieResponse>> SearchOmdbAsync(GetOnlineMovieCommand command)
-  {
-    var omdbData = await _omdbService.GetItemByIdAsync(command.ImdbId, true);
-
-    if (omdbData.Title is null)
-    {
-      return Result.Failure<MovieResponse>(MovieErrors.MovieNotFound(command.ImdbId));
+      return Result.Failure<MovieResponse>(MovieErrors.MovieNotFound(command.TmdbId));
     }
 
-    var genres = omdbData.Genre.Trim().Split(", ").ToList();
+    var imdbId = await _tmdbService.GetImdbIdAsync(command.TmdbId, cancellationToken);
 
-    var releaseDate = ParseReleaseDate(omdbData.Released);
+    if (imdbId is null)
+    {
+      return Result.Failure<MovieResponse>(MovieErrors.MovieNotFound(command.TmdbId));
+    }
+
+    var posterUrl = _tmdbService.BuildPosterUrl(detail.PosterPath);
+
+    var genres = detail.Genres?.Select(g => new GenreRequest(g.Id, g.Name))
+      .ToList() ?? [];
+
+    var directors = detail.Credits?.Crew?
+      .Where(c => c.Job == "Director" && !string.IsNullOrWhiteSpace(c.ImdbId))
+      .Select(c => new PersonRequest(c.Name, c.ImdbId!, c.TmdbId))
+      .ToList() ?? [];
+
+    var writers = detail.Credits?.Crew?
+      .Where(c => c.Job == "Writer" && !string.IsNullOrWhiteSpace(c.ImdbId))
+      .Select(c => new PersonRequest(c.Name, c.ImdbId!, c.TmdbId))
+      .ToList() ?? [];
+
+    var producers = detail.Credits?.Crew?
+      .Where(c => c.Job == "Producer" && !string.IsNullOrWhiteSpace(c.ImdbId))
+      .Select(c => new PersonRequest(c.Name, c.ImdbId!, c.TmdbId))
+      .ToList() ?? [];
+
+    var actors = detail.Credits?.Cast?
+      .Where(c => !string.IsNullOrWhiteSpace(c.ImdbId))
+      .Select(c => new PersonRequest(c.Name, c.ImdbId!, c.TmdbId))
+      .ToList() ?? [];
 
     var response = new MovieResponse(
-      command.ImdbId,
-      omdbData.Title,
-      omdbData.Year,
-      omdbData.Plot,
-      omdbData.Poster,
-      releaseDate,
-      null,
-      genres,
-      null!,
-      null!,
-      null!,
-      null!,
-      null!);
+      ImdbId: imdbId,
+      TmdbId: command.TmdbId,
+      Title: detail.Title,
+      Year: detail.ReleaseDate?[..4]!,
+      Plot: detail.Overview,
+      Image: posterUrl!.ToString(),
+      ReleaseDate: detail.ReleaseDate,
+      TrailerUrl: detail.TrailerUrl,
+      Genres: [.. genres.Select(g => new GenreModel(g.TmdbId, g.Name))],
+      Actors: [.. actors.Select(a => new ActorModel(a.Name, a.ImdbId, a.TmdbId))],
+      Directors: [.. directors.Select(d => new DirectorModel(d.Name, d.ImdbId, d.TmdbId))],
+      Writers: [.. writers.Select(w => new WriterModel(w.Name, w.ImdbId, w.TmdbId))],
+      Producers: [.. producers.Select(p => new ProducerModel(p.Name, p.ImdbId, p.TmdbId))],
+      ProductionCompanies: null!);
 
     return response;
-  }
-
-  private static string? ParseReleaseDate(string? rawData)
-  {
-    if (string.IsNullOrWhiteSpace(rawData))
-    {
-      return null;
-    }
-
-    if (DateTime.TryParse(rawData, CultureInfo.InvariantCulture, out var releaseDate))
-    {
-      return releaseDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
-    }
-
-    if (int.TryParse(rawData, out var year))
-    {
-      return $"{year}-01-01";
-    }
-
-    return null;
   }
 }

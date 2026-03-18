@@ -210,7 +210,7 @@ public sealed class GetDrafterProfileTests(DraftsIntegrationTestWebAppFactory fa
     var hostPublicId = (await Sender.Send(new CreateHostCommand { PersonPublicId = hostPersonId })).Value;
     await Sender.Send(new AddHostToDraftPartCommand
     {
-      DraftPartId = draftPartInternalId,
+      DraftPartId = draftPartPublicId,
       HostPublicId = hostPublicId,
       HostRole = HostRole.Primary
     });

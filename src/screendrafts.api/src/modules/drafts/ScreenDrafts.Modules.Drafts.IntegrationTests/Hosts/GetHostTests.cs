@@ -77,10 +77,10 @@ public sealed class GetHostTests(DraftsIntegrationTestWebAppFactory factory)
     var personId = await peopleFactory.CreateAndSavePersonAsync();
     var hostId = (await Sender.Send(new CreateHostCommand { PersonPublicId = personId })).Value;
 
-    var draftPartInternalId = await CreateDraftPartAsync();
+    var draftPartPublicId = await CreateDraftPartAsync();
     await Sender.Send(new AddHostToDraftPartCommand
     {
-      DraftPartId = draftPartInternalId,
+      DraftPartId = draftPartPublicId,
       HostPublicId = hostId,
       HostRole = HostRole.Primary
     });
@@ -110,11 +110,11 @@ public sealed class GetHostTests(DraftsIntegrationTestWebAppFactory factory)
 
     var seriesId = await CreateSeriesAsync();
     var draftPublicId = await CreateDraftWithTitleAsync(seriesId, draftTitle);
-    var draftPartInternalId = await GetFirstDraftPartIdAsync(draftPublicId);
+    var draftPartPublicId = await GetFirstDraftPartPublicIdAsync(draftPublicId);
 
     await Sender.Send(new AddHostToDraftPartCommand
     {
-      DraftPartId = draftPartInternalId,
+      DraftPartId = draftPartPublicId,
       HostPublicId = hostId,
       HostRole = HostRole.Primary
     });
@@ -132,11 +132,11 @@ public sealed class GetHostTests(DraftsIntegrationTestWebAppFactory factory)
   // Helpers
   // -------------------------------------------------------------------------
 
-  private async Task<Guid> CreateDraftPartAsync()
+  private async Task<string> CreateDraftPartAsync()
   {
     var seriesId = await CreateSeriesAsync();
     var draftPublicId = await CreateDraftWithTitleAsync(seriesId, Faker.Company.CompanyName());
-    return await GetFirstDraftPartIdAsync(draftPublicId);
+    return await GetFirstDraftPartPublicIdAsync(draftPublicId);
   }
 
   private async Task<Guid> CreateSeriesAsync()

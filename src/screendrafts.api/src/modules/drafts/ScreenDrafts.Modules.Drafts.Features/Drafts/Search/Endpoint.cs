@@ -12,7 +12,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<SearchDraftsRequest, Searc
       .Produces<PagedResult<SearchDraftsResponse>>(StatusCodes.Status200OK)
       .Produces(StatusCodes.Status400BadRequest);
     });
-    Policies(DraftsAuth.Permissions.DraftsList);
+    Policies(DraftsAuth.Permissions.DraftList);
   }
 
   public override async Task HandleAsync(SearchDraftsRequest req, CancellationToken ct)

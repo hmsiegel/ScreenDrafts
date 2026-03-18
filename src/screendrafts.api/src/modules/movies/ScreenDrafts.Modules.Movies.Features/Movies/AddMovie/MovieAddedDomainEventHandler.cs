@@ -19,11 +19,12 @@ internal sealed class MovieAddedDomainEventHandler(ISender sender, IEventBus eve
 
     await _eventBus.PublishAsync(
       new MovieAddedIntegrationEvent(
-        domainEvent.Id,
-        domainEvent.OccurredOnUtc,
-        result.Value.Id,
-        result.Value.Title,
-        result.Value.ImdbId),
+        id: domainEvent.Id,
+        occurredOnUtc: domainEvent.OccurredOnUtc,
+        movieId: result.Value.Id,
+        title: result.Value.Title,
+        imdbId: result.Value.ImdbId,
+        tmdbId: result.Value.TmdbId),
       cancellationToken);
   }
 }

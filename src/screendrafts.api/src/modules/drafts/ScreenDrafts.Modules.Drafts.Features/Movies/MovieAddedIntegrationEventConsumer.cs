@@ -19,7 +19,8 @@ internal sealed class MovieAddedIntegrationEventConsumer(
       {
         ImdbId = integrationEvent.ImdbId,
         Id = integrationEvent.MovieId,
-        Title = integrationEvent.Title
+        Title = integrationEvent.Title,
+        TmdbId = integrationEvent.TmdbId
       },
       cancellationToken);
 

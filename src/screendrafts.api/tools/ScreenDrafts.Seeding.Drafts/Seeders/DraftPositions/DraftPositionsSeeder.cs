@@ -38,20 +38,26 @@ internal sealed class DraftPositionsSeeder(
       .Where(dp => draftPartIds.Contains(dp.Id))
       .ToDictionaryAsync(dp => dp.Id.Value, cancellationToken);
 
-    var neededBoardIds = csvDraftPositions
-      .Select(r => GameBoardId.Create(DeterministicIds.GameBoardIdFromDraftPartId(
-        r.DraftPartId,
-        draftParts[r.DraftPartId].PartIndex)))
+    var gameBoardIds = csvDraftPositions
+      .Select(r => GameBoardId.Create(r.GameBoardId))
       .Distinct()
       .ToList();
 
     var boards = await _dbContext.GameBoards
-      .Where(gb => neededBoardIds.Contains(gb.Id))
+      .AsNoTracking()
+      .Where(gb => gameBoardIds.Contains(gb.Id))
       .ToDictionaryAsync(gb => gb.Id.Value, cancellationToken);
 
-    if (boards.Count != neededBoardIds.Count)
+    foreach (var board in boards.Values)
     {
-      var missing = neededBoardIds.Where(id => !boards.ContainsKey(id.Value)).ToList();
+      _dbContext.GameBoards.Attach(board);
+    }
+
+    if (boards.Count != draftParts.Count)
+    {
+      var missing = draftParts.Keys
+        .Where(id => !boards.ContainsKey(id))
+        .ToList();
       throw new InvalidOperationException($"Missing GameBoards for DraftPositions seeding: {string.Join(", ", missing)}");
     }
 
@@ -80,7 +86,7 @@ internal sealed class DraftPositionsSeeder(
         continue;
       }
 
-      if (!boards.TryGetValue(gameBoardGuid, out var gameBoard))
+      if (!boards.TryGetValue(record.GameBoardId, out var gameBoard))
       {
         DatabaseSeedingLoggingMessages.RecordMissing(_logger, nameof(GameBoard), TableName, FormatDraftPositionRecord(record));
         continue;

@@ -1,0 +1,20 @@
+meta {
+  name: List Draft Positions
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{url}}/draft-parts/:draftPartId/positions
+  body: none
+  auth: inherit
+}
+
+params:path {
+  draftPartId: dp_YsQ8xzMC7swP69t
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

@@ -7,7 +7,8 @@ public sealed class MovieAddedIntegrationEvent(
   DateTime occurredOnUtc,
   Guid movieId,
   string title,
-  string imdbId)
+  string imdbId,
+  int tmdbId)
   : IntegrationEvent(id, occurredOnUtc)
 {
   public Guid MovieId { get; init; } = movieId;
@@ -15,4 +16,5 @@ public sealed class MovieAddedIntegrationEvent(
   public string Title { get; init; } = title;
 
   public string ImdbId { get; init; } = imdbId;
+  public int TmdbId { get; init; } = tmdbId;
 }

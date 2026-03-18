@@ -14,7 +14,11 @@ internal sealed class AddMovieCommandHandler(IMovieRepository movieRepository)
       return Result.Failure<string>(MovieErrors.MovieAlreadyExists(request.ImdbId));
     }
 
-    var result = Movie.Create(request.Title, request.ImdbId, request.Id);
+    var result = Movie.Create(
+      movieTitle: request.Title,
+      imdbId: request.ImdbId,
+      id: request.Id,
+      tmdbId: request.TmdbId);
 
     if (result.IsFailure)
     {

@@ -3,6 +3,7 @@
 public sealed record MovieResponse(
   Guid Id,
   string ImdbId,
+  int TmdbId,
   string Title,
   string Year,
   string Plot,
@@ -19,14 +20,15 @@ public sealed record MovieResponse(
 
   public MovieResponse()
     : this(
-        Guid.Empty,
-        string.Empty,
-        string.Empty,
-        string.Empty,
-        string.Empty,
-        string.Empty,
-        string.Empty,
-        string.Empty)
+        Id: Guid.Empty,
+        ImdbId: string.Empty,
+        TmdbId: 0,
+        Title: string.Empty,
+        Year: string.Empty,
+        Plot: string.Empty,
+        Image: string.Empty,
+        ReleaseDate: string.Empty,
+        YouTubeTrailer: string.Empty)
   {
   }
 

@@ -106,6 +106,16 @@ public abstract class DraftsIntegrationTest(DraftsIntegrationTestWebAppFactory f
       .FirstAsync();
   }
 
+  protected async Task<string> GetFirstDraftPartPublicIdAsync(string draftPublicId)
+  {
+    return await DbContext.Drafts
+      .Where(d => d.PublicId == draftPublicId)
+      .SelectMany(d => d.Parts)
+      .OrderBy(p => p.PartIndex)
+      .Select(p => p.PublicId)
+      .FirstAsync();
+  }
+
   protected async Task CreateMovieInDbAsync(int tmdbId)
   {
     var movie = Movie.Create(

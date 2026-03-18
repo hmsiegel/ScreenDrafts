@@ -24,7 +24,7 @@ internal sealed class ListDraftPositionsQueryHandler(IDbConnectionFactory dbConn
       JOIN drafts.game_boards gb on dp.game_board_id = gb.id
       JOIN drafts.draft_parts dp2 on gb.draft_part_id = dp2.id
       WHERE
-        dp2.public_id = @DraftPartId
+        dp2.public_id = @draftPartId
       ORDER BY dp.name ASC
       """;
 

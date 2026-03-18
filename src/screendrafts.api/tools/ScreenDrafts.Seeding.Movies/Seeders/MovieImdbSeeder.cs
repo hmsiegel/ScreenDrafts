@@ -1,7 +1,4 @@
-﻿using Microsoft.IdentityModel.Tokens.Experimental;
-
-using ScreenDrafts.Common.Abstractions.Errors;
-using ScreenDrafts.Modules.Movies.Features.Movies.AddMovie;
+﻿using ScreenDrafts.Modules.Movies.Features.Movies.AddMovie;
 
 using ValidationError = ScreenDrafts.Common.Abstractions.Errors.ValidationError;
 
@@ -16,7 +13,7 @@ internal sealed partial class MovieImdbSeeder(
 {
   public int Order => 1;
 
-  public string Name => "moviesimdb";
+  public string Name => "moviestmdb";
 
   private readonly ISender _sender = sender;
 
@@ -38,15 +35,14 @@ internal sealed partial class MovieImdbSeeder(
       return;
     }
 
-    var movieIds = csvMovies.Select(movie => movie.ImdbId).ToList();
-
+    var movieIds = csvMovies.Select(movie => movie.TmdbId).ToList();
 
     var existingMovieIds = await _dbContext.Movies
-      .Where(movie => movieIds.Contains(movie.ImdbId))
-      .Select(movie => movie.ImdbId)
+      .Where(movie => movieIds.Contains(movie.TmdbId))
+      .Select(movie => movie.TmdbId)
       .ToHashSetAsync(cancellationToken);
 
-    var newMovies = csvMovies.Where(movie => !existingMovieIds.Contains(movie.ImdbId)).ToList();
+    var newMovies = csvMovies.Where(movie => !existingMovieIds.Contains(movie.TmdbId)).ToList();
 
     if (newMovies.Count == 0)
     {
@@ -59,11 +55,11 @@ internal sealed partial class MovieImdbSeeder(
     {
       try
       {
-        var response = await _sender.Send(new GetOnlineMovieCommand(newMovie.ImdbId), cancellationToken);
+        var response = await _sender.Send(new GetOnlineMovieCommand(newMovie.TmdbId), cancellationToken);
 
         if (response is null || response.IsFailure)
         {
-          Log_FailedToFetchMovie(newMovie.ImdbId);
+          Log_FailedToFetchMovie(newMovie.TmdbId);
           continue;
         }
 
@@ -75,18 +71,18 @@ internal sealed partial class MovieImdbSeeder(
           .Select(company => new ProductionCompanyRequest(company.Name, company.ImdbId, 0))
           .ToList();
         var genres = response.Value.Genres
-          .Select(g => new GenreRequest(0, g))
+          .Select(g => new GenreRequest(g.Tmdb, g.Name))
           .ToList();
 
         var command = new AddMovieCommand(
           response.Value.ImdbId,
-          0,
+          response.Value.TmdbId,
           response.Value.Title,
           response.Value.Year,
           response.Value.Plot,
           response.Value.Image,
           response.Value.ReleaseDate,
-          response.Value.YouTubeTrailerUri,
+          response.Value.TrailerUrl,
           genres,
           directors,
           actors,
@@ -101,28 +97,28 @@ internal sealed partial class MovieImdbSeeder(
           var errorMessages = result.Errors
             .SelectMany(e => e is ValidationError ve
               ? ve.Errors.Select(innerError => $"{innerError.Code}: {innerError.Description}")
-              : new[] { $"{e.Code}: {e.Description}" });
+              : [$"{e.Code}: {e.Description}"]);
 
-          Log_FailedToAddMovie(response.Value.ImdbId, response.Value.Title, 
+          Log_FailedToAddMovie(response.Value.TmdbId, response.Value.Title, 
             string.Join(", ", errorMessages));
           continue;
         }
       }
       catch (ScreenDraftsException ex)
       {
-        Log_ErrorFetchingMovie(ex, newMovie.ImdbId);
+        Log_ErrorFetchingMovie(ex, newMovie.TmdbId);
 
       }
     }
 #pragma warning restore S3267
   }
 
-  [LoggerMessage(Level = LogLevel.Warning, Message = "Failed to fetch movie details for IMDb ID: {imdbId}. Skipping.")]
-  private partial void Log_FailedToFetchMovie(string imdbId);
+  [LoggerMessage(Level = LogLevel.Warning, Message = "Failed to fetch movie details for TMDb ID: {tmdbId}. Skipping.")]
+  private partial void Log_FailedToFetchMovie(int tmdbId);
 
-  [LoggerMessage(Level = LogLevel.Error, Message = "An error occurred while fetching movie details for IMDb ID: {imdbId}. Skipping.")]
-  private partial void Log_ErrorFetchingMovie(Exception exception, string imdbId);
+  [LoggerMessage(Level = LogLevel.Error, Message = "An error occurred while fetching movie details for TMDb ID: {tmdbId}. Skipping.")]
+  private partial void Log_ErrorFetchingMovie(Exception exception, int tmdbId);
 
-  [LoggerMessage(Level = LogLevel.Error, Message = "Failed to add movie with IMDb ID: {imdbId} - Title: {title}. Error: {errors}")]
-  private partial void Log_FailedToAddMovie(string imdbId, string title, string errors);
+  [LoggerMessage(Level = LogLevel.Error, Message = "Failed to add movie with TMDb ID: {tmdbId} - Title: {title}. Error: {errors}")]
+  private partial void Log_FailedToAddMovie(int tmdbId, string title, string errors);
 }

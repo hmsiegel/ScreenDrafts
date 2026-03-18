@@ -18,7 +18,7 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("users")
-                .HasAnnotation("ProductVersion", "10.0.1")
+                .HasAnnotation("ProductVersion", "10.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -49,12 +49,22 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                         },
                         new
                         {
-                            PermissionCode = "drafts:search",
+                            PermissionCode = "users:update",
                             RoleName = "Guest"
                         },
                         new
                         {
-                            PermissionCode = "users:update",
+                            PermissionCode = "drafts:list",
+                            RoleName = "Guest"
+                        },
+                        new
+                        {
+                            PermissionCode = "draft-parts:list",
+                            RoleName = "Guest"
+                        },
+                        new
+                        {
+                            PermissionCode = "drafts:search",
                             RoleName = "Guest"
                         },
                         new
@@ -94,12 +104,37 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                         },
                         new
                         {
-                            PermissionCode = "users:read",
-                            RoleName = "Host"
+                            PermissionCode = "drafters:read",
+                            RoleName = "Guest"
                         },
                         new
                         {
-                            PermissionCode = "drafts:search",
+                            PermissionCode = "drafters:list",
+                            RoleName = "Guest"
+                        },
+                        new
+                        {
+                            PermissionCode = "hosts:read",
+                            RoleName = "Guest"
+                        },
+                        new
+                        {
+                            PermissionCode = "hosts:list",
+                            RoleName = "Guest"
+                        },
+                        new
+                        {
+                            PermissionCode = "drafter-teams:read",
+                            RoleName = "Guest"
+                        },
+                        new
+                        {
+                            PermissionCode = "drafter-teams:list",
+                            RoleName = "Guest"
+                        },
+                        new
+                        {
+                            PermissionCode = "users:read",
                             RoleName = "Host"
                         },
                         new
@@ -114,6 +149,101 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                         },
                         new
                         {
+                            PermissionCode = "drafts:list",
+                            RoleName = "Host"
+                        },
+                        new
+                        {
+                            PermissionCode = "drafts:search",
+                            RoleName = "Host"
+                        },
+                        new
+                        {
+                            PermissionCode = "draft-parts:read",
+                            RoleName = "Host"
+                        },
+                        new
+                        {
+                            PermissionCode = "draft-parts:list",
+                            RoleName = "Host"
+                        },
+                        new
+                        {
+                            PermissionCode = "draft-boards:read",
+                            RoleName = "Host"
+                        },
+                        new
+                        {
+                            PermissionCode = "draft-pools:read",
+                            RoleName = "Host"
+                        },
+                        new
+                        {
+                            PermissionCode = "draft-pools:create",
+                            RoleName = "Host"
+                        },
+                        new
+                        {
+                            PermissionCode = "draft-pools:update",
+                            RoleName = "Host"
+                        },
+                        new
+                        {
+                            PermissionCode = "candidate-lists:create",
+                            RoleName = "Host"
+                        },
+                        new
+                        {
+                            PermissionCode = "candidate-lists:update",
+                            RoleName = "Host"
+                        },
+                        new
+                        {
+                            PermissionCode = "candidate-lists:read",
+                            RoleName = "Host"
+                        },
+                        new
+                        {
+                            PermissionCode = "picks:commissioner-override",
+                            RoleName = "Host"
+                        },
+                        new
+                        {
+                            PermissionCode = "drafters:read",
+                            RoleName = "Host"
+                        },
+                        new
+                        {
+                            PermissionCode = "drafters:list",
+                            RoleName = "Host"
+                        },
+                        new
+                        {
+                            PermissionCode = "hosts:read",
+                            RoleName = "Host"
+                        },
+                        new
+                        {
+                            PermissionCode = "hosts:list",
+                            RoleName = "Host"
+                        },
+                        new
+                        {
+                            PermissionCode = "people:read",
+                            RoleName = "Host"
+                        },
+                        new
+                        {
+                            PermissionCode = "people:list",
+                            RoleName = "Host"
+                        },
+                        new
+                        {
+                            PermissionCode = "people:search",
+                            RoleName = "Host"
+                        },
+                        new
+                        {
                             PermissionCode = "movies:search",
                             RoleName = "Host"
                         },
@@ -139,12 +269,27 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                         },
                         new
                         {
-                            PermissionCode = "people:search",
+                            PermissionCode = "categories:search",
                             RoleName = "Host"
                         },
                         new
                         {
-                            PermissionCode = "categories:search",
+                            PermissionCode = "series:read",
+                            RoleName = "Host"
+                        },
+                        new
+                        {
+                            PermissionCode = "series:list",
+                            RoleName = "Host"
+                        },
+                        new
+                        {
+                            PermissionCode = "campaigns:read",
+                            RoleName = "Host"
+                        },
+                        new
+                        {
+                            PermissionCode = "campaigns:list",
                             RoleName = "Host"
                         },
                         new
@@ -159,7 +304,67 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                         },
                         new
                         {
+                            PermissionCode = "drafts:read",
+                            RoleName = "Drafter"
+                        },
+                        new
+                        {
+                            PermissionCode = "drafts:list",
+                            RoleName = "Drafter"
+                        },
+                        new
+                        {
                             PermissionCode = "drafts:search",
+                            RoleName = "Drafter"
+                        },
+                        new
+                        {
+                            PermissionCode = "draft-parts:read",
+                            RoleName = "Drafter"
+                        },
+                        new
+                        {
+                            PermissionCode = "draft-parts:list",
+                            RoleName = "Drafter"
+                        },
+                        new
+                        {
+                            PermissionCode = "draft-boards:read",
+                            RoleName = "Drafter"
+                        },
+                        new
+                        {
+                            PermissionCode = "draft-pools:read",
+                            RoleName = "Drafter"
+                        },
+                        new
+                        {
+                            PermissionCode = "draft-boards:create",
+                            RoleName = "Drafter"
+                        },
+                        new
+                        {
+                            PermissionCode = "draft-boards:delete",
+                            RoleName = "Drafter"
+                        },
+                        new
+                        {
+                            PermissionCode = "draft-boards:update",
+                            RoleName = "Drafter"
+                        },
+                        new
+                        {
+                            PermissionCode = "candidate-lists:create",
+                            RoleName = "Drafter"
+                        },
+                        new
+                        {
+                            PermissionCode = "candidate-lists:update",
+                            RoleName = "Drafter"
+                        },
+                        new
+                        {
+                            PermissionCode = "candidate-lists:read",
                             RoleName = "Drafter"
                         },
                         new
@@ -179,6 +384,31 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                         },
                         new
                         {
+                            PermissionCode = "drafters:read",
+                            RoleName = "Drafter"
+                        },
+                        new
+                        {
+                            PermissionCode = "drafters:list",
+                            RoleName = "Drafter"
+                        },
+                        new
+                        {
+                            PermissionCode = "hosts:read",
+                            RoleName = "Drafter"
+                        },
+                        new
+                        {
+                            PermissionCode = "people:read",
+                            RoleName = "Drafter"
+                        },
+                        new
+                        {
+                            PermissionCode = "people:search",
+                            RoleName = "Drafter"
+                        },
+                        new
+                        {
                             PermissionCode = "movies:search",
                             RoleName = "Drafter"
                         },
@@ -204,12 +434,17 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                         },
                         new
                         {
-                            PermissionCode = "people:search",
+                            PermissionCode = "categories:search",
                             RoleName = "Drafter"
                         },
                         new
                         {
-                            PermissionCode = "categories:search",
+                            PermissionCode = "series:read",
+                            RoleName = "Drafter"
+                        },
+                        new
+                        {
+                            PermissionCode = "series:list",
                             RoleName = "Drafter"
                         },
                         new
@@ -225,6 +460,11 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                         new
                         {
                             PermissionCode = "drafts:read",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "drafts:list",
                             RoleName = "Administrator"
                         },
                         new
@@ -234,17 +474,107 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                         },
                         new
                         {
-                            PermissionCode = "drafts:search",
-                            RoleName = "Administrator"
-                        },
-                        new
-                        {
                             PermissionCode = "drafts:update",
                             RoleName = "Administrator"
                         },
                         new
                         {
+                            PermissionCode = "drafts:delete",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "drafts:search",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "drafts:read-patreon",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "draft-parts:read",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "draft-parts:list",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "draft-parts:create",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "draft-parts:update",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "draft-parts:set-status",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "draft-boards:read",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "draft-boards:list",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "draft-boards:create",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "draft-boards:update",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "draft-boards:delete",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "draft-pools:create",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "draft-pools:update",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "draft-pools:read",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
                             PermissionCode = "picks:add",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "picks:create",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "picks:update",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "picks:undo",
                             RoleName = "Administrator"
                         },
                         new
@@ -255,6 +585,36 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                         new
                         {
                             PermissionCode = "picks:veto-override",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "picks:commissioner-override",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "people:create",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "people:read",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "people:list",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "people:update",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "people:search",
                             RoleName = "Administrator"
                         },
                         new
@@ -284,6 +644,11 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                         },
                         new
                         {
+                            PermissionCode = "drafters:list",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
                             PermissionCode = "hosts:add",
                             RoleName = "Administrator"
                         },
@@ -309,6 +674,56 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                         },
                         new
                         {
+                            PermissionCode = "hosts:list",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "drafter-teams:read",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "drafter-teams:list",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "drafter-teams:create",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "drafter-teams:update",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "drafter-teams:members",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "game-boards:create",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "game-boards:update",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "movies:create",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "movies:read",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
                             PermissionCode = "movies:search",
                             RoleName = "Administrator"
                         },
@@ -334,22 +749,27 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                         },
                         new
                         {
-                            PermissionCode = "people:create",
+                            PermissionCode = "series:read",
                             RoleName = "Administrator"
                         },
                         new
                         {
-                            PermissionCode = "people:read",
+                            PermissionCode = "series:list",
                             RoleName = "Administrator"
                         },
                         new
                         {
-                            PermissionCode = "people:update",
+                            PermissionCode = "series:create",
                             RoleName = "Administrator"
                         },
                         new
                         {
-                            PermissionCode = "people:search",
+                            PermissionCode = "series:update",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "series:delete",
                             RoleName = "Administrator"
                         },
                         new
@@ -379,12 +799,57 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                         },
                         new
                         {
-                            PermissionCode = "movies:create",
+                            PermissionCode = "campaigns:create",
                             RoleName = "Administrator"
                         },
                         new
                         {
-                            PermissionCode = "movies:read",
+                            PermissionCode = "campaigns:update",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "campaigns:read",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "campaigns:list",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "campaigns:delete",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "campaigns:restore",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "candidate-lists:read",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "candidate-lists:list",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "candidate-lists:create",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "candidate-lists:update",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "candidate-lists:delete",
                             RoleName = "Administrator"
                         },
                         new
@@ -395,106 +860,6 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                         new
                         {
                             PermissionCode = "users:update",
-                            RoleName = "SuperAdministrator"
-                        },
-                        new
-                        {
-                            PermissionCode = "drafts:read",
-                            RoleName = "SuperAdministrator"
-                        },
-                        new
-                        {
-                            PermissionCode = "drafts:create",
-                            RoleName = "SuperAdministrator"
-                        },
-                        new
-                        {
-                            PermissionCode = "drafts:search",
-                            RoleName = "SuperAdministrator"
-                        },
-                        new
-                        {
-                            PermissionCode = "drafts:update",
-                            RoleName = "SuperAdministrator"
-                        },
-                        new
-                        {
-                            PermissionCode = "picks:add",
-                            RoleName = "SuperAdministrator"
-                        },
-                        new
-                        {
-                            PermissionCode = "picks:veto",
-                            RoleName = "SuperAdministrator"
-                        },
-                        new
-                        {
-                            PermissionCode = "picks:veto-override",
-                            RoleName = "SuperAdministrator"
-                        },
-                        new
-                        {
-                            PermissionCode = "drafters:add",
-                            RoleName = "SuperAdministrator"
-                        },
-                        new
-                        {
-                            PermissionCode = "drafters:remove",
-                            RoleName = "SuperAdministrator"
-                        },
-                        new
-                        {
-                            PermissionCode = "drafters:update",
-                            RoleName = "SuperAdministrator"
-                        },
-                        new
-                        {
-                            PermissionCode = "drafters:read",
-                            RoleName = "SuperAdministrator"
-                        },
-                        new
-                        {
-                            PermissionCode = "hosts:add",
-                            RoleName = "SuperAdministrator"
-                        },
-                        new
-                        {
-                            PermissionCode = "hosts:remove",
-                            RoleName = "SuperAdministrator"
-                        },
-                        new
-                        {
-                            PermissionCode = "hosts:update",
-                            RoleName = "SuperAdministrator"
-                        },
-                        new
-                        {
-                            PermissionCode = "hosts:read",
-                            RoleName = "SuperAdministrator"
-                        },
-                        new
-                        {
-                            PermissionCode = "movies:search",
-                            RoleName = "SuperAdministrator"
-                        },
-                        new
-                        {
-                            PermissionCode = "actors:search",
-                            RoleName = "SuperAdministrator"
-                        },
-                        new
-                        {
-                            PermissionCode = "crew:search",
-                            RoleName = "SuperAdministrator"
-                        },
-                        new
-                        {
-                            PermissionCode = "genres:search",
-                            RoleName = "SuperAdministrator"
-                        },
-                        new
-                        {
-                            PermissionCode = "studios:search",
                             RoleName = "SuperAdministrator"
                         },
                         new
@@ -519,6 +884,141 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                         },
                         new
                         {
+                            PermissionCode = "drafts:read",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "drafts:list",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "drafts:create",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "drafts:update",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "drafts:delete",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "drafts:search",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "drafts:read-patreon",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "draft-parts:read",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "draft-parts:list",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "draft-parts:create",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "draft-parts:update",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "draft-parts:set-status",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "draft-boards:read",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "draft-boards:list",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "draft-boards:create",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "draft-boards:update",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "draft-boards:delete",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "draft-pools:create",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "draft-pools:update",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "draft-pools:read",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "picks:add",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "picks:create",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "picks:update",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "picks:undo",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "picks:veto",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "picks:veto-override",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "picks:commissioner-override",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
                             PermissionCode = "people:create",
                             RoleName = "SuperAdministrator"
                         },
@@ -529,12 +1029,172 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                         },
                         new
                         {
+                            PermissionCode = "people:list",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
                             PermissionCode = "people:update",
                             RoleName = "SuperAdministrator"
                         },
                         new
                         {
                             PermissionCode = "people:search",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "drafters:add",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "drafters:create",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "drafters:remove",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "drafters:update",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "drafters:read",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "drafters:list",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "hosts:add",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "hosts:create",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "hosts:remove",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "hosts:update",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "hosts:read",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "hosts:list",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "drafter-teams:read",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "drafter-teams:list",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "drafter-teams:create",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "drafter-teams:update",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "drafter-teams:members",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "game-boards:create",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "game-boards:update",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "movies:create",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "movies:read",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "movies:search",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "actors:search",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "crew:search",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "genres:search",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "studios:search",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "series:read",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "series:list",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "series:create",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "series:update",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "series:delete",
                             RoleName = "SuperAdministrator"
                         },
                         new
@@ -564,12 +1224,57 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                         },
                         new
                         {
-                            PermissionCode = "movies:create",
+                            PermissionCode = "campaigns:create",
                             RoleName = "SuperAdministrator"
                         },
                         new
                         {
-                            PermissionCode = "movies:read",
+                            PermissionCode = "campaigns:update",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "campaigns:read",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "campaigns:list",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "campaigns:delete",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "campaigns:restore",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "candidate-lists:read",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "candidate-lists:list",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "candidate-lists:create",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "candidate-lists:update",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "candidate-lists:delete",
                             RoleName = "SuperAdministrator"
                         },
                         new
@@ -727,7 +1432,27 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                         },
                         new
                         {
+                            Code = "roles:read"
+                        },
+                        new
+                        {
+                            Code = "roles:update"
+                        },
+                        new
+                        {
+                            Code = "permissions:read"
+                        },
+                        new
+                        {
+                            Code = "permissions:update"
+                        },
+                        new
+                        {
                             Code = "drafts:read"
+                        },
+                        new
+                        {
+                            Code = "drafts:list"
                         },
                         new
                         {
@@ -735,15 +1460,91 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                         },
                         new
                         {
-                            Code = "drafts:search"
-                        },
-                        new
-                        {
                             Code = "drafts:update"
                         },
                         new
                         {
+                            Code = "drafts:delete"
+                        },
+                        new
+                        {
+                            Code = "drafts:search"
+                        },
+                        new
+                        {
+                            Code = "drafts:read-patreon"
+                        },
+                        new
+                        {
+                            Code = "patreon:search"
+                        },
+                        new
+                        {
+                            Code = "draft-parts:read"
+                        },
+                        new
+                        {
+                            Code = "draft-parts:list"
+                        },
+                        new
+                        {
+                            Code = "draft-parts:create"
+                        },
+                        new
+                        {
+                            Code = "draft-parts:update"
+                        },
+                        new
+                        {
+                            Code = "draft-parts:set-status"
+                        },
+                        new
+                        {
+                            Code = "draft-boards:read"
+                        },
+                        new
+                        {
+                            Code = "draft-boards:list"
+                        },
+                        new
+                        {
+                            Code = "draft-boards:create"
+                        },
+                        new
+                        {
+                            Code = "draft-boards:update"
+                        },
+                        new
+                        {
+                            Code = "draft-boards:delete"
+                        },
+                        new
+                        {
+                            Code = "draft-pools:create"
+                        },
+                        new
+                        {
+                            Code = "draft-pools:update"
+                        },
+                        new
+                        {
+                            Code = "draft-pools:read"
+                        },
+                        new
+                        {
                             Code = "picks:add"
+                        },
+                        new
+                        {
+                            Code = "picks:create"
+                        },
+                        new
+                        {
+                            Code = "picks:update"
+                        },
+                        new
+                        {
+                            Code = "picks:undo"
                         },
                         new
                         {
@@ -752,6 +1553,30 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                         new
                         {
                             Code = "picks:veto-override"
+                        },
+                        new
+                        {
+                            Code = "picks:commissioner-override"
+                        },
+                        new
+                        {
+                            Code = "people:create"
+                        },
+                        new
+                        {
+                            Code = "people:read"
+                        },
+                        new
+                        {
+                            Code = "people:list"
+                        },
+                        new
+                        {
+                            Code = "people:update"
+                        },
+                        new
+                        {
+                            Code = "people:search"
                         },
                         new
                         {
@@ -775,19 +1600,7 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                         },
                         new
                         {
-                            Code = "roles:read"
-                        },
-                        new
-                        {
-                            Code = "roles:update"
-                        },
-                        new
-                        {
-                            Code = "permissions:read"
-                        },
-                        new
-                        {
-                            Code = "permissions:update"
+                            Code = "drafters:list"
                         },
                         new
                         {
@@ -811,6 +1624,46 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                         },
                         new
                         {
+                            Code = "hosts:list"
+                        },
+                        new
+                        {
+                            Code = "drafter-teams:read"
+                        },
+                        new
+                        {
+                            Code = "drafter-teams:list"
+                        },
+                        new
+                        {
+                            Code = "drafter-teams:create"
+                        },
+                        new
+                        {
+                            Code = "drafter-teams:update"
+                        },
+                        new
+                        {
+                            Code = "drafter-teams:members"
+                        },
+                        new
+                        {
+                            Code = "game-boards:create"
+                        },
+                        new
+                        {
+                            Code = "game-boards:update"
+                        },
+                        new
+                        {
+                            Code = "movies:create"
+                        },
+                        new
+                        {
+                            Code = "movies:read"
+                        },
+                        new
+                        {
                             Code = "movies:search"
                         },
                         new
@@ -831,31 +1684,23 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                         },
                         new
                         {
-                            Code = "patreon:search"
+                            Code = "series:read"
                         },
                         new
                         {
-                            Code = "people:create"
+                            Code = "series:list"
                         },
                         new
                         {
-                            Code = "people:read"
+                            Code = "series:create"
                         },
                         new
                         {
-                            Code = "people:update"
+                            Code = "series:update"
                         },
                         new
                         {
-                            Code = "people:search"
-                        },
-                        new
-                        {
-                            Code = "movies:create"
-                        },
-                        new
-                        {
-                            Code = "movies:read"
+                            Code = "series:delete"
                         },
                         new
                         {
@@ -876,6 +1721,50 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                         new
                         {
                             Code = "categories:delete"
+                        },
+                        new
+                        {
+                            Code = "campaigns:create"
+                        },
+                        new
+                        {
+                            Code = "campaigns:update"
+                        },
+                        new
+                        {
+                            Code = "campaigns:read"
+                        },
+                        new
+                        {
+                            Code = "campaigns:list"
+                        },
+                        new
+                        {
+                            Code = "campaigns:delete"
+                        },
+                        new
+                        {
+                            Code = "campaigns:restore"
+                        },
+                        new
+                        {
+                            Code = "candidate-lists:read"
+                        },
+                        new
+                        {
+                            Code = "candidate-lists:list"
+                        },
+                        new
+                        {
+                            Code = "candidate-lists:create"
+                        },
+                        new
+                        {
+                            Code = "candidate-lists:update"
+                        },
+                        new
+                        {
+                            Code = "candidate-lists:delete"
                         });
                 });
 

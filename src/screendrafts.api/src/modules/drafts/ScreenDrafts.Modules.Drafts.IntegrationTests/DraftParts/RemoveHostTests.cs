@@ -11,9 +11,9 @@ public sealed class RemoveHostTests(DraftsIntegrationTestWebAppFactory factory)
   public async Task RemoveHost_WhenHostExistsOnDraftPart_ShouldSucceedAsync()
   {
     // Arrange
-    var (draftPartInternalId, hostInternalId) = await SetupDraftPartWithHostAsync();
+    var (draftPartPublicId, hostPublicId) = await SetupDraftPartWithHostAsync();
 
-    var command = new RemoveHostDraftPartCommand(draftPartInternalId, hostInternalId);
+    var command = new RemoveHostDraftPartCommand { DraftPartId = draftPartPublicId, HostId = hostPublicId };
 
     // Act
     var result = await Sender.Send(command);
@@ -27,9 +27,9 @@ public sealed class RemoveHostTests(DraftsIntegrationTestWebAppFactory factory)
   public async Task RemoveHost_ShouldRemoveHostFromDatabaseAsync()
   {
     // Arrange
-    var (draftPartInternalId, hostInternalId) = await SetupDraftPartWithHostAsync();
+    var (draftPartPublicId, hostPublicId) = await SetupDraftPartWithHostAsync();
 
-    var command = new RemoveHostDraftPartCommand(draftPartInternalId, hostInternalId);
+    var command = new RemoveHostDraftPartCommand { DraftPartId = draftPartPublicId, HostId = hostPublicId };
 
     // Act
     await Sender.Send(command);
@@ -37,7 +37,7 @@ public sealed class RemoveHostTests(DraftsIntegrationTestWebAppFactory factory)
     // Assert
     var draftPart = await DbContext.DraftParts
       .Include("_draftHosts")
-      .FirstAsync(dp => dp.Id == DraftPartId.Create(draftPartInternalId));
+      .FirstAsync(dp => dp.PublicId == draftPartPublicId);
 
     draftPart.DraftHosts.Should().BeEmpty();
     draftPart.PrimaryHost.Should().BeNull();
@@ -54,9 +54,8 @@ public sealed class RemoveHostTests(DraftsIntegrationTestWebAppFactory factory)
     var peopleFactory = new PeopleFactory(Sender, Faker);
     var personId = await peopleFactory.CreateAndSavePersonAsync();
     var hostPublicId = (await Sender.Send(new CreateHostCommand { PersonPublicId = personId })).Value;
-    var host = await DbContext.Hosts.FirstAsync(h => h.PublicId == hostPublicId);
 
-    var command = new RemoveHostDraftPartCommand(Guid.NewGuid(), host.Id.Value);
+    var command = new RemoveHostDraftPartCommand { DraftPartId = Faker.Random.AlphaNumeric(21), HostId = hostPublicId };
 
     // Act
     var result = await Sender.Send(command);
@@ -73,15 +72,14 @@ public sealed class RemoveHostTests(DraftsIntegrationTestWebAppFactory factory)
   public async Task RemoveHost_WhenHostNotOnDraftPart_ShouldFailAsync()
   {
     // Arrange
-    var draftPartInternalId = await CreateDraftPartAsync();
+    var draftPartPublicId = await CreateDraftPartAsync();
 
     // Create a host but do NOT add it to the draft part
     var peopleFactory = new PeopleFactory(Sender, Faker);
     var personId = await peopleFactory.CreateAndSavePersonAsync();
     var hostPublicId = (await Sender.Send(new CreateHostCommand { PersonPublicId = personId })).Value;
-    var host = await DbContext.Hosts.FirstAsync(h => h.PublicId == hostPublicId);
 
-    var command = new RemoveHostDraftPartCommand(draftPartInternalId, host.Id.Value);
+    var command = new RemoveHostDraftPartCommand { DraftPartId = draftPartPublicId, HostId = hostPublicId };
 
     // Act
     var result = await Sender.Send(command);
@@ -94,9 +92,9 @@ public sealed class RemoveHostTests(DraftsIntegrationTestWebAppFactory factory)
   // Helpers
   // -------------------------------------------------------------------------
 
-  private async Task<(Guid DraftPartInternalId, Guid HostInternalId)> SetupDraftPartWithHostAsync()
+  private async Task<(string DraftPartPublicId, string HostPublicId)> SetupDraftPartWithHostAsync()
   {
-    var draftPartInternalId = await CreateDraftPartAsync();
+    var draftPartPublicId = await CreateDraftPartAsync();
 
     var peopleFactory = new PeopleFactory(Sender, Faker);
     var personId = await peopleFactory.CreateAndSavePersonAsync();
@@ -104,21 +102,19 @@ public sealed class RemoveHostTests(DraftsIntegrationTestWebAppFactory factory)
 
     await Sender.Send(new AddHostToDraftPartCommand
     {
-      DraftPartId = draftPartInternalId,
+      DraftPartId = draftPartPublicId,
       HostPublicId = hostPublicId,
       HostRole = HostRole.Primary
     });
 
-    var host = await DbContext.Hosts.FirstAsync(h => h.PublicId == hostPublicId);
-
-    return (draftPartInternalId, host.Id.Value);
+    return (draftPartPublicId, hostPublicId);
   }
 
-  private async Task<Guid> CreateDraftPartAsync()
+  private async Task<string> CreateDraftPartAsync()
   {
     var seriesId = await CreateSeriesAsync();
     var draftPublicId = await CreateDraftAsync(seriesId);
-    return await GetFirstDraftPartIdAsync(draftPublicId);
+    return await GetFirstDraftPartPublicIdAsync(draftPublicId);
   }
 
   private async Task<Guid> CreateSeriesAsync()

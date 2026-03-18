@@ -93,8 +93,8 @@ public sealed class ListUpcomingDraftsTests(DraftsIntegrationTestWebAppFactory f
   public async Task ListUpcomingDrafts_WhenUserIsHost_ShouldReturnCommissionerCapabilitiesAsync()
   {
     // Arrange
-    var (_, draftPartInternalId) = await CreateDraftPartAsync();
-    var userId = await CreatePersonWithUserIdAndAddAsHostAsync(draftPartInternalId);
+    var (draftPartPublicId, _) = await CreateDraftPartAsync();
+    var userId = await CreatePersonWithUserIdAndAddAsHostAsync(draftPartPublicId);
 
     var query = new ListUpcomingDraftsQuery { UserId = userId, IsAdmin = false, IncludePatreon = true };
 
@@ -174,7 +174,7 @@ public sealed class ListUpcomingDraftsTests(DraftsIntegrationTestWebAppFactory f
     return (draftPart.PublicId, internalId);
   }
 
-  private async Task<Guid> CreatePersonWithUserIdAndAddAsHostAsync(Guid draftPartInternalId)
+  private async Task<Guid> CreatePersonWithUserIdAndAddAsHostAsync(string draftPartPublicId)
   {
     var peopleFactory = new PeopleFactory(Sender, Faker);
     var personPublicId = await peopleFactory.CreateAndSavePersonAsync();
@@ -187,7 +187,7 @@ public sealed class ListUpcomingDraftsTests(DraftsIntegrationTestWebAppFactory f
 
     await Sender.Send(new AddHostToDraftPartCommand
     {
-      DraftPartId = draftPartInternalId,
+      DraftPartId = draftPartPublicId,
       HostPublicId = hostPublicId,
       HostRole = HostRole.Primary
     });

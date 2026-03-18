@@ -14,7 +14,7 @@ internal sealed class Endpoint
       .Produces(StatusCodes.Status400BadRequest)
       .Produces(StatusCodes.Status500InternalServerError);
     });
-    Policies(DraftsAuth.Permissions.DraftsList);
+    Policies(DraftsAuth.Permissions.DraftList);
   }
 
   public override async Task HandleAsync(ListDraftsRequest req, CancellationToken ct)

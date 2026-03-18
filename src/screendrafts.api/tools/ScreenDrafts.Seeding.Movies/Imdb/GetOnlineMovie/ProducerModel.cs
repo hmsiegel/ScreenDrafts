@@ -1,8 +1,9 @@
 ﻿namespace ScreenDrafts.Seeding.Movies.Imdb.GetOnlineMovie;
 
 public sealed class ProducerModel(
-  string name, string imdbId)
+  string name, string imdbId, int tmdbId)
 {
   public string ImdbId { get; init; } = imdbId;
+  public int TmdbId { get; init; } = tmdbId;
   public string Name { get; init; } = name;
 }

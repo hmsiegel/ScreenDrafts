@@ -68,7 +68,7 @@ public sealed class DraftPartStartedDomainEventHandlerTests(DraftsIntegrationTes
     var hostPublicId = (await Sender.Send(new CreateHostCommand { PersonPublicId = hostPersonId })).Value;
     await Sender.Send(new AddHostToDraftPartCommand
     {
-      DraftPartId = draftPartId,
+      DraftPartId = draftPart.PublicId,
       HostPublicId = hostPublicId,
       HostRole = HostRole.Primary
     });
@@ -134,7 +134,7 @@ public sealed class DraftPartStartedDomainEventHandlerTests(DraftsIntegrationTes
     var hostPublicId = (await Sender.Send(new CreateHostCommand { PersonPublicId = hostPersonId })).Value;
     await Sender.Send(new AddHostToDraftPartCommand
     {
-      DraftPartId = draftPartId,
+      DraftPartId = draftPartPublicId,
       HostPublicId = hostPublicId,
       HostRole = HostRole.Primary
     });

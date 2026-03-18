@@ -13,6 +13,7 @@ internal sealed class GetMovieSummaryQueryHandler(IDbConnectionFactory dbConnect
       $"""
       SELECT 
         m.imdb_id AS {nameof(GetMovieSummaryResponse.ImdbId)},
+        m.tmdb_id AS {nameof(GetMovieSummaryResponse.TmdbId)},
         m.title AS {nameof(GetMovieSummaryResponse.Title)},
         m.year AS {nameof(GetMovieSummaryResponse.Year)},
         m.image AS {nameof(GetMovieSummaryResponse.Image)},

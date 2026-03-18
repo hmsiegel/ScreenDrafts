@@ -1,0 +1,26 @@
+meta {
+  name: Set Release Date
+  type: http
+  seq: 12
+}
+
+post {
+  url: {{url}}/draft-parts/:draftPartId/releases
+  body: json
+  auth: bearer
+}
+
+params:path {
+  draftPartId: dp_ISB5WqkIr9rnw0z
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+      "releaseDate": "2026-02-16",
+      "releaseChannel": 0
+  }
+}

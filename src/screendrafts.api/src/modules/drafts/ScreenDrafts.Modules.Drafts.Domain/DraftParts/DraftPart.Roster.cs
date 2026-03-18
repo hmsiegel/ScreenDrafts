@@ -96,11 +96,6 @@ public sealed partial class DraftPart
       return Result.Failure(DraftErrors.HostAlreadyAdded(host.Id.Value));
     }
 
-    if (_draftHosts.Count >= TotalHosts)
-    {
-      return Result.Failure(DraftErrors.TooManyHosts);
-    }
-
     _draftHosts.Add(DraftHost.CreateCoHost(this, host));
     UpdatedAtUtc = DateTime.UtcNow;
     Raise(new HostAddedDomainEvent(Id.Value, host.Id.Value));
@@ -124,13 +119,6 @@ public sealed partial class DraftPart
 
     Raise(new HostRemovedDomainEvent(Id.Value, hostId.Value));
 
-    return Result.Success();
-  }
-
-  public Result SetHosts(IReadOnlyList<DraftHost> hosts)
-  {
-    _draftHosts.Clear();
-    _draftHosts.AddRange(hosts);
     return Result.Success();
   }
 }

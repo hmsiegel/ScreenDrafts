@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Common.Presentation.Responses;
-
-namespace ScreenDrafts.Modules.Movies.Features.Movies.AddMovie;
+﻿namespace ScreenDrafts.Modules.Movies.Features.Movies.AddMovie;
 
 internal sealed class Endpoint : ScreenDraftsEndpoint<Request, Guid>
 {
@@ -16,7 +14,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<Request, Guid>
       .Produces(StatusCodes.Status401Unauthorized)
       .Produces(StatusCodes.Status403Forbidden);
     });
-    Policies(MoviesAuth.Permissions.MoviesAdd);
+    Policies(MoviesAuth.Permissions.MoviesCreate);
   }
 
   public override async Task HandleAsync(Request req, CancellationToken ct)

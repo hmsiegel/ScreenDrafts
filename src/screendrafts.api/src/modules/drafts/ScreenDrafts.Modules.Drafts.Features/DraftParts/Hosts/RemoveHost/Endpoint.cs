@@ -20,7 +20,11 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<RemoveHostDraftPartRequest
   public override async Task HandleAsync(RemoveHostDraftPartRequest req, CancellationToken ct)
   {
     ArgumentNullException.ThrowIfNull(req);
-    var RemoveHostDraftPartCommand = new RemoveHostDraftPartCommand(req.DraftPartId, req.HostId);
+    var RemoveHostDraftPartCommand = new RemoveHostDraftPartCommand
+    {
+      DraftPartId = req.DraftPartId,
+      HostId = req.HostId
+    };
 
     var result = await Sender.Send(RemoveHostDraftPartCommand, ct);
 

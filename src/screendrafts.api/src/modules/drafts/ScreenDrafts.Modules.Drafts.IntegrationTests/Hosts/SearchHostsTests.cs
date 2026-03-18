@@ -202,10 +202,10 @@ public sealed class SearchHostsTests(DraftsIntegrationTestWebAppFactory factory)
     var personId = await peopleFactory.CreateAndSavePersonAsync();
     var primaryHostId = (await Sender.Send(new CreateHostCommand { PersonPublicId = personId })).Value;
 
-    var draftPartInternalId = await CreateDraftPartAsync();
+    var draftPartPublicId = await CreateDraftPartAsync();
     await Sender.Send(new AddHostToDraftPartCommand
     {
-      DraftPartId = draftPartInternalId,
+      DraftPartId = draftPartPublicId,
       HostPublicId = primaryHostId,
       HostRole = HostRole.Primary
     });
@@ -233,10 +233,10 @@ public sealed class SearchHostsTests(DraftsIntegrationTestWebAppFactory factory)
     var personId = await peopleFactory.CreateAndSavePersonAsync();
     var primaryHostId = (await Sender.Send(new CreateHostCommand { PersonPublicId = personId })).Value;
 
-    var draftPartInternalId = await CreateDraftPartAsync();
+    var draftPartPublicId = await CreateDraftPartAsync();
     await Sender.Send(new AddHostToDraftPartCommand
     {
-      DraftPartId = draftPartInternalId,
+      DraftPartId = draftPartPublicId,
       HostPublicId = primaryHostId,
       HostRole = HostRole.Primary
     });
@@ -263,18 +263,18 @@ public sealed class SearchHostsTests(DraftsIntegrationTestWebAppFactory factory)
     var hostId = (await Sender.Send(new CreateHostCommand { PersonPublicId = personId })).Value;
 
     // Add host to two draft parts
-    var draftPartId1 = await CreateDraftPartAsync();
-    var draftPartId2 = await CreateDraftPartAsync();
+    var draftPartPublicId1 = await CreateDraftPartAsync();
+    var draftPartPublicId2 = await CreateDraftPartAsync();
 
     await Sender.Send(new AddHostToDraftPartCommand
     {
-      DraftPartId = draftPartId1,
+      DraftPartId = draftPartPublicId1,
       HostPublicId = hostId,
       HostRole = HostRole.Primary
     });
     await Sender.Send(new AddHostToDraftPartCommand
     {
-      DraftPartId = draftPartId2,
+      DraftPartId = draftPartPublicId2,
       HostPublicId = hostId,
       HostRole = HostRole.Primary
     });
@@ -293,11 +293,11 @@ public sealed class SearchHostsTests(DraftsIntegrationTestWebAppFactory factory)
   // Helpers
   // -------------------------------------------------------------------------
 
-  private async Task<Guid> CreateDraftPartAsync()
+  private async Task<string> CreateDraftPartAsync()
   {
     var seriesId = await CreateSeriesAsync();
     var draftPublicId = await CreateDraftAsync(seriesId);
-    return await GetFirstDraftPartIdAsync(draftPublicId);
+    return await GetFirstDraftPartPublicIdAsync(draftPublicId);
   }
 
   private async Task<Guid> CreateSeriesAsync()

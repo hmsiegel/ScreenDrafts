@@ -139,7 +139,7 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
   {
     // Arrange
     var (draftPublicId, _) = await CreateDraftWithPartAsync();
-    var draftPartInternalId = await GetFirstDraftPartIdAsync(draftPublicId);
+    var draftPartPublicId = await GetFirstDraftPartPublicIdAsync(draftPublicId);
 
     var peopleFactory = new PeopleFactory(Sender, Faker);
     var personId = await peopleFactory.CreateAndSavePersonAsync();
@@ -147,7 +147,7 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
 
     await Sender.Send(new AddHostToDraftPartCommand
     {
-      DraftPartId = draftPartInternalId,
+      DraftPartId = draftPartPublicId,
       HostPublicId = hostPublicId,
       HostRole = HostRole.Primary
     });
@@ -550,7 +550,7 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
     var hostPublicId = (await Sender.Send(new CreateHostCommand { PersonPublicId = hostPersonId })).Value;
     await Sender.Send(new AddHostToDraftPartCommand
     {
-      DraftPartId = draftPartInternalId,
+      DraftPartId = draftPartPublicId,
       HostPublicId = hostPublicId,
       HostRole = HostRole.Primary
     });

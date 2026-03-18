@@ -5,6 +5,9 @@ internal sealed class DraftPositionCsvModel
   [Column("draft_part_id")]
   public Guid DraftPartId { get; set; }
 
+  [Column("game_board_id")]
+  public Guid GameBoardId { get; set; }
+
   [Column("name")]
   public string PositionName { get; set; } = string.Empty;
 

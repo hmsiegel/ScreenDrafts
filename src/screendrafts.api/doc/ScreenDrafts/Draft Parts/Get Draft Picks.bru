@@ -5,9 +5,13 @@ meta {
 }
 
 get {
-  url: {{url}}/drafts/{draftId}/picks
+  url: {{url}}/draft-parts/:draftPartId/picks
   body: none
   auth: bearer
+}
+
+params:path {
+  draftPartId: dp_lInlIEG9UCs30X3
 }
 
 auth:bearer {
