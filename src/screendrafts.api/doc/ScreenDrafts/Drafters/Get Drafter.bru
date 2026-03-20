@@ -5,9 +5,13 @@ meta {
 }
 
 get {
-  url: {{url}}/drafters/c2495a46-d6ba-428f-94bb-41a4ad91f7b7
+  url: {{url}}/drafters/:publicId
   body: none
   auth: bearer
+}
+
+params:path {
+  publicId: 
 }
 
 auth:bearer {

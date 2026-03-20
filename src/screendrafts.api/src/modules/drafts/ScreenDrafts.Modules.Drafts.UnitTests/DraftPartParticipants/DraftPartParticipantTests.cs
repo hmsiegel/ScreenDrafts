@@ -78,10 +78,10 @@ public class DraftPartParticipantTests : DraftsBaseTest
     var participant = DraftPartParticipant.Create(draftPart, participantId);
 
     // Act
-    participant.AddRollover(isVeto: true);
+    participant.InitializeVetoes(1, 1, 0);
 
     // Assert
-    participant.RolloverVeto.Should().Be(1);
+    participant.VetoesRollingIn.Should().Be(1);
     participant.TotalVetoes.Should().Be(2);
   }
 
@@ -95,10 +95,10 @@ public class DraftPartParticipantTests : DraftsBaseTest
     var participant = DraftPartParticipant.Create(draftPart, participantId);
 
     // Act
-    participant.AddRollover(isVeto: false);
+    participant.InitializeVetoes(1, 0, 1);
 
     // Assert
-    participant.RolloverVetoOverride.Should().Be(1);
+    participant.VetoOverridesRollingIn.Should().Be(1);
     participant.TotalVetoOverrides.Should().Be(1);
   }
 
@@ -112,10 +112,10 @@ public class DraftPartParticipantTests : DraftsBaseTest
     var participant = DraftPartParticipant.Create(draftPart, participantId);
 
     // Act
-    participant.AddTriviaAward(isVeto: true);
+    participant.GrantAward(isVeto: true);
 
     // Assert
-    participant.TriviaVetoes.Should().Be(1);
+    participant.AwardedVetoes.Should().Be(1);
     participant.TotalVetoes.Should().Be(2);
   }
 
@@ -129,10 +129,10 @@ public class DraftPartParticipantTests : DraftsBaseTest
     var participant = DraftPartParticipant.Create(draftPart, participantId);
 
     // Act
-    participant.AddTriviaAward(isVeto: false);
+    participant.GrantAward(isVeto: false);
 
     // Assert
-    participant.TriviaVetoOverrides.Should().Be(1);
+    participant.AwardedVetoOverrides.Should().Be(1);
     participant.TotalVetoOverrides.Should().Be(1);
   }
 
@@ -227,7 +227,7 @@ public class DraftPartParticipantTests : DraftsBaseTest
     var drafter = CreateDrafter();
     var participantId = CreateParticipantId(drafter);
     var participant = DraftPartParticipant.Create(draftPart, participantId);
-    participant.AddRollover(isVeto: false);
+    participant.InitializeVetoes(1, 1, 1);
 
     // Act
     var canUse = participant.CanUseVetoOverride(maxOverrides: 2);
@@ -244,7 +244,7 @@ public class DraftPartParticipantTests : DraftsBaseTest
     var drafter = CreateDrafter();
     var participantId = CreateParticipantId(drafter);
     var participant = DraftPartParticipant.Create(draftPart, participantId);
-    participant.AddRollover(isVeto: false);
+    participant.InitializeVetoes(1, 1, 0);
 
     // Act
     var canUse = participant.CanUseVetoOverride(maxOverrides: 0);
@@ -261,7 +261,7 @@ public class DraftPartParticipantTests : DraftsBaseTest
     var drafter = CreateDrafter();
     var participantId = CreateParticipantId(drafter);
     var participant = DraftPartParticipant.Create(draftPart, participantId);
-    participant.AddRollover(isVeto: false);
+    participant.InitializeVetoes(1, 1, 1);
 
     // Act
     participant.SpendVetoOverride(maxOverrides: 2);
@@ -297,7 +297,7 @@ public class DraftPartParticipantTests : DraftsBaseTest
     var participant = DraftPartParticipant.Create(draftPart, participantId);
 
     // Act & Assert
-    participant.VetoesRollingOver.Should().Be(1);
+    participant.VetoesRollingOut.Should().Be(1);
   }
 
   [Fact]
@@ -311,7 +311,7 @@ public class DraftPartParticipantTests : DraftsBaseTest
     participant.SpendVeto();
 
     // Act & Assert
-    participant.VetoesRollingOver.Should().Be(0);
+    participant.VetoesRollingOut.Should().Be(0);
   }
 
   [Fact]
@@ -322,54 +322,9 @@ public class DraftPartParticipantTests : DraftsBaseTest
     var drafter = CreateDrafter();
     var participantId = CreateParticipantId(drafter);
     var participant = DraftPartParticipant.Create(draftPart, participantId);
-    participant.AddRollover(isVeto: false);
+    participant.InitializeVetoes(1, 0, 1);
 
     // Act & Assert
-    participant.VetoOverridesRollingOver.Should().Be(1);
-  }
-
-  [Fact]
-  public void Picks_ShouldBeEmptyInitially()
-  {
-    // Arrange
-    var draftPart = CreateDraftPart();
-    var drafter = CreateDrafter();
-    var participantId = CreateParticipantId(drafter);
-
-    // Act
-    var participant = DraftPartParticipant.Create(draftPart, participantId);
-
-    // Assert
-    participant.Picks.Should().BeEmpty();
-  }
-
-  [Fact]
-  public void Vetoes_ShouldBeEmptyInitially()
-  {
-    // Arrange
-    var draftPart = CreateDraftPart();
-    var drafter = CreateDrafter();
-    var participantId = CreateParticipantId(drafter);
-
-    // Act
-    var participant = DraftPartParticipant.Create(draftPart, participantId);
-
-    // Assert
-    participant.Vetoes.Should().BeEmpty();
-  }
-
-  [Fact]
-  public void VetoOverrides_ShouldBeEmptyInitially()
-  {
-    // Arrange
-    var draftPart = CreateDraftPart();
-    var drafter = CreateDrafter();
-    var participantId = CreateParticipantId(drafter);
-
-    // Act
-    var participant = DraftPartParticipant.Create(draftPart, participantId);
-
-    // Assert
-    participant.VetoOverrides.Should().BeEmpty();
+    participant.VetoOverridesRollingOut.Should().Be(1);
   }
 }

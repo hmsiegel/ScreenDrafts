@@ -2,7 +2,9 @@
 
 internal sealed record SetDraftPartStatusCommand : ICommand<Response>
 {
-  public required SetDraftPartStatusRequest SetDraftPartStatusRequest { get; init; }
+  public required string DraftPublicId { get; init; }
+  public required int PartIndex { get; init; }
+  public DraftPartStatusAction Action { get; init; }
 }
 
 

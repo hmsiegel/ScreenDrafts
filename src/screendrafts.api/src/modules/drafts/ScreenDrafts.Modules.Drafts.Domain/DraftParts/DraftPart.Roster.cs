@@ -39,6 +39,23 @@ public sealed partial class DraftPart
     return Result.Success();
   }
 
+  public Result SetParticipantAward(Participant participant, bool isVeto)
+  {
+    var p = GetParticipantRequired(participant);
+    p.GrantAward(isVeto);
+
+    UpdatedAtUtc = DateTime.UtcNow;
+    return Result.Success();
+  }
+
+  public Result RevokeParticipantAward(Participant participant, bool isVeto)
+  {
+    var p = GetParticipantRequired(participant);
+    p.RevokeAward(isVeto);
+    UpdatedAtUtc = DateTime.UtcNow;
+    return Result.Success();
+  }
+
   public Result RemoveParticipant(Participant participant)
   {
     Guard.Against.Null(participant);
@@ -56,6 +73,25 @@ public sealed partial class DraftPart
     Guard.Against.Null(participant);
     return _draftPartParticipants.Any(dp => dp.ParticipantId == participant);
   }
+
+  public Result InitializeParticipantVetoes(
+    Participant participant,
+    int startingVetoes,
+    int vetoesRollingIn,
+    int vetoOverridesRollingIn)
+  {
+    if (!IsParticipantInThisPart(participant))
+    {
+      return Result.Failure(DraftPartErrors.ParticipantDoesNotBelongToThisDraftPart(participant));
+    }
+
+    var p = GetParticipantRequired(participant);
+    p.InitializeVetoes(startingVetoes, vetoesRollingIn, vetoOverridesRollingIn);
+
+    UpdatedAtUtc = DateTime.UtcNow;
+    return Result.Success();
+  }
+
   internal DraftPartParticipant GetParticipantRequired(Participant participantId)
   {
     var participant = _draftPartParticipants.FirstOrDefault(dp => dp.ParticipantIdValue == participantId.Value);
@@ -121,4 +157,5 @@ public sealed partial class DraftPart
 
     return Result.Success();
   }
+
 }

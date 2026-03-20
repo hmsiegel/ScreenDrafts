@@ -51,11 +51,6 @@ internal sealed class PickConfiguration : IEntityTypeConfiguration<Pick>
       .ValueGeneratedNever()
       .HasConversion(IdConverters.DraftPartParticipantIdConverter);
 
-    builder.HasOne(p => p.PlayedByParticipant)
-      .WithMany(p => p.Picks)
-      .HasForeignKey(p => p.PlayedByParticipantId)
-      .OnDelete(DeleteBehavior.Restrict);
-
     builder.Property(p => p.PlayedByParticipantKindValue)
       .IsRequired()
       .HasConversion(IdConverters.ParticipantKindConverter);

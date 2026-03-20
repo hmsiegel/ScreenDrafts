@@ -2,13 +2,11 @@
 
 internal sealed class ApplyVetoCommandHandler(
   IDraftPartRepository draftPartRepository,
-  ISeriesPolicyProvider seriesPolicyProvider,
   ParticipantResolver participantResolver,
   IPickRepository pickRepository)
   : ICommandHandler<ApplyVetoCommand>
 {
   private readonly IDraftPartRepository _draftPartRepository = draftPartRepository;
-  private readonly ISeriesPolicyProvider _seriesPolicyProvider = seriesPolicyProvider;
   private readonly ParticipantResolver _participantResolver = participantResolver;
   private readonly IPickRepository _pickRepository = pickRepository;
 
@@ -45,9 +43,6 @@ internal sealed class ApplyVetoCommandHandler(
     var pickId = PickId.Create(pick.Id.Value);
 
     var pickResult = draftPart.ApplyVeto(
-      seriesPolicyProvider: _seriesPolicyProvider,
-      seriesId: draftPart.SeriesId,
-      draftType: draftPart.DraftType,
       pickId: pickId,
       issuerId: participant,
       actedByPublicId: request.ActorPublicId);

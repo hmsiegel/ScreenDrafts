@@ -126,21 +126,24 @@ public sealed class AddMovieTests(DraftsIntegrationTestWebAppFactory factory)
     {
       Id = Guid.NewGuid(),
       ImdbId = "tt" + Faker.Random.Number(1000000, 9999999),
-      Title = "The Shawshank Redemption"
+      Title = "The Shawshank Redemption",
+      TmdbId = Faker.Random.Number(100000, 999999)
     };
 
     var command2 = new AddMovieCommand
     {
       Id = Guid.NewGuid(),
       ImdbId = "tt" + Faker.Random.Number(1000000, 9999999),
-      Title = "The Godfather"
+      Title = "The Godfather",
+      TmdbId = Faker.Random.Number(100000, 999999)
     };
 
     var command3 = new AddMovieCommand
     {
       Id = Guid.NewGuid(),
       ImdbId = "tt" + Faker.Random.Number(1000000, 9999999),
-      Title = "The Dark Knight"
+      Title = "The Dark Knight",
+      TmdbId = Faker.Random.Number(100000, 999999)
     };
 
     // Act

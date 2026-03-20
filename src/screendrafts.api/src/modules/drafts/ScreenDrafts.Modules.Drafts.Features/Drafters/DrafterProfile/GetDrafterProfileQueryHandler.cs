@@ -116,8 +116,8 @@ internal sealed class GetDrafterProfileQueryHandler(
     const string rolloverSql =
       $"""
       SELECT
-        dpp.rollover_veto AS {nameof(RolloverRow.RolloverVeto)},
-        dpp.rollover_veto_override AS {nameof(RolloverRow.RolloverVetoOverride)}
+        CASE WHEN (dpp.starting_vetoes + dpp.vetoes_rolling_in + dpp.awarded_vetoes - dpp.vetoes_used) >= 1 THEN 1 ELSE 0 END AS {nameof(RolloverRow.RolloverVeto)},
+        CASE WHEN (dpp.veto_overrides_rolling_in + dpp.awarded_veto_overrides - dpp.veto_overrides_used) >= 1 THEN 1 ELSE 0 END AS {nameof(RolloverRow.RolloverVetoOverride)}
       FROM drafts.draft_part_participants dpp
       JOIN drafts.draft_parts dp ON dpp.draft_part_id = dp.id
       LEFT JOIN drafts.draft_releases dr ON dr.part_id = dp.id

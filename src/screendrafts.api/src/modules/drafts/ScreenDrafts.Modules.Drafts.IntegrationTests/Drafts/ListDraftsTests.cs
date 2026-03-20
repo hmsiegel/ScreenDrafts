@@ -1,4 +1,4 @@
-using ScreenDrafts.Modules.Drafts.Domain.DraftParts.Enums;
+﻿using ScreenDrafts.Modules.Drafts.Domain.DraftParts.Enums;
 using ScreenDrafts.Modules.Drafts.Features.Categories.Create;
 using ScreenDrafts.Modules.Drafts.Features.Drafts.ListDrafts;
 using ScreenDrafts.Modules.Drafts.Features.Drafts.SetCategories;
@@ -244,7 +244,7 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
 
     await Sender.Send(new AddParticipantToDraftPartCommand
     {
-      DraftPartPublicId = draftPartPublicId,
+      DraftPartId = draftPartPublicId,
       ParticipantPublicId = drafterPublicId,
       ParticipantKind = ParticipantKind.Drafter
     });
@@ -606,14 +606,14 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
 
     await Sender.Send(new AddParticipantToDraftPartCommand
     {
-      DraftPartPublicId = richPartPublicId,
+      DraftPartId = richPartPublicId,
       ParticipantPublicId = drafter1,
       ParticipantKind = ParticipantKind.Drafter
     });
 
     await Sender.Send(new AddParticipantToDraftPartCommand
     {
-      DraftPartPublicId = richPartPublicId,
+      DraftPartId = richPartPublicId,
       ParticipantPublicId = drafter2,
       ParticipantKind = ParticipantKind.Drafter
     });

@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Drafts.Features.Drafts.SetDraftPartStatus;
+﻿namespace ScreenDrafts.Modules.Drafts.Features.Drafts.SetDraftPartStatus;
 
 internal sealed class Endpoint : ScreenDraftsEndpoint<SetDraftPartStatusRequest, Response>
 {
@@ -22,7 +22,9 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<SetDraftPartStatusRequest,
   {
     var SetDraftPartStatusCommand = new SetDraftPartStatusCommand
     {
-      SetDraftPartStatusRequest = req
+      DraftPublicId = req.DraftPublicId,
+      PartIndex = req.PartIndex,
+      Action = req.Action,
     };
 
     var result = await Sender.Send(SetDraftPartStatusCommand, ct);

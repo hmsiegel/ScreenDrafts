@@ -30,7 +30,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<AddParticipantToDraftPartR
 
     var command = new AddParticipantToDraftPartCommand
     {
-      DraftPartPublicId = req.DraftPartPublicId,
+      DraftPartId = req.DraftPartId,
       ParticipantPublicId = req.ParticipantPublicId,
       ParticipantKind = participantKind
     };

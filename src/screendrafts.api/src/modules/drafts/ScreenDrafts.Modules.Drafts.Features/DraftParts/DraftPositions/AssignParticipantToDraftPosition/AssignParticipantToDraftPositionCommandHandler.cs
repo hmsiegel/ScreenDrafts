@@ -43,9 +43,14 @@ internal sealed class AssignParticipantToDraftPositionCommandHandler : ICommandH
 
     var participant = participantResult.Value;
 
-    participant.Validate();
+    var validationResult = participant.Validate();
 
-    var result = draftPart.AddParticipant(participant);
+    if (validationResult.IsFailure)
+    {
+      return Result.Failure(validationResult.Errors);
+    }
+
+    var result = draftPart.AssignParticipantToPosition(position, participant);
 
     if (result.IsFailure)
     {

@@ -36,11 +36,26 @@ internal sealed class DraftPartParticipantConfiguration : IEntityTypeConfigurati
 
     // Inventory Inputs
     builder.Property(x => x.StartingVetoes).IsRequired();
-    builder.Property(x => x.RolloverVeto).IsRequired();
-    builder.Property(x => x.RolloverVetoOverride).IsRequired();
-    builder.Property(x => x.TriviaVetoes).IsRequired();
-    builder.Property(x => x.TriviaVetoOverrides).IsRequired();
-    builder.Property(x => x.CommissionerOverrides).IsRequired();
+
+    builder.Property(x => x.VetoesRollingIn)
+      .HasColumnName("vetoes_rolling_in")
+      .IsRequired();
+
+    builder.Property(x => x.VetoOverridesRollingIn)
+      .HasColumnName("veto_overrides_rolling_in")
+      .IsRequired();
+
+    builder.Property(x => x.AwardedVetoes)
+      .HasColumnName("awarded_vetoes")
+      .IsRequired();
+
+    builder.Property(x => x.AwardedVetoOverrides)
+      .HasColumnName("awarded_veto_overrides")
+      .IsRequired();
+
+    builder.Property(x => x.CommissionerOverrides)
+      .HasColumnName("commissioner_overrides")
+      .IsRequired();
 
     // Usage Counters
     builder.Property(x => x.VetoesUsed).IsRequired();
@@ -51,30 +66,11 @@ internal sealed class DraftPartParticipantConfiguration : IEntityTypeConfigurati
       .IsUnique()
       .HasDatabaseName("ux_draft_part_participants_unique");
 
-    // Collections (private backing fields)
-    builder.HasMany(x => x.Picks)
-      .WithOne(p => p.PlayedByParticipant)
-      .HasForeignKey(p => p.PlayedByParticipantId)
-      .OnDelete(DeleteBehavior.Restrict);
-
-    builder.HasMany(x => x.Vetoes)
-      .WithOne(v => v.IssuedByParticipant)
-      .HasForeignKey(v => v.IssuedByParticipantId)
-      .OnDelete(DeleteBehavior.Restrict);
-
-    builder.HasMany(x => x.VetoOverrides)
-      .WithOne(vo => vo.IssuedByParticipant)
-      .HasForeignKey(vo => vo.IssuedByParticipantId)
-      .OnDelete(DeleteBehavior.Restrict);
-
-    // Make EF use field access for collections
-    builder.Navigation(dpp => dpp.Picks)
-      .UsePropertyAccessMode(PropertyAccessMode.Field);
-
-    builder.Navigation(dpp => dpp.Vetoes)
-      .UsePropertyAccessMode(PropertyAccessMode.Field);
-
-    builder.Navigation(dpp => dpp.VetoOverrides)
-      .UsePropertyAccessMode(PropertyAccessMode.Field);
+    // Computed properties - not stored
+    builder.Ignore(x => x.TotalVetoes);
+    builder.Ignore(x => x.TotalVetoOverrides);
+    builder.Ignore(x => x.VetoesRollingOut);
+    builder.Ignore(x => x.VetoOverridesRollingOut);
   }
+
 }

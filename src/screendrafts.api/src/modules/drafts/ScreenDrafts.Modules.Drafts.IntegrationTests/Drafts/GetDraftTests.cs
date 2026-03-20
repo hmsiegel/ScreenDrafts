@@ -1,4 +1,4 @@
-using ScreenDrafts.Modules.Drafts.Domain.DraftParts.Enums;
+﻿using ScreenDrafts.Modules.Drafts.Domain.DraftParts.Enums;
 using ScreenDrafts.Modules.Drafts.Features.Drafts.GetDraft;
 using ScreenDrafts.Modules.Drafts.Features.DraftParts.SetReleaseDate;
 
@@ -193,7 +193,7 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
 
     await Sender.Send(new AddParticipantToDraftPartCommand
     {
-      DraftPartPublicId = draftPartPublicId,
+      DraftPartId = draftPartPublicId,
       ParticipantPublicId = drafterPublicId,
       ParticipantKind = ParticipantKind.Drafter
     });
@@ -532,7 +532,7 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
     var drafter1PublicId = (await Sender.Send(new CreateDrafterCommand(person1Id))).Value;
     await Sender.Send(new AddParticipantToDraftPartCommand
     {
-      DraftPartPublicId = draftPartPublicId,
+      DraftPartId = draftPartPublicId,
       ParticipantPublicId = drafter1PublicId,
       ParticipantKind = ParticipantKind.Drafter
     });
@@ -541,7 +541,7 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
     var drafter2PublicId = (await Sender.Send(new CreateDrafterCommand(person2Id))).Value;
     await Sender.Send(new AddParticipantToDraftPartCommand
     {
-      DraftPartPublicId = draftPartPublicId,
+      DraftPartId = draftPartPublicId,
       ParticipantPublicId = drafter2PublicId,
       ParticipantKind = ParticipantKind.Drafter
     });
@@ -556,13 +556,9 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
     });
 
     await Sender.Send(new SetDraftPartStatusCommand
-    {
-      SetDraftPartStatusRequest = new SetDraftPartStatusRequest
-      {
-        DraftPublicId = draftPublicId,
-        PartIndex = 1,
-        Action = DraftPartStatusAction.Start
-      }
+    {      DraftPublicId = draftPublicId,
+      PartIndex = 1,
+      Action = DraftPartStatusAction.Start
     });
 
     return (draftPublicId, draftPartPublicId, drafter1PublicId, drafter2PublicId);

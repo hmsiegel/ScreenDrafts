@@ -98,6 +98,16 @@ public static class DraftPartErrors
     description: "Invalid status for trivia assignment."
   );
 
+  public static readonly SDError MaxCommunityPicksCannotBeNegative = SDError.Conflict(
+    code: "DraftPart.MaxCommunityPicksCannotBeNegative",
+    description: "Maximum community picks cannot be negative."
+  );
+
+  public static readonly SDError MaxCommunityVetoesCannotBeNegative = SDError.Conflict(
+    code: "DraftPart.MaxCommunityVetoesCannotBeNegative",
+    description: "Maximum community vetoes cannot be negative."
+  );
+
   public static SDError NotFound(Guid draftPartId) => SDError.NotFound(
     code: "DraftPart.NotFound",
         description: $"Draft part with ID '{draftPartId}' is not found."

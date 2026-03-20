@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafts;
+﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafts;
 
 public sealed class ListUpcomingDraftsTests(DraftsIntegrationTestWebAppFactory factory)
   : DraftsIntegrationTest(factory)
@@ -208,7 +208,7 @@ public sealed class ListUpcomingDraftsTests(DraftsIntegrationTestWebAppFactory f
 
     await Sender.Send(new AddParticipantToDraftPartCommand
     {
-      DraftPartPublicId = draftPartPublicId,
+      DraftPartId = draftPartPublicId,
       ParticipantPublicId = drafterPublicId,
       ParticipantKind = ParticipantKind.Drafter
     });

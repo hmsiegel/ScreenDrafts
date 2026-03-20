@@ -3,13 +3,11 @@
 internal sealed class PlayPickCommandHandler(
   IDraftPartRepository draftPartRepository,
   IMovieRepository movieRepository,
-  ISeriesPolicyProvider seriesPolicyProvider,
   ParticipantResolver participantResolver)
   : ICommandHandler<PlayPickCommand, PickId>
 {
   private readonly IDraftPartRepository _draftPartRepository = draftPartRepository;
   private readonly IMovieRepository _movieRepository = movieRepository;
-  private readonly ISeriesPolicyProvider _seriesPolicyProvider = seriesPolicyProvider;
   private readonly ParticipantResolver _participantResolver = participantResolver;
 
   public async Task<Result<PickId>> Handle(PlayPickCommand request, CancellationToken cancellationToken)
@@ -48,9 +46,6 @@ internal sealed class PlayPickCommandHandler(
     }
 
     var pickResult = draftPart.PlayPick(
-      seriesPolicyProvider: _seriesPolicyProvider,
-      seriesId: draftPart.SeriesId,
-      draftType: draftPart.DraftType,
       movie: movie,
       draftPosition: request.Position,
       playOrder: request.PlayOrder,
@@ -67,5 +62,4 @@ internal sealed class PlayPickCommandHandler(
 
     return Result.Success(pickResult.Value);
   }
-
 }

@@ -71,6 +71,10 @@ public sealed partial class DraftPart : AggregateRoot<DraftPartId, Guid>
   public int? MinPosition { get; private set; }
   public int? MaxPosition { get; private set; }
 
+  // Community picks/vetoes are tracked separately
+  public int MaxCommunityPicks { get; private set; }
+  public int MaxCommunityVetoes { get; private set; }
+
   public DateTime CreatedAtUtc { get; private set; }
   public DateTime? UpdatedAtUtc { get; private set; }
 
@@ -185,23 +189,6 @@ public sealed partial class DraftPart : AggregateRoot<DraftPartId, Guid>
     return draftPart;
   }
 
-  internal Result ApplyRollover(Participant participantId, bool isVeto)
-  {
-    if (!IsParticipantInThisPart(participantId))
-    {
-      return Result.Failure(DraftPartErrors.ParticipantDoesNotBelongToThisDraftPart(participantId));
-    }
-
-    var participant = GetParticipantRequired(participantId);
-
-    participant.AddRollover(isVeto);
-
-    UpdatedAtUtc = DateTime.UtcNow;
-
-    return Result.Success();
-  }
-
-
   public DraftRelease AddRelease(ReleaseChannel channel, DateOnly date)
   {
     var release = DraftRelease.Create(
@@ -257,8 +244,6 @@ public sealed partial class DraftPart : AggregateRoot<DraftPartId, Guid>
     return Result.Success();
   }
 
-
-
   public void SetGameBoard(GameBoard gameBoard)
   {
     GameBoard = gameBoard;
@@ -290,6 +275,24 @@ public sealed partial class DraftPart : AggregateRoot<DraftPartId, Guid>
   }
 
   internal void IncrementCommunityPicksUsed() => _communityPicksUsed++;
+
+  public Result SetCommunityLimits(int maxCommunityPicks, int maxCommunityVetoes)
+  {
+    if (maxCommunityPicks < 0)
+    {
+      return Result.Failure(DraftPartErrors.MaxCommunityPicksCannotBeNegative);
+    }
+
+    if (maxCommunityVetoes < 0)
+    {
+      return Result.Failure(DraftPartErrors.MaxCommunityVetoesCannotBeNegative);
+    }
+
+    MaxCommunityPicks = maxCommunityPicks;
+    MaxCommunityVetoes = maxCommunityVetoes;
+    UpdatedAtUtc = DateTime.UtcNow;
+    return Result.Success();
+  }
 
   internal Result SetPartIndex(int partIndex)
   {

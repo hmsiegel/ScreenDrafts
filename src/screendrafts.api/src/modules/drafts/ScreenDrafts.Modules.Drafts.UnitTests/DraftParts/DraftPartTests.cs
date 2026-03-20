@@ -444,13 +444,9 @@ public class DraftPartTests : DraftsBaseTest
     var movie = MovieFactory.CreateMovie().Value;
     var position = 1;
     var playOrder = 1;
-    var policyProvider = CreateMockSeriesPolicyProvider();
 
     // Act
     var result = draftPart.PlayPick(
-      policyProvider,
-      draftPart.SeriesId,
-      draftPart.DraftType,
       movie,
       position,
       playOrder,
@@ -479,13 +475,9 @@ public class DraftPartTests : DraftsBaseTest
     var movie = MovieFactory.CreateMovie().Value;
     var position = 1;
     var playOrder = 1;
-    var policyProvider = CreateMockSeriesPolicyProvider();
 
     // Act
     var result = draftPart.PlayPick(
-      policyProvider,
-      draftPart.SeriesId,
-      draftPart.DraftType,
       movie,
       position,
       playOrder,
@@ -499,26 +491,6 @@ public class DraftPartTests : DraftsBaseTest
   // ========================================
   // Helper Methods
   // ========================================
-
-  private static TestSeriesPolicyProvider CreateMockSeriesPolicyProvider()
-  {
-    return new TestSeriesPolicyProvider();
-  }
-
-  private sealed class TestSeriesPolicyProvider : ISeriesPolicyProvider
-  {
-    public ContinuityScope GetContinuityScope(SeriesId seriesId) => ContinuityScope.Global;
-
-    public CanonicalPolicy GetCanonicalPolicy(SeriesId seriesId) => CanonicalPolicy.Always;
-
-    public PartBudget GetPartBudget(SeriesId seriesId, DraftType draftType, int partNumber, int totalParticipants)
-    {
-      return new PartBudget(
-        MaxVetoes: 2,
-        MaxVetoOverrides: 2,
-        MaxCommunityPicks: 1);
-    }
-  }
 
   private static DraftPart CreateDraftPart()
   {

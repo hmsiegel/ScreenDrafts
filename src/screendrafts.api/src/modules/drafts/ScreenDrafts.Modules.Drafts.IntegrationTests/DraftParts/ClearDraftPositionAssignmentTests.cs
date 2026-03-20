@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Drafts.IntegrationTests.DraftParts;
+﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.DraftParts;
 
 public sealed class ClearDraftPositionAssignmentTests(DraftsIntegrationTestWebAppFactory factory)
   : DraftsIntegrationTest(factory)
@@ -177,7 +177,7 @@ public sealed class ClearDraftPositionAssignmentTests(DraftsIntegrationTestWebAp
 
     await Sender.Send(new AddParticipantToDraftPartCommand
     {
-      DraftPartPublicId = draftPart.PublicId,
+      DraftPartId = draftPart.PublicId,
       ParticipantPublicId = drafterPublicId,
       ParticipantKind = ParticipantKind.Drafter
     });

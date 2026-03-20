@@ -10,11 +10,11 @@ internal sealed class AddParticipantToDraftPartCommandHandler(
 
   public async Task<Result> Handle(AddParticipantToDraftPartCommand request, CancellationToken cancellationToken)
   {
-    var draftPart = await _draftPartRepository.GetByPublicIdAsync(request.DraftPartPublicId, cancellationToken);
+    var draftPart = await _draftPartRepository.GetByPublicIdAsync(request.DraftPartId, cancellationToken);
 
     if (draftPart is null)
     {
-      return Result.Failure(DraftPartErrors.NotFound(request.DraftPartPublicId));
+      return Result.Failure(DraftPartErrors.NotFound(request.DraftPartId));
     }
 
     var participantResult = await _participantResolver.ResolveAsync(

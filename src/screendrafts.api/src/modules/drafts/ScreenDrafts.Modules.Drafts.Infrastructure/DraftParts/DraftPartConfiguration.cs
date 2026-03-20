@@ -131,7 +131,7 @@ internal sealed class DraftPartConfiguration : IEntityTypeConfiguration<DraftPar
       .OnDelete(DeleteBehavior.Cascade);
 
     builder.Navigation("_draftHosts")
-      .UsePropertyAccessMode (PropertyAccessMode.Field);
+      .UsePropertyAccessMode(PropertyAccessMode.Field);
 
     // Trivia Results
     builder.HasMany(d => d.TriviaResults)
@@ -140,6 +140,15 @@ internal sealed class DraftPartConfiguration : IEntityTypeConfiguration<DraftPar
       .OnDelete(DeleteBehavior.Cascade);
 
     builder.Property(x => x.ScheduledForUtc);
+
+    // Community Limits
+    builder.Property(dp => dp.MaxCommunityPicks)
+      .HasDefaultValue(0)
+      .IsRequired();
+
+    builder.Property(dp => dp.MaxCommunityVetoes)
+      .HasDefaultValue(0)
+      .IsRequired();
 
     builder.Ignore(d => d.PrimaryHost);
     builder.Ignore(d => d.CoHosts);

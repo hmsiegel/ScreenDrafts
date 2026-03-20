@@ -1,14 +1,12 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Domain.SeriesAggregate;
 
 /// <summary>
-/// Series is the single source of truth for canonical policy and continuity scope.
-/// Resolve policies through this provider.
+/// Infrastructure service for loading Series by ID.
+/// Policy computation lives on Series itself and SeriesPolicyRules.
+/// This interface only exists because handlers sometimes need Series
+/// without havin loaded a Draft that navigates to it.
 /// </summary>
 public interface ISeriesPolicyProvider
 {
-  ContinuityScope GetContinuityScope(SeriesId seriesId);
-  CanonicalPolicy GetCanonicalPolicy(SeriesId seriesId);
-
-  // Compute per-part maxima given the series-level policy
-  PartBudget GetPartBudget(SeriesId seriesId, DraftType draftType, int partNumber, int totalParticipants);
+  Task<Series?> GetSeriesAsyc(SeriesId seriesId, CancellationToken cancellationToken);
 }

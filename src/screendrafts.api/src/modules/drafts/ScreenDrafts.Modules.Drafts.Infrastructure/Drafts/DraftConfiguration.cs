@@ -85,5 +85,9 @@ internal sealed class DraftConfiguration : IEntityTypeConfiguration<Draft>
     builder.HasOne(d => d.Pool)
       .WithOne()
       .HasForeignKey<DraftPool>(p => p.DraftId);
+
+    builder.Property(d => d.GrantsStartingVetoPerPart)
+      .IsRequired()
+      .HasDefaultValue(false);
   }
 }

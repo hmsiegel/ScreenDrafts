@@ -5,7 +5,6 @@ namespace ScreenDrafts.Modules.Drafts.UnitTests.TestUtils;
 public static class PickFactory
 {
   private static readonly Faker _faker = new();
-  private static readonly ISeriesPolicyProvider _seriesPolicyProvider = new TestSeriesPolicyProvider();
 
   public static Result<Pick> CreatePick()
   {
@@ -22,9 +21,6 @@ public static class PickFactory
     var playOrder = _faker.Random.Int(1, 10);
 
     var pickIdResult = draftPart.PlayPick(
-      _seriesPolicyProvider,
-      draftPart.SeriesId,
-      draftPart.DraftType,
       movie,
       position,
       playOrder,
@@ -37,20 +33,5 @@ public static class PickFactory
 
     var pick = draftPart.Picks.First(p => p.Id == pickIdResult.Value);
     return Result.Success(pick);
-  }
-
-  private sealed class TestSeriesPolicyProvider : ISeriesPolicyProvider
-  {
-    public ContinuityScope GetContinuityScope(SeriesId seriesId) => ContinuityScope.Global;
-
-    public CanonicalPolicy GetCanonicalPolicy(SeriesId seriesId) => CanonicalPolicy.Always;
-
-    public PartBudget GetPartBudget(SeriesId seriesId, DraftType draftType, int partNumber, int totalParticipants)
-    {
-      return new PartBudget(
-        MaxVetoes: 2,
-        MaxVetoOverrides: 2,
-        MaxCommunityPicks: 1);
-    }
   }
 }

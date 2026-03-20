@@ -26,7 +26,7 @@ internal sealed class ClearDraftPositionAssignmentCommandHandler(IDraftPartRepos
       return Result.Failure(DraftPositionErrors.NotFound(request.PositionPublicId));
     }
 
-    var result = position.ClearAssignment();
+    var result = draftPart.ClearPositionAssignment(position);
 
     if (result.IsFailure)
     {

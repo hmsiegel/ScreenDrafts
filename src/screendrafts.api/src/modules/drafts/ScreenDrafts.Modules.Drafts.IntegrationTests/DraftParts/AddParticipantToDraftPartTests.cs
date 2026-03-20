@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Drafts.IntegrationTests.DraftParts;
+﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.DraftParts;
 
 public sealed class AddParticipantToDraftPartTests(DraftsIntegrationTestWebAppFactory factory)
   : DraftsIntegrationTest(factory)
@@ -17,7 +17,7 @@ public sealed class AddParticipantToDraftPartTests(DraftsIntegrationTestWebAppFa
 
     var command = new AddParticipantToDraftPartCommand
     {
-      DraftPartPublicId = draftPartPublicId,
+      DraftPartId = draftPartPublicId,
       ParticipantPublicId = drafterPublicId,
       ParticipantKind = ParticipantKind.Drafter
     };
@@ -40,7 +40,7 @@ public sealed class AddParticipantToDraftPartTests(DraftsIntegrationTestWebAppFa
 
     var command = new AddParticipantToDraftPartCommand
     {
-      DraftPartPublicId = draftPartPublicId,
+      DraftPartId = draftPartPublicId,
       ParticipantPublicId = drafterPublicId,
       ParticipantKind = ParticipantKind.Drafter
     };
@@ -66,7 +66,7 @@ public sealed class AddParticipantToDraftPartTests(DraftsIntegrationTestWebAppFa
 
     var command = new AddParticipantToDraftPartCommand
     {
-      DraftPartPublicId = Faker.Random.AlphaNumeric(10),
+      DraftPartId = Faker.Random.AlphaNumeric(10),
       ParticipantPublicId = drafterPublicId,
       ParticipantKind = ParticipantKind.Drafter
     };
@@ -90,7 +90,7 @@ public sealed class AddParticipantToDraftPartTests(DraftsIntegrationTestWebAppFa
 
     var command = new AddParticipantToDraftPartCommand
     {
-      DraftPartPublicId = draftPartPublicId,
+      DraftPartId = draftPartPublicId,
       ParticipantPublicId = Faker.Random.AlphaNumeric(10),
       ParticipantKind = ParticipantKind.Drafter
     };
@@ -116,7 +116,7 @@ public sealed class AddParticipantToDraftPartTests(DraftsIntegrationTestWebAppFa
 
     var command = new AddParticipantToDraftPartCommand
     {
-      DraftPartPublicId = draftPartPublicId,
+      DraftPartId = draftPartPublicId,
       ParticipantPublicId = drafterPublicId,
       ParticipantKind = ParticipantKind.Drafter
     };

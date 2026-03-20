@@ -2,15 +2,11 @@
 
 internal sealed class ApplyVetoOverrideCommandHandler(
   IDraftPartRepository draftPartRepository,
-  IPickRepository pickRepository,
-  ParticipantResolver participantResolver,
-  IVetoRepository vetoRepository)
+  ParticipantResolver participantResolver)
   : ICommandHandler<ApplyVetoOverrideCommand>
 {
   private readonly IDraftPartRepository _draftPartRepository = draftPartRepository;
-  private readonly IPickRepository _pickRepository = pickRepository;
   private readonly ParticipantResolver _participantResolver = participantResolver;
-  private readonly IVetoRepository _vetoRepository = vetoRepository;
 
   public async Task<Result> Handle(ApplyVetoOverrideCommand request, CancellationToken cancellationToken)
   {
@@ -19,23 +15,6 @@ internal sealed class ApplyVetoOverrideCommandHandler(
     if (draftPart is null)
     {
       return Result.Failure(DraftPartErrors.NotFound(request.DraftPartId));
-    }
-
-    var pick = await _pickRepository.GetByDraftPartIdAndPlayOrderAsync(
-      draftPart.Id,
-      request.PlayOrder,
-      cancellationToken);
-
-    if (pick is null)
-    {
-      return Result.Failure(DraftPartErrors.PickNotFound(request.PlayOrder));
-    }
-
-    var veto = pick.Veto;
-
-    if (veto is null)
-    {
-      return Result.Failure(DraftPartErrors.VetoNotFound(request.PlayOrder));
     }
 
     var participantResult = await _participantResolver.ResolveAsync(
@@ -57,17 +36,17 @@ internal sealed class ApplyVetoOverrideCommandHandler(
       return Result.Failure(validationResult.Errors);
     }
 
-    var overrideResult = veto.Override(participant, request.ActorPublicId);
+    var result = draftPart.ApplyVetoOverride(
+      request.PlayOrder,
+      by: participant,
+      actedByPublicId: request.ActorPublicId);
 
-    if (overrideResult.IsFailure)
+    if (result.IsFailure)
     {
-      return Result.Failure(overrideResult.Errors);
+      return Result.Failure(result.Errors);
     }
 
-    draftPart.NotifyVetoOverrideApplied(pick);
-
-    _pickRepository.Update(pick);
-    _vetoRepository.UpdateVeto(veto);
+    _draftPartRepository.Update(draftPart);
 
     return Result.Success();
   }

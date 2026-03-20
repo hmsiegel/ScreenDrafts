@@ -36,6 +36,8 @@ internal static class DraftPartRoutes
   public const string ApplyVetoOverride = "/draft-parts/{draftPartId}/veto-override/{pickId}";
   public const string ApplyCommissionerOverride = "/draft-parts/{draftPartId}/commissioner-override/{pickId}";
 
+  public const string SetCommunityLimits = ById + "/community-limits";
+
   // Candidate Lists
   public const string CandidateList = "/draft-parts/{draftPartId}/candidate-list";
   public const string CandidateListBulkAdd = "/draft-parts/{draftPartId}/candidate-list/bulk";

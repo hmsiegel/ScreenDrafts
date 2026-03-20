@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Drafts.IntegrationTests.DraftPools;
+﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.DraftPools;
 
 /// <summary>
 /// Tests for DraftPartStartedDomainEventHandler:
@@ -19,13 +19,9 @@ public sealed class DraftPartStartedDomainEventHandlerTests(DraftsIntegrationTes
 
     // Act
     await Sender.Send(new SetDraftPartStatusCommand
-    {
-      SetDraftPartStatusRequest = new SetDraftPartStatusRequest
-      {
-        DraftPublicId = draftPublicId,
-        PartIndex = 1,
-        Action = DraftPartStatusAction.Start
-      }
+    {      DraftPublicId = draftPublicId,
+      PartIndex = 1,
+      Action = DraftPartStatusAction.Start
     });
     await ProcessOutboxAsync();
 
@@ -50,7 +46,7 @@ public sealed class DraftPartStartedDomainEventHandlerTests(DraftsIntegrationTes
     var drafter1PublicId = (await Sender.Send(new CreateDrafterCommand(person1Id))).Value;
     await Sender.Send(new AddParticipantToDraftPartCommand
     {
-      DraftPartPublicId = draftPart.PublicId,
+      DraftPartId = draftPart.PublicId,
       ParticipantPublicId = drafter1PublicId,
       ParticipantKind = ParticipantKind.Drafter
     });
@@ -59,7 +55,7 @@ public sealed class DraftPartStartedDomainEventHandlerTests(DraftsIntegrationTes
     var drafter2PublicId = (await Sender.Send(new CreateDrafterCommand(person2Id))).Value;
     await Sender.Send(new AddParticipantToDraftPartCommand
     {
-      DraftPartPublicId = draftPart.PublicId,
+      DraftPartId = draftPart.PublicId,
       ParticipantPublicId = drafter2PublicId,
       ParticipantKind = ParticipantKind.Drafter
     });
@@ -75,13 +71,9 @@ public sealed class DraftPartStartedDomainEventHandlerTests(DraftsIntegrationTes
 
     // Act — starting draft part when no pool exists should still succeed
     var result = await Sender.Send(new SetDraftPartStatusCommand
-    {
-      SetDraftPartStatusRequest = new SetDraftPartStatusRequest
-      {
-        DraftPublicId = draftPublicId,
-        PartIndex = 1,
-        Action = DraftPartStatusAction.Start
-      }
+    {      DraftPublicId = draftPublicId,
+      PartIndex = 1,
+      Action = DraftPartStatusAction.Start
     });
 
     // Assert
@@ -116,7 +108,7 @@ public sealed class DraftPartStartedDomainEventHandlerTests(DraftsIntegrationTes
     var drafter1PublicId = (await Sender.Send(new CreateDrafterCommand(person1Id))).Value;
     await Sender.Send(new AddParticipantToDraftPartCommand
     {
-      DraftPartPublicId = draftPartPublicId,
+      DraftPartId = draftPartPublicId,
       ParticipantPublicId = drafter1PublicId,
       ParticipantKind = ParticipantKind.Drafter
     });
@@ -125,7 +117,7 @@ public sealed class DraftPartStartedDomainEventHandlerTests(DraftsIntegrationTes
     var drafter2PublicId = (await Sender.Send(new CreateDrafterCommand(person2Id))).Value;
     await Sender.Send(new AddParticipantToDraftPartCommand
     {
-      DraftPartPublicId = draftPartPublicId,
+      DraftPartId = draftPartPublicId,
       ParticipantPublicId = drafter2PublicId,
       ParticipantKind = ParticipantKind.Drafter
     });

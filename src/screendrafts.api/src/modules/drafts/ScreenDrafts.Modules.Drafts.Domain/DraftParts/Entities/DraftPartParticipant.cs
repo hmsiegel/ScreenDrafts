@@ -1,13 +1,7 @@
-﻿using ScreenDrafts.Modules.Drafts.Domain.Participants;
-
-namespace ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities;
+﻿namespace ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities;
 
 public sealed class DraftPartParticipant : Entity<DraftPartParticipantId>
 {
-  private readonly List<Pick> _picks = [];
-  private readonly List<Veto> _vetoes = [];
-  private readonly List<VetoOverride> _vetoOverrides = [];
-
   private DraftPartParticipant(
     DraftPart draftPart,
     Participant participantId,
@@ -33,33 +27,60 @@ public sealed class DraftPartParticipant : Entity<DraftPartParticipantId>
 
   public Participant ParticipantId => new(ParticipantIdValue, ParticipantKindValue);
 
+  // Inventory inputs
+
+  /// <summary>
+  /// 1 for part 1 (or any part on a draft that grants a veto per part), otherwise 0.
+  /// Set at part-start time.
+  /// </summary>
   public int StartingVetoes { get; private set; } = 1;
 
-  public int RolloverVeto { get; private set; }
-  public int RolloverVetoOverride { get; private set; }
+  /// <summary>
+  /// Vetoes carries in from the previous part/ draft. Set at part-start time based on the previous part's ending inventory.
+  /// </summary>
+  public int VetoesRollingIn { get; private set; }
 
-  public int TriviaVetoes { get; private set; }
-  public int TriviaVetoOverrides { get; private set; }
+  /// <summary>
+  /// Veto overrides carries in from the previous part/ draft. Set at part-start time based on the previous part's ending inventory.
+  /// </summary>
+  public int VetoOverridesRollingIn { get; private set; }
 
-  public int TotalVetoes => StartingVetoes + RolloverVeto + TriviaVetoes;
-  public int TotalVetoOverrides => RolloverVetoOverride + TriviaVetoOverrides;
+  /// <summary>
+  /// Extra vetoes granted via draft position award (post-trivia)
+  /// </summary>
+  public int AwardedVetoes { get; private set; }
+
+  /// <summary>
+  /// Extra veto overrides granted via draft position award (post-trivia)
+  /// </summary>
+  public int AwardedVetoOverrides { get; private set; }
 
   public int CommissionerOverrides { get; private set; }
 
+  // Usage counters
   public int VetoesUsed { get; private set; }
   public int VetoOverridesUsed { get; private set; }
 
-  public int VetoesRollingOver => TotalVetoes - VetoesUsed >= 1 ? 1 : 0;
-  public int VetoOverridesRollingOver => TotalVetoOverrides - VetoOverridesUsed >= 1 ? 1 : 0;
+  // Computed Totals
 
+  public int TotalVetoes => StartingVetoes + VetoesRollingIn + AwardedVetoes;
+  public int TotalVetoOverrides => VetoOverridesRollingIn + AwardedVetoOverrides;
+
+  /// <summary>
+  /// How many vetoes carry forward to the next part (capped at 1)
+  /// </summary>
+  public int VetoesRollingOut => TotalVetoes - VetoesUsed >= 1 ? 1 : 0;
+
+  /// <summary>
+  /// How many veto overrides carry forward to the next part (capped at 1)
+  /// </summary>
+  public int VetoOverridesRollingOut => TotalVetoOverrides - VetoOverridesUsed >= 1 ? 1 : 0;
+
+  // Guards
   public bool CanUseVeto() => (TotalVetoes - VetoesUsed) >= 1;
   public bool CanUseVetoOverride(int maxOverrides) => (TotalVetoOverrides - VetoOverridesUsed) >= 1 && maxOverrides > 0;
 
-  public IReadOnlyCollection<Pick> Picks => _picks;
-  public IReadOnlyCollection<Veto> Vetoes => _vetoes;
-  public IReadOnlyCollection<VetoOverride> VetoOverrides => _vetoOverrides;
-
-
+  // Factory
   public static DraftPartParticipant Create(
     DraftPart draftPart,
     Participant participantId)
@@ -71,59 +92,43 @@ public sealed class DraftPartParticipant : Entity<DraftPartParticipantId>
       participantId);
   }
 
-  internal void SeedSetState(
-    int startingVetoes,
-    int rolloverVeto,
-    int rolloverVetoOverride,
-    int triviaVetoes,
-    int triviaVetoOverrides,
-    int commissionerOverrides,
-    int vetoesUsed,
-    int vetoOverridesUsed)
+  // Initialization and state mutation methods
+  internal void InitializeVetoes(int startingVetoes, int vetoesRollingIn, int vetoOverridesRollingIn)
   {
-     StartingVetoes = startingVetoes;
-
-    RolloverVeto = rolloverVeto;
-    RolloverVetoOverride = rolloverVetoOverride;
-
-    TriviaVetoes = triviaVetoes;
-    TriviaVetoOverrides = triviaVetoOverrides;
-
-    CommissionerOverrides = commissionerOverrides;
-
-    VetoesUsed = vetoesUsed;
-    VetoOverridesUsed = vetoOverridesUsed;
+    StartingVetoes = startingVetoes;
+    VetoesRollingIn = vetoesRollingIn;
+    VetoOverridesRollingIn = vetoOverridesRollingIn;
   }
 
-  public void AddRollover(bool isVeto)
+  // Awards (granted via draft position post-trivia)
+  internal void GrantAward(bool isVeto)
   {
     if (isVeto)
     {
-      RolloverVeto++;
+      AwardedVetoes++;
     }
     else
     {
-      RolloverVetoOverride++;
+      AwardedVetoOverrides++;
     }
   }
 
-  public void AddTriviaAward(bool isVeto)
+  internal void RevokeAward(bool isVeto)
   {
     if (isVeto)
     {
-      TriviaVetoes++;
+      AwardedVetoes = Math.Max(0, AwardedVetoes - 1);
     }
     else
     {
-      TriviaVetoOverrides++;
+      AwardedVetoOverrides = Math.Max(0, AwardedVetoOverrides - 1);
     }
   }
 
-  public void AddCommissionerOverride()
-  {
-    CommissionerOverrides++;
-  }
+  // Commissioner override
+  public void AddCommissionerOverride() => CommissionerOverrides++;
 
+  // Spending
   public void SpendVeto()
   {
     if (!CanUseVeto())
@@ -143,8 +148,28 @@ public sealed class DraftPartParticipant : Entity<DraftPartParticipantId>
     VetoOverridesUsed++;
   }
 
+  // Seeding (historical data import only)
+  internal void SeedSetState(
+    int startingVetoes,
+    int rolloverVeto,
+    int rolloverVetoOverride,
+    int triviaVetoes,
+    int triviaVetoOverrides,
+    int commissionerOverrides,
+    int vetoesUsed,
+    int vetoOverridesUsed)
+  {
+    StartingVetoes = startingVetoes;
 
-  internal void AddPick(Pick pick) => _picks.Add(pick);
-  internal void AddVeto(Veto veto) => _vetoes.Add(veto);
-  internal void AddVetoOverride(VetoOverride vetoOverride) => _vetoOverrides.Add(vetoOverride);
+    VetoesRollingIn = rolloverVeto;
+    VetoOverridesRollingIn = rolloverVetoOverride;
+
+    AwardedVetoes = triviaVetoes;
+    AwardedVetoOverrides = triviaVetoOverrides;
+
+    CommissionerOverrides = commissionerOverrides;
+
+    VetoesUsed = vetoesUsed;
+    VetoOverridesUsed = vetoOverridesUsed;
+  }
 }

@@ -1,8 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts;
+﻿using Series = ScreenDrafts.Modules.Drafts.Domain.SeriesAggregate.Series;
 
-using ScreenDrafts.Modules.Drafts.Domain.DraftPools;
-
-using Series = Series;
+namespace ScreenDrafts.Modules.Drafts.Domain.Drafts;
 
 public sealed partial class Draft : AggregateRoot<DraftId, Guid>
 {
@@ -45,6 +43,13 @@ public sealed partial class Draft : AggregateRoot<DraftId, Guid>
   public DraftType DraftType { get; private set; } = default!;
 
   public DraftStatus DraftStatus { get; private set; } = DraftStatus.Created;
+
+  /// <summary>
+  /// When true, each part grants participants a fresh starting veto (parts 2+).
+  /// Part 1 always grants a staring veto.
+  /// Defaults to false - only set explicitly for drafts where vetoes reset per part.
+  /// </summary>
+  public bool GrantsStartingVetoPerPart { get; private set; }
 
 
   // Relationships
@@ -278,6 +283,12 @@ public sealed partial class Draft : AggregateRoot<DraftId, Guid>
 
     Raise(new SeriesLinkedDomainEvent(Id.Value, series.Id.Value));
     return Result.Success(series);
+  }
+
+  public void SetVetoPolicy(bool grantsStartingVetoPerPart)
+  {
+    GrantsStartingVetoPerPart = grantsStartingVetoPerPart;
+    UpdatedAtUtc = DateTime.UtcNow;
   }
 
   public void DeriveDraftStatus(DateTime utcNow)

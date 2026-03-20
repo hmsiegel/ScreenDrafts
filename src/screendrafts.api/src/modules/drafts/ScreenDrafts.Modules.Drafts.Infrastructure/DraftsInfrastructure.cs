@@ -16,7 +16,8 @@ public static class DraftsInfrastructure
 
     services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<DraftsDbContext>());
 
-    services.AddSingleton<ISeriesPolicyProvider, NullSeriesPolicyProvider>();
+    services.AddMemoryCache();
+    services.AddScoped<ISeriesPolicyProvider, SeriesPolicyProvider>();
 
     services.Configure<OutboxOptions>(configuration.GetSection("Drafts:Outbox"));
     services.ConfigureOptions<ConfigureProcessOutboxJob>();

@@ -301,6 +301,18 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("draft_type");
 
+                    b.Property<int>("MaxCommunityPicks")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0)
+                        .HasColumnName("max_community_picks");
+
+                    b.Property<int>("MaxCommunityVetoes")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0)
+                        .HasColumnName("max_community_vetoes");
+
                     b.Property<int?>("MaxPosition")
                         .HasColumnType("integer")
                         .HasColumnName("max_position");
@@ -461,6 +473,14 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
+                    b.Property<int>("AwardedVetoOverrides")
+                        .HasColumnType("integer")
+                        .HasColumnName("awarded_veto_overrides");
+
+                    b.Property<int>("AwardedVetoes")
+                        .HasColumnType("integer")
+                        .HasColumnName("awarded_vetoes");
+
                     b.Property<int>("CommissionerOverrides")
                         .HasColumnType("integer")
                         .HasColumnName("commissioner_overrides");
@@ -477,29 +497,21 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("participant_kind_value");
 
-                    b.Property<int>("RolloverVeto")
-                        .HasColumnType("integer")
-                        .HasColumnName("rollover_veto");
-
-                    b.Property<int>("RolloverVetoOverride")
-                        .HasColumnType("integer")
-                        .HasColumnName("rollover_veto_override");
-
                     b.Property<int>("StartingVetoes")
                         .HasColumnType("integer")
                         .HasColumnName("starting_vetoes");
 
-                    b.Property<int>("TriviaVetoOverrides")
+                    b.Property<int>("VetoOverridesRollingIn")
                         .HasColumnType("integer")
-                        .HasColumnName("trivia_veto_overrides");
-
-                    b.Property<int>("TriviaVetoes")
-                        .HasColumnType("integer")
-                        .HasColumnName("trivia_vetoes");
+                        .HasColumnName("veto_overrides_rolling_in");
 
                     b.Property<int>("VetoOverridesUsed")
                         .HasColumnType("integer")
                         .HasColumnName("veto_overrides_used");
+
+                    b.Property<int>("VetoesRollingIn")
+                        .HasColumnType("integer")
+                        .HasColumnName("vetoes_rolling_in");
 
                     b.Property<int>("VetoesUsed")
                         .HasColumnType("integer")
@@ -968,6 +980,12 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                     b.Property<int>("DraftType")
                         .HasColumnType("integer")
                         .HasColumnName("draft_type");
+
+                    b.Property<bool>("GrantsStartingVetoPerPart")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false)
+                        .HasColumnName("grants_starting_veto_per_part");
 
                     b.Property<string>("PublicId")
                         .IsRequired()
@@ -1450,9 +1468,9 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasConstraintName("fk_picks_movies_movie_id");
 
                     b.HasOne("ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities.DraftPartParticipant", "PlayedByParticipant")
-                        .WithMany("Picks")
+                        .WithMany()
                         .HasForeignKey("PlayedByParticipantId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_picks_draft_part_participants_played_by_participant_id");
 
@@ -1478,9 +1496,9 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
             modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities.Veto", b =>
                 {
                     b.HasOne("ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities.DraftPartParticipant", "IssuedByParticipant")
-                        .WithMany("Vetoes")
+                        .WithMany()
                         .HasForeignKey("IssuedByParticipantId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_vetoes_draft_part_participants_issued_by_participant_id");
 
@@ -1499,7 +1517,7 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
             modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities.VetoOverride", b =>
                 {
                     b.HasOne("ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities.DraftPartParticipant", "IssuedByParticipant")
-                        .WithMany("VetoOverrides")
+                        .WithMany()
                         .HasForeignKey("IssuedByParticipantId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
@@ -1675,15 +1693,6 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                     b.Navigation("_picks");
 
                     b.Navigation("_releases");
-                });
-
-            modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities.DraftPartParticipant", b =>
-                {
-                    b.Navigation("Picks");
-
-                    b.Navigation("VetoOverrides");
-
-                    b.Navigation("Vetoes");
                 });
 
             modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities.GameBoard", b =>

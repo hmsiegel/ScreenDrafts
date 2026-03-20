@@ -1,11 +1,10 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Domain.DraftParts;
+﻿using System.Dynamic;
+
+namespace ScreenDrafts.Modules.Drafts.Domain.DraftParts;
 
 public sealed partial class DraftPart
 {
   public Result<PickId> PlayPick(
-    ISeriesPolicyProvider seriesPolicyProvider,
-    SeriesId seriesId,
-    DraftType draftType,
     Movie movie,
     int draftPosition,
     int playOrder,
@@ -14,8 +13,6 @@ public sealed partial class DraftPart
     string? actedByPublicId = null,
     Func<Guid, bool>? isMovieAlreadyPickedInWholeDraft = null)
   {
-    ArgumentNullException.ThrowIfNull(seriesPolicyProvider);
-    ArgumentNullException.ThrowIfNull(seriesId);
     ArgumentNullException.ThrowIfNull(movie);
 
     if (Status != DraftPartStatus.InProgress)
@@ -25,7 +22,7 @@ public sealed partial class DraftPart
 
     if (participantId.Kind == ParticipantKind.Community)
     {
-      var budget = ResolvePartBudget(seriesPolicyProvider, seriesId, draftType);
+      var budget = ResolvePartBudget(DraftType);
 
       if (budget.MaxCommunityPicks <= 0)
       {
@@ -89,7 +86,7 @@ public sealed partial class DraftPart
 
     if (addResult.IsFailure)
     {
-      return  Result.Failure<PickId>(addResult.Errors);
+      return Result.Failure<PickId>(addResult.Errors);
     }
 
     if (participantId.Kind == ParticipantKind.Community)
@@ -129,16 +126,10 @@ public sealed partial class DraftPart
   }
 
   public Result ApplyVeto(
-    ISeriesPolicyProvider seriesPolicyProvider,
-    SeriesId seriesId,
-    DraftType draftType,
     PickId pickId,
     Participant issuerId,
     string? actedByPublicId = null)
   {
-    ArgumentNullException.ThrowIfNull(seriesPolicyProvider);
-    ArgumentNullException.ThrowIfNull(seriesId);
-    ArgumentNullException.ThrowIfNull(draftType);
     ArgumentNullException.ThrowIfNull(pickId);
 
     var pick = _picks.FirstOrDefault(p => p.Id.Value == pickId.Value);
@@ -167,7 +158,17 @@ public sealed partial class DraftPart
       participant.SpendVeto();
     }
 
-    var veto = Veto.Create(pick, participant).Value;
+    var vetoResult = Veto.Create(
+      pick: pick,
+      issuedByParticipant: participant,
+      actedByPublicId: actedByPublicId);
+
+    if (vetoResult.IsFailure)
+    {
+      return Result.Failure(vetoResult.Errors);
+    }
+
+    var veto = vetoResult.Value;
 
     var apply = pick.ApplyVeto(veto);
 
@@ -189,87 +190,47 @@ public sealed partial class DraftPart
 
 
   public Result ApplyVetoOverride(
-    ISeriesPolicyProvider seriesPolicyProvider,
-    SeriesId seriesId,
-    DraftType draftType,
-    Veto veto,
+    int playOrder,
     Participant by,
     string? actedByPublicId = null)
   {
-    ArgumentNullException.ThrowIfNull(seriesPolicyProvider);
-    ArgumentNullException.ThrowIfNull(seriesId);
-    ArgumentNullException.ThrowIfNull(draftType);
-    ArgumentNullException.ThrowIfNull(veto);
-
     if (Status != DraftPartStatus.InProgress)
     {
       return Result.Failure(DraftPartErrors.DraftNotStarted);
     }
 
-    var pick = _picks.FirstOrDefault(p => p.Id == veto.TargetPickId);
+    var pick = _picks.FirstOrDefault(p => p.PlayOrder == playOrder);
 
     if (pick is null)
     {
-      return Result.Failure(DraftPartErrors.PickNotFound(veto.TargetPickId.Value));
+      return Result.Failure(DraftPartErrors.PickNotFound(playOrder));
     }
 
-    var bugdet = ResolvePartBudget(seriesPolicyProvider, seriesId, draftType);
-
-    if (bugdet.MaxVetoOverrides <= 0)
+    if (pick.Veto is null)
     {
-      return Result.Failure(DraftPartErrors.VetoOverridesNotAllowed);
+      return Result.Failure(DraftPartErrors.VetoNotFound(playOrder));
     }
 
-    var participant = GetParticipantRequired(by);
-
-    if (!participant.CanUseVetoOverride(bugdet.MaxVetoOverrides))
-    {
-      return Result.Failure(DraftPartErrors.NoRemainingVetoOverrides);
-    }
-
-    if (pick.Veto is null || pick.Veto.Id != veto.Id)
-    {
-      return Result.Failure(DraftPartErrors.VetoNotFound(veto.Id.Value));
-    }
-
-    var overrideResults = pick.ApplyVetoOverride(by);
+    var overrideResults = pick.Veto.Override(by, actedByPublicId);
 
     if (overrideResults.IsFailure)
     {
       return overrideResults;
     }
 
-    participant.SpendVetoOverride(bugdet.MaxVetoOverrides);
-
-    Raise(new VetoOverrideAddedDomainEvent(
-      draftPartId: Id.Value,
-      draftPartPublicId: PublicId,
-      tmdbId: pick.Movie.TmdbId!.Value,
-      participantId: pick.PlayedByParticipant.ParticipantId.Value,
-      participantKind: pick.PlayedByParticipant.ParticipantKindValue.Value,
-      draftId: DraftId.Value,
-      draftPublicId: DraftPublicId));
-
-    return Result.Success();
-  }
-
-  public void NotifyVetoOverrideApplied(Pick pick)
-  {
-    ArgumentNullException.ThrowIfNull(pick);
-
-    if (pick.Movie?.TmdbId is null)
+    if (pick.Movie?.TmdbId is not null)
     {
-      return;
+      Raise(new VetoOverrideAddedDomainEvent(
+        draftPartId: Id.Value,
+        draftPartPublicId: PublicId,
+        tmdbId: pick.Movie.TmdbId!.Value,
+        participantId: pick.PlayedByParticipant.ParticipantId.Value,
+        participantKind: pick.PlayedByParticipant.ParticipantKindValue.Value,
+        draftId: DraftId.Value,
+        draftPublicId: DraftPublicId));
     }
 
-    Raise(new VetoOverrideAddedDomainEvent(
-      draftPartId: Id.Value,
-      draftPartPublicId: PublicId,
-      tmdbId: pick.Movie.TmdbId.Value,
-      participantId: pick.PlayedByParticipantIdValue,
-      participantKind: pick.PlayedByParticipantKindValue.Value,
-      draftId: DraftId.Value,
-      draftPublicId: DraftPublicId));
+    return Result.Success();
   }
 
   public Result ApplyCommissionerOverride(Pick pick)
@@ -290,7 +251,7 @@ public sealed partial class DraftPart
       return applyResult;
     }
 
-    var playedBy =  GetParticipantRequired(pick.PlayedByParticipant.ParticipantId);
+    var playedBy = GetParticipantRequired(pick.PlayedByParticipant.ParticipantId);
 
     playedBy.AddCommissionerOverride();
 
@@ -373,7 +334,7 @@ public sealed partial class DraftPart
     }
 
     _picks.Add(pick);
-    _picks.Sort((a,b) => a.Position.CompareTo(b.Position));
+    _picks.Sort((a, b) => a.Position.CompareTo(b.Position));
     UpdatedAtUtc = DateTime.UtcNow;
 
     return Result.Success(pick.Id);
@@ -383,10 +344,20 @@ public sealed partial class DraftPart
     _picks.Any(p => p.MovieId == movieId && !p.IsEligibleForRePick);
 
 
-  private PartBudget ResolvePartBudget(ISeriesPolicyProvider series, SeriesId seriesId, DraftType draftType)
+  private PartBudget ResolvePartBudget(DraftType draftType)
   {
-    var totalParticipants = Participants.Count;
-    return series.GetPartBudget(seriesId, draftType,PartIndex, totalParticipants);
+    var budget = SeriesPolicyRules.ComputePartBudget(draftType, Participants.Count);
+
+    if (MaxCommunityPicks > 0 || MaxCommunityVetoes > 0)
+    {
+      return budget with
+      {
+        MaxCommunityPicks = MaxCommunityPicks,
+        MaxCommunityVetoes = MaxCommunityVetoes
+      };
+    }
+
+    return budget;
   }
 
   private bool IsParticipantInThisPart(Participant participantId) =>

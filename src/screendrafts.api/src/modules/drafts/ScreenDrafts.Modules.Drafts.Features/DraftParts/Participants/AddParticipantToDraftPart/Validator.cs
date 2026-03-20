@@ -4,7 +4,7 @@ internal sealed class Validator : AbstractValidator<AddParticipantToDraftPartCom
 {
   public Validator()
   {
-    RuleFor(x => x.DraftPartPublicId).NotEmpty().WithMessage("Draft part ID is required.");
+    RuleFor(x => x.DraftPartId).NotEmpty().WithMessage("Draft part ID is required.");
 
     RuleFor(x => x.ParticipantPublicId)
       .NotEmpty()

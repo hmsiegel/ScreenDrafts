@@ -146,7 +146,7 @@ public sealed class DraftPosition : Entity<DraftPositionId>
     AssignedToKind = assignedTo.Value.Kind;
   }
 
-  public Result AssignParticipant(Participant participant)
+  internal Result AssignParticipant(Participant participant)
   {
     if (AssignedTo is not null)
     {
@@ -157,15 +157,15 @@ public sealed class DraftPosition : Entity<DraftPositionId>
     AssignedToKind = participant.Kind;
 
     Raise(new DraftPositionAssignedDomainEvent(
-      GameBoard.DraftPart.Id.Value,
-      Id.Value,
-      participant.Value,
-      participant.Kind.Value));
+      draftPartId: GameBoard.DraftPartId.Value,
+      draftPositionId: Id.Value,
+      participantId: participant.Value,
+      participantKind: participant.Kind.Value));
 
     return Result.Success();
   }
 
-  public Result ClearAssignment()
+  internal Result ClearAssignment()
   {
     if (AssignedTo is null)
     {
@@ -176,8 +176,8 @@ public sealed class DraftPosition : Entity<DraftPositionId>
     AssignedToKind = default!;
 
     Raise(new DraftPositionUnassignedDomainEvent(
-      GameBoard.DraftPart.Id.Value,
-      Id.Value));
+      draftPartId: GameBoard.DraftPartId.Value,
+      draftPositionId: Id.Value));
 
     return Result.Success();
   }

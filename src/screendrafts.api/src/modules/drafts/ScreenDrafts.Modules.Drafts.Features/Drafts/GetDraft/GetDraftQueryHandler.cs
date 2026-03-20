@@ -148,11 +148,11 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
         dpp.participant_kind_value AS {nameof(GetDraftPartParticipantResponse.ParticipantKindValue)},
         dpp.starting_vetoes AS {nameof(GetDraftPartParticipantResponse.StartingVetoes)},
         dpp.vetoes_used AS {nameof(GetDraftPartParticipantResponse.VetoesUsed)},
-        dpp.rollover_veto AS {nameof(GetDraftPartParticipantResponse.RolloverVetoes)},
-        dpp.trivia_vetoes AS {nameof(GetDraftPartParticipantResponse.TriviaVetoes)},
+        dpp.vetoes_rolling_in AS {nameof(GetDraftPartParticipantResponse.RolloverVetoes)},
+        dpp.awarded_vetoes AS {nameof(GetDraftPartParticipantResponse.TriviaVetoes)},
         dpp.veto_overrides_used AS {nameof(GetDraftPartParticipantResponse.VetoOverridesUsed)},
-        dpp.rollover_veto_override AS {nameof(GetDraftPartParticipantResponse.RolloverVetoOverride)},
-        dpp.trivia_veto_overrides AS {nameof(GetDraftPartParticipantResponse.TriviaVetoOverride)},
+        dpp.veto_overrides_rolling_in AS {nameof(GetDraftPartParticipantResponse.RolloverVetoOverride)},
+        dpp.awarded_veto_overrides AS {nameof(GetDraftPartParticipantResponse.TriviaVetoOverride)},
         dpp.commissioner_overrides AS {nameof(GetDraftPartParticipantResponse.CommissionerOverride)}
       FROM drafts.draft_part_participants dpp
       WHERE dpp.draft_part_id = ANY(@partIds);

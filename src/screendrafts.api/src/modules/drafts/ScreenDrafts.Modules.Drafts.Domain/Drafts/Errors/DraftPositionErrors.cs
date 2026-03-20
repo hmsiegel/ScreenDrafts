@@ -53,4 +53,9 @@ public static class DraftPositionErrors
     SDError.Failure(
       "DraftPositions.CreationFailed",
       "Unable to create a draft position.");
+
+  public static readonly SDError PositionDoesNotBelongToThisGameBoard =
+    SDError.Failure(
+      "DraftPosition.PositionDoesNotBelongToThisGameBoard",
+      "This draft position does not belong to the specified game board.");
 }

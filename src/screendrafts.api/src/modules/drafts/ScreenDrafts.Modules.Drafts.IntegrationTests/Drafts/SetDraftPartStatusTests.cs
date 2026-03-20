@@ -179,13 +179,9 @@ public sealed class SetDraftPartStatusTests(DraftsIntegrationTestWebAppFactory f
   private async Task<Result> SendSetStatusAsync(string draftPublicId, int partIndex, DraftPartStatusAction action)
   {
     var command = new SetDraftPartStatusCommand
-    {
-      SetDraftPartStatusRequest = new SetDraftPartStatusRequest
-      {
-        DraftPublicId = draftPublicId,
-        PartIndex = partIndex,
-        Action = action
-      }
+    {      DraftPublicId = draftPublicId,
+      PartIndex = partIndex,
+      Action = action
     };
 
     return await Sender.Send(command);
@@ -231,7 +227,7 @@ public sealed class SetDraftPartStatusTests(DraftsIntegrationTestWebAppFactory f
       var drafterPublicId = drafterResult.Value;
       await Sender.Send(new AddParticipantToDraftPartCommand
       {
-        DraftPartPublicId = draftPartPublicId,
+        DraftPartId = draftPartPublicId,
         ParticipantPublicId = drafterPublicId,
         ParticipantKind = ParticipantKind.Drafter
       });
@@ -256,7 +252,7 @@ public sealed class SetDraftPartStatusTests(DraftsIntegrationTestWebAppFactory f
     var drafter1PublicId = drafter1Result.Value;
     await Sender.Send(new AddParticipantToDraftPartCommand
     {
-      DraftPartPublicId = draftPartPublicId,
+      DraftPartId = draftPartPublicId,
       ParticipantPublicId = drafter1PublicId,
       ParticipantKind = ParticipantKind.Drafter
     });
@@ -266,7 +262,7 @@ public sealed class SetDraftPartStatusTests(DraftsIntegrationTestWebAppFactory f
     var drafter2PublicId = drafter2Result.Value;
     await Sender.Send(new AddParticipantToDraftPartCommand
     {
-      DraftPartPublicId = draftPartPublicId,
+      DraftPartId = draftPartPublicId,
       ParticipantPublicId = drafter2PublicId,
       ParticipantKind = ParticipantKind.Drafter
     });

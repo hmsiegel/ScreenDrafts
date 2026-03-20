@@ -150,4 +150,12 @@ public sealed class Series : Entity<SeriesId>
     UpdatedAtUtc = DateTime.UtcNow;
     return Result.Success();
   }
+
+  /// <summary>
+  /// Returns true if a draft part with the given releases is canon under this series' policies
+  /// </summary>
+  /// <param name="releases"></param>
+  /// <returns></returns>
+  public bool IsDraftPartCanon(IReadOnlyCollection<DraftRelease> releases) =>
+    SeriesPolicyRules.IsDraftPartCanon(CanonicalPolicy, releases);
 }

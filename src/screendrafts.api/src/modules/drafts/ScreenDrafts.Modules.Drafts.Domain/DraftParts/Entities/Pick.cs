@@ -307,14 +307,14 @@ public sealed class Pick : Entity<PickId>
     return Result.Success();
   }
 
-  internal Result ApplyVetoOverride(Participant by)
+  internal Result ApplyVetoOverride(Participant by, string? actedByPublicId = null)
   {
     if (Veto is null || !IsVetoed)
     {
       return Result.Failure(PickErrors.CannotOverrideAPickThatHasNotBeenVetoed);
     }
 
-    var result = Veto.Override(by);
+    var result = Veto.Override(by, actedByPublicId);
 
     if (result.IsFailure)
     {

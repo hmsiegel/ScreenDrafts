@@ -19,11 +19,6 @@ internal sealed class VetoConfiguration : IEntityTypeConfiguration<Veto>
       .ValueGeneratedNever()
       .HasConversion(IdConverters.DraftPartParticipantIdConverter);
 
-    builder.HasOne(x => x.IssuedByParticipant)
-      .WithMany(p => p.Vetoes)
-      .HasForeignKey(x => x.IssuedByParticipantId)
-      .OnDelete(DeleteBehavior.Restrict);
-
     // Target Pick
     builder.Property(x => x.TargetPickId)
       .IsRequired()

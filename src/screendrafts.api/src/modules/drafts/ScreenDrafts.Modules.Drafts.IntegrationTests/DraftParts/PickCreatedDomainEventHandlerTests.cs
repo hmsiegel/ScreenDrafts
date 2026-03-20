@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Drafts.IntegrationTests.DraftParts;
+﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.DraftParts;
 
 /// <summary>
 /// Tests for PickCreatedDomainEventHandler:
@@ -136,7 +136,7 @@ public sealed class PickCreatedDomainEventHandlerTests(DraftsIntegrationTestWebA
     var drafter1PublicId = (await Sender.Send(new CreateDrafterCommand(person1Id))).Value;
     await Sender.Send(new AddParticipantToDraftPartCommand
     {
-      DraftPartPublicId = draftPartPublicId,
+      DraftPartId = draftPartPublicId,
       ParticipantPublicId = drafter1PublicId,
       ParticipantKind = ParticipantKind.Drafter
     });
@@ -145,7 +145,7 @@ public sealed class PickCreatedDomainEventHandlerTests(DraftsIntegrationTestWebA
     var drafter2PublicId = (await Sender.Send(new CreateDrafterCommand(person2Id))).Value;
     await Sender.Send(new AddParticipantToDraftPartCommand
     {
-      DraftPartPublicId = draftPartPublicId,
+      DraftPartId = draftPartPublicId,
       ParticipantPublicId = drafter2PublicId,
       ParticipantKind = ParticipantKind.Drafter
     });
@@ -160,13 +160,9 @@ public sealed class PickCreatedDomainEventHandlerTests(DraftsIntegrationTestWebA
     });
 
     await Sender.Send(new SetDraftPartStatusCommand
-    {
-      SetDraftPartStatusRequest = new SetDraftPartStatusRequest
-      {
-        DraftPublicId = draftPublicId,
-        PartIndex = 1,
-        Action = DraftPartStatusAction.Start
-      }
+    {      DraftPublicId = draftPublicId,
+      PartIndex = 1,
+      Action = DraftPartStatusAction.Start
     });
 
     return (draftPublicId, draftPartPublicId, drafter1PublicId, drafter2PublicId);
