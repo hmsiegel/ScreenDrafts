@@ -382,22 +382,22 @@ namespace ScreenDrafts.Modules.Movies.Infrastructure.Database.Migrations
                         .HasColumnName("youtube_trailer_url");
 
                     b.HasKey("Id")
-                        .HasName("pk_movies");
+                        .HasName("pk_media");
 
                     b.HasIndex("IgdbId")
-                        .HasDatabaseName("ix_movies_igdb_id");
+                        .HasDatabaseName("ix_media_igdb_id");
 
                     b.HasIndex("ImdbId")
-                        .HasDatabaseName("ix_movies_imdb_id");
+                        .HasDatabaseName("ix_media_imdb_id");
 
                     b.HasIndex("PublicId")
                         .IsUnique()
                         .HasDatabaseName("ux_media_public_id");
 
                     b.HasIndex("TmdbId")
-                        .HasDatabaseName("ix_movies_tmdb_id");
+                        .HasDatabaseName("ix_media_tmdb_id");
 
-                    b.ToTable("movies", "movies");
+                    b.ToTable("media", "movies");
                 });
 
             modelBuilder.Entity("ScreenDrafts.Modules.Movies.Domain.Medias.Person", b =>
@@ -444,7 +444,7 @@ namespace ScreenDrafts.Modules.Movies.Infrastructure.Database.Migrations
                         .HasForeignKey("MediaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_media_actors_movies_media_id");
+                        .HasConstraintName("fk_media_actors_media_media_id");
 
                     b.Navigation("Actor");
 
@@ -465,7 +465,7 @@ namespace ScreenDrafts.Modules.Movies.Infrastructure.Database.Migrations
                         .HasForeignKey("MediaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_media_directors_movies_media_id");
+                        .HasConstraintName("fk_media_directors_media_media_id");
 
                     b.Navigation("Director");
 
@@ -486,7 +486,7 @@ namespace ScreenDrafts.Modules.Movies.Infrastructure.Database.Migrations
                         .HasForeignKey("MediaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_media_genres_movies_media_id");
+                        .HasConstraintName("fk_media_genres_media_media_id");
 
                     b.Navigation("Genre");
 
@@ -500,7 +500,7 @@ namespace ScreenDrafts.Modules.Movies.Infrastructure.Database.Migrations
                         .HasForeignKey("MediaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_media_producers_movies_media_id");
+                        .HasConstraintName("fk_media_producers_media_media_id");
 
                     b.HasOne("ScreenDrafts.Modules.Movies.Domain.Medias.Person", "Producer")
                         .WithMany("MediaProducers")
@@ -521,7 +521,7 @@ namespace ScreenDrafts.Modules.Movies.Infrastructure.Database.Migrations
                         .HasForeignKey("MediaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_media_production_companies_movies_media_id");
+                        .HasConstraintName("fk_media_production_companies_media_media_id");
 
                     b.HasOne("ScreenDrafts.Modules.Movies.Domain.Medias.Entities.ProductionCompany", "ProductionCompany")
                         .WithMany("MediaProductionCompanies")
@@ -542,7 +542,7 @@ namespace ScreenDrafts.Modules.Movies.Infrastructure.Database.Migrations
                         .HasForeignKey("MediaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_media_writers_movies_media_id");
+                        .HasConstraintName("fk_media_writers_media_media_id");
 
                     b.HasOne("ScreenDrafts.Modules.Movies.Domain.Medias.Person", "Writer")
                         .WithMany("MediaWriters")

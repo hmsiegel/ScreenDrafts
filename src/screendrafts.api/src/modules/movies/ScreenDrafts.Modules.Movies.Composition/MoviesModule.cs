@@ -37,6 +37,7 @@ public static class MoviesModule
   {
     services.AddScoped<IMoviesDomainEventDispatcher, MoviesDomainEventDispatcher>();
     services.AddScoped<IMoviesIntegrationEventDispatcher, MoviesIntegrationEventDispatcher>();
+    services.AddScoped(typeof(IPipelineBehavior<,>), typeof(MoviesUnitOfWorkBehavior<,>));
   }
 
 

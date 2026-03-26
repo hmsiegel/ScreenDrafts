@@ -7,11 +7,12 @@ public class MovieTests : DraftsBaseTest
   {
     // Arrange
     var title = Faker.Lorem.Word();
+    var publicId = Faker.Random.AlphaNumeric(10);
     var imdbId = Faker.Random.AlphaNumeric(10);
     var id = Guid.NewGuid();
 
     // Act
-    var result = Movie.Create(title, imdbId, MediaType.Movie, id);
+    var result = Movie.Create(title, publicId, MediaType.Movie, id, imdbId: imdbId);
 
     // Assert
     result.IsSuccess.Should().BeTrue();

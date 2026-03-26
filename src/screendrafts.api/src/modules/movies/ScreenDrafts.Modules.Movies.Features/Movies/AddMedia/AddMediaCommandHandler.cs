@@ -23,9 +23,18 @@ internal sealed class AddMediaCommandHandler(
 
     if (titleExists)
     {
-      var existingId = request.IgdbId?.ToString(CultureInfo.InvariantCulture) ?? request.TmdbId?.ToString(CultureInfo.InvariantCulture);
-      MovieLoggingMessages.MovieAlreadyExists(_logger, existingId!);
-      return Result.Failure<string>(MediaErrors.MediaAlreadyExists(existingId!));
+      if (request.IgdbId.HasValue)
+      {
+        var igdbIdStr = request.IgdbId.Value.ToString(CultureInfo.InvariantCulture);
+        MovieLoggingMessages.MovieAlreadyExists(_logger, igdbIdStr);
+        return Result.Failure<string>(MediaErrors.MediaAlreadyExists(igdbIdStr));
+      }
+      else
+      {
+        var tmdbIdStr = request.TmdbId!.Value.ToString(CultureInfo.InvariantCulture);
+        MovieLoggingMessages.MovieAlreadyExists(_logger, tmdbIdStr);
+        return Result.Failure<string>(MediaErrors.MediaAlreadyExists(request.TmdbId!.Value));
+      }
     }
 
     var releaseDate = request.ReleaseDate ?? request.Year;

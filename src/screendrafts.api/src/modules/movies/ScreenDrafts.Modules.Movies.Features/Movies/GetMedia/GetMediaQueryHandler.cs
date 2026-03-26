@@ -16,7 +16,7 @@ internal sealed class GetMediaQueryHandler(IDbConnectionFactory dbConnectionFact
         m.public_id                                         AS {nameof(MediaResponse.PublicId)},
       	m.imdb_id                                           AS {nameof(MediaResponse.ImdbId)},
         m.tmdb_id                                           AS {nameof(MediaResponse.TmdbId)},
-        m.igdb_id                                           AS {nameof(MediaResponse.ImdbId)},
+        m.igdb_id                                           AS {nameof(MediaResponse.IgdbId)},
       	m.title                                             AS {nameof(MediaResponse.Title)},
       	m.year                                              AS {nameof(MediaResponse.Year)},
       	m.plot                                              AS {nameof(MediaResponse.Plot)},
@@ -43,8 +43,8 @@ internal sealed class GetMediaQueryHandler(IDbConnectionFactory dbConnectionFact
         p.name                                              AS {nameof(ProducerResponse.Name)},
         pc.id                                               AS {nameof(ProductionCompanyResponse.Id)},
         pc.imdb_id                                            AS {nameof(ProductionCompanyResponse.ImdbId)},
-        pc.name                                              AS {nameof(ProductionCompanyResponse.Name)},
-      from movies.media m 
+        pc.name                                              AS {nameof(ProductionCompanyResponse.Name)}
+      from movies.media m
       left join movies.media_genres mg on mg.media_id = m.id
       left join movies.genres g on g.id = mg.genre_id
       left join movies.media_actors ma on ma.media_id = m.id
@@ -110,7 +110,7 @@ internal sealed class GetMediaQueryHandler(IDbConnectionFactory dbConnectionFact
         return mediaEntry!;
       },
       new { request.PublicId },
-      splitOn: "GenreId,ActorId,DirectorId,WriterId,ProducerId,ProductionCompanyId"
+      splitOn: "Id,Id,Id,Id,Id,Id"
     );
 
     var result = mediaDictionary.Values.FirstOrDefault();

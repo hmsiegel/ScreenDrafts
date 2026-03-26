@@ -14,13 +14,13 @@ public abstract class MoviesIntegrationTest(MoviesIntegrationTestWebAppFactory f
       $"""
       TRUNCATE TABLE
         movies.genres,
-        movies.movie_actors,
-        movies.movie_directors,
-        movies.movie_genres,
-        movies.movie_producers,
-        movies.movie_production_companies,
-        movies.movie_writers,
-        movies.movies,
+        movies.media_actors,
+        movies.media_directors,
+        movies.media_genres,
+        movies.media_producers,
+        movies.media_production_companies,
+        movies.media_writers,
+        movies.media,
         movies.people,
         movies.production_companies
       RESTART IDENTITY CASCADE;

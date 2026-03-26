@@ -164,8 +164,8 @@ public sealed class SearchMoviesTests(MoviesIntegrationTestWebAppFactory factory
     {
       Results =
       [
-        new MediaSearchApiResult { TmdbId = movie.TmdbId, Title = movie.Title, Year = movie.Year },
-        new MediaSearchApiResult { TmdbId = movie.TmdbId + 1, Title = "Another Movie", Year = "2000" }
+        new MediaSearchApiResult { TmdbId = movie.TmdbId, Title = movie.Title, Year = movie.Year, MediaType = movie.MediaType },
+        new MediaSearchApiResult { TmdbId = movie.TmdbId + 1, Title = "Another Movie", Year = "2000", MediaType = movie.MediaType }
       ]
     });
 

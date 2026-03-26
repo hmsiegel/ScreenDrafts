@@ -11,8 +11,7 @@ internal sealed class MovieConfiguration : IEntityTypeConfiguration<Movie>
     builder.Property(x => x.MovieTitle)
       .IsRequired();
 
-    builder.Property(x => x.ImdbId)
-      .IsRequired();
+    builder.Property(x => x.ImdbId);
 
     builder.Property(x => x.TmdbId);
 

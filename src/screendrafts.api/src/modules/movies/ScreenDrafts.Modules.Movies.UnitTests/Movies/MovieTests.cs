@@ -93,7 +93,7 @@ public sealed class MovieTests : BaseTest
   }
 
   [Fact]
-  public void Create_ShouldThrowException_WhenImageIsNull()
+  public void Create_ShouldSucceed_WhenImageIsEmpty()
   {
     // Arrange
     var publicId = Faker.Random.AlphaNumeric(10);
@@ -108,8 +108,9 @@ public sealed class MovieTests : BaseTest
     var igdbId = Faker.Random.Int(1, 10000);
     var externalId = Faker.Random.AlphaNumeric(15);
     var mediaType = MediaType.Movie;
+
     // Act
-    var exception = Assert.Throws<ArgumentException>(() => Media.Create(
+    var result = Media.Create(
       publicId: publicId,
       title: title,
       year: year,
@@ -121,10 +122,11 @@ public sealed class MovieTests : BaseTest
       tmdbId: tmdbId,
       igdbId: igdbId,
       externalId: externalId,
-      mediaType: mediaType));
+      mediaType: mediaType);
 
     // Assert
-    Assert.Equal(ExceptionMessage("image"), exception.Message);
+    result.IsSuccess.Should().BeTrue();
+    result.Value.Image.Should().Be(image);
   }
 
   [Fact]

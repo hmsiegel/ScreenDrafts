@@ -642,7 +642,6 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasColumnName("igdb_id");
 
                     b.Property<string>("ImdbId")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("imdb_id");
 

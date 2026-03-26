@@ -12,8 +12,10 @@ public sealed class AddMovieTests(DraftsIntegrationTestWebAppFactory factory)
     var command = new AddMovieCommand
     {
       Id = Guid.NewGuid(),
+      PublicId = $"m_{Faker.Random.AlphaNumeric(15)}",
       ImdbId = "tt" + Faker.Random.Number(1000000, 9999999),
-      Title = Faker.Random.Words(3)
+      Title = Faker.Random.Words(3),
+      MediaType = MediaType.Movie
     };
 
     // Act
@@ -22,7 +24,7 @@ public sealed class AddMovieTests(DraftsIntegrationTestWebAppFactory factory)
     // Assert
     result.Should().NotBeNull();
     result.IsSuccess.Should().BeTrue();
-    result.Value.Should().Be(command.ImdbId);
+    result.Value.Should().Be(command.PublicId);
   }
 
   [Fact]
@@ -86,26 +88,30 @@ public sealed class AddMovieTests(DraftsIntegrationTestWebAppFactory factory)
   }
 
   [Fact]
-  public async Task AddMovie_WithDuplicateImdbId_ShouldReturnErrorAsync()
+  public async Task AddMovie_WithDuplicatePublicId_ShouldReturnErrorAsync()
   {
     // Arrange
-    var imdbId = "tt" + Faker.Random.Number(1000000, 9999999);
+    var publicId = $"m_{Faker.Random.AlphaNumeric(15)}";
     var firstCommand = new AddMovieCommand
     {
       Id = Guid.NewGuid(),
-      ImdbId = imdbId,
-      Title = Faker.Random.Words(3)
+      PublicId = publicId,
+      ImdbId = "tt" + Faker.Random.Number(1000000, 9999999),
+      Title = Faker.Random.Words(3),
+      MediaType = MediaType.Movie
     };
 
     // Add movie first time
     await Sender.Send(firstCommand);
 
-    // Try to add movie again with same IMDB ID
+    // Try to add movie again with same Public ID
     var secondCommand = new AddMovieCommand
     {
       Id = Guid.NewGuid(),
-      ImdbId = imdbId,
-      Title = Faker.Random.Words(3)
+      PublicId = publicId,
+      ImdbId = "tt" + Faker.Random.Number(1000000, 9999999),
+      Title = Faker.Random.Words(3),
+      MediaType = MediaType.Movie
     };
 
     // Act
@@ -115,7 +121,7 @@ public sealed class AddMovieTests(DraftsIntegrationTestWebAppFactory factory)
     result.Should().NotBeNull();
     result.IsFailure.Should().BeTrue();
     result.Errors.Should().NotBeEmpty();
-    result.Errors[0].Should().Be(MovieErrors.MovieAlreadyExists(imdbId));
+    result.Errors[0].Should().Be(MovieErrors.MovieAlreadyExists(publicId));
   }
 
   [Fact]
@@ -125,25 +131,31 @@ public sealed class AddMovieTests(DraftsIntegrationTestWebAppFactory factory)
     var command1 = new AddMovieCommand
     {
       Id = Guid.NewGuid(),
+      PublicId = $"m_{Faker.Random.AlphaNumeric(15)}",
       ImdbId = "tt" + Faker.Random.Number(1000000, 9999999),
       Title = "The Shawshank Redemption",
-      TmdbId = Faker.Random.Number(100000, 999999)
+      TmdbId = Faker.Random.Number(100000, 999999),
+      MediaType = MediaType.Movie
     };
 
     var command2 = new AddMovieCommand
     {
       Id = Guid.NewGuid(),
+      PublicId = $"m_{Faker.Random.AlphaNumeric(15)}",
       ImdbId = "tt" + Faker.Random.Number(1000000, 9999999),
       Title = "The Godfather",
-      TmdbId = Faker.Random.Number(100000, 999999)
+      TmdbId = Faker.Random.Number(100000, 999999),
+      MediaType = MediaType.Movie
     };
 
     var command3 = new AddMovieCommand
     {
       Id = Guid.NewGuid(),
+      PublicId = $"m_{Faker.Random.AlphaNumeric(15)}",
       ImdbId = "tt" + Faker.Random.Number(1000000, 9999999),
       Title = "The Dark Knight",
-      TmdbId = Faker.Random.Number(100000, 999999)
+      TmdbId = Faker.Random.Number(100000, 999999),
+      MediaType = MediaType.Movie
     };
 
     // Act
@@ -153,15 +165,15 @@ public sealed class AddMovieTests(DraftsIntegrationTestWebAppFactory factory)
 
     // Assert
     result1.IsSuccess.Should().BeTrue();
-    result1.Value.Should().Be(command1.ImdbId);
+    result1.Value.Should().Be(command1.PublicId);
 
     result2.IsSuccess.Should().BeTrue();
-    result2.Value.Should().Be(command2.ImdbId);
+    result2.Value.Should().Be(command2.PublicId);
 
     result3.IsSuccess.Should().BeTrue();
-    result3.Value.Should().Be(command3.ImdbId);
+    result3.Value.Should().Be(command3.PublicId);
 
-    // All IMDB IDs should be different
+    // All public IDs should be different
     result1.Value.Should().NotBe(result2.Value);
     result2.Value.Should().NotBe(result3.Value);
     result3.Value.Should().NotBe(result1.Value);
@@ -174,8 +186,10 @@ public sealed class AddMovieTests(DraftsIntegrationTestWebAppFactory factory)
     var command = new AddMovieCommand
     {
       Id = Guid.NewGuid(),
+      PublicId = $"m_{Faker.Random.AlphaNumeric(15)}",
       ImdbId = "tt0111161", // Shawshank Redemption's actual IMDB ID
-      Title = "The Shawshank Redemption"
+      Title = "The Shawshank Redemption",
+      MediaType = MediaType.Movie
     };
 
     // Act
@@ -184,7 +198,7 @@ public sealed class AddMovieTests(DraftsIntegrationTestWebAppFactory factory)
     // Assert
     result.Should().NotBeNull();
     result.IsSuccess.Should().BeTrue();
-    result.Value.Should().Be(command.ImdbId);
+    result.Value.Should().Be(command.PublicId);
   }
 
   [Fact]
@@ -195,8 +209,10 @@ public sealed class AddMovieTests(DraftsIntegrationTestWebAppFactory factory)
     var command = new AddMovieCommand
     {
       Id = Guid.NewGuid(),
+      PublicId = $"m_{Faker.Random.AlphaNumeric(15)}",
       ImdbId = "tt" + Faker.Random.Number(1000000, 9999999),
-      Title = longTitle
+      Title = longTitle,
+      MediaType = MediaType.Movie
     };
 
     // Act
@@ -205,7 +221,7 @@ public sealed class AddMovieTests(DraftsIntegrationTestWebAppFactory factory)
     // Assert
     result.Should().NotBeNull();
     result.IsSuccess.Should().BeTrue();
-    result.Value.Should().Be(command.ImdbId);
+    result.Value.Should().Be(command.PublicId);
   }
 
   [Fact]
@@ -215,8 +231,10 @@ public sealed class AddMovieTests(DraftsIntegrationTestWebAppFactory factory)
     var command = new AddMovieCommand
     {
       Id = Guid.NewGuid(),
+      PublicId = $"m_{Faker.Random.AlphaNumeric(15)}",
       ImdbId = "tt" + Faker.Random.Number(1000000, 9999999),
-      Title = "Movie: The Return - Part II (2024) [Extended Edition]"
+      Title = "Movie: The Return - Part II (2024) [Extended Edition]",
+      MediaType = MediaType.Movie
     };
 
     // Act
@@ -225,6 +243,6 @@ public sealed class AddMovieTests(DraftsIntegrationTestWebAppFactory factory)
     // Assert
     result.Should().NotBeNull();
     result.IsSuccess.Should().BeTrue();
-    result.Value.Should().Be(command.ImdbId);
+    result.Value.Should().Be(command.PublicId);
   }
 }

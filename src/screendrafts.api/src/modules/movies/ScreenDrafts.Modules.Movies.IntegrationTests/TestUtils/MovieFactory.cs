@@ -28,7 +28,7 @@ public static class MovieFactory
     public static Result<Genre> CreateGenre() => Genre.Create(_faker.Music.Genre(), _faker.Random.Int(1, 1000));
 
     public static Result<ScreenDrafts.Modules.Movies.Domain.Medias.Person> CreatePerson() => ScreenDrafts.Modules.Movies.Domain.Medias.Person.Create(
-      _faker.Random.String2(9),
+      _faker.Random.Replace("nm#######"),
       _faker.Name.FullName(),
       _faker.Random.Int(1, 1000));
 
