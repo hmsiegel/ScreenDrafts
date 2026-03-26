@@ -34,15 +34,15 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
       string PublicId,
       string Title,
       string? Description,
-      int DraftType,
-      int DraftStatus,
+      DraftType DraftType,
+      DraftStatus DraftStatus,
       string SeriesPublicId,
       string SeriesName,
       string? CampaignPublicId,
       string? CampaignName
     )>(
       draftSql,
-      new { DraftId = request.DraftId });
+      new { request.DraftId });
 
     if (draft == default)
     {
@@ -68,8 +68,8 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
     var partRows = (await connection.QueryAsync<(
       string PublicId,
       int PartIndex,
-      int DraftType,
-      int Status,
+      DraftType DraftType,
+      DraftPartStatus Status,
       DateTime? ScheduledForUtc,
       Guid InternalId
     )>(
@@ -109,7 +109,7 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
 
     var hostRows = await connection.QueryAsync<(
       Guid PartId,
-      int Role,
+      HostRole Role,
       string HostPublicId,
       string DisplayName
     )>(
@@ -161,7 +161,7 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
     var participantRows = await connection.QueryAsync<(
       Guid PartId,
       Guid ParticipantIdValue,
-      int ParticipantKindValue,
+      ParticipantKind ParticipantKindValue,
       int StartingVetoes,
       int VetoesUsed,
       int RolloverVetoes,
@@ -214,7 +214,7 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
 
     var releaseRows = await connection.QueryAsync<(
       Guid PartId,
-      int ReleaseChannel,
+      ReleaseChannel ReleaseChannel,
       DateOnly ReleaseDate)>(
       new CommandDefinition(releaseSql, new { partIds, allowedChannels }));
 
@@ -261,7 +261,7 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
       string? MovieVersionName,
       string? ActedByPublicId,
       Guid PlayedByParticipantIdValue,
-      int PlayedByParticipantKindValue,
+      ParticipantKind PlayedByParticipantKindValue,
       Guid PickInternalId)>(
       new CommandDefinition(pickSql, new { partIds }))).ToList();
 
@@ -389,8 +389,8 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
     (string PublicId,
       string Title,
       string? Description,
-      int DraftType,
-      int DraftStatus,
+      DraftType DraftType,
+      DraftStatus DraftStatus,
       string SeriesPublicId,
       string SeriesName,
       string? CampaignPublicId,

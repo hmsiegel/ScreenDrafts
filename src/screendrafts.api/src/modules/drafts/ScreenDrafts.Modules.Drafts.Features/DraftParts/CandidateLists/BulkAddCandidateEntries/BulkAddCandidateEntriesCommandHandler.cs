@@ -91,10 +91,16 @@ internal sealed partial class BulkAddCandidateEntriesCommandHandler(
     foreach (var tmdbId in tmdbIdsToFetch)
     {
       await _eventBus.PublishAsync(
-        new FetchMovieRequestedIntegrationEvent(
+        new FetchMediaRequestedIntegrationEvent(
           id: Guid.NewGuid(),
           occurredOnUtc: DateTime.UtcNow,
-          tmdbId: tmdbId),
+          tmdbId: tmdbId,
+          igdbId: null,
+          tvSeriesTmdbId: null,
+          episodeNumber: null,
+          seasonNumber: null,
+          mediaType: MediaType.Movie,
+          imdbId: null),
         cancellationToken);
 
     }

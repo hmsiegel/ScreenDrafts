@@ -10,7 +10,7 @@ public static class MovieLoggingMessages
   private static readonly Action<ILogger, string, Exception?> _movieAlreadyExistsWithImdbId = LoggerMessage.Define<string>(
     LogLevel.Warning,
     new EventId(1, nameof(MovieAlreadyExists)),
-    "The movie with IMDB Id {ImdbId} already exists.");
+    "The movie with PublicId {PublicId} already exists.");
 
   private static readonly Action<ILogger, string, Exception?> _createMovieFailed = LoggerMessage.Define<string>(
     LogLevel.Error,
@@ -37,7 +37,7 @@ public static class MovieLoggingMessages
     new EventId(5, nameof(ImdbIdNotFound)),
     "IMDB Id not found for movie with TMDB Id {TmdbId}.");
 
-  public static void MovieAlreadyExists(ILogger logger, string imdbId) => _movieAlreadyExistsWithImdbId(logger, imdbId, null);
+  public static void MovieAlreadyExists(ILogger logger, string publicId) => _movieAlreadyExistsWithImdbId(logger, publicId, null);
 
   public static void MovieAlreadyExists(ILogger logger, int tmdbId) => _movieAlreadyExists(logger, tmdbId, null);
 

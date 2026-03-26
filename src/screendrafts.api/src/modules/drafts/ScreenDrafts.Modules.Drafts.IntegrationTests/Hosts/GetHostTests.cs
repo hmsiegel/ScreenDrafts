@@ -95,8 +95,8 @@ public sealed class GetHostTests(DraftsIntegrationTestWebAppFactory factory)
     hostedPart.DraftPartPublicId.Should().NotBeNullOrEmpty();
     hostedPart.DraftPublicId.Should().NotBeNullOrEmpty();
     hostedPart.Label.Should().NotBeNullOrEmpty();
-    hostedPart.Role.Should().NotBeNullOrEmpty();
-    hostedPart.Status.Should().NotBeNullOrEmpty();
+    hostedPart.Role.Should().NotBeNull();
+    hostedPart.Status.Should().NotBeNull();
   }
 
   [Fact]

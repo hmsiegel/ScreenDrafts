@@ -53,10 +53,16 @@ internal sealed class AddCandidateEntryCommandHandler(
     if (movieId is null)
     {
       await _eventBus.PublishAsync(
-        new FetchMovieRequestedIntegrationEvent(
+        new FetchMediaRequestedIntegrationEvent(
           id: Guid.NewGuid(),
           occurredOnUtc: DateTime.UtcNow,
-          tmdbId: request.TmdbId), 
+          tmdbId: request.TmdbId,
+          igdbId: null,
+          tvSeriesTmdbId: null,
+          episodeNumber: null,
+          seasonNumber: null,
+          mediaType: MediaType.Movie,
+          imdbId: null),
         cancellationToken);
     }
 

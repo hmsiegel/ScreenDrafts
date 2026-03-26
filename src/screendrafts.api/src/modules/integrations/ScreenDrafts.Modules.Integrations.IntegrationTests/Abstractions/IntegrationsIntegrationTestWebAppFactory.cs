@@ -1,9 +1,4 @@
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-
-using ScreenDrafts.Modules.Integrations.IntegrationTests.Doubles;
-
-namespace ScreenDrafts.Modules.Integrations.IntegrationTests.Abstractions;
+﻿namespace ScreenDrafts.Modules.Integrations.IntegrationTests.Abstractions;
 
 public sealed class IntegrationsIntegrationTestWebAppFactory : IntegrationTestWebAppFactory
 {

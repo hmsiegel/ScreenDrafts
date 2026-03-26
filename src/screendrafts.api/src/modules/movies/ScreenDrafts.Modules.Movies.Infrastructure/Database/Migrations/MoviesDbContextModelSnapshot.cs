@@ -129,7 +129,7 @@ namespace ScreenDrafts.Modules.Movies.Infrastructure.Database.Migrations
                     b.ToTable("outbox_message_consumers", "movies");
                 });
 
-            modelBuilder.Entity("ScreenDrafts.Modules.Movies.Domain.Movies.Entities.Genre", b =>
+            modelBuilder.Entity("ScreenDrafts.Modules.Movies.Domain.Medias.Entities.Genre", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -151,11 +151,11 @@ namespace ScreenDrafts.Modules.Movies.Infrastructure.Database.Migrations
                     b.ToTable("genres", "movies");
                 });
 
-            modelBuilder.Entity("ScreenDrafts.Modules.Movies.Domain.Movies.Entities.MovieActor", b =>
+            modelBuilder.Entity("ScreenDrafts.Modules.Movies.Domain.Medias.Entities.MediaActor", b =>
                 {
-                    b.Property<Guid>("MovieId")
+                    b.Property<Guid>("MediaId")
                         .HasColumnType("uuid")
-                        .HasColumnName("movie_id");
+                        .HasColumnName("media_id");
 
                     b.Property<Guid>("ActorId")
                         .HasColumnType("uuid")
@@ -165,20 +165,20 @@ namespace ScreenDrafts.Modules.Movies.Infrastructure.Database.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.HasKey("MovieId", "ActorId")
-                        .HasName("pk_movie_actors");
+                    b.HasKey("MediaId", "ActorId")
+                        .HasName("pk_media_actors");
 
                     b.HasIndex("ActorId")
-                        .HasDatabaseName("ix_movie_actors_actor_id");
+                        .HasDatabaseName("ix_media_actors_actor_id");
 
-                    b.ToTable("movie_actors", "movies");
+                    b.ToTable("media_actors", "movies");
                 });
 
-            modelBuilder.Entity("ScreenDrafts.Modules.Movies.Domain.Movies.Entities.MovieDirector", b =>
+            modelBuilder.Entity("ScreenDrafts.Modules.Movies.Domain.Medias.Entities.MediaDirector", b =>
                 {
-                    b.Property<Guid>("MovieId")
+                    b.Property<Guid>("MediaId")
                         .HasColumnType("uuid")
-                        .HasColumnName("movie_id");
+                        .HasColumnName("media_id");
 
                     b.Property<Guid>("DirectorId")
                         .HasColumnType("uuid")
@@ -188,39 +188,39 @@ namespace ScreenDrafts.Modules.Movies.Infrastructure.Database.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.HasKey("MovieId", "DirectorId")
-                        .HasName("pk_movie_directors");
+                    b.HasKey("MediaId", "DirectorId")
+                        .HasName("pk_media_directors");
 
                     b.HasIndex("DirectorId")
-                        .HasDatabaseName("ix_movie_directors_director_id");
+                        .HasDatabaseName("ix_media_directors_director_id");
 
-                    b.ToTable("movie_directors", "movies");
+                    b.ToTable("media_directors", "movies");
                 });
 
-            modelBuilder.Entity("ScreenDrafts.Modules.Movies.Domain.Movies.Entities.MovieGenre", b =>
+            modelBuilder.Entity("ScreenDrafts.Modules.Movies.Domain.Medias.Entities.MediaGenre", b =>
                 {
-                    b.Property<Guid>("MovieId")
+                    b.Property<Guid>("MediaId")
                         .HasColumnType("uuid")
-                        .HasColumnName("movie_id");
+                        .HasColumnName("media_id");
 
                     b.Property<Guid>("GenreId")
                         .HasColumnType("uuid")
                         .HasColumnName("genre_id");
 
-                    b.HasKey("MovieId", "GenreId")
-                        .HasName("pk_movie_genres");
+                    b.HasKey("MediaId", "GenreId")
+                        .HasName("pk_media_genres");
 
                     b.HasIndex("GenreId")
-                        .HasDatabaseName("ix_movie_genres_genre_id");
+                        .HasDatabaseName("ix_media_genres_genre_id");
 
-                    b.ToTable("movie_genres", "movies");
+                    b.ToTable("media_genres", "movies");
                 });
 
-            modelBuilder.Entity("ScreenDrafts.Modules.Movies.Domain.Movies.Entities.MovieProducer", b =>
+            modelBuilder.Entity("ScreenDrafts.Modules.Movies.Domain.Medias.Entities.MediaProducer", b =>
                 {
-                    b.Property<Guid>("MovieId")
+                    b.Property<Guid>("MediaId")
                         .HasColumnType("uuid")
-                        .HasColumnName("movie_id");
+                        .HasColumnName("media_id");
 
                     b.Property<Guid>("ProducerId")
                         .HasColumnType("uuid")
@@ -230,39 +230,39 @@ namespace ScreenDrafts.Modules.Movies.Infrastructure.Database.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.HasKey("MovieId", "ProducerId")
-                        .HasName("pk_movie_producers");
+                    b.HasKey("MediaId", "ProducerId")
+                        .HasName("pk_media_producers");
 
                     b.HasIndex("ProducerId")
-                        .HasDatabaseName("ix_movie_producers_producer_id");
+                        .HasDatabaseName("ix_media_producers_producer_id");
 
-                    b.ToTable("movie_producers", "movies");
+                    b.ToTable("media_producers", "movies");
                 });
 
-            modelBuilder.Entity("ScreenDrafts.Modules.Movies.Domain.Movies.Entities.MovieProductionCompany", b =>
+            modelBuilder.Entity("ScreenDrafts.Modules.Movies.Domain.Medias.Entities.MediaProductionCompany", b =>
                 {
-                    b.Property<Guid>("MovieId")
+                    b.Property<Guid>("MediaId")
                         .HasColumnType("uuid")
-                        .HasColumnName("movie_id");
+                        .HasColumnName("media_id");
 
                     b.Property<Guid>("ProductionCompanyId")
                         .HasColumnType("uuid")
                         .HasColumnName("production_company_id");
 
-                    b.HasKey("MovieId", "ProductionCompanyId")
-                        .HasName("pk_movie_production_companies");
+                    b.HasKey("MediaId", "ProductionCompanyId")
+                        .HasName("pk_media_production_companies");
 
                     b.HasIndex("ProductionCompanyId")
-                        .HasDatabaseName("ix_movie_production_companies_production_company_id");
+                        .HasDatabaseName("ix_media_production_companies_production_company_id");
 
-                    b.ToTable("movie_production_companies", "movies");
+                    b.ToTable("media_production_companies", "movies");
                 });
 
-            modelBuilder.Entity("ScreenDrafts.Modules.Movies.Domain.Movies.Entities.MovieWriter", b =>
+            modelBuilder.Entity("ScreenDrafts.Modules.Movies.Domain.Medias.Entities.MediaWriter", b =>
                 {
-                    b.Property<Guid>("MovieId")
+                    b.Property<Guid>("MediaId")
                         .HasColumnType("uuid")
-                        .HasColumnName("movie_id");
+                        .HasColumnName("media_id");
 
                     b.Property<Guid>("WriterId")
                         .HasColumnType("uuid")
@@ -272,16 +272,16 @@ namespace ScreenDrafts.Modules.Movies.Infrastructure.Database.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.HasKey("MovieId", "WriterId")
-                        .HasName("pk_movie_writers");
+                    b.HasKey("MediaId", "WriterId")
+                        .HasName("pk_media_writers");
 
                     b.HasIndex("WriterId")
-                        .HasDatabaseName("ix_movie_writers_writer_id");
+                        .HasDatabaseName("ix_media_writers_writer_id");
 
-                    b.ToTable("movie_writers", "movies");
+                    b.ToTable("media_writers", "movies");
                 });
 
-            modelBuilder.Entity("ScreenDrafts.Modules.Movies.Domain.Movies.Entities.ProductionCompany", b =>
+            modelBuilder.Entity("ScreenDrafts.Modules.Movies.Domain.Medias.Entities.ProductionCompany", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -311,38 +311,66 @@ namespace ScreenDrafts.Modules.Movies.Infrastructure.Database.Migrations
                     b.ToTable("production_companies", "movies");
                 });
 
-            modelBuilder.Entity("ScreenDrafts.Modules.Movies.Domain.Movies.Movie", b =>
+            modelBuilder.Entity("ScreenDrafts.Modules.Movies.Domain.Medias.Media", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
+                    b.Property<int?>("EpisodeNumber")
+                        .HasColumnType("integer")
+                        .HasColumnName("episode_number");
+
+                    b.Property<string>("ExternalId")
+                        .HasColumnType("text")
+                        .HasColumnName("external_id");
+
+                    b.Property<int?>("IgdbId")
+                        .HasColumnType("integer")
+                        .HasColumnName("igdb_id");
+
                     b.Property<string>("Image")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("image");
 
                     b.Property<string>("ImdbId")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("imdb_id");
+
+                    b.Property<int>("MediaType")
+                        .HasColumnType("integer")
+                        .HasColumnName("media_type");
 
                     b.Property<string>("Plot")
                         .HasColumnType("text")
                         .HasColumnName("plot");
 
+                    b.Property<string>("PublicId")
+                        .IsRequired()
+                        .HasMaxLength(19)
+                        .HasColumnType("character varying(19)")
+                        .HasColumnName("public_id");
+
                     b.Property<string>("ReleaseDate")
                         .HasColumnType("text")
                         .HasColumnName("release_date");
+
+                    b.Property<int?>("SeasonNumber")
+                        .HasColumnType("integer")
+                        .HasColumnName("season_number");
 
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("title");
 
-                    b.Property<int>("TmdbId")
+                    b.Property<int?>("TmdbId")
                         .HasColumnType("integer")
                         .HasColumnName("tmdb_id");
+
+                    b.Property<int?>("TvSeriesTmdbId")
+                        .HasColumnType("integer")
+                        .HasColumnName("tv_series_tmdb_id");
 
                     b.Property<string>("Year")
                         .IsRequired()
@@ -356,8 +384,15 @@ namespace ScreenDrafts.Modules.Movies.Infrastructure.Database.Migrations
                     b.HasKey("Id")
                         .HasName("pk_movies");
 
+                    b.HasIndex("IgdbId")
+                        .HasDatabaseName("ix_movies_igdb_id");
+
                     b.HasIndex("ImdbId")
                         .HasDatabaseName("ix_movies_imdb_id");
+
+                    b.HasIndex("PublicId")
+                        .IsUnique()
+                        .HasDatabaseName("ux_media_public_id");
 
                     b.HasIndex("TmdbId")
                         .HasDatabaseName("ix_movies_tmdb_id");
@@ -365,7 +400,7 @@ namespace ScreenDrafts.Modules.Movies.Infrastructure.Database.Migrations
                     b.ToTable("movies", "movies");
                 });
 
-            modelBuilder.Entity("ScreenDrafts.Modules.Movies.Domain.Movies.Person", b =>
+            modelBuilder.Entity("ScreenDrafts.Modules.Movies.Domain.Medias.Person", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid")
@@ -395,166 +430,166 @@ namespace ScreenDrafts.Modules.Movies.Infrastructure.Database.Migrations
                     b.ToTable("people", "movies");
                 });
 
-            modelBuilder.Entity("ScreenDrafts.Modules.Movies.Domain.Movies.Entities.MovieActor", b =>
+            modelBuilder.Entity("ScreenDrafts.Modules.Movies.Domain.Medias.Entities.MediaActor", b =>
                 {
-                    b.HasOne("ScreenDrafts.Modules.Movies.Domain.Movies.Person", "Actor")
-                        .WithMany("MovieActors")
+                    b.HasOne("ScreenDrafts.Modules.Movies.Domain.Medias.Person", "Actor")
+                        .WithMany("MediaActors")
                         .HasForeignKey("ActorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_movie_actors_people_actor_id");
+                        .HasConstraintName("fk_media_actors_people_actor_id");
 
-                    b.HasOne("ScreenDrafts.Modules.Movies.Domain.Movies.Movie", "Movie")
-                        .WithMany("MovieActors")
-                        .HasForeignKey("MovieId")
+                    b.HasOne("ScreenDrafts.Modules.Movies.Domain.Medias.Media", "Media")
+                        .WithMany("MediaActors")
+                        .HasForeignKey("MediaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_movie_actors_movies_movie_id");
+                        .HasConstraintName("fk_media_actors_movies_media_id");
 
                     b.Navigation("Actor");
 
-                    b.Navigation("Movie");
+                    b.Navigation("Media");
                 });
 
-            modelBuilder.Entity("ScreenDrafts.Modules.Movies.Domain.Movies.Entities.MovieDirector", b =>
+            modelBuilder.Entity("ScreenDrafts.Modules.Movies.Domain.Medias.Entities.MediaDirector", b =>
                 {
-                    b.HasOne("ScreenDrafts.Modules.Movies.Domain.Movies.Person", "Director")
-                        .WithMany("MovieDirectors")
+                    b.HasOne("ScreenDrafts.Modules.Movies.Domain.Medias.Person", "Director")
+                        .WithMany("MediaDirectors")
                         .HasForeignKey("DirectorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_movie_directors_people_director_id");
+                        .HasConstraintName("fk_media_directors_people_director_id");
 
-                    b.HasOne("ScreenDrafts.Modules.Movies.Domain.Movies.Movie", "Movie")
-                        .WithMany("MovieDirectors")
-                        .HasForeignKey("MovieId")
+                    b.HasOne("ScreenDrafts.Modules.Movies.Domain.Medias.Media", "Media")
+                        .WithMany("MediaDirectors")
+                        .HasForeignKey("MediaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_movie_directors_movies_movie_id");
+                        .HasConstraintName("fk_media_directors_movies_media_id");
 
                     b.Navigation("Director");
 
-                    b.Navigation("Movie");
+                    b.Navigation("Media");
                 });
 
-            modelBuilder.Entity("ScreenDrafts.Modules.Movies.Domain.Movies.Entities.MovieGenre", b =>
+            modelBuilder.Entity("ScreenDrafts.Modules.Movies.Domain.Medias.Entities.MediaGenre", b =>
                 {
-                    b.HasOne("ScreenDrafts.Modules.Movies.Domain.Movies.Entities.Genre", "Genre")
-                        .WithMany("MovieGenres")
+                    b.HasOne("ScreenDrafts.Modules.Movies.Domain.Medias.Entities.Genre", "Genre")
+                        .WithMany("MediaGenres")
                         .HasForeignKey("GenreId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_movie_genres_genres_genre_id");
+                        .HasConstraintName("fk_media_genres_genres_genre_id");
 
-                    b.HasOne("ScreenDrafts.Modules.Movies.Domain.Movies.Movie", "Movie")
-                        .WithMany("MovieGenres")
-                        .HasForeignKey("MovieId")
+                    b.HasOne("ScreenDrafts.Modules.Movies.Domain.Medias.Media", "Media")
+                        .WithMany("MediaGenres")
+                        .HasForeignKey("MediaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_movie_genres_movies_movie_id");
+                        .HasConstraintName("fk_media_genres_movies_media_id");
 
                     b.Navigation("Genre");
 
-                    b.Navigation("Movie");
+                    b.Navigation("Media");
                 });
 
-            modelBuilder.Entity("ScreenDrafts.Modules.Movies.Domain.Movies.Entities.MovieProducer", b =>
+            modelBuilder.Entity("ScreenDrafts.Modules.Movies.Domain.Medias.Entities.MediaProducer", b =>
                 {
-                    b.HasOne("ScreenDrafts.Modules.Movies.Domain.Movies.Movie", "Movie")
-                        .WithMany("MovieProducers")
-                        .HasForeignKey("MovieId")
+                    b.HasOne("ScreenDrafts.Modules.Movies.Domain.Medias.Media", "Media")
+                        .WithMany("MediaProducers")
+                        .HasForeignKey("MediaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_movie_producers_movies_movie_id");
+                        .HasConstraintName("fk_media_producers_movies_media_id");
 
-                    b.HasOne("ScreenDrafts.Modules.Movies.Domain.Movies.Person", "Producer")
-                        .WithMany("MovieProducers")
+                    b.HasOne("ScreenDrafts.Modules.Movies.Domain.Medias.Person", "Producer")
+                        .WithMany("MediaProducers")
                         .HasForeignKey("ProducerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_movie_producers_people_producer_id");
+                        .HasConstraintName("fk_media_producers_people_producer_id");
 
-                    b.Navigation("Movie");
+                    b.Navigation("Media");
 
                     b.Navigation("Producer");
                 });
 
-            modelBuilder.Entity("ScreenDrafts.Modules.Movies.Domain.Movies.Entities.MovieProductionCompany", b =>
+            modelBuilder.Entity("ScreenDrafts.Modules.Movies.Domain.Medias.Entities.MediaProductionCompany", b =>
                 {
-                    b.HasOne("ScreenDrafts.Modules.Movies.Domain.Movies.Movie", "Movie")
-                        .WithMany("MovieProductionCompanies")
-                        .HasForeignKey("MovieId")
+                    b.HasOne("ScreenDrafts.Modules.Movies.Domain.Medias.Media", "Media")
+                        .WithMany("MediaProductionCompanies")
+                        .HasForeignKey("MediaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_movie_production_companies_movies_movie_id");
+                        .HasConstraintName("fk_media_production_companies_movies_media_id");
 
-                    b.HasOne("ScreenDrafts.Modules.Movies.Domain.Movies.Entities.ProductionCompany", "ProductionCompany")
-                        .WithMany("MovieProductionCompanies")
+                    b.HasOne("ScreenDrafts.Modules.Movies.Domain.Medias.Entities.ProductionCompany", "ProductionCompany")
+                        .WithMany("MediaProductionCompanies")
                         .HasForeignKey("ProductionCompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_movie_production_companies_production_companies_production_");
+                        .HasConstraintName("fk_media_production_companies_production_companies_production_");
 
-                    b.Navigation("Movie");
+                    b.Navigation("Media");
 
                     b.Navigation("ProductionCompany");
                 });
 
-            modelBuilder.Entity("ScreenDrafts.Modules.Movies.Domain.Movies.Entities.MovieWriter", b =>
+            modelBuilder.Entity("ScreenDrafts.Modules.Movies.Domain.Medias.Entities.MediaWriter", b =>
                 {
-                    b.HasOne("ScreenDrafts.Modules.Movies.Domain.Movies.Movie", "Movie")
-                        .WithMany("MovieWriters")
-                        .HasForeignKey("MovieId")
+                    b.HasOne("ScreenDrafts.Modules.Movies.Domain.Medias.Media", "Media")
+                        .WithMany("MediaWriters")
+                        .HasForeignKey("MediaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_movie_writers_movies_movie_id");
+                        .HasConstraintName("fk_media_writers_movies_media_id");
 
-                    b.HasOne("ScreenDrafts.Modules.Movies.Domain.Movies.Person", "Writer")
-                        .WithMany("MovieWriters")
+                    b.HasOne("ScreenDrafts.Modules.Movies.Domain.Medias.Person", "Writer")
+                        .WithMany("MediaWriters")
                         .HasForeignKey("WriterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_movie_writers_people_writer_id");
+                        .HasConstraintName("fk_media_writers_people_writer_id");
 
-                    b.Navigation("Movie");
+                    b.Navigation("Media");
 
                     b.Navigation("Writer");
                 });
 
-            modelBuilder.Entity("ScreenDrafts.Modules.Movies.Domain.Movies.Entities.Genre", b =>
+            modelBuilder.Entity("ScreenDrafts.Modules.Movies.Domain.Medias.Entities.Genre", b =>
                 {
-                    b.Navigation("MovieGenres");
+                    b.Navigation("MediaGenres");
                 });
 
-            modelBuilder.Entity("ScreenDrafts.Modules.Movies.Domain.Movies.Entities.ProductionCompany", b =>
+            modelBuilder.Entity("ScreenDrafts.Modules.Movies.Domain.Medias.Entities.ProductionCompany", b =>
                 {
-                    b.Navigation("MovieProductionCompanies");
+                    b.Navigation("MediaProductionCompanies");
                 });
 
-            modelBuilder.Entity("ScreenDrafts.Modules.Movies.Domain.Movies.Movie", b =>
+            modelBuilder.Entity("ScreenDrafts.Modules.Movies.Domain.Medias.Media", b =>
                 {
-                    b.Navigation("MovieActors");
+                    b.Navigation("MediaActors");
 
-                    b.Navigation("MovieDirectors");
+                    b.Navigation("MediaDirectors");
 
-                    b.Navigation("MovieGenres");
+                    b.Navigation("MediaGenres");
 
-                    b.Navigation("MovieProducers");
+                    b.Navigation("MediaProducers");
 
-                    b.Navigation("MovieProductionCompanies");
+                    b.Navigation("MediaProductionCompanies");
 
-                    b.Navigation("MovieWriters");
+                    b.Navigation("MediaWriters");
                 });
 
-            modelBuilder.Entity("ScreenDrafts.Modules.Movies.Domain.Movies.Person", b =>
+            modelBuilder.Entity("ScreenDrafts.Modules.Movies.Domain.Medias.Person", b =>
                 {
-                    b.Navigation("MovieActors");
+                    b.Navigation("MediaActors");
 
-                    b.Navigation("MovieDirectors");
+                    b.Navigation("MediaDirectors");
 
-                    b.Navigation("MovieProducers");
+                    b.Navigation("MediaProducers");
 
-                    b.Navigation("MovieWriters");
+                    b.Navigation("MediaWriters");
                 });
 #pragma warning restore 612, 618
         }

@@ -11,7 +11,7 @@ public class PersonTests : BaseTest
     var tmdbId = Faker.Random.Int(1, 1000);
 
     // Act
-    var person = Domain.Movies.Person.Create(imdbId, personName, tmdbId);
+    var person = ScreenDrafts.Modules.Movies.Domain.Medias.Person.Create(imdbId, personName, tmdbId);
     // Assert
     person.Should().NotBeNull();
     person.Name.Should().Be(personName);
@@ -26,7 +26,7 @@ public class PersonTests : BaseTest
     var tmdbId = Faker.Random.Int(1, 1000);
 
     // Act
-    var exception = Assert.Throws<ArgumentException>(() => Domain.Movies.Person.Create(imdbId, personName, tmdbId));
+    var exception = Assert.Throws<ArgumentException>(() => ScreenDrafts.Modules.Movies.Domain.Medias.Person.Create(imdbId, personName, tmdbId));
     // Assert
     Assert.Equal(ExceptionMessage("name"), exception.Message);
   }
@@ -39,7 +39,7 @@ public class PersonTests : BaseTest
     var imdbId = string.Empty;
     var tmdbId = Faker.Random.Int(1, 1000);
     // Act
-    var exception = Assert.Throws<ArgumentException>(() => Domain.Movies.Person.Create(imdbId, personName, tmdbId));
+    var exception = Assert.Throws<ArgumentException>(() => ScreenDrafts.Modules.Movies.Domain.Medias.Person.Create(imdbId, personName, tmdbId));
     // Assert
     Assert.Equal(ExceptionMessage("imdbId"), exception.Message);
   }

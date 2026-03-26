@@ -11,7 +11,7 @@ public class MovieTests : DraftsBaseTest
     var id = Guid.NewGuid();
 
     // Act
-    var result = Movie.Create(title, imdbId, id);
+    var result = Movie.Create(title, imdbId, MediaType.Movie, id);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -28,7 +28,7 @@ public class MovieTests : DraftsBaseTest
     var tmdbId = Guid.NewGuid();
 
     // Act
-    var result = Movie.Create(string.Empty, publicId, tmdbId);
+    var result = Movie.Create(string.Empty, publicId, MediaType.Movie, tmdbId);
 
     // Assert
     result.IsFailure.Should().BeTrue();

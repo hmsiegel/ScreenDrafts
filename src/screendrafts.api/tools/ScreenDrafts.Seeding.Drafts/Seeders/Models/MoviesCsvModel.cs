@@ -5,6 +5,9 @@ public sealed class MoviesCsvModel
   [Column("id")]
   public Guid Id { get; set; }
 
+  [Column("public_id")]
+  public string PublicId { get; set; } = default!;
+
   [Column("movie_title")]
   public string Title { get; set; } = default!;
 

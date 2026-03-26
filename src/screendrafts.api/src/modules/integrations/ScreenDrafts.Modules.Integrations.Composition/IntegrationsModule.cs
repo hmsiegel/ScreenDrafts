@@ -23,7 +23,7 @@ public static class IntegrationsModule
   {
     ArgumentNullException.ThrowIfNull(registrationConfigurator);
 
-    registrationConfigurator.AddConsumer<IntegrationEventConsumer<FetchMovieRequestedIntegrationEvent>>()
+    registrationConfigurator.AddConsumer<IntegrationEventConsumer<FetchMediaRequestedIntegrationEvent>>()
       .Endpoint(x => x.InstanceId = instanceId);
   }
 
@@ -35,6 +35,7 @@ public static class IntegrationsModule
     services.AddScoped<IOmdbService, OmdbService>();
 
     services.Configure<TmdbSettings>(configuration.GetSection(TmdbSettings.SectionName));
+    services.Configure<IgdbSettings>(configuration.GetSection(IgdbSettings.SectionName));
 
     services.AddHttpClient<ITmdbService, TmdbService>((sp, client) =>
     {
@@ -42,6 +43,12 @@ public static class IntegrationsModule
       client.BaseAddress = new Uri(tmdbSettings.BaseAddress);
       client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tmdbSettings.AccessToken);
       client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+    });
+
+    services.AddHttpClient<IIgdbService, IgdbService>((sp, client) =>
+    {
+      IgdbSettings igdbSettings = sp.GetRequiredService<IOptions<IgdbSettings>>().Value;
+      client.BaseAddress = new Uri(igdbSettings.BaseAddress);
     });
 
     services.AddScoped<IIntegrationsApi, IntegrationsApi>();

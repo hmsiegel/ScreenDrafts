@@ -135,10 +135,16 @@ internal sealed record BulkAddMoviesToDraftBoardCommandHandler(
     foreach (var tmdbId in tmdbIdsToFetch.Distinct())
     {
       await _eventBus.PublishAsync(
-        new FetchMovieRequestedIntegrationEvent(
+        new FetchMediaRequestedIntegrationEvent(
           id: Guid.NewGuid(),
           occurredOnUtc: _dateTimeProvider.UtcNow,
-          tmdbId: tmdbId),
+          tmdbId: tmdbId,
+          igdbId: null,
+          tvSeriesTmdbId: null,
+          episodeNumber: null,
+          seasonNumber: null,
+          mediaType: MediaType.Movie,
+          imdbId: null),
         cancellationToken: cancellationToken);
     }
 

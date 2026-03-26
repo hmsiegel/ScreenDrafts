@@ -1,4 +1,4 @@
-using ScreenDrafts.Modules.Integrations.Features.Movies.GetOnlineMovie;
+using ScreenDrafts.Modules.Integrations.Features.Movies.GetOnlineMedia;
 
 namespace ScreenDrafts.Modules.Integrations.IntegrationTests.Movies;
 
@@ -10,36 +10,19 @@ public sealed class GetOnlineMovieTests(IntegrationsIntegrationTestWebAppFactory
   // -------------------------------------------------------------------------
 
   [Fact]
-  public async Task GetOnlineMovie_WhenImdbIdNotFoundOnTmdb_ShouldReturnNotFoundErrorAsync()
-  {
-    // Arrange — TMDB returns no result for this IMDb ID
-    FakeTmdbService.SetFindResult(null);
-
-    var command = new GetOnlineMovieCommand("tt0000001");
-
-    // Act
-    var result = await Sender.Send(command);
-
-    // Assert
-    result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(MovieErrors.NotFound("tt0000001"));
-  }
-
-  [Fact]
   public async Task GetOnlineMovie_WhenMovieDetailsNotFound_ShouldReturnNotFoundErrorAsync()
   {
-    // Arrange — TMDB finds the movie but details are unavailable
-    FakeTmdbService.SetFindResult(new TmdbMovieSearchResult { Id = 603, Title = "The Matrix" });
+    // Arrange — TMDB returns no details for this TmdbId
     FakeTmdbService.SetDetails(null);
 
-    var command = new GetOnlineMovieCommand("tt0133093");
+    var command = new GetOnlineMediaCommand { MediaType = MediaType.Movie, TmdbId = 9999 };
 
     // Act
     var result = await Sender.Send(command);
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(MovieErrors.NotFound("tt0133093"));
+    result.Errors[0].Should().Be(MovieErrors.NotFound(9999));
   }
 
   // -------------------------------------------------------------------------
@@ -47,49 +30,26 @@ public sealed class GetOnlineMovieTests(IntegrationsIntegrationTestWebAppFactory
   // -------------------------------------------------------------------------
 
   [Fact]
-  public async Task GetOnlineMovie_WithValidImdbId_ShouldReturnMovieResponseAsync()
+  public async Task GetOnlineMovie_WithValidTmdbId_ShouldReturnMovieResponseAsync()
   {
     // Arrange
-    FakeTmdbService.SetFindResult(new TmdbMovieSearchResult
-    {
-      Id = 603,
-      Title = "The Matrix",
-      ReleaseDate = "1999-03-31",
-      Overview = "A computer hacker learns the truth about his reality.",
-      PosterPath = "/f89U3ADr1oiB1s9GkdPOEpXUk5H.jpg"
-    });
-
-    FakeTmdbService.SetDetails(new TmdbMovieDetails
+    FakeTmdbService.SetDetails(new TmdbMediaDetails
     {
       Id = 603,
       Title = "The Matrix",
       Overview = "A computer hacker learns the truth about his reality.",
       PosterPath = "/f89U3ADr1oiB1s9GkdPOEpXUk5H.jpg",
       ReleaseDate = "1999-03-31",
-      Credits = new TmdbCredits
-      {
-        Cast =
-        [
-          new TmdbCastMember { Id = 6384, Name = "Keanu Reeves" },
-          new TmdbCastMember { Id = 2975, Name = "Laurence Fishburne" }
-        ],
-        Crew =
-        [
-          new TmdbCrewMember { Id = 905152, Name = "Lilly Wachowski", Job = "Director" },
-          new TmdbCrewMember { Id = 20629, Name = "Lana Wachowski", Job = "Director" },
-          new TmdbCrewMember { Id = 9777, Name = "Joel Silver", Job = "Producer" }
-        ]
-      }
+      Credits = new TmdbCredits { Cast = [], Crew = [] }
     });
 
-    var command = new GetOnlineMovieCommand("tt0133093");
+    var command = new GetOnlineMediaCommand { MediaType = MediaType.Movie, TmdbId = 603 };
 
     // Act
     var result = await Sender.Send(command);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
-    result.Value.ImdbId.Should().Be("tt0133093");
     result.Value.TmdbId.Should().Be(603);
     result.Value.Title.Should().Be("The Matrix");
     result.Value.Year.Should().Be("1999");
@@ -101,9 +61,7 @@ public sealed class GetOnlineMovieTests(IntegrationsIntegrationTestWebAppFactory
   public async Task GetOnlineMovie_WithCastAndCrew_ShouldMapDirectorsAndActorsAsync()
   {
     // Arrange
-    FakeTmdbService.SetFindResult(new TmdbMovieSearchResult { Id = 603, Title = "The Matrix" });
-
-    FakeTmdbService.SetDetails(new TmdbMovieDetails
+    FakeTmdbService.SetDetails(new TmdbMediaDetails
     {
       Id = 603,
       Title = "The Matrix",
@@ -114,20 +72,20 @@ public sealed class GetOnlineMovieTests(IntegrationsIntegrationTestWebAppFactory
       {
         Cast =
         [
-          new TmdbCastMember { Id = 6384, Name = "Keanu Reeves" },
-          new TmdbCastMember { Id = 2975, Name = "Laurence Fishburne" }
+          new TmdbCastMember { TmdbId = 6384, Name = "Keanu Reeves" },
+          new TmdbCastMember { TmdbId = 2975, Name = "Laurence Fishburne" }
         ],
         Crew =
         [
-          new TmdbCrewMember { Id = 905152, Name = "Lilly Wachowski", Job = "Director" },
-          new TmdbCrewMember { Id = 20629, Name = "Lana Wachowski", Job = "Director" },
-          new TmdbCrewMember { Id = 9777, Name = "Joel Silver", Job = "Producer" },
-          new TmdbCrewMember { Id = 11111, Name = "Some Writer", Job = "Writer" }
+          new TmdbCrewMember { TmdbId = 905152, Name = "Lilly Wachowski", Job = "Director" },
+          new TmdbCrewMember { TmdbId = 20629, Name = "Lana Wachowski", Job = "Director" },
+          new TmdbCrewMember { TmdbId = 9777, Name = "Joel Silver", Job = "Producer" },
+          new TmdbCrewMember { TmdbId = 11111, Name = "Some Writer", Job = "Writer" }
         ]
       }
     });
 
-    var command = new GetOnlineMovieCommand("tt0133093");
+    var command = new GetOnlineMediaCommand { MediaType = MediaType.Movie, TmdbId = 603 };
 
     // Act
     var result = await Sender.Send(command);
@@ -148,11 +106,9 @@ public sealed class GetOnlineMovieTests(IntegrationsIntegrationTestWebAppFactory
   public async Task GetOnlineMovie_WithNullCredits_ShouldReturnEmptyCollectionsAsync()
   {
     // Arrange
-    FakeTmdbService.SetFindResult(new TmdbMovieSearchResult { Id = 9999, Title = "No Credits Film" });
-
-    FakeTmdbService.SetDetails(new TmdbMovieDetails
+    FakeTmdbService.SetDetails(new TmdbMediaDetails
     {
-      Id = 9999,
+      Id = 9998,
       Title = "No Credits Film",
       Overview = "A film with no credits data.",
       PosterPath = "/nocredits.jpg",
@@ -160,7 +116,7 @@ public sealed class GetOnlineMovieTests(IntegrationsIntegrationTestWebAppFactory
       Credits = new TmdbCredits { Cast = [], Crew = [] }
     });
 
-    var command = new GetOnlineMovieCommand("tt9999999");
+    var command = new GetOnlineMediaCommand { MediaType = MediaType.Movie, TmdbId = 9998 };
 
     // Act
     var result = await Sender.Send(command);

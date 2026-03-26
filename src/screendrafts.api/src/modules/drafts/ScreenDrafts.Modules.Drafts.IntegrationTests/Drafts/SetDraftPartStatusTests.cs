@@ -294,7 +294,7 @@ public sealed class SetDraftPartStatusTests(DraftsIntegrationTestWebAppFactory f
     for (int position = draftPart.MinPosition!.Value; position <= draftPart.MaxPosition!.Value; position++)
     {
       // Create a movie and pick for each position
-      var movie = Movie.Create(Faker.Company.CompanyName(), Faker.Random.AlphaNumeric(10), Guid.NewGuid()).Value;
+      var movie = Movie.Create(Faker.Company.CompanyName(), Faker.Random.AlphaNumeric(10), MediaType.Movie, Guid.NewGuid()).Value;
 
       DbContext.Movies.Add(movie);
       await DbContext.SaveChangesAsync();

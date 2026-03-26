@@ -13,6 +13,7 @@ global using Microsoft.Extensions.DependencyInjection.Extensions;
 global using Microsoft.Extensions.Logging;
 
 global using ScreenDrafts.Common.Application.CsvFiles;
+global using ScreenDrafts.Common.Domain;
 global using ScreenDrafts.Common.Application.Logging;
 global using ScreenDrafts.Common.Application.Seeding;
 global using ScreenDrafts.Common.Application.Services;

@@ -1,6 +1,7 @@
 ﻿global using System.Collections.ObjectModel;
 global using System.Data;
 global using System.Data.Common;
+global using System.Globalization;
 global using System.Reflection;
 
 global using Dapper;
@@ -66,5 +67,6 @@ global using ScreenDrafts.Modules.Drafts.Infrastructure.Converters;
 global using ScreenDrafts.Modules.Drafts.Infrastructure.Database;
 global using ScreenDrafts.Modules.Drafts.Infrastructure.Inbox;
 global using ScreenDrafts.Modules.Drafts.Infrastructure.Outbox;
+global using ScreenDrafts.Modules.Drafts.Infrastructure.SeriesInfrastructure;
 
 global using SmartEnum.EFCore;

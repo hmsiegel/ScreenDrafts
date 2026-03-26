@@ -2,6 +2,6 @@
 
 internal sealed record GetDraftReleaseResponse
 {
-  public int ReleaseChannel { get; init; }
+  public ReleaseChannel ReleaseChannel { get; init; } = default!;
   public DateOnly ReleaseDate { get; init; }
 }

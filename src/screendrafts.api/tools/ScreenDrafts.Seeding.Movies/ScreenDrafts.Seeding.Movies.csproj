@@ -15,6 +15,7 @@
     <PackageReference Include="Serilog.Sinks.File" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\src\modules\integrations\ScreenDrafts.Modules.Integrations.Composition\ScreenDrafts.Modules.Integrations.Composition.csproj" />
     <ProjectReference Include="..\..\src\modules\movies\ScreenDrafts.Modules.Movies.Composition\ScreenDrafts.Modules.Movies.Composition.csproj" />
   </ItemGroup>
   <ItemGroup>

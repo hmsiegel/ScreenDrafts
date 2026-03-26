@@ -21,7 +21,7 @@ internal sealed class MoviesAndActorsSeeder(
   private async Task SeedMoviesAndActorsAsync(CancellationToken cancellationToken)
   {
     const string TableName = "MovieActors";
-    const string DbTableName = $"{Schemas.Movies}.{Tables.MovieGenres}";
+    const string DbTableName = $"{Schemas.Movies}.{Tables.MediaActors}";
 
     var csvMovieActors = await ReadRawLinesAsync(
       new SeedFile(FileNames.MovieActorsSeeder, SeedFileType.RawLines),

@@ -1,0 +1,8 @@
+﻿namespace ScreenDrafts.Modules.Movies.Domain.Medias.Repositories;
+
+public interface IPersonRepository : IRepository
+{
+  Task<Person?> FindByImdbIdAsync(string imdbId, CancellationToken cancellationToken = default);
+  Task<Person?> FindByTmdbAsync(int tmdbId, CancellationToken cancellationToken = default);
+  void Add(Person person);
+}

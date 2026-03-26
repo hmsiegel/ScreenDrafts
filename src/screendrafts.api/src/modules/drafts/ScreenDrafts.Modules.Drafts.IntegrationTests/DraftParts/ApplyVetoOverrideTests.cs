@@ -272,7 +272,7 @@ public sealed class ApplyVetoOverrideTests(DraftsIntegrationTestWebAppFactory fa
 
   private async Task PlayPickAsync(string draftPartPublicId, string drafterPublicId, int position, int playOrder)
   {
-    var movie = Movie.Create(Faker.Company.CompanyName(), Faker.Random.AlphaNumeric(10), Guid.NewGuid()).Value;
+    var movie = Movie.Create(Faker.Company.CompanyName(), Faker.Random.AlphaNumeric(10), MediaType.Movie, Guid.NewGuid()).Value;
     DbContext.Movies.Add(movie);
     await DbContext.SaveChangesAsync();
 

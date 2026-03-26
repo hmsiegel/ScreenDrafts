@@ -40,8 +40,6 @@ public abstract class BaseSeeder(ILogger logger, ICsvFileService csvFileService)
 
   protected List<T> ReadCsv<T>(SeedFile seedFile, string tableName)
   {
-
-
     var (filePath, exists) = ResolveFile(seedFile, tableName);
     if (!exists)
     {

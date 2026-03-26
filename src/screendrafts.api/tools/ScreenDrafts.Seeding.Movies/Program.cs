@@ -1,4 +1,4 @@
-﻿using System.Net.Http.Headers;
+﻿using ScreenDrafts.Modules.Integrations.Infrastructure;
 
 var basePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
 
@@ -41,13 +41,19 @@ try
           o.ConnectionString = connectionString);
 
         services.AddMoviesModule(configuration);
+        services.AddIntegrationsModule(configuration);
 
-        services.AddRepositoriesFromModules([typeof(MoviesInfrastructure).Assembly]);
+        services.AddRepositoriesFromModules(
+        [
+          typeof(MoviesInfrastructure).Assembly,
+          typeof(IntegrationsInfrastructure).Assembly
+        ]);
 
         services.AddApplication(
         [
           AssemblyReference.Assembly,
-          ScreenDrafts.Seeding.Movies.AssemblyReference.Assembly
+          ScreenDrafts.Seeding.Movies.AssemblyReference.Assembly,
+          ScreenDrafts.Modules.Integrations.Features.AssemblyReference.Assembly,
         ],
         configuration);
 
@@ -56,27 +62,7 @@ try
 
         services.TryAddScoped<SqlInsertHelper>();
 
-        services.AddOptions<ImdbSettings>()
-          .Bind(configuration.GetSection("Imdb"))
-          .ValidateDataAnnotations();
-
-        services.AddScoped<IImdbService, ImdbService>();
-
-        services.AddOptions<OmdbSettings>()
-          .Bind(configuration.GetSection("Omdb"))
-          .ValidateDataAnnotations();
-
-        services.AddScoped<IOmdbService, OmdbService>();
-
-        services.Configure<TmdbSettings>(configuration.GetSection(TmdbSettings.SectionName));
-
-        services.AddHttpClient<ITmdbService, TmdbService>((sp, client) =>
-        {
-          TmdbSettings tmdbSettings = sp.GetRequiredService<IOptions<TmdbSettings>>().Value;
-          client.BaseAddress = new Uri(tmdbSettings.BaseAddress);
-          client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tmdbSettings.AccessToken);
-          client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        });
+        services.AddIntegrationFeatures(configuration);
       });
 
   var app = builder.Build();

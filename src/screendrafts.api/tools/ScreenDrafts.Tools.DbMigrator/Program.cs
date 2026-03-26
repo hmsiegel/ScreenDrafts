@@ -92,6 +92,25 @@ try
       return 1;
     }
 
+    // Cross-shema scripts - run as postgres superuser so they can read across module schema boundaries.
+    var crossSchemaResult = DeployChanges.To
+      .PostgresqlDatabase(bootstrapConnectionString)
+      .WithScriptsEmbeddedInAssembly(typeof(Program).Assembly,
+      s => s.StartsWith($"ScreenDrafts.Tools.DbMigrator.Scripts.{module}.", StringComparison.OrdinalIgnoreCase)
+              && s.Contains("_crossschema_", StringComparison.OrdinalIgnoreCase))
+      .WithTransaction()
+      .WithVariablesDisabled()
+      .JournalToPostgresqlTable("public", "schema_versions_cross_schema")
+      .LogToConsole()
+      .Build()
+      .PerformUpgrade();
+
+    if (!crossSchemaResult.Successful)
+    {
+      Log.Error(crossSchemaResult.Error, "{Module} cross-schema migration failed.", module);
+      return 1;
+    }
+
     Log.Information("{Module} migration successful.", module);
   }
   Log.Information("All modules migrated successfully.");

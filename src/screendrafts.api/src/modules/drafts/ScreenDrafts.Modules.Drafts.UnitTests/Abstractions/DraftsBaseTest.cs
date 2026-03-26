@@ -83,6 +83,7 @@ public abstract class DraftsBaseTest : BaseTest
     return Movie.Create(
       Faker.Random.Word(),
       Faker.Random.AlphaNumeric(5),
+      MediaType.Movie,
       Guid.NewGuid()).Value;
   }
 

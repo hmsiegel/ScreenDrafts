@@ -194,9 +194,9 @@ internal sealed class ListDraftsQueryHandler(IDbConnectionFactory connectionFact
       string DraftPartPublicId,
       string DraftPublicId,
       string Label,
-      int DraftType,
-      int DraftStatus,
-      int PartStatus,
+      DraftType DraftType,
+      DraftStatus DraftStatus,
+      DraftPartStatus PartStatus,
       Guid PartInternalId,
       Guid DraftInternalId,
       bool HasCommunityParticipant,
@@ -243,7 +243,7 @@ internal sealed class ListDraftsQueryHandler(IDbConnectionFactory connectionFact
 
     var releaseRows = await connection.QueryAsync<(
       Guid PartId,
-      int ReleaseChannel,
+      ReleaseChannel ReleaseChannel,
       int? EpisodeNumber,
       DateOnly ReleaseDate)>(
       new CommandDefinition(
@@ -276,7 +276,7 @@ internal sealed class ListDraftsQueryHandler(IDbConnectionFactory connectionFact
     var participantRows = await connection.QueryAsync<(
       Guid PartId,
       Guid ParticipantIdValue,
-      int ParticipantKindValue,
+      ParticipantKind ParticipantKindValue,
       string DisplayName)>(
       new CommandDefinition(
         participantsSql,
@@ -305,7 +305,7 @@ internal sealed class ListDraftsQueryHandler(IDbConnectionFactory connectionFact
       Guid PartId,
       string HostPublicId,
       string DisplayName,
-      int Role)>(
+      HostRole Role)>(
       new CommandDefinition(
         hostsSql,
         new { partIds = partInternalIds },

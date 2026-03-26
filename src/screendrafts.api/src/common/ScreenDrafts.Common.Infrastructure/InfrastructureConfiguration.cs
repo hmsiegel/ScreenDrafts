@@ -24,6 +24,7 @@ public static class InfrastructureConfiguration
     services.TryAddScoped<IDbConnectionFactory, DbConnectionFactory>();
 
     SqlMapper.AddTypeHandler(new GenericArrayHandler<string>());
+    SqlMapper.AddTypeHandler(new MediaTypeHandler());
 
     services.AddCaching(redisConnectionString);
 

@@ -1,6 +1,5 @@
-using ScreenDrafts.Modules.Integrations.PublicApi;
-using ScreenDrafts.Modules.Movies.Features.Movies.AddMovie;
-using ScreenDrafts.Modules.Movies.Features.Movies.SearchMovies;
+﻿using ScreenDrafts.Modules.Integrations.PublicApi;
+using ScreenDrafts.Modules.Movies.Features.Movies.SearchMedia;
 
 namespace ScreenDrafts.Modules.Movies.IntegrationTests.Movies;
 
@@ -15,7 +14,7 @@ public sealed class SearchMoviesTests(MoviesIntegrationTestWebAppFactory factory
   public async Task SearchMovies_WithEmptyQuery_ShouldReturnFailureAsync()
   {
     // Arrange
-    var query = new SearchMoviesQuery
+    var query = new SearchMediaQuery
     {
       DraftPartId = Faker.Random.Guid().ToString(),
       Query = string.Empty
@@ -26,14 +25,14 @@ public sealed class SearchMoviesTests(MoviesIntegrationTestWebAppFactory factory
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(MovieErrors.SearchQueryRequired);
+    result.Errors[0].Should().Be(MediaErrors.SearchQueryRequired);
   }
 
   [Fact]
   public async Task SearchMovies_WithWhitespaceQuery_ShouldReturnFailureAsync()
   {
     // Arrange
-    var query = new SearchMoviesQuery
+    var query = new SearchMediaQuery
     {
       DraftPartId = Faker.Random.Guid().ToString(),
       Query = "   "
@@ -44,7 +43,7 @@ public sealed class SearchMoviesTests(MoviesIntegrationTestWebAppFactory factory
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(MovieErrors.SearchQueryRequired);
+    result.Errors[0].Should().Be(MediaErrors.SearchQueryRequired);
   }
 
   // -------------------------------------------------------------------------
@@ -55,16 +54,16 @@ public sealed class SearchMoviesTests(MoviesIntegrationTestWebAppFactory factory
   public async Task SearchMovies_WithValidQuery_ShouldReturnPagedResultsAsync()
   {
     // Arrange
-    FakeIntegrationsApi.SetResponse(new SearchMoviesApiResponse
+    FakeIntegrationsApi.SetResponse(new SearchMediaApiResponse
     {
       Results =
       [
-        new MovieSearchApiResult { TmdbId = 1, Title = "The Matrix", Year = "1999", Poster = "/matrix.jpg", Overview = "A computer hacker discovers the truth." },
-        new MovieSearchApiResult { TmdbId = 2, Title = "The Matrix Reloaded", Year = "2003", Poster = "/matrix2.jpg", Overview = "Neo and the rebels continue their fight." }
+        new MediaSearchApiResult { TmdbId = 1, Title = "The Matrix", Year = "1999", Poster = "/matrix.jpg", Overview = "A computer hacker discovers the truth." },
+        new MediaSearchApiResult { TmdbId = 2, Title = "The Matrix Reloaded", Year = "2003", Poster = "/matrix2.jpg", Overview = "Neo and the rebels continue their fight." }
       ]
     });
 
-    var query = new SearchMoviesQuery
+    var query = new SearchMediaQuery
     {
       DraftPartId = Faker.Random.Guid().ToString(),
       Query = "Matrix",
@@ -87,9 +86,9 @@ public sealed class SearchMoviesTests(MoviesIntegrationTestWebAppFactory factory
   public async Task SearchMovies_WithEmptyResults_ShouldReturnEmptyPagedResultAsync()
   {
     // Arrange
-    FakeIntegrationsApi.SetResponse(new SearchMoviesApiResponse { Results = [] });
+    FakeIntegrationsApi.SetResponse(new SearchMediaApiResponse { Results = [] });
 
-    var query = new SearchMoviesQuery
+    var query = new SearchMediaQuery
     {
       DraftPartId = Faker.Random.Guid().ToString(),
       Query = "UnknownFilmXYZ"
@@ -108,17 +107,17 @@ public sealed class SearchMoviesTests(MoviesIntegrationTestWebAppFactory factory
   public async Task SearchMovies_WithYearFilter_ShouldReturnOnlyMatchingYearAsync()
   {
     // Arrange
-    FakeIntegrationsApi.SetResponse(new SearchMoviesApiResponse
+    FakeIntegrationsApi.SetResponse(new SearchMediaApiResponse
     {
       Results =
       [
-        new MovieSearchApiResult { TmdbId = 1, Title = "The Matrix", Year = "1999" },
-        new MovieSearchApiResult { TmdbId = 2, Title = "The Matrix Reloaded", Year = "2003" },
-        new MovieSearchApiResult { TmdbId = 3, Title = "The Matrix Revolutions", Year = "2003" }
+        new MediaSearchApiResult { TmdbId = 1, Title = "The Matrix", Year = "1999" },
+        new MediaSearchApiResult { TmdbId = 2, Title = "The Matrix Reloaded", Year = "2003" },
+        new MediaSearchApiResult { TmdbId = 3, Title = "The Matrix Revolutions", Year = "2003" }
       ]
     });
 
-    var query = new SearchMoviesQuery
+    var query = new SearchMediaQuery
     {
       DraftPartId = Faker.Random.Guid().ToString(),
       Query = "Matrix",
@@ -140,33 +139,37 @@ public sealed class SearchMoviesTests(MoviesIntegrationTestWebAppFactory factory
     // Arrange — seed a movie so the DB check finds it
     var movie = MovieFactory.CreateMovie().Value;
     var genre = MovieFactory.CreateGenre().Value;
-    var seedCommand = new AddMovieCommand(
-      movie.ImdbId,
-      movie.TmdbId,
-      movie.Title,
-      movie.Year,
-      movie.Plot!,
-      movie.Image,
-      movie.ReleaseDate,
-      movie.YoutubeTrailerUrl,
-      [new GenreRequest(genre.TmdbId, genre.Name)],
-      [],
-      [],
-      [],
-      [],
-      []);
+    var seedCommand = new AddMediaCommand
+    {
+      PublicId = movie.PublicId,
+      ImdbId = movie.ImdbId,
+      TmdbId = movie.TmdbId,
+      IgdbId = movie.IgdbId,
+      Title = movie.Title,
+      Year = movie.Year,
+      Plot = movie.Plot,
+      Image = movie.Image,
+      ReleaseDate = movie.ReleaseDate,
+      YouTubeTrailerUrl = movie.YoutubeTrailerUrl,
+      MediaType = movie.MediaType,
+      TvSeriesTmdbId = movie.TvSeriesTmdbId,
+      SeasonNumber = movie.SeasonNumber,
+      EpisodeNumber = movie.EpisodeNumber,
+      Genres = genre != null ? [new GenreRequest(genre.TmdbId, genre.Name)] : Array.Empty<GenreRequest>(),
+    };
+
     await Sender.Send(seedCommand);
 
-    FakeIntegrationsApi.SetResponse(new SearchMoviesApiResponse
+    FakeIntegrationsApi.SetResponse(new SearchMediaApiResponse
     {
       Results =
       [
-        new MovieSearchApiResult { TmdbId = movie.TmdbId, Title = movie.Title, Year = movie.Year },
-        new MovieSearchApiResult { TmdbId = movie.TmdbId + 1, Title = "Another Movie", Year = "2000" }
+        new MediaSearchApiResult { TmdbId = movie.TmdbId, Title = movie.Title, Year = movie.Year },
+        new MediaSearchApiResult { TmdbId = movie.TmdbId + 1, Title = "Another Movie", Year = "2000" }
       ]
     });
 
-    var query = new SearchMoviesQuery
+    var query = new SearchMediaQuery
     {
       DraftPartId = Faker.Random.Guid().ToString(),
       Query = movie.Title
@@ -178,29 +181,29 @@ public sealed class SearchMoviesTests(MoviesIntegrationTestWebAppFactory factory
     // Assert
     result.IsSuccess.Should().BeTrue();
     var seeded = result.Value.Results.Items.Single(x => x.TmdbId == movie.TmdbId);
-    seeded.IsInMoviesDatabase.Should().BeTrue();
+    seeded.IsInMediaDatabase.Should().BeTrue();
 
     var notSeeded = result.Value.Results.Items.Single(x => x.TmdbId != movie.TmdbId);
-    notSeeded.IsInMoviesDatabase.Should().BeFalse();
+    notSeeded.IsInMediaDatabase.Should().BeFalse();
   }
 
   [Fact]
   public async Task SearchMovies_WithPagination_ShouldReturnCorrectPageAsync()
   {
     // Arrange
-    FakeIntegrationsApi.SetResponse(new SearchMoviesApiResponse
+    FakeIntegrationsApi.SetResponse(new SearchMediaApiResponse
     {
       Results =
       [
-        new MovieSearchApiResult { TmdbId = 1, Title = "Film A" },
-        new MovieSearchApiResult { TmdbId = 2, Title = "Film B" },
-        new MovieSearchApiResult { TmdbId = 3, Title = "Film C" },
-        new MovieSearchApiResult { TmdbId = 4, Title = "Film D" },
-        new MovieSearchApiResult { TmdbId = 5, Title = "Film E" }
+        new MediaSearchApiResult { TmdbId = 1, Title = "Film A" },
+        new MediaSearchApiResult { TmdbId = 2, Title = "Film B" },
+        new MediaSearchApiResult { TmdbId = 3, Title = "Film C" },
+        new MediaSearchApiResult { TmdbId = 4, Title = "Film D" },
+        new MediaSearchApiResult { TmdbId = 5, Title = "Film E" }
       ]
     });
 
-    var query = new SearchMoviesQuery
+    var query = new SearchMediaQuery
     {
       DraftPartId = Faker.Random.Guid().ToString(),
       Query = "Film",

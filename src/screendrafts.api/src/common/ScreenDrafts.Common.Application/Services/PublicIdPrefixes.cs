@@ -20,4 +20,5 @@ public static class PublicIdPrefixes
   public const string User = "u";
   public const string DraftBoard = "db";
   public const string DraftPool = "dpo";
+  public const string Media = "m";
 }

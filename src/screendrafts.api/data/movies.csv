@@ -1,54 +1,30 @@
-Title,TmdbId
-Home for the Holidays,9089
-Incredibles 2,260513
-Crash (Cronenberg),884
-Living Out Loud,46889
-The Positively True Adventures of the Alleged Texas Cheerleader-Murdering Mom,67595
-Raising Arizona,378
-Miss Firecracker,39197
-The Incredibles,9806
-The Piano,713
-Broadcast News,12626
-The Big Sick,416477
-The Firm,37233
-Copycat,1710
-Boardwalk Empire,1621
-Mission: Impossible - Dead Reckoning,575264
-Fast & the Furious 6,82992
-Fancy Dance,1058617
-Tigerland,10687
-Death by Lightning,245219
-True Detective,46648
-Fargo (TV),60622
-Spider-Man: Across the Spider Verse,569094
-Marjorie Prime,426254
-The Americans (TV),46533
-Fried Green Tomatoes,1633
-"Next Stop, Greenwich Village",31913
-The Nice Guys,290250
-Minority Report,180
-Five Easy Pieces,26617
-Sharpe (TV),225
-The Martian,286217
-Goldeneye,710
-Troy,652
-Red Riding: 1974,291081
-Game of Thrones,1399
-The Lord of the Rings: The Fellowship of the Ring,120
-Once Upon a Time in Hollywood,466272
-Blue Moon,1299655
-The Substance,933260
-Poor Things,792307
-The Leftovers (TV),54344
-Oscars 2025,27023
-Fleabag (TV),67070
-Saving Private Ryan,857
-Black Mirror (TV): Smithereens,42009
-Locke,210479
-Ripley,94028
-Wake Up Dead Man,812583
-Ant-Man,102899
-Mr. Robot,62560
-The Irishman,398978
-Blue Jasmine,160588
-The Station Agent,2056
+Title,MediaType,TmdbId,ImdbId,IgdbId,TvSeriesTmdbId,SeasonNumber,EpisodeNumber
+True Detective,1,46648,,,,,
+Fargo,1,60622,,,,,
+The Americans,2,1044302,,,46533,3,9
+Sharpe,1,225,,,,,
+Game of Thrones,1,1399,,,,,
+The Leftovers,1,54344,,,,,
+Oscars 2025,2,5366331,,,27023,73,1
+Fleabag,1,67070,,,,,
+Black Mirror: Smithereens,2,1791584,,,42009,5,2
+Mr. Robot,1,62560,,,,,
+Boardwalk Empire,1,1621,,,,,
+The Amusement Park,0,560981,,,,,
+Knight Riders,0,22167,,,,,
+Season of the Witch,0,29424,,,,,
+Day of thr Dead,0,8408,,,,,
+Martin,0,26517,,,,,
+Dawn of the Dead,0,923,,,,,
+Night of the Living Dead,0,10331,,,,,
+Creepshow,0,16281,,,,,
+The Crazies,0,29425,,,,,
+The Dark Half,0,10349,,,,,
+Friend of a Friend - The Smile,4,,tt31068813,,,,
+Valentine - Haim,4,,tt8150920,,,,
+Save Me - Aimee Man,4,,tt5094696,,,,
+Little of Your Love Haim,4,,tt7707022,,,,
+Sapocanocan - Joanna Newsome,4,,tt5081994,,,,
+Summer Girl - Haim,4,,tt10740192,,,,
+Try - Michael Penn,4,,tt5094676,,,,
+Paper Bags - Fiona Apple,4,,tt5094674,,,,

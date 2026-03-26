@@ -1,6 +1,4 @@
-﻿using System.Collections.ObjectModel;
-
-namespace ScreenDrafts.Modules.Integrations.Features.Movies.SearchFoMovie;
+﻿namespace ScreenDrafts.Modules.Integrations.Features.Movies.SearchFoMovie;
 
 internal sealed class SearchForMovieCommandHandler(ITmdbService tmdbService) : ICommandHandler<SearchFoMovieCommand, SearchForMovieResponse>
 {

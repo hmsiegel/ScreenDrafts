@@ -3,7 +3,7 @@
 public sealed class PickAddedDomainEvent(
   Guid draftPartId,
   string draftPartPublicId,
-  string imdbId,
+  string? imdbId,
   int? tmdbId,
   string movieTitle,
   Guid participantId,
@@ -15,7 +15,7 @@ public sealed class PickAddedDomainEvent(
   public string DraftPartPublicId { get; init; } = draftPartPublicId;
   public Guid DraftId { get; init; } = draftId;
   public string DraftPublicId { get; init; } = draftPublicId;
-  public string ImdbId { get; init; } = imdbId;
+  public string? ImdbId { get; init; } = imdbId;
   public int? TmdbId { get; init; } = tmdbId;
   public string MovieTitle { get; init; } = movieTitle;
   public Guid ParticipantId { get; init; } = participantId;

@@ -3,7 +3,7 @@
 internal sealed class MovieExportCsvModel
 {
   [Column("id")]
-  public string Id { get; set; } = default!;
+  public string? Id { get; set; } = default!;
 
   [Column("imdb_id")]
   public string ImdbId { get; set; } = default!;
@@ -15,17 +15,20 @@ internal sealed class MovieExportCsvModel
   public string Year { get; set; } = default!;
 
   [Column("plot")]
-  public string Plot { get; set; } = default!;
+  public string? Plot { get; set; } = default!;
 
   [Column("image")]
-  public string Image { get; set; } = default!;
+  public string? Image { get; set; } = default!;
 
   [Column("release_date")]
-  public string ReleaseDate { get; set; } = default!;
+  public string? ReleaseDate { get; set; } = default!;
 
   [Column("youtube_trailer_url")]
-  public string YouTubeTrailerUrl { get; set; } = default!;
+  public string? YouTubeTrailerUrl { get; set; } = default!;
 
   [Column("tmdb_id")]
-  public int TmdbId { get; set; }
+  public int? TmdbId { get; set; }
+
+  [Column("media_type")]
+  public int MediaType { get; set; }
 }

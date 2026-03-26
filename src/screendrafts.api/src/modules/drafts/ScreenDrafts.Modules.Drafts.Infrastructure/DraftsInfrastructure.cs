@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Modules.Drafts.Infrastructure.SeriesInfrastructure;
-
-namespace ScreenDrafts.Modules.Drafts.Infrastructure;
+﻿namespace ScreenDrafts.Modules.Drafts.Infrastructure;
 
 public static class DraftsInfrastructure
 {

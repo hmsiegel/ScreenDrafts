@@ -1,4 +1,5 @@
-﻿global using System.Reflection;
+﻿global using System.Globalization;
+global using System.Reflection;
 
 global using MediatR;
 
@@ -15,12 +16,15 @@ global using ScreenDrafts.Common.Application.Logging;
 global using ScreenDrafts.Common.Application.Messaging;
 global using ScreenDrafts.Common.Application.Messaging.Dispatchers;
 global using ScreenDrafts.Common.Application.Outbox;
+global using ScreenDrafts.Common.Application.Services;
 global using ScreenDrafts.Common.Domain;
 global using ScreenDrafts.Common.Presentation.Http;
 global using ScreenDrafts.Common.Presentation.Results;
-global using ScreenDrafts.Modules.Integrations.Domain.Imdb;
 global using ScreenDrafts.Modules.Integrations.Domain.Movies;
-global using ScreenDrafts.Modules.Integrations.Features.Movies.GetOnlineMovie;
+global using ScreenDrafts.Modules.Integrations.Domain.Services.Igdb;
+global using ScreenDrafts.Modules.Integrations.Domain.Services.Tmdb;
+global using ScreenDrafts.Modules.Integrations.Features.Movies.FetchMedia;
+global using ScreenDrafts.Modules.Integrations.Features.Movies.GetOnlineMedia;
 global using ScreenDrafts.Modules.Integrations.Features.Movies.SearchFoMovie;
 global using ScreenDrafts.Modules.Integrations.IntegrationEvents;
 global using ScreenDrafts.Modules.Integrations.PublicApi;

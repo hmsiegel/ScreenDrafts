@@ -1,4 +1,4 @@
-using ScreenDrafts.Modules.Integrations.Features.Movies.SearchFoMovie;
+﻿using ScreenDrafts.Modules.Integrations.Features.Movies.SearchFoMovie;
 
 namespace ScreenDrafts.Modules.Integrations.IntegrationTests.Movies;
 
@@ -47,8 +47,8 @@ public sealed class SearchForMovieTests(IntegrationsIntegrationTestWebAppFactory
     // Arrange
     FakeTmdbService.SetSearchResults(
     [
-      new TmdbMovieSearchResult { Id = 603, Title = "The Matrix", ReleaseDate = "1999-03-31", Overview = "A hacker discovers the truth.", PosterPath = "/poster1.jpg" },
-      new TmdbMovieSearchResult { Id = 604, Title = "The Matrix Reloaded", ReleaseDate = "2003-05-15", Overview = "Neo continues his journey.", PosterPath = "/poster2.jpg" }
+      new TmdbSearchResult { Id = 603, Title = "The Matrix", ReleaseDate = "1999-03-31", Overview = "A hacker discovers the truth.", PosterPath = "/poster1.jpg" },
+      new TmdbSearchResult { Id = 604, Title = "The Matrix Reloaded", ReleaseDate = "2003-05-15", Overview = "Neo continues his journey.", PosterPath = "/poster2.jpg" }
     ]);
 
     var command = new SearchFoMovieCommand { Query = "Matrix" };
@@ -67,7 +67,7 @@ public sealed class SearchForMovieTests(IntegrationsIntegrationTestWebAppFactory
     // Arrange
     FakeTmdbService.SetSearchResults(
     [
-      new TmdbMovieSearchResult
+      new TmdbSearchResult
       {
         Id = 603,
         Title = "The Matrix",
@@ -114,7 +114,7 @@ public sealed class SearchForMovieTests(IntegrationsIntegrationTestWebAppFactory
     // Arrange
     FakeTmdbService.SetSearchResults(
     [
-      new TmdbMovieSearchResult { Id = 999, Title = "Unknown Date Film", ReleaseDate = null }
+      new TmdbSearchResult { Id = 999, Title = "Unknown Date Film", ReleaseDate = null }
     ]);
 
     var command = new SearchFoMovieCommand { Query = "Unknown Date Film" };

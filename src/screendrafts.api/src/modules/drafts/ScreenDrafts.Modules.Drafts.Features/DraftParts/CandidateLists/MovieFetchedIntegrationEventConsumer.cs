@@ -1,13 +1,13 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.CandidateLists;
 
 internal sealed class MovieFetchedIntegrationEventConsumer(ICandidateListRepository candidateListRepository)
-  : IConsumer<MovieFetchedIntegrationEvent>
+  : IConsumer<MediaFetchedIntegrationEvent>
 {
   private readonly ICandidateListRepository _candidateListRepository = candidateListRepository;
 
-  public async Task Consume(ConsumeContext<MovieFetchedIntegrationEvent> context)
+  public async Task Consume(ConsumeContext<MediaFetchedIntegrationEvent> context)
   {
-    var tmdbId = context.Message.TmdbId;
+    var tmdbId = context.Message.TmdbId!.Value;
 
     var movieId = await _candidateListRepository.FindMovieByTmdbIdAsync(
       tmdbId,

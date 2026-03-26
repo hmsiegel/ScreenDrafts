@@ -18,8 +18,8 @@ internal sealed record ListDraftsResponse
   public string Label { get; init; } = default!;
 
   public int DraftType { get; init; }
-  public int DraftStatus { get; init; }
-  public int PartStatus { get; init; }
+  public DraftStatus DraftStatus { get; init; } = default!;
+  public DraftPartStatus PartStatus { get; init; } = default!;
   public bool HasCommunityParticipant { get; init; }
   public int TotalPicks { get; init; }
 

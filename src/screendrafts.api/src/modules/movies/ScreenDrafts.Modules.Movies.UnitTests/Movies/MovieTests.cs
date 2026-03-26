@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Modules.Movies.Domain.Movies.Errors;
-
-namespace ScreenDrafts.Modules.Movies.UnitTests.Movies;
+﻿namespace ScreenDrafts.Modules.Movies.UnitTests.Movies;
 
 public sealed class MovieTests : BaseTest
 {
@@ -25,6 +23,7 @@ public sealed class MovieTests : BaseTest
   public void Create_ShouldReturnFailure_WhenTitleIsNull()
   {
     // Arrange
+    var publicId = Faker.Random.AlphaNumeric(10);
     var title = string.Empty;
     var year = Faker.Date.Past().Year.ToString(CultureInfo.InvariantCulture);
     var plot = Faker.Lorem.Paragraph();
@@ -33,9 +32,13 @@ public sealed class MovieTests : BaseTest
     var youtubeTrailerUrl = new Uri(Faker.Internet.Url());
     var imdbId = Faker.Random.AlphaNumeric(9);
     var tmdbId = Faker.Random.Int(1, 10000);
+    var igdbId = Faker.Random.Int(1, 10000);
+    var externalId = Faker.Random.AlphaNumeric(15);
+    var mediaType = MediaType.Movie;
 
     // Act
-    var result = Movie.Create(
+    var result = Media.Create(
+      publicId,
       title,
       year,
       plot,
@@ -43,17 +46,21 @@ public sealed class MovieTests : BaseTest
       releaseDate,
       youtubeTrailerUrl,
       imdbId,
-      tmdbId);
+      tmdbId,
+      igdbId,
+      externalId,
+      mediaType);
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Error.Should().Be(MovieErrors.RequiredFieldsMissing);
+    result.Error.Should().Be(MediaErrors.RequiredFieldsMissing);
   }
 
   [Fact]
   public void Create_ShouldThrowException_WhenYearIsNull()
   {
     // Arrange
+    var publicId = Faker.Random.AlphaNumeric(10);
     var title = Faker.Company.CompanyName();
     var year = string.Empty;
     var plot = Faker.Lorem.Paragraph();
@@ -62,17 +69,24 @@ public sealed class MovieTests : BaseTest
     var youtubeTrailerUrl = new Uri(Faker.Internet.Url());
     var imdbId = Faker.Random.AlphaNumeric(9);
     var tmdbId = Faker.Random.Int(1, 10000);
+    var igdbId = Faker.Random.Int(1, 10000);
+    var externalId = Faker.Random.AlphaNumeric(15);
+    var mediaType = MediaType.Movie;
 
     // Act
-    var exception = Assert.Throws<ArgumentException>(() => Movie.Create(
-      title,
-      year,
-      plot,
-      image,
-      releaseDate,
-      youtubeTrailerUrl,
-      imdbId,
-      tmdbId));
+    var exception = Assert.Throws<ArgumentException>(() => Media.Create(
+      publicId: publicId,
+      title: title,
+      year: year,
+      plot: plot,
+      image: image,
+      releaseDate: releaseDate,
+      youtubeTrailerUrl: youtubeTrailerUrl,
+      imdbId: imdbId,
+      tmdbId: tmdbId,
+      igdbId: igdbId,
+      externalId: externalId,
+      mediaType: mediaType));
 
     // Assert
     Assert.Equal(ExceptionMessage("year"), exception.Message);
@@ -82,6 +96,7 @@ public sealed class MovieTests : BaseTest
   public void Create_ShouldThrowException_WhenImageIsNull()
   {
     // Arrange
+    var publicId = Faker.Random.AlphaNumeric(10);
     var title = Faker.Company.CompanyName();
     var year = Faker.Date.Past().Year.ToString(CultureInfo.InvariantCulture);
     var plot = Faker.Lorem.Paragraph();
@@ -90,16 +105,23 @@ public sealed class MovieTests : BaseTest
     var youtubeTrailerUrl = new Uri(Faker.Internet.Url());
     var imdbId = Faker.Random.AlphaNumeric(9);
     var tmdbId = Faker.Random.Int(1, 10000);
+    var igdbId = Faker.Random.Int(1, 10000);
+    var externalId = Faker.Random.AlphaNumeric(15);
+    var mediaType = MediaType.Movie;
     // Act
-    var exception = Assert.Throws<ArgumentException>(() => Movie.Create(
-      title,
-      year,
-      plot,
-      image,
-      releaseDate,
-      youtubeTrailerUrl,
-      imdbId,
-      tmdbId));
+    var exception = Assert.Throws<ArgumentException>(() => Media.Create(
+      publicId: publicId,
+      title: title,
+      year: year,
+      plot: plot,
+      image: image,
+      releaseDate: releaseDate,
+      youtubeTrailerUrl: youtubeTrailerUrl,
+      imdbId: imdbId,
+      tmdbId: tmdbId,
+      igdbId: igdbId,
+      externalId: externalId,
+      mediaType: mediaType));
 
     // Assert
     Assert.Equal(ExceptionMessage("image"), exception.Message);
@@ -116,45 +138,16 @@ public sealed class MovieTests : BaseTest
   }
 
   [Fact]
-  public void Create_ShouldReturnFailure_WhenImdbIdIsNull()
-  {
-    // Arrange
-    var title = Faker.Company.CompanyName();
-    var year = Faker.Date.Past().Year.ToString(CultureInfo.InvariantCulture);
-    var plot = Faker.Lorem.Paragraph();
-    var image = Faker.Image.PicsumUrl();
-    var releaseDate = Faker.Date.Past().ToString(CultureInfo.InvariantCulture);
-    var youtubeTrailerUrl = new Uri(Faker.Internet.Url());
-    var imdbId = string.Empty;
-    var tmdbId = Faker.Random.Int(1, 10000);
-
-    // Act
-    var result = Movie.Create(
-      title,
-      year,
-      plot,
-      image,
-      releaseDate,
-      youtubeTrailerUrl,
-      imdbId,
-      tmdbId);
-
-    // Assert
-    result.IsFailure.Should().BeTrue();
-    result.Error.Should().Be(MovieErrors.RequiredFieldsMissing);
-  }
-
-  [Fact]
   public void AddGenre_ShouldAddGenreToMovie()
   {
     // Arrange
     var movie = MovieFactory.CreateMovie().Value;
     var genre = GenreFactory.CreateGenre();
-    var movieGenre = MovieGenre.Create(movie.Id, genre.Id);
+    var movieGenre = MediaGenre.Create(movie.Id, genre.Id);
     // Act
     movie.AddGenre(movieGenre);
     // Assert
-    movie.MovieGenres.Should().Contain(movieGenre);
+    movie.MediaGenres.Should().Contain(movieGenre);
   }
 
   [Fact]
@@ -163,11 +156,11 @@ public sealed class MovieTests : BaseTest
     // Arrange
     var movie = MovieFactory.CreateMovie().Value;
     var actor = PersonFactory.CreatePerson();
-    var movieActor = MovieActor.Create(movie.Id, actor.Id);
+    var movieActor = MediaActor.Create(movie.Id, actor.Id);
     // Act
     movie.AddActor(movieActor);
     // Assert
-    movie.MovieActors.Should().Contain(movieActor);
+    movie.MediaActors.Should().Contain(movieActor);
   }
 
   [Fact]
@@ -176,11 +169,11 @@ public sealed class MovieTests : BaseTest
     // Arrange
     var movie = MovieFactory.CreateMovie().Value;
     var director = PersonFactory.CreatePerson();
-    var movieDirector = MovieDirector.Create(movie.Id, director.Id);
+    var movieDirector = MediaDirector.Create(movie.Id, director.Id);
     // Act
     movie.AddDirector(movieDirector);
     // Assert
-    movie.MovieDirectors.Should().Contain(movieDirector);
+    movie.MediaDirectors.Should().Contain(movieDirector);
   }
 
   [Fact]
@@ -189,11 +182,11 @@ public sealed class MovieTests : BaseTest
     // Arrange
     var movie = MovieFactory.CreateMovie().Value;
     var writer = PersonFactory.CreatePerson();
-    var movieWriter = MovieWriter.Create(movie.Id, writer.Id);
+    var movieWriter = MediaWriter.Create(movie.Id, writer.Id);
     // Act
     movie.AddWriter(movieWriter);
     // Assert
-    movie.MovieWriters.Should().Contain(movieWriter);
+    movie.MediaWriters.Should().Contain(movieWriter);
   }
 
   [Fact]
@@ -202,11 +195,11 @@ public sealed class MovieTests : BaseTest
     // Arrange
     var movie = MovieFactory.CreateMovie().Value;
     var producer = PersonFactory.CreatePerson();
-    var movieProducer = MovieProducer.Create(movie.Id, producer.Id);
+    var movieProducer = MediaProducer.Create(movie.Id, producer.Id);
     // Act
     movie.AddProducer(movieProducer);
     // Assert
-    movie.MovieProducers.Should().Contain(movieProducer);
+    movie.MediaProducers.Should().Contain(movieProducer);
   }
 
   [Fact]
@@ -215,17 +208,18 @@ public sealed class MovieTests : BaseTest
     // Arrange
     var movie = MovieFactory.CreateMovie().Value;
     var productionCompany = ProductionCompanyFactory.CreateProductionCompany();
-    var movieProductionCompany = MovieProductionCompany.Create(movie.Id, productionCompany.Id);
+    var movieProductionCompany = MediaProductionCompany.Create(movie.Id, productionCompany.Id);
     // Act
     movie.AddProductionCompany(movieProductionCompany);
     // Assert
-    movie.MovieProductionCompanies.Should().Contain(movieProductionCompany);
+    movie.MediaProductionCompanies.Should().Contain(movieProductionCompany);
   }
 
   [Fact]
   public void Create_ShouldRaiseMovieCreatedDomainEvent()
   {
     // Arrange
+    var publicId = Faker.Random.AlphaNumeric(10);
     var title = Faker.Company.CompanyName();
     var year = Faker.Date.Past().Year.ToString(CultureInfo.InvariantCulture);
     var plot = Faker.Lorem.Paragraph();
@@ -234,10 +228,14 @@ public sealed class MovieTests : BaseTest
     var youtubeTrailerUrl = new Uri(Faker.Internet.Url());
     var imdbId = Faker.Random.AlphaNumeric(9);
     var tmdbId = Faker.Random.Int(1, 10000);
+    var igdbId = Faker.Random.Int(1, 10000);
+    var externalId = Faker.Random.AlphaNumeric(15);
+    var mediaType = MediaType.Movie;
 
 
     // Act
-    var movie = Movie.Create(
+    var movie = Media.Create(
+      publicId,
       title,
       year,
       plot,
@@ -245,13 +243,16 @@ public sealed class MovieTests : BaseTest
       releaseDate,
       youtubeTrailerUrl,
       imdbId,
-      tmdbId);
+      tmdbId,
+      igdbId,
+      externalId,
+      mediaType);
 
-    var domainEvent = AssertDomainEventWasPublished<MovieCreatedDomainEvent>(movie.Value);
+    var domainEvent = AssertDomainEventWasPublished<MediaCreatedDomainEvent>(movie.Value);
 
     // Assert
     movie.IsSuccess.Should().BeTrue();
-    domainEvent.MovieId.Should().Be(movie.Value.Id.Value);
+    domainEvent.MediaId.Should().Be(movie.Value.Id.Value);
   }
 
   private static string ExceptionMessage(string parameter) => $"Required input {parameter} was empty. (Parameter '{parameter}')";

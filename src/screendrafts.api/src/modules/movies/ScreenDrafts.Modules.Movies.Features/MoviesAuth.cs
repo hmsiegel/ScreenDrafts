@@ -4,9 +4,9 @@ internal static class MoviesAuth
 {
   internal static class Permissions
   {
-    internal const string MoviesCreate = "movies:create";
-    internal const string MoviesRead = "movies:read";
-    internal const string MoviesSearch = "movies:search";
+    internal const string MediaCreate = "media:create";
+    internal const string MediaRead = "media:read";
+    internal const string MediaSearch = "media:search";
     internal const string ActorsSearch = "actors:search";
     internal const string CrewSearch = "crew:search";
     internal const string GenresSearch = "genres:search";

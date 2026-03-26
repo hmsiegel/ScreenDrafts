@@ -120,8 +120,10 @@ public abstract class DraftsIntegrationTest(DraftsIntegrationTestWebAppFactory f
   {
     var movie = Movie.Create(
       movieTitle: "Test Movie",
-      imdbId: $"tt{tmdbId:D7}",
+      publicId: $"m_{Guid.NewGuid():N}",
+      mediaType: MediaType.Movie,
       id: Guid.NewGuid(),
+      imdbId: $"tt{tmdbId:D7}",
       tmdbId: tmdbId).Value;
     DbContext.Add(movie);
     await DbContext.SaveChangesAsync();

@@ -16,10 +16,15 @@
     },
     "Tmdb": {
       "AccessToken": "YOUR_TMDB_ACCESS_TOKEN_HERE",
-      "BaseImageUrl" : "",
+      "BaseImageUrl": "",
       "BaseAddress": "",
       "TrailerPlaceholder": "https://via.placeholder.com/500x750?text=No+Trailer"
+    },
+    "Igdb": {
+      "ClientId": "",
+      "ClientSecret": "",
+      "BaseAddress": "https://api.igdb.com/v4/",
+      "TwitchTokenUrl": "https://id.twitch.tv/oauth2/token"
     }
   }
 }
-

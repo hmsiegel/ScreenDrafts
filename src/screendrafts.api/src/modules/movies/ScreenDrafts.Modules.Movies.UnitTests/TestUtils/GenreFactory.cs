@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Modules.Movies.Domain.Movies.Entities;
-
-namespace ScreenDrafts.Modules.Movies.UnitTests.TestUtils;
+﻿namespace ScreenDrafts.Modules.Movies.UnitTests.TestUtils;
 
 public static class GenreFactory
 {

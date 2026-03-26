@@ -1,4 +1,4 @@
-﻿using ScreenDrafts.Modules.Movies.Features.Movies.AddMovie;
+﻿using ScreenDrafts.Modules.Movies.Features.Movies.AddMedia;
 
 namespace ScreenDrafts.Modules.Movies.IntegrationTests.Movies;
 
@@ -20,25 +20,25 @@ public sealed class AddMovieTests(MoviesIntegrationTestWebAppFactory factory) : 
       genres.Add(MovieFactory.CreateGenre().Value);
     }
 
-    List<Domain.Movies.Person> actors = [];
+    List<Domain.Medias.Person> actors = [];
     for (int i = 0; i < 3; i++)
     {
       actors.Add(MovieFactory.CreatePerson().Value);
     }
 
-    List<Domain.Movies.Person> directors = [];
+    List<Domain.Medias.Person> directors = [];
     for (int i = 0; i < 1; i++)
     {
       directors.Add(MovieFactory.CreatePerson().Value);
     }
 
-    List<Domain.Movies.Person> writers = [];
+    List<Domain.Medias.Person> writers = [];
     for (int i = 0; i < 1; i++)
     {
       writers.Add(MovieFactory.CreatePerson().Value);
     }
 
-    List<Domain.Movies.Person> producers = [];
+    List<Domain.Medias.Person> producers = [];
     for (int i = 0; i < 4; i++)
     {
       producers.Add(MovieFactory.CreatePerson().Value);
@@ -50,21 +50,27 @@ public sealed class AddMovieTests(MoviesIntegrationTestWebAppFactory factory) : 
       productionCompanies.Add(MovieFactory.CreateProductionCompany().Value);
     }
 
-    var request = new AddMovieCommand(
-      movie.ImdbId,
-      movie.TmdbId,
-      movie.Title,
-      movie.Year,
-      movie.Plot!,
-      movie.Image,
-      movie.ReleaseDate,
-      movie.YoutubeTrailerUrl,
-      [.. genres.Select(x => new GenreRequest(x.TmdbId, x.Name))],
-      [.. actors.Select(x => new PersonRequest(x.Name, x.ImdbId, x.TmdbId))],
-      [.. directors.Select(x => new PersonRequest(x.Name, x.ImdbId, x.TmdbId))],
-      [.. writers.Select(x => new PersonRequest(x.Name, x.ImdbId, x.TmdbId))],
-      [.. producers.Select(x => new PersonRequest(x.Name, x.ImdbId, x.TmdbId))],
-      [.. productionCompanies.Select(x => new ProductionCompanyRequest(x.Name, x.ImdbId, x.TmdbId))]);
+    var request = new AddMediaCommand
+    {
+      PublicId = movie.PublicId,
+      Title = movie.Title,
+      ImdbId = movie.ImdbId,
+      TmdbId = movie.TmdbId,
+      Year = movie.Year,
+      Plot = movie.Plot!,
+      Image = movie.Image,
+      ReleaseDate = movie.ReleaseDate,
+      YouTubeTrailerUrl = movie.YoutubeTrailerUrl,
+      TvSeriesTmdbId = movie.TvSeriesTmdbId,
+      SeasonNumber = movie.SeasonNumber,
+      EpisodeNumber = movie.EpisodeNumber,
+      Genres = [.. genres.Select(x => new GenreRequest(x.TmdbId, x.Name))],
+      Actors = [.. actors.Select(x => new PersonRequest(x.Name, x.ImdbId, x.TmdbId))],
+      Directors = [.. directors.Select(x => new PersonRequest(x.Name, x.ImdbId, x.TmdbId))],
+      Writers = [.. writers.Select(x => new PersonRequest(x.Name, x.ImdbId, x.TmdbId))],
+      Producers = [.. producers.Select(x => new PersonRequest(x.Name, x.ImdbId, x.TmdbId))],
+      ProductionCompanies = [.. productionCompanies.Select(x => new ProductionCompanyRequest(x.Name, x.ImdbId, x.TmdbId))]
+    };
 
     // Act
     var result = await Sender.Send(request);
@@ -81,21 +87,27 @@ public sealed class AddMovieTests(MoviesIntegrationTestWebAppFactory factory) : 
     var movie = MovieFactory.CreateMovie().Value;
     var genre = MovieFactory.CreateGenre().Value;
 
-    var command = new AddMovieCommand(
-      movie.ImdbId,
-      movie.TmdbId,
-      movie.Title,
-      movie.Year,
-      movie.Plot!,
-      movie.Image,
-      movie.ReleaseDate,
-      movie.YoutubeTrailerUrl,
-      [new GenreRequest(genre.TmdbId, genre.Name)],
-      [],
-      [],
-      [],
-      [],
-      []);
+    var command = new AddMediaCommand
+    {
+      PublicId = movie.PublicId,
+      Title = movie.Title,
+      ImdbId = movie.ImdbId,
+      TmdbId = movie.TmdbId,
+      Year = movie.Year,
+      Plot = movie.Plot!,
+      Image = movie.Image,
+      ReleaseDate = movie.ReleaseDate,
+      YouTubeTrailerUrl = movie.YoutubeTrailerUrl,
+      TvSeriesTmdbId = movie.TvSeriesTmdbId,
+      SeasonNumber = movie.SeasonNumber,
+      EpisodeNumber = movie.EpisodeNumber,
+      Genres = [new GenreRequest(genre.TmdbId, genre.Name)],
+      Actors = [],
+      Directors = [],
+      Writers = [],
+      Producers = [],
+      ProductionCompanies = []
+    };
 
     // Act
     var result = await Sender.Send(command);
@@ -116,22 +128,24 @@ public sealed class AddMovieTests(MoviesIntegrationTestWebAppFactory factory) : 
     var movie = MovieFactory.CreateMovie().Value;
     var genre = MovieFactory.CreateGenre().Value;
 
-    var command = new AddMovieCommand(
-      movie.ImdbId,
-      movie.TmdbId,
-      movie.Title,
-      movie.Year,
-      movie.Plot!,
-      movie.Image,
-      movie.ReleaseDate,
-      movie.YoutubeTrailerUrl,
-      [new GenreRequest(genre.TmdbId, genre.Name)],
-      [],
-      [],
-      [],
-      [],
-      []);
-
+    var command = new AddMediaCommand
+    {
+      PublicId = movie.PublicId,
+      Title = movie.Title,
+      ImdbId = movie.ImdbId,
+      TmdbId = movie.TmdbId,
+      Year = movie.Year,
+      Plot = movie.Plot!,
+      Image = movie.Image,
+      ReleaseDate = movie.ReleaseDate,
+      YouTubeTrailerUrl = movie.YoutubeTrailerUrl,
+      Genres = [new GenreRequest(genre.TmdbId, genre.Name)],
+      Actors = [],
+      Directors = [],
+      Writers = [],
+      Producers = [],
+      ProductionCompanies = []
+    };
     await Sender.Send(command);
 
     // Act
@@ -139,6 +153,6 @@ public sealed class AddMovieTests(MoviesIntegrationTestWebAppFactory factory) : 
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(MovieErrors.MovieAlreadyExists(movie.ImdbId));
+    result.Errors[0].Should().Be(MediaErrors.MediaAlreadyExists(movie.TmdbId!.Value));
   }
 }

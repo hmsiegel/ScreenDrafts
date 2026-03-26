@@ -10,12 +10,25 @@ public static class DraftsModule
 
     services.AddDraftsFeatures();
 
+    services.AddTypeHandler();
+
     services.AddDomainEventHandlers();
 
     services.AddIntegrationEventHandlers();
 
     services.AddDraftsInfrastructure(configuration);
 
+    return services;
+  }
+
+  private static IServiceCollection AddTypeHandler(this IServiceCollection services)
+  {
+    SqlMapper.AddTypeHandler(new SmartEnumTypeHandler<DraftPartStatus>());
+    SqlMapper.AddTypeHandler(new SmartEnumTypeHandler<DraftStatus>());
+    SqlMapper.AddTypeHandler(new SmartEnumTypeHandler<DraftType>());
+    SqlMapper.AddTypeHandler(new SmartEnumTypeHandler<HostRole>());
+    SqlMapper.AddTypeHandler(new SmartEnumTypeHandler<ParticipantKind>());
+    SqlMapper.AddTypeHandler(new SmartEnumTypeHandler<ReleaseChannel>());
     return services;
   }
 
@@ -33,10 +46,10 @@ public static class DraftsModule
     registrationConfigurator.AddConsumer<IntegrationEventConsumer<UserRegisteredIntegrationEvent>>()
       .Endpoint(c => c.InstanceId = instanceId);
 
-    registrationConfigurator.AddConsumer<IntegrationEventConsumer<MovieAddedIntegrationEvent>>()
+    registrationConfigurator.AddConsumer<IntegrationEventConsumer<MediaAddedIntegrationEvent>>()
       .Endpoint(c => c.InstanceId = instanceId);
 
-    registrationConfigurator.AddConsumer<IntegrationEventConsumer<MovieFetchedIntegrationEvent>>()
+    registrationConfigurator.AddConsumer<IntegrationEventConsumer<MediaFetchedIntegrationEvent>>()
       .Endpoint(c => c.InstanceId = instanceId);
   }
 
@@ -49,6 +62,7 @@ public static class DraftsModule
     services.AddScoped<IDraftsDomainEventDispatcher, DraftsDomainEventDispatcher>();
     return services;
   }
+
 
   private static void AddDomainEventHandlers(this IServiceCollection services)
   {

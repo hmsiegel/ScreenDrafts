@@ -32,7 +32,7 @@ internal sealed class GetDraftStatusQueryHandler(
         {
           DraftPartId = p.Id.Value,
           PartIndex = p.PartIndex,
-          Status = p.Status.Name,
+          Status = p.Status,
           Lifecycleview = partView.ToString(),
           ScheduledForUtc = p.ScheduledForUtc,
           Actions = ResolvePartActions(partView)
@@ -43,7 +43,7 @@ internal sealed class GetDraftStatusQueryHandler(
     return Result.Success(new Response
     {
       DraftPublicId = draft.PublicId,
-      DraftStatus = draft.DraftStatus.Name,
+      DraftStatus = draft.DraftStatus,
       Lifecycleview = draftView.ToString(),
       Actions = draftActions,
       ActionPartIndex = actionPartIndex,

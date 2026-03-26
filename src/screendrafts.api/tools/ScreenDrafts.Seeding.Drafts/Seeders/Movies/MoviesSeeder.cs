@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities;
-
-namespace ScreenDrafts.Seeding.Drafts.Seeders.Movies;
+﻿namespace ScreenDrafts.Seeding.Drafts.Seeders.Movies;
 
 internal sealed class MoviesSeeder(
   DraftsDbContext dbContext,
@@ -47,7 +45,9 @@ internal sealed class MoviesSeeder(
     foreach (var movie in newMovies)
     {
       var newMovie = Movie.Create(
+        publicId: movie.PublicId,
         movieTitle: movie.Title,
+        mediaType: MediaType.Movie,
         imdbId: movie.ImdbId,
         id: movie.Id).Value;
 

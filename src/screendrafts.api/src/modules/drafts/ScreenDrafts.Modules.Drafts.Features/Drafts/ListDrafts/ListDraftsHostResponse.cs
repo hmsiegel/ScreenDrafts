@@ -4,5 +4,5 @@ public sealed record ListDraftsHostResponse
 {
   public string HostPublicId { get; init; } = default!;
   public string DisplayName { get; init; } = default!;
-  public int Role { get; init; }
+  public HostRole Role { get; init; } = default!;
 }

@@ -70,7 +70,7 @@ internal sealed class PickCreatedDomainEventHandler(
       domainEvent.Id,
       domainEvent.OccurredOnUtc,
       domainEvent.DraftPartId,
-      domainEvent.ImdbId,
+      domainEvent.ImdbId!,
       domainEvent.MovieTitle),
       cancellationToken);
   }

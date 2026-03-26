@@ -29,7 +29,7 @@ public static class MoviesModule
   {
     ArgumentNullException.ThrowIfNull(registrationConfigurator);
 
-    registrationConfigurator.AddConsumer<IntegrationEventConsumer<MovieFetchedIntegrationEvent>>()
+    registrationConfigurator.AddConsumer<IntegrationEventConsumer<MediaFetchedIntegrationEvent>>()
       .Endpoint(x => x.InstanceId = instanceId);
   }
 

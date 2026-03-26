@@ -4,8 +4,8 @@ internal sealed record GetDraftPartResponse
 {
   public string PublicId { get; init; } = default!;
   public int PartIndex { get; init; }
-  public int DraftType { get; init; }
-  public int Status { get; init; }
+  public DraftType DraftType { get; init; } = default!;
+  public DraftPartStatus Status { get; init; } = default!;
   public DateTime? ScheduledForUtc { get; init; }
 
   public GetDraftHostResponse? PrimaryHost { get; private set; }

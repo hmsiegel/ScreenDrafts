@@ -92,10 +92,16 @@ internal sealed class BulkAddMoviesToDraftPoolCommandHandler(
       foreach (var tmdbId in tmdbIdsToFetch.Distinct())
       {
         await _eventBus.PublishAsync(
-          new FetchMovieRequestedIntegrationEvent(
+          new FetchMediaRequestedIntegrationEvent(
             id: Guid.NewGuid(),
             occurredOnUtc: _dateTimeProvider.UtcNow,
-            tmdbId: tmdbId),
+            tmdbId: tmdbId,
+            igdbId: null,
+            tvSeriesTmdbId: null,
+            seasonNumber: null,
+            episodeNumber: null,
+            mediaType: MediaType.Movie,
+            imdbId: null),
           cancellationToken: cancellationToken);
       }
 

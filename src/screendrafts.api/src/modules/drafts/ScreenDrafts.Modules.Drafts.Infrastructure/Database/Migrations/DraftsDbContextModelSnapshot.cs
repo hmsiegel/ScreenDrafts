@@ -637,15 +637,28 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
+                    b.Property<int?>("IgdbId")
+                        .HasColumnType("integer")
+                        .HasColumnName("igdb_id");
+
                     b.Property<string>("ImdbId")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("imdb_id");
 
+                    b.Property<int>("MediaType")
+                        .HasColumnType("integer")
+                        .HasColumnName("media_type");
+
                     b.Property<string>("MovieTitle")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("movie_title");
+
+                    b.Property<string>("PublicId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("public_id");
 
                     b.Property<int?>("TmdbId")
                         .HasColumnType("integer")

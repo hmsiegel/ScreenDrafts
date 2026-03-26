@@ -1,4 +1,7 @@
-﻿namespace ScreenDrafts.Modules.Integrations.Infrastructure;
+﻿using ScreenDrafts.Modules.Integrations.Infrastructure.Services.Igdb;
+using ScreenDrafts.Modules.Integrations.Infrastructure.Services.Tmdb;
+
+namespace ScreenDrafts.Modules.Integrations.Infrastructure;
 
 public static class IntegrationsInfrastructure
 {
@@ -31,7 +34,6 @@ public static class IntegrationsInfrastructure
     services.AddOptions<OmdbSettings>()
       .Bind(configuration.GetSection("Integrations:Omdb"))
       .ValidateDataAnnotations();
-
 
     return services;
   }

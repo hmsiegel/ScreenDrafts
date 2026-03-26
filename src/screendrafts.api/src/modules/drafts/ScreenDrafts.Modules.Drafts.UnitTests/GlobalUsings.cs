@@ -5,6 +5,7 @@ global using Bogus;
 global using FluentAssertions;
 
 global using ScreenDrafts.Common.Abstractions.Results;
+global using ScreenDrafts.Common.Domain;
 global using ScreenDrafts.Common.UnitTests;
 global using ScreenDrafts.Modules.Drafts.Domain.Campaigns;
 global using ScreenDrafts.Modules.Drafts.Domain.Categories;

@@ -7,18 +7,21 @@ internal sealed class AddMovieCommandHandler(IMovieRepository movieRepository)
 
   public async Task<Result<string>> Handle(AddMovieCommand request, CancellationToken cancellationToken)
   {
-    var movieExists = await _movieRepository.ExistsByImdbIdAsync(request.ImdbId, cancellationToken);
+    var exists = await _movieRepository.ExistsByPublicIdAsync(request.PublicId, cancellationToken);
 
-    if (movieExists)
+    if (exists)
     {
-      return Result.Failure<string>(MovieErrors.MovieAlreadyExists(request.ImdbId));
+      return Result.Failure<string>(MovieErrors.MovieAlreadyExists(request.PublicId));
     }
 
     var result = Movie.Create(
       movieTitle: request.Title,
-      imdbId: request.ImdbId,
+      publicId: request.PublicId,
       id: request.Id,
-      tmdbId: request.TmdbId);
+      imdbId: request.ImdbId,
+      tmdbId: request.TmdbId,
+      igdbId: request.IgdbId,
+      mediaType: request.MediaType);
 
     if (result.IsFailure)
     {
@@ -29,7 +32,7 @@ internal sealed class AddMovieCommandHandler(IMovieRepository movieRepository)
 
     _movieRepository.Add(movie);
 
-    return Result.Success(movie.ImdbId);
+    return Result.Success(movie.PublicId);
   }
 }
 

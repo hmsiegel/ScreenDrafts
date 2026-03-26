@@ -67,8 +67,8 @@ internal sealed class GetHostQueryHandler(IDbConnectionFactory dbConnectionFacto
         DraftPartPublicId = dp.DraftPartPublicId,
         DraftPublicId = dp.DraftPublicId,
         Label = dp.PartIndex > 1 ? $"{dp.DraftTitle} - Part {dp.PartIndex}" : dp.DraftTitle,
-        Role = HostRole.FromValue(dp.Role).Name,
-        Status = DraftPartStatus.FromValue(dp.Status).Name
+        Role = dp.Role,
+        Status = dp.Status
       })]
     });
   }
@@ -85,7 +85,7 @@ internal sealed class GetHostQueryHandler(IDbConnectionFactory dbConnectionFacto
     string DraftPublicId,
     string DraftTitle,
     int PartIndex,
-    int Role,
-    int Status);
+    HostRole Role,
+    DraftPartStatus Status);
 }
 

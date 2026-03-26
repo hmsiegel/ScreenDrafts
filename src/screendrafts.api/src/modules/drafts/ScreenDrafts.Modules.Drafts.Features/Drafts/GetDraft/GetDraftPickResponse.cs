@@ -9,7 +9,7 @@ internal sealed record GetDraftPickResponse
   public string? MovieVersionName { get; init; }
   public string? ActedByPublicId { get; init; }
   public Guid PlayedByParticipantIdValue { get; init; }
-  public int PlayedByParticipantKindValue { get; init; }
+  public ParticipantKind PlayedByParticipantKindValue { get; init; } = default!;
   public GetDraftVetoResponse? Veto { get; init; }
   public GetDraftCommissionerOverrideResponse? CommissionerOverride { get; init; }
 }

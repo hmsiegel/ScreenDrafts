@@ -50,7 +50,7 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
     result.IsSuccess.Should().BeTrue();
     result.Value.PublicId.Should().Be(draftPublicId);
     result.Value.Title.Should().Be(title);
-    result.Value.DraftType.Should().Be(DraftType.Standard.Value);
+    result.Value.DraftType.Should().Be(DraftType.Standard);
     result.Value.SeriesPublicId.Should().NotBeNullOrEmpty();
     result.Value.CampaignPublicId.Should().BeNull();
   }
@@ -207,7 +207,7 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
     result.IsSuccess.Should().BeTrue();
     var part = result.Value.Parts.Single();
     part.Participants.Should().HaveCount(1);
-    part.Participants[0].ParticipantKindValue.Should().Be(ParticipantKind.Drafter.Value);
+    part.Participants[0].ParticipantKindValue.Should().Be(ParticipantKind.Drafter);
   }
 
   [Fact]
@@ -253,7 +253,7 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
     var part = result.Value.Parts.Single();
     part.Releases.Should().HaveCount(1);
     part.Releases[0].ReleaseDate.Should().Be(releaseDate);
-    part.Releases[0].ReleaseChannel.Should().Be(ReleaseChannel.MainFeed.Value);
+    part.Releases[0].ReleaseChannel.Should().Be(ReleaseChannel.MainFeed);
   }
 
   [Fact]
@@ -315,7 +315,7 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
     // Assert
     result.IsSuccess.Should().BeTrue();
     result.Value.Parts.Single().Releases.Should().HaveCount(1);
-    result.Value.Parts.Single().Releases[0].ReleaseChannel.Should().Be(ReleaseChannel.Patreon.Value);
+    result.Value.Parts.Single().Releases[0].ReleaseChannel.Should().Be(ReleaseChannel.Patreon);
   }
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -566,7 +566,7 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
 
   private async Task<Movie> CreateMovieAsync()
   {
-    var movie = Movie.Create(Faker.Company.CompanyName(), Faker.Random.AlphaNumeric(10), Guid.NewGuid()).Value;
+    var movie = Movie.Create(Faker.Company.CompanyName(), Faker.Random.AlphaNumeric(10), MediaType.Movie, Guid.NewGuid()).Value;
     DbContext.Movies.Add(movie);
     await DbContext.SaveChangesAsync();
     return movie;

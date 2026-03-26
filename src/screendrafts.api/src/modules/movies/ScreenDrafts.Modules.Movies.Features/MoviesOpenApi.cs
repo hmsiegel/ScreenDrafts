@@ -4,15 +4,15 @@ internal static class MoviesOpenApi
 {
   internal static class Tags
   {
-    public const string Movies = "Movies";
+    public const string Media = "Media";
   }
 
 
   internal static class Names
   {
-    public const string Movies_AddMovie = "Movies.AddMovie";
-    public const string Movies_GetMovie = "Movies.GetMovie";
-    public const string Movies_GetMovieSummary = "Movies.GetMovieSummary";
-    public const string Movies_SearchMovies = "Movies.SearchMovies";
+    public const string Media_Add = "Media.Add";
+    public const string Media_Get = "Media.Get";
+    public const string Media_GetSummary = "Media.GetSummary";
+    public const string Media_Search = "Media.Search";
   }
 }

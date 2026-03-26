@@ -9,5 +9,6 @@ public static class MovieFactory
     Movie.Create(
       _faker.Commerce.ProductName(),
       _faker.Lorem.Word(),
+      MediaType.Movie,
       _faker.Internet.Random.Guid());
 }

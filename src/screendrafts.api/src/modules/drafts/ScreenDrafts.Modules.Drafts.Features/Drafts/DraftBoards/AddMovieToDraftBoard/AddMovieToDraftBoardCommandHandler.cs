@@ -82,10 +82,16 @@ internal sealed class AddMovieToDraftBoardCommandHandler(
 
     if (!existsInDb)
     {
-      await _eventBus.PublishAsync(new FetchMovieRequestedIntegrationEvent(
+      await _eventBus.PublishAsync(new FetchMediaRequestedIntegrationEvent(
           id: Guid.NewGuid(),
           occurredOnUtc: _dateTimeProvider.UtcNow,
-          tmdbId: request.TmdbId),
+          tmdbId: request.TmdbId,
+          igdbId: null,
+          tvSeriesTmdbId: null,
+          episodeNumber: null,
+          seasonNumber: null,
+          mediaType: MediaType.Movie,
+          imdbId: null),
         cancellationToken: cancellationToken);
     }
 

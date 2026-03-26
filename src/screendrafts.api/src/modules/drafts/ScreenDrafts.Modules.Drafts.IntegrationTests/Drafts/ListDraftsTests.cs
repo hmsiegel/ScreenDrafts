@@ -212,7 +212,7 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
     var item = result.Value.Items.Single();
     item.Releases.Should().HaveCount(1);
     item.Releases[0].ReleaseDate.Should().Be(releaseDate);
-    item.Releases[0].ReleaseChannel.Should().Be(ReleaseChannel.MainFeed.Value);
+    item.Releases[0].ReleaseChannel.Should().Be(ReleaseChannel.MainFeed);
   }
 
   [Fact]
@@ -258,7 +258,7 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
     result.IsSuccess.Should().BeTrue();
     var item = result.Value.Items.Single();
     item.Participants.Should().HaveCount(1);
-    item.Participants[0].ParticipantKindValue.Should().Be(ParticipantKind.Drafter.Value);
+    item.Participants[0].ParticipantKindValue.Should().Be(ParticipantKind.Drafter);
   }
 
   [Fact]

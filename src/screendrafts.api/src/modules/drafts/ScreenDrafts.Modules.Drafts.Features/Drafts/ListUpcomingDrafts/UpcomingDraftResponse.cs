@@ -8,7 +8,7 @@ internal sealed record UpcomingDraftResponse
   public int PartNumber { get; init; }
   public DateOnly? ReleaseDate { get; init; }
 
-  public int Status { get; init; }
+  public DraftStatus Status { get; init; } = default!;
 
   public DraftUserCapabilities Capabilities { get; private set; } = new(null, false, false, false, false, false);
 

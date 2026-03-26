@@ -1,18 +1,18 @@
-namespace ScreenDrafts.Modules.Integrations.IntegrationTests.Doubles;
+﻿namespace ScreenDrafts.Modules.Integrations.IntegrationTests.Doubles;
 
 public sealed class FakeTmdbService : ITmdbService
 {
-  private IReadOnlyList<TmdbMovieSearchResult> _searchResults = [];
-  private TmdbMovieSearchResult? _findResult;
-  private TmdbMovieDetails? _details;
+  private IReadOnlyList<TmdbSearchResult> _searchResults = [];
+  private TmdbSearchResult? _findResult;
+  private TmdbMediaDetails? _details;
 
-  public void SetSearchResults(IReadOnlyList<TmdbMovieSearchResult> results) =>
+  public void SetSearchResults(IReadOnlyList<TmdbSearchResult> results) =>
     _searchResults = results;
 
-  public void SetFindResult(TmdbMovieSearchResult? result) =>
+  public void SetFindResult(TmdbSearchResult? result) =>
     _findResult = result;
 
-  public void SetDetails(TmdbMovieDetails? details) =>
+  public void SetDetails(TmdbMediaDetails? details) =>
     _details = details;
 
   public void Reset()
@@ -22,22 +22,22 @@ public sealed class FakeTmdbService : ITmdbService
     _details = null;
   }
 
-  public Task<IReadOnlyList<TmdbMovieSearchResult>> SearchMoviesAsync(
+  public Task<IReadOnlyList<TmdbSearchResult>> SearchMoviesAsync(
     string query,
     CancellationToken cancellationToken = default)
     => Task.FromResult(_searchResults);
 
-  public Task<TmdbMovieSearchResult?> FindMovieByImdbIdAsync(
+  public Task<TmdbSearchResult?> FindMovieByImdbIdAsync(
     string imdbId,
     CancellationToken cancellationToken = default)
     => Task.FromResult(_findResult);
 
-  public Task<TmdbMovieDetails?> GetMovieDetailsAsync(
+  public Task<TmdbMediaDetails?> GetMovieDetailsAsync(
     int tmdbId,
     CancellationToken cancellationToken = default)
     => Task.FromResult(_details);
 
-  public Task<string?> GetImdbIdAsync(
+  public Task<string?> GetMovieImdbIdAsync(
     int tmdbId,
     CancellationToken cancellationToken = default)
     => Task.FromResult<string?>(null);
@@ -47,8 +47,30 @@ public sealed class FakeTmdbService : ITmdbService
       ? null
       : new Uri($"https://image.tmdb.org/t/p/{size}{posterPath}");
 
-  public Uri? BuildTrailerUrl(string? trailerPath, string size = "w500") =>
-    trailerPath is null
-      ? null
-      : new Uri($"https://www.youtube.com/watch?v={trailerPath}");
+  public Task<TmdbMediaDetails?> GetTvShowDetailsAsync(
+    int tmdbId,
+    CancellationToken cancellationToken = default)
+  {
+    throw new NotImplementedException();
+  }
+
+  public Task<TmdbMediaDetails?> GetTvEpisodeDetailsAsync(int seriesTmdbId, int seasonNumber, int episodeNumber, CancellationToken cancellationToken = default)
+  {
+    return Task.FromResult<TmdbMediaDetails?>(null);
+  }
+
+  public Task<string?> GetTvShowImdbIdAsync(int tmdbId, CancellationToken cancellationToken = default)
+  {
+    return Task.FromResult<string?>(null);
+  }
+
+  public Task<string?> GetPersonImdbIdAsync(int tmdbPersonId, CancellationToken cancellationToken = default)
+  {
+    return Task.FromResult<string?>(null);
+  }
+
+  public Task<TmdbFindResult?> FindByImdbIdAsync(string imdbId, CancellationToken cancellationToken = default)
+  {
+    return Task.FromResult<TmdbFindResult?>(null);
+  }
 }

@@ -48,7 +48,7 @@ public sealed class PickCreatedDomainEventHandlerTests(DraftsIntegrationTestWebA
     var draftPublicId = await CreateDraftWithPoolAsync();
     var (_, draftPartPublicId, drafter1PublicId, _) = await SetupStartedPartAsync(draftPublicId);
 
-    var movie = Movie.Create(Faker.Company.CompanyName(), Faker.Random.AlphaNumeric(10), Guid.NewGuid()).Value;
+    var movie = Movie.Create(Faker.Company.CompanyName(), Faker.Random.AlphaNumeric(10), MediaType.Movie, Guid.NewGuid()).Value;
     DbContext.Movies.Add(movie);
     await DbContext.SaveChangesAsync();
 

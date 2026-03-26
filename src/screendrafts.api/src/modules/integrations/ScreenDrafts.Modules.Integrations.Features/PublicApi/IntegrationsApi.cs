@@ -4,7 +4,7 @@ internal class IntegrationsApi(ISender sender) : IIntegrationsApi
 {
   private readonly ISender _sender = sender;
 
-  public async Task<Result<SearchMoviesApiResponse>> SearchMoviesAsync(string query, CancellationToken cancellationToken = default)
+  public async Task<Result<SearchMediaApiResponse>> SearchMoviesAsync(string query, CancellationToken cancellationToken = default)
   {
     var result = await _sender.Send(new SearchFoMovieCommand
     { 
@@ -14,11 +14,11 @@ internal class IntegrationsApi(ISender sender) : IIntegrationsApi
 
     if (result.IsFailure)
     {
-      return Result.Failure<SearchMoviesApiResponse>(result.Errors);
+      return Result.Failure<SearchMediaApiResponse>(result.Errors);
     }
 
     var mapped = result.Value.Results
-      .Select(r => new MovieSearchApiResult
+      .Select(r => new MediaSearchApiResult
       {
         TmdbId = r.TmdbId,
         Title = r.Title,
@@ -28,7 +28,7 @@ internal class IntegrationsApi(ISender sender) : IIntegrationsApi
       }).ToList()
         .AsReadOnly();
 
-    return Result.Success(new SearchMoviesApiResponse
+    return Result.Success(new SearchMediaApiResponse
     {
       Results = mapped
     });

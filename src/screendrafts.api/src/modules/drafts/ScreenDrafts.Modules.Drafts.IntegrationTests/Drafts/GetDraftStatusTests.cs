@@ -25,7 +25,7 @@ public sealed class GetDraftStatusTests(DraftsIntegrationTestWebAppFactory facto
     result.IsSuccess.Should().BeTrue();
     result.Value.Should().NotBeNull();
     result.Value.DraftPublicId.Should().Be(draftId);
-    result.Value.DraftStatus.Should().NotBeNullOrEmpty();
+    result.Value.DraftStatus.Should().NotBeNull();
     result.Value.Parts.Should().NotBeNull();
   }
 
@@ -81,7 +81,7 @@ public sealed class GetDraftStatusTests(DraftsIntegrationTestWebAppFactory facto
     // Assert
     result.Should().NotBeNull();
     result.IsSuccess.Should().BeTrue();
-    result.Value.DraftStatus.Should().NotBeNullOrEmpty();
+    result.Value.DraftStatus.Should().NotBeNull();
   }
 
   [Fact]

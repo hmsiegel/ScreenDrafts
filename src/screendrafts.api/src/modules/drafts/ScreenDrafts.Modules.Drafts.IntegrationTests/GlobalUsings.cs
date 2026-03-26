@@ -9,6 +9,7 @@ global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.DependencyInjection;
 
 global using ScreenDrafts.Common.Abstractions.Results;
+global using ScreenDrafts.Common.Domain;
 global using ScreenDrafts.Common.IntegrationTests.Abstractions;
 global using ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities;
 global using ScreenDrafts.Modules.Drafts.Domain.DraftParts.ValueObjects;

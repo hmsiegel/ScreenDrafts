@@ -4,8 +4,8 @@ public static class PersonFactory
 {
   private static readonly Faker _faker = new();
 
-  public static Domain.Movies.Person CreatePerson() =>
-    Domain.Movies.Person.Create(
+  public static Domain.Medias.Person CreatePerson() =>
+Domain.Medias.Person.Create(
       _faker.Random.AlphaNumeric(9),
       _faker.Name.FullName(),
       _faker.Random.Int(1, 1000));

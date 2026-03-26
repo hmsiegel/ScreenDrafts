@@ -2,7 +2,7 @@
 
 public sealed record ListDraftsReleaseResponse
 {
-  public int ReleaseChannel { get; init; }
+  public ReleaseChannel ReleaseChannel { get; init; } = default!;
   public int? EpisodeNumber { get; init; }
   public DateOnly ReleaseDate { get; init; }
 }

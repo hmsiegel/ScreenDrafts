@@ -42,6 +42,11 @@ public static class MovieErrors
       "MovieErrors.MovieIdRequired",
       "A movie ID is required.");
 
+  public static readonly SDError InvalidPublicId =
+    SDError.Failure(
+      "MovieErrors.PublicIdRequired",
+      "A public Id is required.");
+
   public static SDError MovieAlreadyExists(string imdbId) =>
     SDError.Conflict(
       "Drafts.MovieAlreadyExists",

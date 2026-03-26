@@ -33,10 +33,10 @@ internal sealed class ProductionCompaniesRepository(MoviesDbContext dbContext)
     return entity;
   }
 
-  public async Task<bool> RelationshipExistsAsync(Guid movieId, Guid productionCompanyId, CancellationToken cancellationToken = default)
+  public async Task<bool> RelationshipExistsAsync(Guid mediaId, Guid productionCompanyId, CancellationToken cancellationToken = default)
   {
-    return await _dbContext.MovieProductionCompanies
-      .AnyAsync(mpc => mpc.MovieId == MovieId.Create(movieId) &&
+    return await _dbContext.MediaProductionCompanies
+      .AnyAsync(mpc => mpc.MediaId == MediaId.Create(mediaId) &&
         mpc.ProductionCompanyId == productionCompanyId, cancellationToken);
   }
 }
