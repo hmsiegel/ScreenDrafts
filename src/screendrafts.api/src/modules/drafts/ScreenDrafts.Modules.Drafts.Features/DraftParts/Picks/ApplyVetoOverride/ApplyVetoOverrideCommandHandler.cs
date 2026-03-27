@@ -2,11 +2,13 @@
 
 internal sealed class ApplyVetoOverrideCommandHandler(
   IDraftPartRepository draftPartRepository,
-  ParticipantResolver participantResolver)
+  ParticipantResolver participantResolver,
+  ISeriesPolicyProvider seriesPolicyProvider)
   : ICommandHandler<ApplyVetoOverrideCommand>
 {
   private readonly IDraftPartRepository _draftPartRepository = draftPartRepository;
   private readonly ParticipantResolver _participantResolver = participantResolver;
+  private readonly ISeriesPolicyProvider _seriesPolicyProvider = seriesPolicyProvider;
 
   public async Task<Result> Handle(ApplyVetoOverrideCommand request, CancellationToken cancellationToken)
   {
@@ -15,6 +17,13 @@ internal sealed class ApplyVetoOverrideCommandHandler(
     if (draftPart is null)
     {
       return Result.Failure(DraftPartErrors.NotFound(request.DraftPartId));
+    }
+
+    var seriesPolicy = await _seriesPolicyProvider.GetSeriesAsyc(draftPart.SeriesId, cancellationToken);
+
+    if (seriesPolicy is null)
+    {
+      return Result.Failure(SeriesErrors.SeriesNotFound(draftPart.SeriesId.Value));
     }
 
     var participantResult = await _participantResolver.ResolveAsync(
@@ -39,6 +48,7 @@ internal sealed class ApplyVetoOverrideCommandHandler(
     var result = draftPart.ApplyVetoOverride(
       request.PlayOrder,
       by: participant,
+      canonicalPolicyValue: CanonicalPolicy.FromValue(seriesPolicy.CanonicalPolicy),
       actedByPublicId: request.ActorPublicId);
 
     if (result.IsFailure)

@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Common.Abstractions.Errors;
-
-namespace ScreenDrafts.Modules.Drafts.Domain.SeriesAggregate;
+﻿namespace ScreenDrafts.Modules.Drafts.Domain.SeriesAggregate;
 
 public static class SeriesErrors
 {

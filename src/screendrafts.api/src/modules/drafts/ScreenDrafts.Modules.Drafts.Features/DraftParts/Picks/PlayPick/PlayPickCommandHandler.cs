@@ -3,12 +3,14 @@
 internal sealed class PlayPickCommandHandler(
   IDraftPartRepository draftPartRepository,
   IMovieRepository movieRepository,
-  ParticipantResolver participantResolver)
+  ParticipantResolver participantResolver,
+  ISeriesPolicyProvider seriesPolicyProvider)
   : ICommandHandler<PlayPickCommand, PickId>
 {
   private readonly IDraftPartRepository _draftPartRepository = draftPartRepository;
   private readonly IMovieRepository _movieRepository = movieRepository;
   private readonly ParticipantResolver _participantResolver = participantResolver;
+  private readonly ISeriesPolicyProvider _seriesPolicyProvider = seriesPolicyProvider;
 
   public async Task<Result<PickId>> Handle(PlayPickCommand request, CancellationToken cancellationToken)
   {
@@ -17,6 +19,13 @@ internal sealed class PlayPickCommandHandler(
     if (draftPart is null)
     {
       return Result.Failure<PickId>(DraftPartErrors.NotFound(request.DraftPartId));
+    }
+
+    var series = await _seriesPolicyProvider.GetSeriesAsyc(draftPart.SeriesId, cancellationToken);
+
+    if (series is null)
+    {
+      return Result.Failure<PickId>(SeriesErrors.SeriesNotFound(draftPart.SeriesId.Value));
     }
 
     var movie = await _movieRepository.GetByIdAsync(request.MovieId, cancellationToken);
@@ -50,12 +59,13 @@ internal sealed class PlayPickCommandHandler(
       draftPosition: request.Position,
       playOrder: request.PlayOrder,
       participantId: participant,
+      canonicalPolicyValue: CanonicalPolicy.FromValue(series.CanonicalPolicy.Value),
       movieVersionName: request.MovieVersionName,
       actedByPublicId: request.ActedByPublicId);
 
     if (pickResult.IsFailure)
     {
-       return Result.Failure<PickId>(pickResult.Errors);
+      return Result.Failure<PickId>(pickResult.Errors);
     }
 
     _draftPartRepository.Update(draftPart);

@@ -18,7 +18,7 @@ namespace ScreenDrafts.Modules.Reporting.Infrastructure.Database.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("reporting")
-                .HasAnnotation("ProductVersion", "9.0.1")
+                .HasAnnotation("ProductVersion", "10.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -127,6 +127,225 @@ namespace ScreenDrafts.Modules.Reporting.Infrastructure.Database.Migrations
                         .HasName("pk_outbox_message_consumers");
 
                     b.ToTable("outbox_message_consumers", "reporting");
+                });
+
+            modelBuilder.Entity("ScreenDrafts.Modules.Reporting.Domain.Drafters.DrafterCanonicalAppearance", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("AppearedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("appeared_at");
+
+                    b.Property<string>("DraftPartPublicId")
+                        .IsRequired()
+                        .HasMaxLength(19)
+                        .HasColumnType("character varying(19)")
+                        .HasColumnName("draft_part_public_id");
+
+                    b.Property<Guid>("DrafterIdValue")
+                        .HasColumnType("uuid")
+                        .HasColumnName("drafter_id_value");
+
+                    b.Property<bool>("HasMainFeedRelease")
+                        .HasColumnType("boolean")
+                        .HasColumnName("has_main_feed_release");
+
+                    b.HasKey("Id")
+                        .HasName("pk_drafter_canonical_appearances");
+
+                    b.HasIndex("DrafterIdValue")
+                        .HasDatabaseName("ix_drafter_canonical_appearances_drafter_id_value");
+
+                    b.HasIndex("DrafterIdValue", "DraftPartPublicId")
+                        .IsUnique()
+                        .HasDatabaseName("ux_drafter_canonical_appearances_drafter_id_part_id");
+
+                    b.ToTable("drafter_canonical_appearances", "reporting");
+                });
+
+            modelBuilder.Entity("ScreenDrafts.Modules.Reporting.Domain.Drafters.DrafterHonorificEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<int>("AppearanceCount")
+                        .HasColumnType("integer")
+                        .HasColumnName("appearance_count");
+
+                    b.Property<Guid>("DrafterIdValue")
+                        .HasColumnType("uuid")
+                        .HasColumnName("drafter_id_value");
+
+                    b.Property<int>("Honorific")
+                        .HasColumnType("integer")
+                        .HasColumnName("honorific");
+
+                    b.Property<DateTime>("UpdateAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("update_at_utc");
+
+                    b.HasKey("Id")
+                        .HasName("pk_drafter_honorifics");
+
+                    b.HasIndex("DrafterIdValue")
+                        .IsUnique()
+                        .HasDatabaseName("ux_drafter_honorifics_drafter_id_value");
+
+                    b.ToTable("drafter_honorifics", "reporting");
+                });
+
+            modelBuilder.Entity("ScreenDrafts.Modules.Reporting.Domain.Drafters.DrafterHonorificHistory", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("AchievedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("achieved_at");
+
+                    b.Property<int>("AppearanceCount")
+                        .HasColumnType("integer")
+                        .HasColumnName("appearance_count");
+
+                    b.Property<Guid>("DrafterIdValue")
+                        .HasColumnType("uuid")
+                        .HasColumnName("drafter_id_value");
+
+                    b.Property<int>("Honorific")
+                        .HasColumnType("integer")
+                        .HasColumnName("honorific");
+
+                    b.HasKey("Id")
+                        .HasName("pk_drafters_honorifics_history");
+
+                    b.HasIndex("DrafterIdValue", "AchievedAt")
+                        .HasDatabaseName("ix_drafter_honorifics_history_drafter_id_achieved_at");
+
+                    b.ToTable("drafters_honorifics_history", "reporting");
+                });
+
+            modelBuilder.Entity("ScreenDrafts.Modules.Reporting.Domain.Movies.MovieCanonicalPick", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<int>("BoardPosition")
+                        .HasColumnType("integer")
+                        .HasColumnName("board_position");
+
+                    b.Property<string>("DraftPartPublicId")
+                        .IsRequired()
+                        .HasMaxLength(19)
+                        .HasColumnType("character varying(19)")
+                        .HasColumnName("draft_part_public_id");
+
+                    b.Property<string>("MoviePublicId")
+                        .IsRequired()
+                        .HasMaxLength(19)
+                        .HasColumnType("character varying(19)")
+                        .HasColumnName("movie_public_id");
+
+                    b.Property<DateTime>("PickedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("picked_at");
+
+                    b.HasKey("Id")
+                        .HasName("pk_movie_canonical_picks");
+
+                    b.HasIndex("MoviePublicId")
+                        .HasDatabaseName("ix_movie_canonical_picks_movie_public_id");
+
+                    b.HasIndex("MoviePublicId", "DraftPartPublicId")
+                        .IsUnique()
+                        .HasDatabaseName("ux_movie_canonical_picks_movie_public_id_part_public_id");
+
+                    b.ToTable("movie_canonical_picks", "reporting");
+                });
+
+            modelBuilder.Entity("ScreenDrafts.Modules.Reporting.Domain.Movies.MovieHonorificEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<int>("AppearanceCount")
+                        .HasColumnType("integer")
+                        .HasColumnName("appearance_count");
+
+                    b.Property<int>("AppearanceHonorific")
+                        .HasColumnType("integer")
+                        .HasColumnName("appearance_honorific");
+
+                    b.Property<string>("MoviePublicId")
+                        .IsRequired()
+                        .HasMaxLength(19)
+                        .HasColumnType("character varying(19)")
+                        .HasColumnName("movie_public_id");
+
+                    b.Property<string>("MovieTitle")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("movie_title");
+
+                    b.Property<int>("PositionHonorific")
+                        .HasColumnType("integer")
+                        .HasColumnName("position_honorific");
+
+                    b.Property<DateTime>("UpdateAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("update_at_utc");
+
+                    b.HasKey("Id")
+                        .HasName("pk_movie_honorifics");
+
+                    b.HasIndex("MoviePublicId")
+                        .IsUnique()
+                        .HasDatabaseName("ux_movie_honorifics_movie_public_id");
+
+                    b.ToTable("movie_honorifics", "reporting");
+                });
+
+            modelBuilder.Entity("ScreenDrafts.Modules.Reporting.Domain.Movies.MovieHonorificHistory", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("AchievedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("achieved_at");
+
+                    b.Property<int>("AppearanceCount")
+                        .HasColumnType("integer")
+                        .HasColumnName("appearance_count");
+
+                    b.Property<int>("AppearanceHonorific")
+                        .HasColumnType("integer")
+                        .HasColumnName("appearance_honorific");
+
+                    b.Property<string>("MoviePublicId")
+                        .IsRequired()
+                        .HasMaxLength(19)
+                        .HasColumnType("character varying(19)")
+                        .HasColumnName("movie_public_id");
+
+                    b.Property<int>("PositionHonorific")
+                        .HasColumnType("integer")
+                        .HasColumnName("position_honorific");
+
+                    b.HasKey("Id")
+                        .HasName("pk_movies_honorifics_history");
+
+                    b.HasIndex("MoviePublicId", "AchievedAt")
+                        .HasDatabaseName("ix_movie_honorifics_history_movie_public_id_achieved_at");
+
+                    b.ToTable("movies_honorifics_history", "reporting");
                 });
 #pragma warning restore 612, 618
         }

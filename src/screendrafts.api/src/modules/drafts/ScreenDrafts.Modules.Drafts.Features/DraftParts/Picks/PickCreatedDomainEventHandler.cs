@@ -73,5 +73,36 @@ internal sealed class PickCreatedDomainEventHandler(
       domainEvent.ImdbId!,
       domainEvent.MovieTitle),
       cancellationToken);
+
+    if (domainEvent.CanonicalPolicyValue == 1)
+    {
+      return;
+    }
+
+    var hasMainFeedRelease = draftPart?.Releases
+      .Any(r => r.ReleaseChannel == ReleaseChannel.MainFeed) ?? false;
+
+    if (domainEvent.CanonicalPolicyValue == 2 && !hasMainFeedRelease)
+    {
+      return;
+    }
+
+    await _eventBus.PublishAsync(
+      new PickLockedIntegrationEvent(
+        id: Guid.NewGuid(),
+        occurredOnUtc: DateTime.UtcNow,
+        draftPartId: domainEvent.DraftPartId,
+        draftPartPublicId: domainEvent.DraftPartPublicId,
+        draftId: domainEvent.DraftId,
+        draftPublicId: domainEvent.DraftPublicId,
+        moviePublicId: domainEvent.MoviePublicId,
+        movieTitle: domainEvent.MovieTitle,
+        tmdbId: domainEvent.TmdbId,
+        boardPosition: domainEvent.BoardPosition,
+        participantIdValue: domainEvent.ParticipantId,
+        participantKindValue: domainEvent.ParticipantKind,
+        canonicalPolicyValue: domainEvent.CanonicalPolicyValue,
+        hasMainFeedRelease: hasMainFeedRelease),
+      cancellationToken);
   }
 }

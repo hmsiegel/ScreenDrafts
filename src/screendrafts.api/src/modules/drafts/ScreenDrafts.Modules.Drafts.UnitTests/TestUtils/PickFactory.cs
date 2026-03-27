@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Modules.Drafts.Domain.Participants;
-
-namespace ScreenDrafts.Modules.Drafts.UnitTests.TestUtils;
+﻿namespace ScreenDrafts.Modules.Drafts.UnitTests.TestUtils;
 
 public static class PickFactory
 {
@@ -19,12 +17,14 @@ public static class PickFactory
     var movie = MovieFactory.CreateMovie().Value;
     var position = _faker.Random.Int(1, 7);
     var playOrder = _faker.Random.Int(1, 10);
+    var canonicalPolicyValue = _faker.Random.Int(0, 2);
 
     var pickIdResult = draftPart.PlayPick(
-      movie,
-      position,
-      playOrder,
-      participantId);
+      movie: movie,
+      draftPosition: position,
+      playOrder: playOrder,
+      participantId: participantId,
+      canonicalPolicyValue: canonicalPolicyValue);
 
     if (pickIdResult.IsFailure)
     {

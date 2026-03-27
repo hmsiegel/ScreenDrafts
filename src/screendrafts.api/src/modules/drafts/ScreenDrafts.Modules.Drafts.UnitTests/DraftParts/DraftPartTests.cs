@@ -444,13 +444,17 @@ public class DraftPartTests : DraftsBaseTest
     var movie = MovieFactory.CreateMovie().Value;
     var position = 1;
     var playOrder = 1;
+    var canonicalPolicyValue = Faker.Random.Int(0, 2);
+
 
     // Act
     var result = draftPart.PlayPick(
       movie,
       position,
       playOrder,
-      participantId);
+      participantId,
+      canonicalPolicyValue);
+
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -475,13 +479,15 @@ public class DraftPartTests : DraftsBaseTest
     var movie = MovieFactory.CreateMovie().Value;
     var position = 1;
     var playOrder = 1;
+    var canonicalPolicyValue = Faker.Random.Int(0, 2);
 
     // Act
     var result = draftPart.PlayPick(
       movie,
       position,
       playOrder,
-      participantId);
+      participantId,
+      canonicalPolicyValue);
 
     // Assert
     result.IsFailure.Should().BeTrue();

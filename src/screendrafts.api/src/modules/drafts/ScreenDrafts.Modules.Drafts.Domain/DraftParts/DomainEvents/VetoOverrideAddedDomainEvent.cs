@@ -7,7 +7,8 @@ public sealed class VetoOverrideAddedDomainEvent(
   Guid participantId,
   int participantKind,
   Guid draftId,
-  string draftPublicId) : DomainEvent
+  string draftPublicId,
+  int canonicalPolicyValue) : DomainEvent
 {
   public Guid DraftPartId { get; init; } = draftPartId;
   public string DraftPartPublicId { get; init; } = draftPartPublicId;
@@ -16,4 +17,5 @@ public sealed class VetoOverrideAddedDomainEvent(
   public int TmdbId { get; init; } = tmdbId;
   public Guid ParticipantId { get; init; } = participantId;
   public int ParticipantKind { get; init; } = participantKind;
+  public int CanonicalPolicyValue { get; init; } = canonicalPolicyValue;
 }

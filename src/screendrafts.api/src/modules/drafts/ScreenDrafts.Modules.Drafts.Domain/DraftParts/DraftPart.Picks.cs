@@ -1,6 +1,4 @@
-﻿using System.Dynamic;
-
-namespace ScreenDrafts.Modules.Drafts.Domain.DraftParts;
+﻿namespace ScreenDrafts.Modules.Drafts.Domain.DraftParts;
 
 public sealed partial class DraftPart
 {
@@ -9,6 +7,7 @@ public sealed partial class DraftPart
     int draftPosition,
     int playOrder,
     Participant participantId,
+    int canonicalPolicyValue,
     string? movieVersionName = null,
     string? actedByPublicId = null,
     Func<Guid, bool>? isMovieAlreadyPickedInWholeDraft = null)
@@ -100,10 +99,13 @@ public sealed partial class DraftPart
       imdbId: movie.ImdbId,
       tmdbId: movie.TmdbId,
       movieTitle: movie.MovieTitle,
+      boardPosition: draftPosition,
+      moviePublicId: movie.PublicId,
       participantId: participantId.Value,
       participantKind: participantId.Kind.Value,
       draftId: DraftId.Value,
-      draftPublicId: DraftPublicId));
+      draftPublicId: DraftPublicId,
+      canonicalPolicyValue: canonicalPolicyValue));
 
 
     return Result.Success(pick.Id);
@@ -192,6 +194,7 @@ public sealed partial class DraftPart
   public Result ApplyVetoOverride(
     int playOrder,
     Participant by,
+    int canonicalPolicyValue,
     string? actedByPublicId = null)
   {
     if (Status != DraftPartStatus.InProgress)
@@ -227,7 +230,8 @@ public sealed partial class DraftPart
         participantId: pick.PlayedByParticipant.ParticipantId.Value,
         participantKind: pick.PlayedByParticipant.ParticipantKindValue.Value,
         draftId: DraftId.Value,
-        draftPublicId: DraftPublicId));
+        draftPublicId: DraftPublicId,
+        canonicalPolicyValue: canonicalPolicyValue));
     }
 
     return Result.Success();

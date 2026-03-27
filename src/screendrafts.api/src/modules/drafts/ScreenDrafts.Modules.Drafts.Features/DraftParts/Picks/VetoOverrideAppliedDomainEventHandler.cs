@@ -7,7 +7,8 @@ internal sealed class VetoOverrideAppliedDomainEventHandler(
   IDraftPoolRepository poolRepository,
   IDraftBoardRepository boardRepository,
   ParticipantResolver participantResolver,
-  IUnitOfWork unitOfWork)
+  IUnitOfWork unitOfWork,
+  IDateTimeProvider dateTimeProvider)
   : DomainEventHandler<VetoOverrideAddedDomainEvent>
 {
   private readonly IEventBus _eventBus = eventBus;
@@ -17,6 +18,7 @@ internal sealed class VetoOverrideAppliedDomainEventHandler(
   private readonly IDraftBoardRepository _boardRepository = boardRepository;
   private readonly ParticipantResolver _participantResolver = participantResolver;
   private readonly IUnitOfWork _unitOfWork = unitOfWork;
+  private readonly IDateTimeProvider _dateTimeProvider = dateTimeProvider;
 
   public override async Task Handle(VetoOverrideAddedDomainEvent domainEvent, CancellationToken cancellationToken = default)
   {
@@ -73,6 +75,45 @@ internal sealed class VetoOverrideAppliedDomainEventHandler(
       domainEvent.Id,
       domainEvent.OccurredOnUtc,
       domainEvent.DraftPartId),
+      cancellationToken);
+
+    if (domainEvent.CanonicalPolicyValue == 1)
+    {
+      return;
+    }
+
+    var hasMainFeedRelease = draftPart?.Releases
+      .Any(r => r.ReleaseChannel == ReleaseChannel.MainFeed) ?? false;
+
+    if (domainEvent.CanonicalPolicyValue == 2 && !hasMainFeedRelease)
+    {
+      return;
+    }
+
+    var pick = draftPart!.Picks.FirstOrDefault(p =>
+      p.Movie.TmdbId == domainEvent.TmdbId && p.IsActiveOnFinalBoard);
+
+    if (pick is null)
+    {
+      return;
+    }
+
+    await _eventBus.PublishAsync(
+      new PickLockedIntegrationEvent(
+        Guid.NewGuid(),
+        _dateTimeProvider.UtcNow,
+        domainEvent.DraftPartId,
+        domainEvent.DraftPartPublicId,
+        domainEvent.DraftId,
+        domainEvent.DraftPublicId,
+        pick.Movie.PublicId,
+        pick.Movie.MovieTitle,
+        pick.Movie.TmdbId,
+        pick.Position,
+        domainEvent.ParticipantId,
+        domainEvent.ParticipantKind,
+        domainEvent.CanonicalPolicyValue,
+        hasMainFeedRelease),
       cancellationToken);
   }
 }
