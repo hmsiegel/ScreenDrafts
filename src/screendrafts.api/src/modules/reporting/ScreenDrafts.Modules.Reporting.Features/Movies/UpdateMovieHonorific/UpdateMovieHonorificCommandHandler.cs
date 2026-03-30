@@ -45,9 +45,9 @@ internal sealed class UpdateMovieHonorificCommandHandler(
 
     const string picksSql =
       """
-      SELECT mcp.board_position
-      FROM reporting.movie_canonical_picks mcp
-      WHERE mcp.movie_public_id = @MoviePublicId;
+      SELECT board_position
+      FROM reporting.movie_canonical_picks
+      WHERE movie_public_id = @MoviePublicId;
       """;
 
     var positions = (await connection.QueryAsync<int>(
@@ -100,11 +100,11 @@ internal sealed class UpdateMovieHonorificCommandHandler(
         (@Id, @MoviePublicId, @MovieTitle, @AppearanceHonorificValue, @PositionHonorific, @AppearanceCount, @UpdatedAt)
       ON CONFLICT (movie_public_id) DO UPDATE
         SET
-          movie_title = EXCLUDED.movie_title,
-          appearance_honorific = EXCLUDED.appearance_honorific,
-          position_honorific = EXCLUDED.position_honorific,
-          appearance_count = EXCLUDED.appearance_count,
-          update_at_utc = EXCLUDED.update_at_utc
+          movie_title               = EXCLUDED.movie_title,
+          appearance_honorific      = EXCLUDED.appearance_honorific,
+          position_honorific        = EXCLUDED.position_honorific,
+          appearance_count          = EXCLUDED.appearance_count,
+          update_at_utc             = EXCLUDED.update_at_utc
       """;
 
     await connection.ExecuteAsync(

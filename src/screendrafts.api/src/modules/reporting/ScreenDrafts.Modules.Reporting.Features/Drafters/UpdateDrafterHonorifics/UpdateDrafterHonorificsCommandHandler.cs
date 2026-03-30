@@ -50,13 +50,13 @@ internal sealed class UpdateDrafterHonorificsCommandHandler(
     const string countSql =
       """
       SELECT COUNT(*)
-      FROM reporting.drafter_canonical_appearances dca
-      WHERE dca.drafter_id_value = @DrafterIdValue
+      FROM reporting.drafter_canonical_appearances 
+      WHERE drafter_id_value = @DrafterIdValue
         AND (
           @CanonicalPolicyValue = 0
           OR (
             @CanonicalPolicyValue = 2
-            AND dca.has_main_feed_release = true
+            AND has_main_feed_release = true
           )
         );
       """;
@@ -75,7 +75,7 @@ internal sealed class UpdateDrafterHonorificsCommandHandler(
     // Read current honorific row
     const string currentSql =
       """
-      SELECT honorific, appearance_count
+      SELECT honorific
       FROM reporting.drafter_honorifics
       WHERE drafter_id_value = @DrafterIdValue;
       """;
@@ -96,9 +96,9 @@ internal sealed class UpdateDrafterHonorificsCommandHandler(
         (id, drafter_id_value, honorific, appearance_count, update_at_utc)
       VALUES (@Id, @DrafterIdValue, @HonorificValue, @AppearanceCount, @UpdatedAt)
       ON CONFLICT (drafter_id_value) DO UPDATE
-      SET honorific = EXCLUDED.honorific,
-          appearance_count = EXCLUDED.appearance_count,
-          update_at_utc = EXCLUDED.update_at_utc;
+      SET honorific           = EXCLUDED.honorific,
+          appearance_count    = EXCLUDED.appearance_count,
+          update_at_utc       = EXCLUDED.update_at_utc;
       """;
 
     await connection.ExecuteAsync(

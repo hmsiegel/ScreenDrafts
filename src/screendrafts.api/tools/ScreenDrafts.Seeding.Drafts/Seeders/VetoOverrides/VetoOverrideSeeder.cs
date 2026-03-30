@@ -130,6 +130,8 @@ internal sealed class VetoOverrideSeeder(
 
       var entity = result.Value;
 
+      veto.SeedMarkOverridden();
+
       toAdd.Add(entity);
       existingVetoIds.Add(entity.VetoId.Value);
 

@@ -89,6 +89,11 @@ public sealed class Veto : Entity<VetoId>
     return veto;
   }
 
+  internal void SeedMarkOverridden()
+  {
+    IsOverridden = true;
+  }
+
   public Result Override(Participant by, string? actedByPublicId = null)
   {
     if (IsOverridden)

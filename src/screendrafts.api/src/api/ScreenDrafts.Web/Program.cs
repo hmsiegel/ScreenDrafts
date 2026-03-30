@@ -21,8 +21,9 @@ builder.Services.AddInfrastructure(
   [
     DraftsModule.ConfigureConsumers,
     IntegrationsModule.ConfigureConsumers,
+    MoviesModule.ConfigureConsumers,
+    ReportingModule.ConfigureConsumers,
     RealTimeUpdatesModule.ConfigureConsumers,
-    MoviesModule.ConfigureConsumers
     ],
   rabbitMqSettings,
   redisConnectionString,

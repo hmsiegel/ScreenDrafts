@@ -1,4 +1,8 @@
-﻿namespace ScreenDrafts.Modules.Reporting.Composition;
+﻿using MassTransit;
+
+using ScreenDrafts.Modules.Drafts.IntegrationEvents;
+
+namespace ScreenDrafts.Modules.Reporting.Composition;
 
 public static class ReportingModule
 {
@@ -24,6 +28,17 @@ public static class ReportingModule
   {
     services.AddScoped<IReportingIntegrationEventDispatcher, ReportingIntegrationEventDispatcher>();
     services.AddScoped<IReportingDomainEventDispatcher, ReportingDomainEventDispatcher>();
+  }
+
+  public static void ConfigureConsumers(IRegistrationConfigurator registrationConfigurator, string instanceId)
+  {
+    ArgumentNullException.ThrowIfNull(registrationConfigurator);
+
+    registrationConfigurator.AddConsumer<IntegrationEventConsumer<DraftPartStartedIntegrationEvent>>()
+      .Endpoint(c => c.InstanceId = instanceId);
+
+    registrationConfigurator.AddConsumer<IntegrationEventConsumer<PickLockedIntegrationEvent>>()
+      .Endpoint(c => c.InstanceId = instanceId);
   }
 
   private static void AddDomainEventHandlers(this IServiceCollection services)

@@ -164,6 +164,7 @@
   </Folder>
   <Folder Name="/tools/">
     <Project Path="tools/ScreenDrafts.Seeding.Drafts/ScreenDrafts.Seeding.Drafts.csproj" />
+    <Project Path="tools/ScreenDrafts.Seeding.Honorifics/ScreenDrafts.Seeding.Honorifics.csproj" Id="d99cfe95-35a9-473d-b206-e88c609e06f7" />
     <Project Path="tools/ScreenDrafts.Seeding.Movies/ScreenDrafts.Seeding.Movies.csproj" />
     <Project Path="tools/ScreenDrafts.Seeding.Users/ScreenDrafts.Seeding.Users.csproj" />
     <Project Path="tools/ScreenDrafts.Tools.DbMigrator/ScreenDrafts.Tools.DbMigrator.csproj" Id="fce926a6-d3f9-4990-8f13-a250ed056b6a" />

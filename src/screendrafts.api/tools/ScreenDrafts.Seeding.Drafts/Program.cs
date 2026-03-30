@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Common.Abstractions.Exceptions;
-
-using Host = Microsoft.Extensions.Hosting.Host;
+﻿using Host = Microsoft.Extensions.Hosting.Host;
 
 var basePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
 

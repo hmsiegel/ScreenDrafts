@@ -59,6 +59,23 @@
       - Users__Keycloak__PublicClientId=screendrafts-public-client
     profiles: ["manual"]
 
+  screendrafts.seeding.honorifics:
+    build:
+      context: .
+      dockerfile: tools/ScreenDrafts.Seeding.Honorifics/Dockerfile
+    depends_on:
+      - screendrafts.database
+    networks:
+      - screendrafts
+    volumes:
+      - ./data:/app/data
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - DOTNET_ENVIRONMENT=Development
+      - DATA_PATH=/app/data
+      - ConnectionStrings__Database=Host=screendrafts.database;Port=5432;Database=screendrafts;Username=postgres;Password=postgres;Include Error Detail=true
+    profiles: ["manual"]
+
 networks:
   screendrafts:
     external: true

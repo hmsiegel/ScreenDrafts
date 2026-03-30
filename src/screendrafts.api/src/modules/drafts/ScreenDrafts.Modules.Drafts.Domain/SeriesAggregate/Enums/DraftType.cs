@@ -1,6 +1,4 @@
-﻿using System.Data;
-
-namespace ScreenDrafts.Modules.Drafts.Domain.SeriesAggregate.Enums;
+﻿namespace ScreenDrafts.Modules.Drafts.Domain.SeriesAggregate.Enums;
 
 public sealed class DraftType(string name, int value)
   : SmartEnum<DraftType>(name, value)

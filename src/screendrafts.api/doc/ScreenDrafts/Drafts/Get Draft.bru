@@ -5,9 +5,13 @@ meta {
 }
 
 get {
-  url: {{url}}/drafts/6dd82ffb-657f-4ae9-adb3-99132a6dd9d6
+  url: {{url}}/drafts/:publicId
   body: none
   auth: bearer
+}
+
+params:path {
+  publicId: d_u99vZJQCTmpiEdu
 }
 
 auth:bearer {

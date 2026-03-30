@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.RealTimeUpdates.Composition;
+﻿using ScreenDrafts.Modules.Reporting.IntegrationEvents;
+
+namespace ScreenDrafts.Modules.RealTimeUpdates.Composition;
 
 public static class RealTimeUpdatesModule
 {
@@ -48,6 +50,12 @@ public static class RealTimeUpdatesModule
       .Endpoint(c => c.InstanceId = instanceId);
 
     registrationConfigurator.AddConsumer<IntegrationEventConsumer<DraftPositionUnassignedIntegrationEvent>>()
+      .Endpoint(c => c.InstanceId = instanceId);
+
+    registrationConfigurator.AddConsumer<IntegrationEventConsumer<DrafterHonorificEarnedIntegrationEvent>>()
+      .Endpoint(c => c.InstanceId = instanceId);
+
+    registrationConfigurator.AddConsumer<IntegrationEventConsumer<MovieHonorificEarnedIntegrationEvent>>()
       .Endpoint(c => c.InstanceId = instanceId);
   }
 

@@ -1,6 +1,6 @@
 param(
     [Parameter(Mandatory = $true, Position = 0)]
-    [ValidateSet("movies", "drafts", "users")]
+    [ValidateSet("movies", "drafts", "users", "honorifics")]
     [string]$Seeder,
 
     [string]$Module,

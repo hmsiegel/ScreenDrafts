@@ -64,6 +64,7 @@ internal sealed class CommissionerOverrideSeeder(
           nameof(Pick),
           nameof(CommissionerOverride),
           FormatCommissionerOverrideRecord(record));
+        continue;
       }
 
       var overrideGuid = DeterministicIds.CommissionerOverrideIdFrom(pickGuid);
