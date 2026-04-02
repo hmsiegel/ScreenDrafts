@@ -6,6 +6,7 @@ public sealed partial class DraftPart : AggregateRoot<DraftPartId, Guid>
   private readonly List<TriviaResult> _triviaResults = [];
   private readonly List<Pick> _picks = [];
   private readonly List<RequiredMovieVersion> _requiredMovieVersions = [];
+  private readonly List<SubDraft> _subDrafts = [];
   private int _communityPicksUsed;
 
   private DraftPart(
@@ -77,6 +78,10 @@ public sealed partial class DraftPart : AggregateRoot<DraftPartId, Guid>
 
   public DateTime CreatedAtUtc { get; private set; }
   public DateTime? UpdatedAtUtc { get; private set; }
+
+  // Speed Drafts
+  public int? SubDraftCount { get; private set; } = 3;
+  public IReadOnlyCollection<SubDraft> SubDrafts => _subDrafts.AsReadOnly();
 
   public DraftPartMovieVersionPolicyType MovieVersionPolicyType { get; private set; } = default!;
 

@@ -158,5 +158,17 @@ internal sealed class DraftPartConfiguration : IEntityTypeConfiguration<DraftPar
     builder.Ignore(d => d.TotalPicks);
     builder.Ignore(d => d.TotalParticipants);
 
+    // SubDrafts
+    builder.Ignore(d => d.SubDrafts);
+
+    builder.HasMany<SubDraft>("_subDrafts")
+      .WithOne()
+      .HasForeignKey(sd => sd.DraftPartId)
+      .OnDelete(DeleteBehavior.Cascade);
+
+    builder.Navigation("_subDrafts")
+      .UsePropertyAccessMode(PropertyAccessMode.Field);
+
+    builder.Property(d => d.SubDraftCount);
   }
 }

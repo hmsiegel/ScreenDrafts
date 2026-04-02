@@ -108,6 +108,11 @@ public static class DraftPartErrors
     description: "Maximum community vetoes cannot be negative."
   );
 
+  public static readonly SDError SubDraftsOnlyAllowedForSpeedDrafts = SDError.Conflict(
+    code: "DraftPart.SubDraftsOnlyAllowedForSpeedDrafts",
+    description: "Sub drafts are only allowed for speed drafts."
+  );
+
   public static SDError NotFound(Guid draftPartId) => SDError.NotFound(
     code: "DraftPart.NotFound",
         description: $"Draft part with ID '{draftPartId}' is not found."
@@ -181,4 +186,9 @@ public static class DraftPartErrors
       description: $"Participant with ID '{participantId}' already has a trivia result."
     );
 
+  public static SDError SubDraftIndexAlreadyExists(int index) =>
+    SDError.Conflict(
+      code: "DraftPart.SubDraftIndexAlreadyExists",
+      description: $"Sub draft with index '{index}' already exists."
+    );
 }

@@ -102,4 +102,50 @@ public sealed partial class DraftPart
 
     return Result.Success();
   }
+
+  public Result AddSubDraft(int index, SubjectKind subjectKind, string subjectName, string publicId)
+  {
+    if (DraftType != DraftType.SpeedDraft)
+    {
+      return Result.Failure(DraftPartErrors.SubDraftsOnlyAllowedForSpeedDrafts);
+    }
+
+    if (_subDrafts.Any(s => s.Index == index))
+    {
+      return Result.Failure(DraftPartErrors.SubDraftIndexAlreadyExists(index));
+    }
+
+    var result = SubDraft.Create(
+      index: index,
+      subjectKind: subjectKind,
+      subjectName: subjectName,
+      draftPartId: Id,
+      publicId: publicId);
+
+    if (result.IsFailure)
+    {
+      return Result.Failure(result.Errors[0]);
+    }
+
+    _subDrafts.Add(result.Value);
+    UpdatedAtUtc = DateTime.UtcNow;
+    return Result.Success();
+  }
+
+  public int StartingVetoesForSubDraft(int subDraftIndex, IReadOnlyCollection<Veto> vetoes)
+  {
+    if (DraftType != DraftType.SpeedDraft)
+    {
+      return 0;
+    }
+
+    var carry = 0;
+
+    foreach (var subDraft in _subDrafts.OrderBy(s => s.Index).TakeWhile(s => s.Index < subDraftIndex))
+    {
+      carry = subDraft.ComputeVetoRemainder(1 + carry, vetoes);
+    }
+
+    return 1 + carry;
+  }
 }

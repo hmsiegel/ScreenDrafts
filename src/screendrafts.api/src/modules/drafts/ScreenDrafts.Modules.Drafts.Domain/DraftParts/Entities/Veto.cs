@@ -33,6 +33,8 @@ public sealed class Veto : Entity<VetoId>
   public DraftPart DraftPart => TargetPick.DraftPart;
   public DraftPartId DraftPartId => TargetPick.DraftPartId;
 
+  public SubDraftId? SubDraftId { get; private set; } = default!;
+
   public DraftPartParticipant IssuedByParticipant { get; private set; } = default!;
   public DraftPartParticipantId IssuedByParticipantId { get; private set; } = default!;
 

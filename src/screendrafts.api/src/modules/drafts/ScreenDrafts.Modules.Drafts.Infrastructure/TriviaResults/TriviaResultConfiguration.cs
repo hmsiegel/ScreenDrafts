@@ -39,5 +39,9 @@ internal sealed class TriviaResultConfiguration : IEntityTypeConfiguration<Trivi
     builder.Property(tr => tr.DraftPartId)
       .IsRequired()
       .HasConversion(IdConverters.DraftPartIdConverter);
+
+    builder.Property(tr => tr.SubDraftId)
+      .IsRequired(required: false)
+      .HasConversion(IdConverters.NullableSubDraftIdConverter);
   }
 }

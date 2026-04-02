@@ -21,4 +21,6 @@ public static class PublicIdPrefixes
   public const string DraftBoard = "db";
   public const string DraftPool = "dpo";
   public const string Media = "m";
+  public const string TriviaResult = "tr";
+  public const string SubDraft = "sd";
 }

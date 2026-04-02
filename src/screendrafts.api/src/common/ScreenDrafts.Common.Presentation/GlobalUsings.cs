@@ -9,9 +9,11 @@ global using Microsoft.AspNetCore.Authentication;
 global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.Http;
 global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.Options;
 
 global using ScreenDrafts.Common.Abstractions.Authentication;
 global using ScreenDrafts.Common.Abstractions.Authorization;
 global using ScreenDrafts.Common.Abstractions.Exceptions;
+global using ScreenDrafts.Common.Presentation.Http.Authentication;
 global using ScreenDrafts.Common.Presentation.Http.Authorization;
 global using ScreenDrafts.Common.Presentation.Results;

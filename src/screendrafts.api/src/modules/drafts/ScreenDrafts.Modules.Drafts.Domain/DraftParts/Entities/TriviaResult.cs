@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities;
+﻿using System.Data;
+
+namespace ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities;
 
 public sealed class TriviaResult : Entity<TriviaResultId>
 {
@@ -23,6 +25,7 @@ public sealed class TriviaResult : Entity<TriviaResultId>
 
   public DraftPartId DraftPartId { get; private set; } = default!;
   public DraftPart DraftPart { get; private set; } = default!;
+  public SubDraftId? SubDraftId { get; private set; } = default!;
 
   public Participant ParticipantId { get; private set; } = default!;
 
@@ -56,6 +59,44 @@ public sealed class TriviaResult : Entity<TriviaResultId>
       participantId: participantId,
       draftPart: draftPart,
       id: id);
+
+    return triviaResult;
+  }
+
+  public static Result<TriviaResult> CreateForSubDraft(
+    int position,
+    int questionsWon,
+    Participant participantId,
+    DraftPart draftPart,
+    SubDraftId subDraftId,
+    TriviaResultId? id = null)
+  {
+    ArgumentNullException.ThrowIfNull(draftPart);
+
+    if (position <= 0)
+    {
+      return Result.Failure<TriviaResult>(TriviaResultErrors.TriviaResultPositionInvalid);
+    }
+
+    if (questionsWon < 0)
+    {
+      return Result.Failure<TriviaResult>(TriviaResultErrors.TriviaResultQuestionsWonInvalid);
+    }
+
+    var result = Create(
+      position: position,
+      questionsWon: questionsWon,
+      participantId: participantId,
+      draftPart: draftPart,
+      id: id);
+
+    if (result.IsFailure)
+    {
+      return result;
+    }
+
+    var triviaResult = result.Value;
+    triviaResult.SubDraftId = subDraftId;
 
     return triviaResult;
   }

@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Modules.Drafts.Domain.DraftParts.ValueObjects;
-
-namespace ScreenDrafts.Modules.Drafts.Domain.DraftParts.ValueObjects;
+﻿namespace ScreenDrafts.Modules.Drafts.Domain.DraftParts.ValueObjects;
 
 public sealed record TriviaResultId(Guid Value) : AggregateRootId<Guid>
 {

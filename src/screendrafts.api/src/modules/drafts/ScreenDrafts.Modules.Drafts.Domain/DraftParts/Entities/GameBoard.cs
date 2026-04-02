@@ -13,12 +13,21 @@ public sealed class GameBoard : Entity<GameBoardId>
     DraftPartId = draftPart.Id;
   }
 
+  private GameBoard(
+    SubDraft subDraft,
+    GameBoardId? id = null) :
+    base(id ?? GameBoardId.CreateUnique())
+  {
+    SubDraftId = subDraft.Id;
+  }
+
   private GameBoard()
   {
   }
 
-  public DraftPart DraftPart { get; private set; } = default!;
-  public DraftPartId DraftPartId { get; private set; } = default!;
+  public DraftPart? DraftPart { get; private set; } = default!;
+  public DraftPartId? DraftPartId { get; private set; } = default!;
+  public SubDraftId? SubDraftId { get; private set; }
 
   public IReadOnlyCollection<DraftPosition> DraftPositions => _draftPositions;
 
@@ -35,6 +44,21 @@ public sealed class GameBoard : Entity<GameBoardId>
 
     var gameBoard = new GameBoard(
       draftPart: draftPart,
+      id: id);
+
+    return Result.Success(gameBoard);
+  }
+  public static Result<GameBoard> CreateForSubDraft(SubDraft subDraft, GameBoardId? id = null)
+  {
+    if (subDraft is null)
+    {
+      return Result.Failure<GameBoard>(GameBoardErrors.GameBoardCreationFailed);
+    }
+
+    ArgumentNullException.ThrowIfNull(subDraft);
+
+    var gameBoard = new GameBoard(
+      subDraft: subDraft,
       id: id);
 
     return Result.Success(gameBoard);
@@ -64,4 +88,5 @@ public sealed class GameBoard : Entity<GameBoardId>
   {
     _draftPositions.Clear();
   }
+
 }

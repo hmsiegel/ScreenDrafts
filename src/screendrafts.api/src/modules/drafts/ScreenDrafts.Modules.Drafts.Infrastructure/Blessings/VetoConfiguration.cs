@@ -49,5 +49,9 @@ internal sealed class VetoConfiguration : IEntityTypeConfiguration<Veto>
     builder.Ignore(v => v.DraftPartId);
 
     builder.HasIndex(x => new {x.IssuedByParticipantId, x.TargetPickId }).IsUnique();
+
+    builder.Property(v => v.SubDraftId)
+      .IsRequired(required: false)
+      .HasConversion(IdConverters.NullableSubDraftIdConverter);
   }
 }

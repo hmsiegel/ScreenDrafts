@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Modules.Drafts.Domain.DraftParts.Enums;
-
-namespace ScreenDrafts.Modules.Drafts.Domain.DraftParts.Enums;
+﻿namespace ScreenDrafts.Modules.Drafts.Domain.DraftParts.Enums;
 
 public sealed class BlessingType(string name, int value) : SmartEnum<BlessingType>(name, value)
 {

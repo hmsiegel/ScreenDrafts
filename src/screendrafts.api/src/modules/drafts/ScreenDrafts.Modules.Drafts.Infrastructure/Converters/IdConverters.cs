@@ -27,6 +27,11 @@ internal static class IdConverters
       v => v.Value,
       v => DraftPartId.Create(v));
 
+  public static ValueConverter<DraftPartId?, Guid?> NullableDraftPartIdConverter =>
+    new(
+      v => v == null ? null : v.Value,
+      v => v == null ? null : DraftPartId.Create(v.Value));
+
   public static ValueConverter<PickId, Guid> DraftPickIdConverter =>
     new(
       v => v.Value,
@@ -96,4 +101,14 @@ internal static class IdConverters
     new(
       v => v.Value,
       value => CandidateListEntryId.Create(value));
+
+  public static ValueConverter<SubDraftId, Guid> SubDraftIdConverter =>
+    new(
+      v => v.Value,
+      value => SubDraftId.Create(value));
+
+  public static ValueConverter<SubDraftId?, Guid?> NullableSubDraftIdConverter =>
+    new(
+      v => v == null ? null : v.Value,
+      v => v == null ? null : SubDraftId.Create(v.Value));
 }

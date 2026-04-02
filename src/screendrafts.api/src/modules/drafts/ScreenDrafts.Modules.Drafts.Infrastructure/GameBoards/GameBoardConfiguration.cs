@@ -19,10 +19,21 @@ internal sealed class GameBoardConfiguration : IEntityTypeConfiguration<GameBoar
     builder.HasOne(gb => gb.DraftPart)
       .WithOne(d => d.GameBoard)
       .HasForeignKey<GameBoard>(gb => gb.DraftPartId)
+      .IsRequired(required: false)
       .OnDelete(deleteBehavior: DeleteBehavior.Cascade);
 
     builder.Property(gb => gb.DraftPartId)
-      .IsRequired()
-      .HasConversion(IdConverters.DraftPartIdConverter);
+      .IsRequired(required: false)
+      .HasConversion(IdConverters.NullableDraftPartIdConverter);
+
+    builder.Property(gb => gb.SubDraftId)
+      .IsRequired(required: false)
+      .HasConversion(IdConverters.NullableSubDraftIdConverter);
+
+    builder.HasOne<SubDraft>()
+      .WithOne()
+      .HasForeignKey<GameBoard>(gb => gb.SubDraftId)
+      .IsRequired(required: false)
+      .OnDelete(deleteBehavior: DeleteBehavior.Cascade);
   }
 }
