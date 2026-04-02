@@ -1,0 +1,109 @@
+info:
+  name: Drafts.CreateDraft
+  type: http
+  seq: 12
+  tags:
+    - Drafts
+
+http:
+  method: POST
+  url: "{{baseUrl}}/drafts"
+  body:
+    type: json
+    data: |-
+      {
+        "title": "",
+        "draftType": "",
+        "seriesId": ""
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 201 Response
+    description: Created
+    request:
+      url: "{{baseUrl}}/drafts"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "title": "",
+            "draftType": "",
+            "seriesId": ""
+          }
+    response:
+      status: 201
+      statusText: Created
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "publicId": ""
+          }
+  - name: 400 Response
+    description: Bad Request
+    request:
+      url: "{{baseUrl}}/drafts"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "title": "",
+            "draftType": "",
+            "seriesId": ""
+          }
+    response:
+      status: 400
+      statusText: Bad Request
+      body:
+        type: text
+        data: ""
+  - name: 401 Response
+    description: Unauthorized
+    request:
+      url: "{{baseUrl}}/drafts"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "title": "",
+            "draftType": "",
+            "seriesId": ""
+          }
+    response:
+      status: 401
+      statusText: Unauthorized
+      body:
+        type: text
+        data: ""
+  - name: 403 Response
+    description: Forbidden
+    request:
+      url: "{{baseUrl}}/drafts"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "title": "",
+            "draftType": "",
+            "seriesId": ""
+          }
+    response:
+      status: 403
+      statusText: Forbidden
+      body:
+        type: text
+        data: ""

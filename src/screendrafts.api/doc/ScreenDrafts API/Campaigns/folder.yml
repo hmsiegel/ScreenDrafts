@@ -1,0 +1,7 @@
+info:
+  name: Campaigns
+  type: folder
+  seq: 1
+
+request:
+  auth: inherit

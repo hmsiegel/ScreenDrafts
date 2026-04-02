@@ -1,0 +1,104 @@
+info:
+  name: Campaigns.CreateCampaign
+  type: http
+  seq: 4
+  tags:
+    - Campaigns
+
+http:
+  method: POST
+  url: "{{baseUrl}}/campaigns"
+  body:
+    type: json
+    data: |-
+      {
+        "name": "1980's mini-Megas",
+        "slug": "1980-mini-megas"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 201 Response
+    description: Created
+    request:
+      url: "{{baseUrl}}/campaigns"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "name": "",
+            "slug": ""
+          }
+    response:
+      status: 201
+      statusText: Created
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "publicId": ""
+          }
+  - name: 400 Response
+    description: Bad Request
+    request:
+      url: "{{baseUrl}}/campaigns"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "name": "",
+            "slug": ""
+          }
+    response:
+      status: 400
+      statusText: Bad Request
+      body:
+        type: text
+        data: ""
+  - name: 401 Response
+    description: Unauthorized
+    request:
+      url: "{{baseUrl}}/campaigns"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "name": "",
+            "slug": ""
+          }
+    response:
+      status: 401
+      statusText: Unauthorized
+      body:
+        type: text
+        data: ""
+  - name: 403 Response
+    description: Forbidden
+    request:
+      url: "{{baseUrl}}/campaigns"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "name": "",
+            "slug": ""
+          }
+    response:
+      status: 403
+      statusText: Forbidden
+      body:
+        type: text
+        data: ""

@@ -1,0 +1,98 @@
+info:
+  name: Drafts.SetCampaign
+  type: http
+  seq: 6
+  tags:
+    - Drafts
+
+http:
+  method: PUT
+  url: "{{baseUrl}}/drafts/:draftId/campaign"
+  body:
+    type: json
+    data: |-
+      {
+        "draftId": "",
+        "campaignId": ""
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 204 Response
+    description: No Content
+    request:
+      url: "{{baseUrl}}/drafts/:draftId/campaign"
+      method: PUT
+      body:
+        type: json
+        data: |-
+          {
+            "draftId": "",
+            "campaignId": ""
+          }
+    response:
+      status: 204
+      statusText: No Content
+      body:
+        type: text
+        data: ""
+  - name: 400 Response
+    description: Bad Request
+    request:
+      url: "{{baseUrl}}/drafts/:draftId/campaign"
+      method: PUT
+      body:
+        type: json
+        data: |-
+          {
+            "draftId": "",
+            "campaignId": ""
+          }
+    response:
+      status: 400
+      statusText: Bad Request
+      body:
+        type: text
+        data: ""
+  - name: 401 Response
+    description: Unauthorized
+    request:
+      url: "{{baseUrl}}/drafts/:draftId/campaign"
+      method: PUT
+      body:
+        type: json
+        data: |-
+          {
+            "draftId": "",
+            "campaignId": ""
+          }
+    response:
+      status: 401
+      statusText: Unauthorized
+      body:
+        type: text
+        data: ""
+  - name: 403 Response
+    description: Forbidden
+    request:
+      url: "{{baseUrl}}/drafts/:draftId/campaign"
+      method: PUT
+      body:
+        type: json
+        data: |-
+          {
+            "draftId": "",
+            "campaignId": ""
+          }
+    response:
+      status: 403
+      statusText: Forbidden
+      body:
+        type: text
+        data: ""

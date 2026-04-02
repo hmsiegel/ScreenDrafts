@@ -1,0 +1,138 @@
+info:
+  name: Drafters.GetDrafterById
+  type: http
+  seq: 3
+  tags:
+    - Drafters
+
+http:
+  method: GET
+  url: "{{baseUrl}}/drafters/:publicId"
+  body:
+    type: text
+    data: ""
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: OK
+    request:
+      url: "{{baseUrl}}/drafters/:publicId"
+      method: GET
+      body:
+        type: text
+        data: ""
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "drafterPublicId": "",
+            "personPublicId": "",
+            "displayName": "",
+            "totalDrafts": "",
+            "firstDraft": "",
+            "mostRecentDraft": "",
+            "filmsDrafted": "",
+            "vetoesUsed": "",
+            "vetoOverridesUsed": "",
+            "commissionerOverrides": "",
+            "timesVetoed": "",
+            "timeesVetoOverridden": "",
+            "hasRolloverVeto": false,
+            "hasRolloverVetoOverride": false,
+            "socialHandles": "",
+            "draftHistory": [
+              {
+                "draft": {
+                  "draftPublicId": "",
+                  "draftTitle": "",
+                  "releaseDates": []
+                },
+                "picks": [
+                  {
+                    "position": "",
+                    "playOrder": "",
+                    "moviePublicId": "",
+                    "movieTitle": "",
+                    "movieVersionName": "",
+                    "wasVetoed": false,
+                    "wasVetoOverridden": false,
+                    "wasCommissionerOverridden": false,
+                    "vetoedByPublicId": "",
+                    "vetoedByDisplayName": "",
+                    "overrideByPublicId": "",
+                    "overrideByDisplayName": ""
+                  }
+                ]
+              }
+            ],
+            "vetoHistory": [
+              {
+                "draft": {},
+                "targetPickPublicId": "",
+                "position": "",
+                "playOrder": "",
+                "moviePublicId": "",
+                "movieTitle": "",
+                "targetDrafterPublicId": "",
+                "targetDrafterDisplayName": "",
+                "wasVetoOverridden": false,
+                "overrideByPublicId": "",
+                "overrideByDisplayName": ""
+              }
+            ]
+          }
+  - name: 401 Response
+    description: Unauthorized
+    request:
+      url: "{{baseUrl}}/drafters/:publicId"
+      method: GET
+      body:
+        type: text
+        data: ""
+    response:
+      status: 401
+      statusText: Unauthorized
+      body:
+        type: text
+        data: ""
+  - name: 403 Response
+    description: Forbidden
+    request:
+      url: "{{baseUrl}}/drafters/:publicId"
+      method: GET
+      body:
+        type: text
+        data: ""
+    response:
+      status: 403
+      statusText: Forbidden
+      body:
+        type: text
+        data: ""
+  - name: 404 Response
+    description: Not Found
+    request:
+      url: "{{baseUrl}}/drafters/:publicId"
+      method: GET
+      body:
+        type: text
+        data: ""
+    response:
+      status: 404
+      statusText: Not Found
+      body:
+        type: text
+        data: ""

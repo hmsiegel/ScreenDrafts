@@ -1,0 +1,26 @@
+info:
+  name: Access Token Confidential
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: http://localhost:18080/realms/screendrafts/protocol/openid-connect/token
+  body:
+    type: form-urlencoded
+    data:
+      - name: grant_type
+        value: client_credentials
+      - name: client_id
+        value: screendrafts-confidential-client
+      - name: client_secret
+        value: oRL4la55pi1uMlJMKSlg3hrhLfvKrZsg
+      - name: scope
+        value: openid
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

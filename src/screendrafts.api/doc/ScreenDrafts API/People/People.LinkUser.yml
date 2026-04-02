@@ -1,0 +1,98 @@
+info:
+  name: People.LinkUser
+  type: http
+  seq: 4
+  tags:
+    - People
+
+http:
+  method: POST
+  url: "{{baseUrl}}/people/:publicId/link-user"
+  body:
+    type: json
+    data: |-
+      {
+        "publicId": "",
+        "userId": ""
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 204 Response
+    description: No Content
+    request:
+      url: "{{baseUrl}}/people/:publicId/link-user"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "publicId": "",
+            "userId": ""
+          }
+    response:
+      status: 204
+      statusText: No Content
+      body:
+        type: text
+        data: ""
+  - name: 400 Response
+    description: Bad Request
+    request:
+      url: "{{baseUrl}}/people/:publicId/link-user"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "publicId": "",
+            "userId": ""
+          }
+    response:
+      status: 400
+      statusText: Bad Request
+      body:
+        type: text
+        data: ""
+  - name: 401 Response
+    description: Unauthorized
+    request:
+      url: "{{baseUrl}}/people/:publicId/link-user"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "publicId": "",
+            "userId": ""
+          }
+    response:
+      status: 401
+      statusText: Unauthorized
+      body:
+        type: text
+        data: ""
+  - name: 403 Response
+    description: Forbidden
+    request:
+      url: "{{baseUrl}}/people/:publicId/link-user"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "publicId": "",
+            "userId": ""
+          }
+    response:
+      status: 403
+      statusText: Forbidden
+      body:
+        type: text
+        data: ""

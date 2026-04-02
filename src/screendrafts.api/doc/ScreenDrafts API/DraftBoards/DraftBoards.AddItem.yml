@@ -1,0 +1,128 @@
+info:
+  name: DraftBoards.AddItem
+  type: http
+  seq: 4
+  tags:
+    - DraftBoards
+
+http:
+  method: POST
+  url: "{{baseUrl}}/drafts/:draftId/board"
+  body:
+    type: json
+    data: |-
+      {
+        "draftId": "",
+        "tmdbId": "",
+        "notes": "",
+        "priority": ""
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 204 Response
+    description: No Content
+    request:
+      url: "{{baseUrl}}/drafts/:draftId/board"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "draftId": "",
+            "tmdbId": "",
+            "notes": "",
+            "priority": ""
+          }
+    response:
+      status: 204
+      statusText: No Content
+      body:
+        type: text
+        data: ""
+  - name: 400 Response
+    description: Bad Request
+    request:
+      url: "{{baseUrl}}/drafts/:draftId/board"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "draftId": "",
+            "tmdbId": "",
+            "notes": "",
+            "priority": ""
+          }
+    response:
+      status: 400
+      statusText: Bad Request
+      body:
+        type: text
+        data: ""
+  - name: 401 Response
+    description: Unauthorized
+    request:
+      url: "{{baseUrl}}/drafts/:draftId/board"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "draftId": "",
+            "tmdbId": "",
+            "notes": "",
+            "priority": ""
+          }
+    response:
+      status: 401
+      statusText: Unauthorized
+      body:
+        type: text
+        data: ""
+  - name: 403 Response
+    description: Forbidden
+    request:
+      url: "{{baseUrl}}/drafts/:draftId/board"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "draftId": "",
+            "tmdbId": "",
+            "notes": "",
+            "priority": ""
+          }
+    response:
+      status: 403
+      statusText: Forbidden
+      body:
+        type: text
+        data: ""
+  - name: 404 Response
+    description: Not Found
+    request:
+      url: "{{baseUrl}}/drafts/:draftId/board"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "draftId": "",
+            "tmdbId": "",
+            "notes": "",
+            "priority": ""
+          }
+    response:
+      status: 404
+      statusText: Not Found
+      body:
+        type: text
+        data: ""

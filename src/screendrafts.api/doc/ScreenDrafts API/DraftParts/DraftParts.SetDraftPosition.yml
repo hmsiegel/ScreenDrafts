@@ -1,0 +1,158 @@
+info:
+  name: DraftParts.SetDraftPosition
+  type: http
+  seq: 12
+  tags:
+    - DraftParts
+
+http:
+  method: PUT
+  url: "{{baseUrl}}/draft-parts/:draftPartId/positions"
+  body:
+    type: json
+    data: |-
+      {
+        "draftPartId": "",
+        "positions": [
+          {
+            "name": "",
+            "picks": [],
+            "hasBonusVeto": false,
+            "hasBonusVetoOverride": false
+          }
+        ]
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 204 Response
+    description: No Content
+    request:
+      url: "{{baseUrl}}/draft-parts/:draftPartId/positions"
+      method: PUT
+      body:
+        type: json
+        data: |-
+          {
+            "draftPartId": "",
+            "positions": [
+              {
+                "name": "",
+                "picks": [],
+                "hasBonusVeto": false,
+                "hasBonusVetoOverride": false
+              }
+            ]
+          }
+    response:
+      status: 204
+      statusText: No Content
+      body:
+        type: text
+        data: ""
+  - name: 400 Response
+    description: Bad Request
+    request:
+      url: "{{baseUrl}}/draft-parts/:draftPartId/positions"
+      method: PUT
+      body:
+        type: json
+        data: |-
+          {
+            "draftPartId": "",
+            "positions": [
+              {
+                "name": "",
+                "picks": [],
+                "hasBonusVeto": false,
+                "hasBonusVetoOverride": false
+              }
+            ]
+          }
+    response:
+      status: 400
+      statusText: Bad Request
+      body:
+        type: text
+        data: ""
+  - name: 401 Response
+    description: Unauthorized
+    request:
+      url: "{{baseUrl}}/draft-parts/:draftPartId/positions"
+      method: PUT
+      body:
+        type: json
+        data: |-
+          {
+            "draftPartId": "",
+            "positions": [
+              {
+                "name": "",
+                "picks": [],
+                "hasBonusVeto": false,
+                "hasBonusVetoOverride": false
+              }
+            ]
+          }
+    response:
+      status: 401
+      statusText: Unauthorized
+      body:
+        type: text
+        data: ""
+  - name: 403 Response
+    description: Forbidden
+    request:
+      url: "{{baseUrl}}/draft-parts/:draftPartId/positions"
+      method: PUT
+      body:
+        type: json
+        data: |-
+          {
+            "draftPartId": "",
+            "positions": [
+              {
+                "name": "",
+                "picks": [],
+                "hasBonusVeto": false,
+                "hasBonusVetoOverride": false
+              }
+            ]
+          }
+    response:
+      status: 403
+      statusText: Forbidden
+      body:
+        type: text
+        data: ""
+  - name: 404 Response
+    description: Not Found
+    request:
+      url: "{{baseUrl}}/draft-parts/:draftPartId/positions"
+      method: PUT
+      body:
+        type: json
+        data: |-
+          {
+            "draftPartId": "",
+            "positions": [
+              {
+                "name": "",
+                "picks": [],
+                "hasBonusVeto": false,
+                "hasBonusVetoOverride": false
+              }
+            ]
+          }
+    response:
+      status: 404
+      statusText: Not Found
+      body:
+        type: text
+        data: ""

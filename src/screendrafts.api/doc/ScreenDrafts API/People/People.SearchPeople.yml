@@ -1,0 +1,85 @@
+info:
+  name: People.SearchPeople
+  type: http
+  seq: 1
+  tags:
+    - People
+
+http:
+  method: GET
+  url: "{{baseUrl}}/people/search"
+  body:
+    type: text
+    data: ""
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: OK
+    request:
+      url: "{{baseUrl}}/people/search"
+      method: GET
+      body:
+        type: text
+        data: ""
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "items": [
+              {
+                "publicId": "",
+                "firstName": "",
+                "lastName": "",
+                "displayName": "",
+                "isDrafter": false,
+                "isHost": false
+              }
+            ],
+            "totalCount": "",
+            "page": "",
+            "pageSize": "",
+            "totalPages": "",
+            "hasPreviousPage": false,
+            "hasNextPage": false
+          }
+  - name: 401 Response
+    description: Unauthorized
+    request:
+      url: "{{baseUrl}}/people/search"
+      method: GET
+      body:
+        type: text
+        data: ""
+    response:
+      status: 401
+      statusText: Unauthorized
+      body:
+        type: text
+        data: ""
+  - name: 403 Response
+    description: Forbidden
+    request:
+      url: "{{baseUrl}}/people/search"
+      method: GET
+      body:
+        type: text
+        data: ""
+    response:
+      status: 403
+      statusText: Forbidden
+      body:
+        type: text
+        data: ""

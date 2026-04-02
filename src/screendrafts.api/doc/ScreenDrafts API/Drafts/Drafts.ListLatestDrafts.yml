@@ -1,0 +1,46 @@
+info:
+  name: Drafts.ListLatestDrafts
+  type: http
+  seq: 10
+  tags:
+    - Drafts
+
+http:
+  method: GET
+  url: "{{baseUrl}}/drafts/latest"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: OK
+    request:
+      url: "{{baseUrl}}/drafts/latest"
+      method: GET
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "drafts": [
+              {
+                "draftPartPublicId": "",
+                "draftPublicId": "",
+                "title": "",
+                "episodeNumber": "",
+                "partNumber": "",
+                "totalParts": "",
+                "releaseDate": ""
+              }
+            ]
+          }

@@ -1,0 +1,129 @@
+info:
+  name: Series.CreateSeries
+  type: http
+  seq: 3
+  tags:
+    - Series
+
+http:
+  method: POST
+  url: "{{baseUrl}}/series"
+  body:
+    type: json
+    data: |-
+      {
+        "name": "",
+        "kind": "",
+        "canonicalPolicy": "",
+        "continuityScope": "",
+        "continuityDateRule": "",
+        "allowedDraftTypes": 0,
+        "defaultDraftType": ""
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 201 Response
+    description: Created
+    request:
+      url: "{{baseUrl}}/series"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "name": "",
+            "kind": "",
+            "canonicalPolicy": "",
+            "continuityScope": "",
+            "continuityDateRule": "",
+            "allowedDraftTypes": 0,
+            "defaultDraftType": ""
+          }
+    response:
+      status: 201
+      statusText: Created
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "id": ""
+          }
+  - name: 400 Response
+    description: Bad Request
+    request:
+      url: "{{baseUrl}}/series"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "name": "",
+            "kind": "",
+            "canonicalPolicy": "",
+            "continuityScope": "",
+            "continuityDateRule": "",
+            "allowedDraftTypes": 0,
+            "defaultDraftType": ""
+          }
+    response:
+      status: 400
+      statusText: Bad Request
+      body:
+        type: text
+        data: ""
+  - name: 401 Response
+    description: Unauthorized
+    request:
+      url: "{{baseUrl}}/series"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "name": "",
+            "kind": "",
+            "canonicalPolicy": "",
+            "continuityScope": "",
+            "continuityDateRule": "",
+            "allowedDraftTypes": 0,
+            "defaultDraftType": ""
+          }
+    response:
+      status: 401
+      statusText: Unauthorized
+      body:
+        type: text
+        data: ""
+  - name: 403 Response
+    description: Forbidden
+    request:
+      url: "{{baseUrl}}/series"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "name": "",
+            "kind": "",
+            "canonicalPolicy": "",
+            "continuityScope": "",
+            "continuityDateRule": "",
+            "allowedDraftTypes": 0,
+            "defaultDraftType": ""
+          }
+    response:
+      status: 403
+      statusText: Forbidden
+      body:
+        type: text
+        data: ""

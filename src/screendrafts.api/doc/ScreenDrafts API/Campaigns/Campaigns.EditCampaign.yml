@@ -1,0 +1,124 @@
+info:
+  name: Campaigns.EditCampaign
+  type: http
+  seq: 6
+  tags:
+    - Campaigns
+
+http:
+  method: PATCH
+  url: "{{baseUrl}}/campaigns/:publicId"
+  body:
+    type: json
+    data: |-
+      {
+        "publicId": "",
+        "name": "",
+        "slug": ""
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 204 Response
+    description: No Content
+    request:
+      url: "{{baseUrl}}/campaigns/:publicId"
+      method: PATCH
+      body:
+        type: json
+        data: |-
+          {
+            "publicId": "",
+            "name": "",
+            "slug": ""
+          }
+    response:
+      status: 204
+      statusText: No Content
+      body:
+        type: text
+        data: ""
+  - name: 400 Response
+    description: Bad Request
+    request:
+      url: "{{baseUrl}}/campaigns/:publicId"
+      method: PATCH
+      body:
+        type: json
+        data: |-
+          {
+            "publicId": "",
+            "name": "",
+            "slug": ""
+          }
+    response:
+      status: 400
+      statusText: Bad Request
+      body:
+        type: text
+        data: ""
+  - name: 401 Response
+    description: Unauthorized
+    request:
+      url: "{{baseUrl}}/campaigns/:publicId"
+      method: PATCH
+      body:
+        type: json
+        data: |-
+          {
+            "publicId": "",
+            "name": "",
+            "slug": ""
+          }
+    response:
+      status: 401
+      statusText: Unauthorized
+      body:
+        type: text
+        data: ""
+  - name: 403 Response
+    description: Forbidden
+    request:
+      url: "{{baseUrl}}/campaigns/:publicId"
+      method: PATCH
+      body:
+        type: json
+        data: |-
+          {
+            "publicId": "",
+            "name": "",
+            "slug": ""
+          }
+    response:
+      status: 403
+      statusText: Forbidden
+      body:
+        type: text
+        data: ""
+  - name: 404 Response
+    description: Not Found
+    request:
+      url: "{{baseUrl}}/campaigns/:publicId"
+      method: PATCH
+      body:
+        type: json
+        data: |-
+          {
+            "publicId": "",
+            "name": "",
+            "slug": ""
+          }
+    response:
+      status: 404
+      statusText: Not Found
+      body:
+        type: text
+        data: ""
+
+docs: Edits an existing campaign.

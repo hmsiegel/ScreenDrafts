@@ -1,0 +1,80 @@
+info:
+  name: Drafts.RemoveCampaign
+  type: http
+  seq: 1
+  tags:
+    - Campaigns
+
+http:
+  method: DELETE
+  url: "{{baseUrl}}/drafts/:draftId/campaign"
+  body:
+    type: text
+    data: ""
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 204 Response
+    description: No Content
+    request:
+      url: "{{baseUrl}}/drafts/:draftId/campaign"
+      method: DELETE
+      body:
+        type: text
+        data: ""
+    response:
+      status: 204
+      statusText: No Content
+      body:
+        type: text
+        data: ""
+  - name: 400 Response
+    description: Bad Request
+    request:
+      url: "{{baseUrl}}/drafts/:draftId/campaign"
+      method: DELETE
+      body:
+        type: text
+        data: ""
+    response:
+      status: 400
+      statusText: Bad Request
+      body:
+        type: text
+        data: ""
+  - name: 401 Response
+    description: Unauthorized
+    request:
+      url: "{{baseUrl}}/drafts/:draftId/campaign"
+      method: DELETE
+      body:
+        type: text
+        data: ""
+    response:
+      status: 401
+      statusText: Unauthorized
+      body:
+        type: text
+        data: ""
+  - name: 403 Response
+    description: Forbidden
+    request:
+      url: "{{baseUrl}}/drafts/:draftId/campaign"
+      method: DELETE
+      body:
+        type: text
+        data: ""
+    response:
+      status: 403
+      statusText: Forbidden
+      body:
+        type: text
+        data: ""
+
+docs: Removes a campaign from a draft.

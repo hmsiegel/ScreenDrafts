@@ -1,0 +1,28 @@
+meta {
+  name: Access Token
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:18080/realms/screendrafts/protocol/openid-connect/token
+  body: formUrlEncoded
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:form-urlencoded {
+  grant_type: password
+  client_id: screendrafts-public-client
+  scope: email openid
+  username: harlan@siegel.com
+  password: password
+}
+
+tests {
+  var jsonData = res.getBody();
+  bru.setVar("token", jsonData.access_token);
+}

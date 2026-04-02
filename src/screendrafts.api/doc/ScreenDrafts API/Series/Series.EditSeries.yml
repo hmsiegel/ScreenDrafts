@@ -1,0 +1,154 @@
+info:
+  name: Series.EditSeries
+  type: http
+  seq: 5
+  tags:
+    - Series
+
+http:
+  method: PATCH
+  url: "{{baseUrl}}/series/:publicId"
+  body:
+    type: json
+    data: |-
+      {
+        "publicId": "",
+        "name": "",
+        "kind": "",
+        "canonicalPolicy": "",
+        "continuityScope": "",
+        "continuityDateRule": "",
+        "allowedDraftTypes": 0,
+        "defaultDraftType": ""
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 204 Response
+    description: No Content
+    request:
+      url: "{{baseUrl}}/series/:publicId"
+      method: PATCH
+      body:
+        type: json
+        data: |-
+          {
+            "publicId": "",
+            "name": "",
+            "kind": "",
+            "canonicalPolicy": "",
+            "continuityScope": "",
+            "continuityDateRule": "",
+            "allowedDraftTypes": 0,
+            "defaultDraftType": ""
+          }
+    response:
+      status: 204
+      statusText: No Content
+      body:
+        type: text
+        data: ""
+  - name: 400 Response
+    description: Bad Request
+    request:
+      url: "{{baseUrl}}/series/:publicId"
+      method: PATCH
+      body:
+        type: json
+        data: |-
+          {
+            "publicId": "",
+            "name": "",
+            "kind": "",
+            "canonicalPolicy": "",
+            "continuityScope": "",
+            "continuityDateRule": "",
+            "allowedDraftTypes": 0,
+            "defaultDraftType": ""
+          }
+    response:
+      status: 400
+      statusText: Bad Request
+      body:
+        type: text
+        data: ""
+  - name: 401 Response
+    description: Unauthorized
+    request:
+      url: "{{baseUrl}}/series/:publicId"
+      method: PATCH
+      body:
+        type: json
+        data: |-
+          {
+            "publicId": "",
+            "name": "",
+            "kind": "",
+            "canonicalPolicy": "",
+            "continuityScope": "",
+            "continuityDateRule": "",
+            "allowedDraftTypes": 0,
+            "defaultDraftType": ""
+          }
+    response:
+      status: 401
+      statusText: Unauthorized
+      body:
+        type: text
+        data: ""
+  - name: 403 Response
+    description: Forbidden
+    request:
+      url: "{{baseUrl}}/series/:publicId"
+      method: PATCH
+      body:
+        type: json
+        data: |-
+          {
+            "publicId": "",
+            "name": "",
+            "kind": "",
+            "canonicalPolicy": "",
+            "continuityScope": "",
+            "continuityDateRule": "",
+            "allowedDraftTypes": 0,
+            "defaultDraftType": ""
+          }
+    response:
+      status: 403
+      statusText: Forbidden
+      body:
+        type: text
+        data: ""
+  - name: 404 Response
+    description: Not Found
+    request:
+      url: "{{baseUrl}}/series/:publicId"
+      method: PATCH
+      body:
+        type: json
+        data: |-
+          {
+            "publicId": "",
+            "name": "",
+            "kind": "",
+            "canonicalPolicy": "",
+            "continuityScope": "",
+            "continuityDateRule": "",
+            "allowedDraftTypes": 0,
+            "defaultDraftType": ""
+          }
+    response:
+      status: 404
+      statusText: Not Found
+      body:
+        type: text
+        data: ""
+
+docs: Edits an existing series.

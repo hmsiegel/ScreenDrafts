@@ -1,0 +1,98 @@
+info:
+  name: DrafterTeams.AddDrafter
+  type: http
+  seq: 5
+  tags:
+    - DrafterTeams
+
+http:
+  method: POST
+  url: "{{baseUrl}}/drafter-teams/:publicId/members"
+  body:
+    type: json
+    data: |-
+      {
+        "drafterTeamId": "",
+        "drafterId": ""
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 204 Response
+    description: No Content
+    request:
+      url: "{{baseUrl}}/drafter-teams/:publicId/members"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "drafterTeamId": "",
+            "drafterId": ""
+          }
+    response:
+      status: 204
+      statusText: No Content
+      body:
+        type: text
+        data: ""
+  - name: 401 Response
+    description: Unauthorized
+    request:
+      url: "{{baseUrl}}/drafter-teams/:publicId/members"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "drafterTeamId": "",
+            "drafterId": ""
+          }
+    response:
+      status: 401
+      statusText: Unauthorized
+      body:
+        type: text
+        data: ""
+  - name: 403 Response
+    description: Forbidden
+    request:
+      url: "{{baseUrl}}/drafter-teams/:publicId/members"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "drafterTeamId": "",
+            "drafterId": ""
+          }
+    response:
+      status: 403
+      statusText: Forbidden
+      body:
+        type: text
+        data: ""
+  - name: 404 Response
+    description: Not Found
+    request:
+      url: "{{baseUrl}}/drafter-teams/:publicId/members"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "drafterTeamId": "",
+            "drafterId": ""
+          }
+    response:
+      status: 404
+      statusText: Not Found
+      body:
+        type: text
+        data: ""
