@@ -16,7 +16,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<EditSeriesRequest>
       .Produces(StatusCodes.Status403Forbidden)
       .Produces(StatusCodes.Status404NotFound);
     });
-    Permissions(DraftsAuth.Permissions.CampaignUpdate);
+    Policies(DraftsAuth.Permissions.CampaignUpdate);
   }
 
   public override async Task HandleAsync(EditSeriesRequest req, CancellationToken ct)

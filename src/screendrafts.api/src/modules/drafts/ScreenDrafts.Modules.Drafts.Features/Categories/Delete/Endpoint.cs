@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Drafts.Features.Categories.Delete;
+﻿namespace ScreenDrafts.Modules.Drafts.Features.Categories.Delete;
 
 internal sealed class Endpoint : ScreenDraftsEndpoint<DeleteCategoryRequest>
 {
@@ -14,7 +14,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<DeleteCategoryRequest>
       .Produces(StatusCodes.Status403Forbidden)
       .Produces(StatusCodes.Status404NotFound);
     });
-    Permissions(DraftsAuth.Permissions.CampaignDelete);
+    Policies(DraftsAuth.Permissions.CampaignDelete);
   }
 
   public override async Task HandleAsync(DeleteCategoryRequest req, CancellationToken ct)

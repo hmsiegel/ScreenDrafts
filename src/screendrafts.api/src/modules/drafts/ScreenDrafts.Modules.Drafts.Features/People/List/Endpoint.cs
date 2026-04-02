@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Drafts.Features.People.List;
+﻿namespace ScreenDrafts.Modules.Drafts.Features.People.List;
 
 internal sealed class Endpoint : ScreenDraftsEndpoint<ListPeopleRequest, PeopleCollectionResponse>
 {
@@ -13,7 +13,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<ListPeopleRequest, PeopleC
       .Produces(StatusCodes.Status401Unauthorized)
       .Produces(StatusCodes.Status403Forbidden);
     });
-    Permissions(DraftsAuth.Permissions.PersonList);
+    Policies(DraftsAuth.Permissions.PersonList);
   }
 
   public override async Task HandleAsync(ListPeopleRequest req, CancellationToken ct)

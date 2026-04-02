@@ -1,4 +1,4 @@
-using ScreenDrafts.Common.Abstractions.Results;
+﻿using ScreenDrafts.Common.Abstractions.Results;
 
 namespace ScreenDrafts.Modules.Drafts.Features.People.Create;
 
@@ -16,7 +16,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<CreatePersonRequest, strin
        .Produces(StatusCodes.Status401Unauthorized)
        .Produces(StatusCodes.Status403Forbidden);
     });
-    Permissions(DraftsAuth.Permissions.PersonCreate);
+    Policies(DraftsAuth.Permissions.PersonCreate);
   }
 
   public override async Task HandleAsync(CreatePersonRequest req, CancellationToken ct)

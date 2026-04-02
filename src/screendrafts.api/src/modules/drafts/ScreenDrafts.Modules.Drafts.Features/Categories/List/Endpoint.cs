@@ -1,4 +1,4 @@
-using ScreenDrafts.Common.Presentation.Http.Authentication;
+﻿using ScreenDrafts.Common.Presentation.Http.Authentication;
 
 namespace ScreenDrafts.Modules.Drafts.Features.Categories.List;
 
@@ -17,7 +17,7 @@ internal sealed class Endpoint(IUsersApi usersApi) : ScreenDraftsEndpoint<ListCa
       .Produces(StatusCodes.Status401Unauthorized)
       .Produces(StatusCodes.Status403Forbidden);
     });
-    Permissions(DraftsAuth.Permissions.CampaignList);
+    Policies(DraftsAuth.Permissions.CampaignList);
   }
 
   public override async Task HandleAsync(ListCategoriesRequest req, CancellationToken ct)

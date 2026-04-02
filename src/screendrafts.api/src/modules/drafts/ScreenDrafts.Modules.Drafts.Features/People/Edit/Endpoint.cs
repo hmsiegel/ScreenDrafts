@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Drafts.Features.People.Edit;
+﻿namespace ScreenDrafts.Modules.Drafts.Features.People.Edit;
 
 internal sealed class Endpoint : ScreenDraftsEndpoint<EditPersonRequest>
 {
@@ -15,7 +15,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<EditPersonRequest>
       .Produces(StatusCodes.Status403Forbidden)
       .Produces(StatusCodes.Status404NotFound);
     });
-    Permissions(DraftsAuth.Permissions.PersonUpdate);
+    Policies(DraftsAuth.Permissions.PersonUpdate);
   }
 
   public override async Task HandleAsync(EditPersonRequest req, CancellationToken ct)

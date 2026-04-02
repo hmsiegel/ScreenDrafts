@@ -15,7 +15,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<CreateSeriesRequest, Creat
       .Produces(StatusCodes.Status400BadRequest)
       .Produces(StatusCodes.Status403Forbidden);
     });
-    Permissions(DraftsAuth.Permissions.SeriesCreate);
+    Policies(DraftsAuth.Permissions.SeriesCreate);
   }
 
   public override async Task HandleAsync(CreateSeriesRequest req, CancellationToken ct)

@@ -13,7 +13,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<SearchPeopleRequest, Paged
       .Produces(StatusCodes.Status401Unauthorized)
       .Produces(StatusCodes.Status403Forbidden);
     });
-    Permissions(DraftsAuth.Permissions.PersonSearch);
+    Policies(DraftsAuth.Permissions.PersonSearch);
   }
 
   public override async Task HandleAsync(SearchPeopleRequest req, CancellationToken ct)

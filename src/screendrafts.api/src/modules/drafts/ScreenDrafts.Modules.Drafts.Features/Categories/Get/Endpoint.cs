@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Drafts.Features.Categories.Get;
+﻿namespace ScreenDrafts.Modules.Drafts.Features.Categories.Get;
 
 internal sealed class Endpoint : ScreenDraftsEndpoint<GetCategoryRequest, CategoryResponse>
 {
@@ -13,7 +13,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<GetCategoryRequest, Catego
       .Produces(StatusCodes.Status401Unauthorized)
       .Produces(StatusCodes.Status403Forbidden);
     });
-    Permissions(DraftsAuth.Permissions.CategoryRead);
+    Policies(DraftsAuth.Permissions.CategoryRead);
   }
 
   public override async Task HandleAsync(GetCategoryRequest req, CancellationToken ct)

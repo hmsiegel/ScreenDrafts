@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Drafts.Features.People.Get;
+﻿namespace ScreenDrafts.Modules.Drafts.Features.People.Get;
 
 internal sealed class Endpoint : ScreenDraftsEndpoint<GetPersonRequest, PersonResponse>
 {
@@ -14,7 +14,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<GetPersonRequest, PersonRe
        .Produces(StatusCodes.Status401Unauthorized)
        .Produces(StatusCodes.Status403Forbidden);
     });
-    Permissions(DraftsAuth.Permissions.PersonRead);
+    Policies(DraftsAuth.Permissions.PersonRead);
   }
 
   public override async Task HandleAsync(GetPersonRequest req, CancellationToken ct)

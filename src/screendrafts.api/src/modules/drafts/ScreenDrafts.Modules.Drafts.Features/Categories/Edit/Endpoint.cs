@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Drafts.Features.Categories.Edit;
+﻿namespace ScreenDrafts.Modules.Drafts.Features.Categories.Edit;
 
 internal sealed class Endpoint : ScreenDraftsEndpoint<EditCategoryRequest>
 {
@@ -16,7 +16,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<EditCategoryRequest>
       .Produces(StatusCodes.Status403Forbidden)
       .Produces(StatusCodes.Status404NotFound);
     });
-    Permissions(DraftsAuth.Permissions.CategoryUpdate);
+    Policies(DraftsAuth.Permissions.CategoryUpdate);
   }
 
   public override async Task HandleAsync(EditCategoryRequest req, CancellationToken ct)

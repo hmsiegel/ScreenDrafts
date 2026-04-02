@@ -13,7 +13,7 @@ internal sealed class Endpoint : ScreenDraftsEndpointWithoutRequest<Response>
       .Produces(StatusCodes.Status401Unauthorized)
       .Produces(StatusCodes.Status403Forbidden);
     });
-    Permissions(DraftsAuth.Permissions.SeriesRead);
+    Policies(DraftsAuth.Permissions.SeriesRead);
   }
 
   public override async Task HandleAsync(CancellationToken ct)

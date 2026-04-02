@@ -15,7 +15,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<RemoveCandidateListEntryRe
       .Produces(StatusCodes.Status403Forbidden)
       .Produces(StatusCodes.Status404NotFound);
     });
-    Permissions(DraftsAuth.Permissions.CandidateListDelete);
+    Policies(DraftsAuth.Permissions.CandidateListDelete);
   }
 
   public override async Task HandleAsync(RemoveCandidateListEntryRequest req, CancellationToken ct)
