@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Common.Presentation.Http.Authentication;
-
-namespace ScreenDrafts.Common.Presentation.Http.Authorization;
+﻿namespace ScreenDrafts.Common.Presentation.Http.Authorization;
 
 internal sealed class CustomClaimsTransformation(IServiceScopeFactory serviceScopeFactory) : IClaimsTransformation
 {

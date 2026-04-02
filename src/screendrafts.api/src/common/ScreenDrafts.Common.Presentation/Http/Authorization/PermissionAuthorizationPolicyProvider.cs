@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Options;
-
-namespace ScreenDrafts.Common.Presentation.Http.Authorization;
+﻿namespace ScreenDrafts.Common.Presentation.Http.Authorization;
 
 internal sealed class PermissionAuthorizationPolicyProvider(IOptions<AuthorizationOptions> options) : DefaultAuthorizationPolicyProvider(options)
 {
