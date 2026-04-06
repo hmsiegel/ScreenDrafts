@@ -27,7 +27,7 @@ internal sealed class TriviaResultConfiguration : IEntityTypeConfiguration<Trivi
       participantBuilder.Property(p => p.Kind)
         .HasColumnName("participant_kind")
         .IsRequired()
-        .HasConversion(IdConverters.ParticipantKindConverter);
+        .HasConversion(EnumConverters.ParticipantKindConverter);
     });
 
 

@@ -272,7 +272,7 @@ public sealed class ApplyVetoOverrideTests(DraftsIntegrationTestWebAppFactory fa
 
   private async Task PlayPickAsync(string draftPartPublicId, string drafterPublicId, int position, int playOrder)
   {
-    var movie = Movie.Create(Faker.Company.CompanyName(), Faker.Random.AlphaNumeric(10), MediaType.Movie, Guid.NewGuid()).Value;
+    var movie = Movie.Create(Faker.Company.CompanyName(), $"m_{Faker.Random.AlphaNumeric(21)}", MediaType.Movie, Guid.NewGuid()).Value;
     DbContext.Movies.Add(movie);
     await DbContext.SaveChangesAsync();
 
@@ -283,7 +283,7 @@ public sealed class ApplyVetoOverrideTests(DraftsIntegrationTestWebAppFactory fa
       PlayOrder = playOrder,
       ParticipantPublicId = drafterPublicId,
       ParticipantKind = ParticipantKind.Drafter,
-      MovieId = movie.Id
+      MoviePublicId = movie.PublicId
     };
 
     await Sender.Send(command);

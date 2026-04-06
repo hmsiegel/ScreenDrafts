@@ -29,7 +29,7 @@ public sealed class PickCreatedDomainEventHandlerTests(DraftsIntegrationTestWebA
       PlayOrder = 1,
       ParticipantPublicId = drafter1PublicId,
       ParticipantKind = ParticipantKind.Drafter,
-      MovieId = movie.Id
+      MoviePublicId = movie.PublicId
     });
     await ProcessOutboxAsync();
 
@@ -48,7 +48,7 @@ public sealed class PickCreatedDomainEventHandlerTests(DraftsIntegrationTestWebA
     var draftPublicId = await CreateDraftWithPoolAsync();
     var (_, draftPartPublicId, drafter1PublicId, _) = await SetupStartedPartAsync(draftPublicId);
 
-    var movie = Movie.Create(Faker.Company.CompanyName(), Faker.Random.AlphaNumeric(10), MediaType.Movie, Guid.NewGuid()).Value;
+    var movie = Movie.Create(Faker.Company.CompanyName(), $"m_{Faker.Random.AlphaNumeric(21)}", MediaType.Movie, Guid.NewGuid()).Value;
     DbContext.Movies.Add(movie);
     await DbContext.SaveChangesAsync();
 
@@ -60,7 +60,7 @@ public sealed class PickCreatedDomainEventHandlerTests(DraftsIntegrationTestWebA
       PlayOrder = 1,
       ParticipantPublicId = drafter1PublicId,
       ParticipantKind = ParticipantKind.Drafter,
-      MovieId = movie.Id
+      MoviePublicId = movie.PublicId
     });
 
     // Assert — pick should succeed even if movie not in pool
@@ -87,7 +87,7 @@ public sealed class PickCreatedDomainEventHandlerTests(DraftsIntegrationTestWebA
       PlayOrder = 1,
       ParticipantPublicId = drafter1PublicId,
       ParticipantKind = ParticipantKind.Drafter,
-      MovieId = movie.Id
+      MoviePublicId = movie.PublicId
     });
 
     // Assert — pick persisted (integration event would have been published)

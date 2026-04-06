@@ -21,7 +21,7 @@ public sealed class UndoPickTests(DraftsIntegrationTestWebAppFactory factory)
       PlayOrder = 1,
       ParticipantPublicId = drafter1PublicId,
       ParticipantKind = ParticipantKind.Drafter,
-      MovieId = movie.Id
+      MoviePublicId = movie.PublicId
     });
 
     var command = new UndoPickCommand
@@ -52,7 +52,7 @@ public sealed class UndoPickTests(DraftsIntegrationTestWebAppFactory factory)
       PlayOrder = 1,
       ParticipantPublicId = drafter1PublicId,
       ParticipantKind = ParticipantKind.Drafter,
-      MovieId = movie.Id
+      MoviePublicId = movie.PublicId
     });
 
     // Verify pick exists before undo
@@ -88,7 +88,7 @@ public sealed class UndoPickTests(DraftsIntegrationTestWebAppFactory factory)
       PlayOrder = 1,
       ParticipantPublicId = drafter1PublicId,
       ParticipantKind = ParticipantKind.Drafter,
-      MovieId = movie1.Id
+      MoviePublicId = movie1.PublicId
     });
 
     await Sender.Send(new PlayPickCommand
@@ -98,7 +98,7 @@ public sealed class UndoPickTests(DraftsIntegrationTestWebAppFactory factory)
       PlayOrder = 2,
       ParticipantPublicId = drafter2PublicId,
       ParticipantKind = ParticipantKind.Drafter,
-      MovieId = movie2.Id
+      MoviePublicId = movie2.PublicId
     });
 
     // Act — undo pick 1 only
@@ -180,7 +180,7 @@ public sealed class UndoPickTests(DraftsIntegrationTestWebAppFactory factory)
       PlayOrder = 1,
       ParticipantPublicId = drafter1PublicId,
       ParticipantKind = ParticipantKind.Drafter,
-      MovieId = movie.Id
+      MoviePublicId = movie.PublicId
     });
 
     await Sender.Send(new ApplyVetoCommand
@@ -223,7 +223,7 @@ public sealed class UndoPickTests(DraftsIntegrationTestWebAppFactory factory)
       PlayOrder = 1,
       ParticipantPublicId = drafter1PublicId,
       ParticipantKind = ParticipantKind.Drafter,
-      MovieId = movie.Id
+      MoviePublicId = movie.PublicId
     });
 
     // Veto is a prerequisite for commissioner override
@@ -310,7 +310,7 @@ public sealed class UndoPickTests(DraftsIntegrationTestWebAppFactory factory)
 
   private async Task<Movie> CreateMovieAsync()
   {
-    var movie = Movie.Create(Faker.Company.CompanyName(), Faker.Random.AlphaNumeric(10), MediaType.Movie, Guid.NewGuid()).Value;
+    var movie = Movie.Create(Faker.Company.CompanyName(), $"m_{Faker.Random.AlphaNumeric(21)}", MediaType.Movie, Guid.NewGuid()).Value;
     DbContext.Movies.Add(movie);
     await DbContext.SaveChangesAsync();
     return movie;

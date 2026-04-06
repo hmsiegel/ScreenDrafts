@@ -29,6 +29,7 @@ public static class DraftsModule
     SqlMapper.AddTypeHandler(new SmartEnumTypeHandler<HostRole>());
     SqlMapper.AddTypeHandler(new SmartEnumTypeHandler<ParticipantKind>());
     SqlMapper.AddTypeHandler(new SmartEnumTypeHandler<ReleaseChannel>());
+    SqlMapper.AddTypeHandler(new SmartEnumTypeHandler<SubDraftStatus>());
     return services;
   }
 

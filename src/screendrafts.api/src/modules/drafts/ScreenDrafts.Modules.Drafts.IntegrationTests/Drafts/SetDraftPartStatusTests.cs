@@ -294,7 +294,7 @@ public sealed class SetDraftPartStatusTests(DraftsIntegrationTestWebAppFactory f
     for (int position = draftPart.MinPosition!.Value; position <= draftPart.MaxPosition!.Value; position++)
     {
       // Create a movie and pick for each position
-      var movie = Movie.Create(Faker.Company.CompanyName(), Faker.Random.AlphaNumeric(10), MediaType.Movie, Guid.NewGuid()).Value;
+      var movie = Movie.Create(Faker.Company.CompanyName(), $"m_{Faker.Random.AlphaNumeric(21)}", MediaType.Movie, Guid.NewGuid()).Value;
 
       DbContext.Movies.Add(movie);
       await DbContext.SaveChangesAsync();
@@ -309,7 +309,7 @@ public sealed class SetDraftPartStatusTests(DraftsIntegrationTestWebAppFactory f
         PlayOrder = position,
         ParticipantPublicId = participantPublicId,
         ParticipantKind = participant.Kind,
-        MovieId = movie.Id,
+        MoviePublicId = movie.PublicId,
         MovieVersionName = null
       };
 

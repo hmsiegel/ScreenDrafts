@@ -42,5 +42,13 @@ internal static class DraftPartRoutes
   public const string CandidateList = "/draft-parts/{draftPartId}/candidate-list";
   public const string CandidateListBulkAdd = "/draft-parts/{draftPartId}/candidate-list/bulk";
   public const string CandidateListEntry = "/draft-parts/{draftPartId}/candidate-list/{tmdbid}";
-}
 
+  // Speed Draft Sub-Drafts
+  public const string SubDrafts = "/draft-parts/{draftPartId}/sub-drafts";
+  public const string SubDraftById = "/draft-parts/{draftPartId}/sub-drafts/{subDraftId}";
+  public const string SubDraftSubject = "/draft-parts/{draftPartId}/sub-drafts/{subDraftId}/subject";
+  public const string SubDraftTrivia = "/draft-parts/{draftPartId}/sub-drafts/{subDraftId}/trivia-results";
+  public const string SubDraftPicks = "/draft-parts/{draftPartId}/sub-drafts/{subDraftId}/picks";
+  public const string SubDraftVeto = "/draft-parts/{draftPartId}/sub-drafts/{subDraftId}/picks/{playOrder}/veto";
+  public const string SubDraftAdvance = "/draft-parts/{draftPartId}/sub-drafts/{subDraftId}/advance";
+}

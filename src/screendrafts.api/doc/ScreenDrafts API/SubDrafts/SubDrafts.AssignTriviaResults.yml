@@ -1,0 +1,41 @@
+info:
+  name: SubDrafts.AssignTriviaResults
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: "{{baseUrl}}/draft-parts/:draftPartId/sub-drafts/:subDraftId/trivia-results"
+  params:
+    - name: draftPartId
+      value: ""
+      type: path
+    - name: subDraftId
+      value: ""
+      type: path
+  body:
+    type: json
+    data: |-
+      {
+        "results": [
+         {
+           "participantPublicId" :"",
+           "kind": 0,
+           "position" : 0,
+           "questionsWon": 0
+         },
+         {
+           "participantPublicId" :"",
+           "kind": 0,
+           "position" : 0,
+           "questionsWon": 0
+         }
+        ]
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

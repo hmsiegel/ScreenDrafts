@@ -84,7 +84,7 @@ public sealed class GetDrafterProfileTests(DraftsIntegrationTestWebAppFactory fa
       PlayOrder = 1,
       ParticipantPublicId = drafterPublicId,
       ParticipantKind = ParticipantKind.Drafter,
-      MovieId = movie.Id
+      MoviePublicId = movie.PublicId
     });
 
     // Act
@@ -131,7 +131,7 @@ public sealed class GetDrafterProfileTests(DraftsIntegrationTestWebAppFactory fa
       PlayOrder = 1,
       ParticipantPublicId = drafter1PublicId,
       ParticipantKind = ParticipantKind.Drafter,
-      MovieId = movie.Id
+      MoviePublicId = movie.PublicId
     });
 
     // drafter2 vetoes drafter1's pick
@@ -226,7 +226,7 @@ public sealed class GetDrafterProfileTests(DraftsIntegrationTestWebAppFactory fa
 
   private async Task<Movie> CreateMovieAsync()
   {
-    var movie = Movie.Create(Faker.Company.CompanyName(), Faker.Random.AlphaNumeric(10), MediaType.Movie, Guid.NewGuid()).Value;
+    var movie = Movie.Create(Faker.Company.CompanyName(), $"m_{Faker.Random.AlphaNumeric(21)}", MediaType.Movie, Guid.NewGuid()).Value;
     DbContext.Movies.Add(movie);
     await DbContext.SaveChangesAsync();
     return movie;

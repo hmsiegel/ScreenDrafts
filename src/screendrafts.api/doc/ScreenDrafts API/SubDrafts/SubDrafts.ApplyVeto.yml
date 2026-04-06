@@ -1,0 +1,32 @@
+info:
+  name: SubDrafts.ApplyVeto
+  type: http
+  seq: 5
+
+http:
+  method: POST
+  url: "{{baseUrl}}/draft-parts/:draftPartId/sub-drafts/:subDraftId/picks/:playOrder/veto"
+  params:
+    - name: playOrder
+      value: ""
+      type: path
+    - name: draftPartId
+      value: ""
+      type: path
+    - name: subDraftId
+      value: ""
+      type: path
+  body:
+    type: json
+    data: |-
+      {
+        "issuerPublicId": "",
+        "issuerKind": 0
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

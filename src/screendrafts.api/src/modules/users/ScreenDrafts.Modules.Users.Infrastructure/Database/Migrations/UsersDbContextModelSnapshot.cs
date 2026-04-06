@@ -134,6 +134,11 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                         },
                         new
                         {
+                            PermissionCode = "sub-drafts:read",
+                            RoleName = "Guest"
+                        },
+                        new
+                        {
                             PermissionCode = "users:read",
                             RoleName = "Host"
                         },
@@ -294,6 +299,21 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                         },
                         new
                         {
+                            PermissionCode = "sub-drafts:read",
+                            RoleName = "Host"
+                        },
+                        new
+                        {
+                            PermissionCode = "sub-drafts:create",
+                            RoleName = "Host"
+                        },
+                        new
+                        {
+                            PermissionCode = "sub-drafts:update",
+                            RoleName = "Host"
+                        },
+                        new
+                        {
                             PermissionCode = "users:read",
                             RoleName = "Drafter"
                         },
@@ -445,6 +465,11 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                         new
                         {
                             PermissionCode = "series:list",
+                            RoleName = "Drafter"
+                        },
+                        new
+                        {
+                            PermissionCode = "sub-drafts:read",
                             RoleName = "Drafter"
                         },
                         new
@@ -850,6 +875,21 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                         new
                         {
                             PermissionCode = "candidate-lists:delete",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "sub-drafts:read",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "sub-drafts:create",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "sub-drafts:update",
                             RoleName = "Administrator"
                         },
                         new
@@ -1275,6 +1315,21 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                         new
                         {
                             PermissionCode = "candidate-lists:delete",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "sub-drafts:read",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "sub-drafts:create",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "sub-drafts:update",
                             RoleName = "SuperAdministrator"
                         },
                         new
@@ -1765,6 +1820,18 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                         new
                         {
                             Code = "candidate-lists:delete"
+                        },
+                        new
+                        {
+                            Code = "sub-drafts:read"
+                        },
+                        new
+                        {
+                            Code = "sub-drafts:create"
+                        },
+                        new
+                        {
+                            Code = "sub-drafts:update"
                         });
                 });
 

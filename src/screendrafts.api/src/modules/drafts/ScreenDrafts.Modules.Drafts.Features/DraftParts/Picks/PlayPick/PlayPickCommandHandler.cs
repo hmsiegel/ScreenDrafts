@@ -28,11 +28,11 @@ internal sealed class PlayPickCommandHandler(
       return Result.Failure<PickId>(SeriesErrors.SeriesNotFound(draftPart.SeriesId.Value));
     }
 
-    var movie = await _movieRepository.GetByIdAsync(request.MovieId, cancellationToken);
+    var movie = await _movieRepository.GetByPublicIdAsync(request.MoviePublicId, cancellationToken);
 
     if (movie is null)
     {
-      return Result.Failure<PickId>(MovieErrors.NotFound(request.MovieId));
+      return Result.Failure<PickId>(MovieErrors.NotFound(request.MoviePublicId));
     }
 
     var participantResult = await _participantResolver.ResolveAsync(

@@ -2,5 +2,5 @@ name: Development
 variables:
   - name: baseUrl
     value: https://localhost:5001
-  - name: token
-    value: ""
+  - secret: true
+    name: token

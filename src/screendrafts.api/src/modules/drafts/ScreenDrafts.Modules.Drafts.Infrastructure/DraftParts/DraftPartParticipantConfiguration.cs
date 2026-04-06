@@ -30,7 +30,7 @@ internal sealed class DraftPartParticipantConfiguration : IEntityTypeConfigurati
 
     builder.Property(dpp => dpp.ParticipantKindValue)
       .IsRequired()
-      .HasConversion(IdConverters.ParticipantKindConverter);
+      .HasConversion(EnumConverters.ParticipantKindConverter);
 
     builder.Ignore(dpp => dpp.ParticipantId);
 

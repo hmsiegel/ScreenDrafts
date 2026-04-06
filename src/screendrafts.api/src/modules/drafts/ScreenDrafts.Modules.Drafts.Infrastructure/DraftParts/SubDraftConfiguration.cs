@@ -28,14 +28,14 @@ internal sealed class SubDraftConfiguration : IEntityTypeConfiguration<SubDraft>
     builder.Property(s => s.Index)
       .IsRequired();
 
+    builder.Property(s => s.Status)
+      .HasConversion(EnumConverters.SubDraftStatusConverter);
+
+
     builder.Property(s => s.SubjectKind)
-      .IsRequired()
-      .HasConversion(
-      sk => sk.Value,
-      value => SubjectKind.FromValue(value));
+      .HasConversion(EnumConverters.NullableSubjectKindConverter);
 
     builder.Property(s => s.SubjectName)
-      .IsRequired()
       .HasMaxLength(200);
 
     builder.Ignore(s => s.GameBoard);

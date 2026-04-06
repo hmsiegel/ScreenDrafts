@@ -122,5 +122,10 @@ public sealed class Permission(string code)
   public static readonly Permission UpdateCandidateList = new("candidate-lists:update");
   public static readonly Permission DeleteCandidateList = new("candidate-lists:delete");
 
+  // Speed Draft Sub-Drafts
+  public static readonly Permission ReadSubDraft = new("sub-drafts:read");
+  public static readonly Permission CreateSubDraft = new("sub-drafts:create");
+  public static readonly Permission UpdateSubDraft = new("sub-drafts:update");
+
   public string Code { get; } = code;
 }

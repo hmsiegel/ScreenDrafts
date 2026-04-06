@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.Picks.PlayPick;
 
-internal sealed class Endpoint : ScreenDraftsEndpoint<PlayPickRequest, Guid>
+internal sealed class Endpoint : ScreenDraftsEndpoint<PlayPickRequest, CreatedIdResponse>
 {
   public override void Configure()
   {
@@ -44,13 +44,16 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<PlayPickRequest, Guid>
       PlayOrder = req.PlayOrder,
       ParticipantPublicId = req.ParticipantPublicId,
       ParticipantKind = participantKind,
-      MovieId = req.MovieId,
+      MoviePublicId = req.MoviePublicId,
       MovieVersionName = req.MovieVersionName,
       ActedByPublicId = actorPublicId
     };
 
     var result = await Sender.Send(command, ct);
 
-    await this.SendOkAsync(result, ct);
+    await this.SendCreatedAsync(
+      result.Map(id => new CreatedIdResponse(id.Value)),
+      created => DraftPartLocations.ById(req.DraftPartId),
+      ct);
   }
 }

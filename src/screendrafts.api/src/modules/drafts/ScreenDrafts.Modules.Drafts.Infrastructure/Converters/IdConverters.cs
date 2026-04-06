@@ -67,11 +67,6 @@ internal static class IdConverters
       v => v.Value,
       v => TriviaResultId.Create(v));
 
-  public static ValueConverter<ParticipantKind, int> ParticipantKindConverter =>
-    new(
-      v => v.Value,
-      v => ParticipantKind.FromValue(v));
-
   public static ValueConverter<DraftPartParticipantId, Guid> DraftPartParticipantIdConverter =>
     new(
       v => v.Value,

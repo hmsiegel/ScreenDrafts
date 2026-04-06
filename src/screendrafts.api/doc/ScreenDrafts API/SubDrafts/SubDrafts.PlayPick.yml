@@ -1,0 +1,32 @@
+info:
+  name: SubDrafts.PlayPick
+  type: http
+  seq: 4
+
+http:
+  method: POST
+  url: "{{baseUrl}}/draft-parts/:draftPartId/sub-drafts/:subDraftId/picks"
+  params:
+    - name: subDraftId
+      value: ""
+      type: path
+    - name: draftPartId
+      value: ""
+      type: path
+  body:
+    type: json
+    data: |-
+      {
+        "movieId": "",
+        "position": 0,
+        "playOrder": 0,
+        "participantPublicId": "",
+        "participantKind": 0
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

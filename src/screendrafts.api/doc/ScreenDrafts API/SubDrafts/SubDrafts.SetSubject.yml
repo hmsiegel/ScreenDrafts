@@ -1,0 +1,29 @@
+info:
+  name: SubDrafts.SetSubject
+  type: http
+  seq: 2
+
+http:
+  method: PATCH
+  url: "{{baseUrl}}/draft-parts/:draftPartId/sub-drafts/:subDraftId/subject"
+  params:
+    - name: subDraftId
+      value: ""
+      type: path
+    - name: draftPartId
+      value: ""
+      type: path
+  body:
+    type: json
+    data: |-
+      {
+        "subjectKind" : 0,
+        "subjectName" : ""
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

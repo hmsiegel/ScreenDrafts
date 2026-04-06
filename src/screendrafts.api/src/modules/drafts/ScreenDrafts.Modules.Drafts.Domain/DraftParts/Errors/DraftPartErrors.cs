@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Domain.DraftParts.Errors;
+﻿using static System.Runtime.InteropServices.JavaScript.JSType;
+
+namespace ScreenDrafts.Modules.Drafts.Domain.DraftParts.Errors;
 
 public static class DraftPartErrors
 {
@@ -108,10 +110,6 @@ public static class DraftPartErrors
     description: "Maximum community vetoes cannot be negative."
   );
 
-  public static readonly SDError SubDraftsOnlyAllowedForSpeedDrafts = SDError.Conflict(
-    code: "DraftPart.SubDraftsOnlyAllowedForSpeedDrafts",
-    description: "Sub drafts are only allowed for speed drafts."
-  );
 
   public static SDError NotFound(Guid draftPartId) => SDError.NotFound(
     code: "DraftPart.NotFound",

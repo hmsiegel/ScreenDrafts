@@ -21,11 +21,13 @@ request:
   variables:
     - name: token
       value: ""
-    - name: refreshtoken
-      value: eyJhbGciOiJIUzUxMiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICIxMDIxNzdmOS0yMGM5LTQ3YzQtOTBlNS00NzFlY2RkM2M2ZTkifQ.eyJleHAiOjE3NzUxMzkyOTcsImlhdCI6MTc3NTEzNzQ5NywianRpIjoiMmI4YWM4NDMtM2RiZi00YmI5LWI4ZTAtMmJhMWVmYzI3YWI3IiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDoxODA4MC9yZWFsbXMvc2NyZWVuZHJhZnRzIiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDoxODA4MC9yZWFsbXMvc2NyZWVuZHJhZnRzIiwic3ViIjoiNWMyYmVmYTMtNDNjZi00ODU2LWFmZGYtOTU5MDlhYzUwMjIyIiwidHlwIjoiUmVmcmVzaCIsImF6cCI6InNjcmVlbmRyYWZ0cy1wdWJsaWMtY2xpZW50Iiwic2lkIjoiYTYwMDQwYTItZWIxZi00MTNlLWI5ODktYzQ4OTdmZTZiNzA1Iiwic2NvcGUiOiJvcGVuaWQgYWNyIGVtYWlsIHJvbGVzIHdlYi1vcmlnaW5zIHByb2ZpbGUgYmFzaWMifQ.TQFjeucEX58-09vxUxCVnGn737ER0QYTqel_-139fJU1uCYm6wH6uwBozOAudKJWGmsqaVOV2hKHY4HVApa5Pw
 bundled: false
 extensions:
   bruno:
     ignore:
       - node_modules
       - .git
+    presets:
+      request:
+        type: http
+        url: https://localhost:5001

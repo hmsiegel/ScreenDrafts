@@ -21,7 +21,10 @@ internal sealed class Validator : AbstractValidator<PlayPickCommand>
       .WithMessage("Participant ID must be a valid public ID.")
       .When(x => x.ParticipantKind != ParticipantKind.Community.Value);
 
-    RuleFor(x => x.MovieId)
-      .NotEmpty();
+    RuleFor(x => x.MoviePublicId)
+      .NotEmpty()
+      .WithMessage("Movie public ID is required.")
+      .Must(id => PublicIdGuards.IsValidWithPrefix(id, PublicIdPrefixes.Media))
+      .WithMessage("Movie public ID must be a valid public ID.");
   }
 }

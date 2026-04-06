@@ -53,7 +53,7 @@ internal sealed class PickConfiguration : IEntityTypeConfiguration<Pick>
 
     builder.Property(p => p.PlayedByParticipantKindValue)
       .IsRequired()
-      .HasConversion(IdConverters.ParticipantKindConverter);
+      .HasConversion(EnumConverters.ParticipantKindConverter);
 
     builder.Property(p => p.PlayedByParticipantIdValue)
       .IsRequired();

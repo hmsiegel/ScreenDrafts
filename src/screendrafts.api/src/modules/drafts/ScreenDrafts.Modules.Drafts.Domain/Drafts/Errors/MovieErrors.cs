@@ -56,4 +56,9 @@ public static class MovieErrors
     SDError.Failure(
       "MovieErrors.NotFound",
       $"Movie with ID {movieId} was not found.");
+
+  public static SDError NotFound(string publicId) =>
+    SDError.Failure(
+      "MovieErrors.NotFound",
+      $"Movie with public ID {publicId} was not found.");
 }

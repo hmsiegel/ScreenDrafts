@@ -112,5 +112,10 @@ internal static class DraftsAuth
 
     // Patreon
     internal const string PatreonSearch = "patreon:search";
+
+    // Speed Drafts
+    internal const string SubDraftRead = "sub-drafts:read";
+    internal const string SubDraftCreate = "sub-drafts:create";
+    internal const string SubDraftUpdate = "sub-drafts:update";
   }
 }

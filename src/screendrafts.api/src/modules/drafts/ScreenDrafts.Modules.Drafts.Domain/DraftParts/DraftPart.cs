@@ -329,4 +329,52 @@ public sealed partial class DraftPart : AggregateRoot<DraftPartId, Guid>
 
     return Result.Success();
   }
+
+  public Result AssignSubDraftTriviaResults(
+    SubDraftId subDraftId,
+    IEnumerable<(Participant participant, int Position, int QuestionsWon)> results)
+  {
+    ArgumentNullException.ThrowIfNull(results);
+
+    if (Status != DraftPartStatus.InProgress)
+    {
+      return Result.Failure(DraftPartErrors.InvalidStatusForTriviaAssignment);
+    }
+
+    _triviaResults.RemoveAll(t => t.SubDraftId == subDraftId);
+
+    foreach (var (participant, position, questionsWon) in results)
+    {
+      if (_triviaResults.Any(t => t.SubDraftId == subDraftId && t.ParticipantId == participant))
+      {
+        return Result.Failure(DraftPartErrors.ParticipantAlreadyHasTriviaResult(participant));
+      }
+
+      var result = TriviaResult.CreateForSubDraft(
+        participantId: participant,
+        position: position,
+        questionsWon: questionsWon,
+        draftPart: this,
+        subDraftId: subDraftId);
+
+      if (result.IsFailure)
+      {
+        return Result.Failure(result.Errors);
+      }
+
+      _triviaResults.Add(result.Value);
+    }
+
+    Raise(new TriviaResultsAssignedDomainEvent(
+      draftPartId: Id.Value,
+      triviaResults: _triviaResults
+        .Where(t => t.SubDraftId == subDraftId)
+        .Select(t => (t.ParticipantId.Value, t.Position))
+        .ToList()
+        .AsReadOnly()));
+
+    UpdatedAtUtc = DateTime.UtcNow;
+
+    return Result.Success();
+  }
 }

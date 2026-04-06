@@ -131,7 +131,12 @@ internal sealed class PermissionConfiguration : IEntityTypeConfiguration<Permiss
           Permission.ListCandidateLists,
           Permission.CreateCandidateList,
           Permission.UpdateCandidateList,
-          Permission.DeleteCandidateList);
+          Permission.DeleteCandidateList,
+
+          // Speed Sub-Drafts
+          Permission.ReadSubDraft,
+          Permission.CreateSubDraft,
+          Permission.UpdateSubDraft);
 
     builder.HasMany<Role>()
       .WithMany()
@@ -161,6 +166,7 @@ internal sealed class PermissionConfiguration : IEntityTypeConfiguration<Permiss
          CreateRolePermission(Role.Guest, Permission.ListHosts),
          CreateRolePermission(Role.Guest, Permission.ReadDrafterTeam),
          CreateRolePermission(Role.Guest, Permission.ListDrafterTeams),
+         CreateRolePermission(Role.Guest, Permission.ReadSubDraft),
 
          // -------------------------
          // Host
@@ -197,6 +203,9 @@ internal sealed class PermissionConfiguration : IEntityTypeConfiguration<Permiss
          CreateRolePermission(Role.Host, Permission.ListSeries),
          CreateRolePermission(Role.Host, Permission.ReadCampaign),
          CreateRolePermission(Role.Host, Permission.ListCampaigns),
+         CreateRolePermission(Role.Host, Permission.ReadSubDraft),
+         CreateRolePermission(Role.Host, Permission.CreateSubDraft),
+         CreateRolePermission(Role.Host, Permission.UpdateSubDraft),
 
          // -------------------------
          // Drafter
@@ -232,6 +241,7 @@ internal sealed class PermissionConfiguration : IEntityTypeConfiguration<Permiss
          CreateRolePermission(Role.Drafter, Permission.SearchCategories),
          CreateRolePermission(Role.Drafter, Permission.ReadSeries),
          CreateRolePermission(Role.Drafter, Permission.ListSeries),
+         CreateRolePermission(Role.Drafter, Permission.ReadSubDraft),
 
          // -------------------------
          // Administrator
@@ -332,6 +342,10 @@ internal sealed class PermissionConfiguration : IEntityTypeConfiguration<Permiss
          CreateRolePermission(Role.Administrator, Permission.CreateCandidateList),
          CreateRolePermission(Role.Administrator, Permission.UpdateCandidateList),
          CreateRolePermission(Role.Administrator, Permission.DeleteCandidateList),
+
+         CreateRolePermission(Role.Administrator, Permission.ReadSubDraft),
+         CreateRolePermission(Role.Administrator, Permission.CreateSubDraft),
+         CreateRolePermission(Role.Administrator, Permission.UpdateSubDraft),
 
          // -------------------------
          // Super Administrator
@@ -437,6 +451,10 @@ internal sealed class PermissionConfiguration : IEntityTypeConfiguration<Permiss
          CreateRolePermission(Role.SuperAdministrator, Permission.CreateCandidateList),
          CreateRolePermission(Role.SuperAdministrator, Permission.UpdateCandidateList),
          CreateRolePermission(Role.SuperAdministrator, Permission.DeleteCandidateList),
+
+         CreateRolePermission(Role.SuperAdministrator, Permission.ReadSubDraft),
+         CreateRolePermission(Role.SuperAdministrator, Permission.CreateSubDraft),
+         CreateRolePermission(Role.SuperAdministrator, Permission.UpdateSubDraft),
 
          // -------------------------
          // Patreon

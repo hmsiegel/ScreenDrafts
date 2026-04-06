@@ -1,0 +1,7 @@
+info:
+  name: SubDrafts
+  type: folder
+  seq: 20
+
+request:
+  auth: inherit

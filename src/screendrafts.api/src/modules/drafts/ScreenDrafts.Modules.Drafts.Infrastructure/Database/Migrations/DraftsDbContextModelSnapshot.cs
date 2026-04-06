@@ -770,12 +770,15 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasColumnType("text")
                         .HasColumnName("public_id");
 
-                    b.Property<int>("SubjectKind")
+                    b.Property<int>("Status")
+                        .HasColumnType("integer")
+                        .HasColumnName("status");
+
+                    b.Property<int?>("SubjectKind")
                         .HasColumnType("integer")
                         .HasColumnName("subject_kind");
 
                     b.Property<string>("SubjectName")
-                        .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)")
                         .HasColumnName("subject_name");

@@ -31,7 +31,7 @@ public sealed class VetoOverrideAppliedDomainEventHandlerTests(DraftsIntegration
       PlayOrder = 1,
       ParticipantPublicId = drafter1PublicId,
       ParticipantKind = ParticipantKind.Drafter,
-      MovieId = movie.Id
+      MoviePublicId = movie.PublicId
     });
     await ProcessOutboxAsync();
 
@@ -81,7 +81,7 @@ public sealed class VetoOverrideAppliedDomainEventHandlerTests(DraftsIntegration
       PlayOrder = 1,
       ParticipantPublicId = drafter1PublicId,
       ParticipantKind = ParticipantKind.Drafter,
-      MovieId = movie.Id
+      MoviePublicId = movie.PublicId
     });
     await Sender.Send(new ApplyVetoCommand
     {

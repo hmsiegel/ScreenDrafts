@@ -25,7 +25,7 @@ internal sealed class DraftBoardConfiguration : IEntityTypeConfiguration<DraftBo
       participantBuilder.Property(p => p.Kind)
         .HasColumnName("participant_kind")
         .IsRequired()
-        .HasConversion(IdConverters.ParticipantKindConverter);
+        .HasConversion(EnumConverters.ParticipantKindConverter);
     });
 
     builder.Property(b => b.PublicId)

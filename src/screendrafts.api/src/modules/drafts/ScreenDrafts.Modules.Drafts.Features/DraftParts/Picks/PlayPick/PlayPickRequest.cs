@@ -9,6 +9,6 @@ internal sealed record PlayPickRequest
   public int PlayOrder { get; init; }
   public string? ParticipantPublicId { get; init; }
   public int ParticipantKind { get; init; }
-  public Guid MovieId { get; init; }
+  public string MoviePublicId { get; init; } = default!;
   public string? MovieVersionName { get; init; }
 }

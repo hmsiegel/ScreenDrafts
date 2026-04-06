@@ -1,0 +1,25 @@
+info:
+  name: SubDrafts.Add
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{baseUrl}}/draft-parts/:draftPartId/sub-drafts"
+  params:
+    - name: draftPartId
+      value: ""
+      type: path
+  body:
+    type: json
+    data: |-
+      {
+        "index": 0
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

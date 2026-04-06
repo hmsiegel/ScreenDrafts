@@ -136,5 +136,13 @@ internal static class DraftsOpenApi
     public const string CandidateLists_BulkAddEntries = "CandidateLists.BulkAddEntries";
     public const string CandidateLists_RemoveEntry = "CandidateLists.RemoveEntry";
     public const string CandidateLists_GetList = "CandidateLists.GetList";
+
+    // Speed Draft Sub-Drafts
+    public const string SubDrafts_Add = "SubDrafts.Add";
+    public const string SubDrafts_SetSubject = "SubDrafts.SetSubject";
+    public const string SubDrafts_AssignTriviaResults = "SubDrafts.AssignTriviaResults";
+    public const string SubDrafts_PlayPick = "SubDrafts.PlayPick";
+    public const string SubDrafts_ApplyVeto = "SubDrafts.ApplyVeto";
+    public const string SubDrafts_Advance = "SubDrafts.Advance";
   }
 }

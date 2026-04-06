@@ -360,13 +360,13 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
       PlayOrder = playOrder,
       ParticipantPublicId = drafterPublicId,
       ParticipantKind = ParticipantKind.Drafter,
-      MovieId = movie.Id
+      MoviePublicId = movie.PublicId
     });
   }
 
   private async Task<Movie> CreateMovieAsync()
   {
-    var movie = Movie.Create(Faker.Company.CompanyName(), Faker.Random.AlphaNumeric(10), MediaType.Movie, Guid.NewGuid()).Value;
+    var movie = Movie.Create(Faker.Company.CompanyName(), $"m_{Faker.Random.AlphaNumeric(21)}", MediaType.Movie, Guid.NewGuid()).Value;
     DbContext.Movies.Add(movie);
     await DbContext.SaveChangesAsync();
     return movie;

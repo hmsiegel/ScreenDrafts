@@ -7,7 +7,7 @@ internal sealed record PlayPickCommand : ICommand<PickId>
   public required int PlayOrder { get; init; }
   public string? ParticipantPublicId { get; init; } = default!;
   public ParticipantKind ParticipantKind { get; init; } = default!;
-  public Guid MovieId { get; init; }
+  public string MoviePublicId { get; init; } = default!;
   public string? MovieVersionName { get; init; } = default!;
   public string ActedByPublicId { get; init; } = default!;
 }

@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-namespace ScreenDrafts.Modules.Drafts.Infrastructure.DraftParts;
+﻿namespace ScreenDrafts.Modules.Drafts.Infrastructure.DraftParts;
 
 internal sealed class DraftPartRepository(DraftsDbContext dbContext) : IDraftPartRepository
 {
@@ -18,6 +16,16 @@ internal sealed class DraftPartRepository(DraftsDbContext dbContext) : IDraftPar
   {
     return _dbContext.DraftParts
       .Include("_draftPartParticipants")
+      .Include(dp => dp.GameBoard!)
+        .ThenInclude(gb => gb.DraftPositions)
+      .FirstOrDefaultAsync(x => x.PublicId == draftPartId, cancellationToken);
+  }
+
+  public Task<DraftPart?> GetByPublicIdWithSubDraftsAsync(string draftPartId, CancellationToken cancellationToken)
+  {
+    return _dbContext.DraftParts
+      .Include("_draftPartParticipants")
+      .Include("_subDrafts")
       .Include(dp => dp.GameBoard!)
         .ThenInclude(gb => gb.DraftPositions)
       .FirstOrDefaultAsync(x => x.PublicId == draftPartId, cancellationToken);

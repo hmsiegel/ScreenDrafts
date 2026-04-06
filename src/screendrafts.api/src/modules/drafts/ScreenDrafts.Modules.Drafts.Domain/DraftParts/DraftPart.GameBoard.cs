@@ -103,11 +103,11 @@ public sealed partial class DraftPart
     return Result.Success();
   }
 
-  public Result AddSubDraft(int index, SubjectKind subjectKind, string subjectName, string publicId)
+  public Result AddSubDraft(int index, string publicId)
   {
     if (DraftType != DraftType.SpeedDraft)
     {
-      return Result.Failure(DraftPartErrors.SubDraftsOnlyAllowedForSpeedDrafts);
+      return Result.Failure(SubDraftErrors.SubDraftsOnlyAllowedForSpeedDrafts);
     }
 
     if (_subDrafts.Any(s => s.Index == index))
@@ -117,8 +117,6 @@ public sealed partial class DraftPart
 
     var result = SubDraft.Create(
       index: index,
-      subjectKind: subjectKind,
-      subjectName: subjectName,
       draftPartId: Id,
       publicId: publicId);
 
@@ -132,7 +130,7 @@ public sealed partial class DraftPart
     return Result.Success();
   }
 
-  public int StartingVetoesForSubDraft(int subDraftIndex, IReadOnlyCollection<Veto> vetoes)
+  public int StartingVetoesForSubDraft(int subDraftIndex, IReadOnlyCollection<(SubDraftId SubDraftId, bool IsOverridden)> vetoes)
   {
     if (DraftType != DraftType.SpeedDraft)
     {
@@ -147,5 +145,44 @@ public sealed partial class DraftPart
     }
 
     return 1 + carry;
+  }
+
+  public Result<int> AdvanceSubDraft(SubDraftId subDraftId, IReadOnlyCollection<(SubDraftId SubDraftId, bool IsOverridden)> vetoes)
+  {
+    ArgumentNullException.ThrowIfNull(subDraftId);
+
+    if (DraftType != DraftType.SpeedDraft)
+    {
+      return Result.Failure<int>(SubDraftErrors.SubDraftsOnlyAllowedForSpeedDrafts);
+    }
+
+    var current = _subDrafts.FirstOrDefault(s => s.Id == subDraftId);
+
+    if (current is null)
+    {
+      return Result.Failure<int>(SubDraftErrors.NotFound(subDraftId.Value));
+    }
+
+    var completeResult = current.Complete();
+    if (completeResult.IsFailure)
+    {
+      return Result.Failure<int>(completeResult.Errors[0]);
+    }
+
+    var next = _subDrafts
+      .OrderBy(s => s.Index)
+      .FirstOrDefault(s => s.Index > current.Index);
+
+    if (next is null)
+    {
+      UpdatedAtUtc = DateTime.UtcNow;
+      return Result.Success(0);
+    }
+
+    var startingVetoes = StartingVetoesForSubDraft(next.Index, vetoes);
+    var remainder = next.ComputeVetoRemainder(startingVetoes, vetoes);
+
+    UpdatedAtUtc = DateTime.UtcNow;
+    return Result.Success(remainder);
   }
 }

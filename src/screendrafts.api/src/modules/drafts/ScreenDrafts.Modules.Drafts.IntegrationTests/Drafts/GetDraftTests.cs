@@ -351,7 +351,7 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
       PlayOrder = 1,
       ParticipantPublicId = drafter1PublicId,
       ParticipantKind = ParticipantKind.Drafter,
-      MovieId = movie.Id
+      MoviePublicId = movie.PublicId
     });
 
     var query = new GetDraftQuery { DraftId = draftPublicId, IncludePatreon = false };
@@ -390,7 +390,7 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
       PlayOrder = 1,
       ParticipantPublicId = drafter1PublicId,
       ParticipantKind = ParticipantKind.Drafter,
-      MovieId = movie.Id
+      MoviePublicId = movie.PublicId
     });
 
     await Sender.Send(new ApplyVetoCommand
@@ -432,7 +432,7 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
       PlayOrder = 1,
       ParticipantPublicId = drafter1PublicId,
       ParticipantKind = ParticipantKind.Drafter,
-      MovieId = movie.Id
+      MoviePublicId = movie.PublicId
     });
 
     await Sender.Send(new ApplyCommissionerOverrideCommand
@@ -566,7 +566,7 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
 
   private async Task<Movie> CreateMovieAsync()
   {
-    var movie = Movie.Create(Faker.Company.CompanyName(), Faker.Random.AlphaNumeric(10), MediaType.Movie, Guid.NewGuid()).Value;
+    var movie = Movie.Create(Faker.Company.CompanyName(), $"m_{Faker.Random.AlphaNumeric(21)}", MediaType.Movie, Guid.NewGuid()).Value;
     DbContext.Movies.Add(movie);
     await DbContext.SaveChangesAsync();
     return movie;
