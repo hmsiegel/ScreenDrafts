@@ -139,6 +139,11 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                         },
                         new
                         {
+                            PermissionCode = "predictions:read",
+                            RoleName = "Guest"
+                        },
+                        new
+                        {
                             PermissionCode = "users:read",
                             RoleName = "Host"
                         },
@@ -314,6 +319,16 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                         },
                         new
                         {
+                            PermissionCode = "predictions:submit",
+                            RoleName = "Host"
+                        },
+                        new
+                        {
+                            PermissionCode = "predictions:read",
+                            RoleName = "Host"
+                        },
+                        new
+                        {
                             PermissionCode = "users:read",
                             RoleName = "Drafter"
                         },
@@ -470,6 +485,16 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                         new
                         {
                             PermissionCode = "sub-drafts:read",
+                            RoleName = "Drafter"
+                        },
+                        new
+                        {
+                            PermissionCode = "sub-drafts:create",
+                            RoleName = "Drafter"
+                        },
+                        new
+                        {
+                            PermissionCode = "predictions:read",
                             RoleName = "Drafter"
                         },
                         new
@@ -890,6 +915,21 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                         new
                         {
                             PermissionCode = "sub-drafts:update",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "predictions:manage",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "predictions:submit",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "predictions:read",
                             RoleName = "Administrator"
                         },
                         new
@@ -1330,6 +1370,21 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                         new
                         {
                             PermissionCode = "sub-drafts:update",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "predictions:manage",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "predictions:submit",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "predictions:read",
                             RoleName = "SuperAdministrator"
                         },
                         new
@@ -1832,6 +1887,18 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                         new
                         {
                             Code = "sub-drafts:update"
+                        },
+                        new
+                        {
+                            Code = "predictions:manage"
+                        },
+                        new
+                        {
+                            Code = "predictions:submit"
+                        },
+                        new
+                        {
+                            Code = "predictions:read"
                         });
                 });
 

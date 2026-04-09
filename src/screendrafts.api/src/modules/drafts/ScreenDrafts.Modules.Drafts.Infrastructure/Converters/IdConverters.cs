@@ -77,6 +77,11 @@ internal static class IdConverters
       v => v.Value,
       v => PersonId.Create(v));
 
+  public static ValueConverter<PersonId?, Guid?> NullablePersonIdConverter =>
+    new(
+      v => v == null ? null : v.Value,
+      v => v == null ? null : PersonId.Create(v.Value));
+
   public static ValueConverter<DraftPositionId, Guid> DraftPositionIdConverter
     => new(
       v => v.Value,
@@ -106,4 +111,49 @@ internal static class IdConverters
     new(
       v => v == null ? null : v.Value,
       v => v == null ? null : SubDraftId.Create(v.Value));
+
+  public static ValueConverter<PredictionSeasonId, Guid> PredictionSeasonIdConverter =>
+    new(
+      v => v.Value,
+      value => PredictionSeasonId.Create(value));
+
+  public static ValueConverter<ContestantId, Guid> ContestantIdConverter =>
+    new(
+      v => v.Value,
+      value => ContestantId.Create(value));
+
+  public static ValueConverter<DraftPartPredictionRuleId, Guid> DraftPartPredictionRulesIdConverter =>
+    new(
+      v => v.Value,
+      value => DraftPartPredictionRuleId.Create(value));
+
+  public static ValueConverter<DraftPredictionSetId, Guid> DraftPredictionSetIdConverter =>
+    new(
+      v => v.Value,
+      value => DraftPredictionSetId.Create(value));
+
+  public static ValueConverter<PredictionEntryId, Guid> PredictionEntryIdConverter =>
+    new(
+      v => v.Value,
+      value => PredictionEntryId.Create(value));
+
+  public static ValueConverter<SurrogateAssignmentId, Guid> SurrogateAssignmentIdConverter =>
+    new(
+      v => v.Value,
+      value => SurrogateAssignmentId.Create(value));
+
+  public static ValueConverter<PredictionStandingId, Guid> PredictionStandingIdConverter =>
+    new(
+      v => v.Value,
+      value => PredictionStandingId.Create(value));
+
+  public static ValueConverter<PredictionCarryoverId, Guid> PredictionCarryoverIdConverter =>
+    new(
+      v => v.Value,
+      value => PredictionCarryoverId.Create(value));
+
+  public static ValueConverter<PredictionResultId, Guid> PredictionResultIdConverter =>
+    new(
+      v => v.Value,
+      value => PredictionResultId.Create(value));
 }

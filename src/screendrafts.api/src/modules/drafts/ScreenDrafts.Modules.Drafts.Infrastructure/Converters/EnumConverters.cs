@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Infrastructure.Converters;
+﻿using ScreenDrafts.Modules.Drafts.Domain.Predictions.Enums;
+
+namespace ScreenDrafts.Modules.Drafts.Infrastructure.Converters;
 
 internal static class EnumConverters
 {
@@ -14,4 +16,19 @@ internal static class EnumConverters
     new(
       v => v.Value,
       v => SubDraftStatus.FromValue(v));
+
+  public static ValueConverter<PredictionMode, int> PredictionModeConverter =>
+    new(
+      v => v.Value,
+      v => PredictionMode.FromValue(v));
+
+  public static ValueConverter<PredictionSourceKind, int> PredictionSourceKindConverter =>
+    new(
+      v => v.Value,
+      value => PredictionSourceKind.FromValue(value));
+
+  public static ValueConverter<MergePolicy, int> MergePolicyConverter =>
+    new(
+      v => v.Value,
+      v => MergePolicy.FromValue(v));
 }

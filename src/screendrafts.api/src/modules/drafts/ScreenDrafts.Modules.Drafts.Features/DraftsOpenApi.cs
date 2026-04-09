@@ -21,6 +21,7 @@ internal static class DraftsOpenApi
     public const string DraftBoards = "DraftBoards";
     public const string DraftPools = "DraftPools";
     public const string CandidateLists = "CandidateLists";
+    public const string Predictions = "Predictions";
   }
 
   public static class Names
@@ -144,5 +145,24 @@ internal static class DraftsOpenApi
     public const string SubDrafts_PlayPick = "SubDrafts.PlayPick";
     public const string SubDrafts_ApplyVeto = "SubDrafts.ApplyVeto";
     public const string SubDrafts_Advance = "SubDrafts.Advance";
+
+    // Prediction Seasons
+    public const string Predictions_CreateSeason = "Predictions_CreateSeason";
+    public const string Predictions_GetSeasonStandings = "Predictions_GetSeasonStandings";
+
+    // Prediction Contestants
+    public const string Predictions_CreateContestant = "Predictions_CreateContestant";
+
+    // Prediction Rules
+    public const string Predictions_SetRules = "Predictions_SetRules";
+
+    // Prediction Sets
+    public const string Predictions_SubmitSet = "Predictions_SubmitSet";
+    public const string Predictions_GetSets = "Predictions_GetSets";
+    public const string Predictions_LockSet = "Predictions_LockSet";
+    public const string Predictions_AssignSurrogate = "Predictions_AssignSurrogate";
+    public const string Predictions_ScoreSets = "Predictions_ScoreSets";
+    public const string Predictions_AddCarryover = "Predictions_AddCarryover";
+    public const string Predictions_CloseSeason = "Predictions_CloseSeason";
   }
 }

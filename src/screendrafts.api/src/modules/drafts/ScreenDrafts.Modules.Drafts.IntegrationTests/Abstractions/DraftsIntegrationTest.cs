@@ -47,7 +47,16 @@ public abstract class DraftsIntegrationTest(DraftsIntegrationTestWebAppFactory f
         drafts.movies,
         drafts.trivia_results,
         drafts.vetoes,
-        drafts.veto_overrides
+        drafts.veto_overrides,
+        drafts.prediction_entries,
+        drafts.surrogate_assignments,
+        drafts.prediction_results,
+        drafts.prediction_standings,
+        drafts.prediction_carryovers,
+        drafts.draft_prediction_sets,
+        drafts.draft_part_prediction_rules,
+        drafts.prediction_contestants,
+        drafts.prediction_seasons
       RESTART IDENTITY CASCADE;
       """);
   }

@@ -136,7 +136,12 @@ internal sealed class PermissionConfiguration : IEntityTypeConfiguration<Permiss
           // Speed Sub-Drafts
           Permission.ReadSubDraft,
           Permission.CreateSubDraft,
-          Permission.UpdateSubDraft);
+          Permission.UpdateSubDraft,
+
+          // Predictions
+          Permission.ManagePredictions,
+          Permission.SubmitPredictions,
+          Permission.ReadPredictions);
 
     builder.HasMany<Role>()
       .WithMany()
@@ -167,7 +172,7 @@ internal sealed class PermissionConfiguration : IEntityTypeConfiguration<Permiss
          CreateRolePermission(Role.Guest, Permission.ReadDrafterTeam),
          CreateRolePermission(Role.Guest, Permission.ListDrafterTeams),
          CreateRolePermission(Role.Guest, Permission.ReadSubDraft),
-
+         CreateRolePermission(Role.Guest, Permission.ReadPredictions),
          // -------------------------
          // Host
          // -------------------------
@@ -206,6 +211,8 @@ internal sealed class PermissionConfiguration : IEntityTypeConfiguration<Permiss
          CreateRolePermission(Role.Host, Permission.ReadSubDraft),
          CreateRolePermission(Role.Host, Permission.CreateSubDraft),
          CreateRolePermission(Role.Host, Permission.UpdateSubDraft),
+         CreateRolePermission(Role.Host, Permission.SubmitPredictions),
+         CreateRolePermission(Role.Host, Permission.ReadPredictions),
 
          // -------------------------
          // Drafter
@@ -242,6 +249,8 @@ internal sealed class PermissionConfiguration : IEntityTypeConfiguration<Permiss
          CreateRolePermission(Role.Drafter, Permission.ReadSeries),
          CreateRolePermission(Role.Drafter, Permission.ListSeries),
          CreateRolePermission(Role.Drafter, Permission.ReadSubDraft),
+         CreateRolePermission(Role.Drafter, Permission.CreateSubDraft),
+         CreateRolePermission(Role.Drafter, Permission.ReadPredictions),
 
          // -------------------------
          // Administrator
@@ -346,6 +355,10 @@ internal sealed class PermissionConfiguration : IEntityTypeConfiguration<Permiss
          CreateRolePermission(Role.Administrator, Permission.ReadSubDraft),
          CreateRolePermission(Role.Administrator, Permission.CreateSubDraft),
          CreateRolePermission(Role.Administrator, Permission.UpdateSubDraft),
+
+         CreateRolePermission(Role.Administrator, Permission.ManagePredictions),
+         CreateRolePermission(Role.Administrator, Permission.SubmitPredictions),
+         CreateRolePermission(Role.Administrator, Permission.ReadPredictions),
 
          // -------------------------
          // Super Administrator
@@ -455,6 +468,10 @@ internal sealed class PermissionConfiguration : IEntityTypeConfiguration<Permiss
          CreateRolePermission(Role.SuperAdministrator, Permission.ReadSubDraft),
          CreateRolePermission(Role.SuperAdministrator, Permission.CreateSubDraft),
          CreateRolePermission(Role.SuperAdministrator, Permission.UpdateSubDraft),
+
+         CreateRolePermission(Role.SuperAdministrator, Permission.ManagePredictions),
+         CreateRolePermission(Role.SuperAdministrator, Permission.SubmitPredictions),
+         CreateRolePermission(Role.SuperAdministrator, Permission.ReadPredictions),
 
          // -------------------------
          // Patreon

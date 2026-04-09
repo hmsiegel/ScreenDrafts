@@ -9,11 +9,13 @@ public sealed class PredictionSeason : AggregateRoot<PredictionSeasonId, Guid>
   private PredictionSeason(
     int number,
     DateOnly startsOn,
+    string publicId,
     PredictionSeasonId? id = null)
     : base(id ?? PredictionSeasonId.CreateUnique())
   {
     Number = number;
     StartsOn = startsOn;
+    PublicId = publicId;
   }
 
   private PredictionSeason()
@@ -21,6 +23,7 @@ public sealed class PredictionSeason : AggregateRoot<PredictionSeasonId, Guid>
   }
 
   public int Number { get; private set; } = 1;
+  public string PublicId { get; private set; } = default!;
   public DateOnly StartsOn { get; private set; } = default!;
   public DateOnly? EndsOn { get; private set; } = default!;
   public int TargetPoints { get; private set; } = 100;
@@ -32,15 +35,29 @@ public sealed class PredictionSeason : AggregateRoot<PredictionSeasonId, Guid>
 
   public static PredictionSeason Create(
     int number,
-    DateOnly startsOn)
-  {
-    return new PredictionSeason(
+    DateOnly startsOn,
+    string publicId) => new(
       number: number,
-      startsOn: startsOn);
+      startsOn: startsOn,
+      publicId: publicId);
+
+  /// <summary>
+  /// Closes the season and records the date.
+  /// </summary>
+  /// <param name="endsOn">The date the season ends.</param>
+  public void CloseSeason(DateOnly endsOn)
+  {
+    EndsOn = endsOn;
+    IsClosed = true;
   }
 
-  public void CloseSeason()
+  /// <summary>
+  /// Records a points carryover (handicap, bonus, or manual adjustment) for a contestant in the season.
+  /// </summary>
+  /// <param name="carryover">The carryover to record.</param>
+  public void AddCarryover(PredictionCarryover carryover)
   {
-    IsClosed = true;
+    ArgumentNullException.ThrowIfNull(carryover);
+    _carryovers.Add(carryover);
   }
 }

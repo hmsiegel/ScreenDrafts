@@ -1232,6 +1232,396 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                     b.ToTable("people", "drafts");
                 });
 
+            modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Predictions.Entities.DraftPartPredictionRule", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("CreatedOnUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_on_utc");
+
+                    b.Property<DateTime?>("DeadlineUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deadline_utc");
+
+                    b.Property<Guid>("DraftPartId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("draft_part_id");
+
+                    b.Property<int>("PredictionMode")
+                        .HasColumnType("integer")
+                        .HasColumnName("prediction_mode");
+
+                    b.Property<string>("PublicId")
+                        .IsRequired()
+                        .HasMaxLength(19)
+                        .HasColumnType("character varying(19)")
+                        .HasColumnName("public_id");
+
+                    b.Property<int>("RequiredCount")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(7)
+                        .HasColumnName("required_count");
+
+                    b.Property<int?>("TopN")
+                        .HasColumnType("integer")
+                        .HasColumnName("top_n");
+
+                    b.Property<DateTime?>("UpdatedOnUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_on_utc");
+
+                    b.HasKey("Id")
+                        .HasName("pk_draft_part_prediction_rules");
+
+                    b.HasIndex("DraftPartId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_draft_part_prediction_rules_draft_part_id");
+
+                    b.HasIndex("PublicId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_draft_part_prediction_rules_public_id");
+
+                    b.ToTable("draft_part_prediction_rules", "drafts");
+                });
+
+            modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Predictions.Entities.DraftPredictionSet", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("ContestantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("contestant_id");
+
+                    b.Property<Guid>("DraftPartId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("draft_part_id");
+
+                    b.Property<DateTime?>("LockedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("locked_at_utc");
+
+                    b.Property<string>("PublicId")
+                        .IsRequired()
+                        .HasMaxLength(19)
+                        .HasColumnType("character varying(19)")
+                        .HasColumnName("public_id");
+
+                    b.Property<Guid>("SeasonId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("season_id");
+
+                    b.Property<int>("SourceKind")
+                        .HasColumnType("integer")
+                        .HasColumnName("source_kind");
+
+                    b.Property<DateTime>("SubmittedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("submitted_at_utc");
+
+                    b.Property<Guid?>("SubmittedByPersonId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("submitted_by_person_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_draft_prediction_sets");
+
+                    b.HasIndex("DraftPartId")
+                        .HasDatabaseName("ix_draft_prediction_sets_draft_part_id");
+
+                    b.HasIndex("PublicId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_draft_prediction_sets_public_id");
+
+                    b.HasIndex("SeasonId")
+                        .HasDatabaseName("ix_draft_prediction_sets_season_id");
+
+                    b.HasIndex("SubmittedByPersonId")
+                        .HasDatabaseName("ix_draft_prediction_sets_submitted_by_person_id");
+
+                    b.HasIndex("ContestantId", "DraftPartId")
+                        .IsUnique()
+                        .HasDatabaseName("ux_draft_prediction_sets_contestant_part");
+
+                    b.ToTable("draft_prediction_sets", "drafts");
+                });
+
+            modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Predictions.Entities.PredictionCarryover", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("ContestantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("contestant_id");
+
+                    b.Property<int>("Kind")
+                        .HasColumnType("integer")
+                        .HasColumnName("kind");
+
+                    b.Property<int>("Points")
+                        .HasColumnType("integer")
+                        .HasColumnName("points");
+
+                    b.Property<string>("Reason")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("reason");
+
+                    b.Property<Guid>("SeasonId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("season_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_prediction_carryovers");
+
+                    b.HasIndex("ContestantId")
+                        .HasDatabaseName("ix_prediction_carryovers_contestant_id");
+
+                    b.HasIndex("SeasonId")
+                        .HasDatabaseName("ix_prediction_carryovers_season_id");
+
+                    b.ToTable("prediction_carryovers", "drafts");
+                });
+
+            modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Predictions.Entities.PredictionContestant", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("display_name");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
+
+                    b.Property<Guid?>("PersonId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("person_id");
+
+                    b.Property<string>("PublicId")
+                        .IsRequired()
+                        .HasMaxLength(19)
+                        .HasColumnType("character varying(19)")
+                        .HasColumnName("public_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_prediction_contestants");
+
+                    b.HasIndex("PersonId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_prediction_contestants_person_id");
+
+                    b.HasIndex("PublicId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_prediction_contestants_public_id");
+
+                    b.ToTable("prediction_contestants", "drafts");
+                });
+
+            modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Predictions.Entities.PredictionEntry", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("MediaPublicId")
+                        .IsRequired()
+                        .HasMaxLength(19)
+                        .HasColumnType("character varying(19)")
+                        .HasColumnName("media_public_id");
+
+                    b.Property<string>("MediaTitle")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("media_title");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)")
+                        .HasColumnName("notes");
+
+                    b.Property<int?>("OrderIndex")
+                        .HasColumnType("integer")
+                        .HasColumnName("order_index");
+
+                    b.Property<Guid>("SetId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("set_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_prediction_entries");
+
+                    b.HasIndex("SetId")
+                        .HasDatabaseName("ix_prediction_entries_set_id");
+
+                    b.ToTable("prediction_entries", "drafts");
+                });
+
+            modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Predictions.Entities.PredictionResult", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<int>("CorrectCount")
+                        .HasColumnType("integer")
+                        .HasColumnName("correct_count");
+
+                    b.Property<int>("PointsAwarded")
+                        .HasColumnType("integer")
+                        .HasColumnName("points_awarded");
+
+                    b.Property<DateTime>("ScoredAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("scored_at_utc");
+
+                    b.Property<Guid>("SetId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("set_id");
+
+                    b.Property<bool>("ShootTheMoon")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false)
+                        .HasColumnName("shoot_the_moon");
+
+                    b.HasKey("Id")
+                        .HasName("pk_prediction_results");
+
+                    b.HasIndex("SetId")
+                        .IsUnique()
+                        .HasDatabaseName("ux_prediction_results_set_id");
+
+                    b.ToTable("prediction_results", "drafts");
+                });
+
+            modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Predictions.Entities.PredictionStanding", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("ContestantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("contestant_id");
+
+                    b.Property<DateTime?>("FirstCrossedTargetAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("first_crossed_target_at_utc");
+
+                    b.Property<int>("Points")
+                        .HasColumnType("integer")
+                        .HasColumnName("points");
+
+                    b.Property<Guid>("SeasonId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("season_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_prediction_standings");
+
+                    b.HasIndex("SeasonId")
+                        .HasDatabaseName("ix_prediction_standings_season_id");
+
+                    b.HasIndex("ContestantId", "SeasonId")
+                        .IsUnique()
+                        .HasDatabaseName("ux_prediction_standings_contestant_season");
+
+                    b.ToTable("prediction_standings", "drafts");
+                });
+
+            modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Predictions.Entities.SurrogateAssignment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<int>("MergePolicy")
+                        .HasColumnType("integer")
+                        .HasColumnName("merge_policy");
+
+                    b.Property<Guid>("PrimarySetId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("primary_set_id");
+
+                    b.Property<Guid>("SurrogateSetId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("surrogate_set_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_surrogate_assignments");
+
+                    b.HasIndex("PrimarySetId")
+                        .HasDatabaseName("ix_surrogate_assignments_primary_set_id");
+
+                    b.HasIndex("SurrogateSetId")
+                        .HasDatabaseName("ix_surrogate_assignments_surrogate_set_id");
+
+                    b.ToTable("surrogate_assignments", "drafts");
+                });
+
+            modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Predictions.PredictionSeason", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateOnly?>("EndsOn")
+                        .HasColumnType("date")
+                        .HasColumnName("ends_on");
+
+                    b.Property<bool>("IsClosed")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false)
+                        .HasColumnName("is_closed");
+
+                    b.Property<int>("Number")
+                        .HasColumnType("integer")
+                        .HasColumnName("number");
+
+                    b.Property<string>("PublicId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("public_id");
+
+                    b.Property<DateOnly>("StartsOn")
+                        .HasColumnType("date")
+                        .HasColumnName("starts_on");
+
+                    b.Property<int>("TargetPoints")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(100)
+                        .HasColumnName("target_points");
+
+                    b.HasKey("Id")
+                        .HasName("pk_prediction_seasons");
+
+                    b.HasIndex("Number")
+                        .IsUnique()
+                        .HasDatabaseName("ix_prediction_seasons_number");
+
+                    b.HasIndex("PublicId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_prediction_seasons_public_id");
+
+                    b.ToTable("prediction_seasons", "drafts");
+                });
+
             modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.SeriesAggregate.Series", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1746,6 +2136,181 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                     b.Navigation("Person");
                 });
 
+            modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Predictions.Entities.DraftPartPredictionRule", b =>
+                {
+                    b.HasOne("ScreenDrafts.Modules.Drafts.Domain.DraftParts.DraftPart", "DraftPart")
+                        .WithOne()
+                        .HasForeignKey("ScreenDrafts.Modules.Drafts.Domain.Predictions.Entities.DraftPartPredictionRule", "DraftPartId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_draft_part_prediction_rules_draft_parts_draft_part_id");
+
+                    b.Navigation("DraftPart");
+                });
+
+            modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Predictions.Entities.DraftPredictionSet", b =>
+                {
+                    b.HasOne("ScreenDrafts.Modules.Drafts.Domain.Predictions.Entities.PredictionContestant", "Contestant")
+                        .WithMany()
+                        .HasForeignKey("ContestantId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_draft_prediction_sets_prediction_contestants_contestant_id");
+
+                    b.HasOne("ScreenDrafts.Modules.Drafts.Domain.DraftParts.DraftPart", "DraftPart")
+                        .WithMany()
+                        .HasForeignKey("DraftPartId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_draft_prediction_sets_draft_parts_draft_part_id");
+
+                    b.HasOne("ScreenDrafts.Modules.Drafts.Domain.Predictions.PredictionSeason", "Season")
+                        .WithMany("Sets")
+                        .HasForeignKey("SeasonId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_draft_prediction_sets_prediction_seasons_season_id");
+
+                    b.HasOne("ScreenDrafts.Modules.Drafts.Domain.People.Person", "SubmittedByPerson")
+                        .WithMany()
+                        .HasForeignKey("SubmittedByPersonId")
+                        .HasConstraintName("fk_draft_prediction_sets_people_submitted_by_person_id");
+
+                    b.OwnsOne("ScreenDrafts.Modules.Drafts.Domain.Predictions.Entities.PredictionRulesSnapshot", "RulesSnapshot", b1 =>
+                        {
+                            b1.Property<Guid>("DraftPredictionSetId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("id");
+
+                            b1.Property<int>("Mode")
+                                .HasColumnType("integer")
+                                .HasColumnName("snapshot_mode");
+
+                            b1.Property<int>("RequiredCount")
+                                .HasColumnType("integer")
+                                .HasColumnName("snapshot_required_count");
+
+                            b1.Property<int?>("TopN")
+                                .HasColumnType("integer")
+                                .HasColumnName("snapshot_top_n");
+
+                            b1.HasKey("DraftPredictionSetId");
+
+                            b1.ToTable("draft_prediction_sets", "drafts");
+
+                            b1.WithOwner()
+                                .HasForeignKey("DraftPredictionSetId")
+                                .HasConstraintName("fk_draft_prediction_sets_draft_prediction_sets_id");
+                        });
+
+                    b.Navigation("Contestant");
+
+                    b.Navigation("DraftPart");
+
+                    b.Navigation("RulesSnapshot");
+
+                    b.Navigation("Season");
+
+                    b.Navigation("SubmittedByPerson");
+                });
+
+            modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Predictions.Entities.PredictionCarryover", b =>
+                {
+                    b.HasOne("ScreenDrafts.Modules.Drafts.Domain.Predictions.Entities.PredictionContestant", "Contestant")
+                        .WithMany()
+                        .HasForeignKey("ContestantId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_prediction_carryovers_prediction_contestants_contestant_id");
+
+                    b.HasOne("ScreenDrafts.Modules.Drafts.Domain.Predictions.PredictionSeason", "Season")
+                        .WithMany("Carryovers")
+                        .HasForeignKey("SeasonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_prediction_carryovers_prediction_seasons_season_id");
+
+                    b.Navigation("Contestant");
+
+                    b.Navigation("Season");
+                });
+
+            modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Predictions.Entities.PredictionContestant", b =>
+                {
+                    b.HasOne("ScreenDrafts.Modules.Drafts.Domain.People.Person", "Person")
+                        .WithMany()
+                        .HasForeignKey("PersonId")
+                        .HasConstraintName("fk_prediction_contestants_people_person_id");
+
+                    b.Navigation("Person");
+                });
+
+            modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Predictions.Entities.PredictionEntry", b =>
+                {
+                    b.HasOne("ScreenDrafts.Modules.Drafts.Domain.Predictions.Entities.DraftPredictionSet", "PredictionSet")
+                        .WithMany("Entries")
+                        .HasForeignKey("SetId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_prediction_entries_draft_prediction_sets_set_id");
+
+                    b.Navigation("PredictionSet");
+                });
+
+            modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Predictions.Entities.PredictionResult", b =>
+                {
+                    b.HasOne("ScreenDrafts.Modules.Drafts.Domain.Predictions.Entities.DraftPredictionSet", "PredictionSet")
+                        .WithMany()
+                        .HasForeignKey("SetId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_prediction_results_draft_prediction_sets_set_id");
+
+                    b.Navigation("PredictionSet");
+                });
+
+            modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Predictions.Entities.PredictionStanding", b =>
+                {
+                    b.HasOne("ScreenDrafts.Modules.Drafts.Domain.Predictions.Entities.PredictionContestant", "Contestant")
+                        .WithMany()
+                        .HasForeignKey("ContestantId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_prediction_standings_prediction_contestants_contestant_id");
+
+                    b.HasOne("ScreenDrafts.Modules.Drafts.Domain.Predictions.PredictionSeason", "Season")
+                        .WithMany("Standings")
+                        .HasForeignKey("SeasonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_prediction_standings_prediction_seasons_season_id");
+
+                    b.Navigation("Contestant");
+
+                    b.Navigation("Season");
+                });
+
+            modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Predictions.Entities.SurrogateAssignment", b =>
+                {
+                    b.HasOne("ScreenDrafts.Modules.Drafts.Domain.Predictions.Entities.DraftPredictionSet", "PrimarySet")
+                        .WithMany("Surrogates")
+                        .HasForeignKey("PrimarySetId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_surrogate_assignments_draft_prediction_sets_primary_set_id");
+
+                    b.HasOne("ScreenDrafts.Modules.Drafts.Domain.Predictions.Entities.DraftPredictionSet", "SurrogateSet")
+                        .WithMany()
+                        .HasForeignKey("SurrogateSetId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_surrogate_assignments_draft_prediction_sets_surrogate_set_id");
+
+                    b.Navigation("PrimarySet");
+
+                    b.Navigation("SurrogateSet");
+                });
+
             modelBuilder.Entity("drafter_team_drafter", b =>
                 {
                     b.HasOne("ScreenDrafts.Modules.Drafts.Domain.Drafters.Drafter", null)
@@ -1833,6 +2398,22 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                     b.Navigation("DrafterProfile");
 
                     b.Navigation("HostProfile");
+                });
+
+            modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Predictions.Entities.DraftPredictionSet", b =>
+                {
+                    b.Navigation("Entries");
+
+                    b.Navigation("Surrogates");
+                });
+
+            modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Predictions.PredictionSeason", b =>
+                {
+                    b.Navigation("Carryovers");
+
+                    b.Navigation("Sets");
+
+                    b.Navigation("Standings");
                 });
 #pragma warning restore 612, 618
         }

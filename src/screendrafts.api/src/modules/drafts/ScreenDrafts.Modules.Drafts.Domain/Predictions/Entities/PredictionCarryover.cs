@@ -5,7 +5,8 @@ public sealed class PredictionCarryover : Entity<PredictionCarryoverId>
   private PredictionCarryover(
     PredictionSeason season,
     PredictionContestant contestant,
-    decimal points,
+    int points,
+    CarryoverKind carryoverKind,
     string? reason = null,
     PredictionCarryoverId? id = null)
     : base(id ?? PredictionCarryoverId.CreateUnique())
@@ -15,6 +16,8 @@ public sealed class PredictionCarryover : Entity<PredictionCarryoverId>
 
     Contestant = Guard.Against.Null(contestant);
     ContestantId = contestant.Id;
+
+    Kind = carryoverKind;
 
     Points = points;
     Reason = reason;
@@ -30,19 +33,27 @@ public sealed class PredictionCarryover : Entity<PredictionCarryoverId>
   public  PredictionContestant Contestant { get; private set; } = default!;
   public ContestantId ContestantId { get; private set; } = default!;
 
-  public decimal Points { get; private set; } = 0;
+  public int Points { get; private set; } 
+
+  /// <summary>
+  /// Distinguishes a season-start handicap from a manual or bonus adjustment.
+  /// </summary>
+  public CarryoverKind Kind { get; private set; } = default!;
+
   public string? Reason { get; private set; } = string.Empty;
 
   public static PredictionCarryover Create(
     PredictionSeason season,
     PredictionContestant contestant,
-    decimal points,
+    int points,
+    CarryoverKind carryoverKind,
     string? reason = null)
   {
     return new PredictionCarryover(
       season,
       contestant,
       points,
+      carryoverKind,
       reason);
   }
 }

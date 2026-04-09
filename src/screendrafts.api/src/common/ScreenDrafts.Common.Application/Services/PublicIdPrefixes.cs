@@ -23,4 +23,10 @@ public static class PublicIdPrefixes
   public const string Media = "m";
   public const string TriviaResult = "tr";
   public const string SubDraft = "sd";
+  public const string PredictionSeason = "ps";
+  public const string DraftPredictionSet = "set";
+  public const string PredictionContestant = "pc";
+  public const string DraftPartPredictionRules = "pr";
+  public const string PredictionResult = "res";
+  public const string PredictionStanding = "st";
 }

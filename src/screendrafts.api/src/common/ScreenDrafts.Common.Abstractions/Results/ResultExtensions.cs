@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Common.Abstractions.Errors;
-
-namespace ScreenDrafts.Common.Abstractions.Results;
+﻿namespace ScreenDrafts.Common.Abstractions.Results;
 
 public static class ResultExtensions
 {

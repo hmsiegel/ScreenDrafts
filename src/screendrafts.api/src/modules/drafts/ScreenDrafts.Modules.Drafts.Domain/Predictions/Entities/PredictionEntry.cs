@@ -1,12 +1,11 @@
-﻿using ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities;
-
-namespace ScreenDrafts.Modules.Drafts.Domain.Predictions.Entities;
+﻿namespace ScreenDrafts.Modules.Drafts.Domain.Predictions.Entities;
 
 public sealed class PredictionEntry : Entity<PredictionEntryId>
 {
   private PredictionEntry(
     DraftPredictionSet predictionSet,
-    Movie movie,
+    string mediaPublicId,
+    string mediaTitle,
     int? orderIndex = null,
     string? notes = null,
     PredictionEntryId? id = null)
@@ -15,8 +14,8 @@ public sealed class PredictionEntry : Entity<PredictionEntryId>
     PredictionSet = predictionSet;
     SetId = predictionSet.Id;
 
-    Movie = movie;
-    MovieId = movie.Id;
+    MediaPublicId = mediaPublicId;
+    MediaTitle = mediaTitle;
 
     OrderIndex = orderIndex;
     Notes = notes;
@@ -29,24 +28,39 @@ public sealed class PredictionEntry : Entity<PredictionEntryId>
   public DraftPredictionSet PredictionSet { get; private set; } = default!;
   public DraftPredictionSetId SetId { get; private set; } = default!;
 
-  public Movie Movie { get; private set; } = default!;
-  public Guid MovieId { get; private set; } = Guid.Empty;
+  /// <summary>
+  /// Public Id from the Movies module.
+  /// </summary>
+  public string MediaPublicId { get; private set; } = default!; 
 
-  public int? OrderIndex { get; private set; }          // null when unordered
+  /// <summary>
+  /// Title captured at submission time. Stored so the entry is human-readable
+  /// even if the Movies record is later corrected.
+  /// </summary>
+  public string MediaTitle { get; private set; } = default!;
+
+  /// <summary>
+  /// Null when mode is unordered, otherwise the 1-based rank of this entry in the prediction set. Stored
+  /// at submission time to ensure consistency even if the prediction rules change later.
+  /// </summary>
+  public int? OrderIndex { get; private set; }          
   public string? Notes { get; private set; }
 
   public static PredictionEntry Create(
     DraftPredictionSet predictionSet,
-    Movie movie,
+    string mediaPublicId,
+    string mediaTitle,
     int? orderIndex = null,
     string? notes = null)
   {
     ArgumentNullException.ThrowIfNull(predictionSet);
-    ArgumentNullException.ThrowIfNull(movie);
+    ArgumentNullException.ThrowIfNull(mediaPublicId);
+    ArgumentNullException.ThrowIfNull(mediaTitle);
 
     return new PredictionEntry(
       predictionSet: predictionSet,
-      movie: movie,
+      mediaPublicId: mediaPublicId,
+      mediaTitle: mediaTitle,
       orderIndex: orderIndex,
       notes: notes);
   }

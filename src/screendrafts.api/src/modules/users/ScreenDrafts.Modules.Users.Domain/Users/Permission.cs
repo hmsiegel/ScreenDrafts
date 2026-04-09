@@ -127,5 +127,10 @@ public sealed class Permission(string code)
   public static readonly Permission CreateSubDraft = new("sub-drafts:create");
   public static readonly Permission UpdateSubDraft = new("sub-drafts:update");
 
+  // Prediction Seasons
+  public static readonly Permission ManagePredictions = new("predictions:manage");
+  public static readonly Permission SubmitPredictions = new("predictions:submit");
+  public static readonly Permission ReadPredictions = new("predictions:read");
+
   public string Code { get; } = code;
 }

@@ -24,7 +24,7 @@ public sealed class PredictionStanding : Entity<PredictionStandingId>
   public PredictionContestant Contestant { get; private set; } = default!;
   public ContestantId ContestantId { get; private set; } = default!;
 
-  public decimal Points { get; private set; } = default!;
+  public int Points { get; private set; } = default!;
   public DateTime? FirstCrossedTargetAtUtc { get; private set; } = default!;
   // methods: Add(points, targetPoints, beforeTotal, now)
 
@@ -37,7 +37,7 @@ public sealed class PredictionStanding : Entity<PredictionStandingId>
     return new PredictionStanding(season, contestant);
   }
 
-  public void Add(decimal points, int targetPoints, decimal beforeTotal, DateTime now)
+  public void Add(int points, int targetPoints, int beforeTotal, DateTime now)
   {
     Points += points;
     if (beforeTotal < targetPoints && Points >= targetPoints)

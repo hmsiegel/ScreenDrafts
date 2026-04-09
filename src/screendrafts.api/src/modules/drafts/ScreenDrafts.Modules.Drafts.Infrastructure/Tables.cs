@@ -44,4 +44,13 @@ internal static class Tables
   internal const string DraftPoolItems = "draft_pool_items";
   internal const string CandidateListEntries = "candidate_list_entries";
   internal const string SubDrafts = "sub_drafts";
+  internal const string PredictionSeasons = "prediction_seasons";
+  internal const string PredictionContestants = "prediction_contestants";
+  internal const string DraftPartPredictionRules = "draft_part_prediction_rules";
+  internal const string DraftPredictionSets = "draft_prediction_sets";
+  internal const string PredictionEntries = "prediction_entries";
+  internal const string SurrogateAssignments = "surrogate_assignments";
+  internal const string PredictionResults = "prediction_results";
+  internal const string PredictionStandings = "prediction_standings";
+  internal const string PredictionCarryovers = "prediction_carryovers";
 }

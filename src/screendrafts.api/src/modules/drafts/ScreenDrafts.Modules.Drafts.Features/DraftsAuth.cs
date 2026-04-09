@@ -117,5 +117,14 @@ internal static class DraftsAuth
     internal const string SubDraftRead = "sub-drafts:read";
     internal const string SubDraftCreate = "sub-drafts:create";
     internal const string SubDraftUpdate = "sub-drafts:update";
+
+    // Anyone with the manage permission can create seasons, set rules, score, etc.
+    internal const string PredictionManage = "predictions:manage";
+
+    // Contestants submit and lock their own sets.
+    internal const string PredictionSubmit = "predictions:submit";
+
+    // Read standings and sets.
+    internal const string PredictionRead = "predictions:read";
   }
 }

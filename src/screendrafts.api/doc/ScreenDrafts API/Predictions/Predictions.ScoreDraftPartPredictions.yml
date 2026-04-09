@@ -1,0 +1,143 @@
+info:
+  name: Predictions.ScoreDraftPartPredictions
+  type: http
+  seq: 11
+  tags:
+    - Predictions
+
+http:
+  method: POST
+  url: "{{baseUrl}}/draft-parts/:draftPartId/predictions/score"
+  body:
+    type: json
+    data: |-
+      {
+        "finalMediaPublicIds": [
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 204 Response
+    description: No Content
+    request:
+      url: "{{baseUrl}}/draft-parts/:draftPartId/predictions/score"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "finalMediaPublicIds": [
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              ""
+            ]
+          }
+    response:
+      status: 204
+      statusText: No Content
+      body:
+        type: text
+        data: ""
+  - name: 400 Response
+    description: Bad Request
+    request:
+      url: "{{baseUrl}}/draft-parts/:draftPartId/predictions/score"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "finalMediaPublicIds": []
+          }
+    response:
+      status: 400
+      statusText: Bad Request
+      body:
+        type: text
+        data: ""
+  - name: 401 Response
+    description: Unauthorized
+    request:
+      url: "{{baseUrl}}/draft-parts/:draftPartId/predictions/score"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "finalMediaPublicIds": []
+          }
+    response:
+      status: 401
+      statusText: Unauthorized
+      body:
+        type: text
+        data: ""
+  - name: 403 Response
+    description: Forbidden
+    request:
+      url: "{{baseUrl}}/draft-parts/:draftPartId/predictions/score"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "finalMediaPublicIds": []
+          }
+    response:
+      status: 403
+      statusText: Forbidden
+      body:
+        type: text
+        data: ""
+  - name: 404 Response
+    description: Not Found
+    request:
+      url: "{{baseUrl}}/draft-parts/:draftPartId/predictions/score"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "finalMediaPublicIds": []
+          }
+    response:
+      status: 404
+      statusText: Not Found
+      body:
+        type: text
+        data: ""
+  - name: 409 Response
+    description: Conflict
+    request:
+      url: "{{baseUrl}}/draft-parts/:draftPartId/predictions/score"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "finalMediaPublicIds": []
+          }
+    response:
+      status: 409
+      statusText: Conflict
+      body:
+        type: text
+        data: ""
