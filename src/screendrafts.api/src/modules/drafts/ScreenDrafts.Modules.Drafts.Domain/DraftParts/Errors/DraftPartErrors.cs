@@ -30,6 +30,11 @@ public static class DraftPartErrors
     description: "Veto overrides are not allowed."
   );
 
+  public static readonly SDError VetoOverridesNotAllowedInSpeedDrafts = SDError.Conflict(
+    code: "DraftPart.VetoOverridesNotAllowedInSpeedDrafts",
+    description: "Veto overrides are not allowed in speed drafts."
+  );
+
   public static readonly SDError NoRemainingVetoOverrides = SDError.Conflict(
     code: "DraftPart.NoRemainingVetoOverrides",
     description: "No remaining veto overrides available."

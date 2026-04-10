@@ -17,10 +17,31 @@ internal sealed class UndoPickCommandHandler(
       return Result.Failure(DraftPartErrors.NotFound(request.DraftPartPublicId));
     }
 
-    var pick = await _pickRepository.GetByDraftPartIdAndPlayOrderAsync(
-      draftPart.Id,
-      request.PlayOrder,
-      cancellationToken);
+    Pick? pick;
+
+    if (!string.IsNullOrWhiteSpace(request.SubDraftPublicId))
+    {
+      var subDraft = draftPart.SubDrafts
+        .FirstOrDefault(s => s.PublicId == request.SubDraftPublicId);
+
+      if (subDraft is null)
+      {
+        return Result.Failure(SubDraftErrors.NotFound(request.SubDraftPublicId));
+      }
+
+      pick = await _pickRepository.GetByDraftPartIdAndPlayOrderAsync(
+        id: draftPart.Id,
+        playOrder: request.PlayOrder,
+        subDraftId: subDraft.Id,
+        cancellationToken: cancellationToken);
+    }
+    else
+    {
+       pick = await _pickRepository.GetByDraftPartIdAndPlayOrderAsync(
+        id: draftPart.Id,
+        playOrder: request.PlayOrder,
+        cancellationToken: cancellationToken);
+    }
 
     if (pick is null)
     {

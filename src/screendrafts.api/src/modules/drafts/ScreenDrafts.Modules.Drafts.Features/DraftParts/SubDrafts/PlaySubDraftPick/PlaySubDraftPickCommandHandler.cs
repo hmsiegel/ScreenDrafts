@@ -73,6 +73,7 @@ internal sealed class PlaySubDraftPickCommandHandler(
       playOrder: request.PlayOrder,
       participantId: participant,
       canonicalPolicyValue: CanonicalPolicy.FromValue(series.CanonicalPolicy.Value),
+      subDraftId: subDraft.Id,
       actedByPublicId: request.ActedByPublicId);
 
     if (pickResult.IsFailure)

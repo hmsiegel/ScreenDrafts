@@ -32,4 +32,14 @@ internal sealed class PickRepository(DraftsDbContext dbContext) : IPickRepositor
       .Include(p => p.Movie)
       .SingleOrDefaultAsync(p => p.DraftPartId == id && p.PlayOrder == playOrder, cancellationToken);
   }
+
+  public async Task<Pick?> GetByDraftPartIdAndPlayOrderAsync(DraftPartId id, int playOrder, SubDraftId subDraftId, CancellationToken cancellationToken)
+  {
+    return await _dbContext.Picks
+      .Include(p => p.Movie)
+      .SingleOrDefaultAsync(p => p.DraftPartId == id 
+        && p.PlayOrder == playOrder 
+        && p.SubDraftId == subDraftId,
+       cancellationToken);
+  }
 }

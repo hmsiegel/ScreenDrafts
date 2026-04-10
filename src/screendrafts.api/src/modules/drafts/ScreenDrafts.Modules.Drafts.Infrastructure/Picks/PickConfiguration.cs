@@ -24,6 +24,10 @@ internal sealed class PickConfiguration : IEntityTypeConfiguration<Pick>
       .ValueGeneratedNever()
       .HasConversion(IdConverters.DraftPartIdConverter);
 
+    builder.Property(p => p.SubDraftId)
+      .HasColumnName("sub_draft_id")
+      .HasConversion(IdConverters.NullableSubDraftIdConverter);
+
     // Movie
     builder.Property(p => p.MovieId)
       .IsRequired();
@@ -78,8 +82,18 @@ internal sealed class PickConfiguration : IEntityTypeConfiguration<Pick>
     builder.Ignore(p => p.IsActiveOnFinalBoard);
     builder.Ignore(p => p.History);
 
-    builder.HasIndex(x => new { x.DraftPartId, x.PlayOrder }).IsUnique();
+    builder.HasIndex(x => new { x.DraftPartId, x.PlayOrder })
+      .IsUnique()
+      .HasFilter("sub_draft_id IS NULL")
+      .HasDatabaseName("ix_picks_draft_part_id_play_order_standard");
+
+    builder.HasIndex(x => new { x.DraftPartId, x.PlayOrder, x.SubDraftId })
+      .IsUnique()
+      .HasFilter("sub_draft_id IS NOT NULL")
+      .HasDatabaseName("ix_picks_draft_part_id_sub_draft_id_play_order");
+
     builder.HasIndex(x => new { x.DraftPartId, x.Position });
+
     builder.HasIndex(x => new { x.PlayedByParticipantId, x.PlayOrder });
   }
 }

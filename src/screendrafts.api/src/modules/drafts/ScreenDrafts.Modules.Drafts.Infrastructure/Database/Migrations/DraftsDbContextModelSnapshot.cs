@@ -729,6 +729,10 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("position");
 
+                    b.Property<Guid?>("SubDraftId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("sub_draft_id");
+
                     b.HasKey("Id")
                         .HasName("pk_picks");
 
@@ -737,13 +741,19 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
 
                     b.HasIndex("DraftPartId", "PlayOrder")
                         .IsUnique()
-                        .HasDatabaseName("ix_picks_draft_part_id_play_order");
+                        .HasDatabaseName("ix_picks_draft_part_id_play_order_standard")
+                        .HasFilter("sub_draft_id IS NULL");
 
                     b.HasIndex("DraftPartId", "Position")
                         .HasDatabaseName("ix_picks_draft_part_id_position");
 
                     b.HasIndex("PlayedByParticipantId", "PlayOrder")
                         .HasDatabaseName("ix_picks_played_by_participant_id_play_order");
+
+                    b.HasIndex("DraftPartId", "PlayOrder", "SubDraftId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_picks_draft_part_id_sub_draft_id_play_order")
+                        .HasFilter("sub_draft_id IS NOT NULL");
 
                     b.HasIndex("DraftPartId", "PlayedByParticipantIdValue", "PlayedByParticipantKindValue")
                         .HasDatabaseName("ix_picks_draft_part_id_played_by_participant_id_value_played_b");

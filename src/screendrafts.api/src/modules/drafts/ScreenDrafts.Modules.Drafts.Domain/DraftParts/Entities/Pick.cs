@@ -11,11 +11,14 @@ public sealed class Pick : Entity<PickId>
     DraftPartParticipant playedByParticipant,
     string actedByPublicId,
     int playOrder = 0,
+    SubDraftId? subDraftId = null,
     PickId? id = null)
     : base(id ?? PickId.CreateUnique())
   {
     Position = position;
     PlayOrder = playOrder;
+
+    SubDraftId = subDraftId;
 
     Movie = Guard.Against.Null(movie);
     MovieId = movie.Id;
@@ -52,6 +55,8 @@ public sealed class Pick : Entity<PickId>
 
   public Guid PlayedByParticipantIdValue { get; private set; }
   public ParticipantKind PlayedByParticipantKindValue { get; private set; } = default!;
+
+  public SubDraftId? SubDraftId { get; private set; }
 
   /// <summary>
   /// The public ID of the user who physically submitted the pick.
@@ -98,6 +103,7 @@ public sealed class Pick : Entity<PickId>
     string? actedByPublicId = null,
     string? movieVersionName = null,
     MovieVersionPolicy? versionPolicy = null, 
+    SubDraftId? subDraftId = null,
     PickId? id = null)
   {
     if (draftPart is null)
@@ -148,6 +154,7 @@ public sealed class Pick : Entity<PickId>
       draftPart: draftPart,
       actedByPublicId: actedByPublicId ?? string.Empty,
       playOrder: playOrder,
+      subDraftId: subDraftId,
       id: id);
 
     var setVersionResult = pick.SetMovieVersionName(

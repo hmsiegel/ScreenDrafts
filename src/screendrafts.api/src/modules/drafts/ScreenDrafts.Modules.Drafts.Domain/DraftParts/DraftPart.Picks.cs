@@ -8,6 +8,7 @@ public sealed partial class DraftPart
     int playOrder,
     Participant participantId,
     int canonicalPolicyValue,
+    SubDraftId? subDraftId = null,
     string? movieVersionName = null,
     string? actedByPublicId = null,
     Func<Guid, bool>? isMovieAlreadyPickedInWholeDraft = null)
@@ -34,7 +35,7 @@ public sealed partial class DraftPart
       }
     }
 
-    if (IsMovieAlreadyPickedInThisPart(movie.Id))
+    if (IsMovieAlreadyPickedInThisPart(movie.Id, subDraftId))
     {
       return Result.Failure<PickId>(DraftPartErrors.MovieAlreadyPickedInThisDraft(movie.Id));
     }
@@ -72,6 +73,7 @@ public sealed partial class DraftPart
       draftPart: this,
       movieVersionName: effectiveVersionName,
       playOrder: playOrder,
+      subDraftId: subDraftId,
       actedByPublicId: actedByPublicId);
 
     if (pickResult.IsFailure)
@@ -111,9 +113,9 @@ public sealed partial class DraftPart
     return Result.Success(pick.Id);
   }
 
-  public Result UndoPick(int playOrder)
+  public Result UndoPick(int playOrder, SubDraftId? subDraftId = null)
   {
-    var pick = _picks.FirstOrDefault(p => p.PlayOrder == playOrder);
+    var pick = _picks.FirstOrDefault(p => p.PlayOrder == playOrder && p.SubDraftId == subDraftId);
 
     if (pick is null)
     {
@@ -197,6 +199,12 @@ public sealed partial class DraftPart
     int canonicalPolicyValue,
     string? actedByPublicId = null)
   {
+    if (DraftType == DraftType.SpeedDraft)
+    {
+      return Result.Failure(DraftPartErrors.VetoOverridesNotAllowedInSpeedDrafts);
+    }
+
+
     if (Status != DraftPartStatus.InProgress)
     {
       return Result.Failure(DraftPartErrors.DraftNotStarted);
@@ -325,9 +333,9 @@ public sealed partial class DraftPart
     return Result.Success();
   }
 
-  private Result<PickId> AddPickInternal(Pick pick)
+  private Result<PickId> AddPickInternal(Pick pick, SubDraftId? subDraftId = null)
   {
-    if (_picks.Any(p => p.Position == pick.Position))
+    if (_picks.Any(p => p.Position == pick.Position && p.SubDraftId == subDraftId))
     {
       return Result.Failure<PickId>(DraftPartErrors.PickPositionAlreadyExists(pick.Position));
     }
@@ -344,8 +352,10 @@ public sealed partial class DraftPart
     return Result.Success(pick.Id);
   }
 
-  private bool IsMovieAlreadyPickedInThisPart(Guid movieId) =>
-    _picks.Any(p => p.MovieId == movieId && !p.IsEligibleForRePick);
+  private bool IsMovieAlreadyPickedInThisPart(Guid movieId, SubDraftId? subDraftId = null) =>
+    _picks.Any(p => p.MovieId == movieId
+      && p.SubDraftId == subDraftId
+      && !p.IsEligibleForRePick);
 
 
   private PartBudget ResolvePartBudget(DraftType draftType)
