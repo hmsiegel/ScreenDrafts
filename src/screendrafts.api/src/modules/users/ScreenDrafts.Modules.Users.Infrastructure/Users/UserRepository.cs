@@ -16,6 +16,14 @@ internal sealed class UserRepository(UsersDbContext dbContext) : IUserRepository
 
   public void Update(User user)
   {
+    foreach (var role in user.Roles)
+    {
+      if (_dbContext.Entry(role).State == EntityState.Detached)
+      {
+        _dbContext.Attach(role);
+      }
+    }
+
     _dbContext.Users.Update(user);
   }
 

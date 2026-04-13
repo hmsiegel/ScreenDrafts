@@ -30,7 +30,7 @@ internal sealed class ParticipantAddedDomainEventHandler(
 
     const string contextQuery =
       """
-      SELECT d.name as DraftName
+      SELECT d.title as DraftName
       FROM drafts.draft_parts dp
       JOIN drafts.drafts d on d.id = dp.draft_id
       LEFT JOIN drafts.draft_part_participants dpp 

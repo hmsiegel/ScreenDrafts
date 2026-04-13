@@ -16,14 +16,14 @@ internal sealed class HostAddedDomainEventHandler(
 
     const string hostQuery =
       """
-      SELECT 
+      SELECT
         p.user_id AS UserId,
-        p.full_name AS FullName
-      FROM 
+        CONCAT(p.first_name, ' ', p.last_name) AS FullName
+      FROM
         drafts.hosts h
-      JOIN 
+      JOIN
         drafts.people p ON p.id = h.person_id
-      WHERE 
+      WHERE
         h.id = @HostId
       """;
 
@@ -40,13 +40,13 @@ internal sealed class HostAddedDomainEventHandler(
 
     const string contextQuery =
       """
-      SELECT 
-        d.name AS DraftName
-      FROM 
+      SELECT
+        d.title AS DraftName
+      FROM
         drafts.draft_parts dp
       JOIN
         drafts.drafts d ON d.id = dp.draft_id
-      WHERE 
+      WHERE
         dp.id = @DraftPartId
       """;
 
@@ -63,13 +63,13 @@ internal sealed class HostAddedDomainEventHandler(
 
     const string coHostsQuery =
       """
-      SELECT 
-        p.full_name AS FullName
-      FROM 
+      SELECT
+        CONCAT(p.first_name, ' ', p.last_name) AS FullName
+      FROM
         drafts.draft_hosts dh
-      JOIN drafts.hosts h on h.id = dh.host_id
+      JOIN drafts.hosts h ON h.id = dh.host_id
       JOIN drafts.people p ON p.id = h.person_id
-      WHERE 
+      WHERE
         dh.draft_part_id = @DraftPartId
         AND h.id != @HostId
       """;

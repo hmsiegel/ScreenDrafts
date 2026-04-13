@@ -24,7 +24,7 @@ internal sealed class DraftCompletedDomainEventHandler(
           SELECT 1
           FROM drafts.draft_channel_releases dcr
           WHERE dcr.draft_id = d.id
-            AND dcr.release_channel = 'Patreon'
+            AND dcr.release_channel = 1
         ) AS IsPatreon
       FROM drafts.drafts d
       WHERE d.id = @DraftId
