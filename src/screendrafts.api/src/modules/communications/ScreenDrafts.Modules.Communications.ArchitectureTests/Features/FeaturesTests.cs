@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Communications.ArchitectureTests.Features;
+﻿using ScreenDrafts.Common.Application.EventBus;
+
+namespace ScreenDrafts.Modules.Communications.ArchitectureTests.Features;
 
 public class FeaturesTests : BaseTest
 {
@@ -196,5 +198,47 @@ public class FeaturesTests : BaseTest
       .BeSealed()
       .GetResult()
       .ShouldBeSuccessful();
+  }
+
+  [Fact]
+  public void IntegrationEventConsumer_Should_NotBePublic()
+  {
+    Types.InAssembly(FeaturesAssembly)
+        .That()
+        .ImplementInterface(typeof(IIntegrationEventHandler<>))
+        .Or()
+        .Inherit(typeof(IntegrationEventHandler<>))
+        .Should()
+        .NotBePublic()
+        .GetResult()
+        .ShouldBeSuccessful();
+  }
+
+  [Fact]
+  public void IntegrationEventConsumer_Should_BeSealed()
+  {
+    Types.InAssembly(FeaturesAssembly)
+        .That()
+        .ImplementInterface(typeof(IIntegrationEventHandler<>))
+        .Or()
+        .Inherit(typeof(IntegrationEventHandler<>))
+        .Should()
+        .BeSealed()
+        .GetResult()
+        .ShouldBeSuccessful();
+  }
+
+  [Fact]
+  public void IntegrationEventConsumer_ShouldHave_NameEndingWith_IntegrationEventConsumer()
+  {
+    Types.InAssembly(FeaturesAssembly)
+        .That()
+        .ImplementInterface(typeof(IIntegrationEventHandler<>))
+        .Or()
+        .Inherit(typeof(IntegrationEventHandler<>))
+        .Should()
+        .HaveNameEndingWith("IntegrationEventConsumer", StringComparison.InvariantCultureIgnoreCase)
+        .GetResult()
+        .ShouldBeSuccessful();
   }
 }

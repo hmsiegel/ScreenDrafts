@@ -4,6 +4,9 @@ global using System.Reflection;
 
 global using Dapper;
 
+global using MailKit.Net.Smtp;
+global using MailKit.Security;
+
 global using MassTransit;
 
 global using Microsoft.EntityFrameworkCore;
@@ -12,6 +15,8 @@ global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Logging;
 global using Microsoft.Extensions.Options;
+
+global using MimeKit;
 
 global using Newtonsoft.Json;
 
@@ -31,6 +36,7 @@ global using ScreenDrafts.Common.Infrastructure.Inbox;
 global using ScreenDrafts.Common.Infrastructure.Outbox;
 global using ScreenDrafts.Common.Infrastructure.Serialization;
 global using ScreenDrafts.Modules.Communications.Domain.Abstractions.Data;
+global using ScreenDrafts.Modules.Communications.Domain.Email;
 global using ScreenDrafts.Modules.Communications.Infrastructure.Database;
 global using ScreenDrafts.Modules.Communications.Infrastructure.Inbox;
 global using ScreenDrafts.Modules.Communications.Infrastructure.Outbox;

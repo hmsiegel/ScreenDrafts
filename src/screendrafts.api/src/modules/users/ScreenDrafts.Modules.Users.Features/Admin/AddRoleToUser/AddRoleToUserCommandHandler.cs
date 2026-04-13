@@ -25,12 +25,11 @@ internal sealed class AddRoleToUserCommandHandler(
       return Result.Failure<bool>(UserErrors.RoleAlreadyExists(request.UserId, request.Role));
     }
 
-    const string sql =
-        $"""
-            INSERT INTO users.user_roles (user_id, role_name)
-            VALUES (@UserId, @Role)
-            """;
-    await connection.ExecuteAsync(sql, request);
+    var role = Role.FromName(request.Role);
+
+    user.AddRole(role);
+
+    _userRepository.Update(user);
 
     return Result.Success(true);
   }

@@ -19,6 +19,7 @@ builder.Services.AddInfrastructure(
   configuration,
   DiagnosticsConfig.ServiceName,
   [
+    CommunicationsModule.ConfigureConsumers,
     DraftsModule.ConfigureConsumers,
     IntegrationsModule.ConfigureConsumers,
     MoviesModule.ConfigureConsumers,

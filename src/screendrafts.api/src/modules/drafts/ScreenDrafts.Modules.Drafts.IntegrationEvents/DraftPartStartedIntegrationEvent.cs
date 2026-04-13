@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Common.Application.EventBus;
-
-namespace ScreenDrafts.Modules.Drafts.IntegrationEvents;
+﻿namespace ScreenDrafts.Modules.Drafts.IntegrationEvents;
 
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1002:Do not expose generic lists", Justification = "Integration events require exposing generic lists for serialization purposes.")]
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2227:Collection properties should be read only", Justification = "Integration events require exposing generic lists for serialization purposes.")]

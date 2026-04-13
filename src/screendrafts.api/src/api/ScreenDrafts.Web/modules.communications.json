@@ -7,6 +7,15 @@
     "Inbox": {
       "IntervalInSeconds": 5,
       "BatchSize": 50
+    },
+    "Smtp": {
+      "Host": "",
+      "Port": 25,
+      "EnableSsl": false,
+      "FromAddress": "",
+      "FromName": "",
+      "Username": "",
+      "Password": ""
     }
   }
 }

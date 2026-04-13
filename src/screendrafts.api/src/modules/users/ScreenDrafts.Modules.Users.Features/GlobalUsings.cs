@@ -13,6 +13,7 @@ global using Microsoft.Extensions.Logging;
 
 global using ScreenDrafts.Common.Abstractions.Exceptions;
 global using ScreenDrafts.Common.Abstractions.Results;
+global using ScreenDrafts.Common.Application.Clock;
 global using ScreenDrafts.Common.Application.Data;
 global using ScreenDrafts.Common.Application.EventBus;
 global using ScreenDrafts.Common.Application.EventBus.Dispatchers;

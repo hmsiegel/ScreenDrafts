@@ -7,6 +7,15 @@
     "Inbox": {
       "IntervalInSeconds": 15,
       "BatchSize": 20
+    },
+    "Smtp": {
+      "Host": "screendrafts.email",
+      "Port": 25,
+      "EnableSsl": false,
+      "FromAddress": "no-reply@screendrafts.com",
+      "FromName": "ScreenDrafts",
+      "Username": "smtp_user",
+      "Password": "smtp_password"
     }
   }
 }

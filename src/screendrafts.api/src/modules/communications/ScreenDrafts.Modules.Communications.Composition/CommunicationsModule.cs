@@ -1,23 +1,7 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-
-using ScreenDrafts.Common.Application.EventBus;
-using ScreenDrafts.Common.Application.EventBus.Dispatchers;
-using ScreenDrafts.Common.Application.Messaging;
-using ScreenDrafts.Common.Application.Messaging.Dispatchers;
-using ScreenDrafts.Modules.Communications.Features;
-using ScreenDrafts.Modules.Communications.Features.Inbox;
-using ScreenDrafts.Modules.Communications.Features.Outbox;
-using ScreenDrafts.Modules.Communications.Infrastructure;
-using ScreenDrafts.Modules.Communications.Infrastructure.Inbox;
-using ScreenDrafts.Modules.Communications.Infrastructure.Outbox;
-
-namespace ScreenDrafts.Modules.Communications.Composition;
+﻿namespace ScreenDrafts.Modules.Communications.Composition;
 
 public static class CommunicationsModule
 {
-
   public static IServiceCollection AddCommunicationsModule(
     this IServiceCollection services,
     IConfiguration configuration)
@@ -28,16 +12,42 @@ public static class CommunicationsModule
 
     services.AddIntegrationEventHandlers();
 
-    services.AddCommunicationsFeatures();
+    services.AddCommunicationsFeatures(configuration);
 
     services.AddCommunicationsInfrastructure(configuration);
 
     return services;
   }
-  public static void AddCommunicationsFeatures(this IServiceCollection services)
+  public static void AddCommunicationsFeatures(this IServiceCollection services, IConfiguration configuration)
   {
+    ArgumentNullException.ThrowIfNull(configuration);
+
+    services.Configure<SmtpSettings>(configuration.GetSection(SmtpSettings.SectionName));
+    services.AddScoped<IEmailService, SmtpEmailService>();
+
     services.AddScoped<ICommunicationsIntegrationEventDispatcher, CommunicationsIntegrationEventDispatcher>();
     services.AddScoped<ICommunicationsDomainEventDispatcher, CommunicationsDomainEventDispatcher>();
+  }
+
+  public static void ConfigureConsumers(IRegistrationConfigurator registrationConfigurator, string instanceId)
+  {
+    ArgumentNullException.ThrowIfNull(registrationConfigurator);
+
+    registrationConfigurator.AddConsumer<IntegrationEventConsumer<DraftPartParticipantAddedIntegrationEvent>>()
+      .Endpoint(x => x.InstanceId = instanceId);
+
+    registrationConfigurator.AddConsumer<IntegrationEventConsumer<DraftPartHostAddedIntegrationEvent>>()
+      .Endpoint(x => x.InstanceId = instanceId);
+
+    registrationConfigurator.AddConsumer<IntegrationEventConsumer<UserRegisteredIntegrationEvent>>()
+      .Endpoint(x => x.InstanceId = instanceId);
+
+
+    registrationConfigurator.AddConsumer<IntegrationEventConsumer<DraftCompletedIntegrationEvent>>()
+      .Endpoint(x => x.InstanceId = instanceId);
+
+    registrationConfigurator.AddConsumer<IntegrationEventConsumer<DraftCreatedIntegrationEvent>>()
+      .Endpoint(x => x.InstanceId = instanceId);
   }
 
 

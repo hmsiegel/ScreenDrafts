@@ -36,6 +36,14 @@ public sealed partial class DraftPart
       return Result.Failure(DraftPartErrors.ParticipantAlreadyAdded(participant.Value));
     }
     _draftPartParticipants.Add(DraftPartParticipant.Create(this, participant));
+
+    UpdatedAtUtc = DateTime.UtcNow;
+
+    Raise(new ParticipantAddedDomainEvent(
+      draftPartId: Id.Value,
+      participantIdValue: participant.Value,
+      participantKind: participant.Kind));
+
     return Result.Success();
   }
 

@@ -1,4 +1,4 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities;
+﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.DomainEvents;
 
 public sealed class DraftCompletedDomainEvent(Guid draftId) : DomainEvent
 {

@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Common.Application.EventBus;
-
-namespace ScreenDrafts.Modules.Drafts.IntegrationEvents;
+﻿namespace ScreenDrafts.Modules.Drafts.IntegrationEvents;
 
 public sealed class VetoAppliedIntegrationEvent(
   Guid id,
