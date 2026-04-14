@@ -1,10 +1,37 @@
-﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Abstractions;
+﻿using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+
+using ScreenDrafts.Common.Application.EventBus;
+using ScreenDrafts.Modules.Communications.Domain.Email;
+using ScreenDrafts.Modules.RealTimeUpdates.Features;
+
+namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Abstractions;
 
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1303:Do not pass literals as localized parameters", Justification = "<Pending>")]
 public class DraftsIntegrationTestWebAppFactory : IntegrationTestWebAppFactory
 {
   private KeycloakContainer? _keycloakContainer;
   private bool _keycloakInitialized;
+
+  /// <summary>
+  /// Shared in-memory email capture. Tests call <see cref="FakeEmailCapture.Clear"/> in setup
+  /// and inspect <see cref="FakeEmailCapture.SentEmails"/> after outbox drain.
+  /// </summary>
+  public FakeEmailCapture EmailCapture { get; } = new FakeEmailCapture();
+
+  /// <summary>
+  /// Records integration events published by Drafts domain event handlers.
+  /// Call <see cref="CapturingEventBus.Clear"/> in setup, then
+  /// <see cref="Helpers.DraftScenarioBase.DispatchIntegrationEventsAsync"/> to deliver
+  /// captured events in-process to Communications and RealTimeUpdates consumers.
+  /// </summary>
+  public CapturingEventBus EventBusCapture { get; } = new CapturingEventBus();
+
+  /// <summary>
+  /// Captures SignalR messages sent through DraftHub by RealTimeUpdates consumers.
+  /// Inspect after <see cref="Helpers.DraftScenarioBase.DispatchIntegrationEventsAsync"/>.
+  /// </summary>
+  public DraftHubCapture HubCapture { get; } = new DraftHubCapture();
 
   public DraftsIntegrationTestWebAppFactory() : base()
   {
@@ -106,6 +133,23 @@ public class DraftsIntegrationTestWebAppFactory : IntegrationTestWebAppFactory
   protected override void ConfigureModuleServices(IServiceCollection services)
   {
     base.ConfigureModuleServices(services);
+
+    // Replace the real email service with the in-memory capture for all tests.
+    services.RemoveAll<IEmailService>();
+    services.AddSingleton<IEmailService>(EmailCapture);
+    services.AddSingleton<IEmailCapture>(EmailCapture);
+
+    // Replace the base factory's NoOpEventBus with a capturing version so that
+    // integration events published by Drafts domain event handlers can be dispatched
+    // in-process to Communications and RealTimeUpdates consumers during scenario tests.
+    services.RemoveAll<IEventBus>();
+    services.AddSingleton<IEventBus>(EventBusCapture);
+    services.AddSingleton<CapturingEventBus>(EventBusCapture);
+
+    // Replace the real SignalR hub context so that RealTimeUpdates consumers resolved
+    // in-process write their broadcasts to DraftHubCapture instead of a real hub.
+    services.RemoveAll<IHubContext<DraftHub>>();
+    services.AddSingleton<IHubContext<DraftHub>>(HubCapture);
 
     if (_keycloakContainer is null)
     {

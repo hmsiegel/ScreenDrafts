@@ -1,5 +1,9 @@
 ﻿global using Bogus;
 
+global using ScreenDrafts.Common.Application.EventBus;
+global using ScreenDrafts.Modules.Communications.Domain.Email;
+global using ScreenDrafts.Modules.Drafts.IntegrationTests.Fixtures;
+
 global using FluentAssertions;
 
 global using MediatR;
