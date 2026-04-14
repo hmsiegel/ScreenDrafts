@@ -14,6 +14,7 @@ internal sealed class Validator : AbstractValidator<ApplyVetoCommand>
 
     RuleFor(x => x.ParticipantPublicId)
       .Must(id => PublicIdGuards.IsValid(id))
-      .WithMessage("Participant public ID must be a valid public ID.");
+      .WithMessage("Participant public ID must be a valid public ID.")
+      .When(x => x.ParticipantKind != ParticipantKind.Community);
   }
 }

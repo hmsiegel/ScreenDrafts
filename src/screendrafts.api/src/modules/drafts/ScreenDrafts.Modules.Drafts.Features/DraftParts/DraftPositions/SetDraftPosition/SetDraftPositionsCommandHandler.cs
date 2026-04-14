@@ -48,7 +48,7 @@ internal sealed class SetDraftPositionsCommandHandler(
       draftPositions.Add(draftPosition.Value);
     }
 
-    var assignResult = gameBoard.AssignDraftPositions(draftPositions, draftPart.TotalParticipants);
+    var assignResult = gameBoard.AssignDraftPositions(draftPositions, draftPart.TotalDrafters + draftPart.TotalDrafterTeams);
 
     if (assignResult.IsFailure)
     {

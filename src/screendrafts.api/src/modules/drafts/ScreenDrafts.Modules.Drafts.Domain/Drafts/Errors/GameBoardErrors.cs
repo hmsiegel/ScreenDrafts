@@ -32,4 +32,9 @@ public static class GameBoardErrors
     SDError.Problem(
       "GameBoard.GameBoardCreationFailed",
       "There was a problem creating the gameboard.");
+
+  public static readonly SDError DuplicatePickSlots =
+    SDError.Problem(
+      "GameBoard.DuplicatePickSlots",
+      "Pick slot numbers must be unique across all draft positions.");
 }

@@ -269,17 +269,20 @@ public sealed class SpielbergTeamsMegaDraft_Tests(DraftsIntegrationTestWebAppFac
     await CreateDraftPartAsync(draftPublicId, 1, 1, 7);
     var partPublicId = await GetDraftPartPublicIdAsync(draftPublicId);
 
-    // Add a team participant, then try to use a drafter directly to pick
+    // Two team participants are required (Start() needs ≥2 participants) and a primary host.
     await AddTeamParticipantAsync(partPublicId, _teamAPublicId);
+    await AddTeamParticipantAsync(partPublicId, _teamBPublicId);
+    await AddPrimaryHostAsync(partPublicId, Shared.PhilHostPublicId);
 
     var movie = Movie.Create("Guard Test Movie", $"m_{Guid.NewGuid():N}", MediaType.Movie, Guid.NewGuid()).Value;
     DbContext.Movies.Add(movie);
     await DbContext.SaveChangesAsync();
 
-    // Start the draft first (needs positions)
+    // Start the draft first (needs positions — one per team participant)
     await SetPositionsAsync(partPublicId,
     [
-      new DraftPositionRequest { Name = "Team A", Picks = [1, 2, 3, 4, 5, 6, 7] }
+      new DraftPositionRequest { Name = "Team A", Picks = [1, 3, 5, 7] },
+      new DraftPositionRequest { Name = "Team B", Picks = [2, 4, 6] }
     ]);
     await StartDraftPartAsync(draftPublicId);
 

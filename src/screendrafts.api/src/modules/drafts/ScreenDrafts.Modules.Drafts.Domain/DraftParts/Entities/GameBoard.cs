@@ -76,6 +76,12 @@ public sealed class GameBoard : Entity<GameBoardId>
       return Result.Failure(GameBoardErrors.InvalidNumberOfParticipants);
     }
 
+    var allPicks = draftPositions.SelectMany(p => p.Picks).ToList();
+    if (allPicks.Count != allPicks.Distinct().Count())
+    {
+      return Result.Failure(GameBoardErrors.DuplicatePickSlots);
+    }
+
     foreach (var position in draftPositions)
     {
       _draftPositions.Add(position);

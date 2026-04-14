@@ -144,6 +144,13 @@ public sealed class SorkinSuperDraft_Tests(DraftsIntegrationTestWebAppFactory fa
     {
       await AddMovieToPoolAsync(_draftPublicId, sorkinTmdbIds[i]);
     }
+
+    // Drain any outbox entries generated during setup (e.g. DraftPositionAssigned) so
+    // that per-test calls to ProcessOutboxAsync / DispatchIntegrationEventsAsync only
+    // observe events from the test's own operations.
+    await ProcessOutboxAsync();
+    EventBusCapture.Clear();
+    HubCapture.Clear();
   }
 
   // ─────────────────────────────────────────────────────────────────────────

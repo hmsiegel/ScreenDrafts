@@ -137,13 +137,15 @@ public sealed class AssignParticipantToDraftPositionTests(DraftsIntegrationTestW
   }
 
   // -------------------------------------------------------------------------
-  // Guard — participant already in roster
+  // Participant already in roster — assigning to a position should succeed
   // -------------------------------------------------------------------------
 
   [Fact]
-  public async Task AssignParticipant_WhenParticipantAlreadyInRoster_ShouldFailAsync()
+  public async Task AssignParticipant_WhenParticipantAlreadyInRoster_ShouldSucceedAsync()
   {
-    // Arrange — the initial drafter used in setup is already in the roster
+    // Arrange — the initial drafter is already in the roster (added via AddParticipant in setup).
+    // Assigning them to a position is valid: the roster-add is skipped and only the
+    // position assignment happens.
     var (draftPartPublicId, positionPublicId, _, existingDrafterPublicId) = await SetupDraftPartWithPositionAsync();
 
     var command = new AssignParticipantToDraftPositionCommand
@@ -158,7 +160,7 @@ public sealed class AssignParticipantToDraftPositionTests(DraftsIntegrationTestW
     var result = await Sender.Send(command);
 
     // Assert
-    result.IsFailure.Should().BeTrue();
+    result.IsSuccess.Should().BeTrue();
   }
 
   // -------------------------------------------------------------------------

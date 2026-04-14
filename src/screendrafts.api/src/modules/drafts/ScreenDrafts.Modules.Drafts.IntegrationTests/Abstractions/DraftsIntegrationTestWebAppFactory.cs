@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using Dapper;
+
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 using ScreenDrafts.Common.Application.EventBus;
@@ -171,7 +173,48 @@ public class DraftsIntegrationTestWebAppFactory : IntegrationTestWebAppFactory
 
   protected override IEnumerable<Type> GetDbContextTypes()
   {
-    return [typeof(DraftsDbContext), typeof(UsersDbContext)];
+    // Only migrate the schemas needed for Drafts scenario tests.
+    // Communications is required for inbox idempotency and email-notification assertions.
+    // Excludes modules whose migrations are not needed here (Movies, Administration, etc.)
+    // to avoid applying migrations with cross-schema dependencies that fail in isolation.
+    var needed = new[]
+    {
+      "ScreenDrafts.Modules.Communications.Infrastructure.Database.CommunicationsDbContext",
+      "ScreenDrafts.Modules.Drafts.Infrastructure.Database.DraftsDbContext",
+      "ScreenDrafts.Modules.RealTimeUpdates.Infrastructure.Database.RealTimeUpdatesDbContext",
+      "ScreenDrafts.Modules.Users.Infrastructure.Database.UsersDbContext",
+    };
+
+    return [.. AppDomain.CurrentDomain.GetAssemblies()
+      .SelectMany(a => a.GetTypes())
+      .Where(t => needed.Contains(t.FullName, StringComparer.Ordinal))];
+  }
+
+  protected override async Task ApplyMigrationsAsync()
+  {
+    await base.ApplyMigrationsAsync();
+
+    // communications.user_emails is created by the DbMigrator SQL scripts, not by EF Core
+    // migrations, so MigrateAsync() alone won't create it. Run the DDL directly here so that
+    // Communications consumers (DraftCreatedIntegrationEventConsumer, etc.) can query it in
+    // scenario tests that call DispatchIntegrationEventsAsync.
+    using var scope = Services.CreateScope();
+    var connectionFactory = scope.ServiceProvider
+      .GetRequiredService<ScreenDrafts.Common.Application.Data.IDbConnectionFactory>();
+
+    await using var connection = await connectionFactory.OpenConnectionAsync();
+
+    await connection.ExecuteAsync(
+      """
+      CREATE TABLE IF NOT EXISTS communications.user_emails
+      (
+          user_id       uuid         NOT NULL,
+          email_address varchar(320) NOT NULL,
+          full_name     varchar(500) NOT NULL,
+          is_patreon    boolean      NOT NULL DEFAULT false,
+          CONSTRAINT pk_user_emails PRIMARY KEY (user_id)
+      );
+      """);
   }
 
   protected override async Task StopContainersAsync()

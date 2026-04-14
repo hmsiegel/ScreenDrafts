@@ -148,12 +148,10 @@ public sealed partial class DraftPart
       return Result.Failure(DraftPartErrors.DraftNotStarted);
     }
 
-    DraftPartParticipant participant = null!;
+    var participant = GetParticipantRequired(issuerId);
 
     if (issuerId.Kind != ParticipantKind.Community)
     {
-      participant = GetParticipantRequired(issuerId);
-
       if (!participant.CanUseVeto())
       {
         return Result.Failure(DraftPartErrors.NoRemainingVetoes);

@@ -16,12 +16,10 @@ public sealed partial class DraftPart
       return Result.Failure(DraftPositionErrors.PositionDoesNotBelongToThisGameBoard);
     }
 
-    if (HasParticipant(participant))
+    if (!HasParticipant(participant))
     {
-      return Result.Failure(DraftPartErrors.ParticipantAlreadyAdded(participant.Value));
+      _draftPartParticipants.Add(DraftPartParticipant.Create(this, participant));
     }
-
-    _draftPartParticipants.Add(DraftPartParticipant.Create(this, participant));
 
     var assignResult = position.AssignParticipant(participant);
 

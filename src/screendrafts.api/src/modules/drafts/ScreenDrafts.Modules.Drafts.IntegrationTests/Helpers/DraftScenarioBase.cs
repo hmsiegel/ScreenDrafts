@@ -449,11 +449,12 @@ public abstract class DraftScenarioBase(DraftsIntegrationTestWebAppFactory facto
       """
       UPDATE drafts.draft_part_participants dpp
       SET vetoes_rolling_in = @Count
-      FROM drafts.draft_parts dp
-      INNER JOIN drafts.drafters d ON d.id = dpp.participant_id_value
+      FROM drafts.draft_parts dp,
+           drafts.drafters d
       WHERE dp.public_id = @DraftPartPublicId
         AND d.public_id = @DrafterPublicId
         AND dpp.draft_part_id = dp.id
+        AND dpp.participant_id_value = d.id
         AND dpp.participant_kind_value = 0
       """,
       new { Count = count, DraftPartPublicId = draftPartPublicId, DrafterPublicId = drafterPublicId });
@@ -476,11 +477,12 @@ public abstract class DraftScenarioBase(DraftsIntegrationTestWebAppFactory facto
       """
       UPDATE drafts.draft_part_participants dpp
       SET veto_overrides_rolling_in = @Count
-      FROM drafts.draft_parts dp
-      INNER JOIN drafts.drafters d ON d.id = dpp.participant_id_value
+      FROM drafts.draft_parts dp,
+           drafts.drafters d
       WHERE dp.public_id = @DraftPartPublicId
         AND d.public_id = @DrafterPublicId
         AND dpp.draft_part_id = dp.id
+        AND dpp.participant_id_value = d.id
         AND dpp.participant_kind_value = 0
       """,
       new { Count = count, DraftPartPublicId = draftPartPublicId, DrafterPublicId = drafterPublicId });
