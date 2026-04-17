@@ -19,6 +19,7 @@ builder.Services.AddInfrastructure(
   configuration,
   DiagnosticsConfig.ServiceName,
   [
+    AuditModule.ConfigureConsumers,
     CommunicationsModule.ConfigureConsumers,
     DraftsModule.ConfigureConsumers,
     IntegrationsModule.ConfigureConsumers,
@@ -26,6 +27,9 @@ builder.Services.AddInfrastructure(
     ReportingModule.ConfigureConsumers,
     RealTimeUpdatesModule.ConfigureConsumers,
     ],
+  [
+      AuditModule.ConfigureEndpoints
+      ],
   rabbitMqSettings,
   redisConnectionString,
   mongoConnectionString,
@@ -69,7 +73,12 @@ var app = builder.Build();
 app.UseFastEndpoints(c =>
 {
   c.Endpoints.ShortNames = true;
+  c.Endpoints.Configurator = ep =>
+  {
+    ep.AddAuditProcessors();
+  };
 });
+
 
 app.MapHub<DraftHub>("/drafts/hub");
 

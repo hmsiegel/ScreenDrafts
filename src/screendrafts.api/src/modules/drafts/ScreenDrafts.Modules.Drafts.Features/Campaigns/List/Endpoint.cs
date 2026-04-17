@@ -1,6 +1,4 @@
-using ScreenDrafts.Common.Presentation.Http.Authentication;
-
-namespace ScreenDrafts.Modules.Drafts.Features.Campaigns.List;
+﻿namespace ScreenDrafts.Modules.Drafts.Features.Campaigns.List;
 
 internal sealed class Endpoint(IUsersApi usersApi) : ScreenDraftsEndpoint<ListCampaignsRequest, CampaignCollectionResponse>
 {

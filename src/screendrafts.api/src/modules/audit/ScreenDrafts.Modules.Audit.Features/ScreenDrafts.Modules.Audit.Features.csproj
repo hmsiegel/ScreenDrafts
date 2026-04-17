@@ -2,5 +2,10 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\common\ScreenDrafts.Common.Application\ScreenDrafts.Common.Application.csproj" />
     <ProjectReference Include="..\..\..\common\ScreenDrafts.Common.Presentation\ScreenDrafts.Common.Presentation.csproj" />
+    <ProjectReference Include="..\ScreenDrafts.Modules.Audit.Domain\ScreenDrafts.Modules.Audit.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="ScreenDrafts.Modules.Audit.IntegrationTests" />
   </ItemGroup>
 </Project>

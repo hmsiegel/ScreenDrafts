@@ -141,7 +141,11 @@ internal sealed class PermissionConfiguration : IEntityTypeConfiguration<Permiss
           // Predictions
           Permission.ManagePredictions,
           Permission.SubmitPredictions,
-          Permission.ReadPredictions);
+          Permission.ReadPredictions,
+
+          // Audit
+          Permission.AuditRead,
+          Permission.AuditExport);
 
     builder.HasMany<Role>()
       .WithMany()
@@ -360,6 +364,9 @@ internal sealed class PermissionConfiguration : IEntityTypeConfiguration<Permiss
          CreateRolePermission(Role.Administrator, Permission.SubmitPredictions),
          CreateRolePermission(Role.Administrator, Permission.ReadPredictions),
 
+         CreateRolePermission(Role.Administrator, Permission.AuditRead),
+         CreateRolePermission(Role.Administrator, Permission.AuditExport),
+
          // -------------------------
          // Super Administrator
          // -------------------------
@@ -472,6 +479,9 @@ internal sealed class PermissionConfiguration : IEntityTypeConfiguration<Permiss
          CreateRolePermission(Role.SuperAdministrator, Permission.ManagePredictions),
          CreateRolePermission(Role.SuperAdministrator, Permission.SubmitPredictions),
          CreateRolePermission(Role.SuperAdministrator, Permission.ReadPredictions),
+
+         CreateRolePermission(Role.SuperAdministrator, Permission.AuditRead),
+         CreateRolePermission(Role.SuperAdministrator, Permission.AuditExport),
 
          // -------------------------
          // Patreon

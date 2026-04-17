@@ -5,4 +5,4 @@ UPDATE communications.user_emails ue
 SET is_patreon = true
 FROM users.user_roles ur
 WHERE ur.user_id = ue.user_id
-  AND ur.name = 'Patreon';
+  AND ur.role_name = 'Patreon';

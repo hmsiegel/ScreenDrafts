@@ -7,6 +7,14 @@
     "Inbox": {
       "IntervalInSeconds": 15,
       "BatchSize": 20
+    },
+    "KeycloakPoller": {
+      "IntervalInSeconds": 60,
+      "AdminUrl": "http://screendrafts.identity:8080/admin/realms/screendrafts/",
+      "TokenUrl": "http://screendrafts.identity:8080/realms/screendrafts/protocol/openid-connect/token",
+      "ConfidentialClientId": "screendrafts-confidential-client",
+      "ConfidentialClientSecret": "oRL4la55pi1uMlJMKSlg3hrhLfvKrZsg",
+      "Realm": "screendrafts"
     }
   }
 }

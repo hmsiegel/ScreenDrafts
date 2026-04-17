@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Users.IntegrationTests.Abstractions;
+﻿using Dapper;
+
+namespace ScreenDrafts.Modules.Users.IntegrationTests.Abstractions;
 
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1303:Do not pass literals as localized parameters", Justification = "<Pending>")]
 public class UsersIntegrationTestWebAppFactory : IntegrationTestWebAppFactory
@@ -127,7 +129,74 @@ public class UsersIntegrationTestWebAppFactory : IntegrationTestWebAppFactory
 
   protected override IEnumerable<Type> GetDbContextTypes()
   {
-    return [typeof(UsersDbContext)];
+    var auditContextType = AppDomain.CurrentDomain.GetAssemblies()
+      .SelectMany(a => a.GetTypes())
+      .FirstOrDefault(t => string.Equals(
+        t.FullName,
+        "ScreenDrafts.Modules.Audit.Infrastructure.Database.AuditDbContext",
+        StringComparison.Ordinal));
+
+    return auditContextType is null
+      ? [typeof(UsersDbContext)]
+      : [typeof(UsersDbContext), auditContextType];
+  }
+
+  protected override async Task ApplyMigrationsAsync()
+  {
+    await base.ApplyMigrationsAsync();
+
+    // The audit log tables are created by the DbMigrator SQL scripts in production,
+    // not by EF migrations. Create them here so that AuditPostProcessor can write
+    // to them when HTTP requests are made during tests.
+    using var scope = Services.CreateScope();
+    var connectionFactory = scope.ServiceProvider
+      .GetRequiredService<ScreenDrafts.Common.Application.Data.IDbConnectionFactory>();
+
+    await using var connection = await connectionFactory.OpenConnectionAsync();
+
+    await connection.ExecuteAsync(
+      """
+      CREATE TABLE IF NOT EXISTS audit.http_audit_logs
+      (
+          id               uuid        NOT NULL,
+          correlation_id   uuid        NOT NULL,
+          occurred_on_utc  timestamptz NOT NULL,
+          actor_id         text,
+          endpoint_name    text        NOT NULL,
+          http_method      text        NOT NULL,
+          route            text        NOT NULL,
+          status_code      int,
+          duration_ms      int,
+          request_body     jsonb,
+          response_body    jsonb,
+          ip_address       text,
+          CONSTRAINT pk_http_audit_logs PRIMARY KEY (id)
+      );
+
+      CREATE TABLE IF NOT EXISTS audit.domain_event_audit_logs
+      (
+          id               uuid        NOT NULL,
+          occurred_on_utc  timestamptz NOT NULL,
+          event_type       text        NOT NULL,
+          source_module    text        NOT NULL,
+          actor_id         text,
+          entity_id        text,
+          payload          jsonb       NOT NULL,
+          CONSTRAINT pk_domain_event_audit_logs PRIMARY KEY (id)
+      );
+
+      CREATE TABLE IF NOT EXISTS audit.auth_audit_logs
+      (
+          id               uuid        NOT NULL,
+          occurred_on_utc  timestamptz NOT NULL,
+          event_type       text        NOT NULL,
+          user_id          text,
+          client_id        text,
+          ip_address       text,
+          details          jsonb,
+          CONSTRAINT pk_auth_audit_logs PRIMARY KEY (id)
+      );
+      """);
   }
 
   protected override async Task StopContainersAsync()

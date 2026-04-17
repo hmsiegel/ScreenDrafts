@@ -1,17 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-
-using ScreenDrafts.Common.Application.EventBus;
-using ScreenDrafts.Common.Application.EventBus.Dispatchers;
-using ScreenDrafts.Common.Application.Messaging;
-using ScreenDrafts.Common.Application.Messaging.Dispatchers;
-using ScreenDrafts.Modules.Audit.Features;
-using ScreenDrafts.Modules.Audit.Features.Inbox;
-using ScreenDrafts.Modules.Audit.Features.Outbox;
-using ScreenDrafts.Modules.Audit.Infrastructure;
-using ScreenDrafts.Modules.Audit.Infrastructure.Inbox;
-using ScreenDrafts.Modules.Audit.Infrastructure.Outbox;
+﻿using ScreenDrafts.Modules.Audit.Features.Common;
 
 namespace ScreenDrafts.Modules.Audit.Composition;
 
@@ -29,14 +16,43 @@ public static class AuditModule
 
     services.AddAuditInfrastructure(configuration);
 
-    services.AddAuditFeatures();
+    services.AddAuditFeatures(configuration);
 
     return services;
   }
-  public static void AddAuditFeatures(this IServiceCollection services)
+  public static void AddAuditFeatures(this IServiceCollection services, IConfiguration configuration)
   {
+    ArgumentNullException.ThrowIfNull(configuration);
+
     services.AddScoped<IAuditIntegrationEventDispatcher, AuditIntegrationEventDispatcher>();
     services.AddScoped<IAuditDomainEventDispatcher, AuditDomainEventDispatcher>();
+    services.AddScoped(typeof(ExportHelpers<>));
+  }
+
+  public static void ConfigureConsumers(IRegistrationConfigurator registrationConfigurator, string instanceId)
+  {
+    ArgumentNullException.ThrowIfNull(registrationConfigurator);
+    registrationConfigurator.AddConsumer<GenericIntegrationAuditConsumer>()
+      .Endpoint(c => c.InstanceId = instanceId);
+  }
+
+  public static void ConfigureEndpoints(IRabbitMqBusFactoryConfigurator configurator, IBusRegistrationContext context)
+  {
+    ArgumentNullException.ThrowIfNull(configurator);
+
+    configurator.ReceiveEndpoint("screendrafts.audit", endpoint =>
+    {
+      endpoint.ConfigureConsumeTopology = false;
+
+      endpoint.Bind("ScreenDrafts.Common.Application.EventBus:IIntegrationEvent", x =>
+      {
+        x.ExchangeType = "fanout";
+        x.Durable = true;
+        x.AutoDelete = false;
+      });
+
+      endpoint.ConfigureConsumer<GenericIntegrationAuditConsumer>(context);
+    });
   }
 
   private static void AddDomainEventHandlers(this IServiceCollection services)

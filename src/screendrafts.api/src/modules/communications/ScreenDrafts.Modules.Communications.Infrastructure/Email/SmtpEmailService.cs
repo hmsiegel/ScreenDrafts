@@ -23,7 +23,7 @@ internal sealed class SmtpEmailService(IOptions<SmtpSettings> smtpSettings) : IE
       options: _smtpSettings.SecureSocketOptions,
       cancellationToken: cancellationToken);
 
-    if (!string.IsNullOrEmpty(_smtpSettings.Username))
+    if (!string.IsNullOrWhiteSpace(_smtpSettings.Username))
     {
       await client.AuthenticateAsync(
         userName: _smtpSettings.Username,

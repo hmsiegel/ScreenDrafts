@@ -1,0 +1,36 @@
+info:
+  name: Audit.ExportDomainEventAuditLogs
+  type: http
+  seq: 6
+
+http:
+  method: GET
+  url: "{{baseUrl}}/audit/domain-events"
+  params:
+    - name: actorId
+      value: ""
+      type: query
+      disabled: true
+    - name: eventType
+      value: ""
+      type: query
+      disabled: true
+    - name: sourceModule
+      value: ""
+      type: query
+      disabled: true
+    - name: from
+      value: ""
+      type: query
+      disabled: true
+    - name: to
+      value: ""
+      type: query
+      disabled: true
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

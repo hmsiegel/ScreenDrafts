@@ -1,0 +1,48 @@
+info:
+  name: Audit.GetHttpAuditLogs
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: "{{baseUrl}}/audit/http-logs"
+  params:
+    - name: actorId
+      value: ""
+      type: query
+      disabled: true
+    - name: from
+      value: ""
+      type: query
+      disabled: true
+    - name: to
+      value: ""
+      type: query
+      disabled: true
+    - name: statusCode
+      value: ""
+      type: query
+      disabled: true
+    - name: endpoint
+      value: ""
+      type: query
+      disabled: true
+    - name: cursorId
+      value: ""
+      type: query
+      disabled: true
+    - name: cursorTimestamp
+      value: ""
+      type: query
+      disabled: true
+    - name: pageSize
+      value: ""
+      type: query
+      disabled: true
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

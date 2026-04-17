@@ -14,8 +14,8 @@
       "EnableSsl": false,
       "FromAddress": "no-reply@screendrafts.com",
       "FromName": "ScreenDrafts",
-      "Username": "smtp_user",
-      "Password": "smtp_password"
+      "Username": "",
+      "Password": ""
     }
   }
 }

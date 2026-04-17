@@ -934,6 +934,16 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                         },
                         new
                         {
+                            PermissionCode = "audit:read",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "audit:export",
+                            RoleName = "Administrator"
+                        },
+                        new
+                        {
                             PermissionCode = "users:read",
                             RoleName = "SuperAdministrator"
                         },
@@ -1385,6 +1395,16 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                         new
                         {
                             PermissionCode = "predictions:read",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "audit:read",
+                            RoleName = "SuperAdministrator"
+                        },
+                        new
+                        {
+                            PermissionCode = "audit:export",
                             RoleName = "SuperAdministrator"
                         },
                         new
@@ -1899,6 +1919,14 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                         new
                         {
                             Code = "predictions:read"
+                        },
+                        new
+                        {
+                            Code = "audit:read"
+                        },
+                        new
+                        {
+                            Code = "audit:export"
                         });
                 });
 

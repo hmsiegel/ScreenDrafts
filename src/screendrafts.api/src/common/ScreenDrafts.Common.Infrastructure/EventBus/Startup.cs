@@ -6,6 +6,7 @@ internal static class Startup
     this IServiceCollection services,
     string serviceName,
     Action<IRegistrationConfigurator, string>[] moduleConfigureConsumers,
+    Action<IRabbitMqBusFactoryConfigurator, IBusRegistrationContext>[] moduleConfigureEndpoints,
     RabbitMqSettings rabbitMqSettings)
   {
     services.TryAddSingleton<IEventBus, EventBus>();
@@ -29,6 +30,12 @@ internal static class Startup
                   h.Username(rabbitMqSettings.UserName);
                   h.Password(rabbitMqSettings.Password);
                 });
+
+            foreach (Action<IRabbitMqBusFactoryConfigurator, IBusRegistrationContext> configureEndpoint in moduleConfigureEndpoints)
+            {
+              configureEndpoint(cfg, context);
+            }
+
             cfg.ConfigureEndpoints(context);
           });
     });

@@ -132,5 +132,8 @@ public sealed class Permission(string code)
   public static readonly Permission SubmitPredictions = new("predictions:submit");
   public static readonly Permission ReadPredictions = new("predictions:read");
 
+  public static readonly Permission AuditRead = new("audit:read");
+  public static readonly Permission AuditExport = new("audit:export");
+
   public string Code { get; } = code;
 }
