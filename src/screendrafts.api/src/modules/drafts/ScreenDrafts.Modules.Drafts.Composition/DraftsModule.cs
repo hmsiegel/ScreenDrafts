@@ -59,7 +59,7 @@ public static class DraftsModule
     services.AddScoped(typeof(IPipelineBehavior<,>), typeof(DraftsUnitOfWorkBehavior<,>));
     services.AddScoped<ParticipantResolver>();
     services.AddScoped<DraftBoardParticipantResolver>();
-    services.AddScoped<IAdministrationIntegrationEventDispatcher, DraftsIntegrationEventDispatcher>();
+    services.AddScoped<IDraftsIntegrationEventDispatcher, DraftsIntegrationEventDispatcher>();
     services.AddScoped<IDraftsDomainEventDispatcher, DraftsDomainEventDispatcher>();
     return services;
   }

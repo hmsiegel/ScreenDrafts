@@ -1,9 +1,7 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Features.Campaigns.List;
 
-internal sealed class Endpoint(IUsersApi usersApi) : ScreenDraftsEndpoint<ListCampaignsRequest, CampaignCollectionResponse>
+internal sealed class Endpoint : ScreenDraftsEndpoint<ListCampaignsRequest, CampaignCollectionResponse>
 {
-  private readonly IUsersApi _usersApi = usersApi;
-
   public override void Configure()
   {
     Get(CampaignRoutes.Campaigns);
@@ -20,10 +18,7 @@ internal sealed class Endpoint(IUsersApi usersApi) : ScreenDraftsEndpoint<ListCa
 
   public override async Task HandleAsync(ListCampaignsRequest req, CancellationToken ct)
   {
-    var userRoles = await _usersApi.GetUserRolesAsync(User.GetUserId(), ct);
-
-    var isAdmin = userRoles.Contains(DraftsAuth.Roles.Admin, StringComparer.OrdinalIgnoreCase) || 
-      userRoles.Contains(DraftsAuth.Roles.SuperAdmin, StringComparer.OrdinalIgnoreCase);
+    var isAdmin = User.HasPermission(DraftsAuth.Permissions.AdminViewDeleted);
 
     if (!isAdmin && req.IncludeDeleted)
     {
@@ -31,9 +26,9 @@ internal sealed class Endpoint(IUsersApi usersApi) : ScreenDraftsEndpoint<ListCa
       return;
     }
 
-    var ListCampaignsQuery = new ListCampaignsQuery(IncludeDeleted: req.IncludeDeleted);
+    var query = new ListCampaignsQuery(IncludeDeleted: req.IncludeDeleted);
 
-    var result = await Sender.Send(ListCampaignsQuery, ct);
+    var result = await Sender.Send(query, ct);
 
     await this.SendOkAsync(result, ct);
   }

@@ -1,19 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-
-using ScreenDrafts.Common.Application.EventBus;
-using ScreenDrafts.Common.Application.EventBus.Dispatchers;
-using ScreenDrafts.Common.Application.Messaging;
-using ScreenDrafts.Common.Application.Messaging.Dispatchers;
-using ScreenDrafts.Modules.Administration.Features;
-using ScreenDrafts.Modules.Administration.Features.Inbox;
-using ScreenDrafts.Modules.Administration.Features.Outbox;
-using ScreenDrafts.Modules.Administration.Infrastructure;
-using ScreenDrafts.Modules.Administration.Infrastructure.Inbox;
-using ScreenDrafts.Modules.Administration.Infrastructure.Outbox;
-
-namespace ScreenDrafts.Modules.Administration.Composition;
+﻿namespace ScreenDrafts.Modules.Administration.Composition;
 
 public static class AdministrationModule
 {
@@ -34,7 +19,16 @@ public static class AdministrationModule
 
     return services;
   }
-  public static void AddAdministrationFeatures(this IServiceCollection services)
+
+  public static void ConfigureConsumers(IRegistrationConfigurator registrationConfigurator, string instanceId)
+  {
+    ArgumentNullException.ThrowIfNull(registrationConfigurator);
+
+    registrationConfigurator.AddConsumer<IntegrationEventConsumer<UserRegisteredIntegrationEvent>>()
+      .Endpoint(c => c.InstanceId = instanceId);
+  }
+
+  private static void AddAdministrationFeatures(this IServiceCollection services)
   {
     services.AddScoped<IAdministrationIntegrationEventDispatcher, AdministrationIntegrationEventDispatcher>();
     services.AddScoped<IAdministrationDomainEventDispatcher, AdministrationDomainEventDispatcher>();

@@ -1,11 +1,7 @@
-﻿using ScreenDrafts.Common.Presentation.Http.Authentication;
+﻿namespace ScreenDrafts.Modules.Drafts.Features.Categories.List;
 
-namespace ScreenDrafts.Modules.Drafts.Features.Categories.List;
-
-internal sealed class Endpoint(IUsersApi usersApi) : ScreenDraftsEndpoint<ListCategoriesRequest, CategoryCollectionResponse>
+internal sealed class Endpoint : ScreenDraftsEndpoint<ListCategoriesRequest, CategoryCollectionResponse>
 {
-  private readonly IUsersApi _usersApi = usersApi;
-
   public override void Configure()
   {
     Get(CategoryRoutes.Category);
@@ -22,10 +18,7 @@ internal sealed class Endpoint(IUsersApi usersApi) : ScreenDraftsEndpoint<ListCa
 
   public override async Task HandleAsync(ListCategoriesRequest req, CancellationToken ct)
   {
-    var userRoles = await _usersApi.GetUserRolesAsync(User.GetUserId(), ct);
-
-    var isAdmin = userRoles.Contains(DraftsAuth.Roles.Admin, StringComparer.OrdinalIgnoreCase) || 
-      userRoles.Contains(DraftsAuth.Roles.SuperAdmin, StringComparer.OrdinalIgnoreCase);
+    var isAdmin = User.HasPermission(DraftsAuth.Permissions.AdminViewDeleted);
 
     if (!isAdmin && req.IncludeDeleted)
     {
@@ -33,9 +26,9 @@ internal sealed class Endpoint(IUsersApi usersApi) : ScreenDraftsEndpoint<ListCa
       return;
     }
 
-    var ListCategoriesQuery = new ListCategoriesQuery(IncludeDeleted: req.IncludeDeleted);
+    var query = new ListCategoriesQuery(IncludeDeleted: req.IncludeDeleted);
 
-    var result = await Sender.Send(ListCategoriesQuery, ct);
+    var result = await Sender.Send(query, ct);
 
     await this.SendOkAsync(result, ct);
   }

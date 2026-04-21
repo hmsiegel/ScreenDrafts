@@ -16,7 +16,7 @@ internal sealed class ProcessInboxJob(
   private readonly IDateTimeProvider _dateTimeProvider = dateTimeProvider;
   private readonly ILogger<ProcessInboxJob> _logger = logger;
   private readonly InboxOptions _inboxOptions = inboxOptions.Value;
-  private readonly IIntegrationEventDispatcher _integrationEventDispatcher = integrationEventDispatcher;
+  private readonly IAuditIntegrationEventDispatcher _integrationEventDispatcher = integrationEventDispatcher;
 
   public async Task Execute(IJobExecutionContext context)
   {

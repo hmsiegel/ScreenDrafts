@@ -1,11 +1,7 @@
-﻿using ScreenDrafts.Common.Presentation.Http.Authentication;
+﻿namespace ScreenDrafts.Modules.Drafts.Features.Campaigns.Get;
 
-namespace ScreenDrafts.Modules.Drafts.Features.Campaigns.Get;
-
-internal sealed class Endpoint(IUsersApi usersApi) : ScreenDraftsEndpoint<GetCampaignRequest, CampaignResponse>
+internal sealed class Endpoint : ScreenDraftsEndpoint<GetCampaignRequest, CampaignResponse>
 {
-  private readonly IUsersApi _usersApi = usersApi;
-
   public override void Configure()
   {
     Get(CampaignRoutes.ById);
@@ -22,10 +18,7 @@ internal sealed class Endpoint(IUsersApi usersApi) : ScreenDraftsEndpoint<GetCam
 
   public override async Task HandleAsync(GetCampaignRequest req, CancellationToken ct)
   {
-    var userRoles = await _usersApi.GetUserRolesAsync(User.GetUserId(), ct);
-
-    var isAdmin = userRoles.Contains(DraftsAuth.Roles.Admin, StringComparer.OrdinalIgnoreCase) || 
-      userRoles.Contains(DraftsAuth.Roles.SuperAdmin, StringComparer.OrdinalIgnoreCase);
+    var isAdmin = User.HasPermission(DraftsAuth.Permissions.AdminViewDeleted);
 
     if (!isAdmin && req.IncludeDeleted)
     {
@@ -33,9 +26,9 @@ internal sealed class Endpoint(IUsersApi usersApi) : ScreenDraftsEndpoint<GetCam
       return;
     }
 
-    var GetCampaignQuery = new GetCampaignQuery(req.PublicId, req.IncludeDeleted);
+    var query = new GetCampaignQuery(req.PublicId, req.IncludeDeleted);
 
-    var result = await Sender.Send(GetCampaignQuery, ct);
+    var result = await Sender.Send(query, ct);
 
     await this.SendOkAsync(result, ct);
   }

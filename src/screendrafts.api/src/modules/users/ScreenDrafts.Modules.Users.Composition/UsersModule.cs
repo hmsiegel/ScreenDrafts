@@ -1,4 +1,9 @@
-﻿namespace ScreenDrafts.Modules.Users.Composition;
+﻿using MassTransit;
+
+using ScreenDrafts.Modules.Users.Features.Admin.AddPermissionToRole;
+using ScreenDrafts.Modules.Users.IntegrationEvents;
+
+namespace ScreenDrafts.Modules.Users.Composition;
 
 public static class UsersModule
 {
@@ -43,6 +48,20 @@ public static class UsersModule
     services.AddTransient<IIdentityProviderService, IdentityProviderService>();
     services.AddUsersInfratructure(configuration);
     return services;
+  }
+
+  public static void ConfigureConsumers(IRegistrationConfigurator registrationConfigurator, string instanceId)
+  {
+    ArgumentNullException.ThrowIfNull(registrationConfigurator);
+
+    registrationConfigurator.AddConsumer<IntegrationEventConsumer<PermissionAddedToRoleIntegrationEvent>>()
+      .Endpoint(c => c.InstanceId = instanceId);
+    registrationConfigurator.AddConsumer<IntegrationEventConsumer<UserRoleAddedIntegrationEvent>>()
+      .Endpoint(c => c.InstanceId = instanceId);
+    registrationConfigurator.AddConsumer<IntegrationEventConsumer<UserRoleRemovedIntegrationEvent>>()
+      .Endpoint(c => c.InstanceId = instanceId);
+    registrationConfigurator.AddConsumer<IntegrationEventConsumer<PermissionRemovedFromRoleIntegrationEvent>>()
+      .Endpoint(c => c.InstanceId = instanceId);
   }
 
 

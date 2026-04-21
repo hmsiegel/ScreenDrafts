@@ -2,6 +2,9 @@
   <ItemGroup>
     <InternalsVisibleTo Include="ScreenDrafts.Modules.Reporting.IntegrationTests" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="MailKit" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\common\ScreenDrafts.Common.Application\ScreenDrafts.Common.Application.csproj" />

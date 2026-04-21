@@ -7,4 +7,5 @@ internal static class Tables
   internal const string UserRoles = "user_roles";
   internal const string Permissions = "permissions";
   internal const string RolePermissions = "role_permissions";
+  internal const string UserPermissions = "user_permissions";
 }

@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Common.Abstractions.Authorization;
-
-namespace ScreenDrafts.Modules.Users.Features.Users.GetUserPermissions;
+﻿namespace ScreenDrafts.Modules.Users.Features.Users.GetUserPermissions;
 
 internal sealed class GetUserPermissionsQueryHandler(IDbConnectionFactory dbConnectionFactory) : IQueryHandler<GetUserPermissionsQuery, PermissionsResponse>
 {
@@ -15,10 +13,9 @@ internal sealed class GetUserPermissionsQueryHandler(IDbConnectionFactory dbConn
       SELECT DISTINCT
         u.id AS {nameof(UserPermission.UserId)},
         u.public_id AS {nameof(UserPermission.PublicId)},
-        rp.permission_code AS {nameof(UserPermission.Permission)}
+        up.permission_code AS {nameof(UserPermission.Permission)}
       FROM users.users u
-      JOIN users.user_roles ur ON ur.user_id = u.id
-      JOIN users.role_permissions rp ON rp.role_name = ur.role_name
+      JOIN users.user_permissions up ON up.user_id = u.id
       WHERE u.identity_id = @IdentityId
       """;
 
@@ -29,7 +26,10 @@ internal sealed class GetUserPermissionsQueryHandler(IDbConnectionFactory dbConn
       return Result.Failure<PermissionsResponse>(UserErrors.NotFound(request.IdentityId));
     }
 
-    return new PermissionsResponse(permissions[0].UserId, permissions[0].PublicId, permissions.Select(p => p.Permission).ToHashSet());
+    return new PermissionsResponse(
+      permissions[0].UserId,
+      permissions[0].PublicId,
+      [.. permissions.Select(p => p.Permission)]);
   }
 
   internal sealed class UserPermission

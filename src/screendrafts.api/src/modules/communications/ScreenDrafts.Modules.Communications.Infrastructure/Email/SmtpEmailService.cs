@@ -27,7 +27,7 @@ internal sealed class SmtpEmailService(IOptions<SmtpSettings> smtpSettings) : IE
     {
       await client.AuthenticateAsync(
         userName: _smtpSettings.Username,
-        password: _smtpSettings.Password,
+        password: _smtpSettings.Password!,
         cancellationToken: cancellationToken);
     }
 

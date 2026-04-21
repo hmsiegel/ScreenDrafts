@@ -156,6 +156,19 @@ public class UsersIntegrationTestWebAppFactory : IntegrationTestWebAppFactory
 
     await connection.ExecuteAsync(
       """
+      CREATE TABLE IF NOT EXISTS users.user_permissions
+      (
+          user_id         UUID         NOT NULL,
+          permission_code VARCHAR(100) NOT NULL,
+          CONSTRAINT pk_user_permissions PRIMARY KEY (user_id, permission_code)
+      );
+
+      CREATE INDEX IF NOT EXISTS ix_user_permissions_user_id
+          ON users.user_permissions (user_id);
+      """);
+
+    await connection.ExecuteAsync(
+      """
       CREATE TABLE IF NOT EXISTS audit.http_audit_logs
       (
           id               uuid        NOT NULL,

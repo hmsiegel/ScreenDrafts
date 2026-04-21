@@ -4,6 +4,7 @@
     <PackageReference Include="CsvHelper" />
     <PackageReference Include="Dapper" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
+    <PackageReference Include="MailKit" />
     <PackageReference Include="MediatR" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" />

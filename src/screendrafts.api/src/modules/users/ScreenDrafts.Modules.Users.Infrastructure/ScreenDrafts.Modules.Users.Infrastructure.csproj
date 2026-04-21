@@ -10,4 +10,8 @@
     <InternalsVisibleTo Include="ScreenDrafts.IntegrationTests" />
     <InternalsVisibleTo Include="ScreenDrafts.Seeding.Users" />
   </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MailKit" />
+  </ItemGroup>
 </Project>

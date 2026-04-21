@@ -6,6 +6,9 @@ public sealed class Permission(string code)
   public static readonly Permission GetUser = new("users:read");
   public static readonly Permission ModifyUser = new("users:update");
 
+  // Admin View Deleted
+  public static readonly Permission ViewDeleted = new("admin:view-deleted");
+
   // Roles & Permissions (admin)
   public static readonly Permission GetRoles = new("roles:read");
   public static readonly Permission ModifyRoles = new("roles:update");

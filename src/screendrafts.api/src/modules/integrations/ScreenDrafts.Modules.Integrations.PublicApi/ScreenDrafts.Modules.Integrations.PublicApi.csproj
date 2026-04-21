@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MailKit" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\..\common\ScreenDrafts.Common.Abstractions\ScreenDrafts.Common.Abstractions.csproj" />
     <ProjectReference Include="..\..\..\common\ScreenDrafts.Common.Domain\ScreenDrafts.Common.Domain.csproj" />
   </ItemGroup>

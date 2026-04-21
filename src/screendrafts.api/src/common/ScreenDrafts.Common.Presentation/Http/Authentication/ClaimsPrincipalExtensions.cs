@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Common.Abstractions.Authentication;
-
-namespace ScreenDrafts.Common.Presentation.Http.Authentication;
+﻿namespace ScreenDrafts.Common.Presentation.Http.Authentication;
 
 public static class ClaimsPrincipalExtensions
 {
@@ -31,5 +29,11 @@ public static class ClaimsPrincipalExtensions
   {
     return principal?.FindFirst(CustomClaims.PublicId)?.Value ??
            throw new ScreenDraftsException("User public identifier is unavailable");
+  }
+
+  public static bool HasPermission(this ClaimsPrincipal? principal, string permission)
+  {
+    var permissions = principal?.GetPermissions() ?? throw new ScreenDraftsException("Permissions are unavailable");
+    return permissions.Contains(permission);
   }
 }

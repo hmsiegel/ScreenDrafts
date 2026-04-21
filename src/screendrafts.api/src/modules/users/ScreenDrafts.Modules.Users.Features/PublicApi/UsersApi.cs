@@ -1,7 +1,5 @@
 ﻿namespace ScreenDrafts.Modules.Users.Features.PublicApi;
 
-using ScreenDrafts.Common.Abstractions.Results;
-
 using UserResponse = UserResponse;
 
 internal sealed class UsersApi(ISender sender) : IUsersApi
@@ -28,62 +26,6 @@ internal sealed class UsersApi(ISender sender) : IUsersApi
       LastName = result.Value.LastName,
       MiddleName = result.Value.MiddleName
     };
-  }
-
-  public async Task<Result> AddUserRoleAsync(Guid userId, string role)
-  {
-    var command = new Admin.AddRoleToUser.AddRoleToUserCommand(userId, role);
-
-    var result = await _sender.Send(command);
-
-    if (result.IsFailure)
-    {
-      return Result.Failure(result.Errors[0]);
-    }
-
-    return Result.Success();
-  }
-
-  public async Task<Result> RemoveUserRoleAsync(Guid userId, string role)
-  {
-    var command = new Admin.RemoveRoleFromUser.RemoveRoleFromUserCommand(userId, role);
-
-    var result = await _sender.Send(command);
-
-    if (result.IsFailure)
-    {
-      return Result.Failure(result.Errors[0]);
-    }
-
-    return Result.Success();
-  }
-
-  public async Task<Result> AddPermissionToRoleAsync(string role, string permission)
-  {
-    var command = new Admin.AddPermissionToRole.AddPermissionToRoleCommand(role, permission);
-
-    var result = await _sender.Send(command);
-
-    if (result.IsFailure)
-    {
-      return Result.Failure(result.Errors[0]);
-    }
-
-    return Result.Success();
-  }
-
-  public async Task<IReadOnlyCollection<string>> GetUserRolesAsync(Guid userId, CancellationToken cancellationToken)
-  {
-    var query = new Admin.GetUserRoles.GetUserRolesQuery(userId);
-
-    var result = await _sender.Send(query, cancellationToken);
-
-    if (result.IsFailure)
-    {
-      return [];
-    }
-
-    return result.Value;
   }
 
   public async Task<UserSocialResponse?> GetUserSocialsAsync(string publicId, CancellationToken cancellationToken)

@@ -4,6 +4,7 @@ public sealed class UsersDbContext(DbContextOptions<UsersDbContext> options)
   : DbContext(options), IUnitOfWork
 {
   internal DbSet<User> Users { get; set; } = default!;
+  internal DbSet<UserPermissions> UserPermissions { get; set; } = default!;
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {

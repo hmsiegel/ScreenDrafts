@@ -1,8 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Users.Domain.Users;
 public sealed class User : AggregateRoot<UserId, Guid>
 {
-  private readonly List<Role> _roles = [];
-
   private User(
     UserId id,
     Email email,
@@ -32,30 +30,17 @@ public sealed class User : AggregateRoot<UserId, Guid>
 
   public string PublicId { get; private set; } = default!;
   public Email Email { get; private set; } = default!;
-
   public FirstName FirstName { get; private set; } = default!;
-
   public string? MiddleName { get; private set; }
-
   public LastName LastName { get; private set; } = default!;
-
   public string IdentityId { get; private set; } = default!;
-
   public Guid? PersonId { get; private set; } = default!;
-
   public string? PersonPublicId { get; private set; } = default!;
-
   public string? ProfilePicturePath { get; private set; } = default!;
-
   public string? TwitterHandle { get; private set; } = default!;
-
   public string? InstagramHandle { get; private set; } = default!;
-
   public string? LetterboxdHandle { get; private set; } = default!;
-
   public string? BlueskyHandle { get; private set; } = default!;
-
-  public IReadOnlyCollection<Role> Roles => _roles.AsReadOnly();
 
   public static Result<User> Create(
     Email email,
@@ -78,8 +63,6 @@ public sealed class User : AggregateRoot<UserId, Guid>
       personPublicId: personPublicId,
       publicId: publicId,
       id: id ?? UserId.CreateUnique());
-
-    user._roles.Add(Role.Guest);
 
     user.Raise(new UserRegisteredDomainEvent(user.Id.Value));
 
@@ -137,19 +120,6 @@ public sealed class User : AggregateRoot<UserId, Guid>
       letterboxdHandle,
       blueskyHandle));
   }
-
-  public void AddRole(Role role)
-  {
-    ArgumentNullException.ThrowIfNull(role);
-    if (_roles.Contains(role))
-    {
-      return;
-    }
-    _roles.Add(role);
-    Raise(new UserRoleAddedDomainEvent(Id.Value, role.Name));
-  }
-
-  public void ClearRoles() => _roles.Clear();
 
   public void LinkPerson(Guid personId, string personPublicId)
   {

@@ -8,4 +8,8 @@
   <ItemGroup>
     <InternalsVisibleTo Include="ScreenDrafts.Modules.Audit.IntegrationTests" />
   </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MailKit" />
+  </ItemGroup>
 </Project>

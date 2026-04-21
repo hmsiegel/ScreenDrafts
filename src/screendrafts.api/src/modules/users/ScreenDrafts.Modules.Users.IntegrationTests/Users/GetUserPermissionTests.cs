@@ -28,6 +28,13 @@ public class GetUserPermissionTests(UsersIntegrationTestWebAppFactory factory)
         LastName = Faker.Name.LastName()
     });
 
+    await DbContext.Database.ExecuteSqlRawAsync(
+      """
+      INSERT INTO users.user_permissions (user_id, permission_code)
+      VALUES ({0}, 'users:read')
+      """,
+      userId.Value);
+
     var users = await DbContext.Users.ToListAsync();
 
     var identityId = users.FirstOrDefault(x => x.Id.Value == userId.Value)!.IdentityId;

@@ -19,6 +19,7 @@ builder.Services.AddInfrastructure(
   configuration,
   DiagnosticsConfig.ServiceName,
   [
+    AdministrationModule.ConfigureConsumers,
     AuditModule.ConfigureConsumers,
     CommunicationsModule.ConfigureConsumers,
     DraftsModule.ConfigureConsumers,
@@ -26,6 +27,7 @@ builder.Services.AddInfrastructure(
     MoviesModule.ConfigureConsumers,
     ReportingModule.ConfigureConsumers,
     RealTimeUpdatesModule.ConfigureConsumers,
+    UsersModule.ConfigureConsumers
     ],
   [
       AuditModule.ConfigureEndpoints

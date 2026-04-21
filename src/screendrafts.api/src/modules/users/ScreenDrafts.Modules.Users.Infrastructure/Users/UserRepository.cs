@@ -6,31 +6,17 @@ internal sealed class UserRepository(UsersDbContext dbContext) : IUserRepository
 
   public void Add(User user)
   {
-    foreach (var role in user.Roles)
-    {
-      _dbContext.Attach(role);
-    }
-
     _dbContext.Users.Add(user);
   }
 
   public void Update(User user)
   {
-    foreach (var role in user.Roles)
-    {
-      if (_dbContext.Entry(role).State == EntityState.Detached)
-      {
-        _dbContext.Attach(role);
-      }
-    }
-
     _dbContext.Users.Update(user);
   }
 
   public async Task<User?> GetAsync(UserId id, CancellationToken cancellationToken = default)
   {
     return await _dbContext.Users
-      .Include(x => x.Roles)
       .SingleOrDefaultAsync(x => x.Id == id, cancellationToken);
   }
 

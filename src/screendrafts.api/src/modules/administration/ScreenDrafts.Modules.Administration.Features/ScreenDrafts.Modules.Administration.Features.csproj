@@ -1,5 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <PackageReference Include="MailKit" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\..\..\common\ScreenDrafts.Common.Application\ScreenDrafts.Common.Application.csproj" />
     <ProjectReference Include="..\..\..\common\ScreenDrafts.Common.Presentation\ScreenDrafts.Common.Presentation.csproj" />
     <ProjectReference Include="..\..\audit\ScreenDrafts.Modules.Audit.IntegrationEvents\ScreenDrafts.Modules.Audit.IntegrationEvents.csproj" />
@@ -10,6 +13,7 @@
     <ProjectReference Include="..\..\reporting\ScreenDrafts.Modules.Reporting.IntegrationEvents\ScreenDrafts.Modules.Reporting.IntegrationEvents.csproj" />
     <ProjectReference Include="..\..\users\ScreenDrafts.Modules.Users.IntegrationEvents\ScreenDrafts.Modules.Users.IntegrationEvents.csproj" />
     <ProjectReference Include="..\..\users\ScreenDrafts.Modules.Users.PublicApi\ScreenDrafts.Modules.Users.PublicApi.csproj" />
+    <ProjectReference Include="..\ScreenDrafts.Modules.Administration.Domian\ScreenDrafts.Modules.Administration.Domian.csproj" />
     <ProjectReference Include="..\ScreenDrafts.Modules.Administration.IntegrationEvents\ScreenDrafts.Modules.Administration.IntegrationEvents.csproj" />
   </ItemGroup>
 </Project>

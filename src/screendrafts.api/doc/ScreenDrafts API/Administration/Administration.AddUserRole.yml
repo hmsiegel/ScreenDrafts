@@ -7,13 +7,20 @@ info:
 
 http:
   method: POST
-  url: "{{baseUrl}}/admin/roles/:roleName/users/:userId"
+  url: "{{baseUrl}}/admin/roles/:roleName/users/:publicId"
+  headers:
+    - name: Content-Type
+      value: application/json
+  params:
+    - name: roleName
+      value: Drafter
+      type: path
+    - name: publicId
+      value: u_dOqN66QaK5XUEQ3
+      type: path
   body:
     type: json
-    data: |-
-      {
-        "publicIds": []
-      }
+    data: "{}"
   auth: inherit
 
 settings:

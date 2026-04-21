@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Administration.Features.Users.AddPermissionToRole;
+﻿using FastEndpoints;
+
+namespace ScreenDrafts.Modules.Administration.Features.Users.AddPermissionToRole;
 
 internal sealed class Summary : Summary<Endpoint>
 {

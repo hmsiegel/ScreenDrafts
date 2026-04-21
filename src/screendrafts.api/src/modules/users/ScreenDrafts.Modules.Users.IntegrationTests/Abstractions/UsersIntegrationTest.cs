@@ -13,9 +13,9 @@ public abstract class UsersIntegrationTest : BaseIntegrationTest<UsersDbContext>
   protected override async Task ClearDatabaseAsync()
   {
     await DbContext.Database.ExecuteSqlRawAsync(
-      $"""
-      TRUNCATE TABLE 
-        users.user_roles,
+      """
+      TRUNCATE TABLE
+        users.user_permissions,
         users.users
       RESTART IDENTITY CASCADE;
       """);

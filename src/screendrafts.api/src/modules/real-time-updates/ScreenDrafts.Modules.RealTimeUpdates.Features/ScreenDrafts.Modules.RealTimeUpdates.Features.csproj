@@ -3,6 +3,9 @@
     <InternalsVisibleTo Include="ScreenDrafts.Modules.RealTimeUpdates.IntegrationTests" />
     <InternalsVisibleTo Include="ScreenDrafts.Modules.RealTimeUpdates.UnitTests" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="MailKit" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\common\ScreenDrafts.Common.Application\ScreenDrafts.Common.Application.csproj" />

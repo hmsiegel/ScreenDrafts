@@ -1,6 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <PackageReference Include="MailKit" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\..\common\ScreenDrafts.Common.Domain\ScreenDrafts.Common.Domain.csproj" />
   </ItemGroup>
 

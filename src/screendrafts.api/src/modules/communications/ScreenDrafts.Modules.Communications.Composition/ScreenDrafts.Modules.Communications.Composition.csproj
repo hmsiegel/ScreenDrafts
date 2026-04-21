@@ -1,5 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <PackageReference Include="MailKit" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\..\..\common\ScreenDrafts.Common.Infrastructure\ScreenDrafts.Common.Infrastructure.csproj" />
     <ProjectReference Include="..\ScreenDrafts.Modules.Communications.Features\ScreenDrafts.Modules.Communications.Features.csproj" />
     <ProjectReference Include="..\ScreenDrafts.Modules.Communications.Infrastructure\ScreenDrafts.Modules.Communications.Infrastructure.csproj" />

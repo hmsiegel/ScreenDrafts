@@ -1,11 +1,7 @@
-﻿using ScreenDrafts.Common.Presentation.Http;
+﻿namespace ScreenDrafts.Modules.Administration.Features.Users.AddPermissionToRole;
 
-namespace ScreenDrafts.Modules.Administration.Features.Users.AddPermissionToRole;
-
-internal sealed class Endpoint(IUsersApi usersApi) : ScreenDraftsEndpoint<Request>
+internal sealed class Endpoint() : ScreenDraftsEndpoint<AddPermissionToRoleRequest>
 {
-  private readonly IUsersApi _usersApi = usersApi;
-
   public override void Configure()
   {
     Post(UserRoutes.RolePermissions);
@@ -17,12 +13,20 @@ internal sealed class Endpoint(IUsersApi usersApi) : ScreenDraftsEndpoint<Reques
       .Produces(StatusCodes.Status401Unauthorized)
       .Produces(StatusCodes.Status403Forbidden);
     });
-    Policies(Features.Permissions.RoleUpdate);
+    Policies(AdministrationAuth.Permissions.PermissionsUpdate);
   }
 
-  public override async Task HandleAsync(Request req, CancellationToken ct)
+  public override async Task HandleAsync(
+    AddPermissionToRoleRequest req,
+    CancellationToken ct)
   {
-    var result = await _usersApi.AddPermissionToRoleAsync(req.Role!, req.Permission);
+    var command = new AddPermissionToRoleCommand
+    {
+      PermissionCode = req.PermissionCode,
+      RoleName = req.RoleName
+    };
+
+    var result = await Sender.Send(command, ct);
 
     await this.SendNoContentAsync(result, ct);
   }

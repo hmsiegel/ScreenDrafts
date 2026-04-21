@@ -148,26 +148,6 @@ internal sealed class UserSeeder(
       }
 
       person.AssignUserId(userId);
-
-      var user = validUsers
-        .FirstOrDefault(r => r.User!.Id.Value == userId).User;
-
-      var roleLookup = await _dbContext
-        .Set<Role>()
-        .ToDictionaryAsync(r => r.Name, r => r, cancellationToken);
-
-      user!.ClearRoles();
-      user!.AddRole(roleLookup["Guest"]);
-
-      if (await _draftsDbContext.Drafters.AnyAsync(d => d.PersonId == person.Id, cancellationToken))
-      {
-        user!.AddRole(roleLookup["Drafter"]);
-      }
-
-      if (await _draftsDbContext.Hosts.AnyAsync(h => h.PersonId == person.Id, cancellationToken))
-      {
-        user!.AddRole(roleLookup["Host"]);
-      }
     }
 
     _dbContext.Users.AddRange(validUsers.Select(r => r.User)!);

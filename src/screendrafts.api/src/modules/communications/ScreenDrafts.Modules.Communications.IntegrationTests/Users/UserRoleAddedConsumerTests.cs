@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Communications.IntegrationTests.Users;
+﻿namespace ScreenDrafts.Modules.Communications.IntegrationTests.Users;
 
 public sealed class UserRoleAddedConsumerTests
 {
@@ -89,6 +89,7 @@ public sealed class UserRoleAddedConsumerTests
       id: Guid.NewGuid(),
       occurredOnUtc: DateTime.UtcNow,
       userId: Guid.NewGuid(),
-      roleName: roleName);
+      roleName: roleName,
+      permissionCodesToAdd: []);
   }
 }

@@ -126,5 +126,7 @@ internal static class DraftsAuth
 
     // Read standings and sets.
     internal const string PredictionRead = "predictions:read";
+
+    internal const string AdminViewDeleted = "admin:view-deleted";
   }
 }

@@ -17,7 +17,19 @@ public class GetUserProfileTests(UsersIntegrationTestWebAppFactory factory) : Us
   public async Task Should_ReturnOk_WhenUserExistsAsync()
   {
     // Arrange
-    string accessToken = await RegisterUserAndGetAccessTokenAsync("exists@test.com", Faker.Internet.Password());
+    string email = "exists@test.com";
+    string password = Faker.Internet.Password();
+    string accessToken = await RegisterUserAndGetAccessTokenAsync(email, password);
+
+    await DbContext.Database.ExecuteSqlRawAsync(
+      """
+      INSERT INTO users.user_permissions (user_id, permission_code)
+      SELECT id, 'users:read'
+      FROM users.users
+      WHERE email = {0}
+      """,
+      email);
+
     HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
         JwtBearerDefaults.AuthenticationScheme,
         accessToken);
@@ -34,8 +46,6 @@ public class GetUserProfileTests(UsersIntegrationTestWebAppFactory factory) : Us
 
   private async Task<string> RegisterUserAndGetAccessTokenAsync(string email, string password)
   {
-    Log.Information($"HttpClient BaseAddress: {HttpClient.BaseAddress}", HttpClient.BaseAddress);
-
     var request = new RegisterUserRequest
     {
       Email = email,
@@ -44,16 +54,9 @@ public class GetUserProfileTests(UsersIntegrationTestWebAppFactory factory) : Us
       LastName = Faker.Name.LastName()
     };
 
-    Log.Information($"Registering user with email: {email}", email);
     var registerResponse = await HttpClient.PostAsJsonAsync("users/register", request);
-
-    Log.Information($"Registration response status code: {registerResponse.StatusCode}", registerResponse.StatusCode);
-    var registerContent = await registerResponse.Content.ReadAsStringAsync();
-    Log.Information($"Registration response content: {registerContent}", registerContent);
-
     registerResponse.EnsureSuccessStatusCode();
 
-    Log.Information("Getting access token for {email}", email);
     string accessToken = await GetAccessTokenAsync(request.Email, request.Password);
 
     return accessToken;

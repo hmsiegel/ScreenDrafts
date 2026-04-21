@@ -1,0 +1,57 @@
+info:
+  name: Administration.AddPermission
+  type: http
+  seq: 4
+
+http:
+  method: POST
+  url: "{{baseUrl}}/admin/permissions"
+  body:
+    type: json
+    data: |-
+      {
+        "code" : ""
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 204 Response
+    description: No Content
+    request:
+      url: "{{baseUrl}}/admin/permissions"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "code" : ""
+          }
+    response:
+      status: 200
+      statusText: OK
+      body:
+        type: text
+        data: ""
+  - name: 400 Response
+    description: Bad Request
+    request:
+      url: "{{baseUrl}}/admin/permissions"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "code" : ""
+          }
+    response:
+      status: 200
+      statusText: OK
+      body:
+        type: text
+        data: ""

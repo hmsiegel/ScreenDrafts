@@ -2,7 +2,7 @@
 
 namespace ScreenDrafts.Modules.Drafts.Features.Inbox;
 
-public class DraftsIntegrationEventDispatcher : IAdministrationIntegrationEventDispatcher
+public class DraftsIntegrationEventDispatcher : IDraftsIntegrationEventDispatcher
 {
   public async Task DispatchAsync(IIntegrationEvent integrationEvent, IServiceProvider provider)
   {
