@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Drafts.IntegrationTests.TestUtils;
+﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.TestUtils;
 
 public class HostFactory(ISender sender, Faker faker)
 {
@@ -9,7 +9,7 @@ public class HostFactory(ISender sender, Faker faker)
   {
     var peopleFactory = new PeopleFactory(_sender, _faker);
     var personId = await peopleFactory.CreateAndSavePersonAsync();
-    var result = await _sender.Send(new CreateHostCommand { PersonPublicId = personId });
+    var result = await _sender.Send(new CreateHostCommand { PersonPublicId = personId }, TestContext.Current.CancellationToken);
     return result.Value;
   }
 
@@ -19,7 +19,7 @@ public class HostFactory(ISender sender, Faker faker)
   {
     var peopleFactory = new PeopleFactory(_sender, _faker);
     var personId = await peopleFactory.CreateAndSavePersonWithNameAsync(firstName, lastName);
-    var result = await _sender.Send(new CreateHostCommand { PersonPublicId = personId });
+    var result = await _sender.Send(new CreateHostCommand { PersonPublicId = personId }, TestContext.Current.CancellationToken);
     return (result.Value, firstName, lastName);
   }
 }

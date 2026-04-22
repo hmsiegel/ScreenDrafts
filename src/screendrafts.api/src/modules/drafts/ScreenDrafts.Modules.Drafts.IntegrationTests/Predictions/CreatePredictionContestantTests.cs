@@ -13,7 +13,7 @@ public sealed class CreatePredictionContestantTests(DraftsIntegrationTestWebAppF
     var command = new CreatePredictionContestantCommand { PersonPublicId = personPublicId };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -31,12 +31,12 @@ public sealed class CreatePredictionContestantTests(DraftsIntegrationTestWebAppF
     var command = new CreatePredictionContestantCommand { PersonPublicId = personPublicId };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
     var exists = await DbContext.PredictionContestants
-      .AnyAsync(c => c.PublicId == result.Value);
+      .AnyAsync(c => c.PublicId == result.Value, TestContext.Current.CancellationToken);
     exists.Should().BeTrue();
   }
 
@@ -47,7 +47,7 @@ public sealed class CreatePredictionContestantTests(DraftsIntegrationTestWebAppF
     var command = new CreatePredictionContestantCommand { PersonPublicId = "pe_nonexistent123" };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -62,10 +62,10 @@ public sealed class CreatePredictionContestantTests(DraftsIntegrationTestWebAppF
 
     var command = new CreatePredictionContestantCommand { PersonPublicId = personPublicId };
 
-    await Sender.Send(command);
+    await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Act — attempt to create again for the same person
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -82,8 +82,8 @@ public sealed class CreatePredictionContestantTests(DraftsIntegrationTestWebAppF
     var personPublicId2 = await people.CreateAndSavePersonAsync();
 
     // Act
-    var result1 = await Sender.Send(new CreatePredictionContestantCommand { PersonPublicId = personPublicId1 });
-    var result2 = await Sender.Send(new CreatePredictionContestantCommand { PersonPublicId = personPublicId2 });
+    var result1 = await Sender.Send(new CreatePredictionContestantCommand { PersonPublicId = personPublicId1 }, TestContext.Current.CancellationToken);
+    var result2 = await Sender.Send(new CreatePredictionContestantCommand { PersonPublicId = personPublicId2 }, TestContext.Current.CancellationToken);
 
     // Assert
     result1.IsSuccess.Should().BeTrue();

@@ -45,7 +45,6 @@ public abstract partial class BaseIntegrationTest<TDbContext> : IDisposable, IAs
       {
         ServiceScope.Dispose();
         HttpClient.Dispose();
-        DbContext.Dispose();
       }
 
       _disposedValue = true;
@@ -60,9 +59,21 @@ public abstract partial class BaseIntegrationTest<TDbContext> : IDisposable, IAs
 
   public async Task DisposeAsync()
   {
-    await ClearDatabaseAsync();
-    await OnDisposeAsync();
-    Dispose();
+    if (!_disposedValue)
+    {
+      await ClearDatabaseAsync();
+      await OnDisposeAsync();
+      
+      // Async disposal of DbContext
+      await DbContext.DisposeAsync();
+      
+      // Synchronous disposal of other resources
+      ServiceScope.Dispose();
+      HttpClient.Dispose();
+      
+      _disposedValue = true;
+    }
+    
   }
 
   protected virtual Task OnDisposeAsync()
@@ -79,5 +90,16 @@ public abstract partial class BaseIntegrationTest<TDbContext> : IDisposable, IAs
   protected virtual Task OnInitializeAsync()
   {
     return Task.CompletedTask;
+  }
+
+  ValueTask IAsyncLifetime.InitializeAsync()
+  {
+    return new ValueTask(InitializeAsync());
+  }
+
+  ValueTask IAsyncDisposable.DisposeAsync()
+  {
+    GC.SuppressFinalize(this);
+    return new ValueTask(DisposeAsync());
   }
 }

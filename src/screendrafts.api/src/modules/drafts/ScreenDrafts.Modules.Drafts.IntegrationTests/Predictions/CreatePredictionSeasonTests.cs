@@ -14,7 +14,7 @@ public sealed class CreatePredictionSeasonTests(DraftsIntegrationTestWebAppFacto
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -33,12 +33,12 @@ public sealed class CreatePredictionSeasonTests(DraftsIntegrationTestWebAppFacto
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
     var exists = await DbContext.PredictionSeasons
-      .AnyAsync(s => s.PublicId == result.Value);
+      .AnyAsync(s => s.PublicId == result.Value, TestContext.Current.CancellationToken);
     exists.Should().BeTrue();
   }
 
@@ -53,12 +53,12 @@ public sealed class CreatePredictionSeasonTests(DraftsIntegrationTestWebAppFacto
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
     var season = await DbContext.PredictionSeasons
-      .FirstAsync(s => s.PublicId == result.Value);
+      .FirstAsync(s => s.PublicId == result.Value, TestContext.Current.CancellationToken);
     season.IsClosed.Should().BeFalse();
     season.EndsOn.Should().BeNull();
   }
@@ -74,11 +74,11 @@ public sealed class CreatePredictionSeasonTests(DraftsIntegrationTestWebAppFacto
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
-    var season = await DbContext.PredictionSeasons.FirstAsync(s => s.PublicId == result.Value);
+    var season = await DbContext.PredictionSeasons.FirstAsync(s => s.PublicId == result.Value, TestContext.Current.CancellationToken);
     season.TargetPoints.Should().Be(100);
   }
 
@@ -86,8 +86,8 @@ public sealed class CreatePredictionSeasonTests(DraftsIntegrationTestWebAppFacto
   public async Task CreateMultiplePredictionSeasons_ShouldAllSucceedAsync()
   {
     // Arrange & Act
-    var result1 = await Sender.Send(new CreatePredictionSeasonCommand { Number = 1, StartsOn = DateOnly.FromDateTime(DateTime.UtcNow) });
-    var result2 = await Sender.Send(new CreatePredictionSeasonCommand { Number = 2, StartsOn = DateOnly.FromDateTime(DateTime.UtcNow) });
+    var result1 = await Sender.Send(new CreatePredictionSeasonCommand { Number = 1, StartsOn = DateOnly.FromDateTime(DateTime.UtcNow) }, TestContext.Current.CancellationToken);
+    var result2 = await Sender.Send(new CreatePredictionSeasonCommand { Number = 2, StartsOn = DateOnly.FromDateTime(DateTime.UtcNow) }, TestContext.Current.CancellationToken);
 
     // Assert
     result1.IsSuccess.Should().BeTrue();

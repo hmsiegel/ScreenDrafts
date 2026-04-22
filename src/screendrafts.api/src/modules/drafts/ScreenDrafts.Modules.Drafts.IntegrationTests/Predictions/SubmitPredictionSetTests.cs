@@ -23,7 +23,7 @@ public sealed class SubmitPredictionSetTests(DraftsIntegrationTestWebAppFactory 
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -48,14 +48,14 @@ public sealed class SubmitPredictionSetTests(DraftsIntegrationTestWebAppFactory 
     };
 
     // Act
-    await Sender.Send(command);
+    await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
-    var draftPart = await DbContext.DraftParts.FirstAsync(dp => dp.PublicId == draftPartPublicId);
-    var contestant = await DbContext.PredictionContestants.FirstAsync(c => c.PublicId == contestantPublicId);
+    var draftPart = await DbContext.DraftParts.FirstAsync(dp => dp.PublicId == draftPartPublicId, TestContext.Current.CancellationToken);
+    var contestant = await DbContext.PredictionContestants.FirstAsync(c => c.PublicId == contestantPublicId, TestContext.Current.CancellationToken);
     var set = await DbContext.DraftPredictionSets
       .Include(s => s.Entries)
-      .FirstOrDefaultAsync(s => s.DraftPartId == draftPart.Id && s.ContestantId == contestant.Id);
+      .FirstOrDefaultAsync(s => s.DraftPartId == draftPart.Id && s.ContestantId == contestant.Id, TestContext.Current.CancellationToken);
 
     set.Should().NotBeNull();
     set!.Entries.Should().HaveCount(3);
@@ -79,10 +79,10 @@ public sealed class SubmitPredictionSetTests(DraftsIntegrationTestWebAppFactory 
       Entries = MakeEntries("m_00000001", "m_00000002", "m_00000003")
     };
 
-    await Sender.Send(command);
+    await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Act — submit again for same contestant and draft part
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -108,7 +108,7 @@ public sealed class SubmitPredictionSetTests(DraftsIntegrationTestWebAppFactory 
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -133,7 +133,7 @@ public sealed class SubmitPredictionSetTests(DraftsIntegrationTestWebAppFactory 
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -157,7 +157,7 @@ public sealed class SubmitPredictionSetTests(DraftsIntegrationTestWebAppFactory 
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -181,7 +181,7 @@ public sealed class SubmitPredictionSetTests(DraftsIntegrationTestWebAppFactory 
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -206,7 +206,7 @@ public sealed class SubmitPredictionSetTests(DraftsIntegrationTestWebAppFactory 
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -229,7 +229,7 @@ public sealed class SubmitPredictionSetTests(DraftsIntegrationTestWebAppFactory 
       PredictionMode = PredictionMode.UnorderedAll.Value,
       RequiredCount = 3,
       DeadlineUtc = DateTime.UtcNow.AddDays(-1)
-    });
+    }, TestContext.Current.CancellationToken);
 
     var command = new SubmitPredictionSetCommand
     {
@@ -241,7 +241,7 @@ public sealed class SubmitPredictionSetTests(DraftsIntegrationTestWebAppFactory 
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();

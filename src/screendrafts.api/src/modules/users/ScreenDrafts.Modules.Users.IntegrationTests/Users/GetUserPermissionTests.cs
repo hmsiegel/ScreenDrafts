@@ -10,7 +10,7 @@ public class GetUserPermissionTests(UsersIntegrationTestWebAppFactory factory)
     string identityId = Guid.NewGuid().ToString();
 
     // Act
-    Result<PermissionsResponse> permissionsResult = await Sender.Send(new Features.Users.GetUserPermissions.GetUserPermissionsQuery(identityId));
+    Result<PermissionsResponse> permissionsResult = await Sender.Send(new Features.Users.GetUserPermissions.GetUserPermissionsQuery(identityId), TestContext.Current.CancellationToken);
 
     // Assert
     permissionsResult.Errors[0].Should().Be(UserErrors.NotFound(identityId));
@@ -26,7 +26,7 @@ public class GetUserPermissionTests(UsersIntegrationTestWebAppFactory factory)
         Password = Faker.Internet.Password(),
         FirstName = Faker.Name.FirstName(),
         LastName = Faker.Name.LastName()
-    });
+    }, TestContext.Current.CancellationToken);
 
     await DbContext.Database.ExecuteSqlRawAsync(
       """
@@ -35,12 +35,12 @@ public class GetUserPermissionTests(UsersIntegrationTestWebAppFactory factory)
       """,
       userId.Value);
 
-    var users = await DbContext.Users.ToListAsync();
+    var users = await DbContext.Users.ToListAsync(TestContext.Current.CancellationToken);
 
     var identityId = users.FirstOrDefault(x => x.Id.Value == userId.Value)!.IdentityId;
 
     // Act
-    Result<PermissionsResponse> permissionsResult = await Sender.Send(new Features.Users.GetUserPermissions.GetUserPermissionsQuery(identityId));
+    Result<PermissionsResponse> permissionsResult = await Sender.Send(new Features.Users.GetUserPermissions.GetUserPermissionsQuery(identityId), TestContext.Current.CancellationToken);
 
     // Assert
     permissionsResult.IsSuccess.Should().BeTrue();

@@ -16,7 +16,7 @@ public sealed class ScoreDraftPartPredictionsTests(DraftsIntegrationTestWebAppFa
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -35,12 +35,12 @@ public sealed class ScoreDraftPartPredictionsTests(DraftsIntegrationTestWebAppFa
     };
 
     // Act
-    await Sender.Send(command);
+    await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
-    var set = await DbContext.DraftPredictionSets.FirstAsync(s => s.PublicId == setPublicId);
+    var set = await DbContext.DraftPredictionSets.FirstAsync(s => s.PublicId == setPublicId, TestContext.Current.CancellationToken);
     var predictionResult = await DbContext.PredictionResults
-      .FirstOrDefaultAsync(r => r.SetId == set.Id);
+      .FirstOrDefaultAsync(r => r.SetId == set.Id, TestContext.Current.CancellationToken);
 
     predictionResult.Should().NotBeNull();
     predictionResult!.CorrectCount.Should().Be(3);
@@ -66,7 +66,7 @@ public sealed class ScoreDraftPartPredictionsTests(DraftsIntegrationTestWebAppFa
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -84,10 +84,10 @@ public sealed class ScoreDraftPartPredictionsTests(DraftsIntegrationTestWebAppFa
       FinalMediaPublicIds = ["m_00000001", "m_00000002", "m_00000003"]
     };
 
-    await Sender.Send(command);
+    await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Act — score again
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -106,7 +106,7 @@ public sealed class ScoreDraftPartPredictionsTests(DraftsIntegrationTestWebAppFa
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -126,7 +126,7 @@ public sealed class ScoreDraftPartPredictionsTests(DraftsIntegrationTestWebAppFa
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert — no sets to score, so success
     result.IsSuccess.Should().BeTrue();
@@ -138,7 +138,7 @@ public sealed class ScoreDraftPartPredictionsTests(DraftsIntegrationTestWebAppFa
     // Arrange
     var (draftPartPublicId, setPublicId) = await CreateDraftPartWithLockedSetAsync("m_00000001", "m_00000002", "m_00000003");
 
-    var set = await DbContext.DraftPredictionSets.FirstAsync(s => s.PublicId == setPublicId);
+    var set = await DbContext.DraftPredictionSets.FirstAsync(s => s.PublicId == setPublicId, TestContext.Current.CancellationToken);
     var seasonId = set.SeasonId;
     var contestantId = set.ContestantId;
 
@@ -148,14 +148,14 @@ public sealed class ScoreDraftPartPredictionsTests(DraftsIntegrationTestWebAppFa
       FinalMediaPublicIds = ["m_00000001", "m_00000002", "m_00000003"]
     };
 
-    await Sender.Send(command);
+    await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Act — process the outbox to trigger PredictionSetScoredDomainEventHandler
     await ProcessOutboxAsync();
 
     // Assert — standing should have been created and updated
     var standing = await DbContext.PredictionStandings
-      .FirstOrDefaultAsync(s => s.SeasonId == seasonId && s.ContestantId == contestantId);
+      .FirstOrDefaultAsync(s => s.SeasonId == seasonId && s.ContestantId == contestantId, TestContext.Current.CancellationToken);
 
     standing.Should().NotBeNull();
     standing!.Points.Should().Be(6); // 3 correct × 2 for shoot-the-moon
@@ -174,12 +174,12 @@ public sealed class ScoreDraftPartPredictionsTests(DraftsIntegrationTestWebAppFa
     };
 
     // Act
-    await Sender.Send(command);
+    await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
-    var set = await DbContext.DraftPredictionSets.FirstAsync(s => s.PublicId == setPublicId);
+    var set = await DbContext.DraftPredictionSets.FirstAsync(s => s.PublicId == setPublicId, TestContext.Current.CancellationToken);
     var predictionResult = await DbContext.PredictionResults
-      .FirstOrDefaultAsync(r => r.SetId == set.Id);
+      .FirstOrDefaultAsync(r => r.SetId == set.Id, TestContext.Current.CancellationToken);
 
     predictionResult.Should().NotBeNull();
     predictionResult!.CorrectCount.Should().Be(1);
@@ -206,7 +206,7 @@ public sealed class ScoreDraftPartPredictionsTests(DraftsIntegrationTestWebAppFa
     {
       DraftPartPublicId = draftPartPublicId,
       SetPublicId = setPublicId
-    });
+    }, TestContext.Current.CancellationToken);
     lockResult.IsSuccess.Should().BeTrue("set must be locked before scoring");
 
     return (draftPartPublicId, setPublicId);

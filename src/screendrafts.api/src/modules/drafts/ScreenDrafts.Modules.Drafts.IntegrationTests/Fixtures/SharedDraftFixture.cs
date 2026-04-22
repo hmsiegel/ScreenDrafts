@@ -1,4 +1,4 @@
-using ScreenDrafts.Modules.Drafts.Features.Categories.Create;
+﻿using ScreenDrafts.Modules.Drafts.Features.Categories.Create;
 using ScreenDrafts.Modules.Drafts.Features.SeriesFeatures.Create;
 
 namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Fixtures;
@@ -71,7 +71,7 @@ public sealed class SharedDraftFixture
       ContinuityDateRule = ContinuityDateRule.AnyChannelFirstRelease.Value,
       AllowedDraftTypes = (int)DraftTypeMask.All,
       DefaultDraftType = DraftType.Standard.Value
-    });
+    }, TestContext.Current.CancellationToken);
     return result.Value;
   }
 
@@ -81,7 +81,7 @@ public sealed class SharedDraftFixture
     {
       Name = name,
       Description = name
-    });
+    }, TestContext.Current.CancellationToken);
     return result.Value;
   }
 
@@ -98,7 +98,7 @@ public sealed class SharedDraftFixture
     });
     var personPublicId = personResult.Value;
 
-    var hostResult = await sender.Send(new CreateHostCommand { PersonPublicId = personPublicId });
+    var hostResult = await sender.Send(new CreateHostCommand { PersonPublicId = personPublicId }, TestContext.Current.CancellationToken);
     return (personPublicId, hostResult.Value);
   }
 }

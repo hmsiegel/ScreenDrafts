@@ -1,4 +1,4 @@
-using ScreenDrafts.Modules.Integrations.Features.Movies.GetOnlineMedia;
+﻿using ScreenDrafts.Modules.Integrations.Features.Movies.GetOnlineMedia;
 
 namespace ScreenDrafts.Modules.Integrations.IntegrationTests.Movies;
 
@@ -18,7 +18,7 @@ public sealed class GetOnlineMovieTests(IntegrationsIntegrationTestWebAppFactory
     var command = new GetOnlineMediaCommand { MediaType = MediaType.Movie, TmdbId = 9999 };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -46,7 +46,7 @@ public sealed class GetOnlineMovieTests(IntegrationsIntegrationTestWebAppFactory
     var command = new GetOnlineMediaCommand { MediaType = MediaType.Movie, TmdbId = 603 };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -88,7 +88,7 @@ public sealed class GetOnlineMovieTests(IntegrationsIntegrationTestWebAppFactory
     var command = new GetOnlineMediaCommand { MediaType = MediaType.Movie, TmdbId = 603 };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -119,7 +119,7 @@ public sealed class GetOnlineMovieTests(IntegrationsIntegrationTestWebAppFactory
     var command = new GetOnlineMediaCommand { MediaType = MediaType.Movie, TmdbId = 9998 };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();

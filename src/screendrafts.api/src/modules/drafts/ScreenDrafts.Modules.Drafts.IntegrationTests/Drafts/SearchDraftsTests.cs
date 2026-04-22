@@ -1,4 +1,4 @@
-using ScreenDrafts.Modules.Drafts.Domain.DraftParts.Enums;
+﻿using ScreenDrafts.Modules.Drafts.Domain.DraftParts.Enums;
 using ScreenDrafts.Modules.Drafts.Features.Campaigns.Create;
 using ScreenDrafts.Modules.Drafts.Features.Categories.Create;
 using ScreenDrafts.Modules.Drafts.Features.Drafts.Search;
@@ -18,7 +18,7 @@ public sealed class SearchDraftsTests(DraftsIntegrationTestWebAppFactory factory
   public async Task SearchDrafts_WithNoDrafts_ShouldReturnEmptyAsync()
   {
     // Act
-    var result = await Sender.Send(new SearchDraftsQuery { Page = 1, PageSize = 10 });
+    var result = await Sender.Send(new SearchDraftsQuery { Page = 1, PageSize = 10 }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -39,7 +39,7 @@ public sealed class SearchDraftsTests(DraftsIntegrationTestWebAppFactory factory
     await CreateDraftAsync();
 
     // Act
-    var result = await Sender.Send(new SearchDraftsQuery { Page = 1, PageSize = 10 });
+    var result = await Sender.Send(new SearchDraftsQuery { Page = 1, PageSize = 10 }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -60,7 +60,7 @@ public sealed class SearchDraftsTests(DraftsIntegrationTestWebAppFactory factory
     await CreateDraftAsync(title: "SomethingCompletelyDifferent");
 
     // Act
-    var result = await Sender.Send(new SearchDraftsQuery { Name = uniquePrefix });
+    var result = await Sender.Send(new SearchDraftsQuery { Name = uniquePrefix }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -76,7 +76,7 @@ public sealed class SearchDraftsTests(DraftsIntegrationTestWebAppFactory factory
     await CreateDraftAsync(title: title);
 
     // Act
-    var result = await Sender.Send(new SearchDraftsQuery { Name = title.ToUpperInvariant() });
+    var result = await Sender.Send(new SearchDraftsQuery { Name = title.ToUpperInvariant() }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -92,7 +92,7 @@ public sealed class SearchDraftsTests(DraftsIntegrationTestWebAppFactory factory
     await CreateDraftAsync(title: "Prefix_" + suffix);
 
     // Act
-    var result = await Sender.Send(new SearchDraftsQuery { Name = suffix });
+    var result = await Sender.Send(new SearchDraftsQuery { Name = suffix }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -107,7 +107,7 @@ public sealed class SearchDraftsTests(DraftsIntegrationTestWebAppFactory factory
     await CreateDraftAsync();
 
     // Act
-    var result = await Sender.Send(new SearchDraftsQuery { Name = "zzz_no_match_" + Faker.Random.AlphaNumeric(12) });
+    var result = await Sender.Send(new SearchDraftsQuery { Name = "zzz_no_match_" + Faker.Random.AlphaNumeric(12) }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -127,10 +127,10 @@ public sealed class SearchDraftsTests(DraftsIntegrationTestWebAppFactory factory
     var matchId = await CreateDraftAsync();
     await CreateDraftAsync(); // no campaign
 
-    await Sender.Send(new SetCampaignDraftCommand { DraftId = matchId, CampaignId = campaignId });
+    await Sender.Send(new SetCampaignDraftCommand { DraftId = matchId, CampaignId = campaignId }, TestContext.Current.CancellationToken);
 
     // Act
-    var result = await Sender.Send(new SearchDraftsQuery { CampaignPublicId = campaignId });
+    var result = await Sender.Send(new SearchDraftsQuery { CampaignPublicId = campaignId }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -147,7 +147,7 @@ public sealed class SearchDraftsTests(DraftsIntegrationTestWebAppFactory factory
     var unusedCampaignId = await CreateCampaignAsync();
 
     // Act
-    var result = await Sender.Send(new SearchDraftsQuery { CampaignPublicId = unusedCampaignId });
+    var result = await Sender.Send(new SearchDraftsQuery { CampaignPublicId = unusedCampaignId }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -166,10 +166,10 @@ public sealed class SearchDraftsTests(DraftsIntegrationTestWebAppFactory factory
     var matchId = await CreateDraftAsync();
     await CreateDraftAsync(); // no category
 
-    await Sender.Send(new SetCategoriesDraftCommand { DraftId = matchId, CategoryIds = [categoryId] });
+    await Sender.Send(new SetCategoriesDraftCommand { DraftId = matchId, CategoryIds = [categoryId] }, TestContext.Current.CancellationToken);
 
     // Act
-    var result = await Sender.Send(new SearchDraftsQuery { CategoryPublicId = categoryId });
+    var result = await Sender.Send(new SearchDraftsQuery { CategoryPublicId = categoryId }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -185,7 +185,7 @@ public sealed class SearchDraftsTests(DraftsIntegrationTestWebAppFactory factory
     var unusedCategoryId = await CreateCategoryAsync();
 
     // Act
-    var result = await Sender.Send(new SearchDraftsQuery { CategoryPublicId = unusedCategoryId });
+    var result = await Sender.Send(new SearchDraftsQuery { CategoryPublicId = unusedCategoryId }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -204,7 +204,7 @@ public sealed class SearchDraftsTests(DraftsIntegrationTestWebAppFactory factory
     await CreateDraftAsync(draftType: DraftType.MiniMega);
 
     // Act
-    var result = await Sender.Send(new SearchDraftsQuery { DraftType = DraftType.Standard.Value });
+    var result = await Sender.Send(new SearchDraftsQuery { DraftType = DraftType.Standard.Value }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -226,7 +226,7 @@ public sealed class SearchDraftsTests(DraftsIntegrationTestWebAppFactory factory
     }
 
     // Act
-    var result = await Sender.Send(new SearchDraftsQuery { Page = 2, PageSize = 2 });
+    var result = await Sender.Send(new SearchDraftsQuery { Page = 2, PageSize = 2 }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -245,7 +245,7 @@ public sealed class SearchDraftsTests(DraftsIntegrationTestWebAppFactory factory
     await CreateDraftAsync();
 
     // Act
-    var result = await Sender.Send(new SearchDraftsQuery { Page = 1, PageSize = 1000 });
+    var result = await Sender.Send(new SearchDraftsQuery { Page = 1, PageSize = 1000 }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -263,10 +263,10 @@ public sealed class SearchDraftsTests(DraftsIntegrationTestWebAppFactory factory
     const string title = "Shape Test Draft";
     var draftId = await CreateDraftAsync(title: title);
     var campaignId = await CreateCampaignAsync();
-    await Sender.Send(new SetCampaignDraftCommand { DraftId = draftId, CampaignId = campaignId });
+    await Sender.Send(new SetCampaignDraftCommand { DraftId = draftId, CampaignId = campaignId }, TestContext.Current.CancellationToken);
 
     // Act
-    var result = await Sender.Send(new SearchDraftsQuery { Name = title });
+    var result = await Sender.Send(new SearchDraftsQuery { Name = title }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -288,7 +288,7 @@ public sealed class SearchDraftsTests(DraftsIntegrationTestWebAppFactory factory
     await CreateDraftAsync(title: title);
 
     // Act
-    var result = await Sender.Send(new SearchDraftsQuery { Name = title });
+    var result = await Sender.Send(new SearchDraftsQuery { Name = title }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -311,7 +311,7 @@ public sealed class SearchDraftsTests(DraftsIntegrationTestWebAppFactory factory
     await CreateDraftAsync(title: prefix + "B");
 
     // Act
-    var result = await Sender.Send(new SearchDraftsQuery { Name = prefix });
+    var result = await Sender.Send(new SearchDraftsQuery { Name = prefix }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -333,7 +333,7 @@ public sealed class SearchDraftsTests(DraftsIntegrationTestWebAppFactory factory
       Title = title ?? Faker.Company.CompanyName() + Faker.Random.AlphaNumeric(6),
       DraftType = (draftType ?? DraftType.Standard).Value,
       SeriesId = seriesId
-    });
+    }, TestContext.Current.CancellationToken);
     return result.Value;
   }
 
@@ -348,7 +348,7 @@ public sealed class SearchDraftsTests(DraftsIntegrationTestWebAppFactory factory
       ContinuityDateRule = ContinuityDateRule.AnyChannelFirstRelease.Value,
       AllowedDraftTypes = (int)DraftTypeMask.All,
       DefaultDraftType = DraftType.Standard.Value
-    });
+    }, TestContext.Current.CancellationToken);
     return result.Value;
   }
 
@@ -358,7 +358,7 @@ public sealed class SearchDraftsTests(DraftsIntegrationTestWebAppFactory factory
     {
       Name = Faker.Commerce.Department() + Faker.Random.AlphaNumeric(6),
       Slug = Faker.Internet.DomainWord() + Faker.Random.AlphaNumeric(6)
-    });
+    }, TestContext.Current.CancellationToken);
     return result.Value;
   }
 
@@ -368,7 +368,7 @@ public sealed class SearchDraftsTests(DraftsIntegrationTestWebAppFactory factory
     {
       Name = Faker.Commerce.Categories(1)[0] + Faker.Random.AlphaNumeric(8),
       Description = Faker.Lorem.Sentence()
-    });
+    }, TestContext.Current.CancellationToken);
     return result.Value;
   }
 }

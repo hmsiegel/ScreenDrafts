@@ -14,3 +14,5 @@ global using ScreenDrafts.Common.Presentation.Http;
 global using ScreenDrafts.Modules.Drafts.ArchitectureTests.Abstractions;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafts;
 global using ScreenDrafts.Modules.Drafts.Infrastructure;
+
+global using Xunit;

@@ -1,4 +1,4 @@
-using ScreenDrafts.Modules.Drafts.Features.People.Search;
+﻿using ScreenDrafts.Modules.Drafts.Features.People.Search;
 
 namespace ScreenDrafts.Modules.Drafts.IntegrationTests.PeopleTests;
 
@@ -13,7 +13,7 @@ public sealed class SearchPeopleTests(DraftsIntegrationTestWebAppFactory factory
   public async Task SearchPeople_WithNoPeople_ShouldReturnEmptyAsync()
   {
     // Act
-    var result = await Sender.Send(new SearchPeopleQuery { Page = 1, PageSize = 10 });
+    var result = await Sender.Send(new SearchPeopleQuery { Page = 1, PageSize = 10 }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -35,7 +35,7 @@ public sealed class SearchPeopleTests(DraftsIntegrationTestWebAppFactory factory
     await peopleFactory.CreateAndSavePersonAsync();
 
     // Act
-    var result = await Sender.Send(new SearchPeopleQuery { Page = 1, PageSize = 10 });
+    var result = await Sender.Send(new SearchPeopleQuery { Page = 1, PageSize = 10 }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -57,7 +57,7 @@ public sealed class SearchPeopleTests(DraftsIntegrationTestWebAppFactory factory
     await peopleFactory.CreateAndSavePersonAsync(); // unrelated
 
     // Act
-    var result = await Sender.Send(new SearchPeopleQuery { Name = uniqueFirst });
+    var result = await Sender.Send(new SearchPeopleQuery { Name = uniqueFirst }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -75,7 +75,7 @@ public sealed class SearchPeopleTests(DraftsIntegrationTestWebAppFactory factory
     await peopleFactory.CreateAndSavePersonAsync(); // unrelated
 
     // Act
-    var result = await Sender.Send(new SearchPeopleQuery { Name = uniqueLast });
+    var result = await Sender.Send(new SearchPeopleQuery { Name = uniqueLast }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -92,7 +92,7 @@ public sealed class SearchPeopleTests(DraftsIntegrationTestWebAppFactory factory
     await peopleFactory.CreateAndSavePersonWithNameAsync(firstName, "Jones");
 
     // Act
-    var result = await Sender.Send(new SearchPeopleQuery { Name = firstName.ToUpperInvariant() });
+    var result = await Sender.Send(new SearchPeopleQuery { Name = firstName.ToUpperInvariant() }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -109,7 +109,7 @@ public sealed class SearchPeopleTests(DraftsIntegrationTestWebAppFactory factory
     await peopleFactory.CreateAndSavePersonWithNameAsync("Prefix" + suffix, "Doe");
 
     // Act
-    var result = await Sender.Send(new SearchPeopleQuery { Name = suffix });
+    var result = await Sender.Send(new SearchPeopleQuery { Name = suffix }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -125,7 +125,7 @@ public sealed class SearchPeopleTests(DraftsIntegrationTestWebAppFactory factory
     await peopleFactory.CreateAndSavePersonAsync();
 
     // Act
-    var result = await Sender.Send(new SearchPeopleQuery { Name = "zzz_no_match_" + Faker.Random.AlphaNumeric(12) });
+    var result = await Sender.Send(new SearchPeopleQuery { Name = "zzz_no_match_" + Faker.Random.AlphaNumeric(12) }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -143,15 +143,15 @@ public sealed class SearchPeopleTests(DraftsIntegrationTestWebAppFactory factory
     // Arrange – one drafter, one host, one plain person
     var peopleFactory = new PeopleFactory(Sender, Faker);
     var drafterPersonId = await peopleFactory.CreateAndSavePersonAsync();
-    await Sender.Send(new CreateDrafterCommand(drafterPersonId));
+    await Sender.Send(new CreateDrafterCommand(drafterPersonId), TestContext.Current.CancellationToken);
 
     var hostPersonId = await peopleFactory.CreateAndSavePersonAsync();
-    await Sender.Send(new CreateHostCommand { PersonPublicId = hostPersonId });
+    await Sender.Send(new CreateHostCommand { PersonPublicId = hostPersonId }, TestContext.Current.CancellationToken);
 
     await peopleFactory.CreateAndSavePersonAsync(); // plain person
 
     // Act
-    var result = await Sender.Send(new SearchPeopleQuery { Role = "drafter", Page = 1, PageSize = 10 });
+    var result = await Sender.Send(new SearchPeopleQuery { Role = "drafter", Page = 1, PageSize = 10 }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -165,15 +165,15 @@ public sealed class SearchPeopleTests(DraftsIntegrationTestWebAppFactory factory
     // Arrange – one drafter, one host, one plain person
     var peopleFactory = new PeopleFactory(Sender, Faker);
     var drafterPersonId = await peopleFactory.CreateAndSavePersonAsync();
-    await Sender.Send(new CreateDrafterCommand(drafterPersonId));
+    await Sender.Send(new CreateDrafterCommand(drafterPersonId), TestContext.Current.CancellationToken);
 
     var hostPersonId = await peopleFactory.CreateAndSavePersonAsync();
-    await Sender.Send(new CreateHostCommand { PersonPublicId = hostPersonId });
+    await Sender.Send(new CreateHostCommand { PersonPublicId = hostPersonId }, TestContext.Current.CancellationToken);
 
     await peopleFactory.CreateAndSavePersonAsync(); // plain person
 
     // Act
-    var result = await Sender.Send(new SearchPeopleQuery { Role = "HOST", Page = 1, PageSize = 10 });
+    var result = await Sender.Send(new SearchPeopleQuery { Role = "HOST", Page = 1, PageSize = 10 }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -189,7 +189,7 @@ public sealed class SearchPeopleTests(DraftsIntegrationTestWebAppFactory factory
     await peopleFactory.CreateAndSavePersonAsync();
 
     // Act
-    var result = await Sender.Send(new SearchPeopleQuery { Role = "drafter" });
+    var result = await Sender.Send(new SearchPeopleQuery { Role = "drafter" }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -208,10 +208,10 @@ public sealed class SearchPeopleTests(DraftsIntegrationTestWebAppFactory factory
     const string lastName = "ShapeLast";
     var peopleFactory = new PeopleFactory(Sender, Faker);
     var personId = await peopleFactory.CreateAndSavePersonWithNameAsync(firstName, lastName);
-    await Sender.Send(new CreateDrafterCommand(personId));
+    await Sender.Send(new CreateDrafterCommand(personId), TestContext.Current.CancellationToken);
 
     // Act
-    var result = await Sender.Send(new SearchPeopleQuery { Name = firstName });
+    var result = await Sender.Send(new SearchPeopleQuery { Name = firstName }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -230,11 +230,11 @@ public sealed class SearchPeopleTests(DraftsIntegrationTestWebAppFactory factory
     var peopleFactory = new PeopleFactory(Sender, Faker);
     const string firstName = "BothRoles";
     var personId = await peopleFactory.CreateAndSavePersonWithNameAsync(firstName, "Person");
-    await Sender.Send(new CreateDrafterCommand(personId));
-    await Sender.Send(new CreateHostCommand { PersonPublicId = personId });
+    await Sender.Send(new CreateDrafterCommand(personId), TestContext.Current.CancellationToken);
+    await Sender.Send(new CreateHostCommand { PersonPublicId = personId }, TestContext.Current.CancellationToken);
 
     // Act
-    var result = await Sender.Send(new SearchPeopleQuery { Name = firstName });
+    var result = await Sender.Send(new SearchPeopleQuery { Name = firstName }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -258,7 +258,7 @@ public sealed class SearchPeopleTests(DraftsIntegrationTestWebAppFactory factory
     }
 
     // Act
-    var result = await Sender.Send(new SearchPeopleQuery { Page = 2, PageSize = 2 });
+    var result = await Sender.Send(new SearchPeopleQuery { Page = 2, PageSize = 2 }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -278,7 +278,7 @@ public sealed class SearchPeopleTests(DraftsIntegrationTestWebAppFactory factory
     await peopleFactory.CreateAndSavePersonAsync();
 
     // Act
-    var result = await Sender.Send(new SearchPeopleQuery { Page = 1, PageSize = 500 });
+    var result = await Sender.Send(new SearchPeopleQuery { Page = 1, PageSize = 500 }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();

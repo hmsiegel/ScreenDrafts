@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Audit.IntegrationTests.Abstractions;
+﻿namespace ScreenDrafts.Modules.Audit.IntegrationTests.Abstractions;
 
 public sealed class AuditIntegrationTestWebAppFactory : IntegrationTestWebAppFactory
 {
@@ -22,7 +22,7 @@ public sealed class AuditIntegrationTestWebAppFactory : IntegrationTestWebAppFac
     var connectionFactory = scope.ServiceProvider
       .GetRequiredService<ScreenDrafts.Common.Application.Data.IDbConnectionFactory>();
 
-    await using var connection = await connectionFactory.OpenConnectionAsync();
+    await using var connection = await connectionFactory.OpenConnectionAsync(TestContext.Current.CancellationToken);
 
     await connection.ExecuteAsync(
       """

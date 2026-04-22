@@ -1,4 +1,4 @@
-﻿using ScreenDrafts.Modules.Drafts.Domain.SeriesAggregate.Enums;
+using ScreenDrafts.Modules.Drafts.Domain.SeriesAggregate.Enums;
 
 namespace ScreenDrafts.Modules.Drafts.IntegrationTests.DraftParts;
 
@@ -21,7 +21,7 @@ public sealed class VetoOverrideAppliedDomainEventHandlerTests(DraftsIntegration
     var tmdbId = Faker.Random.Int(1, 500_000);
     var (_, draftPartPublicId, drafter1PublicId, drafter2PublicId) = await SetupStartedDraftPartWithPoolAsync(tmdbId);
 
-    var movie = await DbContext.Movies.FirstAsync(m => m.TmdbId == tmdbId);
+    var movie = await DbContext.Movies.FirstAsync(m => m.TmdbId == tmdbId, TestContext.Current.CancellationToken);
 
     // Play pick → movie removed from pool
     await Sender.Send(new PlayPickCommand
@@ -32,7 +32,7 @@ public sealed class VetoOverrideAppliedDomainEventHandlerTests(DraftsIntegration
       ParticipantPublicId = drafter1PublicId,
       ParticipantKind = ParticipantKind.Drafter,
       MoviePublicId = movie.PublicId
-    });
+    }, TestContext.Current.CancellationToken);
     await ProcessOutboxAsync();
 
     // Apply veto → movie restored to pool
@@ -43,7 +43,7 @@ public sealed class VetoOverrideAppliedDomainEventHandlerTests(DraftsIntegration
       ParticipantPublicId = drafter2PublicId,
       ParticipantKind = ParticipantKind.Drafter,
       ActorPublicId = drafter2PublicId
-    });
+    }, TestContext.Current.CancellationToken);
     await ProcessOutboxAsync();
 
     // Act — apply veto override → movie should be removed from pool again
@@ -54,7 +54,7 @@ public sealed class VetoOverrideAppliedDomainEventHandlerTests(DraftsIntegration
       ParticipantIdValue = drafter1PublicId,
       ParticipantKind = ParticipantKind.Drafter,
       ActorPublicId = drafter1PublicId
-    });
+    }, TestContext.Current.CancellationToken);
     await ProcessOutboxAsync();
 
     // Assert
@@ -62,7 +62,7 @@ public sealed class VetoOverrideAppliedDomainEventHandlerTests(DraftsIntegration
     var pool = await DbContext.DraftPools
       .AsNoTracking()
       .Include(p => p.TmdbIds)
-      .FirstAsync();
+      .FirstAsync(TestContext.Current.CancellationToken);
     pool.TmdbIds.Should().NotContain(i => i.TmdbId == tmdbId);
   }
 
@@ -73,7 +73,7 @@ public sealed class VetoOverrideAppliedDomainEventHandlerTests(DraftsIntegration
     var tmdbId = Faker.Random.Int(1, 500_000);
     var (_, draftPartPublicId, drafter1PublicId, drafter2PublicId) = await SetupStartedDraftPartWithPoolAsync(tmdbId);
 
-    var movie = await DbContext.Movies.FirstAsync(m => m.TmdbId == tmdbId);
+    var movie = await DbContext.Movies.FirstAsync(m => m.TmdbId == tmdbId, TestContext.Current.CancellationToken);
     await Sender.Send(new PlayPickCommand
     {
       DraftPartId = draftPartPublicId,
@@ -82,7 +82,7 @@ public sealed class VetoOverrideAppliedDomainEventHandlerTests(DraftsIntegration
       ParticipantPublicId = drafter1PublicId,
       ParticipantKind = ParticipantKind.Drafter,
       MoviePublicId = movie.PublicId
-    });
+    }, TestContext.Current.CancellationToken);
     await Sender.Send(new ApplyVetoCommand
     {
       DraftPartId = draftPartPublicId,
@@ -90,7 +90,7 @@ public sealed class VetoOverrideAppliedDomainEventHandlerTests(DraftsIntegration
       ParticipantPublicId = drafter2PublicId,
       ParticipantKind = ParticipantKind.Drafter,
       ActorPublicId = drafter2PublicId
-    });
+    }, TestContext.Current.CancellationToken);
 
     // Act
     await Sender.Send(new ApplyVetoOverrideCommand
@@ -100,12 +100,12 @@ public sealed class VetoOverrideAppliedDomainEventHandlerTests(DraftsIntegration
       ParticipantIdValue = drafter1PublicId,
       ParticipantKind = ParticipantKind.Drafter,
       ActorPublicId = drafter1PublicId
-    });
+    }, TestContext.Current.CancellationToken);
 
     // Assert — veto override should mark veto as overridden
     var pick = await DbContext.Picks
       .Include(p => p.Veto)
-      .FirstAsync(p => p.PlayOrder == 1 && p.DraftPart.PublicId == draftPartPublicId);
+      .FirstAsync(p => p.PlayOrder == 1 && p.DraftPart.PublicId == draftPartPublicId, TestContext.Current.CancellationToken);
     pick.Veto.Should().NotBeNull();
     pick.Veto!.IsOverridden.Should().BeTrue();
   }
@@ -119,7 +119,7 @@ public sealed class VetoOverrideAppliedDomainEventHandlerTests(DraftsIntegration
   {
     var draftPublicId = await CreateDraftWithPoolAsync();
     await CreateMovieInDbAsync(tmdbId);
-    await Sender.Send(new AddMovieToDraftPoolCommand { PublicId = draftPublicId, TmdbId = tmdbId });
+    await Sender.Send(new AddMovieToDraftPoolCommand { PublicId = draftPublicId, TmdbId = tmdbId }, TestContext.Current.CancellationToken);
 
     await Sender.Send(new CreateDraftPartCommand
     {
@@ -127,46 +127,46 @@ public sealed class VetoOverrideAppliedDomainEventHandlerTests(DraftsIntegration
       PartIndex = 1,
       MinimumPosition = 1,
       MaximumPosition = 7,
-    });
+    }, TestContext.Current.CancellationToken);
 
     var draftPartId = await GetFirstDraftPartIdAsync(draftPublicId);
-    var draftPart = await DbContext.DraftParts.FirstAsync(dp => dp.Id == DraftPartId.Create(draftPartId));
+    var draftPart = await DbContext.DraftParts.FirstAsync(dp => dp.Id == DraftPartId.Create(draftPartId), TestContext.Current.CancellationToken);
     var draftPartPublicId = draftPart.PublicId;
 
     var peopleFactory = new PeopleFactory(Sender, Faker);
 
     var person1Id = await peopleFactory.CreateAndSavePersonAsync();
-    var drafter1PublicId = (await Sender.Send(new CreateDrafterCommand(person1Id))).Value;
+    var drafter1PublicId = (await Sender.Send(new CreateDrafterCommand(person1Id), TestContext.Current.CancellationToken)).Value;
     await Sender.Send(new AddParticipantToDraftPartCommand
     {
       DraftPartId = draftPartPublicId,
       ParticipantPublicId = drafter1PublicId,
       ParticipantKind = ParticipantKind.Drafter
-    });
+    }, TestContext.Current.CancellationToken);
 
     var person2Id = await peopleFactory.CreateAndSavePersonAsync();
-    var drafter2PublicId = (await Sender.Send(new CreateDrafterCommand(person2Id))).Value;
+    var drafter2PublicId = (await Sender.Send(new CreateDrafterCommand(person2Id), TestContext.Current.CancellationToken)).Value;
     await Sender.Send(new AddParticipantToDraftPartCommand
     {
       DraftPartId = draftPartPublicId,
       ParticipantPublicId = drafter2PublicId,
       ParticipantKind = ParticipantKind.Drafter
-    });
+    }, TestContext.Current.CancellationToken);
 
     var hostPersonId = await peopleFactory.CreateAndSavePersonAsync();
-    var hostPublicId = (await Sender.Send(new CreateHostCommand { PersonPublicId = hostPersonId })).Value;
+    var hostPublicId = (await Sender.Send(new CreateHostCommand { PersonPublicId = hostPersonId }, TestContext.Current.CancellationToken)).Value;
     await Sender.Send(new AddHostToDraftPartCommand
     {
       DraftPartId = draftPartPublicId,
       HostPublicId = hostPublicId,
       HostRole = HostRole.Primary
-    });
+    }, TestContext.Current.CancellationToken);
 
     await Sender.Send(new SetDraftPartStatusCommand
     {      DraftPublicId = draftPublicId,
       PartIndex = 1,
       Action = DraftPartStatusAction.Start
-    });
+    }, TestContext.Current.CancellationToken);
 
     return (draftPublicId, draftPartPublicId, drafter1PublicId, drafter2PublicId);
   }
@@ -182,17 +182,17 @@ public sealed class VetoOverrideAppliedDomainEventHandlerTests(DraftsIntegration
       ContinuityDateRule = ContinuityDateRule.AnyChannelFirstRelease.Value,
       AllowedDraftTypes = (int)DraftTypeMask.All,
       DefaultDraftType = DraftType.Standard.Value
-    });
+    }, TestContext.Current.CancellationToken);
 
     var draftResult = await Sender.Send(new CreateDraftCommand
     {
       Title = Faker.Company.CompanyName(),
       DraftType = DraftType.Standard.Value,
       SeriesId = seriesResult.Value,
-    });
+    }, TestContext.Current.CancellationToken);
 
     var draftPublicId = draftResult.Value;
-    await Sender.Send(new CreateDraftPoolCommand { PublicId = draftPublicId });
+    await Sender.Send(new CreateDraftPoolCommand { PublicId = draftPublicId }, TestContext.Current.CancellationToken);
     return draftPublicId;
   }
 }

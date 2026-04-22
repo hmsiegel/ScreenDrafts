@@ -16,7 +16,7 @@ public sealed class SetDraftPartPredictionRulesTests(DraftsIntegrationTestWebApp
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -36,7 +36,7 @@ public sealed class SetDraftPartPredictionRulesTests(DraftsIntegrationTestWebApp
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -55,12 +55,12 @@ public sealed class SetDraftPartPredictionRulesTests(DraftsIntegrationTestWebApp
     };
 
     // Act
-    await Sender.Send(command);
+    await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
-    var draftPart = await DbContext.DraftParts.FirstAsync(dp => dp.PublicId == draftPartPublicId);
+    var draftPart = await DbContext.DraftParts.FirstAsync(dp => dp.PublicId == draftPartPublicId, TestContext.Current.CancellationToken);
     var rules = await DbContext.DraftPartPredictionRules
-      .FirstOrDefaultAsync(r => r.DraftPartId == draftPart.Id);
+      .FirstOrDefaultAsync(r => r.DraftPartId == draftPart.Id, TestContext.Current.CancellationToken);
     rules.Should().NotBeNull();
     rules!.RequiredCount.Should().Be(5);
   }
@@ -77,10 +77,10 @@ public sealed class SetDraftPartPredictionRulesTests(DraftsIntegrationTestWebApp
       RequiredCount = 7
     };
 
-    await Sender.Send(command);
+    await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Act — attempt to set rules again
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -100,7 +100,7 @@ public sealed class SetDraftPartPredictionRulesTests(DraftsIntegrationTestWebApp
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -120,7 +120,7 @@ public sealed class SetDraftPartPredictionRulesTests(DraftsIntegrationTestWebApp
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -142,7 +142,7 @@ public sealed class SetDraftPartPredictionRulesTests(DraftsIntegrationTestWebApp
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -164,7 +164,7 @@ public sealed class SetDraftPartPredictionRulesTests(DraftsIntegrationTestWebApp
       PartIndex = 1,
       MinimumPosition = 1,
       MaximumPosition = 7
-    });
+    }, TestContext.Current.CancellationToken);
     return result.Value;
   }
 
@@ -179,7 +179,7 @@ public sealed class SetDraftPartPredictionRulesTests(DraftsIntegrationTestWebApp
       ContinuityDateRule = ContinuityDateRule.AnyChannelFirstRelease.Value,
       AllowedDraftTypes = (int)DraftTypeMask.All,
       DefaultDraftType = DraftType.Standard.Value
-    });
+    }, TestContext.Current.CancellationToken);
     return result.Value;
   }
 
@@ -190,7 +190,7 @@ public sealed class SetDraftPartPredictionRulesTests(DraftsIntegrationTestWebApp
       Title = Faker.Company.CompanyName(),
       DraftType = DraftType.Standard.Value,
       SeriesId = seriesId
-    });
+    }, TestContext.Current.CancellationToken);
     return result.Value;
   }
 }

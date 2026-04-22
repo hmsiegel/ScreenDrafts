@@ -1,6 +1,4 @@
-using ScreenDrafts.Modules.Audit.Domain;
-
-namespace ScreenDrafts.Modules.Audit.IntegrationTests.Abstractions;
+﻿namespace ScreenDrafts.Modules.Audit.IntegrationTests.Abstractions;
 
 [Collection(nameof(AuditIntegrationTestCollection))]
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1051:Do not declare visible instance fields", Justification = "Reviewed")]

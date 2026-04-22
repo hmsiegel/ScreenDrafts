@@ -18,7 +18,7 @@ public sealed class GetDraftStatusTests(DraftsIntegrationTestWebAppFactory facto
     };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -39,7 +39,7 @@ public sealed class GetDraftStatusTests(DraftsIntegrationTestWebAppFactory facto
     };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -57,7 +57,7 @@ public sealed class GetDraftStatusTests(DraftsIntegrationTestWebAppFactory facto
     };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -76,7 +76,7 @@ public sealed class GetDraftStatusTests(DraftsIntegrationTestWebAppFactory facto
     };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -95,7 +95,7 @@ public sealed class GetDraftStatusTests(DraftsIntegrationTestWebAppFactory facto
     };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -114,7 +114,7 @@ public sealed class GetDraftStatusTests(DraftsIntegrationTestWebAppFactory facto
       SeriesId = seriesId,
     };
 
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
     return result.Value;
   }
 
@@ -126,7 +126,7 @@ public sealed class GetDraftStatusTests(DraftsIntegrationTestWebAppFactory facto
       Title = Faker.Company.CompanyName(),
       DraftType = DraftType.Standard.Value,
       SeriesId = seriesId,
-    });
+    }, TestContext.Current.CancellationToken);
 
     var draftPublicId = draftResult.Value;
     await Sender.Send(new CreateDraftPartCommand
@@ -135,7 +135,7 @@ public sealed class GetDraftStatusTests(DraftsIntegrationTestWebAppFactory facto
       PartIndex = 1,
       MinimumPosition = 1,
       MaximumPosition = 7,
-    });
+    }, TestContext.Current.CancellationToken);
 
     return draftPublicId;
   }
@@ -153,7 +153,7 @@ public sealed class GetDraftStatusTests(DraftsIntegrationTestWebAppFactory facto
       DefaultDraftType = DraftType.Standard.Value
     };
 
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
     return result.Value;
   }
 }

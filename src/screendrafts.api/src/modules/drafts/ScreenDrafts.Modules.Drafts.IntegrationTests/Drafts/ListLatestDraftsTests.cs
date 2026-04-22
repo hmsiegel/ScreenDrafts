@@ -14,7 +14,7 @@ public sealed class ListLatestDraftsTests(DraftsIntegrationTestWebAppFactory fac
     var query = new ListLatestDraftsQuery { IncludePatreonOnly = false };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -36,7 +36,7 @@ public sealed class ListLatestDraftsTests(DraftsIntegrationTestWebAppFactory fac
     var query = new ListLatestDraftsQuery { IncludePatreonOnly = false };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -57,7 +57,7 @@ public sealed class ListLatestDraftsTests(DraftsIntegrationTestWebAppFactory fac
     var query = new ListLatestDraftsQuery { IncludePatreonOnly = false };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -78,7 +78,7 @@ public sealed class ListLatestDraftsTests(DraftsIntegrationTestWebAppFactory fac
     var query = new ListLatestDraftsQuery { IncludePatreonOnly = true };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -104,7 +104,7 @@ public sealed class ListLatestDraftsTests(DraftsIntegrationTestWebAppFactory fac
     var query = new ListLatestDraftsQuery { IncludePatreonOnly = false };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -131,7 +131,7 @@ public sealed class ListLatestDraftsTests(DraftsIntegrationTestWebAppFactory fac
     var query = new ListLatestDraftsQuery { IncludePatreonOnly = false };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -147,7 +147,7 @@ public sealed class ListLatestDraftsTests(DraftsIntegrationTestWebAppFactory fac
     var seriesId = await CreateSeriesAsync();
     var draftPublicId = await CreateDraftWithPartAsync(seriesId);
     var internalId = await GetFirstDraftPartIdAsync(draftPublicId);
-    var draftPart = await DbContext.DraftParts.FirstAsync(dp => dp.Id == DraftPartId.Create(internalId));
+    var draftPart = await DbContext.DraftParts.FirstAsync(dp => dp.Id == DraftPartId.Create(internalId), TestContext.Current.CancellationToken);
     return (draftPart.PublicId, internalId);
   }
 
@@ -164,7 +164,7 @@ public sealed class ListLatestDraftsTests(DraftsIntegrationTestWebAppFactory fac
       DraftPartId = draftPartPublicId,
       ReleaseDate = releaseDate,
       ReleaseChannel = ReleaseChannel.MainFeed
-    });
+    }, TestContext.Current.CancellationToken);
 
     result.IsSuccess.Should().BeTrue();
   }
@@ -180,7 +180,7 @@ public sealed class ListLatestDraftsTests(DraftsIntegrationTestWebAppFactory fac
       ContinuityDateRule = ContinuityDateRule.AnyChannelFirstRelease.Value,
       AllowedDraftTypes = (int)DraftTypeMask.All,
       DefaultDraftType = DraftType.Standard.Value
-    });
+    }, TestContext.Current.CancellationToken);
 
     return result.Value;
   }
@@ -192,7 +192,7 @@ public sealed class ListLatestDraftsTests(DraftsIntegrationTestWebAppFactory fac
       Title = Faker.Company.CompanyName(),
       DraftType = DraftType.Standard.Value,
       SeriesId = seriesId,
-    });
+    }, TestContext.Current.CancellationToken);
 
     var draftPublicId = draftResult.Value;
     await Sender.Send(new CreateDraftPartCommand
@@ -201,7 +201,7 @@ public sealed class ListLatestDraftsTests(DraftsIntegrationTestWebAppFactory fac
       PartIndex = 1,
       MinimumPosition = 1,
       MaximumPosition = 7,
-    });
+    }, TestContext.Current.CancellationToken);
 
     return draftPublicId;
   }

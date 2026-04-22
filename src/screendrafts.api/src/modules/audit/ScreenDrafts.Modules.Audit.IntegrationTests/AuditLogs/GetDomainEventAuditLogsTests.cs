@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Audit.IntegrationTests.AuditLogs;
+﻿namespace ScreenDrafts.Modules.Audit.IntegrationTests.AuditLogs;
 
 public sealed class GetDomainEventAuditLogsTests(AuditIntegrationTestWebAppFactory factory)
   : AuditIntegrationTest(factory)
@@ -13,7 +13,7 @@ public sealed class GetDomainEventAuditLogsTests(AuditIntegrationTestWebAppFacto
     var query = new GetDomainEventAuditLogsQuery { PageSize = 25 };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -31,7 +31,7 @@ public sealed class GetDomainEventAuditLogsTests(AuditIntegrationTestWebAppFacto
     var query = new GetDomainEventAuditLogsQuery { ActorId = targetActorId, PageSize = 25 };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -49,7 +49,7 @@ public sealed class GetDomainEventAuditLogsTests(AuditIntegrationTestWebAppFacto
     var query = new GetDomainEventAuditLogsQuery { EventType = "draftcreated", PageSize = 25 };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -67,7 +67,7 @@ public sealed class GetDomainEventAuditLogsTests(AuditIntegrationTestWebAppFacto
     var query = new GetDomainEventAuditLogsQuery { SourceModule = "Users", PageSize = 25 };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -92,7 +92,7 @@ public sealed class GetDomainEventAuditLogsTests(AuditIntegrationTestWebAppFacto
     };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -112,7 +112,7 @@ public sealed class GetDomainEventAuditLogsTests(AuditIntegrationTestWebAppFacto
     var query = new GetDomainEventAuditLogsQuery { PageSize = 3 };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -128,7 +128,7 @@ public sealed class GetDomainEventAuditLogsTests(AuditIntegrationTestWebAppFacto
     var query = new GetDomainEventAuditLogsQuery { PageSize = 25 };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -156,7 +156,7 @@ public sealed class GetDomainEventAuditLogsTests(AuditIntegrationTestWebAppFacto
     var query = new GetDomainEventAuditLogsQuery { PageSize = 25 };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();

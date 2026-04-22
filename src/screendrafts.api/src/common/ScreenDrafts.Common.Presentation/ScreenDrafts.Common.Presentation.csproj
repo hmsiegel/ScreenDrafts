@@ -2,9 +2,9 @@
 
   <ItemGroup>
     <PackageReference Include="FastEndpoints" />
-    <PackageReference Include="MailKit" />
     <PackageReference Include="MassTransit.Abstractions" />
     <PackageReference Include="MediatR" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.Http" />
   </ItemGroup>
 
   <ItemGroup>

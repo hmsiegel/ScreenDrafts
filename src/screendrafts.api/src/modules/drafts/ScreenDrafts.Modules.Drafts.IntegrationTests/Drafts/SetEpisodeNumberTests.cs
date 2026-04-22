@@ -19,7 +19,7 @@ public sealed class SetEpisodeNumberTests(DraftsIntegrationTestWebAppFactory fac
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -39,14 +39,14 @@ public sealed class SetEpisodeNumberTests(DraftsIntegrationTestWebAppFactory fac
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
 
-    var draft = await DbContext.Drafts.FirstAsync(d => d.PublicId == draftId);
+    var draft = await DbContext.Drafts.FirstAsync(d => d.PublicId == draftId, TestContext.Current.CancellationToken);
     var channelRelease = await DbContext.DraftChannelReleases
-      .FirstAsync(cr => cr.DraftId == draft.Id);
+      .FirstAsync(cr => cr.DraftId == draft.Id, TestContext.Current.CancellationToken);
 
     channelRelease.EpisodeNumber.Should().Be(100);
   }
@@ -64,7 +64,7 @@ public sealed class SetEpisodeNumberTests(DraftsIntegrationTestWebAppFactory fac
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -81,7 +81,7 @@ public sealed class SetEpisodeNumberTests(DraftsIntegrationTestWebAppFactory fac
       DraftId = draftId,
       ReleaseChannel = ReleaseChannel.MainFeed,
       EpisodeNumber = 1
-    });
+    }, TestContext.Current.CancellationToken);
 
     var updateCommand = new SetEpisodeNumberCommand
     {
@@ -91,14 +91,14 @@ public sealed class SetEpisodeNumberTests(DraftsIntegrationTestWebAppFactory fac
     };
 
     // Act
-    var result = await Sender.Send(updateCommand);
+    var result = await Sender.Send(updateCommand, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
 
-    var draft = await DbContext.Drafts.FirstAsync(d => d.PublicId == draftId);
+    var draft = await DbContext.Drafts.FirstAsync(d => d.PublicId == draftId, TestContext.Current.CancellationToken);
     var channelRelease = await DbContext.DraftChannelReleases
-      .FirstAsync(cr => cr.DraftId == draft.Id);
+      .FirstAsync(cr => cr.DraftId == draft.Id, TestContext.Current.CancellationToken);
 
     channelRelease.EpisodeNumber.Should().Be(2);
   }
@@ -115,14 +115,14 @@ public sealed class SetEpisodeNumberTests(DraftsIntegrationTestWebAppFactory fac
       DraftId = draftId,
       ReleaseChannel = ReleaseChannel.MainFeed,
       EpisodeNumber = 10
-    });
+    }, TestContext.Current.CancellationToken);
 
     var patreonResult = await Sender.Send(new SetEpisodeNumberCommand
     {
       DraftId = draftId,
       ReleaseChannel = ReleaseChannel.Patreon,
       EpisodeNumber = 5
-    });
+    }, TestContext.Current.CancellationToken);
 
     // Assert
     mainFeedResult.IsSuccess.Should().BeTrue();
@@ -141,7 +141,7 @@ public sealed class SetEpisodeNumberTests(DraftsIntegrationTestWebAppFactory fac
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -161,7 +161,7 @@ public sealed class SetEpisodeNumberTests(DraftsIntegrationTestWebAppFactory fac
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -182,7 +182,7 @@ public sealed class SetEpisodeNumberTests(DraftsIntegrationTestWebAppFactory fac
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -203,7 +203,7 @@ public sealed class SetEpisodeNumberTests(DraftsIntegrationTestWebAppFactory fac
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -223,7 +223,7 @@ public sealed class SetEpisodeNumberTests(DraftsIntegrationTestWebAppFactory fac
       Title = Faker.Company.CompanyName(),
       DraftType = DraftType.Standard.Value,
       SeriesId = seriesId,
-    });
+    }, TestContext.Current.CancellationToken);
     return result.Value;
   }
 
@@ -238,7 +238,7 @@ public sealed class SetEpisodeNumberTests(DraftsIntegrationTestWebAppFactory fac
       ContinuityDateRule = ContinuityDateRule.AnyChannelFirstRelease.Value,
       AllowedDraftTypes = (int)DraftTypeMask.All,
       DefaultDraftType = DraftType.Standard.Value
-    });
+    }, TestContext.Current.CancellationToken);
     return result.Value;
   }
 }

@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Administration.IntegrationTests.Users;
+﻿namespace ScreenDrafts.Modules.Administration.IntegrationTests.Users;
 
 public class RemoveRoleFromUserTests(AdministrationIntegrationTestWebAppFactory factory)
   : AdministrationIntegrationTest(factory)
@@ -10,7 +10,7 @@ public class RemoveRoleFromUserTests(AdministrationIntegrationTestWebAppFactory 
     {
       UserPublicId = "u_nonexistent00000000000",
       RoleName = "Guest"
-    });
+    }, TestContext.Current.CancellationToken);
 
     result.IsFailure.Should().BeTrue();
     result.Error.Should().Be(AdministrationErrors.UserNotFound("u_nonexistent00000000000"));
@@ -24,7 +24,7 @@ public class RemoveRoleFromUserTests(AdministrationIntegrationTestWebAppFactory 
     await InsertRoleAsync(roleName);
 
     var connectionFactory = GetService<IDbConnectionFactory>();
-    await using var connection = await connectionFactory.OpenConnectionAsync();
+    await using var connection = await connectionFactory.OpenConnectionAsync(TestContext.Current.CancellationToken);
     await connection.ExecuteAsync(
       "INSERT INTO administration.user_roles (user_id, role_name) VALUES (@UserId, @RoleName)",
       new { UserId = userId, RoleName = roleName });
@@ -33,7 +33,7 @@ public class RemoveRoleFromUserTests(AdministrationIntegrationTestWebAppFactory 
     {
       UserPublicId = publicId,
       RoleName = roleName
-    });
+    }, TestContext.Current.CancellationToken);
 
     result.IsSuccess.Should().BeTrue();
     result.Value.Should().BeTrue();
@@ -50,7 +50,7 @@ public class RemoveRoleFromUserTests(AdministrationIntegrationTestWebAppFactory 
     {
       UserPublicId = publicId,
       RoleName = roleName
-    });
+    }, TestContext.Current.CancellationToken);
 
     result.IsSuccess.Should().BeTrue();
     result.Value.Should().BeTrue();

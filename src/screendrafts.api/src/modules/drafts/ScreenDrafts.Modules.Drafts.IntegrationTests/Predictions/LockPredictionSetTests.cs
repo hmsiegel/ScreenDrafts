@@ -16,7 +16,7 @@ public sealed class LockPredictionSetTests(DraftsIntegrationTestWebAppFactory fa
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -35,11 +35,11 @@ public sealed class LockPredictionSetTests(DraftsIntegrationTestWebAppFactory fa
     };
 
     // Act
-    await Sender.Send(command);
+    await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     var set = await DbContext.DraftPredictionSets
-      .FirstAsync(s => s.PublicId == setPublicId);
+      .FirstAsync(s => s.PublicId == setPublicId, TestContext.Current.CancellationToken);
     set.IsLocked.Should().BeTrue();
     set.LockedAtUtc.Should().NotBeNull();
     set.RulesSnapshot.Should().NotBeNull();
@@ -57,10 +57,10 @@ public sealed class LockPredictionSetTests(DraftsIntegrationTestWebAppFactory fa
       SetPublicId = setPublicId
     };
 
-    await Sender.Send(command);
+    await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Act — attempt to lock again
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -81,7 +81,7 @@ public sealed class LockPredictionSetTests(DraftsIntegrationTestWebAppFactory fa
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -104,7 +104,7 @@ public sealed class LockPredictionSetTests(DraftsIntegrationTestWebAppFactory fa
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();

@@ -1,14 +1,4 @@
-﻿using Dapper;
-
-using Newtonsoft.Json;
-
-using ScreenDrafts.Common.Application.Data;
-using ScreenDrafts.Common.Application.Messaging.Dispatchers;
-using ScreenDrafts.Common.Domain;
-using ScreenDrafts.Common.Infrastructure.Serialization;
-using ScreenDrafts.Modules.Drafts.Domain.Drafters.ValueObjects;
-
-namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Abstractions;
+﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Abstractions;
 
 [Collection(nameof(DraftsIntegrationTestCollection))]
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1051:Do not declare visible instance fields", Justification = "Reviewed")]
@@ -71,7 +61,7 @@ public abstract class DraftsIntegrationTest(DraftsIntegrationTestWebAppFactory f
     var dispatcher = ServiceScope.ServiceProvider.GetRequiredService<IDraftsDomainEventDispatcher>();
     var scopeFactory = ServiceScope.ServiceProvider.GetRequiredService<IServiceScopeFactory>();
 
-    await using var connection = await connectionFactory.OpenConnectionAsync();
+    await using var connection = await connectionFactory.OpenConnectionAsync(TestContext.Current.CancellationToken);
     await using var transaction = await connection.BeginTransactionAsync();
 
     var outboxMessages = (await connection.QueryAsync<OutboxRow>(
@@ -112,7 +102,7 @@ public abstract class DraftsIntegrationTest(DraftsIntegrationTestWebAppFactory f
       .SelectMany(d => d.Parts)
       .OrderBy(p => p.PartIndex)
       .Select(p => p.Id.Value)
-      .FirstAsync();
+      .FirstAsync(TestContext.Current.CancellationToken);
   }
 
   protected async Task<string> GetFirstDraftPartPublicIdAsync(string draftPublicId)
@@ -122,7 +112,7 @@ public abstract class DraftsIntegrationTest(DraftsIntegrationTestWebAppFactory f
       .SelectMany(d => d.Parts)
       .OrderBy(p => p.PartIndex)
       .Select(p => p.PublicId)
-      .FirstAsync();
+      .FirstAsync(TestContext.Current.CancellationToken);
   }
 
   protected async Task CreateMovieInDbAsync(int tmdbId)
@@ -135,7 +125,7 @@ public abstract class DraftsIntegrationTest(DraftsIntegrationTestWebAppFactory f
       imdbId: $"tt{tmdbId:D7}",
       tmdbId: tmdbId).Value;
     DbContext.Add(movie);
-    await DbContext.SaveChangesAsync();
+    await DbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
   }
 
   protected async Task<string?> GetFirstParticipantPublicIdAsync(Guid draftPartId)
@@ -144,12 +134,12 @@ public abstract class DraftsIntegrationTest(DraftsIntegrationTestWebAppFactory f
       .Where(p => p.DraftPartId == DraftPartId.Create(draftPartId)
                && p.ParticipantKindValue == ParticipantKind.Drafter)
       .Select(p => p.ParticipantIdValue)
-      .ToListAsync();
+      .ToListAsync(TestContext.Current.CancellationToken);
 
     return await DbContext.Drafters
       .AsAsyncEnumerable()
       .Where(d => participantIdValues.Contains(d.Id.Value))
       .Select(d => d.PublicId)
-      .FirstAsync();
+      .FirstAsync(TestContext.Current.CancellationToken);
   }
 }

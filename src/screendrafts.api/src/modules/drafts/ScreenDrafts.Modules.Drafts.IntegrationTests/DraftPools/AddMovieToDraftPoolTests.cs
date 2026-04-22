@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Drafts.IntegrationTests.DraftPools;
+﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.DraftPools;
 
 public sealed class AddMovieToDraftPoolTests(DraftsIntegrationTestWebAppFactory factory)
   : DraftsIntegrationTest(factory)
@@ -20,7 +20,7 @@ public sealed class AddMovieToDraftPoolTests(DraftsIntegrationTestWebAppFactory 
     {
       PublicId = draftPublicId,
       TmdbId = tmdbId
-    });
+    }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -39,12 +39,12 @@ public sealed class AddMovieToDraftPoolTests(DraftsIntegrationTestWebAppFactory 
     {
       PublicId = draftPublicId,
       TmdbId = tmdbId
-    });
+    }, TestContext.Current.CancellationToken);
 
     // Assert
     var pool = await DbContext.DraftPools
       .Include(p => p.TmdbIds)
-      .FirstAsync();
+      .FirstAsync(TestContext.Current.CancellationToken);
     pool.TmdbIds.Should().Contain(i => i.TmdbId == tmdbId);
   }
 
@@ -60,13 +60,13 @@ public sealed class AddMovieToDraftPoolTests(DraftsIntegrationTestWebAppFactory 
     {
       PublicId = draftPublicId,
       TmdbId = tmdbId
-    });
+    }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
     var pool = await DbContext.DraftPools
       .Include(p => p.TmdbIds)
-      .FirstAsync();
+      .FirstAsync(TestContext.Current.CancellationToken);
     pool.TmdbIds.Should().Contain(i => i.TmdbId == tmdbId);
   }
 
@@ -82,7 +82,7 @@ public sealed class AddMovieToDraftPoolTests(DraftsIntegrationTestWebAppFactory 
     {
       PublicId = "nonexistent",
       TmdbId = 1
-    });
+    }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -103,7 +103,7 @@ public sealed class AddMovieToDraftPoolTests(DraftsIntegrationTestWebAppFactory 
     {
       PublicId = draftPublicId,
       TmdbId = 1
-    });
+    }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -120,14 +120,14 @@ public sealed class AddMovieToDraftPoolTests(DraftsIntegrationTestWebAppFactory 
     var draftPublicId = await CreateDraftWithPoolAsync();
     var tmdbId = Faker.Random.Int(1, 1_000_000);
     await CreateMovieInDbAsync(tmdbId);
-    await Sender.Send(new AddMovieToDraftPoolCommand { PublicId = draftPublicId, TmdbId = tmdbId });
+    await Sender.Send(new AddMovieToDraftPoolCommand { PublicId = draftPublicId, TmdbId = tmdbId }, TestContext.Current.CancellationToken);
 
     // Act — add same movie again
     var result = await Sender.Send(new AddMovieToDraftPoolCommand
     {
       PublicId = draftPublicId,
       TmdbId = tmdbId
-    });
+    }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -148,14 +148,14 @@ public sealed class AddMovieToDraftPoolTests(DraftsIntegrationTestWebAppFactory 
       ContinuityDateRule = ContinuityDateRule.AnyChannelFirstRelease.Value,
       AllowedDraftTypes = (int)DraftTypeMask.All,
       DefaultDraftType = DraftType.Standard.Value
-    });
+    }, TestContext.Current.CancellationToken);
 
     var draftResult = await Sender.Send(new CreateDraftCommand
     {
       Title = Faker.Company.CompanyName(),
       DraftType = DraftType.Standard.Value,
       SeriesId = seriesResult.Value,
-    });
+    }, TestContext.Current.CancellationToken);
 
     return draftResult.Value;
   }
@@ -163,7 +163,7 @@ public sealed class AddMovieToDraftPoolTests(DraftsIntegrationTestWebAppFactory 
   private async Task<string> CreateDraftWithPoolAsync()
   {
     var draftPublicId = await CreateDraftAsync();
-    await Sender.Send(new CreateDraftPoolCommand { PublicId = draftPublicId });
+    await Sender.Send(new CreateDraftPoolCommand { PublicId = draftPublicId }, TestContext.Current.CancellationToken);
     return draftPublicId;
   }
 }

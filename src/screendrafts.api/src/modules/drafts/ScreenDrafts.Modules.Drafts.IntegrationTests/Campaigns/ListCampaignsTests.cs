@@ -15,19 +15,19 @@ public sealed class ListCampaignsTests(DraftsIntegrationTestWebAppFactory factor
       Name = Faker.Commerce.Department(),
       Slug = Faker.Lorem.Slug()
     };
-    await Sender.Send(campaign1);
+    await Sender.Send(campaign1, TestContext.Current.CancellationToken);
 
     var campaign2 = new CreateCampaignCommand
     {
       Name = Faker.Commerce.Department(),
       Slug = Faker.Lorem.Slug()
     };
-    await Sender.Send(campaign2);
+    await Sender.Send(campaign2, TestContext.Current.CancellationToken);
 
     var query = new ListCampaignsQuery(IncludeDeleted: false);
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -45,22 +45,22 @@ public sealed class ListCampaignsTests(DraftsIntegrationTestWebAppFactory factor
       Name = Faker.Commerce.Department(),
       Slug = Faker.Lorem.Slug()
     };
-    await Sender.Send(campaign1Command);
+    await Sender.Send(campaign1Command, TestContext.Current.CancellationToken);
 
     var campaign2Command = new CreateCampaignCommand
     {
       Name = Faker.Commerce.Department(),
       Slug = Faker.Lorem.Slug()
     };
-    var campaign2Result = await Sender.Send(campaign2Command);
+    var campaign2Result = await Sender.Send(campaign2Command, TestContext.Current.CancellationToken);
 
     var deleteCommand = new DeleteCampaignCommand(campaign2Result.Value);
-    await Sender.Send(deleteCommand);
+    await Sender.Send(deleteCommand, TestContext.Current.CancellationToken);
 
     var query = new ListCampaignsQuery(IncludeDeleted: true);
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -79,22 +79,22 @@ public sealed class ListCampaignsTests(DraftsIntegrationTestWebAppFactory factor
       Name = Faker.Commerce.Department(),
       Slug = Faker.Lorem.Slug()
     };
-    await Sender.Send(campaign1Command);
+    await Sender.Send(campaign1Command, TestContext.Current.CancellationToken);
 
     var campaign2Command = new CreateCampaignCommand
     {
       Name = Faker.Commerce.Department(),
       Slug = Faker.Lorem.Slug()
     };
-    var campaign2Result = await Sender.Send(campaign2Command);
+    var campaign2Result = await Sender.Send(campaign2Command, TestContext.Current.CancellationToken);
 
     var deleteCommand = new DeleteCampaignCommand(campaign2Result.Value);
-    await Sender.Send(deleteCommand);
+    await Sender.Send(deleteCommand, TestContext.Current.CancellationToken);
 
     var query = new ListCampaignsQuery(IncludeDeleted: false);
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -109,7 +109,7 @@ public sealed class ListCampaignsTests(DraftsIntegrationTestWebAppFactory factor
     var query = new ListCampaignsQuery(IncludeDeleted: false);
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();

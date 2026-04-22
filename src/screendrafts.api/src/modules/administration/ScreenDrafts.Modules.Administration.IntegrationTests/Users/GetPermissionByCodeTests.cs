@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Administration.IntegrationTests.Users;
+﻿namespace ScreenDrafts.Modules.Administration.IntegrationTests.Users;
 
 public class GetPermissionByCodeTests(AdministrationIntegrationTestWebAppFactory factory)
   : AdministrationIntegrationTest(factory)
@@ -6,7 +6,7 @@ public class GetPermissionByCodeTests(AdministrationIntegrationTestWebAppFactory
   [Fact]
   public async Task GetPermissionByCode_ShouldFail_WhenPermissionDoesNotExistAsync()
   {
-    var result = await Sender.Send(new GetPermissionByCodeQuery { Code = "nonexistent:permission" });
+    var result = await Sender.Send(new GetPermissionByCodeQuery { Code = "nonexistent:permission" }, TestContext.Current.CancellationToken);
 
     result.IsFailure.Should().BeTrue();
     result.Error.Should().Be(AdministrationErrors.PermissionNotFound("nonexistent:permission"));
@@ -18,7 +18,7 @@ public class GetPermissionByCodeTests(AdministrationIntegrationTestWebAppFactory
     const string code = "users:read";
     await InsertPermissionAsync(code);
 
-    var result = await Sender.Send(new GetPermissionByCodeQuery { Code = code });
+    var result = await Sender.Send(new GetPermissionByCodeQuery { Code = code }, TestContext.Current.CancellationToken);
 
     result.IsSuccess.Should().BeTrue();
     result.Value.Code.Should().Be(code);
@@ -37,9 +37,9 @@ public class GetPermissionByCodeTests(AdministrationIntegrationTestWebAppFactory
     {
       PermissionCode = code,
       RoleName = roleName
-    });
+    }, TestContext.Current.CancellationToken);
 
-    var result = await Sender.Send(new GetPermissionByCodeQuery { Code = code });
+    var result = await Sender.Send(new GetPermissionByCodeQuery { Code = code }, TestContext.Current.CancellationToken);
 
     result.IsSuccess.Should().BeTrue();
     result.Value.Roles.Should().Contain(roleName);

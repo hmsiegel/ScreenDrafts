@@ -1,4 +1,4 @@
-﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.DraftParts;
+namespace ScreenDrafts.Modules.Drafts.IntegrationTests.DraftParts;
 
 public sealed class ApplyCommissionerOverrideTests(DraftsIntegrationTestWebAppFactory factory)
   : DraftsIntegrationTest(factory)
@@ -21,7 +21,7 @@ public sealed class ApplyCommissionerOverrideTests(DraftsIntegrationTestWebAppFa
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -42,12 +42,12 @@ public sealed class ApplyCommissionerOverrideTests(DraftsIntegrationTestWebAppFa
     };
 
     // Act
-    await Sender.Send(command);
+    await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     var pick = await DbContext.Picks
       .Include(p => p.CommissionerOverride)
-      .FirstAsync(p => p.PlayOrder == 1 && p.DraftPart.PublicId == draftPartPublicId);
+      .FirstAsync(p => p.PlayOrder == 1 && p.DraftPart.PublicId == draftPartPublicId, TestContext.Current.CancellationToken);
 
     pick.CommissionerOverride.Should().NotBeNull();
     pick.IsCommissionerOverridden.Should().BeTrue();
@@ -68,7 +68,7 @@ public sealed class ApplyCommissionerOverrideTests(DraftsIntegrationTestWebAppFa
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -92,7 +92,7 @@ public sealed class ApplyCommissionerOverrideTests(DraftsIntegrationTestWebAppFa
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -114,7 +114,7 @@ public sealed class ApplyCommissionerOverrideTests(DraftsIntegrationTestWebAppFa
     {
       DraftPartId = draftPartPublicId,
       PlayOrder = 1
-    });
+    }, TestContext.Current.CancellationToken);
 
     // Second override on the same pick — should fail
     var command = new ApplyCommissionerOverrideCommand
@@ -124,7 +124,7 @@ public sealed class ApplyCommissionerOverrideTests(DraftsIntegrationTestWebAppFa
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -141,43 +141,43 @@ public sealed class ApplyCommissionerOverrideTests(DraftsIntegrationTestWebAppFa
     var draftPartInternalId = await GetFirstDraftPartIdAsync(draftPublicId);
 
     var draftPart = await DbContext.DraftParts
-      .FirstAsync(dp => dp.Id == DraftPartId.Create(draftPartInternalId));
+      .FirstAsync(dp => dp.Id == DraftPartId.Create(draftPartInternalId), TestContext.Current.CancellationToken);
     var draftPartPublicId = draftPart.PublicId;
 
     var peopleFactory = new PeopleFactory(Sender, Faker);
 
     var person1Id = await peopleFactory.CreateAndSavePersonAsync();
-    var drafter1PublicId = (await Sender.Send(new CreateDrafterCommand(person1Id))).Value;
+    var drafter1PublicId = (await Sender.Send(new CreateDrafterCommand(person1Id), TestContext.Current.CancellationToken)).Value;
     await Sender.Send(new AddParticipantToDraftPartCommand
     {
       DraftPartId = draftPartPublicId,
       ParticipantPublicId = drafter1PublicId,
       ParticipantKind = ParticipantKind.Drafter
-    });
+    }, TestContext.Current.CancellationToken);
 
     var person2Id = await peopleFactory.CreateAndSavePersonAsync();
-    var drafter2PublicId = (await Sender.Send(new CreateDrafterCommand(person2Id))).Value;
+    var drafter2PublicId = (await Sender.Send(new CreateDrafterCommand(person2Id), TestContext.Current.CancellationToken)).Value;
     await Sender.Send(new AddParticipantToDraftPartCommand
     {
       DraftPartId = draftPartPublicId,
       ParticipantPublicId = drafter2PublicId,
       ParticipantKind = ParticipantKind.Drafter
-    });
+    }, TestContext.Current.CancellationToken);
 
     var hostPersonId = await peopleFactory.CreateAndSavePersonAsync();
-    var hostPublicId = (await Sender.Send(new CreateHostCommand { PersonPublicId = hostPersonId })).Value;
+    var hostPublicId = (await Sender.Send(new CreateHostCommand { PersonPublicId = hostPersonId }, TestContext.Current.CancellationToken)).Value;
     await Sender.Send(new AddHostToDraftPartCommand
     {
       DraftPartId = draftPartPublicId,
       HostPublicId = hostPublicId,
       HostRole = HostRole.Primary
-    });
+    }, TestContext.Current.CancellationToken);
 
     await Sender.Send(new SetDraftPartStatusCommand
     {      DraftPublicId = draftPublicId,
       PartIndex = 1,
       Action = DraftPartStatusAction.Start
-    });
+    }, TestContext.Current.CancellationToken);
 
     return (draftPartPublicId, drafter1PublicId, drafter2PublicId);
   }
@@ -186,7 +186,7 @@ public sealed class ApplyCommissionerOverrideTests(DraftsIntegrationTestWebAppFa
   {
     var movie = Movie.Create(Faker.Company.CompanyName(), $"m_{Faker.Random.AlphaNumeric(21)}", MediaType.Movie, Guid.NewGuid()).Value;
     DbContext.Movies.Add(movie);
-    await DbContext.SaveChangesAsync();
+    await DbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
     await Sender.Send(new PlayPickCommand
     {
@@ -196,7 +196,7 @@ public sealed class ApplyCommissionerOverrideTests(DraftsIntegrationTestWebAppFa
       ParticipantPublicId = drafterPublicId,
       ParticipantKind = ParticipantKind.Drafter,
       MoviePublicId = movie.PublicId
-    });
+    }, TestContext.Current.CancellationToken);
   }
 
   private async Task<Guid> CreateSeriesAsync()
@@ -210,7 +210,7 @@ public sealed class ApplyCommissionerOverrideTests(DraftsIntegrationTestWebAppFa
       ContinuityDateRule = ContinuityDateRule.AnyChannelFirstRelease.Value,
       AllowedDraftTypes = (int)DraftTypeMask.All,
       DefaultDraftType = DraftType.Standard.Value
-    });
+    }, TestContext.Current.CancellationToken);
 
     return result.Value;
   }
@@ -222,7 +222,7 @@ public sealed class ApplyCommissionerOverrideTests(DraftsIntegrationTestWebAppFa
       Title = Faker.Company.CompanyName(),
       DraftType = DraftType.Standard.Value,
       SeriesId = seriesId,
-    });
+    }, TestContext.Current.CancellationToken);
 
     var draftPublicId = draftResult.Value;
     await Sender.Send(new CreateDraftPartCommand
@@ -231,7 +231,7 @@ public sealed class ApplyCommissionerOverrideTests(DraftsIntegrationTestWebAppFa
       PartIndex = 1,
       MinimumPosition = 1,
       MaximumPosition = 7,
-    });
+    }, TestContext.Current.CancellationToken);
 
     return draftPublicId;
   }

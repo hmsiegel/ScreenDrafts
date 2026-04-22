@@ -7,7 +7,7 @@ public class GetUserProfileTests(UsersIntegrationTestWebAppFactory factory) : Us
   public async Task Should_ReturnUnauthorized_WhenAccessTokenNotProvidedAsync()
   {
     // Act
-    HttpResponseMessage response = await HttpClient.GetAsync("users/profile");
+    HttpResponseMessage response = await HttpClient.GetAsync("users/profile", TestContext.Current.CancellationToken);
 
     // Assert
     response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
@@ -35,12 +35,12 @@ public class GetUserProfileTests(UsersIntegrationTestWebAppFactory factory) : Us
         accessToken);
 
     // Act
-    HttpResponseMessage response = await HttpClient.GetAsync("users/profile");
+    HttpResponseMessage response = await HttpClient.GetAsync("users/profile", TestContext.Current.CancellationToken);
 
     // Assert
     response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-    UserResponse? user = await response.Content.ReadFromJsonAsync<UserResponse>();
+    UserResponse? user = await response.Content.ReadFromJsonAsync<UserResponse>(TestContext.Current.CancellationToken);
     user.Should().NotBeNull();
   }
 

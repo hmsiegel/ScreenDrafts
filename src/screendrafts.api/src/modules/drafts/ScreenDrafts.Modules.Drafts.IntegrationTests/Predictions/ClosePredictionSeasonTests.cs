@@ -15,7 +15,7 @@ public sealed class ClosePredictionSeasonTests(DraftsIntegrationTestWebAppFactor
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -34,11 +34,11 @@ public sealed class ClosePredictionSeasonTests(DraftsIntegrationTestWebAppFactor
     };
 
     // Act
-    await Sender.Send(command);
+    await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     var season = await DbContext.PredictionSeasons
-      .FirstAsync(s => s.PublicId == seasonPublicId);
+      .FirstAsync(s => s.PublicId == seasonPublicId, TestContext.Current.CancellationToken);
     season.IsClosed.Should().BeTrue();
     season.EndsOn.Should().Be(endsOn);
   }
@@ -54,10 +54,10 @@ public sealed class ClosePredictionSeasonTests(DraftsIntegrationTestWebAppFactor
       EndsOn = DateOnly.FromDateTime(DateTime.UtcNow)
     };
 
-    await Sender.Send(closeCommand);
+    await Sender.Send(closeCommand, TestContext.Current.CancellationToken);
 
     // Act — attempt to close again
-    var result = await Sender.Send(closeCommand);
+    var result = await Sender.Send(closeCommand, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -75,7 +75,7 @@ public sealed class ClosePredictionSeasonTests(DraftsIntegrationTestWebAppFactor
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -91,7 +91,7 @@ public sealed class ClosePredictionSeasonTests(DraftsIntegrationTestWebAppFactor
     {
       Number = Faker.Random.Int(1, 100),
       StartsOn = DateOnly.FromDateTime(Faker.Date.Past())
-    });
+    }, TestContext.Current.CancellationToken);
     return result.Value;
   }
 }

@@ -137,7 +137,7 @@ public sealed class ScorseseSuperDraft_Tests(DraftsIntegrationTestWebAppFactory 
 
     var picks = await DbContext.Picks
       .Where(p => p.DraftPart.PublicId == _part1PublicId)
-      .ToListAsync();
+      .ToListAsync(TestContext.Current.CancellationToken);
 
     picks.Should().HaveCount(12);
   }
@@ -167,7 +167,7 @@ public sealed class ScorseseSuperDraft_Tests(DraftsIntegrationTestWebAppFactory 
 
     var part = await DbContext.DraftParts
       .AsNoTracking()
-      .FirstAsync(dp => dp.PublicId == _part1PublicId);
+      .FirstAsync(dp => dp.PublicId == _part1PublicId, TestContext.Current.CancellationToken);
 
     part.Status.Should().Be(DraftPartStatus.Completed);
   }
@@ -189,7 +189,7 @@ public sealed class ScorseseSuperDraft_Tests(DraftsIntegrationTestWebAppFactory 
 
     var picks = await DbContext.Picks
       .Where(p => p.DraftPart.PublicId == _part2PublicId)
-      .ToListAsync();
+      .ToListAsync(TestContext.Current.CancellationToken);
 
     picks.Should().HaveCount(10);
   }
@@ -236,7 +236,7 @@ public sealed class ScorseseSuperDraft_Tests(DraftsIntegrationTestWebAppFactory 
 
     var picks = await DbContext.Picks
       .Where(p => p.DraftPart.PublicId == _part3PublicId)
-      .ToListAsync();
+      .ToListAsync(TestContext.Current.CancellationToken);
 
     picks.Should().HaveCount(8);
   }
@@ -293,17 +293,17 @@ public sealed class ScorseseSuperDraft_Tests(DraftsIntegrationTestWebAppFactory 
     await CompleteDraftPartAsync(_draftPublicId, 3);
 
     // Assert all three parts are completed
-    var part1 = await DbContext.DraftParts.AsNoTracking().FirstAsync(dp => dp.PublicId == _part1PublicId);
-    var part2 = await DbContext.DraftParts.AsNoTracking().FirstAsync(dp => dp.PublicId == _part2PublicId);
-    var part3 = await DbContext.DraftParts.AsNoTracking().FirstAsync(dp => dp.PublicId == _part3PublicId);
+    var part1 = await DbContext.DraftParts.AsNoTracking().FirstAsync(dp => dp.PublicId == _part1PublicId, TestContext.Current.CancellationToken);
+    var part2 = await DbContext.DraftParts.AsNoTracking().FirstAsync(dp => dp.PublicId == _part2PublicId, TestContext.Current.CancellationToken);
+    var part3 = await DbContext.DraftParts.AsNoTracking().FirstAsync(dp => dp.PublicId == _part3PublicId, TestContext.Current.CancellationToken);
 
     part1.Status.Should().Be(DraftPartStatus.Completed, "Part 1 should be completed");
     part2.Status.Should().Be(DraftPartStatus.Completed, "Part 2 should be completed");
     part3.Status.Should().Be(DraftPartStatus.Completed, "Part 3 should be completed");
 
-    var part1Count = await DbContext.Picks.CountAsync(p => p.DraftPart.PublicId == _part1PublicId);
-    var part2Count = await DbContext.Picks.CountAsync(p => p.DraftPart.PublicId == _part2PublicId);
-    var part3Count = await DbContext.Picks.CountAsync(p => p.DraftPart.PublicId == _part3PublicId);
+    var part1Count = await DbContext.Picks.CountAsync(p => p.DraftPart.PublicId == _part1PublicId, TestContext.Current.CancellationToken);
+    var part2Count = await DbContext.Picks.CountAsync(p => p.DraftPart.PublicId == _part2PublicId, TestContext.Current.CancellationToken);
+    var part3Count = await DbContext.Picks.CountAsync(p => p.DraftPart.PublicId == _part3PublicId, TestContext.Current.CancellationToken);
 
     (part1Count + part2Count + part3Count).Should().Be(30, "12 + 10 + 8 picks across 3 parts");
   }

@@ -19,7 +19,7 @@ public sealed class CreateDraftTests(DraftsIntegrationTestWebAppFactory factory)
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -40,7 +40,7 @@ public sealed class CreateDraftTests(DraftsIntegrationTestWebAppFactory factory)
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -60,7 +60,7 @@ public sealed class CreateDraftTests(DraftsIntegrationTestWebAppFactory factory)
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -81,7 +81,7 @@ public sealed class CreateDraftTests(DraftsIntegrationTestWebAppFactory factory)
       DefaultDraftType = DraftType.Standard.Value
     };
 
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
     return result.Value;
   }
 }

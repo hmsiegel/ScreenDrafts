@@ -1,4 +1,4 @@
-using ScreenDrafts.Modules.Drafts.Features.DrafterTeams.AddDrafterToTeam;
+﻿using ScreenDrafts.Modules.Drafts.Features.DrafterTeams.AddDrafterToTeam;
 using ScreenDrafts.Modules.Drafts.Features.DrafterTeams.Get;
 
 namespace ScreenDrafts.Modules.Drafts.IntegrationTests.DrafterTeams;
@@ -14,7 +14,7 @@ public sealed class GetDrafterTeamTests(DraftsIntegrationTestWebAppFactory facto
     var teamId = await teamFactory.CreateAndSaveTeamAsync();
 
     // Act
-    var result = await Sender.Send(new GetDrafterTeamQuery { PublicId = teamId });
+    var result = await Sender.Send(new GetDrafterTeamQuery { PublicId = teamId }, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -30,7 +30,7 @@ public sealed class GetDrafterTeamTests(DraftsIntegrationTestWebAppFactory facto
     var nonExistentId = Faker.Random.AlphaNumeric(10);
 
     // Act
-    var result = await Sender.Send(new GetDrafterTeamQuery { PublicId = nonExistentId });
+    var result = await Sender.Send(new GetDrafterTeamQuery { PublicId = nonExistentId }, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -45,7 +45,7 @@ public sealed class GetDrafterTeamTests(DraftsIntegrationTestWebAppFactory facto
     var teamId = await teamFactory.CreateAndSaveTeamAsync();
 
     // Act
-    var result = await Sender.Send(new GetDrafterTeamQuery { PublicId = teamId });
+    var result = await Sender.Send(new GetDrafterTeamQuery { PublicId = teamId }, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -61,10 +61,10 @@ public sealed class GetDrafterTeamTests(DraftsIntegrationTestWebAppFactory facto
     var teamId = await teamFactory.CreateAndSaveTeamAsync();
     var drafterId = await teamFactory.CreateAndSaveDrafterAsync();
 
-    await Sender.Send(new AddDrafterToTeamCommand { DrafterTeamId = teamId, DrafterId = drafterId });
+    await Sender.Send(new AddDrafterToTeamCommand { DrafterTeamId = teamId, DrafterId = drafterId }, TestContext.Current.CancellationToken);
 
     // Act
-    var result = await Sender.Send(new GetDrafterTeamQuery { PublicId = teamId });
+    var result = await Sender.Send(new GetDrafterTeamQuery { PublicId = teamId }, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -83,11 +83,11 @@ public sealed class GetDrafterTeamTests(DraftsIntegrationTestWebAppFactory facto
     var drafterId1 = await teamFactory.CreateAndSaveDrafterAsync();
     var drafterId2 = await teamFactory.CreateAndSaveDrafterAsync();
 
-    await Sender.Send(new AddDrafterToTeamCommand { DrafterTeamId = teamId, DrafterId = drafterId1 });
-    await Sender.Send(new AddDrafterToTeamCommand { DrafterTeamId = teamId, DrafterId = drafterId2 });
+    await Sender.Send(new AddDrafterToTeamCommand { DrafterTeamId = teamId, DrafterId = drafterId1 }, TestContext.Current.CancellationToken);
+    await Sender.Send(new AddDrafterToTeamCommand { DrafterTeamId = teamId, DrafterId = drafterId2 }, TestContext.Current.CancellationToken);
 
     // Act
-    var result = await Sender.Send(new GetDrafterTeamQuery { PublicId = teamId });
+    var result = await Sender.Send(new GetDrafterTeamQuery { PublicId = teamId }, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -105,7 +105,7 @@ public sealed class GetDrafterTeamTests(DraftsIntegrationTestWebAppFactory facto
     var teamId = await teamFactory.CreateAndSaveTeamAsync();
 
     // Act
-    var result = await Sender.Send(new GetDrafterTeamQuery { PublicId = teamId });
+    var result = await Sender.Send(new GetDrafterTeamQuery { PublicId = teamId }, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();

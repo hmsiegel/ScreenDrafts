@@ -16,7 +16,7 @@ public sealed class RemoveHostTests(DraftsIntegrationTestWebAppFactory factory)
     var command = new RemoveHostDraftPartCommand { DraftPartId = draftPartPublicId, HostId = hostPublicId };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -32,12 +32,12 @@ public sealed class RemoveHostTests(DraftsIntegrationTestWebAppFactory factory)
     var command = new RemoveHostDraftPartCommand { DraftPartId = draftPartPublicId, HostId = hostPublicId };
 
     // Act
-    await Sender.Send(command);
+    await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     var draftPart = await DbContext.DraftParts
       .Include("_draftHosts")
-      .FirstAsync(dp => dp.PublicId == draftPartPublicId);
+      .FirstAsync(dp => dp.PublicId == draftPartPublicId, TestContext.Current.CancellationToken);
 
     draftPart.DraftHosts.Should().BeEmpty();
     draftPart.PrimaryHost.Should().BeNull();
@@ -53,12 +53,12 @@ public sealed class RemoveHostTests(DraftsIntegrationTestWebAppFactory factory)
     // Arrange
     var peopleFactory = new PeopleFactory(Sender, Faker);
     var personId = await peopleFactory.CreateAndSavePersonAsync();
-    var hostPublicId = (await Sender.Send(new CreateHostCommand { PersonPublicId = personId })).Value;
+    var hostPublicId = (await Sender.Send(new CreateHostCommand { PersonPublicId = personId }, TestContext.Current.CancellationToken)).Value;
 
     var command = new RemoveHostDraftPartCommand { DraftPartId = Faker.Random.AlphaNumeric(21), HostId = hostPublicId };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -77,12 +77,12 @@ public sealed class RemoveHostTests(DraftsIntegrationTestWebAppFactory factory)
     // Create a host but do NOT add it to the draft part
     var peopleFactory = new PeopleFactory(Sender, Faker);
     var personId = await peopleFactory.CreateAndSavePersonAsync();
-    var hostPublicId = (await Sender.Send(new CreateHostCommand { PersonPublicId = personId })).Value;
+    var hostPublicId = (await Sender.Send(new CreateHostCommand { PersonPublicId = personId }, TestContext.Current.CancellationToken)).Value;
 
     var command = new RemoveHostDraftPartCommand { DraftPartId = draftPartPublicId, HostId = hostPublicId };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -98,14 +98,14 @@ public sealed class RemoveHostTests(DraftsIntegrationTestWebAppFactory factory)
 
     var peopleFactory = new PeopleFactory(Sender, Faker);
     var personId = await peopleFactory.CreateAndSavePersonAsync();
-    var hostPublicId = (await Sender.Send(new CreateHostCommand { PersonPublicId = personId })).Value;
+    var hostPublicId = (await Sender.Send(new CreateHostCommand { PersonPublicId = personId }, TestContext.Current.CancellationToken)).Value;
 
     await Sender.Send(new AddHostToDraftPartCommand
     {
       DraftPartId = draftPartPublicId,
       HostPublicId = hostPublicId,
       HostRole = HostRole.Primary
-    });
+    }, TestContext.Current.CancellationToken);
 
     return (draftPartPublicId, hostPublicId);
   }
@@ -128,7 +128,7 @@ public sealed class RemoveHostTests(DraftsIntegrationTestWebAppFactory factory)
       ContinuityDateRule = ContinuityDateRule.AnyChannelFirstRelease.Value,
       AllowedDraftTypes = (int)DraftTypeMask.All,
       DefaultDraftType = DraftType.Standard.Value
-    });
+    }, TestContext.Current.CancellationToken);
 
     return result.Value;
   }
@@ -140,7 +140,7 @@ public sealed class RemoveHostTests(DraftsIntegrationTestWebAppFactory factory)
       Title = Faker.Company.CompanyName(),
       DraftType = DraftType.Standard.Value,
       SeriesId = seriesId,
-    });
+    }, TestContext.Current.CancellationToken);
 
     var draftPublicId = draftResult.Value;
     await Sender.Send(new CreateDraftPartCommand
@@ -149,7 +149,7 @@ public sealed class RemoveHostTests(DraftsIntegrationTestWebAppFactory factory)
       PartIndex = 1,
       MinimumPosition = 1,
       MaximumPosition = 7,
-    });
+    }, TestContext.Current.CancellationToken);
 
     return draftPublicId;
   }

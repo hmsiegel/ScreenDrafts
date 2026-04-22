@@ -5,6 +5,8 @@ global using System.Text.Json.Serialization;
 
 global using Bogus;
 
+global using Dapper;
+
 global using FluentAssertions;
 
 global using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -26,6 +28,6 @@ global using ScreenDrafts.Modules.Users.Infrastructure.Identity;
 global using ScreenDrafts.Modules.Users.IntegrationTests.Abstractions;
 global using ScreenDrafts.Modules.Users.PublicApi;
 
-global using Serilog;
-
 global using Testcontainers.Keycloak;
+
+global using Xunit;

@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Communications.ArchitectureTests.Abstractions;
+﻿using TestResult = NetArchTest.Rules.TestResult;
+
+namespace ScreenDrafts.Modules.Communications.ArchitectureTests.Abstractions;
 
 internal static class TestResultExtensions
 {

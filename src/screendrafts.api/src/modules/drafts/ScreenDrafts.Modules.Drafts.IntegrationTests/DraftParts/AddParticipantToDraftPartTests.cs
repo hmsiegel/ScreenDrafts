@@ -1,4 +1,4 @@
-﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.DraftParts;
+namespace ScreenDrafts.Modules.Drafts.IntegrationTests.DraftParts;
 
 public sealed class AddParticipantToDraftPartTests(DraftsIntegrationTestWebAppFactory factory)
   : DraftsIntegrationTest(factory)
@@ -23,7 +23,7 @@ public sealed class AddParticipantToDraftPartTests(DraftsIntegrationTestWebAppFa
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -46,7 +46,7 @@ public sealed class AddParticipantToDraftPartTests(DraftsIntegrationTestWebAppFa
     };
 
     // Act
-    await Sender.Send(command);
+    await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     var participantPublicId = await GetFirstParticipantPublicIdAsync(draftPartInternalId);
@@ -72,7 +72,7 @@ public sealed class AddParticipantToDraftPartTests(DraftsIntegrationTestWebAppFa
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -96,7 +96,7 @@ public sealed class AddParticipantToDraftPartTests(DraftsIntegrationTestWebAppFa
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -122,10 +122,10 @@ public sealed class AddParticipantToDraftPartTests(DraftsIntegrationTestWebAppFa
     };
 
     // Add once — should succeed
-    await Sender.Send(command);
+    await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Act — add same participant again
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -140,7 +140,7 @@ public sealed class AddParticipantToDraftPartTests(DraftsIntegrationTestWebAppFa
     var seriesId = await CreateSeriesAsync();
     var draftPublicId = await CreateDraftAsync(seriesId);
     var internalId = await GetFirstDraftPartIdAsync(draftPublicId);
-    var draftPart = await DbContext.DraftParts.FirstAsync(dp => dp.Id == DraftPartId.Create(internalId));
+    var draftPart = await DbContext.DraftParts.FirstAsync(dp => dp.Id == DraftPartId.Create(internalId), TestContext.Current.CancellationToken);
     return (internalId, draftPart.PublicId);
   }
 
@@ -155,7 +155,7 @@ public sealed class AddParticipantToDraftPartTests(DraftsIntegrationTestWebAppFa
       ContinuityDateRule = ContinuityDateRule.AnyChannelFirstRelease.Value,
       AllowedDraftTypes = (int)DraftTypeMask.All,
       DefaultDraftType = DraftType.Standard.Value
-    });
+    }, TestContext.Current.CancellationToken);
 
     return result.Value;
   }
@@ -167,7 +167,7 @@ public sealed class AddParticipantToDraftPartTests(DraftsIntegrationTestWebAppFa
       Title = Faker.Company.CompanyName(),
       DraftType = DraftType.Standard.Value,
       SeriesId = seriesId,
-    });
+    }, TestContext.Current.CancellationToken);
 
     var draftPublicId = draftResult.Value;
     await Sender.Send(new CreateDraftPartCommand
@@ -176,7 +176,7 @@ public sealed class AddParticipantToDraftPartTests(DraftsIntegrationTestWebAppFa
       PartIndex = 1,
       MinimumPosition = 1,
       MaximumPosition = 7,
-    });
+    }, TestContext.Current.CancellationToken);
 
     return draftPublicId;
   }

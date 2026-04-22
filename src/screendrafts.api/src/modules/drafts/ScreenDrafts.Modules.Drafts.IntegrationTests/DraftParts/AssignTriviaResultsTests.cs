@@ -1,4 +1,4 @@
-﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.DraftParts;
+namespace ScreenDrafts.Modules.Drafts.IntegrationTests.DraftParts;
 
 public sealed class AssignTriviaResultsTests(DraftsIntegrationTestWebAppFactory factory)
   : DraftsIntegrationTest(factory)
@@ -29,7 +29,7 @@ public sealed class AssignTriviaResultsTests(DraftsIntegrationTestWebAppFactory 
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -65,12 +65,12 @@ public sealed class AssignTriviaResultsTests(DraftsIntegrationTestWebAppFactory 
     };
 
     // Act
-    await Sender.Send(command);
+    await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     var triviaResults = await DbContext.TriviaResults
       .Where(tr => tr.DraftPart.PublicId == draftPartPublicId)
-      .ToListAsync();
+      .ToListAsync(TestContext.Current.CancellationToken);
 
     triviaResults.Should().HaveCount(2);
     triviaResults.Should().Contain(tr => tr.Position == 1 && tr.QuestionsWon == 5);
@@ -97,7 +97,7 @@ public sealed class AssignTriviaResultsTests(DraftsIntegrationTestWebAppFactory 
           QuestionsWon = 5
         }
       ]
-    });
+    }, TestContext.Current.CancellationToken);
 
     // Assign again with different results
     var command = new AssignTriviaResultsCommand
@@ -116,14 +116,14 @@ public sealed class AssignTriviaResultsTests(DraftsIntegrationTestWebAppFactory 
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
 
     var triviaResults = await DbContext.TriviaResults
       .Where(tr => tr.DraftPart.PublicId == draftPartPublicId)
-      .ToListAsync();
+      .ToListAsync(TestContext.Current.CancellationToken);
 
     triviaResults.Should().HaveCount(1);
     triviaResults[0].Position.Should().Be(1);
@@ -157,7 +157,7 @@ public sealed class AssignTriviaResultsTests(DraftsIntegrationTestWebAppFactory 
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -189,7 +189,7 @@ public sealed class AssignTriviaResultsTests(DraftsIntegrationTestWebAppFactory 
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -228,7 +228,7 @@ public sealed class AssignTriviaResultsTests(DraftsIntegrationTestWebAppFactory 
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -260,7 +260,7 @@ public sealed class AssignTriviaResultsTests(DraftsIntegrationTestWebAppFactory 
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -278,43 +278,43 @@ public sealed class AssignTriviaResultsTests(DraftsIntegrationTestWebAppFactory 
     var draftPartInternalId = await GetFirstDraftPartIdAsync(draftPublicId);
 
     var draftPart = await DbContext.DraftParts
-      .FirstAsync(dp => dp.Id == DraftPartId.Create(draftPartInternalId));
+      .FirstAsync(dp => dp.Id == DraftPartId.Create(draftPartInternalId), TestContext.Current.CancellationToken);
     var draftPartPublicId = draftPart.PublicId;
 
     var peopleFactory = new PeopleFactory(Sender, Faker);
 
     var person1Id = await peopleFactory.CreateAndSavePersonAsync();
-    var drafter1PublicId = (await Sender.Send(new CreateDrafterCommand(person1Id))).Value;
+    var drafter1PublicId = (await Sender.Send(new CreateDrafterCommand(person1Id), TestContext.Current.CancellationToken)).Value;
     await Sender.Send(new AddParticipantToDraftPartCommand
     {
       DraftPartId = draftPartPublicId,
       ParticipantPublicId = drafter1PublicId,
       ParticipantKind = ParticipantKind.Drafter
-    });
+    }, TestContext.Current.CancellationToken);
 
     var person2Id = await peopleFactory.CreateAndSavePersonAsync();
-    var drafter2PublicId = (await Sender.Send(new CreateDrafterCommand(person2Id))).Value;
+    var drafter2PublicId = (await Sender.Send(new CreateDrafterCommand(person2Id), TestContext.Current.CancellationToken)).Value;
     await Sender.Send(new AddParticipantToDraftPartCommand
     {
       DraftPartId = draftPartPublicId,
       ParticipantPublicId = drafter2PublicId,
       ParticipantKind = ParticipantKind.Drafter
-    });
+    }, TestContext.Current.CancellationToken);
 
     var hostPersonId = await peopleFactory.CreateAndSavePersonAsync();
-    var hostPublicId = (await Sender.Send(new CreateHostCommand { PersonPublicId = hostPersonId })).Value;
+    var hostPublicId = (await Sender.Send(new CreateHostCommand { PersonPublicId = hostPersonId }, TestContext.Current.CancellationToken)).Value;
     await Sender.Send(new AddHostToDraftPartCommand
     {
       DraftPartId = draftPartPublicId,
       HostPublicId = hostPublicId,
       HostRole = HostRole.Primary
-    });
+    }, TestContext.Current.CancellationToken);
 
     await Sender.Send(new SetDraftPartStatusCommand
     {      DraftPublicId = draftPublicId,
       PartIndex = 1,
       Action = DraftPartStatusAction.Start
-    });
+    }, TestContext.Current.CancellationToken);
 
     return (draftPartPublicId, drafter1PublicId, drafter2PublicId);
   }
@@ -327,18 +327,18 @@ public sealed class AssignTriviaResultsTests(DraftsIntegrationTestWebAppFactory 
     var draftPartInternalId = await GetFirstDraftPartIdAsync(draftPublicId);
 
     var draftPart = await DbContext.DraftParts
-      .FirstAsync(dp => dp.Id == DraftPartId.Create(draftPartInternalId));
+      .FirstAsync(dp => dp.Id == DraftPartId.Create(draftPartInternalId), TestContext.Current.CancellationToken);
     var draftPartPublicId = draftPart.PublicId;
 
     var peopleFactory = new PeopleFactory(Sender, Faker);
     var personId = await peopleFactory.CreateAndSavePersonAsync();
-    var drafterPublicId = (await Sender.Send(new CreateDrafterCommand(personId))).Value;
+    var drafterPublicId = (await Sender.Send(new CreateDrafterCommand(personId), TestContext.Current.CancellationToken)).Value;
     await Sender.Send(new AddParticipantToDraftPartCommand
     {
       DraftPartId = draftPartPublicId,
       ParticipantPublicId = drafterPublicId,
       ParticipantKind = ParticipantKind.Drafter
-    });
+    }, TestContext.Current.CancellationToken);
 
     return (draftPartPublicId, drafterPublicId);
   }
@@ -354,7 +354,7 @@ public sealed class AssignTriviaResultsTests(DraftsIntegrationTestWebAppFactory 
       ContinuityDateRule = ContinuityDateRule.AnyChannelFirstRelease.Value,
       AllowedDraftTypes = (int)DraftTypeMask.All,
       DefaultDraftType = DraftType.Standard.Value
-    });
+    }, TestContext.Current.CancellationToken);
 
     return result.Value;
   }
@@ -366,7 +366,7 @@ public sealed class AssignTriviaResultsTests(DraftsIntegrationTestWebAppFactory 
       Title = Faker.Company.CompanyName(),
       DraftType = DraftType.Standard.Value,
       SeriesId = seriesId,
-    });
+    }, TestContext.Current.CancellationToken);
 
     var draftPublicId = draftResult.Value;
     await Sender.Send(new CreateDraftPartCommand
@@ -375,7 +375,7 @@ public sealed class AssignTriviaResultsTests(DraftsIntegrationTestWebAppFactory 
       PartIndex = 1,
       MinimumPosition = 1,
       MaximumPosition = 7,
-    });
+    }, TestContext.Current.CancellationToken);
 
     return draftPublicId;
   }

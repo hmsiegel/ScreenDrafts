@@ -1,6 +1,4 @@
-﻿using NanoidDotNet;
-
-namespace ScreenDrafts.Modules.Users.UnitTests.Users;
+﻿namespace ScreenDrafts.Modules.Users.UnitTests.Users;
 
 public class UserTests : BaseTest
 {

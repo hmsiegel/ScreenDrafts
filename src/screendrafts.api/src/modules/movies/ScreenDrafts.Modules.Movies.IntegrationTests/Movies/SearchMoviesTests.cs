@@ -21,7 +21,7 @@ public sealed class SearchMoviesTests(MoviesIntegrationTestWebAppFactory factory
     };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -39,7 +39,7 @@ public sealed class SearchMoviesTests(MoviesIntegrationTestWebAppFactory factory
     };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -72,7 +72,7 @@ public sealed class SearchMoviesTests(MoviesIntegrationTestWebAppFactory factory
     };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -95,7 +95,7 @@ public sealed class SearchMoviesTests(MoviesIntegrationTestWebAppFactory factory
     };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -125,7 +125,7 @@ public sealed class SearchMoviesTests(MoviesIntegrationTestWebAppFactory factory
     };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -158,7 +158,7 @@ public sealed class SearchMoviesTests(MoviesIntegrationTestWebAppFactory factory
       Genres = genre != null ? [new GenreRequest(genre.TmdbId, genre.Name)] : Array.Empty<GenreRequest>(),
     };
 
-    await Sender.Send(seedCommand);
+    await Sender.Send(seedCommand, TestContext.Current.CancellationToken);
 
     FakeIntegrationsApi.SetResponse(new SearchMediaApiResponse
     {
@@ -176,7 +176,7 @@ public sealed class SearchMoviesTests(MoviesIntegrationTestWebAppFactory factory
     };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -212,7 +212,7 @@ public sealed class SearchMoviesTests(MoviesIntegrationTestWebAppFactory factory
     };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();

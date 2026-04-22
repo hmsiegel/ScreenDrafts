@@ -19,10 +19,10 @@ public class CreatePersonTests(DraftsIntegrationTestWebAppFactory factory)
       LastName = person.LastName
     };
     // Act
-    var personId = await Sender.Send(command);
+    var personId = await Sender.Send(command, TestContext.Current.CancellationToken);
     // Assert
     personId.Value.Should().NotBe(string.Empty);
-    var createdPerson = await Sender.Send(new GetPersonQuery(personId.Value));
+    var createdPerson = await Sender.Send(new GetPersonQuery(personId.Value), TestContext.Current.CancellationToken);
     createdPerson.Value.PublicId.Should().Be(personId.Value);
   }
 
@@ -36,7 +36,7 @@ public class CreatePersonTests(DraftsIntegrationTestWebAppFactory factory)
       LastName = string.Empty
     };
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
     // Assert
     result.IsFailure.Should().BeTrue();
     result.Errors[0].Type.Should().Be(ErrorType.Validation);
@@ -57,7 +57,7 @@ public class CreatePersonTests(DraftsIntegrationTestWebAppFactory factory)
       FirstName = Faker.Name.FirstName(),
       LastName = Faker.Name.LastName()
     };
-    var userResult = await Sender.Send(registerUserCommand);
+    var userResult = await Sender.Send(registerUserCommand, TestContext.Current.CancellationToken);
 
     var peopleFactory = new PeopleFactory(Sender, Faker);
     var person = peopleFactory.CreatePersonWithUserId();
@@ -68,10 +68,10 @@ public class CreatePersonTests(DraftsIntegrationTestWebAppFactory factory)
       UserId = userResult.Value
     };
     // Act
-    var personId = await Sender.Send(command);
+    var personId = await Sender.Send(command, TestContext.Current.CancellationToken);
     // Assert
     personId.Value.Should().NotBe(string.Empty);
-    var createdPerson = await Sender.Send(new GetPersonQuery(personId.Value));
+    var createdPerson = await Sender.Send(new GetPersonQuery(personId.Value), TestContext.Current.CancellationToken);
     createdPerson.Value.PublicId.Should().Be(personId.Value);
   }
 
@@ -89,7 +89,7 @@ public class CreatePersonTests(DraftsIntegrationTestWebAppFactory factory)
       UserId = userId
     };
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
     // Assert
     result.IsFailure.Should().BeTrue();
     result.Errors[0].Type.Should().Be(ErrorType.Validation);

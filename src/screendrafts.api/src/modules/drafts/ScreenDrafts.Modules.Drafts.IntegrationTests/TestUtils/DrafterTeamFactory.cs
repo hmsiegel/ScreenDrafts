@@ -1,4 +1,4 @@
-using ScreenDrafts.Modules.Drafts.Features.Drafters.Create;
+﻿using ScreenDrafts.Modules.Drafts.Features.Drafters.Create;
 using ScreenDrafts.Modules.Drafts.Features.DrafterTeams.Create;
 
 namespace ScreenDrafts.Modules.Drafts.IntegrationTests.TestUtils;
@@ -15,7 +15,7 @@ public class DrafterTeamFactory(ISender sender, Faker faker)
       Name = _faker.Internet.UserName() + _faker.Random.AlphaNumeric(6)
     };
 
-    var result = await _sender.Send(command);
+    var result = await _sender.Send(command, TestContext.Current.CancellationToken);
     return result.Value;
   }
 
@@ -24,7 +24,7 @@ public class DrafterTeamFactory(ISender sender, Faker faker)
     var peopleFactory = new PeopleFactory(_sender, _faker);
     var personId = await peopleFactory.CreateAndSavePersonAsync();
     var command = new CreateDrafterCommand(personId);
-    var result = await _sender.Send(command);
+    var result = await _sender.Send(command, TestContext.Current.CancellationToken);
     return result.Value;
   }
 }

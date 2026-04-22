@@ -1,4 +1,4 @@
-using ScreenDrafts.Modules.Drafts.Features.Categories.Create;
+﻿using ScreenDrafts.Modules.Drafts.Features.Categories.Create;
 using ScreenDrafts.Modules.Drafts.Features.Drafts.SetCategories;
 
 namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafts;
@@ -19,7 +19,7 @@ public sealed class SetCategoriesTests(DraftsIntegrationTestWebAppFactory factor
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -41,7 +41,7 @@ public sealed class SetCategoriesTests(DraftsIntegrationTestWebAppFactory factor
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -59,7 +59,7 @@ public sealed class SetCategoriesTests(DraftsIntegrationTestWebAppFactory factor
     {
       DraftId = draftId,
       CategoryIds = [categoryId]
-    });
+    }, TestContext.Current.CancellationToken);
 
     var clearCommand = new SetCategoriesDraftCommand
     {
@@ -68,7 +68,7 @@ public sealed class SetCategoriesTests(DraftsIntegrationTestWebAppFactory factor
     };
 
     // Act
-    var result = await Sender.Send(clearCommand);
+    var result = await Sender.Send(clearCommand, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -87,7 +87,7 @@ public sealed class SetCategoriesTests(DraftsIntegrationTestWebAppFactory factor
     {
       DraftId = draftId,
       CategoryIds = [firstCategoryId]
-    });
+    }, TestContext.Current.CancellationToken);
 
     var replaceCommand = new SetCategoriesDraftCommand
     {
@@ -96,7 +96,7 @@ public sealed class SetCategoriesTests(DraftsIntegrationTestWebAppFactory factor
     };
 
     // Act
-    var result = await Sender.Send(replaceCommand);
+    var result = await Sender.Send(replaceCommand, TestContext.Current.CancellationToken);
 
     // Assert
     firstResult.IsSuccess.Should().BeTrue();
@@ -116,7 +116,7 @@ public sealed class SetCategoriesTests(DraftsIntegrationTestWebAppFactory factor
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -136,7 +136,7 @@ public sealed class SetCategoriesTests(DraftsIntegrationTestWebAppFactory factor
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -157,7 +157,7 @@ public sealed class SetCategoriesTests(DraftsIntegrationTestWebAppFactory factor
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -177,7 +177,7 @@ public sealed class SetCategoriesTests(DraftsIntegrationTestWebAppFactory factor
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -199,7 +199,7 @@ public sealed class SetCategoriesTests(DraftsIntegrationTestWebAppFactory factor
       SeriesId = seriesId,
     };
 
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
     return result.Value;
   }
 
@@ -216,7 +216,7 @@ public sealed class SetCategoriesTests(DraftsIntegrationTestWebAppFactory factor
       DefaultDraftType = DraftType.Standard.Value
     };
 
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
     return result.Value;
   }
 
@@ -228,7 +228,7 @@ public sealed class SetCategoriesTests(DraftsIntegrationTestWebAppFactory factor
       Description = Faker.Lorem.Sentence()
     };
 
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
     return result.Value;
   }
 }

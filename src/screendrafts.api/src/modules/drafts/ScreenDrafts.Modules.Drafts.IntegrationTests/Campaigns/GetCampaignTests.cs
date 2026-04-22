@@ -17,13 +17,13 @@ public sealed class GetCampaignTests(DraftsIntegrationTestWebAppFactory factory)
       Slug = slug
     };
 
-    var createResult = await Sender.Send(createCommand);
+    var createResult = await Sender.Send(createCommand, TestContext.Current.CancellationToken);
     var publicId = createResult.Value;
 
     var query = new GetCampaignQuery(publicId);
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -43,7 +43,7 @@ public sealed class GetCampaignTests(DraftsIntegrationTestWebAppFactory factory)
     var query = new GetCampaignQuery(nonExistentPublicId);
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();

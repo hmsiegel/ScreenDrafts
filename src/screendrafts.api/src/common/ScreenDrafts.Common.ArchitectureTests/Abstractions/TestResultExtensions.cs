@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
 
-using NetArchTest.Rules;
+using TestResult = NetArchTest.Rules.TestResult;
 
 namespace ScreenDrafts.Common.ArchitectureTests.Abstractions;
 

@@ -17,9 +17,9 @@ public class GetPersonTests(DraftsIntegrationTestWebAppFactory factory)
       FirstName = person.FirstName,
       LastName = person.LastName
     };
-    var personId = await Sender.Send(createCommand);
+    var personId = await Sender.Send(createCommand, TestContext.Current.CancellationToken);
     // Act
-    var result = await Sender.Send(new GetPersonQuery(personId.Value));
+    var result = await Sender.Send(new GetPersonQuery(personId.Value), TestContext.Current.CancellationToken);
     // Assert
     result.IsSuccess.Should().BeTrue();
     result.Value.PublicId.Should().Be(personId.Value);
@@ -33,7 +33,7 @@ public class GetPersonTests(DraftsIntegrationTestWebAppFactory factory)
     // Arrange
     var invalidId = "pe_nonexistent123";
     // Act
-    var result = await Sender.Send(new GetPersonQuery(invalidId));
+    var result = await Sender.Send(new GetPersonQuery(invalidId), TestContext.Current.CancellationToken);
     // Assert
     result.IsFailure.Should().BeTrue();
     result.Errors[0].Should().Be(PersonErrors.NotFound(invalidId));

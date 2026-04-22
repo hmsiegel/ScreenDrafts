@@ -19,23 +19,23 @@ public sealed class RestoreCampaignTests(DraftsIntegrationTestWebAppFactory fact
       Slug = slug
     };
 
-    var createResult = await Sender.Send(createCommand);
+    var createResult = await Sender.Send(createCommand, TestContext.Current.CancellationToken);
     var publicId = createResult.Value;
 
     var deleteCommand = new DeleteCampaignCommand(publicId);
-    await Sender.Send(deleteCommand);
+    await Sender.Send(deleteCommand, TestContext.Current.CancellationToken);
 
     var restoreCommand = new RestoreCampaignCommand(publicId);
 
     // Act
-    var result = await Sender.Send(restoreCommand);
+    var result = await Sender.Send(restoreCommand, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
     result.IsSuccess.Should().BeTrue();
 
     var getQuery = new GetCampaignQuery(publicId);
-    var campaign = await Sender.Send(getQuery);
+    var campaign = await Sender.Send(getQuery, TestContext.Current.CancellationToken);
     campaign.Value.IsDeleted.Should().BeFalse();
   }
 
@@ -47,7 +47,7 @@ public sealed class RestoreCampaignTests(DraftsIntegrationTestWebAppFactory fact
     var restoreCommand = new RestoreCampaignCommand(nonExistentPublicId);
 
     // Act
-    var result = await Sender.Send(restoreCommand);
+    var result = await Sender.Send(restoreCommand, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -66,20 +66,20 @@ public sealed class RestoreCampaignTests(DraftsIntegrationTestWebAppFactory fact
       Slug = slug
     };
 
-    var createResult = await Sender.Send(createCommand);
+    var createResult = await Sender.Send(createCommand, TestContext.Current.CancellationToken);
     var publicId = createResult.Value;
 
     var restoreCommand = new RestoreCampaignCommand(publicId);
 
     // Act
-    var result = await Sender.Send(restoreCommand);
+    var result = await Sender.Send(restoreCommand, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
     result.IsSuccess.Should().BeTrue();
 
     var getQuery = new GetCampaignQuery(publicId);
-    var campaign = await Sender.Send(getQuery);
+    var campaign = await Sender.Send(getQuery, TestContext.Current.CancellationToken);
     campaign.Value.IsDeleted.Should().BeFalse();
   }
 
@@ -95,26 +95,26 @@ public sealed class RestoreCampaignTests(DraftsIntegrationTestWebAppFactory fact
       Slug = slug
     };
 
-    var createResult = await Sender.Send(createCommand);
+    var createResult = await Sender.Send(createCommand, TestContext.Current.CancellationToken);
     var publicId = createResult.Value;
 
     var deleteCommand = new DeleteCampaignCommand(publicId);
-    await Sender.Send(deleteCommand);
+    await Sender.Send(deleteCommand, TestContext.Current.CancellationToken);
 
     var restoreCommand1 = new RestoreCampaignCommand(publicId);
-    await Sender.Send(restoreCommand1);
+    await Sender.Send(restoreCommand1, TestContext.Current.CancellationToken);
 
     var restoreCommand2 = new RestoreCampaignCommand(publicId);
 
     // Act
-    var result = await Sender.Send(restoreCommand2);
+    var result = await Sender.Send(restoreCommand2, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
     result.IsSuccess.Should().BeTrue();
 
     var getQuery = new GetCampaignQuery(publicId);
-    var campaign = await Sender.Send(getQuery);
+    var campaign = await Sender.Send(getQuery, TestContext.Current.CancellationToken);
     campaign.Value.IsDeleted.Should().BeFalse();
   }
 }

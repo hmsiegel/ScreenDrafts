@@ -16,7 +16,7 @@ public abstract class PredictionIntegrationTestBase(DraftsIntegrationTestWebAppF
       PartIndex = partIndex,
       MinimumPosition = 1,
       MaximumPosition = 7
-    });
+    }, TestContext.Current.CancellationToken);
     return result.Value;
   }
 
@@ -26,7 +26,7 @@ public abstract class PredictionIntegrationTestBase(DraftsIntegrationTestWebAppF
     {
       Number = number ?? Faker.Random.Int(1, 100),
       StartsOn = DateOnly.FromDateTime(Faker.Date.Past())
-    });
+    }, TestContext.Current.CancellationToken);
     return result.Value;
   }
 
@@ -37,7 +37,7 @@ public abstract class PredictionIntegrationTestBase(DraftsIntegrationTestWebAppF
     var result = await Sender.Send(new CreatePredictionContestantCommand
     {
       PersonPublicId = personPublicId
-    });
+    }, TestContext.Current.CancellationToken);
     return result.Value;
   }
 
@@ -53,7 +53,7 @@ public abstract class PredictionIntegrationTestBase(DraftsIntegrationTestWebAppF
       PredictionMode = predictionMode,
       RequiredCount = requiredCount,
       TopN = topN
-    });
+    }, TestContext.Current.CancellationToken);
     result.IsSuccess.Should().BeTrue("rules must be created before submitting sets");
   }
 
@@ -81,13 +81,13 @@ public abstract class PredictionIntegrationTestBase(DraftsIntegrationTestWebAppF
       Entries = entries
     };
 
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
     result.IsSuccess.Should().BeTrue("set submission must succeed");
 
-    var draftPart = await DbContext.DraftParts.FirstAsync(dp => dp.PublicId == draftPartPublicId);
-    var contestant = await DbContext.PredictionContestants.FirstAsync(c => c.PublicId == contestantPublicId);
+    var draftPart = await DbContext.DraftParts.FirstAsync(dp => dp.PublicId == draftPartPublicId, TestContext.Current.CancellationToken);
+    var contestant = await DbContext.PredictionContestants.FirstAsync(c => c.PublicId == contestantPublicId, TestContext.Current.CancellationToken);
     var set = await DbContext.DraftPredictionSets
-      .FirstAsync(s => s.DraftPartId == draftPart.Id && s.ContestantId == contestant.Id);
+      .FirstAsync(s => s.DraftPartId == draftPart.Id && s.ContestantId == contestant.Id, TestContext.Current.CancellationToken);
     return set.PublicId;
   }
 
@@ -106,7 +106,7 @@ public abstract class PredictionIntegrationTestBase(DraftsIntegrationTestWebAppF
       ContinuityDateRule = ContinuityDateRule.AnyChannelFirstRelease.Value,
       AllowedDraftTypes = (int)DraftTypeMask.All,
       DefaultDraftType = DraftType.Standard.Value
-    });
+    }, TestContext.Current.CancellationToken);
     return result.Value;
   }
 
@@ -117,7 +117,7 @@ public abstract class PredictionIntegrationTestBase(DraftsIntegrationTestWebAppF
       Title = Faker.Company.CompanyName(),
       DraftType = DraftType.Standard.Value,
       SeriesId = seriesId
-    });
+    }, TestContext.Current.CancellationToken);
     return result.Value;
   }
 }

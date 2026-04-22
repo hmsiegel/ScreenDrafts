@@ -1,6 +1,4 @@
-global using Bogus;
-
-global using FluentAssertions;
+﻿global using FluentAssertions;
 
 global using Microsoft.AspNetCore.SignalR;
 global using Microsoft.Extensions.Logging.Abstractions;

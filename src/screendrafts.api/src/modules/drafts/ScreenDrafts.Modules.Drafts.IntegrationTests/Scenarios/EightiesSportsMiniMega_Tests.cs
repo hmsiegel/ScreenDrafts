@@ -129,7 +129,7 @@ public sealed class EightiesSportsMiniMega_Tests(DraftsIntegrationTestWebAppFact
 
     var picks = await DbContext.Picks
       .Where(p => p.DraftPart.PublicId == _draftPartPublicId)
-      .ToListAsync();
+      .ToListAsync(TestContext.Current.CancellationToken);
 
     picks.Should().HaveCount(12);
   }
@@ -144,7 +144,7 @@ public sealed class EightiesSportsMiniMega_Tests(DraftsIntegrationTestWebAppFact
       .CountAsync(p =>
         p.DraftPart.PublicId == _draftPartPublicId &&
         p.PlayedByParticipantKindValue == ParticipantKind.Drafter &&
-        p.PlayedByParticipantIdValue == clayId);
+        p.PlayedByParticipantIdValue == clayId, TestContext.Current.CancellationToken);
 
     count.Should().Be(4, "Clay picks positions 1, 4, 7, 10");
   }
@@ -159,7 +159,7 @@ public sealed class EightiesSportsMiniMega_Tests(DraftsIntegrationTestWebAppFact
       .CountAsync(p =>
         p.DraftPart.PublicId == _draftPartPublicId &&
         p.PlayedByParticipantKindValue == ParticipantKind.Drafter &&
-        p.PlayedByParticipantIdValue == ryanId);
+        p.PlayedByParticipantIdValue == ryanId, TestContext.Current.CancellationToken);
 
     count.Should().Be(4, "Ryan picks positions 2, 5, 8, 11");
   }
@@ -174,7 +174,7 @@ public sealed class EightiesSportsMiniMega_Tests(DraftsIntegrationTestWebAppFact
       .CountAsync(p =>
         p.DraftPart.PublicId == _draftPartPublicId &&
         p.PlayedByParticipantKindValue == ParticipantKind.Drafter &&
-        p.PlayedByParticipantIdValue == darrenId);
+        p.PlayedByParticipantIdValue == darrenId, TestContext.Current.CancellationToken);
 
     count.Should().Be(4, "Darren picks positions 3, 6, 9, 12");
   }
@@ -187,7 +187,7 @@ public sealed class EightiesSportsMiniMega_Tests(DraftsIntegrationTestWebAppFact
 
     var draftPart = await DbContext.DraftParts
       .AsNoTracking()
-      .FirstAsync(dp => dp.PublicId == _draftPartPublicId);
+      .FirstAsync(dp => dp.PublicId == _draftPartPublicId, TestContext.Current.CancellationToken);
 
     draftPart.Status.Should().Be(DraftPartStatus.Completed);
   }
@@ -252,7 +252,7 @@ public sealed class EightiesSportsMiniMega_Tests(DraftsIntegrationTestWebAppFact
       ParticipantKind = ParticipantKind.Drafter,
       MoviePublicId = _moviePublicIds[11],  // same movie
       ActedByPublicId = _ryanDrafterPublicId
-    });
+    }, TestContext.Current.CancellationToken);
 
     result.IsFailure.Should().BeTrue("Picking a duplicate movie in the same part must fail");
   }
@@ -287,7 +287,7 @@ public sealed class EightiesSportsMiniMega_Tests(DraftsIntegrationTestWebAppFact
     var id = await DbContext.Drafters
       .Where(d => d.PublicId == drafterPublicId)
       .Select(d => d.Id)
-      .FirstAsync();
+      .FirstAsync(TestContext.Current.CancellationToken);
     return id.Value;
   }
 }

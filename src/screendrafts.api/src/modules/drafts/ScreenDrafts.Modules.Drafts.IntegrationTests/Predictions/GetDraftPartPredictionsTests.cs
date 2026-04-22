@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Predictions;
+﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Predictions;
 
 public sealed class GetDraftPartPredictionsTests(DraftsIntegrationTestWebAppFactory factory)
   : PredictionIntegrationTestBase(factory)
@@ -13,7 +13,7 @@ public sealed class GetDraftPartPredictionsTests(DraftsIntegrationTestWebAppFact
     var query = new GetDraftPartPredictionsQuery { DraftPartPublicId = draftPartPublicId };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -34,7 +34,7 @@ public sealed class GetDraftPartPredictionsTests(DraftsIntegrationTestWebAppFact
     var query = new GetDraftPartPredictionsQuery { DraftPartPublicId = draftPartPublicId };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -60,12 +60,12 @@ public sealed class GetDraftPartPredictionsTests(DraftsIntegrationTestWebAppFact
     {
       DraftPartPublicId = draftPartPublicId,
       SetPublicId = setPublicId
-    });
+    }, TestContext.Current.CancellationToken);
 
     var query = new GetDraftPartPredictionsQuery { DraftPartPublicId = draftPartPublicId };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -89,18 +89,18 @@ public sealed class GetDraftPartPredictionsTests(DraftsIntegrationTestWebAppFact
     {
       DraftPartPublicId = draftPartPublicId,
       SetPublicId = setPublicId
-    });
+    }, TestContext.Current.CancellationToken);
 
     await Sender.Send(new ScoreDraftPartPredictionsCommand
     {
       DraftPartPublicId = draftPartPublicId,
       FinalMediaPublicIds = ["m_00000001", "m_00000002", "m_00000003"]
-    });
+    }, TestContext.Current.CancellationToken);
 
     var query = new GetDraftPartPredictionsQuery { DraftPartPublicId = draftPartPublicId };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -129,7 +129,7 @@ public sealed class GetDraftPartPredictionsTests(DraftsIntegrationTestWebAppFact
     var query = new GetDraftPartPredictionsQuery { DraftPartPublicId = draftPartPublicId };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();

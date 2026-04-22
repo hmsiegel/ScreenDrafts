@@ -1,15 +1,3 @@
-using Dapper;
-
-using ScreenDrafts.Common.Application.Data;
-using ScreenDrafts.Common.Application.EventBus;
-using ScreenDrafts.Common.Application.Inbox;
-using ScreenDrafts.Modules.Drafts.Features.Categories.Create;
-using ScreenDrafts.Modules.Drafts.Features.DrafterTeams.AddDrafterToTeam;
-using ScreenDrafts.Modules.Drafts.Features.DrafterTeams.Create;
-using ScreenDrafts.Modules.Drafts.Features.SeriesFeatures.Create;
-using ScreenDrafts.Modules.Drafts.IntegrationTests.Abstractions;
-using ScreenDrafts.Modules.Drafts.IntegrationTests.Fixtures;
-
 namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Helpers;
 
 /// <summary>
@@ -55,7 +43,7 @@ public abstract class DraftScenarioBase(DraftsIntegrationTestWebAppFactory facto
       Title = title,
       DraftType = draftType,
       SeriesId = seriesId
-    });
+    }, TestContext.Current.CancellationToken);
 
     result.IsSuccess.Should().BeTrue($"CreateDraft '{title}' must succeed");
     return result.Value;
@@ -77,7 +65,7 @@ public abstract class DraftScenarioBase(DraftsIntegrationTestWebAppFactory facto
       PartIndex = partIndex,
       MinimumPosition = minPosition,
       MaximumPosition = maxPosition
-    });
+    }, TestContext.Current.CancellationToken);
 
     result.IsSuccess.Should().BeTrue($"CreateDraftPart index={partIndex} must succeed");
     return result.Value;
@@ -94,7 +82,7 @@ public abstract class DraftScenarioBase(DraftsIntegrationTestWebAppFactory facto
       DraftPartId = draftPartPublicId,
       ParticipantPublicId = drafterPublicId,
       ParticipantKind = ParticipantKind.Drafter
-    });
+    }, TestContext.Current.CancellationToken);
 
     result.IsSuccess.Should().BeTrue($"AddParticipant drafter={drafterPublicId} must succeed");
   }
@@ -106,7 +94,7 @@ public abstract class DraftScenarioBase(DraftsIntegrationTestWebAppFactory facto
       DraftPartId = draftPartPublicId,
       ParticipantPublicId = teamPublicId,
       ParticipantKind = ParticipantKind.Team
-    });
+    }, TestContext.Current.CancellationToken);
 
     result.IsSuccess.Should().BeTrue($"AddParticipant team={teamPublicId} must succeed");
   }
@@ -119,7 +107,7 @@ public abstract class DraftScenarioBase(DraftsIntegrationTestWebAppFactory facto
       DraftPartId = draftPartPublicId,
       ParticipantPublicId = communityId,
       ParticipantKind = ParticipantKind.Community
-    });
+    }, TestContext.Current.CancellationToken);
   }
 
   // ───────────────────────────────────────────────────────────────────────────
@@ -133,7 +121,7 @@ public abstract class DraftScenarioBase(DraftsIntegrationTestWebAppFactory facto
       DraftPartId = draftPartPublicId,
       HostPublicId = hostPublicId,
       HostRole = HostRole.Primary
-    });
+    }, TestContext.Current.CancellationToken);
 
     result.IsSuccess.Should().BeTrue($"AddHost primary={hostPublicId} must succeed");
   }
@@ -145,7 +133,7 @@ public abstract class DraftScenarioBase(DraftsIntegrationTestWebAppFactory facto
       DraftPartId = draftPartPublicId,
       HostPublicId = hostPublicId,
       HostRole = HostRole.CoHost
-    });
+    }, TestContext.Current.CancellationToken);
 
     result.IsSuccess.Should().BeTrue($"AddHost co-host={hostPublicId} must succeed");
   }
@@ -160,7 +148,7 @@ public abstract class DraftScenarioBase(DraftsIntegrationTestWebAppFactory facto
     {
       DraftPartId = draftPartPublicId,
       Positions = positions.ToList()
-    });
+    }, TestContext.Current.CancellationToken);
 
     result.IsSuccess.Should().BeTrue("SetDraftPositions must succeed");
   }
@@ -181,7 +169,7 @@ public abstract class DraftScenarioBase(DraftsIntegrationTestWebAppFactory facto
       PositionPublicId = positionPublicId,
       ParticipantPublicId = participantPublicId,
       ParticipantKind = kind
-    });
+    }, TestContext.Current.CancellationToken);
 
     result.IsSuccess.Should().BeTrue($"AssignParticipantToPosition {participantPublicId} must succeed");
   }
@@ -197,7 +185,7 @@ public abstract class DraftScenarioBase(DraftsIntegrationTestWebAppFactory facto
       DraftPublicId = draftPublicId,
       PartIndex = partIndex,
       Action = DraftPartStatusAction.Start
-    });
+    }, TestContext.Current.CancellationToken);
 
     result.IsSuccess.Should().BeTrue($"StartDraftPart part={partIndex} must succeed");
   }
@@ -224,7 +212,7 @@ public abstract class DraftScenarioBase(DraftsIntegrationTestWebAppFactory facto
       Results = entries
     };
 
-    var result = await Sender.Send(cmd);
+    var result = await Sender.Send(cmd, TestContext.Current.CancellationToken);
     result.IsSuccess.Should().BeTrue("AssignTriviaResults must succeed");
   }
 
@@ -250,7 +238,7 @@ public abstract class DraftScenarioBase(DraftsIntegrationTestWebAppFactory facto
       ParticipantKind = kind,
       MoviePublicId = moviePublicId,
       ActedByPublicId = actedByPublicId ?? participantPublicId
-    });
+    }, TestContext.Current.CancellationToken);
 
     result.IsSuccess.Should().BeTrue(
       $"PlayPick playOrder={playOrder} position={position} movie={moviePublicId} must succeed");
@@ -270,7 +258,7 @@ public abstract class DraftScenarioBase(DraftsIntegrationTestWebAppFactory facto
       ParticipantPublicId = participantPublicId,
       ParticipantKind = kind,
       ActorPublicId = actorPublicId ?? participantPublicId
-    });
+    }, TestContext.Current.CancellationToken);
 
     result.IsSuccess.Should().BeTrue(
       $"ApplyVeto playOrder={playOrder} by={participantPublicId} must succeed");
@@ -290,7 +278,7 @@ public abstract class DraftScenarioBase(DraftsIntegrationTestWebAppFactory facto
       ParticipantIdValue = participantPublicId,
       ParticipantKind = kind,
       ActorPublicId = actorPublicId ?? participantPublicId
-    });
+    }, TestContext.Current.CancellationToken);
 
     result.IsSuccess.Should().BeTrue(
       $"ApplyVetoOverride playOrder={playOrder} by={participantPublicId} must succeed");
@@ -306,7 +294,7 @@ public abstract class DraftScenarioBase(DraftsIntegrationTestWebAppFactory facto
       ParticipantPublicId = communityId,
       ParticipantKind = ParticipantKind.Community,
       ActorPublicId = communityId
-    });
+    }, TestContext.Current.CancellationToken);
 
     result.IsSuccess.Should().BeTrue(
       $"ApplyCommunityVeto playOrder={playOrder} must succeed");
@@ -318,7 +306,7 @@ public abstract class DraftScenarioBase(DraftsIntegrationTestWebAppFactory facto
     {
       DraftPartId = draftPartPublicId,
       PlayOrder = playOrder
-    });
+    }, TestContext.Current.CancellationToken);
 
     result.IsSuccess.Should().BeTrue(
       $"ApplyCommissionerOverride playOrder={playOrder} must succeed");
@@ -335,7 +323,7 @@ public abstract class DraftScenarioBase(DraftsIntegrationTestWebAppFactory facto
       DraftPublicId = draftPublicId,
       PartIndex = partIndex,
       Action = DraftPartStatusAction.Complete
-    });
+    }, TestContext.Current.CancellationToken);
 
     result.IsSuccess.Should().BeTrue($"CompleteDraftPart part={partIndex} must succeed");
   }
@@ -346,7 +334,7 @@ public abstract class DraftScenarioBase(DraftsIntegrationTestWebAppFactory facto
 
   protected async Task CreatePoolAsync(string draftPublicId)
   {
-    var result = await Sender.Send(new CreateDraftPoolCommand { PublicId = draftPublicId });
+    var result = await Sender.Send(new CreateDraftPoolCommand { PublicId = draftPublicId }, TestContext.Current.CancellationToken);
     result.IsSuccess.Should().BeTrue("CreateDraftPool must succeed");
   }
 
@@ -356,7 +344,7 @@ public abstract class DraftScenarioBase(DraftsIntegrationTestWebAppFactory facto
     {
       PublicId = draftPublicId,
       TmdbId = tmdbId
-    });
+    }, TestContext.Current.CancellationToken);
     result.IsSuccess.Should().BeTrue($"AddMovieToPool tmdbId={tmdbId} must succeed");
   }
 
@@ -371,28 +359,28 @@ public abstract class DraftScenarioBase(DraftsIntegrationTestWebAppFactory facto
       FirstName = firstName,
       LastName = lastName,
       PublicId = $"p_{Guid.NewGuid():N}"
-    });
+    }, TestContext.Current.CancellationToken);
     result.IsSuccess.Should().BeTrue($"CreatePerson {firstName} {lastName} must succeed");
     return result.Value;
   }
 
   protected async Task<string> CreateDrafterAsync(string personPublicId)
   {
-    var result = await Sender.Send(new CreateDrafterCommand(personPublicId));
+    var result = await Sender.Send(new CreateDrafterCommand(personPublicId), TestContext.Current.CancellationToken);
     result.IsSuccess.Should().BeTrue($"CreateDrafter person={personPublicId} must succeed");
     return result.Value;
   }
 
   protected async Task<string> CreateHostAsync(string personPublicId)
   {
-    var result = await Sender.Send(new CreateHostCommand { PersonPublicId = personPublicId });
+    var result = await Sender.Send(new CreateHostCommand { PersonPublicId = personPublicId }, TestContext.Current.CancellationToken);
     result.IsSuccess.Should().BeTrue($"CreateHost person={personPublicId} must succeed");
     return result.Value;
   }
 
   protected async Task<string> CreateTeamAsync(string name)
   {
-    var result = await Sender.Send(new CreateDrafterTeamCommand { Name = name });
+    var result = await Sender.Send(new CreateDrafterTeamCommand { Name = name }, TestContext.Current.CancellationToken);
     result.IsSuccess.Should().BeTrue($"CreateDrafterTeam '{name}' must succeed");
     return result.Value;
   }
@@ -403,7 +391,7 @@ public abstract class DraftScenarioBase(DraftsIntegrationTestWebAppFactory facto
     {
       DrafterTeamId = teamPublicId,
       DrafterId = drafterPublicId
-    });
+    }, TestContext.Current.CancellationToken);
     result.IsSuccess.Should().BeTrue($"AddDrafterToTeam team={teamPublicId} drafter={drafterPublicId} must succeed");
   }
 
@@ -424,7 +412,7 @@ public abstract class DraftScenarioBase(DraftsIntegrationTestWebAppFactory facto
       ContinuityDateRule = ContinuityDateRule.AnyChannelFirstRelease.Value,
       AllowedDraftTypes = (int)DraftTypeMask.All,
       DefaultDraftType = DraftType.Standard.Value
-    });
+    }, TestContext.Current.CancellationToken);
     return result.Value;
   }
 
@@ -443,7 +431,7 @@ public abstract class DraftScenarioBase(DraftsIntegrationTestWebAppFactory facto
     int count)
   {
     var connectionFactory = ServiceScope.ServiceProvider.GetRequiredService<IDbConnectionFactory>();
-    await using var connection = await connectionFactory.OpenConnectionAsync();
+    await using var connection = await connectionFactory.OpenConnectionAsync(TestContext.Current.CancellationToken);
 
     await connection.ExecuteAsync(
       """
@@ -471,7 +459,7 @@ public abstract class DraftScenarioBase(DraftsIntegrationTestWebAppFactory facto
     int count)
   {
     var connectionFactory = ServiceScope.ServiceProvider.GetRequiredService<IDbConnectionFactory>();
-    await using var connection = await connectionFactory.OpenConnectionAsync();
+    await using var connection = await connectionFactory.OpenConnectionAsync(TestContext.Current.CancellationToken);
 
     await connection.ExecuteAsync(
       """
@@ -502,12 +490,12 @@ public abstract class DraftScenarioBase(DraftsIntegrationTestWebAppFactory facto
     var partId = await DbContext.DraftParts
       .Where(dp => dp.PublicId == draftPartPublicId)
       .Select(dp => dp.Id)
-      .FirstAsync();
+      .FirstAsync(TestContext.Current.CancellationToken);
 
     return await DbContext.DraftPositions
       .Where(pos => pos.GameBoard.DraftPartId == partId && pos.Name == positionName)
       .Select(pos => pos.PublicId)
-      .FirstAsync();
+      .FirstAsync(TestContext.Current.CancellationToken);
   }
 
   // ───────────────────────────────────────────────────────────────────────────
@@ -520,7 +508,7 @@ public abstract class DraftScenarioBase(DraftsIntegrationTestWebAppFactory facto
       .AsAsyncEnumerable()
       .Where(d => d.Person.PublicId == personPublicId)
       .Select(d => d.PublicId)
-      .FirstAsync();
+      .FirstAsync(TestContext.Current.CancellationToken);
   }
 
   // ───────────────────────────────────────────────────────────────────────────
@@ -534,7 +522,7 @@ public abstract class DraftScenarioBase(DraftsIntegrationTestWebAppFactory facto
       .SelectMany(d => d.Parts)
       .Where(p => p.PartIndex == partIndex)
       .Select(p => p.PublicId)
-      .FirstAsync();
+      .FirstAsync(TestContext.Current.CancellationToken);
   }
 
   // ───────────────────────────────────────────────────────────────────────────
@@ -546,7 +534,7 @@ public abstract class DraftScenarioBase(DraftsIntegrationTestWebAppFactory facto
     return await DbContext.Movies
       .Where(m => m.ImdbId == imdbId)
       .Select(m => m.PublicId)
-      .FirstAsync();
+      .FirstAsync(TestContext.Current.CancellationToken);
   }
 
   protected async Task<string> GetMoviePublicIdByTitleAsync(string title)
@@ -554,7 +542,7 @@ public abstract class DraftScenarioBase(DraftsIntegrationTestWebAppFactory facto
     return await DbContext.Movies
       .Where(m => m.MovieTitle == title)
       .Select(m => m.PublicId)
-      .FirstAsync();
+      .FirstAsync(TestContext.Current.CancellationToken);
   }
 
   // ───────────────────────────────────────────────────────────────────────────
@@ -571,7 +559,7 @@ public abstract class DraftScenarioBase(DraftsIntegrationTestWebAppFactory facto
       .FirstOrDefaultAsync(p =>
         p.DraftPart.PublicId == draftPartPublicId &&
         p.Position == position &&
-        (p.Veto == null || p.Veto.IsOverridden));
+        (p.Veto == null || p.Veto.IsOverridden), TestContext.Current.CancellationToken);
 
     pick.Should().NotBeNull($"Expected a valid pick at position {position}");
     pick!.Movie.PublicId.Should().Be(expectedMoviePublicId,
@@ -582,7 +570,7 @@ public abstract class DraftScenarioBase(DraftsIntegrationTestWebAppFactory facto
   {
     var pick = await DbContext.Picks
       .Include(p => p.Veto)
-      .FirstAsync(p => p.DraftPart.PublicId == draftPartPublicId && p.PlayOrder == playOrder);
+      .FirstAsync(p => p.DraftPart.PublicId == draftPartPublicId && p.PlayOrder == playOrder, TestContext.Current.CancellationToken);
 
     pick.Veto.Should().NotBeNull($"Pick playOrder={playOrder} should be vetoed");
     pick.Veto!.IsOverridden.Should().BeFalse($"Veto on playOrder={playOrder} should not be overridden");
@@ -593,7 +581,7 @@ public abstract class DraftScenarioBase(DraftsIntegrationTestWebAppFactory facto
     var pick = await DbContext.Picks
       .Include(p => p.Veto)
         .ThenInclude(v => v!.VetoOverride)
-      .FirstAsync(p => p.DraftPart.PublicId == draftPartPublicId && p.PlayOrder == playOrder);
+      .FirstAsync(p => p.DraftPart.PublicId == draftPartPublicId && p.PlayOrder == playOrder, TestContext.Current.CancellationToken);
 
     pick.Veto.Should().NotBeNull($"Pick playOrder={playOrder} should have a veto");
     pick.Veto!.IsOverridden.Should().BeTrue($"Veto on playOrder={playOrder} should be overridden");
@@ -657,7 +645,7 @@ public abstract class DraftScenarioBase(DraftsIntegrationTestWebAppFactory facto
     bool isPatreon = false)
   {
     var connectionFactory = ServiceScope.ServiceProvider.GetRequiredService<IDbConnectionFactory>();
-    await using var connection = await connectionFactory.OpenConnectionAsync();
+    await using var connection = await connectionFactory.OpenConnectionAsync(TestContext.Current.CancellationToken);
 
     await connection.ExecuteAsync(
       """

@@ -13,7 +13,7 @@ public sealed class GetDrafterTests(DraftsIntegrationTestWebAppFactory factory)
     var drafterId = await CreateDrafterAsync();
 
     // Act
-    var result = await Sender.Send(new GetDrafterQuery(drafterId));
+    var result = await Sender.Send(new GetDrafterQuery(drafterId), TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -30,7 +30,7 @@ public sealed class GetDrafterTests(DraftsIntegrationTestWebAppFactory factory)
     var invalidDrafterId = Faker.Random.AlphaNumeric(10);
 
     // Act
-    var result = await Sender.Send(new GetDrafterQuery(invalidDrafterId));
+    var result = await Sender.Send(new GetDrafterQuery(invalidDrafterId), TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -45,7 +45,7 @@ public sealed class GetDrafterTests(DraftsIntegrationTestWebAppFactory factory)
     var drafterId = await CreateDrafterAsync();
 
     // Act
-    var result = await Sender.Send(new GetDrafterQuery(drafterId));
+    var result = await Sender.Send(new GetDrafterQuery(drafterId), TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -59,7 +59,7 @@ public sealed class GetDrafterTests(DraftsIntegrationTestWebAppFactory factory)
     var personFactory = new PeopleFactory(Sender, Faker);
     var personId = await personFactory.CreateAndSavePersonAsync();
     var command = new CreateDrafterCommand(personId);
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
     return result.Value;
   }
 }

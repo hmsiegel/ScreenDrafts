@@ -23,7 +23,7 @@ public sealed class UpdateDraftTests(DraftsIntegrationTestWebAppFactory factory)
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -43,7 +43,7 @@ public sealed class UpdateDraftTests(DraftsIntegrationTestWebAppFactory factory)
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -59,7 +59,7 @@ public sealed class UpdateDraftTests(DraftsIntegrationTestWebAppFactory factory)
     var newSeriesPublicId = await DbContext.Series
       .Where(s => s.Id == SeriesId.Create(newSeriesGuid))
       .Select(s => s.PublicId)
-      .FirstAsync();
+      .FirstAsync(TestContext.Current.CancellationToken);
     var command = new UpdateDraftCommand
     {
       PublicId = draftId,
@@ -67,7 +67,7 @@ public sealed class UpdateDraftTests(DraftsIntegrationTestWebAppFactory factory)
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -87,7 +87,7 @@ public sealed class UpdateDraftTests(DraftsIntegrationTestWebAppFactory factory)
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -105,7 +105,7 @@ public sealed class UpdateDraftTests(DraftsIntegrationTestWebAppFactory factory)
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -125,7 +125,7 @@ public sealed class UpdateDraftTests(DraftsIntegrationTestWebAppFactory factory)
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -148,7 +148,7 @@ public sealed class UpdateDraftTests(DraftsIntegrationTestWebAppFactory factory)
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -165,7 +165,7 @@ public sealed class UpdateDraftTests(DraftsIntegrationTestWebAppFactory factory)
       SeriesId = seriesId,
     };
 
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
     result.IsSuccess.Should().BeTrue($"CreateDraft should succeed, but got errors: {string.Join(", ", result.Errors)}");
     return result.Value;
   }
@@ -183,7 +183,7 @@ public sealed class UpdateDraftTests(DraftsIntegrationTestWebAppFactory factory)
       DefaultDraftType = DraftType.Standard.Value
     };
 
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
     result.IsSuccess.Should().BeTrue($"CreateSeries should succeed, but got errors: {string.Join(", ", result.Errors)}");
     return result.Value;
   }
@@ -196,7 +196,7 @@ public sealed class UpdateDraftTests(DraftsIntegrationTestWebAppFactory factory)
       Slug = Faker.Internet.DomainWord()
     };
 
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
     result.IsSuccess.Should().BeTrue($"CreateCampaign should succeed, but got errors: {string.Join(", ", result.Errors)}");
     return result.Value;
   }

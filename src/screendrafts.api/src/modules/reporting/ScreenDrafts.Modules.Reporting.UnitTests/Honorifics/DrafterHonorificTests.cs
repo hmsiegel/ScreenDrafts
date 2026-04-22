@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Reporting.UnitTests.Honorifics;
+﻿namespace ScreenDrafts.Modules.Reporting.UnitTests.Honorifics;
 
 public sealed class DrafterHonorificTests
 {

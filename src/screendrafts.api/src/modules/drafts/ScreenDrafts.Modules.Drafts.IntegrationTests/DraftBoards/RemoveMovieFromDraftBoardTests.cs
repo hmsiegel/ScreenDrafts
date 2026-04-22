@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Drafts.IntegrationTests.DraftBoards;
+﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.DraftBoards;
 
 public sealed class RemoveMovieFromDraftBoardTests(DraftsIntegrationTestWebAppFactory factory)
   : DraftsIntegrationTest(factory)
@@ -21,7 +21,7 @@ public sealed class RemoveMovieFromDraftBoardTests(DraftsIntegrationTestWebAppFa
       DraftId = draftPublicId,
       UserPublicId = userPublicId,
       TmdbId = tmdbId
-    });
+    }, TestContext.Current.CancellationToken);
 
     var command = new RemoveMovieFromDraftBoardCommand
     {
@@ -31,7 +31,7 @@ public sealed class RemoveMovieFromDraftBoardTests(DraftsIntegrationTestWebAppFa
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -51,7 +51,7 @@ public sealed class RemoveMovieFromDraftBoardTests(DraftsIntegrationTestWebAppFa
       DraftId = draftPublicId,
       UserPublicId = userPublicId,
       TmdbId = tmdbId
-    });
+    }, TestContext.Current.CancellationToken);
 
     var command = new RemoveMovieFromDraftBoardCommand
     {
@@ -61,12 +61,12 @@ public sealed class RemoveMovieFromDraftBoardTests(DraftsIntegrationTestWebAppFa
     };
 
     // Act
-    await Sender.Send(command);
+    await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     var board = await DbContext.DraftBoards
       .Include(b => b.Items)
-      .FirstOrDefaultAsync();
+      .FirstOrDefaultAsync(TestContext.Current.CancellationToken);
 
     board.Should().NotBeNull();
     board!.Items.Should().NotContain(i => i.TmdbId == tmdbId);
@@ -91,7 +91,7 @@ public sealed class RemoveMovieFromDraftBoardTests(DraftsIntegrationTestWebAppFa
     };
 
     // Act — no board has been created, remove should still succeed
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -117,7 +117,7 @@ public sealed class RemoveMovieFromDraftBoardTests(DraftsIntegrationTestWebAppFa
       DraftId = draftPublicId,
       UserPublicId = userPublicId,
       TmdbId = existingTmdbId
-    });
+    }, TestContext.Current.CancellationToken);
 
     // Attempt to remove a movie that was never added
     var command = new RemoveMovieFromDraftBoardCommand
@@ -128,7 +128,7 @@ public sealed class RemoveMovieFromDraftBoardTests(DraftsIntegrationTestWebAppFa
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -153,7 +153,7 @@ public sealed class RemoveMovieFromDraftBoardTests(DraftsIntegrationTestWebAppFa
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -177,7 +177,7 @@ public sealed class RemoveMovieFromDraftBoardTests(DraftsIntegrationTestWebAppFa
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -196,14 +196,14 @@ public sealed class RemoveMovieFromDraftBoardTests(DraftsIntegrationTestWebAppFa
     {
       FirstName = "Test",
       LastName = "Drafter" + Faker.Random.AlphaNumeric(6)
-    })).Value;
+    }, TestContext.Current.CancellationToken)).Value;
 
     // Link the person to the user directly in the DB.
     await DbContext.Database.ExecuteSqlRawAsync(
       "UPDATE drafts.people SET user_id = {0} WHERE public_id = {1}",
       userId, personPublicId);
 
-    var drafterPublicId = (await Sender.Send(new CreateDrafterCommand(personPublicId))).Value;
+    var drafterPublicId = (await Sender.Send(new CreateDrafterCommand(personPublicId), TestContext.Current.CancellationToken)).Value;
 
     return (userId, userPublicId, drafterPublicId);
   }
@@ -236,14 +236,14 @@ public sealed class RemoveMovieFromDraftBoardTests(DraftsIntegrationTestWebAppFa
       ContinuityDateRule = ContinuityDateRule.AnyChannelFirstRelease.Value,
       AllowedDraftTypes = (int)DraftTypeMask.All,
       DefaultDraftType = DraftType.Standard.Value
-    });
+    }, TestContext.Current.CancellationToken);
 
     var draftResult = await Sender.Send(new CreateDraftCommand
     {
       Title = Faker.Company.CompanyName(),
       DraftType = DraftType.Standard.Value,
       SeriesId = seriesResult.Value,
-    });
+    }, TestContext.Current.CancellationToken);
 
     return draftResult.Value;
   }

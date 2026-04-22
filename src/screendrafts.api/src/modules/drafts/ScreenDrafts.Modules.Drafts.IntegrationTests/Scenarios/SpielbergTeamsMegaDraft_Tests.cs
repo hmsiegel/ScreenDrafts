@@ -151,7 +151,7 @@ public sealed class SpielbergTeamsMegaDraft_Tests(DraftsIntegrationTestWebAppFac
       _moviePublicIds[i] = publicId;
     }
 
-    await DbContext.SaveChangesAsync();
+    await DbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
     // Create pool and add all 21 films
     await CreatePoolAsync(_draftPublicId);
@@ -172,7 +172,7 @@ public sealed class SpielbergTeamsMegaDraft_Tests(DraftsIntegrationTestWebAppFac
 
     var picks = await DbContext.Picks
       .Where(p => p.DraftPart.PublicId == _draftPartPublicId)
-      .ToListAsync();
+      .ToListAsync(TestContext.Current.CancellationToken);
 
     picks.Should().HaveCount(21);
   }
@@ -185,7 +185,7 @@ public sealed class SpielbergTeamsMegaDraft_Tests(DraftsIntegrationTestWebAppFac
     var nonTeamPicks = await DbContext.Picks
       .CountAsync(p =>
         p.DraftPart.PublicId == _draftPartPublicId &&
-        p.PlayedByParticipantKindValue != ParticipantKind.Team);
+        p.PlayedByParticipantKindValue != ParticipantKind.Team, TestContext.Current.CancellationToken);
 
     nonTeamPicks.Should().Be(0, "All picks should be attributed to DrafterTeam participants");
   }
@@ -202,17 +202,17 @@ public sealed class SpielbergTeamsMegaDraft_Tests(DraftsIntegrationTestWebAppFac
     var countA = await DbContext.Picks.CountAsync(p =>
       p.DraftPart.PublicId == _draftPartPublicId &&
       p.PlayedByParticipantKindValue == ParticipantKind.Team &&
-      p.PlayedByParticipantIdValue == teamAId);
+      p.PlayedByParticipantIdValue == teamAId, TestContext.Current.CancellationToken);
 
     var countB = await DbContext.Picks.CountAsync(p =>
       p.DraftPart.PublicId == _draftPartPublicId &&
       p.PlayedByParticipantKindValue == ParticipantKind.Team &&
-      p.PlayedByParticipantIdValue == teamBId);
+      p.PlayedByParticipantIdValue == teamBId, TestContext.Current.CancellationToken);
 
     var countC = await DbContext.Picks.CountAsync(p =>
       p.DraftPart.PublicId == _draftPartPublicId &&
       p.PlayedByParticipantKindValue == ParticipantKind.Team &&
-      p.PlayedByParticipantIdValue == teamCId);
+      p.PlayedByParticipantIdValue == teamCId, TestContext.Current.CancellationToken);
 
     countA.Should().Be(7, "Team A should have 7 picks");
     countB.Should().Be(7, "Team B should have 7 picks");
@@ -227,7 +227,7 @@ public sealed class SpielbergTeamsMegaDraft_Tests(DraftsIntegrationTestWebAppFac
 
     var draftPart = await DbContext.DraftParts
       .AsNoTracking()
-      .FirstAsync(dp => dp.PublicId == _draftPartPublicId);
+      .FirstAsync(dp => dp.PublicId == _draftPartPublicId, TestContext.Current.CancellationToken);
 
     draftPart.Status.Should().Be(DraftPartStatus.Completed);
   }
@@ -276,7 +276,7 @@ public sealed class SpielbergTeamsMegaDraft_Tests(DraftsIntegrationTestWebAppFac
 
     var movie = Movie.Create("Guard Test Movie", $"m_{Guid.NewGuid():N}", MediaType.Movie, Guid.NewGuid()).Value;
     DbContext.Movies.Add(movie);
-    await DbContext.SaveChangesAsync();
+    await DbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
     // Start the draft first (needs positions — one per team participant)
     await SetPositionsAsync(partPublicId,
@@ -296,7 +296,7 @@ public sealed class SpielbergTeamsMegaDraft_Tests(DraftsIntegrationTestWebAppFac
       ParticipantKind = ParticipantKind.Drafter,
       MoviePublicId = movie.PublicId,
       ActedByPublicId = _clayDrafterPublicId
-    });
+    }, TestContext.Current.CancellationToken);
 
     result.IsFailure.Should().BeTrue("Cannot pick as individual Drafter when only team participants are registered");
   }
@@ -336,7 +336,7 @@ public sealed class SpielbergTeamsMegaDraft_Tests(DraftsIntegrationTestWebAppFac
     var id = await DbContext.DrafterTeams
       .Where(t => t.PublicId == teamPublicId)
       .Select(t => t.Id)
-      .FirstAsync();
+      .FirstAsync(TestContext.Current.CancellationToken);
     return id.Value;
   }
 }

@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Hosts;
+﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Hosts;
 
 public sealed class GetHostTests(DraftsIntegrationTestWebAppFactory factory)
   : DraftsIntegrationTest(factory)
@@ -11,7 +11,7 @@ public sealed class GetHostTests(DraftsIntegrationTestWebAppFactory factory)
     var hostId = await hostFactory.CreateAndSaveHostAsync();
 
     // Act
-    var result = await Sender.Send(new GetHostQuery { HostPublicId = hostId });
+    var result = await Sender.Send(new GetHostQuery { HostPublicId = hostId }, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -26,7 +26,7 @@ public sealed class GetHostTests(DraftsIntegrationTestWebAppFactory factory)
     var nonExistentId = Faker.Random.AlphaNumeric(10);
 
     // Act
-    var result = await Sender.Send(new GetHostQuery { HostPublicId = nonExistentId });
+    var result = await Sender.Send(new GetHostQuery { HostPublicId = nonExistentId }, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -45,7 +45,7 @@ public sealed class GetHostTests(DraftsIntegrationTestWebAppFactory factory)
     var (hostId, _, _) = await hostFactory.CreateAndSaveHostWithNameAsync(firstName, lastName);
 
     // Act
-    var result = await Sender.Send(new GetHostQuery { HostPublicId = hostId });
+    var result = await Sender.Send(new GetHostQuery { HostPublicId = hostId }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -62,7 +62,7 @@ public sealed class GetHostTests(DraftsIntegrationTestWebAppFactory factory)
     var hostId = await hostFactory.CreateAndSaveHostAsync();
 
     // Act
-    var result = await Sender.Send(new GetHostQuery { HostPublicId = hostId });
+    var result = await Sender.Send(new GetHostQuery { HostPublicId = hostId }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -75,7 +75,7 @@ public sealed class GetHostTests(DraftsIntegrationTestWebAppFactory factory)
     // Arrange
     var peopleFactory = new PeopleFactory(Sender, Faker);
     var personId = await peopleFactory.CreateAndSavePersonAsync();
-    var hostId = (await Sender.Send(new CreateHostCommand { PersonPublicId = personId })).Value;
+    var hostId = (await Sender.Send(new CreateHostCommand { PersonPublicId = personId }, TestContext.Current.CancellationToken)).Value;
 
     var draftPartPublicId = await CreateDraftPartAsync();
     await Sender.Send(new AddHostToDraftPartCommand
@@ -83,10 +83,10 @@ public sealed class GetHostTests(DraftsIntegrationTestWebAppFactory factory)
       DraftPartId = draftPartPublicId,
       HostPublicId = hostId,
       HostRole = HostRole.Primary
-    });
+    }, TestContext.Current.CancellationToken);
 
     // Act
-    var result = await Sender.Send(new GetHostQuery { HostPublicId = hostId });
+    var result = await Sender.Send(new GetHostQuery { HostPublicId = hostId }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -106,7 +106,7 @@ public sealed class GetHostTests(DraftsIntegrationTestWebAppFactory factory)
     var draftTitle = "My Draft " + Faker.Random.AlphaNumeric(6);
     var peopleFactory = new PeopleFactory(Sender, Faker);
     var personId = await peopleFactory.CreateAndSavePersonAsync();
-    var hostId = (await Sender.Send(new CreateHostCommand { PersonPublicId = personId })).Value;
+    var hostId = (await Sender.Send(new CreateHostCommand { PersonPublicId = personId }, TestContext.Current.CancellationToken)).Value;
 
     var seriesId = await CreateSeriesAsync();
     var draftPublicId = await CreateDraftWithTitleAsync(seriesId, draftTitle);
@@ -117,10 +117,10 @@ public sealed class GetHostTests(DraftsIntegrationTestWebAppFactory factory)
       DraftPartId = draftPartPublicId,
       HostPublicId = hostId,
       HostRole = HostRole.Primary
-    });
+    }, TestContext.Current.CancellationToken);
 
     // Act
-    var result = await Sender.Send(new GetHostQuery { HostPublicId = hostId });
+    var result = await Sender.Send(new GetHostQuery { HostPublicId = hostId }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -150,7 +150,7 @@ public sealed class GetHostTests(DraftsIntegrationTestWebAppFactory factory)
       ContinuityDateRule = ContinuityDateRule.AnyChannelFirstRelease.Value,
       AllowedDraftTypes = (int)DraftTypeMask.All,
       DefaultDraftType = DraftType.Standard.Value
-    });
+    }, TestContext.Current.CancellationToken);
     return result.Value;
   }
 
@@ -161,7 +161,7 @@ public sealed class GetHostTests(DraftsIntegrationTestWebAppFactory factory)
       Title = title,
       DraftType = DraftType.Standard.Value,
       SeriesId = seriesId,
-    });
+    }, TestContext.Current.CancellationToken);
 
     var draftPublicId = draftResult.Value;
     await Sender.Send(new CreateDraftPartCommand
@@ -170,7 +170,7 @@ public sealed class GetHostTests(DraftsIntegrationTestWebAppFactory factory)
       PartIndex = 1,
       MinimumPosition = 1,
       MaximumPosition = 7,
-    });
+    }, TestContext.Current.CancellationToken);
 
     return draftPublicId;
   }

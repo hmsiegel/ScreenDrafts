@@ -1,4 +1,4 @@
-using ScreenDrafts.Modules.Drafts.Features.Categories.Create;
+﻿using ScreenDrafts.Modules.Drafts.Features.Categories.Create;
 using ScreenDrafts.Modules.Drafts.Features.Drafts.CreateDraft;
 using ScreenDrafts.Modules.Drafts.Features.Drafts.SetCategory;
 using ScreenDrafts.Modules.Drafts.Features.SeriesFeatures.Create;
@@ -21,7 +21,7 @@ public sealed class SetCategoryTests(DraftsIntegrationTestWebAppFactory factory)
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -40,7 +40,7 @@ public sealed class SetCategoryTests(DraftsIntegrationTestWebAppFactory factory)
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -60,7 +60,7 @@ public sealed class SetCategoryTests(DraftsIntegrationTestWebAppFactory factory)
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -80,7 +80,7 @@ public sealed class SetCategoryTests(DraftsIntegrationTestWebAppFactory factory)
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -100,7 +100,7 @@ public sealed class SetCategoryTests(DraftsIntegrationTestWebAppFactory factory)
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -119,7 +119,7 @@ public sealed class SetCategoryTests(DraftsIntegrationTestWebAppFactory factory)
     {
       DraftId = draftId,
       CategoryId = categoryId
-    });
+    }, TestContext.Current.CancellationToken);
 
     var command = new SetCategoryDraftCommand
     {
@@ -128,7 +128,7 @@ public sealed class SetCategoryTests(DraftsIntegrationTestWebAppFactory factory)
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -148,7 +148,7 @@ public sealed class SetCategoryTests(DraftsIntegrationTestWebAppFactory factory)
     {
       DraftId = draftId,
       CategoryId = firstCategoryId
-    });
+    }, TestContext.Current.CancellationToken);
 
     var command = new SetCategoryDraftCommand
     {
@@ -157,7 +157,7 @@ public sealed class SetCategoryTests(DraftsIntegrationTestWebAppFactory factory)
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -174,7 +174,7 @@ public sealed class SetCategoryTests(DraftsIntegrationTestWebAppFactory factory)
       SeriesId = seriesId,
     };
 
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
     return result.Value;
   }
 
@@ -191,7 +191,7 @@ public sealed class SetCategoryTests(DraftsIntegrationTestWebAppFactory factory)
       DefaultDraftType = DraftType.Standard.Value
     };
 
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
     return result.Value;
   }
 
@@ -203,7 +203,7 @@ public sealed class SetCategoryTests(DraftsIntegrationTestWebAppFactory factory)
       Description = Faker.Lorem.Sentence()
     };
 
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
     return result.Value;
   }
 }

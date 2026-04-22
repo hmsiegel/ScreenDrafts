@@ -29,7 +29,7 @@ public sealed class BulkAddCandidateEntriesTests(DraftsIntegrationTestWebAppFact
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -55,7 +55,7 @@ public sealed class BulkAddCandidateEntriesTests(DraftsIntegrationTestWebAppFact
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Value.TotalRows.Should().Be(2);
@@ -84,12 +84,12 @@ public sealed class BulkAddCandidateEntriesTests(DraftsIntegrationTestWebAppFact
     };
 
     // Act
-    await Sender.Send(command);
+    await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     var entries = await DbContext.CandidateListEntries
       .Where(e => e.TmdbId == tmdbId1 || e.TmdbId == tmdbId2)
-      .ToListAsync();
+      .ToListAsync(TestContext.Current.CancellationToken);
 
     entries.Should().HaveCount(2);
     entries.Should().Contain(e => e.TmdbId == tmdbId1);
@@ -114,7 +114,7 @@ public sealed class BulkAddCandidateEntriesTests(DraftsIntegrationTestWebAppFact
       DraftPartId = draftPartPublicId,
       TmdbId = existingTmdbId,
       AddedByPublicId = "u_" + Faker.Random.AlphaNumeric(17)
-    });
+    }, TestContext.Current.CancellationToken);
 
     using var csvStream = BuildCsvStream(
       ("Existing Movie", existingTmdbId),
@@ -128,7 +128,7 @@ public sealed class BulkAddCandidateEntriesTests(DraftsIntegrationTestWebAppFact
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Value.AddedEntries.Should().Be(1);
@@ -157,7 +157,7 @@ public sealed class BulkAddCandidateEntriesTests(DraftsIntegrationTestWebAppFact
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Value.AddedEntries.Should().Be(1);
@@ -183,7 +183,7 @@ public sealed class BulkAddCandidateEntriesTests(DraftsIntegrationTestWebAppFact
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -201,7 +201,7 @@ public sealed class BulkAddCandidateEntriesTests(DraftsIntegrationTestWebAppFact
     var draftPartInternalId = await GetFirstDraftPartIdAsync(draftPublicId);
 
     var draftPart = await DbContext.DraftParts
-      .FirstAsync(dp => dp.Id == DraftPartId.Create(draftPartInternalId));
+      .FirstAsync(dp => dp.Id == DraftPartId.Create(draftPartInternalId), TestContext.Current.CancellationToken);
 
     return draftPart.PublicId;
   }
@@ -217,7 +217,7 @@ public sealed class BulkAddCandidateEntriesTests(DraftsIntegrationTestWebAppFact
       ContinuityDateRule = ContinuityDateRule.AnyChannelFirstRelease.Value,
       AllowedDraftTypes = (int)DraftTypeMask.All,
       DefaultDraftType = DraftType.Standard.Value
-    });
+    }, TestContext.Current.CancellationToken);
 
     return result.Value;
   }
@@ -229,7 +229,7 @@ public sealed class BulkAddCandidateEntriesTests(DraftsIntegrationTestWebAppFact
       Title = Faker.Company.CompanyName(),
       DraftType = DraftType.Standard.Value,
       SeriesId = seriesId
-    });
+    }, TestContext.Current.CancellationToken);
 
     var draftPublicId = draftResult.Value;
 
@@ -239,7 +239,7 @@ public sealed class BulkAddCandidateEntriesTests(DraftsIntegrationTestWebAppFact
       PartIndex = 1,
       MinimumPosition = 1,
       MaximumPosition = 7
-    });
+    }, TestContext.Current.CancellationToken);
 
     return draftPublicId;
   }

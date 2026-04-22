@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Drafts.IntegrationTests.DraftBoards;
+﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.DraftBoards;
 
 public sealed class UpdateDraftBoardItemTests(DraftsIntegrationTestWebAppFactory factory)
   : DraftsIntegrationTest(factory)
@@ -21,7 +21,7 @@ public sealed class UpdateDraftBoardItemTests(DraftsIntegrationTestWebAppFactory
       DraftId = draftPublicId,
       UserPublicId = userPublicId,
       TmdbId = tmdbId
-    });
+    }, TestContext.Current.CancellationToken);
 
     var command = new UpdateDraftBoardItemCommand
     {
@@ -33,7 +33,7 @@ public sealed class UpdateDraftBoardItemTests(DraftsIntegrationTestWebAppFactory
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -57,7 +57,7 @@ public sealed class UpdateDraftBoardItemTests(DraftsIntegrationTestWebAppFactory
       TmdbId = tmdbId,
       Notes = "Original notes",
       Priority = 10
-    });
+    }, TestContext.Current.CancellationToken);
 
     var command = new UpdateDraftBoardItemCommand
     {
@@ -69,12 +69,12 @@ public sealed class UpdateDraftBoardItemTests(DraftsIntegrationTestWebAppFactory
     };
 
     // Act
-    await Sender.Send(command);
+    await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     var board = await DbContext.DraftBoards
       .Include(b => b.Items)
-      .FirstOrDefaultAsync();
+      .FirstOrDefaultAsync(TestContext.Current.CancellationToken);
 
     var item = board!.Items.FirstOrDefault(i => i.TmdbId == tmdbId);
     item.Should().NotBeNull();
@@ -97,7 +97,7 @@ public sealed class UpdateDraftBoardItemTests(DraftsIntegrationTestWebAppFactory
       UserPublicId = userPublicId,
       TmdbId = tmdbId,
       Notes = "Some notes"
-    });
+    }, TestContext.Current.CancellationToken);
 
     var command = new UpdateDraftBoardItemCommand
     {
@@ -109,12 +109,12 @@ public sealed class UpdateDraftBoardItemTests(DraftsIntegrationTestWebAppFactory
     };
 
     // Act
-    await Sender.Send(command);
+    await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     var board = await DbContext.DraftBoards
       .Include(b => b.Items)
-      .FirstOrDefaultAsync();
+      .FirstOrDefaultAsync(TestContext.Current.CancellationToken);
 
     var item = board!.Items.FirstOrDefault(i => i.TmdbId == tmdbId);
     item.Should().NotBeNull();
@@ -142,7 +142,7 @@ public sealed class UpdateDraftBoardItemTests(DraftsIntegrationTestWebAppFactory
     };
 
     // Act — no board has been created, update should still succeed
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -166,7 +166,7 @@ public sealed class UpdateDraftBoardItemTests(DraftsIntegrationTestWebAppFactory
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -190,7 +190,7 @@ public sealed class UpdateDraftBoardItemTests(DraftsIntegrationTestWebAppFactory
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -209,14 +209,14 @@ public sealed class UpdateDraftBoardItemTests(DraftsIntegrationTestWebAppFactory
     {
       FirstName = "Test",
       LastName = "Drafter" + Faker.Random.AlphaNumeric(6)
-    })).Value;
+    }, TestContext.Current.CancellationToken)).Value;
 
     // Link the person to the user directly in the DB.
     await DbContext.Database.ExecuteSqlRawAsync(
       "UPDATE drafts.people SET user_id = {0} WHERE public_id = {1}",
       userId, personPublicId);
 
-    var drafterPublicId = (await Sender.Send(new CreateDrafterCommand(personPublicId))).Value;
+    var drafterPublicId = (await Sender.Send(new CreateDrafterCommand(personPublicId), TestContext.Current.CancellationToken)).Value;
 
     return (userId, userPublicId, drafterPublicId);
   }
@@ -249,14 +249,14 @@ public sealed class UpdateDraftBoardItemTests(DraftsIntegrationTestWebAppFactory
       ContinuityDateRule = ContinuityDateRule.AnyChannelFirstRelease.Value,
       AllowedDraftTypes = (int)DraftTypeMask.All,
       DefaultDraftType = DraftType.Standard.Value
-    });
+    }, TestContext.Current.CancellationToken);
 
     var draftResult = await Sender.Send(new CreateDraftCommand
     {
       Title = Faker.Company.CompanyName(),
       DraftType = DraftType.Standard.Value,
       SeriesId = seriesResult.Value,
-    });
+    }, TestContext.Current.CancellationToken);
 
     return draftResult.Value;
   }

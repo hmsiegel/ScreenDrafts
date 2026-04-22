@@ -1,4 +1,4 @@
-﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.DraftParts;
+namespace ScreenDrafts.Modules.Drafts.IntegrationTests.DraftParts;
 
 public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
   : DraftsIntegrationTest(factory)
@@ -14,7 +14,7 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
     var (draftPartPublicId, _, _) = await SetupStartedDraftPartAsync();
 
     // Act
-    var result = await Sender.Send(new GetPickListQuery { DraftPartId = draftPartPublicId });
+    var result = await Sender.Send(new GetPickListQuery { DraftPartId = draftPartPublicId }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -25,7 +25,7 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
   public async Task GetPickList_WithNonExistentDraftPartId_ShouldReturnEmptyListAsync()
   {
     // Act
-    var result = await Sender.Send(new GetPickListQuery { DraftPartId = Faker.Random.AlphaNumeric(12) });
+    var result = await Sender.Send(new GetPickListQuery { DraftPartId = Faker.Random.AlphaNumeric(12) }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -45,7 +45,7 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
     await PlayPickAsync(draftPartPublicId, drafter1PublicId, position: 1, playOrder: 1, movie);
 
     // Act
-    var result = await Sender.Send(new GetPickListQuery { DraftPartId = draftPartPublicId });
+    var result = await Sender.Send(new GetPickListQuery { DraftPartId = draftPartPublicId }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -61,7 +61,7 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
     await PlayPickAsync(draftPartPublicId, drafter1PublicId, position: 3, playOrder: 1, movie);
 
     // Act
-    var result = await Sender.Send(new GetPickListQuery { DraftPartId = draftPartPublicId });
+    var result = await Sender.Send(new GetPickListQuery { DraftPartId = draftPartPublicId }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -93,7 +93,7 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
     await PlayPickAsync(draftPartPublicId, drafter1PublicId, position: 3, playOrder: 3, movie3);
 
     // Act
-    var result = await Sender.Send(new GetPickListQuery { DraftPartId = draftPartPublicId });
+    var result = await Sender.Send(new GetPickListQuery { DraftPartId = draftPartPublicId }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -122,10 +122,10 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
       ParticipantPublicId = drafter1PublicId,
       ParticipantKind = ParticipantKind.Drafter,
       ActorPublicId = drafter1PublicId
-    });
+    }, TestContext.Current.CancellationToken);
 
     // Act
-    var result = await Sender.Send(new GetPickListQuery { DraftPartId = draftPartPublicId });
+    var result = await Sender.Send(new GetPickListQuery { DraftPartId = draftPartPublicId }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -155,10 +155,10 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
       ParticipantPublicId = drafter2PublicId,
       ParticipantKind = ParticipantKind.Drafter,
       ActorPublicId = drafter2PublicId
-    });
+    }, TestContext.Current.CancellationToken);
 
     // Act
-    var result = await Sender.Send(new GetPickListQuery { DraftPartId = draftPartPublicId });
+    var result = await Sender.Send(new GetPickListQuery { DraftPartId = draftPartPublicId }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -186,7 +186,7 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
       ParticipantPublicId = drafter1PublicId,
       ParticipantKind = ParticipantKind.Drafter,
       ActorPublicId = drafter1PublicId
-    });
+    }, TestContext.Current.CancellationToken);
 
     await Sender.Send(new ApplyVetoOverrideCommand
     {
@@ -195,10 +195,10 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
       ParticipantIdValue = drafter2PublicId,
       ParticipantKind = ParticipantKind.Drafter,
       ActorPublicId = drafter2PublicId
-    });
+    }, TestContext.Current.CancellationToken);
 
     // Act
-    var result = await Sender.Send(new GetPickListQuery { DraftPartId = draftPartPublicId });
+    var result = await Sender.Send(new GetPickListQuery { DraftPartId = draftPartPublicId }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -225,10 +225,10 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
     {
       DraftPartId = draftPartPublicId,
       PlayOrder = 1
-    });
+    }, TestContext.Current.CancellationToken);
 
     // Act
-    var result = await Sender.Send(new GetPickListQuery { DraftPartId = draftPartPublicId });
+    var result = await Sender.Send(new GetPickListQuery { DraftPartId = draftPartPublicId }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -246,7 +246,7 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
     await PlayPickAsync(draftPartPublicId, drafter1PublicId, position: 1, playOrder: 1, movie);
 
     // Act
-    var result = await Sender.Send(new GetPickListQuery { DraftPartId = draftPartPublicId });
+    var result = await Sender.Send(new GetPickListQuery { DraftPartId = draftPartPublicId }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -270,7 +270,7 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
     await PlayPickAsync(draftPartPublicId, drafter2PublicId, position: 2, playOrder: 2, movie2);
     await PlayPickAsync(draftPartPublicId, drafter1PublicId, position: 3, playOrder: 3, movie3);
 
-    await Sender.Send(new ApplyCommissionerOverrideCommand { DraftPartId = draftPartPublicId, PlayOrder = 1 });
+    await Sender.Send(new ApplyCommissionerOverrideCommand { DraftPartId = draftPartPublicId, PlayOrder = 1 }, TestContext.Current.CancellationToken);
     await Sender.Send(new ApplyVetoCommand
     {
       DraftPartId = draftPartPublicId,
@@ -278,10 +278,10 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
       ParticipantPublicId = drafter2PublicId,
       ParticipantKind = ParticipantKind.Drafter,
       ActorPublicId = drafter2PublicId
-    });
+    }, TestContext.Current.CancellationToken);
 
     // Act
-    var result = await Sender.Send(new GetPickListQuery { DraftPartId = draftPartPublicId });
+    var result = await Sender.Send(new GetPickListQuery { DraftPartId = draftPartPublicId }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -310,43 +310,43 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
     var draftPartInternalId = await GetFirstDraftPartIdAsync(draftPublicId);
 
     var draftPart = await DbContext.DraftParts
-      .FirstAsync(dp => dp.Id == DraftPartId.Create(draftPartInternalId));
+      .FirstAsync(dp => dp.Id == DraftPartId.Create(draftPartInternalId), TestContext.Current.CancellationToken);
     var draftPartPublicId = draftPart.PublicId;
 
     var peopleFactory = new PeopleFactory(Sender, Faker);
 
     var person1Id = await peopleFactory.CreateAndSavePersonAsync();
-    var drafter1PublicId = (await Sender.Send(new CreateDrafterCommand(person1Id))).Value;
+    var drafter1PublicId = (await Sender.Send(new CreateDrafterCommand(person1Id), TestContext.Current.CancellationToken)).Value;
     await Sender.Send(new AddParticipantToDraftPartCommand
     {
       DraftPartId = draftPartPublicId,
       ParticipantPublicId = drafter1PublicId,
       ParticipantKind = ParticipantKind.Drafter
-    });
+    }, TestContext.Current.CancellationToken);
 
     var person2Id = await peopleFactory.CreateAndSavePersonAsync();
-    var drafter2PublicId = (await Sender.Send(new CreateDrafterCommand(person2Id))).Value;
+    var drafter2PublicId = (await Sender.Send(new CreateDrafterCommand(person2Id), TestContext.Current.CancellationToken)).Value;
     await Sender.Send(new AddParticipantToDraftPartCommand
     {
       DraftPartId = draftPartPublicId,
       ParticipantPublicId = drafter2PublicId,
       ParticipantKind = ParticipantKind.Drafter
-    });
+    }, TestContext.Current.CancellationToken);
 
     var hostPersonId = await peopleFactory.CreateAndSavePersonAsync();
-    var hostPublicId = (await Sender.Send(new CreateHostCommand { PersonPublicId = hostPersonId })).Value;
+    var hostPublicId = (await Sender.Send(new CreateHostCommand { PersonPublicId = hostPersonId }, TestContext.Current.CancellationToken)).Value;
     await Sender.Send(new AddHostToDraftPartCommand
     {
       DraftPartId = draftPartPublicId,
       HostPublicId = hostPublicId,
       HostRole = HostRole.Primary
-    });
+    }, TestContext.Current.CancellationToken);
 
     await Sender.Send(new SetDraftPartStatusCommand
     {      DraftPublicId = draftPublicId,
       PartIndex = 1,
       Action = DraftPartStatusAction.Start
-    });
+    }, TestContext.Current.CancellationToken);
 
     return (draftPartPublicId, drafter1PublicId, drafter2PublicId);
   }
@@ -361,14 +361,14 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
       ParticipantPublicId = drafterPublicId,
       ParticipantKind = ParticipantKind.Drafter,
       MoviePublicId = movie.PublicId
-    });
+    }, TestContext.Current.CancellationToken);
   }
 
   private async Task<Movie> CreateMovieAsync()
   {
     var movie = Movie.Create(Faker.Company.CompanyName(), $"m_{Faker.Random.AlphaNumeric(21)}", MediaType.Movie, Guid.NewGuid()).Value;
     DbContext.Movies.Add(movie);
-    await DbContext.SaveChangesAsync();
+    await DbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
     return movie;
   }
 
@@ -383,7 +383,7 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
       ContinuityDateRule = ContinuityDateRule.AnyChannelFirstRelease.Value,
       AllowedDraftTypes = (int)DraftTypeMask.All,
       DefaultDraftType = DraftType.Standard.Value
-    });
+    }, TestContext.Current.CancellationToken);
 
     return result.Value;
   }
@@ -395,7 +395,7 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
       Title = Faker.Company.CompanyName(),
       DraftType = DraftType.Standard.Value,
       SeriesId = seriesId,
-    });
+    }, TestContext.Current.CancellationToken);
 
     var draftPublicId = draftResult.Value;
     await Sender.Send(new CreateDraftPartCommand
@@ -404,7 +404,7 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
       PartIndex = 1,
       MinimumPosition = 1,
       MaximumPosition = 7,
-    });
+    }, TestContext.Current.CancellationToken);
 
     return draftPublicId;
   }

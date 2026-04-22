@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Administration.IntegrationTests.Abstractions;
+﻿namespace ScreenDrafts.Modules.Administration.IntegrationTests.Abstractions;
 
 [Collection(nameof(AdministrationIntegrationTestCollection))]
 public abstract class AdministrationIntegrationTest(AdministrationIntegrationTestWebAppFactory factory)
@@ -32,7 +32,7 @@ public abstract class AdministrationIntegrationTest(AdministrationIntegrationTes
     var publicId = $"u_{Faker.Random.AlphaNumeric(21)}";
 
     var connectionFactory = GetService<IDbConnectionFactory>();
-    await using var connection = await connectionFactory.OpenConnectionAsync();
+    await using var connection = await connectionFactory.OpenConnectionAsync(TestContext.Current.CancellationToken);
 
     await connection.ExecuteAsync(
       """
@@ -55,7 +55,7 @@ public abstract class AdministrationIntegrationTest(AdministrationIntegrationTes
   protected async Task InsertPermissionAsync(string code)
   {
     var connectionFactory = GetService<IDbConnectionFactory>();
-    await using var connection = await connectionFactory.OpenConnectionAsync();
+    await using var connection = await connectionFactory.OpenConnectionAsync(TestContext.Current.CancellationToken);
 
     await connection.ExecuteAsync(
       "INSERT INTO administration.permissions (code) VALUES (@Code)",
@@ -65,7 +65,7 @@ public abstract class AdministrationIntegrationTest(AdministrationIntegrationTes
   protected async Task InsertRoleAsync(string name)
   {
     var connectionFactory = GetService<IDbConnectionFactory>();
-    await using var connection = await connectionFactory.OpenConnectionAsync();
+    await using var connection = await connectionFactory.OpenConnectionAsync(TestContext.Current.CancellationToken);
 
     await connection.ExecuteAsync(
       "INSERT INTO administration.roles (name) VALUES (@Name)",

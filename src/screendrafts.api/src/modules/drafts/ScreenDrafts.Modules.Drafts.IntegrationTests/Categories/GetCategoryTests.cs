@@ -17,13 +17,13 @@ public sealed class GetCategoryTests(DraftsIntegrationTestWebAppFactory factory)
       Description = description
     };
 
-    var createResult = await Sender.Send(createCommand);
+    var createResult = await Sender.Send(createCommand, TestContext.Current.CancellationToken);
     var publicId = createResult.Value;
 
     var query = new GetCategoryQuery(publicId);
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -43,7 +43,7 @@ public sealed class GetCategoryTests(DraftsIntegrationTestWebAppFactory factory)
     var query = new GetCategoryQuery(nonExistentPublicId);
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -62,17 +62,17 @@ public sealed class GetCategoryTests(DraftsIntegrationTestWebAppFactory factory)
       Description = description
     };
 
-    var createResult = await Sender.Send(createCommand);
+    var createResult = await Sender.Send(createCommand, TestContext.Current.CancellationToken);
     var publicId = createResult.Value;
 
     // Delete the category
     var deleteCommand = new Features.Categories.Delete.DeleteCategoryCommand(publicId);
-    await Sender.Send(deleteCommand);
+    await Sender.Send(deleteCommand, TestContext.Current.CancellationToken);
 
     var query = new GetCategoryQuery(publicId);
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();

@@ -75,7 +75,7 @@ public sealed class AddMovieTests(MoviesIntegrationTestWebAppFactory factory) : 
     };
 
     // Act
-    var result = await Sender.Send(request);
+    var result = await Sender.Send(request, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -113,7 +113,7 @@ public sealed class AddMovieTests(MoviesIntegrationTestWebAppFactory factory) : 
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -150,10 +150,10 @@ public sealed class AddMovieTests(MoviesIntegrationTestWebAppFactory factory) : 
       Producers = [],
       ProductionCompanies = []
     };
-    await Sender.Send(command);
+    await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();

@@ -8,7 +8,4 @@
     <InternalsVisibleTo Include="ScreenDrafts.Seeding.Movies" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="MailKit" />
-  </ItemGroup>
 </Project>

@@ -20,7 +20,7 @@ public sealed class AddCarryoverTests(DraftsIntegrationTestWebAppFactory factory
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -43,13 +43,13 @@ public sealed class AddCarryoverTests(DraftsIntegrationTestWebAppFactory factory
     };
 
     // Act
-    await Sender.Send(command);
+    await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
-    var season = await DbContext.PredictionSeasons.FirstAsync(s => s.PublicId == seasonPublicId);
-    var contestant = await DbContext.PredictionContestants.FirstAsync(c => c.PublicId == contestantPublicId);
+    var season = await DbContext.PredictionSeasons.FirstAsync(s => s.PublicId == seasonPublicId, TestContext.Current.CancellationToken);
+    var contestant = await DbContext.PredictionContestants.FirstAsync(c => c.PublicId == contestantPublicId, TestContext.Current.CancellationToken);
     var carryover = await DbContext.PredictionCarryovers
-      .FirstOrDefaultAsync(co => co.SeasonId == season.Id && co.ContestantId == contestant.Id);
+      .FirstOrDefaultAsync(co => co.SeasonId == season.Id && co.ContestantId == contestant.Id, TestContext.Current.CancellationToken);
 
     carryover.Should().NotBeNull();
     carryover!.Points.Should().Be(10);
@@ -70,7 +70,7 @@ public sealed class AddCarryoverTests(DraftsIntegrationTestWebAppFactory factory
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -93,7 +93,7 @@ public sealed class AddCarryoverTests(DraftsIntegrationTestWebAppFactory factory
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -118,7 +118,7 @@ public sealed class AddCarryoverTests(DraftsIntegrationTestWebAppFactory factory
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -138,7 +138,7 @@ public sealed class AddCarryoverTests(DraftsIntegrationTestWebAppFactory factory
       ContestantPublicId = contestantPublicId,
       Points = 5,
       Kind = CarryoverKind.Handicap.Value
-    });
+    }, TestContext.Current.CancellationToken);
     var result2 = await Sender.Send(new AddCarryoverCommand
     {
       SeasonPublicId = seasonPublicId,
@@ -146,17 +146,17 @@ public sealed class AddCarryoverTests(DraftsIntegrationTestWebAppFactory factory
       Points = 3,
       Kind = CarryoverKind.Bonus.Value,
       Reason = "Late bonus"
-    });
+    }, TestContext.Current.CancellationToken);
 
     // Assert
     result1.IsSuccess.Should().BeTrue();
     result2.IsSuccess.Should().BeTrue();
 
-    var season = await DbContext.PredictionSeasons.FirstAsync(s => s.PublicId == seasonPublicId);
-    var contestant = await DbContext.PredictionContestants.FirstAsync(c => c.PublicId == contestantPublicId);
+    var season = await DbContext.PredictionSeasons.FirstAsync(s => s.PublicId == seasonPublicId, TestContext.Current.CancellationToken);
+    var contestant = await DbContext.PredictionContestants.FirstAsync(c => c.PublicId == contestantPublicId, TestContext.Current.CancellationToken);
     var carryovers = await DbContext.PredictionCarryovers
       .Where(co => co.SeasonId == season.Id && co.ContestantId == contestant.Id)
-      .ToListAsync();
+      .ToListAsync(TestContext.Current.CancellationToken);
     carryovers.Should().HaveCount(2);
   }
 }

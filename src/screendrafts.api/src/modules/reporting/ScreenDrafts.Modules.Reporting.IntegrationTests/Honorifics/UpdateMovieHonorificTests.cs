@@ -17,13 +17,13 @@ public sealed class UpdateMovieHonorificTests(ReportingIntegrationTestWebAppFact
     var command = BuildCommand(moviePublicId, _faker.Random.AlphaNumeric(10), boardPosition: 1);
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
 
     var pick = await DbContext.MovieCanonicalPicks
-      .FirstOrDefaultAsync(p => p.MoviePublicId == moviePublicId);
+      .FirstOrDefaultAsync(p => p.MoviePublicId == moviePublicId, TestContext.Current.CancellationToken);
 
     pick.Should().NotBeNull();
     pick!.DraftPartPublicId.Should().Be(command.DraftPartPublicId);
@@ -43,14 +43,14 @@ public sealed class UpdateMovieHonorificTests(ReportingIntegrationTestWebAppFact
     var command = BuildCommand(moviePublicId, partPublicId, boardPosition: 1);
 
     // Act
-    await Sender.Send(command);
-    var result = await Sender.Send(command);
+    await Sender.Send(command, TestContext.Current.CancellationToken);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
 
     var pickCount = await DbContext.MovieCanonicalPicks
-      .CountAsync(p => p.MoviePublicId == moviePublicId);
+      .CountAsync(p => p.MoviePublicId == moviePublicId, TestContext.Current.CancellationToken);
 
     pickCount.Should().Be(1, "duplicate picks must be ignored");
   }
@@ -68,7 +68,7 @@ public sealed class UpdateMovieHonorificTests(ReportingIntegrationTestWebAppFact
 
     // Assert
     var honorific = await DbContext.MovieHonorifics
-      .FirstOrDefaultAsync(h => h.MoviePublicId == moviePublicId);
+      .FirstOrDefaultAsync(h => h.MoviePublicId == moviePublicId, TestContext.Current.CancellationToken);
 
     honorific.Should().NotBeNull();
     honorific!.AppearanceHonorific.Should().Be(MovieHonorific.MarqueeOfFame);
@@ -88,7 +88,7 @@ public sealed class UpdateMovieHonorificTests(ReportingIntegrationTestWebAppFact
 
     // Assert
     var honorific = await DbContext.MovieHonorifics
-      .FirstOrDefaultAsync(h => h.MoviePublicId == moviePublicId);
+      .FirstOrDefaultAsync(h => h.MoviePublicId == moviePublicId, TestContext.Current.CancellationToken);
 
     honorific.Should().NotBeNull();
     honorific!.AppearanceHonorific.Should().Be(MovieHonorific.HatTrick);
@@ -103,11 +103,11 @@ public sealed class UpdateMovieHonorificTests(ReportingIntegrationTestWebAppFact
   {
     // Arrange
     var moviePublicId = _faker.Random.AlphaNumeric(10);
-    await Sender.Send(BuildCommand(moviePublicId, _faker.Random.AlphaNumeric(10), boardPosition: 3));
+    await Sender.Send(BuildCommand(moviePublicId, _faker.Random.AlphaNumeric(10), boardPosition: 3), TestContext.Current.CancellationToken);
 
     // Assert
     var honorific = await DbContext.MovieHonorifics
-      .FirstOrDefaultAsync(h => h.MoviePublicId == moviePublicId);
+      .FirstOrDefaultAsync(h => h.MoviePublicId == moviePublicId, TestContext.Current.CancellationToken);
 
     honorific.Should().NotBeNull();
     honorific!.AppearanceHonorific.Should().Be(MovieHonorific.None);
@@ -123,12 +123,12 @@ public sealed class UpdateMovieHonorificTests(ReportingIntegrationTestWebAppFact
     // Arrange
     var moviePublicId = _faker.Random.AlphaNumeric(10);
 
-    await Sender.Send(BuildCommand(moviePublicId, _faker.Random.AlphaNumeric(10), boardPosition: 1));
-    await Sender.Send(BuildCommand(moviePublicId, _faker.Random.AlphaNumeric(10), boardPosition: 1));
+    await Sender.Send(BuildCommand(moviePublicId, _faker.Random.AlphaNumeric(10), boardPosition: 1), TestContext.Current.CancellationToken);
+    await Sender.Send(BuildCommand(moviePublicId, _faker.Random.AlphaNumeric(10), boardPosition: 1), TestContext.Current.CancellationToken);
 
     // Assert
     var honorific = await DbContext.MovieHonorifics
-      .FirstOrDefaultAsync(h => h.MoviePublicId == moviePublicId);
+      .FirstOrDefaultAsync(h => h.MoviePublicId == moviePublicId, TestContext.Current.CancellationToken);
 
     honorific.Should().NotBeNull();
     honorific!.PositionHonorific.Should().HaveFlag(MoviePositionHonorific.UnifiedNumber1);
@@ -144,14 +144,14 @@ public sealed class UpdateMovieHonorificTests(ReportingIntegrationTestWebAppFact
     // Arrange
     var moviePublicId = _faker.Random.AlphaNumeric(10);
 
-    await Sender.Send(BuildCommand(moviePublicId, _faker.Random.AlphaNumeric(10), boardPosition: 1));
-    await Sender.Send(BuildCommand(moviePublicId, _faker.Random.AlphaNumeric(10), boardPosition: 2));
-    await Sender.Send(BuildCommand(moviePublicId, _faker.Random.AlphaNumeric(10), boardPosition: 3));
-    await Sender.Send(BuildCommand(moviePublicId, _faker.Random.AlphaNumeric(10), boardPosition: 4));
+    await Sender.Send(BuildCommand(moviePublicId, _faker.Random.AlphaNumeric(10), boardPosition: 1), TestContext.Current.CancellationToken);
+    await Sender.Send(BuildCommand(moviePublicId, _faker.Random.AlphaNumeric(10), boardPosition: 2), TestContext.Current.CancellationToken);
+    await Sender.Send(BuildCommand(moviePublicId, _faker.Random.AlphaNumeric(10), boardPosition: 3), TestContext.Current.CancellationToken);
+    await Sender.Send(BuildCommand(moviePublicId, _faker.Random.AlphaNumeric(10), boardPosition: 4), TestContext.Current.CancellationToken);
 
     // Assert
     var honorific = await DbContext.MovieHonorifics
-      .FirstOrDefaultAsync(h => h.MoviePublicId == moviePublicId);
+      .FirstOrDefaultAsync(h => h.MoviePublicId == moviePublicId, TestContext.Current.CancellationToken);
 
     honorific.Should().NotBeNull();
     honorific!.PositionHonorific.Should().HaveFlag(MoviePositionHonorific.TheCycle);
@@ -167,13 +167,13 @@ public sealed class UpdateMovieHonorificTests(ReportingIntegrationTestWebAppFact
     // Arrange
     var moviePublicId = _faker.Random.AlphaNumeric(10);
 
-    await Sender.Send(BuildCommand(moviePublicId, _faker.Random.AlphaNumeric(10), boardPosition: 1));
-    await Sender.Send(BuildCommand(moviePublicId, _faker.Random.AlphaNumeric(10), boardPosition: 2));
-    await Sender.Send(BuildCommand(moviePublicId, _faker.Random.AlphaNumeric(10), boardPosition: 3));
+    await Sender.Send(BuildCommand(moviePublicId, _faker.Random.AlphaNumeric(10), boardPosition: 1), TestContext.Current.CancellationToken);
+    await Sender.Send(BuildCommand(moviePublicId, _faker.Random.AlphaNumeric(10), boardPosition: 2), TestContext.Current.CancellationToken);
+    await Sender.Send(BuildCommand(moviePublicId, _faker.Random.AlphaNumeric(10), boardPosition: 3), TestContext.Current.CancellationToken);
 
     // Assert
     var honorific = await DbContext.MovieHonorifics
-      .FirstOrDefaultAsync(h => h.MoviePublicId == moviePublicId);
+      .FirstOrDefaultAsync(h => h.MoviePublicId == moviePublicId, TestContext.Current.CancellationToken);
 
     honorific.Should().NotBeNull();
     honorific!.PositionHonorific.Should().NotHaveFlag(MoviePositionHonorific.TheCycle);
@@ -190,15 +190,15 @@ public sealed class UpdateMovieHonorificTests(ReportingIntegrationTestWebAppFact
     var moviePublicId = _faker.Random.AlphaNumeric(10);
 
     // first pick — no honorific change (stays None)
-    await Sender.Send(BuildCommand(moviePublicId, _faker.Random.AlphaNumeric(10), boardPosition: 1));
+    await Sender.Send(BuildCommand(moviePublicId, _faker.Random.AlphaNumeric(10), boardPosition: 1), TestContext.Current.CancellationToken);
 
     // second pick — appearance honorific changes to MarqueeOfFame
-    await Sender.Send(BuildCommand(moviePublicId, _faker.Random.AlphaNumeric(10), boardPosition: 1));
+    await Sender.Send(BuildCommand(moviePublicId, _faker.Random.AlphaNumeric(10), boardPosition: 1), TestContext.Current.CancellationToken);
 
     // Assert
     var history = await DbContext.MoviesHonorificHistory
       .Where(h => h.MoviePublicId == moviePublicId)
-      .ToListAsync();
+      .ToListAsync(TestContext.Current.CancellationToken);
 
     history.Should().NotBeEmpty("a history record is written when the honorific changes");
   }
@@ -212,7 +212,7 @@ public sealed class UpdateMovieHonorificTests(ReportingIntegrationTestWebAppFact
     for (var i = 0; i < count; i++)
     {
       var command = BuildCommand(moviePublicId, _faker.Random.AlphaNumeric(10), boardPosition: i + 1);
-      await Sender.Send(command);
+      await Sender.Send(command, TestContext.Current.CancellationToken);
     }
   }
 

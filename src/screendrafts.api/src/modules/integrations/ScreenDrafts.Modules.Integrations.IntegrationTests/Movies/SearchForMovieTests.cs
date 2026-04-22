@@ -16,7 +16,7 @@ public sealed class SearchForMovieTests(IntegrationsIntegrationTestWebAppFactory
     var command = new SearchFoMovieCommand { Query = string.Empty };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -30,7 +30,7 @@ public sealed class SearchForMovieTests(IntegrationsIntegrationTestWebAppFactory
     var command = new SearchFoMovieCommand { Query = "   " };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -54,7 +54,7 @@ public sealed class SearchForMovieTests(IntegrationsIntegrationTestWebAppFactory
     var command = new SearchFoMovieCommand { Query = "Matrix" };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -80,7 +80,7 @@ public sealed class SearchForMovieTests(IntegrationsIntegrationTestWebAppFactory
     var command = new SearchFoMovieCommand { Query = "Matrix" };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -101,7 +101,7 @@ public sealed class SearchForMovieTests(IntegrationsIntegrationTestWebAppFactory
     var command = new SearchFoMovieCommand { Query = "UnknownFilmXYZ" };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -120,7 +120,7 @@ public sealed class SearchForMovieTests(IntegrationsIntegrationTestWebAppFactory
     var command = new SearchFoMovieCommand { Query = "Unknown Date Film" };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();

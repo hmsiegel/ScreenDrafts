@@ -9,7 +9,7 @@ public sealed class GetMovieTests(MoviesIntegrationTestWebAppFactory factory)
     // Arrange
     var publicId = Faker.Random.String2(9);
     // Act
-    Result<MediaResponse> movieResult = await Sender.Send(new GetMediaQuery { PublicId = publicId });
+    Result<MediaResponse> movieResult = await Sender.Send(new GetMediaQuery { PublicId = publicId }, TestContext.Current.CancellationToken);
     // Assert
     movieResult.Errors[0].Should().Be(MediaErrors.MediaNotFound(publicId));
   }
@@ -73,9 +73,9 @@ public sealed class GetMovieTests(MoviesIntegrationTestWebAppFactory factory)
       ProductionCompanies = [.. productionCompanies.Select(x => new ProductionCompanyRequest(x.Name, x.ImdbId, x.TmdbId))]
     };
 
-    await Sender.Send(addMovieCommand);
+    await Sender.Send(addMovieCommand, TestContext.Current.CancellationToken);
     // Act
-    Result<MediaResponse> movieResult = await Sender.Send(new GetMediaQuery { PublicId = movie.PublicId });
+    Result<MediaResponse> movieResult = await Sender.Send(new GetMediaQuery { PublicId = movie.PublicId }, TestContext.Current.CancellationToken);
     // Assert
     movieResult.IsSuccess.Should().BeTrue();
     movieResult.Value.Should().NotBeNull();

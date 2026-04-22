@@ -1,4 +1,4 @@
-using System.Text;
+﻿using System.Text;
 
 namespace ScreenDrafts.Modules.Drafts.IntegrationTests.DraftBoards;
 
@@ -30,7 +30,7 @@ public sealed class BulkAddMoviesToDraftBoardTests(DraftsIntegrationTestWebAppFa
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -57,7 +57,7 @@ public sealed class BulkAddMoviesToDraftBoardTests(DraftsIntegrationTestWebAppFa
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Value.TotalRows.Should().Be(2);
@@ -84,10 +84,10 @@ public sealed class BulkAddMoviesToDraftBoardTests(DraftsIntegrationTestWebAppFa
     };
 
     // Act
-    await Sender.Send(command);
+    await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
-    var board = await DbContext.DraftBoards.FirstOrDefaultAsync();
+    var board = await DbContext.DraftBoards.FirstOrDefaultAsync(TestContext.Current.CancellationToken);
     board.Should().NotBeNull();
     board!.PublicId.Should().NotBeNullOrEmpty();
   }
@@ -113,12 +113,12 @@ public sealed class BulkAddMoviesToDraftBoardTests(DraftsIntegrationTestWebAppFa
     };
 
     // Act
-    await Sender.Send(command);
+    await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     var board = await DbContext.DraftBoards
       .Include(b => b.Items)
-      .FirstOrDefaultAsync();
+      .FirstOrDefaultAsync(TestContext.Current.CancellationToken);
 
     board.Should().NotBeNull();
     board!.Items.Should().Contain(i => i.TmdbId == tmdbId1);
@@ -143,7 +143,7 @@ public sealed class BulkAddMoviesToDraftBoardTests(DraftsIntegrationTestWebAppFa
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -171,7 +171,7 @@ public sealed class BulkAddMoviesToDraftBoardTests(DraftsIntegrationTestWebAppFa
       DraftId = draftPublicId,
       UserPublicId = userPublicId,
       TmdbId = existingTmdbId
-    });
+    }, TestContext.Current.CancellationToken);
 
     using var csvStream = BuildCsvStream(
       ("Existing Movie", existingTmdbId),
@@ -185,7 +185,7 @@ public sealed class BulkAddMoviesToDraftBoardTests(DraftsIntegrationTestWebAppFa
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Value.AddedEntries.Should().Be(1);
@@ -215,7 +215,7 @@ public sealed class BulkAddMoviesToDraftBoardTests(DraftsIntegrationTestWebAppFa
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Value.AddedEntries.Should().Be(1);
@@ -243,7 +243,7 @@ public sealed class BulkAddMoviesToDraftBoardTests(DraftsIntegrationTestWebAppFa
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -269,7 +269,7 @@ public sealed class BulkAddMoviesToDraftBoardTests(DraftsIntegrationTestWebAppFa
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -285,7 +285,7 @@ public sealed class BulkAddMoviesToDraftBoardTests(DraftsIntegrationTestWebAppFa
     // Arrange
     var (_, userPublicId, _) = await CreateDrafterWithUserAsync();
     var draftPublicId = await CreateDraftAsync();
-    await Sender.Send(new CreateDraftPoolCommand { PublicId = draftPublicId });
+    await Sender.Send(new CreateDraftPoolCommand { PublicId = draftPublicId }, TestContext.Current.CancellationToken);
 
     using var csvStream = BuildCsvStream(("Movie One", Faker.Random.Int(1, 1_000_000)));
 
@@ -297,7 +297,7 @@ public sealed class BulkAddMoviesToDraftBoardTests(DraftsIntegrationTestWebAppFa
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -315,13 +315,13 @@ public sealed class BulkAddMoviesToDraftBoardTests(DraftsIntegrationTestWebAppFa
     {
       FirstName = "Test",
       LastName = "Drafter" + Faker.Random.AlphaNumeric(6)
-    })).Value;
+    }, TestContext.Current.CancellationToken)).Value;
 
     await DbContext.Database.ExecuteSqlRawAsync(
       "UPDATE drafts.people SET user_id = {0} WHERE public_id = {1}",
       userId, personPublicId);
 
-    var drafterPublicId = (await Sender.Send(new CreateDrafterCommand(personPublicId))).Value;
+    var drafterPublicId = (await Sender.Send(new CreateDrafterCommand(personPublicId), TestContext.Current.CancellationToken)).Value;
 
     return (userId, userPublicId, drafterPublicId);
   }
@@ -354,14 +354,14 @@ public sealed class BulkAddMoviesToDraftBoardTests(DraftsIntegrationTestWebAppFa
       ContinuityDateRule = ContinuityDateRule.AnyChannelFirstRelease.Value,
       AllowedDraftTypes = (int)DraftTypeMask.All,
       DefaultDraftType = DraftType.Standard.Value
-    });
+    }, TestContext.Current.CancellationToken);
 
     var draftResult = await Sender.Send(new CreateDraftCommand
     {
       Title = Faker.Company.CompanyName(),
       DraftType = DraftType.Standard.Value,
       SeriesId = seriesResult.Value
-    });
+    }, TestContext.Current.CancellationToken);
 
     return draftResult.Value;
   }

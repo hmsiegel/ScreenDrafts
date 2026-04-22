@@ -1,4 +1,4 @@
-﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafts;
+namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafts;
 
 public sealed class SetDraftPartStatusTests(DraftsIntegrationTestWebAppFactory factory)
   : DraftsIntegrationTest(factory)
@@ -184,7 +184,7 @@ public sealed class SetDraftPartStatusTests(DraftsIntegrationTestWebAppFactory f
       Action = action
     };
 
-    return await Sender.Send(command);
+    return await Sender.Send(command, TestContext.Current.CancellationToken);
   }
 
   private async Task<string> CreateDraftWithAutoPartAsync()
@@ -195,7 +195,7 @@ public sealed class SetDraftPartStatusTests(DraftsIntegrationTestWebAppFactory f
       Title = Faker.Company.CompanyName(),
       DraftType = DraftType.Standard.Value,
       SeriesId = seriesId,
-    });
+    }, TestContext.Current.CancellationToken);
 
     var draftPublicId = draftResult.Value;
     await Sender.Send(new CreateDraftPartCommand
@@ -204,7 +204,7 @@ public sealed class SetDraftPartStatusTests(DraftsIntegrationTestWebAppFactory f
       PartIndex = 1,
       MinimumPosition = 1,
       MaximumPosition = 7,
-    });
+    }, TestContext.Current.CancellationToken);
 
     return draftPublicId;
   }
@@ -215,7 +215,7 @@ public sealed class SetDraftPartStatusTests(DraftsIntegrationTestWebAppFactory f
 
     // Get the draft part public ID
     var draftPartId = await GetFirstDraftPartIdAsync(draftPublicId);
-    var draftPart = await DbContext.DraftParts.FirstAsync(dp => dp.Id == DraftPartId.Create(draftPartId));
+    var draftPart = await DbContext.DraftParts.FirstAsync(dp => dp.Id == DraftPartId.Create(draftPartId), TestContext.Current.CancellationToken);
     var draftPartPublicId = draftPart.PublicId;
 
     // Create and add participants (need at least 2)
@@ -223,14 +223,14 @@ public sealed class SetDraftPartStatusTests(DraftsIntegrationTestWebAppFactory f
     for (int i = 0; i < 2; i++)
     {
       var personId = await peopleFactory.CreateAndSavePersonAsync();
-      var drafterResult = await Sender.Send(new CreateDrafterCommand(personId));
+      var drafterResult = await Sender.Send(new CreateDrafterCommand(personId), TestContext.Current.CancellationToken);
       var drafterPublicId = drafterResult.Value;
       await Sender.Send(new AddParticipantToDraftPartCommand
       {
         DraftPartId = draftPartPublicId,
         ParticipantPublicId = drafterPublicId,
         ParticipantKind = ParticipantKind.Drafter
-      });
+      }, TestContext.Current.CancellationToken);
     }
     return draftPublicId;
   }
@@ -241,42 +241,42 @@ public sealed class SetDraftPartStatusTests(DraftsIntegrationTestWebAppFactory f
 
     // Get the draft part internal and public IDs
     var draftPartId = await GetFirstDraftPartIdAsync(draftPublicId);
-    var draftPart = await DbContext.DraftParts.FirstAsync(dp => dp.Id == DraftPartId.Create(draftPartId));
+    var draftPart = await DbContext.DraftParts.FirstAsync(dp => dp.Id == DraftPartId.Create(draftPartId), TestContext.Current.CancellationToken);
     var draftPartPublicId = draftPart.PublicId;
 
     // Create and add participants (need at least 2)
     var peopleFactory = new PeopleFactory(Sender, Faker);
 
     var person1Id = await peopleFactory.CreateAndSavePersonAsync();
-    var drafter1Result = await Sender.Send(new CreateDrafterCommand(person1Id));
+    var drafter1Result = await Sender.Send(new CreateDrafterCommand(person1Id), TestContext.Current.CancellationToken);
     var drafter1PublicId = drafter1Result.Value;
     await Sender.Send(new AddParticipantToDraftPartCommand
     {
       DraftPartId = draftPartPublicId,
       ParticipantPublicId = drafter1PublicId,
       ParticipantKind = ParticipantKind.Drafter
-    });
+    }, TestContext.Current.CancellationToken);
 
     var person2Id = await peopleFactory.CreateAndSavePersonAsync();
-    var drafter2Result = await Sender.Send(new CreateDrafterCommand(person2Id));
+    var drafter2Result = await Sender.Send(new CreateDrafterCommand(person2Id), TestContext.Current.CancellationToken);
     var drafter2PublicId = drafter2Result.Value;
     await Sender.Send(new AddParticipantToDraftPartCommand
     {
       DraftPartId = draftPartPublicId,
       ParticipantPublicId = drafter2PublicId,
       ParticipantKind = ParticipantKind.Drafter
-    });
+    }, TestContext.Current.CancellationToken);
 
     // Create and add a host
     var hostPersonId = await peopleFactory.CreateAndSavePersonAsync();
-    var hostResult = await Sender.Send(new CreateHostCommand { PersonPublicId = hostPersonId });
+    var hostResult = await Sender.Send(new CreateHostCommand { PersonPublicId = hostPersonId }, TestContext.Current.CancellationToken);
     var hostPublicId = hostResult.Value;
     await Sender.Send(new AddHostToDraftPartCommand
     {
       DraftPartId = draftPartPublicId,
       HostPublicId = hostPublicId,
       HostRole = HostRole.Primary
-    });
+    }, TestContext.Current.CancellationToken);
 
     return (draftPublicId, draftPartId);
   }
@@ -285,7 +285,7 @@ public sealed class SetDraftPartStatusTests(DraftsIntegrationTestWebAppFactory f
   {
     // Get the draft part to know how many picks are needed
     var draftPart = await DbContext.DraftParts
-      .FirstOrDefaultAsync(dp => dp.Id == DraftPartId.Create(draftPartId));
+      .FirstOrDefaultAsync(dp => dp.Id == DraftPartId.Create(draftPartId), TestContext.Current.CancellationToken);
 
     if (draftPart == null) return;
 
@@ -297,7 +297,7 @@ public sealed class SetDraftPartStatusTests(DraftsIntegrationTestWebAppFactory f
       var movie = Movie.Create(Faker.Company.CompanyName(), $"m_{Faker.Random.AlphaNumeric(21)}", MediaType.Movie, Guid.NewGuid()).Value;
 
       DbContext.Movies.Add(movie);
-      await DbContext.SaveChangesAsync();
+      await DbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
       var participant = draftPart.Participants.First();
       var participantPublicId = await GetFirstParticipantPublicIdAsync(draftPartId);
@@ -313,10 +313,10 @@ public sealed class SetDraftPartStatusTests(DraftsIntegrationTestWebAppFactory f
         MovieVersionName = null
       };
 
-      await Sender.Send(command);
+      await Sender.Send(command, TestContext.Current.CancellationToken);
     }
 
-    await DbContext.SaveChangesAsync();
+    await DbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
   }
 
   private async Task<Guid> CreateSeriesAsync()
@@ -332,7 +332,7 @@ public sealed class SetDraftPartStatusTests(DraftsIntegrationTestWebAppFactory f
       DefaultDraftType = DraftType.Standard.Value
     };
 
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
     return result.Value;
   }
 }

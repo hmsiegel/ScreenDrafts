@@ -24,7 +24,7 @@ public class UpdateUserTests(UsersIntegrationTestWebAppFactory factory) : UsersI
         lastName);
 
     // Act
-    Result result = await Sender.Send(command);
+    Result result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -42,7 +42,7 @@ public class UpdateUserTests(UsersIntegrationTestWebAppFactory factory) : UsersI
         new UpdateUserCommand(
             publicId,
             Faker.Name.FirstName(),
-            Faker.Name.LastName()));
+            Faker.Name.LastName()), TestContext.Current.CancellationToken);
 
     // Assert
     updateResult.IsFailure.Should().BeTrue();
@@ -60,16 +60,16 @@ public class UpdateUserTests(UsersIntegrationTestWebAppFactory factory) : UsersI
       Password = Faker.Internet.Password(),
       FirstName = Faker.Name.FirstName(),
       LastName = Faker.Name.LastName()
-    });
+    }, TestContext.Current.CancellationToken);
 
-    var user = await Sender.Send(new GetByUserIdQuery(registerResult.Value));
+    var user = await Sender.Send(new GetByUserIdQuery(registerResult.Value), TestContext.Current.CancellationToken);
 
     // Act
     Result updateResult = await Sender.Send(
         new UpdateUserCommand(
             user.Value.PublicId,
             Faker.Name.FirstName(),
-            Faker.Name.LastName()));
+            Faker.Name.LastName()), TestContext.Current.CancellationToken);
 
     // Assert
     updateResult.IsSuccess.Should().BeTrue();

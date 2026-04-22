@@ -12,3 +12,5 @@ global using ScreenDrafts.Modules.Movies.Domain.Medias.DomainEvents;
 global using ScreenDrafts.Modules.Movies.Domain.Medias.Entities;
 global using ScreenDrafts.Modules.Movies.Domain.Medias.Errors;
 global using ScreenDrafts.Modules.Movies.UnitTests.TestUtils;
+
+global using Xunit;

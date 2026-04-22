@@ -19,7 +19,7 @@ public sealed class SetReleaseDateTests(DraftsIntegrationTestWebAppFactory facto
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -40,14 +40,14 @@ public sealed class SetReleaseDateTests(DraftsIntegrationTestWebAppFactory facto
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
 
     var draftPartId = await GetFirstDraftPartIdAsync(draftPublicId);
     var release = await DbContext.DraftReleases
-      .FirstAsync(r => r.PartId == DraftPartId.Create(draftPartId));
+      .FirstAsync(r => r.PartId == DraftPartId.Create(draftPartId), TestContext.Current.CancellationToken);
 
     release.ReleaseDate.Should().Be(releaseDate);
   }
@@ -65,7 +65,7 @@ public sealed class SetReleaseDateTests(DraftsIntegrationTestWebAppFactory facto
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -84,14 +84,14 @@ public sealed class SetReleaseDateTests(DraftsIntegrationTestWebAppFactory facto
       DraftPartId = draftPartPublicId,
       ReleaseDate = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(7)),
       ReleaseChannel = ReleaseChannel.MainFeed
-    });
+    }, TestContext.Current.CancellationToken);
 
     var patreonResult = await Sender.Send(new SetReleaseDateCommand
     {
       DraftPartId = draftPartPublicId,
       ReleaseDate = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(3)),
       ReleaseChannel = ReleaseChannel.Patreon
-    });
+    }, TestContext.Current.CancellationToken);
 
     // Assert
     mainFeedResult.IsSuccess.Should().BeTrue();
@@ -110,7 +110,7 @@ public sealed class SetReleaseDateTests(DraftsIntegrationTestWebAppFactory facto
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -130,7 +130,7 @@ public sealed class SetReleaseDateTests(DraftsIntegrationTestWebAppFactory facto
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -156,7 +156,7 @@ public sealed class SetReleaseDateTests(DraftsIntegrationTestWebAppFactory facto
       Title = Faker.Company.CompanyName(),
       DraftType = DraftType.Standard.Value,
       SeriesId = seriesId,
-    });
+    }, TestContext.Current.CancellationToken);
 
     var draftPublicId = draftResult.Value;
     var partResult = await Sender.Send(new CreateDraftPartCommand
@@ -165,7 +165,7 @@ public sealed class SetReleaseDateTests(DraftsIntegrationTestWebAppFactory facto
       PartIndex = 1,
       MinimumPosition = 1,
       MaximumPosition = 7,
-    });
+    }, TestContext.Current.CancellationToken);
 
     return (draftPublicId, partResult.Value);
   }
@@ -183,7 +183,7 @@ public sealed class SetReleaseDateTests(DraftsIntegrationTestWebAppFactory facto
       DefaultDraftType = DraftType.Standard.Value
     };
 
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
     return result.Value;
   }
 }

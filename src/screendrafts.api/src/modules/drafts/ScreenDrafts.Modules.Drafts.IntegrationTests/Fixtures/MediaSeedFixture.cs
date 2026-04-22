@@ -130,7 +130,7 @@ public sealed class MediaSeedFixture
     await SeedMovieAsync(dbContext, "Who Framed Roger Rabbit", key: "Who Framed Roger Rabbit");
     await SeedMovieAsync(dbContext, "Back to the Future", key: "Back to the Future");
 
-    await dbContext.SaveChangesAsync();
+    await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
     _seeded = true;
   }
 
@@ -145,7 +145,7 @@ public sealed class MediaSeedFixture
     if (_publicIdByKey.ContainsKey(lookupKey)) return;
 
     var existing = imdbId is not null
-      ? await dbContext.Movies.FirstOrDefaultAsync(m => m.ImdbId == imdbId)
+      ? await dbContext.Movies.FirstOrDefaultAsync(m => m.ImdbId == imdbId, TestContext.Current.CancellationToken)
       : null;
 
     if (existing is not null)

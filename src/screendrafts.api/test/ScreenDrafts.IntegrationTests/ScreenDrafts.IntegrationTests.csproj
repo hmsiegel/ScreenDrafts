@@ -2,39 +2,12 @@
 
   <PropertyGroup>
     <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="People\CreatePersonTests.cs" />
-    <Compile Remove="People\EditPersonTests.cs" />
-    <Compile Remove="People\GetPersonTests.cs" />
-    <Compile Remove="People\LinkUserPersonTests.cs" />
-    <Compile Remove="People\ListPeopleTests.cs" />
-    <Compile Remove="People\SearchPeopleTests.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="People\CreatePersonTests.cs" />
-    <None Include="People\EditPersonTests.cs" />
-    <None Include="People\GetPersonTests.cs" />
-    <None Include="People\LinkUserPersonTests.cs" />
-    <None Include="People\ListPeopleTests.cs" />
-    <None Include="People\SearchPeopleTests.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="coverlet.collector" />
-    <PackageReference Include="MailKit" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" />
-    <PackageReference Include="xunit" />
-    <PackageReference Include="xunit.runner.visualstudio">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Using Include="Xunit" />
+    <ProjectReference Include="..\..\src\common\ScreenDrafts.Common.IntegrationTests\ScreenDrafts.Common.IntegrationTests.csproj" />
+    <ProjectReference Include="..\..\src\modules\drafts\ScreenDrafts.Modules.Drafts.IntegrationTests\ScreenDrafts.Modules.Drafts.IntegrationTests.csproj" />
   </ItemGroup>
 
 </Project>

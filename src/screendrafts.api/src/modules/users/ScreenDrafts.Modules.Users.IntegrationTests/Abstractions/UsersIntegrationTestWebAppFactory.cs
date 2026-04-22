@@ -1,6 +1,4 @@
-﻿using Dapper;
-
-namespace ScreenDrafts.Modules.Users.IntegrationTests.Abstractions;
+﻿namespace ScreenDrafts.Modules.Users.IntegrationTests.Abstractions;
 
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1303:Do not pass literals as localized parameters", Justification = "<Pending>")]
 public class UsersIntegrationTestWebAppFactory : IntegrationTestWebAppFactory
@@ -29,8 +27,7 @@ public class UsersIntegrationTestWebAppFactory : IntegrationTestWebAppFactory
     Console.WriteLine($"Realm file path: {realmFilePath}");
     Console.WriteLine($"Realm file exists: {realmFileExists}");
 
-    var builder = new KeycloakBuilder()
-      .WithImage("quay.io/keycloak/keycloak:26.1.0")
+    var builder = new KeycloakBuilder("quay.io/keycloak/keycloak:26.1.0")
       .WithPortBinding(9000, true);
 
     // Only configure resource mapping if the realm file exists
@@ -152,7 +149,7 @@ public class UsersIntegrationTestWebAppFactory : IntegrationTestWebAppFactory
     var connectionFactory = scope.ServiceProvider
       .GetRequiredService<ScreenDrafts.Common.Application.Data.IDbConnectionFactory>();
 
-    await using var connection = await connectionFactory.OpenConnectionAsync();
+    await using var connection = await connectionFactory.OpenConnectionAsync(TestContext.Current.CancellationToken);
 
     await connection.ExecuteAsync(
       """

@@ -17,7 +17,7 @@ public sealed class CreateCampaignTests(DraftsIntegrationTestWebAppFactory facto
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -37,7 +37,7 @@ public sealed class CreateCampaignTests(DraftsIntegrationTestWebAppFactory facto
       Slug = slug
     };
 
-    await Sender.Send(command1);
+    await Sender.Send(command1, TestContext.Current.CancellationToken);
 
     var command2 = new CreateCampaignCommand
     {
@@ -46,7 +46,7 @@ public sealed class CreateCampaignTests(DraftsIntegrationTestWebAppFactory facto
     };
 
     // Act
-    var result = await Sender.Send(command2);
+    var result = await Sender.Send(command2, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -64,7 +64,7 @@ public sealed class CreateCampaignTests(DraftsIntegrationTestWebAppFactory facto
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -82,7 +82,7 @@ public sealed class CreateCampaignTests(DraftsIntegrationTestWebAppFactory facto
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();

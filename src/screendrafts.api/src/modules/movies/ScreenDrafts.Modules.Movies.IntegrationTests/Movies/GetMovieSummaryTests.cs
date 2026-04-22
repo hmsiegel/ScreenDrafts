@@ -16,7 +16,7 @@ public sealed class GetMovieSummaryTests(MoviesIntegrationTestWebAppFactory fact
     var publicId = Faker.Random.AlphaNumeric(10);
 
     // Act
-    var result = await Sender.Send(new GetMediaSummaryQuery { PublicId = publicId });
+    var result = await Sender.Send(new GetMediaSummaryQuery { PublicId = publicId }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -35,7 +35,7 @@ public sealed class GetMovieSummaryTests(MoviesIntegrationTestWebAppFactory fact
     await AddMovieAsync(movie);
 
     // Act
-    var result = await Sender.Send(new GetMediaSummaryQuery { PublicId = movie.PublicId });
+    var result = await Sender.Send(new GetMediaSummaryQuery { PublicId = movie.PublicId }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -53,7 +53,7 @@ public sealed class GetMovieSummaryTests(MoviesIntegrationTestWebAppFactory fact
     await AddMovieAsync(movie);
 
     // Act
-    var result = await Sender.Send(new GetMediaSummaryQuery { PublicId = movie.PublicId });
+    var result = await Sender.Send(new GetMediaSummaryQuery { PublicId = movie.PublicId }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -91,6 +91,6 @@ public sealed class GetMovieSummaryTests(MoviesIntegrationTestWebAppFactory fact
       ProductionCompanies = []
     };
 
-    await Sender.Send(command);
+    await Sender.Send(command, TestContext.Current.CancellationToken);
   }
 }

@@ -16,7 +16,7 @@ public class RegisterUserTests(UsersIntegrationTestWebAppFactory factory)
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -35,7 +35,7 @@ public class RegisterUserTests(UsersIntegrationTestWebAppFactory factory)
         FirstName = Faker.Name.FirstName(),
         LastName = Faker.Name.LastName()
     };
-    await Sender.Send(command1);
+    await Sender.Send(command1, TestContext.Current.CancellationToken);
 
     var command2 = new Features.Users.Register.RegisterUserCommand
     {
@@ -46,7 +46,7 @@ public class RegisterUserTests(UsersIntegrationTestWebAppFactory factory)
     };
 
     // Act
-    var result = await Sender.Send(command2);
+    var result = await Sender.Send(command2, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -65,7 +65,7 @@ public class RegisterUserTests(UsersIntegrationTestWebAppFactory factory)
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();

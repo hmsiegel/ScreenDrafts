@@ -1,4 +1,4 @@
-﻿using ScreenDrafts.Modules.Drafts.Features.Categories.Create;
+using ScreenDrafts.Modules.Drafts.Features.Categories.Create;
 
 namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Categories;
 
@@ -17,7 +17,7 @@ public sealed class CreateCategoryTests(DraftsIntegrationTestWebAppFactory facto
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -36,7 +36,7 @@ public sealed class CreateCategoryTests(DraftsIntegrationTestWebAppFactory facto
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -54,7 +54,7 @@ public sealed class CreateCategoryTests(DraftsIntegrationTestWebAppFactory facto
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -72,7 +72,7 @@ public sealed class CreateCategoryTests(DraftsIntegrationTestWebAppFactory facto
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -93,7 +93,7 @@ public sealed class CreateCategoryTests(DraftsIntegrationTestWebAppFactory facto
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
     var afterCreation = DateTime.UtcNow;
 
     // Assert
@@ -102,7 +102,7 @@ public sealed class CreateCategoryTests(DraftsIntegrationTestWebAppFactory facto
     
     // Verify the category was created within the expected time window
     var createdCategory = await DbContext.Set<Domain.Categories.Category>()
-      .FirstOrDefaultAsync(c => c.PublicId == result.Value);
+      .FirstOrDefaultAsync(c => c.PublicId == result.Value, TestContext.Current.CancellationToken);
     createdCategory.Should().NotBeNull();
     createdCategory!.CreatedOnUtc.Should().BeOnOrAfter(beforeCreation);
     createdCategory.CreatedOnUtc.Should().BeOnOrBefore(afterCreation);

@@ -1,4 +1,4 @@
-using ScreenDrafts.Modules.Drafts.Features.Categories.Create;
+﻿using ScreenDrafts.Modules.Drafts.Features.Categories.Create;
 using ScreenDrafts.Modules.Drafts.Features.Drafts.RemoveCategoryFromDraft;
 using ScreenDrafts.Modules.Drafts.Features.Drafts.SetCategory;
 
@@ -22,7 +22,7 @@ public sealed class RemoveCategoryFromDraftTests(DraftsIntegrationTestWebAppFact
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -42,14 +42,14 @@ public sealed class RemoveCategoryFromDraftTests(DraftsIntegrationTestWebAppFact
     {
       DraftId = draftId,
       CategoryId = categoryId
-    });
+    }, TestContext.Current.CancellationToken);
 
     // Assert — removing it a second time should fail with "not added" error
     var secondResult = await Sender.Send(new RemoveCategoryFromDraftCommand
     {
       DraftId = draftId,
       CategoryId = categoryId
-    });
+    }, TestContext.Current.CancellationToken);
 
     secondResult.IsFailure.Should().BeTrue();
   }
@@ -66,7 +66,7 @@ public sealed class RemoveCategoryFromDraftTests(DraftsIntegrationTestWebAppFact
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -86,7 +86,7 @@ public sealed class RemoveCategoryFromDraftTests(DraftsIntegrationTestWebAppFact
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -108,7 +108,7 @@ public sealed class RemoveCategoryFromDraftTests(DraftsIntegrationTestWebAppFact
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -128,7 +128,7 @@ public sealed class RemoveCategoryFromDraftTests(DraftsIntegrationTestWebAppFact
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -147,7 +147,7 @@ public sealed class RemoveCategoryFromDraftTests(DraftsIntegrationTestWebAppFact
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -166,7 +166,7 @@ public sealed class RemoveCategoryFromDraftTests(DraftsIntegrationTestWebAppFact
     {
       DraftId = draftId,
       CategoryId = categoryId
-    });
+    }, TestContext.Current.CancellationToken);
 
     // Act — add the same category again after removal
     var addResult = await AddCategoryToDraftAsync(draftId, categoryId);
@@ -190,7 +190,7 @@ public sealed class RemoveCategoryFromDraftTests(DraftsIntegrationTestWebAppFact
     {
       DraftId = draftId,
       CategoryId = categoryId1
-    });
+    }, TestContext.Current.CancellationToken);
 
     // Assert — removal succeeded
     result.IsSuccess.Should().BeTrue();
@@ -200,7 +200,7 @@ public sealed class RemoveCategoryFromDraftTests(DraftsIntegrationTestWebAppFact
     {
       DraftId = draftId,
       CategoryId = categoryId2
-    });
+    }, TestContext.Current.CancellationToken);
     result2.IsSuccess.Should().BeTrue();
 
     // Removing the first category again should now fail
@@ -208,7 +208,7 @@ public sealed class RemoveCategoryFromDraftTests(DraftsIntegrationTestWebAppFact
     {
       DraftId = draftId,
       CategoryId = categoryId1
-    });
+    }, TestContext.Current.CancellationToken);
     result3.IsFailure.Should().BeTrue();
   }
 
@@ -224,7 +224,7 @@ public sealed class RemoveCategoryFromDraftTests(DraftsIntegrationTestWebAppFact
       Title = Faker.Company.CompanyName(),
       DraftType = DraftType.Standard.Value,
       SeriesId = seriesId,
-    });
+    }, TestContext.Current.CancellationToken);
     return result.Value;
   }
 
@@ -239,7 +239,7 @@ public sealed class RemoveCategoryFromDraftTests(DraftsIntegrationTestWebAppFact
       ContinuityDateRule = ContinuityDateRule.AnyChannelFirstRelease.Value,
       AllowedDraftTypes = (int)DraftTypeMask.All,
       DefaultDraftType = DraftType.Standard.Value
-    });
+    }, TestContext.Current.CancellationToken);
     return result.Value;
   }
 
@@ -249,7 +249,7 @@ public sealed class RemoveCategoryFromDraftTests(DraftsIntegrationTestWebAppFact
     {
       Name = Faker.Commerce.Categories(1)[0] + Faker.Random.AlphaNumeric(8),
       Description = Faker.Lorem.Sentence()
-    });
+    }, TestContext.Current.CancellationToken);
     return result.Value;
   }
 
@@ -259,6 +259,6 @@ public sealed class RemoveCategoryFromDraftTests(DraftsIntegrationTestWebAppFact
     {
       DraftId = draftId,
       CategoryId = categoryId
-    });
+    }, TestContext.Current.CancellationToken);
   }
 }

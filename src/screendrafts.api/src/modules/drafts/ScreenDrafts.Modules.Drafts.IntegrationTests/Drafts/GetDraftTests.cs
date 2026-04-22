@@ -1,4 +1,4 @@
-﻿using ScreenDrafts.Modules.Drafts.Domain.DraftParts.Enums;
+using ScreenDrafts.Modules.Drafts.Domain.DraftParts.Enums;
 using ScreenDrafts.Modules.Drafts.Features.Drafts.GetDraft;
 using ScreenDrafts.Modules.Drafts.Features.DraftParts.SetReleaseDate;
 
@@ -18,7 +18,7 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
     var query = new GetDraftQuery { DraftId = Faker.Random.AlphaNumeric(10), IncludePatreon = false };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -39,12 +39,12 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
       Title = title,
       DraftType = DraftType.Standard.Value,
       SeriesId = seriesId
-    })).Value;
+    }, TestContext.Current.CancellationToken)).Value;
 
     var query = new GetDraftQuery { DraftId = draftPublicId, IncludePatreon = false };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -67,7 +67,7 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
     var query = new GetDraftQuery { DraftId = draftPublicId, IncludePatreon = false };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -82,7 +82,7 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
     var query = new GetDraftQuery { DraftId = draftPublicId, IncludePatreon = false };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -100,7 +100,7 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
       Title = Faker.Company.CompanyName(),
       DraftType = DraftType.Standard.Value,
       SeriesId = seriesId
-    })).Value;
+    }, TestContext.Current.CancellationToken)).Value;
 
     await Sender.Send(new CreateDraftPartCommand
     {
@@ -108,7 +108,7 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
       PartIndex = 1,
       MinimumPosition = 1,
       MaximumPosition = 7
-    });
+    }, TestContext.Current.CancellationToken);
 
     await Sender.Send(new CreateDraftPartCommand
     {
@@ -116,12 +116,12 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
       PartIndex = 2,
       MinimumPosition = 1,
       MaximumPosition = 7
-    });
+    }, TestContext.Current.CancellationToken);
 
     var query = new GetDraftQuery { DraftId = draftPublicId, IncludePatreon = false };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -143,19 +143,19 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
 
     var peopleFactory = new PeopleFactory(Sender, Faker);
     var personId = await peopleFactory.CreateAndSavePersonAsync();
-    var hostPublicId = (await Sender.Send(new CreateHostCommand { PersonPublicId = personId })).Value;
+    var hostPublicId = (await Sender.Send(new CreateHostCommand { PersonPublicId = personId }, TestContext.Current.CancellationToken)).Value;
 
     await Sender.Send(new AddHostToDraftPartCommand
     {
       DraftPartId = draftPartPublicId,
       HostPublicId = hostPublicId,
       HostRole = HostRole.Primary
-    });
+    }, TestContext.Current.CancellationToken);
 
     var query = new GetDraftQuery { DraftId = draftPublicId, IncludePatreon = false };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -172,7 +172,7 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
     var query = new GetDraftQuery { DraftId = draftPublicId, IncludePatreon = false };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -196,12 +196,12 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
       DraftPartId = draftPartPublicId,
       ParticipantPublicId = drafterPublicId,
       ParticipantKind = ParticipantKind.Drafter
-    });
+    }, TestContext.Current.CancellationToken);
 
     var query = new GetDraftQuery { DraftId = draftPublicId, IncludePatreon = false };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -218,7 +218,7 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
     var query = new GetDraftQuery { DraftId = draftPublicId, IncludePatreon = false };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -241,12 +241,12 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
       DraftPartId = draftPartPublicId,
       ReleaseDate = releaseDate,
       ReleaseChannel = ReleaseChannel.MainFeed
-    });
+    }, TestContext.Current.CancellationToken);
 
     var query = new GetDraftQuery { DraftId = draftPublicId, IncludePatreon = false };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -264,7 +264,7 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
     var query = new GetDraftQuery { DraftId = draftPublicId, IncludePatreon = false };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -282,12 +282,12 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
       DraftPartId = draftPartPublicId,
       ReleaseDate = new DateOnly(2025, 6, 15),
       ReleaseChannel = ReleaseChannel.Patreon
-    });
+    }, TestContext.Current.CancellationToken);
 
     var query = new GetDraftQuery { DraftId = draftPublicId, IncludePatreon = false };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -305,12 +305,12 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
       DraftPartId = draftPartPublicId,
       ReleaseDate = new DateOnly(2025, 6, 15),
       ReleaseChannel = ReleaseChannel.Patreon
-    });
+    }, TestContext.Current.CancellationToken);
 
     var query = new GetDraftQuery { DraftId = draftPublicId, IncludePatreon = true };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -330,7 +330,7 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
     var query = new GetDraftQuery { DraftId = draftPublicId, IncludePatreon = false };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -352,12 +352,12 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
       ParticipantPublicId = drafter1PublicId,
       ParticipantKind = ParticipantKind.Drafter,
       MoviePublicId = movie.PublicId
-    });
+    }, TestContext.Current.CancellationToken);
 
     var query = new GetDraftQuery { DraftId = draftPublicId, IncludePatreon = false };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -391,7 +391,7 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
       ParticipantPublicId = drafter1PublicId,
       ParticipantKind = ParticipantKind.Drafter,
       MoviePublicId = movie.PublicId
-    });
+    }, TestContext.Current.CancellationToken);
 
     await Sender.Send(new ApplyVetoCommand
     {
@@ -400,12 +400,12 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
       ParticipantPublicId = drafter1PublicId,
       ParticipantKind = ParticipantKind.Drafter,
       ActorPublicId = drafter1PublicId
-    });
+    }, TestContext.Current.CancellationToken);
 
     var query = new GetDraftQuery { DraftId = draftPublicId, IncludePatreon = false };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -433,18 +433,18 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
       ParticipantPublicId = drafter1PublicId,
       ParticipantKind = ParticipantKind.Drafter,
       MoviePublicId = movie.PublicId
-    });
+    }, TestContext.Current.CancellationToken);
 
     await Sender.Send(new ApplyCommissionerOverrideCommand
     {
       DraftPartId = draftPartPublicId,
       PlayOrder = 1
-    });
+    }, TestContext.Current.CancellationToken);
 
     var query = new GetDraftQuery { DraftId = draftPublicId, IncludePatreon = false };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -464,7 +464,7 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
       Title = Faker.Company.CompanyName(),
       DraftType = DraftType.Standard.Value,
       SeriesId = seriesId
-    })).Value;
+    }, TestContext.Current.CancellationToken)).Value;
   }
 
   private async Task<(string DraftPublicId, string DraftPartPublicId)> CreateDraftWithPartAsync()
@@ -475,7 +475,7 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
       Title = Faker.Company.CompanyName(),
       DraftType = DraftType.Standard.Value,
       SeriesId = seriesId
-    })).Value;
+    }, TestContext.Current.CancellationToken)).Value;
 
     var partPublicId = (await Sender.Send(new CreateDraftPartCommand
     {
@@ -483,7 +483,7 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
       PartIndex = 1,
       MinimumPosition = 1,
       MaximumPosition = 7
-    })).Value;
+    }, TestContext.Current.CancellationToken)).Value;
 
     return (draftPublicId, partPublicId);
   }
@@ -499,7 +499,7 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
       ContinuityDateRule = ContinuityDateRule.AnyChannelFirstRelease.Value,
       AllowedDraftTypes = (int)DraftTypeMask.All,
       DefaultDraftType = DraftType.Standard.Value
-    })).Value;
+    }, TestContext.Current.CancellationToken)).Value;
   }
 
   private async Task<(string DraftPublicId, string DraftPartPublicId, string Drafter1PublicId, string Drafter2PublicId)> SetupStartedDraftPartAsync()
@@ -510,7 +510,7 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
       Title = Faker.Company.CompanyName(),
       DraftType = DraftType.Standard.Value,
       SeriesId = seriesId
-    })).Value;
+    }, TestContext.Current.CancellationToken)).Value;
 
     await Sender.Send(new CreateDraftPartCommand
     {
@@ -518,48 +518,48 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
       PartIndex = 1,
       MinimumPosition = 1,
       MaximumPosition = 7
-    });
+    }, TestContext.Current.CancellationToken);
 
     var draftPartInternalId = await GetFirstDraftPartIdAsync(draftPublicId);
 
     var draftPart = await DbContext.DraftParts
-      .FirstAsync(dp => dp.Id == DraftPartId.Create(draftPartInternalId));
+      .FirstAsync(dp => dp.Id == DraftPartId.Create(draftPartInternalId), TestContext.Current.CancellationToken);
     var draftPartPublicId = draftPart.PublicId;
 
     var peopleFactory = new PeopleFactory(Sender, Faker);
 
     var person1Id = await peopleFactory.CreateAndSavePersonAsync();
-    var drafter1PublicId = (await Sender.Send(new CreateDrafterCommand(person1Id))).Value;
+    var drafter1PublicId = (await Sender.Send(new CreateDrafterCommand(person1Id), TestContext.Current.CancellationToken)).Value;
     await Sender.Send(new AddParticipantToDraftPartCommand
     {
       DraftPartId = draftPartPublicId,
       ParticipantPublicId = drafter1PublicId,
       ParticipantKind = ParticipantKind.Drafter
-    });
+    }, TestContext.Current.CancellationToken);
 
     var person2Id = await peopleFactory.CreateAndSavePersonAsync();
-    var drafter2PublicId = (await Sender.Send(new CreateDrafterCommand(person2Id))).Value;
+    var drafter2PublicId = (await Sender.Send(new CreateDrafterCommand(person2Id), TestContext.Current.CancellationToken)).Value;
     await Sender.Send(new AddParticipantToDraftPartCommand
     {
       DraftPartId = draftPartPublicId,
       ParticipantPublicId = drafter2PublicId,
       ParticipantKind = ParticipantKind.Drafter
-    });
+    }, TestContext.Current.CancellationToken);
 
     var hostPersonId = await peopleFactory.CreateAndSavePersonAsync();
-    var hostPublicId = (await Sender.Send(new CreateHostCommand { PersonPublicId = hostPersonId })).Value;
+    var hostPublicId = (await Sender.Send(new CreateHostCommand { PersonPublicId = hostPersonId }, TestContext.Current.CancellationToken)).Value;
     await Sender.Send(new AddHostToDraftPartCommand
     {
       DraftPartId = draftPartPublicId,
       HostPublicId = hostPublicId,
       HostRole = HostRole.Primary
-    });
+    }, TestContext.Current.CancellationToken);
 
     await Sender.Send(new SetDraftPartStatusCommand
     {      DraftPublicId = draftPublicId,
       PartIndex = 1,
       Action = DraftPartStatusAction.Start
-    });
+    }, TestContext.Current.CancellationToken);
 
     return (draftPublicId, draftPartPublicId, drafter1PublicId, drafter2PublicId);
   }
@@ -568,7 +568,7 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
   {
     var movie = Movie.Create(Faker.Company.CompanyName(), $"m_{Faker.Random.AlphaNumeric(21)}", MediaType.Movie, Guid.NewGuid()).Value;
     DbContext.Movies.Add(movie);
-    await DbContext.SaveChangesAsync();
+    await DbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
     return movie;
   }
 }

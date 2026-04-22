@@ -13,7 +13,7 @@ public sealed class ListPeopleTests(DraftsIntegrationTestWebAppFactory factory)
     // Act
     var request = new ListPeopleRequest{Page= 1, PageSize= 20};
     var query = new ListPeopleQuery(request);
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
     // Assert
     result.IsSuccess.Should().BeTrue();
     result.Value.People.Should().NotBeNull();
@@ -31,13 +31,13 @@ public sealed class ListPeopleTests(DraftsIntegrationTestWebAppFactory factory)
       {
         FirstName = person.FirstName,
         LastName = person.LastName
-      });
+      }, TestContext.Current.CancellationToken);
     }
 
     // Act
     var request = new ListPeopleRequest{Page= 1, PageSize= 20};
     var query = new ListPeopleQuery(request);
-    var results = await Sender.Send(query);
+    var results = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     results.IsSuccess.Should().BeTrue();

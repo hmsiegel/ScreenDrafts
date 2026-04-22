@@ -1,4 +1,4 @@
-﻿using ScreenDrafts.Modules.Drafts.Features.Categories.Create;
+using ScreenDrafts.Modules.Drafts.Features.Categories.Create;
 using ScreenDrafts.Modules.Drafts.Features.Categories.Delete;
 using ScreenDrafts.Modules.Drafts.Features.Categories.Get;
 using ScreenDrafts.Modules.Drafts.Features.Categories.Restore;
@@ -19,23 +19,23 @@ public sealed class RestoreCategoryTests(DraftsIntegrationTestWebAppFactory fact
       Description = description
     };
 
-    var createResult = await Sender.Send(createCommand);
+    var createResult = await Sender.Send(createCommand, TestContext.Current.CancellationToken);
     var publicId = createResult.Value;
 
     var deleteCommand = new DeleteCategoryCommand(publicId);
-    await Sender.Send(deleteCommand);
+    await Sender.Send(deleteCommand, TestContext.Current.CancellationToken);
 
     var restoreCommand = new RestoreCategoryCommand(publicId);
 
     // Act
-    var result = await Sender.Send(restoreCommand);
+    var result = await Sender.Send(restoreCommand, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
     result.IsSuccess.Should().BeTrue();
 
     var getQuery = new GetCategoryQuery(publicId);
-    var category = await Sender.Send(getQuery);
+    var category = await Sender.Send(getQuery, TestContext.Current.CancellationToken);
     category.Value.IsDeleted.Should().BeFalse();
   }
 
@@ -47,7 +47,7 @@ public sealed class RestoreCategoryTests(DraftsIntegrationTestWebAppFactory fact
     var restoreCommand = new RestoreCategoryCommand(nonExistentPublicId);
 
     // Act
-    var result = await Sender.Send(restoreCommand);
+    var result = await Sender.Send(restoreCommand, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -66,20 +66,20 @@ public sealed class RestoreCategoryTests(DraftsIntegrationTestWebAppFactory fact
       Description = description
     };
 
-    var createResult = await Sender.Send(createCommand);
+    var createResult = await Sender.Send(createCommand, TestContext.Current.CancellationToken);
     var publicId = createResult.Value;
 
     var restoreCommand = new RestoreCategoryCommand(publicId);
 
     // Act
-    var result = await Sender.Send(restoreCommand);
+    var result = await Sender.Send(restoreCommand, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
     result.IsSuccess.Should().BeTrue();
 
     var getQuery = new GetCategoryQuery(publicId);
-    var category = await Sender.Send(getQuery);
+    var category = await Sender.Send(getQuery, TestContext.Current.CancellationToken);
     category.Value.IsDeleted.Should().BeFalse();
   }
 
@@ -95,26 +95,26 @@ public sealed class RestoreCategoryTests(DraftsIntegrationTestWebAppFactory fact
       Description = description
     };
 
-    var createResult = await Sender.Send(createCommand);
+    var createResult = await Sender.Send(createCommand, TestContext.Current.CancellationToken);
     var publicId = createResult.Value;
 
     var deleteCommand = new DeleteCategoryCommand(publicId);
-    await Sender.Send(deleteCommand);
+    await Sender.Send(deleteCommand, TestContext.Current.CancellationToken);
 
     var restoreCommand1 = new RestoreCategoryCommand(publicId);
-    await Sender.Send(restoreCommand1);
+    await Sender.Send(restoreCommand1, TestContext.Current.CancellationToken);
 
     var restoreCommand2 = new RestoreCategoryCommand(publicId);
 
     // Act
-    var result = await Sender.Send(restoreCommand2);
+    var result = await Sender.Send(restoreCommand2, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
     result.IsSuccess.Should().BeTrue();
 
     var getQuery = new GetCategoryQuery(publicId);
-    var category = await Sender.Send(getQuery);
+    var category = await Sender.Send(getQuery, TestContext.Current.CancellationToken);
     category.Value.IsDeleted.Should().BeFalse();
   }
 
@@ -130,20 +130,20 @@ public sealed class RestoreCategoryTests(DraftsIntegrationTestWebAppFactory fact
       Description = description
     };
 
-    var createResult = await Sender.Send(createCommand);
+    var createResult = await Sender.Send(createCommand, TestContext.Current.CancellationToken);
     var publicId = createResult.Value;
 
     var deleteCommand = new DeleteCategoryCommand(publicId);
-    await Sender.Send(deleteCommand);
+    await Sender.Send(deleteCommand, TestContext.Current.CancellationToken);
 
     // Wait a bit to ensure timestamp difference
-    await Task.Delay(100);
+    await Task.Delay(100, TestContext.Current.CancellationToken);
 
     var beforeRestore = DateTime.UtcNow;
     var restoreCommand = new RestoreCategoryCommand(publicId);
 
     // Act
-    var result = await Sender.Send(restoreCommand);
+    var result = await Sender.Send(restoreCommand, TestContext.Current.CancellationToken);
     var afterRestore = DateTime.UtcNow;
 
     // Assert
@@ -151,7 +151,7 @@ public sealed class RestoreCategoryTests(DraftsIntegrationTestWebAppFactory fact
     result.IsSuccess.Should().BeTrue();
 
     var restoredCategory = await DbContext.Set<Domain.Categories.Category>()
-      .FirstOrDefaultAsync(c => c.PublicId == publicId);
+      .FirstOrDefaultAsync(c => c.PublicId == publicId, TestContext.Current.CancellationToken);
     restoredCategory.Should().NotBeNull();
     restoredCategory!.ModifiedOnUtc.Should().NotBeNull();
     restoredCategory.ModifiedOnUtc!.Value.Should().BeOnOrAfter(beforeRestore);

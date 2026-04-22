@@ -22,7 +22,7 @@ public sealed class SetSubDraftSubjectTests(DraftsIntegrationTestWebAppFactory f
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -43,13 +43,13 @@ public sealed class SetSubDraftSubjectTests(DraftsIntegrationTestWebAppFactory f
     };
 
     // Act
-    await Sender.Send(command);
+    await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     var draftPart = await DbContext.DraftParts
       .Include("_subDrafts")
       .AsNoTracking()
-      .FirstAsync(dp => dp.PublicId == draftPartPublicId);
+      .FirstAsync(dp => dp.PublicId == draftPartPublicId, TestContext.Current.CancellationToken);
 
     var subDraft = draftPart.SubDrafts.First(s => s.PublicId == subDraftPublicId);
     subDraft.SubjectKind.Should().Be(SubjectKind.Director);
@@ -73,7 +73,7 @@ public sealed class SetSubDraftSubjectTests(DraftsIntegrationTestWebAppFactory f
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -98,7 +98,7 @@ public sealed class SetSubDraftSubjectTests(DraftsIntegrationTestWebAppFactory f
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -123,7 +123,7 @@ public sealed class SetSubDraftSubjectTests(DraftsIntegrationTestWebAppFactory f
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -143,7 +143,7 @@ public sealed class SetSubDraftSubjectTests(DraftsIntegrationTestWebAppFactory f
     {
       DraftPartPublicId = draftPartPublicId,
       Index = 0
-    })).Value;
+    }, TestContext.Current.CancellationToken)).Value;
 
     return (draftPartPublicId, subDraftPublicId);
   }
@@ -159,7 +159,7 @@ public sealed class SetSubDraftSubjectTests(DraftsIntegrationTestWebAppFactory f
       ContinuityDateRule = ContinuityDateRule.AnyChannelFirstRelease.Value,
       AllowedDraftTypes = (int)DraftTypeMask.All,
       DefaultDraftType = DraftType.SpeedDraft.Value
-    });
+    }, TestContext.Current.CancellationToken);
     return result.Value;
   }
 
@@ -170,7 +170,7 @@ public sealed class SetSubDraftSubjectTests(DraftsIntegrationTestWebAppFactory f
       Title = Faker.Company.CompanyName(),
       DraftType = DraftType.SpeedDraft.Value,
       SeriesId = seriesId,
-    });
+    }, TestContext.Current.CancellationToken);
     var draftPublicId = draftResult.Value;
     await Sender.Send(new CreateDraftPartCommand
     {
@@ -178,7 +178,7 @@ public sealed class SetSubDraftSubjectTests(DraftsIntegrationTestWebAppFactory f
       PartIndex = 1,
       MinimumPosition = 1,
       MaximumPosition = 7,
-    });
+    }, TestContext.Current.CancellationToken);
     return draftPublicId;
   }
 }

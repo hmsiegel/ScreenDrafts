@@ -1,4 +1,4 @@
-﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafts;
+namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafts;
 
 public sealed class CreateDraftPartTests(DraftsIntegrationTestWebAppFactory factory)
   : DraftsIntegrationTest(factory)
@@ -17,7 +17,7 @@ public sealed class CreateDraftPartTests(DraftsIntegrationTestWebAppFactory fact
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -39,12 +39,12 @@ public sealed class CreateDraftPartTests(DraftsIntegrationTestWebAppFactory fact
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
     var exists = await DbContext.DraftParts
-      .AnyAsync(dp => dp.PublicId == result.Value);
+      .AnyAsync(dp => dp.PublicId == result.Value, TestContext.Current.CancellationToken);
     exists.Should().BeTrue();
   }
 
@@ -61,7 +61,7 @@ public sealed class CreateDraftPartTests(DraftsIntegrationTestWebAppFactory fact
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -82,7 +82,7 @@ public sealed class CreateDraftPartTests(DraftsIntegrationTestWebAppFactory fact
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -104,7 +104,7 @@ public sealed class CreateDraftPartTests(DraftsIntegrationTestWebAppFactory fact
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -126,7 +126,7 @@ public sealed class CreateDraftPartTests(DraftsIntegrationTestWebAppFactory fact
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -147,10 +147,10 @@ public sealed class CreateDraftPartTests(DraftsIntegrationTestWebAppFactory fact
       MaximumPosition = 7
     };
 
-    await Sender.Send(command);
+    await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Act — same PartIndex again
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -171,14 +171,14 @@ public sealed class CreateDraftPartTests(DraftsIntegrationTestWebAppFactory fact
       PartIndex = 1,
       MinimumPosition = 15,
       MaximumPosition = 21
-    });
+    }, TestContext.Current.CancellationToken);
     var result2 = await Sender.Send(new CreateDraftPartCommand
     {
       DraftPublicId = draftId,
       PartIndex = 2,
       MinimumPosition = 8,
       MaximumPosition = 14
-    });
+    }, TestContext.Current.CancellationToken);
 
     // Assert
     result1.IsSuccess.Should().BeTrue();
@@ -200,7 +200,7 @@ public sealed class CreateDraftPartTests(DraftsIntegrationTestWebAppFactory fact
       SeriesId = seriesId,
     };
 
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
     return result.Value;
   }
 
@@ -217,7 +217,7 @@ public sealed class CreateDraftPartTests(DraftsIntegrationTestWebAppFactory fact
       DefaultDraftType = DraftType.Standard.Value
     };
 
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
     return result.Value;
   }
 }

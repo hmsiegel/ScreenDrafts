@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Common.Application.EventBus;
-
-namespace ScreenDrafts.Modules.Communications.ArchitectureTests.Features;
+﻿namespace ScreenDrafts.Modules.Communications.ArchitectureTests.Features;
 
 public class FeaturesTests : BaseTest
 {

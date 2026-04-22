@@ -30,7 +30,7 @@ public class PeopleFactory(ISender sender, Faker faker)
       PublicId = person.PublicId
     };
 
-    var result = await _sender.Send(command);
+    var result = await _sender.Send(command, TestContext.Current.CancellationToken);
     return result.Value;
   }
 
@@ -43,7 +43,7 @@ public class PeopleFactory(ISender sender, Faker faker)
       PublicId = Guid.NewGuid().ToString()
     };
 
-    var result = await _sender.Send(command);
+    var result = await _sender.Send(command, TestContext.Current.CancellationToken);
     return result.Value;
   }
 }

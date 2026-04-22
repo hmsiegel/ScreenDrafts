@@ -21,7 +21,7 @@ public sealed class ClearCampaignTests(DraftsIntegrationTestWebAppFactory factor
     {
       DraftId = draftId,
       CampaignId = campaignId
-    });
+    }, TestContext.Current.CancellationToken);
 
     var command = new ClearCampaignDraftCommand
     {
@@ -29,7 +29,7 @@ public sealed class ClearCampaignTests(DraftsIntegrationTestWebAppFactory factor
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -46,7 +46,7 @@ public sealed class ClearCampaignTests(DraftsIntegrationTestWebAppFactory factor
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -64,7 +64,7 @@ public sealed class ClearCampaignTests(DraftsIntegrationTestWebAppFactory factor
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -83,7 +83,7 @@ public sealed class ClearCampaignTests(DraftsIntegrationTestWebAppFactory factor
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -102,7 +102,7 @@ public sealed class ClearCampaignTests(DraftsIntegrationTestWebAppFactory factor
     {
       DraftId = draftId,
       CampaignId = campaignId
-    });
+    }, TestContext.Current.CancellationToken);
 
     var command = new ClearCampaignDraftCommand
     {
@@ -110,9 +110,9 @@ public sealed class ClearCampaignTests(DraftsIntegrationTestWebAppFactory factor
     };
 
     // Act - Clear first time
-    var firstResult = await Sender.Send(command);
+    var firstResult = await Sender.Send(command, TestContext.Current.CancellationToken);
     // Act - Clear second time
-    var secondResult = await Sender.Send(command);
+    var secondResult = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     firstResult.Should().NotBeNull();
@@ -131,7 +131,7 @@ public sealed class ClearCampaignTests(DraftsIntegrationTestWebAppFactory factor
       SeriesId = seriesId,
     };
 
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
     result.IsSuccess.Should().BeTrue($"CreateDraftCommand failed: {string.Join(", ", result.Errors.Select(e => e.Description))}");
     return result.Value;
   }
@@ -149,7 +149,7 @@ public sealed class ClearCampaignTests(DraftsIntegrationTestWebAppFactory factor
       DefaultDraftType = DraftType.Standard.Value
     };
 
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
     result.IsSuccess.Should().BeTrue($"CreateSeriesCommand failed: {string.Join(", ", result.Errors.Select(e => e.Description))}");
     return result.Value;
   }
@@ -162,7 +162,7 @@ public sealed class ClearCampaignTests(DraftsIntegrationTestWebAppFactory factor
       Slug = Faker.Internet.DomainWord()
     };
 
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
     result.IsSuccess.Should().BeTrue($"CreateCampaignCommand failed: {string.Join(", ", result.Errors.Select(e => e.Description))}");
     return result.Value;
   }

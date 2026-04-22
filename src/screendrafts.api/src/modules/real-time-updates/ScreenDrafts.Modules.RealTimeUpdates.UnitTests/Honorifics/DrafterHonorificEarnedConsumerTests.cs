@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.RealTimeUpdates.UnitTests.Honorifics;
+﻿namespace ScreenDrafts.Modules.RealTimeUpdates.UnitTests.Honorifics;
 
 public sealed class DrafterHonorificEarnedConsumerTests
 {
@@ -19,7 +19,7 @@ public sealed class DrafterHonorificEarnedConsumerTests
     var integrationEvent = BuildEvent(draftPartPublicId: draftPartPublicId);
 
     // Act
-    await consumer.Handle(integrationEvent);
+    await consumer.Handle(integrationEvent, CancellationToken.None);
 
     // Assert
     hubContext.LastGroupName.Should().Be(DraftHub.GroupName(draftPartPublicId));
@@ -37,7 +37,7 @@ public sealed class DrafterHonorificEarnedConsumerTests
     var integrationEvent = BuildEvent();
 
     // Act
-    await consumer.Handle(integrationEvent);
+    await consumer.Handle(integrationEvent, CancellationToken.None);
 
     // Assert
     hubContext.SentMessages.Should().ContainSingle()
@@ -61,7 +61,7 @@ public sealed class DrafterHonorificEarnedConsumerTests
       appearanceCount: 5);
 
     // Act
-    await consumer.Handle(integrationEvent);
+    await consumer.Handle(integrationEvent, CancellationToken.None);
 
     // Assert
     var (_, args) = hubContext.SentMessages.Single();

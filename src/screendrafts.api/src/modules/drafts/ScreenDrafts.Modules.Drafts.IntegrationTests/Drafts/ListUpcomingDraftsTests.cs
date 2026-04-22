@@ -1,4 +1,4 @@
-﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafts;
+namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafts;
 
 public sealed class ListUpcomingDraftsTests(DraftsIntegrationTestWebAppFactory factory)
   : DraftsIntegrationTest(factory)
@@ -14,7 +14,7 @@ public sealed class ListUpcomingDraftsTests(DraftsIntegrationTestWebAppFactory f
     var query = new ListUpcomingDraftsQuery { UserId = Guid.NewGuid(), IsAdmin = false, IncludePatreon = true };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -34,7 +34,7 @@ public sealed class ListUpcomingDraftsTests(DraftsIntegrationTestWebAppFactory f
     var query = new ListUpcomingDraftsQuery { UserId = Guid.NewGuid(), IsAdmin = false, IncludePatreon = true };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -52,7 +52,7 @@ public sealed class ListUpcomingDraftsTests(DraftsIntegrationTestWebAppFactory f
     var query = new ListUpcomingDraftsQuery { UserId = Guid.NewGuid(), IsAdmin = false, IncludePatreon = true };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -72,7 +72,7 @@ public sealed class ListUpcomingDraftsTests(DraftsIntegrationTestWebAppFactory f
     var query = new ListUpcomingDraftsQuery { UserId = Guid.NewGuid(), IsAdmin = true, IncludePatreon = true };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -99,7 +99,7 @@ public sealed class ListUpcomingDraftsTests(DraftsIntegrationTestWebAppFactory f
     var query = new ListUpcomingDraftsQuery { UserId = userId, IsAdmin = false, IncludePatreon = true };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -124,7 +124,7 @@ public sealed class ListUpcomingDraftsTests(DraftsIntegrationTestWebAppFactory f
     var query = new ListUpcomingDraftsQuery { UserId = userId, IsAdmin = false, IncludePatreon = true };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -149,7 +149,7 @@ public sealed class ListUpcomingDraftsTests(DraftsIntegrationTestWebAppFactory f
     var query = new ListUpcomingDraftsQuery { UserId = Guid.NewGuid(), IsAdmin = false, IncludePatreon = true };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -170,7 +170,7 @@ public sealed class ListUpcomingDraftsTests(DraftsIntegrationTestWebAppFactory f
     var seriesId = await CreateSeriesAsync();
     var draftPublicId = await CreateDraftWithPartAsync(seriesId);
     var internalId = await GetFirstDraftPartIdAsync(draftPublicId);
-    var draftPart = await DbContext.DraftParts.FirstAsync(dp => dp.Id == DraftPartId.Create(internalId));
+    var draftPart = await DbContext.DraftParts.FirstAsync(dp => dp.Id == DraftPartId.Create(internalId), TestContext.Current.CancellationToken);
     return (draftPart.PublicId, internalId);
   }
 
@@ -183,14 +183,14 @@ public sealed class ListUpcomingDraftsTests(DraftsIntegrationTestWebAppFactory f
     await DbContext.Database.ExecuteSqlRawAsync(
       "UPDATE drafts.people SET user_id = {0} WHERE public_id = {1}", userId, personPublicId);
 
-    var hostPublicId = (await Sender.Send(new CreateHostCommand { PersonPublicId = personPublicId })).Value;
+    var hostPublicId = (await Sender.Send(new CreateHostCommand { PersonPublicId = personPublicId }, TestContext.Current.CancellationToken)).Value;
 
     await Sender.Send(new AddHostToDraftPartCommand
     {
       DraftPartId = draftPartPublicId,
       HostPublicId = hostPublicId,
       HostRole = HostRole.Primary
-    });
+    }, TestContext.Current.CancellationToken);
 
     return userId;
   }
@@ -204,14 +204,14 @@ public sealed class ListUpcomingDraftsTests(DraftsIntegrationTestWebAppFactory f
     await DbContext.Database.ExecuteSqlRawAsync(
       "UPDATE drafts.people SET user_id = {0} WHERE public_id = {1}", userId, personPublicId);
 
-    var drafterPublicId = (await Sender.Send(new CreateDrafterCommand(personPublicId))).Value;
+    var drafterPublicId = (await Sender.Send(new CreateDrafterCommand(personPublicId), TestContext.Current.CancellationToken)).Value;
 
     await Sender.Send(new AddParticipantToDraftPartCommand
     {
       DraftPartId = draftPartPublicId,
       ParticipantPublicId = drafterPublicId,
       ParticipantKind = ParticipantKind.Drafter
-    });
+    }, TestContext.Current.CancellationToken);
 
     return userId;
   }
@@ -227,7 +227,7 @@ public sealed class ListUpcomingDraftsTests(DraftsIntegrationTestWebAppFactory f
       ContinuityDateRule = ContinuityDateRule.AnyChannelFirstRelease.Value,
       AllowedDraftTypes = (int)DraftTypeMask.All,
       DefaultDraftType = DraftType.Standard.Value
-    });
+    }, TestContext.Current.CancellationToken);
 
     return result.Value;
   }
@@ -239,7 +239,7 @@ public sealed class ListUpcomingDraftsTests(DraftsIntegrationTestWebAppFactory f
       Title = Faker.Company.CompanyName(),
       DraftType = DraftType.Standard.Value,
       SeriesId = seriesId,
-    });
+    }, TestContext.Current.CancellationToken);
 
     var draftPublicId = draftResult.Value;
     await Sender.Send(new CreateDraftPartCommand
@@ -248,7 +248,7 @@ public sealed class ListUpcomingDraftsTests(DraftsIntegrationTestWebAppFactory f
       PartIndex = 1,
       MinimumPosition = 1,
       MaximumPosition = 7,
-    });
+    }, TestContext.Current.CancellationToken);
 
     return draftPublicId;
   }

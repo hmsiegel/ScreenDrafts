@@ -1,4 +1,4 @@
-using ScreenDrafts.Modules.Drafts.Features.DrafterTeams.Create;
+﻿using ScreenDrafts.Modules.Drafts.Features.DrafterTeams.Create;
 using ScreenDrafts.Modules.Drafts.Features.DrafterTeams.Search;
 
 namespace ScreenDrafts.Modules.Drafts.IntegrationTests.DrafterTeams;
@@ -10,7 +10,7 @@ public sealed class SearchDrafterTeamsTests(DraftsIntegrationTestWebAppFactory f
   public async Task SearchDrafterTeams_WithNoTeams_ShouldReturnEmptyAsync()
   {
     // Act
-    var result = await Sender.Send(new SearchDrafterTeamsQuery());
+    var result = await Sender.Send(new SearchDrafterTeamsQuery(), TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -28,7 +28,7 @@ public sealed class SearchDrafterTeamsTests(DraftsIntegrationTestWebAppFactory f
     var id3 = await teamFactory.CreateAndSaveTeamAsync();
 
     // Act
-    var result = await Sender.Send(new SearchDrafterTeamsQuery { PageSize = 10 });
+    var result = await Sender.Send(new SearchDrafterTeamsQuery { PageSize = 10 }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -44,13 +44,13 @@ public sealed class SearchDrafterTeamsTests(DraftsIntegrationTestWebAppFactory f
   {
     // Arrange
     var uniquePrefix = "UniqueAlpha_" + Faker.Random.AlphaNumeric(6);
-    await Sender.Send(new CreateDrafterTeamCommand { Name = uniquePrefix + "_Team1" });
-    await Sender.Send(new CreateDrafterTeamCommand { Name = uniquePrefix + "_Team2" });
+    await Sender.Send(new CreateDrafterTeamCommand { Name = uniquePrefix + "_Team1" }, TestContext.Current.CancellationToken);
+    await Sender.Send(new CreateDrafterTeamCommand { Name = uniquePrefix + "_Team2" }, TestContext.Current.CancellationToken);
     var teamFactory = new DrafterTeamFactory(Sender, Faker);
     await teamFactory.CreateAndSaveTeamAsync(); // unrelated team
 
     // Act
-    var result = await Sender.Send(new SearchDrafterTeamsQuery { Name = uniquePrefix });
+    var result = await Sender.Send(new SearchDrafterTeamsQuery { Name = uniquePrefix }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -64,10 +64,10 @@ public sealed class SearchDrafterTeamsTests(DraftsIntegrationTestWebAppFactory f
   {
     // Arrange
     var baseName = "CaseTest_" + Faker.Random.AlphaNumeric(6);
-    await Sender.Send(new CreateDrafterTeamCommand { Name = baseName });
+    await Sender.Send(new CreateDrafterTeamCommand { Name = baseName }, TestContext.Current.CancellationToken);
 
     // Act - search with different casing
-    var result = await Sender.Send(new SearchDrafterTeamsQuery { Name = baseName.ToUpperInvariant() });
+    var result = await Sender.Send(new SearchDrafterTeamsQuery { Name = baseName.ToUpperInvariant() }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -80,10 +80,10 @@ public sealed class SearchDrafterTeamsTests(DraftsIntegrationTestWebAppFactory f
   {
     // Arrange
     var suffix = "PartialMatch_" + Faker.Random.AlphaNumeric(6);
-    await Sender.Send(new CreateDrafterTeamCommand { Name = "Prefix_" + suffix });
+    await Sender.Send(new CreateDrafterTeamCommand { Name = "Prefix_" + suffix }, TestContext.Current.CancellationToken);
 
     // Act - search with only the suffix
-    var result = await Sender.Send(new SearchDrafterTeamsQuery { Name = suffix });
+    var result = await Sender.Send(new SearchDrafterTeamsQuery { Name = suffix }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -99,7 +99,7 @@ public sealed class SearchDrafterTeamsTests(DraftsIntegrationTestWebAppFactory f
     await teamFactory.CreateAndSaveTeamAsync();
 
     // Act
-    var result = await Sender.Send(new SearchDrafterTeamsQuery { Name = "zzz_no_match_" + Faker.Random.AlphaNumeric(12) });
+    var result = await Sender.Send(new SearchDrafterTeamsQuery { Name = "zzz_no_match_" + Faker.Random.AlphaNumeric(12) }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -117,7 +117,7 @@ public sealed class SearchDrafterTeamsTests(DraftsIntegrationTestWebAppFactory f
     await teamFactory.CreateAndSaveTeamAsync();
 
     // Act
-    var result = await Sender.Send(new SearchDrafterTeamsQuery { Page = 1, PageSize = 2 });
+    var result = await Sender.Send(new SearchDrafterTeamsQuery { Page = 1, PageSize = 2 }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -139,7 +139,7 @@ public sealed class SearchDrafterTeamsTests(DraftsIntegrationTestWebAppFactory f
     await teamFactory.CreateAndSaveTeamAsync();
 
     // Act
-    var result = await Sender.Send(new SearchDrafterTeamsQuery { Page = 2, PageSize = 2 });
+    var result = await Sender.Send(new SearchDrafterTeamsQuery { Page = 2, PageSize = 2 }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -155,12 +155,12 @@ public sealed class SearchDrafterTeamsTests(DraftsIntegrationTestWebAppFactory f
   {
     // Arrange - use a shared prefix so we can isolate ordering
     var prefix = "Order_" + Faker.Random.AlphaNumeric(6) + "_";
-    await Sender.Send(new CreateDrafterTeamCommand { Name = prefix + "C" });
-    await Sender.Send(new CreateDrafterTeamCommand { Name = prefix + "A" });
-    await Sender.Send(new CreateDrafterTeamCommand { Name = prefix + "B" });
+    await Sender.Send(new CreateDrafterTeamCommand { Name = prefix + "C" }, TestContext.Current.CancellationToken);
+    await Sender.Send(new CreateDrafterTeamCommand { Name = prefix + "A" }, TestContext.Current.CancellationToken);
+    await Sender.Send(new CreateDrafterTeamCommand { Name = prefix + "B" }, TestContext.Current.CancellationToken);
 
     // Act
-    var result = await Sender.Send(new SearchDrafterTeamsQuery { Name = prefix });
+    var result = await Sender.Send(new SearchDrafterTeamsQuery { Name = prefix }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -175,11 +175,11 @@ public sealed class SearchDrafterTeamsTests(DraftsIntegrationTestWebAppFactory f
   {
     // Arrange
     var teamName = "ShapeTest_" + Faker.Random.AlphaNumeric(6);
-    var createResult = await Sender.Send(new CreateDrafterTeamCommand { Name = teamName });
+    var createResult = await Sender.Send(new CreateDrafterTeamCommand { Name = teamName }, TestContext.Current.CancellationToken);
     var teamId = createResult.Value;
 
     // Act
-    var result = await Sender.Send(new SearchDrafterTeamsQuery { Name = teamName });
+    var result = await Sender.Send(new SearchDrafterTeamsQuery { Name = teamName }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();

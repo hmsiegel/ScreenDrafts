@@ -58,23 +58,19 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
       return;
     }
 
-    _dbContainer = new PostgreSqlBuilder()
-        .WithImage("postgres:latest")
+    _dbContainer = new PostgreSqlBuilder("postgres:latest")
         .WithDatabase("screendrafts")
         .WithUsername("postgres")
         .WithPassword("postgres")
         .Build();
 
-    _redisContainer = new RedisBuilder()
-        .WithImage("redis:latest")
+    _redisContainer = new RedisBuilder("redis:latest")
         .Build();
 
-    _rabbitMqContainer = new RabbitMqBuilder()
-      .WithImage("rabbitmq:3-management")
+    _rabbitMqContainer = new RabbitMqBuilder("rabbitmq:4-management")
       .Build();
 
-    _mongoDbContainer = new MongoDbBuilder()
-      .WithImage("mongo:latest")
+    _mongoDbContainer = new MongoDbBuilder("mongo:latest")
       .Build();
 
     Task.WaitAll(
@@ -271,5 +267,10 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
       _disposed = true;
     }
     base.Dispose(disposing);
+  }
+
+  ValueTask IAsyncLifetime.InitializeAsync()
+  {
+    return new ValueTask(InitializeAsync());
   }
 }

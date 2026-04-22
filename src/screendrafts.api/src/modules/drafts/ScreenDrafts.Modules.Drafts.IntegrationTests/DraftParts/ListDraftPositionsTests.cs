@@ -1,4 +1,4 @@
-﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.DraftParts;
+namespace ScreenDrafts.Modules.Drafts.IntegrationTests.DraftParts;
 
 public sealed class ListDraftPositionsTests(DraftsIntegrationTestWebAppFactory factory)
   : DraftsIntegrationTest(factory)
@@ -16,7 +16,7 @@ public sealed class ListDraftPositionsTests(DraftsIntegrationTestWebAppFactory f
     var query = new ListDraftPositionsQuery { DraftPartId = draftPartPublicId };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -43,12 +43,12 @@ public sealed class ListDraftPositionsTests(DraftsIntegrationTestWebAppFactory f
         new DraftPositionRequest { Name = "Alpha", Picks = [1, 3] },
         new DraftPositionRequest { Name = "Beta", Picks = [2, 4] }
       ]
-    });
+    }, TestContext.Current.CancellationToken);
 
     var query = new ListDraftPositionsQuery { DraftPartId = draftPartPublicId };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -67,17 +67,17 @@ public sealed class ListDraftPositionsTests(DraftsIntegrationTestWebAppFactory f
     {
       DraftPartId = draftPartPublicId,
       Positions = [new DraftPositionRequest { Name = "Slot 1", Picks = [1] }]
-    });
+    }, TestContext.Current.CancellationToken);
 
     var expectedPublicId = await DbContext.DraftPositions
       .Where(p => p.GameBoard.DraftPartId == DraftPartId.Create(internalId))
       .Select(p => p.PublicId)
-      .FirstAsync();
+      .FirstAsync(TestContext.Current.CancellationToken);
 
     var query = new ListDraftPositionsQuery { DraftPartId = draftPartPublicId };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -100,20 +100,20 @@ public sealed class ListDraftPositionsTests(DraftsIntegrationTestWebAppFactory f
     {
       DraftPartId = draftPartPublicId,
       Positions = [new DraftPositionRequest { Name = "Slot 1", Picks = [1] }]
-    });
+    }, TestContext.Current.CancellationToken);
 
     var position = await DbContext.DraftPositions
       .Include(p => p.GameBoard)
       .ThenInclude(gb => gb.DraftPart)
-      .FirstAsync(p => p.GameBoard.DraftPartId == DraftPartId.Create(internalId));
+      .FirstAsync(p => p.GameBoard.DraftPartId == DraftPartId.Create(internalId), TestContext.Current.CancellationToken);
 
     position.AssignParticipant(new Participant(drafterInternalId, ParticipantKind.Drafter));
-    await DbContext.SaveChangesAsync();
+    await DbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
     var query = new ListDraftPositionsQuery { DraftPartId = draftPartPublicId };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -134,12 +134,12 @@ public sealed class ListDraftPositionsTests(DraftsIntegrationTestWebAppFactory f
     {
       DraftPartId = draftPartPublicId,
       Positions = [new DraftPositionRequest { Name = "Slot 1", Picks = [1] }]
-    });
+    }, TestContext.Current.CancellationToken);
 
     var query = new ListDraftPositionsQuery { DraftPartId = draftPartPublicId };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -156,34 +156,34 @@ public sealed class ListDraftPositionsTests(DraftsIntegrationTestWebAppFactory f
     var seriesId = await CreateSeriesAsync();
     var draftPublicId = await CreateDraftAsync(seriesId);
     var internalId = await GetFirstDraftPartIdAsync(draftPublicId);
-    var draftPart = await DbContext.DraftParts.FirstAsync(dp => dp.Id == DraftPartId.Create(internalId));
+    var draftPart = await DbContext.DraftParts.FirstAsync(dp => dp.Id == DraftPartId.Create(internalId), TestContext.Current.CancellationToken);
 
     var gameBoard = GameBoard.Create(draftPart).Value;
     DbContext.GameBoards.Add(gameBoard);
-    await DbContext.SaveChangesAsync();
+    await DbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
     return (draftPart.PublicId, internalId);
   }
 
   private async Task<Guid> AddDrafterToPartAsync(Guid draftPartInternalId)
   {
-    var draftPart = await DbContext.DraftParts.FirstAsync(dp => dp.Id == DraftPartId.Create(draftPartInternalId));
+    var draftPart = await DbContext.DraftParts.FirstAsync(dp => dp.Id == DraftPartId.Create(draftPartInternalId), TestContext.Current.CancellationToken);
 
     var peopleFactory = new PeopleFactory(Sender, Faker);
     var personId = await peopleFactory.CreateAndSavePersonAsync();
-    var drafterPublicId = (await Sender.Send(new CreateDrafterCommand(personId))).Value;
+    var drafterPublicId = (await Sender.Send(new CreateDrafterCommand(personId), TestContext.Current.CancellationToken)).Value;
 
     await Sender.Send(new AddParticipantToDraftPartCommand
     {
       DraftPartId = draftPart.PublicId,
       ParticipantPublicId = drafterPublicId,
       ParticipantKind = ParticipantKind.Drafter
-    });
+    }, TestContext.Current.CancellationToken);
 
     return await DbContext.Drafters
       .Where(d => d.PublicId == drafterPublicId)
       .Select(d => d.Id.Value)
-      .FirstAsync();
+      .FirstAsync(TestContext.Current.CancellationToken);
   }
 
   private async Task<Guid> CreateSeriesAsync()
@@ -197,7 +197,7 @@ public sealed class ListDraftPositionsTests(DraftsIntegrationTestWebAppFactory f
       ContinuityDateRule = ContinuityDateRule.AnyChannelFirstRelease.Value,
       AllowedDraftTypes = (int)DraftTypeMask.All,
       DefaultDraftType = DraftType.Standard.Value
-    });
+    }, TestContext.Current.CancellationToken);
 
     return result.Value;
   }
@@ -209,7 +209,7 @@ public sealed class ListDraftPositionsTests(DraftsIntegrationTestWebAppFactory f
       Title = Faker.Company.CompanyName(),
       DraftType = DraftType.Standard.Value,
       SeriesId = seriesId,
-    });
+    }, TestContext.Current.CancellationToken);
 
     var draftPublicId = draftResult.Value;
     await Sender.Send(new CreateDraftPartCommand
@@ -218,7 +218,7 @@ public sealed class ListDraftPositionsTests(DraftsIntegrationTestWebAppFactory f
       PartIndex = 1,
       MinimumPosition = 1,
       MaximumPosition = 7,
-    });
+    }, TestContext.Current.CancellationToken);
 
     return draftPublicId;
   }

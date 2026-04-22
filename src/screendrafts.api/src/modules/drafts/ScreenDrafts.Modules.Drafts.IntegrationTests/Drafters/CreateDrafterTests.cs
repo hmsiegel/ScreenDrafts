@@ -16,14 +16,14 @@ public sealed class CreateDrafterTests(DraftsIntegrationTestWebAppFactory factor
     var command = new CreateDrafterCommand(personId);
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
     result.IsSuccess.Should().BeTrue();
     result.Value.Should().NotBeNullOrEmpty();
 
-    var createdDrafter = await Sender.Send(new GetDrafterQuery(result.Value));
+    var createdDrafter = await Sender.Send(new GetDrafterQuery(result.Value), TestContext.Current.CancellationToken);
     createdDrafter.IsSuccess.Should().BeTrue();
     createdDrafter.Value.DrafterId.Should().Be(result.Value);
   }
@@ -36,7 +36,7 @@ public sealed class CreateDrafterTests(DraftsIntegrationTestWebAppFactory factor
     var command = new CreateDrafterCommand(invalidPersonId);
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -53,13 +53,13 @@ public sealed class CreateDrafterTests(DraftsIntegrationTestWebAppFactory factor
     var command = new CreateDrafterCommand(personId);
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
     result.IsSuccess.Should().BeTrue();
 
-    var drafter = await Sender.Send(new GetDrafterQuery(result.Value));
+    var drafter = await Sender.Send(new GetDrafterQuery(result.Value), TestContext.Current.CancellationToken);
     drafter.Value.IsRetired.Should().BeFalse();
     drafter.Value.RetiredOnUtc.Should().BeNull();
   }

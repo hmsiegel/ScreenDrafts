@@ -18,7 +18,7 @@ public sealed class EditCampaignTests(DraftsIntegrationTestWebAppFactory factory
       Slug = originalSlug
     };
 
-    var createResult = await Sender.Send(createCommand);
+    var createResult = await Sender.Send(createCommand, TestContext.Current.CancellationToken);
     var publicId = createResult.Value;
 
     var newName = Faker.Commerce.Department();
@@ -30,14 +30,14 @@ public sealed class EditCampaignTests(DraftsIntegrationTestWebAppFactory factory
     };
 
     // Act
-    var result = await Sender.Send(editCommand);
+    var result = await Sender.Send(editCommand, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
     result.IsSuccess.Should().BeTrue();
 
     var getQuery = new GetCampaignQuery(publicId);
-    var campaign = await Sender.Send(getQuery);
+    var campaign = await Sender.Send(getQuery, TestContext.Current.CancellationToken);
     campaign.Value.Name.Should().Be(newName);
     campaign.Value.Slug.Should().Be(originalSlug);
   }
@@ -54,7 +54,7 @@ public sealed class EditCampaignTests(DraftsIntegrationTestWebAppFactory factory
       Slug = originalSlug
     };
 
-    var createResult = await Sender.Send(createCommand);
+    var createResult = await Sender.Send(createCommand, TestContext.Current.CancellationToken);
     var publicId = createResult.Value;
 
     var newSlug = Faker.Lorem.Slug();
@@ -66,14 +66,14 @@ public sealed class EditCampaignTests(DraftsIntegrationTestWebAppFactory factory
     };
 
     // Act
-    var result = await Sender.Send(editCommand);
+    var result = await Sender.Send(editCommand, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
     result.IsSuccess.Should().BeTrue();
 
     var getQuery = new GetCampaignQuery(publicId);
-    var campaign = await Sender.Send(getQuery);
+    var campaign = await Sender.Send(getQuery, TestContext.Current.CancellationToken);
     campaign.Value.Name.Should().Be(originalName);
     campaign.Value.Slug.Should().Be(newSlug);
   }
@@ -90,7 +90,7 @@ public sealed class EditCampaignTests(DraftsIntegrationTestWebAppFactory factory
       Slug = originalSlug
     };
 
-    var createResult = await Sender.Send(createCommand);
+    var createResult = await Sender.Send(createCommand, TestContext.Current.CancellationToken);
     var publicId = createResult.Value;
 
     var newName = Faker.Commerce.Department();
@@ -103,14 +103,14 @@ public sealed class EditCampaignTests(DraftsIntegrationTestWebAppFactory factory
     };
 
     // Act
-    var result = await Sender.Send(editCommand);
+    var result = await Sender.Send(editCommand, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
     result.IsSuccess.Should().BeTrue();
 
     var getQuery = new GetCampaignQuery(publicId);
-    var campaign = await Sender.Send(getQuery);
+    var campaign = await Sender.Send(getQuery, TestContext.Current.CancellationToken);
     campaign.Value.Name.Should().Be(newName);
     campaign.Value.Slug.Should().Be(newSlug);
   }
@@ -128,7 +128,7 @@ public sealed class EditCampaignTests(DraftsIntegrationTestWebAppFactory factory
     };
 
     // Act
-    var result = await Sender.Send(editCommand);
+    var result = await Sender.Send(editCommand, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -147,7 +147,7 @@ public sealed class EditCampaignTests(DraftsIntegrationTestWebAppFactory factory
       Slug = originalSlug
     };
 
-    var createResult = await Sender.Send(createCommand);
+    var createResult = await Sender.Send(createCommand, TestContext.Current.CancellationToken);
     var publicId = createResult.Value;
 
     var editCommand = new EditCampaignCommand
@@ -158,7 +158,7 @@ public sealed class EditCampaignTests(DraftsIntegrationTestWebAppFactory factory
     };
 
     // Act
-    var result = await Sender.Send(editCommand);
+    var result = await Sender.Send(editCommand, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -177,7 +177,7 @@ public sealed class EditCampaignTests(DraftsIntegrationTestWebAppFactory factory
       Slug = originalSlug
     };
 
-    var createResult = await Sender.Send(createCommand);
+    var createResult = await Sender.Send(createCommand, TestContext.Current.CancellationToken);
     var publicId = createResult.Value;
 
     var editCommand = new EditCampaignCommand
@@ -188,7 +188,7 @@ public sealed class EditCampaignTests(DraftsIntegrationTestWebAppFactory factory
     };
 
     // Act
-    var result = await Sender.Send(editCommand);
+    var result = await Sender.Send(editCommand, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -207,7 +207,7 @@ public sealed class EditCampaignTests(DraftsIntegrationTestWebAppFactory factory
       Slug = originalSlug
     };
 
-    var createResult = await Sender.Send(createCommand);
+    var createResult = await Sender.Send(createCommand, TestContext.Current.CancellationToken);
     var publicId = createResult.Value;
 
     var editCommand = new EditCampaignCommand
@@ -218,14 +218,14 @@ public sealed class EditCampaignTests(DraftsIntegrationTestWebAppFactory factory
     };
 
     // Act
-    var result = await Sender.Send(editCommand);
+    var result = await Sender.Send(editCommand, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
     result.IsSuccess.Should().BeTrue();
 
     var getQuery = new GetCampaignQuery(publicId);
-    var campaign = await Sender.Send(getQuery);
+    var campaign = await Sender.Send(getQuery, TestContext.Current.CancellationToken);
     campaign.Value.Name.Should().Be(originalName);
     campaign.Value.Slug.Should().Be(originalSlug);
   }

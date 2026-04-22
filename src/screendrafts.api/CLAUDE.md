@@ -151,3 +151,10 @@ Sensitive development settings (connection strings, secrets) go in `appsettings.
 - **Unit tests**: Extend `DraftsBaseTest` (or the equivalent base for other modules). Use `Faker` (Bogus) for test data. Test domain behavior, not infrastructure.
 - **Integration tests**: Extend `IntegrationTestWebAppFactory` (Testcontainers spins up real Postgres/Redis/RabbitMQ/MongoDB/Keycloak). Apply EF migrations via `ApplyMigrationsAsync`.
 - **Architecture tests**: Use NetArchTest to enforce that e.g. `.Domain` does not reference `.Infrastructure`.
+
+### Personal Preferences
+- Use expression-bodied members where concise.
+- Use `var` when the type is obvious from the right-hand side.
+- Use pattern matching (`is`, `switch`) instead of null checks or type checks.
+- Keep methods short (ideally <20 lines) and focused on a single responsibility.
+- Organize using directives in a GlobalUsings.cs file per project. 

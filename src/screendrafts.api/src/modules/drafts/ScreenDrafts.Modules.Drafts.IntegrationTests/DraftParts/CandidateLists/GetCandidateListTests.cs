@@ -21,7 +21,7 @@ public sealed class GetCandidateListTests(DraftsIntegrationTestWebAppFactory fac
     };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -43,14 +43,14 @@ public sealed class GetCandidateListTests(DraftsIntegrationTestWebAppFactory fac
       DraftPartId = draftPartPublicId,
       TmdbId = tmdbId1,
       AddedByPublicId = addedByPublicId
-    });
+    }, TestContext.Current.CancellationToken);
 
     await Sender.Send(new AddCandidateEntryCommand
     {
       DraftPartId = draftPartPublicId,
       TmdbId = tmdbId2,
       AddedByPublicId = addedByPublicId
-    });
+    }, TestContext.Current.CancellationToken);
 
     var query = new GetCandidateListQuery
     {
@@ -60,7 +60,7 @@ public sealed class GetCandidateListTests(DraftsIntegrationTestWebAppFactory fac
     };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -83,7 +83,7 @@ public sealed class GetCandidateListTests(DraftsIntegrationTestWebAppFactory fac
       DraftPartId = draftPartPublicId,
       TmdbId = tmdbId,
       AddedByPublicId = addedByPublicId
-    });
+    }, TestContext.Current.CancellationToken);
 
     var query = new GetCandidateListQuery
     {
@@ -93,7 +93,7 @@ public sealed class GetCandidateListTests(DraftsIntegrationTestWebAppFactory fac
     };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     var item = result.Value.Response.Items.First(i => i.TmdbId == tmdbId);
@@ -113,7 +113,7 @@ public sealed class GetCandidateListTests(DraftsIntegrationTestWebAppFactory fac
       DraftPartId = draftPartPublicId,
       TmdbId = tmdbId,
       AddedByPublicId = "u_" + Faker.Random.AlphaNumeric(17)
-    });
+    }, TestContext.Current.CancellationToken);
 
     var query = new GetCandidateListQuery
     {
@@ -123,7 +123,7 @@ public sealed class GetCandidateListTests(DraftsIntegrationTestWebAppFactory fac
     };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     var item = result.Value.Response.Items.First(i => i.TmdbId == tmdbId);
@@ -143,7 +143,7 @@ public sealed class GetCandidateListTests(DraftsIntegrationTestWebAppFactory fac
       DraftPartId = draftPartPublicId,
       TmdbId = tmdbId,
       AddedByPublicId = "u_" + Faker.Random.AlphaNumeric(17)
-    });
+    }, TestContext.Current.CancellationToken);
 
     var query = new GetCandidateListQuery
     {
@@ -153,7 +153,7 @@ public sealed class GetCandidateListTests(DraftsIntegrationTestWebAppFactory fac
     };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     var item = result.Value.Response.Items.First(i => i.TmdbId == tmdbId);
@@ -179,7 +179,7 @@ public sealed class GetCandidateListTests(DraftsIntegrationTestWebAppFactory fac
         DraftPartId = draftPartPublicId,
         TmdbId = 1_000_000 + i,
         AddedByPublicId = addedByPublicId
-      });
+      }, TestContext.Current.CancellationToken);
     }
 
     var query = new GetCandidateListQuery
@@ -190,7 +190,7 @@ public sealed class GetCandidateListTests(DraftsIntegrationTestWebAppFactory fac
     };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.Value.Response.TotalCount.Should().Be(5);
@@ -213,7 +213,7 @@ public sealed class GetCandidateListTests(DraftsIntegrationTestWebAppFactory fac
         DraftPartId = draftPartPublicId,
         TmdbId = 2_000_000 + i,
         AddedByPublicId = addedByPublicId
-      });
+      }, TestContext.Current.CancellationToken);
     }
 
     var query = new GetCandidateListQuery
@@ -224,7 +224,7 @@ public sealed class GetCandidateListTests(DraftsIntegrationTestWebAppFactory fac
     };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.Value.Response.TotalCount.Should().Be(4);
@@ -243,7 +243,7 @@ public sealed class GetCandidateListTests(DraftsIntegrationTestWebAppFactory fac
     var draftPartInternalId = await GetFirstDraftPartIdAsync(draftPublicId);
 
     var draftPart = await DbContext.DraftParts
-      .FirstAsync(dp => dp.Id == DraftPartId.Create(draftPartInternalId));
+      .FirstAsync(dp => dp.Id == DraftPartId.Create(draftPartInternalId), TestContext.Current.CancellationToken);
 
     return draftPart.PublicId;
   }
@@ -259,7 +259,7 @@ public sealed class GetCandidateListTests(DraftsIntegrationTestWebAppFactory fac
       ContinuityDateRule = ContinuityDateRule.AnyChannelFirstRelease.Value,
       AllowedDraftTypes = (int)DraftTypeMask.All,
       DefaultDraftType = DraftType.Standard.Value
-    });
+    }, TestContext.Current.CancellationToken);
 
     return result.Value;
   }
@@ -271,7 +271,7 @@ public sealed class GetCandidateListTests(DraftsIntegrationTestWebAppFactory fac
       Title = Faker.Company.CompanyName(),
       DraftType = DraftType.Standard.Value,
       SeriesId = seriesId
-    });
+    }, TestContext.Current.CancellationToken);
 
     var draftPublicId = draftResult.Value;
 
@@ -281,7 +281,7 @@ public sealed class GetCandidateListTests(DraftsIntegrationTestWebAppFactory fac
       PartIndex = 1,
       MinimumPosition = 1,
       MaximumPosition = 7
-    });
+    }, TestContext.Current.CancellationToken);
 
     return draftPublicId;
   }

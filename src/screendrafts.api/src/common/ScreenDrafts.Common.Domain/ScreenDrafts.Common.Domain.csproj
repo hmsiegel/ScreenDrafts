@@ -4,9 +4,9 @@
     <PackageReference Include="Ardalis.GuardClauses" />
     <PackageReference Include="Ardalis.SmartEnum" />
     <PackageReference Include="IMDbApiLib" />
-    <PackageReference Include="MailKit" />
     <PackageReference Include="MediatR.Contracts" />
     <PackageReference Include="OmdbApiNet" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.Http" />
   </ItemGroup>
 
   <ItemGroup>

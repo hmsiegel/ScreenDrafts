@@ -21,7 +21,7 @@ public sealed class SetCampaignTests(DraftsIntegrationTestWebAppFactory factory)
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -40,7 +40,7 @@ public sealed class SetCampaignTests(DraftsIntegrationTestWebAppFactory factory)
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -60,7 +60,7 @@ public sealed class SetCampaignTests(DraftsIntegrationTestWebAppFactory factory)
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -80,7 +80,7 @@ public sealed class SetCampaignTests(DraftsIntegrationTestWebAppFactory factory)
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -100,7 +100,7 @@ public sealed class SetCampaignTests(DraftsIntegrationTestWebAppFactory factory)
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -121,7 +121,7 @@ public sealed class SetCampaignTests(DraftsIntegrationTestWebAppFactory factory)
     {
       DraftId = draftId,
       CampaignId = firstCampaignId
-    });
+    }, TestContext.Current.CancellationToken);
 
     // Change to second campaign
     var command = new SetCampaignDraftCommand
@@ -131,7 +131,7 @@ public sealed class SetCampaignTests(DraftsIntegrationTestWebAppFactory factory)
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -148,7 +148,7 @@ public sealed class SetCampaignTests(DraftsIntegrationTestWebAppFactory factory)
       SeriesId = seriesId,
     };
 
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
     return result.Value;
   }
 
@@ -165,7 +165,7 @@ public sealed class SetCampaignTests(DraftsIntegrationTestWebAppFactory factory)
       DefaultDraftType = DraftType.Standard.Value
     };
 
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
     return result.Value;
   }
 
@@ -177,7 +177,7 @@ public sealed class SetCampaignTests(DraftsIntegrationTestWebAppFactory factory)
       Slug = Faker.Internet.DomainWord()
     };
 
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
     return result.Value;
   }
 }

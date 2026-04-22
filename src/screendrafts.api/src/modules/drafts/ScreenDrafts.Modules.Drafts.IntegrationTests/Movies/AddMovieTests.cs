@@ -19,7 +19,7 @@ public sealed class AddMovieTests(DraftsIntegrationTestWebAppFactory factory)
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -39,7 +39,7 @@ public sealed class AddMovieTests(DraftsIntegrationTestWebAppFactory factory)
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -59,7 +59,7 @@ public sealed class AddMovieTests(DraftsIntegrationTestWebAppFactory factory)
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -79,7 +79,7 @@ public sealed class AddMovieTests(DraftsIntegrationTestWebAppFactory factory)
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -102,7 +102,7 @@ public sealed class AddMovieTests(DraftsIntegrationTestWebAppFactory factory)
     };
 
     // Add movie first time
-    await Sender.Send(firstCommand);
+    await Sender.Send(firstCommand, TestContext.Current.CancellationToken);
 
     // Try to add movie again with same Public ID
     var secondCommand = new AddMovieCommand
@@ -115,7 +115,7 @@ public sealed class AddMovieTests(DraftsIntegrationTestWebAppFactory factory)
     };
 
     // Act
-    var result = await Sender.Send(secondCommand);
+    var result = await Sender.Send(secondCommand, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -159,9 +159,9 @@ public sealed class AddMovieTests(DraftsIntegrationTestWebAppFactory factory)
     };
 
     // Act
-    var result1 = await Sender.Send(command1);
-    var result2 = await Sender.Send(command2);
-    var result3 = await Sender.Send(command3);
+    var result1 = await Sender.Send(command1, TestContext.Current.CancellationToken);
+    var result2 = await Sender.Send(command2, TestContext.Current.CancellationToken);
+    var result3 = await Sender.Send(command3, TestContext.Current.CancellationToken);
 
     // Assert
     result1.IsSuccess.Should().BeTrue();
@@ -193,7 +193,7 @@ public sealed class AddMovieTests(DraftsIntegrationTestWebAppFactory factory)
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -216,7 +216,7 @@ public sealed class AddMovieTests(DraftsIntegrationTestWebAppFactory factory)
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -238,7 +238,7 @@ public sealed class AddMovieTests(DraftsIntegrationTestWebAppFactory factory)
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();

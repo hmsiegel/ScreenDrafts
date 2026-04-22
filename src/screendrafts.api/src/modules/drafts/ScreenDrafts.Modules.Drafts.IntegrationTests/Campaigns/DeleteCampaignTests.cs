@@ -18,20 +18,20 @@ public sealed class DeleteCampaignTests(DraftsIntegrationTestWebAppFactory facto
       Slug = slug
     };
 
-    var createResult = await Sender.Send(createCommand);
+    var createResult = await Sender.Send(createCommand, TestContext.Current.CancellationToken);
     var publicId = createResult.Value;
 
     var deleteCommand = new DeleteCampaignCommand(publicId);
 
     // Act
-    var result = await Sender.Send(deleteCommand);
+    var result = await Sender.Send(deleteCommand, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
     result.IsSuccess.Should().BeTrue();
 
     var getQuery = new GetCampaignQuery(publicId, IncludeDeleted: true);
-    var campaign = await Sender.Send(getQuery);
+    var campaign = await Sender.Send(getQuery, TestContext.Current.CancellationToken);
     campaign.Value.IsDeleted.Should().BeTrue();
   }
 
@@ -43,7 +43,7 @@ public sealed class DeleteCampaignTests(DraftsIntegrationTestWebAppFactory facto
     var deleteCommand = new DeleteCampaignCommand(nonExistentPublicId);
 
     // Act
-    var result = await Sender.Send(deleteCommand);
+    var result = await Sender.Send(deleteCommand, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -62,23 +62,23 @@ public sealed class DeleteCampaignTests(DraftsIntegrationTestWebAppFactory facto
       Slug = slug
     };
 
-    var createResult = await Sender.Send(createCommand);
+    var createResult = await Sender.Send(createCommand, TestContext.Current.CancellationToken);
     var publicId = createResult.Value;
 
     var deleteCommand1 = new DeleteCampaignCommand(publicId);
-    await Sender.Send(deleteCommand1);
+    await Sender.Send(deleteCommand1, TestContext.Current.CancellationToken);
 
     var deleteCommand2 = new DeleteCampaignCommand(publicId);
 
     // Act
-    var result = await Sender.Send(deleteCommand2);
+    var result = await Sender.Send(deleteCommand2, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
     result.IsSuccess.Should().BeTrue();
 
     var getQuery = new GetCampaignQuery(publicId, IncludeDeleted: true);
-    var campaign = await Sender.Send(getQuery);
+    var campaign = await Sender.Send(getQuery, TestContext.Current.CancellationToken);
     campaign.Value.IsDeleted.Should().BeTrue();
   }
 }

@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Drafts.IntegrationTests.DraftPools;
+﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.DraftPools;
 
 public sealed class GetDraftPoolTests(DraftsIntegrationTestWebAppFactory factory)
   : DraftsIntegrationTest(factory)
@@ -14,7 +14,7 @@ public sealed class GetDraftPoolTests(DraftsIntegrationTestWebAppFactory factory
     var draftPublicId = await CreateDraftWithPoolAsync();
 
     // Act
-    var result = await Sender.Send(new GetDraftPoolQuery { PublicId = draftPublicId });
+    var result = await Sender.Send(new GetDraftPoolQuery { PublicId = draftPublicId }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -29,7 +29,7 @@ public sealed class GetDraftPoolTests(DraftsIntegrationTestWebAppFactory factory
     var draftPublicId = await CreateDraftWithPoolAsync();
 
     // Act
-    var result = await Sender.Send(new GetDraftPoolQuery { PublicId = draftPublicId });
+    var result = await Sender.Send(new GetDraftPoolQuery { PublicId = draftPublicId }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -45,11 +45,11 @@ public sealed class GetDraftPoolTests(DraftsIntegrationTestWebAppFactory factory
     var tmdbId2 = Faker.Random.Int(500_001, 1_000_000);
     await CreateMovieInDbAsync(tmdbId1);
     await CreateMovieInDbAsync(tmdbId2);
-    await Sender.Send(new AddMovieToDraftPoolCommand { PublicId = draftPublicId, TmdbId = tmdbId1 });
-    await Sender.Send(new AddMovieToDraftPoolCommand { PublicId = draftPublicId, TmdbId = tmdbId2 });
+    await Sender.Send(new AddMovieToDraftPoolCommand { PublicId = draftPublicId, TmdbId = tmdbId1 }, TestContext.Current.CancellationToken);
+    await Sender.Send(new AddMovieToDraftPoolCommand { PublicId = draftPublicId, TmdbId = tmdbId2 }, TestContext.Current.CancellationToken);
 
     // Act
-    var result = await Sender.Send(new GetDraftPoolQuery { PublicId = draftPublicId });
+    var result = await Sender.Send(new GetDraftPoolQuery { PublicId = draftPublicId }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -65,7 +65,7 @@ public sealed class GetDraftPoolTests(DraftsIntegrationTestWebAppFactory factory
     var draftPublicId = await CreateDraftWithPoolAsync();
 
     // Act
-    var result = await Sender.Send(new GetDraftPoolQuery { PublicId = draftPublicId });
+    var result = await Sender.Send(new GetDraftPoolQuery { PublicId = draftPublicId }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -80,7 +80,7 @@ public sealed class GetDraftPoolTests(DraftsIntegrationTestWebAppFactory factory
   public async Task GetDraftPool_ShouldFail_WhenPoolNotFoundAsync()
   {
     // Act
-    var result = await Sender.Send(new GetDraftPoolQuery { PublicId = "nonexistent-draft" });
+    var result = await Sender.Send(new GetDraftPoolQuery { PublicId = "nonexistent-draft" }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -93,7 +93,7 @@ public sealed class GetDraftPoolTests(DraftsIntegrationTestWebAppFactory factory
     var draftPublicId = await CreateDraftAsync();
 
     // Act
-    var result = await Sender.Send(new GetDraftPoolQuery { PublicId = draftPublicId });
+    var result = await Sender.Send(new GetDraftPoolQuery { PublicId = draftPublicId }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -114,14 +114,14 @@ public sealed class GetDraftPoolTests(DraftsIntegrationTestWebAppFactory factory
       ContinuityDateRule = ContinuityDateRule.AnyChannelFirstRelease.Value,
       AllowedDraftTypes = (int)DraftTypeMask.All,
       DefaultDraftType = DraftType.Standard.Value
-    });
+    }, TestContext.Current.CancellationToken);
 
     var draftResult = await Sender.Send(new CreateDraftCommand
     {
       Title = Faker.Company.CompanyName(),
       DraftType = DraftType.Standard.Value,
       SeriesId = seriesResult.Value,
-    });
+    }, TestContext.Current.CancellationToken);
 
     return draftResult.Value;
   }
@@ -129,7 +129,7 @@ public sealed class GetDraftPoolTests(DraftsIntegrationTestWebAppFactory factory
   private async Task<string> CreateDraftWithPoolAsync()
   {
     var draftPublicId = await CreateDraftAsync();
-    await Sender.Send(new CreateDraftPoolCommand { PublicId = draftPublicId });
+    await Sender.Send(new CreateDraftPoolCommand { PublicId = draftPublicId }, TestContext.Current.CancellationToken);
     return draftPublicId;
   }
 }

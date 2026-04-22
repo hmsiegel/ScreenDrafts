@@ -94,7 +94,7 @@ public sealed class RegularDraft_NewDrafters_Tests(DraftsIntegrationTestWebAppFa
       _moviePublicIds[i] = movie.PublicId;
     }
 
-    await DbContext.SaveChangesAsync();
+    await DbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
   }
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -118,7 +118,7 @@ public sealed class RegularDraft_NewDrafters_Tests(DraftsIntegrationTestWebAppFa
     // Assert — 7 picks total
     var picks = await DbContext.Picks
       .Where(p => p.DraftPart.PublicId == _draftPartPublicId)
-      .ToListAsync();
+      .ToListAsync(TestContext.Current.CancellationToken);
 
     picks.Should().HaveCount(7);
   }
@@ -133,7 +133,7 @@ public sealed class RegularDraft_NewDrafters_Tests(DraftsIntegrationTestWebAppFa
       .CountAsync(p =>
         p.DraftPart.PublicId == _draftPartPublicId &&
         p.PlayedByParticipantKindValue == ParticipantKind.Drafter &&
-        p.PlayedByParticipantIdValue == drafterAId);
+        p.PlayedByParticipantIdValue == drafterAId, TestContext.Current.CancellationToken);
 
     aCount.Should().Be(4, "Drafter A (trivia winner) should have 4 picks");
   }
@@ -148,7 +148,7 @@ public sealed class RegularDraft_NewDrafters_Tests(DraftsIntegrationTestWebAppFa
       .CountAsync(p =>
         p.DraftPart.PublicId == _draftPartPublicId &&
         p.PlayedByParticipantKindValue == ParticipantKind.Drafter &&
-        p.PlayedByParticipantIdValue == drafterBId);
+        p.PlayedByParticipantIdValue == drafterBId, TestContext.Current.CancellationToken);
 
     bCount.Should().Be(3, "Drafter B should have 3 picks");
   }
@@ -163,7 +163,7 @@ public sealed class RegularDraft_NewDrafters_Tests(DraftsIntegrationTestWebAppFa
 
     var draftPart = await DbContext.DraftParts
       .AsNoTracking()
-      .FirstAsync(dp => dp.PublicId == _draftPartPublicId);
+      .FirstAsync(dp => dp.PublicId == _draftPartPublicId, TestContext.Current.CancellationToken);
 
     draftPart.Status.Should().Be(DraftPartStatus.Completed);
   }
@@ -184,7 +184,7 @@ public sealed class RegularDraft_NewDrafters_Tests(DraftsIntegrationTestWebAppFa
       ParticipantKind = ParticipantKind.Drafter,
       MoviePublicId = "m_doesnotexist",
       ActedByPublicId = _drafterAPublicId
-    });
+    }, TestContext.Current.CancellationToken);
 
     result.IsFailure.Should().BeTrue("Picking a non-existent movie must fail");
   }
@@ -201,7 +201,7 @@ public sealed class RegularDraft_NewDrafters_Tests(DraftsIntegrationTestWebAppFa
 
     var movie = Movie.Create("Test", $"m_{Guid.NewGuid():N}", MediaType.Movie, Guid.NewGuid()).Value;
     DbContext.Movies.Add(movie);
-    await DbContext.SaveChangesAsync();
+    await DbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
     var result = await Sender.Send(new PlayPickCommand
     {
@@ -212,7 +212,7 @@ public sealed class RegularDraft_NewDrafters_Tests(DraftsIntegrationTestWebAppFa
       ParticipantKind = ParticipantKind.Drafter,
       MoviePublicId = movie.PublicId,
       ActedByPublicId = _drafterAPublicId
-    });
+    }, TestContext.Current.CancellationToken);
 
     result.IsFailure.Should().BeTrue("Picking when draft is not InProgress must fail");
   }
@@ -232,7 +232,7 @@ public sealed class RegularDraft_NewDrafters_Tests(DraftsIntegrationTestWebAppFa
       ParticipantKind = ParticipantKind.Drafter,
       MoviePublicId = _moviePublicIds[0],  // same movie
       ActedByPublicId = _drafterBPublicId
-    });
+    }, TestContext.Current.CancellationToken);
 
     result.IsFailure.Should().BeTrue("Picking a movie already picked in this part must fail");
   }
@@ -252,7 +252,7 @@ public sealed class RegularDraft_NewDrafters_Tests(DraftsIntegrationTestWebAppFa
       ParticipantPublicId = _drafterAPublicId,
       ParticipantKind = ParticipantKind.Drafter,
       ActorPublicId = _drafterAPublicId
-    });
+    }, TestContext.Current.CancellationToken);
 
     result.IsFailure.Should().BeTrue("Vetoing when no vetoes remain must fail");
   }
@@ -277,7 +277,7 @@ public sealed class RegularDraft_NewDrafters_Tests(DraftsIntegrationTestWebAppFa
         new DraftPositionRequest { Name = "A", Picks = [1, 3] },
         new DraftPositionRequest { Name = "B", Picks = [1, 2] }  // duplicate pick slot 1
       ]
-    });
+    }, TestContext.Current.CancellationToken);
 
     result.IsFailure.Should().BeTrue("Duplicate pick slots in positions must fail");
   }
@@ -341,7 +341,7 @@ public sealed class RegularDraft_NewDrafters_Tests(DraftsIntegrationTestWebAppFa
     var id = await DbContext.Drafters
       .Where(d => d.PublicId == drafterPublicId)
       .Select(d => d.Id)
-      .FirstAsync();
+      .FirstAsync(TestContext.Current.CancellationToken);
     return id.Value;
   }
 }

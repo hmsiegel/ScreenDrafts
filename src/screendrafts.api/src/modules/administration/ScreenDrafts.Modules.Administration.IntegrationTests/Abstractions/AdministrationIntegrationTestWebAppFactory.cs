@@ -1,6 +1,4 @@
-using Testcontainers.Keycloak;
-
-namespace ScreenDrafts.Modules.Administration.IntegrationTests.Abstractions;
+﻿namespace ScreenDrafts.Modules.Administration.IntegrationTests.Abstractions;
 
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1303:Do not pass literals as localized parameters", Justification = "<Pending>")]
 public sealed class AdministrationIntegrationTestWebAppFactory : IntegrationTestWebAppFactory
@@ -23,8 +21,7 @@ public sealed class AdministrationIntegrationTestWebAppFactory : IntegrationTest
     var realmFilePath = Path.Combine(AppContext.BaseDirectory, "screendrafts-realm-export.json");
     var realmFileExists = File.Exists(realmFilePath);
 
-    var builder = new KeycloakBuilder()
-      .WithImage("quay.io/keycloak/keycloak:26.1.0")
+    var builder = new KeycloakBuilder("quay.io/keycloak/keycloak:26.1.0")
       .WithPortBinding(9000, true);
 
     if (realmFileExists)

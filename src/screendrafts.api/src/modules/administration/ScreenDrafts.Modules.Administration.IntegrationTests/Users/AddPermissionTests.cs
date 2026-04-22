@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Administration.IntegrationTests.Users;
+﻿namespace ScreenDrafts.Modules.Administration.IntegrationTests.Users;
 
 public class AddPermissionTests(AdministrationIntegrationTestWebAppFactory factory)
   : AdministrationIntegrationTest(factory)
@@ -8,7 +8,7 @@ public class AddPermissionTests(AdministrationIntegrationTestWebAppFactory facto
   {
     var command = new AddPermissionCommand { Code = "movies:read" };
 
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     result.IsSuccess.Should().BeTrue();
   }
@@ -17,9 +17,9 @@ public class AddPermissionTests(AdministrationIntegrationTestWebAppFactory facto
   public async Task AddPermission_ShouldFail_WhenPermissionAlreadyExistsAsync()
   {
     const string code = "movies:write";
-    await Sender.Send(new AddPermissionCommand { Code = code });
+    await Sender.Send(new AddPermissionCommand { Code = code }, TestContext.Current.CancellationToken);
 
-    var result = await Sender.Send(new AddPermissionCommand { Code = code });
+    var result = await Sender.Send(new AddPermissionCommand { Code = code }, TestContext.Current.CancellationToken);
 
     result.IsFailure.Should().BeTrue();
     result.Error.Should().Be(AdministrationErrors.PermissionAlreadyExists(code));

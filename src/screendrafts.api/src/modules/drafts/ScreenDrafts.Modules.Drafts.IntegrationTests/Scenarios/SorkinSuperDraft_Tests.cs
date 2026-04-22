@@ -136,7 +136,7 @@ public sealed class SorkinSuperDraft_Tests(DraftsIntegrationTestWebAppFactory fa
       _moviePublicIds[i] = publicId;
     }
 
-    await DbContext.SaveChangesAsync();
+    await DbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
     // Create pool and add all movies
     await CreatePoolAsync(_draftPublicId);
@@ -165,7 +165,7 @@ public sealed class SorkinSuperDraft_Tests(DraftsIntegrationTestWebAppFactory fa
 
     var picks = await DbContext.Picks
       .Where(p => p.DraftPart.PublicId == _draftPartPublicId)
-      .ToListAsync();
+      .ToListAsync(TestContext.Current.CancellationToken);
 
     picks.Should().HaveCount(10);
   }
@@ -180,7 +180,7 @@ public sealed class SorkinSuperDraft_Tests(DraftsIntegrationTestWebAppFactory fa
       .CountAsync(p =>
         p.DraftPart.PublicId == _draftPartPublicId &&
         p.PlayedByParticipantKindValue == ParticipantKind.Drafter &&
-        p.PlayedByParticipantIdValue == clayId);
+        p.PlayedByParticipantIdValue == clayId, TestContext.Current.CancellationToken);
 
     count.Should().Be(5, "Clay (trivia winner) should have 5 picks in positions 1,3,5,7,9");
   }
@@ -195,7 +195,7 @@ public sealed class SorkinSuperDraft_Tests(DraftsIntegrationTestWebAppFactory fa
       .CountAsync(p =>
         p.DraftPart.PublicId == _draftPartPublicId &&
         p.PlayedByParticipantKindValue == ParticipantKind.Drafter &&
-        p.PlayedByParticipantIdValue == darrenId);
+        p.PlayedByParticipantIdValue == darrenId, TestContext.Current.CancellationToken);
 
     count.Should().Be(5, "Darren should have 5 picks in positions 2,4,6,8,10");
   }
@@ -208,7 +208,7 @@ public sealed class SorkinSuperDraft_Tests(DraftsIntegrationTestWebAppFactory fa
 
     var draftPart = await DbContext.DraftParts
       .AsNoTracking()
-      .FirstAsync(dp => dp.PublicId == _draftPartPublicId);
+      .FirstAsync(dp => dp.PublicId == _draftPartPublicId, TestContext.Current.CancellationToken);
 
     draftPart.Status.Should().Be(DraftPartStatus.Completed);
   }
@@ -267,7 +267,7 @@ public sealed class SorkinSuperDraft_Tests(DraftsIntegrationTestWebAppFactory fa
       ParticipantPublicId = _clayDrafterPublicId,
       ParticipantKind = ParticipantKind.Drafter,
       ActorPublicId = _clayDrafterPublicId
-    });
+    }, TestContext.Current.CancellationToken);
 
     result.IsSuccess.Should().BeTrue("Clay should have a second veto from the bonus HasBonusVeto position");
   }
@@ -295,7 +295,7 @@ public sealed class SorkinSuperDraft_Tests(DraftsIntegrationTestWebAppFactory fa
       ParticipantPublicId = _darrenDrafterPublicId,
       ParticipantKind = ParticipantKind.Drafter,
       ActorPublicId = _darrenDrafterPublicId
-    });
+    }, TestContext.Current.CancellationToken);
 
     result.IsFailure.Should().BeTrue("Darren only has 1 veto and should fail on a second attempt");
   }
@@ -305,11 +305,11 @@ public sealed class SorkinSuperDraft_Tests(DraftsIntegrationTestWebAppFactory fa
   {
     var draft = await DbContext.Drafts
       .Where(d => d.PublicId == _draftPublicId)
-      .FirstAsync();
+      .FirstAsync(TestContext.Current.CancellationToken);
 
     var pool = await DbContext.DraftPools
       .Include(p => p.TmdbIds)
-      .FirstAsync(p => p.DraftId == draft.Id);
+      .FirstAsync(p => p.DraftId == draft.Id, TestContext.Current.CancellationToken);
 
     pool.TmdbIds.Should().HaveCount(10, "All 10 Sorkin films should be in the pool");
   }
@@ -365,7 +365,7 @@ public sealed class SorkinSuperDraft_Tests(DraftsIntegrationTestWebAppFactory fa
     var id = await DbContext.Drafters
       .Where(d => d.PublicId == drafterPublicId)
       .Select(d => d.Id)
-      .FirstAsync();
+      .FirstAsync(TestContext.Current.CancellationToken);
     return id.Value;
   }
 }

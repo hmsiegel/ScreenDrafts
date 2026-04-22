@@ -43,7 +43,7 @@ public abstract class UsersIntegrationTest : BaseIntegrationTest<UsersDbContext>
 
     authorizationResponse.EnsureSuccessStatusCode();
 
-    var authToken = await authorizationResponse.Content.ReadFromJsonAsync<AuthToken>();
+    var authToken = await authorizationResponse.Content.ReadFromJsonAsync<AuthToken>(TestContext.Current.CancellationToken);
 
     return authToken!.AccessToken;
   }

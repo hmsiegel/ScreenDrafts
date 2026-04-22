@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Hosts;
+﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Hosts;
 
 public sealed class SearchHostsTests(DraftsIntegrationTestWebAppFactory factory)
   : DraftsIntegrationTest(factory)
@@ -7,7 +7,7 @@ public sealed class SearchHostsTests(DraftsIntegrationTestWebAppFactory factory)
   public async Task SearchHosts_WithNoHosts_ShouldReturnEmptyAsync()
   {
     // Act
-    var result = await Sender.Send(new SearchHostQuery());
+    var result = await Sender.Send(new SearchHostQuery(), TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -25,7 +25,7 @@ public sealed class SearchHostsTests(DraftsIntegrationTestWebAppFactory factory)
     var id3 = await hostFactory.CreateAndSaveHostAsync();
 
     // Act
-    var result = await Sender.Send(new SearchHostQuery { PageSize = 10 });
+    var result = await Sender.Send(new SearchHostQuery { PageSize = 10 }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -47,7 +47,7 @@ public sealed class SearchHostsTests(DraftsIntegrationTestWebAppFactory factory)
     await hostFactory.CreateAndSaveHostAsync(); // unrelated host
 
     // Act
-    var result = await Sender.Send(new SearchHostQuery { Name = uniqueSuffix });
+    var result = await Sender.Send(new SearchHostQuery { Name = uniqueSuffix }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -64,7 +64,7 @@ public sealed class SearchHostsTests(DraftsIntegrationTestWebAppFactory factory)
     await hostFactory.CreateAndSaveHostWithNameAsync("First", lastName);
 
     // Act
-    var result = await Sender.Send(new SearchHostQuery { Name = lastName.ToUpperInvariant() });
+    var result = await Sender.Send(new SearchHostQuery { Name = lastName.ToUpperInvariant() }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -81,7 +81,7 @@ public sealed class SearchHostsTests(DraftsIntegrationTestWebAppFactory factory)
     await hostFactory.CreateAndSaveHostWithNameAsync("John", "Prefix_" + suffix);
 
     // Act
-    var result = await Sender.Send(new SearchHostQuery { Name = suffix });
+    var result = await Sender.Send(new SearchHostQuery { Name = suffix }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -97,7 +97,7 @@ public sealed class SearchHostsTests(DraftsIntegrationTestWebAppFactory factory)
     await hostFactory.CreateAndSaveHostAsync();
 
     // Act
-    var result = await Sender.Send(new SearchHostQuery { Name = "zzz_no_match_" + Faker.Random.AlphaNumeric(12) });
+    var result = await Sender.Send(new SearchHostQuery { Name = "zzz_no_match_" + Faker.Random.AlphaNumeric(12) }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -115,7 +115,7 @@ public sealed class SearchHostsTests(DraftsIntegrationTestWebAppFactory factory)
     await hostFactory.CreateAndSaveHostAsync();
 
     // Act
-    var result = await Sender.Send(new SearchHostQuery { Page = 1, PageSize = 2 });
+    var result = await Sender.Send(new SearchHostQuery { Page = 1, PageSize = 2 }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -137,7 +137,7 @@ public sealed class SearchHostsTests(DraftsIntegrationTestWebAppFactory factory)
     await hostFactory.CreateAndSaveHostAsync();
 
     // Act
-    var result = await Sender.Send(new SearchHostQuery { Page = 2, PageSize = 2 });
+    var result = await Sender.Send(new SearchHostQuery { Page = 2, PageSize = 2 }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -158,7 +158,7 @@ public sealed class SearchHostsTests(DraftsIntegrationTestWebAppFactory factory)
     var (hostId, _, _) = await hostFactory.CreateAndSaveHostWithNameAsync(firstName, lastName);
 
     // Act
-    var result = await Sender.Send(new SearchHostQuery { Name = lastName });
+    var result = await Sender.Send(new SearchHostQuery { Name = lastName }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -182,7 +182,7 @@ public sealed class SearchHostsTests(DraftsIntegrationTestWebAppFactory factory)
     await hostFactory.CreateAndSaveHostWithNameAsync("Bob", suffix + "_B");
 
     // Act
-    var result = await Sender.Send(new SearchHostQuery { Name = suffix });
+    var result = await Sender.Send(new SearchHostQuery { Name = suffix }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -200,7 +200,7 @@ public sealed class SearchHostsTests(DraftsIntegrationTestWebAppFactory factory)
 
     // Create a host and add them as a primary host to a draft part
     var personId = await peopleFactory.CreateAndSavePersonAsync();
-    var primaryHostId = (await Sender.Send(new CreateHostCommand { PersonPublicId = personId })).Value;
+    var primaryHostId = (await Sender.Send(new CreateHostCommand { PersonPublicId = personId }, TestContext.Current.CancellationToken)).Value;
 
     var draftPartPublicId = await CreateDraftPartAsync();
     await Sender.Send(new AddHostToDraftPartCommand
@@ -208,14 +208,14 @@ public sealed class SearchHostsTests(DraftsIntegrationTestWebAppFactory factory)
       DraftPartId = draftPartPublicId,
       HostPublicId = primaryHostId,
       HostRole = HostRole.Primary
-    });
+    }, TestContext.Current.CancellationToken);
 
     // Create a host that has never been primary
     var hostFactory = new HostFactory(Sender, Faker);
     await hostFactory.CreateAndSaveHostAsync();
 
     // Act
-    var result = await Sender.Send(new SearchHostQuery { HasBeenPrimary = true });
+    var result = await Sender.Send(new SearchHostQuery { HasBeenPrimary = true }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -231,7 +231,7 @@ public sealed class SearchHostsTests(DraftsIntegrationTestWebAppFactory factory)
 
     // Create a host and add them as a primary host to a draft part
     var personId = await peopleFactory.CreateAndSavePersonAsync();
-    var primaryHostId = (await Sender.Send(new CreateHostCommand { PersonPublicId = personId })).Value;
+    var primaryHostId = (await Sender.Send(new CreateHostCommand { PersonPublicId = personId }, TestContext.Current.CancellationToken)).Value;
 
     var draftPartPublicId = await CreateDraftPartAsync();
     await Sender.Send(new AddHostToDraftPartCommand
@@ -239,14 +239,14 @@ public sealed class SearchHostsTests(DraftsIntegrationTestWebAppFactory factory)
       DraftPartId = draftPartPublicId,
       HostPublicId = primaryHostId,
       HostRole = HostRole.Primary
-    });
+    }, TestContext.Current.CancellationToken);
 
     // Create a host that has never been primary
     var hostFactory = new HostFactory(Sender, Faker);
     var nonPrimaryHostId = await hostFactory.CreateAndSaveHostAsync();
 
     // Act
-    var result = await Sender.Send(new SearchHostQuery { HasBeenPrimary = false });
+    var result = await Sender.Send(new SearchHostQuery { HasBeenPrimary = false }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -260,7 +260,7 @@ public sealed class SearchHostsTests(DraftsIntegrationTestWebAppFactory factory)
     // Arrange
     var peopleFactory = new PeopleFactory(Sender, Faker);
     var personId = await peopleFactory.CreateAndSavePersonAsync();
-    var hostId = (await Sender.Send(new CreateHostCommand { PersonPublicId = personId })).Value;
+    var hostId = (await Sender.Send(new CreateHostCommand { PersonPublicId = personId }, TestContext.Current.CancellationToken)).Value;
 
     // Add host to two draft parts
     var draftPartPublicId1 = await CreateDraftPartAsync();
@@ -271,16 +271,16 @@ public sealed class SearchHostsTests(DraftsIntegrationTestWebAppFactory factory)
       DraftPartId = draftPartPublicId1,
       HostPublicId = hostId,
       HostRole = HostRole.Primary
-    });
+    }, TestContext.Current.CancellationToken);
     await Sender.Send(new AddHostToDraftPartCommand
     {
       DraftPartId = draftPartPublicId2,
       HostPublicId = hostId,
       HostRole = HostRole.Primary
-    });
+    }, TestContext.Current.CancellationToken);
 
     // Act - query by person's host ID
-    var result = await Sender.Send(new SearchHostQuery { HasBeenPrimary = true });
+    var result = await Sender.Send(new SearchHostQuery { HasBeenPrimary = true }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -311,7 +311,7 @@ public sealed class SearchHostsTests(DraftsIntegrationTestWebAppFactory factory)
       ContinuityDateRule = ContinuityDateRule.AnyChannelFirstRelease.Value,
       AllowedDraftTypes = (int)DraftTypeMask.All,
       DefaultDraftType = DraftType.Standard.Value
-    });
+    }, TestContext.Current.CancellationToken);
     return result.Value;
   }
 
@@ -322,7 +322,7 @@ public sealed class SearchHostsTests(DraftsIntegrationTestWebAppFactory factory)
       Title = Faker.Company.CompanyName(),
       DraftType = DraftType.Standard.Value,
       SeriesId = seriesId,
-    });
+    }, TestContext.Current.CancellationToken);
 
     var draftPublicId = draftResult.Value;
     await Sender.Send(new CreateDraftPartCommand
@@ -331,7 +331,7 @@ public sealed class SearchHostsTests(DraftsIntegrationTestWebAppFactory factory)
       PartIndex = 1,
       MinimumPosition = 1,
       MaximumPosition = 7,
-    });
+    }, TestContext.Current.CancellationToken);
 
     return draftPublicId;
   }

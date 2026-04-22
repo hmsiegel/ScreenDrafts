@@ -20,7 +20,7 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
     var query = new ListDraftsQuery { Page = 1, PageSize = 10 };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -41,7 +41,7 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
     var query = new ListDraftsQuery { Page = 1, PageSize = 10 };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -59,7 +59,7 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
     var query = new ListDraftsQuery { Page = 1, PageSize = 10 };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -80,7 +80,7 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
     var query = new ListDraftsQuery { Page = 1, PageSize = 10 };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -100,7 +100,7 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
       Title = "Multi-Part Draft",
       DraftType = DraftType.Standard.Value,
       SeriesId = seriesId
-    });
+    }, TestContext.Current.CancellationToken);
     var draftPublicId = draftResult.Value;
 
     // First part (auto-created by CreateDraft is not created here — we explicitly create parts)
@@ -110,7 +110,7 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
       PartIndex = 1,
       MinimumPosition = 1,
       MaximumPosition = 7
-    });
+    }, TestContext.Current.CancellationToken);
 
     await Sender.Send(new CreateDraftPartCommand
     {
@@ -118,7 +118,7 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
       PartIndex = 2,
       MinimumPosition = 1,
       MaximumPosition = 7
-    });
+    }, TestContext.Current.CancellationToken);
 
     var query = new ListDraftsQuery
     {
@@ -129,7 +129,7 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
     };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -157,7 +157,7 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
     var query = new ListDraftsQuery { Page = 2, PageSize = 2 };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -177,7 +177,7 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
     var query = new ListDraftsQuery { Page = 1, PageSize = 1000 }; // exceeds cap
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -200,12 +200,12 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
       DraftPartId = draftPartPublicId,
       ReleaseDate = releaseDate,
       ReleaseChannel = ReleaseChannel.MainFeed
-    });
+    }, TestContext.Current.CancellationToken);
 
     var query = new ListDraftsQuery { Page = 1, PageSize = 10 };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -223,7 +223,7 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
     var query = new ListDraftsQuery { Page = 1, PageSize = 10 };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -247,12 +247,12 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
       DraftPartId = draftPartPublicId,
       ParticipantPublicId = drafterPublicId,
       ParticipantKind = ParticipantKind.Drafter
-    });
+    }, TestContext.Current.CancellationToken);
 
     var query = new ListDraftsQuery { Page = 1, PageSize = 10 };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -269,7 +269,7 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
     var query = new ListDraftsQuery { Page = 1, PageSize = 10 };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -289,19 +289,19 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
 
     var peopleFactory = new PeopleFactory(Sender, Faker);
     var personId = await peopleFactory.CreateAndSavePersonAsync();
-    var hostPublicId = (await Sender.Send(new CreateHostCommand { PersonPublicId = personId })).Value;
+    var hostPublicId = (await Sender.Send(new CreateHostCommand { PersonPublicId = personId }, TestContext.Current.CancellationToken)).Value;
 
     await Sender.Send(new AddHostToDraftPartCommand
     {
       DraftPartId = draftPartPublicId,
       HostPublicId = hostPublicId,
       HostRole = HostRole.Primary
-    });
+    }, TestContext.Current.CancellationToken);
 
     var query = new ListDraftsQuery { Page = 1, PageSize = 10 };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -318,7 +318,7 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
     var query = new ListDraftsQuery { Page = 1, PageSize = 10 };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -341,7 +341,7 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
     {
       DraftId = draftPublicId,
       CategoryIds = [categoryPublicId]
-    });
+    }, TestContext.Current.CancellationToken);
 
     var query = new ListDraftsQuery
     {
@@ -351,7 +351,7 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
     };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -374,7 +374,7 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
     };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -400,7 +400,7 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
     };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -428,7 +428,7 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
     };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -450,7 +450,7 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
     };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -477,14 +477,14 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
       DraftPartId = earlyPartPublicId,
       ReleaseDate = earlyDate,
       ReleaseChannel = ReleaseChannel.MainFeed
-    });
+    }, TestContext.Current.CancellationToken);
 
     await Sender.Send(new SetReleaseDateCommand
     {
       DraftPartId = latePartPublicId,
       ReleaseDate = lateDate,
       ReleaseChannel = ReleaseChannel.MainFeed
-    });
+    }, TestContext.Current.CancellationToken);
 
     var query = new ListDraftsQuery
     {
@@ -494,7 +494,7 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
     };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -518,14 +518,14 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
       DraftPartId = earlyPartPublicId,
       ReleaseDate = earlyDate,
       ReleaseChannel = ReleaseChannel.MainFeed
-    });
+    }, TestContext.Current.CancellationToken);
 
     await Sender.Send(new SetReleaseDateCommand
     {
       DraftPartId = latePartPublicId,
       ReleaseDate = lateDate,
       ReleaseChannel = ReleaseChannel.MainFeed
-    });
+    }, TestContext.Current.CancellationToken);
 
     var query = new ListDraftsQuery
     {
@@ -535,7 +535,7 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
     };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -556,21 +556,21 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
       DraftPartId = jan2024PublicId,
       ReleaseDate = new DateOnly(2024, 1, 1),
       ReleaseChannel = ReleaseChannel.MainFeed
-    });
+    }, TestContext.Current.CancellationToken);
 
     await Sender.Send(new SetReleaseDateCommand
     {
       DraftPartId = jun2024PublicId,
       ReleaseDate = new DateOnly(2024, 6, 15),
       ReleaseChannel = ReleaseChannel.MainFeed
-    });
+    }, TestContext.Current.CancellationToken);
 
     await Sender.Send(new SetReleaseDateCommand
     {
       DraftPartId = jan2025PublicId,
       ReleaseDate = new DateOnly(2025, 1, 1),
       ReleaseChannel = ReleaseChannel.MainFeed
-    });
+    }, TestContext.Current.CancellationToken);
 
     var query = new ListDraftsQuery
     {
@@ -581,7 +581,7 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
     };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -609,14 +609,14 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
       DraftPartId = richPartPublicId,
       ParticipantPublicId = drafter1,
       ParticipantKind = ParticipantKind.Drafter
-    });
+    }, TestContext.Current.CancellationToken);
 
     await Sender.Send(new AddParticipantToDraftPartCommand
     {
       DraftPartId = richPartPublicId,
       ParticipantPublicId = drafter2,
       ParticipantKind = ParticipantKind.Drafter
-    });
+    }, TestContext.Current.CancellationToken);
 
     var query = new ListDraftsQuery
     {
@@ -627,7 +627,7 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
     };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -656,7 +656,7 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
     };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -683,7 +683,7 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
     };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -703,14 +703,14 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
       DraftPartId = olderPartPublicId,
       ReleaseDate = new DateOnly(2023, 1, 1),
       ReleaseChannel = ReleaseChannel.MainFeed
-    });
+    }, TestContext.Current.CancellationToken);
 
     await Sender.Send(new SetReleaseDateCommand
     {
       DraftPartId = newerPartPublicId,
       ReleaseDate = new DateOnly(2024, 1, 1),
       ReleaseChannel = ReleaseChannel.MainFeed
-    });
+    }, TestContext.Current.CancellationToken);
 
     var query = new ListDraftsQuery
     {
@@ -721,7 +721,7 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
     };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -747,7 +747,7 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
       Title = draftTitle,
       DraftType = selectedDraftType.Value,
       SeriesId = seriesId
-    });
+    }, TestContext.Current.CancellationToken);
 
     var draftPublicId = draftResult.Value;
 
@@ -757,7 +757,7 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
       PartIndex = 1,
       MinimumPosition = 1,
       MaximumPosition = 7
-    });
+    }, TestContext.Current.CancellationToken);
 
     return (draftPublicId, partResult.Value);
   }
@@ -773,7 +773,7 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
       ContinuityDateRule = ContinuityDateRule.AnyChannelFirstRelease.Value,
       AllowedDraftTypes = (int)DraftTypeMask.All,
       DefaultDraftType = DraftType.Standard.Value
-    });
+    }, TestContext.Current.CancellationToken);
 
     return result.Value;
   }
@@ -784,7 +784,7 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
     {
       Name = Faker.Commerce.Categories(1)[0] + Faker.Random.AlphaNumeric(8),
       Description = Faker.Lorem.Sentence()
-    });
+    }, TestContext.Current.CancellationToken);
 
     return result.Value;
   }

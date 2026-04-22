@@ -20,7 +20,7 @@ public sealed class AdvanceSubDraftTests(DraftsIntegrationTestWebAppFactory fact
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -37,13 +37,13 @@ public sealed class AdvanceSubDraftTests(DraftsIntegrationTestWebAppFactory fact
     {
       DraftPartPublicId = draftPartPublicId,
       SubDraftPublicId = subDraftPublicId
-    });
+    }, TestContext.Current.CancellationToken);
 
     // Assert
     var draftPart = await DbContext.DraftParts
       .Include("_subDrafts")
       .AsNoTracking()
-      .FirstAsync(dp => dp.PublicId == draftPartPublicId);
+      .FirstAsync(dp => dp.PublicId == draftPartPublicId, TestContext.Current.CancellationToken);
 
     var subDraft = draftPart.SubDrafts.First(s => s.PublicId == subDraftPublicId);
     subDraft.Status.Should().Be(SubDraftStatus.Completed);
@@ -61,7 +61,7 @@ public sealed class AdvanceSubDraftTests(DraftsIntegrationTestWebAppFactory fact
     {
       DraftPartPublicId = draftPartPublicId,
       SubDraftPublicId = subDraft1PublicId
-    });
+    }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -69,7 +69,7 @@ public sealed class AdvanceSubDraftTests(DraftsIntegrationTestWebAppFactory fact
     var draftPart = await DbContext.DraftParts
       .Include("_subDrafts")
       .AsNoTracking()
-      .FirstAsync(dp => dp.PublicId == draftPartPublicId);
+      .FirstAsync(dp => dp.PublicId == draftPartPublicId, TestContext.Current.CancellationToken);
 
     var firstSubDraft = draftPart.SubDrafts.First(s => s.PublicId == subDraft1PublicId);
     firstSubDraft.Status.Should().Be(SubDraftStatus.Completed);
@@ -90,7 +90,7 @@ public sealed class AdvanceSubDraftTests(DraftsIntegrationTestWebAppFactory fact
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -113,7 +113,7 @@ public sealed class AdvanceSubDraftTests(DraftsIntegrationTestWebAppFactory fact
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -136,7 +136,7 @@ public sealed class AdvanceSubDraftTests(DraftsIntegrationTestWebAppFactory fact
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -156,44 +156,44 @@ public sealed class AdvanceSubDraftTests(DraftsIntegrationTestWebAppFactory fact
     var peopleFactory = new PeopleFactory(Sender, Faker);
 
     var person1Id = await peopleFactory.CreateAndSavePersonAsync();
-    var drafter1PublicId = (await Sender.Send(new CreateDrafterCommand(person1Id))).Value;
+    var drafter1PublicId = (await Sender.Send(new CreateDrafterCommand(person1Id), TestContext.Current.CancellationToken)).Value;
     await Sender.Send(new AddParticipantToDraftPartCommand
     {
       DraftPartId = draftPartPublicId,
       ParticipantPublicId = drafter1PublicId,
       ParticipantKind = ParticipantKind.Drafter
-    });
+    }, TestContext.Current.CancellationToken);
 
     var person2Id = await peopleFactory.CreateAndSavePersonAsync();
-    var drafter2PublicId = (await Sender.Send(new CreateDrafterCommand(person2Id))).Value;
+    var drafter2PublicId = (await Sender.Send(new CreateDrafterCommand(person2Id), TestContext.Current.CancellationToken)).Value;
     await Sender.Send(new AddParticipantToDraftPartCommand
     {
       DraftPartId = draftPartPublicId,
       ParticipantPublicId = drafter2PublicId,
       ParticipantKind = ParticipantKind.Drafter
-    });
+    }, TestContext.Current.CancellationToken);
 
     var hostPersonId = await peopleFactory.CreateAndSavePersonAsync();
-    var hostPublicId = (await Sender.Send(new CreateHostCommand { PersonPublicId = hostPersonId })).Value;
+    var hostPublicId = (await Sender.Send(new CreateHostCommand { PersonPublicId = hostPersonId }, TestContext.Current.CancellationToken)).Value;
     await Sender.Send(new AddHostToDraftPartCommand
     {
       DraftPartId = draftPartPublicId,
       HostPublicId = hostPublicId,
       HostRole = HostRole.Primary
-    });
+    }, TestContext.Current.CancellationToken);
 
     await Sender.Send(new SetDraftPartStatusCommand
     {
       DraftPublicId = draftPublicId,
       PartIndex = 1,
       Action = DraftPartStatusAction.Start
-    });
+    }, TestContext.Current.CancellationToken);
 
     var subDraftPublicId = (await Sender.Send(new AddSubDraftCommand
     {
       DraftPartPublicId = draftPartPublicId,
       Index = 0
-    })).Value;
+    }, TestContext.Current.CancellationToken)).Value;
 
     // Activate the sub-draft via trivia assignment
     await Sender.Send(new AssignSubDraftTriviaCommand
@@ -210,7 +210,7 @@ public sealed class AdvanceSubDraftTests(DraftsIntegrationTestWebAppFactory fact
           QuestionsWon = 1
         }
       ]
-    });
+    }, TestContext.Current.CancellationToken);
 
     return (draftPartPublicId, subDraftPublicId, drafter1PublicId, drafter2PublicId);
   }
@@ -225,51 +225,51 @@ public sealed class AdvanceSubDraftTests(DraftsIntegrationTestWebAppFactory fact
     var peopleFactory = new PeopleFactory(Sender, Faker);
 
     var person1Id = await peopleFactory.CreateAndSavePersonAsync();
-    var drafter1PublicId = (await Sender.Send(new CreateDrafterCommand(person1Id))).Value;
+    var drafter1PublicId = (await Sender.Send(new CreateDrafterCommand(person1Id), TestContext.Current.CancellationToken)).Value;
     await Sender.Send(new AddParticipantToDraftPartCommand
     {
       DraftPartId = draftPartPublicId,
       ParticipantPublicId = drafter1PublicId,
       ParticipantKind = ParticipantKind.Drafter
-    });
+    }, TestContext.Current.CancellationToken);
 
     var person2Id = await peopleFactory.CreateAndSavePersonAsync();
-    var drafter2PublicId = (await Sender.Send(new CreateDrafterCommand(person2Id))).Value;
+    var drafter2PublicId = (await Sender.Send(new CreateDrafterCommand(person2Id), TestContext.Current.CancellationToken)).Value;
     await Sender.Send(new AddParticipantToDraftPartCommand
     {
       DraftPartId = draftPartPublicId,
       ParticipantPublicId = drafter2PublicId,
       ParticipantKind = ParticipantKind.Drafter
-    });
+    }, TestContext.Current.CancellationToken);
 
     var hostPersonId = await peopleFactory.CreateAndSavePersonAsync();
-    var hostPublicId = (await Sender.Send(new CreateHostCommand { PersonPublicId = hostPersonId })).Value;
+    var hostPublicId = (await Sender.Send(new CreateHostCommand { PersonPublicId = hostPersonId }, TestContext.Current.CancellationToken)).Value;
     await Sender.Send(new AddHostToDraftPartCommand
     {
       DraftPartId = draftPartPublicId,
       HostPublicId = hostPublicId,
       HostRole = HostRole.Primary
-    });
+    }, TestContext.Current.CancellationToken);
 
     await Sender.Send(new SetDraftPartStatusCommand
     {
       DraftPublicId = draftPublicId,
       PartIndex = 1,
       Action = DraftPartStatusAction.Start
-    });
+    }, TestContext.Current.CancellationToken);
 
     // Add two sub-drafts
     var subDraft1PublicId = (await Sender.Send(new AddSubDraftCommand
     {
       DraftPartPublicId = draftPartPublicId,
       Index = 0
-    })).Value;
+    }, TestContext.Current.CancellationToken)).Value;
 
     await Sender.Send(new AddSubDraftCommand
     {
       DraftPartPublicId = draftPartPublicId,
       Index = 1
-    });
+    }, TestContext.Current.CancellationToken);
 
     // Activate the first sub-draft via trivia assignment
     await Sender.Send(new AssignSubDraftTriviaCommand
@@ -286,7 +286,7 @@ public sealed class AdvanceSubDraftTests(DraftsIntegrationTestWebAppFactory fact
           QuestionsWon = 1
         }
       ]
-    });
+    }, TestContext.Current.CancellationToken);
 
     return (draftPartPublicId, subDraft1PublicId, drafter1PublicId, drafter2PublicId);
   }
@@ -301,44 +301,44 @@ public sealed class AdvanceSubDraftTests(DraftsIntegrationTestWebAppFactory fact
     var peopleFactory = new PeopleFactory(Sender, Faker);
 
     var person1Id = await peopleFactory.CreateAndSavePersonAsync();
-    var drafter1PublicId = (await Sender.Send(new CreateDrafterCommand(person1Id))).Value;
+    var drafter1PublicId = (await Sender.Send(new CreateDrafterCommand(person1Id), TestContext.Current.CancellationToken)).Value;
     await Sender.Send(new AddParticipantToDraftPartCommand
     {
       DraftPartId = draftPartPublicId,
       ParticipantPublicId = drafter1PublicId,
       ParticipantKind = ParticipantKind.Drafter
-    });
+    }, TestContext.Current.CancellationToken);
 
     var person2Id = await peopleFactory.CreateAndSavePersonAsync();
-    var drafter2PublicId = (await Sender.Send(new CreateDrafterCommand(person2Id))).Value;
+    var drafter2PublicId = (await Sender.Send(new CreateDrafterCommand(person2Id), TestContext.Current.CancellationToken)).Value;
     await Sender.Send(new AddParticipantToDraftPartCommand
     {
       DraftPartId = draftPartPublicId,
       ParticipantPublicId = drafter2PublicId,
       ParticipantKind = ParticipantKind.Drafter
-    });
+    }, TestContext.Current.CancellationToken);
 
     var hostPersonId = await peopleFactory.CreateAndSavePersonAsync();
-    var hostPublicId = (await Sender.Send(new CreateHostCommand { PersonPublicId = hostPersonId })).Value;
+    var hostPublicId = (await Sender.Send(new CreateHostCommand { PersonPublicId = hostPersonId }, TestContext.Current.CancellationToken)).Value;
     await Sender.Send(new AddHostToDraftPartCommand
     {
       DraftPartId = draftPartPublicId,
       HostPublicId = hostPublicId,
       HostRole = HostRole.Primary
-    });
+    }, TestContext.Current.CancellationToken);
 
     await Sender.Send(new SetDraftPartStatusCommand
     {
       DraftPublicId = draftPublicId,
       PartIndex = 1,
       Action = DraftPartStatusAction.Start
-    });
+    }, TestContext.Current.CancellationToken);
 
     var subDraftPublicId = (await Sender.Send(new AddSubDraftCommand
     {
       DraftPartPublicId = draftPartPublicId,
       Index = 0
-    })).Value;
+    }, TestContext.Current.CancellationToken)).Value;
 
     // Sub-draft remains Pending (no trivia assignment)
     return (draftPartPublicId, subDraftPublicId, drafter1PublicId, drafter2PublicId);
@@ -355,7 +355,7 @@ public sealed class AdvanceSubDraftTests(DraftsIntegrationTestWebAppFactory fact
       ContinuityDateRule = ContinuityDateRule.AnyChannelFirstRelease.Value,
       AllowedDraftTypes = (int)DraftTypeMask.All,
       DefaultDraftType = DraftType.SpeedDraft.Value
-    });
+    }, TestContext.Current.CancellationToken);
     return result.Value;
   }
 
@@ -366,7 +366,7 @@ public sealed class AdvanceSubDraftTests(DraftsIntegrationTestWebAppFactory fact
       Title = Faker.Company.CompanyName(),
       DraftType = DraftType.SpeedDraft.Value,
       SeriesId = seriesId,
-    });
+    }, TestContext.Current.CancellationToken);
     var draftPublicId = draftResult.Value;
     await Sender.Send(new CreateDraftPartCommand
     {
@@ -374,7 +374,7 @@ public sealed class AdvanceSubDraftTests(DraftsIntegrationTestWebAppFactory fact
       PartIndex = 1,
       MinimumPosition = 1,
       MaximumPosition = 7,
-    });
+    }, TestContext.Current.CancellationToken);
     return draftPublicId;
   }
 }

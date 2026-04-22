@@ -9,7 +9,7 @@ public class GetUserTests(UsersIntegrationTestWebAppFactory factory) : UsersInte
     var userId = Guid.NewGuid();
 
     // Act
-    var userResult = await Sender.Send(new GetByUserIdQuery(userId));
+    var userResult = await Sender.Send(new GetByUserIdQuery(userId), TestContext.Current.CancellationToken);
 
     // Assert
     userResult.Errors[0].Should().Be(UserErrors.NotFound(userId));
@@ -24,11 +24,11 @@ public class GetUserTests(UsersIntegrationTestWebAppFactory factory) : UsersInte
         Password = Faker.Internet.Password(),
         FirstName = Faker.Name.FirstName(),
         LastName = Faker.Name.LastName()
-    });
+    }, TestContext.Current.CancellationToken);
     Guid userId = result.Value;
 
     // Act
-    var userResult = await Sender.Send(new GetByUserIdQuery(userId));
+    var userResult = await Sender.Send(new GetByUserIdQuery(userId), TestContext.Current.CancellationToken);
 
     // Assert
     userResult.IsSuccess.Should().BeTrue();

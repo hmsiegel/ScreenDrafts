@@ -19,7 +19,7 @@ public sealed class RemoveCandidateListEntryTests(DraftsIntegrationTestWebAppFac
       DraftPartId = draftPartPublicId,
       TmdbId = tmdbId,
       AddedByPublicId = "u_" + Faker.Random.AlphaNumeric(17)
-    });
+    }, TestContext.Current.CancellationToken);
 
     var command = new RemoveCandidateListEntryCommand
     {
@@ -28,7 +28,7 @@ public sealed class RemoveCandidateListEntryTests(DraftsIntegrationTestWebAppFac
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -46,7 +46,7 @@ public sealed class RemoveCandidateListEntryTests(DraftsIntegrationTestWebAppFac
       DraftPartId = draftPartPublicId,
       TmdbId = tmdbId,
       AddedByPublicId = "u_" + Faker.Random.AlphaNumeric(17)
-    });
+    }, TestContext.Current.CancellationToken);
 
     var command = new RemoveCandidateListEntryCommand
     {
@@ -55,11 +55,11 @@ public sealed class RemoveCandidateListEntryTests(DraftsIntegrationTestWebAppFac
     };
 
     // Act
-    await Sender.Send(command);
+    await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     var entry = await DbContext.CandidateListEntries
-      .FirstOrDefaultAsync(e => e.TmdbId == tmdbId);
+      .FirstOrDefaultAsync(e => e.TmdbId == tmdbId, TestContext.Current.CancellationToken);
 
     entry.Should().BeNull();
   }
@@ -78,24 +78,24 @@ public sealed class RemoveCandidateListEntryTests(DraftsIntegrationTestWebAppFac
       DraftPartId = draftPartPublicId,
       TmdbId = tmdbIdToRemove,
       AddedByPublicId = addedByPublicId
-    });
+    }, TestContext.Current.CancellationToken);
 
     await Sender.Send(new AddCandidateEntryCommand
     {
       DraftPartId = draftPartPublicId,
       TmdbId = tmdbIdToKeep,
       AddedByPublicId = addedByPublicId
-    });
+    }, TestContext.Current.CancellationToken);
 
     // Act
     await Sender.Send(new RemoveCandidateListEntryCommand
     {
       DraftPartId = draftPartPublicId,
       TmdbId = tmdbIdToRemove
-    });
+    }, TestContext.Current.CancellationToken);
 
     // Assert
-    var remaining = await DbContext.CandidateListEntries.ToListAsync();
+    var remaining = await DbContext.CandidateListEntries.ToListAsync(TestContext.Current.CancellationToken);
     remaining.Should().ContainSingle(e => e.TmdbId == tmdbIdToKeep);
     remaining.Should().NotContain(e => e.TmdbId == tmdbIdToRemove);
   }
@@ -115,7 +115,7 @@ public sealed class RemoveCandidateListEntryTests(DraftsIntegrationTestWebAppFac
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -140,7 +140,7 @@ public sealed class RemoveCandidateListEntryTests(DraftsIntegrationTestWebAppFac
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -158,7 +158,7 @@ public sealed class RemoveCandidateListEntryTests(DraftsIntegrationTestWebAppFac
     var draftPartInternalId = await GetFirstDraftPartIdAsync(draftPublicId);
 
     var draftPart = await DbContext.DraftParts
-      .FirstAsync(dp => dp.Id == DraftPartId.Create(draftPartInternalId));
+      .FirstAsync(dp => dp.Id == DraftPartId.Create(draftPartInternalId), TestContext.Current.CancellationToken);
 
     return draftPart.PublicId;
   }
@@ -174,7 +174,7 @@ public sealed class RemoveCandidateListEntryTests(DraftsIntegrationTestWebAppFac
       ContinuityDateRule = ContinuityDateRule.AnyChannelFirstRelease.Value,
       AllowedDraftTypes = (int)DraftTypeMask.All,
       DefaultDraftType = DraftType.Standard.Value
-    });
+    }, TestContext.Current.CancellationToken);
 
     return result.Value;
   }
@@ -186,7 +186,7 @@ public sealed class RemoveCandidateListEntryTests(DraftsIntegrationTestWebAppFac
       Title = Faker.Company.CompanyName(),
       DraftType = DraftType.Standard.Value,
       SeriesId = seriesId
-    });
+    }, TestContext.Current.CancellationToken);
 
     var draftPublicId = draftResult.Value;
 
@@ -196,7 +196,7 @@ public sealed class RemoveCandidateListEntryTests(DraftsIntegrationTestWebAppFac
       PartIndex = 1,
       MinimumPosition = 1,
       MaximumPosition = 7
-    });
+    }, TestContext.Current.CancellationToken);
 
     return draftPublicId;
   }

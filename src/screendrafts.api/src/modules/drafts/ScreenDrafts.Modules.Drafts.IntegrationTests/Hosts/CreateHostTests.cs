@@ -19,7 +19,7 @@ public sealed class CreateHostTests(DraftsIntegrationTestWebAppFactory factory)
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -37,7 +37,7 @@ public sealed class CreateHostTests(DraftsIntegrationTestWebAppFactory factory)
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -56,7 +56,7 @@ public sealed class CreateHostTests(DraftsIntegrationTestWebAppFactory factory)
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -76,7 +76,7 @@ public sealed class CreateHostTests(DraftsIntegrationTestWebAppFactory factory)
     {
       PersonPublicId = personId
     };
-    await Sender.Send(firstCommand);
+    await Sender.Send(firstCommand, TestContext.Current.CancellationToken);
 
     // Try to create host again with same person
     var secondCommand = new CreateHostCommand
@@ -85,7 +85,7 @@ public sealed class CreateHostTests(DraftsIntegrationTestWebAppFactory factory)
     };
 
     // Act
-    var result = await Sender.Send(secondCommand);
+    var result = await Sender.Send(secondCommand, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -108,9 +108,9 @@ public sealed class CreateHostTests(DraftsIntegrationTestWebAppFactory factory)
     var command3 = new CreateHostCommand { PersonPublicId = personId3 };
 
     // Act
-    var result1 = await Sender.Send(command1);
-    var result2 = await Sender.Send(command2);
-    var result3 = await Sender.Send(command3);
+    var result1 = await Sender.Send(command1, TestContext.Current.CancellationToken);
+    var result2 = await Sender.Send(command2, TestContext.Current.CancellationToken);
+    var result3 = await Sender.Send(command3, TestContext.Current.CancellationToken);
 
     // Assert
     result1.IsSuccess.Should().BeTrue();
@@ -142,7 +142,7 @@ public sealed class CreateHostTests(DraftsIntegrationTestWebAppFactory factory)
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -162,7 +162,7 @@ public sealed class CreateHostTests(DraftsIntegrationTestWebAppFactory factory)
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();

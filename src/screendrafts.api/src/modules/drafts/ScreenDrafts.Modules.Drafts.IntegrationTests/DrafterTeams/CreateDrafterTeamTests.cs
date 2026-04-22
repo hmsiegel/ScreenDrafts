@@ -1,4 +1,4 @@
-using ScreenDrafts.Modules.Drafts.Features.DrafterTeams.Create;
+﻿using ScreenDrafts.Modules.Drafts.Features.DrafterTeams.Create;
 
 namespace ScreenDrafts.Modules.Drafts.IntegrationTests.DrafterTeams;
 
@@ -15,7 +15,7 @@ public sealed class CreateDrafterTeamTests(DraftsIntegrationTestWebAppFactory fa
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -29,12 +29,12 @@ public sealed class CreateDrafterTeamTests(DraftsIntegrationTestWebAppFactory fa
     // Arrange
     var name = Faker.Internet.UserName();
 
-    await Sender.Send(new CreateDrafterTeamCommand { Name = name });
+    await Sender.Send(new CreateDrafterTeamCommand { Name = name }, TestContext.Current.CancellationToken);
 
     var command = new CreateDrafterTeamCommand { Name = name };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -51,7 +51,7 @@ public sealed class CreateDrafterTeamTests(DraftsIntegrationTestWebAppFactory fa
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -68,7 +68,7 @@ public sealed class CreateDrafterTeamTests(DraftsIntegrationTestWebAppFactory fa
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();

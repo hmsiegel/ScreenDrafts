@@ -42,6 +42,7 @@
     <File Path=".editorconfig" />
     <File Path=".files/screendrafts-realm-export.json" />
     <File Path=".gitignore" />
+    <File Path="CLAUDE.md" />
     <File Path="Directory.Build.props" />
     <File Path="Directory.Build.targets" />
     <File Path="Directory.Packages.props" />

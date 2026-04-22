@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Predictions;
+﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Predictions;
 
 public sealed class GetPredictionStandingsTests(DraftsIntegrationTestWebAppFactory factory)
   : PredictionIntegrationTestBase(factory)
@@ -12,7 +12,7 @@ public sealed class GetPredictionStandingsTests(DraftsIntegrationTestWebAppFacto
     var query = new GetPredictionStandingsQuery { SeasonPublicId = seasonPublicId };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -27,7 +27,7 @@ public sealed class GetPredictionStandingsTests(DraftsIntegrationTestWebAppFacto
     var query = new GetPredictionStandingsQuery { SeasonPublicId = "ps_nonexistent123" };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -50,20 +50,20 @@ public sealed class GetPredictionStandingsTests(DraftsIntegrationTestWebAppFacto
     {
       DraftPartPublicId = draftPartPublicId,
       SetPublicId = setPublicId
-    });
+    }, TestContext.Current.CancellationToken);
 
     await Sender.Send(new ScoreDraftPartPredictionsCommand
     {
       DraftPartPublicId = draftPartPublicId,
       FinalMediaPublicIds = ["m_00000001", "m_00000002", "m_00000003"]
-    });
+    }, TestContext.Current.CancellationToken);
 
     await ProcessOutboxAsync(); // triggers standing update
 
     var query = new GetPredictionStandingsQuery { SeasonPublicId = seasonPublicId };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -87,12 +87,12 @@ public sealed class GetPredictionStandingsTests(DraftsIntegrationTestWebAppFacto
       Points = 8,
       Kind = CarryoverKind.Handicap.Value,
       Reason = "Handicap from prior season"
-    });
+    }, TestContext.Current.CancellationToken);
 
     var query = new GetPredictionStandingsQuery { SeasonPublicId = seasonPublicId };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     // The query aggregates carryovers — standings with no prediction points but with carryovers
@@ -122,21 +122,21 @@ public sealed class GetPredictionStandingsTests(DraftsIntegrationTestWebAppFacto
     var setPublicId2 = await SubmitSetAsync(draftPartPublicId, seasonPublicId, contestantPublicId2,
       "m_00000001", "m_00000099", "m_00000098");
 
-    await Sender.Send(new LockPredictionSetCommand { DraftPartPublicId = draftPartPublicId, SetPublicId = setPublicId1 });
-    await Sender.Send(new LockPredictionSetCommand { DraftPartPublicId = draftPartPublicId, SetPublicId = setPublicId2 });
+    await Sender.Send(new LockPredictionSetCommand { DraftPartPublicId = draftPartPublicId, SetPublicId = setPublicId1 }, TestContext.Current.CancellationToken);
+    await Sender.Send(new LockPredictionSetCommand { DraftPartPublicId = draftPartPublicId, SetPublicId = setPublicId2 }, TestContext.Current.CancellationToken);
 
     await Sender.Send(new ScoreDraftPartPredictionsCommand
     {
       DraftPartPublicId = draftPartPublicId,
       FinalMediaPublicIds = ["m_00000001", "m_00000002", "m_00000003"]
-    });
+    }, TestContext.Current.CancellationToken);
 
     await ProcessOutboxAsync(); // triggers standing updates
 
     var query = new GetPredictionStandingsQuery { SeasonPublicId = seasonPublicId };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -154,12 +154,12 @@ public sealed class GetPredictionStandingsTests(DraftsIntegrationTestWebAppFacto
     {
       SeasonPublicId = seasonPublicId,
       EndsOn = DateOnly.FromDateTime(DateTime.UtcNow)
-    });
+    }, TestContext.Current.CancellationToken);
 
     var query = new GetPredictionStandingsQuery { SeasonPublicId = seasonPublicId };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();

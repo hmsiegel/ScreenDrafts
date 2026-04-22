@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Drafts.IntegrationTests.DraftBoards;
+﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.DraftBoards;
 
 public sealed class GetDraftBoardTests(DraftsIntegrationTestWebAppFactory factory)
   : DraftsIntegrationTest(factory)
@@ -22,7 +22,7 @@ public sealed class GetDraftBoardTests(DraftsIntegrationTestWebAppFactory factor
       DraftId = draftPublicId,
       UserPublicId = userPublicId,
       TmdbId = tmdbId
-    });
+    }, TestContext.Current.CancellationToken);
 
     var query = new GetDraftBoardQuery
     {
@@ -31,7 +31,7 @@ public sealed class GetDraftBoardTests(DraftsIntegrationTestWebAppFactory factor
     };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -57,7 +57,7 @@ public sealed class GetDraftBoardTests(DraftsIntegrationTestWebAppFactory factor
       TmdbId = tmdbId,
       Notes = notes,
       Priority = priority
-    });
+    }, TestContext.Current.CancellationToken);
 
     var query = new GetDraftBoardQuery
     {
@@ -66,7 +66,7 @@ public sealed class GetDraftBoardTests(DraftsIntegrationTestWebAppFactory factor
     };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -92,14 +92,14 @@ public sealed class GetDraftBoardTests(DraftsIntegrationTestWebAppFactory factor
       DraftId = draftPublicId,
       UserPublicId = userPublicId,
       TmdbId = tmdbId
-    });
+    }, TestContext.Current.CancellationToken);
 
     await Sender.Send(new RemoveMovieFromDraftBoardCommand
     {
       DraftId = draftPublicId,
       UserPublicId = userPublicId,
       TmdbId = tmdbId
-    });
+    }, TestContext.Current.CancellationToken);
 
     var query = new GetDraftBoardQuery
     {
@@ -108,7 +108,7 @@ public sealed class GetDraftBoardTests(DraftsIntegrationTestWebAppFactory factor
     };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -133,7 +133,7 @@ public sealed class GetDraftBoardTests(DraftsIntegrationTestWebAppFactory factor
       UserPublicId = userPublicId,
       TmdbId = 100,
       Priority = 3
-    });
+    }, TestContext.Current.CancellationToken);
 
     await Sender.Send(new AddMovieToDraftBoardCommand
     {
@@ -141,7 +141,7 @@ public sealed class GetDraftBoardTests(DraftsIntegrationTestWebAppFactory factor
       UserPublicId = userPublicId,
       TmdbId = 200,
       Priority = 1
-    });
+    }, TestContext.Current.CancellationToken);
 
     await Sender.Send(new AddMovieToDraftBoardCommand
     {
@@ -149,7 +149,7 @@ public sealed class GetDraftBoardTests(DraftsIntegrationTestWebAppFactory factor
       UserPublicId = userPublicId,
       TmdbId = 300
       // no priority — should come last
-    });
+    }, TestContext.Current.CancellationToken);
 
     var query = new GetDraftBoardQuery
     {
@@ -158,7 +158,7 @@ public sealed class GetDraftBoardTests(DraftsIntegrationTestWebAppFactory factor
     };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -188,7 +188,7 @@ public sealed class GetDraftBoardTests(DraftsIntegrationTestWebAppFactory factor
     };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -208,7 +208,7 @@ public sealed class GetDraftBoardTests(DraftsIntegrationTestWebAppFactory factor
     };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -227,14 +227,14 @@ public sealed class GetDraftBoardTests(DraftsIntegrationTestWebAppFactory factor
     {
       FirstName = "Test",
       LastName = "Drafter" + Faker.Random.AlphaNumeric(6)
-    })).Value;
+    }, TestContext.Current.CancellationToken)).Value;
 
     // Link the person to the user directly in the DB.
     await DbContext.Database.ExecuteSqlRawAsync(
       "UPDATE drafts.people SET user_id = {0} WHERE public_id = {1}",
       userId, personPublicId);
 
-    var drafterPublicId = (await Sender.Send(new CreateDrafterCommand(personPublicId))).Value;
+    var drafterPublicId = (await Sender.Send(new CreateDrafterCommand(personPublicId), TestContext.Current.CancellationToken)).Value;
 
     return (userId, userPublicId, drafterPublicId);
   }
@@ -267,14 +267,14 @@ public sealed class GetDraftBoardTests(DraftsIntegrationTestWebAppFactory factor
       ContinuityDateRule = ContinuityDateRule.AnyChannelFirstRelease.Value,
       AllowedDraftTypes = (int)DraftTypeMask.All,
       DefaultDraftType = DraftType.Standard.Value
-    });
+    }, TestContext.Current.CancellationToken);
 
     var draftResult = await Sender.Send(new CreateDraftCommand
     {
       Title = Faker.Company.CompanyName(),
       DraftType = DraftType.Standard.Value,
       SeriesId = seriesResult.Value,
-    });
+    }, TestContext.Current.CancellationToken);
 
     return draftResult.Value;
   }

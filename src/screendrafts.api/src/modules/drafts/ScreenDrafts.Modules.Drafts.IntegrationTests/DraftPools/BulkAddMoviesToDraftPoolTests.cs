@@ -1,4 +1,4 @@
-using System.Text;
+﻿using System.Text;
 
 namespace ScreenDrafts.Modules.Drafts.IntegrationTests.DraftPools;
 
@@ -28,7 +28,7 @@ public sealed class BulkAddMoviesToDraftPoolTests(DraftsIntegrationTestWebAppFac
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -53,7 +53,7 @@ public sealed class BulkAddMoviesToDraftPoolTests(DraftsIntegrationTestWebAppFac
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Value.TotalRows.Should().Be(2);
@@ -81,12 +81,12 @@ public sealed class BulkAddMoviesToDraftPoolTests(DraftsIntegrationTestWebAppFac
     };
 
     // Act
-    await Sender.Send(command);
+    await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     var pool = await DbContext.DraftPools
       .Include(p => p.TmdbIds)
-      .FirstAsync();
+      .FirstAsync(TestContext.Current.CancellationToken);
 
     pool.TmdbIds.Should().Contain(i => i.TmdbId == tmdbId1);
     pool.TmdbIds.Should().Contain(i => i.TmdbId == tmdbId2);
@@ -108,7 +108,7 @@ public sealed class BulkAddMoviesToDraftPoolTests(DraftsIntegrationTestWebAppFac
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -132,7 +132,7 @@ public sealed class BulkAddMoviesToDraftPoolTests(DraftsIntegrationTestWebAppFac
     {
       PublicId = draftPublicId,
       TmdbId = existingTmdbId
-    });
+    }, TestContext.Current.CancellationToken);
 
     using var csvStream = BuildCsvStream(
       ("Existing Movie", existingTmdbId),
@@ -145,7 +145,7 @@ public sealed class BulkAddMoviesToDraftPoolTests(DraftsIntegrationTestWebAppFac
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Value.AddedEntries.Should().Be(1);
@@ -173,7 +173,7 @@ public sealed class BulkAddMoviesToDraftPoolTests(DraftsIntegrationTestWebAppFac
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Value.AddedEntries.Should().Be(1);
@@ -198,7 +198,7 @@ public sealed class BulkAddMoviesToDraftPoolTests(DraftsIntegrationTestWebAppFac
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -223,7 +223,7 @@ public sealed class BulkAddMoviesToDraftPoolTests(DraftsIntegrationTestWebAppFac
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -244,14 +244,14 @@ public sealed class BulkAddMoviesToDraftPoolTests(DraftsIntegrationTestWebAppFac
       ContinuityDateRule = ContinuityDateRule.AnyChannelFirstRelease.Value,
       AllowedDraftTypes = (int)DraftTypeMask.All,
       DefaultDraftType = DraftType.Standard.Value
-    });
+    }, TestContext.Current.CancellationToken);
 
     var draftResult = await Sender.Send(new CreateDraftCommand
     {
       Title = Faker.Company.CompanyName(),
       DraftType = DraftType.Standard.Value,
       SeriesId = seriesResult.Value
-    });
+    }, TestContext.Current.CancellationToken);
 
     return draftResult.Value;
   }
@@ -259,7 +259,7 @@ public sealed class BulkAddMoviesToDraftPoolTests(DraftsIntegrationTestWebAppFac
   private async Task<string> CreateDraftWithPoolAsync()
   {
     var draftPublicId = await CreateDraftAsync();
-    await Sender.Send(new CreateDraftPoolCommand { PublicId = draftPublicId });
+    await Sender.Send(new CreateDraftPoolCommand { PublicId = draftPublicId }, TestContext.Current.CancellationToken);
     return draftPublicId;
   }
 

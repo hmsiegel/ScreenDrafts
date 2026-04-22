@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Administration.IntegrationTests.Users;
+﻿namespace ScreenDrafts.Modules.Administration.IntegrationTests.Users;
 
 public class AddRoleToUserTests(AdministrationIntegrationTestWebAppFactory factory)
   : AdministrationIntegrationTest(factory)
@@ -13,7 +13,7 @@ public class AddRoleToUserTests(AdministrationIntegrationTestWebAppFactory facto
     {
       UserPublicId = "u_nonexistent00000000000",
       RoleName = roleName
-    });
+    }, TestContext.Current.CancellationToken);
 
     result.IsFailure.Should().BeTrue();
     result.Error.Should().Be(AdministrationErrors.UserNotFound("u_nonexistent00000000000"));
@@ -30,7 +30,7 @@ public class AddRoleToUserTests(AdministrationIntegrationTestWebAppFactory facto
     {
       UserPublicId = publicId,
       RoleName = roleName
-    });
+    }, TestContext.Current.CancellationToken);
 
     result.IsSuccess.Should().BeTrue();
     result.Value.Should().BeTrue();
@@ -43,8 +43,8 @@ public class AddRoleToUserTests(AdministrationIntegrationTestWebAppFactory facto
     const string roleName = "Patron";
     await InsertRoleAsync(roleName);
 
-    await Sender.Send(new AddRoleToUserCommand { UserPublicId = publicId, RoleName = roleName });
-    var result = await Sender.Send(new AddRoleToUserCommand { UserPublicId = publicId, RoleName = roleName });
+    await Sender.Send(new AddRoleToUserCommand { UserPublicId = publicId, RoleName = roleName }, TestContext.Current.CancellationToken);
+    var result = await Sender.Send(new AddRoleToUserCommand { UserPublicId = publicId, RoleName = roleName }, TestContext.Current.CancellationToken);
 
     result.IsSuccess.Should().BeTrue();
   }

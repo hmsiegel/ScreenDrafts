@@ -1,4 +1,4 @@
-﻿using ScreenDrafts.Modules.Drafts.Features.Categories.Create;
+using ScreenDrafts.Modules.Drafts.Features.Categories.Create;
 using ScreenDrafts.Modules.Drafts.Features.Categories.Edit;
 using ScreenDrafts.Modules.Drafts.Features.Categories.Get;
 
@@ -18,7 +18,7 @@ public sealed class EditCategoryTests(DraftsIntegrationTestWebAppFactory factory
       Description = originalDescription
     };
 
-    var createResult = await Sender.Send(createCommand);
+    var createResult = await Sender.Send(createCommand, TestContext.Current.CancellationToken);
     var publicId = createResult.Value;
 
     var newName = Faker.Commerce.Categories(1)[0];
@@ -30,14 +30,14 @@ public sealed class EditCategoryTests(DraftsIntegrationTestWebAppFactory factory
     };
 
     // Act
-    var result = await Sender.Send(editCommand);
+    var result = await Sender.Send(editCommand, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
     result.IsSuccess.Should().BeTrue();
 
     var getQuery = new GetCategoryQuery(publicId);
-    var category = await Sender.Send(getQuery);
+    var category = await Sender.Send(getQuery, TestContext.Current.CancellationToken);
     category.Value.Name.Should().Be(newName);
     category.Value.Description.Should().Be(originalDescription);
   }
@@ -54,7 +54,7 @@ public sealed class EditCategoryTests(DraftsIntegrationTestWebAppFactory factory
       Description = originalDescription
     };
 
-    var createResult = await Sender.Send(createCommand);
+    var createResult = await Sender.Send(createCommand, TestContext.Current.CancellationToken);
     var publicId = createResult.Value;
 
     var newDescription = Faker.Lorem.Sentence();
@@ -66,14 +66,14 @@ public sealed class EditCategoryTests(DraftsIntegrationTestWebAppFactory factory
     };
 
     // Act
-    var result = await Sender.Send(editCommand);
+    var result = await Sender.Send(editCommand, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
     result.IsSuccess.Should().BeTrue();
 
     var getQuery = new GetCategoryQuery(publicId);
-    var category = await Sender.Send(getQuery);
+    var category = await Sender.Send(getQuery, TestContext.Current.CancellationToken);
     category.Value.Name.Should().Be(originalName);
     category.Value.Description.Should().Be(newDescription);
   }
@@ -90,7 +90,7 @@ public sealed class EditCategoryTests(DraftsIntegrationTestWebAppFactory factory
       Description = originalDescription
     };
 
-    var createResult = await Sender.Send(createCommand);
+    var createResult = await Sender.Send(createCommand, TestContext.Current.CancellationToken);
     var publicId = createResult.Value;
 
     var newName = Faker.Commerce.Categories(1)[0];
@@ -103,14 +103,14 @@ public sealed class EditCategoryTests(DraftsIntegrationTestWebAppFactory factory
     };
 
     // Act
-    var result = await Sender.Send(editCommand);
+    var result = await Sender.Send(editCommand, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
     result.IsSuccess.Should().BeTrue();
 
     var getQuery = new GetCategoryQuery(publicId);
-    var category = await Sender.Send(getQuery);
+    var category = await Sender.Send(getQuery, TestContext.Current.CancellationToken);
     category.Value.Name.Should().Be(newName);
     category.Value.Description.Should().Be(newDescription);
   }
@@ -128,7 +128,7 @@ public sealed class EditCategoryTests(DraftsIntegrationTestWebAppFactory factory
     };
 
     // Act
-    var result = await Sender.Send(editCommand);
+    var result = await Sender.Send(editCommand, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -147,7 +147,7 @@ public sealed class EditCategoryTests(DraftsIntegrationTestWebAppFactory factory
       Description = originalDescription
     };
 
-    var createResult = await Sender.Send(createCommand);
+    var createResult = await Sender.Send(createCommand, TestContext.Current.CancellationToken);
     var publicId = createResult.Value;
 
     var editCommand = new EditCategoryCommand
@@ -158,7 +158,7 @@ public sealed class EditCategoryTests(DraftsIntegrationTestWebAppFactory factory
     };
 
     // Act
-    var result = await Sender.Send(editCommand);
+    var result = await Sender.Send(editCommand, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -177,7 +177,7 @@ public sealed class EditCategoryTests(DraftsIntegrationTestWebAppFactory factory
       Description = originalDescription
     };
 
-    var createResult = await Sender.Send(createCommand);
+    var createResult = await Sender.Send(createCommand, TestContext.Current.CancellationToken);
     var publicId = createResult.Value;
 
     var editCommand = new EditCategoryCommand
@@ -188,7 +188,7 @@ public sealed class EditCategoryTests(DraftsIntegrationTestWebAppFactory factory
     };
 
     // Act
-    var result = await Sender.Send(editCommand);
+    var result = await Sender.Send(editCommand, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -207,7 +207,7 @@ public sealed class EditCategoryTests(DraftsIntegrationTestWebAppFactory factory
       Description = originalDescription
     };
 
-    var createResult = await Sender.Send(createCommand);
+    var createResult = await Sender.Send(createCommand, TestContext.Current.CancellationToken);
     var publicId = createResult.Value;
 
     var editCommand = new EditCategoryCommand
@@ -218,14 +218,14 @@ public sealed class EditCategoryTests(DraftsIntegrationTestWebAppFactory factory
     };
 
     // Act
-    var result = await Sender.Send(editCommand);
+    var result = await Sender.Send(editCommand, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
     result.IsSuccess.Should().BeTrue();
 
     var getQuery = new GetCategoryQuery(publicId);
-    var category = await Sender.Send(getQuery);
+    var category = await Sender.Send(getQuery, TestContext.Current.CancellationToken);
     category.Value.Name.Should().Be(originalName);
     category.Value.Description.Should().Be(originalDescription);
   }
@@ -242,11 +242,11 @@ public sealed class EditCategoryTests(DraftsIntegrationTestWebAppFactory factory
       Description = originalDescription
     };
 
-    var createResult = await Sender.Send(createCommand);
+    var createResult = await Sender.Send(createCommand, TestContext.Current.CancellationToken);
     var publicId = createResult.Value;
 
     // Wait a bit to ensure timestamp difference
-    await Task.Delay(100);
+    await Task.Delay(100, TestContext.Current.CancellationToken);
 
     var beforeEdit = DateTime.UtcNow;
     var newName = Faker.Commerce.Categories(1)[0];
@@ -258,7 +258,7 @@ public sealed class EditCategoryTests(DraftsIntegrationTestWebAppFactory factory
     };
 
     // Act
-    var result = await Sender.Send(editCommand);
+    var result = await Sender.Send(editCommand, TestContext.Current.CancellationToken);
     var afterEdit = DateTime.UtcNow;
 
     // Assert
@@ -266,7 +266,7 @@ public sealed class EditCategoryTests(DraftsIntegrationTestWebAppFactory factory
     result.IsSuccess.Should().BeTrue();
 
     var editedCategory = await DbContext.Set<Domain.Categories.Category>()
-      .FirstOrDefaultAsync(c => c.PublicId == publicId);
+      .FirstOrDefaultAsync(c => c.PublicId == publicId, TestContext.Current.CancellationToken);
     editedCategory.Should().NotBeNull();
     editedCategory!.ModifiedOnUtc.Should().NotBeNull();
     editedCategory.ModifiedOnUtc!.Value.Should().BeOnOrAfter(beforeEdit);

@@ -148,7 +148,7 @@ public sealed class MegaDraft2025_Tests(DraftsIntegrationTestWebAppFactory facto
       tmdbId: 40099).Value;
     DbContext.Movies.Add(wrongYearMovie);
 
-    await DbContext.SaveChangesAsync();
+    await DbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
     // Create pool and add all 21 × 2025 films
     await CreatePoolAsync(_draftPublicId);
@@ -170,7 +170,7 @@ public sealed class MegaDraft2025_Tests(DraftsIntegrationTestWebAppFactory facto
 
     var picks = await DbContext.Picks
       .Where(p => p.DraftPart.PublicId == _draftPartPublicId)
-      .ToListAsync();
+      .ToListAsync(TestContext.Current.CancellationToken);
 
     picks.Should().HaveCount(21);
   }
@@ -185,7 +185,7 @@ public sealed class MegaDraft2025_Tests(DraftsIntegrationTestWebAppFactory facto
       .CountAsync(p =>
         p.DraftPart.PublicId == _draftPartPublicId &&
         p.PlayedByParticipantKindValue == ParticipantKind.Drafter &&
-        p.PlayedByParticipantIdValue == clayId);
+        p.PlayedByParticipantIdValue == clayId, TestContext.Current.CancellationToken);
 
     count.Should().Be(6, "Clay (trivia winner) has 6 picks");
   }
@@ -200,7 +200,7 @@ public sealed class MegaDraft2025_Tests(DraftsIntegrationTestWebAppFactory facto
       .CountAsync(p =>
         p.DraftPart.PublicId == _draftPartPublicId &&
         p.PlayedByParticipantKindValue == ParticipantKind.Drafter &&
-        p.PlayedByParticipantIdValue == ryanId);
+        p.PlayedByParticipantIdValue == ryanId, TestContext.Current.CancellationToken);
 
     count.Should().Be(5, "Ryan has 5 picks");
   }
@@ -215,7 +215,7 @@ public sealed class MegaDraft2025_Tests(DraftsIntegrationTestWebAppFactory facto
       .CountAsync(p =>
         p.DraftPart.PublicId == _draftPartPublicId &&
         p.PlayedByParticipantKindValue == ParticipantKind.Drafter &&
-        p.PlayedByParticipantIdValue == darrenId);
+        p.PlayedByParticipantIdValue == darrenId, TestContext.Current.CancellationToken);
 
     count.Should().Be(5, "Darren has 5 picks");
   }
@@ -230,7 +230,7 @@ public sealed class MegaDraft2025_Tests(DraftsIntegrationTestWebAppFactory facto
       .CountAsync(p =>
         p.DraftPart.PublicId == _draftPartPublicId &&
         p.PlayedByParticipantKindValue == ParticipantKind.Drafter &&
-        p.PlayedByParticipantIdValue == philId);
+        p.PlayedByParticipantIdValue == philId, TestContext.Current.CancellationToken);
 
     count.Should().Be(5, "Phil has 5 picks");
   }
@@ -243,7 +243,7 @@ public sealed class MegaDraft2025_Tests(DraftsIntegrationTestWebAppFactory facto
 
     var draftPart = await DbContext.DraftParts
       .AsNoTracking()
-      .FirstAsync(dp => dp.PublicId == _draftPartPublicId);
+      .FirstAsync(dp => dp.PublicId == _draftPartPublicId, TestContext.Current.CancellationToken);
 
     draftPart.Status.Should().Be(DraftPartStatus.Completed);
   }
@@ -257,11 +257,11 @@ public sealed class MegaDraft2025_Tests(DraftsIntegrationTestWebAppFactory facto
   {
     var draft = await DbContext.Drafts
       .Where(d => d.PublicId == _draftPublicId)
-      .FirstAsync();
+      .FirstAsync(TestContext.Current.CancellationToken);
 
     var pool = await DbContext.DraftPools
       .Include(p => p.TmdbIds)
-      .FirstAsync(p => p.DraftId == draft.Id);
+      .FirstAsync(p => p.DraftId == draft.Id, TestContext.Current.CancellationToken);
 
     pool.TmdbIds.Should().HaveCount(21, "All 21 × 2025 films should be in the pool");
   }
@@ -276,11 +276,11 @@ public sealed class MegaDraft2025_Tests(DraftsIntegrationTestWebAppFactory facto
   {
     var draft = await DbContext.Drafts
       .Where(d => d.PublicId == _draftPublicId)
-      .FirstAsync();
+      .FirstAsync(TestContext.Current.CancellationToken);
 
     var pool = await DbContext.DraftPools
       .Include(p => p.TmdbIds)
-      .FirstAsync(p => p.DraftId == draft.Id);
+      .FirstAsync(p => p.DraftId == draft.Id, TestContext.Current.CancellationToken);
 
     pool.TmdbIds.Should().NotContain(i => i.TmdbId == 40099,
       "The 2024 guard film (TmdbId=40099) should not be in the 2025 pool");
@@ -338,7 +338,7 @@ public sealed class MegaDraft2025_Tests(DraftsIntegrationTestWebAppFactory facto
     var id = await DbContext.Drafters
       .Where(d => d.PublicId == drafterPublicId)
       .Select(d => d.Id)
-      .FirstAsync();
+      .FirstAsync(TestContext.Current.CancellationToken);
     return id.Value;
   }
 }

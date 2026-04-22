@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Audit.IntegrationTests.AuditLogs;
+﻿namespace ScreenDrafts.Modules.Audit.IntegrationTests.AuditLogs;
 
 public sealed class GetAuthAuditLogsTests(AuditIntegrationTestWebAppFactory factory)
   : AuditIntegrationTest(factory)
@@ -13,7 +13,7 @@ public sealed class GetAuthAuditLogsTests(AuditIntegrationTestWebAppFactory fact
     var query = new GetAuthAuditLogsQuery { PageSize = 25 };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -31,7 +31,7 @@ public sealed class GetAuthAuditLogsTests(AuditIntegrationTestWebAppFactory fact
     var query = new GetAuthAuditLogsQuery { UserId = targetUserId, PageSize = 25 };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -50,7 +50,7 @@ public sealed class GetAuthAuditLogsTests(AuditIntegrationTestWebAppFactory fact
     var query = new GetAuthAuditLogsQuery { EventType = "login_error", PageSize = 25 };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -69,7 +69,7 @@ public sealed class GetAuthAuditLogsTests(AuditIntegrationTestWebAppFactory fact
     var query = new GetAuthAuditLogsQuery { EventType = "login", PageSize = 25 };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -93,7 +93,7 @@ public sealed class GetAuthAuditLogsTests(AuditIntegrationTestWebAppFactory fact
     };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -113,7 +113,7 @@ public sealed class GetAuthAuditLogsTests(AuditIntegrationTestWebAppFactory fact
     var query = new GetAuthAuditLogsQuery { PageSize = 3 };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -129,7 +129,7 @@ public sealed class GetAuthAuditLogsTests(AuditIntegrationTestWebAppFactory fact
     var query = new GetAuthAuditLogsQuery { PageSize = 25 };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -156,7 +156,7 @@ public sealed class GetAuthAuditLogsTests(AuditIntegrationTestWebAppFactory fact
     var query = new GetAuthAuditLogsQuery { PageSize = 25 };
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();

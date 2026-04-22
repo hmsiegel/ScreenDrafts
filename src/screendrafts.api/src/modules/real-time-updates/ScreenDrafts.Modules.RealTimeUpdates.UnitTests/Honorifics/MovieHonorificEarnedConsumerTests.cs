@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.RealTimeUpdates.UnitTests.Honorifics;
+﻿namespace ScreenDrafts.Modules.RealTimeUpdates.UnitTests.Honorifics;
 
 public sealed class MovieHonorificEarnedConsumerTests
 {
@@ -19,7 +19,7 @@ public sealed class MovieHonorificEarnedConsumerTests
     var integrationEvent = BuildEvent(draftPartPublicId: draftPartPublicId);
 
     // Act
-    await consumer.Handle(integrationEvent);
+    await consumer.Handle(integrationEvent, CancellationToken.None);
 
     // Assert
     hubContext.LastGroupName.Should().Be(DraftHub.GroupName(draftPartPublicId));
@@ -37,7 +37,7 @@ public sealed class MovieHonorificEarnedConsumerTests
     var integrationEvent = BuildEvent();
 
     // Act
-    await consumer.Handle(integrationEvent);
+    await consumer.Handle(integrationEvent, CancellationToken.None);
 
     // Assert
     hubContext.SentMessages.Should().ContainSingle()
@@ -66,7 +66,7 @@ public sealed class MovieHonorificEarnedConsumerTests
       appearanceCount: 2);
 
     // Act
-    await consumer.Handle(integrationEvent);
+    await consumer.Handle(integrationEvent, CancellationToken.None);
 
     // Assert
     var (_, args) = hubContext.SentMessages.Single();

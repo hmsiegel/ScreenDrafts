@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Administration.IntegrationTests.Users;
+﻿namespace ScreenDrafts.Modules.Administration.IntegrationTests.Users;
 
 public class AddPermissionToRoleTests(AdministrationIntegrationTestWebAppFactory factory)
   : AdministrationIntegrationTest(factory)
@@ -15,7 +15,7 @@ public class AddPermissionToRoleTests(AdministrationIntegrationTestWebAppFactory
     {
       PermissionCode = code,
       RoleName = roleName
-    });
+    }, TestContext.Current.CancellationToken);
 
     result.IsSuccess.Should().BeTrue();
     result.Value.Should().BeTrue();
@@ -31,7 +31,7 @@ public class AddPermissionToRoleTests(AdministrationIntegrationTestWebAppFactory
     {
       PermissionCode = "missing:permission",
       RoleName = roleName
-    });
+    }, TestContext.Current.CancellationToken);
 
     result.IsFailure.Should().BeTrue();
     result.Error.Should().Be(AdministrationErrors.PermissionNotFound("missing:permission"));
@@ -44,13 +44,13 @@ public class AddPermissionToRoleTests(AdministrationIntegrationTestWebAppFactory
     const string roleName = "Manager";
     await InsertPermissionAsync(code);
     await InsertRoleAsync(roleName);
-    await Sender.Send(new AddPermissionToRoleCommand { PermissionCode = code, RoleName = roleName });
+    await Sender.Send(new AddPermissionToRoleCommand { PermissionCode = code, RoleName = roleName }, TestContext.Current.CancellationToken);
 
     var result = await Sender.Send(new AddPermissionToRoleCommand
     {
       PermissionCode = code,
       RoleName = roleName
-    });
+    }, TestContext.Current.CancellationToken);
 
     result.IsFailure.Should().BeTrue();
     result.Error.Should().Be(AdministrationErrors.PermissionAlreadyAssigned(roleName, code));

@@ -21,7 +21,7 @@ public sealed class AddDrafterToTeamTests(DraftsIntegrationTestWebAppFactory fac
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -37,7 +37,7 @@ public sealed class AddDrafterToTeamTests(DraftsIntegrationTestWebAppFactory fac
     var drafterId1 = await teamFactory.CreateAndSaveDrafterAsync();
     var drafterId2 = await teamFactory.CreateAndSaveDrafterAsync();
 
-    await Sender.Send(new AddDrafterToTeamCommand { DrafterTeamId = teamId, DrafterId = drafterId1 });
+    await Sender.Send(new AddDrafterToTeamCommand { DrafterTeamId = teamId, DrafterId = drafterId1 }, TestContext.Current.CancellationToken);
 
     var command = new AddDrafterToTeamCommand
     {
@@ -46,7 +46,7 @@ public sealed class AddDrafterToTeamTests(DraftsIntegrationTestWebAppFactory fac
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -67,7 +67,7 @@ public sealed class AddDrafterToTeamTests(DraftsIntegrationTestWebAppFactory fac
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -88,7 +88,7 @@ public sealed class AddDrafterToTeamTests(DraftsIntegrationTestWebAppFactory fac
     };
 
     // Act
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -110,12 +110,12 @@ public sealed class AddDrafterToTeamTests(DraftsIntegrationTestWebAppFactory fac
     };
 
     // Act
-    await Sender.Send(command);
+    await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
     var team = await DbContext.DrafterTeams
       .Include(t => t.Drafters)
-      .SingleAsync(t => t.PublicId == teamId);
+      .SingleAsync(t => t.PublicId == teamId, TestContext.Current.CancellationToken);
 
     team.Drafters.Should().HaveCount(1);
     team.Drafters.Should().Contain(d => d.PublicId == drafterId);

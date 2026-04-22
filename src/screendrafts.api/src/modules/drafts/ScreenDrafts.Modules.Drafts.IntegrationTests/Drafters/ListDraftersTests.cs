@@ -19,7 +19,7 @@ public sealed class ListDraftersTests(DraftsIntegrationTestWebAppFactory factory
     var query = new ListDraftersQuery(request);
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -47,7 +47,7 @@ public sealed class ListDraftersTests(DraftsIntegrationTestWebAppFactory factory
     var query = new ListDraftersQuery(request);
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -76,7 +76,7 @@ public sealed class ListDraftersTests(DraftsIntegrationTestWebAppFactory factory
     var query = new ListDraftersQuery(request);
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -96,7 +96,7 @@ public sealed class ListDraftersTests(DraftsIntegrationTestWebAppFactory factory
     var personFactory = new PeopleFactory(Sender, Faker);
     var personId = await personFactory.CreateAndSavePersonWithNameAsync("John", "Doe");
     var command = new CreateDrafterCommand(personId);
-    var createResult = await Sender.Send(command);
+    var createResult = await Sender.Send(command, TestContext.Current.CancellationToken);
     var drafterId = createResult.Value;
 
     var request = new ListDraftersRequest
@@ -108,7 +108,7 @@ public sealed class ListDraftersTests(DraftsIntegrationTestWebAppFactory factory
     var query = new ListDraftersQuery(request);
 
     // Act
-    var result = await Sender.Send(query);
+    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
     // Assert
     result.Should().NotBeNull();
@@ -127,7 +127,7 @@ public sealed class ListDraftersTests(DraftsIntegrationTestWebAppFactory factory
     var personFactory = new PeopleFactory(Sender, Faker);
     var personId = await personFactory.CreateAndSavePersonAsync();
     var command = new CreateDrafterCommand(personId);
-    var result = await Sender.Send(command);
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
     return result.Value;
   }
 }

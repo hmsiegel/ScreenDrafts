@@ -1,9 +1,7 @@
-global using System.Data;
+﻿global using System.Data;
 global using System.Data.Common;
 
 global using FluentAssertions;
-
-global using Microsoft.Extensions.Logging.Abstractions;
 
 global using ScreenDrafts.Common.Application.Data;
 global using ScreenDrafts.Modules.Communications.Domain.Email;
