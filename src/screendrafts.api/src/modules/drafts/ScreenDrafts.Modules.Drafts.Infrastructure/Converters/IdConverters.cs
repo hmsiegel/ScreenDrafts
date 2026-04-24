@@ -156,4 +156,9 @@ internal static class IdConverters
     new(
       v => v.Value,
       value => PredictionResultId.Create(value));
+
+  public static ValueConverter<DraftPartRecordingId, Guid> DraftPartRecordingIdConverter =>
+    new(
+      v => v.Value,
+      value => DraftPartRecordingId.Create(value));
 }

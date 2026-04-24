@@ -68,4 +68,33 @@ public sealed partial class DraftPart
   {
     Status = draftStatus;
   }
+
+  public Result SetZoomSessionName(string sessionNam)
+  {
+    if (string.IsNullOrWhiteSpace(sessionNam))
+    {
+      return Result.Failure(DraftPartErrors.InvalidZoomSessionName);
+    }
+
+    if (ZoomSessionName is not null)
+    {
+      return Result.Failure(DraftPartErrors.ZoomSessionAlreadyActive);
+    }
+
+    ZoomSessionName = sessionNam;
+    UpdatedAtUtc = DateTime.UtcNow;
+    return Result.Success();
+  }
+
+  public Result ClearZoomSessionName()
+  {
+    if (ZoomSessionName is null)
+    {
+      return Result.Failure(DraftPartErrors.NoActiveZoomSession);
+    }
+    ZoomSessionName = null;
+    UpdatedAtUtc = DateTime.UtcNow;
+    return Result.Success();
+  }
+
 }

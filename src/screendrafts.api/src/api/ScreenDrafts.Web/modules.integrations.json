@@ -22,6 +22,15 @@
       "ClientSecret": "",
       "BaseAddress": "https://api.igdb.com/v4/",
       "TwitchTokenUrl": "https://id.twitch.tv/oauth2/token"
+    },
+    "Zoom": {
+      "BaseAddress": "https://api.zoom.us/v2/",
+      "AccountId": "",
+      "ClientId": "",
+      "ClientSecret": "",
+      "VideoSdkKey": "",
+      "VideoSdkSecret": "",
+      "WebhookSecretToken": ""
     }
   }
 }

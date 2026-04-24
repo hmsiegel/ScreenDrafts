@@ -164,5 +164,12 @@ internal static class DraftsOpenApi
     public const string Predictions_ScoreSets = "Predictions_ScoreSets";
     public const string Predictions_AddCarryover = "Predictions_AddCarryover";
     public const string Predictions_CloseSeason = "Predictions_CloseSeason";
+
+    // Zoom Sessions
+    public const string DraftParts_StartZoomSession = "DraftParts.StartZoomSession";
+    public const string DraftParts_EndZoomSession = "DraftParts.EndZoomSession";
+    public const string DraftParts_GetZoomSessionToken = "DraftParts.GetZoomSessionToken";
+    public const string DraftParts_StartZoomRecording = "DraftParts.StartZoomRecording";
+    public const string DraftParts_StopZoomRecording = "DraftParts.StopZoomRecording";
   }
 }

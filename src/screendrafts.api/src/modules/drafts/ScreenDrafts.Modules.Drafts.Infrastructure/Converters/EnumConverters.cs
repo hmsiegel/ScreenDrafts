@@ -31,4 +31,9 @@ internal static class EnumConverters
     new(
       v => v.Value,
       v => MergePolicy.FromValue(v));
+
+  public static ValueConverter<ZoomRecordingFileType, int> ZoomRecordingFileTypeConverter =>
+    new(
+      v => v.Value,
+      v => ZoomRecordingFileType.FromValue(v));
 }

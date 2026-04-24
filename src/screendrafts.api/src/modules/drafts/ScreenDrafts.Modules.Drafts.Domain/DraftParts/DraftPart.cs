@@ -81,6 +81,16 @@ public sealed partial class DraftPart : AggregateRoot<DraftPartId, Guid>
 
   // Speed Drafts
   public int? SubDraftCount { get; private set; } = 3;
+
+  /// <summary>
+  /// The Zoom Video SDK session name for this draft part.
+  /// Set when the host starts a session; used by participants to join 
+  /// and by the recording webhook to correlate completed recordings.
+  /// Null when no session is active or has been started.
+  /// </summary>
+  public string? ZoomSessionName { get; private set; }
+
+
   public IReadOnlyCollection<SubDraft> SubDrafts => _subDrafts.AsReadOnly();
 
   public DraftPartMovieVersionPolicyType MovieVersionPolicyType { get; private set; } = default!;

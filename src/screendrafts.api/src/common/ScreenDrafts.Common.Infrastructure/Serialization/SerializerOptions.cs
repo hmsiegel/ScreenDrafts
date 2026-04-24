@@ -8,4 +8,10 @@ public static class SerializerOptions
     Converters = { new DateOnlyJsonConverter() },
     NumberHandling = JsonNumberHandling.AllowReadingFromString
   };
+
+  public static readonly JsonSerializerOptions ZoomDefault = new()
+  {
+    PropertyNameCaseInsensitive = true,
+    PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower,
+  };
 }

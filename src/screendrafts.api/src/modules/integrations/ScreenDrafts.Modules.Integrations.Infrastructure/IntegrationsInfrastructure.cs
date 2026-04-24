@@ -1,7 +1,4 @@
-﻿using ScreenDrafts.Modules.Integrations.Infrastructure.Services.Igdb;
-using ScreenDrafts.Modules.Integrations.Infrastructure.Services.Tmdb;
-
-namespace ScreenDrafts.Modules.Integrations.Infrastructure;
+﻿namespace ScreenDrafts.Modules.Integrations.Infrastructure;
 
 public static class IntegrationsInfrastructure
 {
@@ -17,6 +14,9 @@ public static class IntegrationsInfrastructure
     });
 
     services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<IntegrationsDbContext>());
+
+    services.AddScoped<IZoomSessionTokenService, ZoomSessionTokenService>();
+    services.AddScoped<IZoomWebhookSignatureVerifier, ZoomWebhookSignatureVerifier>();
 
     services.Configure<OutboxOptions>(configuration.GetSection("Integrations:Outbox"));
 

@@ -46,7 +46,8 @@ public abstract class DraftsIntegrationTest(DraftsIntegrationTestWebAppFactory f
         drafts.draft_prediction_sets,
         drafts.draft_part_prediction_rules,
         drafts.prediction_contestants,
-        drafts.prediction_seasons
+        drafts.prediction_seasons,
+        drafts.draft_part_recordings
       RESTART IDENTITY CASCADE;
       """);
   }

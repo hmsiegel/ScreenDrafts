@@ -21,10 +21,19 @@
       "TrailerPlaceholder": "https://via.placeholder.com/500x750?text=No+Trailer"
     },
     "Igdb": {
-      "ClientId": "",
-      "ClientSecret": "",
+      "ClientId": "YOUR_IGDB_CLIENT_ID_HERE",
+      "ClientSecret": "YOUR_IGDB_CLIENT_SECRET_HERE",
       "BaseAddress": "https://api.igdb.com/v4/",
       "TwitchTokenUrl": "https://id.twitch.tv/oauth2/token"
+    },
+    "Zoom": {
+      "BaseAddress": "https://api.zoom.us/v2/",
+      "AccountId": "YOUR_ZOOM_ACCOUNT_ID_HERE",
+      "ClientId": "YOUR_ZOOM_CLIENT_ID_HERE",
+      "ClientSecret": "YOUR_ZOOM_CLIENT_SECRET_HERE",
+      "VideoSdkKey": "YOUR_ZOOM_VIDEO_SDK_KEY_HERE",
+      "VideoSdkSecret": "YOUR_ZOOM_VIDEO_SDK_SECRET_HERE",
+      "WebhookSecretToken": "YOUR_ZOOM_WEBHOOK_SECRET_TOKEN_HERE"
     }
   }
 }

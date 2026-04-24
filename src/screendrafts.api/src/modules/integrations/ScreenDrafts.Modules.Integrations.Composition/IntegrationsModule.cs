@@ -1,4 +1,8 @@
-﻿namespace ScreenDrafts.Modules.Integrations.Composition;
+﻿using ScreenDrafts.Modules.Drafts.IntegrationEvents;
+using ScreenDrafts.Modules.Integrations.Domain.Zoom;
+using ScreenDrafts.Modules.Integrations.Infrastructure.Zoom;
+
+namespace ScreenDrafts.Modules.Integrations.Composition;
 
 public static class IntegrationsModule
 {
@@ -25,6 +29,12 @@ public static class IntegrationsModule
 
     registrationConfigurator.AddConsumer<IntegrationEventConsumer<FetchMediaRequestedIntegrationEvent>>()
       .Endpoint(x => x.InstanceId = instanceId);
+
+    registrationConfigurator.AddConsumer<IntegrationEventConsumer<StartZoomRecordingRequestedIntegrationEvent>>()
+      .Endpoint(x => x.InstanceId = instanceId);
+
+    registrationConfigurator.AddConsumer<IntegrationEventConsumer<StopZoomRecordingRequestedIntegrationEvent>>()
+      .Endpoint(x => x.InstanceId = instanceId);
   }
 
   public static void AddIntegrationFeatures(this IServiceCollection services, IConfiguration configuration)
@@ -49,6 +59,15 @@ public static class IntegrationsModule
     {
       IgdbSettings igdbSettings = sp.GetRequiredService<IOptions<IgdbSettings>>().Value;
       client.BaseAddress = new Uri(igdbSettings.BaseAddress);
+    });
+
+    services.Configure<ZoomSettings>(configuration.GetSection(ZoomSettings.SectionName));
+
+    services.AddHttpClient<IZoomApiClient, ZoomApiClient>((sp, client) =>
+    {
+      var settings = sp.GetRequiredService<IOptions<ZoomSettings>>().Value;
+      client.BaseAddress = new Uri(settings.BaseAddress);
+      client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
     });
 
     services.AddScoped<IIntegrationsApi, IntegrationsApi>();

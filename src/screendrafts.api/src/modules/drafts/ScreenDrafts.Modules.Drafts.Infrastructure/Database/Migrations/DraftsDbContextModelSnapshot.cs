@@ -19,7 +19,7 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("drafts")
-                .HasAnnotation("ProductVersion", "10.0.3")
+                .HasAnnotation("ProductVersion", "10.0.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -354,12 +354,22 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at_utc");
 
+                    b.Property<string>("ZoomSessionName")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("zoom_session_name");
+
                     b.HasKey("Id")
                         .HasName("pk_draft_parts");
 
                     b.HasIndex("PublicId")
                         .IsUnique()
                         .HasDatabaseName("ix_draft_parts_public_id");
+
+                    b.HasIndex("ZoomSessionName")
+                        .IsUnique()
+                        .HasDatabaseName("uix_draft_parts_zoom_session_name_unique")
+                        .HasFilter("zoom_session_name IS NOT NULL");
 
                     b.HasIndex("DraftId", "PartIndex")
                         .IsUnique()
@@ -529,6 +539,81 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasDatabaseName("ux_draft_part_participants_unique");
 
                     b.ToTable("draft_part_participants", "drafts");
+                });
+
+            modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities.DraftPartRecording", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("DownloadUrl")
+                        .HasMaxLength(2048)
+                        .HasColumnType("character varying(2048)")
+                        .HasColumnName("download_url");
+
+                    b.Property<Guid>("DraftPartId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("draft_part_id");
+
+                    b.Property<long>("FileSizeBytes")
+                        .HasColumnType("bigint")
+                        .HasColumnName("file_size_bytes");
+
+                    b.Property<int>("FileType")
+                        .HasColumnType("integer")
+                        .HasColumnName("file_type");
+
+                    b.Property<string>("PlayUrl")
+                        .HasMaxLength(2048)
+                        .HasColumnType("character varying(2048)")
+                        .HasColumnName("play_url");
+
+                    b.Property<string>("PublicId")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("public_id");
+
+                    b.Property<DateTimeOffset>("RecordingEnd")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("recording_end");
+
+                    b.Property<DateTimeOffset>("RecordingStart")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("recording_start");
+
+                    b.Property<int>("SequenceNumber")
+                        .HasColumnType("integer")
+                        .HasColumnName("sequence_number");
+
+                    b.Property<string>("ZoomFileId")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("zoom_file_id");
+
+                    b.Property<string>("ZoomSessionName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("zoom_session_name");
+
+                    b.HasKey("Id")
+                        .HasName("pk_draft_part_recordings");
+
+                    b.HasIndex("DraftPartId")
+                        .HasDatabaseName("ix_draft_part_recordings_draft_part_id");
+
+                    b.HasIndex("PublicId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_draft_part_recordings_public_id");
+
+                    b.HasIndex("ZoomFileId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_draft_part_recordings_zoom_file_id");
+
+                    b.ToTable("draft_part_recordings", "drafts");
                 });
 
             modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities.DraftPosition", b =>
@@ -1856,6 +1941,16 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasConstraintName("fk_draft_part_participants_draft_parts_draft_part_id");
 
                     b.Navigation("DraftPart");
+                });
+
+            modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities.DraftPartRecording", b =>
+                {
+                    b.HasOne("ScreenDrafts.Modules.Drafts.Domain.DraftParts.DraftPart", null)
+                        .WithMany()
+                        .HasForeignKey("DraftPartId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_draft_part_recordings_draft_parts_draft_part_id");
                 });
 
             modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities.DraftPosition", b =>

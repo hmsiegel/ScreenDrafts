@@ -16,6 +16,12 @@ public abstract class ScreenDraftsEndpoint<TRequest, TResponse> : Endpoint<TRequ
   protected ISender Sender => _sender ??= HttpContext.RequestServices.GetService<ISender>()!;
 }
 
+public abstract class ScreenDraftsEndpointWithoutRequest : EndpointWithoutRequest
+{
+  private ISender _sender = null!;
+  protected ISender Sender => _sender ??= HttpContext.RequestServices.GetService<ISender>()!;
+}
+
 public abstract class ScreenDraftsEndpointWithoutRequest<TResponse> : EndpointWithoutRequest<TResponse>
   where TResponse : notnull
 {

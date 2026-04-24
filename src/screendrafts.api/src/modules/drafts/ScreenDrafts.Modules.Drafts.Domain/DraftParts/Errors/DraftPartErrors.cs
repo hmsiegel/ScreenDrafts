@@ -115,6 +115,20 @@ public static class DraftPartErrors
     description: "Maximum community vetoes cannot be negative."
   );
 
+  public static readonly SDError InvalidZoomSessionName = SDError.Conflict(
+    code: "DraftPart.InvalidZoomSessionName",
+    description: "Invalid Zoom session name."
+  );
+
+  public static readonly SDError ZoomSessionAlreadyActive = SDError.Conflict(
+    code: "DraftPart.ZoomSessionAlreadyActive",
+    description: "Zoom session is already active."
+  );
+
+  public static readonly SDError NoActiveZoomSession = SDError.Conflict(
+    code: "DraftPart.NoActiveZoomSession",
+    description: "No active Zoom session."
+  );
 
   public static SDError NotFound(Guid draftPartId) => SDError.NotFound(
     code: "DraftPart.NotFound",

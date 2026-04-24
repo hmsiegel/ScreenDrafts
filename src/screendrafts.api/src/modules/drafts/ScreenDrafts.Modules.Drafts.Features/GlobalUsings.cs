@@ -85,6 +85,7 @@ global using ScreenDrafts.Modules.Drafts.Features.Movies.Add;
 global using ScreenDrafts.Modules.Drafts.Features.People;
 global using ScreenDrafts.Modules.Drafts.IntegrationEvents;
 global using ScreenDrafts.Modules.Integrations.IntegrationEvents;
+global using ScreenDrafts.Modules.Integrations.PublicApi;
 global using ScreenDrafts.Modules.Movies.IntegrationEvents;
 global using ScreenDrafts.Modules.Users.IntegrationEvents;
 global using ScreenDrafts.Modules.Users.PublicApi;

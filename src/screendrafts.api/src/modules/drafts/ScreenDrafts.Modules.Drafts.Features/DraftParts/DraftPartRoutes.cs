@@ -7,48 +7,54 @@ internal static class DraftPartRoutes
   public const string ById = "/draft-parts/{draftPartId}";
 
   // Status
-  public const string Status = "/draft-parts/{draftPartId}/status";
+  public const string Status = ById + "/status";
 
   // Releases
-  public const string Releases = "/draft-parts/{draftPartId}/releases";
-  public const string RemoveReleaseDate = "/draft-parts/{draftPartId}/releases/{releaseId}";
-  public const string Episode = "/draft-parts/{draftPartId}/episode";
+  public const string Releases = ById + "/releases";
+  public const string RemoveReleaseDate = ById + "/releases/{releaseId}";
+  public const string Episode = ById + "/episode";
 
   // Hosts
-  public const string Hosts = "/draft-parts/{draftPartId}/hosts";
-  public const string RemoveHost = "/draft-parts/{draftPartId}/hosts/{hostId}";
-  public const string SetPrimaryHost = "/draft-parts/{draftPartId}/hosts/{hostId}/primary";
+  public const string Hosts = ById + "/hosts";
+  public const string RemoveHost = ById + "/hosts/{hostId}";
+  public const string SetPrimaryHost = ById + "/hosts/{hostId}/primary";
 
   // Participants
-  public const string Participants = "/draft-parts/{draftPartId}/participants";
-  public const string SetCommunityParticipant = "/draft-parts/{draftPartId}/participants/community";
-  public const string RemoveCommunityParticipant = "/draft-parts/{draftPartId}/participants/community/{communityId}";
-  public const string DraftPositions = "/draft-parts/{draftPartId}/positions";
-  public const string ParticipantDraftPosition = "/draft-parts/{draftPartId}/positions/{positionId}/participant";
-  public const string AssignTriviaResults = "/draft-parts/{draftPartId}/trivia-results";
+  public const string Participants = ById + "/participants";
+  public const string SetCommunityParticipant = ById + "/participants/community";
+  public const string RemoveCommunityParticipant = ById + "/participants/community/{communityId}";
+  public const string DraftPositions = ById + "/positions";
+  public const string ParticipantDraftPosition = ById + "/positions/{positionId}/participant";
+  public const string AssignTriviaResults = ById + "/trivia-results";
 
   // Picks
-  public const string Picks = "/draft-parts/{draftPartId}/picks";
-  public const string UndoPick = "/draft-parts/{draftPartId}/picks/{playOrder}";
+  public const string Picks = ById + "/picks";
+  public const string UndoPick = ById + "/picks/{playOrder}";
 
   // Vetos and Veto Overrides
-  public const string ApplyVeto = "/draft-parts/{draftPartId}/picks/{playOrder}/veto";
-  public const string ApplyVetoOverride = "/draft-parts/{draftPartId}/veto-override/{pickId}";
-  public const string ApplyCommissionerOverride = "/draft-parts/{draftPartId}/commissioner-override/{pickId}";
+  public const string ApplyVeto = ById + "/picks/{playOrder}/veto";
+  public const string ApplyVetoOverride = ById + "/veto-override/{pickId}";
+  public const string ApplyCommissionerOverride = ById + "/commissioner-override/{pickId}";
 
   public const string SetCommunityLimits = ById + "/community-limits";
 
   // Candidate Lists
-  public const string CandidateList = "/draft-parts/{draftPartId}/candidate-list";
-  public const string CandidateListBulkAdd = "/draft-parts/{draftPartId}/candidate-list/bulk";
-  public const string CandidateListEntry = "/draft-parts/{draftPartId}/candidate-list/{tmdbid}";
+  public const string CandidateList = ById + "/candidate-list";
+  public const string CandidateListBulkAdd = ById + "/candidate-list/bulk";
+  public const string CandidateListEntry = ById + "/candidate-list/{tmdbid}";
 
   // Speed Draft Sub-Drafts
-  public const string SubDrafts = "/draft-parts/{draftPartId}/sub-drafts";
-  public const string SubDraftById = "/draft-parts/{draftPartId}/sub-drafts/{subDraftId}";
-  public const string SubDraftSubject = "/draft-parts/{draftPartId}/sub-drafts/{subDraftId}/subject";
-  public const string SubDraftTrivia = "/draft-parts/{draftPartId}/sub-drafts/{subDraftId}/trivia-results";
-  public const string SubDraftPicks = "/draft-parts/{draftPartId}/sub-drafts/{subDraftId}/picks";
-  public const string SubDraftVeto = "/draft-parts/{draftPartId}/sub-drafts/{subDraftId}/picks/{playOrder}/veto";
-  public const string SubDraftAdvance = "/draft-parts/{draftPartId}/sub-drafts/{subDraftId}/advance";
-}
+  public const string SubDrafts = ById + "/sub-drafts";
+  public const string SubDraftById = ById + "/sub-drafts/{subDraftId}";
+  public const string SubDraftSubject = ById + "/sub-drafts/{subDraftId}/subject";
+  public const string SubDraftTrivia = ById + "/sub-drafts/{subDraftId}/trivia-results";
+  public const string SubDraftPicks = ById + "/sub-drafts/{subDraftId}/picks";
+  public const string SubDraftVeto = ById + "/sub-drafts/{subDraftId}/picks/{playOrder}/veto";
+  public const string SubDraftAdvance = ById + "/sub-drafts/{subDraftId}/advance";
+
+  // Zoom Recordings
+  public const string ZoomSession = ById + "/zoom-session";
+  public const string ZoomSessionToken = ZoomSession + "/token";
+  public const string StartZoomSessionRecording = ZoomSession + "/recording/start";
+  public const string StopZoomSessionRecording = ZoomSession + "/recording/stop";
+} 

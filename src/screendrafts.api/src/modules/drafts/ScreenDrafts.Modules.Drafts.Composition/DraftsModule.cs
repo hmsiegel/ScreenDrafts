@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Composition;
+﻿using ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities;
+
+namespace ScreenDrafts.Modules.Drafts.Composition;
 
 public static class DraftsModule
 {
@@ -30,6 +32,7 @@ public static class DraftsModule
     SqlMapper.AddTypeHandler(new SmartEnumTypeHandler<ParticipantKind>());
     SqlMapper.AddTypeHandler(new SmartEnumTypeHandler<ReleaseChannel>());
     SqlMapper.AddTypeHandler(new SmartEnumTypeHandler<SubDraftStatus>());
+    SqlMapper.AddTypeHandler(new SmartEnumTypeHandler<ZoomRecordingFileType>());
     return services;
   }
 
@@ -51,6 +54,9 @@ public static class DraftsModule
       .Endpoint(c => c.InstanceId = instanceId);
 
     registrationConfigurator.AddConsumer<IntegrationEventConsumer<MediaFetchedIntegrationEvent>>()
+      .Endpoint(c => c.InstanceId = instanceId);
+
+    registrationConfigurator.AddConsumer<IntegrationEventConsumer<ZoomRecordingCompletedIntegrationEvent>>()
       .Endpoint(c => c.InstanceId = instanceId);
   }
 

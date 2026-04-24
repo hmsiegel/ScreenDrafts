@@ -1,12 +1,12 @@
 ﻿namespace ScreenDrafts.Modules.Integrations.Features.Movies;
 
-internal sealed class FetchMediaIntegrationEventHandler(
+internal sealed class FetchMediaIntegrationEventConsumer(
   ISender sender,
-  ILogger<FetchMediaIntegrationEventHandler> logger)
+  ILogger<FetchMediaIntegrationEventConsumer> logger)
     : IntegrationEventHandler<FetchMediaRequestedIntegrationEvent>
 {
   private readonly ISender _sender = sender;
-  private readonly ILogger<FetchMediaIntegrationEventHandler> _logger = logger;
+  private readonly ILogger<FetchMediaIntegrationEventConsumer> _logger = logger;
 
   public override async Task Handle(
     FetchMediaRequestedIntegrationEvent integrationEvent,

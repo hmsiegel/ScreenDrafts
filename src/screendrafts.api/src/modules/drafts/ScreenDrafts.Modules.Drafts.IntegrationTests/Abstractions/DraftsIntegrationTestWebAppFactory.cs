@@ -143,6 +143,11 @@ public class DraftsIntegrationTestWebAppFactory : IntegrationTestWebAppFactory
     services.RemoveAll<IHubContext<DraftHub>>();
     services.AddSingleton<IHubContext<DraftHub>>(HubCapture);
 
+    // Replace the real Zoom token service so that Zoom session commands don't require
+    // real Video SDK credentials in integration tests.
+    services.RemoveAll<IZoomSessionTokenService>();
+    services.AddSingleton<IZoomSessionTokenService>(new FakeZoomSessionTokenService());
+
     if (_keycloakContainer is null)
     {
       return;

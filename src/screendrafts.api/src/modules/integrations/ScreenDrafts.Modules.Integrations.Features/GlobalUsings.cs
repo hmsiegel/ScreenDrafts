@@ -1,5 +1,8 @@
 ﻿global using System.Globalization;
 global using System.Reflection;
+global using System.Security.Cryptography;
+global using System.Text;
+global using System.Text.Json;
 
 global using MediatR;
 
@@ -23,9 +26,11 @@ global using ScreenDrafts.Common.Presentation.Results;
 global using ScreenDrafts.Modules.Integrations.Domain.Movies;
 global using ScreenDrafts.Modules.Integrations.Domain.Services.Igdb;
 global using ScreenDrafts.Modules.Integrations.Domain.Services.Tmdb;
+global using ScreenDrafts.Modules.Integrations.Domain.Zoom;
 global using ScreenDrafts.Modules.Integrations.Features.Movies.FetchMedia;
 global using ScreenDrafts.Modules.Integrations.Features.Movies.GetOnlineMedia;
 global using ScreenDrafts.Modules.Integrations.Features.Movies.SearchFoMovie;
+global using ScreenDrafts.Modules.Integrations.Features.Zoom.ProcessZoomRecording;
 global using ScreenDrafts.Modules.Integrations.IntegrationEvents;
 global using ScreenDrafts.Modules.Integrations.PublicApi;
 global using ScreenDrafts.Modules.Movies.IntegrationEvents;

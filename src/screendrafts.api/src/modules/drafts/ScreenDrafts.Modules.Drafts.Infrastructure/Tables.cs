@@ -53,4 +53,5 @@ internal static class Tables
   internal const string PredictionResults = "prediction_results";
   internal const string PredictionStandings = "prediction_standings";
   internal const string PredictionCarryovers = "prediction_carryovers";
+  internal const string DraftPartRecordings = "draft_part_recordings";
 }

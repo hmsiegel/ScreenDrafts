@@ -170,5 +170,14 @@ internal sealed class DraftPartConfiguration : IEntityTypeConfiguration<DraftPar
       .UsePropertyAccessMode(PropertyAccessMode.Field);
 
     builder.Property(d => d.SubDraftCount);
+
+    // Zoom
+    builder.Property(d => d.ZoomSessionName)
+      .HasMaxLength(200);
+
+    builder.HasIndex(d => d.ZoomSessionName)
+      .IsUnique()
+      .HasDatabaseName("uix_draft_parts_zoom_session_name_unique")
+      .HasFilter("zoom_session_name IS NOT NULL");
   }
 }
