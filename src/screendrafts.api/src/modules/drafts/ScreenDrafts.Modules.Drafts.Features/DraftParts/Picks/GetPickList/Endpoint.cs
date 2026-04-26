@@ -22,7 +22,20 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<GetPickListRequest, GetPic
   {
     ArgumentNullException.ThrowIfNull(req);
 
-    var query = new GetPickListQuery { DraftPartId = req.DraftPartId };
+    var callerPublicId = User.GetPublicId();
+
+    if (string.IsNullOrWhiteSpace(callerPublicId))
+    {
+      await Send.UnauthorizedAsync(ct);
+      return;
+    }
+
+    var query = new GetPickListQuery
+    {
+      DraftPartId = req.DraftPartId,
+      CallerPublicId = callerPublicId,
+    };
+
     var result = await Sender.Send(query, ct);
 
     await this.SendOkAsync(result, ct);

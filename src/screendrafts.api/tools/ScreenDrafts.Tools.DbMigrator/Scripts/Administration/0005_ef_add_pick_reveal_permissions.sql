@@ -5,11 +5,11 @@
 -- =============================================================================
  
 INSERT INTO administration.permissions (code)
-VALUES ('admin:view-deleted')
+VALUES ('picks:reveal')
 ON CONFLICT (code) DO NOTHING;
+
  
 INSERT INTO administration.role_permissions (permission_code, role_name)
 VALUES
-    ('admin:view-deleted', 'Administrator'),
-    ('admin:view-deleted', 'SuperAdministrator')
+    ('picks:reveal', 'Host')
 ON CONFLICT (permission_code, role_name) DO NOTHING;

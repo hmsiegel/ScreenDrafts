@@ -494,6 +494,142 @@ public class DraftPartTests : DraftsBaseTest
     result.Errors[0].Should().Be(DraftPartErrors.DraftNotStarted);
   }
 
+  [Fact]
+  public void PlayPick_ShouldAutoRevealPick_WhenDraftTypeIsSpeedDraft()
+  {
+    // Arrange
+    var draftPart = CreateSpeedDraftPart();
+    var drafter = DrafterFactory.CreateDrafter();
+    var participantId = CreateParticipantId(drafter);
+    draftPart.AddParticipant(participantId);
+    draftPart.SetDraftStatus(DraftPartStatus.InProgress);
+    var movie = MovieFactory.CreateMovie().Value;
+
+    // Act
+    draftPart.PlayPick(movie, 1, 1, participantId, CanonicalPolicy.Always.Value);
+
+    // Assert
+    draftPart.Picks.Single().IsRevealed.Should().BeTrue();
+  }
+
+  [Fact]
+  public void PlayPick_ShouldNotRevealPick_WhenDraftTypeIsStandard()
+  {
+    // Arrange
+    var draftPart = CreateDraftPart();
+    var drafter = DrafterFactory.CreateDrafter();
+    var participantId = CreateParticipantId(drafter);
+    draftPart.AddParticipant(participantId);
+    draftPart.SetDraftStatus(DraftPartStatus.InProgress);
+    var movie = MovieFactory.CreateMovie().Value;
+
+    // Act
+    draftPart.PlayPick(movie, 1, 1, participantId, CanonicalPolicy.Always.Value);
+
+    // Assert
+    draftPart.Picks.Single().IsRevealed.Should().BeFalse();
+  }
+
+  // ========================================
+  // Reveal Pick Tests
+  // ========================================
+
+  [Fact]
+  public void RevealPick_ShouldSucceed_WhenPickExists()
+  {
+    // Arrange
+    var draftPart = CreateDraftPartWithInProgressPick(out _);
+
+    // Act
+    var result = draftPart.RevealPick(playOrder: 1, actedByPublicId: "host-public-id");
+
+    // Assert
+    result.IsSuccess.Should().BeTrue();
+  }
+
+  [Fact]
+  public void RevealPick_ShouldSetIsRevealedToTrue()
+  {
+    // Arrange
+    var draftPart = CreateDraftPartWithInProgressPick(out _);
+
+    // Act
+    draftPart.RevealPick(playOrder: 1, actedByPublicId: "host-public-id");
+
+    // Assert
+    draftPart.Picks.Single().IsRevealed.Should().BeTrue();
+  }
+
+  [Fact]
+  public void RevealPick_ShouldSetRevealedAtToNonNull()
+  {
+    // Arrange
+    var draftPart = CreateDraftPartWithInProgressPick(out _);
+
+    // Act
+    draftPart.RevealPick(playOrder: 1, actedByPublicId: "host-public-id");
+
+    // Assert
+    draftPart.Picks.Single().RevealedAt.Should().NotBeNull();
+  }
+
+  [Fact]
+  public void RevealPick_ShouldAddRevealedEventToPickHistory()
+  {
+    // Arrange
+    var draftPart = CreateDraftPartWithInProgressPick(out _);
+
+    // Act
+    draftPart.RevealPick(playOrder: 1, actedByPublicId: "host-public-id");
+
+    // Assert
+    draftPart.Picks.Single().History.Should().ContainSingle(e => e.Kind == "Revealed");
+  }
+
+  [Fact]
+  public void RevealPick_ShouldFail_WhenDraftNotStarted()
+  {
+    // Arrange
+    var draftPart = CreateDraftPart();
+    // status is Created, not InProgress
+
+    // Act
+    var result = draftPart.RevealPick(playOrder: 1, actedByPublicId: "host-public-id");
+
+    // Assert
+    result.IsFailure.Should().BeTrue();
+    result.Errors[0].Should().Be(DraftPartErrors.DraftNotStarted);
+  }
+
+  [Fact]
+  public void RevealPick_ShouldFail_WhenPickNotFound()
+  {
+    // Arrange
+    var draftPart = CreateDraftPartWithInProgressPick(out _);
+
+    // Act — play order 99 does not exist
+    var result = draftPart.RevealPick(playOrder: 99, actedByPublicId: "host-public-id");
+
+    // Assert
+    result.IsFailure.Should().BeTrue();
+    result.Errors[0].Should().Be(DraftPartErrors.PickNotFound(99));
+  }
+
+  [Fact]
+  public void RevealPick_ShouldFail_WhenPickAlreadyRevealed()
+  {
+    // Arrange
+    var draftPart = CreateDraftPartWithInProgressPick(out _);
+    draftPart.RevealPick(playOrder: 1, actedByPublicId: "host-public-id");
+
+    // Act
+    var result = draftPart.RevealPick(playOrder: 1, actedByPublicId: "host-public-id");
+
+    // Assert
+    result.IsFailure.Should().BeTrue();
+    result.Errors[0].Should().Be(PickErrors.PickAlreadyRevealed);
+  }
+
   // ========================================
   // Helper Methods
   // ========================================
@@ -524,6 +660,37 @@ public class DraftPartTests : DraftsBaseTest
       seriesId: series.Id);
 
     return result.Value;
+  }
+
+  private static DraftPart CreateSpeedDraftPart()
+  {
+    var draftId = DraftId.CreateUnique();
+    var series = CreateSeries();
+    var gameplay = DraftPartGamePlaySnapshot.Create(
+      minPosition: 1,
+      maxPosition: 7,
+      draftType: DraftType.SpeedDraft,
+      seriesId: series.Id).Value;
+
+    return DraftPart.Create(
+      draftId: draftId,
+      draftPublicId: Faker.Random.AlphaNumeric(10),
+      partIndex: 1,
+      gameplay: gameplay,
+      publicId: Faker.Random.AlphaNumeric(10)).Value;
+  }
+
+  private static DraftPart CreateDraftPartWithInProgressPick(out Pick pick)
+  {
+    var draftPart = CreateDraftPart();
+    var drafter = DrafterFactory.CreateDrafter();
+    var participantId = CreateParticipantId(drafter);
+    draftPart.AddParticipant(participantId);
+    draftPart.SetDraftStatus(DraftPartStatus.InProgress);
+    var movie = MovieFactory.CreateMovie().Value;
+    draftPart.PlayPick(movie, 1, 1, participantId, CanonicalPolicy.Always.Value);
+    pick = draftPart.Picks.Single();
+    return draftPart;
   }
 }
 

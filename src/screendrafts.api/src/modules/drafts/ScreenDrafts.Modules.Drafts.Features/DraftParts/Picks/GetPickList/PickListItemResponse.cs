@@ -12,4 +12,5 @@ internal sealed record PickListItemResponse
   public string? ActedByPublicId { get; init; }
   public PickListVetoResponse? Veto { get; init; }
   public bool HasCommissionerOverride { get; init; }
+  public bool IsRevealed { get; init; }
 }

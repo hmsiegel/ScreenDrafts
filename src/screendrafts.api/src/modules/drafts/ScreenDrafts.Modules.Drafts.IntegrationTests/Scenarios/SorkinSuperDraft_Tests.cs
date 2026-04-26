@@ -333,12 +333,12 @@ public sealed class SorkinSuperDraft_Tests(DraftsIntegrationTestWebAppFactory fa
     // Deliver to RealTimeUpdates consumers — each event fires its own broadcast.
     await DispatchIntegrationEventsAsync();
 
-    // At minimum the two picks should each yield a PickListUpdated message.
-    // Veto and VetoOverride consumers also send PickListUpdated per the module design.
+    // Picks fire both PickListUpdated (PickAddedIntegrationEventConsumer) and PickSubmitted
+    // (PickSubmittedIntegrationEventConsumer). Veto and VetoOverride fire PickListUpdated.
     HubCapture.SentMessages.Should().NotBeEmpty("pick/veto/override operations should all trigger hub broadcasts");
     HubCapture.SentMessages.Should().AllSatisfy(
-      m => m.Method.Should().Be("PickListUpdated"),
-      "DraftHub only sends PickListUpdated messages from these consumers");
+      m => m.Method.Should().BeOneOf("PickListUpdated", "PickSubmitted"),
+      "all hub broadcasts must be a recognised pick/veto method");
   }
 
   // ─────────────────────────────────────────────────────────────────────────

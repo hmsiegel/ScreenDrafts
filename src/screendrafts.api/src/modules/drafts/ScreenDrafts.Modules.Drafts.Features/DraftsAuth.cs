@@ -45,6 +45,7 @@ internal static class DraftsAuth
     internal const string PickVeto = "picks:veto";
     internal const string PickVetoOverride = "picks:veto-override";
     internal const string PickCommissionerOverride = "picks:commissioner-override";
+    internal const string PickReveal = "picks:reveal";
 
     // People
     internal const string PersonCreate = "people:create";

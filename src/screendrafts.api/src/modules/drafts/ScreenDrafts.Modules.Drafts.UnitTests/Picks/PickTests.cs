@@ -110,5 +110,25 @@ public class PickTests : DraftsBaseTest
     pick.PlayedByParticipant.ParticipantId.Kind.Should().NotBeNull();
     pick.PlayedByParticipant.ParticipantId.Value.Should().NotBe(Guid.Empty);
   }
+
+  // -------------------------------------------------------------------------
+  // Reveal state — initial
+  // -------------------------------------------------------------------------
+
+  [Fact]
+  public void IsRevealed_ShouldBeFalse_WhenPickIsCreated()
+  {
+    var pick = PickFactory.CreatePick().Value;
+
+    pick.IsRevealed.Should().BeFalse();
+  }
+
+  [Fact]
+  public void RevealedAt_ShouldBeNull_WhenPickIsCreated()
+  {
+    var pick = PickFactory.CreatePick().Value;
+
+    pick.RevealedAt.Should().BeNull();
+  }
 }
 

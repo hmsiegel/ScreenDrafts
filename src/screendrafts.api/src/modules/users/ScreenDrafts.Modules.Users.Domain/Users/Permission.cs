@@ -52,6 +52,7 @@ public sealed class Permission(string code)
   public static readonly Permission VetoPicks = new("picks:veto");
   public static readonly Permission VetoOverride = new("picks:veto-override");
   public static readonly Permission CommissionerOverride = new("picks:commissioner-override");
+  public static readonly Permission PickReveal = new("picks:reveal");
 
   // People
   public static readonly Permission CreatePeople = new("people:create");

@@ -22,6 +22,15 @@ internal sealed class DraftPartRepository(DraftsDbContext dbContext) : IDraftPar
       .FirstOrDefaultAsync(x => x.PublicId == draftPartId, cancellationToken);
   }
 
+  public async Task<DraftPart?> GetByPublicIdWithHostsAsync(string draftPartId, CancellationToken cancellationToken)
+  {
+    return await _dbContext.DraftParts
+      .Include("_draftPartParticipants")
+      .Include("_draftHosts.Host")
+      .Include("_picks.Veto.VetoOverride")
+      .FirstOrDefaultAsync(x => x.PublicId == draftPartId, cancellationToken);
+  }
+
   public Task<DraftPart?> GetByPublicIdWithSubDraftsAsync(string draftPartId, CancellationToken cancellationToken)
   {
     return _dbContext.DraftParts

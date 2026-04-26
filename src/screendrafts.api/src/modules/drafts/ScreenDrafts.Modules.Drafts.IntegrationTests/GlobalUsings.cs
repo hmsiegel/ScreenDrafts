@@ -55,6 +55,7 @@ global using ScreenDrafts.Modules.Drafts.Features.DraftParts.Picks.ApplyVeto;
 global using ScreenDrafts.Modules.Drafts.Features.DraftParts.Picks.ApplyVetoOverride;
 global using ScreenDrafts.Modules.Drafts.Features.DraftParts.Picks.GetPickList;
 global using ScreenDrafts.Modules.Drafts.Features.DraftParts.Picks.PlayPick;
+global using ScreenDrafts.Modules.Drafts.Features.DraftParts.Picks.RevealPick;
 global using ScreenDrafts.Modules.Drafts.Features.DraftParts.Picks.UndoPick;
 global using ScreenDrafts.Modules.Drafts.Features.DraftParts.SetReleaseDate;
 global using ScreenDrafts.Modules.Drafts.Features.DraftParts.SubDrafts.AddSubDraft;

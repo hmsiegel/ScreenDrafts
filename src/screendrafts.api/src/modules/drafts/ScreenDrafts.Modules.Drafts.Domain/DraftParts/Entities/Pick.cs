@@ -71,13 +71,12 @@ public sealed class Pick : Entity<PickId>
   [NotMapped]
   public VetoId? VetoId => Veto?.Id;
 
-
   public CommissionerOverride? CommissionerOverride { get; private set; } = default!;
 
   [NotMapped]
   public Guid? CommissionerOverrideId => CommissionerOverride?.Id;
 
-  public bool IsActiveOnFinalBoard => !IsVetoed && !IsCommissionerOverridden; 
+  public bool IsActiveOnFinalBoard => !IsVetoed && !IsCommissionerOverridden;
 
   [NotMapped]
   public bool IsVetoed => Veto is not null && !Veto.IsOverridden;
@@ -92,6 +91,11 @@ public sealed class Pick : Entity<PickId>
   [NotMapped]
   public bool IsEligibleForRePick => IsVetoed && !IsCommissionerOverridden;
 
+  public DateTimeOffset? RevealedAt { get; private set; }
+
+  [NotMapped]
+  public bool IsRevealed => RevealedAt.HasValue;
+
   public IReadOnlyCollection<PickEvent> History => _history.AsReadOnly();
 
   internal static Result<Pick> Create(
@@ -102,7 +106,7 @@ public sealed class Pick : Entity<PickId>
     int playOrder,
     string? actedByPublicId = null,
     string? movieVersionName = null,
-    MovieVersionPolicy? versionPolicy = null, 
+    MovieVersionPolicy? versionPolicy = null,
     SubDraftId? subDraftId = null,
     PickId? id = null)
   {
@@ -335,6 +339,22 @@ public sealed class Pick : Entity<PickId>
 
     return Result.Success();
   }
+
+  internal Result RevealPick(string? actedByPublicId)
+  {
+    if (IsRevealed)
+    {
+      return Result.Failure(PickErrors.PickAlreadyRevealed);
+    }
+
+    RevealedAt = DateTimeOffset.UtcNow;
+
+    _history.Add(
+      PickEvent.Revealed(
+        actedByPublicId: actedByPublicId));
+
+    return Result.Success();
+  }
 }
 
 public sealed record PickEvent(
@@ -384,5 +404,14 @@ public sealed record PickEvent(
       IssuerId: by,
       ActedByPublicId: actedByPublicId,
       Note: note,
+      OccurredOnUtc: DateTime.UtcNow);
+
+  public static PickEvent Revealed(
+    string? actedByPublicId) =>
+    new(
+      Kind: "Revealed",
+      IssuerId: null,
+      ActedByPublicId: actedByPublicId,
+      Note: null,
       OccurredOnUtc: DateTime.UtcNow);
 }

@@ -90,6 +90,16 @@ public sealed partial class DraftPart
       return Result.Failure<PickId>(addResult.Errors);
     }
 
+    if (DraftType == DraftType.SpeedDraft)
+    {
+      var revealResult = pick.RevealPick(actedByPublicId);
+
+      if (revealResult.IsFailure)
+      {
+        return Result.Failure<PickId>(revealResult.Errors);
+      }
+    }
+
     if (participantId.Kind == ParticipantKind.Community)
     {
       IncrementCommunityPicksUsed();
@@ -98,6 +108,8 @@ public sealed partial class DraftPart
     Raise(new PickAddedDomainEvent(
       draftPartId: Id.Value,
       draftPartPublicId: PublicId,
+      pickId:pick.Id.Value,
+      playOrder: playOrder,
       imdbId: movie.ImdbId,
       tmdbId: movie.TmdbId,
       movieTitle: movie.MovieTitle,
@@ -125,6 +137,39 @@ public sealed partial class DraftPart
     _picks.Remove(pick);
 
     UpdatedAtUtc = DateTime.UtcNow;
+
+    return Result.Success();
+  }
+
+  public Result RevealPick(int playOrder, string? actedByPublicId)
+  {
+    if (Status != DraftPartStatus.InProgress)
+    {
+      return Result.Failure(DraftPartErrors.DraftNotStarted);
+    }
+
+    var pick = _picks.SingleOrDefault(p => p.PlayOrder == playOrder);
+
+    if (pick is null)
+    {
+      return Result.Failure(DraftPartErrors.PickNotFound(playOrder));
+    }
+
+    var result = pick.RevealPick(actedByPublicId);
+
+    if (result.IsFailure)
+    {
+      return Result.Failure(result.Errors);
+    }
+
+    Raise(new PickRevealedDomainEvent(
+      Id.Value,
+      PublicId,
+      pick.Id.Value,
+      playOrder,
+      pick.MovieId,
+      actedByPublicId));
+      
 
     return Result.Success();
   }

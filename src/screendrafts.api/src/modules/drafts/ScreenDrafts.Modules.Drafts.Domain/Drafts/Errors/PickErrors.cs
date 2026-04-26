@@ -91,4 +91,9 @@ public static class PickErrors
           "Picks.InvalidPartPositionRange",
           "The draft part position range is invalid."
         );
+
+  public static readonly SDError PickAlreadyRevealed =
+    SDError.Conflict(
+      "Picks.PickAlreadyRevealed",
+      "This pick has already been revealed.");
 }

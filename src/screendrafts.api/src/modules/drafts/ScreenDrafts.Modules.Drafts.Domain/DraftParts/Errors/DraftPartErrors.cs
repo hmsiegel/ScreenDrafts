@@ -130,6 +130,11 @@ public static class DraftPartErrors
     description: "No active Zoom session."
   );
 
+  public static readonly SDError OnlyPrimaryHostCanRevealPicks = SDError.Conflict(
+    code: "DraftPart.OnlyPrimaryHostCanRevealPicks",
+    description: "Only the primary host can reveal picks."
+  );
+
   public static SDError NotFound(Guid draftPartId) => SDError.NotFound(
     code: "DraftPart.NotFound",
         description: $"Draft part with ID '{draftPartId}' is not found."

@@ -12,6 +12,7 @@ public sealed partial class DraftPart
   public IReadOnlyCollection<DraftHost> DraftHosts => _draftHosts;
   public DraftHost? PrimaryHost => _draftHosts.FirstOrDefault(h => h.Role == HostRole.Primary);
   public IEnumerable<DraftHost> CoHosts => _draftHosts.Where(h => h.Role == HostRole.CoHost);
+  public bool IsPrimaryHost(string hostPublicId) => PrimaryHost?.Host.PublicId == hostPublicId;
   public IReadOnlyCollection<Participant> Participants => _draftPartParticipants
     .Select(dp => dp.ParticipantId)
     .ToList()

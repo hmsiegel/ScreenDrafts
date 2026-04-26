@@ -62,6 +62,62 @@ public sealed class PlayPickTests(DraftsIntegrationTestWebAppFactory factory)
     pick.Position.Should().Be(1);
   }
 
+  [Fact]
+  public async Task PlayPick_ShouldPersistActedByPublicIdAsync()
+  {
+    // Arrange
+    var (draftPartPublicId, drafter1PublicId, _) = await SetupStartedDraftPartAsync();
+    var movie = await CreateMovieAsync();
+    var actorId = drafter1PublicId;
+
+    var command = new PlayPickCommand
+    {
+      DraftPartId = draftPartPublicId,
+      Position = 1,
+      PlayOrder = 1,
+      ParticipantPublicId = drafter1PublicId,
+      ParticipantKind = ParticipantKind.Drafter,
+      MoviePublicId = movie.PublicId,
+      ActedByPublicId = actorId
+    };
+
+    // Act
+    await Sender.Send(command, TestContext.Current.CancellationToken);
+
+    // Assert
+    var pick = await DbContext.Picks
+      .FirstAsync(p => p.PlayOrder == 1 && p.DraftPart.PublicId == draftPartPublicId, TestContext.Current.CancellationToken);
+
+    pick.ActedByPublicId.Should().Be(actorId);
+  }
+
+  [Fact]
+  public async Task PlayPick_ShouldNotRevealPick_WhenDraftTypeIsStandardAsync()
+  {
+    // Arrange
+    var (draftPartPublicId, drafter1PublicId, _) = await SetupStartedDraftPartAsync();
+    var movie = await CreateMovieAsync();
+
+    var command = new PlayPickCommand
+    {
+      DraftPartId = draftPartPublicId,
+      Position = 1,
+      PlayOrder = 1,
+      ParticipantPublicId = drafter1PublicId,
+      ParticipantKind = ParticipantKind.Drafter,
+      MoviePublicId = movie.PublicId
+    };
+
+    // Act
+    await Sender.Send(command, TestContext.Current.CancellationToken);
+
+    // Assert
+    var pick = await DbContext.Picks
+      .FirstAsync(p => p.PlayOrder == 1 && p.DraftPart.PublicId == draftPartPublicId, TestContext.Current.CancellationToken);
+
+    pick.RevealedAt.Should().BeNull();
+  }
+
   // -------------------------------------------------------------------------
   // Guard — draft part not found
   // -------------------------------------------------------------------------

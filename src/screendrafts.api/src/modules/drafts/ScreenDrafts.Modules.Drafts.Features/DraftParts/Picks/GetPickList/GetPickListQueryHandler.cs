@@ -12,16 +12,38 @@ internal sealed class GetPickListQueryHandler(
 
   public async Task<Result<GetPickListResponse>> Handle(GetPickListQuery request, CancellationToken cancellationToken)
   {
-    var cacheKey = DraftsCacheKeys.PickList(request.DraftPartId);
-
-    var cached = await _cacheService.GetAsync<GetPickListResponse>(cacheKey, cancellationToken);
-
-    if (cached is not null)
-    {
-      return Result.Success(cached);
-    }
-
     await using var connection = await _dbConnectionFactory.OpenConnectionAsync(cancellationToken);
+
+    const string hostCheckSql =
+      """
+      SELECT EXISTS (
+        SELECT 1
+        FROM drafts.draft_hosts dh
+        JOIN drafts.draft_parts dp ON dh.draft_part_id = dp.id
+        JOIN drafts.hosts h ON dh.host_id = h.id
+        WHERE dp.public_id = @DraftPartId
+          AND dh.role = 0
+          AND h.public_id = @CallerPublicId
+      )
+      """;
+
+    var callerIsPrimaryHost = await connection.ExecuteScalarAsync<bool>(
+      new CommandDefinition(
+        hostCheckSql,
+        new { request.DraftPartId, request.CallerPublicId },
+        cancellationToken: cancellationToken));
+
+    if (!callerIsPrimaryHost)
+    {
+      var cacheKey = DraftsCacheKeys.PickList(request.DraftPartId);
+
+      var cached = await _cacheService.GetAsync<GetPickListResponse>(cacheKey, cancellationToken);
+
+      if (cached is not null)
+      {
+        return Result.Success(cached);
+      }
+    }
 
     const string pickSql =
       $"""
@@ -34,19 +56,30 @@ internal sealed class GetPickListQueryHandler(
         pk.movie_version_name AS {nameof(PickRow.MovieVersionName)},
         pk.played_by_participant_id_value AS {nameof(PickRow.PlayedByParticipantIdValue)},
         pk.played_by_participant_kind_value AS {nameof(PickRow.PlayedByParticipantKindValue)},
-        pk.acted_by_public_id AS {nameof(PickRow.ActedByPublicId)}
+        pk.acted_by_public_id AS {nameof(PickRow.ActedByPublicId)},
+        pk.revealed_at AS {nameof(PickRow.RevealedAt)}
       FROM
         drafts.picks pk
         JOIN drafts.movies m ON pk.movie_id = m.id
         JOIN drafts.draft_parts dp ON pk.draft_part_id = dp.id
-        WHERE dp.public_id = @DraftPartId
-        ORDER BY pk.play_order ASC
+      WHERE dp.public_id = @DraftPartId
+        AND (
+            @CallerIsPrimaryHost = TRUE
+            OR pk.revealed_at IS NOT NULL
+            OR pk.acted_by_public_id = @CallerPublicId
+      )
+      ORDER BY pk.play_order ASC
       """;
 
     var pickRows = (await connection.QueryAsync<PickRow>(
       new CommandDefinition(
         pickSql,
-        new { request.DraftPartId },
+        new
+        {
+          request.DraftPartId,
+          CallerIsPrimaryHost = callerIsPrimaryHost,
+          request.CallerPublicId
+        },
         cancellationToken: cancellationToken)))
       .ToList();
 
@@ -172,6 +205,7 @@ internal sealed class GetPickListQueryHandler(
         PlayedByParticipantIdValue = r.PlayedByParticipantIdValue,
         PlayedByParticipantKindValue = r.PlayedByParticipantKindValue,
         ActedByPublicId = r.ActedByPublicId,
+        IsRevealed = r.RevealedAt.HasValue,
         Veto = veto,
         HasCommissionerOverride = commissionerOverridePickIds.Contains(r.PickInternalId)
       };
@@ -182,7 +216,15 @@ internal sealed class GetPickListQueryHandler(
       Picks = picks
     };
 
-    await _cacheService.SetAsync(cacheKey, response, _cacheExpiration, cancellationToken);
+    if (!callerIsPrimaryHost)
+    {
+      var cacheKey = DraftsCacheKeys.PickList(request.DraftPartId);
+      await _cacheService.SetAsync(
+        key: cacheKey,
+        value: response,
+        expiration: _cacheExpiration,
+        cancellationToken: cancellationToken);
+    }
 
     return Result.Success(response);
   }
@@ -213,5 +255,6 @@ internal sealed class GetPickListQueryHandler(
     string? MovieVersionName,
     Guid PlayedByParticipantIdValue,
     int PlayedByParticipantKindValue,
-    string? ActedByPublicId);
+    string? ActedByPublicId,
+    DateTime? RevealedAt);
 }

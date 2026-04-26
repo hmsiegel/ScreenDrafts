@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Drafts.IntegrationTests.DraftParts;
+﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.DraftParts;
 
 public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
   : DraftsIntegrationTest(factory)
@@ -11,10 +11,14 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
   public async Task GetPickList_WithNoPicks_ShouldReturnEmptyListAsync()
   {
     // Arrange
-    var (draftPartPublicId, _, _) = await SetupStartedDraftPartAsync();
+    var (draftPartPublicId, _, _, hostPublicId) = await SetupStartedDraftPartAsync();
 
     // Act
-    var result = await Sender.Send(new GetPickListQuery { DraftPartId = draftPartPublicId }, TestContext.Current.CancellationToken);
+    var result = await Sender.Send(new GetPickListQuery
+    {
+      DraftPartId = draftPartPublicId,
+      CallerPublicId = hostPublicId
+    }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -25,7 +29,11 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
   public async Task GetPickList_WithNonExistentDraftPartId_ShouldReturnEmptyListAsync()
   {
     // Act
-    var result = await Sender.Send(new GetPickListQuery { DraftPartId = Faker.Random.AlphaNumeric(12) }, TestContext.Current.CancellationToken);
+    var result = await Sender.Send(new GetPickListQuery
+    {
+      DraftPartId = Faker.Random.AlphaNumeric(12),
+      CallerPublicId = Faker.Random.AlphaNumeric(12)
+    }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -40,12 +48,16 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
   public async Task GetPickList_WithOnePick_ShouldReturnOneItemAsync()
   {
     // Arrange
-    var (draftPartPublicId, drafter1PublicId, _) = await SetupStartedDraftPartAsync();
+    var (draftPartPublicId, drafter1PublicId, _, hostPublicId) = await SetupStartedDraftPartAsync();
     var movie = await CreateMovieAsync();
     await PlayPickAsync(draftPartPublicId, drafter1PublicId, position: 1, playOrder: 1, movie);
 
     // Act
-    var result = await Sender.Send(new GetPickListQuery { DraftPartId = draftPartPublicId }, TestContext.Current.CancellationToken);
+    var result = await Sender.Send(new GetPickListQuery
+    {
+      DraftPartId = draftPartPublicId,
+      CallerPublicId = hostPublicId
+    }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -56,12 +68,16 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
   public async Task GetPickList_ShouldPopulatePickFieldsAsync()
   {
     // Arrange
-    var (draftPartPublicId, drafter1PublicId, _) = await SetupStartedDraftPartAsync();
+    var (draftPartPublicId, drafter1PublicId, _, hostPublicId) = await SetupStartedDraftPartAsync();
     var movie = await CreateMovieAsync();
     await PlayPickAsync(draftPartPublicId, drafter1PublicId, position: 3, playOrder: 1, movie);
 
     // Act
-    var result = await Sender.Send(new GetPickListQuery { DraftPartId = draftPartPublicId }, TestContext.Current.CancellationToken);
+    var result = await Sender.Send(new GetPickListQuery
+    {
+      DraftPartId = draftPartPublicId,
+      CallerPublicId = hostPublicId
+    }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -83,7 +99,7 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
   public async Task GetPickList_WithMultiplePicks_ShouldReturnAllPicksOrderedByPlayOrderAsync()
   {
     // Arrange
-    var (draftPartPublicId, drafter1PublicId, drafter2PublicId) = await SetupStartedDraftPartAsync();
+    var (draftPartPublicId, drafter1PublicId, drafter2PublicId, hostPublicId) = await SetupStartedDraftPartAsync();
     var movie1 = await CreateMovieAsync();
     var movie2 = await CreateMovieAsync();
     var movie3 = await CreateMovieAsync();
@@ -93,7 +109,11 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
     await PlayPickAsync(draftPartPublicId, drafter1PublicId, position: 3, playOrder: 3, movie3);
 
     // Act
-    var result = await Sender.Send(new GetPickListQuery { DraftPartId = draftPartPublicId }, TestContext.Current.CancellationToken);
+    var result = await Sender.Send(new GetPickListQuery
+    {
+      DraftPartId = draftPartPublicId,
+      CallerPublicId = hostPublicId
+    }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -111,7 +131,7 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
   public async Task GetPickList_WhenPickIsVetoed_ShouldPopulateVetoAsync()
   {
     // Arrange
-    var (draftPartPublicId, drafter1PublicId, _) = await SetupStartedDraftPartAsync();
+    var (draftPartPublicId, drafter1PublicId, _, hostPublicId) = await SetupStartedDraftPartAsync();
     var movie = await CreateMovieAsync();
     await PlayPickAsync(draftPartPublicId, drafter1PublicId, position: 1, playOrder: 1, movie);
 
@@ -125,7 +145,11 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
     }, TestContext.Current.CancellationToken);
 
     // Act
-    var result = await Sender.Send(new GetPickListQuery { DraftPartId = draftPartPublicId }, TestContext.Current.CancellationToken);
+    var result = await Sender.Send(new GetPickListQuery
+    {
+      DraftPartId = draftPartPublicId,
+      CallerPublicId = hostPublicId
+    }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -140,7 +164,7 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
   public async Task GetPickList_WhenPickIsNotVetoed_VetoShouldBeNullAsync()
   {
     // Arrange
-    var (draftPartPublicId, drafter1PublicId, drafter2PublicId) = await SetupStartedDraftPartAsync();
+    var (draftPartPublicId, drafter1PublicId, drafter2PublicId, hostPublicId) = await SetupStartedDraftPartAsync();
     var movie1 = await CreateMovieAsync();
     var movie2 = await CreateMovieAsync();
 
@@ -158,7 +182,11 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
     }, TestContext.Current.CancellationToken);
 
     // Act
-    var result = await Sender.Send(new GetPickListQuery { DraftPartId = draftPartPublicId }, TestContext.Current.CancellationToken);
+    var result = await Sender.Send(new GetPickListQuery
+    {
+      DraftPartId = draftPartPublicId,
+      CallerPublicId = hostPublicId
+    }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -175,7 +203,7 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
   public async Task GetPickList_WhenVetoIsOverridden_ShouldPopulateOverrideAsync()
   {
     // Arrange
-    var (draftPartPublicId, drafter1PublicId, drafter2PublicId) = await SetupStartedDraftPartAsync();
+    var (draftPartPublicId, drafter1PublicId, drafter2PublicId, hostPublicId) = await SetupStartedDraftPartAsync();
     var movie = await CreateMovieAsync();
     await PlayPickAsync(draftPartPublicId, drafter1PublicId, position: 1, playOrder: 1, movie);
 
@@ -198,7 +226,11 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
     }, TestContext.Current.CancellationToken);
 
     // Act
-    var result = await Sender.Send(new GetPickListQuery { DraftPartId = draftPartPublicId }, TestContext.Current.CancellationToken);
+    var result = await Sender.Send(new GetPickListQuery
+    {
+      DraftPartId = draftPartPublicId,
+      CallerPublicId = hostPublicId
+    }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -217,7 +249,7 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
   public async Task GetPickList_WhenPickHasCommissionerOverride_ShouldSetFlagAsync()
   {
     // Arrange
-    var (draftPartPublicId, drafter1PublicId, _) = await SetupStartedDraftPartAsync();
+    var (draftPartPublicId, drafter1PublicId, _, hostPublicId) = await SetupStartedDraftPartAsync();
     var movie = await CreateMovieAsync();
     await PlayPickAsync(draftPartPublicId, drafter1PublicId, position: 1, playOrder: 1, movie);
 
@@ -228,7 +260,7 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
     }, TestContext.Current.CancellationToken);
 
     // Act
-    var result = await Sender.Send(new GetPickListQuery { DraftPartId = draftPartPublicId }, TestContext.Current.CancellationToken);
+    var result = await Sender.Send(new GetPickListQuery { DraftPartId = draftPartPublicId, CallerPublicId = hostPublicId }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -241,12 +273,12 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
   public async Task GetPickList_WhenPickHasNoCommissionerOverride_FlagShouldBeFalseAsync()
   {
     // Arrange
-    var (draftPartPublicId, drafter1PublicId, _) = await SetupStartedDraftPartAsync();
+    var (draftPartPublicId, drafter1PublicId, _, hostPublicId) = await SetupStartedDraftPartAsync();
     var movie = await CreateMovieAsync();
     await PlayPickAsync(draftPartPublicId, drafter1PublicId, position: 1, playOrder: 1, movie);
 
     // Act
-    var result = await Sender.Send(new GetPickListQuery { DraftPartId = draftPartPublicId }, TestContext.Current.CancellationToken);
+    var result = await Sender.Send(new GetPickListQuery { DraftPartId = draftPartPublicId, CallerPublicId = hostPublicId }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -261,7 +293,7 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
   public async Task GetPickList_MixedOverrides_ShouldReflectEachPickCorrectlyAsync()
   {
     // Arrange — pick 1: commissioner override; pick 2: veto; pick 3: plain
-    var (draftPartPublicId, drafter1PublicId, drafter2PublicId) = await SetupStartedDraftPartAsync();
+    var (draftPartPublicId, drafter1PublicId, drafter2PublicId, hostPublicId) = await SetupStartedDraftPartAsync();
     var movie1 = await CreateMovieAsync();
     var movie2 = await CreateMovieAsync();
     var movie3 = await CreateMovieAsync();
@@ -281,7 +313,7 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
     }, TestContext.Current.CancellationToken);
 
     // Act
-    var result = await Sender.Send(new GetPickListQuery { DraftPartId = draftPartPublicId }, TestContext.Current.CancellationToken);
+    var result = await Sender.Send(new GetPickListQuery { DraftPartId = draftPartPublicId, CallerPublicId = hostPublicId }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -300,10 +332,105 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
   }
 
   // -------------------------------------------------------------------------
+  // IsRevealed flag
+  // -------------------------------------------------------------------------
+
+  [Fact]
+  public async Task GetPickList_WhenPickIsNotRevealed_IsRevealedShouldBeFalseAsync()
+  {
+    // Arrange
+    var (draftPartPublicId, drafter1PublicId, _, hostPublicId) = await SetupStartedDraftPartAsync();
+    var movie = await CreateMovieAsync();
+    await PlayPickAsync(draftPartPublicId, drafter1PublicId, position: 1, playOrder: 1, movie);
+
+    // Act
+    var result = await Sender.Send(new GetPickListQuery { DraftPartId = draftPartPublicId, CallerPublicId = hostPublicId }, TestContext.Current.CancellationToken);
+
+    // Assert
+    result.IsSuccess.Should().BeTrue();
+    result.Value.Picks.Single().IsRevealed.Should().BeFalse();
+  }
+
+  [Fact]
+  public async Task GetPickList_WhenPickIsRevealed_IsRevealedShouldBeTrueAsync()
+  {
+    // Arrange
+    var (draftPartPublicId, drafter1PublicId, _, hostPublicId) = await SetupStartedDraftPartAsync();
+    var movie = await CreateMovieAsync();
+    await PlayPickAsync(draftPartPublicId, drafter1PublicId, position: 1, playOrder: 1, movie);
+
+    await Sender.Send(new RevealPickCommand
+    {
+      DraftPartId = draftPartPublicId,
+      PlayOrder = 1,
+      ActorPublicId = hostPublicId
+    }, TestContext.Current.CancellationToken);
+
+    // Act
+    var result = await Sender.Send(new GetPickListQuery { DraftPartId = draftPartPublicId, CallerPublicId = hostPublicId }, TestContext.Current.CancellationToken);
+
+    // Assert
+    result.IsSuccess.Should().BeTrue();
+    result.Value.Picks.Single().IsRevealed.Should().BeTrue();
+  }
+
+  // -------------------------------------------------------------------------
+  // Visibility — non-host caller
+  // -------------------------------------------------------------------------
+
+  [Fact]
+  public async Task GetPickList_WhenCallerIsNotPrimaryHost_ShouldSeeOwnPicksAndRevealedPicksAsync()
+  {
+    // Arrange — pick 1 by drafter1 (not revealed), pick 2 by drafter2 (revealed)
+    var (draftPartPublicId, drafter1PublicId, drafter2PublicId, hostPublicId) = await SetupStartedDraftPartAsync();
+    var movie1 = await CreateMovieAsync();
+    var movie2 = await CreateMovieAsync();
+
+    await Sender.Send(new PlayPickCommand
+    {
+      DraftPartId = draftPartPublicId,
+      Position = 1,
+      PlayOrder = 1,
+      ParticipantPublicId = drafter1PublicId,
+      ParticipantKind = ParticipantKind.Drafter,
+      MoviePublicId = movie1.PublicId,
+      ActedByPublicId = drafter1PublicId
+    }, TestContext.Current.CancellationToken);
+
+    await Sender.Send(new PlayPickCommand
+    {
+      DraftPartId = draftPartPublicId,
+      Position = 2,
+      PlayOrder = 2,
+      ParticipantPublicId = drafter2PublicId,
+      ParticipantKind = ParticipantKind.Drafter,
+      MoviePublicId = movie2.PublicId,
+      ActedByPublicId = drafter2PublicId
+    }, TestContext.Current.CancellationToken);
+
+    await Sender.Send(new RevealPickCommand
+    {
+      DraftPartId = draftPartPublicId,
+      PlayOrder = 2,
+      ActorPublicId = hostPublicId
+    }, TestContext.Current.CancellationToken);
+
+    // Act — drafter1 (non-host): sees own pick 1 + revealed pick 2
+    var result = await Sender.Send(new GetPickListQuery { DraftPartId = draftPartPublicId, CallerPublicId = drafter1PublicId }, TestContext.Current.CancellationToken);
+
+    // Assert
+    result.IsSuccess.Should().BeTrue();
+    result.Value.Picks.Should().HaveCount(2);
+    result.Value.Picks[0].PlayOrder.Should().Be(1);
+    result.Value.Picks[1].PlayOrder.Should().Be(2);
+    result.Value.Picks[1].IsRevealed.Should().BeTrue();
+  }
+
+  // -------------------------------------------------------------------------
   // Helpers
   // -------------------------------------------------------------------------
 
-  private async Task<(string DraftPartPublicId, string Drafter1PublicId, string Drafter2PublicId)> SetupStartedDraftPartAsync()
+  private async Task<(string DraftPartPublicId, string Drafter1PublicId, string Drafter2PublicId, string HostPublicId)> SetupStartedDraftPartAsync()
   {
     var seriesId = await CreateSeriesAsync();
     var draftPublicId = await CreateDraftAsync(seriesId);
@@ -348,7 +475,7 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
       Action = DraftPartStatusAction.Start
     }, TestContext.Current.CancellationToken);
 
-    return (draftPartPublicId, drafter1PublicId, drafter2PublicId);
+    return (draftPartPublicId, drafter1PublicId, drafter2PublicId, hostPublicId);
   }
 
   private async Task PlayPickAsync(string draftPartPublicId, string drafterPublicId, int position, int playOrder, Movie movie)

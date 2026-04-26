@@ -3,4 +3,5 @@
 internal sealed record GetPickListQuery : IQuery<GetPickListResponse>
 {
   public required string DraftPartId { get; init; }
+  public required string CallerPublicId { get; init; }
 }
