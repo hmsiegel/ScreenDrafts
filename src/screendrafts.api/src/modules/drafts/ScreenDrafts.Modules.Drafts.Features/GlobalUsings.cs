@@ -37,6 +37,7 @@ global using ScreenDrafts.Common.Presentation.Http;
 global using ScreenDrafts.Common.Presentation.Http.Authentication;
 global using ScreenDrafts.Common.Presentation.Responses;
 global using ScreenDrafts.Common.Presentation.Results;
+global using ScreenDrafts.Modules.Administration.PublicApi;
 global using ScreenDrafts.Modules.Drafts.Domain.Abstractions.Data;
 global using ScreenDrafts.Modules.Drafts.Domain.Campaigns;
 global using ScreenDrafts.Modules.Drafts.Domain.Categories;

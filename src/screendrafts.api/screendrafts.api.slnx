@@ -73,6 +73,7 @@
     <Project Path="src/modules/administration/ScreenDrafts.Modules.Administration.Infrastructure/ScreenDrafts.Modules.Administration.Infrastructure.csproj" />
     <Project Path="src/modules/administration/ScreenDrafts.Modules.Administration.IntegrationEvents/ScreenDrafts.Modules.Administration.IntegrationEvents.csproj" />
     <Project Path="src/modules/administration/ScreenDrafts.Modules.Administration.IntegrationTests/ScreenDrafts.Modules.Administration.IntegrationTests.csproj" />
+    <Project Path="src/modules/administration/ScreenDrafts.Modules.Administration.PublicApi/ScreenDrafts.Modules.Administration.PublicApi.csproj" Id="eddcfe56-72e7-43a4-9ebd-75eb614c192a" />
     <Project Path="src/modules/administration/ScreenDrafts.Modules.Administration.UnitTests/ScreenDrafts.Modules.Administration.UnitTests.csproj" />
   </Folder>
   <Folder Name="/src/modules/audit/">

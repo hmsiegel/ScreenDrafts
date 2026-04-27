@@ -7,6 +7,7 @@
     <ProjectReference Include="..\..\..\common\ScreenDrafts.Common.Application\ScreenDrafts.Common.Application.csproj" />
     <ProjectReference Include="..\..\..\common\ScreenDrafts.Common.Presentation\ScreenDrafts.Common.Presentation.csproj" />
     <ProjectReference Include="..\..\administration\ScreenDrafts.Modules.Administration.IntegrationEvents\ScreenDrafts.Modules.Administration.IntegrationEvents.csproj" />
+    <ProjectReference Include="..\..\administration\ScreenDrafts.Modules.Administration.PublicApi\ScreenDrafts.Modules.Administration.PublicApi.csproj" />
 
     <ProjectReference Include="..\..\audit\ScreenDrafts.Modules.Audit.IntegrationEvents\ScreenDrafts.Modules.Audit.IntegrationEvents.csproj" />
     <ProjectReference Include="..\..\communications\ScreenDrafts.Modules.Communications.IntegrationEvents\ScreenDrafts.Modules.Communications.IntegrationEvents.csproj" />

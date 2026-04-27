@@ -13,244 +13,655 @@ export interface IClient {
     /**
      * @return No Content
      */
-    addPermissionToRole(body: AddPermissionToRoleRequest): Promise<void>;
+    administration_RemoveUserRole(body: RemoveRoleFromUserRequest): Promise<void>;
 
     /**
      * @return No Content
      */
-    addUserRole(body: AddUserRoleRequest): Promise<void>;
+    administration_AddUserRole(body: AddRoleToUserRequest): Promise<void>;
+
+    /**
+     * @return OK
+     */
+    administration_GetPermissions(): Promise<ListPermissionsResponse>;
 
     /**
      * @return No Content
      */
-    removeUserRole(body: RemoveUserRoleRequest): Promise<void>;
+    administration_AddPermission(body: AddPermissionRequest): Promise<void>;
 
     /**
      * @return OK
      */
-    createPerson(body: CreatePersonRequest): Promise<string>;
+    administration_GetUserRoles(body: GetUserRolesRequest): Promise<GetUserRolesResponse>;
 
     /**
      * @return OK
      */
-    getPerson(body: GetPersonRequest): Promise<PersonResponse>;
+    administration_GetPermissionsByCode(body: GetPermissionByCodeRequest): Promise<PermissionResponse>;
 
     /**
      * @return OK
      */
-    listPeople(body: ListPeopleRequest): Promise<PagedResultOfPersonResponse>;
-
-    /**
-     * @return OK
-     */
-    createHost(body: CreateHostRequest): Promise<string>;
-
-    /**
-     * @return OK
-     */
-    getHost(body: GetHostRequest): Promise<HostResponse>;
-
-    /**
-     * @return OK
-     */
-    listHosts(body: ListHostsRequest): Promise<HostResponse[]>;
-
-    /**
-     * @return OK
-     */
-    addDrafterToDraft(body: AddDrafterToDraftRequest): Promise<string>;
-
-    /**
-     * @return OK
-     */
-    addDraftPositionsToGameBoard(body: AddDraftPositionsToGameBoardRequest): Promise<void>;
-
-    /**
-     * @return OK
-     */
-    addHostToDraft(body: AddHostToDraftRequest): Promise<string>;
-
-    /**
-     * @return OK
-     */
-    addPick(body: AddPickRequest): Promise<string>;
-
-    /**
-     * @return OK
-     */
-    getDraftPicks(body: GetDraftPicksRequest): Promise<DraftPickResponse[]>;
-
-    /**
-     * @return OK
-     */
-    applyCommissionerOverride(body: ApplyCommissionerOverrideRequest): Promise<string>;
-
-    /**
-     * @return OK
-     */
-    assignDraftPosition(body: AssignDraftPositionRequest): Promise<string>;
-
-    /**
-     * @return OK
-     */
-    completeDraft(body: CompleteDraftRequest): Promise<void>;
-
-    /**
-     * @return OK
-     */
-    continueDraft(body: ContinueDraftRequest): Promise<void>;
-
-    /**
-     * @return OK
-     */
-    createDraft(body: CreateDraftRequest): Promise<string>;
-
-    /**
-     * @return OK
-     */
-    listDrafts(body: ListDraftsRequest): Promise<PagedResultOfDraftResponse>;
-
-    /**
-     * @return OK
-     */
-    createGameBoard(body: CreateGameBoardRequest): Promise<string>;
+    administration_AddRole(body: AddRoleRequest): Promise<void>;
 
     /**
      * @return No Content
      */
-    deleteDraft(body: DeleteDraftRequest): Promise<void>;
+    administration_AddPermissionToRole(body: AddPermissionToRoleRequest): Promise<void>;
 
     /**
      * @return OK
      */
-    editDraft(body: EditDraftRequest): Promise<string>;
+    audit_GetHttpAuditLogs(body: GetHttpAuditLogsRequest): Promise<GetHttpAuditLogsResponse>;
 
     /**
      * @return OK
      */
-    getDraft(body: GetDraftRequest): Promise<DraftResponse>;
+    audit_GetDomainEventAuditLogs(body: GetDomainEventAuditLogsRequest): Promise<GetDomainEventAuditLogsResponse>;
 
     /**
      * @return OK
      */
-    getDraftPositions(body: GetDraftPositionsRequest): Promise<DraftPositionResponse[]>;
+    audit_GetAuthAuditLogs(body: GetAuthAuditLogsRequest): Promise<GetAuthAuditLogsResponse>;
 
     /**
      * @return OK
      */
-    getLatestDrafts(): Promise<DraftResponse[]>;
+    audit_ExportHttpAuditLogs(body: ExportHttpAuditLogsRequest): Promise<FileResult>;
 
     /**
      * @return OK
      */
-    listUpcomingDrafts(): Promise<UpcomingDraftDto[]>;
+    audit_ExportDomainEventAuditLogs(body: ExportDomainEventAuditLogsRequest): Promise<FileResult>;
 
     /**
      * @return OK
      */
-    pauseDraft(body: PauseDraftRequest): Promise<void>;
+    audit_ExportAuthAuditLogs(body: ExportAuthAuditLogsRequest): Promise<FileResult>;
+
+    /**
+     * @return OK
+     */
+    series_GetSeriesMetadata(): Promise<Response>;
+
+    /**
+     * @return OK
+     */
+    series_ListSeries(): Promise<SeriesCollectionResponse>;
+
+    /**
+     * @return Created
+     */
+    series_CreateSeries(body: CreateSeriesRequest): Promise<CreatedIdResponse>;
+
+    /**
+     * @return OK
+     */
+    series_GetSeriesById(body: GetSeriesRequest): Promise<SeriesResponse>;
 
     /**
      * @return No Content
      */
-    removeDrafterFromDraft(body: RemoveDrafterFromDraftRequest): Promise<void>;
+    series_EditSeries(body: EditSeriesRequest): Promise<void>;
 
     /**
      * @return OK
      */
-    removeHostFromDraft(body: RemoveHostFromDraftRequest): Promise<string>;
+    people_SearchPeople(body: SearchPeopleRequest): Promise<PagedResultOfSearchPeopleResponse>;
 
     /**
      * @return OK
      */
-    startDraft(body: StartDraftRequest): Promise<void>;
+    people_ListPeople(body: ListPeopleRequest): Promise<PeopleCollectionResponse>;
+
+    /**
+     * @return Created
+     */
+    people_CreatePerson(body: CreatePersonRequest): Promise<string>;
 
     /**
      * @return No Content
      */
-    updateReleaseDate(body: ReleaseDateRequest): Promise<void>;
+    people_LinkUser(body: LinkUserPersonRequest): Promise<void>;
 
     /**
      * @return OK
      */
-    assignTriviaResults(body: TriviaResultRequest): Promise<void>;
+    people_GetPersonById(body: GetPersonRequest): Promise<PersonResponse>;
+
+    /**
+     * @return No Content
+     */
+    people_EditPerson(body: EditPersonRequest): Promise<void>;
 
     /**
      * @return OK
      */
-    getTriviaResults(body: TriviaResultsRequest): Promise<TriviaResultDto>;
+    hosts_SearchHosts(body: SearchHostRequest): Promise<PagedResultOfSearchHostResponse>;
 
     /**
      * @return OK
      */
-    createDrafter(body: CreateDrafterRequest): Promise<string>;
+    hosts_GetHostById(body: GetHostRequest): Promise<GetHostResponse>;
+
+    /**
+     * @return Created
+     */
+    hosts_CreateHost(body: CreateHostRequest): Promise<string>;
+
+    /**
+     * @return No Content
+     */
+    drafts_UpdateDraft(body: UpdateDraftRequest): Promise<void>;
 
     /**
      * @return OK
      */
-    executeVeto(body: ExecuteVetoRequest): Promise<string>;
+    drafts_GetDraftById(body: GetDraftRequest): Promise<GetDraftResponse>;
+
+    /**
+     * @return No Content
+     */
+    drafts_SetEpisodeNumber(body: SetEpisodeNumberRequest): Promise<void>;
 
     /**
      * @return OK
      */
-    executeVetoOverride(body: VetoOverrideRequest): Promise<string>;
+    drafts_SetDraftPartStatus(body: SetDraftPartStatusRequest): Promise<Response>;
+
+    /**
+     * @return No Content
+     */
+    drafts_SetCategory(body: SetCategoryDraftRequest): Promise<void>;
+
+    /**
+     * @return No Content
+     */
+    drafts_SetCategories(body: SetCategoriesDraftRequest): Promise<void>;
+
+    /**
+     * @return No Content
+     */
+    drafts_SetCampaign(body: SetCampaignDraftRequest): Promise<void>;
+
+    /**
+     * @return No Content
+     */
+    drafts_RemoveCampaign(body: ClearCampaignDraftRequest): Promise<void>;
 
     /**
      * @return OK
      */
-    getDrafter(body: GetDrafterRequest): Promise<DrafterResponse>;
+    drafts_SearchDrafts(body: SearchDraftsRequest): Promise<PagedResultOfSearchDraftsResponse>;
+
+    /**
+     * @return No Content
+     */
+    drafts_RemoveCategory(body: RemoveCategoryFromDraftRequest): Promise<void>;
 
     /**
      * @return OK
      */
-    getDrafterProfile(body: GetDrafterProfileRequest): Promise<DrafterProfileResponse>;
+    drafts_ListUpcomingDrafts(): Promise<ListUpcomingDraftsResponse>;
 
     /**
      * @return OK
      */
-    listDrafters(body: ListDraftersRequest): Promise<DrafterResponse[]>;
+    drafts_ListLatestDrafts(): Promise<ListLatestDraftsResponse>;
 
     /**
      * @return OK
      */
-    searchForMovie(body: MovieRequest): Promise<MovieResponse>;
+    drafts_ListDrafts(body: ListDraftsRequest): Promise<PagedResultOfListDraftsResponse>;
+
+    /**
+     * @return Created
+     */
+    drafts_CreateDraft(body: CreateDraftRequest): Promise<CreatedResponse>;
 
     /**
      * @return OK
      */
-    addMovie(body: AddMovieRequest): Promise<string>;
+    drafts_GetDraftStatus(body: GetDraftStatusRequest): Promise<Response>;
 
     /**
      * @return OK
      */
-    getUserProfile(): Promise<UserResponse>;
+    draftPools_GetPool(body: GetDraftPoolRequest): Promise<DraftPoolResponse>;
+
+    /**
+     * @return No Content
+     */
+    draftPools_CreatePool(body: CreateDraftPoolRequest): Promise<void>;
+
+    /**
+     * @param draftId (optional) 
+     * @param file (optional) 
+     * @return OK
+     */
+    draftPools_BulkAddItems(draftId: string | undefined, file: FileParameter | undefined): Promise<BulkAddMoviesResponse>;
+
+    /**
+     * @return No Content
+     */
+    draftPools_AddItem(body: AddMovieToDraftPoolRequest): Promise<void>;
+
+    /**
+     * @return No Content
+     */
+    draftBoards_UpdateItem(body: UpdateDraftBoardItemRequest): Promise<void>;
+
+    /**
+     * @return No Content
+     */
+    draftBoards_RemoveItem(body: RemoveMovieFromDraftBoardRequest): Promise<void>;
 
     /**
      * @return OK
      */
-    updateUserProfile(body: UpdateUserRequest): Promise<void>;
+    draftBoards_GetBoard(body: GetDraftBoardRequest): Promise<GetDraftBoardResponse>;
+
+    /**
+     * @return No Content
+     */
+    draftBoards_AddItem(body: AddMovieToDraftBoardRequest): Promise<void>;
+
+    /**
+     * @param draftId (optional) 
+     * @param file (optional) 
+     * @return OK
+     */
+    draftBoards_BulkAddItems(draftId: string | undefined, file: FileParameter | undefined): Promise<BulkAddMoviesResponse>;
 
     /**
      * @return OK
      */
-    registerUser(body: RegisterUserRequest): Promise<string>;
+    drafts_CreateDraftPart(body: CreateDraftPartRequest): Promise<string>;
+
+    /**
+     * @return No Content
+     */
+    draftParts_StopZoomRecording(body: StopZoomRecordingRequest): Promise<void>;
+
+    /**
+     * @return OK
+     */
+    draftParts_StartZoomSession(body: StartZoomSessionRequest): Promise<StartZoomSessionResult>;
+
+    /**
+     * @return No Content
+     */
+    draftParts_EndZoomSession(body: EndZoomSessionRequest): Promise<void>;
+
+    /**
+     * @return No Content
+     */
+    draftParts_StartZoomRecording(body: StartZoomRecordingRequest): Promise<void>;
+
+    /**
+     * @return OK
+     */
+    draftParts_GetZoomSessionToken(body: GetZoomSessionTokenRequest): Promise<ZoomSessionTokenResult>;
+
+    /**
+     * @return No Content
+     */
+    subDrafts_SetSubject(body: SetSubDraftSubjectRequest): Promise<void>;
+
+    /**
+     * @return Created
+     */
+    subDrafts_PlayPick(body: PlaySubDraftPickRequest): Promise<CreatedResponse>;
+
+    /**
+     * @return No Content
+     */
+    subDrafts_AssignTriviaResults(body: AssignSubDraftTriviaRequest): Promise<void>;
+
+    /**
+     * @return No Content
+     */
+    subDrafts_ApplyVeto(body: ApplySubDraftVetoRequest): Promise<void>;
+
+    /**
+     * @return No Content
+     */
+    subDrafts_Advance(body: AdvanceSubDraftRequest): Promise<void>;
+
+    /**
+     * @return Created
+     */
+    subDrafts_Add(body: AddSubDraftRequest): Promise<CreatedResponse>;
+
+    /**
+     * @return No Content
+     */
+    draftParts_SetReleaseDate(body: SetReleaseDateRequest): Promise<void>;
+
+    /**
+     * @return No Content
+     */
+    draftParts_SetCommunityLimits(body: SetCommunityLimitsRequest): Promise<void>;
+
+    /**
+     * @return No Content
+     */
+    draftParts_UndoPick(body: UndoPickRequest): Promise<void>;
+
+    /**
+     * @return No Content
+     */
+    draftParts_PickReveal(body: RevealPickRequest): Promise<void>;
+
+    /**
+     * @return OK
+     */
+    draftParts_PlayPick(body: PlayPickRequest): Promise<string>;
+
+    /**
+     * @return OK
+     */
+    draftParts_GetPickList(body: GetPickListRequest): Promise<GetPickListResponse>;
+
+    /**
+     * @return No Content
+     */
+    draftParts_ApplyVeto(body: ApplyVetoRequest): Promise<void>;
+
+    /**
+     * @return No Content
+     */
+    draftParts_ApplyVetoOverride(body: ApplyVetoOverrideRequest): Promise<void>;
+
+    /**
+     * @return No Content
+     */
+    draftParts_ApplyCommissionerOverride(body: ApplyCommissionerOverrideRequest): Promise<void>;
+
+    /**
+     * @return No Content
+     */
+    draftParts_RemoveParticipant(body: RemoveParticipantFromDraftPartRequest): Promise<void>;
+
+    /**
+     * @return No Content
+     */
+    draftParts_AddParticipant(body: AddParticipantToDraftPartRequest): Promise<void>;
+
+    /**
+     * @return No Content
+     */
+    draftParts_RemoveHost(body: RemoveHostDraftPartRequest): Promise<void>;
+
+    /**
+     * @return No Content
+     */
+    draftParts_AddHost(body: AddHostToDraftPartRequest): Promise<void>;
+
+    /**
+     * @return No Content
+     */
+    draftParts_SetDraftPosition(body: SetDraftPositionsRequest): Promise<void>;
+
+    /**
+     * @return OK
+     */
+    draftParts_ListDraftPositions(body: ListDraftPositionsRequest): Promise<ListDraftPositionsResponse>;
+
+    /**
+     * @return No Content
+     */
+    draftParts_ClearDraftPositionAssignment(body: ClearDraftPositionAssignmentRequest): Promise<void>;
+
+    /**
+     * @return No Content
+     */
+    draftParts_AssignParticipantToPosition(body: AssignParticipantToDraftPositionRequest): Promise<void>;
+
+    /**
+     * @return No Content
+     */
+    candidateLists_RemoveEntry(body: RemoveCandidateListEntryRequest): Promise<void>;
+
+    /**
+     * @return OK
+     */
+    candidateLists_GetList(body: GetCandidateListRequest): Promise<GetCandidateListResponse>;
+
+    /**
+     * @return OK
+     */
+    candidateLists_AddEntry(body: AddCandidateEntryRequest): Promise<AddCanidateEntryResponse>;
+
+    /**
+     * @param draftPart (optional) 
+     * @param file (optional) 
+     * @return OK
+     */
+    candidateLists_BulkAddEntries(draftPart: string | undefined, file: FileParameter | undefined): Promise<BulkAddMoviesResponse>;
+
+    /**
+     * @return No Content
+     */
+    draftParts_AssignTriviaResults(body: AssignTriviaResultsRequest): Promise<void>;
+
+    /**
+     * @return OK
+     */
+    drafterTeams_SearchDrafterTeams(body: SearchDrafterTeamsRequest): Promise<PagedResultOfSearchDrafterTeamsResponse>;
+
+    /**
+     * @return No Content
+     */
+    drafterTeams_RemoveDrafterFromTeam(body: RemoveDrafterFromTeamRequest): Promise<void>;
+
+    /**
+     * @return OK
+     */
+    drafterTeams_GetDrafterTeam(body: GetDrafterTeamRequest): Promise<GetDrafterTeamResponse>;
+
+    /**
+     * @return Created
+     */
+    drafterTeams_CreateDrafterTeam(body: CreateDrafterTeamRequest): Promise<string>;
+
+    /**
+     * @return No Content
+     */
+    drafterTeams_AddDrafter(body: AddDrafterToTeamRequest): Promise<void>;
+
+    /**
+     * @return OK
+     */
+    drafters_ListDrafters(body: ListDraftersRequest): Promise<DrafterCollectionResponse>;
+
+    /**
+     * @return Created
+     */
+    drafters_CreateDrafter(body: CreateDrafterRequest): Promise<string>;
+
+    /**
+     * @return OK
+     */
+    drafters_GetDrafterById(body: GetDrafterProfileRequest): Promise<GetDrafterProfileResponse>;
+
+    /**
+     * @return No Content
+     */
+    categories_RestoreCategory(body: RestoreCategoryRequest): Promise<void>;
+
+    /**
+     * @return OK
+     */
+    categories_ListCategories(body: ListCategoriesRequest): Promise<CategoryCollectionResponse>;
+
+    /**
+     * @return Created
+     */
+    categories_CreateCategory(body: CreateCategoryRequest): Promise<CreatedResponse>;
+
+    /**
+     * @return OK
+     */
+    categories_GetCategoryById(body: GetCategoryRequest): Promise<CategoryResponse>;
+
+    /**
+     * @return No Content
+     */
+    categories_EditCategory(body: EditCategoryRequest): Promise<void>;
+
+    /**
+     * @return No Content
+     */
+    categories_DeleteCategory(body: DeleteCategoryRequest): Promise<void>;
+
+    /**
+     * @return No Content
+     */
+    campaigns_RestoreCampaign(body: RestoreCampaignRequest): Promise<void>;
+
+    /**
+     * @return OK
+     */
+    campaigns_ListCampaigns(body: ListCampaignsRequest): Promise<CampaignCollectionResponse>;
+
+    /**
+     * @return Created
+     */
+    campaigns_CreateCampaign(body: CreateCampaignRequest): Promise<CreatedResponse>;
+
+    /**
+     * @return OK
+     */
+    campaigns_GetCampaignById(body: GetCampaignRequest): Promise<CampaignResponse>;
+
+    /**
+     * @return No Content
+     */
+    campaigns_EditCampaign(body: EditCampaignRequest): Promise<void>;
+
+    /**
+     * @return No Content
+     */
+    campaigns_DeleteCampaign(body: DeleteCampaignRequest): Promise<void>;
+
+    /**
+     * @return OK
+     */
+    zoom_Webhook(): Promise<void>;
+
+    /**
+     * @return OK
+     */
+    movies_Search(body: GetOnlineMediaRequest): Promise<GetOnlineMediaResponse>;
+
+    /**
+     * @return OK
+     */
+    media_Search(body: SearchMediaRequest): Promise<SearchMediaResponse>;
+
+    /**
+     * @return OK
+     */
+    media_Get(body: GetMediaRequest): Promise<MediaResponse>;
+
+    /**
+     * @return OK
+     */
+    media_GetSummary(body: GetMediaSummaryRequest): Promise<GetMediaSummaryResponse>;
+
+    /**
+     * @return OK
+     */
+    media_Add(body: AddMediaRequest): Promise<string>;
+
+    /**
+     * @return No Content
+     */
+    users_UpdateUserProfile(body: Request): Promise<void>;
+
+    /**
+     * @return OK
+     */
+    users_GetUserProfile(): Promise<GetUserResponse>;
+
+    /**
+     * @return OK
+     */
+    users_RegisterUser(body: RegisterUserRequest): Promise<string>;
+
+    /**
+     * @return OK
+     */
+    users_GetUsersProfiles(body: Request): Promise<Response>;
 }
 
-export class DraftsClient implements IClient {
+export class Client implements IClient {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
         this.http = http ? http : window as any;
-        this.baseUrl = baseUrl ?? "https://localhost:5001/";
+        this.baseUrl = baseUrl ?? "http://localhost:5000/";
     }
 
     /**
      * @return No Content
      */
-    addPermissionToRole(body: AddPermissionToRoleRequest, signal?: AbortSignal): Promise<void> {
-        let url_ = this.baseUrl + "/administration/roles/{role}/permissions";
+    administration_RemoveUserRole(body: RemoveRoleFromUserRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/admin/roles/{roleName}/users/{publicId}";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "DELETE",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processAdministration_RemoveUserRole(_response);
+        });
+    }
+
+    protected processAdministration_RemoveUserRole(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    administration_AddUserRole(body: AddRoleToUserRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/admin/roles/{roleName}/users/{publicId}";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -265,16 +676,287 @@ export class DraftsClient implements IClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processAddPermissionToRole(_response);
+            return this.processAdministration_AddUserRole(_response);
         });
     }
 
-    protected processAddPermissionToRole(response: Response): Promise<void> {
+    protected processAdministration_AddUserRole(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 204) {
             return response.text().then((_responseText) => {
             return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status === 500) {
+            return response.text().then((_responseText) => {
+            return throwException("Internal Server Error", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    administration_GetPermissions(signal?: AbortSignal): Promise<ListPermissionsResponse> {
+        let url_ = this.baseUrl + "/admin/permissions";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            signal,
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processAdministration_GetPermissions(_response);
+        });
+    }
+
+    protected processAdministration_GetPermissions(response: Response): Promise<ListPermissionsResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ListPermissionsResponse;
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ListPermissionsResponse>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    administration_AddPermission(body: AddPermissionRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/admin/permissions";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processAdministration_AddPermission(_response);
+        });
+    }
+
+    protected processAdministration_AddPermission(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    administration_GetUserRoles(body: GetUserRolesRequest, signal?: AbortSignal): Promise<GetUserRolesResponse> {
+        let url_ = this.baseUrl + "/admin/users/{publicId}/roles";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processAdministration_GetUserRoles(_response);
+        });
+    }
+
+    protected processAdministration_GetUserRoles(response: Response): Promise<GetUserRolesResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as GetUserRolesResponse;
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<GetUserRolesResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    administration_GetPermissionsByCode(body: GetPermissionByCodeRequest, signal?: AbortSignal): Promise<PermissionResponse> {
+        let url_ = this.baseUrl + "/admin/permissions/{code}";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processAdministration_GetPermissionsByCode(_response);
+        });
+    }
+
+    protected processAdministration_GetPermissionsByCode(response: Response): Promise<PermissionResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as PermissionResponse;
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<PermissionResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    administration_AddRole(body: AddRoleRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/admin/roles";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processAdministration_AddRole(_response);
+        });
+    }
+
+    protected processAdministration_AddRole(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
             });
         } else if (status === 401) {
             return response.text().then((_responseText) => {
@@ -295,8 +977,8 @@ export class DraftsClient implements IClient {
     /**
      * @return No Content
      */
-    addUserRole(body: AddUserRoleRequest, signal?: AbortSignal): Promise<void> {
-        let url_ = this.baseUrl + "/administration/users/{userId}/roles";
+    administration_AddPermissionToRole(body: AddPermissionToRoleRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/admin/roles/{roleName}/permissions/{permission}";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -311,20 +993,36 @@ export class DraftsClient implements IClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processAddUserRole(_response);
+            return this.processAdministration_AddPermissionToRole(_response);
         });
     }
 
-    protected processAddUserRole(response: Response): Promise<void> {
+    protected processAdministration_AddPermissionToRole(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 204) {
             return response.text().then((_responseText) => {
             return;
             });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
         } else if (status === 401) {
             return response.text().then((_responseText) => {
             return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status === 500) {
+            return response.text().then((_responseText) => {
+            return throwException("Internal Server Error", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -335,29 +1033,515 @@ export class DraftsClient implements IClient {
     }
 
     /**
-     * @return No Content
+     * @return OK
      */
-    removeUserRole(body: RemoveUserRoleRequest, signal?: AbortSignal): Promise<void> {
-        let url_ = this.baseUrl + "/administration/users/{userId}/roles";
+    audit_GetHttpAuditLogs(body: GetHttpAuditLogsRequest, signal?: AbortSignal): Promise<GetHttpAuditLogsResponse> {
+        let url_ = this.baseUrl + "/audit/http-logs";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
 
         let options_: RequestInit = {
             body: content_,
-            method: "DELETE",
+            method: "GET",
             signal,
             headers: {
                 "Content-Type": "*/*",
+                "Accept": "application/json"
             }
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processRemoveUserRole(_response);
+            return this.processAudit_GetHttpAuditLogs(_response);
         });
     }
 
-    protected processRemoveUserRole(response: Response): Promise<void> {
+    protected processAudit_GetHttpAuditLogs(response: Response): Promise<GetHttpAuditLogsResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as GetHttpAuditLogsResponse;
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<GetHttpAuditLogsResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    audit_GetDomainEventAuditLogs(body: GetDomainEventAuditLogsRequest, signal?: AbortSignal): Promise<GetDomainEventAuditLogsResponse> {
+        let url_ = this.baseUrl + "/audit/domain-events";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processAudit_GetDomainEventAuditLogs(_response);
+        });
+    }
+
+    protected processAudit_GetDomainEventAuditLogs(response: Response): Promise<GetDomainEventAuditLogsResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as GetDomainEventAuditLogsResponse;
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<GetDomainEventAuditLogsResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    audit_GetAuthAuditLogs(body: GetAuthAuditLogsRequest, signal?: AbortSignal): Promise<GetAuthAuditLogsResponse> {
+        let url_ = this.baseUrl + "/audit/auth-logs";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processAudit_GetAuthAuditLogs(_response);
+        });
+    }
+
+    protected processAudit_GetAuthAuditLogs(response: Response): Promise<GetAuthAuditLogsResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as GetAuthAuditLogsResponse;
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<GetAuthAuditLogsResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    audit_ExportHttpAuditLogs(body: ExportHttpAuditLogsRequest, signal?: AbortSignal): Promise<FileResult> {
+        let url_ = this.baseUrl + "/audit/http-logs/export";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "text/csv"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processAudit_ExportHttpAuditLogs(_response);
+        });
+    }
+
+    protected processAudit_ExportHttpAuditLogs(response: Response): Promise<FileResult> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as FileResult;
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<FileResult>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    audit_ExportDomainEventAuditLogs(body: ExportDomainEventAuditLogsRequest, signal?: AbortSignal): Promise<FileResult> {
+        let url_ = this.baseUrl + "/audit/domain-events/export";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "text/csv"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processAudit_ExportDomainEventAuditLogs(_response);
+        });
+    }
+
+    protected processAudit_ExportDomainEventAuditLogs(response: Response): Promise<FileResult> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as FileResult;
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<FileResult>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    audit_ExportAuthAuditLogs(body: ExportAuthAuditLogsRequest, signal?: AbortSignal): Promise<FileResult> {
+        let url_ = this.baseUrl + "/audit/auth-logs/export";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "text/csv"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processAudit_ExportAuthAuditLogs(_response);
+        });
+    }
+
+    protected processAudit_ExportAuthAuditLogs(response: Response): Promise<FileResult> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as FileResult;
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<FileResult>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    series_GetSeriesMetadata(signal?: AbortSignal): Promise<Response> {
+        let url_ = this.baseUrl + "/series/metadata";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            signal,
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processSeries_GetSeriesMetadata(_response);
+        });
+    }
+
+    protected processSeries_GetSeriesMetadata(response: Response): Promise<Response> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as Response;
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Response>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    series_ListSeries(signal?: AbortSignal): Promise<SeriesCollectionResponse> {
+        let url_ = this.baseUrl + "/series";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            signal,
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processSeries_ListSeries(_response);
+        });
+    }
+
+    protected processSeries_ListSeries(response: Response): Promise<SeriesCollectionResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as SeriesCollectionResponse;
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<SeriesCollectionResponse>(null as any);
+    }
+
+    /**
+     * @return Created
+     */
+    series_CreateSeries(body: CreateSeriesRequest, signal?: AbortSignal): Promise<CreatedIdResponse> {
+        let url_ = this.baseUrl + "/series";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processSeries_CreateSeries(_response);
+        });
+    }
+
+    protected processSeries_CreateSeries(response: Response): Promise<CreatedIdResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 201) {
+            return response.text().then((_responseText) => {
+            let result201: any = null;
+            result201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as CreatedIdResponse;
+            return result201;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<CreatedIdResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    series_GetSeriesById(body: GetSeriesRequest, signal?: AbortSignal): Promise<SeriesResponse> {
+        let url_ = this.baseUrl + "/series/{publicId}";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processSeries_GetSeriesById(_response);
+        });
+    }
+
+    protected processSeries_GetSeriesById(response: Response): Promise<SeriesResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as SeriesResponse;
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<SeriesResponse>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    series_EditSeries(body: EditSeriesRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/series/{publicId}";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PATCH",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processSeries_EditSeries(_response);
+        });
+    }
+
+    protected processSeries_EditSeries(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 204) {
@@ -391,8 +1575,106 @@ export class DraftsClient implements IClient {
     /**
      * @return OK
      */
-    createPerson(body: CreatePersonRequest, signal?: AbortSignal): Promise<string> {
-        let url_ = this.baseUrl + "/people/create";
+    people_SearchPeople(body: SearchPeopleRequest, signal?: AbortSignal): Promise<PagedResultOfSearchPeopleResponse> {
+        let url_ = this.baseUrl + "/people/search";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processPeople_SearchPeople(_response);
+        });
+    }
+
+    protected processPeople_SearchPeople(response: Response): Promise<PagedResultOfSearchPeopleResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as PagedResultOfSearchPeopleResponse;
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<PagedResultOfSearchPeopleResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    people_ListPeople(body: ListPeopleRequest, signal?: AbortSignal): Promise<PeopleCollectionResponse> {
+        let url_ = this.baseUrl + "/people";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processPeople_ListPeople(_response);
+        });
+    }
+
+    protected processPeople_ListPeople(response: Response): Promise<PeopleCollectionResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as PeopleCollectionResponse;
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<PeopleCollectionResponse>(null as any);
+    }
+
+    /**
+     * @return Created
+     */
+    people_CreatePerson(body: CreatePersonRequest, signal?: AbortSignal): Promise<string> {
+        let url_ = this.baseUrl + "/people";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -408,18 +1690,18 @@ export class DraftsClient implements IClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreatePerson(_response);
+            return this.processPeople_CreatePerson(_response);
         });
     }
 
-    protected processCreatePerson(response: Response): Promise<string> {
+    protected processPeople_CreatePerson(response: Response): Promise<string> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
+        if (status === 201) {
             return response.text().then((_responseText) => {
-            let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as string;
-            return result200;
+            let result201: any = null;
+            result201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as string;
+            return result201;
             });
         } else if (status === 400) {
             return response.text().then((_responseText) => {
@@ -442,10 +1724,60 @@ export class DraftsClient implements IClient {
     }
 
     /**
+     * @return No Content
+     */
+    people_LinkUser(body: LinkUserPersonRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/people/{publicId}/link-user";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processPeople_LinkUser(_response);
+        });
+    }
+
+    protected processPeople_LinkUser(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
      * @return OK
      */
-    getPerson(body: GetPersonRequest, signal?: AbortSignal): Promise<PersonResponse> {
-        let url_ = this.baseUrl + "/people/{id}";
+    people_GetPersonById(body: GetPersonRequest, signal?: AbortSignal): Promise<PersonResponse> {
+        let url_ = this.baseUrl + "/people/{publicId}";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -461,11 +1793,11 @@ export class DraftsClient implements IClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetPerson(_response);
+            return this.processPeople_GetPersonById(_response);
         });
     }
 
-    protected processGetPerson(response: Response): Promise<PersonResponse> {
+    protected processPeople_GetPersonById(response: Response): Promise<PersonResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -473,10 +1805,6 @@ export class DraftsClient implements IClient {
             let result200: any = null;
             result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as PersonResponse;
             return result200;
-            });
-        } else if (status === 400) {
-            return response.text().then((_responseText) => {
-            return throwException("Bad Request", status, _responseText, _headers);
             });
         } else if (status === 401) {
             return response.text().then((_responseText) => {
@@ -499,10 +1827,64 @@ export class DraftsClient implements IClient {
     }
 
     /**
+     * @return No Content
+     */
+    people_EditPerson(body: EditPersonRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/people/{publicId}";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processPeople_EditPerson(_response);
+        });
+    }
+
+    protected processPeople_EditPerson(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
      * @return OK
      */
-    listPeople(body: ListPeopleRequest, signal?: AbortSignal): Promise<PagedResultOfPersonResponse> {
-        let url_ = this.baseUrl + "/people";
+    hosts_SearchHosts(body: SearchHostRequest, signal?: AbortSignal): Promise<PagedResultOfSearchHostResponse> {
+        let url_ = this.baseUrl + "/hosts/search";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -518,22 +1900,788 @@ export class DraftsClient implements IClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processListPeople(_response);
+            return this.processHosts_SearchHosts(_response);
         });
     }
 
-    protected processListPeople(response: Response): Promise<PagedResultOfPersonResponse> {
+    protected processHosts_SearchHosts(response: Response): Promise<PagedResultOfSearchHostResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as PagedResultOfPersonResponse;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as PagedResultOfSearchHostResponse;
             return result200;
             });
-        } else if (status === 204) {
+        } else if (status === 400) {
             return response.text().then((_responseText) => {
-            return throwException("No Content", status, _responseText, _headers);
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<PagedResultOfSearchHostResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    hosts_GetHostById(body: GetHostRequest, signal?: AbortSignal): Promise<GetHostResponse> {
+        let url_ = this.baseUrl + "/hosts/{publicId}";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processHosts_GetHostById(_response);
+        });
+    }
+
+    protected processHosts_GetHostById(response: Response): Promise<GetHostResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as GetHostResponse;
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<GetHostResponse>(null as any);
+    }
+
+    /**
+     * @return Created
+     */
+    hosts_CreateHost(body: CreateHostRequest, signal?: AbortSignal): Promise<string> {
+        let url_ = this.baseUrl + "/hosts";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processHosts_CreateHost(_response);
+        });
+    }
+
+    protected processHosts_CreateHost(response: Response): Promise<string> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 201) {
+            return response.text().then((_responseText) => {
+            let result201: any = null;
+            result201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as string;
+            return result201;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<string>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    drafts_UpdateDraft(body: UpdateDraftRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/drafts/{draftId}";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDrafts_UpdateDraft(_response);
+        });
+    }
+
+    protected processDrafts_UpdateDraft(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    drafts_GetDraftById(body: GetDraftRequest, signal?: AbortSignal): Promise<GetDraftResponse> {
+        let url_ = this.baseUrl + "/drafts/{draftId}";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDrafts_GetDraftById(_response);
+        });
+    }
+
+    protected processDrafts_GetDraftById(response: Response): Promise<GetDraftResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as GetDraftResponse;
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<GetDraftResponse>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    drafts_SetEpisodeNumber(body: SetEpisodeNumberRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/drafts/{draftId}/episode";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDrafts_SetEpisodeNumber(_response);
+        });
+    }
+
+    protected processDrafts_SetEpisodeNumber(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    drafts_SetDraftPartStatus(body: SetDraftPartStatusRequest, signal?: AbortSignal): Promise<Response> {
+        let url_ = this.baseUrl + "/drafts/{draftId}/parts/{partIndex}/status";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDrafts_SetDraftPartStatus(_response);
+        });
+    }
+
+    protected processDrafts_SetDraftPartStatus(response: Response): Promise<Response> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as Response;
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Response>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    drafts_SetCategory(body: SetCategoryDraftRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/drafts/{draftId}/category";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDrafts_SetCategory(_response);
+        });
+    }
+
+    protected processDrafts_SetCategory(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    drafts_SetCategories(body: SetCategoriesDraftRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/drafts/{draftId}/categories";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDrafts_SetCategories(_response);
+        });
+    }
+
+    protected processDrafts_SetCategories(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    drafts_SetCampaign(body: SetCampaignDraftRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/drafts/{draftId}/campaign";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDrafts_SetCampaign(_response);
+        });
+    }
+
+    protected processDrafts_SetCampaign(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    drafts_RemoveCampaign(body: ClearCampaignDraftRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/drafts/{draftId}/campaign";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "DELETE",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDrafts_RemoveCampaign(_response);
+        });
+    }
+
+    protected processDrafts_RemoveCampaign(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    drafts_SearchDrafts(body: SearchDraftsRequest, signal?: AbortSignal): Promise<PagedResultOfSearchDraftsResponse> {
+        let url_ = this.baseUrl + "/drafts/search";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDrafts_SearchDrafts(_response);
+        });
+    }
+
+    protected processDrafts_SearchDrafts(response: Response): Promise<PagedResultOfSearchDraftsResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as PagedResultOfSearchDraftsResponse;
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<PagedResultOfSearchDraftsResponse>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    drafts_RemoveCategory(body: RemoveCategoryFromDraftRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/drafts/{draftId}/category/{categoryId}";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "DELETE",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDrafts_RemoveCategory(_response);
+        });
+    }
+
+    protected processDrafts_RemoveCategory(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    drafts_ListUpcomingDrafts(signal?: AbortSignal): Promise<ListUpcomingDraftsResponse> {
+        let url_ = this.baseUrl + "/drafts/upcoming";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            signal,
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDrafts_ListUpcomingDrafts(_response);
+        });
+    }
+
+    protected processDrafts_ListUpcomingDrafts(response: Response): Promise<ListUpcomingDraftsResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ListUpcomingDraftsResponse;
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ListUpcomingDraftsResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    drafts_ListLatestDrafts(signal?: AbortSignal): Promise<ListLatestDraftsResponse> {
+        let url_ = this.baseUrl + "/drafts/latest";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            signal,
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDrafts_ListLatestDrafts(_response);
+        });
+    }
+
+    protected processDrafts_ListLatestDrafts(response: Response): Promise<ListLatestDraftsResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ListLatestDraftsResponse;
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ListLatestDraftsResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    drafts_ListDrafts(body: ListDraftsRequest, signal?: AbortSignal): Promise<PagedResultOfListDraftsResponse> {
+        let url_ = this.baseUrl + "/drafts";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDrafts_ListDrafts(_response);
+        });
+    }
+
+    protected processDrafts_ListDrafts(response: Response): Promise<PagedResultOfListDraftsResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as PagedResultOfListDraftsResponse;
+            return result200;
             });
         } else if (status === 400) {
             return response.text().then((_responseText) => {
@@ -556,656 +2704,13 @@ export class DraftsClient implements IClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<PagedResultOfPersonResponse>(null as any);
+        return Promise.resolve<PagedResultOfListDraftsResponse>(null as any);
     }
 
     /**
-     * @return OK
+     * @return Created
      */
-    createHost(body: CreateHostRequest, signal?: AbortSignal): Promise<string> {
-        let url_ = this.baseUrl + "/hosts/{id}";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            signal,
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreateHost(_response);
-        });
-    }
-
-    protected processCreateHost(response: Response): Promise<string> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as string;
-            return result200;
-            });
-        } else if (status === 400) {
-            return response.text().then((_responseText) => {
-            return throwException("Bad Request", status, _responseText, _headers);
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<string>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    getHost(body: GetHostRequest, signal?: AbortSignal): Promise<HostResponse> {
-        let url_ = this.baseUrl + "/hosts/{id}";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "GET",
-            signal,
-            headers: {
-                "Content-Type": "*/*",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetHost(_response);
-        });
-    }
-
-    protected processGetHost(response: Response): Promise<HostResponse> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as HostResponse;
-            return result200;
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<HostResponse>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    listHosts(body: ListHostsRequest, signal?: AbortSignal): Promise<HostResponse[]> {
-        let url_ = this.baseUrl + "/hosts";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "GET",
-            signal,
-            headers: {
-                "Content-Type": "*/*",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processListHosts(_response);
-        });
-    }
-
-    protected processListHosts(response: Response): Promise<HostResponse[]> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as HostResponse[];
-            return result200;
-            });
-        } else if (status === 204) {
-            return response.text().then((_responseText) => {
-            return throwException("No Content", status, _responseText, _headers);
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<HostResponse[]>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    addDrafterToDraft(body: AddDrafterToDraftRequest, signal?: AbortSignal): Promise<string> {
-        let url_ = this.baseUrl + "/drafts/{draftId}/drafters/{drafterId}";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            signal,
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processAddDrafterToDraft(_response);
-        });
-    }
-
-    protected processAddDrafterToDraft(response: Response): Promise<string> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as string;
-            return result200;
-            });
-        } else if (status === 400) {
-            return response.text().then((_responseText) => {
-            return throwException("Bad Request", status, _responseText, _headers);
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<string>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    addDraftPositionsToGameBoard(body: AddDraftPositionsToGameBoardRequest, signal?: AbortSignal): Promise<void> {
-        let url_ = this.baseUrl + "/drafts/{gameBoardId}/positions";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            signal,
-            headers: {
-                "Content-Type": "application/json",
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processAddDraftPositionsToGameBoard(_response);
-        });
-    }
-
-    protected processAddDraftPositionsToGameBoard(response: Response): Promise<void> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<void>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    addHostToDraft(body: AddHostToDraftRequest, signal?: AbortSignal): Promise<string> {
-        let url_ = this.baseUrl + "/drafts/{draftId}/hosts/{hostId}";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            signal,
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processAddHostToDraft(_response);
-        });
-    }
-
-    protected processAddHostToDraft(response: Response): Promise<string> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as string;
-            return result200;
-            });
-        } else if (status === 400) {
-            return response.text().then((_responseText) => {
-            return throwException("Bad Request", status, _responseText, _headers);
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<string>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    addPick(body: AddPickRequest, signal?: AbortSignal): Promise<string> {
-        let url_ = this.baseUrl + "/drafts/{draftId}/picks";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            signal,
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processAddPick(_response);
-        });
-    }
-
-    protected processAddPick(response: Response): Promise<string> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as string;
-            return result200;
-            });
-        } else if (status === 400) {
-            return response.text().then((_responseText) => {
-            return throwException("Bad Request", status, _responseText, _headers);
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<string>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    getDraftPicks(body: GetDraftPicksRequest, signal?: AbortSignal): Promise<DraftPickResponse[]> {
-        let url_ = this.baseUrl + "/drafts/{draftId}/picks";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "GET",
-            signal,
-            headers: {
-                "Content-Type": "*/*",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetDraftPicks(_response);
-        });
-    }
-
-    protected processGetDraftPicks(response: Response): Promise<DraftPickResponse[]> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as DraftPickResponse[];
-            return result200;
-            });
-        } else if (status === 400) {
-            return response.text().then((_responseText) => {
-            return throwException("Bad Request", status, _responseText, _headers);
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<DraftPickResponse[]>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    applyCommissionerOverride(body: ApplyCommissionerOverrideRequest, signal?: AbortSignal): Promise<string> {
-        let url_ = this.baseUrl + "/drafts/{draftId}/commissioner-override/{pickId}";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            signal,
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processApplyCommissionerOverride(_response);
-        });
-    }
-
-    protected processApplyCommissionerOverride(response: Response): Promise<string> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as string;
-            return result200;
-            });
-        } else if (status === 400) {
-            return response.text().then((_responseText) => {
-            return throwException("Bad Request", status, _responseText, _headers);
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<string>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    assignDraftPosition(body: AssignDraftPositionRequest, signal?: AbortSignal): Promise<string> {
-        let url_ = this.baseUrl + "/drafts/{draftId}/position/{drafterId}";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            signal,
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processAssignDraftPosition(_response);
-        });
-    }
-
-    protected processAssignDraftPosition(response: Response): Promise<string> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as string;
-            return result200;
-            });
-        } else if (status === 400) {
-            return response.text().then((_responseText) => {
-            return throwException("Bad Request", status, _responseText, _headers);
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<string>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    completeDraft(body: CompleteDraftRequest, signal?: AbortSignal): Promise<void> {
-        let url_ = this.baseUrl + "/drafts/{draftId}/complete";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            signal,
-            headers: {
-                "Content-Type": "application/json",
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCompleteDraft(_response);
-        });
-    }
-
-    protected processCompleteDraft(response: Response): Promise<void> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status === 400) {
-            return response.text().then((_responseText) => {
-            return throwException("Bad Request", status, _responseText, _headers);
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<void>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    continueDraft(body: ContinueDraftRequest, signal?: AbortSignal): Promise<void> {
-        let url_ = this.baseUrl + "/drafts/{draftId}/continue";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "PATCH",
-            signal,
-            headers: {
-                "Content-Type": "application/json",
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processContinueDraft(_response);
-        });
-    }
-
-    protected processContinueDraft(response: Response): Promise<void> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status === 400) {
-            return response.text().then((_responseText) => {
-            return throwException("Bad Request", status, _responseText, _headers);
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<void>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    createDraft(body: CreateDraftRequest, signal?: AbortSignal): Promise<string> {
+    drafts_CreateDraft(body: CreateDraftRequest, signal?: AbortSignal): Promise<CreatedResponse> {
         let url_ = this.baseUrl + "/drafts";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1222,17 +2727,239 @@ export class DraftsClient implements IClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreateDraft(_response);
+            return this.processDrafts_CreateDraft(_response);
         });
     }
 
-    protected processCreateDraft(response: Response): Promise<string> {
+    protected processDrafts_CreateDraft(response: Response): Promise<CreatedResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 201) {
+            return response.text().then((_responseText) => {
+            let result201: any = null;
+            result201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as CreatedResponse;
+            return result201;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<CreatedResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    drafts_GetDraftStatus(body: GetDraftStatusRequest, signal?: AbortSignal): Promise<Response> {
+        let url_ = this.baseUrl + "/drafts/{draftId}/status";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDrafts_GetDraftStatus(_response);
+        });
+    }
+
+    protected processDrafts_GetDraftStatus(response: Response): Promise<Response> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as string;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as Response;
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Response>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    draftPools_GetPool(body: GetDraftPoolRequest, signal?: AbortSignal): Promise<DraftPoolResponse> {
+        let url_ = this.baseUrl + "/drafts/{draftId}/pool";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDraftPools_GetPool(_response);
+        });
+    }
+
+    protected processDraftPools_GetPool(response: Response): Promise<DraftPoolResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as DraftPoolResponse;
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<DraftPoolResponse>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    draftPools_CreatePool(body: CreateDraftPoolRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/drafts/{draftId}/pool";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDraftPools_CreatePool(_response);
+        });
+    }
+
+    protected processDraftPools_CreatePool(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @param draftId (optional) 
+     * @param file (optional) 
+     * @return OK
+     */
+    draftPools_BulkAddItems(draftId: string | undefined, file: FileParameter | undefined, signal?: AbortSignal): Promise<BulkAddMoviesResponse> {
+        let url_ = this.baseUrl + "/drafts/{draftId}/pool/bulk";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = new FormData();
+        if (draftId === null || draftId === undefined)
+            throw new Error("The parameter 'draftId' cannot be null.");
+        else
+            content_.append("draftId", draftId.toString());
+        if (file === null || file === undefined)
+            throw new Error("The parameter 'file' cannot be null.");
+        else
+            content_.append("file", file.data, file.fileName ? file.fileName : "file");
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDraftPools_BulkAddItems(_response);
+        });
+    }
+
+    protected processDraftPools_BulkAddItems(response: Response): Promise<BulkAddMoviesResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as BulkAddMoviesResponse;
             return result200;
             });
         } else if (status === 400) {
@@ -1256,14 +2983,176 @@ export class DraftsClient implements IClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<string>(null as any);
+        return Promise.resolve<BulkAddMoviesResponse>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    draftPools_AddItem(body: AddMovieToDraftPoolRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/drafts/{draftId}/pool/items";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDraftPools_AddItem(_response);
+        });
+    }
+
+    protected processDraftPools_AddItem(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    draftBoards_UpdateItem(body: UpdateDraftBoardItemRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/drafts/{draftId}/board/{tmdbId}";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDraftBoards_UpdateItem(_response);
+        });
+    }
+
+    protected processDraftBoards_UpdateItem(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    draftBoards_RemoveItem(body: RemoveMovieFromDraftBoardRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/drafts/{draftId}/board/{tmdbId}";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "DELETE",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDraftBoards_RemoveItem(_response);
+        });
+    }
+
+    protected processDraftBoards_RemoveItem(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
     }
 
     /**
      * @return OK
      */
-    listDrafts(body: ListDraftsRequest, signal?: AbortSignal): Promise<PagedResultOfDraftResponse> {
-        let url_ = this.baseUrl + "/drafts";
+    draftBoards_GetBoard(body: GetDraftBoardRequest, signal?: AbortSignal): Promise<GetDraftBoardResponse> {
+        let url_ = this.baseUrl + "/drafts/{draftId}/board";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -1279,22 +3168,18 @@ export class DraftsClient implements IClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processListDrafts(_response);
+            return this.processDraftBoards_GetBoard(_response);
         });
     }
 
-    protected processListDrafts(response: Response): Promise<PagedResultOfDraftResponse> {
+    protected processDraftBoards_GetBoard(response: Response): Promise<GetDraftBoardResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as PagedResultOfDraftResponse;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as GetDraftBoardResponse;
             return result200;
-            });
-        } else if (status === 204) {
-            return response.text().then((_responseText) => {
-            return throwException("No Content", status, _responseText, _headers);
             });
         } else if (status === 401) {
             return response.text().then((_responseText) => {
@@ -1304,19 +3189,143 @@ export class DraftsClient implements IClient {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
             });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<PagedResultOfDraftResponse>(null as any);
+        return Promise.resolve<GetDraftBoardResponse>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    draftBoards_AddItem(body: AddMovieToDraftBoardRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/drafts/{draftId}/board";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDraftBoards_AddItem(_response);
+        });
+    }
+
+    protected processDraftBoards_AddItem(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @param draftId (optional) 
+     * @param file (optional) 
+     * @return OK
+     */
+    draftBoards_BulkAddItems(draftId: string | undefined, file: FileParameter | undefined, signal?: AbortSignal): Promise<BulkAddMoviesResponse> {
+        let url_ = this.baseUrl + "/drafts/{draftId}/board/bulk";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = new FormData();
+        if (draftId === null || draftId === undefined)
+            throw new Error("The parameter 'draftId' cannot be null.");
+        else
+            content_.append("draftId", draftId.toString());
+        if (file === null || file === undefined)
+            throw new Error("The parameter 'file' cannot be null.");
+        else
+            content_.append("file", file.data, file.fileName ? file.fileName : "file");
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDraftBoards_BulkAddItems(_response);
+        });
+    }
+
+    protected processDraftBoards_BulkAddItems(response: Response): Promise<BulkAddMoviesResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as BulkAddMoviesResponse;
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<BulkAddMoviesResponse>(null as any);
     }
 
     /**
      * @return OK
      */
-    createGameBoard(body: CreateGameBoardRequest, signal?: AbortSignal): Promise<string> {
-        let url_ = this.baseUrl + "/drafts/gameboard/{draftId}";
+    drafts_CreateDraftPart(body: CreateDraftPartRequest, signal?: AbortSignal): Promise<string> {
+        let url_ = this.baseUrl + "/drafts/{draftId}/parts";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -1332,11 +3341,11 @@ export class DraftsClient implements IClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreateGameBoard(_response);
+            return this.processDrafts_CreateDraftPart(_response);
         });
     }
 
-    protected processCreateGameBoard(response: Response): Promise<string> {
+    protected processDrafts_CreateDraftPart(response: Response): Promise<string> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -1372,32 +3381,36 @@ export class DraftsClient implements IClient {
     /**
      * @return No Content
      */
-    deleteDraft(body: DeleteDraftRequest, signal?: AbortSignal): Promise<void> {
-        let url_ = this.baseUrl + "/drafts/{draftId}";
+    draftParts_StopZoomRecording(body: StopZoomRecordingRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/zoom-session/recording/stop";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
 
         let options_: RequestInit = {
             body: content_,
-            method: "DELETE",
+            method: "POST",
             signal,
             headers: {
-                "Content-Type": "*/*",
+                "Content-Type": "application/json",
             }
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processDeleteDraft(_response);
+            return this.processDraftParts_StopZoomRecording(_response);
         });
     }
 
-    protected processDeleteDraft(response: Response): Promise<void> {
+    protected processDraftParts_StopZoomRecording(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 204) {
             return response.text().then((_responseText) => {
             return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
             });
         } else if (status === 401) {
             return response.text().then((_responseText) => {
@@ -1422,15 +3435,15 @@ export class DraftsClient implements IClient {
     /**
      * @return OK
      */
-    editDraft(body: EditDraftRequest, signal?: AbortSignal): Promise<string> {
-        let url_ = this.baseUrl + "/drafts/{draftId}";
+    draftParts_StartZoomSession(body: StartZoomSessionRequest, signal?: AbortSignal): Promise<StartZoomSessionResult> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/zoom-session";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
 
         let options_: RequestInit = {
             body: content_,
-            method: "PUT",
+            method: "POST",
             signal,
             headers: {
                 "Content-Type": "application/json",
@@ -1439,17 +3452,17 @@ export class DraftsClient implements IClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processEditDraft(_response);
+            return this.processDraftParts_StartZoomSession(_response);
         });
     }
 
-    protected processEditDraft(response: Response): Promise<string> {
+    protected processDraftParts_StartZoomSession(response: Response): Promise<StartZoomSessionResult> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as string;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as StartZoomSessionResult;
             return result200;
             });
         } else if (status === 400) {
@@ -1473,14 +3486,122 @@ export class DraftsClient implements IClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<string>(null as any);
+        return Promise.resolve<StartZoomSessionResult>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    draftParts_EndZoomSession(body: EndZoomSessionRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/zoom-session";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "DELETE",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDraftParts_EndZoomSession(_response);
+        });
+    }
+
+    protected processDraftParts_EndZoomSession(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    draftParts_StartZoomRecording(body: StartZoomRecordingRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/zoom-session/recording/start";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDraftParts_StartZoomRecording(_response);
+        });
+    }
+
+    protected processDraftParts_StartZoomRecording(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
     }
 
     /**
      * @return OK
      */
-    getDraft(body: GetDraftRequest, signal?: AbortSignal): Promise<DraftResponse> {
-        let url_ = this.baseUrl + "/drafts/{id}";
+    draftParts_GetZoomSessionToken(body: GetZoomSessionTokenRequest, signal?: AbortSignal): Promise<ZoomSessionTokenResult> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/zoom-session/token";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -1496,70 +3617,17 @@ export class DraftsClient implements IClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetDraft(_response);
+            return this.processDraftParts_GetZoomSessionToken(_response);
         });
     }
 
-    protected processGetDraft(response: Response): Promise<DraftResponse> {
+    protected processDraftParts_GetZoomSessionToken(response: Response): Promise<ZoomSessionTokenResult> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as DraftResponse;
-            return result200;
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<DraftResponse>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    getDraftPositions(body: GetDraftPositionsRequest, signal?: AbortSignal): Promise<DraftPositionResponse[]> {
-        let url_ = this.baseUrl + "/drafts/{gameboardId}/positions";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "GET",
-            signal,
-            headers: {
-                "Content-Type": "*/*",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetDraftPositions(_response);
-        });
-    }
-
-    protected processGetDraftPositions(response: Response): Promise<DraftPositionResponse[]> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as DraftPositionResponse[];
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ZoomSessionTokenResult;
             return result200;
             });
         } else if (status === 400) {
@@ -1583,116 +3651,14 @@ export class DraftsClient implements IClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<DraftPositionResponse[]>(null as any);
+        return Promise.resolve<ZoomSessionTokenResult>(null as any);
     }
 
     /**
-     * @return OK
+     * @return No Content
      */
-    getLatestDrafts(signal?: AbortSignal): Promise<DraftResponse[]> {
-        let url_ = this.baseUrl + "/drafts/latest";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "GET",
-            signal,
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetLatestDrafts(_response);
-        });
-    }
-
-    protected processGetLatestDrafts(response: Response): Promise<DraftResponse[]> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as DraftResponse[];
-            return result200;
-            });
-        } else if (status === 400) {
-            return response.text().then((_responseText) => {
-            return throwException("Bad Request", status, _responseText, _headers);
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<DraftResponse[]>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    listUpcomingDrafts(signal?: AbortSignal): Promise<UpcomingDraftDto[]> {
-        let url_ = this.baseUrl + "/drafts/upcoming";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "GET",
-            signal,
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processListUpcomingDrafts(_response);
-        });
-    }
-
-    protected processListUpcomingDrafts(response: Response): Promise<UpcomingDraftDto[]> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as UpcomingDraftDto[];
-            return result200;
-            });
-        } else if (status === 400) {
-            return response.text().then((_responseText) => {
-            return throwException("Bad Request", status, _responseText, _headers);
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<UpcomingDraftDto[]>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    pauseDraft(body: PauseDraftRequest, signal?: AbortSignal): Promise<void> {
-        let url_ = this.baseUrl + "/drafts/{draftId}/pause";
+    subDrafts_SetSubject(body: SetSubDraftSubjectRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/sub-drafts/{subDraftId}/subject";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -1707,65 +3673,11 @@ export class DraftsClient implements IClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processPauseDraft(_response);
+            return this.processSubDrafts_SetSubject(_response);
         });
     }
 
-    protected processPauseDraft(response: Response): Promise<void> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status === 400) {
-            return response.text().then((_responseText) => {
-            return throwException("Bad Request", status, _responseText, _headers);
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<void>(null as any);
-    }
-
-    /**
-     * @return No Content
-     */
-    removeDrafterFromDraft(body: RemoveDrafterFromDraftRequest, signal?: AbortSignal): Promise<void> {
-        let url_ = this.baseUrl + "/drafts/{draftId}/drafter/{drafterId}";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "DELETE",
-            signal,
-            headers: {
-                "Content-Type": "*/*",
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processRemoveDrafterFromDraft(_response);
-        });
-    }
-
-    protected processRemoveDrafterFromDraft(response: Response): Promise<void> {
+    protected processSubDrafts_SetSubject(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 204) {
@@ -1797,37 +3709,37 @@ export class DraftsClient implements IClient {
     }
 
     /**
-     * @return OK
+     * @return Created
      */
-    removeHostFromDraft(body: RemoveHostFromDraftRequest, signal?: AbortSignal): Promise<string> {
-        let url_ = this.baseUrl + "/drafts/{draftId}/remove-host/{hostId}";
+    subDrafts_PlayPick(body: PlaySubDraftPickRequest, signal?: AbortSignal): Promise<CreatedResponse> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/sub-drafts/{subDraftId}/picks";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
 
         let options_: RequestInit = {
             body: content_,
-            method: "DELETE",
+            method: "POST",
             signal,
             headers: {
-                "Content-Type": "*/*",
+                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processRemoveHostFromDraft(_response);
+            return this.processSubDrafts_PlayPick(_response);
         });
     }
 
-    protected processRemoveHostFromDraft(response: Response): Promise<string> {
+    protected processSubDrafts_PlayPick(response: Response): Promise<CreatedResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
+        if (status === 201) {
             return response.text().then((_responseText) => {
-            let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as string;
-            return result200;
+            let result201: any = null;
+            result201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as CreatedResponse;
+            return result201;
             });
         } else if (status === 400) {
             return response.text().then((_responseText) => {
@@ -1850,14 +3762,14 @@ export class DraftsClient implements IClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<string>(null as any);
+        return Promise.resolve<CreatedResponse>(null as any);
     }
 
     /**
-     * @return OK
+     * @return No Content
      */
-    startDraft(body: StartDraftRequest, signal?: AbortSignal): Promise<void> {
-        let url_ = this.baseUrl + "/drafts/{draftId}/start";
+    subDrafts_AssignTriviaResults(body: AssignSubDraftTriviaRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/sub-drafts/{subDraftId}/trivia-results";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -1872,14 +3784,14 @@ export class DraftsClient implements IClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processStartDraft(_response);
+            return this.processSubDrafts_AssignTriviaResults(_response);
         });
     }
 
-    protected processStartDraft(response: Response): Promise<void> {
+    protected processSubDrafts_AssignTriviaResults(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
+        if (status === 204) {
             return response.text().then((_responseText) => {
             return;
             });
@@ -1910,8 +3822,227 @@ export class DraftsClient implements IClient {
     /**
      * @return No Content
      */
-    updateReleaseDate(body: ReleaseDateRequest, signal?: AbortSignal): Promise<void> {
-        let url_ = this.baseUrl + "/drafts/{draftId}/release-date";
+    subDrafts_ApplyVeto(body: ApplySubDraftVetoRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/sub-drafts/{subDraftId}/picks/{playOrder}/veto";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processSubDrafts_ApplyVeto(_response);
+        });
+    }
+
+    protected processSubDrafts_ApplyVeto(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    subDrafts_Advance(body: AdvanceSubDraftRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/sub-drafts/{subDraftId}/advance";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processSubDrafts_Advance(_response);
+        });
+    }
+
+    protected processSubDrafts_Advance(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return Created
+     */
+    subDrafts_Add(body: AddSubDraftRequest, signal?: AbortSignal): Promise<CreatedResponse> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/sub-drafts";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processSubDrafts_Add(_response);
+        });
+    }
+
+    protected processSubDrafts_Add(response: Response): Promise<CreatedResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 201) {
+            return response.text().then((_responseText) => {
+            let result201: any = null;
+            result201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as CreatedResponse;
+            return result201;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<CreatedResponse>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    draftParts_SetReleaseDate(body: SetReleaseDateRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/releases";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDraftParts_SetReleaseDate(_response);
+        });
+    }
+
+    protected processDraftParts_SetReleaseDate(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    draftParts_SetCommunityLimits(body: SetCommunityLimitsRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/community-limits";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -1926,11 +4057,11 @@ export class DraftsClient implements IClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processUpdateReleaseDate(_response);
+            return this.processDraftParts_SetCommunityLimits(_response);
         });
     }
 
-    protected processUpdateReleaseDate(response: Response): Promise<void> {
+    protected processDraftParts_SetCommunityLimits(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 204) {
@@ -1949,6 +4080,10 @@ export class DraftsClient implements IClient {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
             });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
@@ -1958,32 +4093,32 @@ export class DraftsClient implements IClient {
     }
 
     /**
-     * @return OK
+     * @return No Content
      */
-    assignTriviaResults(body: TriviaResultRequest, signal?: AbortSignal): Promise<void> {
-        let url_ = this.baseUrl + "/drafts/{draftId}/trivia/{drafterId}";
+    draftParts_UndoPick(body: UndoPickRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/picks/{playOrder}";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
 
         let options_: RequestInit = {
             body: content_,
-            method: "POST",
+            method: "DELETE",
             signal,
             headers: {
-                "Content-Type": "application/json",
+                "Content-Type": "*/*",
             }
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processAssignTriviaResults(_response);
+            return this.processDraftParts_UndoPick(_response);
         });
     }
 
-    protected processAssignTriviaResults(response: Response): Promise<void> {
+    protected processDraftParts_UndoPick(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
+        if (status === 204) {
             return response.text().then((_responseText) => {
             return;
             });
@@ -1999,6 +4134,68 @@ export class DraftsClient implements IClient {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
             });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status === 409) {
+            return response.text().then((_responseText) => {
+            return throwException("Conflict", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    draftParts_PickReveal(body: RevealPickRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/picks/{playOrder}/reveal";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDraftParts_PickReveal(_response);
+        });
+    }
+
+    protected processDraftParts_PickReveal(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
@@ -2010,65 +4207,8 @@ export class DraftsClient implements IClient {
     /**
      * @return OK
      */
-    getTriviaResults(body: TriviaResultsRequest, signal?: AbortSignal): Promise<TriviaResultDto> {
-        let url_ = this.baseUrl + "/drafts/{draftId}/trivia/{drafterId}";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "GET",
-            signal,
-            headers: {
-                "Content-Type": "*/*",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetTriviaResults(_response);
-        });
-    }
-
-    protected processGetTriviaResults(response: Response): Promise<TriviaResultDto> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as TriviaResultDto;
-            return result200;
-            });
-        } else if (status === 400) {
-            return response.text().then((_responseText) => {
-            return throwException("Bad Request", status, _responseText, _headers);
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<TriviaResultDto>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    createDrafter(body: CreateDrafterRequest, signal?: AbortSignal): Promise<string> {
-        let url_ = this.baseUrl + "/drafters/create";
+    draftParts_PlayPick(body: PlayPickRequest, signal?: AbortSignal): Promise<string> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/picks";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -2084,64 +4224,11 @@ export class DraftsClient implements IClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreateDrafter(_response);
+            return this.processDraftParts_PlayPick(_response);
         });
     }
 
-    protected processCreateDrafter(response: Response): Promise<string> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as string;
-            return result200;
-            });
-        } else if (status === 400) {
-            return response.text().then((_responseText) => {
-            return throwException("Bad Request", status, _responseText, _headers);
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<string>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    executeVeto(body: ExecuteVetoRequest, signal?: AbortSignal): Promise<string> {
-        let url_ = this.baseUrl + "/drafts/{draftId}/veto/{pickId}";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            signal,
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processExecuteVeto(_response);
-        });
-    }
-
-    protected processExecuteVeto(response: Response): Promise<string> {
+    protected processDraftParts_PlayPick(response: Response): Promise<string> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -2177,8 +4264,773 @@ export class DraftsClient implements IClient {
     /**
      * @return OK
      */
-    executeVetoOverride(body: VetoOverrideRequest, signal?: AbortSignal): Promise<string> {
-        let url_ = this.baseUrl + "/drafts/{vetoId}/vetooveride";
+    draftParts_GetPickList(body: GetPickListRequest, signal?: AbortSignal): Promise<GetPickListResponse> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/picks";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDraftParts_GetPickList(_response);
+        });
+    }
+
+    protected processDraftParts_GetPickList(response: Response): Promise<GetPickListResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as GetPickListResponse;
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<GetPickListResponse>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    draftParts_ApplyVeto(body: ApplyVetoRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/picks/{playOrder}/veto";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDraftParts_ApplyVeto(_response);
+        });
+    }
+
+    protected processDraftParts_ApplyVeto(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    draftParts_ApplyVetoOverride(body: ApplyVetoOverrideRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/veto-override/{pickId}";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDraftParts_ApplyVetoOverride(_response);
+        });
+    }
+
+    protected processDraftParts_ApplyVetoOverride(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    draftParts_ApplyCommissionerOverride(body: ApplyCommissionerOverrideRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/commissioner-override/{pickId}";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDraftParts_ApplyCommissionerOverride(_response);
+        });
+    }
+
+    protected processDraftParts_ApplyCommissionerOverride(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    draftParts_RemoveParticipant(body: RemoveParticipantFromDraftPartRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/participants";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "DELETE",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDraftParts_RemoveParticipant(_response);
+        });
+    }
+
+    protected processDraftParts_RemoveParticipant(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    draftParts_AddParticipant(body: AddParticipantToDraftPartRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/participants";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDraftParts_AddParticipant(_response);
+        });
+    }
+
+    protected processDraftParts_AddParticipant(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    draftParts_RemoveHost(body: RemoveHostDraftPartRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/hosts/{hostId}";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "DELETE",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDraftParts_RemoveHost(_response);
+        });
+    }
+
+    protected processDraftParts_RemoveHost(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    draftParts_AddHost(body: AddHostToDraftPartRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/hosts";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDraftParts_AddHost(_response);
+        });
+    }
+
+    protected processDraftParts_AddHost(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    draftParts_SetDraftPosition(body: SetDraftPositionsRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/positions";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDraftParts_SetDraftPosition(_response);
+        });
+    }
+
+    protected processDraftParts_SetDraftPosition(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    draftParts_ListDraftPositions(body: ListDraftPositionsRequest, signal?: AbortSignal): Promise<ListDraftPositionsResponse> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/positions";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDraftParts_ListDraftPositions(_response);
+        });
+    }
+
+    protected processDraftParts_ListDraftPositions(response: Response): Promise<ListDraftPositionsResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ListDraftPositionsResponse;
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ListDraftPositionsResponse>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    draftParts_ClearDraftPositionAssignment(body: ClearDraftPositionAssignmentRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/positions/{positionId}/participant";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "DELETE",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDraftParts_ClearDraftPositionAssignment(_response);
+        });
+    }
+
+    protected processDraftParts_ClearDraftPositionAssignment(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    draftParts_AssignParticipantToPosition(body: AssignParticipantToDraftPositionRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/positions/{positionId}/participant";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDraftParts_AssignParticipantToPosition(_response);
+        });
+    }
+
+    protected processDraftParts_AssignParticipantToPosition(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status === 409) {
+            return response.text().then((_responseText) => {
+            return throwException("Conflict", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    candidateLists_RemoveEntry(body: RemoveCandidateListEntryRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/candidate-list/{tmdbid}";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "DELETE",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCandidateLists_RemoveEntry(_response);
+        });
+    }
+
+    protected processCandidateLists_RemoveEntry(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    candidateLists_GetList(body: GetCandidateListRequest, signal?: AbortSignal): Promise<GetCandidateListResponse> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/candidate-list";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCandidateLists_GetList(_response);
+        });
+    }
+
+    protected processCandidateLists_GetList(response: Response): Promise<GetCandidateListResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as GetCandidateListResponse;
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<GetCandidateListResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    candidateLists_AddEntry(body: AddCandidateEntryRequest, signal?: AbortSignal): Promise<AddCanidateEntryResponse> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/candidate-list";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -2194,17 +5046,17 @@ export class DraftsClient implements IClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processExecuteVetoOverride(_response);
+            return this.processCandidateLists_AddEntry(_response);
         });
     }
 
-    protected processExecuteVetoOverride(response: Response): Promise<string> {
+    protected processCandidateLists_AddEntry(response: Response): Promise<AddCanidateEntryResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as string;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as AddCanidateEntryResponse;
             return result200;
             });
         } else if (status === 400) {
@@ -2222,6 +5074,335 @@ export class DraftsClient implements IClient {
         } else if (status === 404) {
             return response.text().then((_responseText) => {
             return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<AddCanidateEntryResponse>(null as any);
+    }
+
+    /**
+     * @param draftPart (optional) 
+     * @param file (optional) 
+     * @return OK
+     */
+    candidateLists_BulkAddEntries(draftPart: string | undefined, file: FileParameter | undefined, signal?: AbortSignal): Promise<BulkAddMoviesResponse> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/candidate-list/bulk";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = new FormData();
+        if (draftPart === null || draftPart === undefined)
+            throw new Error("The parameter 'draftPart' cannot be null.");
+        else
+            content_.append("draftPart", draftPart.toString());
+        if (file === null || file === undefined)
+            throw new Error("The parameter 'file' cannot be null.");
+        else
+            content_.append("file", file.data, file.fileName ? file.fileName : "file");
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCandidateLists_BulkAddEntries(_response);
+        });
+    }
+
+    protected processCandidateLists_BulkAddEntries(response: Response): Promise<BulkAddMoviesResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as BulkAddMoviesResponse;
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<BulkAddMoviesResponse>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    draftParts_AssignTriviaResults(body: AssignTriviaResultsRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/trivia-results";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDraftParts_AssignTriviaResults(_response);
+        });
+    }
+
+    protected processDraftParts_AssignTriviaResults(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    drafterTeams_SearchDrafterTeams(body: SearchDrafterTeamsRequest, signal?: AbortSignal): Promise<PagedResultOfSearchDrafterTeamsResponse> {
+        let url_ = this.baseUrl + "/drafter-teams/search";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDrafterTeams_SearchDrafterTeams(_response);
+        });
+    }
+
+    protected processDrafterTeams_SearchDrafterTeams(response: Response): Promise<PagedResultOfSearchDrafterTeamsResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as PagedResultOfSearchDrafterTeamsResponse;
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<PagedResultOfSearchDrafterTeamsResponse>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    drafterTeams_RemoveDrafterFromTeam(body: RemoveDrafterFromTeamRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/drafter-teams/{publicId}/members/{drafterId}";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "DELETE",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDrafterTeams_RemoveDrafterFromTeam(_response);
+        });
+    }
+
+    protected processDrafterTeams_RemoveDrafterFromTeam(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    drafterTeams_GetDrafterTeam(body: GetDrafterTeamRequest, signal?: AbortSignal): Promise<GetDrafterTeamResponse> {
+        let url_ = this.baseUrl + "/drafter-teams/{publicId}";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDrafterTeams_GetDrafterTeam(_response);
+        });
+    }
+
+    protected processDrafterTeams_GetDrafterTeam(response: Response): Promise<GetDrafterTeamResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as GetDrafterTeamResponse;
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<GetDrafterTeamResponse>(null as any);
+    }
+
+    /**
+     * @return Created
+     */
+    drafterTeams_CreateDrafterTeam(body: CreateDrafterTeamRequest, signal?: AbortSignal): Promise<string> {
+        let url_ = this.baseUrl + "/drafter-teams";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDrafterTeams_CreateDrafterTeam(_response);
+        });
+    }
+
+    protected processDrafterTeams_CreateDrafterTeam(response: Response): Promise<string> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 201) {
+            return response.text().then((_responseText) => {
+            let result201: any = null;
+            result201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as string;
+            return result201;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -2232,41 +5413,34 @@ export class DraftsClient implements IClient {
     }
 
     /**
-     * @return OK
+     * @return No Content
      */
-    getDrafter(body: GetDrafterRequest, signal?: AbortSignal): Promise<DrafterResponse> {
-        let url_ = this.baseUrl + "/drafters/{id}";
+    drafterTeams_AddDrafter(body: AddDrafterToTeamRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/drafter-teams/{publicId}/members";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
 
         let options_: RequestInit = {
             body: content_,
-            method: "GET",
+            method: "POST",
             signal,
             headers: {
-                "Content-Type": "*/*",
-                "Accept": "application/json"
+                "Content-Type": "application/json",
             }
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetDrafter(_response);
+            return this.processDrafterTeams_AddDrafter(_response);
         });
     }
 
-    protected processGetDrafter(response: Response): Promise<DrafterResponse> {
+    protected processDrafterTeams_AddDrafter(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
+        if (status === 204) {
             return response.text().then((_responseText) => {
-            let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as DrafterResponse;
-            return result200;
-            });
-        } else if (status === 400) {
-            return response.text().then((_responseText) => {
-            return throwException("Bad Request", status, _responseText, _headers);
+            return;
             });
         } else if (status === 401) {
             return response.text().then((_responseText) => {
@@ -2285,70 +5459,13 @@ export class DraftsClient implements IClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<DrafterResponse>(null as any);
+        return Promise.resolve<void>(null as any);
     }
 
     /**
      * @return OK
      */
-    getDrafterProfile(body: GetDrafterProfileRequest, signal?: AbortSignal): Promise<DrafterProfileResponse> {
-        let url_ = this.baseUrl + "/drafters/{drafterId}/profile";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "GET",
-            signal,
-            headers: {
-                "Content-Type": "*/*",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetDrafterProfile(_response);
-        });
-    }
-
-    protected processGetDrafterProfile(response: Response): Promise<DrafterProfileResponse> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as DrafterProfileResponse;
-            return result200;
-            });
-        } else if (status === 400) {
-            return response.text().then((_responseText) => {
-            return throwException("Bad Request", status, _responseText, _headers);
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<DrafterProfileResponse>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    listDrafters(body: ListDraftersRequest, signal?: AbortSignal): Promise<DrafterResponse[]> {
+    drafters_ListDrafters(body: ListDraftersRequest, signal?: AbortSignal): Promise<DrafterCollectionResponse> {
         let url_ = this.baseUrl + "/drafters";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -2365,119 +5482,17 @@ export class DraftsClient implements IClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processListDrafters(_response);
+            return this.processDrafters_ListDrafters(_response);
         });
     }
 
-    protected processListDrafters(response: Response): Promise<DrafterResponse[]> {
+    protected processDrafters_ListDrafters(response: Response): Promise<DrafterCollectionResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as DrafterResponse[];
-            return result200;
-            });
-        } else if (status === 204) {
-            return response.text().then((_responseText) => {
-            return throwException("No Content", status, _responseText, _headers);
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<DrafterResponse[]>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    searchForMovie(body: MovieRequest, signal?: AbortSignal): Promise<MovieResponse> {
-        let url_ = this.baseUrl + "/movies/search";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "GET",
-            signal,
-            headers: {
-                "Content-Type": "*/*",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processSearchForMovie(_response);
-        });
-    }
-
-    protected processSearchForMovie(response: Response): Promise<MovieResponse> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as MovieResponse;
-            return result200;
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<MovieResponse>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    addMovie(body: AddMovieRequest, signal?: AbortSignal): Promise<string> {
-        let url_ = this.baseUrl + "/movies";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            signal,
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processAddMovie(_response);
-        });
-    }
-
-    protected processAddMovie(response: Response): Promise<string> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as string;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as DrafterCollectionResponse;
             return result200;
             });
         } else if (status === 400) {
@@ -2497,36 +5512,97 @@ export class DraftsClient implements IClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
+        return Promise.resolve<DrafterCollectionResponse>(null as any);
+    }
+
+    /**
+     * @return Created
+     */
+    drafters_CreateDrafter(body: CreateDrafterRequest, signal?: AbortSignal): Promise<string> {
+        let url_ = this.baseUrl + "/drafters";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDrafters_CreateDrafter(_response);
+        });
+    }
+
+    protected processDrafters_CreateDrafter(response: Response): Promise<string> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 201) {
+            return response.text().then((_responseText) => {
+            let result201: any = null;
+            result201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as string;
+            return result201;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 409) {
+            return response.text().then((_responseText) => {
+            return throwException("Conflict", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
         return Promise.resolve<string>(null as any);
     }
 
     /**
      * @return OK
      */
-    getUserProfile(signal?: AbortSignal): Promise<UserResponse> {
-        let url_ = this.baseUrl + "/users/profile";
+    drafters_GetDrafterById(body: GetDrafterProfileRequest, signal?: AbortSignal): Promise<GetDrafterProfileResponse> {
+        let url_ = this.baseUrl + "/drafters/{publicId}";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(body);
+
         let options_: RequestInit = {
+            body: content_,
             method: "GET",
             signal,
             headers: {
+                "Content-Type": "*/*",
                 "Accept": "application/json"
             }
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetUserProfile(_response);
+            return this.processDrafters_GetDrafterById(_response);
         });
     }
 
-    protected processGetUserProfile(response: Response): Promise<UserResponse> {
+    protected processDrafters_GetDrafterById(response: Response): Promise<GetDrafterProfileResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as UserResponse;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as GetDrafterProfileResponse;
             return result200;
             });
         } else if (status === 401) {
@@ -2537,26 +5613,30 @@ export class DraftsClient implements IClient {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
             });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<UserResponse>(null as any);
+        return Promise.resolve<GetDrafterProfileResponse>(null as any);
     }
 
     /**
-     * @return OK
+     * @return No Content
      */
-    updateUserProfile(body: UpdateUserRequest, signal?: AbortSignal): Promise<void> {
-        let url_ = this.baseUrl + "/users/profile";
+    categories_RestoreCategory(body: RestoreCategoryRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/categories/{publicId}/restore";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
 
         let options_: RequestInit = {
             body: content_,
-            method: "PUT",
+            method: "POST",
             signal,
             headers: {
                 "Content-Type": "application/json",
@@ -2564,14 +5644,14 @@ export class DraftsClient implements IClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processUpdateUserProfile(_response);
+            return this.processCategories_RestoreCategory(_response);
         });
     }
 
-    protected processUpdateUserProfile(response: Response): Promise<void> {
+    protected processCategories_RestoreCategory(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
+        if (status === 204) {
             return response.text().then((_responseText) => {
             return;
             });
@@ -2602,7 +5682,965 @@ export class DraftsClient implements IClient {
     /**
      * @return OK
      */
-    registerUser(body: RegisterUserRequest, signal?: AbortSignal): Promise<string> {
+    categories_ListCategories(body: ListCategoriesRequest, signal?: AbortSignal): Promise<CategoryCollectionResponse> {
+        let url_ = this.baseUrl + "/categories";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCategories_ListCategories(_response);
+        });
+    }
+
+    protected processCategories_ListCategories(response: Response): Promise<CategoryCollectionResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as CategoryCollectionResponse;
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<CategoryCollectionResponse>(null as any);
+    }
+
+    /**
+     * @return Created
+     */
+    categories_CreateCategory(body: CreateCategoryRequest, signal?: AbortSignal): Promise<CreatedResponse> {
+        let url_ = this.baseUrl + "/categories";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCategories_CreateCategory(_response);
+        });
+    }
+
+    protected processCategories_CreateCategory(response: Response): Promise<CreatedResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 201) {
+            return response.text().then((_responseText) => {
+            let result201: any = null;
+            result201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as CreatedResponse;
+            return result201;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<CreatedResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    categories_GetCategoryById(body: GetCategoryRequest, signal?: AbortSignal): Promise<CategoryResponse> {
+        let url_ = this.baseUrl + "/categories/{publicId}";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCategories_GetCategoryById(_response);
+        });
+    }
+
+    protected processCategories_GetCategoryById(response: Response): Promise<CategoryResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as CategoryResponse;
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<CategoryResponse>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    categories_EditCategory(body: EditCategoryRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/categories/{publicId}";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PATCH",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCategories_EditCategory(_response);
+        });
+    }
+
+    protected processCategories_EditCategory(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    categories_DeleteCategory(body: DeleteCategoryRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/categories/{publicId}";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "DELETE",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCategories_DeleteCategory(_response);
+        });
+    }
+
+    protected processCategories_DeleteCategory(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    campaigns_RestoreCampaign(body: RestoreCampaignRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/campaigns/{publicId}/restore";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCampaigns_RestoreCampaign(_response);
+        });
+    }
+
+    protected processCampaigns_RestoreCampaign(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    campaigns_ListCampaigns(body: ListCampaignsRequest, signal?: AbortSignal): Promise<CampaignCollectionResponse> {
+        let url_ = this.baseUrl + "/campaigns";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCampaigns_ListCampaigns(_response);
+        });
+    }
+
+    protected processCampaigns_ListCampaigns(response: Response): Promise<CampaignCollectionResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as CampaignCollectionResponse;
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<CampaignCollectionResponse>(null as any);
+    }
+
+    /**
+     * @return Created
+     */
+    campaigns_CreateCampaign(body: CreateCampaignRequest, signal?: AbortSignal): Promise<CreatedResponse> {
+        let url_ = this.baseUrl + "/campaigns";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCampaigns_CreateCampaign(_response);
+        });
+    }
+
+    protected processCampaigns_CreateCampaign(response: Response): Promise<CreatedResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 201) {
+            return response.text().then((_responseText) => {
+            let result201: any = null;
+            result201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as CreatedResponse;
+            return result201;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<CreatedResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    campaigns_GetCampaignById(body: GetCampaignRequest, signal?: AbortSignal): Promise<CampaignResponse> {
+        let url_ = this.baseUrl + "/campaigns/{publicId}";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCampaigns_GetCampaignById(_response);
+        });
+    }
+
+    protected processCampaigns_GetCampaignById(response: Response): Promise<CampaignResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as CampaignResponse;
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<CampaignResponse>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    campaigns_EditCampaign(body: EditCampaignRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/campaigns/{publicId}";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PATCH",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCampaigns_EditCampaign(_response);
+        });
+    }
+
+    protected processCampaigns_EditCampaign(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    campaigns_DeleteCampaign(body: DeleteCampaignRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/campaigns/{publicId}";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "DELETE",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCampaigns_DeleteCampaign(_response);
+        });
+    }
+
+    protected processCampaigns_DeleteCampaign(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    zoom_Webhook(signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/zoom/webhook";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            signal,
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processZoom_Webhook(_response);
+        });
+    }
+
+    protected processZoom_Webhook(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    movies_Search(body: GetOnlineMediaRequest, signal?: AbortSignal): Promise<GetOnlineMediaResponse> {
+        let url_ = this.baseUrl + "/movies/search";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processMovies_Search(_response);
+        });
+    }
+
+    protected processMovies_Search(response: Response): Promise<GetOnlineMediaResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as GetOnlineMediaResponse;
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<GetOnlineMediaResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    media_Search(body: SearchMediaRequest, signal?: AbortSignal): Promise<SearchMediaResponse> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/media/search";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processMedia_Search(_response);
+        });
+    }
+
+    protected processMedia_Search(response: Response): Promise<SearchMediaResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as SearchMediaResponse;
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<SearchMediaResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    media_Get(body: GetMediaRequest, signal?: AbortSignal): Promise<MediaResponse> {
+        let url_ = this.baseUrl + "/media/{publicId}";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processMedia_Get(_response);
+        });
+    }
+
+    protected processMedia_Get(response: Response): Promise<MediaResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as MediaResponse;
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<MediaResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    media_GetSummary(body: GetMediaSummaryRequest, signal?: AbortSignal): Promise<GetMediaSummaryResponse> {
+        let url_ = this.baseUrl + "/media/{publicId}/summary";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processMedia_GetSummary(_response);
+        });
+    }
+
+    protected processMedia_GetSummary(response: Response): Promise<GetMediaSummaryResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as GetMediaSummaryResponse;
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<GetMediaSummaryResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    media_Add(body: AddMediaRequest, signal?: AbortSignal): Promise<string> {
+        let url_ = this.baseUrl + "/media";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processMedia_Add(_response);
+        });
+    }
+
+    protected processMedia_Add(response: Response): Promise<string> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as string;
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<string>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    users_UpdateUserProfile(body: Request, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/users/profile";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processUsers_UpdateUserProfile(_response);
+        });
+    }
+
+    protected processUsers_UpdateUserProfile(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    users_GetUserProfile(signal?: AbortSignal): Promise<GetUserResponse> {
+        let url_ = this.baseUrl + "/users/profile";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            signal,
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processUsers_GetUserProfile(_response);
+        });
+    }
+
+    protected processUsers_GetUserProfile(response: Response): Promise<GetUserResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as GetUserResponse;
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<GetUserResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    users_RegisterUser(body: RegisterUserRequest, signal?: AbortSignal): Promise<string> {
         let url_ = this.baseUrl + "/users/register";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -2619,11 +6657,11 @@ export class DraftsClient implements IClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processRegisterUser(_response);
+            return this.processUsers_RegisterUser(_response);
         });
     }
 
-    protected processRegisterUser(response: Response): Promise<string> {
+    protected processUsers_RegisterUser(response: Response): Promise<string> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -2636,6 +6674,12 @@ export class DraftsClient implements IClient {
             return response.text().then((_responseText) => {
             return throwException("Bad Request", status, _responseText, _headers);
             });
+        } else if (status === 500) {
+            return response.text().then((_responseText) => {
+            let result500: any = null;
+            result500 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
+            return throwException("Internal Server Error", status, _responseText, _headers, result500);
+            });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
@@ -2643,253 +6687,1307 @@ export class DraftsClient implements IClient {
         }
         return Promise.resolve<string>(null as any);
     }
+
+    /**
+     * @return OK
+     */
+    users_GetUsersProfiles(body: Request, signal?: AbortSignal): Promise<Response> {
+        let url_ = this.baseUrl + "/users/public-profiles/by-person-ids";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processUsers_GetUsersProfiles(_response);
+        });
+    }
+
+    protected processUsers_GetUsersProfiles(response: Response): Promise<Response> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as Response;
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Response>(null as any);
+    }
+}
+
+export interface IPredictionsClient {
+
+    /**
+     * @return No Content
+     */
+    submitSet(body: SubmitPredictionSetRequest): Promise<void>;
+
+    /**
+     * @return OK
+     */
+    getSets(body: GetDraftPartPredictionsRequest): Promise<DraftPartPredictionResponse[]>;
+
+    /**
+     * @return No Content
+     */
+    setRules(body: SetDraftPartPredictionRulesRequest): Promise<void>;
+
+    /**
+     * @return No Content
+     */
+    scoreSets(body: ScoreDraftPartPredictionsRequest): Promise<void>;
+
+    /**
+     * @return No Content
+     */
+    lockSet(body: LockPredictionSetRequest): Promise<void>;
+
+    /**
+     * @return OK
+     */
+    getSeasonStandings(body: GetPredictionStandingsRequest): Promise<PredictionStandingsResponse>;
+
+    /**
+     * @return Created
+     */
+    createSeason(body: CreatePredictionSeasonRequest): Promise<CreatedResponse>;
+
+    /**
+     * @return Created
+     */
+    createContestant(body: CreatePredictionContestantRequest): Promise<CreatedResponse>;
+
+    /**
+     * @return No Content
+     */
+    closeSeason(body: ClosePredictionSeasonRequest): Promise<void>;
+
+    /**
+     * @return No Content
+     */
+    assignSurrogate(body: AssignSurrogateRequest): Promise<void>;
+
+    /**
+     * @return No Content
+     */
+    addCarryover(body: AddCarryoverRequest): Promise<void>;
+}
+
+export class PredictionsClient implements IPredictionsClient {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        this.http = http ? http : window as any;
+        this.baseUrl = baseUrl ?? "http://localhost:5000/";
+    }
+
+    /**
+     * @return No Content
+     */
+    submitSet(body: SubmitPredictionSetRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/predictions";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processSubmitSet(_response);
+        });
+    }
+
+    protected processSubmitSet(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status === 409) {
+            return response.text().then((_responseText) => {
+            return throwException("Conflict", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    getSets(body: GetDraftPartPredictionsRequest, signal?: AbortSignal): Promise<DraftPartPredictionResponse[]> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/predictions";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetSets(_response);
+        });
+    }
+
+    protected processGetSets(response: Response): Promise<DraftPartPredictionResponse[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as DraftPartPredictionResponse[];
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<DraftPartPredictionResponse[]>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    setRules(body: SetDraftPartPredictionRulesRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/prediction-rules";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processSetRules(_response);
+        });
+    }
+
+    protected processSetRules(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status === 409) {
+            return response.text().then((_responseText) => {
+            return throwException("Conflict", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    scoreSets(body: ScoreDraftPartPredictionsRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/predictions/score";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processScoreSets(_response);
+        });
+    }
+
+    protected processScoreSets(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status === 409) {
+            return response.text().then((_responseText) => {
+            return throwException("Conflict", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    lockSet(body: LockPredictionSetRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/predictions/{setId}/lock";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processLockSet(_response);
+        });
+    }
+
+    protected processLockSet(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status === 409) {
+            return response.text().then((_responseText) => {
+            return throwException("Conflict", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    getSeasonStandings(body: GetPredictionStandingsRequest, signal?: AbortSignal): Promise<PredictionStandingsResponse> {
+        let url_ = this.baseUrl + "/prediction-seasons/{seasonId}/standings";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetSeasonStandings(_response);
+        });
+    }
+
+    protected processGetSeasonStandings(response: Response): Promise<PredictionStandingsResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as PredictionStandingsResponse;
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<PredictionStandingsResponse>(null as any);
+    }
+
+    /**
+     * @return Created
+     */
+    createSeason(body: CreatePredictionSeasonRequest, signal?: AbortSignal): Promise<CreatedResponse> {
+        let url_ = this.baseUrl + "/prediction-seasons";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreateSeason(_response);
+        });
+    }
+
+    protected processCreateSeason(response: Response): Promise<CreatedResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 201) {
+            return response.text().then((_responseText) => {
+            let result201: any = null;
+            result201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as CreatedResponse;
+            return result201;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<CreatedResponse>(null as any);
+    }
+
+    /**
+     * @return Created
+     */
+    createContestant(body: CreatePredictionContestantRequest, signal?: AbortSignal): Promise<CreatedResponse> {
+        let url_ = this.baseUrl + "/prediction-contestants";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreateContestant(_response);
+        });
+    }
+
+    protected processCreateContestant(response: Response): Promise<CreatedResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 201) {
+            return response.text().then((_responseText) => {
+            let result201: any = null;
+            result201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as CreatedResponse;
+            return result201;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status === 409) {
+            return response.text().then((_responseText) => {
+            return throwException("Conflict", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<CreatedResponse>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    closeSeason(body: ClosePredictionSeasonRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/prediction-seasons/{seasonId}/close";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCloseSeason(_response);
+        });
+    }
+
+    protected processCloseSeason(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status === 409) {
+            return response.text().then((_responseText) => {
+            return throwException("Conflict", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    assignSurrogate(body: AssignSurrogateRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/predictions/{setId}/surrogate";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processAssignSurrogate(_response);
+        });
+    }
+
+    protected processAssignSurrogate(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    addCarryover(body: AddCarryoverRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/prediction-seasons/{seasonId}/carryovers";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processAddCarryover(_response);
+        });
+    }
+
+    protected processAddCarryover(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
 }
 
 export interface ActorModel {
     imdbId: string;
+    tmdbId: number;
     name: string;
 
     [key: string]: any;
 }
 
-export interface AddDrafterToDraftRequest {
-    draftId: string;
+export interface ActorResponse {
+    id?: string;
+    imdbId?: string;
+    name?: string;
+
+    [key: string]: any;
+}
+
+export interface AddCandidateEntryRequest {
+    draftPartId: string;
+    tmdbId: number;
+    notes?: string | undefined;
+
+    [key: string]: any;
+}
+
+export interface AddCanidateEntryResponse {
+    entryId: string;
+    tmdbId: number;
+    isPending: boolean;
+
+    [key: string]: any;
+}
+
+export interface AddCarryoverRequest {
+    seasonPublicId?: string;
+    contestantPublicId?: string;
+    points?: number;
+    kind?: number;
+    reason?: string | undefined;
+
+    [key: string]: any;
+}
+
+export interface AddDrafterToTeamRequest {
+    drafterTeamId: string;
     drafterId: string;
 
     [key: string]: any;
 }
 
-export interface AddDraftPositionsToGameBoardRequest {
-    gameBoardId: string;
-    draftPositions: DraftPositionRequest[];
+export interface AddHostToDraftPartRequest {
+    draftPartId?: string;
+    hostPublicId?: string;
+    hostRole?: number;
 
     [key: string]: any;
 }
 
-export interface AddHostToDraftRequest {
-    draftId: string;
-    hostId: string;
-
-    [key: string]: any;
-}
-
-export interface AddMovieRequest {
-    imdbId: string;
+export interface AddMediaRequest {
+    publicId: string;
+    imdbId?: string | undefined;
+    tmdbId?: number | undefined;
+    igdbId?: number | undefined;
     title: string;
     year: string;
-    plot: string;
-    image: string;
-    releaseDate: string;
-    youtubeTrailer: string;
-    genres: string[];
-    actors: PersonRequest[];
-    directors: any[];
-    writers: any[];
-    producers: any[];
-    productionCompanies: ProductionCompanyRequest[];
+    plot?: string | undefined;
+    image?: string | undefined;
+    releaseDate?: string | undefined;
+    youtubeTrailerUrl?: string | undefined;
+    mediaType?: MediaType;
+    tvSeriesTmdbId?: number | undefined;
+    seasonNumber?: number | undefined;
+    episodeNumber?: number | undefined;
+    genres?: GenreRequest[];
+    actors?: PersonRequest[];
+    directors?: PersonRequest[];
+    writers?: PersonRequest[];
+    producers?: PersonRequest[];
+    productionCompanies?: ProductionCompanyRequest[];
+
+    [key: string]: any;
+}
+
+export interface AddMovieToDraftBoardRequest {
+    draftId?: string;
+    tmdbId?: number;
+    notes?: string | undefined;
+    priority?: number | undefined;
+
+    [key: string]: any;
+}
+
+export interface AddMovieToDraftPoolRequest {
+    publicId: string;
+    tmdbId?: number;
+
+    [key: string]: any;
+}
+
+export interface AddParticipantToDraftPartRequest {
+    draftPartId?: string;
+    participantPublicId?: string | undefined;
+    participantKind?: number;
+
+    [key: string]: any;
+}
+
+export interface AddPermissionRequest {
+    code: string;
 
     [key: string]: any;
 }
 
 export interface AddPermissionToRoleRequest {
-    permission: string;
-    role: string;
+    permissionCode: string;
+    roleName: string;
 
     [key: string]: any;
 }
 
-export interface AddPickRequest {
-    draftId: string;
-    drafterId: string | undefined;
-    drafterTeamId: string | undefined;
-    position: number;
-    playOrder: number;
-    movieId: string;
+export interface AddRoleRequest {
+    name: string;
 
     [key: string]: any;
 }
 
-export interface AddUserRoleRequest {
-    role: string;
-    userId: string;
+export interface AddRoleToUserRequest {
+    roleName?: string;
+    publicId?: string;
+
+    [key: string]: any;
+}
+
+export interface AddSubDraftRequest {
+    draftPartPublicId: string;
+    index: number;
+
+    [key: string]: any;
+}
+
+export interface AdvanceSubDraftRequest {
+    draftPartPublicId: string;
+    subDraftPublicId: string;
 
     [key: string]: any;
 }
 
 export interface ApplyCommissionerOverrideRequest {
-    draftId: string;
-    pickId: string;
+    draftPartId: string;
+    playOrder: number;
 
     [key: string]: any;
 }
 
-export interface AssignDraftPositionRequest {
-    positionId: string;
-    draftId: string;
-    drafterId: string;
+export interface ApplySubDraftVetoRequest {
+    draftPartPublicId: string;
+    subDraftPublicId: string;
+    playOrder: number;
+    issuerPublicId: string;
+    issuerKind: number;
 
     [key: string]: any;
 }
 
-export interface CommissionerOverrideResponse {
-    id?: string;
-    pickId?: string;
-    position?: number;
+export interface ApplyVetoOverrideRequest {
+    draftPartId: string;
+    playOrder: number;
+    participantIdValue?: string | undefined;
+    participantKind: number;
+
+    [key: string]: any;
+}
+
+export interface ApplyVetoRequest {
+    draftPartId: string;
     playOrder?: number;
-    movieId?: string;
-    movieTitle?: string;
-    drafterId?: string | undefined;
-    drafterName?: string | undefined;
-    drafterTeamId?: string | undefined;
-    drafterTeamName?: string | undefined;
+    participantPublicId?: string | undefined;
+    participantKind?: number;
 
     [key: string]: any;
 }
 
-export interface CompleteDraftRequest {
+export interface AssignParticipantToDraftPositionRequest {
+    draftPartId: string;
+    positionPublicId: string;
+    participantPublicId?: string | undefined;
+    participantKind: number;
+
+    [key: string]: any;
+}
+
+export interface AssignSubDraftTriviaRequest {
+    draftPartPublicId: string;
+    subDraftPublicId: string;
+    results?: TriviaResultRequestItem[];
+
+    [key: string]: any;
+}
+
+export interface AssignSurrogateRequest {
+    draftPartPublicId?: string;
+    primarySetPublicId?: string;
+    surrogateSetPublicId?: string;
+    mergePolicy?: number;
+
+    [key: string]: any;
+}
+
+export interface AssignTriviaResultsRequest {
+    draftPartPublicId: string;
+    results?: TriviaResultRequestItem[];
+
+    [key: string]: any;
+}
+
+export interface AuthAuditLogResponse {
+    id?: string;
+    occurredOnUtc?: Date;
+    eventType?: string;
+    userId?: string | undefined;
+    clientId?: string | undefined;
+    ipAddress?: string | undefined;
+    details?: string | undefined;
+
+    [key: string]: any;
+}
+
+export interface BulkAddCandidateEntriesRequest {
+    draftPart: string;
+    file: string;
+
+    [key: string]: any;
+}
+
+export interface BulkAddFailureDetail {
+    rowNumber: number;
+    title: string | undefined;
+    reason: string;
+
+    [key: string]: any;
+}
+
+export interface BulkAddMoviesResponse {
+    totalRows: number;
+    addedEntries: number;
+    skipedEntries: number;
+    failedEntries: number;
+    failures?: BulkAddFailureDetail[];
+
+    [key: string]: any;
+}
+
+export interface BulkAddMoviesToDraftBoardRequest {
+    draftId: string;
+    file: string;
+
+    [key: string]: any;
+}
+
+export interface BulkAddMoviesToDraftPoolRequest {
+    draftId: string;
+    file: string;
+
+    [key: string]: any;
+}
+
+export interface CampaignCollectionResponse {
+    items: CampaignResponse[];
+
+    [key: string]: any;
+}
+
+export interface CampaignResponse {
+    publicId: string;
+    name: string;
+    slug: string;
+    isDeleted?: boolean;
+
+    [key: string]: any;
+}
+
+export interface CandidateListEntryResponse {
+    entryId: string;
+    tmdbId: number;
+    movieTitle?: string | undefined;
+    movieImdbId?: string | undefined;
+    addedByPublicId: string;
+    notes?: string | undefined;
+    createdOnUtc: Date;
+    isPending: boolean;
+
+    [key: string]: any;
+}
+
+export interface CategoryCollectionResponse {
+    items: CategoryResponse[];
+
+    [key: string]: any;
+}
+
+export interface CategoryResponse {
+    publicId: string;
+    name: string;
+    description: string;
+    isDeleted?: boolean;
+
+    [key: string]: any;
+}
+
+export interface ClearCampaignDraftRequest {
     draftId: string;
 
     [key: string]: any;
 }
 
-export interface ContinueDraftRequest {
-    draftId: string;
+export interface ClearDraftPositionAssignmentRequest {
+    draftPartId: string;
+    positionPublicId: string;
+
+    [key: string]: any;
+}
+
+export interface ClosePredictionSeasonRequest {
+    seasonPublicId?: string;
+    endsOn?: Date;
+
+    [key: string]: any;
+}
+
+export interface ContestantStandingResponse {
+    contestantPublicId?: string;
+    displayName?: string;
+    points?: number;
+    carryoverPoints?: number;
+    totalPoints?: number;
+    hasCrossedTarget?: boolean;
+    firstCrossedTargetAtUtc?: Date | undefined;
+
+    [key: string]: any;
+}
+
+export interface CreateCampaignRequest {
+    name: string;
+    slug: string;
+
+    [key: string]: any;
+}
+
+export interface CreateCategoryRequest {
+    name: string;
+    description: string;
+
+    [key: string]: any;
+}
+
+export interface CreatedIdResponse {
+    id: string;
 
     [key: string]: any;
 }
 
 export interface CreateDrafterRequest {
-    personId: string;
+    personId?: string;
+
+    [key: string]: any;
+}
+
+export interface CreateDrafterTeamRequest {
+    name: string;
+
+    [key: string]: any;
+}
+
+export interface CreateDraftPartRequest {
+    draftId?: string;
+    partIndex?: number;
+    minimumPosition?: number;
+    maximumPosition?: number;
+
+    [key: string]: any;
+}
+
+export interface CreateDraftPoolRequest {
+    publicId: string;
 
     [key: string]: any;
 }
 
 export interface CreateDraftRequest {
     title: string;
-    draftType: string;
-    totalPicks: number;
-    totalDrafters: number;
-    totalDrafterTeams: number;
-    totalHosts: number;
-    episodeType: string;
-    draftStatus: string;
+    draftType: number;
+    seriesId: string;
 
     [key: string]: any;
 }
 
-export interface CreateGameBoardRequest {
-    draftId: string;
+export interface CreatedResponse {
+    publicId: string;
 
     [key: string]: any;
 }
 
 export interface CreateHostRequest {
-    personId: string;
+    personPublicId: string;
 
     [key: string]: any;
 }
 
 export interface CreatePersonRequest {
-    userId: string | undefined;
-    firstName: string;
-    lastName: string;
+    userId?: string | undefined;
+    firstName?: string;
+    lastName?: string;
+    publicId?: string;
 
     [key: string]: any;
 }
 
-export interface DeleteDraftRequest {
-    draftId: string;
+export interface CreatePredictionContestantRequest {
+
+    [key: string]: any;
+}
+
+export interface CreatePredictionSeasonRequest {
+    number: number;
+    startsOn: Date;
+
+    [key: string]: any;
+}
+
+export interface CreateSeriesRequest {
+    name: string;
+    kind?: number;
+    canonicalPolicy?: number;
+    continuityScope?: number;
+    continuityDateRule?: number;
+    allowedDraftTypes?: number;
+    defaultDraftType?: number | undefined;
+
+    [key: string]: any;
+}
+
+export interface DeleteCampaignRequest {
+    publicId: string;
+
+    [key: string]: any;
+}
+
+export interface DeleteCategoryRequest {
+    publicId: string;
 
     [key: string]: any;
 }
 
 export interface DirectorModel {
     imdbId: string;
+    tmdbId: number;
     name: string;
+
+    [key: string]: any;
+}
+
+export interface DirectorResponse {
+    id?: string;
+    imdbId?: string;
+    name?: string;
+
+    [key: string]: any;
+}
+
+export interface DomainEventAuditLogResponse {
+    id?: string;
+    occurredOnUtc?: Date;
+    eventType?: string;
+    sourceModule?: string;
+    actorId?: string | undefined;
+    entityId?: string | undefined;
+    payload?: string;
+
+    [key: string]: any;
+}
+
+export interface DraftBoardItemResponse {
+    tmdbId?: number;
+    notes?: string | undefined;
+    priority?: number | undefined;
 
     [key: string]: any;
 }
 
 export interface DraftBrief {
-    draftId: string;
-    title: string;
-    draftDates: Date[];
+    draftPublicId: string;
+    draftTitle: string;
+    releaseDates?: Date[];
 
     [key: string]: any;
 }
 
-export interface DraftBrief2 {
-    draftId: string;
-    title: string;
-    draftDates: Date[];
+export interface DrafterCollectionResponse {
+    drafters: PagedResultOfDrafterListItem;
 
     [key: string]: any;
 }
 
-export interface DrafterDraftResponse {
-    id?: string;
-    personId?: string;
-    displayName?: string;
-
-    [key: string]: any;
-}
-
-export interface DrafterProfileResponse {
+export interface DrafterListItem {
     drafterId: string;
     personId: string;
     displayName: string;
-    totalDrafts: number;
-    firstDraft: DraftBrief | undefined;
-    mostRecentDraft: DraftBrief | undefined;
-    filmsDrafted: number;
-    vetoesUsed: number | undefined;
-    vetoOverridesUsed: number | undefined;
-    commissionerOverrides: number | undefined;
-    timesVetoed: number | undefined;
-    timesVetoOverridesAgainst: number | undefined;
-    hasRolloverVeto: boolean;
-    hasRolloverVetoOverride: boolean;
-    socialHandles: SocialHandles | undefined;
-    draftHistory: DraftHistoryItem[];
-    vetoHistory: VetoHistoryItem[];
-
-    [key: string]: any;
-}
-
-export interface DrafterResponse {
-    id?: string;
-    personId?: string;
-    firstName?: string;
-    lastName?: string;
-    displayName?: string;
+    isRetired: boolean;
 
     [key: string]: any;
 }
 
 export interface DraftHistoryItem {
-    draft: DraftBrief2;
-    picks: PickItem[];
+    draft: DraftBrief;
+    picks?: PickItem[];
 
     [key: string]: any;
 }
 
-export interface DraftPickResponse {
-    position?: number;
-    playOrder?: number;
-    movieId?: string;
-    movieTitle?: string;
-    drafterId?: string | undefined;
-    drafterName?: string | undefined;
-    isVetoed?: boolean;
-    drafterTeamId?: string | undefined;
-    drafterTeamName?: string | undefined;
+export interface DraftPartPredictionResponse {
+    publicId: string;
+    contestantPublicId: string;
+    contestantDisplayName: string;
+    submittedAtUtc: Date;
+    sourceKind: string;
+    isLocked: boolean;
+    lockedAtUtc?: Date | undefined;
+    entries: PredictionEntryResponse[];
+    result?: PredictionResultResponse | undefined;
 
     [key: string]: any;
 }
 
-export interface DraftPositionRequest {
+export interface DraftPartStatus {
+    name: string | undefined;
+    value: number;
+
+    [key: string]: any;
+}
+
+export interface DraftPoolResponse {
+    publicId?: string;
+    draftId?: string;
+    isLocked?: boolean;
+    tmdbIds?: number[];
+
+    [key: string]: any;
+}
+
+export interface DraftPositionAssignmentResponse {
+    participantId?: string;
+    participantKind?: number;
+    participantName?: string | undefined;
+
+    [key: string]: any;
+}
+
+export interface DraftPositionRequestModel {
     name: string;
-    picks: number[];
+    picks?: number[];
     hasBonusVeto?: boolean;
     hasBonusVetoOverride?: boolean;
 
@@ -2897,40 +7995,26 @@ export interface DraftPositionRequest {
 }
 
 export interface DraftPositionResponse {
-    id?: string;
+    publicId?: string;
     name?: string;
-    picks?: string;
+    picks?: number[];
     hasBonusVeto?: boolean;
-    hasBonusVetoOveride?: boolean;
-    drafterId?: string | undefined;
-    drafterTeamId?: string | undefined;
+    hasBonusVetoOverride?: boolean;
+    assignedTo?: DraftPositionAssignmentResponse | undefined;
 
     [key: string]: any;
 }
 
-export interface DraftResponse {
-    id?: string;
-    title?: string;
-    episodeNumber?: number | undefined;
-    draftType?: number;
-    totalPicks?: number;
-    totalDrafters?: number;
-    totalHosts?: number;
-    episodeType?: number;
-    draftStatus?: number;
-    description?: string | undefined;
-    previousDraftId?: string | undefined;
-    previousDraftTitle?: string | undefined;
-    nextDraftId?: string | undefined;
-    nextDraftTitle?: string | undefined;
-    rawReleaseDates?: Date[] | undefined;
-    drafters?: DrafterDraftResponse[] | undefined;
-    hosts?: HostDraftResponse[] | undefined;
-    releaseDates?: ReleaseDateResponse[] | undefined;
-    draftPicks?: DraftPickResponse[] | undefined;
-    vetoes?: VetoResponse[] | undefined;
-    vetoOverrides?: VetoOverrideResponse[] | undefined;
-    commissionerOverrides?: CommissionerOverrideResponse[] | undefined;
+export interface DraftStatus {
+    name: string | undefined;
+    value: number;
+
+    [key: string]: any;
+}
+
+export interface DraftType {
+    name: string | undefined;
+    value: number;
 
     [key: string]: any;
 }
@@ -2940,191 +8024,905 @@ export interface DraftUserCapabilities {
     canEdit: boolean;
     canDelete: boolean;
     canStart: boolean;
-    canPlay: boolean;
+    canUpdateBoard: boolean;
+    canJoin: boolean;
 
     [key: string]: any;
 }
 
-export interface EditDraftRequest {
-    draftId: string;
-    title: string;
-    draftType: string;
-    totalPicks: number;
-    totalDrafters: number;
-    totalDrafterTeams: number;
-    totalHosts: number;
-    episodeType: string;
-    draftStatus: string;
-    description: string | undefined;
+export interface EditCampaignRequest {
+    publicId?: string;
+    name?: string | undefined;
+    slug?: string | undefined;
 
     [key: string]: any;
 }
 
-export interface ExecuteVetoRequest {
-    drafterId: string | undefined;
-    drafterTeamId: string | undefined;
+export interface EditCategoryRequest {
+    publicId?: string;
+    name?: string | undefined;
+    description?: string | undefined;
+
+    [key: string]: any;
+}
+
+export interface EditPersonRequest {
+    publicId?: string;
+    firstName?: string;
+    lastName?: string;
+    displayName?: string | undefined;
+
+    [key: string]: any;
+}
+
+export interface EditSeriesRequest {
+    publicId?: string;
+    name?: string | undefined;
+    kind?: number;
+    canonicalPolicy?: number;
+    continuityScope?: number;
+    continuityDateRule?: number;
+    allowedDraftTypes?: number;
+    defaultDraftType?: number | undefined;
+
+    [key: string]: any;
+}
+
+export interface EndZoomSessionRequest {
+    draftPartId: string;
+
+    [key: string]: any;
+}
+
+export interface EntityTagHeaderValue {
+    tag?: StringSegment;
+    isWeak?: boolean;
+
+    [key: string]: any;
+}
+
+export interface ExportAuthAuditLogsRequest {
+    userId?: string | undefined;
+    eventType?: string | undefined;
+    from?: Date | undefined;
+    to?: Date | undefined;
+
+    [key: string]: any;
+}
+
+export interface ExportDomainEventAuditLogsRequest {
+    actorId?: string | undefined;
+    from?: Date | undefined;
+    to?: Date | undefined;
+    eventType?: string | undefined;
+    sourceModule?: string | undefined;
+
+    [key: string]: any;
+}
+
+export interface ExportHttpAuditLogsRequest {
+    actorId?: string | undefined;
+    from?: Date | undefined;
+    to?: Date | undefined;
+    statusCode?: number | undefined;
+    endpoint?: string | undefined;
+
+    [key: string]: any;
+}
+
+export interface FileResult {
+    contentType?: string | undefined;
+    fileDownloadName?: string | undefined;
+    lastModified?: Date | undefined;
+    entityTag?: EntityTagHeaderValue | undefined;
+    enableRangeProcessing?: boolean;
+
+    [key: string]: any;
+}
+
+export interface GenreModel {
+    tmdbId?: number;
+    name: string;
+
+    [key: string]: any;
+}
+
+export interface GenreRequest {
+    tmdbId: number;
+    name: string;
+
+    [key: string]: any;
+}
+
+export interface GenreResponse {
+    id?: string;
+    name?: string;
+
+    [key: string]: any;
+}
+
+export interface GetAuthAuditLogsRequest {
+    userId?: string | undefined;
+    eventType?: string | undefined;
+    from?: Date | undefined;
+    to?: Date | undefined;
+    cursorId?: string | undefined;
+    pageSize?: number;
+
+    [key: string]: any;
+}
+
+export interface GetAuthAuditLogsResponse {
+    items?: AuthAuditLogResponse[];
+    nextCursor?: string | undefined;
+    hasMoreItems?: boolean;
+
+    [key: string]: any;
+}
+
+export interface GetCampaignRequest {
+    publicId: string;
+    includeDeleted?: boolean;
+
+    [key: string]: any;
+}
+
+export interface GetCandidateListRequest {
+    draftPartId: string;
+    page?: number;
+    pageSize?: number;
+
+    [key: string]: any;
+}
+
+export interface GetCandidateListResponse {
+    response?: PagedResultOfCandidateListEntryResponse;
+
+    [key: string]: any;
+}
+
+export interface GetCategoryRequest {
+    publicId: string;
+
+    [key: string]: any;
+}
+
+export interface GetDomainEventAuditLogsRequest {
+    actorId?: string | undefined;
+    from?: Date | undefined;
+    to?: Date | undefined;
+    eventType?: string | undefined;
+    sourceModule?: string | undefined;
+    cursorId?: string | undefined;
+    pageSize?: number;
+
+    [key: string]: any;
+}
+
+export interface GetDomainEventAuditLogsResponse {
+    items?: DomainEventAuditLogResponse[];
+    nextCursor?: string | undefined;
+    hasMoreItems?: boolean;
+
+    [key: string]: any;
+}
+
+export interface GetDraftBoardRequest {
     draftId: string;
-    pickId: string;
+
+    [key: string]: any;
+}
+
+export interface GetDraftBoardResponse {
+    publicId?: string;
+    draftId?: string;
+    items?: DraftBoardItemResponse[];
+
+    [key: string]: any;
+}
+
+export interface GetDraftCommissionerOverrideResponse {
 
     [key: string]: any;
 }
 
 export interface GetDrafterProfileRequest {
-    drafterId: string;
+    publicId: string;
 
     [key: string]: any;
 }
 
-export interface GetDrafterRequest {
-    id: string;
+export interface GetDrafterProfileResponse {
+    drafterPublicId: string;
+    personPublicId: string;
+    displayName: string;
+    totalDrafts?: number;
+    firstDraft?: DraftBrief | undefined;
+    mostRecentDraft?: DraftBrief | undefined;
+    filmsDrafted?: number;
+    vetoesUsed?: number;
+    vetoOverridesUsed?: number;
+    commissionerOverrides?: number;
+    timesVetoed?: number;
+    timeesVetoOverridden?: number;
+    hasRolloverVeto?: boolean;
+    hasRolloverVetoOverride?: boolean;
+    socialHandles?: SocialHandles | undefined;
+    draftHistory?: DraftHistoryItem[];
+    vetoHistory?: VetoHistoryItem[];
 
     [key: string]: any;
 }
 
-export interface GetDraftPicksRequest {
-    draftId: string;
+export interface GetDrafterTeamMemberResponse {
+    publicId: string;
+    displayName: string;
 
     [key: string]: any;
 }
 
-export interface GetDraftPositionsRequest {
-    gameboardId: string;
+export interface GetDrafterTeamRequest {
+    publicId: string;
+
+    [key: string]: any;
+}
+
+export interface GetDrafterTeamResponse {
+    publicId: string;
+    name: string;
+    numberOfDrafters?: number;
+    members?: GetDrafterTeamMemberResponse[];
+
+    [key: string]: any;
+}
+
+export interface GetDraftHostResponse {
+    hostPublicId?: string;
+    displayName?: string;
+
+    [key: string]: any;
+}
+
+export interface GetDraftPartParticipantResponse {
+    participantIdValue?: string;
+    participantKindValue?: ParticipantKind;
+    startingVetoes?: number;
+    vetoesUsed?: number;
+    rolloverVetoes?: number;
+    triviaVetoes?: number;
+    vetoOverridesUsed?: number;
+    rolloverVetoOverride?: number;
+    triviaVetoOverride?: number;
+    commissionerOverride?: number;
+
+    [key: string]: any;
+}
+
+export interface GetDraftPartPredictionsRequest {
+    draftPartPublicId?: string;
+
+    [key: string]: any;
+}
+
+export interface GetDraftPartResponse {
+    publicId?: string;
+    partIndex?: number;
+    draftType?: DraftType;
+    status?: DraftPartStatus;
+    scheduledForUtc?: Date | undefined;
+    primaryHost?: GetDraftHostResponse | undefined;
+    coHosts?: GetDraftHostResponse[];
+    participants?: GetDraftPartParticipantResponse[];
+    releases?: GetDraftReleaseResponse[];
+    picks?: GetDraftPickResponse[];
+
+    [key: string]: any;
+}
+
+export interface GetDraftPickResponse {
+    playOrder?: number;
+    position?: number;
+    moviePublicId: string;
+    movieTitle: string;
+    movieVersionName?: string | undefined;
+    actedByPublicId?: string | undefined;
+    playedByParticipantIdValue?: string;
+    playedByParticipantKindValue?: ParticipantKind;
+    veto?: GetDraftVetoResponse | undefined;
+    commissionerOverride?: GetDraftCommissionerOverrideResponse | undefined;
+
+    [key: string]: any;
+}
+
+export interface GetDraftPoolRequest {
+    publicId: string;
+
+    [key: string]: any;
+}
+
+export interface GetDraftReleaseResponse {
+    releaseChannel?: ReleaseChannel;
+    releaseDate?: Date;
 
     [key: string]: any;
 }
 
 export interface GetDraftRequest {
-    id: string;
+    draftId: string;
+
+    [key: string]: any;
+}
+
+export interface GetDraftResponse {
+    publicId: string;
+    title: string;
+    description?: string | undefined;
+    draftType?: DraftType;
+    draftStatus?: DraftStatus;
+    seriesPublicId: string;
+    seriesName: string;
+    campaignPublicId?: string | undefined;
+    campaignName?: string | undefined;
+    parts?: GetDraftPartResponse[];
+
+    [key: string]: any;
+}
+
+export interface GetDraftStatusRequest {
+    publicId: string;
+
+    [key: string]: any;
+}
+
+export interface GetDraftVetoOverrideResponse {
+    issuedByParticipantId?: string;
+    actedByPublicId?: string | undefined;
+
+    [key: string]: any;
+}
+
+export interface GetDraftVetoResponse {
+    issuedByParticipantId?: string;
+    actedByPublicId?: string | undefined;
+    isOverriden?: boolean;
+    note?: string | undefined;
+    occurredOnUtc?: Date;
+    override?: GetDraftVetoOverrideResponse | undefined;
 
     [key: string]: any;
 }
 
 export interface GetHostRequest {
-    id: string;
+    publicId: string;
+
+    [key: string]: any;
+}
+
+export interface GetHostResponse {
+    publicId: string;
+    publicPersonId: string;
+    firstName: string;
+    lastName: string;
+    displayName?: string | undefined;
+    hostedDraftParts?: HostedDraftPartResponse[];
+
+    [key: string]: any;
+}
+
+export interface GetHttpAuditLogsRequest {
+    actorId?: string | undefined;
+    from?: Date | undefined;
+    to?: Date | undefined;
+    statusCode?: number | undefined;
+    endpoint?: string | undefined;
+    cursorId?: string | undefined;
+    cursorTimestamp?: Date | undefined;
+    pageSize?: number;
+
+    [key: string]: any;
+}
+
+export interface GetHttpAuditLogsResponse {
+    items?: HttpAuditLogResponse[];
+    nextCursor?: string | undefined;
+    nextCursorTimestamp?: Date | undefined;
+    hasMoreItems?: boolean;
+
+    [key: string]: any;
+}
+
+export interface GetMediaRequest {
+    publicId: string;
+
+    [key: string]: any;
+}
+
+export interface GetMediaSummaryRequest {
+    publicId: string;
+
+    [key: string]: any;
+}
+
+export interface GetMediaSummaryResponse {
+    publicId: string;
+    imdbId?: string | undefined;
+    tmdbId?: number | undefined;
+    igdbID?: number | undefined;
+    title: string;
+    year: string;
+    image?: string | undefined;
+    plot?: string | undefined;
+    mediaType: MediaType;
+
+    [key: string]: any;
+}
+
+export interface GetOnlineMediaRequest {
+    mediaType?: MediaType;
+    tmdbId?: number | undefined;
+    igdbId?: number | undefined;
+    imdbId?: string | undefined;
+    tvSeriesTmdbId?: number | undefined;
+    seasonNumber?: number | undefined;
+    episodeNumber?: number | undefined;
+
+    [key: string]: any;
+}
+
+export interface GetOnlineMediaResponse {
+    imdbId?: string | undefined;
+    tmdbId?: number | undefined;
+    igdbId?: number | undefined;
+    title?: string;
+    year?: string;
+    plot?: string | undefined;
+    image?: string | undefined;
+    releaseDate?: string | undefined;
+    youTubeTrailerUrl?: string | undefined;
+    mediaType?: MediaType;
+    tvSeriesTmdbId?: number | undefined;
+    seasonNumber?: number | undefined;
+    episodeNumber?: number | undefined;
+    genres?: GenreModel[];
+    actors?: ActorModel[];
+    directors?: DirectorModel[];
+    writers?: WriterModel[];
+    producers?: ProducerModel[];
+    productionCompanies?: ProductionCompanyModel[];
+
+    [key: string]: any;
+}
+
+export interface GetPermissionByCodeRequest {
+    code: string;
 
     [key: string]: any;
 }
 
 export interface GetPersonRequest {
-    id: string;
+    publicId?: string;
 
     [key: string]: any;
 }
 
-export interface HostDraftResponse {
-    id?: string;
-    personId?: string;
-    displayName?: string;
+export interface GetPickListRequest {
+    draftPartId: string;
 
     [key: string]: any;
 }
 
-export interface HostResponse {
-    id?: string;
-    personId?: string;
+export interface GetPickListResponse {
+    picks?: PickListItemResponse[];
+
+    [key: string]: any;
+}
+
+export interface GetPredictionStandingsRequest {
+    seasonPublicId?: string;
+
+    [key: string]: any;
+}
+
+export interface GetSeriesRequest {
+    publicId: string;
+
+    [key: string]: any;
+}
+
+export interface GetUserResponse {
+    publicId?: string;
+    email?: string;
     firstName?: string;
+    middleName?: string | undefined;
     lastName?: string;
+    personPublicId?: string | undefined;
+    profilePicturePath?: string | undefined;
+    twitterHandle?: string | undefined;
+    instagramHandle?: string | undefined;
+    letterboxdHandle?: string | undefined;
+    blueskyHandle?: string | undefined;
+
+    [key: string]: any;
+}
+
+export interface GetUserRolesRequest {
+    publicId: string;
+
+    [key: string]: any;
+}
+
+export interface GetUserRolesResponse {
+    roles: string[];
+
+    [key: string]: any;
+}
+
+export interface GetZoomSessionTokenRequest {
+    draftPartId: string;
+
+    [key: string]: any;
+}
+
+export interface HostedDraftPartResponse {
+    draftPartPublicId: string;
+    draftPublicId: string;
+    label: string;
+    role: HostRole;
+    status: DraftPartStatus;
+
+    [key: string]: any;
+}
+
+export interface HostRole {
+    name: string | undefined;
+    value: number;
+
+    [key: string]: any;
+}
+
+export interface HttpAuditLogResponse {
+    id?: string;
+    correlationId?: string;
+    occurredOnUtc?: Date;
+    actorId?: string | undefined;
+    endpointName?: string;
+    httpMethod?: string;
+    route?: string;
+    statusCode?: number | undefined;
+    durationMs?: number | undefined;
+    ipAddress?: string | undefined;
+
+    [key: string]: any;
+}
+
+export interface LatestDraftParticipantResponse {
+    participantIdValue?: string;
+    participantKindValue?: ParticipantKind;
     displayName?: string;
+
+    [key: string]: any;
+}
+
+export interface LatestDraftResponse {
+    draftPartPublicId?: string;
+    draftPublicId?: string;
+    title?: string;
+    episodeNumber?: number | undefined;
+    partNumber?: number;
+    totalParts?: number;
+    releaseDate?: Date | undefined;
+    participants?: LatestDraftParticipantResponse[];
+
+    [key: string]: any;
+}
+
+export interface LinkUserPersonRequest {
+    publicId: string;
+    userId?: string;
+
+    [key: string]: any;
+}
+
+export interface ListCampaignsRequest {
+    includeDeleted?: boolean;
+
+    [key: string]: any;
+}
+
+export interface ListCategoriesRequest {
+    includeDeleted?: boolean;
 
     [key: string]: any;
 }
 
 export interface ListDraftersRequest {
-    page?: number;
-    pageSize?: number;
-    search?: string | undefined;
+    q?: string | undefined;
+    retired?: string | undefined;
+    page?: number | undefined;
+    pageSize?: number | undefined;
     sort?: string | undefined;
-    dir?: string | undefined;
+    direction?: string | undefined;
+
+    [key: string]: any;
+}
+
+export interface ListDraftPositionsRequest {
+    draftPartId: string;
+
+    [key: string]: any;
+}
+
+export interface ListDraftPositionsResponse {
+    positions?: DraftPositionResponse[];
+
+    [key: string]: any;
+}
+
+export interface ListDraftsHostResponse {
+    hostPublicId?: string;
+    displayName?: string;
+    role?: HostRole;
+
+    [key: string]: any;
+}
+
+export interface ListDraftsParticipantResponse {
+    participantIdValue?: string;
+    participantKindValue?: ParticipantKind;
+    displayName?: string;
+
+    [key: string]: any;
+}
+
+export interface ListDraftsReleaseResponse {
+    releaseChannel?: ReleaseChannel;
+    episodeNumber?: number | undefined;
+    releaseDate?: Date;
 
     [key: string]: any;
 }
 
 export interface ListDraftsRequest {
+    page?: number;
+    pageSize?: number;
     fromDate?: Date | undefined;
     toDate?: Date | undefined;
-    draftType?: number[] | undefined;
+    draftType?: number | undefined;
+    categoryPublicId?: string | undefined;
     minDrafters?: number | undefined;
     maxDrafters?: number | undefined;
     minPicks?: number | undefined;
     maxPicks?: number | undefined;
-    sort?: string | undefined;
-    dir?: string | undefined;
     q?: string | undefined;
-    page?: number;
-    pageSize?: number;
+    sortBy?: string | undefined;
+    dir?: string | undefined;
 
     [key: string]: any;
 }
 
-export interface ListHostsRequest {
-    page: number;
-    pageSize: number;
-    search?: string | undefined;
-    sort?: string | undefined;
-    dir?: string | undefined;
+export interface ListDraftsResponse {
+    draftPartPublicId?: string;
+    draftPublicId?: string;
+    label?: string;
+    draftType?: number;
+    draftStatus?: DraftStatus;
+    partStatus?: DraftPartStatus;
+    hasCommunityParticipant?: boolean;
+    totalPicks?: number;
+    releases?: ListDraftsReleaseResponse[];
+    participants?: ListDraftsParticipantResponse[];
+    hosts?: ListDraftsHostResponse[];
+
+    [key: string]: any;
+}
+
+export interface ListLatestDraftsResponse {
+    drafts: LatestDraftResponse[];
 
     [key: string]: any;
 }
 
 export interface ListPeopleRequest {
+    page?: number;
+    pageSize?: number;
+    name?: string | undefined;
+    hasDrafter?: boolean | undefined;
+    hasHost?: boolean | undefined;
+    sort?: string;
+    dir?: string;
+
+    [key: string]: any;
+}
+
+export interface ListPermissionsResponse {
+    permissions: string[];
+
+    [key: string]: any;
+}
+
+export interface ListUpcomingDraftsResponse {
+    drafts: UpcomingDraftResponse[];
+
+    [key: string]: any;
+}
+
+export interface LockPredictionSetRequest {
+    draftPartPublicId?: string;
+    setPublicId?: string;
+
+    [key: string]: any;
+}
+
+export interface MediaResponse {
+    id?: string;
+    publicId?: string;
+    imdbId?: string | undefined;
+    tmdbId?: number | undefined;
+    igdbId?: number | undefined;
+    title?: string;
+    year?: string;
+    plot?: string | undefined;
+    image?: string | undefined;
+    releaseDate?: string | undefined;
+    youTubeTrailer?: string | undefined;
+    mediaType?: MediaType;
+    tvSeriesTmdbId?: number | undefined;
+    seasonNumber?: number | undefined;
+    episodeNumber?: number | undefined;
+    genres?: GenreResponse[] | undefined;
+    actors?: ActorResponse[] | undefined;
+    directors?: DirectorResponse[] | undefined;
+    writers?: WriterResponse[] | undefined;
+    producers?: ProducerResponse[] | undefined;
+    productionCompanies?: ProductionCompanyResponse[] | undefined;
+
+    [key: string]: any;
+}
+
+export interface MediaSearchResultResponse {
+    tmdbId?: number | undefined;
+    igdbId?: number | undefined;
+    title?: string;
+    year?: string | undefined;
+    posterUrl?: string | undefined;
+    overview?: string | undefined;
+    mediaType?: MediaType;
+    isInMediaDatabase?: boolean;
+
+    [key: string]: any;
+}
+
+export interface MediaType {
+    name: string | undefined;
+    value: number;
+
+    [key: string]: any;
+}
+
+export interface PagedResultOfCandidateListEntryResponse {
+    items: CandidateListEntryResponse[];
+    totalCount: number;
     page: number;
     pageSize: number;
-    firstName?: string | undefined;
-    lastName?: string | undefined;
-    displayName?: string | undefined;
-    isDrafter?: boolean | undefined;
-    isHost?: boolean | undefined;
-    sort?: string | undefined;
-    dir?: string | undefined;
-    q?: string | undefined;
+    totalPages?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
 
     [key: string]: any;
 }
 
-export interface MovieRequest {
-    imdbId: string;
-
-    [key: string]: any;
-}
-
-export interface MovieResponse {
-    imdbId: string;
-    title: string;
-    year: string;
-    plot: string;
-    image: string;
-    releaseDate: string | undefined;
-    youTubeTrailerUri: string | undefined;
-    genres: string[];
-    actors: ActorModel[];
-    directors: DirectorModel[];
-    writers: WriterModel[];
-    producers: ProducerModel[];
-    productionCompanies: ProductionCompanyModel[];
-
-    [key: string]: any;
-}
-
-export interface PagedResultOfDraftResponse {
-    items: DraftResponse[];
-    total: number;
+export interface PagedResultOfDrafterListItem {
+    items: DrafterListItem[];
+    totalCount: number;
     page: number;
     pageSize: number;
+    totalPages?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+
+    [key: string]: any;
+}
+
+export interface PagedResultOfListDraftsResponse {
+    items: ListDraftsResponse[];
+    totalCount: number;
+    page: number;
+    pageSize: number;
+    totalPages?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+
+    [key: string]: any;
+}
+
+export interface PagedResultOfMediaSearchResultResponse {
+    items: MediaSearchResultResponse[];
+    totalCount: number;
+    page: number;
+    pageSize: number;
+    totalPages?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
 
     [key: string]: any;
 }
 
 export interface PagedResultOfPersonResponse {
     items: PersonResponse[];
-    total: number;
+    totalCount: number;
     page: number;
     pageSize: number;
+    totalPages?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
 
     [key: string]: any;
 }
 
-export interface PauseDraftRequest {
-    draftId: string;
+export interface PagedResultOfSearchDrafterTeamsResponse {
+    items: SearchDrafterTeamsResponse[];
+    totalCount: number;
+    page: number;
+    pageSize: number;
+    totalPages?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+
+    [key: string]: any;
+}
+
+export interface PagedResultOfSearchDraftsResponse {
+    items: SearchDraftsResponse[];
+    totalCount: number;
+    page: number;
+    pageSize: number;
+    totalPages?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+
+    [key: string]: any;
+}
+
+export interface PagedResultOfSearchHostResponse {
+    items: SearchHostResponse[];
+    totalCount: number;
+    page: number;
+    pageSize: number;
+    totalPages?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+
+    [key: string]: any;
+}
+
+export interface PagedResultOfSearchPeopleResponse {
+    items: SearchPeopleResponse[];
+    totalCount: number;
+    page: number;
+    pageSize: number;
+    totalPages?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+
+    [key: string]: any;
+}
+
+export interface ParticipantKind {
+    name: string | undefined;
+    value: number;
+
+    [key: string]: any;
+}
+
+export interface PeopleCollectionResponse {
+    people: PagedResultOfPersonResponse;
+
+    [key: string]: any;
+}
+
+export interface PermissionResponse {
+    code?: string;
+    roles?: string[];
 
     [key: string]: any;
 }
@@ -3132,49 +8930,166 @@ export interface PauseDraftRequest {
 export interface PersonRequest {
     name: string;
     imdbId: string;
+    tmdbId: number;
 
     [key: string]: any;
 }
 
 export interface PersonResponse {
-    id?: string;
+    userId?: string;
+    publicId?: string;
     firstName?: string;
     lastName?: string;
     displayName?: string;
-    drafterId?: string;
-    hostId?: string;
-    isDrafter?: boolean;
-    isHost?: boolean;
+    drafterPublicId?: string | undefined;
+    hostPublicId?: string | undefined;
 
     [key: string]: any;
 }
 
 export interface PickItem {
-    pickId: string;
+    position?: number;
+    playOrder?: number;
+    moviePublicId: string;
+    movieTitle: string;
+    movieVersionName?: string | undefined;
+    wasVetoed?: boolean;
+    wasVetoOverridden?: boolean;
+    wasCommissionerOverridden?: boolean;
+    vetoedByPublicId?: string | undefined;
+    vetoedByDisplayName?: string | undefined;
+    overrideByPublicId?: string | undefined;
+    overrideByDisplayName?: string | undefined;
+
+    [key: string]: any;
+}
+
+export interface PickListItemResponse {
+    playOrder?: number;
+    position?: number;
+    movieImdbId?: string;
+    movieTitle?: string;
+    movieVersionName?: string | undefined;
+    playedByParticipantIdValue?: string;
+    playedByParticipantKindValue?: number;
+    actedByPublicId?: string | undefined;
+    veto?: PickListVetoResponse | undefined;
+    hasCommissionerOverride?: boolean;
+    isRevealed?: boolean;
+
+    [key: string]: any;
+}
+
+export interface PickListVetoOverrideResponse {
+    issuedByParticipantIdValue?: string;
+    issuedByParticipantKindValue?: number;
+    actedByPublicId?: string | undefined;
+
+    [key: string]: any;
+}
+
+export interface PickListVetoResponse {
+    issuedByParticipantIdValue?: string;
+    issuedByParticipantKindValue?: number;
+    actedByPublicId?: string | undefined;
+    note?: string | undefined;
+    occurredOntUtc?: Date;
+    isOverridden?: boolean;
+    override?: PickListVetoOverrideResponse | undefined;
+
+    [key: string]: any;
+}
+
+export interface PlayPickRequest {
+    draftPartId: string;
+    position?: number;
+    playOrder?: number;
+    participantPublicId?: string | undefined;
+    participantKind?: number;
+    moviePublicId?: string;
+    movieVersionName?: string | undefined;
+
+    [key: string]: any;
+}
+
+export interface PlaySubDraftPickRequest {
+    draftPartPublicId: string;
+    subDraftPublicId: string;
+    moviePublicId: string;
     position: number;
     playOrder: number;
-    movieId: string;
-    movieTitle: string;
-    wasVetoed: boolean;
-    wasVetoOverride: boolean;
-    wasCommissionerOverride: boolean;
-    vetoedById: string | undefined;
-    vetoedByName: string | undefined;
-    vetoOverrideById: string | undefined;
-    vetoOverrideByName: string | undefined;
+    participantPublicId: string;
+    participantKind: number;
+
+    [key: string]: any;
+}
+
+export interface PredictionEntryRequest {
+    mediaPublicId?: string;
+    mediaTitle?: string;
+    orderIndex?: number | undefined;
+    notes?: string | undefined;
+
+    [key: string]: any;
+}
+
+export interface PredictionEntryResponse {
+    mediaPublicId: string;
+    mediaTitle: string;
+    orderIndex?: number | undefined;
+    notes?: string | undefined;
+
+    [key: string]: any;
+}
+
+export interface PredictionResultResponse {
+    correctCount: number;
+    shootsTheMoon: boolean;
+    pointsAwarded: number;
+    scoredAtUtc: Date;
+
+    [key: string]: any;
+}
+
+export interface PredictionStandingsResponse {
+    seasonPublicId?: string;
+    seasonNumber?: number;
+    targetPoints?: number;
+    isClosed?: boolean;
+    standings?: ContestantStandingResponse[];
+
+    [key: string]: any;
+}
+
+export interface ProblemDetails {
+    type?: string | undefined;
+    title?: string | undefined;
+    status?: number | undefined;
+    detail?: string | undefined;
+    instance?: string | undefined;
 
     [key: string]: any;
 }
 
 export interface ProducerModel {
     imdbId: string;
+    tmdbId: number;
     name: string;
+
+    [key: string]: any;
+}
+
+export interface ProducerResponse {
+    id?: string;
+    imdbId?: string;
+    name?: string;
 
     [key: string]: any;
 }
 
 export interface ProductionCompanyModel {
     imdbId: string;
+    tmdbId: number;
     name: string;
 
     [key: string]: any;
@@ -3183,50 +9098,336 @@ export interface ProductionCompanyModel {
 export interface ProductionCompanyRequest {
     name: string;
     imdbId: string;
+    tmdbId: number;
+
+    [key: string]: any;
+}
+
+export interface ProductionCompanyResponse {
+    id?: string;
+    imdbId?: string;
+    name?: string;
 
     [key: string]: any;
 }
 
 export interface RegisterUserRequest {
-    email: string;
-    password: string;
-    firstName: string;
-    lastName: string;
+    email?: string;
+    password?: string;
+    firstName?: string;
+    lastName?: string;
     middleName?: string | undefined;
 
     [key: string]: any;
 }
 
-export interface ReleaseDateRequest {
-    releaseDate: Date;
-    draftId: string;
+export interface ReleaseChannel {
+    name: string | undefined;
+    value: number;
 
     [key: string]: any;
 }
 
-export interface ReleaseDateResponse {
-    releaseDate: Date;
+export interface RemoveCandidateListEntryRequest {
+    draftPartId: string;
+    tmdbId: number;
 
     [key: string]: any;
 }
 
-export interface RemoveDrafterFromDraftRequest {
+export interface RemoveCategoryFromDraftRequest {
     draftId: string;
+    categoryId: string;
+
+    [key: string]: any;
+}
+
+export interface RemoveDrafterFromTeamRequest {
+    drafterTeamId: string;
     drafterId: string;
 
     [key: string]: any;
 }
 
-export interface RemoveHostFromDraftRequest {
-    draftId: string;
-    hostId: string;
+export interface RemoveHostDraftPartRequest {
+    draftPartId?: string;
+    hostId?: string;
 
     [key: string]: any;
 }
 
-export interface RemoveUserRoleRequest {
-    role: string;
-    userId: string;
+export interface RemoveMovieFromDraftBoardRequest {
+    draftId?: string;
+    tmdbId?: number;
+    notes?: string | undefined;
+    priority?: number | undefined;
+
+    [key: string]: any;
+}
+
+export interface RemoveParticipantFromDraftPartRequest {
+    draftPartPublicId: string;
+    participantPublicId?: string | undefined;
+    participantKind: number;
+
+    [key: string]: any;
+}
+
+export interface RemoveRoleFromUserRequest {
+    roleName?: string;
+    publicId?: string;
+
+    [key: string]: any;
+}
+
+export interface Request {
+    firstName?: string;
+    lastName?: string;
+    middleName?: string | undefined;
+    profilePicture?: string | undefined;
+    twitterHandle?: string | undefined;
+    instagramHandle?: string | undefined;
+    letterboxdHandle?: string | undefined;
+    blueskyHandle?: string | undefined;
+
+    [key: string]: any;
+}
+
+export interface Response {
+    seriesKinds?: SmartEnumResponse[];
+    canonicalPolicies?: SmartEnumResponse[];
+    continuityScopes?: SmartEnumResponse[];
+    continuityDateRules?: SmartEnumResponse[];
+    draftTypes?: SmartEnumResponse[];
+
+    [key: string]: any;
+}
+
+export interface RestoreCampaignRequest {
+    publicId: string;
+
+    [key: string]: any;
+}
+
+export interface RestoreCategoryRequest {
+    publicId: string;
+
+    [key: string]: any;
+}
+
+export interface RevealPickRequest {
+    draftPartId: string;
+    playOrder: number;
+
+    [key: string]: any;
+}
+
+export interface ScoreDraftPartPredictionsRequest {
+    draftPartPublicId?: string;
+    finalMediaPublicIds?: string[];
+
+    [key: string]: any;
+}
+
+export interface SearchDrafterTeamsRequest {
+    page?: number;
+    pageSize?: number;
+    name?: string | undefined;
+
+    [key: string]: any;
+}
+
+export interface SearchDrafterTeamsResponse {
+    publicId: string;
+    name: string;
+    numberOfDrafters?: number;
+
+    [key: string]: any;
+}
+
+export interface SearchDraftsRequest {
+    page?: number;
+    pageSize?: number;
+    name?: string | undefined;
+    campaignPublicId?: string | undefined;
+    categoryPublicId?: string | undefined;
+    draftType?: number | undefined;
+
+    [key: string]: any;
+}
+
+export interface SearchDraftsResponse {
+    publicId: string;
+    title: string;
+    draftType?: number;
+    draftStatus?: number;
+    campaignPublicId?: string | undefined;
+    campaignName?: string | undefined;
+    seriesPublicId: string;
+    seriesName: string;
+
+    [key: string]: any;
+}
+
+export interface SearchHostRequest {
+    name?: string | undefined;
+    page?: number | undefined;
+    pageSize?: number | undefined;
+    sortBy?: string | undefined;
+    hasBeenPrimary?: boolean | undefined;
+
+    [key: string]: any;
+}
+
+export interface SearchHostResponse {
+    publicId: string;
+    personPublicId: string;
+    firstName: string;
+    lastName: string;
+    displayName?: string | undefined;
+    hostedDraftPartCount: number;
+
+    [key: string]: any;
+}
+
+export interface SearchMediaRequest {
+    draftPartId: string;
+    query: string;
+    year?: number | undefined;
+    page?: number;
+    pageSize?: number;
+
+    [key: string]: any;
+}
+
+export interface SearchMediaResponse {
+    results?: PagedResultOfMediaSearchResultResponse;
+
+    [key: string]: any;
+}
+
+export interface SearchPeopleRequest {
+    page?: number;
+    pageSize?: number;
+    name?: string | undefined;
+    role?: string | undefined;
+
+    [key: string]: any;
+}
+
+export interface SearchPeopleResponse {
+    publicId: string;
+    firstName: string;
+    lastName: string;
+    displayName?: string | undefined;
+    isDrafter?: boolean;
+    isHost?: boolean;
+
+    [key: string]: any;
+}
+
+export interface SeriesCollectionResponse {
+    items: SeriesResponse[];
+
+    [key: string]: any;
+}
+
+export interface SeriesResponse {
+    name?: string;
+    publicId?: string;
+    kind?: SmartEnumResponse;
+    canonicalPolicy?: SmartEnumResponse;
+    continuityScope?: SmartEnumResponse;
+    continuityDateRule?: SmartEnumResponse;
+    allowedDraftTypesMask?: number;
+    allowedDraftTypes?: SmartEnumResponse[];
+    defaultDraftType?: SmartEnumResponse | undefined;
+
+    [key: string]: any;
+}
+
+export interface SetCampaignDraftRequest {
+    draftId?: string;
+    campaignId?: string;
+
+    [key: string]: any;
+}
+
+export interface SetCategoriesDraftRequest {
+    draftId?: string;
+    categoryIds?: string[];
+
+    [key: string]: any;
+}
+
+export interface SetCategoryDraftRequest {
+    draftId?: string;
+    categoryId?: string;
+
+    [key: string]: any;
+}
+
+export interface SetCommunityLimitsRequest {
+    draftPartId: string;
+    maxCommunityPicks?: number;
+    maxCommunityVetoes?: number;
+
+    [key: string]: any;
+}
+
+export interface SetDraftPartPredictionRulesRequest {
+    draftPartPublicId?: string;
+    predictionMode?: number;
+    requiredCount?: number;
+    topN?: number | undefined;
+    deadlineUtc?: Date | undefined;
+
+    [key: string]: any;
+}
+
+export interface SetDraftPartStatusRequest {
+    draftPublicId: string;
+    partIndex: number;
+    action?: number;
+
+    [key: string]: any;
+}
+
+export interface SetDraftPositionsRequest {
+    draftPartId: string;
+    positions?: DraftPositionRequestModel[];
+
+    [key: string]: any;
+}
+
+export interface SetEpisodeNumberRequest {
+    draftId?: string;
+    releaseChannel?: number;
+    episodeNumber?: number;
+
+    [key: string]: any;
+}
+
+export interface SetReleaseDateRequest {
+    draftPartId?: string;
+    releaseDate?: Date;
+    releaseChannel?: number;
+
+    [key: string]: any;
+}
+
+export interface SetSubDraftSubjectRequest {
+    draftPartPublicId: string;
+    subDraftPublicId: string;
+    subjectKind: number;
+    subjectName: string;
+
+    [key: string]: any;
+}
+
+export interface SmartEnumResponse {
+    name?: string;
+    value?: number;
 
     [key: string]: any;
 }
@@ -3241,129 +9442,137 @@ export interface SocialHandles {
     [key: string]: any;
 }
 
-export interface StartDraftRequest {
-    draftId: string;
+export interface StartZoomRecordingRequest {
+    draftPartId: string;
 
     [key: string]: any;
 }
 
-export interface TriviaResultDto {
-    id?: string;
-    position?: number;
-    questionsWon?: number;
-    draftId?: string;
-    drafterId?: string;
+export interface StartZoomSessionRequest {
+    draftPartId: string;
 
     [key: string]: any;
 }
 
-export interface TriviaResultRequest {
+export interface StartZoomSessionResult {
+    sessionName: string;
+    token: string;
+
+    [key: string]: any;
+}
+
+export interface StopZoomRecordingRequest {
+    draftPartId: string;
+
+    [key: string]: any;
+}
+
+export interface StringSegment {
+    buffer?: string | undefined;
+    offset?: number;
+    length?: number;
+    value?: string | undefined;
+    hasValue?: boolean;
+
+    [key: string]: any;
+}
+
+export interface SubmitPredictionSetRequest {
+    draftPartPublicId?: string;
+    seasonPublicId?: string;
+    contestantPublicId?: string;
+    submittedByPersonPublicId?: string | undefined;
+    sourceKind?: number;
+    entries?: PredictionEntryRequest[];
+
+    [key: string]: any;
+}
+
+export interface TriviaResultRequestItem {
+    participantPublicId: string;
+    kind: number;
     position: number;
     questionsWon: number;
-    draftId: string;
-    drafterId: string;
 
     [key: string]: any;
 }
 
-export interface TriviaResultsRequest {
-    draftId: string;
-    drafterId: string;
+export interface UndoPickRequest {
+    draftPartPublicId: string;
+    playOrder?: number;
+    subDraftPublicId?: string | undefined;
 
     [key: string]: any;
 }
 
-export interface UpcomingDraftDto {
-    id?: string;
+export interface UpcomingDraftResponse {
+    draftPartPublicId?: string;
+    draftPublicId?: string;
     title?: string;
-    draftStatus?: number;
-    releaseDates?: Date[];
-    capabilities: DraftUserCapabilities;
+    partNumber?: number;
+    releaseDate?: Date | undefined;
+    status?: DraftStatus;
+    capabilities?: DraftUserCapabilities;
 
     [key: string]: any;
 }
 
-export interface UpdateUserRequest {
-    firstName: string;
-    lastName: string;
-    middleName?: string | undefined;
-    profilePicture?: string | undefined;
-    twitterHandle?: string | undefined;
-    instagramHandle?: string | undefined;
-    letterboxdHandle?: string | undefined;
-    blueskyHandle?: string | undefined;
+export interface UpdateDraftBoardItemRequest {
+    draftId?: string;
+    tmdbId?: number;
+    notes?: string | undefined;
+    priority?: number | undefined;
 
     [key: string]: any;
 }
 
-export interface UserResponse {
-    userId: string;
-    email: string;
-    firstName: string;
-    middleName: string;
-    lastName: string;
-    profilePicturePath: string | undefined;
-    twitterHandle: string | undefined;
-    instagramHandle: string | undefined;
-    letterboxdHandle: string | undefined;
-    blueskyHandle: string | undefined;
+export interface UpdateDraftRequest {
+    publicId: string;
+    title?: string | undefined;
+    description?: string | undefined;
+    seriesPublicId?: string | undefined;
+    campaignPublicId?: string | undefined;
+    publicCategoryIds?: string[] | undefined;
+    draftTypeValue?: number;
 
     [key: string]: any;
 }
 
 export interface VetoHistoryItem {
-    draft: DraftBrief2;
-    vetoId: string;
-    targetPickId: string;
-    position: number;
-    playOrder: number;
-    movieId: string;
+    draft: DraftBrief;
+    targetPickPublicId: string;
+    position?: number;
+    playOrder?: number;
+    moviePublicId: string;
     movieTitle: string;
-    targetDrafterId: string;
+    targetDrafterPublicId: string;
     targetDrafterDisplayName: string;
-    wasVetoOverride: boolean;
-    overrideById: string | undefined;
-    overrideByName: string | undefined;
-
-    [key: string]: any;
-}
-
-export interface VetoOverrideRequest {
-    drafterId: string | undefined;
-    drafterTeamId: string | undefined;
-    vetoId: string;
-
-    [key: string]: any;
-}
-
-export interface VetoOverrideResponse {
-    id: string;
-    veto: VetoResponse;
-    drafterId: string | undefined;
-    drafterName: string | undefined;
-    drafterTeamId?: string | undefined;
-    drafterTeamName?: string | undefined;
-
-    [key: string]: any;
-}
-
-export interface VetoResponse {
-    id: string;
-    pickId: string;
-    pickPosition: number;
-    pickPlayOrder: number;
-    movieTitle: string;
-    drafterId: string | undefined;
-    drafterName: string | undefined;
-    drafterTeamId?: string | undefined;
-    drafterTeamName?: string | undefined;
+    wasVetoOverridden?: boolean;
+    overrideByPublicId?: string | undefined;
+    overrideByDisplayName?: string | undefined;
 
     [key: string]: any;
 }
 
 export interface WriterModel {
     imdbId: string;
+    tmdbId: number;
     name: string;
+
+    [key: string]: any;
+}
+
+export interface WriterResponse {
+    id?: string;
+    imdbId?: string;
+    name?: string;
+
+    [key: string]: any;
+}
+
+export interface ZoomSessionTokenResult {
+    sessionName: string;
+    token: string;
 
     [key: string]: any;
 }

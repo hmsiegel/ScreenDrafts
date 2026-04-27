@@ -30,6 +30,7 @@ public static class AdministrationModule
 
   private static void AddAdministrationFeatures(this IServiceCollection services)
   {
+    services.AddScoped<IAdministrationApi, AdministrationApi>();
     services.AddScoped<IAdministrationIntegrationEventDispatcher, AdministrationIntegrationEventDispatcher>();
     services.AddScoped<IAdministrationDomainEventDispatcher, AdministrationDomainEventDispatcher>();
   }

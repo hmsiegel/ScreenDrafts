@@ -1,7 +1,10 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Features.Drafts.ListUpcomingDrafts;
 
-internal sealed class Endpoint : ScreenDraftsEndpointWithoutRequest<ListUpcomingDraftsResponse>
+internal sealed class Endpoint(IAdministrationApi administrationApi)
+  : ScreenDraftsEndpointWithoutRequest<ListUpcomingDraftsResponse>
 {
+  private readonly IAdministrationApi _administrationApi = administrationApi;
+
   public override void Configure()
   {
     Get(DraftRoutes.Upcoming);
@@ -11,17 +14,21 @@ internal sealed class Endpoint : ScreenDraftsEndpointWithoutRequest<ListUpcoming
       .WithTags(DraftsOpenApi.Tags.Drafts)
       .Produces<ListUpcomingDraftsResponse>(StatusCodes.Status200OK);
     });
-    Policies(DraftsAuth.Permissions.DraftList);
+    AllowAnonymous();
   }
 
   public override async Task HandleAsync(CancellationToken ct)
   {
-    var includePatreon = User.Claims.Any(c => c.Type == "sub" && c.Value == "patreon");
+    var includePatreon = User.HasPermission(DraftsAuth.Permissions.PatreonSearch);
+
+    var roles = await _administrationApi.GetUserRolesAsync(User.GetPublicId(), ct);
+    var isAdmin = roles.Contains(DraftsAuth.Roles.SuperAdmin, StringComparer.OrdinalIgnoreCase)
+      || roles.Contains(DraftsAuth.Roles.Admin, StringComparer.OrdinalIgnoreCase);
 
     var query = new ListUpcomingDraftsQuery
     {
       UserId = User.GetUserId(),
-      IsAdmin = User.IsInRole(DraftRoles.Admin),
+      IsAdmin = isAdmin,
       IncludePatreon = includePatreon
     };
 

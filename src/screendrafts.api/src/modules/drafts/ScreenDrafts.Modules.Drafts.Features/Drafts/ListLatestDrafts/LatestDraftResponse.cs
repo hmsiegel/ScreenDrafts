@@ -9,4 +9,5 @@ internal sealed record LatestDraftResponse
   public int PartNumber { get; init; }
   public int TotalParts { get; init; }
   public DateOnly? ReleaseDate { get; init; }
+  public IReadOnlyCollection<LatestDraftParticipantResponse> Participants { get; init; } = [];
 }

@@ -8,6 +8,10 @@ info:
 http:
   method: GET
   url: "{{baseUrl}}/prediction-seasons/:seasonId/standings"
+  params:
+    - name: seasonId
+      value: ps_M37u3iOQTXcqFTH
+      type: path
   auth: inherit
 
 settings:
