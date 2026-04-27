@@ -1,11 +1,11 @@
-import { DrafterProfileResponse } from "@/lib/dto";
+import { GetDrafterProfileResponse } from "@/lib/dto";
 import ReactMarkdown from "react-markdown";
 import rehypeSanitize from "rehype-sanitize";
 import remarkGfm from "remark-gfm";
 import DrafterInfoCard from "./drafter-info-card";
 import DraftHistory from "./draft-history";
 
-export function DrafterProfile({ drafter }: { drafter: DrafterProfileResponse }) {
+export function DrafterProfile({ drafter }: { drafter: GetDrafterProfileResponse }) {
    return (
       <div className="mx-auto w-full max-w-3xl">
          <div className="grid gap-16 md:grid-cols-[18rem_minmax(0,38rem)]">

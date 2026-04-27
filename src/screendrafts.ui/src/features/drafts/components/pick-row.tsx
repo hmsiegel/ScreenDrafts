@@ -1,4 +1,4 @@
-import { CommissionerOverrideResponse, DraftPickResponse, VetoOverrideResponse, VetoResponse } from "@/lib/dto";
+import { GetDraftCommissionerOverrideResponse, GetDraftPickResponse, GetDraftVetoOverrideResponse, GetDraftVetoResponse } from "@/lib/dto";
 import Link from "next/link";
 
 export function PickRow({
@@ -8,10 +8,10 @@ export function PickRow({
    commissionerOverride,
    drafterMap,
 }: {
-   pick: DraftPickResponse;
-   veto?: VetoResponse;
-   vetoOverride?: VetoOverrideResponse;
-   commissionerOverride?: CommissionerOverrideResponse;
+   pick: GetDraftPickResponse;
+   veto?: GetDraftVetoResponse;
+   vetoOverride?: GetDraftVetoOverrideResponse;
+   commissionerOverride?: GetDraftCommissionerOverrideResponse;
    drafterMap: Map<string, string>;
 }) {
    const getName = (id: string) => drafterMap.get(id) ?? "Unknown";

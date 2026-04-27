@@ -1,12 +1,12 @@
 import { inter, roboto } from "@/styles/fonts";
 import Link from "next/link";
 import React from "react";
-import type { DraftResponse } from "@/lib/dto";
+import type { LatestDraftResponse } from "@/lib/dto";
 import { getLatestDrafts } from "@features/drafts/api/fetch-drafts";
 import { format } from "date-fns/format";
 
 export default async function MostRecentDrafts() {
-   let latestDrafts: DraftResponse[] = [];
+   let latestDrafts: LatestDraftResponse[] = [];
    let debug: { step: string; info: unknown } | null = null;
 
    try {
@@ -49,7 +49,7 @@ export default async function MostRecentDrafts() {
                </div>
             </div>
             <div className={`${roboto.className} table-row-group bg-white`}>
-               {latestDrafts.map((draft: DraftResponse) => {
+               {latestDrafts.map((draft: LatestDraftResponse) => {
                   return (
                      <React.Fragment key={draft.id}>
                         <Link

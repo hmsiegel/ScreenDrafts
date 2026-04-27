@@ -1,13 +1,13 @@
 'use client'
 
 import { deleteDraft, editDraft, playDraft, startDraft } from "@/features/drafts/api/api";
-import { UpcomingDraftDto } from "@/lib/dto";
+import { UpcomingDraftResponse } from "@/lib/dto";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { inter, roboto } from "../../../styles/fonts";
 import { DeleteDraft, EditDraft, PlayDraft, StartDraft } from "./buttons";
 
 interface Props {
-   drafts: UpcomingDraftDto[];
+   drafts: UpcomingDraftResponse[];
 }
 
 export function UpcomingDraftsTableBody({ drafts }: Props) {
@@ -34,8 +34,8 @@ export function UpcomingDraftsTableBody({ drafts }: Props) {
    );
 }
 
-function UpcomingDraftRow({ draft }: { draft: UpcomingDraftDto }) {
-   const { role, canEdit, canDelete, canStart, canPlay } = draft.capabilities ?? {};
+function UpcomingDraftRow({ draft }: { draft: UpcomingDraftResponse }) {
+   const { role, canEdit, canDelete, canStart, canPlay } = draft.capabilities ?? { role: undefined, canEdit: false, canDelete: false, canStart: false, canPlay: false };
 
    const qc = useQueryClient();
 

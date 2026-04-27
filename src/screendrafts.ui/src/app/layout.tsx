@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { roboto } from "@/styles/fonts";
 import "@/styles/global.css";
-import Footer from "@/components/layout/footer/footer";
 import Providers from "./providers";
 
 export const metadata: Metadata = {
@@ -24,7 +23,6 @@ export default function RootLayout({
 
       >
         <Providers>{children}</Providers>
-        <Footer />
       </body>
     </html>
   )

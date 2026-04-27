@@ -16,6 +16,12 @@ export default {
         'light-blue': '#88add0',
         'sd-blue': '#1e448b',
         'sd-red': '#cb2032',
+        'sd-ink': '#0d1430',
+        'sd-paper': '#fbf7ee',
+      },
+      fontFamily: {
+        oswald: ['Oswald', 'sans-serif'],
+        mono: ['"JetBrains Mono"', 'monospace'],
       },
     },
   },

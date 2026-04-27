@@ -1,4 +1,4 @@
-import { DraftResponse } from "@/lib/dto";
+import { GetDraftResponse } from "@/lib/dto";
 import EpisodeInfoCard from "./episode-info-card";
 import PicksList from "./picks-list";
 import ReactMarkdown from "react-markdown";
@@ -6,7 +6,7 @@ import remarkGfm from "remark-gfm";
 import rehypeSanitize from "rehype-sanitize";
 
 export function DraftDetails({ draft, drafterMap }: {
-   draft: DraftResponse;
+   draft: GetDraftResponse;
    drafterMap: Map<string, string>;
 }) {
    return (

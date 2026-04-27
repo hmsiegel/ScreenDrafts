@@ -1,51 +1,80 @@
-'use client';
+import AnnouncementBar from "@/components/layout/announcement-bar";
+import SiteHeader from "@/components/layout/header/site-header";
+import SiteFooter from "@/components/layout/footer/site-footer";
+import SpotlightHero from "@/components/features/home/spotlight-hero";
+import StatBar from "@/components/features/home/stat-bar";
+import RecentDrafts from "@/components/features/home/recent-drafts";
+import CommissionerStandings from "@/components/features/home/commissioner-standings";
+import UpcomingDrafts from "@/components/features/home/upcoming-drafts";
+import AuthStrip from "@/components/features/home/auth-strip";
+import {
+  fetchLatestDrafts,
+  fetchUpcomingDrafts,
+  mapLatestDraft,
+  mapUpcomingDraft,
+} from "@/services/home/fetch-home-data";
 
-import Link from "next/link";
-import { oswald, roboto } from "../styles/fonts";
-import Image from "next/image";
-import { signIn } from "next-auth/react";
+// ── Mock data (no endpoint yet) ────────────────────────────────────────────
 
-export default function Home() {
+const spotlight = {
+  episodeNumber: 264,
+  type: 'Super Draft',
+  parts: 3,
+  subject: 'Martin Scorsese',
+  description: `Nine drafters. Twenty-nine theatrical releases (plus No Direction Home, advanced from the Patreon). Multiple veto overrides — including the first-ever override of a Patreon-awarded veto. The Age of Innocence made the largest leap from a vetoed pick in show history.`,
+  topFive: [
+    { position: 1, title: 'Goodfellas',   year: 1990 },
+    { position: 2, title: 'Taxi Driver',  year: 1976 },
+    { position: 3, title: 'Raging Bull',  year: 1980 },
+    { position: 4, title: 'The Departed', year: 2006 },
+    { position: 5, title: 'Casino',       year: 1995 },
+  ],
+  totalPicks: 30,
+};
+
+// TODO: wire up when endpoint exists
+const stats = [
+  { value: '317',   label: 'EPISODES PRODUCED' },
+  { value: '2,140', label: 'FILMS DRAFTED' },
+  { value: '186',   label: 'GUEST G.M.s' },
+  { value: '418',   label: 'VETOES DEPLOYED' },
+  { value: '6',     label: 'LEGENDS' },
+];
+
+// TODO: wire up when endpoint exists
+const standings = [
+  { rank: 1, name: 'CLAY',  score: 91 },
+  { rank: 2, name: 'RYAN',  score: 78 },
+  { rank: 3, name: 'NICK',  score: 64 },
+  { rank: 4, name: 'EMILY', score: 52 },
+];
+
+// ── Page ───────────────────────────────────────────────────────────────────
+
+export default async function Home() {
+  const [latestDrafts, upcomingDrafts] = await Promise.all([
+    fetchLatestDrafts(),
+    fetchUpcomingDrafts(),
+  ]);
+
+  const recentDrafts = latestDrafts.map(mapLatestDraft);
+  const upcoming = upcomingDrafts.map(mapUpcomingDraft);
+
   return (
-    <main className="flex items-center justify-center min-h-screen ">
-      <div className="bg-[#fffdfd] rounded-lg shadow-lg py-5 px-28 flex flex-col items-center justify-center">
-        <h1 className={`${oswald.className} text-6xl font-bold text-black mb-10`}>
-          SCREEN DRAFTS
-        </h1>
+    <div className="bg-light-blue min-h-screen font-sans">
+      <AnnouncementBar />
+      <SiteHeader />
+      <SpotlightHero spotlight={spotlight} />
+      <StatBar stats={stats} />
 
-        <Image
-          className="mb-5"
-          src="/screen-drafts.jpg"
-          alt="ScreenDrafts logo"
-          height={400}
-          width={400}
-        />
+      <section className="grid grid-cols-3 gap-6 px-8 py-10">
+        <RecentDrafts drafts={recentDrafts} />
+        <CommissionerStandings standings={standings} maxScore={100} />
+        <UpcomingDrafts drafts={upcoming} />
+      </section>
 
-        <div className="w-72 text-center ">
-          <p className={`${roboto.className} font-bold`} >
-            Where Experts And Enthusiasts Competitively Collaborate On The
-            Creation Of Screen-centric Best-of Lists
-          </p>
-        </div>
-
-        <div className="flex-row items-center justify-center mt-4">
-
-
-            <button
-              className="btn-blue hover:bg-blue-400 hover:text-black transition ease-out duration-500"
-              onClick={() => signIn('keycloak', {
-                callbackUrl: '/dashboard'})}
-            >
-              <span>SIGN IN</span>
-            </button>
-
-          <Link href="/register">
-            <div className="btn-blue hover:bg-blue-400 hover:text-black transition ease-out duration-500">
-              REGISTER
-            </div>
-          </Link>
-        </div>
-      </div>
-    </main>
-  )
+      <AuthStrip />
+      <SiteFooter />
+    </div>
+  );
 }

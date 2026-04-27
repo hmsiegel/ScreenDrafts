@@ -1,14 +1,11 @@
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-import { ContinueDraftRequest, DeleteDraftRequest, DraftsClient, EditDraftRequest } from '@/lib/dto';
+import { auth } from '@/auth';
 import { env } from '@/lib/env';
-import { getServerSession } from 'next-auth';
 
 const apiBaseUrl = env.apiUrl;
 
-
 /* ------------------------generic signed fetch------------------------ */
-async function signedFetch(url: string , init: RequestInit = {}) {
-   const session = await getServerSession(authOptions);
+async function signedFetch(url: string, init: RequestInit = {}) {
+   const session = await auth();
    const headers = new Headers(init.headers);
 
    if (!session) {
@@ -23,7 +20,7 @@ async function signedFetch(url: string , init: RequestInit = {}) {
       ...init,
       headers,
       credentials: "include",
-      next: { revalidate: 0 }, // Disable caching
+      next: { revalidate: 0 },
    });
 
    if (!res.ok) {
@@ -34,21 +31,23 @@ async function signedFetch(url: string , init: RequestInit = {}) {
    return res.json();
 }
 
-const draftsClient = new DraftsClient(
-   apiBaseUrl,
-   {
-      fetch: (url, init) => signedFetch(url.toString(), init),
-   }
-);
-
-export const startDraft = (draftId: string) => draftsClient.startDraft({ draftId });
-export const playDraft = (draftId: string) => draftsClient.continueDraft({ draftId } as ContinueDraftRequest);
-export const editDraft = (draftId: string) => draftsClient.editDraft({ draftId } as EditDraftRequest);
-export const deleteDraft = (draftId: string) => draftsClient.deleteDraft({draftId} as DeleteDraftRequest);
-
 export async function apiRequest<T = unknown>(
    path: string,
    init: RequestInit = {}
 ): Promise<T> {
    return signedFetch(`${apiBaseUrl}${path}`, init);
 }
+
+// TODO: re-map to correct endpoints after DraftsClient was removed in dto regen.
+// The new Client uses drafts_SetDraftPartStatus / drafts_UpdateDraft.
+export const startDraft  = (draftId: string): Promise<void> =>
+   apiRequest(`/drafts/${draftId}/start`,    { method: 'POST' });
+
+export const playDraft   = (draftId: string): Promise<void> =>
+   apiRequest(`/drafts/${draftId}/continue`, { method: 'POST' });
+
+export const editDraft   = (draftId: string): Promise<void> =>
+   apiRequest(`/drafts/${draftId}`,          { method: 'PUT'  });
+
+export const deleteDraft = (draftId: string): Promise<void> =>
+   apiRequest(`/drafts/${draftId}`,          { method: 'DELETE' });

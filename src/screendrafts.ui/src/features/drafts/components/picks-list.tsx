@@ -1,4 +1,4 @@
-import { CommissionerOverrideResponse, DraftPickResponse, VetoOverrideResponse, VetoResponse } from "@/lib/dto";
+import { GetDraftCommissionerOverrideResponse, GetDraftPickResponse, GetDraftVetoOverrideResponse, GetDraftVetoResponse } from "@/lib/dto";
 import { blessingsMap } from "@/lib/utils";
 import { PickRow } from "./pick-row";
 
@@ -9,10 +9,10 @@ export default function PicksList({
    commissionerOverride,
    drafterMap,
 }: {
-   picks: DraftPickResponse[];
-   vetoes: VetoResponse[];
-   vetoesOverrides: VetoOverrideResponse[];
-   commissionerOverride: CommissionerOverrideResponse[];
+   picks: GetDraftPickResponse[];
+   vetoes: GetDraftVetoResponse[];
+   vetoesOverrides: GetDraftVetoOverrideResponse[];
+   commissionerOverride: GetDraftCommissionerOverrideResponse[];
    drafterMap?: Map<string, string>;
 }) {
    const { vetoBySlot, vetoOverrideBySlot, commissionerOverrideBySlot } = blessingsMap(

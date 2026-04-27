@@ -1,9 +1,9 @@
-import { DraftResponse } from "@/lib/dto";
+import { GetDraftResponse } from "@/lib/dto";
 import { format } from "date-fns/format";
 import Link from "next/link";
 import Image from "next/image";
 
-export default function EpisodeInfoCard({ draft }: { draft: DraftResponse }) {
+export default function EpisodeInfoCard({ draft }: { draft: GetDraftResponse }) {
    return (
       <aside className="w-80 border rounded-xl shadow-sm p-4 bg-slate-50 sticky top-4 self-start">
          <div className="bg-sd-red rounded-lg">
@@ -24,7 +24,7 @@ export default function EpisodeInfoCard({ draft }: { draft: DraftResponse }) {
             <Info label="Date">
                {draft.releaseDates && draft.releaseDates.length > 0 ? (
                   <div className="flex flex-col">
-                     {draft.releaseDates.map((date, index) => (
+                     {(draft.releaseDates as Array<{ releaseDate: string | Date }>).map((date, index) => (
                         <span key={index} className="text-sm text-slate-800">
                            {format(new Date(date.releaseDate), "MMMM dd, yyyy")}
                         </span>
@@ -38,7 +38,7 @@ export default function EpisodeInfoCard({ draft }: { draft: DraftResponse }) {
             <Info label="Drafters">
                {draft.drafters && draft.drafters.length > 0 ? (
                   <div className="flex flex-col">
-                     {draft.drafters.map((d, index) => (
+                     {(draft.drafters as Array<{ id?: string; displayName?: string }>).map((d, index) => (
                         <DrafterLink key={index} href={`/dashboard/drafters/${d.id}`}>
                            {d.displayName}
                         </DrafterLink>
@@ -52,7 +52,7 @@ export default function EpisodeInfoCard({ draft }: { draft: DraftResponse }) {
             <Info label="Hosts">
                {draft.hosts && draft.hosts.length > 0 ? (
                   <div className="flex flex-col">
-                     {draft.hosts.map((h, index) => (
+                     {(draft.hosts as Array<{ id?: string; displayName?: string }>).map((h, index) => (
                         <HostLink key={index} href={`/dashboard/hosts/${h.id}`}>
                            {h.displayName}
                         </HostLink>
