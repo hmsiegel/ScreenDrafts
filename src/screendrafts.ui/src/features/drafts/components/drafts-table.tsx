@@ -1,4 +1,4 @@
-import { DraftResponse } from "@/lib/dto";
+import { ListDraftsResponse } from "@/lib/dto";
 import { inter, roboto } from "../../../styles/fonts";
 import React from "react";
 import Link from "next/link";
@@ -6,7 +6,7 @@ import { format } from "date-fns/format";
 import { SortableTableHeader } from "../../../components/ui/sortable-table-header";
 
 interface DraftsTableProps {
-   drafts: DraftResponse[];
+   drafts: ListDraftsResponse[];
    sort?: string | undefined;
    dir: string | undefined;
 }
@@ -55,7 +55,7 @@ export function DraftsTable({ drafts, sort, dir }: DraftsTableProps) {
             </div>
             <div className={`${roboto.className} table-row-group bg-white`}>
                {drafts
-                  .map((draft: DraftResponse) => (
+                  .map((draft: ListDraftsResponse) => (
                      <div key={draft.id} className="table-row border-2 hover:bg-gray-200">
                         <Link
                            href={`/dashboard/drafts/${draft.id}`}
@@ -65,14 +65,14 @@ export function DraftsTable({ drafts, sort, dir }: DraftsTableProps) {
                            <div className="whitespace-nowrap align-middle table-cell py-3 pl-6 pr-3">{draft.title}</div>
                            <div className="whitespace-nowrap align-middle table-cell py-3 pl-6 pr-3">
                               <div className="flex flex-col items-start">
-                                 {draft.drafters?.map((d, index) => (
+                                 {(draft.drafters as Array<{ displayName?: string }>)?.map((d, index) => (
                                     <span key={index} className="text-sm">{d.displayName}</span>
                                  ))}
                               </div>
                            </div>
                            <div className="whitespace-nowrap align-middle table-cell py-3 pl-6 pr-3">
                               <div className="flex flex-col items-start">
-                                 {draft.hosts?.map((d, index) => (
+                                 {(draft.hosts as Array<{ displayName?: string }>)?.map((d, index) => (
                                     <span key={index} className="text-sm">{d.displayName}</span>
                                  ))}
                               </div>
@@ -81,7 +81,7 @@ export function DraftsTable({ drafts, sort, dir }: DraftsTableProps) {
                            <div className="whitespace-nowrap table-cell py-3 pl-6 pr-6 align-middle">
                               {draft.releaseDates && draft.releaseDates.length > 0 ? (
                                  <div className="flex flex-col items-start">
-                                    {draft.releaseDates.map((d, idx) => (
+                                    {(draft.releaseDates as Array<{ releaseDate: string | Date }>).map((d, idx) => (
                                        <span key={idx}>{format(new Date(d.releaseDate), "MM/dd/yyyy")}</span>
                                     ))}
                                  </div>

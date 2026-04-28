@@ -1,8 +1,7 @@
-import { getServerSession } from "next-auth";
-import { DrafterProfileResponse, PagedResultOfPersonResponse, PersonResponse } from "@/lib/dto";
-import { env } from "@lib/env";
+import { auth } from "@/auth";
+import { GetDrafterProfileResponse, PagedResultOfPersonResponse, PersonResponse } from "@/lib/dto";
+import { env } from "@/lib/env";
 import { PagedResult, toPagedPeopleResult } from "@/types/paged-result";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 const apiBase = env.apiUrl;
 
@@ -20,7 +19,7 @@ export async function listGuests(params: {
       }
    });
 
-   const session = await getServerSession(authOptions);
+   const session = await auth();
    const headers: HeadersInit = {};
 
    if (session?.accessToken) {
@@ -31,7 +30,7 @@ export async function listGuests(params: {
       method: "GET",
       headers,
       credentials: "include",
-      next: { revalidate: 0 }, // Disable caching
+      next: { revalidate: 0 },
    });
 
    if (!response.ok) {
@@ -41,16 +40,15 @@ export async function listGuests(params: {
       );
    }
 
-   //return response.json() as Promise<DraftResponse[]>;
    const data = await response.json();
    const apiPaged = data.value as PagedResultOfPersonResponse;
    return toPagedPeopleResult(apiPaged);
 }
 
-export async function getDrafterProfile(id: string): Promise<DrafterProfileResponse> {
+export async function getDrafterProfile(id: string): Promise<GetDrafterProfileResponse> {
    const url = `${apiBase}/drafters/${id}/profile`;
 
-   const session = await getServerSession(authOptions);
+   const session = await auth();
    const headers: HeadersInit = {};
 
    if (session?.accessToken) {
@@ -61,7 +59,7 @@ export async function getDrafterProfile(id: string): Promise<DrafterProfileRespo
       method: "GET",
       headers,
       credentials: "include",
-      next: { revalidate: 0 }, // Disable caching
+      next: { revalidate: 0 },
    });
 
    if (!response.ok) {
@@ -71,5 +69,5 @@ export async function getDrafterProfile(id: string): Promise<DrafterProfileRespo
       );
    }
 
-   return response.json() as Promise<DrafterProfileResponse>;
+   return response.json() as Promise<GetDrafterProfileResponse>;
 }

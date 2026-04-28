@@ -1,4 +1,4 @@
-import { DraftResponse } from "@/lib/dto";
+import { GetDraftResponse } from "@/lib/dto";
 import { getDraftDetails } from "@features/drafts/api/fetch-drafts";
 import { DraftDetails } from "@/features/drafts/components/draft-details";
 import Breadcrumbs from "@/components/ui/breadcrumbs";
@@ -9,7 +9,7 @@ export async function generateMetadata(
    _parent: ResolvingMetadata
 ): Promise<Metadata> {
    const { id } = await props.params;
-   const draft = await getDraftDetails(id) as DraftResponse;
+   const draft = await getDraftDetails(id) as GetDraftResponse;
 
    return {
       title: `${draft.title}`,
@@ -29,10 +29,10 @@ export default async function Page(
 ) {
    const { id } = await props.params;
 
-   const draft = await getDraftDetails(id) as DraftResponse;
+   const draft = await getDraftDetails(id) as GetDraftResponse;
 
    const drafterMap = new Map(
-      (draft.drafters ?? [])
+      ((draft.drafters ?? []) as Array<Record<string, unknown>>)
          .filter((d): d is { id: string; displayName: string } => typeof d.id === "string" && typeof d.displayName === "string")
          .map(d => [d.id, d.displayName])
    );

@@ -1,15 +1,21 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { DraftResponse, PagedResultOfDraftResponse, UpcomingDraftDto } from "@/lib/dto";
+import { auth } from "@/auth";
+import {
+  GetDraftResponse,
+  LatestDraftResponse,
+  ListLatestDraftsResponse,
+  ListUpcomingDraftsResponse,
+  PagedResultOfListDraftsResponse,
+  UpcomingDraftResponse,
+} from "@/lib/dto";
 import { env } from "@/lib/env";
 import { PagedResult, toPagedDraftResult } from "@/types/paged-result";
 
 const apiBase = env.apiUrl;
 
-export async function getLatestDrafts(): Promise<DraftResponse[]> {
+export async function getLatestDrafts(): Promise<LatestDraftResponse[]> {
    const url = `${apiBase}/drafts/latest`;
 
-   const session = await getServerSession(authOptions);
+   const session = await auth();
    const headers: HeadersInit = {};
 
    if (session?.accessToken) {
@@ -20,7 +26,7 @@ export async function getLatestDrafts(): Promise<DraftResponse[]> {
       method: "GET",
       headers,
       credentials: "include",
-      next: { revalidate: 0 }, // Disable caching
+      next: { revalidate: 0 },
    });
 
    if (!response.ok) {
@@ -30,13 +36,14 @@ export async function getLatestDrafts(): Promise<DraftResponse[]> {
       );
    }
 
-   return response.json() as Promise<DraftResponse[]>;
+   const data = await response.json() as ListLatestDraftsResponse;
+   return data.drafts ?? [];
 }
 
-export async function getUpcomingDrafts(): Promise<UpcomingDraftDto[]> {
+export async function getUpcomingDrafts(): Promise<UpcomingDraftResponse[]> {
    const url = `${apiBase}/drafts/upcoming`;
 
-   const session = await getServerSession(authOptions);
+   const session = await auth();
    const headers: HeadersInit = {};
 
    if (session?.accessToken) {
@@ -48,7 +55,7 @@ export async function getUpcomingDrafts(): Promise<UpcomingDraftDto[]> {
          method: "GET",
          headers,
          credentials: "include",
-         next: { revalidate: 0 }, // Disable caching
+         next: { revalidate: 0 },
       });
 
       if (!response.ok) {
@@ -58,10 +65,11 @@ export async function getUpcomingDrafts(): Promise<UpcomingDraftDto[]> {
          );
       }
 
-      return response.json() as Promise<UpcomingDraftDto[]>;
+      const data = await response.json() as ListUpcomingDraftsResponse;
+      return data.drafts ?? [];
    } catch (error) {
       console.error("Error fetching upcoming drafts:", error);
-      throw error; // Re-throw the error for further handling
+      throw error;
    }
 }
 
@@ -78,7 +86,7 @@ export async function listDrafts(params: {
    dir?: "asc" | "desc",
    page?: number,
    pageSize?: number,
-} = {}): Promise<PagedResult<DraftResponse>> {
+} = {}): Promise<PagedResult<LatestDraftResponse>> {
    const url = new URL(`${apiBase}/drafts`);
    Object.entries(params).forEach(([key, value]) => {
       if (value !== undefined && value !== null && value !== "") {
@@ -86,7 +94,7 @@ export async function listDrafts(params: {
       }
    });
 
-   const session = await getServerSession(authOptions);
+   const session = await auth();
    const headers: HeadersInit = {};
 
    if (session?.accessToken) {
@@ -97,7 +105,7 @@ export async function listDrafts(params: {
       method: "GET",
       headers,
       credentials: "include",
-      next: { revalidate: 0 }, // Disable caching
+      next: { revalidate: 0 },
    });
 
    if (!response.ok) {
@@ -107,16 +115,15 @@ export async function listDrafts(params: {
       );
    }
 
-   //return response.json() as Promise<DraftResponse[]>;
    const data = await response.json();
-   const apiPaged = data.value as PagedResultOfDraftResponse;
-   return toPagedDraftResult(apiPaged);
+   const apiPaged = data as PagedResultOfListDraftsResponse;
+   return toPagedDraftResult(apiPaged) as PagedResult<LatestDraftResponse>;
 }
 
-export async function getDraftDetails(id: string): Promise<DraftResponse[]> {
+export async function getDraftDetails(id: string): Promise<GetDraftResponse> {
    const url = `${apiBase}/drafts/${id}`;
 
-   const session = await getServerSession(authOptions);
+   const session = await auth();
    const headers: HeadersInit = {};
 
    if (session?.accessToken) {
@@ -127,7 +134,7 @@ export async function getDraftDetails(id: string): Promise<DraftResponse[]> {
       method: "GET",
       headers,
       credentials: "include",
-      next: { revalidate: 0 }, // Disable caching
+      next: { revalidate: 0 },
    });
 
    if (!response.ok) {
@@ -137,5 +144,5 @@ export async function getDraftDetails(id: string): Promise<DraftResponse[]> {
       );
    }
 
-   return response.json() as Promise<DraftResponse[]>;
+   return response.json() as Promise<GetDraftResponse>;
 }

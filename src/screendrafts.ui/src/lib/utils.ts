@@ -1,4 +1,4 @@
-import { CommissionerOverrideResponse, VetoOverrideResponse, VetoResponse } from "./dto";
+import { GetDraftCommissionerOverrideResponse, GetDraftVetoOverrideResponse, GetDraftVetoResponse } from "./dto";
 
 export const generatePagination = (currentPage: number, totalPages: number) => {
      // If the total number of pages is 7 or less,
@@ -42,13 +42,13 @@ export const formatDate = (date: string) => {
 }
 
 export function blessingsMap(
-  vetoes: VetoResponse[],
-  vetoesOverrides: VetoOverrideResponse[],
-  commissionerOverrides: CommissionerOverrideResponse[]
+  vetoes: GetDraftVetoResponse[],
+  vetoesOverrides: GetDraftVetoOverrideResponse[],
+  commissionerOverrides: GetDraftCommissionerOverrideResponse[]
 ) {
-  const vetoBySlot = new Map<number, VetoResponse>();
-  const vetoOverrideBySlot = new Map<number, VetoOverrideResponse>();
-  const commissionerOverrideBySlot = new Map<number, CommissionerOverrideResponse>();
+  const vetoBySlot = new Map<number, GetDraftVetoResponse>();
+  const vetoOverrideBySlot = new Map<number, GetDraftVetoOverrideResponse>();
+  const commissionerOverrideBySlot = new Map<number, GetDraftCommissionerOverrideResponse>();
 
   vetoes.forEach(veto => {
       vetoBySlot.set(veto.pickPlayOrder, veto);

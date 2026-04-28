@@ -1,9 +1,9 @@
-import { DrafterProfileResponse } from "@/lib/dto";
+import { GetDrafterProfileResponse } from "@/lib/dto";
 import { format } from "date-fns/format";
 import Image from "next/image";
 import Link from "next/link";
 
-export default function DrafterInfoCard({ drafter }: { drafter: DrafterProfileResponse }) {
+export default function DrafterInfoCard({ drafter }: { drafter: GetDrafterProfileResponse }) {
    return (
       <aside className="w-80 border rounded-xl shadow-sm p-4 bg-slate-50 sticky top-4 self-start">
          <div className="bg-sd-red rounded-lg">

@@ -1,7 +1,7 @@
 import { getDrafterProfile } from "@features/guests/api/fetch-people";
 import Breadcrumbs from "@/components/ui/breadcrumbs";
 import { Metadata, ResolvingMetadata } from "next";
-import { DrafterProfileResponse } from "@/lib/dto";
+import { GetDrafterProfileResponse } from "@/lib/dto";
 import { DrafterProfile } from "@/features/drafters/components/drafter-profile";
 
 export async function generateMetadata(
@@ -9,7 +9,7 @@ export async function generateMetadata(
    _parent: ResolvingMetadata
 ): Promise<Metadata> {
    const { id } = await props.params;
-   const drafter = await getDrafterProfile(id) as DrafterProfileResponse;
+   const drafter = await getDrafterProfile(id) as GetDrafterProfileResponse;
 
    return {
       title: `${drafter.displayName}`,
@@ -29,7 +29,7 @@ export default async function Page(
 ) {
    const { id } = await props.params;
 
-   const drafter = await getDrafterProfile(id) as DrafterProfileResponse;
+   const drafter = await getDrafterProfile(id) as GetDrafterProfileResponse;
 
    return (
       <main className="flex flex-col items-center justify-center md:h-screen">
