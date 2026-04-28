@@ -24,7 +24,7 @@ internal sealed class ListLatestDraftsQueryHandler(IDbConnectionFactory dbConnec
         MIN(r.release_date) AS {nameof(LatestDraftResponse.ReleaseDate)}
       FROM drafts.draft_parts dp
       JOIN drafts.drafts d ON dp.draft_id = d.id
-      JOIN drafts.draft_channel_releases dcr ON dcr.draft_id = d.id
+      LEFT JOIN drafts.draft_channel_releases dcr ON dcr.draft_id = d.id AND dcr.release_channel = {MainFeedChannel}
       LEFT JOIN drafts.draft_releases r ON r.part_id = dp.id
       WHERE dp.status = {CompletedStatus}
       """

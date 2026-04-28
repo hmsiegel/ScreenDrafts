@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafts;
+﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafts;
 
 public sealed class ListLatestDraftsTests(DraftsIntegrationTestWebAppFactory factory)
   : DraftsIntegrationTest(factory)
@@ -118,7 +118,7 @@ public sealed class ListLatestDraftsTests(DraftsIntegrationTestWebAppFactory fac
   // -------------------------------------------------------------------------
 
   [Fact]
-  public async Task ListLatestDrafts_ShouldReturnAtMost10Async()
+  public async Task ListLatestDrafts_ShouldReturnAtMost5Async()
   {
     // Arrange — create 12 completed drafts with main feed releases
     for (int i = 1; i <= 12; i++)
@@ -135,7 +135,7 @@ public sealed class ListLatestDraftsTests(DraftsIntegrationTestWebAppFactory fac
 
     // Assert
     result.IsSuccess.Should().BeTrue();
-    result.Value.Drafts.Should().HaveCount(10);
+    result.Value.Drafts.Should().HaveCount(5);
   }
 
   // -------------------------------------------------------------------------

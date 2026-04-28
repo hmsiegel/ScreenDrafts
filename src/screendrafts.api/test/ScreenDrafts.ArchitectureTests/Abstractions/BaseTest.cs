@@ -4,6 +4,7 @@ public abstract class BaseTest
 {
   protected const string AdministrationNamespace = "ScreenDrafts.Modules.Administration";
   protected const string AdministrationIntegrationEventsNamespace = "ScreenDrafts.Modules.Administration.IntegrationEvents";
+  protected const string AdministrationPublicApiNamespace = "ScreenDrafts.Modules.Administration.PublicApi";
 
 
   protected const string AuditNamespace = "ScreenDrafts.Modules.Audit";

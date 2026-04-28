@@ -23,6 +23,7 @@ public class ModuleTests : BaseTest
       CommunicationsIntegrationEventsNamespace,
       DraftsIntegrationEventsNamespace,
       IntegrationsIntegrationEventsNamespace,
+      IntegrationsPublicApiNamespace,
       MoviesIntegrationEventsNamespace,
       RealTimeUpdatesIntegrationEventsNamespace,
       ReportingIntegrationEventsNamespace,
@@ -63,13 +64,16 @@ public class ModuleTests : BaseTest
     string[] integrationEventsModules =
     [
       AdministrationIntegrationEventsNamespace,
+      AdministrationPublicApiNamespace,
       CommunicationsIntegrationEventsNamespace,
       DraftsIntegrationEventsNamespace,
       IntegrationsIntegrationEventsNamespace,
+      IntegrationsPublicApiNamespace,
       MoviesIntegrationEventsNamespace,
       RealTimeUpdatesIntegrationEventsNamespace,
       ReportingIntegrationEventsNamespace,
-      UsersIntegrationEventsNamespace
+      UsersIntegrationEventsNamespace,
+      UsersPublicApiNameSpace
     ];
 
     List<Assembly> auditAssemblies =
@@ -105,13 +109,16 @@ public class ModuleTests : BaseTest
     string[] integrationEventsModules =
     [
       AdministrationIntegrationEventsNamespace,
+      AdministrationPublicApiNamespace,
       AuditIntegrationEventsNamespace,
       DraftsIntegrationEventsNamespace,
       IntegrationsIntegrationEventsNamespace,
+      IntegrationsPublicApiNamespace,
       MoviesIntegrationEventsNamespace,
       RealTimeUpdatesIntegrationEventsNamespace,
       ReportingIntegrationEventsNamespace,
-      UsersIntegrationEventsNamespace
+      UsersIntegrationEventsNamespace,
+      UsersPublicApiNameSpace
     ];
 
     List<Assembly> communicationsAssemblies =
@@ -147,6 +154,7 @@ public class ModuleTests : BaseTest
     string[] integrationEventsModules =
     [
       AdministrationIntegrationEventsNamespace,
+      AdministrationPublicApiNamespace,
       AuditIntegrationEventsNamespace,
       CommunicationsIntegrationEventsNamespace,
       IntegrationsIntegrationEventsNamespace,
@@ -192,13 +200,15 @@ public class ModuleTests : BaseTest
     string[] integrationEventsModules =
     [
       AdministrationIntegrationEventsNamespace,
+      AdministrationPublicApiNamespace,
       AuditIntegrationEventsNamespace,
       CommunicationsIntegrationEventsNamespace,
       DraftsIntegrationEventsNamespace,
       MoviesIntegrationEventsNamespace,
       RealTimeUpdatesIntegrationEventsNamespace,
       ReportingIntegrationEventsNamespace,
-      UsersIntegrationEventsNamespace
+      UsersIntegrationEventsNamespace,
+      UsersPublicApiNameSpace
     ];
 
     List<Assembly> integrationsAssemblies =
@@ -234,6 +244,7 @@ public class ModuleTests : BaseTest
     string[] integrationEventsModules =
     [
       AdministrationIntegrationEventsNamespace,
+      AdministrationPublicApiNamespace,
       AuditIntegrationEventsNamespace,
       CommunicationsIntegrationEventsNamespace,
       DraftsIntegrationEventsNamespace,
@@ -241,7 +252,8 @@ public class ModuleTests : BaseTest
       IntegrationsPublicApiNamespace,
       RealTimeUpdatesIntegrationEventsNamespace,
       ReportingIntegrationEventsNamespace,
-      UsersIntegrationEventsNamespace
+      UsersIntegrationEventsNamespace,
+      UsersPublicApiNameSpace
     ];
 
     List<Assembly> moviesAssemblies =
@@ -277,13 +289,16 @@ public class ModuleTests : BaseTest
     string[] integrationEventsModules =
     [
       AdministrationIntegrationEventsNamespace,
+      AdministrationPublicApiNamespace,
       AuditIntegrationEventsNamespace,
       CommunicationsIntegrationEventsNamespace,
       DraftsIntegrationEventsNamespace,
       IntegrationsIntegrationEventsNamespace,
+      IntegrationsPublicApiNamespace,
       MoviesIntegrationEventsNamespace,
       ReportingIntegrationEventsNamespace,
-      UsersIntegrationEventsNamespace
+      UsersIntegrationEventsNamespace,
+      UsersPublicApiNameSpace
     ];
 
     List<Assembly> realTimeUpdatesAssemblies =
@@ -319,13 +334,16 @@ public class ModuleTests : BaseTest
     string[] integrationEventsModules =
     [
       AdministrationIntegrationEventsNamespace,
+      AdministrationPublicApiNamespace,
       AuditIntegrationEventsNamespace,
       CommunicationsIntegrationEventsNamespace,
       DraftsIntegrationEventsNamespace,
       IntegrationsIntegrationEventsNamespace,
+      IntegrationsPublicApiNamespace,
       MoviesIntegrationEventsNamespace,
       RealTimeUpdatesIntegrationEventsNamespace,
-      UsersIntegrationEventsNamespace
+      UsersIntegrationEventsNamespace,
+      UsersPublicApiNameSpace
     ];
 
     List<Assembly> reportingAssemblies =
@@ -361,10 +379,12 @@ public class ModuleTests : BaseTest
     string[] integrationEventsModules =
     [
       AdministrationIntegrationEventsNamespace,
+      AdministrationPublicApiNamespace,
       AuditIntegrationEventsNamespace,
       CommunicationsIntegrationEventsNamespace,
       DraftsIntegrationEventsNamespace,
       IntegrationsIntegrationEventsNamespace,
+      IntegrationsPublicApiNamespace,
       MoviesIntegrationEventsNamespace,
       RealTimeUpdatesIntegrationEventsNamespace,
       ReportingIntegrationEventsNamespace,
