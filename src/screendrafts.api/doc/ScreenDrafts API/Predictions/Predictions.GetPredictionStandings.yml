@@ -7,10 +7,10 @@ info:
 
 http:
   method: GET
-  url: "{{baseUrl}}/prediction-seasons/:seasonId/standings"
+  url: "{{baseUrl}}/prediction-seasons/:publicId/standings"
   params:
-    - name: seasonId
-      value: ps_M37u3iOQTXcqFTH
+    - name: publicId
+      value: ps_XE0ubSNl_dhiwb8
       type: path
   auth: inherit
 

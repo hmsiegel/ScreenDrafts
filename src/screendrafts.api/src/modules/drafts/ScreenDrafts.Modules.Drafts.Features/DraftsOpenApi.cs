@@ -165,6 +165,8 @@ internal static class DraftsOpenApi
     public const string Predictions_ScoreSets = "Predictions_ScoreSets";
     public const string Predictions_AddCarryover = "Predictions_AddCarryover";
     public const string Predictions_CloseSeason = "Predictions_CloseSeason";
+    public const string Predictions_ListSeasons = "Predictions_ListSeasons";
+    public const string Predictions_GetCurrentSeason = "Predictions_GetCurrentSeason";
 
     // Zoom Sessions
     public const string DraftParts_StartZoomSession = "DraftParts.StartZoomSession";

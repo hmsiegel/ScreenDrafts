@@ -4,7 +4,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<CreatePredictionSeasonRequ
 {
   public override void Configure()
   {
-    Post(PredictionRoutes.CreateSeason);
+    Post(PredictionRoutes.Seasons);
     Description(x =>
     {
       x.WithTags(DraftsOpenApi.Tags.Predictions)

@@ -14,6 +14,9 @@ internal sealed class KeyCloakClient(HttpClient httpClient)
       user.LastName,
       user.Email);
 
+    var json = System.Text.Json.JsonSerializer.Serialize(user);
+    Log.Information("Registering use with the following JSON payload: {JsonPayload}", json);
+
     var httpResponseMessage = await _httpClient.PostAsJsonAsync(
       "users",
       user,

@@ -7,7 +7,11 @@ info:
 
 http:
   method: GET
-  url: "{{baseUrl}}/people/search"
+  url: "{{baseUrl}}/people/search?name=Benjamin"
+  params:
+    - name: name
+      value: Benjamin
+      type: query
   body:
     type: text
     data: ""

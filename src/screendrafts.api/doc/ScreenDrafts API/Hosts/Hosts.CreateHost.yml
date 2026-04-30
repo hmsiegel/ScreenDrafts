@@ -12,7 +12,7 @@ http:
     type: json
     data: |-
       {
-        "personPublicId": ""
+        "personPublicId": "pe_BE9cw6YFDCWnlGW"
       }
   auth: inherit
 

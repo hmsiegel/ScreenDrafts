@@ -1,11 +1,6 @@
-interface UpcomingDraft {
-  date: string;
-  title: string;
-  type: string;
-  access: 'PUBLIC' | 'PATRON';
-}
+import { MappedUpcomingDraft } from "@/services/home/fetch-home-data";
 
-export default function UpcomingDrafts({ drafts }: { drafts: UpcomingDraft[] }) {
+export default function UpcomingDrafts({ drafts }: { drafts: MappedUpcomingDraft[] }) {
   return (
     <div className="bg-white border-2 border-sd-ink rounded-sm">
       <div className="bg-sd-blue text-white px-5 py-3.5">
@@ -16,7 +11,7 @@ export default function UpcomingDrafts({ drafts }: { drafts: UpcomingDraft[] }) 
       <div className="divide-y divide-gray-100">
         {drafts.map((draft) => (
           <div
-            key={draft.title}
+            key={draft.draftPartPublicId || draft.title}
             className={`px-5 py-3.5 relative ${draft.access === 'PATRON' ? 'bg-amber-50' : 'bg-white'}`}
           >
             {draft.access === 'PATRON' && (

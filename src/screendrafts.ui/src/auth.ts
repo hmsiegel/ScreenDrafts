@@ -27,7 +27,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         // First login: fetch backend publicId then roles.
         // TODO: confirm the user-lookup endpoint with the backend team.
         try {
-          const userRes = await fetch(`${API_BASE}/users/me`, {
+          const userRes = await fetch(`${API_BASE}/users/profile`, {
             headers: { Authorization: `Bearer ${account.access_token}` },
           });
           if (userRes.ok) {

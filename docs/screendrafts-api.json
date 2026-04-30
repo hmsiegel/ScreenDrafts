@@ -993,7 +993,70 @@
         ]
       }
     },
-    "/prediction-seasons/{seasonId}/standings": {
+    "/prediction-seasons": {
+      "get": {
+        "tags": [
+          "Predictions"
+        ],
+        "operationId": "Predictions_ListSeasons",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListPredictionSeasonsResult"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {}
+        ]
+      },
+      "post": {
+        "tags": [
+          "Predictions"
+        ],
+        "operationId": "Predictions_CreateSeason",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePredictionSeasonRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreatedResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/prediction-seasons/{publicId}/standings": {
       "get": {
         "tags": [
           "Predictions"
@@ -1040,41 +1103,22 @@
         ]
       }
     },
-    "/prediction-seasons": {
-      "post": {
+    "/prediction-seasons/current": {
+      "get": {
         "tags": [
           "Predictions"
         ],
-        "operationId": "Predictions_CreateSeason",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreatePredictionSeasonRequest"
-              }
-            }
-          },
-          "required": true
-        },
+        "operationId": "Predictions_GetCurrentSeason",
         "responses": {
-          "201": {
-            "description": "Created",
+          "200": {
+            "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CreatedResponse"
+                  "$ref": "#/components/schemas/PredictionSeasonSummaryResponse"
                 }
               }
             }
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
           }
         },
         "security": [
@@ -1130,7 +1174,7 @@
         ]
       }
     },
-    "/prediction-seasons/{seasonId}/close": {
+    "/prediction-seasons/{publicId}/close": {
       "post": {
         "tags": [
           "Predictions"
@@ -1209,7 +1253,7 @@
         ]
       }
     },
-    "/prediction-seasons/{seasonId}/carryovers": {
+    "/prediction-seasons/{publicId}/carryovers": {
       "post": {
         "tags": [
           "Predictions"
@@ -2048,12 +2092,6 @@
                 }
               }
             }
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
           }
         },
         "security": [
@@ -8571,7 +8609,7 @@
       "GetPredictionStandingsRequest": {
         "type": "object",
         "properties": {
-          "seasonPublicId": {
+          "publicId": {
             "type": "string"
           }
         }
@@ -9239,6 +9277,20 @@
             "type": "array",
             "items": {
               "type": "string"
+            }
+          }
+        }
+      },
+      "ListPredictionSeasonsResult": {
+        "required": [
+          "seasons"
+        ],
+        "type": "object",
+        "properties": {
+          "seasons": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PredictionSeasonSummaryResponse"
             }
           }
         }
@@ -10487,6 +10539,78 @@
           }
         }
       },
+      "PredictionSeasonSummaryResponse": {
+        "required": [
+          "publicId",
+          "number",
+          "startDate",
+          "firstEpisodeNumber",
+          "lastEpisodeNumber",
+          "targetPoints",
+          "isClosed",
+          "standings"
+        ],
+        "type": "object",
+        "properties": {
+          "publicId": {
+            "type": "string"
+          },
+          "number": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "endDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
+          },
+          "firstEpisodeNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "lastEpisodeNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "targetPoints": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "isClosed": {
+            "type": "boolean"
+          },
+          "standings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SeasonContestantStandingResponse"
+            }
+          }
+        }
+      },
       "PredictionStandingsResponse": {
         "type": "object",
         "properties": {
@@ -11310,6 +11434,41 @@
           },
           "isHost": {
             "type": "boolean"
+          }
+        }
+      },
+      "SeasonContestantStandingResponse": {
+        "required": [
+          "contestantPublicId",
+          "displayName",
+          "points",
+          "hasCrossedTarget"
+        ],
+        "type": "object",
+        "properties": {
+          "contestantPublicId": {
+            "type": "string"
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "points": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "hasCrossedTarget": {
+            "type": "boolean"
+          },
+          "firstCrossedTargetAtUtc": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
           }
         }
       },

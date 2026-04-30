@@ -24,7 +24,7 @@ internal sealed class Endpoint
   {
     var query = new GetPredictionStandingsQuery
     {
-      SeasonPublicId = req.SeasonPublicId
+      SeasonPublicId = req.PublicId
     };
     var result = await Sender.Send(query, ct);
 

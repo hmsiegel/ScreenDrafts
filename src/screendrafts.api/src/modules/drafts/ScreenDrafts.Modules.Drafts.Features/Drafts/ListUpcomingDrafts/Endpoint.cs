@@ -19,20 +19,26 @@ internal sealed class Endpoint(IAdministrationApi administrationApi)
 
   public override async Task HandleAsync(CancellationToken ct)
   {
-    var includePatreon = User.HasPermission(DraftsAuth.Permissions.PatreonSearch);
+    var isAuthenticated = User.Identity?.IsAuthenticated == true;
 
-    var roles = await _administrationApi.GetUserRolesAsync(User.GetPublicId(), ct);
-    var isAdmin = roles.Contains(DraftsAuth.Roles.SuperAdmin, StringComparer.OrdinalIgnoreCase)
-      || roles.Contains(DraftsAuth.Roles.Admin, StringComparer.OrdinalIgnoreCase);
+    var includePatreon = isAuthenticated && User.HasPermission(DraftsAuth.Permissions.PatreonSearch);
+
+    var isAdmin = false;
+    if (isAuthenticated)
+    {
+      var roles = await _administrationApi.GetUserRolesAsync(User.GetPublicId(), ct);
+      isAdmin = roles.Contains(DraftsAuth.Roles.SuperAdmin, StringComparer.OrdinalIgnoreCase)
+        || roles.Contains(DraftsAuth.Roles.Admin, StringComparer.OrdinalIgnoreCase);
+    }
 
     var query = new ListUpcomingDraftsQuery
     {
-      UserId = User.GetUserId(),
+      UserId = isAuthenticated ? User.GetUserId() : Guid.Empty,
       IsAdmin = isAdmin,
       IncludePatreon = includePatreon
     };
 
-    var result = await Sender.Send (query, ct);
+    var result = await Sender.Send(query, ct);
 
     await this.SendOkAsync(result, ct);
   }

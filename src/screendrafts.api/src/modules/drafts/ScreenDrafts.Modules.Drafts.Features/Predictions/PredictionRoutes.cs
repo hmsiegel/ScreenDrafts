@@ -3,10 +3,11 @@
 internal static class PredictionRoutes
 {
   // Seasons
-  public const string CreateSeason = "prediction-seasons";
-  public const string GetSeasonStandings = "prediction-seasons/{seasonId}/standings";
-  public const string AddCarryover = "prediction-seasons/{seasonId}/carryovers";
-  public const string CloseSeason = "prediction-seasons/{seasonId}/close";
+  public const string Seasons = "prediction-seasons";
+  public const string GetCurrentSeason = Seasons + "/current";
+  public const string GetSeasonStandings = Seasons + "/{publicId}/standings";
+  public const string AddCarryover = Seasons + "/{publicId}/carryovers";
+  public const string CloseSeason = Seasons + "/{publicId}/close";
 
   // Contestants
   public const string CreateContestant = "prediction-contestants";

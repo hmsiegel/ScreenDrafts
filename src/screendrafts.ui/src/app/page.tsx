@@ -10,8 +10,10 @@ import AuthStrip from "@/components/features/home/auth-strip";
 import {
   fetchLatestDrafts,
   fetchUpcomingDrafts,
+  fetchCurrentStandings,
   mapLatestDraft,
   mapUpcomingDraft,
+  mapStandings,
 } from "@/services/home/fetch-home-data";
 
 // ── Mock data (no endpoint yet) ────────────────────────────────────────────
@@ -23,42 +25,36 @@ const spotlight = {
   subject: 'Martin Scorsese',
   description: `Nine drafters. Twenty-nine theatrical releases (plus No Direction Home, advanced from the Patreon). Multiple veto overrides — including the first-ever override of a Patreon-awarded veto. The Age of Innocence made the largest leap from a vetoed pick in show history.`,
   topFive: [
-    { position: 1, title: 'Goodfellas',   year: 1990 },
-    { position: 2, title: 'Taxi Driver',  year: 1976 },
-    { position: 3, title: 'Raging Bull',  year: 1980 },
+    { position: 1, title: 'Goodfellas', year: 1990 },
+    { position: 2, title: 'Taxi Driver', year: 1976 },
+    { position: 3, title: 'Raging Bull', year: 1980 },
     { position: 4, title: 'The Departed', year: 2006 },
-    { position: 5, title: 'Casino',       year: 1995 },
+    { position: 5, title: 'Casino', year: 1995 },
   ],
   totalPicks: 30,
 };
 
 // TODO: wire up when endpoint exists
 const stats = [
-  { value: '317',   label: 'EPISODES PRODUCED' },
+  { value: '317', label: 'EPISODES PRODUCED' },
   { value: '2,140', label: 'FILMS DRAFTED' },
-  { value: '186',   label: 'GUEST G.M.s' },
-  { value: '418',   label: 'VETOES DEPLOYED' },
-  { value: '6',     label: 'LEGENDS' },
-];
-
-// TODO: wire up when endpoint exists
-const standings = [
-  { rank: 1, name: 'CLAY',  score: 91 },
-  { rank: 2, name: 'RYAN',  score: 78 },
-  { rank: 3, name: 'NICK',  score: 64 },
-  { rank: 4, name: 'EMILY', score: 52 },
+  { value: '186', label: 'GUEST G.M.s' },
+  { value: '418', label: 'VETOES DEPLOYED' },
+  { value: '6', label: 'LEGENDS' },
 ];
 
 // ── Page ───────────────────────────────────────────────────────────────────
 
 export default async function Home() {
-  const [latestDrafts, upcomingDrafts] = await Promise.all([
+  const [latestDrafts, upcomingDrafts, currentStandings] = await Promise.all([
     fetchLatestDrafts(),
     fetchUpcomingDrafts(),
+    fetchCurrentStandings(),
   ]);
 
   const recentDrafts = latestDrafts.map(mapLatestDraft);
   const upcoming = upcomingDrafts.map(mapUpcomingDraft);
+  const standings = mapStandings(currentStandings);
 
   return (
     <div className="bg-light-blue min-h-screen font-sans">
@@ -69,7 +65,7 @@ export default async function Home() {
 
       <section className="grid grid-cols-3 gap-6 px-8 py-10">
         <RecentDrafts drafts={recentDrafts} />
-        <CommissionerStandings standings={standings} maxScore={100} />
+        <CommissionerStandings standings={standings} />
         <UpcomingDrafts drafts={upcoming} />
       </section>
 

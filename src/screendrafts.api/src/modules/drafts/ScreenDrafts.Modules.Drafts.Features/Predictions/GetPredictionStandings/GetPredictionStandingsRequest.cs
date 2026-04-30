@@ -6,6 +6,6 @@
 
 internal sealed record GetPredictionStandingsRequest
 {
-  [FromRoute(Name = "seasonId")]
-  public string SeasonPublicId { get; init; } = default!;
+  [FromRoute(Name = "publicId")]
+  public string PublicId { get; init; } = default!;
 }

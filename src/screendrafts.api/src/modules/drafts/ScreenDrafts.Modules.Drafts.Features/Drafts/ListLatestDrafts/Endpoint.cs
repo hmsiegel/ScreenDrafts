@@ -16,7 +16,8 @@ internal sealed class Endpoint : ScreenDraftsEndpointWithoutRequest<ListLatestDr
 
   public override async Task HandleAsync(CancellationToken ct)
   {
-    var includePatreon = User.HasPermission(DraftsAuth.Permissions.DraftReadPatreon);
+    var includePatreon = User.Identity?.IsAuthenticated == true 
+      && User.HasPermission(DraftsAuth.Permissions.DraftReadPatreon);
 
     var query = new ListLatestDraftsQuery
     {

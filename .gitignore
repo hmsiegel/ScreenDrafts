@@ -473,3 +473,5 @@ FodyWeavers.xsd
 /src/screendrafts.api/tools/ScreenDrafts.Tools.DbMigrator/appsettings.Development.json
 /src/screendrafts.api/src/modules/users/ScreenDrafts.Modules.Users.IntegrationTests/screendrafts-realm-export.json
 /src/screendrafts.api/tools/ScreenDrafts.Seeding.Honorifics/appsettings.Development.json
+/src/screendrafts.api/tools/patch-keycloak-users.ps1
+/src/screendrafts.api/tools/users_export.csv
