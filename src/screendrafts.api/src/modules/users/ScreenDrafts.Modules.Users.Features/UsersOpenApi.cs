@@ -16,5 +16,6 @@ internal static class UsersOpenApi
     public const string Users_UpdateUserProfile = "Users.UpdateUserProfile";
     public const string Users_GetUserProfile = "Users.GetUserProfile";
     public const string Users_GetUsersProfiles = "Users.GetUsersProfiles";
+    public const string Users_RegisterSocialUser = "Users.RegisterSocialUser";
   }
 }

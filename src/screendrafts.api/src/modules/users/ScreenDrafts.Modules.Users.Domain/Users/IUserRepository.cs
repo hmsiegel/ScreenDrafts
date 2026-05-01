@@ -3,14 +3,10 @@
 public interface IUserRepository : IRepository
 {
   Task<User?> GetAsync(UserId id, CancellationToken cancellationToken = default);
-
   Task<bool> IsEmailUniqueAsync(Email email, CancellationToken cancellationToken = default);
-
   Task<User?> GetByEmailAsync(Email email, CancellationToken cancellationToken = default);
-
   Task<User?> GetByPublicIdAsync(string publicId, CancellationToken cancellationToken = default);
-
+  Task<User?> GetByIdentityIdAsync(string identityId, CancellationToken cancellationToken = default);
   void Add(User user);
-
   void Update(User user);
 }

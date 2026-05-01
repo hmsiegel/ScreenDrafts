@@ -6,6 +6,7 @@ internal sealed record UpcomingDraftResponse
   public string DraftPublicId { get; init; } = string.Empty;
   public string Title { get; init; } = string.Empty;
   public int PartNumber { get; init; }
+  public int TotalParts { get; init; }
   public DateOnly? ReleaseDate { get; init; }
 
   public DraftStatus Status { get; init; } = default!;

@@ -592,6 +592,11 @@ export interface IClient {
     users_RegisterUser(body: RegisterUserRequest): Promise<string>;
 
     /**
+     * @return Created
+     */
+    users_RegisterSocialUser(body: RegisterSocialUserRequest): Promise<string>;
+
+    /**
      * @return OK
      */
     users_GetUsersProfiles(body: Request): Promise<Response>;
@@ -6681,6 +6686,55 @@ export class Client implements IClient {
     }
 
     /**
+     * @return Created
+     */
+    users_RegisterSocialUser(body: RegisterSocialUserRequest, signal?: AbortSignal): Promise<string> {
+        let url_ = this.baseUrl + "/users/register/social";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processUsers_RegisterSocialUser(_response);
+        });
+    }
+
+    protected processUsers_RegisterSocialUser(response: Response): Promise<string> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 201) {
+            return response.text().then((_responseText) => {
+            let result201: any = null;
+            result201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as string;
+            return result201;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<string>(null as any);
+    }
+
+    /**
      * @return OK
      */
     users_GetUsersProfiles(body: Request, signal?: AbortSignal): Promise<Response> {
@@ -9207,6 +9261,15 @@ export interface ProductionCompanyResponse {
     [key: string]: any;
 }
 
+export interface RegisterSocialUserRequest {
+    email: string;
+    firstName: string;
+    lastName: string;
+    identityId: string;
+
+    [key: string]: any;
+}
+
 export interface RegisterUserRequest {
     email?: string;
     password?: string;
@@ -9616,6 +9679,7 @@ export interface UpcomingDraftResponse {
     draftPublicId?: string;
     title?: string;
     partNumber?: number;
+    totalParts?: number;
     releaseDate?: Date | undefined;
     status?: DraftStatus;
     capabilities?: DraftUserCapabilities;

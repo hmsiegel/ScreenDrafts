@@ -22,6 +22,11 @@ internal sealed class ListUpcomingDraftsQueryHandler(IDbConnectionFactory dbConn
         d.public_id AS {nameof(UpcomingDraftResponse.DraftPublicId)},
         d.title AS {nameof(UpcomingDraftResponse.Title)},
         dp.part_index AS {nameof(UpcomingDraftResponse.PartNumber)},
+        (
+          SELECT COUNT(*)
+          FROM drafts.draft_parts dp2
+          WHERE dp2.draft_id = d.id
+        ) AS {nameof(UpcomingDraftResponse.TotalParts)},
         dp.status AS {nameof(UpcomingDraftResponse.Status)},
         MIN(r.release_date) AS {nameof(UpcomingDraftResponse.ReleaseDate)}
       FROM drafts.draft_parts dp

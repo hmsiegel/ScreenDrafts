@@ -15,7 +15,7 @@ internal sealed class GetUserPermissionsQueryHandler(IDbConnectionFactory dbConn
         u.public_id AS {nameof(UserPermission.PublicId)},
         up.permission_code AS {nameof(UserPermission.Permission)}
       FROM users.users u
-      JOIN users.user_permissions up ON up.user_id = u.id
+      LEFT JOIN users.user_permissions up ON up.user_id = u.id
       WHERE u.identity_id = @IdentityId
       """;
 
@@ -29,7 +29,9 @@ internal sealed class GetUserPermissionsQueryHandler(IDbConnectionFactory dbConn
     return new PermissionsResponse(
       permissions[0].UserId,
       permissions[0].PublicId,
-      [.. permissions.Select(p => p.Permission)]);
+      [.. permissions
+                      .Where(p => p.Permission is not null)
+                      .Select(p => p.Permission)]);
   }
 
   internal sealed class UserPermission

@@ -47,7 +47,7 @@ const FALLBACK_STANDINGS: PredictionSeasonSummaryResponse = {
 export async function fetchLatestDrafts(): Promise<LatestDraftResponse[]> {
   try {
     const res = await fetch(`${API_BASE}/drafts/latest`, {
-      next: { revalidate: 3600 },
+      next: { revalidate: process.env.NODE_ENV === 'development' ? 0 : 3600 },
     });
     if (!res.ok) return FALLBACK_LATEST;
     const data = await res.json() as ListLatestDraftsResponse;
@@ -60,12 +60,12 @@ export async function fetchLatestDrafts(): Promise<LatestDraftResponse[]> {
 export async function fetchUpcomingDrafts(): Promise<UpcomingDraftResponse[]> {
   try {
     const res = await fetch(`${API_BASE}/drafts/upcoming`, {
-      next: { revalidate: 3600 },
+      next: { revalidate: process.env.NODE_ENV === 'development' ? 0 : 3600 },
     });
     if (!res.ok) return FALLBACK_UPCOMING;
     const data = await res.json() as ListUpcomingDraftsResponse;
     return data.drafts ?? FALLBACK_UPCOMING;
-  } catch {
+  } catch (e) {
     return FALLBACK_UPCOMING;
   }
 }
@@ -73,7 +73,7 @@ export async function fetchUpcomingDrafts(): Promise<UpcomingDraftResponse[]> {
 export async function fetchCurrentStandings(): Promise<PredictionSeasonSummaryResponse> {
   try {
     const res = await fetch(`${API_BASE}/prediction-seasons/current`, {
-      next: { revalidate: 3600 }
+      next: { revalidate: process.env.NODE_ENV === 'development' ? 0 : 3600 },
     });
     if (!res.ok) return FALLBACK_STANDINGS;
     return await res.json() as PredictionSeasonSummaryResponse;
@@ -143,10 +143,15 @@ export function mapLatestDraft(draft: LatestDraftResponse): MappedRecentDraft {
 }
 
 export function mapUpcomingDraft(draft: UpcomingDraftResponse): MappedUpcomingDraft {
+  const totalParts = draft.totalParts ?? 1;
+  const title = totalParts > 1
+    ? `${draft.title ?? ''} (Part ${draft.partNumber ?? ''})`
+    : draft.title ?? '';
+
   return {
     draftPartPublicId: draft.draftPartPublicId ?? '',
     date: formatDate(draft.releaseDate),
-    title: draft.title ?? '',
+    title,
     type: draft.status?.name ?? 'Draft',
     // TODO: wire access level when backend adds it to UpcomingDraftResponse
     access: 'PUBLIC',

@@ -21,7 +21,7 @@ internal sealed class CustomClaimsTransformation(IServiceScopeFactory serviceSco
 
     if (result.IsFailure)
     {
-      throw new ScreenDraftsException(nameof(IPermissionService.GetUserPermissionsAsync), result.Error);
+      return principal;
     }
 
     var claimsIdentity = new ClaimsIdentity();

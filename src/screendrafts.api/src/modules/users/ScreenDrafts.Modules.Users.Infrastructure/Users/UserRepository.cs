@@ -34,4 +34,9 @@ internal sealed class UserRepository(UsersDbContext dbContext) : IUserRepository
   {
     return _dbContext.Users.SingleOrDefaultAsync(x => x.PublicId == publicId, cancellationToken);
   }
+
+  public Task<User?> GetByIdentityIdAsync(string identityId, CancellationToken cancellationToken = default)
+  {
+    return _dbContext.Users.SingleOrDefaultAsync(x => x.IdentityId == identityId, cancellationToken);
+  }
 }

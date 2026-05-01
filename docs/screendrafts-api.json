@@ -5228,6 +5228,45 @@
         ]
       }
     },
+    "/users/register/social": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "Users.RegisterSocialUser",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterSocialUserRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
     "/users/public-profiles/by-person-ids": {
       "post": {
         "tags": [
@@ -10784,6 +10823,29 @@
           }
         }
       },
+      "RegisterSocialUserRequest": {
+        "required": [
+          "email",
+          "firstName",
+          "lastName",
+          "identityId"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "identityId": {
+            "type": "string"
+          }
+        }
+      },
       "RegisterUserRequest": {
         "type": "object",
         "properties": {
@@ -11993,6 +12055,14 @@
             "type": "string"
           },
           "partNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "totalParts": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": [
               "integer",

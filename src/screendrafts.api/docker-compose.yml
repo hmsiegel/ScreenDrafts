@@ -24,6 +24,7 @@ services:
     environment:
       - DATA_PATH=/app/data
       - ASPNETCORE_ENVIRONMENT=Development
+      - KeycloakRegistration__Secret=HX@rjqcHrC*YnxpiaCU*GiG74dZWau*K
     ports:
       - 5000:8080
       - 5001:8081
@@ -82,9 +83,12 @@ services:
       - KC_LEGACY_OBSERVABILITY_INTERFACE=true
       - KEYCLOAK_ADMIN=admin
       - KEYCLOAK_ADMIN_PASSWORD=admin
+      - SD_API_URL=http://screendrafts.web:8080
+      - SD_KEYCLOAK_SECRET=HX@rjqcHrC*YnxpiaCU*GiG74dZWau*K
     volumes:
       - ./.files:/opt/keycloak/data/import
       - ./res/keycloak-theme-screendrafts.jar:/opt/keycloak/providers/keycloak-theme-screendrafts.jar
+      - ./res/screendrafts-authenticator-1.0.0.jar:/opt/keycloak/providers/screendrafts-authenticator-1.0.0.jar
     ports:
       - 18080:8080
     depends_on:

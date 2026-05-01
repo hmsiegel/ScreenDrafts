@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Common.Abstractions.Results;
-
-namespace ScreenDrafts.Modules.Users.Domain.Users.ValueObjects;
+﻿namespace ScreenDrafts.Modules.Users.Domain.Users.ValueObjects;
 
 public class FirstName(string? Value)
 {
