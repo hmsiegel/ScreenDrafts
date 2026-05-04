@@ -1,0 +1,4 @@
+dist/
+dist_keycloak/
+node_modules/
+keycloak-theme-screendrafts.jar
