@@ -1,0 +1,66 @@
+import { Suspense, lazy } from "react";
+import type { ClassKey } from "keycloakify/login";
+import type { KcContext } from "./KcContext";
+import { useI18n } from "./i18n";
+import DefaultPage from "keycloakify/login/DefaultPage";
+import BuiltinTemplate from "keycloakify/login/Template";
+import "./screendrafts.css";
+import RegisterPage from "./pages/RegisterPage";
+
+const UserProfileFormFields = lazy(
+    () => import("keycloakify/login/UserProfileFormFields")
+);
+
+const LoginPage = lazy(() => import("./pages/LoginPage"));
+
+const doMakeUserConfirmPassword = true;
+
+export default function KcPage(props: { kcContext: KcContext }) {
+    const { kcContext } = props;
+    const { i18n } = useI18n({ kcContext });
+
+    return (
+        <Suspense>
+            {(() => {
+                switch (kcContext.pageId) {
+                    case "login.ftl":
+                        return (
+                            <LoginPage
+                                kcContext={kcContext}
+                                i18n={i18n}
+                                classes={classes}
+                                Template={BuiltinTemplate}
+                                doUseDefaultCss={false}
+                            />
+                        );
+                    case "register.ftl":
+                        return (
+                            <RegisterPage
+                                kcContext={kcContext}
+                                i18n={i18n}
+                                classes={classes}
+                                Template={BuiltinTemplate}
+                                doUseDefaultCss={false}
+                                UserProfileFormFields={UserProfileFormFields}
+                                doMakeUserConfirmPassword={doMakeUserConfirmPassword}
+                            />
+                        );
+                    default:
+                        return (
+                            <DefaultPage
+                                kcContext={kcContext}
+                                i18n={i18n}
+                                classes={classes}
+                                Template={BuiltinTemplate}
+                                doUseDefaultCss={true}
+                                UserProfileFormFields={UserProfileFormFields}
+                                doMakeUserConfirmPassword={doMakeUserConfirmPassword}
+                            />
+                        );
+                }
+            })()}
+        </Suspense>
+    );
+}
+
+const classes = {} satisfies { [key in ClassKey]?: string };

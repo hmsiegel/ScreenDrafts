@@ -72,7 +72,7 @@ services:
   # Keycloak
   screendrafts.identity:
     image: quay.io/keycloak/keycloak:latest
-    command: start-dev --import-realm 
+    command: start-dev --import-realm
     container_name: screendrafts.identity
     environment:
       - KC_DB=postgres
@@ -81,10 +81,14 @@ services:
       - KC_DB_PASSWORD=keycloakpass
       - KC_HEALTH_ENABLED=true
       - KC_LEGACY_OBSERVABILITY_INTERFACE=true
+      - KC_SPI_THEME_STATIC_MAX_AGE=1
+      - KC_SPI_THEME_CACHE_THEMES=false
+      - KC_SPI_THEME_CACHE_TEMPLATES=false
       - KEYCLOAK_ADMIN=admin
       - KEYCLOAK_ADMIN_PASSWORD=admin
       - SD_API_URL=http://screendrafts.web:8080
       - SD_KEYCLOAK_SECRET=HX@rjqcHrC*YnxpiaCU*GiG74dZWau*K
+      - REGISTER_URL=http://localhost:3005/register
     volumes:
       - ./.files:/opt/keycloak/data/import
       - ./res/keycloak-theme-screendrafts.jar:/opt/keycloak/providers/keycloak-theme-screendrafts.jar

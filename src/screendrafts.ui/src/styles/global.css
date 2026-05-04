@@ -7,6 +7,11 @@
 :root {
   --background: #88ADD0;
   --foreground: #171717;
+  --sd-navy:   #0d1430;
+  --sd-red:    #cb2032;
+  --sd-blue:   #1e448b;
+  --sd-cream:  #fbf7ee;
+  --sd-red-dark: #a8182a;
 }
 
 input[type='number'] {
@@ -106,4 +111,72 @@ focus:border-sd-blue
   @apply
   px-4
   py-2
+}
+
+.sd-page-bg {
+  @apply min-h-screen flex items-center justify-center;
+  background-color: #1e448b;
+  background-image:
+    radial-gradient(ellipse 100% 70% at 50% -10%, #3d6fd4 0%, #1e448b 45%, #0f2660 100%),
+    radial-gradient(ellipse 60% 50% at 85% 105%, rgba(203,32,50,0.18) 0%, transparent 55%);
+}
+
+.sd-register-card {
+  @apply w-full bg-white rounded-xl shadow-2xl;
+  max-width: 440px;
+  padding: 32px 32px 28px;
+  color: #1a1a2e;
+}
+
+.sd-register-title {
+  @apply text-center uppercase mb-6;
+  font-family: var(--font-oswald);
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: #1a1a2e;
+}
+
+.sd-register-input {
+  @apply w-full rounded bg-slate-50 border border-slate-300 text-slate-900 text-sm px-3 py-2.5 outline-none transition-all;
+}
+
+.sd-register-input:focus {
+  @apply bg-white;
+  border-color: #1e448b;
+  box-shadow: 0 0 0 3px rgba(30,68,139,0.12);
+}
+
+.sd-register-label {
+  @apply block uppercase text-slate-500 text-xs font-bold tracking-widest mb-1;
+}
+
+.sd-register-btn {
+  @apply w-full text-white uppercase font-bold py-3 rounded transition-colors;
+  font-family: var(--font-oswald);
+  font-size: 16px;
+  letter-spacing: 0.08em;
+  background: #cb2032;
+}
+
+.sd-register-btn:hover  { background: #a8182a; }
+.sd-register-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.sd-register-footer {
+  @apply text-center text-sm mt-4;
+  color: #64748b;
+}
+
+.sd-register-footer a {
+  @apply font-semibold no-underline;
+  color: #1e448b;
+}
+
+.sd-register-footer a:hover { @apply underline; }
+
+.sd-alert {
+  @apply rounded px-3 py-2.5 text-sm leading-relaxed;
+}
+.sd-alert-error {
+  @apply bg-red-50 border border-red-300 text-red-800;
 }

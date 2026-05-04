@@ -1,0 +1,315 @@
+/* ──────────────────────────────────────────────
+   ScreenDrafts Keycloak Theme
+   Design tokens + page layout
+   ────────────────────────────────────────────── */
+
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+
+/* ── Tokens ── */
+:root {
+  --sd-navy:   #0d1430;
+  --sd-red:    #cb2032;
+  --sd-blue:   #1e448b;
+  --sd-cream:  #fbf7ee;
+  --sd-navy-light: #1a2347;
+  --sd-navy-mid:   #131b3a;
+  --sd-red-dark:   #a8182a;
+  --sd-text-muted: #8a95b0;
+  --sd-border:     rgba(255,255,255,0.10);
+  --sd-input-bg:   rgba(255,255,255,0.06);
+  --sd-input-focus:#1e448b;
+  --sd-radius:     6px;
+  --sd-radius-lg:  10px;
+}
+
+/* ── Reset / base ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background-color: var(--sd-blue);
+  color: var(--sd-cream);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* subtle diagonal gradient matching the homepage hero */
+background-image:
+    radial-gradient(ellipse 100% 70% at 50% -10%, #3d6fd4 0%, #1e448b 45%, #0f2660 100%),
+    radial-gradient(ellipse 60% 50% at 85% 105%, rgba(203,32,50,0.18) 0%, transparent 55%);
+}
+
+/* ── Page wrapper ── */
+.sd-page {
+  width: 100%;
+  max-width: 440px;
+  padding: 24px 16px 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+}
+
+/* ── Logo / brand ── */
+.sd-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.sd-logo {
+  width: 88px;
+  height: 88px;
+}
+
+.sd-brand-wordmark {
+  font-family: 'Oswald', sans-serif;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--sd-cream);
+  text-transform: uppercase;
+}
+
+.sd-brand-tagline {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--sd-text-muted);
+  font-weight: 500;
+}
+
+/* ── Card ── */
+.sd-card {
+  width: 100%;
+  background: rgba(255,255,255,0.97);
+  border: none;
+  border-radius: var(--sd-radius-lg);
+  padding: 32px 32px 28px;
+  color: #1a1a2e;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.30), 0 4px 16px rgba(0,0,0,0.15);
+}
+
+/* ── Card header ── */
+.sd-card-title {
+  font-family: 'Oswald', sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-align: center;
+  color: #1a1a2e;
+  margin-bottom: 24px;
+}
+
+/* ── Alert / flash messages ── */
+.sd-alert {
+  border-radius: var(--sd-radius);
+  padding: 10px 14px;
+  font-size: 13px;
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+.sd-alert-error   { background: #fef2f2; border: 1px solid #fca5a5; color: #991b1b; }
+.sd-alert-warning { background: #fffbeb; border: 1px solid #fcd34d; color: #92400e; }
+.sd-alert-success { background: #eff6ff; border: 1px solid #93c5fd; color: #1e3a8a; }
+.sd-alert-info    { background: #f8fafc; border: 1px solid #cbd5e1; color: #334155; }
+
+/* ── Form ── */
+.sd-form { display: flex; flex-direction: column; gap: 16px; }
+
+.sd-field { display: flex; flex-direction: column; gap: 6px; }
+
+.sd-label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #475569;
+}
+
+.sd-input-wrap { position: relative; }
+
+.sd-input {
+  width: 100%;
+  background: #f8fafc;
+  border: 1.5px solid #cbd5e1;
+  border-radius: var(--sd-radius);
+  color: #0f172a;
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  padding: 10px 14px;
+  outline: none;
+  transition: border-color 0.18s, box-shadow 0.18s;
+  -webkit-appearance: none;
+}
+.sd-input::placeholder { color: #94a3b8;}
+.sd-input:focus {
+  border-color: var(--sd-blue);
+  box-shadow: 0 0 0 3px rgba(30,68,139,0.12);
+  background: #fff;
+}
+.sd-input[aria-invalid="true"] {
+  border-color: var(--sd-red);
+  box-shadow: 0 0 0 3px rgba(203,32,50,0.20);
+}
+
+/* password visibility toggle */
+.sd-input-with-toggle { padding-right: 44px; }
+.sd-pwd-toggle {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 42px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s;
+  padding: 0;
+}
+.sd-pwd-toggle:hover { color: #475569; }
+.sd-pwd-toggle svg { width: 18px; height: 18px; }
+
+.sd-field-error {
+  font-size: 12px;
+  color: #b91c1c;
+  margin-top: 2px;
+}
+
+/* ── Forgot password row ── */
+.sd-form-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: -4px;
+}
+
+.sd-remember-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #475569;
+  cursor: pointer;
+  user-select: none;
+}
+.sd-remember-label input[type="checkbox"] { accent-color: var(--sd-blue); width: 15px; height: 15px; }
+
+.sd-forgot-link {
+  font-size: 13px;
+  color: var(--sd-blue);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.sd-forgot-link:hover { color: var(--sd-navy); text-decoration: underline; }
+
+/* ── Primary button ── */
+.sd-btn-primary {
+  display: block;
+  width: 100%;
+  background: var(--sd-red);
+  color: #fff;
+  font-family: 'Oswald', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: none;
+  border-radius: var(--sd-radius);
+  padding: 12px 20px;
+  cursor: pointer;
+  transition: background 0.18s, transform 0.1s;
+  margin-top: 4px;
+}
+.sd-btn-primary:hover  { background: var(--sd-red-dark); }
+.sd-btn-primary:active { transform: scale(0.99); }
+.sd-btn-primary:disabled { opacity: 0.55; cursor: not-allowed; }
+
+/* ── Divider ── */
+.sd-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 24px 0;
+  color: #94a3b8;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.sd-divider::before, .sd-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #e2e8f0;
+}
+
+/* ── Social buttons ── */
+.sd-social-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sd-social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  background: #fff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: var(--sd-radius);
+  color: #1e293b;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 10px 16px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.18s, border-color 0.18s;
+}
+.sd-social-btn:hover {
+  background: #f8fafc;
+  border-color: #94a3b8;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  color: #0f172a;
+}
+.sd-social-btn svg { flex-shrink: 0; width: 20px; height: 20px; }
+
+/* ── Register / sign-in footer link ── */
+.sd-card-footer {
+  text-align: center;
+  font-size: 13px;
+  color: #64748b;
+  margin-top: 20px;
+}
+.sd-card-footer a {
+  color: var(--sd-blue);
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.sd-card-footer a:hover { color: var(--sd-navy); text-decoration: underline; }
+
+/* ── Season badge (decorative) ── */
+.sd-season-badge {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--sd-red);
+  font-family: 'Oswald', sans-serif;
+}
+
+/* ── Responsive ── */
+@media (max-width: 480px) {
+  .sd-card { padding: 24px 20px 22px; }
+  .sd-page { padding: 16px 12px 40px; }
+}
