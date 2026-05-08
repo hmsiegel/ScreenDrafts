@@ -1,11 +1,15 @@
+import { formatDraftType } from '@/lib/draft-type-display';
 import type {
   LatestDraftResponse,
   ListLatestDraftsResponse,
   UpcomingDraftResponse,
   ListUpcomingDraftsResponse,
   PredictionSeasonSummaryResponse,
-  SeasonContestantStandingResponse
+  SeasonContestantStandingResponse,
+  GetActiveSpotlightResponse,
+  GetSiteStatsResponse
 } from '@/lib/dto';
+import { inter } from '@/styles/fonts';
 import exp from 'constants';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL;
@@ -41,6 +45,32 @@ const FALLBACK_STANDINGS: PredictionSeasonSummaryResponse = {
     { contestantPublicId: '', displayName: 'Ryan', points: 85, hasCrossedTarget: false },
   ],
 }
+
+const FALLBACK_SPOTLIGHT: GetActiveSpotlightResponse = {
+  draftPublicId: '',
+  title: 'Martin Scorsese',
+  episodeNumber: 264,
+  draftType: 'Super',
+  totalParts: 3,
+  totalPicks: 30,
+  spotlightDescription: `Nine drafters. Twenty-nine theatrical releases (plus No Direction Home, advanced from the Patreon). Multiple veto overrides — including the first-ever override of a Patreon-awarded veto. The Age of Innocence made the largest leap from a vetoed pick in show history.`,
+  topPicks: [
+    { position: 1, mediaTitle: 'Goodfellas', mediaPublicId: '' },
+    { position: 2, mediaTitle: 'Taxi Driver', mediaPublicId: '' },
+    { position: 3, mediaTitle: 'Raging Bull', mediaPublicId: '' },
+    { position: 4, mediaTitle: 'The Departed', mediaPublicId: '' },
+    { position: 5, mediaTitle: 'Casino', mediaPublicId: '' },
+  ],
+  spotifyUrl: ''
+};
+
+const FALLBACK_STATS: GetSiteStatsResponse = {
+  episodesProduced: 317,
+  filmsDrafted: 2140,
+  guestGMs: 186,
+  vetoesDeployed: 418,
+  legends: 6
+};
 
 // ── Fetchers ───────────────────────────────────────────────────────────────
 
@@ -82,6 +112,30 @@ export async function fetchCurrentStandings(): Promise<PredictionSeasonSummaryRe
   }
 }
 
+export async function fetchSpotlight(): Promise<GetActiveSpotlightResponse> {
+  try {
+    const res = await fetch(`${API_BASE}/spotlight`, {
+      next: { revalidate: process.env.NODE_ENV === 'development' ? 0 : 3600 },
+    });
+    if (!res.ok) return FALLBACK_SPOTLIGHT;
+    return await res.json() as GetActiveSpotlightResponse;
+  } catch {
+    return FALLBACK_SPOTLIGHT;
+  }
+}
+
+export async function fetchSiteStats(): Promise<GetSiteStatsResponse> {
+  try {
+    const res = await fetch(`${API_BASE}/stats`, {
+      next: { revalidate: process.env.NODE_ENV === 'development' ? 0 : 3600 },
+    });
+    if (!res.ok) return FALLBACK_STATS;
+    return await res.json() as GetSiteStatsResponse;
+  } catch {
+    return FALLBACK_STATS;
+  }
+}
+
 // ── Mappers ────────────────────────────────────────────────────────────────
 
 export interface MappedRecentDraft {
@@ -115,6 +169,23 @@ export interface MappedStandings {
   entries: MappedStanding[];
 }
 
+export interface MappedSpotlight {
+  draftPublicId: string;
+  episodeNumber: number;
+  draftType: string;
+  totalParts: number;
+  totalPicks: number;
+  title: string;
+  spotlightDescription: string;
+  spotifyUrl: string | null;
+  topPicks: { position: number; mediaPublicId: string; title: string }[];
+}
+
+export interface MappedStat {
+  value: string;
+  label: string;
+}
+
 function formatDate(raw: Date | string | undefined): string {
   if (!raw) return 'TBA';
   try {
@@ -126,6 +197,11 @@ function formatDate(raw: Date | string | undefined): string {
   } catch {
     return 'TBA';
   }
+}
+
+function formatStatNumber(n: number | undefined): string {
+  if (n == null) return '_';
+  return n.toLocaleString('en-US');
 }
 
 export function mapLatestDraft(draft: LatestDraftResponse): MappedRecentDraft {
@@ -176,3 +252,31 @@ export function mapStandings(response: PredictionSeasonSummaryResponse): MappedS
     entries,
   };
 }
+
+  export function mapSpotlight(response: GetActiveSpotlightResponse): MappedSpotlight {
+    return {
+      draftPublicId: response.draftPublicId ?? '',
+      episodeNumber: response.episodeNumber ?? 0,
+      draftType: formatDraftType(response.draftType),
+      totalParts: response.totalParts ?? 1,
+      totalPicks: response.totalPicks ?? 7,
+      title: response.title ?? '',
+      spotlightDescription: response.spotlightDescription ?? '',
+      spotifyUrl: response.spotifyUrl ?? null,
+      topPicks: (response.topPicks ?? []).map((p) => ({
+        position: p.position ?? 0,
+        mediaPublicId: p.mediaPublicId ?? '',
+        title: p.mediaTitle ?? '',
+      })),
+    };
+  }
+
+  export function mapSiteStats(response: GetSiteStatsResponse): MappedStat[] {
+    return [
+      { value: formatStatNumber(response.episodesProduced), label: 'EPISODES PRODUCED' },
+      { value: formatStatNumber(response.filmsDrafted), label: 'FILMS DRAFTED' },
+      { value: formatStatNumber(response.guestGMs), label: 'GUEST G.M.s' },
+      { value: formatStatNumber(response.vetoesDeployed), label: 'VETOES DEPLOYED' },
+      { value: formatStatNumber(response.legends), label: 'LEGENDS' },
+    ];
+  }

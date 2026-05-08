@@ -61,7 +61,7 @@ export default function CommissionerStandings({
       <div className="mx-5 mb-5 p-3.5 bg-sd-paper border border-dashed border-sd-ink text-sm leading-relaxed">
         <div className="text-[10px] tracking-[0.22em] text-sd-red mb-1.5 font-bold">★ HOW TO PLAY</div>
           The <strong>Predictions Game</strong> is a side game where commissioners Clay and Ryan attempt to
-          predict which movies will be play on each episode of Screen Drafts by the Guest G.M.s. The game is
+          predict which movies will be played on each episode of Screen Drafts by the Guest G.M.s. The game is
           played to seasons of {targetPoints} points.
       </div>
     </div>

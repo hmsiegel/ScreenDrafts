@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ScreenDrafts.Modules.Reporting.Infrastructure.Database;
@@ -11,9 +12,11 @@ using ScreenDrafts.Modules.Reporting.Infrastructure.Database;
 namespace ScreenDrafts.Modules.Reporting.Infrastructure.Database.Migrations
 {
     [DbContext(typeof(ReportingDbContext))]
-    partial class ReportingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260508135657_Add_Total_Picks_And_Fix_DraftType_Names")]
+    partial class Add_Total_Picks_And_Fix_DraftType_Names
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

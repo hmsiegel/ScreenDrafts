@@ -577,6 +577,21 @@ export interface IClient {
     media_Add(body: AddMediaRequest): Promise<string>;
 
     /**
+     * @return OK
+     */
+    stats:GetSiteStats(): Promise<GetSiteStatsResponse>;
+
+    /**
+     * @return OK
+     */
+    spotlight:GetActive(): Promise<GetActiveSpotlightResponse>;
+
+    /**
+     * @return Created
+     */
+    spotlight:Create(body: CreateSpotlightRequest): Promise<CreateSpotlightResponse>;
+
+    /**
      * @return No Content
      */
     users_UpdateUserProfile(body: Request): Promise<void>;
@@ -6540,6 +6555,141 @@ export class Client implements IClient {
     }
 
     /**
+     * @return OK
+     */
+    stats:GetSiteStats(signal?: AbortSignal): Promise<GetSiteStatsResponse> {
+        let url_ = this.baseUrl + "/stats";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            signal,
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processStats:GetSiteStats(_response);
+        });
+    }
+
+    protected processStats:GetSiteStats(response: Response): Promise<GetSiteStatsResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as GetSiteStatsResponse;
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<GetSiteStatsResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    spotlight:GetActive(signal?: AbortSignal): Promise<GetActiveSpotlightResponse> {
+        let url_ = this.baseUrl + "/spotlight";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            signal,
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processSpotlight:GetActive(_response);
+        });
+    }
+
+    protected processSpotlight:GetActive(response: Response): Promise<GetActiveSpotlightResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as GetActiveSpotlightResponse;
+            return result200;
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<GetActiveSpotlightResponse>(null as any);
+    }
+
+    /**
+     * @return Created
+     */
+    spotlight:Create(body: CreateSpotlightRequest, signal?: AbortSignal): Promise<CreateSpotlightResponse> {
+        let url_ = this.baseUrl + "/reporting/spotlights";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processSpotlight:Create(_response);
+        });
+    }
+
+    protected processSpotlight:Create(response: Response): Promise<CreateSpotlightResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 201) {
+            return response.text().then((_responseText) => {
+            let result201: any = null;
+            result201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as CreateSpotlightResponse;
+            return result201;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<CreateSpotlightResponse>(null as any);
+    }
+
+    /**
      * @return No Content
      */
     users_UpdateUserProfile(body: Request, signal?: AbortSignal): Promise<void> {
@@ -7999,6 +8149,20 @@ export interface CreateSeriesRequest {
     [key: string]: any;
 }
 
+export interface CreateSpotlightRequest {
+    draftPublicId: string;
+    spotlightDescription: string;
+    spotifyUrl?: string | undefined;
+
+    [key: string]: any;
+}
+
+export interface CreateSpotlightResponse {
+    spotlightId?: string;
+
+    [key: string]: any;
+}
+
 export interface DeleteCampaignRequest {
     publicId: string;
 
@@ -8271,6 +8435,20 @@ export interface GenreResponse {
     [key: string]: any;
 }
 
+export interface GetActiveSpotlightResponse {
+    draftPublicId?: string;
+    title?: string;
+    episodeNumber?: number | undefined;
+    draftType?: string;
+    totalParts?: number;
+    totalPicks?: number;
+    spotlightDescription?: string;
+    spotifyUrl?: string | undefined;
+    topPicks?: SpotlightPickResponse[];
+
+    [key: string]: any;
+}
+
 export interface GetAuthAuditLogsRequest {
     userId?: string | undefined;
     eventType?: string | undefined;
@@ -8494,6 +8672,10 @@ export interface GetDraftResponse {
     campaignPublicId?: string | undefined;
     campaignName?: string | undefined;
     parts?: GetDraftPartResponse[];
+    previousDraftPublicId?: string | undefined;
+    previousDraftTitle?: string | undefined;
+    nextDraftPublicId?: string | undefined;
+    nextDraftTitle?: string | undefined;
 
     [key: string]: any;
 }
@@ -8655,6 +8837,16 @@ export interface GetPredictionStandingsRequest {
 
 export interface GetSeriesRequest {
     publicId: string;
+
+    [key: string]: any;
+}
+
+export interface GetSiteStatsResponse {
+    episodesProduced?: number;
+    filmsDrafted?: number;
+    guestGMs?: number;
+    vetoesDeployed?: number;
+    legends?: number;
 
     [key: string]: any;
 }
@@ -9607,6 +9799,14 @@ export interface SocialHandles {
     letterboxd?: string | undefined;
     bluesky?: string | undefined;
     profilePicturePath?: string | undefined;
+
+    [key: string]: any;
+}
+
+export interface SpotlightPickResponse {
+    position?: number;
+    mediaPublicId?: string;
+    mediaTitle?: string;
 
     [key: string]: any;
 }

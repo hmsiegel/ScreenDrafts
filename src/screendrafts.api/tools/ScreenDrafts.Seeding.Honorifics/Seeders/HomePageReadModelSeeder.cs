@@ -51,13 +51,36 @@ internal sealed partial class HomePageReadModelSeeder(
         d.public_id                                         AS DraftPublicId,
         dp.public_id                                        AS DraftPartPublicId,
         d.title                                             AS Title,
-        dp.draft_type                                       AS DraftType,
+        Cast((CASE dp.draft_type
+            WHEN 0 THEN 'Standard'
+            WHEN 1 THEN 'MiniMega'
+            WHEN 2 THEN 'Mega'
+            WHEN 3 THEN 'Super'
+            WHEN 4 THEN 'MiniSuper'
+            WHEN 5 THEN 'SpeedDraft'
+            ELSE 'Unknown'
+        END) AS text)                                        As DraftType,
         dp.part_index                                       AS PartIndex,
         Cast((
           SELECT COUNT(*)
           FROM drafts.draft_parts dp2
           WHERE dp2.draft_id = d.id
-        ) as int4)                                                   AS TotalParts,
+        ) as int4)                                          AS TotalParts,
+        Cast((
+          SELECT COUNT(*)
+          FROM drafts.picks p
+          WHERE p.draft_part_id = dp.id
+            AND NOT EXISTS (
+              SELECT 1
+              FROM drafts.vetoes v
+              WHERE v.target_pick_id = p.id AND v.is_overridden = false
+            )
+            AND NOT EXISTS (
+              SELECT 1
+              FROM drafts.commissioner_overrides o
+              WHERE o.pick_id = p.id
+            )
+        ) as int4)                                          AS TotalPicks,
         EXISTS(
           SELECT 1
           FROM drafts.draft_channel_releases dcr
@@ -91,16 +114,17 @@ internal sealed partial class HomePageReadModelSeeder(
     const string upsertSql = """
       INSERT INTO reporting.draft_summaries
           (id, draft_id, draft_public_id, draft_part_public_id, title, draft_type,
-           part_index, total_parts, is_patreon, episode_number,
+           part_index, total_parts, total_picks, is_patreon, episode_number,
            is_complete, completed_at_utc, created_at_utc)
       VALUES
           (@Id, @DraftId, @DraftPublicId, @DraftPartPublicId, @Title, @DraftType,
-           @PartIndex, @TotalParts, @IsPatreon, @EpisodeNumber,
+           @PartIndex, @TotalParts, @TotalPicks, @IsPatreon, @EpisodeNumber,
            @IsComplete, @CompletedAtUtc, @CreatedAtUtc)
       ON CONFLICT (draft_id, draft_part_public_id) DO UPDATE
           SET title           = EXCLUDED.title,
               draft_type      = EXCLUDED.draft_type,
               total_parts     = EXCLUDED.total_parts,
+              total_picks     = EXCLUDED.total_picks,
               is_patreon      = EXCLUDED.is_patreon,
               episode_number  = EXCLUDED.episode_number,
               is_complete     = EXCLUDED.is_complete,
@@ -122,6 +146,7 @@ internal sealed partial class HomePageReadModelSeeder(
             row.DraftType,
             row.PartIndex,
             row.TotalParts,
+            row.TotalPicks,
             row.IsPatreon,
             row.EpisodeNumber,
             row.IsComplete,
@@ -252,9 +277,10 @@ internal sealed partial class HomePageReadModelSeeder(
     string DraftPublicId,
     string DraftPartPublicId,
     string Title,
-    int DraftType,
+    string DraftType,
     int PartIndex,
     int TotalParts,
+    int TotalPicks,
     bool IsPatreon,
     int? EpisodeNumber,
     bool IsComplete,

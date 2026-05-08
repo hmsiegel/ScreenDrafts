@@ -9,6 +9,7 @@ internal sealed record UpsertDraftSummaryCommand : ICommand
   public required string DraftType { get; init; }
   public int PartIndex { get; init; }
   public int TotalParts { get; init; }
+  public int TotalPicks { get; init; }
   public bool IsPatreon { get; init; }
   public int? EpisodeNumber { get; init; }
   public int VetoCount { get; init; }

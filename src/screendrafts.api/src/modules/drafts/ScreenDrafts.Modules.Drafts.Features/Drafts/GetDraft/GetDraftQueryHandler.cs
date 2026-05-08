@@ -1,19 +1,22 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Features.Drafts.GetDraft;
 
-internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFactory) : IQueryHandler<GetDraftQuery, GetDraftResponse>
+internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFactory)
+  : IQueryHandler<GetDraftQuery, GetDraftResponse>
 {
   private readonly IDbConnectionFactory _dbConnectionFactory = dbConnectionFactory;
 
   private const int MainFeedChannel = 0;
   private const int PatreonChannel = 1;
 
-  public async Task<Result<GetDraftResponse>> Handle(GetDraftQuery request, CancellationToken cancellationToken)
+  public async Task<Result<GetDraftResponse>> Handle(
+    GetDraftQuery request,
+    CancellationToken cancellationToken
+  )
   {
     await using var connection = await _dbConnectionFactory.OpenConnectionAsync(cancellationToken);
 
     // 1. Draft Root
-    const string draftSql =
-      $"""
+    const string draftSql = $"""
       SELECT
         d.public_id AS {nameof(GetDraftResponse.PublicId)},
         d.title AS {nameof(GetDraftResponse.Title)},
@@ -40,9 +43,7 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
       string SeriesName,
       string? CampaignPublicId,
       string? CampaignName
-    )>(
-      draftSql,
-      new { request.DraftId });
+    )>(draftSql, new { request.DraftId });
 
     if (draft == default)
     {
@@ -50,8 +51,7 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
     }
 
     // 2. Draft Parts
-    const string partSql =
-      $"""
+    const string partSql = $"""
       SELECT
         dp.public_id AS {nameof(GetDraftPartResponse.PublicId)},
         dp.part_index AS {nameof(GetDraftPartResponse.PartIndex)},
@@ -65,37 +65,37 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
       ORDER BY dp.part_index ASC;
       """;
 
-    var partRows = (await connection.QueryAsync<(
-      string PublicId,
-      int PartIndex,
-      DraftType DraftType,
-      DraftPartStatus Status,
-      DateTime? ScheduledForUtc,
-      Guid InternalId
-    )>(
-      partSql,
-      new { request.DraftId })).ToList();
+    var partRows = (
+      await connection.QueryAsync<(
+        string PublicId,
+        int PartIndex,
+        DraftType DraftType,
+        DraftPartStatus Status,
+        DateTime? ScheduledForUtc,
+        Guid InternalId
+      )>(partSql, new { request.DraftId })
+    ).ToList();
 
     if (partRows.Count == 0)
     {
-      return Result.Success(BuildResponse(draft, []));
+      return Result.Success(BuildResponse(draft, [], default, default));
     }
 
     var partIds = partRows.Select(r => r.InternalId).ToList();
     var partMap = partRows.ToDictionary(
       keySelector: r => r.InternalId,
       elementSelector: r => new GetDraftPartResponse
-    {
-      PublicId = r.PublicId,
-      PartIndex = r.PartIndex,
-      DraftType = r.DraftType,
-      Status = r.Status,
-      ScheduledForUtc = r.ScheduledForUtc
-    });
+      {
+        PublicId = r.PublicId,
+        PartIndex = r.PartIndex,
+        DraftType = r.DraftType,
+        Status = r.Status,
+        ScheduledForUtc = r.ScheduledForUtc,
+      }
+    );
 
     // 3. Hosts
-    const string hostSql =
-      $"""
+    const string hostSql = $"""
       SELECT
         dh.draft_part_id AS PartId,
         dh.role AS Role,
@@ -112,9 +112,7 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
       HostRole Role,
       string HostPublicId,
       string DisplayName
-    )>(
-      hostSql,
-      new { partIds });
+    )>(hostSql, new { partIds });
 
     foreach (var (partId, role, hostPublicId, displayName) in hostRows)
     {
@@ -126,7 +124,7 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
       var hostResponse = new GetDraftHostResponse
       {
         HostPublicId = hostPublicId,
-        DisplayName = displayName
+        DisplayName = displayName,
       };
 
       if (role == 0)
@@ -140,18 +138,21 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
     }
 
     // 4. Participants
-    const string participantSql =
-      $"""
+    const string participantSql = $"""
       SELECT
         dpp.draft_part_id AS PartId,
         dpp.participant_id_value AS {nameof(GetDraftPartParticipantResponse.ParticipantIdValue)},
-        dpp.participant_kind_value AS {nameof(GetDraftPartParticipantResponse.ParticipantKindValue)},
+        dpp.participant_kind_value AS {nameof(
+        GetDraftPartParticipantResponse.ParticipantKindValue
+      )},
         dpp.starting_vetoes AS {nameof(GetDraftPartParticipantResponse.StartingVetoes)},
         dpp.vetoes_used AS {nameof(GetDraftPartParticipantResponse.VetoesUsed)},
         dpp.vetoes_rolling_in AS {nameof(GetDraftPartParticipantResponse.RolloverVetoes)},
         dpp.awarded_vetoes AS {nameof(GetDraftPartParticipantResponse.TriviaVetoes)},
         dpp.veto_overrides_used AS {nameof(GetDraftPartParticipantResponse.VetoOverridesUsed)},
-        dpp.veto_overrides_rolling_in AS {nameof(GetDraftPartParticipantResponse.RolloverVetoOverride)},
+        dpp.veto_overrides_rolling_in AS {nameof(
+        GetDraftPartParticipantResponse.RolloverVetoOverride
+      )},
         dpp.awarded_veto_overrides AS {nameof(GetDraftPartParticipantResponse.TriviaVetoOverride)},
         dpp.commissioner_overrides AS {nameof(GetDraftPartParticipantResponse.CommissionerOverride)}
       FROM drafts.draft_part_participants dpp
@@ -169,8 +170,8 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
       int VetoOverridesUsed,
       int RolloverVetoOverride,
       int TriviaVetoOverride,
-      int CommissionerOverride)>(
-      new CommandDefinition(participantSql, new { partIds }));
+      int CommissionerOverride
+    )>(new CommandDefinition(participantSql, new { partIds }));
 
     foreach (var r in participantRows)
     {
@@ -190,7 +191,7 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
         VetoOverridesUsed = r.VetoOverridesUsed,
         RolloverVetoOverride = r.RolloverVetoOverride,
         TriviaVetoOverride = r.TriviaVetoOverride,
-        CommissionerOverride = r.CommissionerOverride
+        CommissionerOverride = r.CommissionerOverride,
       };
       part.AddParticipant(participantResponse);
     }
@@ -200,8 +201,7 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
       ? [MainFeedChannel, PatreonChannel]
       : new[] { MainFeedChannel };
 
-    const string releaseSql =
-      $"""
+    const string releaseSql = $"""
       SELECT
         dr.part_id AS PartId,
         dr.release_channel AS {nameof(GetDraftReleaseResponse.ReleaseChannel)},
@@ -215,8 +215,8 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
     var releaseRows = await connection.QueryAsync<(
       Guid PartId,
       ReleaseChannel ReleaseChannel,
-      DateOnly ReleaseDate)>(
-      new CommandDefinition(releaseSql, new { partIds, allowedChannels }));
+      DateOnly ReleaseDate
+    )>(new CommandDefinition(releaseSql, new { partIds, allowedChannels }));
 
     foreach (var (partId, channel, date) in releaseRows)
     {
@@ -227,14 +227,13 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
       var releaseResponse = new GetDraftReleaseResponse
       {
         ReleaseChannel = channel,
-        ReleaseDate = date
+        ReleaseDate = date,
       };
       part.AddRelease(releaseResponse);
     }
 
     // 6. Picks
-    const string pickSql =
-      $"""
+    const string pickSql = $"""
       SELECT
         pk.draft_part_id AS PartId,
         pk.play_order AS {nameof(GetDraftPickResponse.PlayOrder)},
@@ -243,8 +242,12 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
         m.movie_title AS {nameof(GetDraftPickResponse.MovieTitle)},
         pk.movie_version_name AS {nameof(GetDraftPickResponse.MovieVersionName)},
         pk.acted_by_public_id AS {nameof(GetDraftPickResponse.ActedByPublicId)},
-        pk.played_by_participant_id_value AS {nameof(GetDraftPickResponse.PlayedByParticipantIdValue)},
-        pk.played_by_participant_kind_value AS {nameof(GetDraftPickResponse.PlayedByParticipantKindValue)},
+        pk.played_by_participant_id_value AS {nameof(
+        GetDraftPickResponse.PlayedByParticipantIdValue
+      )},
+        pk.played_by_participant_kind_value AS {nameof(
+        GetDraftPickResponse.PlayedByParticipantKindValue
+      )},
         pk.id AS PickInternalId
       FROM drafts.picks pk
       JOIN drafts.movies m ON m.id = pk.movie_id
@@ -252,24 +255,25 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
       ORDER BY pk.play_order ASC;
       """;
 
-    var pickRows = (await connection.QueryAsync<(
-      Guid PartId,
-      int PlayOrder,
-      int Position,
-      string MoviePublicId,
-      string MovieTitle,
-      string? MovieVersionName,
-      string? ActedByPublicId,
-      Guid PlayedByParticipantIdValue,
-      ParticipantKind PlayedByParticipantKindValue,
-      Guid PickInternalId)>(
-      new CommandDefinition(pickSql, new { partIds }))).ToList();
+    var pickRows = (
+      await connection.QueryAsync<(
+        Guid PartId,
+        int PlayOrder,
+        int Position,
+        string MoviePublicId,
+        string MovieTitle,
+        string? MovieVersionName,
+        string? ActedByPublicId,
+        Guid PlayedByParticipantIdValue,
+        ParticipantKind PlayedByParticipantKindValue,
+        Guid PickInternalId
+      )>(new CommandDefinition(pickSql, new { partIds }))
+    ).ToList();
 
     var pickInternalIds = pickRows.Select(r => r.PickInternalId).ToArray();
 
     // 7. Pick Vetoes
-    const string pickVetoSql =
-      $"""
+    const string pickVetoSql = $"""
       SELECT
         v.target_pick_id AS PickId,
         v.id AS VetoId,
@@ -282,23 +286,25 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
       WHERE v.target_pick_id = ANY(@pickInternalIds);
       """;
 
-    var vetoRows = pickInternalIds.Length > 0
-      ? (await connection.QueryAsync<(
-        Guid PickId,
-        Guid VetoId,
-        Guid IssuedByParticipantId,
-        string? ActedByPublicId,
-        bool IsOverriden,
-        string? Note,
-        DateTime OccurredOnUtc)>(
-        new CommandDefinition(pickVetoSql, new { pickInternalIds }))).ToList()
-      : [];
+    var vetoRows =
+      pickInternalIds.Length > 0
+        ? (
+          await connection.QueryAsync<(
+            Guid PickId,
+            Guid VetoId,
+            Guid IssuedByParticipantId,
+            string? ActedByPublicId,
+            bool IsOverriden,
+            string? Note,
+            DateTime OccurredOnUtc
+          )>(new CommandDefinition(pickVetoSql, new { pickInternalIds }))
+        ).ToList()
+        : [];
 
     var vetoIds = vetoRows.Select(r => r.VetoId).ToArray();
 
     // 8. Veto Overrides
-    const string vetoOverrideSql =
-      $"""
+    const string vetoOverrideSql = $"""
       SELECT
         vo.veto_id AS VetoId,
         vo.issued_by_participant_id AS {nameof(GetDraftVetoOverrideResponse.IssuedByParticipantId)},
@@ -307,27 +313,94 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
       WHERE vo.veto_id = ANY(@vetoIds);
       """;
 
-    var vetoOverrideRows = vetoIds.Length > 0
-      ? (await connection.QueryAsync<(
-        Guid VetoId,
-        Guid IssuedByParticipantId,
-        string? ActedByPublicId)>(
-        new CommandDefinition(vetoOverrideSql, new { vetoIds }))).ToDictionary(r => r.VetoId)
-      : [];
+    var vetoOverrideRows =
+      vetoIds.Length > 0
+        ? (
+          await connection.QueryAsync<(
+            Guid VetoId,
+            Guid IssuedByParticipantId,
+            string? ActedByPublicId
+          )>(new CommandDefinition(vetoOverrideSql, new { vetoIds }))
+        ).ToDictionary(r => r.VetoId)
+        : [];
 
     // 9. Commissioner Overrides
-    const string commissionerOverrideSql =
-      $"""
+    const string commissionerOverrideSql = $"""
       SELECT
         co.pick_id AS PickId
       FROM drafts.commissioner_overrides co
       WHERE co.pick_id = ANY(@pickInternalIds);
       """;
 
-    var commissionerOverrideRows = pickInternalIds.Length > 0
-      ? [.. (await connection.QueryAsync<Guid>(
-        new CommandDefinition(commissionerOverrideSql, new { pickInternalIds })))]
-      : new HashSet<Guid>();
+    var commissionerOverrideRows =
+      pickInternalIds.Length > 0
+        ?
+        [
+          .. (
+            await connection.QueryAsync<Guid>(
+              new CommandDefinition(commissionerOverrideSql, new { pickInternalIds })
+            )
+          ),
+        ]
+        : new HashSet<Guid>();
+
+    var allowedChannelInts = request.IncludePatreon
+      ? [MainFeedChannel, PatreonChannel]
+      : new[] { MainFeedChannel };
+
+    const string adjacentSql = $"""
+      WITH current AS (
+        SELECT
+          dcr.series_id,
+          MIN(dcr.episode_number) AS episode_number
+        FROM drafts.draft_channel_releases dcr
+        JOIN drafts.drafts d ON d.id = dcr.draft_id
+        WHERE d.public_id = @DraftId
+          AND dcr.release_channel = ANY(@allowedChannelInts)
+          AND dcr.episode_number IS NOT NULL
+        GROUP BY dcr.series_id
+      ),
+      prev AS (
+        SELECT
+          d.public_id,
+          d.title,
+          dcr.episode_number,
+        FROM drafts.draft_channel_releases dcr
+        JOIN drafts.drafts d ON d.id = dcr.draft_id
+        JOIN current c ON current.series_id = dcr.series_id
+        WHERE dcr.release_channel = ANY(@allowedChannelInts)
+          AND dcr.episode_number IS NOT NULL
+          AND dcr.episode_number < c.episode_number
+        GROUP BY dcr.episode_number DESC
+        LIMIT 1
+      ),
+      next AS (
+        SELECT
+          d.public_id,
+          d.title,
+          dcr.episode_number,
+        FROM drafts.draft_channel_releases dcr
+        JOIN drafts.drafts d ON d.id = dcr.draft_id
+        JOIN current c ON current.series_id = dcr.series_id
+        WHERE dcr.release_channel = ANY(@allowedChannelInts)
+          AND dcr.episode_number IS NOT NULL
+          AND drc.episode_number > c.episode_number
+        GROUP BY dcr.episode_number ASC
+        LIMIT 1
+      )
+      SELECT 'prev' AS Direction, public_id AS PublicId, title AS Title, FROM prev
+      UNION ALL
+      SELECT 'next' AS Direction, public_id AS PublicId, title AS Title FROM next;
+      """;
+
+    var adjacentRows = (
+      await connection.QueryAsync<(string Direction, string PublicId, string Title)>(
+        new CommandDefinition(adjacentSql, new { request.DraftId, allowedChannelInts })
+      )
+    ).ToList();
+
+    var prevDraft = adjacentRows.FirstOrDefault(r => r.Direction == "prev");
+    var nextDraft = adjacentRows.FirstOrDefault(r => r.Direction == "next");
 
     // Assemble final pick responses
     var vetoByPickId = vetoRows.ToDictionary(r => r.PickId);
@@ -348,7 +421,7 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
           vetoOverride = new GetDraftVetoOverrideResponse
           {
             IssuedByParticipantId = ov.IssuedByParticipantId,
-            ActedByPublicId = ov.ActedByPublicId
+            ActedByPublicId = ov.ActedByPublicId,
           };
         }
 
@@ -359,7 +432,7 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
           IsOverriden = vetoRow.IsOverriden,
           Note = vetoRow.Note,
           OccurredOnUtc = vetoRow.OccurredOnUtc,
-          Override = vetoOverride
+          Override = vetoOverride,
         };
       }
 
@@ -367,26 +440,29 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
         ? new GetDraftCommissionerOverrideResponse()
         : null;
 
-      part.AddPick(new GetDraftPickResponse
-      {
-        PlayOrder = r.PlayOrder,
-        Position = r.Position,
-        MoviePublicId = r.MoviePublicId,
-        MovieTitle = r.MovieTitle,
-        MovieVersionName = r.MovieVersionName,
-        ActedByPublicId = r.ActedByPublicId,
-        PlayedByParticipantIdValue = r.PlayedByParticipantIdValue,
-        PlayedByParticipantKindValue = r.PlayedByParticipantKindValue,
-        Veto = veto,
-        CommissionerOverride = commissionerOverrideResponse
-      });
+      part.AddPick(
+        new GetDraftPickResponse
+        {
+          PlayOrder = r.PlayOrder,
+          Position = r.Position,
+          MoviePublicId = r.MoviePublicId,
+          MovieTitle = r.MovieTitle,
+          MovieVersionName = r.MovieVersionName,
+          ActedByPublicId = r.ActedByPublicId,
+          PlayedByParticipantIdValue = r.PlayedByParticipantIdValue,
+          PlayedByParticipantKindValue = r.PlayedByParticipantKindValue,
+          Veto = veto,
+          CommissionerOverride = commissionerOverrideResponse,
+        }
+      );
     }
 
-    return Result.Success(BuildResponse(draft, partMap.Values.ToList()));
+    return Result.Success(BuildResponse(draft, partMap.Values.ToList(), prevDraft, nextDraft));
   }
 
   private static GetDraftResponse BuildResponse(
-    (string PublicId,
+    (
+      string PublicId,
       string Title,
       string? Description,
       DraftType DraftType,
@@ -394,8 +470,13 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
       string SeriesPublicId,
       string SeriesName,
       string? CampaignPublicId,
-     string? CampaignName) draft,
-    IReadOnlyList<GetDraftPartResponse> parts) => new()
+      string? CampaignName
+    ) draft,
+    IReadOnlyList<GetDraftPartResponse> parts,
+    (string Direction, string PublicId, string Title) prevDraft,
+    (string Direction, string PublicId, string Title) nextDraft
+  ) =>
+    new()
     {
       PublicId = draft.PublicId,
       Title = draft.Title,
@@ -406,6 +487,10 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
       SeriesName = draft.SeriesName,
       CampaignPublicId = draft.CampaignPublicId,
       CampaignName = draft.CampaignName,
-      Parts = parts
+      Parts = parts,
+      PreviousDraftPublicId = prevDraft == default ? null : prevDraft.PublicId,
+      PreviousDraftTitle = prevDraft == default ? null : prevDraft.Title,
+      NextDraftPublicId = nextDraft == default ? null : nextDraft.PublicId,
+      NextDraftTitle = nextDraft == default ? null : nextDraft.Title,
     };
 }

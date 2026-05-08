@@ -17,7 +17,7 @@ export async function generateMetadata(
       openGraph: {
          title: `${draft.title}`,
          description: `Episode details for ${draft.title}`,
-         url: `/dashboard/drafts/${draft.id}`,
+         url: `/dashboard/drafts/${draft.publicId}`,
       },
    };
 }
@@ -45,7 +45,7 @@ export default async function Page(
                   { label: "Home", href: "/" },
                   { label: "Main", href: "/main" },
                   { label: "Drafts", href: "/main/drafts" },
-                  { label: `${draft.title}`, href: `/main/drafts/${draft.title}`, active: true },
+                  { label: `${draft.title}`, href: `/main/drafts/${draft.publicId}`, active: true },
                ]}
             />
             <DraftDetails

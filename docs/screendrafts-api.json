@@ -5120,6 +5120,100 @@
         ]
       }
     },
+    "/stats": {
+      "get": {
+        "tags": [
+          "Stats"
+        ],
+        "operationId": "Stats:GetSiteStats",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetSiteStatsResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/spotlight": {
+      "get": {
+        "tags": [
+          "Spotlight"
+        ],
+        "operationId": "Spotlight:GetActive",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetActiveSpotlightResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/reporting/spotlights": {
+      "post": {
+        "tags": [
+          "Spotlight"
+        ],
+        "operationId": "Spotlight:Create",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSpotlightRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateSpotlightResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
     "/users/profile": {
       "put": {
         "tags": [
@@ -6592,6 +6686,36 @@
           }
         }
       },
+      "CreateSpotlightRequest": {
+        "required": [
+          "draftPublicId",
+          "spotlightDescription"
+        ],
+        "type": "object",
+        "properties": {
+          "draftPublicId": {
+            "type": "string"
+          },
+          "spotlightDescription": {
+            "type": "string"
+          },
+          "spotifyUrl": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "CreateSpotlightResponse": {
+        "type": "object",
+        "properties": {
+          "spotlightId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
       "DeleteCampaignRequest": {
         "required": [
           "publicId"
@@ -7403,6 +7527,60 @@
           }
         }
       },
+      "GetActiveSpotlightResponse": {
+        "type": "object",
+        "properties": {
+          "draftPublicId": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "episodeNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "draftType": {
+            "type": "string"
+          },
+          "totalParts": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "totalPicks": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "spotlightDescription": {
+            "type": "string"
+          },
+          "spotifyUrl": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "topPicks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SpotlightPickResponse"
+            }
+          }
+        }
+      },
       "GetAuthAuditLogsRequest": {
         "type": "object",
         "properties": {
@@ -8135,6 +8313,30 @@
             "items": {
               "$ref": "#/components/schemas/GetDraftPartResponse"
             }
+          },
+          "previousDraftPublicId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "previousDraftTitle": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "nextDraftPublicId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "nextDraftTitle": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -8661,6 +8863,51 @@
         "properties": {
           "publicId": {
             "type": "string"
+          }
+        }
+      },
+      "GetSiteStatsResponse": {
+        "type": "object",
+        "properties": {
+          "episodesProduced": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "filmsDrafted": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "guestGMs": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "vetoesDeployed": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "legends": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
           }
         }
       },
@@ -11861,6 +12108,25 @@
           }
         }
       },
+      "SpotlightPickResponse": {
+        "type": "object",
+        "properties": {
+          "position": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "mediaPublicId": {
+            "type": "string"
+          },
+          "mediaTitle": {
+            "type": "string"
+          }
+        }
+      },
       "StartZoomRecordingRequest": {
         "required": [
           "draftPartId"
@@ -12350,6 +12616,12 @@
     },
     {
       "name": "Media"
+    },
+    {
+      "name": "Stats"
+    },
+    {
+      "name": "Spotlight"
     },
     {
       "name": "Users"

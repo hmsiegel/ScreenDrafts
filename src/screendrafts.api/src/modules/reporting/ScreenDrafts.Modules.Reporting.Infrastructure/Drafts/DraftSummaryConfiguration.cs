@@ -31,6 +31,8 @@ internal sealed class DraftSummaryConfiguration : IEntityTypeConfiguration<Draft
 
     builder.Property(x => x.TotalParts);
 
+    builder.Property(x => x.TotalPicks);
+
     builder.Property(x => x.IsPatreon);
 
     builder.Property(x => x.EpisodeNumber);

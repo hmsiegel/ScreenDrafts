@@ -10,6 +10,7 @@ public sealed class DraftSummary : Entity<DraftSummaryId>
     string draftType,
     int partIndex,
     int totalParts,
+    int totalPicks,
     bool isPatreon,
     int? episodeNumber,
     bool isComplete,
@@ -26,6 +27,7 @@ public sealed class DraftSummary : Entity<DraftSummaryId>
     DraftType = draftType;
     PartIndex = partIndex;
     TotalParts = totalParts;
+    TotalPicks = totalPicks;
     IsPatreon = isPatreon;
     EpisodeNumber = episodeNumber;
     IsComplete = isComplete;
@@ -42,6 +44,7 @@ public sealed class DraftSummary : Entity<DraftSummaryId>
   public string DraftType { get; private set; } = default!;
   public int PartIndex { get; private set; }
   public int TotalParts { get; private set; }
+  public int TotalPicks { get; private set; }
   public bool IsPatreon { get; private set; }
   public int? EpisodeNumber { get; private set; }
   public bool IsComplete { get; private set; }
@@ -56,6 +59,7 @@ public sealed class DraftSummary : Entity<DraftSummaryId>
     string draftType,
     int partIndex,
     int totalParts,
+    int totalPicks,
     bool isPatreon,
     int? episodeNumber,
     bool isComplete,
@@ -71,6 +75,7 @@ public sealed class DraftSummary : Entity<DraftSummaryId>
       draftType,
       partIndex,
       totalParts,
+      totalPicks,
       isPatreon,
       episodeNumber,
       isComplete,
@@ -79,9 +84,10 @@ public sealed class DraftSummary : Entity<DraftSummaryId>
     );
   }
 
-  public void Update(int totalParts, int? episodeNumber, bool isPatreon)
+  public void Update(int totalParts, int totalPicks, int? episodeNumber, bool isPatreon)
   {
     TotalParts = totalParts;
+    TotalPicks = totalPicks;
     IsPatreon = isPatreon;
 
     if (episodeNumber.HasValue)

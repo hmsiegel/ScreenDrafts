@@ -7,6 +7,7 @@ internal sealed record GetActiveSpotlightResponse
   public int? EpisodeNumber { get; init; }
   public string DraftType { get; init; } = default!;
   public int TotalParts { get; init; }
+  public int TotalPicks { get; init; }
   public string SpotlightDescription { get; init; } = default!;
   public string? SpotifyUrl { get; init; }
   public IReadOnlyList<SpotlightPickResponse> TopPicks { get; init; } = [];

@@ -37,7 +37,8 @@ internal sealed class GetActiveSpotlightQueryHandler(
         s.title                           AS Title,
         s.episode_number                  AS EpisodeNumber,
         s.draft_type                      AS DraftType,
-        s.total_parts                     AS TotalParts
+        s.total_parts                     AS TotalParts,
+        s.total_picks                     AS TotalPicks
       FROM reporting.draft_spotlights ds
       JOIN reporting.draft_summaries s ON ds.draft_public_id = s.draft_public_id
       WHERE ds.is_active = TRUE
@@ -100,6 +101,7 @@ internal sealed class GetActiveSpotlightQueryHandler(
       SpotlightDescription = header.SpotlightDescription,
       SpotifyUrl = header.SpotifyUrl,
       TopPicks = picks,
+      TotalPicks = header.TotalPicks,
     };
 
     await _cacheService.SetAsync(
@@ -119,7 +121,8 @@ internal sealed class GetActiveSpotlightQueryHandler(
     string Title,
     int? EpisodeNumber,
     string DraftType,
-    int TotalParts
+    int TotalParts,
+    int TotalPicks
   );
 
   private sealed record PickRow(int Position, string MediaPublicId);

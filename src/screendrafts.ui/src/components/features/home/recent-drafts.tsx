@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 interface RecentDraft {
   number: number;
   title: string;
@@ -10,7 +12,9 @@ export default function RecentDrafts({ drafts }: { drafts: RecentDraft[] }) {
     <div className="bg-white border-2 border-sd-ink rounded-sm">
       <div className="bg-sd-ink text-white px-5 py-3.5 flex justify-between items-center">
         <div className="font-oswald font-bold text-[22px] tracking-[0.06em]">MOST RECENT DRAFTS</div>
-        <div className="text-[11px] tracking-[0.22em] text-light-blue">VIEW ARCHIVE →</div>
+        <Link href="/drafts" className="text-[11px] tracking-[0.22em] text-light-blue hover:text-white transition-colors">
+          VIEW ARCHIVE →
+        </Link>
       </div>
 
       {/* Column headers */}

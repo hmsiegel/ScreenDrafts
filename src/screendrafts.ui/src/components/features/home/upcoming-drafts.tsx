@@ -5,7 +5,6 @@ export default function UpcomingDrafts({ drafts }: { drafts: MappedUpcomingDraft
     <div className="bg-white border-2 border-sd-ink rounded-sm">
       <div className="bg-sd-blue text-white px-5 py-3.5">
         <div className="font-oswald font-bold text-[22px] tracking-[0.06em]">UPCOMING DRAFTS</div>
-        <div className="text-[11px] tracking-[0.18em] opacity-85 mt-0.5">NEXT 14 DAYS</div>
       </div>
 
       <div className="divide-y divide-gray-100">

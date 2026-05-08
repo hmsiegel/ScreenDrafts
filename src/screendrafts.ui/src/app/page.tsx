@@ -11,28 +11,16 @@ import {
   fetchLatestDrafts,
   fetchUpcomingDrafts,
   fetchCurrentStandings,
+  fetchSpotlight,
+  fetchSiteStats,
   mapLatestDraft,
   mapUpcomingDraft,
   mapStandings,
+  mapSpotlight,
+  mapSiteStats,
 } from "@/services/home/fetch-home-data";
 
 // ── Mock data (no endpoint yet) ────────────────────────────────────────────
-
-const spotlight = {
-  episodeNumber: 264,
-  type: 'Super Draft',
-  parts: 3,
-  subject: 'Martin Scorsese',
-  description: `Nine drafters. Twenty-nine theatrical releases (plus No Direction Home, advanced from the Patreon). Multiple veto overrides — including the first-ever override of a Patreon-awarded veto. The Age of Innocence made the largest leap from a vetoed pick in show history.`,
-  topFive: [
-    { position: 1, title: 'Goodfellas', year: 1990 },
-    { position: 2, title: 'Taxi Driver', year: 1976 },
-    { position: 3, title: 'Raging Bull', year: 1980 },
-    { position: 4, title: 'The Departed', year: 2006 },
-    { position: 5, title: 'Casino', year: 1995 },
-  ],
-  totalPicks: 30,
-};
 
 // TODO: wire up when endpoint exists
 const stats = [
@@ -46,15 +34,19 @@ const stats = [
 // ── Page ───────────────────────────────────────────────────────────────────
 
 export default async function Home() {
-  const [latestDrafts, upcomingDrafts, currentStandings] = await Promise.all([
+  const [latestDrafts, upcomingDrafts, currentStandings, spotlightData, statsData] = await Promise.all([
     fetchLatestDrafts(),
     fetchUpcomingDrafts(),
     fetchCurrentStandings(),
+    fetchSpotlight(),
+    fetchSiteStats(),
   ]);
 
   const recentDrafts = latestDrafts.map(mapLatestDraft);
   const upcoming = upcomingDrafts.map(mapUpcomingDraft);
   const standings = mapStandings(currentStandings);
+  const spotlight = mapSpotlight(spotlightData);
+  const stats = mapSiteStats(statsData);
 
   return (
     <div className="bg-light-blue min-h-screen font-sans">

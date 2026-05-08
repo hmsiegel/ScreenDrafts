@@ -63,42 +63,42 @@ export default function EpisodeInfoCard({ draft }: { draft: GetDraftResponse }) 
                )}
             </Info>
             <div className="col-span-2 bg-sd-red text-xl font-bold py-2 text-white rounded-xl text-center">Episode Navigation</div>
-            {(draft.previousDraftId || draft.nextDraftId) && (
+            {(draft.previousDraftPublicId || draft.nextDraftPublicId) && (
                <>
                   {/* Both links are present, so we can show them */}
-                  {draft.previousDraftId && draft.nextDraftId && (
+                  {draft.previousDraftPublicId && draft.nextDraftPublicId && (
                      <div className="col-span-2 grid grid-cols-2 pt-2">
                         <div className="pr-2">
                            <NavItem
                               label="Previous"
-                              href={`/dashboard/drafts/${draft.previousDraftId}`} >
+                              href={`/dashboard/drafts/${draft.previousDraftPublicId}`} >
                               {draft.previousDraftTitle ?? "View"}
                            </NavItem>
                         </div>
                         <div className="pl-2 border-l border-slate-500">
                            <NavItem label="Next"
-                              href={`/dashboard/drafts/${draft.nextDraftId}`}>
+                              href={`/dashboard/drafts/${draft.nextDraftPublicId}`}>
                               {draft.nextDraftTitle ?? ""}
                            </NavItem>
                         </div>
                      </div>
                   )}
                   {/* Only previous link is present - center it */}
-                  {draft.previousDraftId && !draft.nextDraftId && (
+                  {draft.previousDraftPublicId && !draft.nextDraftPublicId && (
                      <div className="col-span-2 flex justify-center pt-2">
                         <NavItem
                            label="Previous"
-                           href={`/dashboard/drafts/${draft.previousDraftId}`} >
+                           href={`/dashboard/drafts/${draft.previousDraftPublicId}`} >
                            {draft.previousDraftTitle ?? "View"}
                         </NavItem>
                      </div>
                   )}
                   {/* Only next link is present - center it */}
-                  {draft.nextDraftId && !draft.previousDraftId && (
+                  {draft.nextDraftPublicId && !draft.previousDraftPublicId && (
                      <div className="col-span-2 flex justify-center pt-2">
                         <NavItem
                            label="Next"
-                           href={`/dashboard/drafts/${draft.nextDraftId}`} >
+                           href={`/dashboard/drafts/${draft.nextDraftPublicId}`} >
                            {draft.nextDraftTitle ?? "View"}
                         </NavItem>
                      </div>

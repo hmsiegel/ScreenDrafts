@@ -26,6 +26,7 @@ internal sealed class UpsertDraftSummaryCommandHandler(IDraftReportingRepository
         draftType: request.DraftType,
         partIndex: request.PartIndex,
         totalParts: request.TotalParts,
+        totalPicks: request.TotalPicks,
         isPatreon: request.IsPatreon,
         episodeNumber: request.EpisodeNumber,
         isComplete: false,
@@ -38,6 +39,7 @@ internal sealed class UpsertDraftSummaryCommandHandler(IDraftReportingRepository
     {
       existingDraftSummary.Update(
         totalParts: request.TotalParts,
+        totalPicks: request.TotalPicks,
         episodeNumber: request.EpisodeNumber,
         isPatreon: request.IsPatreon
       );

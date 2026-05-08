@@ -8,6 +8,7 @@ public sealed class DraftPartCompletedIntegrationEvent(
   string draftPartPublicId,
   int partIndex,
   int totalParts,
+  int totalPicks,
   string title,
   string draftType,
   bool isPatreon,
@@ -22,6 +23,7 @@ public sealed class DraftPartCompletedIntegrationEvent(
   public string DraftPartPublicId { get; set; } = draftPartPublicId;
   public int PartIndex { get; set; } = partIndex;
   public int TotalParts { get; set; } = totalParts;
+  public int TotalPicks { get; set; } = totalPicks;
   public string Title { get; set; } = title;
   public string DraftType { get; set; } = draftType;
   public bool IsPatreon { get; set; } = isPatreon;
