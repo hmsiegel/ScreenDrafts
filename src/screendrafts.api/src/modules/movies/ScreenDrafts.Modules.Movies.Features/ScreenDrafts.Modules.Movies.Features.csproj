@@ -13,5 +13,6 @@
     <ProjectReference Include="..\..\users\ScreenDrafts.Modules.Users.IntegrationEvents\ScreenDrafts.Modules.Users.IntegrationEvents.csproj" />
     <ProjectReference Include="..\ScreenDrafts.Modules.Movies.Domain\ScreenDrafts.Modules.Movies.Domain.csproj" />
     <ProjectReference Include="..\ScreenDrafts.Modules.Movies.IntegrationEvents\ScreenDrafts.Modules.Movies.IntegrationEvents.csproj" />
+    <ProjectReference Include="..\ScreenDrafts.Modules.Movies.PublicApi\ScreenDrafts.Modules.Movies.PublicApi.csproj" />
   </ItemGroup>
 </Project>

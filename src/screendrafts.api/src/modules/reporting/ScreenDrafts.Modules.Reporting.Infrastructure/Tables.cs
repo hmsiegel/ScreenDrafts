@@ -8,4 +8,8 @@ internal static class Tables
   public const string MovieHonorifics = "movie_honorifics";
   public const string MoviesHonorificsHistory = "movies_honorifics_history";
   public const string MovieCanonicalPicks = "movie_canonical_picks";
+  public const string DraftSummaries = "draft_summaries";
+  public const string DraftPartReleases = "draft_part_releases";
+  public const string DraftSpotlights = "draft_spotlights";
+  public const string SiteStats = "site_stats";
 }

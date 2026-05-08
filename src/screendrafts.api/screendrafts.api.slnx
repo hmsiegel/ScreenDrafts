@@ -127,6 +127,7 @@
     <Project Path="src/modules/movies/ScreenDrafts.Modules.Movies.Infrastructure/ScreenDrafts.Modules.Movies.Infrastructure.csproj" />
     <Project Path="src/modules/movies/ScreenDrafts.Modules.Movies.IntegrationEvents/ScreenDrafts.Modules.Movies.IntegrationEvents.csproj" />
     <Project Path="src/modules/movies/ScreenDrafts.Modules.Movies.IntegrationTests/ScreenDrafts.Modules.Movies.IntegrationTests.csproj" />
+    <Project Path="src/modules/movies/ScreenDrafts.Modules.Movies.PublicApi/ScreenDrafts.Modules.Movies.PublicApi.csproj" Id="ffaabb80-80d2-48b5-9b7f-5867a2d91afa" />
     <Project Path="src/modules/movies/ScreenDrafts.Modules.Movies.UnitTests/ScreenDrafts.Modules.Movies.UnitTests.csproj" />
   </Folder>
   <Folder Name="/src/modules/real-time-updates/">

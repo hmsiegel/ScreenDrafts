@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <ItemGroup>
     <PackageReference Include="Ardalis.SmartEnum.Efcore" />
     <PackageReference Include="AspNetCore.HealthChecks.MongoDb" />
@@ -31,10 +30,10 @@
     <PackageReference Include="Polly" />
     <PackageReference Include="Quartz.Extensions.Hosting" />
     <PackageReference Include="Scrutor" />
+    <PackageReference Include="Snappier" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\ScreenDrafts.Common.Application\ScreenDrafts.Common.Application.csproj" />
   </ItemGroup>
-
 </Project>

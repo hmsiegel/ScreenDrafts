@@ -1,12 +1,11 @@
-﻿using ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities;
-
-namespace ScreenDrafts.Modules.Drafts.Composition;
+﻿namespace ScreenDrafts.Modules.Drafts.Composition;
 
 public static class DraftsModule
 {
   public static IServiceCollection AddDraftsModule(
     this IServiceCollection services,
-    IConfiguration configuration)
+    IConfiguration configuration
+  )
   {
     ArgumentNullException.ThrowIfNull(configuration);
 
@@ -36,27 +35,37 @@ public static class DraftsModule
     return services;
   }
 
-  public static IServiceCollection AddDraftsSeeding(this IServiceCollection services, IConfiguration configuration)
+  public static IServiceCollection AddDraftsSeeding(
+    this IServiceCollection services,
+    IConfiguration configuration
+  )
   {
     services.AddDraftsInfrastructure(configuration);
 
     return services;
   }
 
-  public static void ConfigureConsumers(IRegistrationConfigurator registrationConfigurator, string instanceId)
+  public static void ConfigureConsumers(
+    IRegistrationConfigurator registrationConfigurator,
+    string instanceId
+  )
   {
     ArgumentNullException.ThrowIfNull(registrationConfigurator);
 
-    registrationConfigurator.AddConsumer<IntegrationEventConsumer<UserRegisteredIntegrationEvent>>()
+    registrationConfigurator
+      .AddConsumer<IntegrationEventConsumer<UserRegisteredIntegrationEvent>>()
       .Endpoint(c => c.InstanceId = instanceId);
 
-    registrationConfigurator.AddConsumer<IntegrationEventConsumer<MediaAddedIntegrationEvent>>()
+    registrationConfigurator
+      .AddConsumer<IntegrationEventConsumer<MediaAddedIntegrationEvent>>()
       .Endpoint(c => c.InstanceId = instanceId);
 
-    registrationConfigurator.AddConsumer<IntegrationEventConsumer<MediaFetchedIntegrationEvent>>()
+    registrationConfigurator
+      .AddConsumer<IntegrationEventConsumer<MediaFetchedIntegrationEvent>>()
       .Endpoint(c => c.InstanceId = instanceId);
 
-    registrationConfigurator.AddConsumer<IntegrationEventConsumer<ZoomRecordingCompletedIntegrationEvent>>()
+    registrationConfigurator
+      .AddConsumer<IntegrationEventConsumer<ZoomRecordingCompletedIntegrationEvent>>()
       .Endpoint(c => c.InstanceId = instanceId);
   }
 
@@ -70,24 +79,28 @@ public static class DraftsModule
     return services;
   }
 
-
   private static void AddDomainEventHandlers(this IServiceCollection services)
   {
-    Type[] domainEventHandlers = [.. Features.AssemblyReference.Assembly
-        .GetTypes()
-        .Where(t => t.IsAssignableTo(typeof(IDomainEventHandler)))];
+    Type[] domainEventHandlers =
+    [
+      .. Features
+        .AssemblyReference.Assembly.GetTypes()
+        .Where(t => t.IsAssignableTo(typeof(IDomainEventHandler))),
+    ];
 
     foreach (Type domainEventHandler in domainEventHandlers)
     {
       services.TryAddScoped(domainEventHandler);
 
       Type domainEvent = domainEventHandler
-          .GetInterfaces()
-          .Single(i => i.IsGenericType)
-          .GetGenericArguments()
-          .Single();
+        .GetInterfaces()
+        .Single(i => i.IsGenericType)
+        .GetGenericArguments()
+        .Single();
 
-      Type closedIdempotentHandler = typeof(IdempotentDomainEventHandler<>).MakeGenericType(domainEvent);
+      Type closedIdempotentHandler = typeof(IdempotentDomainEventHandler<>).MakeGenericType(
+        domainEvent
+      );
 
       services.Decorate(domainEventHandler, closedIdempotentHandler);
     }
@@ -95,21 +108,26 @@ public static class DraftsModule
 
   private static void AddIntegrationEventHandlers(this IServiceCollection services)
   {
-    Type[] integrationEventHandlers = [.. Features.AssemblyReference.Assembly
-        .GetTypes()
-        .Where(t => t.IsAssignableTo(typeof(IIntegrationEventHandler)))];
+    Type[] integrationEventHandlers =
+    [
+      .. Features
+        .AssemblyReference.Assembly.GetTypes()
+        .Where(t => t.IsAssignableTo(typeof(IIntegrationEventHandler))),
+    ];
 
     foreach (Type integrationEventHandler in integrationEventHandlers)
     {
       services.TryAddScoped(integrationEventHandler);
 
       Type integrationEvent = integrationEventHandler
-          .GetInterfaces()
-          .Single(i => i.IsGenericType)
-          .GetGenericArguments()
-          .Single();
+        .GetInterfaces()
+        .Single(i => i.IsGenericType)
+        .GetGenericArguments()
+        .Single();
 
-      Type closedIdempotentHandler = typeof(IdempotentIntegrationEventHandler<>).MakeGenericType(integrationEvent);
+      Type closedIdempotentHandler = typeof(IdempotentIntegrationEventHandler<>).MakeGenericType(
+        integrationEvent
+      );
 
       services.Decorate(integrationEventHandler, closedIdempotentHandler);
     }

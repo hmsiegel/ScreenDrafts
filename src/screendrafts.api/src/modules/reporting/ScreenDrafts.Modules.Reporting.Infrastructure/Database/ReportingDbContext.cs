@@ -1,7 +1,8 @@
 ﻿namespace ScreenDrafts.Modules.Reporting.Infrastructure.Database;
 
 public sealed class ReportingDbContext(DbContextOptions<ReportingDbContext> options)
-  : DbContext(options), IUnitOfWork
+  : DbContext(options),
+    IUnitOfWork
 {
   internal DbSet<DrafterHonorificEntity> DrafterHonorifics { get; set; } = default!;
   internal DbSet<DrafterHonorificHistory> DraftersHonorificHistory { get; set; } = default!;
@@ -9,6 +10,10 @@ public sealed class ReportingDbContext(DbContextOptions<ReportingDbContext> opti
   internal DbSet<MovieHonorificEntity> MovieHonorifics { get; set; } = default!;
   internal DbSet<MovieHonorificHistory> MoviesHonorificHistory { get; set; } = default!;
   internal DbSet<MovieCanonicalPick> MovieCanonicalPicks { get; set; } = default!;
+  internal DbSet<DraftPartRelease> DraftPartsReleases { get; set; } = default!;
+  internal DbSet<DraftSpotlight> DraftSpotlights { get; set; } = default!;
+  internal DbSet<DraftSummary> DraftSummaries { get; set; } = default!;
+  internal DbSet<SiteStats> SiteStats { get; set; } = default!;
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {

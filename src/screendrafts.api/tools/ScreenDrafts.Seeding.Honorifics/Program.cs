@@ -1,45 +1,56 @@
-﻿var basePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
+﻿using Microsoft.Extensions.DependencyInjection.Extensions;
+using ScreenDrafts.Common.Infrastructure.Database;
+using ScreenDrafts.Modules.Reporting.Composition;
+
+var basePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
 
 var configuration = new ConfigurationBuilder()
-    .SetBasePath(basePath)
-    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-    .AddJsonFile("appsettings.Development.json", optional: true, reloadOnChange: true)
-    .AddEnvironmentVariables()
-    .Build();
+  .SetBasePath(basePath)
+  .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+  .AddJsonFile("appsettings.Development.json", optional: true, reloadOnChange: true)
+  .AddEnvironmentVariables()
+  .Build();
 
 Log.Logger = new LoggerConfiguration()
-    .ReadFrom.Configuration(configuration)
-    .Enrich.FromLogContext()
-    .CreateLogger();
+  .ReadFrom.Configuration(configuration)
+  .Enrich.FromLogContext()
+  .CreateLogger();
 
 var connectionString = configuration.GetConnectionStringOrThrow("Database");
 
 try
 {
   var builder = Host.CreateDefaultBuilder(args)
-      .UseDefaultServiceProvider(opt =>
-      {
-        opt.ValidateScopes = false;
-        opt.ValidateOnBuild = false;
-      })
-      .UseSerilog((context, services, configuration) =>
+    .UseDefaultServiceProvider(opt =>
+    {
+      opt.ValidateScopes = false;
+      opt.ValidateOnBuild = false;
+    })
+    .UseSerilog(
+      (context, services, configuration) =>
       {
         configuration
           .ReadFrom.Configuration(context.Configuration)
           .ReadFrom.Services(services)
           .Enrich.FromLogContext();
-      })
-      .ConfigureServices((hostContext, services) =>
+      }
+    )
+    .ConfigureServices(
+      (hostContext, services) =>
       {
-        services.AddSingleton(configuration);
+        services.Configure<DatabaseSettings>(o => o.ConnectionString = connectionString);
+
+        services.AddReportingSeeding(configuration);
         services.AddSeedingInfrastructure(connectionString);
         services.AddHonorificsSeeders();
+        services.TryAddScoped<SqlInsertHelper>();
         services.AddLogging(builder =>
-          {
-            builder.AddConsole();
-            builder.AddDebug();
-          });
-      });
+        {
+          builder.AddConsole();
+          builder.AddDebug();
+        });
+      }
+    );
 
   var app = builder.Build();
 

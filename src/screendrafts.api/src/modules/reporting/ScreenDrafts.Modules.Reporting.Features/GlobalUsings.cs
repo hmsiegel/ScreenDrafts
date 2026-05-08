@@ -1,12 +1,12 @@
 ﻿global using System.Reflection;
-
 global using Dapper;
-
+global using FluentValidation;
 global using MediatR;
-
+global using Microsoft.AspNetCore.Builder;
+global using Microsoft.AspNetCore.Http;
 global using Microsoft.Extensions.Logging;
-
 global using ScreenDrafts.Common.Abstractions.Results;
+global using ScreenDrafts.Common.Application.Caching;
 global using ScreenDrafts.Common.Application.Clock;
 global using ScreenDrafts.Common.Application.Data;
 global using ScreenDrafts.Common.Application.EventBus;
@@ -15,11 +15,22 @@ global using ScreenDrafts.Common.Application.Inbox;
 global using ScreenDrafts.Common.Application.Messaging;
 global using ScreenDrafts.Common.Application.Messaging.Dispatchers;
 global using ScreenDrafts.Common.Application.Outbox;
+global using ScreenDrafts.Common.Application.Services;
 global using ScreenDrafts.Common.Domain;
+global using ScreenDrafts.Common.Presentation.Http;
+global using ScreenDrafts.Common.Presentation.Http.Authentication;
+global using ScreenDrafts.Common.Presentation.Responses;
+global using ScreenDrafts.Common.Presentation.Results;
 global using ScreenDrafts.Modules.Drafts.IntegrationEvents;
+global using ScreenDrafts.Modules.Movies.PublicApi;
 global using ScreenDrafts.Modules.Reporting.Domain.Abstractions.Data;
 global using ScreenDrafts.Modules.Reporting.Domain.Drafters;
+global using ScreenDrafts.Modules.Reporting.Domain.Drafts;
 global using ScreenDrafts.Modules.Reporting.Domain.Movies;
+global using ScreenDrafts.Modules.Reporting.Features.Common;
 global using ScreenDrafts.Modules.Reporting.Features.Drafters.UpdateDrafterHonorifics;
+global using ScreenDrafts.Modules.Reporting.Features.Drafts.MarkDraftCompleted;
+global using ScreenDrafts.Modules.Reporting.Features.Drafts.UpsertDraftPartRelease;
+global using ScreenDrafts.Modules.Reporting.Features.Drafts.UpsertDraftSummary;
 global using ScreenDrafts.Modules.Reporting.Features.Movies.UpdateMovieHonorific;
 global using ScreenDrafts.Modules.Reporting.IntegrationEvents;

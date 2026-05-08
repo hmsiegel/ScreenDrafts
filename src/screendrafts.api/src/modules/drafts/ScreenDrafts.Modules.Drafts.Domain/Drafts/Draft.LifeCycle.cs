@@ -1,6 +1,7 @@
 ﻿using ScreenDrafts.Common.Abstractions.Results;
 
 namespace ScreenDrafts.Modules.Drafts.Domain.Drafts;
+
 public sealed partial class Draft
 {
   /// <summary>
@@ -29,10 +30,13 @@ public sealed partial class Draft
     DeriveDraftStatus(utcNow);
 
     UpdatedAtUtc = DateTime.UtcNow;
-    Raise(new DraftPartCompletedDomainEvent(
-      draftId: Id.Value,
-      draftPartId: part.Id.Value,
-      index: part.PartIndex));
+    Raise(
+      new DraftPartCompletedDomainEvent(
+        draftId: Id.Value,
+        draftPartId: part.Id.Value,
+        index: part.PartIndex
+      )
+    );
 
     if (DraftStatus == DraftStatus.Completed)
     {
@@ -56,20 +60,20 @@ public sealed partial class Draft
     }
     DeriveDraftStatus(utcNow);
     UpdatedAtUtc = DateTime.UtcNow;
-    Raise(new DraftPartStartedDomainEvent(
-      draftId: Id.Value,
-      draftPartId: part.Id.Value,
-      draftPublicId: PublicId,
-      index: part.PartIndex));
+    Raise(
+      new DraftPartStartedDomainEvent(
+        draftId: Id.Value,
+        draftPartId: part.Id.Value,
+        draftPublicId: PublicId,
+        index: part.PartIndex
+      )
+    );
     return Result.Success();
   }
 
   public Result Continue(DateTime utcNow)
   {
-    var next = _parts
-      .Where(p => p.IsScheduled(utcNow))
-      .OrderBy(p => p.PartIndex)
-      .FirstOrDefault();
+    var next = _parts.Where(p => p.IsScheduled(utcNow)).OrderBy(p => p.PartIndex).FirstOrDefault();
 
     if (next is null)
     {

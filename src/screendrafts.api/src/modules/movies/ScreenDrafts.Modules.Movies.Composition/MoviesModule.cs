@@ -4,7 +4,8 @@ public static class MoviesModule
 {
   public static IServiceCollection AddMoviesModule(
     this IServiceCollection services,
-    IConfiguration configuration)
+    IConfiguration configuration
+  )
   {
     ArgumentNullException.ThrowIfNull(configuration);
 
@@ -19,45 +20,57 @@ public static class MoviesModule
     return services;
   }
 
-  public static IServiceCollection AddMoviesSeeding(this IServiceCollection services, IConfiguration configuration)
+  public static IServiceCollection AddMoviesSeeding(
+    this IServiceCollection services,
+    IConfiguration configuration
+  )
   {
     services.AddMoviesInfrastructure(configuration);
     return services;
   }
 
-  public static void ConfigureConsumers(IRegistrationConfigurator registrationConfigurator, string instanceId)
+  public static void ConfigureConsumers(
+    IRegistrationConfigurator registrationConfigurator,
+    string instanceId
+  )
   {
     ArgumentNullException.ThrowIfNull(registrationConfigurator);
 
-    registrationConfigurator.AddConsumer<IntegrationEventConsumer<MediaFetchedIntegrationEvent>>()
+    registrationConfigurator
+      .AddConsumer<IntegrationEventConsumer<MediaFetchedIntegrationEvent>>()
       .Endpoint(x => x.InstanceId = instanceId);
   }
 
   private static void AddMoviesFeatures(this IServiceCollection services)
   {
+    services.AddScoped<IMovieTitleReader, MovieTitleReader>();
     services.AddScoped<IMoviesDomainEventDispatcher, MoviesDomainEventDispatcher>();
     services.AddScoped<IMoviesIntegrationEventDispatcher, MoviesIntegrationEventDispatcher>();
     services.AddScoped(typeof(IPipelineBehavior<,>), typeof(MoviesUnitOfWorkBehavior<,>));
   }
 
-
   private static void AddDomainEventHandlers(this IServiceCollection services)
   {
-    Type[] domainEventHandlers = [.. AssemblyReference.Assembly
-        .GetTypes()
-        .Where(t => t.IsAssignableTo(typeof(IDomainEventHandler)))];
+    Type[] domainEventHandlers =
+    [
+      .. AssemblyReference
+        .Assembly.GetTypes()
+        .Where(t => t.IsAssignableTo(typeof(IDomainEventHandler))),
+    ];
 
     foreach (Type domainEventHandler in domainEventHandlers)
     {
       services.TryAddScoped(domainEventHandler);
 
       Type domainEvent = domainEventHandler
-          .GetInterfaces()
-          .Single(i => i.IsGenericType)
-          .GetGenericArguments()
-          .Single();
+        .GetInterfaces()
+        .Single(i => i.IsGenericType)
+        .GetGenericArguments()
+        .Single();
 
-      Type closedIdempotentHandler = typeof(IdempotentDomainEventHandler<>).MakeGenericType(domainEvent);
+      Type closedIdempotentHandler = typeof(IdempotentDomainEventHandler<>).MakeGenericType(
+        domainEvent
+      );
 
       services.Decorate(domainEventHandler, closedIdempotentHandler);
     }
@@ -65,21 +78,26 @@ public static class MoviesModule
 
   private static void AddIntegrationEventHandlers(this IServiceCollection services)
   {
-    Type[] integrationEventHandlers = [.. AssemblyReference.Assembly
-        .GetTypes()
-        .Where(t => t.IsAssignableTo(typeof(IIntegrationEventHandler)))];
+    Type[] integrationEventHandlers =
+    [
+      .. AssemblyReference
+        .Assembly.GetTypes()
+        .Where(t => t.IsAssignableTo(typeof(IIntegrationEventHandler))),
+    ];
 
     foreach (Type integrationEventHandler in integrationEventHandlers)
     {
       services.TryAddScoped(integrationEventHandler);
 
       Type integrationEvent = integrationEventHandler
-          .GetInterfaces()
-          .Single(i => i.IsGenericType)
-          .GetGenericArguments()
-          .Single();
+        .GetInterfaces()
+        .Single(i => i.IsGenericType)
+        .GetGenericArguments()
+        .Single();
 
-      Type closedIdempotentHandler = typeof(IdempotentIntegrationEventHandler<>).MakeGenericType(integrationEvent);
+      Type closedIdempotentHandler = typeof(IdempotentIntegrationEventHandler<>).MakeGenericType(
+        integrationEvent
+      );
 
       services.Decorate(integrationEventHandler, closedIdempotentHandler);
     }

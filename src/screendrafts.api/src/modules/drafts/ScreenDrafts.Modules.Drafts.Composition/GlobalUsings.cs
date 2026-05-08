@@ -1,17 +1,14 @@
 ﻿global using Dapper;
-
 global using MassTransit;
-
 global using MediatR;
-
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.DependencyInjection.Extensions;
-
 global using ScreenDrafts.Common.Application.EventBus;
 global using ScreenDrafts.Common.Application.EventBus.Dispatchers;
 global using ScreenDrafts.Common.Application.Messaging;
 global using ScreenDrafts.Common.Application.Messaging.Dispatchers;
+global using ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities;
 global using ScreenDrafts.Modules.Drafts.Domain.DraftParts.Enums;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafts.Enums;
 global using ScreenDrafts.Modules.Drafts.Domain.Hosts;

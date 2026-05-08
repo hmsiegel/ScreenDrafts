@@ -18,7 +18,7 @@ namespace ScreenDrafts.Modules.Reporting.Infrastructure.Database.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("reporting")
-                .HasAnnotation("ProductVersion", "10.0.3")
+                .HasAnnotation("ProductVersion", "10.0.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -227,6 +227,185 @@ namespace ScreenDrafts.Modules.Reporting.Infrastructure.Database.Migrations
                         .HasDatabaseName("ix_drafter_honorifics_history_drafter_id_achieved_at");
 
                     b.ToTable("drafters_honorifics_history", "reporting");
+                });
+
+            modelBuilder.Entity("ScreenDrafts.Modules.Reporting.Domain.Drafts.DraftPartRelease", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("DraftId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("draft_id");
+
+                    b.Property<string>("DraftPartPublicId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("draft_part_public_id");
+
+                    b.Property<string>("ReleaseChannel")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("release_channel");
+
+                    b.Property<DateOnly>("ReleaseDate")
+                        .HasColumnType("date")
+                        .HasColumnName("release_date");
+
+                    b.HasKey("Id")
+                        .HasName("pk_draft_part_releases");
+
+                    b.HasIndex("DraftId")
+                        .HasDatabaseName("ix_draft_part_releases_draft_id");
+
+                    b.HasIndex("DraftPartPublicId", "ReleaseChannel")
+                        .IsUnique()
+                        .HasDatabaseName("ux_draft_part_releases_part_public_id_channel");
+
+                    b.ToTable("draft_part_releases", "reporting");
+                });
+
+            modelBuilder.Entity("ScreenDrafts.Modules.Reporting.Domain.Drafts.DraftSpotlight", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime?>("ActivatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("activated_at_utc");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at_utc");
+
+                    b.Property<string>("DraftPublicId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("draft_public_id");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
+
+                    b.Property<bool>("IsPinned")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_pinned");
+
+                    b.Property<string>("SpotifyUrl")
+                        .HasColumnType("text")
+                        .HasColumnName("spotify_url");
+
+                    b.Property<string>("SpotlightDescription")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("spotlight_description");
+
+                    b.HasKey("Id")
+                        .HasName("pk_draft_spotlights");
+
+                    b.HasIndex("IsActive")
+                        .IsUnique()
+                        .HasDatabaseName("uix_draft_spotlights_active")
+                        .HasFilter("is_active = true");
+
+                    b.ToTable("draft_spotlights", "reporting");
+                });
+
+            modelBuilder.Entity("ScreenDrafts.Modules.Reporting.Domain.Drafts.DraftSummary", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime?>("CompletedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("completed_at_utc");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at_utc");
+
+                    b.Property<Guid>("DraftId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("draft_id");
+
+                    b.Property<string>("DraftPartPublicId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("draft_part_public_id");
+
+                    b.Property<string>("DraftPublicId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("draft_public_id");
+
+                    b.Property<string>("DraftType")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("draft_type");
+
+                    b.Property<int?>("EpisodeNumber")
+                        .HasColumnType("integer")
+                        .HasColumnName("episode_number");
+
+                    b.Property<bool>("IsComplete")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_complete");
+
+                    b.Property<bool>("IsPatreon")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_patreon");
+
+                    b.Property<int>("PartIndex")
+                        .HasColumnType("integer")
+                        .HasColumnName("part_index");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("title");
+
+                    b.Property<int>("TotalParts")
+                        .HasColumnType("integer")
+                        .HasColumnName("total_parts");
+
+                    b.HasKey("Id")
+                        .HasName("pk_draft_summaries");
+
+                    b.HasIndex("DraftId")
+                        .HasDatabaseName("ix_draft_summaries_draft_id");
+
+                    b.HasIndex("DraftPublicId")
+                        .HasDatabaseName("ix_draft_summaries_draft_public_id");
+
+                    b.HasIndex("DraftId", "DraftPartPublicId")
+                        .IsUnique()
+                        .HasDatabaseName("ux_draft_summaries_draft_id_part_public_id");
+
+                    b.ToTable("draft_summaries", "reporting");
+                });
+
+            modelBuilder.Entity("ScreenDrafts.Modules.Reporting.Domain.Drafts.SiteStats", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<int>("VetoesCount")
+                        .HasColumnType("integer")
+                        .HasColumnName("vetoes_count");
+
+                    b.HasKey("Id")
+                        .HasName("pk_site_stats");
+
+                    b.ToTable("site_stats", "reporting");
                 });
 
             modelBuilder.Entity("ScreenDrafts.Modules.Reporting.Domain.Movies.MovieCanonicalPick", b =>

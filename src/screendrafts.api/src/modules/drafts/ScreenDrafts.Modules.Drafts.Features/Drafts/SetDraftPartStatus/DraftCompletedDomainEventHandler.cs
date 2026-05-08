@@ -3,8 +3,8 @@
 internal sealed class DraftCompletedDomainEventHandler(
   IDbConnectionFactory connectionFactory,
   IEventBus eventBus,
-  IDateTimeProvider dateTimeProvider)
-  : DomainEventHandler<DraftCompletedDomainEvent>
+  IDateTimeProvider dateTimeProvider
+) : DomainEventHandler<DraftCompletedDomainEvent>
 {
   private readonly IDbConnectionFactory _connectionFactory = connectionFactory;
   private readonly IDateTimeProvider _dateTimeProvider = dateTimeProvider;
@@ -12,12 +12,12 @@ internal sealed class DraftCompletedDomainEventHandler(
 
   public override async Task Handle(
     DraftCompletedDomainEvent domainEvent,
-    CancellationToken cancellationToken = default)
+    CancellationToken cancellationToken = default
+  )
   {
     await using var connection = await _connectionFactory.OpenConnectionAsync(cancellationToken);
 
-    const string sql =
-      """
+    const string sql = """
       SELECT 
         d.title As Title,
         EXISTS (
@@ -34,7 +34,9 @@ internal sealed class DraftCompletedDomainEventHandler(
       new CommandDefinition(
         commandText: sql,
         parameters: new { domainEvent.DraftId },
-        cancellationToken: cancellationToken));
+        cancellationToken: cancellationToken
+      )
+    );
 
     if (draftRow is null)
     {
@@ -42,13 +44,15 @@ internal sealed class DraftCompletedDomainEventHandler(
     }
 
     await _eventBus.PublishAsync(
-      new DraftCreatedIntegrationEvent(
+      new DraftCompletedIntegrationEvent(
         id: Guid.NewGuid(),
         occurredOnUtc: _dateTimeProvider.UtcNow,
         draftId: domainEvent.DraftId,
         draftTitle: draftRow.Title,
-        isPatreon: draftRow.IsPatreon),
-      cancellationToken);
+        isPatreon: draftRow.IsPatreon
+      ),
+      cancellationToken
+    );
   }
 
   private sealed record DraftRow(string Title, bool IsPatreon);

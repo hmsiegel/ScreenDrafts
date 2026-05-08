@@ -3,9 +3,7 @@
 public sealed partial class DraftPart
 {
   public bool IsScheduled(DateTime utcNow) =>
-    Status == DraftPartStatus.Created &&
-     ScheduledForUtc.HasValue &&
-      ScheduledForUtc.Value > utcNow;
+    Status == DraftPartStatus.Created && ScheduledForUtc.HasValue && ScheduledForUtc.Value > utcNow;
 
   public DraftPartLifecycleView GetLifecycleView(DateTime utcNow) =>
     Status switch
@@ -14,7 +12,7 @@ public sealed partial class DraftPart
       _ when Status == DraftPartStatus.Created => DraftPartLifecycleView.Created,
       _ when Status == DraftPartStatus.InProgress => DraftPartLifecycleView.InProgress,
       _ when Status == DraftPartStatus.Completed => DraftPartLifecycleView.Completed,
-      _ => DraftPartLifecycleView.Cancelled
+      _ => DraftPartLifecycleView.Cancelled,
     };
 
   internal Result Start()
@@ -36,12 +34,6 @@ public sealed partial class DraftPart
 
     Status = DraftPartStatus.InProgress;
 
-    Raise(new DraftPartStartedDomainEvent(
-      draftPartId: Id.Value,
-      draftId: DraftId.Value,
-      draftPublicId: DraftPublicId,
-      index: PartIndex));
-
     return Result.Success();
   }
 
@@ -59,7 +51,6 @@ public sealed partial class DraftPart
 
     Status = DraftPartStatus.Completed;
     UpdatedAtUtc = DateTime.UtcNow;
-
 
     return Result.Success();
   }
@@ -96,5 +87,4 @@ public sealed partial class DraftPart
     UpdatedAtUtc = DateTime.UtcNow;
     return Result.Success();
   }
-
 }

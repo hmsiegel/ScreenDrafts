@@ -475,3 +475,4 @@ FodyWeavers.xsd
 /src/screendrafts.api/tools/ScreenDrafts.Seeding.Honorifics/appsettings.Development.json
 /src/screendrafts.api/tools/patch-keycloak-users.ps1
 /src/screendrafts.api/tools/users_export.csv
+/src/screendrafts.api/data/tools/spotify_url_filler.py

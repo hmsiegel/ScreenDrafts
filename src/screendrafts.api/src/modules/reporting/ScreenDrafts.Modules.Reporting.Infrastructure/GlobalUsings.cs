@@ -2,11 +2,8 @@
 global using System.Data.Common;
 global using System.Reflection;
 global using System.Runtime.CompilerServices;
-
 global using Dapper;
-
 global using MassTransit;
-
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.EntityFrameworkCore.Metadata.Builders;
 global using Microsoft.EntityFrameworkCore.Migrations;
@@ -15,11 +12,9 @@ global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Logging;
 global using Microsoft.Extensions.Options;
-
 global using Newtonsoft.Json;
-
 global using Quartz;
-
+global using ScreenDrafts.Common.Application.Caching;
 global using ScreenDrafts.Common.Application.Clock;
 global using ScreenDrafts.Common.Application.Data;
 global using ScreenDrafts.Common.Application.EventBus;
@@ -36,10 +31,11 @@ global using ScreenDrafts.Common.Infrastructure.Outbox;
 global using ScreenDrafts.Common.Infrastructure.Serialization;
 global using ScreenDrafts.Modules.Reporting.Domain.Abstractions.Data;
 global using ScreenDrafts.Modules.Reporting.Domain.Drafters;
+global using ScreenDrafts.Modules.Reporting.Domain.Drafts;
 global using ScreenDrafts.Modules.Reporting.Domain.Movies;
 global using ScreenDrafts.Modules.Reporting.Infrastructure.Converters;
 global using ScreenDrafts.Modules.Reporting.Infrastructure.Database;
+global using ScreenDrafts.Modules.Reporting.Infrastructure.Drafts;
 global using ScreenDrafts.Modules.Reporting.Infrastructure.Inbox;
 global using ScreenDrafts.Modules.Reporting.Infrastructure.Outbox;
-
 global using SmartEnum.EFCore;
