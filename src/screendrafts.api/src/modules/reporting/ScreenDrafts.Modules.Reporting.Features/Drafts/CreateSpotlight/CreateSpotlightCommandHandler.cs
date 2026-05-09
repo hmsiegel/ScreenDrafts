@@ -18,7 +18,7 @@ internal sealed class CreateSpotlightCommandHandler(
     // Verify that the draft exists in reporting and is complete
     // a spotlight on an imcomplete draft would show a partial pick list
     const string draftCheckSql = """
-      SELECT is_complete, is_patreon
+      SELECT is_complete AS IsComplete, is_patreon AS IsPatreon
       FROM reporting.draft_summaries
       WHERE draft_public_id = @DraftPublicId
       LIMIT 1
@@ -49,14 +49,14 @@ internal sealed class CreateSpotlightCommandHandler(
       return Result.Failure<CreateSpotlightResponse>(DraftReportingErrors.DraftIsPatreon);
     }
 
-    var spotifyUrl = string.IsNullOrWhiteSpace(request.SpotifyUrl)
-      ? string.Empty
-      : request.SpotifyUrl;
+    Uri? spotifyUri = string.IsNullOrWhiteSpace(request.SpotifyUrl)
+      ? null
+      : new Uri(request.SpotifyUrl);
 
     var spotlight = DraftSpotlight.Create(
       request.DraftPublicId,
       request.SpotlightDescription,
-      new Uri(spotifyUrl)
+      spotifyUri
     );
 
     _draftReportingRepository.AddSpotlight(spotlight);

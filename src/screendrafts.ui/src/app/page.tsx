@@ -20,19 +20,6 @@ import {
   mapSiteStats,
 } from "@/services/home/fetch-home-data";
 
-// ── Mock data (no endpoint yet) ────────────────────────────────────────────
-
-// TODO: wire up when endpoint exists
-const stats = [
-  { value: '317', label: 'EPISODES PRODUCED' },
-  { value: '2,140', label: 'FILMS DRAFTED' },
-  { value: '186', label: 'GUEST G.M.s' },
-  { value: '418', label: 'VETOES DEPLOYED' },
-  { value: '6', label: 'LEGENDS' },
-];
-
-// ── Page ───────────────────────────────────────────────────────────────────
-
 export default async function Home() {
   const [latestDrafts, upcomingDrafts, currentStandings, spotlightData, statsData] = await Promise.all([
     fetchLatestDrafts(),

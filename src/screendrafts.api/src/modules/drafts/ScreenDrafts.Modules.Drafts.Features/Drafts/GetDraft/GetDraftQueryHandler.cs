@@ -364,31 +364,31 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
         SELECT
           d.public_id,
           d.title,
-          dcr.episode_number,
+          dcr.episode_number
         FROM drafts.draft_channel_releases dcr
         JOIN drafts.drafts d ON d.id = dcr.draft_id
-        JOIN current c ON current.series_id = dcr.series_id
+        JOIN current c ON c.series_id = dcr.series_id
         WHERE dcr.release_channel = ANY(@allowedChannelInts)
           AND dcr.episode_number IS NOT NULL
           AND dcr.episode_number < c.episode_number
-        GROUP BY dcr.episode_number DESC
+        ORDER BY dcr.episode_number DESC
         LIMIT 1
       ),
       next AS (
         SELECT
           d.public_id,
           d.title,
-          dcr.episode_number,
+          dcr.episode_number
         FROM drafts.draft_channel_releases dcr
         JOIN drafts.drafts d ON d.id = dcr.draft_id
-        JOIN current c ON current.series_id = dcr.series_id
+        JOIN current c ON c.series_id = dcr.series_id
         WHERE dcr.release_channel = ANY(@allowedChannelInts)
           AND dcr.episode_number IS NOT NULL
-          AND drc.episode_number > c.episode_number
-        GROUP BY dcr.episode_number ASC
+          AND dcr.episode_number > c.episode_number
+        ORDER BY dcr.episode_number ASC
         LIMIT 1
       )
-      SELECT 'prev' AS Direction, public_id AS PublicId, title AS Title, FROM prev
+      SELECT 'prev' AS Direction, public_id AS PublicId, title AS Title FROM prev
       UNION ALL
       SELECT 'next' AS Direction, public_id AS PublicId, title AS Title FROM next;
       """;

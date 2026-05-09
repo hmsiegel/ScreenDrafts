@@ -14,7 +14,7 @@ public class ModuleTests : BaseTest
       MoviesNamespace,
       RealTimeUpdatesNamespace,
       ReportingNamespace,
-      UsersNamespace
+      UsersNamespace,
     ];
 
     string[] integrationEventsModules =
@@ -28,16 +28,17 @@ public class ModuleTests : BaseTest
       RealTimeUpdatesIntegrationEventsNamespace,
       ReportingIntegrationEventsNamespace,
       UsersIntegrationEventsNamespace,
-      UsersPublicApiNameSpace
+      UsersPublicApiNameSpace,
     ];
 
     List<Assembly> administrationAssemblies =
-      [
+    [
       Modules.Administration.Features.AssemblyReference.Assembly,
-      typeof(AdministrationModule).Assembly
-      ];
+      typeof(AdministrationModule).Assembly,
+    ];
 
-    Types.InAssemblies(administrationAssemblies)
+    Types
+      .InAssemblies(administrationAssemblies)
       .That()
       .DoNotHaveDependencyOnAny(integrationEventsModules)
       .Should()
@@ -58,7 +59,7 @@ public class ModuleTests : BaseTest
       MoviesNamespace,
       RealTimeUpdatesNamespace,
       ReportingNamespace,
-      UsersNamespace
+      UsersNamespace,
     ];
 
     string[] integrationEventsModules =
@@ -73,16 +74,17 @@ public class ModuleTests : BaseTest
       RealTimeUpdatesIntegrationEventsNamespace,
       ReportingIntegrationEventsNamespace,
       UsersIntegrationEventsNamespace,
-      UsersPublicApiNameSpace
+      UsersPublicApiNameSpace,
     ];
 
     List<Assembly> auditAssemblies =
-      [
+    [
       Modules.Audit.Features.AssemblyReference.Assembly,
-      typeof(AuditModule).Assembly
-      ];
+      typeof(AuditModule).Assembly,
+    ];
 
-    Types.InAssemblies(auditAssemblies)
+    Types
+      .InAssemblies(auditAssemblies)
       .That()
       .DoNotHaveDependencyOnAny(integrationEventsModules)
       .Should()
@@ -103,7 +105,7 @@ public class ModuleTests : BaseTest
       MoviesNamespace,
       RealTimeUpdatesNamespace,
       ReportingNamespace,
-      UsersNamespace
+      UsersNamespace,
     ];
 
     string[] integrationEventsModules =
@@ -118,16 +120,17 @@ public class ModuleTests : BaseTest
       RealTimeUpdatesIntegrationEventsNamespace,
       ReportingIntegrationEventsNamespace,
       UsersIntegrationEventsNamespace,
-      UsersPublicApiNameSpace
+      UsersPublicApiNameSpace,
     ];
 
     List<Assembly> communicationsAssemblies =
-      [
+    [
       Modules.Communications.Features.AssemblyReference.Assembly,
-      typeof(CommunicationsModule).Assembly
-      ];
+      typeof(CommunicationsModule).Assembly,
+    ];
 
-    Types.InAssemblies(communicationsAssemblies)
+    Types
+      .InAssemblies(communicationsAssemblies)
       .That()
       .DoNotHaveDependencyOnAny(integrationEventsModules)
       .Should()
@@ -148,7 +151,7 @@ public class ModuleTests : BaseTest
       MoviesNamespace,
       RealTimeUpdatesNamespace,
       ReportingNamespace,
-      UsersNamespace
+      UsersNamespace,
     ];
 
     string[] integrationEventsModules =
@@ -163,17 +166,18 @@ public class ModuleTests : BaseTest
       RealTimeUpdatesIntegrationEventsNamespace,
       ReportingIntegrationEventsNamespace,
       UsersIntegrationEventsNamespace,
-      UsersPublicApiNameSpace
+      UsersPublicApiNameSpace,
     ];
 
     List<Assembly> draftsAssemblies =
-      [
+    [
       typeof(Draft).Assembly,
       Modules.Drafts.Features.AssemblyReference.Assembly,
-      typeof(DraftsModule).Assembly
-      ];
+      typeof(DraftsModule).Assembly,
+    ];
 
-    Types.InAssemblies(draftsAssemblies)
+    Types
+      .InAssemblies(draftsAssemblies)
       .That()
       .DoNotHaveDependencyOnAny(integrationEventsModules)
       .Should()
@@ -194,7 +198,7 @@ public class ModuleTests : BaseTest
       MoviesNamespace,
       RealTimeUpdatesNamespace,
       ReportingNamespace,
-      UsersNamespace
+      UsersNamespace,
     ];
 
     string[] integrationEventsModules =
@@ -208,16 +212,17 @@ public class ModuleTests : BaseTest
       RealTimeUpdatesIntegrationEventsNamespace,
       ReportingIntegrationEventsNamespace,
       UsersIntegrationEventsNamespace,
-      UsersPublicApiNameSpace
+      UsersPublicApiNameSpace,
     ];
 
     List<Assembly> integrationsAssemblies =
-      [
+    [
       Modules.Integrations.Features.AssemblyReference.Assembly,
-      typeof(IntegrationsModule).Assembly
-      ];
+      typeof(IntegrationsModule).Assembly,
+    ];
 
-    Types.InAssemblies(integrationsAssemblies)
+    Types
+      .InAssemblies(integrationsAssemblies)
       .That()
       .DoNotHaveDependencyOnAny(integrationEventsModules)
       .Should()
@@ -238,7 +243,7 @@ public class ModuleTests : BaseTest
       IntegrationsNamespace,
       RealTimeUpdatesNamespace,
       ReportingNamespace,
-      UsersNamespace
+      UsersNamespace,
     ];
 
     string[] integrationEventsModules =
@@ -253,16 +258,17 @@ public class ModuleTests : BaseTest
       RealTimeUpdatesIntegrationEventsNamespace,
       ReportingIntegrationEventsNamespace,
       UsersIntegrationEventsNamespace,
-      UsersPublicApiNameSpace
+      UsersPublicApiNameSpace,
     ];
 
     List<Assembly> moviesAssemblies =
-      [
+    [
       Modules.Movies.Features.AssemblyReference.Assembly,
-      typeof(MoviesModule).Assembly
-      ];
+      typeof(MoviesModule).Assembly,
+    ];
 
-    Types.InAssemblies(moviesAssemblies)
+    Types
+      .InAssemblies(moviesAssemblies)
       .That()
       .DoNotHaveDependencyOnAny(integrationEventsModules)
       .Should()
@@ -283,7 +289,7 @@ public class ModuleTests : BaseTest
       IntegrationsNamespace,
       MoviesNamespace,
       ReportingNamespace,
-      UsersNamespace
+      UsersNamespace,
     ];
 
     string[] integrationEventsModules =
@@ -298,16 +304,17 @@ public class ModuleTests : BaseTest
       MoviesIntegrationEventsNamespace,
       ReportingIntegrationEventsNamespace,
       UsersIntegrationEventsNamespace,
-      UsersPublicApiNameSpace
+      UsersPublicApiNameSpace,
     ];
 
     List<Assembly> realTimeUpdatesAssemblies =
-      [
+    [
       Modules.RealTimeUpdates.Features.AssemblyReference.Assembly,
-      typeof(RealTimeUpdatesModule).Assembly
-      ];
+      typeof(RealTimeUpdatesModule).Assembly,
+    ];
 
-    Types.InAssemblies(realTimeUpdatesAssemblies)
+    Types
+      .InAssemblies(realTimeUpdatesAssemblies)
       .That()
       .DoNotHaveDependencyOnAny(integrationEventsModules)
       .Should()
@@ -328,7 +335,7 @@ public class ModuleTests : BaseTest
       IntegrationsNamespace,
       MoviesNamespace,
       RealTimeUpdatesNamespace,
-      UsersNamespace
+      UsersNamespace,
     ];
 
     string[] integrationEventsModules =
@@ -341,18 +348,20 @@ public class ModuleTests : BaseTest
       IntegrationsIntegrationEventsNamespace,
       IntegrationsPublicApiNamespace,
       MoviesIntegrationEventsNamespace,
+      MoviesPublicApiNamespace,
       RealTimeUpdatesIntegrationEventsNamespace,
       UsersIntegrationEventsNamespace,
-      UsersPublicApiNameSpace
+      UsersPublicApiNameSpace,
     ];
 
     List<Assembly> reportingAssemblies =
-      [
+    [
       Modules.Reporting.Features.AssemblyReference.Assembly,
-      typeof(ReportingModule).Assembly
-      ];
+      typeof(ReportingModule).Assembly,
+    ];
 
-    Types.InAssemblies(reportingAssemblies)
+    Types
+      .InAssemblies(reportingAssemblies)
       .That()
       .DoNotHaveDependencyOnAny(integrationEventsModules)
       .Should()
@@ -391,13 +400,14 @@ public class ModuleTests : BaseTest
     ];
 
     List<Assembly> usersAssemblies =
-      [
+    [
       typeof(User).Assembly,
       Modules.Users.Features.AssemblyReference.Assembly,
-      typeof(UsersModule).Assembly
-      ];
+      typeof(UsersModule).Assembly,
+    ];
 
-    Types.InAssemblies(usersAssemblies)
+    Types
+      .InAssemblies(usersAssemblies)
       .That()
       .DoNotHaveDependencyOnAny(integrationEventsModules)
       .Should()

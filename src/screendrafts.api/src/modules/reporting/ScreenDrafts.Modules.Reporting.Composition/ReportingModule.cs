@@ -31,6 +31,7 @@ public static class ReportingModule
 
   private static void AddReportingFeatures(this IServiceCollection services)
   {
+    services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ReportingUnitOfWorkBehavior<,>));
     services.AddScoped<IReportingIntegrationEventDispatcher, ReportingIntegrationEventDispatcher>();
     services.AddScoped<IReportingDomainEventDispatcher, ReportingDomainEventDispatcher>();
   }

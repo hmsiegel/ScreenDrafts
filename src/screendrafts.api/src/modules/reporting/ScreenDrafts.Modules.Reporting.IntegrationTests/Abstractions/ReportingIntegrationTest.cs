@@ -15,8 +15,18 @@ public abstract class ReportingIntegrationTest(ReportingIntegrationTestWebAppFac
         reporting.drafters_honorifics_history,
         reporting.movie_canonical_picks,
         reporting.movie_honorifics,
-        reporting.movies_honorifics_history
+        reporting.movies_honorifics_history,
+        reporting.draft_spotlights,
+        reporting.draft_summaries,
+        reporting.site_stats,
+        reporting.draft_part_releases
       RESTART IDENTITY CASCADE;
       """);
+
+    var cache = GetService<IDistributedCache>();
+    await cache.RemoveAsync("reporting:stats:static", CancellationToken.None);
+    await cache.RemoveAsync("reporting:stats:episodes:public", CancellationToken.None);
+    await cache.RemoveAsync("reporting:stats:episodes:patreon", CancellationToken.None);
+    await cache.RemoveAsync("reporting:spotlight:active", CancellationToken.None);
   }
 }
