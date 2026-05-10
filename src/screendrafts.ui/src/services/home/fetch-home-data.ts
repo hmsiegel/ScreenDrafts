@@ -9,8 +9,6 @@ import type {
   GetActiveSpotlightResponse,
   GetSiteStatsResponse
 } from '@/lib/dto';
-import { inter } from '@/styles/fonts';
-import exp from 'constants';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 
@@ -139,6 +137,7 @@ export async function fetchSiteStats(): Promise<GetSiteStatsResponse> {
 // ── Mappers ────────────────────────────────────────────────────────────────
 
 export interface MappedRecentDraft {
+  publicId: string;
   number: number;
   title: string;
   drafters: string;
@@ -211,6 +210,7 @@ export function mapLatestDraft(draft: LatestDraftResponse): MappedRecentDraft {
     .join(' · ') ?? '';
 
   return {
+    publicId: draft.draftPublicId ?? '',
     number: draft.episodeNumber ?? 0,
     title: draft.title ?? '',
     drafters: drafterLine,

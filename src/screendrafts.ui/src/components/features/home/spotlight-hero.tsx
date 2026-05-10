@@ -37,7 +37,7 @@ export default function SpotlightHero({ spotlight }: { spotlight: MappedSpotligh
               </a>
             )}
             <Link
-              href={`/dashboard/drafts/${spotlight.draftPublicId}`}
+              href={`/drafts/${spotlight.draftPublicId}`}
               className="border-2 border-white px-5 py-3 font-oswald font-semibold tracking-[0.18em] text-sm">
               VIEW THE LIST →
             </Link>
@@ -77,7 +77,7 @@ export default function SpotlightHero({ spotlight }: { spotlight: MappedSpotligh
         </div>
 
         <Link
-          href={`/dashboard/drafts/${spotlight.draftPublicId}`}
+          href={`/drafts/${spotlight.draftPublicId}`}
           className="mt-3.5 text-xs tracking-[0.18em] text-sd-blue font-bold">
           SEE ALL {spotlight.totalPicks} PICKS →
         </Link>

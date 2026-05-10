@@ -32,7 +32,13 @@ export default async function SiteHeader() {
         <Link href="/drafts" className="hover:text-sd-blue transition-colors">DRAFTS</Link>
         <Link href="/drafters" className="hover:text-sd-blue transition-colors">DRAFTERS</Link>
         <Link href="/films" className="hover:text-sd-blue transition-colors">FILMS</Link>
-        <Link href="/wiki" className="hover:text-sd-blue transition-colors">WIKI</Link>
+        <a
+          href={process.env.NEXT_PUBLIC_WIKI_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:text-sd-blue transition-colors">
+          WIKI
+        </a>
         {isAdmin && (
           <Link href="/admin" className="text-sd-red font-oswald font-semibold tracking-widest">
             ADMIN

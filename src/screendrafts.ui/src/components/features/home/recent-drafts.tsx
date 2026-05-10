@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 interface RecentDraft {
+  publicId: string;
   number: number;
   title: string;
   drafters: string;
@@ -28,9 +29,10 @@ export default function RecentDrafts({ drafts }: { drafts: RecentDraft[] }) {
       </div>
 
       {drafts.map((draft, i) => (
-        <div
+        <Link
           key={draft.number}
-          className={`grid px-5 py-3.5 items-center ${i < drafts.length - 1 ? 'border-b border-gray-100' : ''}`}
+          href={`/drafts/${draft.publicId}`}
+          className={`grid px-5 py-3.5 items-center cursor-pointer hover:bg-gray-50 transition-colors ${i < drafts.length - 1 ? 'border-b border-gray-100' : ''}`}
           style={{ gridTemplateColumns: '60px 1fr 100px' }}
         >
           <div className="font-oswald font-bold text-[26px] text-sd-red leading-none">{draft.number}</div>
@@ -39,7 +41,7 @@ export default function RecentDrafts({ drafts }: { drafts: RecentDraft[] }) {
             <div className="text-xs text-gray-500 mt-0.5">{draft.drafters}</div>
           </div>
           <div className="font-mono text-xs text-gray-600">{draft.date}</div>
-        </div>
+        </Link>
       ))}
     </div>
   );
