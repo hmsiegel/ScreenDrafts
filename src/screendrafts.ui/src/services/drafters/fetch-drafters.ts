@@ -1,0 +1,75 @@
+import { auth } from "@/auth";
+import { DrafterCollectionResponse, DrafterListItem, GetDrafterProfileResponse } from "@/lib/dto";
+import { env } from "@/lib/env";
+
+const apiBase = env.apiUrl;
+
+async function authHeaders(): Promise<HeadersInit> {
+  const session = await auth();
+  if (session?.accessToken) {
+    return { Authorization: `Bearer ${session.accessToken}` };
+  }
+  return {};
+}
+
+export interface DrafterPagedResult {
+  items: DrafterListItem[];
+  total: number;
+  page: number;
+  pageSize: number;
+}
+
+export async function listDrafters(params: {
+  q?: string;
+  retired?: string;
+  sort?: string;
+  direction?: string;
+  page?: number;
+  pageSize?: number;
+} = {}): Promise<DrafterPagedResult> {
+  const url = new URL(`${apiBase}/drafters`);
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== "") {
+      url.searchParams.set(key, String(value));
+    }
+  });
+
+  const response = await fetch(url.toString(), {
+    method: "GET",
+    headers: await authHeaders(),
+    credentials: "include",
+    next: { revalidate: 0 },
+  });
+
+  if (!response.ok) {
+    const body = await response.text();
+    throw new Error(`Request failed with status ${response.status}: ${response.statusText} - ${body}`);
+  }
+
+  const data = await response.json() as DrafterCollectionResponse;
+  const paged = data.drafters;
+  return {
+    items: paged.items ?? [],
+    total: paged.totalCount ?? 0,
+    page: paged.page ?? 1,
+    pageSize: paged.pageSize ?? 20,
+  };
+}
+
+export async function getDrafterProfile(id: string): Promise<GetDrafterProfileResponse> {
+  const url = `${apiBase}/drafters/${id}`;
+
+  const response = await fetch(url, {
+    method: "GET",
+    headers: await authHeaders(),
+    credentials: "include",
+    next: { revalidate: 0 },
+  });
+
+  if (!response.ok) {
+    const body = await response.text();
+    throw new Error(`Request failed with status ${response.status}: ${response.statusText} - ${body}`);
+  }
+
+  return response.json() as Promise<GetDrafterProfileResponse>;
+}

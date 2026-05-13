@@ -3,7 +3,9 @@
 internal sealed record GetDraftVetoResponse
 {
   public Guid IssuedByParticipantId { get; init; }
+  public string? IssuedByDisplayName { get; init; }
   public string? ActedByPublicId { get; init; }
+  public string? ActedByDisplayName { get; init; }
   public bool IsOverriden { get; init; }
   public string? Note { get; init; }
   public DateTime OccurredOnUtc { get; init; }

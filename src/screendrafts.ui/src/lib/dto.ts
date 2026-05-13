@@ -2067,7 +2067,7 @@ export class Client implements IClient {
      * @return No Content
      */
     drafts_UpdateDraft(body: UpdateDraftRequest, signal?: AbortSignal): Promise<void> {
-        let url_ = this.baseUrl + "/drafts/{draftId}";
+        let url_ = this.baseUrl + "/drafts/{publicId}";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -2117,7 +2117,7 @@ export class Client implements IClient {
      * @return OK
      */
     drafts_GetDraftById(body: GetDraftRequest, signal?: AbortSignal): Promise<GetDraftResponse> {
-        let url_ = this.baseUrl + "/drafts/{draftId}";
+        let url_ = this.baseUrl + "/drafts/{publicId}";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -2146,14 +2146,6 @@ export class Client implements IClient {
             result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as GetDraftResponse;
             return result200;
             });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
         } else if (status === 404) {
             return response.text().then((_responseText) => {
             return throwException("Not Found", status, _responseText, _headers);
@@ -2170,7 +2162,7 @@ export class Client implements IClient {
      * @return No Content
      */
     drafts_SetEpisodeNumber(body: SetEpisodeNumberRequest, signal?: AbortSignal): Promise<void> {
-        let url_ = this.baseUrl + "/drafts/{draftId}/episode";
+        let url_ = this.baseUrl + "/drafts/{publicId}/episode";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -2224,7 +2216,7 @@ export class Client implements IClient {
      * @return OK
      */
     drafts_SetDraftPartStatus(body: SetDraftPartStatusRequest, signal?: AbortSignal): Promise<Response> {
-        let url_ = this.baseUrl + "/drafts/{draftId}/parts/{partIndex}/status";
+        let url_ = this.baseUrl + "/drafts/{publicId}/parts/{partIndex}/status";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -2281,7 +2273,7 @@ export class Client implements IClient {
      * @return No Content
      */
     drafts_SetCategory(body: SetCategoryDraftRequest, signal?: AbortSignal): Promise<void> {
-        let url_ = this.baseUrl + "/drafts/{draftId}/category";
+        let url_ = this.baseUrl + "/drafts/{publicId}/category";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -2335,7 +2327,7 @@ export class Client implements IClient {
      * @return No Content
      */
     drafts_SetCategories(body: SetCategoriesDraftRequest, signal?: AbortSignal): Promise<void> {
-        let url_ = this.baseUrl + "/drafts/{draftId}/categories";
+        let url_ = this.baseUrl + "/drafts/{publicId}/categories";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -2389,7 +2381,7 @@ export class Client implements IClient {
      * @return No Content
      */
     drafts_SetCampaign(body: SetCampaignDraftRequest, signal?: AbortSignal): Promise<void> {
-        let url_ = this.baseUrl + "/drafts/{draftId}/campaign";
+        let url_ = this.baseUrl + "/drafts/{publicId}/campaign";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -2439,7 +2431,7 @@ export class Client implements IClient {
      * @return No Content
      */
     drafts_RemoveCampaign(body: ClearCampaignDraftRequest, signal?: AbortSignal): Promise<void> {
-        let url_ = this.baseUrl + "/drafts/{draftId}/campaign";
+        let url_ = this.baseUrl + "/drafts/{publicId}/campaign";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -2542,7 +2534,7 @@ export class Client implements IClient {
      * @return No Content
      */
     drafts_RemoveCategory(body: RemoveCategoryFromDraftRequest, signal?: AbortSignal): Promise<void> {
-        let url_ = this.baseUrl + "/drafts/{draftId}/category/{categoryId}";
+        let url_ = this.baseUrl + "/drafts/{publicId}/category/{categoryId}";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -2699,14 +2691,6 @@ export class Client implements IClient {
             return response.text().then((_responseText) => {
             return throwException("Bad Request", status, _responseText, _headers);
             });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
         } else if (status === 500) {
             return response.text().then((_responseText) => {
             return throwException("Internal Server Error", status, _responseText, _headers);
@@ -2776,7 +2760,7 @@ export class Client implements IClient {
      * @return OK
      */
     drafts_GetDraftStatus(body: GetDraftStatusRequest, signal?: AbortSignal): Promise<Response> {
-        let url_ = this.baseUrl + "/drafts/{draftId}/status";
+        let url_ = this.baseUrl + "/drafts/{publicId}/status";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -2829,7 +2813,7 @@ export class Client implements IClient {
      * @return OK
      */
     draftPools_GetPool(body: GetDraftPoolRequest, signal?: AbortSignal): Promise<DraftPoolResponse> {
-        let url_ = this.baseUrl + "/drafts/{draftId}/pool";
+        let url_ = this.baseUrl + "/drafts/{publicId}/pool";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -2882,7 +2866,7 @@ export class Client implements IClient {
      * @return No Content
      */
     draftPools_CreatePool(body: CreateDraftPoolRequest, signal?: AbortSignal): Promise<void> {
-        let url_ = this.baseUrl + "/drafts/{draftId}/pool";
+        let url_ = this.baseUrl + "/drafts/{publicId}/pool";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -2938,7 +2922,7 @@ export class Client implements IClient {
      * @return OK
      */
     draftPools_BulkAddItems(draftId: string | undefined, file: FileParameter | undefined, signal?: AbortSignal): Promise<BulkAddMoviesResponse> {
-        let url_ = this.baseUrl + "/drafts/{draftId}/pool/bulk";
+        let url_ = this.baseUrl + "/drafts/{publicId}/pool/bulk";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = new FormData();
@@ -3002,7 +2986,7 @@ export class Client implements IClient {
      * @return No Content
      */
     draftPools_AddItem(body: AddMovieToDraftPoolRequest, signal?: AbortSignal): Promise<void> {
-        let url_ = this.baseUrl + "/drafts/{draftId}/pool/items";
+        let url_ = this.baseUrl + "/drafts/{publicId}/pool/items";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -3056,7 +3040,7 @@ export class Client implements IClient {
      * @return No Content
      */
     draftBoards_UpdateItem(body: UpdateDraftBoardItemRequest, signal?: AbortSignal): Promise<void> {
-        let url_ = this.baseUrl + "/drafts/{draftId}/board/{tmdbId}";
+        let url_ = this.baseUrl + "/drafts/{publicId}/board/{tmdbId}";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -3110,7 +3094,7 @@ export class Client implements IClient {
      * @return No Content
      */
     draftBoards_RemoveItem(body: RemoveMovieFromDraftBoardRequest, signal?: AbortSignal): Promise<void> {
-        let url_ = this.baseUrl + "/drafts/{draftId}/board/{tmdbId}";
+        let url_ = this.baseUrl + "/drafts/{publicId}/board/{tmdbId}";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -3164,7 +3148,7 @@ export class Client implements IClient {
      * @return OK
      */
     draftBoards_GetBoard(body: GetDraftBoardRequest, signal?: AbortSignal): Promise<GetDraftBoardResponse> {
-        let url_ = this.baseUrl + "/drafts/{draftId}/board";
+        let url_ = this.baseUrl + "/drafts/{publicId}/board";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -3217,7 +3201,7 @@ export class Client implements IClient {
      * @return No Content
      */
     draftBoards_AddItem(body: AddMovieToDraftBoardRequest, signal?: AbortSignal): Promise<void> {
-        let url_ = this.baseUrl + "/drafts/{draftId}/board";
+        let url_ = this.baseUrl + "/drafts/{publicId}/board";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -3273,7 +3257,7 @@ export class Client implements IClient {
      * @return OK
      */
     draftBoards_BulkAddItems(draftId: string | undefined, file: FileParameter | undefined, signal?: AbortSignal): Promise<BulkAddMoviesResponse> {
-        let url_ = this.baseUrl + "/drafts/{draftId}/board/bulk";
+        let url_ = this.baseUrl + "/drafts/{publicId}/board/bulk";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = new FormData();
@@ -3337,7 +3321,7 @@ export class Client implements IClient {
      * @return OK
      */
     drafts_CreateDraftPart(body: CreateDraftPartRequest, signal?: AbortSignal): Promise<string> {
-        let url_ = this.baseUrl + "/drafts/{draftId}/parts";
+        let url_ = this.baseUrl + "/drafts/{publicId}/parts";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -8594,6 +8578,7 @@ export interface GetDraftHostResponse {
 export interface GetDraftPartParticipantResponse {
     participantIdValue?: string;
     participantKindValue?: ParticipantKind;
+    displayName?: string | undefined;
     startingVetoes?: number;
     vetoesUsed?: number;
     rolloverVetoes?: number;
@@ -8656,7 +8641,7 @@ export interface GetDraftReleaseResponse {
 }
 
 export interface GetDraftRequest {
-    draftId: string;
+    publicId: string;
 
     [key: string]: any;
 }
@@ -8669,6 +8654,7 @@ export interface GetDraftResponse {
     draftStatus?: DraftStatus;
     seriesPublicId: string;
     seriesName: string;
+    episodeNumber?: number | undefined;
     campaignPublicId?: string | undefined;
     campaignName?: string | undefined;
     parts?: GetDraftPartResponse[];
@@ -8688,14 +8674,18 @@ export interface GetDraftStatusRequest {
 
 export interface GetDraftVetoOverrideResponse {
     issuedByParticipantId?: string;
+    issuedByDisplayName?: string | undefined;
     actedByPublicId?: string | undefined;
+    actedByDisplayName?: string | undefined;
 
     [key: string]: any;
 }
 
 export interface GetDraftVetoResponse {
     issuedByParticipantId?: string;
+    issuedByDisplayName?: string | undefined;
     actedByPublicId?: string | undefined;
+    actedByDisplayName?: string | undefined;
     isOverriden?: boolean;
     note?: string | undefined;
     occurredOnUtc?: Date;

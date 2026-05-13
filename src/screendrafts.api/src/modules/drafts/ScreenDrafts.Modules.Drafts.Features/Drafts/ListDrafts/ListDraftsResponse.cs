@@ -23,13 +23,17 @@ internal sealed record ListDraftsResponse
   public bool HasCommunityParticipant { get; init; }
   public int TotalPicks { get; init; }
 
+  public string? CampaignPublicId { get; init; }
+  public string? CampaignName { get; init; }
+
   public IReadOnlyList<ListDraftsReleaseResponse> Releases { get; private set; } = [];
   public IReadOnlyList<ListDraftsParticipantResponse> Participants { get; private set; } = [];
   public IReadOnlyList<ListDraftsHostResponse> Hosts { get; private set; } = [];
 
   public void SetReleases(IReadOnlyList<ListDraftsReleaseResponse> releases) => Releases = releases;
 
-  public void SetParticipants(IReadOnlyList<ListDraftsParticipantResponse> participants) => Participants = participants;
+  public void SetParticipants(IReadOnlyList<ListDraftsParticipantResponse> participants) =>
+    Participants = participants;
 
   public void SetHosts(IReadOnlyList<ListDraftsHostResponse> hosts) => Hosts = hosts;
 }

@@ -9,18 +9,19 @@ internal sealed class Endpoint
     Description(x =>
     {
       x.WithTags(DraftsOpenApi.Tags.Drafts)
-      .WithName(DraftsOpenApi.Names.Drafts_ListDrafts)
-      .Produces<PagedResult<ListDraftsResponse>>(StatusCodes.Status200OK)
-      .Produces(StatusCodes.Status400BadRequest)
-      .Produces(StatusCodes.Status500InternalServerError);
+        .WithName(DraftsOpenApi.Names.Drafts_ListDrafts)
+        .Produces<PagedResult<ListDraftsResponse>>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status400BadRequest)
+        .Produces(StatusCodes.Status500InternalServerError);
     });
-    Policies(DraftsAuth.Permissions.DraftList);
+    AllowAnonymous();
   }
 
   public override async Task HandleAsync(ListDraftsRequest req, CancellationToken ct)
   {
-    var includePatreonOnly = User.HasClaim(
-      c => c.Type == "permissions" && c.Value == DraftsAuth.Permissions.PatreonSearch);
+    var includePatreonOnly =
+      User.Identity?.IsAuthenticated == true
+      && User.HasPermission(DraftsAuth.Permissions.DraftReadPatreon);
 
     var query = new ListDraftsQuery
     {
@@ -30,6 +31,7 @@ internal sealed class Endpoint
       ToDate = req.ToDate,
       DraftType = req.DraftType,
       CategoryPublicId = req.CategoryPublicId,
+      CampaignPublicId = req.CampaignPublicId,
       MinDrafters = req.MinDrafters,
       MaxDrafters = req.MaxDrafters,
       MinPicks = req.MinPicks,
@@ -37,7 +39,7 @@ internal sealed class Endpoint
       Q = req.Q,
       SortBy = req.SortBy,
       Dir = req.Dir,
-      IncludePatreonOnly = includePatreonOnly
+      IncludePatreonOnly = includePatreonOnly,
     };
     var result = await Sender.Send(query, ct);
     await this.SendOkAsync(result, ct);

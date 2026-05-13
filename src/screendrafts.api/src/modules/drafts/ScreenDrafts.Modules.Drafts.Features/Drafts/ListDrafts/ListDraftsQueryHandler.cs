@@ -1,7 +1,7 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Features.Drafts.ListDrafts;
 
 internal sealed class ListDraftsQueryHandler(IDbConnectionFactory connectionFactory)
-    : IQueryHandler<ListDraftsQuery, PagedResult<ListDraftsResponse>>
+  : IQueryHandler<ListDraftsQuery, PagedResult<ListDraftsResponse>>
 {
   private const int MainFeedChannel = 0;
   private const int PatreonChannel = 1;
@@ -10,70 +10,94 @@ internal sealed class ListDraftsQueryHandler(IDbConnectionFactory connectionFact
 
   public async Task<Result<PagedResult<ListDraftsResponse>>> Handle(
     ListDraftsQuery request,
-    CancellationToken cancellationToken)
+    CancellationToken cancellationToken
+  )
   {
     ArgumentNullException.ThrowIfNull(request);
 
     await using var connection = await _connectionFactory.OpenConnectionAsync(cancellationToken);
 
     // 1. Base query - one row per draft part.
-    const string baseSql =
-      $"""
-      SELECT
-        dp.public_id AS {nameof(ListDraftsResponse.DraftPartPublicId)},
-        d.public_id AS {nameof(ListDraftsResponse.DraftPublicId)},
-        CASE
-          WHEN (SELECT COUNT(*) FROM drafts.draft_parts dp2 WHERE dp2.draft_id = d.id) > 1
-            THEN CONCAT(d.title, ' - Part ', dp.part_index)
-          ELSE d.title
-        END AS {nameof(ListDraftsResponse.Label)},
-        d.draft_type AS {nameof(ListDraftsResponse.DraftType)},
-        d.draft_status AS {nameof(ListDraftsResponse.DraftStatus)},
-        dp.status AS {nameof(ListDraftsResponse.PartStatus)},
-        dp.id as PartInternalId,
-        d.id as DraftInternalId,
-        EXISTS (
-          SELECT 1
-          FROM drafts.draft_part_participants dpp
-          WHERE dpp.draft_part_id = dp.id
-            AND dpp.participant_kind_value = 2
-        ) AS {nameof(ListDraftsResponse.HasCommunityParticipant)},
-        (
-          SELECT COUNT(*)
-          FROM drafts.picks pk
-          WHERE pk.draft_part_id = dp.id
-        ) AS {nameof(ListDraftsResponse.TotalPicks)}
-      FROM drafts.draft_parts dp
-      JOIN drafts.drafts d ON d.id = dp.draft_id
-      WHERE 1 = 1
-    """;
+    const string baseSql = $"""
+        SELECT
+          dp.public_id AS {nameof(ListDraftsResponse.DraftPartPublicId)},
+          d.public_id AS {nameof(ListDraftsResponse.DraftPublicId)},
+          CASE
+            WHEN (SELECT COUNT(*) FROM drafts.draft_parts dp2 WHERE dp2.draft_id = d.id) > 1
+              THEN CONCAT(d.title, ' - Part ', dp.part_index)
+            ELSE d.title
+          END AS {nameof(ListDraftsResponse.Label)},
+          d.draft_type AS {nameof(ListDraftsResponse.DraftType)},
+          d.draft_status AS {nameof(ListDraftsResponse.DraftStatus)},
+          dp.status AS {nameof(ListDraftsResponse.PartStatus)},
+          dp.id as PartInternalId,
+          d.id as DraftInternalId,
+          EXISTS (
+            SELECT 1
+            FROM drafts.draft_part_participants dpp
+            WHERE dpp.draft_part_id = dp.id
+              AND dpp.participant_kind_value = 2
+          ) AS {nameof(ListDraftsResponse.HasCommunityParticipant)},
+          (
+            SELECT COUNT(*)
+            FROM drafts.picks pk
+            WHERE pk.draft_part_id = dp.id
+          ) AS {nameof(ListDraftsResponse.TotalPicks)},
+          c.public_id AS {nameof(ListDraftsResponse.CampaignPublicId)},
+          c.name AS {nameof(ListDraftsResponse.CampaignName)}
+        FROM drafts.draft_parts dp
+        JOIN drafts.drafts d ON d.id = dp.draft_id
+        LEFT JOIN drafts.campaigns c ON c.id = d.campaign_id
+        WHERE 1 = 1
+      """;
 
     var sqlBuilder = new StringBuilder(baseSql);
     var p = new DynamicParameters();
 
+    var allowedChannels = request.IncludePatreonOnly
+      ? new[] { MainFeedChannel, PatreonChannel }
+      : [MainFeedChannel];
+    p.Add("allowedChannels", allowedChannels);
+
+    sqlBuilder.Append(
+      """
+
+      AND EXISTS (
+        SELECT 1
+        FROM drafts.draft_releases dr
+        WHERE dr.part_id = dp.id
+          AND dr.release_channel = ANY(@allowedChannels)
+      )
+      """
+    );
+
     // Date range filter
     if (request.FromDate.HasValue)
     {
-      sqlBuilder.Append("""
-              AND EXISTS (
-                SELECT 1
-                FROM drafts.draft_releases dr
-                WHERE dr.part_id = dp.id
-                  AND dr.release_date >= @FromDate
-              )
-      """);
+      sqlBuilder.Append(
+        """
+                AND EXISTS (
+                  SELECT 1
+                  FROM drafts.draft_releases dr
+                  WHERE dr.part_id = dp.id
+                    AND dr.release_date >= @FromDate
+                )
+        """
+      );
       p.Add("fromDate", request.FromDate.Value.ToDateTime(TimeOnly.MinValue));
     }
     if (request.ToDate.HasValue)
     {
-      sqlBuilder.Append("""
-              AND EXISTS (
-                SELECT 1
-                FROM drafts.draft_releases dr
-                WHERE dr.part_id = dp.id
-                  AND dr.release_date <= @ToDate
-              )
-      """);
+      sqlBuilder.Append(
+        """
+                AND EXISTS (
+                  SELECT 1
+                  FROM drafts.draft_releases dr
+                  WHERE dr.part_id = dp.id
+                    AND dr.release_date <= @ToDate
+                )
+        """
+      );
       p.Add("toDate", request.ToDate.Value.ToDateTime(TimeOnly.MinValue));
     }
 
@@ -97,20 +121,38 @@ internal sealed class ListDraftsQueryHandler(IDbConnectionFactory connectionFact
             WHERE dc.draft_id = d.id
               AND c.public_id = @CategoryPublicId
           )
-        """);
+        """
+      );
       p.Add("categoryPublicId", request.CategoryPublicId);
+    }
+
+    if (!string.IsNullOrWhiteSpace(request.CampaignPublicId))
+    {
+      sqlBuilder.Append(
+        """
+        AND EXISTS (
+          SELECT 1
+          FROM drafts.campaigns c
+          WHERE c.id = d.campaign_id
+            AND c.public_id = @CampaignPublicId
+        )
+        """
+      );
+      p.Add("campaignPublicId", request.CampaignPublicId);
     }
 
     // Min/ max drafters filter
     if (request.MinDrafters.HasValue)
     {
-      sqlBuilder.Append("""
-              AND (
-                SELECT COUNT(DISTINCT dpp.participant_id_value)
-                FROM drafts.draft_part_participants dpp
-                WHERE dpp.draft_part_id = dp.id
-              ) BETWEEN @minDrafters AND @maxDrafters
-      """);
+      sqlBuilder.Append(
+        """
+                AND (
+                  SELECT COUNT(DISTINCT dpp.participant_id_value)
+                  FROM drafts.draft_part_participants dpp
+                  WHERE dpp.draft_part_id = dp.id
+                ) BETWEEN @minDrafters AND @maxDrafters
+        """
+      );
       p.Add("minDrafters", request.MinDrafters ?? 0);
       p.Add("maxDrafters", request.MaxDrafters ?? int.MaxValue);
     }
@@ -118,13 +160,15 @@ internal sealed class ListDraftsQueryHandler(IDbConnectionFactory connectionFact
     // Min/ max picks filter
     if (request.MinPicks.HasValue)
     {
-      sqlBuilder.Append("""
-              AND (
-                SELECT COUNT(*)
-                FROM drafts.picks pk
-                WHERE pk.draft_part_id = dp.id
-              ) BETWEEN @minPicks AND @maxPicks
-      """);
+      sqlBuilder.Append(
+        """
+                AND (
+                  SELECT COUNT(*)
+                  FROM drafts.picks pk
+                  WHERE pk.draft_part_id = dp.id
+                ) BETWEEN @minPicks AND @maxPicks
+        """
+      );
       p.Add("minPicks", request.MinPicks ?? 0);
       p.Add("maxPicks", request.MaxPicks ?? int.MaxValue);
     }
@@ -132,28 +176,30 @@ internal sealed class ListDraftsQueryHandler(IDbConnectionFactory connectionFact
     // Search query filter (title, drafter names, host names)
     if (!string.IsNullOrWhiteSpace(request.Q))
     {
-      sqlBuilder.Append("""
-              AND (
-                d.title ILIKE '%' || @Q || '%'
-                OR EXISTS (
-                  SELECT 1
-                  FROM drafts.draft_part_participants dpp
-                  JOIN drafts.drafters dr ON dr.id = dpp.participant_id_value 
-                                          AND dpp.participant_kind_value = 0
-                  JOIN drafts.people pe ON pe.id = dr.person_id
-                  WHERE dpp.draft_part_id = dp.id
-                    AND pe.display_name ILIKE '%' || @Q || '%'
+      sqlBuilder.Append(
+        """
+                AND (
+                  d.title ILIKE '%' || @Q || '%'
+                  OR EXISTS (
+                    SELECT 1
+                    FROM drafts.draft_part_participants dpp
+                    JOIN drafts.drafters dr ON dr.id = dpp.participant_id_value 
+                                            AND dpp.participant_kind_value = 0
+                    JOIN drafts.people pe ON pe.id = dr.person_id
+                    WHERE dpp.draft_part_id = dp.id
+                      AND pe.display_name ILIKE '%' || @Q || '%'
+                  )
+                  OR EXISTS (
+                    SELECT 1
+                    FROM drafts.draft_hosts dh
+                    JOIN drafts.hosts h ON h.id = dh.host_id
+                    JOIN drafts.people pe ON pe.id = h.person_id
+                    WHERE dh.draft_part_id = dp.id
+                      AND pe.display_name ILIKE '%' || @Q || '%'
+                  )
                 )
-                OR EXISTS (
-                  SELECT 1
-                  FROM drafts.draft_hosts dh
-                  JOIN drafts.hosts h ON h.id = dh.host_id
-                  JOIN drafts.people pe ON pe.id = h.person_id
-                  WHERE dh.draft_part_id = dp.id
-                    AND pe.display_name ILIKE '%' || @Q || '%'
-                )
-              )
-      """);
+        """
+      );
       p.Add("Q", $"%{request.Q}%");
     }
 
@@ -162,16 +208,19 @@ internal sealed class ListDraftsQueryHandler(IDbConnectionFactory connectionFact
     var orderByClause = request.SortBy?.ToLowerInvariant() switch
     {
       "title" => $"d.title {dir}, dp.part_index {dir}",
-      "episodenumber" =>
-        $"""
+      "episodenumber" => $"""
         (SELECT dcr.episode_number
           FROM drafts.draft_channel_releases dcr
           WHERE dcr.draft_id = d.id
-            AND dcr.episode_number = 0) {dir}
+            AND dcr.release_channel = 0
+          LIMIT 1) {dir}
         """,
-      "totalpicks" => $"(SELECT COUNT(*) FROM drafts.picks pk WHERE pk.draft_part_id = dp.id) {dir}",
-      "date" => $"(SELECT MIN(dr.release_date) FROM drafts.draft_releases dr WHERE dr.part_id = dp.id) {dir}",
-      _ => $"(SELECT MIN(dr.release_date) FROM drafts.draft_releases dr WHERE dr.part_id = dp.id) {dir}",
+      "totalpicks" =>
+        $"(SELECT COUNT(*) FROM drafts.picks pk WHERE pk.draft_part_id = dp.id) {dir}",
+      "date" =>
+        $"(SELECT MIN(dr.release_date) FROM drafts.draft_releases dr WHERE dr.part_id = dp.id) {dir}",
+      _ =>
+        $"(SELECT MIN(dr.release_date) FROM drafts.draft_releases dr WHERE dr.part_id = dp.id) {dir}",
     };
 
     sqlBuilder.Append(CultureInfo.InvariantCulture, $" ORDER BY {orderByClause}");
@@ -181,7 +230,9 @@ internal sealed class ListDraftsQueryHandler(IDbConnectionFactory connectionFact
       new CommandDefinition(
         $"SELECT COUNT(*) FROM ({sqlBuilder}) sub",
         p,
-        cancellationToken: cancellationToken));
+        cancellationToken: cancellationToken
+      )
+    );
 
     var pageSize = Math.Min(request.PageSize, 100);
     var skip = (Math.Max(request.Page, 1) - 1) * pageSize;
@@ -190,39 +241,40 @@ internal sealed class ListDraftsQueryHandler(IDbConnectionFactory connectionFact
     sqlBuilder.Append(" LIMIT @pageSize OFFSET @skip");
 
     // 2. Fetch paged part rows
-    var rawRows = (await connection.QueryAsync<(
-      string DraftPartPublicId,
-      string DraftPublicId,
-      string Label,
-      DraftType DraftType,
-      DraftStatus DraftStatus,
-      DraftPartStatus PartStatus,
-      Guid PartInternalId,
-      Guid DraftInternalId,
-      bool HasCommunityParticipant,
-      int TotalPicks)>(
-      new CommandDefinition(sqlBuilder.ToString(), p, cancellationToken: cancellationToken)))
-      .ToList();
+    var rawRows = (
+      await connection.QueryAsync<(
+        string DraftPartPublicId,
+        string DraftPublicId,
+        string Label,
+        DraftType DraftType,
+        DraftStatus DraftStatus,
+        DraftPartStatus PartStatus,
+        Guid PartInternalId,
+        Guid DraftInternalId,
+        bool HasCommunityParticipant,
+        int TotalPicks,
+        string? CampaignPublicId,
+        string? CampaignName
+      )>(new CommandDefinition(sqlBuilder.ToString(), p, cancellationToken: cancellationToken))
+    ).ToList();
 
     if (rawRows.Count == 0)
     {
-      return Result.Success(new PagedResult<ListDraftsResponse>
-      {
-        Items = [],
-        TotalCount = 0,
-        Page = request.Page,
-        PageSize = pageSize
-      });
+      return Result.Success(
+        new PagedResult<ListDraftsResponse>
+        {
+          Items = [],
+          TotalCount = 0,
+          Page = request.Page,
+          PageSize = pageSize,
+        }
+      );
     }
 
     var partInternalIds = rawRows.Select(r => r.PartInternalId).ToArray();
-    var allowedChannels = request.IncludePatreonOnly
-      ? new[] { MainFeedChannel, PatreonChannel }
-      : [MainFeedChannel];
 
     // 3. Releases
-    const string releasesSql =
-      """
+    const string releasesSql = """
       SELECT
         dr.part_id            AS PartId,
         dr.release_channel    AS ReleaseChannel,
@@ -245,15 +297,17 @@ internal sealed class ListDraftsQueryHandler(IDbConnectionFactory connectionFact
       Guid PartId,
       ReleaseChannel ReleaseChannel,
       int? EpisodeNumber,
-      DateOnly ReleaseDate)>(
+      DateOnly ReleaseDate
+    )>(
       new CommandDefinition(
         releasesSql,
         new { partIds = partInternalIds, channels = allowedChannels },
-        cancellationToken: cancellationToken));
+        cancellationToken: cancellationToken
+      )
+    );
 
     // 4. Participants
-    const string participantsSql =
-      """
+    const string participantsSql = """
       SELECT
         dpp.draft_part_id             AS PartId,
         dpp.participant_id_value      AS ParticipantIdValue,
@@ -277,15 +331,17 @@ internal sealed class ListDraftsQueryHandler(IDbConnectionFactory connectionFact
       Guid PartId,
       Guid ParticipantIdValue,
       ParticipantKind ParticipantKindValue,
-      string DisplayName)>(
+      string DisplayName
+    )>(
       new CommandDefinition(
         participantsSql,
         new { partIds = partInternalIds },
-        cancellationToken: cancellationToken));
+        cancellationToken: cancellationToken
+      )
+    );
 
     // 5. Hosts
-    const string hostsSql =
-      """
+    const string hostsSql = """
       SELECT
         dh.draft_part_id AS PartId,
         h.public_id AS HostPublicId,
@@ -305,72 +361,96 @@ internal sealed class ListDraftsQueryHandler(IDbConnectionFactory connectionFact
       Guid PartId,
       string HostPublicId,
       string DisplayName,
-      HostRole Role)>(
+      HostRole Role
+    )>(
       new CommandDefinition(
         hostsSql,
         new { partIds = partInternalIds },
-        cancellationToken: cancellationToken));
+        cancellationToken: cancellationToken
+      )
+    );
 
     // 6. Assemble
     var releasePartId = releaseRows
       .GroupBy(r => r.PartId)
       .ToDictionary(
         g => g.Key,
-        g => (IReadOnlyList<ListDraftsReleaseResponse>)[.. g.Select(r => new ListDraftsReleaseResponse
-        {
-          ReleaseChannel = r.ReleaseChannel,
-          EpisodeNumber = r.EpisodeNumber,
-          ReleaseDate = r.ReleaseDate
-        })]);
+        g =>
+          (IReadOnlyList<ListDraftsReleaseResponse>)
+            [
+              .. g.Select(r => new ListDraftsReleaseResponse
+              {
+                ReleaseChannel = r.ReleaseChannel,
+                EpisodeNumber = r.EpisodeNumber,
+                ReleaseDate = r.ReleaseDate,
+              }),
+            ]
+      );
 
     var participantPartId = participantRows
       .GroupBy(r => r.PartId)
       .ToDictionary(
         g => g.Key,
-        g => (IReadOnlyList<ListDraftsParticipantResponse>)[.. g.Select(r => new ListDraftsParticipantResponse
-        {
-          ParticipantIdValue = r.ParticipantIdValue,
-          ParticipantKindValue = r.ParticipantKindValue,
-          DisplayName = r.DisplayName
-        })]);
+        g =>
+          (IReadOnlyList<ListDraftsParticipantResponse>)
+            [
+              .. g.Select(r => new ListDraftsParticipantResponse
+              {
+                ParticipantIdValue = r.ParticipantIdValue,
+                ParticipantKindValue = r.ParticipantKindValue,
+                DisplayName = r.DisplayName,
+              }),
+            ]
+      );
 
     var hostsByPartId = hostRows
       .GroupBy(r => r.PartId)
       .ToDictionary(
         g => g.Key,
-        g => (IReadOnlyList<ListDraftsHostResponse>)[.. g.Select(r => new ListDraftsHostResponse
-        {
-          HostPublicId = r.HostPublicId,
-          DisplayName = r.DisplayName,
-          Role = r.Role
-        })]);
+        g =>
+          (IReadOnlyList<ListDraftsHostResponse>)
+            [
+              .. g.Select(r => new ListDraftsHostResponse
+              {
+                HostPublicId = r.HostPublicId,
+                DisplayName = r.DisplayName,
+                Role = r.Role,
+              }),
+            ]
+      );
 
-    var items = rawRows.Select(r =>
-    {
-      var item = new ListDraftsResponse
+    var items = rawRows
+      .Select(r =>
       {
-        DraftPartPublicId = r.DraftPartPublicId,
-        DraftPublicId = r.DraftPublicId,
-        Label = r.Label,
-        DraftType = r.DraftType,
-        DraftStatus = r.DraftStatus,
-        PartStatus = r.PartStatus,
-        HasCommunityParticipant = r.HasCommunityParticipant,
-        TotalPicks = r.TotalPicks
-      };
+        var item = new ListDraftsResponse
+        {
+          DraftPartPublicId = r.DraftPartPublicId,
+          DraftPublicId = r.DraftPublicId,
+          Label = r.Label,
+          DraftType = r.DraftType,
+          DraftStatus = r.DraftStatus,
+          PartStatus = r.PartStatus,
+          HasCommunityParticipant = r.HasCommunityParticipant,
+          TotalPicks = r.TotalPicks,
+          CampaignPublicId = r.CampaignPublicId,
+          CampaignName = r.CampaignName,
+        };
 
-      item.SetReleases(releasePartId.GetValueOrDefault(r.PartInternalId, []));
-      item.SetParticipants(participantPartId.GetValueOrDefault(r.PartInternalId, []));
-      item.SetHosts(hostsByPartId.GetValueOrDefault(r.PartInternalId, []));
-      return item;
-    }).ToList();
+        item.SetReleases(releasePartId.GetValueOrDefault(r.PartInternalId, []));
+        item.SetParticipants(participantPartId.GetValueOrDefault(r.PartInternalId, []));
+        item.SetHosts(hostsByPartId.GetValueOrDefault(r.PartInternalId, []));
+        return item;
+      })
+      .ToList();
 
-    return Result.Success(new PagedResult<ListDraftsResponse>
-    {
-      Items = items,
-      TotalCount = totalCount,
-      Page = request.Page,
-      PageSize = pageSize
-    });
+    return Result.Success(
+      new PagedResult<ListDraftsResponse>
+      {
+        Items = items,
+        TotalCount = totalCount,
+        Page = request.Page,
+        PageSize = pageSize,
+      }
+    );
   }
 }

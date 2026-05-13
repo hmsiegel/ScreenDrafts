@@ -1676,7 +1676,7 @@
         ]
       }
     },
-    "/drafts/{draftId}": {
+    "/drafts/{publicId}": {
       "put": {
         "tags": [
           "Drafts"
@@ -1741,12 +1741,6 @@
               }
             }
           },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
           "404": {
             "description": "Not Found"
           }
@@ -1756,7 +1750,7 @@
         ]
       }
     },
-    "/drafts/{draftId}/episode": {
+    "/drafts/{publicId}/episode": {
       "put": {
         "tags": [
           "Drafts"
@@ -1794,7 +1788,7 @@
         ]
       }
     },
-    "/drafts/{draftId}/parts/{partIndex}/status": {
+    "/drafts/{publicId}/parts/{partIndex}/status": {
       "put": {
         "tags": [
           "Drafts"
@@ -1839,7 +1833,7 @@
         ]
       }
     },
-    "/drafts/{draftId}/category": {
+    "/drafts/{publicId}/category": {
       "put": {
         "tags": [
           "Drafts"
@@ -1877,7 +1871,7 @@
         ]
       }
     },
-    "/drafts/{draftId}/categories": {
+    "/drafts/{publicId}/categories": {
       "put": {
         "tags": [
           "Categories"
@@ -1915,7 +1909,7 @@
         ]
       }
     },
-    "/drafts/{draftId}/campaign": {
+    "/drafts/{publicId}/campaign": {
       "put": {
         "tags": [
           "Drafts"
@@ -2036,7 +2030,7 @@
         ]
       }
     },
-    "/drafts/{draftId}/category/{categoryId}": {
+    "/drafts/{publicId}/category/{categoryId}": {
       "delete": {
         "tags": [
           "Drafts"
@@ -2157,12 +2151,6 @@
           "400": {
             "description": "Bad Request"
           },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
           "500": {
             "description": "Internal Server Error"
           }
@@ -2212,7 +2200,7 @@
         ]
       }
     },
-    "/drafts/{draftId}/status": {
+    "/drafts/{publicId}/status": {
       "get": {
         "tags": [
           "Drafts"
@@ -2259,7 +2247,7 @@
         ]
       }
     },
-    "/drafts/{draftId}/pool": {
+    "/drafts/{publicId}/pool": {
       "get": {
         "tags": [
           "DraftPools"
@@ -2342,7 +2330,7 @@
         ]
       }
     },
-    "/drafts/{draftId}/pool/bulk": {
+    "/drafts/{publicId}/pool/bulk": {
       "post": {
         "tags": [
           "DraftPools"
@@ -2387,7 +2375,7 @@
         ]
       }
     },
-    "/drafts/{draftId}/pool/items": {
+    "/drafts/{publicId}/pool/items": {
       "post": {
         "tags": [
           "DraftPools"
@@ -2425,7 +2413,7 @@
         ]
       }
     },
-    "/drafts/{draftId}/board/{tmdbId}": {
+    "/drafts/{publicId}/board/{tmdbId}": {
       "put": {
         "tags": [
           "DraftBoards"
@@ -2504,7 +2492,7 @@
         ]
       }
     },
-    "/drafts/{draftId}/board": {
+    "/drafts/{publicId}/board": {
       "get": {
         "tags": [
           "DraftBoards"
@@ -2587,7 +2575,7 @@
         ]
       }
     },
-    "/drafts/{draftId}/board/bulk": {
+    "/drafts/{publicId}/board/bulk": {
       "post": {
         "tags": [
           "DraftBoards"
@@ -2632,7 +2620,7 @@
         ]
       }
     },
-    "/drafts/{draftId}/parts": {
+    "/drafts/{publicId}/parts": {
       "post": {
         "tags": [
           "Drafts"
@@ -8022,6 +8010,12 @@
           "participantKindValue": {
             "$ref": "#/components/schemas/ParticipantKind"
           },
+          "displayName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
           "startingVetoes": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": [
@@ -8254,11 +8248,11 @@
       },
       "GetDraftRequest": {
         "required": [
-          "draftId"
+          "publicId"
         ],
         "type": "object",
         "properties": {
-          "draftId": {
+          "publicId": {
             "type": "string"
           }
         }
@@ -8295,6 +8289,15 @@
           },
           "seriesName": {
             "type": "string"
+          },
+          "episodeNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
           },
           "campaignPublicId": {
             "type": [
@@ -8358,7 +8361,19 @@
             "type": "string",
             "format": "uuid"
           },
+          "issuedByDisplayName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
           "actedByPublicId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "actedByDisplayName": {
             "type": [
               "null",
               "string"
@@ -8373,7 +8388,19 @@
             "type": "string",
             "format": "uuid"
           },
+          "issuedByDisplayName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
           "actedByPublicId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "actedByDisplayName": {
             "type": [
               "null",
               "string"

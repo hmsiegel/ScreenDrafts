@@ -4,13 +4,22 @@ import { auth } from "@/auth";
 import SignInButton from "./sign-in-button";
 import AvatarDropdown from "./avatar-dropdown";
 
-export default async function SiteHeader() {
+type NavItem = { label: string; href: string; external?: boolean; className?: string };
+
+const NAV_ITEMS: NavItem[] = [
+  { label: "DRAFTS", href: "/drafts" },
+  { label: "DRAFTERS", href: "/drafters" },
+  { label: "FILMS", href: "/media" },
+  { label: "PATREON", href: "/patreon" },
+];
+
+export default async function SiteHeader({ activePath }: { activePath?: string } = {}) {
   const session = await auth();
   const isAdmin = session?.roles?.includes('admin') ?? false;
 
   return (
     <header className="bg-white border-b-4 border-sd-red px-8 py-5 flex items-center justify-between">
-      <div className="flex items-center gap-3.5">
+      <Link href="/" className="flex items-center gap-3.5">
         <Image
           src="/screen-drafts.jpg"
           alt="Screen Drafts logo"
@@ -26,25 +35,29 @@ export default async function SiteHeader() {
             THE COMPETITIVELY-COLLABORATIVE BEST-OF-LIST PODCAST
           </div>
         </div>
-      </div>
+      </Link>
 
       <nav className="flex items-center gap-5 font-oswald font-medium text-sm tracking-[0.1em]">
-        <Link href="/drafts" className="hover:text-sd-blue transition-colors">DRAFTS</Link>
-        <Link href="/drafters" className="hover:text-sd-blue transition-colors">DRAFTERS</Link>
-        <Link href="/films" className="hover:text-sd-blue transition-colors">FILMS</Link>
-        <a
-          href={process.env.NEXT_PUBLIC_WIKI_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hover:text-sd-blue transition-colors">
-          WIKI
-        </a>
+        {NAV_ITEMS.map(({ label, href }) => {
+          const isActive = activePath?.startsWith(href);
+          return (
+            <Link
+              key={href}
+              href={href}
+              className={`pb-0.5 transition-colors hover:text-sd-red ${isActive
+                ? "border-b-[3px] border-sd-red text-sd-ink"
+                : "text-sd-ink"
+                }`}
+            >
+              {label}
+            </Link>
+          );
+        })}
         {isAdmin && (
           <Link href="/admin" className="text-sd-red font-oswald font-semibold tracking-widest">
             ADMIN
           </Link>
         )}
-        <Link href="/patreon" className="text-sd-red">★ PATREON</Link>
 
         {session ? (
           <AvatarDropdown name={session.user?.name} />

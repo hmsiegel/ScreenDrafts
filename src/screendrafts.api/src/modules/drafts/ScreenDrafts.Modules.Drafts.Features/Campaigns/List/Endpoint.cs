@@ -1,6 +1,7 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Features.Campaigns.List;
 
-internal sealed class Endpoint : ScreenDraftsEndpoint<ListCampaignsRequest, CampaignCollectionResponse>
+internal sealed class Endpoint
+  : ScreenDraftsEndpoint<ListCampaignsRequest, CampaignCollectionResponse>
 {
   public override void Configure()
   {
@@ -8,12 +9,12 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<ListCampaignsRequest, Camp
     Description(x =>
     {
       x.WithName(DraftsOpenApi.Names.Campaigns_ListCampaigns)
-      .WithTags(DraftsOpenApi.Tags.Campaigns)
-      .Produces<CampaignCollectionResponse>(StatusCodes.Status200OK)
-      .Produces(StatusCodes.Status401Unauthorized)
-      .Produces(StatusCodes.Status403Forbidden);
+        .WithTags(DraftsOpenApi.Tags.Campaigns)
+        .Produces<CampaignCollectionResponse>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status401Unauthorized)
+        .Produces(StatusCodes.Status403Forbidden);
     });
-    Policies(DraftsAuth.Permissions.CampaignList);
+    AllowAnonymous();
   }
 
   public override async Task HandleAsync(ListCampaignsRequest req, CancellationToken ct)
@@ -33,5 +34,3 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<ListCampaignsRequest, Camp
     await this.SendOkAsync(result, ct);
   }
 }
-
-

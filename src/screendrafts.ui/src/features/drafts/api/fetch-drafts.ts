@@ -1,16 +1,24 @@
 import { auth } from "@/auth";
 import {
-  GetDraftResponse,
-  LatestDraftResponse,
-  ListLatestDraftsResponse,
-  ListUpcomingDraftsResponse,
-  PagedResultOfListDraftsResponse,
-  UpcomingDraftResponse,
+   GetDraftResponse,
+   LatestDraftResponse,
+   ListLatestDraftsResponse,
+   ListUpcomingDraftsResponse,
+   PagedResultOfListDraftsResponse,
+   UpcomingDraftResponse,
 } from "@/lib/dto";
 import { env } from "@/lib/env";
 import { PagedResult, toPagedDraftResult } from "@/types/paged-result";
 
 const apiBase = env.apiUrl;
+
+async function authHeaders(): Promise<HeadersInit> {
+   const session = await auth();
+   if (session?.accessToken) {
+      return { Authorization: `Bearer ${session.accessToken}` };
+   }
+   return {};
+}
 
 export async function getLatestDrafts(): Promise<LatestDraftResponse[]> {
    const url = `${apiBase}/drafts/latest`;

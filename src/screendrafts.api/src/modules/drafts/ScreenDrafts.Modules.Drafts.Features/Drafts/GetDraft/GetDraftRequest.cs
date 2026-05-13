@@ -3,5 +3,5 @@
 internal sealed record GetDraftRequest
 {
   [FromRoute(Name = "publicId")]
-  public required string DraftId { get; set; }
+  public required string PublicId { get; set; }
 }

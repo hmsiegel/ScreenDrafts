@@ -1,6 +1,7 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Features.Drafters.List;
 
-internal sealed class Endpoint : ScreenDraftsEndpoint<ListDraftersRequest, DrafterCollectionResponse>
+internal sealed class Endpoint
+  : ScreenDraftsEndpoint<ListDraftersRequest, DrafterCollectionResponse>
 {
   public override void Configure()
   {
@@ -8,14 +9,15 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<ListDraftersRequest, Draft
     Description(x =>
     {
       x.WithTags(DraftsOpenApi.Tags.Drafters)
-       .WithName(DraftsOpenApi.Names.Drafters_ListDrafters)
-       .Produces<DrafterCollectionResponse>(StatusCodes.Status200OK)
-       .Produces(StatusCodes.Status400BadRequest)
-       .Produces(StatusCodes.Status401Unauthorized)
-       .Produces(StatusCodes.Status403Forbidden);
+        .WithName(DraftsOpenApi.Names.Drafters_ListDrafters)
+        .Produces<DrafterCollectionResponse>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status400BadRequest)
+        .Produces(StatusCodes.Status401Unauthorized)
+        .Produces(StatusCodes.Status403Forbidden);
     });
-    Policies(DraftsAuth.Permissions.DrafterList);
+    AllowAnonymous();
   }
+
   public override async Task HandleAsync(ListDraftersRequest req, CancellationToken ct)
   {
     var query = new ListDraftersQuery(req);
@@ -23,5 +25,3 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<ListDraftersRequest, Draft
     await this.SendOkAsync(result, ct);
   }
 }
-
-
