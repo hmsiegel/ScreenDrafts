@@ -4,9 +4,7 @@ internal sealed class Validator : AbstractValidator<SetCategoriesDraftRequest>
 {
   public Validator()
   {
-    RuleFor(x => x.DraftId)
-      .NotEmpty()
-      .WithMessage("Draft ID is required.");
+    RuleFor(x => x.PublicId).NotEmpty().WithMessage("Draft ID is required.");
     RuleFor(x => x.CategoryIds)
       .NotNull()
       .WithMessage("Category IDs are required.")

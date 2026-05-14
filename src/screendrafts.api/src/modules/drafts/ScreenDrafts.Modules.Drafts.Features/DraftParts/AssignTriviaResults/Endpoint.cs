@@ -8,12 +8,12 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<AssignTriviaResultsRequest
     Description(x =>
     {
       x.WithTags(DraftsOpenApi.Tags.DraftParts)
-      .WithName(DraftsOpenApi.Names.DraftParts_AssignTriviaResults)
-      .Produces(StatusCodes.Status204NoContent)
-      .Produces(StatusCodes.Status400BadRequest)
-      .Produces(StatusCodes.Status401Unauthorized)
-      .Produces(StatusCodes.Status403Forbidden)
-      .Produces(StatusCodes.Status404NotFound);
+        .WithName(DraftsOpenApi.Names.DraftParts_AssignTriviaResults)
+        .Produces(StatusCodes.Status204NoContent)
+        .Produces(StatusCodes.Status400BadRequest)
+        .Produces(StatusCodes.Status401Unauthorized)
+        .Produces(StatusCodes.Status403Forbidden)
+        .Produces(StatusCodes.Status404NotFound);
     });
     Policies(DraftsAuth.Permissions.DraftPartUpdate);
   }
@@ -33,19 +33,21 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<AssignTriviaResultsRequest
         return;
       }
 
-      entries.Add(new TriviaResultEntry
-      {
-        ParticipantPublicId = r.ParticipantPublicId,
-        Kind = participantKind,
-        Position = r.Position,
-        QuestionsWon = r.QuestionsWon
-      });
+      entries.Add(
+        new TriviaResultEntry
+        {
+          ParticipantPublicId = r.ParticipantPublicId,
+          Kind = participantKind,
+          Position = r.Position,
+          QuestionsWon = r.QuestionsWon,
+        }
+      );
     }
 
     var command = new AssignTriviaResultsCommand
     {
-      DraftPartPublicId = req.DraftPartPublicId,
-      Results = entries
+      DraftPartPublicId = req.DraftPartId,
+      Results = entries,
     };
 
     var result = await Sender.Send(command, ct);

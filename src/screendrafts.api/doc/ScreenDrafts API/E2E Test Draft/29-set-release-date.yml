@@ -1,0 +1,27 @@
+info:
+  name: 29 Set Release Date
+  type: http
+  seq: 29
+
+http:
+  method: POST
+  url: "{{baseUrl}}/draft-parts/{{draftPartId}}/releases"
+  body:
+    type: json
+    data: |-
+      {
+        "releaseDate": "2026-05-11",
+        "releaseChannel": 0
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: expect(res.getStatus()).to.equal(204);
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -1,7 +1,7 @@
 info:
   name: Drafts
   type: folder
-  seq: 1
+  seq: 11
 
 request:
   auth: inherit

@@ -7,7 +7,23 @@ info:
 
 http:
   method: GET
-  url: "{{baseUrl}}/movies/search"
+  url: "{{baseUrl}}/media/search?query=my big fat"
+  params:
+    - name: query
+      value: my big fat
+      type: query
+    - name: year
+      value: "1997"
+      type: query
+      disabled: true
+    - name: pageSize
+      value: "30"
+      type: query
+      disabled: true
+    - name: page
+      value: "2"
+      type: query
+      disabled: true
   body:
     type: text
     data: ""

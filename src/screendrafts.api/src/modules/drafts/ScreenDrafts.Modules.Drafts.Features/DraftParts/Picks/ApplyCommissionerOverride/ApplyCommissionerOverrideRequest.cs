@@ -1,12 +1,12 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.Picks.ApplyCommissionerOverride;
+namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.Picks.ApplyCommissionerOverride;
 
 internal sealed record ApplyCommissionerOverrideRequest
 {
   [FromRoute(Name = "draftPartId")]
-  public required string DraftPartId { get; init; }
+  public string DraftPartId { get; init; } = default!;
 
   [FromRoute(Name = "playOrder")]
-  public required int PlayOrder { get; init; }
+  public int PlayOrder { get; init; } = default!;
 }
 
 

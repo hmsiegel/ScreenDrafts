@@ -1,16 +1,22 @@
 ﻿namespace ScreenDrafts.Modules.RealTimeUpdates.Infrastructure.Inbox;
 
 internal sealed class IdempotentIntegrationEventHandler<TIntegrationEvent>(
-    IIntegrationEventHandler<TIntegrationEvent> decorated,
-    IDbConnectionFactory dbConnectionFactory)
-    : IntegrationEventHandler<TIntegrationEvent>
-    where TIntegrationEvent : IIntegrationEvent
+  IIntegrationEventHandler<TIntegrationEvent> decorated,
+  IDbConnectionFactory dbConnectionFactory
+) : IntegrationEventHandler<TIntegrationEvent>
+  where TIntegrationEvent : IIntegrationEvent
 {
-  public override async Task Handle(TIntegrationEvent integrationEvent, CancellationToken cancellationToken = default)
+  public override async Task Handle(
+    TIntegrationEvent integrationEvent,
+    CancellationToken cancellationToken = default
+  )
   {
     await using var connection = await dbConnectionFactory.OpenConnectionAsync(cancellationToken);
 
-    var inboxMessageConsumer = new InboxMessageConsumer(integrationEvent.Id, decorated.GetType().Name);
+    var inboxMessageConsumer = new InboxMessageConsumer(
+      integrationEvent.Id,
+      decorated.GetType().Name
+    );
 
     if (await InboxConsumerExistsAsync(connection, inboxMessageConsumer))
     {
@@ -23,31 +29,31 @@ internal sealed class IdempotentIntegrationEventHandler<TIntegrationEvent>(
   }
 
   private static async Task<bool> InboxConsumerExistsAsync(
-      DbConnection dbConnection,
-      InboxMessageConsumer inboxMessageConsumer)
+    DbConnection dbConnection,
+    InboxMessageConsumer inboxMessageConsumer
+  )
   {
-    const string sql =
-        """
-            SELECT EXISTS(
-                SELECT 1
-                FROM real_time_updates.inbox_message_consumers
-                WHERE inbox_message_id = @InboxMessageId AND
-                      name = @Name
-            )
-            """;
+    const string sql = """
+      SELECT EXISTS(
+          SELECT 1
+          FROM  real_time_updates.inbox_message_consumers
+          WHERE inbox_message_id = @InboxMessageId AND
+                name = @Name
+      )
+      """;
 
     return await dbConnection.ExecuteScalarAsync<bool>(sql, inboxMessageConsumer);
   }
 
   private static async Task InsertInboxConsumerAsync(
-      DbConnection dbConnection,
-      InboxMessageConsumer inboxMessageConsumer)
+    DbConnection dbConnection,
+    InboxMessageConsumer inboxMessageConsumer
+  )
   {
-    const string sql =
-        """
-            INSERT INTO real_time_updates.inbox_message_consumers(inbox_message_id, name)
-            VALUES (@InboxMessageId, @Name)
-            """;
+    const string sql = """
+      INSERT INTO real_time_updates.inbox_message_consumers(inbox_message_id, name)
+      VALUES (@InboxMessageId, @Name)
+      """;
 
     await dbConnection.ExecuteAsync(sql, inboxMessageConsumer);
   }

@@ -8,22 +8,23 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<SetEpisodeNumberRequest>
     Description(x =>
     {
       x.WithName(DraftsOpenApi.Names.Drafts_SetEpisodeNumber)
-      .WithTags(DraftsOpenApi.Tags.Drafts)
-      .Produces(StatusCodes.Status204NoContent)
-      .Produces(StatusCodes.Status400BadRequest)
-      .Produces(StatusCodes.Status401Unauthorized)
-      .Produces(StatusCodes.Status403Forbidden)
-      .Produces(StatusCodes.Status404NotFound);
+        .WithTags(DraftsOpenApi.Tags.Drafts)
+        .Produces(StatusCodes.Status204NoContent)
+        .Produces(StatusCodes.Status400BadRequest)
+        .Produces(StatusCodes.Status401Unauthorized)
+        .Produces(StatusCodes.Status403Forbidden)
+        .Produces(StatusCodes.Status404NotFound);
     });
     Policies(DraftsAuth.Permissions.DraftUpdate);
   }
+
   public override async Task HandleAsync(SetEpisodeNumberRequest req, CancellationToken ct)
   {
     var command = new SetEpisodeNumberCommand
     {
-      DraftId = req.DraftId,
+      DraftId = req.PublicId,
       ReleaseChannel = ReleaseChannel.FromValue(req.ReleaseChannel),
-      EpisodeNumber = req.EpisodeNumber
+      EpisodeNumber = req.EpisodeNumber,
     };
 
     var result = await Sender.Send(command, ct);

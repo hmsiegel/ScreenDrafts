@@ -1,0 +1,33 @@
+info:
+  name: 02 Create User - Maddie
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{baseUrl}}/users/register"
+  body:
+    type: json
+    data: |-
+      {
+        "email": "maddiewhittle@screendrafts.fake",
+        "password": "password",
+        "firstName": "Maddie",
+        "lastName": "Whittle",
+        "middleName": ""
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        expect(res.getStatus()).to.equal(201);
+        const id = res.getBody().id;
+        bru.setEnvVar("maddieUserId", id);
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

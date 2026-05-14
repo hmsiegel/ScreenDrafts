@@ -1,0 +1,20 @@
+info:
+  name: 18 Lock Prediction Set - Clay
+  type: http
+  seq: 18
+
+http:
+  method: PUT
+  url: "{{baseUrl}}/draft-parts/{{draftPartId}}/predictions/{{clayPredictionSetId}}/lock"
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: expect(res.getStatus()).to.equal(204);
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

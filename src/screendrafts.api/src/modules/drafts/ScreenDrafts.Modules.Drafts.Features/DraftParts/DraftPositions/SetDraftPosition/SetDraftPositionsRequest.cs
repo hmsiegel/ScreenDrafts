@@ -3,6 +3,6 @@
 internal sealed record SetDraftPositionsRequest
 {
   [FromRoute(Name = "draftPartId")]
-  public required string DraftPartId { get; init; }
+  public string DraftPartId { get; init; } = default!;
   public IReadOnlyList<DraftPositionRequestModel> Positions { get; init; } = [];
 }

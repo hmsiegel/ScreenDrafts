@@ -1,0 +1,32 @@
+info:
+  name: 09 Add Participant - Jordain
+  type: http
+  seq: 9
+
+http:
+  method: POST
+  url: "{{baseUrl}}/draft-parts/{{draftPartId}}/participants"
+  body:
+    type: json
+    data: |-
+      {
+        "participantPublicId": "{{jordainDrafterId}}",
+        "participantKind": 0
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        expect(res.getStatus()).to.equal(204);
+        // If the response returns the participant's internal slot id, capture it.
+        // Adjust the property name to match your actual response shape.
+        const id = res.getBody().participantId;
+        if (id) bru.setEnvVar("jordainParticipantId", id);
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

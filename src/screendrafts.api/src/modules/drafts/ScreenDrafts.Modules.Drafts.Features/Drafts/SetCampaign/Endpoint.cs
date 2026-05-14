@@ -21,8 +21,8 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<SetCampaignDraftRequest>
     ArgumentNullException.ThrowIfNull(req);
     var command = new SetCampaignDraftCommand
     {
-      DraftId = req.DraftId,
-      CampaignId = req.CampaignId
+      DraftId = req.PublicId,
+      CampaignId = req.CampaignId,
     };
 
     var result = await Sender.Send(command, ct);
@@ -30,5 +30,3 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<SetCampaignDraftRequest>
     await this.SendNoContentAsync(result, ct);
   }
 }
-
-

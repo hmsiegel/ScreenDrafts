@@ -104,20 +104,34 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
     var draftPublicId = draftResult.Value;
 
     // First part (auto-created by CreateDraft is not created here — we explicitly create parts)
-    await Sender.Send(new CreateDraftPartCommand
+    var part1PublicId = (await Sender.Send(new CreateDraftPartCommand
     {
       DraftPublicId = draftPublicId,
       PartIndex = 1,
       MinimumPosition = 1,
       MaximumPosition = 7
+    }, TestContext.Current.CancellationToken)).Value;
+
+    await Sender.Send(new SetReleaseDateCommand
+    {
+      DraftPartId = part1PublicId,
+      ReleaseDate = new DateOnly(2020, 1, 1),
+      ReleaseChannel = ReleaseChannel.MainFeed
     }, TestContext.Current.CancellationToken);
 
-    await Sender.Send(new CreateDraftPartCommand
+    var part2PublicId = (await Sender.Send(new CreateDraftPartCommand
     {
       DraftPublicId = draftPublicId,
       PartIndex = 2,
       MinimumPosition = 1,
       MaximumPosition = 7
+    }, TestContext.Current.CancellationToken)).Value;
+
+    await Sender.Send(new SetReleaseDateCommand
+    {
+      DraftPartId = part2PublicId,
+      ReleaseDate = new DateOnly(2020, 2, 1),
+      ReleaseChannel = ReleaseChannel.MainFeed
     }, TestContext.Current.CancellationToken);
 
     var query = new ListDraftsQuery
@@ -192,7 +206,7 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
   public async Task ListDrafts_WithRelease_ShouldPopulateReleasesAsync()
   {
     // Arrange
-    var (_, draftPartPublicId) = await CreateDraftWithPartAsync();
+    var (_, draftPartPublicId) = await CreateDraftWithPartAsync(withRelease: false);
     var releaseDate = new DateOnly(2025, 6, 15);
 
     await Sender.Send(new SetReleaseDateCommand
@@ -216,18 +230,24 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
   }
 
   [Fact]
-  public async Task ListDrafts_WithNoRelease_ReleasesListShouldBeEmptyAsync()
+  public async Task ListDrafts_WithPatreonOnlyRelease_ShouldNotAppearInDefaultQueryAsync()
   {
-    // Arrange
-    await CreateDraftWithPartAsync();
+    // A part released only on Patreon should be invisible in the default (MainFeed-only) query.
+    var (_, draftPartPublicId) = await CreateDraftWithPartAsync(withRelease: false);
+
+    await Sender.Send(new SetReleaseDateCommand
+    {
+      DraftPartId = draftPartPublicId,
+      ReleaseDate = new DateOnly(2020, 1, 1),
+      ReleaseChannel = ReleaseChannel.Patreon
+    }, TestContext.Current.CancellationToken);
+
     var query = new ListDraftsQuery { Page = 1, PageSize = 10 };
 
-    // Act
     var result = await Sender.Send(query, TestContext.Current.CancellationToken);
 
-    // Assert
     result.IsSuccess.Should().BeTrue();
-    result.Value.Items.Single().Releases.Should().BeEmpty();
+    result.Value.Items.Should().BeEmpty();
   }
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -465,8 +485,8 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
   public async Task ListDrafts_WithFromDateFilter_ShouldExcludePartsReleasedBeforeAsync()
   {
     // Arrange – two parts: one released before filter date, one after
-    var (_, earlyPartPublicId) = await CreateDraftWithPartAsync();
-    var (_, latePartPublicId) = await CreateDraftWithPartAsync();
+    var (_, earlyPartPublicId) = await CreateDraftWithPartAsync(withRelease: false);
+    var (_, latePartPublicId) = await CreateDraftWithPartAsync(withRelease: false);
 
     var earlyDate = new DateOnly(2024, 1, 1);
     var lateDate = new DateOnly(2025, 6, 1);
@@ -506,8 +526,8 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
   public async Task ListDrafts_WithToDateFilter_ShouldExcludePartsReleasedAfterAsync()
   {
     // Arrange – two parts: one released before filter date, one after
-    var (_, earlyPartPublicId) = await CreateDraftWithPartAsync();
-    var (_, latePartPublicId) = await CreateDraftWithPartAsync();
+    var (_, earlyPartPublicId) = await CreateDraftWithPartAsync(withRelease: false);
+    var (_, latePartPublicId) = await CreateDraftWithPartAsync(withRelease: false);
 
     var earlyDate = new DateOnly(2024, 1, 1);
     var lateDate = new DateOnly(2025, 6, 1);
@@ -547,9 +567,9 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
   public async Task ListDrafts_WithFromAndToDate_ShouldReturnOnlyPartsInRangeAsync()
   {
     // Arrange – three parts with different release dates
-    var (_, jan2024PublicId) = await CreateDraftWithPartAsync();
-    var (_, jun2024PublicId) = await CreateDraftWithPartAsync();
-    var (_, jan2025PublicId) = await CreateDraftWithPartAsync();
+    var (_, jan2024PublicId) = await CreateDraftWithPartAsync(withRelease: false);
+    var (_, jun2024PublicId) = await CreateDraftWithPartAsync(withRelease: false);
+    var (_, jan2025PublicId) = await CreateDraftWithPartAsync(withRelease: false);
 
     await Sender.Send(new SetReleaseDateCommand
     {
@@ -695,8 +715,8 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
   public async Task ListDrafts_SortedByDate_ShouldReturnInReleaseDateOrderAsync()
   {
     // Arrange – two parts with known release dates
-    var (_, olderPartPublicId) = await CreateDraftWithPartAsync(title: "Older Draft");
-    var (_, newerPartPublicId) = await CreateDraftWithPartAsync(title: "Newer Draft");
+    var (_, olderPartPublicId) = await CreateDraftWithPartAsync(title: "Older Draft", withRelease: false);
+    var (_, newerPartPublicId) = await CreateDraftWithPartAsync(title: "Newer Draft", withRelease: false);
 
     await Sender.Send(new SetReleaseDateCommand
     {
@@ -736,7 +756,8 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
 
   private async Task<(string DraftPublicId, string DraftPartPublicId)> CreateDraftWithPartAsync(
     string? title = null,
-    DraftType? draftType = null)
+    DraftType? draftType = null,
+    bool withRelease = true)
   {
     var seriesId = await CreateSeriesAsync();
     var selectedDraftType = draftType ?? DraftType.Standard;
@@ -759,7 +780,19 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
       MaximumPosition = 7
     }, TestContext.Current.CancellationToken);
 
-    return (draftPublicId, partResult.Value);
+    var draftPartPublicId = partResult.Value;
+
+    if (withRelease)
+    {
+      await Sender.Send(new SetReleaseDateCommand
+      {
+        DraftPartId = draftPartPublicId,
+        ReleaseDate = new DateOnly(2020, 1, 1),
+        ReleaseChannel = ReleaseChannel.MainFeed
+      }, TestContext.Current.CancellationToken);
+    }
+
+    return (draftPublicId, draftPartPublicId);
   }
 
   private async Task<Guid> CreateSeriesAsync()

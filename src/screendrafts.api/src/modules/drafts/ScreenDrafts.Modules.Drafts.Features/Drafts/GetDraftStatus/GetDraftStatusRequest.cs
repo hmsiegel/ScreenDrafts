@@ -1,8 +1,8 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.Drafts.GetDraftStatus;
+namespace ScreenDrafts.Modules.Drafts.Features.Drafts.GetDraftStatus;
 
 internal sealed record GetDraftStatusRequest
 {
   [FromRoute(Name = "publicId")]
-  public required string PublicId { get; init; }
+  public string PublicId { get; init; } = default!;
 }
 

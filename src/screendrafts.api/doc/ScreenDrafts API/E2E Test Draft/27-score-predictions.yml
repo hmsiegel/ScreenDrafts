@@ -1,0 +1,34 @@
+info:
+  name: 27 Score Predictions
+  type: http
+  seq: 27
+
+http:
+  method: POST
+  url: "{{baseUrl}}/draft-parts/{{draftPartId}}/predictions/score"
+  body:
+    type: json
+    data: |-
+      {
+        "finalMediaPublicIds": [
+          "m_xh5xjjG7v9jWsKi",
+          "m_cZW9BBOXilyi2kG",
+          "m_rNnVHw4q7L9KzeL",
+          "m_cvqLBbDfPoN17ur",
+          "m_PwXIxFKNEm4HgnC",
+          "m_Wxn3baKEuW5sUbd",
+          "m_gGus9zw46MzsKtj"
+        ]
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: expect(res.getStatus()).to.equal(204);
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

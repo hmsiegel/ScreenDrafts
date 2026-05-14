@@ -1,11 +1,11 @@
-﻿namespace ScreenDrafts.Modules.Administration.Features.Users.AddPermissionToRole;
+namespace ScreenDrafts.Modules.Administration.Features.Users.AddPermissionToRole;
 
 internal sealed record AddPermissionToRoleRequest
 {
   [FromRoute(Name = "permission")]
-  public required string PermissionCode { get; init; }
+  public string PermissionCode { get; init; } = default!;
 
   [FromRoute(Name = "roleName")]
-  public required string RoleName { get; init; }
+  public string RoleName { get; init; } = default!;
 }
 

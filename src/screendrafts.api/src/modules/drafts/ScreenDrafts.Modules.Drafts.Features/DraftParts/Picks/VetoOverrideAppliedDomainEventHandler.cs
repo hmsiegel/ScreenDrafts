@@ -8,8 +8,8 @@ internal sealed class VetoOverrideAppliedDomainEventHandler(
   IDraftBoardRepository boardRepository,
   ParticipantResolver participantResolver,
   IUnitOfWork unitOfWork,
-  IDateTimeProvider dateTimeProvider)
-  : DomainEventHandler<VetoOverrideAddedDomainEvent>
+  IDateTimeProvider dateTimeProvider
+) : DomainEventHandler<VetoOverrideAddedDomainEvent>
 {
   private readonly IEventBus _eventBus = eventBus;
   private readonly ICacheService _cacheService = cacheService;
@@ -20,15 +20,20 @@ internal sealed class VetoOverrideAppliedDomainEventHandler(
   private readonly IUnitOfWork _unitOfWork = unitOfWork;
   private readonly IDateTimeProvider _dateTimeProvider = dateTimeProvider;
 
-  public override async Task Handle(VetoOverrideAddedDomainEvent domainEvent, CancellationToken cancellationToken = default)
+  public override async Task Handle(
+    VetoOverrideAddedDomainEvent domainEvent,
+    CancellationToken cancellationToken = default
+  )
   {
     await _cacheService.RemoveAsync(
       key: DraftsCacheKeys.PickList(draftPartPublicId: domainEvent.DraftPartPublicId),
-      cancellationToken: cancellationToken);
+      cancellationToken: cancellationToken
+    );
 
     var draftPart = await _draftPartRepository.GetByIdAsync(
       draftPartId: DraftPartId.Create(domainEvent.DraftPartId),
-      cancellationToken: cancellationToken);
+      cancellationToken: cancellationToken
+    );
 
     if (draftPart is not null)
     {
@@ -42,19 +47,22 @@ internal sealed class VetoOverrideAppliedDomainEventHandler(
 
         await _cacheService.RemoveAsync(
           key: DraftsCacheKeys.DraftPool(domainEvent.DraftPublicId),
-          cancellationToken: cancellationToken);
+          cancellationToken: cancellationToken
+        );
       }
       else
       {
         var participant = await _participantResolver.ResolveByParticpantIdAsync(
           participantId: domainEvent.ParticipantId,
           participantKind: ParticipantKind.FromValue(domainEvent.ParticipantKind),
-          cancellationToken: cancellationToken);
+          cancellationToken: cancellationToken
+        );
 
         var board = await _boardRepository.GetByDraftAndParticipantAsync(
           draftId: draftPart.DraftId,
-          participantId: participant.Value,
-          cancellationToken: cancellationToken);
+          participantId: participant!.Value,
+          cancellationToken: cancellationToken
+        );
 
         if (board is not null)
         {
@@ -64,26 +72,30 @@ internal sealed class VetoOverrideAppliedDomainEventHandler(
 
           await _cacheService.RemoveAsync(
             key: DraftsCacheKeys.DraftBoard(domainEvent.DraftPublicId, domainEvent.ParticipantId),
-            cancellationToken: cancellationToken);
+            cancellationToken: cancellationToken
+          );
         }
       }
 
       await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
-    await _eventBus.PublishAsync(new VetoOverrideAppliedIntegrationEvent(
-      domainEvent.Id,
-      domainEvent.OccurredOnUtc,
-      domainEvent.DraftPartId),
-      cancellationToken);
+    await _eventBus.PublishAsync(
+      new VetoOverrideAppliedIntegrationEvent(
+        domainEvent.Id,
+        domainEvent.OccurredOnUtc,
+        domainEvent.DraftPartId
+      ),
+      cancellationToken
+    );
 
     if (domainEvent.CanonicalPolicyValue == 1)
     {
       return;
     }
 
-    var hasMainFeedRelease = draftPart?.Releases
-      .Any(r => r.ReleaseChannel == ReleaseChannel.MainFeed) ?? false;
+    var hasMainFeedRelease =
+      draftPart?.Releases.Any(r => r.ReleaseChannel == ReleaseChannel.MainFeed) ?? false;
 
     if (domainEvent.CanonicalPolicyValue == 2 && !hasMainFeedRelease)
     {
@@ -91,7 +103,8 @@ internal sealed class VetoOverrideAppliedDomainEventHandler(
     }
 
     var pick = draftPart!.Picks.FirstOrDefault(p =>
-      p.Movie.TmdbId == domainEvent.TmdbId && p.IsActiveOnFinalBoard);
+      p.Movie.TmdbId == domainEvent.TmdbId && p.IsActiveOnFinalBoard
+    );
 
     if (pick is null)
     {
@@ -113,7 +126,9 @@ internal sealed class VetoOverrideAppliedDomainEventHandler(
         domainEvent.ParticipantId,
         domainEvent.ParticipantKind,
         domainEvent.CanonicalPolicyValue,
-        hasMainFeedRelease),
-      cancellationToken);
+        hasMainFeedRelease
+      ),
+      cancellationToken
+    );
   }
 }

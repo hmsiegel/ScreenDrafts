@@ -1,0 +1,38 @@
+info:
+  name: 17 Submit Prediction Set - Ryan
+  type: http
+  seq: 17
+
+http:
+  method: POST
+  url: "{{baseUrl}}/draft-parts/{{draftPartId}}/predictions"
+  body:
+    type: json
+    data: |-
+      {
+        "seasonPublicId": "{{predictionSeasonPublicId}}",
+        "contestantPublicId": "{{ryanPredictonContestantId}}",
+        "sourceKind": 2,
+        "entries":[
+          { "mediaPublicId": "m_uc5nSg7SGugwmPH","mediaTitle": "Four Weddings and a Funeral" },
+          { "mediaPublicId": "m_he3iAcH7dnWNcft","mediaTitle": "Meloncholia" },
+          { "mediaPublicId": "m_sUeOB1hUGFKC28x","mediaTitle": "My Best Friend's Wedding" },
+          { "mediaPublicId": "m_cvqLBbDfPoN17ur","mediaTitle": "Monsoon Wedding" },
+          { "mediaPublicId": "m_rNnVHw4q7L9KzeL","mediaTitle": "Bridesmaids" },
+          { "mediaPublicId": "m_Wxn3baKEuW5sUbd","mediaTitle": "Rachel Getting Married" },
+          { "mediaPublicId": "m_8XZd6UStWmi9A8Q","mediaTitle": "The Philadelphia Story" }
+          
+        ]
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: expect(res.getStatus()).to.equal(204);
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -10,4 +10,10 @@ internal sealed record MediaSearchResultResponse
   public string? Overview { get; init; }
   public MediaType MediaType { get; init; } = default!;
   public bool IsInMediaDatabase { get; init; }
+
+  /// <summary>
+  /// Populated only when <see cref="IsInMediaDatabase"/> is true.
+  /// Use this to link to /media/{publicId} rather than resolving by TmdbId on the frontend.
+  /// </summary>
+  public string? MediaPublicId { get; init; }
 }

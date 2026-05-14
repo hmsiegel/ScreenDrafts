@@ -1,7 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Features.Predictions.SetDraftPartPredictionRules;
 
-internal sealed class Endpoint
-  : ScreenDraftsEndpoint<SetDraftPartPredictionRulesRequest>
+internal sealed class Endpoint : ScreenDraftsEndpoint<SetDraftPartPredictionRulesRequest>
 {
   public override void Configure()
   {
@@ -22,15 +21,16 @@ internal sealed class Endpoint
 
   public override async Task HandleAsync(
     SetDraftPartPredictionRulesRequest req,
-    CancellationToken ct)
+    CancellationToken ct
+  )
   {
     var command = new SetDraftPartPredictionRulesCommand
     {
-      DraftPartPublicId = req.DraftPartPublicId,
+      DraftPartPublicId = req.DraftPartId,
       PredictionMode = req.PredictionMode,
       RequiredCount = req.RequiredCount,
       TopN = req.TopN,
-      DeadlineUtc = req.DeadlineUtc
+      DeadlineUtc = req.DeadlineUtc,
     };
 
     var result = await Sender.Send(command, ct);

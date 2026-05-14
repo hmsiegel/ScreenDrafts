@@ -20,10 +20,10 @@ internal sealed class DraftPartCompletedDomainEventHandler(
     // 1. Draft + part metadata
     const string draftSql = """
       SELECT
-        d.PublicId                AS DraftPublicId,
-        d.Title                   AS Title,
-        dp.PublicId               AS DraftPartPublicId,
-        dp.PartIndex              AS PartIndex,
+        d.public_id                AS DraftPublicId,
+        d.title                   AS Title,
+        dp.public_id               AS DraftPartPublicId,
+        dp.part_index              AS PartIndex,
         dp.draft_type             AS DraftType,
         (
           SELECT COUNT(*)
@@ -34,14 +34,14 @@ internal sealed class DraftPartCompletedDomainEventHandler(
           SELECT 1
           FROM drafts.draft_channel_releases dcr
           WHERE dcr.draft_id = d.id
-            AND dcr.release_channel_id = 1
+            AND dcr.release_channel = 1
         )                         AS IsPatreon,
-        {
+        (
           SELECT dcr.episode_number
           FROM drafts.draft_channel_releases dcr
           WHERE dcr.draft_id = d.id
-            AND dcr.release_channel_id = 0
-        }                         AS EpisodeNumber
+            AND dcr.release_channel = 0
+        )                         AS EpisodeNumber
         FROM drafts.drafts d
         JOIN drafts.draft_parts dp ON dp.id = @DraftPartId
         WHERE d.id = @DraftId
@@ -97,7 +97,7 @@ internal sealed class DraftPartCompletedDomainEventHandler(
     // 3. Vetoes deployed - vetoes that stuck (not overridden)
     const string vetoCountSql = """
       SELECT COUNT(*)
-      FROM draft.vetoes v
+      FROM drafts.vetoes v
       JOIN drafts.picks p ON p.id = v.target_pick_id
       WHERE p.draft_part_id = @DraftPartId
         AND v.is_overridden = false

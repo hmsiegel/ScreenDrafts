@@ -16,7 +16,7 @@ internal sealed class MediaRepository(MoviesDbContext context) : IMediaRepositor
 
   public void AddMediaActor(Media media, Person actor)
   {
-    _context.MediaActors.Add( MediaActor.Create(media.Id, actor.Id));
+    _context.MediaActors.Add(MediaActor.Create(media.Id, actor.Id));
   }
 
   public void AddMediaDirector(Media media, Person director)
@@ -36,7 +36,9 @@ internal sealed class MediaRepository(MoviesDbContext context) : IMediaRepositor
 
   public void AddMediaProductionCompany(Media media, ProductionCompany productionCompany)
   {
-    _context.MediaProductionCompanies.Add(MediaProductionCompany.Create(media.Id, productionCompany.Id));
+    _context.MediaProductionCompanies.Add(
+      MediaProductionCompany.Create(media.Id, productionCompany.Id)
+    );
   }
 
   public void AddMediaWriter(Media media, Person writer)
@@ -44,20 +46,33 @@ internal sealed class MediaRepository(MoviesDbContext context) : IMediaRepositor
     _context.MediaWriters.Add(MediaWriter.Create(media.Id, writer.Id));
   }
 
-  public async Task<bool> ExistsByIgdbIdAsync(int igdbId, CancellationToken cancellationToken = default)
+  public async Task<bool> ExistsByIgdbIdAsync(
+    int igdbId,
+    CancellationToken cancellationToken = default
+  )
   {
     return await _context.Media.AnyAsync(m => m.IgdbId == igdbId, cancellationToken);
   }
 
-  public async Task<bool> ExistsByTmdbIdAsync(int tmdbId, MediaType mediaType, CancellationToken cancellationToken = default)
+  public async Task<bool> ExistsByTmdbIdAsync(
+    int tmdbId,
+    MediaType mediaType,
+    CancellationToken cancellationToken = default
+  )
   {
-    return await _context.Media.AnyAsync(m => m.TmdbId == tmdbId && m.MediaType == mediaType, cancellationToken);
+    return await _context.Media.AnyAsync(
+      m => m.TmdbId == tmdbId && m.MediaType == mediaType,
+      cancellationToken
+    );
   }
 
-  public async Task<Media?> FindByImdbIdAsync(string imdbId, CancellationToken cancellationToken = default)
+  public async Task<Media?> FindByImdbIdAsync(
+    string imdbId,
+    CancellationToken cancellationToken = default
+  )
   {
-    return await _context.Media
-      .Include(m => m.MediaGenres)
+    return await _context
+      .Media.Include(m => m.MediaGenres)
       .Include(m => m.MediaActors)
       .Include(m => m.MediaDirectors)
       .Include(m => m.MediaWriters)
@@ -66,10 +81,14 @@ internal sealed class MediaRepository(MoviesDbContext context) : IMediaRepositor
       .SingleOrDefaultAsync(m => m.ImdbId == imdbId, cancellationToken);
   }
 
-  public async Task<Media?> FindByTmdbIdAsync(int tmdbId, MediaType mediaType, CancellationToken cancellationToken = default)
+  public async Task<Media?> FindByTmdbIdAsync(
+    int tmdbId,
+    MediaType mediaType,
+    CancellationToken cancellationToken = default
+  )
   {
-    return await _context.Media
-      .Include(m => m.MediaGenres)
+    return await _context
+      .Media.Include(m => m.MediaGenres)
       .Include(m => m.MediaActors)
       .Include(m => m.MediaDirectors)
       .Include(m => m.MediaWriters)
@@ -78,10 +97,13 @@ internal sealed class MediaRepository(MoviesDbContext context) : IMediaRepositor
       .SingleOrDefaultAsync(m => m.TmdbId == tmdbId && m.MediaType == mediaType, cancellationToken);
   }
 
-  public async Task<Media?> FindByIgdbIdAsync(int igdbId, CancellationToken cancellationToken = default)
+  public async Task<Media?> FindByIgdbIdAsync(
+    int igdbId,
+    CancellationToken cancellationToken = default
+  )
   {
-    return await _context.Media
-      .Include(m => m.MediaGenres)
+    return await _context
+      .Media.Include(m => m.MediaGenres)
       .Include(m => m.MediaActors)
       .Include(m => m.MediaDirectors)
       .Include(m => m.MediaWriters)
@@ -90,30 +112,57 @@ internal sealed class MediaRepository(MoviesDbContext context) : IMediaRepositor
       .SingleOrDefaultAsync(m => m.IgdbId == igdbId, cancellationToken);
   }
 
-  public async Task<HashSet<string>> GetExistingMediaImdbsAsync(IEnumerable<string> imdbIds, CancellationToken cancellationToken = default)
+  public async Task<HashSet<string>> GetExistingMediaImdbsAsync(
+    IEnumerable<string> imdbIds,
+    CancellationToken cancellationToken = default
+  )
   {
-    return [.. await _context.Media
-      .Where(m => m.ImdbId != null && imdbIds.Contains(m.ImdbId))
-      .Select(m => m.ImdbId!)
-      .ToListAsync(cancellationToken)];
+    return
+    [
+      .. await _context
+        .Media.Where(m => m.ImdbId != null && imdbIds.Contains(m.ImdbId))
+        .Select(m => m.ImdbId!)
+        .ToListAsync(cancellationToken),
+    ];
   }
 
-
-  public async Task<HashSet<int>> GetExistingMediaIgdbsAsync(IEnumerable<int> igdbIds, CancellationToken cancellationToken = default)
+  public async Task<HashSet<int>> GetExistingMediaIgdbsAsync(
+    IEnumerable<int> igdbIds,
+    CancellationToken cancellationToken = default
+  )
   {
-    return [.. await _context.Media
-      .Where(m => m.IgdbId != null && igdbIds.Contains(m.IgdbId.Value))
-      .Select(m => m.IgdbId!.Value)
-      .ToListAsync(cancellationToken)];
+    return
+    [
+      .. await _context
+        .Media.Where(m => m.IgdbId != null && igdbIds.Contains(m.IgdbId.Value))
+        .Select(m => m.IgdbId!.Value)
+        .ToListAsync(cancellationToken),
+    ];
   }
 
-  public async Task<HashSet<(int TmdbId, int MediaTypeValue)>> GetExistingMediaTmdbsAsync(IEnumerable<int> tmdbIds, CancellationToken cancellationToken = default)
+  public async Task<HashSet<(int TmdbId, int MediaTypeValue)>> GetExistingMediaTmdbsAsync(
+    IEnumerable<int> tmdbIds,
+    CancellationToken cancellationToken = default
+  )
   {
-    var rows = await _context.Media
-      .Where(m => m.TmdbId != null && tmdbIds.Contains(m.TmdbId.Value))
+    var rows = await _context
+      .Media.Where(m => m.TmdbId != null && tmdbIds.Contains(m.TmdbId.Value))
       .Select(m => new { m.TmdbId, MediaTypeValue = m.MediaType.Value })
       .ToListAsync(cancellationToken);
 
     return [.. rows.Select(m => (m.TmdbId!.Value, m.MediaTypeValue))];
+  }
+
+  public async Task<Dictionary<int, string>> GetPublicIdsByTmdbIdsAsync(
+    IEnumerable<int> tmdbIds,
+    CancellationToken cancellationToken = default
+  )
+  {
+    var rows = await _context
+      .Media.Where(m => m.TmdbId != null && tmdbIds.Contains(m.TmdbId.Value))
+      .Select(m => new { m.TmdbId, m.PublicId })
+      .ToListAsync(cancellationToken);
+
+    return rows.ToDictionary(m => m.TmdbId!.Value, m => m.PublicId!);
   }
 }

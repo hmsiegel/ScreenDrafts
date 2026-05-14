@@ -2,8 +2,8 @@
 
 internal sealed record SetEpisodeNumberRequest
 {
-  [FromRoute(Name = "draftId")]
-  public string DraftId { get; init; } = default!;
+  [FromRoute(Name = "publicId")]
+  public string PublicId { get; init; } = default!;
   public int ReleaseChannel { get; init; } = default!;
   public int EpisodeNumber { get; init; }
 }

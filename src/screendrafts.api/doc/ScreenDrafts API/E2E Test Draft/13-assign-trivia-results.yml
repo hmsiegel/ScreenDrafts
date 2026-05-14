@@ -1,0 +1,39 @@
+info:
+  name: 13 Assign Trivia Results
+  type: http
+  seq: 13
+
+http:
+  method: PUT
+  url: "{{baseUrl}}/draft-parts/{{draftPartId}}/trivia-results"
+  body:
+    type: json
+    data: |-
+      {
+        "results": [
+          {
+            "participantPublicId": "dr_JHakgcsAIRmcjoS",
+            "kind": 0,
+            "position": 1,
+            "questionsWon": 3
+          },
+          {
+            "participantPublicId": "dr_r2lCuX8DRBehUkz",
+            "kind": 0,
+            "position": 2,
+            "questionsWon": 2
+          }
+        ]
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: expect(res.getStatus()).to.equal(204);
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

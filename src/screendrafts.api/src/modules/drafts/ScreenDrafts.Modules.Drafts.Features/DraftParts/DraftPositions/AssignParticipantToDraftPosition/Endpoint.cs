@@ -8,18 +8,21 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<AssignParticipantToDraftPo
     Description(x =>
     {
       x.WithName(DraftsOpenApi.Names.DraftParts_AssignParticipantToPosition)
-      .WithTags(DraftsOpenApi.Tags.DraftParts)
-      .Produces(StatusCodes.Status204NoContent)
-      .Produces(StatusCodes.Status400BadRequest)
-      .Produces(StatusCodes.Status401Unauthorized)
-      .Produces(StatusCodes.Status404NotFound)
-      .Produces(StatusCodes.Status403Forbidden)
-      .Produces(StatusCodes.Status409Conflict);
+        .WithTags(DraftsOpenApi.Tags.DraftParts)
+        .Produces(StatusCodes.Status204NoContent)
+        .Produces(StatusCodes.Status400BadRequest)
+        .Produces(StatusCodes.Status401Unauthorized)
+        .Produces(StatusCodes.Status404NotFound)
+        .Produces(StatusCodes.Status403Forbidden)
+        .Produces(StatusCodes.Status409Conflict);
     });
     Policies(DraftsAuth.Permissions.DraftPartUpdate);
   }
 
-  public override async Task HandleAsync(AssignParticipantToDraftPositionRequest req, CancellationToken ct)
+  public override async Task HandleAsync(
+    AssignParticipantToDraftPositionRequest req,
+    CancellationToken ct
+  )
   {
     ArgumentNullException.ThrowIfNull(req);
 
@@ -33,9 +36,9 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<AssignParticipantToDraftPo
     var command = new AssignParticipantToDraftPositionCommand
     {
       DraftPartId = req.DraftPartId,
-      PositionPublicId = req.PositionPublicId,
+      PositionPublicId = req.PositionId,
       ParticipantPublicId = req.ParticipantPublicId,
-      ParticipantKind = participantKind
+      ParticipantKind = participantKind,
     };
 
     var result = await Sender.Send(command, ct);

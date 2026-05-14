@@ -1,9 +1,9 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.Campaigns.Get;
+namespace ScreenDrafts.Modules.Drafts.Features.Campaigns.Get;
 
 internal sealed record GetCampaignRequest
 {
   [FromRoute(Name = "publicId")]
-  public required string PublicId { get; init; }
+  public string PublicId { get; init; } = default!;
 
   [FromQuery]
   public bool IncludeDeleted { get; init; }

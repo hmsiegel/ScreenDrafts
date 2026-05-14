@@ -3,6 +3,6 @@
 internal sealed record SetCategoriesDraftRequest
 {
   [FromRoute(Name = "publicId")]
-  public string DraftId { get; set; } = default!;
+  public string PublicId { get; set; } = default!;
   public List<string> CategoryIds { get; set; } = [];
 }

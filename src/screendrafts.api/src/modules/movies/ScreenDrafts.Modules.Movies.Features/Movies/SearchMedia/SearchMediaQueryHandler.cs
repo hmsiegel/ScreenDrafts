@@ -2,13 +2,16 @@
 
 internal sealed class SearchMediaQueryHandler(
   IIntegrationsApi integrationsApi,
-  IMediaRepository movieRepository)
-  : IQueryHandler<SearchMediaQuery, SearchMediaResponse>
+  IMediaRepository movieRepository
+) : IQueryHandler<SearchMediaQuery, SearchMediaResponse>
 {
   private readonly IIntegrationsApi _integrationsApi = integrationsApi;
   private readonly IMediaRepository _movieRepository = movieRepository;
 
-  public async Task<Result<SearchMediaResponse>> Handle(SearchMediaQuery request, CancellationToken cancellationToken)
+  public async Task<Result<SearchMediaResponse>> Handle(
+    SearchMediaQuery request,
+    CancellationToken cancellationToken
+  )
   {
     if (string.IsNullOrWhiteSpace(request.Query))
     {
@@ -17,7 +20,9 @@ internal sealed class SearchMediaQueryHandler(
 
     var searchResults = await _integrationsApi.SearchMoviesAsync(
       request.Query,
-      cancellationToken);
+      request.Page,
+      cancellationToken
+    );
 
     if (searchResults.IsFailure)
     {
@@ -29,63 +34,70 @@ internal sealed class SearchMediaQueryHandler(
     if (request.Year.HasValue)
     {
       filtered = filtered.Where(r =>
-        r.Year is not null &&
-        int.TryParse(r.Year, out var year) &&
-        year == request.Year.Value);
+        r.Year is not null && int.TryParse(r.Year, out var year) && year == request.Year.Value
+      );
     }
 
     var filteredList = filtered.ToList();
-    var totalCount = filteredList.Count;
 
-    // Pagination
-    var paged = filteredList
-      .Skip((request.Page - 1) * request.PageSize)
-      .Take(request.PageSize)
-      .ToList();
+    var tmdbIds = filteredList.Where(r => r.TmdbId.HasValue).Select(r => r.TmdbId!.Value).ToList();
 
-    // Bulk DB check against paged slice only
-    var tmdbIds = paged
-      .Where(r => r.TmdbId.HasValue)
-      .Select(r => r.TmdbId!.Value)
-      .ToList();
+    var igdbIds = filteredList.Where(r => r.IgdbId.HasValue).Select(r => r.IgdbId!.Value).ToList();
 
-    var igdbIds = paged
-      .Where(r => r.IgdbId.HasValue)
-      .Select(r => r.IgdbId!.Value)
-      .ToList();
+    var existingTmdbIds =
+      tmdbIds.Count > 0
+        ? await _movieRepository.GetExistingMediaTmdbsAsync(tmdbIds, cancellationToken)
+        : [];
 
-    var existingTmdbIds = tmdbIds.Count > 0
-      ? await _movieRepository.GetExistingMediaTmdbsAsync(tmdbIds, cancellationToken)
-      : [];
+    var existingIgdbIds =
+      igdbIds.Count > 0
+        ? await _movieRepository.GetExistingMediaIgdbsAsync(igdbIds, cancellationToken)
+        : [];
 
-    var existingIgdbIds = igdbIds.Count > 0
-      ? await _movieRepository.GetExistingMediaIgdbsAsync(igdbIds, cancellationToken)
-      : [];
+    var publicIdsByTmdbId =
+      tmdbIds.Count > 0
+        ? await _movieRepository.GetPublicIdsByTmdbIdsAsync(tmdbIds, cancellationToken)
+        : [];
 
-    var items = paged.Select(r => new MediaSearchResultResponse
-    {
-      TmdbId = r.TmdbId,
-      IgdbId = r.IgdbId,
-      Title = r.Title,
-      Year = r.Year,
-      PosterUrl = r.Poster,
-      Overview = r.Overview,
-      MediaType = r.MediaType,
-      IsInMediaDatabase = (r.TmdbId.HasValue && existingTmdbIds.Contains((r.TmdbId.Value, r.MediaType))) ||
-                          (r.IgdbId.HasValue && existingIgdbIds.Contains(r.IgdbId.Value)),
-    })
+    var items = filteredList
+      .Select(r =>
+      {
+        var isInDatabase =
+          (r.TmdbId.HasValue && existingTmdbIds.Contains((r.TmdbId.Value, r.MediaType)))
+          || (r.IgdbId.HasValue && existingIgdbIds.Contains(r.IgdbId.Value));
+
+        var publicId =
+          isInDatabase && r.TmdbId.HasValue
+            ? publicIdsByTmdbId.GetValueOrDefault(r.TmdbId.Value)
+            : null;
+
+        return new MediaSearchResultResponse
+        {
+          TmdbId = r.TmdbId,
+          IgdbId = r.IgdbId,
+          Title = r.Title,
+          Year = r.Year,
+          PosterUrl = r.Poster,
+          Overview = r.Overview,
+          MediaType = r.MediaType,
+          IsInMediaDatabase = isInDatabase,
+          MediaPublicId = publicId,
+        };
+      })
       .ToList()
       .AsReadOnly();
 
-    return Result.Success(new SearchMediaResponse
-    {
-      Results = new PagedResult<MediaSearchResultResponse>
+    return Result.Success(
+      new SearchMediaResponse
       {
-        Items = items,
-        Page = request.Page,
-        PageSize = request.PageSize,
-        TotalCount = totalCount
+        Results = new PagedResult<MediaSearchResultResponse>
+        {
+          Items = items,
+          Page = request.Page,
+          PageSize = request.PageSize,
+          TotalCount = searchResults.Value.TotalCount,
+        },
       }
-    });
+    );
   }
 }

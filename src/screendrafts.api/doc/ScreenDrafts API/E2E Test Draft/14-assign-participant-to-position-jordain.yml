@@ -1,0 +1,27 @@
+info:
+  name: 14 Assign Participant To Draft Position - Jordain
+  type: http
+  seq: 14
+
+http:
+  method: PUT
+  url: "{{baseUrl}}/draft-parts/{{draftPartId}}/positions/{{drafterAPosition}}/participant"
+  body:
+    type: json
+    data: |-
+      {
+        "participantPublicId": "{{jordainDrafterId}}",
+        "participantKind": 0
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: expect(res.getStatus()).to.equal(204);
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

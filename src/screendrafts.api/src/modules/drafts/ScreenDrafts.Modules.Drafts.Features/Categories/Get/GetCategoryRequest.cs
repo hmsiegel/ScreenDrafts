@@ -1,8 +1,8 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.Categories.Get;
+namespace ScreenDrafts.Modules.Drafts.Features.Categories.Get;
 
 internal sealed record GetCategoryRequest
 {
   [FromRoute(Name = "publicId")]
-  public required string PublicId { get; init; }
+  public string PublicId { get; init; } = default!;
 }
 

@@ -1,12 +1,12 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.SubDrafts.SetSubDraftSubject;
+namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.SubDrafts.SetSubDraftSubject;
 
 internal sealed record SetSubDraftSubjectRequest
 {
   [FromRoute(Name = "draftPartId")]
-  public required string DraftPartPublicId { get; init; }
+  public string DraftPartPublicId { get; init; } = default!;
 
   [FromRoute(Name = "subDraftId")]
-  public required string SubDraftPublicId { get; init; }
+  public string SubDraftPublicId { get; init; } = default!;
 
   public required int SubjectKind { get; init; }
   public required string SubjectName { get; init; }

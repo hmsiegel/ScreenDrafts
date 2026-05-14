@@ -4,4 +4,5 @@ internal static class MovieRoutes
 {
   public const string Base = "/movies";
   public const string Search = Base + "/search";
+  public const string Import = Base + "/import";
 }

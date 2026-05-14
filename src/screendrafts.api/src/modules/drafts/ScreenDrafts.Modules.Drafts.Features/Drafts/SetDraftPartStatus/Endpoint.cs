@@ -8,12 +8,12 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<SetDraftPartStatusRequest,
     Description(x =>
     {
       x.WithTags(DraftsOpenApi.Tags.Drafts)
-      .WithName(DraftsOpenApi.Names.Drafts_SetDraftPartStatus)
-      .Produces<Response>(StatusCodes.Status200OK)
-      .Produces(StatusCodes.Status400BadRequest)
-      .Produces(StatusCodes.Status401Unauthorized)
-      .Produces(StatusCodes.Status403Forbidden)
-      .Produces(StatusCodes.Status404NotFound);
+        .WithName(DraftsOpenApi.Names.Drafts_SetDraftPartStatus)
+        .Produces<Response>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status400BadRequest)
+        .Produces(StatusCodes.Status401Unauthorized)
+        .Produces(StatusCodes.Status403Forbidden)
+        .Produces(StatusCodes.Status404NotFound);
     });
     Policies(DraftsAuth.Permissions.DraftPartStatus);
   }
@@ -22,7 +22,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<SetDraftPartStatusRequest,
   {
     var SetDraftPartStatusCommand = new SetDraftPartStatusCommand
     {
-      DraftPublicId = req.DraftPublicId,
+      DraftPublicId = req.PublicId,
       PartIndex = req.PartIndex,
       Action = req.Action,
     };
@@ -30,8 +30,5 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<SetDraftPartStatusRequest,
     var result = await Sender.Send(SetDraftPartStatusCommand, ct);
 
     await this.SendOkAsync(result, ct);
-
   }
 }
-
-

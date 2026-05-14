@@ -7,8 +7,8 @@ internal sealed class PickCreatedDomainEventHandler(
   IDraftPoolRepository draftPoolRepository,
   IDraftBoardRepository draftBoardRepository,
   ParticipantResolver participantResolver,
-  IUnitOfWork unitOfWork)
-  : DomainEventHandler<PickAddedDomainEvent>
+  IUnitOfWork unitOfWork
+) : DomainEventHandler<PickAddedDomainEvent>
 {
   private readonly IEventBus _eventBus = eventBus;
   private readonly ICacheService _cacheService = cacheService;
@@ -18,13 +18,20 @@ internal sealed class PickCreatedDomainEventHandler(
   private readonly ParticipantResolver _participantResolver = participantResolver;
   private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-  public override async Task Handle(PickAddedDomainEvent domainEvent, CancellationToken cancellationToken = default)
+  public override async Task Handle(
+    PickAddedDomainEvent domainEvent,
+    CancellationToken cancellationToken = default
+  )
   {
-    await _cacheService.RemoveAsync(DraftsCacheKeys.PickList(domainEvent.DraftPartPublicId), cancellationToken);
+    await _cacheService.RemoveAsync(
+      DraftsCacheKeys.PickList(domainEvent.DraftPartPublicId),
+      cancellationToken
+    );
 
     var draftPart = await _draftPartRepository.GetByIdAsync(
       DraftPartId.Create(domainEvent.DraftPartId),
-      cancellationToken);
+      cancellationToken
+    );
 
     if (draftPart is not null)
     {
@@ -38,19 +45,22 @@ internal sealed class PickCreatedDomainEventHandler(
 
         await _cacheService.RemoveAsync(
           DraftsCacheKeys.DraftPool(domainEvent.DraftPublicId),
-          cancellationToken);
+          cancellationToken
+        );
       }
       else
       {
         var participant = await _participantResolver.ResolveByParticpantIdAsync(
           domainEvent.ParticipantId,
           ParticipantKind.FromValue(domainEvent.ParticipantKind),
-          cancellationToken);
+          cancellationToken
+        );
 
         var board = await _draftBoardRepository.GetByDraftAndParticipantAsync(
           draftPart.DraftId,
-          participant.Value,
-          cancellationToken);
+          participant!.Value,
+          cancellationToken
+        );
 
         if (board is not null)
         {
@@ -59,28 +69,32 @@ internal sealed class PickCreatedDomainEventHandler(
 
           await _cacheService.RemoveAsync(
             DraftsCacheKeys.DraftBoard(domainEvent.DraftPublicId, domainEvent.ParticipantId),
-            cancellationToken);
+            cancellationToken
+          );
         }
       }
 
       await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
-    await _eventBus.PublishAsync(new PickAddedIntegrationEvent(
-      domainEvent.Id,
-      domainEvent.OccurredOnUtc,
-      domainEvent.DraftPartId,
-      domainEvent.ImdbId!,
-      domainEvent.MovieTitle),
-      cancellationToken);
+    await _eventBus.PublishAsync(
+      new PickAddedIntegrationEvent(
+        domainEvent.Id,
+        domainEvent.OccurredOnUtc,
+        domainEvent.DraftPartId,
+        domainEvent.ImdbId!,
+        domainEvent.MovieTitle
+      ),
+      cancellationToken
+    );
 
     if (domainEvent.CanonicalPolicyValue == 1)
     {
       return;
     }
 
-    var hasMainFeedRelease = draftPart?.Releases
-      .Any(r => r.ReleaseChannel == ReleaseChannel.MainFeed) ?? false;
+    var hasMainFeedRelease =
+      draftPart?.Releases.Any(r => r.ReleaseChannel == ReleaseChannel.MainFeed) ?? false;
 
     if (domainEvent.CanonicalPolicyValue == 2 && !hasMainFeedRelease)
     {
@@ -102,7 +116,9 @@ internal sealed class PickCreatedDomainEventHandler(
         participantIdValue: domainEvent.ParticipantId,
         participantKindValue: domainEvent.ParticipantKind,
         canonicalPolicyValue: domainEvent.CanonicalPolicyValue,
-        hasMainFeedRelease: hasMainFeedRelease),
-      cancellationToken);
+        hasMainFeedRelease: hasMainFeedRelease
+      ),
+      cancellationToken
+    );
   }
 }

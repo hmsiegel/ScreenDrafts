@@ -2,10 +2,6 @@
 
 internal sealed record SearchMediaRequest
 {
-
-  [FromRoute(Name = "draftPartId")]
-  public required string DraftPartId { get; init; }
-
   [FromQuery(Name = "query")]
   public required string Query { get; init; }
 

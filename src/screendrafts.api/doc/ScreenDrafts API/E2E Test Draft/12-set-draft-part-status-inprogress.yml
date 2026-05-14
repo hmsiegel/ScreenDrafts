@@ -1,0 +1,30 @@
+info:
+  name: 12 Set Draft Part Status
+  type: http
+  seq: 12
+
+http:
+  method: PUT
+  url: "{{baseUrl}}/drafts/{{draftPublicId}}/parts/:partIndex/status"
+  params:
+    - name: partIndex
+      value: "1"
+      type: path
+  body:
+    type: json
+    data: |-
+      {
+        "action": 1
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: expect(res.getStatus()).to.equal(200);
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

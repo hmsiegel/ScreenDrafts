@@ -2,8 +2,8 @@
 
 public static class PublicIdGuards
 {
-  public static bool IsValid(string? publicId)
-    => !string.IsNullOrWhiteSpace(publicId)
+  public static bool IsValid(string? publicId) =>
+    !string.IsNullOrWhiteSpace(publicId)
     && publicId.Contains('_', StringComparison.OrdinalIgnoreCase);
 
   public static bool IsValidWithPrefix(string? publicId, string prefix)
@@ -37,6 +37,6 @@ public static class PublicIdGuards
       return false;
     }
 
-    return suffix.All(char.IsLetterOrDigit);
+    return suffix.All(c => char.IsLetterOrDigit(c) || c == '-' || c == '_');
   }
 }

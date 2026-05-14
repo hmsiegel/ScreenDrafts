@@ -1,9 +1,9 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.Drafts.Update;
+namespace ScreenDrafts.Modules.Drafts.Features.Drafts.Update;
 
 internal sealed record UpdateDraftRequest
 {
   [FromRoute(Name = "publicId")]
-  public required string PublicId { get; init; }
+  public string PublicId { get; init; } = default!;
   public string? Title { get; init; } = default!;
   public string? Description { get; init; } = default!;
   public string? SeriesPublicId { get; init; } = default!;

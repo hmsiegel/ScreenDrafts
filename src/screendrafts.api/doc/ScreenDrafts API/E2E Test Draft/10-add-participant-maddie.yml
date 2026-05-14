@@ -1,0 +1,30 @@
+info:
+  name: 10 Add Participant - Maddie
+  type: http
+  seq: 10
+
+http:
+  method: POST
+  url: "{{baseUrl}}/draft-parts/{{draftPartId}}/participants"
+  body:
+    type: json
+    data: |-
+      {
+        "participantPublicId": "{{maddieDrafterId}}",
+        "participantKind": 0
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        expect(res.getStatus()).to.equal(204);
+        const id = res.getBody().participantId;
+        if (id) bru.setEnvVar("maddieParticipantId", id);
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

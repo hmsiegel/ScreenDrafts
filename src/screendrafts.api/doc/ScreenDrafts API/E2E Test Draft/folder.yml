@@ -1,0 +1,9 @@
+info:
+  name: E2E Test Draft
+  type: folder
+  seq: 18
+
+request:
+  auth:
+    type: bearer
+    token: "{{token}}"

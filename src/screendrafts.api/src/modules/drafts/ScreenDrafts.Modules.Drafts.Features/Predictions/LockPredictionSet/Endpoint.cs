@@ -1,7 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Features.Predictions.LockPredictionSet;
 
-internal sealed class Endpoint
-  : ScreenDraftsEndpoint<LockPredictionSetRequest>
+internal sealed class Endpoint : ScreenDraftsEndpointWithoutRequest
 {
   public override void Configure()
   {
@@ -20,12 +19,28 @@ internal sealed class Endpoint
     Policies(DraftsAuth.Permissions.PredictionManage);
   }
 
-  public override async Task HandleAsync(LockPredictionSetRequest req, CancellationToken ct)
+  public override async Task HandleAsync(CancellationToken ct)
   {
+    var draftPartId = Route<string>(PredictionRoutes.DraftPartId);
+
+    if (string.IsNullOrWhiteSpace(draftPartId))
+    {
+      await Send.ErrorsAsync(StatusCodes.Status400BadRequest, ct);
+      return;
+    }
+
+    var setId = Route<string>(PredictionRoutes.SetId);
+
+    if (string.IsNullOrWhiteSpace(setId))
+    {
+      await Send.ErrorsAsync(StatusCodes.Status400BadRequest, ct);
+      return;
+    }
+
     var command = new LockPredictionSetCommand
     {
-      DraftPartPublicId = req.DraftPartPublicId,
-      SetPublicId = req.SetPublicId
+      DraftPartPublicId = draftPartId,
+      SetPublicId = setId,
     };
 
     var result = await Sender.Send(command, ct);

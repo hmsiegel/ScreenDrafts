@@ -2,12 +2,13 @@
 
 [DisallowConcurrentExecution]
 internal sealed class ProcessInboxJob(
-    IDbConnectionFactory dbConnectionFactory,
-    IServiceScopeFactory serviceScopeFactory,
-    IDateTimeProvider dateTimeProvider,
-    IOptions<InboxOptions> inboxOptions,
-    ILogger<ProcessInboxJob> logger,
-    IRealTimeUpdatesIntegrationEventDispatcher integrationEventDispatcher) : IJob
+  IDbConnectionFactory dbConnectionFactory,
+  IServiceScopeFactory serviceScopeFactory,
+  IDateTimeProvider dateTimeProvider,
+  IOptions<InboxOptions> inboxOptions,
+  ILogger<ProcessInboxJob> logger,
+  IRealTimeUpdatesIntegrationEventDispatcher integrationEventDispatcher
+) : IJob
 {
   private const string ModuleName = "RealTimeUpdates";
 
@@ -15,7 +16,8 @@ internal sealed class ProcessInboxJob(
   private readonly IServiceScopeFactory _serviceScopeFactory = serviceScopeFactory;
   private readonly IDateTimeProvider _dateTimeProvider = dateTimeProvider;
   private readonly ILogger<ProcessInboxJob> _logger = logger;
-  private readonly IRealTimeUpdatesIntegrationEventDispatcher _integrationEventDispatcher = integrationEventDispatcher;
+  private readonly IRealTimeUpdatesIntegrationEventDispatcher _integrationEventDispatcher =
+    integrationEventDispatcher;
   private readonly InboxOptions _inboxOptions = inboxOptions.Value;
 
   public async Task Execute(IJobExecutionContext context)
@@ -25,7 +27,10 @@ internal sealed class ProcessInboxJob(
     await using DbConnection connection = await _dbConnectionFactory.OpenConnectionAsync();
     await using DbTransaction transaction = await connection.BeginTransactionAsync();
 
-    IReadOnlyList<InboxMessageResponse> inboxMessages = await GetInboxMessagesAsync(connection, transaction);
+    IReadOnlyList<InboxMessageResponse> inboxMessages = await GetInboxMessagesAsync(
+      connection,
+      transaction
+    );
 
     foreach (var inboxMessage in inboxMessages)
     {
@@ -33,21 +38,21 @@ internal sealed class ProcessInboxJob(
       try
       {
         IIntegrationEvent integrationEvent = JsonConvert.DeserializeObject<IIntegrationEvent>(
-            inboxMessage.Content,
-            SerializerSettings.Instance)!;
+          inboxMessage.Content,
+          SerializerSettings.Instance
+        )!;
 
         using var scope = _serviceScopeFactory.CreateScope();
 
-        await _integrationEventDispatcher.DispatchAsync(
-          integrationEvent,
-          scope.ServiceProvider);
+        await _integrationEventDispatcher.DispatchAsync(integrationEvent, scope.ServiceProvider);
       }
       catch (InvalidOperationException caughtException)
       {
         InboxLoggingMessages.ExceptionWhileProcessingInboxMessage(
           _logger,
           ModuleName,
-          inboxMessage.Id);
+          inboxMessage.Id
+        );
 
         exception = caughtException;
       }
@@ -61,51 +66,53 @@ internal sealed class ProcessInboxJob(
   }
 
   private async Task<IReadOnlyList<InboxMessageResponse>> GetInboxMessagesAsync(
-      IDbConnection connection,
-      IDbTransaction transaction)
+    IDbConnection connection,
+    IDbTransaction transaction
+  )
   {
-    var sql =
-        $"""
-             SELECT
-                id AS {nameof(InboxMessageResponse.Id)},
-                content AS {nameof(InboxMessageResponse.Content)}
-             FROM real_time_updates.inbox_messages
-             WHERE processed_on_utc IS NULL
-             ORDER BY occurred_on_utc
-             LIMIT {_inboxOptions.BatchSize}
-             FOR UPDATE
-             """;
+    var sql = $"""
+      SELECT
+         id AS {nameof(InboxMessageResponse.Id)},
+         content AS {nameof(InboxMessageResponse.Content)}
+      FROM real_time_updates.inbox_messages
+      WHERE processed_on_utc IS NULL
+      ORDER BY occurred_on_utc
+      LIMIT {_inboxOptions.BatchSize}
+      FOR UPDATE
+      """;
 
     var inboxMessages = await connection.QueryAsync<InboxMessageResponse>(
-        sql,
-        transaction: transaction);
+      sql,
+      transaction: transaction
+    );
 
     return inboxMessages.ToList();
   }
 
   private async Task UpdateInboxMessageAsync(
-      IDbConnection connection,
-      IDbTransaction transaction,
-      InboxMessageResponse inboxMessage,
-      Exception? exception)
+    IDbConnection connection,
+    IDbTransaction transaction,
+    InboxMessageResponse inboxMessage,
+    Exception? exception
+  )
   {
-    const string sql =
-        """
-            UPDATE real_time_updates.inbox_messages
-            SET processed_on_utc = @ProcessedOnUtc,
-                error = @Error
-            WHERE id = @Id
-            """;
+    const string sql = """
+      UPDATE real_time_updates.inbox_messages
+      SET processed_on_utc = @ProcessedOnUtc,
+          error = @Error
+      WHERE id = @Id
+      """;
 
     await connection.ExecuteAsync(
-        sql,
-        new
-        {
-          inboxMessage.Id,
-          ProcessedOnUtc = _dateTimeProvider.UtcNow,
-          Error = exception?.ToString()
-        },
-        transaction: transaction);
+      sql,
+      new
+      {
+        inboxMessage.Id,
+        ProcessedOnUtc = _dateTimeProvider.UtcNow,
+        Error = exception?.ToString(),
+      },
+      transaction: transaction
+    );
   }
 
   internal sealed record InboxMessageResponse(Guid Id, string Content);

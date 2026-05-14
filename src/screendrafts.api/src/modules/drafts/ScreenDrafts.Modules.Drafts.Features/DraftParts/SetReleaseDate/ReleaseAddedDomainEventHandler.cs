@@ -29,7 +29,7 @@ internal sealed class ReleaseAddedDomainEventHandler(
           FROM drafts.draft_channel_releases dcr
           WHERE dcr.draft_id = d.id
             AND dcr.release_channel = 0
-       )                        AS EpisodeNumber,
+       )                        AS EpisodeNumber
        FROM drafts.draft_releases dr
        JOIN drafts.draft_parts dp ON dp.id = dr.part_id
        JOIN drafts.drafts d ON d.id = dp.draft_id

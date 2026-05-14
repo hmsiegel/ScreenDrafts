@@ -10,16 +10,14 @@ post {
   auth: bearer
 }
 
-auth:bearer {
-  token: {{token}}
-}
+auth:none
 
 body:form-urlencoded {
   grant_type: password
   client_id: screendrafts-public-client
   scope: email openid
-  username: harlan@siegel.com
-  password: password
+  username: "{{username}}"
+  password: "{{password}}"
 }
 
 tests {

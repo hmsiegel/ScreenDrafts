@@ -7,8 +7,8 @@ internal sealed class VetoAppliedDomainEventHandler(
   IDraftPoolRepository draftPoolRepository,
   IDraftBoardRepository draftBoardRepository,
   ParticipantResolver participantResolver,
-  IUnitOfWork unitOfWork)
-  : DomainEventHandler<VetoAddedDomainEvent>
+  IUnitOfWork unitOfWork
+) : DomainEventHandler<VetoAddedDomainEvent>
 {
   private readonly IEventBus _eventBus = eventBus;
   private readonly ICacheService _cacheService = cacheService;
@@ -18,21 +18,24 @@ internal sealed class VetoAppliedDomainEventHandler(
   private readonly ParticipantResolver _participantResolver = participantResolver;
   private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-  public override async Task Handle(VetoAddedDomainEvent domainEvent, CancellationToken cancellationToken = default)
+  public override async Task Handle(
+    VetoAddedDomainEvent domainEvent,
+    CancellationToken cancellationToken = default
+  )
   {
     await _cacheService.RemoveAsync(
       key: DraftsCacheKeys.PickList(draftPartPublicId: domainEvent.DraftPartPublicId),
-      cancellationToken: cancellationToken);
+      cancellationToken: cancellationToken
+    );
 
     var draftPart = await _draftPartRepository.GetByIdAsync(
       DraftPartId.Create(domainEvent.DraftPartId),
-      cancellationToken);
+      cancellationToken
+    );
 
     if (draftPart is not null)
     {
-      var pool = await _draftPoolRepository.GetByDraftIdAsync(
-        draftPart.DraftId,
-        cancellationToken);
+      var pool = await _draftPoolRepository.GetByDraftIdAsync(draftPart.DraftId, cancellationToken);
 
       if (pool is not null)
       {
@@ -42,19 +45,22 @@ internal sealed class VetoAppliedDomainEventHandler(
 
         await _cacheService.RemoveAsync(
           key: DraftsCacheKeys.DraftPool(draftPublicId: domainEvent.DraftPublicId),
-          cancellationToken: cancellationToken);
+          cancellationToken: cancellationToken
+        );
       }
       else
       {
         var participant = await _participantResolver.ResolveByParticpantIdAsync(
           participantId: domainEvent.ParticipantId,
           participantKind: ParticipantKind.FromValue(domainEvent.ParticipantKind),
-          cancellationToken: cancellationToken);
+          cancellationToken: cancellationToken
+        );
 
         var board = await _draftBoardRepository.GetByDraftAndParticipantAsync(
           draftPart.DraftId,
-          participant.Value,
-          cancellationToken);
+          participant!.Value,
+          cancellationToken
+        );
 
         if (board is not null)
         {
@@ -63,18 +69,25 @@ internal sealed class VetoAppliedDomainEventHandler(
           _draftBoardRepository.Update(board);
 
           await _cacheService.RemoveAsync(
-            key: DraftsCacheKeys.DraftBoard(draftPublicId: domainEvent.DraftPublicId, userId: domainEvent.ParticipantId),
-            cancellationToken: cancellationToken);
+            key: DraftsCacheKeys.DraftBoard(
+              draftPublicId: domainEvent.DraftPublicId,
+              userId: domainEvent.ParticipantId
+            ),
+            cancellationToken: cancellationToken
+          );
         }
       }
 
       await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
-    await _eventBus.PublishAsync(new VetoAppliedIntegrationEvent(
-      domainEvent.Id,
-      domainEvent.OccurredOnUtc,
-      domainEvent.DraftPartId),
-      cancellationToken);
+    await _eventBus.PublishAsync(
+      new VetoAppliedIntegrationEvent(
+        domainEvent.Id,
+        domainEvent.OccurredOnUtc,
+        domainEvent.DraftPartId
+      ),
+      cancellationToken
+    );
   }
 }

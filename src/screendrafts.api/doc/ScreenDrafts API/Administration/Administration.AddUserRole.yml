@@ -16,7 +16,7 @@ http:
       value: Drafter
       type: path
     - name: publicId
-      value: u_dOqN66QaK5XUEQ3
+      value: u_Ry5uzrCQMu5GUCA
       type: path
   body:
     type: json

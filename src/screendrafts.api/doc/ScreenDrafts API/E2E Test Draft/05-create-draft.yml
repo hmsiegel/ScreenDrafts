@@ -1,0 +1,33 @@
+info:
+  name: 05 Create Draft
+  type: http
+  seq: 5
+
+http:
+  method: POST
+  url: "{{baseUrl}}/drafts"
+  body:
+    type: json
+    data: |-
+      {
+        "title": "Wedding Movies",
+        "draftType": "0",
+        "seriesId": "ce01a65e-2290-4a9b-baeb-05a5a7445004"
+      }
+  auth:
+    type: bearer
+    token: "{{token}}"
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        expect(res.getStatus()).to.equal(201);
+        const id = res.getBody().publicId;
+        bru.setEnvVar("draftId", id);
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

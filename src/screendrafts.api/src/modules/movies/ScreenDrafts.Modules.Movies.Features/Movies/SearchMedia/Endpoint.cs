@@ -8,22 +8,21 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<SearchMediaRequest, Search
     Description(x =>
     {
       x.WithTags(MoviesOpenApi.Tags.Media)
-      .WithName(MoviesOpenApi.Names.Media_Search)
-      .Produces<SearchMediaResponse>(StatusCodes.Status200OK)
-      .Produces(StatusCodes.Status400BadRequest);
+        .WithName(MoviesOpenApi.Names.Media_Search)
+        .Produces<SearchMediaResponse>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status400BadRequest);
     });
-    Policies(MoviesAuth.Permissions.MediaSearch);
+    AllowAnonymous();
   }
 
   public override async Task HandleAsync(SearchMediaRequest req, CancellationToken ct)
   {
     var query = new SearchMediaQuery
     {
-      DraftPartId = req.DraftPartId,
       Query = req.Query,
       Year = req.Year,
       Page = req.Page,
-      PageSize = req.PageSize
+      PageSize = req.PageSize,
     };
 
     var result = await Sender.Send(query, ct);

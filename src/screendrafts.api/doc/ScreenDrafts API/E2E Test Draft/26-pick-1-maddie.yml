@@ -1,0 +1,30 @@
+info:
+  name: 26 Pick 1 - Maddie
+  type: http
+  seq: 26
+
+http:
+  method: POST
+  url: "{{baseUrl}}/draft-parts/{{draftPartId}}/picks"
+  body:
+    type: json
+    data: |-
+      {
+        "position": 1,
+        "playOrder": 7,
+        "participantPublicId": "{{maddieParticipantId}}",
+        "participantKind": 0,
+        "moviePublicId": "m_gGus9zw46MzsKtj"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: expect(res.getStatus()).to.equal(201);
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

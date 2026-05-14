@@ -23,18 +23,21 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<SubmitPredictionSetRequest
   {
     var command = new SubmitPredictionSetCommand
     {
-      DraftPartPublicId = req.DraftPartPublicId,
+      DraftPartPublicId = req.DraftPartId,
       SeasonPublicId = req.SeasonPublicId,
       ContestantPublicId = req.ContestantPublicId,
       SubmittedByPersonPublicId = req.SubmittedByPersonPublicId,
       SourceKind = req.SourceKind,
-      Entries = [.. req.Entries.Select(e => new PredictionEntryDto
-            {
-              MediaPublicId = e.MediaPublicId,
-              MediaTitle = e.MediaTitle,
-              OrderIndex = e.OrderIndex,
-              Notes = e.Notes
-            })]
+      Entries =
+      [
+        .. req.Entries.Select(e => new PredictionEntryDto
+        {
+          MediaPublicId = e.MediaPublicId,
+          MediaTitle = e.MediaTitle,
+          OrderIndex = e.OrderIndex,
+          Notes = e.Notes,
+        }),
+      ],
     };
 
     var result = await Sender.Send(command, ct);

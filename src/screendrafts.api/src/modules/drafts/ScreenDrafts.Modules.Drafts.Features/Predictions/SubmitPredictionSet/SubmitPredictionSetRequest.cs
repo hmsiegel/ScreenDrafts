@@ -3,7 +3,7 @@
 internal sealed record SubmitPredictionSetRequest
 {
   [FromRoute(Name = "draftPartId")]
-  public string DraftPartPublicId { get; init; } = default!;
+  public string DraftPartId { get; init; } = default!;
 
   public string SeasonPublicId { get; init; } = default!;
   public string ContestantPublicId { get; init; } = default!;

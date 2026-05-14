@@ -1,0 +1,33 @@
+info:
+  name: 01 Create User - Jordain
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{baseUrl}}/users/register"
+  body:
+    type: json
+    data: |-
+      {
+        "email": "jordainsearles@screendrafts.fake",
+        "password": "password",
+        "firstName": "Jordain",
+        "lastName": "Searles",
+        "middleName": ""
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        expect(res.getStatus()).to.equal(201);
+        const id = res.getBody().id;
+        bru.setEnvVar("jordainUserId", id);
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

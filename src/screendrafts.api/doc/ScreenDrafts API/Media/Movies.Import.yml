@@ -1,0 +1,27 @@
+info:
+  name: Movies.Import
+  type: http
+  seq: 5
+
+http:
+  method: POST
+  url: "{{baseUrl}}/movies/import"
+  body:
+    type: json
+    data: |-
+      {
+        "mediaType": 0,
+        "tmdbId": 8346
+        // "igdbId": 0,
+        // "imdbId": "",
+        // "tvSeriesTmdbId": 0,
+        // "seasonNumber": 0,
+        // "episodeNumber": 0
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -1,0 +1,28 @@
+info:
+  name: 04 Create Drafter - Maddie
+  type: http
+  seq: 4
+
+http:
+  method: POST
+  url: "{{baseUrl}}/drafters"
+  body:
+    type: json
+    data: |-
+      {
+        "personId": "{{maddiePersonId}}"
+      }
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        expect(res.getStatus()).to.equal(201);
+        const id = res.getBody().publicId;
+        bru.setEnvVar("maddieDrafterId", id);
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -7,4 +7,5 @@ internal sealed record MovieSearchResult
   public string? Year { get; set; }
   public string? PosterUrl { get; set; }
   public string? Overview { get; set; }
+  public MediaType MediaType { get; set; } = MediaType.Movie;
 }

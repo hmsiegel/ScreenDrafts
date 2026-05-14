@@ -1,12 +1,15 @@
 ﻿namespace ScreenDrafts.Modules.RealTimeUpdates.Infrastructure.Outbox;
 
 internal sealed class IdempotentDomainEventHandler<TDomainEvent>(
-    IDomainEventHandler<TDomainEvent> decorated,
-    IDbConnectionFactory dbConnectionFactory)
-    : DomainEventHandler<TDomainEvent>
-    where TDomainEvent : IDomainEvent
+  IDomainEventHandler<TDomainEvent> decorated,
+  IDbConnectionFactory dbConnectionFactory
+) : DomainEventHandler<TDomainEvent>
+  where TDomainEvent : IDomainEvent
 {
-  public override async Task Handle(TDomainEvent domainEvent, CancellationToken cancellationToken = default)
+  public override async Task Handle(
+    TDomainEvent domainEvent,
+    CancellationToken cancellationToken = default
+  )
   {
     await using var connection = await dbConnectionFactory.OpenConnectionAsync(cancellationToken);
 
@@ -23,31 +26,31 @@ internal sealed class IdempotentDomainEventHandler<TDomainEvent>(
   }
 
   private static async Task<bool> OutboxConsumerExistsAsync(
-      DbConnection dbConnection,
-      OutboxMessageConsumer outboxMessageConsumer)
+    DbConnection dbConnection,
+    OutboxMessageConsumer outboxMessageConsumer
+  )
   {
-    const string sql =
-        """
-            SELECT EXISTS(
-                SELECT 1
-                FROM real_time_updates.outbox_message_consumers
-                WHERE outbox_message_id = @OutboxMessageId AND
-                      name = @Name
-            )
-            """;
+    const string sql = """
+      SELECT EXISTS(
+          SELECT 1
+          FROM real_time_updates.outbox_message_consumers
+          WHERE outbox_message_id = @OutboxMessageId AND
+                name = @Name
+      )
+      """;
 
     return await dbConnection.ExecuteScalarAsync<bool>(sql, outboxMessageConsumer);
   }
 
   private static async Task InsertOutboxConsumerAsync(
-      DbConnection dbConnection,
-      OutboxMessageConsumer outboxMessageConsumer)
+    DbConnection dbConnection,
+    OutboxMessageConsumer outboxMessageConsumer
+  )
   {
-    const string sql =
-        """
-            INSERT INTO real_time_updates.outbox_message_consumers(outbox_message_id, name)
-            VALUES (@OutboxMessageId, @Name)
-            """;
+    const string sql = """
+      INSERT INTO real_time_updates.outbox_message_consumers(outbox_message_id, name)
+      VALUES (@OutboxMessageId, @Name)
+      """;
 
     await dbConnection.ExecuteAsync(sql, outboxMessageConsumer);
   }

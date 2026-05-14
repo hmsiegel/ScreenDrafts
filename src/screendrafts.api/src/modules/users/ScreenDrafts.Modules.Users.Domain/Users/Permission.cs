@@ -89,13 +89,14 @@ public sealed class Permission(string code)
   public static readonly Permission ModifyGameBoard = new("game-boards:update");
 
   // Movies
-  public static readonly Permission CreateMovies = new("movies:create");
-  public static readonly Permission GetMovies = new("movies:read");
-  public static readonly Permission SearchMovies = new("movies:search");
-  public static readonly Permission SearchActors = new("actors:search");
-  public static readonly Permission SearchCrew = new("crew:search");
-  public static readonly Permission SearchGenres = new("genres:search");
-  public static readonly Permission SearchStudios = new("studios:search");
+  public static readonly Permission CreateMovies = new("media:create");
+  public static readonly Permission GetMovies = new("media:read");
+  public static readonly Permission SearchMovies = new("media:search");
+  public static readonly Permission SearchActors = new("media:actors:search");
+  public static readonly Permission SearchCrew = new("media:crew:search");
+  public static readonly Permission SearchGenres = new("media:genres:search");
+  public static readonly Permission SearchStudios = new("media:studios:search");
+  public static readonly Permission MediaImport = new("media:import");
 
   // Series
   public static readonly Permission ReadSeries = new("series:read");

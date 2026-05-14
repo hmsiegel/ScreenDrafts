@@ -1,0 +1,27 @@
+info:
+  name: 08 Add Host to DraftPart
+  type: http
+  seq: 8
+
+http:
+  method: POST
+  url: "{{baseUrl}}/draft-parts/{{draftPartId}}/hosts"
+  body:
+    type: json
+    data: |-
+      {
+        "hostPublicId": "{{hostRyanPublicId}}",
+        "hostRole": 1
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: expect(res.getStatus()).to.equal(204);
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

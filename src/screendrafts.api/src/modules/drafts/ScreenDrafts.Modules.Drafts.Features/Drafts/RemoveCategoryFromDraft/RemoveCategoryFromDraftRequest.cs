@@ -1,10 +1,10 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.Drafts.RemoveCategoryFromDraft;
+namespace ScreenDrafts.Modules.Drafts.Features.Drafts.RemoveCategoryFromDraft;
 
 internal sealed record RemoveCategoryFromDraftRequest
 {
   [FromRoute(Name = "publicId")]
-  public required string DraftId { get; init; }
+  public string DraftId { get; init; } = default!;
 
   [FromRoute(Name = "categoryId")]
-  public required string CategoryId { get; init; }
+  public string CategoryId { get; init; } = default!;
 }

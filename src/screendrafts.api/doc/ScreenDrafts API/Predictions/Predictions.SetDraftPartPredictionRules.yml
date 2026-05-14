@@ -8,6 +8,10 @@ info:
 http:
   method: POST
   url: "{{baseUrl}}/draft-parts/:draftPartId/prediction-rules"
+  params:
+    - name: draftPartId
+      value: dp_CYVmCtMNvLJBa1M
+      type: path
   body:
     type: json
     data: |-

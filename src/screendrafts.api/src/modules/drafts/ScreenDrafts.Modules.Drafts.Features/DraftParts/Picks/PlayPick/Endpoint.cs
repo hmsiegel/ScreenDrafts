@@ -8,14 +8,14 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<PlayPickRequest, CreatedId
     Description(x =>
     {
       x.WithName(DraftsOpenApi.Names.DraftParts_PlayPick)
-      .WithTags(DraftsOpenApi.Tags.DraftParts)
-      .Produces<Guid>(StatusCodes.Status200OK)
-      .Produces(StatusCodes.Status400BadRequest)
-      .Produces(StatusCodes.Status401Unauthorized)
-      .Produces(StatusCodes.Status404NotFound)
-      .Produces(StatusCodes.Status403Forbidden);
+        .WithTags(DraftsOpenApi.Tags.DraftParts)
+        .Produces<Guid>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status400BadRequest)
+        .Produces(StatusCodes.Status401Unauthorized)
+        .Produces(StatusCodes.Status404NotFound)
+        .Produces(StatusCodes.Status403Forbidden);
     });
-    Policies(DraftsAuth.Permissions.PickCreate);
+    Policies(DraftsAuth.Permissions.PickAdd);
   }
 
   public override async Task HandleAsync(PlayPickRequest req, CancellationToken ct)
@@ -46,7 +46,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<PlayPickRequest, CreatedId
       ParticipantKind = participantKind,
       MoviePublicId = req.MoviePublicId,
       MovieVersionName = req.MovieVersionName,
-      ActedByPublicId = actorPublicId
+      ActedByPublicId = actorPublicId,
     };
 
     var result = await Sender.Send(command, ct);
@@ -54,6 +54,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<PlayPickRequest, CreatedId
     await this.SendCreatedAsync(
       result.Map(id => new CreatedIdResponse(id.Value)),
       created => DraftPartLocations.ById(req.DraftPartId),
-      ct);
+      ct
+    );
   }
 }

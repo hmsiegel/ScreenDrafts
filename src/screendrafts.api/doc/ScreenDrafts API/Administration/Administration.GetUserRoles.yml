@@ -8,7 +8,7 @@ http:
   url: "{{baseUrl}}/admin/users/:publicId/roles"
   params:
     - name: publicId
-      value: u_dOqN66QaK5XUEQ3
+      value: u_tYbU0Hy1sHCbhWO
       type: path
   auth: inherit
 

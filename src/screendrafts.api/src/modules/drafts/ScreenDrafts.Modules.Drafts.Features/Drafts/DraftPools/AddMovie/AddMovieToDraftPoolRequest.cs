@@ -1,9 +1,9 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.Drafts.DraftPools.AddMovie;
+namespace ScreenDrafts.Modules.Drafts.Features.Drafts.DraftPools.AddMovie;
 
 internal sealed record AddMovieToDraftPoolRequest
 {
   [FromRoute(Name = "publicId")]
-  public required string PublicId { get; init; }
+  public string PublicId { get; init; } = default!;
 
   public int TmdbId { get; init; }
 }

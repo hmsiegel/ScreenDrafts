@@ -18,9 +18,6 @@ request:
   auth:
     type: bearer
     token: "{{token}}"
-  variables:
-    - name: token
-      value: ""
 bundled: false
 extensions:
   bruno:

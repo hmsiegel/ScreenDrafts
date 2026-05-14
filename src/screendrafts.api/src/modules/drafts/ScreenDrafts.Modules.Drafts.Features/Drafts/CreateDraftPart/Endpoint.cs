@@ -8,12 +8,12 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<CreateDraftPartRequest, st
     Description(x =>
     {
       x.WithName(DraftsOpenApi.Names.Drafts_CreateDraftPart)
-      .WithTags(DraftsOpenApi.Tags.Drafts)
-      .Produces<string>(StatusCodes.Status200OK)
-      .Produces(StatusCodes.Status400BadRequest)
-      .Produces(StatusCodes.Status401Unauthorized)
-      .Produces(StatusCodes.Status403Forbidden)
-      .Produces(StatusCodes.Status404NotFound);
+        .WithTags(DraftsOpenApi.Tags.Drafts)
+        .Produces<string>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status400BadRequest)
+        .Produces(StatusCodes.Status401Unauthorized)
+        .Produces(StatusCodes.Status403Forbidden)
+        .Produces(StatusCodes.Status404NotFound);
     });
     Policies(DraftsAuth.Permissions.DraftPartCreate);
   }
@@ -22,19 +22,19 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<CreateDraftPartRequest, st
   {
     var command = new CreateDraftPartCommand
     {
-      DraftPublicId = req.DraftId,
+      DraftPublicId = req.PublicId,
       PartIndex = req.PartIndex,
       MaximumPosition = req.MaximumPosition,
-      MinimumPosition = req.MinimumPosition
+      MinimumPosition = req.MinimumPosition,
     };
 
     var result = await Sender.Send(command, ct);
 
     await this.SendCreatedAsync(
       result.Map(id => new CreatedResponse(id)),
-      created => DraftLocations.PartById(
-        draftPublicId: req.DraftId,
-        draftPartPublicId: created.PublicId),
-      ct);
+      created =>
+        DraftLocations.PartById(draftPublicId: req.PublicId, draftPartPublicId: created.PublicId),
+      ct
+    );
   }
 }

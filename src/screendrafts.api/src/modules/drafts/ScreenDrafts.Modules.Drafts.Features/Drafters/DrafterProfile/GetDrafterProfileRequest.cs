@@ -1,7 +1,7 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.Drafters.DrafterProfile;
+namespace ScreenDrafts.Modules.Drafts.Features.Drafters.DrafterProfile;
 
 internal sealed record GetDrafterProfileRequest
 {
   [FromRoute(Name = "publicId")]
-  public required string PublicId { get; init; }
+  public string PublicId { get; init; } = default!;
 }

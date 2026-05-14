@@ -1,13 +1,12 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.Drafts.SetDraftPartStatus;
+namespace ScreenDrafts.Modules.Drafts.Features.Drafts.SetDraftPartStatus;
 
 internal sealed record SetDraftPartStatusRequest
 {
-  [FromRoute(Name = "draftPublicId")]
-  public required string DraftPublicId { get; init; }
+  [FromRoute(Name = "publicId")]
+  public string PublicId { get; init; } = default!;
 
   [FromRoute(Name = "partIndex")]
-  public required int PartIndex { get; init; }
+  public int PartIndex { get; init; } = default!;
 
   public DraftPartStatusAction Action { get; init; }
 }
-

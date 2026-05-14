@@ -1,0 +1,31 @@
+info:
+  name: 06 Create DraftPart
+  type: http
+  seq: 6
+
+http:
+  method: POST
+  url: "{{baseUrl}}/drafts/{{draftPublicId}}/parts"
+  body:
+    type: json
+    data: |-
+      {
+        "partIndex": 1,
+        "minimumPosition": 1,
+        "maximumPosition": 7
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        expect(res.getStatus()).to.equal(201);
+        const id = res.getBody().publicId;
+        bru.setEnvVar("draftPartId", id);
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

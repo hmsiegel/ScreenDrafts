@@ -21,4 +21,7 @@ internal static class PredictionRoutes
   public const string LockSet = "draft-parts/{draftPartId}/predictions/{setId}/lock";
   public const string AssignSurrogate = "draft-parts/{draftPartId}/predictions/{setId}/surrogate";
   public const string ScoreSets = "draft-parts/{draftPartId}/predictions/score";
+
+  public const string DraftPartId = "draftPartId";
+  public const string SetId = "setId";
 }

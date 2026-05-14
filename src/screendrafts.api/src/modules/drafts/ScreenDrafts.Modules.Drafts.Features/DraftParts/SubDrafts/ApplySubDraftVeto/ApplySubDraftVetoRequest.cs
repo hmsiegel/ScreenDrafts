@@ -1,15 +1,15 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.SubDrafts.ApplySubDraftVeto;
+namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.SubDrafts.ApplySubDraftVeto;
 
 internal sealed record ApplySubDraftVetoRequest
 {
   [FromRoute(Name = "draftPartId")]
-  public required string DraftPartPublicId { get; init; }
+  public string DraftPartPublicId { get; init; } = default!;
 
   [FromRoute(Name = "subDraftId")]
-  public required string SubDraftPublicId { get; init; }
+  public string SubDraftPublicId { get; init; } = default!;
 
   [FromRoute(Name = "playOrder")]
-  public required int PlayOrder { get; init; }
+  public int PlayOrder { get; init; } = default!;
 
   public required string IssuerPublicId { get; init; }
   public required int IssuerKind  { get; init; }

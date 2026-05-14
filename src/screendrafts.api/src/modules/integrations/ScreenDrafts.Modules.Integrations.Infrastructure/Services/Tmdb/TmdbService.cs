@@ -1,8 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Integrations.Infrastructure.Services.Tmdb;
 
-internal sealed class TmdbService(
-  HttpClient httpClient,
-  IOptions<TmdbSettings> settings)
+internal sealed class TmdbService(HttpClient httpClient, IOptions<TmdbSettings> settings)
   : ITmdbService
 {
   private readonly HttpClient _httpClient = httpClient;
@@ -19,10 +17,15 @@ internal sealed class TmdbService(
   }
 
   // Movies
-  public async Task<TmdbSearchResult?> FindMovieByImdbIdAsync(string imdbId, CancellationToken cancellationToken = default)
+  public async Task<TmdbSearchResult?> FindMovieByImdbIdAsync(
+    string imdbId,
+    CancellationToken cancellationToken = default
+  )
   {
     var response = await _httpClient.GetFromJsonAsync<TmdbFindApiResponse>(
-      $"find/{imdbId}?external_source=imdb_id", cancellationToken);
+      $"find/{imdbId}?external_source=imdb_id",
+      cancellationToken
+    );
 
     var movie = response?.MovieResults.Count > 0 ? response.MovieResults[0] : null;
     if (movie is null)
@@ -36,30 +39,40 @@ internal sealed class TmdbService(
       Title = movie.Title,
       Overview = movie.Overview ?? string.Empty,
       ReleaseDate = movie.ReleaseDate,
-      PosterPath = movie.PosterPath
+      PosterPath = movie.PosterPath,
     };
   }
 
-  public async Task<string?> GetMovieImdbIdAsync(int tmdbId, CancellationToken cancellationToken = default)
+  public async Task<string?> GetMovieImdbIdAsync(
+    int tmdbId,
+    CancellationToken cancellationToken = default
+  )
   {
     var response = await _httpClient.GetFromJsonAsync<TmdbExternalIdsApiResponse>(
-      $"movie/{tmdbId}/external_ids", cancellationToken);
+      $"movie/{tmdbId}/external_ids",
+      cancellationToken
+    );
 
     return response?.ImdbId;
   }
 
-  public async Task<TmdbMediaDetails?> GetMovieDetailsAsync(int tmdbId, CancellationToken cancellationToken = default)
+  public async Task<TmdbMediaDetails?> GetMovieDetailsAsync(
+    int tmdbId,
+    CancellationToken cancellationToken = default
+  )
   {
     var response = await _httpClient.GetFromJsonAsync<TmdbMovieDetailApiResponse>(
-      $"movie/{tmdbId}?append_to_response=credits,videos", cancellationToken);
+      $"movie/{tmdbId}?append_to_response=credits,videos",
+      cancellationToken
+    );
 
     if (response is null)
     {
       return null;
     }
 
-    var trailer = response.Videos.Results
-      .Where(v => v.Site == "YouTube" && v.Type == "Trailer")
+    var trailer = response
+      .Videos.Results.Where(v => v.Site == "YouTube" && v.Type == "Trailer")
       .OrderByDescending(v => v.Official)
       .FirstOrDefault();
 
@@ -77,54 +90,69 @@ internal sealed class TmdbService(
       PosterPath = response.PosterPath,
       ReleaseDate = response.ReleaseDate,
       TrailerUrl = trailerUrl,
-      Genres = response.Genres
-        .Select(g => new TmdbGenre
-        {
-          Id = g.Id,
-          Name = g.Name
-        })
+      Genres = response
+        .Genres.Select(g => new TmdbGenre { Id = g.Id, Name = g.Name })
         .ToList()
         .AsReadOnly(),
-      Credits = credits
+      Credits = credits,
     };
   }
 
-
-  public async Task<IReadOnlyList<TmdbSearchResult>> SearchMoviesAsync(string query, CancellationToken cancellationToken = default)
+  public async Task<TmdbSearchPagedResult> SearchMoviesAsync(
+    string query,
+    int page = 1,
+    CancellationToken cancellationToken = default
+  )
   {
     var response = await _httpClient.GetFromJsonAsync<TmdbSearchResponse>(
-      $"search/movie?query={Uri.EscapeDataString(query)}&include_adult=true", cancellationToken);
+      $"search/movie?query={Uri.EscapeDataString(query)}&include_adult=true&page={page}",
+      cancellationToken
+    );
 
-    return response?.Results
-      .Select(r => new TmdbSearchResult
-      {
-        Id = r.Id,
-        Title = r.Title,
-        Overview = r.Overview!,
-        ReleaseDate = r.ReleaseDate,
-        PosterPath = r.PosterPath
-      })
-      .ToList()
-      .AsReadOnly()
+    var results =
+      response
+        ?.Results.Select(r => new TmdbSearchResult
+        {
+          Id = r.Id,
+          Title = r.Title,
+          Overview = r.Overview ?? string.Empty,
+          ReleaseDate =
+            string.IsNullOrWhiteSpace(r.ReleaseDate) || r.ReleaseDate.Length < 4
+              ? null
+              : r.ReleaseDate,
+          PosterPath = r.PosterPath,
+        })
+        .ToList()
+        .AsReadOnly()
       ?? (IReadOnlyList<TmdbSearchResult>)[];
+
+    return new TmdbSearchPagedResult
+    {
+      Results = results,
+      TotalResults = response?.TotalResults ?? 0,
+      TotalPages = response?.TotalPages ?? 0,
+      Page = page,
+    };
   }
 
   // TV Shows
   public async Task<TmdbMediaDetails?> GetTvShowDetailsAsync(
     int tmdbId,
-    CancellationToken cancellationToken = default)
+    CancellationToken cancellationToken = default
+  )
   {
-
     var response = await _httpClient.GetFromJsonAsync<TmdbTvDetailsApiResponse>(
-      $"tv/{tmdbId}?append_to_response=credits,videos", cancellationToken);
+      $"tv/{tmdbId}?append_to_response=credits,videos",
+      cancellationToken
+    );
 
     if (response is null)
     {
       return null;
     }
 
-    var trailer = response.Videos.Results
-      .Where(v => v.Site == "YouTube" && v.Type == "Trailer")
+    var trailer = response
+      .Videos.Results.Where(v => v.Site == "YouTube" && v.Type == "Trailer")
       .OrderByDescending(v => v.Official)
       .FirstOrDefault();
 
@@ -144,21 +172,23 @@ internal sealed class TmdbService(
       PosterPath = response.PosterPath,
       ReleaseDate = response.FirstAirDate,
       TrailerUrl = trailerUrl,
-      Genres = response.Genres
-        .Select(g => new TmdbGenre
-        {
-          Id = g.Id,
-          Name = g.Name
-        })
+      Genres = response
+        .Genres.Select(g => new TmdbGenre { Id = g.Id, Name = g.Name })
         .ToList()
         .AsReadOnly(),
-      Credits = credits
+      Credits = credits,
     };
   }
-  public async Task<string?> GetTvShowImdbIdAsync(int tmdbId, CancellationToken cancellationToken = default)
+
+  public async Task<string?> GetTvShowImdbIdAsync(
+    int tmdbId,
+    CancellationToken cancellationToken = default
+  )
   {
     var response = await _httpClient.GetFromJsonAsync<TmdbExternalIdsApiResponse>(
-      $"tv/{tmdbId}/external_ids", cancellationToken);
+      $"tv/{tmdbId}/external_ids",
+      cancellationToken
+    );
 
     return response?.ImdbId;
   }
@@ -168,10 +198,13 @@ internal sealed class TmdbService(
     int seriesTmdbId,
     int seasonNumber,
     int episodeNumber,
-    CancellationToken cancellationToken = default)
+    CancellationToken cancellationToken = default
+  )
   {
     var response = await _httpClient.GetFromJsonAsync<TmdbEpisodeDetailApiResponse>(
-      $"tv/{seriesTmdbId}/season/{seasonNumber}/episode/{episodeNumber}?append_to_response=credits", cancellationToken);
+      $"tv/{seriesTmdbId}/season/{seasonNumber}/episode/{episodeNumber}?append_to_response=credits",
+      cancellationToken
+    );
 
     if (response is null)
     {
@@ -203,7 +236,7 @@ internal sealed class TmdbService(
         Name = c.Name,
         Job = c.Job,
         Department = c.Department,
-        ImdbId = imdbIdMap.TryGetValue(c.Id, out var imdbId) ? imdbId : null
+        ImdbId = imdbIdMap.TryGetValue(c.Id, out var imdbId) ? imdbId : null,
       })
       .ToList();
 
@@ -219,55 +252,63 @@ internal sealed class TmdbService(
       Credits = new TmdbCredits { Cast = cast.AsReadOnly(), Crew = crew.AsReadOnly() },
       TVSeriesTmdbId = seriesTmdbId,
       SeasonNumber = seasonNumber,
-      EpisodeNumber = episodeNumber
+      EpisodeNumber = episodeNumber,
     };
   }
 
   //  People
-  public async Task<string?> GetPersonImdbIdAsync(int tmdbPersonId, CancellationToken cancellationToken = default)
+  public async Task<string?> GetPersonImdbIdAsync(
+    int tmdbPersonId,
+    CancellationToken cancellationToken = default
+  )
   {
     var response = await _httpClient.GetFromJsonAsync<TmdbPersonExternalIdsResponse>(
-      $"person/{tmdbPersonId}/external_ids", cancellationToken);
+      $"person/{tmdbPersonId}/external_ids",
+      cancellationToken
+    );
     return response?.ImdbId;
   }
 
   // Private Helpers
-  private async Task<TmdbCredits> BuildCreditsAsync(TmdbCreditsApiResponse raw, CancellationToken cancellationToken)
+  private async Task<TmdbCredits> BuildCreditsAsync(
+    TmdbCreditsApiResponse raw,
+    CancellationToken cancellationToken
+  )
   {
-    var allIds = raw.Cast.Select(c => c.Id)
-      .Concat(raw.Crew.Select(c => c.Id))
-      .Distinct()
-      .ToList();
+    var allIds = raw.Cast.Select(c => c.Id).Concat(raw.Crew.Select(c => c.Id)).Distinct().ToList();
 
     var imdbIdMap = await FetchPersonImdbIdsAsync(allIds, cancellationToken);
 
     return new TmdbCredits
     {
-      Cast = raw.Cast
-        .Select(c => new TmdbCastMember
+      Cast = raw
+        .Cast.Select(c => new TmdbCastMember
         {
           TmdbId = c.Id,
           Name = c.Name,
           KnownForDepartment = c.KnownForDepartment,
-          ImdbId = imdbIdMap.TryGetValue(c.Id, out var imdbId) ? imdbId : null
+          ImdbId = imdbIdMap.TryGetValue(c.Id, out var imdbId) ? imdbId : null,
         })
         .ToList()
         .AsReadOnly(),
-      Crew = raw.Crew
-        .Select(c => new TmdbCrewMember
+      Crew = raw
+        .Crew.Select(c => new TmdbCrewMember
         {
           TmdbId = c.Id,
           Name = c.Name,
           Job = c.Job,
           Department = c.Department,
-          ImdbId = imdbIdMap.TryGetValue(c.Id, out var imdbId) ? imdbId : null
+          ImdbId = imdbIdMap.TryGetValue(c.Id, out var imdbId) ? imdbId : null,
         })
         .ToList()
-        .AsReadOnly()
+        .AsReadOnly(),
     };
   }
 
-  private async Task<Dictionary<int, string>> FetchPersonImdbIdsAsync(IReadOnlyList<int> personIds, CancellationToken cancellationToken)
+  private async Task<Dictionary<int, string>> FetchPersonImdbIdsAsync(
+    IReadOnlyList<int> personIds,
+    CancellationToken cancellationToken
+  )
   {
     var result = new Dictionary<int, string>();
 
@@ -294,10 +335,15 @@ internal sealed class TmdbService(
     return result;
   }
 
-  public async Task<TmdbFindResult?> FindByImdbIdAsync(string imdbId, CancellationToken cancellationToken = default)
+  public async Task<TmdbFindResult?> FindByImdbIdAsync(
+    string imdbId,
+    CancellationToken cancellationToken = default
+  )
   {
     var response = await _httpClient.GetFromJsonAsync<TmdbFindAllApiResponse>(
-      $"find/{imdbId}?external_source=imdb_id", cancellationToken);
+      $"find/{imdbId}?external_source=imdb_id",
+      cancellationToken
+    );
 
     if (response is null)
     {
@@ -313,7 +359,7 @@ internal sealed class TmdbService(
         Title = movie.Title,
         Overview = movie.Overview ?? string.Empty,
         ReleaseDate = movie.ReleaseDate,
-        PosterPath = movie.PosterPath
+        PosterPath = movie.PosterPath,
       }
       : null;
 
@@ -326,7 +372,7 @@ internal sealed class TmdbService(
         Name = tv.Name,
         Overview = tv.Overview,
         FirstAirDate = tv.FirstAirDate,
-        PosterPath = tv.PosterPath
+        PosterPath = tv.PosterPath,
       }
       : null;
 
@@ -342,118 +388,145 @@ internal sealed class TmdbService(
         StillPath = episode.StillPath,
         ShowId = episode.ShowId,
         SeasonNumber = episode.SeasonNumber,
-        EpisodeNumber = episode.EpisodeNumber
+        EpisodeNumber = episode.EpisodeNumber,
       }
       : null;
 
     return new TmdbFindResult
     {
-      MovieResults = movieResult is not null ? new List<TmdbSearchResult> { movieResult }.AsReadOnly() : new List<TmdbSearchResult>().AsReadOnly(),
-      TvResults = tvResult is not null ? new List<TmdbTvResult> { tvResult }.AsReadOnly() : new List<TmdbTvResult>().AsReadOnly(),
-      TvEpisodeResults = episodeResult is not null ? new List<TmdbTvEpisodeResult> { episodeResult }.AsReadOnly() : new List<TmdbTvEpisodeResult>().AsReadOnly()
+      MovieResults = movieResult is not null
+        ? new List<TmdbSearchResult> { movieResult }.AsReadOnly()
+        : new List<TmdbSearchResult>().AsReadOnly(),
+      TvResults = tvResult is not null
+        ? new List<TmdbTvResult> { tvResult }.AsReadOnly()
+        : new List<TmdbTvResult>().AsReadOnly(),
+      TvEpisodeResults = episodeResult is not null
+        ? new List<TmdbTvEpisodeResult> { episodeResult }.AsReadOnly()
+        : new List<TmdbTvEpisodeResult>().AsReadOnly(),
     };
   }
 
   // API Response Models
 
   private sealed record TmdbSearchResponse(
-    [property: JsonPropertyName("results")] IReadOnlyList<TmdbSearchItem> Results);
+    [property: JsonPropertyName("results")] IReadOnlyList<TmdbSearchItem> Results,
+    [property: JsonPropertyName("total_results")] int TotalResults,
+    [property: JsonPropertyName("total_pages")] int TotalPages
+  );
 
   private sealed record TmdbSearchItem(
-        [property: JsonPropertyName("id")] int Id,
-        [property: JsonPropertyName("title")] string Title,
-        [property: JsonPropertyName("overview")] string? Overview,
-        [property: JsonPropertyName("poster_path")] string? PosterPath,
-        [property: JsonPropertyName("release_date")] string? ReleaseDate);
+    [property: JsonPropertyName("id")] int Id,
+    [property: JsonPropertyName("title")] string Title,
+    [property: JsonPropertyName("overview")] string? Overview,
+    [property: JsonPropertyName("poster_path")] string? PosterPath,
+    [property: JsonPropertyName("release_date")] string? ReleaseDate
+  );
 
   private sealed record TmdbFindApiResponse(
-      [property: JsonPropertyName("movie_results")] IReadOnlyList<TmdbSearchItem> MovieResults);
+    [property: JsonPropertyName("movie_results")] IReadOnlyList<TmdbSearchItem> MovieResults
+  );
 
   private sealed record TmdbMovieDetailApiResponse(
-      [property: JsonPropertyName("id")] int Id,
-      [property: JsonPropertyName("title")] string Title,
-      [property: JsonPropertyName("overview")] string? Overview,
-      [property: JsonPropertyName("poster_path")] string? PosterPath,
-      [property: JsonPropertyName("release_date")] string? ReleaseDate,
-      [property: JsonPropertyName("genres")] IReadOnlyList<TmdbGenreApiResponse> Genres,
-      [property: JsonPropertyName("videos")] TmdbVideosApiResponse Videos,
-      [property: JsonPropertyName("credits")] TmdbCreditsApiResponse Credits);
+    [property: JsonPropertyName("id")] int Id,
+    [property: JsonPropertyName("title")] string Title,
+    [property: JsonPropertyName("overview")] string? Overview,
+    [property: JsonPropertyName("poster_path")] string? PosterPath,
+    [property: JsonPropertyName("release_date")] string? ReleaseDate,
+    [property: JsonPropertyName("genres")] IReadOnlyList<TmdbGenreApiResponse> Genres,
+    [property: JsonPropertyName("videos")] TmdbVideosApiResponse Videos,
+    [property: JsonPropertyName("credits")] TmdbCreditsApiResponse Credits
+  );
 
   private sealed record TmdbTvDetailsApiResponse(
-      [property: JsonPropertyName("id")] int Id,
-      [property: JsonPropertyName("name")] string Name,
-      [property: JsonPropertyName("overview")] string? Overview,
-      [property: JsonPropertyName("poster_path")] string? PosterPath,
-      [property: JsonPropertyName("first_air_date")] string? FirstAirDate,
-      [property: JsonPropertyName("genres")] IReadOnlyList<TmdbGenreApiResponse> Genres,
-      [property: JsonPropertyName("videos")] TmdbVideosApiResponse Videos,
-      [property: JsonPropertyName("credits")] TmdbCreditsApiResponse Credits);
+    [property: JsonPropertyName("id")] int Id,
+    [property: JsonPropertyName("name")] string Name,
+    [property: JsonPropertyName("overview")] string? Overview,
+    [property: JsonPropertyName("poster_path")] string? PosterPath,
+    [property: JsonPropertyName("first_air_date")] string? FirstAirDate,
+    [property: JsonPropertyName("genres")] IReadOnlyList<TmdbGenreApiResponse> Genres,
+    [property: JsonPropertyName("videos")] TmdbVideosApiResponse Videos,
+    [property: JsonPropertyName("credits")] TmdbCreditsApiResponse Credits
+  );
 
   private sealed record TmdbEpisodeDetailApiResponse(
-      [property: JsonPropertyName("id")] int Id,
-      [property: JsonPropertyName("name")] string Name,
-      [property: JsonPropertyName("overview")] string? Overview,
-      [property: JsonPropertyName("still_path")] string? StillPath,
-      [property: JsonPropertyName("air_date")] string? AirDate,
-      [property: JsonPropertyName("season_number")] int SeasonNumber,
-      [property: JsonPropertyName("episode_number")] int EpisodeNumber,
-      [property: JsonPropertyName("credits")] TmdbEpisodeCreditsApiResponse? Credits);
+    [property: JsonPropertyName("id")] int Id,
+    [property: JsonPropertyName("name")] string Name,
+    [property: JsonPropertyName("overview")] string? Overview,
+    [property: JsonPropertyName("still_path")] string? StillPath,
+    [property: JsonPropertyName("air_date")] string? AirDate,
+    [property: JsonPropertyName("season_number")] int SeasonNumber,
+    [property: JsonPropertyName("episode_number")] int EpisodeNumber,
+    [property: JsonPropertyName("credits")] TmdbEpisodeCreditsApiResponse? Credits
+  );
 
   private sealed record TmdbEpisodeCreditsApiResponse(
-      [property: JsonPropertyName("cast")] IReadOnlyList<TmdbCastApiResponse> Cast,
-      [property: JsonPropertyName("guest_stars")] IReadOnlyList<TmdbGuestStarApiResponse> GuestStars,
-      [property: JsonPropertyName("crew")] IReadOnlyList<TmdbCrewApiResponse> Crew);
+    [property: JsonPropertyName("cast")] IReadOnlyList<TmdbCastApiResponse> Cast,
+    [property: JsonPropertyName("guest_stars")] IReadOnlyList<TmdbGuestStarApiResponse> GuestStars,
+    [property: JsonPropertyName("crew")] IReadOnlyList<TmdbCrewApiResponse> Crew
+  );
 
   private sealed record TmdbGuestStarApiResponse(
-      [property: JsonPropertyName("id")] int Id,
-      [property: JsonPropertyName("name")] string Name,
-      [property: JsonPropertyName("known_for_department")] string? KnownForDepartment);
+    [property: JsonPropertyName("id")] int Id,
+    [property: JsonPropertyName("name")] string Name,
+    [property: JsonPropertyName("known_for_department")] string? KnownForDepartment
+  );
 
   private sealed record TmdbCreditsApiResponse(
-      [property: JsonPropertyName("cast")] IReadOnlyList<TmdbCastApiResponse> Cast,
-      [property: JsonPropertyName("crew")] IReadOnlyList<TmdbCrewApiResponse> Crew);
+    [property: JsonPropertyName("cast")] IReadOnlyList<TmdbCastApiResponse> Cast,
+    [property: JsonPropertyName("crew")] IReadOnlyList<TmdbCrewApiResponse> Crew
+  );
 
   private sealed record TmdbCastApiResponse(
-      [property: JsonPropertyName("id")] int Id,
-      [property: JsonPropertyName("name")] string Name,
-      [property: JsonPropertyName("known_for_department")] string? KnownForDepartment);
+    [property: JsonPropertyName("id")] int Id,
+    [property: JsonPropertyName("name")] string Name,
+    [property: JsonPropertyName("known_for_department")] string? KnownForDepartment
+  );
 
   private sealed record TmdbCrewApiResponse(
-      [property: JsonPropertyName("id")] int Id,
-      [property: JsonPropertyName("name")] string Name,
-      [property: JsonPropertyName("job")] string Job,
-      [property: JsonPropertyName("department")] string Department);
+    [property: JsonPropertyName("id")] int Id,
+    [property: JsonPropertyName("name")] string Name,
+    [property: JsonPropertyName("job")] string Job,
+    [property: JsonPropertyName("department")] string Department
+  );
 
   private sealed record TmdbExternalIdsApiResponse(
-      [property: JsonPropertyName("imdb_id")] string? ImdbId);
+    [property: JsonPropertyName("imdb_id")] string? ImdbId
+  );
 
   private sealed record TmdbPersonExternalIdsResponse(
-      [property: JsonPropertyName("imdb_id")] string? ImdbId);
+    [property: JsonPropertyName("imdb_id")] string? ImdbId
+  );
 
   private sealed record TmdbGenreApiResponse(
-      [property: JsonPropertyName("id")] int Id,
-      [property: JsonPropertyName("name")] string Name);
+    [property: JsonPropertyName("id")] int Id,
+    [property: JsonPropertyName("name")] string Name
+  );
 
   private sealed record TmdbVideosApiResponse(
-      [property: JsonPropertyName("results")] IReadOnlyList<TmdbVideoItem> Results);
+    [property: JsonPropertyName("results")] IReadOnlyList<TmdbVideoItem> Results
+  );
 
   private sealed record TmdbVideoItem(
     [property: JsonPropertyName("key")] string Key,
     [property: JsonPropertyName("site")] string Site,
     [property: JsonPropertyName("type")] string Type,
-    [property: JsonPropertyName("official")] bool Official);
+    [property: JsonPropertyName("official")] bool Official
+  );
 
   private sealed record TmdbFindAllApiResponse(
-  [property: JsonPropertyName("movie_results")] IReadOnlyList<TmdbSearchItem> MovieResults,
-  [property: JsonPropertyName("tv_results")] IReadOnlyList<TmdbTvApiResponse> TvResults,
-  [property: JsonPropertyName("tv_episode_results")] IReadOnlyList<TmdbTvEpisodeApiResponse> TvEpisodeResults);
+    [property: JsonPropertyName("movie_results")] IReadOnlyList<TmdbSearchItem> MovieResults,
+    [property: JsonPropertyName("tv_results")] IReadOnlyList<TmdbTvApiResponse> TvResults,
+    [property: JsonPropertyName("tv_episode_results")]
+      IReadOnlyList<TmdbTvEpisodeApiResponse> TvEpisodeResults
+  );
 
   private sealed record TmdbTvApiResponse(
     [property: JsonPropertyName("id")] int Id,
     [property: JsonPropertyName("name")] string Name,
     [property: JsonPropertyName("first_air_date")] string? FirstAirDate,
     [property: JsonPropertyName("poster_path")] string? PosterPath,
-    [property: JsonPropertyName("overview")] string? Overview);
+    [property: JsonPropertyName("overview")] string? Overview
+  );
 
   private sealed record TmdbTvEpisodeApiResponse(
     [property: JsonPropertyName("id")] int Id,
@@ -463,7 +536,6 @@ internal sealed class TmdbService(
     [property: JsonPropertyName("overview")] string? Overview,
     [property: JsonPropertyName("show_id")] int ShowId,
     [property: JsonPropertyName("season_number")] int SeasonNumber,
-    [property: JsonPropertyName("episode_number")] int EpisodeNumber);
+    [property: JsonPropertyName("episode_number")] int EpisodeNumber
+  );
 }
-
-

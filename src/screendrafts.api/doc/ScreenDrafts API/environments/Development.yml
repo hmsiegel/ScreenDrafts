@@ -4,3 +4,43 @@ variables:
     value: https://localhost:5001
   - secret: true
     name: token
+  - name: draftPublicId
+    value: d_D0LQjLdKTj0absa
+  - name: draftPartId
+    value: dp_CYVmCtMNvLJBa1M
+  - name: jordainPersonId
+    value: pe_xeGLzvp0cJFtjhj
+  - name: jordainDrafterId
+    value: dr_r2lCuX8DRBehUkz
+  - name: jordainParticipantId
+    value: dr_r2lCuX8DRBehUkz
+  - name: maddiePersonId
+    value: pe_isGZH3gqNCTMRj6
+  - name: maddieDrafterId
+    value: dr_JHakgcsAIRmcjoS
+  - name: maddieParticipantId
+    value: dr_JHakgcsAIRmcjoS
+  - name: campaignId
+    value: ""
+  - name: hostClayPublicId
+    value: h_fAXPdQshS6uBtz0
+  - name: hostRyanPublicId
+    value: h_IPZjxVnEHlvevlC
+  - name: username
+    value: harlan@siegel.com
+  - name: password
+    value: password
+  - name: drafterAPosition
+    value: pos_cgQITzTds1B9X4X
+  - name: drafterBPosition
+    value: pos_xakuSsq6ngMOt63
+  - name: predictionSeasonPublicId
+    value: ps_qwsmVqT-ztMfAQU
+  - name: ryanPredictonContestantId
+    value: pc_BGqUUjlAFCGxIHZ
+  - name: clayPredictionContestantId
+    value: pc_9DT2lqP9qYdexTN
+  - name: clayPredictionSetId
+    value: set_zd6JU2J9mwtB5Ew
+  - name: ryanPredictionSetId
+    value: set_L3oWScdjn2biNd7

@@ -3,9 +3,8 @@
 internal sealed record SetCampaignDraftRequest
 {
   [FromRoute(Name = "publicId")]
-  public string DraftId { get; init; } = default!;
+  public string PublicId { get; init; } = default!;
 
   [FromBody]
   public string CampaignId { get; init; } = default!;
 }
-

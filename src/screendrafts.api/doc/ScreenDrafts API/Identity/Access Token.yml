@@ -16,12 +16,9 @@ http:
       - name: scope
         value: email openid
       - name: username
-        value: harlan@siegel.com
+        value: "{{username}}"
       - name: password
-        value: password
-  auth:
-    type: bearer
-    token: "{{token}}"
+        value: "{{password}}"
 
 runtime:
   scripts:

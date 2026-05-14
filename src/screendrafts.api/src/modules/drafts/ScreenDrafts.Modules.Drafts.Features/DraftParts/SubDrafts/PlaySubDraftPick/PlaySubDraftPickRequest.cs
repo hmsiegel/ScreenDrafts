@@ -1,12 +1,12 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.SubDrafts.PlaySubDraftPick;
+namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.SubDrafts.PlaySubDraftPick;
 
 internal sealed record PlaySubDraftPickRequest
 {
   [FromRoute(Name = "draftPartId")]
-  public required string DraftPartPublicId { get; init; }
+  public string DraftPartPublicId { get; init; } = default!;
 
   [FromRoute(Name = "subDraftId")]
-  public required string SubDraftPublicId { get; init; }
+  public string SubDraftPublicId { get; init; } = default!;
 
   public required string MoviePublicId { get; init; }
   public required int Position { get; init; }

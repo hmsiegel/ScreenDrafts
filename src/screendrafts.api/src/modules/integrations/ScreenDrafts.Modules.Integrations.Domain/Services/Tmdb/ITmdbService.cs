@@ -12,7 +12,8 @@ public interface ITmdbService
   /// <returns></returns>
   Task<TmdbFindResult?> FindByImdbIdAsync(
     string imdbId,
-    CancellationToken cancellationToken = default);
+    CancellationToken cancellationToken = default
+  );
 
   /// <summary>
   /// Search TMDB by Title (movies only).
@@ -20,9 +21,11 @@ public interface ITmdbService
   /// <param name="query"></param>
   /// <param name="cancellationToken"></param>
   /// <returns></returns>
-  Task<IReadOnlyList<TmdbSearchResult>> SearchMoviesAsync(
+  Task<TmdbSearchPagedResult> SearchMoviesAsync(
     string query,
-    CancellationToken cancellationToken = default);
+    int page = 1,
+    CancellationToken cancellationToken = default
+  );
 
   /// <summary>
   /// Find a movie by its TMDB Id.
@@ -32,7 +35,8 @@ public interface ITmdbService
   /// <returns></returns>
   Task<TmdbSearchResult?> FindMovieByImdbIdAsync(
     string imdbId,
-    CancellationToken cancellationToken = default);
+    CancellationToken cancellationToken = default
+  );
 
   /// <summary>
   /// Fetch a full movie detail including cast, crew and trailer.
@@ -42,7 +46,8 @@ public interface ITmdbService
   /// <returns></returns>
   Task<TmdbMediaDetails?> GetMovieDetailsAsync(
     int tmdbId,
-    CancellationToken cancellationToken = default);
+    CancellationToken cancellationToken = default
+  );
 
   /// <summary>
   /// Fetch  full TV show details including cast, crew and trailer.
@@ -52,7 +57,8 @@ public interface ITmdbService
   /// <returns></returns>
   Task<TmdbMediaDetails?> GetTvShowDetailsAsync(
     int tmdbId,
-    CancellationToken cancellationToken = default);
+    CancellationToken cancellationToken = default
+  );
 
   /// <summary>
   /// Fetch TV episode details including episode-level credits.
@@ -67,7 +73,8 @@ public interface ITmdbService
     int seriesTmdbId,
     int seasonNumber,
     int episodeNumber,
-    CancellationToken cancellationToken = default);
+    CancellationToken cancellationToken = default
+  );
 
   /// <summary>
   /// Resolve TMDB ID => IMDB ID.
@@ -75,9 +82,7 @@ public interface ITmdbService
   /// <param name="tmdbId"></param>
   /// <param name="cancellationToken"></param>
   /// <returns></returns>
-  Task<string?> GetMovieImdbIdAsync(
-    int tmdbId,
-    CancellationToken cancellationToken = default);
+  Task<string?> GetMovieImdbIdAsync(int tmdbId, CancellationToken cancellationToken = default);
 
   /// <summary>
   /// Resovle TMDb ID => IMDB ID for TV shows.
@@ -85,13 +90,12 @@ public interface ITmdbService
   /// <param name="tmdbId"></param>
   /// <param name="cancellationToken"></param>
   /// <returns></returns>
-  Task<string?> GetTvShowImdbIdAsync(
-    int tmdbId,
-    CancellationToken cancellationToken = default);
+  Task<string?> GetTvShowImdbIdAsync(int tmdbId, CancellationToken cancellationToken = default);
 
   Task<string?> GetPersonImdbIdAsync(
     int tmdbPersonId,
-    CancellationToken cancellationToken = default);
+    CancellationToken cancellationToken = default
+  );
 
   Uri? BuildPosterUrl(string? posterPath, string size = "w500");
 }

@@ -1,0 +1,27 @@
+info:
+  name: 28 Set Episode Number
+  type: http
+  seq: 28
+
+http:
+  method: PUT
+  url: "{{baseUrl}}/drafts/{{draftPublicId}}/episode"
+  body:
+    type: json
+    data: |-
+      {
+        "releaseChannel": 0,
+        "episodeNumber": 375
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: expect(res.getStatus()).to.equal(204);
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

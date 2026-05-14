@@ -1,7 +1,7 @@
 info:
   name: Predictions
   type: folder
-  seq: 21
+  seq: 22
 
 request:
   auth: inherit

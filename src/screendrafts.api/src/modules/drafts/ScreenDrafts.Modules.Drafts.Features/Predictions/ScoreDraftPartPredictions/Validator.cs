@@ -4,7 +4,7 @@ internal sealed class Validator : AbstractValidator<ScoreDraftPartPredictionsCom
 {
   public Validator()
   {
-    RuleFor(x => x.DraftPartPublicId)
+    RuleFor(x => x.DraftPartId)
       .NotEmpty()
       .WithMessage("Draft part public ID is required.")
       .Must(id => PublicIdGuards.IsValidWithPrefix(id, PublicIdPrefixes.DraftPart))

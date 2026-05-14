@@ -1,12 +1,12 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.SubDrafts.AssignSubDraftTriviaResults;
+namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.SubDrafts.AssignSubDraftTriviaResults;
 
 internal sealed record AssignSubDraftTriviaRequest
 {
   [FromRoute(Name = "draftPartId")]
-  public required string DraftPartPublicId { get; init; }
+  public string DraftPartPublicId { get; init; } = default!;
 
   [FromRoute(Name = "subDraftId")]
-  public required string SubDraftPublicId { get; init; }
+  public string SubDraftPublicId { get; init; } = default!;
 
   public IEnumerable<TriviaResultRequestItem> Results { get; init; } = default!;
 }

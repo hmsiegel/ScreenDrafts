@@ -1,0 +1,32 @@
+name: Development-Jordain
+variables:
+  - name: baseUrl
+    value: https://localhost:5001
+  - name: username
+    value: jordainsearles@screendrafts.fake
+  - name: password
+    value: password
+  - secret: true
+    name: token
+  - name: draftId
+    value: d_D0LQjLdKTj0absa
+  - name: draftPartId
+    value: dp_CYVmCtMNvLJBa1M
+  - name: jordainPersonId
+    value: pe_xeGLzvp0cJFtjhj
+  - name: jordainDrafterId
+    value: dr_r2lCuX8DRBehUkz
+  - name: jordainParticipantId
+    value: dr_r2lCuX8DRBehUkz
+  - name: maddiePersonId
+    value: pe_isGZH3gqNCTMRj6
+  - name: maddieDrafterId
+    value: dr_JHakgcsAIRmcjoS
+  - name: maddieParticipantId
+    value: dr_JHakgcsAIRmcjoS
+  - name: campaignId
+    value: ""
+  - name: hostClayPublicId
+    value: ""
+  - name: hostRyanPublicId
+    value: ""

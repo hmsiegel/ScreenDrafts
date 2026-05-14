@@ -8,13 +8,15 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<SetReleaseDateRequest>
     Description(x =>
     {
       x.WithTags(DraftsOpenApi.Tags.DraftParts)
-      .WithName(DraftsOpenApi.Names.DraftParts_SetReleaseDate)
-      .Produces(StatusCodes.Status204NoContent)
-      .Produces(StatusCodes.Status400BadRequest)
-      .Produces(StatusCodes.Status403Forbidden);
+        .WithName(DraftsOpenApi.Names.DraftParts_SetReleaseDate)
+        .Produces(StatusCodes.Status204NoContent)
+        .Produces(StatusCodes.Status400BadRequest)
+        .Produces(StatusCodes.Status401Unauthorized)
+        .Produces(StatusCodes.Status403Forbidden);
     });
     Policies(DraftsAuth.Permissions.DraftPartUpdate);
   }
+
   public override async Task HandleAsync(SetReleaseDateRequest req, CancellationToken ct)
   {
     ArgumentNullException.ThrowIfNull(req);
@@ -22,7 +24,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<SetReleaseDateRequest>
     {
       DraftPartId = req.DraftPartId,
       ReleaseDate = req.ReleaseDate,
-      ReleaseChannel = ReleaseChannel.FromValue(req.ReleaseChannel)
+      ReleaseChannel = ReleaseChannel.FromValue(req.ReleaseChannel),
     };
     var result = await Sender.Send(command, ct);
     await this.SendNoContentAsync(result, ct);

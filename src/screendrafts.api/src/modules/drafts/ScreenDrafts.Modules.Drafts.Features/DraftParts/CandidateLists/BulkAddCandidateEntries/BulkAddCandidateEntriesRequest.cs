@@ -1,9 +1,9 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.CandidateLists.BulkAddCandidateEntries;
+namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.CandidateLists.BulkAddCandidateEntries;
 
 internal sealed record BulkAddCandidateEntriesRequest
 {
   [FromRoute(Name = "draftPartId")]
-  public required string DraftPart { get; init; }
+  public string DraftPart { get; init; } = default!;
 
   /// <summary>
   /// CSV file with columns: Title, TmdbId

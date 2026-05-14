@@ -1,7 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Features.Predictions.ScoreDraftPartPredictions;
 
-internal sealed class Endpoint
-  : ScreenDraftsEndpoint<ScoreDraftPartPredictionsRequest>
+internal sealed class Endpoint : ScreenDraftsEndpoint<ScoreDraftPartPredictionsRequest>
 {
   public override void Configure()
   {
@@ -20,14 +19,12 @@ internal sealed class Endpoint
     Policies(DraftsAuth.Permissions.PredictionManage);
   }
 
-  public override async Task HandleAsync(
-    ScoreDraftPartPredictionsRequest req,
-    CancellationToken ct)
+  public override async Task HandleAsync(ScoreDraftPartPredictionsRequest req, CancellationToken ct)
   {
     var command = new ScoreDraftPartPredictionsCommand
     {
-      DraftPartPublicId = req.DraftPartPublicId,
-      FinalMediaPublicIds = req.FinalMediaPublicIds
+      DraftPartId = req.DraftPartId,
+      FinalMediaPublicIds = req.FinalMediaPublicIds,
     };
 
     var result = await Sender.Send(command, ct);

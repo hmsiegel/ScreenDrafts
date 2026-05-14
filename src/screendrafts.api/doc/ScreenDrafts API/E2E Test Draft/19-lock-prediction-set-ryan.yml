@@ -1,0 +1,20 @@
+info:
+  name: 19 Lock Prediction Set - Ryan
+  type: http
+  seq: 19
+
+http:
+  method: PUT
+  url: "{{baseUrl}}/draft-parts/{{draftPartId}}/predictions/{{ryanPredictionSetId}}/lock"
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: expect(res.getStatus()).to.equal(204);
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

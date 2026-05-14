@@ -8,12 +8,12 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<SetCategoriesDraftRequest>
     Description(x =>
     {
       x.WithTags(DraftsOpenApi.Tags.Categories)
-      .WithName(DraftsOpenApi.Names.Drafts_SetCategories)
-      .Produces(StatusCodes.Status204NoContent)
-      .Produces(StatusCodes.Status400BadRequest)
-      .Produces(StatusCodes.Status404NotFound)
-      .Produces(StatusCodes.Status403Forbidden)
-      .Produces(StatusCodes.Status401Unauthorized);
+        .WithName(DraftsOpenApi.Names.Drafts_SetCategories)
+        .Produces(StatusCodes.Status204NoContent)
+        .Produces(StatusCodes.Status400BadRequest)
+        .Produces(StatusCodes.Status404NotFound)
+        .Produces(StatusCodes.Status403Forbidden)
+        .Produces(StatusCodes.Status401Unauthorized);
     });
     Policies(DraftsAuth.Permissions.DraftUpdate);
   }
@@ -22,8 +22,8 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<SetCategoriesDraftRequest>
   {
     var command = new SetCategoriesDraftCommand
     {
-      DraftId = req.DraftId,
-      CategoryIds = req.CategoryIds
+      DraftId = req.PublicId,
+      CategoryIds = req.CategoryIds,
     };
 
     var result = await Sender.Send(command, ct);

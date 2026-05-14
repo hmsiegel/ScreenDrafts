@@ -1,8 +1,9 @@
 ﻿namespace ScreenDrafts.Modules.RealTimeUpdates.Infrastructure.Inbox;
 
-internal sealed class IntegrationEventConsumer<TIntegrationEvent>(IDbConnectionFactory dbConnectionFactory)
-    : IConsumer<TIntegrationEvent>
-    where TIntegrationEvent : IntegrationEvent
+internal sealed class IntegrationEventConsumer<TIntegrationEvent>(
+  IDbConnectionFactory dbConnectionFactory
+) : IConsumer<TIntegrationEvent>
+  where TIntegrationEvent : IntegrationEvent
 {
   public async Task Consume(ConsumeContext<TIntegrationEvent> context)
   {
@@ -15,14 +16,13 @@ internal sealed class IntegrationEventConsumer<TIntegrationEvent>(IDbConnectionF
       Id = integrationEvent.Id,
       Type = integrationEvent.GetType().Name,
       Content = JsonConvert.SerializeObject(integrationEvent, SerializerSettings.Instance),
-      OccurredOnUtc = integrationEvent.OccurredOnUtc
+      OccurredOnUtc = integrationEvent.OccurredOnUtc,
     };
 
-    const string sql =
-        """
-            INSERT INTO real-time-updates.inbox_messages(id, type, content, occurred_on_utc)
-            VALUES (@Id, @Type, @Content::json, @OccurredOnUtc)
-            """;
+    const string sql = """
+      INSERT INTO real_time_updates.inbox_messages(id, type, content, occurred_on_utc)
+      VALUES (@Id, @Type, @Content::json, @OccurredOnUtc)
+      """;
 
     await connection.ExecuteAsync(sql, inboxMessage);
   }

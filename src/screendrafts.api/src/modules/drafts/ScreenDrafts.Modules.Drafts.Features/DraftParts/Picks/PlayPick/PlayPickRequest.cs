@@ -1,9 +1,9 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.Picks.PlayPick;
+namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.Picks.PlayPick;
 
 internal sealed record PlayPickRequest
 {
   [FromRoute(Name = "draftPartId")]
-  public required string DraftPartId { get; init; }
+  public string DraftPartId { get; init; } = default!;
 
   public int Position { get; init; }
   public int PlayOrder { get; init; }

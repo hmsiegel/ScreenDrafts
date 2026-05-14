@@ -8,12 +8,13 @@ info:
 http:
   method: POST
   url: "{{baseUrl}}/admin/roles/:roleName/permissions/:permission"
-  body:
-    type: json
-    data: |-
-      {
-        "publicIds": []
-      }
+  params:
+    - name: roleName
+      value: administrator
+      type: path
+    - name: permission
+      value: media:search
+      type: path
   auth: inherit
 
 settings:

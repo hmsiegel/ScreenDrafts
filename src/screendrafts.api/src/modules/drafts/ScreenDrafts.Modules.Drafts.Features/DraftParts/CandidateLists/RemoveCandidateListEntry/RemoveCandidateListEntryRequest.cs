@@ -1,10 +1,10 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.CandidateLists.RemoveCandidateListEntry;
+namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.CandidateLists.RemoveCandidateListEntry;
 
 internal sealed record RemoveCandidateListEntryRequest
 {
   [FromRoute(Name = "draftPartId")]
-  public required string DraftPartId { get; init; }
+  public string DraftPartId { get; init; } = default!;
 
   [FromRoute(Name = "tmdbId")]
-  public required int TmdbId { get; init; }
+  public int TmdbId { get; init; } = default!;
 }

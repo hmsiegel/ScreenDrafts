@@ -5,8 +5,8 @@ internal sealed class ScoreDraftPartPredictionsCommandHandler(
   IDraftPartPredictionRulesRepository rulesRepository,
   IDraftPredictionSetRepository setRepository,
   IPredictionResultRepository resultRepository,
-  IDateTimeProvider dateTimeProvider)
-  : ICommandHandler<ScoreDraftPartPredictionsCommand>
+  IDateTimeProvider dateTimeProvider
+) : ICommandHandler<ScoreDraftPartPredictionsCommand>
 {
   private readonly IDraftPartRepository _draftPartRepository = draftPartRepository;
   private readonly IDraftPartPredictionRulesRepository _rulesRepository = rulesRepository;
@@ -16,22 +16,24 @@ internal sealed class ScoreDraftPartPredictionsCommandHandler(
 
   public async Task<Result> Handle(
     ScoreDraftPartPredictionsCommand request,
-    CancellationToken cancellationToken)
+    CancellationToken cancellationToken
+  )
   {
     var draftPart = await _draftPartRepository.GetByPublicIdAsync(
-      request.DraftPartPublicId,
-      cancellationToken);
+      request.DraftPartId,
+      cancellationToken
+    );
 
     if (draftPart is null)
     {
-      return Result.Failure(DraftPartErrors.NotFound(request.DraftPartPublicId));
+      return Result.Failure(DraftPartErrors.NotFound(request.DraftPartId));
     }
 
     var rules = await _rulesRepository.GetByDraftPartIdAsync(draftPart.Id, cancellationToken);
 
     if (rules is null)
     {
-      return Result.Failure(PredictionErrors.RulesNotFound(request.DraftPartPublicId));
+      return Result.Failure(PredictionErrors.RulesNotFound(request.DraftPartId));
     }
 
     var sets = await _setRepository.GetByDraftPartIdAsync(draftPart.Id, cancellationToken);
@@ -43,11 +45,12 @@ internal sealed class ScoreDraftPartPredictionsCommandHandler(
 
     var existingResults = await _resultRepository.GetByDraftPartIdAsync(
       draftPart.Id,
-      cancellationToken);
+      cancellationToken
+    );
 
     if (existingResults.Count > 0)
     {
-      return Result.Failure(PredictionErrors.AlreadyScored(request.DraftPartPublicId));
+      return Result.Failure(PredictionErrors.AlreadyScored(request.DraftPartId));
     }
 
     var now = _dateTimeProvider.UtcNow;
@@ -60,7 +63,8 @@ internal sealed class ScoreDraftPartPredictionsCommandHandler(
         var snapshot = new PredictionRulesSnapshot(
           rules.PredictionMode,
           rules.RequiredCount,
-          rules.TopN);
+          rules.TopN
+        );
 
         var lockResult = set.Lock(snapshot, now);
         if (lockResult.IsFailure)
@@ -73,7 +77,8 @@ internal sealed class ScoreDraftPartPredictionsCommandHandler(
         set: set,
         finalMediaPublicIds: request.FinalMediaPublicIds,
         rules: rules,
-        scoredAtUtc: now);
+        scoredAtUtc: now
+      );
 
       if (predictionResult.IsFailure)
       {
@@ -86,8 +91,7 @@ internal sealed class ScoreDraftPartPredictionsCommandHandler(
       _resultRepository.Add(prediction);
     }
 
-    var surrogateSetIds = sets
-      .SelectMany(s => s.Surrogates)
+    var surrogateSetIds = sets.SelectMany(s => s.Surrogates)
       .Select(sa => sa.SurrogateSetId)
       .ToHashSet();
 
@@ -112,10 +116,7 @@ internal sealed class ScoreDraftPartPredictionsCommandHandler(
             continue;
           }
 
-          var resolved = SurrogateScoreResolver.Resolve(
-            assignment,
-            primaryResult,
-            surrogateResult);
+          var resolved = SurrogateScoreResolver.Resolve(assignment, primaryResult, surrogateResult);
 
           finalPoints = Math.Max(finalPoints, resolved);
         }
@@ -128,7 +129,8 @@ internal sealed class ScoreDraftPartPredictionsCommandHandler(
       set.RaiseScored(
         pointsAwarded: finalPoints,
         shootTheMoon: primaryResult.ShootTheMoon,
-        seasonId: set.SeasonId);
+        seasonId: set.SeasonId
+      );
 
       _setRepository.Update(set);
     }

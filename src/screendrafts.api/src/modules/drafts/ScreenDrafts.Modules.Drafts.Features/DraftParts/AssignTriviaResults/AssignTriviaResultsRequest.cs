@@ -3,7 +3,6 @@
 internal sealed record AssignTriviaResultsRequest
 {
   [FromRoute(Name = "draftPartId")]
-  public required string DraftPartPublicId { get; init; }
+  public string DraftPartId { get; init; } = default!;
   public IEnumerable<TriviaResultRequestItem> Results { get; init; } = default!;
 }
-

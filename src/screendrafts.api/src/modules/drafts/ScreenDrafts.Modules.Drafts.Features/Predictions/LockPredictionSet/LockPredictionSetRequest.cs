@@ -3,8 +3,8 @@
 internal sealed record LockPredictionSetRequest
 {
   [FromRoute(Name = "draftPartId")]
-  public string DraftPartPublicId { get; init; } = default!;
+  public string DraftPartId { get; init; } = default!;
 
   [FromRoute(Name = "setId")]
-  public string SetPublicId { get; init; } = default!;
+  public string SetId { get; init; } = default!;
 }

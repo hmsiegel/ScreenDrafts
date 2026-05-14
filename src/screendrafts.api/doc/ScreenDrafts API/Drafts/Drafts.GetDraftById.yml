@@ -7,11 +7,7 @@ info:
 
 http:
   method: GET
-  url: "{{baseUrl}}/drafts/:publicId"
-  params:
-    - name: publicId
-      value: d_7kR65xEG1E0rzf5
-      type: path
+  url: "{{baseUrl}}/drafts/{{draftPublicId}}"
   body:
     type: text
     data: ""

@@ -4,9 +4,17 @@ public interface IMediaRepository : IRepository
 {
   void Add(Media media);
   Task<bool> ExistsByIgdbIdAsync(int igdbId, CancellationToken cancellationToken = default);
-  Task<bool> ExistsByTmdbIdAsync(int tmdbId, MediaType mediaType, CancellationToken cancellationToken = default);
+  Task<bool> ExistsByTmdbIdAsync(
+    int tmdbId,
+    MediaType mediaType,
+    CancellationToken cancellationToken = default
+  );
   Task<Media?> FindByImdbIdAsync(string imdbId, CancellationToken cancellationToken = default);
-  Task<Media?> FindByTmdbIdAsync(int tmdbId, MediaType mediaType, CancellationToken cancellationToken = default);
+  Task<Media?> FindByTmdbIdAsync(
+    int tmdbId,
+    MediaType mediaType,
+    CancellationToken cancellationToken = default
+  );
   Task<Media?> FindByIgdbIdAsync(int igdbId, CancellationToken cancellationToken = default);
   void AddMediaActor(Media media, Person actor);
   void AddMediaDirector(Media media, Person director);
@@ -14,9 +22,20 @@ public interface IMediaRepository : IRepository
   void AddMediaProducer(Media media, Person producer);
   void AddMediaGenre(Media media, Genre genre);
   void AddMediaProductionCompany(Media media, ProductionCompany productionCompany);
-  Task<HashSet<string>> GetExistingMediaImdbsAsync(IEnumerable<string> imdbIds, CancellationToken cancellationToken = default);
-  Task<HashSet<(int TmdbId, int MediaTypeValue)>> GetExistingMediaTmdbsAsync(IEnumerable<int> tmdbIds, CancellationToken cancellationToken = default);
-  Task<HashSet<int>> GetExistingMediaIgdbsAsync(IEnumerable<int> igdbIds, CancellationToken cancellationToken = default);
+  Task<HashSet<string>> GetExistingMediaImdbsAsync(
+    IEnumerable<string> imdbIds,
+    CancellationToken cancellationToken = default
+  );
+  Task<HashSet<(int TmdbId, int MediaTypeValue)>> GetExistingMediaTmdbsAsync(
+    IEnumerable<int> tmdbIds,
+    CancellationToken cancellationToken = default
+  );
+  Task<HashSet<int>> GetExistingMediaIgdbsAsync(
+    IEnumerable<int> igdbIds,
+    CancellationToken cancellationToken = default
+  );
+  Task<Dictionary<int, string>> GetPublicIdsByTmdbIdsAsync(
+    IEnumerable<int> tmdbIds,
+    CancellationToken cancellationToken = default
+  );
 }
-
-

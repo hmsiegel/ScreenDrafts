@@ -1,10 +1,10 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.DrafterTeams.RemoveDrafterFromTeam;
+namespace ScreenDrafts.Modules.Drafts.Features.DrafterTeams.RemoveDrafterFromTeam;
 
 internal sealed record RemoveDrafterFromTeamRequest
 {
   [FromRoute(Name = "publicId")]
-  public required string DrafterTeamId { get; init; }
+  public string DrafterTeamId { get; init; } = default!;
 
   [FromRoute(Name = "drafterId")]
-  public required string DrafterId { get; init; }
+  public string DrafterId { get; init; } = default!;
 }

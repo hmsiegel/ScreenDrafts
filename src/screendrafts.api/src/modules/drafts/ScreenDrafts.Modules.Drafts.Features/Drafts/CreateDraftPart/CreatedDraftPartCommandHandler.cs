@@ -2,13 +2,16 @@
 
 internal sealed class CreatedDraftPartCommandHandler(
   IDraftRepository draftRepository,
-  IPublicIdGenerator publicIdGenerator)
-  : ICommandHandler<CreateDraftPartCommand, string>
+  IPublicIdGenerator publicIdGenerator
+) : ICommandHandler<CreateDraftPartCommand, string>
 {
   private readonly IDraftRepository _draftRepository = draftRepository;
   private readonly IPublicIdGenerator _publicIdGenerator = publicIdGenerator;
 
-  public async Task<Result<string>> Handle(CreateDraftPartCommand request, CancellationToken cancellationToken)
+  public async Task<Result<string>> Handle(
+    CreateDraftPartCommand request,
+    CancellationToken cancellationToken
+  )
   {
     var draft = await _draftRepository.GetByPublicIdAsync(request.DraftPublicId, cancellationToken);
 
@@ -23,7 +26,8 @@ internal sealed class CreatedDraftPartCommandHandler(
       request.PartIndex,
       request.MinimumPosition,
       request.MaximumPosition,
-      publicId);
+      publicId
+    );
 
     if (addPartResult.IsFailure)
     {

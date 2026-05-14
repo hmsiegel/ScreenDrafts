@@ -1,0 +1,30 @@
+info:
+  name: 20 Pick 7 - Jordain
+  type: http
+  seq: 20
+
+http:
+  method: POST
+  url: "{{baseUrl}}/draft-parts/{{draftPartId}}/picks"
+  body:
+    type: json
+    data: |-
+      {
+        "position": 7,
+        "playOrder": 1,
+        "participantPublicId": "{{jordainParticipantId}}",
+        "participantKind": 0,
+        "moviePublicId": "m_xh5xjjG7v9jWsKi"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: expect(res.getStatus()).to.equal(201);
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
