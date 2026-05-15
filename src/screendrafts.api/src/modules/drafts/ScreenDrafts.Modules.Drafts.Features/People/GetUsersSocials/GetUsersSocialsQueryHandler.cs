@@ -1,15 +1,20 @@
-﻿namespace ScreenDrafts.Modules.Users.Features.Users.GetUsersSocials;
+﻿using ScreenDrafts.Modules.Drafts.Features.People.GetUsersSocials;
 
-internal sealed class GetUsersSocialsQueryHandler(IDbConnectionFactory connectionFactory) : IQueryHandler<GetUsersSocialsQuery, Response>
+namespace ScreenDrafts.Modules.Drafts.Features.People.GetUsersSocials;
+
+internal sealed class GetUsersSocialsQueryHandler(IDbConnectionFactory connectionFactory)
+  : IQueryHandler<GetUsersSocialsQuery, Response>
 {
   private readonly IDbConnectionFactory _connectionFactory = connectionFactory;
 
-  public async Task<Result<Response>> Handle(GetUsersSocialsQuery request, CancellationToken cancellationToken)
+  public async Task<Result<Response>> Handle(
+    GetUsersSocialsQuery request,
+    CancellationToken cancellationToken
+  )
   {
     await using var connection = await _connectionFactory.OpenConnectionAsync(cancellationToken);
 
-    const string sql =
-      $"""
+    const string sql = $"""
         select
           u.person_public_id as {nameof(SocialResponse.PublicId)},
           u.profile_picture_path as {nameof(SocialResponse.ProfilePicturePath)},
@@ -23,15 +28,11 @@ internal sealed class GetUsersSocialsQueryHandler(IDbConnectionFactory connectio
           u.person_public_id = any(@PersonIds);
       """;
 
-    var socials = await connection.QueryAsync<SocialResponse>(new CommandDefinition(
-      sql,
-      new { request.PersonIds },
-      cancellationToken: cancellationToken));
+    var socials = await connection.QueryAsync<SocialResponse>(
+      new CommandDefinition(sql, new { request.PersonIds }, cancellationToken: cancellationToken)
+    );
 
-    var response = new Response
-    {
-      Socials = [.. socials]
-    };
+    var response = new Response { Socials = [.. socials] };
 
     return Result.Success(response);
   }

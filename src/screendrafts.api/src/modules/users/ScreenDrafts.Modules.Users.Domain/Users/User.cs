@@ -1,4 +1,5 @@
 ﻿namespace ScreenDrafts.Modules.Users.Domain.Users;
+
 public sealed class User : AggregateRoot<UserId, Guid>
 {
   private User(
@@ -10,7 +11,8 @@ public sealed class User : AggregateRoot<UserId, Guid>
     string publicId,
     Guid? personId,
     string? personPublicId,
-    string? middleName = null)
+    string? middleName = null
+  )
     : base(id)
   {
     Id = id;
@@ -24,9 +26,7 @@ public sealed class User : AggregateRoot<UserId, Guid>
     PersonPublicId = personPublicId;
   }
 
-  private User()
-  {
-  }
+  private User() { }
 
   public string PublicId { get; private set; } = default!;
   public Email Email { get; private set; } = default!;
@@ -36,11 +36,6 @@ public sealed class User : AggregateRoot<UserId, Guid>
   public string IdentityId { get; private set; } = default!;
   public Guid? PersonId { get; private set; } = default!;
   public string? PersonPublicId { get; private set; } = default!;
-  public string? ProfilePicturePath { get; private set; } = default!;
-  public string? TwitterHandle { get; private set; } = default!;
-  public string? InstagramHandle { get; private set; } = default!;
-  public string? LetterboxdHandle { get; private set; } = default!;
-  public string? BlueskyHandle { get; private set; } = default!;
 
   public static Result<User> Create(
     Email email,
@@ -51,7 +46,8 @@ public sealed class User : AggregateRoot<UserId, Guid>
     string? middleName = null,
     UserId? id = null,
     Guid? personId = null,
-    string? personPublicId = null)
+    string? personPublicId = null
+  )
   {
     var user = new User(
       email: email,
@@ -62,17 +58,15 @@ public sealed class User : AggregateRoot<UserId, Guid>
       personId: personId,
       personPublicId: personPublicId,
       publicId: publicId,
-      id: id ?? UserId.CreateUnique());
+      id: id ?? UserId.CreateUnique()
+    );
 
     user.Raise(new UserRegisteredDomainEvent(user.Id.Value));
 
     return user;
   }
 
-  public void Update(
-    FirstName firstName,
-    LastName lastName,
-    string? middleName = null)
+  public void Update(FirstName firstName, LastName lastName, string? middleName = null)
   {
     ArgumentNullException.ThrowIfNull(firstName);
     ArgumentNullException.ThrowIfNull(lastName);
@@ -86,45 +80,12 @@ public sealed class User : AggregateRoot<UserId, Guid>
     LastName = lastName;
     MiddleName = middleName;
 
-    Raise(new UserProfileUpdatedDomainEvent(
-      Id.Value,
-      firstName.Value!,
-      lastName.Value!));
-  }
-
-  public void UpdateProfilePicture(string relativePath)
-  {
-    ArgumentNullException.ThrowIfNull(relativePath);
-    if (ProfilePicturePath == relativePath)
-    {
-      return;
-    }
-    ProfilePicturePath = relativePath;
-    Raise(new UserProfilePictureUpdatedDomainEvent(Id.Value, relativePath));
-  }
-
-  public void UpdateSocialHandles(
-    string? twitterHandle = null,
-    string? instagramHandle = null,
-    string? letterboxdHandle = null,
-    string? blueskyHandle = null)
-  {
-    TwitterHandle = twitterHandle;
-    InstagramHandle = instagramHandle;
-    LetterboxdHandle = letterboxdHandle;
-    BlueskyHandle = blueskyHandle;
-    Raise(new UserSocialHandlesUpdatedDomainEvent(
-      Id.Value,
-      twitterHandle,
-      instagramHandle,
-      letterboxdHandle,
-      blueskyHandle));
+    Raise(new UserProfileUpdatedDomainEvent(Id.Value, firstName.Value!, lastName.Value!));
   }
 
   public void LinkPerson(Guid personId, string personPublicId)
   {
-    if (PersonId == personId &&
-      PersonPublicId == personPublicId)
+    if (PersonId == personId && PersonPublicId == personPublicId)
     {
       return;
     }
@@ -144,4 +105,3 @@ public sealed class User : AggregateRoot<UserId, Guid>
     PublicId = publicId;
   }
 }
-

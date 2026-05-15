@@ -8,31 +8,31 @@ public sealed class Person : AggregateRoot<PersonId, Guid>
     string lastName,
     PersonId? id = null,
     string? displayName = null,
-    Guid? userId = null)
+    Guid? userId = null
+  )
     : base(id ?? PersonId.CreateUnique())
   {
     UserId = userId;
     FirstName = firstName;
     LastName = lastName;
     PublicId = publicId;
-    DisplayName = string.IsNullOrWhiteSpace(displayName)
-      ? FullName
-      : displayName;
+    DisplayName = string.IsNullOrWhiteSpace(displayName) ? FullName : displayName;
   }
 
-  private Person()
-  {
-  }
+  private Person() { }
 
   public Guid? UserId { get; private set; }
-
   public string PublicId { get; private set; } = default!;
-
   public string FirstName { get; private set; } = default!;
-
   public string LastName { get; private set; } = default!;
-
   public string? DisplayName { get; private set; }
+  public string? Biography { get; private set; }
+  public string? Location { get; private set; }
+  public string? ProfilePicturePath { get; private set; }
+  public string? TwitterHandle { get; private set; }
+  public string? InstagramHandle { get; private set; }
+  public string? LetterboxdHandle { get; private set; }
+  public string? BlueskyHandle { get; private set; }
 
   public Drafter? DrafterProfile { get; private set; } = default!;
   public Host? HostProfile { get; private set; } = default!;
@@ -45,7 +45,8 @@ public sealed class Person : AggregateRoot<PersonId, Guid>
     string lastName,
     Guid? userId = null,
     string? displayName = null,
-    Guid? id = null)
+    Guid? id = null
+  )
   {
     if (string.IsNullOrWhiteSpace(firstName))
     {
@@ -61,7 +62,8 @@ public sealed class Person : AggregateRoot<PersonId, Guid>
       userId: userId,
       firstName: firstName,
       lastName: lastName,
-      displayName: displayName);
+      displayName: displayName
+    );
 
     person.Raise(new PersonCreatedDomainEvent(person.Id.Value, publicId));
 
@@ -85,10 +87,7 @@ public sealed class Person : AggregateRoot<PersonId, Guid>
     return Result.Success();
   }
 
-  public Result Update(
-    string firstName,
-    string lastName,
-    string? displayName = null)
+  public Result Update(string firstName, string lastName, string? displayName = null)
   {
     if (string.IsNullOrWhiteSpace(firstName))
     {
@@ -100,14 +99,11 @@ public sealed class Person : AggregateRoot<PersonId, Guid>
       return Result.Failure(PersonErrors.InvalidLastName);
     }
 
-    var normalizdDisplayName =
-      string.IsNullOrWhiteSpace(displayName)
+    var normalizdDisplayName = string.IsNullOrWhiteSpace(displayName)
       ? $"{firstName} {lastName}".Trim()
       : displayName;
 
-    if (FirstName == firstName &&
-      LastName == lastName &&
-      DisplayName == normalizdDisplayName)
+    if (FirstName == firstName && LastName == lastName && DisplayName == normalizdDisplayName)
     {
       return Result.Success();
     }
@@ -116,6 +112,38 @@ public sealed class Person : AggregateRoot<PersonId, Guid>
     LastName = lastName;
     DisplayName = normalizdDisplayName;
     Raise(new PersonUpdatedDomainEvent(Id.Value));
+    return Result.Success();
+  }
+
+  public Result UpdateBiography(string? biography)
+  {
+    Biography = biography;
+    return Result.Success();
+  }
+
+  public Result UpdateLocation(string? location)
+  {
+    Location = location;
+    return Result.Success();
+  }
+
+  public Result UpdateSocialHandles(
+    string? twitterHandle,
+    string? instagramHandle,
+    string? letterboxdHandle,
+    string? blueskyHandle
+  )
+  {
+    TwitterHandle = twitterHandle;
+    InstagramHandle = instagramHandle;
+    LetterboxdHandle = letterboxdHandle;
+    BlueskyHandle = blueskyHandle;
+    return Result.Success();
+  }
+
+  public Result UpdateProfilePicture(string? relativePath)
+  {
+    ProfilePicturePath = relativePath;
     return Result.Success();
   }
 }

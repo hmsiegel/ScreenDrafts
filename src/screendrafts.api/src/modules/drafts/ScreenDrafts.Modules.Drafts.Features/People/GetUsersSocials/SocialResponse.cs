@@ -1,5 +1,4 @@
-﻿
-namespace ScreenDrafts.Modules.Users.Features.Users.GetUsersSocials;
+﻿namespace ScreenDrafts.Modules.Drafts.Features.People.GetUsersSocials;
 
 internal sealed record SocialResponse
 {

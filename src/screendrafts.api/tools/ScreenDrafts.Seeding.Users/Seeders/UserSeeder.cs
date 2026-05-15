@@ -6,8 +6,8 @@ internal sealed class UserSeeder(
   UsersDbContext dbContext,
   IIdentityProviderService identityProviderService,
   DraftsDbContext draftsDbContext,
-  IPublicIdGenerator publicIdGenerator)
-  : UserBaseSeeder(logger, csvFileService, dbContext), ICustomSeeder
+  IPublicIdGenerator publicIdGenerator
+) : UserBaseSeeder(logger, csvFileService, dbContext), ICustomSeeder
 {
   private readonly IIdentityProviderService _identityProviderService = identityProviderService;
   private readonly IPublicIdGenerator _publicIdGenerator = publicIdGenerator;
@@ -26,25 +26,24 @@ internal sealed class UserSeeder(
     const string TableName = "Users";
 
     var csvUsers = ReadCsv<UserCsvModel>(
-        new SeedFile(FileNames.UsersSeeder, SeedFileType.Csv),
-        TableName);
+      new SeedFile(FileNames.UsersSeeder, SeedFileType.Csv),
+      TableName
+    );
 
     if (csvUsers.Count == 0)
     {
       return;
     }
 
-    var existingUserKeys = await _dbContext.Users
-        .Select(u => new { u.Email })
-        .ToHashSetAsync(cancellationToken);
+    var existingUserKeys = await _dbContext
+      .Users.Select(u => new { u.Email })
+      .ToHashSetAsync(cancellationToken);
 
-    var existingSet = existingUserKeys
-        .Select(u => (u.Email).Value)
-        .ToHashSet();
+    var existingSet = existingUserKeys.Select(u => (u.Email).Value).ToHashSet();
 
     var usersToProcess = csvUsers
-        .Where(record => !existingSet.Contains(record.EmailAddress))
-        .ToList();
+      .Where(record => !existingSet.Contains(record.EmailAddress))
+      .ToList();
 
     var userResults = new List<(Guid? PersonId, User? User)>();
 
@@ -53,67 +52,58 @@ internal sealed class UserSeeder(
     for (int i = 0; i < usersToProcess.Count; i += batchSize)
     {
       var batch = usersToProcess.Skip(i).Take(batchSize);
-      var batchTasks = batch.Select<UserCsvModel, Task<(Guid? PersonId, User? User)>>(async record =>
-      {
-        var emailResult = Email.Create(record.EmailAddress);
-
-        if (emailResult.IsFailure)
+      var batchTasks = batch.Select<UserCsvModel, Task<(Guid? PersonId, User? User)>>(
+        async record =>
         {
-          DatabaseSeedingLoggingMessages.AlreadyExists(_logger, record.EmailAddress, TableName);
-          // Return nulls to indicate failure, matching the expected tuple type
-          return (null, null);
+          var emailResult = Email.Create(record.EmailAddress);
+
+          if (emailResult.IsFailure)
+          {
+            DatabaseSeedingLoggingMessages.AlreadyExists(_logger, record.EmailAddress, TableName);
+            // Return nulls to indicate failure, matching the expected tuple type
+            return (null, null);
+          }
+
+          var identityResult = await _identityProviderService.RegisterUserAsync(
+            new UserModel(
+              record.EmailAddress,
+              PasswordGenerator.GeneratePassword(),
+              record.FirstName,
+              record.LastName
+            ),
+            cancellationToken
+          );
+
+          await Task.Delay(1000, cancellationToken); // Delay to avoid overwhelming Keycloak
+
+          if (identityResult.IsFailure)
+          {
+            DatabaseSeedingLoggingMessages.UnableToResolve(_logger, record.EmailAddress);
+            return (null, null);
+          }
+
+          var userResult = User.Create(
+            publicId: _publicIdGenerator.GeneratePublicId(PublicIdPrefixes.User),
+            email: emailResult.Value,
+            firstName: FirstName.Create(record.FirstName).Value,
+            lastName: LastName.Create(record.LastName).Value,
+            identityId: identityResult.Value,
+            personId: record.PersonId
+          );
+
+          if (userResult.IsFailure)
+          {
+            DatabaseSeedingLoggingMessages.UnableToResolve(_logger, record.EmailAddress);
+            return (null, null);
+          }
+
+          var user = userResult.Value;
+
+          DatabaseSeedingLoggingMessages.ItemAddedToDatabase(_logger, user.Id.ToString());
+
+          return (record.PersonId, user);
         }
-
-        var identityResult = await _identityProviderService.RegisterUserAsync(
-                    new UserModel(
-                        record.EmailAddress,
-                        PasswordGenerator.GeneratePassword(),
-                        record.FirstName,
-                        record.LastName),
-                    cancellationToken);
-
-        await Task.Delay(1000, cancellationToken); // Delay to avoid overwhelming Keycloak
-
-        if (identityResult.IsFailure)
-        {
-          DatabaseSeedingLoggingMessages.UnableToResolve(
-                  _logger,
-                  record.EmailAddress);
-          return (null, null);
-        }
-
-        var userResult = User.Create(
-                    publicId: _publicIdGenerator.GeneratePublicId(PublicIdPrefixes.User),
-                    email: emailResult.Value,
-                    firstName: FirstName.Create(record.FirstName).Value,
-                    lastName: LastName.Create(record.LastName).Value,
-                    identityId: identityResult.Value,
-                    personId: record.PersonId);
-
-        if (userResult.IsFailure)
-        {
-          DatabaseSeedingLoggingMessages.UnableToResolve(
-                  _logger,
-                  record.EmailAddress);
-          return (null, null);
-        }
-
-        var user = userResult.Value;
-
-        if (!string.IsNullOrWhiteSpace(record.ProfilePictureUrl))
-        {
-          user.UpdateProfilePicture(record.ProfilePictureUrl);
-        }
-
-        user.UpdateSocialHandles(
-                    record.TwitterHandle is not null ? record.TwitterHandle : null,
-                    record.InstagramHandle is not null ? record.InstagramHandle : null,
-                    record.LetterboxdHandle is not null ? record.LetterboxdHandle : null,
-                    record.BlueskyHandle is not null ? record.BlueskyHandle : null);
-        DatabaseSeedingLoggingMessages.ItemAddedToDatabase(_logger, user.Id.ToString());
-
-        return (record.PersonId, user);
-      });
+      );
 
       var batchResults = await Task.WhenAll(batchTasks);
       userResults.AddRange(batchResults);
@@ -123,22 +113,23 @@ internal sealed class UserSeeder(
       var processedUsers = Math.Min(i + batchSize, usersToProcess.Count);
       var totalUsers = usersToProcess.Count;
 
-      DatabaseSeedingLoggingMessages.BatchProcessed(_logger, currentBatch, totalBatches, processedUsers, totalUsers);
+      DatabaseSeedingLoggingMessages.BatchProcessed(
+        _logger,
+        currentBatch,
+        totalBatches,
+        processedUsers,
+        totalUsers
+      );
     }
 
-    var validUsers = userResults
-        .Where(r => r.User is not null)
-        .Select(r => r!)
-        .ToList(); // Materialize to avoid multiple enumeration
+    var validUsers = userResults.Where(r => r.User is not null).Select(r => r!).ToList(); // Materialize to avoid multiple enumeration
 
-    var personUserMap = validUsers.ToDictionary(
-      r => r.PersonId!.Value,
-      r => r.User!.Id.Value);
+    var personUserMap = validUsers.ToDictionary(r => r.PersonId!.Value, r => r.User!.Id.Value);
 
     foreach (var (personId, userId) in personUserMap)
     {
-      var person = await _draftsDbContext.People
-        .Include(p => p.DrafterProfile)
+      var person = await _draftsDbContext
+        .People.Include(p => p.DrafterProfile)
         .Include(p => p.HostProfile)
         .FirstOrDefaultAsync(p => p.Id == PersonId.Create(personId), cancellationToken);
 

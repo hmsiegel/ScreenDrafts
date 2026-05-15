@@ -1,20 +1,19 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Features.Drafters.DrafterProfile;
 
-internal sealed class GetDrafterProfileQueryHandler(
-  IDbConnectionFactory dbConnectionFactory,
-  IUsersApi usersApi)
+internal sealed class GetDrafterProfileQueryHandler(IDbConnectionFactory dbConnectionFactory)
   : IQueryHandler<GetDrafterProfileQuery, GetDrafterProfileResponse>
 {
   private readonly IDbConnectionFactory _dbConnectionFactory = dbConnectionFactory;
-  private readonly IUsersApi _usersApi = usersApi;
 
-  public async Task<Result<GetDrafterProfileResponse>> Handle(GetDrafterProfileQuery request, CancellationToken cancellationToken)
+  public async Task<Result<GetDrafterProfileResponse>> Handle(
+    GetDrafterProfileQuery request,
+    CancellationToken cancellationToken
+  )
   {
     await using var connection = await _dbConnectionFactory.OpenConnectionAsync(cancellationToken);
 
     // 1. Resolve drafter and person information
-    const string drafterSql =
-      $"""
+    const string drafterSql = $"""
       SELECT
         dr.id AS {nameof(DrafterRow.InternalId)},
         dr.public_id AS {nameof(DrafterRow.PublicId)},
@@ -31,7 +30,9 @@ internal sealed class GetDrafterProfileQueryHandler(
       new CommandDefinition(
         drafterSql,
         new { request.PublicId },
-        cancellationToken: cancellationToken));
+        cancellationToken: cancellationToken
+      )
+    );
 
     if (drafter is null)
     {
@@ -39,8 +40,7 @@ internal sealed class GetDrafterProfileQueryHandler(
     }
 
     // 2. Resolve drafter stats
-    const string statsSql =
-      $"""
+    const string statsSql = $"""
       SELECT
         COUNT(DISTINCT dp.draft_id) AS {nameof(StatsRow.TotalDrafts)},
         COALESCE(SUM(dpp.vetoes_used), 0) AS {nameof(StatsRow.VetoesUsed)},
@@ -56,11 +56,12 @@ internal sealed class GetDrafterProfileQueryHandler(
       new CommandDefinition(
         statsSql,
         new { DrafterInternalId = drafter.InternalId },
-        cancellationToken: cancellationToken));
+        cancellationToken: cancellationToken
+      )
+    );
 
     // 3. Times vetoed (pick owned by this drafter, veto not overridden)
-    const string timesVetoedSql =
-      $"""
+    const string timesVetoedSql = $"""
       SELECT COUNT(*) AS {nameof(CountRow.Count)}
       FROM
         drafts.vetoes v
@@ -74,11 +75,12 @@ internal sealed class GetDrafterProfileQueryHandler(
       new CommandDefinition(
         timesVetoedSql,
         new { DrafterInternalId = drafter.InternalId },
-        cancellationToken: cancellationToken));
+        cancellationToken: cancellationToken
+      )
+    );
 
     // 4. Times this drafter's own vetoes were overridden
-    const string timessVetoOverriddenSql =
-      $"""
+    const string timessVetoOverriddenSql = $"""
       SELECT COUNT(*) AS {nameof(CountRow.Count)}
       FROM drafts.veto_overrides vo
       JOIN drafts.vetoes v ON v.id = vo.veto_id
@@ -91,11 +93,12 @@ internal sealed class GetDrafterProfileQueryHandler(
       new CommandDefinition(
         timessVetoOverriddenSql,
         new { DrafterInternalId = drafter.InternalId },
-      cancellationToken: cancellationToken));
+        cancellationToken: cancellationToken
+      )
+    );
 
     // 5. Totaal films drafted
-    const string filmsDraftedSql =
-      $"""
+    const string filmsDraftedSql = $"""
       SELECT COUNT(*) AS {nameof(CountRow.Count)}
       FROM drafts.picks pk
       LEFT JOIN drafts.vetoes v ON v.target_pick_id = pk.id
@@ -110,14 +113,19 @@ internal sealed class GetDrafterProfileQueryHandler(
       new CommandDefinition(
         filmsDraftedSql,
         new { DrafterInternalId = drafter.InternalId },
-        cancellationToken: cancellationToken));
+        cancellationToken: cancellationToken
+      )
+    );
 
     // 6. Rollover vetoes & overrides
-    const string rolloverSql =
-      $"""
+    const string rolloverSql = $"""
       SELECT
-        CASE WHEN (dpp.starting_vetoes + dpp.vetoes_rolling_in + dpp.awarded_vetoes - dpp.vetoes_used) >= 1 THEN 1 ELSE 0 END AS {nameof(RolloverRow.RolloverVeto)},
-        CASE WHEN (dpp.veto_overrides_rolling_in + dpp.awarded_veto_overrides - dpp.veto_overrides_used) >= 1 THEN 1 ELSE 0 END AS {nameof(RolloverRow.RolloverVetoOverride)}
+        CASE WHEN (dpp.starting_vetoes + dpp.vetoes_rolling_in + dpp.awarded_vetoes - dpp.vetoes_used) >= 1 THEN 1 ELSE 0 END AS {nameof(
+        RolloverRow.RolloverVeto
+      )},
+        CASE WHEN (dpp.veto_overrides_rolling_in + dpp.awarded_veto_overrides - dpp.veto_overrides_used) >= 1 THEN 1 ELSE 0 END AS {nameof(
+        RolloverRow.RolloverVetoOverride
+      )}
       FROM drafts.draft_part_participants dpp
       JOIN drafts.draft_parts dp ON dpp.draft_part_id = dp.id
       LEFT JOIN drafts.draft_releases dr ON dr.part_id = dp.id
@@ -131,11 +139,12 @@ internal sealed class GetDrafterProfileQueryHandler(
       new CommandDefinition(
         rolloverSql,
         new { DrafterInternalId = drafter.InternalId },
-        cancellationToken: cancellationToken));
+        cancellationToken: cancellationToken
+      )
+    );
 
     // 7. First draft part (by release date)
-    const string firstDraftSql =
-      $"""
+    const string firstDraftSql = $"""
       SELECT
         d.public_id AS {nameof(DraftBriefRow.DraftPublicId)},
         d.title AS {nameof(DraftBriefRow.DraftTitle)},
@@ -155,11 +164,12 @@ internal sealed class GetDrafterProfileQueryHandler(
       new CommandDefinition(
         firstDraftSql,
         new { DrafterInternalId = drafter.InternalId },
-        cancellationToken: cancellationToken));
+        cancellationToken: cancellationToken
+      )
+    );
 
     // 8. Most recent draft part (by release date)
-    const string mostRecentDraftSql =
-      $"""
+    const string mostRecentDraftSql = $"""
       SELECT
         d.public_id AS {nameof(DraftBriefRow.DraftPublicId)},
         d.title AS {nameof(DraftBriefRow.DraftTitle)},
@@ -179,11 +189,12 @@ internal sealed class GetDrafterProfileQueryHandler(
       new CommandDefinition(
         mostRecentDraftSql,
         new { DrafterInternalId = drafter.InternalId },
-        cancellationToken: cancellationToken));
+        cancellationToken: cancellationToken
+      )
+    );
 
     // 9. Pick history
-    const string pickHistorySql =
-      $"""
+    const string pickHistorySql = $"""
       SELECT
         d.public_id                              AS {nameof(PickHistoryRow.DraftPublicId)},
         d.title                                  AS {nameof(PickHistoryRow.DraftTitle)},
@@ -195,11 +206,17 @@ internal sealed class GetDrafterProfileQueryHandler(
         pk.movie_version_name                    AS {nameof(PickHistoryRow.MovieVersionName)},
         v.id IS NOT NULL                         AS {nameof(PickHistoryRow.WasVetoed)},
         v.is_overridden                          AS {nameof(PickHistoryRow.WasVetoOverridden)},
-        co.id IS NOT NULL                        AS {nameof(PickHistoryRow.WasCommissionerOverridden)},
+        co.id IS NOT NULL                        AS {nameof(
+        PickHistoryRow.WasCommissionerOverridden
+      )},
         vdr.public_id                            AS {nameof(PickHistoryRow.VetoedByPublicId)},
         vp.display_name                          AS {nameof(PickHistoryRow.VetoedByDisplayName)},
-        vodr.public_id                           AS {nameof(PickHistoryRow.VetoOverriddenByPublicId)},
-        vop.display_name                         AS {nameof(PickHistoryRow.VetoOverriddenByDisplayName)}
+        vodr.public_id                           AS {nameof(
+        PickHistoryRow.VetoOverriddenByPublicId
+      )},
+        vop.display_name                         AS {nameof(
+        PickHistoryRow.VetoOverriddenByDisplayName
+      )}
       FROM drafts.picks pk
       JOIN drafts.draft_parts dp ON dp.id = pk.draft_part_id
       JOIN drafts.drafts d ON d.id = dp.draft_id
@@ -229,11 +246,12 @@ internal sealed class GetDrafterProfileQueryHandler(
       new CommandDefinition(
         pickHistorySql,
         new { DrafterInternalId = drafter.InternalId },
-        cancellationToken: cancellationToken));
+        cancellationToken: cancellationToken
+      )
+    );
 
     // 10. Veto history (vetoes issued by this drafter)
-    const string vetoHistorySql =
-      $"""
+    const string vetoHistorySql = $"""
       SELECT
         d.public_id                              AS {nameof(VetoHistoryRow.DraftPublicId)},
         d.title                                  AS {nameof(VetoHistoryRow.DraftTitle)},
@@ -244,7 +262,9 @@ internal sealed class GetDrafterProfileQueryHandler(
         m.imdb_id                                AS {nameof(VetoHistoryRow.MoviePublicId)},
         m.movie_title                            AS {nameof(VetoHistoryRow.MovieTitle)},
         tdr.public_id                            AS {nameof(VetoHistoryRow.TargetDrafterPublicId)},
-        tp.display_name                          AS {nameof(VetoHistoryRow.TargetDrafterDisplayName)},
+        tp.display_name                          AS {nameof(
+        VetoHistoryRow.TargetDrafterDisplayName
+      )},
         v.is_overridden                          AS {nameof(VetoHistoryRow.WasVetoOverridden)},
         vodr.public_id                           AS {nameof(VetoHistoryRow.OverrideByPublicId)},
         vop.display_name                         AS {nameof(VetoHistoryRow.OverrideByDisplayName)}
@@ -272,26 +292,11 @@ internal sealed class GetDrafterProfileQueryHandler(
       ORDER BY MIN(dr.release_date) ASC, pk.play_order ASC;
       """;
 
-    var vetoHistoryRows = (await connection.QueryAsync<VetoHistoryRow>(
-      new CommandDefinition(vetoHistorySql, new { DrafterInternalId = drafter.InternalId }))).ToList();
-
-    // Resolve social handles from users API if this drafter is linked to a user account
-    SocialHandles? socialHandles = null;
-    if (drafter.UserId.HasValue)
-    {
-      var userSocials = await _usersApi.GetUserSocialsAsync(drafter.PublicId, cancellationToken);
-      if (userSocials is not null)
-      {
-        socialHandles = new SocialHandles
-        {
-          Twitter = userSocials.Twitter,
-          Instagram = userSocials.Instagram,
-          Letterboxd = userSocials.Letterboxd,
-          Bluesky = userSocials.Bluesky,
-          ProfilePicturePath = userSocials.ProfilePicturePath
-        };
-      }
-    }
+    var vetoHistoryRows = (
+      await connection.QueryAsync<VetoHistoryRow>(
+        new CommandDefinition(vetoHistorySql, new { DrafterInternalId = drafter.InternalId })
+      )
+    ).ToList();
 
     // Assemble draft history items
     var draftHistory = pickHistory
@@ -303,55 +308,55 @@ internal sealed class GetDrafterProfileQueryHandler(
         {
           DraftPublicId = first.DraftPublicId,
           DraftTitle = first.DraftTitle,
-          ReleaseDates = first.ReleaseDate.HasValue ? [first.ReleaseDate.Value] : []
+          ReleaseDates = first.ReleaseDate.HasValue ? [first.ReleaseDate.Value] : [],
         };
         var picks = g.Select(r => new PickItem
+          {
+            Position = r.Position,
+            PlayOrder = r.PlayOrder,
+            MoviePublicId = r.MoviePublicId,
+            MovieTitle = r.MovieTitle,
+            MovieVersionName = r.MovieVersionName,
+            WasVetoed = r.WasVetoed,
+            WasVetoOverridden = r.WasVetoOverridden ?? false,
+            WasCommissionerOverridden = r.WasCommissionerOverridden,
+            VetoedByPublicId = r.VetoedByPublicId,
+            VetoedByDisplayName = r.VetoedByDisplayName,
+            OverrideByPublicId = r.VetoOverriddenByPublicId,
+            OverrideByDisplayName = r.VetoOverriddenByDisplayName,
+          })
+          .ToList();
+
+        return new DraftHistoryItem { Draft = brief, Picks = picks };
+      })
+      .ToList();
+
+    // Assemble veto history items
+    var vetoHistory = vetoHistoryRows
+      .Select(r =>
+      {
+        var brief = new DraftBrief
         {
+          DraftPublicId = r.DraftPublicId,
+          DraftTitle = r.DraftTitle,
+          ReleaseDates = r.ReleaseDate.HasValue ? [r.ReleaseDate.Value] : [],
+        };
+        return new VetoHistoryItem
+        {
+          Draft = brief,
+          TargetPickPublicId = r.TargetPickPublicId,
           Position = r.Position,
           PlayOrder = r.PlayOrder,
           MoviePublicId = r.MoviePublicId,
           MovieTitle = r.MovieTitle,
-          MovieVersionName = r.MovieVersionName,
-          WasVetoed = r.WasVetoed,
-          WasVetoOverridden = r.WasVetoOverridden ?? false,
-          WasCommissionerOverridden = r.WasCommissionerOverridden,
-          VetoedByPublicId = r.VetoedByPublicId,
-          VetoedByDisplayName = r.VetoedByDisplayName,
-          OverrideByPublicId = r.VetoOverriddenByPublicId,
-          OverrideByDisplayName = r.VetoOverriddenByDisplayName
-        }).ToList();
-
-        return new DraftHistoryItem
-        {
-          Draft = brief,
-          Picks = picks
+          TargetDrafterPublicId = r.TargetDrafterPublicId,
+          TargetDrafterDisplayName = r.TargetDrafterDisplayName,
+          WasVetoOverridden = r.WasVetoOverridden,
+          OverrideByPublicId = r.OverrideByPublicId,
+          OverrideByDisplayName = r.OverrideByDisplayName,
         };
-      }).ToList();
-
-    // Assemble veto history items
-    var vetoHistory = vetoHistoryRows.Select(r =>
-    {
-      var brief = new DraftBrief
-      {
-        DraftPublicId = r.DraftPublicId,
-        DraftTitle = r.DraftTitle,
-        ReleaseDates = r.ReleaseDate.HasValue ? [r.ReleaseDate.Value] : []
-      };
-      return new VetoHistoryItem
-      {
-        Draft = brief,
-        TargetPickPublicId = r.TargetPickPublicId,
-        Position = r.Position,
-        PlayOrder = r.PlayOrder,
-        MoviePublicId = r.MoviePublicId,
-        MovieTitle = r.MovieTitle,
-        TargetDrafterPublicId = r.TargetDrafterPublicId,
-        TargetDrafterDisplayName = r.TargetDrafterDisplayName,
-        WasVetoOverridden = r.WasVetoOverridden,
-        OverrideByPublicId = r.OverrideByPublicId,
-        OverrideByDisplayName = r.OverrideByDisplayName
-      };
-    }).ToList();
+      })
+      .ToList();
 
     DraftBrief? firstDraftBrief = null;
     if (firstDraft is not null)
@@ -363,7 +368,7 @@ internal sealed class GetDrafterProfileQueryHandler(
       {
         DraftPublicId = firstDraft.DraftPublicId,
         DraftTitle = firstDraft.DraftTitle,
-        ReleaseDates = firstReleaseDates
+        ReleaseDates = firstReleaseDates,
       };
     }
 
@@ -377,7 +382,7 @@ internal sealed class GetDrafterProfileQueryHandler(
       {
         DraftPublicId = mostRecentDraft.DraftPublicId,
         DraftTitle = mostRecentDraft.DraftTitle,
-        ReleaseDates = recentReleaseDates
+        ReleaseDates = recentReleaseDates,
       };
     }
 
@@ -397,9 +402,8 @@ internal sealed class GetDrafterProfileQueryHandler(
       TimeesVetoOverridden = (int)timesVetoOverridden.Count,
       HasRolloverVeto = rollover?.RolloverVeto > 0,
       HasRolloverVetoOverride = rollover?.RolloverVetoOverride > 0,
-      SocialHandles = socialHandles,
       DraftHistory = draftHistory,
-      VetoHistory = vetoHistory
+      VetoHistory = vetoHistory,
     };
 
     return Result.Success(response);
@@ -411,19 +415,25 @@ internal sealed class GetDrafterProfileQueryHandler(
     Guid PersonInternalId,
     string PersonPublicId,
     Guid? UserId,
-    string DisplayName);
+    string DisplayName
+  );
 
   private sealed record StatsRow(
     long TotalDrafts,
     long VetoesUsed,
     long VetoOverridesUsed,
-    long CommissionerOverrides);
+    long CommissionerOverrides
+  );
 
   private sealed record CountRow(long Count);
 
   private sealed record RolloverRow(int RolloverVeto, int RolloverVetoOverride);
 
-  private sealed record DraftBriefRow(string DraftPublicId, string DraftTitle, DateOnly? ReleaseDate);
+  private sealed record DraftBriefRow(
+    string DraftPublicId,
+    string DraftTitle,
+    DateOnly? ReleaseDate
+  );
 
   private sealed record PickHistoryRow(
     string DraftPublicId,
@@ -440,7 +450,8 @@ internal sealed class GetDrafterProfileQueryHandler(
     string? VetoedByPublicId,
     string? VetoedByDisplayName,
     string? VetoOverriddenByPublicId,
-    string? VetoOverriddenByDisplayName);
+    string? VetoOverriddenByDisplayName
+  );
 
   private sealed record VetoHistoryRow(
     string DraftPublicId,
@@ -455,5 +466,6 @@ internal sealed class GetDrafterProfileQueryHandler(
     string TargetDrafterDisplayName,
     bool WasVetoOverridden,
     string? OverrideByPublicId,
-    string? OverrideByDisplayName);
+    string? OverrideByDisplayName
+  );
 }

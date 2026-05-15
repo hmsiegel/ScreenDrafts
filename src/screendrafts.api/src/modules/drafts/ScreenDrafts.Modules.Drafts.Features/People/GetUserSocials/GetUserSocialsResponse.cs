@@ -1,6 +1,7 @@
-﻿namespace ScreenDrafts.Modules.Users.Features.Users.GetUserSocials;
+﻿
+namespace ScreenDrafts.Modules.Drafts.Features.People.GetUserSocials;
 
-public sealed record Response
+public sealed record GetUserSocialsResponse
 {
   public string? Twitter { get; init; }
   public string? Instagram { get; init; }

@@ -17,24 +17,8 @@ internal sealed class UpdateUserCommandHandler(IUserRepository userRepository)
     user.Update(
       firstName: FirstName.Create(command.FirstName).Value,
       lastName: LastName.Create(command.LastName).Value,
-      middleName: command.MiddleName is not null ? command.MiddleName : null);
-
-    if (!string.IsNullOrWhiteSpace(command.ProfilePicture))
-    {
-      user.UpdateProfilePicture(command.ProfilePicture);
-    }
-
-    if (!string.IsNullOrWhiteSpace(command.TwitterHandle)
-      || !string.IsNullOrWhiteSpace(command.InstagramHandle)
-      || !string.IsNullOrWhiteSpace(command.LetterboxdHandle)
-      || !string.IsNullOrWhiteSpace(command.BlueskyHandle))
-    {
-      user.UpdateSocialHandles(
-        twitterHandle: command.TwitterHandle,
-        instagramHandle: command.InstagramHandle,
-        letterboxdHandle: command.LetterboxdHandle,
-        blueskyHandle: command.BlueskyHandle);
-    }
+      middleName: command.MiddleName is not null ? command.MiddleName : null
+    );
 
     _userRepository.Update(user);
 

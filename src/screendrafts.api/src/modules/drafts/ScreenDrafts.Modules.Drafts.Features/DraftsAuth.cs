@@ -7,6 +7,7 @@ internal static class DraftsAuth
     internal const string Admin = "Administrator";
     internal const string SuperAdmin = "SuperAdministrator";
   }
+
   internal static class Permissions
   {
     // Drafts
@@ -53,6 +54,7 @@ internal static class DraftsAuth
     internal const string PersonList = "people:list";
     internal const string PersonUpdate = "people:update";
     internal const string PersonSearch = "people:search";
+    internal const string PersonProfile = "people:profiles";
 
     // Drafters
     internal const string DrafterAdd = "drafters:add";
