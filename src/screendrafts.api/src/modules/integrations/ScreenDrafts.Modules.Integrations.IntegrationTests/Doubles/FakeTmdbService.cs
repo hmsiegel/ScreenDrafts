@@ -6,14 +6,11 @@ public sealed class FakeTmdbService : ITmdbService
   private TmdbSearchResult? _findResult;
   private TmdbMediaDetails? _details;
 
-  public void SetSearchResults(IReadOnlyList<TmdbSearchResult> results) =>
-    _searchResults = results;
+  public void SetSearchResults(IReadOnlyList<TmdbSearchResult> results) => _searchResults = results;
 
-  public void SetFindResult(TmdbSearchResult? result) =>
-    _findResult = result;
+  public void SetFindResult(TmdbSearchResult? result) => _findResult = result;
 
-  public void SetDetails(TmdbMediaDetails? details) =>
-    _details = details;
+  public void SetDetails(TmdbMediaDetails? details) => _details = details;
 
   public void Reset()
   {
@@ -24,53 +21,75 @@ public sealed class FakeTmdbService : ITmdbService
 
   public Task<IReadOnlyList<TmdbSearchResult>> SearchMoviesAsync(
     string query,
-    CancellationToken cancellationToken = default)
-    => Task.FromResult(_searchResults);
+    CancellationToken cancellationToken = default
+  ) => Task.FromResult(_searchResults);
 
   public Task<TmdbSearchResult?> FindMovieByImdbIdAsync(
     string imdbId,
-    CancellationToken cancellationToken = default)
-    => Task.FromResult(_findResult);
+    CancellationToken cancellationToken = default
+  ) => Task.FromResult(_findResult);
 
   public Task<TmdbMediaDetails?> GetMovieDetailsAsync(
     int tmdbId,
-    CancellationToken cancellationToken = default)
-    => Task.FromResult(_details);
+    CancellationToken cancellationToken = default
+  ) => Task.FromResult(_details);
 
   public Task<string?> GetMovieImdbIdAsync(
     int tmdbId,
-    CancellationToken cancellationToken = default)
-    => Task.FromResult<string?>(null);
+    CancellationToken cancellationToken = default
+  ) => Task.FromResult<string?>(null);
 
   public Uri? BuildPosterUrl(string? posterPath, string size = "w500") =>
-    posterPath is null
-      ? null
-      : new Uri($"https://image.tmdb.org/t/p/{size}{posterPath}");
+    posterPath is null ? null : new Uri($"https://image.tmdb.org/t/p/{size}{posterPath}");
 
   public Task<TmdbMediaDetails?> GetTvShowDetailsAsync(
     int tmdbId,
-    CancellationToken cancellationToken = default)
-  {
-    throw new NotImplementedException();
-  }
+    CancellationToken cancellationToken = default
+  ) => Task.FromResult<TmdbMediaDetails?>(null);
 
-  public Task<TmdbMediaDetails?> GetTvEpisodeDetailsAsync(int seriesTmdbId, int seasonNumber, int episodeNumber, CancellationToken cancellationToken = default)
+  public Task<TmdbMediaDetails?> GetTvEpisodeDetailsAsync(
+    int seriesTmdbId,
+    int seasonNumber,
+    int episodeNumber,
+    CancellationToken cancellationToken = default
+  )
   {
     return Task.FromResult<TmdbMediaDetails?>(null);
   }
 
-  public Task<string?> GetTvShowImdbIdAsync(int tmdbId, CancellationToken cancellationToken = default)
+  public Task<string?> GetTvShowImdbIdAsync(
+    int tmdbId,
+    CancellationToken cancellationToken = default
+  )
   {
     return Task.FromResult<string?>(null);
   }
 
-  public Task<string?> GetPersonImdbIdAsync(int tmdbPersonId, CancellationToken cancellationToken = default)
+  public Task<string?> GetPersonImdbIdAsync(
+    int tmdbPersonId,
+    CancellationToken cancellationToken = default
+  )
   {
     return Task.FromResult<string?>(null);
   }
 
-  public Task<TmdbFindResult?> FindByImdbIdAsync(string imdbId, CancellationToken cancellationToken = default)
+  public Task<TmdbFindResult?> FindByImdbIdAsync(
+    string imdbId,
+    CancellationToken cancellationToken = default
+  )
   {
     return Task.FromResult<TmdbFindResult?>(null);
   }
+
+  public Task<TmdbSearchPagedResult> SearchMoviesAsync(
+    string query,
+    int page = 1,
+    CancellationToken cancellationToken = default
+  ) => Task.FromResult(new TmdbSearchPagedResult
+  {
+    Results = _searchResults,
+    TotalResults = _searchResults.Count,
+    TotalPages = 1,
+    Page = page,
+  });
 }

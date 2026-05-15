@@ -28,8 +28,14 @@ public sealed class GetDraftPartPredictionsTests(DraftsIntegrationTestWebAppFact
     var seasonPublicId = await CreateSeasonPublicIdAsync();
     var contestantPublicId = await CreateContestantPublicIdAsync();
     await SetRulesAsync(draftPartPublicId, requiredCount: 3);
-    await SubmitSetAsync(draftPartPublicId, seasonPublicId, contestantPublicId,
-      "m_00000001", "m_00000002", "m_00000003");
+    await SubmitSetAsync(
+      draftPartPublicId,
+      seasonPublicId,
+      contestantPublicId,
+      "m_00000001",
+      "m_00000002",
+      "m_00000003"
+    );
 
     var query = new GetDraftPartPredictionsQuery { DraftPartPublicId = draftPartPublicId };
 
@@ -53,14 +59,23 @@ public sealed class GetDraftPartPredictionsTests(DraftsIntegrationTestWebAppFact
     var seasonPublicId = await CreateSeasonPublicIdAsync();
     var contestantPublicId = await CreateContestantPublicIdAsync();
     await SetRulesAsync(draftPartPublicId, requiredCount: 3);
-    var setPublicId = await SubmitSetAsync(draftPartPublicId, seasonPublicId, contestantPublicId,
-      "m_00000001", "m_00000002", "m_00000003");
+    var setPublicId = await SubmitSetAsync(
+      draftPartPublicId,
+      seasonPublicId,
+      contestantPublicId,
+      "m_00000001",
+      "m_00000002",
+      "m_00000003"
+    );
 
-    await Sender.Send(new LockPredictionSetCommand
-    {
-      DraftPartPublicId = draftPartPublicId,
-      SetPublicId = setPublicId
-    }, TestContext.Current.CancellationToken);
+    await Sender.Send(
+      new LockPredictionSetCommand
+      {
+        DraftPartPublicId = draftPartPublicId,
+        SetPublicId = setPublicId,
+      },
+      TestContext.Current.CancellationToken
+    );
 
     var query = new GetDraftPartPredictionsQuery { DraftPartPublicId = draftPartPublicId };
 
@@ -82,20 +97,32 @@ public sealed class GetDraftPartPredictionsTests(DraftsIntegrationTestWebAppFact
     var seasonPublicId = await CreateSeasonPublicIdAsync();
     var contestantPublicId = await CreateContestantPublicIdAsync();
     await SetRulesAsync(draftPartPublicId, requiredCount: 3);
-    var setPublicId = await SubmitSetAsync(draftPartPublicId, seasonPublicId, contestantPublicId,
-      "m_00000001", "m_00000002", "m_00000003");
+    var setPublicId = await SubmitSetAsync(
+      draftPartPublicId,
+      seasonPublicId,
+      contestantPublicId,
+      "m_00000001",
+      "m_00000002",
+      "m_00000003"
+    );
 
-    await Sender.Send(new LockPredictionSetCommand
-    {
-      DraftPartPublicId = draftPartPublicId,
-      SetPublicId = setPublicId
-    }, TestContext.Current.CancellationToken);
+    await Sender.Send(
+      new LockPredictionSetCommand
+      {
+        DraftPartPublicId = draftPartPublicId,
+        SetPublicId = setPublicId,
+      },
+      TestContext.Current.CancellationToken
+    );
 
-    await Sender.Send(new ScoreDraftPartPredictionsCommand
-    {
-      DraftPartPublicId = draftPartPublicId,
-      FinalMediaPublicIds = ["m_00000001", "m_00000002", "m_00000003"]
-    }, TestContext.Current.CancellationToken);
+    await Sender.Send(
+      new ScoreDraftPartPredictionsCommand
+      {
+        DraftPartId = draftPartPublicId,
+        FinalMediaPublicIds = ["m_00000001", "m_00000002", "m_00000003"],
+      },
+      TestContext.Current.CancellationToken
+    );
 
     var query = new GetDraftPartPredictionsQuery { DraftPartPublicId = draftPartPublicId };
 
@@ -121,10 +148,22 @@ public sealed class GetDraftPartPredictionsTests(DraftsIntegrationTestWebAppFact
     var contestantPublicId2 = await CreateContestantPublicIdAsync();
     await SetRulesAsync(draftPartPublicId, requiredCount: 3);
 
-    await SubmitSetAsync(draftPartPublicId, seasonPublicId, contestantPublicId1,
-      "m_00000001", "m_00000002", "m_00000003");
-    await SubmitSetAsync(draftPartPublicId, seasonPublicId, contestantPublicId2,
-      "m_00000004", "m_00000005", "m_00000006");
+    await SubmitSetAsync(
+      draftPartPublicId,
+      seasonPublicId,
+      contestantPublicId1,
+      "m_00000001",
+      "m_00000002",
+      "m_00000003"
+    );
+    await SubmitSetAsync(
+      draftPartPublicId,
+      seasonPublicId,
+      contestantPublicId2,
+      "m_00000004",
+      "m_00000005",
+      "m_00000006"
+    );
 
     var query = new GetDraftPartPredictionsQuery { DraftPartPublicId = draftPartPublicId };
 

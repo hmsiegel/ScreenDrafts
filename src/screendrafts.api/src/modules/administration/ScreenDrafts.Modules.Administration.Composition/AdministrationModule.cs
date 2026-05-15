@@ -2,10 +2,10 @@
 
 public static class AdministrationModule
 {
-
   public static IServiceCollection AddAdministrationModule(
     this IServiceCollection services,
-    IConfiguration configuration)
+    IConfiguration configuration
+  )
   {
     ArgumentNullException.ThrowIfNull(configuration);
 
@@ -20,39 +20,58 @@ public static class AdministrationModule
     return services;
   }
 
-  public static void ConfigureConsumers(IRegistrationConfigurator registrationConfigurator, string instanceId)
+  public static void ConfigureConsumers(
+    IRegistrationConfigurator registrationConfigurator,
+    string instanceId
+  )
   {
     ArgumentNullException.ThrowIfNull(registrationConfigurator);
 
-    registrationConfigurator.AddConsumer<IntegrationEventConsumer<UserRegisteredIntegrationEvent>>()
+    registrationConfigurator
+      .AddConsumer<IntegrationEventConsumer<UserRegisteredIntegrationEvent>>()
+      .Endpoint(c => c.InstanceId = instanceId);
+
+    registrationConfigurator
+      .AddConsumer<IntegrationEventConsumer<DrafterCreatedIntegrationEvent>>()
+      .Endpoint(c => c.InstanceId = instanceId);
+
+    registrationConfigurator
+      .AddConsumer<IntegrationEventConsumer<HostCreatedIntegrationEvent>>()
       .Endpoint(c => c.InstanceId = instanceId);
   }
 
   private static void AddAdministrationFeatures(this IServiceCollection services)
   {
     services.AddScoped<IAdministrationApi, AdministrationApi>();
-    services.AddScoped<IAdministrationIntegrationEventDispatcher, AdministrationIntegrationEventDispatcher>();
+    services.AddScoped<
+      IAdministrationIntegrationEventDispatcher,
+      AdministrationIntegrationEventDispatcher
+    >();
     services.AddScoped<IAdministrationDomainEventDispatcher, AdministrationDomainEventDispatcher>();
   }
 
-
   private static void AddDomainEventHandlers(this IServiceCollection services)
   {
-    Type[] domainEventHandlers = [.. AssemblyReference.Assembly
-        .GetTypes()
-        .Where(t => t.IsAssignableTo(typeof(IDomainEventHandler)))];
+    Type[] domainEventHandlers =
+    [
+      .. AssemblyReference
+        .Assembly.GetTypes()
+        .Where(t => t.IsAssignableTo(typeof(IDomainEventHandler))),
+    ];
 
     foreach (Type domainEventHandler in domainEventHandlers)
     {
       services.TryAddScoped(domainEventHandler);
 
       Type domainEvent = domainEventHandler
-          .GetInterfaces()
-          .Single(i => i.IsGenericType)
-          .GetGenericArguments()
-          .Single();
+        .GetInterfaces()
+        .Single(i => i.IsGenericType)
+        .GetGenericArguments()
+        .Single();
 
-      Type closedIdempotentHandler = typeof(IdempotentDomainEventHandler<>).MakeGenericType(domainEvent);
+      Type closedIdempotentHandler = typeof(IdempotentDomainEventHandler<>).MakeGenericType(
+        domainEvent
+      );
 
       services.Decorate(domainEventHandler, closedIdempotentHandler);
     }
@@ -60,21 +79,26 @@ public static class AdministrationModule
 
   private static void AddIntegrationEventHandlers(this IServiceCollection services)
   {
-    Type[] integrationEventHandlers = [.. AssemblyReference.Assembly
-        .GetTypes()
-        .Where(t => t.IsAssignableTo(typeof(IIntegrationEventHandler)))];
+    Type[] integrationEventHandlers =
+    [
+      .. AssemblyReference
+        .Assembly.GetTypes()
+        .Where(t => t.IsAssignableTo(typeof(IIntegrationEventHandler))),
+    ];
 
     foreach (Type integrationEventHandler in integrationEventHandlers)
     {
       services.TryAddScoped(integrationEventHandler);
 
       Type integrationEvent = integrationEventHandler
-          .GetInterfaces()
-          .Single(i => i.IsGenericType)
-          .GetGenericArguments()
-          .Single();
+        .GetInterfaces()
+        .Single(i => i.IsGenericType)
+        .GetGenericArguments()
+        .Single();
 
-      Type closedIdempotentHandler = typeof(IdempotentIntegrationEventHandler<>).MakeGenericType(integrationEvent);
+      Type closedIdempotentHandler = typeof(IdempotentIntegrationEventHandler<>).MakeGenericType(
+        integrationEvent
+      );
 
       services.Decorate(integrationEventHandler, closedIdempotentHandler);
     }

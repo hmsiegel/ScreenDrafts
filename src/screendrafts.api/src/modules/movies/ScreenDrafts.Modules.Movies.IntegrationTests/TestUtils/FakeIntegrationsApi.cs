@@ -1,5 +1,4 @@
-﻿using ScreenDrafts.Common.Abstractions.Results;
-using ScreenDrafts.Modules.Integrations.PublicApi;
+﻿using ScreenDrafts.Modules.Integrations.PublicApi;
 
 namespace ScreenDrafts.Modules.Movies.IntegrationTests.TestUtils;
 
@@ -11,6 +10,12 @@ public sealed class FakeIntegrationsApi : IIntegrationsApi
 
   public Task<Result<SearchMediaApiResponse>> SearchMoviesAsync(
     string query,
-    CancellationToken cancellationToken = default)
-    => Task.FromResult(Result.Success(_response));
+    CancellationToken cancellationToken = default
+  ) => Task.FromResult(Result.Success(_response));
+
+  public Task<Result<SearchMediaApiResponse>> SearchMoviesAsync(
+    string query,
+    int page = 1,
+    CancellationToken cancellationToken = default
+  ) => Task.FromResult(Result.Success(_response));
 }

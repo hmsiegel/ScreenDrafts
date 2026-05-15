@@ -16,4 +16,10 @@ internal static class AdministrationAuth
     internal const string PermissionsRead = "permissions:read";
     internal const string PermissionsUpdate = "permissions:update";
   }
+
+  internal static class Roles
+  {
+    internal const string Drafter = "Drafter";
+    internal const string Host = "Host";
+  }
 }

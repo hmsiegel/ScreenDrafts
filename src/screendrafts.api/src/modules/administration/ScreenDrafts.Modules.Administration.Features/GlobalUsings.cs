@@ -1,17 +1,12 @@
 ﻿global using System.Data;
 global using System.Reflection;
-
 global using Dapper;
-
 global using FluentValidation;
-
 global using MediatR;
-
 global using Microsoft.AspNetCore.Builder;
 global using Microsoft.AspNetCore.Http;
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.Extensions.Logging;
-
 global using ScreenDrafts.Common.Abstractions.Exceptions;
 global using ScreenDrafts.Common.Abstractions.Results;
 global using ScreenDrafts.Common.Application.Clock;
@@ -27,7 +22,9 @@ global using ScreenDrafts.Common.Domain;
 global using ScreenDrafts.Common.Presentation.Http;
 global using ScreenDrafts.Common.Presentation.Results;
 global using ScreenDrafts.Modules.Administration.Domian;
+global using ScreenDrafts.Modules.Administration.Features.Users.AddRoleToUser;
 global using ScreenDrafts.Modules.Administration.Features.Users.GetUserRoles;
 global using ScreenDrafts.Modules.Administration.PublicApi;
+global using ScreenDrafts.Modules.Drafts.IntegrationEvents;
 global using ScreenDrafts.Modules.Users.IntegrationEvents;
 global using ScreenDrafts.Modules.Users.PublicApi;

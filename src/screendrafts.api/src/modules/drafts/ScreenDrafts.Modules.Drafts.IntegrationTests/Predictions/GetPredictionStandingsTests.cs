@@ -31,8 +31,7 @@ public sealed class GetPredictionStandingsTests(DraftsIntegrationTestWebAppFacto
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors.Should().ContainSingle(e =>
-      e.Code == "PredictionErrors.SeasonNotFound");
+    result.Errors.Should().ContainSingle(e => e.Code == "PredictionErrors.SeasonNotFound");
   }
 
   [Fact]
@@ -43,20 +42,32 @@ public sealed class GetPredictionStandingsTests(DraftsIntegrationTestWebAppFacto
     var draftPartPublicId = await CreateDraftPartPublicIdAsync();
     var contestantPublicId = await CreateContestantPublicIdAsync();
     await SetRulesAsync(draftPartPublicId, requiredCount: 3);
-    var setPublicId = await SubmitSetAsync(draftPartPublicId, seasonPublicId, contestantPublicId,
-      "m_00000001", "m_00000002", "m_00000003");
+    var setPublicId = await SubmitSetAsync(
+      draftPartPublicId,
+      seasonPublicId,
+      contestantPublicId,
+      "m_00000001",
+      "m_00000002",
+      "m_00000003"
+    );
 
-    await Sender.Send(new LockPredictionSetCommand
-    {
-      DraftPartPublicId = draftPartPublicId,
-      SetPublicId = setPublicId
-    }, TestContext.Current.CancellationToken);
+    await Sender.Send(
+      new LockPredictionSetCommand
+      {
+        DraftPartPublicId = draftPartPublicId,
+        SetPublicId = setPublicId,
+      },
+      TestContext.Current.CancellationToken
+    );
 
-    await Sender.Send(new ScoreDraftPartPredictionsCommand
-    {
-      DraftPartPublicId = draftPartPublicId,
-      FinalMediaPublicIds = ["m_00000001", "m_00000002", "m_00000003"]
-    }, TestContext.Current.CancellationToken);
+    await Sender.Send(
+      new ScoreDraftPartPredictionsCommand
+      {
+        DraftPartId = draftPartPublicId,
+        FinalMediaPublicIds = ["m_00000001", "m_00000002", "m_00000003"],
+      },
+      TestContext.Current.CancellationToken
+    );
 
     await ProcessOutboxAsync(); // triggers standing update
 
@@ -80,14 +91,17 @@ public sealed class GetPredictionStandingsTests(DraftsIntegrationTestWebAppFacto
     var seasonPublicId = await CreateSeasonPublicIdAsync(number: 1);
     var contestantPublicId = await CreateContestantPublicIdAsync();
 
-    await Sender.Send(new AddCarryoverCommand
-    {
-      SeasonPublicId = seasonPublicId,
-      ContestantPublicId = contestantPublicId,
-      Points = 8,
-      Kind = CarryoverKind.Handicap.Value,
-      Reason = "Handicap from prior season"
-    }, TestContext.Current.CancellationToken);
+    await Sender.Send(
+      new AddCarryoverCommand
+      {
+        SeasonPublicId = seasonPublicId,
+        ContestantPublicId = contestantPublicId,
+        Points = 8,
+        Kind = CarryoverKind.Handicap.Value,
+        Reason = "Handicap from prior season",
+      },
+      TestContext.Current.CancellationToken
+    );
 
     var query = new GetPredictionStandingsQuery { SeasonPublicId = seasonPublicId };
 
@@ -116,20 +130,49 @@ public sealed class GetPredictionStandingsTests(DraftsIntegrationTestWebAppFacto
     await SetRulesAsync(draftPartPublicId, requiredCount: 3);
 
     // Contestant 1: predicts all correctly (shoot the moon = 6 points)
-    var setPublicId1 = await SubmitSetAsync(draftPartPublicId, seasonPublicId, contestantPublicId1,
-      "m_00000001", "m_00000002", "m_00000003");
+    var setPublicId1 = await SubmitSetAsync(
+      draftPartPublicId,
+      seasonPublicId,
+      contestantPublicId1,
+      "m_00000001",
+      "m_00000002",
+      "m_00000003"
+    );
     // Contestant 2: predicts 1 correctly (1 point)
-    var setPublicId2 = await SubmitSetAsync(draftPartPublicId, seasonPublicId, contestantPublicId2,
-      "m_00000001", "m_00000099", "m_00000098");
+    var setPublicId2 = await SubmitSetAsync(
+      draftPartPublicId,
+      seasonPublicId,
+      contestantPublicId2,
+      "m_00000001",
+      "m_00000099",
+      "m_00000098"
+    );
 
-    await Sender.Send(new LockPredictionSetCommand { DraftPartPublicId = draftPartPublicId, SetPublicId = setPublicId1 }, TestContext.Current.CancellationToken);
-    await Sender.Send(new LockPredictionSetCommand { DraftPartPublicId = draftPartPublicId, SetPublicId = setPublicId2 }, TestContext.Current.CancellationToken);
+    await Sender.Send(
+      new LockPredictionSetCommand
+      {
+        DraftPartPublicId = draftPartPublicId,
+        SetPublicId = setPublicId1,
+      },
+      TestContext.Current.CancellationToken
+    );
+    await Sender.Send(
+      new LockPredictionSetCommand
+      {
+        DraftPartPublicId = draftPartPublicId,
+        SetPublicId = setPublicId2,
+      },
+      TestContext.Current.CancellationToken
+    );
 
-    await Sender.Send(new ScoreDraftPartPredictionsCommand
-    {
-      DraftPartPublicId = draftPartPublicId,
-      FinalMediaPublicIds = ["m_00000001", "m_00000002", "m_00000003"]
-    }, TestContext.Current.CancellationToken);
+    await Sender.Send(
+      new ScoreDraftPartPredictionsCommand
+      {
+        DraftPartId = draftPartPublicId,
+        FinalMediaPublicIds = ["m_00000001", "m_00000002", "m_00000003"],
+      },
+      TestContext.Current.CancellationToken
+    );
 
     await ProcessOutboxAsync(); // triggers standing updates
 
@@ -150,11 +193,14 @@ public sealed class GetPredictionStandingsTests(DraftsIntegrationTestWebAppFacto
   {
     // Arrange
     var seasonPublicId = await CreateSeasonPublicIdAsync(number: 1);
-    await Sender.Send(new ClosePredictionSeasonCommand
-    {
-      SeasonPublicId = seasonPublicId,
-      EndsOn = DateOnly.FromDateTime(DateTime.UtcNow)
-    }, TestContext.Current.CancellationToken);
+    await Sender.Send(
+      new ClosePredictionSeasonCommand
+      {
+        SeasonPublicId = seasonPublicId,
+        EndsOn = DateOnly.FromDateTime(DateTime.UtcNow),
+      },
+      TestContext.Current.CancellationToken
+    );
 
     var query = new GetPredictionStandingsQuery { SeasonPublicId = seasonPublicId };
 

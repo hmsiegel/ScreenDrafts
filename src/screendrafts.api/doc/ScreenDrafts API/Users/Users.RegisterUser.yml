@@ -12,13 +12,12 @@ http:
     type: json
     data: |-
       {
-        "email": "test4@test.com",
-        "password": "Password",
-        "firstName": "test",
-        "lastName": "test",
+        "email": "angelarobinson@screendrafts.fake",
+        "password": "password",
+        "firstName": "Angela",
+        "lastName": "Robinson",
         "middleName": ""
       }
-  auth: inherit
 
 settings:
   encodeUrl: true

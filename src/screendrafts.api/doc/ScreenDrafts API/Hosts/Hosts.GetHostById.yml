@@ -8,6 +8,10 @@ info:
 http:
   method: GET
   url: "{{baseUrl}}/hosts/:publicId"
+  params:
+    - name: publicId
+      value: h_5hJCM2yvWDRAMIf
+      type: path
   body:
     type: text
     data: ""

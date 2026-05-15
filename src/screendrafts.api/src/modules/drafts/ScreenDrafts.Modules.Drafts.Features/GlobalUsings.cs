@@ -3,24 +3,16 @@ global using System.Data;
 global using System.Globalization;
 global using System.Reflection;
 global using System.Text;
-
 global using Ardalis.SmartEnum;
-
 global using CsvHelper;
-
 global using Dapper;
-
 global using FluentValidation;
-
 global using MassTransit;
-
 global using MediatR;
-
 global using Microsoft.AspNetCore.Builder;
 global using Microsoft.AspNetCore.Http;
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.Extensions.Logging;
-
 global using ScreenDrafts.Common.Abstractions.Results;
 global using ScreenDrafts.Common.Application.Caching;
 global using ScreenDrafts.Common.Application.Clock;
@@ -43,6 +35,7 @@ global using ScreenDrafts.Modules.Drafts.Domain.Campaigns;
 global using ScreenDrafts.Modules.Drafts.Domain.Categories;
 global using ScreenDrafts.Modules.Drafts.Domain.DraftBoards;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafters;
+global using ScreenDrafts.Modules.Drafts.Domain.Drafters.DomainEvents;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafters.Errors;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafters.Repositories;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafters.ValueObjects;

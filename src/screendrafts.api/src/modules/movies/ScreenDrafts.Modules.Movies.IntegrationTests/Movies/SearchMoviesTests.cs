@@ -14,11 +14,7 @@ public sealed class SearchMoviesTests(MoviesIntegrationTestWebAppFactory factory
   public async Task SearchMovies_WithEmptyQuery_ShouldReturnFailureAsync()
   {
     // Arrange
-    var query = new SearchMediaQuery
-    {
-      DraftPartId = Faker.Random.Guid().ToString(),
-      Query = string.Empty
-    };
+    var query = new SearchMediaQuery { Query = string.Empty };
 
     // Act
     var result = await Sender.Send(query, TestContext.Current.CancellationToken);
@@ -32,11 +28,7 @@ public sealed class SearchMoviesTests(MoviesIntegrationTestWebAppFactory factory
   public async Task SearchMovies_WithWhitespaceQuery_ShouldReturnFailureAsync()
   {
     // Arrange
-    var query = new SearchMediaQuery
-    {
-      DraftPartId = Faker.Random.Guid().ToString(),
-      Query = "   "
-    };
+    var query = new SearchMediaQuery { Query = "   " };
 
     // Act
     var result = await Sender.Send(query, TestContext.Current.CancellationToken);
@@ -54,21 +46,37 @@ public sealed class SearchMoviesTests(MoviesIntegrationTestWebAppFactory factory
   public async Task SearchMovies_WithValidQuery_ShouldReturnPagedResultsAsync()
   {
     // Arrange
-    FakeIntegrationsApi.SetResponse(new SearchMediaApiResponse
-    {
-      Results =
-      [
-        new MediaSearchApiResult { TmdbId = 1, Title = "The Matrix", Year = "1999", Poster = "/matrix.jpg", Overview = "A computer hacker discovers the truth." },
-        new MediaSearchApiResult { TmdbId = 2, Title = "The Matrix Reloaded", Year = "2003", Poster = "/matrix2.jpg", Overview = "Neo and the rebels continue their fight." }
-      ]
-    });
+    FakeIntegrationsApi.SetResponse(
+      new SearchMediaApiResponse
+      {
+        Results =
+        [
+          new MediaSearchApiResult
+          {
+            TmdbId = 1,
+            Title = "The Matrix",
+            Year = "1999",
+            Poster = "/matrix.jpg",
+            Overview = "A computer hacker discovers the truth.",
+          },
+          new MediaSearchApiResult
+          {
+            TmdbId = 2,
+            Title = "The Matrix Reloaded",
+            Year = "2003",
+            Poster = "/matrix2.jpg",
+            Overview = "Neo and the rebels continue their fight.",
+          },
+        ],
+        TotalCount = 2,
+      }
+    );
 
     var query = new SearchMediaQuery
     {
-      DraftPartId = Faker.Random.Guid().ToString(),
       Query = "Matrix",
       Page = 1,
-      PageSize = 20
+      PageSize = 20,
     };
 
     // Act
@@ -88,11 +96,7 @@ public sealed class SearchMoviesTests(MoviesIntegrationTestWebAppFactory factory
     // Arrange
     FakeIntegrationsApi.SetResponse(new SearchMediaApiResponse { Results = [] });
 
-    var query = new SearchMediaQuery
-    {
-      DraftPartId = Faker.Random.Guid().ToString(),
-      Query = "UnknownFilmXYZ"
-    };
+    var query = new SearchMediaQuery { Query = "UnknownFilmXYZ" };
 
     // Act
     var result = await Sender.Send(query, TestContext.Current.CancellationToken);
@@ -107,22 +111,34 @@ public sealed class SearchMoviesTests(MoviesIntegrationTestWebAppFactory factory
   public async Task SearchMovies_WithYearFilter_ShouldReturnOnlyMatchingYearAsync()
   {
     // Arrange
-    FakeIntegrationsApi.SetResponse(new SearchMediaApiResponse
-    {
-      Results =
-      [
-        new MediaSearchApiResult { TmdbId = 1, Title = "The Matrix", Year = "1999" },
-        new MediaSearchApiResult { TmdbId = 2, Title = "The Matrix Reloaded", Year = "2003" },
-        new MediaSearchApiResult { TmdbId = 3, Title = "The Matrix Revolutions", Year = "2003" }
-      ]
-    });
+    FakeIntegrationsApi.SetResponse(
+      new SearchMediaApiResponse
+      {
+        Results =
+        [
+          new MediaSearchApiResult
+          {
+            TmdbId = 1,
+            Title = "The Matrix",
+            Year = "1999",
+          },
+          new MediaSearchApiResult
+          {
+            TmdbId = 2,
+            Title = "The Matrix Reloaded",
+            Year = "2003",
+          },
+          new MediaSearchApiResult
+          {
+            TmdbId = 3,
+            Title = "The Matrix Revolutions",
+            Year = "2003",
+          },
+        ],
+      }
+    );
 
-    var query = new SearchMediaQuery
-    {
-      DraftPartId = Faker.Random.Guid().ToString(),
-      Query = "Matrix",
-      Year = 2003
-    };
+    var query = new SearchMediaQuery { Query = "Matrix", Year = 2003 };
 
     // Act
     var result = await Sender.Send(query, TestContext.Current.CancellationToken);
@@ -155,25 +171,36 @@ public sealed class SearchMoviesTests(MoviesIntegrationTestWebAppFactory factory
       TvSeriesTmdbId = movie.TvSeriesTmdbId,
       SeasonNumber = movie.SeasonNumber,
       EpisodeNumber = movie.EpisodeNumber,
-      Genres = genre != null ? [new GenreRequest(genre.TmdbId, genre.Name)] : Array.Empty<GenreRequest>(),
+      Genres =
+        genre != null ? [new GenreRequest(genre.TmdbId, genre.Name)] : Array.Empty<GenreRequest>(),
     };
 
     await Sender.Send(seedCommand, TestContext.Current.CancellationToken);
 
-    FakeIntegrationsApi.SetResponse(new SearchMediaApiResponse
-    {
-      Results =
-      [
-        new MediaSearchApiResult { TmdbId = movie.TmdbId, Title = movie.Title, Year = movie.Year, MediaType = movie.MediaType },
-        new MediaSearchApiResult { TmdbId = movie.TmdbId + 1, Title = "Another Movie", Year = "2000", MediaType = movie.MediaType }
-      ]
-    });
+    FakeIntegrationsApi.SetResponse(
+      new SearchMediaApiResponse
+      {
+        Results =
+        [
+          new MediaSearchApiResult
+          {
+            TmdbId = movie.TmdbId,
+            Title = movie.Title,
+            Year = movie.Year,
+            MediaType = movie.MediaType,
+          },
+          new MediaSearchApiResult
+          {
+            TmdbId = movie.TmdbId + 1,
+            Title = "Another Movie",
+            Year = "2000",
+            MediaType = movie.MediaType,
+          },
+        ],
+      }
+    );
 
-    var query = new SearchMediaQuery
-    {
-      DraftPartId = Faker.Random.Guid().ToString(),
-      Query = movie.Title
-    };
+    var query = new SearchMediaQuery { Query = movie.Title };
 
     // Act
     var result = await Sender.Send(query, TestContext.Current.CancellationToken);
@@ -191,24 +218,26 @@ public sealed class SearchMoviesTests(MoviesIntegrationTestWebAppFactory factory
   public async Task SearchMovies_WithPagination_ShouldReturnCorrectPageAsync()
   {
     // Arrange
-    FakeIntegrationsApi.SetResponse(new SearchMediaApiResponse
-    {
-      Results =
-      [
-        new MediaSearchApiResult { TmdbId = 1, Title = "Film A" },
-        new MediaSearchApiResult { TmdbId = 2, Title = "Film B" },
-        new MediaSearchApiResult { TmdbId = 3, Title = "Film C" },
-        new MediaSearchApiResult { TmdbId = 4, Title = "Film D" },
-        new MediaSearchApiResult { TmdbId = 5, Title = "Film E" }
-      ]
-    });
+    // The handler delegates pagination to the integrations API (server-side).
+    // The fake returns what TMDB would return for page 2: items 3 & 4, with TotalCount from the API.
+    FakeIntegrationsApi.SetResponse(
+      new SearchMediaApiResponse
+      {
+        Results =
+        [
+          new MediaSearchApiResult { TmdbId = 3, Title = "Film C" },
+          new MediaSearchApiResult { TmdbId = 4, Title = "Film D" },
+        ],
+        TotalCount = 5,
+        Page = 2,
+      }
+    );
 
     var query = new SearchMediaQuery
     {
-      DraftPartId = Faker.Random.Guid().ToString(),
       Query = "Film",
       Page = 2,
-      PageSize = 2
+      PageSize = 2,
     };
 
     // Act
