@@ -1,18 +1,29 @@
 'use client';
 
 interface EpisodeImageProps {
-   title: string;
+  title: string;
 }
 
 export default function EpisodeImage({ title }: EpisodeImageProps) {
-   return (
-      <div className="mt-4 mb-4 border border-sd-ink/10 overflow-hidden">
-         <img
-            src={`/episodes/${encodeURIComponent(title)}.jpg`}
-            alt="{title}"
-            className="w-full object-cover"
-            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-         />
-      </div>
-   );
+  const encoded = encodeURIComponent(title);
+
+  function tryWebp(e: React.SyntheticEvent<HTMLImageElement>) {
+    const img = e.target as HTMLImageElement;
+    if (!img.src.endsWith('.webp')) {
+      img.src = `/episodes/${encoded}.webp`;
+    } else {
+      img.src = '/screen-drafts.jpg';
+    }
+  }
+
+  return (
+    <div className="mt-4 mb-4 border border-sd-ink/10 overflow-hidden">
+      <img
+        src={`/episodes/${encoded}.jpg`}
+        alt={title}
+        className="w-full object-cover"
+        onError={tryWebp}
+      />
+    </div>
+  );
 }

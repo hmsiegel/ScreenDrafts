@@ -15,6 +15,7 @@
     <ProjectReference Include="..\..\integrations\ScreenDrafts.Modules.Integrations.PublicApi\ScreenDrafts.Modules.Integrations.PublicApi.csproj" />
     <ProjectReference Include="..\..\movies\ScreenDrafts.Modules.Movies.IntegrationEvents\ScreenDrafts.Modules.Movies.IntegrationEvents.csproj" />
     <ProjectReference Include="..\..\reporting\ScreenDrafts.Modules.Reporting.IntegrationEvents\ScreenDrafts.Modules.Reporting.IntegrationEvents.csproj" />
+    <ProjectReference Include="..\..\reporting\ScreenDrafts.Modules.Reporting.PublicApi\ScreenDrafts.Modules.Reporting.PublicApi.csproj" />
     <ProjectReference Include="..\..\users\ScreenDrafts.Modules.Users.IntegrationEvents\ScreenDrafts.Modules.Users.IntegrationEvents.csproj" />
     <ProjectReference Include="..\..\users\ScreenDrafts.Modules.Users.PublicApi\ScreenDrafts.Modules.Users.PublicApi.csproj" />
 

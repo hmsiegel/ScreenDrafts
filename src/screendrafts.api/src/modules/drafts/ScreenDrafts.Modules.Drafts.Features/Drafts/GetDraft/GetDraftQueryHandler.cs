@@ -100,7 +100,8 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
         dh.draft_part_id AS PartId,
         dh.role AS Role,
         h.public_id AS {nameof(GetDraftHostResponse.HostPublicId)},
-        p.display_name AS {nameof(GetDraftHostResponse.DisplayName)}
+        p.display_name AS {nameof(GetDraftHostResponse.DisplayName)},
+        p.public_id AS {nameof(GetDraftHostResponse.PersonPublicId)}
       FROM drafts.draft_hosts dh
       JOIN drafts.hosts h ON h.id = dh.host_id
       JOIN drafts.people p ON p.id = h.person_id
@@ -111,10 +112,11 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
       Guid PartId,
       HostRole Role,
       string HostPublicId,
-      string DisplayName
+      string DisplayName,
+      string? PersonPublicId
     )>(hostSql, new { partIds });
 
-    foreach (var (partId, role, hostPublicId, displayName) in hostRows)
+    foreach (var (partId, role, hostPublicId, displayName, personPublicId) in hostRows)
     {
       if (!partMap.TryGetValue(partId, out var part))
       {
@@ -125,6 +127,7 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
       {
         HostPublicId = hostPublicId,
         DisplayName = displayName,
+        PersonPublicId = personPublicId,
       };
 
       if (role == 0)
@@ -159,7 +162,8 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
           pe.display_name,
           pe.first_name || ' ' || pe.last_name,
           dt.name
-        ) AS {nameof(GetDraftPartParticipantResponse.DisplayName)}
+        ) AS {nameof(GetDraftPartParticipantResponse.DisplayName)},
+        pe.public_id AS {nameof(GetDraftPartParticipantResponse.PersonPublicId)}
       FROM drafts.draft_part_participants dpp
       LEFT JOIN drafts.drafters dr
         ON dr.id = dpp.participant_id_value
@@ -184,7 +188,8 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
       int RolloverVetoOverride,
       int TriviaVetoOverride,
       int CommissionerOverride,
-      string? DisplayName
+      string? DisplayName,
+      string? PersonPublicId
     )>(new CommandDefinition(participantSql, new { partIds }));
 
     foreach (var r in participantRows)
@@ -207,6 +212,7 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
         TriviaVetoOverride = r.TriviaVetoOverride,
         CommissionerOverride = r.CommissionerOverride,
         DisplayName = r.DisplayName,
+        PersonPublicId = r.PersonPublicId,
       };
       part.AddParticipant(participantResponse);
     }
@@ -298,6 +304,9 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
         v.note AS {nameof(GetDraftVetoResponse.Note)},
         v.occurred_on AS {nameof(GetDraftVetoResponse.OccurredOnUtc)},
         COALESCE(
+          CASE WHEN dpp.participant_kind_value = 2
+            THEN 'Patreon Members'
+          END,
           pe.display_name,
           pe.first_name || ' ' || pe.last_name,
           dt.name
@@ -341,6 +350,9 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
         vo.issued_by_participant_id AS {nameof(GetDraftVetoOverrideResponse.IssuedByParticipantId)},
         vo.acted_by_public_id AS {nameof(GetDraftVetoOverrideResponse.ActedByPublicId)},
         COALESCE(
+          CASE WHEN dpp.participant_kind_value = 2
+            THEN 'Patreon Members'
+          END,
           pe.display_name,
           pe.first_name || ' ' || pe.last_name,
           dt.name

@@ -148,6 +148,7 @@
     <Project Path="src/modules/reporting/ScreenDrafts.Modules.Reporting.Infrastructure/ScreenDrafts.Modules.Reporting.Infrastructure.csproj" />
     <Project Path="src/modules/reporting/ScreenDrafts.Modules.Reporting.IntegrationEvents/ScreenDrafts.Modules.Reporting.IntegrationEvents.csproj" />
     <Project Path="src/modules/reporting/ScreenDrafts.Modules.Reporting.IntegrationTests/ScreenDrafts.Modules.Reporting.IntegrationTests.csproj" />
+    <Project Path="src/modules/reporting/ScreenDrafts.Modules.Reporting.PublicApi/ScreenDrafts.Modules.Reporting.PublicApi.csproj" Id="895f2a36-1ef7-4f93-9f08-d732812c6621" />
     <Project Path="src/modules/reporting/ScreenDrafts.Modules.Reporting.UnitTests/ScreenDrafts.Modules.Reporting.UnitTests.csproj" />
   </Folder>
   <Folder Name="/src/modules/users/">

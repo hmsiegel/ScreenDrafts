@@ -7,7 +7,35 @@ info:
 
 http:
   method: GET
-  url: "{{baseUrl}}/people"
+  url: "{{baseUrl}}/people?page=4"
+  params:
+    - name: page
+      value: "4"
+      type: query
+    - name: pageSize
+      value: ""
+      type: query
+      disabled: true
+    - name: name
+      value: ""
+      type: query
+      disabled: true
+    - name: hasDrafter
+      value: ""
+      type: query
+      disabled: true
+    - name: hasHost
+      value: ""
+      type: query
+      disabled: true
+    - name: sort
+      value: ""
+      type: query
+      disabled: true
+    - name: dir
+      value: ""
+      type: query
+      disabled: true
   body:
     type: text
     data: ""

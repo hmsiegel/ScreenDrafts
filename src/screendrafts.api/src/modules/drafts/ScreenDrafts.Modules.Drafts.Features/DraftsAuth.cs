@@ -131,5 +131,9 @@ internal static class DraftsAuth
     internal const string PredictionRead = "predictions:read";
 
     internal const string AdminViewDeleted = "admin:view-deleted";
+
+    // Participants
+    internal const string ParticipantList = "participants:list";
+    internal const string ParticipantRead = "participants:read";
   }
 }

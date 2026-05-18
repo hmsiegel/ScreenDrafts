@@ -2,7 +2,6 @@ import DraftTypeBadge from "@/components/ui/draft-type-badge";
 import { draftTypeFromNumber } from "@/lib/draft-type-display";
 import { GetDraftPartResponse, GetDraftResponse } from "@/lib/dto";
 import Link from "next/link";
-import Image from "next/image";
 import { Avatar } from "./draft-pick";
 import { format } from "date-fns/format";
 import EpisodeImage from "@/components/ui/episode-image";
@@ -48,25 +47,25 @@ export default function DraftSidebar({ draft, participantNames }: DraftSidebarPr
 
   // Collect unique participants across parts (by participantIdValue)
   const seenParticipantIds = new Set<string>();
-  const participantEntries: { id: string; name: string; index: number }[] = [];
+  const participantEntries: { id: string; name: string; index: number; personPublicId?: string; }[] = [];
   let idx = 0;
   for (const part of parts) {
     for (const p of part.participants ?? []) {
       const pid = p.participantIdValue ?? "";
+      if (p.participantKindValue?.value === 2) continue;
       if (pid && !seenParticipantIds.has(pid)) {
         seenParticipantIds.add(pid);
         const name =
-          participantNames.get(pid) ??
-          ((p as Record<string, unknown>).displayName as string | undefined) ??
-          "Unknown";
-        participantEntries.push({ id: pid, name, index: idx++ });
+          participantNames.get(pid) ?? p.displayName ?? "Unknown";
+        const personPublicId = p.personPublicId;
+        participantEntries.push({ id: pid, name, index: idx++, personPublicId });
       }
     }
   }
 
   // Collect hosts (primary + co-hosts) across parts
   const seenHostIds = new Set<string>();
-  const hostEntries: { id: string; name: string; role: string; index: number }[] = [];
+  const hostEntries: { id: string; name: string; role: string; index: number, personPublicId?: string; }[] = [];
   let hostIdx = 0;
   for (const part of parts) {
     if (part.primaryHost?.hostPublicId && !seenHostIds.has(part.primaryHost.hostPublicId)) {
@@ -76,6 +75,7 @@ export default function DraftSidebar({ draft, participantNames }: DraftSidebarPr
         name: part.primaryHost.displayName ?? "Unknown",
         role: "PRIMARY HOST",
         index: hostIdx++,
+        personPublicId: part.primaryHost.personPublicId,
       });
     }
     for (const coHost of part.coHosts ?? []) {
@@ -86,6 +86,7 @@ export default function DraftSidebar({ draft, participantNames }: DraftSidebarPr
           name: coHost.displayName ?? "Unknown",
           role: "CO-HOST",
           index: hostIdx++,
+          personPublicId: coHost.personPublicId,
         });
       }
     }
@@ -158,15 +159,30 @@ export default function DraftSidebar({ draft, participantNames }: DraftSidebarPr
         <div className="border-t border-sd-ink/10 pt-4 mt-4">
           <SectionLabel>DRAFTERS</SectionLabel>
           <div className="flex flex-col gap-3">
-            {participantEntries.map(({ id, name, index }) => (
-              <div key={id} className="flex items-center gap-3">
-                <Avatar name={name} colorIndex={index} size={40} />
-                <div>
-                  <div className="font-sans font-semibold text-[14px] text-sd-ink">{name}</div>
-                  <div className="font-mono text-[10px] text-[#5a6075]">DRAFTER</div>
+            {participantEntries.map(({ id, name, index, personPublicId }) => {
+              const nameEl = (
+                <div className="font-sans font-semibold text-[14px] text-sd-ink leading-tight">
+                  {name}
                 </div>
-              </div>
-            ))}
+              );
+
+              return (
+                <div key={id} className="flex items-center gap-3">
+                  <Avatar name={name} colorIndex={index} size={40} />
+                  <div>
+                    {personPublicId ? (
+                      <Link
+                        href={`/drafters/${personPublicId}`}
+                        className="hover:text-sd-blue transition-colors"
+                      >
+                        {nameEl}
+                      </Link>
+                    ) : nameEl}
+                    <div className="font-mono text-[10px] text-[#5a6075]">DRAFTER</div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       )}
@@ -176,15 +192,30 @@ export default function DraftSidebar({ draft, participantNames }: DraftSidebarPr
         <div className="border-t border-sd-ink/10 pt-4 mt-4">
           <SectionLabel>HOSTS</SectionLabel>
           <div className="flex flex-col gap-3">
-            {hostEntries.map(({ id, name, role, index }) => (
-              <div key={id} className="flex items-center gap-3">
-                <Avatar name={name} colorIndex={index} size={40} />
-                <div>
-                  <div className="font-sans font-semibold text-[14px] text-sd-ink">{name}</div>
-                  <div className="font-mono text-[10px] text-[#5a6075]">{role}</div>
+            {hostEntries.map(({ id, name, role, index, personPublicId }) => {
+              const nameEl = (
+                <div className="font-sans font-semibold text-[14px] text-sd-ink leading-tight">
+                  {name}
                 </div>
-              </div>
-            ))}
+              );
+
+              return (
+                <div key={id} className="flex items-center gap-3">
+                  <Avatar name={name} colorIndex={index} size={40} />
+                  <div>
+                    {personPublicId ? (
+                      <Link
+                        href={`/drafters/${personPublicId}`}
+                        className="hover:text-sd-blue transition-colors"
+                      >
+                        {nameEl}
+                      </Link>
+                    ) : nameEl}
+                    <div className="font-mono text-[10px] text-[#5a6075]">{role}</div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       )}

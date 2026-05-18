@@ -138,6 +138,21 @@ export interface IClient {
     /**
      * @return OK
      */
+    people_GetUsersSocials(body: Request): Promise<Response>;
+
+    /**
+     * @return OK
+     */
+    participants_ListParticipants(body: ListParticipantsRequest): Promise<PagedResultOfParticipantListItem>;
+
+    /**
+     * @return OK
+     */
+    participants_GetById(body: GetParticipantProfileRequest): Promise<GetParticipantProfileResponse>;
+
+    /**
+     * @return OK
+     */
     hosts_SearchHosts(body: SearchHostRequest): Promise<PagedResultOfSearchHostResponse>;
 
     /**
@@ -554,7 +569,12 @@ export interface IClient {
     /**
      * @return OK
      */
-    movies_Search(body: GetOnlineMediaRequest): Promise<GetOnlineMediaResponse>;
+    onlineMedia_Search(body: GetOnlineMediaRequest): Promise<GetOnlineMediaResponse>;
+
+    /**
+     * @return Accepted
+     */
+    media_Import(body: FetchMediaRequest): Promise<void>;
 
     /**
      * @return OK
@@ -610,11 +630,6 @@ export interface IClient {
      * @return Created
      */
     users_RegisterSocialUser(body: RegisterSocialUserRequest): Promise<string>;
-
-    /**
-     * @return OK
-     */
-    users_GetUsersProfiles(body: Request): Promise<Response>;
 }
 
 export class Client implements IClient {
@@ -1898,6 +1913,165 @@ export class Client implements IClient {
             });
         }
         return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    people_GetUsersSocials(body: Request, signal?: AbortSignal): Promise<Response> {
+        let url_ = this.baseUrl + "/people/public-profiles/by-person-ids";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processPeople_GetUsersSocials(_response);
+        });
+    }
+
+    protected processPeople_GetUsersSocials(response: Response): Promise<Response> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as Response;
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Response>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    participants_ListParticipants(body: ListParticipantsRequest, signal?: AbortSignal): Promise<PagedResultOfParticipantListItem> {
+        let url_ = this.baseUrl + "/participants";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processParticipants_ListParticipants(_response);
+        });
+    }
+
+    protected processParticipants_ListParticipants(response: Response): Promise<PagedResultOfParticipantListItem> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as PagedResultOfParticipantListItem;
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<PagedResultOfParticipantListItem>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    participants_GetById(body: GetParticipantProfileRequest, signal?: AbortSignal): Promise<GetParticipantProfileResponse> {
+        let url_ = this.baseUrl + "/participants/{personPublicId}";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processParticipants_GetById(_response);
+        });
+    }
+
+    protected processParticipants_GetById(response: Response): Promise<GetParticipantProfileResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as GetParticipantProfileResponse;
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<GetParticipantProfileResponse>(null as any);
     }
 
     /**
@@ -6276,7 +6450,7 @@ export class Client implements IClient {
     /**
      * @return OK
      */
-    movies_Search(body: GetOnlineMediaRequest, signal?: AbortSignal): Promise<GetOnlineMediaResponse> {
+    onlineMedia_Search(body: GetOnlineMediaRequest, signal?: AbortSignal): Promise<GetOnlineMediaResponse> {
         let url_ = this.baseUrl + "/movies/search";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -6293,11 +6467,11 @@ export class Client implements IClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processMovies_Search(_response);
+            return this.processOnlineMedia_Search(_response);
         });
     }
 
-    protected processMovies_Search(response: Response): Promise<GetOnlineMediaResponse> {
+    protected processOnlineMedia_Search(response: Response): Promise<GetOnlineMediaResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -6327,10 +6501,60 @@ export class Client implements IClient {
     }
 
     /**
+     * @return Accepted
+     */
+    media_Import(body: FetchMediaRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/movies/import";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processMedia_Import(_response);
+        });
+    }
+
+    protected processMedia_Import(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 202) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
      * @return OK
      */
     media_Search(body: SearchMediaRequest, signal?: AbortSignal): Promise<SearchMediaResponse> {
-        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/media/search";
+        let url_ = this.baseUrl + "/media/search";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -6362,14 +6586,6 @@ export class Client implements IClient {
         } else if (status === 400) {
             return response.text().then((_responseText) => {
             return throwException("Bad Request", status, _responseText, _headers);
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -6867,59 +7083,6 @@ export class Client implements IClient {
         }
         return Promise.resolve<string>(null as any);
     }
-
-    /**
-     * @return OK
-     */
-    users_GetUsersProfiles(body: Request, signal?: AbortSignal): Promise<Response> {
-        let url_ = this.baseUrl + "/users/public-profiles/by-person-ids";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            signal,
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processUsers_GetUsersProfiles(_response);
-        });
-    }
-
-    protected processUsers_GetUsersProfiles(response: Response): Promise<Response> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as Response;
-            return result200;
-            });
-        } else if (status === 400) {
-            return response.text().then((_responseText) => {
-            return throwException("Bad Request", status, _responseText, _headers);
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<Response>(null as any);
-    }
 }
 
 export interface IPredictionsClient {
@@ -6947,7 +7110,7 @@ export interface IPredictionsClient {
     /**
      * @return No Content
      */
-    lockSet(body: LockPredictionSetRequest): Promise<void>;
+    lockSet(): Promise<void>;
 
     /**
      * @return OK
@@ -7230,18 +7393,14 @@ export class PredictionsClient implements IPredictionsClient {
     /**
      * @return No Content
      */
-    lockSet(body: LockPredictionSetRequest, signal?: AbortSignal): Promise<void> {
+    lockSet(signal?: AbortSignal): Promise<void> {
         let url_ = this.baseUrl + "/draft-parts/{draftPartId}/predictions/{setId}/lock";
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(body);
-
         let options_: RequestInit = {
-            body: content_,
             method: "PUT",
             signal,
             headers: {
-                "Content-Type": "application/json",
             }
         };
 
@@ -7710,7 +7869,7 @@ export interface ActorResponse {
 }
 
 export interface AddCandidateEntryRequest {
-    draftPartId: string;
+    draftPartId?: string;
     tmdbId: number;
     notes?: string | undefined;
 
@@ -7736,7 +7895,7 @@ export interface AddCarryoverRequest {
 }
 
 export interface AddDrafterToTeamRequest {
-    drafterTeamId: string;
+    drafterTeamId?: string;
     drafterId: string;
 
     [key: string]: any;
@@ -7785,7 +7944,7 @@ export interface AddMovieToDraftBoardRequest {
 }
 
 export interface AddMovieToDraftPoolRequest {
-    publicId: string;
+    publicId?: string;
     tmdbId?: number;
 
     [key: string]: any;
@@ -7806,8 +7965,8 @@ export interface AddPermissionRequest {
 }
 
 export interface AddPermissionToRoleRequest {
-    permissionCode: string;
-    roleName: string;
+    permissionCode?: string;
+    roleName?: string;
 
     [key: string]: any;
 }
@@ -7826,30 +7985,30 @@ export interface AddRoleToUserRequest {
 }
 
 export interface AddSubDraftRequest {
-    draftPartPublicId: string;
+    draftPartPublicId?: string;
     index: number;
 
     [key: string]: any;
 }
 
 export interface AdvanceSubDraftRequest {
-    draftPartPublicId: string;
-    subDraftPublicId: string;
+    draftPartPublicId?: string;
+    subDraftPublicId?: string;
 
     [key: string]: any;
 }
 
 export interface ApplyCommissionerOverrideRequest {
-    draftPartId: string;
-    playOrder: number;
+    draftPartId?: string;
+    playOrder?: number;
 
     [key: string]: any;
 }
 
 export interface ApplySubDraftVetoRequest {
-    draftPartPublicId: string;
-    subDraftPublicId: string;
-    playOrder: number;
+    draftPartPublicId?: string;
+    subDraftPublicId?: string;
+    playOrder?: number;
     issuerPublicId: string;
     issuerKind: number;
 
@@ -7857,8 +8016,8 @@ export interface ApplySubDraftVetoRequest {
 }
 
 export interface ApplyVetoOverrideRequest {
-    draftPartId: string;
-    playOrder: number;
+    draftPartId?: string;
+    playOrder?: number;
     participantIdValue?: string | undefined;
     participantKind: number;
 
@@ -7866,7 +8025,7 @@ export interface ApplyVetoOverrideRequest {
 }
 
 export interface ApplyVetoRequest {
-    draftPartId: string;
+    draftPartId?: string;
     playOrder?: number;
     participantPublicId?: string | undefined;
     participantKind?: number;
@@ -7875,8 +8034,8 @@ export interface ApplyVetoRequest {
 }
 
 export interface AssignParticipantToDraftPositionRequest {
-    draftPartId: string;
-    positionPublicId: string;
+    draftPartId?: string;
+    positionId?: string;
     participantPublicId?: string | undefined;
     participantKind: number;
 
@@ -7884,8 +8043,8 @@ export interface AssignParticipantToDraftPositionRequest {
 }
 
 export interface AssignSubDraftTriviaRequest {
-    draftPartPublicId: string;
-    subDraftPublicId: string;
+    draftPartPublicId?: string;
+    subDraftPublicId?: string;
     results?: TriviaResultRequestItem[];
 
     [key: string]: any;
@@ -7901,7 +8060,7 @@ export interface AssignSurrogateRequest {
 }
 
 export interface AssignTriviaResultsRequest {
-    draftPartPublicId: string;
+    draftPartId?: string;
     results?: TriviaResultRequestItem[];
 
     [key: string]: any;
@@ -7920,7 +8079,7 @@ export interface AuthAuditLogResponse {
 }
 
 export interface BulkAddCandidateEntriesRequest {
-    draftPart: string;
+    draftPart?: string;
     file: string;
 
     [key: string]: any;
@@ -7945,14 +8104,14 @@ export interface BulkAddMoviesResponse {
 }
 
 export interface BulkAddMoviesToDraftBoardRequest {
-    draftId: string;
+    draftId?: string;
     file: string;
 
     [key: string]: any;
 }
 
 export interface BulkAddMoviesToDraftPoolRequest {
-    draftId: string;
+    draftId?: string;
     file: string;
 
     [key: string]: any;
@@ -8008,8 +8167,8 @@ export interface ClearCampaignDraftRequest {
 }
 
 export interface ClearDraftPositionAssignmentRequest {
-    draftPartId: string;
-    positionPublicId: string;
+    draftPartId?: string;
+    positionPublicId?: string;
 
     [key: string]: any;
 }
@@ -8066,7 +8225,7 @@ export interface CreateDrafterTeamRequest {
 }
 
 export interface CreateDraftPartRequest {
-    draftId?: string;
+    publicId?: string;
     partIndex?: number;
     minimumPosition?: number;
     maximumPosition?: number;
@@ -8075,7 +8234,7 @@ export interface CreateDraftPartRequest {
 }
 
 export interface CreateDraftPoolRequest {
-    publicId: string;
+    publicId?: string;
 
     [key: string]: any;
 }
@@ -8218,6 +8377,23 @@ export interface DrafterListItem {
     [key: string]: any;
 }
 
+export interface DrafterStatsResponse {
+    drafterPublicId: string;
+    totalDrafts?: number;
+    firstDraft?: DraftBrief | undefined;
+    mostRecentDraft?: DraftBrief | undefined;
+    filmsDrafted?: number;
+    vetoesUsed?: number;
+    vetoOverridesUsed?: number;
+    commissionerOverrides?: number;
+    timesVetoed?: number;
+    timesVetoOverridden?: number;
+    hasRolloverVeto?: boolean;
+    hasRolloverVetoOverride?: boolean;
+
+    [key: string]: any;
+}
+
 export interface DraftHistoryItem {
     draft: DraftBrief;
     picks?: PickItem[];
@@ -8347,7 +8523,7 @@ export interface EditSeriesRequest {
 }
 
 export interface EndZoomSessionRequest {
-    draftPartId: string;
+    draftPartId?: string;
 
     [key: string]: any;
 }
@@ -8388,6 +8564,18 @@ export interface ExportHttpAuditLogsRequest {
     [key: string]: any;
 }
 
+export interface FetchMediaRequest {
+    mediaType?: number;
+    tmdbId?: number | undefined;
+    igdbId?: number | undefined;
+    imdbId?: string | undefined;
+    tvSeriesTmdbId?: number | undefined;
+    seasonNumber?: number | undefined;
+    episodeNumber?: number | undefined;
+
+    [key: string]: any;
+}
+
 export interface FileResult {
     contentType?: string | undefined;
     fileDownloadName?: string | undefined;
@@ -8399,7 +8587,7 @@ export interface FileResult {
 }
 
 export interface GenreModel {
-    tmdbId?: number;
+    tmdbId: number;
     name: string;
 
     [key: string]: any;
@@ -8453,14 +8641,14 @@ export interface GetAuthAuditLogsResponse {
 }
 
 export interface GetCampaignRequest {
-    publicId: string;
+    publicId?: string;
     includeDeleted?: boolean;
 
     [key: string]: any;
 }
 
 export interface GetCandidateListRequest {
-    draftPartId: string;
+    draftPartId?: string;
     page?: number;
     pageSize?: number;
 
@@ -8474,7 +8662,7 @@ export interface GetCandidateListResponse {
 }
 
 export interface GetCategoryRequest {
-    publicId: string;
+    publicId?: string;
 
     [key: string]: any;
 }
@@ -8500,7 +8688,7 @@ export interface GetDomainEventAuditLogsResponse {
 }
 
 export interface GetDraftBoardRequest {
-    draftId: string;
+    draftId?: string;
 
     [key: string]: any;
 }
@@ -8519,7 +8707,7 @@ export interface GetDraftCommissionerOverrideResponse {
 }
 
 export interface GetDrafterProfileRequest {
-    publicId: string;
+    publicId?: string;
 
     [key: string]: any;
 }
@@ -8554,7 +8742,7 @@ export interface GetDrafterTeamMemberResponse {
 }
 
 export interface GetDrafterTeamRequest {
-    publicId: string;
+    publicId?: string;
 
     [key: string]: any;
 }
@@ -8571,6 +8759,7 @@ export interface GetDrafterTeamResponse {
 export interface GetDraftHostResponse {
     hostPublicId?: string;
     displayName?: string;
+    personPublicId?: string | undefined;
 
     [key: string]: any;
 }
@@ -8579,6 +8768,7 @@ export interface GetDraftPartParticipantResponse {
     participantIdValue?: string;
     participantKindValue?: ParticipantKind;
     displayName?: string | undefined;
+    personPublicId?: string | undefined;
     startingVetoes?: number;
     vetoesUsed?: number;
     rolloverVetoes?: number;
@@ -8641,7 +8831,7 @@ export interface GetDraftReleaseResponse {
 }
 
 export interface GetDraftRequest {
-    publicId: string;
+    publicId?: string;
 
     [key: string]: any;
 }
@@ -8662,12 +8852,16 @@ export interface GetDraftResponse {
     previousDraftTitle?: string | undefined;
     nextDraftPublicId?: string | undefined;
     nextDraftTitle?: string | undefined;
+    previousCampaignDraftPublicId?: string | undefined;
+    previousCampaignDraftTitle?: string | undefined;
+    nextCampaignDraftPublicId?: string | undefined;
+    nextCampaignDraftTitle?: string | undefined;
 
     [key: string]: any;
 }
 
 export interface GetDraftStatusRequest {
-    publicId: string;
+    publicId?: string;
 
     [key: string]: any;
 }
@@ -8695,7 +8889,7 @@ export interface GetDraftVetoResponse {
 }
 
 export interface GetHostRequest {
-    publicId: string;
+    publicId?: string;
 
     [key: string]: any;
 }
@@ -8734,13 +8928,13 @@ export interface GetHttpAuditLogsResponse {
 }
 
 export interface GetMediaRequest {
-    publicId: string;
+    publicId?: string;
 
     [key: string]: any;
 }
 
 export interface GetMediaSummaryRequest {
-    publicId: string;
+    publicId?: string;
 
     [key: string]: any;
 }
@@ -8795,8 +8989,30 @@ export interface GetOnlineMediaResponse {
     [key: string]: any;
 }
 
+export interface GetParticipantProfileRequest {
+    personPublicId?: string;
+
+    [key: string]: any;
+}
+
+export interface GetParticipantProfileResponse {
+    personPublicId: string;
+    displayName: string;
+    biography?: string | undefined;
+    location?: string | undefined;
+    isCommissioner?: boolean;
+    honorific?: HonorificResponse | undefined;
+    socialHandles?: SocialHandles | undefined;
+    drafterStats?: DrafterStatsResponse | undefined;
+    hostStats?: HostStatsResponse | undefined;
+    draftHistory?: DraftHistoryItem[];
+    vetoHistory?: VetoHistoryItem[];
+
+    [key: string]: any;
+}
+
 export interface GetPermissionByCodeRequest {
-    code: string;
+    code?: string;
 
     [key: string]: any;
 }
@@ -8808,7 +9024,7 @@ export interface GetPersonRequest {
 }
 
 export interface GetPickListRequest {
-    draftPartId: string;
+    draftPartId?: string;
 
     [key: string]: any;
 }
@@ -8826,7 +9042,7 @@ export interface GetPredictionStandingsRequest {
 }
 
 export interface GetSeriesRequest {
-    publicId: string;
+    publicId?: string;
 
     [key: string]: any;
 }
@@ -8858,7 +9074,7 @@ export interface GetUserResponse {
 }
 
 export interface GetUserRolesRequest {
-    publicId: string;
+    publicId?: string;
 
     [key: string]: any;
 }
@@ -8871,6 +9087,14 @@ export interface GetUserRolesResponse {
 
 export interface GetZoomSessionTokenRequest {
     draftPartId: string;
+
+    [key: string]: any;
+}
+
+export interface HonorificResponse {
+    honorificValue: number;
+    honorificName: string;
+    appearanceCount: number;
 
     [key: string]: any;
 }
@@ -8888,6 +9112,15 @@ export interface HostedDraftPartResponse {
 export interface HostRole {
     name: string | undefined;
     value: number;
+
+    [key: string]: any;
+}
+
+export interface HostStatsResponse {
+    hostPublicId: string;
+    draftsHosted?: number;
+    firstHostedDraft?: DraftBrief | undefined;
+    mostRecentHostedDraft?: DraftBrief | undefined;
 
     [key: string]: any;
 }
@@ -8929,7 +9162,7 @@ export interface LatestDraftResponse {
 }
 
 export interface LinkUserPersonRequest {
-    publicId: string;
+    publicId?: string;
     userId?: string;
 
     [key: string]: any;
@@ -8959,7 +9192,7 @@ export interface ListDraftersRequest {
 }
 
 export interface ListDraftPositionsRequest {
-    draftPartId: string;
+    draftPartId?: string;
 
     [key: string]: any;
 }
@@ -9001,6 +9234,7 @@ export interface ListDraftsRequest {
     toDate?: Date | undefined;
     draftType?: number | undefined;
     categoryPublicId?: string | undefined;
+    campaignPublicId?: string | undefined;
     minDrafters?: number | undefined;
     maxDrafters?: number | undefined;
     minPicks?: number | undefined;
@@ -9021,6 +9255,8 @@ export interface ListDraftsResponse {
     partStatus?: DraftPartStatus;
     hasCommunityParticipant?: boolean;
     totalPicks?: number;
+    campaignPublicId?: string | undefined;
+    campaignName?: string | undefined;
     releases?: ListDraftsReleaseResponse[];
     participants?: ListDraftsParticipantResponse[];
     hosts?: ListDraftsHostResponse[];
@@ -9030,6 +9266,18 @@ export interface ListDraftsResponse {
 
 export interface ListLatestDraftsResponse {
     drafts: LatestDraftResponse[];
+
+    [key: string]: any;
+}
+
+export interface ListParticipantsRequest {
+    q?: string | undefined;
+    role?: string | undefined;
+    retired?: string | undefined;
+    sort?: string | undefined;
+    honorific?: string | undefined;
+    page?: number | undefined;
+    pageSize?: number | undefined;
 
     [key: string]: any;
 }
@@ -9060,13 +9308,6 @@ export interface ListPredictionSeasonsResult {
 
 export interface ListUpcomingDraftsResponse {
     drafts: UpcomingDraftResponse[];
-
-    [key: string]: any;
-}
-
-export interface LockPredictionSetRequest {
-    draftPartPublicId?: string;
-    setPublicId?: string;
 
     [key: string]: any;
 }
@@ -9106,6 +9347,7 @@ export interface MediaSearchResultResponse {
     overview?: string | undefined;
     mediaType?: MediaType;
     isInMediaDatabase?: boolean;
+    mediaPublicId?: string | undefined;
 
     [key: string]: any;
 }
@@ -9155,6 +9397,18 @@ export interface PagedResultOfListDraftsResponse {
 
 export interface PagedResultOfMediaSearchResultResponse {
     items: MediaSearchResultResponse[];
+    totalCount: number;
+    page: number;
+    pageSize: number;
+    totalPages?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+
+    [key: string]: any;
+}
+
+export interface PagedResultOfParticipantListItem {
+    items: ParticipantListItem[];
     totalCount: number;
     page: number;
     pageSize: number;
@@ -9228,6 +9482,24 @@ export interface PagedResultOfSearchPeopleResponse {
 export interface ParticipantKind {
     name: string | undefined;
     value: number;
+
+    [key: string]: any;
+}
+
+export interface ParticipantListItem {
+    personPublicId: string;
+    drafterPublicId?: string | undefined;
+    hostPublicId?: string | undefined;
+    displayName: string;
+    isCommissioner?: boolean;
+    isRetired?: boolean;
+    roles?: string[];
+    totalDrafts?: number | undefined;
+    filmsDrafted?: number | undefined;
+    vetoesUsed?: number | undefined;
+    draftsHosted?: number | undefined;
+    profilePicturePath?: string | undefined;
+    honorific?: HonorificResponse | undefined;
 
     [key: string]: any;
 }
@@ -9319,7 +9591,7 @@ export interface PickListVetoResponse {
 }
 
 export interface PlayPickRequest {
-    draftPartId: string;
+    draftPartId?: string;
     position?: number;
     playOrder?: number;
     participantPublicId?: string | undefined;
@@ -9331,8 +9603,8 @@ export interface PlayPickRequest {
 }
 
 export interface PlaySubDraftPickRequest {
-    draftPartPublicId: string;
-    subDraftPublicId: string;
+    draftPartPublicId?: string;
+    subDraftPublicId?: string;
     moviePublicId: string;
     position: number;
     playOrder: number;
@@ -9470,22 +9742,22 @@ export interface ReleaseChannel {
 }
 
 export interface RemoveCandidateListEntryRequest {
-    draftPartId: string;
-    tmdbId: number;
+    draftPartId?: string;
+    tmdbId?: number;
 
     [key: string]: any;
 }
 
 export interface RemoveCategoryFromDraftRequest {
-    draftId: string;
-    categoryId: string;
+    draftId?: string;
+    categoryId?: string;
 
     [key: string]: any;
 }
 
 export interface RemoveDrafterFromTeamRequest {
-    drafterTeamId: string;
-    drafterId: string;
+    drafterTeamId?: string;
+    drafterId?: string;
 
     [key: string]: any;
 }
@@ -9522,14 +9794,7 @@ export interface RemoveRoleFromUserRequest {
 }
 
 export interface Request {
-    firstName?: string;
-    lastName?: string;
-    middleName?: string | undefined;
-    profilePicture?: string | undefined;
-    twitterHandle?: string | undefined;
-    instagramHandle?: string | undefined;
-    letterboxdHandle?: string | undefined;
-    blueskyHandle?: string | undefined;
+    publicIds?: string[];
 
     [key: string]: any;
 }
@@ -9545,26 +9810,26 @@ export interface Response {
 }
 
 export interface RestoreCampaignRequest {
-    publicId: string;
+    publicId?: string;
 
     [key: string]: any;
 }
 
 export interface RestoreCategoryRequest {
-    publicId: string;
+    publicId?: string;
 
     [key: string]: any;
 }
 
 export interface RevealPickRequest {
-    draftPartId: string;
-    playOrder: number;
+    draftPartId?: string;
+    playOrder?: number;
 
     [key: string]: any;
 }
 
 export interface ScoreDraftPartPredictionsRequest {
-    draftPartPublicId?: string;
+    draftPartId?: string;
     finalMediaPublicIds?: string[];
 
     [key: string]: any;
@@ -9632,7 +9897,6 @@ export interface SearchHostResponse {
 }
 
 export interface SearchMediaRequest {
-    draftPartId: string;
     query: string;
     year?: number | undefined;
     page?: number;
@@ -9698,28 +9962,28 @@ export interface SeriesResponse {
 }
 
 export interface SetCampaignDraftRequest {
-    draftId?: string;
+    publicId?: string;
     campaignId?: string;
 
     [key: string]: any;
 }
 
 export interface SetCategoriesDraftRequest {
-    draftId?: string;
+    publicId?: string;
     categoryIds?: string[];
 
     [key: string]: any;
 }
 
 export interface SetCategoryDraftRequest {
-    draftId?: string;
+    publicId?: string;
     categoryId?: string;
 
     [key: string]: any;
 }
 
 export interface SetCommunityLimitsRequest {
-    draftPartId: string;
+    draftPartId?: string;
     maxCommunityPicks?: number;
     maxCommunityVetoes?: number;
 
@@ -9727,7 +9991,7 @@ export interface SetCommunityLimitsRequest {
 }
 
 export interface SetDraftPartPredictionRulesRequest {
-    draftPartPublicId?: string;
+    draftPartId?: string;
     predictionMode?: number;
     requiredCount?: number;
     topN?: number | undefined;
@@ -9737,22 +10001,22 @@ export interface SetDraftPartPredictionRulesRequest {
 }
 
 export interface SetDraftPartStatusRequest {
-    draftPublicId: string;
-    partIndex: number;
+    publicId?: string;
+    partIndex?: number;
     action?: number;
 
     [key: string]: any;
 }
 
 export interface SetDraftPositionsRequest {
-    draftPartId: string;
+    draftPartId?: string;
     positions?: DraftPositionRequestModel[];
 
     [key: string]: any;
 }
 
 export interface SetEpisodeNumberRequest {
-    draftId?: string;
+    publicId?: string;
     releaseChannel?: number;
     episodeNumber?: number;
 
@@ -9768,8 +10032,8 @@ export interface SetReleaseDateRequest {
 }
 
 export interface SetSubDraftSubjectRequest {
-    draftPartPublicId: string;
-    subDraftPublicId: string;
+    draftPartPublicId?: string;
+    subDraftPublicId?: string;
     subjectKind: number;
     subjectName: string;
 
@@ -9802,13 +10066,13 @@ export interface SpotlightPickResponse {
 }
 
 export interface StartZoomRecordingRequest {
-    draftPartId: string;
+    draftPartId?: string;
 
     [key: string]: any;
 }
 
 export interface StartZoomSessionRequest {
-    draftPartId: string;
+    draftPartId?: string;
 
     [key: string]: any;
 }
@@ -9821,7 +10085,7 @@ export interface StartZoomSessionResult {
 }
 
 export interface StopZoomRecordingRequest {
-    draftPartId: string;
+    draftPartId?: string;
 
     [key: string]: any;
 }
@@ -9837,7 +10101,7 @@ export interface StringSegment {
 }
 
 export interface SubmitPredictionSetRequest {
-    draftPartPublicId?: string;
+    draftPartId?: string;
     seasonPublicId?: string;
     contestantPublicId?: string;
     submittedByPersonPublicId?: string | undefined;
@@ -9857,7 +10121,7 @@ export interface TriviaResultRequestItem {
 }
 
 export interface UndoPickRequest {
-    draftPartPublicId: string;
+    draftPartPublicId?: string;
     playOrder?: number;
     subDraftPublicId?: string | undefined;
 
@@ -9887,7 +10151,7 @@ export interface UpdateDraftBoardItemRequest {
 }
 
 export interface UpdateDraftRequest {
-    publicId: string;
+    publicId?: string;
     title?: string | undefined;
     description?: string | undefined;
     seriesPublicId?: string | undefined;

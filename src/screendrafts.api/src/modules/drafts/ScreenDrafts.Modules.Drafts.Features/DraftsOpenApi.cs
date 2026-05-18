@@ -22,6 +22,7 @@ internal static class DraftsOpenApi
     public const string DraftPools = "DraftPools";
     public const string CandidateLists = "CandidateLists";
     public const string Predictions = "Predictions";
+    public const string Participants = "Participants";
   }
 
   public static class Names
@@ -179,5 +180,7 @@ internal static class DraftsOpenApi
     public const string DraftParts_StopZoomRecording = "DraftParts.StopZoomRecording";
 
     public const string People_GetUsersSocials = "People.GetUsersSocials";
+    public const string Participants_ListParticipants = "Participants.ListParticipants";
+    public const string Participants_GetById = "Participants.GetById";
   }
 }

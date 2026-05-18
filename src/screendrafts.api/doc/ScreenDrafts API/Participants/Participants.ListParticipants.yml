@@ -1,0 +1,39 @@
+info:
+  name: Participants.ListParticipants
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: "{{baseUrl}}/participants?page=3"
+  params:
+    - name: q
+      value: ""
+      type: query
+      disabled: true
+    - name: role
+      value: ""
+      type: query
+      disabled: true
+    - name: retired
+      value: ""
+      type: query
+      disabled: true
+    - name: sort
+      value: ""
+      type: query
+      disabled: true
+    - name: page
+      value: "3"
+      type: query
+    - name: pageSize
+      value: ""
+      type: query
+      disabled: true
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

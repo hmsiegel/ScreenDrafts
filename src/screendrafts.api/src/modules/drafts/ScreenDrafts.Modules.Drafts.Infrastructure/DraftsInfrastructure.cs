@@ -3,14 +3,20 @@
 public static class DraftsInfrastructure
 {
   private const string ModuleName = "Drafts";
-  public static IServiceCollection AddDraftsInfrastructure(this IServiceCollection services, IConfiguration configuration)
+
+  public static IServiceCollection AddDraftsInfrastructure(
+    this IServiceCollection services,
+    IConfiguration configuration
+  )
   {
     ArgumentNullException.ThrowIfNull(configuration);
 
-    services.AddDbContext<DraftsDbContext>((sp, options) =>
-    {
-      options.UseModuleDefaults(ModuleName, Schemas.Drafts, sp);
-    });
+    services.AddDbContext<DraftsDbContext>(
+      (sp, options) =>
+      {
+        options.UseModuleDefaults(ModuleName, Schemas.Drafts, sp);
+      }
+    );
 
     services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<DraftsDbContext>());
 

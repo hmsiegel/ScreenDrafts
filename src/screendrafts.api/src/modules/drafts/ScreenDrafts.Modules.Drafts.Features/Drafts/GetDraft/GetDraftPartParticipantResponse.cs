@@ -5,6 +5,7 @@ internal sealed record GetDraftPartParticipantResponse
   public Guid ParticipantIdValue { get; init; }
   public ParticipantKind ParticipantKindValue { get; init; } = default!;
   public string? DisplayName { get; init; }
+  public string? PersonPublicId { get; init; }
   public int StartingVetoes { get; init; }
   public int VetoesUsed { get; init; }
   public int RolloverVetoes { get; init; }

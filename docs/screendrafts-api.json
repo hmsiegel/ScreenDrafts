@@ -958,16 +958,6 @@
           "Predictions"
         ],
         "operationId": "Predictions_LockSet",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/LockPredictionSetRequest"
-              }
-            }
-          },
-          "required": true
-        },
         "responses": {
           "204": {
             "description": "No Content"
@@ -1521,6 +1511,142 @@
           },
           "400": {
             "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/people/public-profiles/by-person-ids": {
+      "post": {
+        "tags": [
+          "People"
+        ],
+        "operationId": "People.GetUsersSocials",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Request"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/participants": {
+      "get": {
+        "tags": [
+          "Participants"
+        ],
+        "operationId": "Participants.ListParticipants",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/ListParticipantsRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ListParticipantsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultOfParticipantListItem"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/participants/{personPublicId}": {
+      "get": {
+        "tags": [
+          "Participants"
+        ],
+        "operationId": "Participants.GetById",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/GetParticipantProfileRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetParticipantProfileRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetParticipantProfileResponse"
+                }
+              }
+            }
           },
           "401": {
             "description": "Unauthorized"
@@ -4882,7 +5008,7 @@
         "tags": [
           "Movies"
         ],
-        "operationId": "Movies.Search",
+        "operationId": "OnlineMedia.Search",
         "requestBody": {
           "content": {
             "*/*": {
@@ -4924,7 +5050,42 @@
         ]
       }
     },
-    "/draft-parts/{draftPartId}/media/search": {
+    "/movies/import": {
+      "post": {
+        "tags": [
+          "Movies"
+        ],
+        "operationId": "Media.Import",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FetchMediaRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "Accepted"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/media/search": {
       "get": {
         "tags": [
           "Media"
@@ -4958,12 +5119,6 @@
           },
           "400": {
             "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
           }
         },
         "security": [
@@ -5348,48 +5503,6 @@
           {}
         ]
       }
-    },
-    "/users/public-profiles/by-person-ids": {
-      "post": {
-        "tags": [
-          "Users"
-        ],
-        "operationId": "Users.GetUsersProfiles",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Request"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Response"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          }
-        },
-        "security": [
-          {}
-        ]
-      }
     }
   },
   "components": {
@@ -5435,7 +5548,6 @@
       },
       "AddCandidateEntryRequest": {
         "required": [
-          "draftPartId",
           "tmdbId"
         ],
         "type": "object",
@@ -5519,7 +5631,6 @@
       },
       "AddDrafterToTeamRequest": {
         "required": [
-          "drafterTeamId",
           "drafterId"
         ],
         "type": "object",
@@ -5717,9 +5828,6 @@
         }
       },
       "AddMovieToDraftPoolRequest": {
-        "required": [
-          "publicId"
-        ],
         "type": "object",
         "properties": {
           "publicId": {
@@ -5769,10 +5877,6 @@
         }
       },
       "AddPermissionToRoleRequest": {
-        "required": [
-          "permissionCode",
-          "roleName"
-        ],
         "type": "object",
         "properties": {
           "permissionCode": {
@@ -5807,7 +5911,6 @@
       },
       "AddSubDraftRequest": {
         "required": [
-          "draftPartPublicId",
           "index"
         ],
         "type": "object",
@@ -5826,10 +5929,6 @@
         }
       },
       "AdvanceSubDraftRequest": {
-        "required": [
-          "draftPartPublicId",
-          "subDraftPublicId"
-        ],
         "type": "object",
         "properties": {
           "draftPartPublicId": {
@@ -5841,10 +5940,6 @@
         }
       },
       "ApplyCommissionerOverrideRequest": {
-        "required": [
-          "draftPartId",
-          "playOrder"
-        ],
         "type": "object",
         "properties": {
           "draftPartId": {
@@ -5862,9 +5957,6 @@
       },
       "ApplySubDraftVetoRequest": {
         "required": [
-          "draftPartPublicId",
-          "subDraftPublicId",
-          "playOrder",
           "issuerPublicId",
           "issuerKind"
         ],
@@ -5899,8 +5991,6 @@
       },
       "ApplyVetoOverrideRequest": {
         "required": [
-          "draftPartId",
-          "playOrder",
           "participantKind"
         ],
         "type": "object",
@@ -5933,9 +6023,6 @@
         }
       },
       "ApplyVetoRequest": {
-        "required": [
-          "draftPartId"
-        ],
         "type": "object",
         "properties": {
           "draftPartId": {
@@ -5967,8 +6054,6 @@
       },
       "AssignParticipantToDraftPositionRequest": {
         "required": [
-          "draftPartId",
-          "positionPublicId",
           "participantKind"
         ],
         "type": "object",
@@ -5976,7 +6061,7 @@
           "draftPartId": {
             "type": "string"
           },
-          "positionPublicId": {
+          "positionId": {
             "type": "string"
           },
           "participantPublicId": {
@@ -5996,10 +6081,6 @@
         }
       },
       "AssignSubDraftTriviaRequest": {
-        "required": [
-          "draftPartPublicId",
-          "subDraftPublicId"
-        ],
         "type": "object",
         "properties": {
           "draftPartPublicId": {
@@ -6039,12 +6120,9 @@
         }
       },
       "AssignTriviaResultsRequest": {
-        "required": [
-          "draftPartPublicId"
-        ],
         "type": "object",
         "properties": {
-          "draftPartPublicId": {
+          "draftPartId": {
             "type": "string"
           },
           "results": {
@@ -6097,7 +6175,6 @@
       },
       "BulkAddCandidateEntriesRequest": {
         "required": [
-          "draftPart",
           "file"
         ],
         "type": "object",
@@ -6188,7 +6265,6 @@
       },
       "BulkAddMoviesToDraftBoardRequest": {
         "required": [
-          "draftId",
           "file"
         ],
         "type": "object",
@@ -6203,7 +6279,6 @@
       },
       "BulkAddMoviesToDraftPoolRequest": {
         "required": [
-          "draftId",
           "file"
         ],
         "type": "object",
@@ -6352,10 +6427,6 @@
         }
       },
       "ClearDraftPositionAssignmentRequest": {
-        "required": [
-          "draftPartId",
-          "positionPublicId"
-        ],
         "type": "object",
         "properties": {
           "draftPartId": {
@@ -6487,7 +6558,7 @@
       "CreateDraftPartRequest": {
         "type": "object",
         "properties": {
-          "draftId": {
+          "publicId": {
             "type": "string"
           },
           "partIndex": {
@@ -6517,9 +6588,6 @@
         }
       },
       "CreateDraftPoolRequest": {
-        "required": [
-          "publicId"
-        ],
         "type": "object",
         "properties": {
           "publicId": {
@@ -6879,6 +6947,99 @@
             "type": "string"
           },
           "isRetired": {
+            "type": "boolean"
+          }
+        }
+      },
+      "DrafterStatsResponse": {
+        "required": [
+          "drafterPublicId"
+        ],
+        "type": "object",
+        "properties": {
+          "drafterPublicId": {
+            "type": "string"
+          },
+          "totalDrafts": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "firstDraft": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/DraftBrief"
+              }
+            ]
+          },
+          "mostRecentDraft": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/DraftBrief"
+              }
+            ]
+          },
+          "filmsDrafted": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "vetoesUsed": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "vetoOverridesUsed": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "commissionerOverrides": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "timesVetoed": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "timesVetoOverridden": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "hasRolloverVeto": {
+            "type": "boolean"
+          },
+          "hasRolloverVetoOverride": {
             "type": "boolean"
           }
         }
@@ -7298,9 +7459,6 @@
         }
       },
       "EndZoomSessionRequest": {
-        "required": [
-          "draftPartId"
-        ],
         "type": "object",
         "properties": {
           "draftPartId": {
@@ -7427,6 +7585,70 @@
           }
         }
       },
+      "FetchMediaRequest": {
+        "type": "object",
+        "properties": {
+          "mediaType": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "tmdbId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "igdbId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "imdbId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "tvSeriesTmdbId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "seasonNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "episodeNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
       "FileResult": {
         "type": "object",
         "properties": {
@@ -7466,6 +7688,7 @@
       },
       "GenreModel": {
         "required": [
+          "tmdbId",
           "name"
         ],
         "type": "object",
@@ -7637,9 +7860,6 @@
         }
       },
       "GetCampaignRequest": {
-        "required": [
-          "publicId"
-        ],
         "type": "object",
         "properties": {
           "publicId": {
@@ -7651,9 +7871,6 @@
         }
       },
       "GetCandidateListRequest": {
-        "required": [
-          "draftPartId"
-        ],
         "type": "object",
         "properties": {
           "draftPartId": {
@@ -7686,9 +7903,6 @@
         }
       },
       "GetCategoryRequest": {
-        "required": [
-          "publicId"
-        ],
         "type": "object",
         "properties": {
           "publicId": {
@@ -7770,9 +7984,6 @@
         }
       },
       "GetDraftBoardRequest": {
-        "required": [
-          "draftId"
-        ],
         "type": "object",
         "properties": {
           "draftId": {
@@ -7801,9 +8012,6 @@
         "type": "object"
       },
       "GetDrafterProfileRequest": {
-        "required": [
-          "publicId"
-        ],
         "type": "object",
         "properties": {
           "publicId": {
@@ -7950,9 +8158,6 @@
         }
       },
       "GetDrafterTeamRequest": {
-        "required": [
-          "publicId"
-        ],
         "type": "object",
         "properties": {
           "publicId": {
@@ -7997,6 +8202,12 @@
           },
           "displayName": {
             "type": "string"
+          },
+          "personPublicId": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -8011,6 +8222,12 @@
             "$ref": "#/components/schemas/ParticipantKind"
           },
           "displayName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "personPublicId": {
             "type": [
               "null",
               "string"
@@ -8247,9 +8464,6 @@
         }
       },
       "GetDraftRequest": {
-        "required": [
-          "publicId"
-        ],
         "type": "object",
         "properties": {
           "publicId": {
@@ -8340,13 +8554,34 @@
               "null",
               "string"
             ]
+          },
+          "previousCampaignDraftPublicId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "previousCampaignDraftTitle": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "nextCampaignDraftPublicId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "nextCampaignDraftTitle": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
       "GetDraftStatusRequest": {
-        "required": [
-          "publicId"
-        ],
         "type": "object",
         "properties": {
           "publicId": {
@@ -8432,9 +8667,6 @@
         }
       },
       "GetHostRequest": {
-        "required": [
-          "publicId"
-        ],
         "type": "object",
         "properties": {
           "publicId": {
@@ -8568,9 +8800,6 @@
         }
       },
       "GetMediaRequest": {
-        "required": [
-          "publicId"
-        ],
         "type": "object",
         "properties": {
           "publicId": {
@@ -8579,9 +8808,6 @@
         }
       },
       "GetMediaSummaryRequest": {
-        "required": [
-          "publicId"
-        ],
         "type": "object",
         "properties": {
           "publicId": {
@@ -8833,10 +9059,97 @@
           }
         }
       },
-      "GetPermissionByCodeRequest": {
+      "GetParticipantProfileRequest": {
+        "type": "object",
+        "properties": {
+          "personPublicId": {
+            "type": "string"
+          }
+        }
+      },
+      "GetParticipantProfileResponse": {
         "required": [
-          "code"
+          "personPublicId",
+          "displayName"
         ],
+        "type": "object",
+        "properties": {
+          "personPublicId": {
+            "type": "string"
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "biography": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "location": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "isCommissioner": {
+            "type": "boolean"
+          },
+          "honorific": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/HonorificResponse"
+              }
+            ]
+          },
+          "socialHandles": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/SocialHandles"
+              }
+            ]
+          },
+          "drafterStats": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/DrafterStatsResponse"
+              }
+            ]
+          },
+          "hostStats": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/HostStatsResponse"
+              }
+            ]
+          },
+          "draftHistory": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DraftHistoryItem"
+            }
+          },
+          "vetoHistory": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VetoHistoryItem"
+            }
+          }
+        }
+      },
+      "GetPermissionByCodeRequest": {
         "type": "object",
         "properties": {
           "code": {
@@ -8853,9 +9166,6 @@
         }
       },
       "GetPickListRequest": {
-        "required": [
-          "draftPartId"
-        ],
         "type": "object",
         "properties": {
           "draftPartId": {
@@ -8883,9 +9193,6 @@
         }
       },
       "GetSeriesRequest": {
-        "required": [
-          "publicId"
-        ],
         "type": "object",
         "properties": {
           "publicId": {
@@ -8998,9 +9305,6 @@
         }
       },
       "GetUserRolesRequest": {
-        "required": [
-          "publicId"
-        ],
         "type": "object",
         "properties": {
           "publicId": {
@@ -9030,6 +9334,35 @@
         "properties": {
           "draftPartId": {
             "type": "string"
+          }
+        }
+      },
+      "HonorificResponse": {
+        "required": [
+          "honorificValue",
+          "honorificName",
+          "appearanceCount"
+        ],
+        "type": "object",
+        "properties": {
+          "honorificValue": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "honorificName": {
+            "type": "string"
+          },
+          "appearanceCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
           }
         }
       },
@@ -9080,6 +9413,45 @@
               "string"
             ],
             "format": "int32"
+          }
+        }
+      },
+      "HostStatsResponse": {
+        "required": [
+          "hostPublicId"
+        ],
+        "type": "object",
+        "properties": {
+          "hostPublicId": {
+            "type": "string"
+          },
+          "draftsHosted": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "firstHostedDraft": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/DraftBrief"
+              }
+            ]
+          },
+          "mostRecentHostedDraft": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/DraftBrief"
+              }
+            ]
           }
         }
       },
@@ -9211,9 +9583,6 @@
         }
       },
       "LinkUserPersonRequest": {
-        "required": [
-          "publicId"
-        ],
         "type": "object",
         "properties": {
           "publicId": {
@@ -9289,9 +9658,6 @@
         }
       },
       "ListDraftPositionsRequest": {
-        "required": [
-          "draftPartId"
-        ],
         "type": "object",
         "properties": {
           "draftPartId": {
@@ -9408,6 +9774,12 @@
               "string"
             ]
           },
+          "campaignPublicId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
           "minDrafters": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": [
@@ -9501,6 +9873,18 @@
             ],
             "format": "int32"
           },
+          "campaignPublicId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "campaignName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
           "releases": {
             "type": "array",
             "items": {
@@ -9532,6 +9916,59 @@
             "items": {
               "$ref": "#/components/schemas/LatestDraftResponse"
             }
+          }
+        }
+      },
+      "ListParticipantsRequest": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "role": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "retired": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "sort": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "honorific": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "page": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "pageSize": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
           }
         }
       },
@@ -9619,17 +10056,6 @@
             "items": {
               "$ref": "#/components/schemas/UpcomingDraftResponse"
             }
-          }
-        }
-      },
-      "LockPredictionSetRequest": {
-        "type": "object",
-        "properties": {
-          "draftPartPublicId": {
-            "type": "string"
-          },
-          "setPublicId": {
-            "type": "string"
           }
         }
       },
@@ -9830,6 +10256,12 @@
           },
           "isInMediaDatabase": {
             "type": "boolean"
+          },
+          "mediaPublicId": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -10034,6 +10466,61 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/MediaSearchResultResponse"
+            }
+          },
+          "totalCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "page": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "pageSize": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "totalPages": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "hasPreviousPage": {
+            "type": "boolean"
+          },
+          "hasNextPage": {
+            "type": "boolean"
+          }
+        }
+      },
+      "PagedResultOfParticipantListItem": {
+        "required": [
+          "items",
+          "totalCount",
+          "page",
+          "pageSize"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ParticipantListItem"
             }
           },
           "totalCount": {
@@ -10374,6 +10861,97 @@
           }
         }
       },
+      "ParticipantListItem": {
+        "required": [
+          "personPublicId",
+          "displayName"
+        ],
+        "type": "object",
+        "properties": {
+          "personPublicId": {
+            "type": "string"
+          },
+          "drafterPublicId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "hostPublicId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "isCommissioner": {
+            "type": "boolean"
+          },
+          "isRetired": {
+            "type": "boolean"
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "totalDrafts": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "filmsDrafted": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "vetoesUsed": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "draftsHosted": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "profilePicturePath": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "honorific": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/HonorificResponse"
+              }
+            ]
+          }
+        }
+      },
       "PeopleCollectionResponse": {
         "required": [
           "people"
@@ -10663,9 +11241,6 @@
         }
       },
       "PlayPickRequest": {
-        "required": [
-          "draftPartId"
-        ],
         "type": "object",
         "properties": {
           "draftPartId": {
@@ -10714,8 +11289,6 @@
       },
       "PlaySubDraftPickRequest": {
         "required": [
-          "draftPartPublicId",
-          "subDraftPublicId",
           "moviePublicId",
           "position",
           "playOrder",
@@ -11167,10 +11740,6 @@
         }
       },
       "RemoveCandidateListEntryRequest": {
-        "required": [
-          "draftPartId",
-          "tmdbId"
-        ],
         "type": "object",
         "properties": {
           "draftPartId": {
@@ -11187,10 +11756,6 @@
         }
       },
       "RemoveCategoryFromDraftRequest": {
-        "required": [
-          "draftId",
-          "categoryId"
-        ],
         "type": "object",
         "properties": {
           "draftId": {
@@ -11202,10 +11767,6 @@
         }
       },
       "RemoveDrafterFromTeamRequest": {
-        "required": [
-          "drafterTeamId",
-          "drafterId"
-        ],
         "type": "object",
         "properties": {
           "drafterTeamId": {
@@ -11298,47 +11859,11 @@
       "Request": {
         "type": "object",
         "properties": {
-          "firstName": {
-            "type": "string"
-          },
-          "lastName": {
-            "type": "string"
-          },
-          "middleName": {
-            "type": [
-              "null",
-              "string"
-            ]
-          },
-          "profilePicture": {
-            "type": [
-              "null",
-              "string"
-            ]
-          },
-          "twitterHandle": {
-            "type": [
-              "null",
-              "string"
-            ]
-          },
-          "instagramHandle": {
-            "type": [
-              "null",
-              "string"
-            ]
-          },
-          "letterboxdHandle": {
-            "type": [
-              "null",
-              "string"
-            ]
-          },
-          "blueskyHandle": {
-            "type": [
-              "null",
-              "string"
-            ]
+          "publicIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         }
       },
@@ -11378,9 +11903,6 @@
         }
       },
       "RestoreCampaignRequest": {
-        "required": [
-          "publicId"
-        ],
         "type": "object",
         "properties": {
           "publicId": {
@@ -11389,9 +11911,6 @@
         }
       },
       "RestoreCategoryRequest": {
-        "required": [
-          "publicId"
-        ],
         "type": "object",
         "properties": {
           "publicId": {
@@ -11400,10 +11919,6 @@
         }
       },
       "RevealPickRequest": {
-        "required": [
-          "draftPartId",
-          "playOrder"
-        ],
         "type": "object",
         "properties": {
           "draftPartId": {
@@ -11422,7 +11937,7 @@
       "ScoreDraftPartPredictionsRequest": {
         "type": "object",
         "properties": {
-          "draftPartPublicId": {
+          "draftPartId": {
             "type": "string"
           },
           "finalMediaPublicIds": {
@@ -11663,14 +12178,10 @@
       },
       "SearchMediaRequest": {
         "required": [
-          "draftPartId",
           "query"
         ],
         "type": "object",
         "properties": {
-          "draftPartId": {
-            "type": "string"
-          },
           "query": {
             "type": "string"
           },
@@ -11872,7 +12383,7 @@
       "SetCampaignDraftRequest": {
         "type": "object",
         "properties": {
-          "draftId": {
+          "publicId": {
             "type": "string"
           },
           "campaignId": {
@@ -11883,7 +12394,7 @@
       "SetCategoriesDraftRequest": {
         "type": "object",
         "properties": {
-          "draftId": {
+          "publicId": {
             "type": "string"
           },
           "categoryIds": {
@@ -11897,7 +12408,7 @@
       "SetCategoryDraftRequest": {
         "type": "object",
         "properties": {
-          "draftId": {
+          "publicId": {
             "type": "string"
           },
           "categoryId": {
@@ -11906,9 +12417,6 @@
         }
       },
       "SetCommunityLimitsRequest": {
-        "required": [
-          "draftPartId"
-        ],
         "type": "object",
         "properties": {
           "draftPartId": {
@@ -11935,7 +12443,7 @@
       "SetDraftPartPredictionRulesRequest": {
         "type": "object",
         "properties": {
-          "draftPartPublicId": {
+          "draftPartId": {
             "type": "string"
           },
           "predictionMode": {
@@ -11973,13 +12481,9 @@
         }
       },
       "SetDraftPartStatusRequest": {
-        "required": [
-          "draftPublicId",
-          "partIndex"
-        ],
         "type": "object",
         "properties": {
-          "draftPublicId": {
+          "publicId": {
             "type": "string"
           },
           "partIndex": {
@@ -11996,9 +12500,6 @@
         }
       },
       "SetDraftPositionsRequest": {
-        "required": [
-          "draftPartId"
-        ],
         "type": "object",
         "properties": {
           "draftPartId": {
@@ -12015,7 +12516,7 @@
       "SetEpisodeNumberRequest": {
         "type": "object",
         "properties": {
-          "draftId": {
+          "publicId": {
             "type": "string"
           },
           "releaseChannel": {
@@ -12058,8 +12559,6 @@
       },
       "SetSubDraftSubjectRequest": {
         "required": [
-          "draftPartPublicId",
-          "subDraftPublicId",
           "subjectKind",
           "subjectName"
         ],
@@ -12155,9 +12654,6 @@
         }
       },
       "StartZoomRecordingRequest": {
-        "required": [
-          "draftPartId"
-        ],
         "type": "object",
         "properties": {
           "draftPartId": {
@@ -12166,9 +12662,6 @@
         }
       },
       "StartZoomSessionRequest": {
-        "required": [
-          "draftPartId"
-        ],
         "type": "object",
         "properties": {
           "draftPartId": {
@@ -12192,9 +12685,6 @@
         }
       },
       "StopZoomRecordingRequest": {
-        "required": [
-          "draftPartId"
-        ],
         "type": "object",
         "properties": {
           "draftPartId": {
@@ -12241,7 +12731,7 @@
       "SubmitPredictionSetRequest": {
         "type": "object",
         "properties": {
-          "draftPartPublicId": {
+          "draftPartId": {
             "type": "string"
           },
           "seasonPublicId": {
@@ -12311,9 +12801,6 @@
         }
       },
       "UndoPickRequest": {
-        "required": [
-          "draftPartPublicId"
-        ],
         "type": "object",
         "properties": {
           "draftPartPublicId": {
@@ -12410,9 +12897,6 @@
         }
       },
       "UpdateDraftRequest": {
-        "required": [
-          "publicId"
-        ],
         "type": "object",
         "properties": {
           "publicId": {
@@ -12601,6 +13085,9 @@
     },
     {
       "name": "People"
+    },
+    {
+      "name": "Participants"
     },
     {
       "name": "Hosts"

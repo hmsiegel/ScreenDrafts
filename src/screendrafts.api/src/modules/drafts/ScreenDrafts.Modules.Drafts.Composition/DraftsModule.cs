@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Composition;
+﻿using ScreenDrafts.Modules.Drafts.Features.Participants;
+
+namespace ScreenDrafts.Modules.Drafts.Composition;
 
 public static class DraftsModule
 {
@@ -9,7 +11,7 @@ public static class DraftsModule
   {
     ArgumentNullException.ThrowIfNull(configuration);
 
-    services.AddDraftsFeatures();
+    services.AddDraftsFeatures(configuration);
 
     services.AddTypeHandler();
 
@@ -69,9 +71,13 @@ public static class DraftsModule
       .Endpoint(c => c.InstanceId = instanceId);
   }
 
-  private static IServiceCollection AddDraftsFeatures(this IServiceCollection services)
+  private static IServiceCollection AddDraftsFeatures(
+    this IServiceCollection services,
+    IConfiguration configuration
+  )
   {
     services.AddScoped(typeof(IPipelineBehavior<,>), typeof(DraftsUnitOfWorkBehavior<,>));
+    services.Configure<DraftsOptions>(configuration.GetSection(DraftsOptions.SectionName));
     services.AddScoped<ParticipantResolver>();
     services.AddScoped<DraftBoardParticipantResolver>();
     services.AddScoped<IDraftsIntegrationEventDispatcher, DraftsIntegrationEventDispatcher>();

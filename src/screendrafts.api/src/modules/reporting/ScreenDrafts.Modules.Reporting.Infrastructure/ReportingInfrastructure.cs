@@ -19,6 +19,7 @@ public static class ReportingInfrastructure
     );
 
     services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<ReportingDbContext>());
+    services.AddScoped<IReportingApi, ReportingApi>();
 
     services.AddMemoryCache();
 

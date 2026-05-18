@@ -38,4 +38,6 @@ global using ScreenDrafts.Modules.Reporting.Infrastructure.Database;
 global using ScreenDrafts.Modules.Reporting.Infrastructure.Drafts;
 global using ScreenDrafts.Modules.Reporting.Infrastructure.Inbox;
 global using ScreenDrafts.Modules.Reporting.Infrastructure.Outbox;
+global using ScreenDrafts.Modules.Reporting.Infrastructure.PublicApi;
+global using ScreenDrafts.Modules.Reporting.PublicApi;
 global using SmartEnum.EFCore;

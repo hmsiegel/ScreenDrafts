@@ -4,4 +4,5 @@ internal sealed record GetDraftHostResponse
 {
   public string HostPublicId { get; init; } = default!;
   public string DisplayName { get; init; } = default!;
+  public string? PersonPublicId { get; init; }
 }

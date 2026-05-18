@@ -39,13 +39,18 @@ export default async function DraftDetailPage({ params }: Props) {
   // GetDraftPartParticipantResponse has [key: string]: any so displayName may exist at runtime
   const participantNames = new Map<string, string>();
   const participantIndex = new Map<string, number>();
+  const COMMUNITY_PARTICIPANT_ID = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee";
+  participantNames.set(COMMUNITY_PARTICIPANT_ID, "Patreon Members");
+  // Community participants don't get a color index — they won't appear in
+  // the sidebar avatar list, so the index value doesn't matter.
+  participantIndex.set(COMMUNITY_PARTICIPANT_ID, 99);
   let pIdx = 0;
 
   for (const part of draft.parts ?? []) {
     for (const p of part.participants ?? []) {
       const pid = p.participantIdValue ?? "";
       if (pid && !participantNames.has(pid)) {
-        const name = (p as Record<string, unknown>).displayName as string | undefined;
+        const name = p.displayName;
         participantNames.set(pid, name ?? pid);
         participantIndex.set(pid, pIdx++);
       }
