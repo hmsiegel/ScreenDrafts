@@ -31,16 +31,28 @@ services:
     networks:
       - screendrafts
     depends_on:
-      - screendrafts.database
-      - screendrafts.identity
-      - screendrafts.seq
-      - screendrafts.redis
-      - screendrafts.jaeger
-      - screendrafts.queue
-      - screendrafts.mongo
-      - screendrafts.email
-      - screendrafts.elk
-      - screendrafts.migrator
+      screendrafts.database:
+        condition: service_started
+      screendrafts.identity:
+        condition: service_started
+      screendrafts.seq:
+        condition: service_started
+      screendrafts.redis:
+        condition: service_started
+      screendrafts.jaeger:
+        condition: service_started
+      screendrafts.queue:
+        condition: service_started
+      screendrafts.mongo:
+        condition: service_started
+      screendrafts.email:
+        condition: service_started
+      screendrafts.elk:
+        condition: service_started
+      screendrafts.migrator:
+        condition: service_started
+      vault-init:
+        condition: service_completed_successfully
 
   # YARP Gateway
   screendrafts.gateway:
@@ -202,6 +214,48 @@ services:
       - "5044:5044"
     networks:
       - screendrafts
+
+  # Vault Init
+  # Runs once on `docker compose up`, seeds all secrets, then exits.
+  # screendrafts.web depends on this completing successfully before it starts.
+  vault-init:
+    image: hashicorp/vault:1.13.3
+    environment:
+      - VAULT_DEV_ROOT_TOKEN_ID=screendrafts-dev-root-token
+    volumes:
+      - ./infrastructure/vault/vault-init.sh:/vault-init.sh:ro
+    entrypoint: ["sh", "-c", "tr -d '\\r' < /vault-init.sh | sh"]
+    depends_on:
+      screendrafts.vault:
+        condition: service_healthy
+    networks:
+      - screendrafts
+    restart: "no"
+
+  # HashiCorp Vault
+  # Secrets management — dev mode: auto-unsealed, in-memory, no persistence.
+  # Secrets survive container restarts only while the container is running;
+  # vault-init re-seeds on every fresh `docker compose up`.
+  screendrafts.vault:
+    image: hashicorp/vault:1.13.3
+    container_name: screendrafts.vault
+    command: vault server -dev
+    environment:
+      - VAULT_DEV_ROOT_TOKEN_ID=screendrafts-dev-root-token
+      - VAULT_DEV_LISTEN_ADDRESS=0.0.0.0:8200
+      - VAULT_DISABLE_MLOCK=true
+      - VAULT_LOG_LEVEL=warn
+    ports:
+      - 8200:8200
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://127.0.0.1:8200/v1/sys/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+    networks:
+      - screendrafts
+
 
 volumes:
   keycloak-db-data:

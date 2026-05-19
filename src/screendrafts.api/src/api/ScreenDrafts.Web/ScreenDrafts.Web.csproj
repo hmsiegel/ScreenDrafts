@@ -29,6 +29,7 @@
     <PackageReference Include="Serilog.AspNetCore" />
     <PackageReference Include="Serilog.Sinks.Seq" />
     <PackageReference Include="SharpCompress" />
+    <PackageReference Include="VaultSharp.Extensions.Configuration" />
   </ItemGroup>
 
   <ItemGroup>

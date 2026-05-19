@@ -476,3 +476,4 @@ FodyWeavers.xsd
 /src/screendrafts.api/tools/patch-keycloak-users.ps1
 /src/screendrafts.api/tools/users_export.csv
 /src/screendrafts.api/data/tools/spotify_url_filler.py
+/src/screendrafts.api/infrastructure/vault/vault-init.sh

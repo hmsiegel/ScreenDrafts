@@ -79,6 +79,8 @@
     <PackageVersion Include="Quartz.Extensions.Hosting" Version="3.18.1" />
     <PackageVersion Include="Scrutor" Version="7.0.0" />
     <!-- Gateway -->
+    <PackageVersion Include="VaultSharp" Version="1.17.5.1" />
+    <PackageVersion Include="VaultSharp.Extensions.Configuration" Version="1.1.5" />
     <PackageVersion Include="Yarp.ReverseProxy" Version="2.3.0" />
     <!-- Seeding -->
     <PackageVersion Include="Serilog.Extensions.Hosting" Version="10.0.0" />

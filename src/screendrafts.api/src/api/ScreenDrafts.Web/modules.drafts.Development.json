@@ -9,10 +9,7 @@
       "BatchSize": 20
     },
     "People": {
-      "CommissionerPersonPublicIds": [
-        "pe_FssS7cwtd2b78SC",
-        "pe_qxaLv3nTNTjZqtF"
-      ]
+      "CommissionerPersonPublicIds": ""
     }
   }
 }

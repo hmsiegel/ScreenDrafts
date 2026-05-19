@@ -1,7 +1,17 @@
-﻿var builder = WebApplication.CreateBuilder(args);
+﻿using VaultSharp.Extensions.Configuration;
 
-builder.Host.UseSerilog((context, config) =>
-  config.ReadFrom.Configuration(context.Configuration));
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog((context, config) => config.ReadFrom.Configuration(context.Configuration));
+
+var vaultSection = builder.Configuration.GetSection("Vault");
+
+builder.Configuration.AddVaultConfiguration(
+  () =>
+    new VaultOptions(vaultAddress: vaultSection["Address"]!, vaultToken: vaultSection["Token"]!),
+  "screendrafts",
+  vaultSection["MountPoint"]
+);
 
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
@@ -10,7 +20,9 @@ var configuration = builder.Configuration;
 
 var databaseConnectionString = builder.Services.AddPostgresDatabase(configuration);
 var redisConnectionString = builder.Configuration.GetConnectionStringOrThrow("Cache")!;
-var rabbitMqSettings = new RabbitMqSettings(builder.Configuration.GetConnectionStringOrThrow("Queue"));
+var rabbitMqSettings = new RabbitMqSettings(
+  builder.Configuration.GetConnectionStringOrThrow("Queue")
+);
 var mongoConnectionString = builder.Configuration.GetConnectionStringOrThrow("Mongo")!;
 
 builder.Services.AddApplication(AssemblyReferences.FeatureAssemblies, configuration);
@@ -27,22 +39,22 @@ builder.Services.AddInfrastructure(
     MoviesModule.ConfigureConsumers,
     ReportingModule.ConfigureConsumers,
     RealTimeUpdatesModule.ConfigureConsumers,
-    UsersModule.ConfigureConsumers
-    ],
-  [
-      AuditModule.ConfigureEndpoints
-      ],
+    UsersModule.ConfigureConsumers,
+  ],
+  [AuditModule.ConfigureEndpoints],
   rabbitMqSettings,
   redisConnectionString,
   mongoConnectionString,
   databaseConnectionString,
-  AssemblyReferences.InfrastructureAssemblies);
+  AssemblyReferences.InfrastructureAssemblies
+);
 builder.Services.AddPresentation();
 
-builder.Services.AddFastEndpoints(opt =>
-{
-  opt.Assemblies = AssemblyReferences.FeatureAssemblies;
-})
+builder
+  .Services.AddFastEndpoints(opt =>
+  {
+    opt.Assemblies = AssemblyReferences.FeatureAssemblies;
+  })
   .SwaggerDocument(o => o.ShortSchemaNames = true);
 
 builder.Services.ConfigureOpenApi(builder.Configuration);
@@ -51,13 +63,10 @@ builder.Configuration.AddModuleConfiguration(ModuleReferences.Modules);
 
 var keyCloakHealthUrl = builder.Configuration.GetKeyCloakHealthUrl();
 
-builder.Services
-  .AddSingleton(sp =>
+builder
+  .Services.AddSingleton(sp =>
   {
-    var factory = new ConnectionFactory
-    {
-      Uri = new Uri(rabbitMqSettings.Host)
-    };
+    var factory = new ConnectionFactory { Uri = new Uri(rabbitMqSettings.Host) };
     return factory.CreateConnectionAsync().GetAwaiter().GetResult();
   })
   .AddSingleton(sp => new MongoClient(mongoConnectionString))
@@ -81,7 +90,6 @@ app.UseFastEndpoints(c =>
   };
 });
 
-
 app.MapHub<DraftHub>("/drafts/hub");
 
 if (app.Environment.IsDevelopment())
@@ -94,10 +102,10 @@ if (app.Environment.IsDevelopment())
   app.ApplyMigrations();
 }
 
-app.MapHealthChecks("health", new HealthCheckOptions
-{
-  ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-});
+app.MapHealthChecks(
+  "health",
+  new HealthCheckOptions { ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse }
+);
 
 app.UseLogContextTraceLogging();
 app.UseSerilogRequestLogging();
@@ -108,10 +116,7 @@ app.UseAuthorization();
 
 await app.RunAsync();
 
-
 public partial class Program
 {
-  protected Program()
-  {
-  }
+  protected Program() { }
 }
