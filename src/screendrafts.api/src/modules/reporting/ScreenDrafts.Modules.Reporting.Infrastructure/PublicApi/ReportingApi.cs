@@ -1,4 +1,5 @@
-﻿using ScreenDrafts.Modules.Reporting.PublicApi;
+﻿using Microsoft.Extensions.Caching.Distributed;
+using ScreenDrafts.Modules.Reporting.PublicApi;
 
 namespace ScreenDrafts.Modules.Reporting.Infrastructure.PublicApi;
 
@@ -10,7 +11,8 @@ internal sealed class ReportingApi(
   private readonly IDbConnectionFactory _connectionFactory = connectionFactory;
   private readonly ICacheService _cacheService = cacheService;
 
-  private const string CacheKey = "reporting:drafter-honorific:";
+  private const string DrafterHonorificCacheKey = "reporting:drafter-honorific:";
+  private const string MediaHonorificCacheKey = "reporting:media-honorific:";
   private static readonly TimeSpan _cacheDuration = TimeSpan.FromHours(1);
 
   public async Task<DrafterHonorificResponse?> GetDrafterHonorificAsync(
@@ -19,7 +21,7 @@ internal sealed class ReportingApi(
   )
   {
     var cached = await _cacheService.GetAsync<DrafterHonorificResponse>(
-      $"{CacheKey}{drafterInternalId}",
+      $"{DrafterHonorificCacheKey}{drafterInternalId}",
       cancellationToken
     );
 
@@ -32,15 +34,15 @@ internal sealed class ReportingApi(
 
     const string sql = $"""
       SELECT
-        dh.honorific            AS {nameof(HonorificRow.HonorificValue)},
-        dh.appearance_count     AS {nameof(HonorificRow.AppearanceCount)}
+        dh.honorific            AS {nameof(DrafterHonorificRow.HonorificValue)},
+        dh.appearance_count     AS {nameof(DrafterHonorificRow.AppearanceCount)}
       FROM
         reporting.drafter_honorifics dh
       WHERE
         dh.drafter_id_value = @DrafterInternalId
       """;
 
-    var row = await connections.QuerySingleOrDefaultAsync<HonorificRow>(
+    var row = await connections.QuerySingleOrDefaultAsync<DrafterHonorificRow>(
       new CommandDefinition(
         sql,
         new { DrafterInternalId = drafterInternalId },
@@ -63,7 +65,7 @@ internal sealed class ReportingApi(
     };
 
     await _cacheService.SetAsync(
-      $"{CacheKey}{drafterInternalId}",
+      $"{DrafterHonorificCacheKey}{drafterInternalId}",
       result,
       _cacheDuration,
       cancellationToken
@@ -76,7 +78,7 @@ internal sealed class ReportingApi(
     CancellationToken cancellationToken = default
   )
   {
-    var cacheKey = $"{CacheKey}{honorificValue}";
+    var cacheKey = $"{DrafterHonorificCacheKey}{honorificValue}";
 
     var cached = await _cacheService.GetAsync<List<Guid>>(cacheKey, cancellationToken);
 
@@ -108,5 +110,67 @@ internal sealed class ReportingApi(
     return ids;
   }
 
-  private sealed record HonorificRow(int HonorificValue, int AppearanceCount);
+  public async Task<MediaHonorificRecord?> GetMediaHonorificAsync(
+    string mediaPublicId,
+    CancellationToken ct = default
+  )
+  {
+    var cacheKey = $"{MediaHonorificCacheKey}{mediaPublicId}";
+
+    var cached = await _cacheService.GetAsync<MediaHonorificRecord>(cacheKey, ct);
+
+    if (cached is not null)
+    {
+      return cached;
+    }
+
+    await using var connection = await _connectionFactory.OpenConnectionAsync(ct);
+
+    const string sql = """
+      SELECT
+          appearance_honorific    AS AppearanceHonorificValue,
+          position_honorific      AS PositionHonorificValue,
+          appearance_count        AS AppearanceCount
+      FROM reporting.movie_honorifics
+      WHERE movie_public_id = @MediaPublicId
+      """;
+
+    var row = await connection.QuerySingleOrDefaultAsync<DraftHonorificRow>(
+      sql,
+      new { MediaPublicId = mediaPublicId }
+    );
+
+    if (row is null)
+      return null;
+
+    // Map appearance_honorific int to its name
+    var appearanceName = row.AppearanceHonorificValue switch
+    {
+      1 => "Marquee of Fame",
+      2 => "Hat Trick",
+      3 => "Grand Slam",
+      4 => "High Five",
+      _ => "None",
+    };
+
+    var record = new MediaHonorificRecord
+    {
+      AppearanceHonorificValue = row.AppearanceHonorificValue,
+      AppearanceHonorificName = appearanceName,
+      PositionHonorificValue = row.PositionHonorificValue,
+      AppearanceCount = row.AppearanceCount,
+    };
+
+    await _cacheService.SetAsync(cacheKey, record, TimeSpan.FromHours(1), ct);
+
+    return record;
+  }
+
+  private sealed record DrafterHonorificRow(int HonorificValue, int AppearanceCount);
+
+  private sealed record DraftHonorificRow(
+    int AppearanceHonorificValue,
+    int PositionHonorificValue,
+    int AppearanceCount
+  );
 }

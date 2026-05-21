@@ -8,16 +8,20 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<GetMediaRequest, MediaResp
     Description(x =>
     {
       x.WithTags(MoviesOpenApi.Tags.Media)
-      .WithName(MoviesOpenApi.Names.Media_Get)
-      .Produces<MediaResponse>(StatusCodes.Status200OK)
-      .Produces(StatusCodes.Status404NotFound);
+        .WithName(MoviesOpenApi.Names.Media_Get)
+        .Produces<MediaResponse>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status404NotFound);
     });
-    Policies(MoviesAuth.Permissions.MediaRead);
+    AllowAnonymous();
   }
 
   public override async Task HandleAsync(GetMediaRequest req, CancellationToken ct)
   {
-    var query = new GetMediaQuery { PublicId = req.PublicId };
+    var includePatreon =
+      User.Identity?.IsAuthenticated == true
+      && User.HasPermission(MoviesAuth.Permissions.MediaReadPatreon);
+
+    var query = new GetMediaQuery { PublicId = req.PublicId, IncludePatreon = includePatreon };
     var result = await Sender.Send(query, ct);
     await this.SendOkAsync(result, ct);
   }

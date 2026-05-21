@@ -11,11 +11,9 @@ public interface IReportingApi
     int honorificValue,
     CancellationToken cancellationToken = default
   );
-}
 
-public sealed record DrafterHonorificResponse
-{
-  public required int HonorificValue { get; init; }
-  public required string HonorificName { get; init; }
-  public required int AppearanceCount { get; init; }
+  Task<MediaHonorificRecord?> GetMediaHonorificAsync(
+    string mediaPublicId,
+    CancellationToken ct = default
+  );
 }

@@ -54,7 +54,7 @@ internal sealed class ListDraftsQueryHandler(IDbConnectionFactory connectionFact
     var sqlBuilder = new StringBuilder(baseSql);
     var p = new DynamicParameters();
 
-    var allowedChannels = request.IncludePatreonOnly
+    var allowedChannels = request.IncludePatreon
       ? new[] { MainFeedChannel, PatreonChannel }
       : [MainFeedChannel];
     p.Add("allowedChannels", allowedChannels);

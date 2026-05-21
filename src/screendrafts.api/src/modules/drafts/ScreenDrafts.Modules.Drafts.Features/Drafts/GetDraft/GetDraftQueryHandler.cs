@@ -259,7 +259,7 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
         pk.draft_part_id AS PartId,
         pk.play_order AS {nameof(GetDraftPickResponse.PlayOrder)},
         pk.position AS {nameof(GetDraftPickResponse.Position)},
-        m.imdb_id AS {nameof(GetDraftPickResponse.MoviePublicId)},
+        m.public_id AS {nameof(GetDraftPickResponse.MoviePublicId)},
         m.movie_title AS {nameof(GetDraftPickResponse.MovieTitle)},
         pk.movie_version_name AS {nameof(GetDraftPickResponse.MovieVersionName)},
         pk.acted_by_public_id AS {nameof(GetDraftPickResponse.ActedByPublicId)},

@@ -3,25 +3,27 @@
 import { useRouter } from "next/navigation";
 
 const TABS = [
-  { value: "",          label: "ALL" },
-  { value: "Movie",     label: "MOVIES" },
-  { value: "TvShow",    label: "TV" },
-  { value: "VideoGame", label: "GAMES" },
+  { value: "",  label: "ALL" },
+  { value: "0", label: "MOVIES" },
+  { value: "1", label: "TV" },
+  { value: "3", label: "GAMES" },
 ];
 
 interface MediaTypeTabsProps {
   mediaType: string;
   sort: string;
   q?: string;
+  year?: string;
 }
 
-export default function MediaTypeTabs({ mediaType, sort, q }: MediaTypeTabsProps) {
+export default function MediaTypeTabs({ mediaType, sort, q, year }: MediaTypeTabsProps) {
   const router = useRouter();
 
   function handleTab(value: string) {
     const qs = new URLSearchParams({ sort, page: "1" });
     if (value) qs.set("mediaType", value);
     if (q) qs.set("q", q);
+    if (year) qs.set("year", year);
     router.push(`?${qs.toString()}`);
   }
 

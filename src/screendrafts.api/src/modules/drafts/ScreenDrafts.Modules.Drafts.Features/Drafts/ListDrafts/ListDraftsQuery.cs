@@ -4,7 +4,7 @@ internal sealed record ListDraftsQuery : IQuery<PagedResult<ListDraftsResponse>>
 {
   public int Page { get; init; }
   public int PageSize { get; init; }
-  public bool IncludePatreonOnly { get; init; }
+  public bool IncludePatreon { get; init; }
   public DateOnly? FromDate { get; init; }
   public DateOnly? ToDate { get; init; }
   public int? DraftType { get; init; }

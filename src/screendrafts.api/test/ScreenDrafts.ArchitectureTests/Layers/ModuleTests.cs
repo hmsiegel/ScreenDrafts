@@ -165,6 +165,7 @@ public class ModuleTests : BaseTest
       MoviesIntegrationEventsNamespace,
       RealTimeUpdatesIntegrationEventsNamespace,
       ReportingIntegrationEventsNamespace,
+      ReportingPublicApiNamespace,
       UsersIntegrationEventsNamespace,
       UsersPublicApiNameSpace,
     ];

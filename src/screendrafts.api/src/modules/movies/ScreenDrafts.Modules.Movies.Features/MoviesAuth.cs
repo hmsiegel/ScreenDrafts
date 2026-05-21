@@ -11,5 +11,6 @@ internal static class MoviesAuth
     internal const string CrewSearch = "crew:search";
     internal const string GenresSearch = "genres:search";
     internal const string StudiosSearch = "studios:search";
+    internal const string MediaReadPatreon = "media:read-patreon";
   }
 }

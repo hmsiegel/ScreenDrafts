@@ -6,7 +6,8 @@ public sealed class DraftRelease
     DraftPartId partId,
     ReleaseChannel releaseChannel,
     DateOnly releaseDate,
-    DateTime createdOnUtc)
+    DateTime createdOnUtc
+  )
   {
     PartId = partId;
     ReleaseChannel = releaseChannel;
@@ -18,6 +19,7 @@ public sealed class DraftRelease
   {
     // For EF
   }
+
   public DraftPartId PartId { get; private set; } = default!;
   public DraftPart DraftPart { get; private set; } = default!;
   public ReleaseChannel ReleaseChannel { get; private set; } = default!;
@@ -27,7 +29,8 @@ public sealed class DraftRelease
   public static Result<DraftRelease> Create(
     DraftPartId partId,
     ReleaseChannel releaseChannel,
-    DateOnly releaseDate)
+    DateOnly releaseDate
+  )
   {
     ArgumentNullException.ThrowIfNull(releaseChannel);
     ArgumentNullException.ThrowIfNull(partId);
@@ -46,7 +49,8 @@ public sealed class DraftRelease
       partId: partId,
       releaseChannel: releaseChannel,
       releaseDate: releaseDate,
-      createdOnUtc: DateTime.UtcNow);
+      createdOnUtc: DateTime.UtcNow
+    );
 
     return Result.Success(draftRelease);
   }

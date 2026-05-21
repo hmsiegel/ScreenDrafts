@@ -17,7 +17,8 @@ public sealed partial class DraftPart : AggregateRoot<DraftPartId, Guid>
     int? maxPosition,
     DateTime createdAtUtc,
     string publicId,
-    DraftPartId? id = null)
+    DraftPartId? id = null
+  )
     : base(id ?? DraftPartId.CreateUnique())
   {
     PublicId = publicId;
@@ -84,12 +85,11 @@ public sealed partial class DraftPart : AggregateRoot<DraftPartId, Guid>
 
   /// <summary>
   /// The Zoom Video SDK session name for this draft part.
-  /// Set when the host starts a session; used by participants to join 
+  /// Set when the host starts a session; used by participants to join
   /// and by the recording webhook to correlate completed recordings.
   /// Null when no session is active or has been started.
   /// </summary>
   public string? ZoomSessionName { get; private set; }
-
 
   public IReadOnlyCollection<SubDraft> SubDrafts => _subDrafts.AsReadOnly();
 
@@ -98,14 +98,16 @@ public sealed partial class DraftPart : AggregateRoot<DraftPartId, Guid>
   public IReadOnlyCollection<DraftRelease> Releases => _releases.AsReadOnly();
   public IReadOnlyCollection<TriviaResult> TriviaResults => _triviaResults.AsReadOnly();
   public IReadOnlyCollection<Pick> Picks => _picks.AsReadOnly();
-  public IReadOnlyCollection<RequiredMovieVersion> RequiredMovieVersions => _requiredMovieVersions.AsReadOnly();
+  public IReadOnlyCollection<RequiredMovieVersion> RequiredMovieVersions =>
+    _requiredMovieVersions.AsReadOnly();
 
   public static Result<DraftPart> Create(
     DraftId draftId,
     string draftPublicId,
     int partIndex,
     DraftPartGamePlaySnapshot gameplay,
-    string publicId)
+    string publicId
+  )
   {
     if (draftId == null)
     {
@@ -129,10 +131,11 @@ public sealed partial class DraftPart : AggregateRoot<DraftPartId, Guid>
       minPosition: gameplay.MinPosition,
       maxPosition: gameplay.MaxPosition,
       createdAtUtc: DateTime.UtcNow,
-      publicId: publicId)
+      publicId: publicId
+    )
     {
       DraftType = gameplay.DraftType,
-      SeriesId = gameplay.SeriesId
+      SeriesId = gameplay.SeriesId,
     };
 
     var gameBoardResult = GameBoard.Create(draftPart);
@@ -159,7 +162,8 @@ public sealed partial class DraftPart : AggregateRoot<DraftPartId, Guid>
     string publicId,
     DateTime? scheduledForUtc = null,
     DraftPartId? id = null,
-    DateTime? createdAtUtc = null)
+    DateTime? createdAtUtc = null
+  )
   {
     if (draftId == null)
     {
@@ -194,28 +198,28 @@ public sealed partial class DraftPart : AggregateRoot<DraftPartId, Guid>
       maxPosition: maxPosition,
       publicId: publicId,
       createdAtUtc: createdAtUtc ?? DateTime.UtcNow,
-      id: id)
+      id: id
+    )
     {
       Status = status,
       SeriesId = seriesId,
       DraftType = draftType,
-      ScheduledForUtc = scheduledForUtc
+      ScheduledForUtc = scheduledForUtc,
     };
     return draftPart;
   }
 
   public DraftRelease AddRelease(ReleaseChannel channel, DateOnly date)
   {
-    var release = DraftRelease.Create(
-      partId: Id,
-      releaseChannel: channel,
-      releaseDate: date).Value;
+    var release = DraftRelease.Create(partId: Id, releaseChannel: channel, releaseDate: date).Value;
     _releases.Add(release);
     Raise(new ReleaseAddedDomainEvent(DraftId.Value, Id.Value));
     return release;
   }
 
-  public Result AssignTriviaResults(IEnumerable<(Participant participant, int Position, int QuestionsWon)> results)
+  public Result AssignTriviaResults(
+    IEnumerable<(Participant participant, int Position, int QuestionsWon)> results
+  )
   {
     ArgumentNullException.ThrowIfNull(results);
 
@@ -237,7 +241,8 @@ public sealed partial class DraftPart : AggregateRoot<DraftPartId, Guid>
         participantId: participant,
         position: position,
         questionsWon: questionsWon,
-        draftPart: this);
+        draftPart: this
+      );
 
       if (result.IsFailure)
       {
@@ -247,12 +252,15 @@ public sealed partial class DraftPart : AggregateRoot<DraftPartId, Guid>
       _triviaResults.Add(result.Value);
     }
 
-    Raise(new TriviaResultsAssignedDomainEvent(
-      draftPartId: Id.Value,
-      triviaResults: _triviaResults
-        .Select(t => (t.ParticipantId.Value, t.Position))
-        .ToList()
-        .AsReadOnly()));
+    Raise(
+      new TriviaResultsAssignedDomainEvent(
+        draftPartId: Id.Value,
+        triviaResults: _triviaResults
+          .Select(t => (t.ParticipantId.Value, t.Position))
+          .ToList()
+          .AsReadOnly()
+      )
+    );
 
     UpdatedAtUtc = DateTime.UtcNow;
 
@@ -342,7 +350,8 @@ public sealed partial class DraftPart : AggregateRoot<DraftPartId, Guid>
 
   public Result AssignSubDraftTriviaResults(
     SubDraftId subDraftId,
-    IEnumerable<(Participant participant, int Position, int QuestionsWon)> results)
+    IEnumerable<(Participant participant, int Position, int QuestionsWon)> results
+  )
   {
     ArgumentNullException.ThrowIfNull(results);
 
@@ -365,7 +374,8 @@ public sealed partial class DraftPart : AggregateRoot<DraftPartId, Guid>
         position: position,
         questionsWon: questionsWon,
         draftPart: this,
-        subDraftId: subDraftId);
+        subDraftId: subDraftId
+      );
 
       if (result.IsFailure)
       {
@@ -375,13 +385,16 @@ public sealed partial class DraftPart : AggregateRoot<DraftPartId, Guid>
       _triviaResults.Add(result.Value);
     }
 
-    Raise(new TriviaResultsAssignedDomainEvent(
-      draftPartId: Id.Value,
-      triviaResults: _triviaResults
-        .Where(t => t.SubDraftId == subDraftId)
-        .Select(t => (t.ParticipantId.Value, t.Position))
-        .ToList()
-        .AsReadOnly()));
+    Raise(
+      new TriviaResultsAssignedDomainEvent(
+        draftPartId: Id.Value,
+        triviaResults: _triviaResults
+          .Where(t => t.SubDraftId == subDraftId)
+          .Select(t => (t.ParticipantId.Value, t.Position))
+          .ToList()
+          .AsReadOnly()
+      )
+    );
 
     UpdatedAtUtc = DateTime.UtcNow;
 

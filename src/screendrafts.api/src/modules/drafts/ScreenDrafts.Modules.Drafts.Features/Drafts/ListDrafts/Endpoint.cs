@@ -19,7 +19,7 @@ internal sealed class Endpoint
 
   public override async Task HandleAsync(ListDraftsRequest req, CancellationToken ct)
   {
-    var includePatreonOnly =
+    var includePatreon =
       User.Identity?.IsAuthenticated == true
       && User.HasPermission(DraftsAuth.Permissions.DraftReadPatreon);
 
@@ -39,7 +39,7 @@ internal sealed class Endpoint
       Q = req.Q,
       SortBy = req.SortBy,
       Dir = req.Dir,
-      IncludePatreonOnly = includePatreonOnly,
+      IncludePatreon = includePatreon,
     };
     var result = await Sender.Send(query, ct);
     await this.SendOkAsync(result, ct);

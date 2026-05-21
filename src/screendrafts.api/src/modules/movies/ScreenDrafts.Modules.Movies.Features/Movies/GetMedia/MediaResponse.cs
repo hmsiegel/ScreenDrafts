@@ -8,6 +8,7 @@ public sealed record MediaResponse
   private readonly List<WriterResponse> _writers = [];
   private readonly List<ProducerResponse> _producers = [];
   private readonly List<ProductionCompanyResponse> _productionCompanies = [];
+  private readonly List<MediaAppearanceResponse> _mediaAppearances = [];
 
   public Guid Id { get; init; }
   public string PublicId { get; init; } = default!;
@@ -25,18 +26,47 @@ public sealed record MediaResponse
   public int? SeasonNumber { get; init; }
   public int? EpisodeNumber { get; init; }
 
-
   public ReadOnlyCollection<GenreResponse> Genres => _genres.AsReadOnly();
   public ReadOnlyCollection<ActorResponse> Actors => _actors.AsReadOnly();
   public ReadOnlyCollection<DirectorResponse> Directors => _directors.AsReadOnly();
   public ReadOnlyCollection<WriterResponse> Writers => _writers.AsReadOnly();
   public ReadOnlyCollection<ProducerResponse> Producers => _producers.AsReadOnly();
-  public ReadOnlyCollection<ProductionCompanyResponse> ProductionCompanies => _productionCompanies.AsReadOnly();
+  public ReadOnlyCollection<ProductionCompanyResponse> ProductionCompanies =>
+    _productionCompanies.AsReadOnly();
+  public ReadOnlyCollection<MediaAppearanceResponse> MediaAppearances =>
+    _mediaAppearances.AsReadOnly();
+
+  public MediaHonorificResponse? Honorific { get; private set; }
+  public MediaStatsResponse Stats { get; private set; } = default!;
 
   public void AddGenre(GenreResponse genre) => _genres.Add(genre);
+
   public void AddActor(ActorResponse actor) => _actors.Add(actor);
+
   public void AddDirector(DirectorResponse director) => _directors.Add(director);
+
   public void AddWriter(WriterResponse writer) => _writers.Add(writer);
+
   public void AddProducer(ProducerResponse producer) => _producers.Add(producer);
-  public void AddProductionCompany(ProductionCompanyResponse productionCompany) => _productionCompanies.Add(productionCompany);
+
+  public void AddProductionCompany(ProductionCompanyResponse productionCompany) =>
+    _productionCompanies.Add(productionCompany);
+
+  public void AddMediaAppearance(MediaAppearanceResponse mediaAppearance) =>
+    _mediaAppearances.Add(mediaAppearance);
+
+  public void SetHonorific(MediaHonorificResponse? honorific) => Honorific = honorific;
+
+  public void ComputeStats()
+  {
+    var played = _mediaAppearances.Count;
+    var vetoed = _mediaAppearances.Count(a =>
+      a.WasVetoed && !a.WasVetoOverridden && !a.WasCommissionerOverride
+    );
+    var saved = _mediaAppearances.Count(a => a.WasVetoed && a.WasVetoOverridden);
+    var landed = _mediaAppearances.Count(a =>
+      (!a.WasVetoed || a.WasVetoOverridden) && !a.WasCommissionerOverride
+    );
+    Stats = new MediaStatsResponse(played, landed, vetoed, saved);
+  }
 }

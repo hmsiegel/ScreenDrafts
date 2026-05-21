@@ -8,6 +8,10 @@ info:
 http:
   method: GET
   url: "{{baseUrl}}/media/:publicId"
+  params:
+    - name: publicId
+      value: m_xz7ZAEQI9sVabAK
+      type: path
   body:
     type: text
     data: ""

@@ -3,6 +3,7 @@
     <ProjectReference Include="..\..\..\common\ScreenDrafts.Common.Infrastructure\ScreenDrafts.Common.Infrastructure.csproj" />
     <ProjectReference Include="..\ScreenDrafts.Modules.Drafts.Features\ScreenDrafts.Modules.Drafts.Features.csproj" />
     <ProjectReference Include="..\ScreenDrafts.Modules.Drafts.Infrastructure\ScreenDrafts.Modules.Drafts.Infrastructure.csproj" />
+    <ProjectReference Include="..\ScreenDrafts.Modules.Drafts.PublicApi\ScreenDrafts.Modules.Drafts.PublicApi.csproj" />
   </ItemGroup>
 
 </Project>

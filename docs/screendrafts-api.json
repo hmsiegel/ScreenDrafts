@@ -5126,6 +5126,85 @@
         ]
       }
     },
+    "/media": {
+      "get": {
+        "tags": [
+          "Media"
+        ],
+        "operationId": "Media.List",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/ListMediaRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ListMediaRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListMediaResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {}
+        ]
+      },
+      "post": {
+        "tags": [
+          "Media"
+        ],
+        "operationId": "Media.Add",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddMediaRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
     "/media/{publicId}": {
       "get": {
         "tags": [
@@ -5157,12 +5236,6 @@
                 }
               }
             }
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
           },
           "404": {
             "description": "Not Found"
@@ -5213,49 +5286,6 @@
           },
           "404": {
             "description": "Not Found"
-          }
-        },
-        "security": [
-          {}
-        ]
-      }
-    },
-    "/media": {
-      "post": {
-        "tags": [
-          "Media"
-        ],
-        "operationId": "Media.Add",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/AddMediaRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string",
-                  "format": "uuid"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
           }
         },
         "security": [
@@ -9919,6 +9949,65 @@
           }
         }
       },
+      "ListMediaRequest": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "pageSize": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "search": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "mediaType": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "year": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "sort": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "ListMediaResponse": {
+        "required": [
+          "result"
+        ],
+        "type": "object",
+        "properties": {
+          "result": {
+            "$ref": "#/components/schemas/PagedResultOfMediaListItemResponse"
+          }
+        }
+      },
       "ListParticipantsRequest": {
         "type": "object",
         "properties": {
@@ -10056,6 +10145,178 @@
             "items": {
               "$ref": "#/components/schemas/UpcomingDraftResponse"
             }
+          }
+        }
+      },
+      "MediaAppearanceResponse": {
+        "required": [
+          "draftPublicId",
+          "draftTitle",
+          "pickedByDisplayName",
+          "wasVetoed",
+          "wasVetoOverridden",
+          "wasCommissionerOverride",
+          "isPatreon"
+        ],
+        "type": "object",
+        "properties": {
+          "draftPublicId": {
+            "type": "string"
+          },
+          "draftTitle": {
+            "type": "string"
+          },
+          "episodeNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "pickedByDisplayName": {
+            "type": "string"
+          },
+          "pickedByPersonPublicId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "position": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "wasVetoed": {
+            "type": "boolean"
+          },
+          "wasVetoOverridden": {
+            "type": "boolean"
+          },
+          "wasCommissionerOverride": {
+            "type": "boolean"
+          },
+          "vetoedByDisplayName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "vetoOverrideByDisplayName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "isPatreon": {
+            "type": "boolean"
+          }
+        }
+      },
+      "MediaHonorificResponse": {
+        "required": [
+          "appearanceHonorificValue",
+          "appearanceHonorificName",
+          "positionHonorificValue",
+          "appearanceCount",
+          "isUnifiedNo1",
+          "isTheCycle"
+        ],
+        "type": "object",
+        "properties": {
+          "appearanceHonorificValue": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "appearanceHonorificName": {
+            "type": "string"
+          },
+          "positionHonorificValue": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "appearanceCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "isUnifiedNo1": {
+            "type": "boolean"
+          },
+          "isTheCycle": {
+            "type": "boolean"
+          }
+        }
+      },
+      "MediaListItemResponse": {
+        "required": [
+          "publicId",
+          "title",
+          "mediaTypeValue",
+          "mediaTypeName"
+        ],
+        "type": "object",
+        "properties": {
+          "publicId": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "year": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "mediaTypeValue": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "mediaTypeName": {
+            "type": "string"
+          },
+          "image": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "imdbId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "tmdbId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
           }
         }
       },
@@ -10206,6 +10467,28 @@
             "items": {
               "$ref": "#/components/schemas/ProductionCompanyResponse"
             }
+          },
+          "mediaAppearances": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/MediaAppearanceResponse"
+            }
+          },
+          "honorific": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/MediaHonorificResponse"
+              }
+            ]
+          },
+          "stats": {
+            "$ref": "#/components/schemas/MediaStatsResponse"
           }
         }
       },
@@ -10262,6 +10545,49 @@
               "null",
               "string"
             ]
+          }
+        }
+      },
+      "MediaStatsResponse": {
+        "required": [
+          "totalAppearances",
+          "landedOnBoard",
+          "timesVetoed",
+          "timesSaved"
+        ],
+        "type": "object",
+        "properties": {
+          "totalAppearances": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "landedOnBoard": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "timesVetoed": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "timesSaved": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
           }
         }
       },
@@ -10411,6 +10737,61 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/ListDraftsResponse"
+            }
+          },
+          "totalCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "page": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "pageSize": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "totalPages": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "hasPreviousPage": {
+            "type": "boolean"
+          },
+          "hasNextPage": {
+            "type": "boolean"
+          }
+        }
+      },
+      "PagedResultOfMediaListItemResponse": {
+        "required": [
+          "items",
+          "totalCount",
+          "page",
+          "pageSize"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MediaListItemResponse"
             }
           },
           "totalCount": {

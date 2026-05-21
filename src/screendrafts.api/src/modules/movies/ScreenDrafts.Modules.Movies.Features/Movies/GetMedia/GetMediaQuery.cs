@@ -3,4 +3,5 @@
 internal sealed record GetMediaQuery : IQuery<MediaResponse>
 {
   public required string PublicId { get; init; }
+  public bool IncludePatreon { get; init; }
 }

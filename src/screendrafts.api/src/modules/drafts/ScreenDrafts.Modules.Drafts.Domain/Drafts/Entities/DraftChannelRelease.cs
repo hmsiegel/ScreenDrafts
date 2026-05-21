@@ -7,7 +7,8 @@ public sealed class DraftChannelRelease
     SeriesId seriesId,
     ReleaseChannel releaseChannel,
     DateTime createdOnUtc,
-    int? episodeNumber = null)
+    int? episodeNumber = null
+  )
   {
     DraftId = draftId;
     SeriesId = seriesId;
@@ -35,7 +36,8 @@ public sealed class DraftChannelRelease
     DraftId draftId,
     SeriesId seriesId,
     ReleaseChannel releaseChannel,
-    int? episodeNumber = null)
+    int? episodeNumber = null
+  )
   {
     if (draftId is null)
     {
@@ -57,7 +59,8 @@ public sealed class DraftChannelRelease
       seriesId: seriesId,
       releaseChannel: releaseChannel,
       episodeNumber: episodeNumber,
-      createdOnUtc: DateTime.UtcNow);
+      createdOnUtc: DateTime.UtcNow
+    );
 
     return Result.Success(draftChannelRelease);
   }
