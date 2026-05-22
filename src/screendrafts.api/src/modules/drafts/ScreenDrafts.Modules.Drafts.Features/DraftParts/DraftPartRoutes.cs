@@ -58,4 +58,7 @@ internal static class DraftPartRoutes
   public const string ZoomSessionToken = ZoomSession + "/token";
   public const string StartZoomSessionRecording = ZoomSession + "/recording/start";
   public const string StopZoomSessionRecording = ZoomSession + "/recording/stop";
-} 
+
+  // Trivia Results
+  public const string TriviaResults = ById + "/trivia-results";
+}

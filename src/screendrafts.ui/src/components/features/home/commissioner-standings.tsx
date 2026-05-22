@@ -50,10 +50,10 @@ export default function CommissionerStandings({
             <div className="flex-1 h-2 bg-gray-100 rounded overflow-hidden">
               <div
                 className={`h-full ${i === 0 ? 'bg-sd-red' : 'bg-sd-blue'}`}
-                style={{ width: `${Math.min((s.points / targetPoints) * 100, 100)}%` }}
+                style={{ width: `${Math.min((s.totalPoints / targetPoints) * 100, 100)}%` }}
               />
             </div>
-            <div className="font-mono text-lg font-bold w-9 text-right">{s.points}</div>
+            <div className="font-mono text-lg font-bold w-9 text-right">{s.totalPoints}</div>
           </div>
         ))}
       </div>

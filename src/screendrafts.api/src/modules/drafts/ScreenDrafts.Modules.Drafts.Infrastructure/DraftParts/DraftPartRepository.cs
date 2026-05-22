@@ -4,47 +4,68 @@ internal sealed class DraftPartRepository(DraftsDbContext dbContext) : IDraftPar
 {
   private readonly DraftsDbContext _dbContext = dbContext;
 
+  public Task<bool> ExistsAsync(string draftPartPublicId, CancellationToken cancellationToken)
+  {
+    return _dbContext.DraftParts.AnyAsync(x => x.PublicId == draftPartPublicId, cancellationToken);
+  }
+
   public Task<DraftPart?> GetByIdAsync(DraftPartId draftPartId, CancellationToken cancellationToken)
   {
-    var draftPart = _dbContext.DraftParts
-        .FirstOrDefaultAsync(x => x.Id == draftPartId, cancellationToken);
+    var draftPart = _dbContext.DraftParts.FirstOrDefaultAsync(
+      x => x.Id == draftPartId,
+      cancellationToken
+    );
 
     return draftPart;
   }
 
-  public Task<DraftPart?> GetByPublicIdAsync(string draftPartId, CancellationToken cancellationToken)
+  public Task<DraftPart?> GetByPublicIdAsync(
+    string draftPartId,
+    CancellationToken cancellationToken
+  )
   {
-    return _dbContext.DraftParts
-      .Include("_draftPartParticipants")
+    return _dbContext
+      .DraftParts.Include("_draftPartParticipants")
       .Include(dp => dp.GameBoard!)
         .ThenInclude(gb => gb.DraftPositions)
       .Include("_picks.Veto.VetoOverride")
       .FirstOrDefaultAsync(x => x.PublicId == draftPartId, cancellationToken);
   }
 
-  public async Task<DraftPart?> GetByPublicIdWithHostsAsync(string draftPartId, CancellationToken cancellationToken)
+  public async Task<DraftPart?> GetByPublicIdWithHostsAsync(
+    string draftPartId,
+    CancellationToken cancellationToken
+  )
   {
-    return await _dbContext.DraftParts
-      .Include("_draftPartParticipants")
+    return await _dbContext
+      .DraftParts.Include("_draftPartParticipants")
       .Include("_draftHosts.Host")
       .Include("_picks.Veto.VetoOverride")
       .FirstOrDefaultAsync(x => x.PublicId == draftPartId, cancellationToken);
   }
 
-  public Task<DraftPart?> GetByPublicIdWithSubDraftsAsync(string draftPartId, CancellationToken cancellationToken)
+  public Task<DraftPart?> GetByPublicIdWithSubDraftsAsync(
+    string draftPartId,
+    CancellationToken cancellationToken
+  )
   {
-    return _dbContext.DraftParts
-      .Include("_draftPartParticipants")
+    return _dbContext
+      .DraftParts.Include("_draftPartParticipants")
       .Include("_subDrafts")
       .Include(dp => dp.GameBoard!)
         .ThenInclude(gb => gb.DraftPositions)
       .FirstOrDefaultAsync(x => x.PublicId == draftPartId, cancellationToken);
   }
 
-  public async Task<DraftPart?> GetByZoomSessionNameAsync(string zoomSessionName, CancellationToken cancellationToken)
+  public async Task<DraftPart?> GetByZoomSessionNameAsync(
+    string zoomSessionName,
+    CancellationToken cancellationToken
+  )
   {
-    return await _dbContext.DraftParts
-      .FirstOrDefaultAsync(x => x.ZoomSessionName == zoomSessionName, cancellationToken);
+    return await _dbContext.DraftParts.FirstOrDefaultAsync(
+      x => x.ZoomSessionName == zoomSessionName,
+      cancellationToken
+    );
   }
 
   public void Update(DraftPart draftPart)

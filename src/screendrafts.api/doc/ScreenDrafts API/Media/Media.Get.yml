@@ -10,7 +10,7 @@ http:
   url: "{{baseUrl}}/media/:publicId"
   params:
     - name: publicId
-      value: m_xz7ZAEQI9sVabAK
+      value: m_Xv71556NTz4baaC
       type: path
   body:
     type: text

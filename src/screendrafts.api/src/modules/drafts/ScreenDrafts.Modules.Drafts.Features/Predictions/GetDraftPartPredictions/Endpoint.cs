@@ -1,6 +1,7 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Features.Predictions.GetDraftPartPredictions;
 
-internal sealed class Endpoint : ScreenDraftsEndpoint<GetDraftPartPredictionsRequest, IReadOnlyList<DraftPartPredictionResponse>>
+internal sealed class Endpoint
+  : ScreenDraftsEndpoint<GetDraftPartPredictionsRequest, IReadOnlyList<DraftPartPredictionResponse>>
 {
   public override void Configure()
   {
@@ -14,17 +15,12 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<GetDraftPartPredictionsReq
         .Produces(StatusCodes.Status403Forbidden)
         .Produces(StatusCodes.Status404NotFound);
     });
-    Policies(DraftsAuth.Permissions.PredictionRead);
+    AllowAnonymous();
   }
 
-  public override async Task HandleAsync(
-    GetDraftPartPredictionsRequest req,
-    CancellationToken ct)
+  public override async Task HandleAsync(GetDraftPartPredictionsRequest req, CancellationToken ct)
   {
-    var query = new GetDraftPartPredictionsQuery 
-    { 
-      DraftPartPublicId = req.DraftPartPublicId 
-    };
+    var query = new GetDraftPartPredictionsQuery { DraftPartId = req.DraftPartId };
 
     var result = await Sender.Send(query, ct);
 

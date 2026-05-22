@@ -65,6 +65,7 @@ internal static class DraftsOpenApi
       "DraftParts.ClearDraftPositionAssignment";
     public const string DraftParts_RemoveParticipant = "DraftParts.RemoveParticipant";
     public const string DraftParts_AssignTriviaResults = "DraftParts.AssignTriviaResults";
+    public const string DraftParts_GetTriviaResults = "DraftParts.GetTriviaResults";
     public const string DraftParts_PickList = "DraftParts.GetPickList";
     public const string DraftParts_SetCommunityLimits = "DraftParts.SetCommunityLimits";
 

@@ -8,6 +8,10 @@ info:
 http:
   method: GET
   url: "{{baseUrl}}/draft-parts/:draftPartId/predictions"
+  params:
+    - name: draftPartId
+      value: dp_M0fLVDFmG7Kvox0
+      type: path
   auth: inherit
 
 settings:

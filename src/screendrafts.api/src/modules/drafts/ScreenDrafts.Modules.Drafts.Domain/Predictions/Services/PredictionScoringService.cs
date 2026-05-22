@@ -1,19 +1,19 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Domain.Predictions.Services;
 
 /// <summary>
-/// Domain service that scores a <see cref="DraftPredictionSet"/> against the 
+/// Domain service that scores a <see cref="DraftPredictionSet"/> against the
 /// finalized picks of a <see cref="DraftPart"/> according to the rules defined in <see cref="DraftPartPredictionRule"/>.
-/// 
+///
 /// Scoring rules
 ///  - 1 point per correct prediction
 ///  - "Shoot the moon": predicting every required title correctly earns double points
-/// 
+///
 /// Inputs:
 ///  - The set to score (must be locked)
 ///  - The ordered list of media public Ids that made the final list
 ///  - The prediction rules to apply
 ///  - The UTC time scoring is being performed
-///  
+///
 /// The caller (application-layer handler) is responsibles for:
 /// - Persisting the returned <see cref="PredictionResult"/>.
 /// - Passing the result to <see cref="SurrogateScoreResolver"/> when a surrogate assignment exists.
@@ -31,7 +31,8 @@ public sealed class PredictionScoringService
     DraftPredictionSet set,
     IReadOnlyList<string> finalMediaPublicIds,
     DraftPartPredictionRule rules,
-    DateTime scoredAtUtc)
+    DateTime scoredAtUtc
+  )
   {
     ArgumentNullException.ThrowIfNull(set);
     ArgumentNullException.ThrowIfNull(finalMediaPublicIds);
@@ -46,10 +47,7 @@ public sealed class PredictionScoringService
       ? [.. finalMediaPublicIds.Take(rules.TopN.Value)]
       : finalMediaPublicIds.ToHashSet();
 
-
-    var predictedIds = set.Entries
-      .Select(e => e.MediaPublicId)
-      .ToList();
+    var predictedIds = set.Entries.Select(e => e.MediaPublicId).ToList();
 
     var correctCount = predictedIds.Count(predictedId => scoringPool.Contains(predictedId));
 
@@ -57,11 +55,17 @@ public sealed class PredictionScoringService
 
     var totalPoints = shootTheMoon ? correctCount * 2 : correctCount;
 
+    foreach (var entry in set.Entries)
+    {
+      entry.MarkCorrect(scoringPool.Contains(entry.MediaPublicId));
+    }
+
     return PredictionResult.Create(
       predictionSet: set,
       correctCount: correctCount,
       shootTheMoon: shootTheMoon,
       pointsAwarded: totalPoints,
-      scoredAtUtc: scoredAtUtc);
+      scoredAtUtc: scoredAtUtc
+    );
   }
 }

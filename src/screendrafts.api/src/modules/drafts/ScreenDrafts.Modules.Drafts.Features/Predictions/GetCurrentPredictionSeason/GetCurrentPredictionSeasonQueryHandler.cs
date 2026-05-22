@@ -7,12 +7,12 @@ internal sealed class GetCurrentPredictionSeasonQueryHandler(IDbConnectionFactor
 
   public async Task<Result<PredictionSeasonSummaryResponse>> Handle(
     GetCurrentPredictionSeasonQuery request,
-    CancellationToken cancellationToken)
+    CancellationToken cancellationToken
+  )
   {
     await using var connection = await _connectionFactory.OpenConnectionAsync(cancellationToken);
 
-    const string sql =
-      """
+    const string sql = """
       WITH season_episodes AS (
         SELECT
           dps.season_id,
@@ -25,6 +25,14 @@ internal sealed class GetCurrentPredictionSeasonQueryHandler(IDbConnectionFactor
                                               AND dcr.release_channel = @MainFeedReleaseChannel
         WHERE dcr.episode_number IS NOT NULL
         GROUP BY dps.season_id
+      ),
+      carryover_totals AS (
+        SELECT
+          season_id,
+          contestant_id,
+          COALESCE(SUM(points), 0) AS CarryoverPoints
+        FROM drafts.prediction_carryovers
+        GROUP BY season_id, contestant_id
       )
       SELECT
         ps.public_id                      AS SeasonPublicId,
@@ -38,59 +46,70 @@ internal sealed class GetCurrentPredictionSeasonQueryHandler(IDbConnectionFactor
         c.public_id                       AS ContestantPublicId,
         c.display_name                    AS DisplayName,
         COALESCE(st.points, 0)            AS Points,
+        COALESCE(ct.CarryoverPoints, 0)   AS CarryoverPoints,
+        COALESCE(st.points, 0) + COALESCE(ct.CarryoverPoints, 0) AS TotalPoints,
         st.first_crossed_target_at_utc    AS FirstCrossedTargetAtUtc
       FROM drafts.prediction_seasons ps
       LEFT JOIN season_episodes           se ON se.season_id  = ps.id
       LEFT JOIN drafts.prediction_standings   st ON st.season_id     = ps.id
       LEFT JOIN drafts.prediction_contestants c  ON c.id             = st.contestant_id
+      LEFT JOIN carryover_totals          ct ON ct.season_id = ps.id AND ct.contestant_id = c.id
       WHERE ps.is_closed = FALSE
       GROUP BY
         ps.public_id, ps.number, ps.starts_on, ps.ends_on,
         ps.target_points, ps.is_closed,
         se.FirstEpisodeNumber, se.LastEpisodeNumber,
         c.public_id, c.display_name,
-        st.points, st.first_crossed_target_at_utc
-      ORDER BY (COALESCE(st.points, 0)) DESC;
+        st.points, ct.CarryoverPoints, st.first_crossed_target_at_utc
+      ORDER BY (COALESCE(st.points, 0) + COALESCE(ct.CarryoverPoints, 0)) DESC;
       """;
 
-    var rows = (await connection.QueryAsync<SeasonRow>(
-      new CommandDefinition(
-        commandText: sql,
-        parameters: new { MainFeedReleaseChannel = ReleaseChannel.MainFeed.Value },
-        cancellationToken: cancellationToken))).ToList();
+    var rows = (
+      await connection.QueryAsync<SeasonRow>(
+        new CommandDefinition(
+          commandText: sql,
+          parameters: new { MainFeedReleaseChannel = ReleaseChannel.MainFeed.Value },
+          cancellationToken: cancellationToken
+        )
+      )
+    ).ToList();
 
     if (rows.Count == 0)
     {
       return Result.Failure<PredictionSeasonSummaryResponse>(
-        PredictionErrors.SeasonNotFound("current"));
+        PredictionErrors.SeasonNotFound("current")
+      );
     }
 
     var first = rows[0];
 
-    var standings = rows
-      .Where(r => r.ContestantPublicId is not null)
+    var standings = rows.Where(r => r.ContestantPublicId is not null)
       .Select(r => new SeasonContestantStandingResponse
       {
         ContestantPublicId = r.ContestantPublicId!,
         DisplayName = r.DisplayName!,
         Points = r.Points,
+        CarryoverPoints = r.CarryoverPoints,
+        TotalPoints = r.TotalPoints,
         HasCrossedTarget = r.FirstCrossedTargetAtUtc.HasValue,
-        FirstCrossedTargetAtUtc = r.FirstCrossedTargetAtUtc
+        FirstCrossedTargetAtUtc = r.FirstCrossedTargetAtUtc,
       })
       .ToList();
 
-    return Result.Success(new PredictionSeasonSummaryResponse
-    {
-      PublicId = first.SeasonPublicId,
-      Number = first.SeasonNumber,
-      StartDate = first.StartsOn,
-      EndDate = first.EndsOn,
-      FirstEpisodeNumber = first.FirstEpisodeNumber,
-      LastEpisodeNumber = first.LastEpisodeNumber,
-      TargetPoints = first.TargetPoints,
-      IsClosed = first.IsClosed,
-      Standings = standings
-    });
+    return Result.Success(
+      new PredictionSeasonSummaryResponse
+      {
+        PublicId = first.SeasonPublicId,
+        Number = first.SeasonNumber,
+        StartDate = first.StartsOn,
+        EndDate = first.EndsOn,
+        FirstEpisodeNumber = first.FirstEpisodeNumber,
+        LastEpisodeNumber = first.LastEpisodeNumber,
+        TargetPoints = first.TargetPoints,
+        IsClosed = first.IsClosed,
+        Standings = standings,
+      }
+    );
   }
 
   private sealed record SeasonRow
@@ -106,6 +125,8 @@ internal sealed class GetCurrentPredictionSeasonQueryHandler(IDbConnectionFactor
     public string? ContestantPublicId { get; init; } = default!;
     public string? DisplayName { get; init; } = default!;
     public int Points { get; init; } = default!;
+    public int CarryoverPoints { get; init; } = default!;
+    public int TotalPoints { get; init; } = default!;
     public DateTime? FirstCrossedTargetAtUtc { get; init; } = default!;
   }
 }

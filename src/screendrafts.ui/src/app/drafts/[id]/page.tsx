@@ -1,12 +1,18 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { getDraftDetails } from "@/features/drafts/api/fetch-drafts";
-import { GetDraftPartResponse, GetDraftPickResponse } from "@/lib/dto";
+import { GetDraftPartResponse, GetDraftPickResponse, TriviaResultResponse } from "@/lib/dto";
 import SiteHeader from "@/components/layout/header/site-header";
 import SiteFooter from "@/components/layout/footer/site-footer";
 import DraftSidebar from "@/components/features/drafts/drafts-sidebar";
 import { DraftPick } from "@/components/features/drafts/draft-pick";
+import { DraftPartPredictionData, PredictionsSection } from "@/components/features/drafts/predictions-section";
+import {
+  getDraftDetails,
+  getDraftPartPredictions,
+  getDraftPartTriviaResults,
+  getPredictionStandings
+} from "@/services/drafts/fetch-drafts";
 
 export const dynamic = "force-dynamic";
 
@@ -35,6 +41,8 @@ export default async function DraftDetailPage({ params }: Props) {
     notFound();
   }
 
+  const parts: GetDraftPartResponse[] = draft.parts ?? [];
+
   // Build participant name map from parts
   // GetDraftPartParticipantResponse has [key: string]: any so displayName may exist at runtime
   const participantNames = new Map<string, string>();
@@ -56,6 +64,54 @@ export default async function DraftDetailPage({ params }: Props) {
       }
     }
   }
+
+  // ── Parallel fetch: trivia + predictions + standings per part ──────────────
+  const partDataResults = await Promise.allSettled(
+    parts.map(async (part) => {
+      const partPublicId = part.publicId ?? "";
+      const seasonPublicId = part.predictionSeasonPublicId ?? null;
+
+      const [triviaResult, predictionsResult, standingsResult] =
+        await Promise.allSettled([
+          getDraftPartTriviaResults(partPublicId),
+          getDraftPartPredictions(partPublicId),
+          seasonPublicId
+            ? getPredictionStandings(seasonPublicId, partPublicId)
+            : Promise.resolve(null),
+        ]);
+
+      return {
+        partPublicId,
+        trivia: triviaResult.status === "fulfilled" ? triviaResult.value : null,
+        predictions: predictionsResult.status === "fulfilled" ? predictionsResult.value : [],
+        standings: standingsResult.status === "fulfilled" ? standingsResult.value : null,
+      };
+    })
+  );
+
+  const partData = partDataResults.map((r, i) =>
+    r.status === "fulfilled" ? r.value : {
+      partPublicId: parts[i]?.publicId ?? "",
+      trivia: null,
+      predictions: [],
+      standings: null,
+    }
+  );
+
+  // ── Trivia map keyed by partPublicId ───────────────────────────────────────
+  const triviaByPart = new Map<string, TriviaResultResponse[]>(
+    partData
+      .filter((d) => d.trivia && d.trivia.results.length > 0)
+      .map((d) => [d.partPublicId, d.trivia!.results])
+  );
+
+  // ── Predictions section input ──────────────────────────────────────────────
+  const predictionParts: DraftPartPredictionData[] = parts.map((part, i) => ({
+    draftPartPublicId: part.publicId ?? "",
+    partLabel: parts.length > 1 ? `Part ${part.partIndex ?? i + 1}` : "",
+    predictions: partData[i]?.predictions ?? [],
+    standings: partData[i]?.standings ?? null,
+  }));
 
   // Flatten all picks from all parts, sorted by position
   const allPicks: { pick: GetDraftPickResponse; partIdx: number }[] = [];
@@ -104,11 +160,15 @@ export default async function DraftDetailPage({ params }: Props) {
           style={{ gridTemplateColumns: "380px 1fr", maxWidth: 1400 }}
         >
           {/* Left sidebar */}
-          <DraftSidebar draft={draft} participantNames={participantNames} />
+          <DraftSidebar
+            draft={draft}
+            participantNames={participantNames}
+            triviaByPart={triviaByPart}
+          />
 
           {/* Right column */}
-          <div className="bg-white border-2 border-sd-ink" style={{ padding: "40px 48px" }}>
-            <article style={{ maxWidth: 720 }}>
+          <div className="bg-white border-2 border-sd-ink" style={{ padding: "40px 48px", maxWidth: 720 }}>
+            <article>
               {/* Section label */}
               <div className="font-mono text-[11px] tracking-widest text-sd-red font-bold mb-3">
                 ★ THE EPISODE
@@ -154,6 +214,9 @@ export default async function DraftDetailPage({ params }: Props) {
                   ))
                 )}
               </div>
+
+              {/* Commissioner Predictions */}
+              <PredictionsSection parts={predictionParts} />
             </article>
           </div>
         </div>

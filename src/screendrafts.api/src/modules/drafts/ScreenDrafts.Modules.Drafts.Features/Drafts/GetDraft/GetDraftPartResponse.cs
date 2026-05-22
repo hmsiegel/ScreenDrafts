@@ -7,6 +7,7 @@ internal sealed record GetDraftPartResponse
   public DraftType DraftType { get; init; } = default!;
   public DraftPartStatus Status { get; init; } = default!;
   public DateTime? ScheduledForUtc { get; init; }
+  public string? PredictionSeasonPublicId { get; init; }
 
   public GetDraftHostResponse? PrimaryHost { get; private set; }
   public Collection<GetDraftHostResponse> CoHosts { get; init; } = [];
@@ -15,8 +16,13 @@ internal sealed record GetDraftPartResponse
   public Collection<GetDraftPickResponse> Picks { get; init; } = [];
 
   public void SetPrimaryHost(GetDraftHostResponse host) => PrimaryHost = host;
+
   public void AddCoHost(GetDraftHostResponse host) => CoHosts.Add(host);
-  public void AddParticipant(GetDraftPartParticipantResponse participant) => Participants.Add(participant);
+
+  public void AddParticipant(GetDraftPartParticipantResponse participant) =>
+    Participants.Add(participant);
+
   public void AddRelease(GetDraftReleaseResponse release) => Releases.Add(release);
+
   public void AddPick(GetDraftPickResponse pick) => Picks.Add(pick);
 }

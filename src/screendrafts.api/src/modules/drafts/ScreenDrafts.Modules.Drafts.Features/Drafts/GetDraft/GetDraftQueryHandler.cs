@@ -58,6 +58,13 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
         dp.draft_type AS {nameof(GetDraftPartResponse.DraftType)},
         dp.status AS {nameof(GetDraftPartResponse.Status)},
         dp.scheduled_for_utc AS {nameof(GetDraftPartResponse.ScheduledForUtc)},
+        (
+          SELECT ps.public_id
+          FROM drafts.draft_prediction_sets dps
+          JOIN drafts.prediction_seasons ps ON ps.id = dps.season_id
+          WHERE dps.draft_part_id = dp.id
+          LIMIT 1
+        ) AS {nameof(GetDraftPartResponse.PredictionSeasonPublicId)},
         dp.id AS InternalId
       FROM drafts.draft_parts dp
       JOIN drafts.drafts d ON d.id = dp.draft_id
@@ -72,6 +79,7 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
         DraftType DraftType,
         DraftPartStatus Status,
         DateTime? ScheduledForUtc,
+        string? PredictionSeasonPublicId,
         Guid InternalId
       )>(partSql, new { request.DraftId })
     ).ToList();
@@ -91,6 +99,7 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
         DraftType = r.DraftType,
         Status = r.Status,
         ScheduledForUtc = r.ScheduledForUtc,
+        PredictionSeasonPublicId = r.PredictionSeasonPublicId,
       }
     );
 

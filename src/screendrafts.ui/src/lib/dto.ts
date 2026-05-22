@@ -251,8 +251,8 @@ export interface IClient {
     draftPools_CreatePool(body: CreateDraftPoolRequest): Promise<void>;
 
     /**
-     * @param draftId (optional)
-     * @param file (optional)
+     * @param draftId (optional) 
+     * @param file (optional) 
      * @return OK
      */
     draftPools_BulkAddItems(draftId: string | undefined, file: FileParameter | undefined): Promise<BulkAddMoviesResponse>;
@@ -283,8 +283,8 @@ export interface IClient {
     draftBoards_AddItem(body: AddMovieToDraftBoardRequest): Promise<void>;
 
     /**
-     * @param draftId (optional)
-     * @param file (optional)
+     * @param draftId (optional) 
+     * @param file (optional) 
      * @return OK
      */
     draftBoards_BulkAddItems(draftId: string | undefined, file: FileParameter | undefined): Promise<BulkAddMoviesResponse>;
@@ -318,6 +318,16 @@ export interface IClient {
      * @return OK
      */
     draftParts_GetZoomSessionToken(body: GetZoomSessionTokenRequest): Promise<ZoomSessionTokenResult>;
+
+    /**
+     * @return OK
+     */
+    draftParts_GetTriviaResults(body: GetTriviaResultsRequest): Promise<GetTriviaResultsResponse>;
+
+    /**
+     * @return No Content
+     */
+    draftParts_AssignTriviaResults(body: AssignTriviaResultsRequest): Promise<void>;
 
     /**
      * @return No Content
@@ -450,16 +460,11 @@ export interface IClient {
     candidateLists_AddEntry(body: AddCandidateEntryRequest): Promise<AddCanidateEntryResponse>;
 
     /**
-     * @param draftPart (optional)
-     * @param file (optional)
+     * @param draftPart (optional) 
+     * @param file (optional) 
      * @return OK
      */
     candidateLists_BulkAddEntries(draftPart: string | undefined, file: FileParameter | undefined): Promise<BulkAddMoviesResponse>;
-
-    /**
-     * @return No Content
-     */
-    draftParts_AssignTriviaResults(body: AssignTriviaResultsRequest): Promise<void>;
 
     /**
      * @return OK
@@ -3096,8 +3101,8 @@ export class Client implements IClient {
     }
 
     /**
-     * @param draftId (optional)
-     * @param file (optional)
+     * @param draftId (optional) 
+     * @param file (optional) 
      * @return OK
      */
     draftPools_BulkAddItems(draftId: string | undefined, file: FileParameter | undefined, signal?: AbortSignal): Promise<BulkAddMoviesResponse> {
@@ -3431,8 +3436,8 @@ export class Client implements IClient {
     }
 
     /**
-     * @param draftId (optional)
-     * @param file (optional)
+     * @param draftId (optional) 
+     * @param file (optional) 
      * @return OK
      */
     draftBoards_BulkAddItems(draftId: string | undefined, file: FileParameter | undefined, signal?: AbortSignal): Promise<BulkAddMoviesResponse> {
@@ -3827,6 +3832,105 @@ export class Client implements IClient {
             });
         }
         return Promise.resolve<ZoomSessionTokenResult>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    draftParts_GetTriviaResults(body: GetTriviaResultsRequest, signal?: AbortSignal): Promise<GetTriviaResultsResponse> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/trivia-results";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDraftParts_GetTriviaResults(_response);
+        });
+    }
+
+    protected processDraftParts_GetTriviaResults(response: Response): Promise<GetTriviaResultsResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as GetTriviaResultsResponse;
+            return result200;
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<GetTriviaResultsResponse>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    draftParts_AssignTriviaResults(body: AssignTriviaResultsRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/trivia-results";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDraftParts_AssignTriviaResults(_response);
+        });
+    }
+
+    protected processDraftParts_AssignTriviaResults(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
     }
 
     /**
@@ -5259,8 +5363,8 @@ export class Client implements IClient {
     }
 
     /**
-     * @param draftPart (optional)
-     * @param file (optional)
+     * @param draftPart (optional) 
+     * @param file (optional) 
      * @return OK
      */
     candidateLists_BulkAddEntries(draftPart: string | undefined, file: FileParameter | undefined, signal?: AbortSignal): Promise<BulkAddMoviesResponse> {
@@ -5322,60 +5426,6 @@ export class Client implements IClient {
             });
         }
         return Promise.resolve<BulkAddMoviesResponse>(null as any);
-    }
-
-    /**
-     * @return No Content
-     */
-    draftParts_AssignTriviaResults(body: AssignTriviaResultsRequest, signal?: AbortSignal): Promise<void> {
-        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/trivia-results";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "PUT",
-            signal,
-            headers: {
-                "Content-Type": "application/json",
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processDraftParts_AssignTriviaResults(_response);
-        });
-    }
-
-    protected processDraftParts_AssignTriviaResults(response: Response): Promise<void> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 204) {
-            return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status === 400) {
-            return response.text().then((_responseText) => {
-            return throwException("Bad Request", status, _responseText, _headers);
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<void>(null as any);
     }
 
     /**
@@ -8820,7 +8870,7 @@ export interface GetDraftPartParticipantResponse {
 }
 
 export interface GetDraftPartPredictionsRequest {
-    draftPartPublicId?: string;
+    draftPartId?: string;
 
     [key: string]: any;
 }
@@ -8831,6 +8881,7 @@ export interface GetDraftPartResponse {
     draftType?: DraftType;
     status?: DraftPartStatus;
     scheduledForUtc?: Date | undefined;
+    predictionSeasonPublicId?: string | undefined;
     primaryHost?: GetDraftHostResponse | undefined;
     coHosts?: GetDraftHostResponse[];
     participants?: GetDraftPartParticipantResponse[];
@@ -9075,6 +9126,7 @@ export interface GetPickListResponse {
 
 export interface GetPredictionStandingsRequest {
     publicId?: string;
+    asOfDraftPartId?: string | undefined;
 
     [key: string]: any;
 }
@@ -9091,6 +9143,19 @@ export interface GetSiteStatsResponse {
     guestGMs?: number;
     vetoesDeployed?: number;
     legends?: number;
+
+    [key: string]: any;
+}
+
+export interface GetTriviaResultsRequest {
+    draftPartId: string;
+
+    [key: string]: any;
+}
+
+export interface GetTriviaResultsResponse {
+    draftPartId: string;
+    results: TriviaResultResponse[];
 
     [key: string]: any;
 }
@@ -9747,6 +9812,7 @@ export interface PredictionEntryResponse {
     mediaPublicId: string;
     mediaTitle: string;
     orderIndex?: number | undefined;
+    isCorrect?: boolean | undefined;
     notes?: string | undefined;
 
     [key: string]: any;
@@ -10055,6 +10121,8 @@ export interface SeasonContestantStandingResponse {
     contestantPublicId: string;
     displayName: string;
     points: number;
+    carryoverPoints: number;
+    totalPoints: number;
     hasCrossedTarget: boolean;
     firstCrossedTargetAtUtc?: Date | undefined;
 
@@ -10236,6 +10304,15 @@ export interface TriviaResultRequestItem {
     kind: number;
     position: number;
     questionsWon: number;
+
+    [key: string]: any;
+}
+
+export interface TriviaResultResponse {
+    position: number;
+    questionsWon: number;
+    participantDisplayName: string;
+    participantKind: string;
 
     [key: string]: any;
 }

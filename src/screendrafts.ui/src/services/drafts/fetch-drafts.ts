@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import { GetDraftResponse, ListDraftsHostResponse, ListDraftsResponse, PagedResultOfListDraftsResponse } from "@/lib/dto";
+import { DraftPartPredictionResponse, GetDraftResponse, GetTriviaResultsResponse, ListDraftsHostResponse, ListDraftsResponse, PagedResultOfListDraftsResponse, PredictionStandingsResponse } from "@/lib/dto";
 import { env } from "@/lib/env";
 import { PagedResult, toPagedDraftResult } from "@/types/paged-result";
 
@@ -372,5 +372,53 @@ export async function getDraftDetails(id: string): Promise<GetDraftResponse> {
     return response.json() as Promise<GetDraftResponse> ?? FALLBACK_DRAFT_RESPONSE;
   } catch {
     return FALLBACK_DRAFT_RESPONSE;
+  }
+}
+
+export async function getDraftPartTriviaResults(
+  draftPartPublicId: string
+): Promise<GetTriviaResultsResponse> {
+  const empty: GetTriviaResultsResponse = { draftPartId: "", results: [] };
+  try {
+    const response = await fetch(
+      `${apiBase}/draft-parts/${draftPartPublicId}/trivia-results`,
+      { next: { revalidate: 0 } }
+    );
+    if (!response.ok) return empty;
+    return (await response.json()) as GetTriviaResultsResponse;
+  } catch {
+    return empty;
+  }
+}
+
+export async function getDraftPartPredictions(
+  draftPartPublicId: string
+): Promise<DraftPartPredictionResponse[]> {
+  try {
+    const response = await fetch(
+      `${apiBase}/draft-parts/${draftPartPublicId}/predictions`,
+      { next: { revalidate: 0 } }
+    );
+    if (!response.ok) return [];
+    return (await response.json()) as DraftPartPredictionResponse[];
+  } catch {
+    return [];
+  }
+}
+
+export async function getPredictionStandings(
+  seasonPublicId: string,
+  asOfDraftPartId: string
+): Promise<PredictionStandingsResponse | null> {
+  try {
+    const url = `${apiBase}/prediction-seasons/${seasonPublicId}/standings?asOfDraftPartId=${encodeURIComponent(asOfDraftPartId)}`;
+    const response = await fetch(
+      url,
+      { next: { revalidate: 0 } }
+    );
+    if (!response.ok) return null;
+    return (await response.json()) as PredictionStandingsResponse;
+  } catch {
+    return null;
   }
 }

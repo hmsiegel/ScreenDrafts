@@ -7,7 +7,8 @@ internal sealed class GetDraftPartPredictionsQueryHandler(IDbConnectionFactory c
 
   public async Task<Result<IReadOnlyList<DraftPartPredictionResponse>>> Handle(
     GetDraftPartPredictionsQuery request,
-    CancellationToken cancellationToken)
+    CancellationToken cancellationToken
+  )
   {
     await using var connection = await _connectionFactory.OpenConnectionAsync(cancellationToken);
 
@@ -22,6 +23,7 @@ internal sealed class GetDraftPartPredictionsQueryHandler(IDbConnectionFactory c
         e.media_public_id      AS MediaPublicId,
         e.media_title          AS MediaTitle,
         e.order_index          AS OrderIndex,
+        e.is_correct           AS IsCorrect,
         e.notes                AS Notes,
         r.correct_count        AS CorrectCount,
         r.shoot_the_moon       AS ShootsTheMoon,
@@ -32,31 +34,35 @@ internal sealed class GetDraftPartPredictionsQueryHandler(IDbConnectionFactory c
       JOIN drafts.prediction_contestants c  ON c.id          = s.contestant_id
       LEFT JOIN drafts.prediction_entries e  ON e.set_id     = s.id
       LEFT JOIN drafts.prediction_results r  ON r.set_id     = s.id
-      WHERE dp.public_id = @DraftPartPublicId
+      WHERE dp.public_id = @DraftPartId
       ORDER BY c.display_name, e.order_index;
       """;
 
-    var rows = (await connection.QueryAsync<SetRow>(
-      new CommandDefinition(
-        commandText: sql,
-        parameters: new { request.DraftPartPublicId },
-        cancellationToken: cancellationToken))).ToList();
+    var rows = (
+      await connection.QueryAsync<SetRow>(
+        new CommandDefinition(
+          commandText: sql,
+          parameters: new { request.DraftPartId },
+          cancellationToken: cancellationToken
+        )
+      )
+    ).ToList();
 
-    var response = rows
-      .GroupBy(r => r.SetPublicId)
+    var response = rows.GroupBy(r => r.SetPublicId)
       .Select(g =>
       {
         var first = g.First();
 
-        var entries = g
-          .Where(r => r.MediaPublicId is not null)
+        var entries = g.Where(r => r.MediaPublicId is not null)
           .Select(r => new PredictionEntryResponse
           {
             MediaPublicId = r.MediaPublicId!,
             MediaTitle = r.MediaTitle!,
             OrderIndex = r.OrderIndex!,
-            Notes = r.Notes
-          }).ToList();
+            IsCorrect = r.IsCorrect,
+            Notes = r.Notes,
+          })
+          .ToList();
 
         PredictionResultResponse? result = first.CorrectCount.HasValue
           ? new PredictionResultResponse
@@ -64,7 +70,7 @@ internal sealed class GetDraftPartPredictionsQueryHandler(IDbConnectionFactory c
             CorrectCount = first.CorrectCount.Value,
             ShootsTheMoon = first.ShootsTheMoon!.Value,
             PointsAwarded = first.PointsAwarded!.Value,
-            ScoredAtUtc = first.ScoredAtUtc!.Value
+            ScoredAtUtc = first.ScoredAtUtc!.Value,
           }
           : null;
 
@@ -78,9 +84,10 @@ internal sealed class GetDraftPartPredictionsQueryHandler(IDbConnectionFactory c
           IsLocked = first.LockedAtUtc.HasValue,
           LockedAtUtc = first.LockedAtUtc,
           Entries = entries,
-          Result = result
+          Result = result,
         };
-      }).ToList();
+      })
+      .ToList();
 
     return Result.Success<IReadOnlyList<DraftPartPredictionResponse>>(response);
   }
@@ -95,9 +102,11 @@ internal sealed class GetDraftPartPredictionsQueryHandler(IDbConnectionFactory c
     string? MediaPublicId,
     string? MediaTitle,
     int? OrderIndex,
+    bool? IsCorrect,
     string? Notes,
     int? CorrectCount,
     bool? ShootsTheMoon,
     int? PointsAwarded,
-    DateTime? ScoredAtUtc);
+    DateTime? ScoredAtUtc
+  );
 }

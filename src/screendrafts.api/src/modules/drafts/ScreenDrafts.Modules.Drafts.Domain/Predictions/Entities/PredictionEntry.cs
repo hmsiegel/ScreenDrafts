@@ -8,11 +8,14 @@ public sealed class PredictionEntry : Entity<PredictionEntryId>
     string mediaTitle,
     int? orderIndex = null,
     string? notes = null,
-    PredictionEntryId? id = null)
+    bool? isCorrect = null,
+    PredictionEntryId? id = null
+  )
     : base(id ?? PredictionEntryId.CreateUnique())
   {
     PredictionSet = predictionSet;
     SetId = predictionSet.Id;
+    IsCorrect = isCorrect;
 
     MediaPublicId = mediaPublicId;
     MediaTitle = mediaTitle;
@@ -21,9 +24,7 @@ public sealed class PredictionEntry : Entity<PredictionEntryId>
     Notes = notes;
   }
 
-  private PredictionEntry()
-  {
-  }
+  private PredictionEntry() { }
 
   public DraftPredictionSet PredictionSet { get; private set; } = default!;
   public DraftPredictionSetId SetId { get; private set; } = default!;
@@ -31,7 +32,7 @@ public sealed class PredictionEntry : Entity<PredictionEntryId>
   /// <summary>
   /// Public Id from the Movies module.
   /// </summary>
-  public string MediaPublicId { get; private set; } = default!; 
+  public string MediaPublicId { get; private set; } = default!;
 
   /// <summary>
   /// Title captured at submission time. Stored so the entry is human-readable
@@ -43,15 +44,18 @@ public sealed class PredictionEntry : Entity<PredictionEntryId>
   /// Null when mode is unordered, otherwise the 1-based rank of this entry in the prediction set. Stored
   /// at submission time to ensure consistency even if the prediction rules change later.
   /// </summary>
-  public int? OrderIndex { get; private set; }          
+  public int? OrderIndex { get; private set; }
   public string? Notes { get; private set; }
+  public bool? IsCorrect { get; private set; }
 
   public static PredictionEntry Create(
     DraftPredictionSet predictionSet,
     string mediaPublicId,
     string mediaTitle,
     int? orderIndex = null,
-    string? notes = null)
+    string? notes = null,
+    bool? isCorrect = null
+  )
   {
     ArgumentNullException.ThrowIfNull(predictionSet);
     ArgumentNullException.ThrowIfNull(mediaPublicId);
@@ -62,6 +66,10 @@ public sealed class PredictionEntry : Entity<PredictionEntryId>
       mediaPublicId: mediaPublicId,
       mediaTitle: mediaTitle,
       orderIndex: orderIndex,
-      notes: notes);
+      notes: notes,
+      isCorrect: isCorrect
+    );
   }
+
+  public void MarkCorrect(bool isCorrect) => IsCorrect = isCorrect;
 }

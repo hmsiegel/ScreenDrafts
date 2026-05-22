@@ -10,7 +10,7 @@ public sealed class GetDraftPartPredictionsTests(DraftsIntegrationTestWebAppFact
     var draftPartPublicId = await CreateDraftPartPublicIdAsync();
     await SetRulesAsync(draftPartPublicId, requiredCount: 3);
 
-    var query = new GetDraftPartPredictionsQuery { DraftPartPublicId = draftPartPublicId };
+    var query = new GetDraftPartPredictionsQuery { DraftPartId = draftPartPublicId };
 
     // Act
     var result = await Sender.Send(query, TestContext.Current.CancellationToken);
@@ -37,7 +37,7 @@ public sealed class GetDraftPartPredictionsTests(DraftsIntegrationTestWebAppFact
       "m_00000003"
     );
 
-    var query = new GetDraftPartPredictionsQuery { DraftPartPublicId = draftPartPublicId };
+    var query = new GetDraftPartPredictionsQuery { DraftPartId = draftPartPublicId };
 
     // Act
     var result = await Sender.Send(query, TestContext.Current.CancellationToken);
@@ -77,7 +77,7 @@ public sealed class GetDraftPartPredictionsTests(DraftsIntegrationTestWebAppFact
       TestContext.Current.CancellationToken
     );
 
-    var query = new GetDraftPartPredictionsQuery { DraftPartPublicId = draftPartPublicId };
+    var query = new GetDraftPartPredictionsQuery { DraftPartId = draftPartPublicId };
 
     // Act
     var result = await Sender.Send(query, TestContext.Current.CancellationToken);
@@ -124,7 +124,7 @@ public sealed class GetDraftPartPredictionsTests(DraftsIntegrationTestWebAppFact
       TestContext.Current.CancellationToken
     );
 
-    var query = new GetDraftPartPredictionsQuery { DraftPartPublicId = draftPartPublicId };
+    var query = new GetDraftPartPredictionsQuery { DraftPartId = draftPartPublicId };
 
     // Act
     var result = await Sender.Send(query, TestContext.Current.CancellationToken);
@@ -165,7 +165,7 @@ public sealed class GetDraftPartPredictionsTests(DraftsIntegrationTestWebAppFact
       "m_00000006"
     );
 
-    var query = new GetDraftPartPredictionsQuery { DraftPartPublicId = draftPartPublicId };
+    var query = new GetDraftPartPredictionsQuery { DraftPartId = draftPartPublicId };
 
     // Act
     var result = await Sender.Send(query, TestContext.Current.CancellationToken);

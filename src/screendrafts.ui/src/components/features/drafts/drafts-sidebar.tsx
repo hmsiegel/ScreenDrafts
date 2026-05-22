@@ -1,6 +1,6 @@
 import DraftTypeBadge from "@/components/ui/draft-type-badge";
 import { draftTypeFromNumber } from "@/lib/draft-type-display";
-import { GetDraftPartResponse, GetDraftResponse } from "@/lib/dto";
+import { GetDraftPartResponse, GetDraftResponse, TriviaResultResponse } from "@/lib/dto";
 import Link from "next/link";
 import { Avatar } from "./draft-pick";
 import { format } from "date-fns/format";
@@ -30,9 +30,10 @@ function SectionLabel({ children }: SidebarLabelProps) {
 interface DraftSidebarProps {
   draft: GetDraftResponse;
   participantNames: Map<string, string>;
+  triviaByPart: Map<string, TriviaResultResponse[]>;
 }
 
-export default function DraftSidebar({ draft, participantNames }: DraftSidebarProps) {
+export default function DraftSidebar({ draft, participantNames, triviaByPart }: DraftSidebarProps) {
   // Flatten participants and hosts across all parts
   const parts: GetDraftPartResponse[] = draft.parts ?? [];
   const firstPart = parts[0];
@@ -93,10 +94,10 @@ export default function DraftSidebar({ draft, participantNames }: DraftSidebarPr
   }
 
   // Trivia results — via index sig
-  const triviaResults = (draft as Record<string, unknown>).triviaResults as
-    | { winnerName?: string; score?: number }[]
-    | undefined;
-  const hasTriviaResults = Array.isArray(triviaResults) && triviaResults.length > 0;
+  const allTriviaResults: TriviaResultResponse[] = parts.flatMap(
+    (part) => triviaByPart.get(part.publicId ?? "") ?? []
+  );
+  const hasTriviaResults = allTriviaResults.length > 0;
 
   // Draft type
   const draftTypeDisplay =
@@ -225,12 +226,17 @@ export default function DraftSidebar({ draft, participantNames }: DraftSidebarPr
         <div className="border-t border-sd-ink/10 pt-4 mt-4">
           <SectionLabel>TRIVIA</SectionLabel>
           <div className="flex flex-col gap-2">
-            {triviaResults!.map((t, i) => (
-              <div key={i} className="flex justify-between text-[13px]">
-                <span className="font-sans font-semibold text-sd-ink">{t.winnerName ?? "Unknown"}</span>
-                {t.score != null && (
-                  <span className="font-mono text-[#5a6075]">{t.score}</span>
-                )}
+            {allTriviaResults.map((t) => (
+              <div key={t.position} className="flex items-baseline justify-between text-[13px]">
+                <div className="flex items-baseline gap-2">
+                  <span className="font-mono text-sd-red text-[11px] font-bold w-4 shrink-0">
+                    {t.position}.
+                  </span>
+                  <span className="font-sans font-semibold text-sd-ink">
+                    {t.participantDisplayName}
+                  </span>
+                </div>
+                <span className="font-mono text-[#5a6075]">{t.questionsWon}</span>
               </div>
             ))}
           </div>

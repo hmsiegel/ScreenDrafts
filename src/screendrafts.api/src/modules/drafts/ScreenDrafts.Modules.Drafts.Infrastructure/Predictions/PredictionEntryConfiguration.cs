@@ -8,28 +8,31 @@ internal sealed class PredictionEntryConfiguration : IEntityTypeConfiguration<Pr
 
     builder.HasKey(e => e.Id);
 
-    builder.Property(e => e.Id)
+    builder
+      .Property(e => e.Id)
       .ValueGeneratedNever()
       .HasConversion(IdConverters.PredictionEntryIdConverter);
 
-    builder.Property(e => e.SetId)
+    builder
+      .Property(e => e.SetId)
       .IsRequired()
       .HasConversion(IdConverters.DraftPredictionSetIdConverter);
 
-    builder.Property(e => e.MediaPublicId)
+    builder
+      .Property(e => e.MediaPublicId)
       .IsRequired()
       .HasMaxLength(PublicIdPrefixes.MaxPublicIdLength);
 
-    builder.Property(e => e.MediaTitle)
-      .IsRequired()
-      .HasMaxLength(500);
+    builder.Property(e => e.MediaTitle).IsRequired().HasMaxLength(500);
 
     builder.Property(e => e.OrderIndex);
 
-    builder.Property(e => e.Notes)
-      .HasMaxLength(1000);
+    builder.Property(e => e.IsCorrect);
 
-    builder.HasOne(e => e.PredictionSet)
+    builder.Property(e => e.Notes).HasMaxLength(1000);
+
+    builder
+      .HasOne(e => e.PredictionSet)
       .WithMany(s => s.Entries)
       .HasForeignKey(e => e.SetId)
       .OnDelete(DeleteBehavior.Cascade);

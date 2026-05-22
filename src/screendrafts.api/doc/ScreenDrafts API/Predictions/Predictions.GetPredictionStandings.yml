@@ -7,10 +7,13 @@ info:
 
 http:
   method: GET
-  url: "{{baseUrl}}/prediction-seasons/:publicId/standings"
+  url: "{{baseUrl}}/prediction-seasons/:publicId/standings?asOfDraftPartId=dp_M0fLVDFmG7Kvox0"
   params:
+    - name: asOfDraftPartId
+      value: dp_M0fLVDFmG7Kvox0
+      type: query
     - name: publicId
-      value: ps_XE0ubSNl_dhiwb8
+      value: ps_qwsmVqT-ztMfAQU
       type: path
   auth: inherit
 

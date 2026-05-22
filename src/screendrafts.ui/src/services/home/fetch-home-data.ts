@@ -39,8 +39,8 @@ const FALLBACK_STANDINGS: PredictionSeasonSummaryResponse = {
   startDate: new Date(),
   endDate: undefined,
   standings: [
-    { contestantPublicId: '', displayName: 'Clay', points: 91, hasCrossedTarget: false },
-    { contestantPublicId: '', displayName: 'Ryan', points: 85, hasCrossedTarget: false },
+    { contestantPublicId: '', displayName: 'Clay', points: 91, hasCrossedTarget: false, carryoverPoints: 0, totalPoints: 91 },
+    { contestantPublicId: '', displayName: 'Ryan', points: 85, hasCrossedTarget: false, carryoverPoints: 5, totalPoints: 90 },
   ],
 }
 
@@ -156,6 +156,8 @@ export interface MappedStanding {
   rank: number;
   name: string;
   points: number;
+  carryoverPoints: number;
+  totalPoints: number;
   hasCrossedTarget: boolean;
 }
 
@@ -240,8 +242,12 @@ export function mapStandings(response: PredictionSeasonSummaryResponse): MappedS
       rank: index + 1,
       name: entry.displayName ?? '',
       points: entry.points ?? 0,
+      carryoverPoints: entry.carryoverPoints ?? 0,
+      totalPoints: entry.totalPoints ?? 0,
       hasCrossedTarget: entry.hasCrossedTarget ?? false,
-    }));
+    }))
+    .sort((a, b) => b.totalPoints - a.totalPoints)
+    .map((e, i) => ({ ...e, rank: i + 1 }));
 
   return {
     seasonNumber: response.number ?? 0,
@@ -253,30 +259,30 @@ export function mapStandings(response: PredictionSeasonSummaryResponse): MappedS
   };
 }
 
-  export function mapSpotlight(response: GetActiveSpotlightResponse): MappedSpotlight {
-    return {
-      draftPublicId: response.draftPublicId ?? '',
-      episodeNumber: response.episodeNumber ?? 0,
-      draftType: formatDraftType(response.draftType),
-      totalParts: response.totalParts ?? 1,
-      totalPicks: response.totalPicks ?? 7,
-      title: response.title ?? '',
-      spotlightDescription: response.spotlightDescription ?? '',
-      spotifyUrl: response.spotifyUrl ?? null,
-      topPicks: (response.topPicks ?? []).map((p) => ({
-        position: p.position ?? 0,
-        mediaPublicId: p.mediaPublicId ?? '',
-        title: p.mediaTitle ?? '',
-      })),
-    };
-  }
+export function mapSpotlight(response: GetActiveSpotlightResponse): MappedSpotlight {
+  return {
+    draftPublicId: response.draftPublicId ?? '',
+    episodeNumber: response.episodeNumber ?? 0,
+    draftType: formatDraftType(response.draftType),
+    totalParts: response.totalParts ?? 1,
+    totalPicks: response.totalPicks ?? 7,
+    title: response.title ?? '',
+    spotlightDescription: response.spotlightDescription ?? '',
+    spotifyUrl: response.spotifyUrl ?? null,
+    topPicks: (response.topPicks ?? []).map((p) => ({
+      position: p.position ?? 0,
+      mediaPublicId: p.mediaPublicId ?? '',
+      title: p.mediaTitle ?? '',
+    })),
+  };
+}
 
-  export function mapSiteStats(response: GetSiteStatsResponse): MappedStat[] {
-    return [
-      { value: formatStatNumber(response.episodesProduced), label: 'EPISODES PRODUCED' },
-      { value: formatStatNumber(response.filmsDrafted), label: 'FILMS DRAFTED' },
-      { value: formatStatNumber(response.guestGMs), label: 'GUEST G.M.s' },
-      { value: formatStatNumber(response.vetoesDeployed), label: 'VETOES DEPLOYED' },
-      { value: formatStatNumber(response.legends), label: 'LEGENDS' },
-    ];
-  }
+export function mapSiteStats(response: GetSiteStatsResponse): MappedStat[] {
+  return [
+    { value: formatStatNumber(response.episodesProduced), label: 'EPISODES PRODUCED' },
+    { value: formatStatNumber(response.filmsDrafted), label: 'FILMS DRAFTED' },
+    { value: formatStatNumber(response.guestGMs), label: 'GUEST G.M.s' },
+    { value: formatStatNumber(response.vetoesDeployed), label: 'VETOES DEPLOYED' },
+    { value: formatStatNumber(response.legends), label: 'LEGENDS' },
+  ];
+}

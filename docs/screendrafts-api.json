@@ -3003,6 +3003,83 @@
         ]
       }
     },
+    "/draft-parts/{draftPartId}/trivia-results": {
+      "get": {
+        "tags": [
+          "DraftParts"
+        ],
+        "operationId": "DraftParts.GetTriviaResults",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/GetTriviaResultsRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetTriviaResultsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetTriviaResultsResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {}
+        ]
+      },
+      "put": {
+        "tags": [
+          "DraftParts"
+        ],
+        "operationId": "DraftParts.AssignTriviaResults",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssignTriviaResultsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
     "/draft-parts/{draftPartId}/sub-drafts/{subDraftId}/subject": {
       "patch": {
         "tags": [
@@ -4100,44 +4177,6 @@
                 }
               }
             }
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "404": {
-            "description": "Not Found"
-          }
-        },
-        "security": [
-          {}
-        ]
-      }
-    },
-    "/draft-parts/{draftPartId}/trivia-results": {
-      "put": {
-        "tags": [
-          "DraftParts"
-        ],
-        "operationId": "DraftParts.AssignTriviaResults",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/AssignTriviaResultsRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "204": {
-            "description": "No Content"
           },
           "400": {
             "description": "Bad Request"
@@ -8332,7 +8371,7 @@
       "GetDraftPartPredictionsRequest": {
         "type": "object",
         "properties": {
-          "draftPartPublicId": {
+          "draftPartId": {
             "type": "string"
           }
         }
@@ -8363,6 +8402,12 @@
               "string"
             ],
             "format": "date-time"
+          },
+          "predictionSeasonPublicId": {
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "primaryHost": {
             "oneOf": [
@@ -9219,6 +9264,12 @@
         "properties": {
           "publicId": {
             "type": "string"
+          },
+          "asOfDraftPartId": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -9272,6 +9323,35 @@
               "string"
             ],
             "format": "int32"
+          }
+        }
+      },
+      "GetTriviaResultsRequest": {
+        "required": [
+          "draftPartId"
+        ],
+        "type": "object",
+        "properties": {
+          "draftPartId": {
+            "type": "string"
+          }
+        }
+      },
+      "GetTriviaResultsResponse": {
+        "required": [
+          "draftPartId",
+          "results"
+        ],
+        "type": "object",
+        "properties": {
+          "draftPartId": {
+            "type": "string"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TriviaResultResponse"
+            }
           }
         }
       },
@@ -10550,14 +10630,14 @@
       },
       "MediaStatsResponse": {
         "required": [
-          "totalAppearances",
+          "timesPlayed",
           "landedOnBoard",
           "timesVetoed",
           "timesSaved"
         ],
         "type": "object",
         "properties": {
-          "totalAppearances": {
+          "timesPlayed": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": [
               "integer",
@@ -11764,6 +11844,12 @@
             ],
             "format": "int32"
           },
+          "isCorrect": {
+            "type": [
+              "null",
+              "boolean"
+            ]
+          },
           "notes": {
             "type": [
               "null",
@@ -12670,6 +12756,8 @@
           "contestantPublicId",
           "displayName",
           "points",
+          "carryoverPoints",
+          "totalPoints",
           "hasCrossedTarget"
         ],
         "type": "object",
@@ -12681,6 +12769,22 @@
             "type": "string"
           },
           "points": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "carryoverPoints": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "totalPoints": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": [
               "integer",
@@ -13178,6 +13282,39 @@
               "string"
             ],
             "format": "int32"
+          }
+        }
+      },
+      "TriviaResultResponse": {
+        "required": [
+          "position",
+          "questionsWon",
+          "participantDisplayName",
+          "participantKind"
+        ],
+        "type": "object",
+        "properties": {
+          "position": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "questionsWon": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "participantDisplayName": {
+            "type": "string"
+          },
+          "participantKind": {
+            "type": "string"
           }
         }
       },

@@ -1,10 +1,8 @@
-﻿using ScreenDrafts.Modules.Drafts.Domain.Predictions;
-using ScreenDrafts.Modules.Drafts.Domain.Predictions.Entities;
-
-namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database;
+﻿namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database;
 
 public sealed class DraftsDbContext(DbContextOptions<DraftsDbContext> options)
-  : DbContext(options), IUnitOfWork
+  : DbContext(options),
+    IUnitOfWork
 {
   internal DbSet<Draft> Drafts { get; set; }
   internal DbSet<Person> People { get; set; }
@@ -29,15 +27,15 @@ public sealed class DraftsDbContext(DbContextOptions<DraftsDbContext> options)
   internal DbSet<DraftBoard> DraftBoards { get; set; }
   internal DbSet<DraftPool> DraftPools { get; set; }
   internal DbSet<CandidateListEntry> CandidateListEntries { get; set; }
-  internal DbSet<PredictionSeason> PredictionSeasons { get; set; } 
-  internal DbSet<PredictionContestant> PredictionContestants { get; set; } 
-  internal DbSet<DraftPartPredictionRule> DraftPartPredictionRules { get; set; } 
-  internal DbSet<DraftPredictionSet> DraftPredictionSets { get; set; } 
-  internal DbSet<PredictionEntry> PredictionEntries { get; set; } 
-  internal DbSet<SurrogateAssignment> SurrogateAssignments { get; set; } 
-  internal DbSet<PredictionResult> PredictionResults { get; set; } 
-  internal DbSet<PredictionStanding> PredictionStandings { get; set; } 
-  internal DbSet<PredictionCarryover> PredictionCarryovers { get; set; } 
+  internal DbSet<PredictionSeason> PredictionSeasons { get; set; }
+  internal DbSet<PredictionContestant> PredictionContestants { get; set; }
+  internal DbSet<DraftPartPredictionRule> DraftPartPredictionRules { get; set; }
+  internal DbSet<DraftPredictionSet> DraftPredictionSets { get; set; }
+  internal DbSet<PredictionEntry> PredictionEntries { get; set; }
+  internal DbSet<SurrogateAssignment> SurrogateAssignments { get; set; }
+  internal DbSet<PredictionResult> PredictionResults { get; set; }
+  internal DbSet<PredictionStanding> PredictionStandings { get; set; }
+  internal DbSet<PredictionCarryover> PredictionCarryovers { get; set; }
   internal DbSet<DraftPartRecording> DraftPartRecordings { get; set; }
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -15,16 +15,15 @@ internal sealed class Endpoint
         .Produces(StatusCodes.Status403Forbidden)
         .Produces(StatusCodes.Status404NotFound);
     });
-    Policies(DraftsAuth.Permissions.PredictionRead);
+    AllowAnonymous();
   }
 
-  public override async Task HandleAsync(
-    GetPredictionStandingsRequest req,
-    CancellationToken ct)
+  public override async Task HandleAsync(GetPredictionStandingsRequest req, CancellationToken ct)
   {
     var query = new GetPredictionStandingsQuery
     {
-      SeasonPublicId = req.PublicId
+      SeasonPublicId = req.PublicId,
+      AsOfDraftPartPublicId = req.AsOfDraftPartId,
     };
     var result = await Sender.Send(query, ct);
 
