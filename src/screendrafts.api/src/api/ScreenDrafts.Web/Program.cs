@@ -6,12 +6,32 @@ builder.Host.UseSerilog((context, config) => config.ReadFrom.Configuration(conte
 
 var vaultSection = builder.Configuration.GetSection("Vault");
 
-builder.Configuration.AddVaultConfiguration(
-  () =>
-    new VaultOptions(vaultAddress: vaultSection["Address"]!, vaultToken: vaultSection["Token"]!),
-  "screendrafts",
-  vaultSection["MountPoint"]
-);
+if (!builder.Environment.IsEnvironment("Testing"))
+{
+  builder.Configuration.AddVaultConfiguration(
+    () =>
+      new VaultOptions(vaultAddress: vaultSection["Address"]!, vaultToken: vaultSection["Token"]!),
+    "screendrafts",
+    vaultSection["MountPoint"]
+  );
+}
+
+foreach (
+  var kvp in builder
+    .Configuration.AsEnumerable()
+    .Where(k =>
+      k.Key.Contains("MediatR", StringComparison.InvariantCultureIgnoreCase)
+      || k.Key.Contains("KeycloakPoller", StringComparison.InvariantCultureIgnoreCase)
+      || k.Key.Contains("ConnectionStrings", StringComparison.InvariantCultureIgnoreCase)
+      || k.Key.Contains("Users", StringComparison.InvariantCultureIgnoreCase)
+      || k.Key.Contains("Drafts", StringComparison.InvariantCultureIgnoreCase)
+      || k.Key.Contains("Integrations", StringComparison.InvariantCultureIgnoreCase)
+    )
+    .OrderBy(k => k.Key)
+)
+{
+  Console.WriteLine($"CONFIG: {kvp.Key} = {(kvp.Value is null ? "<null>" : "<set>")}");
+}
 
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();

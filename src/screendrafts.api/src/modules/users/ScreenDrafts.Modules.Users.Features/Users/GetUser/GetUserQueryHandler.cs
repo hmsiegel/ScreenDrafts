@@ -15,11 +15,7 @@ internal sealed class GetUserQueryHandler(IDbConnectionFactory dbConnectionFacto
         u.first_name As {nameof(GetUserResponse.FirstName)},
         u.middle_name As {nameof(GetUserResponse.MiddleName)},
         u.last_name As {nameof(GetUserResponse.LastName)},
-        u.profile_picture_path As {nameof(GetUserResponse.ProfilePicturePath)},
-        u.twitter_handle As {nameof(GetUserResponse.TwitterHandle)},
-        u.instagram_handle As {nameof(GetUserResponse.InstagramHandle)},
-        u.letterboxd_handle As {nameof(GetUserResponse.LetterboxdHandle)},
-        u.bluesky_handle As {nameof(GetUserResponse.BlueskyHandle)}
+        u.person_public_id As {nameof(GetUserResponse.PersonPublicId)}
       FROM users.users u
       WHERE public_id = @PublicId
       """;

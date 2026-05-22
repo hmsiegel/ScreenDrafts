@@ -7,12 +7,6 @@
     "Inbox": {
       "IntervalInSeconds": 5,
       "BatchSize": 50
-    },
-    "People": {
-      "CommissionerPersonPublicIds": [
-        "",
-        ""
-      ]
     }
   }
 }

@@ -10,10 +10,19 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
   private bool _disposed;
   private bool _containersInitialized;
 
-  public IntegrationTestWebAppFactory()
+  private void CreateContainers()
   {
-    InitializeAndStartContainers();
-    SetEnvironmentVariables();
+    _dbContainer = new PostgreSqlBuilder("postgres:latest")
+      .WithDatabase("screendrafts")
+      .WithUsername("postgres")
+      .WithPassword("postgres")
+      .Build();
+
+    _redisContainer = new RedisBuilder("redis:latest").Build();
+
+    _rabbitMqContainer = new RabbitMqBuilder("rabbitmq:4-management").Build();
+
+    _mongoDbContainer = new MongoDbBuilder("mongo:latest").Build();
   }
 
   private void SetEnvironmentVariables()
@@ -25,10 +34,8 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
 
     var dbConnectionString = _dbContainer.GetConnectionString();
 
-    // Set environment variables for the application to use the test containers
     Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Testing");
 
-    // Connection strings for various modules
     Environment.SetEnvironmentVariable("ConnectionStrings__Database", dbConnectionString);
     Environment.SetEnvironmentVariable("ConnectionStrings__Administration", dbConnectionString);
     Environment.SetEnvironmentVariable("ConnectionStrings__Audit", dbConnectionString);
@@ -39,75 +46,39 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
     Environment.SetEnvironmentVariable("ConnectionStrings__RealTimeUpdates", dbConnectionString);
     Environment.SetEnvironmentVariable("ConnectionStrings__Reporting", dbConnectionString);
     Environment.SetEnvironmentVariable("ConnectionStrings__Users", dbConnectionString);
-    Environment.SetEnvironmentVariable("ConnectionStrings__Cache", _redisContainer.GetConnectionString());
-    Environment.SetEnvironmentVariable("ConnectionStrings__Queue", _rabbitMqContainer?.GetConnectionString());
-    Environment.SetEnvironmentVariable("ConnectionStrings__Mongo", _mongoDbContainer?.GetConnectionString());
+    Environment.SetEnvironmentVariable(
+      "ConnectionStrings__Cache",
+      _redisContainer.GetConnectionString()
+    );
+    Environment.SetEnvironmentVariable(
+      "ConnectionStrings__Queue",
+      _rabbitMqContainer?.GetConnectionString()
+    );
+    Environment.SetEnvironmentVariable(
+      "ConnectionStrings__Mongo",
+      _mongoDbContainer?.GetConnectionString()
+    );
 
-    // Keycloak settings
     Environment.SetEnvironmentVariable("KeyCloak__HealthUrl", "http://localhost:8080/health");
-
-    // Serilog settings
     Environment.SetEnvironmentVariable("Serilog__MinimumLevel__Default", "Warning");
     Environment.SetEnvironmentVariable("Serilog__MinimumLevel__Override__Microsoft", "Warning");
   }
 
-  private void InitializeAndStartContainers()
-  {
-    if (_containersInitialized)
-    {
-      return;
-    }
-
-    _dbContainer = new PostgreSqlBuilder("postgres:latest")
-        .WithDatabase("screendrafts")
-        .WithUsername("postgres")
-        .WithPassword("postgres")
-        .Build();
-
-    _redisContainer = new RedisBuilder("redis:latest")
-        .Build();
-
-    _rabbitMqContainer = new RabbitMqBuilder("rabbitmq:4-management")
-      .Build();
-
-    _mongoDbContainer = new MongoDbBuilder("mongo:latest")
-      .Build();
-
-    Task.WaitAll(
-      _dbContainer.StartAsync(),
-      _redisContainer.StartAsync(),
-      _rabbitMqContainer.StartAsync(),
-      _mongoDbContainer.StartAsync());
-
-    _containersInitialized = true;
-  }
-
-
   /// <summary>
   /// Virtual method to allow module specific configuration.
   /// </summary>
-  /// <param name="services">The services to configure.</param>
-  protected virtual void ConfigureModuleServices(IServiceCollection services)
-  {
-    // Override in module specific factories if needed.
-  }
+  protected virtual void ConfigureModuleServices(IServiceCollection services) { }
 
   /// <summary>
   /// Virtual method to allow module-specific app configuration.
   /// </summary>
-  /// <param name="app">The app builder.</param>
-  protected virtual void ConfigureModuleApp(IApplicationBuilder app)
-  {
-    // Override in module specific factories if needed.
-  }
+  protected virtual void ConfigureModuleApp(IApplicationBuilder app) { }
 
   /// <summary>
   /// Virtual method to get module-specific DbContext types for migration application.
   /// </summary>
-  /// <returns>Returns all known DbContext types.</returns>
   protected virtual IEnumerable<Type> GetDbContextTypes()
   {
-    // Override in module specific factories to return only relevant DbContext types.
     var contextTypeNames = new[]
     {
       "ScreenDrafts.Modules.Administration.Infrastructure.Database.AdministrationDbContext",
@@ -121,9 +92,13 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
       "ScreenDrafts.Modules.Users.Infrastructure.Database.UsersDbContext",
     };
 
-    return [.. AppDomain.CurrentDomain.GetAssemblies()
+    return
+    [
+      .. AppDomain
+        .CurrentDomain.GetAssemblies()
         .SelectMany(a => a.GetTypes())
-        .Where(t => contextTypeNames.Contains(t.FullName, StringComparer.Ordinal))];
+        .Where(t => contextTypeNames.Contains(t.FullName, StringComparer.Ordinal)),
+    ];
   }
 
   protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -132,19 +107,19 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
 
     builder.UseEnvironment("Testing");
 
-    builder.ConfigureAppConfiguration((context, config) =>
-    {
-      if (!_containersInitialized)
+    builder.ConfigureAppConfiguration(
+      (context, config) =>
       {
-        throw new InvalidOperationException("Containers have not been initialized.");
+        if (!_containersInitialized)
+        {
+          throw new InvalidOperationException("Containers have not been initialized.");
+        }
+
+        config.Sources.Clear();
+        config.AddEnvironmentVariables();
+        config.AddInMemoryCollection(GetTestConfiguration());
       }
-
-      config.Sources.Clear();
-
-      config.AddEnvironmentVariables();
-
-      config.AddInMemoryCollection(GetTestConfiguration());
-    });
+    );
 
     builder.ConfigureTestServices(services =>
     {
@@ -160,7 +135,7 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
       ["OTEL_EXPORTER_OTLP_ENDPOINT"] = "",
       ["Serilog:MinimumLevel:Default"] = "Warning",
       ["Serilog:MinimumLevel:Override:Microsoft"] = "Warning",
-      ["Environment"] = "Testing"
+      ["Environment"] = "Testing",
     };
   }
 
@@ -174,25 +149,32 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
 
     services.RemoveAll<IHealthCheck>();
 
-    // Replace IEventBus with a no-op: the RabbitMQ guest user has a loopback
-    // restriction and cannot connect from outside the container in tests.
-    services.RemoveAll<ScreenDrafts.Common.Application.EventBus.IEventBus>();
-    services.AddSingleton<ScreenDrafts.Common.Application.EventBus.IEventBus, NoOpEventBus>();
+    services.RemoveAll<IEventBus>();
+    services.AddSingleton<IEventBus, NoOpEventBus>();
   }
 
-  private sealed class NoOpEventBus : ScreenDrafts.Common.Application.EventBus.IEventBus
+  private sealed class NoOpEventBus : IEventBus
   {
     public Task PublishAsync<T>(T integrationEvent, CancellationToken cancellationToken = default)
-      where T : ScreenDrafts.Common.Application.EventBus.IIntegrationEvent
-      => Task.CompletedTask;
+      where T : IIntegrationEvent => Task.CompletedTask;
   }
 
   public async Task InitializeAsync()
   {
-    if (_containersInitialized)
-    {
-      await ApplyMigrationsAsync();
-    }
+    CreateContainers();
+
+    await Task.WhenAll(
+      _dbContainer!.StartAsync(),
+      _redisContainer!.StartAsync(),
+      _rabbitMqContainer!.StartAsync(),
+      _mongoDbContainer!.StartAsync()
+    );
+
+    _containersInitialized = true;
+
+    SetEnvironmentVariables();
+
+    await ApplyMigrationsAsync();
   }
 
   protected virtual async Task ApplyMigrationsAsync()
@@ -258,10 +240,10 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
       }
       else
       {
-        _dbContainer?.ConfigureAwait(false).DisposeAsync();
-        _redisContainer?.ConfigureAwait(false).DisposeAsync();
-        _rabbitMqContainer?.ConfigureAwait(false).DisposeAsync();
-        _mongoDbContainer?.ConfigureAwait(false).DisposeAsync();
+        _dbContainer?.DisposeAsync().AsTask().GetAwaiter().GetResult();
+        _redisContainer?.DisposeAsync().AsTask().GetAwaiter().GetResult();
+        _rabbitMqContainer?.DisposeAsync().AsTask().GetAwaiter().GetResult();
+        _mongoDbContainer?.DisposeAsync().AsTask().GetAwaiter().GetResult();
       }
 
       _disposed = true;

@@ -1,6 +1,6 @@
-using ScreenDrafts.Modules.Drafts.Domain.DraftParts.Enums;
-using ScreenDrafts.Modules.Drafts.Features.Drafts.GetDraft;
+﻿using ScreenDrafts.Modules.Drafts.Domain.DraftParts.Enums;
 using ScreenDrafts.Modules.Drafts.Features.DraftParts.SetReleaseDate;
+using ScreenDrafts.Modules.Drafts.Features.Drafts.GetDraft;
 
 namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafts;
 
@@ -15,7 +15,11 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
   public async Task GetDraft_WithNonExistentId_ShouldReturnFailureAsync()
   {
     // Arrange
-    var query = new GetDraftQuery { DraftId = Faker.Random.AlphaNumeric(10), IncludePatreon = false };
+    var query = new GetDraftQuery
+    {
+      DraftId = Faker.Random.AlphaNumeric(10),
+      IncludePatreon = false,
+    };
 
     // Act
     var result = await Sender.Send(query, TestContext.Current.CancellationToken);
@@ -34,12 +38,17 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
     // Arrange
     const string title = "My Integration Test Draft";
     var seriesId = await CreateSeriesAsync();
-    var draftPublicId = (await Sender.Send(new CreateDraftCommand
-    {
-      Title = title,
-      DraftType = DraftType.Standard.Value,
-      SeriesId = seriesId
-    }, TestContext.Current.CancellationToken)).Value;
+    var draftPublicId = (
+      await Sender.Send(
+        new CreateDraftCommand
+        {
+          Title = title,
+          DraftType = DraftType.Standard.Value,
+          SeriesId = seriesId,
+        },
+        TestContext.Current.CancellationToken
+      )
+    ).Value;
 
     var query = new GetDraftQuery { DraftId = draftPublicId, IncludePatreon = false };
 
@@ -95,28 +104,39 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
   {
     // Arrange
     var seriesId = await CreateSeriesAsync();
-    var draftPublicId = (await Sender.Send(new CreateDraftCommand
-    {
-      Title = Faker.Company.CompanyName(),
-      DraftType = DraftType.Standard.Value,
-      SeriesId = seriesId
-    }, TestContext.Current.CancellationToken)).Value;
+    var draftPublicId = (
+      await Sender.Send(
+        new CreateDraftCommand
+        {
+          Title = Faker.Company.CompanyName(),
+          DraftType = DraftType.Standard.Value,
+          SeriesId = seriesId,
+        },
+        TestContext.Current.CancellationToken
+      )
+    ).Value;
 
-    await Sender.Send(new CreateDraftPartCommand
-    {
-      DraftPublicId = draftPublicId,
-      PartIndex = 1,
-      MinimumPosition = 1,
-      MaximumPosition = 7
-    }, TestContext.Current.CancellationToken);
+    await Sender.Send(
+      new CreateDraftPartCommand
+      {
+        DraftPublicId = draftPublicId,
+        PartIndex = 1,
+        MinimumPosition = 1,
+        MaximumPosition = 7,
+      },
+      TestContext.Current.CancellationToken
+    );
 
-    await Sender.Send(new CreateDraftPartCommand
-    {
-      DraftPublicId = draftPublicId,
-      PartIndex = 2,
-      MinimumPosition = 1,
-      MaximumPosition = 7
-    }, TestContext.Current.CancellationToken);
+    await Sender.Send(
+      new CreateDraftPartCommand
+      {
+        DraftPublicId = draftPublicId,
+        PartIndex = 2,
+        MinimumPosition = 1,
+        MaximumPosition = 7,
+      },
+      TestContext.Current.CancellationToken
+    );
 
     var query = new GetDraftQuery { DraftId = draftPublicId, IncludePatreon = false };
 
@@ -143,14 +163,22 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
 
     var peopleFactory = new PeopleFactory(Sender, Faker);
     var personId = await peopleFactory.CreateAndSavePersonAsync();
-    var hostPublicId = (await Sender.Send(new CreateHostCommand { PersonPublicId = personId }, TestContext.Current.CancellationToken)).Value;
+    var hostPublicId = (
+      await Sender.Send(
+        new CreateHostCommand { PersonPublicId = personId },
+        TestContext.Current.CancellationToken
+      )
+    ).Value;
 
-    await Sender.Send(new AddHostToDraftPartCommand
-    {
-      DraftPartId = draftPartPublicId,
-      HostPublicId = hostPublicId,
-      HostRole = HostRole.Primary
-    }, TestContext.Current.CancellationToken);
+    await Sender.Send(
+      new AddHostToDraftPartCommand
+      {
+        DraftPartId = draftPartPublicId,
+        HostPublicId = hostPublicId,
+        HostRole = HostRole.Primary,
+      },
+      TestContext.Current.CancellationToken
+    );
 
     var query = new GetDraftQuery { DraftId = draftPublicId, IncludePatreon = false };
 
@@ -191,12 +219,15 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
     var teamFactory = new DrafterTeamFactory(Sender, Faker);
     var drafterPublicId = await teamFactory.CreateAndSaveDrafterAsync();
 
-    await Sender.Send(new AddParticipantToDraftPartCommand
-    {
-      DraftPartId = draftPartPublicId,
-      ParticipantPublicId = drafterPublicId,
-      ParticipantKind = ParticipantKind.Drafter
-    }, TestContext.Current.CancellationToken);
+    await Sender.Send(
+      new AddParticipantToDraftPartCommand
+      {
+        DraftPartId = draftPartPublicId,
+        ParticipantPublicId = drafterPublicId,
+        ParticipantKind = ParticipantKind.Drafter,
+      },
+      TestContext.Current.CancellationToken
+    );
 
     var query = new GetDraftQuery { DraftId = draftPublicId, IncludePatreon = false };
 
@@ -236,12 +267,15 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
     var (draftPublicId, draftPartPublicId) = await CreateDraftWithPartAsync();
     var releaseDate = new DateOnly(2025, 6, 15);
 
-    await Sender.Send(new SetReleaseDateCommand
-    {
-      DraftPartId = draftPartPublicId,
-      ReleaseDate = releaseDate,
-      ReleaseChannel = ReleaseChannel.MainFeed
-    }, TestContext.Current.CancellationToken);
+    await Sender.Send(
+      new SetReleaseDateCommand
+      {
+        DraftPartId = draftPartPublicId,
+        ReleaseDate = releaseDate,
+        ReleaseChannel = ReleaseChannel.MainFeed,
+      },
+      TestContext.Current.CancellationToken
+    );
 
     var query = new GetDraftQuery { DraftId = draftPublicId, IncludePatreon = false };
 
@@ -277,12 +311,15 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
     // Arrange
     var (draftPublicId, draftPartPublicId) = await CreateDraftWithPartAsync();
 
-    await Sender.Send(new SetReleaseDateCommand
-    {
-      DraftPartId = draftPartPublicId,
-      ReleaseDate = new DateOnly(2025, 6, 15),
-      ReleaseChannel = ReleaseChannel.Patreon
-    }, TestContext.Current.CancellationToken);
+    await Sender.Send(
+      new SetReleaseDateCommand
+      {
+        DraftPartId = draftPartPublicId,
+        ReleaseDate = new DateOnly(2025, 6, 15),
+        ReleaseChannel = ReleaseChannel.Patreon,
+      },
+      TestContext.Current.CancellationToken
+    );
 
     var query = new GetDraftQuery { DraftId = draftPublicId, IncludePatreon = false };
 
@@ -300,12 +337,15 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
     // Arrange
     var (draftPublicId, draftPartPublicId) = await CreateDraftWithPartAsync();
 
-    await Sender.Send(new SetReleaseDateCommand
-    {
-      DraftPartId = draftPartPublicId,
-      ReleaseDate = new DateOnly(2025, 6, 15),
-      ReleaseChannel = ReleaseChannel.Patreon
-    }, TestContext.Current.CancellationToken);
+    await Sender.Send(
+      new SetReleaseDateCommand
+      {
+        DraftPartId = draftPartPublicId,
+        ReleaseDate = new DateOnly(2025, 6, 15),
+        ReleaseChannel = ReleaseChannel.Patreon,
+      },
+      TestContext.Current.CancellationToken
+    );
 
     var query = new GetDraftQuery { DraftId = draftPublicId, IncludePatreon = true };
 
@@ -341,18 +381,22 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
   public async Task GetDraft_WithPick_ShouldPopulatePicksAsync()
   {
     // Arrange
-    var (draftPublicId, draftPartPublicId, drafter1PublicId, _) = await SetupStartedDraftPartAsync();
+    var (draftPublicId, draftPartPublicId, drafter1PublicId, _) =
+      await SetupStartedDraftPartAsync();
     var movie = await CreateMovieAsync();
 
-    await Sender.Send(new PlayPickCommand
-    {
-      DraftPartId = draftPartPublicId,
-      Position = 1,
-      PlayOrder = 1,
-      ParticipantPublicId = drafter1PublicId,
-      ParticipantKind = ParticipantKind.Drafter,
-      MoviePublicId = movie.PublicId
-    }, TestContext.Current.CancellationToken);
+    await Sender.Send(
+      new PlayPickCommand
+      {
+        DraftPartId = draftPartPublicId,
+        Position = 1,
+        PlayOrder = 1,
+        ParticipantPublicId = drafter1PublicId,
+        ParticipantKind = ParticipantKind.Drafter,
+        MoviePublicId = movie.PublicId,
+      },
+      TestContext.Current.CancellationToken
+    );
 
     var query = new GetDraftQuery { DraftId = draftPublicId, IncludePatreon = false };
 
@@ -366,7 +410,7 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
     var pick = part.Picks[0];
     pick.PlayOrder.Should().Be(1);
     pick.Position.Should().Be(1);
-    pick.MoviePublicId.Should().Be(movie.ImdbId);
+    pick.MoviePublicId.Should().Be(movie.PublicId);
     pick.MovieTitle.Should().Be(movie.MovieTitle);
     pick.Veto.Should().BeNull();
     pick.CommissionerOverride.Should().BeNull();
@@ -380,27 +424,34 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
   public async Task GetDraft_WithVeto_ShouldPopulateVetoOnPickAsync()
   {
     // Arrange
-    var (draftPublicId, draftPartPublicId, drafter1PublicId, _) = await SetupStartedDraftPartAsync();
+    var (draftPublicId, draftPartPublicId, drafter1PublicId, _) =
+      await SetupStartedDraftPartAsync();
     var movie = await CreateMovieAsync();
 
-    await Sender.Send(new PlayPickCommand
-    {
-      DraftPartId = draftPartPublicId,
-      Position = 1,
-      PlayOrder = 1,
-      ParticipantPublicId = drafter1PublicId,
-      ParticipantKind = ParticipantKind.Drafter,
-      MoviePublicId = movie.PublicId
-    }, TestContext.Current.CancellationToken);
+    await Sender.Send(
+      new PlayPickCommand
+      {
+        DraftPartId = draftPartPublicId,
+        Position = 1,
+        PlayOrder = 1,
+        ParticipantPublicId = drafter1PublicId,
+        ParticipantKind = ParticipantKind.Drafter,
+        MoviePublicId = movie.PublicId,
+      },
+      TestContext.Current.CancellationToken
+    );
 
-    await Sender.Send(new ApplyVetoCommand
-    {
-      DraftPartId = draftPartPublicId,
-      PlayOrder = 1,
-      ParticipantPublicId = drafter1PublicId,
-      ParticipantKind = ParticipantKind.Drafter,
-      ActorPublicId = drafter1PublicId
-    }, TestContext.Current.CancellationToken);
+    await Sender.Send(
+      new ApplyVetoCommand
+      {
+        DraftPartId = draftPartPublicId,
+        PlayOrder = 1,
+        ParticipantPublicId = drafter1PublicId,
+        ParticipantKind = ParticipantKind.Drafter,
+        ActorPublicId = drafter1PublicId,
+      },
+      TestContext.Current.CancellationToken
+    );
 
     var query = new GetDraftQuery { DraftId = draftPublicId, IncludePatreon = false };
 
@@ -422,24 +473,27 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
   public async Task GetDraft_WithCommissionerOverride_ShouldPopulateOverrideAsync()
   {
     // Arrange
-    var (draftPublicId, draftPartPublicId, drafter1PublicId, _) = await SetupStartedDraftPartAsync();
+    var (draftPublicId, draftPartPublicId, drafter1PublicId, _) =
+      await SetupStartedDraftPartAsync();
     var movie = await CreateMovieAsync();
 
-    await Sender.Send(new PlayPickCommand
-    {
-      DraftPartId = draftPartPublicId,
-      Position = 1,
-      PlayOrder = 1,
-      ParticipantPublicId = drafter1PublicId,
-      ParticipantKind = ParticipantKind.Drafter,
-      MoviePublicId = movie.PublicId
-    }, TestContext.Current.CancellationToken);
+    await Sender.Send(
+      new PlayPickCommand
+      {
+        DraftPartId = draftPartPublicId,
+        Position = 1,
+        PlayOrder = 1,
+        ParticipantPublicId = drafter1PublicId,
+        ParticipantKind = ParticipantKind.Drafter,
+        MoviePublicId = movie.PublicId,
+      },
+      TestContext.Current.CancellationToken
+    );
 
-    await Sender.Send(new ApplyCommissionerOverrideCommand
-    {
-      DraftPartId = draftPartPublicId,
-      PlayOrder = 1
-    }, TestContext.Current.CancellationToken);
+    await Sender.Send(
+      new ApplyCommissionerOverrideCommand { DraftPartId = draftPartPublicId, PlayOrder = 1 },
+      TestContext.Current.CancellationToken
+    );
 
     var query = new GetDraftQuery { DraftId = draftPublicId, IncludePatreon = false };
 
@@ -459,114 +513,178 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
   private async Task<string> CreateDraftAsync()
   {
     var seriesId = await CreateSeriesAsync();
-    return (await Sender.Send(new CreateDraftCommand
-    {
-      Title = Faker.Company.CompanyName(),
-      DraftType = DraftType.Standard.Value,
-      SeriesId = seriesId
-    }, TestContext.Current.CancellationToken)).Value;
+    return (
+      await Sender.Send(
+        new CreateDraftCommand
+        {
+          Title = Faker.Company.CompanyName(),
+          DraftType = DraftType.Standard.Value,
+          SeriesId = seriesId,
+        },
+        TestContext.Current.CancellationToken
+      )
+    ).Value;
   }
 
   private async Task<(string DraftPublicId, string DraftPartPublicId)> CreateDraftWithPartAsync()
   {
     var seriesId = await CreateSeriesAsync();
-    var draftPublicId = (await Sender.Send(new CreateDraftCommand
-    {
-      Title = Faker.Company.CompanyName(),
-      DraftType = DraftType.Standard.Value,
-      SeriesId = seriesId
-    }, TestContext.Current.CancellationToken)).Value;
+    var draftPublicId = (
+      await Sender.Send(
+        new CreateDraftCommand
+        {
+          Title = Faker.Company.CompanyName(),
+          DraftType = DraftType.Standard.Value,
+          SeriesId = seriesId,
+        },
+        TestContext.Current.CancellationToken
+      )
+    ).Value;
 
-    var partPublicId = (await Sender.Send(new CreateDraftPartCommand
-    {
-      DraftPublicId = draftPublicId,
-      PartIndex = 1,
-      MinimumPosition = 1,
-      MaximumPosition = 7
-    }, TestContext.Current.CancellationToken)).Value;
+    var partPublicId = (
+      await Sender.Send(
+        new CreateDraftPartCommand
+        {
+          DraftPublicId = draftPublicId,
+          PartIndex = 1,
+          MinimumPosition = 1,
+          MaximumPosition = 7,
+        },
+        TestContext.Current.CancellationToken
+      )
+    ).Value;
 
     return (draftPublicId, partPublicId);
   }
 
   private async Task<Guid> CreateSeriesAsync()
   {
-    return (await Sender.Send(new CreateSeriesCommand
-    {
-      Name = Faker.Company.CompanyName(),
-      Kind = SeriesKind.Regular.Value,
-      CanonicalPolicy = CanonicalPolicy.Always.Value,
-      ContinuityScope = ContinuityScope.None.Value,
-      ContinuityDateRule = ContinuityDateRule.AnyChannelFirstRelease.Value,
-      AllowedDraftTypes = (int)DraftTypeMask.All,
-      DefaultDraftType = DraftType.Standard.Value
-    }, TestContext.Current.CancellationToken)).Value;
+    return (
+      await Sender.Send(
+        new CreateSeriesCommand
+        {
+          Name = Faker.Company.CompanyName(),
+          Kind = SeriesKind.Regular.Value,
+          CanonicalPolicy = CanonicalPolicy.Always.Value,
+          ContinuityScope = ContinuityScope.None.Value,
+          ContinuityDateRule = ContinuityDateRule.AnyChannelFirstRelease.Value,
+          AllowedDraftTypes = (int)DraftTypeMask.All,
+          DefaultDraftType = DraftType.Standard.Value,
+        },
+        TestContext.Current.CancellationToken
+      )
+    ).Value;
   }
 
-  private async Task<(string DraftPublicId, string DraftPartPublicId, string Drafter1PublicId, string Drafter2PublicId)> SetupStartedDraftPartAsync()
+  private async Task<(
+    string DraftPublicId,
+    string DraftPartPublicId,
+    string Drafter1PublicId,
+    string Drafter2PublicId
+  )> SetupStartedDraftPartAsync()
   {
     var seriesId = await CreateSeriesAsync();
-    var draftPublicId = (await Sender.Send(new CreateDraftCommand
-    {
-      Title = Faker.Company.CompanyName(),
-      DraftType = DraftType.Standard.Value,
-      SeriesId = seriesId
-    }, TestContext.Current.CancellationToken)).Value;
+    var draftPublicId = (
+      await Sender.Send(
+        new CreateDraftCommand
+        {
+          Title = Faker.Company.CompanyName(),
+          DraftType = DraftType.Standard.Value,
+          SeriesId = seriesId,
+        },
+        TestContext.Current.CancellationToken
+      )
+    ).Value;
 
-    await Sender.Send(new CreateDraftPartCommand
-    {
-      DraftPublicId = draftPublicId,
-      PartIndex = 1,
-      MinimumPosition = 1,
-      MaximumPosition = 7
-    }, TestContext.Current.CancellationToken);
+    await Sender.Send(
+      new CreateDraftPartCommand
+      {
+        DraftPublicId = draftPublicId,
+        PartIndex = 1,
+        MinimumPosition = 1,
+        MaximumPosition = 7,
+      },
+      TestContext.Current.CancellationToken
+    );
 
     var draftPartInternalId = await GetFirstDraftPartIdAsync(draftPublicId);
 
-    var draftPart = await DbContext.DraftParts
-      .FirstAsync(dp => dp.Id == DraftPartId.Create(draftPartInternalId), TestContext.Current.CancellationToken);
+    var draftPart = await DbContext.DraftParts.FirstAsync(
+      dp => dp.Id == DraftPartId.Create(draftPartInternalId),
+      TestContext.Current.CancellationToken
+    );
     var draftPartPublicId = draftPart.PublicId;
 
     var peopleFactory = new PeopleFactory(Sender, Faker);
 
     var person1Id = await peopleFactory.CreateAndSavePersonAsync();
-    var drafter1PublicId = (await Sender.Send(new CreateDrafterCommand(person1Id), TestContext.Current.CancellationToken)).Value;
-    await Sender.Send(new AddParticipantToDraftPartCommand
-    {
-      DraftPartId = draftPartPublicId,
-      ParticipantPublicId = drafter1PublicId,
-      ParticipantKind = ParticipantKind.Drafter
-    }, TestContext.Current.CancellationToken);
+    var drafter1PublicId = (
+      await Sender.Send(new CreateDrafterCommand(person1Id), TestContext.Current.CancellationToken)
+    ).Value;
+    await Sender.Send(
+      new AddParticipantToDraftPartCommand
+      {
+        DraftPartId = draftPartPublicId,
+        ParticipantPublicId = drafter1PublicId,
+        ParticipantKind = ParticipantKind.Drafter,
+      },
+      TestContext.Current.CancellationToken
+    );
 
     var person2Id = await peopleFactory.CreateAndSavePersonAsync();
-    var drafter2PublicId = (await Sender.Send(new CreateDrafterCommand(person2Id), TestContext.Current.CancellationToken)).Value;
-    await Sender.Send(new AddParticipantToDraftPartCommand
-    {
-      DraftPartId = draftPartPublicId,
-      ParticipantPublicId = drafter2PublicId,
-      ParticipantKind = ParticipantKind.Drafter
-    }, TestContext.Current.CancellationToken);
+    var drafter2PublicId = (
+      await Sender.Send(new CreateDrafterCommand(person2Id), TestContext.Current.CancellationToken)
+    ).Value;
+    await Sender.Send(
+      new AddParticipantToDraftPartCommand
+      {
+        DraftPartId = draftPartPublicId,
+        ParticipantPublicId = drafter2PublicId,
+        ParticipantKind = ParticipantKind.Drafter,
+      },
+      TestContext.Current.CancellationToken
+    );
 
     var hostPersonId = await peopleFactory.CreateAndSavePersonAsync();
-    var hostPublicId = (await Sender.Send(new CreateHostCommand { PersonPublicId = hostPersonId }, TestContext.Current.CancellationToken)).Value;
-    await Sender.Send(new AddHostToDraftPartCommand
-    {
-      DraftPartId = draftPartPublicId,
-      HostPublicId = hostPublicId,
-      HostRole = HostRole.Primary
-    }, TestContext.Current.CancellationToken);
+    var hostPublicId = (
+      await Sender.Send(
+        new CreateHostCommand { PersonPublicId = hostPersonId },
+        TestContext.Current.CancellationToken
+      )
+    ).Value;
+    await Sender.Send(
+      new AddHostToDraftPartCommand
+      {
+        DraftPartId = draftPartPublicId,
+        HostPublicId = hostPublicId,
+        HostRole = HostRole.Primary,
+      },
+      TestContext.Current.CancellationToken
+    );
 
-    await Sender.Send(new SetDraftPartStatusCommand
-    {      DraftPublicId = draftPublicId,
-      PartIndex = 1,
-      Action = DraftPartStatusAction.Start
-    }, TestContext.Current.CancellationToken);
+    await Sender.Send(
+      new SetDraftPartStatusCommand
+      {
+        DraftPublicId = draftPublicId,
+        PartIndex = 1,
+        Action = DraftPartStatusAction.Start,
+      },
+      TestContext.Current.CancellationToken
+    );
 
     return (draftPublicId, draftPartPublicId, drafter1PublicId, drafter2PublicId);
   }
 
   private async Task<Movie> CreateMovieAsync()
   {
-    var movie = Movie.Create(Faker.Company.CompanyName(), $"m_{Faker.Random.AlphaNumeric(21)}", MediaType.Movie, Guid.NewGuid()).Value;
+    var movie = Movie
+      .Create(
+        Faker.Company.CompanyName(),
+        $"m_{Faker.Random.AlphaNumeric(21)}",
+        MediaType.Movie,
+        Guid.NewGuid()
+      )
+      .Value;
     DbContext.Movies.Add(movie);
     await DbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
     return movie;

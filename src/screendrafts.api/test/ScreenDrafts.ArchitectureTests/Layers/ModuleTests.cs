@@ -254,6 +254,7 @@ public class ModuleTests : BaseTest
       AuditIntegrationEventsNamespace,
       CommunicationsIntegrationEventsNamespace,
       DraftsIntegrationEventsNamespace,
+      DraftsPublicApiNamespace,
       IntegrationsIntegrationEventsNamespace,
       IntegrationsPublicApiNamespace,
       RealTimeUpdatesIntegrationEventsNamespace,

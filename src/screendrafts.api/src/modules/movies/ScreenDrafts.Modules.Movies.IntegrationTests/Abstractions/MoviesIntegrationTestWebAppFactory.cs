@@ -1,8 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
+using ScreenDrafts.Modules.Drafts.PublicApi;
 using ScreenDrafts.Modules.Integrations.PublicApi;
 using ScreenDrafts.Modules.Movies.IntegrationTests.TestUtils;
+using ScreenDrafts.Modules.Reporting.PublicApi;
 
 namespace ScreenDrafts.Modules.Movies.IntegrationTests.Abstractions;
 
@@ -19,6 +21,12 @@ public class MoviesIntegrationTestWebAppFactory : IntegrationTestWebAppFactory
   {
     services.RemoveAll<IIntegrationsApi>();
     services.AddSingleton<IIntegrationsApi>(FakeIntegrationsApi);
+
+    services.RemoveAll<IDraftsApi>();
+    services.AddSingleton<IDraftsApi>(new FakeDraftsApi());
+
+    services.RemoveAll<IReportingApi>();
+    services.AddSingleton<IReportingApi>(new FakeReportingApi());
   }
 
   protected override async Task ApplyMigrationsAsync()

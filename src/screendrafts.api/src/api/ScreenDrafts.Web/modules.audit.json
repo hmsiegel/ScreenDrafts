@@ -10,10 +10,6 @@
     },
     "KeycloakPoller": {
       "IntervalInSeconds": 60,
-      "AdminUrl": "",
-      "TokenUrl": "",
-      "ConfidentialClientId": "",
-      "ConfidentialClientSecret": "",
       "Realm": ""
     }
   }
