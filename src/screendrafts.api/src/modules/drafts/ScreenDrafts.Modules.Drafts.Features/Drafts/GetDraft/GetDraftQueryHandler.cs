@@ -86,7 +86,7 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
 
     if (partRows.Count == 0)
     {
-      return Result.Success(BuildResponse(draft, [], default, default, default, default, 0));
+      return Result.Success(BuildResponse(draft, [], 0));
     }
 
     var partIds = partRows.Select(r => r.InternalId).ToList();
@@ -435,111 +435,178 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
       )
     );
 
-    const string adjacentSql = $"""
-      WITH current AS (
+    // 11. Per-part adjacent drafts (ordered by part release date within the series)
+    //
+    // For each part we find:
+    //   prev — the draft whose earliest allowed-channel part release date is the
+    //          largest date strictly before this part's earliest release date,
+    //          within the same series.
+    //   next — the same in the other direction.
+    //
+    // A single query returns all (partId, direction, draftPublicId, draftTitle) rows
+    // for all parts in one round-trip.
+    const string partAdjacentSql = """
+      WITH this_part_dates AS (
+        -- Earliest allowed-channel release date per part being queried
         SELECT
-          dcr.series_id,
-          MIN(dcr.episode_number) AS episode_number
-        FROM drafts.draft_channel_releases dcr
-        JOIN drafts.drafts d ON d.id = dcr.draft_id
-        WHERE d.public_id = @DraftId
-          AND dcr.release_channel = ANY(@allowedChannelInts)
-          AND dcr.episode_number IS NOT NULL
-        GROUP BY dcr.series_id
+          dr.part_id,
+          MIN(dr.release_date) AS release_date
+        FROM drafts.draft_releases dr
+        WHERE dr.part_id = ANY(@partIds)
+          AND dr.release_channel = ANY(@allowedChannelInts)
+        GROUP BY dr.part_id
       ),
-      prev AS (
+      series_part_dates AS (
+        -- Earliest allowed-channel release date for every part in the same series,
+        -- excluding the parts we are currently looking up
         SELECT
-          d.public_id,
-          d.title,
-          dcr.episode_number
-        FROM drafts.draft_channel_releases dcr
-        JOIN drafts.drafts d ON d.id = dcr.draft_id
-        JOIN current c ON c.series_id = dcr.series_id
-        WHERE dcr.release_channel = ANY(@allowedChannelInts)
-          AND dcr.episode_number IS NOT NULL
-          AND dcr.episode_number < c.episode_number
-        ORDER BY dcr.episode_number DESC
-        LIMIT 1
+          dp.id AS part_id,
+          d.id AS draft_id,
+          d.public_id AS draft_public_id,
+          d.title AS draft_title,
+          MIN(dr.release_date) AS release_date
+        FROM drafts.draft_releases dr
+        JOIN drafts.draft_parts dp ON dp.id = dr.part_id
+        JOIN drafts.drafts d ON d.id = dp.draft_id
+        JOIN drafts.series s ON s.id = d.series_id
+        -- restrict to same series as the requested draft
+        JOIN drafts.drafts current_d ON current_d.public_id = @DraftId
+          AND current_d.series_id = s.id
+        WHERE dr.release_channel = ANY(@allowedChannelInts)
+          AND dp.id != ALL(@partIds)
+        GROUP BY dp.id, d.id, d.public_id, d.title
       ),
-      next AS (
+      prev_ranked AS (
         SELECT
-          d.public_id,
-          d.title,
-          dcr.episode_number
-        FROM drafts.draft_channel_releases dcr
-        JOIN drafts.drafts d ON d.id = dcr.draft_id
-        JOIN current c ON c.series_id = dcr.series_id
-        WHERE dcr.release_channel = ANY(@allowedChannelInts)
-          AND dcr.episode_number IS NOT NULL
-          AND dcr.episode_number > c.episode_number
-        ORDER BY dcr.episode_number ASC
-        LIMIT 1
+          tpd.part_id AS source_part_id,
+          spd.draft_public_id,
+          spd.draft_title,
+          ROW_NUMBER() OVER (
+            PARTITION BY tpd.part_id
+            ORDER BY spd.release_date DESC
+          ) AS rn
+        FROM this_part_dates tpd
+        JOIN series_part_dates spd ON spd.release_date < tpd.release_date
+      ),
+      next_ranked AS (
+        SELECT
+          tpd.part_id AS source_part_id,
+          spd.draft_public_id,
+          spd.draft_title,
+          ROW_NUMBER() OVER (
+            PARTITION BY tpd.part_id
+            ORDER BY spd.release_date ASC
+          ) AS rn
+        FROM this_part_dates tpd
+        JOIN series_part_dates spd ON spd.release_date > tpd.release_date
       )
-      SELECT 'prev' AS Direction, public_id AS PublicId, title AS Title FROM prev
+      SELECT source_part_id AS PartId, 'prev' AS Direction, draft_public_id AS PublicId, draft_title AS Title
+      FROM prev_ranked WHERE rn = 1
       UNION ALL
-      SELECT 'next' AS Direction, public_id AS PublicId, title AS Title FROM next;
+      SELECT source_part_id AS PartId, 'next' AS Direction, draft_public_id AS PublicId, draft_title AS Title
+      FROM next_ranked WHERE rn = 1;
       """;
 
-    var adjacentRows = (
-      await connection.QueryAsync<(string Direction, string PublicId, string Title)>(
-        new CommandDefinition(adjacentSql, new { request.DraftId, allowedChannelInts })
+    var partAdjacentRows = (
+      await connection.QueryAsync<(Guid PartId, string Direction, string PublicId, string Title)>(
+        new CommandDefinition(
+          partAdjacentSql,
+          new
+          {
+            partIds,
+            allowedChannelInts,
+            request.DraftId,
+          }
+        )
       )
-    ).ToList();
+    ).ToLookup(r => r.PartId);
 
-    var prevDraft = adjacentRows.FirstOrDefault(r => r.Direction == "prev");
-    var nextDraft = adjacentRows.FirstOrDefault(r => r.Direction == "next");
+    // 12. Per-part campaign adjacent drafts (only meaningful when draft has a campaign)
+    Dictionary<
+      Guid,
+      IEnumerable<(Guid PartId, string Direction, string PublicId, string Title)>
+    > partCampaignAdjacentLookup = [];
 
-    // Campaign adjacent drafts (only when this draft belongs to a campaign)
-    const string campaignAdjacentSql = """
-      WITH current AS (
-        SELECT
-          d.campaign_id,
-          MIN(dcr.episode_number) AS episode_number
-        FROM drafts.draft_channel_releases dcr
-        JOIN drafts.drafts d ON d.id = dcr.draft_id
-        WHERE d.public_id = @DraftId
-          AND dcr.episode_number IS NOT NULL
-          AND d.campaign_id IS NOT NULL
-        GROUP BY d.campaign_id
-      ),
-      prev AS (
-        SELECT
-          d.public_id,
-          d.title
-        FROM drafts.draft_channel_releases dcr
-        JOIN drafts.drafts d ON d.id = dcr.draft_id
-        JOIN current c ON c.campaign_id = d.campaign_id
-        WHERE dcr.episode_number IS NOT NULL
-          AND dcr.episode_number < c.episode_number
-        ORDER BY dcr.episode_number DESC
-        LIMIT 1
-      ),
-      next AS (
-        SELECT
-          d.public_id,
-          d.title
-        FROM drafts.draft_channel_releases dcr
-        JOIN drafts.drafts d ON d.id = dcr.draft_id
-        JOIN current c ON c.campaign_id = d.campaign_id
-        WHERE dcr.episode_number IS NOT NULL
-          AND dcr.episode_number > c.episode_number
-        ORDER BY dcr.episode_number ASC
-        LIMIT 1
-      )
-      SELECT 'prev' AS Direction, public_id AS PublicId, title AS Title FROM prev
-      UNION ALL
-      SELECT 'next' AS Direction, public_id AS PublicId, title AS Title FROM next;
-      """;
+    if (draft.CampaignPublicId is not null)
+    {
+      const string partCampaignAdjacentSql = """
+        WITH this_part_dates AS (
+          SELECT
+            dr.part_id,
+            MIN(dr.release_date) AS release_date
+          FROM drafts.draft_releases dr
+          WHERE dr.part_id = ANY(@partIds)
+            AND dr.release_channel = ANY(@allowedChannelInts)
+          GROUP BY dr.part_id
+        ),
+        campaign_part_dates AS (
+          SELECT
+            dp.id AS part_id,
+            d.public_id AS draft_public_id,
+            d.title AS draft_title,
+            MIN(dr.release_date) AS release_date
+          FROM drafts.draft_releases dr
+          JOIN drafts.draft_parts dp ON dp.id = dr.part_id
+          JOIN drafts.drafts d ON d.id = dp.draft_id
+          JOIN drafts.campaigns c ON c.id = d.campaign_id
+          JOIN drafts.drafts current_d ON current_d.public_id = @DraftId
+            AND current_d.campaign_id = c.id
+          WHERE dr.release_channel = ANY(@allowedChannelInts)
+            AND dp.id != ALL(@partIds)
+          GROUP BY dp.id, d.public_id, d.title
+        ),
+        prev_ranked AS (
+          SELECT
+            tpd.part_id AS source_part_id,
+            cpd.draft_public_id,
+            cpd.draft_title,
+            ROW_NUMBER() OVER (
+              PARTITION BY tpd.part_id
+              ORDER BY cpd.release_date DESC
+            ) AS rn
+          FROM this_part_dates tpd
+          JOIN campaign_part_dates cpd ON cpd.release_date < tpd.release_date
+        ),
+        next_ranked AS (
+          SELECT
+            tpd.part_id AS source_part_id,
+            cpd.draft_public_id,
+            cpd.draft_title,
+            ROW_NUMBER() OVER (
+              PARTITION BY tpd.part_id
+              ORDER BY cpd.release_date ASC
+            ) AS rn
+          FROM this_part_dates tpd
+          JOIN campaign_part_dates cpd ON cpd.release_date > tpd.release_date
+        )
+        SELECT source_part_id AS PartId, 'prev' AS Direction, draft_public_id AS PublicId, draft_title AS Title
+        FROM prev_ranked WHERE rn = 1
+        UNION ALL
+        SELECT source_part_id AS PartId, 'next' AS Direction, draft_public_id AS PublicId, draft_title AS Title
+        FROM next_ranked WHERE rn = 1;
+        """;
 
-    var campaignAdjacentRows = (
-      await connection.QueryAsync<(string Direction, string PublicId, string Title)>(
-        new CommandDefinition(campaignAdjacentSql, new { request.DraftId })
-      )
-    ).ToList();
+      var partCampaignAdjacentRows = await connection.QueryAsync<(
+        Guid PartId,
+        string Direction,
+        string PublicId,
+        string Title
+      )>(
+        new CommandDefinition(
+          partCampaignAdjacentSql,
+          new
+          {
+            partIds,
+            allowedChannelInts,
+            request.DraftId,
+          }
+        )
+      );
 
-    var prevCampaignDraft = campaignAdjacentRows.FirstOrDefault(r => r.Direction == "prev");
-    var nextCampaignDraft = campaignAdjacentRows.FirstOrDefault(r => r.Direction == "next");
-
+      partCampaignAdjacentLookup = partCampaignAdjacentRows
+        .GroupBy(r => r.PartId)
+        .ToDictionary(g => g.Key, g => g.AsEnumerable());
+    }
     // Assemble final pick responses
     var vetoByPickId = vetoRows.ToDictionary(r => r.PickId);
 
@@ -597,17 +664,44 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
       );
     }
 
-    return Result.Success(
-      BuildResponse(
-        draft,
-        partMap.Values.ToList(),
-        prevDraft,
-        nextDraft,
-        prevCampaignDraft,
-        nextCampaignDraft,
-        episodeNumber
-      )
-    );
+    // Stamp navigation onto each part response (records are immutable so we rebuild them)
+    var parts = partMap
+      .Values.OrderBy(p => p.PartIndex)
+      .Select(p =>
+      {
+        // Match back to internal id via PublicId (partMap key is internal Guid)
+        var internalId = partRows.First(r => r.PublicId == p.PublicId).InternalId;
+
+        var adjRows = partAdjacentRows[internalId].ToList();
+        var prev = adjRows.FirstOrDefault(r => r.Direction == "prev");
+        var next = adjRows.FirstOrDefault(r => r.Direction == "next");
+
+        (string PublicId, string Title) prevCampaign = default;
+        (string PublicId, string Title) nextCampaign = default;
+        if (partCampaignAdjacentLookup.TryGetValue(internalId, out var campaignRows))
+        {
+          var campaignList = campaignRows.ToList();
+          var pc = campaignList.FirstOrDefault(r => r.Direction == "prev");
+          var nc = campaignList.FirstOrDefault(r => r.Direction == "next");
+          prevCampaign = pc == default ? default : (pc.PublicId, pc.Title);
+          nextCampaign = nc == default ? default : (nc.PublicId, nc.Title);
+        }
+
+        return p with
+        {
+          PreviousDraftPublicId = prev == default ? null : prev.PublicId,
+          PreviousDraftTitle = prev == default ? null : prev.Title,
+          NextDraftPublicId = next == default ? null : next.PublicId,
+          NextDraftTitle = next == default ? null : next.Title,
+          PreviousCampaignDraftPublicId = prevCampaign == default ? null : prevCampaign.PublicId,
+          PreviousCampaignDraftTitle = prevCampaign == default ? null : prevCampaign.Title,
+          NextCampaignDraftPublicId = nextCampaign == default ? null : nextCampaign.PublicId,
+          NextCampaignDraftTitle = nextCampaign == default ? null : nextCampaign.Title,
+        };
+      })
+      .ToList();
+
+    return Result.Success(BuildResponse(draft, parts, episodeNumber));
   }
 
   private static GetDraftResponse BuildResponse(
@@ -623,10 +717,6 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
       string? CampaignName
     ) draft,
     IReadOnlyList<GetDraftPartResponse> parts,
-    (string Direction, string PublicId, string Title) prevDraft,
-    (string Direction, string PublicId, string Title) nextDraft,
-    (string Direction, string PublicId, string Title) prevCampaignDraft,
-    (string Direction, string PublicId, string Title) nextCampaignDraft,
     int? episodeNumber
   ) =>
     new()
@@ -642,14 +732,5 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
       CampaignName = draft.CampaignName,
       EpisodeNumber = episodeNumber,
       Parts = parts,
-      PreviousDraftPublicId = prevDraft == default ? null : prevDraft.PublicId,
-      PreviousDraftTitle = prevDraft == default ? null : prevDraft.Title,
-      NextDraftPublicId = nextDraft == default ? null : nextDraft.PublicId,
-      NextDraftTitle = nextDraft == default ? null : nextDraft.Title,
-      PreviousCampaignDraftPublicId =
-        prevCampaignDraft == default ? null : prevCampaignDraft.PublicId,
-      PreviousCampaignDraftTitle = prevCampaignDraft == default ? null : prevCampaignDraft.Title,
-      NextCampaignDraftPublicId = nextCampaignDraft == default ? null : nextCampaignDraft.PublicId,
-      NextCampaignDraftTitle = nextCampaignDraft == default ? null : nextCampaignDraft.Title,
     };
 }

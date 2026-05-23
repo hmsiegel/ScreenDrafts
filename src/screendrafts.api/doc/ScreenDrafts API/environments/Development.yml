@@ -5,7 +5,7 @@ variables:
   - secret: true
     name: token
   - name: draftPublicId
-    value: d_D0LQjLdKTj0absa
+    value: d_iAcWvC2FlPCdf64
   - name: draftPartId
     value: dp_CYVmCtMNvLJBa1M
   - name: jordainPersonId

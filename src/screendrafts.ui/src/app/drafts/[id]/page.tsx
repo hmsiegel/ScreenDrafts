@@ -42,6 +42,7 @@ export default async function DraftDetailPage({ params }: Props) {
   }
 
   const parts: GetDraftPartResponse[] = draft.parts ?? [];
+  const isMultiPart = parts.length > 1;
 
   // Build participant name map from parts
   // GetDraftPartParticipantResponse has [key: string]: any so displayName may exist at runtime
@@ -105,40 +106,35 @@ export default async function DraftDetailPage({ params }: Props) {
       .map((d) => [d.partPublicId, d.trivia!.results])
   );
 
-  // ── Predictions section input ──────────────────────────────────────────────
-  const predictionParts: DraftPartPredictionData[] = parts.map((part, i) => ({
-    draftPartPublicId: part.publicId ?? "",
-    partLabel: parts.length > 1 ? `Part ${part.partIndex ?? i + 1}` : "",
-    predictions: partData[i]?.predictions ?? [],
-    standings: partData[i]?.standings ?? null,
-  }));
-
-  // Flatten all picks from all parts, sorted by position
-  const allPicks: { pick: GetDraftPickResponse; partIdx: number }[] = [];
-  for (let pi = 0; pi < (draft.parts ?? []).length; pi++) {
-    const part: GetDraftPartResponse = (draft.parts ?? [])[pi];
-    for (const pick of part.picks ?? []) {
-      allPicks.push({ pick, partIdx: pi });
-    }
-  }
-  allPicks.sort((a, b) => (a.pick.playOrder ?? 0) - (b.pick.playOrder ?? 0));
-
+  // ── Per-part structured data for the right column ─────────────────────────
   const isVetoed = (pick: GetDraftPickResponse) =>
     !!pick.veto && !pick.veto.isOverriden;
   const isCommissionerRemoved = (pick: GetDraftPickResponse) =>
     pick.commissionerOverride !== null && pick.commissionerOverride !== undefined;
 
-  const finalPicks = allPicks.filter(({ pick }) =>
-    !isVetoed(pick) && !isCommissionerRemoved(pick)
-  );
+  const partSections = parts.map((part, i) => {
+    const partLabel = `Part ${part.partIndex ?? i + 1}`;
+    const picks = [...(part.picks ?? [])].sort(
+      (a, b) => (a.playOrder ?? 0) - (b.playOrder ?? 0)
+    );
+    const finalPicks = picks.filter(
+      (p) => !isVetoed(p) && !isCommissionerRemoved(p)
+    );
+    const topPlayOrder = finalPicks.reduce(
+      (max, p) => Math.max(max, p.playOrder ?? 0),
+      0
+    );
+    const predictionData: DraftPartPredictionData = {
+      draftPartPublicId: part.publicId ?? "",
+      partLabel: "",
+      predictions: partData[i]?.predictions ?? [],
+      standings: partData[i]?.standings ?? null,
+    };
 
-  const totalPicks = finalPicks.length;
+    return { part, partLabel, picks, finalPicks, topPlayOrder, predictionData };
+  });
 
-  // The top pick is the last pick placed by play order among final picks
-  const topPlayOrder = finalPicks.reduce(
-    (max, { pick }) => Math.max(max, pick.playOrder ?? 0),
-    0
-  );
+  const totalFinalPicks = partSections.reduce((n, s) => n + s.finalPicks.length, 0);
 
   return (
     <div className="min-h-screen bg-light-blue">
@@ -164,6 +160,7 @@ export default async function DraftDetailPage({ params }: Props) {
             draft={draft}
             participantNames={participantNames}
             triviaByPart={triviaByPart}
+            isMultiPart={isMultiPart}
           />
 
           {/* Right column */}
@@ -186,37 +183,105 @@ export default async function DraftDetailPage({ params }: Props) {
                 </p>
               )}
 
-              {/* Divider + pick count */}
-              <div className="flex items-center gap-4 mb-2">
-                <h2 className="font-oswald font-bold text-[32px] text-sd-ink whitespace-nowrap">
-                  THE FINAL LIST
-                </h2>
-                <div className="flex-1 h-0.5 bg-sd-ink" />
-                <span className="font-mono text-[11px] text-sd-ink/60 whitespace-nowrap">
-                  {totalPicks} PICKS
-                </span>
-              </div>
+              {/* ── Single-part layout ─────────────────────────────────────── */}
+              {!isMultiPart && (() => {
+                const { picks, finalPicks, topPlayOrder, predictionData } = partSections[0]!;
+                return (
+                  <>
+                    <div className="flex items-center gap-4 mb-2">
+                      <h2 className="font-oswald font-bold text-[32px] text-sd-ink whitespace-nowrap">
+                        THE FINAL LIST
+                      </h2>
+                      <div className="flex-1 h-0.5 bg-sd-ink" />
+                      <span className="font-mono text-[11px] text-sd-ink/60 whitespace-nowrap">
+                        {finalPicks.length} PICKS
+                      </span>
+                    </div>
+                    <div className="mt-6">
+                      {picks.length === 0 ? (
+                        <p className="font-mono text-sm text-sd-ink/40">No picks recorded.</p>
+                      ) : (
+                        picks.map((pick, i) => (
+                          <DraftPick
+                            key={`${pick.moviePublicId}-${pick.playOrder ?? i}`}
+                            pick={pick}
+                            position={pick.position ?? i + 1}
+                            isTopPick={pick.playOrder === topPlayOrder}
+                            participantNames={participantNames}
+                            participantIndex={participantIndex}
+                          />
+                        ))
+                      )}
+                    </div>
+                    <PredictionsSection parts={[predictionData]} />
+                  </>
+                );
+              })()}
 
-              {/* Picks */}
-              <div className="mt-6">
-                {allPicks.length === 0 ? (
-                  <p className="font-mono text-sm text-sd-ink/40">No picks recorded.</p>
-                ) : (
-                  allPicks.map(({ pick }, i) => (
-                    <DraftPick
-                      key={`${pick.moviePublicId}-${pick.playOrder ?? i}`}
-                      pick={pick}
-                      position={pick.position ?? i + 1}
-                      isTopPick={pick.playOrder === topPlayOrder}
-                      participantNames={participantNames}
-                      participantIndex={participantIndex}
-                    />
-                  ))
-                )}
-              </div>
+              {/* ── Multi-part layout ──────────────────────────────────────── */}
+              {isMultiPart && (
+                <>
+                  {/* Overall count */}
+                  <div className="flex items-center gap-4 mb-8">
+                    <h2 className="font-oswald font-bold text-[32px] text-sd-ink whitespace-nowrap">
+                      THE FINAL LIST
+                    </h2>
+                    <div className="flex-1 h-0.5 bg-sd-ink" />
+                    <span className="font-mono text-[11px] text-sd-ink/60 whitespace-nowrap">
+                      {totalFinalPicks} PICKS
+                    </span>
+                  </div>
 
-              {/* Commissioner Predictions */}
-              <PredictionsSection parts={predictionParts} />
+                  <div className="space-y-12">
+                    {partSections.map(({ part, partLabel, picks, finalPicks, topPlayOrder, predictionData }, i) => (
+                      <section key={part.publicId ?? i}>
+                        {/* Part header */}
+                        <div className="flex items-center gap-3 mb-5">
+                          <div className="font-mono text-[10px] tracking-widest text-sd-red font-bold whitespace-nowrap">
+                            ★ {partLabel.toUpperCase()}
+                          </div>
+                          <div className="flex-1 h-px bg-sd-ink/15" />
+                          <span className="font-mono text-[11px] text-sd-ink/50 whitespace-nowrap">
+                            {finalPicks.length} PICKS
+                          </span>
+                        </div>
+
+                        {/* Release date for this part */}
+                        {part.releases?.[0]?.releaseDate && (
+                          <div className="font-mono text-[11px] text-sd-blue mb-4">
+                            {new Date(part.releases[0].releaseDate as string | Date).toLocaleDateString("en-US", {
+                              month: "short",
+                              day: "2-digit",
+                              year: "numeric",
+                            }).toUpperCase()}
+                          </div>
+                        )}
+
+                        {/* Picks for this part */}
+                        <div>
+                          {picks.length === 0 ? (
+                            <p className="font-mono text-sm text-sd-ink/40">No picks recorded.</p>
+                          ) : (
+                            picks.map((pick, j) => (
+                              <DraftPick
+                                key={`${pick.moviePublicId}-${pick.playOrder ?? j}`}
+                                pick={pick}
+                                position={pick.position ?? j + 1}
+                                isTopPick={pick.playOrder === topPlayOrder}
+                                participantNames={participantNames}
+                                participantIndex={participantIndex}
+                              />
+                            ))
+                          )}
+                        </div>
+
+                        {/* Predictions for this part */}
+                        <PredictionsSection parts={[predictionData]} />
+                      </section>
+                    ))}
+                  </div>
+                </>
+              )}
             </article>
           </div>
         </div>

@@ -9,6 +9,16 @@ internal sealed record GetDraftPartResponse
   public DateTime? ScheduledForUtc { get; init; }
   public string? PredictionSeasonPublicId { get; init; }
 
+  // Per-part adjacent navigation (ordered by this part's release date within the series)
+  public string? PreviousDraftPublicId { get; init; }
+  public string? PreviousDraftTitle { get; init; }
+  public string? NextDraftPublicId { get; init; }
+  public string? NextDraftTitle { get; init; }
+  public string? PreviousCampaignDraftPublicId { get; init; }
+  public string? PreviousCampaignDraftTitle { get; init; }
+  public string? NextCampaignDraftPublicId { get; init; }
+  public string? NextCampaignDraftTitle { get; init; }
+
   public GetDraftHostResponse? PrimaryHost { get; private set; }
   public Collection<GetDraftHostResponse> CoHosts { get; init; } = [];
   public Collection<GetDraftPartParticipantResponse> Participants { get; init; } = [];

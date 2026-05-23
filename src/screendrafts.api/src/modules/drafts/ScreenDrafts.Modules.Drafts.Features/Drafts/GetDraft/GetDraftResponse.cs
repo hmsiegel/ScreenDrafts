@@ -13,12 +13,4 @@ internal sealed record GetDraftResponse
   public string? CampaignPublicId { get; init; }
   public string? CampaignName { get; init; }
   public IReadOnlyList<GetDraftPartResponse> Parts { get; init; } = [];
-  public string? PreviousDraftPublicId { get; init; }
-  public string? PreviousDraftTitle { get; init; }
-  public string? NextDraftPublicId { get; init; }
-  public string? NextDraftTitle { get; init; }
-  public string? PreviousCampaignDraftPublicId { get; init; }
-  public string? PreviousCampaignDraftTitle { get; init; }
-  public string? NextCampaignDraftPublicId { get; init; }
-  public string? NextCampaignDraftTitle { get; init; }
 }
