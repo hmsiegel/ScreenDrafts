@@ -37,7 +37,6 @@ export default async function Home() {
 
   return (
     <div className="bg-light-blue min-h-screen font-sans">
-      <AnnouncementBar />
       <SiteHeader />
       <SpotlightHero spotlight={spotlight} />
       <StatBar stats={stats} />

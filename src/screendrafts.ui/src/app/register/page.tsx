@@ -1,6 +1,9 @@
+"use client";
+
 import { oswald } from "@/styles/fonts";
 import RegisterForm from "@/features/register/components/register-form";
 import Image from "next/image";
+import { signIn } from "next-auth/react";
 
 export default function RegisterPage() {
    return (
@@ -26,9 +29,9 @@ export default function RegisterPage() {
                <RegisterForm />
                <div className="sd-register-footer">
                   Already have an account?{" "}
-                  <a href="http://localhost:18080/realms/screendrafts/protocol/openid-connect/auth?client_id=screendrafts-public-client&response_type=code&scope=openid">
+                  <button onClick={() => signIn('keycloak', {callbackUrl: '/' })}>
                      Sign In
-                  </a>
+                  </button>
                </div>
             </div>
          </div>

@@ -27,14 +27,10 @@ export default function LoginPage(
     const hasError = messagesPerField.existsError("username", "password");
     const globalMessage = (kcContext as any).message;
 
-    const rawProviders: Array<{ alias: string; displayName: string; loginUrl: string }> =
-        (window as any).kcContext?.social?.providers ?? [];
+    const rawProviders = kcContext.social?.providers ?? [];
     const hasSocial = rawProviders.length > 0;
 
-    const registerUrl = (window as any).kcContext?.properties?.REGISTER_URL ?? "http://localhost:3005/register";
-
-    console.log("registerUrl:", registerUrl);
-    console.log("properties:", JSON.stringify(kcContext.properties));
+    const registerUrl = kcContext.properties.REGISTER_URL;
 
     return (
         <div className="sd-page">
