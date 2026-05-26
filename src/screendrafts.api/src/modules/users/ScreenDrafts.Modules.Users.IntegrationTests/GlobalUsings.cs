@@ -22,6 +22,8 @@ global using ScreenDrafts.Common.IntegrationTests.Abstractions;
 global using ScreenDrafts.Modules.Users.Domain.Users.Errors;
 global using ScreenDrafts.Modules.Users.Features.Users.GetByUserId;
 global using ScreenDrafts.Modules.Users.Features.Users.Register;
+global using ScreenDrafts.Modules.Users.Domain.Abstractions.Identity;
+global using ScreenDrafts.Modules.Users.Features.Users.ChangePassword;
 global using ScreenDrafts.Modules.Users.Features.Users.Update;
 global using ScreenDrafts.Modules.Users.Infrastructure.Database;
 global using ScreenDrafts.Modules.Users.Infrastructure.Identity;

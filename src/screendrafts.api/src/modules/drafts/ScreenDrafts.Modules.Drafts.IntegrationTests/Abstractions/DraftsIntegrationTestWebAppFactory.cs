@@ -116,6 +116,7 @@ public class DraftsIntegrationTestWebAppFactory : IntegrationTestWebAppFactory
     EnsureKeyCloakInitialized();
 
     builder.UseUrls("http://localhost:0");
+    builder.UseWebRoot(Path.GetTempPath());
 
     Console.WriteLine("Configuring web host for tests...");
 
