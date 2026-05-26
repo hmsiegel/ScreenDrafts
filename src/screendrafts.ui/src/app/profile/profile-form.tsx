@@ -3,16 +3,18 @@
 import { useState } from "react";
 import { GetUserResponse } from "@/lib/dto";
 import AvatarUpload from "./avatar-upload";
+import { MergedProfile } from "@/services/profile/fetch-profile";
 
 type Tab = 'personal' | 'password' | 'social' | 'avatar';
 
 interface ProfileFormProps {
-  profile: GetUserResponse | null;
+  profile: MergedProfile | null;
   accessToken: string | undefined;
   apiBase: string;
 }
 
 const INPUT = "border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink font-sans text-sm focus:outline-none focus:ring-2 focus:ring-sd-blue rounded w-full";
+const TEXTAREA = "border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink font-sans text-sm focus:outline-none focus:ring-2 focus:ring-sd-blue rounded w-full resize-none";
 const LABEL = "block text-[11px] font-mono tracking-widest text-sd-ink/60 uppercase mb-1";
 const BTN_PRIMARY = "bg-sd-red text-white font-oswald tracking-wide uppercase px-4 py-2 hover:bg-sd-red/90 disabled:opacity-50 transition-colors";
 
@@ -39,6 +41,9 @@ function Feedback({ status }: { status: Status }) {
 function PersonalTab({ profile, accessToken, apiBase }: ProfileFormProps) {
   const [firstName, setFirstName] = useState(profile?.firstName ?? '');
   const [lastName, setLastName] = useState(profile?.lastName ?? '');
+  const [displayName, setDisplayName] = useState(profile?.displayName ?? '');
+  const [biography, setBiography] = useState(profile?.biography ?? '');
+  const [location, setLocation] = useState(profile?.location ?? '');
   const [status, setStatus] = useState<Status>(null);
   const [saving, setSaving] = useState(false);
 
@@ -46,7 +51,8 @@ function PersonalTab({ profile, accessToken, apiBase }: ProfileFormProps) {
     setSaving(true);
     setStatus(null);
     try {
-      const res = await fetch(`${apiBase}/users/profile`, {
+      // Name → Users module
+      const nameRes = await fetch(`${apiBase}/users/profile`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -54,9 +60,31 @@ function PersonalTab({ profile, accessToken, apiBase }: ProfileFormProps) {
         },
         body: JSON.stringify({ firstName, lastName }),
       });
-      if (!res.ok) throw new Error(`${res.status}`);
+      if (!nameRes.ok) throw new Error(`name update failed: ${nameRes.status}`);
+
+      // Bio / location / displayName → Drafts People module (only if personPublicId exists)
+      if (profile?.personPublicId) {
+        const profileRes = await fetch(
+          `${apiBase}/people/${profile.personPublicId}/profile`,
+          {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+            },
+            body: JSON.stringify({
+              displayName: displayName || null,
+              biography: biography || null,
+              location: location || null,
+            }),
+          }
+        );
+        if (!profileRes.ok) throw new Error(`profile update failed: ${profileRes.status}`);
+      }
+
       setStatus({ type: 'success', message: 'Profile updated.' });
-    } catch {
+    } catch (err) {
+      console.error('[PersonalTab]', err);
       setStatus({ type: 'error', message: 'Failed to save. Please try again.' });
     } finally {
       setSaving(false);
@@ -71,6 +99,36 @@ function PersonalTab({ profile, accessToken, apiBase }: ProfileFormProps) {
       <Field label="Last Name">
         <input className={INPUT} value={lastName} onChange={e => setLastName(e.target.value)} />
       </Field>
+      <Field label="Display Name">
+        <input
+          className={INPUT}
+          value={displayName}
+          onChange={e => setDisplayName(e.target.value)}
+          placeholder="Leave blank to use First + Last name"
+        />
+      </Field>
+      <Field label="Biography">
+        <textarea
+          className={TEXTAREA}
+          rows={4}
+          value={biography}
+          onChange={e => setBiography(e.target.value)}
+          placeholder="A short bio shown on your public profile"
+        />
+      </Field>
+      <Field label="Location">
+        <input
+          className={INPUT}
+          value={location}
+          onChange={e => setLocation(e.target.value)}
+          placeholder="City, Country"
+        />
+      </Field>
+      {!profile?.personPublicId && (
+        <p className="text-[12px] text-sd-ink/40 font-mono">
+          Display name, biography and location are available once your account is linked to a participant profile.
+        </p>
+      )}
       <div className="pt-1 flex items-center gap-4">
         <button className={BTN_PRIMARY} onClick={handleSave} disabled={saving}>
           {saving ? 'SAVING…' : 'SAVE CHANGES'}
@@ -170,6 +228,11 @@ function SocialTab({ profile, accessToken, apiBase }: ProfileFormProps) {
 
   return (
     <div className="space-y-5">
+      {!profile?.personPublicId && (
+        <p className="text-[12px] text-sd-ink/40 font-mono">
+          Social profiles are available once your account is linked to a participant profile.
+        </p>
+      )}
       <Field label="Twitter / X (without @)">
         <input className={INPUT} value={twitter} onChange={e => setTwitter(e.target.value)} placeholder="yourhandle" />
       </Field>
@@ -210,11 +273,10 @@ export default function ProfileForm({ profile, accessToken, apiBase }: ProfileFo
           <button
             key={id}
             onClick={() => setActiveTab(id)}
-            className={`px-5 py-3.5 font-oswald text-[13px] tracking-wide uppercase transition-colors border-b-2 -mb-px ${
-              activeTab === id
-                ? 'border-sd-red text-sd-ink font-semibold'
-                : 'border-transparent text-sd-ink/40 hover:text-sd-ink'
-            }`}
+            className={`px-5 py-3.5 font-oswald text-[13px] tracking-wide uppercase transition-colors border-b-2 -mb-px ${activeTab === id
+              ? 'border-sd-red text-sd-ink font-semibold'
+              : 'border-transparent text-sd-ink/40 hover:text-sd-ink'
+              }`}
           >
             {label}
           </button>
@@ -237,6 +299,7 @@ export default function ProfileForm({ profile, accessToken, apiBase }: ProfileFo
             displayName={[profile?.firstName, profile?.lastName].filter(Boolean).join(' ') || profile?.email || 'User'}
             accessToken={accessToken}
             apiBase={apiBase}
+            personPublicId={profile?.personPublicId}
           />
         )}
       </div>

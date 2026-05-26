@@ -7,6 +7,7 @@ interface AvatarUploadProps {
   displayName: string;
   accessToken: string | undefined;
   apiBase: string;
+  personPublicId: string | undefined;
 }
 
 function Initials({ name }: { name: string }) {
@@ -21,13 +22,19 @@ function Initials({ name }: { name: string }) {
   );
 }
 
-export default function AvatarUpload({ currentAvatarUrl, displayName, accessToken, apiBase }: AvatarUploadProps) {
+export default function AvatarUpload({ currentAvatarUrl, displayName, accessToken, apiBase, personPublicId }: AvatarUploadProps) {
   const [avatarUrl, setAvatarUrl] = useState(currentAvatarUrl);
   const [status, setStatus] = useState<'idle' | 'uploading' | 'success' | 'error'>('idle');
   const [errorMsg, setErrorMsg] = useState('');
   const fileRef = useRef<HTMLInputElement>(null);
 
   async function handleUpload() {
+    if (!personPublicId) {
+      setStatus('error');
+      setErrorMsg('Account not linked to a participant profile.');
+      return;
+    }
+
     const file = fileRef.current?.files?.[0];
     if (!file) return;
 
@@ -42,14 +49,14 @@ export default function AvatarUpload({ currentAvatarUrl, displayName, accessToke
     try {
       const form = new FormData();
       form.append('avatar', file);
-      const res = await fetch(`${apiBase}/users/profile/avatar`, {
+      const res = await fetch(`${apiBase}/people/${personPublicId}/avatar`, {
         method: 'POST',
         headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
         body: form,
       });
       if (!res.ok) throw new Error(`${res.status}`);
-      const data = await res.json() as { avatarUrl?: string };
-      if (data.avatarUrl) setAvatarUrl(data.avatarUrl);
+      const data = await res.json() as { avatarPath?: string };
+      if (data.avatarPath) setAvatarUrl(data.avatarPath);
       setStatus('success');
     } catch (err) {
       console.error('[AvatarUpload]', err);
@@ -75,6 +82,12 @@ export default function AvatarUpload({ currentAvatarUrl, displayName, accessToke
       <p className="text-[12px] text-sd-ink/50 text-center">
         Profile pictures are stored and served from the ScreenDrafts CDN.
       </p>
+
+      {!personPublicId && (
+        <p className="text-[12px] text-sd-ink/40 font-mono text-center">
+          Avatar upload is available once your account is linked to a participant profile.
+        </p>
+      )}
 
       <div className="space-y-3">
         <input

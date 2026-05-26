@@ -26,12 +26,16 @@ export default async function ProfilePage() {
   const session = await auth();
   if (!session) redirect("/api/auth/signin?callbackUrl=/profile");
 
-  const profile = await fetchProfile();
-  const displayName = [profile?.firstName, profile?.lastName].filter(Boolean).join(' ')
-    || session.user?.name
-    || 'User';
-  const email = profile?.email || session.user?.email || '';
-  const apiBase = env.apiUrl ?? '';
+  const profile = await fetchProfile(session.accessToken!);
+
+  const displayName =
+    profile?.displayName ||
+    [profile?.firstName, profile?.lastName].filter(Boolean).join(" ") ||
+    session.user?.name ||
+    "User";
+
+  const email = profile?.email || session.user?.email || "";
+  const apiBase = env.apiUrl ?? "";
 
   return (
     <div className="min-h-screen bg-light-blue">
@@ -66,20 +70,22 @@ export default async function ProfilePage() {
                   <p className="font-mono text-[11px] text-sd-ink/50 break-all">{email}</p>
                 )}
               </div>
-              <div className="border-t border-sd-ink/10 pt-4 space-y-1">
-                {profile?.twitterHandle && (
-                  <p className="font-mono text-[11px] text-sd-ink/60">𝕏 @{profile.twitterHandle}</p>
-                )}
-                {profile?.instagramHandle && (
-                  <p className="font-mono text-[11px] text-sd-ink/60">IG @{profile.instagramHandle}</p>
-                )}
-                {profile?.letterboxdHandle && (
-                  <p className="font-mono text-[11px] text-sd-ink/60">LB {profile.letterboxdHandle}</p>
-                )}
-                {profile?.blueskyHandle && (
-                  <p className="font-mono text-[11px] text-sd-ink/60">BSky {profile.blueskyHandle}</p>
-                )}
-              </div>
+              {(profile?.twitterHandle || profile?.instagramHandle || profile?.letterboxdHandle || profile?.blueskyHandle) && (
+                <div className="border-t border-sd-ink/10 pt-4 space-y-1">
+                  {profile.twitterHandle && (
+                    <p className="font-mono text-[11px] text-sd-ink/60">𝕏 @{profile.twitterHandle}</p>
+                  )}
+                  {profile.instagramHandle && (
+                    <p className="font-mono text-[11px] text-sd-ink/60">IG @{profile.instagramHandle}</p>
+                  )}
+                  {profile.letterboxdHandle && (
+                    <p className="font-mono text-[11px] text-sd-ink/60">LB {profile.letterboxdHandle}</p>
+                  )}
+                  {profile.blueskyHandle && (
+                    <p className="font-mono text-[11px] text-sd-ink/60">BSky {profile.blueskyHandle}</p>
+                  )}
+                </div>
+              )}
             </div>
           </aside>
 

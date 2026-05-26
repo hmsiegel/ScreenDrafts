@@ -17,7 +17,7 @@ function initials(name?: string | null): string {
 
 export default function AvatarDropdown({ name }: Props) {
   return (
-    <details className="relative">
+    <details className="relative" suppressHydrationWarning>
       <summary className="list-none cursor-pointer">
         <div className="w-9 h-9 rounded-full bg-sd-blue text-white font-oswald font-bold text-sm flex items-center justify-center select-none">
           {initials(name)}

@@ -12,6 +12,8 @@ import { env } from "@/lib/env";
 export const metadata: Metadata = { title: "Administration" };
 export const dynamic = "force-dynamic";
 
+const ADMIN_ROLES = ["Administrator", "SuperAdministrator"];
+
 interface AdminCardProps {
   title: string;
   children: React.ReactNode;
@@ -31,7 +33,9 @@ function AdminCard({ title, children }: AdminCardProps) {
 
 export default async function AdminPage() {
   const session = await auth();
-  if (!session?.roles?.includes('admin')) redirect('/');
+  const isAdmin = session?.roles?.some(r => ADMIN_ROLES.includes(r)) ?? false;
+
+  if (!isAdmin) redirect ('/');
 
   const apiBase = env.apiUrl ?? '';
   const [users, roles] = await Promise.all([
@@ -56,7 +60,7 @@ export default async function AdminPage() {
               <UserTable
                 initialUsers={users}
                 allRoles={roles}
-                accessToken={session.accessToken}
+                accessToken={session?.accessToken}
                 apiBase={apiBase}
               />
             </AdminCard>
@@ -64,12 +68,13 @@ export default async function AdminPage() {
 
           {/* Password Reset */}
           <AdminCard title="Reset User Password">
-            <PasswordResetCard accessToken={session.accessToken} apiBase={apiBase} />
+            <PasswordResetCard accessToken={session?.accessToken} apiBase={apiBase} />
           </AdminCard>
 
           {/* Roles Reference */}
           <AdminCard title="Roles & Permissions">
-            <RolesAccordion roles={roles} accessToken={session.accessToken} apiBase={apiBase} />
+            <RolesAccordion roles={roles} accessToken={session?.accessToken} apiBase={apiBase} />
+
           </AdminCard>
         </div>
       </div>

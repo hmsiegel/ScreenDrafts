@@ -4,6 +4,10 @@ import { auth } from "@/auth";
 import SignInButton from "./sign-in-button";
 import AvatarDropdown from "./avatar-dropdown";
 
+// Must match administration.roles.name exactly.
+// Run: SELECT name FROM administration.roles WHERE name ILIKE '%admin%';
+const ADMIN_ROLES = ["Administrator", "SuperAdministrator"];
+
 type NavItem = { label: string; href: string; external?: boolean; className?: string };
 
 const NAV_ITEMS: NavItem[] = [
@@ -15,7 +19,7 @@ const NAV_ITEMS: NavItem[] = [
 
 export default async function SiteHeader({ activePath }: { activePath?: string } = {}) {
   const session = await auth();
-  const isAdmin = session?.roles?.includes('admin') ?? false;
+  const isAdmin = session?.roles?.some(r => ADMIN_ROLES.includes(r)) ?? false;
 
   return (
     <header className="bg-white border-b-4 border-sd-red px-8 py-5 flex items-center justify-between">

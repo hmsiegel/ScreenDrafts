@@ -8,4 +8,5 @@ internal static class UserRoutes
   public const string GetById = Base + "/{userId:guid}";
   public const string Profile = Base + "/profile";
   public const string PublicProfiles = Base + "/public-profiles/by-person-ids";
+  public const string Password = Profile + "/password";
 }

@@ -1281,6 +1281,127 @@
         ]
       }
     },
+    "/people/{publicId}/avatar": {
+      "post": {
+        "tags": [
+          "People"
+        ],
+        "operationId": "People.UploadAvatar",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UploadAvatarRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadAvatarResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/people/{publicId}/social": {
+      "put": {
+        "tags": [
+          "People"
+        ],
+        "operationId": "People.UpdateSocial",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateSocialRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/people/{publicId}/profile": {
+      "put": {
+        "tags": [
+          "People"
+        ],
+        "operationId": "People.UpdateProfile",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProfileRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
     "/people/search": {
       "get": {
         "tags": [
@@ -5572,6 +5693,44 @@
           {}
         ]
       }
+    },
+    "/users/profile/password": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "Users.UpdateUserPassword",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePasswordRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
     }
   },
   "components": {
@@ -6481,6 +6640,25 @@
           },
           "isDeleted": {
             "type": "boolean"
+          }
+        }
+      },
+      "ChangePasswordRequest": {
+        "required": [
+          "currentPassword",
+          "password",
+          "confirmPassword"
+        ],
+        "type": "object",
+        "properties": {
+          "currentPassword": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "confirmPassword": {
+            "type": "string"
           }
         }
       },
@@ -8409,6 +8587,54 @@
               "string"
             ]
           },
+          "previousDraftPublicId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "previousDraftTitle": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "nextDraftPublicId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "nextDraftTitle": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "previousCampaignDraftPublicId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "previousCampaignDraftTitle": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "nextCampaignDraftPublicId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "nextCampaignDraftTitle": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
           "primaryHost": {
             "oneOf": [
               {
@@ -8605,54 +8831,6 @@
             "items": {
               "$ref": "#/components/schemas/GetDraftPartResponse"
             }
-          },
-          "previousDraftPublicId": {
-            "type": [
-              "null",
-              "string"
-            ]
-          },
-          "previousDraftTitle": {
-            "type": [
-              "null",
-              "string"
-            ]
-          },
-          "nextDraftPublicId": {
-            "type": [
-              "null",
-              "string"
-            ]
-          },
-          "nextDraftTitle": {
-            "type": [
-              "null",
-              "string"
-            ]
-          },
-          "previousCampaignDraftPublicId": {
-            "type": [
-              "null",
-              "string"
-            ]
-          },
-          "previousCampaignDraftTitle": {
-            "type": [
-              "null",
-              "string"
-            ]
-          },
-          "nextCampaignDraftPublicId": {
-            "type": [
-              "null",
-              "string"
-            ]
-          },
-          "nextCampaignDraftTitle": {
-            "type": [
-              "null",
-              "string"
-            ]
           }
         }
       },
@@ -9377,36 +9555,6 @@
             "type": "string"
           },
           "personPublicId": {
-            "type": [
-              "null",
-              "string"
-            ]
-          },
-          "profilePicturePath": {
-            "type": [
-              "null",
-              "string"
-            ]
-          },
-          "twitterHandle": {
-            "type": [
-              "null",
-              "string"
-            ]
-          },
-          "instagramHandle": {
-            "type": [
-              "null",
-              "string"
-            ]
-          },
-          "letterboxdHandle": {
-            "type": [
-              "null",
-              "string"
-            ]
-          },
-          "blueskyHandle": {
             "type": [
               "null",
               "string"
@@ -13460,6 +13608,92 @@
               "string"
             ],
             "format": "int32"
+          }
+        }
+      },
+      "UpdateProfileRequest": {
+        "required": [
+          "publicId"
+        ],
+        "type": "object",
+        "properties": {
+          "publicId": {
+            "type": "string"
+          },
+          "displayName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "biography": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "location": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "UpdateSocialRequest": {
+        "required": [
+          "publicId"
+        ],
+        "type": "object",
+        "properties": {
+          "publicId": {
+            "type": "string"
+          },
+          "twitterHandle": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "instagramHandle": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "letterboxdHandle": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "blueskyHandle": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "UploadAvatarRequest": {
+        "required": [
+          "publicId"
+        ],
+        "type": "object",
+        "properties": {
+          "publicId": {
+            "type": "string"
+          }
+        }
+      },
+      "UploadAvatarResponse": {
+        "required": [
+          "avatarPath"
+        ],
+        "type": "object",
+        "properties": {
+          "avatarPath": {
+            "type": "string"
           }
         }
       },

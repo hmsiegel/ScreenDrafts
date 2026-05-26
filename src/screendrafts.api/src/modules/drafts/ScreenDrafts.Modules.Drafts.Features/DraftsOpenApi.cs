@@ -102,6 +102,9 @@ internal static class DraftsOpenApi
     public const string People_RestorePerson = "People.RestorePerson";
     public const string People_SearchPeople = "People.SearchPeople";
     public const string People_LinkUser = "People.LinkUser";
+    public const string People_UpdateProfile = "People.UpdateProfile";
+    public const string People_UpdateSocial = "People.UpdateSocial";
+    public const string People_UploadAvatar = "People.UploadAvatar";
 
     // Draft Boards
     public const string DraftBoards_AddItem = "DraftBoards.AddItem";

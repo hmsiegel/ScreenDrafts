@@ -108,6 +108,21 @@ export interface IClient {
     /**
      * @return OK
      */
+    people_UploadAvatar(body: UploadAvatarRequest): Promise<UploadAvatarResponse>;
+
+    /**
+     * @return No Content
+     */
+    people_UpdateSocial(body: UpdateSocialRequest): Promise<void>;
+
+    /**
+     * @return No Content
+     */
+    people_UpdateProfile(body: UpdateProfileRequest): Promise<void>;
+
+    /**
+     * @return OK
+     */
     people_SearchPeople(body: SearchPeopleRequest): Promise<PagedResultOfSearchPeopleResponse>;
 
     /**
@@ -640,6 +655,11 @@ export interface IClient {
      * @return Created
      */
     users_RegisterSocialUser(body: RegisterSocialUserRequest): Promise<string>;
+
+    /**
+     * @return No Content
+     */
+    users_UpdateUserPassword(body: ChangePasswordRequest): Promise<void>;
 }
 
 export class Client implements IClient {
@@ -1587,6 +1607,171 @@ export class Client implements IClient {
     }
 
     protected processSeries_EditSeries(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    people_UploadAvatar(body: UploadAvatarRequest, signal?: AbortSignal): Promise<UploadAvatarResponse> {
+        let url_ = this.baseUrl + "/people/{publicId}/avatar";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processPeople_UploadAvatar(_response);
+        });
+    }
+
+    protected processPeople_UploadAvatar(response: Response): Promise<UploadAvatarResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as UploadAvatarResponse;
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<UploadAvatarResponse>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    people_UpdateSocial(body: UpdateSocialRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/people/{publicId}/social";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processPeople_UpdateSocial(_response);
+        });
+    }
+
+    protected processPeople_UpdateSocial(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    people_UpdateProfile(body: UpdateProfileRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/people/{publicId}/profile";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processPeople_UpdateProfile(_response);
+        });
+    }
+
+    protected processPeople_UpdateProfile(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 204) {
@@ -7171,6 +7356,60 @@ export class Client implements IClient {
         }
         return Promise.resolve<string>(null as any);
     }
+
+    /**
+     * @return No Content
+     */
+    users_UpdateUserPassword(body: ChangePasswordRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/users/profile/password";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processUsers_UpdateUserPassword(_response);
+        });
+    }
+
+    protected processUsers_UpdateUserPassword(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
 }
 
 export interface IPredictionsClient {
@@ -8248,6 +8487,14 @@ export interface CategoryResponse {
     [key: string]: any;
 }
 
+export interface ChangePasswordRequest {
+    currentPassword: string;
+    password: string;
+    confirmPassword: string;
+
+    [key: string]: any;
+}
+
 export interface ClearCampaignDraftRequest {
     draftId: string;
 
@@ -8882,6 +9129,14 @@ export interface GetDraftPartResponse {
     status?: DraftPartStatus;
     scheduledForUtc?: Date | undefined;
     predictionSeasonPublicId?: string | undefined;
+    previousDraftPublicId?: string | undefined;
+    previousDraftTitle?: string | undefined;
+    nextDraftPublicId?: string | undefined;
+    nextDraftTitle?: string | undefined;
+    previousCampaignDraftPublicId?: string | undefined;
+    previousCampaignDraftTitle?: string | undefined;
+    nextCampaignDraftPublicId?: string | undefined;
+    nextCampaignDraftTitle?: string | undefined;
     primaryHost?: GetDraftHostResponse | undefined;
     coHosts?: GetDraftHostResponse[];
     participants?: GetDraftPartParticipantResponse[];
@@ -8937,14 +9192,6 @@ export interface GetDraftResponse {
     campaignPublicId?: string | undefined;
     campaignName?: string | undefined;
     parts?: GetDraftPartResponse[];
-    previousDraftPublicId?: string | undefined;
-    previousDraftTitle?: string | undefined;
-    nextDraftPublicId?: string | undefined;
-    nextDraftTitle?: string | undefined;
-    previousCampaignDraftPublicId?: string | undefined;
-    previousCampaignDraftTitle?: string | undefined;
-    nextCampaignDraftPublicId?: string | undefined;
-    nextCampaignDraftTitle?: string | undefined;
 
     [key: string]: any;
 }
@@ -9167,11 +9414,6 @@ export interface GetUserResponse {
     middleName?: string | undefined;
     lastName?: string;
     personPublicId?: string | undefined;
-    profilePicturePath?: string | undefined;
-    twitterHandle?: string | undefined;
-    instagramHandle?: string | undefined;
-    letterboxdHandle?: string | undefined;
-    blueskyHandle?: string | undefined;
 
     [key: string]: any;
 }
@@ -10355,6 +10597,37 @@ export interface UpdateDraftRequest {
     campaignPublicId?: string | undefined;
     publicCategoryIds?: string[] | undefined;
     draftTypeValue?: number;
+
+    [key: string]: any;
+}
+
+export interface UpdateProfileRequest {
+    publicId: string;
+    displayName?: string | undefined;
+    biography?: string | undefined;
+    location?: string | undefined;
+
+    [key: string]: any;
+}
+
+export interface UpdateSocialRequest {
+    publicId: string;
+    twitterHandle?: string | undefined;
+    instagramHandle?: string | undefined;
+    letterboxdHandle?: string | undefined;
+    blueskyHandle?: string | undefined;
+
+    [key: string]: any;
+}
+
+export interface UploadAvatarRequest {
+    publicId: string;
+
+    [key: string]: any;
+}
+
+export interface UploadAvatarResponse {
+    avatarPath: string;
 
     [key: string]: any;
 }

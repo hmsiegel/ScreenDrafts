@@ -8,7 +8,7 @@ internal static class UsersOpenApi
     public const string Admin = "Admin";
   }
 
-  public static class  Names
+  public static class Names
   {
     // Users
     public const string Users_RegisterUser = "Users.RegisterUser";
@@ -17,5 +17,6 @@ internal static class UsersOpenApi
     public const string Users_GetUserProfile = "Users.GetUserProfile";
     public const string Users_GetUsersProfiles = "Users.GetUsersProfiles";
     public const string Users_RegisterSocialUser = "Users.RegisterSocialUser";
+    public const string Users_UpdateUserPassword = "Users.UpdateUserPassword";
   }
 }

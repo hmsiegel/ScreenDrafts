@@ -67,6 +67,10 @@ public static class DraftsModule
     registrationConfigurator
       .AddConsumer<IntegrationEventConsumer<ZoomRecordingCompletedIntegrationEvent>>()
       .Endpoint(c => c.InstanceId = instanceId);
+
+    registrationConfigurator
+      .AddConsumer<IntegrationEventConsumer<UserNameUpdatedIntegrationEvent>>()
+      .Endpoint(c => c.InstanceId = instanceId);
   }
 
   private static IServiceCollection AddDraftsFeatures(

@@ -1,4 +1,5 @@
 ﻿namespace ScreenDrafts.Modules.Users.Infrastructure.Identity;
+
 internal sealed class KeyCloakOptions
 {
   public string AdminUrl { get; set; } = default!;
