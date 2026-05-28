@@ -36,5 +36,7 @@ internal sealed class PredictionEntryConfiguration : IEntityTypeConfiguration<Pr
       .WithMany(s => s.Entries)
       .HasForeignKey(e => e.SetId)
       .OnDelete(DeleteBehavior.Cascade);
+
+    builder.HasIndex(e => new { e.SetId, e.MediaPublicId }).IsUnique();
   }
 }

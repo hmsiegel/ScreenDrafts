@@ -1,10 +1,14 @@
 ﻿namespace ScreenDrafts.Modules.Users.Features.Users.GetByPublicId;
 
-internal sealed class GetByPublicIdQueryHandler(IDbConnectionFactory dbConnectionFactory) : IQueryHandler<GetByPublicIdQuery, GetByPublicIdResponse>
+internal sealed class GetByPublicIdQueryHandler(IDbConnectionFactory dbConnectionFactory)
+  : IQueryHandler<GetByPublicIdQuery, GetByPublicIdResponse>
 {
   private readonly IDbConnectionFactory _dbConnectionFactory = dbConnectionFactory;
 
-  public async Task<Result<GetByPublicIdResponse>> Handle(GetByPublicIdQuery request, CancellationToken cancellationToken)
+  public async Task<Result<GetByPublicIdResponse>> Handle(
+    GetByPublicIdQuery request,
+    CancellationToken cancellationToken
+  )
   {
     await using var connection = await _dbConnectionFactory.OpenConnectionAsync(cancellationToken);
 
@@ -15,15 +19,15 @@ internal sealed class GetByPublicIdQueryHandler(IDbConnectionFactory dbConnectio
         u.email as {nameof(GetByPublicIdResponse.Email)},
         u.first_name As {nameof(GetByPublicIdResponse.FirstName)},
         u.middle_name As {nameof(GetByPublicIdResponse.MiddleName)},
-        u.last_name As {nameof(GetByPublicIdResponse.LastName)}
+        u.last_name As {nameof(GetByPublicIdResponse.LastName)},
+        u.identity_id As {nameof(GetByPublicIdResponse.IdentityId)}
       FROM users.users u
       WHERE u.public_id = @PublicId
       """;
 
-    var user = await connection.QuerySingleOrDefaultAsync<GetByPublicIdResponse>(new CommandDefinition(
-      query,
-      new { request.PublicId },
-      cancellationToken: cancellationToken));
+    var user = await connection.QuerySingleOrDefaultAsync<GetByPublicIdResponse>(
+      new CommandDefinition(query, new { request.PublicId }, cancellationToken: cancellationToken)
+    );
 
     if (user is null)
     {

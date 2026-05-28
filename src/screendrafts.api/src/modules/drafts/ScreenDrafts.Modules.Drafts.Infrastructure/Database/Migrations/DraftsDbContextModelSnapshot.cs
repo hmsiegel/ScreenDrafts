@@ -1601,8 +1601,9 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                     b.HasKey("Id")
                         .HasName("pk_prediction_entries");
 
-                    b.HasIndex("SetId")
-                        .HasDatabaseName("ix_prediction_entries_set_id");
+                    b.HasIndex("SetId", "MediaPublicId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_prediction_entries_set_id_media_public_id");
 
                     b.ToTable("prediction_entries", "drafts");
                 });

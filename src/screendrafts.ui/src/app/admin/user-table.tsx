@@ -1,11 +1,11 @@
 'use client';
 
 import { useState, useEffect, useRef } from "react";
-import { AdminUserItem, AdminRoleItem } from "@/services/admin/fetch-admin";
+import { AdminUserItem, AdminRoleItem, PagedResult, fetchAdminUsers } from "@/services/admin/fetch-admin";
 import ManageRolesPanel from "./manage-roles-panel";
 
 interface UserTableProps {
-  initialUsers: AdminUserItem[];
+  initialData: PagedResult<AdminUserItem>;
   allRoles: AdminRoleItem[];
   accessToken: string | undefined;
   apiBase: string;
@@ -20,56 +20,89 @@ function RoleBadge({ role }: { role: string }) {
   );
 }
 
-export default function UserTable({ initialUsers, allRoles, accessToken, apiBase }: UserTableProps) {
-  const [users, setUsers] = useState<AdminUserItem[]>(initialUsers);
+function Pagination({
+  page, totalPages, onPage,
+}: {
+  page: number;
+  totalPages: number;
+  onPage: (p: number) => void;
+}) {
+  if (totalPages <= 1) return null;
+  return (
+    <div className="flex items-center justify-between pt-3">
+      <button
+        onClick={() => onPage(page - 1)}
+        disabled={page <= 1}
+        className="font-mono text-[11px] tracking-widest uppercase px-3 py-1.5 border border-sd-ink/20 text-sd-ink disabled:opacity-30 hover:bg-sd-paper transition-colors"
+      >
+        ← Prev
+      </button>
+      <span className="font-mono text-[11px] text-sd-ink/50">
+        Page {page} of {totalPages}
+      </span>
+      <button
+        onClick={() => onPage(page + 1)}
+        disabled={page >= totalPages}
+        className="font-mono text-[11px] tracking-widest uppercase px-3 py-1.5 border border-sd-ink/20 text-sd-ink disabled:opacity-30 hover:bg-sd-paper transition-colors"
+      >
+        Next →
+      </button>
+    </div>
+  );
+}
+
+const PAGE_SIZE = 25;
+
+export default function UserTable({ initialData, allRoles, accessToken, apiBase }: UserTableProps) {
+  const [data, setData] = useState<PagedResult<AdminUserItem>>(initialData);
   const [search, setSearch] = useState('');
-  const [searching, setSearching] = useState(false);
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
   const [managingUser, setManagingUser] = useState<AdminUserItem | null>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // Re-fetch whenever search or page changes
   useEffect(() => {
-    if (!search.trim()) {
-      setUsers(initialUsers);
-      return;
-    }
     if (debounceRef.current) clearTimeout(debounceRef.current);
+    const delay = search !== '' ? 300 : 0;
     debounceRef.current = setTimeout(async () => {
-      setSearching(true);
+      setLoading(true);
       try {
-        const url = new URL(`${apiBase}/admin/users`);
-        url.searchParams.set('search', search);
-        const res = await fetch(url.toString(), {
-          headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
-        });
-        if (res.ok) {
-          const data = await res.json() as AdminUserItem[];
-          setUsers(data);
-        }
+        const result = await fetchAdminUsers(accessToken, search || undefined, page, PAGE_SIZE);
+        setData(result);
       } catch {
-        // keep current results on error
+        // keep current data on error
       } finally {
-        setSearching(false);
+        setLoading(false);
       }
-    }, 300);
-
+    }, delay);
     return () => { if (debounceRef.current) clearTimeout(debounceRef.current); };
-  }, [search, initialUsers, accessToken, apiBase]);
+  }, [search, page, accessToken]);
+
+  // Reset to page 1 when search changes
+  function handleSearch(value: string) {
+    setSearch(value);
+    setPage(1);
+  }
 
   function handleRolesChanged(userId: string, newRoles: string[]) {
-    setUsers(prev => prev.map(u => u.publicId === userId ? { ...u, roles: newRoles } : u));
+    setData(prev => ({
+      ...prev,
+      items: prev.items.map(u => u.publicId === userId ? { ...u, roles: newRoles } : u),
+    }));
   }
 
   return (
     <>
-      {/* Search */}
+      {/* Toolbar */}
       <div className="flex items-center justify-between mb-3">
         <p className="font-mono text-[10px] tracking-widest text-sd-ink/50 uppercase">
-          {searching ? 'Searching…' : `${users.length} users`}
+          {loading ? 'Loading…' : `${data.totalCount} users`}
         </p>
         <input
           type="search"
           value={search}
-          onChange={e => setSearch(e.target.value)}
+          onChange={e => handleSearch(e.target.value)}
           placeholder="Search users…"
           className="border border-sd-ink/20 bg-sd-paper px-3 py-1.5 text-sd-ink text-sm focus:outline-none focus:ring-2 focus:ring-sd-blue rounded w-[220px]"
         />
@@ -86,15 +119,15 @@ export default function UserTable({ initialUsers, allRoles, accessToken, apiBase
               <th className="px-4 py-3 font-mono text-[10px] tracking-widest uppercase text-right">Actions</th>
             </tr>
           </thead>
-          <tbody>
-            {users.length === 0 ? (
+          <tbody className={loading ? 'opacity-50' : ''}>
+            {data.items.length === 0 ? (
               <tr>
                 <td colSpan={4} className="px-4 py-6 text-center text-sd-ink/40 text-[13px] italic">
                   No users found.
                 </td>
               </tr>
             ) : (
-              users.map((user, i) => (
+              data.items.map((user, i) => (
                 <tr
                   key={user.publicId}
                   className={`border-t border-sd-ink/10 hover:bg-sd-paper transition-colors ${i % 2 === 1 ? 'bg-sd-ink/[0.02]' : 'bg-white'}`}
@@ -120,6 +153,12 @@ export default function UserTable({ initialUsers, allRoles, accessToken, apiBase
           </tbody>
         </table>
       </div>
+
+      <Pagination
+        page={page}
+        totalPages={data.totalPages}
+        onPage={setPage}
+      />
 
       {managingUser && (
         <ManageRolesPanel

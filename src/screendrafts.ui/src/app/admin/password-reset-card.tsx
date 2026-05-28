@@ -28,7 +28,10 @@ export default function PasswordResetCard({ accessToken, apiBase }: PasswordRese
         const res = await fetch(url.toString(), {
           headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
         });
-        if (res.ok) setResults(await res.json() as AdminUserItem[]);
+        if (res.ok) {
+          const data = await res.json() as { items: AdminUserItem[] };
+          setResults(data.items);
+        }
       } catch {
         // ignore
       } finally {
@@ -54,7 +57,11 @@ export default function PasswordResetCard({ accessToken, apiBase }: PasswordRese
         `${apiBase}/admin/users/${encodeURIComponent(selected.publicId)}/password-reset`,
         {
           method: 'POST',
-          headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
+          headers: {
+            'Content-Type': 'application/json',
+            ... (accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+          },
+          body: JSON.stringify({}),
         }
       );
       if (!res.ok) throw new Error(`${res.status}`);

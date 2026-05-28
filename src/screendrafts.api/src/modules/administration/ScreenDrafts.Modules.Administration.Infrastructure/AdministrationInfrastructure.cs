@@ -3,16 +3,27 @@
 public static class AdministrationInfrastructure
 {
   private const string ModuleName = "Administration";
-  public static IServiceCollection AddAdministrationInfrastructure(this IServiceCollection services, IConfiguration configuration)
+
+  public static IServiceCollection AddAdministrationInfrastructure(
+    this IServiceCollection services,
+    IConfiguration configuration
+  )
   {
     ArgumentNullException.ThrowIfNull(configuration);
 
-    services.AddDbContext<AdministrationDbContext>((sp, options) =>
-    {
-      options.UseModuleDefaults(ModuleName,Schemas.Administration, sp);
-    });
+    services.AddDbContext<AdministrationDbContext>(
+      (sp, options) =>
+      {
+        options.UseModuleDefaults(ModuleName, Schemas.Administration, sp);
+      }
+    );
 
     services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<AdministrationDbContext>());
+
+    services.AddScoped<
+      IAdministrationIdentityProviderService,
+      AdministrationIdentityProviderService
+    >();
 
     services.Configure<OutboxOptions>(configuration.GetSection("Administration:Outbox"));
     services.ConfigureOptions<ConfigureProcessOutboxJob>();

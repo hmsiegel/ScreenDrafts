@@ -1,15 +1,23 @@
-﻿namespace ScreenDrafts.Modules.Users.Infrastructure.Identity;
-internal sealed class KeyCloakAuthDelegatingHandler(IOptions<KeyCloakOptions> options) : DelegatingHandler
+﻿namespace ScreenDrafts.Common.Infrastructure.Identity;
+
+public sealed class KeyCloakAuthDelegatingHandler(IOptions<KeyCloakOptions> options)
+  : DelegatingHandler
 {
   private readonly KeyCloakOptions _options = options.Value;
 
   protected override async Task<HttpResponseMessage> SendAsync(
     HttpRequestMessage request,
-    CancellationToken cancellationToken)
+    CancellationToken cancellationToken
+  )
   {
+    ArgumentNullException.ThrowIfNull(request);
+
     var authorizationToken = await GetAuthorizationTokenAsync(cancellationToken);
 
-    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", authorizationToken.AccessToken);
+    request.Headers.Authorization = new AuthenticationHeaderValue(
+      "Bearer",
+      authorizationToken.AccessToken
+    );
 
     var httpResponseMessage = await base.SendAsync(request, cancellationToken);
 
@@ -20,7 +28,8 @@ internal sealed class KeyCloakAuthDelegatingHandler(IOptions<KeyCloakOptions> op
         "Failed to send request to KeyCloak. Status Code: {StatusCode}, Body: {Body}, RequestUri: {RequestUri}",
         httpResponseMessage.StatusCode,
         body,
-        request.RequestUri);
+        request.RequestUri
+      );
     }
 
     return httpResponseMessage;
@@ -43,11 +52,18 @@ internal sealed class KeyCloakAuthDelegatingHandler(IOptions<KeyCloakOptions> op
       Content = authRequestContent,
     };
 
-    using HttpResponseMessage authorizationMessage = await base.SendAsync(authRequest, cancellationToken);
+    using HttpResponseMessage authorizationMessage = await base.SendAsync(
+      authRequest,
+      cancellationToken
+    );
 
     authorizationMessage.EnsureSuccessStatusCode();
 
-    return (await authorizationMessage.Content.ReadFromJsonAsync<AuthToken>(cancellationToken: cancellationToken))!;
+    return (
+      await authorizationMessage.Content.ReadFromJsonAsync<AuthToken>(
+        cancellationToken: cancellationToken
+      )
+    )!;
   }
 
   internal sealed class AuthToken

@@ -1,9 +1,8 @@
-import { auth } from "@/auth";
 import { env } from "@/lib/env";
 
 const apiBase = env.apiUrl;
 
-// Local types — will move to dto.ts after NSwag regeneration when backend adds these endpoints.
+// Local types — will move to dto.ts after NSwag regeneration.
 export interface AdminUserItem {
   publicId: string;
   displayName: string;
@@ -16,57 +15,80 @@ export interface AdminRoleItem {
   description?: string;
 }
 
-async function authHeaders(): Promise<HeadersInit> {
-  const session = await auth();
-  if (session?.accessToken) {
-    return { Authorization: `Bearer ${session.accessToken}` };
-  }
-  return {};
+function authHeaders(accessToken: string | undefined): HeadersInit {
+  return accessToken ? { Authorization: `Bearer ${accessToken}` } : {};
 }
 
-export async function fetchAdminUsers(search?: string): Promise<AdminUserItem[]> {
+export interface PagedResult<T> {
+  items: T[];
+  totalCount: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+  hasPreviousPage: boolean;
+  hasNextPage: boolean;
+}
+
+export async function fetchAdminUsers(
+  accessToken: string | undefined,
+  search?: string,
+  page = 1,
+  pageSize = 25
+): Promise<PagedResult<AdminUserItem>> {
+  const empty: PagedResult<AdminUserItem> = {
+    items: [], totalCount: 0, page, pageSize,
+    totalPages: 0, hasPreviousPage: false, hasNextPage: false,
+  };
   try {
     const url = new URL(`${apiBase}/admin/users`);
     if (search) url.searchParams.set("search", search);
+    url.searchParams.set("page", String(page));
+    url.searchParams.set("pageSize", String(pageSize));
     const response = await fetch(url.toString(), {
-      headers: await authHeaders(),
-      next: { revalidate: 0 },
+      headers: authHeaders(accessToken),
+      cache: "no-store",
     });
     if (!response.ok) {
       console.error(`[fetchAdminUsers] ${response.status}`);
-      return [];
+      return empty;
     }
-    return response.json() as Promise<AdminUserItem[]>;
+    return response.json() as Promise<PagedResult<AdminUserItem>>;
   } catch (err) {
     console.error("[fetchAdminUsers] error:", err);
-    return [];
+    return empty;
   }
 }
 
-export async function fetchAdminRoles(): Promise<AdminRoleItem[]> {
+export async function fetchAdminRoles(
+  accessToken: string | undefined
+): Promise<AdminRoleItem[]> {
   try {
     const response = await fetch(`${apiBase}/admin/roles`, {
-      headers: await authHeaders(),
-      next: { revalidate: 0 },
+      headers: authHeaders(accessToken),
+      cache: "no-store",
     });
     if (!response.ok) {
       console.error(`[fetchAdminRoles] ${response.status}`);
       return [];
     }
-    return response.json() as Promise<AdminRoleItem[]>;
+    const data = await response.json() as { roles: string[] };
+    return data.roles.map(name => ({ name }));
   } catch (err) {
     console.error("[fetchAdminRoles] error:", err);
     return [];
   }
 }
 
-export async function fetchRolePermissions(roleName: string): Promise<string[]> {
+export async function fetchRolePermissions(
+  accessToken: string | undefined,
+  roleName: string
+): Promise<string[]> {
   try {
     const response = await fetch(
       `${apiBase}/admin/roles/${encodeURIComponent(roleName)}/permissions`,
       {
-        headers: await authHeaders(),
-        next: { revalidate: 0 },
+        headers: authHeaders(accessToken),
+        cache: "no-store",
       }
     );
     if (!response.ok) {

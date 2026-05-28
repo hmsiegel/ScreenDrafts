@@ -12,7 +12,8 @@ public static class InfrastructureConfiguration
     string redisConnectionString,
     string mongoConnectionString,
     string databaseConnectionString,
-    Assembly[] infrastructureAssemblies)
+    Assembly[] infrastructureAssemblies
+  )
   {
     services.AddCorsPolicy(configuration);
 
@@ -33,14 +34,24 @@ public static class InfrastructureConfiguration
 
     services.AddMongoDb(mongoConnectionString);
 
-    services.AddEventBus(serviceName, moduleConfigureConsumers, moduleConfigureEndpoints, rabbitMqSettings);
+    services.AddEventBus(
+      serviceName,
+      moduleConfigureConsumers,
+      moduleConfigureEndpoints,
+      rabbitMqSettings
+    );
 
     return services;
   }
 
   public static IServiceCollection AddSeedingInfrastructure(
-    this IServiceCollection services, string databaseConnectionString)
+    this IServiceCollection services,
+    IConfiguration configuration,
+    string databaseConnectionString
+  )
   {
+    ArgumentNullException.ThrowIfNull(configuration);
+
     services.AddCoreInfrastructure(databaseConnectionString);
     services.TryAddScoped<IDbConnectionFactory, DbConnectionFactory>();
     return services;
@@ -48,7 +59,8 @@ public static class InfrastructureConfiguration
 
   private static IServiceCollection AddCoreInfrastructure(
     this IServiceCollection services,
-    string databaseConnectionString)
+    string databaseConnectionString
+  )
   {
     // Add core infrastructure services here
     services.TryAddSingleton<IDateTimeProvider, DateTimeProvider>();
@@ -59,8 +71,7 @@ public static class InfrastructureConfiguration
 
     if (!string.IsNullOrEmpty(databaseConnectionString))
     {
-      var npgsqlDataSource = new NpgsqlDataSourceBuilder(databaseConnectionString)
-        .Build();
+      var npgsqlDataSource = new NpgsqlDataSourceBuilder(databaseConnectionString).Build();
       services.TryAddSingleton(npgsqlDataSource);
     }
 
@@ -71,16 +82,17 @@ public static class InfrastructureConfiguration
     return services;
   }
 
-
   private static IServiceCollection AddRepositoriesFromModules(
     this IServiceCollection services,
-    Assembly[] infrastructureAssemblies)
+    Assembly[] infrastructureAssemblies
+  )
   {
-    services.Scan(scan => scan
-        .FromAssemblies(infrastructureAssemblies)
+    services.Scan(scan =>
+      scan.FromAssemblies(infrastructureAssemblies)
         .AddClasses(classes => classes.AssignableTo<IRepository>(), false)
         .AsImplementedInterfaces()
-        .WithScopedLifetime());
+        .WithScopedLifetime()
+    );
 
     return services;
   }

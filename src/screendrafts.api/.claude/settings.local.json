@@ -17,7 +17,9 @@
       "Bash(Get-Process Docker Desktop:*)",
       "Bash(tasklist:*)",
       "Bash(wsl:*)",
-      "Bash(DOCKER_HOST=npipe:////./pipe/docker_engine docker ps:*)"
+      "Bash(DOCKER_HOST=npipe:////./pipe/docker_engine docker ps:*)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Repos\\\\ScreenDrafts\\\\src\\\\screendrafts.api\" -Directory)",
+      "Bash(Select-Object Name)"
     ]
   }
 }

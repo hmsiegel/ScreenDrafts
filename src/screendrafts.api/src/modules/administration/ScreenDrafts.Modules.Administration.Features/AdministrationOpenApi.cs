@@ -18,5 +18,9 @@ internal static class AdministrationOpenApi
     public const string Administration_GetUserRoles = "Administration.GetUserRoles";
     public const string Administration_AddPermission = "Administration.AddPermission";
     public const string Administration_AddRole = "Administration.AddRole";
+    public const string Administration_ListRoles = "Administration.ListRoles";
+    public const string Administration_ListUsers = "Administration.ListUsers";
+    public const string Administration_SendPasswordReset = "Administration.SendPasswordReset";
+    public const string Administration_GetRolePermissions = "Administration.GetRolePermissions";
   }
 }

@@ -42,7 +42,14 @@ export default function ManageRolesPanel({
     try {
       const res = await fetch(
         `${apiBase}/admin/roles/${encodeURIComponent(selectedRole)}/users/${encodeURIComponent(user.publicId)}`,
-        { method: 'POST', headers }
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+          },
+          body: JSON.stringify({})
+        }
       );
       if (!res.ok) throw new Error(`${res.status}`);
       onRolesChanged(user.publicId, [...prev, selectedRole]);
@@ -63,7 +70,14 @@ export default function ManageRolesPanel({
     try {
       const res = await fetch(
         `${apiBase}/admin/roles/${encodeURIComponent(roleName)}/users/${encodeURIComponent(user.publicId)}`,
-        { method: 'DELETE', headers }
+        {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+          },
+          body: JSON.stringify({})
+        }
       );
       if (!res.ok) throw new Error(`${res.status}`);
       onRolesChanged(user.publicId, prev.filter(x => x !== roleName));
@@ -114,9 +128,8 @@ export default function ManageRolesPanel({
                 {roles.map(role => (
                   <span
                     key={role}
-                    className={`inline-flex items-center gap-1.5 font-mono text-xs px-2.5 py-1 rounded-full text-white ${
-                      role.toLowerCase().includes('admin') ? 'bg-sd-red' : 'bg-sd-blue'
-                    }`}
+                    className={`inline-flex items-center gap-1.5 font-mono text-xs px-2.5 py-1 rounded-full text-white ${role.toLowerCase().includes('admin') ? 'bg-sd-red' : 'bg-sd-blue'
+                      }`}
                   >
                     {role}
                     <button

@@ -1,12 +1,19 @@
-﻿namespace ScreenDrafts.Modules.Users.IntegrationTests.Abstractions;
+﻿using ScreenDrafts.Common.Infrastructure.Identity;
 
-[System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1303:Do not pass literals as localized parameters", Justification = "<Pending>")]
+namespace ScreenDrafts.Modules.Users.IntegrationTests.Abstractions;
+
+[System.Diagnostics.CodeAnalysis.SuppressMessage(
+  "Globalization",
+  "CA1303:Do not pass literals as localized parameters",
+  Justification = "<Pending>"
+)]
 public class UsersIntegrationTestWebAppFactory : IntegrationTestWebAppFactory
 {
   private KeycloakContainer? _keycloakContainer;
   private bool _keycloakInitialized;
 
-  public UsersIntegrationTestWebAppFactory() : base()
+  public UsersIntegrationTestWebAppFactory()
+    : base()
   {
     EnsureKeyCloakInitialized();
   }
@@ -27,8 +34,10 @@ public class UsersIntegrationTestWebAppFactory : IntegrationTestWebAppFactory
     Console.WriteLine($"Realm file path: {realmFilePath}");
     Console.WriteLine($"Realm file exists: {realmFileExists}");
 
-    var builder = new KeycloakBuilder("quay.io/keycloak/keycloak:26.1.0")
-      .WithPortBinding(9000, true);
+    var builder = new KeycloakBuilder("quay.io/keycloak/keycloak:26.1.0").WithPortBinding(
+      9000,
+      true
+    );
 
     // Only configure resource mapping if the realm file exists
     if (realmFileExists)
@@ -37,13 +46,16 @@ public class UsersIntegrationTestWebAppFactory : IntegrationTestWebAppFactory
       builder = builder
         .WithResourceMapping(
           new FileInfo(realmFilePath),
-          new FileInfo("/opt/keycloak/data/import/realm.json"))
+          new FileInfo("/opt/keycloak/data/import/realm.json")
+        )
         .WithCommand("--import-realm");
     }
     else
     {
       Console.WriteLine("Realm file not found - starting KeyCloak without pre-configured realm.");
-      Console.WriteLine("Note: You may need to configure the realm manually or create the realm export file.");
+      Console.WriteLine(
+        "Note: You may need to configure the realm manually or create the realm export file."
+      );
     }
 
     _keycloakContainer = builder.Build();
@@ -52,7 +64,6 @@ public class UsersIntegrationTestWebAppFactory : IntegrationTestWebAppFactory
 
     SetKeyCloakEnvironmentVariables();
     _keycloakInitialized = true;
-
   }
 
   private void SetKeyCloakEnvironmentVariables()
@@ -70,7 +81,7 @@ public class UsersIntegrationTestWebAppFactory : IntegrationTestWebAppFactory
       // Authentication settings
       ["Authentication__MetadataAddress"] = $"{keyCloakRealmUrl}/.well-known/openid-configuration",
       ["Authentication__TokenValidationParameters__ValidIssuers"] = keyCloakRealmUrl,
-      ["Authentication__RequireHttpsMetadata" ] = "false",
+      ["Authentication__RequireHttpsMetadata"] = "false",
       ["Authentication__Audience"] = "account",
 
       // KeyCloak Health Url
@@ -88,7 +99,6 @@ public class UsersIntegrationTestWebAppFactory : IntegrationTestWebAppFactory
     {
       Environment.SetEnvironmentVariable(key, value);
     }
-
   }
 
   protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -126,12 +136,16 @@ public class UsersIntegrationTestWebAppFactory : IntegrationTestWebAppFactory
 
   protected override IEnumerable<Type> GetDbContextTypes()
   {
-    var auditContextType = AppDomain.CurrentDomain.GetAssemblies()
+    var auditContextType = AppDomain
+      .CurrentDomain.GetAssemblies()
       .SelectMany(a => a.GetTypes())
-      .FirstOrDefault(t => string.Equals(
-        t.FullName,
-        "ScreenDrafts.Modules.Audit.Infrastructure.Database.AuditDbContext",
-        StringComparison.Ordinal));
+      .FirstOrDefault(t =>
+        string.Equals(
+          t.FullName,
+          "ScreenDrafts.Modules.Audit.Infrastructure.Database.AuditDbContext",
+          StringComparison.Ordinal
+        )
+      );
 
     return auditContextType is null
       ? [typeof(UsersDbContext)]
@@ -146,10 +160,12 @@ public class UsersIntegrationTestWebAppFactory : IntegrationTestWebAppFactory
     // not by EF migrations. Create them here so that AuditPostProcessor can write
     // to them when HTTP requests are made during tests.
     using var scope = Services.CreateScope();
-    var connectionFactory = scope.ServiceProvider
-      .GetRequiredService<ScreenDrafts.Common.Application.Data.IDbConnectionFactory>();
+    var connectionFactory =
+      scope.ServiceProvider.GetRequiredService<ScreenDrafts.Common.Application.Data.IDbConnectionFactory>();
 
-    await using var connection = await connectionFactory.OpenConnectionAsync(TestContext.Current.CancellationToken);
+    await using var connection = await connectionFactory.OpenConnectionAsync(
+      TestContext.Current.CancellationToken
+    );
 
     await connection.ExecuteAsync(
       """
@@ -162,7 +178,8 @@ public class UsersIntegrationTestWebAppFactory : IntegrationTestWebAppFactory
 
       CREATE INDEX IF NOT EXISTS ix_user_permissions_user_id
           ON users.user_permissions (user_id);
-      """);
+      """
+    );
 
     await connection.ExecuteAsync(
       """
@@ -206,7 +223,8 @@ public class UsersIntegrationTestWebAppFactory : IntegrationTestWebAppFactory
           details          jsonb,
           CONSTRAINT pk_auth_audit_logs PRIMARY KEY (id)
       );
-      """);
+      """
+    );
   }
 
   protected override async Task StopContainersAsync()

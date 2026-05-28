@@ -1,6 +1,12 @@
-﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Abstractions;
+﻿using ScreenDrafts.Common.Infrastructure.Identity;
 
-[System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1303:Do not pass literals as localized parameters", Justification = "<Pending>")]
+namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Abstractions;
+
+[System.Diagnostics.CodeAnalysis.SuppressMessage(
+  "Globalization",
+  "CA1303:Do not pass literals as localized parameters",
+  Justification = "<Pending>"
+)]
 public class DraftsIntegrationTestWebAppFactory : IntegrationTestWebAppFactory
 {
   private KeycloakContainer? _keycloakContainer;
@@ -26,7 +32,8 @@ public class DraftsIntegrationTestWebAppFactory : IntegrationTestWebAppFactory
   /// </summary>
   public DraftHubCapture HubCapture { get; } = new DraftHubCapture();
 
-  public DraftsIntegrationTestWebAppFactory() : base()
+  public DraftsIntegrationTestWebAppFactory()
+    : base()
   {
     EnsureKeyCloakInitialized();
   }
@@ -47,8 +54,10 @@ public class DraftsIntegrationTestWebAppFactory : IntegrationTestWebAppFactory
     Console.WriteLine($"Realm file path: {realmFilePath}");
     Console.WriteLine($"Realm file exists: {realmFileExists}");
 
-    var builder = new KeycloakBuilder("quay.io/keycloak/keycloak:26.1.0")
-      .WithPortBinding(9000, true);
+    var builder = new KeycloakBuilder("quay.io/keycloak/keycloak:26.1.0").WithPortBinding(
+      9000,
+      true
+    );
 
     // Only configure resource mapping if the realm file exists
     if (realmFileExists)
@@ -57,13 +66,16 @@ public class DraftsIntegrationTestWebAppFactory : IntegrationTestWebAppFactory
       builder = builder
         .WithResourceMapping(
           new FileInfo(realmFilePath),
-          new FileInfo("/opt/keycloak/data/import/realm.json"))
+          new FileInfo("/opt/keycloak/data/import/realm.json")
+        )
         .WithCommand("--import-realm");
     }
     else
     {
       Console.WriteLine("Realm file not found - starting KeyCloak without pre-configured realm.");
-      Console.WriteLine("Note: You may need to configure the realm manually or create the realm export file.");
+      Console.WriteLine(
+        "Note: You may need to configure the realm manually or create the realm export file."
+      );
     }
 
     _keycloakContainer = builder.Build();
@@ -72,7 +84,6 @@ public class DraftsIntegrationTestWebAppFactory : IntegrationTestWebAppFactory
 
     SetKeyCloakEnvironmentVariables();
     _keycloakInitialized = true;
-
   }
 
   private void SetKeyCloakEnvironmentVariables()
@@ -90,7 +101,7 @@ public class DraftsIntegrationTestWebAppFactory : IntegrationTestWebAppFactory
       // Authentication settings
       ["Authentication__MetadataAddress"] = $"{keyCloakRealmUrl}/.well-known/openid-configuration",
       ["Authentication__TokenValidationParameters__ValidIssuers"] = keyCloakRealmUrl,
-      ["Authentication__RequireHttpsMetadata" ] = "false",
+      ["Authentication__RequireHttpsMetadata"] = "false",
       ["Authentication__Audience"] = "account",
 
       // KeyCloak Health Url
@@ -108,7 +119,6 @@ public class DraftsIntegrationTestWebAppFactory : IntegrationTestWebAppFactory
     {
       Environment.SetEnvironmentVariable(key, value);
     }
-
   }
 
   protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -181,9 +191,13 @@ public class DraftsIntegrationTestWebAppFactory : IntegrationTestWebAppFactory
       "ScreenDrafts.Modules.Users.Infrastructure.Database.UsersDbContext",
     };
 
-    return [.. AppDomain.CurrentDomain.GetAssemblies()
-      .SelectMany(a => a.GetTypes())
-      .Where(t => needed.Contains(t.FullName, StringComparer.Ordinal))];
+    return
+    [
+      .. AppDomain
+        .CurrentDomain.GetAssemblies()
+        .SelectMany(a => a.GetTypes())
+        .Where(t => needed.Contains(t.FullName, StringComparer.Ordinal)),
+    ];
   }
 
   protected override async Task ApplyMigrationsAsync()
@@ -195,10 +209,12 @@ public class DraftsIntegrationTestWebAppFactory : IntegrationTestWebAppFactory
     // Communications consumers (DraftCreatedIntegrationEventConsumer, etc.) can query it in
     // scenario tests that call DispatchIntegrationEventsAsync.
     using var scope = Services.CreateScope();
-    var connectionFactory = scope.ServiceProvider
-      .GetRequiredService<ScreenDrafts.Common.Application.Data.IDbConnectionFactory>();
+    var connectionFactory =
+      scope.ServiceProvider.GetRequiredService<ScreenDrafts.Common.Application.Data.IDbConnectionFactory>();
 
-    await using var connection = await connectionFactory.OpenConnectionAsync(TestContext.Current.CancellationToken);
+    await using var connection = await connectionFactory.OpenConnectionAsync(
+      TestContext.Current.CancellationToken
+    );
 
     await connection.ExecuteAsync(
       """
@@ -210,7 +226,8 @@ public class DraftsIntegrationTestWebAppFactory : IntegrationTestWebAppFactory
           is_patreon    boolean      NOT NULL DEFAULT false,
           CONSTRAINT pk_user_emails PRIMARY KEY (user_id)
       );
-      """);
+      """
+    );
   }
 
   protected override async Task StopContainersAsync()

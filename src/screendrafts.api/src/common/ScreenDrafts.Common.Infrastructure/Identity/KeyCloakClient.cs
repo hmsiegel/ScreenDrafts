@@ -1,14 +1,17 @@
-﻿namespace ScreenDrafts.Modules.Users.Infrastructure.Identity;
+﻿namespace ScreenDrafts.Common.Infrastructure.Identity;
 
-internal sealed class KeyCloakClient(HttpClient httpClient)
+public sealed class KeyCloakClient(HttpClient httpClient, IOptions<KeyCloakOptions> options)
 {
   private readonly HttpClient _httpClient = httpClient;
+  private readonly KeyCloakOptions _options = options.Value;
+  private static readonly string[] _value = ["UPDATE_PASSWORD"];
 
-  internal async Task<string> RegisterUserAsync(
+  public async Task<string> RegisterUserAsync(
     UserRepresentation user,
     CancellationToken cancellationToken = default
   )
   {
+    ArgumentNullException.ThrowIfNull(user);
     Log.Information("HttpClient Base Address: {BaseAddress}", _httpClient.BaseAddress);
     Log.Information(
       "Registering user with the following values: Username: {Username}, First Name: {FirstName}, LastName: {LastName}, Email: {Email}",
@@ -42,13 +45,14 @@ internal sealed class KeyCloakClient(HttpClient httpClient)
   // then resets to the new password via the Admin API.
   // The HttpClient base address is already the admin URL — reset-password
   // is called at users/{identityId}/reset-password relative to that.
-  internal static async Task VerifyPasswordAsync(
+  public static async Task VerifyPasswordAsync(
     string userEmail,
     string currentPassword,
     KeyCloakOptions options,
     CancellationToken cancellationToken = default
   )
   {
+    ArgumentNullException.ThrowIfNull(options);
     // Use a separate HttpClient for the token endpoint (different base URL).
     using var http = new HttpClient();
     using var tokenRequest = new FormUrlEncodedContent(
@@ -68,7 +72,7 @@ internal sealed class KeyCloakClient(HttpClient httpClient)
     }
   }
 
-  internal async Task ResetPasswordAsync(
+  public async Task ResetPasswordAsync(
     string identityId,
     string newPassword,
     CancellationToken cancellationToken = default
@@ -87,6 +91,38 @@ internal sealed class KeyCloakClient(HttpClient httpClient)
       var responseBody = await response.Content.ReadAsStringAsync(cancellationToken);
       Log.Error(
         "Failed to reset password for identity {IdentityId}. Status: {Status}, Body: {Body}",
+        identityId,
+        response.StatusCode,
+        responseBody
+      );
+    }
+
+    response.EnsureSuccessStatusCode();
+  }
+
+  public async Task SendPasswordResetEmailAsync(
+    string identityId,
+    CancellationToken cancellationToken = default
+  )
+  {
+    var actionsUrl =
+      $"users/{identityId}/execute-actions-email"
+      + $"?client_id={_options.PublicClientId}"
+      + $"&redirect_uri={Uri.EscapeDataString("http://localhost:3005")}";
+    var body = System.Text.Json.JsonSerializer.Serialize(_value);
+
+    using var request = new HttpRequestMessage(HttpMethod.Put, actionsUrl)
+    {
+      Content = new StringContent(body, System.Text.Encoding.UTF8, "application/json"),
+    };
+
+    var response = await _httpClient.SendAsync(request, cancellationToken);
+
+    if (!response.IsSuccessStatusCode)
+    {
+      var responseBody = await response.Content.ReadAsStringAsync(cancellationToken);
+      Log.Error(
+        "Failed to send password reset email for {IdentityId}. Status: {Status}, Body: {Body}",
         identityId,
         response.StatusCode,
         responseBody

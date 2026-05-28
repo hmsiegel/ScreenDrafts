@@ -8,4 +8,5 @@ public sealed record GetByPublicIdResponse
   public string FirstName { get; init; } = default!;
   public string LastName { get; init; } = default!;
   public string MiddleName { get; init; } = default!;
+  public string IdentityId { get; init; } = default!;
 }

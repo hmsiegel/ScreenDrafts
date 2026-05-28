@@ -1,15 +1,11 @@
-﻿using MassTransit;
-
-using ScreenDrafts.Modules.Users.Features.Admin.AddPermissionToRole;
-using ScreenDrafts.Modules.Users.IntegrationEvents;
-
-namespace ScreenDrafts.Modules.Users.Composition;
+﻿namespace ScreenDrafts.Modules.Users.Composition;
 
 public static class UsersModule
 {
   public static IServiceCollection AddUsersModule(
     this IServiceCollection services,
-    IConfiguration configuration)
+    IConfiguration configuration
+  )
   {
     ArgumentNullException.ThrowIfNull(configuration);
 
@@ -26,44 +22,38 @@ public static class UsersModule
     return services;
   }
 
-  public static IServiceCollection AddUsersSeeding(this IServiceCollection services, IConfiguration configuration)
+  public static IServiceCollection AddUsersSeeding(
+    this IServiceCollection services,
+    IConfiguration configuration
+  )
   {
     ArgumentNullException.ThrowIfNull(configuration);
-    services.Configure<KeyCloakOptions>(configuration.GetSection("Users:KeyCloak"));
-
-    services.AddTransient<KeyCloakAuthDelegatingHandler>();
-
-    services
-      .AddHttpClient<KeyCloakClient>((sp, client) =>
-      {
-        var keyCloakOptions = sp.GetRequiredService<IOptions<KeyCloakOptions>>().Value;
-
-        Log.Information("Admin URL for KeyCloak: {AdminUrl}", keyCloakOptions.AdminUrl);
-
-        client.BaseAddress = new Uri(keyCloakOptions.AdminUrl);
-
-        Log.Information("KeyCloak Client Base Address: {BaseAddress}", client.BaseAddress);
-      })
-      .AddHttpMessageHandler<KeyCloakAuthDelegatingHandler>();
+    services.AddKeyCloakClient(configuration);
     services.AddTransient<IIdentityProviderService, IdentityProviderService>();
     services.AddUsersInfratructure(configuration);
     return services;
   }
 
-  public static void ConfigureConsumers(IRegistrationConfigurator registrationConfigurator, string instanceId)
+  public static void ConfigureConsumers(
+    IRegistrationConfigurator registrationConfigurator,
+    string instanceId
+  )
   {
     ArgumentNullException.ThrowIfNull(registrationConfigurator);
 
-    registrationConfigurator.AddConsumer<IntegrationEventConsumer<PermissionAddedToRoleIntegrationEvent>>()
+    registrationConfigurator
+      .AddConsumer<IntegrationEventConsumer<PermissionAddedToRoleIntegrationEvent>>()
       .Endpoint(c => c.InstanceId = instanceId);
-    registrationConfigurator.AddConsumer<IntegrationEventConsumer<UserRoleAddedIntegrationEvent>>()
+    registrationConfigurator
+      .AddConsumer<IntegrationEventConsumer<UserRoleAddedIntegrationEvent>>()
       .Endpoint(c => c.InstanceId = instanceId);
-    registrationConfigurator.AddConsumer<IntegrationEventConsumer<UserRoleRemovedIntegrationEvent>>()
+    registrationConfigurator
+      .AddConsumer<IntegrationEventConsumer<UserRoleRemovedIntegrationEvent>>()
       .Endpoint(c => c.InstanceId = instanceId);
-    registrationConfigurator.AddConsumer<IntegrationEventConsumer<PermissionRemovedFromRoleIntegrationEvent>>()
+    registrationConfigurator
+      .AddConsumer<IntegrationEventConsumer<PermissionRemovedFromRoleIntegrationEvent>>()
       .Endpoint(c => c.InstanceId = instanceId);
   }
-
 
   private static IServiceCollection AddUsersFeatures(this IServiceCollection services)
   {
@@ -76,21 +66,26 @@ public static class UsersModule
 
   private static void AddDomainEventHandlers(this IServiceCollection services)
   {
-    Type[] domainEventHandlers = [.. Features.AssemblyReference.Assembly
-        .GetTypes()
-        .Where(t => t.IsAssignableTo(typeof(IDomainEventHandler)))];
+    Type[] domainEventHandlers =
+    [
+      .. Features
+        .AssemblyReference.Assembly.GetTypes()
+        .Where(t => t.IsAssignableTo(typeof(IDomainEventHandler))),
+    ];
 
     foreach (Type domainEventHandler in domainEventHandlers)
     {
       services.TryAddScoped(domainEventHandler);
 
       Type domainEvent = domainEventHandler
-          .GetInterfaces()
-          .Single(i => i.IsGenericType)
-          .GetGenericArguments()
-          .Single();
+        .GetInterfaces()
+        .Single(i => i.IsGenericType)
+        .GetGenericArguments()
+        .Single();
 
-      Type closedIdempotentHandler = typeof(IdempotentDomainEventHandler<>).MakeGenericType(domainEvent);
+      Type closedIdempotentHandler = typeof(IdempotentDomainEventHandler<>).MakeGenericType(
+        domainEvent
+      );
 
       services.Decorate(domainEventHandler, closedIdempotentHandler);
     }
@@ -98,21 +93,26 @@ public static class UsersModule
 
   private static void AddIntegrationEventHandlers(this IServiceCollection services)
   {
-    Type[] integrationEventHandlers = [.. Features.AssemblyReference.Assembly
-        .GetTypes()
-        .Where(t => t.IsAssignableTo(typeof(IIntegrationEventHandler)))];
+    Type[] integrationEventHandlers =
+    [
+      .. Features
+        .AssemblyReference.Assembly.GetTypes()
+        .Where(t => t.IsAssignableTo(typeof(IIntegrationEventHandler))),
+    ];
 
     foreach (Type integrationEventHandler in integrationEventHandlers)
     {
       services.TryAddScoped(integrationEventHandler);
 
       Type integrationEvent = integrationEventHandler
-          .GetInterfaces()
-          .Single(i => i.IsGenericType)
-          .GetGenericArguments()
-          .Single();
+        .GetInterfaces()
+        .Single(i => i.IsGenericType)
+        .GetGenericArguments()
+        .Single();
 
-      Type closedIdempotentHandler = typeof(IdempotentIntegrationEventHandler<>).MakeGenericType(integrationEvent);
+      Type closedIdempotentHandler = typeof(IdempotentIntegrationEventHandler<>).MakeGenericType(
+        integrationEvent
+      );
 
       services.Decorate(integrationEventHandler, closedIdempotentHandler);
     }
@@ -122,22 +122,7 @@ public static class UsersModule
   {
     services.AddScoped<IPermissionService, PermissionService>();
 
-    services.Configure<KeyCloakOptions>(configuration.GetSection("Users:KeyCloak"));
-
-    services.AddTransient<KeyCloakAuthDelegatingHandler>();
-
-    services
-      .AddHttpClient<KeyCloakClient>((sp, client) =>
-      {
-        var keyCloakOptions = sp.GetRequiredService<IOptions<KeyCloakOptions>>().Value;
-
-        Log.Information("Admin URL for KeyCloak: {AdminUrl}", keyCloakOptions.AdminUrl);
-
-        client.BaseAddress = new Uri(keyCloakOptions.AdminUrl);
-
-        Log.Information("KeyCloak Client Base Address: {BaseAddress}", client.BaseAddress);
-      })
-      .AddHttpMessageHandler<KeyCloakAuthDelegatingHandler>();
+    services.AddKeyCloakClient(configuration);
 
     services.AddTransient<IIdentityProviderService, IdentityProviderService>();
   }

@@ -106,7 +106,7 @@ function PredictionSet({ set }: { set: DraftPartPredictionResponse }) {
 
             return (
               <li
-                key={entry.mediaPublicId ?? idx}
+                key={`${set.publicId}-${entry.mediaPublicId ?? idx}`}
                 className="flex items-baseline gap-2 font-['JetBrains_Mono'] text-xs"
               >
                 {entry.orderIndex != null && (

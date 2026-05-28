@@ -39,8 +39,8 @@ export default async function AdminPage() {
 
   const apiBase = env.apiUrl ?? '';
   const [users, roles] = await Promise.all([
-    fetchAdminUsers(),
-    fetchAdminRoles(),
+    fetchAdminUsers(session?.accessToken),
+    fetchAdminRoles(session?.accessToken),
   ]);
 
   return (
@@ -58,7 +58,7 @@ export default async function AdminPage() {
           <div className="lg:col-span-2">
             <AdminCard title="Users">
               <UserTable
-                initialUsers={users}
+                initialData={users}
                 allRoles={roles}
                 accessToken={session?.accessToken}
                 apiBase={apiBase}

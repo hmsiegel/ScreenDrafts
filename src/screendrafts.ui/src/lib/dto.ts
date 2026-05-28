@@ -13,12 +13,22 @@ export interface IClient {
     /**
      * @return No Content
      */
+    administration_SendPasswordReset(body: SendPasswordResetRequest): Promise<void>;
+
+    /**
+     * @return No Content
+     */
     administration_RemoveUserRole(body: RemoveRoleFromUserRequest): Promise<void>;
 
     /**
      * @return No Content
      */
     administration_AddUserRole(body: AddRoleToUserRequest): Promise<void>;
+
+    /**
+     * @return OK
+     */
+    administration_ListUsers(body: ListUsersRequest): Promise<PagedResultOfUserItem>;
 
     /**
      * @return OK
@@ -38,12 +48,22 @@ export interface IClient {
     /**
      * @return OK
      */
-    administration_GetPermissionsByCode(body: GetPermissionByCodeRequest): Promise<PermissionResponse>;
+    administration_ListRoles(): Promise<GetRolesResponse>;
 
     /**
      * @return OK
      */
     administration_AddRole(body: AddRoleRequest): Promise<void>;
+
+    /**
+     * @return OK
+     */
+    administration_GetRolePermissions(body: GetRolePermissionsRequest): Promise<GetRolePermissionsResponse>;
+
+    /**
+     * @return OK
+     */
+    administration_GetPermissionsByCode(body: GetPermissionByCodeRequest): Promise<PermissionResponse>;
 
     /**
      * @return No Content
@@ -675,6 +695,60 @@ export class Client implements IClient {
     /**
      * @return No Content
      */
+    administration_SendPasswordReset(body: SendPasswordResetRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/admin/users/{publicId}/password-reset";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processAdministration_SendPasswordReset(_response);
+        });
+    }
+
+    protected processAdministration_SendPasswordReset(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
     administration_RemoveUserRole(body: RemoveRoleFromUserRequest, signal?: AbortSignal): Promise<void> {
         let url_ = this.baseUrl + "/admin/roles/{roleName}/users/{publicId}";
         url_ = url_.replace(/[?&]$/, "");
@@ -778,6 +852,55 @@ export class Client implements IClient {
             });
         }
         return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    administration_ListUsers(body: ListUsersRequest, signal?: AbortSignal): Promise<PagedResultOfUserItem> {
+        let url_ = this.baseUrl + "/admin/users";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processAdministration_ListUsers(_response);
+        });
+    }
+
+    protected processAdministration_ListUsers(response: Response): Promise<PagedResultOfUserItem> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as PagedResultOfUserItem;
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<PagedResultOfUserItem>(null as any);
     }
 
     /**
@@ -935,6 +1058,158 @@ export class Client implements IClient {
     /**
      * @return OK
      */
+    administration_ListRoles(signal?: AbortSignal): Promise<GetRolesResponse> {
+        let url_ = this.baseUrl + "/admin/roles";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            signal,
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processAdministration_ListRoles(_response);
+        });
+    }
+
+    protected processAdministration_ListRoles(response: Response): Promise<GetRolesResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as GetRolesResponse;
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<GetRolesResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    administration_AddRole(body: AddRoleRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/admin/roles";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processAdministration_AddRole(_response);
+        });
+    }
+
+    protected processAdministration_AddRole(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    administration_GetRolePermissions(body: GetRolePermissionsRequest, signal?: AbortSignal): Promise<GetRolePermissionsResponse> {
+        let url_ = this.baseUrl + "/admin/roles/{roleName}/permissions";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processAdministration_GetRolePermissions(_response);
+        });
+    }
+
+    protected processAdministration_GetRolePermissions(response: Response): Promise<GetRolePermissionsResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as GetRolePermissionsResponse;
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<GetRolePermissionsResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
     administration_GetPermissionsByCode(body: GetPermissionByCodeRequest, signal?: AbortSignal): Promise<PermissionResponse> {
         let url_ = this.baseUrl + "/admin/permissions/{code}";
         url_ = url_.replace(/[?&]$/, "");
@@ -987,56 +1262,6 @@ export class Client implements IClient {
             });
         }
         return Promise.resolve<PermissionResponse>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    administration_AddRole(body: AddRoleRequest, signal?: AbortSignal): Promise<void> {
-        let url_ = this.baseUrl + "/admin/roles";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            signal,
-            headers: {
-                "Content-Type": "application/json",
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processAdministration_AddRole(_response);
-        });
-    }
-
-    protected processAdministration_AddRole(response: Response): Promise<void> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status === 400) {
-            return response.text().then((_responseText) => {
-            return throwException("Bad Request", status, _responseText, _headers);
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<void>(null as any);
     }
 
     /**
@@ -9378,6 +9603,24 @@ export interface GetPredictionStandingsRequest {
     [key: string]: any;
 }
 
+export interface GetRolePermissionsRequest {
+    roleName?: string;
+
+    [key: string]: any;
+}
+
+export interface GetRolePermissionsResponse {
+    permissions?: string[];
+
+    [key: string]: any;
+}
+
+export interface GetRolesResponse {
+    roles?: string[];
+
+    [key: string]: any;
+}
+
 export interface GetSeriesRequest {
     publicId?: string;
 
@@ -9674,6 +9917,14 @@ export interface ListUpcomingDraftsResponse {
     [key: string]: any;
 }
 
+export interface ListUsersRequest {
+    search?: string | undefined;
+    page?: number;
+    pageSize?: number;
+
+    [key: string]: any;
+}
+
 export interface MediaAppearanceResponse {
     draftPublicId: string;
     draftTitle: string;
@@ -9896,6 +10147,18 @@ export interface PagedResultOfSearchHostResponse {
 
 export interface PagedResultOfSearchPeopleResponse {
     items: SearchPeopleResponse[];
+    totalCount: number;
+    page: number;
+    pageSize: number;
+    totalPages?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+
+    [key: string]: any;
+}
+
+export interface PagedResultOfUserItem {
+    items: UserItem[];
     totalCount: number;
     page: number;
     pageSize: number;
@@ -10371,6 +10634,12 @@ export interface SeasonContestantStandingResponse {
     [key: string]: any;
 }
 
+export interface SendPasswordResetRequest {
+    publicId?: string;
+
+    [key: string]: any;
+}
+
 export interface SeriesCollectionResponse {
     items: SeriesResponse[];
 
@@ -10628,6 +10897,15 @@ export interface UploadAvatarRequest {
 
 export interface UploadAvatarResponse {
     avatarPath: string;
+
+    [key: string]: any;
+}
+
+export interface UserItem {
+    publicId?: string;
+    displayName?: string;
+    email?: string;
+    roles?: string[];
 
     [key: string]: any;
 }

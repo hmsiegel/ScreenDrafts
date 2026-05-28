@@ -3,47 +3,50 @@
 var basePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
 
 var configuration = new ConfigurationBuilder()
-    .SetBasePath(basePath)
-    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-    .AddJsonFile("appsettings.Development.json", optional: true, reloadOnChange: true)
-    .AddEnvironmentVariables()
-    .Build();
+  .SetBasePath(basePath)
+  .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+  .AddJsonFile("appsettings.Development.json", optional: true, reloadOnChange: true)
+  .AddEnvironmentVariables()
+  .Build();
 
 Log.Logger = new LoggerConfiguration()
-    .ReadFrom.Configuration(configuration)
-    .Enrich.FromLogContext()
-    .CreateLogger();
+  .ReadFrom.Configuration(configuration)
+  .Enrich.FromLogContext()
+  .CreateLogger();
 
 var connectionString = configuration.GetConnectionStringOrThrow("Database");
 
 try
 {
   var builder = Host.CreateDefaultBuilder(args) // Ensure the correct namespace is used
-      .UseSerilog((context, services, configuration) =>
+    .UseSerilog(
+      (context, services, configuration) =>
       {
         configuration
           .ReadFrom.Configuration(context.Configuration)
           .ReadFrom.Services(services)
           .Enrich.FromLogContext();
-      })
-      .ConfigureServices((hostContext, services) =>
+      }
+    )
+    .ConfigureServices(
+      (hostContext, services) =>
       {
         services.AddSingleton(configuration);
 
         // Configure DatabaseSettings for DraftsModule
-        services.Configure<DatabaseSettings>(o =>
-          o.ConnectionString = connectionString);
+        services.Configure<DatabaseSettings>(o => o.ConnectionString = connectionString);
 
         services.AddDraftsSeeding(configuration);
-        services.AddSeedingInfrastructure(connectionString);
+        services.AddSeedingInfrastructure(configuration, connectionString);
         services.AddDraftSeeders();
         services.TryAddScoped<SqlInsertHelper>();
         services.AddLogging(builder =>
-          {
-            builder.AddConsole();
-            builder.AddDebug();
-          });
-      });
+        {
+          builder.AddConsole();
+          builder.AddDebug();
+        });
+      }
+    );
 
   var app = builder.Build();
 
@@ -64,4 +67,3 @@ finally
 {
   await Log.CloseAndFlushAsync();
 }
-

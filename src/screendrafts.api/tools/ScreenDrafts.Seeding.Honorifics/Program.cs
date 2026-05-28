@@ -41,7 +41,7 @@ try
         services.Configure<DatabaseSettings>(o => o.ConnectionString = connectionString);
 
         services.AddReportingSeeding(configuration);
-        services.AddSeedingInfrastructure(connectionString);
+        services.AddSeedingInfrastructure(configuration, connectionString);
         services.AddHonorificsSeeders();
         services.TryAddScoped<SqlInsertHelper>();
         services.AddLogging(builder =>
