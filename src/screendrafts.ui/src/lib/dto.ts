@@ -9367,6 +9367,7 @@ export interface GetDraftPartResponse {
     participants?: GetDraftPartParticipantResponse[];
     releases?: GetDraftReleaseResponse[];
     picks?: GetDraftPickResponse[];
+    subDrafts?: GetDraftSubDraftResponse[];
 
     [key: string]: any;
 }
@@ -9382,6 +9383,7 @@ export interface GetDraftPickResponse {
     playedByParticipantKindValue?: ParticipantKind;
     veto?: GetDraftVetoResponse | undefined;
     commissionerOverride?: GetDraftCommissionerOverrideResponse | undefined;
+    subDraftIndex?: number | undefined;
 
     [key: string]: any;
 }
@@ -9423,6 +9425,14 @@ export interface GetDraftResponse {
 
 export interface GetDraftStatusRequest {
     publicId?: string;
+
+    [key: string]: any;
+}
+
+export interface GetDraftSubDraftResponse {
+    index?: number;
+    subjectKind?: number;
+    subjectName?: string;
 
     [key: string]: any;
 }
@@ -10824,6 +10834,7 @@ export interface TriviaResultResponse {
     questionsWon: number;
     participantDisplayName: string;
     participantKind: string;
+    subDraftIndex?: number | undefined;
 
     [key: string]: any;
 }

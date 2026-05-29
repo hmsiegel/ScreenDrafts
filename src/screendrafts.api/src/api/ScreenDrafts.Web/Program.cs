@@ -1,6 +1,4 @@
-﻿using VaultSharp.Extensions.Configuration;
-
-var builder = WebApplication.CreateBuilder(args);
+﻿var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog((context, config) => config.ReadFrom.Configuration(context.Configuration));
 
@@ -14,23 +12,6 @@ if (!builder.Environment.IsEnvironment("Testing"))
     "screendrafts",
     vaultSection["MountPoint"]
   );
-}
-
-foreach (
-  var kvp in builder
-    .Configuration.AsEnumerable()
-    .Where(k =>
-      k.Key.Contains("MediatR", StringComparison.InvariantCultureIgnoreCase)
-      || k.Key.Contains("KeycloakPoller", StringComparison.InvariantCultureIgnoreCase)
-      || k.Key.Contains("ConnectionStrings", StringComparison.InvariantCultureIgnoreCase)
-      || k.Key.Contains("Users", StringComparison.InvariantCultureIgnoreCase)
-      || k.Key.Contains("Drafts", StringComparison.InvariantCultureIgnoreCase)
-      || k.Key.Contains("Integrations", StringComparison.InvariantCultureIgnoreCase)
-    )
-    .OrderBy(k => k.Key)
-)
-{
-  Console.WriteLine($"CONFIG: {kvp.Key} = {(kvp.Value is null ? "<null>" : "<set>")}");
 }
 
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
@@ -101,6 +82,43 @@ ModuleServiceExtensions.AddModules(builder.Services, builder.Configuration);
 
 var app = builder.Build();
 
+// Startup diagnostics
+Console.WriteLine($"[DEBUG] WebRootPath: '{app.Environment.WebRootPath}'");
+Console.WriteLine($"[DEBUG] ContentRootPath: '{app.Environment.ContentRootPath}'");
+var draftersPath = Path.Combine(app.Environment.WebRootPath, "drafters");
+Console.WriteLine($"[DEBUG] Drafters dir exists: {Directory.Exists(draftersPath)}");
+
+// 1. Diagnostics and logging
+app.UseLogContextTraceLogging();
+app.UseSerilogRequestLogging();
+app.UseExceptionHandler();
+
+// 2. Request-trace debug middleware
+app.Use(
+  async (context, next) =>
+  {
+    Console.WriteLine($"[DEBUG] Incoming: {context.Request.Method} {context.Request.Path}");
+    await next();
+    Console.WriteLine(
+      $"[DEBUG] Outgoing: {context.Request.Method} {context.Request.Path} → {context.Response.StatusCode}"
+    );
+  }
+);
+
+// 3. Static files and FastEndpoints
+app.UseStaticFiles();
+
+// 4.Explicit routing
+app.UseRouting();
+
+// 5. CORS must run after UseRouting and before UseAuthentication/UseAuthorization
+app.UseCors("AllowUI");
+
+// 6. Auth pipeline
+app.UseAuthentication();
+app.UseAuthorization();
+
+// 7. FastEndpoints with audit processors
 app.UseFastEndpoints(c =>
 {
   c.Endpoints.ShortNames = true;
@@ -126,13 +144,6 @@ app.MapHealthChecks(
   "health",
   new HealthCheckOptions { ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse }
 );
-
-app.UseLogContextTraceLogging();
-app.UseSerilogRequestLogging();
-app.UseExceptionHandler();
-app.UseCors("AllowUI");
-app.UseAuthentication();
-app.UseAuthorization();
 
 await app.RunAsync();
 

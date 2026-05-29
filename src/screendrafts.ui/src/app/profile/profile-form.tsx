@@ -1,9 +1,8 @@
 'use client';
 
 import { useState } from "react";
-import { GetUserResponse } from "@/lib/dto";
-import AvatarUpload from "./avatar-upload";
 import { MergedProfile } from "@/services/profile/fetch-profile";
+import AvatarUpload from "./avatar-upload";
 
 type Tab = 'personal' | 'password' | 'social' | 'avatar';
 
@@ -51,7 +50,6 @@ function PersonalTab({ profile, accessToken, apiBase }: ProfileFormProps) {
     setSaving(true);
     setStatus(null);
     try {
-      // Name → Users module
       const nameRes = await fetch(`${apiBase}/users/profile`, {
         method: 'PUT',
         headers: {
@@ -62,7 +60,6 @@ function PersonalTab({ profile, accessToken, apiBase }: ProfileFormProps) {
       });
       if (!nameRes.ok) throw new Error(`name update failed: ${nameRes.status}`);
 
-      // Bio / location / displayName → Drafts People module (only if personPublicId exists)
       if (profile?.personPublicId) {
         const profileRes = await fetch(
           `${apiBase}/people/${profile.personPublicId}/profile`,
@@ -206,16 +203,25 @@ function SocialTab({ profile, accessToken, apiBase }: ProfileFormProps) {
   const [saving, setSaving] = useState(false);
 
   async function handleSave() {
+    if (!profile?.personPublicId) {
+      setStatus({ type: 'error', message: 'Account not linked to a participant profile.' });
+      return;
+    }
     setSaving(true);
     setStatus(null);
     try {
-      const res = await fetch(`${apiBase}/users/profile/social`, {
+      const res = await fetch(`${apiBase}/people/${profile.personPublicId}/social`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
         },
-        body: JSON.stringify({ twitter, instagram, letterboxd, bluesky }),
+        body: JSON.stringify({
+          twitterHandle: twitter || null,
+          instagramHandle: instagram || null,
+          letterboxdHandle: letterboxd || null,
+          blueskyHandle: bluesky || null,
+        }),
       });
       if (!res.ok) throw new Error(`${res.status}`);
       setStatus({ type: 'success', message: 'Social profiles updated.' });
@@ -234,19 +240,19 @@ function SocialTab({ profile, accessToken, apiBase }: ProfileFormProps) {
         </p>
       )}
       <Field label="Twitter / X (without @)">
-        <input className={INPUT} value={twitter} onChange={e => setTwitter(e.target.value)} placeholder="yourhandle" />
+        <input className={INPUT} value={twitter} onChange={e => setTwitter(e.target.value)} placeholder="yourhandle" disabled={!profile?.personPublicId} />
       </Field>
       <Field label="Instagram">
-        <input className={INPUT} value={instagram} onChange={e => setInstagram(e.target.value)} placeholder="yourhandle" />
+        <input className={INPUT} value={instagram} onChange={e => setInstagram(e.target.value)} placeholder="yourhandle" disabled={!profile?.personPublicId} />
       </Field>
       <Field label="Letterboxd">
-        <input className={INPUT} value={letterboxd} onChange={e => setLetterboxd(e.target.value)} placeholder="yourusername" />
+        <input className={INPUT} value={letterboxd} onChange={e => setLetterboxd(e.target.value)} placeholder="yourusername" disabled={!profile?.personPublicId} />
       </Field>
       <Field label="Bluesky">
-        <input className={INPUT} value={bluesky} onChange={e => setBluesky(e.target.value)} placeholder="yourhandle" />
+        <input className={INPUT} value={bluesky} onChange={e => setBluesky(e.target.value)} placeholder="yourhandle" disabled={!profile?.personPublicId} />
       </Field>
       <div className="pt-1 flex items-center gap-4">
-        <button className={BTN_PRIMARY} onClick={handleSave} disabled={saving}>
+        <button className={BTN_PRIMARY} onClick={handleSave} disabled={saving || !profile?.personPublicId}>
           {saving ? 'SAVING…' : 'SAVE SOCIAL PROFILES'}
         </button>
         <Feedback status={status} />
@@ -267,7 +273,6 @@ export default function ProfileForm({ profile, accessToken, apiBase }: ProfileFo
 
   return (
     <div className="bg-white border border-sd-ink/10">
-      {/* Tab bar */}
       <div className="flex border-b border-sd-ink/10">
         {TABS.map(({ id, label }) => (
           <button

@@ -1,17 +1,7 @@
-import { auth } from "@/auth";
 import { env } from "@/lib/env";
 
 const apiBase = env.apiUrl;
 
-async function authHeaders(): Promise<HeadersInit> {
-  const session = await auth();
-  if (session?.accessToken) {
-    return { Authorization: `Bearer ${session.accessToken}` };
-  }
-  return {};
-}
-
-// Shape returned by GET /users/profile (GetUserResponse)
 export interface UserProfile {
   publicId: string;
   email: string;
@@ -21,20 +11,24 @@ export interface UserProfile {
   personPublicId?: string;
 }
 
-// Shape returned by GET /participants/{personPublicId} (GetParticipantResponse)
-// Fields we care about for the profile page.
-export interface PersonProfile {
+// Matches the actual GET /participants/{personPublicId} response shape.
+interface SocialHandles {
+  twitter?: string | null;
+  instagram?: string | null;
+  letterboxd?: string | null;
+  bluesky?: string | null;
+  profilePicturePath?: string | null;
+}
+
+interface PersonProfile {
   personPublicId: string;
   displayName: string;
   biography?: string;
   location?: string;
-  profilePicturePath?: string;
-  socialLinks?: { platform: string; url: string }[];
+  socialHandles?: SocialHandles;
 }
 
-// Merged shape for the profile page — everything it needs in one object.
 export interface MergedProfile extends UserProfile {
-  // Resolved from PersonProfile
   displayName?: string;
   biography?: string;
   location?: string;
@@ -45,17 +39,10 @@ export interface MergedProfile extends UserProfile {
   blueskyHandle?: string;
 }
 
-const SOCIAL_PLATFORM_MAP: Record<string, keyof Pick<MergedProfile, "twitterHandle" | "instagramHandle" | "letterboxdHandle" | "blueskyHandle">> = {
-  twitter: "twitterHandle",
-  instagram: "instagramHandle",
-  letterboxd: "letterboxdHandle",
-  bluesky: "blueskyHandle",
-};
-
 export async function fetchProfile(accessToken: string): Promise<MergedProfile | null> {
-  const headers: HeadersInit = { Authorization: `Bearer ${accessToken}`};
+  const headers: HeadersInit = { Authorization: `Bearer ${accessToken}` };
 
-  // Step 1: user record (email, name, personPublicId)
+  // Step 1: user record
   let userProfile: UserProfile | null = null;
   try {
     const res = await fetch(`${apiBase}/users/profile`, {
@@ -72,11 +59,11 @@ export async function fetchProfile(accessToken: string): Promise<MergedProfile |
     return null;
   }
 
-  // Step 2: person record (bio, location, socials, avatar) — optional
   if (!userProfile.personPublicId) {
     return { ...userProfile };
   }
 
+  // Step 2: person record
   let personProfile: PersonProfile | null = null;
   try {
     const res = await fetch(
@@ -96,26 +83,19 @@ export async function fetchProfile(accessToken: string): Promise<MergedProfile |
     return { ...userProfile };
   }
 
-  // Flatten social links array into named handles
-  const socials: Partial<MergedProfile> = {};
-  for (const link of personProfile.socialLinks ?? []) {
-    const key = SOCIAL_PLATFORM_MAP[link.platform.toLowerCase()];
-    if (key) {
-      // Store only the handle portion — strip leading @ and domain if present
-      const raw = link.url;
-      const handle = raw.startsWith("http")
-        ? new URL(raw).pathname.replace(/^\//, "").split("/")[0]
-        : raw.replace(/^@/, "");
-      socials[key] = handle;
-    }
-  }
+  const handles = personProfile.socialHandles;
 
   return {
     ...userProfile,
     displayName: personProfile.displayName,
     biography: personProfile.biography,
     location: personProfile.location,
-    profilePicturePath: personProfile.profilePicturePath,
-    ...socials,
+    profilePicturePath: handles?.profilePicturePath
+      ? `${apiBase}/drafters/${handles.profilePicturePath}`
+      : undefined,
+    twitterHandle:   handles?.twitter    ?? undefined,
+    instagramHandle: handles?.instagram  ?? undefined,
+    letterboxdHandle: handles?.letterboxd ?? undefined,
+    blueskyHandle:   handles?.bluesky    ?? undefined,
   };
 }

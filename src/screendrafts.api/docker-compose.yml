@@ -21,6 +21,11 @@ services:
       dockerfile: src/api/ScreenDrafts.Web/Dockerfile
     volumes:
       - ./data:/app/data
+      # Dev only: mount wwwroot so uploaded avatars persist on the host.
+      # TODO: For production, copy wwwroot into the image via Dockerfile instead:
+      #   COPY ["src/api/ScreenDrafts.Web/wwwroot", "/app/wwwroot/"]
+      # and serve avatars from a CDN (e.g. Azure Blob Storage, CloudFront).
+      - ./src/api/ScreenDrafts.Web/wwwroot:/app/wwwroot
     environment:
       - DATA_PATH=/app/data
       - ASPNETCORE_ENVIRONMENT=Development
@@ -73,6 +78,7 @@ services:
       - POSTGRES_DB=screendrafts
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+      - PGDATA=/var/lib/postgresql/data
     volumes:
       - ./.containers/db:/var/lib/postgresql/data
     ports:

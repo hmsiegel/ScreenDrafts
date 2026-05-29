@@ -63,3 +63,5 @@ global using ScreenDrafts.Web.OpenTelemetry;
 
 global using Serilog;
 global using Serilog.Context;
+
+global using VaultSharp.Extensions.Configuration;

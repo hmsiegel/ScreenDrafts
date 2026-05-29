@@ -485,3 +485,7 @@ $RECYCLE.BIN/
 
 # Docker database files
 .containers/**
+
+**/wwwroot/drafters/*.jpg
+**/wwwroot/drafters/*.webp
+**/wwwroot/drafters/*.png

@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 
 interface AvatarUploadProps {
@@ -23,6 +24,7 @@ function Initials({ name }: { name: string }) {
 }
 
 export default function AvatarUpload({ currentAvatarUrl, displayName, accessToken, apiBase, personPublicId }: AvatarUploadProps) {
+  const router = useRouter();
   const [avatarUrl, setAvatarUrl] = useState(currentAvatarUrl);
   const [status, setStatus] = useState<'idle' | 'uploading' | 'success' | 'error'>('idle');
   const [errorMsg, setErrorMsg] = useState('');
@@ -56,8 +58,9 @@ export default function AvatarUpload({ currentAvatarUrl, displayName, accessToke
       });
       if (!res.ok) throw new Error(`${res.status}`);
       const data = await res.json() as { avatarPath?: string };
-      if (data.avatarPath) setAvatarUrl(data.avatarPath);
+      if (data.avatarPath) setAvatarUrl(`${apiBase}/drafters/${data.avatarPath}`);
       setStatus('success');
+      router.refresh();
     } catch (err) {
       console.error('[AvatarUpload]', err);
       setStatus('error');

@@ -16,6 +16,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<UploadAvatarRequest, Uploa
         .Produces(StatusCodes.Status404NotFound);
     });
     Policies(DraftsAuth.Permissions.PersonUpdate);
+    AllowFileUploads();
   }
 
   public override async Task HandleAsync(UploadAvatarRequest req, CancellationToken ct)

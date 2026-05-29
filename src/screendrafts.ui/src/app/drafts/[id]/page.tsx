@@ -6,6 +6,7 @@ import SiteHeader from "@/components/layout/header/site-header";
 import SiteFooter from "@/components/layout/footer/site-footer";
 import DraftSidebar from "@/components/features/drafts/drafts-sidebar";
 import { DraftPick } from "@/components/features/drafts/draft-pick";
+import { SpeedDraftLayout } from "@/components/features/drafts/speed-draft-layout";
 import { DraftPartPredictionData, PredictionsSection } from "@/components/features/drafts/predictions-section";
 import {
   getDraftDetails,
@@ -44,14 +45,11 @@ export default async function DraftDetailPage({ params }: Props) {
   const parts: GetDraftPartResponse[] = draft.parts ?? [];
   const isMultiPart = parts.length > 1;
 
-  // Build participant name map from parts
-  // GetDraftPartParticipantResponse has [key: string]: any so displayName may exist at runtime
+  // Build participant name + index maps
   const participantNames = new Map<string, string>();
   const participantIndex = new Map<string, number>();
   const COMMUNITY_PARTICIPANT_ID = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee";
   participantNames.set(COMMUNITY_PARTICIPANT_ID, "Patreon Members");
-  // Community participants don't get a color index — they won't appear in
-  // the sidebar avatar list, so the index value doesn't matter.
   participantIndex.set(COMMUNITY_PARTICIPANT_ID, 99);
   let pIdx = 0;
 
@@ -99,14 +97,14 @@ export default async function DraftDetailPage({ params }: Props) {
     }
   );
 
-  // ── Trivia map keyed by partPublicId ───────────────────────────────────────
+  // ── Trivia map keyed by partPublicId (used by standard DraftSidebar) ───────
   const triviaByPart = new Map<string, TriviaResultResponse[]>(
     partData
       .filter((d) => d.trivia && d.trivia.results.length > 0)
       .map((d) => [d.partPublicId, d.trivia!.results])
   );
 
-  // ── Per-part structured data for the right column ─────────────────────────
+  // ── Per-part structured data ───────────────────────────────────────────────
   const isVetoed = (pick: GetDraftPickResponse) =>
     !!pick.veto && !pick.veto.isOverriden;
   const isCommissionerRemoved = (pick: GetDraftPickResponse) =>
@@ -136,6 +134,41 @@ export default async function DraftDetailPage({ params }: Props) {
 
   const totalFinalPicks = partSections.reduce((n, s) => n + s.finalPicks.length, 0);
 
+  // ── SpeedDraft single-part: delegate entirely to SpeedDraftLayout ──────────
+  const firstPart = parts[0];
+  const isSpeedDraft = !isMultiPart && firstPart?.draftType?.name === "SpeedDraft";
+
+  if (isSpeedDraft && firstPart) {
+    const triviaResults = partData[0]?.trivia?.results ?? [];
+    const predictionData = partSections[0]!.predictionData;
+
+    return (
+      <div className="min-h-screen bg-light-blue">
+        <SiteHeader activePath="/drafts" />
+        <div style={{ padding: "40px 40px 64px" }}>
+          <nav className="font-mono text-[11px] mb-8 flex items-center gap-1.5">
+            <Link href="/drafts" className="text-sd-blue hover:underline">
+              / DRAFTS
+            </Link>
+            <span className="text-sd-ink/30">/</span>
+            <span className="text-sd-ink/60 truncate max-w-[400px]">{draft.title}</span>
+          </nav>
+
+          <SpeedDraftLayout
+            draft={draft}
+            part={firstPart}
+            participantNames={participantNames}
+            participantIndex={participantIndex}
+            triviaResults={triviaResults}
+            predictionData={predictionData}
+          />
+        </div>
+        <SiteFooter />
+      </div>
+    );
+  }
+
+  // ── Standard layout (single-part non-SpeedDraft + all multi-part) ──────────
   return (
     <div className="min-h-screen bg-light-blue">
       <SiteHeader activePath="/drafts" />
@@ -166,24 +199,21 @@ export default async function DraftDetailPage({ params }: Props) {
           {/* Right column */}
           <div className="bg-white border-2 border-sd-ink" style={{ padding: "40px 48px", maxWidth: 720 }}>
             <article>
-              {/* Section label */}
               <div className="font-mono text-[11px] tracking-widest text-sd-red font-bold mb-3">
                 ★ THE EPISODE
               </div>
 
-              {/* Title */}
               <h1 className="font-oswald font-bold text-[56px] text-sd-ink leading-[1] mb-6">
                 {draft.title}
               </h1>
 
-              {/* Description */}
               {draft.description && (
                 <p className="font-serif text-[18px] leading-[1.55] text-[#2a2f44] mb-10 max-w-[680px]">
                   {draft.description}
                 </p>
               )}
 
-              {/* ── Single-part layout ─────────────────────────────────────── */}
+              {/* ── Single-part layout ───────────────────────────────────── */}
               {!isMultiPart && (() => {
                 const { picks, finalPicks, topPlayOrder, predictionData } = partSections[0]!;
                 return (
@@ -218,10 +248,9 @@ export default async function DraftDetailPage({ params }: Props) {
                 );
               })()}
 
-              {/* ── Multi-part layout ──────────────────────────────────────── */}
+              {/* ── Multi-part layout ────────────────────────────────────── */}
               {isMultiPart && (
                 <>
-                  {/* Overall count */}
                   <div className="flex items-center gap-4 mb-8">
                     <h2 className="font-oswald font-bold text-[32px] text-sd-ink whitespace-nowrap">
                       THE FINAL LIST
@@ -235,7 +264,6 @@ export default async function DraftDetailPage({ params }: Props) {
                   <div className="space-y-12">
                     {partSections.map(({ part, partLabel, picks, finalPicks, topPlayOrder, predictionData }, i) => (
                       <section key={part.publicId ?? i}>
-                        {/* Part header */}
                         <div className="flex items-center gap-3 mb-5">
                           <div className="font-mono text-[10px] tracking-widest text-sd-red font-bold whitespace-nowrap">
                             ★ {partLabel.toUpperCase()}
@@ -246,7 +274,6 @@ export default async function DraftDetailPage({ params }: Props) {
                           </span>
                         </div>
 
-                        {/* Release date for this part */}
                         {part.releases?.[0]?.releaseDate && (
                           <div className="font-mono text-[11px] text-sd-blue mb-4">
                             {new Date(part.releases[0].releaseDate as string | Date).toLocaleDateString("en-US", {
@@ -257,7 +284,6 @@ export default async function DraftDetailPage({ params }: Props) {
                           </div>
                         )}
 
-                        {/* Picks for this part */}
                         <div>
                           {picks.length === 0 ? (
                             <p className="font-mono text-sm text-sd-ink/40">No picks recorded.</p>
@@ -275,7 +301,6 @@ export default async function DraftDetailPage({ params }: Props) {
                           )}
                         </div>
 
-                        {/* Predictions for this part */}
                         <PredictionsSection parts={[predictionData]} />
                       </section>
                     ))}

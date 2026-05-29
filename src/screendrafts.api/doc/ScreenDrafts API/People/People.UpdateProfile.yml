@@ -1,0 +1,27 @@
+info:
+  name: People.UpdateProfile
+  type: http
+  seq: 7
+
+http:
+  method: PUT
+  url: "{{baseUrl}}/people/:publicId/profile"
+  params:
+    - name: publicId
+      value: pe_1QRxEY30kEsj5WX
+      type: path
+  body:
+    type: json
+    data: |-
+      {
+        "displayName": "Harlan Siegel",
+        "biography": "Test bio",
+        "location": "Akron, OH"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

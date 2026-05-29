@@ -25,6 +25,12 @@ internal sealed record GetDraftPartResponse
   public Collection<GetDraftReleaseResponse> Releases { get; init; } = [];
   public Collection<GetDraftPickResponse> Picks { get; init; } = [];
 
+  /// <summary>
+  /// Populated only when DraftType == SpeedDraft. Each entry describes one
+  /// sub-draft within the part (index, subject kind, subject name).
+  /// </summary>
+  public Collection<GetDraftSubDraftResponse> SubDrafts { get; init; } = [];
+
   public void SetPrimaryHost(GetDraftHostResponse host) => PrimaryHost = host;
 
   public void AddCoHost(GetDraftHostResponse host) => CoHosts.Add(host);
@@ -35,4 +41,13 @@ internal sealed record GetDraftPartResponse
   public void AddRelease(GetDraftReleaseResponse release) => Releases.Add(release);
 
   public void AddPick(GetDraftPickResponse pick) => Picks.Add(pick);
+
+  public void AddSubDraft(GetDraftSubDraftResponse subDraft) => SubDrafts.Add(subDraft);
+}
+
+internal sealed record GetDraftSubDraftResponse
+{
+  public int Index { get; init; }
+  public int SubjectKind { get; init; }
+  public string SubjectName { get; init; } = default!;
 }

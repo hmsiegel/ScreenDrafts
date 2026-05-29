@@ -8,7 +8,7 @@ http:
   url: "{{baseUrl}}/participants/:personPublicId"
   params:
     - name: personPublicId
-      value: pe_dSd73x5UNASNnPB
+      value: pe_1QRxEY30kEsj5WX
       type: path
   auth: inherit
 

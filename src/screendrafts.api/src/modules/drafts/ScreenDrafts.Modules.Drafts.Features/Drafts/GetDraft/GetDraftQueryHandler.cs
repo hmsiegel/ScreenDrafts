@@ -227,9 +227,20 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
     }
 
     // 5. Releases
-    var allowedChannels = request.IncludePatreon
-      ? [MainFeedChannel, PatreonChannel]
-      : new[] { MainFeedChannel };
+    int[] allowedChannels;
+
+    if (draft.DraftType == DraftType.SpeedDraft)
+    {
+      allowedChannels = [PatreonChannel];
+    }
+    else if (request.IncludePatreon)
+    {
+      allowedChannels = [MainFeedChannel, PatreonChannel];
+    }
+    else
+    {
+      allowedChannels = [MainFeedChannel];
+    }
 
     const string releaseSql = $"""
       SELECT
@@ -262,6 +273,41 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
       part.AddRelease(releaseResponse);
     }
 
+    // 6a. Sub-Drafts (SpeedDraft parts only — NULL rows for standard parts are skipped)
+    const string subDraftSql = $"""
+      SELECT
+        sd.draft_part_id AS PartId,
+        sd.index AS {nameof(GetDraftSubDraftResponse.Index)},
+        sd.subject_kind AS {nameof(GetDraftSubDraftResponse.SubjectKind)},
+        sd.subject_name AS {nameof(GetDraftSubDraftResponse.SubjectName)}
+      FROM drafts.sub_drafts sd
+      WHERE sd.draft_part_id = ANY(@partIds)
+      ORDER BY sd.draft_part_id, sd.index ASC;
+      """;
+
+    var subDraftRows = await connection.QueryAsync<(
+      Guid PartId,
+      int Index,
+      int SubjectKind,
+      string SubjectName
+    )>(new CommandDefinition(subDraftSql, new { partIds }));
+
+    foreach (var (partId, index, subjectKind, subjectName) in subDraftRows)
+    {
+      if (!partMap.TryGetValue(partId, out var part))
+      {
+        continue;
+      }
+      part.AddSubDraft(
+        new GetDraftSubDraftResponse
+        {
+          Index = index,
+          SubjectKind = subjectKind,
+          SubjectName = subjectName,
+        }
+      );
+    }
+
     // 6. Picks
     const string pickSql = $"""
       SELECT
@@ -278,9 +324,11 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
         pk.played_by_participant_kind_value AS {nameof(
         GetDraftPickResponse.PlayedByParticipantKindValue
       )},
+        sd.index AS {nameof(GetDraftPickResponse.SubDraftIndex)},
         pk.id AS PickInternalId
       FROM drafts.picks pk
       JOIN drafts.movies m ON m.id = pk.movie_id
+      LEFT JOIN drafts.sub_drafts sd ON sd.id = pk.sub_draft_id
       WHERE pk.draft_part_id = ANY(@partIds)
       ORDER BY pk.play_order ASC;
       """;
@@ -296,6 +344,7 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
         string? ActedByPublicId,
         Guid PlayedByParticipantIdValue,
         ParticipantKind PlayedByParticipantKindValue,
+        int? SubDraftIndex,
         Guid PickInternalId
       )>(new CommandDefinition(pickSql, new { partIds }))
     ).ToList();
@@ -412,10 +461,20 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
         ]
         : new HashSet<Guid>();
 
-    var allowedChannelInts = request.IncludePatreon
-      ? [MainFeedChannel, PatreonChannel]
-      : new[] { MainFeedChannel };
+    int[] allowedChannelInts;
 
+    if (draft.DraftType == DraftType.SpeedDraft)
+    {
+      allowedChannelInts = [PatreonChannel];
+    }
+    else if (request.IncludePatreon)
+    {
+      allowedChannelInts = [MainFeedChannel, PatreonChannel];
+    }
+    else
+    {
+      allowedChannelInts = [MainFeedChannel];
+    }
     // Episode number
     const string episodeNumberSql = $"""
       SELECT
@@ -658,6 +717,7 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
           ActedByPublicId = r.ActedByPublicId,
           PlayedByParticipantIdValue = r.PlayedByParticipantIdValue,
           PlayedByParticipantKindValue = r.PlayedByParticipantKindValue,
+          SubDraftIndex = r.SubDraftIndex,
           Veto = veto,
           CommissionerOverride = commissionerOverrideResponse,
         }

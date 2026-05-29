@@ -4,7 +4,10 @@ internal static class AuthenticationExtensions
 {
   internal static IServiceCollection AddAuthenticationInternal(this IServiceCollection services)
   {
-    services.AddAuthorization();
+    services.AddAuthorization(options =>
+    {
+      options.FallbackPolicy = null;
+    });
 
     services.AddAuthentication().AddJwtBearer();
 

@@ -3,7 +3,7 @@
 internal sealed record UpdateProfileRequest
 {
   [FromRoute(Name = "publicId")]
-  public required string PublicId { get; init; }
+  public string PublicId { get; init; } = default!;
 
   public string? DisplayName { get; init; }
   public string? Biography { get; init; }

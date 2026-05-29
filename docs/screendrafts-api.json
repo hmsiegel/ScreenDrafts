@@ -8827,6 +8827,12 @@
             "items": {
               "$ref": "#/components/schemas/GetDraftPickResponse"
             }
+          },
+          "subDrafts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GetDraftSubDraftResponse"
+            }
           }
         }
       },
@@ -8897,6 +8903,15 @@
                 "$ref": "#/components/schemas/GetDraftCommissionerOverrideResponse"
               }
             ]
+          },
+          "subDraftIndex": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
           }
         }
       },
@@ -8997,6 +9012,30 @@
         "type": "object",
         "properties": {
           "publicId": {
+            "type": "string"
+          }
+        }
+      },
+      "GetDraftSubDraftResponse": {
+        "type": "object",
+        "properties": {
+          "index": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "subjectKind": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "subjectName": {
             "type": "string"
           }
         }
@@ -13742,6 +13781,15 @@
           },
           "participantKind": {
             "type": "string"
+          },
+          "subDraftIndex": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
           }
         }
       },

@@ -1,16 +1,16 @@
 "use client";
 
-export default function ProfileAvatar({ displayName, picturePath }: { displayName: string; picturePath?: string }) {
+interface ProfileAvatarProps {
+  displayName: string;
+  picturePath?: string;  // full URL already constructed by fetch-profile.ts
+}
+
+export default function ProfileAvatar({ displayName, picturePath }: ProfileAvatarProps) {
   const initials = displayName
     .split(" ")
     .slice(0, 2)
     .map((w) => w[0]?.toUpperCase() ?? "")
     .join("");
-
-  // Strip extension so we can try both
-  const base = picturePath
-    ? `/drafters/${picturePath}`
-    : null;
 
   function showFallback(e: React.SyntheticEvent<HTMLImageElement>) {
     const img = e.target as HTMLImageElement;
@@ -26,9 +26,9 @@ export default function ProfileAvatar({ displayName, picturePath }: { displayNam
       className="relative overflow-hidden rounded-full border-4 border-sd-red"
       style={{ width: 96, height: 96 }}
     >
-      {base ? (
+      {picturePath ? (
         <img
-          src={base}
+          src={picturePath}
           alt={displayName}
           className="w-full h-full object-cover"
           onError={showFallback}
