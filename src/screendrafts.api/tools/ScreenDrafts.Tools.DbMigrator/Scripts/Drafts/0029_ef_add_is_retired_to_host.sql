@@ -2193,3 +2193,28 @@ BEGIN
 END $EF$;
 COMMIT;
 
+START TRANSACTION;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM drafts."__EFMigrationsHistory" WHERE "migration_id" = '20260529144313_Add_IsRetired_To_Host') THEN
+    ALTER TABLE drafts.hosts ADD is_retired boolean NOT NULL DEFAULT FALSE;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM drafts."__EFMigrationsHistory" WHERE "migration_id" = '20260529144313_Add_IsRetired_To_Host') THEN
+    ALTER TABLE drafts.hosts ADD retired_at_utc timestamp with time zone;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM drafts."__EFMigrationsHistory" WHERE "migration_id" = '20260529144313_Add_IsRetired_To_Host') THEN
+    INSERT INTO drafts."__EFMigrationsHistory" (migration_id, product_version)
+    VALUES ('20260529144313_Add_IsRetired_To_Host', '10.0.7');
+    END IF;
+END $EF$;
+COMMIT;
+

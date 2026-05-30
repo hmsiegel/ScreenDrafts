@@ -2,6 +2,10 @@
 
 public static class AdministrationModule
 {
+  private static readonly string _moduleName = typeof(AdministrationModule)
+    .Assembly.GetName()
+    .Name!;
+
   public static IServiceCollection AddAdministrationModule(
     this IServiceCollection services,
     IConfiguration configuration
@@ -27,17 +31,19 @@ public static class AdministrationModule
   {
     ArgumentNullException.ThrowIfNull(registrationConfigurator);
 
+    var moduleInstanceId = $"{instanceId}-{_moduleName.ToLowerInvariant()}";
+
     registrationConfigurator
       .AddConsumer<IntegrationEventConsumer<UserRegisteredIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = instanceId);
+      .Endpoint(c => c.InstanceId = moduleInstanceId);
 
     registrationConfigurator
       .AddConsumer<IntegrationEventConsumer<DrafterCreatedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = instanceId);
+      .Endpoint(c => c.InstanceId = moduleInstanceId);
 
     registrationConfigurator
       .AddConsumer<IntegrationEventConsumer<HostCreatedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = instanceId);
+      .Endpoint(c => c.InstanceId = moduleInstanceId);
   }
 
   private static void AddAdministrationFeatures(this IServiceCollection services)

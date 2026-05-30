@@ -3,4 +3,8 @@
 public interface IDrafterRepository : IRepository<Drafter, DrafterId>
 {
   Task<bool> ExistsForPersonAsync(string personPublicId, CancellationToken cancellationToken);
+  Task<Drafter?> GetByPersonPublicIdAsync(
+    string personPublicId,
+    CancellationToken cancellationToken
+  );
 }

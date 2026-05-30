@@ -1,7 +1,11 @@
-﻿namespace ScreenDrafts.Modules.Users.Composition;
+﻿using ScreenDrafts.Modules.Drafts.IntegrationEvents;
+
+namespace ScreenDrafts.Modules.Users.Composition;
 
 public static class UsersModule
 {
+  private static readonly string _moduleName = typeof(UsersModule).Assembly.GetName().Name!;
+
   public static IServiceCollection AddUsersModule(
     this IServiceCollection services,
     IConfiguration configuration
@@ -41,18 +45,22 @@ public static class UsersModule
   {
     ArgumentNullException.ThrowIfNull(registrationConfigurator);
 
+    var moduleInstanceId = $"{instanceId}-{_moduleName.ToLowerInvariant()}";
     registrationConfigurator
       .AddConsumer<IntegrationEventConsumer<PermissionAddedToRoleIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = instanceId);
+      .Endpoint(c => c.InstanceId = moduleInstanceId);
     registrationConfigurator
       .AddConsumer<IntegrationEventConsumer<UserRoleAddedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = instanceId);
+      .Endpoint(c => c.InstanceId = moduleInstanceId);
     registrationConfigurator
       .AddConsumer<IntegrationEventConsumer<UserRoleRemovedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = instanceId);
+      .Endpoint(c => c.InstanceId = moduleInstanceId);
     registrationConfigurator
       .AddConsumer<IntegrationEventConsumer<PermissionRemovedFromRoleIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = instanceId);
+      .Endpoint(c => c.InstanceId = moduleInstanceId);
+    registrationConfigurator
+      .AddConsumer<IntegrationEventConsumer<PersonCreatedForUserIntegrationEvent>>()
+      .Endpoint(c => c.InstanceId = moduleInstanceId);
   }
 
   private static IServiceCollection AddUsersFeatures(this IServiceCollection services)

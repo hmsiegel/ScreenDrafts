@@ -2,6 +2,8 @@
 
 public static class MoviesModule
 {
+  private static readonly string _moduleName = typeof(MoviesModule).Assembly.GetName().Name!;
+
   public static IServiceCollection AddMoviesModule(
     this IServiceCollection services,
     IConfiguration configuration
@@ -36,9 +38,11 @@ public static class MoviesModule
   {
     ArgumentNullException.ThrowIfNull(registrationConfigurator);
 
+    var moduleInstanceId = $"{instanceId}-{_moduleName.ToLowerInvariant()}";
+
     registrationConfigurator
       .AddConsumer<IntegrationEventConsumer<MediaFetchedIntegrationEvent>>()
-      .Endpoint(x => x.InstanceId = instanceId);
+      .Endpoint(x => x.InstanceId = moduleInstanceId);
   }
 
   private static void AddMoviesFeatures(this IServiceCollection services)

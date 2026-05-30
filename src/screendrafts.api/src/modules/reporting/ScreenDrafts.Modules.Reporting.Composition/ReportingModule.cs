@@ -2,6 +2,8 @@
 
 public static class ReportingModule
 {
+  private static readonly string _moduleName = typeof(ReportingModule).Assembly.GetName().Name!;
+
   public static IServiceCollection AddReportingModule(
     this IServiceCollection services,
     IConfiguration configuration
@@ -43,25 +45,27 @@ public static class ReportingModule
   {
     ArgumentNullException.ThrowIfNull(registrationConfigurator);
 
+    var moduleInstanceId = $"{instanceId}-{_moduleName.ToLowerInvariant()}";
+
     registrationConfigurator
       .AddConsumer<IntegrationEventConsumer<DraftPartStartedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = instanceId);
+      .Endpoint(c => c.InstanceId = moduleInstanceId);
 
     registrationConfigurator
       .AddConsumer<IntegrationEventConsumer<PickLockedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = instanceId);
+      .Endpoint(c => c.InstanceId = moduleInstanceId);
 
     registrationConfigurator
       .AddConsumer<IntegrationEventConsumer<DraftCompletedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = instanceId);
+      .Endpoint(c => c.InstanceId = moduleInstanceId);
 
     registrationConfigurator
       .AddConsumer<IntegrationEventConsumer<DraftPartCompletedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = instanceId);
+      .Endpoint(c => c.InstanceId = moduleInstanceId);
 
     registrationConfigurator
       .AddConsumer<IntegrationEventConsumer<DraftPartReleaseAddedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = instanceId);
+      .Endpoint(c => c.InstanceId = moduleInstanceId);
   }
 
   private static void AddDomainEventHandlers(this IServiceCollection services)

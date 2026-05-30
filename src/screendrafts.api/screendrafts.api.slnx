@@ -97,7 +97,6 @@
     <Project Path="src/modules/communications/ScreenDrafts.Modules.Communications.UnitTests/ScreenDrafts.Modules.Communications.UnitTests.csproj" />
   </Folder>
   <Folder Name="/src/modules/drafts/">
-    <Project Path="src/modules/drafts/ScreenDrafts.Modules.Drafts.Application/ScreenDrafts.Modules.Drafts.Application.csproj" />
     <Project Path="src/modules/drafts/ScreenDrafts.Modules.Drafts.ArchitectureTests/ScreenDrafts.Modules.Drafts.ArchitectureTests.csproj" />
     <Project Path="src/modules/drafts/ScreenDrafts.Modules.Drafts.Composition/ScreenDrafts.Modules.Drafts.Composition.csproj" Id="f7e0a4a1-ff4b-4a85-88d7-07de9c951420" />
     <Project Path="src/modules/drafts/ScreenDrafts.Modules.Drafts.Domain/ScreenDrafts.Modules.Drafts.Domain.csproj" />

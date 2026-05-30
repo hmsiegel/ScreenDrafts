@@ -82,28 +82,10 @@ ModuleServiceExtensions.AddModules(builder.Services, builder.Configuration);
 
 var app = builder.Build();
 
-// Startup diagnostics
-Console.WriteLine($"[DEBUG] WebRootPath: '{app.Environment.WebRootPath}'");
-Console.WriteLine($"[DEBUG] ContentRootPath: '{app.Environment.ContentRootPath}'");
-var draftersPath = Path.Combine(app.Environment.WebRootPath, "drafters");
-Console.WriteLine($"[DEBUG] Drafters dir exists: {Directory.Exists(draftersPath)}");
-
 // 1. Diagnostics and logging
 app.UseLogContextTraceLogging();
 app.UseSerilogRequestLogging();
 app.UseExceptionHandler();
-
-// 2. Request-trace debug middleware
-app.Use(
-  async (context, next) =>
-  {
-    Console.WriteLine($"[DEBUG] Incoming: {context.Request.Method} {context.Request.Path}");
-    await next();
-    Console.WriteLine(
-      $"[DEBUG] Outgoing: {context.Request.Method} {context.Request.Path} → {context.Response.StatusCode}"
-    );
-  }
-);
 
 // 3. Static files and FastEndpoints
 app.UseStaticFiles();

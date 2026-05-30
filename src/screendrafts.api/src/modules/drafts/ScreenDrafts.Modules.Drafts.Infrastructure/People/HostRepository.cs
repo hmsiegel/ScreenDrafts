@@ -29,14 +29,20 @@ internal sealed class HostRepository(DraftsDbContext dbContext) : IHostRepositor
     return _dbContext.Hosts.FirstOrDefaultAsync(h => h.Id == id, cancellationToken);
   }
 
-  public async Task<bool> ExistsByPublicIdAsync(string publicId, CancellationToken cancellationToken)
+  public async Task<bool> ExistsByPublicIdAsync(
+    string publicId,
+    CancellationToken cancellationToken
+  )
   {
     return await _dbContext.Hosts.AnyAsync(h => h.PublicId == publicId, cancellationToken);
   }
 
   public async Task<Host?> GetByPublicIdAsync(string publicId, CancellationToken cancellationToken)
   {
-    return await _dbContext.Hosts.FirstOrDefaultAsync(h => h.PublicId == publicId, cancellationToken);
+    return await _dbContext.Hosts.FirstOrDefaultAsync(
+      h => h.PublicId == publicId,
+      cancellationToken
+    );
   }
 
   public async Task<List<Host>> GetAllAsync(CancellationToken cancellationToken)
@@ -44,8 +50,27 @@ internal sealed class HostRepository(DraftsDbContext dbContext) : IHostRepositor
     return await _dbContext.Hosts.ToListAsync(cancellationToken);
   }
 
-  public async Task<bool> ExistsByPersonPublicId(string personPublicId, CancellationToken cancellationToken)
+  public async Task<bool> ExistsByPersonPublicId(
+    string personPublicId,
+    CancellationToken cancellationToken
+  )
   {
-    return await _dbContext.Hosts.AnyAsync(h => h.Person.PublicId == personPublicId, cancellationToken);
+    return await _dbContext.Hosts.AnyAsync(
+      h => h.Person.PublicId == personPublicId,
+      cancellationToken
+    );
+  }
+
+  public async Task<Host?> GetByPersonPublicIdAsync(
+    string personPublicId,
+    CancellationToken cancellationToken
+  )
+  {
+    var host = await _dbContext.Hosts.SingleOrDefaultAsync(
+      h => h.Person.PublicId == personPublicId,
+      cancellationToken
+    );
+
+    return host;
   }
 }

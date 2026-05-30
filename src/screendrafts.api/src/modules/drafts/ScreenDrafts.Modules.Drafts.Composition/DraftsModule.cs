@@ -2,6 +2,8 @@
 
 public static class DraftsModule
 {
+  private static readonly string _moduleName = typeof(DraftsModule).Assembly.GetName().Name!;
+
   public static IServiceCollection AddDraftsModule(
     this IServiceCollection services,
     IConfiguration configuration
@@ -52,25 +54,35 @@ public static class DraftsModule
   {
     ArgumentNullException.ThrowIfNull(registrationConfigurator);
 
+    var moduleInstanceId = $"{instanceId}-{_moduleName.ToLowerInvariant()}";
+
     registrationConfigurator
       .AddConsumer<IntegrationEventConsumer<UserRegisteredIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = instanceId);
+      .Endpoint(c => c.InstanceId = moduleInstanceId);
 
     registrationConfigurator
       .AddConsumer<IntegrationEventConsumer<MediaAddedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = instanceId);
+      .Endpoint(c => c.InstanceId = moduleInstanceId);
 
     registrationConfigurator
       .AddConsumer<IntegrationEventConsumer<MediaFetchedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = instanceId);
+      .Endpoint(c => c.InstanceId = moduleInstanceId);
 
     registrationConfigurator
       .AddConsumer<IntegrationEventConsumer<ZoomRecordingCompletedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = instanceId);
+      .Endpoint(c => c.InstanceId = moduleInstanceId);
 
     registrationConfigurator
       .AddConsumer<IntegrationEventConsumer<UserNameUpdatedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = instanceId);
+      .Endpoint(c => c.InstanceId = moduleInstanceId);
+
+    registrationConfigurator
+      .AddConsumer<IntegrationEventConsumer<UserRoleAddedIntegrationEvent>>()
+      .Endpoint(c => c.InstanceId = moduleInstanceId);
+
+    registrationConfigurator
+      .AddConsumer<IntegrationEventConsumer<UserRoleRemovedIntegrationEvent>>()
+      .Endpoint(c => c.InstanceId = moduleInstanceId);
   }
 
   private static IServiceCollection AddDraftsFeatures(

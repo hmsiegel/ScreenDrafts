@@ -21,28 +21,49 @@ internal sealed class DrafterRepository(DraftsDbContext dbContext) : IDrafterRep
 
   public Task<bool> ExistsForPersonAsync(string personPublicId, CancellationToken cancellationToken)
   {
-    return _dbContext.Drafters.AnyAsync(d => d.PublicId == personPublicId, cancellationToken);
+    return _dbContext.Drafters.AnyAsync(
+      d => d.Person.PublicId == personPublicId,
+      cancellationToken
+    );
   }
 
   public async Task<List<Drafter>> GetAllAsync(CancellationToken cancellationToken)
   {
-    return await _dbContext.Drafters
-      .ToListAsync(cancellationToken);
-
+    return await _dbContext.Drafters.ToListAsync(cancellationToken);
   }
 
   public async Task<Drafter?> GetByIdAsync(DrafterId drafterId, CancellationToken cancellationToken)
   {
-    var drafter = await _dbContext.Drafters
-      .SingleOrDefaultAsync(d => d.Id == drafterId, cancellationToken);
+    var drafter = await _dbContext.Drafters.SingleOrDefaultAsync(
+      d => d.Id == drafterId,
+      cancellationToken
+    );
 
     return drafter;
   }
 
-  public async Task<Drafter?> GetByPublicIdAsync(string publicId, CancellationToken cancellationToken)
+  public async Task<Drafter?> GetByPersonPublicIdAsync(
+    string personPublicId,
+    CancellationToken cancellationToken
+  )
   {
-    var drafter = await _dbContext.Drafters
-      .SingleOrDefaultAsync(d => d.PublicId == publicId, cancellationToken);
+    var drafter = await _dbContext.Drafters.SingleOrDefaultAsync(
+      d => d.Person.PublicId == personPublicId,
+      cancellationToken
+    );
+
+    return drafter;
+  }
+
+  public async Task<Drafter?> GetByPublicIdAsync(
+    string publicId,
+    CancellationToken cancellationToken
+  )
+  {
+    var drafter = await _dbContext.Drafters.SingleOrDefaultAsync(
+      d => d.PublicId == publicId,
+      cancellationToken
+    );
 
     return drafter;
   }
