@@ -64,7 +64,7 @@ export default async function SiteHeader({ activePath }: { activePath?: string }
         )}
 
         {session ? (
-          <AvatarDropdown name={session.user?.name} />
+          <AvatarDropdown name={session.user?.name} isAdmin={isAdmin} />
         ) : (
           <>
             <SignInButton />
