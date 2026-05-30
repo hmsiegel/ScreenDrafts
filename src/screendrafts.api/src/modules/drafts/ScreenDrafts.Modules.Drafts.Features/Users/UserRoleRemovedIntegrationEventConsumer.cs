@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Features.Users;
 
-internal sealed class UserRoleRemovedIntegrationvEventConsumer(
+internal sealed class UserRoleRemovedIntegrationEventConsumer(
   IPersonRepository personRepository,
   IDrafterRepository drafterRepository,
   IHostRepository hostRepository
