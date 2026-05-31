@@ -2,8 +2,6 @@ name: Development
 variables:
   - name: baseUrl
     value: https://localhost:5001
-  - secret: true
-    name: token
   - name: draftPublicId
     value: d_iAcWvC2FlPCdf64
   - name: draftPartId
@@ -28,8 +26,8 @@ variables:
     value: h_IPZjxVnEHlvevlC
   - name: username
     value: harlan@siegel.com
-  - name: password
-    value: password
+  - secret: true
+    name: password
   - name: drafterAPosition
     value: pos_cgQITzTds1B9X4X
   - name: drafterBPosition

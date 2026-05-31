@@ -5,12 +5,14 @@ internal sealed class SearchDraftsQueryHandler(IDbConnectionFactory dbConnection
 {
   private readonly IDbConnectionFactory _dbConnectionFactory = dbConnectionFactory;
 
-  public async Task<Result<PagedResult<SearchDraftsResponse>>> Handle(SearchDraftsQuery request, CancellationToken cancellationToken)
+  public async Task<Result<PagedResult<SearchDraftsResponse>>> Handle(
+    SearchDraftsQuery request,
+    CancellationToken cancellationToken
+  )
   {
     await using var connection = await _dbConnectionFactory.OpenConnectionAsync(cancellationToken);
 
-    const string baseSql =
-      $"""
+    const string baseSql = $"""
       SELECT
         d.public_id AS {nameof(SearchDraftsResponse.PublicId)},
         d.title AS {nameof(SearchDraftsResponse.Title)},
@@ -51,7 +53,8 @@ internal sealed class SearchDraftsQueryHandler(IDbConnectionFactory dbConnection
            JOIN drafts.categories cat ON dc.category_id = cat.id
            WHERE dc.draft_id = d.id AND cat.public_id = @categoryPublicId
          )
-        """);
+        """
+      );
       parameters.Add("categoryPublicId", request.CategoryPublicId);
     }
 
@@ -61,13 +64,21 @@ internal sealed class SearchDraftsQueryHandler(IDbConnectionFactory dbConnection
       parameters.Add("draftType", request.DraftType.Value);
     }
 
+    if (request.Status.HasValue)
+    {
+      sqlBuilder.Append(" AND d.draft_status = @status");
+      parameters.Add("status", request.Status.Value);
+    }
+
     sqlBuilder.Append(" ORDER BY d.title ASC");
 
     var totalCount = await connection.ExecuteScalarAsync<int>(
       new CommandDefinition(
         $"SELECT COUNT(*) FROM ({sqlBuilder}) sub",
         parameters,
-        cancellationToken: cancellationToken));
+        cancellationToken: cancellationToken
+      )
+    );
 
     var pageSize = Math.Min(request.PageSize, 100);
     var skip = (Math.Max(request.Page, 1) - 1) * pageSize;
@@ -76,19 +87,24 @@ internal sealed class SearchDraftsQueryHandler(IDbConnectionFactory dbConnection
     parameters.Add("skip", skip);
     sqlBuilder.Append(" LIMIT @pageSize OFFSET @skip");
 
-    var items = (await connection.QueryAsync<SearchDraftsResponse>(
-      new CommandDefinition(
-        sqlBuilder.ToString(),
-        parameters,
-        cancellationToken: cancellationToken)))
-      .ToList();
+    var items = (
+      await connection.QueryAsync<SearchDraftsResponse>(
+        new CommandDefinition(
+          sqlBuilder.ToString(),
+          parameters,
+          cancellationToken: cancellationToken
+        )
+      )
+    ).ToList();
 
-    return Result.Success(new PagedResult<SearchDraftsResponse>
-    {
-      Items = items,
-      TotalCount = totalCount,
-      Page = request.Page,
-      PageSize = pageSize
-    });
+    return Result.Success(
+      new PagedResult<SearchDraftsResponse>
+      {
+        Items = items,
+        TotalCount = totalCount,
+        Page = request.Page,
+        PageSize = pageSize,
+      }
+    );
   }
 }

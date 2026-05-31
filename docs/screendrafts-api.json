@@ -1448,7 +1448,7 @@
         "operationId": "People.UploadAvatar",
         "requestBody": {
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
                 "$ref": "#/components/schemas/UploadAvatarRequest"
               }
@@ -4680,6 +4680,53 @@
           },
           "404": {
             "description": "Not Found"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/drafters/search": {
+      "get": {
+        "tags": [
+          "Drafters"
+        ],
+        "operationId": "Drafters.SearchDrafters",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchDraftersRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchDraftersRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultOfSearchDraftersResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
           }
         },
         "security": [
@@ -11482,6 +11529,61 @@
           }
         }
       },
+      "PagedResultOfSearchDraftersResponse": {
+        "required": [
+          "items",
+          "totalCount",
+          "page",
+          "pageSize"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SearchDraftersResponse"
+            }
+          },
+          "totalCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "page": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "pageSize": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "totalPages": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "hasPreviousPage": {
+            "type": "boolean"
+          },
+          "hasNextPage": {
+            "type": "boolean"
+          }
+        }
+      },
       "PagedResultOfSearchDrafterTeamsResponse": {
         "required": [
           "items",
@@ -12873,6 +12975,62 @@
           }
         }
       },
+      "SearchDraftersRequest": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "pageSize": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "isRetired": {
+            "type": [
+              "null",
+              "boolean"
+            ]
+          }
+        }
+      },
+      "SearchDraftersResponse": {
+        "required": [
+          "publicId",
+          "personPublicId",
+          "displayName",
+          "isRetired"
+        ],
+        "type": "object",
+        "properties": {
+          "publicId": {
+            "type": "string"
+          },
+          "personPublicId": {
+            "type": "string"
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "isRetired": {
+            "type": "boolean"
+          }
+        }
+      },
       "SearchDrafterTeamsRequest": {
         "type": "object",
         "properties": {
@@ -12961,6 +13119,15 @@
             ]
           },
           "draftType": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "status": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": [
               "null",
@@ -13939,9 +14106,6 @@
         }
       },
       "UpdateProfileRequest": {
-        "required": [
-          "publicId"
-        ],
         "type": "object",
         "properties": {
           "publicId": {
@@ -13968,9 +14132,6 @@
         }
       },
       "UpdateSocialRequest": {
-        "required": [
-          "publicId"
-        ],
         "type": "object",
         "properties": {
           "publicId": {
@@ -14003,9 +14164,6 @@
         }
       },
       "UploadAvatarRequest": {
-        "required": [
-          "publicId"
-        ],
         "type": "object",
         "properties": {
           "publicId": {

@@ -4,6 +4,7 @@ import {
   CategoryResponse,
   CreatedResponse,
   SearchDraftsResponse,
+  SearchHostResponse,
   SeriesResponse,
   SmartEnumResponse,
 } from "@/lib/dto";
@@ -24,8 +25,16 @@ export interface AdminHostOption {
 }
 
 export interface AdminDrafterOption {
-  publicId: string; // drafterId
+  publicId: string;
+  personPublicId: string;
   displayName: string;
+  isRetired: boolean;
+}
+
+export interface AdminDrafterTeamOption {
+  publicId: string;
+  name: string;
+  numberOfDrafters: number;
 }
 
 const apiBase = env.apiUrl;
@@ -36,6 +45,7 @@ function authHeaders(accessToken: string | undefined): HeadersInit {
 
 export async function listAdminDrafts(
   accessToken: string | undefined,
+  draftStatus?: number,
   page = 1,
   pageSize = 50
 ): Promise<AdminDraftListItem[]> {
@@ -43,6 +53,9 @@ export async function listAdminDrafts(
     const url = new URL(`${apiBase}/drafts/search`);
     url.searchParams.set("page", String(page));
     url.searchParams.set("pageSize", String(pageSize));
+    if (draftStatus !== undefined){
+      url.searchParams.set("status", String(draftStatus));
+    }
     const response = await fetch(url.toString(), {
       headers: authHeaders(accessToken),
       cache: "no-store",
@@ -54,6 +67,14 @@ export async function listAdminDrafts(
     console.error("[listAdminDrafts]", err);
     return [];
   }
+}
+
+export async function listAdminActiveDrafts(accessToken: string | undefined) {
+  const [created, paused] = await Promise.all([
+    listAdminDrafts(accessToken, 0),
+    listAdminDrafts(accessToken, 3),
+  ]);
+  return [...created, ...paused];
 }
 
 export async function listAllSeries(
@@ -79,23 +100,25 @@ export async function listAllSeries(
 }
 
 export async function searchAllHosts(
-  accessToken: string | undefined
+  accessToken: string | undefined,
+  name?: string
 ): Promise<AdminHostOption[]> {
   try {
-    const response = await fetch(`${apiBase}/hosts/search`, {
-      method: "POST",
-      headers: {
-        ...authHeaders(accessToken),
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ page: 1, pageSize: 200 }),
+    const url = new URL(`${apiBase}/hosts/search`);
+    url.searchParams.set("page", "1");
+    url.searchParams.set("pageSize", "200");
+    if (name) url.searchParams.set("name", name);
+
+    const response = await fetch(url.toString(), {
+      headers: authHeaders(accessToken),
       cache: "no-store",
     });
     if (!response.ok) return [];
-    const data = await response.json() as { items?: { publicId: string; displayName?: string; firstName?: string; lastName?: string }[] };
+
+    const data = await response.json() as { items?: SearchHostResponse[] };
     return (data.items ?? []).map((h) => ({
       publicId: h.publicId,
-      displayName: h.displayName ?? `${h.firstName ?? ""} ${h.lastName ?? ""}`.trim(),
+      displayName: h.displayName ?? `${h.firstName} ${h.lastName}`.trim(),
     }));
   } catch (err) {
     console.error("[searchAllHosts]", err);
@@ -103,27 +126,61 @@ export async function searchAllHosts(
   }
 }
 
-export async function listAllDrafters(
-  accessToken: string | undefined
+export async function searchDrafters(
+  accessToken: string | undefined,
+  name?: string,
+  retired = false,
+  page = 1,
+  pageSize = 200
 ): Promise<AdminDrafterOption[]> {
   try {
-    const response = await fetch(`${apiBase}/drafters`, {
-      method: "POST",
-      headers: {
-        ...authHeaders(accessToken),
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ page: 1, pageSize: 200, retired: "false" }),
+    const url = new URL(`${apiBase}/drafters/search`);
+    url.searchParams.set("page", String(page));
+    url.searchParams.set("pageSize", String(pageSize));
+    url.searchParams.set("retired", String(retired));
+    if (name) url.searchParams.set("name", name);
+    const response = await fetch(url.toString(), {
+      headers: authHeaders(accessToken),
       cache: "no-store",
     });
     if (!response.ok) return [];
-    const data = await response.json() as { drafters?: { items?: { drafterId: string; displayName: string }[] } };
-    return (data.drafters?.items ?? []).map((d) => ({
-      publicId: d.drafterId,
-      displayName: d.displayName,
-    }));
+    const data = (await response.json()) as {
+      items?: {
+        publicId: string;
+        personPublicId: string;
+        displayName: string;
+        isRetired: boolean;
+      }[];
+    };
+    return data.items ?? [];
   } catch (err) {
-    console.error("[listAllDrafters]", err);
+    console.error("[searchDrafters]", err);
+    return [];
+  }
+}
+
+export async function searchDrafterTeams(
+  accessToken: string | undefined,
+  name?: string,
+  page = 1,
+  pageSize = 200
+): Promise<AdminDrafterTeamOption[]> {
+  try {
+    const url = new URL(`${apiBase}/drafter-teams/search`);
+    url.searchParams.set("page", String(page));
+    url.searchParams.set("pageSize", String(pageSize));
+    if (name) url.searchParams.set("name", name);
+    const response = await fetch(url.toString(), {
+      headers: authHeaders(accessToken),
+      cache: "no-store",
+    });
+    if (!response.ok) return [];
+    const data = (await response.json()) as {
+      items?: AdminDrafterTeamOption[];
+    };
+    return data.items ?? [];
+  } catch (err) {
+    console.error("[searchDrafterTeams]", err);
     return [];
   }
 }

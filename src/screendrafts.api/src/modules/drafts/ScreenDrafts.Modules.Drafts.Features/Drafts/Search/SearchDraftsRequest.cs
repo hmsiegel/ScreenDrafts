@@ -19,4 +19,7 @@ internal sealed record SearchDraftsRequest
 
   [FromQuery(Name = "draftType")]
   public int? DraftType { get; init; }
+
+  [FromQuery(Name = "status")]
+  public int? Status { get; init; }
 }

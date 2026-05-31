@@ -3,8 +3,10 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import SiteHeader from "@/components/layout/header/site-header";
 import SiteFooter from "@/components/layout/footer/site-footer";
-import { listAdminDrafts } from "@/services/admin/fetch-admin-drafts";
+import { listAdminActiveDrafts } from "@/services/admin/fetch-admin-drafts";
 import { Metadata } from "next";
+import DraftTypeBadge from "@/components/ui/draft-type-badge";
+import { draftTypeFromNumber } from "@/lib/draft-type-display";
 
 export const metadata: Metadata = { title: "Draft Management" };
 export const dynamic = "force-dynamic";
@@ -13,11 +15,11 @@ const ADMIN_ROLES = ["Administrator", "SuperAdministrator"];
 
 // Draft status numeric values from backend SmartEnum
 const STATUS_LABELS: Record<number, string> = {
-  0: "Draft",
-  1: "Scheduled",
-  2: "Active",
+  0: "Created",
+  1: "In Progress",
   3: "Paused",
   4: "Completed",
+  5: "Cancelled",
 };
 
 function AdminCard({ title, children }: { title: string; children: React.ReactNode }) {
@@ -39,13 +41,8 @@ export default async function AdminDraftsPage() {
   const isAdmin = session?.roles?.some((r) => ADMIN_ROLES.includes(r)) ?? false;
   if (!isAdmin) redirect("/");
 
-  const drafts = await listAdminDrafts(session?.accessToken);
-
   // Show Active (2) and Paused (3) first; fall back to all if none match
-  const activePaused = drafts.filter(
-    (d) => d.draftStatus === 2 || d.draftStatus === 3
-  );
-  const displayDrafts = activePaused.length > 0 ? activePaused : drafts;
+  const displayDrafts = await listAdminActiveDrafts(session?.accessToken);
 
   return (
     <div className="min-h-screen bg-light-blue">
@@ -68,7 +65,7 @@ export default async function AdminDraftsPage() {
           </Link>
         </div>
 
-        <AdminCard title="Active & Paused Drafts">
+        <AdminCard title="Created & Paused Drafts">
           {displayDrafts.length === 0 ? (
             <p className="text-sd-ink/50 text-sm font-mono">No drafts found.</p>
           ) : (
@@ -94,18 +91,17 @@ export default async function AdminDraftsPage() {
                     >
                       <td className="py-3 pr-4 font-medium text-sd-ink">{d.title}</td>
                       <td className="py-3 pr-4 text-sd-ink/70">
-                        {d.draftType !== undefined ? String(d.draftType) : "—"}
+                        <DraftTypeBadge type={draftTypeFromNumber(d.draftType)} />
                       </td>
                       <td className="py-3 pr-4 text-sd-ink/70">{d.seriesName ?? "—"}</td>
                       <td className="py-3 pr-4">
                         <span
-                          className={`inline-block px-2 py-0.5 text-[11px] font-mono tracking-wide uppercase rounded ${
-                            d.draftStatus === 2
+                          className={`inline-block px-2 py-0.5 text-[11px] font-mono tracking-wide uppercase rounded ${d.draftStatus === 2
                               ? "bg-green-100 text-green-800"
                               : d.draftStatus === 3
-                              ? "bg-yellow-100 text-yellow-800"
-                              : "bg-gray-100 text-gray-600"
-                          }`}
+                                ? "bg-yellow-100 text-yellow-800"
+                                : "bg-gray-100 text-gray-600"
+                            }`}
                         >
                           {STATUS_LABELS[d.draftStatus ?? -1] ?? "Unknown"}
                         </span>

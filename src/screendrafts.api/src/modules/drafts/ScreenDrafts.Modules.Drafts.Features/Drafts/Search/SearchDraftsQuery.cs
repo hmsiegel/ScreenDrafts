@@ -8,4 +8,5 @@ internal sealed record SearchDraftsQuery : IQuery<PagedResult<SearchDraftsRespon
   public string? CampaignPublicId { get; init; }
   public string? CategoryPublicId { get; init; }
   public int? DraftType { get; init; }
+  public int? Status { get; init; }
 }

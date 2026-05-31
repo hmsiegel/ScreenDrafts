@@ -7,7 +7,8 @@ import CreateDraftForm from "./create-draft-form";
 import {
   listAllSeries,
   searchAllHosts,
-  listAllDrafters,
+  searchDrafters,
+  searchDrafterTeams,
   listAllCategories,
   listAllCampaigns,
 } from "@/services/admin/fetch-admin-drafts";
@@ -25,10 +26,11 @@ export default async function CreateDraftPage() {
 
   if (!session?.accessToken) redirect("/");
 
-  const [seriesList, hostList, drafterList, categoryList, campaignList] = await Promise.all([
+  const [seriesList, hostList, drafterList, drafterTeamList, categoryList, campaignList] = await Promise.all([
     listAllSeries(session.accessToken),
     searchAllHosts(session.accessToken),
-    listAllDrafters(session.accessToken),
+    searchDrafters(session.accessToken),
+    searchDrafterTeams(session.accessToken),
     listAllCategories(session.accessToken),
     listAllCampaigns(session.accessToken),
   ]);
@@ -54,6 +56,7 @@ export default async function CreateDraftPage() {
             seriesList={seriesList}
             hostList={hostList}
             drafterList={drafterList}
+            drafterTeamList={drafterTeamList}
             categoryList={categoryList}
             campaignList={campaignList}
             accessToken={session.accessToken}

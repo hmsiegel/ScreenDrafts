@@ -8,9 +8,9 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<SearchDraftsRequest, Searc
     Description(x =>
     {
       x.WithTags(DraftsOpenApi.Tags.Drafts)
-      .WithName(DraftsOpenApi.Names.Drafts_SearchDrafts)
-      .Produces<PagedResult<SearchDraftsResponse>>(StatusCodes.Status200OK)
-      .Produces(StatusCodes.Status400BadRequest);
+        .WithName(DraftsOpenApi.Names.Drafts_SearchDrafts)
+        .Produces<PagedResult<SearchDraftsResponse>>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status400BadRequest);
     });
     Policies(DraftsAuth.Permissions.DraftList);
   }
@@ -26,7 +26,8 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<SearchDraftsRequest, Searc
       Name = req.Name,
       CampaignPublicId = req.CampaignPublicId,
       CategoryPublicId = req.CategoryPublicId,
-      DraftType = req.DraftType
+      DraftType = req.DraftType,
+      Status = req.Status,
     };
 
     var result = await Sender.Send(query, ct);

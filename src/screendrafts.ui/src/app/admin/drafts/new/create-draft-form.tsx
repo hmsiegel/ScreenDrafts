@@ -5,15 +5,18 @@ import { useRouter } from "next/navigation";
 import {
   AdminSeriesOption,
   AdminHostOption,
-  AdminDrafterOption,
+  AdminDrafterTeamOption,
   createDraft,
   createDraftPart,
   addHostToDraftPart,
   addParticipantToDraftPart,
   setDraftCategories,
   setDraftCampaign,
+  AdminDrafterOption,
 } from "@/services/admin/fetch-admin-drafts";
 import { CampaignResponse, CategoryResponse, SmartEnumResponse } from "@/lib/dto";
+import { formatDraftType } from "@/lib/draft-type-display";
+import { ParticipantsSection } from "./participants-section";
 
 const LABEL = "block text-[11px] font-mono tracking-widest text-sd-ink/60 uppercase mb-1";
 const INPUT =
@@ -57,6 +60,7 @@ interface Props {
   seriesList: AdminSeriesOption[];
   hostList: AdminHostOption[];
   drafterList: AdminDrafterOption[];
+  drafterTeamList: AdminDrafterTeamOption[];
   categoryList: CategoryResponse[];
   campaignList: CampaignResponse[];
   accessToken: string;
@@ -66,6 +70,7 @@ export default function CreateDraftForm({
   seriesList,
   hostList,
   drafterList,
+  drafterTeamList,
   categoryList,
   campaignList,
   accessToken,
@@ -88,8 +93,12 @@ export default function CreateDraftForm({
   const [hostSearch, setHostSearch] = useState("");
 
   // Section 4 — Drafters
+  type ParticipantKind = "drafter" | "team";
+  const [participantTab, setParticipantTab] = useState<ParticipantKind>("drafter");
   const [selectedDrafterIds, setSelectedDrafterIds] = useState<Set<string>>(new Set());
+  const [selectedTeamIds, setSelectedTeamIds] = useState<Set<string>>(new Set());
   const [drafterSearch, setDrafterSearch] = useState("");
+  const [teamSearch, setTeamSearch] = useState("");
 
   // Section 5 — Categories
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<Set<string>>(new Set());
@@ -192,6 +201,15 @@ export default function CreateDraftForm({
     });
   }
 
+  function toggleTeam(id: string) {
+    setSelectedTeamIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+
   // Categories
   function toggleCategory(id: string) {
     setSelectedCategoryIds((prev) => {
@@ -211,6 +229,11 @@ export default function CreateDraftForm({
   const filteredDrafters = drafterList.filter((d) =>
     d.displayName.toLowerCase().includes(drafterSearch.toLowerCase())
   );
+
+  const filteredTeams = drafterTeamList.filter((d) =>
+    d.name.toLowerCase().includes(teamSearch.toLowerCase())
+  );
+
 
   const canSubmit = title.trim() !== "" && selectedSeriesId !== "" && selectedDraftType !== null;
 
@@ -253,7 +276,7 @@ export default function CreateDraftForm({
         }
       }
 
-      // Step 4: Add drafters to each part
+      // Step 4a: Add drafters
       if (selectedDrafterIds.size > 0) {
         for (const partId of partPublicIds) {
           for (const drafterId of selectedDrafterIds) {
@@ -261,6 +284,18 @@ export default function CreateDraftForm({
               draftPartId: partId,
               participantPublicId: drafterId,
               participantKind: 0, // Drafter
+            });
+          }
+        }
+      }
+      // Step 4b: Add drafter teams
+      if (selectedTeamIds.size > 0) {
+        for (const partId of partPublicIds) {
+          for (const teamId of selectedTeamIds) {
+            await addParticipantToDraftPart(accessToken, partId, {
+              draftPartId: partId,
+              participantPublicId: teamId,
+              participantKind: 1, // DrafterTeam
             });
           }
         }
@@ -338,7 +373,7 @@ export default function CreateDraftForm({
               <option value="">— Select draft type —</option>
               {availableDraftTypes.map((t) => (
                 <option key={t.name} value={t.name ?? ""}>
-                  {t.name}
+                  {formatDraftType(t.name)}
                 </option>
               ))}
             </select>
@@ -499,42 +534,20 @@ export default function CreateDraftForm({
       </section>
 
       {/* ── Section 4: Participants (Drafters) ── */}
-      <section>
-        <h2 className={SECTION_HEADING}>Participants (Optional)</h2>
-        <div className="border border-sd-ink/10 rounded p-4 bg-white">
-          <input
-            type="text"
-            placeholder="Search drafters…"
-            className={`${INPUT} mb-3`}
-            value={drafterSearch}
-            onChange={(e) => setDrafterSearch(e.target.value)}
-          />
-          <div className="max-h-48 overflow-y-auto space-y-1">
-            {filteredDrafters.map((d) => {
-              const checked = selectedDrafterIds.has(d.publicId);
-              return (
-                <label
-                  key={d.publicId}
-                  className="flex items-center gap-2 px-3 py-1.5 text-sm text-sd-ink hover:bg-sd-ink/5 rounded cursor-pointer"
-                >
-                  <input
-                    type="checkbox"
-                    checked={checked}
-                    onChange={() => toggleDrafter(d.publicId)}
-                    className="accent-sd-red"
-                  />
-                  {d.displayName}
-                </label>
-              );
-            })}
-          </div>
-          {selectedDrafterIds.size > 0 && (
-            <p className="mt-2 text-[11px] font-mono text-sd-ink/50">
-              {selectedDrafterIds.size} drafter{selectedDrafterIds.size !== 1 ? "s" : ""} selected
-            </p>
-          )}
-        </div>
-      </section>
+      <ParticipantsSection
+        drafterList={drafterList}
+        drafterTeamList={drafterTeamList}
+        selectedDrafterIds={selectedDrafterIds}
+        selectedTeamIds={selectedTeamIds}
+        drafterSearch={drafterSearch}
+        teamSearch={teamSearch}
+        participantTab={participantTab}
+        onToggleDrafter={toggleDrafter}
+        onToggleTeam={toggleTeam}
+        onDrafterSearch={setDrafterSearch}
+        onTeamSearch={setTeamSearch}
+        onTabChange={setParticipantTab}
+      />
 
       {/* ── Section 5: Category ── */}
       <section>

@@ -126,6 +126,7 @@ internal static class DraftsOpenApi
     public const string Drafters_RetireDrafter = "Drafters.RetireDrafter";
     public const string Drafters_GetDrafterById = "Drafters.GetDrafterById";
     public const string Drafters_ListDrafters = "Drafters.ListDrafters";
+    public const string Drafters_SearchDrafters = "Drafters.SearchDrafters";
 
     // Drafter Teams
     public const string DrafterTeams_CreateDrafterTeam = "DrafterTeams.CreateDrafterTeam";

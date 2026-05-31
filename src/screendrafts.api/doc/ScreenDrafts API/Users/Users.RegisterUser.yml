@@ -12,10 +12,10 @@ http:
     type: json
     data: |-
       {
-        "email": "angelarobinson@screendrafts.fake",
-        "password": "password",
-        "firstName": "Angela",
-        "lastName": "Robinson",
+        "email": "harlan@siegel.com",
+        "password": "rjm3xyw4JDF@mav-kxf",
+        "firstName": "Harlan",
+        "lastName": "Siegel",
         "middleName": ""
       }
 

@@ -7,14 +7,14 @@ internal sealed class ListSeriesQueryHandler(IDbConnectionFactory dbConnectionFa
 
   public async Task<Result<SeriesCollectionResponse>> Handle(
     ListSeriesQuery request,
-    CancellationToken cancellationToken)
+    CancellationToken cancellationToken
+  )
   {
     await using var connection = await _dbConnectionFactory.OpenConnectionAsync(cancellationToken);
 
-    const string sql =
-      $"""
+    const string sql = $"""
         SELECT
-          s.publicId AS {nameof(SeriesResponse.PublicId)},
+          s.public_id AS {nameof(SeriesResponse.PublicId)},
           s.name AS {nameof(SeriesResponse.Name)},
           s.kind AS {nameof(SeriesResponse.Kind)},
           s.canonical_policy AS {nameof(SeriesResponse.CanonicalPolicy)},
@@ -24,19 +24,16 @@ internal sealed class ListSeriesQueryHandler(IDbConnectionFactory dbConnectionFa
           s.default_draft_type AS {nameof(SeriesResponse.DefaultDraftType)}
         FROM
           drafts.series s
-        WHERE
-          s.publicId = @PublicId
+        ORDER BY
+          s.name ASC
       """;
 
-    var rows = await connection.QueryAsync<SeriesRow>(new CommandDefinition(
-      sql,
-      cancellationToken: cancellationToken));
+    var rows = await connection.QueryAsync<SeriesRow>(
+      new CommandDefinition(sql, cancellationToken: cancellationToken)
+    );
 
     var series = rows.Select(QueryMapping.Map).ToList();
 
     return Result.Success(new SeriesCollectionResponse(series));
   }
 }
-
-
-

@@ -7,7 +7,11 @@ info:
 
 http:
   method: GET
-  url: "{{baseUrl}}/drafts/search"
+  url: "{{baseUrl}}/drafts/search?status=0"
+  params:
+    - name: status
+      value: "0"
+      type: query
   body:
     type: text
     data: ""

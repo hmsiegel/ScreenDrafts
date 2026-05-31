@@ -126,9 +126,10 @@ export interface IClient {
     series_EditSeries(body: EditSeriesRequest): Promise<void>;
 
     /**
+     * @param publicId (optional) 
      * @return OK
      */
-    people_UploadAvatar(body: UploadAvatarRequest): Promise<UploadAvatarResponse>;
+    people_UploadAvatar(publicId: string | undefined): Promise<UploadAvatarResponse>;
 
     /**
      * @return No Content
@@ -525,6 +526,11 @@ export interface IClient {
      * @return No Content
      */
     drafterTeams_AddDrafter(body: AddDrafterToTeamRequest): Promise<void>;
+
+    /**
+     * @return OK
+     */
+    drafters_SearchDrafters(body: SearchDraftersRequest): Promise<PagedResultOfSearchDraftersResponse>;
 
     /**
      * @return OK
@@ -1863,20 +1869,24 @@ export class Client implements IClient {
     }
 
     /**
+     * @param publicId (optional) 
      * @return OK
      */
-    people_UploadAvatar(body: UploadAvatarRequest, signal?: AbortSignal): Promise<UploadAvatarResponse> {
+    people_UploadAvatar(publicId: string | undefined, signal?: AbortSignal): Promise<UploadAvatarResponse> {
         let url_ = this.baseUrl + "/people/{publicId}/avatar";
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(body);
+        const content_ = new FormData();
+        if (publicId === null || publicId === undefined)
+            throw new Error("The parameter 'publicId' cannot be null.");
+        else
+            content_.append("publicId", publicId.toString());
 
         let options_: RequestInit = {
             body: content_,
             method: "POST",
             signal,
             headers: {
-                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
@@ -6100,6 +6110,59 @@ export class Client implements IClient {
     /**
      * @return OK
      */
+    drafters_SearchDrafters(body: SearchDraftersRequest, signal?: AbortSignal): Promise<PagedResultOfSearchDraftersResponse> {
+        let url_ = this.baseUrl + "/drafters/search";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDrafters_SearchDrafters(_response);
+        });
+    }
+
+    protected processDrafters_SearchDrafters(response: Response): Promise<PagedResultOfSearchDraftersResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as PagedResultOfSearchDraftersResponse;
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<PagedResultOfSearchDraftersResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
     drafters_ListDrafters(body: ListDraftersRequest, signal?: AbortSignal): Promise<DrafterCollectionResponse> {
         let url_ = this.baseUrl + "/drafters";
         url_ = url_.replace(/[?&]$/, "");
@@ -10119,6 +10182,18 @@ export interface PagedResultOfPersonResponse {
     [key: string]: any;
 }
 
+export interface PagedResultOfSearchDraftersResponse {
+    items: SearchDraftersResponse[];
+    totalCount: number;
+    page: number;
+    pageSize: number;
+    totalPages?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+
+    [key: string]: any;
+}
+
 export interface PagedResultOfSearchDrafterTeamsResponse {
     items: SearchDrafterTeamsResponse[];
     totalCount: number;
@@ -10536,6 +10611,24 @@ export interface ScoreDraftPartPredictionsRequest {
     [key: string]: any;
 }
 
+export interface SearchDraftersRequest {
+    page?: number;
+    pageSize?: number;
+    name?: string | undefined;
+    isRetired?: boolean | undefined;
+
+    [key: string]: any;
+}
+
+export interface SearchDraftersResponse {
+    publicId: string;
+    personPublicId: string;
+    displayName: string;
+    isRetired: boolean;
+
+    [key: string]: any;
+}
+
 export interface SearchDrafterTeamsRequest {
     page?: number;
     pageSize?: number;
@@ -10559,6 +10652,7 @@ export interface SearchDraftsRequest {
     campaignPublicId?: string | undefined;
     categoryPublicId?: string | undefined;
     draftType?: number | undefined;
+    status?: number | undefined;
 
     [key: string]: any;
 }
@@ -10882,7 +10976,7 @@ export interface UpdateDraftRequest {
 }
 
 export interface UpdateProfileRequest {
-    publicId: string;
+    publicId?: string;
     displayName?: string | undefined;
     biography?: string | undefined;
     location?: string | undefined;
@@ -10891,7 +10985,7 @@ export interface UpdateProfileRequest {
 }
 
 export interface UpdateSocialRequest {
-    publicId: string;
+    publicId?: string;
     twitterHandle?: string | undefined;
     instagramHandle?: string | undefined;
     letterboxdHandle?: string | undefined;
@@ -10901,7 +10995,7 @@ export interface UpdateSocialRequest {
 }
 
 export interface UploadAvatarRequest {
-    publicId: string;
+    publicId?: string;
 
     [key: string]: any;
 }
