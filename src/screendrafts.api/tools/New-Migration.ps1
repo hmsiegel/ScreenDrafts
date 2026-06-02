@@ -53,7 +53,7 @@ function Get-NextScriptNumber {
         Measure-Object -Maximum |
         Select-Object -ExpandProperty Maximum
 
-    return "{0:D4}" -f (($highest ?? 0) + 1)
+    return "{0:D4}" -f ([int]($highest ?? 0) + 1)
 }
 
 function ConvertTo-SnakeCase {

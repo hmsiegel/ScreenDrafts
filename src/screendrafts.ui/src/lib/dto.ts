@@ -202,6 +202,12 @@ export interface IClient {
     hosts_CreateHost(body: CreateHostRequest): Promise<string>;
 
     /**
+     * @param publicId (optional) 
+     * @return OK
+     */
+    drafts_UploadDraftImage(publicId: string | undefined): Promise<UploadDraftImageResponse>;
+
+    /**
      * @return No Content
      */
     drafts_UpdateDraft(body: UpdateDraftRequest): Promise<void>;
@@ -2665,6 +2671,67 @@ export class Client implements IClient {
             });
         }
         return Promise.resolve<string>(null as any);
+    }
+
+    /**
+     * @param publicId (optional) 
+     * @return OK
+     */
+    drafts_UploadDraftImage(publicId: string | undefined, signal?: AbortSignal): Promise<UploadDraftImageResponse> {
+        let url_ = this.baseUrl + "/drafts/{publicId}/image";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = new FormData();
+        if (publicId === null || publicId === undefined)
+            throw new Error("The parameter 'publicId' cannot be null.");
+        else
+            content_.append("publicId", publicId.toString());
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDrafts_UploadDraftImage(_response);
+        });
+    }
+
+    protected processDrafts_UploadDraftImage(response: Response): Promise<UploadDraftImageResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as UploadDraftImageResponse;
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<UploadDraftImageResponse>(null as any);
     }
 
     /**
@@ -9324,6 +9391,13 @@ export interface GetDraftBoardResponse {
     [key: string]: any;
 }
 
+export interface GetDraftCategoryResponse {
+    publicId: string;
+    name: string;
+
+    [key: string]: any;
+}
+
 export interface GetDraftCommissionerOverrideResponse {
 
     [key: string]: any;
@@ -9390,6 +9464,7 @@ export interface GetDraftHostResponse {
 export interface GetDraftPartParticipantResponse {
     participantIdValue?: string;
     participantKindValue?: ParticipantKind;
+    participantPublicId?: string | undefined;
     displayName?: string | undefined;
     personPublicId?: string | undefined;
     startingVetoes?: number;
@@ -9479,8 +9554,10 @@ export interface GetDraftResponse {
     seriesPublicId: string;
     seriesName: string;
     episodeNumber?: number | undefined;
+    imagePath?: string | undefined;
     campaignPublicId?: string | undefined;
     campaignName?: string | undefined;
+    categories?: GetDraftCategoryResponse[] | undefined;
     parts?: GetDraftPartResponse[];
 
     [key: string]: any;
@@ -11002,6 +11079,18 @@ export interface UploadAvatarRequest {
 
 export interface UploadAvatarResponse {
     avatarPath: string;
+
+    [key: string]: any;
+}
+
+export interface UploadDraftImageRequest {
+    publicId?: string;
+
+    [key: string]: any;
+}
+
+export interface UploadDraftImageResponse {
+    imagePath: string;
 
     [key: string]: any;
 }

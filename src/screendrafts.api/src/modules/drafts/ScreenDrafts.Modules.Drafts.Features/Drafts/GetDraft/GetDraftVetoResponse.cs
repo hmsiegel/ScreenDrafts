@@ -6,7 +6,7 @@ internal sealed record GetDraftVetoResponse
   public string? IssuedByDisplayName { get; init; }
   public string? ActedByPublicId { get; init; }
   public string? ActedByDisplayName { get; init; }
-  public bool IsOverriden { get; init; }
+  public bool IsOverridden { get; init; }
   public string? Note { get; init; }
   public DateTime OccurredOnUtc { get; init; }
   public GetDraftVetoOverrideResponse? Override { get; init; }

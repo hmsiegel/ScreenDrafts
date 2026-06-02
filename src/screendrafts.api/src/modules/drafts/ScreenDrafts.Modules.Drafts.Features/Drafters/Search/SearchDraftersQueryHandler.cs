@@ -51,7 +51,7 @@ internal sealed class SearchDraftersQueryHandler(IDbConnectionFactory dbConnecti
       );
     }
 
-    var pageSize = Math.Min(request.PageSize, 100);
+    var pageSize = Math.Min(request.PageSize, 500);
     var offset = (Math.Max(request.Page, 1) - 1) * pageSize;
     p.Add("PageSize", pageSize);
     p.Add("Offset", offset);

@@ -20,11 +20,16 @@ internal sealed class MongoAuditRepository
   {
     var database = mongoClient.GetDatabase(DatabaseName);
     _httpAuditLogs = database.GetCollection<HttpAuditLogDocument>("http_audit_logs");
-    _domainEventAuditLogs = database.GetCollection<DomainEventAuditLogDocument>("domain_event_audit_logs");
+    _domainEventAuditLogs = database.GetCollection<DomainEventAuditLogDocument>(
+      "domain_event_audit_logs"
+    );
     _authAuditLogs = database.GetCollection<AuthAuditLogDocument>("auth_audit_logs");
   }
 
-  public async Task WriteHttpLogAsync(HttpAuditLog log, CancellationToken cancellationToken = default)
+  public async Task WriteHttpLogAsync(
+    HttpAuditLog log,
+    CancellationToken cancellationToken = default
+  )
   {
     var document = new HttpAuditLogDocument
     {
@@ -37,15 +42,18 @@ internal sealed class MongoAuditRepository
       Route = log.Route,
       StatusCode = log.StatusCode,
       DurationMs = log.DurationMs,
-      RequestBody = log.RequestBody is not null ? BsonDocument.Parse(log.RequestBody) : null,
-      ResponseBody = log.ResponseBody != null ? BsonDocument.Parse(log.ResponseBody) : null,
-      IpAddress = log.IpAddress
+      RequestBody = ParseBson(log.RequestBody),
+      ResponseBody = ParseBson(log.ResponseBody),
+      IpAddress = log.IpAddress,
     };
 
     await _httpAuditLogs.InsertOneAsync(document, cancellationToken: cancellationToken);
   }
 
-  public async Task WriteDomainEventLogAsync(DomainEventAuditLog log, CancellationToken cancellationToken = default)
+  public async Task WriteDomainEventLogAsync(
+    DomainEventAuditLog log,
+    CancellationToken cancellationToken = default
+  )
   {
     var document = new DomainEventAuditLogDocument
     {
@@ -55,12 +63,15 @@ internal sealed class MongoAuditRepository
       SourceModule = log.SourceModule,
       ActorId = log.ActorId,
       EntityId = log.EntityId,
-      Payload = BsonDocument.Parse(log.Payload)
+      Payload = ParseBson(log.Payload) ?? [],
     };
     await _domainEventAuditLogs.InsertOneAsync(document, cancellationToken: cancellationToken);
   }
 
-  public async Task WriteAuthLogAsync(AuthAuditLog log, CancellationToken cancellationToken = default)
+  public async Task WriteAuthLogAsync(
+    AuthAuditLog log,
+    CancellationToken cancellationToken = default
+  )
   {
     var document = new AuthAuditLogDocument
     {
@@ -70,11 +81,10 @@ internal sealed class MongoAuditRepository
       UserId = log.UserId,
       ClientId = log.ClientId,
       IpAddress = log.IpAddress,
-      Details = log.Details != null ? BsonDocument.Parse(log.Details) : null
+      Details = ParseBson(log.Details),
     };
     await _authAuditLogs.InsertOneAsync(document, cancellationToken: cancellationToken);
   }
-
 
   // -------------------------------------------------------------------------
   // Private document types
@@ -125,5 +135,21 @@ internal sealed class MongoAuditRepository
 
     [BsonIgnoreIfNull]
     public BsonDocument? Details { get; init; }
+  }
+
+  private static BsonDocument? ParseBson(string? json)
+  {
+    if (json is null)
+    {
+      return null;
+    }
+
+    var trimmed = json.TrimStart();
+
+    if (trimmed.StartsWith('['))
+    {
+      return new BsonDocument("value", BsonSerializer.Deserialize<BsonArray>(json));
+    }
+    return BsonDocument.Parse(trimmed);
   }
 }

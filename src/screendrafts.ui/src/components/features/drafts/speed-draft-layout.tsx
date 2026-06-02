@@ -281,7 +281,7 @@ export function SpeedDraftLayout({
           {episodeNumber ?? "—"}
         </div>
 
-        <EpisodeImage title={draft.title} />
+        <EpisodeImage imagePath={draft.imagePath} title={draft.title} />
 
         <div className="font-oswald font-semibold text-[22px] text-sd-ink leading-[1.15] tracking-tight mb-3">
           {draft.title}

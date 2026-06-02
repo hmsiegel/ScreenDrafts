@@ -10,7 +10,9 @@ internal sealed record GetDraftResponse
   public required string SeriesPublicId { get; init; }
   public required string SeriesName { get; init; }
   public int? EpisodeNumber { get; init; }
+  public string? ImagePath { get; init; }
   public string? CampaignPublicId { get; init; }
   public string? CampaignName { get; init; }
+  public IReadOnlyList<GetDraftCategoryResponse>? Categories { get; init; } = [];
   public IReadOnlyList<GetDraftPartResponse> Parts { get; init; } = [];
 }

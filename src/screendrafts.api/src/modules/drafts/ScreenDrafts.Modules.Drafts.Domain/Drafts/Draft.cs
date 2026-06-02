@@ -10,13 +10,14 @@ public sealed partial class Draft : AggregateRoot<DraftId, Guid>
   private DraftPool? _pool;
 
   private Draft(
-  DraftId id,
-  string publicId,
-  Title title,
-  DraftType draftType,
-  Series series,
-  DateTime createdAtUtc)
-  : base(id)
+    DraftId id,
+    string publicId,
+    Title title,
+    DraftType draftType,
+    Series series,
+    DateTime createdAtUtc
+  )
+    : base(id)
   {
     PublicId = publicId;
     Title = title;
@@ -26,14 +27,13 @@ public sealed partial class Draft : AggregateRoot<DraftId, Guid>
     CreatedAtUtc = createdAtUtc;
   }
 
-  private Draft()
-  {
-  }
+  private Draft() { }
 
   // Identity and Metadata
   public string PublicId { get; private set; } = default!;
   public Title Title { get; private set; } = default!;
   public string? Description { get; private set; }
+  public string? ImagePath { get; private set; }
   public DateTime CreatedAtUtc { get; private set; }
   public DateTime? UpdatedAtUtc { get; private set; }
 
@@ -51,15 +51,12 @@ public sealed partial class Draft : AggregateRoot<DraftId, Guid>
   /// </summary>
   public bool GrantsStartingVetoPerPart { get; private set; }
 
-
   // Relationships
   public IReadOnlyCollection<DraftPart> Parts => _parts.AsReadOnly();
   public IReadOnlyCollection<DraftCategory> DraftCategories => _draftCategories.AsReadOnly();
   public IReadOnlyCollection<DraftChannelRelease> ChannelReleases => _channelReleases.AsReadOnly();
   public bool HasPool => _pool is not null;
   public DraftPool? Pool => _pool;
-
-
 
   public Guid? CampaignId { get; private set; }
   public Campaign? Campaign { get; private set; }
@@ -69,17 +66,17 @@ public sealed partial class Draft : AggregateRoot<DraftId, Guid>
   // Rollups
   public int TotalParts => _parts.Count;
   public int TotalPicks => _parts.Sum(p => p.Picks.Count);
-  public int TotalParticipants => _parts.Sum(p => p.TotalDrafters) + _parts.Sum(p => p.TotalDrafterTeams);
+  public int TotalParticipants =>
+    _parts.Sum(p => p.TotalDrafters) + _parts.Sum(p => p.TotalDrafterTeams);
   public int TotalHosts => _parts.Sum(p => p.TotalHosts);
 
-
-
   public static Result<Draft> Create(
-  Title title,
-  string publicId,
-  DraftType draftType,
-  Series series,
-  DraftId? id = null)
+    Title title,
+    string publicId,
+    DraftType draftType,
+    Series series,
+    DraftId? id = null
+  )
   {
     ArgumentNullException.ThrowIfNull(series);
 
@@ -89,17 +86,15 @@ public sealed partial class Draft : AggregateRoot<DraftId, Guid>
       publicId: publicId,
       draftType: draftType,
       series: series,
-      createdAtUtc: DateTime.UtcNow);
+      createdAtUtc: DateTime.UtcNow
+    );
 
     draft.Raise(new DraftCreatedDomainEvent(draft.Id.Value, publicId));
 
     return draft;
   }
 
-  public void Update(
-    string? title,
-    string? description,
-    int draftTypeValue)
+  public void Update(string? title, string? description, int draftTypeValue)
   {
     // Update the draft's title if provided
     if (!string.IsNullOrEmpty(title))
@@ -232,6 +227,14 @@ public sealed partial class Draft : AggregateRoot<DraftId, Guid>
     return Result.Success();
   }
 
+  // Image Path
+  public void SetImagePath(string imagePath)
+  {
+    ArgumentException.ThrowIfNullOrWhiteSpace(imagePath);
+    ImagePath = imagePath;
+    UpdatedAtUtc = DateTime.UtcNow;
+  }
+
   // Channel Releases
   public Result UpsertChannelRelease(ReleaseChannel channel, int? episodeNumber = null)
   {
@@ -243,7 +246,8 @@ public sealed partial class Draft : AggregateRoot<DraftId, Guid>
         draftId: Id,
         seriesId: SeriesId,
         releaseChannel: channel,
-        episodeNumber: episodeNumber);
+        episodeNumber: episodeNumber
+      );
 
       if (createResult.IsFailure)
       {
@@ -320,16 +324,18 @@ public sealed partial class Draft : AggregateRoot<DraftId, Guid>
       return;
     }
 
-    if (_parts.Count > 0 &&
-        _parts.All(p => p.Status == DraftPartStatus.Completed ||
-                          p.Status == DraftPartStatus.Cancelled))
+    if (
+      _parts.Count > 0
+      && _parts.All(p =>
+        p.Status == DraftPartStatus.Completed || p.Status == DraftPartStatus.Cancelled
+      )
+    )
     {
       DraftStatus = DraftStatus.Completed;
       return;
     }
 
     DraftStatus = DraftStatus.Created;
-
   }
 
   public DraftLifecycleView GetLifecycleView(DateTime utcNow)

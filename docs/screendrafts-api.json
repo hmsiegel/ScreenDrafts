@@ -2082,6 +2082,51 @@
         ]
       }
     },
+    "/drafts/{publicId}/image": {
+      "post": {
+        "tags": [
+          "Drafts"
+        ],
+        "operationId": "Drafts.UploadDraftImage",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/UploadDraftImageRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadDraftImageResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
     "/drafts/{publicId}": {
       "put": {
         "tags": [
@@ -8461,6 +8506,21 @@
           }
         }
       },
+      "GetDraftCategoryResponse": {
+        "required": [
+          "publicId",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "publicId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
       "GetDraftCommissionerOverrideResponse": {
         "type": "object"
       },
@@ -8673,6 +8733,12 @@
           },
           "participantKindValue": {
             "$ref": "#/components/schemas/ParticipantKind"
+          },
+          "participantPublicId": {
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "displayName": {
             "type": [
@@ -9035,6 +9101,12 @@
             ],
             "format": "int32"
           },
+          "imagePath": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
           "campaignPublicId": {
             "type": [
               "null",
@@ -9046,6 +9118,15 @@
               "null",
               "string"
             ]
+          },
+          "categories": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/GetDraftCategoryResponse"
+            }
           },
           "parts": {
             "type": "array",
@@ -14178,6 +14259,25 @@
         "type": "object",
         "properties": {
           "avatarPath": {
+            "type": "string"
+          }
+        }
+      },
+      "UploadDraftImageRequest": {
+        "type": "object",
+        "properties": {
+          "publicId": {
+            "type": "string"
+          }
+        }
+      },
+      "UploadDraftImageResponse": {
+        "required": [
+          "imagePath"
+        ],
+        "type": "object",
+        "properties": {
+          "imagePath": {
             "type": "string"
           }
         }

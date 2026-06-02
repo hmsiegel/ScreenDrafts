@@ -23,6 +23,7 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
         d.description AS {nameof(GetDraftResponse.Description)},
         d.draft_type AS {nameof(GetDraftResponse.DraftType)},
         d.draft_status AS {nameof(GetDraftResponse.DraftStatus)},
+        d.image_path AS {nameof(GetDraftResponse.ImagePath)},
         s.public_id AS {nameof(GetDraftResponse.SeriesPublicId)},
         s.name AS {nameof(GetDraftResponse.SeriesName)},
         c.public_id AS {nameof(GetDraftResponse.CampaignPublicId)},
@@ -39,6 +40,7 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
       string? Description,
       DraftType DraftType,
       DraftStatus DraftStatus,
+      string ImagePath,
       string SeriesPublicId,
       string SeriesName,
       string? CampaignPublicId,
@@ -86,7 +88,7 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
 
     if (partRows.Count == 0)
     {
-      return Result.Success(BuildResponse(draft, [], 0));
+      return Result.Success(BuildResponse(draft, [], 0, []));
     }
 
     var partIds = partRows.Select(r => r.InternalId).ToList();
@@ -167,6 +169,7 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
       )},
         dpp.awarded_veto_overrides AS {nameof(GetDraftPartParticipantResponse.TriviaVetoOverride)},
         dpp.commissioner_overrides AS {nameof(GetDraftPartParticipantResponse.CommissionerOverride)},
+        COALESCE(dr.public_id, dt.public_id) AS {nameof(GetDraftPartParticipantResponse.ParticipantPublicId)},
         COALESCE(
           pe.display_name,
           pe.first_name || ' ' || pe.last_name,
@@ -197,6 +200,7 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
       int RolloverVetoOverride,
       int TriviaVetoOverride,
       int CommissionerOverride,
+      string? ParticipantPublicId,
       string? DisplayName,
       string? PersonPublicId
     )>(new CommandDefinition(participantSql, new { partIds }));
@@ -220,11 +224,33 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
         RolloverVetoOverride = r.RolloverVetoOverride,
         TriviaVetoOverride = r.TriviaVetoOverride,
         CommissionerOverride = r.CommissionerOverride,
+        ParticipantPublicId = r.ParticipantPublicId,
         DisplayName = r.DisplayName,
         PersonPublicId = r.PersonPublicId,
       };
       part.AddParticipant(participantResponse);
     }
+
+    const string categorySql = $"""
+      SELECT
+        cat.public_id       AS {nameof(GetDraftCategoryResponse.PublicId)},
+        cat.name            AS {nameof(GetDraftCategoryResponse.Name)}
+      FROM drafts.draft_categories dc
+      JOIN drafts.categories cat on cat.id = dc.category_id
+      JOIN drafts.drafts d ON d.id = dc.draft_id
+      WHERE d.public_id = @DraftId
+      ORDER BY cat.name ASC
+      """;
+
+    var categoryRows = (
+      await connection.QueryAsync<GetDraftCategoryResponse>(
+        new CommandDefinition(
+          categorySql,
+          new { request.DraftId },
+          cancellationToken: cancellationToken
+        )
+      )
+    ).ToList();
 
     // 5. Releases
     int[] allowedChannels;
@@ -358,7 +384,7 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
         v.id AS VetoId,
         v.issued_by_participant_id AS {nameof(GetDraftVetoResponse.IssuedByParticipantId)},
         v.acted_by_public_id AS {nameof(GetDraftVetoResponse.ActedByPublicId)},
-        v.is_overridden AS {nameof(GetDraftVetoResponse.IsOverriden)},
+        v.is_overridden AS {nameof(GetDraftVetoResponse.IsOverridden)},
         v.note AS {nameof(GetDraftVetoResponse.Note)},
         v.occurred_on AS {nameof(GetDraftVetoResponse.OccurredOnUtc)},
         COALESCE(
@@ -519,7 +545,6 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
         -- Earliest allowed-channel release date for every part in the same series,
         -- excluding the parts we are currently looking up
         SELECT
-          dp.id AS part_id,
           d.id AS draft_id,
           d.public_id AS draft_public_id,
           d.title AS draft_title,
@@ -533,7 +558,7 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
           AND current_d.series_id = s.id
         WHERE dr.release_channel = ANY(@allowedChannelInts)
           AND dp.id != ALL(@partIds)
-        GROUP BY dp.id, d.id, d.public_id, d.title
+        GROUP BY d.id, d.public_id, d.title
       ),
       prev_ranked AS (
         SELECT
@@ -694,7 +719,7 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
         {
           IssuedByParticipantId = vetoRow.IssuedByParticipantId,
           ActedByPublicId = vetoRow.ActedByPublicId,
-          IsOverriden = vetoRow.IsOverriden,
+          IsOverridden = vetoRow.IsOverriden,
           Note = vetoRow.Note,
           OccurredOnUtc = vetoRow.OccurredOnUtc,
           Override = vetoOverride,
@@ -761,7 +786,7 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
       })
       .ToList();
 
-    return Result.Success(BuildResponse(draft, parts, episodeNumber));
+    return Result.Success(BuildResponse(draft, parts, episodeNumber, categoryRows));
   }
 
   private static GetDraftResponse BuildResponse(
@@ -771,13 +796,15 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
       string? Description,
       DraftType DraftType,
       DraftStatus DraftStatus,
+      string? ImagePath,
       string SeriesPublicId,
       string SeriesName,
       string? CampaignPublicId,
       string? CampaignName
     ) draft,
     IReadOnlyList<GetDraftPartResponse> parts,
-    int? episodeNumber
+    int? episodeNumber,
+    IReadOnlyList<GetDraftCategoryResponse> categories
   ) =>
     new()
     {
@@ -786,11 +813,13 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
       Description = draft.Description,
       DraftType = draft.DraftType,
       DraftStatus = draft.DraftStatus,
+      ImagePath = draft.ImagePath,
       SeriesPublicId = draft.SeriesPublicId,
       SeriesName = draft.SeriesName,
       CampaignPublicId = draft.CampaignPublicId,
       CampaignName = draft.CampaignName,
       EpisodeNumber = episodeNumber,
+      Categories = categories,
       Parts = parts,
     };
 }

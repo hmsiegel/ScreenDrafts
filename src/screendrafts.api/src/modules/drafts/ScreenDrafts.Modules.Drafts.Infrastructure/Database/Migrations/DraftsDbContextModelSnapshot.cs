@@ -1164,6 +1164,10 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasDefaultValue(false)
                         .HasColumnName("grants_starting_veto_per_part");
 
+                    b.Property<string>("ImagePath")
+                        .HasColumnType("text")
+                        .HasColumnName("image_path");
+
                     b.Property<string>("PublicId")
                         .IsRequired()
                         .HasMaxLength(19)

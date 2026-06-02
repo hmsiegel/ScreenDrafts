@@ -21,4 +21,5 @@ internal static class DraftRoutes
   public const string PoolBulk = Pool + "/bulk";
   public const string Latest = Base + "/latest";
   public const string Upcoming = Base + "/upcoming";
+  public const string Image = ById + "/image";
 }

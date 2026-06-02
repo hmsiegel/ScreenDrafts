@@ -2,11 +2,13 @@ import DraftTypeBadge from "@/components/ui/draft-type-badge";
 import { draftTypeFromNumber } from "@/lib/draft-type-display";
 import { ListDraftsResponse } from "@/lib/dto";
 import { format } from "date-fns/format";
+import { isLastDayOfMonthWithOptions } from "date-fns/fp";
 import Link from "next/link";
 
 interface DraftsTableProps {
    drafts: ListDraftsResponse[];
    searchParams: Record<string, string | string[] | undefined>;
+   isAdmin?: boolean;
 }
 
 function formatAirDate(raw: Date | string | undefined): string {
@@ -78,102 +80,131 @@ function SortableHeader({
    );
 }
 
-export function DraftsTable({ drafts, searchParams }: DraftsTableProps) {
-   const currentSort = searchParams.sort as string | undefined;
-   const currentDir = searchParams.dir as string | undefined;
+export function DraftsTable({ drafts, searchParams, isAdmin = false }: DraftsTableProps) {
+  const currentSort = searchParams.sort as string | undefined;
+  const currentDir = searchParams.dir as string | undefined;
 
-   return (
-      <div className="bg-white border-2 border-sd-ink border-t-0">
-         {/* Header */}
-         <div
-            className="grid bg-sd-ink text-white font-mono text-[10px] tracking-wide"
-            style={{ gridTemplateColumns: "90px minmax(160px, 1.5fr) 130px minmax(160px, 1fr) 90px 130px 28px" }}
-         >
-            <div className="px-4 py-3">
-               <SortableHeader
-                  field="episodenumber"
-                  label="EP. NO."
-                  currentSort={currentSort}
-                  currentDir={currentDir}
-                  params={searchParams}
-               />
-            </div>
-            <div className="px-4 py-3">
-               <SortableHeader
-                  field="title"
-                  label="EPISODE"
-                  currentSort={currentSort}
-                  currentDir={currentDir}
-                  params={searchParams}
-               />
-            </div>
-            <div className="px-4 py-3 text-white/60">TYPE</div>
-            <div className="px-4 py-3 text-white/60">DRAFTERS</div>
-            <div className="px-4 py-3 text-right text-white/60">PICKS</div>
-            <div className="px-4 py-3 text-right">
-               <SortableHeader
-                  field="date"
-                  label="AIR DATE"
-                  currentSort={currentSort}
-                  currentDir={currentDir}
-                  params={searchParams}
-                  className="justify-end"
-               />
-            </div>
-            <div className="px-2 py-3" />
-         </div>
+  // When isAdmin, the last column is split: arrow (28px) + edit link (56px)
+  const gridCols = isAdmin
+    ? "90px minmax(160px, 1.5fr) 130px minmax(160px, 1fr) 90px 130px 28px 56px"
+    : "90px minmax(160px, 1.5fr) 130px minmax(160px, 1fr) 90px 130px 28px";
 
-         {/* Rows */}
-         {drafts.length === 0 ? (
-            <div className="px-4 py-8 text-center font-mono text-sm text-sd-ink/50">
-               No drafts found.
-            </div>
-         ) : (
-            drafts.map((draft) => {
-               const episodeNumber = draft.releases?.[0]?.episodeNumber;
-               const releaseDate = draft.releases?.[0]?.releaseDate;
-               const participantLine = draft.participants
-                  ?.map((p) => p.displayName)
-                  .filter(Boolean)
-                  .join(" · ");
-               const draftTypeDisplay = draftTypeFromNumber(draft.draftType);
-
-               return (
-                  <Link
-                     key={draft.draftPartPublicId ?? draft.draftPublicId}
-                     href={`/drafts/${draft.draftPublicId}`}
-                     className="group grid border-t border-sd-ink/10 hover:bg-sd-paper transition-colors duration-100 cursor-pointer"
-                     style={{ gridTemplateColumns: "90px minmax(160px, 1.5fr) 130px minmax(160px, 1fr) 90px 130px 28px" }}
-                  >
-                     <div className="px-4 py-4 font-oswald font-bold text-[30px] text-sd-red leading-none self-center">
-                        {episodeNumber ?? "—"}
-                     </div>
-                     <div className="px-4 py-4 self-center overflow-hidden">
-                        <span className="block font-sans font-semibold text-[17px] text-sd-ink truncate">
-                           {draft.label ?? "—"}
-                        </span>
-                     </div>
-                     <div className="px-4 py-4 self-center">
-                        {draftTypeDisplay ? <DraftTypeBadge type={draftTypeDisplay} /> : <span className="text-sd-ink/40 text-sm">—</span>}
-                     </div>
-                     <div className="px-4 py-4 self-center overflow-hidden">
-                        <span className="block text-[13px] italic text-[#5a6075] truncate">
-                           {participantLine ?? "—"}
-                        </span>
-                     </div>
-                     <div className="px-4 py-4 self-center text-right font-mono text-[14px] text-sd-ink">
-                        {draft.totalPicks ?? "—"}
-                     </div>
-                     <div className="px-4 py-4 self-center text-right font-mono text-[11px] text-sd-blue">
-                        {formatAirDate(releaseDate)}
-                     </div>
-                     <div className="px-2 py-4 self-center text-sd-ink/30 group-hover:text-sd-red transition-colors text-center">
-                        ›
-                     </div>
-                  </Link>
-               );
-            })
-         )}
+  return (
+    <div className="bg-white border-2 border-sd-ink border-t-0">
+      {/* Header */}
+      <div
+        className="grid bg-sd-ink text-white font-mono text-[10px] tracking-wide"
+        style={{ gridTemplateColumns: gridCols }}
+      >
+        <div className="px-4 py-3">
+          <SortableHeader
+            field="episodenumber"
+            label="EP. NO."
+            currentSort={currentSort}
+            currentDir={currentDir}
+            params={searchParams}
+          />
+        </div>
+        <div className="px-4 py-3">
+          <SortableHeader
+            field="title"
+            label="EPISODE"
+            currentSort={currentSort}
+            currentDir={currentDir}
+            params={searchParams}
+          />
+        </div>
+        <div className="px-4 py-3 text-white/60">TYPE</div>
+        <div className="px-4 py-3 text-white/60">DRAFTERS</div>
+        <div className="px-4 py-3 text-right text-white/60">PICKS</div>
+        <div className="px-4 py-3 text-right">
+          <SortableHeader
+            field="date"
+            label="AIR DATE"
+            currentSort={currentSort}
+            currentDir={currentDir}
+            params={searchParams}
+            className="justify-end"
+          />
+        </div>
+        <div className="px-2 py-3" />
+        {isAdmin && <div className="px-2 py-3" />}
       </div>
-   );
+
+      {/* Rows */}
+      {drafts.length === 0 ? (
+        <div className="px-4 py-8 text-center font-mono text-sm text-sd-ink/50">
+          No drafts found.
+        </div>
+      ) : (
+        drafts.map((draft) => {
+          const episodeNumber = draft.releases?.[0]?.episodeNumber;
+          const releaseDate = draft.releases?.[0]?.releaseDate;
+          const participantLine = draft.participants
+            ?.map((p) => p.displayName)
+            .filter(Boolean)
+            .join(" · ");
+          const draftTypeDisplay = draftTypeFromNumber(draft.draftType);
+
+          return (
+            <div
+              key={draft.draftPartPublicId ?? draft.draftPublicId}
+              className="group grid border-t border-sd-ink/10 hover:bg-sd-paper transition-colors duration-100"
+              style={{ gridTemplateColumns: gridCols }}
+            >
+              {/* Clickable draft link — spans all columns except the admin edit slot */}
+              <Link
+                href={`/drafts/${draft.draftPublicId}`}
+                className="contents"
+                aria-label={draft.label ?? "View draft"}
+              >
+                <div className="px-4 py-4 font-oswald font-bold text-[30px] text-sd-red leading-none self-center">
+                  {episodeNumber ?? "—"}
+                </div>
+                <div className="px-4 py-4 self-center overflow-hidden">
+                  <span className="block font-sans font-semibold text-[17px] text-sd-ink truncate">
+                    {draft.label ?? "—"}
+                  </span>
+                </div>
+                <div className="px-4 py-4 self-center">
+                  {draftTypeDisplay ? (
+                    <DraftTypeBadge type={draftTypeDisplay} />
+                  ) : (
+                    <span className="text-sd-ink/40 text-sm">—</span>
+                  )}
+                </div>
+                <div className="px-4 py-4 self-center overflow-hidden">
+                  <span className="block text-[13px] italic text-[#5a6075] truncate">
+                    {participantLine ?? "—"}
+                  </span>
+                </div>
+                <div className="px-4 py-4 self-center text-right font-mono text-[14px] text-sd-ink">
+                  {draft.totalPicks ?? "—"}
+                </div>
+                <div className="px-4 py-4 self-center text-right font-mono text-[11px] text-sd-blue">
+                  {formatAirDate(releaseDate)}
+                </div>
+                <div className="px-2 py-4 self-center text-sd-ink/30 group-hover:text-sd-red transition-colors text-center">
+                  ›
+                </div>
+              </Link>
+
+              {/* Admin edit button — sits outside the draft link */}
+              {isAdmin && (
+                <div className="px-2 py-4 self-center text-center">
+                  <Link
+                    href={`/admin/drafts/${draft.draftPublicId}/edit-meta`}
+                    className="text-[11px] font-mono text-sd-ink/40 hover:text-sd-blue transition-colors uppercase tracking-wide"
+                    title="Edit campaign & categories"
+                  >
+                    Edit
+                  </Link>
+                </div>
+              )}
+            </div>
+          );
+        })
+      )}
+    </div>
+  );
 }

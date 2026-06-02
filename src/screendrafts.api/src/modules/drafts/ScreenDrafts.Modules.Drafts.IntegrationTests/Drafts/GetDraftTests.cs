@@ -462,7 +462,7 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
     result.IsSuccess.Should().BeTrue();
     var pick = result.Value.Parts.Single().Picks.Single();
     pick.Veto.Should().NotBeNull();
-    pick.Veto!.IsOverriden.Should().BeFalse();
+    pick.Veto!.IsOverridden.Should().BeFalse();
   }
 
   // ─────────────────────────────────────────────────────────────────────────

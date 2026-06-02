@@ -94,6 +94,12 @@ interface NavEntry {
 
 function NavBlock({ entries }: { entries: NavEntry[] }) {
   if (entries.length === 0) return null;
+  const seen = new Set<string>();
+  const unique = entries.filter(({publicId}) => {
+    if (seen.has(publicId)) return false;
+    seen.add(publicId);
+    return true;
+  });
   return (
     <div className="flex flex-col gap-2">
       {entries.map(({ publicId, title, direction }) => (
@@ -363,7 +369,7 @@ export default function DraftSidebar({
       </div>
 
       {/* Artwork */}
-      <EpisodeImage title={draft.title} />
+      <EpisodeImage imagePath={draft.imagePath} title={draft.title} />
 
       {/* Title */}
       <div className="font-oswald font-semibold text-[22px] text-sd-ink leading-[1.15] tracking-tight mb-3">

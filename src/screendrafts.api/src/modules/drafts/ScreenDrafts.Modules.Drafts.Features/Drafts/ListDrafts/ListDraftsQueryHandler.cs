@@ -41,7 +41,11 @@ internal sealed class ListDraftsQueryHandler(IDbConnectionFactory connectionFact
           (
             SELECT COUNT(*)
             FROM drafts.picks pk
+            LEFT JOIN drafts.vetoes v ON v.target_pick_id = pk.id
+            LEFT JOIN drafts.commissioner_overrides co ON co.pick_id = pk.id
             WHERE pk.draft_part_id = dp.id
+              AND co.id IS NULL
+              AND (v.id IS NULL OR v.is_overridden = true)
           ) AS {nameof(ListDraftsResponse.TotalPicks)},
           c.public_id AS {nameof(ListDraftsResponse.CampaignPublicId)},
           c.name AS {nameof(ListDraftsResponse.CampaignName)}
@@ -215,8 +219,17 @@ internal sealed class ListDraftsQueryHandler(IDbConnectionFactory connectionFact
             AND dcr.release_channel = 0
           LIMIT 1) {dir}
         """,
-      "totalpicks" =>
-        $"(SELECT COUNT(*) FROM drafts.picks pk WHERE pk.draft_part_id = dp.id) {dir}",
+      "totalpicks" => $"""
+        (
+          SELECT COUNT(*)
+            FROM drafts.picks pk
+            LEFT JOIN drafts.vetoes v ON v.target_pick_id = pk.id
+            LEFT JOIN drafts.commissioner_overrides co ON co.pick_id = pk.id
+            WHERE pk.draft_part_id = dp.id
+              AND co.id IS NULL
+              AND (v.id IS NULL OR v.is_overridden = true)
+        ) {dir}
+        """,
       "date" =>
         $"(SELECT MIN(dr.release_date) FROM drafts.draft_releases dr WHERE dr.part_id = dp.id) {dir}",
       _ =>

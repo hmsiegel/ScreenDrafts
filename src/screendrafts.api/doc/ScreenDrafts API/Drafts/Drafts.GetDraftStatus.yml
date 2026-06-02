@@ -8,6 +8,10 @@ info:
 http:
   method: GET
   url: "{{baseUrl}}/drafts/:draftId/status"
+  params:
+    - name: draftId
+      value: d_7nWJeO-IBWj7ia2
+      type: path
   body:
     type: text
     data: ""

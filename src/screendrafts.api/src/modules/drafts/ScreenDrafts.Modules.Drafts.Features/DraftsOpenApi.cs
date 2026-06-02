@@ -44,6 +44,7 @@ internal static class DraftsOpenApi
     public const string Drafts_RemoveCategory = "Drafts.RemoveCategory";
     public const string Drafts_ListLatestDrafts = "Drafts.ListLatestDrafts";
     public const string Drafts_ListUpcomingDrafts = "Drafts.ListUpcomingDrafts";
+    public const string Drafts_UploadDraftImage = "Drafts.UploadDraftImage";
 
     // Draft Parts
     public const string DraftParts_RemoveHost = "DraftParts.RemoveHost";

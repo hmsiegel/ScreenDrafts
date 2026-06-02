@@ -186,10 +186,10 @@ internal sealed class ParticipantAddedDomainEventHandler(
 
     const string emebersSql = """
       SELECT p.user_id
-      FROM drafts.drafter_team_drafters dtt
+      FROM drafts.drafter_team_drafter dtt
       JOIN drafts.drafters d on d.id = dtt.drafter_id
       JOIN drafts.people p on p.id = d.person_id
-      WHERE dtt.team_id = @TeamId
+      WHERE dtt.drafter_team_id = @TeamId
         AND p.user_id IS NOT NULL
       """;
 

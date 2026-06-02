@@ -7,6 +7,7 @@ import { Suspense } from "react";
 import { DraftsTable } from "@/components/features/drafts/drafts-table";
 import SiteFooter from "@/components/layout/footer/site-footer";
 import { listCampaigns } from "@/services/drafts/fetch-campaigns";
+import { auth } from "@/auth";
 
 export const metadata: Metadata = {
    title: "The Archive",
@@ -14,6 +15,7 @@ export const metadata: Metadata = {
 }
 
 export const dynamic = "force-dynamic"
+const ADMIN_ROLES = ["Administrator", "SuperAdministrator"];
 
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
 
@@ -33,6 +35,8 @@ function formatStat(n: number | undefined): string {
 }
 
 export default async function DraftsPage(props: { searchParams: SearchParams }) {
+   const session = await auth();
+   const isAdmin = session?.roles?.some(r => ADMIN_ROLES.includes(r)) ?? false;
    const qp = await props.searchParams;
 
    const page = asNumber(qp.page) ?? 1;
@@ -102,7 +106,7 @@ export default async function DraftsPage(props: { searchParams: SearchParams }) 
 
          {/* Table container */}
          <div className="px-10 pt-0 pb-16">
-            <DraftsTable drafts={draftsResult.items} searchParams={qp} />
+            <DraftsTable drafts={draftsResult.items} searchParams={qp} isAdmin={isAdmin} />
 
             {/* Pagination */}
             <div className="flex items-center justify-between mt-4">

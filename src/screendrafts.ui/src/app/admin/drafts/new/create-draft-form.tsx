@@ -5,14 +5,12 @@ import { useRouter } from "next/navigation";
 import {
   AdminSeriesOption,
   AdminHostOption,
-  AdminDrafterTeamOption,
   createDraft,
   createDraftPart,
   addHostToDraftPart,
   addParticipantToDraftPart,
   setDraftCategories,
   setDraftCampaign,
-  AdminDrafterOption,
 } from "@/services/admin/fetch-admin-drafts";
 import { CampaignResponse, CategoryResponse, SmartEnumResponse } from "@/lib/dto";
 import { formatDraftType } from "@/lib/draft-type-display";
@@ -59,8 +57,6 @@ interface SelectedHost {
 interface Props {
   seriesList: AdminSeriesOption[];
   hostList: AdminHostOption[];
-  drafterList: AdminDrafterOption[];
-  drafterTeamList: AdminDrafterTeamOption[];
   categoryList: CategoryResponse[];
   campaignList: CampaignResponse[];
   accessToken: string;
@@ -69,8 +65,6 @@ interface Props {
 export default function CreateDraftForm({
   seriesList,
   hostList,
-  drafterList,
-  drafterTeamList,
   categoryList,
   campaignList,
   accessToken,
@@ -93,12 +87,8 @@ export default function CreateDraftForm({
   const [hostSearch, setHostSearch] = useState("");
 
   // Section 4 — Drafters
-  type ParticipantKind = "drafter" | "team";
-  const [participantTab, setParticipantTab] = useState<ParticipantKind>("drafter");
   const [selectedDrafterIds, setSelectedDrafterIds] = useState<Set<string>>(new Set());
   const [selectedTeamIds, setSelectedTeamIds] = useState<Set<string>>(new Set());
-  const [drafterSearch, setDrafterSearch] = useState("");
-  const [teamSearch, setTeamSearch] = useState("");
 
   // Section 5 — Categories
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<Set<string>>(new Set());
@@ -225,15 +215,6 @@ export default function CreateDraftForm({
       !hosts.some((sel) => sel.publicId === h.publicId) &&
       h.displayName.toLowerCase().includes(hostSearch.toLowerCase())
   );
-
-  const filteredDrafters = drafterList.filter((d) =>
-    d.displayName.toLowerCase().includes(drafterSearch.toLowerCase())
-  );
-
-  const filteredTeams = drafterTeamList.filter((d) =>
-    d.name.toLowerCase().includes(teamSearch.toLowerCase())
-  );
-
 
   const canSubmit = title.trim() !== "" && selectedSeriesId !== "" && selectedDraftType !== null;
 
@@ -535,18 +516,11 @@ export default function CreateDraftForm({
 
       {/* ── Section 4: Participants (Drafters) ── */}
       <ParticipantsSection
-        drafterList={drafterList}
-        drafterTeamList={drafterTeamList}
+        accessToken={accessToken}
         selectedDrafterIds={selectedDrafterIds}
         selectedTeamIds={selectedTeamIds}
-        drafterSearch={drafterSearch}
-        teamSearch={teamSearch}
-        participantTab={participantTab}
         onToggleDrafter={toggleDrafter}
         onToggleTeam={toggleTeam}
-        onDrafterSearch={setDrafterSearch}
-        onTeamSearch={setTeamSearch}
-        onTabChange={setParticipantTab}
       />
 
       {/* ── Section 5: Category ── */}

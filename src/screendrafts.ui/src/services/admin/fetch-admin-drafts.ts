@@ -3,6 +3,7 @@ import {
   CampaignResponse,
   CategoryResponse,
   CreatedResponse,
+  GetDraftCategoryResponse,
   SearchDraftsResponse,
   SearchHostResponse,
   SeriesResponse,
@@ -35,6 +36,46 @@ export interface AdminDrafterTeamOption {
   publicId: string;
   name: string;
   numberOfDrafters: number;
+}
+
+export interface DraftPartParticipant {
+  participantIdValue: string; // Guid as string
+  participantKindValue: SmartEnumResponse;
+  participantPublicId: string | null;
+  displayName: string | null;
+  personPublicId: string | null;
+}
+
+export interface DraftPartHost {
+  hostPublicId: string;
+  displayName: string;
+  personPublicId: string | null;
+}
+
+export interface DraftPart {
+  publicId: string;
+  partIndex: number;
+  draftType: SmartEnumResponse;
+  status: SmartEnumResponse;
+  primaryHost: DraftPartHost | null;
+  coHosts: DraftPartHost[];
+  participants: DraftPartParticipant[];
+}
+
+export interface AdminDraftDetail {
+  publicId: string;
+  title: string;
+  description: string | null;
+  draftType: SmartEnumResponse;
+  draftStatus: SmartEnumResponse;
+  seriesPublicId: string | null;
+  seriesName: string | null;
+  episodeNumber: number | null;
+  campaignPublicId: string | null;
+  campaignName: string | null;
+  imagePath: string | null;
+  categories: GetDraftCategoryResponse[];
+  parts: DraftPart[];
 }
 
 const apiBase = env.apiUrl;
@@ -131,7 +172,7 @@ export async function searchDrafters(
   name?: string,
   retired = false,
   page = 1,
-  pageSize = 200
+  pageSize = 500
 ): Promise<AdminDrafterOption[]> {
   try {
     const url = new URL(`${apiBase}/drafters/search`);
@@ -216,6 +257,26 @@ export async function listAllCampaigns(
   } catch (err) {
     console.error("[listAllCampaigns]", err);
     return [];
+  }
+}
+
+export async function getDraft(
+  accessToken: string | undefined,
+  draftPublicId: string
+): Promise<AdminDraftDetail | null> {
+  try {
+    const response = await fetch(
+      `${apiBase}/drafts/${encodeURIComponent(draftPublicId)}`,
+      {
+        headers: authHeaders(accessToken),
+        cache: "no-store",
+      }
+    );
+    if (!response.ok) return null;
+    return (await response.json()) as AdminDraftDetail;
+  } catch (err) {
+    console.error("[getDraft]", err);
+    return null;
   }
 }
 
@@ -352,6 +413,98 @@ export async function setDraftCampaign(
     const text = await response.text().catch(() => response.statusText);
     throw new Error(
       `POST /drafts/${draftPublicId}/campaign failed (${response.status}): ${text}`
+    );
+  }
+}
+
+export async function updateDraft(
+  accessToken: string,
+  draftPublicId: string,
+  body: {
+    title?: string;
+    description?: string;
+    seriesPublicId?: string;
+    campaignPublicId?: string;
+    publicCategoryIds?: string[];
+    draftTypeValue: number;
+  }
+): Promise<void> {
+  const response = await fetch(
+    `${apiBase}/drafts/${encodeURIComponent(draftPublicId)}`,
+    {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    }
+  );
+  if (!response.ok) {
+    const text = await response.text().catch(() => response.statusText);
+    throw new Error(`PUT /drafts/${draftPublicId} failed (${response.status}): ${text}`);
+  }
+}
+
+export async function removeHostFromDraftPart(
+  accessToken: string,
+  draftPartId: string,
+  hostPublicId: string
+): Promise<void> {
+  const response = await fetch(
+    `${apiBase}/draft-parts/${encodeURIComponent(draftPartId)}/hosts/${encodeURIComponent(hostPublicId)}`,
+    {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${accessToken}` },
+    }
+  );
+  if (!response.ok) {
+    const text = await response.text().catch(() => response.statusText);
+    throw new Error(
+      `DELETE /draft-parts/${draftPartId}/hosts/${hostPublicId} failed (${response.status}): ${text}`
+    );
+  }
+}
+
+export async function removeParticipantFromDraftPart(
+  accessToken: string,
+  draftPartId: string,
+  body: { participantPublicId: string; participantKind: number }
+): Promise<void> {
+  const response = await fetch(
+    `${apiBase}/draft-parts/${encodeURIComponent(draftPartId)}/participants`,
+    {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ draftPartId, ...body }),
+    }
+  );
+  if (!response.ok) {
+    const text = await response.text().catch(() => response.statusText);
+    throw new Error(
+      `DELETE /draft-parts/${draftPartId}/participants failed (${response.status}): ${text}`
+    );
+  }
+}
+
+export async function clearDraftCampaign(
+  accessToken: string,
+  draftPublicId: string
+): Promise<void> {
+  const response = await fetch(
+    `${apiBase}/drafts/${encodeURIComponent(draftPublicId)}/campaign`,
+    {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${accessToken}` },
+    }
+  );
+  if (!response.ok) {
+    const text = await response.text().catch(() => response.statusText);
+    throw new Error(
+      `DELETE /drafts/${draftPublicId}/campaign failed (${response.status}): ${text}`
     );
   }
 }
