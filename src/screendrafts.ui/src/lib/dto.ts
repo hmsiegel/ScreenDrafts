@@ -467,6 +467,11 @@ export interface IClient {
     draftParts_AddHost(body: AddHostToDraftPartRequest): Promise<void>;
 
     /**
+     * @return OK
+     */
+    draftParts_GetDraftPartById(body: GetDraftPartRequest): Promise<GetDraftPartQueryResponse>;
+
+    /**
      * @return No Content
      */
     draftParts_SetDraftPosition(body: SetDraftPositionsRequest): Promise<void>;
@@ -485,6 +490,26 @@ export interface IClient {
      * @return No Content
      */
     draftParts_AssignParticipantToPosition(body: AssignParticipantToDraftPositionRequest): Promise<void>;
+
+    /**
+     * @return No Content
+     */
+    draftParts_UpdateCommunityFilmRule(body: RemoveCommunityFilmRuleRequest): Promise<void>;
+
+    /**
+     * @return No Content
+     */
+    draftParts_RemoveCommunityFilmRule(body: RemoveCommunityFilmRuleRequest): Promise<void>;
+
+    /**
+     * @return No Content
+     */
+    draftParts_AddCommunityFilmRule(body: AddCommunityFilmRuleRequest): Promise<void>;
+
+    /**
+     * @return No Content
+     */
+    draftParts_AssignFilmToCommunityFilmRule(body: AssignFilmToCommunityFilmRuleRequest): Promise<void>;
 
     /**
      * @return No Content
@@ -5463,6 +5488,51 @@ export class Client implements IClient {
     }
 
     /**
+     * @return OK
+     */
+    draftParts_GetDraftPartById(body: GetDraftPartRequest, signal?: AbortSignal): Promise<GetDraftPartQueryResponse> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDraftParts_GetDraftPartById(_response);
+        });
+    }
+
+    protected processDraftParts_GetDraftPartById(response: Response): Promise<GetDraftPartQueryResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as GetDraftPartQueryResponse;
+            return result200;
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<GetDraftPartQueryResponse>(null as any);
+    }
+
+    /**
      * @return No Content
      */
     draftParts_SetDraftPosition(body: SetDraftPositionsRequest, signal?: AbortSignal): Promise<void> {
@@ -5676,6 +5746,222 @@ export class Client implements IClient {
         } else if (status === 409) {
             return response.text().then((_responseText) => {
             return throwException("Conflict", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    draftParts_UpdateCommunityFilmRule(body: RemoveCommunityFilmRuleRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/community-film-rules/{ruleId}";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDraftParts_UpdateCommunityFilmRule(_response);
+        });
+    }
+
+    protected processDraftParts_UpdateCommunityFilmRule(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    draftParts_RemoveCommunityFilmRule(body: RemoveCommunityFilmRuleRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/community-film-rules";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "DELETE",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDraftParts_RemoveCommunityFilmRule(_response);
+        });
+    }
+
+    protected processDraftParts_RemoveCommunityFilmRule(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    draftParts_AddCommunityFilmRule(body: AddCommunityFilmRuleRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/community-film-rules";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDraftParts_AddCommunityFilmRule(_response);
+        });
+    }
+
+    protected processDraftParts_AddCommunityFilmRule(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    draftParts_AssignFilmToCommunityFilmRule(body: AssignFilmToCommunityFilmRuleRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/community-film-rules/{ruleId}/film";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDraftParts_AssignFilmToCommunityFilmRule(_response);
+        });
+    }
+
+    protected processDraftParts_AssignFilmToCommunityFilmRule(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -8576,6 +8862,14 @@ export interface AddCarryoverRequest {
     [key: string]: any;
 }
 
+export interface AddCommunityFilmRuleRequest {
+    draftPartId?: string;
+    ruleKind?: number;
+    targetSlot?: number | undefined;
+
+    [key: string]: any;
+}
+
 export interface AddDrafterToTeamRequest {
     drafterTeamId?: string;
     drafterId: string;
@@ -8711,6 +9005,14 @@ export interface ApplyVetoRequest {
     playOrder?: number;
     participantPublicId?: string | undefined;
     participantKind?: number;
+
+    [key: string]: any;
+}
+
+export interface AssignFilmToCommunityFilmRuleRequest {
+    draftPartId?: string;
+    ruleId?: string;
+    tmdbId?: number;
 
     [key: string]: any;
 }
@@ -8866,6 +9168,13 @@ export interface ClearDraftPositionAssignmentRequest {
 export interface ClosePredictionSeasonRequest {
     seasonPublicId?: string;
     endsOn?: Date;
+
+    [key: string]: any;
+}
+
+export interface CommunityFilmRuleKind {
+    name: string | undefined;
+    value: number;
 
     [key: string]: any;
 }
@@ -9403,6 +9712,16 @@ export interface GetDraftCommissionerOverrideResponse {
     [key: string]: any;
 }
 
+export interface GetDraftCommunityFilmRuleResponse {
+    publicId?: string;
+    ruleKind?: CommunityFilmRuleKind;
+    targetSlot?: number | undefined;
+    tmdbId?: number | undefined;
+    title?: string | undefined;
+
+    [key: string]: any;
+}
+
 export interface GetDrafterProfileRequest {
     publicId?: string;
 
@@ -9485,6 +9804,27 @@ export interface GetDraftPartPredictionsRequest {
     [key: string]: any;
 }
 
+export interface GetDraftPartQueryResponse {
+    publicId?: string;
+    partIndex?: number;
+    maxCommunityPicks?: number;
+    maxCommunityVetoes?: number;
+    primaryHost?: GetDraftHostResponse | undefined;
+    coHosts?: GetDraftHostResponse[];
+    participants?: GetDraftPartParticipantResponse[];
+    releases?: GetDraftReleaseResponse[];
+    picks?: GetDraftPickResponse[];
+    communityFilmRules?: GetDraftCommunityFilmRuleResponse[];
+
+    [key: string]: any;
+}
+
+export interface GetDraftPartRequest {
+    draftPartId?: string;
+
+    [key: string]: any;
+}
+
 export interface GetDraftPartResponse {
     publicId?: string;
     partIndex?: number;
@@ -9500,6 +9840,9 @@ export interface GetDraftPartResponse {
     previousCampaignDraftTitle?: string | undefined;
     nextCampaignDraftPublicId?: string | undefined;
     nextCampaignDraftTitle?: string | undefined;
+    maxCommunityPicks?: number;
+    maxCommunityVetoes?: number;
+    communityFilmRules?: GetDraftCommunityFilmRuleResponse[];
     primaryHost?: GetDraftHostResponse | undefined;
     coHosts?: GetDraftHostResponse[];
     participants?: GetDraftPartParticipantResponse[];
@@ -9591,7 +9934,7 @@ export interface GetDraftVetoResponse {
     issuedByDisplayName?: string | undefined;
     actedByPublicId?: string | undefined;
     actedByDisplayName?: string | undefined;
-    isOverriden?: boolean;
+    isOverridden?: boolean;
     note?: string | undefined;
     occurredOnUtc?: Date;
     override?: GetDraftVetoOverrideResponse | undefined;
@@ -10604,6 +10947,15 @@ export interface RemoveCandidateListEntryRequest {
 export interface RemoveCategoryFromDraftRequest {
     draftId?: string;
     categoryId?: string;
+
+    [key: string]: any;
+}
+
+export interface RemoveCommunityFilmRuleRequest {
+    draftPartId?: string;
+    ruleId?: string;
+    ruleKind?: number;
+    targetSlot?: number | undefined;
 
     [key: string]: any;
 }

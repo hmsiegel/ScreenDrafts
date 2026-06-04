@@ -1,5 +1,4 @@
-﻿
-namespace ScreenDrafts.Modules.Drafts.Infrastructure;
+﻿namespace ScreenDrafts.Modules.Drafts.Infrastructure;
 
 internal static class Tables
 {
@@ -54,4 +53,5 @@ internal static class Tables
   internal const string PredictionStandings = "prediction_standings";
   internal const string PredictionCarryovers = "prediction_carryovers";
   internal const string DraftPartRecordings = "draft_part_recordings";
+  internal const string DraftPartCommunityFilmRules = "draft_part_community_film_rules";
 }

@@ -11,10 +11,15 @@ import {
   addParticipantToDraftPart,
   setDraftCategories,
   setDraftCampaign,
+  addCommunityFilmRule,
+  setDraftPartCommunityLimits,
+  setDraftPartCommunityParticipant,
+  assignFilmToCommunityFilmRule,
 } from "@/services/admin/fetch-admin-drafts";
 import { CampaignResponse, CategoryResponse, SmartEnumResponse } from "@/lib/dto";
 import { formatDraftType } from "@/lib/draft-type-display";
 import { ParticipantsSection } from "./participants-section";
+import { CommunityConfig, CommunitySection, defaultCommunityConfig } from "./community-section";
 
 const LABEL = "block text-[11px] font-mono tracking-widest text-sd-ink/60 uppercase mb-1";
 const INPUT =
@@ -36,7 +41,7 @@ function getMaxPositionsConfig(draftTypeName: string): { max: number; locked: bo
     case "SpeedDraft":
       return { max: 7, locked: true };
     default:
-      return { max: 5, locked: false };
+      return { max: 7, locked: false };
   }
 }
 
@@ -46,6 +51,7 @@ interface PartConfig {
   maxPositions: number;
   maxLocked: boolean;
   collapsed: boolean;
+  communityConfig: CommunityConfig;
 }
 
 interface SelectedHost {
@@ -79,7 +85,7 @@ export default function CreateDraftForm({
   // Section 2 — Parts
   const [numParts, setNumParts] = useState(1);
   const [parts, setParts] = useState<PartConfig[]>([
-    { partIndex: 1, minPositions: 1, maxPositions: 7, maxLocked: true, collapsed: false },
+    { partIndex: 1, minPositions: 1, maxPositions: 7, maxLocked: true, collapsed: false, communityConfig: defaultCommunityConfig() },
   ]);
 
   // Section 3 — Hosts
@@ -123,13 +129,14 @@ export default function CreateDraftForm({
 
   function syncPartsToType(typeName: string, count: number) {
     const { max, locked } = getMaxPositionsConfig(typeName);
-    setParts(
+    setParts((prev) =>
       Array.from({ length: count }, (_, i) => ({
         partIndex: i + 1,
         minPositions: 1,
         maxPositions: max,
         maxLocked: locked,
         collapsed: i > 0,
+        communityConfig: prev[i]?.communityConfig ?? defaultCommunityConfig(),
       }))
     );
   }
@@ -139,13 +146,14 @@ export default function CreateDraftForm({
     setNumParts(count);
     const typeName = selectedDraftType?.name ?? "";
     const { max, locked } = getMaxPositionsConfig(typeName);
-    setParts(
+    setParts((prev) =>
       Array.from({ length: count }, (_, i) => ({
         partIndex: i + 1,
         minPositions: 1,
         maxPositions: parts[i]?.maxPositions ?? max,
         maxLocked: locked,
         collapsed: i > 0,
+        communityConfig: prev[i]?.communityConfig ?? defaultCommunityConfig(),
       }))
     );
   }
@@ -153,6 +161,12 @@ export default function CreateDraftForm({
   function updatePartMax(idx: number, value: number) {
     setParts((prev) =>
       prev.map((p, i) => (i === idx ? { ...p, maxPositions: Math.max(1, value) } : p))
+    );
+  }
+
+  function updatePartCommunityConfig(idx: number, config: CommunityConfig) {
+    setParts((prev) =>
+      prev.map((p, i) => (i === idx ? { ...p, communityConfg: config } : p))
     );
   }
 
@@ -282,6 +296,27 @@ export default function CreateDraftForm({
         }
       }
 
+      // Step 4c: Community participant + limits + film rules (per part)
+      for (let i = 0; i < parts.length; i++) {
+        const part = parts[i];
+        if (!part.communityConfig.enabled) continue;
+        const partId = partPublicIds[i];
+        await setDraftPartCommunityParticipant(accessToken, partId);
+        await setDraftPartCommunityLimits(accessToken, partId, {
+          maxCommunityPicks: part.communityConfig.maxCommunityPicks,
+          maxCommunityVetoes: part.communityConfig.maxCommunityVetoes,
+        });
+        for (const rule of part.communityConfig.filmRules.filter((r) => r.status !== "removing")) {
+          const rulePublicId = await addCommunityFilmRule(accessToken, partId, {
+            ruleKind: rule.ruleKind === "BoostersVeto" ? 0 : 1,
+            targetSlot: rule.targetSlot,
+          });
+          if (rule.tmdbId) {
+            await assignFilmToCommunityFilmRule(accessToken, partId, rulePublicId, rule.tmdbId);
+          }
+        }
+      }
+
       // Step 5: Set categories
       if (selectedCategoryIds.size > 0) {
         await setDraftCategories(accessToken, draftPublicId, [...selectedCategoryIds]);
@@ -382,62 +417,84 @@ export default function CreateDraftForm({
           />
         </div>
 
-        <div className="space-y-3">
-          {parts.map((part, idx) => (
-            <div key={idx} className="border border-sd-ink/10 rounded">
-              <button
-                type="button"
-                className="w-full flex items-center justify-between px-4 py-3 text-left bg-sd-ink/5 hover:bg-sd-ink/10 transition-colors"
-                onClick={() => togglePartCollapsed(idx)}
-              >
-                <span className="font-oswald font-medium text-sd-ink tracking-wide">
-                  {numParts > 1 ? `Part ${part.partIndex}` : "Part Configuration"}
-                </span>
-                <span className="text-sd-ink/50 text-sm">{part.collapsed ? "▶" : "▼"}</span>
-              </button>
+        {/* Single part + locked: positions are fully determined by draft type — nothing to show */}
+        {numParts === 1 && parts[0]?.maxLocked && (
+          <p className="text-[11px] font-mono text-sd-ink/50">
+            Positions 1–{parts[0].maxPositions} (fixed by draft type)
+          </p>
+        )}
 
-              {!part.collapsed && (
-                <div className="px-4 py-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  {numParts > 1 && (
+        {/* Single part + unlocked: only max is editable; min is always 1 */}
+        {numParts === 1 && !parts[0]?.maxLocked && (
+          <div className="max-w-[160px]">
+            <label className={LABEL}>Max Positions</label>
+            <input
+              type="number"
+              min={1}
+              className={INPUT}
+              value={parts[0]?.maxPositions ?? 1}
+              onChange={(e) => updatePartMax(0, parseInt(e.target.value, 10) || 1)}
+            />
+          </div>
+        )}
+
+        {/* Multiple parts: full accordion with per-part min/max */}
+        {numParts > 1 && (
+          <div className="space-y-3">
+            {parts.map((part, idx) => (
+              <div key={idx} className="border border-sd-ink/10 rounded">
+                <button
+                  type="button"
+                  className="w-full flex items-center justify-between px-4 py-3 text-left bg-sd-ink/5 hover:bg-sd-ink/10 transition-colors"
+                  onClick={() => togglePartCollapsed(idx)}
+                >
+                  <span className="font-oswald font-medium text-sd-ink tracking-wide">
+                    Part {part.partIndex}
+                  </span>
+                  <span className="text-sd-ink/50 text-sm">{part.collapsed ? "▶" : "▼"}</span>
+                </button>
+
+                {!part.collapsed && (
+                  <div className="px-4 py-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
                       <label className={LABEL}>Part Index</label>
                       <div className="px-3 py-2 bg-sd-ink/5 rounded text-sd-ink text-sm font-mono">
                         {part.partIndex}
                       </div>
                     </div>
-                  )}
-                  <div>
-                    <label className={LABEL}>Min Positions</label>
-                    <div className="px-3 py-2 bg-sd-ink/5 rounded text-sd-ink text-sm font-mono">
-                      {part.minPositions}
+                    <div>
+                      <label className={LABEL}>Min Positions</label>
+                      <div className="px-3 py-2 bg-sd-ink/5 rounded text-sd-ink text-sm font-mono">
+                        {part.minPositions}
+                      </div>
+                    </div>
+                    <div>
+                      <label className={LABEL}>Max Positions</label>
+                      {part.maxLocked ? (
+                        <div className="px-3 py-2 bg-sd-ink/5 rounded text-sd-ink text-sm font-mono flex items-center gap-2">
+                          {part.maxPositions}
+                          <span className="text-[10px] text-sd-ink/40 font-mono uppercase tracking-wide">
+                            locked
+                          </span>
+                        </div>
+                      ) : (
+                        <input
+                          type="number"
+                          min={1}
+                          className={INPUT}
+                          value={part.maxPositions}
+                          onChange={(e) =>
+                            updatePartMax(idx, parseInt(e.target.value, 10) || 1)
+                          }
+                        />
+                      )}
                     </div>
                   </div>
-                  <div>
-                    <label className={LABEL}>Max Positions</label>
-                    {part.maxLocked ? (
-                      <div className="px-3 py-2 bg-sd-ink/5 rounded text-sd-ink text-sm font-mono flex items-center gap-2">
-                        {part.maxPositions}
-                        <span className="text-[10px] text-sd-ink/40 font-mono uppercase tracking-wide">
-                          locked
-                        </span>
-                      </div>
-                    ) : (
-                      <input
-                        type="number"
-                        min={1}
-                        className={INPUT}
-                        value={part.maxPositions}
-                        onChange={(e) =>
-                          updatePartMax(idx, parseInt(e.target.value, 10) || 1)
-                        }
-                      />
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
       </section>
 
       {/* ── Section 3: Hosts ── */}
@@ -522,6 +579,27 @@ export default function CreateDraftForm({
         onToggleDrafter={toggleDrafter}
         onToggleTeam={toggleTeam}
       />
+
+
+      {/* ── Section 4c: Community (per part) ── */}
+      <section>
+        <h2 className={SECTION_HEADING}>Community (Optional)</h2>
+        <div className="space-y-4">
+          {parts.map((part, idx) => (
+            <div key={idx}>
+              {parts.length > 1 && (
+                <p className="font-mono text-[11px] tracking-widest text-sd-ink/50 uppercase mb-2">
+                  Part {part.partIndex}
+                </p>
+              )}
+              <CommunitySection
+                config={part.communityConfig}
+                onChange={(next) => updatePartCommunityConfig(idx, next)}
+              />
+            </div>
+          ))}
+        </div>
+      </section>
 
       {/* ── Section 5: Category ── */}
       <section>

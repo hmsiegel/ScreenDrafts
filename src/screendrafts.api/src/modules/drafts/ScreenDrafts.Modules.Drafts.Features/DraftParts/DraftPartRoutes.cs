@@ -27,6 +27,14 @@ internal static class DraftPartRoutes
   public const string ParticipantDraftPosition = ById + "/positions/{positionId}/participant";
   public const string AssignTriviaResults = ById + "/trivia-results";
 
+  // Community Limits
+  public const string CommunityLimits = ById + "/community-limits";
+
+  // Community Film Rules
+  public const string CommunityFilmRules = ById + "/community-film-rules";
+  public const string CommunityFilmRuleById = ById + "/community-film-rules/{ruleId}";
+  public const string CommunityFilmRuleEntry = CommunityFilmRuleById + "/film";
+
   // Picks
   public const string Picks = ById + "/picks";
   public const string UndoPick = ById + "/picks/{playOrder}";

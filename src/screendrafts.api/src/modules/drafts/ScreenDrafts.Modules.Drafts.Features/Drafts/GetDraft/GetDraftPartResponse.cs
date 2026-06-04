@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.Drafts.GetDraft;
+﻿using ScreenDrafts.Modules.Drafts.Features.DraftParts.Get;
+
+namespace ScreenDrafts.Modules.Drafts.Features.Drafts.GetDraft;
 
 internal sealed record GetDraftPartResponse
 {
@@ -18,6 +20,10 @@ internal sealed record GetDraftPartResponse
   public string? PreviousCampaignDraftTitle { get; init; }
   public string? NextCampaignDraftPublicId { get; init; }
   public string? NextCampaignDraftTitle { get; init; }
+
+  public int MaxCommunityPicks { get; init; }
+  public int MaxCommunityVetoes { get; init; }
+  public Collection<GetDraftCommunityFilmRuleResponse> CommunityFilmRules { get; init; } = [];
 
   public GetDraftHostResponse? PrimaryHost { get; private set; }
   public Collection<GetDraftHostResponse> CoHosts { get; init; } = [];
@@ -43,11 +49,7 @@ internal sealed record GetDraftPartResponse
   public void AddPick(GetDraftPickResponse pick) => Picks.Add(pick);
 
   public void AddSubDraft(GetDraftSubDraftResponse subDraft) => SubDrafts.Add(subDraft);
-}
 
-internal sealed record GetDraftSubDraftResponse
-{
-  public int Index { get; init; }
-  public int SubjectKind { get; init; }
-  public string SubjectName { get; init; } = default!;
+  public void AddCommunityFilmRule(GetDraftCommunityFilmRuleResponse rule) =>
+    CommunityFilmRules.Add(rule);
 }

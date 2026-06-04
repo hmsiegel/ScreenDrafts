@@ -16,12 +16,20 @@ import {
   clearDraftCampaign,
   updateDraft,
   createDraftPart,
+  removeDraftPartCommunityParticipant,
+  setDraftPartCommunityLimits,
+  setDraftPartCommunityParticipant,
+  addCommunityFilmRule,
+  assignFilmToCommunityFilmRule,
+  removeCommunityFilmRule,
+  updateCommunityFilmRule,
 } from "@/services/admin/fetch-admin-drafts";
 import { CampaignResponse, CategoryResponse, SmartEnumResponse } from "@/lib/dto";
 import { formatDraftType } from "@/lib/draft-type-display";
 import { ParticipantsSection, InitialParticipant } from "../../new/participants-section";
 import DraftImageUpload from "@/components/features/drafts/draft-image-upload";
 import { env } from "@/lib/env";
+import { CommunityConfig, CommunityFilmRuleState, CommunitySection } from "../../new/community-section";
 
 const LABEL = "block text-[11px] font-mono tracking-widest text-sd-ink/60 uppercase mb-1";
 const INPUT =
@@ -64,6 +72,8 @@ interface PartEditState {
   removingTeamIds: Set<string>;
   hostSearch: string;
   initialParticipants: InitialParticipant[];
+  communityConfig: CommunityConfig;
+  communityWasEnabled: boolean;
 }
 
 interface PendingPart {
@@ -121,6 +131,25 @@ function initPartState(parts: DraftPart[]): PartEditState[] {
         kind: pt.participantKindValue.value === 0 ? "drafter" : "team",
       }));
 
+    const hasCommunity = p.participants.some((pt) => pt.participantKindValue.value === 2);
+
+    const filmRules: CommunityFilmRuleState[] = (p.communityFilmRules ?? []).map((r) => ({
+      localId: crypto.randomUUID(),
+      publicId: r.publicId,
+      ruleKind: r.ruleKind.name === "BoostersPick" ? "BoostersPick" : "BoostersVeto",
+      targetSlot: r.targetSlot,
+      tmdbId: r.tmdbId,
+      title: r.title,
+      status: "persisted" as const,
+    }));
+
+    const communityConfig: CommunityConfig = {
+      enabled: hasCommunity,
+      maxCommunityPicks: p.maxCommunityPicks ?? 0,
+      maxCommunityVetoes: p.maxCommunityVetoes ?? 0,
+      filmRules,
+    };
+
     return {
       partPublicId: p.publicId,
       partIndex: p.partIndex,
@@ -134,6 +163,8 @@ function initPartState(parts: DraftPart[]): PartEditState[] {
       removingTeamIds: new Set(),
       hostSearch: "",
       initialParticipants,
+      communityConfig,
+      communityWasEnabled: hasCommunity,
     };
   });
 }
@@ -306,6 +337,12 @@ export default function EditDraftForm({
     });
   }
 
+  function updateCommunityConfigOnPart(partIdx: number, config: CommunityConfig) {
+    setPartStates((prev) =>
+      prev.map((p, i) => (i !== partIdx ? p : { ...p, communityConfig: config }))
+    );
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (submitting) return;
@@ -373,6 +410,43 @@ export default function EditDraftForm({
           }
           for (const id of part.pendingTeamIds) {
             await addParticipantToDraftPart(accessToken, partPublicId, { draftPartId: partPublicId, participantPublicId: id, participantKind: 1 });
+          }
+
+          // Community participant
+          if (part.communityConfig.enabled && !part.communityWasEnabled) {
+            await setDraftPartCommunityParticipant(accessToken, partPublicId);
+          } else if (!part.communityConfig.enabled && part.communityWasEnabled) {
+            await removeDraftPartCommunityParticipant(accessToken, partPublicId);
+          }
+
+          // Community limits (resend whenever enabled — idempotent)
+          if (part.communityConfig.enabled) {
+            await setDraftPartCommunityLimits(accessToken, partPublicId, {
+              maxCommunityPicks: part.communityConfig.maxCommunityPicks,
+              maxCommunityVetoes: part.communityConfig.maxCommunityVetoes,
+            });
+          }
+          // Community film rules
+          for (const rule of part.communityConfig.filmRules) {
+            if (rule.status === "removing" && rule.publicId) {
+              await removeCommunityFilmRule(accessToken, partPublicId, rule.publicId);
+            } else if (rule.status === "pending") {
+              await addCommunityFilmRule(accessToken, partPublicId, {
+                ruleKind: rule.ruleKind === "BoostersVeto" ? 0 : 1,
+                targetSlot: rule.targetSlot,
+              });
+              // TODO: assign film inline once AddCommunityFilmRule returns { publicId }
+            } else if (rule.status === "persisted" && rule.publicId) {
+              // Update rule shape (ruleKind / targetSlot may have changed)
+              await updateCommunityFilmRule(accessToken, partPublicId, rule.publicId, {
+                ruleKind: rule.ruleKind === "BoostersVeto" ? 0 : 1,
+                targetSlot: rule.targetSlot,
+              });
+              // Assign or reassign film if tmdbId is present
+              if (rule.tmdbId) {
+                await assignFilmToCommunityFilmRule(accessToken, partPublicId, rule.publicId, rule.tmdbId);
+              }
+            }
           }
         }
 
@@ -515,7 +589,7 @@ export default function EditDraftForm({
                     <div className="px-4 py-4 space-y-6">
                       {/* Hosts */}
                       <div>
-                        <p className="font-mono text-[11px] tracking-widest text-sd-ink/50 uppercase mb-3">Hosts</p>
+                        <h2 className={SECTION_HEADING}>Hosts</h2>
                         {part.hosts.length > 0 && (
                           <div className="mb-3 space-y-2">
                             {part.hosts.map((h) => (
@@ -573,6 +647,17 @@ export default function EditDraftForm({
                         onToggleTeam={(id) => toggleTeamOnPart(idx, id)}
                         initialParticipants={part.initialParticipants}
                       />
+
+                      {/* Community */}
+                      <div>
+                        <p className="font-mono text-[11px] tracking-widest text-sd-ink/50 uppercase mb-3">
+                          Community
+                        </p>
+                        <CommunitySection
+                          config={part.communityConfig}
+                          onChange={(next) => updateCommunityConfigOnPart(idx, next)}
+                        />
+                      </div>
                     </div>
                   )}
                 </div>
@@ -600,22 +685,23 @@ export default function EditDraftForm({
                     </div>
                   </button>
                   {isPendingExpanded && (
-                    <div className="px-4 py-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div>
-                        <label className={LABEL}>Min Positions</label>
-                        <div className="px-3 py-2 bg-sd-ink/5 rounded text-sd-ink text-sm font-mono">1</div>
-                      </div>
-                      <div>
-                        <label className={LABEL}>Max Positions</label>
-                        {pp.maxLocked ? (
-                          <div className="px-3 py-2 bg-sd-ink/5 rounded text-sd-ink text-sm font-mono flex items-center gap-2">
-                            {pp.maxPositions}
-                            <span className="text-[10px] text-sd-ink/40 font-mono uppercase tracking-wide">locked</span>
-                          </div>
-                        ) : (
-                          <input type="number" min={1} className={INPUT} value={pp.maxPositions} onChange={(e) => updatePendingPartMax(pp.tempId, parseInt(e.target.value, 10) || 1)} />
-                        )}
-                      </div>
+                    <div className="px-4 py-4">
+                      {pp.maxLocked ? (
+                        <p className="text-[11px] font-mono text-sd-ink/50">
+                          Positions 1–{pp.maxPositions} (fixed by draft type)
+                        </p>
+                      ) : (
+                        <div className="max-w-[160px]">
+                          <label className={LABEL}>Max Positions</label>
+                          <input
+                            type="number"
+                            min={1}
+                            className={INPUT}
+                            value={pp.maxPositions}
+                            onChange={(e) => updatePendingPartMax(pp.tempId, parseInt(e.target.value, 10) || 1)}
+                          />
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>

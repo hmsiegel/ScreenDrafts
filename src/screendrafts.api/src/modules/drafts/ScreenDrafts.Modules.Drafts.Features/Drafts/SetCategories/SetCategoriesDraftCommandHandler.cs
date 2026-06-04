@@ -13,7 +13,10 @@ internal sealed class SetCategoriesDraftCommandHandler(
     CancellationToken cancellationToken
   )
   {
-    var draft = await _draftRepository.GetByPublicIdAsync(request.DraftId, cancellationToken);
+    var draft = await _draftRepository.GetDraftByPublicIdForUpdateAsync(
+      request.DraftId,
+      cancellationToken
+    );
 
     if (draft is null)
     {

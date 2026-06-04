@@ -4175,6 +4175,47 @@
         ]
       }
     },
+    "/draft-parts/{draftPartId}": {
+      "get": {
+        "tags": [
+          "DraftParts"
+        ],
+        "operationId": "DraftParts.GetDraftPartById",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/GetDraftPartRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetDraftPartRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetDraftPartQueryResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
     "/draft-parts/{draftPartId}/positions": {
       "put": {
         "tags": [
@@ -4336,6 +4377,161 @@
           },
           "409": {
             "description": "Conflict"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/draft-parts/{draftPartId}/community-film-rules/{ruleId}": {
+      "put": {
+        "tags": [
+          "DraftParts"
+        ],
+        "operationId": "DraftParts.UpdateCommunityFilmRule",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RemoveCommunityFilmRuleRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/draft-parts/{draftPartId}/community-film-rules": {
+      "delete": {
+        "tags": [
+          "DraftParts"
+        ],
+        "operationId": "DraftParts.RemoveCommunityFilmRule",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/RemoveCommunityFilmRuleRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RemoveCommunityFilmRuleRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {}
+        ]
+      },
+      "post": {
+        "tags": [
+          "DraftParts"
+        ],
+        "operationId": "DraftParts.AddCommunityFilmRule",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddCommunityFilmRuleRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/draft-parts/{draftPartId}/community-film-rules/{ruleId}/film": {
+      "put": {
+        "tags": [
+          "DraftParts"
+        ],
+        "operationId": "DraftParts.AssignFilmToCommunityFilmRule",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssignFilmToCommunityFilmRuleRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
           }
         },
         "security": [
@@ -6108,6 +6304,31 @@
           }
         }
       },
+      "AddCommunityFilmRuleRequest": {
+        "type": "object",
+        "properties": {
+          "draftPartId": {
+            "type": "string"
+          },
+          "ruleKind": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "targetSlot": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
       "AddDrafterToTeamRequest": {
         "required": [
           "drafterId"
@@ -6531,6 +6752,25 @@
           }
         }
       },
+      "AssignFilmToCommunityFilmRuleRequest": {
+        "type": "object",
+        "properties": {
+          "draftPartId": {
+            "type": "string"
+          },
+          "ruleId": {
+            "type": "string"
+          },
+          "tmdbId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
       "AssignParticipantToDraftPositionRequest": {
         "required": [
           "participantKind"
@@ -6944,6 +7184,29 @@
           "endsOn": {
             "type": "string",
             "format": "date"
+          }
+        }
+      },
+      "CommunityFilmRuleKind": {
+        "required": [
+          "name",
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "value": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
           }
         }
       },
@@ -8524,6 +8787,41 @@
       "GetDraftCommissionerOverrideResponse": {
         "type": "object"
       },
+      "GetDraftCommunityFilmRuleResponse": {
+        "type": "object",
+        "properties": {
+          "publicId": {
+            "type": "string"
+          },
+          "ruleKind": {
+            "$ref": "#/components/schemas/CommunityFilmRuleKind"
+          },
+          "targetSlot": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "tmdbId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "title": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
       "GetDrafterProfileRequest": {
         "type": "object",
         "properties": {
@@ -8826,6 +9124,86 @@
           }
         }
       },
+      "GetDraftPartQueryResponse": {
+        "type": "object",
+        "properties": {
+          "publicId": {
+            "type": "string"
+          },
+          "partIndex": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "maxCommunityPicks": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "maxCommunityVetoes": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "primaryHost": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/GetDraftHostResponse"
+              }
+            ]
+          },
+          "coHosts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GetDraftHostResponse"
+            }
+          },
+          "participants": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GetDraftPartParticipantResponse"
+            }
+          },
+          "releases": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GetDraftReleaseResponse"
+            }
+          },
+          "picks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GetDraftPickResponse"
+            }
+          },
+          "communityFilmRules": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GetDraftCommunityFilmRuleResponse"
+            }
+          }
+        }
+      },
+      "GetDraftPartRequest": {
+        "type": "object",
+        "properties": {
+          "draftPartId": {
+            "type": "string"
+          }
+        }
+      },
       "GetDraftPartResponse": {
         "type": "object",
         "properties": {
@@ -8906,6 +9284,28 @@
               "null",
               "string"
             ]
+          },
+          "maxCommunityPicks": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "maxCommunityVetoes": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "communityFilmRules": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GetDraftCommunityFilmRuleResponse"
+            }
           },
           "primaryHost": {
             "oneOf": [
@@ -9220,7 +9620,7 @@
               "string"
             ]
           },
-          "isOverriden": {
+          "isOverridden": {
             "type": "boolean"
           },
           "note": {
@@ -12871,6 +13271,34 @@
           },
           "categoryId": {
             "type": "string"
+          }
+        }
+      },
+      "RemoveCommunityFilmRuleRequest": {
+        "type": "object",
+        "properties": {
+          "draftPartId": {
+            "type": "string"
+          },
+          "ruleId": {
+            "type": "string"
+          },
+          "ruleKind": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "targetSlot": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
           }
         }
       },

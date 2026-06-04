@@ -47,6 +47,7 @@ internal static class DraftsOpenApi
     public const string Drafts_UploadDraftImage = "Drafts.UploadDraftImage";
 
     // Draft Parts
+    public const string DraftParts_GetDraftPartById = "DraftParts.GetDraftPartById";
     public const string DraftParts_RemoveHost = "DraftParts.RemoveHost";
     public const string DraftParts_AddParticipant = "DraftParts.AddParticipant";
     public const string DraftParts_AddHost = "DraftParts.AddHost";
@@ -69,6 +70,9 @@ internal static class DraftsOpenApi
     public const string DraftParts_GetTriviaResults = "DraftParts.GetTriviaResults";
     public const string DraftParts_PickList = "DraftParts.GetPickList";
     public const string DraftParts_SetCommunityLimits = "DraftParts.SetCommunityLimits";
+    public const string DraftParts_AddCommunityFilmRule = "DraftParts.AddCommunityFilmRule";
+    public const string DraftParts_RemoveCommunityFilmRule = "DraftParts.RemoveCommunityFilmRule";
+    public const string DraftParts_UpdateCommunityFilmRule = "DraftParts.UpdateCommunityFilmRule";
 
     // Campaigns
     public const string Campaigns_CreateCampaign = "Campaigns.CreateCampaign";
@@ -188,5 +192,7 @@ internal static class DraftsOpenApi
     public const string People_GetUsersSocials = "People.GetUsersSocials";
     public const string Participants_ListParticipants = "Participants.ListParticipants";
     public const string Participants_GetById = "Participants.GetById";
+    public const string DraftParts_AssignFilmToCommunityFilmRule =
+      "DraftParts.AssignFilmToCommunityFilmRule";
   }
 }

@@ -52,6 +52,14 @@ export interface DraftPartHost {
   personPublicId: string | null;
 }
 
+export interface DraftPartCommunityFilmRule {
+  publicId: string;
+  ruleKind: SmartEnumResponse;
+  targetSlot: number | null;
+  tmdbId: number | null;
+  title: string | null;
+}
+
 export interface DraftPart {
   publicId: string;
   partIndex: number;
@@ -60,6 +68,9 @@ export interface DraftPart {
   primaryHost: DraftPartHost | null;
   coHosts: DraftPartHost[];
   participants: DraftPartParticipant[];
+  maxCommunityPicks: number;
+  maxCommunityVetoes: number;
+  communityFilmRules: DraftPartCommunityFilmRule[];
 }
 
 export interface AdminDraftDetail {
@@ -506,5 +517,139 @@ export async function clearDraftCampaign(
     throw new Error(
       `DELETE /drafts/${draftPublicId}/campaign failed (${response.status}): ${text}`
     );
+  }
+}
+
+export async function setDraftPartCommunityParticipant(
+  accessToken: string,
+  draftPartId: string
+): Promise<void> {
+  const res = await fetch(
+    `${apiBase}/draft-parts/${encodeURIComponent(draftPartId)}/participants/community`,
+    {
+      method: "POST",
+      headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+      // PatreonMembers well-known GUID
+      body: JSON.stringify({ participantPublicId: "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee" }),
+    }
+  );
+  if (!res.ok) {
+    const text = await res.text().catch(() => res.statusText);
+    throw new Error(`POST /draft-parts/${draftPartId}/participants/community failed (${res.status}): ${text}`);
+  }
+}
+
+export async function removeDraftPartCommunityParticipant(
+  accessToken: string,
+  draftPartId: string
+): Promise<void> {
+  const res = await fetch(
+    `${apiBase}/draft-parts/${encodeURIComponent(draftPartId)}/participants/community/aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee`,
+    {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${accessToken}` },
+    }
+  );
+  if (!res.ok) {
+    const text = await res.text().catch(() => res.statusText);
+    throw new Error(`DELETE /draft-parts/${draftPartId}/participants/community failed (${res.status}): ${text}`);
+  }
+}
+
+export async function setDraftPartCommunityLimits(
+  accessToken: string,
+  draftPartId: string,
+  body: { maxCommunityPicks: number; maxCommunityVetoes: number }
+): Promise<void> {
+  const res = await fetch(
+    `${apiBase}/draft-parts/${encodeURIComponent(draftPartId)}/community-limits`,
+    {
+      method: "PUT",
+      headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    }
+  );
+  if (!res.ok) {
+    const text = await res.text().catch(() => res.statusText);
+    throw new Error(`PUT /draft-parts/${draftPartId}/community-limits failed (${res.status}): ${text}`);
+  }
+}
+
+export async function addCommunityFilmRule(
+  accessToken: string,
+  draftPartId: string,
+  body: { ruleKind: number; targetSlot: number | null }
+): Promise<string> {
+  const res = await fetch(
+    `${apiBase}/draft-parts/${encodeURIComponent(draftPartId)}/community-film-rules`,
+    {
+      method: "POST",
+      headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    }
+  );
+  if (!res.ok) {
+    const text = await res.text().catch(() => res.statusText);
+    throw new Error(`POST /draft-parts/${draftPartId}/community-film-rules failed (${res.status}): ${text}`);
+  }
+  const data = (await res.json()) as {publicId: string};
+  return data.publicId;
+}
+
+export async function updateCommunityFilmRule(
+  accessToken: string,
+  draftPartId: string,
+  ruleId: string,
+  body: { ruleKind: number; targetSlot: number | null }
+): Promise<void> {
+  const res = await fetch(
+    `${apiBase}/draft-parts/${encodeURIComponent(draftPartId)}/community-film-rules/${encodeURIComponent(ruleId)}`,
+    {
+      method: "PUT",
+      headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    }
+  );
+  if (!res.ok) {
+    const text = await res.text().catch(() => res.statusText);
+    throw new Error(`PUT /draft-parts/${draftPartId}/community-film-rules/${ruleId} failed (${res.status}): ${text}`);
+  }
+}
+
+export async function assignFilmToCommunityFilmRule(
+  accessToken: string,
+  draftPartId: string,
+  ruleId: string,
+  tmdbId: number
+): Promise<void> {
+  const res = await fetch(
+    `${apiBase}/draft-parts/${encodeURIComponent(draftPartId)}/community-film-rules/${encodeURIComponent(ruleId)}/film`,
+    {
+      method: "PUT",
+      headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ tmdbId }),
+    }
+  );
+  if (!res.ok) {
+    const text = await res.text().catch(() => res.statusText);
+    throw new Error(`PUT /draft-parts/${draftPartId}/community-film-rules/${ruleId}/film failed (${res.status}): ${text}`);
+  }
+}
+
+export async function removeCommunityFilmRule(
+  accessToken: string,
+  draftPartId: string,
+  ruleId: string
+): Promise<void> {
+  const res = await fetch(
+    `${apiBase}/draft-parts/${encodeURIComponent(draftPartId)}/community-film-rules/${encodeURIComponent(ruleId)}`,
+    {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${accessToken}` },
+    }
+  );
+  if (!res.ok) {
+    const text = await res.text().catch(() => res.statusText);
+    throw new Error(`DELETE /draft-parts/${draftPartId}/community-film-rules/${ruleId} failed (${res.status}): ${text}`);
   }
 }

@@ -30,4 +30,5 @@ public static class PublicIdPrefixes
   public const string PredictionResult = "res";
   public const string PredictionStanding = "st";
   public const string Recording = "rec";
+  public const string CommunityFilmRule = "cfr";
 }

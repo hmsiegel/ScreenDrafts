@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.Drafts.GetDraft;
+﻿using ScreenDrafts.Modules.Drafts.Features.DraftParts.Get;
+
+namespace ScreenDrafts.Modules.Drafts.Features.Drafts.GetDraft;
 
 internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFactory)
   : IQueryHandler<GetDraftQuery, GetDraftResponse>
@@ -67,6 +69,8 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
           WHERE dps.draft_part_id = dp.id
           LIMIT 1
         ) AS {nameof(GetDraftPartResponse.PredictionSeasonPublicId)},
+        dp.max_community_picks  AS {nameof(GetDraftPartResponse.MaxCommunityPicks)},
+        dp.max_community_vetoes AS {nameof(GetDraftPartResponse.MaxCommunityVetoes)},
         dp.id AS InternalId
       FROM drafts.draft_parts dp
       JOIN drafts.drafts d ON d.id = dp.draft_id
@@ -82,6 +86,8 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
         DraftPartStatus Status,
         DateTime? ScheduledForUtc,
         string? PredictionSeasonPublicId,
+        int MaxCommunityPicks,
+        int MaxCommunityVetoes,
         Guid InternalId
       )>(partSql, new { request.DraftId })
     ).ToList();
@@ -102,6 +108,8 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
         Status = r.Status,
         ScheduledForUtc = r.ScheduledForUtc,
         PredictionSeasonPublicId = r.PredictionSeasonPublicId,
+        MaxCommunityPicks = r.MaxCommunityPicks,
+        MaxCommunityVetoes = r.MaxCommunityVetoes,
       }
     );
 
@@ -149,6 +157,46 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
       {
         part.AddCoHost(hostResponse);
       }
+    }
+
+    // 4a. Community Film Rules
+    const string communityFilmRuleSql = $"""
+      SELECT
+        cfr.draft_part_id AS PartId,
+        cfr.public_id     AS {nameof(GetDraftCommunityFilmRuleResponse.PublicId)},
+        cfr.rule_kind     AS {nameof(GetDraftCommunityFilmRuleResponse.RuleKind)},
+        cfr.target_slot   AS {nameof(GetDraftCommunityFilmRuleResponse.TargetSlot)},
+        cfr.tmdb_id       AS {nameof(GetDraftCommunityFilmRuleResponse.TmdbId)},
+        m.movie_title     AS {nameof(GetDraftCommunityFilmRuleResponse.Title)}
+      FROM drafts.draft_part_community_film_rules cfr
+      LEFT JOIN drafts.movies m ON m.tmdb_id = cfr.tmdb_id
+      WHERE cfr.draft_part_id = ANY(@partIds)
+      ORDER BY cfr.public_id ASC;
+      """;
+
+    var communityFilmRuleRows = await connection.QueryAsync<(
+      Guid PartId,
+      string PublicId,
+      CommunityFilmRuleKind RuleKind,
+      int? TargetSlot,
+      int? TmdbId,
+      string? Title
+    )>(new CommandDefinition(communityFilmRuleSql, new { partIds }));
+
+    foreach (var (partId, publicId, ruleKind, targetSlot, tmdbId, title) in communityFilmRuleRows)
+    {
+      if (!partMap.TryGetValue(partId, out var part))
+        continue;
+      part.AddCommunityFilmRule(
+        new GetDraftCommunityFilmRuleResponse
+        {
+          PublicId = publicId,
+          RuleKind = ruleKind,
+          TargetSlot = targetSlot,
+          TmdbId = tmdbId,
+          Title = title,
+        }
+      );
     }
 
     // 4. Participants
