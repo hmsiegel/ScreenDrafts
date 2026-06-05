@@ -1,7 +1,5 @@
 import DraftersFilterStrip from "@/components/features/participants/drafters-filter-strip";
 import ParticipantCard from "@/components/features/participants/participant-card";
-import SiteFooter from "@/components/layout/footer/site-footer";
-import SiteHeader from "@/components/layout/header/site-header";
 import { listParticipants } from "@/services/participants/fetch-participants";
 import { Metadata } from "next";
 import { Suspense } from "react";
@@ -57,8 +55,6 @@ export default async function ParticipantsPage(props: { searchParams: SearchPara
 
   return (
     <div className="min-h-screen bg-light-blue">
-      <SiteHeader activePath="/drafters" />
-
       {/* Banner */}
       <div className="bg-sd-ink text-white" style={{ padding: "56px 40px 44px" }}>
         <p className="font-mono text-[11px] tracking-widest text-light-blue mb-3">/ DRAFTERS</p>
@@ -115,7 +111,6 @@ export default async function ParticipantsPage(props: { searchParams: SearchPara
         </div>
       </div>
 
-      <SiteFooter />
     </div>
   );
 }

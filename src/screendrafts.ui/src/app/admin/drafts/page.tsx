@@ -1,8 +1,5 @@
 import { auth } from "@/auth";
-import { redirect } from "next/navigation";
 import Link from "next/link";
-import SiteHeader from "@/components/layout/header/site-header";
-import SiteFooter from "@/components/layout/footer/site-footer";
 import { listAdminActiveDrafts } from "@/services/admin/fetch-admin-drafts";
 import { Metadata } from "next";
 import DraftTypeBadge from "@/components/ui/draft-type-badge";
@@ -10,8 +7,6 @@ import { draftTypeFromNumber } from "@/lib/draft-type-display";
 
 export const metadata: Metadata = { title: "Draft Management" };
 export const dynamic = "force-dynamic";
-
-const ADMIN_ROLES = ["Administrator", "SuperAdministrator"];
 
 // Draft status numeric values from backend SmartEnum
 const STATUS_LABELS: Record<number, string> = {
@@ -38,15 +33,12 @@ function AdminCard({ title, children }: { title: string; children: React.ReactNo
 
 export default async function AdminDraftsPage() {
   const session = await auth();
-  const isAdmin = session?.roles?.some((r) => ADMIN_ROLES.includes(r)) ?? false;
-  if (!isAdmin) redirect("/");
 
   // Show Active (2) and Paused (3) first; fall back to all if none match
   const displayDrafts = await listAdminActiveDrafts(session?.accessToken);
 
   return (
     <div className="min-h-screen bg-light-blue">
-      <SiteHeader activePath="/admin" />
 
       <div className="px-6 md:px-10 py-10 max-w-[1200px] mx-auto">
         <p className="font-mono text-[11px] tracking-widest text-sd-ink/50 mb-6">
@@ -123,7 +115,6 @@ export default async function AdminDraftsPage() {
         </AdminCard>
       </div>
 
-      <SiteFooter />
     </div>
   );
 }

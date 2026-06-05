@@ -2,8 +2,6 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { GetDraftPartResponse, GetDraftPickResponse, TriviaResultResponse } from "@/lib/dto";
-import SiteHeader from "@/components/layout/header/site-header";
-import SiteFooter from "@/components/layout/footer/site-footer";
 import DraftSidebar from "@/components/features/drafts/drafts-sidebar";
 import { DraftPick } from "@/components/features/drafts/draft-pick";
 import { SpeedDraftLayout } from "@/components/features/drafts/speed-draft-layout";
@@ -144,7 +142,6 @@ export default async function DraftDetailPage({ params }: Props) {
 
     return (
       <div className="min-h-screen bg-light-blue">
-        <SiteHeader activePath="/drafts" />
         <div style={{ padding: "40px 40px 64px" }}>
           <nav className="font-mono text-[11px] mb-8 flex items-center gap-1.5">
             <Link href="/drafts" className="text-sd-blue hover:underline">
@@ -163,7 +160,6 @@ export default async function DraftDetailPage({ params }: Props) {
             predictionData={predictionData}
           />
         </div>
-        <SiteFooter />
       </div>
     );
   }
@@ -171,8 +167,6 @@ export default async function DraftDetailPage({ params }: Props) {
   // ── Standard layout (single-part non-SpeedDraft + all multi-part) ──────────
   return (
     <div className="min-h-screen bg-light-blue">
-      <SiteHeader activePath="/drafts" />
-
       <div style={{ padding: "40px 40px 64px" }}>
         {/* Breadcrumb */}
         <nav className="font-mono text-[11px] mb-8 flex items-center gap-1.5">
@@ -312,7 +306,6 @@ export default async function DraftDetailPage({ params }: Props) {
         </div>
       </div>
 
-      <SiteFooter />
     </div>
   );
 }

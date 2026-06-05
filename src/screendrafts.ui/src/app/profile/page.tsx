@@ -1,8 +1,6 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { fetchProfile } from "@/services/profile/fetch-profile";
-import SiteHeader from "@/components/layout/header/site-header";
-import SiteFooter from "@/components/layout/footer/site-footer";
 import ProfileForm from "./profile-form";
 import { Metadata } from "next";
 import { env } from "@/lib/env";
@@ -39,8 +37,6 @@ export default async function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-light-blue">
-      <SiteHeader activePath="/profile" />
-
       <div className="px-6 md:px-10 py-10 max-w-[1100px] mx-auto">
         <p className="font-mono text-[11px] tracking-widest text-sd-ink/50 mb-6">/ PROFILE</p>
         <h1 className="font-oswald font-bold text-[48px] leading-none text-sd-ink mb-10">
@@ -99,8 +95,6 @@ export default async function ProfilePage() {
           </main>
         </div>
       </div>
-
-      <SiteFooter />
     </div>
   );
 }

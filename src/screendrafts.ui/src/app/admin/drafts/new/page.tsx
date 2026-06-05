@@ -1,8 +1,6 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import SiteHeader from "@/components/layout/header/site-header";
-import SiteFooter from "@/components/layout/footer/site-footer";
 import CreateDraftForm from "./create-draft-form";
 import {
   listAllSeries,
@@ -15,12 +13,8 @@ import { Metadata } from "next";
 export const metadata: Metadata = { title: "Create Draft" };
 export const dynamic = "force-dynamic";
 
-const ADMIN_ROLES = ["Administrator", "SuperAdministrator"];
-
 export default async function CreateDraftPage() {
   const session = await auth();
-  const isAdmin = session?.roles?.some((r) => ADMIN_ROLES.includes(r)) ?? false;
-  if (!isAdmin) redirect("/");
 
   if (!session?.accessToken) redirect("/");
 
@@ -33,8 +27,6 @@ export default async function CreateDraftPage() {
 
   return (
     <div className="min-h-screen bg-light-blue">
-      <SiteHeader activePath="/admin" />
-
       <div className="px-6 md:px-10 py-10 max-w-[900px] mx-auto">
         <p className="font-mono text-[11px] tracking-widest text-sd-ink/50 mb-6">
           <Link href="/admin" className="hover:text-sd-ink/70">ADMIN</Link>
@@ -57,8 +49,6 @@ export default async function CreateDraftPage() {
           />
         </div>
       </div>
-
-      <SiteFooter />
     </div>
   );
 }
