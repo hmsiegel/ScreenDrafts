@@ -1,6 +1,4 @@
 import MediaFilterStrip from "@/components/features/media/media-filter-strip";
-import SiteFooter from "@/components/layout/footer/site-footer";
-import SiteHeader from "@/components/layout/header/site-header";
 import { fetchMedia } from "@/services/media/fetch-media";
 import { MediaListItemResponse } from "@/lib/dto";
 import { Metadata } from "next";
@@ -50,8 +48,6 @@ export default async function MediaPage(props: { searchParams: SearchParams }) {
 
   return (
     <div className="min-h-screen bg-light-blue">
-      <SiteHeader activePath="/media" />
-
       {/* Banner */}
       <div className="bg-sd-ink text-white" style={{ padding: "56px 40px 44px" }}>
         <p className="font-mono text-[11px] tracking-widest text-light-blue mb-3">/ MEDIA</p>
@@ -93,7 +89,6 @@ export default async function MediaPage(props: { searchParams: SearchParams }) {
         </div>
       </div>
 
-      <SiteFooter />
     </div>
   );
 }

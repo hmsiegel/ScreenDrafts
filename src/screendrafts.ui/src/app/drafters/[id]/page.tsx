@@ -1,5 +1,3 @@
-import SiteFooter from "@/components/layout/footer/site-footer";
-import SiteHeader from "@/components/layout/header/site-header";
 import { getParticipantProfile } from "@/services/participants/fetch-participants";
 import { HonorificBanner } from "@/components/features/participants/honorific-banner";
 import {
@@ -73,8 +71,6 @@ export default async function DrafterProfilePage({ params }: Props) {
 
   return (
     <div className="min-h-screen bg-light-blue">
-      <SiteHeader activePath="/drafters" />
-
       {/* Page header */}
       <div className="bg-sd-ink text-white px-10 py-12">
         <p className="font-mono text-[11px] tracking-widest text-light-blue mb-3">
@@ -152,7 +148,6 @@ export default async function DrafterProfilePage({ params }: Props) {
         </div>
       </div>
 
-      <SiteFooter />
     </div>
   );
 }

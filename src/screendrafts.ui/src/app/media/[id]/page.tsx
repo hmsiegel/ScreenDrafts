@@ -1,5 +1,3 @@
-import SiteFooter from "@/components/layout/footer/site-footer";
-import SiteHeader from "@/components/layout/header/site-header";
 import YouTubeEmbed from "@/components/features/media/youtube-embed";
 import { fetchMediaDetail } from "@/services/media/fetch-media-detail";
 import { MediaResponse, MediaType, MediaAppearanceResponse, MediaStatsResponse, MediaHonorificResponse } from "@/lib/dto";
@@ -86,8 +84,6 @@ export default async function MediaDetailPage({ params }: Props) {
 
   return (
     <div className="min-h-screen bg-light-blue">
-      <SiteHeader activePath="/media" />
-
       {/* Hero */}
       <div className="relative bg-sd-ink overflow-hidden" style={{ minHeight: 360 }}>
         {media.image && (
@@ -167,7 +163,6 @@ export default async function MediaDetailPage({ params }: Props) {
         </div>
       </div>
 
-      <SiteFooter />
     </div>
   );
 }

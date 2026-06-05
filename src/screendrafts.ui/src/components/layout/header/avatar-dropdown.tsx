@@ -4,6 +4,7 @@ import SignOutButton from "./sign-out-button";
 interface Props {
   name?: string | null;
   isAdmin?: boolean;
+  isDrafter?: boolean;
 }
 
 function initials(name?: string | null): string {
@@ -16,7 +17,7 @@ function initials(name?: string | null): string {
     .toUpperCase();
 }
 
-export default function AvatarDropdown({ name, isAdmin }: Props) {
+export default function AvatarDropdown({ name, isDrafter }: Props) {
   return (
     <details className="relative" suppressHydrationWarning>
       <summary className="list-none cursor-pointer">
@@ -32,22 +33,14 @@ export default function AvatarDropdown({ name, isAdmin }: Props) {
         >
           My Dashboard
         </Link>
-        <Link
-          href="/dashboard/drafts"
-          className="block px-4 py-2 text-sm text-sd-ink hover:bg-gray-50 transition-colors"
-        >
-          My Draft Boards
-        </Link>
-        {isAdmin && (
-          <>
-            <div className="border-t border-gray-100 mt-1 pt-1" />
-            <Link
-              href="/admin/drafts"
-              className="block px-4 py-2 text-sm text-sd-red font-medium hover:bg-gray-50 transition-colors"
-            >
-              Draft Management
-            </Link>
-          </>
+        {isDrafter && (
+          // TODO: implement /my-drafts — drafter draft board
+          <Link
+            href="/my-drafts"
+            className="block px-4 py-2 text-sm text-sd-ink hover:bg-gray-50 transition-colors"
+          >
+            My Drafts
+          </Link>
         )}
         <div className="border-t border-gray-100 mt-1 pt-1">
           <SignOutButton />

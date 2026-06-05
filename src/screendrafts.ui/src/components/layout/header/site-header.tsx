@@ -3,6 +3,7 @@ import Link from "next/link";
 import { auth } from "@/auth";
 import SignInButton from "./sign-in-button";
 import AvatarDropdown from "./avatar-dropdown";
+import AdminDropdown from "./admin-dropdown";
 
 // Must match administration.roles.name exactly.
 // Run: SELECT name FROM administration.roles WHERE name ILIKE '%admin%';
@@ -20,6 +21,7 @@ const NAV_ITEMS: NavItem[] = [
 export default async function SiteHeader({ activePath }: { activePath?: string } = {}) {
   const session = await auth();
   const isAdmin = session?.roles?.some(r => ADMIN_ROLES.includes(r)) ?? false;
+  const isDrafter = session?.roles?.includes("Drafter") ?? false;
 
   return (
     <header className="bg-white border-b-4 border-sd-red px-8 py-5 flex items-center justify-between">
@@ -57,14 +59,10 @@ export default async function SiteHeader({ activePath }: { activePath?: string }
             </Link>
           );
         })}
-        {isAdmin && (
-          <Link href="/admin" className="text-sd-red font-oswald font-semibold tracking-widest">
-            ADMIN
-          </Link>
-        )}
+        {isAdmin && <AdminDropdown />}
 
         {session ? (
-          <AvatarDropdown name={session.user?.name} isAdmin={isAdmin} />
+          <AvatarDropdown name={session.user?.name} isAdmin={isAdmin} isDrafter={isDrafter} />
         ) : (
           <>
             <SignInButton />

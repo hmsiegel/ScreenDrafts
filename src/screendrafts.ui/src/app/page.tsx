@@ -1,6 +1,4 @@
 import AnnouncementBar from "@/components/layout/announcement-bar";
-import SiteHeader from "@/components/layout/header/site-header";
-import SiteFooter from "@/components/layout/footer/site-footer";
 import SpotlightHero from "@/components/features/home/spotlight-hero";
 import StatBar from "@/components/features/home/stat-bar";
 import RecentDrafts from "@/components/features/home/recent-drafts";
@@ -37,7 +35,6 @@ export default async function Home() {
 
   return (
     <div className="bg-light-blue min-h-screen font-sans">
-      <SiteHeader />
       <SpotlightHero spotlight={spotlight} />
       <StatBar stats={stats} />
 
@@ -48,7 +45,6 @@ export default async function Home() {
       </section>
 
       <AuthStrip />
-      <SiteFooter />
     </div>
   );
 }

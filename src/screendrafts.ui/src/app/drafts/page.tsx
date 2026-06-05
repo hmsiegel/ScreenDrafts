@@ -1,11 +1,9 @@
-import SiteHeader from "@/components/layout/header/site-header";
 import DraftsFilter from "@/components/features/drafts/drafts-filter";
 import { listDrafts } from "@/services/drafts/fetch-drafts";
 import { fetchSiteStats } from "@/services/home/fetch-home-data";
 import { Metadata } from "next";
 import { Suspense } from "react";
 import { DraftsTable } from "@/components/features/drafts/drafts-table";
-import SiteFooter from "@/components/layout/footer/site-footer";
 import { listCampaigns } from "@/services/drafts/fetch-campaigns";
 import { auth } from "@/auth";
 
@@ -68,8 +66,6 @@ export default async function DraftsPage(props: { searchParams: SearchParams }) 
 
    return (
       <div className="min-h-screen bg-light-blue">
-         <SiteHeader activePath="/drafts" />
-
          {/* Banner */}
          <div className="bg-sd-ink text-white" style={{ padding: "56px 40px 44px" }}>
             <p className="font-mono text-[11px] tracking-widest text-light-blue mb-3">/ DRAFTS</p>
@@ -119,7 +115,6 @@ export default async function DraftsPage(props: { searchParams: SearchParams }) 
             </div>
          </div>
 
-         <SiteFooter />
       </div>
    );
 }
