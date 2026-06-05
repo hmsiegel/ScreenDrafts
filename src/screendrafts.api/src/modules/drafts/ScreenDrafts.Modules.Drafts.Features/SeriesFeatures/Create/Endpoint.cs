@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Common.Abstractions.Results;
-
-namespace ScreenDrafts.Modules.Drafts.Features.SeriesFeatures.Create;
+﻿namespace ScreenDrafts.Modules.Drafts.Features.SeriesFeatures.Create;
 
 internal sealed class Endpoint : ScreenDraftsEndpoint<CreateSeriesRequest, CreatedIdResponse>
 {
@@ -10,10 +8,10 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<CreateSeriesRequest, Creat
     Description(x =>
     {
       x.WithTags(DraftsOpenApi.Tags.Series)
-      .WithName(DraftsOpenApi.Names.Series_CreateSeries)
-      .Produces<CreatedIdResponse>(StatusCodes.Status201Created)
-      .Produces(StatusCodes.Status400BadRequest)
-      .Produces(StatusCodes.Status403Forbidden);
+        .WithName(DraftsOpenApi.Names.Series_CreateSeries)
+        .Produces<CreatedIdResponse>(StatusCodes.Status201Created)
+        .Produces(StatusCodes.Status400BadRequest)
+        .Produces(StatusCodes.Status403Forbidden);
     });
     Policies(DraftsAuth.Permissions.SeriesCreate);
   }
@@ -24,12 +22,13 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<CreateSeriesRequest, Creat
     var CreateSeriesFeatureCommand = new CreateSeriesCommand
     {
       Name = req.Name,
+      Description = req.Description,
       Kind = req.Kind,
       CanonicalPolicy = req.CanonicalPolicy,
       ContinuityScope = req.ContinuityScope,
       ContinuityDateRule = req.ContinuityDateRule,
       AllowedDraftTypes = (int)req.AllowedDraftTypes,
-      DefaultDraftType = req.DefaultDraftType
+      DefaultDraftType = req.DefaultDraftType,
     };
 
     var result = await Sender.Send(CreateSeriesFeatureCommand, ct);
@@ -37,8 +36,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<CreateSeriesRequest, Creat
     await this.SendCreatedAsync(
       result.Map(id => new CreatedIdResponse(id)),
       created => SeriesLocations.ById(created.Id),
-      ct);
+      ct
+    );
   }
 }
-
-

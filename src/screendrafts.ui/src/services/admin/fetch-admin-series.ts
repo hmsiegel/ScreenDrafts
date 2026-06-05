@@ -1,6 +1,6 @@
 import { env } from "@/lib/env";
-import { SeriesResponse } from "@/lib/dto";
 import { auth } from "@/auth";
+import { SeriesResponse } from "@/lib/dto";
 
 const apiBase = env.apiUrl;
 
@@ -8,21 +8,23 @@ function authHeaders(accessToken: string | undefined): HeadersInit {
   return accessToken ? { Authorization: `Bearer ${accessToken}` } : {};
 }
 
-export type SeriesListItem = SeriesResponse;
+export type SeriesListItem = SeriesResponse & { isDeleted?: boolean };
 
 export interface CreateSeriesRequest {
   name: string;
-  description?: string;
+  description?: string | null;
+  kind: number;
+  canonicalPolicy: number;
+  continuityScope: number;
+  continuityDateRule: number;
+  allowedDraftTypes: number;   // bitmask integer
+  defaultDraftType: number | null;
 }
 
-export interface UpdateSeriesRequest {
-  name?: string;
-  description?: string;
-}
+export type UpdateSeriesRequest = CreateSeriesRequest;
 
 export async function listAllSeries(): Promise<SeriesListItem[]> {
   const session = await auth();
-  // TODO: backend SearchSeries not yet implemented — stub returns [] until endpoint is available
   const res = await fetch(`${apiBase}/series`, {
     headers: authHeaders(session?.accessToken),
     cache: "no-store",

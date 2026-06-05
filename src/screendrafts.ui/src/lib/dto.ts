@@ -9281,6 +9281,7 @@ export interface CreatePredictionSeasonRequest {
 
 export interface CreateSeriesRequest {
     name: string;
+    description?: string | undefined;
     kind?: number;
     canonicalPolicy?: number;
     continuityScope?: number;
@@ -9511,6 +9512,7 @@ export interface EditPersonRequest {
 export interface EditSeriesRequest {
     publicId?: string;
     name?: string | undefined;
+    description?: string | undefined;
     kind?: number;
     canonicalPolicy?: number;
     continuityScope?: number;
@@ -10314,7 +10316,7 @@ export interface ListDraftsRequest {
     fromDate?: Date | undefined;
     toDate?: Date | undefined;
     draftType?: number | undefined;
-    categoryPublicId?: string | undefined;
+    categoryPublicIds?: string[] | undefined;
     campaignPublicId?: string | undefined;
     minDrafters?: number | undefined;
     maxDrafters?: number | undefined;
@@ -11181,6 +11183,7 @@ export interface SeriesCollectionResponse {
 
 export interface SeriesResponse {
     name?: string;
+    description?: string;
     publicId?: string;
     kind?: SmartEnumResponse;
     canonicalPolicy?: SmartEnumResponse;

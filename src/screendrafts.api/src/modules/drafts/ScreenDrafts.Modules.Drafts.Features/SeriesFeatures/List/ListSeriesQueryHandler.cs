@@ -15,6 +15,7 @@ internal sealed class ListSeriesQueryHandler(IDbConnectionFactory dbConnectionFa
     const string sql = $"""
         SELECT
           s.public_id AS {nameof(SeriesResponse.PublicId)},
+          s.description AS {nameof(SeriesResponse.Description)},
           s.name AS {nameof(SeriesResponse.Name)},
           s.kind AS {nameof(SeriesResponse.Kind)},
           s.canonical_policy AS {nameof(SeriesResponse.CanonicalPolicy)},

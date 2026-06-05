@@ -86,6 +86,7 @@ global using ScreenDrafts.Modules.Drafts.Features.Participants.Shared;
 global using ScreenDrafts.Modules.Drafts.Features.People;
 global using ScreenDrafts.Modules.Drafts.Features.People.Create;
 global using ScreenDrafts.Modules.Drafts.Features.Predictions.Common;
+global using ScreenDrafts.Modules.Drafts.Features.SeriesFeatures;
 global using ScreenDrafts.Modules.Drafts.IntegrationEvents;
 global using ScreenDrafts.Modules.Integrations.IntegrationEvents;
 global using ScreenDrafts.Modules.Integrations.PublicApi;

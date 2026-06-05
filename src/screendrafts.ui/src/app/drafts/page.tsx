@@ -6,6 +6,7 @@ import { Suspense } from "react";
 import { DraftsTable } from "@/components/features/drafts/drafts-table";
 import { listCampaigns } from "@/services/drafts/fetch-campaigns";
 import { auth } from "@/auth";
+import { listCategories } from "@/services/drafts/fetch-categrories";
 
 export const metadata: Metadata = {
    title: "The Archive",
@@ -26,6 +27,10 @@ function asString(v: string | string[] | undefined): string | undefined {
    if (!v) return undefined;
    return Array.isArray(v) ? v[0] : v;
 }
+function asStringArray(v: string | string[] | undefined): string[] {
+  if (!v) return [];
+  return Array.isArray(v) ? v : [v];
+}
 
 function formatStat(n: number | undefined): string {
    if (n == null) return "—";
@@ -43,8 +48,9 @@ export default async function DraftsPage(props: { searchParams: SearchParams }) 
 
    const sort = asString(qp.sort) ?? "date";
    const dir = (asString(qp.dir) ?? "desc") as "asc" | "desc";
+   const categoryPublicIds = asStringArray(qp.categoryPublicIds);
 
-   const [draftsResult, stats, campaigns] = await Promise.all([
+   const [draftsResult, stats, campaigns, categories] = await Promise.all([
       listDrafts({
          q: asString(qp.q),
          fromDate: asString(qp.fromDate),
@@ -55,11 +61,13 @@ export default async function DraftsPage(props: { searchParams: SearchParams }) 
          page,
          pageSize,
          campaignPublicId: asString(qp.campaignPublicId),
+         categoryPublicIds,
          sort,
          dir,
       }),
       fetchSiteStats(),
       listCampaigns(),
+      listCategories(),
    ]);
 
    const totalPages = Math.ceil(draftsResult.total / pageSize);
@@ -97,7 +105,7 @@ export default async function DraftsPage(props: { searchParams: SearchParams }) 
 
          {/* Filter strip */}
          <Suspense>
-            <DraftsFilter campaigns={campaigns} />
+            <DraftsFilter campaigns={campaigns} categories={categories}/>
          </Suspense>
 
          {/* Table container */}

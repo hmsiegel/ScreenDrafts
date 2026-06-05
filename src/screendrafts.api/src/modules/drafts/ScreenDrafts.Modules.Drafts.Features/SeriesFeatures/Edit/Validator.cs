@@ -1,7 +1,4 @@
-﻿using ScreenDrafts.Modules.Drafts.Features.SeriesFeatures.Edit;
-using ScreenDrafts.Modules.Drafts.Domain.SeriesAggregate.Enums;
-
-namespace ScreenDrafts.Modules.Drafts.Features.SeriesFeatures.Edit;
+﻿namespace ScreenDrafts.Modules.Drafts.Features.SeriesFeatures.Edit;
 
 internal sealed class Validator : AbstractValidator<EditSeriesCommand>
 {
@@ -13,17 +10,20 @@ internal sealed class Validator : AbstractValidator<EditSeriesCommand>
       .WithMessage("Series ID must be provided.");
 
     RuleFor(x => x.Name)
-      .MaximumLength(100).WithMessage("Series name must not exceed 100 characters.")
+      .MaximumLength(Series.MaxNameLength)
+      .WithMessage($"Series name must not exceed {Series.MaxNameLength} characters.")
       .When(x => x.Name is not null);
 
-    RuleFor(x => x.Kind)
-      .MustBeSmartEnumValue<EditSeriesCommand, SeriesKind>();
+    RuleFor(x => x.Description)
+      .MaximumLength(Series.MaxDescriptionLength)
+      .WithMessage($"Series description must not exceed {Series.MaxDescriptionLength} characters.")
+      .When(x => x.Description is not null);
 
-    RuleFor(x => x.CanonicalPolicy)
-      .MustBeSmartEnumValue<EditSeriesCommand, CanonicalPolicy>();
+    RuleFor(x => x.Kind).MustBeSmartEnumValue<EditSeriesCommand, SeriesKind>();
 
-    RuleFor(x => x.ContinuityScope)
-      .MustBeSmartEnumValue<EditSeriesCommand, ContinuityScope>();
+    RuleFor(x => x.CanonicalPolicy).MustBeSmartEnumValue<EditSeriesCommand, CanonicalPolicy>();
+
+    RuleFor(x => x.ContinuityScope).MustBeSmartEnumValue<EditSeriesCommand, ContinuityScope>();
 
     RuleFor(x => x.ContinuityDateRule)
       .MustBeSmartEnumValue<EditSeriesCommand, ContinuityDateRule>();
@@ -51,4 +51,3 @@ internal sealed class Validator : AbstractValidator<EditSeriesCommand>
       .WithMessage("Default draft type must be one of the allowed draft types.");
   }
 }
-

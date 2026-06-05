@@ -7457,6 +7457,12 @@
           "name": {
             "type": "string"
           },
+          "description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
           "kind": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": [
@@ -8168,6 +8174,12 @@
             "type": "string"
           },
           "name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "description": {
             "type": [
               "null",
               "string"
@@ -10782,11 +10794,14 @@
             ],
             "format": "int32"
           },
-          "categoryPublicId": {
+          "categoryPublicIds": {
             "type": [
               "null",
-              "string"
-            ]
+              "array"
+            ],
+            "items": {
+              "type": "string"
+            }
           },
           "campaignPublicId": {
             "type": [
@@ -13964,6 +13979,9 @@
         "type": "object",
         "properties": {
           "name": {
+            "type": "string"
+          },
+          "description": {
             "type": "string"
           },
           "publicId": {

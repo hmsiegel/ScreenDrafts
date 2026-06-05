@@ -94,6 +94,7 @@ internal sealed class ListDraftsQueryHandler(IDbConnectionFactory connectionFact
     {
       sqlBuilder.Append(
         """
+
                 AND EXISTS (
                   SELECT 1
                   FROM drafts.draft_releases dr
@@ -114,22 +115,26 @@ internal sealed class ListDraftsQueryHandler(IDbConnectionFactory connectionFact
 
     // Category filter
     // Categories belong to the draft not the draft part
-    if (!string.IsNullOrWhiteSpace(request.CategoryPublicId))
+    if (
+      request.CategoryPublicIds is { Count: > 0 } ids
+      && ids.Any(id => !string.IsNullOrWhiteSpace(id))
+    )
     {
+      var nonEmpty = ids.Where(id => !string.IsNullOrWhiteSpace(id)).ToArray();
       sqlBuilder.Append(
         """
-          AND EXISTS (
-            SELECT 1
-            FROM drafts.draft_categories dc
-            JOIN drafts.categories c ON c.id = dc.category_id
-            WHERE dc.draft_id = d.id
-              AND c.public_id = @CategoryPublicId
-          )
+
+        AND EXISTS (
+          SELECT 1
+          FROM drafts.draft_categories dc
+          JOIN drafts.categories cat ON cat.id = dc.category_id
+          WHERE dc.draft_id = d.id
+            AND cat.public_id = ANY(@CategoryPublicIds)
+        )
         """
       );
-      p.Add("categoryPublicId", request.CategoryPublicId);
+      p.Add("CategoryPublicIds", nonEmpty);
     }
-
     if (!string.IsNullOrWhiteSpace(request.CampaignPublicId))
     {
       sqlBuilder.Append(

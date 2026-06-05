@@ -23,6 +23,8 @@ import {
   assignFilmToCommunityFilmRule,
   removeCommunityFilmRule,
   updateCommunityFilmRule,
+  setDraftPositions,
+  listDraftPositions,
 } from "@/services/admin/fetch-admin-drafts";
 import { CampaignResponse, CategoryResponse, SmartEnumResponse } from "@/lib/dto";
 import { formatDraftType } from "@/lib/draft-type-display";
@@ -30,6 +32,12 @@ import { ParticipantsSection, InitialParticipant } from "../../new/participants-
 import DraftImageUpload from "@/components/features/drafts/draft-image-upload";
 import { env } from "@/lib/env";
 import { CommunityConfig, CommunityFilmRuleState, CommunitySection } from "../../new/community-section";
+import {
+  PositionConfig,
+  PositionsEditor,
+  getDefaultPositions,
+  isFixedPositionType,
+} from "../../new/positions-editor";
 
 const LABEL = "block text-[11px] font-mono tracking-widest text-sd-ink/60 uppercase mb-1";
 const INPUT =
@@ -74,6 +82,8 @@ interface PartEditState {
   initialParticipants: InitialParticipant[];
   communityConfig: CommunityConfig;
   communityWasEnabled: boolean;
+  positions: PositionConfig[];
+  positionsLoaded: boolean;
 }
 
 interface PendingPart {
@@ -81,6 +91,7 @@ interface PendingPart {
   minPositions: number;
   maxPositions: number;
   maxLocked: boolean;
+  positions: PositionConfig[];
 }
 
 interface Props {
@@ -165,6 +176,8 @@ function initPartState(parts: DraftPart[]): PartEditState[] {
       initialParticipants,
       communityConfig,
       communityWasEnabled: hasCommunity,
+      positions: getDefaultPositions(p.draftType?.name ?? ""),
+      positionsLoaded: false,
     };
   });
 }
@@ -203,12 +216,10 @@ export default function EditDraftForm({
   const [pendingParts, setPendingParts] = useState<PendingPart[]>([]);
   const [expandedPart, setExpandedPart] = useState<number | null>(0);
 
-  // Categories — seeded from draft.categories
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<Set<string>>(
     () => new Set(draft.categories?.map((c) => c.publicId) ?? [])
   );
   const [categoriesChanged, setCategoriesChanged] = useState(false);
-
   const [campaignId, setCampaignId] = useState(draft.campaignPublicId ?? "");
 
   const [submitting, setSubmitting] = useState(false);
@@ -219,9 +230,33 @@ export default function EditDraftForm({
   const availableDraftTypes = selectedSeries?.allowedDraftTypes ?? [];
   const anyPartStarted = draft.parts.some((p) => p.status.name !== "Created");
 
+  // Load positions for each existing part on mount and after save
   useEffect(() => {
-    setPartStates(initPartState(draft.parts));
-  }, [saveCount]);
+    const states = initPartState(draft.parts);
+    setPartStates(states);
+
+    // Fetch positions for each part
+    states.forEach((part, idx) => {
+      listDraftPositions(accessToken, part.partPublicId).then((loaded) => {
+        const typeName = draft.parts[idx]?.draftType?.name ?? "";
+        const fixed = isFixedPositionType(typeName);
+        // For fixed types always use the canonical layout; for variable use what the API returns,
+        // falling back to defaults if nothing is set yet.
+        const resolved =
+          fixed
+            ? getDefaultPositions(typeName)
+            : loaded.length > 0
+              ? loaded
+              : getDefaultPositions(typeName);
+
+        setPartStates((prev) =>
+          prev.map((p, i) =>
+            i === idx ? { ...p, positions: resolved, positionsLoaded: true } : p
+          )
+        );
+      });
+    });
+  }, [saveCount]); // eslint-disable-line react-hooks/exhaustive-deps
 
   function handleSeriesChange(seriesId: string) {
     setSelectedSeriesId(seriesId);
@@ -233,14 +268,28 @@ export default function EditDraftForm({
     const typeObj = availableDraftTypes.find((t) => t.name === typeName) ?? null;
     setSelectedDraftType(typeObj);
     const { max, locked } = getMaxPositionsConfig(typeName);
-    setPendingParts((prev) => prev.map((p) => ({ ...p, maxPositions: max, maxLocked: locked })));
+    setPendingParts((prev) =>
+      prev.map((p) => ({
+        ...p,
+        maxPositions: max,
+        maxLocked: locked,
+        positions: getDefaultPositions(typeName),
+      }))
+    );
   }
 
   function addPendingPart() {
-    const { max, locked } = getMaxPositionsConfig(selectedDraftType?.name ?? "");
+    const typeName = selectedDraftType?.name ?? "";
+    const { max, locked } = getMaxPositionsConfig(typeName);
     setPendingParts((prev) => [
       ...prev,
-      { tempId: crypto.randomUUID(), minPositions: 1, maxPositions: max, maxLocked: locked },
+      {
+        tempId: crypto.randomUUID(),
+        minPositions: 1,
+        maxPositions: max,
+        maxLocked: locked,
+        positions: getDefaultPositions(typeName),
+      },
     ]);
   }
 
@@ -254,13 +303,28 @@ export default function EditDraftForm({
     );
   }
 
+  function updatePendingPartPositions(tempId: string, positions: PositionConfig[]) {
+    setPendingParts((prev) =>
+      prev.map((p) => (p.tempId === tempId ? { ...p, positions } : p))
+    );
+  }
+
+  function updatePartPositions(partIdx: number, positions: PositionConfig[]) {
+    setPartStates((prev) =>
+      prev.map((p, i) => (i === partIdx ? { ...p, positions } : p))
+    );
+  }
+
   function addHostToPart(partIdx: number, host: AdminHostOption) {
     setPartStates((prev) =>
       prev.map((p, i) => {
         if (i !== partIdx || p.hosts.some((h) => h.publicId === host.publicId)) return p;
         return {
           ...p,
-          hosts: [...p.hosts, { publicId: host.publicId, displayName: host.displayName, role: "CoHost", persisted: false }],
+          hosts: [
+            ...p.hosts,
+            { publicId: host.publicId, displayName: host.displayName, role: "CoHost", persisted: false },
+          ],
         };
       })
     );
@@ -268,14 +332,18 @@ export default function EditDraftForm({
 
   function removeHostFromPart(partIdx: number, hostPublicId: string) {
     setPartStates((prev) =>
-      prev.map((p, i) => i !== partIdx ? p : { ...p, hosts: p.hosts.filter((h) => h.publicId !== hostPublicId) })
+      prev.map((p, i) =>
+        i !== partIdx ? p : { ...p, hosts: p.hosts.filter((h) => h.publicId !== hostPublicId) }
+      )
     );
   }
 
   function setHostRoleOnPart(partIdx: number, hostPublicId: string, role: "Primary" | "CoHost") {
     setPartStates((prev) =>
       prev.map((p, i) =>
-        i !== partIdx ? p : { ...p, hosts: p.hosts.map((h) => h.publicId === hostPublicId ? { ...h, role } : h) }
+        i !== partIdx
+          ? p
+          : { ...p, hosts: p.hosts.map((h) => (h.publicId === hostPublicId ? { ...h, role } : h)) }
       )
     );
   }
@@ -351,7 +419,7 @@ export default function EditDraftForm({
     setSubmitting(true);
 
     try {
-      // Step 1: Core metadata (only when not completed/cancelled — guard is in backend)
+      // Step 1: Core metadata
       if (draft.draftStatus.name !== "Completed" && draft.draftStatus.name !== "Cancelled") {
         await updateDraft(accessToken, draft.publicId, {
           title: title.trim(),
@@ -361,21 +429,19 @@ export default function EditDraftForm({
         });
       }
 
-      // Step 2: Campaign (allowed on any status via dedicated endpoint)
+      // Step 2: Campaign
       if (!campaignId && draft.campaignPublicId) {
         await clearDraftCampaign(accessToken, draft.publicId);
       } else if (campaignId && campaignId !== draft.campaignPublicId) {
         await setDraftCampaign(accessToken, draft.publicId, campaignId);
       }
 
-      // Step 3: Categories (allowed on any status via dedicated endpoint)
-      if (categoriesChanged) {
-        if (selectedCategoryIds.size > 0) {
-          await setDraftCategories(accessToken, draft.publicId, [...selectedCategoryIds]);
-        }
+      // Step 3: Categories
+      if (categoriesChanged && selectedCategoryIds.size > 0) {
+        await setDraftCategories(accessToken, draft.publicId, [...selectedCategoryIds]);
       }
 
-      // Step 4: Per-part hosts and participants (skip for completed/cancelled)
+      // Step 4: Per-part updates
       if (draft.draftStatus.name !== "Completed" && draft.draftStatus.name !== "Cancelled") {
         for (const part of partStates) {
           const { partPublicId } = part;
@@ -412,6 +478,11 @@ export default function EditDraftForm({
             await addParticipantToDraftPart(accessToken, partPublicId, { draftPartId: partPublicId, participantPublicId: id, participantKind: 1 });
           }
 
+          // Positions — always resend (idempotent)
+          if (part.positionsLoaded) {
+            await setDraftPositions(accessToken, partPublicId, part.positions);
+          }
+
           // Community participant
           if (part.communityConfig.enabled && !part.communityWasEnabled) {
             await setDraftPartCommunityParticipant(accessToken, partPublicId);
@@ -419,14 +490,13 @@ export default function EditDraftForm({
             await removeDraftPartCommunityParticipant(accessToken, partPublicId);
           }
 
-          // Community limits (resend whenever enabled — idempotent)
           if (part.communityConfig.enabled) {
             await setDraftPartCommunityLimits(accessToken, partPublicId, {
               maxCommunityPicks: part.communityConfig.maxCommunityPicks,
               maxCommunityVetoes: part.communityConfig.maxCommunityVetoes,
             });
           }
-          // Community film rules
+
           for (const rule of part.communityConfig.filmRules) {
             if (rule.status === "removing" && rule.publicId) {
               await removeCommunityFilmRule(accessToken, partPublicId, rule.publicId);
@@ -435,14 +505,11 @@ export default function EditDraftForm({
                 ruleKind: rule.ruleKind === "BoostersVeto" ? 0 : 1,
                 targetSlot: rule.targetSlot,
               });
-              // TODO: assign film inline once AddCommunityFilmRule returns { publicId }
             } else if (rule.status === "persisted" && rule.publicId) {
-              // Update rule shape (ruleKind / targetSlot may have changed)
               await updateCommunityFilmRule(accessToken, partPublicId, rule.publicId, {
                 ruleKind: rule.ruleKind === "BoostersVeto" ? 0 : 1,
                 targetSlot: rule.targetSlot,
               });
-              // Assign or reassign film if tmdbId is present
               if (rule.tmdbId) {
                 await assignFilmToCommunityFilmRule(accessToken, partPublicId, rule.publicId, rule.tmdbId);
               }
@@ -450,15 +517,16 @@ export default function EditDraftForm({
           }
         }
 
-        // Step 5: Create pending parts
+        // Step 5: Create pending parts + set their positions
         for (let i = 0; i < pendingParts.length; i++) {
           const pp = pendingParts[i];
-          await createDraftPart(accessToken, draft.publicId, {
+          const newPartId = await createDraftPart(accessToken, draft.publicId, {
             publicId: draft.publicId,
             partIndex: partStates.length + i + 1,
             minimumPosition: pp.minPositions,
             maximumPosition: pp.maxPositions,
           });
+          await setDraftPositions(accessToken, newPartId, pp.positions);
         }
       }
 
@@ -474,6 +542,9 @@ export default function EditDraftForm({
 
   const isCompletedOrCancelled =
     draft.draftStatus.name === "Completed" || draft.draftStatus.name === "Cancelled";
+
+  const draftTypeName = selectedDraftType?.name ?? draft.draftType?.name ?? "";
+  const fixedPositions = isFixedPositionType(draftTypeName);
 
   return (
     <form onSubmit={handleSubmit} className="space-y-10">
@@ -568,6 +639,9 @@ export default function EditDraftForm({
                   h.displayName.toLowerCase().includes(part.hostSearch.toLowerCase())
               );
               const totalParts = partStates.length + pendingParts.length;
+              // Max positions: infer from existing positions or fall back to standard
+              const maxPos = part.positions.flatMap((p) => p.picks).length ||
+                (fixedPositions ? getMaxPositionsConfig(draftTypeName).max : 7);
 
               return (
                 <div key={part.partPublicId} className="border border-sd-ink/10 rounded">
@@ -607,7 +681,7 @@ export default function EditDraftForm({
                                     <input type="radio" name={`host-role-${part.partPublicId}-${h.publicId}`} checked={h.role === "CoHost"} onChange={() => setHostRoleOnPart(idx, h.publicId, "CoHost")} className="accent-sd-red" />
                                     Co-Host
                                   </label>
-                                  <button type="button" onClick={() => removeHostFromPart(idx, h.publicId)} className="text-sd-ink/40 hover:text-sd-red text-lg leading-none" aria-label={`Remove ${h.displayName}`}>{"x"}</button>
+                                  <button type="button" onClick={() => removeHostFromPart(idx, h.publicId)} className="text-sd-ink/40 hover:text-sd-red text-lg leading-none" aria-label={`Remove ${h.displayName}`}>×</button>
                                 </div>
                               </div>
                             ))}
@@ -620,7 +694,9 @@ export default function EditDraftForm({
                             className={`${INPUT} mb-2`}
                             value={part.hostSearch}
                             onChange={(e) =>
-                              setPartStates((prev) => prev.map((p, i) => i === idx ? { ...p, hostSearch: e.target.value } : p))
+                              setPartStates((prev) =>
+                                prev.map((p, i) => i === idx ? { ...p, hostSearch: e.target.value } : p)
+                              )
                             }
                           />
                           <div className="max-h-32 overflow-y-auto space-y-0.5">
@@ -648,6 +724,23 @@ export default function EditDraftForm({
                         initialParticipants={part.initialParticipants}
                       />
 
+                      {/* Positions */}
+                      <div>
+                        <p className="font-mono text-[11px] tracking-widest text-sd-ink/50 uppercase mb-3">
+                          Positions
+                        </p>
+                        {part.positionsLoaded ? (
+                          <PositionsEditor
+                            positions={part.positions}
+                            onChange={(pos) => updatePartPositions(idx, pos)}
+                            totalPicks={maxPos}
+                            readonly={fixedPositions}
+                          />
+                        ) : (
+                          <p className="text-[11px] font-mono text-sd-ink/40">Loading…</p>
+                        )}
+                      </div>
+
                       {/* Community */}
                       <div>
                         <p className="font-mono text-[11px] tracking-widest text-sd-ink/50 uppercase mb-3">
@@ -668,6 +761,7 @@ export default function EditDraftForm({
             {!anyPartStarted && pendingParts.map((pp, idx) => {
               const partNumber = partStates.length + idx + 1;
               const isPendingExpanded = expandedPart === partStates.length + idx;
+              const ppFixed = isFixedPositionType(selectedDraftType?.name ?? "");
               return (
                 <div key={pp.tempId} className="border border-sd-blue/30 rounded">
                   <button
@@ -685,7 +779,7 @@ export default function EditDraftForm({
                     </div>
                   </button>
                   {isPendingExpanded && (
-                    <div className="px-4 py-4">
+                    <div className="px-4 py-4 space-y-4">
                       {pp.maxLocked ? (
                         <p className="text-[11px] font-mono text-sd-ink/50">
                           Positions 1–{pp.maxPositions} (fixed by draft type)
@@ -702,6 +796,15 @@ export default function EditDraftForm({
                           />
                         </div>
                       )}
+                      <div>
+                        <p className={LABEL}>Positions</p>
+                        <PositionsEditor
+                          positions={pp.positions}
+                          onChange={(pos) => updatePendingPartPositions(pp.tempId, pos)}
+                          totalPicks={pp.maxPositions}
+                          readonly={ppFixed}
+                        />
+                      </div>
                     </div>
                   )}
                 </div>

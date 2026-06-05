@@ -3,6 +3,7 @@
 internal sealed record SeriesResponse
 {
   public string Name { get; init; } = default!;
+  public string Description { get; init; } = default!;
   public string PublicId { get; init; } = default!;
 
   public SmartEnumResponse Kind { get; init; } = default!;
@@ -14,5 +15,4 @@ internal sealed record SeriesResponse
   public IReadOnlyList<SmartEnumResponse> AllowedDraftTypes { get; init; } = [];
 
   public SmartEnumResponse? DefaultDraftType { get; init; }
-
 }

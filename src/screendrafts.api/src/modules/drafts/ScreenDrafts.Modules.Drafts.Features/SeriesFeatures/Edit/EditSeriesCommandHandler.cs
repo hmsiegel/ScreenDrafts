@@ -5,40 +5,43 @@ internal sealed class EditSeriesCommandHandler(ISeriesRepository seriesRepositor
 {
   private readonly ISeriesRepository _seriesRepository = seriesRepository;
 
-  public async Task<Result> Handle(EditSeriesCommand EditSeriesFeatureRequest, CancellationToken cancellationToken)
+  public async Task<Result> Handle(EditSeriesCommand request, CancellationToken cancellationToken)
   {
-    var series = await _seriesRepository.GetByPublicIdAsync(EditSeriesFeatureRequest.PublicId, cancellationToken);
+    var series = await _seriesRepository.GetByPublicIdAsync(request.PublicId, cancellationToken);
 
     if (series is null)
     {
-      return Result.Failure(SeriesErrors.NotFound(EditSeriesFeatureRequest.PublicId));
+      return Result.Failure(SeriesErrors.NotFound(request.PublicId));
     }
 
-    var kind = SeriesKind.FromValue(EditSeriesFeatureRequest.Kind);
-    var canonicalPolicy = CanonicalPolicy.FromValue(EditSeriesFeatureRequest.CanonicalPolicy);
-    var continuityScope = ContinuityScope.FromValue(EditSeriesFeatureRequest.ContinuityScope);
-    var continuityDateRule = ContinuityDateRule.FromValue(EditSeriesFeatureRequest.ContinuityDateRule);
+    var kind = SeriesKind.FromValue(request.Kind);
+    var canonicalPolicy = CanonicalPolicy.FromValue(request.CanonicalPolicy);
+    var continuityScope = ContinuityScope.FromValue(request.ContinuityScope);
+    var continuityDateRule = ContinuityDateRule.FromValue(request.ContinuityDateRule);
 
-    var allowedDraftTypes = (DraftTypeMask)EditSeriesFeatureRequest.AllowedDraftTypes;
+    var allowedDraftTypes = (DraftTypeMask)request.AllowedDraftTypes;
 
     DraftType? defaultDraftType = null;
-    if (EditSeriesFeatureRequest.DefaultDraftType.HasValue)
+    if (request.DefaultDraftType.HasValue)
     {
-      defaultDraftType = DraftType.FromValue(EditSeriesFeatureRequest.DefaultDraftType.Value);
+      defaultDraftType = DraftType.FromValue(request.DefaultDraftType.Value);
     }
 
-    var rename = series.Rename(EditSeriesFeatureRequest.Name);
+    var rename = series.Rename(request.Name);
 
     if (rename.IsFailure)
     {
       return rename;
     }
 
+    series.UpdateDescription(request.Description);
+
     var policies = series.UpdatePolicies(
       canonicalPolicy: canonicalPolicy,
       continuityScope: continuityScope,
       continuityDateRule: continuityDateRule,
-      kind: kind);
+      kind: kind
+    );
 
     if (policies.IsFailure)
     {
@@ -47,7 +50,8 @@ internal sealed class EditSeriesCommandHandler(ISeriesRepository seriesRepositor
 
     var format = series.UpdateFormatRules(
       allowedDraftTypes: allowedDraftTypes,
-      defaultDraftType: defaultDraftType);
+      defaultDraftType: defaultDraftType
+    );
 
     if (format.IsFailure)
     {
@@ -59,6 +63,3 @@ internal sealed class EditSeriesCommandHandler(ISeriesRepository seriesRepositor
     return Result.Success();
   }
 }
-
-
-

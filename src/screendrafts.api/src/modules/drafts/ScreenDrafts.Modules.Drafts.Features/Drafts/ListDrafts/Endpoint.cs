@@ -30,7 +30,7 @@ internal sealed class Endpoint
       FromDate = req.FromDate,
       ToDate = req.ToDate,
       DraftType = req.DraftType,
-      CategoryPublicId = req.CategoryPublicId,
+      CategoryPublicIds = req.CategoryPublicIds,
       CampaignPublicId = req.CampaignPublicId,
       MinDrafters = req.MinDrafters,
       MaxDrafters = req.MaxDrafters,

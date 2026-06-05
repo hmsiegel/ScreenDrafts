@@ -3,17 +3,20 @@
 public sealed class Series : Entity<SeriesId>
 {
   public const int MaxNameLength = 200;
+  public const int MaxDescriptionLength = 2000;
 
   private Series(
     string name,
     string publicId,
+    string? description,
     CanonicalPolicy canonicalPolicy,
     ContinuityScope continuityScope,
     ContinuityDateRule continuityDateRule,
     DraftType? defaultDraftType,
     DraftTypeMask allowedDraftTypes,
     SeriesKind kind,
-    SeriesId? id = null)
+    SeriesId? id = null
+  )
     : base(id ?? SeriesId.CreateUnique())
   {
     Name = name;
@@ -24,6 +27,7 @@ public sealed class Series : Entity<SeriesId>
     DefaultDraftType = defaultDraftType;
     AllowedDraftTypes = allowedDraftTypes;
     Kind = kind;
+    Description = description;
   }
 
   private Series()
@@ -32,13 +36,15 @@ public sealed class Series : Entity<SeriesId>
   }
 
   public string Name { get; private set; } = default!;
+  public string? Description { get; private set; }
   public string PublicId { get; private set; } = default!;
   public SeriesKind Kind { get; private set; } = SeriesKind.Regular;
 
   // Eligibility canon & continuity controls
   public CanonicalPolicy CanonicalPolicy { get; private set; } = CanonicalPolicy.Always;
   public ContinuityScope ContinuityScope { get; private set; } = ContinuityScope.Global;
-  public ContinuityDateRule ContinuityDateRule { get; private set; } = ContinuityDateRule.AnyChannelFirstRelease;
+  public ContinuityDateRule ContinuityDateRule { get; private set; } =
+    ContinuityDateRule.AnyChannelFirstRelease;
 
   // Format guidance
   public DraftType? DefaultDraftType { get; private set; } = DraftType.Standard;
@@ -47,7 +53,6 @@ public sealed class Series : Entity<SeriesId>
   public DateTime? UpdatedAtUtc { get; private set; } = default!;
 
   public DraftTypeMask AllowedDraftTypes { get; private set; } = DraftTypeMask.All;
-
 
   public static Result<Series> Create(
     string name,
@@ -58,7 +63,9 @@ public sealed class Series : Entity<SeriesId>
     SeriesKind kind,
     DraftType? defaultDraftType,
     DraftTypeMask allowedDraftTypes,
-    SeriesId? id = null)
+    string? description = null,
+    SeriesId? id = null
+  )
   {
     if (string.IsNullOrWhiteSpace(name))
     {
@@ -82,9 +89,11 @@ public sealed class Series : Entity<SeriesId>
       continuityScope: continuityScope,
       continuityDateRule: continuityDateRule,
       kind: kind,
+      description: description,
       defaultDraftType: defaultDraftType,
       allowedDraftTypes: allowedDraftTypes,
-      id: id);
+      id: id
+    );
 
     return Result.Success(series);
   }
@@ -99,10 +108,12 @@ public sealed class Series : Entity<SeriesId>
     return Result.Success();
   }
 
-  public Result UpdatePolicies(CanonicalPolicy canonicalPolicy,
+  public Result UpdatePolicies(
+    CanonicalPolicy canonicalPolicy,
     ContinuityScope continuityScope,
     ContinuityDateRule continuityDateRule,
-    SeriesKind kind)
+    SeriesKind kind
+  )
   {
     CanonicalPolicy = canonicalPolicy;
     ContinuityScope = continuityScope;
@@ -130,7 +141,7 @@ public sealed class Series : Entity<SeriesId>
       3 => DraftTypeMask.Super,
       4 => DraftTypeMask.MiniSuper,
       5 => DraftTypeMask.SpeedDraft,
-      _ => DraftTypeMask.None
+      _ => DraftTypeMask.None,
     };
 
   public Result UpdateFormatRules(DraftTypeMask allowedDraftTypes, DraftType? defaultDraftType)
@@ -158,4 +169,10 @@ public sealed class Series : Entity<SeriesId>
   /// <returns></returns>
   public bool IsDraftPartCanon(IReadOnlyCollection<DraftRelease> releases) =>
     SeriesPolicyRules.IsDraftPartCanon(CanonicalPolicy, releases);
+
+  public void UpdateDescription(string? description)
+  {
+    Description = description;
+    UpdatedAtUtc = DateTime.UtcNow;
+  }
 }

@@ -3,6 +3,7 @@
 internal sealed record CreateSeriesRequest
 {
   public required string Name { get; init; }
+  public string? Description { get; init; }
 
   // SmartEnum values
   public int Kind { get; init; }
@@ -16,6 +17,3 @@ internal sealed record CreateSeriesRequest
   // DraftType SmartEnum value (nullable)
   public int? DefaultDraftType { get; init; }
 }
-
-
-

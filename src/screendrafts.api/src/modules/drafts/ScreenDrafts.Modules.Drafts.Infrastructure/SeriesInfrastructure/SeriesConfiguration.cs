@@ -8,58 +8,49 @@ internal sealed class SeriesConfiguration : IEntityTypeConfiguration<Series>
 
     builder.HasKey(x => x.Id);
 
-    builder.Property(x => x.Id)
-        .ValueGeneratedNever()
-        .HasConversion(IdConverters.SeriesIdConverter);
+    builder.Property(x => x.Id).ValueGeneratedNever().HasConversion(IdConverters.SeriesIdConverter);
 
-    builder.Property(x => x.Name)
+    builder.Property(x => x.Name).IsRequired().HasMaxLength(Series.MaxNameLength);
+
+    builder.Property(x => x.Description).HasMaxLength(Series.MaxDescriptionLength);
+
+    builder.Property(x => x.PublicId).IsRequired().HasMaxLength(PublicIdPrefixes.MaxPublicIdLength);
+
+    builder.HasIndex(x => x.PublicId).IsUnique();
+
+    builder
+      .Property(x => x.Kind)
       .IsRequired()
-      .HasMaxLength(Series.MaxNameLength);
+      .HasConversion(x => x.Value, value => SeriesKind.FromValue(value));
 
-    builder.Property(x => x.PublicId)
+    builder
+      .Property(x => x.CanonicalPolicy)
       .IsRequired()
-      .HasMaxLength(PublicIdPrefixes.MaxPublicIdLength);
+      .HasConversion(x => x.Value, value => CanonicalPolicy.FromValue(value));
 
-    builder.HasIndex(x => x.PublicId)
-      .IsUnique();
-
-    builder.Property(x => x.Kind)
+    builder
+      .Property(x => x.ContinuityScope)
       .IsRequired()
-      .HasConversion(
-      x => x.Value,
-      value => SeriesKind.FromValue(value));
+      .HasConversion(x => x.Value, value => ContinuityScope.FromValue(value));
 
-    builder.Property(x => x.CanonicalPolicy)
+    builder
+      .Property(x => x.ContinuityDateRule)
       .IsRequired()
-      .HasConversion(
-      x => x.Value,
-      value => CanonicalPolicy.FromValue(value));
+      .HasConversion(x => x.Value, value => ContinuityDateRule.FromValue(value));
 
-    builder.Property(x => x.ContinuityScope)
-      .IsRequired()
-      .HasConversion(
-      x => x.Value,
-      value => ContinuityScope.FromValue(value));
-
-    builder.Property(x => x.ContinuityDateRule)
-      .IsRequired()
-      .HasConversion(
-      x => x.Value,
-      value => ContinuityDateRule.FromValue(value));
-
-    builder.Property(x => x.DefaultDraftType)
+    builder
+      .Property(x => x.DefaultDraftType)
       .HasConversion(
         x => x != null ? x.Value : (int?)null,
-        value => value.HasValue ? DraftType.FromValue(value.Value) : null);
+        value => value.HasValue ? DraftType.FromValue(value.Value) : null
+      );
 
-    builder.Property(x => x.AllowedDraftTypes)
+    builder
+      .Property(x => x.AllowedDraftTypes)
       .IsRequired()
-      .HasConversion(
-        x => (int)x,
-        value => (DraftTypeMask)value);
+      .HasConversion(x => (int)x, value => (DraftTypeMask)value);
 
-    builder.Property(x => x.CreatedAtUtc)
-      .IsRequired();
+    builder.Property(x => x.CreatedAtUtc).IsRequired();
 
     builder.Property(x => x.UpdatedAtUtc);
   }

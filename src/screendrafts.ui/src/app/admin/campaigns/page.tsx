@@ -17,6 +17,10 @@ export default async function CampaignsPage() {
         <h1 className="font-oswald font-bold text-[56px] leading-none text-sd-ink mb-10">
           CAMPAIGNS
         </h1>
+        <p className="font-serif italic text-[16px] text-sd-ink/70 max-w-2xl mb-10">
+          A campaign groups a set of drafts around a shared theme — typically a seasonal run or
+          a special event. Drafts belong to at most one campaign. Campaigns recur at most once or twice a year.
+        </p>
         <CampaignManager initialData={campaigns} accessToken={session?.accessToken} />
       </div>
     </div>

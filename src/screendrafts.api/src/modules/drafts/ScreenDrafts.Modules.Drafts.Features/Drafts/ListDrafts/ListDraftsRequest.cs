@@ -7,7 +7,7 @@ internal sealed record ListDraftsRequest
   public DateOnly? FromDate { get; init; }
   public DateOnly? ToDate { get; init; }
   public int? DraftType { get; init; }
-  public string? CategoryPublicId { get; init; }
+  public IReadOnlyList<string>? CategoryPublicIds { get; init; }
   public string? CampaignPublicId { get; init; }
   public int? MinDrafters { get; init; }
   public int? MaxDrafters { get; init; }

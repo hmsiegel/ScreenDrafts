@@ -4,6 +4,7 @@ internal sealed record SeriesRow
 {
   public string PublicId { get; init; } = default!;
   public string Name { get; init; } = default!;
+  public string? Description { get; init; } = default!;
   public int Kind { get; init; } = default!;
   public int CanonicalPolicy { get; init; } = default!;
   public int ContinuityScope { get; init; } = default!;
@@ -11,5 +12,3 @@ internal sealed record SeriesRow
   public int AllowedDraftTypesMask { get; init; } = default!;
   public int? DefaultDraftType { get; init; } = default!;
 }
-
-

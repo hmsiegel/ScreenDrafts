@@ -2,38 +2,43 @@
 
 internal sealed class CreateSeriesCommandHandler(
   ISeriesRepository seriesRepository,
-  IPublicIdGenerator publicIdGenerator)
-    : ICommandHandler<CreateSeriesCommand, Guid>
+  IPublicIdGenerator publicIdGenerator
+) : ICommandHandler<CreateSeriesCommand, Guid>
 {
   private readonly ISeriesRepository _seriesRepository = seriesRepository;
   private readonly IPublicIdGenerator _publicIdGenerator = publicIdGenerator;
 
-  public async Task<Result<Guid>> Handle(CreateSeriesCommand CreateSeriesFeatureCommand, CancellationToken cancellationToken)
+  public async Task<Result<Guid>> Handle(
+    CreateSeriesCommand request,
+    CancellationToken cancellationToken
+  )
   {
     var publicId = _publicIdGenerator.GeneratePublicId(PublicIdPrefixes.Series);
-    var kind = SeriesKind.FromValue(CreateSeriesFeatureCommand.Kind);
-    var canonicalPolicy = CanonicalPolicy.FromValue(CreateSeriesFeatureCommand.CanonicalPolicy);
-    var continuityScope = ContinuityScope.FromValue(CreateSeriesFeatureCommand.ContinuityScope);
-    var continuityDateRule = ContinuityDateRule.FromValue(CreateSeriesFeatureCommand.ContinuityDateRule);
+    var kind = SeriesKind.FromValue(request.Kind);
+    var canonicalPolicy = CanonicalPolicy.FromValue(request.CanonicalPolicy);
+    var continuityScope = ContinuityScope.FromValue(request.ContinuityScope);
+    var continuityDateRule = ContinuityDateRule.FromValue(request.ContinuityDateRule);
 
-    var allowed = (DraftTypeMask)CreateSeriesFeatureCommand.AllowedDraftTypes;
+    var allowed = (DraftTypeMask)request.AllowedDraftTypes;
 
     DraftType? defaultDraftType = null;
 
-    if (CreateSeriesFeatureCommand.DefaultDraftType.HasValue)
+    if (request.DefaultDraftType.HasValue)
     {
-      defaultDraftType = DraftType.FromValue(CreateSeriesFeatureCommand.DefaultDraftType.Value);
+      defaultDraftType = DraftType.FromValue(request.DefaultDraftType.Value);
     }
 
     var seriesResult = Series.Create(
-      name: CreateSeriesFeatureCommand.Name,
+      name: request.Name,
+      description: request.Description,
       publicId: publicId,
       kind: kind,
       canonicalPolicy: canonicalPolicy,
       continuityScope: continuityScope,
       continuityDateRule: continuityDateRule,
       allowedDraftTypes: allowed,
-      defaultDraftType: defaultDraftType);
+      defaultDraftType: defaultDraftType
+    );
 
     if (seriesResult.IsFailure)
     {
@@ -47,7 +52,3 @@ internal sealed class CreateSeriesCommandHandler(
     return Result.Success(series.Id.Value);
   }
 }
-
-
-
-

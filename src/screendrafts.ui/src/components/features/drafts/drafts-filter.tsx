@@ -1,15 +1,21 @@
 'use client';
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 interface CampaignOption {
   publicId: string;
   name: string;
 }
 
+interface CategoryOption {
+  publicId: string;
+  name: string;
+}
+
 interface DraftsFilterProps {
   campaigns: CampaignOption[];
+  categories: CategoryOption[];
 }
 
 const DRAFT_TYPE_OPTIONS = [
@@ -37,7 +43,87 @@ const SORT_OPTIONS = [
   { value: "title-desc", label: "Title (Z → A)" },
 ];
 
-export default function DraftsFilter({ campaigns }: DraftsFilterProps) {
+// ── Category dropdown ──────────────────────────────────────────────────────
+
+interface CategoryDropdownProps {
+  categories: CategoryOption[];
+  selected: Set<string>;
+  onChange: (next: Set<string>) => void;
+}
+
+function CategoryDropdown({ categories, selected, onChange }: CategoryDropdownProps) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handler(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    }
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  function toggle(publicId: string) {
+    const next = new Set(selected);
+    next.has(publicId) ? next.delete(publicId) : next.add(publicId);
+    onChange(next);
+  }
+
+  const label = selected.size === 0
+    ? "All categories"
+    : selected.size === 1
+      ? (categories.find(c => selected.has(c.publicId))?.name ?? "1 selected")
+      : `${selected.size} selected`;
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen(v => !v)}
+        className="w-full border border-sd-ink/30 rounded px-3 py-2 text-sm text-sd-ink bg-white focus:outline-none focus:border-sd-blue text-left flex items-center justify-between gap-2"
+      >
+        <span className={selected.size === 0 ? "text-sd-ink/40" : ""}>{label}</span>
+        <span className="text-sd-ink/40 text-xs">{open ? "▲" : "▼"}</span>
+      </button>
+
+      {open && (
+        <div className="absolute z-20 top-full left-0 mt-1 w-full min-w-[200px] bg-white border border-sd-ink/20 shadow-lg max-h-60 overflow-y-auto">
+          {categories.length === 0 && (
+            <p className="px-3 py-2 font-mono text-[11px] text-sd-ink/40">No categories.</p>
+          )}
+          {categories.map(c => (
+            <label
+              key={c.publicId}
+              className="flex items-center gap-2.5 px-3 py-2 cursor-pointer hover:bg-sd-paper/60 select-none"
+            >
+              <input
+                type="checkbox"
+                checked={selected.has(c.publicId)}
+                onChange={() => toggle(c.publicId)}
+                className="accent-sd-blue"
+              />
+              <span className="text-sm text-sd-ink">{c.name}</span>
+            </label>
+          ))}
+          {selected.size > 0 && (
+            <>
+              <div className="border-t border-sd-ink/10 mx-2" />
+              <button
+                type="button"
+                onClick={() => onChange(new Set())}
+                className="w-full text-left px-3 py-2 font-mono text-[10px] tracking-widest text-sd-red hover:bg-red-50"
+              >
+                CLEAR
+              </button>
+            </>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default function DraftsFilter({ campaigns, categories }: DraftsFilterProps) {
   const router = useRouter();
   const params = useSearchParams();
 
@@ -47,6 +133,10 @@ export default function DraftsFilter({ campaigns }: DraftsFilterProps) {
   const [draftType, setDraftType] = useState(params.get("draftType") ?? "");
   const [minDrafters, setMinDrafters] = useState(params.get("minDrafters") ?? "");
   const [campaign, setCampaign] = useState(params.get("campaignPublicId") ?? "");
+  const [selectedCategories, setSelectedCategories] = useState<Set<string>>(() => {
+    const raw = params.getAll("categoryPublicIds");
+    return new Set(raw);
+  });
   const [sort, setSort] = useState(() => {
     const s = params.get("sort") ?? "date";
     const d = params.get("dir") ?? "desc";
@@ -60,6 +150,7 @@ export default function DraftsFilter({ campaigns }: DraftsFilterProps) {
     setDraftType(params.get("draftType") ?? "");
     setMinDrafters(params.get("minDrafters") ?? "");
     setCampaign(params.get("campaignPublicId") ?? "");
+    setSelectedCategories(new Set(params.getAll("categoryPublicIds")));
     const s = params.get("sort") ?? "date";
     const d = params.get("dir") ?? "desc";
     setSort(`${s}-${d}`);
@@ -73,6 +164,7 @@ export default function DraftsFilter({ campaigns }: DraftsFilterProps) {
     if (draftType) qs.set("draftType", draftType);
     if (minDrafters) qs.set("minDrafters", minDrafters);
     if (campaign) qs.set("campaignPublicId", campaign);
+    selectedCategories.forEach(id => qs.append("categoryPublicIds", id));
     const [sortField, sortDir] = sort.split("-") as [string, string];
     if (sortField) qs.set("sort", sortField);
     if (sortDir) qs.set("dir", sortDir);
@@ -149,6 +241,16 @@ export default function DraftsFilter({ campaigns }: DraftsFilterProps) {
             </option>
           ))}
         </select>
+      </div>
+
+      {/* Category multi-select */}
+      <div className="flex-1 min-w-[160px]">
+        <label className={labelCls}>CATEGORIES</label>
+        <CategoryDropdown
+          categories={categories}
+          selected={selectedCategories}
+          onChange={setSelectedCategories}
+        />
       </div>
 
       {/* Drafter count */}

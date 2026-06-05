@@ -323,6 +323,7 @@ export async function listDrafts(params: {
   dir?: "asc" | "desc";
   q?: string;
   campaignPublicId?: string;
+  categoryPublicIds?: string[];
   page?: number;
   pageSize?: number;
 } = {}): Promise<PagedResult<ListDraftsResponse>> {
@@ -335,12 +336,20 @@ export async function listDrafts(params: {
       dir: "dir",
     }
 
+    const { categoryPublicIds, ...scalarParams } = params;
 
     Object.entries(params).forEach(([key, value]) => {
       if (value === undefined || value === null || value === "") return;
       const backendKey = paramMap[key] ?? key;
       url.searchParams.set(backendKey, String(value));
     });
+
+    // Repeated param: ?categoryPublicIds=cat_abc&categoryPublicIds=cat_xyz
+    if (categoryPublicIds && categoryPublicIds.length > 0) {
+      categoryPublicIds
+        .filter(id => id !== "")
+        .forEach(id => url.searchParams.append("categoryPublicIds", id));
+    }
 
     const response = await fetch(url, {
       method: "GET",

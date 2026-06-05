@@ -17,6 +17,11 @@ export default async function CategoriesPage() {
         <h1 className="font-oswald font-bold text-[56px] leading-none text-sd-ink mb-10">
           CATEGORIES
         </h1>
+        <p className="font-serif italic text-[16px] text-sd-ink/70 max-w-2xl mb-10">
+          Categories classify what a draft is about — the subject matter, format, or scope. A
+          draft can carry multiple categories, and categories are searchable across the archive.
+          Use them to make the collection discoverable.
+        </p>
         <CategoryManager initialData={categories} accessToken={session?.accessToken} />
       </div>
     </div>

@@ -9,6 +9,7 @@ import {
   SeriesResponse,
   SmartEnumResponse,
 } from "@/lib/dto";
+import { PositionConfig } from "@/app/admin/drafts/new/positions-editor";
 
 // TODO: regenerate dto.ts after backend adds these response shapes if they differ
 export interface AdminDraftListItem extends SearchDraftsResponse {}
@@ -652,4 +653,45 @@ export async function removeCommunityFilmRule(
     const text = await res.text().catch(() => res.statusText);
     throw new Error(`DELETE /draft-parts/${draftPartId}/community-film-rules/${ruleId} failed (${res.status}): ${text}`);
   }
+}
+
+export async function setDraftPositions(
+  accessToken: string | undefined,
+  draftPartId: string,
+  positions: PositionConfig[]
+): Promise<void> {
+  const res = await fetch(`${apiBase}/draft-parts/${draftPartId}/positions`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json", ...authHeaders(accessToken) },
+    body: JSON.stringify({
+      draftPartId,
+      positions: positions.map((p) => ({
+        name: p.name,
+        picks: p.picks,
+        hasBonusVeto: p.hasBonusVeto,
+        hasBonusVetoOverride: p.hasBonusVetoOverride,
+      })),
+    }),
+  });
+  if (!res.ok) throw await res.json().catch(() => new Error("Failed to set positions"));
+}
+
+export async function listDraftPositions(
+  accessToken: string | undefined,
+  draftPartId: string
+): Promise<PositionConfig[]> {
+  const res = await fetch(`${apiBase}/draft-parts/${draftPartId}/positions`, {
+    method: "GET",
+    headers: { ...authHeaders(accessToken) },
+  });
+  if (!res.ok) return [];
+  const data = await res.json();
+  return (data.positions ?? []).map(
+    (p: { name?: string; picks?: number[]; hasBonusVeto?: boolean; hasBonusVetoOverride?: boolean }) => ({
+      name: p.name ?? "",
+      picks: p.picks ?? [],
+      hasBonusVeto: p.hasBonusVeto ?? false,
+      hasBonusVetoOverride: p.hasBonusVetoOverride ?? false,
+    })
+  );
 }

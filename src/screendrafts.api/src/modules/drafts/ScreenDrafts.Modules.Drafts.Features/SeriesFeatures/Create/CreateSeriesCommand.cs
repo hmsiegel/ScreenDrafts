@@ -3,6 +3,7 @@
 internal sealed record CreateSeriesCommand : ICommand<Guid>
 {
   public required string Name { get; init; }
+  public string? Description { get; init; }
   public int Kind { get; init; }
   public int CanonicalPolicy { get; init; }
   public int ContinuityScope { get; init; }
