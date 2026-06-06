@@ -676,6 +676,133 @@ export async function setDraftPositions(
   if (!res.ok) throw await res.json().catch(() => new Error("Failed to set positions"));
 }
 
+export async function startDraftPart(
+  accessToken: string,
+  draftId: string,
+  partIndex: number
+): Promise<void> {
+  const res = await fetch(
+    `${apiBase}/drafts/${encodeURIComponent(draftId)}/parts/${partIndex}/status`,
+    {
+      method: "PUT",
+      headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ action: 1 }),
+    }
+  );
+  if (!res.ok) {
+    const text = await res.text().catch(() => res.statusText);
+    throw new Error(`PUT /drafts/${draftId}/parts/${partIndex}/status failed (${res.status}): ${text}`);
+  }
+}
+
+export async function deleteDraft(
+  accessToken: string,
+  draftId: string
+): Promise<void> {
+  // TODO: confirm whether a dedicated DELETE /drafts/{draftId} exists
+  const res = await fetch(`${apiBase}/drafts/${encodeURIComponent(draftId)}`, {
+    method: "PUT",
+    headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ isDeleted: true }),
+  });
+  if (!res.ok) {
+    const text = await res.text().catch(() => res.statusText);
+    throw new Error(`DELETE /drafts/${draftId} failed (${res.status}): ${text}`);
+  }
+}
+
+export interface DraftPoolData {
+  publicId: string;
+  draftId: string;
+  isLocked: boolean;
+  tmdbIds: number[];
+}
+
+export async function getDraftPool(
+  accessToken: string | undefined,
+  draftId: string
+): Promise<DraftPoolData | null> {
+  try {
+    const res = await fetch(`${apiBase}/drafts/${encodeURIComponent(draftId)}/pool`, {
+      headers: authHeaders(accessToken),
+      cache: "no-store",
+    });
+    if (res.status === 404) return null;
+    if (!res.ok) return null;
+    return (await res.json()) as DraftPoolData;
+  } catch (err) {
+    console.error("[getDraftPool]", err);
+    return null;
+  }
+}
+
+export async function createDraftPool(
+  accessToken: string,
+  draftId: string
+): Promise<void> {
+  const res = await fetch(`${apiBase}/drafts/${encodeURIComponent(draftId)}/pool`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+  if (!res.ok) {
+    const text = await res.text().catch(() => res.statusText);
+    throw new Error(`POST /drafts/${draftId}/pool failed (${res.status}): ${text}`);
+  }
+}
+
+export async function addMovieToDraftPool(
+  accessToken: string,
+  draftId: string,
+  tmdbId: number
+): Promise<void> {
+  const res = await fetch(`${apiBase}/drafts/${encodeURIComponent(draftId)}/pool/items`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ tmdbId }),
+  });
+  if (!res.ok) {
+    const text = await res.text().catch(() => res.statusText);
+    throw new Error(`POST /drafts/${draftId}/pool/items failed (${res.status}): ${text}`);
+  }
+}
+
+export async function removeMovieFromDraftPool(
+  accessToken: string,
+  draftId: string,
+  tmdbId: number
+): Promise<void> {
+  // TODO: confirm DELETE /drafts/{draftId}/pool/items/{tmdbId} endpoint
+  const res = await fetch(
+    `${apiBase}/drafts/${encodeURIComponent(draftId)}/pool/items/${tmdbId}`,
+    {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${accessToken}` },
+    }
+  );
+  if (!res.ok) {
+    const text = await res.text().catch(() => res.statusText);
+    throw new Error(`DELETE /drafts/${draftId}/pool/items/${tmdbId} failed (${res.status}): ${text}`);
+  }
+}
+
+export async function bulkAddMoviesToDraftPool(
+  accessToken: string,
+  draftId: string,
+  file: File
+): Promise<void> {
+  const form = new FormData();
+  form.append("file", file);
+  const res = await fetch(`${apiBase}/drafts/${encodeURIComponent(draftId)}/pool/bulk`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${accessToken}` },
+    body: form,
+  });
+  if (!res.ok) {
+    const text = await res.text().catch(() => res.statusText);
+    throw new Error(`POST /drafts/${draftId}/pool/bulk failed (${res.status}): ${text}`);
+  }
+}
+
 export async function listDraftPositions(
   accessToken: string | undefined,
   draftPartId: string
