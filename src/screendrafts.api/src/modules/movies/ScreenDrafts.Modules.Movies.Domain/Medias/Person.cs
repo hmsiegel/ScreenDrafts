@@ -7,23 +7,17 @@ public sealed class Person : AggregateRoot<PersonId, Guid>
   private readonly List<MediaDirector> _mediaDirectors = [];
   private readonly List<MediaProducer> _mediaProducers = [];
 
-  private Person(
-    string imdbId,
-    string name,
-    int tmdbId,
-    PersonId? id = null)
+  private Person(string? imdbId, string name, int tmdbId, PersonId? id = null)
   {
     Id = id ?? PersonId.CreateUnique();
-    ImdbId = Guard.Against.NullOrWhiteSpace(imdbId);
+    ImdbId = imdbId;
     Name = Guard.Against.NullOrWhiteSpace(name);
     TmdbId = tmdbId;
   }
 
-  private Person()
-  {
-  }
+  private Person() { }
 
-  public string ImdbId { get; private set; } = default!;
+  public string? ImdbId { get; private set; } = default!;
   public int TmdbId { get; private set; }
   public string Name { get; private set; } = default!;
 
@@ -32,17 +26,9 @@ public sealed class Person : AggregateRoot<PersonId, Guid>
   public IReadOnlyList<MediaDirector> MediaDirectors => _mediaDirectors.AsReadOnly();
   public IReadOnlyList<MediaProducer> MediaProducers => _mediaProducers.AsReadOnly();
 
-  public static Person Create(
-    string imdbId,
-    string name,
-    int tmdbId,
-    PersonId? id = null)
+  public static Person Create(string? imdbId, string name, int tmdbId, PersonId? id = null)
   {
-    return new Person(
-      imdbId: imdbId,
-      name: name,
-      tmdbId: tmdbId,
-      id: id);
+    return new Person(imdbId: imdbId, name: name, tmdbId: tmdbId, id: id);
   }
 
   public void AddMediaActor(MediaActor mediaActor)

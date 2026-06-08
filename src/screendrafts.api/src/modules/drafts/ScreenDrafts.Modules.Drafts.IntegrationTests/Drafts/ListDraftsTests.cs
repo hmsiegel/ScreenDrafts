@@ -1,8 +1,8 @@
 ﻿using ScreenDrafts.Modules.Drafts.Domain.DraftParts.Enums;
 using ScreenDrafts.Modules.Drafts.Features.Categories.Create;
+using ScreenDrafts.Modules.Drafts.Features.DraftParts.SetReleaseDate;
 using ScreenDrafts.Modules.Drafts.Features.Drafts.ListDrafts;
 using ScreenDrafts.Modules.Drafts.Features.Drafts.SetCategories;
-using ScreenDrafts.Modules.Drafts.Features.DraftParts.SetReleaseDate;
 
 namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafts;
 
@@ -95,51 +95,70 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
   {
     // Arrange: create a draft, then add a second part manually so COUNT(*) > 1
     var seriesId = await CreateSeriesAsync();
-    var draftResult = await Sender.Send(new CreateDraftCommand
-    {
-      Title = "Multi-Part Draft",
-      DraftType = DraftType.Standard.Value,
-      SeriesId = seriesId
-    }, TestContext.Current.CancellationToken);
+    var draftResult = await Sender.Send(
+      new CreateDraftCommand
+      {
+        Title = "Multi-Part Draft",
+        DraftType = DraftType.Standard.Value,
+        SeriesId = seriesId,
+      },
+      TestContext.Current.CancellationToken
+    );
     var draftPublicId = draftResult.Value;
 
     // First part (auto-created by CreateDraft is not created here — we explicitly create parts)
-    var part1PublicId = (await Sender.Send(new CreateDraftPartCommand
-    {
-      DraftPublicId = draftPublicId,
-      PartIndex = 1,
-      MinimumPosition = 1,
-      MaximumPosition = 7
-    }, TestContext.Current.CancellationToken)).Value;
+    var part1PublicId = (
+      await Sender.Send(
+        new CreateDraftPartCommand
+        {
+          DraftPublicId = draftPublicId,
+          PartIndex = 1,
+          MinimumPosition = 1,
+          MaximumPosition = 7,
+        },
+        TestContext.Current.CancellationToken
+      )
+    ).Value;
 
-    await Sender.Send(new SetReleaseDateCommand
-    {
-      DraftPartId = part1PublicId,
-      ReleaseDate = new DateOnly(2020, 1, 1),
-      ReleaseChannel = ReleaseChannel.MainFeed
-    }, TestContext.Current.CancellationToken);
+    await Sender.Send(
+      new SetReleaseDateCommand
+      {
+        DraftPartId = part1PublicId,
+        ReleaseDate = new DateOnly(2020, 1, 1),
+        ReleaseChannel = ReleaseChannel.MainFeed,
+      },
+      TestContext.Current.CancellationToken
+    );
 
-    var part2PublicId = (await Sender.Send(new CreateDraftPartCommand
-    {
-      DraftPublicId = draftPublicId,
-      PartIndex = 2,
-      MinimumPosition = 1,
-      MaximumPosition = 7
-    }, TestContext.Current.CancellationToken)).Value;
+    var part2PublicId = (
+      await Sender.Send(
+        new CreateDraftPartCommand
+        {
+          DraftPublicId = draftPublicId,
+          PartIndex = 2,
+          MinimumPosition = 1,
+          MaximumPosition = 7,
+        },
+        TestContext.Current.CancellationToken
+      )
+    ).Value;
 
-    await Sender.Send(new SetReleaseDateCommand
-    {
-      DraftPartId = part2PublicId,
-      ReleaseDate = new DateOnly(2020, 2, 1),
-      ReleaseChannel = ReleaseChannel.MainFeed
-    }, TestContext.Current.CancellationToken);
+    await Sender.Send(
+      new SetReleaseDateCommand
+      {
+        DraftPartId = part2PublicId,
+        ReleaseDate = new DateOnly(2020, 2, 1),
+        ReleaseChannel = ReleaseChannel.MainFeed,
+      },
+      TestContext.Current.CancellationToken
+    );
 
     var query = new ListDraftsQuery
     {
       Page = 1,
       PageSize = 10,
       SortBy = "title",
-      Dir = "asc"
+      Dir = "asc",
     };
 
     // Act
@@ -209,12 +228,15 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
     var (_, draftPartPublicId) = await CreateDraftWithPartAsync(withRelease: false);
     var releaseDate = new DateOnly(2025, 6, 15);
 
-    await Sender.Send(new SetReleaseDateCommand
-    {
-      DraftPartId = draftPartPublicId,
-      ReleaseDate = releaseDate,
-      ReleaseChannel = ReleaseChannel.MainFeed
-    }, TestContext.Current.CancellationToken);
+    await Sender.Send(
+      new SetReleaseDateCommand
+      {
+        DraftPartId = draftPartPublicId,
+        ReleaseDate = releaseDate,
+        ReleaseChannel = ReleaseChannel.MainFeed,
+      },
+      TestContext.Current.CancellationToken
+    );
 
     var query = new ListDraftsQuery { Page = 1, PageSize = 10 };
 
@@ -235,12 +257,15 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
     // A part released only on Patreon should be invisible in the default (MainFeed-only) query.
     var (_, draftPartPublicId) = await CreateDraftWithPartAsync(withRelease: false);
 
-    await Sender.Send(new SetReleaseDateCommand
-    {
-      DraftPartId = draftPartPublicId,
-      ReleaseDate = new DateOnly(2020, 1, 1),
-      ReleaseChannel = ReleaseChannel.Patreon
-    }, TestContext.Current.CancellationToken);
+    await Sender.Send(
+      new SetReleaseDateCommand
+      {
+        DraftPartId = draftPartPublicId,
+        ReleaseDate = new DateOnly(2020, 1, 1),
+        ReleaseChannel = ReleaseChannel.Patreon,
+      },
+      TestContext.Current.CancellationToken
+    );
 
     var query = new ListDraftsQuery { Page = 1, PageSize = 10 };
 
@@ -262,12 +287,15 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
     var teamFactory = new DrafterTeamFactory(Sender, Faker);
     var drafterPublicId = await teamFactory.CreateAndSaveDrafterAsync();
 
-    await Sender.Send(new AddParticipantToDraftPartCommand
-    {
-      DraftPartId = draftPartPublicId,
-      ParticipantPublicId = drafterPublicId,
-      ParticipantKind = ParticipantKind.Drafter
-    }, TestContext.Current.CancellationToken);
+    await Sender.Send(
+      new AddParticipantToDraftPartCommand
+      {
+        DraftPartId = draftPartPublicId,
+        ParticipantPublicId = drafterPublicId,
+        ParticipantKind = ParticipantKind.Drafter,
+      },
+      TestContext.Current.CancellationToken
+    );
 
     var query = new ListDraftsQuery { Page = 1, PageSize = 10 };
 
@@ -309,14 +337,22 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
 
     var peopleFactory = new PeopleFactory(Sender, Faker);
     var personId = await peopleFactory.CreateAndSavePersonAsync();
-    var hostPublicId = (await Sender.Send(new CreateHostCommand { PersonPublicId = personId }, TestContext.Current.CancellationToken)).Value;
+    var hostPublicId = (
+      await Sender.Send(
+        new CreateHostCommand { PersonPublicId = personId },
+        TestContext.Current.CancellationToken
+      )
+    ).Value;
 
-    await Sender.Send(new AddHostToDraftPartCommand
-    {
-      DraftPartId = draftPartPublicId,
-      HostPublicId = hostPublicId,
-      HostRole = HostRole.Primary
-    }, TestContext.Current.CancellationToken);
+    await Sender.Send(
+      new AddHostToDraftPartCommand
+      {
+        DraftPartId = draftPartPublicId,
+        HostPublicId = hostPublicId,
+        HostRole = HostRole.Primary,
+      },
+      TestContext.Current.CancellationToken
+    );
 
     var query = new ListDraftsQuery { Page = 1, PageSize = 10 };
 
@@ -357,18 +393,12 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
     await CreateDraftWithPartAsync(); // unrelated draft
 
     var categoryPublicId = await CreateCategoryAsync();
-    await Sender.Send(new SetCategoriesDraftCommand
-    {
-      DraftId = draftPublicId,
-      CategoryIds = [categoryPublicId]
-    }, TestContext.Current.CancellationToken);
+    await Sender.Send(
+      new SetCategoriesDraftCommand { DraftId = draftPublicId, CategoryIds = [categoryPublicId] },
+      TestContext.Current.CancellationToken
+    );
 
-    var query = new ListDraftsQuery
-    {
-      Page = 1,
-      PageSize = 10,
-      CategoryPublicId = categoryPublicId
-    };
+    var query = new ListDraftsQuery { Page = 1, PageSize = 10 };
 
     // Act
     var result = await Sender.Send(query, TestContext.Current.CancellationToken);
@@ -384,14 +414,8 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
   {
     // Arrange – draft exists but is not assigned to the queried category
     await CreateDraftWithPartAsync();
-    var unusedCategoryPublicId = await CreateCategoryAsync();
 
-    var query = new ListDraftsQuery
-    {
-      Page = 1,
-      PageSize = 10,
-      CategoryPublicId = unusedCategoryPublicId
-    };
+    var query = new ListDraftsQuery { Page = 1, PageSize = 10 };
 
     // Act
     var result = await Sender.Send(query, TestContext.Current.CancellationToken);
@@ -416,7 +440,7 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
     {
       Page = 1,
       PageSize = 10,
-      DraftType = DraftType.Standard.Value
+      DraftType = DraftType.Standard.Value,
     };
 
     // Act
@@ -444,7 +468,7 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
     {
       Page = 1,
       PageSize = 10,
-      Q = "UniqueSearch"
+      Q = "UniqueSearch",
     };
 
     // Act
@@ -466,7 +490,7 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
     {
       Page = 1,
       PageSize = 10,
-      Q = "DefinitelyNoSuchTitle_AbsolutelyNotExists"
+      Q = "DefinitelyNoSuchTitle_AbsolutelyNotExists",
     };
 
     // Act
@@ -492,25 +516,31 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
     var lateDate = new DateOnly(2025, 6, 1);
     var filterDate = new DateOnly(2024, 6, 1);
 
-    await Sender.Send(new SetReleaseDateCommand
-    {
-      DraftPartId = earlyPartPublicId,
-      ReleaseDate = earlyDate,
-      ReleaseChannel = ReleaseChannel.MainFeed
-    }, TestContext.Current.CancellationToken);
+    await Sender.Send(
+      new SetReleaseDateCommand
+      {
+        DraftPartId = earlyPartPublicId,
+        ReleaseDate = earlyDate,
+        ReleaseChannel = ReleaseChannel.MainFeed,
+      },
+      TestContext.Current.CancellationToken
+    );
 
-    await Sender.Send(new SetReleaseDateCommand
-    {
-      DraftPartId = latePartPublicId,
-      ReleaseDate = lateDate,
-      ReleaseChannel = ReleaseChannel.MainFeed
-    }, TestContext.Current.CancellationToken);
+    await Sender.Send(
+      new SetReleaseDateCommand
+      {
+        DraftPartId = latePartPublicId,
+        ReleaseDate = lateDate,
+        ReleaseChannel = ReleaseChannel.MainFeed,
+      },
+      TestContext.Current.CancellationToken
+    );
 
     var query = new ListDraftsQuery
     {
       Page = 1,
       PageSize = 10,
-      FromDate = filterDate
+      FromDate = filterDate,
     };
 
     // Act
@@ -533,25 +563,31 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
     var lateDate = new DateOnly(2025, 6, 1);
     var filterDate = new DateOnly(2024, 6, 1);
 
-    await Sender.Send(new SetReleaseDateCommand
-    {
-      DraftPartId = earlyPartPublicId,
-      ReleaseDate = earlyDate,
-      ReleaseChannel = ReleaseChannel.MainFeed
-    }, TestContext.Current.CancellationToken);
+    await Sender.Send(
+      new SetReleaseDateCommand
+      {
+        DraftPartId = earlyPartPublicId,
+        ReleaseDate = earlyDate,
+        ReleaseChannel = ReleaseChannel.MainFeed,
+      },
+      TestContext.Current.CancellationToken
+    );
 
-    await Sender.Send(new SetReleaseDateCommand
-    {
-      DraftPartId = latePartPublicId,
-      ReleaseDate = lateDate,
-      ReleaseChannel = ReleaseChannel.MainFeed
-    }, TestContext.Current.CancellationToken);
+    await Sender.Send(
+      new SetReleaseDateCommand
+      {
+        DraftPartId = latePartPublicId,
+        ReleaseDate = lateDate,
+        ReleaseChannel = ReleaseChannel.MainFeed,
+      },
+      TestContext.Current.CancellationToken
+    );
 
     var query = new ListDraftsQuery
     {
       Page = 1,
       PageSize = 10,
-      ToDate = filterDate
+      ToDate = filterDate,
     };
 
     // Act
@@ -571,33 +607,42 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
     var (_, jun2024PublicId) = await CreateDraftWithPartAsync(withRelease: false);
     var (_, jan2025PublicId) = await CreateDraftWithPartAsync(withRelease: false);
 
-    await Sender.Send(new SetReleaseDateCommand
-    {
-      DraftPartId = jan2024PublicId,
-      ReleaseDate = new DateOnly(2024, 1, 1),
-      ReleaseChannel = ReleaseChannel.MainFeed
-    }, TestContext.Current.CancellationToken);
+    await Sender.Send(
+      new SetReleaseDateCommand
+      {
+        DraftPartId = jan2024PublicId,
+        ReleaseDate = new DateOnly(2024, 1, 1),
+        ReleaseChannel = ReleaseChannel.MainFeed,
+      },
+      TestContext.Current.CancellationToken
+    );
 
-    await Sender.Send(new SetReleaseDateCommand
-    {
-      DraftPartId = jun2024PublicId,
-      ReleaseDate = new DateOnly(2024, 6, 15),
-      ReleaseChannel = ReleaseChannel.MainFeed
-    }, TestContext.Current.CancellationToken);
+    await Sender.Send(
+      new SetReleaseDateCommand
+      {
+        DraftPartId = jun2024PublicId,
+        ReleaseDate = new DateOnly(2024, 6, 15),
+        ReleaseChannel = ReleaseChannel.MainFeed,
+      },
+      TestContext.Current.CancellationToken
+    );
 
-    await Sender.Send(new SetReleaseDateCommand
-    {
-      DraftPartId = jan2025PublicId,
-      ReleaseDate = new DateOnly(2025, 1, 1),
-      ReleaseChannel = ReleaseChannel.MainFeed
-    }, TestContext.Current.CancellationToken);
+    await Sender.Send(
+      new SetReleaseDateCommand
+      {
+        DraftPartId = jan2025PublicId,
+        ReleaseDate = new DateOnly(2025, 1, 1),
+        ReleaseChannel = ReleaseChannel.MainFeed,
+      },
+      TestContext.Current.CancellationToken
+    );
 
     var query = new ListDraftsQuery
     {
       Page = 1,
       PageSize = 10,
       FromDate = new DateOnly(2024, 3, 1),
-      ToDate = new DateOnly(2024, 12, 31)
+      ToDate = new DateOnly(2024, 12, 31),
     };
 
     // Act
@@ -624,26 +669,32 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
     var drafter1 = await teamFactory.CreateAndSaveDrafterAsync();
     var drafter2 = await teamFactory.CreateAndSaveDrafterAsync();
 
-    await Sender.Send(new AddParticipantToDraftPartCommand
-    {
-      DraftPartId = richPartPublicId,
-      ParticipantPublicId = drafter1,
-      ParticipantKind = ParticipantKind.Drafter
-    }, TestContext.Current.CancellationToken);
+    await Sender.Send(
+      new AddParticipantToDraftPartCommand
+      {
+        DraftPartId = richPartPublicId,
+        ParticipantPublicId = drafter1,
+        ParticipantKind = ParticipantKind.Drafter,
+      },
+      TestContext.Current.CancellationToken
+    );
 
-    await Sender.Send(new AddParticipantToDraftPartCommand
-    {
-      DraftPartId = richPartPublicId,
-      ParticipantPublicId = drafter2,
-      ParticipantKind = ParticipantKind.Drafter
-    }, TestContext.Current.CancellationToken);
+    await Sender.Send(
+      new AddParticipantToDraftPartCommand
+      {
+        DraftPartId = richPartPublicId,
+        ParticipantPublicId = drafter2,
+        ParticipantKind = ParticipantKind.Drafter,
+      },
+      TestContext.Current.CancellationToken
+    );
 
     var query = new ListDraftsQuery
     {
       Page = 1,
       PageSize = 10,
       MinDrafters = 2,
-      MaxDrafters = 10
+      MaxDrafters = 10,
     };
 
     // Act
@@ -672,7 +723,7 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
       Page = 1,
       PageSize = 10,
       SortBy = "title",
-      Dir = "asc"
+      Dir = "asc",
     };
 
     // Act
@@ -699,7 +750,7 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
       Page = 1,
       PageSize = 10,
       SortBy = "title",
-      Dir = "desc"
+      Dir = "desc",
     };
 
     // Act
@@ -715,29 +766,41 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
   public async Task ListDrafts_SortedByDate_ShouldReturnInReleaseDateOrderAsync()
   {
     // Arrange – two parts with known release dates
-    var (_, olderPartPublicId) = await CreateDraftWithPartAsync(title: "Older Draft", withRelease: false);
-    var (_, newerPartPublicId) = await CreateDraftWithPartAsync(title: "Newer Draft", withRelease: false);
+    var (_, olderPartPublicId) = await CreateDraftWithPartAsync(
+      title: "Older Draft",
+      withRelease: false
+    );
+    var (_, newerPartPublicId) = await CreateDraftWithPartAsync(
+      title: "Newer Draft",
+      withRelease: false
+    );
 
-    await Sender.Send(new SetReleaseDateCommand
-    {
-      DraftPartId = olderPartPublicId,
-      ReleaseDate = new DateOnly(2023, 1, 1),
-      ReleaseChannel = ReleaseChannel.MainFeed
-    }, TestContext.Current.CancellationToken);
+    await Sender.Send(
+      new SetReleaseDateCommand
+      {
+        DraftPartId = olderPartPublicId,
+        ReleaseDate = new DateOnly(2023, 1, 1),
+        ReleaseChannel = ReleaseChannel.MainFeed,
+      },
+      TestContext.Current.CancellationToken
+    );
 
-    await Sender.Send(new SetReleaseDateCommand
-    {
-      DraftPartId = newerPartPublicId,
-      ReleaseDate = new DateOnly(2024, 1, 1),
-      ReleaseChannel = ReleaseChannel.MainFeed
-    }, TestContext.Current.CancellationToken);
+    await Sender.Send(
+      new SetReleaseDateCommand
+      {
+        DraftPartId = newerPartPublicId,
+        ReleaseDate = new DateOnly(2024, 1, 1),
+        ReleaseChannel = ReleaseChannel.MainFeed,
+      },
+      TestContext.Current.CancellationToken
+    );
 
     var query = new ListDraftsQuery
     {
       Page = 1,
       PageSize = 10,
       SortBy = "date",
-      Dir = "asc"
+      Dir = "asc",
     };
 
     // Act
@@ -757,39 +820,49 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
   private async Task<(string DraftPublicId, string DraftPartPublicId)> CreateDraftWithPartAsync(
     string? title = null,
     DraftType? draftType = null,
-    bool withRelease = true)
+    bool withRelease = true
+  )
   {
     var seriesId = await CreateSeriesAsync();
     var selectedDraftType = draftType ?? DraftType.Standard;
     var draftTitle = title ?? Faker.Company.CompanyName();
 
-    var draftResult = await Sender.Send(new CreateDraftCommand
-    {
-      Title = draftTitle,
-      DraftType = selectedDraftType.Value,
-      SeriesId = seriesId
-    }, TestContext.Current.CancellationToken);
+    var draftResult = await Sender.Send(
+      new CreateDraftCommand
+      {
+        Title = draftTitle,
+        DraftType = selectedDraftType.Value,
+        SeriesId = seriesId,
+      },
+      TestContext.Current.CancellationToken
+    );
 
     var draftPublicId = draftResult.Value;
 
-    var partResult = await Sender.Send(new CreateDraftPartCommand
-    {
-      DraftPublicId = draftPublicId,
-      PartIndex = 1,
-      MinimumPosition = 1,
-      MaximumPosition = 7
-    }, TestContext.Current.CancellationToken);
+    var partResult = await Sender.Send(
+      new CreateDraftPartCommand
+      {
+        DraftPublicId = draftPublicId,
+        PartIndex = 1,
+        MinimumPosition = 1,
+        MaximumPosition = 7,
+      },
+      TestContext.Current.CancellationToken
+    );
 
     var draftPartPublicId = partResult.Value;
 
     if (withRelease)
     {
-      await Sender.Send(new SetReleaseDateCommand
-      {
-        DraftPartId = draftPartPublicId,
-        ReleaseDate = new DateOnly(2020, 1, 1),
-        ReleaseChannel = ReleaseChannel.MainFeed
-      }, TestContext.Current.CancellationToken);
+      await Sender.Send(
+        new SetReleaseDateCommand
+        {
+          DraftPartId = draftPartPublicId,
+          ReleaseDate = new DateOnly(2020, 1, 1),
+          ReleaseChannel = ReleaseChannel.MainFeed,
+        },
+        TestContext.Current.CancellationToken
+      );
     }
 
     return (draftPublicId, draftPartPublicId);
@@ -797,27 +870,33 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
 
   private async Task<Guid> CreateSeriesAsync()
   {
-    var result = await Sender.Send(new CreateSeriesCommand
-    {
-      Name = Faker.Company.CompanyName(),
-      Kind = SeriesKind.Regular.Value,
-      CanonicalPolicy = CanonicalPolicy.Always.Value,
-      ContinuityScope = ContinuityScope.None.Value,
-      ContinuityDateRule = ContinuityDateRule.AnyChannelFirstRelease.Value,
-      AllowedDraftTypes = (int)DraftTypeMask.All,
-      DefaultDraftType = DraftType.Standard.Value
-    }, TestContext.Current.CancellationToken);
+    var result = await Sender.Send(
+      new CreateSeriesCommand
+      {
+        Name = Faker.Company.CompanyName(),
+        Kind = SeriesKind.Regular.Value,
+        CanonicalPolicy = CanonicalPolicy.Always.Value,
+        ContinuityScope = ContinuityScope.None.Value,
+        ContinuityDateRule = ContinuityDateRule.AnyChannelFirstRelease.Value,
+        AllowedDraftTypes = (int)DraftTypeMask.All,
+        DefaultDraftType = DraftType.Standard.Value,
+      },
+      TestContext.Current.CancellationToken
+    );
 
     return result.Value;
   }
 
   private async Task<string> CreateCategoryAsync()
   {
-    var result = await Sender.Send(new CreateCategoryCommand
-    {
-      Name = Faker.Commerce.Categories(1)[0] + Faker.Random.AlphaNumeric(8),
-      Description = Faker.Lorem.Sentence()
-    }, TestContext.Current.CancellationToken);
+    var result = await Sender.Send(
+      new CreateCategoryCommand
+      {
+        Name = Faker.Commerce.Categories(1)[0] + Faker.Random.AlphaNumeric(8),
+        Description = Faker.Lorem.Sentence(),
+      },
+      TestContext.Current.CancellationToken
+    );
 
     return result.Value;
   }

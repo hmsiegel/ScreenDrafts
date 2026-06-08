@@ -1,6 +1,6 @@
 import { auth } from "@/auth";
+import { MediaResponse } from "@/lib/dto";
 import { env } from "@/lib/env";
-import { MediaDetail } from "@/lib/media-dto";
 
 const apiBase = env.apiUrl;
 
@@ -12,7 +12,7 @@ async function authHeaders(): Promise<HeadersInit> {
   return {};
 }
 
-export async function fetchMediaDetail(publicId: string): Promise<MediaDetail> {
+export async function fetchMediaDetail(publicId: string): Promise<MediaResponse> {
   const url = `${apiBase}/media/${publicId}`;
 
   const response = await fetch(url, {
@@ -29,5 +29,5 @@ export async function fetchMediaDetail(publicId: string): Promise<MediaDetail> {
     );
   }
 
-  return response.json() as Promise<MediaDetail>;
+  return response.json() as Promise<MediaResponse>;
 }

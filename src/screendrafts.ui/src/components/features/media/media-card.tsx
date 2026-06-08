@@ -1,4 +1,4 @@
-import { MediaListItem } from "@/lib/media-dto";
+import { MediaListItemResponse } from "@/lib/dto";
 import { mediaTypeLabel } from "@/lib/media-type-display";
 import Link from "next/link";
 
@@ -13,11 +13,12 @@ function posterInitials(title: string): string {
 }
 
 interface MediaCardProps {
-  item: MediaListItem;
+  item: MediaListItemResponse;
+  draftCount?: number;
 }
 
-export default function MediaCard({ item }: MediaCardProps) {
-  const { publicId, title, year, mediaType, posterPath, draftCount } = item;
+export default function MediaCard({ item, draftCount }: MediaCardProps) {
+  const { publicId, title, year, mediaType, image } = item;
 
   return (
     <Link
@@ -26,9 +27,9 @@ export default function MediaCard({ item }: MediaCardProps) {
     >
       {/* Poster */}
       <div className="relative w-full overflow-hidden bg-sd-ink" style={{ aspectRatio: "2 / 3" }}>
-        {posterPath ? (
+        {image ? (
           <img
-            src={`${TMDB_IMAGE_BASE}${posterPath}`}
+            src={`${TMDB_IMAGE_BASE}${image}`}
             alt={title}
             className="w-full h-full object-cover"
           />
@@ -56,9 +57,11 @@ export default function MediaCard({ item }: MediaCardProps) {
         </div>
 
         {/* Stat */}
-        <div className="border-t border-sd-ink/10 pt-3 mt-3">
-          <StatCell value={draftCount} label="APPEARANCES" />
-        </div>
+        {draftCount !== undefined && (
+          <div className="border-t border-sd-ink/10 pt-3 mt-3">
+            <StatCell value={draftCount} label="APPEARANCES" />
+          </div>
+        )}
 
         <div className="mt-4 font-oswald font-semibold text-[12px] tracking-wide text-sd-blue group-hover:text-sd-red transition-colors">
           VIEW DETAILS →

@@ -13,6 +13,7 @@ public sealed record TmdbMediaDetails
   public string? ReleaseDate { get; init; }
   public Uri? TrailerUrl { get; init; }
   public IReadOnlyList<TmdbGenre> Genres { get; init; } = [];
+  public IReadOnlyList<TmdbProductionCompany> ProductionCompanies { get; init; } = [];
   public TmdbCredits Credits { get; init; } = default!;
 
   // TV Episode specific fields

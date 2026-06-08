@@ -1,42 +1,48 @@
 ﻿namespace ScreenDrafts.Modules.Movies.Infrastructure.ProductionCompanies;
 
 internal sealed class ProductionCompaniesRepository(MoviesDbContext dbContext)
-  : MoviesRepositoryBase<ProductionCompany>(dbContext), IProductionCompanyRepository
+  : MoviesRepositoryBase<ProductionCompany>(dbContext),
+    IProductionCompanyRepository
 {
   private readonly MoviesDbContext _dbContext = dbContext;
 
   public void Add(ProductionCompany productionCompany)
   {
-    if (_dbContext.Entry(productionCompany).State == EntityState.Detached)
-    {
-      _dbContext.ProductionCompanies.Attach(productionCompany);
-    }
     _dbContext.ProductionCompanies.Add(productionCompany);
   }
 
-  public async Task<ProductionCompany?> FindByImdbIdAsync(string imdbId, CancellationToken cancellationToken = default)
+  public async Task<ProductionCompany?> FindByNameAsync(
+    string name,
+    CancellationToken cancellationToken = default
+  )
   {
-    return await _dbContext.ProductionCompanies
-      .FirstOrDefaultAsync(pc => pc.ImdbId == imdbId, cancellationToken);
+    return await _dbContext.ProductionCompanies.FirstOrDefaultAsync(
+      pc => pc.Name == name,
+      cancellationToken
+    );
   }
 
-  public async Task<ProductionCompany?> FindByNameAsync(string name, CancellationToken cancellationToken = default)
+  public async Task<ProductionCompany?> FindByTmdbIdAsync(
+    int tmdbId,
+    CancellationToken cancellationToken = default
+  )
   {
-    return await _dbContext.ProductionCompanies
-      .FirstOrDefaultAsync(pc => pc.Name == name, cancellationToken);
+    return await _dbContext.ProductionCompanies.FirstOrDefaultAsync(
+      pc => pc.TmdbId == tmdbId,
+      cancellationToken
+    );
   }
 
-  public ProductionCompany? FindExistingEntity(string imdbId, CancellationToken cancellationToken = default)
+  public async Task<bool> RelationshipExistsAsync(
+    Guid mediaId,
+    Guid productionCompanyId,
+    CancellationToken cancellationToken = default
+  )
   {
-    var entity = _dbContext.ChangeTracker.Entries<ProductionCompany>()
-      .FirstOrDefault(pc => pc.Entity.ImdbId == imdbId)?.Entity;
-    return entity;
-  }
-
-  public async Task<bool> RelationshipExistsAsync(Guid mediaId, Guid productionCompanyId, CancellationToken cancellationToken = default)
-  {
-    return await _dbContext.MediaProductionCompanies
-      .AnyAsync(mpc => mpc.MediaId == MediaId.Create(mediaId) &&
-        mpc.ProductionCompanyId == productionCompanyId, cancellationToken);
+    return await _dbContext.MediaProductionCompanies.AnyAsync(
+      mpc =>
+        mpc.MediaId == MediaId.Create(mediaId) && mpc.ProductionCompanyId == productionCompanyId,
+      cancellationToken
+    );
   }
 }

@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Movies.Composition;
+﻿using ScreenDrafts.Modules.Movies.Features.Movies.Shared;
+
+namespace ScreenDrafts.Modules.Movies.Composition;
 
 public static class MoviesModule
 {
@@ -47,6 +49,7 @@ public static class MoviesModule
 
   private static void AddMoviesFeatures(this IServiceCollection services)
   {
+    services.AddScoped<MediaPeopleAttacher>();
     services.AddScoped<IMovieTitleReader, MovieTitleReader>();
     services.AddScoped<IMoviesDomainEventDispatcher, MoviesDomainEventDispatcher>();
     services.AddScoped<IMoviesIntegrationEventDispatcher, MoviesIntegrationEventDispatcher>();

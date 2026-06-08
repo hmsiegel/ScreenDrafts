@@ -38,4 +38,24 @@ public interface IMediaRepository : IRepository
     IEnumerable<int> tmdbIds,
     CancellationToken cancellationToken = default
   );
+
+  Task<Media?> FindByTvEpisodeAsync(
+    int tvSeriesTmdbId,
+    int seasonNumber,
+    int episodeNumber,
+    CancellationToken cancellationToken = default
+  );
+
+  Task<Media?> FindByTmdbIdForUpdateAsync(
+    int tmdbId,
+    MediaType mediaType,
+    CancellationToken cancellationToken = default
+  );
+
+  Task<Media?> FindByTvEpisodeForUpdateAsync(
+    int tvSeriesTmdbId,
+    int seasonNumber,
+    int episodeNumber,
+    CancellationToken cancellationToken = default
+  );
 }

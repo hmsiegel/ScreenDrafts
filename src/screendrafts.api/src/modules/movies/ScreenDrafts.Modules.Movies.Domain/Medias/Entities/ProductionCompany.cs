@@ -4,11 +4,7 @@ public sealed class ProductionCompany : Entity
 {
   private readonly List<MediaProductionCompany> _mediaProductionCompanies = [];
 
-  private ProductionCompany(
-    string name,
-    string imdbId,
-    int tmdbId,
-    Guid? id = null)
+  private ProductionCompany(string name, string? imdbId, int tmdbId, Guid? id = null)
     : base(id ?? Guid.NewGuid())
   {
     Name = Guard.Against.NullOrWhiteSpace(name);
@@ -16,22 +12,17 @@ public sealed class ProductionCompany : Entity
     TmdbId = tmdbId;
   }
 
-  private ProductionCompany()
-  {
-  }
+  private ProductionCompany() { }
 
-  public IReadOnlyList<MediaProductionCompany> MediaProductionCompanies => _mediaProductionCompanies.AsReadOnly();
+  public IReadOnlyList<MediaProductionCompany> MediaProductionCompanies =>
+    _mediaProductionCompanies.AsReadOnly();
 
   public string Name { get; private set; } = default!;
-  public string ImdbId { get; private set; } = default!;
+  public string? ImdbId { get; private set; } = default!;
   public int TmdbId { get; private set; }
 
-  public static ProductionCompany Create(string name, string imdbId, int tmdbId, Guid? id = null)
+  public static ProductionCompany Create(string name, string? imdbId, int tmdbId, Guid? id = null)
   {
-    return new ProductionCompany(
-      name: name,
-      imdbId: imdbId,
-      tmdbId: tmdbId,
-      id: id);
+    return new ProductionCompany(name: name, imdbId: imdbId, tmdbId: tmdbId, id: id);
   }
 }

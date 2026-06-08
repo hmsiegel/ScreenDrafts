@@ -33,6 +33,7 @@ global using ScreenDrafts.Modules.Movies.Domain.Medias.Entities;
 global using ScreenDrafts.Modules.Movies.Domain.Medias.Errors;
 global using ScreenDrafts.Modules.Movies.Domain.Medias.Repositories;
 global using ScreenDrafts.Modules.Movies.Features.Movies.AddMedia;
+global using ScreenDrafts.Modules.Movies.Features.Movies.Shared;
 global using ScreenDrafts.Modules.Movies.IntegrationEvents;
 global using ScreenDrafts.Modules.Movies.PublicApi;
 global using ScreenDrafts.Modules.Reporting.PublicApi;

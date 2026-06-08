@@ -94,6 +94,10 @@ internal sealed class TmdbService(HttpClient httpClient, IOptions<TmdbSettings> 
         .Genres.Select(g => new TmdbGenre { Id = g.Id, Name = g.Name })
         .ToList()
         .AsReadOnly(),
+      ProductionCompanies = response
+        .ProductionCompanies.Select(pc => new TmdbProductionCompany { Id = pc.Id, Name = pc.Name })
+        .ToList()
+        .AsReadOnly(),
       Credits = credits,
     };
   }
@@ -174,6 +178,10 @@ internal sealed class TmdbService(HttpClient httpClient, IOptions<TmdbSettings> 
       TrailerUrl = trailerUrl,
       Genres = response
         .Genres.Select(g => new TmdbGenre { Id = g.Id, Name = g.Name })
+        .ToList()
+        .AsReadOnly(),
+      ProductionCompanies = response
+        .ProductionCompanies.Select(pc => new TmdbProductionCompany { Id = pc.Id, Name = pc.Name })
         .ToList()
         .AsReadOnly(),
       Credits = credits,
@@ -434,7 +442,9 @@ internal sealed class TmdbService(HttpClient httpClient, IOptions<TmdbSettings> 
     [property: JsonPropertyName("release_date")] string? ReleaseDate,
     [property: JsonPropertyName("genres")] IReadOnlyList<TmdbGenreApiResponse> Genres,
     [property: JsonPropertyName("videos")] TmdbVideosApiResponse Videos,
-    [property: JsonPropertyName("credits")] TmdbCreditsApiResponse Credits
+    [property: JsonPropertyName("credits")] TmdbCreditsApiResponse Credits,
+    [property: JsonPropertyName("production_companies")]
+      IReadOnlyList<TmdbProductionCompanyApiResponse> ProductionCompanies
   );
 
   private sealed record TmdbTvDetailsApiResponse(
@@ -445,7 +455,9 @@ internal sealed class TmdbService(HttpClient httpClient, IOptions<TmdbSettings> 
     [property: JsonPropertyName("first_air_date")] string? FirstAirDate,
     [property: JsonPropertyName("genres")] IReadOnlyList<TmdbGenreApiResponse> Genres,
     [property: JsonPropertyName("videos")] TmdbVideosApiResponse Videos,
-    [property: JsonPropertyName("credits")] TmdbCreditsApiResponse Credits
+    [property: JsonPropertyName("credits")] TmdbCreditsApiResponse Credits,
+    [property: JsonPropertyName("production_companies")]
+      IReadOnlyList<TmdbProductionCompanyApiResponse> ProductionCompanies
   );
 
   private sealed record TmdbEpisodeDetailApiResponse(
@@ -537,5 +549,10 @@ internal sealed class TmdbService(HttpClient httpClient, IOptions<TmdbSettings> 
     [property: JsonPropertyName("show_id")] int ShowId,
     [property: JsonPropertyName("season_number")] int SeasonNumber,
     [property: JsonPropertyName("episode_number")] int EpisodeNumber
+  );
+
+  private sealed record TmdbProductionCompanyApiResponse(
+    [property: JsonPropertyName("id")] int Id,
+    [property: JsonPropertyName("name")] string Name
   );
 }

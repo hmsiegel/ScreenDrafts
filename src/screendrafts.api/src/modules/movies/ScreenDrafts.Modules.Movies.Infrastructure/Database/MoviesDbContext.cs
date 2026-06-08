@@ -3,7 +3,8 @@
 namespace ScreenDrafts.Modules.Movies.Infrastructure.Database;
 
 public sealed class MoviesDbContext(DbContextOptions<MoviesDbContext> options)
-  : DbContext(options), IUnitOfWork
+  : DbContext(options),
+    IUnitOfWork
 {
   internal DbSet<Media> Media { get; set; }
 
@@ -39,4 +40,6 @@ public sealed class MoviesDbContext(DbContextOptions<MoviesDbContext> options)
     ArgumentNullException.ThrowIfNull(configurationBuilder);
     configurationBuilder.ConfigureSmartEnum();
   }
+
+  public void ClearChangeTracker() => ChangeTracker.Clear();
 }

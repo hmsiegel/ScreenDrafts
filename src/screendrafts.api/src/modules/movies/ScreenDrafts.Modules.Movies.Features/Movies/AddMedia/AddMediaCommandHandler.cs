@@ -1,25 +1,32 @@
-﻿namespace ScreenDrafts.Modules.Movies.Features.Movies.AddMedia;
+﻿using ScreenDrafts.Modules.Movies.Features.Movies.Shared;
+
+namespace ScreenDrafts.Modules.Movies.Features.Movies.AddMedia;
 
 internal sealed class AddMediaCommandHandler(
   IMediaRepository mediaRepository,
   IGenreRepository genreRepository,
-  IPersonRepository personRepository,
-  IProductionCompanyRepository productionCompanyRepository,
-  ILogger<AddMediaCommandHandler> logger)
-  : ICommandHandler<AddMediaCommand, string>
+  ILogger<AddMediaCommandHandler> logger,
+  MediaPeopleAttacher peopleAttacher
+) : ICommandHandler<AddMediaCommand, string>
 {
   private readonly IMediaRepository _mediaRepository = mediaRepository;
   private readonly IGenreRepository _genreRepository = genreRepository;
-  private readonly IPersonRepository _personRepository = personRepository;
-  private readonly IProductionCompanyRepository _productionCompanyRepository = productionCompanyRepository;
+  private readonly MediaPeopleAttacher _peopleAttacher = peopleAttacher;
   private readonly ILogger<AddMediaCommandHandler> _logger = logger;
 
-  public async Task<Result<string>> Handle(AddMediaCommand request, CancellationToken cancellationToken)
+  public async Task<Result<string>> Handle(
+    AddMediaCommand request,
+    CancellationToken cancellationToken
+  )
   {
     // Existence check: use TmdbId for movies & tv, Igdb for games.
     var titleExists = request.IgdbId.HasValue
       ? await _mediaRepository.ExistsByIgdbIdAsync(request.IgdbId.Value, cancellationToken)
-      : await _mediaRepository.ExistsByTmdbIdAsync(request.TmdbId!.Value, request.MediaType, cancellationToken);
+      : await _mediaRepository.ExistsByTmdbIdAsync(
+        request.TmdbId!.Value,
+        request.MediaType,
+        cancellationToken
+      );
 
     if (titleExists)
     {
@@ -56,7 +63,8 @@ internal sealed class AddMediaCommandHandler(
       mediaType: request.MediaType,
       tvSeriesTmdbId: request.TvSeriesTmdbId,
       seasonNumber: request.SeasonNumber,
-      episodeNumber: request.EpisodeNumber);
+      episodeNumber: request.EpisodeNumber
+    );
 
     if (mediaResult.IsFailure)
     {
@@ -66,36 +74,14 @@ internal sealed class AddMediaCommandHandler(
 
     var media = mediaResult.Value;
     _mediaRepository.Add(media);
-    MovieLoggingMessages.MovieAddedToDatabase(_logger, media.Title, request.ImdbId 
-      ?? request.TmdbId?.ToString(CultureInfo.InvariantCulture) 
-      ?? request.IgdbId?.ToString(CultureInfo.InvariantCulture) 
-      ?? "N/A");
-
-    var peopleCache = new Dictionary<string, Person>();
-
-    async Task<Person?> GetOrCreatePersonAsync(string name, string imdbId, int tmdbId)
-    {
-      if (string.IsNullOrWhiteSpace(imdbId))
-      {
-        return null;
-      }
-
-      if (peopleCache.TryGetValue(imdbId, out var existing))
-      {
-        return existing;
-      }
-
-      var person = await _personRepository.FindByImdbIdAsync(imdbId, cancellationToken);
-
-      if (person is null)
-      {
-        person = Person.Create(imdbId, name, tmdbId);
-        _personRepository.Add(person);
-      }
-
-      peopleCache[imdbId] = person;
-      return person;
-    }
+    MovieLoggingMessages.MovieAddedToDatabase(
+      _logger,
+      media.Title,
+      request.ImdbId
+        ?? request.TmdbId?.ToString(CultureInfo.InvariantCulture)
+        ?? request.IgdbId?.ToString(CultureInfo.InvariantCulture)
+        ?? "N/A"
+    );
 
     foreach (var genreRequest in request.Genres)
     {
@@ -110,83 +96,21 @@ internal sealed class AddMediaCommandHandler(
       _mediaRepository.AddMediaGenre(media, genre);
     }
 
-    if (request.Directors is not null)
-    {
-      foreach (var d in request.Directors)
-      {
-        var person = await GetOrCreatePersonAsync(d.Name, d.ImdbId, d.TmdbId);
-        if (person is not null)
-        {
-          _mediaRepository.AddMediaDirector(media, person);
-        }
-      }
-    }
+    await _peopleAttacher.AttachAsync(
+      media: media,
+      directors: request.Directors,
+      actors: request.Actors,
+      writers: request.Writers,
+      producers: request.Producers,
+      productionCompanies: request.ProductionCompanies,
+      cancellationToken: cancellationToken
+    );
 
-    if (request.Actors is not null)
-    {
-      foreach (var a in request.Actors)
-      {
-        var person = await GetOrCreatePersonAsync(a.Name, a.ImdbId, a.TmdbId);
-        if (person is not null)
-        {
-          _mediaRepository.AddMediaActor(media, person);
-        }
-      }
-    }
-
-    if (request.Producers is not null)
-    {
-      foreach (var p in request.Producers)
-      {
-        var person = await GetOrCreatePersonAsync(p.Name, p.ImdbId, p.TmdbId);
-        if (person is not null)
-        {
-          _mediaRepository.AddMediaProducer(media, person);
-        }
-      }
-    }
-
-    if (request.Writers is not null)
-    {
-      foreach (var w in request.Writers)
-      {
-        var person = await GetOrCreatePersonAsync(w.Name, w.ImdbId, w.TmdbId);
-        if (person is not null)
-        {
-          _mediaRepository.AddMediaWriter(media, person);
-        }
-      }
-    }
-
-    if (request.ProductionCompanies is not null)
-    {
-      foreach (var company in request.ProductionCompanies)
-      {
-        var productionCompany = await _productionCompanyRepository.FindByImdbIdAsync(company.ImdbId, cancellationToken);
-
-        if (productionCompany is null)
-        {
-          productionCompany = ProductionCompany.Create(company.Name, company.ImdbId, company.TmdbId);
-          _productionCompanyRepository.Add(productionCompany);
-        }
-        else
-        {
-          var existingEntity = _productionCompanyRepository
-            .FindExistingEntity(company.ImdbId, cancellationToken);
-          productionCompany = existingEntity ?? productionCompany;
-          if (existingEntity is null)
-          {
-            _productionCompanyRepository.Add(productionCompany);
-          }
-        }
-        if (!await _productionCompanyRepository.RelationshipExistsAsync(media.Id.Value, productionCompany.Id, cancellationToken))
-        {
-          _mediaRepository.AddMediaProductionCompany(media, productionCompany);
-        }
-      }
-    }
-
-    return Result.Success(media.ImdbId ?? media.TmdbId?.ToString(CultureInfo.InvariantCulture) ?? media.IgdbId?.ToString(CultureInfo.InvariantCulture) ?? "N/A");
+    return Result.Success(
+      media.ImdbId
+        ?? media.TmdbId?.ToString(CultureInfo.InvariantCulture)
+        ?? media.IgdbId?.ToString(CultureInfo.InvariantCulture)
+        ?? "N/A"
+    );
   }
 }
-

@@ -5,35 +5,41 @@ namespace ScreenDrafts.Modules.Integrations.Features.Movies.GetOnlineMedia;
 
 internal sealed class GetOnlineMediaCommandHandler(
   ITmdbService tmdbService,
-  IIgdbService igdbService)
-  : ICommandHandler<GetOnlineMediaCommand, GetOnlineMediaResponse>
+  IIgdbService igdbService
+) : ICommandHandler<GetOnlineMediaCommand, GetOnlineMediaResponse>
 {
   private readonly ITmdbService _tmdbService = tmdbService;
   private readonly IIgdbService _igdbService = igdbService;
 
-  public async Task<Result<GetOnlineMediaResponse>> Handle(GetOnlineMediaCommand command, CancellationToken cancellationToken)
+  public async Task<Result<GetOnlineMediaResponse>> Handle(
+    GetOnlineMediaCommand command,
+    CancellationToken cancellationToken
+  )
   {
     return command.MediaType switch
     {
-      var mt when mt == MediaType.Movie =>
-        await FetchMovieAsync(command, cancellationToken),
+      var mt when mt == MediaType.Movie => await FetchMovieAsync(command, cancellationToken),
 
-      var mt when mt == MediaType.TvShow =>
-        await FetchTvShowAsync(command, cancellationToken),
+      var mt when mt == MediaType.TvShow => await FetchTvShowAsync(command, cancellationToken),
 
-      var mt when mt == MediaType.TvEpisode =>
-        await FetchTvEpisodeAsync(command, cancellationToken),
+      var mt when mt == MediaType.TvEpisode => await FetchTvEpisodeAsync(
+        command,
+        cancellationToken
+      ),
 
-      var mt when mt == MediaType.VideoGame =>
-        await FetchVideoGameAsync(command, cancellationToken),
+      var mt when mt == MediaType.VideoGame => await FetchVideoGameAsync(
+        command,
+        cancellationToken
+      ),
 
-      _ => Result.Failure<GetOnlineMediaResponse>(MovieErrors.UnsupportedMediaType)
+      _ => Result.Failure<GetOnlineMediaResponse>(MovieErrors.UnsupportedMediaType),
     };
   }
 
   private async Task<Result<GetOnlineMediaResponse>> FetchMovieAsync(
     GetOnlineMediaCommand command,
-    CancellationToken cancellationToken)
+    CancellationToken cancellationToken
+  )
   {
     var detail = await _tmdbService.GetMovieDetailsAsync(command.TmdbId!.Value, cancellationToken);
 
@@ -49,7 +55,8 @@ internal sealed class GetOnlineMediaCommandHandler(
 
   private async Task<Result<GetOnlineMediaResponse>> FetchTvShowAsync(
     GetOnlineMediaCommand command,
-    CancellationToken cancellationToken)
+    CancellationToken cancellationToken
+  )
   {
     var detail = await _tmdbService.GetTvShowDetailsAsync(command.TmdbId!.Value, cancellationToken);
 
@@ -65,9 +72,14 @@ internal sealed class GetOnlineMediaCommandHandler(
 
   private async Task<Result<GetOnlineMediaResponse>> FetchTvEpisodeAsync(
     GetOnlineMediaCommand command,
-    CancellationToken cancellationToken)
+    CancellationToken cancellationToken
+  )
   {
-    if (command.TvSeriesTmdbId is null || command.SeasonNumber is null || command.EpisodeNumber is null)
+    if (
+      command.TvSeriesTmdbId is null
+      || command.SeasonNumber is null
+      || command.EpisodeNumber is null
+    )
     {
       return Result.Failure<GetOnlineMediaResponse>(MovieErrors.EpisodeFieldsAreRequired);
     }
@@ -76,21 +88,28 @@ internal sealed class GetOnlineMediaCommandHandler(
       command.TvSeriesTmdbId!.Value,
       command.SeasonNumber!.Value,
       command.EpisodeNumber!.Value,
-      cancellationToken);
+      cancellationToken
+    );
 
     if (detail is null)
     {
-      return Result.Failure<GetOnlineMediaResponse>(MovieErrors.NotFound(command.TvSeriesTmdbId!.Value));
+      return Result.Failure<GetOnlineMediaResponse>(
+        MovieErrors.NotFound(command.TvSeriesTmdbId!.Value)
+      );
     }
 
-    var imdbId = await _tmdbService.GetTvShowImdbIdAsync(command.TvSeriesTmdbId!.Value, cancellationToken);
+    var imdbId = await _tmdbService.GetTvShowImdbIdAsync(
+      command.TvSeriesTmdbId!.Value,
+      cancellationToken
+    );
 
     return BuildTmdbResponse(detail, imdbId, MediaType.TvEpisode);
   }
 
   private async Task<Result<GetOnlineMediaResponse>> FetchVideoGameAsync(
     GetOnlineMediaCommand command,
-    CancellationToken cancellationToken)
+    CancellationToken cancellationToken
+  )
   {
     if (command.IgdbId is null)
     {
@@ -105,88 +124,99 @@ internal sealed class GetOnlineMediaCommandHandler(
     }
 
     var year = game.FirstReleaseDate.HasValue
-      ? DateTimeOffset.FromUnixTimeSeconds(game.FirstReleaseDate.Value).Year.ToString(CultureInfo.InvariantCulture)
+      ? DateTimeOffset
+        .FromUnixTimeSeconds(game.FirstReleaseDate.Value)
+        .Year.ToString(CultureInfo.InvariantCulture)
       : "N/A";
 
     var releaseDate = game.FirstReleaseDate.HasValue
-      ? DateTimeOffset.FromUnixTimeSeconds(game.FirstReleaseDate.Value).ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)
+      ? DateTimeOffset
+        .FromUnixTimeSeconds(game.FirstReleaseDate.Value)
+        .ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)
       : null;
 
-    return Result.Success(new GetOnlineMediaResponse
-    {
-      ImdbId = null,
-      TmdbId = null,
-      IgdbId = command.IgdbId.Value,
-      Title = game.Name,
-      Year = year,
-      Plot = game.Summary,
-      Image = game.CoverUrl!.ToString(),
-      ReleaseDate = releaseDate,
-      YouTubeTrailerUrl = null,
-      MediaType = MediaType.VideoGame,
-      TvSeriesTmdbId = null,
-      SeasonNumber = null,
-      EpisodeNumber = null,
-      Genres = [.. game.Genres.Select(g => new GenreModel(0, g))],
-      Actors = [],
-      Directors = [],
-      Writers = [],
-      Producers = [],
-      ProductionCompanies = [],
-    });
+    return Result.Success(
+      new GetOnlineMediaResponse
+      {
+        ImdbId = null,
+        TmdbId = null,
+        IgdbId = command.IgdbId.Value,
+        Title = game.Name,
+        Year = year,
+        Plot = game.Summary,
+        Image = game.CoverUrl!.ToString(),
+        ReleaseDate = releaseDate,
+        YouTubeTrailerUrl = null,
+        MediaType = MediaType.VideoGame,
+        TvSeriesTmdbId = null,
+        SeasonNumber = null,
+        EpisodeNumber = null,
+        Genres = [.. game.Genres.Select(g => new GenreModel(0, g))],
+        Actors = [],
+        Directors = [],
+        Writers = [],
+        Producers = [],
+        ProductionCompanies = [],
+      }
+    );
   }
 
   private Result<GetOnlineMediaResponse> BuildTmdbResponse(
     TmdbMediaDetails detail,
     string? imdbId,
-    MediaType mediaType)
+    MediaType mediaType
+  )
   {
     var posterUrl = _tmdbService.BuildPosterUrl(detail.PosterPath, "original");
 
-    var year = detail.ReleaseDate?.Length >= 4
-      ? detail.ReleaseDate[..4]
-      : "Unknown";
+    var year = detail.ReleaseDate?.Length >= 4 ? detail.ReleaseDate[..4] : "Unknown";
 
-    var directors = detail.Credits.Crew
-      .Where(c => c.Job.Equals("Director", StringComparison.OrdinalIgnoreCase))
-      .Select(c => new DirectorModel(c.Name, string.Empty, c.TmdbId))
+    var directors = detail
+      .Credits.Crew.Where(c => c.Job.Equals("Director", StringComparison.OrdinalIgnoreCase))
+      .Select(c => new DirectorModel(c.Name, c.ImdbId!, c.TmdbId))
       .ToList();
 
-    var writers = detail.Credits.Crew
-      .Where(c => c.Job.Equals("Writer", StringComparison.OrdinalIgnoreCase))
-      .Select(c => new WriterModel(c.Name, string.Empty, c.TmdbId))
+    var writers = detail
+      .Credits.Crew.Where(c => c.Job.Equals("Writer", StringComparison.OrdinalIgnoreCase))
+      .Select(c => new WriterModel(c.Name, c.ImdbId!, c.TmdbId))
       .ToList();
 
-    var producers = detail.Credits.Crew
-      .Where(c => c.Job.Equals("Producer", StringComparison.OrdinalIgnoreCase))
-      .Select(c => new ProducerModel(c.Name, string.Empty, c.TmdbId))
+    var producers = detail
+      .Credits.Crew.Where(c => c.Job.Equals("Producer", StringComparison.OrdinalIgnoreCase))
+      .Select(c => new ProducerModel(c.Name, c.ImdbId!, c.TmdbId))
       .ToList();
 
-    var actors = detail.Credits.Cast
-      .Select(c => new ActorModel(c.Name, string.Empty, c.TmdbId))
+    var actors = detail
+      .Credits.Cast.Select(c => new ActorModel(c.Name, c.ImdbId!, c.TmdbId))
       .ToList();
 
-    return Result.Success(new GetOnlineMediaResponse
-    {
-      ImdbId = imdbId,
-      TmdbId = detail.Id,
-      IgdbId = null,
-      Title = detail.Title,
-      Year = year,
-      Plot = detail.Overview,
-      Image = posterUrl!.ToString(),
-      ReleaseDate = detail.ReleaseDate,
-      YouTubeTrailerUrl = detail.TrailerUrl,
-      MediaType = mediaType,
-      TvSeriesTmdbId = detail.TVSeriesTmdbId,
-      SeasonNumber = detail.SeasonNumber,
-      EpisodeNumber = detail.EpisodeNumber,
-      Genres = [.. detail.Genres.Select(g => new GenreModel(g.Id, g.Name))],
-      Actors = actors,
-      Directors = directors,
-      Writers = writers,
-      Producers = producers,
-      ProductionCompanies = []
-    });
+    var productionCompanies = detail
+      .ProductionCompanies.Select(pc => new ProductionCompanyModel(null!, pc.Name, pc.Id))
+      .ToList();
+
+    return Result.Success(
+      new GetOnlineMediaResponse
+      {
+        ImdbId = imdbId,
+        TmdbId = detail.Id,
+        IgdbId = null,
+        Title = detail.Title,
+        Year = year,
+        Plot = detail.Overview,
+        Image = posterUrl!.ToString(),
+        ReleaseDate = detail.ReleaseDate,
+        YouTubeTrailerUrl = detail.TrailerUrl,
+        MediaType = mediaType,
+        TvSeriesTmdbId = detail.TVSeriesTmdbId,
+        SeasonNumber = detail.SeasonNumber,
+        EpisodeNumber = detail.EpisodeNumber,
+        Genres = [.. detail.Genres.Select(g => new GenreModel(g.Id, g.Name))],
+        Actors = actors,
+        Directors = directors,
+        Writers = writers,
+        Producers = producers,
+        ProductionCompanies = productionCompanies,
+      }
+    );
   }
 }

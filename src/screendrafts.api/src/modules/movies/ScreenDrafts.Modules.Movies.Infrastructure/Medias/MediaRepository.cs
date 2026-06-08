@@ -165,4 +165,55 @@ internal sealed class MediaRepository(MoviesDbContext context) : IMediaRepositor
 
     return rows.ToDictionary(m => m.TmdbId!.Value, m => m.PublicId!);
   }
+
+  public async Task<Media?> FindByTvEpisodeAsync(
+    int tvSeriesTmdbId,
+    int seasonNumber,
+    int episodeNumber,
+    CancellationToken cancellationToken = default
+  )
+  {
+    return await _context
+      .Media.Include(m => m.MediaGenres)
+      .Include(m => m.MediaActors)
+      .Include(m => m.MediaDirectors)
+      .Include(m => m.MediaWriters)
+      .Include(m => m.MediaProducers)
+      .Include(m => m.MediaProductionCompanies)
+      .SingleOrDefaultAsync(
+        m =>
+          m.TvSeriesTmdbId == tvSeriesTmdbId
+          && m.SeasonNumber == seasonNumber
+          && m.EpisodeNumber == episodeNumber,
+        cancellationToken
+      );
+  }
+
+  public async Task<Media?> FindByTmdbIdForUpdateAsync(
+    int tmdbId,
+    MediaType mediaType,
+    CancellationToken cancellationToken = default
+  )
+  {
+    return await _context.Media.SingleOrDefaultAsync(
+      m => m.TmdbId == tmdbId && m.MediaType == mediaType,
+      cancellationToken
+    );
+  }
+
+  public async Task<Media?> FindByTvEpisodeForUpdateAsync(
+    int tvSeriesTmdbId,
+    int seasonNumber,
+    int episodeNumber,
+    CancellationToken cancellationToken = default
+  )
+  {
+    return await _context.Media.SingleOrDefaultAsync(
+      m =>
+        m.TvSeriesTmdbId == tvSeriesTmdbId
+        && m.SeasonNumber == seasonNumber
+        && m.EpisodeNumber == episodeNumber,
+      cancellationToken
+    );
+  }
 }

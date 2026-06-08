@@ -3,7 +3,7 @@ variables:
   - name: baseUrl
     value: https://localhost:5001
   - name: draftPublicId
-    value: d_4F3uIGDvawh57xt
+    value: d_EGVIAiqi0FMrdWJ
   - name: draftPartId
     value: dp_CYVmCtMNvLJBa1M
   - name: jordainPersonId

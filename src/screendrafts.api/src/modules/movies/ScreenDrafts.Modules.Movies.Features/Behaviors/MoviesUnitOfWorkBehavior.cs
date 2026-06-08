@@ -1,4 +1,4 @@
-using ScreenDrafts.Modules.Movies.Domain.Abstractions.Data;
+﻿using ScreenDrafts.Modules.Movies.Domain.Abstractions.Data;
 
 namespace ScreenDrafts.Modules.Movies.Features.Behaviors;
 
@@ -11,13 +11,15 @@ public sealed class MoviesUnitOfWorkBehavior<TRequest, TResponse>(IUnitOfWork un
   public async Task<TResponse> Handle(
     TRequest request,
     RequestHandlerDelegate<TResponse> next,
-    CancellationToken cancellationToken)
+    CancellationToken cancellationToken
+  )
   {
     ArgumentNullException.ThrowIfNull(next);
 
     var response = await next(cancellationToken);
 
     await _unitOfWork.SaveChangesAsync(cancellationToken);
+    _unitOfWork.ClearChangeTracker();
 
     return response;
   }
