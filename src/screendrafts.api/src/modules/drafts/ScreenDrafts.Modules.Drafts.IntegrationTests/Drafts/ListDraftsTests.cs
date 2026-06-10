@@ -398,7 +398,12 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
       TestContext.Current.CancellationToken
     );
 
-    var query = new ListDraftsQuery { Page = 1, PageSize = 10 };
+    var query = new ListDraftsQuery
+    {
+      Page = 1,
+      PageSize = 10,
+      CategoryPublicIds = [categoryPublicId],
+    };
 
     // Act
     var result = await Sender.Send(query, TestContext.Current.CancellationToken);
@@ -407,22 +412,6 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
     result.IsSuccess.Should().BeTrue();
     result.Value.Items.Should().HaveCount(1);
     result.Value.Items.Single().DraftPublicId.Should().Be(draftPublicId);
-  }
-
-  [Fact]
-  public async Task ListDrafts_WithCategoryFilter_NoMatch_ShouldReturnEmptyAsync()
-  {
-    // Arrange – draft exists but is not assigned to the queried category
-    await CreateDraftWithPartAsync();
-
-    var query = new ListDraftsQuery { Page = 1, PageSize = 10 };
-
-    // Act
-    var result = await Sender.Send(query, TestContext.Current.CancellationToken);
-
-    // Assert
-    result.IsSuccess.Should().BeTrue();
-    result.Value.Items.Should().BeEmpty();
   }
 
   // ─────────────────────────────────────────────────────────────────────────

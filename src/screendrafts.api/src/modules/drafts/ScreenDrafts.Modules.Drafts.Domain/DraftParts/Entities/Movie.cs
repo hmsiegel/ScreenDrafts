@@ -12,7 +12,9 @@ public sealed class Movie : Entity
     int? tmdbId,
     int? igdbId,
     MediaType mediaType,
-    Guid id)
+    string? year,
+    Guid id
+  )
     : base(id)
   {
     PublicId = publicId;
@@ -21,18 +23,18 @@ public sealed class Movie : Entity
     TmdbId = tmdbId;
     IgdbId = igdbId;
     MediaType = mediaType;
+    Year = year;
   }
 
-  private Movie()
-  {
-  }
+  private Movie() { }
 
   public string PublicId { get; private set; } = default!;
   public string MovieTitle { get; private set; } = default!;
-  public string? ImdbId { get; private set; } 
+  public string? ImdbId { get; private set; }
   public int? TmdbId { get; private set; }
   public int? IgdbId { get; private set; }
   public MediaType MediaType { get; private set; } = default!;
+  public string? Year { get; private set; }
   public bool HasDefinedVersions => _versions.Count > 0;
   public IReadOnlyCollection<Pick> Picks => _picks.AsReadOnly();
   public IReadOnlyCollection<MovieVersion> Versions => _versions.AsReadOnly();
@@ -44,7 +46,9 @@ public sealed class Movie : Entity
     Guid id,
     string? imdbId = null,
     int? tmdbId = null,
-    int? igdbId = null)
+    int? igdbId = null,
+    string? year = null
+  )
   {
     if (string.IsNullOrWhiteSpace(movieTitle))
     {
@@ -63,15 +67,15 @@ public sealed class Movie : Entity
       id: id,
       tmdbId: tmdbId,
       igdbId: igdbId,
-      mediaType: mediaType);
+      mediaType: mediaType,
+      year: year
+    );
     return movie;
   }
 
   public void AddVersion(MovieVersion version)
   {
-    if (!_versions.Any(v => v.Name.Equals(
-      version.Name,
-      StringComparison.OrdinalIgnoreCase)))
+    if (!_versions.Any(v => v.Name.Equals(version.Name, StringComparison.OrdinalIgnoreCase)))
     {
       _versions.Add(version);
     }
@@ -86,9 +90,9 @@ public sealed class Movie : Entity
       return false;
     }
 
-    var match = _versions.FirstOrDefault(v => v.Name.Equals(
-      input.Trim(),
-      StringComparison.OrdinalIgnoreCase));
+    var match = _versions.FirstOrDefault(v =>
+      v.Name.Equals(input.Trim(), StringComparison.OrdinalIgnoreCase)
+    );
 
     if (match is null)
     {

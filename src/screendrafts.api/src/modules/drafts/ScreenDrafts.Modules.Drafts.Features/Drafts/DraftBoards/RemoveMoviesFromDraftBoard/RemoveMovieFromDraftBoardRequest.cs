@@ -3,7 +3,7 @@
 internal sealed record RemoveMovieFromDraftBoardRequest
 {
   [FromRoute(Name = "publicId")]
-  public string DraftId { get; init; } = default!;
+  public string PublicId { get; init; } = default!;
 
   [FromRoute(Name = "tmdbId")]
   public int TmdbId { get; init; } = default!;

@@ -1,18 +1,8 @@
 import { auth } from "@/auth";
 import { env } from "@/lib/env";
-import {
-  PagedResultOfMediaListItemResponse,
-} from "@/lib/dto";
+import { PagedResultOfMediaListItemResponse } from "@/lib/dto";
 
 const apiBase = env.apiUrl;
-
-async function authHeaders(): Promise<HeadersInit> {
-  const session = await auth();
-  if (session?.accessToken) {
-    return { Authorization: `Bearer ${session.accessToken}` };
-  }
-  return {};
-}
 
 const EMPTY_RESULT: PagedResultOfMediaListItemResponse = {
   items: [],
@@ -22,14 +12,30 @@ const EMPTY_RESULT: PagedResultOfMediaListItemResponse = {
   totalPages: 0,
 };
 
-export async function fetchMedia(params: {
-  page?: number;
-  pageSize?: number;
-  search?: string;
-  mediaType?: number;   // integer: 0=Movie 1=TvShow 2=TvEpisode 3=VideoGame 4=MusicVideo
-  year?: string;
-  sort?: string;
-} = {}): Promise<PagedResultOfMediaListItemResponse> {
+export async function fetchMedia(
+  params: {
+    page?: number;
+    pageSize?: number;
+    search?: string;
+    mediaType?: number;
+    year?: string;
+    sort?: string;
+  } = {},
+  accessToken?: string
+): Promise<PagedResultOfMediaListItemResponse> {
+  // If no token supplied, try to get one server-side via auth()
+  let token = accessToken;
+  if (!token) {
+    try {
+      const session = await auth();
+      token = session?.accessToken;
+    } catch {
+      // Running client-side — no session available, proceed without token
+    }
+  }
+
+  const headers: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
+
   const url = new URL(`${apiBase}/media`);
   Object.entries(params).forEach(([key, value]) => {
     if (value !== undefined && value !== null && value !== "") {
@@ -40,7 +46,7 @@ export async function fetchMedia(params: {
   try {
     const response = await fetch(url.toString(), {
       method: "GET",
-      headers: await authHeaders(),
+      headers,
       next: { revalidate: 0 },
     });
 
@@ -49,8 +55,7 @@ export async function fetchMedia(params: {
       return EMPTY_RESULT;
     }
 
-    // ListMediaResponse wraps the paged result: { result: { items, totalCount, ... } }
-    const body = await response.json() as { result: PagedResultOfMediaListItemResponse };
+    const body = (await response.json()) as { result: PagedResultOfMediaListItemResponse };
     return body.result ?? EMPTY_RESULT;
   } catch (err) {
     console.error("[fetchMedia] Network error:", err);

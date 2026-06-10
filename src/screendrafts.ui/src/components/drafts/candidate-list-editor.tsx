@@ -1,20 +1,19 @@
 'use client';
 
 import { useRef, useState } from "react";
-import Image from "next/image";
 import MovieSearchInput from "@/components/drafts/movie-search-input";
 import {
   addCandidateListEntry,
   bulkAddCandidateListEntries,
   removeCandidateListEntry,
-  type CandidateListEntry,
 } from "@/services/drafts/fetch-candidate-list";
-import { TMDB_IMAGE_BASE, type MovieSearchResult } from "@/services/movies/fetch-movies";
+import { type MovieSearchResult } from "@/services/movies/fetch-movies";
+import type { CandidateListEntryResponse } from "@/lib/dto";
 
 interface CandidateListEditorProps {
   draftPartId: string;
   accessToken: string;
-  initialEntries: CandidateListEntry[];
+  initialEntries: CandidateListEntryResponse[];
   readonly?: boolean;
 }
 
@@ -29,7 +28,7 @@ export default function CandidateListEditor({
   initialEntries,
   readonly = false,
 }: CandidateListEditorProps) {
-  const [entries, setEntries] = useState<CandidateListEntry[]>(initialEntries);
+  const [entries, setEntries] = useState<CandidateListEntryResponse[]>(initialEntries);
   const [pending, setPending] = useState<PendingMovie | null>(null);
   const [uploading, setUploading] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -40,16 +39,24 @@ export default function CandidateListEditor({
 
   async function confirmAdd() {
     if (!pending) return;
-    await addCandidateListEntry(accessToken, draftPartId, pending.movie.tmdbId, pending.notes || undefined);
+    await addCandidateListEntry(
+      accessToken,
+      draftPartId,
+      pending.movie.tmdbId,
+      pending.notes || undefined
+    );
     setEntries((prev) => [
       ...prev,
       {
+        entryId: crypto.randomUUID(),
         tmdbId: pending.movie.tmdbId,
-        title: pending.movie.title,
-        year: pending.movie.year,
-        posterUrl: pending.movie.posterUrl,
+        movieTitle: pending.movie.title,
+        movieImdbId: undefined,
+        addedByPublicId: "",
         notes: pending.notes || undefined,
-      },
+        createdOnUtc: new Date(),
+        isPending: false,
+      } as CandidateListEntryResponse,
     ]);
     setPending(null);
   }
@@ -65,7 +72,6 @@ export default function CandidateListEditor({
     setUploading(true);
     try {
       await bulkAddCandidateListEntries(accessToken, draftPartId, file);
-      // Refresh by reloading — full refresh since we don't have a direct refetch here
       window.location.reload();
     } finally {
       setUploading(false);
@@ -77,11 +83,16 @@ export default function CandidateListEditor({
     <div className="space-y-4">
       {!readonly && (
         <div className="space-y-2">
-          <MovieSearchInput onSelect={handleSelect} placeholder="Search to add a film…" />
+          <MovieSearchInput
+            onSelect={handleSelect}
+            accessToken={accessToken}
+            placeholder="Search to add a film…"
+          />
           {pending && (
             <div className="border border-sd-ink/20 bg-sd-paper p-3 space-y-2">
               <p className="text-sm font-medium text-sd-ink">
-                {pending.movie.title} <span className="font-mono text-xs text-sd-ink/50">{pending.movie.year}</span>
+                {pending.movie.title}{" "}
+                <span className="font-mono text-xs text-sd-ink/50">{pending.movie.year ?? ""}</span>
               </p>
               <input
                 type="text"
@@ -134,26 +145,16 @@ export default function CandidateListEditor({
         <ul className="divide-y divide-sd-ink/10 border border-sd-ink/10">
           {entries.map((entry) => (
             <li key={entry.tmdbId} className="flex items-center gap-3 px-3 py-2">
-              {entry.posterUrl ? (
-                <Image
-                  src={`${TMDB_IMAGE_BASE}${entry.posterUrl}`}
-                  alt={entry.title}
-                  width={32}
-                  height={48}
-                  className="shrink-0 object-cover"
-                />
-              ) : (
-                <div className="w-8 h-12 bg-sd-ink/10 shrink-0" />
-              )}
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-sd-ink">{entry.title}</p>
-                <p className="font-mono text-xs text-sd-ink/50">{entry.year}</p>
-                {entry.notes && <p className="text-xs text-sd-ink/60 mt-0.5 italic">{entry.notes}</p>}
+                <p className="text-sm font-medium text-sd-ink">{entry.movieTitle}</p>
+                {entry.notes && (
+                  <p className="text-xs text-sd-ink/60 mt-0.5 italic">{entry.notes}</p>
+                )}
               </div>
               {!readonly && (
                 <button
                   type="button"
-                  onClick={() => handleRemove(entry.tmdbId)}
+                  onClick={() => handleRemove(entry.tmdbId ?? 0)}
                   className="text-sd-ink/40 hover:text-sd-red text-lg leading-none shrink-0"
                   aria-label="Remove"
                 >

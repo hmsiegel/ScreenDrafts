@@ -1,12 +1,12 @@
-﻿namespace ScreenDrafts.Modules.Integrations.Features.Movies.SearchFoMovie;
+﻿namespace ScreenDrafts.Modules.Integrations.Features.Movies.SearchForMovie;
 
 internal sealed class SearchForMovieCommandHandler(ITmdbService tmdbService)
-  : ICommandHandler<SearchFoMovieCommand, SearchForMovieResponse>
+  : ICommandHandler<SearchForMovieCommand, SearchForMovieResponse>
 {
   private readonly ITmdbService _tmdbService = tmdbService;
 
   public async Task<Result<SearchForMovieResponse>> Handle(
-    SearchFoMovieCommand request,
+    SearchForMovieCommand request,
     CancellationToken cancellationToken
   )
   {

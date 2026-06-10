@@ -1,20 +1,23 @@
-'use client';
+"use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import DraftBoardEditor from "@/components/drafts/draft-board-editor";
 import CandidateListEditor from "@/components/drafts/candidate-list-editor";
-import { type MyDraftDetailResponse, type MyDraftPartDetail } from "@/services/drafts/fetch-my-drafts";
-import { type DraftBoardMovie } from "@/services/drafts/fetch-draft-board";
-import { type CandidateListEntry } from "@/services/drafts/fetch-candidate-list";
+import { getDraftBoard } from "@/services/drafts/fetch-draft-board";
+import type { GetMyDraftDetailResponse, MyDraftPartDetail } from "@/lib/dto";
+import type { DraftBoardItemResponse } from "@/lib/dto";
 
 interface MyDraftTabsProps {
-  detail: MyDraftDetailResponse;
+  detail: GetMyDraftDetailResponse;
   accessToken: string;
 }
 
 export default function MyDraftTabs({ detail, accessToken }: MyDraftTabsProps) {
-  const { myRoles, isSurrogate, parts } = detail;
+  const myRoles = detail.myRoles ?? [];
+  const parts = detail.parts ?? [];
+  const isSurrogate = detail.isSurrogate ?? false;
+
   const isDrafter = myRoles.includes("Drafter");
   const isHost = myRoles.includes("Host");
 
@@ -25,13 +28,26 @@ export default function MyDraftTabs({ detail, accessToken }: MyDraftTabsProps) {
 
   const [activeTab, setActiveTab] = useState(tabs[0] ?? "");
   const [selectedPartIdx, setSelectedPartIdx] = useState(0);
+  const [board, setBoard] = useState<DraftBoardItemResponse[]>([]);
+  const [boardLoading, setBoardLoading] = useState(false);
 
-  const drafterParts = parts.filter((p) => p.drafterPosition != null);
-  const hostParts = parts.filter((p) => p.hostRole != null);
+  const drafterParts = parts.filter((p) => p.isDrafter ?? false);
+  const hostParts = parts.filter((p) => p.isHost ?? false);
   const currentPart: MyDraftPartDetail | undefined = drafterParts[selectedPartIdx];
+  const draftPublicId = detail.draftPublicId ?? "";
+
+  // Load board whenever the selected drafter part changes
+  useEffect(() => {
+    if (!isDrafter || !draftPublicId) return;
+    setBoardLoading(true);
+    getDraftBoard(accessToken, draftPublicId)
+      .then(setBoard)
+      .finally(() => setBoardLoading(false));
+  }, [isDrafter, draftPublicId, accessToken]);
 
   return (
     <div>
+      {/* Tab bar */}
       <div className="flex border-b border-sd-ink/10 mb-6">
         {tabs.map((tab) => (
           <button
@@ -49,13 +65,14 @@ export default function MyDraftTabs({ detail, accessToken }: MyDraftTabsProps) {
         ))}
       </div>
 
+      {/* MY BOARD */}
       {activeTab === "MY BOARD" && isDrafter && (
         <div>
           {drafterParts.length > 1 && (
             <div className="flex gap-2 mb-4">
               {drafterParts.map((p, i) => (
                 <button
-                  key={p.draftPartId}
+                  key={p.draftPartPublicId ?? ""}
                   type="button"
                   onClick={() => setSelectedPartIdx(i)}
                   className={`font-mono text-xs uppercase px-3 py-1.5 border ${
@@ -64,16 +81,18 @@ export default function MyDraftTabs({ detail, accessToken }: MyDraftTabsProps) {
                       : "border-sd-ink/20 text-sd-ink/60 hover:border-sd-ink/40"
                   }`}
                 >
-                  Part {p.partNumber}
+                  Part {p.partIndex}
                 </button>
               ))}
             </div>
           )}
-          {currentPart ? (
+          {boardLoading ? (
+            <p className="font-mono text-sm text-sd-ink/40">Loading board…</p>
+          ) : currentPart ? (
             <DraftBoardEditor
-              draftId={detail.draft.publicId}
+              draftId={draftPublicId}
               accessToken={accessToken}
-              initialBoard={currentPart.draftBoard as DraftBoardMovie[]}
+              initialBoard={board}
             />
           ) : (
             <p className="font-mono text-sm text-sd-ink/40">No drafter parts found.</p>
@@ -81,13 +100,14 @@ export default function MyDraftTabs({ detail, accessToken }: MyDraftTabsProps) {
         </div>
       )}
 
+      {/* CANDIDATE LIST */}
       {activeTab === "CANDIDATE LIST" && isDrafter && (
         <div>
           {drafterParts.length > 1 && (
             <div className="flex gap-2 mb-4">
               {drafterParts.map((p, i) => (
                 <button
-                  key={p.draftPartId}
+                  key={p.draftPartPublicId ?? ""}
                   type="button"
                   onClick={() => setSelectedPartIdx(i)}
                   className={`font-mono text-xs uppercase px-3 py-1.5 border ${
@@ -96,16 +116,16 @@ export default function MyDraftTabs({ detail, accessToken }: MyDraftTabsProps) {
                       : "border-sd-ink/20 text-sd-ink/60 hover:border-sd-ink/40"
                   }`}
                 >
-                  Part {p.partNumber}
+                  Part {p.partIndex}
                 </button>
               ))}
             </div>
           )}
           {currentPart ? (
             <CandidateListEditor
-              draftPartId={currentPart.draftPartId}
+              draftPartId={currentPart.draftPartPublicId ?? ""}
               accessToken={accessToken}
-              initialEntries={currentPart.candidateList as CandidateListEntry[]}
+              initialEntries={[]}
               readonly={false}
             />
           ) : (
@@ -114,23 +134,24 @@ export default function MyDraftTabs({ detail, accessToken }: MyDraftTabsProps) {
         </div>
       )}
 
+      {/* HOSTING */}
       {activeTab === "HOSTING" && isHost && (
         <div className="space-y-3">
           {hostParts.length === 0 ? (
             <p className="font-mono text-sm text-sd-ink/40">No hosting assignments found.</p>
           ) : (
             hostParts.map((p) => (
-              <div key={p.draftPartId} className="flex items-center justify-between border border-sd-ink/10 px-4 py-3">
+              <div
+                key={p.draftPartPublicId ?? ""}
+                className="flex items-center justify-between border border-sd-ink/10 px-4 py-3"
+              >
                 <div>
                   <p className="font-oswald font-bold text-sm uppercase tracking-wide text-sd-ink">
-                    Part {p.partNumber}
-                  </p>
-                  <p className="font-mono text-xs text-sd-ink/50 capitalize">
-                    {p.hostRole?.name ?? "Host"}
+                    {parts.length > 1 ? `Part ${p.partIndex}` : detail.title}
                   </p>
                 </div>
                 <Link
-                  href={`/gameplay/${p.draftPartId}`}
+                  href={`/gameplay/${p.draftPartPublicId ?? ""}`}
                   className="bg-sd-blue text-white font-oswald font-medium uppercase tracking-wide text-xs px-4 py-2 hover:bg-sd-blue/90"
                 >
                   Open
@@ -141,6 +162,7 @@ export default function MyDraftTabs({ detail, accessToken }: MyDraftTabsProps) {
         </div>
       )}
 
+      {/* PREDICTIONS */}
       {activeTab === "PREDICTIONS" && isSurrogate && (
         <div className="border border-sd-ink/10 bg-white p-8 text-center">
           <p className="font-oswald font-bold text-xl uppercase tracking-wide text-sd-ink/40">

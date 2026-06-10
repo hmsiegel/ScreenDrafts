@@ -23,6 +23,8 @@ internal static class DraftsOpenApi
     public const string CandidateLists = "CandidateLists";
     public const string Predictions = "Predictions";
     public const string Participants = "Participants";
+    public const string Attendances = "Attendances";
+    public const string MyDrafts = "MyDrafts";
   }
 
   public static class Names
@@ -125,6 +127,7 @@ internal static class DraftsOpenApi
     public const string DraftPools_UpdateItem = "DraftPools.UpdateItem";
     public const string DraftPools_GetPool = "DraftPools.GetPool";
     public const string DraftPools_BulkAddItems = "DraftPools.BulkAddItems";
+    public const string DraftPools_RemoveMovie = "DraftPools.RemoveMovie";
 
     // Drafters
     public const string Drafters_CreateDrafter = "Drafters.CreateDrafter";
@@ -194,5 +197,17 @@ internal static class DraftsOpenApi
     public const string Participants_GetById = "Participants.GetById";
     public const string DraftParts_AssignFilmToCommunityFilmRule =
       "DraftParts.AssignFilmToCommunityFilmRule";
+
+    // Attendance
+    public const string Attendances_Add = "AddAttendance";
+    public const string Attendances_Confirm = "ConfirmAttendance";
+    public const string Attendances_Join = "JoinAttendance";
+    public const string Attendances_Withdraw = "WithdrawAttendance";
+    public const string Attendances_Reinstate = "ReinstateAttendance";
+    public const string Attendances_List = "ListAttendances";
+
+    // My Drafts
+    public const string MyDrafts_GetAll = "GetMyDrafts";
+    public const string MyDrafts_GetDetail = "GetMyDraftDetail";
   }
 }

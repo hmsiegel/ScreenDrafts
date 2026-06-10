@@ -11,7 +11,7 @@ internal class IntegrationsApi(ISender sender) : IIntegrationsApi
   )
   {
     var result = await _sender.Send(
-      new SearchFoMovieCommand { Query = query, Page = page },
+      new SearchForMovieCommand { Query = query, Page = page },
       cancellationToken
     );
 

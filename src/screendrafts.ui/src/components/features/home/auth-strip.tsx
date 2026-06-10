@@ -8,10 +8,10 @@ export default function AuthStrip() {
       <div className="bg-sd-ink text-white p-9 rounded relative overflow-hidden">
         <div className="font-oswald font-bold text-[30px] leading-[1.1] tracking-[0.02em]">
           JOIN THE LEAGUE.<br />
-          <span className="text-light-blue">PLAY THE COMMISSIONER GAME.</span>
+          <span className="text-light-blue">PLAY THE GAME.</span>
         </div>
         <p className="text-sm opacity-70 max-w-md mt-3 leading-relaxed">
-          Predict picks before they air. Build your own brackets. Track your accuracy across the season.
+          Create and host your own drafts. Have your friends join in.
         </p>
         <div className="flex gap-2.5 mt-6">
           <SignInButton />
@@ -31,7 +31,7 @@ export default function AuthStrip() {
           UNLOCK BONUS DRAFTS.<br />JOIN THE ZOOM ROOM.
         </div>
         <p className="text-sm opacity-85 max-w-md mt-3 leading-relaxed">
-          Patreon-only mini-drafts, watch-along Zoom calls with the hosts, early-access predictions, and the Hidden Gems vaults.
+          Patreon-only drafts, watch-along Zoom calls with the hosts, access to all the wonders of Draftland.
         </p>
         <div className="mt-6">
           <Link

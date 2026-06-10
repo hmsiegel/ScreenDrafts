@@ -69,4 +69,12 @@ internal static class DraftPartRoutes
 
   // Trivia Results
   public const string TriviaResults = ById + "/trivia-results";
+
+  // Attendances
+  public const string Attendances = ById + "/attendances";
+  public const string AttendanceByPerson = ById + "/attendances/{personPublicId}";
+  public const string AttendanceConfirm = AttendanceByPerson + "/confirm";
+  public const string AttendanceJoin = AttendanceByPerson + "/join";
+  public const string AttendanceWithdraw = AttendanceByPerson + "/withdraw";
+  public const string AttendanceReinstate = AttendanceByPerson + "/reinstate";
 }

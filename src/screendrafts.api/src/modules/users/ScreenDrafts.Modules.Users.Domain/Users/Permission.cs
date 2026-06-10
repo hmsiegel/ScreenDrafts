@@ -140,5 +140,9 @@ public sealed class Permission(string code)
   public static readonly Permission AuditRead = new("audit:read");
   public static readonly Permission AuditExport = new("audit:export");
 
+  // Attendances
+  public static readonly Permission AttendanceJoin = new("attendances:join");
+  public static readonly Permission AttendanceWithdraw = new("attendances:withdraw");
+
   public string Code { get; } = code;
 }

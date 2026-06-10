@@ -3,13 +3,11 @@ global using System.Reflection;
 global using System.Security.Cryptography;
 global using System.Text;
 global using System.Text.Json;
-
 global using MediatR;
-
 global using Microsoft.AspNetCore.Builder;
 global using Microsoft.AspNetCore.Http;
+global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.Extensions.Logging;
-
 global using ScreenDrafts.Common.Abstractions.Results;
 global using ScreenDrafts.Common.Application.Clock;
 global using ScreenDrafts.Common.Application.EventBus;
@@ -29,7 +27,7 @@ global using ScreenDrafts.Modules.Integrations.Domain.Services.Tmdb;
 global using ScreenDrafts.Modules.Integrations.Domain.Zoom;
 global using ScreenDrafts.Modules.Integrations.Features.Movies.FetchMedia;
 global using ScreenDrafts.Modules.Integrations.Features.Movies.GetOnlineMedia;
-global using ScreenDrafts.Modules.Integrations.Features.Movies.SearchFoMovie;
+global using ScreenDrafts.Modules.Integrations.Features.Movies.SearchForMovie;
 global using ScreenDrafts.Modules.Integrations.Features.Zoom.ProcessZoomRecording;
 global using ScreenDrafts.Modules.Integrations.IntegrationEvents;
 global using ScreenDrafts.Modules.Integrations.PublicApi;

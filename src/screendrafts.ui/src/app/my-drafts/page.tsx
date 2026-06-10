@@ -1,10 +1,11 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { getMyDrafts, joinDraftPart, type MyDraftSummary } from "@/services/drafts/fetch-my-drafts";
+import { getMyDrafts, joinDraftPart } from "@/services/drafts/fetch-my-drafts";
 import DraftTypeBadge from "@/components/ui/draft-type-badge";
 import { draftTypeFromNumber } from "@/lib/draft-type-display";
 import { Metadata } from "next";
+import type { MyDraftSummary, MyDraftPartSummary } from "@/lib/dto";
 
 export const metadata: Metadata = { title: "My Drafts" };
 export const dynamic = "force-dynamic";
@@ -17,99 +18,167 @@ function SectionHeading({ children }: { children: React.ReactNode }) {
   );
 }
 
-function DraftCard({ draft, accessToken }: { draft: MyDraftSummary; accessToken: string }) {
+function RoleBadge({ isDrafter, isHost }: { isDrafter: boolean; isHost: boolean }) {
+  return (
+    <div className="flex gap-1">
+      {isDrafter && (
+        <span className="font-mono text-[9px] tracking-widest uppercase px-1.5 py-0.5 bg-sd-blue/10 text-sd-blue border border-sd-blue/20">
+          Drafter
+        </span>
+      )}
+      {isHost && (
+        <span className="font-mono text-[9px] tracking-widest uppercase px-1.5 py-0.5 bg-sd-ink/10 text-sd-ink border border-sd-ink/20">
+          Host
+        </span>
+      )}
+    </div>
+  );
+}
+
+// ── List row for upcoming / in-progress ──────────────────────────────────────
+
+function DraftListRow({
+  draft,
+  accessToken,
+}: {
+  draft: MyDraftSummary;
+  accessToken: string;
+}) {
+  const parts = draft.parts ?? [];
+  const multiPart = parts.length > 1;
+  const isDrafter = parts.some((p) => p.isDrafter ?? false);
+  const isHost = parts.some((p) => p.isHost ?? false);
+
   return (
     <div className="bg-white border border-sd-ink/10">
-      <div className="flex items-center gap-3 px-4 py-3 border-b border-sd-ink/10 bg-sd-ink">
-        <div className="w-1 h-4 bg-sd-red shrink-0" />
-        <span className="font-oswald font-bold text-sm uppercase tracking-wide text-white flex-1 truncate">
-          {draft.name}
-        </span>
-        <DraftTypeBadge type={draftTypeFromNumber(draft.draftType?.value)} />
-      </div>
-      <div className="p-4 space-y-3">
-        {draft.episodeNumber != null && (
-          <p className="font-mono text-xs text-sd-ink/50">Episode {draft.episodeNumber}</p>
+      {/* Main row */}
+      <div className="flex items-center gap-4 px-4 py-3">
+        <div className="w-1 h-8 bg-sd-red shrink-0" />
+        <div className="flex-1 min-w-0">
+          <Link
+            href={`/my-drafts/${draft.draftPublicId ?? ""}`}
+            className="font-oswald font-bold text-[15px] uppercase tracking-wide text-sd-ink hover:text-sd-blue transition-colors truncate block"
+          >
+            {draft.title}
+          </Link>
+          <div className="flex items-center gap-2 mt-0.5">
+            <RoleBadge isDrafter={isDrafter} isHost={isHost} />
+            {multiPart && (
+              <span className="font-mono text-[9px] text-sd-ink/40">{parts.length} parts</span>
+            )}
+          </div>
+        </div>
+        <DraftTypeBadge type={draftTypeFromNumber(draft.draftType)} />
+        {/* Single-part action inline */}
+        {!multiPart && parts[0] && (
+          <PartActionButton
+            draftPublicId={draft.draftPublicId ?? ""}
+            part={parts[0]}
+            accessToken={accessToken}
+          />
         )}
-        <div className="space-y-2">
-          {draft.parts.map((part) => (
-            <div key={part.draftPartId} className="flex items-center justify-between border border-sd-ink/10 px-3 py-2">
-              <div>
+      </div>
+
+      {/* Multi-part sub-rows */}
+      {multiPart && (
+        <div className="border-t border-sd-ink/5">
+          {parts.map((part) => (
+            <div
+              key={part.draftPartPublicId ?? ""}
+              className="flex items-center justify-between px-8 py-2 border-b border-sd-ink/5 last:border-b-0"
+            >
+              <div className="flex items-center gap-3">
                 <p className="font-mono text-xs text-sd-ink/60 uppercase tracking-wide">
-                  Part {part.partNumber}
+                  Part {part.partIndex}
                 </p>
                 {part.releaseDate && (
-                  <p className="font-mono text-xs text-sd-ink/40">{part.releaseDate}</p>
+                  <p className="font-mono text-xs text-sd-ink/40">
+                    {new Date(part.releaseDate).toLocaleDateString()}
+                  </p>
                 )}
               </div>
               <PartActionButton
-                draftId={draft.draftId}
+                draftPublicId={draft.draftPublicId ?? ""}
                 part={part}
                 accessToken={accessToken}
               />
             </div>
           ))}
         </div>
-      </div>
+      )}
     </div>
   );
 }
 
 function PartActionButton({
-  draftId,
+  draftPublicId,
   part,
   accessToken,
 }: {
-  draftId: string;
-  part: MyDraftSummary["parts"][number];
+  draftPublicId: string;
+  part: MyDraftPartSummary;
   accessToken: string;
 }) {
-  if (!part.isJoined) {
+  const isJoined = part.attendanceStatus === "Joined";
+
+  if (!isJoined) {
     return (
       <form
         action={async () => {
-          'use server';
-          await joinDraftPart(accessToken, part.draftPartId);
-          redirect(`/my-drafts/${draftId}`);
+          "use server";
+          await joinDraftPart(accessToken, part.draftPartPublicId ?? "");
+          redirect(`/my-drafts/${draftPublicId}`);
         }}
       >
         <button
           type="submit"
-          className="bg-sd-blue text-white font-oswald font-medium uppercase tracking-wide text-xs px-3 py-1.5 hover:bg-sd-blue/90"
+          className="bg-sd-blue text-white font-oswald font-medium uppercase tracking-wide text-xs px-3 py-1.5 hover:bg-sd-blue/90 shrink-0"
         >
           Join
         </button>
       </form>
     );
   }
+
   return (
     <Link
-      href={`/my-drafts/${draftId}`}
-      className="bg-sd-ink text-white font-oswald font-medium uppercase tracking-wide text-xs px-3 py-1.5 hover:bg-sd-ink/80"
+      href={`/my-drafts/${draftPublicId}`}
+      className="bg-sd-ink text-white font-oswald font-medium uppercase tracking-wide text-xs px-3 py-1.5 hover:bg-sd-ink/80 shrink-0"
     >
       Open
     </Link>
   );
 }
 
+// ── Card for completed ────────────────────────────────────────────────────────
+
 function CompletedDraftCard({ draft }: { draft: MyDraftSummary }) {
+  const parts = draft.parts ?? [];
+  const isDrafter = parts.some((p) => p.isDrafter ?? false);
+  const isHost = parts.some((p) => p.isHost ?? false);
+
   return (
-    <Link href={`/my-drafts/${draft.draftId}`} className="block bg-white border border-sd-ink/10 hover:border-sd-ink/30 transition-colors">
+    <Link
+      href={`/my-drafts/${draft.draftPublicId ?? ""}`}
+      className="block bg-white border border-sd-ink/10 hover:border-sd-ink/30 transition-colors"
+    >
       <div className="flex items-center gap-3 px-4 py-3 border-b border-sd-ink/10">
         <span className="font-oswald font-bold text-sm uppercase tracking-wide text-sd-ink flex-1 truncate">
-          {draft.name}
+          {draft.title}
         </span>
-        <DraftTypeBadge type={draftTypeFromNumber(draft.draftType?.value)} />
+        <DraftTypeBadge type={draftTypeFromNumber(draft.draftType)} />
       </div>
-      <div className="px-4 py-3">
-        {draft.episodeNumber != null && (
-          <p className="font-mono text-xs text-sd-ink/50">Episode {draft.episodeNumber}</p>
+      <div className="px-4 py-3 space-y-2">
+        <RoleBadge isDrafter={isDrafter} isHost={isHost} />
+        {parts.length > 1 && (
+          <p className="font-mono text-xs text-sd-ink/40">{parts.length} parts</p>
         )}
-        <p className="font-mono text-xs text-sd-ink/40 mt-1">{draft.parts.length} part{draft.parts.length !== 1 ? "s" : ""}</p>
       </div>
     </Link>
   );
 }
+
+// ── Page ──────────────────────────────────────────────────────────────────────
 
 export default async function MyDraftsPage() {
   const session = await auth();
@@ -125,12 +194,12 @@ export default async function MyDraftsPage() {
 
         <section>
           <SectionHeading>Upcoming</SectionHeading>
-          {upcoming.length === 0 ? (
+          {(upcoming ?? []).length === 0 ? (
             <p className="font-mono text-sm text-sd-ink/40">No upcoming drafts.</p>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {upcoming.map((d) => (
-                <DraftCard key={d.draftId} draft={d} accessToken={session.accessToken!} />
+            <div className="space-y-2">
+              {(upcoming ?? []).map((d) => (
+                <DraftListRow key={d.draftPublicId ?? ""} draft={d} accessToken={session.accessToken!} />
               ))}
             </div>
           )}
@@ -138,12 +207,12 @@ export default async function MyDraftsPage() {
 
         <section>
           <SectionHeading>In Progress</SectionHeading>
-          {inProgress.length === 0 ? (
+          {(inProgress ?? []).length === 0 ? (
             <p className="font-mono text-sm text-sd-ink/40">No drafts in progress.</p>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {inProgress.map((d) => (
-                <DraftCard key={d.draftId} draft={d} accessToken={session.accessToken!} />
+            <div className="space-y-2">
+              {(inProgress ?? []).map((d) => (
+                <DraftListRow key={d.draftPublicId ?? ""} draft={d} accessToken={session.accessToken!} />
               ))}
             </div>
           )}
@@ -151,12 +220,12 @@ export default async function MyDraftsPage() {
 
         <section>
           <SectionHeading>Completed</SectionHeading>
-          {completed.length === 0 ? (
+          {(completed ?? []).length === 0 ? (
             <p className="font-mono text-sm text-sd-ink/40">No completed drafts.</p>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {completed.map((d) => (
-                <CompletedDraftCard key={d.draftId} draft={d} />
+              {(completed ?? []).map((d) => (
+                <CompletedDraftCard key={d.draftPublicId ?? ""} draft={d} />
               ))}
             </div>
           )}

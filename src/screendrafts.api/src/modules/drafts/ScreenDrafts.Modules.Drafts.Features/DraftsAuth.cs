@@ -135,5 +135,8 @@ internal static class DraftsAuth
     // Participants
     internal const string ParticipantList = "participants:list";
     internal const string ParticipantRead = "participants:read";
+
+    internal const string AttendanceJoin = "attendances:join";
+    internal const string AttendanceWithdraw = "attendances:withdraw";
   }
 }

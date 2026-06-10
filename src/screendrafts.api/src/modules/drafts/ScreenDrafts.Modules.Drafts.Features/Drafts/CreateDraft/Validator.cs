@@ -6,7 +6,10 @@ internal sealed class Validator : AbstractValidator<CreateDraftCommand>
   {
     RuleFor(x => x.Title).NotEmpty();
     RuleFor(x => x.DraftType).MustBeSmartEnumValue<CreateDraftCommand, DraftType>();
-    RuleFor(x => x.SeriesId).NotEqual(Guid.Empty);
+    RuleFor(x => x.SeriesId)
+      .NotEmpty()
+      .WithMessage("SeriesId is required.")
+      .Must(id => PublicIdGuards.IsValidWithPrefix(id, PublicIdPrefixes.Series))
+      .WithMessage("SeriesId must be a valid public ID.");
   }
 }
-

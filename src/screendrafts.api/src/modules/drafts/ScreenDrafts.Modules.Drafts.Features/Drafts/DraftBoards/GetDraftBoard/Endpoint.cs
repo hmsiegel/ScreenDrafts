@@ -13,9 +13,9 @@ internal sealed class Endpoint(IUsersApi usersApi)
     Description(x =>
     {
       x.WithTags(DraftsOpenApi.Tags.DraftBoards)
-      .WithName(DraftsOpenApi.Names.DraftBoards_GetBoard)
-      .Produces<GetDraftBoardResponse>(StatusCodes.Status200OK)
-      .Produces(StatusCodes.Status404NotFound);
+        .WithName(DraftsOpenApi.Names.DraftBoards_GetBoard)
+        .Produces<GetDraftBoardResponse>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status404NotFound);
     });
     Policies(DraftsAuth.Permissions.DraftBoardRead);
   }
@@ -29,11 +29,7 @@ internal sealed class Endpoint(IUsersApi usersApi)
       await Send.NotFoundAsync(ct);
       return;
     }
-    var query = new GetDraftBoardQuery
-    {
-      DraftId = req.DraftId,
-      UserId = user.UserId
-    };
+    var query = new GetDraftBoardQuery { DraftId = req.PublicId, UserId = user.UserId };
     var result = await Sender.Send(query, ct);
 
     await this.SendOkAsync(result, ct);

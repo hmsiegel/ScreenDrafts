@@ -47,7 +47,8 @@ export default function SiteFooter() {
           </div>
           <p className="font-serif italic text-[15px] leading-relaxed text-light-blue">
             &ldquo;Where experts and enthusiasts competitively collaborate in the creation of screen-centric
-            best-of lists.&rdquo;
+            best-of lists. This website was fan-built for the Screen Drafts podcast. All podcast content belongs
+            to its respective creators. This site is not affiliated with or endorsed by the show.&rdquo;
           </p>
         </div>
 

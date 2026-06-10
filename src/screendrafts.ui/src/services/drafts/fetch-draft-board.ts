@@ -1,28 +1,19 @@
+import { DraftBoardItemResponse, GetDraftBoardResponse } from "@/lib/dto";
 import { env } from "@/lib/env";
-
-// NOTE: awaiting NSwag regen
-export interface DraftBoardMovie {
-  tmdbId: number;
-  title: string;
-  year: number;
-  posterUrl?: string;
-  notes?: string;
-  priority?: number;
-}
 
 const apiBase = env.apiUrl;
 
 export async function getDraftBoard(
   accessToken: string | undefined,
   draftId: string
-): Promise<DraftBoardMovie[]> {
+): Promise<DraftBoardItemResponse[]> {
   try {
     const res = await fetch(`${apiBase}/drafts/${encodeURIComponent(draftId)}/board`, {
       headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
       cache: "no-store",
     });
     if (!res.ok) return [];
-    const data = (await res.json()) as { items?: DraftBoardMovie[] };
+    const data = await res.json() as GetDraftBoardResponse;
     return data.items ?? [];
   } catch (err) {
     console.error("[getDraftBoard]", err);

@@ -31,6 +31,7 @@ global using ScreenDrafts.Common.Infrastructure.Inbox;
 global using ScreenDrafts.Common.Infrastructure.Outbox;
 global using ScreenDrafts.Common.Infrastructure.Serialization;
 global using ScreenDrafts.Modules.Drafts.Domain.Abstractions.Data;
+global using ScreenDrafts.Modules.Drafts.Domain.Attendances;
 global using ScreenDrafts.Modules.Drafts.Domain.Campaigns;
 global using ScreenDrafts.Modules.Drafts.Domain.Categories;
 global using ScreenDrafts.Modules.Drafts.Domain.DraftBoards;

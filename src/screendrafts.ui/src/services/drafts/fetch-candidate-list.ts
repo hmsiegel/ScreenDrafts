@@ -1,14 +1,6 @@
 import { env } from "@/lib/env";
 import { auth } from "@/auth";
-
-// NOTE: awaiting NSwag regen
-export interface CandidateListEntry {
-  tmdbId: number;
-  title: string;
-  year: number;
-  posterUrl?: string;
-  notes?: string;
-}
+import { CandidateListEntryResponse } from "@/lib/dto";
 
 const apiBase = env.apiUrl;
 
@@ -17,7 +9,7 @@ async function accessToken(): Promise<string | undefined> {
   return session?.accessToken;
 }
 
-export async function getCandidateList(draftPartId: string): Promise<CandidateListEntry[]> {
+export async function getCandidateList(draftPartId: string): Promise<CandidateListEntryResponse[]> {
   // TODO: confirm endpoint
   try {
     const token = await accessToken();
@@ -29,7 +21,7 @@ export async function getCandidateList(draftPartId: string): Promise<CandidateLi
       }
     );
     if (!res.ok) return [];
-    const data = (await res.json()) as { items?: CandidateListEntry[] };
+    const data = (await res.json()) as { items?: CandidateListEntryResponse[] };
     return data.items ?? [];
   } catch (err) {
     console.error("[getCandidateList]", err);

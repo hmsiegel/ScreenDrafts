@@ -1,4 +1,4 @@
-﻿namespace ScreenDrafts.Modules.Integrations.Features.Movies.SearchFoMovie;
+﻿namespace ScreenDrafts.Modules.Integrations.Features.Movies.SearchForMovie;
 
 internal sealed record MovieSearchResult
 {

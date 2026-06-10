@@ -1,7 +1,4 @@
-﻿using ScreenDrafts.Modules.Integrations.Domain.Services.Imdb;
-using ScreenDrafts.Modules.Integrations.Domain.Services.Omb;
-
-namespace ScreenDrafts.Modules.Integrations.Features.Movies.GetOnlineMedia;
+﻿namespace ScreenDrafts.Modules.Integrations.Features.Movies.GetOnlineMedia;
 
 internal sealed class GetOnlineMediaCommandHandler(
   ITmdbService tmdbService,

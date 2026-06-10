@@ -3,19 +3,20 @@
 internal sealed class CreateDraftCommandHandler(
   IDraftRepository draftsRepository,
   IPublicIdGenerator publicIdGenerator,
-  ISeriesRepository seriesRepository)
-  : ICommandHandler<CreateDraftCommand, string>
+  ISeriesRepository seriesRepository
+) : ICommandHandler<CreateDraftCommand, string>
 {
   private readonly IDraftRepository _draftsRepository = draftsRepository;
   private readonly ISeriesRepository _seriesRepository = seriesRepository;
   private readonly IPublicIdGenerator _publicIdGenerator = publicIdGenerator;
 
-  public async Task<Result<string>> Handle(CreateDraftCommand request, CancellationToken cancellationToken)
+  public async Task<Result<string>> Handle(
+    CreateDraftCommand request,
+    CancellationToken cancellationToken
+  )
   {
     var publicId = _publicIdGenerator.GeneratePublicId(PublicIdPrefixes.Draft);
-    var seriesId = SeriesId.Create(request.SeriesId);
-
-    var series = await _seriesRepository.GetByIdAsync(seriesId, cancellationToken);
+    var series = await _seriesRepository.GetByPublicIdAsync(request.SeriesId, cancellationToken);
 
     if (series is null)
     {
@@ -26,7 +27,8 @@ internal sealed class CreateDraftCommandHandler(
       title: new Title(request.Title),
       publicId: publicId,
       draftType: DraftType.FromValue(request.DraftType),
-      series: series!);
+      series: series!
+    );
 
     if (result.IsFailure)
     {
@@ -39,6 +41,3 @@ internal sealed class CreateDraftCommandHandler(
     return draft.PublicId;
   }
 }
-
-
-

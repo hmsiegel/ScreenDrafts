@@ -8,12 +8,12 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<UpdateDraftBoardItemReques
     Description(x =>
     {
       x.WithTags(DraftsOpenApi.Tags.DraftBoards)
-      .WithName(DraftsOpenApi.Names.DraftBoards_UpdateItem)
-      .Produces(StatusCodes.Status204NoContent)
-      .Produces(StatusCodes.Status400BadRequest)
-      .Produces(StatusCodes.Status401Unauthorized)
-      .Produces(StatusCodes.Status403Forbidden)
-      .Produces(StatusCodes.Status404NotFound);
+        .WithName(DraftsOpenApi.Names.DraftBoards_UpdateItem)
+        .Produces(StatusCodes.Status204NoContent)
+        .Produces(StatusCodes.Status400BadRequest)
+        .Produces(StatusCodes.Status401Unauthorized)
+        .Produces(StatusCodes.Status403Forbidden)
+        .Produces(StatusCodes.Status404NotFound);
     });
     Policies(DraftsAuth.Permissions.DraftBoardCreate);
   }
@@ -24,11 +24,11 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<UpdateDraftBoardItemReques
 
     var command = new UpdateDraftBoardItemCommand
     {
-      DraftId = req.DraftId,
+      DraftId = req.PublicId,
       UserPublicId = userPublicId,
       TmdbId = req.TmdbId,
       Notes = req.Notes,
-      Priority = req.Priority
+      Priority = req.Priority,
     };
 
     var result = await Sender.Send(command, ct);

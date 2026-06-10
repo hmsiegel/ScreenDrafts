@@ -4,7 +4,5 @@ internal sealed record CreateDraftCommand : ICommand<string>
 {
   public required string Title { get; init; }
   public required int DraftType { get; init; }
-  public required Guid SeriesId { get; init; }
+  public required string SeriesId { get; init; }
 }
-
-

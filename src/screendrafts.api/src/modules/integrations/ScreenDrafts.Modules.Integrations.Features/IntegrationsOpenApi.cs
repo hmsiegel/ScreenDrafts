@@ -11,7 +11,8 @@ internal static class IntegrationsOpenApi
   public static class Names
   {
     public const string Movies_Search = "OnlineMedia.Search";
-    public const string Movies_Import = "Media.Import";
+    public const string Movies_Lookup = "OnlineMedia.Lookup";
+    public const string Movies_Import = "OnlineMedia.Import";
     public const string Zoom_Webhook = "Zoom.Webhook";
   }
 

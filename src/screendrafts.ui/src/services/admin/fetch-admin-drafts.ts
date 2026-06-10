@@ -4,6 +4,7 @@ import {
   CategoryResponse,
   CreatedResponse,
   GetDraftCategoryResponse,
+  GetMediaByTmdbIdsResponse,
   SearchDraftsResponse,
   SearchHostResponse,
   SeriesResponse,
@@ -331,8 +332,8 @@ export async function createDraftPart(
     throw new Error(`POST /drafts/${draftPublicId}/parts failed (${response.status}): ${text}`);
   }
   // Returns the new part publicId as a JSON string
-  const raw = await response.text();
-  try { return JSON.parse(raw) as string; } catch { return raw; }
+  const data = (await response.json()) as { publicId: string };
+  return data.publicId;
 }
 
 export async function addHostToDraftPart(
@@ -742,7 +743,8 @@ export async function createDraftPool(
 ): Promise<void> {
   const res = await fetch(`${apiBase}/drafts/${encodeURIComponent(draftId)}/pool`, {
     method: "POST",
-    headers: { Authorization: `Bearer ${accessToken}` },
+    headers: { Authorization: `Bearer ${accessToken}` , "Content-Type": "application/json" },
+    body: JSON.stringify({}),
   });
   if (!res.ok) {
     const text = await res.text().catch(() => res.statusText);
@@ -821,4 +823,18 @@ export async function listDraftPositions(
       hasBonusVetoOverride: p.hasBonusVetoOverride ?? false,
     })
   );
+}
+
+export async function getMediaByTmdbIds(
+  accessToken: string,
+  tmdbIds: number[]
+): Promise<GetMediaByTmdbIdsResponse> {
+  const url = new URL(`${apiBase}/media/by-tmdb-ids`);
+  tmdbIds.forEach((id) => url.searchParams.append("tmdbIds", String(id)));
+  const res = await fetch(url.toString(), {
+    headers: { Authorization: `Bearer ${accessToken}` },
+    cache: "no-store",
+  });
+  if (!res.ok) return { items: [] };
+  return res.json() as Promise<GetMediaByTmdbIdsResponse>;
 }

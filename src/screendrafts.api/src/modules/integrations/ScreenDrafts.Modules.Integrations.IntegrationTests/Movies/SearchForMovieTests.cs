@@ -13,7 +13,7 @@ public sealed class SearchForMovieTests(IntegrationsIntegrationTestWebAppFactory
   public async Task SearchForMovie_WithEmptyQuery_ShouldReturnFailureAsync()
   {
     // Arrange
-    var command = new SearchFoMovieCommand { Query = string.Empty };
+    var command = new SearchForMovieCommand { Query = string.Empty };
 
     // Act
     var result = await Sender.Send(command, TestContext.Current.CancellationToken);
@@ -27,7 +27,7 @@ public sealed class SearchForMovieTests(IntegrationsIntegrationTestWebAppFactory
   public async Task SearchForMovie_WithWhitespaceQuery_ShouldReturnFailureAsync()
   {
     // Arrange
-    var command = new SearchFoMovieCommand { Query = "   " };
+    var command = new SearchForMovieCommand { Query = "   " };
 
     // Act
     var result = await Sender.Send(command, TestContext.Current.CancellationToken);
@@ -45,13 +45,26 @@ public sealed class SearchForMovieTests(IntegrationsIntegrationTestWebAppFactory
   public async Task SearchForMovie_WithValidQuery_ShouldReturnResultsAsync()
   {
     // Arrange
-    FakeTmdbService.SetSearchResults(
-    [
-      new TmdbSearchResult { Id = 603, Title = "The Matrix", ReleaseDate = "1999-03-31", Overview = "A hacker discovers the truth.", PosterPath = "/poster1.jpg" },
-      new TmdbSearchResult { Id = 604, Title = "The Matrix Reloaded", ReleaseDate = "2003-05-15", Overview = "Neo continues his journey.", PosterPath = "/poster2.jpg" }
+    FakeTmdbService.SetSearchResults([
+      new TmdbSearchResult
+      {
+        Id = 603,
+        Title = "The Matrix",
+        ReleaseDate = "1999-03-31",
+        Overview = "A hacker discovers the truth.",
+        PosterPath = "/poster1.jpg",
+      },
+      new TmdbSearchResult
+      {
+        Id = 604,
+        Title = "The Matrix Reloaded",
+        ReleaseDate = "2003-05-15",
+        Overview = "Neo continues his journey.",
+        PosterPath = "/poster2.jpg",
+      },
     ]);
 
-    var command = new SearchFoMovieCommand { Query = "Matrix" };
+    var command = new SearchForMovieCommand { Query = "Matrix" };
 
     // Act
     var result = await Sender.Send(command, TestContext.Current.CancellationToken);
@@ -65,19 +78,18 @@ public sealed class SearchForMovieTests(IntegrationsIntegrationTestWebAppFactory
   public async Task SearchForMovie_WithValidQuery_ShouldMapResultFieldsCorrectlyAsync()
   {
     // Arrange
-    FakeTmdbService.SetSearchResults(
-    [
+    FakeTmdbService.SetSearchResults([
       new TmdbSearchResult
       {
         Id = 603,
         Title = "The Matrix",
         ReleaseDate = "1999-03-31",
         Overview = "A computer hacker learns the truth.",
-        PosterPath = "/f89U3ADr1oiB1s9GkdPOEpXUk5H.jpg"
-      }
+        PosterPath = "/f89U3ADr1oiB1s9GkdPOEpXUk5H.jpg",
+      },
     ]);
 
-    var command = new SearchFoMovieCommand { Query = "Matrix" };
+    var command = new SearchForMovieCommand { Query = "Matrix" };
 
     // Act
     var result = await Sender.Send(command, TestContext.Current.CancellationToken);
@@ -98,7 +110,7 @@ public sealed class SearchForMovieTests(IntegrationsIntegrationTestWebAppFactory
     // Arrange
     FakeTmdbService.SetSearchResults([]);
 
-    var command = new SearchFoMovieCommand { Query = "UnknownFilmXYZ" };
+    var command = new SearchForMovieCommand { Query = "UnknownFilmXYZ" };
 
     // Act
     var result = await Sender.Send(command, TestContext.Current.CancellationToken);
@@ -112,12 +124,16 @@ public sealed class SearchForMovieTests(IntegrationsIntegrationTestWebAppFactory
   public async Task SearchForMovie_WithNullReleaseDate_ShouldReturnNullYearAsync()
   {
     // Arrange
-    FakeTmdbService.SetSearchResults(
-    [
-      new TmdbSearchResult { Id = 999, Title = "Unknown Date Film", ReleaseDate = null }
+    FakeTmdbService.SetSearchResults([
+      new TmdbSearchResult
+      {
+        Id = 999,
+        Title = "Unknown Date Film",
+        ReleaseDate = null,
+      },
     ]);
 
-    var command = new SearchFoMovieCommand { Query = "Unknown Date Film" };
+    var command = new SearchForMovieCommand { Query = "Unknown Date Film" };
 
     // Act
     var result = await Sender.Send(command, TestContext.Current.CancellationToken);

@@ -9,5 +9,5 @@ internal sealed record AddMovieCommand : ICommand<string>
   public int? TmdbId { get; init; }
   public int? IgdbId { get; init; }
   public MediaType MediaType { get; init; } = default!;
+  public string? Year { get; init; } = default!;
 }
-

@@ -1,6 +1,7 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Features.Drafts.DraftBoards.BulkAddMoviesToDraftBoard;
 
-internal sealed class Endpoint : ScreenDraftsEndpoint<BulkAddMoviesToDraftBoardRequest, BulkAddMoviesResponse>
+internal sealed class Endpoint
+  : ScreenDraftsEndpoint<BulkAddMoviesToDraftBoardRequest, BulkAddMoviesResponse>
 {
   public override void Configure()
   {
@@ -9,12 +10,12 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<BulkAddMoviesToDraftBoardR
     Description(x =>
     {
       x.WithTags(DraftsOpenApi.Tags.DraftBoards)
-      .WithName(DraftsOpenApi.Names.DraftBoards_BulkAddItems)
-      .Produces<BulkAddMoviesResponse>(StatusCodes.Status200OK)
-      .Produces(StatusCodes.Status400BadRequest)
-      .Produces(StatusCodes.Status401Unauthorized)
-      .Produces(StatusCodes.Status403Forbidden)
-      .Produces(StatusCodes.Status404NotFound);
+        .WithName(DraftsOpenApi.Names.DraftBoards_BulkAddItems)
+        .Produces<BulkAddMoviesResponse>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status400BadRequest)
+        .Produces(StatusCodes.Status401Unauthorized)
+        .Produces(StatusCodes.Status403Forbidden)
+        .Produces(StatusCodes.Status404NotFound);
     });
     Policies(DraftsAuth.Permissions.DraftBoardCreate);
   }
@@ -27,9 +28,9 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<BulkAddMoviesToDraftBoardR
 
     var command = new BulkAddMoviesToDraftBoardCommand
     {
-      DraftId = req.DraftId,
+      DraftId = req.PublicId,
       UserPublicId = userPublicId,
-      CsvStream = stream
+      CsvStream = stream,
     };
 
     var result = await Sender.Send(command, ct);

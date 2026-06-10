@@ -16,13 +16,9 @@ internal sealed class Validator : AbstractValidator<AddMovieToDraftBoardCommand>
       .Must(id => PublicIdGuards.IsValidWithPrefix(id, PublicIdPrefixes.User))
       .WithMessage("Invalid User Public ID format.");
 
-    RuleFor(x => x.TmdbId)
-     .GreaterThan(0)
-     .WithMessage("TMDB ID must be a positive integer.");
+    RuleFor(x => x.TmdbId).GreaterThan(0).WithMessage("TMDB ID must be a positive integer.");
 
-    RuleFor(x => x.Notes)
-      .MaximumLength(1000)
-      .WithMessage("Notes cannot exceed 1000 characters.");
+    RuleFor(x => x.Notes).MaximumLength(1000).WithMessage("Notes cannot exceed 1000 characters.");
 
     RuleFor(x => x.Priority)
       .GreaterThan(0)

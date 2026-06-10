@@ -23,6 +23,7 @@ internal sealed class MediaAddedIntegrationEventConsumer(
         TmdbId = integrationEvent.TmdbId,
         IgdbId = integrationEvent.IgdbId,
         MediaType = integrationEvent.MediaType,
+        Year = integrationEvent.Year,
       },
       cancellationToken
     );

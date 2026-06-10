@@ -1,15 +1,19 @@
 'use client';
 
 import { useRef, useState } from "react";
-import Image from "next/image";
-import { searchMovies, TMDB_IMAGE_BASE, type MovieSearchResult } from "@/services/movies/fetch-movies";
+import { searchMovies, type MovieSearchResult } from "@/services/movies/fetch-movies";
 
 interface MovieSearchInputProps {
   onSelect: (movie: MovieSearchResult) => void;
+  accessToken?: string;
   placeholder?: string;
 }
 
-export default function MovieSearchInput({ onSelect, placeholder = "Search movies…" }: MovieSearchInputProps) {
+export default function MovieSearchInput({
+  onSelect,
+  accessToken,
+  placeholder = "Search movies…",
+}: MovieSearchInputProps) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<MovieSearchResult[]>([]);
   const [open, setOpen] = useState(false);
@@ -18,9 +22,13 @@ export default function MovieSearchInput({ onSelect, placeholder = "Search movie
   function handleChange(value: string) {
     setQuery(value);
     if (debounceRef.current) clearTimeout(debounceRef.current);
-    if (!value.trim()) { setResults([]); setOpen(false); return; }
+    if (!value.trim()) {
+      setResults([]);
+      setOpen(false);
+      return;
+    }
     debounceRef.current = setTimeout(async () => {
-      const items = await searchMovies(value.trim());
+      const items = await searchMovies(value.trim(), accessToken);
       setResults(items);
       setOpen(items.length > 0);
     }, 300);
@@ -53,21 +61,8 @@ export default function MovieSearchInput({ onSelect, placeholder = "Search movie
                 onMouseDown={() => handleSelect(movie)}
                 className="flex items-center gap-3 w-full px-3 py-2 text-left hover:bg-sd-paper text-sm text-sd-ink"
               >
-                {movie.posterUrl ? (
-                  <Image
-                    src={`${TMDB_IMAGE_BASE}${movie.posterUrl}`}
-                    alt={movie.title}
-                    width={32}
-                    height={48}
-                    className="shrink-0 object-cover"
-                  />
-                ) : (
-                  <div className="w-8 h-12 bg-sd-ink/10 shrink-0" />
-                )}
-                <span>
-                  <span className="font-medium">{movie.title}</span>
-                  <span className="ml-2 font-mono text-sd-ink/50 text-xs">{movie.year}</span>
-                </span>
+                <span className="font-medium">{movie.title}</span>
+                <span className="font-mono text-sd-ink/50 text-xs">{movie.year ?? ""}</span>
               </button>
             </li>
           ))}

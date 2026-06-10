@@ -1,7 +1,6 @@
 'use client';
 
 import { useRef, useState } from "react";
-import Image from "next/image";
 import MovieSearchInput from "@/components/drafts/movie-search-input";
 import {
   createDraftPool,
@@ -10,13 +9,13 @@ import {
   bulkAddMoviesToDraftPool,
   type DraftPoolData,
 } from "@/services/admin/fetch-admin-drafts";
-import { TMDB_IMAGE_BASE, type MovieSearchResult } from "@/services/movies/fetch-movies";
+import { type MovieSearchResult } from "@/services/movies/fetch-movies";
+import Link from "next/link";
 
 interface PoolMovie {
   tmdbId: number;
   title: string;
-  year: number;
-  posterUrl?: string;
+  year: string | null;
 }
 
 interface DraftPoolManagerProps {
@@ -24,7 +23,6 @@ interface DraftPoolManagerProps {
   draftName: string;
   accessToken: string;
   initialPool: DraftPoolData | null;
-  // Movie metadata for existing pool items resolved server-side
   initialMovies: PoolMovie[];
 }
 
@@ -53,17 +51,14 @@ export default function DraftPoolManager({
 
   async function handleAddMovie(movie: MovieSearchResult) {
     await addMovieToDraftPool(accessToken, draftId, movie.tmdbId);
-    setMovies((prev) => [
-      ...prev,
-      { tmdbId: movie.tmdbId, title: movie.title, year: movie.year, posterUrl: movie.posterUrl },
-    ]);
-    setPool((prev) => prev ? { ...prev, tmdbIds: [...prev.tmdbIds, movie.tmdbId] } : prev);
+    setMovies((prev) => [...prev, { tmdbId: movie.tmdbId, title: movie.title, year: movie.year }]);
+    setPool((prev) => prev ? { ...prev, tmdbIds: [...(prev.tmdbIds ?? []), movie.tmdbId] } : prev);
   }
 
   async function handleRemoveMovie(tmdbId: number) {
     await removeMovieFromDraftPool(accessToken, draftId, tmdbId);
     setMovies((prev) => prev.filter((m) => m.tmdbId !== tmdbId));
-    setPool((prev) => prev ? { ...prev, tmdbIds: prev.tmdbIds.filter((id) => id !== tmdbId) } : prev);
+    setPool((prev) => prev ? { ...prev, tmdbIds: (prev.tmdbIds ?? []).filter((id) => id !== tmdbId) } : prev);
   }
 
   async function handleBulkUpload(e: React.ChangeEvent<HTMLInputElement>) {
@@ -83,7 +78,10 @@ export default function DraftPoolManager({
     <div className="min-h-screen bg-light-blue">
       <div className="px-6 md:px-10 py-10 max-w-[900px] mx-auto">
         <p className="font-mono text-[11px] tracking-widest text-sd-ink/50 mb-6">
-          / ADMIN / DRAFTS / {draftName.toUpperCase()} / POOL
+          <Link href="/admin/drafts" className="hover:text-sd-ink transition-colors" >
+            / ADMIN / DRAFTS
+          </Link>
+          {" / "}{draftName.toUpperCase()} / POOL
         </p>
 
         <div className="flex items-end justify-between mb-10">
@@ -118,11 +116,15 @@ export default function DraftPoolManager({
                   <span>🔒</span>
                   <span>This pool is locked. No changes can be made.</span>
                 </div>
-                <PoolList movies={movies} onRemove={undefined} />
+                <PoolList movies={movies} />
               </div>
             ) : (
               <div className="space-y-4">
-                <MovieSearchInput onSelect={handleAddMovie} placeholder="Search to add a film to pool…" />
+                <MovieSearchInput
+                  onSelect={handleAddMovie}
+                  accessToken={accessToken}
+                  placeholder="Search to add a film to pool…"
+                />
                 <div>
                   <button
                     type="button"
@@ -158,31 +160,16 @@ function PoolList({
     <table className="w-full text-sm">
       <thead>
         <tr className="border-b border-sd-ink/10">
-          {["", "Title", "Year", ""].map((col, i) => (
-            <th key={i} className="text-left font-mono text-[11px] tracking-widest uppercase text-sd-ink/50 pb-3 pr-4">
-              {col}
-            </th>
-          ))}
+          <th className="text-left font-mono text-[11px] tracking-widest uppercase text-sd-ink/50 pb-3 pr-4">Title</th>
+          <th className="text-left font-mono text-[11px] tracking-widest uppercase text-sd-ink/50 pb-3 pr-4">Year</th>
+          <th />
         </tr>
       </thead>
       <tbody>
         {movies.map((movie) => (
           <tr key={movie.tmdbId} className="border-b border-sd-ink/5 hover:bg-sd-paper/60">
-            <td className="py-2 pr-3 w-10">
-              {movie.posterUrl ? (
-                <Image
-                  src={`${TMDB_IMAGE_BASE}${movie.posterUrl}`}
-                  alt={movie.title}
-                  width={28}
-                  height={42}
-                  className="object-cover"
-                />
-              ) : (
-                <div className="w-7 h-10 bg-sd-ink/10" />
-              )}
-            </td>
             <td className="py-2 pr-4 font-medium text-sd-ink">{movie.title}</td>
-            <td className="py-2 pr-4 font-mono text-sd-ink/60">{movie.year}</td>
+            <td className="py-2 pr-4 font-mono text-sd-ink/60">{movie.year ?? ""}</td>
             <td className="py-2 text-right">
               {onRemove && (
                 <button

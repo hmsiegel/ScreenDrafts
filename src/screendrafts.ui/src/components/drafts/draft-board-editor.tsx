@@ -1,21 +1,20 @@
 'use client';
 
 import { useRef, useState } from "react";
-import Image from "next/image";
 import MovieSearchInput from "@/components/drafts/movie-search-input";
 import {
   addMovieToDraftBoard,
   removeMovieFromDraftBoard,
   updateDraftBoardItem,
   updateDraftBoardOrder,
-  type DraftBoardMovie,
 } from "@/services/drafts/fetch-draft-board";
-import { TMDB_IMAGE_BASE, type MovieSearchResult } from "@/services/movies/fetch-movies";
+import { type MovieSearchResult } from "@/services/movies/fetch-movies";
+import type { DraftBoardItemResponse } from "@/lib/dto";
 
 interface DraftBoardEditorProps {
   draftId: string;
   accessToken: string;
-  initialBoard: DraftBoardMovie[];
+  initialBoard: DraftBoardItemResponse[];
 }
 
 interface PendingMovie {
@@ -25,7 +24,7 @@ interface PendingMovie {
 }
 
 export default function DraftBoardEditor({ draftId, accessToken, initialBoard }: DraftBoardEditorProps) {
-  const [board, setBoard] = useState<DraftBoardMovie[]>(initialBoard);
+  const [board, setBoard] = useState<DraftBoardItemResponse[]>(initialBoard);
   const [pending, setPending] = useState<PendingMovie | null>(null);
   const dragIdx = useRef<number | null>(null);
 
@@ -36,17 +35,22 @@ export default function DraftBoardEditor({ draftId, accessToken, initialBoard }:
   async function confirmAdd() {
     if (!pending) return;
     const priority = pending.priority ? parseInt(pending.priority, 10) : undefined;
-    await addMovieToDraftBoard(accessToken, draftId, pending.movie.tmdbId, pending.notes || undefined, priority);
+    await addMovieToDraftBoard(
+      accessToken,
+      draftId,
+      pending.movie.tmdbId,
+      pending.notes || undefined,
+      priority
+    );
     setBoard((prev) => [
       ...prev,
       {
         tmdbId: pending.movie.tmdbId,
         title: pending.movie.title,
-        year: pending.movie.year,
-        posterUrl: pending.movie.posterUrl,
+        year: pending.movie.year ?? undefined,
         notes: pending.notes || undefined,
         priority,
-      },
+      } as DraftBoardItemResponse,
     ]);
     setPending(null);
   }
@@ -68,6 +72,7 @@ export default function DraftBoardEditor({ draftId, accessToken, initialBoard }:
   }
 
   function handleDragStart(idx: number) { dragIdx.current = idx; }
+
   function handleDragOver(e: React.DragEvent, idx: number) {
     e.preventDefault();
     if (dragIdx.current === null || dragIdx.current === idx) return;
@@ -77,20 +82,26 @@ export default function DraftBoardEditor({ draftId, accessToken, initialBoard }:
     dragIdx.current = idx;
     setBoard(newBoard);
   }
+
   async function handleDrop() {
     if (dragIdx.current === null) return;
     dragIdx.current = null;
-    await updateDraftBoardOrder(accessToken, draftId, board.map((m) => m.tmdbId));
+    await updateDraftBoardOrder(accessToken, draftId, board.map((m) => m.tmdbId ?? 0));
   }
 
   return (
     <div className="space-y-4">
       <div className="space-y-2">
-        <MovieSearchInput onSelect={handleSelect} placeholder="Search to add a film…" />
+        <MovieSearchInput
+          onSelect={handleSelect}
+          accessToken={accessToken}
+          placeholder="Search to add a film…"
+        />
         {pending && (
           <div className="border border-sd-ink/20 bg-sd-paper p-3 space-y-2">
             <p className="text-sm font-medium text-sd-ink">
-              {pending.movie.title} <span className="font-mono text-xs text-sd-ink/50">{pending.movie.year}</span>
+              {pending.movie.title}{" "}
+              <span className="font-mono text-xs text-sd-ink/50">{pending.movie.year ?? ""}</span>
             </p>
             <div className="flex gap-2">
               <input
@@ -142,24 +153,17 @@ export default function DraftBoardEditor({ draftId, accessToken, initialBoard }:
               className="flex items-center gap-3 px-3 py-2 bg-white hover:bg-sd-paper/40 cursor-grab active:cursor-grabbing"
             >
               <span className="text-sd-ink/30 font-mono text-xs select-none">⠿</span>
-              {movie.posterUrl ? (
-                <Image
-                  src={`${TMDB_IMAGE_BASE}${movie.posterUrl}`}
-                  alt={movie.title}
-                  width={32}
-                  height={48}
-                  className="shrink-0 object-cover"
-                />
-              ) : (
-                <div className="w-8 h-12 bg-sd-ink/10 shrink-0" />
-              )}
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-sd-ink">{movie.title}</p>
-                <p className="font-mono text-xs text-sd-ink/50">{movie.year}</p>
+                <p className="text-sm font-medium text-sd-ink">
+                  {movie.title ?? `TMDb #${movie.tmdbId}`}
+                </p>
+                {movie.year && (
+                  <p className="font-mono text-xs text-sd-ink/50">{movie.year}</p>
+                )}
                 <input
                   type="text"
                   defaultValue={movie.notes ?? ""}
-                  onBlur={(e) => handleNotesChange(movie.tmdbId, e.target.value)}
+                  onBlur={(e) => handleNotesChange(movie.tmdbId ?? 0, e.target.value)}
                   placeholder="Notes…"
                   className="mt-1 w-full border-b border-sd-ink/10 bg-transparent text-xs font-mono text-sd-ink placeholder:text-sd-ink/30 focus:outline-none focus:border-sd-blue"
                 />
@@ -167,13 +171,13 @@ export default function DraftBoardEditor({ draftId, accessToken, initialBoard }:
               <input
                 type="number"
                 defaultValue={movie.priority ?? ""}
-                onBlur={(e) => handlePriorityChange(movie.tmdbId, e.target.value)}
+                onBlur={(e) => handlePriorityChange(movie.tmdbId ?? 0, e.target.value)}
                 placeholder="Pri"
                 className="w-16 border border-sd-ink/20 bg-white px-2 py-1 text-xs font-mono text-center text-sd-ink focus:outline-none focus:border-sd-blue"
               />
               <button
                 type="button"
-                onClick={() => handleRemove(movie.tmdbId)}
+                onClick={() => handleRemove(movie.tmdbId ?? 0)}
                 className="text-sd-ink/40 hover:text-sd-red text-lg leading-none shrink-0"
                 aria-label="Remove"
               >

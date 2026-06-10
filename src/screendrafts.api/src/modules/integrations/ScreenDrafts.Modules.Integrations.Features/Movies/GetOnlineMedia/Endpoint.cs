@@ -1,20 +1,21 @@
 ﻿namespace ScreenDrafts.Modules.Integrations.Features.Movies.GetOnlineMedia;
 
-internal sealed class Endpoint(ISender sender) : ScreenDraftsEndpoint<GetOnlineMediaRequest, GetOnlineMediaResponse>
+internal sealed class Endpoint(ISender sender)
+  : ScreenDraftsEndpoint<GetOnlineMediaRequest, GetOnlineMediaResponse>
 {
   private readonly ISender _sender = sender;
 
   public override void Configure()
   {
-    Get(MovieRoutes.Search);
+    Get(MovieRoutes.Lookup);
     Description(x =>
     {
       x.WithTags(IntegrationsOpenApi.Tags.Movies)
-      .WithName(IntegrationsOpenApi.Names.Movies_Search)
-      .Produces<GetOnlineMediaResponse>(StatusCodes.Status200OK)
-      .Produces(StatusCodes.Status400BadRequest);
+        .WithName(IntegrationsOpenApi.Names.Movies_Lookup)
+        .Produces<GetOnlineMediaResponse>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status400BadRequest);
     });
-    Policies(IntegrationsOpenApi.Permissions.MoviesSearch);
+    Policies(IntegrationsOpenApi.Permissions.MoviesImport);
   }
 
   public override async Task HandleAsync(GetOnlineMediaRequest req, CancellationToken ct)
@@ -27,7 +28,7 @@ internal sealed class Endpoint(ISender sender) : ScreenDraftsEndpoint<GetOnlineM
       MediaType = req.MediaType,
       EpisodeNumber = req.EpisodeNumber,
       SeasonNumber = req.SeasonNumber,
-      TvSeriesTmdbId = req.TvSeriesTmdbId
+      TvSeriesTmdbId = req.TvSeriesTmdbId,
     };
 
     var result = await _sender.Send(command, ct);

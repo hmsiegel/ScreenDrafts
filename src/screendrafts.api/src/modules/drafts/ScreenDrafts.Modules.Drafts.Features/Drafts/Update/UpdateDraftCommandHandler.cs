@@ -4,17 +4,23 @@ internal sealed class UpdateDraftCommandHandler(
   IDraftRepository draftsRepository,
   ISeriesRepository seriesRepository,
   ICampaignRepository campaignsRepository,
-  ICategoryRepository categoriesRepository)
-  : ICommandHandler<UpdateDraftCommand>
+  ICategoryRepository categoriesRepository
+) : ICommandHandler<UpdateDraftCommand>
 {
   private readonly IDraftRepository _draftsRepository = draftsRepository;
   private readonly ISeriesRepository _seriesRepository = seriesRepository;
   private readonly ICampaignRepository _campaignsRepository = campaignsRepository;
   private readonly ICategoryRepository _categoriesRepository = categoriesRepository;
 
-  public async Task<Result> Handle(UpdateDraftCommand UpdateDraftRequest, CancellationToken cancellationToken)
+  public async Task<Result> Handle(
+    UpdateDraftCommand UpdateDraftRequest,
+    CancellationToken cancellationToken
+  )
   {
-    var draft = await _draftsRepository.GetDraftByPublicId(UpdateDraftRequest.PublicId, cancellationToken);
+    var draft = await _draftsRepository.GetDraftByPublicId(
+      UpdateDraftRequest.PublicId,
+      cancellationToken
+    );
 
     if (draft is null)
     {
@@ -23,13 +29,21 @@ internal sealed class UpdateDraftCommandHandler(
 
     if (draft.DraftStatus == DraftStatus.Completed || draft.DraftStatus == DraftStatus.Cancelled)
     {
-      return Result.Failure(DraftErrors.CannotUpdateCompletedOrCancelledDraft(UpdateDraftRequest.PublicId));
+      return Result.Failure(
+        DraftErrors.CannotUpdateCompletedOrCancelledDraft(UpdateDraftRequest.PublicId)
+      );
     }
 
     var anyStartedPart = draft.Parts.Any(p => p.Status != DraftPartStatus.Created);
     if (anyStartedPart)
     {
-      if (!string.Equals(draft.Series.PublicId, UpdateDraftRequest.SeriesPublicId, StringComparison.Ordinal))
+      if (
+        !string.Equals(
+          draft.Series.PublicId,
+          UpdateDraftRequest.SeriesPublicId,
+          StringComparison.Ordinal
+        )
+      )
       {
         return Result.Failure(DraftErrors.CannotChangeASeriesAfterADraftPartHasStarted);
       }
@@ -42,16 +56,24 @@ internal sealed class UpdateDraftCommandHandler(
 
     if (!string.IsNullOrEmpty(UpdateDraftRequest.SeriesPublicId))
     {
-      if (!await _seriesRepository.ExistsByPublicIdAsync(UpdateDraftRequest.SeriesPublicId, cancellationToken))
+      if (
+        !await _seriesRepository.ExistsByPublicIdAsync(
+          UpdateDraftRequest.SeriesPublicId,
+          cancellationToken
+        )
+      )
       {
         return Result.Failure(SeriesErrors.SeriesIdIsInvalid(UpdateDraftRequest.SeriesPublicId));
       }
 
-      var series = await _seriesRepository.GetByPublicIdAsync(UpdateDraftRequest.SeriesPublicId, cancellationToken);
+      var series = await _seriesRepository.GetByPublicIdAsync(
+        UpdateDraftRequest.SeriesPublicId,
+        cancellationToken
+      );
 
       if (series is null)
       {
-        return Result.Failure(SeriesErrors.NotFound(UpdateDraftRequest.SeriesPublicId));
+        return Result.Failure(SeriesErrors.SeriesNotFound(UpdateDraftRequest.SeriesPublicId));
       }
 
       draft.LinkSeries(series);
@@ -59,12 +81,22 @@ internal sealed class UpdateDraftCommandHandler(
 
     if (!string.IsNullOrEmpty(UpdateDraftRequest.CampaignPublicId))
     {
-      if (!await _campaignsRepository.ExistsByPublicIdAsync(UpdateDraftRequest.CampaignPublicId, cancellationToken))
+      if (
+        !await _campaignsRepository.ExistsByPublicIdAsync(
+          UpdateDraftRequest.CampaignPublicId,
+          cancellationToken
+        )
+      )
       {
-        return Result.Failure(CampaignErrors.CampaignIdIsInvalid(UpdateDraftRequest.CampaignPublicId));
+        return Result.Failure(
+          CampaignErrors.CampaignIdIsInvalid(UpdateDraftRequest.CampaignPublicId)
+        );
       }
 
-      var campaign = await _campaignsRepository.GetByPublicIdAsync(UpdateDraftRequest.CampaignPublicId, cancellationToken);
+      var campaign = await _campaignsRepository.GetByPublicIdAsync(
+        UpdateDraftRequest.CampaignPublicId,
+        cancellationToken
+      );
 
       if (campaign is null)
       {
@@ -76,17 +108,27 @@ internal sealed class UpdateDraftCommandHandler(
 
     if (UpdateDraftRequest.PublicCategoryIds is { Count: > 0 })
     {
-      var allExist = await _categoriesRepository.AllExistByPublicIdsAsync(UpdateDraftRequest.PublicCategoryIds, cancellationToken);
+      var allExist = await _categoriesRepository.AllExistByPublicIdsAsync(
+        UpdateDraftRequest.PublicCategoryIds,
+        cancellationToken
+      );
       if (!allExist)
       {
-        return Result.Failure(CategoryErrors.OneOrMoreCategoryIdsAreInvalid(UpdateDraftRequest.PublicCategoryIds));
+        return Result.Failure(
+          CategoryErrors.OneOrMoreCategoryIdsAreInvalid(UpdateDraftRequest.PublicCategoryIds)
+        );
       }
 
-      var categories = await _categoriesRepository.GetByPublicIdsAsync(UpdateDraftRequest.PublicCategoryIds, cancellationToken);
+      var categories = await _categoriesRepository.GetByPublicIdsAsync(
+        UpdateDraftRequest.PublicCategoryIds,
+        cancellationToken
+      );
 
       if (categories.Count != UpdateDraftRequest.PublicCategoryIds.Count)
       {
-        return Result.Failure(CategoryErrors.OneOrMoreCategoryIdsAreInvalid(UpdateDraftRequest.PublicCategoryIds));
+        return Result.Failure(
+          CategoryErrors.OneOrMoreCategoryIdsAreInvalid(UpdateDraftRequest.PublicCategoryIds)
+        );
       }
 
       draft.ReplaceCategories(categories);
@@ -95,14 +137,11 @@ internal sealed class UpdateDraftCommandHandler(
     draft.Update(
       title: UpdateDraftRequest.Title,
       description: UpdateDraftRequest.Description,
-      draftTypeValue: UpdateDraftRequest.DraftTypeValue);
+      draftTypeValue: UpdateDraftRequest.DraftTypeValue
+    );
 
     _draftsRepository.Update(draft);
 
     return Result.Success();
-
   }
 }
-
-
-

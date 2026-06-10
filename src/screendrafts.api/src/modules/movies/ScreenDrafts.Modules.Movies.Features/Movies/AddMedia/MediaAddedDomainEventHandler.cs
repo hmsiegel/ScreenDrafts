@@ -10,12 +10,10 @@ internal sealed class MediaAddedDomainEventHandler(ISender sender, IEventBus eve
 
   public override async Task Handle(
     MediaCreatedDomainEvent domainEvent,
-    CancellationToken cancellationToken = default)
+    CancellationToken cancellationToken = default
+  )
   {
-    var query = new GetMediaQuery 
-    {
-      PublicId = domainEvent.PublicId
-    };
+    var query = new GetMediaQuery { PublicId = domainEvent.PublicId };
 
     var result = await _sender.Send(query, cancellationToken);
 
@@ -36,7 +34,10 @@ internal sealed class MediaAddedDomainEventHandler(ISender sender, IEventBus eve
         tmdbId: r.TmdbId!.Value,
         publicId: r.PublicId,
         mediaType: r.MediaType,
-        igdbId: r.IgdbId),
-      cancellationToken);
+        igdbId: r.IgdbId,
+        year: r.Year
+      ),
+      cancellationToken
+    );
   }
 }

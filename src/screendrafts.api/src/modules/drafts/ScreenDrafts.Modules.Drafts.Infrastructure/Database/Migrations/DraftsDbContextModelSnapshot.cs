@@ -130,6 +130,54 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                     b.ToTable("outbox_message_consumers", "drafts");
                 });
 
+            modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Attendances.DraftPartAttendance", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at_utc");
+
+                    b.Property<Guid>("DraftPartId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("draft_part_id");
+
+                    b.Property<string>("PersonPublicId")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("person_public_id");
+
+                    b.Property<string>("PublicId")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("public_id");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer")
+                        .HasColumnName("status");
+
+                    b.Property<DateTime?>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at_utc");
+
+                    b.HasKey("Id")
+                        .HasName("pk_draft_part_attendances");
+
+                    b.HasIndex("PublicId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_draft_part_attendances_public_id");
+
+                    b.HasIndex("DraftPartId", "PersonPublicId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_draft_part_attendances_draft_part_id_person_public_id");
+
+                    b.ToTable("draft_part_attendances", "drafts");
+                });
+
             modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Campaigns.Campaign", b =>
                 {
                     b.Property<Guid>("Id")
@@ -759,6 +807,11 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                     b.Property<int?>("TmdbId")
                         .HasColumnType("integer")
                         .HasColumnName("tmdb_id");
+
+                    b.Property<string>("Year")
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("year");
 
                     b.HasKey("Id")
                         .HasName("pk_movies");

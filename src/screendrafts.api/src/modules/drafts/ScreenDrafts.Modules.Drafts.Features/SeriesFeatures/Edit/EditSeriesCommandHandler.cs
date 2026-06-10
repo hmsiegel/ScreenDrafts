@@ -11,7 +11,7 @@ internal sealed class EditSeriesCommandHandler(ISeriesRepository seriesRepositor
 
     if (series is null)
     {
-      return Result.Failure(SeriesErrors.NotFound(request.PublicId));
+      return Result.Failure(SeriesErrors.SeriesNotFound(request.PublicId));
     }
 
     var kind = SeriesKind.FromValue(request.Kind);

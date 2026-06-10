@@ -1,8 +1,8 @@
-namespace ScreenDrafts.Modules.Drafts.Features.Drafts.DraftBoards.BulkAddMoviesToDraftBoard;
+﻿namespace ScreenDrafts.Modules.Drafts.Features.Drafts.DraftBoards.BulkAddMoviesToDraftBoard;
 
 internal sealed record BulkAddMoviesToDraftBoardRequest
 {
-  [FromRoute(Name = "draftId")]
-  public string DraftId { get; init; } = default!;
+  [FromRoute(Name = "publicId")]
+  public string PublicId { get; init; } = default!;
   public required IFormFile File { get; init; }
 }

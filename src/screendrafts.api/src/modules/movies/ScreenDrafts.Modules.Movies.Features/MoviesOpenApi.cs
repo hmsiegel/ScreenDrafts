@@ -14,5 +14,6 @@ internal static class MoviesOpenApi
     public const string Media_GetSummary = "Media.GetSummary";
     public const string Media_Search = "Media.Search";
     public const string Media_ListMedia = "Media.List";
+    public const string Media_GetMediaByTmdbIds = "Media.GetByTmdbIds";
   }
 }

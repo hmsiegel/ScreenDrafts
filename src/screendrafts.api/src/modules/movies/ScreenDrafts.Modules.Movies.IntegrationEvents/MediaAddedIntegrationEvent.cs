@@ -9,8 +9,9 @@ public sealed class MediaAddedIntegrationEvent(
   int? tmdbId,
   string publicId,
   MediaType mediaType,
-  int? igdbId)
-  : IntegrationEvent(id, occurredOnUtc)
+  int? igdbId,
+  string? year
+) : IntegrationEvent(id, occurredOnUtc)
 {
   public Guid MediaId { get; init; } = mediaId;
   public string PublicId { get; init; } = publicId;
@@ -19,4 +20,5 @@ public sealed class MediaAddedIntegrationEvent(
   public int? TmdbId { get; init; } = tmdbId;
   public int? IgdbId { get; init; } = igdbId;
   public MediaType MediaType { get; init; } = mediaType;
+  public string? Year { get; init; } = year;
 }

@@ -8,38 +8,36 @@ internal sealed class MovieConfiguration : IEntityTypeConfiguration<Movie>
 
     builder.HasKey(x => x.Id);
 
-    builder.Property(x => x.MovieTitle)
-      .IsRequired();
+    builder.Property(x => x.MovieTitle).IsRequired();
 
     builder.Property(x => x.ImdbId);
 
     builder.Property(x => x.TmdbId);
 
-    builder.HasIndex(x => x.TmdbId)
-      .IsUnique()
-      .HasFilter("tmdb_id IS NOT NULL");
+    builder.Property(x => x.Year).HasMaxLength(10);
 
-    builder.OwnsMany(x => x.Versions, mvb =>
-    {
-      mvb.ToTable(Tables.MovieVersions);
+    builder.HasIndex(x => x.TmdbId).IsUnique().HasFilter("tmdb_id IS NOT NULL");
 
-      mvb.WithOwner().HasForeignKey("movie_id");
+    builder.OwnsMany(
+      x => x.Versions,
+      mvb =>
+      {
+        mvb.ToTable(Tables.MovieVersions);
 
-      mvb.Property<Guid>("id")
-      .ValueGeneratedNever();
+        mvb.WithOwner().HasForeignKey("movie_id");
 
-      mvb.HasKey("id");
+        mvb.Property<Guid>("id").ValueGeneratedNever();
 
-      mvb.Property(v => v.Name)
-      .IsRequired()
-      .HasMaxLength(100)
-      .HasColumnName("name");
+        mvb.HasKey("id");
 
-      mvb.HasIndex("movie_id", nameof(MovieVersion.Name))
-      .IsUnique();
-    });
+        mvb.Property(v => v.Name).IsRequired().HasMaxLength(100).HasColumnName("name");
 
-    builder.Navigation(x => x.Versions)
+        mvb.HasIndex("movie_id", nameof(MovieVersion.Name)).IsUnique();
+      }
+    );
+
+    builder
+      .Navigation(x => x.Versions)
       .HasField("_versions")
       .UsePropertyAccessMode(PropertyAccessMode.Field);
   }

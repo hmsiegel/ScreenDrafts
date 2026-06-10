@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Features.Drafts;
 
-internal static class DraftRoutes
+internal static partial class DraftRoutes
 {
   public const string Base = "/drafts";
   public const string Search = Base + "/search";
@@ -19,6 +19,7 @@ internal static class DraftRoutes
   public const string Pool = ById + "/pool";
   public const string PoolItem = Pool + "/items";
   public const string PoolBulk = Pool + "/bulk";
+  public const string PoolItemById = PoolItem + "/{tmdbId}";
   public const string Latest = Base + "/latest";
   public const string Upcoming = Base + "/upcoming";
   public const string Image = ById + "/image";

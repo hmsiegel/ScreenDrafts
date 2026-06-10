@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database;
+﻿using ScreenDrafts.Modules.Drafts.Domain.Attendances;
+
+namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database;
 
 public sealed class DraftsDbContext(DbContextOptions<DraftsDbContext> options)
   : DbContext(options),
@@ -37,6 +39,7 @@ public sealed class DraftsDbContext(DbContextOptions<DraftsDbContext> options)
   internal DbSet<PredictionStanding> PredictionStandings { get; set; }
   internal DbSet<PredictionCarryover> PredictionCarryovers { get; set; }
   internal DbSet<DraftPartRecording> DraftPartRecordings { get; set; }
+  internal DbSet<DraftPartAttendance> Attendances { get; set; }
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {

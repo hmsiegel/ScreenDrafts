@@ -52,8 +52,6 @@ services:
         condition: service_started
       screendrafts.email:
         condition: service_started
-      screendrafts.elk:
-        condition: service_started
       screendrafts.migrator:
         condition: service_started
       vault-init:

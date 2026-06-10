@@ -5,7 +5,10 @@ internal sealed class AddMovieCommandHandler(IMovieRepository movieRepository)
 {
   private readonly IMovieRepository _movieRepository = movieRepository;
 
-  public async Task<Result<string>> Handle(AddMovieCommand request, CancellationToken cancellationToken)
+  public async Task<Result<string>> Handle(
+    AddMovieCommand request,
+    CancellationToken cancellationToken
+  )
   {
     var exists = await _movieRepository.ExistsByPublicIdAsync(request.PublicId, cancellationToken);
 
@@ -21,7 +24,9 @@ internal sealed class AddMovieCommandHandler(IMovieRepository movieRepository)
       imdbId: request.ImdbId,
       tmdbId: request.TmdbId,
       igdbId: request.IgdbId,
-      mediaType: request.MediaType);
+      mediaType: request.MediaType,
+      year: request.Year
+    );
 
     if (result.IsFailure)
     {
@@ -35,5 +40,3 @@ internal sealed class AddMovieCommandHandler(IMovieRepository movieRepository)
     return Result.Success(movie.PublicId);
   }
 }
-
-

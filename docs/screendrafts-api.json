@@ -2521,6 +2521,76 @@
         ]
       }
     },
+    "/my-drafts": {
+      "get": {
+        "tags": [
+          "MyDrafts"
+        ],
+        "operationId": "GetMyDrafts",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMyDraftsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/my-drafts/{draftId}": {
+      "get": {
+        "tags": [
+          "MyDrafts"
+        ],
+        "operationId": "GetMyDraftDetail",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/GetMyDraftDetailRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetMyDraftDetailRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMyDraftDetailResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
     "/drafts/upcoming": {
       "get": {
         "tags": [
@@ -2682,6 +2752,49 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/drafts/{publicId}/pool/items/{tmdbId}": {
+      "delete": {
+        "tags": [
+          "DraftPools"
+        ],
+        "operationId": "DraftPools.RemoveMovie",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/RemoveMovieFromDraftPoolRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RemoveMovieFromDraftPoolRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
           },
           "401": {
             "description": "Unauthorized"
@@ -4717,6 +4830,251 @@
         ]
       }
     },
+    "/draft-parts/{draftPartId}/attendances/{personPublicId}/withdraw": {
+      "put": {
+        "tags": [
+          "Attendances"
+        ],
+        "operationId": "WithdrawAttendance",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WithdrawAttendanceRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/draft-parts/{draftPartId}/attendances/{personPublicId}/reinstate": {
+      "put": {
+        "tags": [
+          "Attendances"
+        ],
+        "operationId": "ReinstateAttendance",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReinstateAttendanceRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/draft-parts/{draftPartId}/attendances": {
+      "get": {
+        "tags": [
+          "Attendances"
+        ],
+        "operationId": "ListAttendances",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/ListAttendancesRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ListAttendancesRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListAttendancesResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {}
+        ]
+      },
+      "post": {
+        "tags": [
+          "Attendances"
+        ],
+        "operationId": "AddAttendance",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddAttendanceRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddAttendanceResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/draft-parts/{draftPartId}/attendances/{personPublicId}/join": {
+      "put": {
+        "tags": [
+          "Attendances"
+        ],
+        "operationId": "JoinAttendance",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JoinAttendanceRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/draft-parts/{draftPartId}/attendances/{personPublicId}/confirm": {
+      "put": {
+        "tags": [
+          "Attendances"
+        ],
+        "operationId": "ConfirmAttendance",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfirmAttendanceRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
     "/drafter-teams/search": {
       "get": {
         "tags": [
@@ -5610,12 +5968,56 @@
         ]
       }
     },
-    "/movies/search": {
+    "/integrations/movies/search": {
       "get": {
         "tags": [
           "Movies"
         ],
         "operationId": "OnlineMedia.Search",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchForMovieRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchForMovieRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchForMovieResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/integrations/movies/lookup": {
+      "get": {
+        "tags": [
+          "Movies"
+        ],
+        "operationId": "OnlineMedia.Lookup",
         "requestBody": {
           "content": {
             "*/*": {
@@ -5657,12 +6059,12 @@
         ]
       }
     },
-    "/movies/import": {
+    "/integrations/movies/import": {
       "post": {
         "tags": [
           "Movies"
         ],
-        "operationId": "Media.Import",
+        "operationId": "OnlineMedia.Import",
         "requestBody": {
           "content": {
             "application/json": {
@@ -5893,6 +6295,47 @@
           },
           "404": {
             "description": "Not Found"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/media/by-tmdb-ids": {
+      "get": {
+        "tags": [
+          "Media"
+        ],
+        "operationId": "Media.GetByTmdbIds",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/GetMediaByTmdbIdsRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetMediaByTmdbIdsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMediaByTmdbIdsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
           }
         },
         "security": [
@@ -6217,6 +6660,31 @@
             "type": "string"
           },
           "name": {
+            "type": "string"
+          }
+        }
+      },
+      "AddAttendanceRequest": {
+        "type": "object",
+        "properties": {
+          "draftPartId": {
+            "type": "string"
+          },
+          "personPublicId": {
+            "type": "string"
+          }
+        }
+      },
+      "AddAttendanceResponse": {
+        "type": "object",
+        "properties": {
+          "publicId": {
+            "type": "string"
+          },
+          "personPublicId": {
+            "type": "string"
+          },
+          "status": {
             "type": "string"
           }
         }
@@ -6852,6 +7320,39 @@
           }
         }
       },
+      "AttendanceItemResponse": {
+        "type": "object",
+        "properties": {
+          "publicId": {
+            "type": "string"
+          },
+          "personPublicId": {
+            "type": "string"
+          },
+          "status": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "statusName": {
+            "type": "string"
+          },
+          "createdAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAtUtc": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          }
+        }
+      },
       "AuthAuditLogResponse": {
         "type": "object",
         "properties": {
@@ -7210,6 +7711,17 @@
           }
         }
       },
+      "ConfirmAttendanceRequest": {
+        "type": "object",
+        "properties": {
+          "draftPartId": {
+            "type": "string"
+          },
+          "personPublicId": {
+            "type": "string"
+          }
+        }
+      },
       "ContestantStandingResponse": {
         "type": "object",
         "properties": {
@@ -7376,8 +7888,7 @@
             "format": "int32"
           },
           "seriesId": {
-            "type": "string",
-            "format": "uuid"
+            "type": "string"
           }
         }
       },
@@ -7659,6 +8170,18 @@
               "string"
             ],
             "format": "int32"
+          },
+          "title": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "year": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -9790,6 +10313,33 @@
           }
         }
       },
+      "GetMediaByTmdbIdsRequest": {
+        "type": "object",
+        "properties": {
+          "tmdbIds": {
+            "type": "array",
+            "items": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        }
+      },
+      "GetMediaByTmdbIdsResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MediaTmdbSummary"
+            }
+          }
+        }
+      },
       "GetMediaRequest": {
         "type": "object",
         "properties": {
@@ -9862,6 +10412,74 @@
           },
           "mediaType": {
             "$ref": "#/components/schemas/MediaType"
+          }
+        }
+      },
+      "GetMyDraftDetailRequest": {
+        "type": "object",
+        "properties": {
+          "draftId": {
+            "type": "string"
+          }
+        }
+      },
+      "GetMyDraftDetailResponse": {
+        "type": "object",
+        "properties": {
+          "draftPublicId": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "draftType": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "hasPool": {
+            "type": "boolean"
+          },
+          "isSurrogate": {
+            "type": "boolean"
+          },
+          "myRoles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "parts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MyDraftPartDetail"
+            }
+          }
+        }
+      },
+      "GetMyDraftsResponse": {
+        "type": "object",
+        "properties": {
+          "upcoming": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MyDraftSummary"
+            }
+          },
+          "inProgress": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MyDraftSummary"
+            }
+          },
+          "completed": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MyDraftSummary"
+            }
           }
         }
       },
@@ -10541,6 +11159,17 @@
         "type": "string",
         "format": "binary"
       },
+      "JoinAttendanceRequest": {
+        "type": "object",
+        "properties": {
+          "draftPartId": {
+            "type": "string"
+          },
+          "personPublicId": {
+            "type": "string"
+          }
+        }
+      },
       "LatestDraftParticipantResponse": {
         "type": "object",
         "properties": {
@@ -10617,6 +11246,25 @@
           "userId": {
             "type": "string",
             "format": "uuid"
+          }
+        }
+      },
+      "ListAttendancesRequest": {
+        "type": "object",
+        "properties": {
+          "draftPartId": {
+            "type": "string"
+          }
+        }
+      },
+      "ListAttendancesResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AttendanceItemResponse"
+            }
           }
         }
       },
@@ -11617,6 +12265,28 @@
           }
         }
       },
+      "MediaTmdbSummary": {
+        "type": "object",
+        "properties": {
+          "tmdbId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "title": {
+            "type": "string"
+          },
+          "year": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
       "MediaType": {
         "required": [
           "name",
@@ -11637,6 +12307,168 @@
               "string"
             ],
             "format": "int32"
+          }
+        }
+      },
+      "MovieSearchResult": {
+        "required": [
+          "title"
+        ],
+        "type": "object",
+        "properties": {
+          "tmdbId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "title": {
+            "type": "string"
+          },
+          "year": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "posterUrl": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "overview": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "mediaType": {
+            "$ref": "#/components/schemas/MediaType"
+          }
+        }
+      },
+      "MyDraftPartDetail": {
+        "type": "object",
+        "properties": {
+          "draftPartPublicId": {
+            "type": "string"
+          },
+          "partIndex": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "status": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "isHost": {
+            "type": "boolean"
+          },
+          "isDrafter": {
+            "type": "boolean"
+          },
+          "attendanceStatus": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "releaseDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          }
+        }
+      },
+      "MyDraftPartSummary": {
+        "type": "object",
+        "properties": {
+          "draftPartPublicId": {
+            "type": "string"
+          },
+          "partIndex": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "status": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "isHost": {
+            "type": "boolean"
+          },
+          "isDrafter": {
+            "type": "boolean"
+          },
+          "attendanceStatus": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "releaseDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
+          }
+        }
+      },
+      "MyDraftSummary": {
+        "type": "object",
+        "properties": {
+          "draftPublicId": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "draftType": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "hasPool": {
+            "type": "boolean"
+          },
+          "draftStatus": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "parts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MyDraftPartSummary"
+            }
           }
         }
       },
@@ -12506,7 +13338,10 @@
             "type": "string"
           },
           "imdbId": {
-            "type": "string"
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "tmdbId": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
@@ -13166,7 +14001,10 @@
             "type": "string"
           },
           "imdbId": {
-            "type": "string"
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "tmdbId": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
@@ -13236,6 +14074,17 @@
               "null",
               "string"
             ]
+          }
+        }
+      },
+      "ReinstateAttendanceRequest": {
+        "type": "object",
+        "properties": {
+          "draftPartId": {
+            "type": "string"
+          },
+          "personPublicId": {
+            "type": "string"
           }
         }
       },
@@ -13363,6 +14212,22 @@
             "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": [
               "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "RemoveMovieFromDraftPoolRequest": {
+        "type": "object",
+        "properties": {
+          "publicId": {
+            "type": "string"
+          },
+          "tmdbId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
               "integer",
               "string"
             ],
@@ -13710,6 +14575,57 @@
           },
           "seriesName": {
             "type": "string"
+          }
+        }
+      },
+      "SearchForMovieRequest": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string"
+          },
+          "page": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "SearchForMovieResponse": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MovieSearchResult"
+            }
+          },
+          "totalResults": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "totalPages": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "page": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
           }
         }
       },
@@ -14810,6 +15726,17 @@
           }
         }
       },
+      "WithdrawAttendanceRequest": {
+        "type": "object",
+        "properties": {
+          "draftPartId": {
+            "type": "string"
+          },
+          "personPublicId": {
+            "type": "string"
+          }
+        }
+      },
       "WriterModel": {
         "required": [
           "imdbId",
@@ -14905,6 +15832,9 @@
       "name": "Campaigns"
     },
     {
+      "name": "MyDrafts"
+    },
+    {
       "name": "DraftPools"
     },
     {
@@ -14918,6 +15848,9 @@
     },
     {
       "name": "CandidateLists"
+    },
+    {
+      "name": "Attendances"
     },
     {
       "name": "DrafterTeams"
