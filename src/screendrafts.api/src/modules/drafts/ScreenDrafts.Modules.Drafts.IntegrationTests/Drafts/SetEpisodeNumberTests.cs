@@ -227,7 +227,7 @@ public sealed class SetEpisodeNumberTests(DraftsIntegrationTestWebAppFactory fac
     return result.Value;
   }
 
-  private async Task<Guid> CreateSeriesAsync()
+  private async Task<string> CreateSeriesAsync()
   {
     var result = await Sender.Send(new CreateSeriesCommand
     {

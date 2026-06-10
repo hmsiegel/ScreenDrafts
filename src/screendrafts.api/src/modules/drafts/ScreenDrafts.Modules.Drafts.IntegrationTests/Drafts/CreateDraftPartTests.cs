@@ -204,7 +204,7 @@ public sealed class CreateDraftPartTests(DraftsIntegrationTestWebAppFactory fact
     return result.Value;
   }
 
-  private async Task<Guid> CreateSeriesAsync()
+  private async Task<string> CreateSeriesAsync()
   {
     var command = new CreateSeriesCommand
     {

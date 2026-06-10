@@ -1,4 +1,4 @@
-﻿using ScreenDrafts.Modules.Drafts.Features.Categories.Create;
+using ScreenDrafts.Modules.Drafts.Features.Categories.Create;
 using ScreenDrafts.Modules.Drafts.Features.SeriesFeatures.Create;
 
 namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Fixtures;
@@ -15,7 +15,7 @@ namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Fixtures;
 public sealed class SharedDraftFixture
 {
   // Series
-  public Guid RegularSeriesId { get; private set; }
+  public string RegularSeriesId { get; private set; } = default!;
 
   // Categories
   public string DirectorCategoryPublicId { get; private set; } = default!;
@@ -60,7 +60,7 @@ public sealed class SharedDraftFixture
     _seeded = true;
   }
 
-  private static async Task<Guid> CreateSeriesAsync(ISender sender, string name)
+  private static async Task<string> CreateSeriesAsync(ISender sender, string name)
   {
     var result = await sender.Send(new CreateSeriesCommand
     {

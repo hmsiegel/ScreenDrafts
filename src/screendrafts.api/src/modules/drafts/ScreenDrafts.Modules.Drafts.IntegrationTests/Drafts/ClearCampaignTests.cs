@@ -1,4 +1,4 @@
-﻿using ScreenDrafts.Modules.Drafts.Features.Campaigns.Create;
+using ScreenDrafts.Modules.Drafts.Features.Campaigns.Create;
 using ScreenDrafts.Modules.Drafts.Features.Drafts.ClearCampaign;
 using ScreenDrafts.Modules.Drafts.Features.Drafts.CreateDraft;
 using ScreenDrafts.Modules.Drafts.Features.Drafts.SetCampaign;
@@ -136,7 +136,7 @@ public sealed class ClearCampaignTests(DraftsIntegrationTestWebAppFactory factor
     return result.Value;
   }
 
-  private async Task<Guid> CreateSeriesAsync()
+  private async Task<string> CreateSeriesAsync()
   {
     var command = new CreateSeriesCommand
     {

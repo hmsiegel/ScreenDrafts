@@ -1,4 +1,4 @@
-﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafts;
+namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafts;
 
 public sealed class ListLatestDraftsTests(DraftsIntegrationTestWebAppFactory factory)
   : DraftsIntegrationTest(factory)
@@ -169,7 +169,7 @@ public sealed class ListLatestDraftsTests(DraftsIntegrationTestWebAppFactory fac
     result.IsSuccess.Should().BeTrue();
   }
 
-  private async Task<Guid> CreateSeriesAsync()
+  private async Task<string> CreateSeriesAsync()
   {
     var result = await Sender.Send(new CreateSeriesCommand
     {
@@ -185,7 +185,7 @@ public sealed class ListLatestDraftsTests(DraftsIntegrationTestWebAppFactory fac
     return result.Value;
   }
 
-  private async Task<string> CreateDraftWithPartAsync(Guid seriesId)
+  private async Task<string> CreateDraftWithPartAsync(string seriesId)
   {
     var draftResult = await Sender.Send(new CreateDraftCommand
     {

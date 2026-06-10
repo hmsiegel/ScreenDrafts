@@ -345,7 +345,7 @@ public sealed class PlaySubDraftPickTests(DraftsIntegrationTestWebAppFactory fac
     return movie;
   }
 
-  private async Task<Guid> CreateSeriesAsync()
+  private async Task<string> CreateSeriesAsync()
   {
     var result = await Sender.Send(new CreateSeriesCommand
     {
@@ -360,7 +360,7 @@ public sealed class PlaySubDraftPickTests(DraftsIntegrationTestWebAppFactory fac
     return result.Value;
   }
 
-  private async Task<string> CreateSpeedDraftAsync(Guid seriesId)
+  private async Task<string> CreateSpeedDraftAsync(string seriesId)
   {
     var draftResult = await Sender.Send(new CreateDraftCommand
     {

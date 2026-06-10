@@ -1,4 +1,4 @@
-﻿using ScreenDrafts.Modules.Integrations.Features.Movies.SearchFoMovie;
+﻿using ScreenDrafts.Modules.Integrations.Features.Movies.SearchForMovie;
 
 namespace ScreenDrafts.Modules.Integrations.IntegrationTests.Movies;
 

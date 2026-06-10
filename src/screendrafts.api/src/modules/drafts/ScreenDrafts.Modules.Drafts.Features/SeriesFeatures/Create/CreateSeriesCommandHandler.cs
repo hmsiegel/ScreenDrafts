@@ -3,12 +3,12 @@
 internal sealed class CreateSeriesCommandHandler(
   ISeriesRepository seriesRepository,
   IPublicIdGenerator publicIdGenerator
-) : ICommandHandler<CreateSeriesCommand, Guid>
+) : ICommandHandler<CreateSeriesCommand, string>
 {
   private readonly ISeriesRepository _seriesRepository = seriesRepository;
   private readonly IPublicIdGenerator _publicIdGenerator = publicIdGenerator;
 
-  public async Task<Result<Guid>> Handle(
+  public async Task<Result<string>> Handle(
     CreateSeriesCommand request,
     CancellationToken cancellationToken
   )
@@ -42,13 +42,13 @@ internal sealed class CreateSeriesCommandHandler(
 
     if (seriesResult.IsFailure)
     {
-      return Result.Failure<Guid>(seriesResult.Error!);
+      return Result.Failure<string>(seriesResult.Error!);
     }
 
     var series = seriesResult.Value;
 
     _seriesRepository.Add(series);
 
-    return Result.Success(series.Id.Value);
+    return Result.Success(series.PublicId);
   }
 }

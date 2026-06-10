@@ -319,7 +319,7 @@ public sealed class SetDraftPartStatusTests(DraftsIntegrationTestWebAppFactory f
     await DbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
   }
 
-  private async Task<Guid> CreateSeriesAsync()
+  private async Task<string> CreateSeriesAsync()
   {
     var command = new CreateSeriesCommand
     {

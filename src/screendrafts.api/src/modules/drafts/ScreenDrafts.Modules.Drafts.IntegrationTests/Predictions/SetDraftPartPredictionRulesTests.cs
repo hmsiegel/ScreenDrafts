@@ -168,7 +168,7 @@ public sealed class SetDraftPartPredictionRulesTests(DraftsIntegrationTestWebApp
     return result.Value;
   }
 
-  private async Task<Guid> CreateSeriesAsync()
+  private async Task<string> CreateSeriesAsync()
   {
     var result = await Sender.Send(new CreateSeriesCommand
     {
@@ -183,7 +183,7 @@ public sealed class SetDraftPartPredictionRulesTests(DraftsIntegrationTestWebApp
     return result.Value;
   }
 
-  private async Task<string> CreateDraftPublicIdAsync(Guid seriesId)
+  private async Task<string> CreateDraftPublicIdAsync(string seriesId)
   {
     var result = await Sender.Send(new CreateDraftCommand
     {

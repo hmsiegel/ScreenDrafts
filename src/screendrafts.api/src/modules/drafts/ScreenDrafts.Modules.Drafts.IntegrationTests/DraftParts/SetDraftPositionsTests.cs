@@ -188,7 +188,7 @@ public sealed class SetDraftPositionsTests(DraftsIntegrationTestWebAppFactory fa
     return drafterPublicId;
   }
 
-  private async Task<Guid> CreateSeriesAsync()
+  private async Task<string> CreateSeriesAsync()
   {
     var result = await Sender.Send(new CreateSeriesCommand
     {
@@ -204,7 +204,7 @@ public sealed class SetDraftPositionsTests(DraftsIntegrationTestWebAppFactory fa
     return result.Value;
   }
 
-  private async Task<string> CreateDraftAsync(Guid seriesId)
+  private async Task<string> CreateDraftAsync(string seriesId)
   {
     var draftResult = await Sender.Send(new CreateDraftCommand
     {

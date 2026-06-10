@@ -1,4 +1,4 @@
-﻿using ScreenDrafts.Modules.Drafts.Features.Categories.Create;
+using ScreenDrafts.Modules.Drafts.Features.Categories.Create;
 using ScreenDrafts.Modules.Drafts.Features.Drafts.SetCategories;
 
 namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafts;
@@ -203,7 +203,7 @@ public sealed class SetCategoriesTests(DraftsIntegrationTestWebAppFactory factor
     return result.Value;
   }
 
-  private async Task<Guid> CreateSeriesAsync()
+  private async Task<string> CreateSeriesAsync()
   {
     var command = new CreateSeriesCommand
     {

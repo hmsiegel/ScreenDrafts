@@ -1,4 +1,4 @@
-﻿using ScreenDrafts.Modules.Drafts.Domain.DraftParts.Enums;
+using ScreenDrafts.Modules.Drafts.Domain.DraftParts.Enums;
 using ScreenDrafts.Modules.Drafts.Features.Categories.Create;
 using ScreenDrafts.Modules.Drafts.Features.DraftParts.SetReleaseDate;
 using ScreenDrafts.Modules.Drafts.Features.Drafts.ListDrafts;
@@ -857,7 +857,7 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
     return (draftPublicId, draftPartPublicId);
   }
 
-  private async Task<Guid> CreateSeriesAsync()
+  private async Task<string> CreateSeriesAsync()
   {
     var result = await Sender.Send(
       new CreateSeriesCommand

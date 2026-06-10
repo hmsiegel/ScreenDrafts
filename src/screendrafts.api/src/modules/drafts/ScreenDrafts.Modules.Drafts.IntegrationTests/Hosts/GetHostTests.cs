@@ -1,4 +1,4 @@
-﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Hosts;
+namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Hosts;
 
 public sealed class GetHostTests(DraftsIntegrationTestWebAppFactory factory)
   : DraftsIntegrationTest(factory)
@@ -139,7 +139,7 @@ public sealed class GetHostTests(DraftsIntegrationTestWebAppFactory factory)
     return await GetFirstDraftPartPublicIdAsync(draftPublicId);
   }
 
-  private async Task<Guid> CreateSeriesAsync()
+  private async Task<string> CreateSeriesAsync()
   {
     var result = await Sender.Send(new CreateSeriesCommand
     {
@@ -154,7 +154,7 @@ public sealed class GetHostTests(DraftsIntegrationTestWebAppFactory factory)
     return result.Value;
   }
 
-  private async Task<string> CreateDraftWithTitleAsync(Guid seriesId, string title)
+  private async Task<string> CreateDraftWithTitleAsync(string seriesId, string title)
   {
     var draftResult = await Sender.Send(new CreateDraftCommand
     {

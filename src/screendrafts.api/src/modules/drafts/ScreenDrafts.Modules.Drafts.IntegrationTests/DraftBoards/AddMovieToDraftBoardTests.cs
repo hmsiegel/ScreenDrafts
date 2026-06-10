@@ -21,7 +21,7 @@ public sealed class AddMovieToDraftBoardTests(DraftsIntegrationTestWebAppFactory
     {
       DraftId = draftPublicId,
       UserPublicId = userPublicId,
-      TmdbId = tmdbId
+      TmdbId = tmdbId,
     };
 
     // Act
@@ -45,14 +45,16 @@ public sealed class AddMovieToDraftBoardTests(DraftsIntegrationTestWebAppFactory
     {
       DraftId = draftPublicId,
       UserPublicId = userPublicId,
-      TmdbId = tmdbId
+      TmdbId = tmdbId,
     };
 
     // Act
     await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
-    var board = await DbContext.DraftBoards.FirstOrDefaultAsync(TestContext.Current.CancellationToken);
+    var board = await DbContext.DraftBoards.FirstOrDefaultAsync(
+      TestContext.Current.CancellationToken
+    );
     board.Should().NotBeNull();
     board!.PublicId.Should().NotBeNullOrEmpty();
   }
@@ -70,15 +72,15 @@ public sealed class AddMovieToDraftBoardTests(DraftsIntegrationTestWebAppFactory
     {
       DraftId = draftPublicId,
       UserPublicId = userPublicId,
-      TmdbId = tmdbId
+      TmdbId = tmdbId,
     };
 
     // Act
     await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
-    var board = await DbContext.DraftBoards
-      .Include(b => b.Items)
+    var board = await DbContext
+      .DraftBoards.Include(b => b.Items)
       .FirstOrDefaultAsync(TestContext.Current.CancellationToken);
 
     board.Should().NotBeNull();
@@ -102,15 +104,15 @@ public sealed class AddMovieToDraftBoardTests(DraftsIntegrationTestWebAppFactory
       UserPublicId = userPublicId,
       TmdbId = tmdbId,
       Notes = notes,
-      Priority = priority
+      Priority = priority,
     };
 
     // Act
     await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
-    var board = await DbContext.DraftBoards
-      .Include(b => b.Items)
+    var board = await DbContext
+      .DraftBoards.Include(b => b.Items)
       .FirstOrDefaultAsync(TestContext.Current.CancellationToken);
 
     var item = board!.Items.FirstOrDefault(i => i.TmdbId == tmdbId);
@@ -133,7 +135,7 @@ public sealed class AddMovieToDraftBoardTests(DraftsIntegrationTestWebAppFactory
     {
       DraftId = "nonexistent-draft-id",
       UserPublicId = userPublicId,
-      TmdbId = Faker.Random.Int(1, 1_000_000)
+      TmdbId = Faker.Random.Int(1, 1_000_000),
     };
 
     // Act
@@ -157,7 +159,7 @@ public sealed class AddMovieToDraftBoardTests(DraftsIntegrationTestWebAppFactory
     {
       DraftId = draftPublicId,
       UserPublicId = "nonexistent-user-id",
-      TmdbId = Faker.Random.Int(1, 1_000_000)
+      TmdbId = Faker.Random.Int(1, 1_000_000),
     };
 
     // Act
@@ -184,7 +186,7 @@ public sealed class AddMovieToDraftBoardTests(DraftsIntegrationTestWebAppFactory
     {
       DraftId = draftPublicId,
       UserPublicId = userPublicId,
-      TmdbId = tmdbId
+      TmdbId = tmdbId,
     };
 
     // Add first time — should succeed
@@ -202,23 +204,39 @@ public sealed class AddMovieToDraftBoardTests(DraftsIntegrationTestWebAppFactory
   // Helpers
   // ---------------------------------------------------------------------------
 
-  private async Task<(Guid UserId, string UserPublicId, string DrafterPublicId)> CreateDrafterWithUserAsync()
+  private async Task<(
+    Guid UserId,
+    string UserPublicId,
+    string DrafterPublicId
+  )> CreateDrafterWithUserAsync()
   {
     var (userId, userPublicId) = await CreateUserInDbAsync();
 
     // Create person without UserId to avoid the GetUserById cross-module call.
-    var personPublicId = (await Sender.Send(new CreatePersonCommand
-    {
-      FirstName = "Test",
-      LastName = "Drafter" + Faker.Random.AlphaNumeric(6)
-    }, TestContext.Current.CancellationToken)).Value;
+    var personPublicId = (
+      await Sender.Send(
+        new CreatePersonCommand
+        {
+          FirstName = "Test",
+          LastName = "Drafter" + Faker.Random.AlphaNumeric(6),
+        },
+        TestContext.Current.CancellationToken
+      )
+    ).Value;
 
     // Link the person to the user directly in the DB.
     await DbContext.Database.ExecuteSqlRawAsync(
       "UPDATE drafts.people SET user_id = {0} WHERE public_id = {1}",
-      userId, personPublicId);
+      userId,
+      personPublicId
+    );
 
-    var drafterPublicId = (await Sender.Send(new CreateDrafterCommand(personPublicId), TestContext.Current.CancellationToken)).Value;
+    var drafterPublicId = (
+      await Sender.Send(
+        new CreateDrafterCommand(personPublicId),
+        TestContext.Current.CancellationToken
+      )
+    ).Value;
 
     return (userId, userPublicId, drafterPublicId);
   }
@@ -235,30 +253,42 @@ public sealed class AddMovieToDraftBoardTests(DraftsIntegrationTestWebAppFactory
     var usersCtx = GetService<UsersDbContext>();
     await usersCtx.Database.ExecuteSqlRawAsync(
       "INSERT INTO users.users (id, public_id, identity_id, first_name, last_name, email) VALUES ({0}, {1}, {2}, {3}, {4}, {5})",
-      userId, userPublicId, identityId, firstName, lastName, email);
+      userId,
+      userPublicId,
+      identityId,
+      firstName,
+      lastName,
+      email
+    );
 
     return (userId, userPublicId);
   }
 
   private async Task<string> CreateDraftAsync()
   {
-    var seriesResult = await Sender.Send(new CreateSeriesCommand
-    {
-      Name = Faker.Company.CompanyName() + Faker.Random.AlphaNumeric(6),
-      Kind = SeriesKind.Regular.Value,
-      CanonicalPolicy = CanonicalPolicy.Always.Value,
-      ContinuityScope = ContinuityScope.None.Value,
-      ContinuityDateRule = ContinuityDateRule.AnyChannelFirstRelease.Value,
-      AllowedDraftTypes = (int)DraftTypeMask.All,
-      DefaultDraftType = DraftType.Standard.Value
-    }, TestContext.Current.CancellationToken);
+    var seriesResult = await Sender.Send(
+      new CreateSeriesCommand
+      {
+        Name = Faker.Company.CompanyName() + Faker.Random.AlphaNumeric(6),
+        Kind = SeriesKind.Regular.Value,
+        CanonicalPolicy = CanonicalPolicy.Always.Value,
+        ContinuityScope = ContinuityScope.None.Value,
+        ContinuityDateRule = ContinuityDateRule.AnyChannelFirstRelease.Value,
+        AllowedDraftTypes = (int)DraftTypeMask.All,
+        DefaultDraftType = DraftType.Standard.Value,
+      },
+      TestContext.Current.CancellationToken
+    );
 
-    var draftResult = await Sender.Send(new CreateDraftCommand
-    {
-      Title = Faker.Company.CompanyName(),
-      DraftType = DraftType.Standard.Value,
-      SeriesId = seriesResult.Value,
-    }, TestContext.Current.CancellationToken);
+    var draftResult = await Sender.Send(
+      new CreateDraftCommand
+      {
+        Title = Faker.Company.CompanyName(),
+        DraftType = DraftType.Standard.Value,
+        SeriesId = seriesResult.Value,
+      },
+      TestContext.Current.CancellationToken
+    );
 
     return draftResult.Value;
   }

@@ -95,7 +95,7 @@ public abstract class PredictionIntegrationTestBase(DraftsIntegrationTestWebAppF
   // Private infrastructure helpers
   // ──────────────────────────────────────────────────────────────────────
 
-  private async Task<Guid> CreateSeriesIdAsync()
+  private async Task<string> CreateSeriesIdAsync()
   {
     var result = await Sender.Send(new CreateSeriesCommand
     {
@@ -110,7 +110,7 @@ public abstract class PredictionIntegrationTestBase(DraftsIntegrationTestWebAppF
     return result.Value;
   }
 
-  private async Task<string> CreateDraftPublicIdAsync(Guid seriesId)
+  private async Task<string> CreateDraftPublicIdAsync(string seriesId)
   {
     var result = await Sender.Send(new CreateDraftCommand
     {

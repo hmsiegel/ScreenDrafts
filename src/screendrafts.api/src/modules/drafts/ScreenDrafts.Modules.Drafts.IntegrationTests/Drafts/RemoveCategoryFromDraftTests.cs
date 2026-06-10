@@ -1,4 +1,4 @@
-﻿using ScreenDrafts.Modules.Drafts.Features.Categories.Create;
+using ScreenDrafts.Modules.Drafts.Features.Categories.Create;
 using ScreenDrafts.Modules.Drafts.Features.Drafts.RemoveCategoryFromDraft;
 using ScreenDrafts.Modules.Drafts.Features.Drafts.SetCategory;
 
@@ -228,7 +228,7 @@ public sealed class RemoveCategoryFromDraftTests(DraftsIntegrationTestWebAppFact
     return result.Value;
   }
 
-  private async Task<Guid> CreateSeriesAsync()
+  private async Task<string> CreateSeriesAsync()
   {
     var result = await Sender.Send(new CreateSeriesCommand
     {

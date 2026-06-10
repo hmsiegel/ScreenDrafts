@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Features.SeriesFeatures.Create;
 
-internal sealed record CreateSeriesCommand : ICommand<Guid>
+internal sealed record CreateSeriesCommand : ICommand<string>
 {
   public required string Name { get; init; }
   public string? Description { get; init; }

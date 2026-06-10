@@ -1,4 +1,4 @@
-﻿using ScreenDrafts.Modules.Drafts.Features.Drafts.CreateDraft;
+using ScreenDrafts.Modules.Drafts.Features.Drafts.CreateDraft;
 using ScreenDrafts.Modules.Drafts.Features.Drafts.GetDraftStatus;
 using ScreenDrafts.Modules.Drafts.Features.SeriesFeatures.Create;
 
@@ -140,7 +140,7 @@ public sealed class GetDraftStatusTests(DraftsIntegrationTestWebAppFactory facto
     return draftPublicId;
   }
 
-  private async Task<Guid> CreateSeriesAsync()
+  private async Task<string> CreateSeriesAsync()
   {
     var command = new CreateSeriesCommand
     {

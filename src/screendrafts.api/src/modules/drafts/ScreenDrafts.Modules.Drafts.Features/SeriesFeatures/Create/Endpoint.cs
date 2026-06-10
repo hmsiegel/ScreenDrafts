@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Features.SeriesFeatures.Create;
 
-internal sealed class Endpoint : ScreenDraftsEndpoint<CreateSeriesRequest, CreatedIdResponse>
+internal sealed class Endpoint : ScreenDraftsEndpoint<CreateSeriesRequest, CreatedResponse>
 {
   public override void Configure()
   {
@@ -9,7 +9,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<CreateSeriesRequest, Creat
     {
       x.WithTags(DraftsOpenApi.Tags.Series)
         .WithName(DraftsOpenApi.Names.Series_CreateSeries)
-        .Produces<CreatedIdResponse>(StatusCodes.Status201Created)
+        .Produces<CreatedResponse>(StatusCodes.Status201Created)
         .Produces(StatusCodes.Status400BadRequest)
         .Produces(StatusCodes.Status403Forbidden);
     });
@@ -34,8 +34,8 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<CreateSeriesRequest, Creat
     var result = await Sender.Send(CreateSeriesFeatureCommand, ct);
 
     await this.SendCreatedAsync(
-      result.Map(id => new CreatedIdResponse(id)),
-      created => SeriesLocations.ById(created.Id),
+      result.Map(id => new CreatedResponse(id)),
+      created => SeriesLocations.ById(created.PublicId),
       ct
     );
   }

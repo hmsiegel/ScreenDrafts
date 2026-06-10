@@ -170,7 +170,7 @@ public sealed class SetReleaseDateTests(DraftsIntegrationTestWebAppFactory facto
     return (draftPublicId, partResult.Value);
   }
 
-  private async Task<Guid> CreateSeriesAsync()
+  private async Task<string> CreateSeriesAsync()
   {
     var command = new CreateSeriesCommand
     {

@@ -36,7 +36,7 @@ public abstract class DraftScenarioBase(DraftsIntegrationTestWebAppFactory facto
   protected async Task<string> CreateDraftAsync(
     string title,
     int draftType,
-    Guid seriesId)
+    string seriesId)
   {
     var result = await Sender.Send(new CreateDraftCommand
     {
@@ -399,7 +399,7 @@ public abstract class DraftScenarioBase(DraftsIntegrationTestWebAppFactory facto
   // Series helper
   // ───────────────────────────────────────────────────────────────────────────
 
-  protected async Task<Guid> CreateSeriesAsync(
+  protected async Task<string> CreateSeriesAsync(
     string name = "Regular",
     int continuityScope = 0 /* None */)
   {

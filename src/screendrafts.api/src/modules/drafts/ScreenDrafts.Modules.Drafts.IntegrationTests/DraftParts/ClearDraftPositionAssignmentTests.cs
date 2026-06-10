@@ -188,7 +188,7 @@ public sealed class ClearDraftPositionAssignmentTests(DraftsIntegrationTestWebAp
       .FirstAsync(TestContext.Current.CancellationToken);
   }
 
-  private async Task<Guid> CreateSeriesAsync()
+  private async Task<string> CreateSeriesAsync()
   {
     var result = await Sender.Send(new CreateSeriesCommand
     {
@@ -204,7 +204,7 @@ public sealed class ClearDraftPositionAssignmentTests(DraftsIntegrationTestWebAp
     return result.Value;
   }
 
-  private async Task<string> CreateDraftAsync(Guid seriesId)
+  private async Task<string> CreateDraftAsync(string seriesId)
   {
     var draftResult = await Sender.Send(new CreateDraftCommand
     {

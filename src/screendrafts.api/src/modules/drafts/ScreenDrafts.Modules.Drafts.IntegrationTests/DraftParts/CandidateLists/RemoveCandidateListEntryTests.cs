@@ -163,7 +163,7 @@ public sealed class RemoveCandidateListEntryTests(DraftsIntegrationTestWebAppFac
     return draftPart.PublicId;
   }
 
-  private async Task<Guid> CreateSeriesAsync()
+  private async Task<string> CreateSeriesAsync()
   {
     var result = await Sender.Send(new CreateSeriesCommand
     {
@@ -179,7 +179,7 @@ public sealed class RemoveCandidateListEntryTests(DraftsIntegrationTestWebAppFac
     return result.Value;
   }
 
-  private async Task<string> CreateDraftAndPartAsync(Guid seriesId)
+  private async Task<string> CreateDraftAndPartAsync(string seriesId)
   {
     var draftResult = await Sender.Send(new CreateDraftCommand
     {

@@ -1,4 +1,4 @@
-﻿using ScreenDrafts.Modules.Drafts.Features.Campaigns.Create;
+using ScreenDrafts.Modules.Drafts.Features.Campaigns.Create;
 using ScreenDrafts.Modules.Drafts.Features.Drafts.CreateDraft;
 using ScreenDrafts.Modules.Drafts.Features.Drafts.SetCampaign;
 using ScreenDrafts.Modules.Drafts.Features.SeriesFeatures.Create;
@@ -152,7 +152,7 @@ public sealed class SetCampaignTests(DraftsIntegrationTestWebAppFactory factory)
     return result.Value;
   }
 
-  private async Task<Guid> CreateSeriesAsync()
+  private async Task<string> CreateSeriesAsync()
   {
     var command = new CreateSeriesCommand
     {

@@ -1,4 +1,4 @@
-﻿using ScreenDrafts.Modules.Drafts.Features.Drafts.CreateDraft;
+using ScreenDrafts.Modules.Drafts.Features.Drafts.CreateDraft;
 using ScreenDrafts.Modules.Drafts.Features.SeriesFeatures.Create;
 
 namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafts;
@@ -56,7 +56,7 @@ public sealed class CreateDraftTests(DraftsIntegrationTestWebAppFactory factory)
     {
       Title = Faker.Company.CompanyName(),
       DraftType = DraftType.Standard.Value,
-      SeriesId = Guid.NewGuid(),
+      SeriesId = "nonexistent_series_public_id",
     };
 
     // Act
@@ -68,7 +68,7 @@ public sealed class CreateDraftTests(DraftsIntegrationTestWebAppFactory factory)
     result.Errors.Should().NotBeEmpty();
   }
 
-  private async Task<Guid> CreateSeriesAsync()
+  private async Task<string> CreateSeriesAsync()
   {
     var command = new CreateSeriesCommand
     {

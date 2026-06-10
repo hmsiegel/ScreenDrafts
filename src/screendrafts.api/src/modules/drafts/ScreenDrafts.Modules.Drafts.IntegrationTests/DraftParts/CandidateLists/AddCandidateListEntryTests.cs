@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Drafts.IntegrationTests.DraftParts.CandidateLists;
+﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.DraftParts.CandidateLists;
 
 public sealed class AddCandidateListEntryTests(DraftsIntegrationTestWebAppFactory factory)
   : DraftsIntegrationTest(factory)
@@ -18,7 +18,7 @@ public sealed class AddCandidateListEntryTests(DraftsIntegrationTestWebAppFactor
     {
       DraftPartId = draftPartPublicId,
       TmdbId = tmdbId,
-      AddedByPublicId = "u_" + Faker.Random.AlphaNumeric(17)
+      AddedByPublicId = "u_" + Faker.Random.AlphaNumeric(17),
     };
 
     // Act
@@ -41,15 +41,17 @@ public sealed class AddCandidateListEntryTests(DraftsIntegrationTestWebAppFactor
     {
       DraftPartId = draftPartPublicId,
       TmdbId = tmdbId,
-      AddedByPublicId = "u_" + Faker.Random.AlphaNumeric(17)
+      AddedByPublicId = "u_" + Faker.Random.AlphaNumeric(17),
     };
 
     // Act
     await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
-    var entry = await DbContext.CandidateListEntries
-      .FirstOrDefaultAsync(e => e.TmdbId == tmdbId, TestContext.Current.CancellationToken);
+    var entry = await DbContext.CandidateListEntries.FirstOrDefaultAsync(
+      e => e.TmdbId == tmdbId,
+      TestContext.Current.CancellationToken
+    );
 
     entry.Should().NotBeNull();
     entry!.TmdbId.Should().Be(tmdbId);
@@ -67,7 +69,7 @@ public sealed class AddCandidateListEntryTests(DraftsIntegrationTestWebAppFactor
     {
       DraftPartId = draftPartPublicId,
       TmdbId = tmdbId,
-      AddedByPublicId = "u_" + Faker.Random.AlphaNumeric(17)
+      AddedByPublicId = "u_" + Faker.Random.AlphaNumeric(17),
     };
 
     // Act
@@ -89,7 +91,7 @@ public sealed class AddCandidateListEntryTests(DraftsIntegrationTestWebAppFactor
     {
       DraftPartId = draftPartPublicId,
       TmdbId = tmdbId,
-      AddedByPublicId = "u_" + Faker.Random.AlphaNumeric(17)
+      AddedByPublicId = "u_" + Faker.Random.AlphaNumeric(17),
     };
 
     // Act
@@ -100,7 +102,7 @@ public sealed class AddCandidateListEntryTests(DraftsIntegrationTestWebAppFactor
   }
 
   [Fact]
-  public async Task AddCandidateListEntry_ShouldPersistNotes_WhenProvided()
+  public async Task AddCandidateListEntry_ShouldPersistNotes_WhenProvidedAsync()
   {
     // Arrange
     var draftPartPublicId = await SetupDraftPartAsync();
@@ -112,15 +114,17 @@ public sealed class AddCandidateListEntryTests(DraftsIntegrationTestWebAppFactor
       DraftPartId = draftPartPublicId,
       TmdbId = tmdbId,
       Notes = notes,
-      AddedByPublicId = "u_" + Faker.Random.AlphaNumeric(17)
+      AddedByPublicId = "u_" + Faker.Random.AlphaNumeric(17),
     };
 
     // Act
     await Sender.Send(command, TestContext.Current.CancellationToken);
 
     // Assert
-    var entry = await DbContext.CandidateListEntries
-      .FirstOrDefaultAsync(e => e.TmdbId == tmdbId, TestContext.Current.CancellationToken);
+    var entry = await DbContext.CandidateListEntries.FirstOrDefaultAsync(
+      e => e.TmdbId == tmdbId,
+      TestContext.Current.CancellationToken
+    );
 
     entry!.Notes.Should().Be(notes);
   }
@@ -141,7 +145,7 @@ public sealed class AddCandidateListEntryTests(DraftsIntegrationTestWebAppFactor
     {
       DraftPartId = draftPartPublicId,
       TmdbId = tmdbId,
-      AddedByPublicId = addedByPublicId
+      AddedByPublicId = addedByPublicId,
     };
 
     var first = await Sender.Send(command, TestContext.Current.CancellationToken);
@@ -154,8 +158,10 @@ public sealed class AddCandidateListEntryTests(DraftsIntegrationTestWebAppFactor
     second.Value.EntryId.Should().Be(first.Value.EntryId);
     second.Value.TmdbId.Should().Be(tmdbId);
 
-    var count = await DbContext.CandidateListEntries
-      .CountAsync(e => e.TmdbId == tmdbId, TestContext.Current.CancellationToken);
+    var count = await DbContext.CandidateListEntries.CountAsync(
+      e => e.TmdbId == tmdbId,
+      TestContext.Current.CancellationToken
+    );
     count.Should().Be(1);
   }
 
@@ -171,7 +177,7 @@ public sealed class AddCandidateListEntryTests(DraftsIntegrationTestWebAppFactor
     {
       DraftPartId = "dp_nonexistent",
       TmdbId = Faker.Random.Int(1, 1_000_000),
-      AddedByPublicId = "u_" + Faker.Random.AlphaNumeric(17)
+      AddedByPublicId = "u_" + Faker.Random.AlphaNumeric(17),
     };
 
     // Act
@@ -192,46 +198,57 @@ public sealed class AddCandidateListEntryTests(DraftsIntegrationTestWebAppFactor
     var draftPublicId = await CreateDraftAndPartAsync(seriesId);
     var draftPartInternalId = await GetFirstDraftPartIdAsync(draftPublicId);
 
-    var draftPart = await DbContext.DraftParts
-      .FirstAsync(dp => dp.Id == DraftPartId.Create(draftPartInternalId), TestContext.Current.CancellationToken);
+    var draftPart = await DbContext.DraftParts.FirstAsync(
+      dp => dp.Id == DraftPartId.Create(draftPartInternalId),
+      TestContext.Current.CancellationToken
+    );
 
     return draftPart.PublicId;
   }
 
-  private async Task<Guid> CreateSeriesAsync()
+  private async Task<string> CreateSeriesAsync()
   {
-    var result = await Sender.Send(new CreateSeriesCommand
-    {
-      Name = Faker.Company.CompanyName() + Faker.Random.AlphaNumeric(6),
-      Kind = SeriesKind.Regular.Value,
-      CanonicalPolicy = CanonicalPolicy.Always.Value,
-      ContinuityScope = ContinuityScope.None.Value,
-      ContinuityDateRule = ContinuityDateRule.AnyChannelFirstRelease.Value,
-      AllowedDraftTypes = (int)DraftTypeMask.All,
-      DefaultDraftType = DraftType.Standard.Value
-    }, TestContext.Current.CancellationToken);
+    var result = await Sender.Send(
+      new CreateSeriesCommand
+      {
+        Name = Faker.Company.CompanyName() + Faker.Random.AlphaNumeric(6),
+        Kind = SeriesKind.Regular.Value,
+        CanonicalPolicy = CanonicalPolicy.Always.Value,
+        ContinuityScope = ContinuityScope.None.Value,
+        ContinuityDateRule = ContinuityDateRule.AnyChannelFirstRelease.Value,
+        AllowedDraftTypes = (int)DraftTypeMask.All,
+        DefaultDraftType = DraftType.Standard.Value,
+      },
+      TestContext.Current.CancellationToken
+    );
 
     return result.Value;
   }
 
-  private async Task<string> CreateDraftAndPartAsync(Guid seriesId)
+  private async Task<string> CreateDraftAndPartAsync(string seriesId)
   {
-    var draftResult = await Sender.Send(new CreateDraftCommand
-    {
-      Title = Faker.Company.CompanyName(),
-      DraftType = DraftType.Standard.Value,
-      SeriesId = seriesId
-    }, TestContext.Current.CancellationToken);
+    var draftResult = await Sender.Send(
+      new CreateDraftCommand
+      {
+        Title = Faker.Company.CompanyName(),
+        DraftType = DraftType.Standard.Value,
+        SeriesId = seriesId,
+      },
+      TestContext.Current.CancellationToken
+    );
 
     var draftPublicId = draftResult.Value;
 
-    await Sender.Send(new CreateDraftPartCommand
-    {
-      DraftPublicId = draftPublicId,
-      PartIndex = 1,
-      MinimumPosition = 1,
-      MaximumPosition = 7
-    }, TestContext.Current.CancellationToken);
+    await Sender.Send(
+      new CreateDraftPartCommand
+      {
+        DraftPublicId = draftPublicId,
+        PartIndex = 1,
+        MinimumPosition = 1,
+        MaximumPosition = 7,
+      },
+      TestContext.Current.CancellationToken
+    );
 
     return draftPublicId;
   }

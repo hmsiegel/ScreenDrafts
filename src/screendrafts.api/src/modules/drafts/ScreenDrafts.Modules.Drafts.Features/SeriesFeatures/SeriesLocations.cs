@@ -2,5 +2,5 @@
 
 internal static class SeriesLocations
 {
-  public static string ById(Guid id) => $"/series/{id}";
+  public static string ById(string publicId) => $"/series/{publicId}";
 }

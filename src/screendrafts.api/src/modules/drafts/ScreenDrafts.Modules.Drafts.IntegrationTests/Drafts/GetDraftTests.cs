@@ -1,4 +1,4 @@
-﻿using ScreenDrafts.Modules.Drafts.Domain.DraftParts.Enums;
+using ScreenDrafts.Modules.Drafts.Domain.DraftParts.Enums;
 using ScreenDrafts.Modules.Drafts.Features.DraftParts.SetReleaseDate;
 using ScreenDrafts.Modules.Drafts.Features.Drafts.GetDraft;
 
@@ -557,7 +557,7 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
     return (draftPublicId, partPublicId);
   }
 
-  private async Task<Guid> CreateSeriesAsync()
+  private async Task<string> CreateSeriesAsync()
   {
     return (
       await Sender.Send(

@@ -339,7 +339,7 @@ public sealed class AssignSubDraftTriviaResultsTests(DraftsIntegrationTestWebApp
     return (draftPartPublicId, subDraftPublicId);
   }
 
-  private async Task<Guid> CreateSeriesAsync()
+  private async Task<string> CreateSeriesAsync()
   {
     var result = await Sender.Send(new CreateSeriesCommand
     {
@@ -354,7 +354,7 @@ public sealed class AssignSubDraftTriviaResultsTests(DraftsIntegrationTestWebApp
     return result.Value;
   }
 
-  private async Task<string> CreateSpeedDraftAsync(Guid seriesId)
+  private async Task<string> CreateSpeedDraftAsync(string seriesId)
   {
     var draftResult = await Sender.Send(new CreateDraftCommand
     {
