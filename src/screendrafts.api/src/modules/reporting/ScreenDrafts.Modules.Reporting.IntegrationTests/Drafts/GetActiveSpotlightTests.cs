@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Reporting.IntegrationTests.Drafts;
+﻿namespace ScreenDrafts.Modules.Reporting.IntegrationTests.Drafts;
 
 public sealed class GetActiveSpotlightTests(ReportingIntegrationTestWebAppFactory factory)
   : ReportingIntegrationTest(factory)
@@ -13,7 +13,10 @@ public sealed class GetActiveSpotlightTests(ReportingIntegrationTestWebAppFactor
   public async Task Handle_ShouldReturnFailure_WhenNoActiveSpotlightExistsAsync()
   {
     // Act
-    var result = await Sender.Send(new GetActiveSpotlightQuery(), TestContext.Current.CancellationToken);
+    var result = await Sender.Send(
+      new GetActiveSpotlightQuery(),
+      TestContext.Current.CancellationToken
+    );
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -31,7 +34,10 @@ public sealed class GetActiveSpotlightTests(ReportingIntegrationTestWebAppFactor
     var draftPublicId = await SeedActiveSpotlightAsync(description: description);
 
     // Act
-    var result = await Sender.Send(new GetActiveSpotlightQuery(), TestContext.Current.CancellationToken);
+    var result = await Sender.Send(
+      new GetActiveSpotlightQuery(),
+      TestContext.Current.CancellationToken
+    );
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -51,7 +57,10 @@ public sealed class GetActiveSpotlightTests(ReportingIntegrationTestWebAppFactor
     );
 
     // Act
-    var result = await Sender.Send(new GetActiveSpotlightQuery(), TestContext.Current.CancellationToken);
+    var result = await Sender.Send(
+      new GetActiveSpotlightQuery(),
+      TestContext.Current.CancellationToken
+    );
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -68,7 +77,10 @@ public sealed class GetActiveSpotlightTests(ReportingIntegrationTestWebAppFactor
     await SeedActiveSpotlightAsync();
 
     // Act
-    var result = await Sender.Send(new GetActiveSpotlightQuery(), TestContext.Current.CancellationToken);
+    var result = await Sender.Send(
+      new GetActiveSpotlightQuery(),
+      TestContext.Current.CancellationToken
+    );
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -84,14 +96,18 @@ public sealed class GetActiveSpotlightTests(ReportingIntegrationTestWebAppFactor
   {
     // Arrange — create spotlight without activating it
     var draftPublicId = _faker.Random.AlphaNumeric(10);
+    var spotlightPublicId = _faker.Random.AlphaNumeric(10);
     await SeedCompletedSummaryAsync(draftPublicId);
 
-    var spotlight = DraftSpotlight.Create(draftPublicId, "Inactive", null);
+    var spotlight = DraftSpotlight.Create(spotlightPublicId, draftPublicId, "Inactive", null);
     DbContext.DraftSpotlights.Add(spotlight);
     await DbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
     // Act
-    var result = await Sender.Send(new GetActiveSpotlightQuery(), TestContext.Current.CancellationToken);
+    var result = await Sender.Send(
+      new GetActiveSpotlightQuery(),
+      TestContext.Current.CancellationToken
+    );
 
     // Assert
     result.IsFailure.Should().BeTrue("an inactive spotlight should not be returned");
@@ -102,6 +118,7 @@ public sealed class GetActiveSpotlightTests(ReportingIntegrationTestWebAppFactor
   // -------------------------------------------------------------------------
 
   private async Task<string> SeedActiveSpotlightAsync(
+    string? spotlightPublicId = null,
     string? draftPublicId = null,
     string description = "Great episode",
     string? title = null,
@@ -110,6 +127,7 @@ public sealed class GetActiveSpotlightTests(ReportingIntegrationTestWebAppFactor
     int totalPicks = 7
   )
   {
+    spotlightPublicId ??= _faker.Random.AlphaNumeric(10);
     draftPublicId ??= _faker.Random.AlphaNumeric(10);
     title ??= _faker.Company.CompanyName();
 
@@ -121,7 +139,7 @@ public sealed class GetActiveSpotlightTests(ReportingIntegrationTestWebAppFactor
       totalPicks: totalPicks
     );
 
-    var spotlight = DraftSpotlight.Create(draftPublicId, description, null);
+    var spotlight = DraftSpotlight.Create(spotlightPublicId, draftPublicId, description, null);
     spotlight.Activate();
     DbContext.DraftSpotlights.Add(spotlight);
     await DbContext.SaveChangesAsync(TestContext.Current.CancellationToken);

@@ -18,7 +18,7 @@ namespace ScreenDrafts.Modules.Reporting.Infrastructure.Database.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("reporting")
-                .HasAnnotation("ProductVersion", "10.0.6")
+                .HasAnnotation("ProductVersion", "10.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -292,6 +292,11 @@ namespace ScreenDrafts.Modules.Reporting.Infrastructure.Database.Migrations
                     b.Property<bool>("IsPinned")
                         .HasColumnType("boolean")
                         .HasColumnName("is_pinned");
+
+                    b.Property<string>("PublicId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("public_id");
 
                     b.Property<string>("SpotifyUrl")
                         .HasColumnType("text")

@@ -5,7 +5,7 @@ internal sealed class Endpoint
 {
   public override void Configure()
   {
-    Post(ReportingRoutes.Spotlights);
+    Post(DraftReportingRoutes.Spotlights);
     Description(x =>
     {
       x.WithTags(ReportingOpenApi.Tags.Spotlight)

@@ -4,7 +4,7 @@ internal sealed class Endpoint : ScreenDraftsEndpointWithoutRequest<GetActiveSpo
 {
   public override void Configure()
   {
-    Get(ReportingRoutes.Spotlight);
+    Get(DraftReportingRoutes.Spotlight);
     Description(x =>
     {
       x.WithTags(ReportingOpenApi.Tags.Spotlight)

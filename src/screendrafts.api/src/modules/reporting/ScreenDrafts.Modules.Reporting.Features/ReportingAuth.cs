@@ -15,9 +15,10 @@ internal static class ReportingAuth
 
   internal static class Permissions
   {
-    internal const string SpotlightCreate = "spotlights:create";
-    internal const string SpotlightUpdate = "spotlights:update";
-    internal const string SpotlightRead = "spotlights:read";
+    internal const string SpotlightCreate = "spotlight:create";
+    internal const string SpotlightUpdate = "spotlight:update";
+    internal const string SpotlightRead = "spotlight:read";
+    internal const string SpotlightManage = "spotlight:manage";
     internal const string StatsRead = "stats:read";
 
     /// <summary>

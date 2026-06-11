@@ -13,6 +13,7 @@ global using ScreenDrafts.Common.Application.CsvFiles;
 global using ScreenDrafts.Common.Application.Data;
 global using ScreenDrafts.Common.Application.Logging;
 global using ScreenDrafts.Common.Application.Seeding;
+global using ScreenDrafts.Common.Application.Services;
 global using ScreenDrafts.Common.Infrastructure;
 global using ScreenDrafts.Common.Infrastructure.Configuration;
 global using ScreenDrafts.Common.Infrastructure.Database.DatabaseSeeders;

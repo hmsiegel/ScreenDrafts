@@ -30,4 +30,11 @@ public interface IDraftReportingRepository : IRepository
 
   // Spotlight
   void AddSpotlight(DraftSpotlight spotlight);
+
+  Task<DraftSpotlight?> GetSpotlightByPublicIdAsync(
+    string publicId,
+    CancellationToken cancellationToken
+  );
+  Task<DraftSpotlight?> GetActiveSpotlightAsync(CancellationToken cancellationToken);
+  void RemoveSpotlight(DraftSpotlight spotlight);
 }

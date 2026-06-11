@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Reporting.Infrastructure.Drafts;
+﻿using Polly;
+
+namespace ScreenDrafts.Modules.Reporting.Infrastructure.Drafts;
 
 internal sealed class DraftReportingRepository(ReportingDbContext dbContext)
   : IDraftReportingRepository
@@ -73,4 +75,19 @@ internal sealed class DraftReportingRepository(ReportingDbContext dbContext)
   {
     _dbContext.SiteStats.Update(siteStats);
   }
+
+  public async Task<DraftSpotlight?> GetSpotlightByPublicIdAsync(
+    string publicId,
+    CancellationToken cancellationToken
+  ) =>
+    await _dbContext.DraftSpotlights.FirstOrDefaultAsync(
+      s => s.PublicId == publicId,
+      cancellationToken
+    );
+
+  public async Task<DraftSpotlight?> GetActiveSpotlightAsync(CancellationToken cancellationToken) =>
+    await _dbContext.DraftSpotlights.FirstOrDefaultAsync(s => s.IsActive, cancellationToken);
+
+  public void RemoveSpotlight(DraftSpotlight spotlight) =>
+    _dbContext.DraftSpotlights.Remove(spotlight);
 }

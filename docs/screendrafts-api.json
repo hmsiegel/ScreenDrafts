@@ -839,7 +839,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CreatedIdResponse"
+                  "$ref": "#/components/schemas/CreatedResponse"
                 }
               }
             }
@@ -6343,6 +6343,165 @@
         ]
       }
     },
+    "/reporting/spotlights/candidates": {
+      "get": {
+        "tags": [
+          "Spotlight"
+        ],
+        "operationId": "Spotlight:SearchCandidates",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchSpotlightCandidatesRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchSpotlightCandidatesRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchSpotlightCandidatesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/reporting/spotlights/rotate": {
+      "post": {
+        "tags": [
+          "Spotlight"
+        ],
+        "operationId": "Spotlight:RotateSpotlight",
+        "responses": {
+          "202": {
+            "description": "Accepted"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/reporting/spotlights": {
+      "get": {
+        "tags": [
+          "Spotlight"
+        ],
+        "operationId": "Spotlight:GetSpotlights",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/ListSpotlightDraftsRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ListSpotlightDraftsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultOfListSpotlightDraftsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {}
+        ]
+      },
+      "post": {
+        "tags": [
+          "Spotlight"
+        ],
+        "operationId": "Spotlight:Create",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSpotlightRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateSpotlightResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
     "/stats": {
       "get": {
         "tags": [
@@ -6392,32 +6551,104 @@
         ]
       }
     },
-    "/reporting/spotlights": {
-      "post": {
+    "/reporting/spotlights/{publicId}": {
+      "delete": {
         "tags": [
           "Spotlight"
         ],
-        "operationId": "Spotlight:Create",
+        "operationId": "Spotlight:Delete",
         "requestBody": {
           "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteSpotlightRequest"
+              }
+            },
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateSpotlightRequest"
+                "$ref": "#/components/schemas/DeleteSpotlightRequest"
               }
             }
           },
           "required": true
         },
         "responses": {
-          "201": {
-            "description": "Created",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CreateSpotlightResponse"
-                }
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {}
+        ]
+      },
+      "put": {
+        "tags": [
+          "Spotlight"
+        ],
+        "operationId": "Spotlight:Activate",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ActivateSpotlightRequest"
               }
             }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/reporting/spotlights/{publicId}/deactivate": {
+      "put": {
+        "tags": [
+          "Spotlight"
+        ],
+        "operationId": "Spotlight:Deactivate",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeactivateSpotlightRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
           },
           "400": {
             "description": "Bad Request"
@@ -6625,6 +6856,14 @@
   },
   "components": {
     "schemas": {
+      "ActivateSpotlightRequest": {
+        "type": "object",
+        "properties": {
+          "publicId": {
+            "type": "string"
+          }
+        }
+      },
       "ActorModel": {
         "required": [
           "imdbId",
@@ -6967,7 +7206,7 @@
       "AddMovieToDraftBoardRequest": {
         "type": "object",
         "properties": {
-          "draftId": {
+          "publicId": {
             "type": "string"
           },
           "tmdbId": {
@@ -7489,7 +7728,7 @@
         ],
         "type": "object",
         "properties": {
-          "draftId": {
+          "publicId": {
             "type": "string"
           },
           "file": {
@@ -7797,18 +8036,6 @@
           }
         }
       },
-      "CreatedIdResponse": {
-        "required": [
-          "id"
-        ],
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          }
-        }
-      },
       "CreateDrafterRequest": {
         "type": "object",
         "properties": {
@@ -8050,6 +8277,14 @@
           }
         }
       },
+      "DeactivateSpotlightRequest": {
+        "type": "object",
+        "properties": {
+          "publicId": {
+            "type": "string"
+          }
+        }
+      },
       "DeleteCampaignRequest": {
         "required": [
           "publicId"
@@ -8065,6 +8300,14 @@
         "required": [
           "publicId"
         ],
+        "type": "object",
+        "properties": {
+          "publicId": {
+            "type": "string"
+          }
+        }
+      },
+      "DeleteSpotlightRequest": {
         "type": "object",
         "properties": {
           "publicId": {
@@ -9282,7 +9525,7 @@
       "GetDraftBoardRequest": {
         "type": "object",
         "properties": {
-          "draftId": {
+          "publicId": {
             "type": "string"
           }
         }
@@ -11781,6 +12024,108 @@
           }
         }
       },
+      "ListSpotlightDraftsRequest": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "pageSize": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "excludeActive": {
+            "type": "boolean"
+          },
+          "query": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "draftType": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "ListSpotlightDraftsResponse": {
+        "required": [
+          "publicId",
+          "draftPublicId",
+          "title",
+          "draftType",
+          "episodeNumber",
+          "spotlightDescription",
+          "spotifyUrl",
+          "isActive",
+          "isPinned",
+          "activatedAtUtc",
+          "createdAtUtc"
+        ],
+        "type": "object",
+        "properties": {
+          "publicId": {
+            "type": "string"
+          },
+          "draftPublicId": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "draftType": {
+            "type": "string"
+          },
+          "episodeNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "spotlightDescription": {
+            "type": "string"
+          },
+          "spotifyUrl": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uri"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "isPinned": {
+            "type": "boolean"
+          },
+          "activatedAtUtc": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "createdAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
       "ListUpcomingDraftsResponse": {
         "required": [
           "drafts"
@@ -12389,7 +12734,7 @@
               "null",
               "string"
             ],
-            "format": "date-time"
+            "format": "date"
           }
         }
       },
@@ -12595,6 +12940,61 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/ListDraftsResponse"
+            }
+          },
+          "totalCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "page": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "pageSize": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "totalPages": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "hasPreviousPage": {
+            "type": "boolean"
+          },
+          "hasNextPage": {
+            "type": "boolean"
+          }
+        }
+      },
+      "PagedResultOfListSpotlightDraftsResponse": {
+        "required": [
+          "items",
+          "totalCount",
+          "page",
+          "pageSize"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ListSpotlightDraftsResponse"
             }
           },
           "totalCount": {
@@ -14191,7 +14591,7 @@
       "RemoveMovieFromDraftBoardRequest": {
         "type": "object",
         "properties": {
-          "draftId": {
+          "publicId": {
             "type": "string"
           },
           "tmdbId": {
@@ -14816,6 +15216,74 @@
           }
         }
       },
+      "SearchSpotlightCandidatesRequest": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "page": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "pageSize": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "SearchSpotlightCandidatesResponse": {
+        "required": [
+          "items",
+          "totalCount",
+          "page",
+          "pageSize"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SpotlightCandidateItem"
+            }
+          },
+          "totalCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "page": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "pageSize": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
       "SeasonContestantStandingResponse": {
         "required": [
           "contestantPublicId",
@@ -15195,6 +15663,44 @@
           }
         }
       },
+      "SpotlightCandidateItem": {
+        "required": [
+          "draftPublicId",
+          "title",
+          "draftType",
+          "episodeNumber",
+          "totalPicks"
+        ],
+        "type": "object",
+        "properties": {
+          "draftPublicId": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "draftType": {
+            "type": "string"
+          },
+          "episodeNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "totalPicks": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
       "SpotlightPickResponse": {
         "type": "object",
         "properties": {
@@ -15471,7 +15977,7 @@
       "UpdateDraftBoardItemRequest": {
         "type": "object",
         "properties": {
-          "draftId": {
+          "publicId": {
             "type": "string"
           },
           "tmdbId": {
@@ -15868,10 +16374,10 @@
       "name": "Media"
     },
     {
-      "name": "Stats"
+      "name": "Spotlight"
     },
     {
-      "name": "Spotlight"
+      "name": "Stats"
     },
     {
       "name": "Users"

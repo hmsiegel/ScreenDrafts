@@ -2,11 +2,13 @@
 
 internal sealed class CreateSpotlightCommandHandler(
   IDbConnectionFactory connectionFactory,
-  IDraftReportingRepository draftReportingRepository
+  IDraftReportingRepository draftReportingRepository,
+  IPublicIdGenerator publicIdGenerator
 ) : ICommandHandler<CreateSpotlightCommand, CreateSpotlightResponse>
 {
   private readonly IDbConnectionFactory _connectionFactory = connectionFactory;
   private readonly IDraftReportingRepository _draftReportingRepository = draftReportingRepository;
+  private readonly IPublicIdGenerator _publicIdGenerator = publicIdGenerator;
 
   public async Task<Result<CreateSpotlightResponse>> Handle(
     CreateSpotlightCommand request,
@@ -49,14 +51,17 @@ internal sealed class CreateSpotlightCommandHandler(
       return Result.Failure<CreateSpotlightResponse>(DraftReportingErrors.DraftIsPatreon);
     }
 
+    var publicId = _publicIdGenerator.GeneratePublicId(PublicIdPrefixes.Spotlight);
+
     Uri? spotifyUri = string.IsNullOrWhiteSpace(request.SpotifyUrl)
       ? null
       : new Uri(request.SpotifyUrl);
 
     var spotlight = DraftSpotlight.Create(
-      request.DraftPublicId,
-      request.SpotlightDescription,
-      spotifyUri
+      publicId: publicId,
+      draftPublicId: request.DraftPublicId,
+      spotlightDescription: request.SpotlightDescription,
+      spotifyUrl: spotifyUri
     );
 
     _draftReportingRepository.AddSpotlight(spotlight);

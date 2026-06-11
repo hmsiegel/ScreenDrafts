@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 const ADMIN_ITEMS = [
   { label: "User Management", href: "/admin" },
   { label: "Draft Management", href: "/admin/drafts" },
+  { label: "Spotlight Management", href: "/admin/spotlight"},
   { label: "Campaigns", href: "/admin/campaigns" },
   { label: "Categories", href: "/admin/categories" },
   { label: "Series", href: "/admin/series" },

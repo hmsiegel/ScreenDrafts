@@ -8,5 +8,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const isAdmin = session?.roles?.some(r => ADMIN_ROLES.includes(r)) ?? false;
   if (!isAdmin) redirect("/");
 
-  return <>{children}</>;
+  return (
+    <div className="min-h-screen bg-light-blue">
+      {children}
+    </div>
+  );
 }

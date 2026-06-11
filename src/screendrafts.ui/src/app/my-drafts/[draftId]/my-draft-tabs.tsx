@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import DraftBoardEditor from "@/components/drafts/draft-board-editor";
 import CandidateListEditor from "@/components/drafts/candidate-list-editor";
+import InfoTooltip from "@/components/ui/info-tooltip";
 import { getDraftBoard } from "@/services/drafts/fetch-draft-board";
 import type { GetMyDraftDetailResponse, MyDraftPartDetail } from "@/lib/dto";
 import type { DraftBoardItemResponse } from "@/lib/dto";
@@ -11,6 +12,32 @@ import type { DraftBoardItemResponse } from "@/lib/dto";
 interface MyDraftTabsProps {
   detail: GetMyDraftDetailResponse;
   accessToken: string;
+}
+
+const TAB_TOOLTIPS: Record<string, React.ReactNode> = {
+  "MY BOARD": (
+    <>
+      Your personal research list. Add films you&apos;re considering, rank them by priority,
+      and add notes. Only you can see your board.
+    </>
+  ),
+  "CANDIDATE LIST": (
+    <>
+      A shared public list of eligible titles for drafts with a narrower topic.
+      Drafters contribute to it collaboratively; hosts and admins can also manage it.
+    </>
+  ),
+};
+
+function TabLabel({ tab }: { tab: string }) {
+  const tooltip = TAB_TOOLTIPS[tab];
+  if (!tooltip) return <>{tab}</>;
+  return (
+    <span className="flex items-center gap-1.5">
+      {tab}
+      <InfoTooltip position="bottom">{tooltip}</InfoTooltip>
+    </span>
+  );
 }
 
 export default function MyDraftTabs({ detail, accessToken }: MyDraftTabsProps) {
@@ -36,7 +63,6 @@ export default function MyDraftTabs({ detail, accessToken }: MyDraftTabsProps) {
   const currentPart: MyDraftPartDetail | undefined = drafterParts[selectedPartIdx];
   const draftPublicId = detail.draftPublicId ?? "";
 
-  // Load board whenever the selected drafter part changes
   useEffect(() => {
     if (!isDrafter || !draftPublicId) return;
     setBoardLoading(true);
@@ -60,7 +86,7 @@ export default function MyDraftTabs({ detail, accessToken }: MyDraftTabsProps) {
                 : "text-sd-ink/40 hover:text-sd-ink/70"
             }`}
           >
-            {tab}
+            <TabLabel tab={tab} />
           </button>
         ))}
       </div>

@@ -32,4 +32,5 @@ public static class PublicIdPrefixes
   public const string Recording = "rec";
   public const string CommunityFilmRule = "cfr";
   public const string Attendance = "att";
+  public const string Spotlight = "spl";
 }

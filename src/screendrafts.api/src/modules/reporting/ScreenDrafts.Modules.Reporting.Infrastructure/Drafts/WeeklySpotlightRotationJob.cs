@@ -26,8 +26,10 @@ internal sealed partial class WeeklySpotlightRotationJob(
     {
       // 1. Check if the current active spotlight is pinned. Skip is so.
       const string pinneedCheckSql = """
-        SELECT id, is_pinned, created_at_utc
-        FROM reporting.draft_spotlights
+        SELECT 
+          ds.id          AS Id,
+          ds.is_pinned   AS IsPinned
+        FROM reporting.draft_spotlights ds
         WHERE is_active = true
         LIMIT 1
         """;
@@ -45,7 +47,9 @@ internal sealed partial class WeeklySpotlightRotationJob(
       // 2. Pick a random eligible inactive spotlight
       // Eligible = inactive, draft complete, draft is MainFeed
       const string randomCandidateSql = """
-        SELECT s.id, s.is_pinned
+        SELECT 
+          s.id      AS Id,
+          s.is_pinned AS IsPinned
         FROM reporting.draft_spotlights s
         JOIN reporting.draft_summaries ds ON ds.draft_public_id = s.draft_public_id
         WHERE s.is_active = false
@@ -119,7 +123,7 @@ internal sealed partial class WeeklySpotlightRotationJob(
     }
   }
 
-  private sealed record SpotlightRow(Guid Id, bool IsPinned, DateTime CreatedAtUtc);
+  private sealed record SpotlightRow(Guid Id, bool IsPinned);
 
   [LoggerMessage(
     EventId = 1,

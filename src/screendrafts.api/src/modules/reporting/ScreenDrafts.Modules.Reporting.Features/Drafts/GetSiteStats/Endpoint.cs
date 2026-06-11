@@ -4,7 +4,7 @@ internal sealed class Endpoint : ScreenDraftsEndpointWithoutRequest<GetSiteStats
 {
   public override void Configure()
   {
-    Get(ReportingRoutes.Stats);
+    Get(DraftReportingRoutes.Stats);
     Description(x =>
     {
       x.WithTags(ReportingOpenApi.Tags.Stats)

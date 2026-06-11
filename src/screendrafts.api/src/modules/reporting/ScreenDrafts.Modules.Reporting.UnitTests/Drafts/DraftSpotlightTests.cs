@@ -1,13 +1,13 @@
-namespace ScreenDrafts.Modules.Reporting.UnitTests.Drafts;
+﻿namespace ScreenDrafts.Modules.Reporting.UnitTests.Drafts;
 
 public sealed class DraftSpotlightTests
 {
   private static DraftSpotlight BuildSpotlight(
+    string spotlightPublicId = "s_abc",
     string draftPublicId = "d_abc",
     string description = "A great draft",
     Uri? spotifyUrl = null
-  ) =>
-    DraftSpotlight.Create(draftPublicId, description, spotifyUrl);
+  ) => DraftSpotlight.Create(spotlightPublicId, draftPublicId, description, spotifyUrl);
 
   // -------------------------------------------------------------------------
   // Create — initial state

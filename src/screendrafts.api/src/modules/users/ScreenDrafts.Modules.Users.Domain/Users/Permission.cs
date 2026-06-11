@@ -144,5 +144,7 @@ public sealed class Permission(string code)
   public static readonly Permission AttendanceJoin = new("attendances:join");
   public static readonly Permission AttendanceWithdraw = new("attendances:withdraw");
 
+  public static readonly Permission SpotlightManage = new("spotlight:manage");
+
   public string Code { get; } = code;
 }

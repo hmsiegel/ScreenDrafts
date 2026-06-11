@@ -3,6 +3,7 @@
 public sealed class DraftSpotlight : Entity<DraftSpotlightId>
 {
   private DraftSpotlight(
+    string publicId,
     string draftPublicId,
     string spotlightDescription,
     Uri? spotifyUrl,
@@ -10,6 +11,7 @@ public sealed class DraftSpotlight : Entity<DraftSpotlightId>
   )
     : base(id ?? DraftSpotlightId.CreateUnique())
   {
+    PublicId = publicId;
     DraftPublicId = draftPublicId;
     SpotlightDescription = spotlightDescription;
     SpotifyUrl = spotifyUrl;
@@ -20,6 +22,7 @@ public sealed class DraftSpotlight : Entity<DraftSpotlightId>
 
   private DraftSpotlight() { }
 
+  public string PublicId { get; private set; } = default!;
   public string DraftPublicId { get; private set; } = default!;
   public string SpotlightDescription { get; private set; } = default!;
   public Uri? SpotifyUrl { get; private set; }
@@ -29,11 +32,13 @@ public sealed class DraftSpotlight : Entity<DraftSpotlightId>
   public DateTime CreatedAtUtc { get; private set; }
 
   public static DraftSpotlight Create(
+    string publicId,
     string draftPublicId,
     string spotlightDescription,
     Uri? spotifyUrl
   ) =>
     new(
+      publicId: publicId,
       draftPublicId: draftPublicId,
       spotlightDescription: spotlightDescription,
       spotifyUrl: spotifyUrl
@@ -69,11 +74,10 @@ public sealed class DraftSpotlight : Entity<DraftSpotlightId>
   {
     SpotifyUrl = spotifyUrl;
   }
-}
 
-public sealed record DraftSpotlightId(Guid Value)
-{
-  public static DraftSpotlightId CreateUnique() => new(Guid.NewGuid());
-
-  public static DraftSpotlightId Create(Guid value) => new(value);
+  internal void SetPublicId(string publicId)
+  {
+    ArgumentNullException.ThrowIfNull(publicId);
+    PublicId = publicId;
+  }
 }
