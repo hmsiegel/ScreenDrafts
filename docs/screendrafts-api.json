@@ -3836,6 +3836,44 @@
         ]
       }
     },
+    "/draft-parts/{draftPartId}/picks/{playOrder}/undo-veto": {
+      "post": {
+        "tags": [
+          "DraftParts"
+        ],
+        "operationId": "DraftParts.UndoVeto",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UndoVetoRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
     "/draft-parts/{draftPartId}/picks/{playOrder}": {
       "delete": {
         "tags": [
@@ -4319,6 +4357,53 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/draft-parts/{draftPartId}/gameplay": {
+      "get": {
+        "tags": [
+          "DraftParts"
+        ],
+        "operationId": "DraftParts.GetGameplay",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/GetDraftPartGameplayRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetDraftPartGameplayRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetDraftPartGameplayResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
           },
           "404": {
             "description": "Not Found"
@@ -9225,6 +9310,204 @@
           }
         }
       },
+      "GameplayDraftPositionResponse": {
+        "type": "object",
+        "properties": {
+          "positionPublicId": {
+            "type": "string"
+          },
+          "positionName": {
+            "type": "string"
+          },
+          "ownedBoardSlots": {
+            "type": "array",
+            "items": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          "hasBonusVeto": {
+            "type": "boolean"
+          },
+          "hasBonusVetoOverride": {
+            "type": "boolean"
+          },
+          "assignedParticipantId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "assignedParticipantKind": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "assignedParticipantName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "GameplayHostResponse": {
+        "type": "object",
+        "properties": {
+          "hostPublicId": {
+            "type": "string"
+          },
+          "hostName": {
+            "type": "string"
+          },
+          "isPrimary": {
+            "type": "boolean"
+          }
+        }
+      },
+      "GameplayParticipantResponse": {
+        "type": "object",
+        "properties": {
+          "participantId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "participantKind": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "participantName": {
+            "type": "string"
+          },
+          "vetoTokensRemaining": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "overrideTokensRemaining": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "GameplayPickResponse": {
+        "type": "object",
+        "properties": {
+          "playOrder": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "boardPosition": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "movieTitle": {
+            "type": "string"
+          },
+          "movieYear": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "tmdbId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "playedById": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "playedByKind": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "playedByName": {
+            "type": "string"
+          },
+          "wasVetoed": {
+            "type": "boolean"
+          },
+          "wasVetoOverridden": {
+            "type": "boolean"
+          },
+          "wasCommissionerOverride": {
+            "type": "boolean"
+          }
+        }
+      },
+      "GameplayTriviaResultResponse": {
+        "type": "object",
+        "properties": {
+          "participantId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "participantKind": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "participantName": {
+            "type": "string"
+          },
+          "questionsWon": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "position": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
       "GenreModel": {
         "required": [
           "tmdbId",
@@ -9797,6 +10080,91 @@
               "null",
               "string"
             ]
+          }
+        }
+      },
+      "GetDraftPartGameplayRequest": {
+        "type": "object",
+        "properties": {
+          "draftPartId": {
+            "type": "string"
+          }
+        }
+      },
+      "GetDraftPartGameplayResponse": {
+        "type": "object",
+        "properties": {
+          "draftPartId": {
+            "type": "string"
+          },
+          "draftId": {
+            "type": "string"
+          },
+          "draftTitle": {
+            "type": "string"
+          },
+          "draftType": {
+            "type": "string"
+          },
+          "isMultiPart": {
+            "type": "boolean"
+          },
+          "isFinalPart": {
+            "type": "boolean"
+          },
+          "hasDraftPool": {
+            "type": "boolean"
+          },
+          "hasDraftBoard": {
+            "type": "boolean"
+          },
+          "hasCandidateList": {
+            "type": "boolean"
+          },
+          "triviaResults": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GameplayTriviaResultResponse"
+            }
+          },
+          "draftPositions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GameplayDraftPositionResponse"
+            }
+          },
+          "nextExpectedParticipantId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "nextExpectedParticipantKind": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "participants": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GameplayParticipantResponse"
+            }
+          },
+          "picks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GameplayPickResponse"
+            }
+          },
+          "hosts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GameplayHostResponse"
+            }
           }
         }
       },
@@ -15928,6 +16296,22 @@
               "null",
               "string"
             ]
+          }
+        }
+      },
+      "UndoVetoRequest": {
+        "type": "object",
+        "properties": {
+          "draftPartId": {
+            "type": "string"
+          },
+          "playOrder": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
           }
         }
       },

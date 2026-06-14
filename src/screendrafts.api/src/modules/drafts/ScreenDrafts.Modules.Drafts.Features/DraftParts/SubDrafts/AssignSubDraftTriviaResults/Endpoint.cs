@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.SubDrafts.AssignSubDraftTriviaResults;
+﻿using ScreenDrafts.Modules.Drafts.Features.DraftParts.TriviaResults.AssignTriviaResults;
+
+namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.SubDrafts.AssignSubDraftTriviaResults;
 
 internal sealed class Endpoint : ScreenDraftsEndpoint<AssignSubDraftTriviaRequest>
 {
@@ -8,12 +10,12 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<AssignSubDraftTriviaReques
     Description(x =>
     {
       x.WithTags(DraftsOpenApi.Tags.DraftParts)
-      .WithName(DraftsOpenApi.Names.SubDrafts_AssignTriviaResults)
-      .Produces(StatusCodes.Status204NoContent)
-      .Produces(StatusCodes.Status400BadRequest)
-      .Produces(StatusCodes.Status401Unauthorized)
-      .Produces(StatusCodes.Status403Forbidden)
-      .Produces(StatusCodes.Status404NotFound);
+        .WithName(DraftsOpenApi.Names.SubDrafts_AssignTriviaResults)
+        .Produces(StatusCodes.Status204NoContent)
+        .Produces(StatusCodes.Status400BadRequest)
+        .Produces(StatusCodes.Status401Unauthorized)
+        .Produces(StatusCodes.Status403Forbidden)
+        .Produces(StatusCodes.Status404NotFound);
     });
     Policies(DraftsAuth.Permissions.SubDraftUpdate);
   }
@@ -24,28 +26,29 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<AssignSubDraftTriviaReques
 
     foreach (var r in req.Results)
     {
-      if(!ParticipantKind.TryFromValue(r.Kind, out var participantKind))
+      if (!ParticipantKind.TryFromValue(r.Kind, out var participantKind))
       {
-        AddError(r => r.Results, "Invalid participant kind: {0}"+ r.Kind);
+        AddError(r => r.Results, "Invalid participant kind: {0}" + r.Kind);
         await Send.ErrorsAsync(StatusCodes.Status400BadRequest, ct);
         return;
       }
 
-
-      entries.Add(new TriviaResultEntry
-      {
-        ParticipantPublicId = r.ParticipantPublicId,
-        Kind = participantKind,
-        Position = r.Position,
-        QuestionsWon = r.QuestionsWon
-      });
+      entries.Add(
+        new TriviaResultEntry
+        {
+          ParticipantPublicId = r.ParticipantPublicId,
+          Kind = participantKind,
+          Position = r.Position,
+          QuestionsWon = r.QuestionsWon,
+        }
+      );
     }
 
     var command = new AssignSubDraftTriviaCommand
     {
       DraftPartPublicId = req.DraftPartPublicId,
       SubDraftPublicId = req.SubDraftPublicId,
-      Results = entries
+      Results = entries,
     };
 
     var result = await Sender.Send(command, ct);

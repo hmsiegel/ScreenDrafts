@@ -82,9 +82,15 @@ internal sealed class VetoOverrideAppliedDomainEventHandler(
 
     await _eventBus.PublishAsync(
       new VetoOverrideAppliedIntegrationEvent(
-        domainEvent.Id,
-        domainEvent.OccurredOnUtc,
-        domainEvent.DraftPartId
+        id: domainEvent.Id,
+        occurredOnUtc: domainEvent.OccurredOnUtc,
+        draftPartId: domainEvent.DraftPartId,
+        draftPartPublicId: domainEvent.DraftPartPublicId,
+        playOrder: domainEvent.PlayOrder,
+        tmdbId: domainEvent.TmdbId,
+        movieTitle: domainEvent.MovieTitle!,
+        overriddenByParticipantId: domainEvent.ParticipantId,
+        overriddenByParticipantKind: domainEvent.ParticipantKind
       ),
       cancellationToken
     );

@@ -4,19 +4,19 @@
  
 INSERT INTO administration.permissions (code)
 VALUES 
-    ('addendances:join'),
+    ('attendances:join'),
     ('attendances:withdraw')
 ON CONFLICT (code) DO NOTHING;
 
  
 INSERT INTO administration.role_permissions (permission_code, role_name)
 VALUES
-    ('addendances:join', 'Drafter'),
+    ('attendances:join', 'Drafter'),
     ('attendances:withdraw', 'Drafter'),
-    ('addendances:join', 'Host'),
+    ('attendances:join', 'Host'),
     ('attendances:withdraw', 'Host'),
-    ('addendances:join', 'Administrator'),
+    ('attendances:join', 'Administrator'),
     ('attendances:withdraw', 'Administrator'),
-    ('addendances:join', 'SuperAdministrator'),
+    ('attendances:join', 'SuperAdministrator'),
     ('attendances:withdraw', 'SuperAdministrator')
 ON CONFLICT (permission_code, role_name) DO NOTHING;

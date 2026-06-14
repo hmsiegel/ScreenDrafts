@@ -1,16 +1,22 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.AssignTriviaResults;
+﻿namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.TriviaResults.AssignTriviaResults;
 
 internal sealed class AssignTriviaResultsCommandHandler(
   IDraftPartRepository draftPartRepository,
-  ParticipantResolver participantResolver)
-  : ICommandHandler<AssignTriviaResultsCommand>
+  ParticipantResolver participantResolver
+) : ICommandHandler<AssignTriviaResultsCommand>
 {
   private readonly IDraftPartRepository _draftPartRepository = draftPartRepository;
   private readonly ParticipantResolver _participantResolver = participantResolver;
 
-  public async Task<Result> Handle(AssignTriviaResultsCommand request, CancellationToken cancellationToken)
+  public async Task<Result> Handle(
+    AssignTriviaResultsCommand request,
+    CancellationToken cancellationToken
+  )
   {
-    var draftPart = await _draftPartRepository.GetByPublicIdAsync(request.DraftPartPublicId, cancellationToken);
+    var draftPart = await _draftPartRepository.GetByPublicIdAsync(
+      request.DraftPartPublicId,
+      cancellationToken
+    );
 
     if (draftPart is null)
     {
@@ -24,7 +30,8 @@ internal sealed class AssignTriviaResultsCommandHandler(
       var participantResult = await _participantResolver.ResolveAsync(
         r.ParticipantPublicId,
         r.Kind,
-        cancellationToken);
+        cancellationToken
+      );
 
       if (participantResult.IsFailure)
       {
@@ -55,4 +62,3 @@ internal sealed class AssignTriviaResultsCommandHandler(
     return Result.Success();
   }
 }
-

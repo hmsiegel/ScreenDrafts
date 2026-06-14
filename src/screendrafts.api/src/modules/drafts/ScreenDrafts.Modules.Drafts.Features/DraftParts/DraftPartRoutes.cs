@@ -39,6 +39,7 @@ internal static class DraftPartRoutes
   public const string Picks = ById + "/picks";
   public const string UndoPick = ById + "/picks/{playOrder}";
   public const string RevealPick = ById + "/picks/{playOrder}/reveal";
+  public const string UndoVeto = ById + "/picks/{playOrder}/undo-veto";
 
   // Vetos and Veto Overrides
   public const string ApplyVeto = ById + "/picks/{playOrder}/veto";
@@ -77,4 +78,7 @@ internal static class DraftPartRoutes
   public const string AttendanceJoin = AttendanceByPerson + "/join";
   public const string AttendanceWithdraw = AttendanceByPerson + "/withdraw";
   public const string AttendanceReinstate = AttendanceByPerson + "/reinstate";
+
+  // Gameplay
+  public const string Gameplay = ById + "/gameplay";
 }

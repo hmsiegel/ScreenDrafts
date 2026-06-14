@@ -122,12 +122,11 @@ public sealed class ApplyVetoTests(DraftsIntegrationTestWebAppFactory factory)
   [Fact]
   public async Task ApplyVeto_WhenDrafterHasNoRemainingVetoes_ShouldFailAsync()
   {
-    // Arrange — drafter starts with 1 veto; use it on pick 1, then try pick 2
+    // Arrange — drafter starts with 1 veto; spend it on pick 1 (currently max), then try again on pick 2
     var (draftPartPublicId, drafter1PublicId, _) = await SetupStartedDraftPartAsync();
     await PlayPickAsync(draftPartPublicId, drafter1PublicId, position: 1, playOrder: 1);
-    await PlayPickAsync(draftPartPublicId, drafter1PublicId, position: 2, playOrder: 2);
 
-    // Spend the only veto
+    // Spend the only veto on pick 1 (currently the max playOrder)
     await Sender.Send(new ApplyVetoCommand
     {
       DraftPartId = draftPartPublicId,
@@ -136,6 +135,9 @@ public sealed class ApplyVetoTests(DraftsIntegrationTestWebAppFactory factory)
       ParticipantKind = ParticipantKind.Drafter,
       ActorPublicId = drafter1PublicId
     }, TestContext.Current.CancellationToken);
+
+    // Play pick 2 — drafter has no vetoes remaining
+    await PlayPickAsync(draftPartPublicId, drafter1PublicId, position: 2, playOrder: 2);
 
     var command = new ApplyVetoCommand
     {

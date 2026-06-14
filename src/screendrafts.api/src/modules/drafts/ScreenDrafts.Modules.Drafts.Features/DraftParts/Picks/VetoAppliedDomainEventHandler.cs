@@ -83,9 +83,17 @@ internal sealed class VetoAppliedDomainEventHandler(
 
     await _eventBus.PublishAsync(
       new VetoAppliedIntegrationEvent(
-        domainEvent.Id,
-        domainEvent.OccurredOnUtc,
-        domainEvent.DraftPartId
+        id: domainEvent.Id,
+        occurredOnUtc: domainEvent.OccurredOnUtc,
+        draftPartId: domainEvent.DraftPartId,
+        draftPartPublicId: domainEvent.DraftPartPublicId,
+        playOrder: domainEvent.PlayOrder,
+        tmdbId: domainEvent.TmdbId!.Value,
+        movieTitle: domainEvent.MovieTitle!,
+        vetoedByParticipantId: domainEvent.ParticipantId,
+        vetoedByParticipantKind: domainEvent.ParticipantKind,
+        playedByParticipantId: domainEvent.PlayedByParticipantId,
+        playedByParticipantKind: domainEvent.PlayedByParticipantKind
       ),
       cancellationToken
     );

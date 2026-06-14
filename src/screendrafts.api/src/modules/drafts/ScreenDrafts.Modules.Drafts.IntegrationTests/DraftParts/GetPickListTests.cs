@@ -300,9 +300,10 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
 
     await PlayPickAsync(draftPartPublicId, drafter1PublicId, position: 1, playOrder: 1, movie1);
     await PlayPickAsync(draftPartPublicId, drafter2PublicId, position: 2, playOrder: 2, movie2);
-    await PlayPickAsync(draftPartPublicId, drafter1PublicId, position: 3, playOrder: 3, movie3);
 
+    // Apply commissioner override to pick 1 (no veto guard on overrides)
     await Sender.Send(new ApplyCommissionerOverrideCommand { DraftPartId = draftPartPublicId, PlayOrder = 1 }, TestContext.Current.CancellationToken);
+    // Veto pick 2 while it is still the max playOrder, then play pick 3
     await Sender.Send(new ApplyVetoCommand
     {
       DraftPartId = draftPartPublicId,
@@ -311,6 +312,8 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
       ParticipantKind = ParticipantKind.Drafter,
       ActorPublicId = drafter2PublicId
     }, TestContext.Current.CancellationToken);
+
+    await PlayPickAsync(draftPartPublicId, drafter1PublicId, position: 3, playOrder: 3, movie3);
 
     // Act
     var result = await Sender.Send(new GetPickListQuery { DraftPartId = draftPartPublicId, CallerPublicId = hostPublicId }, TestContext.Current.CancellationToken);

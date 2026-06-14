@@ -86,6 +86,12 @@ export default function UpcomingDraftActions({ draft, accessToken, onRemove }: U
           Manage Pool
         </Link>
       )}
+      <Link
+        href={`/admin/drafts/${draft.publicId}/attendances`}
+        className="text-sd-blue text-xs font-mono uppercase tracking-wide hover:underline"
+      >
+        Attendance
+      </Link>
       <button
         type="button"
         onClick={handleStart}

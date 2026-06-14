@@ -247,13 +247,13 @@ public sealed class SpielbergTeamsMegaDraft_Tests(DraftsIntegrationTestWebAppFac
       await PlayPickAsync(_draftPartPublicId, pos, pos, team, ParticipantKind.Team, _moviePublicIds[i]);
     }
 
-    // Team B plays position 14
-    await PlayPickAsync(_draftPartPublicId, 14, 14, _teamBPublicId, ParticipantKind.Team, _moviePublicIds[13]);
+    // Team B plays position 14 with playOrder=22 (above current max of 21) so it can be vetoed
+    await PlayPickAsync(_draftPartPublicId, 14, 22, _teamBPublicId, ParticipantKind.Team, _moviePublicIds[13]);
 
-    // Team A vetoes Team B's position-14 pick
-    await ApplyVetoAsync(_draftPartPublicId, 14, _teamAPublicId, ParticipantKind.Team);
+    // Team A vetoes Team B's position-14 pick (playOrder=22 is now the max)
+    await ApplyVetoAsync(_draftPartPublicId, 22, _teamAPublicId, ParticipantKind.Team);
 
-    await AssertPickVetoedAsync(_draftPartPublicId, 14);
+    await AssertPickVetoedAsync(_draftPartPublicId, 22);
   }
 
   // ─────────────────────────────────────────────────────────────────────────

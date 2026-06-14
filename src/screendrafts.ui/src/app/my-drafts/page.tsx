@@ -40,9 +40,11 @@ function RoleBadge({ isDrafter, isHost }: { isDrafter: boolean; isHost: boolean 
 function DraftListRow({
   draft,
   accessToken,
+  personPublicId,
 }: {
   draft: MyDraftSummary;
   accessToken: string;
+  personPublicId: string;
 }) {
   const parts = draft.parts ?? [];
   const multiPart = parts.length > 1;
@@ -75,6 +77,7 @@ function DraftListRow({
             draftPublicId={draft.draftPublicId ?? ""}
             part={parts[0]}
             accessToken={accessToken}
+            personPublicId={personPublicId}
           />
         )}
       </div>
@@ -101,6 +104,7 @@ function DraftListRow({
                 draftPublicId={draft.draftPublicId ?? ""}
                 part={part}
                 accessToken={accessToken}
+                personPublicId={personPublicId}
               />
             </div>
           ))}
@@ -114,10 +118,12 @@ function PartActionButton({
   draftPublicId,
   part,
   accessToken,
+  personPublicId,
 }: {
   draftPublicId: string;
   part: MyDraftPartSummary;
   accessToken: string;
+  personPublicId: string;
 }) {
   const isJoined = part.attendanceStatus === "Joined";
 
@@ -126,7 +132,7 @@ function PartActionButton({
       <form
         action={async () => {
           "use server";
-          await joinDraftPart(accessToken, part.draftPartPublicId ?? "");
+          await joinDraftPart(accessToken, part.draftPartPublicId ?? "", personPublicId);
           redirect(`/my-drafts/${draftPublicId}`);
         }}
       >
@@ -199,7 +205,7 @@ export default async function MyDraftsPage() {
           ) : (
             <div className="space-y-2">
               {(upcoming ?? []).map((d) => (
-                <DraftListRow key={d.draftPublicId ?? ""} draft={d} accessToken={session.accessToken!} />
+                <DraftListRow key={d.draftPublicId ?? ""} draft={d} accessToken={session.accessToken!} personPublicId={session.publicId ?? ""} />
               ))}
             </div>
           )}
@@ -212,7 +218,7 @@ export default async function MyDraftsPage() {
           ) : (
             <div className="space-y-2">
               {(inProgress ?? []).map((d) => (
-                <DraftListRow key={d.draftPublicId ?? ""} draft={d} accessToken={session.accessToken!} />
+                <DraftListRow key={d.draftPublicId ?? ""} draft={d} accessToken={session.accessToken!} personPublicId={session.publicId ?? ""} />
               ))}
             </div>
           )}

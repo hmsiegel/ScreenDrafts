@@ -83,6 +83,7 @@ export default async function MyDraftDetailPage({
                   draftId={draftId}
                   accessToken={session.accessToken!}
                   statusLabels={PART_STATUS_LABELS}
+                  personPublicId={session.publicId ?? ""}
                 />
               ))}
             </div>
@@ -95,6 +96,7 @@ export default async function MyDraftDetailPage({
               draftId={draftId}
               accessToken={session.accessToken!}
               statusLabels={PART_STATUS_LABELS}
+              personPublicId={session.publicId ?? ""}
             />
           )}
         </div>
@@ -111,11 +113,13 @@ function SinglePartAction({
   draftId,
   accessToken,
   statusLabels,
+  personPublicId,
 }: {
   part: MyDraftPartDetail;
   draftId: string;
   accessToken: string;
   statusLabels: Record<number, string>;
+  personPublicId: string;
 }) {
   const isJoined = part.attendanceStatus === "Joined";
   const isCompleted = (part.status ?? 0) === 3 || (part.status ?? 0) === 4;
@@ -130,7 +134,7 @@ function SinglePartAction({
         <form
           action={async () => {
             "use server";
-            await joinDraftPart(accessToken, draftPartPublicId);
+            await joinDraftPart(accessToken, draftPartPublicId, personPublicId);
             redirect(`/my-drafts/${draftId}`);
           }}
         >
@@ -143,14 +147,14 @@ function SinglePartAction({
         </form>
       ) : isCompleted ? (
         <Link
-          href={`/gameplay/${draftPartPublicId}`}
+          href={`/draft-parts/${draftPartPublicId}/live`}
           className="border border-sd-ink/20 text-sd-ink font-oswald font-medium uppercase tracking-wide text-xs px-3 py-1.5 hover:bg-sd-ink/5"
         >
           View
         </Link>
       ) : (
         <Link
-          href={`/gameplay/${draftPartPublicId}`}
+          href={`/draft-parts/${draftPartPublicId}/live`}
           className="bg-sd-blue text-white font-oswald font-medium uppercase tracking-wide text-xs px-3 py-1.5 hover:bg-sd-blue/90"
         >
           Open
@@ -165,11 +169,13 @@ function PartStrip({
   draftId,
   accessToken,
   statusLabels,
+  personPublicId,
 }: {
   part: MyDraftPartDetail;
   draftId: string;
   accessToken: string;
   statusLabels: Record<number, string>;
+  personPublicId: string;
 }) {
   const isJoined = part.attendanceStatus === "Joined";
   const isCompleted = (part.status ?? 0) === 3 || (part.status ?? 0) === 4;
@@ -185,7 +191,7 @@ function PartStrip({
         <form
           action={async () => {
             "use server";
-            await joinDraftPart(accessToken, draftPartPublicId);
+            await joinDraftPart(accessToken, draftPartPublicId, personPublicId);
             redirect(`/my-drafts/${draftId}`);
           }}
         >
@@ -198,14 +204,14 @@ function PartStrip({
         </form>
       ) : isCompleted ? (
         <Link
-          href={`/gameplay/${draftPartPublicId}`}
+          href={`/draft-parts/${draftPartPublicId}/live`}
           className="border border-sd-ink/20 text-sd-ink font-oswald font-medium uppercase tracking-wide text-xs px-3 py-1.5 hover:bg-sd-ink/5"
         >
           View
         </Link>
       ) : (
         <Link
-          href={`/gameplay/${draftPartPublicId}`}
+          href={`/draft-parts/${draftPartPublicId}/live`}
           className="bg-sd-blue text-white font-oswald font-medium uppercase tracking-wide text-xs px-3 py-1.5 hover:bg-sd-blue/90"
         >
           Open

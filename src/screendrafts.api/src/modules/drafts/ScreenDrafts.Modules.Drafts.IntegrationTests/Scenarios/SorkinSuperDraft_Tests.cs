@@ -250,20 +250,23 @@ public sealed class SorkinSuperDraft_Tests(DraftsIntegrationTestWebAppFactory fa
   [Fact]
   public async Task SorkinSuperDraft_BonusVeto_MeansClayHasTwoVetoes_TotalAsync()
   {
-    // Play first two picks
+    // Play four picks
     await PlayPickAsync(_draftPartPublicId, 10, 10, _darrenDrafterPublicId, ParticipantKind.Drafter, _moviePublicIds[9]);
     await PlayPickAsync(_draftPartPublicId, 9, 9, _clayDrafterPublicId, ParticipantKind.Drafter, _moviePublicIds[8]);
     await PlayPickAsync(_draftPartPublicId, 8, 8, _darrenDrafterPublicId, ParticipantKind.Drafter, _moviePublicIds[7]);
     await PlayPickAsync(_draftPartPublicId, 7, 7, _clayDrafterPublicId, ParticipantKind.Drafter, _moviePublicIds[6]);
 
-    // Clay uses first veto (starting)
+    // Clay uses first veto on playOrder=10 (the current max)
     await ApplyVetoAsync(_draftPartPublicId, 10, _clayDrafterPublicId, ParticipantKind.Drafter);
 
-    // Clay uses second veto (bonus) — should succeed
+    // Play one more pick to advance the max playOrder
+    await PlayPickAsync(_draftPartPublicId, 6, 11, _darrenDrafterPublicId, ParticipantKind.Drafter, _moviePublicIds[5]);
+
+    // Clay uses second veto (bonus) on the new max playOrder=11 — should succeed
     var result = await Sender.Send(new ApplyVetoCommand
     {
       DraftPartId = _draftPartPublicId,
-      PlayOrder = 8,
+      PlayOrder = 11,
       ParticipantPublicId = _clayDrafterPublicId,
       ParticipantKind = ParticipantKind.Drafter,
       ActorPublicId = _clayDrafterPublicId
@@ -284,14 +287,17 @@ public sealed class SorkinSuperDraft_Tests(DraftsIntegrationTestWebAppFactory fa
     await PlayPickAsync(_draftPartPublicId, 8, 8, _darrenDrafterPublicId, ParticipantKind.Drafter, _moviePublicIds[7]);
     await PlayPickAsync(_draftPartPublicId, 7, 7, _clayDrafterPublicId, ParticipantKind.Drafter, _moviePublicIds[6]);
 
-    // Darren uses his only veto
-    await ApplyVetoAsync(_draftPartPublicId, 9, _darrenDrafterPublicId, ParticipantKind.Drafter);
+    // Darren uses his only veto on playOrder=10 (the current max)
+    await ApplyVetoAsync(_draftPartPublicId, 10, _darrenDrafterPublicId, ParticipantKind.Drafter);
 
-    // Darren tries to veto again — should fail
+    // Play one more pick to advance the max playOrder
+    await PlayPickAsync(_draftPartPublicId, 6, 11, _darrenDrafterPublicId, ParticipantKind.Drafter, _moviePublicIds[5]);
+
+    // Darren tries to veto again on the new max — should fail (no vetoes remaining)
     var result = await Sender.Send(new ApplyVetoCommand
     {
       DraftPartId = _draftPartPublicId,
-      PlayOrder = 7,
+      PlayOrder = 11,
       ParticipantPublicId = _darrenDrafterPublicId,
       ParticipantKind = ParticipantKind.Drafter,
       ActorPublicId = _darrenDrafterPublicId
@@ -333,11 +339,11 @@ public sealed class SorkinSuperDraft_Tests(DraftsIntegrationTestWebAppFactory fa
     // Deliver to RealTimeUpdates consumers — each event fires its own broadcast.
     await DispatchIntegrationEventsAsync();
 
-    // Picks fire both PickListUpdated (PickAddedIntegrationEventConsumer) and PickSubmitted
-    // (PickSubmittedIntegrationEventConsumer). Veto and VetoOverride fire PickListUpdated.
+    // Picks fire PickAdded (PickAddedIntegrationEventConsumer) and PickSubmitted
+    // (PickSubmittedIntegrationEventConsumer). Veto fires VetoApplied. Override fires VetoOverrideApplied.
     HubCapture.SentMessages.Should().NotBeEmpty("pick/veto/override operations should all trigger hub broadcasts");
     HubCapture.SentMessages.Should().AllSatisfy(
-      m => m.Method.Should().BeOneOf("PickListUpdated", "PickSubmitted"),
+      m => m.Method.Should().BeOneOf("PickAdded", "PickSubmitted", "VetoApplied", "VetoOverrideApplied"),
       "all hub broadcasts must be a recognised pick/veto method");
   }
 

@@ -1,0 +1,19 @@
+info:
+  name: DraftParts.GetGamePlay
+  type: http
+  seq: 16
+
+http:
+  method: GET
+  url: "{{baseUrl}}/draft-parts/:draftPartId/gameplay"
+  params:
+    - name: draftPartId
+      value: dp_cGlzC3JdJ2Ig0xs
+      type: path
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

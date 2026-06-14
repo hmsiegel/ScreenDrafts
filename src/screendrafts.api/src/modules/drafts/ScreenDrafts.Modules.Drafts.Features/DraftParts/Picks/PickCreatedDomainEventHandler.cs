@@ -79,11 +79,17 @@ internal sealed class PickCreatedDomainEventHandler(
 
     await _eventBus.PublishAsync(
       new PickAddedIntegrationEvent(
-        domainEvent.Id,
-        domainEvent.OccurredOnUtc,
-        domainEvent.DraftPartId,
-        domainEvent.ImdbId!,
-        domainEvent.MovieTitle
+        id: domainEvent.Id,
+        occurredOnUtc: domainEvent.OccurredOnUtc,
+        draftPartId: domainEvent.DraftPartId,
+        draftPartPublicId: domainEvent.DraftPartPublicId,
+        imdbId: domainEvent.ImdbId!,
+        movieTitle: domainEvent.MovieTitle,
+        tmdbId: domainEvent.TmdbId,
+        boardPosition: domainEvent.BoardPosition,
+        playOrder: domainEvent.PlayOrder,
+        participantId: domainEvent.ParticipantId,
+        participantKind: domainEvent.ParticipantKind
       ),
       cancellationToken
     );

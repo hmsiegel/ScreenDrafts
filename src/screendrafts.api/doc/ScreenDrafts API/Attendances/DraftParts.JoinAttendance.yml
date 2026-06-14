@@ -1,0 +1,25 @@
+info:
+  name: DraftParts.JoinAttendance
+  type: http
+  seq: 1
+
+http:
+  method: PUT
+  url: "{{baseUrl}}/draft-parts/:draftPartId/attendances/:personPublicId/join"
+  params:
+    - name: draftPartId
+      value: dp_cGlzC3JdJ2Ig0xs
+      type: path
+    - name: personPublicId
+      value: pe_xEq021wf4348xXL
+      type: path
+  body:
+    type: json
+    data: ""
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

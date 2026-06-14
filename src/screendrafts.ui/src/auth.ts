@@ -1,5 +1,6 @@
 import NextAuth, { type DefaultSession } from "next-auth";
 import KeycloakProvider from "next-auth/providers/keycloak";
+import type { JWT } from "next-auth/jwt";
 
 declare module "next-auth" {
   interface Session {
@@ -11,6 +12,55 @@ declare module "next-auth" {
 }
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL;
+const REFRESH_BUFFER_MS = 60 * 1000;
+
+interface AppToken extends JWT {
+  accessToken?: string;
+  refreshToken?: string;
+  accessTokenExpiresAt?: number;
+  publicId?: string;
+  roles?: string[];
+}
+
+async function refreshAccessToken(refreshToken: string): Promise<{
+  accessToken: string;
+  refreshToken: string;
+  accessTokenExpiresAt: number;
+} | null> {
+  try {
+    const url = `${process.env.KEYCLOAK_ISSUER}/protocol/openid-connect/token`;
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        grant_type: "refresh_token",
+        client_id: process.env.KEYCLOAK_CLIENT_ID!,
+        client_secret: process.env.KEYCLOAK_CLIENT_SECRET!,
+        refresh_token: refreshToken,
+      }).toString(),
+    });
+
+    if (!res.ok) {
+      console.error("[auth] Token refresh failed:", res.status, await res.text());
+      return null;
+    }
+
+    const data = await res.json() as {
+      access_token: string;
+      refresh_token: string;
+      expires_in: number;
+    };
+
+    return {
+      accessToken: data.access_token,
+      refreshToken: data.refresh_token,
+      accessTokenExpiresAt: Date.now() + data.expires_in * 1000,
+    };
+  } catch (e) {
+    console.error("[auth] Token refresh error:", e);
+    return null;
+  }
+}
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
@@ -24,8 +74,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   ],
   callbacks: {
     async jwt({ token, account }) {
+      const appToken = token as AppToken;
+
+      // ── Initial sign-in ─────────────────────────────────────────────────
       if (account?.access_token) {
-        token["accessToken"] = account.access_token;
+        appToken.accessToken = account.access_token;
+        appToken.refreshToken = account.refresh_token as string | undefined;
+        appToken.accessTokenExpiresAt = account.expires_at
+          ? account.expires_at * 1000
+          : Date.now() + ((account.expires_in as number) ?? 300) * 1000;
 
         try {
           const userRes = await fetch(`${API_BASE}/users/profile`, {
@@ -34,7 +91,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           if (userRes.ok) {
             const user = (await userRes.json()) as { publicId?: string };
             if (user.publicId) {
-              token["publicId"] = user.publicId;
+              appToken.publicId = user.publicId;
 
               const rolesRes = await fetch(
                 `${API_BASE}/admin/users/${user.publicId}/roles`,
@@ -42,20 +99,45 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
               );
               if (rolesRes.ok) {
                 const data = (await rolesRes.json()) as { roles: string[] };
-                token["roles"] = data.roles;
+                appToken.roles = data.roles;
               }
             }
           }
         } catch {
           // Role fetching failed — proceed with empty roles.
         }
+
+        return appToken;
       }
-      return token;
+
+      // ── Subsequent calls — check expiry ──────────────────────────────────
+      const expiresAt = appToken.accessTokenExpiresAt ?? 0;
+      if (Date.now() <= expiresAt - REFRESH_BUFFER_MS) {
+        return appToken;
+      }
+
+      // ── Refresh ──────────────────────────────────────────────────────────
+      if (!appToken.refreshToken) {
+        console.warn("[auth] No refresh token — session will expire.");
+        return appToken;
+      }
+
+      const refreshed = await refreshAccessToken(appToken.refreshToken);
+      if (!refreshed) return appToken;
+
+      return {
+        ...appToken,
+        accessToken: refreshed.accessToken,
+        refreshToken: refreshed.refreshToken,
+        accessTokenExpiresAt: refreshed.accessTokenExpiresAt,
+      };
     },
+
     async session({ session, token }) {
-      session.accessToken = token["accessToken"] as string | undefined;
-      session.publicId = token["publicId"] as string | undefined;
-      session.roles = (token["roles"] as string[] | undefined) ?? [];
+      const appToken = token as AppToken;
+      session.accessToken = appToken.accessToken;
+      session.publicId = appToken.publicId;
+      session.roles = appToken.roles ?? [];
       return session;
     },
   },

@@ -4,7 +4,7 @@ internal sealed class Validator : AbstractValidator<RemoveParticipantFromDraftPa
 {
   public Validator()
   {
-    RuleFor(x => x.DraftPartPublicId).NotEmpty().WithMessage("Draft part public ID is required.");
+    RuleFor(x => x.DraftPartId).NotEmpty().WithMessage("Draft part public ID is required.");
 
     RuleFor(x => x.ParticipantPublicId)
       .NotEmpty()
@@ -15,4 +15,3 @@ internal sealed class Validator : AbstractValidator<RemoveParticipantFromDraftPa
       .When(x => x.ParticipantKind != ParticipantKind.Community.Value);
   }
 }
-

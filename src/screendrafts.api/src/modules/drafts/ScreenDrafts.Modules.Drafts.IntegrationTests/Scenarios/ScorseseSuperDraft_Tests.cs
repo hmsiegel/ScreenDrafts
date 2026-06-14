@@ -147,15 +147,16 @@ public sealed class ScorseseSuperDraft_Tests(DraftsIntegrationTestWebAppFactory 
   {
     await SetupPart1Async();
 
-    // Play position 12 through 10
-    await PlayPickAsync(_part1PublicId, 12, 12, _philDrafterPublicId, ParticipantKind.Drafter, _part1MoviePublicIds[11]);
-    await PlayPickAsync(_part1PublicId, 11, 11, _darrenDrafterPublicId, ParticipantKind.Drafter, _part1MoviePublicIds[10]);
-    await PlayPickAsync(_part1PublicId, 10, 10, _ryanDrafterPublicId, ParticipantKind.Drafter, _part1MoviePublicIds[9]);
+    // Play positions 12 and 11 with lower playOrders, then Ryan's position-10 pick
+    // gets the highest playOrder so the community veto can target it
+    await PlayPickAsync(_part1PublicId, 12, 1, _philDrafterPublicId, ParticipantKind.Drafter, _part1MoviePublicIds[11]);
+    await PlayPickAsync(_part1PublicId, 11, 2, _darrenDrafterPublicId, ParticipantKind.Drafter, _part1MoviePublicIds[10]);
+    await PlayPickAsync(_part1PublicId, 10, 3, _ryanDrafterPublicId, ParticipantKind.Drafter, _part1MoviePublicIds[9]);
 
-    // Community vetoes Ryan's position-10 pick
-    await ApplyCommunityVetoAsync(_part1PublicId, 10);
+    // Community vetoes Ryan's position-10 pick (playOrder=3 is the max)
+    await ApplyCommunityVetoAsync(_part1PublicId, 3);
 
-    await AssertPickVetoedAsync(_part1PublicId, 10);
+    await AssertPickVetoedAsync(_part1PublicId, 3);
   }
 
   [Fact]

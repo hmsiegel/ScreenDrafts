@@ -1,19 +1,14 @@
 ﻿global using Bogus;
-
 global using Dapper;
-
 global using FluentAssertions;
-
 global using MediatR;
-
 global using Microsoft.AspNetCore.Hosting;
 global using Microsoft.AspNetCore.SignalR;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.DependencyInjection.Extensions;
-
 global using Newtonsoft.Json;
-
+global using ScreenDrafts.Common.Abstractions.Errors;
 global using ScreenDrafts.Common.Abstractions.Results;
 global using ScreenDrafts.Common.Application.Data;
 global using ScreenDrafts.Common.Application.EventBus;
@@ -31,18 +26,13 @@ global using ScreenDrafts.Modules.Drafts.Domain.DraftParts.ValueObjects;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafts.Errors;
 global using ScreenDrafts.Modules.Drafts.Domain.Hosts;
 global using ScreenDrafts.Modules.Drafts.Domain.Participants;
-global using ScreenDrafts.Common.Abstractions.Errors;
 global using ScreenDrafts.Modules.Drafts.Domain.People.Errors;
-global using ScreenDrafts.Modules.Drafts.Features.People.UpdateProfile;
-global using ScreenDrafts.Modules.Drafts.Features.People.UpdateSocial;
-global using ScreenDrafts.Modules.Drafts.Features.People.UploadAvatar;
 global using ScreenDrafts.Modules.Drafts.Domain.Predictions.Enums;
 global using ScreenDrafts.Modules.Drafts.Domain.Predictions.Errors;
 global using ScreenDrafts.Modules.Drafts.Domain.SeriesAggregate.Enums;
 global using ScreenDrafts.Modules.Drafts.Features.Drafters.Create;
 global using ScreenDrafts.Modules.Drafts.Features.DrafterTeams.AddDrafterToTeam;
 global using ScreenDrafts.Modules.Drafts.Features.DrafterTeams.Create;
-global using ScreenDrafts.Modules.Drafts.Features.DraftParts.AssignTriviaResults;
 global using ScreenDrafts.Modules.Drafts.Features.DraftParts.CandidateLists.AddCandidateListEntry;
 global using ScreenDrafts.Modules.Drafts.Features.DraftParts.CandidateLists.BulkAddCandidateEntries;
 global using ScreenDrafts.Modules.Drafts.Features.DraftParts.CandidateLists.Get;
@@ -68,6 +58,12 @@ global using ScreenDrafts.Modules.Drafts.Features.DraftParts.SubDrafts.ApplySubD
 global using ScreenDrafts.Modules.Drafts.Features.DraftParts.SubDrafts.AssignSubDraftTriviaResults;
 global using ScreenDrafts.Modules.Drafts.Features.DraftParts.SubDrafts.PlaySubDraftPick;
 global using ScreenDrafts.Modules.Drafts.Features.DraftParts.SubDrafts.SetSubDraftSubject;
+global using ScreenDrafts.Modules.Drafts.Features.DraftParts.TriviaResults.AssignTriviaResults;
+global using ScreenDrafts.Modules.Drafts.Features.DraftParts.Zoom.EndZoomSession;
+global using ScreenDrafts.Modules.Drafts.Features.DraftParts.Zoom.GetZoomSessionToken;
+global using ScreenDrafts.Modules.Drafts.Features.DraftParts.Zoom.StartZoomRecording;
+global using ScreenDrafts.Modules.Drafts.Features.DraftParts.Zoom.StartZoomSession;
+global using ScreenDrafts.Modules.Drafts.Features.DraftParts.Zoom.StopZoomRecording;
 global using ScreenDrafts.Modules.Drafts.Features.Drafts.CreateDraft;
 global using ScreenDrafts.Modules.Drafts.Features.Drafts.CreateDraftPart;
 global using ScreenDrafts.Modules.Drafts.Features.Drafts.DraftBoards.AddMovieToDraftBoard;
@@ -86,6 +82,9 @@ global using ScreenDrafts.Modules.Drafts.Features.Hosts.Create;
 global using ScreenDrafts.Modules.Drafts.Features.Hosts.Get;
 global using ScreenDrafts.Modules.Drafts.Features.Hosts.Search;
 global using ScreenDrafts.Modules.Drafts.Features.People.Create;
+global using ScreenDrafts.Modules.Drafts.Features.People.UpdateProfile;
+global using ScreenDrafts.Modules.Drafts.Features.People.UpdateSocial;
+global using ScreenDrafts.Modules.Drafts.Features.People.UploadAvatar;
 global using ScreenDrafts.Modules.Drafts.Features.Predictions.AddCarryover;
 global using ScreenDrafts.Modules.Drafts.Features.Predictions.ClosePredictionSeason;
 global using ScreenDrafts.Modules.Drafts.Features.Predictions.CreatePredictionContestant;
@@ -96,24 +95,16 @@ global using ScreenDrafts.Modules.Drafts.Features.Predictions.LockPredictionSet;
 global using ScreenDrafts.Modules.Drafts.Features.Predictions.ScoreDraftPartPredictions;
 global using ScreenDrafts.Modules.Drafts.Features.Predictions.SetDraftPartPredictionRules;
 global using ScreenDrafts.Modules.Drafts.Features.Predictions.SubmitPredictionSet;
-global using ScreenDrafts.Modules.Drafts.Features.DraftParts.Zoom.EndZoomSession;
-global using ScreenDrafts.Modules.Drafts.Features.DraftParts.Zoom.GetZoomSessionToken;
-global using ScreenDrafts.Modules.Drafts.Features.DraftParts.Zoom.StartZoomRecording;
-global using ScreenDrafts.Modules.Drafts.Features.DraftParts.Zoom.StartZoomSession;
-global using ScreenDrafts.Modules.Drafts.Features.DraftParts.Zoom.StopZoomRecording;
 global using ScreenDrafts.Modules.Drafts.Features.SeriesFeatures.Create;
 global using ScreenDrafts.Modules.Drafts.Infrastructure.Database;
+global using ScreenDrafts.Modules.Drafts.IntegrationEvents;
 global using ScreenDrafts.Modules.Drafts.IntegrationTests.Abstractions;
 global using ScreenDrafts.Modules.Drafts.IntegrationTests.Doubles;
-global using ScreenDrafts.Modules.Drafts.IntegrationEvents;
-global using ScreenDrafts.Modules.Integrations.IntegrationEvents;
-global using ScreenDrafts.Modules.Integrations.PublicApi;
 global using ScreenDrafts.Modules.Drafts.IntegrationTests.Fixtures;
 global using ScreenDrafts.Modules.Drafts.IntegrationTests.TestUtils;
+global using ScreenDrafts.Modules.Integrations.IntegrationEvents;
+global using ScreenDrafts.Modules.Integrations.PublicApi;
 global using ScreenDrafts.Modules.RealTimeUpdates.Features;
 global using ScreenDrafts.Modules.Users.Infrastructure.Database;
-global using ScreenDrafts.Modules.Users.Infrastructure.Identity;
-
 global using Testcontainers.Keycloak;
-
 global using Xunit;

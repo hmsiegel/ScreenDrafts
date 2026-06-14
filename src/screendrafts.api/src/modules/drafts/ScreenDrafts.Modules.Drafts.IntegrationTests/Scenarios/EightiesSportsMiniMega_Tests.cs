@@ -204,13 +204,13 @@ public sealed class EightiesSportsMiniMega_Tests(DraftsIntegrationTestWebAppFact
     await PlayPickAsync(_draftPartPublicId, 11, 11, _ryanDrafterPublicId,   ParticipantKind.Drafter, _moviePublicIds[10]);
     await PlayPickAsync(_draftPartPublicId, 10, 10, _clayDrafterPublicId,   ParticipantKind.Drafter, _moviePublicIds[9]);
 
-    // Ryan plays position 8
-    await PlayPickAsync(_draftPartPublicId, 8, 8, _ryanDrafterPublicId, ParticipantKind.Drafter, _moviePublicIds[7]);
+    // Ryan plays position 8 with playOrder=13 (above current max of 12) so it can be vetoed
+    await PlayPickAsync(_draftPartPublicId, 8, 13, _ryanDrafterPublicId, ParticipantKind.Drafter, _moviePublicIds[7]);
 
-    // Clay vetoes Ryan's position-8 pick
-    await ApplyVetoAsync(_draftPartPublicId, 8, _clayDrafterPublicId, ParticipantKind.Drafter);
+    // Clay vetoes Ryan's position-8 pick (playOrder=13 is now the max)
+    await ApplyVetoAsync(_draftPartPublicId, 13, _clayDrafterPublicId, ParticipantKind.Drafter);
 
-    await AssertPickVetoedAsync(_draftPartPublicId, 8);
+    await AssertPickVetoedAsync(_draftPartPublicId, 13);
   }
 
   [Fact]
@@ -220,16 +220,17 @@ public sealed class EightiesSportsMiniMega_Tests(DraftsIntegrationTestWebAppFact
     await PlayPickAsync(_draftPartPublicId, 12, 12, _darrenDrafterPublicId, ParticipantKind.Drafter, _moviePublicIds[11]);
     await PlayPickAsync(_draftPartPublicId, 11, 11, _ryanDrafterPublicId,   ParticipantKind.Drafter, _moviePublicIds[10]);
     await PlayPickAsync(_draftPartPublicId, 10, 10, _clayDrafterPublicId,   ParticipantKind.Drafter, _moviePublicIds[9]);
-    await PlayPickAsync(_draftPartPublicId, 8,   8, _ryanDrafterPublicId,   ParticipantKind.Drafter, _moviePublicIds[7]);
+    // Ryan plays position 8 with playOrder=13 (above current max of 12) so it can be vetoed
+    await PlayPickAsync(_draftPartPublicId, 8, 13, _ryanDrafterPublicId,   ParticipantKind.Drafter, _moviePublicIds[7]);
 
-    // Clay vetoes Ryan's position-8 pick
-    await ApplyVetoAsync(_draftPartPublicId, 8, _clayDrafterPublicId, ParticipantKind.Drafter);
+    // Clay vetoes Ryan's position-8 pick (playOrder=13 is now the max)
+    await ApplyVetoAsync(_draftPartPublicId, 13, _clayDrafterPublicId, ParticipantKind.Drafter);
 
     // Darren uses his veto-override to reinstate Ryan's pick (using SetRollingInVetoOverrides to give Darren an override)
     await SetRollingInVetoOverridesAsync(_draftPartPublicId, _darrenDrafterPublicId, 1);
-    await ApplyVetoOverrideAsync(_draftPartPublicId, 8, _darrenDrafterPublicId, ParticipantKind.Drafter);
+    await ApplyVetoOverrideAsync(_draftPartPublicId, 13, _darrenDrafterPublicId, ParticipantKind.Drafter);
 
-    await AssertVetoOverriddenAsync(_draftPartPublicId, 8);
+    await AssertVetoOverriddenAsync(_draftPartPublicId, 13);
   }
 
   // ─────────────────────────────────────────────────────────────────────────

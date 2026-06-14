@@ -691,23 +691,23 @@ public abstract class DraftScenarioBase(DraftsIntegrationTestWebAppFactory facto
   // ───────────────────────────────────────────────────────────────────────────
 
   /// <summary>
-  /// Asserts that at least one <c>PickListUpdated</c> message was broadcast to DraftHub
+  /// Asserts that at least one <c>PickAdded</c> message was broadcast to DraftHub
   /// after <see cref="DispatchIntegrationEventsAsync"/> was called.
   /// </summary>
   protected void AssertPickListUpdatedBroadcast()
   {
     HubCapture.SentMessages.Should().Contain(
-      m => m.Method == "PickListUpdated",
-      "A PickAddedIntegrationEvent should trigger a PickListUpdated SignalR broadcast");
+      m => m.Method == "PickAdded",
+      "A PickAddedIntegrationEvent should trigger a PickAdded SignalR broadcast");
   }
 
   /// <summary>
-  /// Asserts that <paramref name="expectedCount"/> <c>PickListUpdated</c> messages were broadcast.
+  /// Asserts that <paramref name="expectedCount"/> <c>PickAdded</c> messages were broadcast.
   /// </summary>
   protected void AssertPickListUpdatedBroadcastCount(int expectedCount)
   {
-    HubCapture.SentMessages.Count(m => m.Method == "PickListUpdated")
+    HubCapture.SentMessages.Count(m => m.Method == "PickAdded")
       .Should().Be(expectedCount,
-        $"Expected exactly {expectedCount} PickListUpdated broadcast(s)");
+        $"Expected exactly {expectedCount} PickAdded broadcast(s)");
   }
 }

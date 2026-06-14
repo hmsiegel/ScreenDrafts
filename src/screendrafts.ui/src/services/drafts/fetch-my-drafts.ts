@@ -40,20 +40,19 @@ export async function getMyDraftDetail(
 
 export async function joinDraftPart(
   accessToken: string,
-  draftPartId: string
+  draftPartId: string,
+  personPublicId: string,
 ): Promise<void> {
-  // TODO: confirm endpoint — does not exist yet in backend
-  // TODO: confirm whether this creates a backend attendance record
   const res = await fetch(
-    `${apiBase}/draft-parts/${encodeURIComponent(draftPartId)}/join`,
+    `${apiBase}/draft-parts/${draftPartId}/attendances/${personPublicId}/join`,
     {
-      method: "POST",
-      headers: { Authorization: `Bearer ${accessToken}` },
-    }
+      method: 'PUT',
+      headers: { Authorization: `Bearer ${accessToken}`},
+    },
   );
   if (!res.ok) {
     const text = await res.text().catch(() => res.statusText);
-    throw new Error(`POST /draft-parts/${draftPartId}/join failed (${res.status}): ${text}`);
+    throw new Error(`PUT /draft-parts/${draftPartId}/attendances/${personPublicId}/join failed (${res.status}): ${text}`);
   }
 }
 

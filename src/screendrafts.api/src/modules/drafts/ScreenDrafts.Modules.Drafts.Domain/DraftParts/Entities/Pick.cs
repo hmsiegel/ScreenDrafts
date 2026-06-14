@@ -12,7 +12,8 @@ public sealed class Pick : Entity<PickId>
     string actedByPublicId,
     int playOrder = 0,
     SubDraftId? subDraftId = null,
-    PickId? id = null)
+    PickId? id = null
+  )
     : base(id ?? PickId.CreateUnique())
   {
     Position = position;
@@ -35,9 +36,7 @@ public sealed class Pick : Entity<PickId>
     ActedByPublicId = actedByPublicId;
   }
 
-  private Pick()
-  {
-  }
+  private Pick() { }
 
   public int Position { get; private set; }
   public int PlayOrder { get; private set; }
@@ -64,7 +63,6 @@ public sealed class Pick : Entity<PickId>
   /// Null for system-generated community picks.
   /// </summary>
   public string? ActedByPublicId { get; private set; }
-
 
   public Veto? Veto { get; private set; } = default!;
 
@@ -108,17 +106,20 @@ public sealed class Pick : Entity<PickId>
     string? movieVersionName = null,
     MovieVersionPolicy? versionPolicy = null,
     SubDraftId? subDraftId = null,
-    PickId? id = null)
+    PickId? id = null
+  )
   {
     if (draftPart is null)
     {
       return Result.Failure<Pick>(PickErrors.DraftMustBeProvided);
     }
 
-    if (!draftPart.MinPosition.HasValue ||
-          !draftPart.MaxPosition.HasValue ||
-          draftPart.MinPosition.Value <= 0 ||
-          draftPart.MaxPosition.Value <= 0)
+    if (
+      !draftPart.MinPosition.HasValue
+      || !draftPart.MaxPosition.HasValue
+      || draftPart.MinPosition.Value <= 0
+      || draftPart.MaxPosition.Value <= 0
+    )
     {
       return Result.Failure<Pick>(PickErrors.PartPositionsNotSet);
     }
@@ -159,12 +160,14 @@ public sealed class Pick : Entity<PickId>
       actedByPublicId: actedByPublicId ?? string.Empty,
       playOrder: playOrder,
       subDraftId: subDraftId,
-      id: id);
+      id: id
+    );
 
     var setVersionResult = pick.SetMovieVersionName(
       movieVersionName: movieVersionName,
       movie: movie,
-      versionPolicy: versionPolicy);
+      versionPolicy: versionPolicy
+    );
 
     if (setVersionResult.IsFailure)
     {
@@ -181,7 +184,8 @@ public sealed class Pick : Entity<PickId>
     DraftPartParticipant playedByParticipant,
     int playOrder,
     string? movieVersionName = null,
-    PickId? id = null)
+    PickId? id = null
+  )
   {
     if (draftPart is null)
     {
@@ -228,7 +232,8 @@ public sealed class Pick : Entity<PickId>
       playedByParticipant: playedByParticipant,
       playOrder: playOrder,
       actedByPublicId: string.Empty,
-      id: id);
+      id: id
+    );
 
     var versionResult = pick.SetMovieVersionName(movieVersionName, movie, versionPolicy: null);
 
@@ -240,7 +245,11 @@ public sealed class Pick : Entity<PickId>
     return pick;
   }
 
-  internal Result SetMovieVersionName(string? movieVersionName, Movie movie, MovieVersionPolicy? versionPolicy = null)
+  internal Result SetMovieVersionName(
+    string? movieVersionName,
+    Movie movie,
+    MovieVersionPolicy? versionPolicy = null
+  )
   {
     if (string.IsNullOrWhiteSpace(movieVersionName))
     {
@@ -298,13 +307,14 @@ public sealed class Pick : Entity<PickId>
       PickEvent.Veto(
         issuerId: veto.IssuedByParticipant.ParticipantId,
         actedByPublicId: veto.ActedByPublicId,
-        note: veto.Note));
+        note: veto.Note
+      )
+    );
 
     return Result.Success();
   }
 
-  internal Result ApplyCommissionerOverride(
-    CommissionerOverride commissionerOverride)
+  internal Result ApplyCommissionerOverride(CommissionerOverride commissionerOverride)
   {
     Guard.Against.Null(commissionerOverride);
 
@@ -332,10 +342,7 @@ public sealed class Pick : Entity<PickId>
       return result;
     }
 
-    _history.Add(
-      PickEvent.VetoOverride(
-        by: by,
-        actedByPublicId: Veto.ActedByPublicId));
+    _history.Add(PickEvent.VetoOverride(by: by, actedByPublicId: Veto.ActedByPublicId));
 
     return Result.Success();
   }
@@ -349,9 +356,31 @@ public sealed class Pick : Entity<PickId>
 
     RevealedAt = DateTimeOffset.UtcNow;
 
-    _history.Add(
-      PickEvent.Revealed(
-        actedByPublicId: actedByPublicId));
+    _history.Add(PickEvent.Revealed(actedByPublicId: actedByPublicId));
+
+    return Result.Success();
+  }
+
+  /// <summary>
+  /// Reverses a veto on this pick. The pick is restored to active board status
+  /// and the veto token is refunded to the issuer.
+  /// Commissioner-only / break-glass operation.
+  /// </summary>
+  internal Result UndoVeto()
+  {
+    if (Veto is null)
+    {
+      return Result.Failure(PickErrors.PickNotVetoed);
+    }
+
+    if (Veto.IsOverridden)
+    {
+      return Result.Failure(PickErrors.CannotUndoVetoThatHasBeenOverridden);
+    }
+
+    Veto = null;
+
+    _history.Add(PickEvent.Played(issuer: null, actedByPublicId: null)); // log the undo
 
     return Result.Success();
   }
@@ -362,56 +391,55 @@ public sealed record PickEvent(
   Participant? IssuerId,
   string? ActedByPublicId,
   string? Note,
-  DateTime OccurredOnUtc)
+  DateTime OccurredOnUtc
+)
 {
-  public static PickEvent Played(
-    Participant? issuer,
-    string? actedByPublicId) =>
+  public static PickEvent Played(Participant? issuer, string? actedByPublicId) =>
     new(
       Kind: "Played",
       IssuerId: issuer,
       ActedByPublicId: actedByPublicId,
       Note: null,
-      OccurredOnUtc: DateTime.UtcNow);
+      OccurredOnUtc: DateTime.UtcNow
+    );
 
-  public static PickEvent Veto(
-    Participant? issuerId,
-    string? actedByPublicId,
-    string? note) =>
+  public static PickEvent Veto(Participant? issuerId, string? actedByPublicId, string? note) =>
     new(
       Kind: "Veto",
       IssuerId: issuerId,
       ActedByPublicId: actedByPublicId,
       Note: note,
-      OccurredOnUtc: DateTime.UtcNow);
+      OccurredOnUtc: DateTime.UtcNow
+    );
 
-  public static PickEvent VetoOverride(
-    Participant by,
-    string? actedByPublicId) =>
+  public static PickEvent VetoOverride(Participant by, string? actedByPublicId) =>
     new(
       Kind: "VetoOverride",
       IssuerId: by,
       ActedByPublicId: actedByPublicId,
       Note: "Veto Override",
-      OccurredOnUtc: DateTime.UtcNow);
+      OccurredOnUtc: DateTime.UtcNow
+    );
 
   public static PickEvent CommissionerOverride(
     Participant by,
     string? actedByPublicId,
-    string? note) =>
+    string? note
+  ) =>
     new(
       Kind: "CommissionerOverride",
       IssuerId: by,
       ActedByPublicId: actedByPublicId,
       Note: note,
-      OccurredOnUtc: DateTime.UtcNow);
+      OccurredOnUtc: DateTime.UtcNow
+    );
 
-  public static PickEvent Revealed(
-    string? actedByPublicId) =>
+  public static PickEvent Revealed(string? actedByPublicId) =>
     new(
       Kind: "Revealed",
       IssuerId: null,
       ActedByPublicId: actedByPublicId,
       Note: null,
-      OccurredOnUtc: DateTime.UtcNow);
+      OccurredOnUtc: DateTime.UtcNow
+    );
 }

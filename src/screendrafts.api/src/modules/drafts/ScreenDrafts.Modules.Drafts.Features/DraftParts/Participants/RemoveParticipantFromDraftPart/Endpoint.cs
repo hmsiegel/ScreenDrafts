@@ -8,16 +8,19 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<RemoveParticipantFromDraft
     Description(x =>
     {
       x.WithTags(DraftsOpenApi.Tags.DraftParts)
-      .WithName(DraftsOpenApi.Names.DraftParts_RemoveParticipant)
-      .Produces(StatusCodes.Status204NoContent)
-      .Produces(StatusCodes.Status400BadRequest)
-      .Produces(StatusCodes.Status403Forbidden)
-      .Produces(StatusCodes.Status404NotFound);
+        .WithName(DraftsOpenApi.Names.DraftParts_RemoveParticipant)
+        .Produces(StatusCodes.Status204NoContent)
+        .Produces(StatusCodes.Status400BadRequest)
+        .Produces(StatusCodes.Status403Forbidden)
+        .Produces(StatusCodes.Status404NotFound);
     });
     Policies(DraftsAuth.Permissions.DraftPartUpdate);
   }
 
-  public override async Task HandleAsync(RemoveParticipantFromDraftPartRequest req, CancellationToken ct)
+  public override async Task HandleAsync(
+    RemoveParticipantFromDraftPartRequest req,
+    CancellationToken ct
+  )
   {
     ArgumentNullException.ThrowIfNull(req);
 
@@ -30,9 +33,9 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<RemoveParticipantFromDraft
 
     var command = new RemoveParticipantFromDraftPartCommand
     {
-      DraftPartPublicId = req.DraftPartPublicId,
+      DraftPartId = req.DraftPartId,
       ParticipantPublicId = req.ParticipantPublicId,
-      ParticipantKind = participantKind
+      ParticipantKind = participantKind,
     };
 
     var result = await Sender.Send(command, ct);

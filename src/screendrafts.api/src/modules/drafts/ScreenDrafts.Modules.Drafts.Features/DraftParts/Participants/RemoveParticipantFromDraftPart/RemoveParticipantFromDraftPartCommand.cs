@@ -2,7 +2,7 @@
 
 internal sealed record RemoveParticipantFromDraftPartCommand : ICommand
 {
-  public required string DraftPartPublicId { get; init; }
+  public required string DraftPartId { get; init; }
   public string? ParticipantPublicId { get; init; }
   public required ParticipantKind ParticipantKind { get; init; }
 }

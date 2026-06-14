@@ -1,4 +1,4 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.AssignTriviaResults;
+﻿namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.TriviaResults.AssignTriviaResults;
 
 internal sealed record AssignTriviaResultsRequest
 {

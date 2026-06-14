@@ -2,23 +2,63 @@
 
 internal sealed partial class VetoOverrideAppliedIntegrationEventConsumer(
   IHubContext<DraftHub> hubContext,
-  ILogger<VetoOverrideAppliedIntegrationEventConsumer> logger)
-  : IntegrationEventHandler<VetoOverrideAppliedIntegrationEvent>
+  ILogger<VetoOverrideAppliedIntegrationEventConsumer> logger,
+  IDbConnectionFactory dbConnectionFactory
+) : IntegrationEventHandler<VetoOverrideAppliedIntegrationEvent>
 {
   private readonly ILogger<VetoOverrideAppliedIntegrationEventConsumer> _logger = logger;
   private readonly IHubContext<DraftHub> _hubContext = hubContext;
+  private readonly IDbConnectionFactory _dbConnectionFactory = dbConnectionFactory;
 
-  public override async Task Handle(VetoOverrideAppliedIntegrationEvent integrationEvent, CancellationToken cancellationToken = default)
+  public override async Task Handle(
+    VetoOverrideAppliedIntegrationEvent integrationEvent,
+    CancellationToken cancellationToken = default
+  )
   {
-    Log_NotifyingDraftPartOfPick(_logger, integrationEvent.DraftPartId);
+    LogVetoOverrideApplied(_logger, integrationEvent.DraftPartPublicId, integrationEvent.PlayOrder);
 
-    await _hubContext.Clients
-      .Group(DraftHub.GroupName(integrationEvent.DraftPartId.ToString()))
-      .SendAsync("PickListUpdated", integrationEvent.DraftPartId, cancellationToken);
+    await using var connection = await _dbConnectionFactory.OpenConnectionAsync(cancellationToken);
 
+    var tokens = (
+      await connection.QueryAsync<GamePlayTokenQuery.TokenRow>(
+        new CommandDefinition(
+          GamePlayTokenQuery.Sql,
+          new { integrationEvent.DraftPartPublicId },
+          cancellationToken: cancellationToken
+        )
+      )
+    ).ToList();
+
+    var payload = new
+    {
+      integrationEvent.DraftPartPublicId,
+      integrationEvent.PlayOrder,
+      integrationEvent.MovieTitle,
+      integrationEvent.TmdbId,
+      integrationEvent.OverriddenByParticipantId,
+      integrationEvent.OverriddenByParticipantKind,
+      Participants = tokens.Select(t => new
+      {
+        t.ParticipantIdValue,
+        t.ParticipantKindValue,
+        t.VetoTokensRemaining,
+        t.OverrideTokensRemaining,
+      }),
+    };
+
+    await _hubContext
+      .Clients.Group(DraftHub.GroupName(integrationEvent.DraftPartPublicId))
+      .SendAsync("VetoOverrideApplied", payload, cancellationToken);
   }
 
-  [LoggerMessage(0, LogLevel.Information, "Notifying draft part {DraftPartId}")]
-  private static partial void Log_NotifyingDraftPartOfPick(ILogger logger, Guid draftPartId);
+  [LoggerMessage(
+    1,
+    LogLevel.Information,
+    "VetoOverrideApplied — draft part {DraftPartPublicId} play order {PlayOrder}"
+  )]
+  private static partial void LogVetoOverrideApplied(
+    ILogger logger,
+    string draftPartPublicId,
+    int playOrder
+  );
 }
-

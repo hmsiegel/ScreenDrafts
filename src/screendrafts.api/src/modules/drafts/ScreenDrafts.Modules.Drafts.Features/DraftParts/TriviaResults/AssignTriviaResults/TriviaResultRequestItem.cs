@@ -1,4 +1,4 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.AssignTriviaResults;
+﻿namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.TriviaResults.AssignTriviaResults;
 
 internal sealed record TriviaResultRequestItem
 {
@@ -7,4 +7,3 @@ internal sealed record TriviaResultRequestItem
   public required int Position { get; init; }
   public required int QuestionsWon { get; init; }
 }
-

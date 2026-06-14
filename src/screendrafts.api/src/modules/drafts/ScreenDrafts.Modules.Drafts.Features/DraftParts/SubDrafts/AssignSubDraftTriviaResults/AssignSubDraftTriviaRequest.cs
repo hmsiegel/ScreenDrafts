@@ -1,3 +1,5 @@
+﻿using ScreenDrafts.Modules.Drafts.Features.DraftParts.TriviaResults.AssignTriviaResults;
+
 namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.SubDrafts.AssignSubDraftTriviaResults;
 
 internal sealed record AssignSubDraftTriviaRequest

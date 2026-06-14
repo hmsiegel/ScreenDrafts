@@ -4,10 +4,9 @@ namespace ScreenDrafts.Modules.Drafts.Domain.DraftParts.Errors;
 
 public static class DraftPartErrors
 {
-  public static readonly SDError DraftNotStarted =
-    SDError.Conflict(
-      code: "DraftPart.DraftNotStarted",
-      description: "Draft part has not started."
+  public static readonly SDError DraftNotStarted = SDError.Conflict(
+    code: "DraftPart.DraftNotStarted",
+    description: "Draft part has not started."
   );
 
   public static readonly SDError CommunityPicksNotAllowed = SDError.Conflict(
@@ -135,12 +134,19 @@ public static class DraftPartErrors
     description: "Only the primary host can reveal picks."
   );
 
-  public static SDError NotFound(Guid draftPartId) => SDError.NotFound(
-    code: "DraftPart.NotFound",
-        description: $"Draft part with ID '{draftPartId}' is not found."
+  public static readonly SDError VetoNotOnMostRecentPick = SDError.Conflict(
+    code: "DraftPart.VetoNotOnMostRecentPick",
+    description: "Veto can only be applied to the most recent pick."
   );
 
-  public static SDError NotFound(string draftPartId) => SDError.NotFound(
+  public static SDError NotFound(Guid draftPartId) =>
+    SDError.NotFound(
+      code: "DraftPart.NotFound",
+      description: $"Draft part with ID '{draftPartId}' is not found."
+    );
+
+  public static SDError NotFound(string draftPartId) =>
+    SDError.NotFound(
       code: "DraftPart.NotFound",
       description: $"Draft part with ID '{draftPartId}' is not found."
     );
@@ -157,7 +163,7 @@ public static class DraftPartErrors
       description: $"Participant with ID '{participantId}' is not found in the draft part."
     );
 
-  public static SDError PickPositionAlreadyExists(int position) => 
+  public static SDError PickPositionAlreadyExists(int position) =>
     SDError.Conflict(
       code: "DraftPart.PickPositionAlreadyExists",
       description: $"Pick position '{position}' already exists."
@@ -169,7 +175,7 @@ public static class DraftPartErrors
       description: $"Invalid pick play order '{playOrder}'."
     );
 
-  public static SDError MovieAlreadyPickedInThisDraft(Guid id) => 
+  public static SDError MovieAlreadyPickedInThisDraft(Guid id) =>
     SDError.Conflict(
       code: "DraftPart.MovieAlreadyPickedInThisDraft",
       description: $"Movie with ID '{id}' has already been picked in this draft."
@@ -187,12 +193,14 @@ public static class DraftPartErrors
       description: $"Pick with playOrder '{playOrder}' is not found."
     );
 
-  public static SDError VetoNotFound(Guid value) => SDError.NotFound(
+  public static SDError VetoNotFound(Guid value) =>
+    SDError.NotFound(
       code: "DraftPart.VetoNotFound",
       description: $"Veto with ID '{value}' is not found."
     );
 
-  public static SDError VetoNotFound(int playOrder) => SDError.NotFound(
+  public static SDError VetoNotFound(int playOrder) =>
+    SDError.NotFound(
       code: "DraftPart.VetoNotFound",
       description: $"Veto with play order '{playOrder}' is not found."
     );
@@ -203,7 +211,8 @@ public static class DraftPartErrors
       description: $"Participant with ID '{playedBy}' does not belong to this draft part."
     );
 
-  public static SDError ParticipantAlreadyHasTriviaResult(Participant participantId) => SDError.Conflict(
+  public static SDError ParticipantAlreadyHasTriviaResult(Participant participantId) =>
+    SDError.Conflict(
       code: "DraftPart.ParticipantAlreadyHasTriviaResult",
       description: $"Participant with ID '{participantId}' already has a trivia result."
     );

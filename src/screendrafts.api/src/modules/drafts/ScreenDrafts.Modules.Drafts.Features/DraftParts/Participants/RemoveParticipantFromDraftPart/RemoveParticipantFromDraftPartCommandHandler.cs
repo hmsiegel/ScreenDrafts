@@ -1,29 +1,40 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.Participants.RemoveParticipantFromDraftPart;
 
-internal sealed class RemoveParticipantFromDraftPartCommandHandler : ICommandHandler<RemoveParticipantFromDraftPartCommand>
+internal sealed class RemoveParticipantFromDraftPartCommandHandler
+  : ICommandHandler<RemoveParticipantFromDraftPartCommand>
 {
   private readonly IDraftPartRepository _draftPartRepository;
   private readonly ParticipantResolver _participantResolver;
 
-  public RemoveParticipantFromDraftPartCommandHandler(IDraftPartRepository draftPartRepository, ParticipantResolver participantResolver)
+  public RemoveParticipantFromDraftPartCommandHandler(
+    IDraftPartRepository draftPartRepository,
+    ParticipantResolver participantResolver
+  )
   {
     _draftPartRepository = draftPartRepository;
     _participantResolver = participantResolver;
   }
 
-  public async Task<Result> Handle(RemoveParticipantFromDraftPartCommand request, CancellationToken cancellationToken)
+  public async Task<Result> Handle(
+    RemoveParticipantFromDraftPartCommand request,
+    CancellationToken cancellationToken
+  )
   {
-    var draftPart = await _draftPartRepository.GetByPublicIdAsync(request.DraftPartPublicId, cancellationToken);
+    var draftPart = await _draftPartRepository.GetByPublicIdAsync(
+      request.DraftPartId,
+      cancellationToken
+    );
 
     if (draftPart is null)
     {
-      return Result.Failure(DraftPartErrors.NotFound(request.DraftPartPublicId));
+      return Result.Failure(DraftPartErrors.NotFound(request.DraftPartId));
     }
 
     var participantResult = await _participantResolver.ResolveAsync(
       request.ParticipantPublicId,
       request.ParticipantKind,
-      cancellationToken);
+      cancellationToken
+    );
 
     if (participantResult.IsFailure)
     {

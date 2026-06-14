@@ -429,6 +429,11 @@ export interface IClient {
     /**
      * @return No Content
      */
+    draftParts_UndoVeto(body: UndoVetoRequest): Promise<void>;
+
+    /**
+     * @return No Content
+     */
     draftParts_UndoPick(body: UndoPickRequest): Promise<void>;
 
     /**
@@ -485,6 +490,11 @@ export interface IClient {
      * @return OK
      */
     draftParts_GetDraftPartById(body: GetDraftPartRequest): Promise<GetDraftPartQueryResponse>;
+
+    /**
+     * @return OK
+     */
+    draftParts_GetGameplay(body: GetDraftPartGameplayRequest): Promise<GetDraftPartGameplayResponse>;
 
     /**
      * @return No Content
@@ -5115,6 +5125,60 @@ export class Client implements IClient {
     /**
      * @return No Content
      */
+    draftParts_UndoVeto(body: UndoVetoRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/picks/{playOrder}/undo-veto";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDraftParts_UndoVeto(_response);
+        });
+    }
+
+    protected processDraftParts_UndoVeto(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
     draftParts_UndoPick(body: UndoPickRequest, signal?: AbortSignal): Promise<void> {
         let url_ = this.baseUrl + "/draft-parts/{draftPartId}/picks/{playOrder}";
         url_ = url_.replace(/[?&]$/, "");
@@ -5759,6 +5823,59 @@ export class Client implements IClient {
             });
         }
         return Promise.resolve<GetDraftPartQueryResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    draftParts_GetGameplay(body: GetDraftPartGameplayRequest, signal?: AbortSignal): Promise<GetDraftPartGameplayResponse> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/gameplay";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDraftParts_GetGameplay(_response);
+        });
+    }
+
+    protected processDraftParts_GetGameplay(response: Response): Promise<GetDraftPartGameplayResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as GetDraftPartGameplayResponse;
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<GetDraftPartGameplayResponse>(null as any);
     }
 
     /**
@@ -10597,6 +10714,63 @@ export interface FileResult {
     [key: string]: any;
 }
 
+export interface GameplayDraftPositionResponse {
+    positionPublicId?: string;
+    positionName?: string;
+    ownedBoardSlots?: number[];
+    hasBonusVeto?: boolean;
+    hasBonusVetoOverride?: boolean;
+    assignedParticipantId?: string | undefined;
+    assignedParticipantKind?: number | undefined;
+    assignedParticipantName?: string | undefined;
+
+    [key: string]: any;
+}
+
+export interface GameplayHostResponse {
+    hostPublicId?: string;
+    hostName?: string;
+    isPrimary?: boolean;
+
+    [key: string]: any;
+}
+
+export interface GameplayParticipantResponse {
+    participantId?: string;
+    participantKind?: number;
+    participantName?: string;
+    vetoTokensRemaining?: number;
+    overrideTokensRemaining?: number;
+
+    [key: string]: any;
+}
+
+export interface GameplayPickResponse {
+    playOrder?: number;
+    boardPosition?: number;
+    movieTitle?: string;
+    movieYear?: string | undefined;
+    tmdbId?: number;
+    playedById?: string;
+    playedByKind?: number;
+    playedByName?: string;
+    wasVetoed?: boolean;
+    wasVetoOverridden?: boolean;
+    wasCommissionerOverride?: boolean;
+
+    [key: string]: any;
+}
+
+export interface GameplayTriviaResultResponse {
+    participantId?: string;
+    participantKind?: number;
+    participantName?: string;
+    questionsWon?: number;
+    position?: number;
+
+    [key: string]: any;
+}
+
 export interface GenreModel {
     tmdbId: number;
     name: string;
@@ -10788,6 +10962,33 @@ export interface GetDraftHostResponse {
     hostPublicId?: string;
     displayName?: string;
     personPublicId?: string | undefined;
+
+    [key: string]: any;
+}
+
+export interface GetDraftPartGameplayRequest {
+    draftPartId?: string;
+
+    [key: string]: any;
+}
+
+export interface GetDraftPartGameplayResponse {
+    draftPartId?: string;
+    draftId?: string;
+    draftTitle?: string;
+    draftType?: string;
+    isMultiPart?: boolean;
+    isFinalPart?: boolean;
+    hasDraftPool?: boolean;
+    hasDraftBoard?: boolean;
+    hasCandidateList?: boolean;
+    triviaResults?: GameplayTriviaResultResponse[];
+    draftPositions?: GameplayDraftPositionResponse[];
+    nextExpectedParticipantId?: string | undefined;
+    nextExpectedParticipantKind?: number | undefined;
+    participants?: GameplayParticipantResponse[];
+    picks?: GameplayPickResponse[];
+    hosts?: GameplayHostResponse[];
 
     [key: string]: any;
 }
@@ -12585,6 +12786,13 @@ export interface UndoPickRequest {
     draftPartPublicId?: string;
     playOrder?: number;
     subDraftPublicId?: string | undefined;
+
+    [key: string]: any;
+}
+
+export interface UndoVetoRequest {
+    draftPartId?: string;
+    playOrder?: number;
 
     [key: string]: any;
 }

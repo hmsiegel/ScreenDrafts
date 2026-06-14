@@ -46,6 +46,13 @@ public sealed partial class DraftPart
       }
     }
 
+    var allAssigned = GameBoard.DraftPositions.All(p => p.AssignedTo is not null);
+
+    if (allAssigned)
+    {
+      Raise(new AllPositionsAssignedDomainEvent(Id.Value, PublicId));
+    }
+
     UpdatedAtUtc = DateTime.UtcNow;
 
     return Result.Success();
@@ -85,14 +92,20 @@ public sealed partial class DraftPart
       {
         var revokeResult = RevokeParticipantAward(participant, isVeto: true);
 
-        if (revokeResult.IsFailure) { return revokeResult; }
+        if (revokeResult.IsFailure)
+        {
+          return revokeResult;
+        }
       }
 
       if (position.HasBonusVetoOverride)
       {
         var revokeResult = RevokeParticipantAward(participant, isVeto: false);
 
-        if (revokeResult.IsFailure) { return revokeResult; }
+        if (revokeResult.IsFailure)
+        {
+          return revokeResult;
+        }
       }
     }
 
@@ -113,10 +126,7 @@ public sealed partial class DraftPart
       return Result.Failure(DraftPartErrors.SubDraftIndexAlreadyExists(index));
     }
 
-    var result = SubDraft.Create(
-      index: index,
-      draftPartId: Id,
-      publicId: publicId);
+    var result = SubDraft.Create(index: index, draftPartId: Id, publicId: publicId);
 
     if (result.IsFailure)
     {
@@ -128,7 +138,10 @@ public sealed partial class DraftPart
     return Result.Success();
   }
 
-  public int StartingVetoesForSubDraft(int subDraftIndex, IReadOnlyCollection<(SubDraftId SubDraftId, bool IsOverridden)> vetoes)
+  public int StartingVetoesForSubDraft(
+    int subDraftIndex,
+    IReadOnlyCollection<(SubDraftId SubDraftId, bool IsOverridden)> vetoes
+  )
   {
     if (DraftType != DraftType.SpeedDraft)
     {
@@ -137,7 +150,9 @@ public sealed partial class DraftPart
 
     var carry = 0;
 
-    foreach (var subDraft in _subDrafts.OrderBy(s => s.Index).TakeWhile(s => s.Index < subDraftIndex))
+    foreach (
+      var subDraft in _subDrafts.OrderBy(s => s.Index).TakeWhile(s => s.Index < subDraftIndex)
+    )
     {
       carry = subDraft.ComputeVetoRemainder(1 + carry, vetoes);
     }
@@ -145,7 +160,10 @@ public sealed partial class DraftPart
     return 1 + carry;
   }
 
-  public Result<int> AdvanceSubDraft(SubDraftId subDraftId, IReadOnlyCollection<(SubDraftId SubDraftId, bool IsOverridden)> vetoes)
+  public Result<int> AdvanceSubDraft(
+    SubDraftId subDraftId,
+    IReadOnlyCollection<(SubDraftId SubDraftId, bool IsOverridden)> vetoes
+  )
   {
     ArgumentNullException.ThrowIfNull(subDraftId);
 
@@ -167,9 +185,7 @@ public sealed partial class DraftPart
       return Result.Failure<int>(completeResult.Errors[0]);
     }
 
-    var next = _subDrafts
-      .OrderBy(s => s.Index)
-      .FirstOrDefault(s => s.Index > current.Index);
+    var next = _subDrafts.OrderBy(s => s.Index).FirstOrDefault(s => s.Index > current.Index);
 
     if (next is null)
     {

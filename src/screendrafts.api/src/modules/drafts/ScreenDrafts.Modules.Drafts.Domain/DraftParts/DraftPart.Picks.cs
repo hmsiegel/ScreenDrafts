@@ -11,7 +11,8 @@ public sealed partial class DraftPart
     SubDraftId? subDraftId = null,
     string? movieVersionName = null,
     string? actedByPublicId = null,
-    Func<Guid, bool>? isMovieAlreadyPickedInWholeDraft = null)
+    Func<Guid, bool>? isMovieAlreadyPickedInWholeDraft = null
+  )
   {
     ArgumentNullException.ThrowIfNull(movie);
 
@@ -49,8 +50,10 @@ public sealed partial class DraftPart
 
     if (TryGetRequiredMovieVersion(movie.Id, out var required))
     {
-      if (string.IsNullOrWhiteSpace(movieVersionName) ||
-        !movieVersionName!.Trim().Equals(required, StringComparison.OrdinalIgnoreCase))
+      if (
+        string.IsNullOrWhiteSpace(movieVersionName)
+        || !movieVersionName!.Trim().Equals(required, StringComparison.OrdinalIgnoreCase)
+      )
       {
         return Result.Failure<PickId>(MovieErrors.VersionDoesNotMatchRequiredPolicy);
       }
@@ -58,8 +61,9 @@ public sealed partial class DraftPart
       effectiveVersionName = required;
     }
 
-    var draftPartParticipant = _draftPartParticipants
-      .FirstOrDefault(p => p.ParticipantId == participantId);
+    var draftPartParticipant = _draftPartParticipants.FirstOrDefault(p =>
+      p.ParticipantId == participantId
+    );
 
     if (draftPartParticipant is null)
     {
@@ -74,7 +78,8 @@ public sealed partial class DraftPart
       movieVersionName: effectiveVersionName,
       playOrder: playOrder,
       subDraftId: subDraftId,
-      actedByPublicId: actedByPublicId);
+      actedByPublicId: actedByPublicId
+    );
 
     if (pickResult.IsFailure)
     {
@@ -105,22 +110,24 @@ public sealed partial class DraftPart
       IncrementCommunityPicksUsed();
     }
 
-    Raise(new PickAddedDomainEvent(
-      draftPartId: Id.Value,
-      draftPartPublicId: PublicId,
-      pickId:pick.Id.Value,
-      playOrder: playOrder,
-      imdbId: movie.ImdbId,
-      tmdbId: movie.TmdbId,
-      movieTitle: movie.MovieTitle,
-      boardPosition: draftPosition,
-      moviePublicId: movie.PublicId,
-      participantId: participantId.Value,
-      participantKind: participantId.Kind.Value,
-      draftId: DraftId.Value,
-      draftPublicId: DraftPublicId,
-      canonicalPolicyValue: canonicalPolicyValue));
-
+    Raise(
+      new PickAddedDomainEvent(
+        draftPartId: Id.Value,
+        draftPartPublicId: PublicId,
+        pickId: pick.Id.Value,
+        playOrder: playOrder,
+        imdbId: movie.ImdbId,
+        tmdbId: movie.TmdbId,
+        movieTitle: movie.MovieTitle,
+        boardPosition: draftPosition,
+        moviePublicId: movie.PublicId,
+        participantId: participantId.Value,
+        participantKind: participantId.Kind.Value,
+        draftId: DraftId.Value,
+        draftPublicId: DraftPublicId,
+        canonicalPolicyValue: canonicalPolicyValue
+      )
+    );
 
     return Result.Success(pick.Id);
   }
@@ -135,6 +142,19 @@ public sealed partial class DraftPart
     }
 
     _picks.Remove(pick);
+
+    Raise(
+      new PickUndoDomainEvent(
+        DraftPartId: Id.Value,
+        DraftPartPublicId: PublicId,
+        PlayOrder: playOrder,
+        BoardPosition: pick.Position,
+        TmdbId: pick.Movie.TmdbId ?? 0,
+        MovieTitle: pick.Movie.MovieTitle,
+        DraftId: DraftId.Value,
+        DraftPublicId: DraftPublicId
+      )
+    );
 
     UpdatedAtUtc = DateTime.UtcNow;
 
@@ -162,22 +182,21 @@ public sealed partial class DraftPart
       return Result.Failure(result.Errors);
     }
 
-    Raise(new PickRevealedDomainEvent(
-      Id.Value,
-      PublicId,
-      pick.Id.Value,
-      playOrder,
-      pick.MovieId,
-      actedByPublicId));
-      
+    Raise(
+      new PickRevealedDomainEvent(
+        Id.Value,
+        PublicId,
+        pick.Id.Value,
+        playOrder,
+        pick.MovieId,
+        actedByPublicId
+      )
+    );
 
     return Result.Success();
   }
 
-  public Result ApplyVeto(
-    PickId pickId,
-    Participant issuerId,
-    string? actedByPublicId = null)
+  public Result ApplyVeto(PickId pickId, Participant issuerId, string? actedByPublicId = null)
   {
     ArgumentNullException.ThrowIfNull(pickId);
 
@@ -187,6 +206,17 @@ public sealed partial class DraftPart
     {
       return Result.Failure(DraftPartErrors.PickNotFound(pickId.Value));
     }
+
+    // ── Veto scope guard ──────────────────────────────────────────────────────
+    // A veto may only be applied to the most recently played pick.
+    // A pick is "most recent" by play order regardless of veto state —
+    // only the last play attempt is eligible.
+    var maxPlayOrder = _picks.Max(p => p.PlayOrder);
+    if (pick.PlayOrder != maxPlayOrder)
+    {
+      return Result.Failure(DraftPartErrors.VetoNotOnMostRecentPick);
+    }
+    // ─────────────────────────────────────────────────────────────────────────
 
     if (Status != DraftPartStatus.InProgress)
     {
@@ -208,7 +238,8 @@ public sealed partial class DraftPart
     var vetoResult = Veto.Create(
       pick: pick,
       issuedByParticipant: participant,
-      actedByPublicId: actedByPublicId);
+      actedByPublicId: actedByPublicId
+    );
 
     if (vetoResult.IsFailure)
     {
@@ -224,29 +255,94 @@ public sealed partial class DraftPart
       return apply;
     }
 
-    Raise(new VetoAddedDomainEvent(
-      draftPartId: Id.Value,
-      draftPartPublicId: PublicId,
-      tmdbId: pick.Movie.TmdbId,
-      participantId: participant.Id.Value,
-      participantKind: participant.ParticipantKindValue.Value,
-      draftId: DraftId.Value,
-      draftPublicId: DraftPublicId));
+    Raise(
+      new VetoAddedDomainEvent(
+        draftPartId: Id.Value,
+        draftPartPublicId: PublicId,
+        tmdbId: pick.Movie.TmdbId,
+        participantId: participant.Id.Value,
+        participantKind: participant.ParticipantKindValue.Value,
+        draftId: DraftId.Value,
+        draftPublicId: DraftPublicId,
+        playOrder: pick.PlayOrder,
+        movieTitle: pick.Movie?.MovieTitle,
+        playedByParticipantId: pick.PlayedByParticipant.ParticipantIdValue,
+        playedByParticipantKind: pick.PlayedByParticipant.ParticipantKindValue.Value
+      )
+    );
     return Result.Success();
   }
 
+  /// <summary>
+  /// Reverses a veto by play order. Restores the pick to the board and
+  /// refunds the veto token to the original issuer.
+  /// Commissioner-only / break-glass operation.
+  /// </summary>
+  public Result UndoVeto(int playOrder)
+  {
+    if (Status != DraftPartStatus.InProgress)
+    {
+      return Result.Failure(DraftPartErrors.DraftNotStarted);
+    }
+
+    var pick = _picks.FirstOrDefault(p => p.PlayOrder == playOrder);
+
+    if (pick is null)
+    {
+      return Result.Failure(DraftPartErrors.PickNotFound(playOrder));
+    }
+
+    if (pick.Veto is null)
+    {
+      return Result.Failure(PickErrors.PickNotVetoed);
+    }
+
+    // Refund the veto token to the issuer before clearing the veto
+    var issuerParticipant = _draftPartParticipants.FirstOrDefault(p =>
+      p.Id == pick.Veto.IssuedByParticipantId
+    );
+
+    if (issuerParticipant is not null)
+    {
+      issuerParticipant.RefundVeto();
+    }
+
+    var result = pick.UndoVeto();
+
+    if (result.IsFailure)
+    {
+      return result;
+    }
+
+    Raise(
+      new VetoUndoDomainEvent(
+        DraftPartId: Id.Value,
+        DraftPartPublicId: PublicId,
+        PickId: pick.Id.Value,
+        PlayOrder: playOrder,
+        TmdbId: pick.Movie.TmdbId ?? 0,
+        DraftId: DraftId.Value,
+        DraftPublicId: DraftPublicId,
+        movieTitle: pick.Movie?.MovieTitle
+      )
+    );
+
+    UpdatedAtUtc = DateTime.UtcNow;
+
+    return Result.Success();
+  }
 
   public Result ApplyVetoOverride(
     int playOrder,
     Participant by,
     int canonicalPolicyValue,
-    string? actedByPublicId = null)
+    string? actedByPublicId = null
+  )
   {
     if (DraftType == DraftType.SpeedDraft)
     {
       return Result.Failure(DraftPartErrors.VetoOverridesNotAllowedInSpeedDrafts);
     }
-
 
     if (Status != DraftPartStatus.InProgress)
     {
@@ -274,15 +370,20 @@ public sealed partial class DraftPart
 
     if (pick.Movie?.TmdbId is not null)
     {
-      Raise(new VetoOverrideAddedDomainEvent(
-        draftPartId: Id.Value,
-        draftPartPublicId: PublicId,
-        tmdbId: pick.Movie.TmdbId!.Value,
-        participantId: pick.PlayedByParticipant.ParticipantId.Value,
-        participantKind: pick.PlayedByParticipant.ParticipantKindValue.Value,
-        draftId: DraftId.Value,
-        draftPublicId: DraftPublicId,
-        canonicalPolicyValue: canonicalPolicyValue));
+      Raise(
+        new VetoOverrideAddedDomainEvent(
+          draftPartId: Id.Value,
+          draftPartPublicId: PublicId,
+          tmdbId: pick.Movie.TmdbId!.Value,
+          participantId: pick.PlayedByParticipant.ParticipantId.Value,
+          participantKind: pick.PlayedByParticipant.ParticipantKindValue.Value,
+          draftId: DraftId.Value,
+          draftPublicId: DraftPublicId,
+          canonicalPolicyValue: canonicalPolicyValue,
+          playOrder: pick.PlayOrder,
+          movieTitle: pick.Movie?.MovieTitle
+        )
+      );
     }
 
     return Result.Success();
@@ -310,13 +411,16 @@ public sealed partial class DraftPart
 
     playedBy.AddCommissionerOverride();
 
-    Raise(new CommissionerOverrideAppliedDomainEvent(
-      draftPartId: Id.Value,
-      draftPartPublicId: PublicId,
-      tmdbId: pick.Movie.TmdbId ?? 0,
-      participantId: pick.PlayedByParticipant.ParticipantId.Value,
-      draftId: DraftId.Value,
-      draftPublicId: DraftPublicId));
+    Raise(
+      new CommissionerOverrideAppliedDomainEvent(
+        draftPartId: Id.Value,
+        draftPartPublicId: PublicId,
+        tmdbId: pick.Movie.TmdbId ?? 0,
+        participantId: pick.PlayedByParticipant.ParticipantId.Value,
+        draftId: DraftId.Value,
+        draftPublicId: DraftPublicId
+      )
+    );
     return Result.Success();
   }
 
@@ -378,7 +482,13 @@ public sealed partial class DraftPart
 
   private Result<PickId> AddPickInternal(Pick pick, SubDraftId? subDraftId = null)
   {
-    if (_picks.Any(p => p.Position == pick.Position && p.SubDraftId == subDraftId))
+    // Block duplicate position only if the existing pick at that slot landed.
+    // A vetoed pick that is eligible for re-pick does not block the slot.
+    var landedAtPosition = _picks.Any(p =>
+      p.Position == pick.Position && p.SubDraftId == subDraftId && !p.IsEligibleForRePick
+    );
+
+    if (landedAtPosition)
     {
       return Result.Failure<PickId>(DraftPartErrors.PickPositionAlreadyExists(pick.Position));
     }
@@ -396,10 +506,7 @@ public sealed partial class DraftPart
   }
 
   private bool IsMovieAlreadyPickedInThisPart(Guid movieId, SubDraftId? subDraftId = null) =>
-    _picks.Any(p => p.MovieId == movieId
-      && p.SubDraftId == subDraftId
-      && !p.IsEligibleForRePick);
-
+    _picks.Any(p => p.MovieId == movieId && p.SubDraftId == subDraftId && !p.IsEligibleForRePick);
 
   private PartBudget ResolvePartBudget(DraftType draftType)
   {
@@ -410,7 +517,7 @@ public sealed partial class DraftPart
       return budget with
       {
         MaxCommunityPicks = MaxCommunityPicks,
-        MaxCommunityVetoes = MaxCommunityVetoes
+        MaxCommunityVetoes = MaxCommunityVetoes,
       };
     }
 

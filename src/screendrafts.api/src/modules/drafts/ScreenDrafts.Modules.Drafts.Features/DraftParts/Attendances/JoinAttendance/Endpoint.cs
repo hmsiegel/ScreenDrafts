@@ -6,7 +6,7 @@
 
 namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.Attendances.JoinAttendance;
 
-internal sealed class Endpoint : ScreenDraftsEndpoint<JoinAttendanceRequest>
+internal sealed class Endpoint : ScreenDraftsEndpointWithoutRequest
 {
   public override void Configure()
   {
@@ -24,8 +24,10 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<JoinAttendanceRequest>
     Policies(DraftsAuth.Permissions.AttendanceJoin);
   }
 
-  public override async Task HandleAsync(JoinAttendanceRequest req, CancellationToken ct)
+  public override async Task HandleAsync(CancellationToken ct)
   {
+    var publicId = Route<string>("draftPartId");
+    var personPublicId = Route<string>("personPublicId");
     var callerPersonPublicId = User.GetPublicId() ?? string.Empty;
 
     if (string.IsNullOrWhiteSpace(callerPersonPublicId))
@@ -34,10 +36,16 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<JoinAttendanceRequest>
       return;
     }
 
+    if (string.IsNullOrWhiteSpace(publicId) || string.IsNullOrWhiteSpace(personPublicId))
+    {
+      await Send.ErrorsAsync(StatusCodes.Status400BadRequest, cancellation: ct);
+      return;
+    }
+
     var command = new JoinAttendanceCommand
     {
-      DraftPartId = req.DraftPartId,
-      PersonPublicId = req.PersonPublicId,
+      DraftPartId = publicId,
+      PersonPublicId = personPublicId,
       CallerPersonPublicId = callerPersonPublicId,
     };
 

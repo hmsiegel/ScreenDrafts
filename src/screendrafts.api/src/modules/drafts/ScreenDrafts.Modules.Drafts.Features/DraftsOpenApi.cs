@@ -55,6 +55,7 @@ internal static class DraftsOpenApi
     public const string DraftParts_AddHost = "DraftParts.AddHost";
     public const string DraftParts_PlayPick = "DraftParts.PlayPick";
     public const string DraftParts_UndoPick = "DraftParts.UndoPick";
+    public const string DraftParts_UndoVeto = "DraftParts.UndoVeto";
     public const string DraftParts_SetReleaseDate = "DraftParts.SetReleaseDate";
     public const string DraftParts_ApplyVeto = "DraftParts.ApplyVeto";
     public const string DraftParts_ApplyVetoOverride = "DraftParts.ApplyVetoOverride";
@@ -75,6 +76,7 @@ internal static class DraftsOpenApi
     public const string DraftParts_AddCommunityFilmRule = "DraftParts.AddCommunityFilmRule";
     public const string DraftParts_RemoveCommunityFilmRule = "DraftParts.RemoveCommunityFilmRule";
     public const string DraftParts_UpdateCommunityFilmRule = "DraftParts.UpdateCommunityFilmRule";
+    public const string DraftParts_GetGameplay = "DraftParts.GetGameplay";
 
     // Campaigns
     public const string Campaigns_CreateCampaign = "Campaigns.CreateCampaign";
@@ -209,5 +211,7 @@ internal static class DraftsOpenApi
     // My Drafts
     public const string MyDrafts_GetAll = "GetMyDrafts";
     public const string MyDrafts_GetDetail = "GetMyDraftDetail";
+
+    // Gameplay
   }
 }

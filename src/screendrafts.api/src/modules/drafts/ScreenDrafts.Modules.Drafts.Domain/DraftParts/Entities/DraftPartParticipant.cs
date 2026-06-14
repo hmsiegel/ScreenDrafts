@@ -5,7 +5,8 @@ public sealed class DraftPartParticipant : Entity<DraftPartParticipantId>
   private DraftPartParticipant(
     DraftPart draftPart,
     Participant participantId,
-    DraftPartParticipantId? id = null)
+    DraftPartParticipantId? id = null
+  )
     : base(id ?? DraftPartParticipantId.CreateUnique())
   {
     DraftPartId = draftPart.Id;
@@ -78,22 +79,24 @@ public sealed class DraftPartParticipant : Entity<DraftPartParticipantId>
 
   // Guards
   public bool CanUseVeto() => (TotalVetoes - VetoesUsed) >= 1;
-  public bool CanUseVetoOverride(int maxOverrides) => (TotalVetoOverrides - VetoOverridesUsed) >= 1 && maxOverrides > 0;
+
+  public bool CanUseVetoOverride(int maxOverrides) =>
+    (TotalVetoOverrides - VetoOverridesUsed) >= 1 && maxOverrides > 0;
 
   // Factory
-  public static DraftPartParticipant Create(
-    DraftPart draftPart,
-    Participant participantId)
+  public static DraftPartParticipant Create(DraftPart draftPart, Participant participantId)
   {
     ArgumentNullException.ThrowIfNull(draftPart);
 
-    return new DraftPartParticipant(
-      draftPart,
-      participantId);
+    return new DraftPartParticipant(draftPart, participantId);
   }
 
   // Initialization and state mutation methods
-  internal void InitializeVetoes(int startingVetoes, int vetoesRollingIn, int vetoOverridesRollingIn)
+  internal void InitializeVetoes(
+    int startingVetoes,
+    int vetoesRollingIn,
+    int vetoOverridesRollingIn
+  )
   {
     StartingVetoes = startingVetoes;
     VetoesRollingIn = vetoesRollingIn;
@@ -148,6 +151,22 @@ public sealed class DraftPartParticipant : Entity<DraftPartParticipantId>
     VetoOverridesUsed++;
   }
 
+  /// <summary>
+  /// Refunds a spent veto token. Used when a veto is undone by a commissioner.
+  /// </summary>
+  public void RefundVeto()
+  {
+    VetoesUsed = Math.Max(0, VetoesUsed - 1);
+  }
+
+  /// <summary>
+  /// Refunds a spent veto override token. Used when a veto override is undone by a commissioner.
+  /// </summary>
+  public void RefundVetoOverride()
+  {
+    VetoOverridesUsed = Math.Max(0, VetoOverridesUsed - 1);
+  }
+
   // Seeding (historical data import only)
   internal void SeedSetState(
     int startingVetoes,
@@ -157,7 +176,8 @@ public sealed class DraftPartParticipant : Entity<DraftPartParticipantId>
     int triviaVetoOverrides,
     int commissionerOverrides,
     int vetoesUsed,
-    int vetoOverridesUsed)
+    int vetoOverridesUsed
+  )
   {
     StartingVetoes = startingVetoes;
 

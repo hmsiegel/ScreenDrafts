@@ -78,6 +78,18 @@ public static class RealTimeUpdatesModule
     registrationConfigurator
       .AddConsumer<IntegrationEventConsumer<MovieHonorificEarnedIntegrationEvent>>()
       .Endpoint(c => c.InstanceId = moduleInstanceId);
+
+    registrationConfigurator
+      .AddConsumer<IntegrationEventConsumer<VetoUndoneIntegrationEvent>>()
+      .Endpoint(c => c.InstanceId = moduleInstanceId);
+
+    registrationConfigurator
+      .AddConsumer<IntegrationEventConsumer<PositionsSetIntegrationEvent>>()
+      .Endpoint(c => c.InstanceId = moduleInstanceId);
+
+    registrationConfigurator
+      .AddConsumer<IntegrationEventConsumer<PickUndoneIntegrationEvent>>()
+      .Endpoint(c => c.InstanceId = moduleInstanceId);
   }
 
   private static void AddDomainEventHandlers(this IServiceCollection services)

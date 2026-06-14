@@ -2,7 +2,8 @@
 
 internal sealed record RemoveParticipantFromDraftPartRequest
 {
-  public required string DraftPartPublicId { get; init; }
+  [FromRoute(Name = "draftPartId")]
+  public string DraftPartId { get; init; } = default!;
   public string? ParticipantPublicId { get; init; }
   public required int ParticipantKind { get; init; }
 }
