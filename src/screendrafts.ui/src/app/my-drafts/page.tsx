@@ -205,7 +205,7 @@ export default async function MyDraftsPage() {
           ) : (
             <div className="space-y-2">
               {(upcoming ?? []).map((d) => (
-                <DraftListRow key={d.draftPublicId ?? ""} draft={d} accessToken={session.accessToken!} personPublicId={session.publicId ?? ""} />
+                <DraftListRow key={d.draftPublicId ?? ""} draft={d} accessToken={session.accessToken!} personPublicId={session.personPublicId ?? ""} />
               ))}
             </div>
           )}
@@ -218,7 +218,7 @@ export default async function MyDraftsPage() {
           ) : (
             <div className="space-y-2">
               {(inProgress ?? []).map((d) => (
-                <DraftListRow key={d.draftPublicId ?? ""} draft={d} accessToken={session.accessToken!} personPublicId={session.publicId ?? ""} />
+                <DraftListRow key={d.draftPublicId ?? ""} draft={d} accessToken={session.accessToken!} personPublicId={session.personPublicId ?? ""} />
               ))}
             </div>
           )}

@@ -9,6 +9,7 @@ internal sealed record AttendanceItemResponse
 {
   public string PublicId { get; init; } = default!;
   public string PersonPublicId { get; init; } = default!;
+  public string PersonName { get; init; } = default!;
   public int Status { get; init; }
   public string StatusName { get; init; } = default!;
   public DateTime CreatedAtUtc { get; init; }

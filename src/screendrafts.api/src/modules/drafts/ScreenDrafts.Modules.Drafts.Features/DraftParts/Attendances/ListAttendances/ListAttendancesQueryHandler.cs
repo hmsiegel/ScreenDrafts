@@ -19,17 +19,21 @@ internal sealed class ListAttendancesQueryHandler(IDbConnectionFactory dbConnect
 
     const string sql = $"""
       SELECT
-        a.public_id        AS {nameof(AttendanceItemResponse.PublicId)},
-        a.person_public_id AS {nameof(AttendanceItemResponse.PersonPublicId)},
-        a.status           AS {nameof(AttendanceItemResponse.Status)},
-        a.created_at_utc   AS {nameof(AttendanceItemResponse.CreatedAtUtc)},
-        a.updated_at_utc   AS {nameof(AttendanceItemResponse.UpdatedAtUtc)}
+        a.public_id                               AS {nameof(AttendanceItemResponse.PublicId)},
+        a.person_public_id                        AS {nameof(
+        AttendanceItemResponse.PersonPublicId
+      )},
+        COALESCE(p.first_name || ' ' || p.last_name, a.person_public_id)
+                                                  AS {nameof(AttendanceItemResponse.PersonName)},
+        a.status                                  AS {nameof(AttendanceItemResponse.Status)},
+        a.created_at_utc                          AS {nameof(AttendanceItemResponse.CreatedAtUtc)},
+        a.updated_at_utc                          AS {nameof(AttendanceItemResponse.UpdatedAtUtc)}
       FROM drafts.draft_part_attendances a
       JOIN drafts.draft_parts dp ON dp.id = a.draft_part_id
+      LEFT JOIN drafts.people p ON p.public_id = a.person_public_id
       WHERE dp.public_id = @DraftPartId
       ORDER BY a.created_at_utc ASC;
       """;
-
     var rows = await connection.QueryAsync<AttendanceItemResponse>(
       new CommandDefinition(sql, new { request.DraftPartId }, cancellationToken: cancellationToken)
     );

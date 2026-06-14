@@ -83,7 +83,7 @@ export default async function MyDraftDetailPage({
                   draftId={draftId}
                   accessToken={session.accessToken!}
                   statusLabels={PART_STATUS_LABELS}
-                  personPublicId={session.publicId ?? ""}
+                  personPublicId={session.personPublicId ?? ""}
                 />
               ))}
             </div>
@@ -96,7 +96,7 @@ export default async function MyDraftDetailPage({
               draftId={draftId}
               accessToken={session.accessToken!}
               statusLabels={PART_STATUS_LABELS}
-              personPublicId={session.publicId ?? ""}
+              personPublicId={session.personPublicId ?? ""}
             />
           )}
         </div>

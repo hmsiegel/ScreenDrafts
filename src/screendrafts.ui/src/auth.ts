@@ -1,13 +1,16 @@
 import NextAuth, { type DefaultSession } from "next-auth";
 import KeycloakProvider from "next-auth/providers/keycloak";
 import type { JWT } from "next-auth/jwt";
+import { use } from "react";
 
 declare module "next-auth" {
   interface Session {
     accessToken?: string | undefined;
     publicId: string | undefined;
+    personPublicId: string | undefined;
     roles: string[];
     user: DefaultSession["user"];
+    error?: "RefreshTokenExpired";
   }
 }
 
@@ -19,7 +22,9 @@ interface AppToken extends JWT {
   refreshToken?: string;
   accessTokenExpiresAt?: number;
   publicId?: string;
+  personPublicId?: string;
   roles?: string[];
+  error?: "RefreshTokenExpired";
 }
 
 async function refreshAccessToken(refreshToken: string): Promise<{
@@ -89,9 +94,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             headers: { Authorization: `Bearer ${account.access_token}` },
           });
           if (userRes.ok) {
-            const user = (await userRes.json()) as { publicId?: string };
+            const user = (await userRes.json()) as { publicId?: string; personPublicId?: string };
             if (user.publicId) {
               appToken.publicId = user.publicId;
+              appToken.personPublicId = user.personPublicId;
 
               const rolesRes = await fetch(
                 `${API_BASE}/admin/users/${user.publicId}/roles`,
@@ -117,13 +123,17 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       }
 
       // ── Refresh ──────────────────────────────────────────────────────────
-      if (!appToken.refreshToken) {
+      const refreshToken = appToken.refreshToken;
+      if (!refreshToken) {
         console.warn("[auth] No refresh token — session will expire.");
         return appToken;
       }
 
-      const refreshed = await refreshAccessToken(appToken.refreshToken);
-      if (!refreshed) return appToken;
+      const refreshed = await refreshAccessToken(refreshToken);
+      if (!refreshed) {
+        // Refresh token expired or invalid — force re-authentication.
+        return { ...appToken, accessToken: undefined, error: "RefreshTokenExpired" };
+      }
 
       return {
         ...appToken,
@@ -137,7 +147,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       const appToken = token as AppToken;
       session.accessToken = appToken.accessToken;
       session.publicId = appToken.publicId;
+      session.personPublicId = appToken.personPublicId;
       session.roles = appToken.roles ?? [];
+      session.error = appToken.error;
       return session;
     },
   },

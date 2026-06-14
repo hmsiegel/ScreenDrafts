@@ -1,4 +1,7 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Domain.DraftParts;
+﻿using System.Linq;
+
+namespace ScreenDrafts.Modules.Drafts.Domain.DraftParts;
+
 public sealed partial class DraftPart
 {
   private readonly List<DraftHost> _draftHosts = [];
@@ -12,20 +15,38 @@ public sealed partial class DraftPart
   public IReadOnlyCollection<DraftHost> DraftHosts => _draftHosts;
   public DraftHost? PrimaryHost => _draftHosts.FirstOrDefault(h => h.Role == HostRole.Primary);
   public IEnumerable<DraftHost> CoHosts => _draftHosts.Where(h => h.Role == HostRole.CoHost);
-  public bool IsPrimaryHost(string hostPublicId) => PrimaryHost?.Host.PublicId == hostPublicId;
-  public IReadOnlyCollection<Participant> Participants => _draftPartParticipants
-    .Select(dp => dp.ParticipantId)
-    .ToList()
-    .AsReadOnly();
 
-  // Participants
+  public bool IsPrimaryHost(string hostPublicId) => PrimaryHost?.Host.PublicId == hostPublicId;
+
+  public IReadOnlyCollection<Participant> Participants =>
+    _draftPartParticipants.Select(dp => dp.ParticipantId).ToList().AsReadOnly();
+
+  // ── Patch to DraftPart.Roster.cs — SetParticipants ───────────────────────────
+  // Replace existing SetParticipants with version that raises ParticipantAddedDomainEvent
+  // for each participant not previously in the list.
+
   public Result SetParticipants(IReadOnlyList<Participant> participants)
   {
     Guard.Against.Null(participants);
+
+    var existing = _draftPartParticipants.Select(dp => dp.ParticipantId).ToHashSet();
+
     _draftPartParticipants.Clear();
-    _draftPartParticipants.AddRange(
-      participants.Select(p => DraftPartParticipant.Create(this, p))
-    );
+    _draftPartParticipants.AddRange(participants.Select(p => DraftPartParticipant.Create(this, p)));
+
+    foreach (var participant in participants.Where(participant => !existing.Contains(participant))
+    // Raise domain events only for participants that weren't already in the list.
+    )
+    {
+      Raise(
+        new ParticipantAddedDomainEvent(
+          draftPartId: Id.Value,
+          participantIdValue: participant.Value,
+          participantKind: participant.Kind
+        )
+      );
+    }
+
     return Result.Success();
   }
 
@@ -40,10 +61,13 @@ public sealed partial class DraftPart
 
     UpdatedAtUtc = DateTime.UtcNow;
 
-    Raise(new ParticipantAddedDomainEvent(
-      draftPartId: Id.Value,
-      participantIdValue: participant.Value,
-      participantKind: participant.Kind));
+    Raise(
+      new ParticipantAddedDomainEvent(
+        draftPartId: Id.Value,
+        participantIdValue: participant.Value,
+        participantKind: participant.Kind
+      )
+    );
 
     return Result.Success();
   }
@@ -87,7 +111,8 @@ public sealed partial class DraftPart
     Participant participant,
     int startingVetoes,
     int vetoesRollingIn,
-    int vetoOverridesRollingIn)
+    int vetoOverridesRollingIn
+  )
   {
     if (!IsParticipantInThisPart(participant))
     {
@@ -103,9 +128,14 @@ public sealed partial class DraftPart
 
   internal DraftPartParticipant GetParticipantRequired(Participant participantId)
   {
-    var participant = _draftPartParticipants.FirstOrDefault(dp => dp.ParticipantIdValue == participantId.Value);
+    var participant = _draftPartParticipants.FirstOrDefault(dp =>
+      dp.ParticipantIdValue == participantId.Value
+    );
     return participant is null
-      ? throw new ArgumentException($"Participant not found: {participantId}", nameof(participantId))
+      ? throw new ArgumentException(
+        $"Participant not found: {participantId}",
+        nameof(participantId)
+      )
       : participant;
   }
 
@@ -166,5 +196,4 @@ public sealed partial class DraftPart
 
     return Result.Success();
   }
-
 }

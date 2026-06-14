@@ -4,26 +4,20 @@ public sealed class GameBoard : Entity<GameBoardId>
 {
   private readonly Collection<DraftPosition> _draftPositions = [];
 
-  private GameBoard(
-    DraftPart draftPart,
-    GameBoardId? id = null) :
-    base(id ?? GameBoardId.CreateUnique())
+  private GameBoard(DraftPart draftPart, GameBoardId? id = null)
+    : base(id ?? GameBoardId.CreateUnique())
   {
     DraftPart = draftPart;
     DraftPartId = draftPart.Id;
   }
 
-  private GameBoard(
-    SubDraft subDraft,
-    GameBoardId? id = null) :
-    base(id ?? GameBoardId.CreateUnique())
+  private GameBoard(SubDraft subDraft, GameBoardId? id = null)
+    : base(id ?? GameBoardId.CreateUnique())
   {
     SubDraftId = subDraft.Id;
   }
 
-  private GameBoard()
-  {
-  }
+  private GameBoard() { }
 
   public DraftPart? DraftPart { get; private set; } = default!;
   public DraftPartId? DraftPartId { get; private set; } = default!;
@@ -31,9 +25,7 @@ public sealed class GameBoard : Entity<GameBoardId>
 
   public IReadOnlyCollection<DraftPosition> DraftPositions => _draftPositions;
 
-  public static Result<GameBoard> Create(
-    DraftPart draftPart,
-    GameBoardId? id = null)
+  public static Result<GameBoard> Create(DraftPart draftPart, GameBoardId? id = null)
   {
     if (draftPart is null)
     {
@@ -42,12 +34,11 @@ public sealed class GameBoard : Entity<GameBoardId>
 
     ArgumentNullException.ThrowIfNull(draftPart);
 
-    var gameBoard = new GameBoard(
-      draftPart: draftPart,
-      id: id);
+    var gameBoard = new GameBoard(draftPart: draftPart, id: id);
 
     return Result.Success(gameBoard);
   }
+
   public static Result<GameBoard> CreateForSubDraft(SubDraft subDraft, GameBoardId? id = null)
   {
     if (subDraft is null)
@@ -57,23 +48,16 @@ public sealed class GameBoard : Entity<GameBoardId>
 
     ArgumentNullException.ThrowIfNull(subDraft);
 
-    var gameBoard = new GameBoard(
-      subDraft: subDraft,
-      id: id);
+    var gameBoard = new GameBoard(subDraft: subDraft, id: id);
 
     return Result.Success(gameBoard);
   }
 
-  public Result AssignDraftPositions(ICollection<DraftPosition> draftPositions, int participantCount)
+  public Result AssignDraftPositions(ICollection<DraftPosition> draftPositions)
   {
-    if (draftPositions is null)
+    if (draftPositions is null || draftPositions.Count < 1)
     {
       return Result.Failure(GameBoardErrors.DraftPositionsMissing);
-    }
-
-    if (draftPositions.Count < 1 || draftPositions.Count != participantCount)
-    {
-      return Result.Failure(GameBoardErrors.InvalidNumberOfParticipants);
     }
 
     var allPicks = draftPositions.SelectMany(p => p.Picks).ToList();
@@ -94,5 +78,4 @@ public sealed class GameBoard : Entity<GameBoardId>
   {
     _draftPositions.Clear();
   }
-
 }

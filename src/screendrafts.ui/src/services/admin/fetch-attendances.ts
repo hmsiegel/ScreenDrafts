@@ -12,6 +12,7 @@ function authHeaders(accessToken: string) {
 export interface AttendanceItem {
   publicId: string;
   personPublicId: string;
+  personName: string;
   status: number;
   statusName: string;
   createdAtUtc: string;

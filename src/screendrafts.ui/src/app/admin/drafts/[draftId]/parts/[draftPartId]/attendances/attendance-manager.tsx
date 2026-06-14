@@ -9,18 +9,17 @@ import {
   reinstateAttendance,
 } from '@/services/admin/fetch-attendances';
 
-// Status values from AttendanceStatus SmartEnum
 const STATUS = { Pending: 0, Confirmed: 1, Joined: 2, Withdrawn: 3 } as const;
 
 function StatusBadge({ status, statusName }: { status: number; statusName: string }) {
   const colours: Record<number, string> = {
-    [STATUS.Pending]:   'bg-white/10 text-white/50 border-white/20',
-    [STATUS.Confirmed]: 'bg-sd-blue/20 text-sd-blue border-sd-blue/30',
-    [STATUS.Joined]:    'bg-green-900/20 text-green-400 border-green-800/30',
+    [STATUS.Pending]:   'bg-sd-ink/10 text-sd-ink/50 border-sd-ink/20',
+    [STATUS.Confirmed]: 'bg-sd-blue/10 text-sd-blue border-sd-blue/20',
+    [STATUS.Joined]:    'bg-green-100 text-green-800 border-green-200',
     [STATUS.Withdrawn]: 'bg-sd-red/10 text-sd-red border-sd-red/20',
   };
   return (
-    <span className={`text-[10px] font-oswald tracking-widest px-2 py-0.5 border ${colours[status] ?? 'bg-white/5 text-white/30 border-white/10'}`}>
+    <span className={`text-[10px] font-oswald tracking-widest px-2 py-0.5 border ${colours[status] ?? 'bg-sd-ink/5 text-sd-ink/30 border-sd-ink/10'}`}>
       {statusName.toUpperCase()}
     </span>
   );
@@ -47,7 +46,6 @@ export function AttendanceManager({ initialItems, accessToken, draftPartId }: Pr
     setItems((prev) => optimistic(prev));
     try {
       await fn();
-      // Refetch for ground truth
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/draft-parts/${draftPartId}/attendances`,
         { headers: { Authorization: `Bearer ${accessToken}` }, cache: 'no-store' },
@@ -58,7 +56,6 @@ export function AttendanceManager({ initialItems, accessToken, draftPartId }: Pr
       }
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Action failed.');
-      // Revert optimistic update
       setItems(initialItems);
     } finally {
       setBusy(null);
@@ -103,7 +100,7 @@ export function AttendanceManager({ initialItems, accessToken, draftPartId }: Pr
 
   if (items.length === 0) {
     return (
-      <p className="text-white/30 font-mono text-sm italic">
+      <p className="text-sd-ink/40 font-mono text-sm italic">
         No attendance records. Participants are auto-enrolled when added to the draft part.
       </p>
     );
@@ -117,30 +114,21 @@ export function AttendanceManager({ initialItems, accessToken, draftPartId }: Pr
         </p>
       )}
 
-      <div className="divide-y divide-white/10 border border-white/10">
+      <div className="divide-y divide-sd-ink/10 border border-sd-ink/10">
         {items.map((item) => {
           const isBusy = busy === item.personPublicId;
           return (
             <div
               key={item.publicId}
-              className="flex items-center gap-4 px-4 py-3 bg-sd-ink hover:bg-white/5 transition-colors"
+              className="flex items-center gap-4 px-4 py-3 bg-white hover:bg-slate-400 transition-colors"
             >
-              {/* Person ID */}
-              <span className="font-mono text-xs text-white/40 w-40 truncate shrink-0">
-                {item.personPublicId}
+              {/* Name */}
+              <span className="font-oswald text-sm text-sd-ink flex-1 truncate">
+                {item.personName ?? item.personPublicId}
               </span>
 
               {/* Status */}
-              <div className="flex-1">
-                <StatusBadge status={item.status} statusName={item.statusName} />
-              </div>
-
-              {/* Updated */}
-              <span className="font-mono text-[11px] text-white/25 shrink-0">
-                {item.updatedAtUtc
-                  ? new Date(item.updatedAtUtc).toLocaleDateString()
-                  : new Date(item.createdAtUtc).toLocaleDateString()}
-              </span>
+              <StatusBadge status={item.status} statusName={item.statusName} />
 
               {/* Actions */}
               <div className="flex gap-2 shrink-0">
@@ -153,16 +141,7 @@ export function AttendanceManager({ initialItems, accessToken, draftPartId }: Pr
                     {isBusy ? '…' : 'CONFIRM'}
                   </button>
                 )}
-                {item.status === STATUS.Confirmed && (
-                  <button
-                    onClick={() => handleWithdraw(item)}
-                    disabled={isBusy}
-                    className="px-3 py-1 border border-sd-red/40 text-sd-red font-oswald text-xs tracking-wider hover:border-sd-red disabled:opacity-40 transition-colors"
-                  >
-                    {isBusy ? '…' : 'WITHDRAW'}
-                  </button>
-                )}
-                {item.status === STATUS.Joined && (
+                {(item.status === STATUS.Confirmed || item.status === STATUS.Joined) && (
                   <button
                     onClick={() => handleWithdraw(item)}
                     disabled={isBusy}
@@ -175,7 +154,7 @@ export function AttendanceManager({ initialItems, accessToken, draftPartId }: Pr
                   <button
                     onClick={() => handleReinstate(item)}
                     disabled={isBusy}
-                    className="px-3 py-1 border border-white/20 text-white/50 font-oswald text-xs tracking-wider hover:border-white/40 hover:text-white/70 disabled:opacity-40 transition-colors"
+                    className="px-3 py-1 border border-sd-ink/20 text-sd-ink/50 font-oswald text-xs tracking-wider hover:border-sd-ink/40 hover:text-sd-ink/70 disabled:opacity-40 transition-colors"
                   >
                     {isBusy ? '…' : 'REINSTATE'}
                   </button>
@@ -186,8 +165,8 @@ export function AttendanceManager({ initialItems, accessToken, draftPartId }: Pr
         })}
       </div>
 
-      <p className="text-white/25 font-mono text-[11px] pt-1">
-        Confirmed status required before a participant can Join.
+      <p className="text-sd-ink/30 font-mono text-[11px] pt-1">
+        Confirmed status required before a participant can join.
       </p>
     </div>
   );

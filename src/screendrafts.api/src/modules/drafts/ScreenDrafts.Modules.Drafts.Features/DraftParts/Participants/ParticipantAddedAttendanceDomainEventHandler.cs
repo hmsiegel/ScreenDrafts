@@ -9,12 +9,14 @@
 internal sealed class ParticipantAddedAttendanceHandler(
   IDbConnectionFactory dbConnectionFactory,
   IAttendanceRepository attendanceRepository,
-  IPublicIdGenerator publicIdGenerator
+  IPublicIdGenerator publicIdGenerator,
+  IUnitOfWork unitOfWork
 ) : DomainEventHandler<ParticipantAddedDomainEvent>
 {
   private readonly IDbConnectionFactory _dbConnectionFactory = dbConnectionFactory;
   private readonly IAttendanceRepository _attendanceRepository = attendanceRepository;
   private readonly IPublicIdGenerator _publicIdGenerator = publicIdGenerator;
+  private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
   public override async Task Handle(
     ParticipantAddedDomainEvent domainEvent,
@@ -43,6 +45,8 @@ internal sealed class ParticipantAddedAttendanceHandler(
 
     var draftPartId = DraftPartId.Create(domainEvent.DraftPartId);
 
+    var added = false;
+
     foreach (var personPublicId in personPublicIds)
     {
       // Skip if a record already exists (idempotency)
@@ -64,6 +68,12 @@ internal sealed class ParticipantAddedAttendanceHandler(
         continue;
 
       _attendanceRepository.Add(createResult.Value);
+      added = true;
+    }
+
+    if (added)
+    {
+      await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
   }
 

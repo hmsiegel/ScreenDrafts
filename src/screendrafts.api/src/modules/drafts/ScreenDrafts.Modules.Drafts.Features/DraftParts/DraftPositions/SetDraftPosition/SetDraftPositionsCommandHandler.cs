@@ -2,15 +2,21 @@
 
 internal sealed class SetDraftPositionsCommandHandler(
   IDraftPartRepository draftPartRepository,
-  IPublicIdGenerator publicIdGenerator)
-  : ICommandHandler<SetDraftPositionsCommand>
+  IPublicIdGenerator publicIdGenerator
+) : ICommandHandler<SetDraftPositionsCommand>
 {
   private readonly IDraftPartRepository _draftPartRepository = draftPartRepository;
   private readonly IPublicIdGenerator _publicIdGenerator = publicIdGenerator;
 
-  public async Task<Result> Handle(SetDraftPositionsCommand request, CancellationToken cancellationToken)
+  public async Task<Result> Handle(
+    SetDraftPositionsCommand request,
+    CancellationToken cancellationToken
+  )
   {
-    var draftPart = await _draftPartRepository.GetByPublicIdAsync(request.DraftPartId, cancellationToken);
+    var draftPart = await _draftPartRepository.GetByPublicIdAsync(
+      request.DraftPartId,
+      cancellationToken
+    );
 
     if (draftPart is null)
     {
@@ -38,7 +44,8 @@ internal sealed class SetDraftPositionsCommandHandler(
         position.Picks,
         publicId,
         position.HasBonusVeto,
-        position.HasBonusVetoOverride);
+        position.HasBonusVetoOverride
+      );
 
       if (draftPosition.IsFailure)
       {
@@ -48,7 +55,7 @@ internal sealed class SetDraftPositionsCommandHandler(
       draftPositions.Add(draftPosition.Value);
     }
 
-    var assignResult = gameBoard.AssignDraftPositions(draftPositions, draftPart.TotalDrafters + draftPart.TotalDrafterTeams);
+    var assignResult = gameBoard.AssignDraftPositions(draftPositions);
 
     if (assignResult.IsFailure)
     {
