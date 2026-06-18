@@ -259,6 +259,8 @@ public sealed class GetDraftBoardTests(DraftsIntegrationTestWebAppFactory factor
       email
     );
 
+    FakeUsersApi.RegisterUser(userId, userPublicId, firstName, lastName);
+
     return (userId, userPublicId);
   }
 

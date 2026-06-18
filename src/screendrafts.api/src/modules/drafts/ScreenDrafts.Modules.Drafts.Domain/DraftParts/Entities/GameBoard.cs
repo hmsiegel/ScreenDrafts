@@ -60,7 +60,7 @@ public sealed class GameBoard : Entity<GameBoardId>
       return Result.Failure(GameBoardErrors.DraftPositionsMissing);
     }
 
-    var participantCount = DraftPart?.TotalParticipants ?? 0;
+    var participantCount = (DraftPart?.TotalDrafters ?? 0) + (DraftPart?.TotalDrafterTeams ?? 0);
     if (draftPositions.Count == 0 || draftPositions.Count != participantCount)
     {
       return Result.Failure(GameBoardErrors.InvalidNumberOfParticipants);

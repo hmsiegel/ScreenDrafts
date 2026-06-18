@@ -59,6 +59,8 @@ public class CreatePersonTests(DraftsIntegrationTestWebAppFactory factory)
     };
     var userResult = await Sender.Send(registerUserCommand, TestContext.Current.CancellationToken);
 
+    FakeUsersApi.RegisterUser(userResult.Value, "u_" + Faker.Random.AlphaNumeric(21), registerUserCommand.FirstName, registerUserCommand.LastName);
+
     var peopleFactory = new PeopleFactory(Sender, Faker);
     var person = peopleFactory.CreatePersonWithUserId();
     var command = new CreatePersonCommand

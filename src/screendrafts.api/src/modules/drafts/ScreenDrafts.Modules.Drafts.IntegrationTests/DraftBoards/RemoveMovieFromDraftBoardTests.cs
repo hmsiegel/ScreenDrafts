@@ -222,6 +222,8 @@ public sealed class RemoveMovieFromDraftBoardTests(DraftsIntegrationTestWebAppFa
       "INSERT INTO users.users (id, public_id, identity_id, first_name, last_name, email) VALUES ({0}, {1}, {2}, {3}, {4}, {5})",
       userId, userPublicId, identityId, firstName, lastName, email);
 
+    FakeUsersApi.RegisterUser(userId, userPublicId, firstName, lastName);
+
     return (userId, userPublicId);
   }
 

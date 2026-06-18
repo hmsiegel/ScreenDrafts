@@ -261,6 +261,8 @@ public sealed class AddMovieToDraftBoardTests(DraftsIntegrationTestWebAppFactory
       email
     );
 
+    FakeUsersApi.RegisterUser(userId, userPublicId, firstName, lastName);
+
     return (userId, userPublicId);
   }
 
