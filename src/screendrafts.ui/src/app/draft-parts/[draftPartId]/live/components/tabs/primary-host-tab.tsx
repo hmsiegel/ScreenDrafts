@@ -5,38 +5,34 @@ import { useState } from 'react';
 import { useLiveDraft } from '../../live-draft-context';
 import { DraftBoard } from '../draft-board';
 import { DraftPickList } from '../draft-pick-list';
-import { submitTriviaResults, completeDraftPart } from '../../gameplay-fetchers';
+import { submitTriviaResults } from '../../gameplay-fetchers';
+import { completeDraftPart } from '@/services/drafts/fetch-my-drafts';
 
 interface Props {
   accessToken: string;
   draftPartId: string;
-  userPublicId: string | null;
+  isCommissioner: boolean;
 }
 
-export function PrimaryHostTab({ accessToken, draftPartId }: Props) {
-  const { gameplay, draftPositions, picks } = useLiveDraft();
+export function PrimaryHostTab({ accessToken, draftPartId, isCommissioner: _isCommissioner }: Props) {
+  const { gameplay, draftPositions } = useLiveDraft();
+  console.log('currentUserRoles', gameplay.currentUserRoles);
 
-  const allPositionsAssigned = draftPositions.every(
-    (p) => p.assignedParticipantId !== null,
-  );
+  const allPositionsAssigned = draftPositions.every((p) => p.assignedParticipantId !== null);
   const triviaComplete = (gameplay.triviaResults?.length ?? 0) > 0;
-  const draftStarted = allPositionsAssigned && picks.length > 0;
 
-  // If all positions assigned and we have picks — skip to gameplay view
-  if (allPositionsAssigned && draftStarted) {
+  if (allPositionsAssigned && triviaComplete) {
     return <GameplayView accessToken={accessToken} draftPartId={draftPartId} />;
   }
 
   return (
     <div className="max-w-2xl space-y-8">
-      {/* Phase 1a — Trivia Results */}
       <TriviaResultsForm
         accessToken={accessToken}
         draftPartId={draftPartId}
         complete={triviaComplete}
       />
 
-      {/* Phase 1b — Draft Positions (revealed after trivia submitted) */}
       {triviaComplete && (
         <DraftPositionsForm
           accessToken={accessToken}
@@ -45,15 +41,7 @@ export function PrimaryHostTab({ accessToken, draftPartId }: Props) {
         />
       )}
 
-      {/* Start Draft button — visible once all positions assigned */}
-      {allPositionsAssigned && (
-        <button
-          onClick={() => {/* UI-only transition — page re-renders via picks.length check */}}
-          className="px-6 py-3 bg-sd-red text-white font-oswald tracking-widest text-sm hover:bg-sd-red/80 transition-colors"
-        >
-          START DRAFT
-        </button>
-      )}
+
     </div>
   );
 }
@@ -76,8 +64,12 @@ function TriviaResultsForm({
         (gameplay.participants ?? []).map((p, i) => [
           p.participantId,
           {
-            position: gameplay.triviaResults?.find((t) => t.participantId === p.participantId)?.position ?? i + 1,
-            questionsWon: gameplay.triviaResults?.find((t) => t.participantId === p.participantId)?.questionsWon ?? 0,
+            position:
+              gameplay.triviaResults?.find((t) => t.participantId === p.participantId)?.position ??
+              i + 1,
+            questionsWon:
+              gameplay.triviaResults?.find((t) => t.participantId === p.participantId)
+                ?.questionsWon ?? 0,
           },
         ]),
       ),
@@ -93,7 +85,7 @@ function TriviaResultsForm({
         accessToken,
         draftPartId,
         (gameplay.participants ?? []).map((p) => ({
-          participantPublicId: p.participantId ?? '',
+          participantPublicId: p.participantPublicId ?? '',
           participantKind: p.participantKind ?? 0,
           position: scores[p.participantId ?? '']?.position ?? 1,
           questionsWon: scores[p.participantId ?? '']?.questionsWon ?? 0,
@@ -115,8 +107,8 @@ function TriviaResultsForm({
 
       {complete ? (
         <div className="space-y-1">
-          {gameplay.triviaResults?.
-            sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
+          {gameplay.triviaResults
+            ?.sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
             .map((t) => (
               <div key={t.participantId} className="flex gap-4 text-sm text-white/60 font-mono">
                 <span className="text-sd-red font-bold w-4">{t.position}</span>
@@ -139,7 +131,7 @@ function TriviaResultsForm({
                   type="number"
                   min={1}
                   max={gameplay.participants?.length}
-                  value={p.participantId ? scores[p.participantId]?.position ?? 1 : 1}
+                  value={p.participantId ? (scores[p.participantId]?.position ?? 1) : 1}
                   onChange={(e) => {
                     if (p.participantId) {
                       setScores((prev) => ({
@@ -159,7 +151,7 @@ function TriviaResultsForm({
                 <input
                   type="number"
                   min={0}
-                  value={p.participantId ? scores[p.participantId]?.questionsWon ?? 0 : 0}
+                  value={p.participantId ? (scores[p.participantId]?.questionsWon ?? 0) : 0}
                   onChange={(e) => {
                     if (p.participantId) {
                       setScores((prev) => ({
@@ -209,14 +201,14 @@ function DraftPositionsForm({
 
   async function handleAssign(positionPublicId: string, participantId: string) {
     if (!participantId) return;
-    const participant = gameplay.participants?.find((p) => p.participantId === participantId);
+    const participant = gameplay.participants?.find((p) => p.participantPublicId === participantId);
     if (!participant) return;
 
     setSaving(positionPublicId);
     setError(null);
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/draft-parts/${draftPartId}/positions/${positionPublicId}/assign`,
+        `${process.env.NEXT_PUBLIC_API_URL}/draft-parts/${draftPartId}/positions/${positionPublicId}/participant`,
         {
           method: 'PUT',
           headers: {
@@ -243,7 +235,7 @@ function DraftPositionsForm({
     setError(null);
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/draft-parts/${draftPartId}/positions/${positionPublicId}/assign`,
+        `${process.env.NEXT_PUBLIC_API_URL}/draft-parts/${draftPartId}/positions/${positionPublicId}/participant`,
         {
           method: 'DELETE',
           headers: { Authorization: `Bearer ${accessToken}` },
@@ -296,15 +288,17 @@ function DraftPositionsForm({
             ) : (
               <select
                 defaultValue=""
-                onChange={(e) => pos.positionPublicId && e.target.value && handleAssign(pos.positionPublicId, e.target.value)}
+                onChange={(e) =>
+                  pos.positionPublicId && e.target.value && handleAssign(pos.positionPublicId, e.target.value)
+                }
                 disabled={saving === pos.positionPublicId}
-                className="bg-white/10 border border-white/20 text-sd-paper text-sm font-oswald px-3 py-1.5 min-w-[180px]"
+                className="bg-white/10 border border-white/20 text-sd-paper text-sm font-oswald px-3 py-1.5 min-w-[180px] [&>option]:text-sd-ink [&>option]:bg-white"
               >
                 <option value="" disabled>
                   Assign participant…
                 </option>
                 {(gameplay.participants ?? []).map((p) => (
-                  <option key={p.participantId} value={p.participantId}>
+                  <option key={p.participantPublicId} value={p.participantPublicId}>
                     {p.participantName}
                   </option>
                 ))}
@@ -334,21 +328,26 @@ function GameplayView({
   accessToken: string;
   draftPartId: string;
 }) {
-  const { gameplay, draftPositions, picks, refetch } = useLiveDraft();
+  const { gameplay, draftPositions, picks, pendingPicks, refetch, revealPick } = useLiveDraft();
   const [completing, setCompleting] = useState(false);
   const [confirmComplete, setConfirmComplete] = useState(false);
+  const [acting, setActing] = useState<string | null>(null); // action key in flight
   const [error, setError] = useState<string | null>(null);
 
-  // Count total expected picks from all position slots
   const totalSlots = draftPositions.flatMap((p) => p.ownedBoardSlots).length;
   const landedPicks = picks.filter((p) => !p.wasVetoed || p.wasVetoOverridden).length;
   const draftComplete = landedPicks === totalSlots;
+
+  const mostRecentPick = picks.reduce<(typeof picks)[0] | null>(
+    (acc, p) => (!acc || (p.playOrder ?? 0) > (acc.playOrder ?? 0) ? p : acc),
+    null,
+  );
 
   async function handleComplete() {
     setCompleting(true);
     setError(null);
     try {
-      await completeDraftPart(accessToken, draftPartId);
+      await completeDraftPart(accessToken, gameplay.draftId ?? "", gameplay.partIndex ?? 0);
       await refetch();
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Failed to complete draft part.');
@@ -358,16 +357,129 @@ function GameplayView({
     }
   }
 
+  async function handleUndoPick(playOrder: number) {
+    setActing('undo-pick');
+    setError(null);
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/draft-parts/${draftPartId}/picks/${playOrder}`,
+        { method: 'DELETE', headers: { Authorization: `Bearer ${accessToken}` } },
+      );
+      if (!res.ok) throw new Error(`Undo pick failed: ${res.status}`);
+      await refetch();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Failed to undo pick.');
+    } finally {
+      setActing(null);
+    }
+  }
+
+  async function handleUndoVeto(playOrder: number) {
+    setActing('undo-veto');
+    setError(null);
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/draft-parts/${draftPartId}/picks/${playOrder}/undo-veto`,
+        { method: 'POST', headers: { Authorization: `Bearer ${accessToken}` } },
+      );
+      if (!res.ok) throw new Error(`Undo veto failed: ${res.status}`);
+      await refetch();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Failed to undo veto.');
+    } finally {
+      setActing(null);
+    }
+  }
+
+  async function handleCommissionerOverride(playOrder: number) {
+    setActing('commissioner-override');
+    setError(null);
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/draft-parts/${draftPartId}/picks/${playOrder}/commissioner-override`,
+        { method: 'POST', headers: { Authorization: `Bearer ${accessToken}` } },
+      );
+      if (!res.ok) throw new Error(`Commissioner override failed: ${res.status}`);
+      await refetch();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Failed to apply commissioner override.');
+    } finally {
+      setActing(null);
+    }
+  }
+
+  // Primary host inline actions on the most recent pick: undo the pick
+  // entirely, undo a veto (if the most recent pick was vetoed), or apply
+  // a commissioner override (remove without counting as veto or save).
+  function renderBoardActions(pick: import('@/lib/dto').GameplayPickResponse) {
+    if (pick.playOrder !== mostRecentPick?.playOrder) return null;
+    const playOrder = pick.playOrder!;
+    const busy = acting !== null;
+
+    return (
+      <div className="flex gap-2">
+        {pick.wasVetoed && !pick.wasVetoOverridden && (
+          <button
+            onClick={() => handleUndoVeto(playOrder)}
+            disabled={busy}
+            className="px-3 py-1 border border-light-blue text-light-blue font-oswald text-xs tracking-widest hover:bg-light-blue hover:text-sd-ink disabled:opacity-40 transition-colors"
+          >
+            {acting === 'undo-veto' ? '…' : 'UNDO VETO'}
+          </button>
+        )}
+        <button
+          onClick={() => handleCommissionerOverride(playOrder)}
+          disabled={busy}
+          className="px-3 py-1 border border-white/30 text-white/70 font-oswald text-xs tracking-widest hover:border-white hover:text-white disabled:opacity-40 transition-colors"
+        >
+          {acting === 'commissioner-override' ? '…' : 'OVERRIDE'}
+        </button>
+        <button
+          onClick={() => handleUndoPick(playOrder)}
+          disabled={busy}
+          className="px-3 py-1 border border-sd-red text-sd-red font-oswald text-xs tracking-widest hover:bg-sd-red hover:text-white disabled:opacity-40 transition-colors"
+        >
+          {acting === 'undo-pick' ? '…' : 'UNDO'}
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-      {/* Left — Draft Board */}
       <div>
+        {pendingPicks.length > 0 && (
+          <div className="mb-4 space-y-2">
+            {pendingPicks.map((pp) => (
+              <div
+                key={pp.playOrder}
+                className="flex items-center justify-between gap-3 px-4 py-3 bg-sd-blue/20 border border-sd-blue/40"
+              >
+                <div className="min-w-0">
+                  <p className="font-oswald text-sd-paper text-sm truncate">
+                    {pp.movieTitle}{' '}
+                    <span className="text-white/40 text-xs">→ slot {pp.boardPosition}</span>
+                  </p>
+                  <p className="text-[11px] text-white/40 font-mono">Awaiting announcement</p>
+                </div>
+                <button
+                  onClick={() => revealPick(pp.playOrder)}
+                  className="shrink-0 px-4 py-2 bg-sd-blue text-white font-oswald text-xs tracking-widest hover:bg-sd-blue/80 transition-colors"
+                >
+                  ANNOUNCE
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+
         <h2 className="font-oswald text-sm tracking-widest text-white/50 uppercase mb-3">
           Draft Board
         </h2>
-        <DraftBoard />
+        <DraftBoard renderActions={renderBoardActions} />
 
-        {/* Position summary */}
+        {error && <p className="text-sd-red text-xs font-mono mt-2">{error}</p>}
+
         <div className="mt-4 flex flex-wrap gap-4">
           {draftPositions.map((pos) => (
             <div key={pos.positionPublicId} className="text-xs font-mono text-white/50">
@@ -377,9 +489,7 @@ function GameplayView({
           ))}
         </div>
 
-        {/* Complete button */}
         <div className="mt-6">
-          {error && <p className="text-sd-red text-xs font-mono mb-2">{error}</p>}
           {confirmComplete ? (
             <div className="flex gap-3">
               <button
@@ -412,13 +522,11 @@ function GameplayView({
           )}
         </div>
 
-        {/* Zoom placeholder */}
         <div className="mt-6 h-32 border border-dashed border-white/10 flex items-center justify-center">
           <span className="text-white/20 text-xs font-mono">Zoom — coming soon</span>
         </div>
       </div>
 
-      {/* Right — Pick list */}
       <div>
         <h2 className="font-oswald text-sm tracking-widest text-white/50 uppercase mb-3">
           Pick List

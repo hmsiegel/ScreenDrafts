@@ -26,17 +26,24 @@ internal sealed class LinkUserPersonCommandHandler(
       return Result.Failure(PersonErrors.NotFound(LinkUserPersonRequest.UserId));
     }
 
-    person.AssignUserId(LinkUserPersonRequest.UserId);
+    var assignResult = person.AssignUserId(LinkUserPersonRequest.UserId);
+
+    if (assignResult.IsFailure)
+    {
+      return assignResult;
+    }
+
+    _personRepository.Update(person);
 
     await _eventBus.PublishAsync(
-      new PersonCreatedForUserIntegrationEvent(
-        id: Guid.NewGuid(),
-        occurredOnUtc: DateTime.UtcNow,
-        personId: person.Id.Value,
-        personPublicId: person.PublicId,
-        userId: user.UserId),
-      cancellationToken: cancellationToken
-    );
+    new PersonCreatedForUserIntegrationEvent(
+      id: Guid.NewGuid(),
+      occurredOnUtc: DateTime.UtcNow,
+      personId: person.Id.Value,
+      personPublicId: person.PublicId,
+      userId: user.UserId),
+    cancellationToken: cancellationToken
+  );
 
     return Result.Success();
   }

@@ -20,7 +20,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<AddCandidateEntryRequest, 
 
   public override async Task HandleAsync(AddCandidateEntryRequest req, CancellationToken ct)
   {
-    var actorPublicId = User.GetPublicId() ?? string.Empty;
+    var actorPublicId = User.GetUserPublicId() ?? string.Empty;
 
     if (string.IsNullOrWhiteSpace(actorPublicId))
     {

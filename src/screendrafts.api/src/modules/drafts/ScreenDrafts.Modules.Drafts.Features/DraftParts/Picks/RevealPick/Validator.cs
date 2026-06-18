@@ -13,5 +13,11 @@ internal sealed class Validator : AbstractValidator<RevealPickCommand>
     RuleFor(x => x.PlayOrder)
       .GreaterThan(0)
       .WithMessage("Play order must be greater than 0.");
+
+    RuleFor(x => x.UserPublicId)
+      .NotEmpty()
+      .WithMessage("User public ID is required.")
+      .Must(id => PublicIdGuards.IsValidWithPrefix(id, PublicIdPrefixes.User))
+      .WithMessage("User public ID must be a valid public ID with the correct prefix.");
   }
 }

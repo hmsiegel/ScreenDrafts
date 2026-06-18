@@ -7,7 +7,8 @@ internal sealed class PickCreatedDomainEventHandler(
   IDraftPoolRepository draftPoolRepository,
   IDraftBoardRepository draftBoardRepository,
   ParticipantResolver participantResolver,
-  IUnitOfWork unitOfWork
+  IUnitOfWork unitOfWork,
+  IPickRepository pickRepository
 ) : DomainEventHandler<PickAddedDomainEvent>
 {
   private readonly IEventBus _eventBus = eventBus;
@@ -16,6 +17,7 @@ internal sealed class PickCreatedDomainEventHandler(
   private readonly IDraftPoolRepository _draftPoolRepository = draftPoolRepository;
   private readonly IDraftBoardRepository _draftBoardRepository = draftBoardRepository;
   private readonly ParticipantResolver _participantResolver = participantResolver;
+  private readonly IPickRepository _pickRepository = pickRepository;
   private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
   public override async Task Handle(
@@ -75,6 +77,14 @@ internal sealed class PickCreatedDomainEventHandler(
       }
 
       await _unitOfWork.SaveChangesAsync(cancellationToken);
+    }
+
+    var pickId = PickId.Create(domainEvent.PickId);
+    var pick = await _pickRepository.GetByIdAsync(pickId, cancellationToken);
+
+    if (pick is null || !pick.IsRevealed)
+    {
+      return;
     }
 
     await _eventBus.PublishAsync(

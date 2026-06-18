@@ -1,8 +1,8 @@
-// src/middleware.ts
+// src/proxy.ts
 import { auth } from "@/auth";
 import { NextResponse } from "next/server";
 
-export default auth((req) => {
+const handler = auth((req) => {
   const session = req.auth;
 
   // If the refresh token has expired, force re-authentication.
@@ -14,6 +14,8 @@ export default auth((req) => {
 
   return NextResponse.next();
 });
+
+export { handler as proxy };
 
 export const config = {
   // Run on all routes except Next.js internals and static files.

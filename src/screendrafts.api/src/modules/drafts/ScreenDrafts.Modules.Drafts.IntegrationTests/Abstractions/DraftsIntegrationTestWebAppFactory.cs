@@ -1,4 +1,6 @@
-﻿using ScreenDrafts.Common.Infrastructure.Identity;
+﻿using ScreenDrafts.Common.Application.Services;
+using ScreenDrafts.Common.Infrastructure.Identity;
+using ScreenDrafts.Modules.Users.PublicApi;
 
 namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Abstractions;
 
@@ -136,6 +138,10 @@ public class DraftsIntegrationTestWebAppFactory : IntegrationTestWebAppFactory
   protected override void ConfigureModuleServices(IServiceCollection services)
   {
     base.ConfigureModuleServices(services);
+
+    services.RemoveAll<IUsersApi>();
+    services.AddSingleton<FakeUsersApi>();
+    services.AddSingleton<IUsersApi>(sp => sp.GetRequiredService<FakeUsersApi>());
 
     // Replace the real email service with the in-memory capture for all tests.
     services.RemoveAll<IEmailService>();

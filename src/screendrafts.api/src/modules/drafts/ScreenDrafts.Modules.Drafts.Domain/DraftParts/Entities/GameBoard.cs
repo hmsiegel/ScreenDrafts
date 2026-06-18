@@ -55,9 +55,15 @@ public sealed class GameBoard : Entity<GameBoardId>
 
   public Result AssignDraftPositions(ICollection<DraftPosition> draftPositions)
   {
-    if (draftPositions is null || draftPositions.Count < 1)
+    if (draftPositions is null)
     {
       return Result.Failure(GameBoardErrors.DraftPositionsMissing);
+    }
+
+    var participantCount = DraftPart?.TotalParticipants ?? 0;
+    if (draftPositions.Count == 0 || draftPositions.Count != participantCount)
+    {
+      return Result.Failure(GameBoardErrors.InvalidNumberOfParticipants);
     }
 
     var allPicks = draftPositions.SelectMany(p => p.Picks).ToList();

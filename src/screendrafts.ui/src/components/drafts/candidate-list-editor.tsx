@@ -7,7 +7,7 @@ import {
   bulkAddCandidateListEntries,
   removeCandidateListEntry,
 } from "@/services/drafts/fetch-candidate-list";
-import { type MovieSearchResult } from "@/services/movies/fetch-movies";
+import { type MovieSearchResult } from "@/services/movies/fetch-tmdb";
 import type { CandidateListEntryResponse } from "@/lib/dto";
 
 interface CandidateListEditorProps {

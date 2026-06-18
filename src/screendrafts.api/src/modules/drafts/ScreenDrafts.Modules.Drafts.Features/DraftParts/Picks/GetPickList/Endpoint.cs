@@ -22,7 +22,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<GetPickListRequest, GetPic
   {
     ArgumentNullException.ThrowIfNull(req);
 
-    var callerPublicId = User.GetPublicId();
+    var callerPublicId = User.GetUserPublicId();
 
     if (string.IsNullOrWhiteSpace(callerPublicId))
     {

@@ -6,7 +6,10 @@ import { useLiveDraft } from '../live-draft-context';
 export function DraftPickList() {
   const { picks } = useLiveDraft();
 
-  const sorted = [...picks].sort((a, b) => (b.playOrder ?? 0) - (a.playOrder ?? 0));
+  // Ascending by play order: the first pick played (typically the highest
+  // board slot, e.g. #7) appears at the top, with later picks added below —
+  // matching the natural top-to-bottom flow of the draft as it happens.
+  const sorted = [...picks].sort((a, b) => (a.playOrder ?? 0) - (b.playOrder ?? 0));
 
   if (sorted.length === 0) {
     return (

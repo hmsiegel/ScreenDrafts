@@ -1,3 +1,5 @@
+// src/app/gameplay/[draftPartId]/page.tsx
+
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { getDraftPart, getDraftPool } from "@/services/drafts/fetch-draft-parts";

@@ -20,7 +20,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<StartZoomSessionRequest, S
 
   public override async Task HandleAsync(StartZoomSessionRequest req, CancellationToken ct)
   {
-    var hostPublicId = User.GetPublicId();
+    var hostPublicId = User.GetUserPublicId();
 
     var command = new StartZoomSessionCommand
     {

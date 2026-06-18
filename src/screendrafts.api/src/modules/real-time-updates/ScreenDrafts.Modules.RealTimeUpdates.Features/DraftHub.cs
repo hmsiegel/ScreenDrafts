@@ -8,12 +8,12 @@ public sealed class DraftHub : Hub
 
   public async Task JoinDraftPartAsync(string draftPartId)
   {
-    await Groups.AddToGroupAsync(Context.ConnectionId, draftPartId);
+    await Groups.AddToGroupAsync(Context.ConnectionId, GroupName(draftPartId));
   }
 
   public async Task LeaveDraftPartAsync(string draftPartId)
   {
-    await Groups.RemoveFromGroupAsync(Context.ConnectionId, draftPartId);
+    await Groups.RemoveFromGroupAsync(Context.ConnectionId, GroupName(draftPartId));
   }
 
   public async Task JoinDraftPartAsHostAsync(string draftPartId)

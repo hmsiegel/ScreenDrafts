@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Modules.Drafts.Features.People.Create;
-
-namespace ScreenDrafts.Modules.Drafts.IntegrationTests.TestUtils;
+﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.TestUtils;
 
 public class PeopleFactory(ISender sender, Faker faker)
 {

@@ -26,7 +26,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<ChangePasswordRequest>
       return;
     }
 
-    var usedrId = User.GetPublicId();
+    var usedrId = User.GetUserPublicId();
     var command = new ChangePasswordCommand
     {
       PublicId = usedrId,

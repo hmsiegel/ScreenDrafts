@@ -20,7 +20,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<RemoveMovieFromDraftBoardR
 
   public override async Task HandleAsync(RemoveMovieFromDraftBoardRequest req, CancellationToken ct)
   {
-    var userPublicId = User.GetPublicId() ?? string.Empty;
+    var userPublicId = User.GetUserPublicId() ?? string.Empty;
 
     var command = new RemoveMovieFromDraftBoardCommand
     {

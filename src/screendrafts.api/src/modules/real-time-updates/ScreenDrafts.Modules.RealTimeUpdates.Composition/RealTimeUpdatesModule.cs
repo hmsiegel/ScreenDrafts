@@ -52,6 +52,14 @@ public static class RealTimeUpdatesModule
       .Endpoint(c => c.InstanceId = moduleInstanceId);
 
     registrationConfigurator
+      .AddConsumer<IntegrationEventConsumer<PickRevealedIntegrationEvent>>()
+      .Endpoint(c => c.InstanceId = moduleInstanceId);
+
+    registrationConfigurator
+      .AddConsumer<IntegrationEventConsumer<PickSubmittedIntegrationEvent>>()
+      .Endpoint(c => c.InstanceId = moduleInstanceId);
+
+    registrationConfigurator
       .AddConsumer<IntegrationEventConsumer<VetoAppliedIntegrationEvent>>()
       .Endpoint(c => c.InstanceId = moduleInstanceId);
 

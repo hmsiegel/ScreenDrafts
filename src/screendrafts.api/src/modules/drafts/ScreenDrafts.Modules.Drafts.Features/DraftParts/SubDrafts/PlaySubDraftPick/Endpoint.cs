@@ -20,7 +20,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<PlaySubDraftPickRequest, C
 
   public override async Task HandleAsync(PlaySubDraftPickRequest req, CancellationToken ct)
   {
-    var actorPublicId = User.GetPublicId();
+    var actorPublicId = User.GetUserPublicId();
 
     if (string.IsNullOrWhiteSpace(actorPublicId))
     {

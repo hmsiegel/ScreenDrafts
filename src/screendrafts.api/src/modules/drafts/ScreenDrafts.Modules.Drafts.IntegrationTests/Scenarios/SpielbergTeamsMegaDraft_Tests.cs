@@ -1,4 +1,4 @@
-using ScreenDrafts.Modules.Drafts.IntegrationTests.Helpers;
+﻿using ScreenDrafts.Modules.Drafts.IntegrationTests.Helpers;
 
 namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Scenarios;
 
@@ -20,9 +20,9 @@ public sealed class SpielbergTeamsMegaDraft_Tests(DraftsIntegrationTestWebAppFac
   private string _draftPartPublicId = default!;
 
   // Team public IDs
-  private string _teamAPublicId = default!;  // Clay + Ryan (trivia winner)
-  private string _teamBPublicId = default!;  // Darren + Phil
-  private string _teamCPublicId = default!;  // Bryan solo
+  private string _teamAPublicId = default!; // Clay + Ryan (trivia winner)
+  private string _teamBPublicId = default!; // Darren + Phil
+  private string _teamCPublicId = default!; // Bryan solo
 
   // Individual drafter public IDs (needed to add to teams)
   private string _clayDrafterPublicId = default!;
@@ -57,12 +57,12 @@ public sealed class SpielbergTeamsMegaDraft_Tests(DraftsIntegrationTestWebAppFac
     "Men in Black",
     "Twister",
     "Who Framed Roger Rabbit",
-    "Back to the Future"
+    "Back to the Future",
   ];
 
   protected override async Task OnInitializeAsync()
   {
-    await Shared.SeedAsync(Sender);
+    await Shared.SeedAsync(Sender, FakeUsersApi);
     await Media.SeedAsync(DbContext);
     EmailCapture.Clear();
 
@@ -88,7 +88,8 @@ public sealed class SpielbergTeamsMegaDraft_Tests(DraftsIntegrationTestWebAppFac
     _draftPublicId = await CreateDraftAsync(
       "Spielberg Produced Mega Draft",
       DraftType.Mega.Value,
-      Shared.RegularSeriesId);
+      Shared.RegularSeriesId
+    );
 
     await ProcessOutboxAsync();
 
@@ -109,44 +110,60 @@ public sealed class SpielbergTeamsMegaDraft_Tests(DraftsIntegrationTestWebAppFac
     // Team A wins trivia: positions 1,4,7,10,13,16,19 (7 picks)
     // Team B: positions 2,5,8,11,14,17,20 (7 picks)
     // Team C: positions 3,6,9,12,15,18,21 (7 picks)
-    await SetPositionsAsync(_draftPartPublicId,
-    [
-      new DraftPositionRequest { Name = "Team A", Picks = [1, 4, 7, 10, 13, 16, 19] },
-      new DraftPositionRequest { Name = "Team B", Picks = [2, 5, 8, 11, 14, 17, 20] },
-      new DraftPositionRequest { Name = "Team C", Picks = [3, 6, 9, 12, 15, 18, 21] }
-    ]);
+    await SetPositionsAsync(
+      _draftPartPublicId,
+      [
+        new DraftPositionRequest { Name = "Team A", Picks = [1, 4, 7, 10, 13, 16, 19] },
+        new DraftPositionRequest { Name = "Team B", Picks = [2, 5, 8, 11, 14, 17, 20] },
+        new DraftPositionRequest { Name = "Team C", Picks = [3, 6, 9, 12, 15, 18, 21] },
+      ]
+    );
 
     // Step 6 — StartDraft
     await StartDraftPartAsync(_draftPublicId);
 
     // Step 7 — AssignTriviaResults (teams participate in trivia)
-    await AssignTriviaAsync(_draftPartPublicId,
-    [
-      (_teamAPublicId, ParticipantKind.Team, 1, 5),
-      (_teamBPublicId, ParticipantKind.Team, 2, 3),
-      (_teamCPublicId, ParticipantKind.Team, 3, 1)
-    ]);
+    await AssignTriviaAsync(
+      _draftPartPublicId,
+      [
+        (_teamAPublicId, ParticipantKind.Team, 1, 5),
+        (_teamBPublicId, ParticipantKind.Team, 2, 3),
+        (_teamCPublicId, ParticipantKind.Team, 3, 1),
+      ]
+    );
 
     // Step 8 — AssignParticipantsToPositions
     var teamAPosId = await GetPositionPublicIdByNameAsync(_draftPartPublicId, "Team A");
     var teamBPosId = await GetPositionPublicIdByNameAsync(_draftPartPublicId, "Team B");
     var teamCPosId = await GetPositionPublicIdByNameAsync(_draftPartPublicId, "Team C");
 
-    await AssignParticipantToPositionAsync(_draftPartPublicId, teamAPosId, _teamAPublicId, ParticipantKind.Team);
-    await AssignParticipantToPositionAsync(_draftPartPublicId, teamBPosId, _teamBPublicId, ParticipantKind.Team);
-    await AssignParticipantToPositionAsync(_draftPartPublicId, teamCPosId, _teamCPublicId, ParticipantKind.Team);
+    await AssignParticipantToPositionAsync(
+      _draftPartPublicId,
+      teamAPosId,
+      _teamAPublicId,
+      ParticipantKind.Team
+    );
+    await AssignParticipantToPositionAsync(
+      _draftPartPublicId,
+      teamBPosId,
+      _teamBPublicId,
+      ParticipantKind.Team
+    );
+    await AssignParticipantToPositionAsync(
+      _draftPartPublicId,
+      teamCPosId,
+      _teamCPublicId,
+      ParticipantKind.Team
+    );
 
     // Seed 21 Spielberg films (fictional TmdbIds 50001-50021)
     _moviePublicIds = new string[21];
     for (var i = 0; i < 21; i++)
     {
       var publicId = $"m_{Guid.NewGuid():N}";
-      var movie = Movie.Create(
-        SpielbergTitleKeys[i],
-        publicId,
-        MediaType.Movie,
-        Guid.NewGuid(),
-        tmdbId: 50001 + i).Value;
+      var movie = Movie
+        .Create(SpielbergTitleKeys[i], publicId, MediaType.Movie, Guid.NewGuid(), tmdbId: 50001 + i)
+        .Value;
       DbContext.Movies.Add(movie);
       _moviePublicIds[i] = publicId;
     }
@@ -170,8 +187,8 @@ public sealed class SpielbergTeamsMegaDraft_Tests(DraftsIntegrationTestWebAppFac
   {
     await PlayAllPicksAsync();
 
-    var picks = await DbContext.Picks
-      .Where(p => p.DraftPart.PublicId == _draftPartPublicId)
+    var picks = await DbContext
+      .Picks.Where(p => p.DraftPart.PublicId == _draftPartPublicId)
       .ToListAsync(TestContext.Current.CancellationToken);
 
     picks.Should().HaveCount(21);
@@ -182,10 +199,12 @@ public sealed class SpielbergTeamsMegaDraft_Tests(DraftsIntegrationTestWebAppFac
   {
     await PlayAllPicksAsync();
 
-    var nonTeamPicks = await DbContext.Picks
-      .CountAsync(p =>
-        p.DraftPart.PublicId == _draftPartPublicId &&
-        p.PlayedByParticipantKindValue != ParticipantKind.Team, TestContext.Current.CancellationToken);
+    var nonTeamPicks = await DbContext.Picks.CountAsync(
+      p =>
+        p.DraftPart.PublicId == _draftPartPublicId
+        && p.PlayedByParticipantKindValue != ParticipantKind.Team,
+      TestContext.Current.CancellationToken
+    );
 
     nonTeamPicks.Should().Be(0, "All picks should be attributed to DrafterTeam participants");
   }
@@ -199,20 +218,29 @@ public sealed class SpielbergTeamsMegaDraft_Tests(DraftsIntegrationTestWebAppFac
     var teamBId = await GetTeamInternalIdAsync(_teamBPublicId);
     var teamCId = await GetTeamInternalIdAsync(_teamCPublicId);
 
-    var countA = await DbContext.Picks.CountAsync(p =>
-      p.DraftPart.PublicId == _draftPartPublicId &&
-      p.PlayedByParticipantKindValue == ParticipantKind.Team &&
-      p.PlayedByParticipantIdValue == teamAId, TestContext.Current.CancellationToken);
+    var countA = await DbContext.Picks.CountAsync(
+      p =>
+        p.DraftPart.PublicId == _draftPartPublicId
+        && p.PlayedByParticipantKindValue == ParticipantKind.Team
+        && p.PlayedByParticipantIdValue == teamAId,
+      TestContext.Current.CancellationToken
+    );
 
-    var countB = await DbContext.Picks.CountAsync(p =>
-      p.DraftPart.PublicId == _draftPartPublicId &&
-      p.PlayedByParticipantKindValue == ParticipantKind.Team &&
-      p.PlayedByParticipantIdValue == teamBId, TestContext.Current.CancellationToken);
+    var countB = await DbContext.Picks.CountAsync(
+      p =>
+        p.DraftPart.PublicId == _draftPartPublicId
+        && p.PlayedByParticipantKindValue == ParticipantKind.Team
+        && p.PlayedByParticipantIdValue == teamBId,
+      TestContext.Current.CancellationToken
+    );
 
-    var countC = await DbContext.Picks.CountAsync(p =>
-      p.DraftPart.PublicId == _draftPartPublicId &&
-      p.PlayedByParticipantKindValue == ParticipantKind.Team &&
-      p.PlayedByParticipantIdValue == teamCId, TestContext.Current.CancellationToken);
+    var countC = await DbContext.Picks.CountAsync(
+      p =>
+        p.DraftPart.PublicId == _draftPartPublicId
+        && p.PlayedByParticipantKindValue == ParticipantKind.Team
+        && p.PlayedByParticipantIdValue == teamCId,
+      TestContext.Current.CancellationToken
+    );
 
     countA.Should().Be(7, "Team A should have 7 picks");
     countB.Should().Be(7, "Team B should have 7 picks");
@@ -225,8 +253,8 @@ public sealed class SpielbergTeamsMegaDraft_Tests(DraftsIntegrationTestWebAppFac
     await PlayAllPicksAsync();
     await CompleteDraftPartAsync(_draftPublicId);
 
-    var draftPart = await DbContext.DraftParts
-      .AsNoTracking()
+    var draftPart = await DbContext
+      .DraftParts.AsNoTracking()
       .FirstAsync(dp => dp.PublicId == _draftPartPublicId, TestContext.Current.CancellationToken);
 
     draftPart.Status.Should().Be(DraftPartStatus.Completed);
@@ -244,11 +272,25 @@ public sealed class SpielbergTeamsMegaDraft_Tests(DraftsIntegrationTestWebAppFac
     {
       var pos = i + 1;
       var (team, _) = TeamForPosition(pos);
-      await PlayPickAsync(_draftPartPublicId, pos, pos, team, ParticipantKind.Team, _moviePublicIds[i]);
+      await PlayPickAsync(
+        _draftPartPublicId,
+        pos,
+        pos,
+        team,
+        ParticipantKind.Team,
+        _moviePublicIds[i]
+      );
     }
 
     // Team B plays position 14 with playOrder=22 (above current max of 21) so it can be vetoed
-    await PlayPickAsync(_draftPartPublicId, 14, 22, _teamBPublicId, ParticipantKind.Team, _moviePublicIds[13]);
+    await PlayPickAsync(
+      _draftPartPublicId,
+      14,
+      22,
+      _teamBPublicId,
+      ParticipantKind.Team,
+      _moviePublicIds[13]
+    );
 
     // Team A vetoes Team B's position-14 pick (playOrder=22 is now the max)
     await ApplyVetoAsync(_draftPartPublicId, 22, _teamAPublicId, ParticipantKind.Team);
@@ -274,31 +316,40 @@ public sealed class SpielbergTeamsMegaDraft_Tests(DraftsIntegrationTestWebAppFac
     await AddTeamParticipantAsync(partPublicId, _teamBPublicId);
     await AddPrimaryHostAsync(partPublicId, Shared.PhilHostPublicId);
 
-    var movie = Movie.Create("Guard Test Movie", $"m_{Guid.NewGuid():N}", MediaType.Movie, Guid.NewGuid()).Value;
+    var movie = Movie
+      .Create("Guard Test Movie", $"m_{Guid.NewGuid():N}", MediaType.Movie, Guid.NewGuid())
+      .Value;
     DbContext.Movies.Add(movie);
     await DbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
     // Start the draft first (needs positions — one per team participant)
-    await SetPositionsAsync(partPublicId,
-    [
-      new DraftPositionRequest { Name = "Team A", Picks = [1, 3, 5, 7] },
-      new DraftPositionRequest { Name = "Team B", Picks = [2, 4, 6] }
-    ]);
+    await SetPositionsAsync(
+      partPublicId,
+      [
+        new DraftPositionRequest { Name = "Team A", Picks = [1, 3, 5, 7] },
+        new DraftPositionRequest { Name = "Team B", Picks = [2, 4, 6] },
+      ]
+    );
     await StartDraftPartAsync(draftPublicId);
 
     // Attempt to play a pick using a Drafter (not a team)
-    var result = await Sender.Send(new PlayPickCommand
-    {
-      DraftPartId = partPublicId,
-      Position = 7,
-      PlayOrder = 7,
-      ParticipantPublicId = _clayDrafterPublicId,
-      ParticipantKind = ParticipantKind.Drafter,
-      MoviePublicId = movie.PublicId,
-      ActedByPublicId = _clayDrafterPublicId
-    }, TestContext.Current.CancellationToken);
+    var result = await Sender.Send(
+      new PlayPickCommand
+      {
+        DraftPartId = partPublicId,
+        Position = 7,
+        PlayOrder = 7,
+        ParticipantPublicId = _clayDrafterPublicId,
+        ParticipantKind = ParticipantKind.Drafter,
+        MoviePublicId = movie.PublicId,
+        ActedByPublicId = _clayDrafterPublicId,
+      },
+      TestContext.Current.CancellationToken
+    );
 
-    result.IsFailure.Should().BeTrue("Cannot pick as individual Drafter when only team participants are registered");
+    result
+      .IsFailure.Should()
+      .BeTrue("Cannot pick as individual Drafter when only team participants are registered");
   }
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -315,7 +366,14 @@ public sealed class SpielbergTeamsMegaDraft_Tests(DraftsIntegrationTestWebAppFac
     {
       var movieIdx = pos - 1;
       var (team, _) = TeamForPosition(pos);
-      await PlayPickAsync(_draftPartPublicId, pos, pos, team, ParticipantKind.Team, _moviePublicIds[movieIdx]);
+      await PlayPickAsync(
+        _draftPartPublicId,
+        pos,
+        pos,
+        team,
+        ParticipantKind.Team,
+        _moviePublicIds[movieIdx]
+      );
     }
   }
 
@@ -324,17 +382,17 @@ public sealed class SpielbergTeamsMegaDraft_Tests(DraftsIntegrationTestWebAppFac
   {
     return (position % 3) switch
     {
-      1 => (_teamAPublicId, position - 1),   // positions 1,4,7,10,13,16,19
-      2 => (_teamBPublicId, position - 1),   // positions 2,5,8,11,14,17,20
-      0 => (_teamCPublicId, position - 1),   // positions 3,6,9,12,15,18,21
-      _ => throw new InvalidOperationException()
+      1 => (_teamAPublicId, position - 1), // positions 1,4,7,10,13,16,19
+      2 => (_teamBPublicId, position - 1), // positions 2,5,8,11,14,17,20
+      0 => (_teamCPublicId, position - 1), // positions 3,6,9,12,15,18,21
+      _ => throw new InvalidOperationException(),
     };
   }
 
   private async Task<Guid> GetTeamInternalIdAsync(string teamPublicId)
   {
-    var id = await DbContext.DrafterTeams
-      .Where(t => t.PublicId == teamPublicId)
+    var id = await DbContext
+      .DrafterTeams.Where(t => t.PublicId == teamPublicId)
       .Select(t => t.Id)
       .FirstAsync(TestContext.Current.CancellationToken);
     return id.Value;

@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { TMDB_IMAGE_BASE } from "@/services/movies/fetch-movies";
+import { TMDB_IMAGE_BASE } from "@/services/movies/fetch-tmdb";
 
 interface PoolMovie {
   tmdbId: number;

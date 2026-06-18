@@ -177,7 +177,7 @@ export default function MyDraftTabs({ detail, accessToken }: MyDraftTabsProps) {
                   </p>
                 </div>
                 <Link
-                  href={`/gameplay/${p.draftPartPublicId ?? ""}`}
+                  href={`/draft-parts/${p.draftPartPublicId ?? ""}/live`}
                   className="bg-sd-blue text-white font-oswald font-medium uppercase tracking-wide text-xs px-4 py-2 hover:bg-sd-blue/90"
                 >
                   Open

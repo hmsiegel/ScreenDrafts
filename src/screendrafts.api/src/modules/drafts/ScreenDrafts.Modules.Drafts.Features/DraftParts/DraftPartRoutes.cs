@@ -43,8 +43,8 @@ internal static class DraftPartRoutes
 
   // Vetos and Veto Overrides
   public const string ApplyVeto = ById + "/picks/{playOrder}/veto";
-  public const string ApplyVetoOverride = ById + "/veto-override/{pickId}";
-  public const string ApplyCommissionerOverride = ById + "/commissioner-override/{pickId}";
+  public const string ApplyVetoOverride = ById + "/veto-override/{playOrder}";
+  public const string ApplyCommissionerOverride = ById + "/commissioner-override/{playOrder}";
 
   public const string SetCommunityLimits = ById + "/community-limits";
 
@@ -75,7 +75,7 @@ internal static class DraftPartRoutes
   public const string Attendances = ById + "/attendances";
   public const string AttendanceByPerson = ById + "/attendances/{personPublicId}";
   public const string AttendanceConfirm = AttendanceByPerson + "/confirm";
-  public const string AttendanceJoin = AttendanceByPerson + "/join";
+  public const string AttendanceJoin = Attendances + "/join";
   public const string AttendanceWithdraw = AttendanceByPerson + "/withdraw";
   public const string AttendanceReinstate = AttendanceByPerson + "/reinstate";
 

@@ -22,7 +22,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<BulkAddCandidateEntriesReq
 
   public override async Task HandleAsync(BulkAddCandidateEntriesRequest req, CancellationToken ct)
   {
-    var actorPublicId = User.GetPublicId()!;
+    var actorPublicId = User.GetUserPublicId()!;
 
     if (string.IsNullOrWhiteSpace(actorPublicId))
     {

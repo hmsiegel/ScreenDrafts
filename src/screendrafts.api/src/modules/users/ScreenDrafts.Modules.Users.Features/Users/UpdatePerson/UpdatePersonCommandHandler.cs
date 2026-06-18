@@ -13,7 +13,7 @@ internal sealed class UpdatePersonCommandHandler(IUserRepository userRepository)
 
     if (user is null)
     {
-      return Result.Failure(UserErrors.NotFound(request.UserId));
+      return Result.Failure(Domain.Users.Errors.UserErrors.NotFound(request.UserId));
     }
 
     user.LinkPerson(request.PersonId, request.PersonPublicId);

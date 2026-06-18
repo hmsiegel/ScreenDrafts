@@ -1,4 +1,4 @@
-using ScreenDrafts.Modules.Drafts.IntegrationTests.Helpers;
+﻿using ScreenDrafts.Modules.Drafts.IntegrationTests.Helpers;
 
 namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Scenarios;
 
@@ -35,7 +35,7 @@ public sealed class SorkinSuperDraft_Tests(DraftsIntegrationTestWebAppFactory fa
 
   protected override async Task OnInitializeAsync()
   {
-    await Shared.SeedAsync(Sender);
+    await Shared.SeedAsync(Sender, FakeUsersApi);
     await Media.SeedAsync(DbContext);
     EmailCapture.Clear();
     HubCapture.Clear();
@@ -49,7 +49,8 @@ public sealed class SorkinSuperDraft_Tests(DraftsIntegrationTestWebAppFactory fa
     _draftPublicId = await CreateDraftAsync(
       "Aaron Sorkin Super Draft",
       DraftType.Super.Value,
-      Shared.RegularSeriesId);
+      Shared.RegularSeriesId
+    );
 
     await ProcessOutboxAsync();
 
@@ -68,40 +69,62 @@ public sealed class SorkinSuperDraft_Tests(DraftsIntegrationTestWebAppFactory fa
     // Step 5 — SetDraftPositions
     // Clay wins trivia → gets positions 1,3,5,7,9 with HasBonusVeto = true
     // Darren → gets positions 2,4,6,8,10
-    await SetPositionsAsync(_draftPartPublicId,
-    [
-      new DraftPositionRequest
-      {
-        Name = "Clay",
-        Picks = [1, 3, 5, 7, 9],
-        HasBonusVeto = true
-      },
-      new DraftPositionRequest
-      {
-        Name = "Darren",
-        Picks = [2, 4, 6, 8, 10]
-      }
-    ]);
+    await SetPositionsAsync(
+      _draftPartPublicId,
+      [
+        new DraftPositionRequest
+        {
+          Name = "Clay",
+          Picks = [1, 3, 5, 7, 9],
+          HasBonusVeto = true,
+        },
+        new DraftPositionRequest { Name = "Darren", Picks = [2, 4, 6, 8, 10] },
+      ]
+    );
 
     // Step 6 — StartDraft
     await StartDraftPartAsync(_draftPublicId);
 
     // Step 7 — AssignTriviaResults (Clay wins: 5 questions, Darren: 2 questions)
-    await AssignTriviaAsync(_draftPartPublicId,
-    [
-      (_clayDrafterPublicId, ParticipantKind.Drafter, 1, 5),
-      (_darrenDrafterPublicId, ParticipantKind.Drafter, 2, 2)
-    ]);
+    await AssignTriviaAsync(
+      _draftPartPublicId,
+      [
+        (_clayDrafterPublicId, ParticipantKind.Drafter, 1, 5),
+        (_darrenDrafterPublicId, ParticipantKind.Drafter, 2, 2),
+      ]
+    );
 
     // Step 8 — AssignParticipantsToPositions
     var clayPosId = await GetPositionPublicIdByNameAsync(_draftPartPublicId, "Clay");
     var darrenPosId = await GetPositionPublicIdByNameAsync(_draftPartPublicId, "Darren");
-    await AssignParticipantToPositionAsync(_draftPartPublicId, clayPosId, _clayDrafterPublicId, ParticipantKind.Drafter);
-    await AssignParticipantToPositionAsync(_draftPartPublicId, darrenPosId, _darrenDrafterPublicId, ParticipantKind.Drafter);
+    await AssignParticipantToPositionAsync(
+      _draftPartPublicId,
+      clayPosId,
+      _clayDrafterPublicId,
+      ParticipantKind.Drafter
+    );
+    await AssignParticipantToPositionAsync(
+      _draftPartPublicId,
+      darrenPosId,
+      _darrenDrafterPublicId,
+      ParticipantKind.Drafter
+    );
 
     // Seed Sorkin pool movies with TmdbIds so pool can reference them
     // Using fictional TmdbIds in 30001–30010 range for test isolation
-    var sorkinTmdbIds = new[] { 30001, 30002, 30003, 30004, 30005, 30006, 30007, 30008, 30009, 30010 };
+    var sorkinTmdbIds = new[]
+    {
+      30001,
+      30002,
+      30003,
+      30004,
+      30005,
+      30006,
+      30007,
+      30008,
+      30009,
+      30010,
+    };
     var sorkinTitles = new[]
     {
       "A Few Good Men",
@@ -113,25 +136,36 @@ public sealed class SorkinSuperDraft_Tests(DraftsIntegrationTestWebAppFactory fa
       "Steve Jobs",
       "Molly's Game",
       "The Trial of the Chicago 7",
-      "Being the Ricardos"
+      "Being the Ricardos",
     };
     var sorkinImdbIds = new[]
     {
-      "tt0104257", "tt0107497", "tt0112346", "tt0472062", "tt1285016",
-      "tt1210166", "tt2080374", "tt4669788", "tt1070874", "tt6009292"
+      "tt0104257",
+      "tt0107497",
+      "tt0112346",
+      "tt0472062",
+      "tt1285016",
+      "tt1210166",
+      "tt2080374",
+      "tt4669788",
+      "tt1070874",
+      "tt6009292",
     };
 
     _moviePublicIds = new string[10];
     for (var i = 0; i < 10; i++)
     {
       var publicId = $"m_{Guid.NewGuid():N}";
-      var movie = Movie.Create(
-        sorkinTitles[i],
-        publicId,
-        MediaType.Movie,
-        Guid.NewGuid(),
-        imdbId: sorkinImdbIds[i],
-        tmdbId: sorkinTmdbIds[i]).Value;
+      var movie = Movie
+        .Create(
+          sorkinTitles[i],
+          publicId,
+          MediaType.Movie,
+          Guid.NewGuid(),
+          imdbId: sorkinImdbIds[i],
+          tmdbId: sorkinTmdbIds[i]
+        )
+        .Value;
       DbContext.Movies.Add(movie);
       _moviePublicIds[i] = publicId;
     }
@@ -163,8 +197,8 @@ public sealed class SorkinSuperDraft_Tests(DraftsIntegrationTestWebAppFactory fa
   {
     await PlayAllPicksAsync();
 
-    var picks = await DbContext.Picks
-      .Where(p => p.DraftPart.PublicId == _draftPartPublicId)
+    var picks = await DbContext
+      .Picks.Where(p => p.DraftPart.PublicId == _draftPartPublicId)
       .ToListAsync(TestContext.Current.CancellationToken);
 
     picks.Should().HaveCount(10);
@@ -176,11 +210,13 @@ public sealed class SorkinSuperDraft_Tests(DraftsIntegrationTestWebAppFactory fa
     await PlayAllPicksAsync();
 
     var clayId = await GetDrafterInternalIdAsync(_clayDrafterPublicId);
-    var count = await DbContext.Picks
-      .CountAsync(p =>
-        p.DraftPart.PublicId == _draftPartPublicId &&
-        p.PlayedByParticipantKindValue == ParticipantKind.Drafter &&
-        p.PlayedByParticipantIdValue == clayId, TestContext.Current.CancellationToken);
+    var count = await DbContext.Picks.CountAsync(
+      p =>
+        p.DraftPart.PublicId == _draftPartPublicId
+        && p.PlayedByParticipantKindValue == ParticipantKind.Drafter
+        && p.PlayedByParticipantIdValue == clayId,
+      TestContext.Current.CancellationToken
+    );
 
     count.Should().Be(5, "Clay (trivia winner) should have 5 picks in positions 1,3,5,7,9");
   }
@@ -191,11 +227,13 @@ public sealed class SorkinSuperDraft_Tests(DraftsIntegrationTestWebAppFactory fa
     await PlayAllPicksAsync();
 
     var darrenId = await GetDrafterInternalIdAsync(_darrenDrafterPublicId);
-    var count = await DbContext.Picks
-      .CountAsync(p =>
-        p.DraftPart.PublicId == _draftPartPublicId &&
-        p.PlayedByParticipantKindValue == ParticipantKind.Drafter &&
-        p.PlayedByParticipantIdValue == darrenId, TestContext.Current.CancellationToken);
+    var count = await DbContext.Picks.CountAsync(
+      p =>
+        p.DraftPart.PublicId == _draftPartPublicId
+        && p.PlayedByParticipantKindValue == ParticipantKind.Drafter
+        && p.PlayedByParticipantIdValue == darrenId,
+      TestContext.Current.CancellationToken
+    );
 
     count.Should().Be(5, "Darren should have 5 picks in positions 2,4,6,8,10");
   }
@@ -206,8 +244,8 @@ public sealed class SorkinSuperDraft_Tests(DraftsIntegrationTestWebAppFactory fa
     await PlayAllPicksAsync();
     await CompleteDraftPartAsync(_draftPublicId);
 
-    var draftPart = await DbContext.DraftParts
-      .AsNoTracking()
+    var draftPart = await DbContext
+      .DraftParts.AsNoTracking()
       .FirstAsync(dp => dp.PublicId == _draftPartPublicId, TestContext.Current.CancellationToken);
 
     draftPart.Status.Should().Be(DraftPartStatus.Completed);
@@ -222,8 +260,22 @@ public sealed class SorkinSuperDraft_Tests(DraftsIntegrationTestWebAppFactory fa
   public async Task SorkinSuperDraft_Clay_CanUseStartingVeto_OnDarrenPickAsync()
   {
     // Play positions 10-3, then veto
-    await PlayPickAsync(_draftPartPublicId, 10, 10, _darrenDrafterPublicId, ParticipantKind.Drafter, _moviePublicIds[9]);
-    await PlayPickAsync(_draftPartPublicId, 9, 9, _clayDrafterPublicId, ParticipantKind.Drafter, _moviePublicIds[8]);
+    await PlayPickAsync(
+      _draftPartPublicId,
+      10,
+      10,
+      _darrenDrafterPublicId,
+      ParticipantKind.Drafter,
+      _moviePublicIds[9]
+    );
+    await PlayPickAsync(
+      _draftPartPublicId,
+      9,
+      9,
+      _clayDrafterPublicId,
+      ParticipantKind.Drafter,
+      _moviePublicIds[8]
+    );
 
     // Clay uses his starting veto on Darren's position 10 pick
     await ApplyVetoAsync(_draftPartPublicId, 10, _clayDrafterPublicId, ParticipantKind.Drafter);
@@ -235,14 +287,33 @@ public sealed class SorkinSuperDraft_Tests(DraftsIntegrationTestWebAppFactory fa
   public async Task SorkinSuperDraft_Clay_CanUseVetoOverride_AfterVetoAsync()
   {
     // Play positions 10-9, veto position 10, then override it
-    await PlayPickAsync(_draftPartPublicId, 10, 10, _darrenDrafterPublicId, ParticipantKind.Drafter, _moviePublicIds[9]);
-    await PlayPickAsync(_draftPartPublicId, 9, 9, _clayDrafterPublicId, ParticipantKind.Drafter, _moviePublicIds[8]);
+    await PlayPickAsync(
+      _draftPartPublicId,
+      10,
+      10,
+      _darrenDrafterPublicId,
+      ParticipantKind.Drafter,
+      _moviePublicIds[9]
+    );
+    await PlayPickAsync(
+      _draftPartPublicId,
+      9,
+      9,
+      _clayDrafterPublicId,
+      ParticipantKind.Drafter,
+      _moviePublicIds[8]
+    );
 
     // Clay vetoes position 10 (starting veto)
     await ApplyVetoAsync(_draftPartPublicId, 10, _clayDrafterPublicId, ParticipantKind.Drafter);
 
     // Clay uses bonus veto override to override the veto (keeping Darren's pick)
-    await ApplyVetoOverrideAsync(_draftPartPublicId, 10, _clayDrafterPublicId, ParticipantKind.Drafter);
+    await ApplyVetoOverrideAsync(
+      _draftPartPublicId,
+      10,
+      _clayDrafterPublicId,
+      ParticipantKind.Drafter
+    );
 
     await AssertVetoOverriddenAsync(_draftPartPublicId, 10);
   }
@@ -251,28 +322,68 @@ public sealed class SorkinSuperDraft_Tests(DraftsIntegrationTestWebAppFactory fa
   public async Task SorkinSuperDraft_BonusVeto_MeansClayHasTwoVetoes_TotalAsync()
   {
     // Play four picks
-    await PlayPickAsync(_draftPartPublicId, 10, 10, _darrenDrafterPublicId, ParticipantKind.Drafter, _moviePublicIds[9]);
-    await PlayPickAsync(_draftPartPublicId, 9, 9, _clayDrafterPublicId, ParticipantKind.Drafter, _moviePublicIds[8]);
-    await PlayPickAsync(_draftPartPublicId, 8, 8, _darrenDrafterPublicId, ParticipantKind.Drafter, _moviePublicIds[7]);
-    await PlayPickAsync(_draftPartPublicId, 7, 7, _clayDrafterPublicId, ParticipantKind.Drafter, _moviePublicIds[6]);
+    await PlayPickAsync(
+      _draftPartPublicId,
+      10,
+      10,
+      _darrenDrafterPublicId,
+      ParticipantKind.Drafter,
+      _moviePublicIds[9]
+    );
+    await PlayPickAsync(
+      _draftPartPublicId,
+      9,
+      9,
+      _clayDrafterPublicId,
+      ParticipantKind.Drafter,
+      _moviePublicIds[8]
+    );
+    await PlayPickAsync(
+      _draftPartPublicId,
+      8,
+      8,
+      _darrenDrafterPublicId,
+      ParticipantKind.Drafter,
+      _moviePublicIds[7]
+    );
+    await PlayPickAsync(
+      _draftPartPublicId,
+      7,
+      7,
+      _clayDrafterPublicId,
+      ParticipantKind.Drafter,
+      _moviePublicIds[6]
+    );
 
     // Clay uses first veto on playOrder=10 (the current max)
     await ApplyVetoAsync(_draftPartPublicId, 10, _clayDrafterPublicId, ParticipantKind.Drafter);
 
     // Play one more pick to advance the max playOrder
-    await PlayPickAsync(_draftPartPublicId, 6, 11, _darrenDrafterPublicId, ParticipantKind.Drafter, _moviePublicIds[5]);
+    await PlayPickAsync(
+      _draftPartPublicId,
+      6,
+      11,
+      _darrenDrafterPublicId,
+      ParticipantKind.Drafter,
+      _moviePublicIds[5]
+    );
 
     // Clay uses second veto (bonus) on the new max playOrder=11 — should succeed
-    var result = await Sender.Send(new ApplyVetoCommand
-    {
-      DraftPartId = _draftPartPublicId,
-      PlayOrder = 11,
-      ParticipantPublicId = _clayDrafterPublicId,
-      ParticipantKind = ParticipantKind.Drafter,
-      ActorPublicId = _clayDrafterPublicId
-    }, TestContext.Current.CancellationToken);
+    var result = await Sender.Send(
+      new ApplyVetoCommand
+      {
+        DraftPartId = _draftPartPublicId,
+        PlayOrder = 11,
+        ParticipantPublicId = _clayDrafterPublicId,
+        ParticipantKind = ParticipantKind.Drafter,
+        ActorPublicId = _clayDrafterPublicId,
+      },
+      TestContext.Current.CancellationToken
+    );
 
-    result.IsSuccess.Should().BeTrue("Clay should have a second veto from the bonus HasBonusVeto position");
+    result
+      .IsSuccess.Should()
+      .BeTrue("Clay should have a second veto from the bonus HasBonusVeto position");
   }
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -282,26 +393,64 @@ public sealed class SorkinSuperDraft_Tests(DraftsIntegrationTestWebAppFactory fa
   [Fact]
   public async Task SorkinSuperDraft_Darren_HasOnlyOneVeto_ShouldFailOnSecondAsync()
   {
-    await PlayPickAsync(_draftPartPublicId, 10, 10, _darrenDrafterPublicId, ParticipantKind.Drafter, _moviePublicIds[9]);
-    await PlayPickAsync(_draftPartPublicId, 9, 9, _clayDrafterPublicId, ParticipantKind.Drafter, _moviePublicIds[8]);
-    await PlayPickAsync(_draftPartPublicId, 8, 8, _darrenDrafterPublicId, ParticipantKind.Drafter, _moviePublicIds[7]);
-    await PlayPickAsync(_draftPartPublicId, 7, 7, _clayDrafterPublicId, ParticipantKind.Drafter, _moviePublicIds[6]);
+    await PlayPickAsync(
+      _draftPartPublicId,
+      10,
+      10,
+      _darrenDrafterPublicId,
+      ParticipantKind.Drafter,
+      _moviePublicIds[9]
+    );
+    await PlayPickAsync(
+      _draftPartPublicId,
+      9,
+      9,
+      _clayDrafterPublicId,
+      ParticipantKind.Drafter,
+      _moviePublicIds[8]
+    );
+    await PlayPickAsync(
+      _draftPartPublicId,
+      8,
+      8,
+      _darrenDrafterPublicId,
+      ParticipantKind.Drafter,
+      _moviePublicIds[7]
+    );
+    await PlayPickAsync(
+      _draftPartPublicId,
+      7,
+      7,
+      _clayDrafterPublicId,
+      ParticipantKind.Drafter,
+      _moviePublicIds[6]
+    );
 
     // Darren uses his only veto on playOrder=10 (the current max)
     await ApplyVetoAsync(_draftPartPublicId, 10, _darrenDrafterPublicId, ParticipantKind.Drafter);
 
     // Play one more pick to advance the max playOrder
-    await PlayPickAsync(_draftPartPublicId, 6, 11, _darrenDrafterPublicId, ParticipantKind.Drafter, _moviePublicIds[5]);
+    await PlayPickAsync(
+      _draftPartPublicId,
+      6,
+      11,
+      _darrenDrafterPublicId,
+      ParticipantKind.Drafter,
+      _moviePublicIds[5]
+    );
 
     // Darren tries to veto again on the new max — should fail (no vetoes remaining)
-    var result = await Sender.Send(new ApplyVetoCommand
-    {
-      DraftPartId = _draftPartPublicId,
-      PlayOrder = 11,
-      ParticipantPublicId = _darrenDrafterPublicId,
-      ParticipantKind = ParticipantKind.Drafter,
-      ActorPublicId = _darrenDrafterPublicId
-    }, TestContext.Current.CancellationToken);
+    var result = await Sender.Send(
+      new ApplyVetoCommand
+      {
+        DraftPartId = _draftPartPublicId,
+        PlayOrder = 11,
+        ParticipantPublicId = _darrenDrafterPublicId,
+        ParticipantKind = ParticipantKind.Drafter,
+        ActorPublicId = _darrenDrafterPublicId,
+      },
+      TestContext.Current.CancellationToken
+    );
 
     result.IsFailure.Should().BeTrue("Darren only has 1 veto and should fail on a second attempt");
   }
@@ -309,12 +458,12 @@ public sealed class SorkinSuperDraft_Tests(DraftsIntegrationTestWebAppFactory fa
   [Fact]
   public async Task SorkinSuperDraft_Pool_ShouldContainTenMoviesAsync()
   {
-    var draft = await DbContext.Drafts
-      .Where(d => d.PublicId == _draftPublicId)
+    var draft = await DbContext
+      .Drafts.Where(d => d.PublicId == _draftPublicId)
       .FirstAsync(TestContext.Current.CancellationToken);
 
-    var pool = await DbContext.DraftPools
-      .Include(p => p.TmdbIds)
+    var pool = await DbContext
+      .DraftPools.Include(p => p.TmdbIds)
       .FirstAsync(p => p.DraftId == draft.Id, TestContext.Current.CancellationToken);
 
     pool.TmdbIds.Should().HaveCount(10, "All 10 Sorkin films should be in the pool");
@@ -328,10 +477,29 @@ public sealed class SorkinSuperDraft_Tests(DraftsIntegrationTestWebAppFactory fa
   public async Task SorkinSuperDraft_VetoAndOverride_ShouldBroadcastPickListUpdatedTwiceAsync()
   {
     // Play two picks then veto one, then override the veto.
-    await PlayPickAsync(_draftPartPublicId, 10, 10, _darrenDrafterPublicId, ParticipantKind.Drafter, _moviePublicIds[9]);
-    await PlayPickAsync(_draftPartPublicId, 9, 9, _clayDrafterPublicId, ParticipantKind.Drafter, _moviePublicIds[8]);
+    await PlayPickAsync(
+      _draftPartPublicId,
+      10,
+      10,
+      _darrenDrafterPublicId,
+      ParticipantKind.Drafter,
+      _moviePublicIds[9]
+    );
+    await PlayPickAsync(
+      _draftPartPublicId,
+      9,
+      9,
+      _clayDrafterPublicId,
+      ParticipantKind.Drafter,
+      _moviePublicIds[8]
+    );
     await ApplyVetoAsync(_draftPartPublicId, 10, _clayDrafterPublicId, ParticipantKind.Drafter);
-    await ApplyVetoOverrideAsync(_draftPartPublicId, 10, _clayDrafterPublicId, ParticipantKind.Drafter);
+    await ApplyVetoOverrideAsync(
+      _draftPartPublicId,
+      10,
+      _clayDrafterPublicId,
+      ParticipantKind.Drafter
+    );
 
     // Process outbox to capture PickAdded + VetoApplied + VetoOverrideApplied events.
     await ProcessOutboxAsync();
@@ -341,10 +509,17 @@ public sealed class SorkinSuperDraft_Tests(DraftsIntegrationTestWebAppFactory fa
 
     // Picks fire PickAdded (PickAddedIntegrationEventConsumer) and PickSubmitted
     // (PickSubmittedIntegrationEventConsumer). Veto fires VetoApplied. Override fires VetoOverrideApplied.
-    HubCapture.SentMessages.Should().NotBeEmpty("pick/veto/override operations should all trigger hub broadcasts");
-    HubCapture.SentMessages.Should().AllSatisfy(
-      m => m.Method.Should().BeOneOf("PickAdded", "PickSubmitted", "VetoApplied", "VetoOverrideApplied"),
-      "all hub broadcasts must be a recognised pick/veto method");
+    HubCapture
+      .SentMessages.Should()
+      .NotBeEmpty("pick/veto/override operations should all trigger hub broadcasts");
+    HubCapture
+      .SentMessages.Should()
+      .AllSatisfy(
+        m =>
+          m.Method.Should()
+            .BeOneOf("PickAdded", "PickSubmitted", "VetoApplied", "VetoOverrideApplied"),
+        "all hub broadcasts must be a recognised pick/veto method"
+      );
   }
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -354,22 +529,92 @@ public sealed class SorkinSuperDraft_Tests(DraftsIntegrationTestWebAppFactory fa
   private async Task PlayAllPicksAsync()
   {
     // Snake order: 10 → 1 (Darren picks even positions, Clay picks odd)
-    await PlayPickAsync(_draftPartPublicId, 10, 10, _darrenDrafterPublicId, ParticipantKind.Drafter, _moviePublicIds[9]);
-    await PlayPickAsync(_draftPartPublicId, 9, 9, _clayDrafterPublicId, ParticipantKind.Drafter, _moviePublicIds[8]);
-    await PlayPickAsync(_draftPartPublicId, 8, 8, _darrenDrafterPublicId, ParticipantKind.Drafter, _moviePublicIds[7]);
-    await PlayPickAsync(_draftPartPublicId, 7, 7, _clayDrafterPublicId, ParticipantKind.Drafter, _moviePublicIds[6]);
-    await PlayPickAsync(_draftPartPublicId, 6, 6, _darrenDrafterPublicId, ParticipantKind.Drafter, _moviePublicIds[5]);
-    await PlayPickAsync(_draftPartPublicId, 5, 5, _clayDrafterPublicId, ParticipantKind.Drafter, _moviePublicIds[4]);
-    await PlayPickAsync(_draftPartPublicId, 4, 4, _darrenDrafterPublicId, ParticipantKind.Drafter, _moviePublicIds[3]);
-    await PlayPickAsync(_draftPartPublicId, 3, 3, _clayDrafterPublicId, ParticipantKind.Drafter, _moviePublicIds[2]);
-    await PlayPickAsync(_draftPartPublicId, 2, 2, _darrenDrafterPublicId, ParticipantKind.Drafter, _moviePublicIds[1]);
-    await PlayPickAsync(_draftPartPublicId, 1, 1, _clayDrafterPublicId, ParticipantKind.Drafter, _moviePublicIds[0]);
+    await PlayPickAsync(
+      _draftPartPublicId,
+      10,
+      10,
+      _darrenDrafterPublicId,
+      ParticipantKind.Drafter,
+      _moviePublicIds[9]
+    );
+    await PlayPickAsync(
+      _draftPartPublicId,
+      9,
+      9,
+      _clayDrafterPublicId,
+      ParticipantKind.Drafter,
+      _moviePublicIds[8]
+    );
+    await PlayPickAsync(
+      _draftPartPublicId,
+      8,
+      8,
+      _darrenDrafterPublicId,
+      ParticipantKind.Drafter,
+      _moviePublicIds[7]
+    );
+    await PlayPickAsync(
+      _draftPartPublicId,
+      7,
+      7,
+      _clayDrafterPublicId,
+      ParticipantKind.Drafter,
+      _moviePublicIds[6]
+    );
+    await PlayPickAsync(
+      _draftPartPublicId,
+      6,
+      6,
+      _darrenDrafterPublicId,
+      ParticipantKind.Drafter,
+      _moviePublicIds[5]
+    );
+    await PlayPickAsync(
+      _draftPartPublicId,
+      5,
+      5,
+      _clayDrafterPublicId,
+      ParticipantKind.Drafter,
+      _moviePublicIds[4]
+    );
+    await PlayPickAsync(
+      _draftPartPublicId,
+      4,
+      4,
+      _darrenDrafterPublicId,
+      ParticipantKind.Drafter,
+      _moviePublicIds[3]
+    );
+    await PlayPickAsync(
+      _draftPartPublicId,
+      3,
+      3,
+      _clayDrafterPublicId,
+      ParticipantKind.Drafter,
+      _moviePublicIds[2]
+    );
+    await PlayPickAsync(
+      _draftPartPublicId,
+      2,
+      2,
+      _darrenDrafterPublicId,
+      ParticipantKind.Drafter,
+      _moviePublicIds[1]
+    );
+    await PlayPickAsync(
+      _draftPartPublicId,
+      1,
+      1,
+      _clayDrafterPublicId,
+      ParticipantKind.Drafter,
+      _moviePublicIds[0]
+    );
   }
 
   private async Task<Guid> GetDrafterInternalIdAsync(string drafterPublicId)
   {
-    var id = await DbContext.Drafters
-      .Where(d => d.PublicId == drafterPublicId)
+    var id = await DbContext
+      .Drafters.Where(d => d.PublicId == drafterPublicId)
       .Select(d => d.Id)
       .FirstAsync(TestContext.Current.CancellationToken);
     return id.Value;

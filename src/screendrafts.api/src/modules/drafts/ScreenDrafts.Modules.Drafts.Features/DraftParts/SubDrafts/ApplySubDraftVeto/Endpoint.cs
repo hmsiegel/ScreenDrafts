@@ -20,7 +20,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<ApplySubDraftVetoRequest>
 
   public override async Task HandleAsync(ApplySubDraftVetoRequest req, CancellationToken ct)
   {
-    var actedBy = User.GetPublicId();
+    var actedBy = User.GetUserPublicId();
 
     if(!ParticipantKind.TryFromValue(req.IssuerKind, out var issuerKind))
     {

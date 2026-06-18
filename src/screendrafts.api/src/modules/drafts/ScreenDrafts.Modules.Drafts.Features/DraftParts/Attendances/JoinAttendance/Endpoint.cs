@@ -26,28 +26,22 @@ internal sealed class Endpoint : ScreenDraftsEndpointWithoutRequest
 
   public override async Task HandleAsync(CancellationToken ct)
   {
-    var publicId = Route<string>("draftPartId");
-    var personPublicId = Route<string>("personPublicId");
-    var callerPersonPublicId = User.GetPublicId() ?? string.Empty;
+    var draftPartId = Route<string>("draftPartId");
+    var userId = User.GetUserId();
 
-    if (string.IsNullOrWhiteSpace(callerPersonPublicId))
+    if (userId == Guid.Empty)
     {
       await Send.UnauthorizedAsync(ct);
       return;
     }
 
-    if (string.IsNullOrWhiteSpace(publicId) || string.IsNullOrWhiteSpace(personPublicId))
+    if (string.IsNullOrWhiteSpace(draftPartId))
     {
       await Send.ErrorsAsync(StatusCodes.Status400BadRequest, cancellation: ct);
       return;
     }
 
-    var command = new JoinAttendanceCommand
-    {
-      DraftPartId = publicId,
-      PersonPublicId = personPublicId,
-      CallerPersonPublicId = callerPersonPublicId,
-    };
+    var command = new JoinAttendanceCommand { DraftPartId = draftPartId, UserId = userId };
 
     var result = await Sender.Send(command, ct);
 

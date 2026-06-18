@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.Picks.RevealPick;
 
-internal sealed class Endpoint : ScreenDraftsEndpoint<RevealPickRequest>
+internal sealed class Endpoint : ScreenDraftsEndpointWithoutRequest
 {
   public override void Configure()
   {
@@ -8,32 +8,41 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<RevealPickRequest>
     Description(x =>
     {
       x.WithTags(DraftsOpenApi.Tags.DraftParts)
-      .WithName(DraftsOpenApi.Names.DraftParts_PickReveal)
-      .Produces(StatusCodes.Status204NoContent)
-      .Produces(StatusCodes.Status400BadRequest)
-      .Produces(StatusCodes.Status401Unauthorized)
-      .Produces(StatusCodes.Status403Forbidden)
-      .Produces(StatusCodes.Status404NotFound);
+        .WithName(DraftsOpenApi.Names.DraftParts_PickReveal)
+        .Produces(StatusCodes.Status204NoContent)
+        .Produces(StatusCodes.Status400BadRequest)
+        .Produces(StatusCodes.Status401Unauthorized)
+        .Produces(StatusCodes.Status403Forbidden)
+        .Produces(StatusCodes.Status404NotFound);
     });
     Policies(DraftsAuth.Permissions.PickReveal);
   }
 
-  public override async Task HandleAsync(RevealPickRequest req, CancellationToken ct)
+  public override async Task HandleAsync(CancellationToken ct)
   {
-    var actorPublicId = User.GetPublicId();
+    var userPublicId = User.GetUserPublicId();
 
-    if (string.IsNullOrWhiteSpace(actorPublicId))
+    var draftPartId = Route<string>("draftPartId");
+    var playOrder = Route<int>("playOrder");
+
+    if (string.IsNullOrWhiteSpace(draftPartId))
     {
-      await Send.UnauthorizedAsync(ct);
+      await Send.ErrorsAsync(StatusCodes.Status400BadRequest, cancellation: ct);
+      return;
+    }
+
+    if (userPublicId is null)
+    {
+      await Send.ErrorsAsync(StatusCodes.Status403Forbidden, cancellation: ct);
       return;
     }
 
     var command = new RevealPickCommand
     {
-      DraftPartId = req.DraftPartId,
-      PlayOrder = req.PlayOrder,
-      ActorPublicId = actorPublicId
-    }; 
+      DraftPartId = draftPartId,
+      PlayOrder = playOrder,
+      UserPublicId = userPublicId
+    };
 
     var result = await Sender.Send(command, ct);
 

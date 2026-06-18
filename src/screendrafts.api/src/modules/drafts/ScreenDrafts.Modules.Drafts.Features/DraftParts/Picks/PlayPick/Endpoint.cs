@@ -22,7 +22,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<PlayPickRequest, CreatedId
   {
     ArgumentNullException.ThrowIfNull(req);
 
-    var actorPublicId = User.GetPublicId();
+    var actorPublicId = User.GetUserPublicId();
 
     if (string.IsNullOrWhiteSpace(actorPublicId))
     {

@@ -11,7 +11,6 @@ internal sealed class Validator : AbstractValidator<JoinAttendanceCommand>
   public Validator()
   {
     RuleFor(x => x.DraftPartId).NotEmpty();
-    RuleFor(x => x.PersonPublicId).NotEmpty();
-    RuleFor(x => x.CallerPersonPublicId).NotEmpty();
+    RuleFor(x => x.UserId).NotEmpty();
   }
 }

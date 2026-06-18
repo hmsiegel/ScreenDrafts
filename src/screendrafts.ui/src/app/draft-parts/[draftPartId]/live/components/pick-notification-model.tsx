@@ -9,6 +9,7 @@ interface Props {
   notification: GameplayNotification;
   onDismiss: () => void;
   isPrimaryHost: boolean;
+  isCommissioner: boolean;
   accessToken: string;
   draftPartId: string;
 }
@@ -17,6 +18,7 @@ export function PickNotificationModal({
   notification,
   onDismiss,
   isPrimaryHost,
+  isCommissioner,
   accessToken,
   draftPartId,
 }: Props) {
@@ -24,7 +26,6 @@ export function PickNotificationModal({
   const [confirming, setConfirming] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Auto-dismiss after 8 seconds
   useEffect(() => {
     timerRef.current = setTimeout(onDismiss, 8000);
     return () => {
@@ -44,6 +45,7 @@ export function PickNotificationModal({
     }
   }
 
+  const canUndoVeto = isPrimaryHost || isCommissioner;
   const { kind, payload } = notification;
 
   return (
@@ -82,7 +84,7 @@ export function PickNotificationModal({
             <p className="text-white/50 font-mono text-xs mb-6">
               Play order #{payload.playOrder}
             </p>
-            {isPrimaryHost && (
+            {canUndoVeto && (
               <>
                 {confirming ? (
                   <div className="flex gap-3">

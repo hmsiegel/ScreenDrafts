@@ -1,5 +1,5 @@
 import { type DraftPartPosition } from "@/services/drafts/fetch-draft-parts";
-import { TMDB_IMAGE_BASE } from "@/services/movies/fetch-movies";
+import { TMDB_IMAGE_BASE } from "@/services/movies/fetch-tmdb";
 import Image from "next/image";
 
 interface PositionSlotsGridProps {

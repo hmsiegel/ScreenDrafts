@@ -1,5 +1,7 @@
 ﻿using ScreenDrafts.Common.Abstractions.Errors;
 
+using static System.Runtime.InteropServices.JavaScript.JSType;
+
 namespace ScreenDrafts.Modules.Drafts.Domain.Hosts;
 
 public static class HostErrors
@@ -40,4 +42,9 @@ public static class HostErrors
       "HostError.AlreadyExists",
       $"Host with person ID {personPublicId} already exists."
     );
+
+  public static SDError NotFoundForPerson(string personPublicId) =>
+  SDError.NotFound(
+    "Host.NotFoundForPerson",
+    $"No Host is linked to person '{personPublicId}'.");
 }

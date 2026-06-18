@@ -1,4 +1,4 @@
-using ScreenDrafts.Modules.Drafts.IntegrationTests.Helpers;
+﻿using ScreenDrafts.Modules.Drafts.IntegrationTests.Helpers;
 
 namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Scenarios;
 
@@ -36,45 +36,45 @@ public sealed class ScorseseSuperDraft_Tests(DraftsIntegrationTestWebAppFactory 
   // Part 1 movies (12 Scorsese early films)
   private static readonly string[] Part1ImdbIds =
   [
-    "tt0063876",  // Who's That Knocking at My Door
-    "tt0068232",  // Boxcar Bertha
-    "tt0070379",  // Mean Streets
-    "tt0071115",  // Alice Doesn't Live Here Anymore
-    "tt0075314",  // Taxi Driver
-    "tt0076451",  // New York, New York
-    "tt0077838",  // The Last Waltz
-    "tt0081398",  // Raging Bull
-    "tt0085794",  // The King of Comedy
-    "tt0088680",  // After Hours
-    "tt0090863",  // The Color of Money
-    "tt0095497",  // The Last Temptation of Christ
+    "tt0063876", // Who's That Knocking at My Door
+    "tt0068232", // Boxcar Bertha
+    "tt0070379", // Mean Streets
+    "tt0071115", // Alice Doesn't Live Here Anymore
+    "tt0075314", // Taxi Driver
+    "tt0076451", // New York, New York
+    "tt0077838", // The Last Waltz
+    "tt0081398", // Raging Bull
+    "tt0085794", // The King of Comedy
+    "tt0088680", // After Hours
+    "tt0090863", // The Color of Money
+    "tt0095497", // The Last Temptation of Christ
   ];
 
   // Part 2 movies (10 Scorsese mid-career films)
   private static readonly string[] Part2ImdbIds =
   [
-    "tt0099685",  // Goodfellas
-    "tt0101540",  // Cape Fear
-    "tt0106226",  // The Age of Innocence
-    "tt0112641",  // Casino
-    "tt0119485",  // Kundun
-    "tt0163988",  // Bringing Out the Dead
-    "tt0217505",  // Gangs of New York
-    "tt0338751",  // The Aviator
-    "tt0407887",  // The Departed
-    "tt1130884",  // Shutter Island
+    "tt0099685", // Goodfellas
+    "tt0101540", // Cape Fear
+    "tt0106226", // The Age of Innocence
+    "tt0112641", // Casino
+    "tt0119485", // Kundun
+    "tt0163988", // Bringing Out the Dead
+    "tt0217505", // Gangs of New York
+    "tt0338751", // The Aviator
+    "tt0407887", // The Departed
+    "tt1130884", // Shutter Island
   ];
 
   // Part 3 movies (8 Scorsese late-career films)
   private static readonly string[] Part3ImdbIds =
   [
-    "tt0970179",  // Hugo
-    "tt0993846",  // The Wolf of Wall Street
-    "tt0490215",  // Silence
-    "tt1302006",  // The Irishman
-    "tt0367631",  // No Direction Home
-    "tt5537002",  // Killers of the Flower Moon
-    "tt0893382",  // Shine a Light
+    "tt0970179", // Hugo
+    "tt0993846", // The Wolf of Wall Street
+    "tt0490215", // Silence
+    "tt1302006", // The Irishman
+    "tt0367631", // No Direction Home
+    "tt5537002", // Killers of the Flower Moon
+    "tt0893382", // Shine a Light
     "tt10293552", // Rolling Thunder Revue
   ];
 
@@ -84,22 +84,23 @@ public sealed class ScorseseSuperDraft_Tests(DraftsIntegrationTestWebAppFactory 
 
   protected override async Task OnInitializeAsync()
   {
-    await Shared.SeedAsync(Sender);
+    await Shared.SeedAsync(Sender, FakeUsersApi);
     await Media.SeedAsync(DbContext);
     EmailCapture.Clear();
 
     // Create drafters
-    _clayDrafterPublicId   = await CreateDrafterAsync(Shared.ClayPersonPublicId);
-    _ryanDrafterPublicId   = await CreateDrafterAsync(Shared.RyanPersonPublicId);
+    _clayDrafterPublicId = await CreateDrafterAsync(Shared.ClayPersonPublicId);
+    _ryanDrafterPublicId = await CreateDrafterAsync(Shared.RyanPersonPublicId);
     _darrenDrafterPublicId = await CreateDrafterAsync(Shared.DarrenPersonPublicId);
-    _philDrafterPublicId   = await CreateDrafterAsync(Shared.PhilPersonPublicId);
-    _bryanDrafterPublicId  = await CreateDrafterAsync(Shared.BryanPersonPublicId);
+    _philDrafterPublicId = await CreateDrafterAsync(Shared.PhilPersonPublicId);
+    _bryanDrafterPublicId = await CreateDrafterAsync(Shared.BryanPersonPublicId);
 
     // Step 1 — CreateDraft
     _draftPublicId = await CreateDraftAsync(
       "Martin Scorsese Super Draft",
       DraftType.Super.Value,
-      Shared.RegularSeriesId);
+      Shared.RegularSeriesId
+    );
 
     await ProcessOutboxAsync();
 
@@ -135,8 +136,8 @@ public sealed class ScorseseSuperDraft_Tests(DraftsIntegrationTestWebAppFactory 
     // Play all 12 picks
     await PlayPart1PicksAsync();
 
-    var picks = await DbContext.Picks
-      .Where(p => p.DraftPart.PublicId == _part1PublicId)
+    var picks = await DbContext
+      .Picks.Where(p => p.DraftPart.PublicId == _part1PublicId)
       .ToListAsync(TestContext.Current.CancellationToken);
 
     picks.Should().HaveCount(12);
@@ -149,9 +150,30 @@ public sealed class ScorseseSuperDraft_Tests(DraftsIntegrationTestWebAppFactory 
 
     // Play positions 12 and 11 with lower playOrders, then Ryan's position-10 pick
     // gets the highest playOrder so the community veto can target it
-    await PlayPickAsync(_part1PublicId, 12, 1, _philDrafterPublicId, ParticipantKind.Drafter, _part1MoviePublicIds[11]);
-    await PlayPickAsync(_part1PublicId, 11, 2, _darrenDrafterPublicId, ParticipantKind.Drafter, _part1MoviePublicIds[10]);
-    await PlayPickAsync(_part1PublicId, 10, 3, _ryanDrafterPublicId, ParticipantKind.Drafter, _part1MoviePublicIds[9]);
+    await PlayPickAsync(
+      _part1PublicId,
+      12,
+      1,
+      _philDrafterPublicId,
+      ParticipantKind.Drafter,
+      _part1MoviePublicIds[11]
+    );
+    await PlayPickAsync(
+      _part1PublicId,
+      11,
+      2,
+      _darrenDrafterPublicId,
+      ParticipantKind.Drafter,
+      _part1MoviePublicIds[10]
+    );
+    await PlayPickAsync(
+      _part1PublicId,
+      10,
+      3,
+      _ryanDrafterPublicId,
+      ParticipantKind.Drafter,
+      _part1MoviePublicIds[9]
+    );
 
     // Community vetoes Ryan's position-10 pick (playOrder=3 is the max)
     await ApplyCommunityVetoAsync(_part1PublicId, 3);
@@ -166,8 +188,8 @@ public sealed class ScorseseSuperDraft_Tests(DraftsIntegrationTestWebAppFactory 
     await PlayPart1PicksAsync();
     await CompleteDraftPartAsync(_draftPublicId, 1);
 
-    var part = await DbContext.DraftParts
-      .AsNoTracking()
+    var part = await DbContext
+      .DraftParts.AsNoTracking()
       .FirstAsync(dp => dp.PublicId == _part1PublicId, TestContext.Current.CancellationToken);
 
     part.Status.Should().Be(DraftPartStatus.Completed);
@@ -188,8 +210,8 @@ public sealed class ScorseseSuperDraft_Tests(DraftsIntegrationTestWebAppFactory 
     await SetupPart2Async();
     await PlayPart2PicksAsync();
 
-    var picks = await DbContext.Picks
-      .Where(p => p.DraftPart.PublicId == _part2PublicId)
+    var picks = await DbContext
+      .Picks.Where(p => p.DraftPart.PublicId == _part2PublicId)
       .ToListAsync(TestContext.Current.CancellationToken);
 
     picks.Should().HaveCount(10);
@@ -208,8 +230,22 @@ public sealed class ScorseseSuperDraft_Tests(DraftsIntegrationTestWebAppFactory 
     await SetRollingInVetoesAsync(_part2PublicId, _clayDrafterPublicId, 1);
 
     // Play positions 10 and 9
-    await PlayPickAsync(_part2PublicId, 10, 10, _ryanDrafterPublicId, ParticipantKind.Drafter, _part2MoviePublicIds[9]);
-    await PlayPickAsync(_part2PublicId, 9,   9, _darrenDrafterPublicId, ParticipantKind.Drafter, _part2MoviePublicIds[8]);
+    await PlayPickAsync(
+      _part2PublicId,
+      10,
+      10,
+      _ryanDrafterPublicId,
+      ParticipantKind.Drafter,
+      _part2MoviePublicIds[9]
+    );
+    await PlayPickAsync(
+      _part2PublicId,
+      9,
+      9,
+      _darrenDrafterPublicId,
+      ParticipantKind.Drafter,
+      _part2MoviePublicIds[8]
+    );
 
     // Clay vetoes Ryan's position-10 pick using his rolling-in veto
     await ApplyVetoAsync(_part2PublicId, 10, _clayDrafterPublicId, ParticipantKind.Drafter);
@@ -235,8 +271,8 @@ public sealed class ScorseseSuperDraft_Tests(DraftsIntegrationTestWebAppFactory 
     await SetupPart3Async();
     await PlayPart3PicksAsync();
 
-    var picks = await DbContext.Picks
-      .Where(p => p.DraftPart.PublicId == _part3PublicId)
+    var picks = await DbContext
+      .Picks.Where(p => p.DraftPart.PublicId == _part3PublicId)
       .ToListAsync(TestContext.Current.CancellationToken);
 
     picks.Should().HaveCount(8);
@@ -256,8 +292,22 @@ public sealed class ScorseseSuperDraft_Tests(DraftsIntegrationTestWebAppFactory 
     await SetupPart3Async();
 
     // Play positions 8-7
-    await PlayPickAsync(_part3PublicId, 8, 8, _philDrafterPublicId, ParticipantKind.Drafter, _part3MoviePublicIds[7]);
-    await PlayPickAsync(_part3PublicId, 7, 7, _darrenDrafterPublicId, ParticipantKind.Drafter, _part3MoviePublicIds[6]);
+    await PlayPickAsync(
+      _part3PublicId,
+      8,
+      8,
+      _philDrafterPublicId,
+      ParticipantKind.Drafter,
+      _part3MoviePublicIds[7]
+    );
+    await PlayPickAsync(
+      _part3PublicId,
+      7,
+      7,
+      _darrenDrafterPublicId,
+      ParticipantKind.Drafter,
+      _part3MoviePublicIds[6]
+    );
 
     // Community vetoes position-8 pick
     await ApplyCommunityVetoAsync(_part3PublicId, 8);
@@ -294,17 +344,32 @@ public sealed class ScorseseSuperDraft_Tests(DraftsIntegrationTestWebAppFactory 
     await CompleteDraftPartAsync(_draftPublicId, 3);
 
     // Assert all three parts are completed
-    var part1 = await DbContext.DraftParts.AsNoTracking().FirstAsync(dp => dp.PublicId == _part1PublicId, TestContext.Current.CancellationToken);
-    var part2 = await DbContext.DraftParts.AsNoTracking().FirstAsync(dp => dp.PublicId == _part2PublicId, TestContext.Current.CancellationToken);
-    var part3 = await DbContext.DraftParts.AsNoTracking().FirstAsync(dp => dp.PublicId == _part3PublicId, TestContext.Current.CancellationToken);
+    var part1 = await DbContext
+      .DraftParts.AsNoTracking()
+      .FirstAsync(dp => dp.PublicId == _part1PublicId, TestContext.Current.CancellationToken);
+    var part2 = await DbContext
+      .DraftParts.AsNoTracking()
+      .FirstAsync(dp => dp.PublicId == _part2PublicId, TestContext.Current.CancellationToken);
+    var part3 = await DbContext
+      .DraftParts.AsNoTracking()
+      .FirstAsync(dp => dp.PublicId == _part3PublicId, TestContext.Current.CancellationToken);
 
     part1.Status.Should().Be(DraftPartStatus.Completed, "Part 1 should be completed");
     part2.Status.Should().Be(DraftPartStatus.Completed, "Part 2 should be completed");
     part3.Status.Should().Be(DraftPartStatus.Completed, "Part 3 should be completed");
 
-    var part1Count = await DbContext.Picks.CountAsync(p => p.DraftPart.PublicId == _part1PublicId, TestContext.Current.CancellationToken);
-    var part2Count = await DbContext.Picks.CountAsync(p => p.DraftPart.PublicId == _part2PublicId, TestContext.Current.CancellationToken);
-    var part3Count = await DbContext.Picks.CountAsync(p => p.DraftPart.PublicId == _part3PublicId, TestContext.Current.CancellationToken);
+    var part1Count = await DbContext.Picks.CountAsync(
+      p => p.DraftPart.PublicId == _part1PublicId,
+      TestContext.Current.CancellationToken
+    );
+    var part2Count = await DbContext.Picks.CountAsync(
+      p => p.DraftPart.PublicId == _part2PublicId,
+      TestContext.Current.CancellationToken
+    );
+    var part3Count = await DbContext.Picks.CountAsync(
+      p => p.DraftPart.PublicId == _part3PublicId,
+      TestContext.Current.CancellationToken
+    );
 
     (part1Count + part2Count + part3Count).Should().Be(30, "12 + 10 + 8 picks across 3 parts");
   }
@@ -326,33 +391,57 @@ public sealed class ScorseseSuperDraft_Tests(DraftsIntegrationTestWebAppFactory 
     await AddCoHostAsync(_part1PublicId, Shared.RyanHostPublicId);
 
     // Positions: 4 drafters × 3 picks each = 12
-    await SetPositionsAsync(_part1PublicId,
-    [
-      new DraftPositionRequest { Name = "Clay",   Picks = [1, 5, 9] },
-      new DraftPositionRequest { Name = "Ryan",   Picks = [2, 6, 10] },
-      new DraftPositionRequest { Name = "Darren", Picks = [3, 7, 11] },
-      new DraftPositionRequest { Name = "Phil",   Picks = [4, 8, 12] }
-    ]);
+    await SetPositionsAsync(
+      _part1PublicId,
+      [
+        new DraftPositionRequest { Name = "Clay", Picks = [1, 5, 9] },
+        new DraftPositionRequest { Name = "Ryan", Picks = [2, 6, 10] },
+        new DraftPositionRequest { Name = "Darren", Picks = [3, 7, 11] },
+        new DraftPositionRequest { Name = "Phil", Picks = [4, 8, 12] },
+      ]
+    );
 
     await StartDraftPartAsync(_draftPublicId, 1);
 
-    await AssignTriviaAsync(_part1PublicId,
-    [
-      (_clayDrafterPublicId,   ParticipantKind.Drafter, 1, 4),
-      (_ryanDrafterPublicId,   ParticipantKind.Drafter, 2, 3),
-      (_darrenDrafterPublicId, ParticipantKind.Drafter, 3, 2),
-      (_philDrafterPublicId,   ParticipantKind.Drafter, 4, 1)
-    ]);
+    await AssignTriviaAsync(
+      _part1PublicId,
+      [
+        (_clayDrafterPublicId, ParticipantKind.Drafter, 1, 4),
+        (_ryanDrafterPublicId, ParticipantKind.Drafter, 2, 3),
+        (_darrenDrafterPublicId, ParticipantKind.Drafter, 3, 2),
+        (_philDrafterPublicId, ParticipantKind.Drafter, 4, 1),
+      ]
+    );
 
-    var clayPos   = await GetPositionPublicIdByNameAsync(_part1PublicId, "Clay");
-    var ryanPos   = await GetPositionPublicIdByNameAsync(_part1PublicId, "Ryan");
+    var clayPos = await GetPositionPublicIdByNameAsync(_part1PublicId, "Clay");
+    var ryanPos = await GetPositionPublicIdByNameAsync(_part1PublicId, "Ryan");
     var darrenPos = await GetPositionPublicIdByNameAsync(_part1PublicId, "Darren");
-    var philPos   = await GetPositionPublicIdByNameAsync(_part1PublicId, "Phil");
+    var philPos = await GetPositionPublicIdByNameAsync(_part1PublicId, "Phil");
 
-    await AssignParticipantToPositionAsync(_part1PublicId, clayPos,   _clayDrafterPublicId,   ParticipantKind.Drafter);
-    await AssignParticipantToPositionAsync(_part1PublicId, ryanPos,   _ryanDrafterPublicId,   ParticipantKind.Drafter);
-    await AssignParticipantToPositionAsync(_part1PublicId, darrenPos, _darrenDrafterPublicId, ParticipantKind.Drafter);
-    await AssignParticipantToPositionAsync(_part1PublicId, philPos,   _philDrafterPublicId,   ParticipantKind.Drafter);
+    await AssignParticipantToPositionAsync(
+      _part1PublicId,
+      clayPos,
+      _clayDrafterPublicId,
+      ParticipantKind.Drafter
+    );
+    await AssignParticipantToPositionAsync(
+      _part1PublicId,
+      ryanPos,
+      _ryanDrafterPublicId,
+      ParticipantKind.Drafter
+    );
+    await AssignParticipantToPositionAsync(
+      _part1PublicId,
+      darrenPos,
+      _darrenDrafterPublicId,
+      ParticipantKind.Drafter
+    );
+    await AssignParticipantToPositionAsync(
+      _part1PublicId,
+      philPos,
+      _philDrafterPublicId,
+      ParticipantKind.Drafter
+    );
   }
 
   private async Task SetupPart2Async()
@@ -369,33 +458,57 @@ public sealed class ScorseseSuperDraft_Tests(DraftsIntegrationTestWebAppFactory 
 
     // Positions: 4 drafters with 2-3 picks each for 10 total
     // Clay: 1,5,9 | Ryan: 2,6,10 | Darren: 3,7 | Phil: 4,8
-    await SetPositionsAsync(_part2PublicId,
-    [
-      new DraftPositionRequest { Name = "Clay",   Picks = [1, 5, 9] },
-      new DraftPositionRequest { Name = "Ryan",   Picks = [2, 6, 10] },
-      new DraftPositionRequest { Name = "Darren", Picks = [3, 7] },
-      new DraftPositionRequest { Name = "Phil",   Picks = [4, 8] }
-    ]);
+    await SetPositionsAsync(
+      _part2PublicId,
+      [
+        new DraftPositionRequest { Name = "Clay", Picks = [1, 5, 9] },
+        new DraftPositionRequest { Name = "Ryan", Picks = [2, 6, 10] },
+        new DraftPositionRequest { Name = "Darren", Picks = [3, 7] },
+        new DraftPositionRequest { Name = "Phil", Picks = [4, 8] },
+      ]
+    );
 
     await StartDraftPartAsync(_draftPublicId, 2);
 
-    await AssignTriviaAsync(_part2PublicId,
-    [
-      (_ryanDrafterPublicId,   ParticipantKind.Drafter, 1, 4),
-      (_clayDrafterPublicId,   ParticipantKind.Drafter, 2, 3),
-      (_philDrafterPublicId,   ParticipantKind.Drafter, 3, 2),
-      (_darrenDrafterPublicId, ParticipantKind.Drafter, 4, 1)
-    ]);
+    await AssignTriviaAsync(
+      _part2PublicId,
+      [
+        (_ryanDrafterPublicId, ParticipantKind.Drafter, 1, 4),
+        (_clayDrafterPublicId, ParticipantKind.Drafter, 2, 3),
+        (_philDrafterPublicId, ParticipantKind.Drafter, 3, 2),
+        (_darrenDrafterPublicId, ParticipantKind.Drafter, 4, 1),
+      ]
+    );
 
-    var clayPos   = await GetPositionPublicIdByNameAsync(_part2PublicId, "Clay");
-    var ryanPos   = await GetPositionPublicIdByNameAsync(_part2PublicId, "Ryan");
+    var clayPos = await GetPositionPublicIdByNameAsync(_part2PublicId, "Clay");
+    var ryanPos = await GetPositionPublicIdByNameAsync(_part2PublicId, "Ryan");
     var darrenPos = await GetPositionPublicIdByNameAsync(_part2PublicId, "Darren");
-    var philPos   = await GetPositionPublicIdByNameAsync(_part2PublicId, "Phil");
+    var philPos = await GetPositionPublicIdByNameAsync(_part2PublicId, "Phil");
 
-    await AssignParticipantToPositionAsync(_part2PublicId, clayPos,   _clayDrafterPublicId,   ParticipantKind.Drafter);
-    await AssignParticipantToPositionAsync(_part2PublicId, ryanPos,   _ryanDrafterPublicId,   ParticipantKind.Drafter);
-    await AssignParticipantToPositionAsync(_part2PublicId, darrenPos, _darrenDrafterPublicId, ParticipantKind.Drafter);
-    await AssignParticipantToPositionAsync(_part2PublicId, philPos,   _philDrafterPublicId,   ParticipantKind.Drafter);
+    await AssignParticipantToPositionAsync(
+      _part2PublicId,
+      clayPos,
+      _clayDrafterPublicId,
+      ParticipantKind.Drafter
+    );
+    await AssignParticipantToPositionAsync(
+      _part2PublicId,
+      ryanPos,
+      _ryanDrafterPublicId,
+      ParticipantKind.Drafter
+    );
+    await AssignParticipantToPositionAsync(
+      _part2PublicId,
+      darrenPos,
+      _darrenDrafterPublicId,
+      ParticipantKind.Drafter
+    );
+    await AssignParticipantToPositionAsync(
+      _part2PublicId,
+      philPos,
+      _philDrafterPublicId,
+      ParticipantKind.Drafter
+    );
   }
 
   private async Task SetupPart3Async()
@@ -413,37 +526,66 @@ public sealed class ScorseseSuperDraft_Tests(DraftsIntegrationTestWebAppFactory 
     await AddCoHostAsync(_part3PublicId, Shared.ClayHostPublicId);
 
     // Positions: 5 drafters — Clay: 1,6 | Ryan: 2,7 | Darren: 3,8 | Phil: 4 | Bryan: 5
-    await SetPositionsAsync(_part3PublicId,
-    [
-      new DraftPositionRequest { Name = "Clay",   Picks = [1, 6] },
-      new DraftPositionRequest { Name = "Ryan",   Picks = [2, 7] },
-      new DraftPositionRequest { Name = "Darren", Picks = [3, 8] },
-      new DraftPositionRequest { Name = "Phil",   Picks = [4] },
-      new DraftPositionRequest { Name = "Bryan",  Picks = [5] }
-    ]);
+    await SetPositionsAsync(
+      _part3PublicId,
+      [
+        new DraftPositionRequest { Name = "Clay", Picks = [1, 6] },
+        new DraftPositionRequest { Name = "Ryan", Picks = [2, 7] },
+        new DraftPositionRequest { Name = "Darren", Picks = [3, 8] },
+        new DraftPositionRequest { Name = "Phil", Picks = [4] },
+        new DraftPositionRequest { Name = "Bryan", Picks = [5] },
+      ]
+    );
 
     await StartDraftPartAsync(_draftPublicId, 3);
 
-    await AssignTriviaAsync(_part3PublicId,
-    [
-      (_darrenDrafterPublicId, ParticipantKind.Drafter, 1, 3),
-      (_clayDrafterPublicId,   ParticipantKind.Drafter, 2, 2),
-      (_ryanDrafterPublicId,   ParticipantKind.Drafter, 3, 2),
-      (_philDrafterPublicId,   ParticipantKind.Drafter, 4, 1),
-      (_bryanDrafterPublicId,  ParticipantKind.Drafter, 5, 1)
-    ]);
+    await AssignTriviaAsync(
+      _part3PublicId,
+      [
+        (_darrenDrafterPublicId, ParticipantKind.Drafter, 1, 3),
+        (_clayDrafterPublicId, ParticipantKind.Drafter, 2, 2),
+        (_ryanDrafterPublicId, ParticipantKind.Drafter, 3, 2),
+        (_philDrafterPublicId, ParticipantKind.Drafter, 4, 1),
+        (_bryanDrafterPublicId, ParticipantKind.Drafter, 5, 1),
+      ]
+    );
 
-    var clayPos   = await GetPositionPublicIdByNameAsync(_part3PublicId, "Clay");
-    var ryanPos   = await GetPositionPublicIdByNameAsync(_part3PublicId, "Ryan");
+    var clayPos = await GetPositionPublicIdByNameAsync(_part3PublicId, "Clay");
+    var ryanPos = await GetPositionPublicIdByNameAsync(_part3PublicId, "Ryan");
     var darrenPos = await GetPositionPublicIdByNameAsync(_part3PublicId, "Darren");
-    var philPos   = await GetPositionPublicIdByNameAsync(_part3PublicId, "Phil");
-    var bryanPos  = await GetPositionPublicIdByNameAsync(_part3PublicId, "Bryan");
+    var philPos = await GetPositionPublicIdByNameAsync(_part3PublicId, "Phil");
+    var bryanPos = await GetPositionPublicIdByNameAsync(_part3PublicId, "Bryan");
 
-    await AssignParticipantToPositionAsync(_part3PublicId, clayPos,   _clayDrafterPublicId,   ParticipantKind.Drafter);
-    await AssignParticipantToPositionAsync(_part3PublicId, ryanPos,   _ryanDrafterPublicId,   ParticipantKind.Drafter);
-    await AssignParticipantToPositionAsync(_part3PublicId, darrenPos, _darrenDrafterPublicId, ParticipantKind.Drafter);
-    await AssignParticipantToPositionAsync(_part3PublicId, philPos,   _philDrafterPublicId,   ParticipantKind.Drafter);
-    await AssignParticipantToPositionAsync(_part3PublicId, bryanPos,  _bryanDrafterPublicId,  ParticipantKind.Drafter);
+    await AssignParticipantToPositionAsync(
+      _part3PublicId,
+      clayPos,
+      _clayDrafterPublicId,
+      ParticipantKind.Drafter
+    );
+    await AssignParticipantToPositionAsync(
+      _part3PublicId,
+      ryanPos,
+      _ryanDrafterPublicId,
+      ParticipantKind.Drafter
+    );
+    await AssignParticipantToPositionAsync(
+      _part3PublicId,
+      darrenPos,
+      _darrenDrafterPublicId,
+      ParticipantKind.Drafter
+    );
+    await AssignParticipantToPositionAsync(
+      _part3PublicId,
+      philPos,
+      _philDrafterPublicId,
+      ParticipantKind.Drafter
+    );
+    await AssignParticipantToPositionAsync(
+      _part3PublicId,
+      bryanPos,
+      _bryanDrafterPublicId,
+      ParticipantKind.Drafter
+    );
   }
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -454,46 +596,256 @@ public sealed class ScorseseSuperDraft_Tests(DraftsIntegrationTestWebAppFactory 
   {
     // 12 picks; play in descending position order
     // Clay: 9,5,1 | Ryan: 10,6,2 | Darren: 11,7,3 | Phil: 12,8,4
-    await PlayPickAsync(_part1PublicId, 12, 12, _philDrafterPublicId,   ParticipantKind.Drafter, _part1MoviePublicIds[11]);
-    await PlayPickAsync(_part1PublicId, 11, 11, _darrenDrafterPublicId, ParticipantKind.Drafter, _part1MoviePublicIds[10]);
-    await PlayPickAsync(_part1PublicId, 10, 10, _ryanDrafterPublicId,   ParticipantKind.Drafter, _part1MoviePublicIds[9]);
-    await PlayPickAsync(_part1PublicId,  9,  9, _clayDrafterPublicId,   ParticipantKind.Drafter, _part1MoviePublicIds[8]);
-    await PlayPickAsync(_part1PublicId,  8,  8, _philDrafterPublicId,   ParticipantKind.Drafter, _part1MoviePublicIds[7]);
-    await PlayPickAsync(_part1PublicId,  7,  7, _darrenDrafterPublicId, ParticipantKind.Drafter, _part1MoviePublicIds[6]);
-    await PlayPickAsync(_part1PublicId,  6,  6, _ryanDrafterPublicId,   ParticipantKind.Drafter, _part1MoviePublicIds[5]);
-    await PlayPickAsync(_part1PublicId,  5,  5, _clayDrafterPublicId,   ParticipantKind.Drafter, _part1MoviePublicIds[4]);
-    await PlayPickAsync(_part1PublicId,  4,  4, _philDrafterPublicId,   ParticipantKind.Drafter, _part1MoviePublicIds[3]);
-    await PlayPickAsync(_part1PublicId,  3,  3, _darrenDrafterPublicId, ParticipantKind.Drafter, _part1MoviePublicIds[2]);
-    await PlayPickAsync(_part1PublicId,  2,  2, _ryanDrafterPublicId,   ParticipantKind.Drafter, _part1MoviePublicIds[1]);
-    await PlayPickAsync(_part1PublicId,  1,  1, _clayDrafterPublicId,   ParticipantKind.Drafter, _part1MoviePublicIds[0]);
+    await PlayPickAsync(
+      _part1PublicId,
+      12,
+      12,
+      _philDrafterPublicId,
+      ParticipantKind.Drafter,
+      _part1MoviePublicIds[11]
+    );
+    await PlayPickAsync(
+      _part1PublicId,
+      11,
+      11,
+      _darrenDrafterPublicId,
+      ParticipantKind.Drafter,
+      _part1MoviePublicIds[10]
+    );
+    await PlayPickAsync(
+      _part1PublicId,
+      10,
+      10,
+      _ryanDrafterPublicId,
+      ParticipantKind.Drafter,
+      _part1MoviePublicIds[9]
+    );
+    await PlayPickAsync(
+      _part1PublicId,
+      9,
+      9,
+      _clayDrafterPublicId,
+      ParticipantKind.Drafter,
+      _part1MoviePublicIds[8]
+    );
+    await PlayPickAsync(
+      _part1PublicId,
+      8,
+      8,
+      _philDrafterPublicId,
+      ParticipantKind.Drafter,
+      _part1MoviePublicIds[7]
+    );
+    await PlayPickAsync(
+      _part1PublicId,
+      7,
+      7,
+      _darrenDrafterPublicId,
+      ParticipantKind.Drafter,
+      _part1MoviePublicIds[6]
+    );
+    await PlayPickAsync(
+      _part1PublicId,
+      6,
+      6,
+      _ryanDrafterPublicId,
+      ParticipantKind.Drafter,
+      _part1MoviePublicIds[5]
+    );
+    await PlayPickAsync(
+      _part1PublicId,
+      5,
+      5,
+      _clayDrafterPublicId,
+      ParticipantKind.Drafter,
+      _part1MoviePublicIds[4]
+    );
+    await PlayPickAsync(
+      _part1PublicId,
+      4,
+      4,
+      _philDrafterPublicId,
+      ParticipantKind.Drafter,
+      _part1MoviePublicIds[3]
+    );
+    await PlayPickAsync(
+      _part1PublicId,
+      3,
+      3,
+      _darrenDrafterPublicId,
+      ParticipantKind.Drafter,
+      _part1MoviePublicIds[2]
+    );
+    await PlayPickAsync(
+      _part1PublicId,
+      2,
+      2,
+      _ryanDrafterPublicId,
+      ParticipantKind.Drafter,
+      _part1MoviePublicIds[1]
+    );
+    await PlayPickAsync(
+      _part1PublicId,
+      1,
+      1,
+      _clayDrafterPublicId,
+      ParticipantKind.Drafter,
+      _part1MoviePublicIds[0]
+    );
   }
 
   private async Task PlayPart2PicksAsync()
   {
     // 10 picks; Clay 3, Ryan 3, Darren 2, Phil 2
-    await PlayPickAsync(_part2PublicId, 10, 10, _ryanDrafterPublicId,   ParticipantKind.Drafter, _part2MoviePublicIds[9]);
-    await PlayPickAsync(_part2PublicId,  9,  9, _clayDrafterPublicId,   ParticipantKind.Drafter, _part2MoviePublicIds[8]);
-    await PlayPickAsync(_part2PublicId,  8,  8, _philDrafterPublicId,   ParticipantKind.Drafter, _part2MoviePublicIds[7]);
-    await PlayPickAsync(_part2PublicId,  7,  7, _darrenDrafterPublicId, ParticipantKind.Drafter, _part2MoviePublicIds[6]);
-    await PlayPickAsync(_part2PublicId,  6,  6, _ryanDrafterPublicId,   ParticipantKind.Drafter, _part2MoviePublicIds[5]);
-    await PlayPickAsync(_part2PublicId,  5,  5, _clayDrafterPublicId,   ParticipantKind.Drafter, _part2MoviePublicIds[4]);
-    await PlayPickAsync(_part2PublicId,  4,  4, _philDrafterPublicId,   ParticipantKind.Drafter, _part2MoviePublicIds[3]);
-    await PlayPickAsync(_part2PublicId,  3,  3, _darrenDrafterPublicId, ParticipantKind.Drafter, _part2MoviePublicIds[2]);
-    await PlayPickAsync(_part2PublicId,  2,  2, _ryanDrafterPublicId,   ParticipantKind.Drafter, _part2MoviePublicIds[1]);
-    await PlayPickAsync(_part2PublicId,  1,  1, _clayDrafterPublicId,   ParticipantKind.Drafter, _part2MoviePublicIds[0]);
+    await PlayPickAsync(
+      _part2PublicId,
+      10,
+      10,
+      _ryanDrafterPublicId,
+      ParticipantKind.Drafter,
+      _part2MoviePublicIds[9]
+    );
+    await PlayPickAsync(
+      _part2PublicId,
+      9,
+      9,
+      _clayDrafterPublicId,
+      ParticipantKind.Drafter,
+      _part2MoviePublicIds[8]
+    );
+    await PlayPickAsync(
+      _part2PublicId,
+      8,
+      8,
+      _philDrafterPublicId,
+      ParticipantKind.Drafter,
+      _part2MoviePublicIds[7]
+    );
+    await PlayPickAsync(
+      _part2PublicId,
+      7,
+      7,
+      _darrenDrafterPublicId,
+      ParticipantKind.Drafter,
+      _part2MoviePublicIds[6]
+    );
+    await PlayPickAsync(
+      _part2PublicId,
+      6,
+      6,
+      _ryanDrafterPublicId,
+      ParticipantKind.Drafter,
+      _part2MoviePublicIds[5]
+    );
+    await PlayPickAsync(
+      _part2PublicId,
+      5,
+      5,
+      _clayDrafterPublicId,
+      ParticipantKind.Drafter,
+      _part2MoviePublicIds[4]
+    );
+    await PlayPickAsync(
+      _part2PublicId,
+      4,
+      4,
+      _philDrafterPublicId,
+      ParticipantKind.Drafter,
+      _part2MoviePublicIds[3]
+    );
+    await PlayPickAsync(
+      _part2PublicId,
+      3,
+      3,
+      _darrenDrafterPublicId,
+      ParticipantKind.Drafter,
+      _part2MoviePublicIds[2]
+    );
+    await PlayPickAsync(
+      _part2PublicId,
+      2,
+      2,
+      _ryanDrafterPublicId,
+      ParticipantKind.Drafter,
+      _part2MoviePublicIds[1]
+    );
+    await PlayPickAsync(
+      _part2PublicId,
+      1,
+      1,
+      _clayDrafterPublicId,
+      ParticipantKind.Drafter,
+      _part2MoviePublicIds[0]
+    );
   }
 
   private async Task PlayPart3PicksAsync()
   {
     // 8 picks; Clay: 6,1 | Ryan: 7,2 | Darren: 8,3 | Phil: 4 | Bryan: 5
-    await PlayPickAsync(_part3PublicId, 8, 8, _darrenDrafterPublicId, ParticipantKind.Drafter, _part3MoviePublicIds[7]);
-    await PlayPickAsync(_part3PublicId, 7, 7, _ryanDrafterPublicId,   ParticipantKind.Drafter, _part3MoviePublicIds[6]);
-    await PlayPickAsync(_part3PublicId, 6, 6, _clayDrafterPublicId,   ParticipantKind.Drafter, _part3MoviePublicIds[5]);
-    await PlayPickAsync(_part3PublicId, 5, 5, _bryanDrafterPublicId,  ParticipantKind.Drafter, _part3MoviePublicIds[4]);
-    await PlayPickAsync(_part3PublicId, 4, 4, _philDrafterPublicId,   ParticipantKind.Drafter, _part3MoviePublicIds[3]);
-    await PlayPickAsync(_part3PublicId, 3, 3, _darrenDrafterPublicId, ParticipantKind.Drafter, _part3MoviePublicIds[2]);
-    await PlayPickAsync(_part3PublicId, 2, 2, _ryanDrafterPublicId,   ParticipantKind.Drafter, _part3MoviePublicIds[1]);
-    await PlayPickAsync(_part3PublicId, 1, 1, _clayDrafterPublicId,   ParticipantKind.Drafter, _part3MoviePublicIds[0]);
+    await PlayPickAsync(
+      _part3PublicId,
+      8,
+      8,
+      _darrenDrafterPublicId,
+      ParticipantKind.Drafter,
+      _part3MoviePublicIds[7]
+    );
+    await PlayPickAsync(
+      _part3PublicId,
+      7,
+      7,
+      _ryanDrafterPublicId,
+      ParticipantKind.Drafter,
+      _part3MoviePublicIds[6]
+    );
+    await PlayPickAsync(
+      _part3PublicId,
+      6,
+      6,
+      _clayDrafterPublicId,
+      ParticipantKind.Drafter,
+      _part3MoviePublicIds[5]
+    );
+    await PlayPickAsync(
+      _part3PublicId,
+      5,
+      5,
+      _bryanDrafterPublicId,
+      ParticipantKind.Drafter,
+      _part3MoviePublicIds[4]
+    );
+    await PlayPickAsync(
+      _part3PublicId,
+      4,
+      4,
+      _philDrafterPublicId,
+      ParticipantKind.Drafter,
+      _part3MoviePublicIds[3]
+    );
+    await PlayPickAsync(
+      _part3PublicId,
+      3,
+      3,
+      _darrenDrafterPublicId,
+      ParticipantKind.Drafter,
+      _part3MoviePublicIds[2]
+    );
+    await PlayPickAsync(
+      _part3PublicId,
+      2,
+      2,
+      _ryanDrafterPublicId,
+      ParticipantKind.Drafter,
+      _part3MoviePublicIds[1]
+    );
+    await PlayPickAsync(
+      _part3PublicId,
+      1,
+      1,
+      _clayDrafterPublicId,
+      ParticipantKind.Drafter,
+      _part3MoviePublicIds[0]
+    );
   }
 
   // ─────────────────────────────────────────────────────────────────────────

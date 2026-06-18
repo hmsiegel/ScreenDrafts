@@ -18,7 +18,7 @@ internal sealed class Endpoint : ScreenDraftsEndpointWithoutRequest<GetUserRespo
 
   public override async Task HandleAsync(CancellationToken ct)
   {
-    var publicId = User.GetPublicId();
+    var publicId = User.GetUserPublicId();
 
     var query = new GetUserQuery(publicId);
 

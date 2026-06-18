@@ -2,9 +2,13 @@
 
 // ── Query Handler ─────────────────────────────────────────────────────────────
 
-internal sealed class GetDraftPartGameplayQueryHandler(IDbConnectionFactory dbConnectionFactory)
-  : IQueryHandler<GetDraftPartGameplayQuery, GetDraftPartGameplayResponse>
+internal sealed class GetDraftPartGameplayQueryHandler(
+  IDbConnectionFactory dbConnectionFactory,
+  IOptions<DraftsOptions> options
+) : IQueryHandler<GetDraftPartGameplayQuery, GetDraftPartGameplayResponse>
 {
+  private readonly DraftsOptions _options = options.Value;
+
   public async Task<Result<GetDraftPartGameplayResponse>> Handle(
     GetDraftPartGameplayQuery request,
     CancellationToken cancellationToken
@@ -85,6 +89,7 @@ internal sealed class GetDraftPartGameplayQueryHandler(IDbConnectionFactory dbCo
       SELECT
         dpp.participant_id_value        AS {nameof(ParticipantRow.ParticipantIdValue)},
         dpp.participant_kind_value      AS {nameof(ParticipantRow.ParticipantKindValue)},
+        COALESCE(dr.public_id, dt.public_id) AS {nameof(ParticipantRow.ParticipantPublicId)},
         COALESCE(pe.first_name || ' ' || pe.last_name, dt.name)
                                         AS {nameof(ParticipantRow.Name)},
         (dpp.starting_vetoes
@@ -118,20 +123,19 @@ internal sealed class GetDraftPartGameplayQueryHandler(IDbConnectionFactory dbCo
     // ── 4. Trivia results ─────────────────────────────────────────────────────
     const string triviaSql = $"""
       SELECT
-        dpp.participant_id_value        AS {nameof(TriviaRow.ParticipantIdValue)},
-        dpp.participant_kind_value      AS {nameof(TriviaRow.ParticipantKindValue)},
+        tr.participant_id               AS {nameof(TriviaRow.ParticipantIdValue)},
+        tr.participant_kind             AS {nameof(TriviaRow.ParticipantKindValue)},
         COALESCE(pe.first_name || ' ' || pe.last_name, dt.name)
                                         AS {nameof(TriviaRow.Name)},
         tr.questions_won                AS {nameof(TriviaRow.QuestionsWon)},
         tr.position                     AS {nameof(TriviaRow.Position)}
       FROM drafts.trivia_results tr
-      JOIN drafts.draft_part_participants dpp ON dpp.id = tr.participant_id
       JOIN drafts.draft_parts dp ON dp.id = tr.draft_part_id
-      LEFT JOIN drafts.drafters dr ON dr.id = dpp.participant_id_value
-        AND dpp.participant_kind_value = 0
+      LEFT JOIN drafts.drafters dr ON dr.id = tr.participant_id
+        AND tr.participant_kind = 0
       LEFT JOIN drafts.people pe ON pe.id = dr.person_id
-      LEFT JOIN drafts.drafter_teams dt ON dt.id = dpp.participant_id_value
-        AND dpp.participant_kind_value = 1
+      LEFT JOIN drafts.drafter_teams dt ON dt.id = tr.participant_id
+        AND tr.participant_kind = 1
       WHERE dp.public_id = @DraftPartPublicId
       ORDER BY tr.position
       """;
@@ -217,6 +221,83 @@ internal sealed class GetDraftPartGameplayQueryHandler(IDbConnectionFactory dbCo
       )
     ).ToList();
 
+    // ── 7. Caller roles ───────────────────────────────────────────────────────
+    // Resolve caller's internal person.id from their public_id (drafts.people).
+    // Then check host and participant membership for this draft part.
+    var callerRoles = new CurrentUserRolesResponse();
+    string? callerParticipantId = null;
+
+    if (request.CallerUserId.HasValue)
+    {
+      const string callerRoleSql = $"""
+        SELECT
+          pe.id                           AS {nameof(CallerRoleRow.PersonId)},
+          pe.public_id                    AS {nameof(CallerRoleRow.PersonPublicId)},
+          EXISTS (
+            SELECT 1 FROM drafts.draft_hosts dh
+            JOIN drafts.draft_parts dp2 ON dp2.id = dh.draft_part_id
+            JOIN drafts.hosts h ON h.id = dh.host_id
+            WHERE dp2.public_id = @DraftPartPublicId
+              AND h.person_id = pe.id
+              AND dh.role = 0
+          )                               AS {nameof(CallerRoleRow.IsPrimaryHost)},
+          EXISTS (
+            SELECT 1 FROM drafts.draft_hosts dh
+            JOIN drafts.draft_parts dp2 ON dp2.id = dh.draft_part_id
+            JOIN drafts.hosts h ON h.id = dh.host_id
+            WHERE dp2.public_id = @DraftPartPublicId
+              AND h.person_id = pe.id
+              AND dh.role != 0
+          )                               AS {nameof(CallerRoleRow.IsCoHost)},
+          EXISTS (
+            SELECT 1 FROM drafts.draft_part_participants dpp
+            JOIN drafts.draft_parts dp2 ON dp2.id = dpp.draft_part_id
+            JOIN drafts.drafters dr ON dr.id = dpp.participant_id_value
+              AND dpp.participant_kind_value = 0
+            WHERE dp2.public_id = @DraftPartPublicId
+              AND dr.person_id = pe.id
+          )                               AS {nameof(CallerRoleRow.IsParticipant)},
+        (
+          SELECT dpp.participant_id_value::text
+          FROM drafts.draft_part_participants dpp
+          JOIN drafts.draft_parts dp2 ON dp2.id = dpp.draft_part_id
+          JOIN drafts.drafters dr ON dr.id = dpp.participant_id_value
+            AND dpp.participant_kind_value = 0
+          WHERE dp2.public_id = @DraftPartPublicId
+            AND dr.person_id = pe.id
+          LIMIT 1
+        )                               AS {nameof(CallerRoleRow.ParticipantIdValue)}
+        FROM drafts.people pe
+        WHERE pe.user_id = @CallerUserId
+        """;
+
+      var callerRow = await connection.QuerySingleOrDefaultAsync<CallerRoleRow>(
+        new CommandDefinition(
+          callerRoleSql,
+          new { request.DraftPartPublicId, request.CallerUserId },
+          cancellationToken: cancellationToken
+        )
+      );
+
+      if (callerRow is not null)
+      {
+        var isCommissioner = _options.CommissionerPersonPublicIds.Contains(
+          callerRow.PersonPublicId,
+          StringComparer.OrdinalIgnoreCase
+        );
+
+        callerRoles = new CurrentUserRolesResponse
+        {
+          IsPrimaryHost = callerRow.IsPrimaryHost,
+          IsCoHost = callerRow.IsCoHost,
+          IsParticipant = callerRow.IsParticipant,
+          IsCommissioner = isCommissioner,
+        };
+
+        callerParticipantId = callerRow.ParticipantIdValue;
+      }
+    }
+
     // ── 7. Compute next expected participant ──────────────────────────────────
     // Find the highest board slot that has no landed pick.
     // Landed = pick exists at that position where WasVetoed = false OR WasVetoOverridden = true.
@@ -228,14 +309,12 @@ internal sealed class GetDraftPartGameplayQueryHandler(IDbConnectionFactory dbCo
     Guid? nextParticipantId = null;
     int? nextParticipantKind = null;
 
-    var parsedPicks = ParsePicks(positionRows.FirstOrDefault()?.Picks ?? string.Empty);
-
     if (positionRows.Count > 0)
     {
       // Find the highest unfilled slot and look up which position owns it
       var nextSlot = positionRows
         .Where(pos => pos.AssignedToId.HasValue) // only consider assigned positions
-        .SelectMany(pos => parsedPicks.Select(slot => (slot, pos)))
+        .SelectMany(pos => ParsePicks(pos.Picks).Select(slot => (slot, pos)))
         .Where(x => !landedPositions.Contains(x.slot))
         .OrderByDescending(x => x.slot)
         .Select(x => x.pos)
@@ -263,11 +342,14 @@ internal sealed class GetDraftPartGameplayQueryHandler(IDbConnectionFactory dbCo
         DraftId = header.DraftPublicId,
         DraftTitle = header.DraftTitle,
         DraftType = DraftType.FromValue(header.DraftType).Name,
+        PartIndex = header.PartIndex,
         IsMultiPart = header.TotalParts > 1,
         IsFinalPart = header.PartIndex == header.TotalParts,
         HasDraftPool = header.HasDraftPool,
         HasDraftBoard = header.HasDraftBoard,
         HasCandidateList = header.HasCandidateList,
+        CurrentUserRoles = callerRoles,
+        CallerParticipantId = callerParticipantId,
         TriviaResults =
         [
           .. triviaRows.Select(t => new GameplayTriviaResultResponse
@@ -305,6 +387,7 @@ internal sealed class GetDraftPartGameplayQueryHandler(IDbConnectionFactory dbCo
           .. participantRows.Select(p => new GameplayParticipantResponse
           {
             ParticipantId = p.ParticipantIdValue,
+            ParticipantPublicId = p.ParticipantPublicId,
             ParticipantKind = p.ParticipantKindValue,
             ParticipantName = p.Name,
             VetoTokensRemaining = p.VetoTokensRemaining,
@@ -368,6 +451,7 @@ internal sealed class GetDraftPartGameplayQueryHandler(IDbConnectionFactory dbCo
   private sealed record ParticipantRow(
     Guid ParticipantIdValue,
     int ParticipantKindValue,
+    string? ParticipantPublicId,
     string Name,
     int VetoTokensRemaining,
     int OverrideTokensRemaining
@@ -393,6 +477,15 @@ internal sealed class GetDraftPartGameplayQueryHandler(IDbConnectionFactory dbCo
     bool WasVetoed,
     bool WasVetoOverridden,
     bool WasCommissionerOverride
+  );
+
+  private sealed record CallerRoleRow(
+    Guid PersonId,
+    string PersonPublicId,
+    bool IsPrimaryHost,
+    bool IsCoHost,
+    bool IsParticipant,
+    string? ParticipantIdValue
   );
 
   private sealed record HostRow(string PublicId, string Name, bool IsPrimary);

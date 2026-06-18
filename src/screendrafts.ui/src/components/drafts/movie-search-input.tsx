@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useState } from "react";
-import { searchMovies, type MovieSearchResult } from "@/services/movies/fetch-movies";
+import { searchMovies, type MovieSearchResult } from "@/services/movies/fetch-tmdb";
 
 interface MovieSearchInputProps {
   onSelect: (movie: MovieSearchResult) => void;

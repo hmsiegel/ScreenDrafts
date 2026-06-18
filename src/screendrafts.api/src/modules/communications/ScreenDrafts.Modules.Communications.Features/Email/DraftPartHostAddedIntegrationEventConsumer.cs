@@ -21,7 +21,7 @@ internal sealed class DraftPartHostAddedIntegrationEventConsumer(
       WHERE user_id = @UserId
       """;
 
-    var recipient = await connection.QuerySingleAsync<RecipientRow>(
+    var recipient = await connection.QuerySingleOrDefaultAsync<RecipientRow>(
       new CommandDefinition(
         commandText: sql,
         parameters: new { UserId = integrationEvent.RecipientUserId },

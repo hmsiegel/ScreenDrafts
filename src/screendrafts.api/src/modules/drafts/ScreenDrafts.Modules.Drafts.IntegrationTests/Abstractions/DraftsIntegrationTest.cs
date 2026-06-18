@@ -4,6 +4,7 @@
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1051:Do not declare visible instance fields", Justification = "Reviewed")]
 public abstract class DraftsIntegrationTest(DraftsIntegrationTestWebAppFactory factory) : BaseIntegrationTest<DraftsDbContext>(factory)
 {
+  protected FakeUsersApi FakeUsersApi { get; } = factory.Services.GetRequiredService<FakeUsersApi>();
   protected override async Task ClearDatabaseAsync()
   {
     await DbContext.Database.ExecuteSqlRawAsync(

@@ -1,3 +1,5 @@
+﻿using ScreenDrafts.Modules.Drafts.Features.People.LinkUser;
+
 namespace ScreenDrafts.Modules.Drafts.IntegrationTests.DraftParts;
 
 public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
@@ -11,7 +13,7 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
   public async Task GetPickList_WithNoPicks_ShouldReturnEmptyListAsync()
   {
     // Arrange
-    var (draftPartPublicId, _, _, hostPublicId) = await SetupStartedDraftPartAsync();
+    var (draftPartPublicId, _, _, hostPublicId, _) = await SetupStartedDraftPartAsync();
 
     // Act
     var result = await Sender.Send(new GetPickListQuery
@@ -48,7 +50,7 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
   public async Task GetPickList_WithOnePick_ShouldReturnOneItemAsync()
   {
     // Arrange
-    var (draftPartPublicId, drafter1PublicId, _, hostPublicId) = await SetupStartedDraftPartAsync();
+    var (draftPartPublicId, drafter1PublicId, _, hostPublicId, _) = await SetupStartedDraftPartAsync();
     var movie = await CreateMovieAsync();
     await PlayPickAsync(draftPartPublicId, drafter1PublicId, position: 1, playOrder: 1, movie);
 
@@ -68,7 +70,7 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
   public async Task GetPickList_ShouldPopulatePickFieldsAsync()
   {
     // Arrange
-    var (draftPartPublicId, drafter1PublicId, _, hostPublicId) = await SetupStartedDraftPartAsync();
+    var (draftPartPublicId, drafter1PublicId, _, hostPublicId, _) = await SetupStartedDraftPartAsync();
     var movie = await CreateMovieAsync();
     await PlayPickAsync(draftPartPublicId, drafter1PublicId, position: 3, playOrder: 1, movie);
 
@@ -99,7 +101,7 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
   public async Task GetPickList_WithMultiplePicks_ShouldReturnAllPicksOrderedByPlayOrderAsync()
   {
     // Arrange
-    var (draftPartPublicId, drafter1PublicId, drafter2PublicId, hostPublicId) = await SetupStartedDraftPartAsync();
+    var (draftPartPublicId, drafter1PublicId, drafter2PublicId, hostPublicId, _) = await SetupStartedDraftPartAsync();
     var movie1 = await CreateMovieAsync();
     var movie2 = await CreateMovieAsync();
     var movie3 = await CreateMovieAsync();
@@ -131,7 +133,7 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
   public async Task GetPickList_WhenPickIsVetoed_ShouldPopulateVetoAsync()
   {
     // Arrange
-    var (draftPartPublicId, drafter1PublicId, _, hostPublicId) = await SetupStartedDraftPartAsync();
+    var (draftPartPublicId, drafter1PublicId, _, hostPublicId, _) = await SetupStartedDraftPartAsync();
     var movie = await CreateMovieAsync();
     await PlayPickAsync(draftPartPublicId, drafter1PublicId, position: 1, playOrder: 1, movie);
 
@@ -164,7 +166,7 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
   public async Task GetPickList_WhenPickIsNotVetoed_VetoShouldBeNullAsync()
   {
     // Arrange
-    var (draftPartPublicId, drafter1PublicId, drafter2PublicId, hostPublicId) = await SetupStartedDraftPartAsync();
+    var (draftPartPublicId, drafter1PublicId, drafter2PublicId, hostPublicId, _) = await SetupStartedDraftPartAsync();
     var movie1 = await CreateMovieAsync();
     var movie2 = await CreateMovieAsync();
 
@@ -203,7 +205,7 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
   public async Task GetPickList_WhenVetoIsOverridden_ShouldPopulateOverrideAsync()
   {
     // Arrange
-    var (draftPartPublicId, drafter1PublicId, drafter2PublicId, hostPublicId) = await SetupStartedDraftPartAsync();
+    var (draftPartPublicId, drafter1PublicId, drafter2PublicId, hostPublicId, _) = await SetupStartedDraftPartAsync();
     var movie = await CreateMovieAsync();
     await PlayPickAsync(draftPartPublicId, drafter1PublicId, position: 1, playOrder: 1, movie);
 
@@ -249,7 +251,7 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
   public async Task GetPickList_WhenPickHasCommissionerOverride_ShouldSetFlagAsync()
   {
     // Arrange
-    var (draftPartPublicId, drafter1PublicId, _, hostPublicId) = await SetupStartedDraftPartAsync();
+    var (draftPartPublicId, drafter1PublicId, _, hostPublicId, _) = await SetupStartedDraftPartAsync();
     var movie = await CreateMovieAsync();
     await PlayPickAsync(draftPartPublicId, drafter1PublicId, position: 1, playOrder: 1, movie);
 
@@ -273,7 +275,7 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
   public async Task GetPickList_WhenPickHasNoCommissionerOverride_FlagShouldBeFalseAsync()
   {
     // Arrange
-    var (draftPartPublicId, drafter1PublicId, _, hostPublicId) = await SetupStartedDraftPartAsync();
+    var (draftPartPublicId, drafter1PublicId, _, hostPublicId, _) = await SetupStartedDraftPartAsync();
     var movie = await CreateMovieAsync();
     await PlayPickAsync(draftPartPublicId, drafter1PublicId, position: 1, playOrder: 1, movie);
 
@@ -293,7 +295,7 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
   public async Task GetPickList_MixedOverrides_ShouldReflectEachPickCorrectlyAsync()
   {
     // Arrange — pick 1: commissioner override; pick 2: veto; pick 3: plain
-    var (draftPartPublicId, drafter1PublicId, drafter2PublicId, hostPublicId) = await SetupStartedDraftPartAsync();
+    var (draftPartPublicId, drafter1PublicId, drafter2PublicId, hostPublicId, _) = await SetupStartedDraftPartAsync();
     var movie1 = await CreateMovieAsync();
     var movie2 = await CreateMovieAsync();
     var movie3 = await CreateMovieAsync();
@@ -342,7 +344,7 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
   public async Task GetPickList_WhenPickIsNotRevealed_IsRevealedShouldBeFalseAsync()
   {
     // Arrange
-    var (draftPartPublicId, drafter1PublicId, _, hostPublicId) = await SetupStartedDraftPartAsync();
+    var (draftPartPublicId, drafter1PublicId, _, hostPublicId, _) = await SetupStartedDraftPartAsync();
     var movie = await CreateMovieAsync();
     await PlayPickAsync(draftPartPublicId, drafter1PublicId, position: 1, playOrder: 1, movie);
 
@@ -358,7 +360,7 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
   public async Task GetPickList_WhenPickIsRevealed_IsRevealedShouldBeTrueAsync()
   {
     // Arrange
-    var (draftPartPublicId, drafter1PublicId, _, hostPublicId) = await SetupStartedDraftPartAsync();
+    var (draftPartPublicId, drafter1PublicId, _, hostPublicId, hostUserPublicId) = await SetupStartedDraftPartAsync();
     var movie = await CreateMovieAsync();
     await PlayPickAsync(draftPartPublicId, drafter1PublicId, position: 1, playOrder: 1, movie);
 
@@ -366,7 +368,7 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
     {
       DraftPartId = draftPartPublicId,
       PlayOrder = 1,
-      ActorPublicId = hostPublicId
+      UserPublicId = hostUserPublicId
     }, TestContext.Current.CancellationToken);
 
     // Act
@@ -385,7 +387,7 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
   public async Task GetPickList_WhenCallerIsNotPrimaryHost_ShouldSeeOwnPicksAndRevealedPicksAsync()
   {
     // Arrange — pick 1 by drafter1 (not revealed), pick 2 by drafter2 (revealed)
-    var (draftPartPublicId, drafter1PublicId, drafter2PublicId, hostPublicId) = await SetupStartedDraftPartAsync();
+    var (draftPartPublicId, drafter1PublicId, drafter2PublicId, _, hostUserPublicId) = await SetupStartedDraftPartAsync();
     var movie1 = await CreateMovieAsync();
     var movie2 = await CreateMovieAsync();
 
@@ -415,7 +417,7 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
     {
       DraftPartId = draftPartPublicId,
       PlayOrder = 2,
-      ActorPublicId = hostPublicId
+      UserPublicId = hostUserPublicId
     }, TestContext.Current.CancellationToken);
 
     // Act — drafter1 (non-host): sees own pick 1 + revealed pick 2
@@ -433,7 +435,14 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
   // Helpers
   // -------------------------------------------------------------------------
 
-  private async Task<(string DraftPartPublicId, string Drafter1PublicId, string Drafter2PublicId, string HostPublicId)> SetupStartedDraftPartAsync()
+  /// <summary>
+  /// Sets up a draft part with two drafters and a primary host. Returns the
+  /// host's own domain public id (for GetPickListQuery.CallerPublicId, which
+  /// expects a domain actor id) AND the host's linked UserPublicId (for
+  /// RevealPickCommand.UserPublicId, which is resolved through
+  /// User -> Person -> Host and must NOT be the host's own public id).
+  /// </summary>
+  private async Task<(string DraftPartPublicId, string Drafter1PublicId, string Drafter2PublicId, string HostPublicId, string HostUserPublicId)> SetupStartedDraftPartAsync()
   {
     var seriesId = await CreateSeriesAsync();
     var draftPublicId = await CreateDraftAsync(seriesId);
@@ -472,13 +481,38 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
       HostRole = HostRole.Primary
     }, TestContext.Current.CancellationToken);
 
+    // Link the host's Person to a fake User so RevealPickCommand (which
+    // resolves UserPublicId -> Person -> Host) has something real to chase.
+    var hostUserPublicId = await LinkPersonToNewUserAsync(hostPersonId);
+
     await Sender.Send(new SetDraftPartStatusCommand
-    {      DraftPublicId = draftPublicId,
+    {
+      DraftPublicId = draftPublicId,
       PartIndex = 1,
       Action = DraftPartStatusAction.Start
     }, TestContext.Current.CancellationToken);
 
-    return (draftPartPublicId, drafter1PublicId, drafter2PublicId, hostPublicId);
+    return (draftPartPublicId, drafter1PublicId, drafter2PublicId, hostPublicId, hostUserPublicId);
+  }
+
+  /// <summary>
+  /// Registers a fake User and links it to the given Person via
+  /// LinkUserPersonCommand. Returns the new User's public id.
+  /// </summary>
+  private async Task<string> LinkPersonToNewUserAsync(string personPublicId)
+  {
+    var userId = Guid.NewGuid();
+    var userPublicId = FakeUsersApi.RegisterUser(userId, $"u_{Faker.Random.AlphaNumeric(16)}");
+
+    var linkResult = await Sender.Send(new LinkUserPersonCommand
+    {
+      PublicId = personPublicId,
+      UserId = userId
+    }, TestContext.Current.CancellationToken);
+
+    linkResult.IsSuccess.Should().BeTrue("test setup must be able to link a fresh Person to a fresh User");
+
+    return userPublicId;
   }
 
   private async Task PlayPickAsync(string draftPartPublicId, string drafterPublicId, int position, int playOrder, Movie movie)

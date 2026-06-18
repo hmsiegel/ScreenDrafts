@@ -2,39 +2,70 @@
 
 internal sealed class RevealPickCommandHandler(
   IDraftPartRepository draftPartRepository,
-  IPickRepository pickRepository)
-  : ICommandHandler<RevealPickCommand>
+  IPickRepository pickRepository,
+  IHostRepository hostRepository,
+  IPersonRepository personRepository,
+  IUsersApi usersApi) : ICommandHandler<RevealPickCommand>
 {
   private readonly IDraftPartRepository _draftPartRepository = draftPartRepository;
   private readonly IPickRepository _pickRepository = pickRepository;
+  private readonly IHostRepository _hostRepository = hostRepository;
+  private readonly IPersonRepository _personRepository = personRepository;
+  private readonly IUsersApi _usersApi = usersApi;
 
   public async Task<Result> Handle(RevealPickCommand request, CancellationToken cancellationToken)
   {
-    var draftPart = await _draftPartRepository.GetByPublicIdWithHostsAsync(request.DraftPartId, cancellationToken);
+    var draftPart = await _draftPartRepository.GetByPublicIdWithHostsAsync(
+      request.DraftPartId,
+      cancellationToken
+    );
 
     if (draftPart is null)
     {
       return Result.Failure(DraftPartErrors.NotFound(request.DraftPartId));
     }
 
-    if (!draftPart.IsPrimaryHost(request.ActorPublicId))
-    {
-      return Result.Failure(DraftPartErrors.OnlyPrimaryHostCanRevealPicks);
-    }
-
     var pick = await _pickRepository.GetByDraftPartIdAndPlayOrderAsync(
       id: draftPart.Id,
       playOrder: request.PlayOrder,
-      cancellationToken: cancellationToken);
+      cancellationToken: cancellationToken
+    );
 
     if (pick is null)
     {
       return Result.Failure(DraftPartErrors.PickNotFound(request.PlayOrder));
     }
 
+    var user = await _usersApi.GetUserByPublicId(request.UserPublicId, cancellationToken);
+
+    if (user is null)
+    {
+      return Result.Failure(UserPublicApiErrors.PublicIdNotFound(request.UserPublicId));
+    }
+
+    var person = await _personRepository.GetByUserIdAsync(user.UserId, cancellationToken);
+
+    if (person is null)
+    {
+      return Result.Failure(PersonErrors.NotFoundForUser(request.UserPublicId));
+    }
+
+    var host = await _hostRepository.GetByPersonPublicIdAsync(person.PublicId, cancellationToken);
+
+    if (host is null)
+    {
+      return Result.Failure(HostErrors.NotFoundForPerson(person.PublicId));
+    }
+
+    if (!draftPart.IsPrimaryHost(host.PublicId))
+    {
+      return Result.Failure(DraftPartErrors.OnlyPrimaryHostCanRevealPicks);
+    }
+
     var result = draftPart.RevealPick(
       playOrder: request.PlayOrder,
-      actedByPublicId: request.ActorPublicId);
+      actedByPublicId: host.PublicId
+    );
 
     if (result.IsFailure)
     {

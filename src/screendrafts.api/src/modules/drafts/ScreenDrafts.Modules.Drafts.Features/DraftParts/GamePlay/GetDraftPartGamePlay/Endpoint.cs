@@ -20,7 +20,13 @@ internal sealed class Endpoint
 
   public override async Task HandleAsync(GetDraftPartGameplayRequest req, CancellationToken ct)
   {
-    var query = new GetDraftPartGameplayQuery { DraftPartPublicId = req.DraftPartId };
+    Guid? callerUserId = User.Identity?.IsAuthenticated == true ? User.GetUserId() : null;
+
+    var query = new GetDraftPartGameplayQuery
+    {
+      DraftPartPublicId = req.DraftPartId,
+      CallerUserId = callerUserId,
+    };
 
     var result = await Sender.Send(query, ct);
 

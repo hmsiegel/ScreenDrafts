@@ -16,20 +16,16 @@ export default async function Page({ params }: Props) {
 
   const gameplay = await fetchGameplay(session.accessToken, draftPartId);
 
-  // Resolve the current user's participant/host identity from the session publicId
-  const userPublicId = session.publicId ?? null;
+  const {
+    isPrimaryHost = false,
+    isCoHost = false,
+    isParticipant = false,
+    isCommissioner = false
+  } = gameplay.currentUserRoles ?? {};
 
-  // Determine roles for this draft part
-  const isPrimaryHost =
-    gameplay.hosts?.some((h) => h.isPrimary && h.hostPublicId === userPublicId) ?? false;
-  const isCoHost =
-    gameplay.hosts?.some((h) => !h.isPrimary && h.hostPublicId === userPublicId) ?? false;
-  const isParticipant =
-    gameplay.participants?.some((p) => p.participantId === userPublicId) ?? false;
-
-  // Note: commissioner / surrogate detection requires checking against
-  // DraftsOptions.CommissionerPersonPublicIds from config — deferred until
-  // Predictions tab is built. For now isPredictions = false.
+  // isPredictions: true when this co-host is acting as surrogate for the
+  // commissioner predictions game. Deferred until predictions feature is built —
+  // will come from a separate query or session attribute at that point.
   const isPredictions = false;
 
   return (
@@ -37,10 +33,10 @@ export default async function Page({ params }: Props) {
       draftPartId={draftPartId}
       accessToken={session.accessToken}
       initialGameplay={gameplay}
-      userPublicId={userPublicId}
       isPrimaryHost={isPrimaryHost}
       isCoHost={isCoHost}
       isParticipant={isParticipant}
+      isCommissioner={isCommissioner}
       isPredictions={isPredictions}
     />
   );

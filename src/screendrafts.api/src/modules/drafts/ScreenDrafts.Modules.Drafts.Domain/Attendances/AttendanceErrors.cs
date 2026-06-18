@@ -8,6 +8,9 @@ public static class AttendanceErrors
       $"No attendance record found for person '{personPublicId}'."
     );
 
+  public static SDError NotFound(Guid userId) =>
+    SDError.NotFound("Attendance.NotFound", $"No attendance record found for user '{userId}'.");
+
   public static SDError AlreadyExists(string personPublicId) =>
     SDError.Conflict(
       "Attendance.AlreadyExists",

@@ -1,4 +1,4 @@
-using ScreenDrafts.Modules.Drafts.IntegrationTests.Helpers;
+﻿using ScreenDrafts.Modules.Drafts.IntegrationTests.Helpers;
 
 namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Scenarios;
 
@@ -33,23 +33,23 @@ public sealed class EightiesSportsMiniMega_Tests(DraftsIntegrationTestWebAppFact
   // IMDb IDs for the 12 80s sports films in order
   private static readonly string[] SportsImdbIds =
   [
-    "tt0081398",  // Raging Bull (pos 1 — Clay)
-    "tt0084534",  // Personal Best (pos 2 — Ryan)
-    "tt0084602",  // Rocky III (pos 3 — Darren)
-    "tt0087538",  // The Karate Kid (pos 4 — Clay)
-    "tt0087781",  // The Natural (pos 5 — Ryan)
-    "tt0091217",  // Hoosiers (pos 6 — Darren)
-    "tt0091501",  // Lucas (pos 7 — Clay)
-    "tt0090863",  // The Color of Money (pos 8 — Ryan)
-    "tt0095016",  // Eight Men Out (pos 9 — Darren)
-    "tt0094812",  // Bull Durham (pos 10 — Clay)
-    "tt0097815",  // Major League (pos 11 — Ryan)
-    "tt0097351",  // Field of Dreams (pos 12 — Darren)
+    "tt0081398", // Raging Bull (pos 1 — Clay)
+    "tt0084534", // Personal Best (pos 2 — Ryan)
+    "tt0084602", // Rocky III (pos 3 — Darren)
+    "tt0087538", // The Karate Kid (pos 4 — Clay)
+    "tt0087781", // The Natural (pos 5 — Ryan)
+    "tt0091217", // Hoosiers (pos 6 — Darren)
+    "tt0091501", // Lucas (pos 7 — Clay)
+    "tt0090863", // The Color of Money (pos 8 — Ryan)
+    "tt0095016", // Eight Men Out (pos 9 — Darren)
+    "tt0094812", // Bull Durham (pos 10 — Clay)
+    "tt0097815", // Major League (pos 11 — Ryan)
+    "tt0097351", // Field of Dreams (pos 12 — Darren)
   ];
 
   protected override async Task OnInitializeAsync()
   {
-    await Shared.SeedAsync(Sender);
+    await Shared.SeedAsync(Sender, FakeUsersApi);
     await Media.SeedAsync(DbContext);
     EmailCapture.Clear();
 
@@ -62,7 +62,8 @@ public sealed class EightiesSportsMiniMega_Tests(DraftsIntegrationTestWebAppFact
     _draftPublicId = await CreateDraftAsync(
       "80's Sports Mini-Mega Draft",
       DraftType.MiniMega.Value,
-      Shared.RegularSeriesId);
+      Shared.RegularSeriesId
+    );
 
     await ProcessOutboxAsync();
 
@@ -83,32 +84,51 @@ public sealed class EightiesSportsMiniMega_Tests(DraftsIntegrationTestWebAppFact
     // Clay wins trivia: positions 1,4,7,10
     // Ryan 2nd: positions 2,5,8,11
     // Darren 3rd: positions 3,6,9,12
-    await SetPositionsAsync(_draftPartPublicId,
-    [
-      new DraftPositionRequest { Name = "Clay",   Picks = [1, 4, 7, 10] },
-      new DraftPositionRequest { Name = "Ryan",   Picks = [2, 5, 8, 11] },
-      new DraftPositionRequest { Name = "Darren", Picks = [3, 6, 9, 12] }
-    ]);
+    await SetPositionsAsync(
+      _draftPartPublicId,
+      [
+        new DraftPositionRequest { Name = "Clay", Picks = [1, 4, 7, 10] },
+        new DraftPositionRequest { Name = "Ryan", Picks = [2, 5, 8, 11] },
+        new DraftPositionRequest { Name = "Darren", Picks = [3, 6, 9, 12] },
+      ]
+    );
 
     // Step 6 — StartDraft
     await StartDraftPartAsync(_draftPublicId);
 
     // Step 7 — AssignTriviaResults
-    await AssignTriviaAsync(_draftPartPublicId,
-    [
-      (_clayDrafterPublicId, ParticipantKind.Drafter, 1, 3),
-      (_ryanDrafterPublicId, ParticipantKind.Drafter, 2, 2),
-      (_darrenDrafterPublicId, ParticipantKind.Drafter, 3, 1)
-    ]);
+    await AssignTriviaAsync(
+      _draftPartPublicId,
+      [
+        (_clayDrafterPublicId, ParticipantKind.Drafter, 1, 3),
+        (_ryanDrafterPublicId, ParticipantKind.Drafter, 2, 2),
+        (_darrenDrafterPublicId, ParticipantKind.Drafter, 3, 1),
+      ]
+    );
 
     // Step 8 — AssignParticipantsToPositions
-    var clayPosId   = await GetPositionPublicIdByNameAsync(_draftPartPublicId, "Clay");
-    var ryanPosId   = await GetPositionPublicIdByNameAsync(_draftPartPublicId, "Ryan");
+    var clayPosId = await GetPositionPublicIdByNameAsync(_draftPartPublicId, "Clay");
+    var ryanPosId = await GetPositionPublicIdByNameAsync(_draftPartPublicId, "Ryan");
     var darrenPosId = await GetPositionPublicIdByNameAsync(_draftPartPublicId, "Darren");
 
-    await AssignParticipantToPositionAsync(_draftPartPublicId, clayPosId,   _clayDrafterPublicId,   ParticipantKind.Drafter);
-    await AssignParticipantToPositionAsync(_draftPartPublicId, ryanPosId,   _ryanDrafterPublicId,   ParticipantKind.Drafter);
-    await AssignParticipantToPositionAsync(_draftPartPublicId, darrenPosId, _darrenDrafterPublicId, ParticipantKind.Drafter);
+    await AssignParticipantToPositionAsync(
+      _draftPartPublicId,
+      clayPosId,
+      _clayDrafterPublicId,
+      ParticipantKind.Drafter
+    );
+    await AssignParticipantToPositionAsync(
+      _draftPartPublicId,
+      ryanPosId,
+      _ryanDrafterPublicId,
+      ParticipantKind.Drafter
+    );
+    await AssignParticipantToPositionAsync(
+      _draftPartPublicId,
+      darrenPosId,
+      _darrenDrafterPublicId,
+      ParticipantKind.Drafter
+    );
 
     // Collect the 12 seeded movie publicIds from MediaSeedFixture by IMDb ID
     _moviePublicIds = new string[12];
@@ -127,8 +147,8 @@ public sealed class EightiesSportsMiniMega_Tests(DraftsIntegrationTestWebAppFact
   {
     await PlayAllPicksAsync();
 
-    var picks = await DbContext.Picks
-      .Where(p => p.DraftPart.PublicId == _draftPartPublicId)
+    var picks = await DbContext
+      .Picks.Where(p => p.DraftPart.PublicId == _draftPartPublicId)
       .ToListAsync(TestContext.Current.CancellationToken);
 
     picks.Should().HaveCount(12);
@@ -140,11 +160,13 @@ public sealed class EightiesSportsMiniMega_Tests(DraftsIntegrationTestWebAppFact
     await PlayAllPicksAsync();
 
     var clayId = await GetDrafterInternalIdAsync(_clayDrafterPublicId);
-    var count = await DbContext.Picks
-      .CountAsync(p =>
-        p.DraftPart.PublicId == _draftPartPublicId &&
-        p.PlayedByParticipantKindValue == ParticipantKind.Drafter &&
-        p.PlayedByParticipantIdValue == clayId, TestContext.Current.CancellationToken);
+    var count = await DbContext.Picks.CountAsync(
+      p =>
+        p.DraftPart.PublicId == _draftPartPublicId
+        && p.PlayedByParticipantKindValue == ParticipantKind.Drafter
+        && p.PlayedByParticipantIdValue == clayId,
+      TestContext.Current.CancellationToken
+    );
 
     count.Should().Be(4, "Clay picks positions 1, 4, 7, 10");
   }
@@ -155,11 +177,13 @@ public sealed class EightiesSportsMiniMega_Tests(DraftsIntegrationTestWebAppFact
     await PlayAllPicksAsync();
 
     var ryanId = await GetDrafterInternalIdAsync(_ryanDrafterPublicId);
-    var count = await DbContext.Picks
-      .CountAsync(p =>
-        p.DraftPart.PublicId == _draftPartPublicId &&
-        p.PlayedByParticipantKindValue == ParticipantKind.Drafter &&
-        p.PlayedByParticipantIdValue == ryanId, TestContext.Current.CancellationToken);
+    var count = await DbContext.Picks.CountAsync(
+      p =>
+        p.DraftPart.PublicId == _draftPartPublicId
+        && p.PlayedByParticipantKindValue == ParticipantKind.Drafter
+        && p.PlayedByParticipantIdValue == ryanId,
+      TestContext.Current.CancellationToken
+    );
 
     count.Should().Be(4, "Ryan picks positions 2, 5, 8, 11");
   }
@@ -170,11 +194,13 @@ public sealed class EightiesSportsMiniMega_Tests(DraftsIntegrationTestWebAppFact
     await PlayAllPicksAsync();
 
     var darrenId = await GetDrafterInternalIdAsync(_darrenDrafterPublicId);
-    var count = await DbContext.Picks
-      .CountAsync(p =>
-        p.DraftPart.PublicId == _draftPartPublicId &&
-        p.PlayedByParticipantKindValue == ParticipantKind.Drafter &&
-        p.PlayedByParticipantIdValue == darrenId, TestContext.Current.CancellationToken);
+    var count = await DbContext.Picks.CountAsync(
+      p =>
+        p.DraftPart.PublicId == _draftPartPublicId
+        && p.PlayedByParticipantKindValue == ParticipantKind.Drafter
+        && p.PlayedByParticipantIdValue == darrenId,
+      TestContext.Current.CancellationToken
+    );
 
     count.Should().Be(4, "Darren picks positions 3, 6, 9, 12");
   }
@@ -185,8 +211,8 @@ public sealed class EightiesSportsMiniMega_Tests(DraftsIntegrationTestWebAppFact
     await PlayAllPicksAsync();
     await CompleteDraftPartAsync(_draftPublicId);
 
-    var draftPart = await DbContext.DraftParts
-      .AsNoTracking()
+    var draftPart = await DbContext
+      .DraftParts.AsNoTracking()
       .FirstAsync(dp => dp.PublicId == _draftPartPublicId, TestContext.Current.CancellationToken);
 
     draftPart.Status.Should().Be(DraftPartStatus.Completed);
@@ -200,12 +226,40 @@ public sealed class EightiesSportsMiniMega_Tests(DraftsIntegrationTestWebAppFact
   public async Task EightiesSports_Clay_CanVeto_RyanPickAsync()
   {
     // Play positions 12 through 9
-    await PlayPickAsync(_draftPartPublicId, 12, 12, _darrenDrafterPublicId, ParticipantKind.Drafter, _moviePublicIds[11]);
-    await PlayPickAsync(_draftPartPublicId, 11, 11, _ryanDrafterPublicId,   ParticipantKind.Drafter, _moviePublicIds[10]);
-    await PlayPickAsync(_draftPartPublicId, 10, 10, _clayDrafterPublicId,   ParticipantKind.Drafter, _moviePublicIds[9]);
+    await PlayPickAsync(
+      _draftPartPublicId,
+      12,
+      12,
+      _darrenDrafterPublicId,
+      ParticipantKind.Drafter,
+      _moviePublicIds[11]
+    );
+    await PlayPickAsync(
+      _draftPartPublicId,
+      11,
+      11,
+      _ryanDrafterPublicId,
+      ParticipantKind.Drafter,
+      _moviePublicIds[10]
+    );
+    await PlayPickAsync(
+      _draftPartPublicId,
+      10,
+      10,
+      _clayDrafterPublicId,
+      ParticipantKind.Drafter,
+      _moviePublicIds[9]
+    );
 
     // Ryan plays position 8 with playOrder=13 (above current max of 12) so it can be vetoed
-    await PlayPickAsync(_draftPartPublicId, 8, 13, _ryanDrafterPublicId, ParticipantKind.Drafter, _moviePublicIds[7]);
+    await PlayPickAsync(
+      _draftPartPublicId,
+      8,
+      13,
+      _ryanDrafterPublicId,
+      ParticipantKind.Drafter,
+      _moviePublicIds[7]
+    );
 
     // Clay vetoes Ryan's position-8 pick (playOrder=13 is now the max)
     await ApplyVetoAsync(_draftPartPublicId, 13, _clayDrafterPublicId, ParticipantKind.Drafter);
@@ -217,18 +271,51 @@ public sealed class EightiesSportsMiniMega_Tests(DraftsIntegrationTestWebAppFact
   public async Task EightiesSports_Darren_CanOverride_ClayVetoAsync()
   {
     // Play positions 12 through 9, veto position 8
-    await PlayPickAsync(_draftPartPublicId, 12, 12, _darrenDrafterPublicId, ParticipantKind.Drafter, _moviePublicIds[11]);
-    await PlayPickAsync(_draftPartPublicId, 11, 11, _ryanDrafterPublicId,   ParticipantKind.Drafter, _moviePublicIds[10]);
-    await PlayPickAsync(_draftPartPublicId, 10, 10, _clayDrafterPublicId,   ParticipantKind.Drafter, _moviePublicIds[9]);
+    await PlayPickAsync(
+      _draftPartPublicId,
+      12,
+      12,
+      _darrenDrafterPublicId,
+      ParticipantKind.Drafter,
+      _moviePublicIds[11]
+    );
+    await PlayPickAsync(
+      _draftPartPublicId,
+      11,
+      11,
+      _ryanDrafterPublicId,
+      ParticipantKind.Drafter,
+      _moviePublicIds[10]
+    );
+    await PlayPickAsync(
+      _draftPartPublicId,
+      10,
+      10,
+      _clayDrafterPublicId,
+      ParticipantKind.Drafter,
+      _moviePublicIds[9]
+    );
     // Ryan plays position 8 with playOrder=13 (above current max of 12) so it can be vetoed
-    await PlayPickAsync(_draftPartPublicId, 8, 13, _ryanDrafterPublicId,   ParticipantKind.Drafter, _moviePublicIds[7]);
+    await PlayPickAsync(
+      _draftPartPublicId,
+      8,
+      13,
+      _ryanDrafterPublicId,
+      ParticipantKind.Drafter,
+      _moviePublicIds[7]
+    );
 
     // Clay vetoes Ryan's position-8 pick (playOrder=13 is now the max)
     await ApplyVetoAsync(_draftPartPublicId, 13, _clayDrafterPublicId, ParticipantKind.Drafter);
 
     // Darren uses his veto-override to reinstate Ryan's pick (using SetRollingInVetoOverrides to give Darren an override)
     await SetRollingInVetoOverridesAsync(_draftPartPublicId, _darrenDrafterPublicId, 1);
-    await ApplyVetoOverrideAsync(_draftPartPublicId, 13, _darrenDrafterPublicId, ParticipantKind.Drafter);
+    await ApplyVetoOverrideAsync(
+      _draftPartPublicId,
+      13,
+      _darrenDrafterPublicId,
+      ParticipantKind.Drafter
+    );
 
     await AssertVetoOverriddenAsync(_draftPartPublicId, 13);
   }
@@ -241,19 +328,29 @@ public sealed class EightiesSportsMiniMega_Tests(DraftsIntegrationTestWebAppFact
   public async Task EightiesSports_DuplicateMovie_ShouldFailAsync()
   {
     // Play position 12 with Raging Bull
-    await PlayPickAsync(_draftPartPublicId, 12, 12, _darrenDrafterPublicId, ParticipantKind.Drafter, _moviePublicIds[11]);
+    await PlayPickAsync(
+      _draftPartPublicId,
+      12,
+      12,
+      _darrenDrafterPublicId,
+      ParticipantKind.Drafter,
+      _moviePublicIds[11]
+    );
 
     // Try to pick the same movie at position 11
-    var result = await Sender.Send(new PlayPickCommand
-    {
-      DraftPartId = _draftPartPublicId,
-      Position = 11,
-      PlayOrder = 11,
-      ParticipantPublicId = _ryanDrafterPublicId,
-      ParticipantKind = ParticipantKind.Drafter,
-      MoviePublicId = _moviePublicIds[11],  // same movie
-      ActedByPublicId = _ryanDrafterPublicId
-    }, TestContext.Current.CancellationToken);
+    var result = await Sender.Send(
+      new PlayPickCommand
+      {
+        DraftPartId = _draftPartPublicId,
+        Position = 11,
+        PlayOrder = 11,
+        ParticipantPublicId = _ryanDrafterPublicId,
+        ParticipantKind = ParticipantKind.Drafter,
+        MoviePublicId = _moviePublicIds[11], // same movie
+        ActedByPublicId = _ryanDrafterPublicId,
+      },
+      TestContext.Current.CancellationToken
+    );
 
     result.IsFailure.Should().BeTrue("Picking a duplicate movie in the same part must fail");
   }
@@ -269,24 +366,108 @@ public sealed class EightiesSportsMiniMega_Tests(DraftsIntegrationTestWebAppFact
   private async Task PlayAllPicksAsync()
   {
     // Positions assigned: Clay→1,4,7,10 | Ryan→2,5,8,11 | Darren→3,6,9,12
-    await PlayPickAsync(_draftPartPublicId, 12, 12, _darrenDrafterPublicId, ParticipantKind.Drafter, _moviePublicIds[11]);
-    await PlayPickAsync(_draftPartPublicId, 11, 11, _ryanDrafterPublicId,   ParticipantKind.Drafter, _moviePublicIds[10]);
-    await PlayPickAsync(_draftPartPublicId, 10, 10, _clayDrafterPublicId,   ParticipantKind.Drafter, _moviePublicIds[9]);
-    await PlayPickAsync(_draftPartPublicId,  9,  9, _darrenDrafterPublicId, ParticipantKind.Drafter, _moviePublicIds[8]);
-    await PlayPickAsync(_draftPartPublicId,  8,  8, _ryanDrafterPublicId,   ParticipantKind.Drafter, _moviePublicIds[7]);
-    await PlayPickAsync(_draftPartPublicId,  7,  7, _clayDrafterPublicId,   ParticipantKind.Drafter, _moviePublicIds[6]);
-    await PlayPickAsync(_draftPartPublicId,  6,  6, _darrenDrafterPublicId, ParticipantKind.Drafter, _moviePublicIds[5]);
-    await PlayPickAsync(_draftPartPublicId,  5,  5, _ryanDrafterPublicId,   ParticipantKind.Drafter, _moviePublicIds[4]);
-    await PlayPickAsync(_draftPartPublicId,  4,  4, _clayDrafterPublicId,   ParticipantKind.Drafter, _moviePublicIds[3]);
-    await PlayPickAsync(_draftPartPublicId,  3,  3, _darrenDrafterPublicId, ParticipantKind.Drafter, _moviePublicIds[2]);
-    await PlayPickAsync(_draftPartPublicId,  2,  2, _ryanDrafterPublicId,   ParticipantKind.Drafter, _moviePublicIds[1]);
-    await PlayPickAsync(_draftPartPublicId,  1,  1, _clayDrafterPublicId,   ParticipantKind.Drafter, _moviePublicIds[0]);
+    await PlayPickAsync(
+      _draftPartPublicId,
+      12,
+      12,
+      _darrenDrafterPublicId,
+      ParticipantKind.Drafter,
+      _moviePublicIds[11]
+    );
+    await PlayPickAsync(
+      _draftPartPublicId,
+      11,
+      11,
+      _ryanDrafterPublicId,
+      ParticipantKind.Drafter,
+      _moviePublicIds[10]
+    );
+    await PlayPickAsync(
+      _draftPartPublicId,
+      10,
+      10,
+      _clayDrafterPublicId,
+      ParticipantKind.Drafter,
+      _moviePublicIds[9]
+    );
+    await PlayPickAsync(
+      _draftPartPublicId,
+      9,
+      9,
+      _darrenDrafterPublicId,
+      ParticipantKind.Drafter,
+      _moviePublicIds[8]
+    );
+    await PlayPickAsync(
+      _draftPartPublicId,
+      8,
+      8,
+      _ryanDrafterPublicId,
+      ParticipantKind.Drafter,
+      _moviePublicIds[7]
+    );
+    await PlayPickAsync(
+      _draftPartPublicId,
+      7,
+      7,
+      _clayDrafterPublicId,
+      ParticipantKind.Drafter,
+      _moviePublicIds[6]
+    );
+    await PlayPickAsync(
+      _draftPartPublicId,
+      6,
+      6,
+      _darrenDrafterPublicId,
+      ParticipantKind.Drafter,
+      _moviePublicIds[5]
+    );
+    await PlayPickAsync(
+      _draftPartPublicId,
+      5,
+      5,
+      _ryanDrafterPublicId,
+      ParticipantKind.Drafter,
+      _moviePublicIds[4]
+    );
+    await PlayPickAsync(
+      _draftPartPublicId,
+      4,
+      4,
+      _clayDrafterPublicId,
+      ParticipantKind.Drafter,
+      _moviePublicIds[3]
+    );
+    await PlayPickAsync(
+      _draftPartPublicId,
+      3,
+      3,
+      _darrenDrafterPublicId,
+      ParticipantKind.Drafter,
+      _moviePublicIds[2]
+    );
+    await PlayPickAsync(
+      _draftPartPublicId,
+      2,
+      2,
+      _ryanDrafterPublicId,
+      ParticipantKind.Drafter,
+      _moviePublicIds[1]
+    );
+    await PlayPickAsync(
+      _draftPartPublicId,
+      1,
+      1,
+      _clayDrafterPublicId,
+      ParticipantKind.Drafter,
+      _moviePublicIds[0]
+    );
   }
 
   private async Task<Guid> GetDrafterInternalIdAsync(string drafterPublicId)
   {
-    var id = await DbContext.Drafters
-      .Where(d => d.PublicId == drafterPublicId)
+    var id = await DbContext
+      .Drafters.Where(d => d.PublicId == drafterPublicId)
       .Select(d => d.Id)
       .FirstAsync(TestContext.Current.CancellationToken);
     return id.Value;

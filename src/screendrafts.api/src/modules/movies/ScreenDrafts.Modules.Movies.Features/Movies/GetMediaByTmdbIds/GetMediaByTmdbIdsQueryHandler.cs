@@ -19,9 +19,11 @@ internal sealed class GetMediaByTmdbIdsQueryHandler(IDbConnectionFactory dbConne
 
     const string sql = $"""
       SELECT
+        m.public_id AS {nameof(MediaTmdbSummary.PublicId)},
         m.tmdb_id AS {nameof(MediaTmdbSummary.TmdbId)},
         m.title   AS {nameof(MediaTmdbSummary.Title)},
-        m.year    AS {nameof(MediaTmdbSummary.Year)}
+        m.year    AS {nameof(MediaTmdbSummary.Year)},
+        m.image AS {nameof(MediaTmdbSummary.PosterUrl)}
       FROM movies.media m
       WHERE m.tmdb_id = ANY(@TmdbIds)
         AND m.media_type = 0

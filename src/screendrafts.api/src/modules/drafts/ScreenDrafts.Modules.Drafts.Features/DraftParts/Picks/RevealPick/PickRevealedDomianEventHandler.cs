@@ -56,5 +56,19 @@ internal sealed class PickRevealedDomianEventHandler(
       pick.PlayedByParticipantKindValue.Value,
       domainEvent.ActedByPublicId),
       cancellationToken);
+
+    await _eventBus.PublishAsync(new PickAddedIntegrationEvent(
+      id: Guid.NewGuid(),
+      occurredOnUtc: _dateTimeProvider.UtcNow,
+      draftPartId: domainEvent.DraftPartId,
+      draftPartPublicId: domainEvent.DraftPartPublicId,
+      imdbId: movie.ImdbId!,
+      movieTitle: movie.MovieTitle,
+      tmdbId: movie.TmdbId,
+      boardPosition: pick.Position,
+      playOrder: domainEvent.PlayOrder,
+      participantId: pick.PlayedByParticipantIdValue,
+      participantKind: pick.PlayedByParticipantKindValue.Value),
+      cancellationToken);
   }
 }

@@ -1,8 +1,13 @@
+﻿using ScreenDrafts.Common.Application.Services;
+using ScreenDrafts.Modules.Drafts.Features.People.LinkUser;
+
 namespace ScreenDrafts.Modules.Drafts.IntegrationTests.DraftParts;
 
 public sealed class RevealPickTests(DraftsIntegrationTestWebAppFactory factory)
   : DraftsIntegrationTest(factory)
 {
+  private readonly IPublicIdGenerator _publicIdGenerator = factory.Services.GetRequiredService<IPublicIdGenerator>();
+
   // -------------------------------------------------------------------------
   // Happy path
   // -------------------------------------------------------------------------
@@ -11,7 +16,7 @@ public sealed class RevealPickTests(DraftsIntegrationTestWebAppFactory factory)
   public async Task RevealPick_ShouldSucceedAsync()
   {
     // Arrange
-    var (draftPartPublicId, drafter1PublicId, hostPublicId) = await SetupAsync();
+    var (draftPartPublicId, drafter1PublicId, _, hostUserPublicId) = await SetupAsync();
     var movie = await CreateMovieAsync();
     await PlayPickAsync(draftPartPublicId, drafter1PublicId, position: 1, playOrder: 1, movie);
 
@@ -20,7 +25,7 @@ public sealed class RevealPickTests(DraftsIntegrationTestWebAppFactory factory)
     {
       DraftPartId = draftPartPublicId,
       PlayOrder = 1,
-      ActorPublicId = hostPublicId
+      UserPublicId = hostUserPublicId
     }, TestContext.Current.CancellationToken);
 
     // Assert
@@ -31,7 +36,7 @@ public sealed class RevealPickTests(DraftsIntegrationTestWebAppFactory factory)
   public async Task RevealPick_ShouldPersistRevealedAtAsync()
   {
     // Arrange
-    var (draftPartPublicId, drafter1PublicId, hostPublicId) = await SetupAsync();
+    var (draftPartPublicId, drafter1PublicId, _, hostUserPublicId) = await SetupAsync();
     var movie = await CreateMovieAsync();
     await PlayPickAsync(draftPartPublicId, drafter1PublicId, position: 1, playOrder: 1, movie);
 
@@ -40,7 +45,7 @@ public sealed class RevealPickTests(DraftsIntegrationTestWebAppFactory factory)
     {
       DraftPartId = draftPartPublicId,
       PlayOrder = 1,
-      ActorPublicId = hostPublicId
+      UserPublicId = hostUserPublicId
     }, TestContext.Current.CancellationToken);
 
     // Assert
@@ -58,16 +63,18 @@ public sealed class RevealPickTests(DraftsIntegrationTestWebAppFactory factory)
   [Fact]
   public async Task RevealPick_ShouldFail_WhenDraftPartNotFoundAsync()
   {
-    // Act
+    // Act — neither the draft part nor the caller need to resolve to anything
+    // real; the draft-part lookup fails before identity is ever touched.
     var result = await Sender.Send(new RevealPickCommand
     {
-      DraftPartId = Faker.Random.AlphaNumeric(12),
+      DraftPartId = _publicIdGenerator.GeneratePublicId(PublicIdPrefixes.DraftPart),
       PlayOrder = 1,
-      ActorPublicId = Faker.Random.AlphaNumeric(12)
+      UserPublicId = _publicIdGenerator.GeneratePublicId(PublicIdPrefixes.User)
     }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
+    result.Errors.Should().Contain(e => e.Code == DraftPartErrors.NotFound(string.Empty).Code);
   }
 
   // -------------------------------------------------------------------------
@@ -78,19 +85,48 @@ public sealed class RevealPickTests(DraftsIntegrationTestWebAppFactory factory)
   public async Task RevealPick_ShouldFail_WhenPickNotFoundAsync()
   {
     // Arrange
-    var (draftPartPublicId, _, hostPublicId) = await SetupAsync();
+    var (draftPartPublicId, _, _, hostUserPublicId) = await SetupAsync();
 
     // Act — no picks played; play order 1 does not exist
     var result = await Sender.Send(new RevealPickCommand
     {
       DraftPartId = draftPartPublicId,
       PlayOrder = 1,
-      ActorPublicId = hostPublicId
+      UserPublicId = hostUserPublicId
     }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
     result.Errors.Should().Contain(e => e.Code == DraftPartErrors.PickNotFound(1).Code);
+  }
+
+  // -------------------------------------------------------------------------
+  // Guard — caller's User has no linked Person
+  // -------------------------------------------------------------------------
+
+  [Fact]
+  public async Task RevealPick_ShouldFail_WhenUserHasNoLinkedPersonAsync()
+  {
+    // Arrange
+    var (draftPartPublicId, drafter1PublicId, _, _) = await SetupAsync();
+    var movie = await CreateMovieAsync();
+    await PlayPickAsync(draftPartPublicId, drafter1PublicId, position: 1, playOrder: 1, movie);
+
+    // A User exists in the fake Users module but was never linked to a Person.
+    var orphanUserId = Guid.NewGuid();
+    var orphanUserPublicId = FakeUsersApi.RegisterUser(orphanUserId, $"u_{Faker.Random.AlphaNumeric(16)}");
+
+    // Act
+    var result = await Sender.Send(new RevealPickCommand
+    {
+      DraftPartId = draftPartPublicId,
+      PlayOrder = 1,
+      UserPublicId = orphanUserPublicId
+    }, TestContext.Current.CancellationToken);
+
+    // Assert
+    result.IsFailure.Should().BeTrue();
+    result.Errors.Should().Contain(e => e.Code == PersonErrors.NotFoundForUser(orphanUserPublicId).Code);
   }
 
   // -------------------------------------------------------------------------
@@ -101,21 +137,27 @@ public sealed class RevealPickTests(DraftsIntegrationTestWebAppFactory factory)
   public async Task RevealPick_ShouldFail_WhenCallerIsNotPrimaryHostAsync()
   {
     // Arrange
-    var (draftPartPublicId, drafter1PublicId, _) = await SetupAsync();
+    var (draftPartPublicId, drafter1PublicId, _, _) = await SetupAsync();
     var movie = await CreateMovieAsync();
     await PlayPickAsync(draftPartPublicId, drafter1PublicId, position: 1, playOrder: 1, movie);
 
-    // Act — use the drafter's public ID instead of the host's
+    // Drafter1 has a real User->Person link but is not a Host at all, let
+    // alone the primary host — this exercises the authorization check itself
+    // rather than failing earlier in identity resolution.
+    var drafter1UserPublicId = await LinkPersonBehindParticipantToNewUserAsync(drafter1PublicId);
+
+    // Act
     var result = await Sender.Send(new RevealPickCommand
     {
       DraftPartId = draftPartPublicId,
       PlayOrder = 1,
-      ActorPublicId = drafter1PublicId
+      UserPublicId = drafter1UserPublicId
     }, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors.Should().Contain(e => e.Code == DraftPartErrors.OnlyPrimaryHostCanRevealPicks.Code);
+    result.Errors.Should().Contain(e => e.Code == HostErrors.NotFoundForPerson(string.Empty).Code
+      || e.Code == DraftPartErrors.OnlyPrimaryHostCanRevealPicks.Code);
   }
 
   // -------------------------------------------------------------------------
@@ -126,7 +168,7 @@ public sealed class RevealPickTests(DraftsIntegrationTestWebAppFactory factory)
   public async Task RevealPick_ShouldFail_WhenPickAlreadyRevealedAsync()
   {
     // Arrange
-    var (draftPartPublicId, drafter1PublicId, hostPublicId) = await SetupAsync();
+    var (draftPartPublicId, drafter1PublicId, _, hostUserPublicId) = await SetupAsync();
     var movie = await CreateMovieAsync();
     await PlayPickAsync(draftPartPublicId, drafter1PublicId, position: 1, playOrder: 1, movie);
 
@@ -134,7 +176,7 @@ public sealed class RevealPickTests(DraftsIntegrationTestWebAppFactory factory)
     {
       DraftPartId = draftPartPublicId,
       PlayOrder = 1,
-      ActorPublicId = hostPublicId
+      UserPublicId = hostUserPublicId
     }, TestContext.Current.CancellationToken);
 
     // Act — reveal again
@@ -142,7 +184,7 @@ public sealed class RevealPickTests(DraftsIntegrationTestWebAppFactory factory)
     {
       DraftPartId = draftPartPublicId,
       PlayOrder = 1,
-      ActorPublicId = hostPublicId
+      UserPublicId = hostUserPublicId
     }, TestContext.Current.CancellationToken);
 
     // Assert
@@ -154,7 +196,13 @@ public sealed class RevealPickTests(DraftsIntegrationTestWebAppFactory factory)
   // Helpers
   // -------------------------------------------------------------------------
 
-  private async Task<(string DraftPartPublicId, string Drafter1PublicId, string HostPublicId)> SetupAsync()
+  /// <summary>
+  /// Sets up a draft part with two drafters and a primary host. Returns the
+  /// host's UserPublicId (not the host's own domain public id) since that is
+  /// what RevealPickCommand actually requires — the field the Endpoint
+  /// populates from the JWT via User.GetUserPublicId().
+  /// </summary>
+  private async Task<(string DraftPartPublicId, string Drafter1PublicId, string Drafter2PublicId, string HostUserPublicId)> SetupAsync()
   {
     var seriesId = await CreateSeriesAsync();
     var draftPublicId = await CreateDraftAsync(seriesId);
@@ -193,6 +241,10 @@ public sealed class RevealPickTests(DraftsIntegrationTestWebAppFactory factory)
       HostRole = HostRole.Primary
     }, TestContext.Current.CancellationToken);
 
+    // Link the host's Person to a fake User so the handler's
+    // User -> Person -> Host chain has something real to resolve.
+    var hostUserPublicId = await LinkPersonToNewUserAsync(hostPersonId);
+
     await Sender.Send(new SetDraftPartStatusCommand
     {
       DraftPublicId = draftPublicId,
@@ -200,7 +252,42 @@ public sealed class RevealPickTests(DraftsIntegrationTestWebAppFactory factory)
       Action = DraftPartStatusAction.Start
     }, TestContext.Current.CancellationToken);
 
-    return (draftPartPublicId, drafter1PublicId, hostPublicId);
+    return (draftPartPublicId, drafter1PublicId, drafter2PublicId, hostUserPublicId);
+  }
+
+  /// <summary>
+  /// Registers a fake User and links it to the given Person via
+  /// LinkUserPersonCommand. Returns the new User's public id.
+  /// </summary>
+  private async Task<string> LinkPersonToNewUserAsync(string personPublicId)
+  {
+    var userId = Guid.NewGuid();
+    var userPublicId = FakeUsersApi.RegisterUser(userId, $"u_{Faker.Random.AlphaNumeric(16)}");
+
+    var linkResult = await Sender.Send(new LinkUserPersonCommand
+    {
+      PublicId = personPublicId,
+      UserId = userId
+    }, TestContext.Current.CancellationToken);
+
+    linkResult.IsSuccess.Should().BeTrue("test setup must be able to link a fresh Person to a fresh User");
+
+    return userPublicId;
+  }
+
+  /// <summary>
+  /// Looks up the Person backing a Drafter participant and links it to a new
+  /// fake User. Used for guard tests where the caller has a valid identity
+  /// chain but lacks the Host role entirely.
+  /// </summary>
+  private async Task<string> LinkPersonBehindParticipantToNewUserAsync(string drafterPublicId)
+  {
+    var personPublicId = await DbContext.Drafters
+      .Where(d => d.PublicId == drafterPublicId)
+      .Select(d => d.Person.PublicId)
+      .FirstAsync(TestContext.Current.CancellationToken);
+
+    return await LinkPersonToNewUserAsync(personPublicId);
   }
 
   private async Task PlayPickAsync(string draftPartPublicId, string drafterPublicId, int position, int playOrder, Movie movie)

@@ -8,7 +8,7 @@ import {
   updateDraftBoardItem,
   updateDraftBoardOrder,
 } from "@/services/drafts/fetch-draft-board";
-import { type MovieSearchResult } from "@/services/movies/fetch-movies";
+import { type MovieSearchResult } from "@/services/movies/fetch-tmdb";
 import type { DraftBoardItemResponse } from "@/lib/dto";
 
 interface DraftBoardEditorProps {

@@ -1,12 +1,7 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿namespace ScreenDrafts.Modules.Drafts.Features.Drafts.DraftBoards.GetDraftBoard;
 
-namespace ScreenDrafts.Modules.Drafts.Features.Drafts.DraftBoards.GetDraftBoard;
-
-internal sealed class Endpoint(IUsersApi usersApi)
-  : ScreenDraftsEndpoint<GetDraftBoardRequest, GetDraftBoardResponse>
+internal sealed class Endpoint : ScreenDraftsEndpoint<GetDraftBoardRequest, GetDraftBoardResponse>
 {
-  private readonly IUsersApi _usersApi = usersApi;
-
   public override void Configure()
   {
     Get(DraftRoutes.Board);
@@ -22,14 +17,9 @@ internal sealed class Endpoint(IUsersApi usersApi)
 
   public override async Task HandleAsync(GetDraftBoardRequest req, CancellationToken ct)
   {
-    var user = await _usersApi.GetUserByPublicId(User.GetPublicId(), ct);
+    var userId = User.GetUserId();
 
-    if (user is null)
-    {
-      await Send.NotFoundAsync(ct);
-      return;
-    }
-    var query = new GetDraftBoardQuery { DraftId = req.PublicId, UserId = user.UserId };
+    var query = new GetDraftBoardQuery { DraftId = req.PublicId, UserId = userId };
     var result = await Sender.Send(query, ct);
 
     await this.SendOkAsync(result, ct);

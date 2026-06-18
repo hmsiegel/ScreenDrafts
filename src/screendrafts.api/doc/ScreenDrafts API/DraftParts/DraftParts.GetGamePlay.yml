@@ -8,7 +8,7 @@ http:
   url: "{{baseUrl}}/draft-parts/:draftPartId/gameplay"
   params:
     - name: draftPartId
-      value: dp_cGlzC3JdJ2Ig0xs
+      value: dp_iNP3R3iT0QNyykY
       type: path
   auth: inherit
 

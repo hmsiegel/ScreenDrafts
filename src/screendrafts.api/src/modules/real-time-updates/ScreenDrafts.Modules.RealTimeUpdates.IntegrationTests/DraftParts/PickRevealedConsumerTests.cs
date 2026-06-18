@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.RealTimeUpdates.IntegrationTests.DraftParts;
+﻿namespace ScreenDrafts.Modules.RealTimeUpdates.IntegrationTests.DraftParts;
 
 public sealed class PickRevealedConsumerTests
 {
@@ -15,14 +15,18 @@ public sealed class PickRevealedConsumerTests
     var hubContext = new TestHubContext();
     var consumer = new PickRevealedIntegrationEventConsumer(
       NullLogger<PickRevealedIntegrationEventConsumer>.Instance,
-      hubContext);
+      hubContext
+    );
 
     // Act
     await consumer.Handle(integrationEvent, CancellationToken.None);
 
     // Assert
-    hubContext.SentMessages.Should().ContainSingle()
-      .Which.GroupName.Should().Be(DraftHub.HostGroupName(draftPartPublicId));
+    hubContext
+      .SentMessages.Should()
+      .ContainSingle()
+      .Which.GroupName.Should()
+      .Be(DraftHub.HostGroupName(draftPartPublicId));
   }
 
   // -------------------------------------------------------------------------
@@ -37,7 +41,8 @@ public sealed class PickRevealedConsumerTests
     var hubContext = new TestHubContext();
     var consumer = new PickRevealedIntegrationEventConsumer(
       NullLogger<PickRevealedIntegrationEventConsumer>.Instance,
-      hubContext);
+      hubContext
+    );
 
     // Act
     await consumer.Handle(integrationEvent, CancellationToken.None);
@@ -77,12 +82,14 @@ public sealed class PickRevealedConsumerTests
       boardPosition: boardPosition,
       participantId: participantId,
       participantKind: participantKind,
-      actedByPublicId: null);
+      actedByPublicId: null
+    );
 
     var hubContext = new TestHubContext();
     var consumer = new PickRevealedIntegrationEventConsumer(
       NullLogger<PickRevealedIntegrationEventConsumer>.Instance,
-      hubContext);
+      hubContext
+    );
 
     // Act
     await consumer.Handle(integrationEvent, CancellationToken.None);
@@ -119,5 +126,6 @@ public sealed class PickRevealedConsumerTests
       boardPosition: 1,
       participantId: Guid.NewGuid(),
       participantKind: 0,
-      actedByPublicId: null);
+      actedByPublicId: null
+    );
 }

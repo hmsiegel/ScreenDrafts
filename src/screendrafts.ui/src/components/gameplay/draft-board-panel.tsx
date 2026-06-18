@@ -1,15 +1,14 @@
 import CandidateListEditor from "@/components/drafts/candidate-list-editor";
-import { type CandidateListEntry } from "@/services/drafts/fetch-candidate-list";
-import { type DraftBoardMovie } from "@/services/drafts/fetch-draft-board";
 import Image from "next/image";
-import { TMDB_IMAGE_BASE } from "@/services/movies/fetch-movies";
+import { TMDB_IMAGE_BASE } from "@/services/movies/fetch-tmdb";
+import { CandidateListEntryResponse, DraftBoardItemResponse } from "@/lib/dto";
 
 interface DraftBoardPanelProps {
   isHost: boolean;
   accessToken: string;
   draftPartId: string;
-  board: DraftBoardMovie[];
-  candidateList: CandidateListEntry[];
+  board: DraftBoardItemResponse[];
+  candidateList: CandidateListEntryResponse[];
 }
 
 export default function DraftBoardPanel({
@@ -43,7 +42,7 @@ export default function DraftBoardPanel({
                     {movie.posterUrl ? (
                       <Image
                         src={`${TMDB_IMAGE_BASE}${movie.posterUrl}`}
-                        alt={movie.title}
+                        alt={movie.title || ""}
                         width={28}
                         height={42}
                         className="shrink-0 object-cover"

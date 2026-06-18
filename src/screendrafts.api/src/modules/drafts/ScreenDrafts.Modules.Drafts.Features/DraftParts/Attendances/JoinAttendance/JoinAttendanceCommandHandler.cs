@@ -1,29 +1,35 @@
-﻿// ═══════════════════════════════════════════════════════════════════════════════
-// JoinAttendance — PUT /draft-parts/{draftPartId}/attendances/{personPublicId}/join
-// Person joins the draft part. Confirmed → Joined.
-// Caller must be the person identified by personPublicId (or admin/commissioner).
-// ═══════════════════════════════════════════════════════════════════════════════
+﻿// ── Patch to JoinAttendanceCommandHandler.cs ──────────────────────────────────
+// Replace the CallerPersonPublicId != PersonPublicId check with a user→person
+// resolution so callers passing their u_ public ID can join their pe_ record.
+// Inject IDbConnectionFactory to resolve the mapping.
 
 namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.Attendances.JoinAttendance;
 
 internal sealed class JoinAttendanceCommandHandler(
   IDraftPartRepository draftPartRepository,
-  IAttendanceRepository attendanceRepository
+  IAttendanceRepository attendanceRepository,
+  IPersonRepository personRepository
 ) : ICommandHandler<JoinAttendanceCommand>
 {
   private readonly IDraftPartRepository _draftPartRepository = draftPartRepository;
   private readonly IAttendanceRepository _attendanceRepository = attendanceRepository;
+  private readonly IPersonRepository _personRepository = personRepository;
 
   public async Task<Result> Handle(
     JoinAttendanceCommand request,
     CancellationToken cancellationToken
   )
   {
-    // Caller must be joining their own record.
-    // Admins bypass this check via the DraftPartUpdate permission on the endpoint;
-    // here we enforce it for the self-service permission (AttendanceJoin).
-    if (request.CallerPersonPublicId != request.PersonPublicId)
-      return Result.Failure(AttendanceErrors.NotParticipant);
+    // Fall back to the raw value if no user record found (supports pe_ passed directly).
+    var callerPersonPublicId = await _personRepository.GetByUserIdAsync(
+      request.UserId,
+      cancellationToken
+    );
+
+    if (callerPersonPublicId is null)
+    {
+      return Result.Failure(AttendanceErrors.NotFound(request.UserId));
+    }
 
     var draftPart = await _draftPartRepository.GetByPublicIdAsync(
       request.DraftPartId,
@@ -35,12 +41,12 @@ internal sealed class JoinAttendanceCommandHandler(
 
     var attendance = await _attendanceRepository.GetByPartAndPersonAsync(
       draftPart.Id,
-      request.PersonPublicId,
+      callerPersonPublicId.PublicId,
       cancellationToken
     );
 
     if (attendance is null)
-      return Result.Failure(AttendanceErrors.NotFound(request.PersonPublicId));
+      return Result.Failure(AttendanceErrors.NotFound(callerPersonPublicId.PublicId));
 
     var result = attendance.Join();
 

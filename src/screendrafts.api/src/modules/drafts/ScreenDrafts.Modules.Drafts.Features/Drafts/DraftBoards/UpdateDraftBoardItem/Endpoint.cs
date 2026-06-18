@@ -20,7 +20,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<UpdateDraftBoardItemReques
 
   public override async Task HandleAsync(UpdateDraftBoardItemRequest req, CancellationToken ct)
   {
-    var userPublicId = User.GetPublicId() ?? string.Empty;
+    var userPublicId = User.GetUserPublicId() ?? string.Empty;
 
     var command = new UpdateDraftBoardItemCommand
     {

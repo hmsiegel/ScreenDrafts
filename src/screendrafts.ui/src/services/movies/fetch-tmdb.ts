@@ -1,5 +1,7 @@
 import { env } from "@/lib/env";
 
+export const TMDB_IMAGE_BASE = "https://image.tmdb.org/t/p/w500";
+
 export interface MovieSearchResult {
   tmdbId: number;
   title: string;

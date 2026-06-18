@@ -1,18 +1,22 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.DraftPositions.AssignParticipantToDraftPosition;
 
-internal sealed class AssignParticipantToDraftPositionCommandHandler : ICommandHandler<AssignParticipantToDraftPositionCommand>
+internal sealed class AssignParticipantToDraftPositionCommandHandler(
+  IDraftPartRepository draftPartRepository,
+  ParticipantResolver participantResolver
+) : ICommandHandler<AssignParticipantToDraftPositionCommand>
 {
-  private readonly IDraftPartRepository _draftPartRepository;
-  private readonly ParticipantResolver _participantResolver;
-  public AssignParticipantToDraftPositionCommandHandler(IDraftPartRepository draftPartRepository, ParticipantResolver participantResolver)
-  {
-    _draftPartRepository = draftPartRepository;
-    _participantResolver = participantResolver;
-  }
+  private readonly IDraftPartRepository _draftPartRepository = draftPartRepository;
+  private readonly ParticipantResolver _participantResolver = participantResolver;
 
-  public async Task<Result> Handle(AssignParticipantToDraftPositionCommand request, CancellationToken cancellationToken)
+  public async Task<Result> Handle(
+    AssignParticipantToDraftPositionCommand request,
+    CancellationToken cancellationToken
+  )
   {
-    var draftPart = await _draftPartRepository.GetByPublicIdAsync(request.DraftPartId, cancellationToken);
+    var draftPart = await _draftPartRepository.GetByPublicIdAsync(
+      request.DraftPartId,
+      cancellationToken
+    );
 
     if (draftPart is null)
     {
@@ -24,7 +28,9 @@ internal sealed class AssignParticipantToDraftPositionCommandHandler : ICommandH
       return Result.Failure(DraftPartErrors.GameBoardNotFound);
     }
 
-    var position = draftPart.GameBoard.DraftPositions.FirstOrDefault(p => p.PublicId == request.PositionPublicId);
+    var position = draftPart.GameBoard.DraftPositions.FirstOrDefault(p =>
+      p.PublicId == request.PositionPublicId
+    );
 
     if (position is null)
     {
@@ -34,7 +40,8 @@ internal sealed class AssignParticipantToDraftPositionCommandHandler : ICommandH
     var participantResult = await _participantResolver.ResolveAsync(
       request.ParticipantPublicId,
       request.ParticipantKind,
-      cancellationToken);
+      cancellationToken
+    );
 
     if (participantResult.IsFailure)
     {

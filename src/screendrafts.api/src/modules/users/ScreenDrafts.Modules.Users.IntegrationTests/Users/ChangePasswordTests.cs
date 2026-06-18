@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Users.IntegrationTests.Users;
+﻿namespace ScreenDrafts.Modules.Users.IntegrationTests.Users;
 
 public class ChangePasswordTests(UsersIntegrationTestWebAppFactory factory) : UsersIntegrationTest(factory)
 {

@@ -25,7 +25,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<WithdrawAttendanceRequest>
 
   public override async Task HandleAsync(WithdrawAttendanceRequest req, CancellationToken ct)
   {
-    var callerPersonPublicId = User.GetPublicId() ?? string.Empty;
+    var callerPersonPublicId = User.GetUserPublicId() ?? string.Empty;
 
     if (string.IsNullOrWhiteSpace(callerPersonPublicId))
     {

@@ -1,7 +1,6 @@
 import NextAuth, { type DefaultSession } from "next-auth";
 import KeycloakProvider from "next-auth/providers/keycloak";
 import type { JWT } from "next-auth/jwt";
-import { use } from "react";
 
 declare module "next-auth" {
   interface Session {

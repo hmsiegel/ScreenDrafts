@@ -28,7 +28,10 @@ export async function fetchGameplay(
     `${API_BASE}/draft-parts/${draftPartId}/gameplay`,
     { headers: authHeadersGet(accessToken), cache: 'no-store' },
   );
-  if (!res.ok) throw new Error(`fetchGameplay failed: ${res.status}`);
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`fetchGameplay failed: ${res.status} - ${body}`);
+  }
   return res.json();
 }
 

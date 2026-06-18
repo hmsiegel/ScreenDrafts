@@ -23,7 +23,7 @@ internal sealed class PersonCreatedForUserIntegrationEventConsumer(
     PersonCreatedForUserIntegrationEvent integrationEvent,
     CancellationToken cancellationToken = default)
   {
-    var command = new UpdatePerson.UpdatePersonCommand
+    var command = new UpdatePersonCommand
     {
       UserId = integrationEvent.UserId,
       PersonId = integrationEvent.PersonId,

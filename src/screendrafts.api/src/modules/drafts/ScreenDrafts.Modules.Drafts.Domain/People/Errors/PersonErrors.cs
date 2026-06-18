@@ -1,5 +1,7 @@
 ﻿using ScreenDrafts.Common.Abstractions.Errors;
 
+using static System.Runtime.InteropServices.JavaScript.JSType;
+
 namespace ScreenDrafts.Modules.Drafts.Domain.People.Errors;
 
 public static class PersonErrors
@@ -40,4 +42,9 @@ public static class PersonErrors
       "PersonError.UserAlreadyAssigned",
       $"The user with id {userId} is already assigned to a person profile."
     );
+
+  public static SDError NotFoundForUser(string userPublicId) =>
+  SDError.NotFound(
+    "Person.NotFoundForUser",
+    $"No Person is linked to user '{userPublicId}'.");
 }

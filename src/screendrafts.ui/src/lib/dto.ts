@@ -581,7 +581,7 @@ export interface IClient {
     /**
      * @return No Content
      */
-    joinAttendance(body: JoinAttendanceRequest): Promise<void>;
+    joinAttendance(): Promise<void>;
 
     /**
      * @return No Content
@@ -908,6 +908,10 @@ export class Client implements IClient {
             return response.text().then((_responseText) => {
             return;
             });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
         } else if (status === 401) {
             return response.text().then((_responseText) => {
             return throwException("Unauthorized", status, _responseText, _headers);
@@ -915,10 +919,6 @@ export class Client implements IClient {
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -962,10 +962,6 @@ export class Client implements IClient {
             return response.text().then((_responseText) => {
             return throwException("Bad Request", status, _responseText, _headers);
             });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
@@ -977,6 +973,10 @@ export class Client implements IClient {
         } else if (status === 500) {
             return response.text().then((_responseText) => {
             return throwException("Internal Server Error", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -1114,13 +1114,13 @@ export class Client implements IClient {
             return response.text().then((_responseText) => {
             return throwException("Bad Request", status, _responseText, _headers);
             });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -1426,17 +1426,13 @@ export class Client implements IClient {
             return response.text().then((_responseText) => {
             return;
             });
-        } else if (status === 400) {
-            return response.text().then((_responseText) => {
-            return throwException("Bad Request", status, _responseText, _headers);
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
             });
         } else if (status === 404) {
             return response.text().then((_responseText) => {
@@ -1445,6 +1441,10 @@ export class Client implements IClient {
         } else if (status === 500) {
             return response.text().then((_responseText) => {
             return throwException("Internal Server Error", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -1875,13 +1875,13 @@ export class Client implements IClient {
             return response.text().then((_responseText) => {
             return throwException("Bad Request", status, _responseText, _headers);
             });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -2397,6 +2397,10 @@ export class Client implements IClient {
             result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as PersonResponse;
             return result200;
             });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
         } else if (status === 401) {
             return response.text().then((_responseText) => {
             return throwException("Unauthorized", status, _responseText, _headers);
@@ -2404,10 +2408,6 @@ export class Client implements IClient {
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -3094,17 +3094,17 @@ export class Client implements IClient {
             return response.text().then((_responseText) => {
             return throwException("Bad Request", status, _responseText, _headers);
             });
-        } else if (status === 401) {
+        } else if (status === 404) {
             return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
+            return throwException("Not Found", status, _responseText, _headers);
             });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
             });
-        } else if (status === 404) {
+        } else if (status === 401) {
             return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -3148,17 +3148,17 @@ export class Client implements IClient {
             return response.text().then((_responseText) => {
             return throwException("Bad Request", status, _responseText, _headers);
             });
-        } else if (status === 401) {
+        } else if (status === 404) {
             return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
+            return throwException("Not Found", status, _responseText, _headers);
             });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
             });
-        } else if (status === 404) {
+        } else if (status === 401) {
             return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -3202,13 +3202,13 @@ export class Client implements IClient {
             return response.text().then((_responseText) => {
             return throwException("Bad Request", status, _responseText, _headers);
             });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -3621,13 +3621,13 @@ export class Client implements IClient {
             return response.text().then((_responseText) => {
             return throwException("Bad Request", status, _responseText, _headers);
             });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -3670,6 +3670,10 @@ export class Client implements IClient {
             result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as Response;
             return result200;
             });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
         } else if (status === 401) {
             return response.text().then((_responseText) => {
             return throwException("Unauthorized", status, _responseText, _headers);
@@ -3677,10 +3681,6 @@ export class Client implements IClient {
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -3777,6 +3777,10 @@ export class Client implements IClient {
             result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as DraftPoolResponse;
             return result200;
             });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
         } else if (status === 401) {
             return response.text().then((_responseText) => {
             return throwException("Unauthorized", status, _responseText, _headers);
@@ -3784,10 +3788,6 @@ export class Client implements IClient {
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -3951,6 +3951,10 @@ export class Client implements IClient {
             return response.text().then((_responseText) => {
             return throwException("Bad Request", status, _responseText, _headers);
             });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
         } else if (status === 401) {
             return response.text().then((_responseText) => {
             return throwException("Unauthorized", status, _responseText, _headers);
@@ -3958,10 +3962,6 @@ export class Client implements IClient {
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -4112,6 +4112,10 @@ export class Client implements IClient {
             result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as GetDraftBoardResponse;
             return result200;
             });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
         } else if (status === 401) {
             return response.text().then((_responseText) => {
             return throwException("Unauthorized", status, _responseText, _headers);
@@ -4119,10 +4123,6 @@ export class Client implements IClient {
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -4879,6 +4879,10 @@ export class Client implements IClient {
             return response.text().then((_responseText) => {
             return;
             });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
         } else if (status === 400) {
             return response.text().then((_responseText) => {
             return throwException("Bad Request", status, _responseText, _headers);
@@ -4890,10 +4894,6 @@ export class Client implements IClient {
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -4937,10 +4937,6 @@ export class Client implements IClient {
             return response.text().then((_responseText) => {
             return throwException("Bad Request", status, _responseText, _headers);
             });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
@@ -4948,6 +4944,10 @@ export class Client implements IClient {
         } else if (status === 404) {
             return response.text().then((_responseText) => {
             return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -5048,10 +5048,6 @@ export class Client implements IClient {
             return response.text().then((_responseText) => {
             return throwException("Bad Request", status, _responseText, _headers);
             });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
@@ -5059,6 +5055,10 @@ export class Client implements IClient {
         } else if (status === 404) {
             return response.text().then((_responseText) => {
             return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -5218,13 +5218,13 @@ export class Client implements IClient {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
             });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
-            });
         } else if (status === 409) {
             return response.text().then((_responseText) => {
             return throwException("Conflict", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -5432,6 +5432,10 @@ export class Client implements IClient {
             return response.text().then((_responseText) => {
             return;
             });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
         } else if (status === 400) {
             return response.text().then((_responseText) => {
             return throwException("Bad Request", status, _responseText, _headers);
@@ -5443,10 +5447,6 @@ export class Client implements IClient {
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -5460,7 +5460,7 @@ export class Client implements IClient {
      * @return No Content
      */
     draftParts_ApplyVetoOverride(body: ApplyVetoOverrideRequest, signal?: AbortSignal): Promise<void> {
-        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/veto-override/{pickId}";
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/veto-override/{playOrder}";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -5514,7 +5514,7 @@ export class Client implements IClient {
      * @return No Content
      */
     draftParts_ApplyCommissionerOverride(body: ApplyCommissionerOverrideRequest, signal?: AbortSignal): Promise<void> {
-        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/commissioner-override/{pickId}";
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/commissioner-override/{playOrder}";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -5598,10 +5598,6 @@ export class Client implements IClient {
             return response.text().then((_responseText) => {
             return throwException("Bad Request", status, _responseText, _headers);
             });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
@@ -5609,6 +5605,10 @@ export class Client implements IClient {
         } else if (status === 404) {
             return response.text().then((_responseText) => {
             return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -5652,10 +5652,6 @@ export class Client implements IClient {
             return response.text().then((_responseText) => {
             return throwException("Bad Request", status, _responseText, _headers);
             });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
@@ -5663,6 +5659,10 @@ export class Client implements IClient {
         } else if (status === 404) {
             return response.text().then((_responseText) => {
             return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -5702,21 +5702,21 @@ export class Client implements IClient {
             return response.text().then((_responseText) => {
             return;
             });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
         } else if (status === 400) {
             return response.text().then((_responseText) => {
             return throwException("Bad Request", status, _responseText, _headers);
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
             });
-        } else if (status === 404) {
+        } else if (status === 401) {
             return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -6772,18 +6772,14 @@ export class Client implements IClient {
     /**
      * @return No Content
      */
-    joinAttendance(body: JoinAttendanceRequest, signal?: AbortSignal): Promise<void> {
-        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/attendances/{personPublicId}/join";
+    joinAttendance(signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/attendances/join";
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(body);
-
         let options_: RequestInit = {
-            body: content_,
             method: "PUT",
             signal,
             headers: {
-                "Content-Type": "application/json",
             }
         };
 
@@ -7013,6 +7009,10 @@ export class Client implements IClient {
             result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as GetDrafterTeamResponse;
             return result200;
             });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
         } else if (status === 401) {
             return response.text().then((_responseText) => {
             return throwException("Unauthorized", status, _responseText, _headers);
@@ -7020,10 +7020,6 @@ export class Client implements IClient {
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -7070,13 +7066,13 @@ export class Client implements IClient {
             return response.text().then((_responseText) => {
             return throwException("Bad Request", status, _responseText, _headers);
             });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -7332,6 +7328,10 @@ export class Client implements IClient {
             result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as GetDrafterProfileResponse;
             return result200;
             });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
         } else if (status === 401) {
             return response.text().then((_responseText) => {
             return throwException("Unauthorized", status, _responseText, _headers);
@@ -7339,10 +7339,6 @@ export class Client implements IClient {
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -7492,13 +7488,13 @@ export class Client implements IClient {
             return response.text().then((_responseText) => {
             return throwException("Bad Request", status, _responseText, _headers);
             });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -7641,17 +7637,17 @@ export class Client implements IClient {
             return response.text().then((_responseText) => {
             return;
             });
-        } else if (status === 401) {
+        } else if (status === 404) {
             return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
+            return throwException("Not Found", status, _responseText, _headers);
             });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
             });
-        } else if (status === 404) {
+        } else if (status === 401) {
             return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -7801,13 +7797,13 @@ export class Client implements IClient {
             return response.text().then((_responseText) => {
             return throwException("Bad Request", status, _responseText, _headers);
             });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -7950,17 +7946,17 @@ export class Client implements IClient {
             return response.text().then((_responseText) => {
             return;
             });
-        } else if (status === 401) {
+        } else if (status === 404) {
             return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
+            return throwException("Not Found", status, _responseText, _headers);
             });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
             });
-        } else if (status === 404) {
+        } else if (status === 401) {
             return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -8373,6 +8369,10 @@ export class Client implements IClient {
             result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as GetMediaSummaryResponse;
             return result200;
             });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
         } else if (status === 401) {
             return response.text().then((_responseText) => {
             return throwException("Unauthorized", status, _responseText, _headers);
@@ -8380,10 +8380,6 @@ export class Client implements IClient {
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -9116,13 +9112,13 @@ export class Client implements IClient {
             return response.text().then((_responseText) => {
             return throwException("Unauthorized", status, _responseText, _headers);
             });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
         } else if (status === 404) {
             return response.text().then((_responseText) => {
             return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -9245,14 +9241,6 @@ export class PredictionsClient implements IPredictionsClient {
             return response.text().then((_responseText) => {
             return throwException("Bad Request", status, _responseText, _headers);
             });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
         } else if (status === 404) {
             return response.text().then((_responseText) => {
             return throwException("Not Found", status, _responseText, _headers);
@@ -9260,6 +9248,14 @@ export class PredictionsClient implements IPredictionsClient {
         } else if (status === 409) {
             return response.text().then((_responseText) => {
             return throwException("Conflict", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -9302,17 +9298,17 @@ export class PredictionsClient implements IPredictionsClient {
             result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as DraftPartPredictionResponse[];
             return result200;
             });
-        } else if (status === 401) {
+        } else if (status === 404) {
             return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
+            return throwException("Not Found", status, _responseText, _headers);
             });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
             });
-        } else if (status === 404) {
+        } else if (status === 401) {
             return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -9414,14 +9410,6 @@ export class PredictionsClient implements IPredictionsClient {
             return response.text().then((_responseText) => {
             return throwException("Bad Request", status, _responseText, _headers);
             });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
         } else if (status === 404) {
             return response.text().then((_responseText) => {
             return throwException("Not Found", status, _responseText, _headers);
@@ -9429,6 +9417,14 @@ export class PredictionsClient implements IPredictionsClient {
         } else if (status === 409) {
             return response.text().then((_responseText) => {
             return throwException("Conflict", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -9464,18 +9460,6 @@ export class PredictionsClient implements IPredictionsClient {
             return response.text().then((_responseText) => {
             return;
             });
-        } else if (status === 400) {
-            return response.text().then((_responseText) => {
-            return throwException("Bad Request", status, _responseText, _headers);
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
         } else if (status === 404) {
             return response.text().then((_responseText) => {
             return throwException("Not Found", status, _responseText, _headers);
@@ -9483,6 +9467,18 @@ export class PredictionsClient implements IPredictionsClient {
         } else if (status === 409) {
             return response.text().then((_responseText) => {
             return throwException("Conflict", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -9566,13 +9562,13 @@ export class PredictionsClient implements IPredictionsClient {
             return response.text().then((_responseText) => {
             return throwException("Bad Request", status, _responseText, _headers);
             });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -9615,17 +9611,17 @@ export class PredictionsClient implements IPredictionsClient {
             result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as PredictionStandingsResponse;
             return result200;
             });
-        } else if (status === 401) {
+        } else if (status === 404) {
             return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
+            return throwException("Not Found", status, _responseText, _headers);
             });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
             });
-        } else if (status === 404) {
+        } else if (status === 401) {
             return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -9709,14 +9705,6 @@ export class PredictionsClient implements IPredictionsClient {
             return response.text().then((_responseText) => {
             return throwException("Bad Request", status, _responseText, _headers);
             });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
         } else if (status === 404) {
             return response.text().then((_responseText) => {
             return throwException("Not Found", status, _responseText, _headers);
@@ -9724,6 +9712,14 @@ export class PredictionsClient implements IPredictionsClient {
         } else if (status === 409) {
             return response.text().then((_responseText) => {
             return throwException("Conflict", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -9763,18 +9759,6 @@ export class PredictionsClient implements IPredictionsClient {
             return response.text().then((_responseText) => {
             return;
             });
-        } else if (status === 400) {
-            return response.text().then((_responseText) => {
-            return throwException("Bad Request", status, _responseText, _headers);
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
         } else if (status === 404) {
             return response.text().then((_responseText) => {
             return throwException("Not Found", status, _responseText, _headers);
@@ -9782,6 +9766,18 @@ export class PredictionsClient implements IPredictionsClient {
         } else if (status === 409) {
             return response.text().then((_responseText) => {
             return throwException("Conflict", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -9825,17 +9821,17 @@ export class PredictionsClient implements IPredictionsClient {
             return response.text().then((_responseText) => {
             return throwException("Bad Request", status, _responseText, _headers);
             });
-        } else if (status === 401) {
+        } else if (status === 404) {
             return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
+            return throwException("Not Found", status, _responseText, _headers);
             });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
             });
-        } else if (status === 404) {
+        } else if (status === 401) {
             return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -9879,17 +9875,17 @@ export class PredictionsClient implements IPredictionsClient {
             return response.text().then((_responseText) => {
             return throwException("Bad Request", status, _responseText, _headers);
             });
-        } else if (status === 401) {
+        } else if (status === 404) {
             return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
+            return throwException("Not Found", status, _responseText, _headers);
             });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
             });
-        } else if (status === 404) {
+        } else if (status === 401) {
             return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -10154,6 +10150,7 @@ export interface AssignTriviaResultsRequest {
 export interface AttendanceItemResponse {
     publicId?: string;
     personPublicId?: string;
+    personName?: string;
     status?: number;
     statusName?: string;
     createdAtUtc?: Date;
@@ -10415,6 +10412,15 @@ export interface CreateSpotlightRequest {
 
 export interface CreateSpotlightResponse {
     spotlightId?: string;
+
+    [key: string]: any;
+}
+
+export interface CurrentUserRolesResponse {
+    isPrimaryHost?: boolean;
+    isCoHost?: boolean;
+    isParticipant?: boolean;
+    isCommissioner?: boolean;
 
     [key: string]: any;
 }
@@ -10737,6 +10743,7 @@ export interface GameplayHostResponse {
 
 export interface GameplayParticipantResponse {
     participantId?: string;
+    participantPublicId?: string | undefined;
     participantKind?: number;
     participantName?: string;
     vetoTokensRemaining?: number;
@@ -10977,11 +10984,14 @@ export interface GetDraftPartGameplayResponse {
     draftId?: string;
     draftTitle?: string;
     draftType?: string;
+    partIndex?: number;
     isMultiPart?: boolean;
     isFinalPart?: boolean;
     hasDraftPool?: boolean;
     hasDraftBoard?: boolean;
     hasCandidateList?: boolean;
+    currentUserRoles?: CurrentUserRolesResponse;
+    callerParticipantId?: string | undefined;
     triviaResults?: GameplayTriviaResultResponse[];
     draftPositions?: GameplayDraftPositionResponse[];
     nextExpectedParticipantId?: string | undefined;
@@ -11472,13 +11482,6 @@ export interface HttpAuditLogResponse {
     [key: string]: any;
 }
 
-export interface JoinAttendanceRequest {
-    draftPartId?: string;
-    personPublicId?: string;
-
-    [key: string]: any;
-}
-
 export interface LatestDraftParticipantResponse {
     participantIdValue?: string;
     participantKindValue?: ParticipantKind;
@@ -11808,9 +11811,11 @@ export interface MediaStatsResponse {
 }
 
 export interface MediaTmdbSummary {
+    publicId?: string;
     tmdbId?: number;
     title?: string;
     year?: string | undefined;
+    posterUrl?: string | undefined;
 
     [key: string]: any;
 }
@@ -12360,7 +12365,7 @@ export interface RemoveMovieFromDraftPoolRequest {
 }
 
 export interface RemoveParticipantFromDraftPartRequest {
-    draftPartPublicId: string;
+    draftPartId?: string;
     participantPublicId?: string | undefined;
     participantKind: number;
 

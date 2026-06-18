@@ -9,7 +9,7 @@ import {
   bulkAddMoviesToDraftPool,
   type DraftPoolData,
 } from "@/services/admin/fetch-admin-drafts";
-import { type MovieSearchResult } from "@/services/movies/fetch-movies";
+import { type MovieSearchResult } from "@/services/movies/fetch-tmdb";
 import Link from "next/link";
 
 interface PoolMovie {

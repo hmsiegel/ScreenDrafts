@@ -25,7 +25,7 @@ public static class ClaimsPrincipalExtensions
     return [.. permissionClaims.Select(c => c.Value)];
   }
 
-  public static string GetPublicId(this ClaimsPrincipal? principal)
+  public static string GetUserPublicId(this ClaimsPrincipal? principal)
   {
     return principal?.FindFirst(CustomClaims.PublicId)?.Value ??
            throw new ScreenDraftsException("User public identifier is unavailable");

@@ -9,8 +9,5 @@ namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.Attendances.JoinAttend
 internal sealed record JoinAttendanceCommand : ICommand
 {
   public required string DraftPartId { get; init; }
-  public required string PersonPublicId { get; init; }
-
-  /// <summary>PublicId of the caller resolved from JWT, used for authorization check.</summary>
-  public required string CallerPersonPublicId { get; init; }
+  public required Guid UserId { get; init; }
 }

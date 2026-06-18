@@ -22,7 +22,7 @@ internal sealed class Endpoint
 
   public override async Task HandleAsync(BulkAddMoviesToDraftBoardRequest req, CancellationToken ct)
   {
-    var userPublicId = User.GetPublicId()!;
+    var userPublicId = User.GetUserPublicId()!;
 
     using var stream = req.File.OpenReadStream();
 

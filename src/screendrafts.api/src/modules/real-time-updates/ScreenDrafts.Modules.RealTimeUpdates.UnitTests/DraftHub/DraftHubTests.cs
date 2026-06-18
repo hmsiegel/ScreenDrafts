@@ -40,7 +40,7 @@ public sealed class DraftHubTests
 
     // Assert
     groups.AddCalls.Should().ContainSingle()
-      .Which.Should().Be((connectionId, draftPartId));
+      .Which.Should().Be((connectionId, DraftHub.GroupName(draftPartId)));
   }
 
   [Fact]
@@ -73,7 +73,7 @@ public sealed class DraftHubTests
 
     // Assert
     groups.RemoveCalls.Should().ContainSingle()
-      .Which.Should().Be((connectionId, draftPartId));
+      .Which.Should().Be((connectionId, DraftHub.GroupName(draftPartId)));
   }
 
   [Fact]

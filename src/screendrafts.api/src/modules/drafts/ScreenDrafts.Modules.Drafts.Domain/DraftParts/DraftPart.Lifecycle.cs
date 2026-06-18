@@ -44,7 +44,14 @@ public sealed partial class DraftPart
       return Result.Failure(DraftErrors.CannotCompleteDraftIfItIsNotInProgress);
     }
 
-    if (_picks.Count != TotalPicks)
+    var landedPositionCount = _picks
+      .Where(p => p.IsActiveOnFinalBoard)
+      .Select(p => p.Position)
+      .Distinct()
+      .Count();
+
+
+    if (landedPositionCount != TotalPicks)
     {
       return Result.Failure(DraftErrors.CannotCompleteDraftWithoutAllPicks);
     }

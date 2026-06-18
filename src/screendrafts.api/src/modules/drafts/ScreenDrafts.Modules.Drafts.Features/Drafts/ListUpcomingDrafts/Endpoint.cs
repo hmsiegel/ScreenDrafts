@@ -26,7 +26,7 @@ internal sealed class Endpoint(IAdministrationApi administrationApi)
     var isAdmin = false;
     if (isAuthenticated)
     {
-      var roles = await _administrationApi.GetUserRolesAsync(User.GetPublicId(), ct);
+      var roles = await _administrationApi.GetUserRolesAsync(User.GetUserPublicId(), ct);
       isAdmin = roles.Contains(DraftsAuth.Roles.SuperAdmin, StringComparer.OrdinalIgnoreCase)
         || roles.Contains(DraftsAuth.Roles.Admin, StringComparer.OrdinalIgnoreCase);
     }
