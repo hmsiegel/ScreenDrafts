@@ -86,7 +86,7 @@ function TriviaResultsForm({
         draftPartId,
         (gameplay.participants ?? []).map((p) => ({
           participantPublicId: p.participantPublicId ?? '',
-          participantKind: p.participantKind ?? 0,
+          kind: p.participantKind ?? 0,
           position: scores[p.participantId ?? '']?.position ?? 1,
           questionsWon: scores[p.participantId ?? '']?.questionsWon ?? 0,
         })),
@@ -396,7 +396,7 @@ function GameplayView({
     setError(null);
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/draft-parts/${draftPartId}/picks/${playOrder}/commissioner-override`,
+        `${process.env.NEXT_PUBLIC_API_URL}/draft-parts/${draftPartId}/commissioner-override/${playOrder}`,
         { method: 'POST', headers: { Authorization: `Bearer ${accessToken}` } },
       );
       if (!res.ok) throw new Error(`Commissioner override failed: ${res.status}`);
@@ -457,7 +457,14 @@ function GameplayView({
               >
                 <div className="min-w-0">
                   <p className="font-oswald text-sd-paper text-sm truncate">
-                    {pp.movieTitle}{' '}
+                    <a
+                      href={`https://www.themoviedb.org/movie/${pp.tmdbId}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:underline underline-offset-2"
+                    >
+                      {pp.movieTitle}
+                    </a>{' '}
                     <span className="text-white/40 text-xs">→ slot {pp.boardPosition}</span>
                   </p>
                   <p className="text-[11px] text-white/40 font-mono">Awaiting announcement</p>

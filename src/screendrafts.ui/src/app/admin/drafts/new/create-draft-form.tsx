@@ -183,7 +183,7 @@ export default function CreateDraftForm({
 
   function updatePartCommunityConfig(idx: number, config: CommunityConfig) {
     setParts((prev) =>
-      prev.map((p, i) => (i === idx ? { ...p, communityConfg: config } : p))
+      prev.map((p, i) => (i === idx ? { ...p, communityConfig: config } : p))
     );
   }
 
@@ -263,7 +263,10 @@ export default function CreateDraftForm({
         seriesId: selectedSeriesId,
       });
 
-      // Step 2: Create parts
+      // Step 2: Create parts (positions are NOT set yet — GameBoard validates
+      // draftPositions.Count against DraftPart.TotalDrafters + TotalDrafterTeams,
+      // which is 0 until participants are added in Step 4. Setting positions
+      // here unconditionally fails with GameBoard.InvalidNumberOfParticipants.)
       const partPublicIds: string[] = [];
       for (const part of parts) {
         const partId = await createDraftPart(accessToken, draftPublicId, {
@@ -273,8 +276,6 @@ export default function CreateDraftForm({
           maximumPosition: part.maxPositions,
         });
         partPublicIds.push(partId);
-
-        await setDraftPositions(accessToken, partId, part.positions);
       }
 
       // Step 3: Add hosts to each part
@@ -334,6 +335,16 @@ export default function CreateDraftForm({
             await assignFilmToCommunityFilmRule(accessToken, partId, rulePublicId, rule.tmdbId);
           }
         }
+      }
+
+      // Step 4d: Set draft positions — now that every drafter, team, and
+      // (if enabled) the community participant have been added to each part,
+      // TotalDrafters + TotalDrafterTeams matches the participant count the
+      // GameBoard validation expects. Must run after Steps 4a–4c, not before.
+      for (let i = 0; i < parts.length; i++) {
+        const part = parts[i];
+        const partId = partPublicIds[i];
+        await setDraftPositions(accessToken, partId, part.positions);
       }
 
       // Step 5: Set categories

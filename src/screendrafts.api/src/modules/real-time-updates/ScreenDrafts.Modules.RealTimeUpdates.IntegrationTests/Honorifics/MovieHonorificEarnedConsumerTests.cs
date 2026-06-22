@@ -81,14 +81,15 @@ public sealed class MovieHonorificEarnedConsumerTests
 
     // Assert
     var args = hubContext.SentMessages.Single().Args;
-    args.Should().HaveCount(7);
-    args[0].Should().Be(moviePublicId);
-    args[1].Should().Be(movieTitle);
-    args[2].Should().Be(previousAppearanceHonorific);
-    args[3].Should().Be(newAppearanceHonorific);
-    args[4].Should().Be(previousPositionHonorific);
-    args[5].Should().Be(newPositionHonorific);
-    args[6].Should().Be(appearanceCount);
+    args.Should().HaveCount(8);
+    args[0].Should().Be("dp_test");
+    args[1].Should().Be(moviePublicId);
+    args[2].Should().Be(movieTitle);
+    args[3].Should().Be(previousAppearanceHonorific);
+    args[4].Should().Be(newAppearanceHonorific);
+    args[5].Should().Be(previousPositionHonorific);
+    args[6].Should().Be(newPositionHonorific);
+    args[7].Should().Be(appearanceCount);
   }
 
   // -------------------------------------------------------------------------

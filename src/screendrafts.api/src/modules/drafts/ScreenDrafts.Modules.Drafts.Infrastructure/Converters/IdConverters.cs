@@ -23,6 +23,9 @@ internal static class IdConverters
   public static ValueConverter<PickId, Guid> DraftPickIdConverter =>
     new(v => v.Value, v => PickId.Create(v));
 
+  public static ValueConverter<PickId?, Guid?> NullablePickIdConverter =>
+    new(v => v == null ? null : v.Value, v => v == null ? null : PickId.Create(v.Value));
+
   public static ValueConverter<VetoId, Guid> VetoIdConverter =>
     new(v => v.Value, v => VetoId.Create(v));
 

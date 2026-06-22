@@ -13,7 +13,8 @@ public sealed class MovieHonorificEarnedConsumerTests
     var hubContext = new TestHubContext();
     var consumer = new MovieHonorificEarnedIntegrationEventConsumer(
       hubContext,
-      NullLogger<MovieHonorificEarnedIntegrationEventConsumer>.Instance);
+      NullLogger<MovieHonorificEarnedIntegrationEventConsumer>.Instance
+    );
 
     var draftPartPublicId = "dp-xyz789";
     var integrationEvent = BuildEvent(draftPartPublicId: draftPartPublicId);
@@ -32,7 +33,8 @@ public sealed class MovieHonorificEarnedConsumerTests
     var hubContext = new TestHubContext();
     var consumer = new MovieHonorificEarnedIntegrationEventConsumer(
       hubContext,
-      NullLogger<MovieHonorificEarnedIntegrationEventConsumer>.Instance);
+      NullLogger<MovieHonorificEarnedIntegrationEventConsumer>.Instance
+    );
 
     var integrationEvent = BuildEvent();
 
@@ -40,8 +42,11 @@ public sealed class MovieHonorificEarnedConsumerTests
     await consumer.Handle(integrationEvent, CancellationToken.None);
 
     // Assert
-    hubContext.SentMessages.Should().ContainSingle()
-      .Which.Method.Should().Be("MovieHonorificEarned");
+    hubContext
+      .SentMessages.Should()
+      .ContainSingle()
+      .Which.Method.Should()
+      .Be("MovieHonorificEarned");
   }
 
   [Fact]
@@ -51,33 +56,38 @@ public sealed class MovieHonorificEarnedConsumerTests
     var hubContext = new TestHubContext();
     var consumer = new MovieHonorificEarnedIntegrationEventConsumer(
       hubContext,
-      NullLogger<MovieHonorificEarnedIntegrationEventConsumer>.Instance);
+      NullLogger<MovieHonorificEarnedIntegrationEventConsumer>.Instance
+    );
 
     const string moviePublicId = "m_testpublicid";
     const string movieTitle = "The Matrix";
+    const string draftPartPublicId = "dp-test";
 
     var integrationEvent = BuildEvent(
+      draftPartPublicId: draftPartPublicId,
       moviePublicId: moviePublicId,
       movieTitle: movieTitle,
       previousAppearanceHonorific: 0,
       newAppearanceHonorific: 1,
       previousPositionHonorific: 0,
       newPositionHonorific: 1,
-      appearanceCount: 2);
+      appearanceCount: 2
+    );
 
     // Act
     await consumer.Handle(integrationEvent, CancellationToken.None);
 
     // Assert
     var (_, args) = hubContext.SentMessages.Single();
-    args.Should().HaveCount(7);
-    args[0].Should().Be(moviePublicId);
-    args[1].Should().Be(movieTitle);
-    args[2].Should().Be(0);
-    args[3].Should().Be(1);
-    args[4].Should().Be(0);
-    args[5].Should().Be(1);
-    args[6].Should().Be(2);
+    args.Should().HaveCount(8);
+    args[0].Should().Be(draftPartPublicId);
+    args[1].Should().Be(moviePublicId);
+    args[2].Should().Be(movieTitle);
+    args[3].Should().Be(0);
+    args[4].Should().Be(1);
+    args[5].Should().Be(0);
+    args[6].Should().Be(1);
+    args[7].Should().Be(2);
   }
 
   // -------------------------------------------------------------------------
@@ -92,7 +102,8 @@ public sealed class MovieHonorificEarnedConsumerTests
     int newAppearanceHonorific = 1,
     int previousPositionHonorific = 0,
     int newPositionHonorific = 0,
-    int appearanceCount = 2)
+    int appearanceCount = 2
+  )
   {
     return new MovieHonorificEarnedIntegrationEvent(
       id: Guid.NewGuid(),
@@ -104,6 +115,7 @@ public sealed class MovieHonorificEarnedConsumerTests
       newAppearanceHonorificValue: newAppearanceHonorific,
       previousPositionHonorificValue: previousPositionHonorific,
       newPositionHonorificValue: newPositionHonorific,
-      appearanceCount: appearanceCount);
+      appearanceCount: appearanceCount
+    );
   }
 }

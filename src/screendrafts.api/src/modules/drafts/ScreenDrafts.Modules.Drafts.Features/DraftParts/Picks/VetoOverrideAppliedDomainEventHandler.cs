@@ -37,6 +37,11 @@ internal sealed class VetoOverrideAppliedDomainEventHandler(
 
     if (draftPart is not null)
     {
+      // Pool and board are independent and can coexist — NOT mutually
+      // exclusive. See VetoAppliedDomainEventHandler /
+      // PickCreatedDomainEventHandler for the same restructuring and
+      // rationale.
+
       var pool = await _poolRepository.GetByDraftIdAsync(draftPart.DraftId, cancellationToken);
 
       if (pool is not null)
@@ -50,17 +55,28 @@ internal sealed class VetoOverrideAppliedDomainEventHandler(
           cancellationToken: cancellationToken
         );
       }
-      else
-      {
-        var participant = await _participantResolver.ResolveByParticpantIdAsync(
-          participantId: domainEvent.ParticipantId,
-          participantKind: ParticipantKind.FromValue(domainEvent.ParticipantKind),
-          cancellationToken: cancellationToken
-        );
 
+      var participant = await _participantResolver.ResolveByParticpantIdAsync(
+        participantId: domainEvent.ParticipantId,
+        participantKind: ParticipantKind.FromValue(domainEvent.ParticipantKind),
+        cancellationToken: cancellationToken
+      );
+
+      // Resolution can legitimately fail — e.g. the overriding participant
+      // has no draft board for this draft (boards are optional). Previously
+      // this forced participant!.Value, which threw
+      // InvalidOperationException and silently killed the entire domain
+      // event handler — meaning VetoOverrideAppliedIntegrationEvent AND the
+      // downstream PickLockedIntegrationEvent (further below) never
+      // published, so neither the live override broadcast nor the
+      // honorific lock would fire. Treat a failed resolution the same way
+      // a missing board is already treated below: nothing to update, skip
+      // and continue.
+      if (participant is not null)
+      {
         var board = await _boardRepository.GetByDraftAndParticipantAsync(
           draftId: draftPart.DraftId,
-          participantId: participant!.Value,
+          participantId: participant.Value,
           cancellationToken: cancellationToken
         );
 
@@ -119,20 +135,20 @@ internal sealed class VetoOverrideAppliedDomainEventHandler(
 
     await _eventBus.PublishAsync(
       new PickLockedIntegrationEvent(
-        Guid.NewGuid(),
-        _dateTimeProvider.UtcNow,
-        domainEvent.DraftPartId,
-        domainEvent.DraftPartPublicId,
-        domainEvent.DraftId,
-        domainEvent.DraftPublicId,
-        pick.Movie.PublicId,
-        pick.Movie.MovieTitle,
-        pick.Movie.TmdbId,
-        pick.Position,
-        domainEvent.ParticipantId,
-        domainEvent.ParticipantKind,
-        domainEvent.CanonicalPolicyValue,
-        hasMainFeedRelease
+        id: Guid.NewGuid(),
+        occurredOnUtc: _dateTimeProvider.UtcNow,
+        draftPartId: domainEvent.DraftPartId,
+        draftPartPublicId: domainEvent.DraftPartPublicId,
+        draftId: domainEvent.DraftId,
+        draftPublicId: domainEvent.DraftPublicId,
+        moviePublicId: pick.Movie.PublicId,
+        movieTitle: pick.Movie.MovieTitle,
+        tmdbId: pick.Movie.TmdbId,
+        boardPosition: pick.Position,
+        participantIdValue: domainEvent.ParticipantId,
+        participantKindValue: domainEvent.ParticipantKind,
+        canonicalPolicyValue: domainEvent.CanonicalPolicyValue,
+        hasMainFeedRelease: hasMainFeedRelease
       ),
       cancellationToken
     );

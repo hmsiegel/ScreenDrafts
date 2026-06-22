@@ -84,6 +84,16 @@ export interface VetoOverrideAppliedPayload {
   participants: TokenUpdate[];
 }
 
+export interface CommissionerOverrideAppliedPayload {
+  draftPartPublicId: string;
+  tmdbId: number;
+  movieTitle: string;
+  participantId: string;
+  participantKind: number;
+  boardPosition: number;
+  participants: TokenUpdate[];
+}
+
 export interface VetoUndonePayload {
   draftPartPublicId: string;
   playOrder: number;
@@ -101,6 +111,61 @@ export interface PickUndonePayload {
   participants: TokenUpdate[];
 }
 
+export interface MovieHonorificChangedPayload {
+  draftPartPublicId: string;
+  moviePublicId: string;
+  movieTitle: string;
+  previousAppearanceHonorificValue: number;
+  newAppearanceHonorificValue: number;
+  previousPositionHonorificValue: number;
+  newPositionHonorificValue: number;
+  appearanceCount: number;
+}
+
+export interface DrafterHonorificChangedPayload {
+  draftPartPublicId: string;
+  drafterIdValue: string;
+  previousHonorificValue: number;
+  newHonorificValue: number;
+  appearanceCount: number;
+}
+
+export interface CompletedPickSummary {
+  position: number;
+  mediaPublicId: string;
+  mediaTitle: string;
+}
+
+export interface PickHonorificSummary {
+  mediaPublicId: string;
+  mediaTitle: string;
+  boardPosition: number;
+  priorCount: number;
+  newCount: number;
+}
+
+export interface DrafterHonorificSummary {
+  drafterIdValue: string;
+  priorCount: number;
+  newCount: number;
+}
+
+export interface DraftCompletionSummary {
+  draftPartPublicId: string;
+  draftId: string;
+  draftPublicId: string;
+  title: string;
+  draftType: string;
+  partIndex: number;
+  totalParts: number;
+  totalPicks: number;
+  vetoCount: number;
+  isPatreon: boolean;
+  picks: CompletedPickSummary[];
+  movieHonorifics: PickHonorificSummary[];
+  drafterHonorifics: DrafterHonorificSummary[];
+}
+
 export interface CountdownStartedPayload {
   draftPartPublicId: string;
   targetParticipantId: string;
@@ -113,8 +178,11 @@ export type GameplayNotification =
   | { kind: 'PickRevealed'; payload: PickRevealedPayload }
   | { kind: 'VetoApplied'; payload: VetoAppliedPayload }
   | { kind: 'VetoOverrideApplied'; payload: VetoOverrideAppliedPayload }
+  | { kind: 'CommissionerOverrideApplied'; payload: CommissionerOverrideAppliedPayload }
   | { kind: 'VetoUndone'; payload: VetoUndonePayload }
-  | { kind: 'PickUndone'; payload: PickUndonePayload };
+  | { kind: 'PickUndone'; payload: PickUndonePayload }
+  | { kind: 'MovieHonorificChanged'; payload: MovieHonorificChangedPayload }
+  | { kind: 'DrafterHonorificChanged'; payload: DrafterHonorificChangedPayload };
 
 // ── Context shape ─────────────────────────────────────────────────────────────
 
@@ -135,10 +203,13 @@ interface LiveDraftContextValue {
   notification: GameplayNotification | null;
   dismissNotification: () => void;
   countdownTarget: string | null;
+  dismissCountdown: () => void;
   refetch: () => Promise<void>;
   sendCountdown: (targetParticipantId: string) => Promise<void>;
   // Primary-host action: announce/reveal a pending pick to everyone.
   revealPick: (playOrder: number) => Promise<void>;
+  completionSummary: DraftCompletionSummary | null;
+  dismissCompletionSummary: () => void;
 }
 
 const LiveDraftContext = createContext<LiveDraftContextValue | null>(null);
@@ -184,9 +255,20 @@ export function LiveDraftProvider({
   const [reconnecting, setReconnecting] = useState(false);
   const [notification, setNotification] = useState<GameplayNotification | null>(null);
   const [countdownTarget, setCountdownTarget] = useState<string | null>(null);
+  const [completionSummary, setCompletionSummary] = useState<DraftCompletionSummary | null>(null);
   const notificationQueue = useRef<GameplayNotification[]>([]);
   const participantsRef = useRef(initialGameplay.participants ?? []);
   const connectionRef = useRef<signalR.HubConnection | null>(null);
+  const countdownTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Holds the teardown (stop) promise from the PREVIOUS effect invocation.
+  // Persists across Strict Mode's dev-only mount → cleanup → remount cycle
+  // because refs survive that cycle on the same component instance. The next
+  // invocation awaits this before starting a new connection, so the old
+  // connection is guaranteed to have actually left the SignalR group before
+  // the new one joins — otherwise both connections can be briefly live
+  // members of the same group, and every server broadcast (PickSubmitted,
+  // token updates, etc.) gets delivered twice to this client.
+  const previousTeardownRef = useRef<Promise<void> | null>(null);
 
   // ── Token update helper ───────────────────────────────────────────────────
 
@@ -303,41 +385,89 @@ export function LiveDraftProvider({
     // Host-only — a pick has been submitted and is awaiting announcement.
     // Only the primary host's connection is in the host group, so this
     // never fires for drafters or co-hosts.
-    connection.on('PickSubmitted', (payload: PickSubmittedPayload) => {
-      setPendingPicks((prev) => {
-        const without = prev.filter((p) => p.playOrder !== payload.playOrder);
-        return [...without, payload];
-      });
-    });
+    connection.on(
+      'PickSubmitted',
+      (
+        eventDraftPartId: string,
+        playOrder: number,
+        moviePublicId: string,
+        movieTitle: string,
+        tmdbId: number,
+        boardPosition: number,
+        participantId: string,
+        participantKind: number,
+      ) => {
+        const payload: PickSubmittedPayload = {
+          draftPartPublicId: draftPartId,
+          playOrder,
+          boardPosition,
+          moviePublicId,
+          movieTitle,
+          tmdbId,
+          participantId,
+          participantKind,
+        };
+        setPendingPicks((prev) => {
+          const without = prev.filter((p) => p.playOrder !== payload.playOrder);
+          return [...without, payload];
+        });
+      },
+    );
 
     // General — the pick is now public. This is the real "pick landed on
     // the board" signal for everyone (drafters, co-hosts, and the host's
     // own board view), replacing PickAdded for every non-SpeedDraft type.
-    connection.on('PickRevealed', (payload: PickRevealedPayload) => {
-      setPendingPicks((prev) => prev.filter((p) => p.playOrder !== payload.playOrder));
-      setPicks((prev) => {
-        const without = prev.filter((p) => p.playOrder !== payload.playOrder);
-        const newPick: GameplayPickResponse = {
-          playOrder: payload.playOrder,
-          boardPosition: payload.boardPosition,
-          movieTitle: payload.movieTitle,
-          movieYear: undefined,
-          tmdbId: payload.tmdbId,
-          playedById: payload.participantId,
-          playedByKind: payload.participantKind,
-          playedByName:
-            participantsRef.current.find((p) => p.participantId === payload.participantId)
-              ?.participantName ?? '',
-          wasVetoed: false,
-          wasVetoOverridden: false,
-          wasCommissionerOverride: false,
+    connection.on(
+      'PickRevealed',
+      (
+        eventDraftPartId: string,
+        playOrder: number,
+        moviePublicId: string,
+        movieTitle: string,
+        tmdbId: number,
+        boardPosition: number,
+        participantId: string,
+        participantKind: number,
+      ) => {
+        const payload: PickRevealedPayload = {
+          draftPartPublicId: draftPartId,
+          playOrder,
+          boardPosition,
+          movieTitle,
+          tmdbId,
+          participantId,
+          participantKind,
+          // Reveal does not change anyone's veto/override token counts —
+          // only veto/override/undo actions do, and those broadcast their
+          // own token updates separately. Kept as an empty array so
+          // PickRevealedPayload's shape stays consistent for callers, but
+          // applyTokenUpdates is intentionally not called below.
+          participants: [],
         };
-        return [...without, newPick];
-      });
-      applyTokenUpdates(payload.participants);
-      enqueueNotification({ kind: 'PickRevealed', payload });
-      setTimeout(() => void refetch(), 300);
-    });
+        setPendingPicks((prev) => prev.filter((p) => p.playOrder !== payload.playOrder));
+        setPicks((prev) => {
+          const without = prev.filter((p) => p.playOrder !== payload.playOrder);
+          const newPick: GameplayPickResponse = {
+            playOrder: payload.playOrder,
+            boardPosition: payload.boardPosition,
+            movieTitle: payload.movieTitle,
+            movieYear: undefined,
+            tmdbId: payload.tmdbId,
+            playedById: payload.participantId,
+            playedByKind: payload.participantKind,
+            playedByName:
+              participantsRef.current.find((p) => p.participantId === payload.participantId)
+                ?.participantName ?? '',
+            wasVetoed: false,
+            wasVetoOverridden: false,
+            wasCommissionerOverride: false,
+          };
+          return [...without, newPick];
+        });
+        enqueueNotification({ kind: 'PickRevealed', payload });
+        setTimeout(() => void refetch(), 300);
+      },
+    );
 
     connection.on('VetoApplied', (payload: VetoAppliedPayload) => {
       setPicks((prev) =>
@@ -347,6 +477,7 @@ export function LiveDraftProvider({
       );
       applyTokenUpdates(payload.participants);
       enqueueNotification({ kind: 'VetoApplied', payload });
+      setTimeout(() => void refetch(), 300);
     });
 
     connection.on('VetoOverrideApplied', (payload: VetoOverrideAppliedPayload) => {
@@ -359,6 +490,20 @@ export function LiveDraftProvider({
       );
       applyTokenUpdates(payload.participants);
       enqueueNotification({ kind: 'VetoOverrideApplied', payload });
+      setTimeout(() => void refetch(), 300);
+    });
+
+    connection.on('CommissionerOverrideApplied', (payload: CommissionerOverrideAppliedPayload) => {
+      setPicks((prev) =>
+        prev.map((p) =>
+          p.boardPosition === payload.boardPosition
+            ? { ...p, wasCommissionerOverride: true }
+            : p,
+        ),
+      );
+      applyTokenUpdates(payload.participants);
+      enqueueNotification({ kind: 'CommissionerOverrideApplied', payload });
+      setTimeout(() => void refetch(), 300);
     });
 
     connection.on('VetoUndone', (payload: VetoUndonePayload) => {
@@ -371,6 +516,7 @@ export function LiveDraftProvider({
       );
       applyTokenUpdates(payload.participants);
       enqueueNotification({ kind: 'VetoUndone', payload });
+      setTimeout(() => void refetch(), 300);
     });
 
     connection.on('PickUndone', (payload: PickUndonePayload) => {
@@ -378,24 +524,80 @@ export function LiveDraftProvider({
       setPendingPicks((prev) => prev.filter((p) => p.playOrder !== payload.playOrder));
       applyTokenUpdates(payload.participants);
       enqueueNotification({ kind: 'PickUndone', payload });
+      setTimeout(() => void refetch(), 300);
     });
 
+    // Fires whenever a movie's honorific changes — in either direction.
+    // newAppearanceHonorificValue > previousAppearanceHonorificValue = earned.
+    // newAppearanceHonorificValue < previousAppearanceHonorificValue = reverted
+    // (caused by a veto or commissioner override striking a previously-locked pick).
+    connection.on(
+      'MovieHonorificEarned',
+      (
+        eventDraftPartPublicId: string,
+        moviePublicId: string,
+        movieTitle: string,
+        previousAppearanceHonorificValue: number,
+        newAppearanceHonorificValue: number,
+        previousPositionHonorificValue: number,
+        newPositionHonorificValue: number,
+        appearanceCount: number,
+      ) => {
+        const payload: MovieHonorificChangedPayload = {
+          draftPartPublicId: eventDraftPartPublicId,
+          moviePublicId,
+          movieTitle,
+          previousAppearanceHonorificValue,
+          newAppearanceHonorificValue,
+          previousPositionHonorificValue,
+          newPositionHonorificValue,
+          appearanceCount,
+        };
+        enqueueNotification({ kind: 'MovieHonorificChanged', payload });
+      },
+    );
+
+    connection.on(
+      'DrafterHonorificEarned',
+      (
+        eventDraftPartPublicId: string,
+        drafterIdValue: string,
+        previousHonorificValue: number,
+        newHonorificValue: number,
+        appearanceCount: number,
+      ) => {
+        const payload: DrafterHonorificChangedPayload = {
+          draftPartPublicId: eventDraftPartPublicId,
+          drafterIdValue,
+          previousHonorificValue,
+          newHonorificValue,
+          appearanceCount,
+        };
+        enqueueNotification({ kind: 'DrafterHonorificChanged', payload });
+      },
+    );
+
     connection.on('PositionsSet', () => {
-      // Small delay to ensure the server has committed before we refetch.
       setTimeout(() => void refetch(), 500);
     });
 
     connection.on('CountdownStarted', (payload: CountdownStartedPayload) => {
+      if (countdownTimerRef.current) {
+        clearTimeout(countdownTimerRef.current);
+      }
       setCountdownTarget(payload.targetParticipantId);
-      setTimeout(() => setCountdownTarget(null), 6000);
+      countdownTimerRef.current = setTimeout(() => {
+        setCountdownTarget(null);
+        countdownTimerRef.current = null;
+      }, 6000);
     });
 
     connection.on('DraftCompleted', () => {
       window.location.href = `/drafts/${initialGameplay.draftId}`;
     });
 
-    connection.on('PartCompleted', () => {
-      window.location.href = `/my-drafts/${initialGameplay.draftId}`;
+    connection.on('PartCompleted', (summary: DraftCompletionSummary) => {
+      setCompletionSummary(summary);
     });
 
     connection.onreconnecting(() => {
@@ -416,6 +618,16 @@ export function LiveDraftProvider({
     let mounted = true;
 
     async function start() {
+      // Wait for any prior connection (from a previous effect invocation —
+      // notably React Strict Mode's dev-only mount → cleanup → remount) to
+      // fully stop and leave the SignalR group before this one starts and
+      // joins. Without this, two connections can briefly both be members of
+      // the same group, and every server broadcast gets delivered twice.
+      if (previousTeardownRef.current) {
+        await previousTeardownRef.current;
+      }
+      if (!mounted) return;
+
       try {
         await connection.start();
         if (!mounted) return;
@@ -436,12 +648,18 @@ export function LiveDraftProvider({
 
     return () => {
       mounted = false;
-      // Wait for negotiation/start to settle before stopping — calling
-      // stop() while start() is mid-negotiation throws "connection was
-      // stopped during negotiation" and logs as an unhandled error.
-      void startPromise.finally(() => {
-        void connection.stop();
-      });
+      if (countdownTimerRef.current) {
+        clearTimeout(countdownTimerRef.current);
+        countdownTimerRef.current = null;
+      }
+      // Build this invocation's teardown promise and publish it to the ref
+      // BEFORE awaiting it here, so the next effect invocation's start()
+      // (which may already be queued via Strict Mode's synchronous remount)
+      // can see and await it immediately rather than racing against it.
+      const teardown = startPromise
+        .catch(() => undefined)
+        .then(() => connection.stop());
+      previousTeardownRef.current = teardown;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [draftPartId, isPrimaryHost]);
@@ -451,6 +669,19 @@ export function LiveDraftProvider({
     if (!connection || connection.state !== signalR.HubConnectionState.Connected) return;
     await connection.invoke('StartCountdownAsync', draftPartId, targetParticipantId);
   }, [draftPartId]);
+
+  const dismissCompletionSummary = useCallback(() => {
+    setCompletionSummary(null);
+    window.location.href = `/my-drafts/${initialGameplay.draftId}`;
+  }, [initialGameplay.draftId]);
+
+  const dismissCountdown = useCallback(() => {
+    if (countdownTimerRef.current) {
+      clearTimeout(countdownTimerRef.current);
+      countdownTimerRef.current = null;
+    }
+    setCountdownTarget(null);
+  }, []);
 
   return (
     <LiveDraftContext.Provider
@@ -467,9 +698,12 @@ export function LiveDraftProvider({
         notification,
         dismissNotification,
         countdownTarget,
+        dismissCountdown,
         refetch,
         sendCountdown,
         revealPick,
+        completionSummary,
+        dismissCompletionSummary,
       }}
     >
       {children}

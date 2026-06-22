@@ -38,7 +38,7 @@ export async function fetchGameplay(
 export async function submitTriviaResults(
   accessToken: string,
   draftPartId: string,
-  results: { participantPublicId: string; participantKind: number; position: number; questionsWon: number }[],
+  results: { participantPublicId: string; kind: number; position: number; questionsWon: number }[],
 ): Promise<void> {
   const res = await fetch(`${API_BASE}/draft-parts/${draftPartId}/trivia-results`, {
     method: 'PUT',

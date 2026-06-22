@@ -67,6 +67,10 @@ public static class ReportingModule
     registrationConfigurator
       .AddConsumer<IntegrationEventConsumer<DraftPartReleaseAddedIntegrationEvent>>()
       .Endpoint(c => c.InstanceId = moduleInstanceId);
+
+    registrationConfigurator
+      .AddConsumer<IntegrationEventConsumer<PickUnlockedIntegrationEvent>>()
+      .Endpoint(c => c.InstanceId = moduleInstanceId);
   }
 
   private static void AddDomainEventHandlers(this IServiceCollection services)

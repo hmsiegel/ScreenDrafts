@@ -3926,16 +3926,6 @@
           "DraftParts"
         ],
         "operationId": "DraftParts.PickReveal",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RevealPickRequest"
-              }
-            }
-          },
-          "required": true
-        },
         "responses": {
           "204": {
             "description": "No Content"
@@ -9417,6 +9407,22 @@
             "format": "int32"
           },
           "overrideTokensRemaining": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "vetoesRollingIn": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "vetoOverridesRollingIn": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": [
               "integer",
@@ -15129,22 +15135,6 @@
         "properties": {
           "publicId": {
             "type": "string"
-          }
-        }
-      },
-      "RevealPickRequest": {
-        "type": "object",
-        "properties": {
-          "draftPartId": {
-            "type": "string"
-          },
-          "playOrder": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": [
-              "integer",
-              "string"
-            ],
-            "format": "int32"
           }
         }
       },

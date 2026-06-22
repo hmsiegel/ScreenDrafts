@@ -41,7 +41,7 @@ export function CoHostTab({ accessToken, draftPartId, isCommissioner }: Props) {
     setActing(true);
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/draft-parts/${draftPartId}/picks/${mostRecentPick.playOrder}/commissioner-override`,
+        `${process.env.NEXT_PUBLIC_API_URL}/draft-parts/${draftPartId}/commissioner-override/${mostRecentPick.playOrder}`,
         {
           method: 'POST',
           headers: { Authorization: `Bearer ${accessToken}` },

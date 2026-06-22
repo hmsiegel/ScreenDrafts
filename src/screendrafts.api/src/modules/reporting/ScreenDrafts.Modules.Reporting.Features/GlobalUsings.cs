@@ -33,5 +33,6 @@ global using ScreenDrafts.Modules.Reporting.Features.Drafters.UpdateDrafterHonor
 global using ScreenDrafts.Modules.Reporting.Features.Drafts.MarkDraftCompleted;
 global using ScreenDrafts.Modules.Reporting.Features.Drafts.UpsertDraftPartRelease;
 global using ScreenDrafts.Modules.Reporting.Features.Drafts.UpsertDraftSummary;
+global using ScreenDrafts.Modules.Reporting.Features.Movies.RevertMovieHonorific;
 global using ScreenDrafts.Modules.Reporting.Features.Movies.UpdateMovieHonorific;
 global using ScreenDrafts.Modules.Reporting.IntegrationEvents;

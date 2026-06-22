@@ -11,7 +11,8 @@ public sealed class CandidateListEntry : Entity<CandidateListEntryId>
     Guid? movieId,
     string addedByPublicId,
     string? notes,
-    CandidateListEntryId? id = null)
+    CandidateListEntryId? id = null
+  )
     : base(id ?? CandidateListEntryId.CreateUnique())
   {
     DraftPartId = draftPartId;
@@ -45,10 +46,24 @@ public sealed class CandidateListEntry : Entity<CandidateListEntryId>
   public DateTime CreatedOnUtc { get; private set; }
 
   /// <summary>
-  /// True while the movie record has not yet been created. 
+  /// True while the movie record has not yet been created.
   /// Cleared by the Movies module when processing the MovieFetchedIntegrationEvent.
   /// </summary>
   public bool IsPending { get; private set; }
+
+  /// <summary>
+  /// True once a pick has claimed this entry. Candidate lists are
+  /// inexhaustive and shared — picking a listed movie does not remove it
+  /// from view, but it does mark it picked so it can be visually
+  /// distinguished and restored cleanly if the pick is later vetoed.
+  /// </summary>
+  public bool IsPicked { get; private set; }
+
+  /// <summary>
+  /// The pick that claimed this entry. Null until MarkAsPicked is called;
+  /// cleared again by RestoreToAvailable if that pick is vetoed.
+  /// </summary>
+  public PickId? PickId { get; private set; }
 
   public static Result<CandidateListEntry> Create(
     DraftPartId draftPartId,
@@ -57,7 +72,8 @@ public sealed class CandidateListEntry : Entity<CandidateListEntryId>
     Guid? movieId,
     string addedByPublicId,
     string? notes = null,
-    CandidateListEntryId? id = null)
+    CandidateListEntryId? id = null
+  )
   {
     var entry = new CandidateListEntry(
       draftPartId: draftPartId,
@@ -66,7 +82,8 @@ public sealed class CandidateListEntry : Entity<CandidateListEntryId>
       movieId: movieId,
       addedByPublicId: addedByPublicId,
       notes: notes,
-      id: id);
+      id: id
+    );
 
     return Result.Success(entry);
   }
@@ -80,6 +97,42 @@ public sealed class CandidateListEntry : Entity<CandidateListEntryId>
 
     MovieId = movieId;
     IsPending = false;
+
+    return Result.Success();
+  }
+
+  /// <summary>
+  /// Claims this entry for a pick. Does not remove the entry from the list —
+  /// candidate lists are inexhaustive and shared, so the entry remains
+  /// visible, just flagged as picked.
+  /// </summary>
+  public Result MarkAsPicked(PickId pickId)
+  {
+    if (IsPicked)
+    {
+      return Result.Failure(CandidateListErrors.EntryAlreadyPicked);
+    }
+
+    IsPicked = true;
+    PickId = pickId;
+
+    return Result.Success();
+  }
+
+  /// <summary>
+  /// Reverses MarkAsPicked. Called when the pick that claimed this entry is
+  /// vetoed, returning the entry to available status so it can be picked
+  /// again by anyone.
+  /// </summary>
+  public Result RestoreToAvailable()
+  {
+    if (!IsPicked)
+    {
+      return Result.Failure(CandidateListErrors.EntryNotPicked);
+    }
+
+    IsPicked = false;
+    PickId = null;
 
     return Result.Success();
   }

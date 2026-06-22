@@ -533,15 +533,19 @@ function MovieList({
             )}
 
             {/* Title + year */}
-            <div className="flex-1 min-w-0">
-              <p className="font-oswald text-sm truncate leading-tight text-sd-paper">
+            <a
+              href={`https://www.themoviedb.org/movie/${movie.tmdbId}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 min-w-0 group"
+            >
+              <p className="font-oswald text-sm truncate leading-tight text-sd-paper group-hover:text-sd-blue transition-colors">
                 {movie.title}
               </p>
               {movie.year && (
                 <p className="text-[11px] text-white/40 font-mono">{movie.year}</p>
               )}
-
-            </div>
+            </a>
 
             {/* Pick button */}
             <button

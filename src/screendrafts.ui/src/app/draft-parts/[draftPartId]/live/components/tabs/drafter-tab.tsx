@@ -23,6 +23,7 @@ export function DrafterTab({ accessToken, draftPartId }: Props) {
     nextExpectedParticipantId,
     callerParticipantId,
     countdownTarget,
+    dismissCountdown,
   } = useLiveDraft();
 
   const [showCountdown, setShowCountdown] = useState(false);
@@ -87,6 +88,17 @@ export function DrafterTab({ accessToken, draftPartId }: Props) {
     setShowCountdown(false);
   }, []);
 
+  // Manual dismiss (distinct from natural timeout completion above). Must
+  // clear BOTH the local showCountdown flag AND the context's countdownTarget
+  // — clearing only showCountdown would leave isCountdownTarget true, and
+  // the reactive check above (`if (isCountdownTarget && !showCountdown)`)
+  // would immediately flip showCountdown back to true on the next render,
+  // undoing the dismiss.
+  const handleCountdownDismiss = useCallback(() => {
+    setShowCountdown(false);
+    dismissCountdown();
+  }, [dismissCountdown]);
+
   async function handleVeto() {
     if (!mostRecentPick || !canVeto || !myParticipant) return;
     const res = await fetch(
@@ -106,7 +118,7 @@ export function DrafterTab({ accessToken, draftPartId }: Props) {
   async function handleOverride() {
     if (!mostRecentPick || !canOverride || !myParticipant) return;
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/draft-parts/${draftPartId}/picks/${mostRecentPick.playOrder}/veto-override`,
+      `${process.env.NEXT_PUBLIC_API_URL}/draft-parts/${draftPartId}/veto-override/${mostRecentPick.playOrder}`,
       {
         method: 'POST',
         headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
@@ -140,7 +152,7 @@ export function DrafterTab({ accessToken, draftPartId }: Props) {
             onClick={handleOverride}
             className="px-3 py-1 border border-light-blue text-light-blue font-oswald text-xs tracking-widest hover:bg-light-blue hover:text-sd-ink transition-colors"
           >
-            SAVE
+            OVERRIDE
           </button>
         )}
       </div>
@@ -149,7 +161,9 @@ export function DrafterTab({ accessToken, draftPartId }: Props) {
 
   return (
     <>
-      {showCountdown && <CountdownOverlay onComplete={handleCountdownComplete} />}
+      {showCountdown && (
+        <CountdownOverlay onComplete={handleCountdownComplete} onDismiss={handleCountdownDismiss} />
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Left — Position + Board + Pick source */}

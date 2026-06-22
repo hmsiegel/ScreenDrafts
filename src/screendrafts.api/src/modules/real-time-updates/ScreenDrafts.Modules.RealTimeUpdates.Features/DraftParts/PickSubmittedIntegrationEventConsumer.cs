@@ -17,15 +17,20 @@ internal sealed partial class PickSubmittedIntegrationEventConsumer(
 
     await _hubContext
       .Clients.Group(DraftHub.HostGroupName(integrationEvent.DraftPartPublicId))
-      .SendCoreAsync("PickSubmitted", [
-        integrationEvent.DraftPartId,
-        integrationEvent.PlayOrder,
-        integrationEvent.MoviePublicId,
-        integrationEvent.MovieTitle,
-        integrationEvent.TmdbId,
-        integrationEvent.ParticipantId,
-        integrationEvent.ParticipantKind,
-      ], cancellationToken);
+      .SendCoreAsync(
+        "PickSubmitted",
+        [
+          integrationEvent.DraftPartId,
+          integrationEvent.PlayOrder,
+          integrationEvent.MoviePublicId,
+          integrationEvent.MovieTitle,
+          integrationEvent.TmdbId,
+          integrationEvent.BoardPosition,
+          integrationEvent.ParticipantId,
+          integrationEvent.ParticipantKind,
+        ],
+        cancellationToken
+      );
   }
 
   [LoggerMessage(

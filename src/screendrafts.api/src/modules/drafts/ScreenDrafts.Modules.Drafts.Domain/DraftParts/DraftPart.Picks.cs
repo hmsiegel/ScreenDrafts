@@ -267,7 +267,9 @@ public sealed partial class DraftPart
         playOrder: pick.PlayOrder,
         movieTitle: pick.Movie?.MovieTitle,
         playedByParticipantId: pick.PlayedByParticipant.ParticipantIdValue,
-        playedByParticipantKind: pick.PlayedByParticipant.ParticipantKindValue.Value
+        playedByParticipantKind: pick.PlayedByParticipant.ParticipantKindValue.Value,
+        moviePublicId: pick.Movie!.PublicId,
+        boardPosition: pick.Position
       )
     );
     return Result.Success();
@@ -339,7 +341,7 @@ public sealed partial class DraftPart
     string? actedByPublicId = null
   )
   {
-    if (DraftType == DraftType.SpeedDraft)
+    if (DraftType == DraftType.SpeedDraft || DraftType == DraftType.Standard)
     {
       return Result.Failure(DraftPartErrors.VetoOverridesNotAllowedInSpeedDrafts);
     }
@@ -418,7 +420,11 @@ public sealed partial class DraftPart
         tmdbId: pick.Movie.TmdbId ?? 0,
         participantId: pick.PlayedByParticipant.ParticipantId.Value,
         draftId: DraftId.Value,
-        draftPublicId: DraftPublicId
+        draftPublicId: DraftPublicId,
+        participantKind: pick.PlayedByParticipant.ParticipantKindValue.Value,
+        moviePublicId: pick.Movie!.PublicId,
+        movieTitle: pick.Movie!.MovieTitle,
+        boardPosition: pick.Position
       )
     );
     return Result.Success();

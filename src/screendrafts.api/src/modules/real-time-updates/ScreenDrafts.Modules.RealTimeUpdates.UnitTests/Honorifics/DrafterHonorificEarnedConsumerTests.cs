@@ -13,7 +13,8 @@ public sealed class DrafterHonorificEarnedConsumerTests
     var hubContext = new TestHubContext();
     var consumer = new DrafterHonorificEarnedIntegrationEventConsumer(
       hubContext,
-      NullLogger<DrafterHonorificEarnedIntegrationEventConsumer>.Instance);
+      NullLogger<DrafterHonorificEarnedIntegrationEventConsumer>.Instance
+    );
 
     var draftPartPublicId = "dp-abc123";
     var integrationEvent = BuildEvent(draftPartPublicId: draftPartPublicId);
@@ -32,7 +33,8 @@ public sealed class DrafterHonorificEarnedConsumerTests
     var hubContext = new TestHubContext();
     var consumer = new DrafterHonorificEarnedIntegrationEventConsumer(
       hubContext,
-      NullLogger<DrafterHonorificEarnedIntegrationEventConsumer>.Instance);
+      NullLogger<DrafterHonorificEarnedIntegrationEventConsumer>.Instance
+    );
 
     var integrationEvent = BuildEvent();
 
@@ -40,8 +42,11 @@ public sealed class DrafterHonorificEarnedConsumerTests
     await consumer.Handle(integrationEvent, CancellationToken.None);
 
     // Assert
-    hubContext.SentMessages.Should().ContainSingle()
-      .Which.Method.Should().Be("DrafterHonorificEarned");
+    hubContext
+      .SentMessages.Should()
+      .ContainSingle()
+      .Which.Method.Should()
+      .Be("DrafterHonorificEarned");
   }
 
   [Fact]
@@ -51,25 +56,29 @@ public sealed class DrafterHonorificEarnedConsumerTests
     var hubContext = new TestHubContext();
     var consumer = new DrafterHonorificEarnedIntegrationEventConsumer(
       hubContext,
-      NullLogger<DrafterHonorificEarnedIntegrationEventConsumer>.Instance);
+      NullLogger<DrafterHonorificEarnedIntegrationEventConsumer>.Instance
+    );
 
     var drafterId = Guid.NewGuid();
     var integrationEvent = BuildEvent(
+      draftPartPublicId: "dp-test",
       drafterId: drafterId,
       previousHonorific: 0,
       newHonorific: 1,
-      appearanceCount: 5);
+      appearanceCount: 5
+    );
 
     // Act
     await consumer.Handle(integrationEvent, CancellationToken.None);
 
     // Assert
     var (_, args) = hubContext.SentMessages.Single();
-    args.Should().HaveCount(4);
-    args[0].Should().Be(drafterId);
-    args[1].Should().Be(0);
-    args[2].Should().Be(1);
-    args[3].Should().Be(5);
+    args.Should().HaveCount(5);
+    args[0].Should().Be("dp-test");
+    args[1].Should().Be(drafterId);
+    args[2].Should().Be(0);
+    args[3].Should().Be(1);
+    args[4].Should().Be(5);
   }
 
   // -------------------------------------------------------------------------
@@ -81,7 +90,8 @@ public sealed class DrafterHonorificEarnedConsumerTests
     Guid? drafterId = null,
     int previousHonorific = 0,
     int newHonorific = 1,
-    int appearanceCount = 5)
+    int appearanceCount = 5
+  )
   {
     return new DrafterHonorificEarnedIntegrationEvent(
       id: Guid.NewGuid(),
@@ -90,7 +100,8 @@ public sealed class DrafterHonorificEarnedConsumerTests
       draftPartPublicId: draftPartPublicId,
       previousHonorificValue: previousHonorific,
       newHonorificValue: newHonorific,
-      appearanceCount: appearanceCount);
+      appearanceCount: appearanceCount
+    );
   }
 }
 
@@ -117,8 +128,11 @@ internal sealed class TestHubClients : IHubClients
   public IReadOnlyList<(string Method, object?[] Args)> SentMessages => _proxy.SentMessages;
 
   public IClientProxy All => _proxy;
+
   public IClientProxy AllExcept(IReadOnlyList<string> excludedConnectionIds) => _proxy;
+
   public IClientProxy Client(string connectionId) => _proxy;
+
   public IClientProxy Clients(IReadOnlyList<string> connectionIds) => _proxy;
 
   public IClientProxy Group(string groupName)
@@ -127,9 +141,13 @@ internal sealed class TestHubClients : IHubClients
     return _proxy;
   }
 
-  public IClientProxy GroupExcept(string groupName, IReadOnlyList<string> excludedConnectionIds) => _proxy;
+  public IClientProxy GroupExcept(string groupName, IReadOnlyList<string> excludedConnectionIds) =>
+    _proxy;
+
   public IClientProxy Groups(IReadOnlyList<string> groupNames) => _proxy;
+
   public IClientProxy User(string userId) => _proxy;
+
   public IClientProxy Users(IReadOnlyList<string> userIds) => _proxy;
 }
 
@@ -139,7 +157,11 @@ internal sealed class TestClientProxy : IClientProxy
 
   public IReadOnlyList<(string Method, object?[] Args)> SentMessages => _sentMessages;
 
-  public Task SendCoreAsync(string method, object?[] args, CancellationToken cancellationToken = default)
+  public Task SendCoreAsync(
+    string method,
+    object?[] args,
+    CancellationToken cancellationToken = default
+  )
   {
     _sentMessages.Add((method, args));
     return Task.CompletedTask;

@@ -10,7 +10,8 @@ import { PrimaryHostTab } from './components/tabs/primary-host-tab';
 import { CoHostTab } from './components/tabs/co-host-tab';
 import { DrafterTab } from './components/tabs/drafter-tab';
 import { PredictionsTab } from './components/tabs/predictions-tab';
-import { PickNotificationModal } from './components/pick-notification-model';
+import { PickNotificationModal } from './components/pick-notification-modal';
+import { DraftCompletionSummaryModal } from './components/draft-completion-summary';
 
 interface LiveDraftPageProps {
   draftPartId: string;
@@ -20,7 +21,6 @@ interface LiveDraftPageProps {
   isCoHost: boolean;
   isParticipant: boolean;
   isCommissioner: boolean;
-  // True when this co-host is acting as surrogate for the commissioner predictions game.
   isPredictions: boolean;
 }
 
@@ -44,7 +44,13 @@ function LiveDraftPageInner({
   isCommissioner,
   isPredictions,
 }: LiveDraftPageProps) {
-  const { gameplay, reconnecting, notification, dismissNotification } = useLiveDraft();
+  const {
+    gameplay,
+    reconnecting,
+    notification,
+    dismissNotification,
+    completionSummary,
+  } = useLiveDraft();
 
   type TabKey = 'host' | 'cohost' | 'drafter' | 'predictions';
   const tabs: { key: TabKey; label: string }[] = [
@@ -122,6 +128,7 @@ function LiveDraftPageInner({
         {activeTab === 'predictions' && isPredictions && <PredictionsTab />}
       </div>
 
+      {/* Gameplay event announcements — pick reveals, vetoes, honorifics, etc. */}
       {notification && gameplay.draftPartId && (
         <PickNotificationModal
           notification={notification}
@@ -131,6 +138,13 @@ function LiveDraftPageInner({
           accessToken={accessToken}
           draftPartId={gameplay.draftPartId}
         />
+      )}
+
+      {/* Completion summary — shown to all participants when the draft part ends.
+          Sits above the notification modal (z-50 vs z-40) so it can't be
+          accidentally dismissed by a queued gameplay notification. */}
+      {completionSummary && (
+        <DraftCompletionSummaryModal summary={completionSummary} />
       )}
     </div>
   );

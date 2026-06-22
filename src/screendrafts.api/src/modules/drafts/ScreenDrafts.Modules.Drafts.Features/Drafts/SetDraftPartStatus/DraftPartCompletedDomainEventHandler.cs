@@ -242,10 +242,10 @@ internal sealed class DraftPartCompletedDomainEventHandler(
 
   private sealed record DraftRow(
     string DraftPublicId,
-    string DraftPartPublicId,
     string Title,
-    int DraftType,
+    string DraftPartPublicId,
     int PartIndex,
+    int DraftType,
     int TotalParts,
     bool IsPatreon,
     int? EpisodeNumber

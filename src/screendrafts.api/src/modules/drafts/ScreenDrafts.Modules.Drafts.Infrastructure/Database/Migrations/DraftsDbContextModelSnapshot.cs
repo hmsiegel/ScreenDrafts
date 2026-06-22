@@ -455,6 +455,10 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("is_pending");
 
+                    b.Property<bool>("IsPicked")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_picked");
+
                     b.Property<Guid?>("MovieId")
                         .HasColumnType("uuid")
                         .HasColumnName("movie_id");
@@ -463,6 +467,10 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("character varying(1000)")
                         .HasColumnName("notes");
+
+                    b.Property<Guid?>("PickId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("pick_id");
 
                     b.Property<int>("TmdbId")
                         .HasColumnType("integer")

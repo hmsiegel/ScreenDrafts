@@ -439,7 +439,7 @@ export interface IClient {
     /**
      * @return No Content
      */
-    draftParts_PickReveal(body: RevealPickRequest): Promise<void>;
+    draftParts_PickReveal(): Promise<void>;
 
     /**
      * @return OK
@@ -5237,18 +5237,14 @@ export class Client implements IClient {
     /**
      * @return No Content
      */
-    draftParts_PickReveal(body: RevealPickRequest, signal?: AbortSignal): Promise<void> {
+    draftParts_PickReveal(signal?: AbortSignal): Promise<void> {
         let url_ = this.baseUrl + "/draft-parts/{draftPartId}/picks/{playOrder}/reveal";
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(body);
-
         let options_: RequestInit = {
-            body: content_,
             method: "POST",
             signal,
             headers: {
-                "Content-Type": "application/json",
             }
         };
 
@@ -10748,6 +10744,8 @@ export interface GameplayParticipantResponse {
     participantName?: string;
     vetoTokensRemaining?: number;
     overrideTokensRemaining?: number;
+    vetoesRollingIn?: number;
+    vetoOverridesRollingIn?: number;
 
     [key: string]: any;
 }
@@ -12403,13 +12401,6 @@ export interface RestoreCampaignRequest {
 
 export interface RestoreCategoryRequest {
     publicId?: string;
-
-    [key: string]: any;
-}
-
-export interface RevealPickRequest {
-    draftPartId?: string;
-    playOrder?: number;
 
     [key: string]: any;
 }

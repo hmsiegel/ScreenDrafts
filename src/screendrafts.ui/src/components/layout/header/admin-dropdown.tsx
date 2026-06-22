@@ -18,6 +18,11 @@ export default function AdminDropdown() {
   const ref = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
 
+  // Close on navigation
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
+
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (e.key === "Escape") setOpen(false);

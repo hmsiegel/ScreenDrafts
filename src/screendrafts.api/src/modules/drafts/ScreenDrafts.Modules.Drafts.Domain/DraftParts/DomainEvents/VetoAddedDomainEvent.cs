@@ -11,7 +11,9 @@ public sealed class VetoAddedDomainEvent(
   int playOrder,
   string? movieTitle,
   Guid playedByParticipantId,
-  int playedByParticipantKind
+  int playedByParticipantKind,
+  string moviePublicId,
+  int boardPosition
 ) : DomainEvent
 {
   public Guid DraftPartId { get; init; } = draftPartId;
@@ -25,4 +27,6 @@ public sealed class VetoAddedDomainEvent(
   public string? MovieTitle { get; init; } = movieTitle;
   public Guid PlayedByParticipantId { get; init; } = playedByParticipantId;
   public int PlayedByParticipantKind { get; init; } = playedByParticipantKind;
+  public string MoviePublicId { get; init; } = moviePublicId;
+  public int BoardPosition { get; init; } = boardPosition;
 }

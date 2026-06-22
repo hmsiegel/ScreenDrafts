@@ -6,7 +6,12 @@ public sealed class CommissionerOverrideAppliedDomainEvent(
   int tmdbId,
   Guid participantId,
   Guid draftId,
-  string draftPublicId) : DomainEvent
+  string draftPublicId,
+  int participantKind,
+  string moviePublicId,
+  string movieTitle,
+  int boardPosition
+) : DomainEvent
 {
   public Guid DraftPartId { get; init; } = draftPartId;
   public string DraftPartPublicId { get; init; } = draftPartPublicId;
@@ -14,4 +19,8 @@ public sealed class CommissionerOverrideAppliedDomainEvent(
   public string DraftPublicId { get; init; } = draftPublicId;
   public int TmdbId { get; init; } = tmdbId;
   public Guid ParticipantId { get; init; } = participantId;
+  public int ParticipantKind { get; init; } = participantKind;
+  public string MoviePublicId { get; init; } = moviePublicId;
+  public string MovieTitle { get; init; } = movieTitle;
+  public int BoardPosition { get; init; } = boardPosition;
 }

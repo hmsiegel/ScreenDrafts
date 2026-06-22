@@ -2,23 +2,67 @@
 
 internal sealed partial class CommissionerOverrideAppliedIntegrationEventConsumer(
   IHubContext<DraftHub> hubContext,
-  ILogger<CommissionerOverrideAppliedIntegrationEventConsumer> logger)
-  : IntegrationEventHandler<CommissionerOverrideAppliedIntegrationEvent>
+  ILogger<CommissionerOverrideAppliedIntegrationEventConsumer> logger,
+  IDbConnectionFactory dbConnectionFactory
+) : IntegrationEventHandler<CommissionerOverrideAppliedIntegrationEvent>
 {
   private readonly ILogger<CommissionerOverrideAppliedIntegrationEventConsumer> _logger = logger;
   private readonly IHubContext<DraftHub> _hubContext = hubContext;
+  private readonly IDbConnectionFactory _dbConnectionFactory = dbConnectionFactory;
 
-  public override async Task Handle(CommissionerOverrideAppliedIntegrationEvent integrationEvent, CancellationToken cancellationToken = default)
+  public override async Task Handle(
+    CommissionerOverrideAppliedIntegrationEvent integrationEvent,
+    CancellationToken cancellationToken = default
+  )
   {
-    Log_NotifyingDraftPartOfPick(_logger, integrationEvent.DraftPartId);
+    LogCommissionerOverrideApplied(
+      _logger,
+      integrationEvent.DraftPartPublicId,
+      integrationEvent.TmdbId
+    );
 
-    await _hubContext.Clients
-      .Group(DraftHub.GroupName(integrationEvent.DraftPartId.ToString()))
-      .SendAsync("PickListUpdated", integrationEvent.DraftPartId, cancellationToken);
+    await using var connection = await _dbConnectionFactory.OpenConnectionAsync(cancellationToken);
 
+    var tokens = (
+      await connection.QueryAsync<GamePlayTokenQuery.TokenRow>(
+        new CommandDefinition(
+          GamePlayTokenQuery.Sql,
+          new { integrationEvent.DraftPartPublicId },
+          cancellationToken: cancellationToken
+        )
+      )
+    ).ToList();
+
+    var payload = new
+    {
+      integrationEvent.DraftPartPublicId,
+      integrationEvent.TmdbId,
+      integrationEvent.MovieTitle,
+      integrationEvent.ParticipantId,
+      integrationEvent.ParticipantKind,
+      integrationEvent.BoardPosition,
+      Participants = tokens.Select(t => new
+      {
+        t.ParticipantIdValue,
+        t.ParticipantKindValue,
+        t.VetoTokensRemaining,
+        t.OverrideTokensRemaining,
+      }),
+    };
+
+    await _hubContext
+      .Clients.Group(DraftHub.GroupName(integrationEvent.DraftPartPublicId))
+      .SendAsync("CommissionerOverrideApplied", payload, cancellationToken);
   }
 
-  [LoggerMessage(0, LogLevel.Information, "Notifying draft part {DraftPartId}")]
-  private static partial void Log_NotifyingDraftPartOfPick(ILogger logger, Guid draftPartId);
+  [LoggerMessage(
+    1001,
+    LogLevel.Information,
+    "CommissionerOverrideApplied — draft part {DraftPartPublicId} tmdbId {TmdbId}"
+  )]
+  private static partial void LogCommissionerOverrideApplied(
+    ILogger<CommissionerOverrideAppliedIntegrationEventConsumer> logger,
+    string draftPartPublicId,
+    int tmdbId
+  );
 }
-

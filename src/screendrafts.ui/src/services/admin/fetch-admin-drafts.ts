@@ -527,17 +527,19 @@ export async function setDraftPartCommunityParticipant(
   draftPartId: string
 ): Promise<void> {
   const res = await fetch(
-    `${apiBase}/draft-parts/${encodeURIComponent(draftPartId)}/participants/community`,
+    `${apiBase}/draft-parts/${encodeURIComponent(draftPartId)}/participants`,
     {
       method: "POST",
       headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
-      // PatreonMembers well-known GUID
-      body: JSON.stringify({ participantPublicId: "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee" }),
+      body: JSON.stringify({
+        participantPublicId: null,
+        participantKind: 2, // Community
+      }),
     }
   );
   if (!res.ok) {
     const text = await res.text().catch(() => res.statusText);
-    throw new Error(`POST /draft-parts/${draftPartId}/participants/community failed (${res.status}): ${text}`);
+    throw new Error(`POST /draft-parts/${draftPartId}/participants (community) failed (${res.status}): ${text}`);
   }
 }
 

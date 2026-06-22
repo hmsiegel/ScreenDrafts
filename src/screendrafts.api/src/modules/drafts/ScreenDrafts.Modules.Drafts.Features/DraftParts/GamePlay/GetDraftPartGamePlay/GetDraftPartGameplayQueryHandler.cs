@@ -98,7 +98,9 @@ internal sealed class GetDraftPartGameplayQueryHandler(
           - dpp.vetoes_used)            AS {nameof(ParticipantRow.VetoTokensRemaining)},
         (dpp.veto_overrides_rolling_in
           + dpp.awarded_veto_overrides
-          - dpp.veto_overrides_used)    AS {nameof(ParticipantRow.OverrideTokensRemaining)}
+          - dpp.veto_overrides_used)    AS {nameof(ParticipantRow.OverrideTokensRemaining)},
+        dpp.vetoes_rolling_in           AS {nameof(ParticipantRow.VetoesRollingIn)},
+        dpp.veto_overrides_rolling_in   AS {nameof(ParticipantRow.VetoOverridesRollingIn)}
       FROM drafts.draft_part_participants dpp
       JOIN drafts.draft_parts dp ON dp.id = dpp.draft_part_id
       LEFT JOIN drafts.drafters dr ON dr.id = dpp.participant_id_value
@@ -454,7 +456,9 @@ internal sealed class GetDraftPartGameplayQueryHandler(
     string? ParticipantPublicId,
     string Name,
     int VetoTokensRemaining,
-    int OverrideTokensRemaining
+    int OverrideTokensRemaining,
+    int VetoesRollingIn,
+    int VetoOverridesRollingIn
   );
 
   private sealed record TriviaRow(

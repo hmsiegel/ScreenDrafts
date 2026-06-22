@@ -75,11 +75,12 @@ public sealed class DrafterHonorificEarnedConsumerTests
 
     // Assert
     var args = hubContext.SentMessages.Single().Args;
-    args.Should().HaveCount(4);
-    args[0].Should().Be(drafterId);
-    args[1].Should().Be(previousHonorific);
-    args[2].Should().Be(newHonorific);
-    args[3].Should().Be(appearanceCount);
+    args.Should().HaveCount(5);
+    args[0].Should().Be("dp_test");
+    args[1].Should().Be(drafterId);
+    args[2].Should().Be(previousHonorific);
+    args[3].Should().Be(newHonorific);
+    args[4].Should().Be(appearanceCount);
   }
 
   // -------------------------------------------------------------------------

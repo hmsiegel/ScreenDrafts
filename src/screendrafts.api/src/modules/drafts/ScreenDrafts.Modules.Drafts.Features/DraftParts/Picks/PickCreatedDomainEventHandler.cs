@@ -6,6 +6,7 @@ internal sealed class PickCreatedDomainEventHandler(
   IDraftPartRepository draftPartRepository,
   IDraftPoolRepository draftPoolRepository,
   IDraftBoardRepository draftBoardRepository,
+  ICandidateListRepository candidateListRepository,
   ParticipantResolver participantResolver,
   IUnitOfWork unitOfWork,
   IPickRepository pickRepository
@@ -16,6 +17,7 @@ internal sealed class PickCreatedDomainEventHandler(
   private readonly IDraftPartRepository _draftPartRepository = draftPartRepository;
   private readonly IDraftPoolRepository _draftPoolRepository = draftPoolRepository;
   private readonly IDraftBoardRepository _draftBoardRepository = draftBoardRepository;
+  private readonly ICandidateListRepository _candidateListRepository = candidateListRepository;
   private readonly ParticipantResolver _participantResolver = participantResolver;
   private readonly IPickRepository _pickRepository = pickRepository;
   private readonly IUnitOfWork _unitOfWork = unitOfWork;
@@ -35,8 +37,19 @@ internal sealed class PickCreatedDomainEventHandler(
       cancellationToken
     );
 
+    var pickId = PickId.Create(domainEvent.PickId);
+
     if (draftPart is not null)
     {
+      // Pool, board, and candidate list are independent, optional, and can
+      // coexist for the same participant/draft — NOT mutually exclusive.
+      // A pool is draft-wide (Super Drafts, exhaustive — every movie must be
+      // picked). A board is per-participant (personal ranked/unranked list).
+      // A candidate list is draft-part-wide and shared (inexhaustive
+      // brainstorm list, large-pool drafts). All three are checked and
+      // updated independently below, each guarded against not existing for
+      // this draft/participant, which is a normal, expected state.
+
       var pool = await _draftPoolRepository.GetByDraftIdAsync(draftPart.DraftId, cancellationToken);
 
       if (pool is not null)
@@ -50,17 +63,25 @@ internal sealed class PickCreatedDomainEventHandler(
           cancellationToken
         );
       }
-      else
-      {
-        var participant = await _participantResolver.ResolveByParticpantIdAsync(
-          domainEvent.ParticipantId,
-          ParticipantKind.FromValue(domainEvent.ParticipantKind),
-          cancellationToken
-        );
 
+      var participant = await _participantResolver.ResolveByParticpantIdAsync(
+        domainEvent.ParticipantId,
+        ParticipantKind.FromValue(domainEvent.ParticipantKind),
+        cancellationToken
+      );
+
+      // Resolution can legitimately fail — e.g. this participant has no
+      // draft board for this draft at all, which is a normal, supported
+      // state (boards are optional, not every participant creates one).
+      // Previously this forced participant!.Value, which threw
+      // InvalidOperationException and silently killed the entire domain
+      // event handler whenever it happened, the same bug fixed in
+      // VetoAppliedDomainEventHandler.
+      if (participant is not null)
+      {
         var board = await _draftBoardRepository.GetByDraftAndParticipantAsync(
           draftPart.DraftId,
-          participant!.Value,
+          participant.Value,
           cancellationToken
         );
 
@@ -76,10 +97,33 @@ internal sealed class PickCreatedDomainEventHandler(
         }
       }
 
+      // Candidate list entries are inexhaustive and shared — picking does
+      // not remove the entry, just flags it picked so RestoreToAvailable
+      // can cleanly reverse it on veto. Independent of pool/board above:
+      // a movie can simultaneously be in the candidate list AND someone's
+      // board, for instance.
+      if (domainEvent.TmdbId is not null)
+      {
+        var candidateEntry = await _candidateListRepository.FindByTmdbIdAsync(
+          draftPart.Id,
+          domainEvent.TmdbId.Value,
+          cancellationToken
+        );
+
+        if (candidateEntry is not null)
+        {
+          var markResult = candidateEntry.MarkAsPicked(pickId);
+
+          if (markResult.IsSuccess)
+          {
+            _candidateListRepository.Update(candidateEntry);
+          }
+        }
+      }
+
       await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
-    var pickId = PickId.Create(domainEvent.PickId);
     var pick = await _pickRepository.GetByIdAsync(pickId, cancellationToken);
 
     if (pick is null || !pick.IsRevealed)
