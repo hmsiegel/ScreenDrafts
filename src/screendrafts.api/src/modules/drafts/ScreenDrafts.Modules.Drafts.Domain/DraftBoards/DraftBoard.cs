@@ -8,17 +8,18 @@ public sealed class DraftBoard : AggregateRoot<DraftBoardId, Guid>
     DraftId draftId,
     Participant participant,
     string publicId,
-    DraftBoardId? id = null)
+    bool isPoolSourced = false,
+    DraftBoardId? id = null
+  )
     : base(id ?? DraftBoardId.CreateUnique())
   {
     DraftId = draftId;
     Participant = participant;
     PublicId = publicId;
+    IsPoolSourced = isPoolSourced;
   }
 
-  private DraftBoard()
-  {
-  }
+  private DraftBoard() { }
 
   public DraftId DraftId { get; private set; } = default!;
   public Participant Participant { get; private set; } = default!;
@@ -26,12 +27,27 @@ public sealed class DraftBoard : AggregateRoot<DraftBoardId, Guid>
   public DateTime CreatedAtUtc { get; private set; } = default!;
   public DateTime? UpdatedAtUtc { get; private set; }
 
+  /// <summary>
+  /// True for boards that mirror a Draft Pool (Super Draft). When true:
+  /// - Only the pool sync may add or remove items (direct calls are blocked).
+  /// - Once the pool is locked, all adds and removes are blocked.
+  /// </summary>
+  public bool IsPoolSourced { get; private set; }
+
+  /// <summary>
+  /// True once the pool that sources this board is locked. No further
+  /// adds or removes are permitted after this point.
+  /// </summary>
+  public bool IsLocked { get; private set; }
+
   public IReadOnlyCollection<DraftBoardItem> Items => _items.AsReadOnly();
 
   public static Result<DraftBoard> Create(
     DraftId draftId,
     Participant participant,
-    string publicId)
+    string publicId,
+    bool isPoolSourced = false
+  )
   {
     ArgumentNullException.ThrowIfNull(draftId);
 
@@ -43,23 +59,113 @@ public sealed class DraftBoard : AggregateRoot<DraftBoardId, Guid>
     var board = new DraftBoard(
       draftId: draftId,
       participant: participant,
-      publicId: publicId)
+      publicId: publicId,
+      isPoolSourced: isPoolSourced
+    )
     {
-      CreatedAtUtc = DateTime.UtcNow
+      CreatedAtUtc = DateTime.UtcNow,
     };
 
-    board.Raise(new DraftBoardCreatedDomainEvent(
-      board.Id.Value,
-      draftId.Value,
-      participant.Value));
+    board.Raise(new DraftBoardCreatedDomainEvent(board.Id.Value, draftId.Value, participant.Value));
 
     return Result.Success(board);
   }
 
-  public Result AddItem(
-    int tmdbId,
-    string? notes,
-    int? priority)
+  /// <summary>
+  /// Adds a movie to the board. Pool-sourced boards reject direct adds —
+  /// use SyncAddItem for pool-driven additions.
+  /// </summary>
+  public Result AddItem(int tmdbId, string? notes, int? priority)
+  {
+    if (IsPoolSourced)
+    {
+      return Result.Failure(DraftBoardErrors.PoolSourcedBoardCannotBeModifiedDirectly);
+    }
+
+    return AddItemInternal(tmdbId, notes, priority);
+  }
+
+  /// <summary>
+  /// Adds a movie to the board as a pool or candidate list sync action.
+  /// Blocked once the pool is locked.
+  /// </summary>
+  public Result SyncAddItem(int tmdbId)
+  {
+    if (IsLocked)
+    {
+      return Result.Failure(DraftBoardErrors.BoardIsLocked);
+    }
+
+    if (_items.Any(i => i.TmdbId == tmdbId))
+    {
+      return Result.Success(); // idempotent
+    }
+
+    return AddItemInternal(tmdbId, notes: null, priority: null);
+  }
+
+  /// <summary>
+  /// Removes a movie from the board as a pool sync action.
+  /// Blocked once the pool is locked.
+  /// </summary>
+  public Result SyncRemoveItem(int tmdbId)
+  {
+    if (IsLocked)
+    {
+      return Result.Failure(DraftBoardErrors.BoardIsLocked);
+    }
+
+    return RemoveItemInternal(tmdbId, mustExist: false);
+  }
+
+  /// <summary>
+  /// Removes a movie from the board. Pool-sourced boards reject direct removes —
+  /// use SyncRemoveItem for pool-driven removals.
+  /// </summary>
+  public Result RemoveItem(int tmdbId)
+  {
+    if (IsPoolSourced)
+    {
+      return Result.Failure(DraftBoardErrors.PoolSourcedBoardCannotBeModifiedDirectly);
+    }
+
+    return RemoveItemInternal(tmdbId, mustExist: true);
+  }
+
+  public Result UpdateItem(int tmdbId, string? notes, int? priority)
+  {
+    var item = _items.FirstOrDefault(i => i.TmdbId == tmdbId);
+
+    if (item is null)
+    {
+      return Result.Failure(DraftBoardErrors.MovieNotFoundOnTheBoard(tmdbId));
+    }
+
+    item.Update(notes, priority);
+
+    UpdatedAtUtc = DateTime.UtcNow;
+
+    return Result.Success();
+  }
+
+  /// <summary>
+  /// Locks this board. Called when the sourcing pool is locked.
+  /// No further adds or removes are permitted after this point.
+  /// </summary>
+  public Result Lock()
+  {
+    if (IsLocked)
+    {
+      return Result.Success();
+    }
+
+    IsLocked = true;
+    UpdatedAtUtc = DateTime.UtcNow;
+
+    return Result.Success();
+  }
+
+  private Result AddItemInternal(int tmdbId, string? notes, int? priority)
   {
     if (_items.Any(i => i.TmdbId == tmdbId))
     {
@@ -77,53 +183,40 @@ public sealed class DraftBoard : AggregateRoot<DraftBoardId, Guid>
 
     UpdatedAtUtc = DateTime.UtcNow;
 
-    Raise(new MovieAddedToDraftBoardDomainEvent(
-      boardId: Id.Value,
-      draftId: DraftId.Value,
-      participantId: Participant.Value));
+    Raise(
+      new MovieAddedToDraftBoardDomainEvent(
+        boardId: Id.Value,
+        draftId: DraftId.Value,
+        participantId: Participant.Value
+      )
+    );
 
     return Result.Success();
   }
 
-  public Result RemoveItem(int tmdbId)
+  private Result RemoveItemInternal(int tmdbId, bool mustExist)
   {
     var item = _items.FirstOrDefault(i => i.TmdbId == tmdbId);
 
     if (item is null)
     {
-      return Result.Failure(DraftBoardErrors.MovieNotFoundOnTheBoard(tmdbId));
+      return mustExist
+        ? Result.Failure(DraftBoardErrors.MovieNotFoundOnTheBoard(tmdbId))
+        : Result.Success();
     }
 
     _items.Remove(item);
 
     UpdatedAtUtc = DateTime.UtcNow;
 
-    Raise(new MovieRemovedFromDraftBoardDomainEvent(
-      boardId: Id.Value,
-      draftId: DraftId.Value,
-      participantId: Participant.Value));
-
-    return Result.Success();
-  }
-
-  public Result UpdateItem(
-    int tmdbId,
-    string? notes,
-    int? priority)
-  {
-    var item = _items.FirstOrDefault(i => i.TmdbId == tmdbId);
-
-    if (item is null)
-    {
-      return Result.Failure(DraftBoardErrors.MovieNotFoundOnTheBoard(tmdbId));
-    }
-
-    item.Update(notes, priority);
-
-    UpdatedAtUtc = DateTime.UtcNow;
+    Raise(
+      new MovieRemovedFromDraftBoardDomainEvent(
+        boardId: Id.Value,
+        draftId: DraftId.Value,
+        participantId: Participant.Value
+      )
+    );
 
     return Result.Success();
   }
 }
-
-

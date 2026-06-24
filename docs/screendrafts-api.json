@@ -8104,6 +8104,71 @@
           }
         }
       },
+      "CreateDraftCommunityFilmRuleRequest": {
+        "required": [
+          "ruleKind"
+        ],
+        "type": "object",
+        "properties": {
+          "ruleKind": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "targetSlot": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "tmdbId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "CreateDraftCommunityRequest": {
+        "required": [
+          "maxCommunityPicks",
+          "maxCommunityVetoes"
+        ],
+        "type": "object",
+        "properties": {
+          "maxCommunityPicks": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "maxCommunityVetoes": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "filmRules": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateDraftCommunityFilmRuleRequest"
+            }
+          }
+        }
+      },
       "CreateDrafterRequest": {
         "type": "object",
         "properties": {
@@ -8123,12 +8188,34 @@
           }
         }
       },
-      "CreateDraftPartRequest": {
+      "CreateDraftHostRequest": {
+        "required": [
+          "hostPublicId",
+          "hostRole"
+        ],
         "type": "object",
         "properties": {
-          "publicId": {
+          "hostPublicId": {
             "type": "string"
           },
+          "hostRole": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "CreateDraftPartRequest": {
+        "required": [
+          "partIndex",
+          "minimumPosition",
+          "maximumPosition"
+        ],
+        "type": "object",
+        "properties": {
           "partIndex": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": [
@@ -8152,6 +8239,22 @@
               "string"
             ],
             "format": "int32"
+          },
+          "community": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/CreateDraftCommunityRequest"
+              }
+            ]
+          },
+          "positions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateDraftPositionRequest"
+            }
           }
         }
       },
@@ -8160,6 +8263,35 @@
         "properties": {
           "publicId": {
             "type": "string"
+          }
+        }
+      },
+      "CreateDraftPositionRequest": {
+        "required": [
+          "name",
+          "picks"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "picks": {
+            "type": "array",
+            "items": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          "hasBonusVeto": {
+            "type": "boolean"
+          },
+          "hasBonusVetoOverride": {
+            "type": "boolean"
           }
         }
       },
@@ -8184,6 +8316,42 @@
           },
           "seriesId": {
             "type": "string"
+          },
+          "parts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateDraftPartRequest"
+            }
+          },
+          "hosts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateDraftHostRequest"
+            }
+          },
+          "drafterIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "teamIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "categoryIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "campaignId": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },

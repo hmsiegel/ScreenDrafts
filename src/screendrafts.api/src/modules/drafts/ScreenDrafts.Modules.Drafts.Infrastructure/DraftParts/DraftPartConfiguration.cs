@@ -149,7 +149,7 @@ internal sealed class DraftPartConfiguration : IEntityTypeConfiguration<DraftPar
 
         b.HasKey(d => d.Id);
 
-        b.Property<Guid>("id").ValueGeneratedNever().IsRequired();
+        b.Property(d => d.Id).HasColumnName("id").IsRequired().ValueGeneratedNever();
 
         b.Property(x => x.PublicId).IsRequired();
 
@@ -161,6 +161,8 @@ internal sealed class DraftPartConfiguration : IEntityTypeConfiguration<DraftPar
           .HasConversion(rk => rk.Value, value => CommunityFilmRuleKind.FromValue(value));
 
         b.Property(x => x.TargetSlot).HasColumnName("target_slot");
+
+        b.Property(x => x.WasAutoVetoFired).IsRequired();
       }
     );
 

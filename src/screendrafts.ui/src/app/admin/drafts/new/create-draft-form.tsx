@@ -6,16 +6,6 @@ import {
   AdminSeriesOption,
   AdminHostOption,
   createDraft,
-  createDraftPart,
-  addHostToDraftPart,
-  addParticipantToDraftPart,
-  setDraftCategories,
-  setDraftCampaign,
-  addCommunityFilmRule,
-  setDraftPartCommunityLimits,
-  setDraftPartCommunityParticipant,
-  assignFilmToCommunityFilmRule,
-  setDraftPositions,
 } from "@/services/admin/fetch-admin-drafts";
 import { CampaignResponse, CategoryResponse, SmartEnumResponse } from "@/lib/dto";
 import { formatDraftType } from "@/lib/draft-type-display";
@@ -35,7 +25,6 @@ const BTN_SECONDARY =
 const SECTION_HEADING =
   "font-oswald font-bold text-[18px] tracking-wide uppercase text-sd-ink mb-4 pb-2 border-b border-sd-ink/10";
 
-// Max positions per draft type name (locked = user cannot change)
 function getMaxPositionsConfig(draftTypeName: string): { max: number; locked: boolean } {
   switch (draftTypeName) {
     case "Standard": return { max: 7, locked: true };
@@ -78,12 +67,10 @@ export default function CreateDraftForm({
 }: Props) {
   const router = useRouter();
 
-  // Section 1 — Core metadata
   const [title, setTitle] = useState("");
   const [selectedSeriesId, setSelectedSeriesId] = useState("");
   const [selectedDraftType, setSelectedDraftType] = useState<SmartEnumResponse | null>(null);
 
-  // Section 2 — Parts
   const [numParts, setNumParts] = useState(1);
   const [parts, setParts] = useState<PartConfig[]>([
     {
@@ -97,29 +84,19 @@ export default function CreateDraftForm({
     },
   ]);
 
-  // Section 3 — Hosts
   const [hosts, setHosts] = useState<SelectedHost[]>([]);
   const [hostSearch, setHostSearch] = useState("");
-
-  // Section 4 — Drafters
   const [selectedDrafterIds, setSelectedDrafterIds] = useState<Set<string>>(new Set());
   const [selectedTeamIds, setSelectedTeamIds] = useState<Set<string>>(new Set());
-
-  // Section 5 — Categories
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<Set<string>>(new Set());
-
-  // Section 6 — Campaign
   const [campaignId, setCampaignId] = useState("");
 
-  // Submit state
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Derived: available draft types for selected series
   const selectedSeries = seriesList.find((s) => s.publicId === selectedSeriesId);
   const availableDraftTypes = selectedSeries?.allowedDraftTypes ?? [];
 
-  // When series changes, reset draft type
   function handleSeriesChange(seriesId: string) {
     setSelectedSeriesId(seriesId);
     const series = seriesList.find((s) => s.publicId === seriesId);
@@ -193,7 +170,6 @@ export default function CreateDraftForm({
     );
   }
 
-  // Hosts
   function addHost(host: AdminHostOption) {
     if (hosts.some((h) => h.publicId === host.publicId)) return;
     setHosts((prev) => [
@@ -212,12 +188,10 @@ export default function CreateDraftForm({
     );
   }
 
-  // Drafters
   function toggleDrafter(id: string) {
     setSelectedDrafterIds((prev) => {
       const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
+      if (next.has(id)) next.delete(id); else next.add(id);
       return next;
     });
   }
@@ -225,18 +199,15 @@ export default function CreateDraftForm({
   function toggleTeam(id: string) {
     setSelectedTeamIds((prev) => {
       const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
+      if (next.has(id)) next.delete(id); else next.add(id);
       return next;
     });
   }
 
-  // Categories
   function toggleCategory(id: string) {
     setSelectedCategoryIds((prev) => {
       const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
+      if (next.has(id)) next.delete(id); else next.add(id);
       return next;
     });
   }
@@ -256,108 +227,44 @@ export default function CreateDraftForm({
     setSubmitting(true);
 
     try {
-      // Step 1: Create draft
       const { publicId: draftPublicId } = await createDraft(accessToken, {
         title: title.trim(),
         draftType: selectedDraftType!.value ?? 0,
         seriesId: selectedSeriesId,
-      });
-
-      // Step 2: Create parts (positions are NOT set yet — GameBoard validates
-      // draftPositions.Count against DraftPart.TotalDrafters + TotalDrafterTeams,
-      // which is 0 until participants are added in Step 4. Setting positions
-      // here unconditionally fails with GameBoard.InvalidNumberOfParticipants.)
-      const partPublicIds: string[] = [];
-      for (const part of parts) {
-        const partId = await createDraftPart(accessToken, draftPublicId, {
-          publicId: draftPublicId,
+        parts: parts.map((part) => ({
           partIndex: parts.length === 1 ? 1 : part.partIndex,
           minimumPosition: part.minPositions,
           maximumPosition: part.maxPositions,
-        });
-        partPublicIds.push(partId);
-      }
+          community: part.communityConfig.enabled
+            ? {
+                maxCommunityPicks: part.communityConfig.maxCommunityPicks,
+                maxCommunityVetoes: part.communityConfig.maxCommunityVetoes,
+                filmRules: part.communityConfig.filmRules
+                  .filter((r) => r.status !== "removing")
+                  .map((r) => ({
+                    ruleKind: r.ruleKind === "BoostersVeto" ? 0 : 1,
+                    targetSlot: r.targetSlot ?? null,
+                    tmdbId: r.tmdbId ?? null,
+                  })),
+              }
+            : null,
+          positions: part.positions.map((p) => ({
+            name: p.name,
+            picks: p.picks,
+            hasBonusVeto: p.hasBonusVeto,
+            hasBonusVetoOverride: p.hasBonusVetoOverride,
+          })),
+        })),
+        hosts: hosts.map((h) => ({
+          hostPublicId: h.publicId,
+          hostRole: h.role === "Primary" ? 0 : 1,
+        })),
+        drafterIds: [...selectedDrafterIds],
+        teamIds: [...selectedTeamIds],
+        categoryIds: [...selectedCategoryIds],
+        campaignId: campaignId || null,
+      });
 
-      // Step 3: Add hosts to each part
-      if (hosts.length > 0) {
-        for (const partId of partPublicIds) {
-          for (const host of hosts) {
-            await addHostToDraftPart(accessToken, partId, {
-              draftPartId: partId,
-              hostPublicId: host.publicId,
-              hostRole: host.role === "Primary" ? 0 : 1,
-            });
-          }
-        }
-      }
-
-      // Step 4a: Add drafters
-      if (selectedDrafterIds.size > 0) {
-        for (const partId of partPublicIds) {
-          for (const drafterId of selectedDrafterIds) {
-            await addParticipantToDraftPart(accessToken, partId, {
-              draftPartId: partId,
-              participantPublicId: drafterId,
-              participantKind: 0, // Drafter
-            });
-          }
-        }
-      }
-      // Step 4b: Add drafter teams
-      if (selectedTeamIds.size > 0) {
-        for (const partId of partPublicIds) {
-          for (const teamId of selectedTeamIds) {
-            await addParticipantToDraftPart(accessToken, partId, {
-              draftPartId: partId,
-              participantPublicId: teamId,
-              participantKind: 1, // DrafterTeam
-            });
-          }
-        }
-      }
-
-      // Step 4c: Community participant + limits + film rules (per part)
-      for (let i = 0; i < parts.length; i++) {
-        const part = parts[i];
-        if (!part.communityConfig.enabled) continue;
-        const partId = partPublicIds[i];
-        await setDraftPartCommunityParticipant(accessToken, partId);
-        await setDraftPartCommunityLimits(accessToken, partId, {
-          maxCommunityPicks: part.communityConfig.maxCommunityPicks,
-          maxCommunityVetoes: part.communityConfig.maxCommunityVetoes,
-        });
-        for (const rule of part.communityConfig.filmRules.filter((r) => r.status !== "removing")) {
-          const rulePublicId = await addCommunityFilmRule(accessToken, partId, {
-            ruleKind: rule.ruleKind === "BoostersVeto" ? 0 : 1,
-            targetSlot: rule.targetSlot,
-          });
-          if (rule.tmdbId) {
-            await assignFilmToCommunityFilmRule(accessToken, partId, rulePublicId, rule.tmdbId);
-          }
-        }
-      }
-
-      // Step 4d: Set draft positions — now that every drafter, team, and
-      // (if enabled) the community participant have been added to each part,
-      // TotalDrafters + TotalDrafterTeams matches the participant count the
-      // GameBoard validation expects. Must run after Steps 4a–4c, not before.
-      for (let i = 0; i < parts.length; i++) {
-        const part = parts[i];
-        const partId = partPublicIds[i];
-        await setDraftPositions(accessToken, partId, part.positions);
-      }
-
-      // Step 5: Set categories
-      if (selectedCategoryIds.size > 0) {
-        await setDraftCategories(accessToken, draftPublicId, [...selectedCategoryIds]);
-      }
-
-      // Step 6: Set campaign
-      if (campaignId) {
-        await setDraftCampaign(accessToken, draftPublicId, campaignId);
-      }
-
-      // TODO: redirect to /admin/drafts/{draftPublicId}/edit once edit page exists
       router.push(`/admin/drafts`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "An unexpected error occurred.");
@@ -450,7 +357,6 @@ export default function CreateDraftForm({
           />
         </div>
 
-        {/* Single part + locked */}
         {numParts === 1 && parts[0]?.maxLocked && (
           <div className="space-y-4">
             <p className="text-[11px] font-mono text-sd-ink/50">
@@ -468,7 +374,6 @@ export default function CreateDraftForm({
           </div>
         )}
 
-        {/* Single part + unlocked */}
         {numParts === 1 && !parts[0]?.maxLocked && (
           <div className="space-y-4">
             <div className="max-w-[160px]">
@@ -492,7 +397,6 @@ export default function CreateDraftForm({
           </div>
         )}
 
-        {/* Multiple parts */}
         {numParts > 1 && (
           <div className="space-y-3">
             {parts.map((part, idx) => (
@@ -633,7 +537,7 @@ export default function CreateDraftForm({
         </div>
       </section>
 
-      {/* ── Section 4: Participants (Drafters) ── */}
+      {/* ── Section 4: Participants ── */}
       <ParticipantsSection
         accessToken={accessToken}
         selectedDrafterIds={selectedDrafterIds}
@@ -641,7 +545,6 @@ export default function CreateDraftForm({
         onToggleDrafter={toggleDrafter}
         onToggleTeam={toggleTeam}
       />
-
 
       {/* ── Section 4c: Community (per part) ── */}
       <section>
@@ -713,7 +616,6 @@ export default function CreateDraftForm({
         </div>
       </section>
 
-      {/* ── Error + Submit ── */}
       {error && (
         <div className="border border-red-300 bg-red-50 text-red-800 text-sm px-4 py-3 rounded">
           {error}

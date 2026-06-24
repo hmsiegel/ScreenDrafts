@@ -16,30 +16,57 @@ export default function MovieSearchInput({
 }: MovieSearchInputProps) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<MovieSearchResult[]>([]);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [open, setOpen] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const currentQuery = useRef("");
 
   function handleChange(value: string) {
     setQuery(value);
     if (debounceRef.current) clearTimeout(debounceRef.current);
     if (!value.trim()) {
       setResults([]);
+      setPage(1);
+      setTotalPages(1);
       setOpen(false);
       return;
     }
     debounceRef.current = setTimeout(async () => {
-      const items = await searchMovies(value.trim(), accessToken);
-      setResults(items);
-      setOpen(items.length > 0);
+      currentQuery.current = value.trim();
+      const data = await searchMovies(value.trim(), 1, accessToken);
+      if (currentQuery.current !== value.trim()) return;
+      setResults(data.results);
+      setPage(data.page);
+      setTotalPages(data.totalPages);
+      setOpen(data.results.length > 0);
     }, 300);
+  }
+
+    async function handleLoadMore() {
+    const nextPage = page + 1;
+    setLoadingMore(true);
+    try {
+      const data = await searchMovies(currentQuery.current, nextPage, accessToken);
+      setResults((prev) => [...prev, ...data.results]);
+      setPage(data.page);
+      setTotalPages(data.totalPages);
+    } finally {
+      setLoadingMore(false);
+    }
   }
 
   function handleSelect(movie: MovieSearchResult) {
     onSelect(movie);
     setQuery("");
     setResults([]);
+    setPage(1);
+    setTotalPages(1);
     setOpen(false);
   }
+
+  const hasMore = page < totalPages;
 
   return (
     <div className="relative">
@@ -66,6 +93,18 @@ export default function MovieSearchInput({
               </button>
             </li>
           ))}
+          {hasMore && (
+            <li>
+              <button
+                type="button"
+                onMouseDown={handleLoadMore}
+                disabled={loadingMore}
+                className="w-full px-3 py-2 text-center font-mono text-xs text-sd-blue hover:bg-sd-paper disabled:opacity-50 border-t border-sd-ink/10"
+              >
+                {loadingMore ? "Loading…" : `Load more (page ${page + 1} of ${totalPages})`}
+              </button>
+            </li>
+          )}
         </ul>
       )}
     </div>

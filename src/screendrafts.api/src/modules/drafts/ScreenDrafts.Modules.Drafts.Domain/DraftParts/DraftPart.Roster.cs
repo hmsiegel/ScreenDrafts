@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-namespace ScreenDrafts.Modules.Drafts.Domain.DraftParts;
+﻿namespace ScreenDrafts.Modules.Drafts.Domain.DraftParts;
 
 public sealed partial class DraftPart
 {

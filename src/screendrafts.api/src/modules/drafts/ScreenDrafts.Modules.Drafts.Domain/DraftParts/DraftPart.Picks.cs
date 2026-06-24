@@ -95,6 +95,13 @@ public sealed partial class DraftPart
       return Result.Failure<PickId>(addResult.Errors);
     }
 
+    var autoVetoResult = TryApplyAutoVeto(pick);
+
+    if (autoVetoResult.IsFailure)
+    {
+      return Result.Failure<PickId>(autoVetoResult.Errors);
+    }
+
     if (DraftType == DraftType.SpeedDraft)
     {
       var revealResult = pick.RevealPick(actedByPublicId);

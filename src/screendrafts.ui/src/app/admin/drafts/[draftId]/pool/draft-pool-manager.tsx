@@ -37,6 +37,7 @@ export default function DraftPoolManager({
   const [movies, setMovies] = useState<PoolMovie[]>(initialMovies);
   const [creating, setCreating] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [showCsvInfo, setShowCsvInfo] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   async function handleCreatePool() {
@@ -78,7 +79,7 @@ export default function DraftPoolManager({
     <div className="min-h-screen bg-light-blue">
       <div className="px-6 md:px-10 py-10 max-w-[900px] mx-auto">
         <p className="font-mono text-[11px] tracking-widest text-sd-ink/50 mb-6">
-          <Link href="/admin/drafts" className="hover:text-sd-ink transition-colors" >
+          <Link href="/admin/drafts" className="hover:text-sd-ink transition-colors">
             / ADMIN / DRAFTS
           </Link>
           {" / "}{draftName.toUpperCase()} / POOL
@@ -125,7 +126,9 @@ export default function DraftPoolManager({
                   accessToken={accessToken}
                   placeholder="Search to add a film to pool…"
                 />
-                <div>
+
+                {/* Bulk upload row */}
+                <div className="flex items-center gap-3">
                   <button
                     type="button"
                     onClick={() => fileRef.current?.click()}
@@ -134,8 +137,45 @@ export default function DraftPoolManager({
                   >
                     {uploading ? "Uploading…" : "Bulk Upload (CSV)"}
                   </button>
-                  <input ref={fileRef} type="file" accept=".csv" className="hidden" onChange={handleBulkUpload} />
+                  <button
+                    type="button"
+                    onClick={() => setShowCsvInfo((v) => !v)}
+                    className="text-sd-ink/40 hover:text-sd-ink/70 font-mono text-xs underline underline-offset-2 transition-colors"
+                  >
+                    {showCsvInfo ? "Hide format" : "CSV format"}
+                  </button>
+                  <input
+                    ref={fileRef}
+                    type="file"
+                    accept=".csv"
+                    className="hidden"
+                    onChange={handleBulkUpload}
+                  />
                 </div>
+
+                {/* CSV format info card */}
+                {showCsvInfo && (
+                  <div className="border border-sd-ink/10 bg-sd-paper px-4 py-3 space-y-2">
+                    <p className="font-oswald font-bold text-xs tracking-widest uppercase text-sd-ink/60">
+                      CSV Format
+                    </p>
+                    <p className="font-mono text-xs text-sd-ink/70 leading-relaxed">
+                      No header row. Each line should be:
+                    </p>
+                    <pre className="font-mono text-xs text-sd-ink bg-white border border-sd-ink/10 px-3 py-2 leading-relaxed">
+{`603,The Matrix
+680,Pulp Fiction
+424,Schindler's List`}
+                    </pre>
+                    <p className="font-mono text-xs text-sd-ink/50 leading-relaxed">
+                      Column 1: TMDb ID (required) · Column 2: Title (optional, for your reference only)
+                    </p>
+                    <p className="font-mono text-xs text-sd-ink/40">
+                      Rows missing a TMDb ID will be skipped. Duplicates are ignored.
+                    </p>
+                  </div>
+                )}
+
                 <PoolList movies={movies} onRemove={handleRemoveMovie} />
               </div>
             )}

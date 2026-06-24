@@ -22,6 +22,14 @@ public sealed class CommunityFilmRule : Entity
   public CommunityFilmRuleKind RuleKind { get; private set; } = default!;
   public int? TargetSlot { get; private set; }
 
+  /// <summary>
+  /// True once the system auto-veto has fired for a BoostersVeto rule.
+  /// BoostersVeto gets exactly one auto-veto; subsequent out-of-slot plays
+  /// are not vetoed again. Always false for BoostersPick rules (which enforce
+  /// every play until the film lands at TargetSlot).
+  /// </summary>
+  public bool WasAutoVetoFired { get; private set; }
+
   public static Result<CommunityFilmRule> Create(
     CommunityFilmRuleKind ruleKind,
     int? targetSlot,
@@ -53,5 +61,14 @@ public sealed class CommunityFilmRule : Entity
   internal void ClearFilm()
   {
     TmdbId = null;
+  }
+
+  /// <summary>
+  /// Marks this BoostersVeto rule's single auto-veto as spent.
+  /// Has no effect on BoostersPick rules.
+  /// </summary>
+  internal void MarkAutoVetoFired()
+  {
+    WasAutoVetoFired = true;
   }
 }

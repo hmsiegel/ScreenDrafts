@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Composition;
+﻿using ScreenDrafts.Modules.Drafts.IntegrationEvents;
+
+namespace ScreenDrafts.Modules.Drafts.Composition;
 
 public static class DraftsModule
 {
@@ -34,6 +36,7 @@ public static class DraftsModule
     SqlMapper.AddTypeHandler(new SmartEnumTypeHandler<ReleaseChannel>());
     SqlMapper.AddTypeHandler(new SmartEnumTypeHandler<SubDraftStatus>());
     SqlMapper.AddTypeHandler(new SmartEnumTypeHandler<ZoomRecordingFileType>());
+    SqlMapper.AddTypeHandler(new SmartEnumTypeHandler<CommunityFilmRuleKind>());
     return services;
   }
 
@@ -82,6 +85,10 @@ public static class DraftsModule
 
     registrationConfigurator
       .AddConsumer<IntegrationEventConsumer<UserRoleRemovedIntegrationEvent>>()
+      .Endpoint(c => c.InstanceId = moduleInstanceId);
+
+    registrationConfigurator
+      .AddConsumer<IntegrationEventConsumer<CandidateListEntryAddedIntegrationEvent>>()
       .Endpoint(c => c.InstanceId = moduleInstanceId);
   }
 

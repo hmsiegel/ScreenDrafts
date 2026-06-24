@@ -290,6 +290,14 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("draft_id");
 
+                    b.Property<bool>("IsLocked")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_locked");
+
+                    b.Property<bool>("IsPoolSourced")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_pool_sourced");
+
                     b.Property<string>("PublicId")
                         .IsRequired()
                         .HasMaxLength(19)
@@ -1974,7 +1982,6 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                     b.OwnsMany("ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities.CommunityFilmRule", "_communityFilmRules", b1 =>
                         {
                             b1.Property<Guid>("Id")
-                                .ValueGeneratedOnAdd()
                                 .HasColumnType("uuid")
                                 .HasColumnName("id");
 
@@ -1995,13 +2002,13 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                                 .HasColumnType("integer")
                                 .HasColumnName("tmdb_id");
 
+                            b1.Property<bool>("WasAutoVetoFired")
+                                .HasColumnType("boolean")
+                                .HasColumnName("was_auto_veto_fired");
+
                             b1.Property<Guid>("draft_part_id")
                                 .HasColumnType("uuid")
                                 .HasColumnName("draft_part_id");
-
-                            b1.Property<Guid>("id")
-                                .HasColumnType("uuid")
-                                .HasColumnName("id");
 
                             b1.HasKey("Id")
                                 .HasName("pk_draft_part_community_film_rules");
@@ -2009,11 +2016,7 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                             b1.HasIndex("draft_part_id")
                                 .HasDatabaseName("ix_draft_part_community_film_rules_draft_part_id");
 
-                            b1.ToTable("draft_part_community_film_rules", "drafts", t =>
-                                {
-                                    t.Property("id")
-                                        .HasColumnName("id1");
-                                });
+                            b1.ToTable("draft_part_community_film_rules", "drafts");
 
                             b1.WithOwner()
                                 .HasForeignKey("draft_part_id")

@@ -97,4 +97,14 @@ internal sealed class DraftRepository(DraftsDbContext dbContext) : IDraftReposit
   {
     return _dbContext.Drafts.ToListAsync(cancellationToken);
   }
+
+  public Task<Draft?> GetByIdWithPartsAndParticipantsAsync(
+    DraftId draftId,
+    CancellationToken cancellationToken
+  )
+  {
+    return _dbContext
+      .Drafts.Include("Parts._draftPartParticipants")
+      .FirstOrDefaultAsync(d => d.Id == draftId, cancellationToken);
+  }
 }

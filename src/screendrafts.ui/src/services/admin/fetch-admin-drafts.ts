@@ -91,6 +91,43 @@ export interface AdminDraftDetail {
   parts: DraftPart[];
 }
 
+export interface CreateDraftPositionBody {
+  name: string;
+  picks: number[];
+  hasBonusVeto: boolean;
+  hasBonusVetoOverride: boolean;
+}
+
+export interface CreateDraftCommunityBody {
+  maxCommunityPicks: number;
+  maxCommunityVetoes: number;
+  filmRules: Array<{
+    ruleKind: number;
+    targetSlot: number | null;
+    tmdbId: number | null;
+  }>;
+}
+
+export interface CreateDraftPartBody {
+  partIndex: number;
+  minimumPosition: number;
+  maximumPosition: number;
+  community: CreateDraftCommunityBody | null;
+  positions: CreateDraftPositionBody[];
+}
+
+export interface CreateDraftBody {
+  title: string;
+  draftType: number;
+  seriesId: string;
+  parts: CreateDraftPartBody[];
+  hosts: Array<{ hostPublicId: string; hostRole: number }>;
+  drafterIds: string[];
+  teamIds: string[];
+  categoryIds: string[];
+  campaignId: string | null;
+}
+
 const apiBase = env.apiUrl;
 
 function authHeaders(accessToken: string | undefined): HeadersInit {
@@ -297,7 +334,7 @@ export async function getDraft(
 
 export async function createDraft(
   accessToken: string,
-  body: { title: string; draftType: number; seriesId: string }
+  body: CreateDraftBody
 ): Promise<CreatedResponse> {
   const response = await fetch(`${apiBase}/drafts`, {
     method: "POST",

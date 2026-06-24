@@ -20,20 +20,65 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<CreateDraftRequest, Create
   {
     ArgumentNullException.ThrowIfNull(req);
 
-    var CreateDraftCommand = new CreateDraftCommand
+    var command = new CreateDraftCommand
     {
-      DraftType = req.DraftType,
       Title = req.Title,
+      DraftType = req.DraftType,
       SeriesId = req.SeriesId,
+      Parts =
+      [
+        .. req.Parts.Select(p => new CreateDraftPartInput
+        {
+          PartIndex = p.PartIndex,
+          MinimumPosition = p.MinimumPosition,
+          MaximumPosition = p.MaximumPosition,
+          Community = p.Community is null
+            ? null
+            : new CommunityInput
+            {
+              MaxCommunityPicks = p.Community.MaxCommunityPicks,
+              MaxCommunityVetoes = p.Community.MaxCommunityVetoes,
+              FilmRules =
+              [
+                .. p.Community.FilmRules.Select(r => new CommunityFilmRuleInput
+                {
+                  RuleKind = r.RuleKind,
+                  TargetSlot = r.TargetSlot,
+                  TmdbId = r.TmdbId,
+                }),
+              ],
+            },
+          Positions =
+          [
+            .. p.Positions.Select(pos => new DraftPositionInput
+            {
+              Name = pos.Name,
+              Picks = pos.Picks,
+              HasBonusVeto = pos.HasBonusVeto,
+              HasBonusVetoOverride = pos.HasBonusVetoOverride,
+            }),
+          ],
+        }),
+      ],
+      Hosts =
+      [
+        .. req.Hosts.Select(h => new CreateDraftHostInput
+        {
+          HostPublicId = h.HostPublicId,
+          HostRole = h.HostRole,
+        }),
+      ],
+      DrafterIds = req.DrafterIds,
+      TeamIds = req.TeamIds,
+      CategoryIds = req.CategoryIds,
+      CampaignId = req.CampaignId,
     };
-
-    var result = await Sender.Send(CreateDraftCommand, ct);
+    var result = await Sender.Send(command, ct);
 
     await this.SendCreatedAsync(
       result.Map(id => new CreatedResponse(id)),
       created => DraftLocations.ById(created.PublicId),
-      ct);
+      ct
+    );
   }
 }
-
-

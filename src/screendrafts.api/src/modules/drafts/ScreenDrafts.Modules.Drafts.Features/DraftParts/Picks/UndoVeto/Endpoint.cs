@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.Picks.UndoVeto;
 
-internal sealed class Endpoint : ScreenDraftsEndpoint<UndoVetoRequest>
+internal sealed class Endpoint : ScreenDraftsEndpointWithoutRequest
 {
   public override void Configure()
   {
@@ -18,9 +18,18 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<UndoVetoRequest>
     Policies(DraftsAuth.Permissions.PickVetoUndo);
   }
 
-  public override async Task HandleAsync(UndoVetoRequest req, CancellationToken ct)
+  public override async Task HandleAsync(CancellationToken ct)
   {
-    var command = new UndoVetoCommand { DraftPartId = req.DraftPartId, PlayOrder = req.PlayOrder };
+    var draftPartId = Route<string>("draftPartId");
+    var playOrder = Route<int>("playOrder");
+
+    if (draftPartId is null || playOrder < 1)
+    {
+      await Send.ErrorsAsync(StatusCodes.Status404NotFound, ct);
+      return;
+    }
+
+    var command = new UndoVetoCommand { DraftPartId = draftPartId, PlayOrder = playOrder };
 
     var result = await Sender.Send(command, ct);
 

@@ -3,35 +3,52 @@
 internal sealed class AddCandidateEntryCommandHandler(
   IDraftPartRepository draftPartRepository,
   ICandidateListRepository candidateListRepository,
-  IEventBus eventBus)
-  : ICommandHandler<AddCandidateEntryCommand, AddCanidateEntryResponse>
+  IEventBus eventBus
+) : ICommandHandler<AddCandidateEntryCommand, AddCanidateEntryResponse>
 {
   private readonly IDraftPartRepository _draftPartRepository = draftPartRepository;
   private readonly ICandidateListRepository _candidateListRepository = candidateListRepository;
   private readonly IEventBus _eventBus = eventBus;
 
-  public async Task<Result<AddCanidateEntryResponse>> Handle(AddCandidateEntryCommand request, CancellationToken cancellationToken)
+  public async Task<Result<AddCanidateEntryResponse>> Handle(
+    AddCandidateEntryCommand request,
+    CancellationToken cancellationToken
+  )
   {
-    var draftPart = await _draftPartRepository.GetByPublicIdAsync(request.DraftPartId, cancellationToken);
+    var draftPart = await _draftPartRepository.GetByPublicIdAsync(
+      request.DraftPartId,
+      cancellationToken
+    );
 
     if (draftPart is null)
     {
-      return Result.Failure<AddCanidateEntryResponse>(CandidateListErrors.DraftPartNotFound(request.DraftPartId));
+      return Result.Failure<AddCanidateEntryResponse>(
+        CandidateListErrors.DraftPartNotFound(request.DraftPartId)
+      );
     }
 
-    var existing = await _candidateListRepository.FindByTmdbIdAsync(draftPart.Id, request.TmdbId, cancellationToken);
+    var existing = await _candidateListRepository.FindByTmdbIdAsync(
+      draftPart.Id,
+      request.TmdbId,
+      cancellationToken
+    );
 
     if (existing is not null)
     {
-      return Result.Success(new AddCanidateEntryResponse
-      {
-        EntryId = existing.Id.Value,
-        TmdbId = existing.TmdbId,
-        IsPending = existing.IsPending
-      });
+      return Result.Success(
+        new AddCanidateEntryResponse
+        {
+          EntryId = existing.Id.Value,
+          TmdbId = existing.TmdbId,
+          IsPending = existing.IsPending,
+        }
+      );
     }
 
-    var movieId = await _candidateListRepository.FindMovieByTmdbIdAsync(request.TmdbId, cancellationToken);
+    var movieId = await _candidateListRepository.FindMovieByTmdbIdAsync(
+      request.TmdbId,
+      cancellationToken
+    );
 
     var entryResult = CandidateListEntry.Create(
       draftPartId: draftPart.Id,
@@ -39,7 +56,8 @@ internal sealed class AddCandidateEntryCommandHandler(
       tmdbId: request.TmdbId,
       movieId: movieId,
       addedByPublicId: request.AddedByPublicId,
-      notes: request.Notes);
+      notes: request.Notes
+    );
 
     if (entryResult.IsFailure)
     {
@@ -62,15 +80,31 @@ internal sealed class AddCandidateEntryCommandHandler(
           episodeNumber: null,
           seasonNumber: null,
           mediaType: MediaType.Movie,
-          imdbId: null),
-        cancellationToken);
+          imdbId: null
+        ),
+        cancellationToken
+      );
     }
 
-    return Result.Success(new AddCanidateEntryResponse
-    {
-      EntryId = entry.Id.Value,
-      TmdbId = entry.TmdbId,
-      IsPending = movieId is null
-    });
+    // Publish the board sync event. DraftId is on the DraftPart directly.
+    await _eventBus.PublishAsync(
+      new CandidateListEntryAddedIntegrationEvent(
+        id: Guid.NewGuid(),
+        occurredOnUtc: DateTime.UtcNow,
+        draftId: draftPart.DraftId.Value,
+        draftPartId: draftPart.Id.Value,
+        tmdbId: request.TmdbId
+      ),
+      cancellationToken
+    );
+
+    return Result.Success(
+      new AddCanidateEntryResponse
+      {
+        EntryId = entry.Id.Value,
+        TmdbId = entry.TmdbId,
+        IsPending = movieId is null,
+      }
+    );
   }
 }

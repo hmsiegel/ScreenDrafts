@@ -10317,6 +10317,22 @@ export interface CreateCategoryRequest {
     [key: string]: any;
 }
 
+export interface CreateDraftCommunityFilmRuleRequest {
+    ruleKind: number;
+    targetSlot?: number | undefined;
+    tmdbId?: number | undefined;
+
+    [key: string]: any;
+}
+
+export interface CreateDraftCommunityRequest {
+    maxCommunityPicks: number;
+    maxCommunityVetoes: number;
+    filmRules?: CreateDraftCommunityFilmRuleRequest[];
+
+    [key: string]: any;
+}
+
 export interface CreateDrafterRequest {
     personId?: string;
 
@@ -10329,11 +10345,19 @@ export interface CreateDrafterTeamRequest {
     [key: string]: any;
 }
 
+export interface CreateDraftHostRequest {
+    hostPublicId: string;
+    hostRole: number;
+
+    [key: string]: any;
+}
+
 export interface CreateDraftPartRequest {
-    publicId?: string;
-    partIndex?: number;
-    minimumPosition?: number;
-    maximumPosition?: number;
+    partIndex: number;
+    minimumPosition: number;
+    maximumPosition: number;
+    community?: CreateDraftCommunityRequest | undefined;
+    positions?: CreateDraftPositionRequest[];
 
     [key: string]: any;
 }
@@ -10344,10 +10368,25 @@ export interface CreateDraftPoolRequest {
     [key: string]: any;
 }
 
+export interface CreateDraftPositionRequest {
+    name: string;
+    picks: number[];
+    hasBonusVeto?: boolean;
+    hasBonusVetoOverride?: boolean;
+
+    [key: string]: any;
+}
+
 export interface CreateDraftRequest {
     title: string;
     draftType: number;
     seriesId: string;
+    parts?: CreateDraftPartRequest[];
+    hosts?: CreateDraftHostRequest[];
+    drafterIds?: string[];
+    teamIds?: string[];
+    categoryIds?: string[];
+    campaignId?: string | undefined;
 
     [key: string]: any;
 }

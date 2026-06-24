@@ -35,6 +35,9 @@ public sealed partial class DraftPart
 
     var rule = result.Value;
     _communityFilmRules.Add(rule);
+
+    EnsureCommunityParticipant();
+
     UpdatedAtUtc = DateTime.UtcNow;
 
     return Result.Success();
@@ -114,5 +117,135 @@ public sealed partial class DraftPart
     rule.AssignFilm(tmdbId);
     UpdatedAtUtc = DateTime.UtcNow;
     return Result.Success();
+  }
+
+  /// <summary>
+  /// Checks whether the pick triggers a community film rule auto-veto and,
+  /// if so, applies it without spending a veto token.
+  ///
+  /// BoostersVeto — the film must land at or above TargetSlot (higher slot
+  ///   number = higher board position). Auto-veto fires at most once
+  ///   (WasAutoVetoFired gate).
+  ///
+  /// BoostersPick — the film must land at exactly TargetSlot. Auto-veto
+  ///   fires every time the film is played at the wrong slot.
+  ///
+  /// Returns Result.Success() whether or not a veto was applied — no matching
+  /// rule is not an error. Returns Result.Failure() only on misconfiguration
+  /// (community participant absent) or Veto construction failure.
+  /// </summary>
+  internal Result TryApplyAutoVeto(Pick pick)
+  {
+    if (pick.Movie.TmdbId is null)
+    {
+      return Result.Success();
+    }
+
+    var rule = _communityFilmRules.FirstOrDefault(r => r.TmdbId == pick.Movie.TmdbId);
+
+    if (rule is null)
+    {
+      return Result.Success();
+    }
+
+    var shouldVeto = rule.RuleKind switch
+    {
+      var k when k == CommunityFilmRuleKind.BoostersVeto => !rule.WasAutoVetoFired
+        && rule.TargetSlot.HasValue
+        && pick.Position < rule.TargetSlot.Value,
+
+      var k when k == CommunityFilmRuleKind.BoostersPick => rule.TargetSlot.HasValue
+        && pick.Position != rule.TargetSlot.Value,
+
+      _ => false,
+    };
+
+    if (!shouldVeto)
+    {
+      return Result.Success();
+    }
+
+    // AddCommunityFilmRule guarantees this participant exists, but guard
+    // defensively in case of legacy data or direct DB manipulation.
+    var communityDraftPartParticipant = _draftPartParticipants.FirstOrDefault(p =>
+      p.ParticipantIdValue == CommunityParticipants.PatreonMembers.Value
+      && p.ParticipantKindValue == ParticipantKind.Community
+    );
+
+    if (communityDraftPartParticipant is null)
+    {
+      return Result.Failure(CommunityFilmRuleErrors.CommunityParticipantNotFound);
+    }
+
+    var vetoResult = Veto.Create(
+      pick: pick,
+      issuedByParticipant: communityDraftPartParticipant,
+      actedByPublicId: null,
+      note: rule.RuleKind == CommunityFilmRuleKind.BoostersVeto
+        ? $"Boosters veto: film must be played at slot {rule.TargetSlot} or higher."
+        : $"Boosters pick: film must be played at slot {rule.TargetSlot}."
+    );
+
+    if (vetoResult.IsFailure)
+    {
+      return Result.Failure(vetoResult.Errors);
+    }
+
+    var applyResult = pick.ApplyVeto(vetoResult.Value);
+
+    if (applyResult.IsFailure)
+    {
+      return applyResult;
+    }
+
+    if (rule.RuleKind == CommunityFilmRuleKind.BoostersVeto)
+    {
+      rule.MarkAutoVetoFired();
+    }
+
+    Raise(
+      new VetoAddedDomainEvent(
+        draftPartId: Id.Value,
+        draftPartPublicId: PublicId,
+        tmdbId: pick.Movie.TmdbId,
+        participantId: communityDraftPartParticipant.ParticipantIdValue,
+        participantKind: communityDraftPartParticipant.ParticipantKindValue.Value,
+        draftId: DraftId.Value,
+        draftPublicId: DraftPublicId,
+        playOrder: pick.PlayOrder,
+        movieTitle: pick.Movie.MovieTitle,
+        playedByParticipantId: pick.PlayedByParticipant.ParticipantIdValue,
+        playedByParticipantKind: pick.PlayedByParticipant.ParticipantKindValue.Value,
+        moviePublicId: pick.Movie.PublicId,
+        boardPosition: pick.Position
+      )
+    );
+
+    UpdatedAtUtc = DateTime.UtcNow;
+
+    return Result.Success();
+  }
+
+  /// <summary>
+  /// Ensures CommunityParticipants.PatreonMembers is in _draftPartParticipants.
+  /// Called automatically by AddCommunityFilmRule so the veto issuer FK is
+  /// always satisfiable. Does not raise a domain event — the participant is
+  /// a system actor, not a drafter.
+  /// </summary>
+  private void EnsureCommunityParticipant()
+  {
+    var alreadyPresent = _draftPartParticipants.Any(p =>
+      p.ParticipantIdValue == CommunityParticipants.PatreonMembers.Value
+      && p.ParticipantKindValue == ParticipantKind.Community
+    );
+
+    if (alreadyPresent)
+    {
+      return;
+    }
+
+    _draftPartParticipants.Add(
+      DraftPartParticipant.Create(this, CommunityParticipants.PatreonMembers)
+    );
   }
 }

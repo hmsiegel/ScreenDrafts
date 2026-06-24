@@ -2,5 +2,11 @@
 
 public interface IDraftBoardRepository : IRepository<DraftBoard, DraftBoardId>
 {
-  Task<DraftBoard?> GetByDraftAndParticipantAsync(DraftId draftId, Participant participantId, CancellationToken cancellationToken);
+  Task<DraftBoard?> GetByDraftAndParticipantAsync(
+    DraftId draftId,
+    Participant participantId,
+    CancellationToken cancellationToken
+  );
+
+  Task<List<DraftBoard>> GetAllByDraftIdAsync(DraftId draftId, CancellationToken cancellationToken);
 }

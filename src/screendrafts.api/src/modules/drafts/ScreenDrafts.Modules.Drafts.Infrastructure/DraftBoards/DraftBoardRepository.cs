@@ -24,11 +24,29 @@ internal sealed class DraftBoardRepository(DraftsDbContext dbContext) : IDraftBo
     return _dbContext.DraftBoards.ToListAsync(cancellationToken);
   }
 
-  public Task<DraftBoard?> GetByDraftAndParticipantAsync(DraftId draftId, Participant participantId, CancellationToken cancellationToken)
+  public Task<List<DraftBoard>> GetAllByDraftIdAsync(
+    DraftId draftId,
+    CancellationToken cancellationToken
+  )
   {
-    return _dbContext.DraftBoards
-      .Include(x => x.Items)
-      .FirstOrDefaultAsync(x => x.DraftId == draftId && x.Participant == participantId, cancellationToken);
+    return _dbContext
+      .DraftBoards.Include(x => x.Items)
+      .Where(x => x.DraftId == draftId)
+      .ToListAsync(cancellationToken);
+  }
+
+  public Task<DraftBoard?> GetByDraftAndParticipantAsync(
+    DraftId draftId,
+    Participant participantId,
+    CancellationToken cancellationToken
+  )
+  {
+    return _dbContext
+      .DraftBoards.Include(x => x.Items)
+      .FirstOrDefaultAsync(
+        x => x.DraftId == draftId && x.Participant == participantId,
+        cancellationToken
+      );
   }
 
   public Task<DraftBoard?> GetByIdAsync(DraftBoardId id, CancellationToken cancellationToken)
@@ -38,7 +56,10 @@ internal sealed class DraftBoardRepository(DraftsDbContext dbContext) : IDraftBo
 
   public Task<DraftBoard?> GetByPublicIdAsync(string publicId, CancellationToken cancellationToken)
   {
-    return _dbContext.DraftBoards.FirstOrDefaultAsync(x => x.PublicId == publicId, cancellationToken);
+    return _dbContext.DraftBoards.FirstOrDefaultAsync(
+      x => x.PublicId == publicId,
+      cancellationToken
+    );
   }
 
   public void Update(DraftBoard entity)

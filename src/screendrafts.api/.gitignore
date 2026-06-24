@@ -489,3 +489,5 @@ $RECYCLE.BIN/
 **/wwwroot/drafters/*.jpg
 **/wwwroot/drafters/*.webp
 **/wwwroot/drafters/*.png
+
+.testresults/

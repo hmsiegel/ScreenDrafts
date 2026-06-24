@@ -5,6 +5,7 @@ global using System.Reflection;
 global using System.Text;
 global using Ardalis.SmartEnum;
 global using CsvHelper;
+global using CsvHelper.Configuration;
 global using Dapper;
 global using FluentValidation;
 global using MassTransit;

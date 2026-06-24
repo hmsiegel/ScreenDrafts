@@ -12,6 +12,11 @@ public static class CommunityFilmRuleErrors
     description: "Community film rules can only be modified when the draft part is Created or Paused."
   );
 
+  public static readonly SDError CommunityParticipantNotFound = SDError.Failure(
+    code: "CommunityFilmRule.CommunityParticipantNotFound",
+    description: "The community participant (Patrion members) must be added to this draft part before creating a community film rule."
+  );
+
   public static SDError Duplicate(int tmdbId) =>
     SDError.Conflict(
       code: "CommunityFilmRule.Duplicate",

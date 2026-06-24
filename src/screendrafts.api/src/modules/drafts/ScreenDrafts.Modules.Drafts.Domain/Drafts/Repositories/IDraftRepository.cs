@@ -15,4 +15,13 @@ public interface IDraftRepository : IRepository<Draft, DraftId>
     string publicId,
     CancellationToken cancellationToken
   );
+
+  /// <summary>
+  /// Loads a draft with all its parts and their participants.
+  /// Used by board fan-out handlers to enumerate unique participants for sync.
+  /// </summary>
+  Task<Draft?> GetByIdWithPartsAndParticipantsAsync(
+    DraftId draftId,
+    CancellationToken cancellationToken
+  );
 }

@@ -4,10 +4,7 @@ public sealed class DraftPool : AggregateRoot<DraftPoolId, Guid>
 {
   private readonly List<DraftPoolItem> _tmdbIds = [];
 
-  private DraftPool(
-    DraftId draftId,
-    string publicId,
-    DraftPoolId? id = null)
+  private DraftPool(DraftId draftId, string publicId, DraftPoolId? id = null)
     : base(id ?? DraftPoolId.CreateUnique())
   {
     DraftId = draftId;
@@ -16,10 +13,7 @@ public sealed class DraftPool : AggregateRoot<DraftPoolId, Guid>
     CreatedAtUtc = DateTime.UtcNow;
   }
 
-  private DraftPool()
-  {
-
-  }
+  private DraftPool() { }
 
   public DraftId DraftId { get; private set; } = default!;
   public string PublicId { get; private set; } = default!;
@@ -29,9 +23,7 @@ public sealed class DraftPool : AggregateRoot<DraftPoolId, Guid>
 
   public IReadOnlyList<DraftPoolItem> TmdbIds => _tmdbIds.AsReadOnly();
 
-  public static Result<DraftPool> Create(
-    DraftId draftId,
-    string publicId)
+  public static Result<DraftPool> Create(DraftId draftId, string publicId)
   {
     ArgumentNullException.ThrowIfNull(draftId);
 
@@ -89,6 +81,7 @@ public sealed class DraftPool : AggregateRoot<DraftPoolId, Guid>
     if (item is not null)
     {
       _tmdbIds.Remove(item);
+      Raise(new MovieRemovedFromDraftPoolDomainEvent(Id.Value, DraftId.Value, tmdbId));
     }
 
     UpdatedAtUtc = DateTime.UtcNow;

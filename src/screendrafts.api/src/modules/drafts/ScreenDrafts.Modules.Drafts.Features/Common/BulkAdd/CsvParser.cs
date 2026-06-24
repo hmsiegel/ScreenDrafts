@@ -2,31 +2,40 @@
 
 internal static class CsvParser
 {
+  /// <summary>
+  /// Parses a headerless CSV where each row is: tmdbId,title
+  /// Blank lines and lines where tmdbId cannot be parsed are recorded as failures.
+  /// </summary>
   public static List<CsvRow> Parse(Stream csvStream)
   {
     using var reader = new StreamReader(csvStream);
-    using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
+
+    var config = new CsvConfiguration(CultureInfo.InvariantCulture)
+    {
+      HasHeaderRecord = false,
+      MissingFieldFound = null,
+      TrimOptions = TrimOptions.Trim,
+    };
+
+    using var csv = new CsvReader(reader, config);
 
     var rows = new List<CsvRow>();
-    var rowNumber = 1;
-
-    csv.Read();
-    csv.ReadHeader();
+    var rowNumber = 0;
 
     while (csv.Read())
     {
       rowNumber++;
-      var title = csv.GetField<string?>("Title");
-      var rawTmdbId = csv.GetField<string?>("TmdbId");
 
-      int? tmdbId = int.TryParse(rawTmdbId, out var parsed) && parsed > 0
-        ? parsed
-        : null;
+      var rawTmdbId = csv.GetField<string?>(0);
+      var title = csv.GetField<string?>(1);
 
-      rows.Add(new CsvRow(rowNumber, title, tmdbId));
+      int? tmdbId = int.TryParse(rawTmdbId?.Trim(), out var parsed) && parsed > 0 ? parsed : null;
+
+      rows.Add(new CsvRow(rowNumber, title?.Trim(), tmdbId));
     }
 
     return rows;
   }
+
   internal sealed record CsvRow(int RowNumber, string? Title, int? TmdbId);
 }
