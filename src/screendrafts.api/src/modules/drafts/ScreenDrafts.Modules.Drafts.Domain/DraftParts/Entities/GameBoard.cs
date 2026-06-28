@@ -2,7 +2,7 @@
 
 public sealed class GameBoard : Entity<GameBoardId>
 {
-  private readonly Collection<DraftPosition> _draftPositions = [];
+  private readonly List<DraftPosition> _draftPositions = [];
 
   private GameBoard(DraftPart draftPart, GameBoardId? id = null)
     : base(id ?? GameBoardId.CreateUnique())
@@ -83,5 +83,16 @@ public sealed class GameBoard : Entity<GameBoardId>
   public void ClearPositions()
   {
     _draftPositions.Clear();
+  }
+
+  /// <summary>
+  /// Adds the community position to the board without participant count validation. The
+  /// community position is managed separately from human drafter positions and
+  /// is excluded from trivia assignment.
+  /// </summary>
+  /// <param name="draftPosition"></param>
+  internal void AddCommunityPosition(DraftPosition draftPosition)
+  {
+    _draftPositions.Add(draftPosition);
   }
 }

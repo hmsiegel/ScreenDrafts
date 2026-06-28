@@ -2,11 +2,13 @@
 
 internal sealed class MovieRemovedFromDraftPoolDomainEventHandler(
   IDraftBoardRepository draftBoardRepository,
-  IDraftRepository draftRepository
+  IDraftRepository draftRepository,
+  IUnitOfWork unitOfWork
 ) : DomainEventHandler<MovieRemovedFromDraftPoolDomainEvent>
 {
   private readonly IDraftBoardRepository _draftBoardRepository = draftBoardRepository;
   private readonly IDraftRepository _draftRepository = draftRepository;
+  private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
   public override async Task Handle(
     MovieRemovedFromDraftPoolDomainEvent domainEvent,
@@ -32,5 +34,7 @@ internal sealed class MovieRemovedFromDraftPoolDomainEventHandler(
       board.SyncRemoveItem(domainEvent.TmdbId);
       _draftBoardRepository.Update(board);
     }
+
+    await _unitOfWork.SaveChangesAsync(cancellationToken);
   }
 }

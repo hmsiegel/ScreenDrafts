@@ -137,6 +137,8 @@ services:
     environment:
       - ACCEPT_EULA=Y
       - SEQ_FIRSTRUN_ADMINPASSWORD=admin
+    volumes:
+      - ./.containers/seq:/data
     ports:
       - 5341:5341
       - 8081:80

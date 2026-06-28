@@ -8,13 +8,13 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<UndoPickRequest>
     Description(x =>
     {
       x.WithTags(DraftsOpenApi.Tags.DraftParts)
-      .WithName(DraftsOpenApi.Names.DraftParts_UndoPick)
-      .Produces(StatusCodes.Status204NoContent)
-      .Produces(StatusCodes.Status400BadRequest)
-      .Produces(StatusCodes.Status401Unauthorized)
-      .Produces(StatusCodes.Status403Forbidden)
-      .Produces(StatusCodes.Status404NotFound)
-      .Produces(StatusCodes.Status409Conflict);
+        .WithName(DraftsOpenApi.Names.DraftParts_UndoPick)
+        .Produces(StatusCodes.Status204NoContent)
+        .Produces(StatusCodes.Status400BadRequest)
+        .Produces(StatusCodes.Status401Unauthorized)
+        .Produces(StatusCodes.Status403Forbidden)
+        .Produces(StatusCodes.Status404NotFound)
+        .Produces(StatusCodes.Status409Conflict);
     });
     Policies(DraftsAuth.Permissions.PickUndo);
   }
@@ -23,11 +23,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<UndoPickRequest>
   {
     ArgumentNullException.ThrowIfNull(req);
 
-    var command = new UndoPickCommand
-    {
-      DraftPartPublicId = req.DraftPartPublicId,
-      PlayOrder = req.PlayOrder
-    };
+    var command = new UndoPickCommand { DraftPartId = req.DraftPartId, PlayOrder = req.PlayOrder };
 
     var result = await Sender.Send(command, ct);
 

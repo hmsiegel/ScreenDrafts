@@ -2,27 +2,31 @@
 
 internal sealed class UndoPickCommandHandler(
   IDraftPartRepository draftPartRepository,
-  IPickRepository pickRepository)
-  : ICommandHandler<UndoPickCommand>
+  IPickRepository pickRepository
+) : ICommandHandler<UndoPickCommand>
 {
   private readonly IDraftPartRepository _draftPartRepository = draftPartRepository;
   private readonly IPickRepository _pickRepository = pickRepository;
 
   public async Task<Result> Handle(UndoPickCommand request, CancellationToken cancellationToken)
   {
-    var draftPart = await _draftPartRepository.GetByPublicIdAsync(request.DraftPartPublicId, cancellationToken);
+    var draftPart = await _draftPartRepository.GetByPublicIdAsync(
+      request.DraftPartId,
+      cancellationToken
+    );
 
     if (draftPart is null)
     {
-      return Result.Failure(DraftPartErrors.NotFound(request.DraftPartPublicId));
+      return Result.Failure(DraftPartErrors.NotFound(request.DraftPartId));
     }
 
     Pick? pick;
 
     if (!string.IsNullOrWhiteSpace(request.SubDraftPublicId))
     {
-      var subDraft = draftPart.SubDrafts
-        .FirstOrDefault(s => s.PublicId == request.SubDraftPublicId);
+      var subDraft = draftPart.SubDrafts.FirstOrDefault(s =>
+        s.PublicId == request.SubDraftPublicId
+      );
 
       if (subDraft is null)
       {
@@ -33,14 +37,16 @@ internal sealed class UndoPickCommandHandler(
         id: draftPart.Id,
         playOrder: request.PlayOrder,
         subDraftId: subDraft.Id,
-        cancellationToken: cancellationToken);
+        cancellationToken: cancellationToken
+      );
     }
     else
     {
-       pick = await _pickRepository.GetByDraftPartIdAndPlayOrderAsync(
+      pick = await _pickRepository.GetByDraftPartIdAndPlayOrderAsync(
         id: draftPart.Id,
         playOrder: request.PlayOrder,
-        cancellationToken: cancellationToken);
+        cancellationToken: cancellationToken
+      );
     }
 
     if (pick is null)

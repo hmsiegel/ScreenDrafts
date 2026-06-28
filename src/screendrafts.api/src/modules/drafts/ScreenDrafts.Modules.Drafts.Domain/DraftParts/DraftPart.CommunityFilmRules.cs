@@ -24,7 +24,7 @@ public sealed partial class DraftPart
 
     var result = CommunityFilmRule.Create(
       ruleKind: ruleKind,
-      targetSlot: ruleKind == CommunityFilmRuleKind.BoostersPick ? targetSlot : null,
+      targetSlot: targetSlot,
       publicId: publicId
     );
 
@@ -152,7 +152,7 @@ public sealed partial class DraftPart
     {
       var k when k == CommunityFilmRuleKind.BoostersVeto => !rule.WasAutoVetoFired
         && rule.TargetSlot.HasValue
-        && pick.Position < rule.TargetSlot.Value,
+        && pick.Position > rule.TargetSlot.Value,
 
       var k when k == CommunityFilmRuleKind.BoostersPick => rule.TargetSlot.HasValue
         && pick.Position != rule.TargetSlot.Value,
@@ -221,6 +221,21 @@ public sealed partial class DraftPart
       )
     );
 
+    Raise(
+      new CommunityRuleVetoAppliedDomainEvent(
+        draftPartId: Id.Value,
+        draftPartPublicId: PublicId,
+        draftId: DraftId.Value,
+        draftPublicId: DraftPublicId,
+        tmdbId: pick.Movie.TmdbId!.Value,
+        playOrder: pick.PlayOrder,
+        movieTitle: pick.Movie.MovieTitle,
+        boardPosition: pick.Position,
+        ruleKind: rule.RuleKind.Value,
+        targetSlot: rule.TargetSlot.GetValueOrDefault()
+      )
+    );
+
     UpdatedAtUtc = DateTime.UtcNow;
 
     return Result.Success();
@@ -247,5 +262,100 @@ public sealed partial class DraftPart
     _draftPartParticipants.Add(
       DraftPartParticipant.Create(this, CommunityParticipants.PatreonMembers)
     );
+  }
+
+  /// <summary>
+  /// Ensures the community participant has a draft position on the game board
+  /// owning the given slot. If a community position already exists, adds the
+  /// slot to it. If not, creates one and assigns it to PatreonMembers.
+  /// Called only for BoostersPick rules.
+  /// </summary>
+  private void EnsureCommunityPosition(int slot, string communityPositionPublicId)
+  {
+    ArgumentNullException.ThrowIfNull(communityPositionPublicId);
+
+    if (GameBoard is null)
+    {
+      throw new ScreenDraftsException(
+        "GameBoard is null. EnsureCommunityPosition must be called after the draft part is added to a game board."
+      );
+    }
+
+    var existingCommunityPosition = GameBoard.DraftPositions.FirstOrDefault(p =>
+      p.AssignedToId == CommunityParticipants.PatreonMembers.Value
+    );
+
+    if (existingCommunityPosition is not null)
+    {
+      existingCommunityPosition.AddSlot(slot);
+      return;
+    }
+
+    var positionResult = DraftPosition.Create(
+      gameBoard: GameBoard,
+      name: "Community",
+      picks: [slot],
+      publicId: communityPositionPublicId
+    );
+
+    if (positionResult.IsFailure)
+      return;
+
+    var position = positionResult.Value;
+
+    // Assign directly — bypasses AssignParticipant's "already assigned" guard
+    // since this is a fresh position.
+    position.AssignParticipant(CommunityParticipants.PatreonMembers);
+
+    GameBoard.AddCommunityPosition(position);
+  }
+
+  /// <summary>
+  /// Creates or updates the community draft position on the game board
+  /// based on all current BoostersPick rules. Must be called after
+  /// AssignDraftPositions so ClearPositions doesn't remove it.
+  /// </summary>
+  public Result EnsureCommunityPositions(Func<string> publicIdFactory)
+  {
+    ArgumentNullException.ThrowIfNull(publicIdFactory);
+
+    var boostersPickRules = _communityFilmRules
+      .Where(r => r.RuleKind == CommunityFilmRuleKind.BoostersPick && r.TargetSlot.HasValue)
+      .ToList();
+
+    if (boostersPickRules.Count == 0)
+    {
+      return Result.Success();
+    }
+
+    if (GameBoard is null)
+    {
+      return Result.Failure(DraftPartErrors.GameBoardNotFound);
+    }
+
+    // All BoostersPick slots go on one community position.
+    // Generate a public ID only if the position doesn't exist yet.
+    var existingCommunityPosition = GameBoard.DraftPositions.FirstOrDefault(p =>
+      p.AssignedToId == CommunityParticipants.PatreonMembers.Value
+    );
+
+    for (var i = 0; i < boostersPickRules.Count; i++)
+    {
+      var rule = boostersPickRules[i];
+      if (existingCommunityPosition is not null)
+      {
+        existingCommunityPosition.AddSlot(rule.TargetSlot!.Value);
+      }
+      else
+      {
+        EnsureCommunityPosition(rule.TargetSlot!.Value, publicIdFactory());
+        // After first creation, subsequent rules add slots to the same position.
+        existingCommunityPosition = GameBoard.DraftPositions.FirstOrDefault(p =>
+          p.AssignedToId == CommunityParticipants.PatreonMembers.Value
+        );
+      }
+    }
+
+    return Result.Success();
   }
 }

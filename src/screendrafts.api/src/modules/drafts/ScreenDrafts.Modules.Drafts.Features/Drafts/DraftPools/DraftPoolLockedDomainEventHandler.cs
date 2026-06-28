@@ -2,11 +2,13 @@
 
 internal sealed class DraftPoolLockedDomainEventHandler(
   IDraftBoardRepository draftBoardRepository,
-  IDraftRepository draftRepository
+  IDraftRepository draftRepository,
+  IUnitOfWork unitOfWork
 ) : DomainEventHandler<DraftPoolLockedDomainEvent>
 {
   private readonly IDraftBoardRepository _draftBoardRepository = draftBoardRepository;
   private readonly IDraftRepository _draftRepository = draftRepository;
+  private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
   public override async Task Handle(
     DraftPoolLockedDomainEvent domainEvent,
@@ -29,5 +31,7 @@ internal sealed class DraftPoolLockedDomainEventHandler(
       board.Lock();
       _draftBoardRepository.Update(board);
     }
+
+    await _unitOfWork.SaveChangesAsync(cancellationToken);
   }
 }

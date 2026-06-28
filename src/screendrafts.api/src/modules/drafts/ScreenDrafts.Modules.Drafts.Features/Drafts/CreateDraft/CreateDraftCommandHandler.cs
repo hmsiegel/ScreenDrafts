@@ -264,7 +264,12 @@ internal sealed class CreateDraftCommandHandler(
             PublicIdPrefixes.CommunityFilmRule
           );
           var ruleKind = CommunityFilmRuleKind.FromValue(rule.RuleKind);
-          var ruleResult = draftPart.AddCommunityFilmRule(rulePublicId, ruleKind, rule.TargetSlot);
+
+          var ruleResult = draftPart.AddCommunityFilmRule(
+            publicId: rulePublicId,
+            ruleKind: ruleKind,
+            targetSlot: rule.TargetSlot
+          );
 
           if (ruleResult.IsFailure)
           {
@@ -320,6 +325,15 @@ internal sealed class CreateDraftCommandHandler(
         if (assignResult.IsFailure)
         {
           return Result.Failure<string>(assignResult.Errors);
+        }
+
+        var communityPosResult = draftPart.EnsureCommunityPositions(() =>
+          _publicIdGenerator.GeneratePublicId(PublicIdPrefixes.DraftPosition)
+        );
+
+        if (communityPosResult.IsFailure)
+        {
+          return Result.Failure<string>(communityPosResult.Errors);
         }
       }
     }

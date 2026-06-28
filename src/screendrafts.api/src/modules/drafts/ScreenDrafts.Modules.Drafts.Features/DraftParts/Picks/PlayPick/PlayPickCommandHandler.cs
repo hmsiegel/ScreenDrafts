@@ -4,17 +4,23 @@ internal sealed class PlayPickCommandHandler(
   IDraftPartRepository draftPartRepository,
   IMovieRepository movieRepository,
   ParticipantResolver participantResolver,
-  ISeriesPolicyProvider seriesPolicyProvider)
-  : ICommandHandler<PlayPickCommand, PickId>
+  ISeriesPolicyProvider seriesPolicyProvider
+) : ICommandHandler<PlayPickCommand, PickId>
 {
   private readonly IDraftPartRepository _draftPartRepository = draftPartRepository;
   private readonly IMovieRepository _movieRepository = movieRepository;
   private readonly ParticipantResolver _participantResolver = participantResolver;
   private readonly ISeriesPolicyProvider _seriesPolicyProvider = seriesPolicyProvider;
 
-  public async Task<Result<PickId>> Handle(PlayPickCommand request, CancellationToken cancellationToken)
+  public async Task<Result<PickId>> Handle(
+    PlayPickCommand request,
+    CancellationToken cancellationToken
+  )
   {
-    var draftPart = await _draftPartRepository.GetByPublicIdAsync(request.DraftPartId, cancellationToken);
+    var draftPart = await _draftPartRepository.GetByPublicIdAsync(
+      request.DraftPartId,
+      cancellationToken
+    );
 
     if (draftPart is null)
     {
@@ -28,17 +34,36 @@ internal sealed class PlayPickCommandHandler(
       return Result.Failure<PickId>(SeriesErrors.SeriesNotFound(draftPart.SeriesId.Value));
     }
 
-    var movie = await _movieRepository.GetByPublicIdAsync(request.MoviePublicId, cancellationToken);
+    Movie? movie = null;
 
-    if (movie is null)
+    if (!string.IsNullOrWhiteSpace(request.MoviePublicId))
     {
-      return Result.Failure<PickId>(MovieErrors.NotFound(request.MoviePublicId));
+      movie = await _movieRepository.GetByPublicIdAsync(request.MoviePublicId, cancellationToken);
+
+      if (movie is null)
+      {
+        return Result.Failure<PickId>(MovieErrors.NotFound(request.MoviePublicId));
+      }
+    }
+    else if (request.TmdbId.HasValue)
+    {
+      movie = await _movieRepository.GetByTmdbIdAsync(request.TmdbId.Value, cancellationToken);
+
+      if (movie is null)
+      {
+        return Result.Failure<PickId>(MovieErrors.NotFoundByTmdbId(request.TmdbId.Value));
+      }
+    }
+    else
+    {
+      return Result.Failure<PickId>(MovieErrors.MovieIdentifierRequired);
     }
 
     var participantResult = await _participantResolver.ResolveAsync(
       request.ParticipantPublicId,
       request.ParticipantKind,
-      cancellationToken);
+      cancellationToken
+    );
 
     if (participantResult.IsFailure)
     {
@@ -61,7 +86,8 @@ internal sealed class PlayPickCommandHandler(
       participantId: participant,
       canonicalPolicyValue: CanonicalPolicy.FromValue(series.CanonicalPolicy.Value),
       movieVersionName: request.MovieVersionName,
-      actedByPublicId: request.ActedByPublicId);
+      actedByPublicId: request.ActedByPublicId
+    );
 
     if (pickResult.IsFailure)
     {

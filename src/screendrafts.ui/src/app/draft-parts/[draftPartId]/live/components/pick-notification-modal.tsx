@@ -2,7 +2,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import type { GameplayNotification } from '../live-draft-context';
+import type { CommunityRuleAppliedPayload, GameplayNotification } from '../live-draft-context';
 import { useLiveDraft } from '../live-draft-context';
 import { undoVeto } from '../gameplay-fetchers';
 
@@ -252,6 +252,24 @@ export function PickNotificationModal({
             </h2>
             <p className="text-white/50 font-mono text-xs">
               {drafterHonorificName(payload.newHonorificValue)} — {payload.appearanceCount} canonical appearance{payload.appearanceCount !== 1 ? 's' : ''}
+            </p>
+          </>
+        )}
+
+        {kind === 'CommunityRuleApplied' && (
+          <>
+            <p className="font-oswald text-sd-red text-xl font-bold tracking-widest mb-3 uppercase">
+              {(payload as CommunityRuleAppliedPayload).ruleKind === 0
+                ? 'BOOSTERS VETO'
+                : "BOOSTERS' PICK"}
+            </p>
+            <h2 className="font-oswald text-sd-paper text-2xl font-bold mb-2">
+              {(payload as CommunityRuleAppliedPayload).movieTitle}
+            </h2>
+            <p className="text-white/50 font-mono text-xs">
+              {(payload as CommunityRuleAppliedPayload).ruleKind === 0
+                ? `The Patreon community voted this must land at slot ${(payload as CommunityRuleAppliedPayload).targetSlot} or higher. Auto-vetoed.`
+                : `The Patreon community voted this must be played at slot ${(payload as CommunityRuleAppliedPayload).targetSlot}. Auto-vetoed.`}
             </p>
           </>
         )}

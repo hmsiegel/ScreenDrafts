@@ -130,6 +130,16 @@ export interface DrafterHonorificChangedPayload {
   appearanceCount: number;
 }
 
+export interface CommunityRuleAppliedPayload {
+  draftPartPublicId: string;
+  tmdbId: number;
+  movieTitle?: string;
+  playOrder: number;
+  boardPosition: number;
+  ruleKind: number; // 0 = BoostersVeto, 1 = BoostersPick
+  targetSlot: number;
+}
+
 export interface CompletedPickSummary {
   position: number;
   mediaPublicId: string;
@@ -182,7 +192,8 @@ export type GameplayNotification =
   | { kind: 'VetoUndone'; payload: VetoUndonePayload }
   | { kind: 'PickUndone'; payload: PickUndonePayload }
   | { kind: 'MovieHonorificChanged'; payload: MovieHonorificChangedPayload }
-  | { kind: 'DrafterHonorificChanged'; payload: DrafterHonorificChangedPayload };
+  | { kind: 'DrafterHonorificChanged'; payload: DrafterHonorificChangedPayload }
+  | { kind: 'CommunityRuleApplied'; payload: CommunityRuleAppliedPayload };
 
 // ── Context shape ─────────────────────────────────────────────────────────────
 
@@ -576,6 +587,17 @@ export function LiveDraftProvider({
         enqueueNotification({ kind: 'DrafterHonorificChanged', payload });
       },
     );
+
+    connection.on('CommunityRuleApplied', (payload: CommunityRuleAppliedPayload) => {
+      // Mark the pick as vetoed in local state
+      setPicks((prev) =>
+        prev.map((p) =>
+          p.playOrder === payload.playOrder ? { ...p, wasVetoed: true } : p,
+        ),
+      );
+      enqueueNotification({ kind: 'CommunityRuleApplied', payload });
+      setTimeout(() => void refetch(), 300);
+    });
 
     connection.on('PositionsSet', () => {
       setTimeout(() => void refetch(), 500);

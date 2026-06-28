@@ -10,4 +10,5 @@ internal sealed record GameplayDraftPositionResponse
   public Guid? AssignedParticipantId { get; init; }
   public int? AssignedParticipantKind { get; init; }
   public string? AssignedParticipantName { get; init; }
+  public bool IsCommunityPosition { get; init; }
 }

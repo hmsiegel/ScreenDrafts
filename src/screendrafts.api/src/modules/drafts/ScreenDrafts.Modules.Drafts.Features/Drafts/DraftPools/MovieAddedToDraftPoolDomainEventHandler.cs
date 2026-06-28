@@ -3,12 +3,14 @@
 internal sealed class MovieAddedToDraftPoolDomainEventHandler(
   IDraftRepository draftRepository,
   IDraftBoardRepository draftBoardRepository,
-  IPublicIdGenerator publicIdGenerator
+  IPublicIdGenerator publicIdGenerator,
+  IUnitOfWork unitOfWork
 ) : DomainEventHandler<MovieAddedToDraftPoolDomainEvent>
 {
   private readonly IDraftRepository _draftRepository = draftRepository;
   private readonly IDraftBoardRepository _draftBoardRepository = draftBoardRepository;
   private readonly IPublicIdGenerator _publicIdGenerator = publicIdGenerator;
+  private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
   public override async Task Handle(
     MovieAddedToDraftPoolDomainEvent domainEvent,
@@ -57,6 +59,8 @@ internal sealed class MovieAddedToDraftPoolDomainEventHandler(
 
       board.SyncAddItem(domainEvent.TmdbId);
       _draftBoardRepository.Update(board);
+
+      await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
   }
 }

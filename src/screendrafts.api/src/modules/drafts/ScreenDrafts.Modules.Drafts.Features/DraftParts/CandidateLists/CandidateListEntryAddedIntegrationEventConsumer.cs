@@ -3,9 +3,15 @@
 internal sealed class CandidateListEntryAddedIntegrationEventHandler(
   IDraftRepository draftRepository,
   IDraftBoardRepository draftBoardRepository,
-  IPublicIdGenerator publicIdGenerator
+  IPublicIdGenerator publicIdGenerator,
+  IUnitOfWork unitOfWork
 ) : IntegrationEventHandler<CandidateListEntryAddedIntegrationEvent>
 {
+  private readonly IDraftRepository _draftRepository = draftRepository;
+  private readonly IDraftBoardRepository _draftBoardRepository = draftBoardRepository;
+  private readonly IPublicIdGenerator _publicIdGenerator = publicIdGenerator;
+  private readonly IUnitOfWork _unitOfWork = unitOfWork;
+
   public override async Task Handle(
     CandidateListEntryAddedIntegrationEvent integrationEvent,
     CancellationToken cancellationToken = default
@@ -13,7 +19,7 @@ internal sealed class CandidateListEntryAddedIntegrationEventHandler(
   {
     var draftId = new DraftId(integrationEvent.DraftId);
 
-    var draft = await draftRepository.GetByIdWithPartsAndParticipantsAsync(
+    var draft = await _draftRepository.GetByIdWithPartsAndParticipantsAsync(
       draftId,
       cancellationToken
     );
@@ -31,7 +37,7 @@ internal sealed class CandidateListEntryAddedIntegrationEventHandler(
 
     foreach (var participant in participants)
     {
-      var board = await draftBoardRepository.GetByDraftAndParticipantAsync(
+      var board = await _draftBoardRepository.GetByDraftAndParticipantAsync(
         draftId,
         participant,
         cancellationToken
@@ -39,7 +45,7 @@ internal sealed class CandidateListEntryAddedIntegrationEventHandler(
 
       if (board is null)
       {
-        var publicId = publicIdGenerator.GeneratePublicId(PublicIdPrefixes.DraftBoard);
+        var publicId = _publicIdGenerator.GeneratePublicId(PublicIdPrefixes.DraftBoard);
 
         // Candidate list boards are not pool-sourced — participants can add
         // their own movies freely.
@@ -51,11 +57,13 @@ internal sealed class CandidateListEntryAddedIntegrationEventHandler(
         }
 
         board = createResult.Value;
-        draftBoardRepository.Add(board);
+        _draftBoardRepository.Add(board);
       }
 
       board.SyncAddItem(integrationEvent.TmdbId);
-      draftBoardRepository.Update(board);
+      _draftBoardRepository.Update(board);
     }
+
+    await _unitOfWork.SaveChangesAsync(cancellationToken);
   }
 }

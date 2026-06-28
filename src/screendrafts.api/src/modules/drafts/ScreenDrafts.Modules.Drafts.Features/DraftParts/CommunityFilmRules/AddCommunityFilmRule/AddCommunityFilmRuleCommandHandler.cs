@@ -29,6 +29,15 @@ internal sealed class AddCommunityFilmRuleCommandHandler(
 
     var result = draftPart.AddCommunityFilmRule(publicId, ruleKind, request.TargetSlot);
 
+    var communityPositionResult = draftPart.EnsureCommunityPositions(() =>
+      _publicIdGenerator.GeneratePublicId(PublicIdPrefixes.DraftPosition)
+    );
+
+    if (communityPositionResult.IsFailure)
+    {
+      return Result.Failure<string>(communityPositionResult.Errors);
+    }
+
     if (result.IsFailure)
     {
       return Result.Failure<string>(result.Errors);

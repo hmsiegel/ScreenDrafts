@@ -3842,16 +3842,6 @@
           "DraftParts"
         ],
         "operationId": "DraftParts.UndoVeto",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UndoVetoRequest"
-              }
-            }
-          },
-          "required": true
-        },
         "responses": {
           "204": {
             "description": "No Content"
@@ -7810,7 +7800,7 @@
         ],
         "type": "object",
         "properties": {
-          "draftId": {
+          "publicId": {
             "type": "string"
           },
           "file": {
@@ -9478,6 +9468,49 @@
           }
         }
       },
+      "GameplayCommunityFilmRuleResponse": {
+        "type": "object",
+        "properties": {
+          "publicId": {
+            "type": "string"
+          },
+          "ruleKind": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "targetSlot": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "tmdbId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "title": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "wasAutoVetoFired": {
+            "type": "boolean"
+          }
+        }
+      },
       "GameplayDraftPositionResponse": {
         "type": "object",
         "properties": {
@@ -9525,6 +9558,9 @@
               "null",
               "string"
             ]
+          },
+          "isCommunityPosition": {
+            "type": "boolean"
           }
         }
       },
@@ -10371,6 +10407,12 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/GameplayHostResponse"
+            }
+          },
+          "communityFilmRules": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GameplayCommunityFilmRuleResponse"
             }
           }
         }
@@ -14604,6 +14646,15 @@
           "moviePublicId": {
             "type": "string"
           },
+          "tmdbId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
           "movieVersionName": {
             "type": [
               "null",
@@ -16468,7 +16519,7 @@
       "UndoPickRequest": {
         "type": "object",
         "properties": {
-          "draftPartPublicId": {
+          "draftPartId": {
             "type": "string"
           },
           "playOrder": {
@@ -16484,22 +16535,6 @@
               "null",
               "string"
             ]
-          }
-        }
-      },
-      "UndoVetoRequest": {
-        "type": "object",
-        "properties": {
-          "draftPartId": {
-            "type": "string"
-          },
-          "playOrder": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": [
-              "integer",
-              "string"
-            ],
-            "format": "int32"
           }
         }
       },

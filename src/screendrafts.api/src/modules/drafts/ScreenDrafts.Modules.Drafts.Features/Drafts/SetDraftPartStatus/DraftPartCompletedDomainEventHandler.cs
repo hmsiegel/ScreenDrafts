@@ -25,11 +25,11 @@ internal sealed class DraftPartCompletedDomainEventHandler(
         dp.public_id               AS DraftPartPublicId,
         dp.part_index              AS PartIndex,
         dp.draft_type             AS DraftType,
-        (
+        Cast((
           SELECT COUNT(*)
           FROM drafts.draft_parts
           WHERE draft_id = d.id
-        )                         AS TotalParts,
+        ) AS INT4)                         AS TotalParts,
         EXISTS (
           SELECT 1
           FROM drafts.draft_channel_releases dcr
@@ -121,7 +121,7 @@ internal sealed class DraftPartCompletedDomainEventHandler(
           SELECT
             m.id           AS Id,
             m.public_id    AS PublicId,
-            m.title        AS Title
+            m.movie_title        AS Title
           FROM drafts.movies m
           WHERE m.id = ANY(@MovieIds)
         """;
@@ -177,7 +177,7 @@ internal sealed class DraftPartCompletedDomainEventHandler(
           WHERE d.id = ANY(@DrafterIds)
         """;
 
-      var drafterPublicIds = await connection.QueryAsync<(Guid Id, string PublicId)>(
+      var drafterPublicIds = await connection.QueryAsync<string>(
         new CommandDefinition(
           commandText: draftersSql,
           parameters: new { DrafterIds = drafterIds },
@@ -185,7 +185,7 @@ internal sealed class DraftPartCompletedDomainEventHandler(
         )
       );
 
-      participntPublicIds.AddRange(drafterPublicIds.Select(dp => dp.PublicId));
+      participntPublicIds.AddRange(drafterPublicIds);
     }
 
     if (teamIds.Length > 0)
@@ -197,7 +197,7 @@ internal sealed class DraftPartCompletedDomainEventHandler(
           WHERE t.id = ANY(@TeamIds)
         """;
 
-      var teamPublicIds = await connection.QueryAsync<(Guid Id, string PublicId)>(
+      var teamPublicIds = await connection.QueryAsync<string>(
         new CommandDefinition(
           commandText: teamsSql,
           parameters: new { TeamIds = teamIds },
@@ -205,7 +205,7 @@ internal sealed class DraftPartCompletedDomainEventHandler(
         )
       );
 
-      participntPublicIds.AddRange(teamPublicIds.Select(tp => tp.PublicId));
+      participntPublicIds.AddRange(teamPublicIds);
     }
 
     // 7. Build pick DTOs

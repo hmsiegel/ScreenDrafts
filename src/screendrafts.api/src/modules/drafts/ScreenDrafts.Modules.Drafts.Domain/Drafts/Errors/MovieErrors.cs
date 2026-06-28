@@ -2,63 +2,60 @@
 
 public static class MovieErrors
 {
-  public static readonly SDError InvalidMovieTitle =
-    SDError.Failure(
-      "MovieErrors.InvalidMovieTitle",
-      "The movie title is invalid.");
+  public static readonly SDError InvalidMovieTitle = SDError.Failure(
+    "MovieErrors.InvalidMovieTitle",
+    "The movie title is invalid."
+  );
 
-  public static readonly SDError InvalidImdbId =
-    SDError.Failure(
-      "MovieErrors.InvalidImdbId",
-      "The IMDb ID is invalid.");
+  public static readonly SDError InvalidImdbId = SDError.Failure(
+    "MovieErrors.InvalidImdbId",
+    "The IMDb ID is invalid."
+  );
 
-  public static readonly SDError VersionNotAllowedByPolicy =
-        SDError.Failure(
-      "MovieErrors.VersionNotAllowedByPolicy",
-      "The specified version is not allowed by the draft policy.");
+  public static readonly SDError VersionNotAllowedByPolicy = SDError.Failure(
+    "MovieErrors.VersionNotAllowedByPolicy",
+    "The specified version is not allowed by the draft policy."
+  );
 
-  public static readonly SDError VersionNameTooLong =
-    SDError.Failure(
-      "MovieErrors.VersionNameTooLong",
-      "The specified version name is too long.");
+  public static readonly SDError VersionNameTooLong = SDError.Failure(
+    "MovieErrors.VersionNameTooLong",
+    "The specified version name is too long."
+  );
 
-  public static readonly SDError UnknownVersionForMovie =
-    SDError.Failure(
-      "MovieErrors.UnknownVersionForMovie",
-      "The specified version is unknown for the movie.");
+  public static readonly SDError UnknownVersionForMovie = SDError.Failure(
+    "MovieErrors.UnknownVersionForMovie",
+    "The specified version is unknown for the movie."
+  );
 
-  public static readonly SDError VersionIsRequiredByPolicy =
-    SDError.Failure(
-      "MovieErrors.VersionIsRequiredByPolicy",
-      "A version is required by the draft policy.");
+  public static readonly SDError VersionIsRequiredByPolicy = SDError.Failure(
+    "MovieErrors.VersionIsRequiredByPolicy",
+    "A version is required by the draft policy."
+  );
 
-  public static readonly SDError VersionDoesNotMatchRequiredPolicy =
-    SDError.Failure(
-      "MovieErrors.VersionDoesNotMatchRequiredPolicy",
-      "The specified version does not match the required draft policy.");
+  public static readonly SDError VersionDoesNotMatchRequiredPolicy = SDError.Failure(
+    "MovieErrors.VersionDoesNotMatchRequiredPolicy",
+    "The specified version does not match the required draft policy."
+  );
 
-  public static readonly SDError MovieIdRequired =
-    SDError.Failure(
-      "MovieErrors.MovieIdRequired",
-      "A movie ID is required.");
+  public static readonly SDError MovieIdentifierRequired = SDError.Failure(
+    "MovieErrors.MovieIdentifierRequired",
+    "A movie identifier is required."
+  );
 
-  public static readonly SDError InvalidPublicId =
-    SDError.Failure(
-      "MovieErrors.PublicIdRequired",
-      "A public Id is required.");
+  public static readonly SDError InvalidPublicId = SDError.Failure(
+    "MovieErrors.PublicIdRequired",
+    "A public Id is required."
+  );
 
   public static SDError MovieAlreadyExists(string imdbId) =>
-    SDError.Conflict(
-      "Drafts.MovieAlreadyExists",
-      $"Movie with IMDB id {imdbId} already exists.");
+    SDError.Conflict("Drafts.MovieAlreadyExists", $"Movie with IMDB id {imdbId} already exists.");
 
   public static SDError NotFound(Guid movieId) =>
-    SDError.Failure(
-      "MovieErrors.NotFound",
-      $"Movie with ID {movieId} was not found.");
+    SDError.Failure("MovieErrors.NotFound", $"Movie with ID {movieId} was not found.");
 
   public static SDError NotFound(string publicId) =>
-    SDError.Failure(
-      "MovieErrors.NotFound",
-      $"Movie with public ID {publicId} was not found.");
+    SDError.Failure("MovieErrors.NotFound", $"Movie with public ID {publicId} was not found.");
+
+  public static SDError NotFoundByTmdbId(int value) =>
+    SDError.Failure("MovieErrors.NotFound", $"Movie with TMDB ID {value} was not found.");
 }

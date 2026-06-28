@@ -2,7 +2,7 @@
 
 internal sealed record UndoPickCommand : ICommand
 {
-  public required string DraftPartPublicId { get; init; }
+  public required string DraftPartId { get; init; }
   public int PlayOrder { get; init; }
   public string? SubDraftPublicId { get; init; }
 }

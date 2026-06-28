@@ -68,16 +68,23 @@ export function DrafterTab({ accessToken, draftPartId }: Props) {
     (acc, p) => (!acc || (p.playOrder ?? 0) > (acc.playOrder ?? 0) ? p : acc),
     null,
   );
+
+  const roundIsOver = mostRecentPick?.wasVetoOverridden === true;
+
   const canVeto =
+    !roundIsOver &&
     mostRecentPick !== null &&
     !mostRecentPick.wasVetoed &&
     (myParticipant?.vetoTokensRemaining ?? 0) > 0;
+
   const canOverride =
+    !roundIsOver &&
+    callerParticipantId != null &&
     mostRecentPick !== null &&
-    mostRecentPick.wasVetoed &&
+    mostRecentPick.wasVetoed === true &&
     !mostRecentPick.wasVetoOverridden &&
-    mostRecentPick.playedById?.toString() !== callerParticipantId &&
-    (myParticipant?.overrideTokensRemaining ?? 0) > 0;
+    mostRecentPick.playedById !== callerParticipantId &&
+    (myParticipant?.overrideTokensRemaining ?? 0) > 0
 
   const isCountdownTarget = countdownTarget === callerParticipantId;
   if (isCountdownTarget && !showCountdown) {

@@ -8,29 +8,40 @@ internal sealed class GameBoardConfiguration : IEntityTypeConfiguration<GameBoar
 
     builder.HasKey(e => e.Id);
 
-    builder.Property(e => e.Id)
+    builder
+      .Property(e => e.Id)
       .ValueGeneratedNever()
       .HasConversion(IdConverters.GameBoardIdConverter);
 
-    builder.HasMany(gb => gb.DraftPositions)
+    builder
+      .HasMany(gb => gb.DraftPositions)
       .WithOne(dp => dp.GameBoard)
       .OnDelete(DeleteBehavior.Cascade);
 
-    builder.HasOne(gb => gb.DraftPart)
+    builder
+      .Navigation(gb => gb.DraftPositions)
+      .HasField("_draftPositions")
+      .UsePropertyAccessMode(PropertyAccessMode.Field);
+
+    builder
+      .HasOne(gb => gb.DraftPart)
       .WithOne(d => d.GameBoard)
       .HasForeignKey<GameBoard>(gb => gb.DraftPartId)
       .IsRequired(required: false)
       .OnDelete(deleteBehavior: DeleteBehavior.Cascade);
 
-    builder.Property(gb => gb.DraftPartId)
+    builder
+      .Property(gb => gb.DraftPartId)
       .IsRequired(required: false)
       .HasConversion(IdConverters.NullableDraftPartIdConverter);
 
-    builder.Property(gb => gb.SubDraftId)
+    builder
+      .Property(gb => gb.SubDraftId)
       .IsRequired(required: false)
       .HasConversion(IdConverters.NullableSubDraftIdConverter);
 
-    builder.HasOne<SubDraft>()
+    builder
+      .HasOne<SubDraft>()
       .WithOne()
       .HasForeignKey<GameBoard>(gb => gb.SubDraftId)
       .IsRequired(required: false)

@@ -308,11 +308,11 @@ export interface IClient {
     draftPools_CreatePool(body: CreateDraftPoolRequest): Promise<void>;
 
     /**
-     * @param draftId (optional) 
+     * @param publicId (optional) 
      * @param file (optional) 
      * @return OK
      */
-    draftPools_BulkAddItems(draftId: string | undefined, file: FileParameter | undefined): Promise<BulkAddMoviesResponse>;
+    draftPools_BulkAddItems(publicId: string | undefined, file: FileParameter | undefined): Promise<BulkAddMoviesResponse>;
 
     /**
      * @return No Content
@@ -429,7 +429,7 @@ export interface IClient {
     /**
      * @return No Content
      */
-    draftParts_UndoVeto(body: UndoVetoRequest): Promise<void>;
+    draftParts_UndoVeto(): Promise<void>;
 
     /**
      * @return No Content
@@ -3852,19 +3852,19 @@ export class Client implements IClient {
     }
 
     /**
-     * @param draftId (optional) 
+     * @param publicId (optional) 
      * @param file (optional) 
      * @return OK
      */
-    draftPools_BulkAddItems(draftId: string | undefined, file: FileParameter | undefined, signal?: AbortSignal): Promise<BulkAddMoviesResponse> {
+    draftPools_BulkAddItems(publicId: string | undefined, file: FileParameter | undefined, signal?: AbortSignal): Promise<BulkAddMoviesResponse> {
         let url_ = this.baseUrl + "/drafts/{publicId}/pool/bulk";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = new FormData();
-        if (draftId === null || draftId === undefined)
-            throw new Error("The parameter 'draftId' cannot be null.");
+        if (publicId === null || publicId === undefined)
+            throw new Error("The parameter 'publicId' cannot be null.");
         else
-            content_.append("draftId", draftId.toString());
+            content_.append("publicId", publicId.toString());
         if (file === null || file === undefined)
             throw new Error("The parameter 'file' cannot be null.");
         else
@@ -5125,18 +5125,14 @@ export class Client implements IClient {
     /**
      * @return No Content
      */
-    draftParts_UndoVeto(body: UndoVetoRequest, signal?: AbortSignal): Promise<void> {
+    draftParts_UndoVeto(signal?: AbortSignal): Promise<void> {
         let url_ = this.baseUrl + "/draft-parts/{draftPartId}/picks/{playOrder}/undo-veto";
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(body);
-
         let options_: RequestInit = {
-            body: content_,
             method: "POST",
             signal,
             headers: {
-                "Content-Type": "application/json",
             }
         };
 
@@ -10200,7 +10196,7 @@ export interface BulkAddMoviesToDraftBoardRequest {
 }
 
 export interface BulkAddMoviesToDraftPoolRequest {
-    draftId?: string;
+    publicId?: string;
     file: string;
 
     [key: string]: any;
@@ -10755,6 +10751,17 @@ export interface FileResult {
     [key: string]: any;
 }
 
+export interface GameplayCommunityFilmRuleResponse {
+    publicId?: string;
+    ruleKind?: number;
+    targetSlot?: number | undefined;
+    tmdbId?: number | undefined;
+    title?: string | undefined;
+    wasAutoVetoFired?: boolean;
+
+    [key: string]: any;
+}
+
 export interface GameplayDraftPositionResponse {
     positionPublicId?: string;
     positionName?: string;
@@ -10764,6 +10771,7 @@ export interface GameplayDraftPositionResponse {
     assignedParticipantId?: string | undefined;
     assignedParticipantKind?: number | undefined;
     assignedParticipantName?: string | undefined;
+    isCommunityPosition?: boolean;
 
     [key: string]: any;
 }
@@ -11036,6 +11044,7 @@ export interface GetDraftPartGameplayResponse {
     participants?: GameplayParticipantResponse[];
     picks?: GameplayPickResponse[];
     hosts?: GameplayHostResponse[];
+    communityFilmRules?: GameplayCommunityFilmRuleResponse[];
 
     [key: string]: any;
 }
@@ -12196,6 +12205,7 @@ export interface PlayPickRequest {
     participantPublicId?: string | undefined;
     participantKind?: number;
     moviePublicId?: string;
+    tmdbId?: number | undefined;
     movieVersionName?: string | undefined;
 
     [key: string]: any;
@@ -12818,16 +12828,9 @@ export interface TriviaResultResponse {
 }
 
 export interface UndoPickRequest {
-    draftPartPublicId?: string;
-    playOrder?: number;
-    subDraftPublicId?: string | undefined;
-
-    [key: string]: any;
-}
-
-export interface UndoVetoRequest {
     draftPartId?: string;
     playOrder?: number;
+    subDraftPublicId?: string | undefined;
 
     [key: string]: any;
 }

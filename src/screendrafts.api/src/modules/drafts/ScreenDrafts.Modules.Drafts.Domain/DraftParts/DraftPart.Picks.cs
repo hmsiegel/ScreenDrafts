@@ -95,13 +95,6 @@ public sealed partial class DraftPart
       return Result.Failure<PickId>(addResult.Errors);
     }
 
-    var autoVetoResult = TryApplyAutoVeto(pick);
-
-    if (autoVetoResult.IsFailure)
-    {
-      return Result.Failure<PickId>(autoVetoResult.Errors);
-    }
-
     if (DraftType == DraftType.SpeedDraft)
     {
       var revealResult = pick.RevealPick(actedByPublicId);
@@ -184,6 +177,13 @@ public sealed partial class DraftPart
 
     var result = pick.RevealPick(actedByPublicId);
 
+    var autoVetoResult = TryApplyAutoVeto(pick);
+
+    if (autoVetoResult.IsFailure)
+    {
+      return Result.Failure<PickId>(autoVetoResult.Errors);
+    }
+
     if (result.IsFailure)
     {
       return Result.Failure(result.Errors);
@@ -191,12 +191,12 @@ public sealed partial class DraftPart
 
     Raise(
       new PickRevealedDomainEvent(
-        Id.Value,
-        PublicId,
-        pick.Id.Value,
-        playOrder,
-        pick.MovieId,
-        actedByPublicId
+        draftPartId: Id.Value,
+        draftPartPublicId: PublicId,
+        pickId: pick.Id.Value,
+        playOrder: playOrder,
+        movieId: pick.MovieId,
+        actedByPublicId: actedByPublicId
       )
     );
 
@@ -370,6 +370,11 @@ public sealed partial class DraftPart
       return Result.Failure(DraftPartErrors.VetoNotFound(playOrder));
     }
 
+    if (pick.PlayedByParticipant.ParticipantId == by)
+    {
+      return Result.Failure(DraftPartErrors.CannotOverrideOwnPick);
+    }
+
     var overrideResults = pick.Veto.Override(by, actedByPublicId);
 
     if (overrideResults.IsFailure)
@@ -461,7 +466,7 @@ public sealed partial class DraftPart
   {
     if (movieId == Guid.Empty)
     {
-      return Result.Failure(MovieErrors.MovieIdRequired);
+      return Result.Failure(MovieErrors.MovieIdentifierRequired);
     }
 
     if (string.IsNullOrWhiteSpace(versionName))

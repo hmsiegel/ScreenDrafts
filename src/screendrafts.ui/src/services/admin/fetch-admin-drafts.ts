@@ -13,13 +13,14 @@ import {
 import { PositionConfig } from "@/app/admin/drafts/new/positions-editor";
 
 // TODO: regenerate dto.ts after backend adds these response shapes if they differ
-export interface AdminDraftListItem extends SearchDraftsResponse {}
+export interface AdminDraftListItem extends SearchDraftsResponse { }
 
 export interface AdminSeriesOption {
   publicId: string;
   name: string;
   allowedDraftTypes: SmartEnumResponse[];
   defaultDraftType?: SmartEnumResponse;
+  kindValue: number;
 }
 
 export interface AdminHostOption {
@@ -144,7 +145,7 @@ export async function listAdminDrafts(
     const url = new URL(`${apiBase}/drafts/search`);
     url.searchParams.set("page", String(page));
     url.searchParams.set("pageSize", String(pageSize));
-    if (draftStatus !== undefined){
+    if (draftStatus !== undefined) {
       url.searchParams.set("status", String(draftStatus));
     }
     const response = await fetch(url.toString(), {
@@ -178,12 +179,15 @@ export async function listAllSeries(
     });
     if (!response.ok) return [];
     const data = await response.json() as { items?: SeriesResponse[] };
-    return (data.items ?? []).map((s) => ({
-      publicId: s.publicId ?? "",
-      name: s.name ?? "",
-      allowedDraftTypes: s.allowedDraftTypes ?? [],
-      defaultDraftType: s.defaultDraftType,
-    }));
+    return (data.items ?? []).map((s) => {
+      return {
+        publicId: s.publicId ?? "",
+        name: s.name ?? "",
+        allowedDraftTypes: s.allowedDraftTypes ?? [],
+        defaultDraftType: s.defaultDraftType,
+        kindValue: (s.kind as SmartEnumResponse)?.value ?? 0,
+      };
+    });
   } catch (err) {
     console.error("[listAllSeries]", err);
     return [];
@@ -633,7 +637,7 @@ export async function addCommunityFilmRule(
     const text = await res.text().catch(() => res.statusText);
     throw new Error(`POST /draft-parts/${draftPartId}/community-film-rules failed (${res.status}): ${text}`);
   }
-  const data = (await res.json()) as {publicId: string};
+  const data = (await res.json()) as { publicId: string };
   return data.publicId;
 }
 
@@ -782,7 +786,7 @@ export async function createDraftPool(
 ): Promise<void> {
   const res = await fetch(`${apiBase}/drafts/${encodeURIComponent(draftId)}/pool`, {
     method: "POST",
-    headers: { Authorization: `Bearer ${accessToken}` , "Content-Type": "application/json" },
+    headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
     body: JSON.stringify({}),
   });
   if (!res.ok) {

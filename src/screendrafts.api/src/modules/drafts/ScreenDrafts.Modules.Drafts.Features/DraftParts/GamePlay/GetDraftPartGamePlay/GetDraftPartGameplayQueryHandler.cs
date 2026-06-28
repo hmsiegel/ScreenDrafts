@@ -223,6 +223,31 @@ internal sealed class GetDraftPartGameplayQueryHandler(
       )
     ).ToList();
 
+    // Community Film Rules
+    const string communityFilmRuleSql = $"""
+      SELECT
+        cfr.public_id                   AS {nameof(CommunityFilmRuleRow.PublicId)},
+        cfr.rule_kind                   AS {nameof(CommunityFilmRuleRow.RuleKind)},
+        cfr.target_slot                 AS {nameof(CommunityFilmRuleRow.TargetSlot)},
+        cfr.tmdb_id                     AS {nameof(CommunityFilmRuleRow.TmdbId)},
+        m.movie_title                   AS {nameof(CommunityFilmRuleRow.Title)},
+        cfr.was_auto_veto_fired         AS {nameof(CommunityFilmRuleRow.WasAutoVetoFired)}
+      FROM drafts.draft_part_community_film_rules cfr
+      JOIN drafts.draft_parts dp ON dp.id = cfr.draft_part_id
+      LEFT JOIN drafts.movies m ON m.tmdb_id = cfr.tmdb_id
+      WHERE dp.public_id = @DraftPartPublicId
+      """;
+
+    var communityFilmRuleRows = (
+      await connection.QueryAsync<CommunityFilmRuleRow>(
+        new CommandDefinition(
+          communityFilmRuleSql,
+          new { request.DraftPartPublicId },
+          cancellationToken: cancellationToken
+        )
+      )
+    ).ToList();
+
     // ── 7. Caller roles ───────────────────────────────────────────────────────
     // Resolve caller's internal person.id from their public_id (drafts.people).
     // Then check host and participant membership for this draft part.
@@ -380,6 +405,7 @@ internal sealed class GetDraftPartGameplayQueryHandler(
                 null
               )
               : null,
+            IsCommunityPosition = pos.AssignedToKind == 2,
           }),
         ],
         NextExpectedParticipantId = nextParticipantId?.ToString(),
@@ -420,6 +446,18 @@ internal sealed class GetDraftPartGameplayQueryHandler(
             HostPublicId = h.PublicId,
             HostName = h.Name,
             IsPrimary = h.IsPrimary,
+          }),
+        ],
+        CommunityFilmRules =
+        [
+          .. communityFilmRuleRows.Select(cfr => new GameplayCommunityFilmRuleResponse
+          {
+            PublicId = cfr.PublicId,
+            RuleKind = cfr.RuleKind,
+            TargetSlot = cfr.TargetSlot,
+            TmdbId = cfr.TmdbId,
+            Title = cfr.Title,
+            WasAutoVetoFired = cfr.WasAutoVetoFired,
           }),
         ],
       }
@@ -490,6 +528,15 @@ internal sealed class GetDraftPartGameplayQueryHandler(
     bool IsCoHost,
     bool IsParticipant,
     string? ParticipantIdValue
+  );
+
+  private sealed record CommunityFilmRuleRow(
+    string PublicId,
+    int RuleKind,
+    int? TargetSlot,
+    int? TmdbId,
+    string? Title,
+    bool WasAutoVetoFired
   );
 
   private sealed record HostRow(string PublicId, string Name, bool IsPrimary);

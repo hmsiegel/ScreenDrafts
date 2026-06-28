@@ -25,6 +25,17 @@ const BTN_SECONDARY =
 const SECTION_HEADING =
   "font-oswald font-bold text-[18px] tracking-wide uppercase text-sd-ink mb-4 pb-2 border-b border-sd-ink/10";
 
+// ── Series kind groupings ─────────────────────────────────────────────────────
+// Main Feed: LegendsSuper (9), Regular (0), LiveDraft (6)
+// Patreon:   Regular (0), LiveDraft (6), FranchiseMiniSuper (1),
+//            InMemoriam (2), LegendsMega (3), BestPictureNominee (4),
+//            PatreonVs (5), Special (7), SpeedDrafts (8)
+
+const MAIN_FEED_KINDS = new Set([0, 6, 9]);
+const PATREON_KINDS = new Set([0, 1, 2, 3, 4, 5, 6, 7, 8]);
+
+type FeedType = "main" | "patreon" | "";
+
 function getMaxPositionsConfig(draftTypeName: string): { max: number; locked: boolean } {
   switch (draftTypeName) {
     case "Standard": return { max: 7, locked: true };
@@ -68,6 +79,7 @@ export default function CreateDraftForm({
   const router = useRouter();
 
   const [title, setTitle] = useState("");
+  const [selectedFeed, setSelectedFeed] = useState<FeedType>("");
   const [selectedSeriesId, setSelectedSeriesId] = useState("");
   const [selectedDraftType, setSelectedDraftType] = useState<SmartEnumResponse | null>(null);
 
@@ -94,8 +106,23 @@ export default function CreateDraftForm({
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Filter series by selected feed
+  const filteredSeriesList = selectedFeed === ""
+    ? []
+    : seriesList.filter((s) =>
+        selectedFeed === "main"
+          ? MAIN_FEED_KINDS.has(s.kindValue)
+          : PATREON_KINDS.has(s.kindValue)
+      );
+
   const selectedSeries = seriesList.find((s) => s.publicId === selectedSeriesId);
   const availableDraftTypes = selectedSeries?.allowedDraftTypes ?? [];
+
+  function handleFeedChange(feed: FeedType) {
+    setSelectedFeed(feed);
+    setSelectedSeriesId("");
+    setSelectedDraftType(null);
+  }
 
   function handleSeriesChange(seriesId: string) {
     setSelectedSeriesId(seriesId);
@@ -227,7 +254,7 @@ export default function CreateDraftForm({
     setSubmitting(true);
 
     try {
-      const { publicId: draftPublicId } = await createDraft(accessToken, {
+      await createDraft(accessToken, {
         title: title.trim(),
         draftType: selectedDraftType!.value ?? 0,
         seriesId: selectedSeriesId,
@@ -281,8 +308,8 @@ export default function CreateDraftForm({
       {/* ── Section 1: Core metadata ── */}
       <section>
         <h2 className={SECTION_HEADING}>Core Details</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="md:col-span-2">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="md:col-span-3">
             <label className={LABEL}>
               Title <span className="text-sd-red">*</span>
             </label>
@@ -296,6 +323,24 @@ export default function CreateDraftForm({
             />
           </div>
 
+          {/* Feed selector */}
+          <div>
+            <label className={LABEL}>
+              Feed <span className="text-sd-red">*</span>
+            </label>
+            <select
+              className={SELECT}
+              value={selectedFeed}
+              onChange={(e) => handleFeedChange(e.target.value as FeedType)}
+              required
+            >
+              <option value="">— Select feed —</option>
+              <option value="main">Main Feed</option>
+              <option value="patreon">Patreon</option>
+            </select>
+          </div>
+
+          {/* Series selector — appears once feed is chosen */}
           <div>
             <label className={LABEL}>
               Series <span className="text-sd-red">*</span>
@@ -304,10 +349,13 @@ export default function CreateDraftForm({
               className={SELECT}
               value={selectedSeriesId}
               onChange={(e) => handleSeriesChange(e.target.value)}
+              disabled={selectedFeed === ""}
               required
             >
-              <option value="">— Select series —</option>
-              {seriesList.map((s) => (
+              <option value="">
+                {selectedFeed === "" ? "— Select feed first —" : "— Select series —"}
+              </option>
+              {filteredSeriesList.map((s) => (
                 <option key={s.publicId} value={s.publicId}>
                   {s.name}
                 </option>
@@ -315,6 +363,7 @@ export default function CreateDraftForm({
             </select>
           </div>
 
+          {/* Draft type selector */}
           <div>
             <label className={LABEL}>
               Draft Type <span className="text-sd-red">*</span>

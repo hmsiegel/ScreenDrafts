@@ -139,6 +139,11 @@ public static class DraftPartErrors
     description: "Veto can only be applied to the most recent pick."
   );
 
+  public static readonly SDError CannotOverrideOwnPick = SDError.Conflict(
+    code: "DraftPart.CannotOverrideOwnPick",
+    description: "A participant cannot use a veto override to save their own pick."
+  );
+
   public static SDError NotFound(Guid draftPartId) =>
     SDError.NotFound(
       code: "DraftPart.NotFound",

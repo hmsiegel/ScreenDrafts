@@ -11,7 +11,8 @@ public sealed class DraftPosition : Entity<DraftPositionId>
     string publicId,
     bool hasBonusVeto = false,
     bool hasBonusVetoOverride = false,
-    DraftPositionId? id = null)
+    DraftPositionId? id = null
+  )
     : base(id ?? DraftPositionId.CreateUnique())
   {
     GameBoard = gameBoard;
@@ -26,9 +27,7 @@ public sealed class DraftPosition : Entity<DraftPositionId>
     HasBonusVetoOverride = hasBonusVetoOverride;
   }
 
-  private DraftPosition()
-  {
-  }
+  private DraftPosition() { }
 
   public string PublicId { get; private set; } = default!;
 
@@ -47,7 +46,6 @@ public sealed class DraftPosition : Entity<DraftPositionId>
       ? null
       : new Participant(AssignedToId.Value, AssignedToKind);
 
-
   public static Result<DraftPosition> Create(
     GameBoard gameBoard,
     string name,
@@ -55,7 +53,8 @@ public sealed class DraftPosition : Entity<DraftPositionId>
     string publicId,
     bool hasBonusVeto = false,
     bool hasBonusVetoOverride = false,
-    DraftPositionId? id = null)
+    DraftPositionId? id = null
+  )
   {
     ArgumentNullException.ThrowIfNull(picks);
     ArgumentNullException.ThrowIfNull(gameBoard);
@@ -82,12 +81,12 @@ public sealed class DraftPosition : Entity<DraftPositionId>
       hasBonusVeto: hasBonusVeto,
       hasBonusVetoOverride: hasBonusVetoOverride,
       publicId: publicId,
-      id: id);
+      id: id
+    );
 
     draftPosition.Raise(
-      new DraftPositionCreatedDomainEvent(
-      draftPosition.Id.Value,
-      draftPosition.PublicId));
+      new DraftPositionCreatedDomainEvent(draftPosition.Id.Value, draftPosition.PublicId)
+    );
 
     return draftPosition;
   }
@@ -100,7 +99,8 @@ public sealed class DraftPosition : Entity<DraftPositionId>
     bool hasBonusVetoOverride = false,
     string? publicId = null,
     Participant? assignedTo = null,
-    DraftPositionId? id = null)
+    DraftPositionId? id = null
+  )
   {
     if (gameBoard is null)
     {
@@ -129,7 +129,8 @@ public sealed class DraftPosition : Entity<DraftPositionId>
       hasBonusVeto: hasBonusVeto,
       hasBonusVetoOverride: hasBonusVetoOverride,
       publicId: publicId,
-      id: id);
+      id: id
+    );
 
     if (assignedTo is not null)
     {
@@ -156,11 +157,14 @@ public sealed class DraftPosition : Entity<DraftPositionId>
     AssignedToId = participant.Value;
     AssignedToKind = participant.Kind;
 
-    Raise(new DraftPositionAssignedDomainEvent(
-      draftPartId: GameBoard.DraftPartId!.Value,
-      draftPositionId: Id.Value,
-      participantId: participant.Value,
-      participantKind: participant.Kind.Value));
+    Raise(
+      new DraftPositionAssignedDomainEvent(
+        draftPartId: GameBoard.DraftPartId!.Value,
+        draftPositionId: Id.Value,
+        participantId: participant.Value,
+        participantKind: participant.Kind.Value
+      )
+    );
 
     return Result.Success();
   }
@@ -175,9 +179,12 @@ public sealed class DraftPosition : Entity<DraftPositionId>
     AssignedToId = null;
     AssignedToKind = default!;
 
-    Raise(new DraftPositionUnassignedDomainEvent(
-      draftPartId: GameBoard.DraftPartId!.Value,
-      draftPositionId: Id.Value));
+    Raise(
+      new DraftPositionUnassignedDomainEvent(
+        draftPartId: GameBoard.DraftPartId!.Value,
+        draftPositionId: Id.Value
+      )
+    );
 
     return Result.Success();
   }
@@ -190,7 +197,21 @@ public sealed class DraftPosition : Entity<DraftPositionId>
     }
 
     PublicId = publicId;
-    
+
     return Result.Success();
+  }
+
+  /// <summary>
+  /// Adds a slot to this positions's pick list. Only used for the
+  /// community position when a second Booster's Pick rule is
+  /// added for a different slot.
+  /// </summary>
+  /// <param name="slot"></param>
+  internal void AddSlot(int slot)
+  {
+    if (!Picks.Contains(slot))
+    {
+      Picks.Add(slot);
+    }
   }
 }

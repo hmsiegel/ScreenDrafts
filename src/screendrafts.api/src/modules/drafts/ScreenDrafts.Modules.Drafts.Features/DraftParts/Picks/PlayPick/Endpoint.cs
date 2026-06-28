@@ -45,6 +45,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<PlayPickRequest, CreatedId
       ParticipantPublicId = req.ParticipantPublicId,
       ParticipantKind = participantKind,
       MoviePublicId = req.MoviePublicId,
+      TmdbId = req.TmdbId,
       MovieVersionName = req.MovieVersionName,
       ActedByPublicId = actorPublicId,
     };

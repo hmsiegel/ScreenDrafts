@@ -7,6 +7,7 @@ import { DraftBoard } from '../draft-board';
 import { DraftPickList } from '../draft-pick-list';
 import { submitTriviaResults } from '../../gameplay-fetchers';
 import { completeDraftPart } from '@/services/drafts/fetch-my-drafts';
+import * as signalR from '@microsoft/signalr';
 
 interface Props {
   accessToken: string;
@@ -16,8 +17,6 @@ interface Props {
 
 export function PrimaryHostTab({ accessToken, draftPartId, isCommissioner: _isCommissioner }: Props) {
   const { gameplay, draftPositions } = useLiveDraft();
-  console.log('currentUserRoles', gameplay.currentUserRoles);
-
   const allPositionsAssigned = draftPositions.every((p) => p.assignedParticipantId !== null);
   const triviaComplete = (gameplay.triviaResults?.length ?? 0) > 0;
 
@@ -257,55 +256,67 @@ function DraftPositionsForm({
       </h2>
 
       <div className="space-y-3">
-        {draftPositions.map((pos) => (
-          <div key={pos.positionPublicId} className="flex items-center gap-4">
-            <div className="w-28 shrink-0">
-              <span className="font-oswald text-sd-red font-bold">{pos.positionName}</span>
-              <span className="block text-[11px] text-white/30 font-mono">
-                Picks: {(pos.ownedBoardSlots ?? []).sort((a, b) => b - a).join(', ')}
-              </span>
-              {pos.hasBonusVeto && (
-                <span className="text-[10px] text-light-blue font-mono">+1 veto</span>
-              )}
-              {pos.hasBonusVetoOverride && (
-                <span className="text-[10px] text-light-blue font-mono ml-1">+1 override</span>
+        {draftPositions
+          .filter((pos) => !pos.isCommunitPosition)
+          .map((pos) => (
+            <div key={pos.positionPublicId} className="flex items-center gap-4">
+              <div className="w-28 shrink-0">
+                <span className="font-oswald text-sd-red font-bold">{pos.positionName}</span>
+                <span className="block text-[11px] text-white/30 font-mono">
+                  Picks: {(pos.ownedBoardSlots ?? []).sort((a, b) => b - a).join(', ')}
+                </span>
+                {pos.hasBonusVeto && (
+                  <span className="text-[10px] text-light-blue font-mono">+1 veto</span>
+                )}
+                {pos.hasBonusVetoOverride && (
+                  <span className="text-[10px] text-light-blue font-mono ml-1">+1 override</span>
+                )}
+              </div>
+
+              {pos.assignedParticipantId ? (
+                <div className="flex items-center gap-3">
+                  <span className="font-oswald text-sd-paper text-sm">
+                    {pos.assignedParticipantName}
+                  </span>
+                  <button
+                    onClick={() => pos.positionPublicId && handleClear(pos.positionPublicId)}
+                    disabled={saving === pos.positionPublicId}
+                    className="text-xs text-white/30 hover:text-sd-red font-mono transition-colors"
+                  >
+                    {saving === pos.positionPublicId ? '…' : 'clear'}
+                  </button>
+                </div>
+              ) : (
+                <select
+                  defaultValue=""
+                  onChange={(e) =>
+                    pos.positionPublicId && e.target.value &&
+                    handleAssign(pos.positionPublicId, e.target.value)
+                  }
+                  disabled={saving === pos.positionPublicId}
+                  className="bg-white/10 border border-white/20 text-sd-paper text-sm font-oswald px-3 py-1.5 min-w-[180px] [&>option]:text-sd-ink [&>option]:bg-white"
+                >
+                  <option value="" disabled>
+                    Assign participant…
+                  </option>
+                  {(gameplay.participants ?? [])
+                    .filter((p) =>
+                      // Show only unassigned participants (those not assigned to any position)
+                      !draftPositions.some(
+                        (otherPos) =>
+                          otherPos.positionPublicId !== pos.positionPublicId &&
+                          otherPos.assignedParticipantId?.toString() === p.participantId?.toString()
+                      )
+                    )
+                    .map((p) => (
+                      <option key={p.participantPublicId} value={p.participantPublicId}>
+                        {p.participantName}
+                      </option>
+                    ))}
+                </select>
               )}
             </div>
-
-            {pos.assignedParticipantId ? (
-              <div className="flex items-center gap-3">
-                <span className="font-oswald text-sd-paper text-sm">
-                  {pos.assignedParticipantName}
-                </span>
-                <button
-                  onClick={() => pos.positionPublicId && handleClear(pos.positionPublicId)}
-                  disabled={saving === pos.positionPublicId}
-                  className="text-xs text-white/30 hover:text-sd-red font-mono transition-colors"
-                >
-                  {saving === pos.positionPublicId ? '…' : 'clear'}
-                </button>
-              </div>
-            ) : (
-              <select
-                defaultValue=""
-                onChange={(e) =>
-                  pos.positionPublicId && e.target.value && handleAssign(pos.positionPublicId, e.target.value)
-                }
-                disabled={saving === pos.positionPublicId}
-                className="bg-white/10 border border-white/20 text-sd-paper text-sm font-oswald px-3 py-1.5 min-w-[180px] [&>option]:text-sd-ink [&>option]:bg-white"
-              >
-                <option value="" disabled>
-                  Assign participant…
-                </option>
-                {(gameplay.participants ?? []).map((p) => (
-                  <option key={p.participantPublicId} value={p.participantPublicId}>
-                    {p.participantName}
-                  </option>
-                ))}
-              </select>
-            )}
-          </div>
-        ))}
+          ))}
       </div>
 
       {error && <p className="text-sd-red text-xs font-mono mt-2">{error}</p>}
@@ -328,11 +339,12 @@ function GameplayView({
   accessToken: string;
   draftPartId: string;
 }) {
-  const { gameplay, draftPositions, picks, pendingPicks, refetch, revealPick } = useLiveDraft();
+  const { gameplay, draftPositions, picks, pendingPicks, refetch, revealPick, sendCountdown, nextExpectedParticipantId, connectionState } = useLiveDraft();
   const [completing, setCompleting] = useState(false);
   const [confirmComplete, setConfirmComplete] = useState(false);
   const [acting, setActing] = useState<string | null>(null); // action key in flight
   const [error, setError] = useState<string | null>(null);
+  const [counting, setCounting] = useState(false);
 
   const totalSlots = draftPositions.flatMap((p) => p.ownedBoardSlots).length;
   const landedPicks = picks.filter((p) => !p.wasVetoed || p.wasVetoOverridden).length;
@@ -342,6 +354,26 @@ function GameplayView({
     (acc, p) => (!acc || (p.playOrder ?? 0) > (acc.playOrder ?? 0) ? p : acc),
     null,
   );
+
+  const communityParticipantId = 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee';
+  const isCommunityTurn = nextExpectedParticipantId === communityParticipantId;
+
+
+  const communityPickRule = isCommunityTurn
+    ? gameplay.communityFilmRules?.find(
+      (r) =>
+        r.ruleKind === 1 && // BoostersPick
+        r.targetSlot != null &&
+        !picks.some((p) => p.boardPosition === r.targetSlot && !p.wasVetoed)
+    )
+    : null;
+
+  async function handleCountdown() {
+    if (!nextExpectedParticipantId || counting) return;
+    setCounting(true);
+    await sendCountdown(nextExpectedParticipantId);
+    setTimeout(() => setCounting(false), 7000);
+  }
 
   async function handleComplete() {
     setCompleting(true);
@@ -408,6 +440,41 @@ function GameplayView({
     }
   }
 
+  async function handlePlayCommunityPick(rule: { tmdbId?: number; targetSlot?: number }) {
+    if (!rule.tmdbId || !rule.targetSlot) return;
+    setActing('community-pick');
+    setError(null);
+    try {
+      // PlayOrder = next available play order
+      const nextPlayOrder = (picks.reduce((max, p) => Math.max(max, p.playOrder ?? 0), 0)) + 1;
+
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/draft-parts/${draftPartId}/picks`,
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            tmdbId: rule.tmdbId,
+            position: rule.targetSlot,
+            playOrder: nextPlayOrder,
+            participantPublicId: null,
+            participantKind: 2,       // Community
+          }),
+        },
+      );
+      if (!res.ok) {
+        const text = await res.text().catch(() => String(res.status));
+        setError(`Community pick failed: ${text}`);
+      }
+      await refetch();
+    } finally {
+      setActing(null);
+    }
+  }
+
   // Primary host inline actions on the most recent pick: undo the pick
   // entirely, undo a veto (if the most recent pick was vetoed), or apply
   // a commissioner override (remove without counting as veto or save).
@@ -448,35 +515,66 @@ function GameplayView({
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
       <div>
+        {isCommunityTurn && communityPickRule && (
+          <div className="mb-4 flex items-center justify-between gap-4 px-4 py-3 bg-sd-red/20 border border-sd-red/40">
+            <div className="min-w-0">
+              <p className="font-oswald text-white text-xs tracking-widest uppercase mb-1">
+                Community Pick
+              </p>
+              <p className="font-oswald text-white text-sm">
+                <span className="text-sd-red font-bold">
+                  At No. {communityPickRule.targetSlot}
+                </span>
+                {', the Patreon community selects '}
+                <span className="font-bold">
+                  {communityPickRule.title ?? `TMDb #${communityPickRule.tmdbId}`}
+                </span>
+              </p>
+            </div>
+            <button
+              onClick={() => handlePlayCommunityPick(communityPickRule)}
+              className="shrink-0 px-4 py-2 bg-sd-red text-white font-oswald text-xs tracking-widest hover:bg-sd-red/80 transition-colors"
+            >
+              ANNOUNCE
+            </button>
+          </div>
+        )}
+
         {pendingPicks.length > 0 && (
           <div className="mb-4 space-y-2">
-            {pendingPicks.map((pp) => (
-              <div
-                key={pp.playOrder}
-                className="flex items-center justify-between gap-3 px-4 py-3 bg-sd-blue/20 border border-sd-blue/40"
-              >
-                <div className="min-w-0">
-                  <p className="font-oswald text-sd-paper text-sm truncate">
+            {pendingPicks.map((pp) => {
+              const participantName =
+                gameplay.participants?.find((p) => p.participantId === pp.participantId)
+                  ?.participantName ?? pp.participantId;
+
+              return (
+                <div
+                  key={pp.playOrder}
+                  className="flex items-center justify-between gap-4 px-4 py-3 bg-sd-blue/20 border border-sd-blue/40"
+                >
+                  <p className="font-oswald text-sd-paper text-sm min-w-0">
+                    <span className="text-sd-red font-bold">At No. {pp.boardPosition}</span>
+                    {', '}
+                    <span className="text-white/70">{participantName}</span>
+                    {' selects '}
                     <a
                       href={`https://www.themoviedb.org/movie/${pp.tmdbId}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="hover:underline underline-offset-2"
+                      className="font-bold hover:underline underline-offset-2"
                     >
                       {pp.movieTitle}
-                    </a>{' '}
-                    <span className="text-white/40 text-xs">→ slot {pp.boardPosition}</span>
+                    </a>
                   </p>
-                  <p className="text-[11px] text-white/40 font-mono">Awaiting announcement</p>
+                  <button
+                    onClick={() => revealPick(pp.playOrder)}
+                    className="shrink-0 px-4 py-2 bg-sd-blue text-white font-oswald text-xs tracking-widest hover:bg-sd-blue/80 transition-colors"
+                  >
+                    ANNOUNCE
+                  </button>
                 </div>
-                <button
-                  onClick={() => revealPick(pp.playOrder)}
-                  className="shrink-0 px-4 py-2 bg-sd-blue text-white font-oswald text-xs tracking-widest hover:bg-sd-blue/80 transition-colors"
-                >
-                  ANNOUNCE
-                </button>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
 
@@ -487,43 +585,73 @@ function GameplayView({
 
         {error && <p className="text-sd-red text-xs font-mono mt-2">{error}</p>}
 
-        <div className="mt-4 flex flex-wrap gap-4">
-          {draftPositions.map((pos) => (
-            <div key={pos.positionPublicId} className="text-xs font-mono text-white/50">
-              <span className="text-sd-red font-bold">{pos.positionName}</span>{' '}
-              {pos.assignedParticipantName ?? '—'}
-            </div>
-          ))}
+        <div className="mt-4 space-y-1">
+          {draftPositions
+            .filter((pos) => !pos.isCommunityPosition)
+            .map((pos) => (
+              <div key={pos.positionPublicId} className="text-xs font-mono text-white/50">
+                <span className="text-sd-red font-bold tracking-wider">
+                  {pos.positionName}
+                </span>
+                {pos.assignedParticipantName && (
+                  <>
+                    <span className="text-white/70 ml-2">{pos.assignedParticipantName}</span>
+                    <span className="text-white/30 ml-2">
+                      {(pos.ownedBoardSlots ?? [])
+                        .slice()
+                        .sort((a, b) => b - a)
+                        .join(', ')}
+                    </span>
+                  </>
+                )}
+                {!pos.assignedParticipantName && (
+                  <span className="text-white/20 ml-2">unassigned</span>
+                )}
+              </div>
+            ))}
         </div>
 
-        <div className="mt-6">
-          {confirmComplete ? (
-            <div className="flex gap-3">
+        <div className="mt-6 space-y-2">
+          <div className="flex items-center gap-3">
+            {confirmComplete ? (
+              <>
+                <button
+                  onClick={handleComplete}
+                  disabled={completing}
+                  className="px-5 py-2 bg-sd-red text-white font-oswald text-sm tracking-wider hover:bg-sd-red/80 disabled:opacity-50"
+                >
+                  {completing ? 'COMPLETING…' : 'CONFIRM'}
+                </button>
+                <button
+                  onClick={() => setConfirmComplete(false)}
+                  className="px-5 py-2 border border-white/20 text-white/60 font-oswald text-sm tracking-wider"
+                >
+                  CANCEL
+                </button>
+              </>
+            ) : (
               <button
-                onClick={handleComplete}
-                disabled={completing}
-                className="px-5 py-2 bg-sd-red text-white font-oswald text-sm tracking-wider hover:bg-sd-red/80 disabled:opacity-50"
+                onClick={() => setConfirmComplete(true)}
+                disabled={!draftComplete}
+                className="px-5 py-2 bg-sd-blue text-white font-oswald text-sm tracking-widest hover:bg-sd-blue/80 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
               >
-                {completing ? 'COMPLETING…' : 'CONFIRM'}
+                {gameplay.isFinalPart ? 'COMPLETE DRAFT' : 'COMPLETE PART'}
               </button>
-              <button
-                onClick={() => setConfirmComplete(false)}
-                className="px-5 py-2 border border-white/20 text-white/60 font-oswald text-sm tracking-wider"
-              >
-                CANCEL
-              </button>
-            </div>
-          ) : (
+            )}
             <button
-              onClick={() => setConfirmComplete(true)}
-              disabled={!draftComplete}
-              className="px-5 py-2 bg-sd-blue text-white font-oswald text-sm tracking-widest hover:bg-sd-blue/80 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+              onClick={handleCountdown}
+              disabled={
+                !nextExpectedParticipantId ||
+                counting ||
+                connectionState !== signalR.HubConnectionState.Connected
+              }
+              className="px-4 py-2 border border-sd-red/50 text-sd-red font-oswald text-xs tracking-widest hover:border-sd-red disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
             >
-              {gameplay.isFinalPart ? 'COMPLETE DRAFT' : 'COMPLETE PART'}
+              {counting ? 'COUNTING DOWN…' : 'START COUNTDOWN'}
             </button>
-          )}
+          </div>
           {!draftComplete && (
-            <p className="text-xs text-white/30 font-mono mt-1">
+            <p className="text-xs text-white/30 font-mono">
               {totalSlots - landedPicks} pick{totalSlots - landedPicks !== 1 ? 's' : ''} remaining
             </p>
           )}
