@@ -5,12 +5,14 @@ internal sealed class ListDraftPositionsQueryHandler(IDbConnectionFactory dbConn
 {
   private readonly IDbConnectionFactory _dbConnectionFactory = dbConnectionFactory;
 
-  public async Task<Result<ListDraftPositionsResponse>> Handle(ListDraftPositionsQuery request, CancellationToken cancellationToken)
+  public async Task<Result<ListDraftPositionsResponse>> Handle(
+    ListDraftPositionsQuery request,
+    CancellationToken cancellationToken
+  )
   {
     await using var connection = await _dbConnectionFactory.OpenConnectionAsync(cancellationToken);
 
-    const string positionSql =
-      $"""
+    const string positionSql = $"""
       SELECT
         dp.public_id AS {nameof(PositionRow.PublicId)},
         dp.name AS {nameof(PositionRow.Name)},
@@ -25,22 +27,23 @@ internal sealed class ListDraftPositionsQueryHandler(IDbConnectionFactory dbConn
       JOIN drafts.draft_parts dp2 on gb.draft_part_id = dp2.id
       WHERE
         dp2.public_id = @draftPartId
+        AND dp.assigned_to_kind IS DISTINCT FROM 2
       ORDER BY dp.name ASC
       """;
 
-    var positionRows = (await connection.QueryAsync<PositionRow>(
-      new CommandDefinition(
-        commandText: positionSql,
-        parameters: new { request.DraftPartId },
-        cancellationToken: cancellationToken)))
-      .ToList();
+    var positionRows = (
+      await connection.QueryAsync<PositionRow>(
+        new CommandDefinition(
+          commandText: positionSql,
+          parameters: new { request.DraftPartId },
+          cancellationToken: cancellationToken
+        )
+      )
+    ).ToList();
 
     if (positionRows.Count == 0)
     {
-      return Result.Success(new ListDraftPositionsResponse
-      {
-        Positions = []
-      });
+      return Result.Success(new ListDraftPositionsResponse { Positions = [] });
     }
 
     var assignedIds = positionRows
@@ -53,8 +56,7 @@ internal sealed class ListDraftPositionsQueryHandler(IDbConnectionFactory dbConn
 
     if (assignedIds.Length > 0)
     {
-      const string nameSql =
-        $"""
+      const string nameSql = $"""
         SELECT
           d.id AS {nameof(ParticipantNameRow.ParticipantId)},
           p.display_name AS {nameof(ParticipantNameRow.ParticipantName)}
@@ -71,12 +73,15 @@ internal sealed class ListDraftPositionsQueryHandler(IDbConnectionFactory dbConn
           dt.id = ANY(@assignedIds)
         """;
 
-      nameById = (await connection.QueryAsync<ParticipantNameRow>(
-        new CommandDefinition(
-          commandText: nameSql,
-          parameters: new { assignedIds },
-          cancellationToken: cancellationToken)))
-        .ToDictionary(r => r.ParticipantId, r => r.ParticipantName);
+      nameById = (
+        await connection.QueryAsync<ParticipantNameRow>(
+          new CommandDefinition(
+            commandText: nameSql,
+            parameters: new { assignedIds },
+            cancellationToken: cancellationToken
+          )
+        )
+      ).ToDictionary(r => r.ParticipantId, r => r.ParticipantName);
     }
 
     var positions = positionRows
@@ -91,12 +96,12 @@ internal sealed class ListDraftPositionsQueryHandler(IDbConnectionFactory dbConn
           {
             ParticipantId = r.AssignedTo_ParticipantId.Value,
             ParticipantKind = ParticipantKind.FromValue(r.AssignedTo_ParticipantKind.Value),
-            ParticipantName = name
+            ParticipantName = name,
           };
         }
 
         var picks = string.IsNullOrEmpty(r.Picks)
-          ? Array.Empty<int>()
+          ? []
           : r.Picks.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).ToArray();
 
         return new DraftPositionResponse
@@ -106,16 +111,13 @@ internal sealed class ListDraftPositionsQueryHandler(IDbConnectionFactory dbConn
           Picks = picks,
           HasBonusVeto = r.HasBonusVeto,
           HasBonusVetoOverride = r.HasBonusVetoOverride,
-          AssignedTo = assignment
+          AssignedTo = assignment,
         };
       })
       .ToList()
       .AsReadOnly();
 
-    return Result.Success(new ListDraftPositionsResponse
-    {
-      Positions = positions
-    });
+    return Result.Success(new ListDraftPositionsResponse { Positions = positions });
   }
 
   private sealed record PositionRow(
@@ -125,9 +127,8 @@ internal sealed class ListDraftPositionsQueryHandler(IDbConnectionFactory dbConn
     bool HasBonusVeto,
     bool HasBonusVetoOverride,
     Guid? AssignedTo_ParticipantId,
-    int? AssignedTo_ParticipantKind);
+    int? AssignedTo_ParticipantKind
+  );
 
-  private sealed record ParticipantNameRow(
-    Guid ParticipantId,
-    string ParticipantName);
+  private sealed record ParticipantNameRow(Guid ParticipantId, string ParticipantName);
 }

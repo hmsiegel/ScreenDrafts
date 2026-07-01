@@ -99,8 +99,8 @@ export function DraftCompletionSummaryModal({ summary }: Props) {
   const hasAnyHonorifics = hasMovieHonorifics || hasDrafterHonorifics;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-sd-ink/95 backdrop-blur-sm overflow-y-auto py-8">
-      <div className="w-full max-w-2xl mx-6">
+    <div className="fixed inset-0 z-50 flex items-start justify-center bg-sd-ink/95 backdrop-blur-sm overflow-y-auto py-8">
+      <div className="w-full max-w-5xl mx-6">
 
         {/* Header */}
         <div className="text-center mb-8">
@@ -117,45 +117,50 @@ export function DraftCompletionSummaryModal({ summary }: Props) {
           </p>
         </div>
 
-        {/* Final board */}
-        <section className="mb-8">
-          <p className="font-oswald text-xs tracking-[0.25em] text-white/40 uppercase mb-3">
-            Final Board
-          </p>
-          <div className="border border-white/10 px-4">
-            {summary.picks
-              .slice()
-              .sort((a, b) => a.position - b.position)
-              .map((pick) => (
-                <BoardRow
-                  key={pick.mediaPublicId}
-                  position={pick.position}
-                  title={pick.mediaTitle}
-                />
-              ))}
-          </div>
-        </section>
-
-        {/* Honorifics */}
-        {hasAnyHonorifics && (
+        <div
+          className={`grid gap-6 mb-8 ${hasAnyHonorifics ? 'grid-cols-1 lg:grid-cols-2' : 'grid-cols-1'
+            }`}
+        >
+          {/* Final board */}
           <section className="mb-8">
             <p className="font-oswald text-xs tracking-[0.25em] text-white/40 uppercase mb-3">
-              Honorifics This Draft
+              Final Board
             </p>
             <div className="border border-white/10 px-4">
-              {summary.movieHonorifics.map((h) => (
-                <MovieHonorificRow key={h.mediaPublicId} h={h} />
-              ))}
-              {summary.drafterHonorifics.map((h) => (
-                <DrafterHonorificRow
-                  key={h.drafterIdValue}
-                  h={h}
-                  participants={participants}
-                />
-              ))}
+              {summary.picks
+                .slice()
+                .sort((a, b) => a.position - b.position)
+                .map((pick) => (
+                  <BoardRow
+                    key={pick.mediaPublicId}
+                    position={pick.position}
+                    title={pick.mediaTitle}
+                  />
+                ))}
             </div>
           </section>
-        )}
+
+          {/* Honorifics */}
+          {hasAnyHonorifics && (
+            <section className="mb-8">
+              <p className="font-oswald text-xs tracking-[0.25em] text-white/40 uppercase mb-3">
+                Honorifics This Draft
+              </p>
+              <div className="border border-white/10 px-4">
+                {summary.movieHonorifics.map((h) => (
+                  <MovieHonorificRow key={h.mediaPublicId} h={h} />
+                ))}
+                {summary.drafterHonorifics.map((h) => (
+                  <DrafterHonorificRow
+                    key={h.drafterIdValue}
+                    h={h}
+                    participants={participants}
+                  />
+                ))}
+              </div>
+            </section>
+          )}
+        </div>
 
         {/* OK button */}
         <div className="text-center">

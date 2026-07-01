@@ -5,13 +5,16 @@ internal sealed class RevealPickCommandHandler(
   IPickRepository pickRepository,
   IHostRepository hostRepository,
   IPersonRepository personRepository,
-  IUsersApi usersApi) : ICommandHandler<RevealPickCommand>
+  IUsersApi usersApi,
+  ISeriesPolicyProvider seriesPolicyProvider
+) : ICommandHandler<RevealPickCommand>
 {
   private readonly IDraftPartRepository _draftPartRepository = draftPartRepository;
   private readonly IPickRepository _pickRepository = pickRepository;
   private readonly IHostRepository _hostRepository = hostRepository;
   private readonly IPersonRepository _personRepository = personRepository;
   private readonly IUsersApi _usersApi = usersApi;
+  private readonly ISeriesPolicyProvider _seriesPolicyProvider = seriesPolicyProvider;
 
   public async Task<Result> Handle(RevealPickCommand request, CancellationToken cancellationToken)
   {
@@ -62,9 +65,17 @@ internal sealed class RevealPickCommandHandler(
       return Result.Failure(DraftPartErrors.OnlyPrimaryHostCanRevealPicks);
     }
 
+    var series = await _seriesPolicyProvider.GetSeriesAsyc(draftPart.SeriesId, cancellationToken);
+
+    if (series is null)
+    {
+      return Result.Failure(SeriesErrors.SeriesNotFound(draftPart.SeriesId.Value));
+    }
+
     var result = draftPart.RevealPick(
       playOrder: request.PlayOrder,
-      actedByPublicId: host.PublicId
+      actedByPublicId: host.PublicId,
+      canonicalPolicyValue: CanonicalPolicy.FromValue(series.CanonicalPolicy.Value)
     );
 
     if (result.IsFailure)

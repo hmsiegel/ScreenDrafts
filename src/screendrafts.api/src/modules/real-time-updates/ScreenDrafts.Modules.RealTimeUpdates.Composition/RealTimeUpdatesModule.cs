@@ -104,6 +104,10 @@ public static class RealTimeUpdatesModule
       .Endpoint(c => c.InstanceId = moduleInstanceId);
 
     registrationConfigurator
+      .AddConsumer<IntegrationEventConsumer<DraftPartCompletedIntegrationEvent>>()
+      .Endpoint(c => c.InstanceId = moduleInstanceId);
+
+    registrationConfigurator
       .AddConsumer<IntegrationEventConsumer<CommunityRuleAppliedIntegrationEvent>>()
       .Endpoint(c => c.InstanceId = moduleInstanceId);
   }

@@ -24,6 +24,7 @@ global using ScreenDrafts.Modules.Drafts.Infrastructure;
 global using ScreenDrafts.Modules.Drafts.Infrastructure.Data;
 global using ScreenDrafts.Modules.Drafts.Infrastructure.Inbox;
 global using ScreenDrafts.Modules.Drafts.Infrastructure.Outbox;
+global using ScreenDrafts.Modules.Drafts.IntegrationEvents;
 global using ScreenDrafts.Modules.Integrations.IntegrationEvents;
 global using ScreenDrafts.Modules.Movies.IntegrationEvents;
 global using ScreenDrafts.Modules.Users.IntegrationEvents;

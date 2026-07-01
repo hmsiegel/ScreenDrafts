@@ -2,7 +2,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useLiveDraft } from '../../live-draft-context';
+import { resolveParticipantName, useLiveDraft } from '../../live-draft-context';
 import { DraftBoard } from '../draft-board';
 import { DraftPickList } from '../draft-pick-list';
 import { submitTriviaResults } from '../../gameplay-fetchers';
@@ -515,6 +515,23 @@ function GameplayView({
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
       <div>
+        {/* On the clock — shown only while waiting for the next pick. A submitted
+            drafter pick (→ pending/ANNOUNCE banner) or a community turn (→ Community
+            Pick banner) replaces it. */}
+        {!isCommunityTurn &&
+          !pendingPicks.some((pp) => pp.participantKind !== 2) &&
+          nextExpectedParticipantId && (
+            <div className="mb-4 px-4 py-3 bg-white/5 border border-white/10">
+              <p className="font-oswald text-white text-sm">
+                <span className="text-white/50 text-xs tracking-widest uppercase mr-2">
+                  On the clock
+                </span>
+                <span className="font-bold">
+                  {resolveParticipantName(gameplay.participants ?? [], nextExpectedParticipantId)}
+                </span>
+              </p>
+            </div>
+          )}
         {isCommunityTurn && communityPickRule && (
           <div className="mb-4 flex items-center justify-between gap-4 px-4 py-3 bg-sd-red/20 border border-sd-red/40">
             <div className="min-w-0">
@@ -540,41 +557,43 @@ function GameplayView({
           </div>
         )}
 
-        {pendingPicks.length > 0 && (
+        {pendingPicks.some((pp) => pp.participantKind !== 2) && (
           <div className="mb-4 space-y-2">
-            {pendingPicks.map((pp) => {
-              const participantName =
-                gameplay.participants?.find((p) => p.participantId === pp.participantId)
-                  ?.participantName ?? pp.participantId;
+            {pendingPicks
+              .filter((pp) => pp.participantKind !== 1)
+              .map((pp) => {
+                const participantName =
+                  gameplay.participants?.find((p) => p.participantId === pp.participantId)
+                    ?.participantName ?? pp.participantId;
 
-              return (
-                <div
-                  key={pp.playOrder}
-                  className="flex items-center justify-between gap-4 px-4 py-3 bg-sd-blue/20 border border-sd-blue/40"
-                >
-                  <p className="font-oswald text-sd-paper text-sm min-w-0">
-                    <span className="text-sd-red font-bold">At No. {pp.boardPosition}</span>
-                    {', '}
-                    <span className="text-white/70">{participantName}</span>
-                    {' selects '}
-                    <a
-                      href={`https://www.themoviedb.org/movie/${pp.tmdbId}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="font-bold hover:underline underline-offset-2"
-                    >
-                      {pp.movieTitle}
-                    </a>
-                  </p>
-                  <button
-                    onClick={() => revealPick(pp.playOrder)}
-                    className="shrink-0 px-4 py-2 bg-sd-blue text-white font-oswald text-xs tracking-widest hover:bg-sd-blue/80 transition-colors"
+                return (
+                  <div
+                    key={pp.playOrder}
+                    className="flex items-center justify-between gap-4 px-4 py-3 bg-sd-blue/20 border border-sd-blue/40"
                   >
-                    ANNOUNCE
-                  </button>
-                </div>
-              );
-            })}
+                    <p className="font-oswald text-sd-paper text-sm min-w-0">
+                      <span className="text-sd-red font-bold">At No. {pp.boardPosition}</span>
+                      {', '}
+                      <span className="text-white/70">{participantName}</span>
+                      {' selects '}
+                      <a
+                        href={`https://www.themoviedb.org/movie/${pp.tmdbId}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-bold hover:underline underline-offset-2"
+                      >
+                        {pp.movieTitle}
+                      </a>
+                    </p>
+                    <button
+                      onClick={() => revealPick(pp.playOrder)}
+                      className="shrink-0 px-4 py-2 bg-sd-blue text-white font-oswald text-xs tracking-widest hover:bg-sd-blue/80 transition-colors"
+                    >
+                      ANNOUNCE
+                    </button>
+                  </div>
+                );
+              })}
           </div>
         )}
 

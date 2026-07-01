@@ -47,12 +47,12 @@ export function DraftPickList() {
           </div>
           {pick.wasVetoed && !pick.wasVetoOverridden && (
             <span className="text-[10px] bg-sd-red/20 text-sd-red px-1.5 py-0.5 font-oswald tracking-wider shrink-0">
-              VETOED
+              VETOED{pick.vetoedByName ? ` BY ${pick.vetoedByName.toUpperCase()}` : ''}
             </span>
           )}
           {pick.wasVetoOverridden && (
             <span className="text-[10px] bg-light-blue/20 text-light-blue px-1.5 py-0.5 font-oswald tracking-wider shrink-0">
-              SAVED
+              SAVED{pick.savedByName ? ` BY ${pick.savedByName.toUpperCase()}` : ''}
             </span>
           )}
           {pick.wasCommissionerOverride && (

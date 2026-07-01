@@ -5,8 +5,8 @@ internal sealed class PickRevealedDomianEventHandler(
   IEventBus eventBus,
   ICacheService cacheService,
   IDateTimeProvider dateTimeProvider,
-  IMovieRepository movieRepository)
-  : DomainEventHandler<PickRevealedDomainEvent>
+  IMovieRepository movieRepository
+) : DomainEventHandler<PickRevealedDomainEvent>
 {
   private readonly IPickRepository _pickRepository = pickRepository;
   private readonly IEventBus _eventBus = eventBus;
@@ -16,59 +16,93 @@ internal sealed class PickRevealedDomianEventHandler(
 
   public override async Task Handle(
     PickRevealedDomainEvent domainEvent,
-    CancellationToken cancellationToken = default)
+    CancellationToken cancellationToken = default
+  )
   {
     await _cacheService.RemoveAsync(
       key: DraftsCacheKeys.PickList(domainEvent.DraftPartPublicId),
-      cancellationToken: cancellationToken);
+      cancellationToken: cancellationToken
+    );
 
     var pickId = PickId.Create(domainEvent.PickId);
 
-    var pick = await _pickRepository.GetByIdAsync(
-      id: pickId,
-      cancellationToken: cancellationToken);
+    var pick = await _pickRepository.GetByIdAsync(id: pickId, cancellationToken: cancellationToken);
 
     if (pick is null)
     {
       return;
     }
 
-    var movie = await _movieRepository.GetByIdAsync(domainEvent.MovieId, cancellationToken: cancellationToken);
+    var movie = await _movieRepository.GetByIdAsync(
+      domainEvent.MovieId,
+      cancellationToken: cancellationToken
+    );
 
     if (movie is null)
     {
       return;
     }
 
-    await _eventBus.PublishAsync(new PickRevealedIntegrationEvent(
-      Guid.NewGuid(),
-      _dateTimeProvider.UtcNow,
-      domainEvent.DraftPartId,
-      domainEvent.DraftPartPublicId,
-      domainEvent.PlayOrder,
-      domainEvent.MovieId,
-      movie.PublicId,
-      movie.MovieTitle,
-      movie.ImdbId,
-      movie.TmdbId,
-      pick.Position,
-      pick.PlayedByParticipantIdValue,
-      pick.PlayedByParticipantKindValue.Value,
-      domainEvent.ActedByPublicId),
-      cancellationToken);
+    await _eventBus.PublishAsync(
+      new PickRevealedIntegrationEvent(
+        Guid.NewGuid(),
+        _dateTimeProvider.UtcNow,
+        domainEvent.DraftPartId,
+        domainEvent.DraftPartPublicId,
+        domainEvent.PlayOrder,
+        domainEvent.MovieId,
+        movie.PublicId,
+        movie.MovieTitle,
+        movie.ImdbId,
+        movie.TmdbId,
+        pick.Position,
+        pick.PlayedByParticipantIdValue,
+        pick.PlayedByParticipantKindValue.Value,
+        domainEvent.ActedByPublicId
+      ),
+      cancellationToken
+    );
 
-    await _eventBus.PublishAsync(new PickAddedIntegrationEvent(
-      id: Guid.NewGuid(),
-      occurredOnUtc: _dateTimeProvider.UtcNow,
-      draftPartId: domainEvent.DraftPartId,
-      draftPartPublicId: domainEvent.DraftPartPublicId,
-      imdbId: movie.ImdbId!,
-      movieTitle: movie.MovieTitle,
-      tmdbId: movie.TmdbId,
-      boardPosition: pick.Position,
-      playOrder: domainEvent.PlayOrder,
-      participantId: pick.PlayedByParticipantIdValue,
-      participantKind: pick.PlayedByParticipantKindValue.Value),
-      cancellationToken);
+    await _eventBus.PublishAsync(
+      new PickAddedIntegrationEvent(
+        id: Guid.NewGuid(),
+        occurredOnUtc: _dateTimeProvider.UtcNow,
+        draftPartId: domainEvent.DraftPartId,
+        draftPartPublicId: domainEvent.DraftPartPublicId,
+        imdbId: movie.ImdbId!,
+        movieTitle: movie.MovieTitle,
+        tmdbId: movie.TmdbId,
+        boardPosition: pick.Position,
+        playOrder: domainEvent.PlayOrder,
+        participantId: pick.PlayedByParticipantIdValue,
+        participantKind: pick.PlayedByParticipantKindValue.Value
+      ),
+      cancellationToken
+    );
+
+    if (domainEvent.CanonicalPolicyValue != 0)
+    {
+      return;
+    }
+
+    await _eventBus.PublishAsync(
+      new PickLockedIntegrationEvent(
+        id: Guid.NewGuid(),
+        occurredOnUtc: _dateTimeProvider.UtcNow,
+        draftPartId: domainEvent.DraftPartId,
+        draftPartPublicId: domainEvent.DraftPartPublicId,
+        draftId: domainEvent.DraftId,
+        draftPublicId: domainEvent.DraftPublicId,
+        moviePublicId: movie.PublicId,
+        movieTitle: movie.MovieTitle,
+        tmdbId: movie.TmdbId,
+        boardPosition: pick.Position,
+        participantIdValue: pick.PlayedByParticipantIdValue,
+        participantKindValue: pick.PlayedByParticipantKindValue.Value,
+        canonicalPolicyValue: domainEvent.CanonicalPolicyValue,
+        hasMainFeedRelease: false
+      ),
+      cancellationToken
+    );
   }
 }

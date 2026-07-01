@@ -165,13 +165,25 @@ internal sealed class GetDraftPartGameplayQueryHandler(
         m.tmdb_id                       AS {nameof(PickRow.TmdbId)},
         dpp.participant_id_value        AS {nameof(PickRow.PlayedByIdValue)},
         dpp.participant_kind_value      AS {nameof(PickRow.PlayedByKindValue)},
-        COALESCE(pe.first_name || ' ' || pe.last_name, dt.name)
-                                        AS {nameof(PickRow.PlayedByName)},
+        CASE
+          WHEN dpp.participant_kind_value = 2 THEN 'Patreon Members'
+          ELSE COALESCE(pe.first_name || ' ' || pe.last_name, dt.name)
+        END                             AS {nameof(PickRow.PlayedByName)},
         (v.id IS NOT NULL AND v.is_overridden = FALSE)
                                         AS {nameof(PickRow.WasVetoed)},
         (v.id IS NOT NULL AND v.is_overridden = TRUE)
                                         AS {nameof(PickRow.WasVetoOverridden)},
-        (co.id IS NOT NULL)             AS {nameof(PickRow.WasCommissionerOverride)}
+        (co.id IS NOT NULL)             AS {nameof(PickRow.WasCommissionerOverride)},
+        CASE
+          WHEN v.id IS NULL THEN NULL
+          WHEN dpp_v.participant_kind_value = 2 THEN 'Patreon Members'
+          ELSE COALESCE(pe_v.first_name || ' ' || pe_v.last_name, dt_v.name)
+        END                             AS {nameof(PickRow.VetoedByName)},
+        CASE
+          WHEN vo.id IS NULL THEN NULL
+          WHEN dpp_vo.participant_kind_value = 2 THEN 'Patreon Members'
+          ELSE COALESCE(pe_vo.first_name || ' ' || pe_vo.last_name, dt_vo.name)
+        END                             AS {nameof(PickRow.SavedByName)}
       FROM drafts.picks pk
       JOIN drafts.draft_parts dp ON dp.id = pk.draft_part_id
       JOIN drafts.draft_part_participants dpp ON dpp.id = pk.played_by_participant_id
@@ -183,6 +195,21 @@ internal sealed class GetDraftPartGameplayQueryHandler(
         AND dpp.participant_kind_value = 1
       LEFT JOIN drafts.vetoes v ON v.target_pick_id = pk.id
       LEFT JOIN drafts.commissioner_overrides co ON co.pick_id = pk.id
+      -- VETOED BY: veto issuer
+      LEFT JOIN drafts.draft_part_participants dpp_v ON dpp_v.id = v.issued_by_participant_id
+      LEFT JOIN drafts.people pe_v ON pe_v.id = (
+        SELECT dr_v.person_id FROM drafts.drafters dr_v WHERE dr_v.id = dpp_v.participant_id_value
+      )
+      LEFT JOIN drafts.drafter_teams dt_v ON dt_v.id = dpp_v.participant_id_value
+        AND dpp_v.participant_kind_value = 1
+      -- SAVED BY: veto-override issuer
+      LEFT JOIN drafts.veto_overrides vo ON vo.veto_id = v.id
+      LEFT JOIN drafts.draft_part_participants dpp_vo ON dpp_vo.id = vo.issued_by_participant_id
+      LEFT JOIN drafts.people pe_vo ON pe_vo.id = (
+        SELECT dr_vo.person_id FROM drafts.drafters dr_vo WHERE dr_vo.id = dpp_vo.participant_id_value
+      )
+      LEFT JOIN drafts.drafter_teams dt_vo ON dt_vo.id = dpp_vo.participant_id_value
+        AND dpp_vo.participant_kind_value = 1
       WHERE dp.public_id = @DraftPartPublicId
         AND pk.sub_draft_id IS NULL
       ORDER BY pk.play_order
@@ -437,6 +464,8 @@ internal sealed class GetDraftPartGameplayQueryHandler(
             WasVetoed = p.WasVetoed,
             WasVetoOverridden = p.WasVetoOverridden,
             WasCommissionerOverride = p.WasCommissionerOverride,
+            VetoedByName = p.VetoedByName,
+            SavedByName = p.SavedByName,
           }),
         ],
         Hosts =
@@ -518,7 +547,9 @@ internal sealed class GetDraftPartGameplayQueryHandler(
     string PlayedByName,
     bool WasVetoed,
     bool WasVetoOverridden,
-    bool WasCommissionerOverride
+    bool WasCommissionerOverride,
+    string? VetoedByName,
+    string? SavedByName
   );
 
   private sealed record CallerRoleRow(

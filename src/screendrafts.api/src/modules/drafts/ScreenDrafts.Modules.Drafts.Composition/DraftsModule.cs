@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Modules.Drafts.IntegrationEvents;
-
-namespace ScreenDrafts.Modules.Drafts.Composition;
+﻿namespace ScreenDrafts.Modules.Drafts.Composition;
 
 public static class DraftsModule
 {

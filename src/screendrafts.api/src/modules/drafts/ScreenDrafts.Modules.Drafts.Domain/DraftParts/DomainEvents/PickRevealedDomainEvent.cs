@@ -6,7 +6,11 @@ public sealed class PickRevealedDomainEvent(
   Guid pickId,
   int playOrder,
   Guid movieId,
-  string? actedByPublicId) : DomainEvent
+  string? actedByPublicId,
+  Guid draftId,
+  string draftPublicId,
+  int canonicalPolicyValue
+) : DomainEvent
 {
   public Guid DraftPartId { get; init; } = draftPartId;
   public string DraftPartPublicId { get; init; } = draftPartPublicId;
@@ -14,4 +18,7 @@ public sealed class PickRevealedDomainEvent(
   public int PlayOrder { get; init; } = playOrder;
   public Guid MovieId { get; init; } = movieId;
   public string? ActedByPublicId { get; init; } = actedByPublicId;
+  public Guid DraftId { get; init; } = draftId;
+  public string DraftPublicId { get; init; } = draftPublicId;
+  public int CanonicalPolicyValue { get; init; } = canonicalPolicyValue;
 }

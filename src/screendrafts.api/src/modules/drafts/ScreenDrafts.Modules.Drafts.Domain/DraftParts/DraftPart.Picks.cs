@@ -95,7 +95,7 @@ public sealed partial class DraftPart
       return Result.Failure<PickId>(addResult.Errors);
     }
 
-    if (DraftType == DraftType.SpeedDraft)
+    if (DraftType == DraftType.SpeedDraft || participantId.Kind == ParticipantKind.Community)
     {
       var revealResult = pick.RevealPick(actedByPublicId);
 
@@ -161,7 +161,7 @@ public sealed partial class DraftPart
     return Result.Success();
   }
 
-  public Result RevealPick(int playOrder, string? actedByPublicId)
+  public Result RevealPick(int playOrder, string? actedByPublicId, int canonicalPolicyValue)
   {
     if (Status != DraftPartStatus.InProgress)
     {
@@ -196,7 +196,10 @@ public sealed partial class DraftPart
         pickId: pick.Id.Value,
         playOrder: playOrder,
         movieId: pick.MovieId,
-        actedByPublicId: actedByPublicId
+        actedByPublicId: actedByPublicId,
+        draftId: DraftId.Value,
+        draftPublicId: DraftPublicId,
+        canonicalPolicyValue: canonicalPolicyValue
       )
     );
 

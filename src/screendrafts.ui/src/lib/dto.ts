@@ -10809,6 +10809,8 @@ export interface GameplayPickResponse {
     wasVetoed?: boolean;
     wasVetoOverridden?: boolean;
     wasCommissionerOverride?: boolean;
+    vetoedByName?: string | undefined;
+    savedByName?: string | undefined;
 
     [key: string]: any;
 }

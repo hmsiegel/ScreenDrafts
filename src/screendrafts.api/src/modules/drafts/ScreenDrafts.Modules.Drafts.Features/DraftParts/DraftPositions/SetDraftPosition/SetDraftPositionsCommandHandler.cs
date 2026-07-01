@@ -62,6 +62,15 @@ internal sealed class SetDraftPositionsCommandHandler(
       return assignResult;
     }
 
+    var communityPosResult = draftPart.EnsureCommunityPositions(() =>
+      _publicIdGenerator.GeneratePublicId(PublicIdPrefixes.DraftPosition)
+    );
+
+    if (communityPosResult.IsFailure)
+    {
+      return Result.Failure(communityPosResult.Errors);
+    }
+
     _draftPartRepository.Update(draftPart);
     return Result.Success();
   }

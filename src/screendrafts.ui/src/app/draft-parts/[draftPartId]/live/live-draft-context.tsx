@@ -17,6 +17,24 @@ import {
   GameplayPickResponse,
   GetDraftPartGameplayResponse,
 } from '@/lib/dto';
+import { deriveHonorificMoments, type HonorificMoment } from './lib/honorifics';
+
+// The community participant (kind 2 / well-known GUID) is intentionally excluded
+// from the gameplay `participants` list, so a normal id→name lookup misses and
+// falls back to the raw GUID. Resolve its display name explicitly.
+export const COMMUNITY_PARTICIPANT_ID = 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee';
+
+export function resolveParticipantName(
+  participants: GameplayParticipantResponse[],
+  participantId: string | null | undefined,
+  participantKind?: number,
+): string {
+  if (!participantId) return '';
+  if (participantId === COMMUNITY_PARTICIPANT_ID || participantKind === 2) {
+    return 'Patreon Members';
+  }
+  return participants.find((p) => p.participantId === participantId)?.participantName ?? '';
+}
 
 // ── SignalR payload shapes ────────────────────────────────────────────────────
 
@@ -221,6 +239,8 @@ interface LiveDraftContextValue {
   revealPick: (playOrder: number) => Promise<void>;
   completionSummary: DraftCompletionSummary | null;
   dismissCompletionSummary: () => void;
+  honorificOverlay: HonorificMoment | null;
+  dismissHonorificOverlay: () => void;
 }
 
 const LiveDraftContext = createContext<LiveDraftContextValue | null>(null);
@@ -267,7 +287,11 @@ export function LiveDraftProvider({
   const [notification, setNotification] = useState<GameplayNotification | null>(null);
   const [countdownTarget, setCountdownTarget] = useState<string | null>(null);
   const [completionSummary, setCompletionSummary] = useState<DraftCompletionSummary | null>(null);
+  const [honorificOverlay, setHonorificOverlay] = useState<HonorificMoment | null>(null);
   const notificationQueue = useRef<GameplayNotification[]>([]);
+  const showingNotificationRef = useRef(false);
+  const honorificQueue = useRef<HonorificMoment[]>([]);
+  const showingHonorificRef = useRef(false);
   const participantsRef = useRef(initialGameplay.participants ?? []);
   const connectionRef = useRef<signalR.HubConnection | null>(null);
   const countdownTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -310,11 +334,32 @@ export function LiveDraftProvider({
 
   const enqueueNotification = useCallback((n: GameplayNotification) => {
     notificationQueue.current.push(n);
-    setNotification((current) => current ?? notificationQueue.current.shift() ?? null);
+    if (showingNotificationRef.current) return;
+    const next = notificationQueue.current.shift() ?? null;
+    showingHonorificRef.current = next !== null;
+    setNotification(next);
   }, []);
 
   const dismissNotification = useCallback(() => {
-    setNotification(notificationQueue.current.shift() ?? null);
+    const next = notificationQueue.current.shift() ?? null;
+    showingNotificationRef.current = next !== null;
+    setNotification(next);
+  }, []);
+
+  // ── Honorific overlay queue ───────────────────────────────────────────────
+  // Separate from the toast queue: a film reaching (or losing) a canonical
+  // honorific is a full-screen headline moment, like the countdown and the
+  // completion summary. One MovieHonorificEarned event can yield several moments
+  // (an appearance tier AND one or more position flags), so they're queued and
+  // shown one at a time.
+
+  const enqueueHonorificMoments = useCallback((moments: HonorificMoment[]) => {
+    if (moments.length === 0) return;
+    honorificQueue.current.push(...moments);
+    if (showingHonorificRef.current) return;       // one already up; queue holds the rest
+    const next = honorificQueue.current.shift() ?? null;
+    showingHonorificRef.current = next !== null;
+    setHonorificOverlay(next);                       // plain value — no updater, no double-invoke
   }, []);
 
   // ── Refetch ───────────────────────────────────────────────────────────────
@@ -379,9 +424,11 @@ export function LiveDraftProvider({
           tmdbId: payload.tmdbId,
           playedById: payload.participantId,
           playedByKind: payload.participantKind,
-          playedByName:
-            participantsRef.current.find((p) => p.participantId === payload.participantId)
-              ?.participantName ?? '',
+          playedByName: resolveParticipantName(
+            participantsRef.current,
+            payload.participantId,
+            payload.participantKind,
+          ),
           wasVetoed: false,
           wasVetoOverridden: false,
           wasCommissionerOverride: false,
@@ -466,9 +513,11 @@ export function LiveDraftProvider({
             tmdbId: payload.tmdbId,
             playedById: payload.participantId,
             playedByKind: payload.participantKind,
-            playedByName:
-              participantsRef.current.find((p) => p.participantId === payload.participantId)
-                ?.participantName ?? '',
+            playedByName: resolveParticipantName(
+              participantsRef.current,
+              payload.participantId,
+              payload.participantKind,
+            ),
             wasVetoed: false,
             wasVetoOverridden: false,
             wasCommissionerOverride: false,
@@ -538,11 +587,14 @@ export function LiveDraftProvider({
       setTimeout(() => void refetch(), 300);
     });
 
-    // Fires whenever a movie's honorific changes — in either direction.
-    // newAppearanceHonorificValue > previousAppearanceHonorificValue = earned.
-    // newAppearanceHonorificValue < previousAppearanceHonorificValue = reverted
-    // (caused by a veto or commissioner override striking a previously-locked pick).
-    connection.on(
+    // Fires whenever a movie's honorific changes — in either direction, on either
+    // axis. Appearance is a tier (Marquee → High Five); position is a [Flags]
+    // bitmask (Unified No. 1, The Cycle). deriveHonorificMoments turns one event
+    // into the discrete moments worth announcing — a position-only change (e.g. a
+    // 6th appearance completing Unified No. 1, where the appearance value is already
+    // capped at High Five) still announces, because it diffs the bitmask, not just
+    // the appearance value. Earned vs reverted is derived per moment.
+connection.on(
       'MovieHonorificEarned',
       (
         eventDraftPartPublicId: string,
@@ -552,19 +604,15 @@ export function LiveDraftProvider({
         newAppearanceHonorificValue: number,
         previousPositionHonorificValue: number,
         newPositionHonorificValue: number,
-        appearanceCount: number,
       ) => {
-        const payload: MovieHonorificChangedPayload = {
-          draftPartPublicId: eventDraftPartPublicId,
-          moviePublicId,
+        const moments = deriveHonorificMoments({
           movieTitle,
           previousAppearanceHonorificValue,
           newAppearanceHonorificValue,
           previousPositionHonorificValue,
           newPositionHonorificValue,
-          appearanceCount,
-        };
-        enqueueNotification({ kind: 'MovieHonorificChanged', payload });
+        });
+        enqueueHonorificMoments(moments);
       },
     );
 
@@ -697,6 +745,12 @@ export function LiveDraftProvider({
     window.location.href = `/my-drafts/${initialGameplay.draftId}`;
   }, [initialGameplay.draftId]);
 
+  const dismissHonorificOverlay = useCallback(() => {
+    const next = honorificQueue.current.shift() ?? null;
+    showingHonorificRef.current = next !== null;
+    setHonorificOverlay(next);
+  }, []);
+
   const dismissCountdown = useCallback(() => {
     if (countdownTimerRef.current) {
       clearTimeout(countdownTimerRef.current);
@@ -726,6 +780,8 @@ export function LiveDraftProvider({
         revealPick,
         completionSummary,
         dismissCompletionSummary,
+        honorificOverlay,
+        dismissHonorificOverlay,
       }}
     >
       {children}

@@ -12,6 +12,7 @@ import { DrafterTab } from './components/tabs/drafter-tab';
 import { PredictionsTab } from './components/tabs/predictions-tab';
 import { PickNotificationModal } from './components/pick-notification-modal';
 import { DraftCompletionSummaryModal } from './components/draft-completion-summary';
+import { HonorificOverlay } from './components/honorific-overlay';
 
 interface LiveDraftPageProps {
   draftPartId: string;
@@ -50,6 +51,8 @@ function LiveDraftPageInner({
     notification,
     dismissNotification,
     completionSummary,
+    honorificOverlay,
+    dismissHonorificOverlay
   } = useLiveDraft();
 
   type TabKey = 'host' | 'cohost' | 'drafter' | 'predictions';
@@ -145,6 +148,10 @@ function LiveDraftPageInner({
           accidentally dismissed by a queued gameplay notification. */}
       {completionSummary && (
         <DraftCompletionSummaryModal summary={completionSummary} />
+      )}
+
+      {honorificOverlay && (
+        <HonorificOverlay payload={honorificOverlay} onDismiss={dismissHonorificOverlay} />
       )}
     </div>
   );

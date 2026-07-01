@@ -9695,6 +9695,18 @@
           },
           "wasCommissionerOverride": {
             "type": "boolean"
+          },
+          "vetoedByName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "savedByName": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },

@@ -13,4 +13,6 @@ internal sealed record GameplayPickResponse
   public bool WasVetoed { get; init; }
   public bool WasVetoOverridden { get; init; }
   public bool WasCommissionerOverride { get; init; }
+  public string? VetoedByName { get; init; }
+  public string? SavedByName { get; init; }
 }
