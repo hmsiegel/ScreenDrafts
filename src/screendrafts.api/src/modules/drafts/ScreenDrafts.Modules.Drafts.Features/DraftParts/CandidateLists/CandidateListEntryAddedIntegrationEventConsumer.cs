@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.CandidateLists;
 
-internal sealed class CandidateListEntryAddedIntegrationEventHandler(
+internal sealed class CandidateListEntryAddedIntegrationEventConsumer(
   IDraftRepository draftRepository,
   IDraftBoardRepository draftBoardRepository,
   IPublicIdGenerator publicIdGenerator,

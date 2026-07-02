@@ -159,15 +159,11 @@ public sealed class SetReleaseDateTests(DraftsIntegrationTestWebAppFactory facto
     }, TestContext.Current.CancellationToken);
 
     var draftPublicId = draftResult.Value;
-    var partResult = await Sender.Send(new CreateDraftPartCommand
-    {
-      DraftPublicId = draftPublicId,
-      PartIndex = 1,
-      MinimumPosition = 1,
-      MaximumPosition = 7,
-    }, TestContext.Current.CancellationToken);
 
-    return (draftPublicId, partResult.Value);
+    // CreateDraft auto-creates part index 1 (min=1, max=7) when no Parts are supplied.
+    var draftPartPublicId = await GetFirstDraftPartPublicIdAsync(draftPublicId);
+
+    return (draftPublicId, draftPartPublicId);
   }
 
   private async Task<string> CreateSeriesAsync()

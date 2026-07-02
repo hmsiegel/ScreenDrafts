@@ -69,9 +69,9 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
   // ─────────────────────────────────────────────────────────────────────────
 
   [Fact]
-  public async Task GetDraft_WithNoParts_ShouldReturnEmptyPartsListAsync()
+  public async Task GetDraft_WithDefaultPart_ShouldReturnOnePartAsync()
   {
-    // Arrange
+    // Arrange — CreateDraft auto-creates part index 1 (min=1, max=7) when no Parts are supplied.
     var draftPublicId = await CreateDraftAsync();
     var query = new GetDraftQuery { DraftId = draftPublicId, IncludePatreon = false };
 
@@ -80,7 +80,8 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
 
     // Assert
     result.IsSuccess.Should().BeTrue();
-    result.Value.Parts.Should().BeEmpty();
+    result.Value.Parts.Should().HaveCount(1);
+    result.Value.Parts[0].PartIndex.Should().Be(1);
   }
 
   [Fact]
@@ -116,17 +117,7 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
       )
     ).Value;
 
-    await Sender.Send(
-      new CreateDraftPartCommand
-      {
-        DraftPublicId = draftPublicId,
-        PartIndex = 1,
-        MinimumPosition = 1,
-        MaximumPosition = 7,
-      },
-      TestContext.Current.CancellationToken
-    );
-
+    // CreateDraft auto-creates part index 1 (min=1, max=7) when no Parts are supplied.
     await Sender.Send(
       new CreateDraftPartCommand
       {
@@ -541,18 +532,8 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
       )
     ).Value;
 
-    var partPublicId = (
-      await Sender.Send(
-        new CreateDraftPartCommand
-        {
-          DraftPublicId = draftPublicId,
-          PartIndex = 1,
-          MinimumPosition = 1,
-          MaximumPosition = 7,
-        },
-        TestContext.Current.CancellationToken
-      )
-    ).Value;
+    // CreateDraft auto-creates part index 1 (min=1, max=7) when no Parts are supplied.
+    var partPublicId = await GetFirstDraftPartPublicIdAsync(draftPublicId);
 
     return (draftPublicId, partPublicId);
   }
@@ -596,17 +577,7 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
       )
     ).Value;
 
-    await Sender.Send(
-      new CreateDraftPartCommand
-      {
-        DraftPublicId = draftPublicId,
-        PartIndex = 1,
-        MinimumPosition = 1,
-        MaximumPosition = 7,
-      },
-      TestContext.Current.CancellationToken
-    );
-
+    // CreateDraft auto-creates part index 1 (min=1, max=7) when no Parts are supplied.
     var draftPartInternalId = await GetFirstDraftPartIdAsync(draftPublicId);
 
     var draftPart = await DbContext.DraftParts.FirstAsync(

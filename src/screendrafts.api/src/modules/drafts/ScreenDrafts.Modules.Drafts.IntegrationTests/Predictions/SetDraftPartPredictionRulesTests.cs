@@ -158,6 +158,19 @@ public sealed class SetDraftPartPredictionRulesTests(DraftsIntegrationTestWebApp
   {
     var seriesId = await CreateSeriesAsync();
     var draftPublicId = await CreateDraftPublicIdAsync(seriesId);
+
+    // CreateDraft auto-creates part index 1 (min=1, max=7) when no Parts are supplied,
+    // which matches the values requested here — reuse it instead of colliding with it.
+    var existingPart = await DbContext.Drafts
+      .Where(d => d.PublicId == draftPublicId)
+      .SelectMany(d => d.Parts)
+      .FirstOrDefaultAsync(p => p.PartIndex == 1, TestContext.Current.CancellationToken);
+
+    if (existingPart is not null)
+    {
+      return existingPart.PublicId;
+    }
+
     var result = await Sender.Send(new CreateDraftPartCommand
     {
       DraftPublicId = draftPublicId,

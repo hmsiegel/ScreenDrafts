@@ -19,7 +19,13 @@
       "Bash(wsl:*)",
       "Bash(DOCKER_HOST=npipe:////./pipe/docker_engine docker ps:*)",
       "Bash(Get-ChildItem -Path \"C:\\\\Repos\\\\ScreenDrafts\\\\src\\\\screendrafts.api\" -Directory)",
-      "Bash(Select-Object Name)"
+      "Bash(Select-Object Name)",
+      "Read(//c/Users/hmsie/AppData/Local/Temp/claude/**)",
+      "Bash(sed -E 's/\\\\.[A-Za-z0-9_]+_.*//')",
+      "Bash(awk -F'\\\\t' '{print $2}' drafts_failures.tsv)",
+      "Bash(awk -F'\\\\t' '{print $1}' drafts_failures.tsv)",
+      "Bash(sed -E 's/\\\\.[A-Za-z0-9_]+Async$//')",
+      "Bash(awk -F'.' '{print $\\(NF\\)}')"
     ]
   }
 }

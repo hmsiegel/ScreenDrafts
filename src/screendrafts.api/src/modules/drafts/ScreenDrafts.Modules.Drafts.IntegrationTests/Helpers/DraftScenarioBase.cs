@@ -59,6 +59,25 @@ public abstract class DraftScenarioBase(DraftsIntegrationTestWebAppFactory facto
     int minPosition,
     int maxPosition)
   {
+    // CreateDraft auto-creates part index 1 (min=1, max=7) when no Parts are supplied.
+    // Reuse/reconfigure that auto-created part instead of colliding with it.
+    var existingPart = await DbContext.Drafts
+      .Where(d => d.PublicId == draftPublicId)
+      .SelectMany(d => d.Parts)
+      .FirstOrDefaultAsync(p => p.PartIndex == partIndex, TestContext.Current.CancellationToken);
+
+    if (existingPart is not null)
+    {
+      if (existingPart.MinPosition != minPosition || existingPart.MaxPosition != maxPosition)
+      {
+        var updateResult = existingPart.SetPartPositions(minPosition, maxPosition);
+        updateResult.IsSuccess.Should().BeTrue($"updating part index={partIndex} positions must succeed");
+        await DbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
+      }
+
+      return existingPart.PublicId;
+    }
+
     var result = await Sender.Send(new CreateDraftPartCommand
     {
       DraftPublicId = draftPublicId,

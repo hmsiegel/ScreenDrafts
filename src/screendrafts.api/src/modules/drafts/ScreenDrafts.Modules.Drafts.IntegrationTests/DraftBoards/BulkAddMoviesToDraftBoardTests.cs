@@ -204,7 +204,7 @@ public sealed class BulkAddMoviesToDraftBoardTests(DraftsIntegrationTestWebAppFa
     var draftPublicId = await CreateDraftAsync();
     var validTmdbId = Faker.Random.Int(1, 1_000_000);
 
-    var csvContent = $"Title,TmdbId\nGood Movie,{validTmdbId.ToString(System.Globalization.CultureInfo.InvariantCulture)}\nBad Movie,\n";
+    var csvContent = $"{validTmdbId.ToString(System.Globalization.CultureInfo.InvariantCulture)},Good Movie\n,Bad Movie\n";
     using var csvStream = new MemoryStream(Encoding.UTF8.GetBytes(csvContent));
 
     var command = new BulkAddMoviesToDraftBoardCommand
@@ -371,12 +371,11 @@ public sealed class BulkAddMoviesToDraftBoardTests(DraftsIntegrationTestWebAppFa
   private static MemoryStream BuildCsvStream(params (string Title, int TmdbId)[] rows)
   {
     var sb = new System.Text.StringBuilder();
-    sb.AppendLine("Title,TmdbId");
     foreach (var (title, tmdbId) in rows)
     {
-      sb.Append(title);
-      sb.Append(',');
       sb.Append(tmdbId.ToString(System.Globalization.CultureInfo.InvariantCulture));
+      sb.Append(',');
+      sb.Append(title);
       sb.AppendLine();
     }
 

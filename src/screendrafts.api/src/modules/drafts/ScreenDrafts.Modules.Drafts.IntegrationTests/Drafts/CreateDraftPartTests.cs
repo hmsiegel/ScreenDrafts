@@ -6,12 +6,12 @@ public sealed class CreateDraftPartTests(DraftsIntegrationTestWebAppFactory fact
   [Fact]
   public async Task CreateDraftPart_WithValidData_ShouldSucceedAsync()
   {
-    // Arrange
+    // Arrange — CreateDraft auto-creates part index 1, so this targets index 2
     var draftId = await CreateDraftWithoutPartAsync();
     var command = new CreateDraftPartCommand
     {
       DraftPublicId = draftId,
-      PartIndex = 1,
+      PartIndex = 2,
       MinimumPosition = 1,
       MaximumPosition = 7
     };
@@ -28,12 +28,12 @@ public sealed class CreateDraftPartTests(DraftsIntegrationTestWebAppFactory fact
   [Fact]
   public async Task CreateDraftPart_ShouldReturnPublicId_ThatMatchesDraftPartInDatabaseAsync()
   {
-    // Arrange
+    // Arrange — CreateDraft auto-creates part index 1, so this targets index 2
     var draftId = await CreateDraftWithoutPartAsync();
     var command = new CreateDraftPartCommand
     {
       DraftPublicId = draftId,
-      PartIndex = 1,
+      PartIndex = 2,
       MinimumPosition = 1,
       MaximumPosition = 7
     };
@@ -137,12 +137,12 @@ public sealed class CreateDraftPartTests(DraftsIntegrationTestWebAppFactory fact
   [Fact]
   public async Task CreateDraftPart_WithDuplicatePartIndex_ShouldReturnErrorAsync()
   {
-    // Arrange
+    // Arrange — CreateDraft auto-creates part index 1, so this targets index 2
     var draftId = await CreateDraftWithoutPartAsync();
     var command = new CreateDraftPartCommand
     {
       DraftPublicId = draftId,
-      PartIndex = 1,
+      PartIndex = 2,
       MinimumPosition = 1,
       MaximumPosition = 7
     };
@@ -161,21 +161,21 @@ public sealed class CreateDraftPartTests(DraftsIntegrationTestWebAppFactory fact
   [Fact]
   public async Task CreateDraftPart_MultipleParts_ShouldSucceedAsync()
   {
-    // Arrange
+    // Arrange — CreateDraft auto-creates part index 1, so this targets indexes 2 and 3
     var draftId = await CreateDraftWithoutPartAsync();
 
     // Act
     var result1 = await Sender.Send(new CreateDraftPartCommand
     {
       DraftPublicId = draftId,
-      PartIndex = 1,
+      PartIndex = 2,
       MinimumPosition = 15,
       MaximumPosition = 21
     }, TestContext.Current.CancellationToken);
     var result2 = await Sender.Send(new CreateDraftPartCommand
     {
       DraftPublicId = draftId,
-      PartIndex = 2,
+      PartIndex = 3,
       MinimumPosition = 8,
       MaximumPosition = 14
     }, TestContext.Current.CancellationToken);

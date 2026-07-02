@@ -204,8 +204,9 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
   [Fact]
   public async Task GetPickList_WhenVetoIsOverridden_ShouldPopulateOverrideAsync()
   {
-    // Arrange
-    var (draftPartPublicId, drafter1PublicId, drafter2PublicId, hostPublicId, _) = await SetupStartedDraftPartAsync();
+    // Arrange — veto overrides are not allowed in Standard drafts, so use MiniMega here
+    var (draftPartPublicId, drafter1PublicId, drafter2PublicId, hostPublicId, _) =
+      await SetupStartedDraftPartAsync(DraftType.MiniMega.Value);
     var movie = await CreateMovieAsync();
     await PlayPickAsync(draftPartPublicId, drafter1PublicId, position: 1, playOrder: 1, movie);
 
@@ -442,10 +443,10 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
   /// RevealPickCommand.UserPublicId, which is resolved through
   /// User -> Person -> Host and must NOT be the host's own public id).
   /// </summary>
-  private async Task<(string DraftPartPublicId, string Drafter1PublicId, string Drafter2PublicId, string HostPublicId, string HostUserPublicId)> SetupStartedDraftPartAsync()
+  private async Task<(string DraftPartPublicId, string Drafter1PublicId, string Drafter2PublicId, string HostPublicId, string HostUserPublicId)> SetupStartedDraftPartAsync(int? draftTypeValue = null)
   {
     var seriesId = await CreateSeriesAsync();
-    var draftPublicId = await CreateDraftAsync(seriesId);
+    var draftPublicId = await CreateDraftAsync(seriesId, draftTypeValue);
     var draftPartInternalId = await GetFirstDraftPartIdAsync(draftPublicId);
 
     var draftPart = await DbContext.DraftParts
@@ -552,24 +553,16 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
     return result.Value;
   }
 
-  private async Task<string> CreateDraftAsync(string seriesId)
+  private async Task<string> CreateDraftAsync(string seriesId, int? draftTypeValue = null)
   {
     var draftResult = await Sender.Send(new CreateDraftCommand
     {
       Title = Faker.Company.CompanyName(),
-      DraftType = DraftType.Standard.Value,
+      DraftType = draftTypeValue ?? DraftType.Standard.Value,
       SeriesId = seriesId,
     }, TestContext.Current.CancellationToken);
 
-    var draftPublicId = draftResult.Value;
-    await Sender.Send(new CreateDraftPartCommand
-    {
-      DraftPublicId = draftPublicId,
-      PartIndex = 1,
-      MinimumPosition = 1,
-      MaximumPosition = 7,
-    }, TestContext.Current.CancellationToken);
-
-    return draftPublicId;
+    // CreateDraft auto-creates part index 1 (min=1, max=7) when no Parts are supplied.
+    return draftResult.Value;
   }
 }

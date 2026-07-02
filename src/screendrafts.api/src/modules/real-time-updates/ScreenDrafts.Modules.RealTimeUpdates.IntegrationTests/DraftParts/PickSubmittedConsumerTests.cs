@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.RealTimeUpdates.IntegrationTests.DraftParts;
+﻿namespace ScreenDrafts.Modules.RealTimeUpdates.IntegrationTests.DraftParts;
 
 public sealed class PickSubmittedConsumerTests
 {
@@ -15,14 +15,18 @@ public sealed class PickSubmittedConsumerTests
     var hubContext = new TestHubContext();
     var consumer = new PickSubmittedIntegrationEventConsumer(
       NullLogger<PickSubmittedIntegrationEventConsumer>.Instance,
-      hubContext);
+      hubContext
+    );
 
     // Act
     await consumer.Handle(integrationEvent, CancellationToken.None);
 
     // Assert
-    hubContext.SentMessages.Should().ContainSingle()
-      .Which.GroupName.Should().Be(DraftHub.HostGroupName(draftPartPublicId));
+    hubContext
+      .SentMessages.Should()
+      .ContainSingle()
+      .Which.GroupName.Should()
+      .Be(DraftHub.HostGroupName(draftPartPublicId));
   }
 
   // -------------------------------------------------------------------------
@@ -37,7 +41,8 @@ public sealed class PickSubmittedConsumerTests
     var hubContext = new TestHubContext();
     var consumer = new PickSubmittedIntegrationEventConsumer(
       NullLogger<PickSubmittedIntegrationEventConsumer>.Instance,
-      hubContext);
+      hubContext
+    );
 
     // Act
     await consumer.Handle(integrationEvent, CancellationToken.None);
@@ -61,6 +66,7 @@ public sealed class PickSubmittedConsumerTests
     int? tmdbId = 54321;
     var participantId = Guid.NewGuid();
     var participantKind = 1;
+    var boardPosition = 3;
 
     var integrationEvent = new PickSubmittedIntegrationEvent(
       id: Guid.NewGuid(),
@@ -73,29 +79,32 @@ public sealed class PickSubmittedConsumerTests
       movieTitle: movieTitle,
       imdbId: "tt7654321",
       tmdbId: tmdbId,
-      boardPosition: 1,
+      boardPosition: boardPosition,
       participantId: participantId,
       participantKind: participantKind,
-      actedByPublicId: null);
+      actedByPublicId: null
+    );
 
     var hubContext = new TestHubContext();
     var consumer = new PickSubmittedIntegrationEventConsumer(
       NullLogger<PickSubmittedIntegrationEventConsumer>.Instance,
-      hubContext);
+      hubContext
+    );
 
     // Act
     await consumer.Handle(integrationEvent, CancellationToken.None);
 
     // Assert
     var args = hubContext.SentMessages.Single().Args;
-    args.Should().HaveCount(7);
+    args.Should().HaveCount(8);
     args[0].Should().Be(draftPartId);
     args[1].Should().Be(playOrder);
     args[2].Should().Be(moviePublicId);
     args[3].Should().Be(movieTitle);
     args[4].Should().Be(tmdbId);
-    args[5].Should().Be(participantId);
-    args[6].Should().Be(participantKind);
+    args[5].Should().Be(boardPosition);
+    args[6].Should().Be(participantId);
+    args[7].Should().Be(participantKind);
   }
 
   // -------------------------------------------------------------------------
@@ -117,5 +126,6 @@ public sealed class PickSubmittedConsumerTests
       boardPosition: 1,
       participantId: Guid.NewGuid(),
       participantKind: 0,
-      actedByPublicId: null);
+      actedByPublicId: null
+    );
 }

@@ -24,7 +24,8 @@ public class DraftPartTests : DraftsBaseTest
       draftPublicId: draftPublicId,
       partIndex: partIndex,
       gameplay: gameplay,
-      publicId: publicId);
+      publicId: publicId
+    );
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -49,7 +50,8 @@ public class DraftPartTests : DraftsBaseTest
       draftPublicId: draftPublicId,
       partIndex: partIndex,
       gameplay: gameplay,
-      publicId: publicId);
+      publicId: publicId
+    );
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -68,10 +70,11 @@ public class DraftPartTests : DraftsBaseTest
     // Act
     var result = DraftPart.Create(
       draftId: draftId,
-      draftPublicId : draftPublicId,
+      draftPublicId: draftPublicId,
       partIndex: 0,
       gameplay: gameplay,
-      publicId: publicId);
+      publicId: publicId
+    );
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -446,15 +449,14 @@ public class DraftPartTests : DraftsBaseTest
     var playOrder = 1;
     var canonicalPolicyValue = Faker.Random.Int(0, 2);
 
-
     // Act
     var result = draftPart.PlayPick(
       movie,
       position,
       playOrder,
       participantId,
-      canonicalPolicyValue);
-
+      canonicalPolicyValue
+    );
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -487,7 +489,8 @@ public class DraftPartTests : DraftsBaseTest
       position,
       playOrder,
       participantId,
-      canonicalPolicyValue);
+      canonicalPolicyValue
+    );
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -541,7 +544,11 @@ public class DraftPartTests : DraftsBaseTest
     var draftPart = CreateDraftPartWithInProgressPick(out _);
 
     // Act
-    var result = draftPart.RevealPick(playOrder: 1, actedByPublicId: "host-public-id");
+    var result = draftPart.RevealPick(
+      playOrder: 1,
+      actedByPublicId: "host-public-id",
+      canonicalPolicyValue: CanonicalPolicy.Always.Value
+    );
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -554,7 +561,11 @@ public class DraftPartTests : DraftsBaseTest
     var draftPart = CreateDraftPartWithInProgressPick(out _);
 
     // Act
-    draftPart.RevealPick(playOrder: 1, actedByPublicId: "host-public-id");
+    draftPart.RevealPick(
+      playOrder: 1,
+      actedByPublicId: "host-public-id",
+      canonicalPolicyValue: CanonicalPolicy.Always.Value
+    );
 
     // Assert
     draftPart.Picks.Single().IsRevealed.Should().BeTrue();
@@ -567,7 +578,11 @@ public class DraftPartTests : DraftsBaseTest
     var draftPart = CreateDraftPartWithInProgressPick(out _);
 
     // Act
-    draftPart.RevealPick(playOrder: 1, actedByPublicId: "host-public-id");
+    draftPart.RevealPick(
+      playOrder: 1,
+      actedByPublicId: "host-public-id",
+      canonicalPolicyValue: CanonicalPolicy.Always.Value
+    );
 
     // Assert
     draftPart.Picks.Single().RevealedAt.Should().NotBeNull();
@@ -580,7 +595,11 @@ public class DraftPartTests : DraftsBaseTest
     var draftPart = CreateDraftPartWithInProgressPick(out _);
 
     // Act
-    draftPart.RevealPick(playOrder: 1, actedByPublicId: "host-public-id");
+    draftPart.RevealPick(
+      playOrder: 1,
+      actedByPublicId: "host-public-id",
+      canonicalPolicyValue: CanonicalPolicy.Always.Value
+    );
 
     // Assert
     draftPart.Picks.Single().History.Should().ContainSingle(e => e.Kind == "Revealed");
@@ -594,7 +613,11 @@ public class DraftPartTests : DraftsBaseTest
     // status is Created, not InProgress
 
     // Act
-    var result = draftPart.RevealPick(playOrder: 1, actedByPublicId: "host-public-id");
+    var result = draftPart.RevealPick(
+      playOrder: 1,
+      actedByPublicId: "host-public-id",
+      canonicalPolicyValue: CanonicalPolicy.Always.Value
+    );
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -608,7 +631,11 @@ public class DraftPartTests : DraftsBaseTest
     var draftPart = CreateDraftPartWithInProgressPick(out _);
 
     // Act — play order 99 does not exist
-    var result = draftPart.RevealPick(playOrder: 99, actedByPublicId: "host-public-id");
+    var result = draftPart.RevealPick(
+      playOrder: 99,
+      actedByPublicId: "host-public-id",
+      canonicalPolicyValue: CanonicalPolicy.Always.Value
+    );
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -620,10 +647,18 @@ public class DraftPartTests : DraftsBaseTest
   {
     // Arrange
     var draftPart = CreateDraftPartWithInProgressPick(out _);
-    draftPart.RevealPick(playOrder: 1, actedByPublicId: "host-public-id");
+    draftPart.RevealPick(
+      playOrder: 1,
+      actedByPublicId: "host-public-id",
+      canonicalPolicyValue: CanonicalPolicy.Always.Value
+    );
 
     // Act
-    var result = draftPart.RevealPick(playOrder: 1, actedByPublicId: "host-public-id");
+    var result = draftPart.RevealPick(
+      playOrder: 1,
+      actedByPublicId: "host-public-id",
+      canonicalPolicyValue: CanonicalPolicy.Always.Value
+    );
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -642,12 +677,15 @@ public class DraftPartTests : DraftsBaseTest
     var publicId = Faker.Random.AlphaNumeric(10);
     var draftPublicId = Faker.Random.AlphaNumeric(10);
 
-    return DraftPart.Create(
-      draftId: draftId,
-      draftPublicId: draftPublicId,
-      partIndex: partIndex,
-      gameplay: gameplay,
-      publicId: publicId).Value;
+    return DraftPart
+      .Create(
+        draftId: draftId,
+        draftPublicId: draftPublicId,
+        partIndex: partIndex,
+        gameplay: gameplay,
+        publicId: publicId
+      )
+      .Value;
   }
 
   private static DraftPartGamePlaySnapshot CreateGameplaySnapshot()
@@ -657,7 +695,8 @@ public class DraftPartTests : DraftsBaseTest
       minPosition: 1,
       maxPosition: 7,
       draftType: DraftType.Standard,
-      seriesId: series.Id);
+      seriesId: series.Id
+    );
 
     return result.Value;
   }
@@ -666,18 +705,19 @@ public class DraftPartTests : DraftsBaseTest
   {
     var draftId = DraftId.CreateUnique();
     var series = CreateSeries();
-    var gameplay = DraftPartGamePlaySnapshot.Create(
-      minPosition: 1,
-      maxPosition: 7,
-      draftType: DraftType.SpeedDraft,
-      seriesId: series.Id).Value;
+    var gameplay = DraftPartGamePlaySnapshot
+      .Create(minPosition: 1, maxPosition: 7, draftType: DraftType.SpeedDraft, seriesId: series.Id)
+      .Value;
 
-    return DraftPart.Create(
-      draftId: draftId,
-      draftPublicId: Faker.Random.AlphaNumeric(10),
-      partIndex: 1,
-      gameplay: gameplay,
-      publicId: Faker.Random.AlphaNumeric(10)).Value;
+    return DraftPart
+      .Create(
+        draftId: draftId,
+        draftPublicId: Faker.Random.AlphaNumeric(10),
+        partIndex: 1,
+        gameplay: gameplay,
+        publicId: Faker.Random.AlphaNumeric(10)
+      )
+      .Value;
   }
 
   private static DraftPart CreateDraftPartWithInProgressPick(out Pick pick)
@@ -693,4 +733,3 @@ public class DraftPartTests : DraftsBaseTest
     return draftPart;
   }
 }
-

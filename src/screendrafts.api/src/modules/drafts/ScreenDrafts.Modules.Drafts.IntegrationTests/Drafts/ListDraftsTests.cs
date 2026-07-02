@@ -106,19 +106,8 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
     );
     var draftPublicId = draftResult.Value;
 
-    // First part (auto-created by CreateDraft is not created here — we explicitly create parts)
-    var part1PublicId = (
-      await Sender.Send(
-        new CreateDraftPartCommand
-        {
-          DraftPublicId = draftPublicId,
-          PartIndex = 1,
-          MinimumPosition = 1,
-          MaximumPosition = 7,
-        },
-        TestContext.Current.CancellationToken
-      )
-    ).Value;
+    // CreateDraft auto-creates part index 1 (min=1, max=7) when no Parts are supplied.
+    var part1PublicId = await GetFirstDraftPartPublicIdAsync(draftPublicId);
 
     await Sender.Send(
       new SetReleaseDateCommand
@@ -828,18 +817,8 @@ public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
 
     var draftPublicId = draftResult.Value;
 
-    var partResult = await Sender.Send(
-      new CreateDraftPartCommand
-      {
-        DraftPublicId = draftPublicId,
-        PartIndex = 1,
-        MinimumPosition = 1,
-        MaximumPosition = 7,
-      },
-      TestContext.Current.CancellationToken
-    );
-
-    var draftPartPublicId = partResult.Value;
+    // CreateDraft auto-creates part index 1 (min=1, max=7) when no Parts are supplied.
+    var draftPartPublicId = await GetFirstDraftPartPublicIdAsync(draftPublicId);
 
     if (withRelease)
     {

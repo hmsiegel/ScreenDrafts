@@ -307,22 +307,15 @@ public sealed class ApplyVetoOverrideTests(DraftsIntegrationTestWebAppFactory fa
 
   private async Task<string> CreateDraftAsync(string seriesId)
   {
+    // Veto overrides are not allowed in Standard (or SpeedDraft) drafts, so use MiniMega here.
     var draftResult = await Sender.Send(new CreateDraftCommand
     {
       Title = Faker.Company.CompanyName(),
-      DraftType = DraftType.Standard.Value,
+      DraftType = DraftType.MiniMega.Value,
       SeriesId = seriesId,
     }, TestContext.Current.CancellationToken);
 
-    var draftPublicId = draftResult.Value;
-    await Sender.Send(new CreateDraftPartCommand
-    {
-      DraftPublicId = draftPublicId,
-      PartIndex = 1,
-      MinimumPosition = 1,
-      MaximumPosition = 7,
-    }, TestContext.Current.CancellationToken);
-
-    return draftPublicId;
+    // CreateDraft auto-creates part index 1 (min=1, max=7) when no Parts are supplied.
+    return draftResult.Value;
   }
 }

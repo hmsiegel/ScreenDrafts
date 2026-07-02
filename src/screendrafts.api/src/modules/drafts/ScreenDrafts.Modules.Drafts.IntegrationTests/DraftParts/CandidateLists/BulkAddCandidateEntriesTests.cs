@@ -146,7 +146,7 @@ public sealed class BulkAddCandidateEntriesTests(DraftsIntegrationTestWebAppFact
     var draftPartPublicId = await SetupDraftPartAsync();
     var validTmdbId = Faker.Random.Int(1, 1_000_000);
 
-    var csvContent = $"Title,TmdbId\nGood Movie,{validTmdbId}\nBad Movie,\n";
+    var csvContent = $"{validTmdbId},Good Movie\n,Bad Movie\n";
     using var csvStream = new MemoryStream(Encoding.UTF8.GetBytes(csvContent));
 
     var command = new BulkAddCandidateEntriesCommand
@@ -231,28 +231,18 @@ public sealed class BulkAddCandidateEntriesTests(DraftsIntegrationTestWebAppFact
       SeriesId = seriesId
     }, TestContext.Current.CancellationToken);
 
-    var draftPublicId = draftResult.Value;
-
-    await Sender.Send(new CreateDraftPartCommand
-    {
-      DraftPublicId = draftPublicId,
-      PartIndex = 1,
-      MinimumPosition = 1,
-      MaximumPosition = 7
-    }, TestContext.Current.CancellationToken);
-
-    return draftPublicId;
+    // CreateDraft auto-creates part index 1 (min=1, max=7) when no Parts are supplied.
+    return draftResult.Value;
   }
 
   private static MemoryStream BuildCsvStream(params (string Title, int TmdbId)[] rows)
   {
     var sb = new System.Text.StringBuilder();
-    sb.AppendLine("Title,TmdbId");
     foreach (var (title, tmdbId) in rows)
     {
-      sb.Append(title);
-      sb.Append(',');
       sb.Append(tmdbId.ToString(System.Globalization.CultureInfo.InvariantCulture));
+      sb.Append(',');
+      sb.Append(title);
       sb.AppendLine();
     }
 

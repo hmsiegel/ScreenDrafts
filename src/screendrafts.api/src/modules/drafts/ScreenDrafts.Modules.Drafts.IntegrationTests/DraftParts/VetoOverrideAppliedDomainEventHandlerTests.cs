@@ -47,13 +47,14 @@ public sealed class VetoOverrideAppliedDomainEventHandlerTests(DraftsIntegration
     await ProcessOutboxAsync();
 
     // Act — apply veto override → movie should be removed from pool again
+    // (the overriding participant must differ from the original picker, drafter1)
     var result = await Sender.Send(new ApplyVetoOverrideCommand
     {
       DraftPartId = draftPartPublicId,
       PlayOrder = 1,
-      ParticipantIdValue = drafter1PublicId,
+      ParticipantIdValue = drafter2PublicId,
       ParticipantKind = ParticipantKind.Drafter,
-      ActorPublicId = drafter1PublicId
+      ActorPublicId = drafter2PublicId
     }, TestContext.Current.CancellationToken);
     await ProcessOutboxAsync();
 
@@ -92,14 +93,14 @@ public sealed class VetoOverrideAppliedDomainEventHandlerTests(DraftsIntegration
       ActorPublicId = drafter2PublicId
     }, TestContext.Current.CancellationToken);
 
-    // Act
+    // Act — the overriding participant must differ from the original picker, drafter1
     await Sender.Send(new ApplyVetoOverrideCommand
     {
       DraftPartId = draftPartPublicId,
       PlayOrder = 1,
-      ParticipantIdValue = drafter1PublicId,
+      ParticipantIdValue = drafter2PublicId,
       ParticipantKind = ParticipantKind.Drafter,
-      ActorPublicId = drafter1PublicId
+      ActorPublicId = drafter2PublicId
     }, TestContext.Current.CancellationToken);
 
     // Assert — veto override should mark veto as overridden
@@ -121,14 +122,7 @@ public sealed class VetoOverrideAppliedDomainEventHandlerTests(DraftsIntegration
     await CreateMovieInDbAsync(tmdbId);
     await Sender.Send(new AddMovieToDraftPoolCommand { PublicId = draftPublicId, TmdbId = tmdbId }, TestContext.Current.CancellationToken);
 
-    await Sender.Send(new CreateDraftPartCommand
-    {
-      DraftPublicId = draftPublicId,
-      PartIndex = 1,
-      MinimumPosition = 1,
-      MaximumPosition = 7,
-    }, TestContext.Current.CancellationToken);
-
+    // CreateDraft auto-creates part index 1 (min=1, max=7) when no Parts are supplied.
     var draftPartId = await GetFirstDraftPartIdAsync(draftPublicId);
     var draftPart = await DbContext.DraftParts.FirstAsync(dp => dp.Id == DraftPartId.Create(draftPartId), TestContext.Current.CancellationToken);
     var draftPartPublicId = draftPart.PublicId;
@@ -184,10 +178,11 @@ public sealed class VetoOverrideAppliedDomainEventHandlerTests(DraftsIntegration
       DefaultDraftType = DraftType.Standard.Value
     }, TestContext.Current.CancellationToken);
 
+    // Veto overrides are not allowed in Standard (or SpeedDraft) drafts, so use MiniMega here.
     var draftResult = await Sender.Send(new CreateDraftCommand
     {
       Title = Faker.Company.CompanyName(),
-      DraftType = DraftType.Standard.Value,
+      DraftType = DraftType.MiniMega.Value,
       SeriesId = seriesResult.Value,
     }, TestContext.Current.CancellationToken);
 
