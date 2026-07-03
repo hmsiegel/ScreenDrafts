@@ -107,10 +107,13 @@ internal sealed class ListPeopleQueryHandler(IDbConnectionFactory connectionFact
     LIMIT @PageSize OFFSET @Offset;
   """;
 
+    // S2077: pageSql interpolates sortExpr and dir, both chosen from fixed whitelist switches above (not user-controlled text).
+#pragma warning disable S2077
     var items = (await connection.QueryAsync<PersonResponse>(new CommandDefinition(
       pageSql,
       parameters: args,
       cancellationToken: cancellationToken))).ToList();
+#pragma warning restore S2077
 
     return Result.Success(new PeopleCollectionResponse(new PagedResult<PersonResponse>
     {

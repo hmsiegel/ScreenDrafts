@@ -40,11 +40,14 @@ internal sealed class SearchHostQueryHandler(IDbConnectionFactory connectionFact
 
     var countSql = $"SELECT COUNT(*) {baseFrom} {where}";
 
+    // S2077: countSql interpolates existsClause, one of exactly two hardcoded values ("" or "NOT ") from the bool check above; all values are bound via Dapper parameters.
+#pragma warning disable S2077
     var totalCount = await connection.ExecuteScalarAsync<int>(
       new CommandDefinition(
         countSql,
         p,
         cancellationToken: cancellationToken));
+#pragma warning restore S2077
 
     if (totalCount == 0)
     {
@@ -85,12 +88,15 @@ internal sealed class SearchHostQueryHandler(IDbConnectionFactory connectionFact
       LIMIT @PageSize OFFSET @Offset
       """;
 
+    // S2077: pageSql interpolates orderBy, chosen from the fixed whitelist switch above (not user-controlled text).
+#pragma warning disable S2077
     var items = (await connection.QueryAsync<SearchHostResponse>(
       new CommandDefinition(
         pageSql,
         p,
         cancellationToken: cancellationToken)))
         .ToList();
+#pragma warning restore S2077
 
     return Result.Success(new PagedResult<SearchHostResponse>
     {

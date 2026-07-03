@@ -72,6 +72,8 @@ internal sealed class SearchDraftsQueryHandler(IDbConnectionFactory dbConnection
 
     sqlBuilder.Append(" ORDER BY d.title ASC");
 
+    // S2077: sqlBuilder is our own app-built query text (fixed literal clauses only); all values are bound via Dapper parameters above.
+#pragma warning disable S2077
     var totalCount = await connection.ExecuteScalarAsync<int>(
       new CommandDefinition(
         $"SELECT COUNT(*) FROM ({sqlBuilder}) sub",
@@ -79,6 +81,7 @@ internal sealed class SearchDraftsQueryHandler(IDbConnectionFactory dbConnection
         cancellationToken: cancellationToken
       )
     );
+#pragma warning restore S2077
 
     var pageSize = Math.Min(request.PageSize, 100);
     var skip = (Math.Max(request.Page, 1) - 1) * pageSize;

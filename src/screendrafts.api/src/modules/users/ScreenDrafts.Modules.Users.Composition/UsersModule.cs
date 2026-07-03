@@ -63,13 +63,12 @@ public static class UsersModule
       .Endpoint(c => c.InstanceId = moduleInstanceId);
   }
 
-  private static IServiceCollection AddUsersFeatures(this IServiceCollection services)
+  private static void AddUsersFeatures(this IServiceCollection services)
   {
     services.AddScoped<IUsersApi, UsersApi>();
     services.AddScoped<IUsersDomainEventDispatcher, UsersDomainEventDispatcher>();
     services.AddScoped<IUsersIntegrationEventDispatcher, UsersIntegrationEventDispatcher>();
     services.AddScoped(typeof(IPipelineBehavior<,>), typeof(UsersUnitOfWorkBehavior<,>));
-    return services;
   }
 
   private static void AddDomainEventHandlers(this IServiceCollection services)

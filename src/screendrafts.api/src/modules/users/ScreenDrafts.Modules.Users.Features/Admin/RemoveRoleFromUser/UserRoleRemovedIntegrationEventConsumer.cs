@@ -2,15 +2,16 @@
 
 internal sealed partial class UserRoleRemovedIntegrationEventConsumer(
   IDbConnectionFactory dbConnectionFactory,
-  ILogger<UserRoleRemovedIntegrationEvent> logger)
-  : IntegrationEventHandler<UserRoleRemovedIntegrationEvent>
+  ILogger<UserRoleRemovedIntegrationEventConsumer> logger
+) : IntegrationEventHandler<UserRoleRemovedIntegrationEvent>
 {
   private readonly IDbConnectionFactory _dbConnectionFactory = dbConnectionFactory;
-  private readonly ILogger<UserRoleRemovedIntegrationEvent> _logger = logger;
+  private readonly ILogger<UserRoleRemovedIntegrationEventConsumer> _logger = logger;
 
   public override async Task Handle(
     UserRoleRemovedIntegrationEvent integrationEvent,
-    CancellationToken cancellationToken = default)
+    CancellationToken cancellationToken = default
+  )
   {
     ArgumentNullException.ThrowIfNull(integrationEvent);
 
@@ -21,20 +22,21 @@ internal sealed partial class UserRoleRemovedIntegrationEventConsumer(
 
     try
     {
-      await using var connection = await _dbConnectionFactory.OpenConnectionAsync(cancellationToken);
+      await using var connection = await _dbConnectionFactory.OpenConnectionAsync(
+        cancellationToken
+      );
 
-      const string sql =
-        """
+      const string sql = """
         DELETE FROM users.user_permissions
         WHERE user_id = @UserId
           AND permission_code = @PermissionCode
         """;
 
-      var rows = integrationEvent.PermissionCodesToRemove
-        .Select(code => new
+      var rows = integrationEvent
+        .PermissionCodesToRemove.Select(code => new
         {
           integrationEvent.UserId,
-          PermissionCode = code
+          PermissionCode = code,
         })
         .ToList();
 
@@ -50,6 +52,11 @@ internal sealed partial class UserRoleRemovedIntegrationEventConsumer(
   [LoggerMessage(
     EventId = 1,
     Level = LogLevel.Error,
-    Message = "Failed to update user_permissions for user {UserId} after role {RoleName} was removed.")]
-  private static partial void LogFailedToUpdateUserPermissions(ILogger logger, Guid userId, string roleName);
+    Message = "Failed to update user_permissions for user {UserId} after role {RoleName} was removed."
+  )]
+  private static partial void LogFailedToUpdateUserPermissions(
+    ILogger<UserRoleRemovedIntegrationEventConsumer> logger,
+    Guid userId,
+    string roleName
+  );
 }

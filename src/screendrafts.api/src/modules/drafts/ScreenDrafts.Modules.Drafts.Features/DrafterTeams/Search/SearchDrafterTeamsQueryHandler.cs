@@ -30,11 +30,14 @@ internal sealed class SearchDrafterTeamsQueryHandler(IDbConnectionFactory dbConn
 
     sql.Append(" ORDER BY dt.name ASC");
 
+    // S2077: sql is our own app-built query text (constants + whitelisted fragments); all values are bound via Dapper parameters above.
+#pragma warning disable S2077
     var totalCount = await connection.ExecuteScalarAsync<int>(
       new CommandDefinition(
         $"SELECT COUNT(*) FROM ({sql}) AS count_query",
         p,
         cancellationToken: cancellationToken));
+#pragma warning restore S2077
 
     var pageSize = Math.Min(request.PageSize, 100);
     var skip = (Math.Max(request.Page, 1) - 1) * pageSize;

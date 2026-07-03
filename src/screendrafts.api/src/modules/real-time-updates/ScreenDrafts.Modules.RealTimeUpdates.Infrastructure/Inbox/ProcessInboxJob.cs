@@ -77,12 +77,13 @@ internal sealed class ProcessInboxJob(
       FROM real_time_updates.inbox_messages
       WHERE processed_on_utc IS NULL
       ORDER BY occurred_on_utc
-      LIMIT {_inboxOptions.BatchSize}
+      LIMIT @batchSize
       FOR UPDATE
       """;
 
     var inboxMessages = await connection.QueryAsync<InboxMessageResponse>(
       sql,
+      new { batchSize = _inboxOptions.BatchSize },
       transaction: transaction
     );
 

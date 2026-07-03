@@ -57,7 +57,7 @@ public static class InfrastructureConfiguration
     return services;
   }
 
-  private static IServiceCollection AddCoreInfrastructure(
+  private static void AddCoreInfrastructure(
     this IServiceCollection services,
     string databaseConnectionString
   )
@@ -78,11 +78,9 @@ public static class InfrastructureConfiguration
     services.TryAddScoped<ICsvFileService, CsvFileService>();
 
     services.AddQuartzService();
-
-    return services;
   }
 
-  private static IServiceCollection AddRepositoriesFromModules(
+  private static void AddRepositoriesFromModules(
     this IServiceCollection services,
     Assembly[] infrastructureAssemblies
   )
@@ -93,7 +91,5 @@ public static class InfrastructureConfiguration
         .AsImplementedInterfaces()
         .WithScopedLifetime()
     );
-
-    return services;
   }
 }

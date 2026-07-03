@@ -34,9 +34,12 @@ internal sealed class SearchDraftersQueryHandler(IDbConnectionFactory dbConnecti
 
     var countSql = $"SELECT COUNT(*) {baseFrom} {where}";
 
+    // S2077: countSql is our own app-built query text (constants + WHERE clause built from fixed fragments); all values are bound via Dapper parameters above.
+#pragma warning disable S2077
     var totalCount = await connection.ExecuteScalarAsync<int>(
       new CommandDefinition(countSql, p, cancellationToken: cancellationToken)
     );
+#pragma warning restore S2077
 
     if (totalCount == 0)
     {
@@ -68,11 +71,14 @@ internal sealed class SearchDraftersQueryHandler(IDbConnectionFactory dbConnecti
       LIMIT @PageSize OFFSET @Offset
       """;
 
+    // S2077: pageSql is our own app-built query text (constants + WHERE clause built from fixed fragments); all values are bound via Dapper parameters above.
+#pragma warning disable S2077
     var items = (
       await connection.QueryAsync<SearchDraftersResponse>(
         new CommandDefinition(pageSql, p, cancellationToken: cancellationToken)
       )
     ).ToList();
+#pragma warning restore S2077
 
     return Result.Success(
       new PagedResult<SearchDraftersResponse>

@@ -114,9 +114,12 @@ internal sealed class ListParticipantsQueryHandler(
       {where}
       """;
 
+    // S2077: countSql interpolates where, built entirely from fixed literal clauses selected by the switches above; all values are bound via Dapper parameters.
+#pragma warning disable S2077
     var totalCount = await conn.ExecuteScalarAsync<int>(
       new CommandDefinition(countSql, p, cancellationToken: cancellationToken)
     );
+#pragma warning restore S2077
 
     var result = new ListParticipantsResponse
     {
@@ -209,11 +212,14 @@ internal sealed class ListParticipantsQueryHandler(
       LIMIT @PageSize OFFSET @Offset
       """;
 
+    // S2077: itemsSql interpolates where and orderBy, both built from fixed literal fragments/switches above; all values are bound via Dapper parameters.
+#pragma warning disable S2077
     var rows = (
       await conn.QueryAsync<ParticipantRow>(
         new CommandDefinition(itemsSql, p, cancellationToken: cancellationToken)
       )
     ).ToList();
+#pragma warning restore S2077
 
     var honorificTasks = rows.Select(async r =>
         r.DrafterInternalId.HasValue

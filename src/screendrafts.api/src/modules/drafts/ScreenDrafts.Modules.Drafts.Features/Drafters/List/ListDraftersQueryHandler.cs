@@ -5,7 +5,10 @@ internal sealed class ListDraftersQueryHandler(IDbConnectionFactory connectionFa
 {
   private readonly IDbConnectionFactory _connectionFactory = connectionFactory;
 
-  public async Task<Result<DrafterCollectionResponse>> Handle(ListDraftersQuery ListDraftersRequest, CancellationToken cancellationToken)
+  public async Task<Result<DrafterCollectionResponse>> Handle(
+    ListDraftersQuery ListDraftersRequest,
+    CancellationToken cancellationToken
+  )
   {
     await using var conn = await _connectionFactory.OpenConnectionAsync(cancellationToken);
 
@@ -18,7 +21,7 @@ internal sealed class ListDraftersQueryHandler(IDbConnectionFactory connectionFa
     var orderBy = (r.Sort, r.Direction) switch
     {
       ("name", "desc") => "p.display_name desc",
-      _ => "p.display_name asc"
+      _ => "p.display_name asc",
     };
 
     var args = new
@@ -29,8 +32,7 @@ internal sealed class ListDraftersQueryHandler(IDbConnectionFactory connectionFa
       Offset = offset,
     };
 
-    const string baseWhere =
-      $"""
+    const string baseWhere = $"""
       where
         (
           @Retired = 'all'
@@ -43,16 +45,14 @@ internal sealed class ListDraftersQueryHandler(IDbConnectionFactory connectionFa
         )
       """;
 
-    const string countSql =
-      $"""
+    const string countSql = $"""
       select count(*)::bigint
       from drafts.drafters d
       join drafts.people p on p.id = d.person_id
       {baseWhere}
       """;
 
-    var itemsSql =
-      $"""
+    var itemsSql = $"""
         select
           d.public_id as {nameof(DrafterListItem.DrafterId)},
           p.public_id as {nameof(DrafterListItem.PersonId)},
@@ -65,27 +65,29 @@ internal sealed class ListDraftersQueryHandler(IDbConnectionFactory connectionFa
         limit @PageSize offset @Offset;
       """;
 
-    var total = await conn.ExecuteScalarAsync<int>(new CommandDefinition(
-      countSql,
-      args,
-      cancellationToken: cancellationToken));
+    var total = await conn.ExecuteScalarAsync<int>(
+      new CommandDefinition(countSql, args, cancellationToken: cancellationToken)
+    );
 
-    var items = (await conn.QueryAsync<DrafterListItem>(new CommandDefinition(
-      itemsSql,
-      args,
-      cancellationToken: cancellationToken))).AsList();
+    // S2077: itemsSql's only dynamic part is orderBy, chosen from the fixed whitelist switch above (not user-controlled text).
+#pragma warning disable S2077
+    var items = (
+      await conn.QueryAsync<DrafterListItem>(
+        new CommandDefinition(itemsSql, args, cancellationToken: cancellationToken)
+      )
+    ).AsList();
+#pragma warning restore S2077
 
-    return Result.Success(new DrafterCollectionResponse(
-      new PagedResult<DrafterListItem>
-      {
-        Items = items,
-        TotalCount = total,
-        Page = page,
-        PageSize = pageSize
-      }));
-
+    return Result.Success(
+      new DrafterCollectionResponse(
+        new PagedResult<DrafterListItem>
+        {
+          Items = items,
+          TotalCount = total,
+          Page = page,
+          PageSize = pageSize,
+        }
+      )
+    );
   }
 }
-
-
-

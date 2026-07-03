@@ -24,7 +24,7 @@ public static class DraftsModule
     return services;
   }
 
-  private static IServiceCollection AddTypeHandler(this IServiceCollection services)
+  private static void AddTypeHandler(this IServiceCollection services)
   {
     SqlMapper.AddTypeHandler(new SmartEnumTypeHandler<DraftPartStatus>());
     SqlMapper.AddTypeHandler(new SmartEnumTypeHandler<DraftStatus>());
@@ -35,7 +35,6 @@ public static class DraftsModule
     SqlMapper.AddTypeHandler(new SmartEnumTypeHandler<SubDraftStatus>());
     SqlMapper.AddTypeHandler(new SmartEnumTypeHandler<ZoomRecordingFileType>());
     SqlMapper.AddTypeHandler(new SmartEnumTypeHandler<CommunityFilmRuleKind>());
-    return services;
   }
 
   public static IServiceCollection AddDraftsSeeding(
@@ -90,7 +89,7 @@ public static class DraftsModule
       .Endpoint(c => c.InstanceId = moduleInstanceId);
   }
 
-  private static IServiceCollection AddDraftsFeatures(
+  private static void AddDraftsFeatures(
     this IServiceCollection services,
     IConfiguration configuration
   )
@@ -101,7 +100,6 @@ public static class DraftsModule
     services.AddScoped<DraftBoardParticipantResolver>();
     services.AddScoped<IDraftsIntegrationEventDispatcher, DraftsIntegrationEventDispatcher>();
     services.AddScoped<IDraftsDomainEventDispatcher, DraftsDomainEventDispatcher>();
-    return services;
   }
 
   private static void AddDomainEventHandlers(this IServiceCollection services)

@@ -49,11 +49,14 @@ internal sealed class SearchPeopleQueryHandler(IDbConnectionFactory dbConnection
 
     sql.Append(" ORDER BY p.last_name, p.first_name ASC");
 
+    // S2077: sql is our own app-built query text (constants + fixed literal clauses only); all values are bound via Dapper parameters above.
+#pragma warning disable S2077
     var totalCount = await connection.ExecuteScalarAsync<int>(
       new CommandDefinition(
       $"SELECT COUNT(*) FROM ({sql}) sub",
       parameters: p,
       cancellationToken: cancellationToken));
+#pragma warning restore S2077
 
     var pageSize = Math.Min(request.PageSize, 100);
     var skip = (Math.Max(request.Page, 1) - 1) * pageSize;

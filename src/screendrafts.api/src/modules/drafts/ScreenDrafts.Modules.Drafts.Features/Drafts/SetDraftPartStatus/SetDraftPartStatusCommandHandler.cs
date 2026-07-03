@@ -159,9 +159,12 @@ internal sealed class SetDraftPartStatusCommandHandler(
 
     await using var connection = await _dbConnectionFactory.OpenConnectionAsync(cancellationToken);
 
+    // S2077: sql interpolates scopeFilter, which is one of exactly two hardcoded clauses chosen by the ContinuityScope branch above; all values are bound via Dapper parameters.
+#pragma warning disable S2077
     var rows = await connection.QueryAsync<RolloverRow>(
       new CommandDefinition(sql, parameters, cancellationToken: cancellationToken)
     );
+#pragma warning restore S2077
 
     var rolloverByDrafter = rows.ToDictionary(r => r.ParticipantId);
 

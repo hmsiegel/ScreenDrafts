@@ -107,6 +107,7 @@
     <Project Path="src/modules/drafts/ScreenDrafts.Modules.Drafts.PublicApi/ScreenDrafts.Modules.Drafts.PublicApi.csproj" />
     <Project Path="src/modules/drafts/ScreenDrafts.Modules.Drafts.UnitTests/ScreenDrafts.Modules.Drafts.UnitTests.csproj" />
   </Folder>
+  <Folder Name="/src/modules/guest-drafts/" />
   <Folder Name="/src/modules/integrations/">
     <Project Path="src/modules/integrations/ScreenDrafts.Modules.Integrations.ArchitectureTests/ScreenDrafts.Modules.Integrations.ArchitectureTests.csproj" />
     <Project Path="src/modules/integrations/ScreenDrafts.Modules.Integrations.Composition/ScreenDrafts.Modules.Integrations.Composition.csproj" />

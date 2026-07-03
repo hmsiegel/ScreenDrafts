@@ -244,6 +244,8 @@ internal sealed class ListDraftsQueryHandler(IDbConnectionFactory connectionFact
     sqlBuilder.Append(CultureInfo.InvariantCulture, $" ORDER BY {orderByClause}");
 
     //Count before pagination
+    // S2077: sqlBuilder is our own app-built query text (orderByClause comes from the fixed whitelist switch above); all values are bound via Dapper parameters.
+#pragma warning disable S2077
     var totalCount = await connection.ExecuteScalarAsync<int>(
       new CommandDefinition(
         $"SELECT COUNT(*) FROM ({sqlBuilder}) sub",
@@ -251,6 +253,7 @@ internal sealed class ListDraftsQueryHandler(IDbConnectionFactory connectionFact
         cancellationToken: cancellationToken
       )
     );
+#pragma warning restore S2077
 
     var pageSize = Math.Min(request.PageSize, 100);
     var skip = (Math.Max(request.Page, 1) - 1) * pageSize;

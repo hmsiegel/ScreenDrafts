@@ -50,9 +50,12 @@ internal sealed class ListMediaQueryHandler(IDbConnectionFactory dbConnectionFac
     parameters.Add("PageSize", pageSize);
     parameters.Add("Offset", offset);
 
+    // S2077: countSql/dataSql interpolate whereClause and orderClause, both built from fixed literal fragments/whitelisted switches; all values are bound via Dapper parameters.
+#pragma warning disable S2077
     var totalCount = await connection.ExecuteScalarAsync<int>(countSql, parameters);
 
     var rows = await connection.QueryAsync<MediaListItemRow>(dataSql, parameters);
+#pragma warning restore S2077
 
     var items = rows.Select(r => new MediaListItemResponse
       {

@@ -70,12 +70,13 @@ internal sealed class ProcessOutboxJob(
              FROM drafts.outbox_messages
              WHERE processed_on_utc IS NULL
              ORDER BY occurred_on_utc
-             LIMIT {_outboxOptions.BatchSize}
+             LIMIT @batchSize
              FOR UPDATE
              """;
 
     var outboxMessages = await connection.QueryAsync<OutboxMessageResponse>(
         sql,
+        new { batchSize = _outboxOptions.BatchSize },
         transaction: transaction);
 
     return outboxMessages.ToList();

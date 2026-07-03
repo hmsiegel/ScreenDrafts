@@ -25,7 +25,9 @@
       "Bash(awk -F'\\\\t' '{print $2}' drafts_failures.tsv)",
       "Bash(awk -F'\\\\t' '{print $1}' drafts_failures.tsv)",
       "Bash(sed -E 's/\\\\.[A-Za-z0-9_]+Async$//')",
-      "Bash(awk -F'.' '{print $\\(NF\\)}')"
+      "Bash(awk -F'.' '{print $\\(NF\\)}')",
+      "Bash(curl -s \"https://api.github.com/advisories/GHSA-v5pm-xwqc-g5wc\")",
+      "Bash(dotnet restore *)"
     ]
   }
 }

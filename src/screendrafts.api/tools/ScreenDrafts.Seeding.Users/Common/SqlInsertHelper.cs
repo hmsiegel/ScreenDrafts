@@ -16,9 +16,13 @@ internal sealed class SqlInsertHelper(UsersDbContext dbContext)
       ON CONFLICT DO NOTHING
       """;
 
+    // S2077: table/columnList are identifiers (table/column names), which can't be bound as SQL parameters.
+    // This is an offline seeding CLI tool called only with hardcoded table/column names from seeder classes, not external input.
+#pragma warning disable S2077
     await _dbContext.Database.ExecuteSqlRawAsync(
       sql,
       values,
       cancellationToken);
+#pragma warning restore S2077
   }
 }
