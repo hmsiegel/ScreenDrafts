@@ -48,6 +48,7 @@
     <File Path="Directory.Packages.props" />
     <File Path="global.json" />
     <File Path="nswag.json" />
+    <File Path="screendrafts.runsettings" />
   </Folder>
   <Folder Name="/src/" />
   <Folder Name="/src/api/">
@@ -107,7 +108,16 @@
     <Project Path="src/modules/drafts/ScreenDrafts.Modules.Drafts.PublicApi/ScreenDrafts.Modules.Drafts.PublicApi.csproj" />
     <Project Path="src/modules/drafts/ScreenDrafts.Modules.Drafts.UnitTests/ScreenDrafts.Modules.Drafts.UnitTests.csproj" />
   </Folder>
-  <Folder Name="/src/modules/guest-drafts/" />
+  <Folder Name="/src/modules/guest-drafts/">
+    <Project Path="src/modules/guest-drafts/ScreenDrafts.Modules.GuestDrafts.ArchitectureTests/ScreenDrafts.Modules.GuestDrafts.ArchitectureTests.csproj" Id="cb73c1ac-0b6e-4d15-bce4-ae253b195a0d" />
+    <Project Path="src/modules/guest-drafts/ScreenDrafts.Modules.GuestDrafts.Composition/ScreenDrafts.Modules.GuestDrafts.Composition.csproj" Id="714a459a-c16b-4730-b0d7-c64f7a207916" />
+    <Project Path="src/modules/guest-drafts/ScreenDrafts.Modules.GuestDrafts.Domain/ScreenDrafts.Modules.GuestDrafts.Domain.csproj" Id="c8270851-0115-4230-82aa-669639037d66" />
+    <Project Path="src/modules/guest-drafts/ScreenDrafts.Modules.GuestDrafts.Features/ScreenDrafts.Modules.GuestDrafts.Features.csproj" Id="59f0b051-6e86-4b90-bbcc-684555116a91" />
+    <Project Path="src/modules/guest-drafts/ScreenDrafts.Modules.GuestDrafts.Infrastructure/ScreenDrafts.Modules.GuestDrafts.Infrastructure.csproj" Id="3a4d40ce-1718-4596-9d4d-14309990e728" />
+    <Project Path="src/modules/guest-drafts/ScreenDrafts.Modules.GuestDrafts.IntegrationEvents/ScreenDrafts.Modules.GuestDrafts.IntegrationEvents.csproj" Id="5bda87e6-4453-482a-9f6d-36aeb03ea019" />
+    <Project Path="src/modules/guest-drafts/ScreenDrafts.Modules.GuestDrafts.IntegrationTests/ScreenDrafts.Modules.GuestDrafts.IntegrationTests.csproj" Id="56536ade-cc05-47b2-9d8b-b5355fc366cf" />
+    <Project Path="src/modules/guest-drafts/ScreenDrafts.Modules.GuestDrafts.UnitTests/ScreenDrafts.Modules.GuestDrafts.UnitTests.csproj" Id="4733ff98-3379-4fd4-b347-69faabe8d221" />
+  </Folder>
   <Folder Name="/src/modules/integrations/">
     <Project Path="src/modules/integrations/ScreenDrafts.Modules.Integrations.ArchitectureTests/ScreenDrafts.Modules.Integrations.ArchitectureTests.csproj" />
     <Project Path="src/modules/integrations/ScreenDrafts.Modules.Integrations.Composition/ScreenDrafts.Modules.Integrations.Composition.csproj" />

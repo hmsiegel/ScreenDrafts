@@ -14,7 +14,8 @@ public sealed class DraftPartRecording : Entity<DraftPartRecordingId>
     DateTimeOffset recordingEnd,
     long fileSizeBytes,
     int sequenceNumber,
-    DraftPartRecordingId? id = null)
+    DraftPartRecordingId? id = null
+  )
     : base(id ?? DraftPartRecordingId.CreateUnique())
   {
     PublicId = publicId;
@@ -55,8 +56,9 @@ public sealed class DraftPartRecording : Entity<DraftPartRecordingId>
     DateTimeOffset recordingStart,
     DateTimeOffset recordingEnd,
     long fileSizeBytes,
-    int sequenceNumber, 
-    DraftPartRecordingId? id = null)
+    int sequenceNumber,
+    DraftPartRecordingId? id = null
+  )
   {
     return new DraftPartRecording(
       publicId: publicId,
@@ -70,25 +72,7 @@ public sealed class DraftPartRecording : Entity<DraftPartRecordingId>
       recordingEnd: recordingEnd,
       fileSizeBytes: fileSizeBytes,
       sequenceNumber: sequenceNumber,
-      id: id);
+      id: id
+    );
   }
-}
-
-public sealed record DraftPartRecordingId(Guid Value)
-{
-  public Guid Value { get; init; } = Value;
-  public static DraftPartRecordingId CreateUnique() => new(Guid.NewGuid());
-  public static DraftPartRecordingId FromString(string value) => new(Guid.Parse(value));
-  public static DraftPartRecordingId Create(Guid value) => new(value);
-}
-
-public sealed class ZoomRecordingFileType(string name, int value)
-  : SmartEnum<ZoomRecordingFileType>(name, value)
-{
-  public static readonly ZoomRecordingFileType Video = new("MP4", 0);
-  public static readonly ZoomRecordingFileType Audio = new("M4A", 1);
-  public static readonly ZoomRecordingFileType Transcript = new("TRANSCRIPT", 2);
-  public static readonly ZoomRecordingFileType Chat = new("CHAT", 3);
-  public static readonly ZoomRecordingFileType Timeline = new("TIMELINE", 4);
-  public static readonly ZoomRecordingFileType ClosedCaption = new("CC", 5);
 }

@@ -1,0 +1,12 @@
+﻿global using System.Reflection;
+global using System.Runtime.CompilerServices;
+global using MediatR;
+global using ScreenDrafts.Common.Application.EventBus;
+global using ScreenDrafts.Common.Application.EventBus.Dispatchers;
+global using ScreenDrafts.Common.Application.Inbox;
+global using ScreenDrafts.Common.Application.Messaging;
+global using ScreenDrafts.Common.Application.Messaging.Dispatchers;
+global using ScreenDrafts.Common.Application.Outbox;
+global using ScreenDrafts.Common.Domain;
+global using ScreenDrafts.Modules.GuestDrafts.Domain.Abstractions.Data;
+global using Serilog;

@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <InternalsVisibleTo Include="ScreenDrafts.Modules.GuestDrafts.IntegrationTests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\common\ScreenDrafts.Common.Application\ScreenDrafts.Common.Application.csproj" />
+    <ProjectReference Include="..\..\..\common\ScreenDrafts.Common.Presentation\ScreenDrafts.Common.Presentation.csproj" />
+    <ProjectReference Include="..\..\administration\ScreenDrafts.Modules.Administration.IntegrationEvents\ScreenDrafts.Modules.Administration.IntegrationEvents.csproj" />
+    <ProjectReference Include="..\..\administration\ScreenDrafts.Modules.Administration.PublicApi\ScreenDrafts.Modules.Administration.PublicApi.csproj" />
+
+    <ProjectReference Include="..\..\audit\ScreenDrafts.Modules.Audit.IntegrationEvents\ScreenDrafts.Modules.Audit.IntegrationEvents.csproj" />
+    <ProjectReference Include="..\..\communications\ScreenDrafts.Modules.Communications.IntegrationEvents\ScreenDrafts.Modules.Communications.IntegrationEvents.csproj" />
+    <ProjectReference Include="..\..\integrations\ScreenDrafts.Modules.Integrations.IntegrationEvents\ScreenDrafts.Modules.Integrations.IntegrationEvents.csproj" />
+    <ProjectReference Include="..\..\integrations\ScreenDrafts.Modules.Integrations.PublicApi\ScreenDrafts.Modules.Integrations.PublicApi.csproj" />
+    <ProjectReference Include="..\..\movies\ScreenDrafts.Modules.Movies.IntegrationEvents\ScreenDrafts.Modules.Movies.IntegrationEvents.csproj" />
+    <ProjectReference Include="..\..\reporting\ScreenDrafts.Modules.Reporting.IntegrationEvents\ScreenDrafts.Modules.Reporting.IntegrationEvents.csproj" />
+    <ProjectReference Include="..\..\reporting\ScreenDrafts.Modules.Reporting.PublicApi\ScreenDrafts.Modules.Reporting.PublicApi.csproj" />
+    <ProjectReference Include="..\..\users\ScreenDrafts.Modules.Users.IntegrationEvents\ScreenDrafts.Modules.Users.IntegrationEvents.csproj" />
+    <ProjectReference Include="..\..\users\ScreenDrafts.Modules.Users.PublicApi\ScreenDrafts.Modules.Users.PublicApi.csproj" />
+
+    <ProjectReference Include="..\ScreenDrafts.Modules.GuestDrafts.Domain\ScreenDrafts.Modules.GuestDrafts.Domain.csproj" />
+    <ProjectReference Include="..\ScreenDrafts.Modules.GuestDrafts.IntegrationEvents\ScreenDrafts.Modules.GuestDrafts.IntegrationEvents.csproj" />
+  </ItemGroup>
+</Project>

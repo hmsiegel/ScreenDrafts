@@ -1,0 +1,6 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\common\ScreenDrafts.Common.ArchitectureTests\ScreenDrafts.Common.ArchitectureTests.csproj" />
+    <ProjectReference Include="..\ScreenDrafts.Modules.GuestDrafts.Composition\ScreenDrafts.Modules.GuestDrafts.Composition.csproj" />
+  </ItemGroup>
+</Project>

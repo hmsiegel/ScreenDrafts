@@ -1,0 +1,215 @@
+﻿namespace ScreenDrafts.Modules.GuestDrafts.Features;
+
+internal static class GuestDraftsOpenApi
+{
+  public static class Tags
+  {
+    public const string Drafts = "Drafts";
+    public const string DraftParts = "DraftParts";
+    public const string Campaigns = "Campaigns";
+    public const string Teams = "Teams";
+    public const string People = "People";
+    public const string GameBoards = "GameBoards";
+    public const string Drafters = "Drafters";
+    public const string Hosts = "Hosts";
+    public const string Picks = "Picks";
+    public const string Trivia = "Trivia";
+    public const string DraftPositions = "DraftPositions";
+    public const string Categories = "Categories";
+    public const string DrafterTeams = "DrafterTeams";
+    public const string DraftBoards = "DraftBoards";
+    public const string DraftPools = "DraftPools";
+    public const string CandidateLists = "CandidateLists";
+    public const string Participants = "Participants";
+    public const string Attendances = "Attendances";
+    public const string MyDrafts = "MyDrafts";
+  }
+
+  public static class Names
+  {
+    // Drafts
+    public const string Drafts_CreateDraft = "Drafts.CreateDraft";
+    public const string Drafts_GetDraftById = "Drafts.GetDraftById";
+    public const string Drafts_SearchDrafts = "Drafts.SearchDrafts";
+    public const string Drafts_SetCampaign = "Drafts.SetCampaign";
+    public const string Drafts_SetCategory = "Drafts.SetCategory";
+    public const string Drafts_RemoveCampaign = "Drafts.RemoveCampaign";
+    public const string Drafts_GetDraftStatus = "Drafts.GetDraftStatus";
+    public const string Drafts_SetDraftPartStatus = "Drafts.SetDraftPartStatus";
+    public const string Drafts_UpdateDraft = "Drafts.UpdateDraft";
+    public const string Drafts_SetCategories = "Drafts.SetCategories";
+    public const string Drafts_CreateDraftPart = "Drafts.CreateDraftPart";
+    public const string Drafts_SetEpisodeNumber = "Drafts.SetEpisodeNumber";
+    public const string Drafts_ListDrafts = "Drafts.ListDrafts";
+    public const string Drafts_RemoveCategory = "Drafts.RemoveCategory";
+    public const string Drafts_ListLatestDrafts = "Drafts.ListLatestDrafts";
+    public const string Drafts_ListUpcomingDrafts = "Drafts.ListUpcomingDrafts";
+    public const string Drafts_UploadDraftImage = "Drafts.UploadDraftImage";
+
+    // Draft Parts
+    public const string DraftParts_GetDraftPartById = "DraftParts.GetDraftPartById";
+    public const string DraftParts_RemoveHost = "DraftParts.RemoveHost";
+    public const string DraftParts_AddParticipant = "DraftParts.AddParticipant";
+    public const string DraftParts_AddHost = "DraftParts.AddHost";
+    public const string DraftParts_PlayPick = "DraftParts.PlayPick";
+    public const string DraftParts_UndoPick = "DraftParts.UndoPick";
+    public const string DraftParts_UndoVeto = "DraftParts.UndoVeto";
+    public const string DraftParts_SetReleaseDate = "DraftParts.SetReleaseDate";
+    public const string DraftParts_ApplyVeto = "DraftParts.ApplyVeto";
+    public const string DraftParts_ApplyVetoOverride = "DraftParts.ApplyVetoOverride";
+    public const string DraftParts_ApplyCommissionerOverride =
+      "DraftParts.ApplyCommissionerOverride";
+    public const string DraftParts_PickReveal = "DraftParts.PickReveal";
+    public const string DraftParts_SetDraftPosition = "DraftParts.SetDraftPosition";
+    public const string DraftParts_AssignParticipantToPosition =
+      "DraftParts.AssignParticipantToPosition";
+    public const string DraftParts_ListDraftPositions = "DraftParts.ListDraftPositions";
+    public const string DraftParts_ClearDraftPositionAssignment =
+      "DraftParts.ClearDraftPositionAssignment";
+    public const string DraftParts_RemoveParticipant = "DraftParts.RemoveParticipant";
+    public const string DraftParts_AssignTriviaResults = "DraftParts.AssignTriviaResults";
+    public const string DraftParts_GetTriviaResults = "DraftParts.GetTriviaResults";
+    public const string DraftParts_PickList = "DraftParts.GetPickList";
+    public const string DraftParts_SetCommunityLimits = "DraftParts.SetCommunityLimits";
+    public const string DraftParts_AddCommunityFilmRule = "DraftParts.AddCommunityFilmRule";
+    public const string DraftParts_RemoveCommunityFilmRule = "DraftParts.RemoveCommunityFilmRule";
+    public const string DraftParts_UpdateCommunityFilmRule = "DraftParts.UpdateCommunityFilmRule";
+    public const string DraftParts_GetGameplay = "DraftParts.GetGameplay";
+
+    // Campaigns
+    public const string Campaigns_CreateCampaign = "Campaigns.CreateCampaign";
+    public const string Campaigns_EditCampaign = "Campaigns.EditCampaign";
+    public const string Campaigns_ListCampaigns = "Campaigns.ListCampaigns";
+    public const string Campaigns_GetCampaignById = "Campaigns.GetCampaignById";
+    public const string Campaigns_DeleteCampaign = "Campaigns.DeleteCampaign";
+    public const string Campaigns_RestoreCampaign = "Campaigns.RestoreCampaign";
+
+    // Categories
+    public const string Categories_CreateCategory = "Categories.CreateCategory";
+    public const string Categories_EditCategory = "Categories.EditCategory";
+    public const string Categories_ListCategories = "Categories.ListCategories";
+    public const string Categories_GetCategoryById = "Categories.GetCategoryById";
+    public const string Categories_DeleteCategory = "Categories.DeleteCategory";
+    public const string Categories_RestoreCategory = "Categories.RestoreCategory";
+
+    // Series
+    public const string Series_CreateSeries = "Series.CreateSeries";
+    public const string Series_EditSeries = "Series.EditSeries";
+    public const string Series_ListSeries = "Series.ListSeries";
+    public const string Series_GetSeriesById = "Series.GetSeriesById";
+    public const string Series_DeleteSeries = "Series.DeleteSeries";
+    public const string Series_GetSeriesMetadata = "Series.GetSeriesMetadata";
+
+    // People
+    public const string People_CreatePerson = "People.CreatePerson";
+    public const string People_EditPerson = "People.EditPerson";
+    public const string People_ListPeople = "People.ListPeople";
+    public const string People_GetPersonById = "People.GetPersonById";
+    public const string People_DeletePerson = "People.DeletePerson";
+    public const string People_RestorePerson = "People.RestorePerson";
+    public const string People_SearchPeople = "People.SearchPeople";
+    public const string People_LinkUser = "People.LinkUser";
+    public const string People_UpdateProfile = "People.UpdateProfile";
+    public const string People_UpdateSocial = "People.UpdateSocial";
+    public const string People_UploadAvatar = "People.UploadAvatar";
+
+    // Draft Boards
+    public const string DraftBoards_AddItem = "DraftBoards.AddItem";
+    public const string DraftBoards_RemoveItem = "DraftBoards.RemoveItem";
+    public const string DraftBoards_UpdateItem = "DraftBoards.UpdateItem";
+    public const string DraftBoards_GetBoard = "DraftBoards.GetBoard";
+    public const string DraftBoards_BulkAddItems = "DraftBoards.BulkAddItems";
+
+    // Draft Pools
+    public const string DraftPools_CreatePool = "DraftPools.CreatePool";
+    public const string DraftPools_AddItem = "DraftPools.AddItem";
+    public const string DraftPools_RemoveItem = "DraftPools.RemoveItem";
+    public const string DraftPools_UpdateItem = "DraftPools.UpdateItem";
+    public const string DraftPools_GetPool = "DraftPools.GetPool";
+    public const string DraftPools_BulkAddItems = "DraftPools.BulkAddItems";
+    public const string DraftPools_RemoveMovie = "DraftPools.RemoveMovie";
+
+    // Drafters
+    public const string Drafters_CreateDrafter = "Drafters.CreateDrafter";
+    public const string Drafters_RetireDrafter = "Drafters.RetireDrafter";
+    public const string Drafters_GetDrafterById = "Drafters.GetDrafterById";
+    public const string Drafters_ListDrafters = "Drafters.ListDrafters";
+    public const string Drafters_SearchDrafters = "Drafters.SearchDrafters";
+
+    // Drafter Teams
+    public const string DrafterTeams_CreateDrafterTeam = "DrafterTeams.CreateDrafterTeam";
+    public const string DrafterTeams_AddDrafter = "DrafterTeams.AddDrafter";
+    public const string DrafterTeams_RemoveDrafterFromTeam = "DrafterTeams.RemoveDrafterFromTeam";
+    public const string DrafterTeams_GetDrafterTeam = "DrafterTeams.GetDrafterTeam";
+    public const string DrafterTeams_SearchDrafterTeams = "DrafterTeams.SearchDrafterTeams";
+
+    // Hosts
+    public const string Hosts_CreateHost = "Hosts.CreateHost";
+    public const string Hosts_RetireHost = "Hosts.RetireHost";
+    public const string Hosts_GetHostById = "Hosts.GetHostById";
+    public const string Hosts_ListHosts = "Hosts.ListHosts";
+    public const string Hosts_SearchHosts = "Hosts.SearchHosts";
+
+    // Candidate Lists
+    public const string CandidateLists_AddEntry = "CandidateLists.AddEntry";
+    public const string CandidateLists_BulkAddEntries = "CandidateLists.BulkAddEntries";
+    public const string CandidateLists_RemoveEntry = "CandidateLists.RemoveEntry";
+    public const string CandidateLists_GetList = "CandidateLists.GetList";
+
+    // Speed Draft Sub-Drafts
+    public const string SubDrafts_Add = "SubDrafts.Add";
+    public const string SubDrafts_SetSubject = "SubDrafts.SetSubject";
+    public const string SubDrafts_AssignTriviaResults = "SubDrafts.AssignTriviaResults";
+    public const string SubDrafts_PlayPick = "SubDrafts.PlayPick";
+    public const string SubDrafts_ApplyVeto = "SubDrafts.ApplyVeto";
+    public const string SubDrafts_Advance = "SubDrafts.Advance";
+
+    // Prediction Seasons
+    public const string Predictions_CreateSeason = "Predictions_CreateSeason";
+    public const string Predictions_GetSeasonStandings = "Predictions_GetSeasonStandings";
+
+    // Prediction Contestants
+    public const string Predictions_CreateContestant = "Predictions_CreateContestant";
+
+    // Prediction Rules
+    public const string Predictions_SetRules = "Predictions_SetRules";
+
+    // Prediction Sets
+    public const string Predictions_SubmitSet = "Predictions_SubmitSet";
+    public const string Predictions_GetSets = "Predictions_GetSets";
+    public const string Predictions_LockSet = "Predictions_LockSet";
+    public const string Predictions_AssignSurrogate = "Predictions_AssignSurrogate";
+    public const string Predictions_ScoreSets = "Predictions_ScoreSets";
+    public const string Predictions_AddCarryover = "Predictions_AddCarryover";
+    public const string Predictions_CloseSeason = "Predictions_CloseSeason";
+    public const string Predictions_ListSeasons = "Predictions_ListSeasons";
+    public const string Predictions_GetCurrentSeason = "Predictions_GetCurrentSeason";
+
+    // Zoom Sessions
+    public const string DraftParts_StartZoomSession = "DraftParts.StartZoomSession";
+    public const string DraftParts_EndZoomSession = "DraftParts.EndZoomSession";
+    public const string DraftParts_GetZoomSessionToken = "DraftParts.GetZoomSessionToken";
+    public const string DraftParts_StartZoomRecording = "DraftParts.StartZoomRecording";
+    public const string DraftParts_StopZoomRecording = "DraftParts.StopZoomRecording";
+
+    public const string People_GetUsersSocials = "People.GetUsersSocials";
+    public const string Participants_ListParticipants = "Participants.ListParticipants";
+    public const string Participants_GetById = "Participants.GetById";
+    public const string DraftParts_AssignFilmToCommunityFilmRule =
+      "DraftParts.AssignFilmToCommunityFilmRule";
+
+    // Attendance
+    public const string Attendances_Add = "AddAttendance";
+    public const string Attendances_Confirm = "ConfirmAttendance";
+    public const string Attendances_Join = "JoinAttendance";
+    public const string Attendances_Withdraw = "WithdrawAttendance";
+    public const string Attendances_Reinstate = "ReinstateAttendance";
+    public const string Attendances_List = "ListAttendances";
+
+    // My Drafts
+    public const string MyDrafts_GetAll = "GetMyDrafts";
+    public const string MyDrafts_GetDetail = "GetMyDraftDetail";
+
+    // Gameplay
+  }
+}
