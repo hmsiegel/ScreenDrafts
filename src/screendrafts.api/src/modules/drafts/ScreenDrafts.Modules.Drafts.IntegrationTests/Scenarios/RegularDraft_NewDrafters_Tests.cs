@@ -422,12 +422,12 @@ public sealed class RegularDraft_NewDrafters_Tests(DraftsIntegrationTestWebAppFa
   // ─────────────────────────────────────────────────────────────────────────
   // RealTimeUpdates: SignalR broadcasts on pick play and reveal
   //
-  // PickAddedIntegrationEvent only fires once a pick is revealed (see the
-  // IsRevealed guard in PickCreatedDomainEventHandler) — playing a pick alone
-  // notifies only the host (PickSubmitted, to the host-only group) so the
-  // movie title isn't broadcast to everyone before the host reveals it on
-  // stream. These two tests reflect that split instead of asserting a single
-  // unconditional "play -> PickAdded" broadcast.
+  // Playing a pick notifies only the host (PickSubmitted, to the host-only
+  // group) so the movie title isn't broadcast to everyone before the host
+  // reveals it on stream. Revealing then broadcasts PickRevealed to the
+  // general draft-part group as the viewer-facing "board changed" signal.
+  // PickAddedIntegrationEvent is a separate path for picks that are created
+  // already-revealed and doesn't apply to this pending-reveal flow.
   // ─────────────────────────────────────────────────────────────────────────
 
   [Fact]
@@ -468,9 +468,9 @@ public sealed class RegularDraft_NewDrafters_Tests(DraftsIntegrationTestWebAppFa
   }
 
   [Fact]
-  public async Task RegularDraft_RevealPick_ShouldBroadcastPickAddedViaSignalRAsync()
+  public async Task RegularDraft_RevealPick_ShouldBroadcastPickRevealedViaSignalRAsync()
   {
-    // Arrange — play the pick first; this alone must not trigger PickAdded.
+    // Arrange — play the pick first; this alone must not trigger a public broadcast.
     await PlayPickAsync(
       _draftPartPublicId,
       7,
@@ -484,10 +484,12 @@ public sealed class RegularDraft_NewDrafters_Tests(DraftsIntegrationTestWebAppFa
     HubCapture.Clear();
     EventBusCapture.Clear();
 
-    // Act — reveal the pick. PickRevealedDomianEventHandler now publishes
-    // both PickRevealedIntegrationEvent (private, host-only "reveal action
-    // completed" signal) and PickAddedIntegrationEvent (public broadcast
-    // that the movie is now visible on the board) from the same handler.
+    // Act — reveal the pick. PickRevealedDomianEventHandler publishes
+    // PickRevealedIntegrationEvent to the general draft-part group; this is
+    // the viewer-facing "board changed" signal in the pending-reveal flow.
+    // PickAddedIntegrationEvent is not raised here — it only fires when a
+    // pick is created already-revealed (see the IsRevealed guard in
+    // PickCreatedDomainEventHandler), which doesn't apply to this flow.
     var revealResult = await Sender.Send(
       new RevealPickCommand
       {
@@ -502,23 +504,13 @@ public sealed class RegularDraft_NewDrafters_Tests(DraftsIntegrationTestWebAppFa
     await ProcessOutboxAsync();
     await DispatchIntegrationEventsAsync();
 
-    // Assert — the general draft-part group received a PickAdded broadcast,
+    // Assert — the general draft-part group received a PickRevealed broadcast,
     // which is the actual viewer-facing signal that the board changed.
     HubCapture
       .SentMessages.Should()
       .Contain(
-        m => m.Method == "PickAdded" && m.GroupName == DraftHub.GroupName(_draftPartPublicId),
-        "revealing a pick should broadcast PickAdded to everyone in the draft part group"
-      );
-
-    // Assert — the host also gets a private PickRevealed notification on the
-    // same action; this is a separate signal, not a duplicate of PickAdded.
-    HubCapture
-      .SentMessages.Should()
-      .Contain(
-        m =>
-          m.Method == "PickRevealed" && m.GroupName == DraftHub.HostGroupName(_draftPartPublicId),
-        "the host group should also receive a private PickRevealed notification"
+        m => m.Method == "PickRevealed" && m.GroupName == DraftHub.GroupName(_draftPartPublicId),
+        "revealing a pick should broadcast PickRevealed to everyone in the draft part group"
       );
   }
 

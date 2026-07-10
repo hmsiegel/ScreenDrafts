@@ -7,7 +7,7 @@ public sealed class PickRevealedConsumerTests
   // -------------------------------------------------------------------------
 
   [Fact]
-  public async Task Handle_ShouldNotifyHostGroupAsync()
+  public async Task Handle_ShouldNotifyDraftPartGroupAsync()
   {
     // Arrange
     var draftPartPublicId = "dp_abc123xyz";
@@ -21,12 +21,13 @@ public sealed class PickRevealedConsumerTests
     // Act
     await consumer.Handle(integrationEvent, CancellationToken.None);
 
-    // Assert
+    // Assert — PickRevealed is broadcast to the general draft-part group
+    // (everyone), not the host-only group; the reveal is the public signal.
     hubContext
       .SentMessages.Should()
       .ContainSingle()
       .Which.GroupName.Should()
-      .Be(DraftHub.HostGroupName(draftPartPublicId));
+      .Be(DraftHub.GroupName(draftPartPublicId));
   }
 
   // -------------------------------------------------------------------------

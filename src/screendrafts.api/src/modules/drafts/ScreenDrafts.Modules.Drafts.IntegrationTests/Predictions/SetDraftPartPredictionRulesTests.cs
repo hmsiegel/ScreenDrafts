@@ -66,9 +66,12 @@ public sealed class SetDraftPartPredictionRulesTests(DraftsIntegrationTestWebApp
   }
 
   [Fact]
-  public async Task SetRules_WhenRulesAlreadyExist_ShouldFailAsync()
+  public async Task SetRules_WhenRulesAlreadyExist_ShouldReplaceExistingRulesAsync()
   {
-    // Arrange
+    // Arrange — SetDraftPartPredictionRules is idempotent-replace (matching
+    // the "Set" naming convention used elsewhere, e.g. SetDraftPositions,
+    // SetDraftCategories), so re-sending the command updates the existing
+    // rules in place rather than failing.
     var draftPartPublicId = await CreateDraftPartPublicIdAsync();
     var command = new SetDraftPartPredictionRulesCommand
     {
@@ -79,13 +82,20 @@ public sealed class SetDraftPartPredictionRulesTests(DraftsIntegrationTestWebApp
 
     await Sender.Send(command, TestContext.Current.CancellationToken);
 
-    // Act — attempt to set rules again
-    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
+    var updateCommand = command with { RequiredCount = 3 };
+
+    // Act — set rules again with a different RequiredCount
+    var result = await Sender.Send(updateCommand, TestContext.Current.CancellationToken);
 
     // Assert
-    result.IsFailure.Should().BeTrue();
-    result.Errors.Should().ContainSingle(e =>
-      e.Code == "PredictionErrors.RulesAlreadyExist");
+    result.IsSuccess.Should().BeTrue();
+
+    var draftPart = await DbContext.DraftParts
+      .FirstAsync(dp => dp.PublicId == draftPartPublicId, TestContext.Current.CancellationToken);
+    var rules = await DbContext.DraftPartPredictionRules
+      .FirstOrDefaultAsync(r => r.DraftPartId == draftPart.Id, TestContext.Current.CancellationToken);
+    rules.Should().NotBeNull();
+    rules!.RequiredCount.Should().Be(3);
   }
 
   [Fact]
