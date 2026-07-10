@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getMyDrafts, joinDraftPart, startDraftPart } from "@/services/drafts/fetch-my-drafts";
+import { parseApiErrorMessage } from "@/lib/parse-api-error";
 import DraftTypeBadge from "@/components/ui/draft-type-badge";
 import { draftTypeFromNumber } from "@/lib/draft-type-display";
 import { Metadata } from "next";
@@ -152,7 +153,12 @@ function PartActionButton({
       <form
         action={async () => {
           "use server";
-          await startDraftPart(accessToken, draftPublicId, part.partIndex ?? 1);
+          try {
+            await startDraftPart(accessToken, draftPublicId, part.partIndex ?? 1);
+          } catch (err) {
+            const message = parseApiErrorMessage(err, "Couldn't start the draft. Please try again.");
+            redirect(`/my-drafts?error=${encodeURIComponent(message)}`);
+          }
           redirect(`/draft-parts/${draftPartPublicId}/live`);
         }}
       >
@@ -172,7 +178,12 @@ function PartActionButton({
       <form
         action={async () => {
           "use server";
-          await joinDraftPart(accessToken, draftPartPublicId);
+          try {
+            await joinDraftPart(accessToken, draftPartPublicId);
+          } catch (err) {
+            const message = parseApiErrorMessage(err, "Couldn't join the draft. Please try again.");
+            redirect(`/my-drafts?error=${encodeURIComponent(message)}`);
+          }
           redirect(`/draft-parts/${draftPartPublicId}/live`);
         }}
       >
@@ -245,10 +256,15 @@ function CompletedDraftCard({ draft }: { draft: MyDraftSummary }) {
   );
 }
 
-export default async function MyDraftsPage() {
+export default async function MyDraftsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>;
+}) {
   const session = await auth();
   if (!session?.accessToken) redirect("/sign-in");
 
+  const { error } = await searchParams;
   const { upcoming, inProgress, completed } = await getMyDrafts(session.accessToken);
 
   return (
@@ -258,6 +274,18 @@ export default async function MyDraftsPage() {
         <h1 className="font-oswald font-bold text-[56px] leading-none text-sd-ink -mt-4">
           MY DRAFTS
         </h1>
+
+        {error && (
+          <div className="flex items-start justify-between gap-4 border border-sd-red/30 bg-sd-red/5 text-sd-ink px-4 py-3 -mt-8">
+            <p className="font-mono text-sm">{error}</p>
+            <Link
+              href="/my-drafts"
+              className="font-mono text-xs text-sd-ink/50 hover:text-sd-ink/80 uppercase tracking-widest shrink-0"
+            >
+              Dismiss
+            </Link>
+          </div>
+        )}
 
         <section>
           <SectionHeading>Upcoming</SectionHeading>

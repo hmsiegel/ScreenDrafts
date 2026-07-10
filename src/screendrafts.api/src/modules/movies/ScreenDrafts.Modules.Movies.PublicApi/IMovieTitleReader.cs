@@ -6,4 +6,9 @@ public interface IMovieTitleReader
     IEnumerable<string> publicIds,
     CancellationToken cancellationToken = default
   );
+
+  Task<IReadOnlyList<string>> GetPublicIdsByTmdbIdsAsync(
+    IReadOnlyList<int> tmdbIds,
+    CancellationToken cancellationToken = default
+  );
 }

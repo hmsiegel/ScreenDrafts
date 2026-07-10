@@ -27,7 +27,8 @@
       "Bash(sed -E 's/\\\\.[A-Za-z0-9_]+Async$//')",
       "Bash(awk -F'.' '{print $\\(NF\\)}')",
       "Bash(curl -s \"https://api.github.com/advisories/GHSA-v5pm-xwqc-g5wc\")",
-      "Bash(dotnet restore *)"
+      "Bash(dotnet restore *)",
+      "Bash(xargs -I{} sh -c 'echo \"=== {} ===\"; cat {}')"
     ]
   }
 }

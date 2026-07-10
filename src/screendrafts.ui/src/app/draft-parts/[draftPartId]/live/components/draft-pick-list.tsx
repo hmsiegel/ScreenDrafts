@@ -33,7 +33,7 @@ export function DraftPickList() {
               target="_blank"
               rel="noopener noreferrer"
               className={`font-oswald text-sm transition-colors hover:text-light-blue ${
-                pick.wasVetoed && !pick.wasVetoOverridden
+                (pick.wasVetoed && !pick.wasVetoOverridden) || pick.wasCommissionerOverride
                   ? 'line-through text-white/30'
                   : 'text-sd-paper'
               }`}

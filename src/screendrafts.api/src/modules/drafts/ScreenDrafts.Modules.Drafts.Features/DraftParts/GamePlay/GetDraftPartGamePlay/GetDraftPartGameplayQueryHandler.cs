@@ -356,7 +356,7 @@ internal sealed class GetDraftPartGameplayQueryHandler(
     // Find the highest board slot that has no landed pick.
     // Landed = pick exists at that position where WasVetoed = false OR WasVetoOverridden = true.
     var landedPositions = pickRows
-      .Where(p => !p.WasVetoed || p.WasVetoOverridden)
+      .Where(p => !p.WasCommissionerOverride && (!p.WasVetoed || p.WasVetoOverridden))
       .Select(p => p.BoardPosition)
       .ToHashSet();
 

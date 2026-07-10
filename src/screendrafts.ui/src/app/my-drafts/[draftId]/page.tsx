@@ -44,7 +44,8 @@ export default async function MyDraftDetailPage({
   const isDrafter = myRoles.includes("Drafter");
   const isHost = myRoles.includes("Host");
 
-  if (myRoles.length === 0 && !detail.isSurrogate) redirect("/my-drafts");
+  const hasPredictorRole = parts.some((p) => p.isPredictor);
+  if (myRoles.length === 0 && !hasPredictorRole) redirect("/my-drafts");
 
   return (
     <div className="min-h-screen bg-light-blue">

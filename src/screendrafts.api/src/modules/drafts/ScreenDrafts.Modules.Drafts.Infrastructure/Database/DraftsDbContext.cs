@@ -38,6 +38,7 @@ public sealed class DraftsDbContext(DbContextOptions<DraftsDbContext> options)
   internal DbSet<PredictionResult> PredictionResults { get; set; }
   internal DbSet<PredictionStanding> PredictionStandings { get; set; }
   internal DbSet<PredictionCarryover> PredictionCarryovers { get; set; }
+  internal DbSet<DraftPartPredictor> DraftPartPredictors { get; set; }
   internal DbSet<DraftPartRecording> DraftPartRecordings { get; set; }
   internal DbSet<DraftPartAttendance> Attendances { get; set; }
 

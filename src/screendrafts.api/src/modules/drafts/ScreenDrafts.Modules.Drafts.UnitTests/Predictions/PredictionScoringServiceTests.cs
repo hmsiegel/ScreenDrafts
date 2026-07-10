@@ -16,10 +16,14 @@ public sealed class PredictionScoringServiceTests : DraftsBaseTest
     var rules = PredictionFactory.CreateUnorderedAllRule(draftPart, requiredCount: 3);
 
     var set = PredictionFactory.CreateLockedSet(
-      draftPart, season, contestant, rules,
-      mediaPublicIds: ["m_001", "m_002", "m_003"]);
+      draftPart,
+      season,
+      contestant,
+      rules,
+      tmdbIds: [1, 2, 3]
+    );
 
-    var finalPicks = new[] { "m_004", "m_005", "m_006" };
+    var finalPicks = new[] { 4, 5, 6 };
 
     // Act
     var result = PredictionScoringService.Score(set, finalPicks, rules, DateTime.UtcNow);
@@ -41,10 +45,14 @@ public sealed class PredictionScoringServiceTests : DraftsBaseTest
     var rules = PredictionFactory.CreateUnorderedAllRule(draftPart, requiredCount: 3);
 
     var set = PredictionFactory.CreateLockedSet(
-      draftPart, season, contestant, rules,
-      mediaPublicIds: ["m_001", "m_002", "m_003"]);
+      draftPart,
+      season,
+      contestant,
+      rules,
+      tmdbIds: [1, 2, 3]
+    );
 
-    var finalPicks = new[] { "m_001", "m_002", "m_999" };
+    var finalPicks = new[] { 1, 2, 999 };
 
     // Act
     var result = PredictionScoringService.Score(set, finalPicks, rules, DateTime.UtcNow);
@@ -66,10 +74,14 @@ public sealed class PredictionScoringServiceTests : DraftsBaseTest
     var rules = PredictionFactory.CreateUnorderedAllRule(draftPart, requiredCount: 3);
 
     var set = PredictionFactory.CreateLockedSet(
-      draftPart, season, contestant, rules,
-      mediaPublicIds: ["m_001", "m_002", "m_003"]);
+      draftPart,
+      season,
+      contestant,
+      rules,
+      tmdbIds: [1, 2, 3]
+    );
 
-    var finalPicks = new[] { "m_001", "m_002", "m_003" };
+    var finalPicks = new[] { 1, 2, 3 };
 
     // Act
     var result = PredictionScoringService.Score(set, finalPicks, rules, DateTime.UtcNow);
@@ -93,7 +105,7 @@ public sealed class PredictionScoringServiceTests : DraftsBaseTest
     var set = PredictionFactory.CreateSet(draftPart, season, contestant);
     // Not locked
 
-    var finalPicks = new[] { "m_001", "m_002", "m_003" };
+    var finalPicks = new[] { 1, 2, 3 };
 
     // Act
     var result = PredictionScoringService.Score(set, finalPicks, rules, DateTime.UtcNow);
@@ -116,20 +128,24 @@ public sealed class PredictionScoringServiceTests : DraftsBaseTest
     // TopN=3 means only the first 3 final picks are in the scoring pool
     var rules = PredictionFactory.CreateUnorderedTopNRule(draftPart, requiredCount: 3, topN: 3);
 
-    // Predict m_001 (in top 3) and m_004 (NOT in top 3)
+    // Predict 1 (in top 3) and 4, 5 (NOT in top 3)
     var set = PredictionFactory.CreateLockedSet(
-      draftPart, season, contestant, rules,
-      mediaPublicIds: ["m_001", "m_004", "m_005"]);
+      draftPart,
+      season,
+      contestant,
+      rules,
+      tmdbIds: [1, 4, 5]
+    );
 
-    // Final picks: m_001 is top 1, m_002 is top 2, m_003 is top 3; m_004 is position 4 (outside TopN)
-    var finalPicks = new[] { "m_001", "m_002", "m_003", "m_004", "m_005" };
+    // Final picks: 1 is top 1, 2 is top 2, 3 is top 3; 4 is position 4 (outside TopN)
+    var finalPicks = new[] { 1, 2, 3, 4, 5 };
 
     // Act
     var result = PredictionScoringService.Score(set, finalPicks, rules, DateTime.UtcNow);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
-    result.Value.CorrectCount.Should().Be(1); // only m_001 is in top 3
+    result.Value.CorrectCount.Should().Be(1); // only 1 is in top 3
     result.Value.ShootTheMoon.Should().BeFalse();
     result.Value.PointsAwarded.Should().Be(1);
   }
@@ -144,10 +160,14 @@ public sealed class PredictionScoringServiceTests : DraftsBaseTest
     var rules = PredictionFactory.CreateUnorderedTopNRule(draftPart, requiredCount: 3, topN: 3);
 
     var set = PredictionFactory.CreateLockedSet(
-      draftPart, season, contestant, rules,
-      mediaPublicIds: ["m_001", "m_002", "m_003"]);
+      draftPart,
+      season,
+      contestant,
+      rules,
+      tmdbIds: [1, 2, 3]
+    );
 
-    var finalPicks = new[] { "m_001", "m_002", "m_003", "m_004" };
+    var finalPicks = new[] { 1, 2, 3, 4 };
 
     // Act
     var result = PredictionScoringService.Score(set, finalPicks, rules, DateTime.UtcNow);

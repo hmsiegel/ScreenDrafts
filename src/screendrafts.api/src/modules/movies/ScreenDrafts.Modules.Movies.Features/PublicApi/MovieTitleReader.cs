@@ -4,6 +4,35 @@ internal sealed class MovieTitleReader(IDbConnectionFactory connectionFactory) :
 {
   private readonly IDbConnectionFactory _connectionFactory = connectionFactory;
 
+  public async Task<IReadOnlyList<string>> GetPublicIdsByTmdbIdsAsync(
+    IReadOnlyList<int> tmdbIds,
+    CancellationToken cancellationToken = default
+  )
+  {
+    if (tmdbIds.Count == 0)
+    {
+      return [];
+    }
+
+    await using var connection = await _connectionFactory.OpenConnectionAsync(cancellationToken);
+
+    const string sql = """
+      SELECT m.public_id
+      FROM movies.media m
+      WHERE m.tmdb_id = ANY(@TmdbIds)
+      """;
+
+    var publicIds = await connection.QueryAsync<string>(
+      new CommandDefinition(
+        commandText: sql,
+        parameters: new { TmdbIds = tmdbIds },
+        cancellationToken: cancellationToken
+      )
+    );
+
+    return [.. publicIds];
+  }
+
   public async Task<IReadOnlyDictionary<string, string>> GetTitlesByPublicIdsAsync(
     IEnumerable<string> publicIds,
     CancellationToken cancellationToken = default

@@ -2,7 +2,7 @@
 
 internal sealed class DraftsOptions
 {
-  public const string SectionName = "Drafts:People";
+  public const string SectionName = "Shared:People";
 
   public string[] CommissionerPersonPublicIds { get; set; } = [];
 }

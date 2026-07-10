@@ -18,12 +18,11 @@ internal sealed class PredictionEntryConfiguration : IEntityTypeConfiguration<Pr
       .IsRequired()
       .HasConversion(IdConverters.DraftPredictionSetIdConverter);
 
-    builder
-      .Property(e => e.MediaPublicId)
-      .IsRequired()
-      .HasMaxLength(PublicIdPrefixes.MaxPublicIdLength);
+    builder.Property(e => e.TmdbId).IsRequired();
 
     builder.Property(e => e.MediaTitle).IsRequired().HasMaxLength(500);
+
+    builder.Property(e => e.MediaPublicId).HasMaxLength(PublicIdPrefixes.MaxPublicIdLength);
 
     builder.Property(e => e.OrderIndex);
 
@@ -37,6 +36,6 @@ internal sealed class PredictionEntryConfiguration : IEntityTypeConfiguration<Pr
       .HasForeignKey(e => e.SetId)
       .OnDelete(DeleteBehavior.Cascade);
 
-    builder.HasIndex(e => new { e.SetId, e.MediaPublicId }).IsUnique();
+    builder.HasIndex(e => new { e.SetId, e.TmdbId }).IsUnique();
   }
 }

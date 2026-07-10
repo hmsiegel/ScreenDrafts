@@ -49,6 +49,30 @@ internal sealed class PickUndoDomainEventHandler(
       cancellationToken
     );
 
+    // Reporting doesn't listen for PickUndoneIntegrationEvent — RealTimeUpdates does, for the
+    // live undo banner. Reporting's RevertMovieHonorificCommandHandler is wired to
+    // PickUnlockedIntegrationEvent (same event veto and commissioner-override already publish),
+    // so undo has to publish it too or the movie's canonical-pick row never gets deleted and
+    // the honorific never recomputes on undo.
+    await _eventBus.PublishAsync(
+      new PickUnlockedIntegrationEvent(
+        id: domainEvent.Id,
+        occurredOnUtc: domainEvent.OccurredOnUtc,
+        draftPartId: domainEvent.DraftPartId,
+        draftPartPublicId: domainEvent.DraftPartPublicId,
+        draftId: domainEvent.DraftId,
+        draftPublicId: domainEvent.DraftPublicId,
+        moviePublicId: domainEvent.MoviePublicId,
+        movieTitle: domainEvent.MovieTitle,
+        tmdbId: domainEvent.TmdbId,
+        boardPosition: domainEvent.BoardPosition,
+        playedByParticipantId: domainEvent.PlayedByParticipantId,
+        playedByParticipantKind: domainEvent.PlayedByParticipantKind,
+        unlockReason: PickUnlockReason.Undone
+      ),
+      cancellationToken
+    );
+
     await _unitOfWork.SaveChangesAsync(cancellationToken);
   }
 }

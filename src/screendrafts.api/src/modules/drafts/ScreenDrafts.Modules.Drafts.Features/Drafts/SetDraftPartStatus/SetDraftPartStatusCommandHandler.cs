@@ -115,25 +115,9 @@ internal sealed class SetDraftPartStatusCommandHandler(
     }
     else // Global
     {
-      var channel = draft.ChannelReleases.Any(cr => cr.ReleaseChannel == ReleaseChannel.MainFeed)
-        ? ReleaseChannel.MainFeed.Value
-        : ReleaseChannel.Patreon.Value;
+      scopeFilter = string.Empty;
 
-      scopeFilter = """
-        AND EXISTS (
-          SELECT 1
-          FROM drafts.draft_channel_releases dcr
-          WHERE dcr.draft_id = d.id
-            AND dcr.release_channel = @Channel
-        )
-        """;
-
-      parameters = new
-      {
-        DrafterIds = drafterIds,
-        CurrentPartIds = part.Id.Value,
-        Channel = channel,
-      };
+      parameters = new { DrafterIds = drafterIds, CurrentPartIds = part.Id.Value };
     }
 
     var sql = $"""

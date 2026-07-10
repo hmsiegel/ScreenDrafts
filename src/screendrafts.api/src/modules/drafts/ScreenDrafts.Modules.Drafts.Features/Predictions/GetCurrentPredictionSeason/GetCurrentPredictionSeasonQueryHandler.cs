@@ -1,9 +1,12 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Features.Predictions.GetCurrentPredictionSeason;
 
-internal sealed class GetCurrentPredictionSeasonQueryHandler(IDbConnectionFactory connectionFactory)
-  : IQueryHandler<GetCurrentPredictionSeasonQuery, PredictionSeasonSummaryResponse>
+internal sealed class GetCurrentPredictionSeasonQueryHandler(
+  IDbConnectionFactory connectionFactory,
+  IOptions<DraftsOptions> draftsOptions
+) : IQueryHandler<GetCurrentPredictionSeasonQuery, PredictionSeasonSummaryResponse>
 {
   private readonly IDbConnectionFactory _connectionFactory = connectionFactory;
+  private readonly DraftsOptions _draftsOptions = draftsOptions.Value;
 
   public async Task<Result<PredictionSeasonSummaryResponse>> Handle(
     GetCurrentPredictionSeasonQuery request,
@@ -53,8 +56,10 @@ internal sealed class GetCurrentPredictionSeasonQueryHandler(IDbConnectionFactor
       LEFT JOIN season_episodes           se ON se.season_id  = ps.id
       LEFT JOIN drafts.prediction_standings   st ON st.season_id     = ps.id
       LEFT JOIN drafts.prediction_contestants c  ON c.id             = st.contestant_id
+      LEFT JOIN drafts.people ppl ON ppl.id = c.person_id
       LEFT JOIN carryover_totals          ct ON ct.season_id = ps.id AND ct.contestant_id = c.id
       WHERE ps.is_closed = FALSE
+      AND (c.id IS NULL OR ppl.public_id = ANY (@CommissionerPersonPublicIds))
       GROUP BY
         ps.public_id, ps.number, ps.starts_on, ps.ends_on,
         ps.target_points, ps.is_closed,
@@ -68,7 +73,11 @@ internal sealed class GetCurrentPredictionSeasonQueryHandler(IDbConnectionFactor
       await connection.QueryAsync<SeasonRow>(
         new CommandDefinition(
           commandText: sql,
-          parameters: new { MainFeedReleaseChannel = ReleaseChannel.MainFeed.Value },
+          parameters: new
+          {
+            MainFeedReleaseChannel = ReleaseChannel.MainFeed.Value,
+            _draftsOptions.CommissionerPersonPublicIds,
+          },
           cancellationToken: cancellationToken
         )
       )

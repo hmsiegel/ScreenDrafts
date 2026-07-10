@@ -28,7 +28,8 @@ internal sealed class CommissionerOverrideAppliedDomainEventHandler(
         movieTitle: domainEvent.MovieTitle,
         participantId: domainEvent.ParticipantId,
         participantKind: domainEvent.ParticipantKind,
-        boardPosition: domainEvent.BoardPosition
+        boardPosition: domainEvent.BoardPosition,
+        playOrder: domainEvent.PlayOrder
       ),
       cancellationToken
     );

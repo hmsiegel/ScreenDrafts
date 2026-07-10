@@ -8,4 +8,6 @@ internal sealed record SubmitPredictionSetCommand : ICommand
   public string? SubmittedByPersonPublicId { get; init; }
   public required int SourceKind { get; init; }
   public required IReadOnlyList<PredictionEntryDto> Entries { get; init; }
+
+  public required string ActorUserPublicId { get; init; }
 }

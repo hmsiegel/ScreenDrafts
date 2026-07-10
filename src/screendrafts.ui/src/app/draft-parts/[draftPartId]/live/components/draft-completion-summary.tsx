@@ -2,7 +2,13 @@
 'use client';
 
 import { useLiveDraft } from '../live-draft-context';
-import type { DraftCompletionSummary, PickHonorificSummary, DrafterHonorificSummary } from '../live-draft-context';
+import type {
+  DraftCompletionSummary,
+  PickHonorificSummary,
+  DrafterHonorificSummary,
+  PredictionSummary,
+  SeasonStanding,
+} from '../live-draft-context';
 
 // ── Honorific name maps ────────────────────────────────────────────────────────
 
@@ -85,6 +91,66 @@ function DrafterHonorificRow({
   );
 }
 
+function PredictorColumn({ p }: { p: PredictionSummary }) {
+  return (
+    <div className="border border-white/10 px-4 py-3">
+      <p className="font-oswald text-sd-paper text-sm tracking-wider uppercase mb-3">
+        {p.contestantDisplayName}
+      </p>
+      <div className="space-y-1.5 mb-3">
+        {p.entries.map((e, i) => (
+          <div key={i} className="flex items-start gap-2">
+            <span
+              className={`font-mono text-xs mt-0.5 shrink-0 ${
+                e.isCorrect ? 'text-light-blue' : 'text-white/20'
+              }`}
+            >
+              {e.isCorrect ? '✓' : '✗'}
+            </span>
+            <span
+              className={`font-mono text-sm leading-tight ${
+                e.isCorrect ? 'text-sd-paper' : 'text-white/30 line-through'
+              }`}
+            >
+              {e.mediaTitle}
+            </span>
+          </div>
+        ))}
+      </div>
+      <div className="pt-2 border-t border-white/10 flex items-center justify-between">
+        <span className="font-oswald text-xs text-white/40 uppercase tracking-wider">
+          Total
+        </span>
+        <span className="font-oswald text-yellow-400 text-lg">
+          {p.pointsAwarded} pts
+          {p.shootsTheMoon && (
+            <span className="ml-1.5 text-[10px] text-light-blue align-middle">MOON</span>
+          )}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function StandingRow({ s, rank }: { s: SeasonStanding; rank: number }) {
+  return (
+    <div className="flex items-center justify-between py-2 border-b border-white/5 last:border-0">
+      <div className="flex items-baseline gap-3">
+        <span className="font-oswald text-sd-red text-lg w-6 shrink-0">{rank}</span>
+        <p className="font-oswald text-sd-paper">{s.contestantDisplayName}</p>
+      </div>
+      <div className="text-right">
+        <span className="font-oswald text-sd-paper text-lg">{s.totalPoints} pts</span>
+        {s.carryoverPoints > 0 && (
+          <p className="font-mono text-xs text-white/40 mt-0.5">
+            {s.points} + {s.carryoverPoints} carryover
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ── Main component ────────────────────────────────────────────────────────────
 
 interface Props {
@@ -97,6 +163,8 @@ export function DraftCompletionSummaryModal({ summary }: Props) {
   const hasMovieHonorifics = summary.movieHonorifics.length > 0;
   const hasDrafterHonorifics = summary.drafterHonorifics.length > 0;
   const hasAnyHonorifics = hasMovieHonorifics || hasDrafterHonorifics;
+  const hasPredictions = summary.predictions.length > 0;
+  const hasStandings = summary.standings.length > 0;
 
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center bg-sd-ink/95 backdrop-blur-sm overflow-y-auto py-8">
@@ -121,7 +189,7 @@ export function DraftCompletionSummaryModal({ summary }: Props) {
           className={`grid gap-6 mb-8 ${hasAnyHonorifics ? 'grid-cols-1 lg:grid-cols-2' : 'grid-cols-1'
             }`}
         >
-          {/* Final board */}
+          {/* Row 1 — Final board */}
           <section className="mb-8">
             <p className="font-oswald text-xs tracking-[0.25em] text-white/40 uppercase mb-3">
               Final Board
@@ -140,7 +208,7 @@ export function DraftCompletionSummaryModal({ summary }: Props) {
             </div>
           </section>
 
-          {/* Honorifics */}
+          {/* Row 1 — Honorifics */}
           {hasAnyHonorifics && (
             <section className="mb-8">
               <p className="font-oswald text-xs tracking-[0.25em] text-white/40 uppercase mb-3">
@@ -161,6 +229,40 @@ export function DraftCompletionSummaryModal({ summary }: Props) {
             </section>
           )}
         </div>
+
+        {/* Row 2 — Predictor results, one column per predictor */}
+        {hasPredictions && (
+          <section className="mb-8">
+            <p className="font-oswald text-xs tracking-[0.25em] text-white/40 uppercase mb-3">
+              Commissioner Predictions
+            </p>
+            <div
+              className="grid gap-4"
+              style={{
+                gridTemplateColumns: `repeat(${summary.predictions.length}, minmax(0, 1fr))`,
+              }}
+            >
+              {summary.predictions.map((p) => (
+                <PredictorColumn key={p.contestantDisplayName} p={p} />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Row 3 — Season standings */}
+        {hasStandings && (
+          <section className="mb-8">
+            <p className="font-oswald text-xs tracking-[0.25em] text-white/40 uppercase mb-3">
+              Season Standings
+            </p>
+            <div className="border border-white/10 px-4">
+              {summary.standings.map((s, i) => (
+                <StandingRow key={s.contestantDisplayName} s={s} rank={i + 1} />
+              ))}
+            </div>
+          </section>
+        )}
+
 
         {/* OK button */}
         <div className="text-center">

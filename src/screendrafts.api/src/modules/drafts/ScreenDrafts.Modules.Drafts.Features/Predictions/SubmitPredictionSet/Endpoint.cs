@@ -21,6 +21,8 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<SubmitPredictionSetRequest
 
   public override async Task HandleAsync(SubmitPredictionSetRequest req, CancellationToken ct)
   {
+    var actorPublicId = User.GetUserPublicId();
+
     var command = new SubmitPredictionSetCommand
     {
       DraftPartPublicId = req.DraftPartId,
@@ -28,11 +30,12 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<SubmitPredictionSetRequest
       ContestantPublicId = req.ContestantPublicId,
       SubmittedByPersonPublicId = req.SubmittedByPersonPublicId,
       SourceKind = req.SourceKind,
+      ActorUserPublicId = actorPublicId,
       Entries =
       [
         .. req.Entries.Select(e => new PredictionEntryDto
         {
-          MediaPublicId = e.MediaPublicId,
+          TmdbId = e.TmdbId,
           MediaTitle = e.MediaTitle,
           OrderIndex = e.OrderIndex,
           Notes = e.Notes,

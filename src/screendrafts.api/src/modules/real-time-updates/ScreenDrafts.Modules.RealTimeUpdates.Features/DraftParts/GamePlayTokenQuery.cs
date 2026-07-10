@@ -1,5 +1,14 @@
 ﻿namespace ScreenDrafts.Modules.RealTimeUpdates.Features.DraftParts;
 
+// CROSS-SCHEMA READS: intentional, not a boundary violation. RealTimeUpdates
+// has no domain tables and performs no writes outside its own outbox/inbox —
+// it exists purely to read current state (drafts.*, reporting.*) and
+// broadcast it over SignalR. Sanctioned exception to the "no cross-schema
+// SQL" rule; real_time_updates_user has SELECT-only grants on both schemas.
+// See _crossschema_grant_realtimeupdates_readonly.sql. Every query in this
+// class and in GamePlayTokenQuery falls under this exception — SELECT only,
+// never a write, to any table outside RealTimeUpdates' own schema.
+
 internal static class GamePlayTokenQuery
 {
   public const string Sql = """

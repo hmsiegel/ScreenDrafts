@@ -1,6 +1,4 @@
-﻿using static System.Runtime.InteropServices.JavaScript.JSType;
-
-namespace ScreenDrafts.Modules.Drafts.Domain.DraftParts.Errors;
+﻿namespace ScreenDrafts.Modules.Drafts.Domain.DraftParts.Errors;
 
 public static class DraftPartErrors
 {
@@ -180,10 +178,10 @@ public static class DraftPartErrors
       description: $"Invalid pick play order '{playOrder}'."
     );
 
-  public static SDError MovieAlreadyPickedInThisDraft(Guid id) =>
+  public static SDError MovieAlreadyPickedInThisDraft(string movieTitle) =>
     SDError.Conflict(
       code: "DraftPart.MovieAlreadyPickedInThisDraft",
-      description: $"Movie with ID '{id}' has already been picked in this draft."
+      description: $"'{movieTitle}' has already been picked in this draft."
     );
 
   public static SDError PickNotFound(Guid pickId) =>

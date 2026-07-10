@@ -11,16 +11,16 @@ internal sealed class Validator : AbstractValidator<SubmitPredictionSetCommand>
       .WithMessage("DraftPartPublicId must be a valid public ID with the correct prefix.");
 
     RuleFor(x => x.SeasonPublicId)
-            .NotEmpty()
-            .WithMessage("SeasonPublicId is required.")
-            .Must(id => PublicIdGuards.IsValidWithPrefix(id, PublicIdPrefixes.PredictionSeason))
-            .WithMessage("SeasonPublicId must be a valid public ID with the correct prefix.");
+      .NotEmpty()
+      .WithMessage("SeasonPublicId is required.")
+      .Must(id => PublicIdGuards.IsValidWithPrefix(id, PublicIdPrefixes.PredictionSeason))
+      .WithMessage("SeasonPublicId must be a valid public ID with the correct prefix.");
 
     RuleFor(x => x.ContestantPublicId)
-            .NotEmpty()
-            .WithMessage("ContestantPublicId is required.")
-            .Must(id => PublicIdGuards.IsValidWithPrefix(id, PublicIdPrefixes.PredictionContestant))
-            .WithMessage("ContestantPublicId must be a valid public ID with the correct prefix.");
+      .NotEmpty()
+      .WithMessage("ContestantPublicId is required.")
+      .Must(id => PublicIdGuards.IsValidWithPrefix(id, PublicIdPrefixes.PredictionContestant))
+      .WithMessage("ContestantPublicId must be a valid public ID with the correct prefix.");
 
     RuleFor(x => x.SourceKind)
       .MustBeSmartEnumValue<SubmitPredictionSetCommand, PredictionSourceKind>()
@@ -28,15 +28,17 @@ internal sealed class Validator : AbstractValidator<SubmitPredictionSetCommand>
 
     RuleFor(x => x.Entries).NotEmpty();
 
-    RuleForEach(x => x.Entries).ChildRules(entry =>
-    {
-      entry.RuleFor(e => e.MediaPublicId)
-        .NotEmpty()
-        .WithMessage("MediaPublicId is required.")
-        .Must(id => PublicIdGuards.IsValidWithPrefix(id, PublicIdPrefixes.Media))
-        .WithMessage("MediaPublicId must be a valid public ID with the correct prefix.");
+    RuleForEach(x => x.Entries)
+      .ChildRules(entry =>
+      {
+        entry
+          .RuleFor(e => e.TmdbId)
+          .NotEmpty()
+          .WithMessage("TmdbId is required.")
+          .GreaterThan(0)
+          .WithMessage("TmdbId must be a valid ID.");
 
-      entry.RuleFor(e => e.MediaTitle).NotEmpty().WithMessage("MediaTitle is required.");
-    });
+        entry.RuleFor(e => e.MediaTitle).NotEmpty().WithMessage("MediaTitle is required.");
+      });
   }
 }

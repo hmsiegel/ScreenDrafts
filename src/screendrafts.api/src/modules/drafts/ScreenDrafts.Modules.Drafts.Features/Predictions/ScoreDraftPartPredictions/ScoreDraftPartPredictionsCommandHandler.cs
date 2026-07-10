@@ -75,7 +75,7 @@ internal sealed class ScoreDraftPartPredictionsCommandHandler(
 
       var predictionResult = PredictionScoringService.Score(
         set: set,
-        finalMediaPublicIds: request.FinalMediaPublicIds,
+        finalTmdbIds: request.FinalTmdbIds,
         rules: rules,
         scoredAtUtc: now
       );

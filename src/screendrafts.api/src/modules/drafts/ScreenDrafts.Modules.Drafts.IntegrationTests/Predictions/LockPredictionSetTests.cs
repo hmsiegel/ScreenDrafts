@@ -95,7 +95,7 @@ public sealed class LockPredictionSetTests(DraftsIntegrationTestWebAppFactory fa
     var seasonPublicId = await CreateSeasonPublicIdAsync();
     var contestantPublicId = await CreateContestantPublicIdAsync();
     await SetRulesAsync(draftPartPublicId, requiredCount: 3);
-    var setPublicId = await SubmitSetAsync(draftPartPublicId, seasonPublicId, contestantPublicId, "m_00000001", "m_00000002", "m_00000003");
+    var setPublicId = await SubmitSetAsync(draftPartPublicId, seasonPublicId, contestantPublicId, 1, 2, 3);
 
     var command = new LockPredictionSetCommand
     {
@@ -122,7 +122,7 @@ public sealed class LockPredictionSetTests(DraftsIntegrationTestWebAppFactory fa
     await SetRulesAsync(draftPartPublicId, requiredCount: 3);
     var setPublicId = await SubmitSetAsync(
       draftPartPublicId, seasonPublicId, contestantPublicId,
-      "m_00000001", "m_00000002", "m_00000003");
+      1, 2, 3);
     return (draftPartPublicId, setPublicId);
   }
 }

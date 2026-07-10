@@ -2,15 +2,21 @@
 
 internal sealed class RemoveHostDraftPartCommandHandler(
   IDraftPartRepository draftPartsRepository,
-  IHostRepository hostRepository)
-    : ICommandHandler<RemoveHostDraftPartCommand>
+  IHostRepository hostRepository
+) : ICommandHandler<RemoveHostDraftPartCommand>
 {
   private readonly IDraftPartRepository _draftPartsRepository = draftPartsRepository;
   private readonly IHostRepository _hostRepository = hostRepository;
 
-  public async Task<Result> Handle(RemoveHostDraftPartCommand request, CancellationToken cancellationToken)
+  public async Task<Result> Handle(
+    RemoveHostDraftPartCommand request,
+    CancellationToken cancellationToken
+  )
   {
-    var draftPart = await _draftPartsRepository.GetByPublicIdAsync(request.DraftPartId, cancellationToken);
+    var draftPart = await _draftPartsRepository.GetByPublicIdWithHostsAsync(
+      request.DraftPartId,
+      cancellationToken
+    );
 
     if (draftPart is null)
     {

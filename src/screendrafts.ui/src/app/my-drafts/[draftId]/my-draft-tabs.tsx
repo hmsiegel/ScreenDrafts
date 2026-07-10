@@ -8,6 +8,7 @@ import InfoTooltip from "@/components/ui/info-tooltip";
 import { getDraftBoard } from "@/services/drafts/fetch-draft-board";
 import type { GetMyDraftDetailResponse, MyDraftPartDetail } from "@/lib/dto";
 import type { DraftBoardItemResponse } from "@/lib/dto";
+import PredictionSubmission from "./prediction-submission";
 
 interface MyDraftTabsProps {
   detail: GetMyDraftDetailResponse;
@@ -43,7 +44,8 @@ function TabLabel({ tab }: { tab: string }) {
 export default function MyDraftTabs({ detail, accessToken }: MyDraftTabsProps) {
   const myRoles = detail.myRoles ?? [];
   const parts = detail.parts ?? [];
-  const isSurrogate = detail.isSurrogate ?? false;
+  const predictorParts = parts.filter((p) => p.isPredictor ?? false);
+  const hasPredictorRole = predictorParts.length > 0;
 
   const isDrafter = myRoles.includes("Drafter");
   const isHost = myRoles.includes("Host");
@@ -51,12 +53,13 @@ export default function MyDraftTabs({ detail, accessToken }: MyDraftTabsProps) {
   const tabs: string[] = [];
   if (isDrafter) tabs.push("MY BOARD", "CANDIDATE LIST");
   if (isHost) tabs.push("HOSTING");
-  if (isSurrogate) tabs.push("PREDICTIONS");
+  if (hasPredictorRole) tabs.push("PREDICTIONS");
 
   const [activeTab, setActiveTab] = useState(tabs[0] ?? "");
   const [selectedPartIdx, setSelectedPartIdx] = useState(0);
   const [board, setBoard] = useState<DraftBoardItemResponse[]>([]);
   const [boardLoading, setBoardLoading] = useState(false);
+  const [selectedPredictionPartIdx, setSelectedPredictionPartIdx] = useState(0);
 
   const drafterParts = parts.filter((p) => p.isDrafter ?? false);
   const hostParts = parts.filter((p) => p.isHost ?? false);
@@ -80,11 +83,10 @@ export default function MyDraftTabs({ detail, accessToken }: MyDraftTabsProps) {
             key={tab}
             type="button"
             onClick={() => setActiveTab(tab)}
-            className={`font-oswald font-bold text-sm uppercase tracking-wide px-5 py-3 transition-colors ${
-              activeTab === tab
+            className={`font-oswald font-bold text-sm uppercase tracking-wide px-5 py-3 transition-colors ${activeTab === tab
                 ? "border-b-2 border-sd-red text-sd-ink"
                 : "text-sd-ink/40 hover:text-sd-ink/70"
-            }`}
+              }`}
           >
             <TabLabel tab={tab} />
           </button>
@@ -101,11 +103,10 @@ export default function MyDraftTabs({ detail, accessToken }: MyDraftTabsProps) {
                   key={p.draftPartPublicId ?? ""}
                   type="button"
                   onClick={() => setSelectedPartIdx(i)}
-                  className={`font-mono text-xs uppercase px-3 py-1.5 border ${
-                    selectedPartIdx === i
+                  className={`font-mono text-xs uppercase px-3 py-1.5 border ${selectedPartIdx === i
                       ? "border-sd-blue bg-sd-blue text-white"
                       : "border-sd-ink/20 text-sd-ink/60 hover:border-sd-ink/40"
-                  }`}
+                    }`}
                 >
                   Part {p.partIndex}
                 </button>
@@ -136,11 +137,10 @@ export default function MyDraftTabs({ detail, accessToken }: MyDraftTabsProps) {
                   key={p.draftPartPublicId ?? ""}
                   type="button"
                   onClick={() => setSelectedPartIdx(i)}
-                  className={`font-mono text-xs uppercase px-3 py-1.5 border ${
-                    selectedPartIdx === i
+                  className={`font-mono text-xs uppercase px-3 py-1.5 border ${selectedPartIdx === i
                       ? "border-sd-blue bg-sd-blue text-white"
                       : "border-sd-ink/20 text-sd-ink/60 hover:border-sd-ink/40"
-                  }`}
+                    }`}
                 >
                   Part {p.partIndex}
                 </button>
@@ -189,11 +189,33 @@ export default function MyDraftTabs({ detail, accessToken }: MyDraftTabsProps) {
       )}
 
       {/* PREDICTIONS */}
-      {activeTab === "PREDICTIONS" && isSurrogate && (
-        <div className="border border-sd-ink/10 bg-white p-8 text-center">
-          <p className="font-oswald font-bold text-xl uppercase tracking-wide text-sd-ink/40">
-            Commissioner Predictions — Coming Soon
-          </p>
+      {activeTab === "PREDICTIONS" && hasPredictorRole && (
+        <div>
+          {predictorParts.length > 1 && (
+            <div className="flex gap-2 mb-4">
+              {predictorParts.map((p, i) => (
+                <button
+                  key={p.draftPartPublicId ?? ""}
+                  type="button"
+                  onClick={() => setSelectedPredictionPartIdx(i)}
+                  className={`font-mono text-xs uppercase px-3 py-1.5 border ${selectedPredictionPartIdx === i
+                      ? "border-sd-blue bg-sd-blue text-white"
+                      : "border-sd-ink/20 text-sd-ink/60 hover:border-sd-ink/40"
+                    }`}
+                >
+                  Part {p.partIndex}
+                </button>
+              ))}
+            </div>
+          )}
+          {predictorParts[selectedPredictionPartIdx] && (
+            <PredictionSubmission
+              accessToken={accessToken}
+              draftPartId={predictorParts[selectedPredictionPartIdx].draftPartPublicId ?? ""}
+              contestantPublicId={predictorParts[selectedPredictionPartIdx].contestantPublicId ?? ""}
+              hasSubmitted={predictorParts[selectedPredictionPartIdx].hasSubmittedPrediction ?? false}
+            />
+          )}
         </div>
       )}
     </div>

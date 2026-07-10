@@ -29,6 +29,7 @@ internal sealed class DraftPartRepository(DraftsDbContext dbContext) : IDraftPar
       .Include(dp => dp.GameBoard!)
         .ThenInclude(gb => gb.DraftPositions)
       .Include("_picks.Veto.VetoOverride")
+      .Include("_picks.CommissionerOverride")
       .Include("_picks.Movie")
       .Include("_communityFilmRules")
       .FirstOrDefaultAsync(x => x.PublicId == draftPartId, cancellationToken);

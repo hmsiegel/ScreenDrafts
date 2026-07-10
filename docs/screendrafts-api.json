@@ -1029,6 +1029,71 @@
         ]
       }
     },
+    "/draft-parts/{draftPartId}/predictors": {
+      "put": {
+        "tags": [
+          "Predictions"
+        ],
+        "operationId": "Predictions_SetPredictors",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetDraftPartPredictorsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        },
+        "security": [
+          { }
+        ]
+      },
+      "get": {
+        "tags": [
+          "Predictions"
+        ],
+        "operationId": "Predictions_GetPredictors",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetDraftPartPredictorsResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
     "/draft-parts/{draftPartId}/prediction-rules": {
       "post": {
         "tags": [
@@ -1063,6 +1128,80 @@
           },
           "409": {
             "description": "Conflict"
+          }
+        },
+        "security": [
+          { }
+        ]
+      },
+      "get": {
+        "tags": [
+          "Predictions"
+        ],
+        "operationId": "Predictions_GetRules",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetDraftPartPredictionRulesResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/prediction-contestants/search": {
+      "get": {
+        "tags": [
+          "Predictions"
+        ],
+        "operationId": "Predictions_SearchContestants",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchPredictionContestantsRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchPredictionContestantsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchPredictionContestantsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
           }
         },
         "security": [
@@ -8019,6 +8158,21 @@
           }
         }
       },
+      "ContestantSearchResultResponse": {
+        "required": [
+          "publicId",
+          "displayName"
+        ],
+        "type": "object",
+        "properties": {
+          "publicId": {
+            "type": "string"
+          },
+          "displayName": {
+            "type": "string"
+          }
+        }
+      },
       "ContestantStandingResponse": {
         "type": "object",
         "properties": {
@@ -10523,11 +10677,66 @@
           }
         }
       },
+      "GetDraftPartPredictionRulesResponse": {
+        "required": [
+          "predictionMode",
+          "requiredCount"
+        ],
+        "type": "object",
+        "properties": {
+          "predictionMode": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "requiredCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "topN": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "deadlineUtc": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          }
+        }
+      },
       "GetDraftPartPredictionsRequest": {
         "type": "object",
         "properties": {
           "draftPartId": {
             "type": "string"
+          }
+        }
+      },
+      "GetDraftPartPredictorsResponse": {
+        "required": [
+          "predictors"
+        ],
+        "type": "object",
+        "properties": {
+          "predictors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PredictorResponse"
+            }
           }
         }
       },
@@ -13362,6 +13571,18 @@
               "string"
             ],
             "format": "date"
+          },
+          "isPredictor": {
+            "type": "boolean"
+          },
+          "contestantPublicId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "hasSubmittedPrediction": {
+            "type": "boolean"
           }
         }
       },
@@ -14726,8 +14947,13 @@
       "PredictionEntryRequest": {
         "type": "object",
         "properties": {
-          "mediaPublicId": {
-            "type": "string"
+          "tmdbId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
           },
           "mediaTitle": {
             "type": "string"
@@ -14751,13 +14977,24 @@
       },
       "PredictionEntryResponse": {
         "required": [
-          "mediaPublicId",
+          "tmdbId",
           "mediaTitle"
         ],
         "type": "object",
         "properties": {
+          "tmdbId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
           "mediaPublicId": {
-            "type": "string"
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "mediaTitle": {
             "type": "string"
@@ -14921,6 +15158,50 @@
             "items": {
               "$ref": "#/components/schemas/ContestantStandingResponse"
             }
+          }
+        }
+      },
+      "PredictorEntryRequest": {
+        "required": [
+          "contestantPublicId"
+        ],
+        "type": "object",
+        "properties": {
+          "contestantPublicId": {
+            "type": "string"
+          },
+          "allowedSubmitterPersonPublicId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "PredictorResponse": {
+        "required": [
+          "contestantPublicId",
+          "contestantDisplayName"
+        ],
+        "type": "object",
+        "properties": {
+          "contestantPublicId": {
+            "type": "string"
+          },
+          "contestantDisplayName": {
+            "type": "string"
+          },
+          "allowedSubmitterPersonPublicId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "allowedSubmitterDisplayName": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -15375,10 +15656,15 @@
           "draftPartId": {
             "type": "string"
           },
-          "finalMediaPublicIds": {
+          "finalTmdbIds": {
             "type": "array",
             "items": {
-              "type": "string"
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
             }
           }
         }
@@ -15835,6 +16121,39 @@
           }
         }
       },
+      "SearchPredictionContestantsRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "pageSize": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "SearchPredictionContestantsResponse": {
+        "required": [
+          "items"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContestantSearchResultResponse"
+            }
+          }
+        }
+      },
       "SearchSpotlightCandidatesRequest": {
         "type": "object",
         "properties": {
@@ -16125,6 +16444,23 @@
               "string"
             ],
             "format": "date-time"
+          }
+        }
+      },
+      "SetDraftPartPredictorsRequest": {
+        "required": [
+          "predictors"
+        ],
+        "type": "object",
+        "properties": {
+          "draftPartId": {
+            "type": "string"
+          },
+          "predictors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PredictorEntryRequest"
+            }
           }
         }
       },

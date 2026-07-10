@@ -11,6 +11,7 @@ import {
   SmartEnumResponse,
 } from "@/lib/dto";
 import { PositionConfig } from "@/app/admin/drafts/new/positions-editor";
+import { PREDICTION_MODE_VALUES, PredictionConfig } from "@/app/admin/drafts/new/prediction-rules-section";
 
 // TODO: regenerate dto.ts after backend adds these response shapes if they differ
 export interface AdminDraftListItem extends SearchDraftsResponse { }
@@ -25,6 +26,7 @@ export interface AdminSeriesOption {
 
 export interface AdminHostOption {
   publicId: string;
+  personPublicId: string;
   displayName: string;
 }
 
@@ -129,10 +131,30 @@ export interface CreateDraftBody {
   campaignId: string | null;
 }
 
+export interface DraftPartPredictionRulesDto {
+  predictionMode: number;
+  requiredCount: number;
+  topN: number | null;
+  deadlineUtc: string | null;
+}
+
+export interface DraftPartPredictorDto {
+  contestantPublicId: string;
+  contestantDisplayName: string;
+  allowedSubmitterPersonPublicId: string | null;
+  allowedSubmitterDisplayName: string | null;
+}
+
 const apiBase = env.apiUrl;
 
 function authHeaders(accessToken: string | undefined): HeadersInit {
   return accessToken ? { Authorization: `Bearer ${accessToken}` } : {};
+}
+
+function toUtcIso(deadlineUtc: string | null): string | null {
+  if (!deadlineUtc) return null;
+  const parsed = new Date(deadlineUtc);
+  return isNaN(parsed.getTime()) ? null : parsed.toISOString();
 }
 
 export async function listAdminDrafts(
@@ -213,6 +235,7 @@ export async function searchAllHosts(
     const data = await response.json() as { items?: SearchHostResponse[] };
     return (data.items ?? []).map((h) => ({
       publicId: h.publicId,
+      personPublicId: h.personPublicId,
       displayName: h.displayName ?? `${h.firstName} ${h.lastName}`.trim(),
     }));
   } catch (err) {
@@ -880,4 +903,105 @@ export async function getMediaByTmdbIds(
   });
   if (!res.ok) return { items: [] };
   return res.json() as Promise<GetMediaByTmdbIdsResponse>;
+}
+
+export async function getDraftPartPredictionRules(
+  accessToken: string | undefined,
+  draftPartId: string
+): Promise<DraftPartPredictionRulesDto | null> {
+  try {
+    const res = await fetch(
+      `${apiBase}/draft-parts/${encodeURIComponent(draftPartId)}/prediction-rules`,
+      { headers: authHeaders(accessToken), cache: "no-store" }
+    );
+    if (!res.ok) return null;
+    return (await res.json()) as DraftPartPredictionRulesDto | null;
+  } catch (err) {
+    console.error("[getDraftPartPredictionRules]", err);
+    return null;
+  }
+}
+
+export async function getDraftPartPredictors(
+  accessToken: string | undefined,
+  draftPartId: string
+): Promise<DraftPartPredictorDto[]> {
+  try {
+    const res = await fetch(
+      `${apiBase}/draft-parts/${encodeURIComponent(draftPartId)}/predictors`,
+      { headers: authHeaders(accessToken), cache: "no-store" }
+    );
+    if (!res.ok) return [];
+    const data = (await res.json()) as { predictors?: DraftPartPredictorDto[] };
+    return data.predictors ?? [];
+  } catch (err) {
+    console.error("[getDraftPartPredictors]", err);
+    return [];
+  }
+}
+
+export async function setDraftPartPredictionRules(
+  accessToken: string,
+  draftPartId: string,
+  body: { predictionMode: number; requiredCount: number; topN: number | null; deadlineUtc: string | null }
+): Promise<void> {
+  const res = await fetch(
+    `${apiBase}/draft-parts/${encodeURIComponent(draftPartId)}/prediction-rules`,
+    {
+      method: "PUT",
+      headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ draftPartId, ...body }),
+    }
+  );
+  if (!res.ok) {
+    const text = await res.text().catch(() => res.statusText);
+    throw new Error(
+      `PUT /draft-parts/${draftPartId}/prediction-rules failed (${res.status}): ${text}`
+    );
+  }
+}
+
+export async function setDraftPartPredictors(
+  accessToken: string,
+  draftPartId: string,
+  predictors: Array<{ contestantPublicId: string; allowedSubmitterPersonPublicId: string | null }>
+): Promise<void> {
+  const res = await fetch(
+    `${apiBase}/draft-parts/${encodeURIComponent(draftPartId)}/predictors`,
+    {
+      method: "PUT",
+      headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ draftPartId, predictors }),
+    }
+  );
+  if (!res.ok) {
+    const text = await res.text().catch(() => res.statusText);
+    throw new Error(
+      `PUT /draft-parts/${draftPartId}/predictors failed (${res.status}): ${text}`
+    );
+  }
+}
+
+export async function syncPredictionConfig(
+  accessToken: string,
+  draftPartId: string,
+  config: PredictionConfig
+): Promise<void> {
+  if (!config.enabled) return;
+
+  await setDraftPartPredictionRules(accessToken, draftPartId, {
+    predictionMode: PREDICTION_MODE_VALUES[config.mode],
+    requiredCount: config.requiredCount,
+    topN: config.topN,
+    deadlineUtc: toUtcIso(config.deadlineUtc),
+  });
+
+  await setDraftPartPredictors(
+    accessToken,
+    draftPartId,
+    config.predictors.map((p) => ({
+      contestantPublicId: p.contestantPublicId,
+      allowedSubmitterPersonPublicId: p.allowedSubmitterPersonPublicId,
+    }))
+  );
 }

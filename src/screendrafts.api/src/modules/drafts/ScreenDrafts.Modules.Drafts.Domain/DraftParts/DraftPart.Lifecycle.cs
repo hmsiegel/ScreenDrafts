@@ -50,7 +50,6 @@ public sealed partial class DraftPart
       .Distinct()
       .Count();
 
-
     if (landedPositionCount != TotalPicks)
     {
       return Result.Failure(DraftErrors.CannotCompleteDraftWithoutAllPicks);

@@ -10,7 +10,8 @@ internal static class PredictionRoutes
   public const string CloseSeason = Seasons + "/{publicId}/close";
 
   // Contestants
-  public const string CreateContestant = "prediction-contestants";
+  public const string Contestants = "prediction-contestants";
+  public const string SearchContestants = Contestants + "/search";
 
   // Rules (draft-part scoped)
   public const string SetRules = "draft-parts/{draftPartId}/prediction-rules";
@@ -24,4 +25,7 @@ internal static class PredictionRoutes
 
   public const string DraftPartId = "draftPartId";
   public const string SetId = "setId";
+
+  // Predictors
+  public const string SetPredictors = "/draft-parts/{draftPartId}/predictors";
 }

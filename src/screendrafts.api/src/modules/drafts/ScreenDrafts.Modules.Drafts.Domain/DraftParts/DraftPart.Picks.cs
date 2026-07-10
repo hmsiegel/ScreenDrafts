@@ -38,12 +38,16 @@ public sealed partial class DraftPart
 
     if (IsMovieAlreadyPickedInThisPart(movie.Id, subDraftId))
     {
-      return Result.Failure<PickId>(DraftPartErrors.MovieAlreadyPickedInThisDraft(movie.Id));
+      return Result.Failure<PickId>(
+        DraftPartErrors.MovieAlreadyPickedInThisDraft(movie.MovieTitle)
+      );
     }
 
     if (isMovieAlreadyPickedInWholeDraft is not null && isMovieAlreadyPickedInWholeDraft(movie.Id))
     {
-      return Result.Failure<PickId>(DraftPartErrors.MovieAlreadyPickedInThisDraft(movie.Id));
+      return Result.Failure<PickId>(
+        DraftPartErrors.MovieAlreadyPickedInThisDraft(movie.MovieTitle)
+      );
     }
 
     string? effectiveVersionName = movieVersionName;
@@ -145,14 +149,17 @@ public sealed partial class DraftPart
 
     Raise(
       new PickUndoDomainEvent(
-        DraftPartId: Id.Value,
-        DraftPartPublicId: PublicId,
-        PlayOrder: playOrder,
-        BoardPosition: pick.Position,
-        TmdbId: pick.Movie.TmdbId ?? 0,
-        MovieTitle: pick.Movie.MovieTitle,
-        DraftId: DraftId.Value,
-        DraftPublicId: DraftPublicId
+        draftPartId: Id.Value,
+        draftPartPublicId: PublicId,
+        playOrder: playOrder,
+        boardPosition: pick.Position,
+        tmdbId: pick.Movie.TmdbId ?? 0,
+        movieTitle: pick.Movie.MovieTitle,
+        draftId: DraftId.Value,
+        draftPublicId: DraftPublicId,
+        moviePublicId: pick.Movie.PublicId,
+        playedByParticipantId: pick.PlayedByParticipantIdValue,
+        playedByParticipantKind: pick.PlayedByParticipantKindValue.Value
       )
     );
 
@@ -270,7 +277,7 @@ public sealed partial class DraftPart
         draftPartId: Id.Value,
         draftPartPublicId: PublicId,
         tmdbId: pick.Movie.TmdbId,
-        participantId: participant.Id.Value,
+        participantId: participant.ParticipantIdValue,
         participantKind: participant.ParticipantKindValue.Value,
         draftId: DraftId.Value,
         draftPublicId: DraftPublicId,
@@ -439,7 +446,8 @@ public sealed partial class DraftPart
         participantKind: pick.PlayedByParticipant.ParticipantKindValue.Value,
         moviePublicId: pick.Movie!.PublicId,
         movieTitle: pick.Movie!.MovieTitle,
-        boardPosition: pick.Position
+        boardPosition: pick.Position,
+        playOrder: pick.PlayOrder
       )
     );
     return Result.Success();
@@ -506,7 +514,7 @@ public sealed partial class DraftPart
     // Block duplicate position only if the existing pick at that slot landed.
     // A vetoed pick that is eligible for re-pick does not block the slot.
     var landedAtPosition = _picks.Any(p =>
-      p.Position == pick.Position && p.SubDraftId == subDraftId && !p.IsEligibleForRePick
+      p.Position == pick.Position && p.SubDraftId == subDraftId && p.IsActiveOnFinalBoard
     );
 
     if (landedAtPosition)

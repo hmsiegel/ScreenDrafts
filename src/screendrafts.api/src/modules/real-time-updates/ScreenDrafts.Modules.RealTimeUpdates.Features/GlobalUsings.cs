@@ -2,6 +2,7 @@
 global using Dapper;
 global using Microsoft.AspNetCore.SignalR;
 global using Microsoft.Extensions.Logging;
+global using Microsoft.Extensions.Options;
 global using ScreenDrafts.Common.Application.Data;
 global using ScreenDrafts.Common.Application.EventBus;
 global using ScreenDrafts.Common.Application.EventBus.Dispatchers;

@@ -11,15 +11,17 @@ public sealed class SubmitPredictionSetTests(DraftsIntegrationTestWebAppFactory 
     var seasonPublicId = await CreateSeasonPublicIdAsync();
     var contestantPublicId = await CreateContestantPublicIdAsync();
     await SetRulesAsync(draftPartPublicId, requiredCount: 3);
+    await EnsurePredictorConfiguredAsync(draftPartPublicId, contestantPublicId);
 
-    var entries = MakeEntries("m_00000001", "m_00000002", "m_00000003");
+    var entries = MakeEntries(1, 2, 3);
     var command = new SubmitPredictionSetCommand
     {
       DraftPartPublicId = draftPartPublicId,
       SeasonPublicId = seasonPublicId,
       ContestantPublicId = contestantPublicId,
       SourceKind = PredictionSourceKind.UI.Value,
-      Entries = entries
+      Entries = entries,
+      ActorUserPublicId = GetActorUserPublicIdForContestant(contestantPublicId)
     };
 
     // Act
@@ -37,6 +39,7 @@ public sealed class SubmitPredictionSetTests(DraftsIntegrationTestWebAppFactory 
     var seasonPublicId = await CreateSeasonPublicIdAsync();
     var contestantPublicId = await CreateContestantPublicIdAsync();
     await SetRulesAsync(draftPartPublicId, requiredCount: 3);
+    await EnsurePredictorConfiguredAsync(draftPartPublicId, contestantPublicId);
 
     var command = new SubmitPredictionSetCommand
     {
@@ -44,7 +47,8 @@ public sealed class SubmitPredictionSetTests(DraftsIntegrationTestWebAppFactory 
       SeasonPublicId = seasonPublicId,
       ContestantPublicId = contestantPublicId,
       SourceKind = PredictionSourceKind.UI.Value,
-      Entries = MakeEntries("m_00000001", "m_00000002", "m_00000003")
+      Entries = MakeEntries(1, 2, 3),
+      ActorUserPublicId = GetActorUserPublicIdForContestant(contestantPublicId)
     };
 
     // Act
@@ -69,6 +73,7 @@ public sealed class SubmitPredictionSetTests(DraftsIntegrationTestWebAppFactory 
     var seasonPublicId = await CreateSeasonPublicIdAsync();
     var contestantPublicId = await CreateContestantPublicIdAsync();
     await SetRulesAsync(draftPartPublicId, requiredCount: 3);
+    await EnsurePredictorConfiguredAsync(draftPartPublicId, contestantPublicId);
 
     var command = new SubmitPredictionSetCommand
     {
@@ -76,7 +81,8 @@ public sealed class SubmitPredictionSetTests(DraftsIntegrationTestWebAppFactory 
       SeasonPublicId = seasonPublicId,
       ContestantPublicId = contestantPublicId,
       SourceKind = PredictionSourceKind.UI.Value,
-      Entries = MakeEntries("m_00000001", "m_00000002", "m_00000003")
+      Entries = MakeEntries(1, 2, 3),
+      ActorUserPublicId = GetActorUserPublicIdForContestant(contestantPublicId)
     };
 
     await Sender.Send(command, TestContext.Current.CancellationToken);
@@ -97,6 +103,7 @@ public sealed class SubmitPredictionSetTests(DraftsIntegrationTestWebAppFactory 
     var seasonPublicId = await CreateSeasonPublicIdAsync();
     var contestantPublicId = await CreateContestantPublicIdAsync();
     await SetRulesAsync(draftPartPublicId, requiredCount: 3);
+    await EnsurePredictorConfiguredAsync(draftPartPublicId, contestantPublicId);
 
     var command = new SubmitPredictionSetCommand
     {
@@ -104,7 +111,8 @@ public sealed class SubmitPredictionSetTests(DraftsIntegrationTestWebAppFactory 
       SeasonPublicId = seasonPublicId,
       ContestantPublicId = contestantPublicId,
       SourceKind = PredictionSourceKind.UI.Value,
-      Entries = MakeEntries("m_00000001", "m_00000002") // only 2, but 3 required
+      Entries = MakeEntries(1, 2), // only 2, but 3 required
+      ActorUserPublicId = GetActorUserPublicIdForContestant(contestantPublicId)
     };
 
     // Act
@@ -129,7 +137,8 @@ public sealed class SubmitPredictionSetTests(DraftsIntegrationTestWebAppFactory 
       SeasonPublicId = seasonPublicId,
       ContestantPublicId = contestantPublicId,
       SourceKind = PredictionSourceKind.UI.Value,
-      Entries = MakeEntries("m_00000001", "m_00000002", "m_00000003")
+      Entries = MakeEntries(1, 2, 3),
+      ActorUserPublicId = GetActorUserPublicIdForContestant(contestantPublicId)
     };
 
     // Act
@@ -146,6 +155,7 @@ public sealed class SubmitPredictionSetTests(DraftsIntegrationTestWebAppFactory 
     var draftPartPublicId = await CreateDraftPartPublicIdAsync();
     var contestantPublicId = await CreateContestantPublicIdAsync();
     await SetRulesAsync(draftPartPublicId, requiredCount: 3);
+    await EnsurePredictorConfiguredAsync(draftPartPublicId, contestantPublicId);
 
     var command = new SubmitPredictionSetCommand
     {
@@ -153,7 +163,8 @@ public sealed class SubmitPredictionSetTests(DraftsIntegrationTestWebAppFactory 
       SeasonPublicId = "ps_nonexistent123",
       ContestantPublicId = contestantPublicId,
       SourceKind = PredictionSourceKind.UI.Value,
-      Entries = MakeEntries("m_00000001", "m_00000002", "m_00000003")
+      Entries = MakeEntries(1, 2, 3),
+      ActorUserPublicId = GetActorUserPublicIdForContestant(contestantPublicId)
     };
 
     // Act
@@ -177,7 +188,8 @@ public sealed class SubmitPredictionSetTests(DraftsIntegrationTestWebAppFactory 
       SeasonPublicId = seasonPublicId,
       ContestantPublicId = "pc_nonexistent123",
       SourceKind = PredictionSourceKind.UI.Value,
-      Entries = MakeEntries("m_00000001", "m_00000002", "m_00000003")
+      Entries = MakeEntries(1, 2, 3),
+      ActorUserPublicId = $"u_{Faker.Random.AlphaNumeric(16)}"
     };
 
     // Act
@@ -194,6 +206,7 @@ public sealed class SubmitPredictionSetTests(DraftsIntegrationTestWebAppFactory 
     var draftPartPublicId = await CreateDraftPartPublicIdAsync();
     var seasonPublicId = await CreateSeasonPublicIdAsync();
     var contestantPublicId = await CreateContestantPublicIdAsync();
+    await EnsurePredictorConfiguredAsync(draftPartPublicId, contestantPublicId);
     // Intentionally NOT setting rules
 
     var command = new SubmitPredictionSetCommand
@@ -202,7 +215,8 @@ public sealed class SubmitPredictionSetTests(DraftsIntegrationTestWebAppFactory 
       SeasonPublicId = seasonPublicId,
       ContestantPublicId = contestantPublicId,
       SourceKind = PredictionSourceKind.UI.Value,
-      Entries = MakeEntries("m_00000001", "m_00000002", "m_00000003")
+      Entries = MakeEntries(1, 2, 3),
+      ActorUserPublicId = GetActorUserPublicIdForContestant(contestantPublicId)
     };
 
     // Act
@@ -230,6 +244,7 @@ public sealed class SubmitPredictionSetTests(DraftsIntegrationTestWebAppFactory 
       RequiredCount = 3,
       DeadlineUtc = DateTime.UtcNow.AddDays(-1)
     }, TestContext.Current.CancellationToken);
+    await EnsurePredictorConfiguredAsync(draftPartPublicId, contestantPublicId);
 
     var command = new SubmitPredictionSetCommand
     {
@@ -237,7 +252,8 @@ public sealed class SubmitPredictionSetTests(DraftsIntegrationTestWebAppFactory 
       SeasonPublicId = seasonPublicId,
       ContestantPublicId = contestantPublicId,
       SourceKind = PredictionSourceKind.UI.Value,
-      Entries = MakeEntries("m_00000001", "m_00000002", "m_00000003")
+      Entries = MakeEntries(1, 2, 3),
+      ActorUserPublicId = GetActorUserPublicIdForContestant(contestantPublicId)
     };
 
     // Act
@@ -252,6 +268,6 @@ public sealed class SubmitPredictionSetTests(DraftsIntegrationTestWebAppFactory 
   // Helpers
   // ──────────────────────────────────────────────────────────────────────
 
-  private static IReadOnlyList<PredictionEntryDto> MakeEntries(params string[] mediaIds) =>
-    [.. mediaIds.Select((id, i) => new PredictionEntryDto { MediaPublicId = id, MediaTitle = $"Movie {i + 1}" })];
+  private static IReadOnlyList<PredictionEntryDto> MakeEntries(params int[] tmdbIds) =>
+    [.. tmdbIds.Select((id, i) => new PredictionEntryDto { TmdbId = id, MediaTitle = $"Movie {i + 1}" })];
 }

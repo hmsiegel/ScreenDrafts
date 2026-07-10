@@ -30,11 +30,21 @@ public sealed partial class Draft
     DeriveDraftStatus(utcNow);
 
     UpdatedAtUtc = DateTime.UtcNow;
+
+    var landedTmdbIds = part
+      .Picks.Where(p => p.IsActiveOnFinalBoard && p.Movie.TmdbId.HasValue)
+      .Select(p => p.Movie.TmdbId!.Value)
+      .Distinct()
+      .ToList();
+
     Raise(
       new DraftPartCompletedDomainEvent(
         draftId: Id.Value,
         draftPartId: part.Id.Value,
-        index: part.PartIndex
+        index: part.PartIndex,
+        draftPublicId: PublicId,
+        draftPartPublicId: part.PublicId,
+        landedTmdbIds: landedTmdbIds
       )
     );
 

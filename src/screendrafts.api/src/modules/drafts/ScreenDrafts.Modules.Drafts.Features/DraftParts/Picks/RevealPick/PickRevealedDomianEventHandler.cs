@@ -63,23 +63,6 @@ internal sealed class PickRevealedDomianEventHandler(
       cancellationToken
     );
 
-    await _eventBus.PublishAsync(
-      new PickAddedIntegrationEvent(
-        id: Guid.NewGuid(),
-        occurredOnUtc: _dateTimeProvider.UtcNow,
-        draftPartId: domainEvent.DraftPartId,
-        draftPartPublicId: domainEvent.DraftPartPublicId,
-        imdbId: movie.ImdbId!,
-        movieTitle: movie.MovieTitle,
-        tmdbId: movie.TmdbId,
-        boardPosition: pick.Position,
-        playOrder: domainEvent.PlayOrder,
-        participantId: pick.PlayedByParticipantIdValue,
-        participantKind: pick.PlayedByParticipantKindValue.Value
-      ),
-      cancellationToken
-    );
-
     if (domainEvent.CanonicalPolicyValue != 0)
     {
       return;

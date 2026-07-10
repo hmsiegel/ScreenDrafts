@@ -9136,7 +9136,27 @@ export interface IPredictionsClient {
     /**
      * @return No Content
      */
+    setPredictors(body: SetDraftPartPredictorsRequest): Promise<void>;
+
+    /**
+     * @return OK
+     */
+    getPredictors(): Promise<GetDraftPartPredictorsResponse>;
+
+    /**
+     * @return No Content
+     */
     setRules(body: SetDraftPartPredictionRulesRequest): Promise<void>;
+
+    /**
+     * @return OK
+     */
+    getRules(): Promise<GetDraftPartPredictionRulesResponse>;
+
+    /**
+     * @return OK
+     */
+    searchContestants(body: SearchPredictionContestantsRequest): Promise<SearchPredictionContestantsResponse>;
 
     /**
      * @return No Content
@@ -9313,6 +9333,105 @@ export class PredictionsClient implements IPredictionsClient {
     /**
      * @return No Content
      */
+    setPredictors(body: SetDraftPartPredictorsRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/predictors";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processSetPredictors(_response);
+        });
+    }
+
+    protected processSetPredictors(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status === 409) {
+            return response.text().then((_responseText) => {
+            return throwException("Conflict", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    getPredictors(signal?: AbortSignal): Promise<GetDraftPartPredictorsResponse> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/predictors";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            signal,
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetPredictors(_response);
+        });
+    }
+
+    protected processGetPredictors(response: Response): Promise<GetDraftPartPredictorsResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as GetDraftPartPredictorsResponse;
+            return result200;
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<GetDraftPartPredictorsResponse>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
     setRules(body: SetDraftPartPredictionRulesRequest, signal?: AbortSignal): Promise<void> {
         let url_ = this.baseUrl + "/draft-parts/{draftPartId}/prediction-rules";
         url_ = url_.replace(/[?&]$/, "");
@@ -9366,6 +9485,104 @@ export class PredictionsClient implements IPredictionsClient {
             });
         }
         return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    getRules(signal?: AbortSignal): Promise<GetDraftPartPredictionRulesResponse> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/prediction-rules";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            signal,
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetRules(_response);
+        });
+    }
+
+    protected processGetRules(response: Response): Promise<GetDraftPartPredictionRulesResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as GetDraftPartPredictionRulesResponse;
+            return result200;
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<GetDraftPartPredictionRulesResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    searchContestants(body: SearchPredictionContestantsRequest, signal?: AbortSignal): Promise<SearchPredictionContestantsResponse> {
+        let url_ = this.baseUrl + "/prediction-contestants/search";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processSearchContestants(_response);
+        });
+    }
+
+    protected processSearchContestants(response: Response): Promise<SearchPredictionContestantsResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as SearchPredictionContestantsResponse;
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<SearchPredictionContestantsResponse>(null as any);
     }
 
     /**
@@ -10287,6 +10504,13 @@ export interface ConfirmAttendanceRequest {
     [key: string]: any;
 }
 
+export interface ContestantSearchResultResponse {
+    publicId: string;
+    displayName: string;
+
+    [key: string]: any;
+}
+
 export interface ContestantStandingResponse {
     contestantPublicId?: string;
     displayName?: string;
@@ -11069,8 +11293,23 @@ export interface GetDraftPartParticipantResponse {
     [key: string]: any;
 }
 
+export interface GetDraftPartPredictionRulesResponse {
+    predictionMode: number;
+    requiredCount: number;
+    topN?: number | undefined;
+    deadlineUtc?: Date | undefined;
+
+    [key: string]: any;
+}
+
 export interface GetDraftPartPredictionsRequest {
     draftPartId?: string;
+
+    [key: string]: any;
+}
+
+export interface GetDraftPartPredictorsResponse {
+    predictors: PredictorResponse[];
 
     [key: string]: any;
 }
@@ -11894,6 +12133,9 @@ export interface MyDraftPartDetail {
     isDrafter?: boolean;
     attendanceStatus?: string | undefined;
     releaseDate?: Date | undefined;
+    isPredictor?: boolean;
+    contestantPublicId?: string | undefined;
+    hasSubmittedPrediction?: boolean;
 
     [key: string]: any;
 }
@@ -12226,7 +12468,7 @@ export interface PlaySubDraftPickRequest {
 }
 
 export interface PredictionEntryRequest {
-    mediaPublicId?: string;
+    tmdbId?: number;
     mediaTitle?: string;
     orderIndex?: number | undefined;
     notes?: string | undefined;
@@ -12235,7 +12477,8 @@ export interface PredictionEntryRequest {
 }
 
 export interface PredictionEntryResponse {
-    mediaPublicId: string;
+    tmdbId: number;
+    mediaPublicId?: string | undefined;
     mediaTitle: string;
     orderIndex?: number | undefined;
     isCorrect?: boolean | undefined;
@@ -12273,6 +12516,22 @@ export interface PredictionStandingsResponse {
     targetPoints?: number;
     isClosed?: boolean;
     standings?: ContestantStandingResponse[];
+
+    [key: string]: any;
+}
+
+export interface PredictorEntryRequest {
+    contestantPublicId: string;
+    allowedSubmitterPersonPublicId?: string | undefined;
+
+    [key: string]: any;
+}
+
+export interface PredictorResponse {
+    contestantPublicId: string;
+    contestantDisplayName: string;
+    allowedSubmitterPersonPublicId?: string | undefined;
+    allowedSubmitterDisplayName?: string | undefined;
 
     [key: string]: any;
 }
@@ -12458,7 +12717,7 @@ export interface RestoreCategoryRequest {
 
 export interface ScoreDraftPartPredictionsRequest {
     draftPartId?: string;
-    finalMediaPublicIds?: string[];
+    finalTmdbIds?: number[];
 
     [key: string]: any;
 }
@@ -12594,6 +12853,19 @@ export interface SearchPeopleResponse {
     [key: string]: any;
 }
 
+export interface SearchPredictionContestantsRequest {
+    name?: string | undefined;
+    pageSize?: number;
+
+    [key: string]: any;
+}
+
+export interface SearchPredictionContestantsResponse {
+    items: ContestantSearchResultResponse[];
+
+    [key: string]: any;
+}
+
 export interface SearchSpotlightCandidatesRequest {
     query?: string | undefined;
     page?: number;
@@ -12685,6 +12957,13 @@ export interface SetDraftPartPredictionRulesRequest {
     requiredCount?: number;
     topN?: number | undefined;
     deadlineUtc?: Date | undefined;
+
+    [key: string]: any;
+}
+
+export interface SetDraftPartPredictorsRequest {
+    draftPartId?: string;
+    predictors: PredictorEntryRequest[];
 
     [key: string]: any;
 }

@@ -20,7 +20,8 @@ internal sealed class GetDraftPartPredictionsQueryHandler(IDbConnectionFactory c
         s.submitted_at_utc     AS SubmittedAtUtc,
         s.source_kind          AS SourceKind,
         s.locked_at_utc        AS LockedAtUtc,
-        e.media_public_id      AS MediaPublicId,
+        e.tmdb_id              AS TmdbId,
+        mv.public_id           AS MediaPublicId,
         e.media_title          AS MediaTitle,
         e.order_index          AS OrderIndex,
         e.is_correct           AS IsCorrect,
@@ -33,6 +34,7 @@ internal sealed class GetDraftPartPredictionsQueryHandler(IDbConnectionFactory c
       JOIN drafts.draft_parts            dp ON dp.id         = s.draft_part_id
       JOIN drafts.prediction_contestants c  ON c.id          = s.contestant_id
       LEFT JOIN drafts.prediction_entries e  ON e.set_id     = s.id
+      LEFT JOIN drafts.movies            mv ON mv.tmdb_id    = e.tmdb_id
       LEFT JOIN drafts.prediction_results r  ON r.set_id     = s.id
       WHERE dp.public_id = @DraftPartId
       ORDER BY c.display_name, e.order_index;
@@ -53,9 +55,10 @@ internal sealed class GetDraftPartPredictionsQueryHandler(IDbConnectionFactory c
       {
         var first = g.First();
 
-        var entries = g.Where(r => r.MediaPublicId is not null)
+        var entries = g.Where(r => r.TmdbId is not null)
           .Select(r => new PredictionEntryResponse
           {
+            TmdbId = r.TmdbId!.Value,
             MediaPublicId = r.MediaPublicId!,
             MediaTitle = r.MediaTitle!,
             OrderIndex = r.OrderIndex!,
@@ -99,6 +102,7 @@ internal sealed class GetDraftPartPredictionsQueryHandler(IDbConnectionFactory c
     DateTime SubmittedAtUtc,
     int SourceKind,
     DateTime? LockedAtUtc,
+    int? TmdbId,
     string? MediaPublicId,
     string? MediaTitle,
     int? OrderIndex,

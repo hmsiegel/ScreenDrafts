@@ -9,7 +9,8 @@ public sealed class CommissionerOverrideAppliedIntegrationEvent(
   string movieTitle,
   Guid participantId,
   int participantKind,
-  int boardPosition
+  int boardPosition,
+  int playOrder
 ) : IntegrationEvent(id, occurredOnUtc)
 {
   public Guid DraftPartId { get; init; } = draftPartId;
@@ -19,4 +20,5 @@ public sealed class CommissionerOverrideAppliedIntegrationEvent(
   public Guid ParticipantId { get; init; } = participantId;
   public int ParticipantKind { get; init; } = participantKind;
   public int BoardPosition { get; init; } = boardPosition;
+  public int PlayOrder { get; init; } = playOrder;
 }

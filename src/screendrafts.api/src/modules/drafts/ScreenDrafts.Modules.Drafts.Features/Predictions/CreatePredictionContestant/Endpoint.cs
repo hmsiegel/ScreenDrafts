@@ -1,10 +1,11 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Features.Predictions.CreatePredictionContestant;
 
-internal sealed class Endpoint : ScreenDraftsEndpoint<CreatePredictionContestantRequest, CreatedResponse>
+internal sealed class Endpoint
+  : ScreenDraftsEndpoint<CreatePredictionContestantRequest, CreatedResponse>
 {
   public override void Configure()
   {
-    Post(PredictionRoutes.CreateContestant);
+    Post(PredictionRoutes.Contestants);
     Description(x =>
     {
       x.WithTags(DraftsOpenApi.Tags.Predictions)
@@ -20,18 +21,17 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<CreatePredictionContestant
 
   public override async Task HandleAsync(
     CreatePredictionContestantRequest req,
-    CancellationToken ct)
+    CancellationToken ct
+  )
   {
-    var command = new CreatePredictionContestantCommand
-    {
-      PersonPublicId = req.PersonPublicId
-    };
+    var command = new CreatePredictionContestantCommand { PersonPublicId = req.PersonPublicId };
 
     var result = await Sender.Send(command, ct);
 
     await this.SendCreatedAsync(
       result: result.Map(value => new CreatedResponse(value)),
       locationFactory: id => PredictionLocations.ContestantById(id.PublicId),
-      cancellationToken: ct);
+      cancellationToken: ct
+    );
   }
 }

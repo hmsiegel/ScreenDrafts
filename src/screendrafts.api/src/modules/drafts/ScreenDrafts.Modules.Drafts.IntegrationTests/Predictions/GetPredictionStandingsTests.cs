@@ -46,9 +46,9 @@ public sealed class GetPredictionStandingsTests(DraftsIntegrationTestWebAppFacto
       draftPartPublicId,
       seasonPublicId,
       contestantPublicId,
-      "m_00000001",
-      "m_00000002",
-      "m_00000003"
+      1,
+      2,
+      3
     );
 
     await Sender.Send(
@@ -64,7 +64,7 @@ public sealed class GetPredictionStandingsTests(DraftsIntegrationTestWebAppFacto
       new ScoreDraftPartPredictionsCommand
       {
         DraftPartId = draftPartPublicId,
-        FinalMediaPublicIds = ["m_00000001", "m_00000002", "m_00000003"],
+        FinalTmdbIds = [1, 2, 3],
       },
       TestContext.Current.CancellationToken
     );
@@ -134,18 +134,18 @@ public sealed class GetPredictionStandingsTests(DraftsIntegrationTestWebAppFacto
       draftPartPublicId,
       seasonPublicId,
       contestantPublicId1,
-      "m_00000001",
-      "m_00000002",
-      "m_00000003"
+      1,
+      2,
+      3
     );
     // Contestant 2: predicts 1 correctly (1 point)
     var setPublicId2 = await SubmitSetAsync(
       draftPartPublicId,
       seasonPublicId,
       contestantPublicId2,
-      "m_00000001",
-      "m_00000099",
-      "m_00000098"
+      1,
+      99,
+      98
     );
 
     await Sender.Send(
@@ -169,7 +169,7 @@ public sealed class GetPredictionStandingsTests(DraftsIntegrationTestWebAppFacto
       new ScoreDraftPartPredictionsCommand
       {
         DraftPartId = draftPartPublicId,
-        FinalMediaPublicIds = ["m_00000001", "m_00000002", "m_00000003"],
+        FinalTmdbIds = [1, 2, 3],
       },
       TestContext.Current.CancellationToken
     );

@@ -7,8 +7,8 @@ public sealed class SurrogateScoreResolverTests : DraftsBaseTest
     PredictionSeason season,
     PredictionContestant contestant,
     DraftPartPredictionRule rules,
-    IEnumerable<string> mediaIds) =>
-    PredictionFactory.CreateLockedSet(draftPart, season, contestant, rules, mediaIds);
+    IEnumerable<int> tmdbIds) =>
+    PredictionFactory.CreateLockedSet(draftPart, season, contestant, rules, tmdbIds);
 
   // ========================================
   // UseHigherScore Policy
@@ -24,8 +24,8 @@ public sealed class SurrogateScoreResolverTests : DraftsBaseTest
     var surrogateContestant = PredictionFactory.CreateContestant();
     var rules = PredictionFactory.CreateUnorderedAllRule(draftPart, requiredCount: 3);
 
-    var primarySet = CreateLockedSetWithPoints(draftPart, season, primaryContestant, rules, ["m_001", "m_002", "m_999"]);
-    var surrogateSet = CreateLockedSetWithPoints(draftPart, season, surrogateContestant, rules, ["m_001", "m_002", "m_003"]);
+    var primarySet = CreateLockedSetWithPoints(draftPart, season, primaryContestant, rules, [1, 2, 999]);
+    var surrogateSet = CreateLockedSetWithPoints(draftPart, season, surrogateContestant, rules, [1, 2, 3]);
 
     var assignment = SurrogateAssignment.Create(primarySet, surrogateSet, MergePolicy.UseHigherScore);
 
@@ -49,8 +49,8 @@ public sealed class SurrogateScoreResolverTests : DraftsBaseTest
     var surrogateContestant = PredictionFactory.CreateContestant();
     var rules = PredictionFactory.CreateUnorderedAllRule(draftPart, requiredCount: 3);
 
-    var primarySet = CreateLockedSetWithPoints(draftPart, season, primaryContestant, rules, ["m_001", "m_002", "m_003"]);
-    var surrogateSet = CreateLockedSetWithPoints(draftPart, season, surrogateContestant, rules, ["m_001", "m_999", "m_998"]);
+    var primarySet = CreateLockedSetWithPoints(draftPart, season, primaryContestant, rules, [1, 2, 3]);
+    var surrogateSet = CreateLockedSetWithPoints(draftPart, season, surrogateContestant, rules, [1, 999, 998]);
 
     var assignment = SurrogateAssignment.Create(primarySet, surrogateSet, MergePolicy.UseHigherScore);
 
@@ -74,8 +74,8 @@ public sealed class SurrogateScoreResolverTests : DraftsBaseTest
     var surrogateContestant = PredictionFactory.CreateContestant();
     var rules = PredictionFactory.CreateUnorderedAllRule(draftPart, requiredCount: 3);
 
-    var primarySet = CreateLockedSetWithPoints(draftPart, season, primaryContestant, rules, ["m_001", "m_002", "m_003"]);
-    var surrogateSet = CreateLockedSetWithPoints(draftPart, season, surrogateContestant, rules, ["m_001", "m_002", "m_003"]);
+    var primarySet = CreateLockedSetWithPoints(draftPart, season, primaryContestant, rules, [1, 2, 3]);
+    var surrogateSet = CreateLockedSetWithPoints(draftPart, season, surrogateContestant, rules, [1, 2, 3]);
 
     var assignment = SurrogateAssignment.Create(primarySet, surrogateSet, MergePolicy.UseHigherScore);
 
@@ -102,8 +102,8 @@ public sealed class SurrogateScoreResolverTests : DraftsBaseTest
     var surrogateContestant = PredictionFactory.CreateContestant();
     var rules = PredictionFactory.CreateUnorderedAllRule(draftPart, requiredCount: 3);
 
-    var primarySet = CreateLockedSetWithPoints(draftPart, season, primaryContestant, rules, ["m_001", "m_002", "m_003"]);
-    var surrogateSet = CreateLockedSetWithPoints(draftPart, season, surrogateContestant, rules, ["m_001", "m_002", "m_003"]);
+    var primarySet = CreateLockedSetWithPoints(draftPart, season, primaryContestant, rules, [1, 2, 3]);
+    var surrogateSet = CreateLockedSetWithPoints(draftPart, season, surrogateContestant, rules, [1, 2, 3]);
 
     var assignment = SurrogateAssignment.Create(primarySet, surrogateSet, MergePolicy.UseBothScores);
 
@@ -127,8 +127,8 @@ public sealed class SurrogateScoreResolverTests : DraftsBaseTest
     var surrogateContestant = PredictionFactory.CreateContestant();
     var rules = PredictionFactory.CreateUnorderedAllRule(draftPart, requiredCount: 3);
 
-    var primarySet = CreateLockedSetWithPoints(draftPart, season, primaryContestant, rules, ["m_001", "m_002", "m_003"]);
-    var surrogateSet = CreateLockedSetWithPoints(draftPart, season, surrogateContestant, rules, ["m_001", "m_002", "m_003"]);
+    var primarySet = CreateLockedSetWithPoints(draftPart, season, primaryContestant, rules, [1, 2, 3]);
+    var surrogateSet = CreateLockedSetWithPoints(draftPart, season, surrogateContestant, rules, [1, 2, 3]);
 
     var assignment = SurrogateAssignment.Create(primarySet, surrogateSet, MergePolicy.UseBothScores);
 

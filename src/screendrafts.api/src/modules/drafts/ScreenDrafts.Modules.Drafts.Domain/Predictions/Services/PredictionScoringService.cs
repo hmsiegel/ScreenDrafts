@@ -29,13 +29,13 @@ public sealed class PredictionScoringService
   /// </summary>
   public static Result<PredictionResult> Score(
     DraftPredictionSet set,
-    IReadOnlyList<string> finalMediaPublicIds,
+    IReadOnlyList<int> finalTmdbIds,
     DraftPartPredictionRule rules,
     DateTime scoredAtUtc
   )
   {
     ArgumentNullException.ThrowIfNull(set);
-    ArgumentNullException.ThrowIfNull(finalMediaPublicIds);
+    ArgumentNullException.ThrowIfNull(finalTmdbIds);
     ArgumentNullException.ThrowIfNull(rules);
 
     if (!set.IsLocked)
@@ -44,10 +44,10 @@ public sealed class PredictionScoringService
     }
 
     var scoringPool = rules.TopN.HasValue
-      ? [.. finalMediaPublicIds.Take(rules.TopN.Value)]
-      : finalMediaPublicIds.ToHashSet();
+      ? [.. finalTmdbIds.Take(rules.TopN.Value)]
+      : finalTmdbIds.ToHashSet();
 
-    var predictedIds = set.Entries.Select(e => e.MediaPublicId).ToList();
+    var predictedIds = set.Entries.Select(e => e.TmdbId).ToList();
 
     var correctCount = predictedIds.Count(predictedId => scoringPool.Contains(predictedId));
 
@@ -57,7 +57,7 @@ public sealed class PredictionScoringService
 
     foreach (var entry in set.Entries)
     {
-      entry.MarkCorrect(scoringPool.Contains(entry.MediaPublicId));
+      entry.MarkCorrect(scoringPool.Contains(entry.TmdbId));
     }
 
     return PredictionResult.Create(

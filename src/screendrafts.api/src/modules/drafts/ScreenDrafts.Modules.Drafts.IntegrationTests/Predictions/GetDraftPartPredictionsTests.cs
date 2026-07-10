@@ -32,9 +32,9 @@ public sealed class GetDraftPartPredictionsTests(DraftsIntegrationTestWebAppFact
       draftPartPublicId,
       seasonPublicId,
       contestantPublicId,
-      "m_00000001",
-      "m_00000002",
-      "m_00000003"
+      1,
+      2,
+      3
     );
 
     var query = new GetDraftPartPredictionsQuery { DraftPartId = draftPartPublicId };
@@ -63,9 +63,9 @@ public sealed class GetDraftPartPredictionsTests(DraftsIntegrationTestWebAppFact
       draftPartPublicId,
       seasonPublicId,
       contestantPublicId,
-      "m_00000001",
-      "m_00000002",
-      "m_00000003"
+      1,
+      2,
+      3
     );
 
     await Sender.Send(
@@ -101,9 +101,9 @@ public sealed class GetDraftPartPredictionsTests(DraftsIntegrationTestWebAppFact
       draftPartPublicId,
       seasonPublicId,
       contestantPublicId,
-      "m_00000001",
-      "m_00000002",
-      "m_00000003"
+      1,
+      2,
+      3
     );
 
     await Sender.Send(
@@ -119,7 +119,7 @@ public sealed class GetDraftPartPredictionsTests(DraftsIntegrationTestWebAppFact
       new ScoreDraftPartPredictionsCommand
       {
         DraftPartId = draftPartPublicId,
-        FinalMediaPublicIds = ["m_00000001", "m_00000002", "m_00000003"],
+        FinalTmdbIds = [1, 2, 3],
       },
       TestContext.Current.CancellationToken
     );
@@ -152,17 +152,17 @@ public sealed class GetDraftPartPredictionsTests(DraftsIntegrationTestWebAppFact
       draftPartPublicId,
       seasonPublicId,
       contestantPublicId1,
-      "m_00000001",
-      "m_00000002",
-      "m_00000003"
+      1,
+      2,
+      3
     );
     await SubmitSetAsync(
       draftPartPublicId,
       seasonPublicId,
       contestantPublicId2,
-      "m_00000004",
-      "m_00000005",
-      "m_00000006"
+      4,
+      5,
+      6
     );
 
     var query = new GetDraftPartPredictionsQuery { DraftPartId = draftPartPublicId };

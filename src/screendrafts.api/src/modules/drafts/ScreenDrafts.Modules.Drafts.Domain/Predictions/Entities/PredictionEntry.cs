@@ -4,19 +4,20 @@ public sealed class PredictionEntry : Entity<PredictionEntryId>
 {
   private PredictionEntry(
     DraftPredictionSet predictionSet,
-    string mediaPublicId,
+    int tmdbId,
     string mediaTitle,
     int? orderIndex = null,
     string? notes = null,
     bool? isCorrect = null,
+    string? mediaPublicId = null,
     PredictionEntryId? id = null
   )
     : base(id ?? PredictionEntryId.CreateUnique())
   {
     PredictionSet = predictionSet;
     SetId = predictionSet.Id;
+    TmdbId = tmdbId;
     IsCorrect = isCorrect;
-
     MediaPublicId = mediaPublicId;
     MediaTitle = mediaTitle;
 
@@ -30,9 +31,14 @@ public sealed class PredictionEntry : Entity<PredictionEntryId>
   public DraftPredictionSetId SetId { get; private set; } = default!;
 
   /// <summary>
-  /// Public Id from the Movies module.
+  /// TMDb id of the predicted title — the same identifier the draft board,
+  /// candidate list, and community film rules key off. The movie need not
+  /// exist in the Movies database at submission time; FetchMediaRequestedIntegrationEvent
+  /// syncs it, same as AddMovieToDraftBoard.
   /// </summary>
-  public string MediaPublicId { get; private set; } = default!;
+  public int TmdbId { get; private set; }
+
+  public string? MediaPublicId { get; private set; }
 
   /// <summary>
   /// Title captured at submission time. Stored so the entry is human-readable
@@ -50,7 +56,7 @@ public sealed class PredictionEntry : Entity<PredictionEntryId>
 
   public static PredictionEntry Create(
     DraftPredictionSet predictionSet,
-    string mediaPublicId,
+    int tmdbId,
     string mediaTitle,
     int? orderIndex = null,
     string? notes = null,
@@ -58,12 +64,11 @@ public sealed class PredictionEntry : Entity<PredictionEntryId>
   )
   {
     ArgumentNullException.ThrowIfNull(predictionSet);
-    ArgumentNullException.ThrowIfNull(mediaPublicId);
     ArgumentNullException.ThrowIfNull(mediaTitle);
 
     return new PredictionEntry(
       predictionSet: predictionSet,
-      mediaPublicId: mediaPublicId,
+      tmdbId: tmdbId,
       mediaTitle: mediaTitle,
       orderIndex: orderIndex,
       notes: notes,

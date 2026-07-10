@@ -347,7 +347,7 @@ function GameplayView({
   const [counting, setCounting] = useState(false);
 
   const totalSlots = draftPositions.flatMap((p) => p.ownedBoardSlots).length;
-  const landedPicks = picks.filter((p) => !p.wasVetoed || p.wasVetoOverridden).length;
+  const landedPicks = picks.filter((p) => !p.wasCommissionerOverride && (!p.wasVetoed || p.wasVetoOverridden)).length;
   const draftComplete = landedPicks === totalSlots;
 
   const mostRecentPick = picks.reduce<(typeof picks)[0] | null>(
@@ -429,7 +429,14 @@ function GameplayView({
     try {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/draft-parts/${draftPartId}/commissioner-override/${playOrder}`,
-        { method: 'POST', headers: { Authorization: `Bearer ${accessToken}` } },
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({}),
+        },
       );
       if (!res.ok) throw new Error(`Commissioner override failed: ${res.status}`);
       await refetch();

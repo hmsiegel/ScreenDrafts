@@ -52,7 +52,7 @@ export function DrafterTab({ accessToken, draftPartId }: Props) {
 
   const landedPositions = new Set(
     picks
-      .filter((p) => !p.wasVetoed || p.wasVetoOverridden)
+      .filter((p) => !p.wasCommissionerOverride && (!p.wasVetoed || p.wasVetoOverridden))
       .map((p) => p.boardPosition),
   );
   const activeSlot =

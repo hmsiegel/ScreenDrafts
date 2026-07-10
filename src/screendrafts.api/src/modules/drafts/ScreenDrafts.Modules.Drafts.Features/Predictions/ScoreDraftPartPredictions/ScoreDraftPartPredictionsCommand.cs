@@ -3,5 +3,5 @@
 internal sealed record ScoreDraftPartPredictionsCommand : ICommand
 {
   public required string DraftPartId { get; init; }
-  public required IReadOnlyList<string> FinalMediaPublicIds { get; init; }
+  public required IReadOnlyList<int> FinalTmdbIds { get; init; }
 }

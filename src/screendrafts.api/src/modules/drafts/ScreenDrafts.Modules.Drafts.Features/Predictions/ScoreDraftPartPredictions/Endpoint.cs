@@ -24,7 +24,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<ScoreDraftPartPredictionsR
     var command = new ScoreDraftPartPredictionsCommand
     {
       DraftPartId = req.DraftPartId,
-      FinalMediaPublicIds = req.FinalMediaPublicIds,
+      FinalTmdbIds = req.FinalTmdbIds,
     };
 
     var result = await Sender.Send(command, ct);

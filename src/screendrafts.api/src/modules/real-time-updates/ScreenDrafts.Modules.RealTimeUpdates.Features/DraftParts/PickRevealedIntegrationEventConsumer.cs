@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.RealTimeUpdates.Features.DraftParts;
+﻿namespace ScreenDrafts.Modules.RealTimeUpdates.Features.DraftParts;
 
 internal sealed partial class PickRevealedIntegrationEventConsumer(
   ILogger<PickRevealedIntegrationEventConsumer> logger,
@@ -16,17 +16,21 @@ internal sealed partial class PickRevealedIntegrationEventConsumer(
     LogPickRevealed(_logger, integrationEvent.DraftPartId, integrationEvent.PlayOrder);
 
     await _hubContext
-      .Clients.Group(DraftHub.HostGroupName(integrationEvent.DraftPartPublicId))
-      .SendCoreAsync("PickRevealed", [
-        integrationEvent.DraftPartId,
-        integrationEvent.PlayOrder,
-        integrationEvent.MoviePublicId,
-        integrationEvent.MovieTitle,
-        integrationEvent.TmdbId,
-        integrationEvent.BoardPosition,
-        integrationEvent.ParticipantId,
-        integrationEvent.ParticipantKind,
-      ], cancellationToken);
+      .Clients.Group(DraftHub.GroupName(integrationEvent.DraftPartPublicId))
+      .SendCoreAsync(
+        "PickRevealed",
+        [
+          integrationEvent.DraftPartId,
+          integrationEvent.PlayOrder,
+          integrationEvent.MoviePublicId,
+          integrationEvent.MovieTitle,
+          integrationEvent.TmdbId,
+          integrationEvent.BoardPosition,
+          integrationEvent.ParticipantId,
+          integrationEvent.ParticipantKind,
+        ],
+        cancellationToken
+      );
   }
 
   [LoggerMessage(

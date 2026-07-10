@@ -8,15 +8,15 @@ public sealed class ScoreDraftPartPredictionsTests(DraftsIntegrationTestWebAppFa
   {
     // Arrange
     var (draftPartPublicId, _) = await CreateDraftPartWithLockedSetAsync(
-      "m_00000001",
-      "m_00000002",
-      "m_00000003"
+      1,
+      2,
+      3
     );
 
     var command = new ScoreDraftPartPredictionsCommand
     {
       DraftPartId = draftPartPublicId,
-      FinalMediaPublicIds = ["m_00000001", "m_00000002", "m_00000003"],
+      FinalTmdbIds = [1, 2, 3],
     };
 
     // Act
@@ -31,15 +31,15 @@ public sealed class ScoreDraftPartPredictionsTests(DraftsIntegrationTestWebAppFa
   {
     // Arrange
     var (draftPartPublicId, setPublicId) = await CreateDraftPartWithLockedSetAsync(
-      "m_00000001",
-      "m_00000002",
-      "m_00000003"
+      1,
+      2,
+      3
     );
 
     var command = new ScoreDraftPartPredictionsCommand
     {
       DraftPartId = draftPartPublicId,
-      FinalMediaPublicIds = ["m_00000001", "m_00000002", "m_00000003"],
+      FinalTmdbIds = [1, 2, 3],
     };
 
     // Act
@@ -73,15 +73,15 @@ public sealed class ScoreDraftPartPredictionsTests(DraftsIntegrationTestWebAppFa
       draftPartPublicId,
       seasonPublicId,
       contestantPublicId,
-      "m_00000001",
-      "m_00000002",
-      "m_00000003"
+      1,
+      2,
+      3
     );
 
     var command = new ScoreDraftPartPredictionsCommand
     {
       DraftPartId = draftPartPublicId,
-      FinalMediaPublicIds = ["m_00000001", "m_00000002", "m_00000003"],
+      FinalTmdbIds = [1, 2, 3],
     };
 
     // Act
@@ -96,15 +96,15 @@ public sealed class ScoreDraftPartPredictionsTests(DraftsIntegrationTestWebAppFa
   {
     // Arrange
     var (draftPartPublicId, _) = await CreateDraftPartWithLockedSetAsync(
-      "m_00000001",
-      "m_00000002",
-      "m_00000003"
+      1,
+      2,
+      3
     );
 
     var command = new ScoreDraftPartPredictionsCommand
     {
       DraftPartId = draftPartPublicId,
-      FinalMediaPublicIds = ["m_00000001", "m_00000002", "m_00000003"],
+      FinalTmdbIds = [1, 2, 3],
     };
 
     await Sender.Send(command, TestContext.Current.CancellationToken);
@@ -124,7 +124,7 @@ public sealed class ScoreDraftPartPredictionsTests(DraftsIntegrationTestWebAppFa
     var command = new ScoreDraftPartPredictionsCommand
     {
       DraftPartId = "dp_nonexistent123",
-      FinalMediaPublicIds = ["m_00000001", "m_00000002", "m_00000003"],
+      FinalTmdbIds = [1, 2, 3],
     };
 
     // Act
@@ -144,7 +144,7 @@ public sealed class ScoreDraftPartPredictionsTests(DraftsIntegrationTestWebAppFa
     var command = new ScoreDraftPartPredictionsCommand
     {
       DraftPartId = draftPartPublicId,
-      FinalMediaPublicIds = ["m_00000001", "m_00000002", "m_00000003"],
+      FinalTmdbIds = [1, 2, 3],
     };
 
     // Act
@@ -159,9 +159,9 @@ public sealed class ScoreDraftPartPredictionsTests(DraftsIntegrationTestWebAppFa
   {
     // Arrange
     var (draftPartPublicId, setPublicId) = await CreateDraftPartWithLockedSetAsync(
-      "m_00000001",
-      "m_00000002",
-      "m_00000003"
+      1,
+      2,
+      3
     );
 
     var set = await DbContext.DraftPredictionSets.FirstAsync(
@@ -174,7 +174,7 @@ public sealed class ScoreDraftPartPredictionsTests(DraftsIntegrationTestWebAppFa
     var command = new ScoreDraftPartPredictionsCommand
     {
       DraftPartId = draftPartPublicId,
-      FinalMediaPublicIds = ["m_00000001", "m_00000002", "m_00000003"],
+      FinalTmdbIds = [1, 2, 3],
     };
 
     await Sender.Send(command, TestContext.Current.CancellationToken);
@@ -197,15 +197,15 @@ public sealed class ScoreDraftPartPredictionsTests(DraftsIntegrationTestWebAppFa
   {
     // Arrange — predict 3 movies but only 1 is in the final list
     var (draftPartPublicId, setPublicId) = await CreateDraftPartWithLockedSetAsync(
-      "m_00000001",
-      "m_00000002",
-      "m_00000003"
+      1,
+      2,
+      3
     );
 
     var command = new ScoreDraftPartPredictionsCommand
     {
       DraftPartId = draftPartPublicId,
-      FinalMediaPublicIds = ["m_00000001", "m_00000099", "m_00000098"], // only m_001 matches
+      FinalTmdbIds = [1, 99, 98], // only 1 matches
     };
 
     // Act
@@ -234,17 +234,17 @@ public sealed class ScoreDraftPartPredictionsTests(DraftsIntegrationTestWebAppFa
   private async Task<(
     string DraftPartPublicId,
     string SetPublicId
-  )> CreateDraftPartWithLockedSetAsync(params string[] mediaPublicIds)
+  )> CreateDraftPartWithLockedSetAsync(params int[] tmdbIds)
   {
     var draftPartPublicId = await CreateDraftPartPublicIdAsync();
     var seasonPublicId = await CreateSeasonPublicIdAsync();
     var contestantPublicId = await CreateContestantPublicIdAsync();
-    await SetRulesAsync(draftPartPublicId, requiredCount: mediaPublicIds.Length);
+    await SetRulesAsync(draftPartPublicId, requiredCount: tmdbIds.Length);
     var setPublicId = await SubmitSetAsync(
       draftPartPublicId,
       seasonPublicId,
       contestantPublicId,
-      mediaPublicIds
+      tmdbIds
     );
 
     var lockResult = await Sender.Send(

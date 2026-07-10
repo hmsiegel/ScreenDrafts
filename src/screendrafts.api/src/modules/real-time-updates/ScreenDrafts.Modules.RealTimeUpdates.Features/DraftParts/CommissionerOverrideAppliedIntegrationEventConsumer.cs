@@ -41,6 +41,7 @@ internal sealed partial class CommissionerOverrideAppliedIntegrationEventConsume
       integrationEvent.ParticipantId,
       integrationEvent.ParticipantKind,
       integrationEvent.BoardPosition,
+      integrationEvent.PlayOrder,
       Participants = tokens.Select(t => new
       {
         t.ParticipantIdValue,

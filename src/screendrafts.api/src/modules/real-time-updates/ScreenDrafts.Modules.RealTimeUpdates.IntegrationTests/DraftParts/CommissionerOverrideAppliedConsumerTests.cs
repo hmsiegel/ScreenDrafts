@@ -19,6 +19,7 @@ public sealed class CommissionerOverrideAppliedConsumerTests
       "Test Movie",
       Guid.NewGuid(),
       0,
+      1,
       1
     );
     var hubContext = new TestHubContext();
@@ -55,6 +56,7 @@ public sealed class CommissionerOverrideAppliedConsumerTests
       "Test Movie",
       Guid.NewGuid(),
       0,
+      1,
       1
     );
     var hubContext = new TestHubContext();
@@ -88,6 +90,7 @@ public sealed class CommissionerOverrideAppliedConsumerTests
       "Test Movie",
       participantId,
       0,
+      1,
       1
     );
     var hubContext = new TestHubContext();
@@ -102,16 +105,22 @@ public sealed class CommissionerOverrideAppliedConsumerTests
     await consumer.Handle(integrationEvent, CancellationToken.None);
 
     // Assert
-    hubContext.SentMessages.Single().Args.Should().ContainSingle()
-      .Which.Should().BeEquivalentTo(new
-      {
-        DraftPartPublicId = draftPartPublicId,
-        TmdbId = 12345,
-        MovieTitle = "Test Movie",
-        ParticipantId = participantId,
-        ParticipantKind = 0,
-        BoardPosition = 1,
-        Participants = Array.Empty<object>(),
-      });
+    hubContext
+      .SentMessages.Single()
+      .Args.Should()
+      .ContainSingle()
+      .Which.Should()
+      .BeEquivalentTo(
+        new
+        {
+          DraftPartPublicId = draftPartPublicId,
+          TmdbId = 12345,
+          MovieTitle = "Test Movie",
+          ParticipantId = participantId,
+          ParticipantKind = 0,
+          BoardPosition = 1,
+          Participants = Array.Empty<object>(),
+        }
+      );
   }
 }

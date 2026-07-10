@@ -119,7 +119,10 @@ export function PickSourcePanel({
   // Prevent picking if the slot is already filled (e.g. from a race between
   // two source tabs both submitting, or a SignalR update arriving mid-submit).
   const slotAlreadyPicked = picks.some(
-    (p) => p.boardPosition === activeSlot && (!p.wasVetoed || p.wasVetoOverridden),
+    (p) =>
+      p.boardPosition === activeSlot &&
+      !p.wasCommissionerOverride &&
+      (!p.wasVetoed || p.wasVetoOverridden),
   );
 
   async function handlePick(movie: ResolvedMovie) {

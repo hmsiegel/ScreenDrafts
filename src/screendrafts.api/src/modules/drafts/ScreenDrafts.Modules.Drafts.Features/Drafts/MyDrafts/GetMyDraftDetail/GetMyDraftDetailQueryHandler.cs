@@ -139,6 +139,41 @@ internal sealed class GetMyDraftDetailQueryHandler(IDbConnectionFactory dbConnec
       )
     ).ToDictionary(x => x.PartPublicId, x => x.AttendanceStatus);
 
+    // ── Predictor eligibility ─────────────────────────────────────────────────
+    // Caller qualifies for a slot as either the contestant themself or that
+    // slot's designated submitter (drafts.draft_part_predictors). Distinct from
+    // the surrogate_assignments check below, which is a scoring-time merge
+    // between two already-submitted sets, not a submission-time permission.
+
+    const string predictorSql = $"""
+      SELECT
+        dp.public_id AS {nameof(PredictorRow.PartPublicId)},
+        pc.public_id AS {nameof(PredictorRow.ContestantPublicId)},
+        EXISTS (
+          SELECT 1
+          FROM drafts.draft_prediction_sets s
+          WHERE s.contestant_id = pc.id
+            AND s.draft_part_id = dp.id
+        ) AS {nameof(PredictorRow.HasSubmitted)}
+      FROM drafts.draft_part_predictors dpp
+      JOIN drafts.draft_parts dp ON dp.id = dpp.draft_part_id
+      JOIN drafts.prediction_contestants pc ON pc.id = dpp.contestant_id
+      LEFT JOIN drafts.people contestant_person ON contestant_person.id = pc.person_id
+      LEFT JOIN drafts.people submitter_person ON submitter_person.id = dpp.allowed_submitter_person_id
+      WHERE dp.public_id = ANY(@PartPublicIds)
+        AND (contestant_person.user_id = @UserId OR submitter_person.user_id = @UserId);
+      """;
+
+    var predictorMap = (
+      await connection.QueryAsync<PredictorRow>(
+        new CommandDefinition(
+          predictorSql,
+          new { request.UserId, PartPublicIds = allPartPublicIds },
+          cancellationToken: cancellationToken
+        )
+      )
+    ).ToDictionary(x => x.PartPublicId);
+
     // ── isSurrogate check ─────────────────────────────────────────────────────
     // True when a SurrogateAssignment exists where the surrogate set's
     // submitted_by_person has user_id = caller, and that set belongs to a part
@@ -173,24 +208,33 @@ internal sealed class GetMyDraftDetailQueryHandler(IDbConnectionFactory dbConnec
 
     var isHost = hostPartIds.Count > 0;
     var isDrafter = drafterPartIds.Count > 0;
+    var isPredictor = predictorMap.Count > 0;
 
-    if (!isHost && !isDrafter && !request.IsAdmin)
+    if (!isHost && !isDrafter && !isPredictor && !request.IsAdmin)
       return Result.Failure<GetMyDraftDetailResponse>(DraftErrors.NotFound(request.DraftId));
 
     // ── Assemble parts ────────────────────────────────────────────────────────
 
     var parts = partRows
-      .Select(p => new MyDraftPartDetail
+      .Select(p =>
       {
-        DraftPartPublicId = p.DraftPartPublicId,
-        PartIndex = p.PartIndex,
-        Status = p.Status,
-        IsHost = hostPartIds.Contains(p.DraftPartPublicId),
-        IsDrafter = drafterPartIds.Contains(p.DraftPartPublicId),
-        AttendanceStatus = attendanceMap.TryGetValue(p.DraftPartPublicId, out var s)
-          ? AttendanceStatus.FromValue(s).Name
-          : null,
-        ReleaseDate = p.ReleaseDate,
+        predictorMap.TryGetValue(p.DraftPartPublicId, out var predictor);
+
+        return new MyDraftPartDetail
+        {
+          DraftPartPublicId = p.DraftPartPublicId,
+          PartIndex = p.PartIndex,
+          Status = p.Status,
+          IsHost = hostPartIds.Contains(p.DraftPartPublicId),
+          IsDrafter = drafterPartIds.Contains(p.DraftPartPublicId),
+          AttendanceStatus = attendanceMap.TryGetValue(p.DraftPartPublicId, out var s)
+            ? AttendanceStatus.FromValue(s).Name
+            : null,
+          ReleaseDate = p.ReleaseDate,
+          IsPredictor = predictor is not null,
+          ContestantPublicId = predictor?.ContestantPublicId,
+          HasSubmittedPrediction = predictor?.HasSubmitted ?? false,
+        };
       })
       .ToList();
 
@@ -228,5 +272,11 @@ internal sealed class GetMyDraftDetailQueryHandler(IDbConnectionFactory dbConnec
     int PartIndex,
     int Status,
     DateOnly? ReleaseDate
+  );
+
+  private sealed record PredictorRow(
+    string PartPublicId,
+    string ContestantPublicId,
+    bool HasSubmitted
   );
 }

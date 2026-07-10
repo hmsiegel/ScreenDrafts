@@ -52,13 +52,13 @@ public static class PredictionFactory
     PredictionSeason season,
     PredictionContestant contestant,
     DraftPartPredictionRule rules,
-    IEnumerable<string>? mediaPublicIds = null)
+    IEnumerable<int>? tmdbIds = null)
   {
     ArgumentNullException.ThrowIfNull(rules);
 
     var set = CreateSet(draftPart, season, contestant);
 
-    var ids = (mediaPublicIds ?? Enumerable.Range(1, rules.RequiredCount).Select(i => $"m_{i:D3}")).ToList();
+    var ids = (tmdbIds ?? Enumerable.Range(1, rules.RequiredCount)).ToList();
     var entries = ids.Select((id, idx) => PredictionEntry.Create(set, id, $"Movie {idx + 1}")).ToList();
     set.ReplaceEntries(entries);
 

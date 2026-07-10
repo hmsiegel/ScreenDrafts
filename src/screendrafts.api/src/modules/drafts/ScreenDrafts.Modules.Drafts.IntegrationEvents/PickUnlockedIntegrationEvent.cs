@@ -50,4 +50,5 @@ public enum PickUnlockReason
 {
   Vetoed = 0,
   CommissionerOverride = 1,
+  Undone = 2,
 }

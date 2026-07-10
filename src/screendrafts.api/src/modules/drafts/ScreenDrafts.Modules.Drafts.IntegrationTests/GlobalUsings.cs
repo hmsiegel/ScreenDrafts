@@ -82,6 +82,7 @@ global using ScreenDrafts.Modules.Drafts.Features.Hosts.Create;
 global using ScreenDrafts.Modules.Drafts.Features.Hosts.Get;
 global using ScreenDrafts.Modules.Drafts.Features.Hosts.Search;
 global using ScreenDrafts.Modules.Drafts.Features.People.Create;
+global using ScreenDrafts.Modules.Drafts.Features.People.LinkUser;
 global using ScreenDrafts.Modules.Drafts.Features.People.UpdateProfile;
 global using ScreenDrafts.Modules.Drafts.Features.People.UpdateSocial;
 global using ScreenDrafts.Modules.Drafts.Features.People.UploadAvatar;
@@ -94,6 +95,7 @@ global using ScreenDrafts.Modules.Drafts.Features.Predictions.GetPredictionStand
 global using ScreenDrafts.Modules.Drafts.Features.Predictions.LockPredictionSet;
 global using ScreenDrafts.Modules.Drafts.Features.Predictions.ScoreDraftPartPredictions;
 global using ScreenDrafts.Modules.Drafts.Features.Predictions.SetDraftPartPredictionRules;
+global using ScreenDrafts.Modules.Drafts.Features.Predictions.SetDraftPartPredictors;
 global using ScreenDrafts.Modules.Drafts.Features.Predictions.SubmitPredictionSet;
 global using ScreenDrafts.Modules.Drafts.Features.SeriesFeatures.Create;
 global using ScreenDrafts.Modules.Drafts.Infrastructure.Database;

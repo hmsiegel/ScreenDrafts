@@ -21,13 +21,19 @@ public static class RealTimeUpdatesModule
 
     services.AddRealTimeUpdatesInfrastructure(configuration);
 
-    services.AddRealTimeUpdatesFeatures();
+    services.AddRealTimeUpdatesFeatures(configuration);
 
     return services;
   }
 
-  private static void AddRealTimeUpdatesFeatures(this IServiceCollection services)
+  private static void AddRealTimeUpdatesFeatures(
+    this IServiceCollection services,
+    IConfiguration configuration
+  )
   {
+    services.Configure<RealTimeUpdatesDraftsOptions>(
+      configuration.GetSection(RealTimeUpdatesDraftsOptions.SectionName)
+    );
     services.AddScoped<
       IRealTimeUpdatesDomainEventDispatcher,
       RealTimeUpdatesDomainEventDispatcher

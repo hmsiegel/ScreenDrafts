@@ -186,6 +186,10 @@ internal static class DraftsOpenApi
     public const string Predictions_CloseSeason = "Predictions_CloseSeason";
     public const string Predictions_ListSeasons = "Predictions_ListSeasons";
     public const string Predictions_GetCurrentSeason = "Predictions_GetCurrentSeason";
+    public const string Predictions_SetPredictors = "Predictions_SetPredictors";
+    public const string Predictions_GetPredictors = "Predictions_GetPredictors";
+    public const string Predictions_GetRules = "Predictions_GetRules";
+    public const string Predictions_SearchContestants = "Predictions_SearchContestants";
 
     // Zoom Sessions
     public const string DraftParts_StartZoomSession = "DraftParts.StartZoomSession";
@@ -211,7 +215,5 @@ internal static class DraftsOpenApi
     // My Drafts
     public const string MyDrafts_GetAll = "GetMyDrafts";
     public const string MyDrafts_GetDetail = "GetMyDraftDetail";
-
-    // Gameplay
   }
 }

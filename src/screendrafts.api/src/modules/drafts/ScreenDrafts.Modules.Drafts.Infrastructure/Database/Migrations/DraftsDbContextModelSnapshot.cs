@@ -19,7 +19,7 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("drafts")
-                .HasAnnotation("ProductVersion", "10.0.7")
+                .HasAnnotation("ProductVersion", "10.0.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -1502,6 +1502,47 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                     b.ToTable("draft_part_prediction_rules", "drafts");
                 });
 
+            modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Predictions.Entities.DraftPartPredictor", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid?>("AllowedSubmitterPersonId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("allowed_submitter_person_id");
+
+                    b.Property<Guid>("ContestantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("contestant_id");
+
+                    b.Property<Guid>("DraftPartId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("draft_part_id");
+
+                    b.Property<string>("PublicId")
+                        .IsRequired()
+                        .HasMaxLength(19)
+                        .HasColumnType("character varying(19)")
+                        .HasColumnName("public_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_draft_part_predictors");
+
+                    b.HasIndex("ContestantId")
+                        .HasDatabaseName("ix_draft_part_predictors_contestant_id");
+
+                    b.HasIndex("PublicId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_draft_part_predictors_public_id");
+
+                    b.HasIndex("DraftPartId", "ContestantId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_draft_part_predictors_draft_part_id_contestant_id");
+
+                    b.ToTable("draft_part_predictors", "drafts");
+                });
+
             modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Predictions.Entities.DraftPredictionSet", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1655,7 +1696,6 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasColumnName("is_correct");
 
                     b.Property<string>("MediaPublicId")
-                        .IsRequired()
                         .HasMaxLength(19)
                         .HasColumnType("character varying(19)")
                         .HasColumnName("media_public_id");
@@ -1679,12 +1719,16 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("set_id");
 
+                    b.Property<int>("TmdbId")
+                        .HasColumnType("integer")
+                        .HasColumnName("tmdb_id");
+
                     b.HasKey("Id")
                         .HasName("pk_prediction_entries");
 
-                    b.HasIndex("SetId", "MediaPublicId")
+                    b.HasIndex("SetId", "TmdbId")
                         .IsUnique()
-                        .HasDatabaseName("ix_prediction_entries_set_id_media_public_id");
+                        .HasDatabaseName("ix_prediction_entries_set_id_tmdb_id");
 
                     b.ToTable("prediction_entries", "drafts");
                 });
@@ -2426,6 +2470,18 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasConstraintName("fk_draft_part_prediction_rules_draft_parts_draft_part_id");
 
                     b.Navigation("DraftPart");
+                });
+
+            modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Predictions.Entities.DraftPartPredictor", b =>
+                {
+                    b.HasOne("ScreenDrafts.Modules.Drafts.Domain.Predictions.Entities.PredictionContestant", "Contestant")
+                        .WithMany()
+                        .HasForeignKey("ContestantId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_draft_part_predictors_prediction_contestants_contestant_id");
+
+                    b.Navigation("Contestant");
                 });
 
             modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.Predictions.Entities.DraftPredictionSet", b =>

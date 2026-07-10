@@ -10,12 +10,6 @@ internal sealed class Validator : AbstractValidator<ScoreDraftPartPredictionsCom
       .Must(id => PublicIdGuards.IsValidWithPrefix(id, PublicIdPrefixes.DraftPart))
       .WithMessage("Draft part public ID must start with the correct prefix.");
 
-    RuleFor(x => x.FinalMediaPublicIds).NotEmpty();
-
-    RuleForEach(x => x.FinalMediaPublicIds)
-      .NotEmpty()
-      .WithMessage("Final media public IDs cannot contain empty values.")
-      .Must(id => PublicIdGuards.IsValidWithPrefix(id, PublicIdPrefixes.Media))
-      .WithMessage("Each final media public ID must start with the correct prefix.");
+    RuleFor(x => x.FinalTmdbIds).NotEmpty();
   }
 }

@@ -1,6 +1,25 @@
 import { GetMyDraftDetailResponse, GetMyDraftsResponse } from "@/lib/dto";
 import { env } from "@/lib/env";
 
+export interface PredictionSeasonSummary {
+  publicId: string;
+  number: number;
+}
+
+export interface DraftPartPredictionRulesDto {
+  predictionMode: number;
+  requiredCount: number;
+  topN: number | null;
+  deadlineUtc: string | null;
+}
+
+export interface SubmitPredictionEntry {
+  tmdbId: number;
+  mediaTitle: string;
+  orderIndex: number | null;
+  notes: string | null;
+}
+
 const apiBase = env.apiUrl;
 
 export async function getMyDrafts(
@@ -94,5 +113,65 @@ export async function completeDraftPart(
   if (!res.ok) {
     const text = await res.text().catch(() => res.statusText);
     throw new Error(`completeDraftPart failed (${res.status}): ${text}`);
+  }
+}
+
+export async function getCurrentPredictionSeason(
+  accessToken: string | undefined
+): Promise<PredictionSeasonSummary | null> {
+  try {
+    const res = await fetch(`${apiBase}/prediction-seasons/current`, {
+      headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
+      cache: "no-store",
+    });
+    if (!res.ok) return null;
+    return (await res.json()) as PredictionSeasonSummary;
+  } catch (err) {
+    console.error("[getCurrentPredictionSeason]", err);
+    return null;
+  }
+}
+
+export async function getDraftPartPredictionRules(
+  accessToken: string | undefined,
+  draftPartId: string
+): Promise<DraftPartPredictionRulesDto | null> {
+  try {
+    const res = await fetch(
+      `${apiBase}/draft-parts/${encodeURIComponent(draftPartId)}/prediction-rules`,
+      { headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {}, cache: "no-store" }
+    );
+    if (!res.ok) return null;
+    return (await res.json()) as DraftPartPredictionRulesDto | null;
+  } catch (err) {
+    console.error("[getDraftPartPredictionRules]", err);
+    return null;
+  }
+}
+
+export async function submitPredictionSet(
+  accessToken: string,
+  draftPartId: string,
+  body: {
+    seasonPublicId: string;
+    contestantPublicId: string;
+    submittedByPersonPublicId: string | null;
+    sourceKind: number;
+    entries: SubmitPredictionEntry[];
+  }
+): Promise<void> {
+  const res = await fetch(
+    `${apiBase}/draft-parts/${encodeURIComponent(draftPartId)}/predictions`,
+    {
+      method: "POST",
+      headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ draftPartId, ...body }),
+    }
+  );
+  if (!res.ok) {
+    const text = await res.text().catch(() => res.statusText);
+    throw new Error(
+      `POST /draft-parts/${draftPartId}/predictions failed (${res.status}): ${text}`
+    );
   }
 }

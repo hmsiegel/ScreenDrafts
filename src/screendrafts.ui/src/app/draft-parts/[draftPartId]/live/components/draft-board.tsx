@@ -33,7 +33,10 @@ export function DraftBoard({ activeSlot, renderActions }: DraftBoardProps) {
         // the most recent pick even if vetoed-and-not-saved, so the host can
         // still see and act on it (override / undo) right where it happened.
         const landedPick = picks.find(
-          (p) => p.boardPosition === slot && (!p.wasVetoed || p.wasVetoOverridden),
+          (p) =>
+            p.boardPosition === slot &&
+            !p.wasCommissionerOverride &&
+            (!p.wasVetoed || p.wasVetoOverridden),
         );
         const vetoedRecentPick =
           !landedPick &&

@@ -6,12 +6,15 @@ import {
   AdminSeriesOption,
   AdminHostOption,
   createDraft,
+  syncPredictionConfig,
+  getDraft,
 } from "@/services/admin/fetch-admin-drafts";
 import { CampaignResponse, CategoryResponse, SmartEnumResponse } from "@/lib/dto";
 import { formatDraftType } from "@/lib/draft-type-display";
 import { ParticipantsSection } from "./participants-section";
 import { CommunityConfig, CommunitySection, defaultCommunityConfig } from "./community-section";
 import { getDefaultPositions, isFixedPositionType, PositionConfig, PositionsEditor } from "./positions-editor";
+import { defaultPredictionConfig, PredictionConfig, PredictionRulesSection } from "./prediction-rules-section";
 
 const LABEL = "block text-[11px] font-mono tracking-widest text-sd-ink/60 uppercase mb-1";
 const INPUT =
@@ -52,6 +55,7 @@ interface PartConfig {
   maxLocked: boolean;
   collapsed: boolean;
   communityConfig: CommunityConfig;
+  predictionConfig: PredictionConfig;
   positions: PositionConfig[];
 }
 
@@ -92,6 +96,7 @@ export default function CreateDraftForm({
       maxLocked: true,
       collapsed: false,
       communityConfig: defaultCommunityConfig(),
+      predictionConfig: defaultPredictionConfig(),
       positions: getDefaultPositions("Standard"),
     },
   ]);
@@ -110,10 +115,10 @@ export default function CreateDraftForm({
   const filteredSeriesList = selectedFeed === ""
     ? []
     : seriesList.filter((s) =>
-        selectedFeed === "main"
-          ? MAIN_FEED_KINDS.has(s.kindValue)
-          : PATREON_KINDS.has(s.kindValue)
-      );
+      selectedFeed === "main"
+        ? MAIN_FEED_KINDS.has(s.kindValue)
+        : PATREON_KINDS.has(s.kindValue)
+    );
 
   const selectedSeries = seriesList.find((s) => s.publicId === selectedSeriesId);
   const availableDraftTypes = selectedSeries?.allowedDraftTypes ?? [];
@@ -150,6 +155,7 @@ export default function CreateDraftForm({
         maxLocked: locked,
         collapsed: i > 0,
         communityConfig: prev[i]?.communityConfig ?? defaultCommunityConfig(),
+        predictionConfig: prev[i]?.predictionConfig ?? defaultPredictionConfig(),
         positions: getDefaultPositions(typeName),
       }))
     );
@@ -168,6 +174,7 @@ export default function CreateDraftForm({
         maxLocked: locked,
         collapsed: i > 0,
         communityConfig: prev[i]?.communityConfig ?? defaultCommunityConfig(),
+        predictionConfig: prev[i]?.predictionConfig ?? defaultPredictionConfig(),
         positions: prev[i]?.positions ?? getDefaultPositions(typeName),
       }))
     );
@@ -191,6 +198,12 @@ export default function CreateDraftForm({
     );
   }
 
+  function updatePartPredictionConfig(idx: number, config: PredictionConfig) {
+    setParts((prev) =>
+      prev.map((p, i) => (i === idx ? { ...p, predictionConfig: config } : p))
+    );
+  }
+
   function togglePartCollapsed(idx: number) {
     setParts((prev) =>
       prev.map((p, i) => (i === idx ? { ...p, collapsed: !p.collapsed } : p))
@@ -211,7 +224,11 @@ export default function CreateDraftForm({
 
   function setHostRole(publicId: string, role: "Primary" | "CoHost") {
     setHosts((prev) =>
-      prev.map((h) => (h.publicId === publicId ? { ...h, role } : h))
+      prev.map((h) => {
+        if (h.publicId === publicId) return { ...h, role };
+        if (role === "Primary" && h.role === "Primary") return { ...h, role: "CoHost" };
+        return h;
+      })
     );
   }
 
@@ -245,7 +262,9 @@ export default function CreateDraftForm({
       h.displayName.toLowerCase().includes(hostSearch.toLowerCase())
   );
 
-  const canSubmit = title.trim() !== "" && selectedSeriesId !== "" && selectedDraftType !== null;
+  const hasPrimaryHost = hosts.length === 0 || hosts.some((h) => h.role === "Primary");
+  const canSubmit =
+    title.trim() !== "" && selectedSeriesId !== "" && selectedDraftType !== null && hasPrimaryHost;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -254,7 +273,7 @@ export default function CreateDraftForm({
     setSubmitting(true);
 
     try {
-      await createDraft(accessToken, {
+      const created = await createDraft(accessToken, {
         title: title.trim(),
         draftType: selectedDraftType!.value ?? 0,
         seriesId: selectedSeriesId,
@@ -264,16 +283,16 @@ export default function CreateDraftForm({
           maximumPosition: part.maxPositions,
           community: part.communityConfig.enabled
             ? {
-                maxCommunityPicks: part.communityConfig.maxCommunityPicks,
-                maxCommunityVetoes: part.communityConfig.maxCommunityVetoes,
-                filmRules: part.communityConfig.filmRules
-                  .filter((r) => r.status !== "removing")
-                  .map((r) => ({
-                    ruleKind: r.ruleKind === "BoostersVeto" ? 0 : 1,
-                    targetSlot: r.targetSlot ?? null,
-                    tmdbId: r.tmdbId ?? null,
-                  })),
-              }
+              maxCommunityPicks: part.communityConfig.maxCommunityPicks,
+              maxCommunityVetoes: part.communityConfig.maxCommunityVetoes,
+              filmRules: part.communityConfig.filmRules
+                .filter((r) => r.status !== "removing")
+                .map((r) => ({
+                  ruleKind: r.ruleKind === "BoostersVeto" ? 0 : 1,
+                  targetSlot: r.targetSlot ?? null,
+                  tmdbId: r.tmdbId ?? null,
+                })),
+            }
             : null,
           positions: part.positions.map((p) => ({
             name: p.name,
@@ -291,6 +310,21 @@ export default function CreateDraftForm({
         categoryIds: [...selectedCategoryIds],
         campaignId: campaignId || null,
       });
+
+      const hasPredictions = parts.some((p) => p.predictionConfig.enabled);
+      if (hasPredictions) {
+        const detail = await getDraft(accessToken, created.publicId);
+        if (detail) {
+          for (let i = 0; i < parts.length; i++) {
+            const config = parts[i].predictionConfig;
+            if (!config.enabled) continue;
+            const detailPart = detail.parts.find((dp) => dp.partIndex === parts[i].partIndex);
+            if (detailPart) {
+              await syncPredictionConfig(accessToken, detailPart.publicId, config);
+            }
+          }
+        }
+      }
 
       router.push(`/admin/drafts`);
     } catch (err) {
@@ -516,6 +550,12 @@ export default function CreateDraftForm({
       <section>
         <h2 className={SECTION_HEADING}>Hosts (Optional)</h2>
 
+        {hosts.length > 0 && !hasPrimaryHost && (
+          <p className="mb-3 text-sm text-sd-red font-mono">
+            Select a primary host before saving — the draft can&apos;t be started without one.
+          </p>
+        )}
+
         {hosts.length > 0 && (
           <div className="mb-4 space-y-2">
             {hosts.map((h) => (
@@ -609,6 +649,27 @@ export default function CreateDraftForm({
               <CommunitySection
                 config={part.communityConfig}
                 onChange={(next) => updatePartCommunityConfig(idx, next)}
+              />
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── Section 4d: Commissioner Predictions (per part) ── */}
+      <section>
+        <h2 className={SECTION_HEADING}>Commissioner Predictions (Optional)</h2>
+        <div className="space-y-4">
+          {parts.map((part, idx) => (
+            <div key={idx}>
+              {parts.length > 1 && (
+                <p className="font-mono text-[11px] tracking-widest text-sd-ink/50 uppercase mb-2">
+                  Part {part.partIndex}
+                </p>
+              )}
+              <PredictionRulesSection
+                config={part.predictionConfig}
+                onChange={(next) => updatePartPredictionConfig(idx, next)}
+                accessToken={accessToken}
               />
             </div>
           ))}

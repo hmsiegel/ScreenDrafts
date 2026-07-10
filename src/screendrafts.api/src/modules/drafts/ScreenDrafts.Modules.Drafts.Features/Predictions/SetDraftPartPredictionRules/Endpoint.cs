@@ -4,7 +4,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<SetDraftPartPredictionRule
 {
   public override void Configure()
   {
-    Post(PredictionRoutes.SetRules);
+    Put(PredictionRoutes.SetRules);
     Description(x =>
     {
       x.WithTags(DraftsOpenApi.Tags.Predictions)
@@ -13,8 +13,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<SetDraftPartPredictionRule
         .Produces(StatusCodes.Status400BadRequest)
         .Produces(StatusCodes.Status401Unauthorized)
         .Produces(StatusCodes.Status403Forbidden)
-        .Produces(StatusCodes.Status404NotFound)
-        .Produces(StatusCodes.Status409Conflict);
+        .Produces(StatusCodes.Status404NotFound);
     });
     Policies(DraftsAuth.Permissions.PredictionManage);
   }

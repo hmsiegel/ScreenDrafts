@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Drafts.UnitTests.Predictions;
+﻿namespace ScreenDrafts.Modules.Drafts.UnitTests.Predictions;
 
 public sealed class DraftPredictionSetTests : DraftsBaseTest
 {
@@ -22,7 +22,8 @@ public sealed class DraftPredictionSetTests : DraftsBaseTest
       draftPart: draftPart,
       contestant: contestant,
       submittedByPerson: null,
-      sourceKind: PredictionSourceKind.UI);
+      sourceKind: PredictionSourceKind.UI
+    );
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -44,13 +45,16 @@ public sealed class DraftPredictionSetTests : DraftsBaseTest
     var contestant = PredictionFactory.CreateContestant();
 
     // Act
-    var set = DraftPredictionSet.Create(
-      publicId: Faker.Random.AlphaNumeric(10),
-      season: season,
-      draftPart: draftPart,
-      contestant: contestant,
-      submittedByPerson: null,
-      sourceKind: PredictionSourceKind.UI).Value;
+    var set = DraftPredictionSet
+      .Create(
+        publicId: Faker.Random.AlphaNumeric(10),
+        season: season,
+        draftPart: draftPart,
+        contestant: contestant,
+        submittedByPerson: null,
+        sourceKind: PredictionSourceKind.UI
+      )
+      .Value;
 
     // Assert
     var domainEvent = AssertDomainEventWasPublished<PredictionSetSubmittedDomainEvent>(set);
@@ -68,13 +72,15 @@ public sealed class DraftPredictionSetTests : DraftsBaseTest
     var contestant = PredictionFactory.CreateContestant();
 
     // Act
-    Action act = () => DraftPredictionSet.Create(
-      publicId: Faker.Random.AlphaNumeric(10),
-      season: null!,
-      draftPart: draftPart,
-      contestant: contestant,
-      submittedByPerson: null,
-      sourceKind: PredictionSourceKind.UI);
+    Action act = () =>
+      DraftPredictionSet.Create(
+        publicId: Faker.Random.AlphaNumeric(10),
+        season: null!,
+        draftPart: draftPart,
+        contestant: contestant,
+        submittedByPerson: null,
+        sourceKind: PredictionSourceKind.UI
+      );
 
     // Assert
     act.Should().Throw<ArgumentNullException>();
@@ -95,8 +101,8 @@ public sealed class DraftPredictionSetTests : DraftsBaseTest
 
     var entries = new[]
     {
-      PredictionEntry.Create(set, "m_001", "Movie 1"),
-      PredictionEntry.Create(set, "m_002", "Movie 2"),
+      PredictionEntry.Create(set, Faker.Random.Number(1, 1000), "Movie 1"),
+      PredictionEntry.Create(set, Faker.Random.Number(1, 1000), "Movie 2"),
     };
 
     // Act
@@ -119,7 +125,7 @@ public sealed class DraftPredictionSetTests : DraftsBaseTest
 
     set.Lock(rules.ToSnapshot(), DateTime.UtcNow);
 
-    var newEntries = new[] { PredictionEntry.Create(set, "m_003", "Movie 3") };
+    var newEntries = new[] { PredictionEntry.Create(set, Faker.Random.Number(1, 1000), "Movie 3") };
 
     // Act
     var result = set.ReplaceEntries(newEntries);
@@ -215,7 +221,8 @@ public sealed class DraftPredictionSetTests : DraftsBaseTest
     var assignment = SurrogateAssignment.Create(
       primarySet: primarySet,
       surrogateSet: surrogateSet,
-      mergePolicy: MergePolicy.UseHigherScore);
+      mergePolicy: MergePolicy.UseHigherScore
+    );
 
     // Act
     var result = primarySet.AttachSurrogate(assignment);
@@ -242,7 +249,8 @@ public sealed class DraftPredictionSetTests : DraftsBaseTest
     var assignment = SurrogateAssignment.Create(
       primarySet: set1,
       surrogateSet: set3,
-      mergePolicy: MergePolicy.UseHigherScore);
+      mergePolicy: MergePolicy.UseHigherScore
+    );
 
     // Act
     var result = set2.AttachSurrogate(assignment);

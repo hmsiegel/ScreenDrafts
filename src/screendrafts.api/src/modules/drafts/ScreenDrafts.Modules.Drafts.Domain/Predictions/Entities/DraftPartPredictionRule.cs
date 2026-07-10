@@ -9,7 +9,8 @@ public sealed class DraftPartPredictionRule : Entity<DraftPartPredictionRuleId>
     int requiredCount,
     int? topN,
     DateTime? deadlineUtc,
-    DraftPartPredictionRuleId? id = null)
+    DraftPartPredictionRuleId? id = null
+  )
     : base(id ?? DraftPartPredictionRuleId.CreateUnique())
   {
     PredictionMode = predictionMode;
@@ -20,9 +21,8 @@ public sealed class DraftPartPredictionRule : Entity<DraftPartPredictionRuleId>
     DraftPart = draftPart;
     DraftPartId = draftPart.Id;
   }
-  private DraftPartPredictionRule()
-  {
-  }
+
+  private DraftPartPredictionRule() { }
 
   public string PublicId { get; private set; } = default!;
   public DraftPart DraftPart { get; private set; } = default!;
@@ -41,7 +41,7 @@ public sealed class DraftPartPredictionRule : Entity<DraftPartPredictionRuleId>
   /// Submissionr are rejected after this deadline. Null if no deadline.
   /// (close manually via DraftPart status transition)
   /// </summary>
-  public DateTime? DeadlineUtc { get; private set; } 
+  public DateTime? DeadlineUtc { get; private set; }
 
   public DateTime CreatedOnUtc { get; private set; } = DateTime.UtcNow;
   public DateTime? UpdatedOnUtc { get; private set; } = default!;
@@ -55,25 +55,17 @@ public sealed class DraftPartPredictionRule : Entity<DraftPartPredictionRuleId>
     PredictionMode predictionMode,
     int requiredCount = 7,
     int? topN = null,
-    DateTime? deadlineUtc = null)
+    DateTime? deadlineUtc = null
+  )
   {
     ArgumentNullException.ThrowIfNull(draftPart);
     ArgumentNullException.ThrowIfNull(predictionMode);
 
-    var isTopNMode =
-      predictionMode == PredictionMode.UnorderedTopN
-      || predictionMode == PredictionMode.OrderedTopN;
+    var validation = ValidateTopN(predictionMode, topN);
 
-    if (isTopNMode && topN is null)
+    if (validation.IsFailure)
     {
-      return Result.Failure<DraftPartPredictionRule>(
-        PredictionErrors.TopNRequiredForPredictionMode(predictionMode.Name));
-    }
-
-    if (!isTopNMode && topN is not null)
-    {
-      return Result.Failure<DraftPartPredictionRule>(
-        PredictionErrors.TopNNotAllowedForPredictionMode(predictionMode.Name));
+      return Result.Failure<DraftPartPredictionRule>(validation.Errors);
     }
 
     return new DraftPartPredictionRule(
@@ -82,12 +74,46 @@ public sealed class DraftPartPredictionRule : Entity<DraftPartPredictionRuleId>
       predictionMode: predictionMode,
       requiredCount: requiredCount,
       topN: topN,
-      deadlineUtc: deadlineUtc);
+      deadlineUtc: deadlineUtc
+    );
+  }
+
+  /// <summary>
+  /// Updates an existing rule set in place. Same validation as <see cref="Create"/>.
+  /// Used by SetDraftPartPredictionRules when rules already exist for this part —
+  /// the endpoint is idempotent-replace, matching the "Set" naming convention used
+  /// elsewhere in this codebase (SetDraftPositions, SetDraftCategories), rather than
+  /// create-only.
+  /// </summary>
+  public Result UpdateRules(
+    PredictionMode predictionMode,
+    int requiredCount,
+    int? topN,
+    DateTime? deadlineUtc,
+    DateTime updatedOnUtc
+  )
+  {
+    ArgumentNullException.ThrowIfNull(predictionMode);
+
+    var validation = ValidateTopN(predictionMode, topN);
+
+    if (validation.IsFailure)
+    {
+      return validation;
+    }
+
+    PredictionMode = predictionMode;
+    RequiredCount = requiredCount;
+    TopN = topN;
+    DeadlineUtc = deadlineUtc;
+    UpdatedOnUtc = updatedOnUtc;
+
+    return Result.Success();
   }
 
   /// <summary>
   /// Produces a frozen snapshot of the current rules for attaching to a locked
-  /// <see cref="DraftPredictionSet"/>. Scoring always uses the live rules. This 
+  /// <see cref="DraftPredictionSet"/>. Scoring always uses the live rules. This
   /// snapshot is for audit and display only.
   /// </summary>
   /// <returns></returns>
@@ -96,6 +122,26 @@ public sealed class DraftPartPredictionRule : Entity<DraftPartPredictionRuleId>
     return new PredictionRulesSnapshot(
       Mode: PredictionMode,
       RequiredCount: RequiredCount,
-      TopN: TopN);
+      TopN: TopN
+    );
+  }
+
+  private static Result ValidateTopN(PredictionMode predictionMode, int? topN)
+  {
+    var isTopNMode =
+      predictionMode == PredictionMode.UnorderedTopN
+      || predictionMode == PredictionMode.OrderedTopN;
+
+    if (isTopNMode && topN is null)
+    {
+      return Result.Failure(PredictionErrors.TopNRequiredForPredictionMode(predictionMode.Name));
+    }
+
+    if (!isTopNMode && topN is not null)
+    {
+      return Result.Failure(PredictionErrors.TopNNotAllowedForPredictionMode(predictionMode.Name));
+    }
+
+    return Result.Success();
   }
 }

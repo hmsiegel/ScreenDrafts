@@ -55,4 +55,5 @@ internal static class Tables
   internal const string DraftPartRecordings = "draft_part_recordings";
   internal const string DraftPartCommunityFilmRules = "draft_part_community_film_rules";
   internal const string DraftPartAttendance = "draft_part_attendances";
+  internal const string DraftPartPredictors = "draft_part_predictors";
 }

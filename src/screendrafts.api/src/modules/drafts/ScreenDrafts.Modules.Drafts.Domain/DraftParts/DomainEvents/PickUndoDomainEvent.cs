@@ -1,22 +1,28 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Domain.DraftParts.DomainEvents;
 
 public sealed class PickUndoDomainEvent(
-  Guid DraftPartId,
-  string DraftPartPublicId,
-  int PlayOrder,
-  int BoardPosition,
-  int TmdbId,
-  string MovieTitle,
-  Guid DraftId,
-  string DraftPublicId
+  Guid draftPartId,
+  string draftPartPublicId,
+  int playOrder,
+  int boardPosition,
+  int tmdbId,
+  string movieTitle,
+  Guid draftId,
+  string draftPublicId,
+  string moviePublicId,
+  Guid playedByParticipantId,
+  int playedByParticipantKind
 ) : DomainEvent
 {
-  public Guid DraftPartId { get; init; } = DraftPartId;
-  public string DraftPartPublicId { get; init; } = DraftPartPublicId;
-  public int PlayOrder { get; init; } = PlayOrder;
-  public int BoardPosition { get; init; } = BoardPosition;
-  public int TmdbId { get; init; } = TmdbId;
-  public string MovieTitle { get; init; } = MovieTitle;
-  public Guid DraftId { get; init; } = DraftId;
-  public string DraftPublicId { get; init; } = DraftPublicId;
+  public Guid DraftPartId { get; init; } = draftPartId;
+  public string DraftPartPublicId { get; init; } = draftPartPublicId;
+  public int PlayOrder { get; init; } = playOrder;
+  public int BoardPosition { get; init; } = boardPosition;
+  public int TmdbId { get; init; } = tmdbId;
+  public string MovieTitle { get; init; } = movieTitle;
+  public Guid DraftId { get; init; } = draftId;
+  public string DraftPublicId { get; init; } = draftPublicId;
+  public string MoviePublicId { get; init; } = moviePublicId;
+  public Guid PlayedByParticipantId { get; init; } = playedByParticipantId;
+  public int PlayedByParticipantKind { get; init; } = playedByParticipantKind;
 }

@@ -109,6 +109,7 @@ export interface CommissionerOverrideAppliedPayload {
   participantId: string;
   participantKind: number;
   boardPosition: number;
+  playOrder: number;
   participants: TokenUpdate[];
 }
 
@@ -178,6 +179,26 @@ export interface DrafterHonorificSummary {
   newCount: number;
 }
 
+export interface PredictionEntry {
+  mediaTitle: string;
+  isCorrect: boolean | null;
+}
+
+export interface PredictionSummary {
+  contestantDisplayName: string;
+  correctCount: number;
+  shootsTheMoon: boolean;
+  pointsAwarded: number;
+  entries: PredictionEntry[];
+}
+
+export interface SeasonStanding {
+  contestantDisplayName: string;
+  points: number;
+  carryoverPoints: number;
+  totalPoints: number;
+}
+
 export interface DraftCompletionSummary {
   draftPartPublicId: string;
   draftId: string;
@@ -192,6 +213,8 @@ export interface DraftCompletionSummary {
   picks: CompletedPickSummary[];
   movieHonorifics: PickHonorificSummary[];
   drafterHonorifics: DrafterHonorificSummary[];
+  predictions: PredictionSummary[];
+  standings: SeasonStanding[];
 }
 
 export interface CountdownStartedPayload {
@@ -288,6 +311,7 @@ export function LiveDraftProvider({
   const [countdownTarget, setCountdownTarget] = useState<string | null>(null);
   const [completionSummary, setCompletionSummary] = useState<DraftCompletionSummary | null>(null);
   const [honorificOverlay, setHonorificOverlay] = useState<HonorificMoment | null>(null);
+  console.log('OVERLAY STATE', honorificOverlay);
   const notificationQueue = useRef<GameplayNotification[]>([]);
   const showingNotificationRef = useRef(false);
   const honorificQueue = useRef<HonorificMoment[]>([]);
@@ -336,7 +360,7 @@ export function LiveDraftProvider({
     notificationQueue.current.push(n);
     if (showingNotificationRef.current) return;
     const next = notificationQueue.current.shift() ?? null;
-    showingHonorificRef.current = next !== null;
+    showingNotificationRef.current = next !== null;
     setNotification(next);
   }, []);
 
@@ -556,7 +580,7 @@ export function LiveDraftProvider({
     connection.on('CommissionerOverrideApplied', (payload: CommissionerOverrideAppliedPayload) => {
       setPicks((prev) =>
         prev.map((p) =>
-          p.boardPosition === payload.boardPosition
+          p.playOrder === payload.playOrder
             ? { ...p, wasCommissionerOverride: true }
             : p,
         ),
@@ -594,7 +618,7 @@ export function LiveDraftProvider({
     // 6th appearance completing Unified No. 1, where the appearance value is already
     // capped at High Five) still announces, because it diffs the bitmask, not just
     // the appearance value. Earned vs reverted is derived per moment.
-connection.on(
+    connection.on(
       'MovieHonorificEarned',
       (
         eventDraftPartPublicId: string,
@@ -605,6 +629,7 @@ connection.on(
         previousPositionHonorificValue: number,
         newPositionHonorificValue: number,
       ) => {
+        console.log('HONORIFIC FRAME', { movieTitle, previousAppearanceHonorificValue, newAppearanceHonorificValue, previousPositionHonorificValue, newPositionHonorificValue });
         const moments = deriveHonorificMoments({
           movieTitle,
           previousAppearanceHonorificValue,
@@ -612,6 +637,7 @@ connection.on(
           previousPositionHonorificValue,
           newPositionHonorificValue,
         });
+        console.log('DERIVED MOMENTS', moments);
         enqueueHonorificMoments(moments);
       },
     );
