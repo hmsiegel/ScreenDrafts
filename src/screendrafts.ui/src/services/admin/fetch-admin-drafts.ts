@@ -766,11 +766,9 @@ export async function deleteDraft(
   accessToken: string,
   draftId: string
 ): Promise<void> {
-  // TODO: confirm whether a dedicated DELETE /drafts/{draftId} exists
   const res = await fetch(`${apiBase}/drafts/${encodeURIComponent(draftId)}`, {
-    method: "PUT",
-    headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ isDeleted: true }),
+    method: "DELETE",
+    headers: { Authorization: `Bearer ${accessToken}` },
   });
   if (!res.ok) {
     const text = await res.text().catch(() => res.statusText);

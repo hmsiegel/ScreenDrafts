@@ -28,7 +28,8 @@ internal sealed class GetMyDraftsQueryHandler(IDbConnectionFactory dbConnectionF
         CASE WHEN dp2.id IS NOT NULL THEN true ELSE false END AS {nameof(DraftRow.HasPool)}
       FROM drafts.drafts d
       LEFT JOIN drafts.draft_pools dp2 ON dp2.draft_id = d.id
-      WHERE
+      WHERE d.is_deleted = false
+        AND
         -- caller is a drafter on at least one part
         EXISTS (
           SELECT 1

@@ -47,6 +47,8 @@ internal static class DraftsOpenApi
     public const string Drafts_ListLatestDrafts = "Drafts.ListLatestDrafts";
     public const string Drafts_ListUpcomingDrafts = "Drafts.ListUpcomingDrafts";
     public const string Drafts_UploadDraftImage = "Drafts.UploadDraftImage";
+    public const string Drafts_DeleteDraft = "Drafts.DeleteDraft";
+    public const string Drafts_Restore = "Drafts.Restore";
 
     // Draft Parts
     public const string DraftParts_GetDraftPartById = "DraftParts.GetDraftPartById";

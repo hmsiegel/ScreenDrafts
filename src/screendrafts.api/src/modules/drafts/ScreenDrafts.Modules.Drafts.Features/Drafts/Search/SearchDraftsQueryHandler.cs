@@ -25,7 +25,7 @@ internal sealed class SearchDraftsQueryHandler(IDbConnectionFactory dbConnection
       FROM drafts.drafts d
       JOIN drafts.series s ON d.series_id = s.id
       LEFT JOIN drafts.campaigns c ON d.campaign_id = c.id
-      WHERE 1 = 1
+      WHERE is_deleted = false
       """;
 
     var sqlBuilder = new StringBuilder(baseSql);

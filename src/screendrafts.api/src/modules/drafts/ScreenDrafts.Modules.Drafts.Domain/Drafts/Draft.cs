@@ -36,6 +36,8 @@ public sealed partial class Draft : AggregateRoot<DraftId, Guid>
   public string? ImagePath { get; private set; }
   public DateTime CreatedAtUtc { get; private set; }
   public DateTime? UpdatedAtUtc { get; private set; }
+  public bool IsDeleted { get; private set; }
+  public DateTime? DeletedAtUtc { get; private set; }
 
   // Policy Snapshots
   public Series Series { get; private set; } = default!;
@@ -287,6 +289,55 @@ public sealed partial class Draft : AggregateRoot<DraftId, Guid>
 
     Raise(new SeriesLinkedDomainEvent(Id.Value, series.Id.Value));
     return Result.Success(series);
+  }
+
+  /// <summary>
+  /// Soft-deletes the draft. Refused once any part has left Created status —
+  /// same guard UpdateDraftCommandHandler already applies for series/type
+  /// changes, extended here since a draft that's started shouldn't
+  /// disappear out from under an in-progress or completed session.
+  /// </summary>
+  public Result SoftDelete(DateTime utcNow)
+  {
+    if (IsDeleted)
+    {
+      return Result.Failure(DraftErrors.DraftAlreadyDeleted(PublicId));
+    }
+
+    var anyStartedPart = _parts.Any(p => p.Status != DraftPartStatus.Created);
+
+    if (anyStartedPart)
+    {
+      return Result.Failure(DraftErrors.CannotDeleteDraftAfterAPartHasStarted(PublicId));
+    }
+
+    IsDeleted = true;
+    DeletedAtUtc = utcNow;
+    UpdatedAtUtc = utcNow;
+
+    Raise(new DraftDeletedDomainEvent(Id.Value, PublicId));
+
+    return Result.Success();
+  }
+
+  /// <summary>
+  /// Reverses a soft-delete. Mirrors the Restore convention already used
+  /// for Series/Campaigns/Categories elsewhere in this module.
+  /// </summary>
+  public Result Restore(DateTime utcNow)
+  {
+    if (!IsDeleted)
+    {
+      return Result.Failure(DraftErrors.DraftNotDeleted(PublicId));
+    }
+
+    IsDeleted = false;
+    DeletedAtUtc = null;
+    UpdatedAtUtc = utcNow;
+
+    Raise(new DraftRestoredDomainEvent(Id.Value, PublicId));
+
+    return Result.Success();
   }
 
   public void SetVetoPolicy(bool grantsStartingVetoPerPart)

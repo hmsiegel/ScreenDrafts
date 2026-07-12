@@ -24,4 +24,9 @@ public interface IDraftRepository : IRepository<Draft, DraftId>
     DraftId draftId,
     CancellationToken cancellationToken
   );
+
+  Task<Draft?> GetDraftByPublicIdIncludingDeletedAsync(
+    string publicId,
+    CancellationToken cancellationToken
+  );
 }

@@ -25,6 +25,7 @@ internal sealed class GetMyDraftDetailQueryHandler(IDbConnectionFactory dbConnec
       FROM drafts.drafts d
       LEFT JOIN drafts.draft_pools pool ON pool.draft_id = d.id
       WHERE d.public_id = @DraftId
+        AND d.is_deleted = FALSE
       LIMIT 1;
       """;
 

@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Common.Abstractions.Errors;
-
-namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.Errors;
+﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts.Errors;
 
 public static partial class DraftErrors
 {
@@ -218,5 +216,23 @@ public static partial class DraftErrors
     SDError.NotFound(
       "DraftBoard.ParticipantNotFound",
       $"Participant with public id {userPublicId} was not found."
+    );
+
+  public static SDError CannotDeleteDraftAfterAPartHasStarted(string draftPublicId) =>
+    SDError.Conflict(
+      code: "Draft.CannotDeleteDraftAfterAPartHasStarted",
+      description: $"Cannot delete draft '{draftPublicId}' because a part has already started."
+    );
+
+  public static SDError DraftAlreadyDeleted(string draftPublicId) =>
+    SDError.Conflict(
+      code: "Draft.DraftAlreadyDeleted",
+      description: $"Draft '{draftPublicId}' has already been deleted."
+    );
+
+  public static SDError DraftNotDeleted(string publicId) =>
+    SDError.Conflict(
+      code: "Draft.DraftNotDeleted",
+      description: $"Draft '{publicId}' is not deleted."
     );
 }

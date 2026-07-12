@@ -52,7 +52,7 @@ internal sealed class ListDraftsQueryHandler(IDbConnectionFactory connectionFact
         FROM drafts.draft_parts dp
         JOIN drafts.drafts d ON d.id = dp.draft_id
         LEFT JOIN drafts.campaigns c ON c.id = d.campaign_id
-        WHERE 1 = 1
+        WHERE d.is_deleted = false
       """;
 
     var sqlBuilder = new StringBuilder(baseSql);

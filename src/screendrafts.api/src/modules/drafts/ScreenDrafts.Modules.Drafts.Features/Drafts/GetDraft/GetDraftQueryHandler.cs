@@ -33,7 +33,8 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
       FROM drafts.drafts d
       JOIN drafts.series s ON s.id = d.series_id
       LEFT JOIN drafts.campaigns c ON c.id = d.campaign_id
-      WHERE d.public_id = @DraftId;
+      WHERE d.public_id = @DraftId
+        AND d.is_deleted = FALSE
       """;
 
     var draft = await connection.QuerySingleOrDefaultAsync<(

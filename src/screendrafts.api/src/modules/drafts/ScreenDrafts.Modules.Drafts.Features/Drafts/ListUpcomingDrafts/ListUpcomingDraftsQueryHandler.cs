@@ -10,13 +10,14 @@ internal sealed class ListUpcomingDraftsQueryHandler(IDbConnectionFactory dbConn
   private const int MainFeedChannel = 0;
   private const int PatreonChannel = 1;
 
-
-  public async Task<Result<ListUpcomingDraftsResponse>> Handle(ListUpcomingDraftsQuery request, CancellationToken cancellationToken)
+  public async Task<Result<ListUpcomingDraftsResponse>> Handle(
+    ListUpcomingDraftsQuery request,
+    CancellationToken cancellationToken
+  )
   {
     await using var connection = await _dbConnectionFactory.OpenConnectionAsync(cancellationToken);
 
-    const string baseSql =
-      $"""
+    const string baseSql = $"""
       SELECT
         dp.public_id AS {nameof(UpcomingDraftResponse.DraftPartPublicId)},
         d.public_id AS {nameof(UpcomingDraftResponse.DraftPublicId)},
@@ -33,6 +34,7 @@ internal sealed class ListUpcomingDraftsQueryHandler(IDbConnectionFactory dbConn
       JOIN drafts.drafts d ON dp.draft_id = d.id
       LEFT JOIN drafts.draft_releases r ON r.part_id = dp.id
       WHERE dp.status IN (@CreatedStatus, @InProgressStatus)
+        AND d.is_deleted = FALSE
       """;
 
     var sqlBuilder = new StringBuilder(baseSql);
@@ -55,34 +57,42 @@ internal sealed class ListUpcomingDraftsQueryHandler(IDbConnectionFactory dbConn
             AND dr3.release_channel = {MainFeedChannel}
           )
         )
-        """);
+        """
+      );
     }
 
     sqlBuilder.Append(
       """
-      
+
       GROUP BY dp.id, dp.public_id, dp.part_index, dp.status, d.id, d.public_id, d.title
       ORDER BY MIN(r.release_date) ASC NULLS LAST
-      """);
+      """
+    );
 
-    var draftParts = (await connection.QueryAsync<UpcomingDraftResponse>(
-      new CommandDefinition(
-        sqlBuilder.ToString(),
-        new { CreatedStatus, InProgressStatus, PatreonChannel, MainFeedChannel },
-        cancellationToken: cancellationToken))).ToList();
+    var draftParts = (
+      await connection.QueryAsync<UpcomingDraftResponse>(
+        new CommandDefinition(
+          sqlBuilder.ToString(),
+          new
+          {
+            CreatedStatus,
+            InProgressStatus,
+            PatreonChannel,
+            MainFeedChannel,
+          },
+          cancellationToken: cancellationToken
+        )
+      )
+    ).ToList();
 
     if (draftParts.Count == 0)
     {
-      return Result.Success(new ListUpcomingDraftsResponse
-      {
-        Drafts = []
-      });
+      return Result.Success(new ListUpcomingDraftsResponse { Drafts = [] });
     }
 
     var userId = request.UserId;
 
-    const string hostSql =
-      $"""
+    const string hostSql = $"""
       SELECT
         dp.public_id
       FROM drafts.draft_hosts dh
@@ -92,14 +102,13 @@ internal sealed class ListUpcomingDraftsQueryHandler(IDbConnectionFactory dbConn
       WHERE p.user_id = @userId
       """;
 
-    var hostPartIds = (await connection.QueryAsync<string>(
-      new CommandDefinition(
-        hostSql,
-        new { userId },
-        cancellationToken: cancellationToken))).ToHashSet();
+    var hostPartIds = (
+      await connection.QueryAsync<string>(
+        new CommandDefinition(hostSql, new { userId }, cancellationToken: cancellationToken)
+      )
+    ).ToHashSet();
 
-    const string participantSql =
-      $"""
+    const string participantSql = $"""
       SELECT
         dp.public_id
       FROM drafts.draft_part_participants dpp
@@ -109,32 +118,33 @@ internal sealed class ListUpcomingDraftsQueryHandler(IDbConnectionFactory dbConn
       WHERE p.user_id = @userId
       """;
 
-    var participantPartIds = (await connection.QueryAsync<string>(
-      new CommandDefinition(
-        participantSql,
-        new { userId },
-        cancellationToken: cancellationToken))).ToHashSet();
+    var participantPartIds = (
+      await connection.QueryAsync<string>(
+        new CommandDefinition(participantSql, new { userId }, cancellationToken: cancellationToken)
+      )
+    ).ToHashSet();
 
     foreach (var part in draftParts)
     {
-      part.SetCapabilities(BuildCapabilities(
-        isAdmin: request.IsAdmin,
-        isHost: hostPartIds.Contains(part.DraftPartPublicId),
-        isParticipant: participantPartIds.Contains(part.DraftPartPublicId),
-        status: part.Status));
+      part.SetCapabilities(
+        BuildCapabilities(
+          isAdmin: request.IsAdmin,
+          isHost: hostPartIds.Contains(part.DraftPartPublicId),
+          isParticipant: participantPartIds.Contains(part.DraftPartPublicId),
+          status: part.Status
+        )
+      );
     }
 
-    return Result.Success(new ListUpcomingDraftsResponse
-    {
-      Drafts = draftParts
-    });
+    return Result.Success(new ListUpcomingDraftsResponse { Drafts = draftParts });
   }
 
   private static DraftUserCapabilities BuildCapabilities(
     bool isAdmin,
     bool isHost,
     bool isParticipant,
-    int status)
+    int status
+  )
   {
     if (isAdmin)
     {
@@ -144,7 +154,8 @@ internal sealed class ListUpcomingDraftsQueryHandler(IDbConnectionFactory dbConn
         CanDelete: true,
         CanStart: true,
         CanUpdateBoard: true,
-        CanJoin: true);
+        CanJoin: true
+      );
     }
 
     if (isHost)
@@ -155,7 +166,8 @@ internal sealed class ListUpcomingDraftsQueryHandler(IDbConnectionFactory dbConn
         CanDelete: true,
         CanStart: true,
         CanUpdateBoard: false,
-        CanJoin: true);
+        CanJoin: true
+      );
     }
 
     if (isParticipant)
@@ -166,7 +178,8 @@ internal sealed class ListUpcomingDraftsQueryHandler(IDbConnectionFactory dbConn
         CanDelete: false,
         CanStart: false,
         CanUpdateBoard: true,
-        CanJoin: status == InProgressStatus);
+        CanJoin: status == InProgressStatus
+      );
     }
 
     return new DraftUserCapabilities(
@@ -175,6 +188,7 @@ internal sealed class ListUpcomingDraftsQueryHandler(IDbConnectionFactory dbConn
       CanDelete: false,
       CanStart: false,
       CanUpdateBoard: false,
-      CanJoin: status == InProgressStatus);
+      CanJoin: status == InProgressStatus
+    );
   }
 }

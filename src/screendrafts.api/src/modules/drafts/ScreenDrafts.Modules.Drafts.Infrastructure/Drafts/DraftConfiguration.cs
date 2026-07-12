@@ -89,5 +89,15 @@ internal sealed class DraftConfiguration : IEntityTypeConfiguration<Draft>
     builder.HasOne(d => d.Pool).WithOne().HasForeignKey<DraftPool>(p => p.DraftId);
 
     builder.Property(d => d.GrantsStartingVetoPerPart).IsRequired().HasDefaultValue(false);
+
+    builder.Property(d => d.IsDeleted).IsRequired().HasDefaultValue(false);
+    builder.Property(d => d.DeletedAtUtc);
+
+    // Global filter — every LINQ query against Draft (via DraftRepository or
+    // any other DbSet<Draft> access) automatically excludes soft-deleted
+    // rows. Flows that need to see a deleted draft (currently only Restore)
+    // must call .IgnoreQueryFilters() explicitly — see
+    // DraftRepository.GetDraftByPublicIdIncludingDeletedAsync.
+    builder.HasQueryFilter(d => !d.IsDeleted);
   }
 }
