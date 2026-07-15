@@ -16,6 +16,18 @@ public static class SeriesErrors
   public static SDError SeriesIdIsInvalid(string? seriesPublicId) =>
     SDError.Problem("Series.SeriesIdIsInvalid", $"Series public id '{seriesPublicId}' is invalid.");
 
+  public static SDError SeriesAlreadyDeleted(string publicId) =>
+    SDError.Problem(
+      "Series.SeriesAlreadyDeleted",
+      $"Series with public id '{publicId}' is already deleted."
+    );
+
+  public static SDError SeriesNotDeleted(string publicId) =>
+    SDError.Problem(
+      "Series.SeriesNotDeleted",
+      $"Series with public id '{publicId}' was not deleted."
+    );
+
   public static readonly SDError AllowedDraftTypesCannotBeNone = SDError.Problem(
     "Series.AllowedDraftTypesCannotBeNone",
     "Allowed draft types cannot be none."

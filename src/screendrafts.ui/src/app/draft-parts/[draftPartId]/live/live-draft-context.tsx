@@ -311,7 +311,6 @@ export function LiveDraftProvider({
   const [countdownTarget, setCountdownTarget] = useState<string | null>(null);
   const [completionSummary, setCompletionSummary] = useState<DraftCompletionSummary | null>(null);
   const [honorificOverlay, setHonorificOverlay] = useState<HonorificMoment | null>(null);
-  console.log('OVERLAY STATE', honorificOverlay);
   const notificationQueue = useRef<GameplayNotification[]>([]);
   const showingNotificationRef = useRef(false);
   const honorificQueue = useRef<HonorificMoment[]>([]);
@@ -629,7 +628,6 @@ export function LiveDraftProvider({
         previousPositionHonorificValue: number,
         newPositionHonorificValue: number,
       ) => {
-        console.log('HONORIFIC FRAME', { movieTitle, previousAppearanceHonorificValue, newAppearanceHonorificValue, previousPositionHonorificValue, newPositionHonorificValue });
         const moments = deriveHonorificMoments({
           movieTitle,
           previousAppearanceHonorificValue,
@@ -637,7 +635,6 @@ export function LiveDraftProvider({
           previousPositionHonorificValue,
           newPositionHonorificValue,
         });
-        console.log('DERIVED MOMENTS', moments);
         enqueueHonorificMoments(moments);
       },
     );

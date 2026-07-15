@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 
 export default async function CategoriesPage() {
   const session = await auth();
-  const categories = await listAllCategories();
+  const categories = await listAllCategories(true);
 
   return (
     <div className="min-h-screen bg-light-blue">

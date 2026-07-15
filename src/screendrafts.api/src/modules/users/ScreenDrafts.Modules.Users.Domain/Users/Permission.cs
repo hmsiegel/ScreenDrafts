@@ -22,6 +22,7 @@ public sealed class Permission(string code)
   public static readonly Permission ModifyDraft = new("drafts:update");
   public static readonly Permission DeleteDraft = new("drafts:delete");
   public static readonly Permission SearchDrafts = new("drafts:search");
+  public static readonly Permission RestoreDraft = new("drafts:restore");
   public static readonly Permission ReadPatreonDrafts = new("drafts:read-patreon");
   public static readonly Permission SearchPatreonDrafts = new("patreon:search");
 
@@ -104,6 +105,7 @@ public sealed class Permission(string code)
   public static readonly Permission CreateSeries = new("series:create");
   public static readonly Permission UpdateSeries = new("series:update");
   public static readonly Permission DeleteSeries = new("series:delete");
+  public static readonly Permission RestoreSeries = new("series:restore");
 
   // Categories
   public static readonly Permission CreateCategories = new("categories:create");
@@ -111,6 +113,7 @@ public sealed class Permission(string code)
   public static readonly Permission GetCategories = new("categories:read");
   public static readonly Permission SearchCategories = new("categories:search");
   public static readonly Permission DeleteCategories = new("categories:delete");
+  public static readonly Permission RestoreCategories = new("categories:restore");
 
   // Campaigns
   public static readonly Permission CreateCampaign = new("campaigns:create");

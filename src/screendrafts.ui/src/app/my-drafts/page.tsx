@@ -7,6 +7,7 @@ import DraftTypeBadge from "@/components/ui/draft-type-badge";
 import { draftTypeFromNumber } from "@/lib/draft-type-display";
 import { Metadata } from "next";
 import type { MyDraftSummary, MyDraftPartSummary } from "@/lib/dto";
+import MyDraftsRealtimeRefresher from "./my-drafts-realtime-refresher";
 
 export const metadata: Metadata = { title: "My Drafts" };
 export const dynamic = "force-dynamic";
@@ -266,9 +267,21 @@ export default async function MyDraftsPage({
 
   const { error } = await searchParams;
   const { upcoming, inProgress, completed } = await getMyDrafts(session.accessToken);
+  const STATUS_CREATED = 0;
+
+  const watchedDraftPartIds = (upcoming ?? [])
+    .flatMap((d) => d.parts ?? [])
+    .filter((p) => (p.status ?? STATUS_CREATED) === STATUS_CREATED)
+    .map((p) => p.draftPartPublicId ?? '')
+    .filter((id) => id.length > 0);
 
   return (
     <div className="min-h-screen bg-light-blue">
+      <MyDraftsRealtimeRefresher
+        accessToken={session.accessToken!}
+        watchedDraftPartIds={watchedDraftPartIds}
+      />
+
       <div className="px-6 md:px-10 py-10 max-w-[1200px] mx-auto space-y-12">
         <p className="font-mono text-[11px] tracking-widest text-sd-ink/50">/ MY DRAFTS</p>
         <h1 className="font-oswald font-bold text-[56px] leading-none text-sd-ink -mt-4">

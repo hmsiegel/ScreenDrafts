@@ -11,4 +11,5 @@ internal sealed record SeriesRow
   public int ContinuityDateRule { get; init; } = default!;
   public int AllowedDraftTypesMask { get; init; } = default!;
   public int? DefaultDraftType { get; init; } = default!;
+  public bool IsDeleted { get; init; } = default!;
 }

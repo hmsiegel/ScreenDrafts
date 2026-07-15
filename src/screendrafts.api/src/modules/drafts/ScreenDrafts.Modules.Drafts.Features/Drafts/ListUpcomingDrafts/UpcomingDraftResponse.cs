@@ -8,10 +8,12 @@ internal sealed record UpcomingDraftResponse
   public int PartNumber { get; init; }
   public int TotalParts { get; init; }
   public DateOnly? ReleaseDate { get; init; }
+  public bool IsDelete { get; init; }
 
   public DraftStatus Status { get; init; } = default!;
 
-  public DraftUserCapabilities Capabilities { get; private set; } = new(null, false, false, false, false, false);
+  public DraftUserCapabilities Capabilities { get; private set; } =
+    new(null, false, false, false, false, false);
 
   public void SetCapabilities(DraftUserCapabilities capabilities)
   {

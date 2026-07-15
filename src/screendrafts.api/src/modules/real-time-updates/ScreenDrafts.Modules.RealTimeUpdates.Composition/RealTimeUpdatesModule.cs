@@ -116,6 +116,10 @@ public static class RealTimeUpdatesModule
     registrationConfigurator
       .AddConsumer<IntegrationEventConsumer<CommunityRuleAppliedIntegrationEvent>>()
       .Endpoint(c => c.InstanceId = moduleInstanceId);
+
+    registrationConfigurator
+      .AddConsumer<IntegrationEventConsumer<DraftPartStartedIntegrationEvent>>()
+      .Endpoint(c => c.InstanceId = moduleInstanceId);
   }
 
   private static void AddDomainEventHandlers(this IServiceCollection services)

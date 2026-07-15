@@ -4,7 +4,8 @@ using ScreenDrafts.Modules.Drafts.Features.Categories.List;
 
 namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Categories;
 
-public sealed class ListCategoriesTests(DraftsIntegrationTestWebAppFactory factory) : DraftsIntegrationTest(factory)
+public sealed class ListCategoriesTests(DraftsIntegrationTestWebAppFactory factory)
+  : DraftsIntegrationTest(factory)
 {
   [Fact]
   public async Task ListCategoriesAsync_ShouldReturnAllNonDeletedCategoriesAsync()
@@ -13,14 +14,14 @@ public sealed class ListCategoriesTests(DraftsIntegrationTestWebAppFactory facto
     var category1 = new CreateCategoryCommand
     {
       Name = $"{Faker.Commerce.Categories(1)[0]} {Faker.Random.AlphaNumeric(6)}",
-      Description = Faker.Lorem.Sentence()
+      Description = Faker.Lorem.Sentence(),
     };
     await Sender.Send(category1, TestContext.Current.CancellationToken);
 
     var category2 = new CreateCategoryCommand
     {
       Name = $"{Faker.Commerce.Categories(1)[0]} {Faker.Random.AlphaNumeric(6)}",
-      Description = Faker.Lorem.Sentence()
+      Description = Faker.Lorem.Sentence(),
     };
     await Sender.Send(category2, TestContext.Current.CancellationToken);
 
@@ -43,18 +44,21 @@ public sealed class ListCategoriesTests(DraftsIntegrationTestWebAppFactory facto
     var category1Command = new CreateCategoryCommand
     {
       Name = $"{Faker.Commerce.Categories(1)[0]} {Faker.Random.AlphaNumeric(6)}",
-      Description = Faker.Lorem.Sentence()
+      Description = Faker.Lorem.Sentence(),
     };
     await Sender.Send(category1Command, TestContext.Current.CancellationToken);
 
     var category2Command = new CreateCategoryCommand
     {
       Name = $"{Faker.Commerce.Categories(1)[0]} {Faker.Random.AlphaNumeric(6)}",
-      Description = Faker.Lorem.Sentence()
+      Description = Faker.Lorem.Sentence(),
     };
-    var category2Result = await Sender.Send(category2Command, TestContext.Current.CancellationToken);
+    var category2Result = await Sender.Send(
+      category2Command,
+      TestContext.Current.CancellationToken
+    );
 
-    var deleteCommand = new DeleteCategoryCommand(category2Result.Value);
+    var deleteCommand = new DeleteCategoryCommand { PublicId = category2Result.Value };
     await Sender.Send(deleteCommand, TestContext.Current.CancellationToken);
 
     var query = new ListCategoriesQuery(IncludeDeleted: true);
@@ -77,18 +81,21 @@ public sealed class ListCategoriesTests(DraftsIntegrationTestWebAppFactory facto
     var category1Command = new CreateCategoryCommand
     {
       Name = $"{Faker.Commerce.Categories(1)[0]} {Faker.Random.AlphaNumeric(6)}",
-      Description = Faker.Lorem.Sentence()
+      Description = Faker.Lorem.Sentence(),
     };
     await Sender.Send(category1Command, TestContext.Current.CancellationToken);
 
     var category2Command = new CreateCategoryCommand
     {
       Name = $"{Faker.Commerce.Categories(1)[0]} {Faker.Random.AlphaNumeric(6)}",
-      Description = Faker.Lorem.Sentence()
+      Description = Faker.Lorem.Sentence(),
     };
-    var category2Result = await Sender.Send(category2Command, TestContext.Current.CancellationToken);
+    var category2Result = await Sender.Send(
+      category2Command,
+      TestContext.Current.CancellationToken
+    );
 
-    var deleteCommand = new DeleteCategoryCommand(category2Result.Value);
+    var deleteCommand = new DeleteCategoryCommand { PublicId = category2Result.Value };
     await Sender.Send(deleteCommand, TestContext.Current.CancellationToken);
 
     var query = new ListCategoriesQuery(IncludeDeleted: false);
@@ -127,7 +134,7 @@ public sealed class ListCategoriesTests(DraftsIntegrationTestWebAppFactory facto
       var command = new CreateCategoryCommand
       {
         Name = $"{Faker.Commerce.Categories(1)[0]} {i}",
-        Description = Faker.Lorem.Sentence()
+        Description = Faker.Lorem.Sentence(),
       };
       await Sender.Send(command, TestContext.Current.CancellationToken);
     }
@@ -150,21 +157,33 @@ public sealed class ListCategoriesTests(DraftsIntegrationTestWebAppFactory facto
     var category1Command = new CreateCategoryCommand
     {
       Name = $"{Faker.Commerce.Categories(1)[0]} {Faker.Random.AlphaNumeric(6)}",
-      Description = Faker.Lorem.Sentence()
+      Description = Faker.Lorem.Sentence(),
     };
-    var category1Result = await Sender.Send(category1Command, TestContext.Current.CancellationToken);
+    var category1Result = await Sender.Send(
+      category1Command,
+      TestContext.Current.CancellationToken
+    );
     category1Result.IsSuccess.Should().BeTrue();
 
     var category2Command = new CreateCategoryCommand
     {
       Name = $"{Faker.Commerce.Categories(1)[0]} {Faker.Random.AlphaNumeric(6)}",
-      Description = Faker.Lorem.Sentence()
+      Description = Faker.Lorem.Sentence(),
     };
-    var category2Result = await Sender.Send(category2Command, TestContext.Current.CancellationToken);
+    var category2Result = await Sender.Send(
+      category2Command,
+      TestContext.Current.CancellationToken
+    );
     category2Result.IsSuccess.Should().BeTrue();
 
-    await Sender.Send(new DeleteCategoryCommand(category1Result.Value), TestContext.Current.CancellationToken);
-    await Sender.Send(new DeleteCategoryCommand(category2Result.Value), TestContext.Current.CancellationToken);
+    await Sender.Send(
+      new DeleteCategoryCommand { PublicId = category1Result.Value },
+      TestContext.Current.CancellationToken
+    );
+    await Sender.Send(
+      new DeleteCategoryCommand { PublicId = category2Result.Value },
+      TestContext.Current.CancellationToken
+    );
 
     var query = new ListCategoriesQuery(IncludeDeleted: false);
 

@@ -5,7 +5,8 @@ using ScreenDrafts.Modules.Drafts.Features.Campaigns.Restore;
 
 namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Campaigns;
 
-public sealed class RestoreCampaignTests(DraftsIntegrationTestWebAppFactory factory) : DraftsIntegrationTest(factory)
+public sealed class RestoreCampaignTests(DraftsIntegrationTestWebAppFactory factory)
+  : DraftsIntegrationTest(factory)
 {
   [Fact]
   public async Task Restore_DeletedCampaign_ShouldSucceedAsync()
@@ -13,16 +14,12 @@ public sealed class RestoreCampaignTests(DraftsIntegrationTestWebAppFactory fact
     // Arrange
     var name = Faker.Commerce.Department();
     var slug = Faker.Lorem.Slug();
-    var createCommand = new CreateCampaignCommand
-    {
-      Name = name,
-      Slug = slug
-    };
+    var createCommand = new CreateCampaignCommand { Name = name, Slug = slug };
 
     var createResult = await Sender.Send(createCommand, TestContext.Current.CancellationToken);
     var publicId = createResult.Value;
 
-    var deleteCommand = new DeleteCampaignCommand(publicId);
+    var deleteCommand = new DeleteCampaignCommand { PublicId = publicId };
     await Sender.Send(deleteCommand, TestContext.Current.CancellationToken);
 
     var restoreCommand = new RestoreCampaignCommand(publicId);
@@ -60,11 +57,7 @@ public sealed class RestoreCampaignTests(DraftsIntegrationTestWebAppFactory fact
     // Arrange
     var name = Faker.Commerce.Department();
     var slug = Faker.Lorem.Slug();
-    var createCommand = new CreateCampaignCommand
-    {
-      Name = name,
-      Slug = slug
-    };
+    var createCommand = new CreateCampaignCommand { Name = name, Slug = slug };
 
     var createResult = await Sender.Send(createCommand, TestContext.Current.CancellationToken);
     var publicId = createResult.Value;
@@ -89,16 +82,12 @@ public sealed class RestoreCampaignTests(DraftsIntegrationTestWebAppFactory fact
     // Arrange
     var name = Faker.Commerce.Department();
     var slug = Faker.Lorem.Slug();
-    var createCommand = new CreateCampaignCommand
-    {
-      Name = name,
-      Slug = slug
-    };
+    var createCommand = new CreateCampaignCommand { Name = name, Slug = slug };
 
     var createResult = await Sender.Send(createCommand, TestContext.Current.CancellationToken);
     var publicId = createResult.Value;
 
-    var deleteCommand = new DeleteCampaignCommand(publicId);
+    var deleteCommand = new DeleteCampaignCommand { PublicId = publicId };
     await Sender.Send(deleteCommand, TestContext.Current.CancellationToken);
 
     var restoreCommand1 = new RestoreCampaignCommand(publicId);

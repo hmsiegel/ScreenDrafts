@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Features.Categories.Delete;
 
-internal sealed class Endpoint : ScreenDraftsEndpoint<DeleteCategoryRequest>
+internal sealed class Endpoint : ScreenDraftsEndpointWithoutRequest
 {
   public override void Configure()
   {
@@ -8,23 +8,28 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<DeleteCategoryRequest>
     Description(x =>
     {
       x.WithName(DraftsOpenApi.Names.Categories_DeleteCategory)
-      .WithTags(DraftsOpenApi.Tags.Categories)
-      .Produces(StatusCodes.Status204NoContent)
-      .Produces(StatusCodes.Status401Unauthorized)
-      .Produces(StatusCodes.Status403Forbidden)
-      .Produces(StatusCodes.Status404NotFound);
+        .WithTags(DraftsOpenApi.Tags.Categories)
+        .Produces(StatusCodes.Status204NoContent)
+        .Produces(StatusCodes.Status401Unauthorized)
+        .Produces(StatusCodes.Status403Forbidden)
+        .Produces(StatusCodes.Status404NotFound);
     });
-    Policies(DraftsAuth.Permissions.CampaignDelete);
+    Policies(DraftsAuth.Permissions.CategoryDelete);
   }
 
-  public override async Task HandleAsync(DeleteCategoryRequest req, CancellationToken ct)
+  public override async Task HandleAsync(CancellationToken ct)
   {
-    var DeleteCategoryCommand = new DeleteCategoryCommand(req.PublicId);
+    var publicId = Route<string>("publicId");
 
-    var result = await Sender.Send(DeleteCategoryCommand, ct);
+    if (string.IsNullOrWhiteSpace(publicId))
+    {
+      await Send.ErrorsAsync(StatusCodes.Status400BadRequest, ct);
+      return;
+    }
+
+    var command = new DeleteCategoryCommand { PublicId = publicId };
+    var result = await Sender.Send(command, ct);
 
     await this.SendNoContentAsync(result, ct);
   }
 }
-
-

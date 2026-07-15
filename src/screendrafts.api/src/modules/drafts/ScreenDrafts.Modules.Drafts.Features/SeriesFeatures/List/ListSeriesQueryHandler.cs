@@ -14,23 +14,29 @@ internal sealed class ListSeriesQueryHandler(IDbConnectionFactory dbConnectionFa
 
     const string sql = $"""
         SELECT
-          s.public_id AS {nameof(SeriesResponse.PublicId)},
-          s.description AS {nameof(SeriesResponse.Description)},
-          s.name AS {nameof(SeriesResponse.Name)},
-          s.kind AS {nameof(SeriesResponse.Kind)},
-          s.canonical_policy AS {nameof(SeriesResponse.CanonicalPolicy)},
-          s.continuity_scope AS {nameof(SeriesResponse.ContinuityScope)},
-          s.continuity_date_rule AS {nameof(SeriesResponse.ContinuityDateRule)},
-          s.allowed_draft_types AS {nameof(SeriesResponse.AllowedDraftTypesMask)},
-          s.default_draft_type AS {nameof(SeriesResponse.DefaultDraftType)}
+          s.public_id AS {nameof(SeriesRow.PublicId)},
+          s.description AS {nameof(SeriesRow.Description)},
+          s.name AS {nameof(SeriesRow.Name)},
+          s.kind AS {nameof(SeriesRow.Kind)},
+          s.canonical_policy AS {nameof(SeriesRow.CanonicalPolicy)},
+          s.continuity_scope AS {nameof(SeriesRow.ContinuityScope)},
+          s.continuity_date_rule AS {nameof(SeriesRow.ContinuityDateRule)},
+          s.allowed_draft_types AS {nameof(SeriesRow.AllowedDraftTypesMask)},
+          s.default_draft_type AS {nameof(SeriesRow.DefaultDraftType)},
+          s.is_deleted AS {nameof(SeriesRow.IsDeleted)}
         FROM
           drafts.series s
+        WHERE
+          (s.is_deleted = FALSE OR @IncludeDeleted = TRUE)
         ORDER BY
           s.name ASC
       """;
 
+    var parameters = new DynamicParameters();
+    parameters.Add("IncludeDeleted", request.IncludeDeleted, DbType.Boolean);
+
     var rows = await connection.QueryAsync<SeriesRow>(
-      new CommandDefinition(sql, cancellationToken: cancellationToken)
+      new CommandDefinition(sql, parameters, cancellationToken: cancellationToken)
     );
 
     var series = rows.Select(QueryMapping.Map).ToList();

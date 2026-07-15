@@ -20,12 +20,22 @@ export interface UpdateCampaignRequest {
   slug?: string;
 }
 
-export async function listAllCampaigns(): Promise<CampaignListItem[]> {
+export async function listAllCampaigns(includeDeleted = false): Promise<CampaignListItem[]> {
   const session = await auth();
-  const res = await fetch(`${apiBase}/campaigns`, {
-    headers: authHeaders(session?.accessToken),
-    cache: "no-store",
-  });
+  const headers = authHeaders(session?.accessToken);
+
+  const url = new URL(`${apiBase}/campaigns`);
+  if (includeDeleted) {
+    url.searchParams.set("includeDeleted", "true");
+  }
+
+  let res = await fetch(url.toString(), { headers, cache: "no-store" });
+
+  if (res.status === 403 && includeDeleted) {
+    url.searchParams.delete("includeDeleted");
+    res = await fetch(url.toString(), { headers, cache: "no-store" });
+  }
+
   if (!res.ok) return [];
   const data = await res.json();
   return data.items ?? data ?? [];

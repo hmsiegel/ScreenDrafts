@@ -18,6 +18,7 @@ internal static class DraftsAuth
     internal const string DraftDelete = "drafts:delete";
     internal const string DraftSearch = "drafts:search";
     internal const string DraftReadPatreon = "drafts:read-patreon";
+    internal const string DraftRestore = "drafts:restore";
 
     // Draft Parts
     internal const string DraftPartRead = "draft-parts:read";
@@ -90,6 +91,7 @@ internal static class DraftsAuth
     internal const string SeriesCreate = "series:create";
     internal const string SeriesUpdate = "series:update";
     internal const string SeriesDelete = "series:delete";
+    internal const string SeriesRestore = "series:restore";
 
     // Categories
     internal const string CategoryCreate = "categories:create";
@@ -98,6 +100,7 @@ internal static class DraftsAuth
     internal const string CategoryList = "categories:list";
     internal const string CategorySearch = "categories:search";
     internal const string CategoryDelete = "categories:delete";
+    internal const string CategoryRestore = "categories:restore";
 
     // Campaigns
     internal const string CampaignCreate = "campaigns:create";

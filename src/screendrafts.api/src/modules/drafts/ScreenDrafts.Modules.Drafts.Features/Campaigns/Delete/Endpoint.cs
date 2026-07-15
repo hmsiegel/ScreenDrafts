@@ -1,6 +1,6 @@
-namespace ScreenDrafts.Modules.Drafts.Features.Campaigns.Delete;
+﻿namespace ScreenDrafts.Modules.Drafts.Features.Campaigns.Delete;
 
-internal sealed class Endpoint : ScreenDraftsEndpoint<DeleteCampaignRequest>
+internal sealed class Endpoint : ScreenDraftsEndpointWithoutRequest
 {
   public override void Configure()
   {
@@ -8,23 +8,28 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<DeleteCampaignRequest>
     Description(x =>
     {
       x.WithName(DraftsOpenApi.Names.Campaigns_DeleteCampaign)
-      .WithTags(DraftsOpenApi.Tags.Campaigns)
-      .Produces(StatusCodes.Status204NoContent)
-      .Produces(StatusCodes.Status401Unauthorized)
-      .Produces(StatusCodes.Status403Forbidden)
-      .Produces(StatusCodes.Status404NotFound);
+        .WithTags(DraftsOpenApi.Tags.Campaigns)
+        .Produces(StatusCodes.Status204NoContent)
+        .Produces(StatusCodes.Status401Unauthorized)
+        .Produces(StatusCodes.Status403Forbidden)
+        .Produces(StatusCodes.Status404NotFound);
     });
     Policies(DraftsAuth.Permissions.CampaignDelete);
   }
 
-  public override async Task HandleAsync(DeleteCampaignRequest req, CancellationToken ct)
+  public override async Task HandleAsync(CancellationToken ct)
   {
-    var DeleteCampaignCommand = new DeleteCampaignCommand(req.PublicId);
+    var publicId = Route<string>("publicId");
 
-    var result = await Sender.Send(DeleteCampaignCommand, ct);
+    if (string.IsNullOrWhiteSpace(publicId))
+    {
+      await Send.ErrorsAsync(StatusCodes.Status400BadRequest, ct);
+      return;
+    }
+
+    var command = new DeleteCampaignCommand { PublicId = publicId };
+    var result = await Sender.Send(command, ct);
 
     await this.SendNoContentAsync(result, ct);
   }
 }
-
-

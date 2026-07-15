@@ -28,6 +28,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<SearchDraftsRequest, Searc
       CategoryPublicId = req.CategoryPublicId,
       DraftType = req.DraftType,
       Status = req.Status,
+      IncludeDeleted = req.IncludeDeleted,
     };
 
     var result = await Sender.Send(query, ct);

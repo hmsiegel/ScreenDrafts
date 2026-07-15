@@ -6,42 +6,42 @@ import { SeriesResponse } from "@/lib/dto";
 // ── Enum constants ─────────────────────────────────────────────────────────
 
 const SERIES_KIND_OPTIONS = [
-  { label: "Regular",                              value: 0 },
-  { label: "Franchise Mini Super Draft",           value: 1 },
-  { label: "In Memoriam",                          value: 2 },
-  { label: "Legends Mega Draft",                   value: 3 },
+  { label: "Regular", value: 0 },
+  { label: "Franchise Mini Super Draft", value: 1 },
+  { label: "In Memoriam", value: 2 },
+  { label: "Legends Mega Draft", value: 3 },
   { label: "Best Picture Nominee mini-Super Draft", value: 4 },
-  { label: "Patreon Vs. Draft",                    value: 5 },
-  { label: "Live Draft",                           value: 6 },
-  { label: "Special Draft",                        value: 7 },
-  { label: "Speed Drafts",                         value: 8 },
-  { label: "Legends Super Draft",                  value: 9 },
+  { label: "Patreon Vs. Draft", value: 5 },
+  { label: "Live Draft", value: 6 },
+  { label: "Special Draft", value: 7 },
+  { label: "Speed Drafts", value: 8 },
+  { label: "Legends Super Draft", value: 9 },
 ] as const;
 
 const CANONICAL_POLICY_OPTIONS = [
-  { label: "Always",       value: 0, hint: "Every draft in this series is canon immediately on completion." },
-  { label: "Never",        value: 1, hint: "Drafts in this series never contribute to honorifics." },
+  { label: "Always", value: 0, hint: "Every draft in this series is canon immediately on completion." },
+  { label: "Never", value: 1, hint: "Drafts in this series never contribute to honorifics." },
   { label: "On Main Feed", value: 2, hint: "Patreon-first drafts become canon once released on the main feed." },
 ] as const;
 
 const CONTINUITY_SCOPE_OPTIONS = [
-  { label: "None",         value: 0, hint: "No veto rollover between drafts." },
-  { label: "Series",       value: 1, hint: "Vetoes roll over within this series only." },
-  { label: "Global",       value: 2, hint: "Vetoes roll over across all drafts on the same release channel." },
+  { label: "None", value: 0, hint: "No veto rollover between drafts." },
+  { label: "Series", value: 1, hint: "Vetoes roll over within this series only." },
+  { label: "Global", value: 2, hint: "Vetoes roll over across all drafts on the same release channel." },
   { label: "Speed Drafts", value: 3, hint: "Vetoes roll over between sub-drafts within a single Speed Draft episode." },
 ] as const;
 
 const CONTINUITY_DATE_RULE_OPTIONS = [
   { label: "Any Channel First Release", value: 0, hint: "Eligibility starts from the earliest release on any channel." },
-  { label: "Main Feed First Release",   value: 1, hint: "Eligibility starts from the main feed release date only." },
+  { label: "Main Feed First Release", value: 1, hint: "Eligibility starts from the main feed release date only." },
 ] as const;
 
 const DRAFT_TYPE_OPTIONS = [
-  { label: "Standard",    value: 0, bit: 1  },
-  { label: "Mini-Mega",   value: 1, bit: 2  },
-  { label: "Mega",        value: 2, bit: 4  },
-  { label: "Super",       value: 3, bit: 8  },
-  { label: "Mini-Super",  value: 4, bit: 16 },
+  { label: "Standard", value: 0, bit: 1 },
+  { label: "Mini-Mega", value: 1, bit: 2 },
+  { label: "Mega", value: 2, bit: 4 },
+  { label: "Super", value: 3, bit: 8 },
+  { label: "Mini-Super", value: 4, bit: 16 },
   { label: "Speed Draft", value: 5, bit: 32 },
 ] as const;
 
@@ -63,16 +63,16 @@ interface SeriesItem {
 
 function normalize(s: SeriesResponse): SeriesItem {
   return {
-    publicId:          s.publicId ?? "",
-    name:              s.name ?? "",
-    description:       s.description ?? "",
-    kind:              s.kind?.value ?? 0,
-    canonicalPolicy:   s.canonicalPolicy?.value ?? 0,
-    continuityScope:   s.continuityScope?.value ?? 0,
+    publicId: s.publicId ?? "",
+    name: s.name ?? "",
+    description: s.description ?? "",
+    kind: s.kind?.value ?? 0,
+    canonicalPolicy: s.canonicalPolicy?.value ?? 0,
+    continuityScope: s.continuityScope?.value ?? 0,
     continuityDateRule: s.continuityDateRule?.value ?? 0,
     allowedDraftTypesMask: s.allowedDraftTypesMask ?? 0,
-    defaultDraftType:  s.defaultDraftType?.value ?? null,
-    isDeleted:         false,
+    defaultDraftType: s.defaultDraftType?.value ?? null,
+    isDeleted: s.isDeleted ?? false,
   };
 }
 
@@ -97,7 +97,7 @@ interface SlideOverProps {
   mode: "create" | "edit";
   item?: SeriesItem;
   onClose: () => void;
-  onSaved: (item: SeriesItem, mode: "create" | "edit") => void;
+  onSaved: () => void;
   accessToken: string | undefined;
 }
 
@@ -115,9 +115,9 @@ const selectCls = "w-full border border-sd-ink/20 px-3 py-2 text-sm text-sd-ink 
 const hintCls = "mt-1 font-mono text-[10px] text-sd-ink/40 leading-relaxed";
 
 function SlideOver({ mode, item, onClose, onSaved, accessToken }: SlideOverProps) {
-  const [name, setName]             = useState(item?.name ?? "");
+  const [name, setName] = useState(item?.name ?? "");
   const [description, setDescription] = useState(item?.description ?? "");
-  const [kind, setKind]             = useState(item?.kind ?? 0);
+  const [kind, setKind] = useState(item?.kind ?? 0);
   const [canonicalPolicy, setCanonicalPolicy] = useState(item?.canonicalPolicy ?? 0);
   const [continuityScope, setContinuityScope] = useState(item?.continuityScope ?? 0);
   const [continuityDateRule, setContinuityDateRule] = useState(item?.continuityDateRule ?? 0);
@@ -127,7 +127,7 @@ function SlideOver({ mode, item, onClose, onSaved, accessToken }: SlideOverProps
   const [defaultDraftType, setDefaultDraftType] = useState<number | null>(
     item?.defaultDraftType ?? null
   );
-  const [error, setError]   = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const firstRef = useRef<HTMLInputElement>(null);
 
@@ -190,19 +190,7 @@ function SlideOver({ mode, item, onClose, onSaved, accessToken }: SlideOverProps
           setError(err?.detail ?? err?.errors?.[0] ?? "Save failed.");
           return;
         }
-        const created = await res.json();
-        onSaved({
-          publicId: created.publicId ?? "",
-          name: name.trim(),
-          description: description.trim(),
-          kind,
-          canonicalPolicy,
-          continuityScope,
-          continuityDateRule,
-          allowedDraftTypesMask,
-          defaultDraftType,
-          isDeleted: false,
-        }, "create");
+        onSaved();
       } else {
         const res = await fetch(`${apiBase}/series/${item!.publicId}`, {
           method: "PATCH",
@@ -214,26 +202,16 @@ function SlideOver({ mode, item, onClose, onSaved, accessToken }: SlideOverProps
           setError(err?.detail ?? err?.errors?.[0] ?? "Save failed.");
           return;
         }
-        onSaved({
-          ...item!,
-          name: name.trim(),
-          description: description.trim(),
-          kind,
-          canonicalPolicy,
-          continuityScope,
-          continuityDateRule,
-          allowedDraftTypesMask,
-          defaultDraftType,
-        }, "edit");
+        onSaved();
       }
     } finally {
       setSaving(false);
     }
   }
 
-  const canonicalHint   = CANONICAL_POLICY_OPTIONS.find(o => o.value === canonicalPolicy)?.hint;
-  const scopeHint       = CONTINUITY_SCOPE_OPTIONS.find(o => o.value === continuityScope)?.hint;
-  const dateRuleHint    = CONTINUITY_DATE_RULE_OPTIONS.find(o => o.value === continuityDateRule)?.hint;
+  const canonicalHint = CANONICAL_POLICY_OPTIONS.find(o => o.value === canonicalPolicy)?.hint;
+  const scopeHint = CONTINUITY_SCOPE_OPTIONS.find(o => o.value === continuityScope)?.hint;
+  const dateRuleHint = CONTINUITY_DATE_RULE_OPTIONS.find(o => o.value === continuityDateRule)?.hint;
   const allowedTypeOptions = DRAFT_TYPE_OPTIONS.filter(o => checkedTypes.has(o.value));
 
   return (
@@ -381,53 +359,76 @@ export default function SeriesManager({ initialData, accessToken }: Props) {
   const [slideOver, setSlideOver]     = useState<{ mode: "create" | "edit"; item?: SeriesItem } | null>(null);
   const [confirming, setConfirming]   = useState<string | null>(null);
   const [toast, setToast]             = useState<string | null>(null);
+  const [refreshing, setRefreshing]   = useState(false);
 
   function showToast(msg: string) {
     setToast(msg);
     setTimeout(() => setToast(null), 2000);
   }
 
-  const handleSaved = useCallback((saved: SeriesItem, mode: "create" | "edit") => {
-    setItems(prev =>
-      mode === "create"
-        ? [saved, ...prev]
-        : prev.map(i => i.publicId === saved.publicId ? saved : i)
-    );
+  const refresh = useCallback(async () => {
+    setRefreshing(true);
+    try {
+      const apiBase = process.env.NEXT_PUBLIC_API_URL;
+      const headers: HeadersInit = accessToken ? { Authorization: `Bearer ${accessToken}` } : {};
+
+      const url = new URL(`${apiBase}/series`);
+      url.searchParams.set("includeDeleted", "true");
+
+      let res = await fetch(url.toString(), { headers, cache: "no-store" });
+
+      if (res.status === 403) {
+        url.searchParams.delete("includeDeleted");
+        res = await fetch(url.toString(), { headers, cache: "no-store" });
+      }
+
+      if (!res.ok) return;
+      const data = await res.json();
+      const raw: SeriesResponse[] = data.items ?? data ?? [];
+      setItems(raw.map(normalize));
+    } catch (err) {
+      console.error("[refresh]", err);
+    } finally {
+      setRefreshing(false);
+    }
+  }, [accessToken]);
+
+  const handleSaved = useCallback(async () => {
+    const mode = slideOver?.mode;
     setSlideOver(null);
+    await refresh();
     showToast(mode === "create" ? "Series created." : "Series updated.");
-  }, []);
+  }, [refresh, slideOver?.mode]);
 
   async function handleRetire(publicId: string) {
-    const apiBase = process.env.NEXT_PUBLIC_API_URL;
-    setItems(prev => prev.map(i => i.publicId === publicId ? { ...i, isDeleted: true } : i));
     setConfirming(null);
     try {
+      const apiBase = process.env.NEXT_PUBLIC_API_URL;
       const res = await fetch(`${apiBase}/series/${publicId}`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json", ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}) },
         body: JSON.stringify({}),
       });
       if (!res.ok) throw new Error();
+      await refresh();
       showToast("Series retired.");
     } catch {
-      setItems(prev => prev.map(i => i.publicId === publicId ? { ...i, isDeleted: false } : i));
       showToast("Failed to retire series.");
     }
   }
 
   async function handleRestore(publicId: string) {
-    const apiBase = process.env.NEXT_PUBLIC_API_URL;
-    setItems(prev => prev.map(i => i.publicId === publicId ? { ...i, isDeleted: false } : i));
     try {
+      const apiBase = process.env.NEXT_PUBLIC_API_URL;
       const res = await fetch(`${apiBase}/series/${publicId}/restore`, {
         method: "POST",
         headers: { "Content-Type": "application/json", ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}) },
         body: JSON.stringify({}),
       });
       if (!res.ok) throw new Error();
+      await refresh();
       showToast("Series restored.");
     } catch {
-      setItems(prev => prev.map(i => i.publicId === publicId ? { ...i, isDeleted: true } : i));
       showToast("Failed to restore series.");
     }
   }

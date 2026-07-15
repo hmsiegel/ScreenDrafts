@@ -22,4 +22,7 @@ internal sealed record SearchDraftsRequest
 
   [FromQuery(Name = "status")]
   public int? Status { get; init; }
+
+  [FromQuery(Name = "includeDeleted")]
+  public bool IncludeDeleted { get; init; }
 }

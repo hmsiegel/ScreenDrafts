@@ -10,4 +10,5 @@ internal sealed record SearchDraftsResponse
   public string? CampaignName { get; init; }
   public required string SeriesPublicId { get; init; }
   public required string SeriesName { get; init; }
+  public bool IsDeleted { get; init; }
 }

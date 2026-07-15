@@ -163,8 +163,6 @@ function ProfileCard({
 }) {
   const isGM = profile.drafterStats !== null && profile.drafterStats !== undefined;
 
-  console.log(profile.socialHandles?.profilePicturePath)
-
   return (
     <div className="bg-white border-2 border-sd-ink overflow-hidden">
       <div className="p-6 flex flex-col items-center gap-4">

@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 
 export default async function SeriesPage() {
   const session = await auth();
-  const series = await listAllSeries();
+  const series = await listAllSeries(true);
 
   return (
     <div className="min-h-screen bg-light-blue">

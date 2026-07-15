@@ -1,10 +1,10 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Features.Drafts.Restore;
 
-internal sealed class Endpoint : ScreenDraftsEndpoint<RestoreDraftRequest>
+internal sealed class Endpoint : ScreenDraftsEndpointWithoutRequest
 {
   public override void Configure()
   {
-    Post("/drafts/{publicId}/restore");
+    Post(DraftRoutes.Restore);
     Description(x =>
     {
       x.WithTags(DraftsOpenApi.Tags.Drafts)
@@ -15,13 +15,20 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<RestoreDraftRequest>
         .Produces(StatusCodes.Status404NotFound)
         .Produces(StatusCodes.Status409Conflict);
     });
-    // Same guess as DeleteDraftEndpoint — verify the real permission constant.
-    Policies(DraftsAuth.Permissions.DraftUpdate);
+    Policies(DraftsAuth.Permissions.DraftRestore);
   }
 
-  public override async Task HandleAsync(RestoreDraftRequest req, CancellationToken ct)
+  public override async Task HandleAsync(CancellationToken ct)
   {
-    var command = new RestoreDraftCommand { PublicId = req.PublicId };
+    var publicId = Route<string>("publicId");
+
+    if (string.IsNullOrWhiteSpace(publicId))
+    {
+      await Send.ErrorsAsync(StatusCodes.Status400BadRequest, ct);
+      return;
+    }
+
+    var command = new RestoreDraftCommand { PublicId = publicId };
     var result = await Sender.Send(command, ct);
     await this.SendNoContentAsync(result, ct);
   }

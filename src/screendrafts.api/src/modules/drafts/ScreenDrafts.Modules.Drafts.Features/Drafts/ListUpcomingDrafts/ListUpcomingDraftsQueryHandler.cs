@@ -34,7 +34,7 @@ internal sealed class ListUpcomingDraftsQueryHandler(IDbConnectionFactory dbConn
       JOIN drafts.drafts d ON dp.draft_id = d.id
       LEFT JOIN drafts.draft_releases r ON r.part_id = dp.id
       WHERE dp.status IN (@CreatedStatus, @InProgressStatus)
-        AND d.is_deleted = FALSE
+        AND (d.is_deleted = FALSE OR @IncludeDeleted = TRUE)
       """;
 
     var sqlBuilder = new StringBuilder(baseSql);
@@ -64,7 +64,7 @@ internal sealed class ListUpcomingDraftsQueryHandler(IDbConnectionFactory dbConn
     sqlBuilder.Append(
       """
 
-      GROUP BY dp.id, dp.public_id, dp.part_index, dp.status, d.id, d.public_id, d.title
+      GROUP BY dp.id, dp.public_id, dp.part_index, dp.status, d.id, d.public_id, d.title, d.is_deleted
       ORDER BY MIN(r.release_date) ASC NULLS LAST
       """
     );
@@ -79,6 +79,7 @@ internal sealed class ListUpcomingDraftsQueryHandler(IDbConnectionFactory dbConn
             InProgressStatus,
             PatreonChannel,
             MainFeedChannel,
+            request.IncludeDeleted,
           },
           cancellationToken: cancellationToken
         )

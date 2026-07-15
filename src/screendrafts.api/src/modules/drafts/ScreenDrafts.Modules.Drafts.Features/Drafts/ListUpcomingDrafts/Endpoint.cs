@@ -1,7 +1,7 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Features.Drafts.ListUpcomingDrafts;
 
 internal sealed class Endpoint(IAdministrationApi administrationApi)
-  : ScreenDraftsEndpointWithoutRequest<ListUpcomingDraftsResponse>
+  : ScreenDraftsEndpoint<ListUpcomingDraftsRequest, ListUpcomingDraftsResponse>
 {
   private readonly IAdministrationApi _administrationApi = administrationApi;
 
@@ -11,23 +11,33 @@ internal sealed class Endpoint(IAdministrationApi administrationApi)
     Description(x =>
     {
       x.WithName(DraftsOpenApi.Names.Drafts_ListUpcomingDrafts)
-      .WithTags(DraftsOpenApi.Tags.Drafts)
-      .Produces<ListUpcomingDraftsResponse>(StatusCodes.Status200OK);
+        .WithTags(DraftsOpenApi.Tags.Drafts)
+        .Produces<ListUpcomingDraftsResponse>(StatusCodes.Status200OK);
     });
     AllowAnonymous();
   }
 
-  public override async Task HandleAsync(CancellationToken ct)
+  public override async Task HandleAsync(ListUpcomingDraftsRequest request, CancellationToken ct)
   {
     var isAuthenticated = User.Identity?.IsAuthenticated == true;
 
-    var includePatreon = isAuthenticated && User.HasPermission(DraftsAuth.Permissions.PatreonSearch);
+    var includePatreon =
+      isAuthenticated && User.HasPermission(DraftsAuth.Permissions.PatreonSearch);
+    var canViewDeleted =
+      isAuthenticated && User.HasPermission(DraftsAuth.Permissions.AdminViewDeleted);
+
+    if (request.IncludeDeleted && !canViewDeleted)
+    {
+      await Send.ErrorsAsync(StatusCodes.Status403Forbidden, cancellation: ct);
+      return;
+    }
 
     var isAdmin = false;
     if (isAuthenticated)
     {
       var roles = await _administrationApi.GetUserRolesAsync(User.GetUserPublicId(), ct);
-      isAdmin = roles.Contains(DraftsAuth.Roles.SuperAdmin, StringComparer.OrdinalIgnoreCase)
+      isAdmin =
+        roles.Contains(DraftsAuth.Roles.SuperAdmin, StringComparer.OrdinalIgnoreCase)
         || roles.Contains(DraftsAuth.Roles.Admin, StringComparer.OrdinalIgnoreCase);
     }
 
@@ -35,7 +45,8 @@ internal sealed class Endpoint(IAdministrationApi administrationApi)
     {
       UserId = isAuthenticated ? User.GetUserId() : Guid.Empty,
       IsAdmin = isAdmin,
-      IncludePatreon = includePatreon
+      IncludePatreon = includePatreon,
+      IncludeDeleted = request.IncludeDeleted,
     };
 
     var result = await Sender.Send(query, ct);

@@ -12,7 +12,7 @@ interface SlideOverProps {
   mode: "create" | "edit";
   item?: CampaignListItem;
   onClose: () => void;
-  onSaved: (item: CampaignListItem, mode: "create" | "edit") => void;
+  onSaved: () => void;
   accessToken: string | undefined;
 }
 
@@ -62,8 +62,6 @@ function SlideOver({ mode, item, onClose, onSaved, accessToken }: SlideOverProps
           setError(err?.detail ?? err?.errors?.[0] ?? "Save failed.");
           return;
         }
-        const created = await res.json();
-        onSaved({ publicId: created.publicId ?? created.id ?? "", name: name.trim(), slug: "" }, "create");
       } else {
         const res = await fetch(`${apiBase}/campaigns/${item!.publicId}`, {
           method: "PATCH",
@@ -75,8 +73,13 @@ function SlideOver({ mode, item, onClose, onSaved, accessToken }: SlideOverProps
           setError(err?.detail ?? err?.errors?.[0] ?? "Save failed.");
           return;
         }
-        onSaved({ ...item!, name: name.trim() }, "edit");
       }
+      // Re-fetch rather than construct the row locally — this is the actual
+      // fix for "CreateCampaign not refreshing the list": the old code built
+      // a fake row from `created.publicId ?? created.id ?? ""` with
+      // slug hardcoded to "", which could silently produce a bad or
+      // duplicate key instead of the real server row.
+      onSaved();
     } finally {
       setSaving(false);
     }
@@ -161,27 +164,50 @@ export default function CampaignManager({ initialData, accessToken }: Props) {
   const [slideOver, setSlideOver] = useState<{ mode: "create" | "edit"; item?: CampaignListItem } | null>(null);
   const [confirming, setConfirming] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
 
   function showToast(msg: string) {
     setToast(msg);
     setTimeout(() => setToast(null), 2000);
   }
 
-  const handleSaved = useCallback((saved: CampaignListItem, mode: "create" | "edit") => {
-    setItems(prev =>
-      mode === "create"
-        ? [saved, ...prev]
-        : prev.map(i => (i.publicId === saved.publicId ? saved : i))
-    );
+  const refresh = useCallback(async () => {
+    setRefreshing(true);
+    try {
+      const apiBase = process.env.NEXT_PUBLIC_API_URL;
+      const headers: HeadersInit = accessToken ? { Authorization: `Bearer ${accessToken}` } : {};
+
+      const url = new URL(`${apiBase}/campaigns`);
+      url.searchParams.set("includeDeleted", "true");
+
+      let res = await fetch(url.toString(), { headers, cache: "no-store" });
+
+      if (res.status === 403) {
+        url.searchParams.delete("includeDeleted");
+        res = await fetch(url.toString(), { headers, cache: "no-store" });
+      }
+
+      if (!res.ok) return;
+      const data = await res.json();
+      setItems(data.items ?? data ?? []);
+    } catch (err) {
+      console.error("[refresh]", err);
+    } finally {
+      setRefreshing(false);
+    }
+  }, [accessToken]);
+
+  const handleSaved = useCallback(async () => {
+    const mode = slideOver?.mode;
     setSlideOver(null);
+    await refresh();
     showToast(mode === "create" ? "Campaign created." : "Campaign updated.");
-  }, []);
+  }, [refresh, slideOver?.mode]);
 
   async function handleRetire(publicId: string) {
-    const apiBase = process.env.NEXT_PUBLIC_API_URL;
-    setItems(prev => prev.map(i => i.publicId === publicId ? { ...i, isDeleted: true } : i));
     setConfirming(null);
     try {
+      const apiBase = process.env.NEXT_PUBLIC_API_URL;
       const res = await fetch(`${apiBase}/campaigns/${publicId}`, {
         method: "DELETE",
         headers: {
@@ -191,17 +217,16 @@ export default function CampaignManager({ initialData, accessToken }: Props) {
         body: JSON.stringify({}),
       });
       if (!res.ok) throw new Error();
+      await refresh();
       showToast("Campaign retired.");
     } catch {
-      setItems(prev => prev.map(i => i.publicId === publicId ? { ...i, isDeleted: false } : i));
       showToast("Failed to retire campaign.");
     }
   }
 
   async function handleRestore(publicId: string) {
-    const apiBase = process.env.NEXT_PUBLIC_API_URL;
-    setItems(prev => prev.map(i => i.publicId === publicId ? { ...i, isDeleted: false } : i));
     try {
+      const apiBase = process.env.NEXT_PUBLIC_API_URL;
       const res = await fetch(`${apiBase}/campaigns/${publicId}/restore`, {
         method: "POST",
         headers: {
@@ -211,9 +236,9 @@ export default function CampaignManager({ initialData, accessToken }: Props) {
         body: JSON.stringify({}),
       });
       if (!res.ok) throw new Error();
+      await refresh();
       showToast("Campaign restored.");
     } catch {
-      setItems(prev => prev.map(i => i.publicId === publicId ? { ...i, isDeleted: true } : i));
       showToast("Failed to restore campaign.");
     }
   }
@@ -242,6 +267,7 @@ export default function CampaignManager({ initialData, accessToken }: Props) {
             className="accent-sd-red"
           />
           SHOW RETIRED
+          {refreshing && <span className="text-sd-ink/30 normal-case">refreshing…</span>}
         </label>
         <button
           onClick={() => setSlideOver({ mode: "create" })}

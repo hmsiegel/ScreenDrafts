@@ -23,4 +23,5 @@ internal static partial class DraftRoutes
   public const string Latest = Base + "/latest";
   public const string Upcoming = Base + "/upcoming";
   public const string Image = ById + "/image";
+  public const string Restore = ById + "/restore";
 }

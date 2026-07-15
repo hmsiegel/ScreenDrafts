@@ -21,15 +21,18 @@ internal sealed class SearchDraftsQueryHandler(IDbConnectionFactory dbConnection
         c.public_id AS {nameof(SearchDraftsResponse.CampaignPublicId)},
         c.name AS {nameof(SearchDraftsResponse.CampaignName)},
         s.public_id AS {nameof(SearchDraftsResponse.SeriesPublicId)},
-        s.name AS {nameof(SearchDraftsResponse.SeriesName)}
+        s.name AS {nameof(SearchDraftsResponse.SeriesName)},
+        d.is_deleted AS {nameof(SearchDraftsResponse.IsDeleted)}
       FROM drafts.drafts d
       JOIN drafts.series s ON d.series_id = s.id
       LEFT JOIN drafts.campaigns c ON d.campaign_id = c.id
-      WHERE is_deleted = false
+      WHERE (@includeDeleted = true OR d.is_deleted = false)
+
       """;
 
     var sqlBuilder = new StringBuilder(baseSql);
     var parameters = new DynamicParameters();
+    parameters.Add("includeDeleted", request.IncludeDeleted);
 
     if (!string.IsNullOrWhiteSpace(request.Name))
     {

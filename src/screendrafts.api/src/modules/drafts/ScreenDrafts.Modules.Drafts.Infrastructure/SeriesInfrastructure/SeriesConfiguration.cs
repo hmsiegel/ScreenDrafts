@@ -53,5 +53,9 @@ internal sealed class SeriesConfiguration : IEntityTypeConfiguration<Series>
     builder.Property(x => x.CreatedAtUtc).IsRequired();
 
     builder.Property(x => x.UpdatedAtUtc);
+
+    builder.Property(x => x.IsDeleted).IsRequired();
+    builder.Property(x => x.DeletedAtUtc);
+    builder.HasQueryFilter(x => !x.IsDeleted);
   }
 }

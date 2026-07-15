@@ -6,6 +6,7 @@ import {
   getDraft,
   startDraftPart,
   deleteDraft,
+  restoreDraft,
   type AdminDraftListItem,
 } from "@/services/admin/fetch-admin-drafts";
 
@@ -15,13 +16,18 @@ const SUPER_DRAFT_TYPE = 3;
 interface UpcomingDraftActionsProps {
   draft: AdminDraftListItem;
   accessToken: string;
-  onRemove: (publicId: string) => void;
+  onRefresh: () => void | Promise<void>;
 }
 
-export default function UpcomingDraftActions({ draft, accessToken, onRemove }: UpcomingDraftActionsProps) {
+export default function UpcomingDraftActions({
+  draft,
+  accessToken,
+  onRefresh,
+}: UpcomingDraftActionsProps) {
   const [starting, setStarting] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [restoring, setRestoring] = useState(false);
 
   async function handleStart() {
     setStarting(true);
@@ -31,7 +37,7 @@ export default function UpcomingDraftActions({ draft, accessToken, onRemove }: U
       for (const part of parts) {
         await startDraftPart(accessToken, draft.publicId, part.partIndex);
       }
-      onRemove(draft.publicId);
+      await onRefresh();
     } catch (err) {
       console.error("[handleStart]", err);
     } finally {
@@ -43,15 +49,43 @@ export default function UpcomingDraftActions({ draft, accessToken, onRemove }: U
     setDeleting(true);
     try {
       await deleteDraft(accessToken, draft.publicId);
-      onRemove(draft.publicId);
+      await onRefresh();
     } catch (err) {
       console.error("[handleDelete]", err);
+    } finally {
       setDeleting(false);
       setConfirmDelete(false);
     }
   }
 
+  async function handleRestore() {
+    setRestoring(true);
+    try {
+      await restoreDraft(accessToken, draft.publicId);
+      await onRefresh();
+    } catch (err) {
+      console.error("[handleRestore]", err);
+    } finally {
+      setRestoring(false);
+    }
+  }
+
   const isSuper = draft.draftType === SUPER_DRAFT_TYPE;
+
+  if (draft.isDeleted) {
+    return (
+      <div className="flex items-center justify-end">
+        <button
+          type="button"
+          onClick={handleRestore}
+          disabled={restoring}
+          className="text-sd-blue text-sm font-medium hover:underline disabled:opacity-50"
+        >
+          {restoring ? "Restoring…" : "Restore"}
+        </button>
+      </div>
+    );
+  }
 
   if (confirmDelete) {
     return (

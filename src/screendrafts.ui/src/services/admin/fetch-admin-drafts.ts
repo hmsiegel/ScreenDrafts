@@ -13,7 +13,6 @@ import {
 import { PositionConfig } from "@/app/admin/drafts/new/positions-editor";
 import { PREDICTION_MODE_VALUES, PredictionConfig } from "@/app/admin/drafts/new/prediction-rules-section";
 
-// TODO: regenerate dto.ts after backend adds these response shapes if they differ
 export interface AdminDraftListItem extends SearchDraftsResponse { }
 
 export interface AdminSeriesOption {
@@ -161,19 +160,28 @@ export async function listAdminDrafts(
   accessToken: string | undefined,
   draftStatus?: number,
   page = 1,
-  pageSize = 50
+  pageSize = 50,
+  includeDeleted = false
 ): Promise<AdminDraftListItem[]> {
   try {
+    const headers = authHeaders(accessToken);
     const url = new URL(`${apiBase}/drafts/search`);
     url.searchParams.set("page", String(page));
     url.searchParams.set("pageSize", String(pageSize));
     if (draftStatus !== undefined) {
       url.searchParams.set("status", String(draftStatus));
     }
-    const response = await fetch(url.toString(), {
-      headers: authHeaders(accessToken),
-      cache: "no-store",
-    });
+    if (includeDeleted) {
+      url.searchParams.set("includeDeleted", "true");
+    }
+
+    let response = await fetch(url.toString(), { headers, cache: "no-store" });
+
+    if (response.status === 403 && includeDeleted) {
+      url.searchParams.delete("includeDeleted");
+      response = await fetch(url.toString(), { headers, cache: "no-store" });
+    }
+
     if (!response.ok) return [];
     const data = await response.json() as { items?: AdminDraftListItem[] };
     return data.items ?? [];
@@ -183,10 +191,13 @@ export async function listAdminDrafts(
   }
 }
 
-export async function listAdminActiveDrafts(accessToken: string | undefined) {
+export async function listAdminActiveDrafts(
+  accessToken: string | undefined,
+  includeDeleted = false
+) {
   const [created, paused] = await Promise.all([
-    listAdminDrafts(accessToken, 0),
-    listAdminDrafts(accessToken, 3),
+    listAdminDrafts(accessToken, 0, 1, 50, includeDeleted),
+    listAdminDrafts(accessToken, 3, 1, 50, includeDeleted),
   ]);
   return [...created, ...paused];
 }
@@ -773,6 +784,20 @@ export async function deleteDraft(
   if (!res.ok) {
     const text = await res.text().catch(() => res.statusText);
     throw new Error(`DELETE /drafts/${draftId} failed (${res.status}): ${text}`);
+  }
+}
+
+export async function restoreDraft(
+  accessToken: string,
+  draftId: string
+): Promise<void> {
+  const res = await fetch(`${apiBase}/drafts/${encodeURIComponent(draftId)}/restore`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+  });
+  if (!res.ok) {
+    const text = await res.text().catch(() => res.statusText);
+    throw new Error(`POST /drafts/${draftId}/restore failed (${res.status}): ${text}`);
   }
 }
 

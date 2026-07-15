@@ -1,11 +1,12 @@
-using ScreenDrafts.Modules.Drafts.Features.Categories.Create;
+﻿using ScreenDrafts.Modules.Drafts.Features.Categories.Create;
 using ScreenDrafts.Modules.Drafts.Features.Categories.Delete;
 using ScreenDrafts.Modules.Drafts.Features.Categories.Get;
 using ScreenDrafts.Modules.Drafts.Features.Categories.Restore;
 
 namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Categories;
 
-public sealed class RestoreCategoryTests(DraftsIntegrationTestWebAppFactory factory) : DraftsIntegrationTest(factory)
+public sealed class RestoreCategoryTests(DraftsIntegrationTestWebAppFactory factory)
+  : DraftsIntegrationTest(factory)
 {
   [Fact]
   public async Task RestoreCategoryAsync_DeletedCategory_ShouldSucceedAsync()
@@ -13,16 +14,12 @@ public sealed class RestoreCategoryTests(DraftsIntegrationTestWebAppFactory fact
     // Arrange
     var name = Faker.Commerce.Categories(1)[0];
     var description = Faker.Lorem.Sentence();
-    var createCommand = new CreateCategoryCommand
-    {
-      Name = name,
-      Description = description
-    };
+    var createCommand = new CreateCategoryCommand { Name = name, Description = description };
 
     var createResult = await Sender.Send(createCommand, TestContext.Current.CancellationToken);
     var publicId = createResult.Value;
 
-    var deleteCommand = new DeleteCategoryCommand(publicId);
+    var deleteCommand = new DeleteCategoryCommand { PublicId = publicId };
     await Sender.Send(deleteCommand, TestContext.Current.CancellationToken);
 
     var restoreCommand = new RestoreCategoryCommand(publicId);
@@ -60,11 +57,7 @@ public sealed class RestoreCategoryTests(DraftsIntegrationTestWebAppFactory fact
     // Arrange
     var name = Faker.Commerce.Categories(1)[0];
     var description = Faker.Lorem.Sentence();
-    var createCommand = new CreateCategoryCommand
-    {
-      Name = name,
-      Description = description
-    };
+    var createCommand = new CreateCategoryCommand { Name = name, Description = description };
 
     var createResult = await Sender.Send(createCommand, TestContext.Current.CancellationToken);
     var publicId = createResult.Value;
@@ -89,16 +82,12 @@ public sealed class RestoreCategoryTests(DraftsIntegrationTestWebAppFactory fact
     // Arrange
     var name = Faker.Commerce.Categories(1)[0];
     var description = Faker.Lorem.Sentence();
-    var createCommand = new CreateCategoryCommand
-    {
-      Name = name,
-      Description = description
-    };
+    var createCommand = new CreateCategoryCommand { Name = name, Description = description };
 
     var createResult = await Sender.Send(createCommand, TestContext.Current.CancellationToken);
     var publicId = createResult.Value;
 
-    var deleteCommand = new DeleteCategoryCommand(publicId);
+    var deleteCommand = new DeleteCategoryCommand { PublicId = publicId };
     await Sender.Send(deleteCommand, TestContext.Current.CancellationToken);
 
     var restoreCommand1 = new RestoreCategoryCommand(publicId);
@@ -124,16 +113,12 @@ public sealed class RestoreCategoryTests(DraftsIntegrationTestWebAppFactory fact
     // Arrange
     var name = Faker.Commerce.Categories(1)[0];
     var description = Faker.Lorem.Sentence();
-    var createCommand = new CreateCategoryCommand
-    {
-      Name = name,
-      Description = description
-    };
+    var createCommand = new CreateCategoryCommand { Name = name, Description = description };
 
     var createResult = await Sender.Send(createCommand, TestContext.Current.CancellationToken);
     var publicId = createResult.Value;
 
-    var deleteCommand = new DeleteCategoryCommand(publicId);
+    var deleteCommand = new DeleteCategoryCommand { PublicId = publicId };
     await Sender.Send(deleteCommand, TestContext.Current.CancellationToken);
 
     // Wait a bit to ensure timestamp difference
@@ -150,7 +135,8 @@ public sealed class RestoreCategoryTests(DraftsIntegrationTestWebAppFactory fact
     result.Should().NotBeNull();
     result.IsSuccess.Should().BeTrue();
 
-    var restoredCategory = await DbContext.Set<Domain.Categories.Category>()
+    var restoredCategory = await DbContext
+      .Set<Domain.Categories.Category>()
       .FirstOrDefaultAsync(c => c.PublicId == publicId, TestContext.Current.CancellationToken);
     restoredCategory.Should().NotBeNull();
     restoredCategory!.ModifiedOnUtc.Should().NotBeNull();

@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 
 export default async function CampaignsPage() {
   const session = await auth();
-  const campaigns = await listAllCampaigns();
+  const campaigns = await listAllCampaigns(true);
 
   return (
     <div className="min-h-screen bg-light-blue">

@@ -1,10 +1,10 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Features.Drafts.Delete;
 
-internal sealed class Endpoint : ScreenDraftsEndpoint<DeleteDraftRequest>
+internal sealed class Endpoint : ScreenDraftsEndpointWithoutRequest
 {
   public override void Configure()
   {
-    Delete("/drafts/{publicId}");
+    Delete(DraftRoutes.ById);
     Description(x =>
     {
       x.WithTags(DraftsOpenApi.Tags.Drafts)
@@ -21,9 +21,17 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<DeleteDraftRequest>
     Policies(DraftsAuth.Permissions.DraftDelete);
   }
 
-  public override async Task HandleAsync(DeleteDraftRequest req, CancellationToken ct)
+  public override async Task HandleAsync(CancellationToken ct)
   {
-    var command = new DeleteDraftCommand { PublicId = req.PublicId };
+    var publicId = Route<string>("publicId");
+
+    if (string.IsNullOrWhiteSpace(publicId))
+    {
+      await Send.ErrorsAsync(StatusCodes.Status400BadRequest, ct);
+      return;
+    }
+
+    var command = new DeleteDraftCommand { PublicId = publicId };
     var result = await Sender.Send(command, ct);
     await this.SendNoContentAsync(result, ct);
   }

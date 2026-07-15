@@ -5,4 +5,5 @@ internal sealed record ListUpcomingDraftsQuery : IQuery<ListUpcomingDraftsRespon
   public Guid UserId { get; init; }
   public bool IsAdmin { get; init; }
   public bool IncludePatreon { get; init; }
+  public bool IncludeDeleted { get; init; }
 }

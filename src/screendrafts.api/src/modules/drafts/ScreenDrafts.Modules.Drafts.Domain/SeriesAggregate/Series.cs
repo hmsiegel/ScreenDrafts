@@ -51,6 +51,8 @@ public sealed class Series : Entity<SeriesId>
 
   public DateTime CreatedAtUtc { get; private set; } = DateTime.UtcNow;
   public DateTime? UpdatedAtUtc { get; private set; } = default!;
+  public bool IsDeleted { get; private set; }
+  public DateTime? DeletedAtUtc { get; private set; } = default!;
 
   public DraftTypeMask AllowedDraftTypes { get; private set; } = DraftTypeMask.All;
 
@@ -174,5 +176,43 @@ public sealed class Series : Entity<SeriesId>
   {
     Description = description;
     UpdatedAtUtc = DateTime.UtcNow;
+  }
+
+  /// <summary>
+  /// Soft-deletes the series. No guard against in-use Drafts — Series is a
+  /// reference/lookup entity, unlike Draft's started-part guard. If a
+  /// deleted Series should be blocked while active Drafts still reference
+  /// it, that check belongs here and in wherever Drafts get linked to a
+  /// Series (CreateDraftCommandHandler / LinkSeries) — flagging, not adding.
+  /// </summary>
+  public Result SoftDelete(DateTime utcNow)
+  {
+    if (IsDeleted)
+    {
+      return Result.Failure(SeriesErrors.SeriesAlreadyDeleted(PublicId));
+    }
+
+    IsDeleted = true;
+    DeletedAtUtc = utcNow;
+    UpdatedAtUtc = utcNow;
+
+    return Result.Success();
+  }
+
+  /// <summary>
+  /// Reverses a soft-delete. Mirrors Draft's Restore convention.
+  /// </summary>
+  public Result Restore(DateTime utcNow)
+  {
+    if (!IsDeleted)
+    {
+      return Result.Failure(SeriesErrors.SeriesNotDeleted(PublicId));
+    }
+
+    IsDeleted = false;
+    DeletedAtUtc = null;
+    UpdatedAtUtc = utcNow;
+
+    return Result.Success();
   }
 }

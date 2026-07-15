@@ -1,10 +1,11 @@
-using ScreenDrafts.Modules.Drafts.Features.Categories.Create;
+﻿using ScreenDrafts.Modules.Drafts.Features.Categories.Create;
 using ScreenDrafts.Modules.Drafts.Features.Categories.Delete;
 using ScreenDrafts.Modules.Drafts.Features.Categories.Get;
 
 namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Categories;
 
-public sealed class DeleteCategoryTests(DraftsIntegrationTestWebAppFactory factory) : DraftsIntegrationTest(factory)
+public sealed class DeleteCategoryTests(DraftsIntegrationTestWebAppFactory factory)
+  : DraftsIntegrationTest(factory)
 {
   [Fact]
   public async Task DeleteCategoryAsync_ShouldSucceedAsync()
@@ -12,16 +13,12 @@ public sealed class DeleteCategoryTests(DraftsIntegrationTestWebAppFactory facto
     // Arrange
     var name = Faker.Commerce.Categories(1)[0];
     var description = Faker.Lorem.Sentence();
-    var createCommand = new CreateCategoryCommand
-    {
-      Name = name,
-      Description = description
-    };
+    var createCommand = new CreateCategoryCommand { Name = name, Description = description };
 
     var createResult = await Sender.Send(createCommand, TestContext.Current.CancellationToken);
     var publicId = createResult.Value;
 
-    var deleteCommand = new DeleteCategoryCommand(publicId);
+    var deleteCommand = new DeleteCategoryCommand { PublicId = publicId };
 
     // Act
     var result = await Sender.Send(deleteCommand, TestContext.Current.CancellationToken);
@@ -40,7 +37,7 @@ public sealed class DeleteCategoryTests(DraftsIntegrationTestWebAppFactory facto
   {
     // Arrange
     var nonExistentPublicId = Faker.Random.AlphaNumeric(10);
-    var deleteCommand = new DeleteCategoryCommand(nonExistentPublicId);
+    var deleteCommand = new DeleteCategoryCommand { PublicId = nonExistentPublicId };
 
     // Act
     var result = await Sender.Send(deleteCommand, TestContext.Current.CancellationToken);
@@ -56,19 +53,15 @@ public sealed class DeleteCategoryTests(DraftsIntegrationTestWebAppFactory facto
     // Arrange
     var name = Faker.Commerce.Categories(1)[0];
     var description = Faker.Lorem.Sentence();
-    var createCommand = new CreateCategoryCommand
-    {
-      Name = name,
-      Description = description
-    };
+    var createCommand = new CreateCategoryCommand { Name = name, Description = description };
 
     var createResult = await Sender.Send(createCommand, TestContext.Current.CancellationToken);
     var publicId = createResult.Value;
 
-    var deleteCommand1 = new DeleteCategoryCommand(publicId);
+    var deleteCommand1 = new DeleteCategoryCommand { PublicId = publicId };
     await Sender.Send(deleteCommand1, TestContext.Current.CancellationToken);
 
-    var deleteCommand2 = new DeleteCategoryCommand(publicId);
+    var deleteCommand2 = new DeleteCategoryCommand { PublicId = publicId };
 
     // Act
     var result = await Sender.Send(deleteCommand2, TestContext.Current.CancellationToken);
@@ -88,11 +81,7 @@ public sealed class DeleteCategoryTests(DraftsIntegrationTestWebAppFactory facto
     // Arrange
     var name = Faker.Commerce.Categories(1)[0];
     var description = Faker.Lorem.Sentence();
-    var createCommand = new CreateCategoryCommand
-    {
-      Name = name,
-      Description = description
-    };
+    var createCommand = new CreateCategoryCommand { Name = name, Description = description };
 
     var createResult = await Sender.Send(createCommand, TestContext.Current.CancellationToken);
     var publicId = createResult.Value;
@@ -101,7 +90,7 @@ public sealed class DeleteCategoryTests(DraftsIntegrationTestWebAppFactory facto
     await Task.Delay(100, TestContext.Current.CancellationToken);
 
     var beforeDelete = DateTime.UtcNow;
-    var deleteCommand = new DeleteCategoryCommand(publicId);
+    var deleteCommand = new DeleteCategoryCommand { PublicId = publicId };
 
     // Act
     var result = await Sender.Send(deleteCommand, TestContext.Current.CancellationToken);
@@ -111,7 +100,8 @@ public sealed class DeleteCategoryTests(DraftsIntegrationTestWebAppFactory facto
     result.Should().NotBeNull();
     result.IsSuccess.Should().BeTrue();
 
-    var deletedCategory = await DbContext.Set<Domain.Categories.Category>()
+    var deletedCategory = await DbContext
+      .Set<Domain.Categories.Category>()
       .FirstOrDefaultAsync(c => c.PublicId == publicId, TestContext.Current.CancellationToken);
     deletedCategory.Should().NotBeNull();
     deletedCategory!.ModifiedOnUtc.Should().NotBeNull();

@@ -15,4 +15,5 @@ internal sealed record SeriesResponse
   public IReadOnlyList<SmartEnumResponse> AllowedDraftTypes { get; init; } = [];
 
   public SmartEnumResponse? DefaultDraftType { get; init; }
+  public bool IsDeleted { get; init; }
 }

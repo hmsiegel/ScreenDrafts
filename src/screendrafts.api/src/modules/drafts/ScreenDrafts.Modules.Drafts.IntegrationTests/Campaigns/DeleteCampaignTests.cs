@@ -4,7 +4,8 @@ using ScreenDrafts.Modules.Drafts.Features.Campaigns.Get;
 
 namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Campaigns;
 
-public sealed class DeleteCampaignTests(DraftsIntegrationTestWebAppFactory factory) : DraftsIntegrationTest(factory)
+public sealed class DeleteCampaignTests(DraftsIntegrationTestWebAppFactory factory)
+  : DraftsIntegrationTest(factory)
 {
   [Fact]
   public async Task Delete_Campaign_ShouldSucceedAsync()
@@ -12,16 +13,12 @@ public sealed class DeleteCampaignTests(DraftsIntegrationTestWebAppFactory facto
     // Arrange
     var name = Faker.Commerce.Department();
     var slug = Faker.Lorem.Slug();
-    var createCommand = new CreateCampaignCommand
-    {
-      Name = name,
-      Slug = slug
-    };
+    var createCommand = new CreateCampaignCommand { Name = name, Slug = slug };
 
     var createResult = await Sender.Send(createCommand, TestContext.Current.CancellationToken);
     var publicId = createResult.Value;
 
-    var deleteCommand = new DeleteCampaignCommand(publicId);
+    var deleteCommand = new DeleteCampaignCommand { PublicId = publicId };
 
     // Act
     var result = await Sender.Send(deleteCommand, TestContext.Current.CancellationToken);
@@ -40,7 +37,7 @@ public sealed class DeleteCampaignTests(DraftsIntegrationTestWebAppFactory facto
   {
     // Arrange
     var nonExistentPublicId = Faker.Random.AlphaNumeric(10);
-    var deleteCommand = new DeleteCampaignCommand(nonExistentPublicId);
+    var deleteCommand = new DeleteCampaignCommand { PublicId = nonExistentPublicId };
 
     // Act
     var result = await Sender.Send(deleteCommand, TestContext.Current.CancellationToken);
@@ -56,19 +53,15 @@ public sealed class DeleteCampaignTests(DraftsIntegrationTestWebAppFactory facto
     // Arrange
     var name = Faker.Commerce.Department();
     var slug = Faker.Lorem.Slug();
-    var createCommand = new CreateCampaignCommand
-    {
-      Name = name,
-      Slug = slug
-    };
+    var createCommand = new CreateCampaignCommand { Name = name, Slug = slug };
 
     var createResult = await Sender.Send(createCommand, TestContext.Current.CancellationToken);
     var publicId = createResult.Value;
 
-    var deleteCommand1 = new DeleteCampaignCommand(publicId);
+    var deleteCommand1 = new DeleteCampaignCommand { PublicId = publicId };
     await Sender.Send(deleteCommand1, TestContext.Current.CancellationToken);
 
-    var deleteCommand2 = new DeleteCampaignCommand(publicId);
+    var deleteCommand2 = new DeleteCampaignCommand { PublicId = publicId };
 
     // Act
     var result = await Sender.Send(deleteCommand2, TestContext.Current.CancellationToken);

@@ -9,4 +9,5 @@ internal sealed record SearchDraftsQuery : IQuery<PagedResult<SearchDraftsRespon
   public string? CategoryPublicId { get; init; }
   public int? DraftType { get; init; }
   public int? Status { get; init; }
+  public bool IncludeDeleted { get; init; }
 }

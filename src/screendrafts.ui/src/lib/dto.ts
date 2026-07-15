@@ -101,6 +101,11 @@ export interface IClient {
     audit_ExportAuthAuditLogs(body: ExportAuthAuditLogsRequest): Promise<FileResult>;
 
     /**
+     * @return No Content
+     */
+    series_RestoreSeries(body: RestoreSeriesRequest): Promise<void>;
+
+    /**
      * @return OK
      */
     series_GetSeriesMetadata(): Promise<Response>;
@@ -108,7 +113,7 @@ export interface IClient {
     /**
      * @return OK
      */
-    series_ListSeries(): Promise<SeriesCollectionResponse>;
+    series_ListSeries(body: ListSeriesRequest): Promise<SeriesCollectionResponse>;
 
     /**
      * @return Created
@@ -124,6 +129,11 @@ export interface IClient {
      * @return No Content
      */
     series_EditSeries(body: EditSeriesRequest): Promise<void>;
+
+    /**
+     * @return No Content
+     */
+    series_DeleteSeries(body: DeleteSeriesRequest): Promise<void>;
 
     /**
      * @param publicId (optional) 
@@ -220,6 +230,11 @@ export interface IClient {
     /**
      * @return No Content
      */
+    drafts_DeleteDraft(body: DeleteDraftRequest): Promise<void>;
+
+    /**
+     * @return No Content
+     */
     drafts_SetEpisodeNumber(body: SetEpisodeNumberRequest): Promise<void>;
 
     /**
@@ -255,6 +270,11 @@ export interface IClient {
     /**
      * @return No Content
      */
+    drafts_Restore(body: RestoreDraftRequest): Promise<void>;
+
+    /**
+     * @return No Content
+     */
     drafts_RemoveCategory(body: RemoveCategoryFromDraftRequest): Promise<void>;
 
     /**
@@ -270,7 +290,7 @@ export interface IClient {
     /**
      * @return OK
      */
-    drafts_ListUpcomingDrafts(): Promise<ListUpcomingDraftsResponse>;
+    drafts_ListUpcomingDrafts(body: ListUpcomingDraftsRequest): Promise<ListUpcomingDraftsResponse>;
 
     /**
      * @return OK
@@ -1749,6 +1769,60 @@ export class Client implements IClient {
     }
 
     /**
+     * @return No Content
+     */
+    series_RestoreSeries(body: RestoreSeriesRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/series/{publicId}/restore";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processSeries_RestoreSeries(_response);
+        });
+    }
+
+    protected processSeries_RestoreSeries(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status === 409) {
+            return response.text().then((_responseText) => {
+            return throwException("Conflict", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
      * @return OK
      */
     series_GetSeriesMetadata(signal?: AbortSignal): Promise<Response> {
@@ -1796,14 +1870,18 @@ export class Client implements IClient {
     /**
      * @return OK
      */
-    series_ListSeries(signal?: AbortSignal): Promise<SeriesCollectionResponse> {
+    series_ListSeries(body: ListSeriesRequest, signal?: AbortSignal): Promise<SeriesCollectionResponse> {
         let url_ = this.baseUrl + "/series";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(body);
+
         let options_: RequestInit = {
+            body: content_,
             method: "GET",
             signal,
             headers: {
+                "Content-Type": "*/*",
                 "Accept": "application/json"
             }
         };
@@ -1985,6 +2063,64 @@ export class Client implements IClient {
         } else if (status === 404) {
             return response.text().then((_responseText) => {
             return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    series_DeleteSeries(body: DeleteSeriesRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/series/{publicId}";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "DELETE",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processSeries_DeleteSeries(_response);
+        });
+    }
+
+    protected processSeries_DeleteSeries(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status === 409) {
+            return response.text().then((_responseText) => {
+            return throwException("Conflict", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -2952,6 +3088,64 @@ export class Client implements IClient {
     /**
      * @return No Content
      */
+    drafts_DeleteDraft(body: DeleteDraftRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/drafts/{publicId}";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "DELETE",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDrafts_DeleteDraft(_response);
+        });
+    }
+
+    protected processDrafts_DeleteDraft(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status === 409) {
+            return response.text().then((_responseText) => {
+            return throwException("Conflict", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
     drafts_SetEpisodeNumber(body: SetEpisodeNumberRequest, signal?: AbortSignal): Promise<void> {
         let url_ = this.baseUrl + "/drafts/{publicId}/episode";
         url_ = url_.replace(/[?&]$/, "");
@@ -3324,6 +3518,64 @@ export class Client implements IClient {
     /**
      * @return No Content
      */
+    drafts_Restore(body: RestoreDraftRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/drafts/{publicId}/restore";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDrafts_Restore(_response);
+        });
+    }
+
+    protected processDrafts_Restore(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status === 409) {
+            return response.text().then((_responseText) => {
+            return throwException("Conflict", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
     drafts_RemoveCategory(body: RemoveCategoryFromDraftRequest, signal?: AbortSignal): Promise<void> {
         let url_ = this.baseUrl + "/drafts/{publicId}/category/{categoryId}";
         url_ = url_.replace(/[?&]$/, "");
@@ -3464,14 +3716,18 @@ export class Client implements IClient {
     /**
      * @return OK
      */
-    drafts_ListUpcomingDrafts(signal?: AbortSignal): Promise<ListUpcomingDraftsResponse> {
+    drafts_ListUpcomingDrafts(body: ListUpcomingDraftsRequest, signal?: AbortSignal): Promise<ListUpcomingDraftsResponse> {
         let url_ = this.baseUrl + "/drafts/upcoming";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(body);
+
         let options_: RequestInit = {
+            body: content_,
             method: "GET",
             signal,
             headers: {
+                "Content-Type": "*/*",
                 "Accept": "application/json"
             }
         };
@@ -9440,7 +9696,7 @@ export class PredictionsClient implements IPredictionsClient {
 
         let options_: RequestInit = {
             body: content_,
-            method: "POST",
+            method: "PUT",
             signal,
             headers: {
                 "Content-Type": "application/json",
@@ -9474,10 +9730,6 @@ export class PredictionsClient implements IPredictionsClient {
         } else if (status === 404) {
             return response.text().then((_responseText) => {
             return throwException("Not Found", status, _responseText, _headers);
-            });
-        } else if (status === 409) {
-            return response.text().then((_responseText) => {
-            return throwException("Conflict", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -10694,6 +10946,18 @@ export interface DeleteCampaignRequest {
 
 export interface DeleteCategoryRequest {
     publicId: string;
+
+    [key: string]: any;
+}
+
+export interface DeleteDraftRequest {
+    publicId?: string;
+
+    [key: string]: any;
+}
+
+export interface DeleteSeriesRequest {
+    publicId?: string;
 
     [key: string]: any;
 }
@@ -11964,6 +12228,12 @@ export interface ListPredictionSeasonsResult {
     [key: string]: any;
 }
 
+export interface ListSeriesRequest {
+    includeDeleted?: boolean;
+
+    [key: string]: any;
+}
+
 export interface ListSpotlightDraftsRequest {
     page?: number;
     pageSize?: number;
@@ -11986,6 +12256,12 @@ export interface ListSpotlightDraftsResponse {
     isPinned: boolean;
     activatedAtUtc: Date | undefined;
     createdAtUtc: Date;
+
+    [key: string]: any;
+}
+
+export interface ListUpcomingDraftsRequest {
+    includeDeleted?: boolean;
 
     [key: string]: any;
 }
@@ -12715,6 +12991,18 @@ export interface RestoreCategoryRequest {
     [key: string]: any;
 }
 
+export interface RestoreDraftRequest {
+    publicId?: string;
+
+    [key: string]: any;
+}
+
+export interface RestoreSeriesRequest {
+    publicId?: string;
+
+    [key: string]: any;
+}
+
 export interface ScoreDraftPartPredictionsRequest {
     draftPartId?: string;
     finalTmdbIds?: number[];
@@ -12764,6 +13052,7 @@ export interface SearchDraftsRequest {
     categoryPublicId?: string | undefined;
     draftType?: number | undefined;
     status?: number | undefined;
+    includeDeleted?: boolean;
 
     [key: string]: any;
 }
@@ -12777,6 +13066,7 @@ export interface SearchDraftsResponse {
     campaignName?: string | undefined;
     seriesPublicId: string;
     seriesName: string;
+    isDeleted?: boolean;
 
     [key: string]: any;
 }
@@ -12918,6 +13208,7 @@ export interface SeriesResponse {
     allowedDraftTypesMask?: number;
     allowedDraftTypes?: SmartEnumResponse[];
     defaultDraftType?: SmartEnumResponse | undefined;
+    isDeleted?: boolean;
 
     [key: string]: any;
 }
@@ -13123,6 +13414,7 @@ export interface UpcomingDraftResponse {
     partNumber?: number;
     totalParts?: number;
     releaseDate?: Date | undefined;
+    isDelete?: boolean;
     status?: DraftStatus;
     capabilities?: DraftUserCapabilities;
 

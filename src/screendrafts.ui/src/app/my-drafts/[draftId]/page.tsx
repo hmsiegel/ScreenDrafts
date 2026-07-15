@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getMyDraftDetail, joinDraftPart, startDraftPart } from "@/services/drafts/fetch-my-drafts";
+import { parseApiErrorMessage } from "@/lib/parse-api-error";
 import DraftTypeBadge from "@/components/ui/draft-type-badge";
 import { draftTypeFromNumber } from "@/lib/draft-type-display";
 import MyDraftTabs from "./my-draft-tabs";
@@ -27,13 +28,16 @@ const PART_STATUS_LABELS: Record<number, string> = {
 
 export default async function MyDraftDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ draftId: string }>;
+  searchParams: Promise<{ error?: string }>;
 }) {
   const session = await auth();
   if (!session?.accessToken) redirect("/sign-in");
 
   const { draftId } = await params;
+  const { error } = await searchParams;
   const detail = await getMyDraftDetail(session.accessToken, draftId);
 
   if (!detail) redirect("/my-drafts");
@@ -57,6 +61,18 @@ export default async function MyDraftDetailPage({
           {" / "}
           {(detail.title ?? "").toUpperCase()}
         </p>
+
+        {error && (
+          <div className="flex items-start justify-between gap-4 border border-sd-red/30 bg-sd-red/5 text-sd-ink px-4 py-3 mb-6">
+            <p className="font-mono text-sm">{error}</p>
+            <Link
+              href={`/my-drafts/${draftId}`}
+              className="font-mono text-xs text-sd-ink/50 hover:text-sd-ink/80 uppercase tracking-widest shrink-0"
+            >
+              Dismiss
+            </Link>
+          </div>
+        )}
 
         <div className="mb-8">
           <div className="flex items-start gap-4 flex-wrap mb-3">
@@ -148,7 +164,12 @@ function PartAction({
       <form
         action={async () => {
           "use server";
-          await startDraftPart(accessToken, draftId, part.partIndex ?? 1);
+          try {
+            await startDraftPart(accessToken, draftId, part.partIndex ?? 1);
+          } catch (err) {
+            const message = parseApiErrorMessage(err, "Couldn't start the draft. Please try again.");
+            redirect(`/my-drafts/${draftId}?error=${encodeURIComponent(message)}`);
+          }
           redirect(`/draft-parts/${draftPartPublicId}/live`);
         }}
       >
@@ -167,7 +188,12 @@ function PartAction({
       <form
         action={async () => {
           "use server";
-          await joinDraftPart(accessToken, draftPartPublicId);
+          try {
+            await joinDraftPart(accessToken, draftPartPublicId);
+          } catch (err) {
+            const message = parseApiErrorMessage(err, "Couldn't join the draft. Please try again.");
+            redirect(`/my-drafts/${draftId}?error=${encodeURIComponent(message)}`);
+          }
           redirect(`/draft-parts/${draftPartPublicId}/live`);
         }}
       >

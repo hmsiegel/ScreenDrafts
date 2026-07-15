@@ -103,6 +103,7 @@ internal static class DraftsOpenApi
     public const string Series_GetSeriesById = "Series.GetSeriesById";
     public const string Series_DeleteSeries = "Series.DeleteSeries";
     public const string Series_GetSeriesMetadata = "Series.GetSeriesMetadata";
+    public const string Series_RestoreSeries = "Series.RestoreSeries";
 
     // People
     public const string People_CreatePerson = "People.CreatePerson";

@@ -1,9 +1,11 @@
 ﻿using ScreenDrafts.Modules.Drafts.Features.Categories.Create;
+using ScreenDrafts.Modules.Drafts.Features.Categories.Delete;
 using ScreenDrafts.Modules.Drafts.Features.Categories.Get;
 
 namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Categories;
 
-public sealed class GetCategoryTests(DraftsIntegrationTestWebAppFactory factory) : DraftsIntegrationTest(factory)
+public sealed class GetCategoryTests(DraftsIntegrationTestWebAppFactory factory)
+  : DraftsIntegrationTest(factory)
 {
   [Fact]
   public async Task GetCategory_ByPublicId_ShouldSucceedAsync()
@@ -11,11 +13,7 @@ public sealed class GetCategoryTests(DraftsIntegrationTestWebAppFactory factory)
     // Arrange
     var name = Faker.Commerce.Categories(1)[0];
     var description = Faker.Lorem.Sentence();
-    var createCommand = new CreateCategoryCommand
-    {
-      Name = name,
-      Description = description
-    };
+    var createCommand = new CreateCategoryCommand { Name = name, Description = description };
 
     var createResult = await Sender.Send(createCommand, TestContext.Current.CancellationToken);
     var publicId = createResult.Value;
@@ -56,17 +54,13 @@ public sealed class GetCategoryTests(DraftsIntegrationTestWebAppFactory factory)
     // Arrange
     var name = Faker.Commerce.Categories(1)[0];
     var description = Faker.Lorem.Sentence();
-    var createCommand = new CreateCategoryCommand
-    {
-      Name = name,
-      Description = description
-    };
+    var createCommand = new CreateCategoryCommand { Name = name, Description = description };
 
     var createResult = await Sender.Send(createCommand, TestContext.Current.CancellationToken);
     var publicId = createResult.Value;
 
     // Delete the category
-    var deleteCommand = new Features.Categories.Delete.DeleteCategoryCommand(publicId);
+    var deleteCommand = new DeleteCategoryCommand { PublicId = publicId };
     await Sender.Send(deleteCommand, TestContext.Current.CancellationToken);
 
     var query = new GetCategoryQuery(publicId);

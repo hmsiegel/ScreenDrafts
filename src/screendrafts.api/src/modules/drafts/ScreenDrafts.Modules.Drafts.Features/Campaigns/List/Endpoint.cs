@@ -14,7 +14,7 @@ internal sealed class Endpoint
         .Produces(StatusCodes.Status401Unauthorized)
         .Produces(StatusCodes.Status403Forbidden);
     });
-    AllowAnonymous();
+    Policies(DraftsAuth.Permissions.CampaignList);
   }
 
   public override async Task HandleAsync(ListCampaignsRequest req, CancellationToken ct)

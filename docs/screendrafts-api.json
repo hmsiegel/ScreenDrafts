@@ -761,6 +761,44 @@
         ]
       }
     },
+    "/series/{publicId}/restore": {
+      "post": {
+        "tags": [
+          "Series"
+        ],
+        "operationId": "Series.RestoreSeries",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RestoreSeriesRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
     "/series/metadata": {
       "get": {
         "tags": [
@@ -796,6 +834,21 @@
           "Series"
         ],
         "operationId": "Series.ListSeries",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/ListSeriesRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ListSeriesRequest"
+              }
+            }
+          },
+          "required": true
+        },
         "responses": {
           "200": {
             "description": "OK",
@@ -933,6 +986,50 @@
           },
           "404": {
             "description": "Not Found"
+          }
+        },
+        "security": [
+          { }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Series"
+        ],
+        "operationId": "Series.DeleteSeries",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteSeriesRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteSeriesRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "409": {
+            "description": "Conflict"
           }
         },
         "security": [
@@ -1095,7 +1192,7 @@
       }
     },
     "/draft-parts/{draftPartId}/prediction-rules": {
-      "post": {
+      "put": {
         "tags": [
           "Predictions"
         ],
@@ -1125,9 +1222,6 @@
           },
           "404": {
             "description": "Not Found"
-          },
-          "409": {
-            "description": "Conflict"
           }
         },
         "security": [
@@ -2338,6 +2432,50 @@
         "security": [
           { }
         ]
+      },
+      "delete": {
+        "tags": [
+          "Drafts"
+        ],
+        "operationId": "Drafts.DeleteDraft",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteDraftRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteDraftRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        },
+        "security": [
+          { }
+        ]
       }
     },
     "/drafts/{publicId}/episode": {
@@ -2620,6 +2758,47 @@
         ]
       }
     },
+    "/drafts/{publicId}/restore": {
+      "post": {
+        "tags": [
+          "Drafts"
+        ],
+        "operationId": "Drafts.Restore",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RestoreDraftRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
     "/drafts/{publicId}/category/{categoryId}": {
       "delete": {
         "tags": [
@@ -2736,6 +2915,21 @@
           "Drafts"
         ],
         "operationId": "Drafts.ListUpcomingDrafts",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/ListUpcomingDraftsRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ListUpcomingDraftsRequest"
+              }
+            }
+          },
+          "required": true
+        },
         "responses": {
           "200": {
             "description": "OK",
@@ -8704,6 +8898,22 @@
           }
         }
       },
+      "DeleteDraftRequest": {
+        "type": "object",
+        "properties": {
+          "publicId": {
+            "type": "string"
+          }
+        }
+      },
+      "DeleteSeriesRequest": {
+        "type": "object",
+        "properties": {
+          "publicId": {
+            "type": "string"
+          }
+        }
+      },
       "DeleteSpotlightRequest": {
         "type": "object",
         "properties": {
@@ -12851,6 +13061,14 @@
           }
         }
       },
+      "ListSeriesRequest": {
+        "type": "object",
+        "properties": {
+          "includeDeleted": {
+            "type": "boolean"
+          }
+        }
+      },
       "ListSpotlightDraftsRequest": {
         "type": "object",
         "properties": {
@@ -12950,6 +13168,14 @@
           "createdAtUtc": {
             "type": "string",
             "format": "date-time"
+          }
+        }
+      },
+      "ListUpcomingDraftsRequest": {
+        "type": "object",
+        "properties": {
+          "includeDeleted": {
+            "type": "boolean"
           }
         }
       },
@@ -15650,6 +15876,22 @@
           }
         }
       },
+      "RestoreDraftRequest": {
+        "type": "object",
+        "properties": {
+          "publicId": {
+            "type": "string"
+          }
+        }
+      },
+      "RestoreSeriesRequest": {
+        "type": "object",
+        "properties": {
+          "publicId": {
+            "type": "string"
+          }
+        }
+      },
       "ScoreDraftPartPredictionsRequest": {
         "type": "object",
         "properties": {
@@ -15829,6 +16071,9 @@
               "string"
             ],
             "format": "int32"
+          },
+          "includeDeleted": {
+            "type": "boolean"
           }
         }
       },
@@ -15880,6 +16125,9 @@
           },
           "seriesName": {
             "type": "string"
+          },
+          "isDeleted": {
+            "type": "boolean"
           }
         }
       },
@@ -16344,6 +16592,9 @@
                 "$ref": "#/components/schemas/SmartEnumResponse"
               }
             ]
+          },
+          "isDeleted": {
+            "type": "boolean"
           }
         }
       },
@@ -16920,6 +17171,9 @@
               "string"
             ],
             "format": "date"
+          },
+          "isDelete": {
+            "type": "boolean"
           },
           "status": {
             "$ref": "#/components/schemas/DraftStatus"

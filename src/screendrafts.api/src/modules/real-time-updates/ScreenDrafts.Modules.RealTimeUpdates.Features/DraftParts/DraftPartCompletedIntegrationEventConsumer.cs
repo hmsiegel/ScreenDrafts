@@ -236,7 +236,7 @@ internal sealed partial class DraftPartCompletedIntegrationEventConsumer(
         FROM drafts.draft_prediction_sets s
         JOIN drafts.prediction_contestants c ON c.id = s.contestant_id
         JOIN drafts.prediction_results r ON r.set_id = s.id
-        JOIN drafts.peopln ppl ON ppl.id = c.person_id
+        JOIN drafts.people ppl ON ppl.id = c.person_id
         LEFT JOIN (
           SELECT contestant_id, SUM(points) AS CarryoverPoints
           FROM drafts.prediction_carryovers

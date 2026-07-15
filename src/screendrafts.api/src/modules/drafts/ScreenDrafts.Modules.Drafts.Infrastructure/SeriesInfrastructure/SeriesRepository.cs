@@ -34,7 +34,10 @@ internal sealed class SeriesRepository(DraftsDbContext dbContext) : ISeriesRepos
     return _dbContext.Series.FirstOrDefaultAsync(s => s.PublicId == publicId, cancellationToken);
   }
 
-  public Task<bool> ExistsByPublicIdAsync(string? seriesPublicId, CancellationToken cancellationToken)
+  public Task<bool> ExistsByPublicIdAsync(
+    string? seriesPublicId,
+    CancellationToken cancellationToken
+  )
   {
     return _dbContext.Series.AnyAsync(s => s.PublicId == seriesPublicId, cancellationToken);
   }
@@ -42,5 +45,15 @@ internal sealed class SeriesRepository(DraftsDbContext dbContext) : ISeriesRepos
   public Task<List<Series>> GetAllAsync(CancellationToken cancellationToken)
   {
     return _dbContext.Series.ToListAsync(cancellationToken);
+  }
+
+  public Task<Series?> GetSeriesByPublicIdIncludingDeletedAsync(
+    string? seriesPublicId,
+    CancellationToken cancellationToken
+  )
+  {
+    return _dbContext
+      .Series.IgnoreQueryFilters()
+      .FirstOrDefaultAsync(s => s.PublicId == seriesPublicId, cancellationToken);
   }
 }

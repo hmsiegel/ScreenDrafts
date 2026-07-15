@@ -1,6 +1,7 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Features.Categories.List;
 
-internal sealed class Endpoint : ScreenDraftsEndpoint<ListCategoriesRequest, CategoryCollectionResponse>
+internal sealed class Endpoint
+  : ScreenDraftsEndpoint<ListCategoriesRequest, CategoryCollectionResponse>
 {
   public override void Configure()
   {
@@ -8,12 +9,12 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<ListCategoriesRequest, Cat
     Description(x =>
     {
       x.WithName(DraftsOpenApi.Names.Categories_ListCategories)
-      .WithTags(DraftsOpenApi.Tags.Categories)
-      .Produces<CategoryCollectionResponse>(StatusCodes.Status200OK)
-      .Produces(StatusCodes.Status401Unauthorized)
-      .Produces(StatusCodes.Status403Forbidden);
+        .WithTags(DraftsOpenApi.Tags.Categories)
+        .Produces<CategoryCollectionResponse>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status401Unauthorized)
+        .Produces(StatusCodes.Status403Forbidden);
     });
-    Policies(DraftsAuth.Permissions.CampaignList);
+    Policies(DraftsAuth.Permissions.CategoryList);
   }
 
   public override async Task HandleAsync(ListCategoriesRequest req, CancellationToken ct)
@@ -33,6 +34,3 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<ListCategoriesRequest, Cat
     await this.SendOkAsync(result, ct);
   }
 }
-
-
-

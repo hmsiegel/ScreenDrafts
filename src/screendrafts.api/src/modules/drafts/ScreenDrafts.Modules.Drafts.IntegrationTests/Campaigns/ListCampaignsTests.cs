@@ -4,7 +4,8 @@ using ScreenDrafts.Modules.Drafts.Features.Campaigns.List;
 
 namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Campaigns;
 
-public sealed class ListCampaignsTests(DraftsIntegrationTestWebAppFactory factory) : DraftsIntegrationTest(factory)
+public sealed class ListCampaignsTests(DraftsIntegrationTestWebAppFactory factory)
+  : DraftsIntegrationTest(factory)
 {
   [Fact]
   public async Task List_Campaigns_ShouldReturnAllNonDeletedCampaignsAsync()
@@ -13,14 +14,14 @@ public sealed class ListCampaignsTests(DraftsIntegrationTestWebAppFactory factor
     var campaign1 = new CreateCampaignCommand
     {
       Name = Faker.Commerce.Department(),
-      Slug = Faker.Lorem.Slug()
+      Slug = Faker.Lorem.Slug(),
     };
     await Sender.Send(campaign1, TestContext.Current.CancellationToken);
 
     var campaign2 = new CreateCampaignCommand
     {
       Name = Faker.Commerce.Department(),
-      Slug = Faker.Lorem.Slug()
+      Slug = Faker.Lorem.Slug(),
     };
     await Sender.Send(campaign2, TestContext.Current.CancellationToken);
 
@@ -43,18 +44,21 @@ public sealed class ListCampaignsTests(DraftsIntegrationTestWebAppFactory factor
     var campaign1Command = new CreateCampaignCommand
     {
       Name = Faker.Commerce.Department(),
-      Slug = Faker.Lorem.Slug()
+      Slug = Faker.Lorem.Slug(),
     };
     await Sender.Send(campaign1Command, TestContext.Current.CancellationToken);
 
     var campaign2Command = new CreateCampaignCommand
     {
       Name = Faker.Commerce.Department(),
-      Slug = Faker.Lorem.Slug()
+      Slug = Faker.Lorem.Slug(),
     };
-    var campaign2Result = await Sender.Send(campaign2Command, TestContext.Current.CancellationToken);
+    var campaign2Result = await Sender.Send(
+      campaign2Command,
+      TestContext.Current.CancellationToken
+    );
 
-    var deleteCommand = new DeleteCampaignCommand(campaign2Result.Value);
+    var deleteCommand = new DeleteCampaignCommand { PublicId = campaign2Result.Value };
     await Sender.Send(deleteCommand, TestContext.Current.CancellationToken);
 
     var query = new ListCampaignsQuery(IncludeDeleted: true);
@@ -77,18 +81,21 @@ public sealed class ListCampaignsTests(DraftsIntegrationTestWebAppFactory factor
     var campaign1Command = new CreateCampaignCommand
     {
       Name = Faker.Commerce.Department(),
-      Slug = Faker.Lorem.Slug()
+      Slug = Faker.Lorem.Slug(),
     };
     await Sender.Send(campaign1Command, TestContext.Current.CancellationToken);
 
     var campaign2Command = new CreateCampaignCommand
     {
       Name = Faker.Commerce.Department(),
-      Slug = Faker.Lorem.Slug()
+      Slug = Faker.Lorem.Slug(),
     };
-    var campaign2Result = await Sender.Send(campaign2Command, TestContext.Current.CancellationToken);
+    var campaign2Result = await Sender.Send(
+      campaign2Command,
+      TestContext.Current.CancellationToken
+    );
 
-    var deleteCommand = new DeleteCampaignCommand(campaign2Result.Value);
+    var deleteCommand = new DeleteCampaignCommand { PublicId = campaign2Result.Value };
     await Sender.Send(deleteCommand, TestContext.Current.CancellationToken);
 
     var query = new ListCampaignsQuery(IncludeDeleted: false);

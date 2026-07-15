@@ -23,7 +23,14 @@ function AdminCard({ title, children }: { title: string; children: React.ReactNo
 
 export default async function AdminDraftsPage() {
   const session = await auth();
-  const displayDrafts = await listAdminActiveDrafts(session?.accessToken);
+  // includeDeleted: true — this is the admin drafts page, and the client
+  // component filters client-side (SHOW DELETED checkbox), same pattern as
+  // category-manager.tsx / campaign-manager.tsx. Requires the caller to
+  // have AdminViewDeleted or the endpoint 403s — since this route already
+  // gates on admin access to be reachable at all, that should hold, but
+  // worth confirming once the real endpoint behind listAdminActiveDrafts
+  // is known.
+  const displayDrafts = await listAdminActiveDrafts(session?.accessToken, true);
 
   return (
     <div className="min-h-screen bg-light-blue">

@@ -65,6 +65,7 @@ internal static class QueryMapping
       AllowedDraftTypesMask = row.AllowedDraftTypesMask,
       AllowedDraftTypes = DraftTypesFromMask(row.AllowedDraftTypesMask),
       DefaultDraftType = ToSmartEnumResponseNullable<DraftType>(row.DefaultDraftType),
+      IsDeleted = row.IsDeleted,
     };
   }
 }
