@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Drafts.UnitTests.Predictions;
+﻿namespace ScreenDrafts.Modules.Drafts.UnitTests.Predictions;
 
 public sealed class PredictionSeasonTests : DraftsBaseTest
 {
@@ -15,7 +15,7 @@ public sealed class PredictionSeasonTests : DraftsBaseTest
     var publicId = Faker.Random.AlphaNumeric(10);
 
     // Act
-    var season = PredictionSeason.Create(number, startsOn, publicId);
+    var season = PredictionSeason.Create(number, startsOn, publicId).Value;
 
     // Assert
     season.Number.Should().Be(number);
@@ -57,7 +57,13 @@ public sealed class PredictionSeasonTests : DraftsBaseTest
     // Arrange
     var season = PredictionFactory.CreateSeason();
     var contestant = PredictionFactory.CreateContestant();
-    var carryover = PredictionCarryover.Create(season, contestant, 5, CarryoverKind.Handicap, "Lost by 5 last season");
+    var carryover = PredictionCarryover.Create(
+      season,
+      contestant,
+      5,
+      CarryoverKind.Handicap,
+      "Lost by 5 last season"
+    );
 
     // Act
     season.AddCarryover(carryover);
@@ -88,7 +94,13 @@ public sealed class PredictionSeasonTests : DraftsBaseTest
     var contestant1 = PredictionFactory.CreateContestant();
     var contestant2 = PredictionFactory.CreateContestant();
     var carryover1 = PredictionCarryover.Create(season, contestant1, 5, CarryoverKind.Handicap);
-    var carryover2 = PredictionCarryover.Create(season, contestant2, 10, CarryoverKind.Bonus, "Bonus reward");
+    var carryover2 = PredictionCarryover.Create(
+      season,
+      contestant2,
+      10,
+      CarryoverKind.Bonus,
+      "Bonus reward"
+    );
 
     // Act
     season.AddCarryover(carryover1);

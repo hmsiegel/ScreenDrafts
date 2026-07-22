@@ -6,6 +6,7 @@ import {
   getDraft,
   listAllCategories,
   listAllCampaigns,
+  listUnreleasedDraftParts,
 } from "@/services/admin/fetch-admin-drafts";
 import { Metadata } from "next";
 
@@ -22,10 +23,11 @@ export default async function EditMetaPage({
 
   if (!session?.accessToken) redirect("/");
 
-  const [draft, categoryList, campaignList] = await Promise.all([
+  const [draft, categoryList, campaignList, unreleasedParts] = await Promise.all([
     getDraft(session.accessToken, draftId),
     listAllCategories(session.accessToken),
     listAllCampaigns(session.accessToken),
+    listUnreleasedDraftParts(session.accessToken, draftId),
   ]);
 
   if (!draft) notFound();
@@ -52,6 +54,7 @@ export default async function EditMetaPage({
             draft={draft}
             categoryList={categoryList}
             campaignList={campaignList}
+            unreleasedParts={unreleasedParts}
             accessToken={session.accessToken}
           />
         </div>

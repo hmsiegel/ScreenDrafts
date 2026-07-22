@@ -103,7 +103,7 @@ export interface IClient {
     /**
      * @return No Content
      */
-    series_RestoreSeries(body: RestoreSeriesRequest): Promise<void>;
+    series_RestoreSeries(): Promise<void>;
 
     /**
      * @return OK
@@ -133,7 +133,7 @@ export interface IClient {
     /**
      * @return No Content
      */
-    series_DeleteSeries(body: DeleteSeriesRequest): Promise<void>;
+    series_DeleteSeries(): Promise<void>;
 
     /**
      * @param publicId (optional) 
@@ -230,7 +230,7 @@ export interface IClient {
     /**
      * @return No Content
      */
-    drafts_DeleteDraft(body: DeleteDraftRequest): Promise<void>;
+    drafts_DeleteDraft(): Promise<void>;
 
     /**
      * @return No Content
@@ -270,7 +270,7 @@ export interface IClient {
     /**
      * @return No Content
      */
-    drafts_Restore(body: RestoreDraftRequest): Promise<void>;
+    drafts_Restore(): Promise<void>;
 
     /**
      * @return No Content
@@ -439,12 +439,17 @@ export interface IClient {
     /**
      * @return No Content
      */
-    draftParts_SetReleaseDate(body: SetReleaseDateRequest): Promise<void>;
+    draftParts_SetCommunityLimits(body: SetCommunityLimitsRequest): Promise<void>;
 
     /**
      * @return No Content
      */
-    draftParts_SetCommunityLimits(body: SetCommunityLimitsRequest): Promise<void>;
+    draftParts_SetReleaseDate(body: SetReleaseDateRequest): Promise<void>;
+
+    /**
+     * @return OK
+     */
+    draftParts_ListUnreleased(body: ListUnreleasedDraftPartsRequest): Promise<PagedResultOfUnreleasedDraftPartResponse>;
 
     /**
      * @return No Content
@@ -656,7 +661,7 @@ export interface IClient {
     /**
      * @return No Content
      */
-    categories_RestoreCategory(body: RestoreCategoryRequest): Promise<void>;
+    categories_RestoreCategory(): Promise<void>;
 
     /**
      * @return OK
@@ -681,12 +686,12 @@ export interface IClient {
     /**
      * @return No Content
      */
-    categories_DeleteCategory(body: DeleteCategoryRequest): Promise<void>;
+    categories_DeleteCategory(): Promise<void>;
 
     /**
      * @return No Content
      */
-    campaigns_RestoreCampaign(body: RestoreCampaignRequest): Promise<void>;
+    campaigns_RestoreCampaign(): Promise<void>;
 
     /**
      * @return OK
@@ -711,7 +716,7 @@ export interface IClient {
     /**
      * @return No Content
      */
-    campaigns_DeleteCampaign(body: DeleteCampaignRequest): Promise<void>;
+    campaigns_DeleteCampaign(): Promise<void>;
 
     /**
      * @return OK
@@ -1771,18 +1776,14 @@ export class Client implements IClient {
     /**
      * @return No Content
      */
-    series_RestoreSeries(body: RestoreSeriesRequest, signal?: AbortSignal): Promise<void> {
+    series_RestoreSeries(signal?: AbortSignal): Promise<void> {
         let url_ = this.baseUrl + "/series/{publicId}/restore";
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(body);
-
         let options_: RequestInit = {
-            body: content_,
             method: "POST",
             signal,
             headers: {
-                "Content-Type": "application/json",
             }
         };
 
@@ -2075,18 +2076,14 @@ export class Client implements IClient {
     /**
      * @return No Content
      */
-    series_DeleteSeries(body: DeleteSeriesRequest, signal?: AbortSignal): Promise<void> {
+    series_DeleteSeries(signal?: AbortSignal): Promise<void> {
         let url_ = this.baseUrl + "/series/{publicId}";
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(body);
-
         let options_: RequestInit = {
-            body: content_,
             method: "DELETE",
             signal,
             headers: {
-                "Content-Type": "*/*",
             }
         };
 
@@ -3088,18 +3085,14 @@ export class Client implements IClient {
     /**
      * @return No Content
      */
-    drafts_DeleteDraft(body: DeleteDraftRequest, signal?: AbortSignal): Promise<void> {
+    drafts_DeleteDraft(signal?: AbortSignal): Promise<void> {
         let url_ = this.baseUrl + "/drafts/{publicId}";
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(body);
-
         let options_: RequestInit = {
-            body: content_,
             method: "DELETE",
             signal,
             headers: {
-                "Content-Type": "*/*",
             }
         };
 
@@ -3518,18 +3511,14 @@ export class Client implements IClient {
     /**
      * @return No Content
      */
-    drafts_Restore(body: RestoreDraftRequest, signal?: AbortSignal): Promise<void> {
+    drafts_Restore(signal?: AbortSignal): Promise<void> {
         let url_ = this.baseUrl + "/drafts/{publicId}/restore";
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(body);
-
         let options_: RequestInit = {
-            body: content_,
             method: "POST",
             signal,
             headers: {
-                "Content-Type": "application/json",
             }
         };
 
@@ -5273,6 +5262,60 @@ export class Client implements IClient {
     /**
      * @return No Content
      */
+    draftParts_SetCommunityLimits(body: SetCommunityLimitsRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/community-limits";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDraftParts_SetCommunityLimits(_response);
+        });
+    }
+
+    protected processDraftParts_SetCommunityLimits(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
     draftParts_SetReleaseDate(body: SetReleaseDateRequest, signal?: AbortSignal): Promise<void> {
         let url_ = this.baseUrl + "/draft-parts/{draftPartId}/releases";
         url_ = url_.replace(/[?&]$/, "");
@@ -5325,34 +5368,37 @@ export class Client implements IClient {
     }
 
     /**
-     * @return No Content
+     * @return OK
      */
-    draftParts_SetCommunityLimits(body: SetCommunityLimitsRequest, signal?: AbortSignal): Promise<void> {
-        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/community-limits";
+    draftParts_ListUnreleased(body: ListUnreleasedDraftPartsRequest, signal?: AbortSignal): Promise<PagedResultOfUnreleasedDraftPartResponse> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/unreleased";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
 
         let options_: RequestInit = {
             body: content_,
-            method: "PUT",
+            method: "GET",
             signal,
             headers: {
-                "Content-Type": "application/json",
+                "Content-Type": "*/*",
+                "Accept": "application/json"
             }
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processDraftParts_SetCommunityLimits(_response);
+            return this.processDraftParts_ListUnreleased(_response);
         });
     }
 
-    protected processDraftParts_SetCommunityLimits(response: Response): Promise<void> {
+    protected processDraftParts_ListUnreleased(response: Response): Promise<PagedResultOfUnreleasedDraftPartResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 204) {
+        if (status === 200) {
             return response.text().then((_responseText) => {
-            return;
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as PagedResultOfUnreleasedDraftPartResponse;
+            return result200;
             });
         } else if (status === 400) {
             return response.text().then((_responseText) => {
@@ -5366,16 +5412,12 @@ export class Client implements IClient {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
             });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
-            });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<PagedResultOfUnreleasedDraftPartResponse>(null as any);
     }
 
     /**
@@ -7599,18 +7641,14 @@ export class Client implements IClient {
     /**
      * @return No Content
      */
-    categories_RestoreCategory(body: RestoreCategoryRequest, signal?: AbortSignal): Promise<void> {
+    categories_RestoreCategory(signal?: AbortSignal): Promise<void> {
         let url_ = this.baseUrl + "/categories/{publicId}/restore";
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(body);
-
         let options_: RequestInit = {
-            body: content_,
             method: "POST",
             signal,
             headers: {
-                "Content-Type": "application/json",
             }
         };
 
@@ -7858,18 +7896,14 @@ export class Client implements IClient {
     /**
      * @return No Content
      */
-    categories_DeleteCategory(body: DeleteCategoryRequest, signal?: AbortSignal): Promise<void> {
+    categories_DeleteCategory(signal?: AbortSignal): Promise<void> {
         let url_ = this.baseUrl + "/categories/{publicId}";
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(body);
-
         let options_: RequestInit = {
-            body: content_,
             method: "DELETE",
             signal,
             headers: {
-                "Content-Type": "*/*",
             }
         };
 
@@ -7908,18 +7942,14 @@ export class Client implements IClient {
     /**
      * @return No Content
      */
-    campaigns_RestoreCampaign(body: RestoreCampaignRequest, signal?: AbortSignal): Promise<void> {
+    campaigns_RestoreCampaign(signal?: AbortSignal): Promise<void> {
         let url_ = this.baseUrl + "/campaigns/{publicId}/restore";
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(body);
-
         let options_: RequestInit = {
-            body: content_,
             method: "POST",
             signal,
             headers: {
-                "Content-Type": "application/json",
             }
         };
 
@@ -8167,18 +8197,14 @@ export class Client implements IClient {
     /**
      * @return No Content
      */
-    campaigns_DeleteCampaign(body: DeleteCampaignRequest, signal?: AbortSignal): Promise<void> {
+    campaigns_DeleteCampaign(signal?: AbortSignal): Promise<void> {
         let url_ = this.baseUrl + "/campaigns/{publicId}";
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(body);
-
         let options_: RequestInit = {
-            body: content_,
             method: "DELETE",
             signal,
             headers: {
-                "Content-Type": "*/*",
             }
         };
 
@@ -10938,30 +10964,6 @@ export interface DeactivateSpotlightRequest {
     [key: string]: any;
 }
 
-export interface DeleteCampaignRequest {
-    publicId: string;
-
-    [key: string]: any;
-}
-
-export interface DeleteCategoryRequest {
-    publicId: string;
-
-    [key: string]: any;
-}
-
-export interface DeleteDraftRequest {
-    publicId?: string;
-
-    [key: string]: any;
-}
-
-export interface DeleteSeriesRequest {
-    publicId?: string;
-
-    [key: string]: any;
-}
-
 export interface DeleteSpotlightRequest {
     publicId?: string;
 
@@ -12260,6 +12262,14 @@ export interface ListSpotlightDraftsResponse {
     [key: string]: any;
 }
 
+export interface ListUnreleasedDraftPartsRequest {
+    page?: number;
+    pageSize?: number;
+    draftPublicId?: string | undefined;
+
+    [key: string]: any;
+}
+
 export interface ListUpcomingDraftsRequest {
     includeDeleted?: boolean;
 
@@ -12585,6 +12595,18 @@ export interface PagedResultOfSearchHostResponse {
 
 export interface PagedResultOfSearchPeopleResponse {
     items: SearchPeopleResponse[];
+    totalCount: number;
+    page: number;
+    pageSize: number;
+    totalPages?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+
+    [key: string]: any;
+}
+
+export interface PagedResultOfUnreleasedDraftPartResponse {
+    items: UnreleasedDraftPartResponse[];
     totalCount: number;
     page: number;
     pageSize: number;
@@ -12975,30 +12997,6 @@ export interface Response {
     continuityScopes?: SmartEnumResponse[];
     continuityDateRules?: SmartEnumResponse[];
     draftTypes?: SmartEnumResponse[];
-
-    [key: string]: any;
-}
-
-export interface RestoreCampaignRequest {
-    publicId?: string;
-
-    [key: string]: any;
-}
-
-export interface RestoreCategoryRequest {
-    publicId?: string;
-
-    [key: string]: any;
-}
-
-export interface RestoreDraftRequest {
-    publicId?: string;
-
-    [key: string]: any;
-}
-
-export interface RestoreSeriesRequest {
-    publicId?: string;
 
     [key: string]: any;
 }
@@ -13403,6 +13401,18 @@ export interface UndoPickRequest {
     draftPartId?: string;
     playOrder?: number;
     subDraftPublicId?: string | undefined;
+
+    [key: string]: any;
+}
+
+export interface UnreleasedDraftPartResponse {
+    draftPartPublicId: string;
+    draftPublicId: string;
+    draftTitle: string;
+    partIndex?: number;
+    draftType?: number;
+    seriesPublicId: string;
+    seriesName: string;
 
     [key: string]: any;
 }

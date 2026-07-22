@@ -1,8 +1,9 @@
 import { auth } from "@/auth";
 import Link from "next/link";
-import { listAdminActiveDrafts } from "@/services/admin/fetch-admin-drafts";
+import { listAdminActiveDrafts, listUnreleasedDraftParts } from "@/services/admin/fetch-admin-drafts";
 import { Metadata } from "next";
 import UpcomingDraftsList from "./upcoming-drafts-list";
+import UnreleasedPartsList from "./unreleased-parts-list";
 
 export const metadata: Metadata = { title: "Draft Management" };
 export const dynamic = "force-dynamic";
@@ -30,7 +31,10 @@ export default async function AdminDraftsPage() {
   // gates on admin access to be reachable at all, that should hold, but
   // worth confirming once the real endpoint behind listAdminActiveDrafts
   // is known.
-  const displayDrafts = await listAdminActiveDrafts(session?.accessToken, true);
+  const [displayDrafts, unreleasedParts] = await Promise.all([
+    listAdminActiveDrafts(session?.accessToken, true),
+    listUnreleasedDraftParts(session?.accessToken),
+  ]);
 
   return (
     <div className="min-h-screen bg-light-blue">
@@ -56,6 +60,10 @@ export default async function AdminDraftsPage() {
             initialDrafts={displayDrafts}
             accessToken={session?.accessToken ?? ""}
           />
+        </AdminCard>
+
+        <AdminCard title="Completed, Not Released">
+          <UnreleasedPartsList parts={unreleasedParts} />
         </AdminCard>
       </div>
     </div>

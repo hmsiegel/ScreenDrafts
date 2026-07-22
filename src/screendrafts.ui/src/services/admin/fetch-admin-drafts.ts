@@ -93,6 +93,16 @@ export interface AdminDraftDetail {
   parts: DraftPart[];
 }
 
+export interface UnreleasedDraftPart {
+  draftPartPublicId: string;
+  draftPublicId: string;
+  draftTitle: string;
+  partIndex: number;
+  draftType: number;
+  seriesPublicId: string;
+  seriesName: string;
+}
+
 export interface CreateDraftPositionBody {
   name: string;
   picks: number[];
@@ -200,6 +210,31 @@ export async function listAdminActiveDrafts(
     listAdminDrafts(accessToken, 3, 1, 50, includeDeleted),
   ]);
   return [...created, ...paused];
+}
+
+export async function listUnreleasedDraftParts(
+  accessToken: string | undefined,
+  draftPublicId?: string,
+  page = 1,
+  pageSize = 100
+): Promise<UnreleasedDraftPart[]> {
+  try {
+    const url = new URL(`${apiBase}/draft-parts/unreleased`);
+    url.searchParams.set("page", String(page));
+    url.searchParams.set("pageSize", String(pageSize));
+    if (draftPublicId) url.searchParams.set("draftPublicId", draftPublicId);
+
+    const response = await fetch(url.toString(), {
+      headers: authHeaders(accessToken),
+      cache: "no-store",
+    });
+    if (!response.ok) return [];
+    const data = (await response.json()) as { items?: UnreleasedDraftPart[] };
+    return data.items ?? [];
+  } catch (err) {
+    console.error("[listUnreleasedDraftParts]", err);
+    return [];
+  }
 }
 
 export async function listAllSeries(
@@ -798,6 +833,46 @@ export async function restoreDraft(
   if (!res.ok) {
     const text = await res.text().catch(() => res.statusText);
     throw new Error(`POST /drafts/${draftId}/restore failed (${res.status}): ${text}`);
+  }
+}
+
+export async function setDraftPartRelease(
+  accessToken: string,
+  draftPartId: string,
+  releaseDate: string, // "YYYY-MM-DD" — matches DateOnly / <input type="date">
+  releaseChannel: number
+): Promise<void> {
+  const res = await fetch(
+    `${apiBase}/draft-parts/${encodeURIComponent(draftPartId)}/releases`,
+    {
+      method: "POST",
+      headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ draftPartId, releaseDate, releaseChannel }),
+    }
+  );
+  if (!res.ok) {
+    const text = await res.text().catch(() => res.statusText);
+    throw new Error(`POST /draft-parts/${draftPartId}/releases failed (${res.status}): ${text}`);
+  }
+}
+
+export async function setDraftEpisodeNumber(
+  accessToken: string,
+  draftPublicId: string,
+  episodeNumber: number,
+  releaseChannel = 0
+): Promise<void> {
+  const res = await fetch(
+    `${apiBase}/drafts/${encodeURIComponent(draftPublicId)}/episode`,
+    {
+      method: "PUT",
+      headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ draftId: draftPublicId, releaseChannel, episodeNumber }),
+    }
+  );
+  if (!res.ok) {
+    const text = await res.text().catch(() => res.statusText);
+    throw new Error(`PUT /drafts/${draftPublicId}/episode failed (${res.status}): ${text}`);
   }
 }
 

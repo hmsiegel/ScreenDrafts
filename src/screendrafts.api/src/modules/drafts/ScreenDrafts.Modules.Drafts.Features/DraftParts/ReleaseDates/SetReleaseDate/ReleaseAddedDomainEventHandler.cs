@@ -1,4 +1,4 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.SetReleaseDate;
+﻿namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.ReleaseDates.SetReleaseDate;
 
 internal sealed class ReleaseAddedDomainEventHandler(
   IDbConnectionFactory connectionFactory,

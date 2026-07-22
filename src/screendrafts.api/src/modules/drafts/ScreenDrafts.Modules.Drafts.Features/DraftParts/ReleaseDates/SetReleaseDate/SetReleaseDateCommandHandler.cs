@@ -1,13 +1,19 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.SetReleaseDate;
+﻿namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.ReleaseDates.SetReleaseDate;
 
 internal sealed class SetReleaseDateCommandHandler(IDraftPartRepository draftPartRepository)
   : ICommandHandler<SetReleaseDateCommand>
 {
   private readonly IDraftPartRepository _draftPartRepository = draftPartRepository;
 
-  public async Task<Result> Handle(SetReleaseDateCommand request, CancellationToken cancellationToken)
+  public async Task<Result> Handle(
+    SetReleaseDateCommand request,
+    CancellationToken cancellationToken
+  )
   {
-    var draftPart = await _draftPartRepository.GetByPublicIdAsync(request.DraftPartId, cancellationToken);
+    var draftPart = await _draftPartRepository.GetByPublicIdAsync(
+      request.DraftPartId,
+      cancellationToken
+    );
 
     if (draftPart is null)
     {

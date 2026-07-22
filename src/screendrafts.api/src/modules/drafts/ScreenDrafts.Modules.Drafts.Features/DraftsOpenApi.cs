@@ -79,6 +79,7 @@ internal static class DraftsOpenApi
     public const string DraftParts_RemoveCommunityFilmRule = "DraftParts.RemoveCommunityFilmRule";
     public const string DraftParts_UpdateCommunityFilmRule = "DraftParts.UpdateCommunityFilmRule";
     public const string DraftParts_GetGameplay = "DraftParts.GetGameplay";
+    public const string DraftParts_ListUnreleased = "DraftParts.ListUnreleased";
 
     // Campaigns
     public const string Campaigns_CreateCampaign = "Campaigns.CreateCampaign";

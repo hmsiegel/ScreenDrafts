@@ -1,4 +1,4 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.SetReleaseDate;
+﻿namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.ReleaseDates.SetReleaseDate;
 
 internal sealed class SetReleaseDateValidator : AbstractValidator<SetReleaseDateCommand>
 {
@@ -6,7 +6,7 @@ internal sealed class SetReleaseDateValidator : AbstractValidator<SetReleaseDate
   {
     RuleFor(x => x.DraftPartId)
       .NotEmpty()
-      .Must(id => PublicIdGuards.IsValidWithPrefix(id,PublicIdPrefixes.DraftPart))
+      .Must(id => PublicIdGuards.IsValidWithPrefix(id, PublicIdPrefixes.DraftPart))
       .WithMessage("Draft part ID is required.");
 
     RuleFor(x => x.ReleaseChannel)

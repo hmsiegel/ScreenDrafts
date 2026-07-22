@@ -1,8 +1,4 @@
-using ScreenDrafts.Modules.Drafts.Domain.DraftParts.Enums;
-using ScreenDrafts.Modules.Drafts.Features.DraftParts.SetReleaseDate;
-using ScreenDrafts.Modules.Drafts.Features.Drafts.GetDraft;
-
-namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafts;
+﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafts;
 
 public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
   : DraftsIntegrationTest(factory)

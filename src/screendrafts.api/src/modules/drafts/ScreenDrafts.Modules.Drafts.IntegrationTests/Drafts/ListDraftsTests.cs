@@ -1,10 +1,4 @@
-using ScreenDrafts.Modules.Drafts.Domain.DraftParts.Enums;
-using ScreenDrafts.Modules.Drafts.Features.Categories.Create;
-using ScreenDrafts.Modules.Drafts.Features.DraftParts.SetReleaseDate;
-using ScreenDrafts.Modules.Drafts.Features.Drafts.ListDrafts;
-using ScreenDrafts.Modules.Drafts.Features.Drafts.SetCategories;
-
-namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafts;
+﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Drafts;
 
 public sealed class ListDraftsTests(DraftsIntegrationTestWebAppFactory factory)
   : DraftsIntegrationTest(factory)

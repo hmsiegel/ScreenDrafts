@@ -13,6 +13,7 @@ internal static class DraftPartRoutes
   public const string Releases = ById + "/releases";
   public const string RemoveReleaseDate = ById + "/releases/{releaseId}";
   public const string Episode = ById + "/episode";
+  public const string Unreleased = "/draft-parts/unreleased";
 
   // Hosts
   public const string Hosts = ById + "/hosts";

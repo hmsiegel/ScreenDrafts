@@ -767,16 +767,6 @@
           "Series"
         ],
         "operationId": "Series.RestoreSeries",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RestoreSeriesRequest"
-              }
-            }
-          },
-          "required": true
-        },
         "responses": {
           "204": {
             "description": "No Content"
@@ -997,21 +987,6 @@
           "Series"
         ],
         "operationId": "Series.DeleteSeries",
-        "requestBody": {
-          "content": {
-            "*/*": {
-              "schema": {
-                "$ref": "#/components/schemas/DeleteSeriesRequest"
-              }
-            },
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/DeleteSeriesRequest"
-              }
-            }
-          },
-          "required": true
-        },
         "responses": {
           "204": {
             "description": "No Content"
@@ -2438,21 +2413,6 @@
           "Drafts"
         ],
         "operationId": "Drafts.DeleteDraft",
-        "requestBody": {
-          "content": {
-            "*/*": {
-              "schema": {
-                "$ref": "#/components/schemas/DeleteDraftRequest"
-              }
-            },
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/DeleteDraftRequest"
-              }
-            }
-          },
-          "required": true
-        },
         "responses": {
           "400": {
             "description": "Bad Request"
@@ -2764,16 +2724,6 @@
           "Drafts"
         ],
         "operationId": "Drafts.Restore",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RestoreDraftRequest"
-              }
-            }
-          },
-          "required": true
-        },
         "responses": {
           "204": {
             "description": "No Content"
@@ -4093,6 +4043,44 @@
         ]
       }
     },
+    "/draft-parts/{draftPartId}/community-limits": {
+      "put": {
+        "tags": [
+          "DraftParts"
+        ],
+        "operationId": "DraftParts.SetCommunityLimits",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetCommunityLimitsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
     "/draft-parts/{draftPartId}/releases": {
       "post": {
         "tags": [
@@ -4131,25 +4119,37 @@
         ]
       }
     },
-    "/draft-parts/{draftPartId}/community-limits": {
-      "put": {
+    "/draft-parts/{draftPartId}/unreleased": {
+      "get": {
         "tags": [
           "DraftParts"
         ],
-        "operationId": "DraftParts.SetCommunityLimits",
+        "operationId": "DraftParts.ListUnreleased",
         "requestBody": {
           "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/ListUnreleasedDraftPartsRequest"
+              }
+            },
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/SetCommunityLimitsRequest"
+                "$ref": "#/components/schemas/ListUnreleasedDraftPartsRequest"
               }
             }
           },
           "required": true
         },
         "responses": {
-          "204": {
-            "description": "No Content"
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultOfUnreleasedDraftPartResponse"
+                }
+              }
+            }
           },
           "400": {
             "description": "Bad Request"
@@ -4159,9 +4159,6 @@
           },
           "403": {
             "description": "Forbidden"
-          },
-          "404": {
-            "description": "Not Found"
           }
         },
         "security": [
@@ -5864,16 +5861,6 @@
           "Categories"
         ],
         "operationId": "Categories.RestoreCategory",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RestoreCategoryRequest"
-              }
-            }
-          },
-          "required": true
-        },
         "responses": {
           "204": {
             "description": "No Content"
@@ -6065,21 +6052,6 @@
           "Categories"
         ],
         "operationId": "Categories.DeleteCategory",
-        "requestBody": {
-          "content": {
-            "*/*": {
-              "schema": {
-                "$ref": "#/components/schemas/DeleteCategoryRequest"
-              }
-            },
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/DeleteCategoryRequest"
-              }
-            }
-          },
-          "required": true
-        },
         "responses": {
           "204": {
             "description": "No Content"
@@ -6105,16 +6077,6 @@
           "Campaigns"
         ],
         "operationId": "Campaigns.RestoreCampaign",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RestoreCampaignRequest"
-              }
-            }
-          },
-          "required": true
-        },
         "responses": {
           "204": {
             "description": "No Content"
@@ -6306,21 +6268,6 @@
           "Campaigns"
         ],
         "operationId": "Campaigns.DeleteCampaign",
-        "requestBody": {
-          "content": {
-            "*/*": {
-              "schema": {
-                "$ref": "#/components/schemas/DeleteCampaignRequest"
-              }
-            },
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/DeleteCampaignRequest"
-              }
-            }
-          },
-          "required": true
-        },
         "responses": {
           "204": {
             "description": "No Content"
@@ -8869,44 +8816,6 @@
         }
       },
       "DeactivateSpotlightRequest": {
-        "type": "object",
-        "properties": {
-          "publicId": {
-            "type": "string"
-          }
-        }
-      },
-      "DeleteCampaignRequest": {
-        "required": [
-          "publicId"
-        ],
-        "type": "object",
-        "properties": {
-          "publicId": {
-            "type": "string"
-          }
-        }
-      },
-      "DeleteCategoryRequest": {
-        "required": [
-          "publicId"
-        ],
-        "type": "object",
-        "properties": {
-          "publicId": {
-            "type": "string"
-          }
-        }
-      },
-      "DeleteDraftRequest": {
-        "type": "object",
-        "properties": {
-          "publicId": {
-            "type": "string"
-          }
-        }
-      },
-      "DeleteSeriesRequest": {
         "type": "object",
         "properties": {
           "publicId": {
@@ -13171,6 +13080,33 @@
           }
         }
       },
+      "ListUnreleasedDraftPartsRequest": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "pageSize": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "draftPublicId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
       "ListUpcomingDraftsRequest": {
         "type": "object",
         "properties": {
@@ -14606,6 +14542,61 @@
           }
         }
       },
+      "PagedResultOfUnreleasedDraftPartResponse": {
+        "required": [
+          "items",
+          "totalCount",
+          "page",
+          "pageSize"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UnreleasedDraftPartResponse"
+            }
+          },
+          "totalCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "page": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "pageSize": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "totalPages": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "hasPreviousPage": {
+            "type": "boolean"
+          },
+          "hasNextPage": {
+            "type": "boolean"
+          }
+        }
+      },
       "PagedResultOfUserItem": {
         "required": [
           "items",
@@ -15860,38 +15851,6 @@
           }
         }
       },
-      "RestoreCampaignRequest": {
-        "type": "object",
-        "properties": {
-          "publicId": {
-            "type": "string"
-          }
-        }
-      },
-      "RestoreCategoryRequest": {
-        "type": "object",
-        "properties": {
-          "publicId": {
-            "type": "string"
-          }
-        }
-      },
-      "RestoreDraftRequest": {
-        "type": "object",
-        "properties": {
-          "publicId": {
-            "type": "string"
-          }
-        }
-      },
-      "RestoreSeriesRequest": {
-        "type": "object",
-        "properties": {
-          "publicId": {
-            "type": "string"
-          }
-        }
-      },
       "ScoreDraftPartPredictionsRequest": {
         "type": "object",
         "properties": {
@@ -17134,6 +17093,49 @@
               "null",
               "string"
             ]
+          }
+        }
+      },
+      "UnreleasedDraftPartResponse": {
+        "required": [
+          "draftPartPublicId",
+          "draftPublicId",
+          "draftTitle",
+          "seriesPublicId",
+          "seriesName"
+        ],
+        "type": "object",
+        "properties": {
+          "draftPartPublicId": {
+            "type": "string"
+          },
+          "draftPublicId": {
+            "type": "string"
+          },
+          "draftTitle": {
+            "type": "string"
+          },
+          "partIndex": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "draftType": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "seriesPublicId": {
+            "type": "string"
+          },
+          "seriesName": {
+            "type": "string"
           }
         }
       },
