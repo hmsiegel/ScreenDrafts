@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Common.Abstractions.Results;
-
-namespace ScreenDrafts.Modules.Drafts.Domain.Drafts;
+﻿namespace ScreenDrafts.Modules.Drafts.Domain.Drafts;
 
 public sealed partial class Draft
 {

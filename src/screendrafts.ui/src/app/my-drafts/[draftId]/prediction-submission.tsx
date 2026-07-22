@@ -1,19 +1,24 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
+import * as signalR from "@microsoft/signalr";
 import MovieSearchInput from "@/components/drafts/movie-search-input";
 import { type MovieSearchResult } from "@/services/movies/fetch-tmdb";
 import {
   getCurrentPredictionSeason,
   getDraftPartPredictionRules,
+  getDraftPartPredictions,
   submitPredictionSet,
   SubmitPredictionEntry,
 } from "@/services/drafts/fetch-my-drafts";
+import { parseApiErrorMessage } from "@/lib/parse-api-error";
 
 interface Props {
   accessToken: string;
   draftPartId: string;
   contestantPublicId: string;
+  // Kept for backward compatibility with my-draft-tabs.tsx — not the
+  // source of truth, just an initial hint for the loading-state label.
   hasSubmitted: boolean;
 }
 
@@ -42,24 +47,93 @@ export default function PredictionSubmission({
     topN: number | null;
     deadlineUtc: string | null;
   } | null>(null);
-  const [rulesLoading, setRulesLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [seasonPublicId, setSeasonPublicId] = useState<string | null>(null);
 
   const [entries, setEntries] = useState<SubmitPredictionEntry[]>([]);
-  const [submitting, setSubmitting] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [submitted, setSubmitted] = useState(hasSubmitted);
+  const [isLocked, setIsLocked] = useState(false);
+  const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
+  const [justLocked, setJustLocked] = useState(false);
 
-  useEffect(() => {
-    Promise.all([
+  const loadState = useCallback(async () => {
+    const [r, season, sets] = await Promise.all([
       getDraftPartPredictionRules(accessToken, draftPartId),
       getCurrentPredictionSeason(accessToken),
-    ]).then(([r, season]) => {
-      setRules(r);
-      setSeasonPublicId(season?.publicId ?? null);
-      setRulesLoading(false);
+      getDraftPartPredictions(accessToken, draftPartId),
+    ]);
+
+    setRules(r);
+    setSeasonPublicId(season?.publicId ?? null);
+
+    const mySet = sets.find((s) => s.contestantPublicId === contestantPublicId);
+    if (mySet) {
+      setIsLocked(mySet.isLocked);
+      setEntries(
+        [...mySet.entries]
+          .sort((a, b) => a.orderIndex - b.orderIndex)
+          .map((e) => ({
+            tmdbId: e.tmdbId,
+            mediaTitle: e.mediaTitle,
+            orderIndex: e.orderIndex,
+            notes: e.notes,
+          }))
+      );
+    }
+  }, [accessToken, draftPartId, contestantPublicId]);
+
+  // Initial load.
+  useEffect(() => {
+    loadState().finally(() => setLoading(false));
+  }, [loadState]);
+
+  // Real-time: if the draft part starts while this tab is open, re-fetch
+  // to pick up the server's authoritative locked state — rather than
+  // guessing client-side what got locked, since a partial save could
+  // still be sitting in local state that never made it to the server.
+  const previousTeardownRef = useRef<Promise<void> | null>(null);
+
+  useEffect(() => {
+    const hubUrl = `${process.env.NEXT_PUBLIC_API_URL}/drafts/hub`;
+
+    const connection = new signalR.HubConnectionBuilder()
+      .withUrl(hubUrl, { accessTokenFactory: () => accessToken })
+      .withAutomaticReconnect()
+      .build();
+
+    connection.on("DraftPartStarted", () => {
+      setJustLocked(true);
+      loadState();
     });
-  }, [accessToken, draftPartId]);
+
+    let mounted = true;
+
+    async function start() {
+      if (previousTeardownRef.current) {
+        await previousTeardownRef.current;
+      }
+      if (!mounted) return;
+      try {
+        await connection.start();
+        if (!mounted) return;
+        await connection.invoke("JoinDraftPartAsync", draftPartId);
+      } catch {
+        // Silent — same as MyDraftsRealtimeRefresher. A failed connection
+        // just means a manual reload is needed to see the lock, same as
+        // before this existed. The save-time DraftPartAlreadyStarted
+        // error is still the hard backstop either way.
+      }
+    }
+
+    const startPromise = start();
+
+    return () => {
+      mounted = false;
+      const teardown = startPromise.catch(() => undefined).then(() => connection.stop());
+      previousTeardownRef.current = teardown;
+    };
+  }, [accessToken, draftPartId, loadState]);
 
   function handleSelect(movie: MovieSearchResult) {
     if (!rules) return;
@@ -94,10 +168,10 @@ export default function PredictionSubmission({
     setEntries(next.map((e, i) => ({ ...e, orderIndex: i + 1 })));
   }
 
-  async function handleSubmit() {
-    if (!rules || !seasonPublicId) return;
+  async function handleSave() {
+    if (!rules || !seasonPublicId || entries.length === 0) return;
     setError(null);
-    setSubmitting(true);
+    setSaving(true);
     try {
       await submitPredictionSet(accessToken, draftPartId, {
         seasonPublicId,
@@ -106,16 +180,20 @@ export default function PredictionSubmission({
         sourceKind: 0, // PredictionSourceKind.UI
         entries,
       });
-      setSubmitted(true);
+      setLastSavedAt(new Date());
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Submission failed.");
+      setError(parseApiErrorMessage(err, "Save failed. Please try again."));
     } finally {
-      setSubmitting(false);
+      setSaving(false);
     }
   }
 
-  if (rulesLoading) {
-    return <p className="text-sm text-sd-ink/40 font-mono">Loading…</p>;
+  if (loading) {
+    return (
+      <p className="text-sm text-sd-ink/40 font-mono">
+        {hasSubmitted ? "Loading your predictions…" : "Loading…"}
+      </p>
+    );
   }
 
   if (!rules) {
@@ -126,10 +204,22 @@ export default function PredictionSubmission({
     );
   }
 
-  if (submitted) {
+  if (isLocked) {
     return (
-      <div className="border border-sd-ink/10 rounded p-4 bg-white">
-        <p className="text-sm text-sd-ink">Your predictions are in.</p>
+      <div className="border border-sd-ink/10 rounded p-4 bg-white space-y-2">
+        {justLocked && (
+          <p className="text-sm text-sd-blue">The draft just started — your picks are locked in.</p>
+        )}
+        <p className="text-sm text-sd-ink">
+          Your predictions are locked in — the draft has started.
+        </p>
+        {entries.length > 0 && (
+          <ul className="text-sm text-sd-ink/70 list-decimal list-inside space-y-0.5">
+            {entries.map((e) => (
+              <li key={e.tmdbId}>{e.mediaTitle}</li>
+            ))}
+          </ul>
+        )}
       </div>
     );
   }
@@ -213,14 +303,26 @@ export default function PredictionSubmission({
 
           {error && <p className="text-sm text-sd-red">{error}</p>}
 
-          <button
-            type="button"
-            onClick={handleSubmit}
-            disabled={!complete || submitting || !seasonPublicId}
-            className="bg-sd-red text-white font-oswald font-medium uppercase tracking-wide text-xs px-4 py-2 hover:bg-sd-red/90 disabled:opacity-50"
-          >
-            {submitting ? "Submitting…" : "Submit Predictions"}
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={handleSave}
+              disabled={entries.length === 0 || saving}
+              className="bg-sd-red text-white font-oswald font-medium uppercase tracking-wide text-xs px-4 py-2 hover:bg-sd-red/90 disabled:opacity-50"
+            >
+              {saving ? "Saving…" : complete ? "Save Final Picks" : "Save Progress"}
+            </button>
+            {lastSavedAt && !saving && (
+              <span className="text-[11px] font-mono text-sd-ink/40">
+                Saved
+              </span>
+            )}
+          </div>
+
+          <p className="text-[11px] font-mono text-sd-ink/40">
+            You can keep editing and saving until the draft starts.
+            {!complete && ` ${rules.requiredCount - entries.length} more needed.`}
+          </p>
         </>
       )}
     </div>

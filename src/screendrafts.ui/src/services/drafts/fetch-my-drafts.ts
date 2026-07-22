@@ -20,6 +20,34 @@ export interface SubmitPredictionEntry {
   notes: string | null;
 }
 
+export interface PredictionEntryDto {
+  tmdbId: number;
+  mediaPublicId: string;
+  mediaTitle: string;
+  orderIndex: number;
+  isCorrect: boolean | null;
+  notes: string | null;
+}
+
+export interface PredictionResultDto {
+  correctCount: number;
+  shootsTheMoon: boolean;
+  pointsAwarded: number;
+  scoredAtUtc: string;
+}
+
+export interface DraftPartPredictionSetDto {
+  publicId: string;
+  contestantPublicId: string;
+  contestantDisplayName: string;
+  submittedAtUtc: string;
+  sourceKind: string;
+  isLocked: boolean;
+  lockedAtUtc: string | null;
+  entries: PredictionEntryDto[];
+  result: PredictionResultDto | null;
+}
+
 const apiBase = env.apiUrl;
 
 export async function getMyDrafts(
@@ -173,5 +201,25 @@ export async function submitPredictionSet(
     throw new Error(
       `POST /draft-parts/${draftPartId}/predictions failed (${res.status}): ${text}`
     );
+  }
+}
+
+export async function getDraftPartPredictions(
+  accessToken: string | undefined,
+  draftPartId: string
+): Promise<DraftPartPredictionSetDto[]> {
+  try {
+    const res = await fetch(
+      `${apiBase}/draft-parts/${encodeURIComponent(draftPartId)}/predictions`,
+      {
+        headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
+        cache: "no-store",
+      }
+    );
+    if (!res.ok) return [];
+    return (await res.json()) as DraftPartPredictionSetDto[];
+  } catch (err) {
+    console.error("[getDraftPartPredictions]", err);
+    return [];
   }
 }

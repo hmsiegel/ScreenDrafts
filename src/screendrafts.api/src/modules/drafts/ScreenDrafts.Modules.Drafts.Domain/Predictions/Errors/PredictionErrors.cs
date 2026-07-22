@@ -87,6 +87,16 @@ public static class PredictionErrors
       "The surrogate assignment does not belong to this prediction set."
     );
 
+  public static readonly SDError SeasonNumberMustBePositive = SDError.Problem(
+    "PredictionErrors.SeasonNumberMustBePositive",
+    "The season number must be positive."
+  );
+
+  public static readonly SDError DraftPartAlreadyStarted = SDError.Conflict(
+    "PredictionErrors.DraftPartAlreadyStarted",
+    "The draft part has already started."
+  );
+
   public static readonly SDError DuplicateEntryInSet = SDError.Conflict(
     "PredictionErrors.DuplicateEntryInSet",
     "The same entry appears more than once in the prediction set."
@@ -129,5 +139,11 @@ public static class PredictionErrors
     SDError.NotFound(
       "PredictionErrors.SubmitterPersonNotFound",
       $"Person '{personPublicId}' was not found."
+    );
+
+  public static SDError SeasonNumberAlreadyExists(int number) =>
+    SDError.Conflict(
+      "PredictionErrors.SeasonNumberAlreadyExists",
+      $"A prediction season with number '{number}' already exists."
     );
 }

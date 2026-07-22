@@ -10,7 +10,8 @@ public sealed class PredictionSeason : AggregateRoot<PredictionSeasonId, Guid>
     int number,
     DateOnly startsOn,
     string publicId,
-    PredictionSeasonId? id = null)
+    PredictionSeasonId? id = null
+  )
     : base(id ?? PredictionSeasonId.CreateUnique())
   {
     Number = number;
@@ -18,9 +19,7 @@ public sealed class PredictionSeason : AggregateRoot<PredictionSeasonId, Guid>
     PublicId = publicId;
   }
 
-  private PredictionSeason()
-  {
-  }
+  private PredictionSeason() { }
 
   public int Number { get; private set; } = 1;
   public string PublicId { get; private set; } = default!;
@@ -33,13 +32,17 @@ public sealed class PredictionSeason : AggregateRoot<PredictionSeasonId, Guid>
   public IReadOnlyCollection<PredictionCarryover> Carryovers => _carryovers.AsReadOnly();
   public IReadOnlyCollection<DraftPredictionSet> Sets => _sets.AsReadOnly();
 
-  public static PredictionSeason Create(
-    int number,
-    DateOnly startsOn,
-    string publicId) => new(
-      number: number,
-      startsOn: startsOn,
-      publicId: publicId);
+  public static Result<PredictionSeason> Create(int number, DateOnly startsOn, string publicId)
+  {
+    if (number <= 0)
+    {
+      return Result.Failure<PredictionSeason>(PredictionErrors.SeasonNumberMustBePositive);
+    }
+
+    var season = new PredictionSeason(number, startsOn, publicId);
+
+    return Result.Success(season);
+  }
 
   /// <summary>
   /// Closes the season and records the date.

@@ -15,8 +15,34 @@ internal sealed class GetCurrentPredictionSeasonQueryHandler(
   {
     await using var connection = await _connectionFactory.OpenConnectionAsync(cancellationToken);
 
+    // CHANGED: resolved_season picks the open season if one exists; if
+    // none does (every season closed, none started yet — the gap between
+    // a season closing and the next draft part triggering a new one),
+    // falls back to the most recently closed season by number instead of
+    // returning nothing. The rest of the query is unchanged — it just
+    // joins against whichever season resolved_season picked instead of
+    // hardcoding "WHERE ps.is_closed = FALSE".
     const string sql = """
-      WITH season_episodes AS (
+      WITH target_season AS (
+        SELECT id
+        FROM drafts.prediction_seasons
+        WHERE is_closed = FALSE
+        ORDER BY number DESC
+        LIMIT 1
+      ),
+      fallback_season AS (
+        SELECT id
+        FROM drafts.prediction_seasons
+        WHERE NOT EXISTS (SELECT 1 FROM target_season)
+        ORDER BY number DESC
+        LIMIT 1
+      ),
+      resolved_season AS (
+        SELECT id FROM target_season
+        UNION ALL
+        SELECT id FROM fallback_season
+      ),
+      season_episodes AS (
         SELECT
           dps.season_id,
           MIN(dcr.episode_number) AS FirstEpisodeNumber,
@@ -53,13 +79,13 @@ internal sealed class GetCurrentPredictionSeasonQueryHandler(
         COALESCE(st.points, 0) + COALESCE(ct.CarryoverPoints, 0) AS TotalPoints,
         st.first_crossed_target_at_utc    AS FirstCrossedTargetAtUtc
       FROM drafts.prediction_seasons ps
+      JOIN resolved_season                    rs ON rs.id          = ps.id
       LEFT JOIN season_episodes           se ON se.season_id  = ps.id
       LEFT JOIN drafts.prediction_standings   st ON st.season_id     = ps.id
       LEFT JOIN drafts.prediction_contestants c  ON c.id             = st.contestant_id
       LEFT JOIN drafts.people ppl ON ppl.id = c.person_id
       LEFT JOIN carryover_totals          ct ON ct.season_id = ps.id AND ct.contestant_id = c.id
-      WHERE ps.is_closed = FALSE
-      AND (c.id IS NULL OR ppl.public_id = ANY (@CommissionerPersonPublicIds))
+      WHERE (c.id IS NULL OR ppl.public_id = ANY (@CommissionerPersonPublicIds))
       GROUP BY
         ps.public_id, ps.number, ps.starts_on, ps.ends_on,
         ps.target_points, ps.is_closed,
@@ -83,6 +109,8 @@ internal sealed class GetCurrentPredictionSeasonQueryHandler(
       )
     ).ToList();
 
+    // Now only empty if literally no season has ever been created — a
+    // brand-new install, not the "between seasons" gap this fix targets.
     if (rows.Count == 0)
     {
       return Result.Failure<PredictionSeasonSummaryResponse>(

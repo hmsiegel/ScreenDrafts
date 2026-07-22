@@ -43,6 +43,16 @@ internal sealed class SubmitPredictionSetCommandHandler(
       return Result.Failure(DraftPartErrors.NotFound(request.DraftPartPublicId));
     }
 
+    // NEW — closes the race between the draft starting (which locks every
+    // set via LockPredictionSetsOnDraftPartStartedDomainEventHandler) and a
+    // submission landing before that handler has run. Checking status here
+    // directly means correctness doesn't depend on handler ordering.
+    //
+    if (draftPart.Status != DraftPartStatus.Created)
+    {
+      return Result.Failure(PredictionErrors.DraftPartAlreadyStarted);
+    }
+
     var contestant = await _contestantRepository.GetByPublicIdAsync(
       request.ContestantPublicId,
       cancellationToken
@@ -106,7 +116,13 @@ internal sealed class SubmitPredictionSetCommandHandler(
       return Result.Failure(PredictionErrors.DeadlinePassed);
     }
 
-    if (request.Entries.Count != rules.RequiredCount)
+    // CHANGED — was `!= rules.RequiredCount` (exact match only). A partial
+    // save (1..RequiredCount) is now valid; only zero entries or more than
+    // the rules allow are rejected. Completeness is no longer enforced at
+    // save time — it was never enforced at lock time either (locking
+    // proceeds "as-is" per confirmed behavior), so this handler shouldn't
+    // be stricter than the point that actually finalizes things.
+    if (request.Entries.Count < 1 || request.Entries.Count > rules.RequiredCount)
     {
       return Result.Failure(
         PredictionErrors.InvalidEntryCount(rules.RequiredCount, request.Entries.Count)
@@ -134,10 +150,14 @@ internal sealed class SubmitPredictionSetCommandHandler(
       cancellationToken
     );
 
-    if (existing is not null)
-    {
-      return Result.Failure(PredictionErrors.SetAlreadyExists);
-    }
+    // CHANGED — was an unconditional failure (PredictionErrors.SetAlreadyExists)
+    // whenever a set already existed. Now branches: no set yet → create
+    // (original path, unchanged below); set exists and unlocked → replace
+    // its entries (upsert, enables repeated saves); set exists and locked →
+    // reject. ReplaceEntries() already returns PredictionErrors.SetAlreadyLocked
+    // for the locked case on its own, so that branch needs no separate check
+    // here — just let it flow through and propagate whatever ReplaceEntries
+    // returns.
 
     // Sequential — one scoped DbContext underneath these repositories.
     // Task.WhenAll over this loop fires concurrent operations on the same
@@ -163,6 +183,32 @@ internal sealed class SubmitPredictionSetCommandHandler(
           cancellationToken
         );
       }
+    }
+
+    if (existing is not null)
+    {
+      var replaceEntries = request
+        .Entries.Select(dto =>
+          PredictionEntry.Create(
+            predictionSet: existing,
+            tmdbId: dto.TmdbId,
+            mediaTitle: dto.MediaTitle,
+            orderIndex: dto.OrderIndex,
+            notes: dto.Notes
+          )
+        )
+        .ToList();
+
+      var replaceExistingResult = existing.ReplaceEntries(replaceEntries);
+
+      if (replaceExistingResult.IsFailure)
+      {
+        return replaceExistingResult;
+      }
+
+      _setRepository.Update(existing);
+
+      return Result.Success();
     }
 
     // SubmittedByPersonPublicId, if given, is recorded for the audit trail —

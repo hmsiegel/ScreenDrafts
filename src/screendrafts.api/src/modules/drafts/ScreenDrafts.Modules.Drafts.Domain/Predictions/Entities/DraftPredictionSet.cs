@@ -12,7 +12,8 @@ public sealed class DraftPredictionSet : Entity<DraftPredictionSetId>
     PredictionContestant contestant,
     Person? submittedByPerson,
     PredictionSourceKind sourceKind,
-    DraftPredictionSetId? id = null)
+    DraftPredictionSetId? id = null
+  )
     : base(id ?? DraftPredictionSetId.CreateUnique())
   {
     PublicId = publicId;
@@ -32,22 +33,20 @@ public sealed class DraftPredictionSet : Entity<DraftPredictionSetId>
     SourceKind = sourceKind;
   }
 
-  private DraftPredictionSet()
-  {
-  }
+  private DraftPredictionSet() { }
 
   public string PublicId { get; private set; } = default!;
 
   public PredictionSeason Season { get; private set; } = default!;
-  public PredictionSeasonId SeasonId { get; private set; } = default!; 
+  public PredictionSeasonId SeasonId { get; private set; } = default!;
 
   public DraftPart DraftPart { get; private set; } = default!;
-  public DraftPartId DraftPartId { get; private set; } = default!;          // where rules live 
+  public DraftPartId DraftPartId { get; private set; } = default!; // where rules live
 
   public PredictionContestant Contestant { get; private set; } = default!;
-  public ContestantId ContestantId { get; private set; } = default!;  
+  public ContestantId ContestantId { get; private set; } = default!;
 
-  public Person? SubmittedByPerson { get; private set; } = default!; 
+  public Person? SubmittedByPerson { get; private set; } = default!;
   public PersonId? SubmittedByPersonId { get; private set; } = default!;
 
   public DateTime SubmittedAtUtc { get; private set; } = DateTime.UtcNow;
@@ -69,7 +68,8 @@ public sealed class DraftPredictionSet : Entity<DraftPredictionSetId>
     DraftPart draftPart,
     PredictionContestant contestant,
     Person? submittedByPerson,
-    PredictionSourceKind sourceKind)
+    PredictionSourceKind sourceKind
+  )
   {
     ArgumentNullException.ThrowIfNull(season);
     ArgumentNullException.ThrowIfNull(draftPart);
@@ -81,13 +81,17 @@ public sealed class DraftPredictionSet : Entity<DraftPredictionSetId>
       draftPart: draftPart,
       contestant: contestant,
       submittedByPerson: submittedByPerson,
-      sourceKind: sourceKind);
+      sourceKind: sourceKind
+    );
 
-    set.Raise(new PredictionSetSubmittedDomainEvent(
-      setId: set.Id,
-      contestantId: set.ContestantId,
-      draftPartId: set.DraftPartId,
-      seasonId: set.SeasonId));
+    set.Raise(
+      new PredictionSetSubmittedDomainEvent(
+        setId: set.Id,
+        contestantId: set.ContestantId,
+        draftPartId: set.DraftPartId,
+        seasonId: set.SeasonId
+      )
+    );
 
     return set;
   }
@@ -126,11 +130,14 @@ public sealed class DraftPredictionSet : Entity<DraftPredictionSetId>
     RulesSnapshot = rulesSnapshot;
     LockedAtUtc = now;
 
-    Raise(new PredictionSetLockedDomainEvent(
-      setId: Id,
-      contestantId: ContestantId,
-      draftPartId: DraftPartId,
-      lockedAtUtc: now));
+    Raise(
+      new PredictionSetLockedDomainEvent(
+        setId: Id,
+        contestantId: ContestantId,
+        draftPartId: DraftPartId,
+        lockedAtUtc: now
+      )
+    );
 
     return Result.Success();
   }
@@ -155,12 +162,42 @@ public sealed class DraftPredictionSet : Entity<DraftPredictionSetId>
 
   public void RaiseScored(int pointsAwarded, bool shootTheMoon, PredictionSeasonId seasonId)
   {
-    Raise(new PredictionSetScoredDomainEvent(
-      setId: Id,
-      contestantId: ContestantId,
-      pointsAwarded: pointsAwarded,
-      shootTheMoon: shootTheMoon,
-      seasonId: seasonId));
+    Raise(
+      new PredictionSetScoredDomainEvent(
+        setId: Id,
+        contestantId: ContestantId,
+        pointsAwarded: pointsAwarded,
+        shootTheMoon: shootTheMoon,
+        seasonId: seasonId
+      )
+    );
   }
 
+  /// <summary>
+  /// Reassigns this set to a different prediction season. Needed because a
+  /// set's season is set once, at Submit time — but Submit can happen days
+  /// or weeks before the draft part actually starts, during which the
+  /// season that was "current" at save time can close and a new one open.
+  /// Called at draft-part-start, right before locking, so a set always ends
+  /// up filed under whichever season is actually open when it's finalized,
+  /// not whichever was open when it was first saved. Rejected if the set is
+  /// already locked, matching ReplaceEntries' guard — a locked set's season
+  /// is as final as its entries.
+  /// </summary>
+  /// <param name="season">The season to reassign this set to.</param>
+  /// <returns>A result indicating success or failure.</returns>
+  public Result ReassignSeason(PredictionSeason season)
+  {
+    ArgumentNullException.ThrowIfNull(season);
+
+    if (IsLocked)
+    {
+      return Result.Failure(PredictionErrors.SetAlreadyLocked);
+    }
+
+    Season = season;
+    SeasonId = season.Id;
+
+    return Result.Success();
+  }
 }

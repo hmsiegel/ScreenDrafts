@@ -71,7 +71,7 @@ services:
 
   # Main App DB
   screendrafts.database:
-    image: postgres:latest
+    image: postgres:17
     environment:
       - POSTGRES_DB=screendrafts
       - POSTGRES_USER=postgres
@@ -203,7 +203,7 @@ services:
   screendrafts.email:
     image: changemakerstudiosus/papercut-smtp:latest
     ports:
-      - "8085:80"
+      - "8084:80"
       - "25:25"
     networks:
       - screendrafts
