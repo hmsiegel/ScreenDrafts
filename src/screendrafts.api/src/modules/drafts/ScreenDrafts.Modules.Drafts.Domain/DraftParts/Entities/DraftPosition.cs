@@ -157,14 +157,17 @@ public sealed class DraftPosition : Entity<DraftPositionId>
     AssignedToId = participant.Value;
     AssignedToKind = participant.Kind;
 
-    Raise(
-      new DraftPositionAssignedDomainEvent(
-        draftPartId: GameBoard.DraftPartId!.Value,
-        draftPositionId: Id.Value,
-        participantId: participant.Value,
-        participantKind: participant.Kind.Value
-      )
-    );
+    if (GameBoard.DraftPartId is not null)
+    {
+      Raise(
+        new DraftPositionAssignedDomainEvent(
+          draftPartId: GameBoard.DraftPartId!.Value,
+          draftPositionId: Id.Value,
+          participantId: participant.Value,
+          participantKind: participant.Kind.Value
+        )
+      );
+    }
 
     return Result.Success();
   }

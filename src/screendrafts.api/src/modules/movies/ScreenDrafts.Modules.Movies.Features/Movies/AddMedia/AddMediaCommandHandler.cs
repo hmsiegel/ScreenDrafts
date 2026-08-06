@@ -20,28 +20,44 @@ internal sealed class AddMediaCommandHandler(
   )
   {
     // Existence check: use TmdbId for movies & tv, Igdb for games.
-    var titleExists = request.IgdbId.HasValue
-      ? await _mediaRepository.ExistsByIgdbIdAsync(request.IgdbId.Value, cancellationToken)
-      : await _mediaRepository.ExistsByTmdbIdAsync(
-        request.TmdbId!.Value,
+    bool titleExists;
+    if (request.IgdbId.HasValue)
+    {
+      titleExists = await _mediaRepository.ExistsByIgdbIdAsync(
+        request.IgdbId.Value,
+        cancellationToken
+      );
+    }
+    else if (request.TmdbId.HasValue)
+    {
+      titleExists = await _mediaRepository.ExistsByTmdbIdAsync(
+        request.TmdbId.Value,
         request.MediaType,
         cancellationToken
       );
+    }
+    else
+    {
+      titleExists =
+        !string.IsNullOrWhiteSpace(request.ExternalId)
+        && await _mediaRepository.ExistsByExternalIdAsync(request.ExternalId, cancellationToken);
+    }
 
     if (titleExists)
     {
-      if (request.IgdbId.HasValue)
-      {
-        var igdbIdStr = request.IgdbId.Value.ToString(CultureInfo.InvariantCulture);
-        MovieLoggingMessages.MovieAlreadyExists(_logger, igdbIdStr);
-        return Result.Failure<string>(MediaErrors.MediaAlreadyExists(igdbIdStr));
-      }
-      else
-      {
-        var tmdbIdStr = request.TmdbId!.Value.ToString(CultureInfo.InvariantCulture);
-        MovieLoggingMessages.MovieAlreadyExists(_logger, tmdbIdStr);
-        return Result.Failure<string>(MediaErrors.MediaAlreadyExists(request.TmdbId!.Value));
-      }
+      var existingIdStr =
+        request.IgdbId?.ToString(CultureInfo.InvariantCulture)
+        ?? request.TmdbId?.ToString(CultureInfo.InvariantCulture)
+        ?? request.ExternalId
+        ?? "unknown";
+
+      MovieLoggingMessages.MovieAlreadyExists(_logger, existingIdStr);
+
+      var error = request.IgdbId.HasValue || request.TmdbId.HasValue
+        ? MediaErrors.MediaAlreadyExists(request.IgdbId ?? request.TmdbId!.Value)
+        : MediaErrors.MediaAlreadyExists(existingIdStr);
+
+      return Result.Failure<string>(error);
     }
 
     var releaseDate = request.ReleaseDate ?? request.Year;
@@ -58,7 +74,7 @@ internal sealed class AddMediaCommandHandler(
       imdbId: request.ImdbId,
       tmdbId: request.TmdbId,
       igdbId: request.IgdbId,
-      externalId: null,
+      externalId: request.ExternalId,
       youtubeTrailerUrl: request.YouTubeTrailerUrl,
       mediaType: request.MediaType,
       tvSeriesTmdbId: request.TvSeriesTmdbId,
@@ -110,6 +126,7 @@ internal sealed class AddMediaCommandHandler(
       media.ImdbId
         ?? media.TmdbId?.ToString(CultureInfo.InvariantCulture)
         ?? media.IgdbId?.ToString(CultureInfo.InvariantCulture)
+        ?? media.ExternalId
         ?? "N/A"
     );
   }

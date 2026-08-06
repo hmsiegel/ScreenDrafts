@@ -39,6 +39,7 @@ internal sealed partial class VetoAppliedIntegrationEventConsumer(
       integrationEvent.VetoedByParticipantKind,
       integrationEvent.PlayedByParticipantId,
       integrationEvent.PlayedByParticipantKind,
+      integrationEvent.SubDraftPublicId,
       Participants = tokens.Select(t => new
       {
         t.ParticipantIdValue,
@@ -48,9 +49,14 @@ internal sealed partial class VetoAppliedIntegrationEventConsumer(
       }),
     };
 
-    await _hubContext
-      .Clients.Group(DraftHub.GroupName(integrationEvent.DraftPartPublicId))
-      .SendAsync("VetoApplied", payload, cancellationToken);
+    var groupName = integrationEvent.SubDraftPublicId is not null
+      ? DraftHub.SubDraftGroupName(
+        integrationEvent.DraftPartPublicId,
+        integrationEvent.SubDraftPublicId
+      )
+      : DraftHub.GroupName(integrationEvent.DraftPartPublicId);
+
+    await _hubContext.Clients.Group(groupName).SendAsync("VetoApplied", payload, cancellationToken);
   }
 
   [LoggerMessage(

@@ -9,17 +9,15 @@ internal sealed class ImdbService(IOptions<ImdbSettings> imdbSettings) : IImdbSe
   public async Task<AdvancedSearchData> AdvancedSearch(AdvancedSearchInput advancedSearchQuery) =>
     await ApiLib.AdvancedSearchAsync(advancedSearchQuery);
 
-  public Task<FullCastData> GetFullCast(string id) =>
-    ApiLib.FullCastDataAsync(id);
+  public Task<FullCastData> GetFullCast(string id) => ApiLib.FullCastDataAsync(id);
 
   public async Task<TitleData> GetMovieInformation(string id, TitleOptions? options) =>
-    await ApiLib.TitleAsync(
-      id,
-      Language.en,
-      options.ToString());
+    await ApiLib.TitleAsync(id, Language.en, options.ToString());
 
   public async Task<TitleData> GetMovieInformation(string id) =>
     await ApiLib.TitleAsync(id, Language.en);
+
+  public async Task<NameData> GetPersonInformation(string nmId) => await ApiLib.NameAsync(nmId);
 
   public async Task<SearchData> SearchByKeyword(string searchExpression) =>
     await ApiLib.SearchKeywordAsync(searchExpression);
@@ -33,8 +31,7 @@ internal sealed class ImdbService(IOptions<ImdbSettings> imdbSettings) : IImdbSe
   public async Task<SearchData> SearchForMovie(string searchExpression) =>
     await ApiLib.SearchMovieAsync(searchExpression);
 
-  public async Task<PosterData> SearchForPoster(string id) =>
-    await ApiLib.PostersAsync(id);
+  public async Task<PosterData> SearchForPoster(string id) => await ApiLib.PostersAsync(id);
 
   public async Task<SearchData> SearchForSeries(string searchExpression) =>
     await ApiLib.SearchSeriesAsync(searchExpression);

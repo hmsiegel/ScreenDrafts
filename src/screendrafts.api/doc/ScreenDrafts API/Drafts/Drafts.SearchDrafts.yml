@@ -7,13 +7,16 @@ info:
 
 http:
   method: GET
-  url: "{{baseUrl}}/drafts/search?status=0&includeDeleted=true"
+  url: "{{baseUrl}}/drafts/search?status=4&includeDeleted=true&name=test"
   params:
     - name: status
-      value: "0"
+      value: "4"
       type: query
     - name: includeDeleted
       value: "true"
+      type: query
+    - name: name
+      value: test
       type: query
   body:
     type: text

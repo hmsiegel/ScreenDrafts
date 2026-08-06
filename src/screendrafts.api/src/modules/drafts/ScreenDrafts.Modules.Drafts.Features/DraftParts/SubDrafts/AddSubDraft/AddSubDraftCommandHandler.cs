@@ -2,26 +2,30 @@
 
 internal sealed class AddSubDraftCommandHandler(
   IDraftPartRepository draftPartRepository,
-  IPublicIdGenerator publicIdGenerator)
-  : ICommandHandler<AddSubDraftCommand, string>
+  IPublicIdGenerator publicIdGenerator
+) : ICommandHandler<AddSubDraftCommand, string>
 {
   private readonly IDraftPartRepository _draftPartRepository = draftPartRepository;
   private readonly IPublicIdGenerator _publicIdGenerator = publicIdGenerator;
 
-  public async Task<Result<string>> Handle(AddSubDraftCommand request, CancellationToken cancellationToken)
+  public async Task<Result<string>> Handle(
+    AddSubDraftCommand request,
+    CancellationToken cancellationToken
+  )
   {
     var draftPart = await _draftPartRepository.GetByPublicIdWithSubDraftsAsync(
       request.DraftPartPublicId,
-      cancellationToken);
+      cancellationToken
+    );
 
     if (draftPart is null)
     {
       return Result.Failure<string>(DraftPartErrors.NotFound(request.DraftPartPublicId));
     }
 
-    var publicId = _publicIdGenerator.GeneratePublicId(PublicIdPrefixes.SubDraft);
+    var subDraftPublicId = _publicIdGenerator.GeneratePublicId(PublicIdPrefixes.SubDraft);
 
-    var result = draftPart.AddSubDraft(request.Index, publicId);
+    var result = draftPart.AddSubDraft(index: request.Index, publicId: subDraftPublicId);
 
     if (result.IsFailure)
     {
@@ -30,6 +34,6 @@ internal sealed class AddSubDraftCommandHandler(
 
     _draftPartRepository.Update(draftPart);
 
-    return Result.Success(publicId);
+    return Result.Success(subDraftPublicId);
   }
 }

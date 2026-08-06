@@ -6,4 +6,5 @@ internal sealed record UndoVetoCommand : ICommand
 {
   public required string DraftPartId { get; init; }
   public required int PlayOrder { get; init; }
+  public string? SubDraftPublicId { get; init; }
 }

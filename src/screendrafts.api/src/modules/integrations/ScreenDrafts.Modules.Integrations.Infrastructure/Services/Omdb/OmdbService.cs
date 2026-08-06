@@ -14,5 +14,7 @@ internal sealed class OmdbService(IOptions<OmdbSettings> omdbSettings) : IOmdbSe
 
   public async Task<Item> GetSeriesByTitleAsync(string id, bool fullPlot) =>
     await OmdbClient.GetItemByTitleAsync(id, OmdbType.Series, fullPlot);
-}
 
+  public async Task<SearchList> SearchAsync(string query, int page) =>
+    await OmdbClient.GetSearchListAsync(query, page);
+}

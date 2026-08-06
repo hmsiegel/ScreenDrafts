@@ -54,6 +54,9 @@ export interface PickAddedPayload {
   participantId: string;
   participantKind: number;
   participants: TokenUpdate[];
+  // Present only for Speed Draft sub-draft picks — null/undefined for
+  // every other draft type and for regular DraftPart picks.
+  subDraftPublicId?: string | null;
 }
 
 // Pick submitted but not yet revealed — host-only, awaiting ANNOUNCE/REVEAL.
@@ -78,6 +81,7 @@ export interface PickRevealedPayload {
   participantId: string;
   participantKind: number;
   participants: TokenUpdate[];
+  subDraftPublicId?: string | null;
 }
 
 export interface VetoAppliedPayload {
@@ -90,6 +94,7 @@ export interface VetoAppliedPayload {
   playedByParticipantId: string;
   playedByParticipantKind: number;
   participants: TokenUpdate[];
+  subDraftPublicId?: string | null;
 }
 
 export interface VetoOverrideAppliedPayload {
@@ -119,6 +124,7 @@ export interface VetoUndonePayload {
   movieTitle: string;
   tmdbId: number;
   participants: TokenUpdate[];
+  subDraftPublicId?: string | null;
 }
 
 export interface PickUndonePayload {
@@ -128,6 +134,7 @@ export interface PickUndonePayload {
   movieTitle: string;
   tmdbId: number;
   participants: TokenUpdate[];
+  subDraftPublicId?: string | null;
 }
 
 export interface MovieHonorificChangedPayload {
@@ -199,6 +206,14 @@ export interface SeasonStanding {
   totalPoints: number;
 }
 
+export interface SpeedDraftBoardSummary {
+  subDraftPublicId: string;
+  index: number;
+  subjectKind: number | null;
+  subjectName: string | null;
+  picks: CompletedPickSummary[];
+}
+
 export interface DraftCompletionSummary {
   draftPartPublicId: string;
   draftId: string;
@@ -211,6 +226,13 @@ export interface DraftCompletionSummary {
   vetoCount: number;
   isPatreon: boolean;
   picks: CompletedPickSummary[];
+  // Present only when draftType is Speed Draft — picks grouped by each of
+  // the three sub-draft boards, each with its own subject. `picks` above
+  // still carries the flat combined list (from part.Picks including all
+  // sub-drafts) for anything that doesn't care about grouping; the modal
+  // should prefer subDraftBreakdowns when present and fall back to `picks`
+  // as one "Final Board" otherwise.
+  subDraftBreakdowns?: SpeedDraftBoardSummary[];
   movieHonorifics: PickHonorificSummary[];
   drafterHonorifics: DrafterHonorificSummary[];
   predictions: PredictionSummary[];
@@ -235,6 +257,32 @@ export type GameplayNotification =
   | { kind: 'MovieHonorificChanged'; payload: MovieHonorificChangedPayload }
   | { kind: 'DrafterHonorificChanged'; payload: DrafterHonorificChangedPayload }
   | { kind: 'CommunityRuleApplied'; payload: CommunityRuleAppliedPayload };
+
+// Signal only — not the event data itself, just "this sub-draft changed,
+// go refetch it." SpeedDraftTabs/SubDraftPanel own the real per-sub-draft
+// state via GetSubDraftGameplay; this context deliberately doesn't try to
+// duplicate that nested shape client-side. `seq` guarantees a new object
+// reference even for two identical-looking events on the same sub-draft in
+// a row, so a useEffect watching this always re-fires.
+// Minimal local shape — GetDraftPartGameplayResponse's generated dto.ts type
+// doesn't have `subDrafts` yet (backend addition not yet regenerated
+// through NSwag), so this exists purely to give the SubDraftUpdated
+// handler's .map() something concrete to type against instead of falling
+// back to `any`. Replace with the real generated type once regenerated.
+interface GameplaySubDraftSummary {
+  publicId: string;
+  index: number;
+  status: number;
+  subjectKind: number | null;
+  subjectName: string | null;
+  subjectImdbId: string | null;
+}
+
+interface SubDraftEventSignal {
+  subDraftPublicId: string;
+  kind: 'PickAdded' | 'PickRevealed' | 'VetoApplied' | 'SubDraftUpdated' | 'VetoUndone' | 'PickUndone';
+  seq: number;
+}
 
 // ── Context shape ─────────────────────────────────────────────────────────────
 
@@ -264,6 +312,11 @@ interface LiveDraftContextValue {
   dismissCompletionSummary: () => void;
   honorificOverlay: HonorificMoment | null;
   dismissHonorificOverlay: () => void;
+  // Speed Draft only — join/leave the per-sub-draft SignalR group when a
+  // tab activates/deactivates, and the resulting event signal to watch.
+  joinSubDraftGroup: (subDraftId: string) => Promise<void>;
+  leaveSubDraftGroup: (subDraftId: string) => Promise<void>;
+  lastSubDraftEvent: SubDraftEventSignal | null;
 }
 
 const LiveDraftContext = createContext<LiveDraftContextValue | null>(null);
@@ -311,6 +364,8 @@ export function LiveDraftProvider({
   const [countdownTarget, setCountdownTarget] = useState<string | null>(null);
   const [completionSummary, setCompletionSummary] = useState<DraftCompletionSummary | null>(null);
   const [honorificOverlay, setHonorificOverlay] = useState<HonorificMoment | null>(null);
+  const [lastSubDraftEvent, setLastSubDraftEvent] = useState<SubDraftEventSignal | null>(null);
+  const subDraftEventSeqRef = useRef(0);
   const notificationQueue = useRef<GameplayNotification[]>([]);
   const showingNotificationRef = useRef(false);
   const honorificQueue = useRef<HonorificMoment[]>([]);
@@ -437,6 +492,21 @@ export function LiveDraftProvider({
     // PickAdded still fires for SpeedDraft (auto-revealed at submission) and
     // is kept for backward compatibility / non-reveal-gated draft types.
     connection.on('PickAdded', (payload: PickAddedPayload) => {
+      // Sub-draft picks arrive on this same connection once a sub-draft
+      // group is joined (SignalR delivers to every group a connection
+      // belongs to, regardless of which one triggered the send) — they
+      // must NOT merge into the main board's picks the way a regular
+      // draft's PickAdded does.
+      if (payload.subDraftPublicId) {
+        subDraftEventSeqRef.current += 1;
+        setLastSubDraftEvent({
+          subDraftPublicId: payload.subDraftPublicId,
+          kind: 'PickAdded',
+          seq: subDraftEventSeqRef.current,
+        });
+        return;
+      }
+
       setPicks((prev) => {
         const without = prev.filter((p) => p.playOrder !== payload.playOrder);
         const newPick: GameplayPickResponse = {
@@ -509,6 +579,7 @@ export function LiveDraftProvider({
         boardPosition: number,
         participantId: string,
         participantKind: number,
+        subDraftPublicId: string | null,
       ) => {
         const payload: PickRevealedPayload = {
           draftPartPublicId: draftPartId,
@@ -524,7 +595,19 @@ export function LiveDraftProvider({
           // PickRevealedPayload's shape stays consistent for callers, but
           // applyTokenUpdates is intentionally not called below.
           participants: [],
+          subDraftPublicId,
         };
+
+        if (subDraftPublicId) {
+          subDraftEventSeqRef.current += 1;
+          setLastSubDraftEvent({
+            subDraftPublicId,
+            kind: 'PickRevealed',
+            seq: subDraftEventSeqRef.current,
+          });
+          return;
+        }
+
         setPendingPicks((prev) => prev.filter((p) => p.playOrder !== payload.playOrder));
         setPicks((prev) => {
           const without = prev.filter((p) => p.playOrder !== payload.playOrder);
@@ -553,15 +636,79 @@ export function LiveDraftProvider({
     );
 
     connection.on('VetoApplied', (payload: VetoAppliedPayload) => {
+      // Token counts (starting/rolling-in/awarded/used) live on the shared
+      // draft-part-level participants list even for sub-draft vetoes — only
+      // the pick/board state is sub-draft-scoped. Apply the token update
+      // unconditionally, THEN branch on subDraftPublicId for the
+      // pick-list/board-state handling below.
+      applyTokenUpdates(payload.participants);
+
+      if (payload.subDraftPublicId) {
+        subDraftEventSeqRef.current += 1;
+        setLastSubDraftEvent({
+          subDraftPublicId: payload.subDraftPublicId,
+          kind: 'VetoApplied',
+          seq: subDraftEventSeqRef.current,
+        });
+        return;
+      }
+
       setPicks((prev) =>
         prev.map((p) =>
           p.playOrder === payload.playOrder ? { ...p, wasVetoed: true } : p,
         ),
       );
-      applyTokenUpdates(payload.participants);
       enqueueNotification({ kind: 'VetoApplied', payload });
       setTimeout(() => void refetch(), 300);
     });
+
+    // Trivia resolution (subject reveal) and position choice — the two
+    // sub-draft "summary changed" moments that aren't a pick or a veto.
+    // Patches gameplay.subDrafts directly (status/subject/tab gating) AND
+    // feeds the shared signal, so SubDraftPanel's own board/pick detail
+    // also refreshes in the same pass.
+    connection.on(
+      'SubDraftUpdated',
+      (payload: {
+        draftPartPublicId: string;
+        subDraftPublicId: string;
+        status: number;
+        subjectKind: number | null;
+        subjectName: string | null;
+        subjectImdbId: string | null;
+        participants?: TokenUpdate[];
+      }) => {
+        // Advancing a sub-draft resets every participant's veto inventory
+        // server-side. Without applying it here, only the host (who calls
+        // refetch() locally from the advance button) saw the new counts —
+        // drafters kept the previous sub-draft's numbers until they reloaded.
+        if (payload.participants) {
+          applyTokenUpdates(payload.participants);
+        }
+
+        setGameplay((prev) => ({
+          ...prev,
+          subDrafts: ((prev.subDrafts ?? []) as GameplaySubDraftSummary[]).map((sd) =>
+            sd.publicId === payload.subDraftPublicId
+              ? {
+                  ...sd,
+                  status: payload.status,
+                  subjectKind: payload.subjectKind,
+                  subjectName: payload.subjectName,
+                  subjectImdbId: payload.subjectImdbId,
+                }
+              : sd,
+          ),
+        }));
+
+        subDraftEventSeqRef.current += 1;
+        setLastSubDraftEvent({
+          subDraftPublicId: payload.subDraftPublicId,
+          kind: 'SubDraftUpdated',
+          seq: subDraftEventSeqRef.current,
+        });
+      },
+    );
 
     connection.on('VetoOverrideApplied', (payload: VetoOverrideAppliedPayload) => {
       setPicks((prev) =>
@@ -590,22 +737,44 @@ export function LiveDraftProvider({
     });
 
     connection.on('VetoUndone', (payload: VetoUndonePayload) => {
-      setPicks((prev) =>
-        prev.map((p) =>
-          p.playOrder === payload.playOrder
-            ? { ...p, wasVetoed: false, wasVetoOverridden: false }
-            : p,
-        ),
-      );
       applyTokenUpdates(payload.participants);
+
+      if (payload.subDraftPublicId) {
+        subDraftEventSeqRef.current += 1;
+        setLastSubDraftEvent({
+          subDraftPublicId: payload.subDraftPublicId,
+          kind: 'VetoUndone',
+          seq: subDraftEventSeqRef.current,
+        });
+      } else {
+        setPicks((prev) =>
+          prev.map((p) =>
+            p.playOrder === payload.playOrder
+              ? { ...p, wasVetoed: false, wasVetoOverridden: false }
+              : p,
+          ),
+        );
+      }
+
       enqueueNotification({ kind: 'VetoUndone', payload });
       setTimeout(() => void refetch(), 300);
     });
 
     connection.on('PickUndone', (payload: PickUndonePayload) => {
-      setPicks((prev) => prev.filter((p) => p.playOrder !== payload.playOrder));
-      setPendingPicks((prev) => prev.filter((p) => p.playOrder !== payload.playOrder));
       applyTokenUpdates(payload.participants);
+
+      if (payload.subDraftPublicId) {
+        subDraftEventSeqRef.current += 1;
+        setLastSubDraftEvent({
+          subDraftPublicId: payload.subDraftPublicId,
+          kind: 'PickUndone',
+          seq: subDraftEventSeqRef.current,
+        });
+      } else {
+        setPicks((prev) => prev.filter((p) => p.playOrder !== payload.playOrder));
+        setPendingPicks((prev) => prev.filter((p) => p.playOrder !== payload.playOrder));
+      }
+
       enqueueNotification({ kind: 'PickUndone', payload });
       setTimeout(() => void refetch(), 300);
     });
@@ -763,6 +932,31 @@ export function LiveDraftProvider({
     await connection.invoke('StartCountdownAsync', draftPartId, targetParticipantId);
   }, [draftPartId]);
 
+  // Was a silent no-op if the connection wasn't Connected yet, matching
+  // sendCountdown's pattern above — fine for a one-off user action someone
+  // can just re-click, wrong here: SubDraftPanel calls this once on mount,
+  // which is often before the SignalR handshake finishes on a fresh page
+  // load, and a failed one-shot join was never retried. Waits up to 10s for
+  // the connection to come up before attempting the join.
+  const joinSubDraftGroup = useCallback(async (subDraftId: string) => {
+    const deadline = Date.now() + 10000;
+    while (
+      connectionRef.current?.state !== signalR.HubConnectionState.Connected &&
+      Date.now() < deadline
+    ) {
+      await new Promise((r) => setTimeout(r, 300));
+    }
+    const connection = connectionRef.current;
+    if (!connection || connection.state !== signalR.HubConnectionState.Connected) return;
+    await connection.invoke('JoinSubDraftGroupAsync', draftPartId, subDraftId);
+  }, [draftPartId]);
+
+  const leaveSubDraftGroup = useCallback(async (subDraftId: string) => {
+    const connection = connectionRef.current;
+    if (!connection || connection.state !== signalR.HubConnectionState.Connected) return;
+    await connection.invoke('LeaveSubDraftGroupAsync', draftPartId, subDraftId);
+  }, [draftPartId]);
+
   const dismissCompletionSummary = useCallback(() => {
     setCompletionSummary(null);
     window.location.href = `/my-drafts/${initialGameplay.draftId}`;
@@ -805,6 +999,9 @@ export function LiveDraftProvider({
         dismissCompletionSummary,
         honorificOverlay,
         dismissHonorificOverlay,
+        joinSubDraftGroup,
+        leaveSubDraftGroup,
+        lastSubDraftEvent,
       }}
     >
       {children}

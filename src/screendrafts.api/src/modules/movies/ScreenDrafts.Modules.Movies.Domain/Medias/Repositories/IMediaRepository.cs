@@ -4,6 +4,10 @@ public interface IMediaRepository : IRepository
 {
   void Add(Media media);
   Task<bool> ExistsByIgdbIdAsync(int igdbId, CancellationToken cancellationToken = default);
+  Task<bool> ExistsByExternalIdAsync(
+    string externalId,
+    CancellationToken cancellationToken = default
+  );
   Task<bool> ExistsByTmdbIdAsync(
     int tmdbId,
     MediaType mediaType,
@@ -34,8 +38,24 @@ public interface IMediaRepository : IRepository
     IEnumerable<int> igdbIds,
     CancellationToken cancellationToken = default
   );
-  Task<Dictionary<int, string>> GetPublicIdsByTmdbIdsAsync(
-    IEnumerable<int> tmdbIds,
+  Task<HashSet<string>> GetExistingMediaExternalIdsAsync(
+    IEnumerable<string> externalIds,
+    CancellationToken cancellationToken = default
+  );
+  Task<Dictionary<(int TmdbId, int MediaTypeValue), string>> GetPublicIdsByTmdbIdsAsync(
+    IEnumerable<(int TmdbId, int MediaTypeValue)> tmdbIds,
+    CancellationToken cancellationToken = default
+  );
+  Task<Dictionary<string, string>> GetPublicIdsByImdbIdsAsync(
+    IEnumerable<string> imdbIds,
+    CancellationToken cancellationToken = default
+  );
+  Task<Dictionary<int, string>> GetPublicIdsByIgdbIdsAsync(
+    IEnumerable<int> igdbIds,
+    CancellationToken cancellationToken = default
+  );
+  Task<Dictionary<string, string>> GetPublicIdsByExternalIdsAsync(
+    IEnumerable<string> externalIds,
     CancellationToken cancellationToken = default
   );
 

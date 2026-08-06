@@ -2,10 +2,11 @@
 
 internal sealed record MovieSearchResult
 {
-  public int TmdbId { get; set; }
+  public int? TmdbId { get; set; }
   public required string Title { get; set; }
   public string? Year { get; set; }
   public string? PosterUrl { get; set; }
   public string? Overview { get; set; }
   public MediaType MediaType { get; set; } = MediaType.Movie;
+  public string? ImdbId { get; init; }
 }

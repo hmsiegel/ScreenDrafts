@@ -8,36 +8,30 @@ internal sealed class SubDraftConfiguration : IEntityTypeConfiguration<SubDraft>
 
     builder.HasKey(s => s.Id);
 
-    builder.Property(s => s.Id)
+    builder
+      .Property(s => s.Id)
       .ValueGeneratedNever()
       .HasConversion(IdConverters.SubDraftIdConverter);
 
-    builder.Property(s => s.PublicId)
-      .IsRequired();
+    builder.Property(s => s.PublicId).IsRequired();
 
-    builder.HasIndex(s => s.PublicId)
-      .IsUnique();
+    builder.HasIndex(s => s.PublicId).IsUnique();
 
-    builder.Property(s => s.DraftPartId)
+    builder
+      .Property(s => s.DraftPartId)
       .IsRequired()
       .HasConversion(IdConverters.DraftPartIdConverter);
 
-    builder.HasIndex(s => new {s.DraftPartId, s.Index })
-      .IsUnique() ;
+    builder.HasIndex(s => new { s.DraftPartId, s.Index }).IsUnique();
 
-    builder.Property(s => s.Index)
-      .IsRequired();
+    builder.Property(s => s.Index).IsRequired();
 
-    builder.Property(s => s.Status)
-      .HasConversion(EnumConverters.SubDraftStatusConverter);
+    builder.Property(s => s.Status).HasConversion(EnumConverters.SubDraftStatusConverter);
 
+    builder.Property(s => s.SubjectKind).HasConversion(EnumConverters.NullableSubjectKindConverter);
 
-    builder.Property(s => s.SubjectKind)
-      .HasConversion(EnumConverters.NullableSubjectKindConverter);
+    builder.Property(s => s.SubjectName).HasMaxLength(200);
 
-    builder.Property(s => s.SubjectName)
-      .HasMaxLength(200);
-
-    builder.Ignore(s => s.GameBoard);
+    builder.Property(s => s.SubjectImdbId).HasMaxLength(20);
   }
 }

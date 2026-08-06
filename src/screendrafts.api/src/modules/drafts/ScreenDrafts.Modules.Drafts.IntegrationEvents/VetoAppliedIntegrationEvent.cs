@@ -11,7 +11,8 @@ public sealed class VetoAppliedIntegrationEvent(
   Guid vetoedByParticipantId,
   int vetoedByParticipantKind,
   Guid playedByParticipantId,
-  int playedByParticipantKind
+  int playedByParticipantKind,
+  string? subDraftPublicId = null
 ) : IntegrationEvent(id, occurredOnUtc)
 {
   public Guid DraftPartId { get; init; } = draftPartId;
@@ -23,4 +24,5 @@ public sealed class VetoAppliedIntegrationEvent(
   public int VetoedByParticipantKind { get; init; } = vetoedByParticipantKind;
   public Guid PlayedByParticipantId { get; init; } = playedByParticipantId;
   public int PlayedByParticipantKind { get; init; } = playedByParticipantKind;
+  public string? SubDraftPublicId { get; init; } = subDraftPublicId;
 }

@@ -21,6 +21,9 @@
       "BaseAddress": "https://api.zoom.us/v2/",
       "VideoSdkKey": "",
       "VideoSdkSecret": ""
+    },
+    "YouTube": {
+      "BaseAddress": "https://www.googleapis.com/youtube/v3/"
     }
   }
 }

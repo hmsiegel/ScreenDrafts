@@ -4,8 +4,8 @@ internal sealed class FetchMediaCommandHandler(
   IEventBus eventBus,
   IDateTimeProvider dateTimeProvider,
   ISender sender,
-  IPublicIdGenerator publicIdGenerator)
-  : ICommandHandler<FetchMediaCommand>
+  IPublicIdGenerator publicIdGenerator
+) : ICommandHandler<FetchMediaCommand>
 {
   private readonly IEventBus _eventBus = eventBus;
   private readonly IDateTimeProvider _dateTimeProvider = dateTimeProvider;
@@ -19,10 +19,11 @@ internal sealed class FetchMediaCommandHandler(
       TmdbId = request.TmdbId,
       IgdbId = request.IgdbId,
       ImdbId = request.ImdbId,
+      ExternalId = request.ExternalId,
       MediaType = request.MediaType,
       EpisodeNumber = request.EpisodeNumber,
       SeasonNumber = request.SeasonNumber,
-      TvSeriesTmdbId = request.TvSeriesTmdbId
+      TvSeriesTmdbId = request.TvSeriesTmdbId,
     };
 
     var responseResult = await _sender.Send(command, cancellationToken);
@@ -36,30 +37,34 @@ internal sealed class FetchMediaCommandHandler(
 
     var publicId = _publicIdGenerator.GeneratePublicId(PublicIdPrefixes.Media);
 
-    await _eventBus.PublishAsync(new MediaFetchedIntegrationEvent(
-      id: Guid.NewGuid(),
-      occurredOnUtc: _dateTimeProvider.UtcNow,
-      publicId: publicId,
-      imdbId: response.ImdbId,
-      tmdbId: response.TmdbId,
-      igdbId: response.IgdbId,
-      title: response.Title!,
-      year: response.Year,
-      plot: response.Plot,
-      image: response.Image,
-      releaseDate: response.ReleaseDate,
-      youTubeTrailerUri: response.YouTubeTrailerUrl,
-      mediaType: response.MediaType,
-      tvSeriesTmdbId: response.TvSeriesTmdbId,
-      seasonNumber: response.SeasonNumber,
-      episodeNumber: response.EpisodeNumber,
-      genres: response.Genres,
-      actors: response.Actors,
-      directors: response.Directors,
-      writers: response.Writers,
-      producers: response.Producers,
-      productionCompanies: response.ProductionCompanies),
-      cancellationToken);
+    await _eventBus.PublishAsync(
+      new MediaFetchedIntegrationEvent(
+        id: Guid.NewGuid(),
+        occurredOnUtc: _dateTimeProvider.UtcNow,
+        publicId: publicId,
+        imdbId: response.ImdbId,
+        tmdbId: response.TmdbId,
+        igdbId: response.IgdbId,
+        externalId: response.ExternalId,
+        title: response.Title!,
+        year: response.Year,
+        plot: response.Plot,
+        image: response.Image,
+        releaseDate: response.ReleaseDate,
+        youTubeTrailerUri: response.YouTubeTrailerUrl,
+        mediaType: response.MediaType,
+        tvSeriesTmdbId: response.TvSeriesTmdbId,
+        seasonNumber: response.SeasonNumber,
+        episodeNumber: response.EpisodeNumber,
+        genres: response.Genres,
+        actors: response.Actors,
+        directors: response.Directors,
+        writers: response.Writers,
+        producers: response.Producers,
+        productionCompanies: response.ProductionCompanies
+      ),
+      cancellationToken
+    );
 
     return Result.Success();
   }

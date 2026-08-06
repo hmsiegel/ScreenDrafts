@@ -25,6 +25,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<FetchMediaRequest>
       ImdbId = req.ImdbId,
       TmdbId = req.TmdbId,
       IgdbId = req.IgdbId,
+      ExternalId = req.ExternalId,
       TvSeriesTmdbId = req.TvSeriesTmdbId,
       SeasonNumber = req.SeasonNumber,
       EpisodeNumber = req.EpisodeNumber,

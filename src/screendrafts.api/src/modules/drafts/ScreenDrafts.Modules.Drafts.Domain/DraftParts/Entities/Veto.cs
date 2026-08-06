@@ -8,11 +8,14 @@ public sealed class Veto : Entity<VetoId>
     string actedByPublicId,
     DateTime? occurredOn = null,
     string? note = null,
-    VetoId? id = null)
+    VetoId? id = null
+  )
     : base(id ?? VetoId.CreateUnique())
   {
     TargetPick = pick;
     TargetPickId = pick.Id;
+
+    SubDraftId = pick.SubDraftId;
 
     IssuedByParticipant = issuedByParticipant;
     IssuedByParticipantId = issuedByParticipant.Id;
@@ -23,9 +26,7 @@ public sealed class Veto : Entity<VetoId>
     Note = note;
   }
 
-  private Veto()
-  {
-  }
+  private Veto() { }
 
   public Pick TargetPick { get; private set; } = default!;
   public PickId TargetPickId { get; private set; } = default!;
@@ -47,13 +48,13 @@ public sealed class Veto : Entity<VetoId>
   public DateTime? OccurredOn { get; private set; }
   public string? Note { get; private set; } = default!;
 
-
   public static Result<Veto> Create(
     Pick pick,
     DraftPartParticipant issuedByParticipant,
     string? actedByPublicId = null,
     VetoId? id = null,
-    string? note = null)
+    string? note = null
+  )
   {
     if (pick is null)
     {
@@ -69,7 +70,8 @@ public sealed class Veto : Entity<VetoId>
       actedByPublicId: actedByPublicId ?? string.Empty,
       occurredOn: DateTime.UtcNow,
       note: note,
-      id: id ?? VetoId.CreateUnique());
+      id: id ?? VetoId.CreateUnique()
+    );
 
     return veto;
   }
@@ -79,7 +81,8 @@ public sealed class Veto : Entity<VetoId>
     DraftPartParticipant issuedByParticipant,
     DateTime occurredOn,
     VetoId? id = null,
-    string? note = null)
+    string? note = null
+  )
   {
     var veto = new Veto(
       id: id,
@@ -87,7 +90,8 @@ public sealed class Veto : Entity<VetoId>
       occurredOn: occurredOn,
       issuedByParticipant: issuedByParticipant,
       actedByPublicId: string.Empty,
-      note: note);
+      note: note
+    );
     return veto;
   }
 
@@ -106,10 +110,13 @@ public sealed class Veto : Entity<VetoId>
     var participant = DraftPart.GetParticipantRequired(by);
 
     IsOverridden = true;
-    VetoOverride = VetoOverride.Create(
-      veto: this,
-      issuedByParticipant: participant,
-      actedByPublicId: actedByPublicId ?? string.Empty).Value;
+    VetoOverride = VetoOverride
+      .Create(
+        veto: this,
+        issuedByParticipant: participant,
+        actedByPublicId: actedByPublicId ?? string.Empty
+      )
+      .Value;
 
     return Result.Success();
   }

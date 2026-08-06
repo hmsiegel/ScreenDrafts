@@ -1,0 +1,30 @@
+# screen-drafts.com Caddyfile
+# TLS is automatic via Let's Encrypt.
+# Cloudflare sits in front — real client IPs are forwarded via CF-Connecting-IP.
+
+{
+	email hmsiegel@gmail.com
+}
+
+# API
+api.screen-drafts.com {
+	reverse_proxy screendrafts.web:8080 {
+		# Pass real client IP from Cloudflare
+		header_up X-Real-IP {http.request.header.CF-Connecting-IP}
+	}
+
+	# SignalR WebSocket passthrough
+	@signalr path /drafts/hub*
+	reverse_proxy @signalr screendrafts.web:8080 {
+		header_up Connection {http.request.header.Connection}
+		header_up Upgrade {http.request.header.Upgrade}
+	}
+}
+
+# Keycloak
+auth.screen-drafts.com {
+	reverse_proxy screendrafts.identity:8080 {
+		header_up X-Real-IP {http.request.header.CF-Connecting-IP}
+		header_up X-Forwarded-Proto {scheme}
+	}
+}

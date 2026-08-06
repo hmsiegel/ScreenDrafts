@@ -1,4 +1,8 @@
-﻿namespace ScreenDrafts.Modules.Integrations.Composition;
+﻿using ScreenDrafts.Modules.Integrations.Domain.Services.Omdb;
+using ScreenDrafts.Modules.Integrations.Domain.Services.YouTube;
+using ScreenDrafts.Modules.Integrations.Infrastructure.Services.YouTube;
+
+namespace ScreenDrafts.Modules.Integrations.Composition;
 
 public static class IntegrationsModule
 {
@@ -56,6 +60,7 @@ public static class IntegrationsModule
 
     services.Configure<TmdbSettings>(configuration.GetSection(TmdbSettings.SectionName));
     services.Configure<IgdbSettings>(configuration.GetSection(IgdbSettings.SectionName));
+    services.Configure<YouTubeSettings>(configuration.GetSection(YouTubeSettings.SectionName));
 
     services.AddHttpClient<ITmdbService, TmdbService>(
       (sp, client) =>
@@ -77,6 +82,17 @@ public static class IntegrationsModule
       {
         IgdbSettings igdbSettings = sp.GetRequiredService<IOptions<IgdbSettings>>().Value;
         client.BaseAddress = new Uri(igdbSettings.BaseAddress);
+      }
+    );
+
+    services.AddHttpClient<IYouTubeService, YouTubeService>(
+      (sp, client) =>
+      {
+        YouTubeSettings youTubeSettings = sp.GetRequiredService<IOptions<YouTubeSettings>>().Value;
+        client.BaseAddress = new Uri(youTubeSettings.BaseAddress);
+        client.DefaultRequestHeaders.Accept.Add(
+          new MediaTypeWithQualityHeaderValue("application/json")
+        );
       }
     );
 

@@ -6,4 +6,5 @@ internal sealed record SetSubDraftSubjectCommand : ICommand
   public required string SubDraftPublicId { get; init; }
   public required int SubjectKind { get; init; }
   public required string SubjectName { get; init; }
+  public string? SubjectImdbId { get; init; }
 }

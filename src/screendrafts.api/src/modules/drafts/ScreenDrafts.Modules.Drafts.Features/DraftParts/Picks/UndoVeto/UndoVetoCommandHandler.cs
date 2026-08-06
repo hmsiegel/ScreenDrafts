@@ -17,7 +17,23 @@ internal sealed class UndoVetoCommandHandler(IDraftPartRepository draftPartRepos
       return Result.Failure(DraftPartErrors.NotFound(request.DraftPartId));
     }
 
-    var result = draftPart.UndoVeto(request.PlayOrder);
+    SubDraftId? subDraftId = null;
+
+    if (!string.IsNullOrWhiteSpace(request.SubDraftPublicId))
+    {
+      var subDraft = draftPart.SubDrafts.FirstOrDefault(x =>
+        x.PublicId == request.SubDraftPublicId
+      );
+
+      if (subDraft is null)
+      {
+        return Result.Failure(SubDraftErrors.NotFound(request.SubDraftPublicId));
+      }
+
+      subDraftId = subDraft.Id;
+    }
+
+    var result = draftPart.UndoVeto(request.PlayOrder, subDraftId);
 
     if (result.IsFailure)
     {

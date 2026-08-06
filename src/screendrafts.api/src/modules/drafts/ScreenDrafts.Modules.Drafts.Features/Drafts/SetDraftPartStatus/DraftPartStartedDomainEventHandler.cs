@@ -1,11 +1,15 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Features.Drafts.SetDraftPartStatus;
 
 internal sealed class DraftPartStartedDomainEventHandler(
+  IDraftPoolRepository draftPoolRepository,
+  IUnitOfWork unitOfWork,
   IDbConnectionFactory connectionFactory,
   IEventBus eventBus,
   IDateTimeProvider dateTimeProvider
 ) : DomainEventHandler<DraftPartStartedDomainEvent>
 {
+  private readonly IDraftPoolRepository _draftPoolRepository = draftPoolRepository;
+  private readonly IUnitOfWork _unitOfWork = unitOfWork;
   private readonly IDbConnectionFactory _connectionFactory = connectionFactory;
   private readonly IEventBus _eventBus = eventBus;
   private readonly IDateTimeProvider _dateTimeProvider = dateTimeProvider;
@@ -15,6 +19,19 @@ internal sealed class DraftPartStartedDomainEventHandler(
     CancellationToken cancellationToken = default
   )
   {
+    var pool = await _draftPoolRepository.GetByDraftIdAsync(
+      DraftId.Create(domainEvent.DraftId),
+      cancellationToken
+    );
+
+    if (pool is not null)
+    {
+      pool.Lock();
+      _draftPoolRepository.Update(pool);
+
+      await _unitOfWork.SaveChangesAsync(cancellationToken);
+    }
+
     await using var connection = await _connectionFactory.OpenConnectionAsync(cancellationToken);
 
     const string metadataSql = """

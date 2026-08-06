@@ -24,4 +24,5 @@ internal sealed record GetDraftPartGameplayResponse
   public IReadOnlyList<GameplayPickResponse> Picks { get; init; } = [];
   public IReadOnlyList<GameplayHostResponse> Hosts { get; init; } = [];
   public IReadOnlyList<GameplayCommunityFilmRuleResponse> CommunityFilmRules { get; init; } = [];
+  public IReadOnlyList<GameplaySubDraftSummaryResponse> SubDrafts { get; init; } = [];
 }

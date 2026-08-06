@@ -1,8 +1,4 @@
-﻿using IMDbApiLib.Models;
-
-using ScreenDrafts.Modules.Integrations.Domain.Enums;
-
-namespace ScreenDrafts.Modules.Integrations.Domain.Services.Imdb;
+﻿namespace ScreenDrafts.Modules.Integrations.Domain.Services.Imdb;
 
 public interface IImdbService
 {
@@ -17,4 +13,5 @@ public interface IImdbService
   Task<YouTubeTrailerData> SearchForYouTubeTrailer(string id);
   Task<SearchData> SearchByName(string searchExpression);
   Task<PosterData> SearchForPoster(string id);
+  Task<NameData> GetPersonInformation(string nmId);
 }

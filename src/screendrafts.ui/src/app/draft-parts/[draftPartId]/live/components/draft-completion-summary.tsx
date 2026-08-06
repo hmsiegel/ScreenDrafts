@@ -8,6 +8,7 @@ import type {
   DrafterHonorificSummary,
   PredictionSummary,
   SeasonStanding,
+  SpeedDraftBoardSummary,
 } from '../live-draft-context';
 
 // ── Honorific name maps ────────────────────────────────────────────────────────
@@ -24,6 +25,12 @@ const DRAFTER_HONORIFIC_NAMES: Record<number, string> = {
   10: 'Hall of Fame',
   15: 'MVP',
   20: 'Legend',
+};
+
+const SUBJECT_KIND_NAMES: Record<number, string> = {
+  0: 'Actor',
+  1: 'Director',
+  2: 'Word',
 };
 
 function movieHonorificName(newCount: number): string {
@@ -45,6 +52,29 @@ function BoardRow({ position, title }: { position: number; title: string }) {
     <div className="flex items-baseline gap-4 py-2 border-b border-white/5 last:border-0">
       <span className="font-oswald text-sd-red text-lg w-8 shrink-0">#{position}</span>
       <span className="font-oswald text-sd-paper text-lg leading-tight">{title}</span>
+    </div>
+  );
+}
+
+function SubDraftBoardSection({ board }: { board: SpeedDraftBoardSummary }) {
+  const subjectLabel =
+    board.subjectKind !== null
+      ? `${SUBJECT_KIND_NAMES[board.subjectKind] ?? 'Subject'}: ${board.subjectName ?? '—'}`
+      : (board.subjectName ?? '—');
+
+  return (
+    <div>
+      <p className="font-oswald text-xs tracking-[0.25em] text-white/40 uppercase mb-2">
+        Board {board.index + 1} — {subjectLabel}
+      </p>
+      <div className="border border-white/10 px-4 mb-4">
+        {board.picks
+          .slice()
+          .sort((a, b) => a.position - b.position)
+          .map((pick) => (
+            <BoardRow key={pick.mediaPublicId} position={pick.position} title={pick.mediaTitle} />
+          ))}
+      </div>
     </div>
   );
 }
@@ -189,23 +219,36 @@ export function DraftCompletionSummaryModal({ summary }: Props) {
           className={`grid gap-6 mb-8 ${hasAnyHonorifics ? 'grid-cols-1 lg:grid-cols-2' : 'grid-cols-1'
             }`}
         >
-          {/* Row 1 — Final board */}
+          {/* Row 1 — Final board(s). Speed Drafts show three separate
+              boards, one per sub-draft, each labeled with its own subject —
+              never concatenated into one list, since positions are only
+              unique within a single sub-draft's own board. */}
           <section className="mb-8">
             <p className="font-oswald text-xs tracking-[0.25em] text-white/40 uppercase mb-3">
-              Final Board
+              {summary.subDraftBreakdowns && summary.subDraftBreakdowns.length > 0
+                ? 'Final Boards'
+                : 'Final Board'}
             </p>
-            <div className="border border-white/10 px-4">
-              {summary.picks
-                .slice()
-                .sort((a, b) => a.position - b.position)
-                .map((pick) => (
-                  <BoardRow
-                    key={pick.mediaPublicId}
-                    position={pick.position}
-                    title={pick.mediaTitle}
-                  />
+            {summary.subDraftBreakdowns && summary.subDraftBreakdowns.length > 0 ? (
+              <div className="space-y-4">
+                {summary.subDraftBreakdowns.map((board) => (
+                  <SubDraftBoardSection key={board.subDraftPublicId} board={board} />
                 ))}
-            </div>
+              </div>
+            ) : (
+              <div className="border border-white/10 px-4">
+                {summary.picks
+                  .slice()
+                  .sort((a, b) => a.position - b.position)
+                  .map((pick) => (
+                    <BoardRow
+                      key={pick.mediaPublicId}
+                      position={pick.position}
+                      title={pick.mediaTitle}
+                    />
+                  ))}
+              </div>
+            )}
           </section>
 
           {/* Row 1 — Honorifics */}

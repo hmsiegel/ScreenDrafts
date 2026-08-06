@@ -34,6 +34,10 @@
       "VideoSdkKey": "YOUR_ZOOM_VIDEO_SDK_KEY_HERE",
       "VideoSdkSecret": "YOUR_ZOOM_VIDEO_SDK_SECRET_HERE",
       "WebhookSecretToken": "YOUR_ZOOM_WEBHOOK_SECRET_TOKEN_HERE"
+    },
+    "YouTube": {
+      "Key": "YOUR_YOUTUBE_API_KEY_HERE",
+      "BaseAddress": "https://www.googleapis.com/youtube/v3/"
     }
   }
 }

@@ -11,7 +11,7 @@ global using ScreenDrafts.Common.Application.Messaging.Dispatchers;
 global using ScreenDrafts.Modules.Drafts.IntegrationEvents;
 global using ScreenDrafts.Modules.Integrations.Domain.Services.Igdb;
 global using ScreenDrafts.Modules.Integrations.Domain.Services.Imdb;
-global using ScreenDrafts.Modules.Integrations.Domain.Services.Omb;
+global using ScreenDrafts.Modules.Integrations.Domain.Services.Omdb;
 global using ScreenDrafts.Modules.Integrations.Domain.Services.Tmdb;
 global using ScreenDrafts.Modules.Integrations.Domain.Zoom;
 global using ScreenDrafts.Modules.Integrations.Features;

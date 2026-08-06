@@ -169,6 +169,9 @@ internal static class DraftsOpenApi
     public const string SubDrafts_PlayPick = "SubDrafts.PlayPick";
     public const string SubDrafts_ApplyVeto = "SubDrafts.ApplyVeto";
     public const string SubDrafts_Advance = "SubDrafts.Advance";
+    public const string SubDrafts_AssignPosition = "SubDrafts.AssignPosition";
+    public const string SubDrafts_GetGameplay = "SubDrafts.GetGameplay";
+    public const string SubDrafts_SetPositions = "SubDrafts.SetPositions";
 
     // Prediction Seasons
     public const string Predictions_CreateSeason = "Predictions_CreateSeason";

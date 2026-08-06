@@ -412,14 +412,29 @@ export interface IClient {
     subDrafts_SetSubject(body: SetSubDraftSubjectRequest): Promise<void>;
 
     /**
+     * @return No Content
+     */
+    subDrafts_SetPositions(body: SetSpeedDraftPositionsRequest): Promise<void>;
+
+    /**
      * @return Created
      */
     subDrafts_PlayPick(body: PlaySubDraftPickRequest): Promise<CreatedResponse>;
 
     /**
+     * @return OK
+     */
+    subDrafts_GetGameplay(): Promise<GetSubDraftGameplayResponse>;
+
+    /**
      * @return No Content
      */
     subDrafts_AssignTriviaResults(body: AssignSubDraftTriviaRequest): Promise<void>;
+
+    /**
+     * @return No Content
+     */
+    subDrafts_AssignPosition(body: AssignSubDraftPositionRequest): Promise<void>;
 
     /**
      * @return No Content
@@ -726,6 +741,21 @@ export interface IClient {
     /**
      * @return OK
      */
+    youTube_Search(body: SearchYouTubeRequest): Promise<SearchYouTubeResponse>;
+
+    /**
+     * @return OK
+     */
+    people_Search(body: SearchImdbPeopleRequest): Promise<SearchImdbPeopleResponse>;
+
+    /**
+     * @return OK
+     */
+    people_GetFilmography(body: GetPersonFilmographyRequest): Promise<GetPersonFilmographyResponse>;
+
+    /**
+     * @return OK
+     */
     onlineMedia_Search(body: SearchForMovieRequest): Promise<SearchForMovieResponse>;
 
     /**
@@ -741,7 +771,22 @@ export interface IClient {
     /**
      * @return OK
      */
+    games_Search(body: SearchGamesRequest): Promise<SearchGamesResponse>;
+
+    /**
+     * @return OK
+     */
+    media_SearchYouTube(body: SearchYouTubeMediaRequest): Promise<SearchYouTubeMediaResponse>;
+
+    /**
+     * @return OK
+     */
     media_Search(body: SearchMediaRequest): Promise<SearchMediaResponse>;
+
+    /**
+     * @return OK
+     */
+    media_SearchGames(body: SearchGamesMediaRequest): Promise<SearchGamesMediaResponse>;
 
     /**
      * @return OK
@@ -752,6 +797,11 @@ export interface IClient {
      * @return OK
      */
     media_Add(body: AddMediaRequest): Promise<string>;
+
+    /**
+     * @return OK
+     */
+    media_GetPersonFilmography(body: GetPersonFilmographyMediaRequest): Promise<GetPersonFilmographyMediaResponse>;
 
     /**
      * @return OK
@@ -767,6 +817,21 @@ export interface IClient {
      * @return OK
      */
     media_GetByTmdbIds(body: GetMediaByTmdbIdsRequest): Promise<GetMediaByTmdbIdsResponse>;
+
+    /**
+     * @return OK
+     */
+    media_GetByImdbIds(body: GetMediaByImdbIdsRequest): Promise<GetMediaByImdbIdsResponse>;
+
+    /**
+     * @return OK
+     */
+    media_GetByIgdbIds(body: GetMediaByIgdbIdsRequest): Promise<GetMediaByIgdbIdsResponse>;
+
+    /**
+     * @return OK
+     */
+    media_GetByExternalIds(body: GetMediaByExternalIdsRequest): Promise<GetMediaByExternalIdsResponse>;
 
     /**
      * @return OK
@@ -4984,6 +5049,60 @@ export class Client implements IClient {
     }
 
     /**
+     * @return No Content
+     */
+    subDrafts_SetPositions(body: SetSpeedDraftPositionsRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/sub-drafts/positions";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processSubDrafts_SetPositions(_response);
+        });
+    }
+
+    protected processSubDrafts_SetPositions(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
      * @return Created
      */
     subDrafts_PlayPick(body: PlaySubDraftPickRequest, signal?: AbortSignal): Promise<CreatedResponse> {
@@ -5041,6 +5160,51 @@ export class Client implements IClient {
     }
 
     /**
+     * @return OK
+     */
+    subDrafts_GetGameplay(signal?: AbortSignal): Promise<GetSubDraftGameplayResponse> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/sub-drafts/{subDraftId}/gameplay";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            signal,
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processSubDrafts_GetGameplay(_response);
+        });
+    }
+
+    protected processSubDrafts_GetGameplay(response: Response): Promise<GetSubDraftGameplayResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as GetSubDraftGameplayResponse;
+            return result200;
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<GetSubDraftGameplayResponse>(null as any);
+    }
+
+    /**
      * @return No Content
      */
     subDrafts_AssignTriviaResults(body: AssignSubDraftTriviaRequest, signal?: AbortSignal): Promise<void> {
@@ -5064,6 +5228,60 @@ export class Client implements IClient {
     }
 
     protected processSubDrafts_AssignTriviaResults(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    subDrafts_AssignPosition(body: AssignSubDraftPositionRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/sub-drafts/{subDraftId}/position";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processSubDrafts_AssignPosition(_response);
+        });
+    }
+
+    protected processSubDrafts_AssignPosition(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 204) {
@@ -5371,7 +5589,7 @@ export class Client implements IClient {
      * @return OK
      */
     draftParts_ListUnreleased(body: ListUnreleasedDraftPartsRequest, signal?: AbortSignal): Promise<PagedResultOfUnreleasedDraftPartResponse> {
-        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/unreleased";
+        let url_ = this.baseUrl + "/draft-parts/unreleased";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -8277,6 +8495,157 @@ export class Client implements IClient {
     /**
      * @return OK
      */
+    youTube_Search(body: SearchYouTubeRequest, signal?: AbortSignal): Promise<SearchYouTubeResponse> {
+        let url_ = this.baseUrl + "/youtube/search";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processYouTube_Search(_response);
+        });
+    }
+
+    protected processYouTube_Search(response: Response): Promise<SearchYouTubeResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as SearchYouTubeResponse;
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<SearchYouTubeResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    people_Search(body: SearchImdbPeopleRequest, signal?: AbortSignal): Promise<SearchImdbPeopleResponse> {
+        let url_ = this.baseUrl + "/movie-people/search";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processPeople_Search(_response);
+        });
+    }
+
+    protected processPeople_Search(response: Response): Promise<SearchImdbPeopleResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as SearchImdbPeopleResponse;
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<SearchImdbPeopleResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    people_GetFilmography(body: GetPersonFilmographyRequest, signal?: AbortSignal): Promise<GetPersonFilmographyResponse> {
+        let url_ = this.baseUrl + "/movie-people/filmography";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processPeople_GetFilmography(_response);
+        });
+    }
+
+    protected processPeople_GetFilmography(response: Response): Promise<GetPersonFilmographyResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as GetPersonFilmographyResponse;
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<GetPersonFilmographyResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
     onlineMedia_Search(body: SearchForMovieRequest, signal?: AbortSignal): Promise<SearchForMovieResponse> {
         let url_ = this.baseUrl + "/integrations/movies/search";
         url_ = url_.replace(/[?&]$/, "");
@@ -8429,6 +8798,100 @@ export class Client implements IClient {
     /**
      * @return OK
      */
+    games_Search(body: SearchGamesRequest, signal?: AbortSignal): Promise<SearchGamesResponse> {
+        let url_ = this.baseUrl + "/games/search";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGames_Search(_response);
+        });
+    }
+
+    protected processGames_Search(response: Response): Promise<SearchGamesResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as SearchGamesResponse;
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<SearchGamesResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    media_SearchYouTube(body: SearchYouTubeMediaRequest, signal?: AbortSignal): Promise<SearchYouTubeMediaResponse> {
+        let url_ = this.baseUrl + "/media/search-youtube";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processMedia_SearchYouTube(_response);
+        });
+    }
+
+    protected processMedia_SearchYouTube(response: Response): Promise<SearchYouTubeMediaResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as SearchYouTubeMediaResponse;
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<SearchYouTubeMediaResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
     media_Search(body: SearchMediaRequest, signal?: AbortSignal): Promise<SearchMediaResponse> {
         let url_ = this.baseUrl + "/media/search";
         url_ = url_.replace(/[?&]$/, "");
@@ -8469,6 +8932,51 @@ export class Client implements IClient {
             });
         }
         return Promise.resolve<SearchMediaResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    media_SearchGames(body: SearchGamesMediaRequest, signal?: AbortSignal): Promise<SearchGamesMediaResponse> {
+        let url_ = this.baseUrl + "/media/search-games";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processMedia_SearchGames(_response);
+        });
+    }
+
+    protected processMedia_SearchGames(response: Response): Promise<SearchGamesMediaResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as SearchGamesMediaResponse;
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<SearchGamesMediaResponse>(null as any);
     }
 
     /**
@@ -8563,6 +9071,55 @@ export class Client implements IClient {
             });
         }
         return Promise.resolve<string>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    media_GetPersonFilmography(body: GetPersonFilmographyMediaRequest, signal?: AbortSignal): Promise<GetPersonFilmographyMediaResponse> {
+        let url_ = this.baseUrl + "/media/person-filmography";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processMedia_GetPersonFilmography(_response);
+        });
+    }
+
+    protected processMedia_GetPersonFilmography(response: Response): Promise<GetPersonFilmographyMediaResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as GetPersonFilmographyMediaResponse;
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<GetPersonFilmographyMediaResponse>(null as any);
     }
 
     /**
@@ -8706,6 +9263,141 @@ export class Client implements IClient {
             });
         }
         return Promise.resolve<GetMediaByTmdbIdsResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    media_GetByImdbIds(body: GetMediaByImdbIdsRequest, signal?: AbortSignal): Promise<GetMediaByImdbIdsResponse> {
+        let url_ = this.baseUrl + "/media/by-imdb-ids";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processMedia_GetByImdbIds(_response);
+        });
+    }
+
+    protected processMedia_GetByImdbIds(response: Response): Promise<GetMediaByImdbIdsResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as GetMediaByImdbIdsResponse;
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<GetMediaByImdbIdsResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    media_GetByIgdbIds(body: GetMediaByIgdbIdsRequest, signal?: AbortSignal): Promise<GetMediaByIgdbIdsResponse> {
+        let url_ = this.baseUrl + "/media/by-igdb-ids";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processMedia_GetByIgdbIds(_response);
+        });
+    }
+
+    protected processMedia_GetByIgdbIds(response: Response): Promise<GetMediaByIgdbIdsResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as GetMediaByIgdbIdsResponse;
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<GetMediaByIgdbIdsResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    media_GetByExternalIds(body: GetMediaByExternalIdsRequest, signal?: AbortSignal): Promise<GetMediaByExternalIdsResponse> {
+        let url_ = this.baseUrl + "/media/by-external-ids";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processMedia_GetByExternalIds(_response);
+        });
+    }
+
+    protected processMedia_GetByExternalIds(response: Response): Promise<GetMediaByExternalIdsResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as GetMediaByExternalIdsResponse;
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<GetMediaByExternalIdsResponse>(null as any);
     }
 
     /**
@@ -10474,6 +11166,7 @@ export interface AddMediaRequest {
     imdbId?: string | undefined;
     tmdbId?: number | undefined;
     igdbId?: number | undefined;
+    externalId?: string | undefined;
     title: string;
     year: string;
     plot?: string | undefined;
@@ -10606,6 +11299,16 @@ export interface AssignParticipantToDraftPositionRequest {
     positionId?: string;
     participantPublicId?: string | undefined;
     participantKind: number;
+
+    [key: string]: any;
+}
+
+export interface AssignSubDraftPositionRequest {
+    draftPartId?: string;
+    subDraftId?: string;
+    winnerParticipantPublicId?: string;
+    winnerParticipantKind?: number;
+    choice?: string;
 
     [key: string]: any;
 }
@@ -11223,6 +11926,7 @@ export interface FetchMediaRequest {
     mediaType?: number;
     tmdbId?: number | undefined;
     igdbId?: number | undefined;
+    externalId?: string | undefined;
     imdbId?: string | undefined;
     tvSeriesTmdbId?: number | undefined;
     seasonNumber?: number | undefined;
@@ -11237,6 +11941,41 @@ export interface FileResult {
     lastModified?: Date | undefined;
     entityTag?: EntityTagHeaderValue | undefined;
     enableRangeProcessing?: boolean;
+
+    [key: string]: any;
+}
+
+export interface FilmographyCreditResponse {
+    tmdbId?: number;
+    title?: string;
+    year?: string | undefined;
+    posterUrl?: string | undefined;
+    mediaType?: number;
+    creditRole?: string | undefined;
+
+    [key: string]: any;
+}
+
+export interface FilmographyMediaCreditResponse {
+    tmdbId?: number;
+    title?: string;
+    year?: string | undefined;
+    posterUrl?: string | undefined;
+    mediaType?: number;
+    creditRole?: string | undefined;
+    isInMediaDatabase?: boolean;
+    mediaPublicId?: string | undefined;
+
+    [key: string]: any;
+}
+
+export interface GameMediaSearchResultResponse {
+    igdbId?: number;
+    title?: string;
+    year?: string | undefined;
+    posterUrl?: string | undefined;
+    isInMediaDatabase?: boolean;
+    mediaPublicId?: string | undefined;
 
     [key: string]: any;
 }
@@ -11292,7 +12031,10 @@ export interface GameplayPickResponse {
     boardPosition?: number;
     movieTitle?: string;
     movieYear?: string | undefined;
-    tmdbId?: number;
+    tmdbId?: number | undefined;
+    imdbId?: string | undefined;
+    igdbId?: number | undefined;
+    mediaType?: number | undefined;
     playedById?: string;
     playedByKind?: number;
     playedByName?: string;
@@ -11305,12 +12047,32 @@ export interface GameplayPickResponse {
     [key: string]: any;
 }
 
+export interface GameplaySubDraftSummaryResponse {
+    publicId?: string;
+    index?: number;
+    status?: number;
+    subjectKind?: number | undefined;
+    subjectName?: string | undefined;
+    subjectImdbId?: string | undefined;
+
+    [key: string]: any;
+}
+
 export interface GameplayTriviaResultResponse {
     participantId?: string;
     participantKind?: number;
     participantName?: string;
     questionsWon?: number;
     position?: number;
+
+    [key: string]: any;
+}
+
+export interface GameSearchResult {
+    igdbId?: number;
+    title?: string;
+    year?: string | undefined;
+    posterUrl?: string | undefined;
 
     [key: string]: any;
 }
@@ -11537,6 +12299,7 @@ export interface GetDraftPartGameplayResponse {
     picks?: GameplayPickResponse[];
     hosts?: GameplayHostResponse[];
     communityFilmRules?: GameplayCommunityFilmRuleResponse[];
+    subDrafts?: GameplaySubDraftSummaryResponse[];
 
     [key: string]: any;
 }
@@ -11757,8 +12520,45 @@ export interface GetHttpAuditLogsResponse {
     [key: string]: any;
 }
 
+export interface GetMediaByExternalIdsRequest {
+    externalIds?: string[];
+
+    [key: string]: any;
+}
+
+export interface GetMediaByExternalIdsResponse {
+    items?: MediaExternalSummary[];
+
+    [key: string]: any;
+}
+
+export interface GetMediaByIgdbIdsRequest {
+    igdbIds?: number[];
+
+    [key: string]: any;
+}
+
+export interface GetMediaByIgdbIdsResponse {
+    items?: MediaIgdbSummary[];
+
+    [key: string]: any;
+}
+
+export interface GetMediaByImdbIdsRequest {
+    imdbIds?: string[];
+
+    [key: string]: any;
+}
+
+export interface GetMediaByImdbIdsResponse {
+    items?: MediaImdbSummary[];
+
+    [key: string]: any;
+}
+
 export interface GetMediaByTmdbIdsRequest {
     tmdbIds?: number[];
+    mediaType?: number;
 
     [key: string]: any;
 }
@@ -11826,6 +12626,7 @@ export interface GetOnlineMediaRequest {
     tmdbId?: number | undefined;
     igdbId?: number | undefined;
     imdbId?: string | undefined;
+    externalId?: string | undefined;
     tvSeriesTmdbId?: number | undefined;
     seasonNumber?: number | undefined;
     episodeNumber?: number | undefined;
@@ -11837,6 +12638,7 @@ export interface GetOnlineMediaResponse {
     imdbId?: string | undefined;
     tmdbId?: number | undefined;
     igdbId?: number | undefined;
+    externalId?: string | undefined;
     title?: string;
     year?: string;
     plot?: string | undefined;
@@ -11881,6 +12683,34 @@ export interface GetParticipantProfileResponse {
 
 export interface GetPermissionByCodeRequest {
     code?: string;
+
+    [key: string]: any;
+}
+
+export interface GetPersonFilmographyMediaRequest {
+    imdbId: string;
+
+    [key: string]: any;
+}
+
+export interface GetPersonFilmographyMediaResponse {
+    personName?: string;
+    personPhotoUrl?: string | undefined;
+    credits?: FilmographyMediaCreditResponse[];
+
+    [key: string]: any;
+}
+
+export interface GetPersonFilmographyRequest {
+    imdbId?: string;
+
+    [key: string]: any;
+}
+
+export interface GetPersonFilmographyResponse {
+    personName?: string;
+    personPhotoUrl?: string | undefined;
+    credits?: FilmographyCreditResponse[];
 
     [key: string]: any;
 }
@@ -11940,6 +12770,17 @@ export interface GetSiteStatsResponse {
     guestGMs?: number;
     vetoesDeployed?: number;
     legends?: number;
+
+    [key: string]: any;
+}
+
+export interface GetSubDraftGameplayResponse {
+    subDraftPublicId?: string;
+    index?: number;
+    status?: number;
+    draftPositions?: GameplayDraftPositionResponse[];
+    picks?: GameplayPickResponse[];
+    triviaResults?: GameplayTriviaResultResponse[];
 
     [key: string]: any;
 }
@@ -12031,6 +12872,15 @@ export interface HttpAuditLogResponse {
     statusCode?: number | undefined;
     durationMs?: number | undefined;
     ipAddress?: string | undefined;
+
+    [key: string]: any;
+}
+
+export interface ImdbPersonSearchResult {
+    imdbId?: string;
+    name?: string;
+    description?: string | undefined;
+    photoUrl?: string | undefined;
 
     [key: string]: any;
 }
@@ -12307,6 +13157,16 @@ export interface MediaAppearanceResponse {
     [key: string]: any;
 }
 
+export interface MediaExternalSummary {
+    publicId?: string;
+    externalId?: string;
+    title?: string;
+    year?: string | undefined;
+    posterUrl?: string | undefined;
+
+    [key: string]: any;
+}
+
 export interface MediaHonorificResponse {
     appearanceHonorificValue: number;
     appearanceHonorificName: string;
@@ -12314,6 +13174,26 @@ export interface MediaHonorificResponse {
     appearanceCount: number;
     isUnifiedNo1: boolean;
     isTheCycle: boolean;
+
+    [key: string]: any;
+}
+
+export interface MediaIgdbSummary {
+    publicId?: string;
+    igdbId?: number;
+    title?: string;
+    year?: string | undefined;
+    posterUrl?: string | undefined;
+
+    [key: string]: any;
+}
+
+export interface MediaImdbSummary {
+    publicId?: string;
+    imdbId?: string;
+    title?: string;
+    year?: string | undefined;
+    posterUrl?: string | undefined;
 
     [key: string]: any;
 }
@@ -12362,6 +13242,7 @@ export interface MediaResponse {
 
 export interface MediaSearchResultResponse {
     tmdbId?: number | undefined;
+    imdbId?: string | undefined;
     igdbId?: number | undefined;
     title?: string;
     year?: string | undefined;
@@ -12401,12 +13282,13 @@ export interface MediaType {
 }
 
 export interface MovieSearchResult {
-    tmdbId?: number;
+    tmdbId?: number | undefined;
     title: string;
     year?: string | undefined;
     posterUrl?: string | undefined;
     overview?: string | undefined;
     mediaType?: MediaType;
+    imdbId?: string | undefined;
 
     [key: string]: any;
 }
@@ -13085,6 +13967,32 @@ export interface SearchForMovieResponse {
     [key: string]: any;
 }
 
+export interface SearchGamesMediaRequest {
+    query: string;
+    page?: number;
+
+    [key: string]: any;
+}
+
+export interface SearchGamesMediaResponse {
+    results?: GameMediaSearchResultResponse[];
+
+    [key: string]: any;
+}
+
+export interface SearchGamesRequest {
+    query: string;
+    page?: number;
+
+    [key: string]: any;
+}
+
+export interface SearchGamesResponse {
+    results?: GameSearchResult[];
+
+    [key: string]: any;
+}
+
 export interface SearchHostRequest {
     name?: string | undefined;
     page?: number | undefined;
@@ -13102,6 +14010,18 @@ export interface SearchHostResponse {
     lastName: string;
     displayName?: string | undefined;
     hostedDraftPartCount: number;
+
+    [key: string]: any;
+}
+
+export interface SearchImdbPeopleRequest {
+    query: string;
+
+    [key: string]: any;
+}
+
+export interface SearchImdbPeopleResponse {
+    results?: ImdbPersonSearchResult[];
 
     [key: string]: any;
 }
@@ -13167,6 +14087,32 @@ export interface SearchSpotlightCandidatesResponse {
     totalCount: number;
     page: number;
     pageSize: number;
+
+    [key: string]: any;
+}
+
+export interface SearchYouTubeMediaRequest {
+    query: string;
+    page?: number;
+
+    [key: string]: any;
+}
+
+export interface SearchYouTubeMediaResponse {
+    results?: YouTubeMediaSearchResultResponse[];
+
+    [key: string]: any;
+}
+
+export interface SearchYouTubeRequest {
+    query: string;
+    page?: number;
+
+    [key: string]: any;
+}
+
+export interface SearchYouTubeResponse {
+    results?: YouTubeSearchResultItem[];
 
     [key: string]: any;
 }
@@ -13288,11 +14234,19 @@ export interface SetReleaseDateRequest {
     [key: string]: any;
 }
 
+export interface SetSpeedDraftPositionsRequest {
+    draftPartId: string;
+    positions: SpeedDraftPositionEntry[];
+
+    [key: string]: any;
+}
+
 export interface SetSubDraftSubjectRequest {
     draftPartPublicId?: string;
     subDraftPublicId?: string;
-    subjectKind: number;
-    subjectName: string;
+    subjectKind?: number;
+    subjectName?: string;
+    subjectImdbId?: string | undefined;
 
     [key: string]: any;
 }
@@ -13310,6 +14264,13 @@ export interface SocialHandles {
     letterboxd?: string | undefined;
     bluesky?: string | undefined;
     profilePicturePath?: string | undefined;
+
+    [key: string]: any;
+}
+
+export interface SpeedDraftPositionEntry {
+    name: string;
+    picks: number[];
 
     [key: string]: any;
 }
@@ -13539,6 +14500,26 @@ export interface WriterResponse {
     id?: string;
     imdbId?: string;
     name?: string;
+
+    [key: string]: any;
+}
+
+export interface YouTubeMediaSearchResultResponse {
+    externalId?: string;
+    title?: string;
+    channelTitle?: string | undefined;
+    thumbnailUrl?: string | undefined;
+    isInMediaDatabase?: boolean;
+    mediaPublicId?: string | undefined;
+
+    [key: string]: any;
+}
+
+export interface YouTubeSearchResultItem {
+    videoId?: string;
+    title?: string;
+    channelTitle?: string | undefined;
+    thumbnailUrl?: string | undefined;
 
     [key: string]: any;
 }

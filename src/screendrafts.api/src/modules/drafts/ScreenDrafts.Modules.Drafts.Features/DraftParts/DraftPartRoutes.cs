@@ -62,6 +62,9 @@ internal static class DraftPartRoutes
   public const string SubDraftPicks = ById + "/sub-drafts/{subDraftId}/picks";
   public const string SubDraftVeto = ById + "/sub-drafts/{subDraftId}/picks/{playOrder}/veto";
   public const string SubDraftAdvance = ById + "/sub-drafts/{subDraftId}/advance";
+  public const string SubDraftPosition = ById + "/sub-drafts/{subDraftId}/position";
+  public const string SubDraftPositions = ById + "/sub-drafts/positions";
+  public const string SubDraftGameplay = ById + "/sub-drafts/{subDraftId}/gameplay";
 
   // Zoom Recordings
   public const string ZoomSession = ById + "/zoom-session";

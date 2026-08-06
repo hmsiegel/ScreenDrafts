@@ -5,11 +5,15 @@ internal sealed class SetSubDraftSubjectCommandHandler(IDraftPartRepository draf
 {
   private readonly IDraftPartRepository _draftPartRepository = draftPartRepository;
 
-  public async Task<Result> Handle(SetSubDraftSubjectCommand request, CancellationToken cancellationToken)
+  public async Task<Result> Handle(
+    SetSubDraftSubjectCommand request,
+    CancellationToken cancellationToken
+  )
   {
     var draftPart = await _draftPartRepository.GetByPublicIdWithSubDraftsAsync(
       request.DraftPartPublicId,
-      cancellationToken);
+      cancellationToken
+    );
 
     if (draftPart is null)
     {
@@ -24,7 +28,7 @@ internal sealed class SetSubDraftSubjectCommandHandler(IDraftPartRepository draf
 
     var subjectKind = SubjectKind.FromValue(request.SubjectKind);
 
-    var result = subDraft.SetSubject(subjectKind, request.SubjectName);
+    var result = subDraft.SetSubject(subjectKind, request.SubjectName, request.SubjectImdbId);
 
     if (result.IsFailure)
     {

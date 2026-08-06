@@ -8,6 +8,7 @@ import { DraftPickList } from '../draft-pick-list';
 import { submitTriviaResults } from '../../gameplay-fetchers';
 import { completeDraftPart } from '@/services/drafts/fetch-my-drafts';
 import * as signalR from '@microsoft/signalr';
+import { SpeedDraftTabs } from '../speed-draft-tabs';
 
 interface Props {
   accessToken: string;
@@ -17,6 +18,24 @@ interface Props {
 
 export function PrimaryHostTab({ accessToken, draftPartId, isCommissioner: _isCommissioner }: Props) {
   const { gameplay, draftPositions } = useLiveDraft();
+
+  // Speed Drafts skip the single-board setup flow (trivia form + position
+  // assignment) entirely — positions are chosen per-round by the trivia
+  // winner, and each of the three sub-drafts has its own trivia round, not
+  // one shared one. This branch has to come before allPositionsAssigned/
+  // triviaComplete below, since those are computed against the DraftPart's
+  // single shared board/trivia, which a Speed Draft never populates.
+  if (gameplay.draftType === 'SpeedDraft') {
+    return (
+      <SpeedDraftTabs
+        accessToken={accessToken}
+        draftPartId={draftPartId}
+        isHost={true}
+        callerParticipantId={null}
+      />
+    );
+  }
+
   const allPositionsAssigned = draftPositions.every((p) => p.assignedParticipantId !== null);
   const triviaComplete = (gameplay.triviaResults?.length ?? 0) > 0;
 

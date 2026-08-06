@@ -19,7 +19,11 @@ internal sealed class Endpoint
 
   public override async Task HandleAsync(GetMediaByTmdbIdsRequest req, CancellationToken ct)
   {
-    var query = new GetMediaByTmdbIdsQuery { TmdbIds = req.TmdbIds };
+    var query = new GetMediaByTmdbIdsQuery
+    {
+      TmdbIds = req.TmdbIds,
+      MediaType = MediaType.FromValue(req.MediaType),
+    };
     var result = await Sender.Send(query, ct);
     await this.SendOkAsync(result, ct);
   }

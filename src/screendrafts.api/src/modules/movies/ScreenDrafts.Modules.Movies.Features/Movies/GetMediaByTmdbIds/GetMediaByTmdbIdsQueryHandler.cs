@@ -13,7 +13,9 @@ internal sealed class GetMediaByTmdbIdsQueryHandler(IDbConnectionFactory dbConne
   )
   {
     if (request.TmdbIds.Count == 0)
+    {
       return Result.Success(new GetMediaByTmdbIdsResponse());
+    }
 
     await using var connection = await _dbConnectionFactory.OpenConnectionAsync(cancellationToken);
 
@@ -26,14 +28,14 @@ internal sealed class GetMediaByTmdbIdsQueryHandler(IDbConnectionFactory dbConne
         m.image AS {nameof(MediaTmdbSummary.PosterUrl)}
       FROM movies.media m
       WHERE m.tmdb_id = ANY(@TmdbIds)
-        AND m.media_type = 0
+        AND m.media_type = @MediaType
       ORDER BY m.title ASC;
       """;
 
     var rows = await connection.QueryAsync<MediaTmdbSummary>(
       new CommandDefinition(
         sql,
-        new { TmdbIds = request.TmdbIds.ToArray() },
+        new { TmdbIds = request.TmdbIds.ToArray(), request.MediaType },
         cancellationToken: cancellationToken
       )
     );

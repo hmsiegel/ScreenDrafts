@@ -44,7 +44,9 @@ internal sealed class PickUndoDomainEventHandler(
         playOrder: domainEvent.PlayOrder,
         boardPosition: domainEvent.BoardPosition,
         tmdbId: domainEvent.TmdbId,
-        movieTitle: domainEvent.MovieTitle
+        movieTitle: domainEvent.MovieTitle,
+        subDraftId: domainEvent.SubDraftId,
+        subDraftPublicId: domainEvent.SubDraftPublicId
       ),
       cancellationToken
     );

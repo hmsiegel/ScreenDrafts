@@ -942,6 +942,11 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("status");
 
+                    b.Property<string>("SubjectImdbId")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("subject_imdb_id");
+
                     b.Property<int?>("SubjectKind")
                         .HasColumnType("integer")
                         .HasColumnName("subject_kind");
@@ -2223,7 +2228,7 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasConstraintName("fk_game_boards_draft_parts_draft_part_id");
 
                     b.HasOne("ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities.SubDraft", null)
-                        .WithOne()
+                        .WithOne("GameBoard")
                         .HasForeignKey("ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities.GameBoard", "SubDraftId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("fk_game_boards_sub_drafts_sub_draft_id");
@@ -2724,6 +2729,11 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                     b.Navigation("CommissionerOverride");
 
                     b.Navigation("Veto");
+                });
+
+            modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities.SubDraft", b =>
+                {
+                    b.Navigation("GameBoard");
                 });
 
             modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities.Veto", b =>

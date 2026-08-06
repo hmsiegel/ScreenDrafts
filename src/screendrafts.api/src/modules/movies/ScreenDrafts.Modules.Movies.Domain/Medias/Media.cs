@@ -27,7 +27,8 @@ public sealed class Media : AggregateRoot<MediaId, Guid>
     int? tvSeriesTmdbId,
     int? seasonNumber,
     int? episodeNumber,
-    MediaId? id = null)
+    MediaId? id = null
+  )
     : base(id ?? MediaId.CreateUnique())
   {
     Title = Guard.Against.NullOrWhiteSpace(title);
@@ -47,9 +48,7 @@ public sealed class Media : AggregateRoot<MediaId, Guid>
     EpisodeNumber = episodeNumber;
   }
 
-  private Media()
-  {
-  }
+  private Media() { }
 
   public string PublicId { get; private set; } = default!;
 
@@ -57,7 +56,7 @@ public sealed class Media : AggregateRoot<MediaId, Guid>
   /// TMDbId - null for video games
   /// </summary>
   public int? TmdbId { get; private set; }
-  
+
   /// <summary>
   /// IMDbId - nullable; not available for all media types
   /// </summary>
@@ -104,7 +103,8 @@ public sealed class Media : AggregateRoot<MediaId, Guid>
   public IReadOnlyCollection<MediaWriter> MediaWriters => _mediaWriters.AsReadOnly();
   public IReadOnlyCollection<MediaProducer> MediaProducers => _mediaProducers.AsReadOnly();
 
-  public IReadOnlyCollection<MediaProductionCompany> MediaProductionCompanies => _mediaProductionCompanies.AsReadOnly();
+  public IReadOnlyCollection<MediaProductionCompany> MediaProductionCompanies =>
+    _mediaProductionCompanies.AsReadOnly();
 
   public void AddGenre(MediaGenre genre)
   {
@@ -152,7 +152,8 @@ public sealed class Media : AggregateRoot<MediaId, Guid>
     int? tvSeriesTmdbId = null,
     int? seasonNumber = null,
     int? episodeNumber = null,
-    MediaId? id = null)
+    MediaId? id = null
+  )
   {
     if (string.IsNullOrWhiteSpace(title))
     {
@@ -169,15 +170,29 @@ public sealed class Media : AggregateRoot<MediaId, Guid>
       return Result.Failure<Media>(MediaErrors.IgdbIdRequiredForVideoGames);
     }
 
-    if (mediaType != MediaType.VideoGame 
-      && mediaType != MediaType.MusicVideo
-      && tmdbId is null)
+    if (mediaType == MediaType.ShortFilm && string.IsNullOrWhiteSpace(externalId))
+    {
+      return Result.Failure<Media>(MediaErrors.ExternalIdsRequiredForShorts);
+    }
+
+    if (
+      mediaType == MediaType.MusicVideo
+      && string.IsNullOrWhiteSpace(imdbId)
+      && string.IsNullOrWhiteSpace(externalId)
+    )
+    {
+      return Result.Failure<Media>(MediaErrors.ImdbOrExternalIdRequiredForMusicVideos);
+    }
+
+    if (mediaType != MediaType.VideoGame && mediaType != MediaType.MusicVideo && tmdbId is null)
     {
       return Result.Failure<Media>(MediaErrors.TmdbIdRequired);
     }
 
-    if (mediaType == MediaType.TvEpisode &&
-      (tvSeriesTmdbId is null || seasonNumber is null || episodeNumber is null))
+    if (
+      mediaType == MediaType.TvEpisode
+      && (tvSeriesTmdbId is null || seasonNumber is null || episodeNumber is null)
+    )
     {
       return Result.Failure<Media>(MediaErrors.EpisodeFieldsRequired);
     }
@@ -198,21 +213,27 @@ public sealed class Media : AggregateRoot<MediaId, Guid>
       tvSeriesTmdbId: tvSeriesTmdbId,
       seasonNumber: seasonNumber,
       episodeNumber: episodeNumber,
-      id: id);
+      id: id
+    );
 
-    media.Raise(new MediaCreatedDomainEvent(
-      mediaId: media.Id.Value,
-      imdbId: imdbId,
-      tmdbId: tmdbId,
-      igdbId: igdbId,
-      publicId: publicId,
-      mediaType: mediaType));
+    media.Raise(
+      new MediaCreatedDomainEvent(
+        mediaId: media.Id.Value,
+        imdbId: imdbId,
+        tmdbId: tmdbId,
+        igdbId: igdbId,
+        publicId: publicId,
+        mediaType: mediaType
+      )
+    );
 
     return Result.Success(media);
   }
 
   internal void SetTmdbId(int tmdbId) => TmdbId = tmdbId;
+
   internal void SetMediaType(MediaType mediaType) => MediaType = mediaType;
+
   internal void SetEpisodeDetails(int tvSeriesTmdbId, int seasonNumber, int episodeNumber)
   {
     TvSeriesTmdbId = tvSeriesTmdbId;

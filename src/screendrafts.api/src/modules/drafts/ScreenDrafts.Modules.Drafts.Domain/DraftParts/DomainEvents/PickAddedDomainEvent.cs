@@ -14,7 +14,10 @@ public sealed class PickAddedDomainEvent(
   string moviePublicId,
   int boardPosition,
   Guid pickId,
-  int playOrder) : DomainEvent
+  int playOrder,
+  Guid? subDraftId = null,
+  string? subDraftPublicId = null
+) : DomainEvent
 {
   public Guid DraftPartId { get; init; } = draftPartId;
   public string DraftPartPublicId { get; init; } = draftPartPublicId;
@@ -30,4 +33,6 @@ public sealed class PickAddedDomainEvent(
   public Guid ParticipantId { get; init; } = participantId;
   public int ParticipantKind { get; init; } = participantKind;
   public int CanonicalPolicyValue { get; init; } = canonicalPolicyValue;
+  public Guid? SubDraftId { get; init; } = subDraftId;
+  public string? SubDraftPublicId { get; init; } = subDraftPublicId;
 }

@@ -18,7 +18,9 @@ internal sealed class VetoUndoDomainEventHandler(IEventBus eventBus)
         draftPartPublicId: domainEvent.DraftPartPublicId,
         playOrder: domainEvent.PlayOrder,
         tmdbId: domainEvent.TmdbId,
-        movieTitle: domainEvent.MovieTitle ?? string.Empty
+        movieTitle: domainEvent.MovieTitle ?? string.Empty,
+        subDraftId: domainEvent.SubDraftId,
+        subDraftPublicId: domainEvent.SubDraftPublicId
       ),
       cancellationToken: cancellationToken
     );

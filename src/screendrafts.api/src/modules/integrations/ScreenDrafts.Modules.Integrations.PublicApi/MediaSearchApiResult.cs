@@ -5,6 +5,7 @@ namespace ScreenDrafts.Modules.Integrations.PublicApi;
 public sealed record MediaSearchApiResult
 {
   public int? TmdbId { get; init; }
+  public string? ImdbId { get; init; }
   public int? IgdbId { get; init; }
   public string Title { get; init; } = default!;
   public MediaType MediaType { get; init; } = default!;

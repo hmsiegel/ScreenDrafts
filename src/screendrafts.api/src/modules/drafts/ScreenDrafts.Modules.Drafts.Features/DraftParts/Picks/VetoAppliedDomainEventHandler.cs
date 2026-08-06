@@ -134,7 +134,8 @@ internal sealed class VetoAppliedDomainEventHandler(
         vetoedByParticipantId: domainEvent.ParticipantId,
         vetoedByParticipantKind: domainEvent.ParticipantKind,
         playedByParticipantId: domainEvent.PlayedByParticipantId,
-        playedByParticipantKind: domainEvent.PlayedByParticipantKind
+        playedByParticipantKind: domainEvent.PlayedByParticipantKind,
+        subDraftPublicId: domainEvent.SubDraftPublicId
       ),
       cancellationToken
     );

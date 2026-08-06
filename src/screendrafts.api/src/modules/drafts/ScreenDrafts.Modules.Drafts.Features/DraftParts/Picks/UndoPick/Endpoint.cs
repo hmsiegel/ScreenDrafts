@@ -23,7 +23,12 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<UndoPickRequest>
   {
     ArgumentNullException.ThrowIfNull(req);
 
-    var command = new UndoPickCommand { DraftPartId = req.DraftPartId, PlayOrder = req.PlayOrder };
+    var command = new UndoPickCommand
+    {
+      DraftPartId = req.DraftPartId,
+      PlayOrder = req.PlayOrder,
+      SubDraftPublicId = req.SubDraftPublicId,
+    };
 
     var result = await Sender.Send(command, ct);
 

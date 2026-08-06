@@ -15,7 +15,9 @@ public sealed class DraftPartCompletedIntegrationEvent(
   int? episodeNumber,
   int vetoCount,
   IReadOnlyList<CompletedPickRecord> picks,
-  IReadOnlyList<string> participantPublicIds
+  IReadOnlyList<string> participantPublicIds,
+  IReadOnlyList<CompletedSubDraftBreakdownRecord>? subDraftBreakdowns,
+  int canonicalPolicyValue
 ) : IntegrationEvent(id, occurredOnUtc)
 {
   public Guid DraftId { get; set; } = draftId;
@@ -26,11 +28,12 @@ public sealed class DraftPartCompletedIntegrationEvent(
   public int TotalPicks { get; set; } = totalPicks;
   public string Title { get; set; } = title;
   public string DraftType { get; set; } = draftType;
+  public int CanonicalPolicyValue { get; set; } = canonicalPolicyValue;
   public bool IsPatreon { get; set; } = isPatreon;
   public int? EpisodeNumber { get; set; } = episodeNumber;
   public IReadOnlyList<CompletedPickRecord> Picks { get; set; } = picks;
   public IReadOnlyList<string> ParticipantPublicIds { get; set; } = participantPublicIds;
   public int VetoCount { get; set; } = vetoCount;
+  public IReadOnlyList<CompletedSubDraftBreakdownRecord>? SubDraftBreakdowns { get; set; } =
+    subDraftBreakdowns;
 }
-
-public sealed record CompletedPickRecord(int Position, string MediaPublicId, string MediaTitle);

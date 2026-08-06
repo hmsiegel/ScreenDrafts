@@ -51,11 +51,11 @@ public static class MovieErrors
     SDError.Conflict("Drafts.MovieAlreadyExists", $"Movie with IMDB id {imdbId} already exists.");
 
   public static SDError NotFound(Guid movieId) =>
-    SDError.Failure("MovieErrors.NotFound", $"Movie with ID {movieId} was not found.");
+    SDError.NotFound("MovieErrors.NotFound", $"Movie with ID {movieId} was not found.");
 
   public static SDError NotFound(string publicId) =>
-    SDError.Failure("MovieErrors.NotFound", $"Movie with public ID {publicId} was not found.");
+    SDError.NotFound("MovieErrors.NotFound", $"Movie with public ID {publicId} was not found.");
 
   public static SDError NotFoundByTmdbId(int value) =>
-    SDError.Failure("MovieErrors.NotFound", $"Movie with TMDB ID {value} was not found.");
+    SDError.NotFound("MovieErrors.NotFound", $"Movie with TMDB ID {value} was not found.");
 }

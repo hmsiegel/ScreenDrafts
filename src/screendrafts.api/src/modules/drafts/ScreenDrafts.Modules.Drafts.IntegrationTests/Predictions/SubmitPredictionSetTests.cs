@@ -66,7 +66,7 @@ public sealed class SubmitPredictionSetTests(DraftsIntegrationTestWebAppFactory 
   }
 
   [Fact]
-  public async Task SubmitPredictionSet_WhenDuplicateForSameContestantAndDraftPart_ShouldFailAsync()
+  public async Task SubmitPredictionSet_WhenResubmittedForSameContestantAndDraftPart_ShouldReplaceEntriesAsync()
   {
     // Arrange
     var draftPartPublicId = await CreateDraftPartPublicIdAsync();
@@ -87,16 +87,24 @@ public sealed class SubmitPredictionSetTests(DraftsIntegrationTestWebAppFactory 
 
     await Sender.Send(command, TestContext.Current.CancellationToken);
 
-    // Act — submit again for same contestant and draft part
-    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
+    // Act — submit again for same contestant and draft part, with different entries
+    var resubmitCommand = command with { Entries = MakeEntries(4, 5, 6) };
+    var result = await Sender.Send(resubmitCommand, TestContext.Current.CancellationToken);
 
-    // Assert
-    result.IsFailure.Should().BeTrue();
-    result.Errors.Should().Contain(PredictionErrors.SetAlreadyExists);
+    // Assert — resubmission replaces the entries instead of failing
+    result.IsSuccess.Should().BeTrue();
+
+    var draftPart = await DbContext.DraftParts.FirstAsync(dp => dp.PublicId == draftPartPublicId, TestContext.Current.CancellationToken);
+    var contestant = await DbContext.PredictionContestants.FirstAsync(c => c.PublicId == contestantPublicId, TestContext.Current.CancellationToken);
+    var set = await DbContext.DraftPredictionSets
+      .Include(s => s.Entries)
+      .FirstAsync(s => s.DraftPartId == draftPart.Id && s.ContestantId == contestant.Id, TestContext.Current.CancellationToken);
+
+    set.Entries.Select(e => e.TmdbId).Should().BeEquivalentTo([4, 5, 6]);
   }
 
   [Fact]
-  public async Task SubmitPredictionSet_WithWrongEntryCount_ShouldFailAsync()
+  public async Task SubmitPredictionSet_WithMoreEntriesThanRequiredCount_ShouldFailAsync()
   {
     // Arrange
     var draftPartPublicId = await CreateDraftPartPublicIdAsync();
@@ -111,7 +119,7 @@ public sealed class SubmitPredictionSetTests(DraftsIntegrationTestWebAppFactory 
       SeasonPublicId = seasonPublicId,
       ContestantPublicId = contestantPublicId,
       SourceKind = PredictionSourceKind.UI.Value,
-      Entries = MakeEntries(1, 2), // only 2, but 3 required
+      Entries = MakeEntries(1, 2, 3, 4), // 4, but only 3 allowed
       ActorUserPublicId = GetActorUserPublicIdForContestant(contestantPublicId)
     };
 
@@ -122,6 +130,33 @@ public sealed class SubmitPredictionSetTests(DraftsIntegrationTestWebAppFactory 
     result.IsFailure.Should().BeTrue();
     result.Errors.Should().ContainSingle(e =>
       e.Code == "PredictionErrors.InvalidEntryCount");
+  }
+
+  [Fact]
+  public async Task SubmitPredictionSet_WithPartialEntries_ShouldSucceedAsync()
+  {
+    // Arrange
+    var draftPartPublicId = await CreateDraftPartPublicIdAsync();
+    var seasonPublicId = await CreateSeasonPublicIdAsync();
+    var contestantPublicId = await CreateContestantPublicIdAsync();
+    await SetRulesAsync(draftPartPublicId, requiredCount: 3);
+    await EnsurePredictorConfiguredAsync(draftPartPublicId, contestantPublicId);
+
+    var command = new SubmitPredictionSetCommand
+    {
+      DraftPartPublicId = draftPartPublicId,
+      SeasonPublicId = seasonPublicId,
+      ContestantPublicId = contestantPublicId,
+      SourceKind = PredictionSourceKind.UI.Value,
+      Entries = MakeEntries(1, 2), // only 2, but 3 allowed — partial saves are valid
+      ActorUserPublicId = GetActorUserPublicIdForContestant(contestantPublicId)
+    };
+
+    // Act
+    var result = await Sender.Send(command, TestContext.Current.CancellationToken);
+
+    // Assert
+    result.IsSuccess.Should().BeTrue();
   }
 
   [Fact]

@@ -254,11 +254,16 @@ public sealed class DraftPartSubDraftTests : DraftsBaseTest
       draftType: DraftType.SpeedDraft,
       seriesId: series.Id).Value;
 
-    return DraftPart.Create(
+    var draftPart = DraftPart.Create(
       draftId: draftId,
       draftPublicId: Faker.Random.AlphaNumeric(10),
       partIndex: 1,
       gameplay: gameplay,
       publicId: Faker.Random.AlphaNumeric(10)).Value;
+
+    draftPart.AddParticipant(CreateParticipantId(CreateDrafter()));
+    draftPart.AddParticipant(CreateParticipantId(CreateDrafter()));
+
+    return draftPart;
   }
 }

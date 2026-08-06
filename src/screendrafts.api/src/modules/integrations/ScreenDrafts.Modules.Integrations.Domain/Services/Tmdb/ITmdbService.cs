@@ -97,5 +97,22 @@ public interface ITmdbService
     CancellationToken cancellationToken = default
   );
 
+  /// <summary>
+  /// Reverse of GetPersonImdbIdAsync — resolves an IMDb person ID (nm...) to
+  /// a TMDb person ID via GET /find/{imdb_id}?external_source=imdb_id. Null
+  /// if TMDb has no matching person record for that IMDb ID.
+  /// </summary>
+  Task<int?> FindPersonByImdbIdAsync(string imdbId, CancellationToken cancellationToken = default);
+
+  /// <summary>
+  /// Full filmography (movies + TV, every credit type — cast and crew) via
+  /// GET /person/{id}/combined_credits. Not filtered by role; the caller
+  /// decides what to do with CreditRole.
+  /// </summary>
+  Task<IReadOnlyList<TmdbPersonCredit>> GetPersonCombinedCreditsAsync(
+    int tmdbPersonId,
+    CancellationToken cancellationToken = default
+  );
+
   Uri? BuildPosterUrl(string? posterPath, string size = "w500");
 }

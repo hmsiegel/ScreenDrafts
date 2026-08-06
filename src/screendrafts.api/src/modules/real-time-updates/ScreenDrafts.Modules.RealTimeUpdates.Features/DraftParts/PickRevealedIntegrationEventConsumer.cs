@@ -15,8 +15,15 @@ internal sealed partial class PickRevealedIntegrationEventConsumer(
   {
     LogPickRevealed(_logger, integrationEvent.DraftPartId, integrationEvent.PlayOrder);
 
+    var groupName = integrationEvent.SubDraftPublicId is not null
+      ? DraftHub.SubDraftGroupName(
+        integrationEvent.DraftPartPublicId,
+        integrationEvent.SubDraftPublicId
+      )
+      : DraftHub.GroupName(integrationEvent.DraftPartPublicId);
+
     await _hubContext
-      .Clients.Group(DraftHub.GroupName(integrationEvent.DraftPartPublicId))
+      .Clients.Group(groupName)
       .SendCoreAsync(
         "PickRevealed",
         [
@@ -28,6 +35,7 @@ internal sealed partial class PickRevealedIntegrationEventConsumer(
           integrationEvent.BoardPosition,
           integrationEvent.ParticipantId,
           integrationEvent.ParticipantKind,
+          integrationEvent.SubDraftPublicId,
         ],
         cancellationToken
       );

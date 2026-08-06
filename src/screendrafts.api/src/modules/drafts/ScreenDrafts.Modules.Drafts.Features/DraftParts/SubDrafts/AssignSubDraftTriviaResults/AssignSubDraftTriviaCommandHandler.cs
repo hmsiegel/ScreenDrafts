@@ -2,23 +2,28 @@
 
 internal sealed record AssignSubDraftTriviaCommandHandler(
   IDraftPartRepository draftPartRepository,
-  ParticipantResolver participantResolver)
-  : ICommandHandler<AssignSubDraftTriviaCommand>
+  ParticipantResolver participantResolver
+) : ICommandHandler<AssignSubDraftTriviaCommand>
 {
   private readonly IDraftPartRepository _draftPartRepository = draftPartRepository;
   private readonly ParticipantResolver _participantResolver = participantResolver;
 
-  public async Task<Result> Handle(AssignSubDraftTriviaCommand request, CancellationToken cancellationToken)
+  public async Task<Result> Handle(
+    AssignSubDraftTriviaCommand request,
+    CancellationToken cancellationToken
+  )
   {
-    var draftPart = await _draftPartRepository.GetByPublicIdWithSubDraftsAsync(request.DraftPartPublicId, cancellationToken);
+    var draftPart = await _draftPartRepository.GetByPublicIdWithSubDraftsAsync(
+      request.DraftPartPublicId,
+      cancellationToken
+    );
 
     if (draftPart is null)
     {
       return Result.Failure(DraftPartErrors.NotFound(request.DraftPartPublicId));
     }
 
-    var subDraft = draftPart.SubDrafts
-      .FirstOrDefault(x => x.PublicId == request.SubDraftPublicId);
+    var subDraft = draftPart.SubDrafts.FirstOrDefault(x => x.PublicId == request.SubDraftPublicId);
 
     if (subDraft is null)
     {
@@ -37,7 +42,8 @@ internal sealed record AssignSubDraftTriviaCommandHandler(
       var participantResult = await _participantResolver.ResolveAsync(
         r.ParticipantPublicId,
         ParticipantKind.FromValue(r.Kind),
-        cancellationToken);
+        cancellationToken
+      );
 
       if (participantResult.IsFailure)
       {
@@ -61,13 +67,6 @@ internal sealed record AssignSubDraftTriviaCommandHandler(
     if (triviaResult.IsFailure)
     {
       return triviaResult;
-    }
-
-    var activateResult = subDraft.Activate();
-
-    if (activateResult.IsFailure)
-    {
-      return activateResult;
     }
 
     _draftPartRepository.Update(draftPart);

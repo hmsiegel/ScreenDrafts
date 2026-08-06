@@ -123,6 +123,9 @@ internal sealed class GetDraftPartGameplayQueryHandler(
     ).ToList();
 
     // ── 4. Trivia results ─────────────────────────────────────────────────────
+    // sub_draft_id IS NULL here — same reasoning as the pick query below, this
+    // stays scoped to the part-level trivia round. Sub-draft trivia belongs to
+    // the per-sub-draft on-demand query, not this response.
     const string triviaSql = $"""
       SELECT
         tr.participant_id               AS {nameof(TriviaRow.ParticipantIdValue)},
@@ -139,6 +142,7 @@ internal sealed class GetDraftPartGameplayQueryHandler(
       LEFT JOIN drafts.drafter_teams dt ON dt.id = tr.participant_id
         AND tr.participant_kind = 1
       WHERE dp.public_id = @DraftPartPublicId
+        AND tr.sub_draft_id IS NULL
       ORDER BY tr.position
       """;
 
@@ -163,6 +167,7 @@ internal sealed class GetDraftPartGameplayQueryHandler(
         m.movie_title                   AS {nameof(PickRow.MovieTitle)},
         m.year                          AS {nameof(PickRow.MovieYear)},
         m.tmdb_id                       AS {nameof(PickRow.TmdbId)},
+        m.imdb_id                       AS {nameof(PickRow.ImdbId)},
         dpp.participant_id_value        AS {nameof(PickRow.PlayedByIdValue)},
         dpp.participant_kind_value      AS {nameof(PickRow.PlayedByKindValue)},
         CASE
@@ -275,6 +280,33 @@ internal sealed class GetDraftPartGameplayQueryHandler(
       )
     ).ToList();
 
+    // ── 6b. Sub-drafts (summary only) ───────────────────────────────────────
+    // Empty result for non-SpeedDraft parts. Subject is filtered for
+    // non-host roles further down, once callerRoles is known.
+    const string subDraftSql = $"""
+      SELECT
+        sd.public_id                    AS {nameof(SubDraftRow.PublicId)},
+        sd.index                        AS {nameof(SubDraftRow.Index)},
+        sd.status                       AS {nameof(SubDraftRow.Status)},
+        sd.subject_kind                 AS {nameof(SubDraftRow.SubjectKind)},
+        sd.subject_name                 AS {nameof(SubDraftRow.SubjectName)},
+        sd.subject_imdb_id               AS {nameof(SubDraftRow.SubjectImdbId)}
+      FROM drafts.sub_drafts sd
+      JOIN drafts.draft_parts dp ON dp.id = sd.draft_part_id
+      WHERE dp.public_id = @DraftPartPublicId
+      ORDER BY sd.index
+      """;
+
+    var subDraftRows = (
+      await connection.QueryAsync<SubDraftRow>(
+        new CommandDefinition(
+          subDraftSql,
+          new { request.DraftPartPublicId },
+          cancellationToken: cancellationToken
+        )
+      )
+    ).ToList();
+
     // ── 7. Caller roles ───────────────────────────────────────────────────────
     // Resolve caller's internal person.id from their public_id (drafts.people).
     // Then check host and participant membership for this draft part.
@@ -352,7 +384,10 @@ internal sealed class GetDraftPartGameplayQueryHandler(
       }
     }
 
-    // ── 7. Compute next expected participant ──────────────────────────────────
+    var canSeePendingSubjects = callerRoles.IsPrimaryHost || callerRoles.IsCoHost;
+    const int subDraftStatusPending = 0;
+
+    // ── 7b. Compute next expected participant ──────────────────────────────────
     // Find the highest board slot that has no landed pick.
     // Landed = pick exists at that position where WasVetoed = false OR WasVetoOverridden = true.
     var landedPositions = pickRows
@@ -458,6 +493,7 @@ internal sealed class GetDraftPartGameplayQueryHandler(
             MovieTitle = p.MovieTitle,
             MovieYear = p.MovieYear,
             TmdbId = p.TmdbId,
+            ImdbId = p.ImdbId,
             PlayedById = p.PlayedByIdValue,
             PlayedByKind = p.PlayedByKindValue,
             PlayedByName = p.PlayedByName,
@@ -487,6 +523,23 @@ internal sealed class GetDraftPartGameplayQueryHandler(
             TmdbId = cfr.TmdbId,
             Title = cfr.Title,
             WasAutoVetoFired = cfr.WasAutoVetoFired,
+          }),
+        ],
+        SubDrafts =
+        [
+          .. subDraftRows.Select(sd =>
+          {
+            var hideSubject = sd.Status == subDraftStatusPending && !canSeePendingSubjects;
+
+            return new GameplaySubDraftSummaryResponse
+            {
+              PublicId = sd.PublicId,
+              Index = sd.Index,
+              Status = sd.Status,
+              SubjectKind = hideSubject ? null : sd.SubjectKind,
+              SubjectName = hideSubject ? null : sd.SubjectName,
+              SubjectImdbId = hideSubject ? null : sd.SubjectImdbId,
+            };
           }),
         ],
       }
@@ -541,7 +594,8 @@ internal sealed class GetDraftPartGameplayQueryHandler(
     int BoardPosition,
     string MovieTitle,
     string? MovieYear,
-    int TmdbId,
+    int? TmdbId,
+    string? ImdbId,
     Guid PlayedByIdValue,
     int PlayedByKindValue,
     string PlayedByName,
@@ -571,6 +625,15 @@ internal sealed class GetDraftPartGameplayQueryHandler(
   );
 
   private sealed record HostRow(string PublicId, string Name, bool IsPrimary);
+
+  private sealed record SubDraftRow(
+    string PublicId,
+    int Index,
+    int Status,
+    int? SubjectKind,
+    string? SubjectName,
+    string? SubjectImdbId
+  );
 
   private static int[] ParsePicks(string picks) =>
     string.IsNullOrWhiteSpace(picks)

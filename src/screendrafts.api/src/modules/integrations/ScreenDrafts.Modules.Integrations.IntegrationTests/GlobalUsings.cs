@@ -9,6 +9,7 @@ global using ScreenDrafts.Common.Domain;
 global using ScreenDrafts.Common.IntegrationTests.Abstractions;
 global using ScreenDrafts.Modules.Drafts.IntegrationEvents;
 global using ScreenDrafts.Modules.Integrations.Domain.Movies;
+global using ScreenDrafts.Modules.Integrations.Domain.Services.Omdb;
 global using ScreenDrafts.Modules.Integrations.Domain.Services.Tmdb;
 global using ScreenDrafts.Modules.Integrations.Domain.Zoom;
 global using ScreenDrafts.Modules.Integrations.Features.Zoom;

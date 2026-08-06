@@ -35,6 +35,7 @@ internal sealed partial class VetoUndoneIntegrationEventConsumer(
       integrationEvent.PlayOrder,
       integrationEvent.MovieTitle,
       integrationEvent.TmdbId,
+      integrationEvent.SubDraftPublicId,
       Participants = tokens.Select(t => new
       {
         t.ParticipantIdValue,

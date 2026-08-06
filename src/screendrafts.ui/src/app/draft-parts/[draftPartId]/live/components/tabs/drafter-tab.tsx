@@ -7,6 +7,7 @@ import { DraftBoard } from '../draft-board';
 import { DraftPickList } from '../draft-pick-list';
 import { CountdownOverlay } from '../countdown-overlay';
 import { PickSourcePanel } from '../pick-source-panel';
+import { SpeedDraftTabs } from '../speed-draft-tabs';
 import type { GameplayPickResponse } from '@/lib/dto';
 
 interface Props {
@@ -25,6 +26,22 @@ export function DrafterTab({ accessToken, draftPartId }: Props) {
     countdownTarget,
     dismissCountdown,
   } = useLiveDraft();
+
+  // Speed Drafts render entirely differently — three gated sub-draft tabs,
+  // each with its own board/picks/trivia, rather than the single shared
+  // board every other draft type uses. Branch out before any of the
+  // single-board logic below, which doesn't apply here.
+  if (gameplay.draftType === 'SpeedDraft') {
+    return (
+      <SpeedDraftTabs
+        accessToken={accessToken}
+        draftPartId={draftPartId}
+        isHost={false}
+        callerParticipantId={callerParticipantId}
+      />
+    );
+  }
+
 
   const [showCountdown, setShowCountdown] = useState(false);
   // Tracks a pick this drafter just submitted, awaiting the host's

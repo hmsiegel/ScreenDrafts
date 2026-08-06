@@ -44,15 +44,25 @@ public sealed partial class DraftPart
       return Result.Failure(DraftErrors.CannotCompleteDraftIfItIsNotInProgress);
     }
 
-    var landedPositionCount = _picks
-      .Where(p => p.IsActiveOnFinalBoard)
-      .Select(p => p.Position)
-      .Distinct()
-      .Count();
-
-    if (landedPositionCount != TotalPicks)
+    if (DraftType == DraftType.SpeedDraft)
     {
-      return Result.Failure(DraftErrors.CannotCompleteDraftWithoutAllPicks);
+      if (_subDrafts.Count == 0 || _subDrafts.Any(sd => sd.Status != SubDraftStatus.Completed))
+      {
+        return Result.Failure(SubDraftErrors.AllSubDraftsMustBeCompletedBeforeDraftPartCanComplete);
+      }
+    }
+    else
+    {
+      var landedPositionCount = _picks
+        .Where(p => p.IsActiveOnFinalBoard)
+        .Select(p => p.Position)
+        .Distinct()
+        .Count();
+
+      if (landedPositionCount != TotalPicks)
+      {
+        return Result.Failure(DraftErrors.CannotCompleteDraftWithoutAllPicks);
+      }
     }
 
     Status = DraftPartStatus.Completed;

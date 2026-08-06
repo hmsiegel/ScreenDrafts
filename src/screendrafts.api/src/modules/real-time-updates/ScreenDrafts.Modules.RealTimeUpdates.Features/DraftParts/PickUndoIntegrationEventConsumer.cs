@@ -36,6 +36,7 @@ internal sealed partial class PickUndoneIntegrationEventConsumer(
       integrationEvent.BoardPosition,
       integrationEvent.MovieTitle,
       integrationEvent.TmdbId,
+      integrationEvent.SubDraftPublicId,
       Participants = tokens.Select(t => new
       {
         t.ParticipantIdValue,

@@ -25,6 +25,7 @@ internal sealed class Endpoint(ISender sender)
       TmdbId = req.TmdbId,
       IgdbId = req.IgdbId,
       ImdbId = req.ImdbId,
+      ExternalId = req.ExternalId,
       MediaType = req.MediaType,
       EpisodeNumber = req.EpisodeNumber,
       SeasonNumber = req.SeasonNumber,

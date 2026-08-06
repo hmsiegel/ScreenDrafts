@@ -97,7 +97,7 @@ public sealed class PickRevealedConsumerTests
 
     // Assert
     var args = hubContext.SentMessages.Single().Args;
-    args.Should().HaveCount(8);
+    args.Should().HaveCount(9);
     args[0].Should().Be(draftPartId);
     args[1].Should().Be(playOrder);
     args[2].Should().Be(moviePublicId);
@@ -106,6 +106,7 @@ public sealed class PickRevealedConsumerTests
     args[5].Should().Be(boardPosition);
     args[6].Should().Be(participantId);
     args[7].Should().Be(participantKind);
+    args[8].Should().BeNull();
   }
 
   // -------------------------------------------------------------------------

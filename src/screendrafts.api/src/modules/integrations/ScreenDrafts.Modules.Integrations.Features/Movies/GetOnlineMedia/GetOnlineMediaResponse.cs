@@ -1,11 +1,16 @@
 ﻿namespace ScreenDrafts.Modules.Integrations.Features.Movies.GetOnlineMedia;
 
-[System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1002:Do not expose generic lists", Justification = "<Pending>")]
+[System.Diagnostics.CodeAnalysis.SuppressMessage(
+  "Design",
+  "CA1002:Do not expose generic lists",
+  Justification = "<Pending>"
+)]
 internal sealed record GetOnlineMediaResponse
 {
   public string? ImdbId { get; init; }
   public int? TmdbId { get; init; }
   public int? IgdbId { get; init; }
+  public string? ExternalId { get; init; }
   public string Title { get; init; } = default!;
   public string Year { get; init; } = default!;
   public string? Plot { get; init; }

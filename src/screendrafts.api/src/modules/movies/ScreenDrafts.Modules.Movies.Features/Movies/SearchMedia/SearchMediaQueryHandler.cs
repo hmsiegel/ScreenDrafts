@@ -42,7 +42,24 @@ internal sealed class SearchMediaQueryHandler(
 
     var tmdbIds = filteredList.Where(r => r.TmdbId.HasValue).Select(r => r.TmdbId!.Value).ToList();
 
+    // Pairs for the public-id lookup — same source rows as tmdbIds above,
+    // but keeping mediaType alongside since the same numeric TMDb ID can
+    // belong to both a movie and a show.
+    var tmdbIdMediaTypePairs = filteredList
+      .Where(r => r.TmdbId.HasValue)
+      .Select(r => (TmdbId: r.TmdbId!.Value, MediaTypeValue: r.MediaType.Value))
+      .Distinct()
+      .ToList();
+
     var igdbIds = filteredList.Where(r => r.IgdbId.HasValue).Select(r => r.IgdbId!.Value).ToList();
+
+    // OMDb-fallback results have no TmdbId, only ImdbId — same merge treatment
+    // as tmdb/igdb, just keyed differently since imdb_id needs no MediaType
+    // disambiguation.
+    var imdbIds = filteredList
+      .Where(r => !r.TmdbId.HasValue && !string.IsNullOrWhiteSpace(r.ImdbId))
+      .Select(r => r.ImdbId!)
+      .ToList();
 
     var existingTmdbIds =
       tmdbIds.Count > 0
@@ -54,9 +71,19 @@ internal sealed class SearchMediaQueryHandler(
         ? await _movieRepository.GetExistingMediaIgdbsAsync(igdbIds, cancellationToken)
         : [];
 
+    var existingImdbIds =
+      imdbIds.Count > 0
+        ? await _movieRepository.GetExistingMediaImdbsAsync(imdbIds, cancellationToken)
+        : [];
+
     var publicIdsByTmdbId =
-      tmdbIds.Count > 0
-        ? await _movieRepository.GetPublicIdsByTmdbIdsAsync(tmdbIds, cancellationToken)
+      tmdbIdMediaTypePairs.Count > 0
+        ? await _movieRepository.GetPublicIdsByTmdbIdsAsync(tmdbIdMediaTypePairs, cancellationToken)
+        : [];
+
+    var publicIdsByImdbId =
+      imdbIds.Count > 0
+        ? await _movieRepository.GetPublicIdsByImdbIdsAsync(imdbIds, cancellationToken)
         : [];
 
     var items = filteredList
@@ -64,15 +91,22 @@ internal sealed class SearchMediaQueryHandler(
       {
         var isInDatabase =
           (r.TmdbId.HasValue && existingTmdbIds.Contains((r.TmdbId.Value, r.MediaType)))
-          || (r.IgdbId.HasValue && existingIgdbIds.Contains(r.IgdbId.Value));
+          || (r.IgdbId.HasValue && existingIgdbIds.Contains(r.IgdbId.Value))
+          || (!r.TmdbId.HasValue && r.ImdbId is not null && existingImdbIds.Contains(r.ImdbId));
 
-        var publicId =
-          isInDatabase && r.TmdbId.HasValue
-            ? publicIdsByTmdbId.GetValueOrDefault(r.TmdbId.Value)
-            : null;
+        var publicId = isInDatabase switch
+        {
+          false => null,
+          true when r.TmdbId.HasValue => publicIdsByTmdbId.GetValueOrDefault(
+            (r.TmdbId.Value, r.MediaType.Value)
+          ),
+          true when r.ImdbId is not null => publicIdsByImdbId.GetValueOrDefault(r.ImdbId),
+          _ => null,
+        };
 
         return new MediaSearchResultResponse
         {
+          ImdbId = r.ImdbId,
           TmdbId = r.TmdbId,
           IgdbId = r.IgdbId,
           Title = r.Title,

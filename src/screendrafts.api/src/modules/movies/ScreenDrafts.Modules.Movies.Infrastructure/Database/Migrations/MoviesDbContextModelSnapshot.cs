@@ -18,7 +18,7 @@ namespace ScreenDrafts.Modules.Movies.Infrastructure.Database.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("movies")
-                .HasAnnotation("ProductVersion", "10.0.7")
+                .HasAnnotation("ProductVersion", "10.0.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -382,6 +382,9 @@ namespace ScreenDrafts.Modules.Movies.Infrastructure.Database.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_media");
+
+                    b.HasIndex("ExternalId")
+                        .HasDatabaseName("ix_media_external_id");
 
                     b.HasIndex("IgdbId")
                         .HasDatabaseName("ix_media_igdb_id");

@@ -153,17 +153,30 @@ internal sealed class MediaRepository(MoviesDbContext context) : IMediaRepositor
     return [.. rows.Select(m => (m.TmdbId!.Value, m.MediaTypeValue))];
   }
 
-  public async Task<Dictionary<int, string>> GetPublicIdsByTmdbIdsAsync(
-    IEnumerable<int> tmdbIds,
+  public async Task<
+    Dictionary<(int TmdbId, int MediaTypeValue), string>
+  > GetPublicIdsByTmdbIdsAsync(
+    IEnumerable<(int TmdbId, int MediaTypeValue)> tmdbIds,
     CancellationToken cancellationToken = default
   )
   {
+    var pairs = tmdbIds as ICollection<(int TmdbId, int MediaTypeValue)> ?? [.. tmdbIds];
+    var distinctTmdbIds = pairs.Select(p => p.TmdbId).Distinct().ToArray();
+
     var rows = await _context
-      .Media.Where(m => m.TmdbId != null && tmdbIds.Contains(m.TmdbId.Value))
-      .Select(m => new { m.TmdbId, m.PublicId })
+      .Media.Where(m => m.TmdbId != null && distinctTmdbIds.Contains(m.TmdbId.Value))
+      .Select(m => new
+      {
+        m.TmdbId,
+        MediaTypeValue = m.MediaType.Value,
+        m.PublicId,
+      })
       .ToListAsync(cancellationToken);
 
-    return rows.ToDictionary(m => m.TmdbId!.Value, m => m.PublicId!);
+    var pairSet = pairs.ToHashSet();
+
+    return rows.Where(m => pairSet.Contains((m.TmdbId!.Value, m.MediaTypeValue)))
+      .ToDictionary(m => (m.TmdbId!.Value, m.MediaTypeValue), m => m.PublicId!);
   }
 
   public async Task<Media?> FindByTvEpisodeAsync(
@@ -215,5 +228,65 @@ internal sealed class MediaRepository(MoviesDbContext context) : IMediaRepositor
         && m.EpisodeNumber == episodeNumber,
       cancellationToken
     );
+  }
+
+  public async Task<bool> ExistsByExternalIdAsync(
+    string externalId,
+    CancellationToken cancellationToken = default
+  )
+  {
+    return await _context.Media.AnyAsync(m => m.ExternalId == externalId, cancellationToken);
+  }
+
+  public async Task<HashSet<string>> GetExistingMediaExternalIdsAsync(
+    IEnumerable<string> externalIds,
+    CancellationToken cancellationToken = default
+  )
+  {
+    var rows = await _context
+      .Media.Where(m => m.ExternalId != null && externalIds.Contains(m.ExternalId))
+      .Select(m => m.ExternalId!)
+      .ToListAsync(cancellationToken);
+
+    return [.. rows];
+  }
+
+  public async Task<Dictionary<string, string>> GetPublicIdsByImdbIdsAsync(
+    IEnumerable<string> imdbIds,
+    CancellationToken cancellationToken = default
+  )
+  {
+    var rows = await _context
+      .Media.Where(m => m.ImdbId != null && imdbIds.Contains(m.ImdbId))
+      .Select(m => new { m.ImdbId, m.PublicId })
+      .ToListAsync(cancellationToken);
+
+    return rows.ToDictionary(m => m.ImdbId!, m => m.PublicId!);
+  }
+
+  public async Task<Dictionary<int, string>> GetPublicIdsByIgdbIdsAsync(
+    IEnumerable<int> igdbIds,
+    CancellationToken cancellationToken = default
+  )
+  {
+    var rows = await _context
+      .Media.Where(m => m.IgdbId != null && igdbIds.Contains(m.IgdbId.Value))
+      .Select(m => new { m.IgdbId, m.PublicId })
+      .ToListAsync(cancellationToken);
+
+    return rows.ToDictionary(m => m.IgdbId!.Value, m => m.PublicId!);
+  }
+
+  public async Task<Dictionary<string, string>> GetPublicIdsByExternalIdsAsync(
+    IEnumerable<string> externalIds,
+    CancellationToken cancellationToken = default
+  )
+  {
+    var rows = await _context
+      .Media.Where(m => m.ExternalId != null && externalIds.Contains(m.ExternalId))
+      .Select(m => new { m.ExternalId, m.PublicId })
+      .ToListAsync(cancellationToken);
+
+    return rows.ToDictionary(m => m.ExternalId!, m => m.PublicId!);
   }
 }

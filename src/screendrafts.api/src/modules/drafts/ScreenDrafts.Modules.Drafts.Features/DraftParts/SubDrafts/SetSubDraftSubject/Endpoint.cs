@@ -8,12 +8,12 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<SetSubDraftSubjectRequest>
     Description(x =>
     {
       x.WithTags(DraftsOpenApi.Tags.DraftParts)
-      .WithName(DraftsOpenApi.Names.SubDrafts_SetSubject)
-      .Produces(StatusCodes.Status204NoContent)
-      .Produces(StatusCodes.Status400BadRequest)
-      .Produces(StatusCodes.Status401Unauthorized)
-      .Produces(StatusCodes.Status403Forbidden)
-      .Produces(StatusCodes.Status404NotFound);
+        .WithName(DraftsOpenApi.Names.SubDrafts_SetSubject)
+        .Produces(StatusCodes.Status204NoContent)
+        .Produces(StatusCodes.Status400BadRequest)
+        .Produces(StatusCodes.Status401Unauthorized)
+        .Produces(StatusCodes.Status403Forbidden)
+        .Produces(StatusCodes.Status404NotFound);
     });
     Policies(DraftsAuth.Permissions.SubDraftUpdate);
   }
@@ -25,7 +25,8 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<SetSubDraftSubjectRequest>
       DraftPartPublicId = req.DraftPartPublicId,
       SubDraftPublicId = req.SubDraftPublicId,
       SubjectKind = req.SubjectKind,
-      SubjectName = req.SubjectName
+      SubjectName = req.SubjectName,
+      SubjectImdbId = req.SubjectImdbId,
     };
 
     var result = await Sender.Send(command, ct);

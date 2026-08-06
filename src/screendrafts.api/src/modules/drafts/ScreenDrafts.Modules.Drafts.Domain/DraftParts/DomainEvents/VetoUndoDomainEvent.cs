@@ -8,7 +8,9 @@ public sealed class VetoUndoDomainEvent(
   int TmdbId,
   Guid DraftId,
   string DraftPublicId,
-  string? movieTitle
+  string? movieTitle,
+  Guid? subDraftId,
+  string? subDraftPublicId
 ) : DomainEvent
 {
   public Guid DraftPartId { get; init; } = DraftPartId;
@@ -19,4 +21,6 @@ public sealed class VetoUndoDomainEvent(
   public Guid DraftId { get; init; } = DraftId;
   public string DraftPublicId { get; init; } = DraftPublicId;
   public string? MovieTitle { get; init; } = movieTitle;
+  public Guid? SubDraftId { get; init; } = subDraftId;
+  public string? SubDraftPublicId { get; init; } = subDraftPublicId;
 }

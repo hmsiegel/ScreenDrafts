@@ -42,7 +42,7 @@ internal sealed class GameBoardConfiguration : IEntityTypeConfiguration<GameBoar
 
     builder
       .HasOne<SubDraft>()
-      .WithOne()
+      .WithOne(s => s.GameBoard)
       .HasForeignKey<GameBoard>(gb => gb.SubDraftId)
       .IsRequired(required: false)
       .OnDelete(deleteBehavior: DeleteBehavior.Cascade);

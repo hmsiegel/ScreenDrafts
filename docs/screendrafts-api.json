@@ -3839,6 +3839,44 @@
         ]
       }
     },
+    "/draft-parts/{draftPartId}/sub-drafts/positions": {
+      "post": {
+        "tags": [
+          "DraftParts"
+        ],
+        "operationId": "SubDrafts.SetPositions",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetSpeedDraftPositionsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
     "/draft-parts/{draftPartId}/sub-drafts/{subDraftId}/picks": {
       "post": {
         "tags": [
@@ -3884,6 +3922,35 @@
         ]
       }
     },
+    "/draft-parts/{draftPartId}/sub-drafts/{subDraftId}/gameplay": {
+      "get": {
+        "tags": [
+          "DraftParts"
+        ],
+        "operationId": "SubDrafts.GetGameplay",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetSubDraftGameplayResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
     "/draft-parts/{draftPartId}/sub-drafts/{subDraftId}/trivia-results": {
       "post": {
         "tags": [
@@ -3895,6 +3962,44 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/AssignSubDraftTriviaRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/draft-parts/{draftPartId}/sub-drafts/{subDraftId}/position": {
+      "post": {
+        "tags": [
+          "DraftParts"
+        ],
+        "operationId": "SubDrafts.AssignPosition",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssignSubDraftPositionRequest"
               }
             }
           },
@@ -4119,7 +4224,7 @@
         ]
       }
     },
-    "/draft-parts/{draftPartId}/unreleased": {
+    "/draft-parts/unreleased": {
       "get": {
         "tags": [
           "DraftParts"
@@ -6303,6 +6408,141 @@
         ]
       }
     },
+    "/youtube/search": {
+      "get": {
+        "tags": [
+          "YouTube"
+        ],
+        "operationId": "YouTube.Search",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchYouTubeRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchYouTubeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchYouTubeResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/movie-people/search": {
+      "get": {
+        "tags": [
+          "People"
+        ],
+        "operationId": "People.Search",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchImdbPeopleRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchImdbPeopleRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchImdbPeopleResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/movie-people/filmography": {
+      "get": {
+        "tags": [
+          "People"
+        ],
+        "operationId": "People.GetFilmography",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/GetPersonFilmographyRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetPersonFilmographyRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetPersonFilmographyResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
     "/integrations/movies/search": {
       "get": {
         "tags": [
@@ -6429,6 +6669,91 @@
         ]
       }
     },
+    "/games/search": {
+      "get": {
+        "tags": [
+          "Games"
+        ],
+        "operationId": "Games.Search",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchGamesRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchGamesRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchGamesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/media/search-youtube": {
+      "get": {
+        "tags": [
+          "Media"
+        ],
+        "operationId": "Media.SearchYouTube",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchYouTubeMediaRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchYouTubeMediaRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchYouTubeMediaResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
     "/media/search": {
       "get": {
         "tags": [
@@ -6457,6 +6782,47 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/SearchMediaResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/media/search-games": {
+      "get": {
+        "tags": [
+          "Media"
+        ],
+        "operationId": "Media.SearchGames",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchGamesMediaRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchGamesMediaRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchGamesMediaResponse"
                 }
               }
             }
@@ -6542,6 +6908,50 @@
           },
           "403": {
             "description": "Forbidden"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/media/person-filmography": {
+      "get": {
+        "tags": [
+          "Media"
+        ],
+        "operationId": "Media.GetPersonFilmography",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/GetPersonFilmographyMediaRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetPersonFilmographyMediaRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetPersonFilmographyMediaResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
           }
         },
         "security": [
@@ -6665,6 +7075,129 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/GetMediaByTmdbIdsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/media/by-imdb-ids": {
+      "get": {
+        "tags": [
+          "Media"
+        ],
+        "operationId": "Media.GetByImdbIds",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/GetMediaByImdbIdsRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetMediaByImdbIdsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMediaByImdbIdsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/media/by-igdb-ids": {
+      "get": {
+        "tags": [
+          "Media"
+        ],
+        "operationId": "Media.GetByIgdbIds",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/GetMediaByIgdbIdsRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetMediaByIgdbIdsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMediaByIgdbIdsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/media/by-external-ids": {
+      "get": {
+        "tags": [
+          "Media"
+        ],
+        "operationId": "Media.GetByExternalIds",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/GetMediaByExternalIdsRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetMediaByExternalIdsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMediaByExternalIdsResponse"
                 }
               }
             }
@@ -7439,6 +7972,12 @@
             ],
             "format": "int32"
           },
+          "externalId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
           "title": {
             "type": "string"
           },
@@ -7838,6 +8377,31 @@
               "string"
             ],
             "format": "int32"
+          }
+        }
+      },
+      "AssignSubDraftPositionRequest": {
+        "type": "object",
+        "properties": {
+          "draftPartId": {
+            "type": "string"
+          },
+          "subDraftId": {
+            "type": "string"
+          },
+          "winnerParticipantPublicId": {
+            "type": "string"
+          },
+          "winnerParticipantKind": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "choice": {
+            "type": "string"
           }
         }
       },
@@ -9669,6 +10233,12 @@
             ],
             "format": "int32"
           },
+          "externalId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
           "imdbId": {
             "type": [
               "null",
@@ -9738,6 +10308,136 @@
           },
           "enableRangeProcessing": {
             "type": "boolean"
+          }
+        }
+      },
+      "FilmographyCreditResponse": {
+        "type": "object",
+        "properties": {
+          "tmdbId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "title": {
+            "type": "string"
+          },
+          "year": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "posterUrl": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "mediaType": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "creditRole": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "FilmographyMediaCreditResponse": {
+        "type": "object",
+        "properties": {
+          "tmdbId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "title": {
+            "type": "string"
+          },
+          "year": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "posterUrl": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "mediaType": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "creditRole": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "isInMediaDatabase": {
+            "type": "boolean"
+          },
+          "mediaPublicId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "GameMediaSearchResultResponse": {
+        "type": "object",
+        "properties": {
+          "igdbId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "title": {
+            "type": "string"
+          },
+          "year": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "posterUrl": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "isInMediaDatabase": {
+            "type": "boolean"
+          },
+          "mediaPublicId": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -9940,6 +10640,31 @@
           "tmdbId": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "imdbId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "igdbId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "mediaType": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
               "integer",
               "string"
             ],
@@ -9983,6 +10708,51 @@
           }
         }
       },
+      "GameplaySubDraftSummaryResponse": {
+        "type": "object",
+        "properties": {
+          "publicId": {
+            "type": "string"
+          },
+          "index": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "status": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "subjectKind": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "subjectName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "subjectImdbId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
       "GameplayTriviaResultResponse": {
         "type": "object",
         "properties": {
@@ -10016,6 +10786,34 @@
               "string"
             ],
             "format": "int32"
+          }
+        }
+      },
+      "GameSearchResult": {
+        "type": "object",
+        "properties": {
+          "igdbId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "title": {
+            "type": "string"
+          },
+          "year": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "posterUrl": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -10698,6 +11496,12 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/GameplayCommunityFilmRuleResponse"
+            }
+          },
+          "subDrafts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GameplaySubDraftSummaryResponse"
             }
           }
         }
@@ -11513,6 +12317,77 @@
           }
         }
       },
+      "GetMediaByExternalIdsRequest": {
+        "type": "object",
+        "properties": {
+          "externalIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "GetMediaByExternalIdsResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MediaExternalSummary"
+            }
+          }
+        }
+      },
+      "GetMediaByIgdbIdsRequest": {
+        "type": "object",
+        "properties": {
+          "igdbIds": {
+            "type": "array",
+            "items": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        }
+      },
+      "GetMediaByIgdbIdsResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MediaIgdbSummary"
+            }
+          }
+        }
+      },
+      "GetMediaByImdbIdsRequest": {
+        "type": "object",
+        "properties": {
+          "imdbIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "GetMediaByImdbIdsResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MediaImdbSummary"
+            }
+          }
+        }
+      },
       "GetMediaByTmdbIdsRequest": {
         "type": "object",
         "properties": {
@@ -11526,6 +12401,14 @@
               ],
               "format": "int32"
             }
+          },
+          "mediaType": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
           }
         }
       },
@@ -11713,6 +12596,12 @@
               "string"
             ]
           },
+          "externalId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
           "tvSeriesTmdbId": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": [
@@ -11768,6 +12657,12 @@
               "string"
             ],
             "format": "int32"
+          },
+          "externalId": {
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "title": {
             "type": "string"
@@ -11966,6 +12861,65 @@
           }
         }
       },
+      "GetPersonFilmographyMediaRequest": {
+        "required": [
+          "imdbId"
+        ],
+        "type": "object",
+        "properties": {
+          "imdbId": {
+            "type": "string"
+          }
+        }
+      },
+      "GetPersonFilmographyMediaResponse": {
+        "type": "object",
+        "properties": {
+          "personName": {
+            "type": "string"
+          },
+          "personPhotoUrl": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "credits": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FilmographyMediaCreditResponse"
+            }
+          }
+        }
+      },
+      "GetPersonFilmographyRequest": {
+        "type": "object",
+        "properties": {
+          "imdbId": {
+            "type": "string"
+          }
+        }
+      },
+      "GetPersonFilmographyResponse": {
+        "type": "object",
+        "properties": {
+          "personName": {
+            "type": "string"
+          },
+          "personPhotoUrl": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "credits": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FilmographyCreditResponse"
+            }
+          }
+        }
+      },
       "GetPersonRequest": {
         "type": "object",
         "properties": {
@@ -12087,6 +13041,48 @@
               "string"
             ],
             "format": "int32"
+          }
+        }
+      },
+      "GetSubDraftGameplayResponse": {
+        "type": "object",
+        "properties": {
+          "subDraftPublicId": {
+            "type": "string"
+          },
+          "index": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "status": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "draftPositions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GameplayDraftPositionResponse"
+            }
+          },
+          "picks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GameplayPickResponse"
+            }
+          },
+          "triviaResults": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GameplayTriviaResultResponse"
+            }
           }
         }
       },
@@ -12358,6 +13354,29 @@
       "IFormFile": {
         "type": "string",
         "format": "binary"
+      },
+      "ImdbPersonSearchResult": {
+        "type": "object",
+        "properties": {
+          "imdbId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "photoUrl": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
       },
       "LatestDraftParticipantResponse": {
         "type": "object",
@@ -13227,6 +14246,32 @@
           }
         }
       },
+      "MediaExternalSummary": {
+        "type": "object",
+        "properties": {
+          "publicId": {
+            "type": "string"
+          },
+          "externalId": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "year": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "posterUrl": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
       "MediaHonorificResponse": {
         "required": [
           "appearanceHonorificValue",
@@ -13270,6 +14315,63 @@
           },
           "isTheCycle": {
             "type": "boolean"
+          }
+        }
+      },
+      "MediaIgdbSummary": {
+        "type": "object",
+        "properties": {
+          "publicId": {
+            "type": "string"
+          },
+          "igdbId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "title": {
+            "type": "string"
+          },
+          "year": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "posterUrl": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "MediaImdbSummary": {
+        "type": "object",
+        "properties": {
+          "publicId": {
+            "type": "string"
+          },
+          "imdbId": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "year": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "posterUrl": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -13512,6 +14614,12 @@
             ],
             "format": "int32"
           },
+          "imdbId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
           "igdbId": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": [
@@ -13662,6 +14770,7 @@
           "tmdbId": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": [
+              "null",
               "integer",
               "string"
             ],
@@ -13690,6 +14799,12 @@
           },
           "mediaType": {
             "$ref": "#/components/schemas/MediaType"
+          },
+          "imdbId": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -16141,6 +17256,66 @@
           }
         }
       },
+      "SearchGamesMediaRequest": {
+        "required": [
+          "query"
+        ],
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string"
+          },
+          "page": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "SearchGamesMediaResponse": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GameMediaSearchResultResponse"
+            }
+          }
+        }
+      },
+      "SearchGamesRequest": {
+        "required": [
+          "query"
+        ],
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string"
+          },
+          "page": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "SearchGamesResponse": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GameSearchResult"
+            }
+          }
+        }
+      },
       "SearchHostRequest": {
         "type": "object",
         "properties": {
@@ -16217,6 +17392,28 @@
               "string"
             ],
             "format": "int32"
+          }
+        }
+      },
+      "SearchImdbPeopleRequest": {
+        "required": [
+          "query"
+        ],
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string"
+          }
+        }
+      },
+      "SearchImdbPeopleResponse": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ImdbPersonSearchResult"
+            }
           }
         }
       },
@@ -16426,6 +17623,66 @@
               "string"
             ],
             "format": "int32"
+          }
+        }
+      },
+      "SearchYouTubeMediaRequest": {
+        "required": [
+          "query"
+        ],
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string"
+          },
+          "page": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "SearchYouTubeMediaResponse": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/YouTubeMediaSearchResultResponse"
+            }
+          }
+        }
+      },
+      "SearchYouTubeRequest": {
+        "required": [
+          "query"
+        ],
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string"
+          },
+          "page": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "SearchYouTubeResponse": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/YouTubeSearchResultItem"
+            }
           }
         }
       },
@@ -16751,11 +18008,25 @@
           }
         }
       },
-      "SetSubDraftSubjectRequest": {
+      "SetSpeedDraftPositionsRequest": {
         "required": [
-          "subjectKind",
-          "subjectName"
+          "draftPartId",
+          "positions"
         ],
+        "type": "object",
+        "properties": {
+          "draftPartId": {
+            "type": "string"
+          },
+          "positions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SpeedDraftPositionEntry"
+            }
+          }
+        }
+      },
+      "SetSubDraftSubjectRequest": {
         "type": "object",
         "properties": {
           "draftPartPublicId": {
@@ -16774,6 +18045,12 @@
           },
           "subjectName": {
             "type": "string"
+          },
+          "subjectImdbId": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -16825,6 +18102,29 @@
               "null",
               "string"
             ]
+          }
+        }
+      },
+      "SpeedDraftPositionEntry": {
+        "required": [
+          "name",
+          "picks"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "picks": {
+            "type": "array",
+            "items": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
           }
         }
       },
@@ -17493,6 +18793,61 @@
           }
         }
       },
+      "YouTubeMediaSearchResultResponse": {
+        "type": "object",
+        "properties": {
+          "externalId": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "channelTitle": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "thumbnailUrl": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "isInMediaDatabase": {
+            "type": "boolean"
+          },
+          "mediaPublicId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "YouTubeSearchResultItem": {
+        "type": "object",
+        "properties": {
+          "videoId": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "channelTitle": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "thumbnailUrl": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
       "ZoomSessionTokenResult": {
         "required": [
           "sessionName",
@@ -17579,7 +18934,13 @@
       "name": "Zoom"
     },
     {
+      "name": "YouTube"
+    },
+    {
       "name": "Movies"
+    },
+    {
+      "name": "Games"
     },
     {
       "name": "Media"

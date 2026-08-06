@@ -10,21 +10,44 @@ internal sealed class Validator : AbstractValidator<AddMediaCommand>
       .MaximumLength(255)
       .WithMessage("Title must not exceed 255 characters");
 
-    // ImdbId ir required for movies and music videos, optional for tv shows,
-    // TV episodes and video games which may not have an IMDb Id on TMDb.
+    // Movie: IMDb ID is always required for movies.
     RuleFor(x => x.ImdbId)
       .NotEmpty()
       .WithMessage("IMDb ID is required")
       .Matches(@"^tt\d{7,8}$")
       .WithMessage("IMDb ID must be in the format 'tt' followed by 7 or 8 digits")
-      .When(x => x.MediaType == MediaType.Movie || x.MediaType == MediaType.MusicVideo);
+      .When(x => x.MediaType == MediaType.Movie);
+
+    // Music Videos: IMDDb is the primary identifier. It is required unless an External ID is provided (YouTube Video ID).
+    RuleFor(x => x.ImdbId)
+      .NotEmpty()
+      .WithMessage("IMDb is required unless an external ID is provided")
+      .Matches(@"^tt\d{7,8}$")
+      .WithMessage("IMDb ID must be in the format 'tt' followed by 7 or 8 digits")
+      .When(x => x.MediaType == MediaType.MusicVideo && string.IsNullOrWhiteSpace(x.ExternalId));
 
     RuleFor(x => x.ImdbId)
       .Matches(@"^tt\d{7,8}$")
       .WithMessage("IMDb ID must be in the format 'tt' followed by 7 or 8 digits")
-      .When(x => !string.IsNullOrWhiteSpace(x.ImdbId)
-        && x.MediaType != MediaType.Movie 
-        && x.MediaType != MediaType.MusicVideo);
+      .When(x =>
+        !string.IsNullOrWhiteSpace(x.ImdbId)
+        && x.MediaType == MediaType.MusicVideo
+        && !string.IsNullOrWhiteSpace(x.ExternalId)
+      );
+
+    RuleFor(x => x.ImdbId)
+      .Matches(@"^tt\d{7,8}$")
+      .WithMessage("IMDb ID must be in the format 'tt' followed by 7 or 8 digits")
+      .When(x =>
+        !string.IsNullOrWhiteSpace(x.ImdbId)
+        && x.MediaType != MediaType.Movie
+        && x.MediaType != MediaType.MusicVideo
+      );
+
+    RuleFor(x => x.ExternalId)
+      .NotEmpty()
+      .WithMessage("An external ID is required for shorts")
+      .When(x => x.MediaType == MediaType.ShortFilm);
 
     RuleFor(x => x.Year)
       .NotEmpty()
@@ -75,14 +98,12 @@ internal sealed class Validator : AbstractValidator<AddMediaCommand>
       "yyyy-MM-dd",
       CultureInfo.InvariantCulture,
       DateTimeStyles.None,
-      out _);
+      out _
+    );
   }
 
   private static bool BeAValidTrailerUrl(Uri? url)
   {
-    return url is null
-      || url.Host == "www.youtube.com"
-      || url.Host == "youtu.be";
+    return url is null || url.Host == "www.youtube.com" || url.Host == "youtu.be";
   }
 }
-

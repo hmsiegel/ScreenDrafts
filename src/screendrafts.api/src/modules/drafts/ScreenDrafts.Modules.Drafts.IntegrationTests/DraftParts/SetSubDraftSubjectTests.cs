@@ -138,6 +138,7 @@ public sealed class SetSubDraftSubjectTests(DraftsIntegrationTestWebAppFactory f
     var seriesId = await CreateSeriesAsync();
     var draftPublicId = await CreateSpeedDraftAsync(seriesId);
     var draftPartPublicId = await GetFirstDraftPartPublicIdAsync(draftPublicId);
+    await AddTwoParticipantsAsync(draftPartPublicId);
 
     var subDraftPublicId = (await Sender.Send(new AddSubDraftCommand
     {
@@ -146,6 +147,39 @@ public sealed class SetSubDraftSubjectTests(DraftsIntegrationTestWebAppFactory f
     }, TestContext.Current.CancellationToken)).Value;
 
     return (draftPartPublicId, subDraftPublicId);
+  }
+
+  private async Task AddTwoParticipantsAsync(string draftPartPublicId)
+  {
+    var peopleFactory = new PeopleFactory(Sender, Faker);
+
+    var person1Id = await peopleFactory.CreateAndSavePersonAsync();
+    var drafter1PublicId = (
+      await Sender.Send(new CreateDrafterCommand(person1Id), TestContext.Current.CancellationToken)
+    ).Value;
+    await Sender.Send(
+      new AddParticipantToDraftPartCommand
+      {
+        DraftPartId = draftPartPublicId,
+        ParticipantPublicId = drafter1PublicId,
+        ParticipantKind = ParticipantKind.Drafter,
+      },
+      TestContext.Current.CancellationToken
+    );
+
+    var person2Id = await peopleFactory.CreateAndSavePersonAsync();
+    var drafter2PublicId = (
+      await Sender.Send(new CreateDrafterCommand(person2Id), TestContext.Current.CancellationToken)
+    ).Value;
+    await Sender.Send(
+      new AddParticipantToDraftPartCommand
+      {
+        DraftPartId = draftPartPublicId,
+        ParticipantPublicId = drafter2PublicId,
+        ParticipantKind = ParticipantKind.Drafter,
+      },
+      TestContext.Current.CancellationToken
+    );
   }
 
   private async Task<string> CreateSeriesAsync()

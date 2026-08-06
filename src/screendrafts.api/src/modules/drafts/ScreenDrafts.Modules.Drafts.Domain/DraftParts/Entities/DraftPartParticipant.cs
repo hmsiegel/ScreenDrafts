@@ -101,6 +101,8 @@ public sealed class DraftPartParticipant : Entity<DraftPartParticipantId>
     StartingVetoes = startingVetoes;
     VetoesRollingIn = vetoesRollingIn;
     VetoOverridesRollingIn = vetoOverridesRollingIn;
+    VetoesUsed = 0;
+    VetoOverridesUsed = 0;
   }
 
   // Awards (granted via draft position post-trivia)

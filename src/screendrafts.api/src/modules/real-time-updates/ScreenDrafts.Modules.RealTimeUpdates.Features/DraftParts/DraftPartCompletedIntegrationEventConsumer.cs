@@ -30,6 +30,9 @@ internal sealed partial class DraftPartCompletedIntegrationEventConsumer(
 
     await using var connection = await _dbConnectionFactory.OpenConnectionAsync(cancellationToken);
 
+    var isCanonical =
+      integrationEvent.CanonicalPolicyValue != 1 && integrationEvent.CanonicalPolicyValue != 2;
+
     // ── Movie honorifics ───────────────────────────────────────────────────
     // For each landed pick, count how many canonical appearances the movie had
     // BEFORE this draft part. If priorCount >= 1, this part pushes it to >= 2
@@ -37,10 +40,9 @@ internal sealed partial class DraftPartCompletedIntegrationEventConsumer(
     // We also catch movies already past named thresholds (e.g. 5 → 6 is still
     // a High Five shout-out per domain rules). Skip the query entirely for
     // Patreon drafts since those never count as canonical.
-
     var movieHonorifics = new List<PickHonorificRecord>();
 
-    if (!integrationEvent.IsPatreon && integrationEvent.Picks.Count > 0)
+    if (isCanonical && integrationEvent.Picks.Count > 0)
     {
       const string moviePriorCountSql = """
         SELECT
@@ -57,8 +59,8 @@ internal sealed partial class DraftPartCompletedIntegrationEventConsumer(
       var priorCounts = (
         await connection.QueryAsync<(string MoviePublicId, int PriorCount)>(
           new CommandDefinition(
-            moviePriorCountSql,
-            new { MoviePublicIds = moviePublicIds, integrationEvent.DraftPartPublicId },
+            commandText: moviePriorCountSql,
+            parameters: new { MoviePublicIds = moviePublicIds, integrationEvent.DraftPartPublicId },
             cancellationToken: cancellationToken
           )
         )
@@ -92,7 +94,7 @@ internal sealed partial class DraftPartCompletedIntegrationEventConsumer(
 
     var drafterHonorifics = new List<DrafterHonorificRecord>();
 
-    if (!integrationEvent.IsPatreon && integrationEvent.ParticipantPublicIds.Count > 0)
+    if (isCanonical && integrationEvent.ParticipantPublicIds.Count > 0)
     {
       // ParticipantPublicIds are person public IDs (pe_ prefix). The drafter
       // canonical appearances table stores DrafterIdValue as a Guid. We need
@@ -251,22 +253,23 @@ internal sealed partial class DraftPartCompletedIntegrationEventConsumer(
 
       var commissionerPublicIds = _options.CommissionerPersonPublicIds;
 
-      standings = (
-        await connection.QueryAsync<StandingRow>(
-          new CommandDefinition(
-            standingsSql,
-            new { SeasonId = seasonId, CommissionerPublicIds = commissionerPublicIds },
-            cancellationToken: cancellationToken
+      standings =
+      [
+        .. (
+          await connection.QueryAsync<StandingRow>(
+            new CommandDefinition(
+              standingsSql,
+              new { SeasonId = seasonId, CommissionerPublicIds = commissionerPublicIds },
+              cancellationToken: cancellationToken
+            )
           )
-        )
-      )
-        .Select(r => new StandingRecord(
+        ).Select(r => new StandingRecord(
           ContestantDisplayName: r.ContestantDisplayName,
           Points: r.Points,
           CarryoverPoints: r.CarryoverPoints,
           TotalPoints: r.Points + r.CarryoverPoints
-        ))
-        .ToList();
+        )),
+      ];
     }
 
     var payload = new
@@ -286,6 +289,19 @@ internal sealed partial class DraftPartCompletedIntegrationEventConsumer(
         p.Position,
         p.MediaPublicId,
         p.MediaTitle,
+      }),
+      SubDraftBreakdowns = integrationEvent.SubDraftBreakdowns?.Select(b => new
+      {
+        b.SubDraftPublicId,
+        b.Index,
+        b.SubjectKind,
+        b.SubjectName,
+        Picks = b.Picks.Select(p => new
+        {
+          p.Position,
+          p.MediaPublicId,
+          p.MediaTitle,
+        }),
       }),
       MovieHonorifics = movieHonorifics,
       DrafterHonorifics = drafterHonorifics,

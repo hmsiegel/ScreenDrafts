@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Integrations.Infrastructure.Services.Tmdb;
+﻿using ScreenDrafts.Common.Abstractions.Exceptions;
+
+namespace ScreenDrafts.Modules.Integrations.Infrastructure.Services.Tmdb;
 
 internal sealed class TmdbService(HttpClient httpClient, IOptions<TmdbSettings> settings)
   : ITmdbService
@@ -277,7 +279,64 @@ internal sealed class TmdbService(HttpClient httpClient, IOptions<TmdbSettings> 
     return response?.ImdbId;
   }
 
+  public async Task<int?> FindPersonByImdbIdAsync(
+    string imdbId,
+    CancellationToken cancellationToken = default
+  )
+  {
+    var response = await _httpClient.GetFromJsonAsync<TmdbFindPersonApiResponse>(
+      $"find/{imdbId}?external_source=imdb_id",
+      cancellationToken
+    );
+
+    return response?.PersonResults.Count > 0 ? response.PersonResults[0].Id : null;
+  }
+
+  public async Task<IReadOnlyList<TmdbPersonCredit>> GetPersonCombinedCreditsAsync(
+    int tmdbPersonId,
+    CancellationToken cancellationToken = default
+  )
+  {
+    var movieTask = await _httpClient.GetFromJsonAsync<TmdbMovieCreditsApiResponse>(
+      $"person/{tmdbPersonId}/movie_credits",
+      cancellationToken
+    );
+    var tvTask = await _httpClient.GetFromJsonAsync<TmdbTvCreditsApiResponse>(
+      $"person/{tmdbPersonId}/tv_credits",
+      cancellationToken
+    );
+
+    var movieCredits = (movieTask?.Cast ?? [])
+      .Concat(movieTask?.Crew ?? [])
+      .Select(c => new TmdbPersonCredit
+      {
+        TmdbId = c.Id,
+        Title = c.Title ?? string.Empty,
+        Year = ExtractYear(c.ReleaseDate),
+        PosterUrl = BuildPosterUrl(c.PosterPath)?.ToString(),
+        MediaType = 0,
+        CreditRole = c.Character ?? c.Job,
+      });
+
+    var tvCredits = (tvTask?.Cast ?? [])
+      .Concat(tvTask?.Crew ?? [])
+      .Select(c => new TmdbPersonCredit
+      {
+        TmdbId = c.Id,
+        Title = c.Name ?? string.Empty,
+        Year = ExtractYear(c.FirstAirDate),
+        PosterUrl = BuildPosterUrl(c.PosterPath)?.ToString(),
+        MediaType = 1,
+        CreditRole = c.Character ?? c.Job,
+      });
+
+    return movieCredits.Concat(tvCredits).ToList().AsReadOnly();
+  }
+
   // Private Helpers
+  private static string? ExtractYear(string? date) =>
+    !string.IsNullOrWhiteSpace(date) && date.Length >= 4 ? date[..4] : null;
+
   private async Task<TmdbCredits> BuildCreditsAsync(
     TmdbCreditsApiResponse raw,
     CancellationToken cancellationToken
@@ -554,5 +613,43 @@ internal sealed class TmdbService(HttpClient httpClient, IOptions<TmdbSettings> 
   private sealed record TmdbProductionCompanyApiResponse(
     [property: JsonPropertyName("id")] int Id,
     [property: JsonPropertyName("name")] string Name
+  );
+
+  private sealed record TmdbFindPersonApiResponse(
+    [property: JsonPropertyName("person_results")]
+      IReadOnlyList<TmdbPersonResultApiResponse> PersonResults
+  );
+
+  private sealed record TmdbPersonResultApiResponse(
+    [property: JsonPropertyName("id")] int Id,
+    [property: JsonPropertyName("name")] string Name
+  );
+
+  private sealed record TmdbMovieCreditsApiResponse(
+    [property: JsonPropertyName("cast")] IReadOnlyList<TmdbMovieCreditItemApiResponse> Cast,
+    [property: JsonPropertyName("crew")] IReadOnlyList<TmdbMovieCreditItemApiResponse> Crew
+  );
+
+  private sealed record TmdbMovieCreditItemApiResponse(
+    [property: JsonPropertyName("id")] int Id,
+    [property: JsonPropertyName("title")] string? Title,
+    [property: JsonPropertyName("release_date")] string? ReleaseDate,
+    [property: JsonPropertyName("poster_path")] string? PosterPath,
+    [property: JsonPropertyName("character")] string? Character,
+    [property: JsonPropertyName("job")] string? Job
+  );
+
+  private sealed record TmdbTvCreditsApiResponse(
+    [property: JsonPropertyName("cast")] IReadOnlyList<TmdbTvCreditItemApiResponse> Cast,
+    [property: JsonPropertyName("crew")] IReadOnlyList<TmdbTvCreditItemApiResponse> Crew
+  );
+
+  private sealed record TmdbTvCreditItemApiResponse(
+    [property: JsonPropertyName("id")] int Id,
+    [property: JsonPropertyName("name")] string? Name,
+    [property: JsonPropertyName("first_air_date")] string? FirstAirDate,
+    [property: JsonPropertyName("poster_path")] string? PosterPath,
+    [property: JsonPropertyName("character")] string? Character,
+    [property: JsonPropertyName("job")] string? Job
   );
 }

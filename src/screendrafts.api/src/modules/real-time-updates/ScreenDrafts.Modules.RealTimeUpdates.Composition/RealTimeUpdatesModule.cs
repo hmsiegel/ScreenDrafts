@@ -120,6 +120,10 @@ public static class RealTimeUpdatesModule
     registrationConfigurator
       .AddConsumer<IntegrationEventConsumer<DraftPartStartedIntegrationEvent>>()
       .Endpoint(c => c.InstanceId = moduleInstanceId);
+
+    registrationConfigurator
+      .AddConsumer<IntegrationEventConsumer<SubDraftUpdatedIntegrationEvent>>()
+      .Endpoint(c => c.InstanceId = moduleInstanceId);
   }
 
   private static void AddDomainEventHandlers(this IServiceCollection services)

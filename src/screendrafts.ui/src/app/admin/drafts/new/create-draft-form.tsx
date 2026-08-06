@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import {
   AdminSeriesOption,
@@ -8,6 +8,11 @@ import {
   createDraft,
   syncPredictionConfig,
   getDraft,
+  addSubDraft,
+  setSubDraftSubject,
+  setSpeedDraftPositions,
+  searchImdbPeople,
+  type ImdbPersonSearchResult,
 } from "@/services/admin/fetch-admin-drafts";
 import { CampaignResponse, CategoryResponse, SmartEnumResponse } from "@/lib/dto";
 import { formatDraftType } from "@/lib/draft-type-display";
@@ -38,6 +43,154 @@ const MAIN_FEED_KINDS = new Set([0, 6, 9]);
 const PATREON_KINDS = new Set([0, 1, 2, 3, 4, 5, 6, 7, 8]);
 
 type FeedType = "main" | "patreon" | "";
+
+// Confirmed against the actual SubjectKind SmartEnum: Actor/Director/Word.
+const SUBJECT_KIND_OPTIONS = [
+  { value: 0, label: "Actor" },
+  { value: 1, label: "Director" },
+  { value: 2, label: "Word" },
+];
+
+const PERSON_SUBJECT_KINDS = new Set([0, 1]); // Actor, Director
+
+interface SubDraftSubjectDraft {
+  index: number;
+  subjectKind: number;
+  subjectName: string;
+  // Only set for Actor/Director — resolved via person search, not typed.
+  // Null for Word, which stays free text.
+  subjectImdbId: string | null;
+  subjectPhotoUrl: string | null;
+}
+
+function defaultSubDraftSubjects(): SubDraftSubjectDraft[] {
+  return [1, 2, 3].map((index) => ({
+    index,
+    subjectKind: 0,
+    subjectName: "",
+    subjectImdbId: null,
+    subjectPhotoUrl: null,
+  }));
+}
+
+// Debounced IMDb person search + select, replacing free-text entry for
+// Actor/Director subjects. Once a person is picked, shows a compact
+// resolved state (photo + name + "change") instead of the search box —
+// mirrors picking, not typing, matching the "open IMDb and search" flow
+// this whole redesign is trying to replicate at setup time instead of live.
+function PersonSubjectPicker({
+  accessToken,
+  value,
+  onChange,
+}: {
+  accessToken: string;
+  value: SubDraftSubjectDraft;
+  onChange: (next: Partial<SubDraftSubjectDraft>) => void;
+}) {
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState<ImdbPersonSearchResult[]>([]);
+  const [loading, setLoading] = useState(false);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    if (query.trim().length < 2) {
+      setResults([]);
+      return;
+    }
+    debounceRef.current = setTimeout(async () => {
+      setLoading(true);
+      try {
+        const found = await searchImdbPeople(accessToken, query.trim());
+        setResults(found);
+      } finally {
+        setLoading(false);
+      }
+    }, 350);
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  }, [query, accessToken]);
+
+  if (value.subjectImdbId) {
+    return (
+      <div className="flex items-center gap-2 border border-sd-ink/20 bg-sd-paper px-3 py-2">
+        {value.subjectPhotoUrl ? (
+          <img
+            src={value.subjectPhotoUrl}
+            alt=""
+            className="w-8 h-8 rounded-full object-cover shrink-0"
+          />
+        ) : (
+          <div className="w-8 h-8 rounded-full bg-sd-ink/10 shrink-0" />
+        )}
+        <span className="text-sm text-sd-ink flex-1 truncate">{value.subjectName}</span>
+        <button
+          type="button"
+          onClick={() => onChange({ subjectName: "", subjectImdbId: null, subjectPhotoUrl: null })}
+          className="text-[11px] font-mono text-sd-blue hover:text-sd-ink uppercase shrink-0"
+        >
+          Change
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="relative">
+      <input
+        type="text"
+        className={INPUT}
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        placeholder="Search IMDb for a person…"
+      />
+      {(loading || results.length > 0) && query.trim().length >= 2 && (
+        <div className="absolute z-10 mt-1 w-full max-h-64 overflow-y-auto border border-sd-ink/20 bg-white shadow-lg">
+          {loading && (
+            <p className="px-3 py-2 text-[11px] font-mono text-sd-ink/40 italic">Searching…</p>
+          )}
+          {!loading &&
+            results.map((r) => (
+              <button
+                key={r.imdbId}
+                type="button"
+                onClick={() => {
+                  onChange({
+                    subjectName: r.name,
+                    subjectImdbId: r.imdbId,
+                    subjectPhotoUrl: r.photoUrl ?? null,
+                  });
+                  setQuery("");
+                  setResults([]);
+                }}
+                className="flex items-center gap-2 w-full px-3 py-2 hover:bg-sd-ink/5 text-left"
+              >
+                {r.photoUrl ? (
+                  <img
+                    src={r.photoUrl}
+                    alt=""
+                    className="w-8 h-8 rounded-full object-cover shrink-0"
+                  />
+                ) : (
+                  <div className="w-8 h-8 rounded-full bg-sd-ink/10 shrink-0" />
+                )}
+                <div className="min-w-0">
+                  <p className="text-sm text-sd-ink truncate">{r.name}</p>
+                  {r.description && (
+                    <p className="text-[11px] text-sd-ink/50 truncate">{r.description}</p>
+                  )}
+                </div>
+              </button>
+            ))}
+          {!loading && results.length === 0 && (
+            <p className="px-3 py-2 text-[11px] font-mono text-sd-ink/40 italic">No results.</p>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
 
 function getMaxPositionsConfig(draftTypeName: string): { max: number; locked: boolean } {
   switch (draftTypeName) {
@@ -107,6 +260,9 @@ export default function CreateDraftForm({
   const [selectedTeamIds, setSelectedTeamIds] = useState<Set<string>>(new Set());
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<Set<string>>(new Set());
   const [campaignId, setCampaignId] = useState("");
+  const [subDraftSubjects, setSubDraftSubjects] = useState<SubDraftSubjectDraft[]>(
+    defaultSubDraftSubjects()
+  );
 
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -142,7 +298,9 @@ export default function CreateDraftForm({
   function handleDraftTypeChange(typeName: string) {
     const typeObj = availableDraftTypes.find((t) => t.name === typeName) ?? null;
     setSelectedDraftType(typeObj);
-    syncPartsToType(typeName, numParts);
+    const count = typeName === "SpeedDraft" ? 1 : numParts;
+    if (typeName === "SpeedDraft") setNumParts(1);
+    syncPartsToType(typeName, count);
   }
 
   function syncPartsToType(typeName: string, count: number) {
@@ -263,8 +421,22 @@ export default function CreateDraftForm({
   );
 
   const hasPrimaryHost = hosts.length === 0 || hosts.some((h) => h.role === "Primary");
+  const isSpeedDraft = selectedDraftType?.name === "SpeedDraft";
+  const speedDraftHasValidRoster = selectedDrafterIds.size === 2 && selectedTeamIds.size === 0;
+  const hasAtLeastOneHost = hosts.length >= 1;
+  const speedDraftSubjectsFilled = subDraftSubjects.every(
+    (s) =>
+      s.subjectName.trim() !== "" &&
+      (!PERSON_SUBJECT_KINDS.has(s.subjectKind) || !!s.subjectImdbId)
+  );
+
   const canSubmit =
-    title.trim() !== "" && selectedSeriesId !== "" && selectedDraftType !== null && hasPrimaryHost;
+    title.trim() !== "" &&
+    selectedSeriesId !== "" &&
+    selectedDraftType !== null &&
+    hasPrimaryHost &&
+    (!isSpeedDraft ||
+      (speedDraftHasValidRoster && hasAtLeastOneHost && speedDraftSubjectsFilled));
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -323,6 +495,35 @@ export default function CreateDraftForm({
               await syncPredictionConfig(accessToken, detailPart.publicId, config);
             }
           }
+        }
+      }
+
+      if (isSpeedDraft) {
+        const detail = await getDraft(accessToken, created.publicId);
+        const draftPart = detail?.parts.find((dp) => dp.partIndex === 1);
+        if (draftPart) {
+          // Sequential, not Promise.all — each AddSubDraft call needs the
+          // previous one committed since index uniqueness is checked against
+          // the current state of the aggregate, and running them concurrently
+          // risks two calls both seeing the same "not yet added" state.
+          for (const subject of subDraftSubjects) {
+            const subDraftPublicId = await addSubDraft(accessToken, draftPart.publicId, subject.index);
+            await setSubDraftSubject(
+              accessToken,
+              draftPart.publicId,
+              subDraftPublicId,
+              subject.subjectKind,
+              subject.subjectName.trim(),
+              subject.subjectImdbId
+            );
+          }
+
+          // Once, after all three sub-drafts exist — creates the fixed A/B
+          // positions on every sub-draft's board at once. Without this,
+          // GetSubDraftGameplay returns an empty draftPositions array for
+          // every round and the live page has nothing to gate the position-
+          // choice picker on.
+          await setSpeedDraftPositions(accessToken, draftPart.publicId);
         }
       }
 
@@ -428,17 +629,19 @@ export default function CreateDraftForm({
       {/* ── Section 2: Parts configuration ── */}
       <section>
         <h2 className={SECTION_HEADING}>Parts Configuration</h2>
-        <div className="mb-6 max-w-[160px]">
-          <label className={LABEL}>Number of Parts</label>
-          <input
-            type="number"
-            min={1}
-            max={10}
-            className={INPUT}
-            value={numParts}
-            onChange={(e) => handleNumPartsChange(parseInt(e.target.value, 10) || 1)}
-          />
-        </div>
+        {!isSpeedDraft && (
+          <div className="mb-6 max-w-[160px]">
+            <label className={LABEL}>Number of Parts</label>
+            <input
+              type="number"
+              min={1}
+              max={10}
+              className={INPUT}
+              value={numParts}
+              onChange={(e) => handleNumPartsChange(parseInt(e.target.value, 10) || 1)}
+            />
+          </div>
+        )}
 
         {numParts === 1 && parts[0]?.maxLocked && (
           <div className="space-y-4">
@@ -635,96 +838,205 @@ export default function CreateDraftForm({
         onToggleTeam={toggleTeam}
       />
 
-      {/* ── Section 4c: Community (per part) ── */}
-      <section>
-        <h2 className={SECTION_HEADING}>Community (Optional)</h2>
-        <div className="space-y-4">
-          {parts.map((part, idx) => (
-            <div key={idx}>
-              {parts.length > 1 && (
-                <p className="font-mono text-[11px] tracking-widest text-sd-ink/50 uppercase mb-2">
-                  Part {part.partIndex}
-                </p>
-              )}
-              <CommunitySection
-                config={part.communityConfig}
-                onChange={(next) => updatePartCommunityConfig(idx, next)}
-              />
-            </div>
-          ))}
-        </div>
-      </section>
+      {isSpeedDraft && (
+        <p
+          className={`text-sm font-mono ${
+            speedDraftHasValidRoster ? "text-sd-ink/50" : "text-sd-red"
+          }`}
+        >
+          Speed Drafts need exactly 2 individual drafters (Drafter A / Drafter B) — no teams
+          — currently {selectedDrafterIds.size} drafter
+          {selectedDrafterIds.size !== 1 ? "s" : ""}
+          {selectedTeamIds.size > 0
+            ? ` and ${selectedTeamIds.size} team${selectedTeamIds.size !== 1 ? "s" : ""} selected (remove teams)`
+            : " selected"}
+          .
+        </p>
+      )}
 
-      {/* ── Section 4d: Commissioner Predictions (per part) ── */}
-      <section>
-        <h2 className={SECTION_HEADING}>Commissioner Predictions (Optional)</h2>
-        <div className="space-y-4">
-          {parts.map((part, idx) => (
-            <div key={idx}>
-              {parts.length > 1 && (
-                <p className="font-mono text-[11px] tracking-widest text-sd-ink/50 uppercase mb-2">
-                  Part {part.partIndex}
-                </p>
-              )}
-              <PredictionRulesSection
-                config={part.predictionConfig}
-                onChange={(next) => updatePartPredictionConfig(idx, next)}
-                accessToken={accessToken}
-              />
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ── Section 5: Category ── */}
-      <section>
-        <h2 className={SECTION_HEADING}>Category (Optional)</h2>
-        <div className="border border-sd-ink/10 rounded p-4 bg-white">
-          <div className="max-h-40 overflow-y-auto columns-2 gap-4">
-            {categoryList.map((c) => {
-              const checked = selectedCategoryIds.has(c.publicId);
-              return (
-                <label
-                  key={c.publicId}
-                  className="flex items-center gap-2 mb-1 text-sm text-sd-ink hover:bg-sd-ink/5 rounded px-2 py-1 cursor-pointer break-inside-avoid"
-                >
-                  <input
-                    type="checkbox"
-                    checked={checked}
-                    onChange={() => toggleCategory(c.publicId)}
-                    className="accent-sd-red"
+      {/* ── Sections 4c–6: Community / Predictions / Category / Campaign ──
+          None of these apply to Speed Drafts — no categories, campaigns,
+          predictions, or community participants. Skipped entirely rather
+          than shown-and-disabled, since nothing in them is relevant. */}
+      {!isSpeedDraft && (
+        <>
+          {/* ── Section 4c: Community (per part) ── */}
+          <section>
+            <h2 className={SECTION_HEADING}>Community (Optional)</h2>
+            <div className="space-y-4">
+              {parts.map((part, idx) => (
+                <div key={idx}>
+                  {parts.length > 1 && (
+                    <p className="font-mono text-[11px] tracking-widest text-sd-ink/50 uppercase mb-2">
+                      Part {part.partIndex}
+                    </p>
+                  )}
+                  <CommunitySection
+                    config={part.communityConfig}
+                    onChange={(next) => updatePartCommunityConfig(idx, next)}
                   />
-                  {c.name}
-                </label>
-              );
-            })}
-          </div>
-          {selectedCategoryIds.size > 0 && (
-            <p className="mt-2 text-[11px] font-mono text-sd-ink/50">
-              {selectedCategoryIds.size} categor{selectedCategoryIds.size !== 1 ? "ies" : "y"} selected
-            </p>
-          )}
-        </div>
-      </section>
+                </div>
+              ))}
+            </div>
+          </section>
 
-      {/* ── Section 6: Campaign ── */}
-      <section>
-        <h2 className={SECTION_HEADING}>Campaign (Optional)</h2>
-        <div className="max-w-sm">
-          <select
-            className={SELECT}
-            value={campaignId}
-            onChange={(e) => setCampaignId(e.target.value)}
-          >
-            <option value="">— No campaign —</option>
-            {campaignList.map((c) => (
-              <option key={c.publicId} value={c.publicId}>
-                {c.name}
-              </option>
+          {/* ── Section 4d: Commissioner Predictions (per part) ── */}
+          <section>
+            <h2 className={SECTION_HEADING}>Commissioner Predictions (Optional)</h2>
+            <div className="space-y-4">
+              {parts.map((part, idx) => (
+                <div key={idx}>
+                  {parts.length > 1 && (
+                    <p className="font-mono text-[11px] tracking-widest text-sd-ink/50 uppercase mb-2">
+                      Part {part.partIndex}
+                    </p>
+                  )}
+                  <PredictionRulesSection
+                    config={part.predictionConfig}
+                    onChange={(next) => updatePartPredictionConfig(idx, next)}
+                    accessToken={accessToken}
+                  />
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* ── Section 5: Category ── */}
+          <section>
+            <h2 className={SECTION_HEADING}>Category (Optional)</h2>
+            <div className="border border-sd-ink/10 rounded p-4 bg-white">
+              <div className="max-h-40 overflow-y-auto columns-2 gap-4">
+                {categoryList.map((c) => {
+                  const checked = selectedCategoryIds.has(c.publicId);
+                  return (
+                    <label
+                      key={c.publicId}
+                      className="flex items-center gap-2 mb-1 text-sm text-sd-ink hover:bg-sd-ink/5 rounded px-2 py-1 cursor-pointer break-inside-avoid"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={checked}
+                        onChange={() => toggleCategory(c.publicId)}
+                        className="accent-sd-red"
+                      />
+                      {c.name}
+                    </label>
+                  );
+                })}
+              </div>
+              {selectedCategoryIds.size > 0 && (
+                <p className="mt-2 text-[11px] font-mono text-sd-ink/50">
+                  {selectedCategoryIds.size} categor{selectedCategoryIds.size !== 1 ? "ies" : "y"} selected
+                </p>
+              )}
+            </div>
+          </section>
+
+          {/* ── Section 6: Campaign ── */}
+          <section>
+            <h2 className={SECTION_HEADING}>Campaign (Optional)</h2>
+            <div className="max-w-sm">
+              <select
+                className={SELECT}
+                value={campaignId}
+                onChange={(e) => setCampaignId(e.target.value)}
+              >
+                <option value="">— No campaign —</option>
+                {campaignList.map((c) => (
+                  <option key={c.publicId} value={c.publicId}>
+                    {c.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </section>
+        </>
+      )}
+
+      {/* ── Section 7: Sub-Draft Subjects (SpeedDraft only) ──
+          Pre-loaded here, hidden from drafters until each is revealed live —
+          the reveal itself happens via the trivia-winner action during the
+          draft, not here. This just stages what the host will reveal. */}
+      {isSpeedDraft && (
+        <section>
+          <h2 className={SECTION_HEADING}>Sub-Draft Subjects</h2>
+          <p className="text-[11px] font-mono text-sd-ink/50 mb-4">
+            Hidden from drafters until revealed live. Only hosts can see these before air.
+          </p>
+          <div className="space-y-3">
+            {subDraftSubjects.map((subject, idx) => (
+              <div
+                key={subject.index}
+                className="border border-sd-ink/10 rounded p-4 bg-white grid grid-cols-[80px_160px_1fr] gap-3 items-end"
+              >
+                <div className="font-oswald font-bold text-sd-ink pb-2">
+                  Subject {subject.index}
+                </div>
+                <div>
+                  <label className={LABEL}>Kind</label>
+                  <select
+                    className={SELECT}
+                    value={subject.subjectKind}
+                    onChange={(e) => {
+                      const nextKind = parseInt(e.target.value, 10);
+                      setSubDraftSubjects((prev) =>
+                        prev.map((s, i) =>
+                          i === idx
+                            ? {
+                                ...s,
+                                subjectKind: nextKind,
+                                // Switching kind invalidates whatever was
+                                // resolved/typed before — Actor/Director
+                                // and Word aren't interchangeable values.
+                                subjectName: "",
+                                subjectImdbId: null,
+                                subjectPhotoUrl: null,
+                              }
+                            : s
+                        )
+                      );
+                    }}
+                  >
+                    {SUBJECT_KIND_OPTIONS.map((o) => (
+                      <option key={o.value} value={o.value}>
+                        {o.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className={LABEL}>Subject</label>
+                  {PERSON_SUBJECT_KINDS.has(subject.subjectKind) ? (
+                    <PersonSubjectPicker
+                      accessToken={accessToken}
+                      value={subject}
+                      onChange={(next) =>
+                        setSubDraftSubjects((prev) =>
+                          prev.map((s, i) => (i === idx ? { ...s, ...next } : s))
+                        )
+                      }
+                    />
+                  ) : (
+                    <input
+                      type="text"
+                      className={INPUT}
+                      value={subject.subjectName}
+                      onChange={(e) =>
+                        setSubDraftSubjects((prev) =>
+                          prev.map((s, i) =>
+                            i === idx ? { ...s, subjectName: e.target.value } : s
+                          )
+                        )
+                      }
+                      placeholder="e.g. Space"
+                    />
+                  )}
+                </div>
+              </div>
             ))}
-          </select>
-        </div>
-      </section>
+          </div>
+        </section>
+      )}
 
       {error && (
         <div className="border border-red-300 bg-red-50 text-red-800 text-sm px-4 py-3 rounded">

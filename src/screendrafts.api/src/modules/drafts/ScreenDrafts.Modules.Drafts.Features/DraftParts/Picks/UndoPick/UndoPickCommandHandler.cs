@@ -10,7 +10,7 @@ internal sealed class UndoPickCommandHandler(
 
   public async Task<Result> Handle(UndoPickCommand request, CancellationToken cancellationToken)
   {
-    var draftPart = await _draftPartRepository.GetByPublicIdAsync(
+    var draftPart = await _draftPartRepository.GetByPublicIdWithSubDraftsAsync(
       request.DraftPartId,
       cancellationToken
     );
@@ -21,6 +21,7 @@ internal sealed class UndoPickCommandHandler(
     }
 
     Pick? pick;
+    SubDraftId? subDraftId = null;
 
     if (!string.IsNullOrWhiteSpace(request.SubDraftPublicId))
     {
@@ -32,6 +33,8 @@ internal sealed class UndoPickCommandHandler(
       {
         return Result.Failure(SubDraftErrors.NotFound(request.SubDraftPublicId));
       }
+
+      subDraftId = subDraft.Id;
 
       pick = await _pickRepository.GetByDraftPartIdAndPlayOrderAsync(
         id: draftPart.Id,
@@ -64,7 +67,7 @@ internal sealed class UndoPickCommandHandler(
       return Result.Failure(PickErrors.CannotUndoACommissionerOverriddenPick(request.PlayOrder));
     }
 
-    var result = draftPart.UndoPick(request.PlayOrder);
+    var result = draftPart.UndoPick(request.PlayOrder, subDraftId);
 
     if (result.IsFailure)
     {

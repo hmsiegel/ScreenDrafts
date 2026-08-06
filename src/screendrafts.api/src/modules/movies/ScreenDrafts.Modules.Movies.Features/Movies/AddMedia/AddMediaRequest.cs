@@ -6,6 +6,7 @@ internal sealed record AddMediaRequest
   public string? ImdbId { get; init; }
   public int? TmdbId { get; init; }
   public int? IgdbId { get; init; }
+  public string? ExternalId { get; init; }
   public required string Title { get; init; }
   public required string Year { get; init; }
   public string? Plot { get; init; }
@@ -13,7 +14,7 @@ internal sealed record AddMediaRequest
   public string? ReleaseDate { get; init; }
   public Uri? YoutubeTrailerUrl { get; init; }
   public MediaType MediaType { get; init; } = default!;
-  public int? TvSeriesTmdbId {  get; init; }
+  public int? TvSeriesTmdbId { get; init; }
   public int? SeasonNumber { get; init; }
   public int? EpisodeNumber { get; init; }
   public IReadOnlyCollection<GenreRequest> Genres { get; init; } = [];
@@ -23,4 +24,3 @@ internal sealed record AddMediaRequest
   public IReadOnlyCollection<PersonRequest> Producers { get; init; } = [];
   public IReadOnlyCollection<ProductionCompanyRequest> ProductionCompanies { get; init; } = [];
 }
-

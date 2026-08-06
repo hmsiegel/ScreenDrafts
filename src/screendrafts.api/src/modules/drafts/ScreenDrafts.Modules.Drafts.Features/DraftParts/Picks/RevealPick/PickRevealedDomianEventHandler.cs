@@ -45,20 +45,21 @@ internal sealed class PickRevealedDomianEventHandler(
 
     await _eventBus.PublishAsync(
       new PickRevealedIntegrationEvent(
-        Guid.NewGuid(),
-        _dateTimeProvider.UtcNow,
-        domainEvent.DraftPartId,
-        domainEvent.DraftPartPublicId,
-        domainEvent.PlayOrder,
-        domainEvent.MovieId,
-        movie.PublicId,
-        movie.MovieTitle,
-        movie.ImdbId,
-        movie.TmdbId,
-        pick.Position,
-        pick.PlayedByParticipantIdValue,
-        pick.PlayedByParticipantKindValue.Value,
-        domainEvent.ActedByPublicId
+        id: Guid.NewGuid(),
+        occurredOnUtc: _dateTimeProvider.UtcNow,
+        draftPartId: domainEvent.DraftPartId,
+        draftPartPublicId: domainEvent.DraftPartPublicId,
+        playOrder: domainEvent.PlayOrder,
+        movieId: domainEvent.MovieId,
+        moviePublicId: movie.PublicId,
+        movieTitle: movie.MovieTitle,
+        imdbId: movie.ImdbId,
+        tmdbId: movie.TmdbId,
+        boardPosition: pick.Position,
+        participantId: pick.PlayedByParticipantIdValue,
+        participantKind: pick.PlayedByParticipantKindValue.Value,
+        actedByPublicId: domainEvent.ActedByPublicId,
+        subDraftPublicId: domainEvent.SubDraftPublicId
       ),
       cancellationToken
     );

@@ -6,6 +6,7 @@ internal sealed record AddMediaCommand : ICommand<string>
   public string? ImdbId { get; init; }
   public int? TmdbId { get; init; }
   public int? IgdbId { get; init; }
+  public string? ExternalId { get; init; }
   public string Title { get; init; } = default!;
   public string Year { get; init; } = default!;
   public string? Plot { get; init; }
@@ -21,6 +22,6 @@ internal sealed record AddMediaCommand : ICommand<string>
   public IReadOnlyCollection<PersonRequest> Actors { get; init; } = default!;
   public IReadOnlyCollection<PersonRequest> Writers { get; init; } = default!;
   public IReadOnlyCollection<PersonRequest> Producers { get; init; } = default!;
-  public IReadOnlyCollection<ProductionCompanyRequest> ProductionCompanies { get; init; } = default!;
+  public IReadOnlyCollection<ProductionCompanyRequest> ProductionCompanies { get; init; } =
+    default!;
 }
-

@@ -1,0 +1,340 @@
+services:
+
+  # ── Reverse Proxy ──────────────────────────────────────────────────────────
+  caddy:
+    image: caddy:latest
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./infrastructure/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - screendrafts
+    depends_on:
+      - screendrafts.web
+
+  # ── Migrator (one-shot) ────────────────────────────────────────────────────
+  screendrafts.migrator:
+    image: ghcr.io/hmsiegel/screendrafts/migrator:${IMAGE_TAG:-latest}
+    restart: "no"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+    secrets:
+      - db_connection_string
+    networks:
+      - screendrafts
+    depends_on:
+      screendrafts.database:
+        condition: service_healthy
+
+  # ── API ────────────────────────────────────────────────────────────────────
+  screendrafts.web:
+    image: ghcr.io/hmsiegel/screendrafts/api:${IMAGE_TAG:-latest}
+    restart: unless-stopped
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+    secrets:
+      - db_connection_string
+      - db_connection_administration
+      - db_connection_audit
+      - db_connection_communications
+      - db_connection_drafts
+      - db_connection_integrations
+      - db_connection_movies
+      - db_connection_realtimeupdates
+      - db_connection_reporting
+      - db_connection_users
+      - redis_connection_string
+      - rabbitmq_connection_string
+      - mongo_connection_string
+      - mediatr_license_key
+      - keycloak_confidential_client_secret
+      - keycloak_registration_secret
+      - tmdb_access_token
+      - imdb_key
+      - omdb_key
+      - igdb_client_id
+      - igdb_client_secret
+      - zoom_account_id
+      - zoom_client_id
+      - zoom_client_secret
+      - zoom_webhook_secret_token
+    volumes:
+      - wwwroot:/app/wwwroot
+    networks:
+      - screendrafts
+    depends_on:
+      screendrafts.migrator:
+        condition: service_completed_successfully
+      screendrafts.database:
+        condition: service_healthy
+      screendrafts.identity:
+        condition: service_started
+      screendrafts.redis:
+        condition: service_started
+      screendrafts.queue:
+        condition: service_started
+      screendrafts.mongo:
+        condition: service_started
+
+  # ── PostgreSQL (app) ───────────────────────────────────────────────────────
+  screendrafts.database:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: screendrafts
+      POSTGRES_USER_FILE: /run/secrets/pg_superuser
+      POSTGRES_PASSWORD_FILE: /run/secrets/pg_superpassword
+      PGDATA: /var/lib/postgresql/data
+    secrets:
+      - pg_superuser
+      - pg_superpassword
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    networks:
+      - screendrafts
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $(cat /run/secrets/pg_superuser) -d screendrafts"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Keycloak ───────────────────────────────────────────────────────────────
+  screendrafts.identity:
+    image: quay.io/keycloak/keycloak:latest
+    restart: unless-stopped
+    command: start --import-realm
+    environment:
+      - KC_DB=postgres
+      - KC_DB_URL=jdbc:postgresql://keycloak-db:5432/keycloak
+      - KC_DB_USERNAME_FILE=/run/secrets/keycloak_db_user
+      - KC_DB_PASSWORD_FILE=/run/secrets/keycloak_db_password
+      - KC_HEALTH_ENABLED=true
+      - KC_HOSTNAME=https://auth.screen-drafts.com
+      - KC_PROXY=edge
+      - KEYCLOAK_ADMIN_FILE=/run/secrets/keycloak_admin_user
+      - KEYCLOAK_ADMIN_PASSWORD_FILE=/run/secrets/keycloak_admin_password
+      - SD_API_URL=https://api.screen-drafts.com
+      - SD_KEYCLOAK_SECRET_FILE=/run/secrets/keycloak_registration_secret
+      - REGISTER_URL=https://www.screen-drafts.com/register
+    secrets:
+      - keycloak_db_user
+      - keycloak_db_password
+      - keycloak_admin_user
+      - keycloak_admin_password
+      - keycloak_registration_secret
+    volumes:
+      - /opt/screendrafts/keycloak/import:/opt/keycloak/data/import:ro
+      - /opt/screendrafts/keycloak/providers/keycloak-theme-screendrafts.jar:/opt/keycloak/providers/keycloak-theme-screendrafts.jar:ro
+      - /opt/screendrafts/keycloak/providers/screendrafts-authenticator-1.0.0.jar:/opt/keycloak/providers/screendrafts-authenticator-1.0.0.jar:ro
+    networks:
+      - screendrafts
+    depends_on:
+      keycloak-db:
+        condition: service_healthy
+
+  # ── Keycloak DB ────────────────────────────────────────────────────────────
+  keycloak-db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER_FILE: /run/secrets/keycloak_db_user
+      POSTGRES_PASSWORD_FILE: /run/secrets/keycloak_db_password
+    secrets:
+      - keycloak_db_user
+      - keycloak_db_password
+    volumes:
+      - keycloak_db_data:/var/lib/postgresql/data
+    networks:
+      - screendrafts
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $(cat /run/secrets/keycloak_db_user) -d keycloak"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Redis ──────────────────────────────────────────────────────────────────
+  screendrafts.redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: redis-server --requirepass-file /run/secrets/redis_password
+    secrets:
+      - redis_password
+    volumes:
+      - redis_data:/data
+    networks:
+      - screendrafts
+
+  # ── RabbitMQ ───────────────────────────────────────────────────────────────
+  screendrafts.queue:
+    image: rabbitmq:3-alpine
+    restart: unless-stopped
+    hostname: screendrafts-queue
+    environment:
+      RABBITMQ_DEFAULT_USER_FILE: /run/secrets/rabbitmq_user
+      RABBITMQ_DEFAULT_PASS_FILE: /run/secrets/rabbitmq_password
+    secrets:
+      - rabbitmq_user
+      - rabbitmq_password
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - screendrafts
+
+  # ── MongoDB ────────────────────────────────────────────────────────────────
+  screendrafts.mongo:
+    image: mongo:7
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME_FILE: /run/secrets/mongo_user
+      MONGO_INITDB_ROOT_PASSWORD_FILE: /run/secrets/mongo_password
+    secrets:
+      - mongo_user
+      - mongo_password
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - screendrafts
+
+  # ── PostgreSQL Backup ──────────────────────────────────────────────────────
+  screendrafts.backup:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      PGHOST: screendrafts.database
+      PGDATABASE: screendrafts
+      PGUSER_FILE: /run/secrets/pg_superuser
+      PGPASSWORD_FILE: /run/secrets/pg_superpassword
+      S3_BUCKET: ${BACKUP_S3_BUCKET}
+      S3_ENDPOINT: ${BACKUP_S3_ENDPOINT}
+      AWS_ACCESS_KEY_ID_FILE: /run/secrets/backup_s3_key
+      AWS_SECRET_ACCESS_KEY_FILE: /run/secrets/backup_s3_secret
+    secrets:
+      - pg_superuser
+      - pg_superpassword
+      - backup_s3_key
+      - backup_s3_secret
+    volumes:
+      - ./infrastructure/backup/backup.sh:/backup.sh:ro
+    entrypoint: ["sh", "-c", "crond -f -d 8 & sh /backup.sh"]
+    networks:
+      - screendrafts
+    depends_on:
+      screendrafts.database:
+        condition: service_healthy
+
+# ── Secrets ────────────────────────────────────────────────────────────────
+secrets:
+  # PostgreSQL superuser
+  pg_superuser:
+    file: ./secrets/pg_superuser.txt
+  pg_superpassword:
+    file: ./secrets/pg_superpassword.txt
+
+  # Per-module DB connection strings
+  db_connection_string:
+    file: ./secrets/db_connection_string.txt
+  db_connection_administration:
+    file: ./secrets/db_connection_administration.txt
+  db_connection_audit:
+    file: ./secrets/db_connection_audit.txt
+  db_connection_communications:
+    file: ./secrets/db_connection_communications.txt
+  db_connection_drafts:
+    file: ./secrets/db_connection_drafts.txt
+  db_connection_integrations:
+    file: ./secrets/db_connection_integrations.txt
+  db_connection_movies:
+    file: ./secrets/db_connection_movies.txt
+  db_connection_realtimeupdates:
+    file: ./secrets/db_connection_realtimeupdates.txt
+  db_connection_reporting:
+    file: ./secrets/db_connection_reporting.txt
+  db_connection_users:
+    file: ./secrets/db_connection_users.txt
+
+  # Redis
+  redis_password:
+    file: ./secrets/redis_password.txt
+  redis_connection_string:
+    file: ./secrets/redis_connection_string.txt
+
+  # RabbitMQ
+  rabbitmq_user:
+    file: ./secrets/rabbitmq_user.txt
+  rabbitmq_password:
+    file: ./secrets/rabbitmq_password.txt
+  rabbitmq_connection_string:
+    file: ./secrets/rabbitmq_connection_string.txt
+
+  # MongoDB
+  mongo_user:
+    file: ./secrets/mongo_user.txt
+  mongo_password:
+    file: ./secrets/mongo_password.txt
+  mongo_connection_string:
+    file: ./secrets/mongo_connection_string.txt
+
+  # Keycloak
+  keycloak_db_user:
+    file: ./secrets/keycloak_db_user.txt
+  keycloak_db_password:
+    file: ./secrets/keycloak_db_password.txt
+  keycloak_admin_user:
+    file: ./secrets/keycloak_admin_user.txt
+  keycloak_admin_password:
+    file: ./secrets/keycloak_admin_password.txt
+  keycloak_confidential_client_secret:
+    file: ./secrets/keycloak_confidential_client_secret.txt
+  keycloak_registration_secret:
+    file: ./secrets/keycloak_registration_secret.txt
+
+  # External APIs
+  mediatr_license_key:
+    file: ./secrets/mediatr_license_key.txt
+  tmdb_access_token:
+    file: ./secrets/tmdb_access_token.txt
+  imdb_key:
+    file: ./secrets/imdb_key.txt
+  omdb_key:
+    file: ./secrets/omdb_key.txt
+  igdb_client_id:
+    file: ./secrets/igdb_client_id.txt
+  igdb_client_secret:
+    file: ./secrets/igdb_client_secret.txt
+  zoom_account_id:
+    file: ./secrets/zoom_account_id.txt
+  zoom_client_id:
+    file: ./secrets/zoom_client_id.txt
+  zoom_client_secret:
+    file: ./secrets/zoom_client_secret.txt
+  zoom_webhook_secret_token:
+    file: ./secrets/zoom_webhook_secret_token.txt
+
+  # Backup
+  backup_s3_key:
+    file: ./secrets/backup_s3_key.txt
+  backup_s3_secret:
+    file: ./secrets/backup_s3_secret.txt
+
+# ── Volumes ────────────────────────────────────────────────────────────────
+volumes:
+  pg_data:
+  keycloak_db_data:
+  redis_data:
+  rabbitmq_data:
+  mongo_data:
+  caddy_data:
+  caddy_config:
+  wwwroot:
+
+# ── Networks ───────────────────────────────────────────────────────────────
+networks:
+  screendrafts:
+    name: screendrafts
+    driver: bridge

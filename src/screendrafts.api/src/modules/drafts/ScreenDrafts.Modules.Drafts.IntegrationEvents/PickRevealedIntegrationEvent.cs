@@ -14,8 +14,9 @@ public sealed class PickRevealedIntegrationEvent(
   int boardPosition,
   Guid participantId,
   int participantKind,
-  string? actedByPublicId)
-  : IntegrationEvent(id, occurredOnUtc)
+  string? actedByPublicId,
+  string? subDraftPublicId = null
+) : IntegrationEvent(id, occurredOnUtc)
 {
   public Guid DraftPartId { get; set; } = draftPartId;
   public string DraftPartPublicId { get; set; } = draftPartPublicId;
@@ -29,4 +30,5 @@ public sealed class PickRevealedIntegrationEvent(
   public Guid ParticipantId { get; set; } = participantId;
   public int ParticipantKind { get; set; } = participantKind;
   public string? ActedByPublicId { get; set; } = actedByPublicId;
+  public string? SubDraftPublicId { get; set; } = subDraftPublicId;
 }

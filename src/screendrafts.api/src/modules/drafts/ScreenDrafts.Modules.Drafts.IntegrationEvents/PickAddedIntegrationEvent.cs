@@ -11,7 +11,8 @@ public sealed class PickAddedIntegrationEvent(
   int boardPosition,
   int playOrder,
   Guid participantId,
-  int participantKind
+  int participantKind,
+  string? subDraftPublicId = null
 ) : IntegrationEvent(id, occurredOnUtc)
 {
   public Guid DraftPartId { get; init; } = draftPartId;
@@ -23,4 +24,5 @@ public sealed class PickAddedIntegrationEvent(
   public int PlayOrder { get; init; } = playOrder;
   public Guid ParticipantId { get; init; } = participantId;
   public int ParticipantKind { get; init; } = participantKind;
+  public string? SubDraftPublicId { get; init; } = subDraftPublicId;
 }

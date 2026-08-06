@@ -38,6 +38,7 @@ internal sealed partial class PickAddedIntegrationEventConsumer(
       integrationEvent.TmdbId,
       integrationEvent.ParticipantId,
       integrationEvent.ParticipantKind,
+      integrationEvent.SubDraftPublicId,
       Participants = tokens.Select(t => new
       {
         t.ParticipantIdValue,
@@ -47,7 +48,12 @@ internal sealed partial class PickAddedIntegrationEventConsumer(
       }),
     };
 
-    var group = DraftHub.GroupName(integrationEvent.DraftPartPublicId);
+    var group = integrationEvent.SubDraftPublicId is not null
+      ? DraftHub.SubDraftGroupName(
+        integrationEvent.DraftPartPublicId,
+        integrationEvent.SubDraftPublicId
+      )
+      : DraftHub.GroupName(integrationEvent.DraftPartPublicId);
 
     await _hubContext.Clients.Group(group).SendAsync("PickAdded", payload, cancellationToken);
   }

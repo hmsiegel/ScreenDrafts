@@ -1,0 +1,23 @@
+﻿namespace ScreenDrafts.Modules.Drafts.Infrastructure.Inbox;
+
+internal sealed class ConfigureProcessInboxJob(IOptions<InboxOptions> inboxOptions)
+  : IConfigureOptions<QuartzOptions>
+{
+  private readonly InboxOptions _inboxOptions = inboxOptions.Value;
+
+  public void Configure(QuartzOptions options)
+  {
+    var jobName = typeof(ProcessInboxJob).FullName!;
+    var interval = _inboxOptions.IntervalInMilliseconds.HasValue
+      ? TimeSpan.FromMilliseconds(_inboxOptions.IntervalInMilliseconds.Value)
+      : TimeSpan.FromSeconds(_inboxOptions.IntervalInSeconds);
+
+    options
+      .AddJob<ProcessInboxJob>(configure => configure.WithIdentity(jobName))
+      .AddTrigger(configure =>
+        configure
+          .ForJob(jobName)
+          .WithSimpleSchedule(schedule => schedule.WithInterval(interval).RepeatForever())
+      );
+  }
+}

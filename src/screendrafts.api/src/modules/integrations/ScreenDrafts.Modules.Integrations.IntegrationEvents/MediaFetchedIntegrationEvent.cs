@@ -3,7 +3,11 @@ using ScreenDrafts.Common.Domain;
 
 namespace ScreenDrafts.Modules.Integrations.IntegrationEvents;
 
-[System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1002:Do not expose generic lists", Justification = "Integration event requires lists for serialization")]
+[System.Diagnostics.CodeAnalysis.SuppressMessage(
+  "Design",
+  "CA1002:Do not expose generic lists",
+  Justification = "Integration event requires lists for serialization"
+)]
 public sealed class MediaFetchedIntegrationEvent(
   Guid id,
   DateTime occurredOnUtc,
@@ -26,13 +30,15 @@ public sealed class MediaFetchedIntegrationEvent(
   List<DirectorModel> directors,
   List<WriterModel> writers,
   List<ProducerModel> producers,
-  List<ProductionCompanyModel> productionCompanies)
-  : IntegrationEvent(id, occurredOnUtc)
+  List<ProductionCompanyModel> productionCompanies,
+  string? externalId = null
+) : IntegrationEvent(id, occurredOnUtc)
 {
   public string PublicId { get; init; } = publicId;
   public string? ImdbId { get; init; } = imdbId;
   public int? TmdbId { get; init; } = tmdbId;
   public int? IgdbId { get; init; } = igdbId;
+  public string? ExternalId { get; init; } = externalId;
   public string Title { get; init; } = title;
   public string Year { get; init; } = year;
   public string? Plot { get; init; } = plot;
@@ -47,14 +53,9 @@ public sealed class MediaFetchedIntegrationEvent(
   public int? EpisodeNumber { get; init; } = episodeNumber;
 
   public List<GenreModel> Genres { get; init; } = genres;
-
   public List<ActorModel> Actors { get; init; } = actors;
-
   public List<DirectorModel> Directors { get; init; } = directors;
-
   public List<WriterModel> Writers { get; init; } = writers;
-
   public List<ProducerModel> Producers { get; init; } = producers;
-
   public List<ProductionCompanyModel> ProductionCompanies { get; init; } = productionCompanies;
 }

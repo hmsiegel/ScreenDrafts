@@ -143,7 +143,8 @@ internal sealed class PickCreatedDomainEventHandler(
         boardPosition: domainEvent.BoardPosition,
         playOrder: domainEvent.PlayOrder,
         participantId: domainEvent.ParticipantId,
-        participantKind: domainEvent.ParticipantKind
+        participantKind: domainEvent.ParticipantKind,
+        subDraftPublicId: domainEvent.SubDraftPublicId
       ),
       cancellationToken
     );

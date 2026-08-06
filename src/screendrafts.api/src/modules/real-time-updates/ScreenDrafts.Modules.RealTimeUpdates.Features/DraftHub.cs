@@ -6,6 +6,9 @@ public sealed class DraftHub : Hub
 
   public static string HostGroupName(string draftPartId) => $"draft-part:{draftPartId}:host";
 
+  public static string SubDraftGroupName(string draftPartId, string subDraftId) =>
+    $"draft-part:{draftPartId}:sub-draft:{subDraftId}";
+
   public async Task JoinDraftPartAsync(string draftPartId)
   {
     await Groups.AddToGroupAsync(Context.ConnectionId, GroupName(draftPartId));
@@ -26,6 +29,19 @@ public sealed class DraftHub : Hub
   {
     await Groups.RemoveFromGroupAsync(Context.ConnectionId, GroupName(draftPartId));
     await Groups.RemoveFromGroupAsync(Context.ConnectionId, HostGroupName(draftPartId));
+  }
+
+  public async Task JoinSubDraftGroupAsync(string draftPartId, string subDraftId)
+  {
+    await Groups.AddToGroupAsync(Context.ConnectionId, SubDraftGroupName(draftPartId, subDraftId));
+  }
+
+  public async Task LeaveSubDraftGroupAsync(string draftPartId, string subDraftId)
+  {
+    await Groups.RemoveFromGroupAsync(
+      Context.ConnectionId,
+      SubDraftGroupName(draftPartId, subDraftId)
+    );
   }
 
   /// <summary>

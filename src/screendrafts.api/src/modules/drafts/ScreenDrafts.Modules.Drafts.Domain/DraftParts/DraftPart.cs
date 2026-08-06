@@ -353,6 +353,7 @@ public sealed partial class DraftPart : AggregateRoot<DraftPartId, Guid>
     IEnumerable<(Participant participant, int Position, int QuestionsWon)> results
   )
   {
+    ArgumentNullException.ThrowIfNull(subDraftId);
     ArgumentNullException.ThrowIfNull(results);
 
     if (Status != DraftPartStatus.InProgress)
@@ -385,6 +386,20 @@ public sealed partial class DraftPart : AggregateRoot<DraftPartId, Guid>
       _triviaResults.Add(result.Value);
     }
 
+    var subDraft = _subDrafts.FirstOrDefault(sd => sd.Id == subDraftId);
+
+    if (subDraft == null)
+    {
+      return Result.Failure(SubDraftErrors.NotFound(subDraftId.Value));
+    }
+
+    var activateResult = subDraft.Activate();
+
+    if (activateResult.IsFailure)
+    {
+      return Result.Failure(activateResult.Errors);
+    }
+
     Raise(
       new TriviaResultsAssignedDomainEvent(
         draftPartId: Id.Value,
@@ -393,6 +408,19 @@ public sealed partial class DraftPart : AggregateRoot<DraftPartId, Guid>
           .Select(t => (t.ParticipantId.Value, t.Position))
           .ToList()
           .AsReadOnly()
+      )
+    );
+
+    Raise(
+      new SubDraftUpdatedDomainEvent(
+        draftPartId: Id.Value,
+        draftPartPublicId: PublicId,
+        subDraftId: subDraft.Id.Value,
+        subDraftPublicId: subDraft.PublicId,
+        status: subDraft.Status.Value,
+        subjectKind: subDraft.SubjectKind?.Value,
+        subjectName: subDraft.SubjectName,
+        subjectImdbId: subDraft.SubjectImdbId
       )
     );
 

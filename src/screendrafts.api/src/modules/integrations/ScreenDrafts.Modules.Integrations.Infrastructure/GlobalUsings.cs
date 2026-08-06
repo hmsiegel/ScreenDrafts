@@ -10,14 +10,10 @@ global using System.Security.Claims;
 global using System.Security.Cryptography;
 global using System.Text;
 global using System.Text.Json.Serialization;
-
 global using Dapper;
-
 global using IMDbApiLib;
 global using IMDbApiLib.Models;
-
 global using MassTransit;
-
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.EntityFrameworkCore.Migrations;
 global using Microsoft.Extensions.Configuration;
@@ -25,16 +21,11 @@ global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Logging;
 global using Microsoft.Extensions.Options;
 global using Microsoft.IdentityModel.Tokens;
-
 global using Newtonsoft.Json;
-
 global using OMDbApiNet;
 global using OMDbApiNet.Model;
-
 global using Polly;
-
 global using Quartz;
-
 global using ScreenDrafts.Common.Application.Clock;
 global using ScreenDrafts.Common.Application.Data;
 global using ScreenDrafts.Common.Application.EventBus;
@@ -52,8 +43,9 @@ global using ScreenDrafts.Modules.Integrations.Domain.Abstractions.Data;
 global using ScreenDrafts.Modules.Integrations.Domain.Enums;
 global using ScreenDrafts.Modules.Integrations.Domain.Services.Igdb;
 global using ScreenDrafts.Modules.Integrations.Domain.Services.Imdb;
-global using ScreenDrafts.Modules.Integrations.Domain.Services.Omb;
+global using ScreenDrafts.Modules.Integrations.Domain.Services.Omdb;
 global using ScreenDrafts.Modules.Integrations.Domain.Services.Tmdb;
+global using ScreenDrafts.Modules.Integrations.Domain.Services.YouTube;
 global using ScreenDrafts.Modules.Integrations.Domain.Zoom;
 global using ScreenDrafts.Modules.Integrations.Infrastructure.Database;
 global using ScreenDrafts.Modules.Integrations.Infrastructure.Inbox;

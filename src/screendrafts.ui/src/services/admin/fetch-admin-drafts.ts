@@ -154,6 +154,13 @@ export interface DraftPartPredictorDto {
   allowedSubmitterDisplayName: string | null;
 }
 
+export interface ImdbPersonSearchResult {
+  imdbId: string;
+  name: string;
+  description?: string | null;
+  photoUrl?: string | null;
+}
+
 const apiBase = env.apiUrl;
 
 function authHeaders(accessToken: string | undefined): HeadersInit {
@@ -1102,4 +1109,104 @@ export async function syncPredictionConfig(
       allowedSubmitterPersonPublicId: p.allowedSubmitterPersonPublicId,
     }))
   );
+}
+
+export async function addSubDraft(
+  accessToken: string,
+  draftPartPublicId: string,
+  index: number
+): Promise<string> {
+  const res = await fetch(`${apiBase}/draft-parts/${draftPartPublicId}/sub-drafts`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ draftPartPublicId, index }),
+  });
+
+  if (!res.ok) {
+    const body = await res.json().catch(() => null);
+    throw new Error(body?.detail ?? `Failed to add sub-draft ${index}: ${res.status}`);
+  }
+
+  const data = await res.json();
+  return data.publicId as string;
+}
+
+export async function setSubDraftSubject(
+  accessToken: string,
+  draftPartPublicId: string,
+  subDraftPublicId: string,
+  subjectKind: number,
+  subjectName: string,
+  subjectImdbId: string | null
+): Promise<void> {
+  const res = await fetch(
+    `${apiBase}/draft-parts/${draftPartPublicId}/sub-drafts/${subDraftPublicId}/subject`,
+    {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        draftPartPublicId,
+        subDraftPublicId,
+        subjectKind,
+        subjectName,
+        subjectImdbId: subjectImdbId ?? null,
+      }),
+    }
+  );
+
+  if (!res.ok) {
+    const body = await res.json().catch(() => null);
+    throw new Error(body?.detail ?? `Failed to set subject for ${subDraftPublicId}: ${res.status}`);
+  }
+}
+
+export async function setSpeedDraftPositions(
+  accessToken: string,
+  draftPartId: string
+): Promise<void> {
+  const res = await fetch(`${apiBase}/draft-parts/${draftPartId}/sub-drafts/positions`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      draftPartId,
+      // Fixed Speed Draft layout — same shape positions-editor.tsx already
+      // uses for the read-only summary, applied identically to all three
+      // sub-draft boards by the handler (see SetSpeedDraftPositions.cs).
+      positions: [
+        { name: "A", picks: [7, 5, 3, 1] },
+        { name: "B", picks: [6, 4, 2] },
+      ],
+    }),
+  });
+
+  if (!res.ok) {
+    const body = await res.json().catch(() => null);
+    throw new Error(body?.detail ?? `Failed to set Speed Draft positions: ${res.status}`);
+  }
+}
+
+export async function searchImdbPeople(
+  accessToken: string,
+  query: string
+): Promise<ImdbPersonSearchResult[]> {
+  const res = await fetch(
+    `${apiBase}/movie-people/search?query=${encodeURIComponent(query)}`,
+    { headers: { Authorization: `Bearer ${accessToken}` } }
+  );
+
+  if (!res.ok) {
+    return [];
+  }
+
+  const data = await res.json();
+  return data.results ?? data.items ?? [];
 }

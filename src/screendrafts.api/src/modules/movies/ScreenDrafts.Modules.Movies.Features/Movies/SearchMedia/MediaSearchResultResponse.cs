@@ -3,6 +3,7 @@
 internal sealed record MediaSearchResultResponse
 {
   public int? TmdbId { get; init; }
+  public string? ImdbId { get; init; }
   public int? IgdbId { get; init; }
   public string Title { get; init; } = default!;
   public string? Year { get; init; }

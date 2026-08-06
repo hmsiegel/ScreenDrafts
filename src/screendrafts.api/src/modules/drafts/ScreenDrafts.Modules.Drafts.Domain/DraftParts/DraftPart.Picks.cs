@@ -129,7 +129,9 @@ public sealed partial class DraftPart
         participantKind: participantId.Kind.Value,
         draftId: DraftId.Value,
         draftPublicId: DraftPublicId,
-        canonicalPolicyValue: canonicalPolicyValue
+        canonicalPolicyValue: canonicalPolicyValue,
+        subDraftId: subDraftId?.Value,
+        subDraftPublicId: ResolveSubDraftPublicId(subDraftId)
       )
     );
 
@@ -159,7 +161,9 @@ public sealed partial class DraftPart
         draftPublicId: DraftPublicId,
         moviePublicId: pick.Movie.PublicId,
         playedByParticipantId: pick.PlayedByParticipantIdValue,
-        playedByParticipantKind: pick.PlayedByParticipantKindValue.Value
+        playedByParticipantKind: pick.PlayedByParticipantKindValue.Value,
+        subDraftId: pick.SubDraftId?.Value,
+        subDraftPublicId: ResolveSubDraftPublicId(pick.SubDraftId)
       )
     );
 
@@ -206,7 +210,9 @@ public sealed partial class DraftPart
         actedByPublicId: actedByPublicId,
         draftId: DraftId.Value,
         draftPublicId: DraftPublicId,
-        canonicalPolicyValue: canonicalPolicyValue
+        canonicalPolicyValue: canonicalPolicyValue,
+        subDraftId: pick.SubDraftId?.Value,
+        subDraftPublicId: ResolveSubDraftPublicId(pick.SubDraftId)
       )
     );
 
@@ -286,7 +292,9 @@ public sealed partial class DraftPart
         playedByParticipantId: pick.PlayedByParticipant.ParticipantIdValue,
         playedByParticipantKind: pick.PlayedByParticipant.ParticipantKindValue.Value,
         moviePublicId: pick.Movie!.PublicId,
-        boardPosition: pick.Position
+        boardPosition: pick.Position,
+        subDraftId: pick.SubDraftId?.Value,
+        subDraftPublicId: ResolveSubDraftPublicId(pick.SubDraftId)
       )
     );
     return Result.Success();
@@ -297,14 +305,14 @@ public sealed partial class DraftPart
   /// refunds the veto token to the original issuer.
   /// Commissioner-only / break-glass operation.
   /// </summary>
-  public Result UndoVeto(int playOrder)
+  public Result UndoVeto(int playOrder, SubDraftId? subDraftId)
   {
     if (Status != DraftPartStatus.InProgress)
     {
       return Result.Failure(DraftPartErrors.DraftNotStarted);
     }
 
-    var pick = _picks.FirstOrDefault(p => p.PlayOrder == playOrder);
+    var pick = _picks.FirstOrDefault(p => p.PlayOrder == playOrder && p.SubDraftId == subDraftId);
 
     if (pick is null)
     {
@@ -342,7 +350,9 @@ public sealed partial class DraftPart
         TmdbId: pick.Movie.TmdbId ?? 0,
         DraftId: DraftId.Value,
         DraftPublicId: DraftPublicId,
-        movieTitle: pick.Movie?.MovieTitle
+        movieTitle: pick.Movie?.MovieTitle,
+        subDraftId: pick.SubDraftId?.Value,
+        subDraftPublicId: ResolveSubDraftPublicId(pick.SubDraftId)
       )
     );
 
@@ -555,4 +565,7 @@ public sealed partial class DraftPart
 
   private bool IsParticipantInThisPart(Participant participantId) =>
     _draftPartParticipants.Select(p => p.ParticipantId).Contains(participantId);
+
+  private string? ResolveSubDraftPublicId(SubDraftId? subDraftId) =>
+    subDraftId is null ? null : _subDrafts.FirstOrDefault(s => s.Id == subDraftId)?.PublicId;
 }

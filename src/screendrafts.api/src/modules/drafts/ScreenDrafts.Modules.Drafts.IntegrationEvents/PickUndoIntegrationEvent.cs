@@ -8,7 +8,9 @@ public sealed class PickUndoneIntegrationEvent(
   int playOrder,
   int boardPosition,
   int tmdbId,
-  string movieTitle
+  string movieTitle,
+  Guid? subDraftId,
+  string? subDraftPublicId
 ) : IntegrationEvent(id, occurredOnUtc)
 {
   public Guid DraftPartId { get; init; } = draftPartId;
@@ -17,4 +19,6 @@ public sealed class PickUndoneIntegrationEvent(
   public int BoardPosition { get; init; } = boardPosition;
   public int TmdbId { get; init; } = tmdbId;
   public string MovieTitle { get; init; } = movieTitle;
+  public Guid? SubDraftId { get; init; } = subDraftId;
+  public string? SubDraftPublicId { get; init; } = subDraftPublicId;
 }

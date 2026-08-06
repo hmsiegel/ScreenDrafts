@@ -8,20 +8,18 @@ internal sealed class MediaConfiguration : IEntityTypeConfiguration<Media>
 
     builder.HasKey(t => t.Id);
 
-    builder.Property(d => d.Id)
+    builder
+      .Property(d => d.Id)
       .ValueGeneratedNever()
-      .HasConversion(
-      id => id.Value,
-      value => MediaId.Create(value));
+      .HasConversion(id => id.Value, value => MediaId.Create(value));
 
-    builder.Property(x => x.PublicId)
+    builder
+      .Property(x => x.PublicId)
       .IsRequired()
       .HasMaxLength(PublicIdPrefixes.MaxPublicIdLength)
       .ValueGeneratedNever();
 
-    builder.HasIndex(x => x.PublicId)
-      .IsUnique()
-      .HasDatabaseName("ux_media_public_id");
+    builder.HasIndex(x => x.PublicId).IsUnique().HasDatabaseName("ux_media_public_id");
 
     builder.HasIndex(d => d.ImdbId);
 
@@ -33,7 +31,10 @@ internal sealed class MediaConfiguration : IEntityTypeConfiguration<Media>
 
     builder.HasIndex(m => m.IgdbId);
 
-    builder.Property(d => d.Plot)
-      .HasColumnType("text");
+    builder.Property(d => d.Plot).HasColumnType("text");
+
+    builder.Property(m => m.ExternalId);
+
+    builder.HasIndex(m => m.ExternalId);
   }
 }

@@ -3,20 +3,15 @@
 public sealed class SubDraft : Entity<SubDraftId>
 {
   private GameBoard? _gameBoard;
-  private SubDraft(
-    DraftPartId draftPartId,
-    int index,
-    SubDraftId? id = null)
+
+  private SubDraft(DraftPartId draftPartId, int index, SubDraftId? id = null)
     : base(id ?? SubDraftId.CreateUnique())
   {
     DraftPartId = draftPartId;
     Index = index;
   }
 
-  private SubDraft()
-  {
-
-  }
+  private SubDraft() { }
 
   public string PublicId { get; private set; } = default!;
   public DraftPartId DraftPartId { get; private set; } = default!;
@@ -24,13 +19,15 @@ public sealed class SubDraft : Entity<SubDraftId>
   public SubDraftStatus Status { get; private set; } = SubDraftStatus.Pending;
   public SubjectKind? SubjectKind { get; private set; } = default!;
   public string? SubjectName { get; private set; } = default!;
+  public string? SubjectImdbId { get; private set; } = default!;
   public GameBoard? GameBoard => _gameBoard;
 
   public static Result<SubDraft> Create(
     int index,
     DraftPartId draftPartId,
     string publicId,
-    SubDraftId? id = null)
+    SubDraftId? id = null
+  )
   {
     ArgumentNullException.ThrowIfNull(draftPartId);
 
@@ -39,13 +36,9 @@ public sealed class SubDraft : Entity<SubDraftId>
       return Result.Failure<SubDraft>(DraftPartErrors.PartIndexIsOutOfRange);
     }
 
-    var subDraft = new SubDraft(
-      draftPartId: draftPartId,
-      index: index,
-      id: id
-    )
+    var subDraft = new SubDraft(draftPartId: draftPartId, index: index, id: id)
     {
-      PublicId = publicId
+      PublicId = publicId,
     };
 
     var boardResult = GameBoard.CreateForSubDraft(subDraft);
@@ -62,21 +55,42 @@ public sealed class SubDraft : Entity<SubDraftId>
 
   private void SetGameBoard(GameBoard gameBoard) => _gameBoard = gameBoard;
 
-  public int ComputeVetoRemainder(int startingVetoes, IEnumerable<(SubDraftId SubDraftId, bool IsOverridden)> vetoes)
+  public int ComputeVetoRemainder(
+    Participant participant,
+    int startingVetoes,
+    IEnumerable<(SubDraftId SubDraftId, Participant IssuedBy)> vetoes
+  )
   {
-    var used = vetoes.Count(v => v.SubDraftId == Id);
+    var used = vetoes.Count(v => v.SubDraftId == Id && v.IssuedBy == participant);
     return Math.Max(0, startingVetoes - used);
   }
 
-  public Result SetSubject(SubjectKind subjectKind, string subjectName)
+  public Result SetSubject(
+    SubjectKind subjectKind,
+    string subjectName,
+    string? subjectImdbId = null
+  )
   {
     if (string.IsNullOrWhiteSpace(subjectName))
     {
       return Result.Failure(SubDraftErrors.SubjectNameCannotBeEmpty);
     }
 
+    var isPersonSubject = subjectKind == SubjectKind.Actor || subjectKind == SubjectKind.Director;
+
+    if (isPersonSubject && string.IsNullOrWhiteSpace(subjectImdbId))
+    {
+      return Result.Failure(SubDraftErrors.SubjectImdbIdCannotBeEmptyForPersonSubjects);
+    }
+
+    if (!isPersonSubject && !string.IsNullOrWhiteSpace(subjectImdbId))
+    {
+      return Result.Failure(SubDraftErrors.SubjectImdbNotAllowedForWordSubjects);
+    }
+
     SubjectKind = subjectKind;
     SubjectName = subjectName.Trim();
+    SubjectImdbId = subjectImdbId;
     return Result.Success();
   }
 

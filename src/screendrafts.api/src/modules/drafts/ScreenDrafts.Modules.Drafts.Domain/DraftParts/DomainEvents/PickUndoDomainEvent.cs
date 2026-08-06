@@ -11,7 +11,9 @@ public sealed class PickUndoDomainEvent(
   string draftPublicId,
   string moviePublicId,
   Guid playedByParticipantId,
-  int playedByParticipantKind
+  int playedByParticipantKind,
+  Guid? subDraftId,
+  string? subDraftPublicId
 ) : DomainEvent
 {
   public Guid DraftPartId { get; init; } = draftPartId;
@@ -25,4 +27,6 @@ public sealed class PickUndoDomainEvent(
   public string MoviePublicId { get; init; } = moviePublicId;
   public Guid PlayedByParticipantId { get; init; } = playedByParticipantId;
   public int PlayedByParticipantKind { get; init; } = playedByParticipantKind;
+  public Guid? SubDraftId { get; init; } = subDraftId;
+  public string? SubDraftPublicId { get; init; } = subDraftPublicId;
 }

@@ -8,11 +8,11 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<AddMediaRequest, string>
     Description(x =>
     {
       x.WithTags(MoviesOpenApi.Tags.Media)
-      .WithName(MoviesOpenApi.Names.Media_Add)
-      .Produces<Guid>(StatusCodes.Status200OK)
-      .Produces(StatusCodes.Status400BadRequest)
-      .Produces(StatusCodes.Status401Unauthorized)
-      .Produces(StatusCodes.Status403Forbidden);
+        .WithName(MoviesOpenApi.Names.Media_Add)
+        .Produces<Guid>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status400BadRequest)
+        .Produces(StatusCodes.Status401Unauthorized)
+        .Produces(StatusCodes.Status403Forbidden);
     });
     Policies(MoviesAuth.Permissions.MediaCreate);
   }
@@ -25,6 +25,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<AddMediaRequest, string>
       ImdbId = req.ImdbId,
       TmdbId = req.TmdbId,
       IgdbId = req.IgdbId,
+      ExternalId = req.ExternalId,
       Title = req.Title,
       Year = req.Year,
       Plot = req.Plot,
@@ -39,7 +40,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<AddMediaRequest, string>
       Actors = req.Actors,
       Directors = req.Directors,
       Producers = req.Producers,
-      ProductionCompanies = req.ProductionCompanies
+      ProductionCompanies = req.ProductionCompanies,
     };
 
     var result = await Sender.Send(command, ct);
@@ -47,6 +48,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<AddMediaRequest, string>
     await this.SendCreatedAsync(
       result.Map(id => new CreatedResponse(id)),
       created => MovieLocations.ById(created.PublicId),
-      ct);
+      ct
+    );
   }
 }

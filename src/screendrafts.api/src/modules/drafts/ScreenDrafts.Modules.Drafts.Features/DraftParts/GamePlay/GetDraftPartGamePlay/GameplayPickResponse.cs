@@ -6,7 +6,10 @@ internal sealed record GameplayPickResponse
   public int BoardPosition { get; init; }
   public string MovieTitle { get; init; } = default!;
   public string? MovieYear { get; init; }
-  public int TmdbId { get; init; }
+  public int? TmdbId { get; init; }
+  public string? ImdbId { get; init; }
+  public int? IgdbId { get; init; }
+  public int? MediaType { get; init; }
   public Guid PlayedById { get; init; }
   public int PlayedByKind { get; init; }
   public string PlayedByName { get; init; } = default!;
