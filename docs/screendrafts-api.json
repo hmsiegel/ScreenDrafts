@@ -4186,6 +4186,85 @@
         ]
       }
     },
+    "/draft-parts/{draftPartId}/predictions/seed": {
+      "post": {
+        "tags": [
+          "Predictions"
+        ],
+        "operationId": "Predictions_SeedSubmitSet",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SeedSubmitPredictionSetRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "409": {
+            "description": "Conflict"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/draft-parts/{draftPartId}/seed/picks/{playOrder}/reveal": {
+      "post": {
+        "tags": [
+          "DraftParts"
+        ],
+        "operationId": "DraftParts.SeedRevealPick",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SeedRevealPickRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
     "/draft-parts/{draftPartId}/releases": {
       "post": {
         "tags": [
@@ -4277,6 +4356,16 @@
           "DraftParts"
         ],
         "operationId": "DraftParts.UndoVeto",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UndoVetoRequest"
+              }
+            }
+          },
+          "required": true
+        },
         "responses": {
           "204": {
             "description": "No Content"
@@ -17739,6 +17828,93 @@
           }
         }
       },
+      "SeedPredictionEntryRequest": {
+        "type": "object",
+        "properties": {
+          "tmdbId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "mediaTitle": {
+            "type": "string"
+          },
+          "orderIndex": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "notes": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "SeedRevealPickRequest": {
+        "required": [
+          "actedByPublicId"
+        ],
+        "type": "object",
+        "properties": {
+          "draftPartId": {
+            "type": "string"
+          },
+          "playOrder": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "actedByPublicId": {
+            "type": "string"
+          }
+        }
+      },
+      "SeedSubmitPredictionSetRequest": {
+        "type": "object",
+        "properties": {
+          "draftPartId": {
+            "type": "string"
+          },
+          "seasonPublicId": {
+            "type": "string"
+          },
+          "contestantPublicId": {
+            "type": "string"
+          },
+          "submittedByPersonPublicId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "sourceKind": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "entries": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SeedPredictionEntryRequest"
+            }
+          }
+        }
+      },
       "SendPasswordResetRequest": {
         "type": "object",
         "properties": {
@@ -18375,6 +18551,28 @@
         }
       },
       "UndoPickRequest": {
+        "type": "object",
+        "properties": {
+          "draftPartId": {
+            "type": "string"
+          },
+          "playOrder": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "subDraftPublicId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "UndoVetoRequest": {
         "type": "object",
         "properties": {
           "draftPartId": {

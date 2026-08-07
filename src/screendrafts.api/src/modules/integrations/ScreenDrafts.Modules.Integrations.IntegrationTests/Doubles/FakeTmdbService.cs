@@ -85,11 +85,30 @@ public sealed class FakeTmdbService : ITmdbService
     string query,
     int page = 1,
     CancellationToken cancellationToken = default
-  ) => Task.FromResult(new TmdbSearchPagedResult
+  ) =>
+    Task.FromResult(
+      new TmdbSearchPagedResult
+      {
+        Results = _searchResults,
+        TotalResults = _searchResults.Count,
+        TotalPages = 1,
+        Page = page,
+      }
+    );
+
+  public Task<int?> FindPersonByImdbIdAsync(
+    string imdbId,
+    CancellationToken cancellationToken = default
+  )
   {
-    Results = _searchResults,
-    TotalResults = _searchResults.Count,
-    TotalPages = 1,
-    Page = page,
-  });
+    return Task.FromResult<int?>(null);
+  }
+
+  public Task<IReadOnlyList<TmdbPersonCredit>> GetPersonCombinedCreditsAsync(
+    int tmdbPersonId,
+    CancellationToken cancellationToken = default
+  )
+  {
+    return Task.FromResult<IReadOnlyList<TmdbPersonCredit>>(Array.Empty<TmdbPersonCredit>());
+  }
 }

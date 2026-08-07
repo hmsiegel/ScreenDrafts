@@ -24,6 +24,7 @@ public sealed class Permission(string code)
   public static readonly Permission SearchDrafts = new("drafts:search");
   public static readonly Permission RestoreDraft = new("drafts:restore");
   public static readonly Permission ReadPatreonDrafts = new("drafts:read-patreon");
+  public static readonly Permission SeedDraft = new("drafts:seed");
   public static readonly Permission SearchPatreonDrafts = new("patreon:search");
 
   // Draft Parts

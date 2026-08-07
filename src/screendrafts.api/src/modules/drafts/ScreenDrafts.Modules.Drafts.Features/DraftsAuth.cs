@@ -142,5 +142,7 @@ internal static class DraftsAuth
 
     internal const string AttendanceJoin = "attendances:join";
     internal const string AttendanceWithdraw = "attendances:withdraw";
+
+    internal const string DraftSeed = "drafts:seed";
   }
 }

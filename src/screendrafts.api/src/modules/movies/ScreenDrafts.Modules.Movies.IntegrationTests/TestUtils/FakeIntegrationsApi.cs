@@ -28,4 +28,12 @@ public sealed class FakeIntegrationsApi : IIntegrationsApi
     int page = 1,
     CancellationToken cancellationToken = default
   ) => Task.FromResult(Result.Success(new SearchYouTubeApiResponse()));
+
+  public Task<Result<PersonFilmographyApiResponse>> GetPersonFilmographyAsync(
+    string imdbId,
+    CancellationToken cancellationToken = default
+  )
+  {
+    return Task.FromResult(Result.Success(new PersonFilmographyApiResponse()));
+  }
 }

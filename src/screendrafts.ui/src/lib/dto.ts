@@ -459,6 +459,11 @@ export interface IClient {
     /**
      * @return No Content
      */
+    draftParts_SeedRevealPick(body: SeedRevealPickRequest): Promise<void>;
+
+    /**
+     * @return No Content
+     */
     draftParts_SetReleaseDate(body: SetReleaseDateRequest): Promise<void>;
 
     /**
@@ -469,7 +474,7 @@ export interface IClient {
     /**
      * @return No Content
      */
-    draftParts_UndoVeto(): Promise<void>;
+    draftParts_UndoVeto(body: UndoVetoRequest): Promise<void>;
 
     /**
      * @return No Content
@@ -5534,6 +5539,60 @@ export class Client implements IClient {
     /**
      * @return No Content
      */
+    draftParts_SeedRevealPick(body: SeedRevealPickRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/seed/picks/{playOrder}/reveal";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDraftParts_SeedRevealPick(_response);
+        });
+    }
+
+    protected processDraftParts_SeedRevealPick(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
     draftParts_SetReleaseDate(body: SetReleaseDateRequest, signal?: AbortSignal): Promise<void> {
         let url_ = this.baseUrl + "/draft-parts/{draftPartId}/releases";
         url_ = url_.replace(/[?&]$/, "");
@@ -5641,14 +5700,18 @@ export class Client implements IClient {
     /**
      * @return No Content
      */
-    draftParts_UndoVeto(signal?: AbortSignal): Promise<void> {
+    draftParts_UndoVeto(body: UndoVetoRequest, signal?: AbortSignal): Promise<void> {
         let url_ = this.baseUrl + "/draft-parts/{draftPartId}/picks/{playOrder}/undo-veto";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(body);
+
         let options_: RequestInit = {
+            body: content_,
             method: "POST",
             signal,
             headers: {
+                "Content-Type": "application/json",
             }
         };
 
@@ -10181,6 +10244,11 @@ export interface IPredictionsClient {
      * @return No Content
      */
     addCarryover(body: AddCarryoverRequest): Promise<void>;
+
+    /**
+     * @return No Content
+     */
+    seedSubmitSet(body: SeedSubmitPredictionSetRequest): Promise<void>;
 }
 
 export class PredictionsClient implements IPredictionsClient {
@@ -11057,6 +11125,64 @@ export class PredictionsClient implements IPredictionsClient {
         } else if (status === 404) {
             return response.text().then((_responseText) => {
             return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    seedSubmitSet(body: SeedSubmitPredictionSetRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/predictions/seed";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processSeedSubmitSet(_response);
+        });
+    }
+
+    protected processSeedSubmitSet(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status === 409) {
+            return response.text().then((_responseText) => {
+            return throwException("Conflict", status, _responseText, _headers);
             });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
@@ -14129,6 +14255,34 @@ export interface SeasonContestantStandingResponse {
     [key: string]: any;
 }
 
+export interface SeedPredictionEntryRequest {
+    tmdbId?: number;
+    mediaTitle?: string;
+    orderIndex?: number | undefined;
+    notes?: string | undefined;
+
+    [key: string]: any;
+}
+
+export interface SeedRevealPickRequest {
+    draftPartId?: string;
+    playOrder?: number;
+    actedByPublicId: string;
+
+    [key: string]: any;
+}
+
+export interface SeedSubmitPredictionSetRequest {
+    draftPartId?: string;
+    seasonPublicId?: string;
+    contestantPublicId?: string;
+    submittedByPersonPublicId?: string | undefined;
+    sourceKind?: number;
+    entries?: SeedPredictionEntryRequest[];
+
+    [key: string]: any;
+}
+
 export interface SendPasswordResetRequest {
     publicId?: string;
 
@@ -14359,6 +14513,14 @@ export interface TriviaResultResponse {
 }
 
 export interface UndoPickRequest {
+    draftPartId?: string;
+    playOrder?: number;
+    subDraftPublicId?: string | undefined;
+
+    [key: string]: any;
+}
+
+export interface UndoVetoRequest {
     draftPartId?: string;
     playOrder?: number;
     subDraftPublicId?: string | undefined;
