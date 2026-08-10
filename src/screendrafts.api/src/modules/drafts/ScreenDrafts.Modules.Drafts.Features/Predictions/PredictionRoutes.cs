@@ -28,4 +28,7 @@ internal static class PredictionRoutes
 
   // Predictors
   public const string SetPredictors = "/draft-parts/{draftPartId}/predictors";
+
+  // Seed
+  public const string SeedSubmitSet = "draft-parts/{draftPartId}/predictions/seed";
 }

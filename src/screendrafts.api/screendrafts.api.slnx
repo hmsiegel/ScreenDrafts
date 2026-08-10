@@ -130,6 +130,7 @@
     <Project Path="src/modules/integrations/ScreenDrafts.Modules.Integrations.UnitTests/ScreenDrafts.Modules.Integrations.UnitTests.csproj" />
   </Folder>
   <Folder Name="/src/modules/movies/">
+    <File Path="src/modules/drafts/ScreenDrafts.Modules.Drafts.Infrastructure/Database/DraftsDbContextFactory.cs" />
     <Project Path="src/modules/movies/ScreenDrafts.Modules.Movies.ArchitectureTests/ScreenDrafts.Modules.Movies.ArchitectureTests.csproj" />
     <Project Path="src/modules/movies/ScreenDrafts.Modules.Movies.Composition/ScreenDrafts.Modules.Movies.Composition.csproj" />
     <Project Path="src/modules/movies/ScreenDrafts.Modules.Movies.Domain/ScreenDrafts.Modules.Movies.Domain.csproj" />

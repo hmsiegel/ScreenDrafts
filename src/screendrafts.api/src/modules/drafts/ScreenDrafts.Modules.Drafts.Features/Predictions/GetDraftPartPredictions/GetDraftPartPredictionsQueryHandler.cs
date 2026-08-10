@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.Predictions.GetDraftPartPredictions;
+﻿using System.Text.Json;
+
+namespace ScreenDrafts.Modules.Drafts.Features.Predictions.GetDraftPartPredictions;
 
 internal sealed class GetDraftPartPredictionsQueryHandler(IDbConnectionFactory connectionFactory)
   : IQueryHandler<GetDraftPartPredictionsQuery, IReadOnlyList<DraftPartPredictionResponse>>
@@ -29,13 +31,25 @@ internal sealed class GetDraftPartPredictionsQueryHandler(IDbConnectionFactory c
         r.correct_count        AS CorrectCount,
         r.shoot_the_moon       AS ShootsTheMoon,
         r.points_awarded       AS PointsAwarded,
-        r.scored_at_utc        AS ScoredAtUtc
+        r.scored_at_utc        AS ScoredAtUtc,
+        sa.surrogates          AS SurrogatesJson
       FROM drafts.draft_prediction_sets s
       JOIN drafts.draft_parts            dp ON dp.id         = s.draft_part_id
       JOIN drafts.prediction_contestants c  ON c.id          = s.contestant_id
       LEFT JOIN drafts.prediction_entries e  ON e.set_id     = s.id
       LEFT JOIN drafts.movies            mv ON mv.tmdb_id    = e.tmdb_id
       LEFT JOIN drafts.prediction_results r  ON r.set_id     = s.id
+      LEFT JOIN LATERAL (
+        SELECT json_agg(json_build_object(
+          'SurrogateSetPublicId', ss.public_id,
+          'SurrogateContestantDisplayName', sc.display_name,
+          'MergePolicy', surr.merge_policy
+        )) AS surrogates
+        FROM drafts.surrogate_assignments surr
+        JOIN drafts.draft_prediction_sets ss  ON ss.id = surr.surrogate_set_id
+        JOIN drafts.prediction_contestants sc ON sc.id = ss.contestant_id
+        WHERE surr.primary_set_id = s.id
+      ) sa ON true
       WHERE dp.public_id = @DraftPartId
       ORDER BY c.display_name, e.order_index;
       """;
@@ -77,6 +91,20 @@ internal sealed class GetDraftPartPredictionsQueryHandler(IDbConnectionFactory c
           }
           : null;
 
+        var surrogates = string.IsNullOrWhiteSpace(first.SurrogatesJson)
+          ? new List<SurrogateAssignmentResponse>()
+          :
+          [
+            .. JsonSerializer
+              .Deserialize<List<SurrogateJsonRow>>(first.SurrogatesJson)!
+              .Select(sr => new SurrogateAssignmentResponse
+              {
+                SurrogateSetPublicId = sr.SurrogateSetPublicId,
+                SurrogateContestantDisplayName = sr.SurrogateContestantDisplayName,
+                MergePolicy = MergePolicy.FromValue(sr.MergePolicy).Name,
+              }),
+          ];
+
         return new DraftPartPredictionResponse
         {
           PublicId = first.SetPublicId,
@@ -88,6 +116,7 @@ internal sealed class GetDraftPartPredictionsQueryHandler(IDbConnectionFactory c
           LockedAtUtc = first.LockedAtUtc,
           Entries = entries,
           Result = result,
+          Surrogates = surrogates,
         };
       })
       .ToList();
@@ -111,6 +140,13 @@ internal sealed class GetDraftPartPredictionsQueryHandler(IDbConnectionFactory c
     int? CorrectCount,
     bool? ShootsTheMoon,
     int? PointsAwarded,
-    DateTime? ScoredAtUtc
+    DateTime? ScoredAtUtc,
+    string? SurrogatesJson
+  );
+
+  private sealed record SurrogateJsonRow(
+    string SurrogateSetPublicId,
+    string SurrogateContestantDisplayName,
+    int MergePolicy
   );
 }

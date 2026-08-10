@@ -30,7 +30,7 @@ internal sealed class ListPredictionSeasonsQueryHandler(IDbConnectionFactory dbC
         SELECT
           contestant_id,
           season_id,
-          COALESCE(SUM(s.points), 0) AS CarryoverPoints
+          COALESCE(SUM(points), 0) AS CarryoverPoints
         FROM drafts.prediction_carryovers
         GROUP BY contestant_id, season_id
       )
@@ -53,6 +53,7 @@ internal sealed class ListPredictionSeasonsQueryHandler(IDbConnectionFactory dbC
       LEFT JOIN season_episodes           se ON se.season_id  = ps.id
       LEFT JOIN drafts.prediction_standings   st ON st.season_id     = ps.id
       LEFT JOIN drafts.prediction_contestants c  ON c.id             = st.contestant_id
+      LEFT JOIN carryover_totals ct ON ct.season_id = ps.id AND ct.contestant_id = c.id
       GROUP BY
         ps.public_id, ps.number, ps.starts_on, ps.ends_on,
         ps.target_points, ps.is_closed,

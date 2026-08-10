@@ -234,7 +234,8 @@ public sealed partial class DraftPart
     // A veto may only be applied to the most recently played pick.
     // A pick is "most recent" by play order regardless of veto state —
     // only the last play attempt is eligible.
-    var maxPlayOrder = _picks.Max(p => p.PlayOrder);
+    var maxPlayOrder = _picks.Where(p => p.SubDraftId == pick.SubDraftId).Max(p => p.PlayOrder);
+
     if (pick.PlayOrder != maxPlayOrder)
     {
       return Result.Failure(DraftPartErrors.VetoNotOnMostRecentPick);

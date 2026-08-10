@@ -5,6 +5,7 @@ import {
   CreatedResponse,
   GetDraftCategoryResponse,
   GetMediaByTmdbIdsResponse,
+  ListPredictionSeasonsResult,
   SearchDraftsResponse,
   SearchHostResponse,
   SeriesResponse,
@@ -212,11 +213,12 @@ export async function listAdminActiveDrafts(
   accessToken: string | undefined,
   includeDeleted = false
 ) {
-  const [created, paused] = await Promise.all([
+  const [created, inProgress, paused] = await Promise.all([
     listAdminDrafts(accessToken, 0, 1, 50, includeDeleted),
+    listAdminDrafts(accessToken, 2, 1, 50, includeDeleted),
     listAdminDrafts(accessToken, 3, 1, 50, includeDeleted),
   ]);
-  return [...created, ...paused];
+  return [...created, ...inProgress, ...paused];
 }
 
 export async function listUnreleasedDraftParts(
@@ -815,6 +817,173 @@ export async function startDraftPart(
   }
 }
 
+export async function completeDraftPart(
+  accessToken: string,
+  draftId: string,
+  partIndex: number
+): Promise<void> {
+  const res = await fetch(
+    `${apiBase}/drafts/${encodeURIComponent(draftId)}/parts/${partIndex}/status`,
+    {
+      method: "PUT",
+      headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+      // action: 2 assumed for Complete — Start is confirmed as 1 via
+      // startDraftPart above; Complete's value wasn't independently
+      // verified against DraftPartStatusAction.cs.
+      body: JSON.stringify({ action: 2 }),
+    }
+  );
+  if (!res.ok) {
+    const text = await res.text().catch(() => res.statusText);
+    throw new Error(`PUT /drafts/${draftId}/parts/${partIndex}/status failed (${res.status}): ${text}`);
+  }
+}
+
+// Retries a transient "movie not found" — same gap as playSubDraftPick:
+// importAndResolve's poll (in movie-resolve.ts) only confirms the title
+// landed in the Movies module's own table; a second, separate outbox hop
+// syncs it into the Drafts module's own denormalized copy, which is what
+// this endpoint actually reads from. That hop can still be in flight even
+// after resolve succeeds. Not independently reported broken here yet, but
+// it's the identical resolve-then-POST shape that caused it for sub-draft
+// picks, so applying the same fix rather than waiting to hit it live.
+export async function playPick(
+  accessToken: string,
+  body: {
+    draftPartId: string;
+    position: number;
+    playOrder: number;
+    participantPublicId: string | null;
+    participantKind: number;
+    moviePublicId: string;
+    movieVersionName?: string | null;
+  }
+): Promise<void> {
+  const url = `${apiBase}/draft-parts/${body.draftPartId}/picks`;
+  const payload = JSON.stringify(body);
+
+  const maxAttempts = 5;
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+      body: payload,
+    });
+
+    if (res.ok) return;
+
+    const problem = await res.json().catch(() => null);
+    const detail: string = problem?.detail ?? "";
+
+    const isTransientNotFound =
+      (res.status === 404 || res.status === 500) && detail.toLowerCase().includes("not found");
+
+    if (!isTransientNotFound || attempt === maxAttempts) {
+      throw new Error(detail || `Failed to record pick: ${res.status}`);
+    }
+
+    await new Promise((r) => setTimeout(r, 1000));
+  }
+}
+
+// Seed-only reveal — hits the new /seed/picks/{playOrder}/reveal route added
+// alongside SeedRevealPickCommand, not the live /picks/{playOrder}/reveal
+// route (which requires the caller to resolve as the draft part's primary
+// host — wrong check for a backfilling admin).
+export async function seedRevealPick(
+  accessToken: string,
+  params: { draftPartId: string; playOrder: number; actedByPublicId: string }
+): Promise<void> {
+  const res = await fetch(
+    `${apiBase}/draft-parts/${params.draftPartId}/seed/picks/${params.playOrder}/reveal`,
+    {
+      method: "POST",
+      headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ actedByPublicId: params.actedByPublicId }),
+    }
+  );
+  if (!res.ok) {
+    const problem = await res.json().catch(() => null);
+    throw new Error(problem?.detail ?? `Failed to reveal pick: ${res.status}`);
+  }
+}
+
+// No seed variant needed — ApplyVeto resolves the caller's own identity as
+// the audit-trail actor server-side with no authorization check attached to
+// it, so calling this as the seeding admin is harmless.
+export async function applyVeto(
+  accessToken: string,
+  params: {
+    draftPartId: string;
+    playOrder: number;
+    participantPublicId: string | null;
+    participantKind: number;
+  }
+): Promise<void> {
+  const res = await fetch(
+    `${apiBase}/draft-parts/${params.draftPartId}/picks/${params.playOrder}/veto`,
+    {
+      method: "POST",
+      headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        participantPublicId: params.participantPublicId,
+        participantKind: params.participantKind,
+      }),
+    }
+  );
+  if (!res.ok) {
+    const problem = await res.json().catch(() => null);
+    throw new Error(problem?.detail ?? `Failed to apply veto: ${res.status}`);
+  }
+}
+
+// Note the field name is participantIdValue here, not participantPublicId —
+// matches ApplyVetoOverrideRequest in dto.ts exactly; the two request types
+// are inconsistent with each other, not a typo on this end.
+export async function applyVetoOverride(
+  accessToken: string,
+  params: {
+    draftPartId: string;
+    playOrder: number;
+    participantIdValue: string | null;
+    participantKind: number;
+  }
+): Promise<void> {
+  const res = await fetch(
+    `${apiBase}/draft-parts/${params.draftPartId}/veto-override/${params.playOrder}`,
+    {
+      method: "POST",
+      headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        participantIdValue: params.participantIdValue,
+        participantKind: params.participantKind,
+      }),
+    }
+  );
+  if (!res.ok) {
+    const problem = await res.json().catch(() => null);
+    throw new Error(problem?.detail ?? `Failed to apply veto override: ${res.status}`);
+  }
+}
+
+export async function applyCommissionerOverride(
+  accessToken: string,
+  params: { draftPartId: string; playOrder: number }
+): Promise<void> {
+  const res = await fetch(
+    `${apiBase}/draft-parts/${params.draftPartId}/commissioner-override/${params.playOrder}`,
+    {
+      method: "POST",
+      headers: { Authorization: `Bearer ${accessToken}` },
+    }
+  );
+  if (!res.ok) {
+    const problem = await res.json().catch(() => null);
+    throw new Error(problem?.detail ?? `Failed to apply commissioner override: ${res.status}`);
+  }
+}
+
 export async function deleteDraft(
   accessToken: string,
   draftId: string
@@ -996,6 +1165,98 @@ export async function listDraftPositions(
   );
 }
 
+export interface GameplayPick {
+  playOrder: number;
+  boardPosition: number;
+  movieTitle: string;
+  tmdbId: number | null;
+  playedById: string;
+  playedByKind: number;
+  playedByName: string;
+  wasVetoed: boolean;
+  wasVetoOverridden: boolean;
+  wasCommissionerOverride: boolean;
+  vetoedByName: string | null;
+  savedByName: string | null;
+}
+
+export interface GameplayTriviaResult {
+  participantId: string;
+  participantKind: number;
+  participantName: string;
+  questionsWon: number;
+  position: number;
+}
+
+// Matches GameplaySubDraftSummaryResponse. subjectKind/subjectName/subjectImdbId
+// come back null for a pending subject the caller isn't allowed to see yet
+// (canSeePendingSubjects in the handler) — not relevant to seeding, which
+// runs after the draft's already fully set up, but nullable here regardless.
+export interface GameplaySubDraftSummary {
+  publicId: string;
+  index: number;
+  status: number; // SubDraftStatus: Pending=0, Active=1, Completed=2
+  subjectKind: number | null;
+  subjectName: string | null;
+  subjectImdbId: string | null;
+}
+
+export interface DraftPartGameplay {
+  picks: GameplayPick[];
+  triviaResults: GameplayTriviaResult[];
+  subDrafts: GameplaySubDraftSummary[];
+}
+
+export async function getDraftPartGameplay(
+  accessToken: string | undefined,
+  draftPartId: string
+): Promise<DraftPartGameplay | null> {
+  try {
+    const res = await fetch(
+      `${apiBase}/draft-parts/${encodeURIComponent(draftPartId)}/gameplay`,
+      { headers: authHeaders(accessToken), cache: "no-store" }
+    );
+    if (!res.ok) return null;
+    const text = await res.text();
+    if (!text) return null;
+    const data = JSON.parse(text) as {
+      picks?: GameplayPick[];
+      triviaResults?: GameplayTriviaResult[];
+      subDrafts?: GameplaySubDraftSummary[];
+    };
+    return {
+      picks: data.picks ?? [],
+      triviaResults: data.triviaResults ?? [],
+      subDrafts: data.subDrafts ?? [],
+    };
+  } catch (err) {
+    console.error("[getDraftPartGameplay]", err);
+    return null;
+  }
+}
+
+export interface TriviaResultEntryBody {
+  participantPublicId: string;
+  kind: number;
+  position: number;
+  questionsWon: number;
+}
+
+export async function assignTriviaResults(
+  accessToken: string,
+  params: { draftPartId: string; results: TriviaResultEntryBody[] }
+): Promise<void> {
+  const res = await fetch(`${apiBase}/draft-parts/${params.draftPartId}/trivia-results`, {
+    method: "PUT",
+    headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ results: params.results }),
+  });
+  if (!res.ok) {
+    const problem = await res.json().catch(() => null);
+    throw new Error(problem?.detail ?? `Failed to assign trivia results: ${res.status}`);
+  }
+}
+
 export async function getMediaByTmdbIds(
   accessToken: string,
   tmdbIds: number[]
@@ -1019,8 +1280,10 @@ export async function getDraftPartPredictionRules(
       `${apiBase}/draft-parts/${encodeURIComponent(draftPartId)}/prediction-rules`,
       { headers: authHeaders(accessToken), cache: "no-store" }
     );
-    if (!res.ok) return null;
-    return (await res.json()) as DraftPartPredictionRulesDto | null;
+    if (!res.ok || res.status === 204) return null;
+    const text = await res.text();
+    if (!text) return null;
+    return JSON.parse(text) as DraftPartPredictionRulesDto;
   } catch (err) {
     console.error("[getDraftPartPredictionRules]", err);
     return null;
@@ -1111,6 +1374,169 @@ export async function syncPredictionConfig(
   );
 }
 
+export async function listSeasons(
+  accessToken: string | undefined
+): Promise<ListPredictionSeasonsResult["seasons"]> {
+  try {
+    const res = await fetch(`${apiBase}/prediction-seasons`, {
+      headers: authHeaders(accessToken),
+      cache: "no-store",
+    });
+    if (!res.ok) return [];
+    const data = (await res.json()) as ListPredictionSeasonsResult;
+    return data.seasons ?? [];
+  } catch (err) {
+    console.error("[listSeasons]", err);
+    return [];
+  }
+}
+
+export interface SeedPredictionEntryBody {
+  tmdbId: number;
+  mediaTitle: string;
+  orderIndex?: number | null;
+  notes?: string | null;
+}
+
+// Hits the new /seed/predictions route added alongside
+// SeedSubmitPredictionSetCommand — not /predictions (SubmitSet), which
+// requires the caller to resolve as the contestant or their designated
+// submitter. sourceKind is unconfirmed against the real PredictionSourceKind
+// enum — defaulting to 0, verify before relying on this.
+export async function seedSubmitPredictionSet(
+  accessToken: string,
+  params: {
+    draftPartId: string;
+    seasonPublicId: string;
+    contestantPublicId: string;
+    submittedByPersonPublicId?: string | null;
+    sourceKind?: number;
+    entries: SeedPredictionEntryBody[];
+  }
+): Promise<void> {
+  const res = await fetch(`${apiBase}/draft-parts/${params.draftPartId}/predictions/seed`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      seasonPublicId: params.seasonPublicId,
+      contestantPublicId: params.contestantPublicId,
+      submittedByPersonPublicId: params.submittedByPersonPublicId ?? null,
+      sourceKind: params.sourceKind ?? 0,
+      entries: params.entries,
+    }),
+  });
+  if (!res.ok) {
+    const problem = await res.json().catch(() => null);
+    throw new Error(problem?.detail ?? `Failed to submit predictions: ${res.status}`);
+  }
+}
+
+// ── Additions for fetch-admin-drafts.ts ──
+
+export interface PredictionEntrySummary {
+  tmdbId: number;
+  mediaPublicId: string | null;
+  mediaTitle: string;
+  orderIndex: number | null;
+  isCorrect: boolean | null;
+  notes: string | null;
+}
+
+export interface PredictionResultSummary {
+  correctCount: number;
+  shootsTheMoon: boolean;
+  pointsAwarded: number;
+  scoredAtUtc: string;
+}
+
+export interface SurrogateAssignmentSummary {
+  surrogateSetPublicId: string;
+  surrogateContestantDisplayName: string;
+  mergePolicy: string;
+}
+
+export interface DraftPartPrediction {
+  publicId: string;
+  contestantPublicId: string;
+  contestantDisplayName: string;
+  submittedAtUtc: string;
+  sourceKind: string;
+  isLocked: boolean;
+  lockedAtUtc: string | null;
+  entries: PredictionEntrySummary[];
+  result: PredictionResultSummary | null;
+  surrogates: SurrogateAssignmentSummary[];
+}
+
+// GetDraftPartPredictionsQuery returns IReadOnlyList<DraftPartPredictionResponse>
+// directly (not wrapped, no PagedResult envelope) — read from the C# query
+// signature, not runtime-confirmed against an actual response body yet.
+export async function getDraftPartPredictions(
+  accessToken: string | undefined,
+  draftPartId: string
+): Promise<DraftPartPrediction[]> {
+  try {
+    const res = await fetch(`${apiBase}/draft-parts/${draftPartId}/predictions`, {
+      headers: authHeaders(accessToken),
+      cache: "no-store",
+    });
+    if (!res.ok) return [];
+    const text = await res.text();
+    if (!text) return [];
+    return JSON.parse(text) as DraftPartPrediction[];
+  } catch (err) {
+    console.error("[getDraftPartPredictions]", err);
+    return [];
+  }
+}
+
+export async function assignSurrogate(
+  accessToken: string,
+  params: {
+    draftPartId: string;
+    primarySetPublicId: string;
+    surrogateSetPublicId: string;
+    mergePolicy: number;
+  }
+): Promise<void> {
+  const res = await fetch(
+    `${apiBase}/draft-parts/${params.draftPartId}/predictions/${params.primarySetPublicId}/surrogate`,
+    {
+      method: "POST",
+      headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        surrogateSetPublicId: params.surrogateSetPublicId,
+        mergePolicy: params.mergePolicy,
+      }),
+    }
+  );
+  if (!res.ok) {
+    const problem = await res.json().catch(() => null);
+    throw new Error(problem?.detail ?? `Failed to assign surrogate: ${res.status}`);
+  }
+}
+
+export async function createPredictionContestant(
+  accessToken: string,
+  personPublicId: string
+): Promise<string> {
+  const res = await fetch(`${apiBase}/prediction-contestants`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ personPublicId }),
+  });
+  if (!res.ok) {
+    const problem = await res.json().catch(() => null);
+    throw new Error(problem?.detail ?? `Failed to create contestant: ${res.status}`);
+  }
+  const text = await res.text();
+  try {
+    return JSON.parse(text) as string;
+  } catch {
+    return text;
+  }
+}
+
 export async function addSubDraft(
   accessToken: string,
   draftPartPublicId: string,
@@ -1191,6 +1617,265 @@ export async function setSpeedDraftPositions(
   if (!res.ok) {
     const body = await res.json().catch(() => null);
     throw new Error(body?.detail ?? `Failed to set Speed Draft positions: ${res.status}`);
+  }
+}
+
+// ── Speed Draft sub-draft gameplay ──
+// Mirrors GetDraftPartGameplayQueryHandler's field casing exactly — same
+// object-initializer property names run through the same camelCase
+// serialization, confirmed against GameplayPick above. wasCommissionerOverride
+// is always false and vetoedByName/savedByName are always null for sub-draft
+// picks (GetSubDraftGameplayQueryHandler hardcodes these — sub-drafts have no
+// commissioner overrides, and the query doesn't join for veto-issuer names).
+// Track vetoedByName locally in session state instead, same as the issuer
+// picker already does in seed-picks-step.tsx.
+
+export interface SubDraftGameplayPosition {
+  positionPublicId: string;
+  positionName: string;
+  ownedBoardSlots: number[];
+  hasBonusVeto: boolean;
+  hasBonusVetoOverride: boolean;
+  assignedParticipantId: string | null;
+  assignedParticipantKind: number | null;
+  assignedParticipantName: string | null;
+  isCommunityPosition: boolean;
+}
+
+export interface SubDraftGameplayPick {
+  playOrder: number;
+  boardPosition: number;
+  movieTitle: string;
+  movieYear: string | null;
+  tmdbId: number | null;
+  imdbId: string | null;
+  igdbId: number | null;
+  mediaType: number | null;
+  playedById: string;
+  playedByKind: number;
+  playedByName: string;
+  wasVetoed: boolean;
+  wasVetoOverridden: boolean;
+  wasCommissionerOverride: boolean;
+  vetoedByName: string | null;
+  savedByName: string | null;
+}
+
+export interface SubDraftGameplayTriviaResult {
+  participantId: string;
+  participantKind: number;
+  participantName: string;
+  questionsWon: number;
+  position: number;
+}
+
+export interface SubDraftGameplay {
+  subDraftPublicId: string;
+  index: number;
+  status: number; // SubDraftStatus: Pending=0, Active=1, Completed=2
+  draftPositions: SubDraftGameplayPosition[];
+  picks: SubDraftGameplayPick[];
+  triviaResults: SubDraftGameplayTriviaResult[];
+}
+
+export async function getSubDraftGameplay(
+  accessToken: string | undefined,
+  draftPartId: string,
+  subDraftId: string
+): Promise<SubDraftGameplay | null> {
+  try {
+    const res = await fetch(
+      `${apiBase}/draft-parts/${draftPartId}/sub-drafts/${subDraftId}/gameplay`,
+      { headers: authHeaders(accessToken), cache: "no-store" }
+    );
+    if (!res.ok) return null;
+    const text = await res.text();
+    if (!text) return null;
+    return JSON.parse(text) as SubDraftGameplay;
+  } catch (err) {
+    console.error("[getSubDraftGameplay]", err);
+    return null;
+  }
+}
+
+// No seed variant needed — same reasoning as playPick: ActedByPublicId comes
+// straight from the JWT (PlaySubDraftPickCommandHandler doesn't check it
+// against a specific role), so the seeding admin's own token is harmless.
+//
+// draftPartPublicId/subDraftPublicId are sent in the body as well as the
+// URL — confirmed necessary for trivia/position/veto/advance in
+// speed-draft-tabs.tsx (the [FromRoute]-bound properties on these DTOs come
+// back empty without it; the body is the actual source these commands read
+// from, not route binding).
+//
+// Retries a transient "movie not found" — importAndResolveTitle's poll (in
+// seed-speed-draft-step.tsx) only confirms the title landed in the Movies
+// module's own table; a second, separate outbox hop syncs it into the
+// Drafts module's own denormalized copy, which is what this endpoint
+// actually reads from. That hop can still be in flight even after resolve
+// succeeds. Same retry shape as speed-draft-pick-panel.tsx's submitPick
+// (live gameplay) — 5 attempts, 1s apart, only for a 404/500 whose message
+// actually says "not found" rather than retrying every failure blindly.
+export async function playSubDraftPick(
+  accessToken: string,
+  body: {
+    draftPartId: string;
+    subDraftId: string;
+    position: number;
+    playOrder: number;
+    participantPublicId: string;
+    participantKind: number;
+    moviePublicId: string;
+  }
+): Promise<void> {
+  const url = `${apiBase}/draft-parts/${body.draftPartId}/sub-drafts/${body.subDraftId}/picks`;
+  const payload = JSON.stringify({
+    draftPartPublicId: body.draftPartId,
+    subDraftPublicId: body.subDraftId,
+    moviePublicId: body.moviePublicId,
+    position: body.position,
+    playOrder: body.playOrder,
+    participantPublicId: body.participantPublicId,
+    participantKind: body.participantKind,
+  });
+
+  const maxAttempts = 5;
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+      body: payload,
+    });
+
+    if (res.ok) return;
+
+    const problem = await res.json().catch(() => null);
+    const detail: string = problem?.detail ?? "";
+
+    const isTransientNotFound =
+      (res.status === 404 || res.status === 500) && detail.toLowerCase().includes("not found");
+
+    if (!isTransientNotFound || attempt === maxAttempts) {
+      throw new Error(detail || `Failed to record sub-draft pick: ${res.status}`);
+    }
+
+    await new Promise((r) => setTimeout(r, 1000));
+  }
+}
+
+export async function applySubDraftVeto(
+  accessToken: string,
+  params: {
+    draftPartId: string;
+    subDraftId: string;
+    playOrder: number;
+    issuerPublicId: string;
+    issuerKind: number;
+  }
+): Promise<void> {
+  const res = await fetch(
+    `${apiBase}/draft-parts/${params.draftPartId}/sub-drafts/${params.subDraftId}/picks/${params.playOrder}/veto`,
+    {
+      method: "POST",
+      headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        draftPartPublicId: params.draftPartId,
+        subDraftPublicId: params.subDraftId,
+        playOrder: params.playOrder,
+        issuerPublicId: params.issuerPublicId,
+        issuerKind: params.issuerKind,
+      }),
+    }
+  );
+  if (!res.ok) {
+    const problem = await res.json().catch(() => null);
+    throw new Error(problem?.detail ?? `Failed to apply sub-draft veto: ${res.status}`);
+  }
+}
+
+// Submitting results also activates the sub-draft server-side
+// (DraftPart.AssignSubDraftTriviaResults calls SubDraft.Activate()) — there
+// is no separate "start" call and no skip option, unlike the part-level
+// trivia step. Reuses TriviaResultEntryBody, same shape as AssignSubDraftTriviaRequest.
+export async function assignSubDraftTrivia(
+  accessToken: string,
+  params: { draftPartId: string; subDraftId: string; results: TriviaResultEntryBody[] }
+): Promise<void> {
+  const res = await fetch(
+    `${apiBase}/draft-parts/${params.draftPartId}/sub-drafts/${params.subDraftId}/trivia-results`,
+    {
+      method: "POST",
+      headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        draftPartPublicId: params.draftPartId,
+        subDraftPublicId: params.subDraftId,
+        results: params.results,
+      }),
+    }
+  );
+  if (!res.ok) {
+    const problem = await res.json().catch(() => null);
+    throw new Error(problem?.detail ?? `Failed to assign sub-draft trivia: ${res.status}`);
+  }
+}
+
+// winnerChoice must be "A" or "B" (DraftPart.AssignSubDraftPosition rejects
+// anything else). Only valid once the sub-draft is Active (trivia already
+// submitted) and only before either slot has been assigned.
+export async function assignSubDraftPosition(
+  accessToken: string,
+  params: {
+    draftPartId: string;
+    subDraftId: string;
+    winnerParticipantPublicId: string;
+    winnerParticipantKind: number;
+    choice: "A" | "B";
+  }
+): Promise<void> {
+  const res = await fetch(
+    `${apiBase}/draft-parts/${params.draftPartId}/sub-drafts/${params.subDraftId}/position`,
+    {
+      method: "POST",
+      headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        draftPartPublicId: params.draftPartId,
+        subDraftPublicId: params.subDraftId,
+        winnerParticipantPublicId: params.winnerParticipantPublicId,
+        winnerParticipantKind: params.winnerParticipantKind,
+        choice: params.choice,
+      }),
+    }
+  );
+  if (!res.ok) {
+    const problem = await res.json().catch(() => null);
+    throw new Error(problem?.detail ?? `Failed to assign sub-draft position: ${res.status}`);
+  }
+}
+
+// Completes the named sub-draft (Active -> Completed) and, server-side,
+// rolls unused veto tokens into whichever sub-draft comes next — no separate
+// call needed for that. On the 3rd sub-draft this also fires
+// AllSubDraftsCompletedDomainEvent, but that's consumed elsewhere, not
+// something the wizard needs to react to directly.
+export async function advanceSubDraft(
+  accessToken: string,
+  params: { draftPartId: string; subDraftId: string }
+): Promise<void> {
+  const res = await fetch(
+    `${apiBase}/draft-parts/${params.draftPartId}/sub-drafts/${params.subDraftId}/advance`,
+    {
+      method: "POST",
+      headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        draftPartPublicId: params.draftPartId,
+        subDraftPublicId: params.subDraftId,
+      }),
+    }
+  );
+  if (!res.ok) {
+    const problem = await res.json().catch(() => null);
+    throw new Error(problem?.detail ?? `Failed to advance sub-draft: ${res.status}`);
   }
 }
 

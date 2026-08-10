@@ -1,4 +1,3 @@
-import AnnouncementBar from "@/components/layout/announcement-bar";
 import SpotlightHero from "@/components/features/home/spotlight-hero";
 import StatBar from "@/components/features/home/stat-bar";
 import RecentDrafts from "@/components/features/home/recent-drafts";
@@ -17,6 +16,7 @@ import {
   mapSpotlight,
   mapSiteStats,
 } from "@/services/home/fetch-home-data";
+import AnnouncementBar from "@/components/layout/announcement-bar";
 
 export default async function Home() {
   const [latestDrafts, upcomingDrafts, currentStandings, spotlightData, statsData] = await Promise.all([

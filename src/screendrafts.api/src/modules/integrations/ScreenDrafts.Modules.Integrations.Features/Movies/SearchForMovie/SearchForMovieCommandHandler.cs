@@ -1,12 +1,14 @@
 ﻿namespace ScreenDrafts.Modules.Integrations.Features.Movies.SearchForMovie;
 
-internal sealed class SearchForMovieCommandHandler(
+internal sealed partial class SearchForMovieCommandHandler(
   ITmdbService tmdbService,
-  IOmdbService omdbService
+  IOmdbService omdbService,
+  ILogger<SearchForMovieCommandHandler> logger
 ) : ICommandHandler<SearchForMovieCommand, SearchForMovieResponse>
 {
   private readonly ITmdbService _tmdbService = tmdbService;
   private readonly IOmdbService _omdbService = omdbService;
+  private readonly ILogger<SearchForMovieCommandHandler> _logger = logger;
 
   public async Task<Result<SearchForMovieResponse>> Handle(
     SearchForMovieCommand request,
@@ -18,41 +20,53 @@ internal sealed class SearchForMovieCommandHandler(
       return Result.Failure<SearchForMovieResponse>(MovieErrors.SearchQueryRequired);
     }
 
-    var pagedResult = await _tmdbService.SearchMoviesAsync(
-      request.Query,
-      request.Page,
-      cancellationToken
-    );
-
-    if (pagedResult.Results.Count > 0)
+    try
     {
-      var mapped = pagedResult
-        .Results.Select(x => new MovieSearchResult
-        {
-          TmdbId = x.Id,
-          Title = x.Title,
-          Year =
-            string.IsNullOrWhiteSpace(x.ReleaseDate) || x.ReleaseDate.Length < 4
-              ? null
-              : x.ReleaseDate[..4],
-          PosterUrl = x.PosterPath is not null
-            ? _tmdbService.BuildPosterUrl(x.PosterPath)?.ToString()
-            : null,
-          Overview = x.Overview,
-          MediaType = MediaType.Movie,
-        })
-        .ToList()
-        .AsReadOnly();
-
-      return Result.Success(
-        new SearchForMovieResponse
-        {
-          Results = mapped,
-          TotalResults = pagedResult.TotalResults,
-          TotalPages = pagedResult.TotalPages,
-          Page = pagedResult.Page,
-        }
+      var pagedResult = await _tmdbService.SearchMoviesAsync(
+        request.Query,
+        request.Page,
+        cancellationToken
       );
+
+      if (pagedResult.Results.Count > 0)
+      {
+        var mapped = pagedResult
+          .Results.Select(x => new MovieSearchResult
+          {
+            TmdbId = x.Id,
+            Title = x.Title,
+            Year =
+              string.IsNullOrWhiteSpace(x.ReleaseDate) || x.ReleaseDate.Length < 4
+                ? null
+                : x.ReleaseDate[..4],
+            PosterUrl = x.PosterPath is not null
+              ? _tmdbService.BuildPosterUrl(x.PosterPath)?.ToString()
+              : null,
+            Overview = x.Overview,
+            MediaType = MediaType.Movie,
+          })
+          .ToList()
+          .AsReadOnly();
+
+        return Result.Success(
+          new SearchForMovieResponse
+          {
+            Results = mapped,
+            TotalResults = pagedResult.TotalResults,
+            TotalPages = pagedResult.TotalPages,
+            Page = pagedResult.Page,
+          }
+        );
+      }
+    }
+    catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException)
+    {
+      if (cancellationToken.IsCancellationRequested)
+      {
+        throw;
+      }
+
+      LogTmdbSearchFailed(_logger, request.Query, request.Page, ex);
     }
 
     var omdbResult = await _omdbService.SearchAsync(request.Query, request.Page);
@@ -101,4 +115,15 @@ internal sealed class SearchForMovieCommandHandler(
       }
     );
   }
+
+  [LoggerMessage(
+    Level = LogLevel.Warning,
+    Message = "TMDb search failed for query {Query}, page {Page} — falling back to OMDb."
+  )]
+  private static partial void LogTmdbSearchFailed(
+    ILogger logger,
+    string query,
+    int page,
+    Exception exception
+  );
 }

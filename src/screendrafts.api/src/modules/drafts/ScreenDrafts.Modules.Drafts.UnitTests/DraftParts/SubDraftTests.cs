@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Drafts.UnitTests.DraftParts;
+﻿namespace ScreenDrafts.Modules.Drafts.UnitTests.DraftParts;
 
 public sealed class SubDraftTests : DraftsBaseTest
 {
@@ -257,10 +257,11 @@ public sealed class SubDraftTests : DraftsBaseTest
     // Arrange
     var subDraft = CreateSubDraft();
     var startingVetoes = 1;
-    var vetoes = Array.Empty<(SubDraftId SubDraftId, bool IsOverridden)>();
+    var vetoes = Array.Empty<(SubDraftId SubDraftId, Participant IssuedBy)>();
+    var participant = new Participant(Guid.NewGuid(), ParticipantKind.Drafter); // Replace with actual participant creation logic
 
     // Act
-    var remainder = subDraft.ComputeVetoRemainder(startingVetoes, vetoes);
+    var remainder = subDraft.ComputeVetoRemainder(participant, startingVetoes, vetoes);
 
     // Assert
     remainder.Should().Be(1);
@@ -271,11 +272,12 @@ public sealed class SubDraftTests : DraftsBaseTest
   {
     // Arrange
     var subDraft = CreateSubDraft();
+    var participant = new Participant(Guid.NewGuid(), ParticipantKind.Drafter); // Replace with actual participant creation logic
     var startingVetoes = 1;
-    var vetoes = new[] { (SubDraftId: subDraft.Id, IsOverridden: false) };
+    var vetoes = new[] { (SubDraftId: subDraft.Id, IssuedBy: participant) };
 
     // Act
-    var remainder = subDraft.ComputeVetoRemainder(startingVetoes, vetoes);
+    var remainder = subDraft.ComputeVetoRemainder(participant, startingVetoes, vetoes);
 
     // Assert
     remainder.Should().Be(0);
@@ -288,10 +290,11 @@ public sealed class SubDraftTests : DraftsBaseTest
     var subDraft = CreateSubDraft();
     var otherSubDraftId = SubDraftId.CreateUnique();
     var startingVetoes = 1;
-    var vetoes = new[] { (SubDraftId: otherSubDraftId, IsOverridden: false) };
+    var participant = new Participant(Guid.NewGuid(), ParticipantKind.Drafter); // Replace with actual participant creation logic
+    var vetoes = new[] { (SubDraftId: otherSubDraftId, IssuedBy: participant) };
 
     // Act
-    var remainder = subDraft.ComputeVetoRemainder(startingVetoes, vetoes);
+    var remainder = subDraft.ComputeVetoRemainder(participant, startingVetoes, vetoes);
 
     // Assert
     remainder.Should().Be(1);
@@ -302,14 +305,12 @@ public sealed class SubDraftTests : DraftsBaseTest
   {
     // Arrange
     var subDraft = CreateSubDraft();
+    var participant = new Participant(Guid.NewGuid(), ParticipantKind.Drafter); // Replace with actual participant creation logic
     var startingVetoes = 3;
-    var vetoes = new[]
-    {
-      (SubDraftId: subDraft.Id, IsOverridden: false),
-    };
+    var vetoes = new[] { (SubDraftId: subDraft.Id, IssuedBy: participant) };
 
     // Act
-    var remainder = subDraft.ComputeVetoRemainder(startingVetoes, vetoes);
+    var remainder = subDraft.ComputeVetoRemainder(participant, startingVetoes, vetoes);
 
     // Assert
     remainder.Should().Be(2);
@@ -320,14 +321,12 @@ public sealed class SubDraftTests : DraftsBaseTest
   {
     // Arrange
     var subDraft = CreateSubDraft();
+    var participant = new Participant(Guid.NewGuid(), ParticipantKind.Drafter); // Replace with actual participant creation logic
     var startingVetoes = 0;
-    var vetoes = new[]
-    {
-      (SubDraftId: subDraft.Id, IsOverridden: false),
-    };
+    var vetoes = new[] { (SubDraftId: subDraft.Id, IssuedBy: participant) };
 
     // Act
-    var remainder = subDraft.ComputeVetoRemainder(startingVetoes, vetoes);
+    var remainder = subDraft.ComputeVetoRemainder(participant, startingVetoes, vetoes);
 
     // Assert
     remainder.Should().Be(0);

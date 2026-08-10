@@ -8,7 +8,7 @@ import UpcomingDraftActions from "./upcoming-draft-actions";
 
 const STATUS_LABELS: Record<number, string> = {
   0: "Created",
-  1: "In Progress",
+  2: "In Progress",
   3: "Paused",
   4: "Completed",
   5: "Cancelled",
@@ -39,7 +39,12 @@ export default function UpcomingDraftsList({ initialDrafts, accessToken }: Upcom
     }
   }, [accessToken]);
 
-  const visibleDrafts = showDeleted ? drafts : drafts.filter((d) => !d.isDeleted);
+  // InProgress (status 2 — confirmed against DraftStatus.cs; value 1 is
+  // unused in this enum) gets its own section (InProgressDraftsList) now —
+  // excluded here so it doesn't render in both places.
+  const visibleDrafts = (showDeleted ? drafts : drafts.filter((d) => !d.isDeleted)).filter(
+    (d) => d.draftStatus !== 2
+  );
 
   return (
     <div>

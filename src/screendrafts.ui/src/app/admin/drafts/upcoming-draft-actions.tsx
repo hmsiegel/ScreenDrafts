@@ -147,6 +147,12 @@ export default function UpcomingDraftActions({
       >
         Delete
       </button>
+      <Link
+        href={`/admin/drafts/${draft.publicId}/seed`}
+        className="text-sd-blue text-xs font-mono uppercase tracking-wide hover:underline"
+      >
+        Seed
+      </Link>
     </div>
   );
 }

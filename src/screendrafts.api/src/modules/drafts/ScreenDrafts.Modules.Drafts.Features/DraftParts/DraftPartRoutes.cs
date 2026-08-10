@@ -85,4 +85,7 @@ internal static class DraftPartRoutes
 
   // Gameplay
   public const string Gameplay = ById + "/gameplay";
+
+  // Seed Drafts
+  public const string SeedRevealPick = ById + "/seed/picks/{playOrder}/reveal";
 }

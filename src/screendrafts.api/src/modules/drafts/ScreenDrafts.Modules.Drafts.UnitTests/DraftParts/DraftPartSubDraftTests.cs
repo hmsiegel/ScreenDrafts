@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Drafts.UnitTests.DraftParts;
+﻿namespace ScreenDrafts.Modules.Drafts.UnitTests.DraftParts;
 
 public sealed class DraftPartSubDraftTests : DraftsBaseTest
 {
@@ -81,10 +81,11 @@ public sealed class DraftPartSubDraftTests : DraftsBaseTest
     // Arrange
     var draftPart = CreateSpeedDraftPart();
     draftPart.AddSubDraft(0, $"sd_{Faker.Random.AlphaNumeric(21)}");
-    var vetoes = Array.Empty<(SubDraftId SubDraftId, bool IsOverridden)>();
+    var vetoes = Array.Empty<(SubDraftId SubDraftId, Participant IssuedBy)>();
+    var participant = new Participant(Guid.NewGuid(), ParticipantKind.Drafter); // Replace with actual participant creation logic
 
     // Act
-    var starting = draftPart.StartingVetoesForSubDraft(0, vetoes);
+    var starting = draftPart.StartingVetoesForSubDraft(participant, 0, vetoes);
 
     // Assert
     starting.Should().Be(1);
@@ -95,10 +96,11 @@ public sealed class DraftPartSubDraftTests : DraftsBaseTest
   {
     // Arrange
     var draftPart = CreateDraftPart();
-    var vetoes = Array.Empty<(SubDraftId SubDraftId, bool IsOverridden)>();
+    var vetoes = Array.Empty<(SubDraftId SubDraftId, Participant IssuedBy)>();
+    var participant = new Participant(Guid.NewGuid(), ParticipantKind.Drafter);
 
     // Act
-    var starting = draftPart.StartingVetoesForSubDraft(1, vetoes);
+    var starting = draftPart.StartingVetoesForSubDraft(participant, 1, vetoes);
 
     // Assert
     starting.Should().Be(0);
@@ -113,10 +115,11 @@ public sealed class DraftPartSubDraftTests : DraftsBaseTest
     draftPart.AddSubDraft(1, $"sd_{Faker.Random.AlphaNumeric(21)}");
 
     // No vetoes used in sub-draft 0 → 1 unused veto should carry to sub-draft 1
-    var vetoes = Array.Empty<(SubDraftId SubDraftId, bool IsOverridden)>();
+    var vetoes = Array.Empty<(SubDraftId SubDraftId, Participant IssuedBy)>();
+    var participant = new Participant(Guid.NewGuid(), ParticipantKind.Drafter);
 
     // Act
-    var starting = draftPart.StartingVetoesForSubDraft(1, vetoes);
+    var starting = draftPart.StartingVetoesForSubDraft(participant, 1, vetoes);
 
     // Assert
     // Sub-draft 0 had 1 starting veto, used 0 → remainder = 1
@@ -133,11 +136,12 @@ public sealed class DraftPartSubDraftTests : DraftsBaseTest
     draftPart.AddSubDraft(1, $"sd_{Faker.Random.AlphaNumeric(21)}");
 
     var firstSubDraft = draftPart.SubDrafts.First(s => s.Index == 0);
+    var participant = new Participant(Guid.NewGuid(), ParticipantKind.Drafter);
     // 1 veto used in sub-draft 0
-    var vetoes = new[] { (SubDraftId: firstSubDraft.Id, IsOverridden: false) };
+    var vetoes = new[] { (SubDraftId: firstSubDraft.Id, IssuedBy: participant) };
 
     // Act
-    var starting = draftPart.StartingVetoesForSubDraft(1, vetoes);
+    var starting = draftPart.StartingVetoesForSubDraft(participant, 1, vetoes);
 
     // Assert
     // Sub-draft 0 had 1 starting veto, used 1 → remainder = 0
@@ -157,14 +161,14 @@ public sealed class DraftPartSubDraftTests : DraftsBaseTest
     draftPart.AddSubDraft(0, $"sd_{Faker.Random.AlphaNumeric(21)}");
     var subDraft = draftPart.SubDrafts.First();
     subDraft.Activate();
-    var vetoes = Array.Empty<(SubDraftId SubDraftId, bool IsOverridden)>();
+    var vetoes = Array.Empty<(SubDraftId SubDraftId, Participant IssuedBy)>();
 
     // Act
     var result = draftPart.AdvanceSubDraft(subDraft.Id, vetoes);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
-    result.Value.Should().Be(0); // No next sub-draft
+    result.Value.Should().BeEmpty(); // No next sub-draft
     subDraft.Status.Should().Be(SubDraftStatus.Completed);
   }
 
@@ -179,7 +183,7 @@ public sealed class DraftPartSubDraftTests : DraftsBaseTest
     var firstSubDraft = draftPart.SubDrafts.First(s => s.Index == 0);
     firstSubDraft.Activate();
     // No vetoes used → 1 unused veto carries over
-    var vetoes = Array.Empty<(SubDraftId SubDraftId, bool IsOverridden)>();
+    var vetoes = Array.Empty<(SubDraftId SubDraftId, Participant IssuedBy)>();
 
     // Act
     var result = draftPart.AdvanceSubDraft(firstSubDraft.Id, vetoes);
@@ -187,8 +191,8 @@ public sealed class DraftPartSubDraftTests : DraftsBaseTest
     // Assert
     result.IsSuccess.Should().BeTrue();
     firstSubDraft.Status.Should().Be(SubDraftStatus.Completed);
-    // Next sub-draft starts with 1 + 1 (carry) = 2 starting vetoes, 0 used → remainder = 2
-    result.Value.Should().Be(2);
+    // Next sub-draft starts with 1 + 1 (carry) = 2 starting vetoes; remainder reported is 2 - 1 = 1 per participant
+    result.Value.Values.Should().AllSatisfy(remainder => remainder.Should().Be(1));
   }
 
   [Fact]
@@ -197,7 +201,7 @@ public sealed class DraftPartSubDraftTests : DraftsBaseTest
     // Arrange
     var draftPart = CreateDraftPart();
     var fakeSubDraftId = SubDraftId.CreateUnique();
-    var vetoes = Array.Empty<(SubDraftId SubDraftId, bool IsOverridden)>();
+    var vetoes = Array.Empty<(SubDraftId SubDraftId, Participant IssuedBy)>();
 
     // Act
     var result = draftPart.AdvanceSubDraft(fakeSubDraftId, vetoes);
@@ -213,7 +217,7 @@ public sealed class DraftPartSubDraftTests : DraftsBaseTest
     // Arrange
     var draftPart = CreateSpeedDraftPart();
     var unknownId = SubDraftId.CreateUnique();
-    var vetoes = Array.Empty<(SubDraftId SubDraftId, bool IsOverridden)>();
+    var vetoes = Array.Empty<(SubDraftId SubDraftId, Participant IssuedBy)>();
 
     // Act
     var result = draftPart.AdvanceSubDraft(unknownId, vetoes);
@@ -230,7 +234,7 @@ public sealed class DraftPartSubDraftTests : DraftsBaseTest
     draftPart.AddSubDraft(0, $"sd_{Faker.Random.AlphaNumeric(21)}");
     var subDraft = draftPart.SubDrafts.First();
     // subDraft is still Pending (not activated)
-    var vetoes = Array.Empty<(SubDraftId SubDraftId, bool IsOverridden)>();
+    var vetoes = Array.Empty<(SubDraftId SubDraftId, Participant IssuedBy)>();
 
     // Act
     var result = draftPart.AdvanceSubDraft(subDraft.Id, vetoes);
@@ -248,18 +252,19 @@ public sealed class DraftPartSubDraftTests : DraftsBaseTest
   {
     var draftId = DraftId.CreateUnique();
     var series = CreateSeries();
-    var gameplay = DraftPartGamePlaySnapshot.Create(
-      minPosition: 1,
-      maxPosition: 7,
-      draftType: DraftType.SpeedDraft,
-      seriesId: series.Id).Value;
+    var gameplay = DraftPartGamePlaySnapshot
+      .Create(minPosition: 1, maxPosition: 7, draftType: DraftType.SpeedDraft, seriesId: series.Id)
+      .Value;
 
-    var draftPart = DraftPart.Create(
-      draftId: draftId,
-      draftPublicId: Faker.Random.AlphaNumeric(10),
-      partIndex: 1,
-      gameplay: gameplay,
-      publicId: Faker.Random.AlphaNumeric(10)).Value;
+    var draftPart = DraftPart
+      .Create(
+        draftId: draftId,
+        draftPublicId: Faker.Random.AlphaNumeric(10),
+        partIndex: 1,
+        gameplay: gameplay,
+        publicId: Faker.Random.AlphaNumeric(10)
+      )
+      .Value;
 
     draftPart.AddParticipant(CreateParticipantId(CreateDrafter()));
     draftPart.AddParticipant(CreateParticipantId(CreateDrafter()));

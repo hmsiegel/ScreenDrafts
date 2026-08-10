@@ -3,6 +3,7 @@ import Link from "next/link";
 import { listAdminActiveDrafts, listUnreleasedDraftParts } from "@/services/admin/fetch-admin-drafts";
 import { Metadata } from "next";
 import UpcomingDraftsList from "./upcoming-drafts-list";
+import InProgressDraftsList from "./in-progress-drafts-list";
 import UnreleasedPartsList from "./unreleased-parts-list";
 
 export const metadata: Metadata = { title: "Draft Management" };
@@ -60,6 +61,10 @@ export default async function AdminDraftsPage() {
             initialDrafts={displayDrafts}
             accessToken={session?.accessToken ?? ""}
           />
+        </AdminCard>
+
+        <AdminCard title="In Progress">
+          <InProgressDraftsList drafts={displayDrafts} />
         </AdminCard>
 
         <AdminCard title="Completed, Not Released">

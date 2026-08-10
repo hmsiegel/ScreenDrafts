@@ -222,5 +222,9 @@ internal static class DraftsOpenApi
     // My Drafts
     public const string MyDrafts_GetAll = "GetMyDrafts";
     public const string MyDrafts_GetDetail = "GetMyDraftDetail";
+
+    // Seed Drafts
+    public const string DraftParts_SeedRevealPick = "DraftParts.SeedRevealPick";
+    public const string Predictions_SeedSubmitSet = "Predictions_SeedSubmitSet";
   }
 }

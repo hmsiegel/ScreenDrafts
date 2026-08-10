@@ -11,4 +11,5 @@ internal sealed record DraftPartPredictionResponse
   public DateTime? LockedAtUtc { get; init; }
   public required IReadOnlyList<PredictionEntryResponse> Entries { get; init; }
   public PredictionResultResponse? Result { get; init; }
+  public required IReadOnlyList<SurrogateAssignmentResponse> Surrogates { get; init; }
 }
