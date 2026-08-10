@@ -83,6 +83,7 @@ ModuleServiceExtensions.AddModules(builder.Services, builder.Configuration);
 var app = builder.Build();
 
 // 1. Diagnostics and logging
+app.UseRequestAbortedHandling();
 app.UseLogContextTraceLogging();
 app.UseSerilogRequestLogging();
 app.UseExceptionHandler();

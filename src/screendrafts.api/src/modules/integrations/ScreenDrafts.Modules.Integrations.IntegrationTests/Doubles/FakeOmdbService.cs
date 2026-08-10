@@ -1,4 +1,4 @@
-using OMDbApiNet.Model;
+﻿using OMDbApiNet.Model;
 
 namespace ScreenDrafts.Modules.Integrations.IntegrationTests.Doubles;
 
@@ -23,5 +23,6 @@ public sealed class FakeOmdbService : IOmdbService
 
   public Task<Item> GetSeriesByTitleAsync(string id, bool fullPlot) => Task.FromResult(_item!);
 
-  public Task<SearchList> SearchAsync(string query, int page) => Task.FromResult(_searchList);
+  public Task<SearchList?> SearchAsync(string query, int page) =>
+    Task.FromResult<SearchList?>(_searchList);
 }

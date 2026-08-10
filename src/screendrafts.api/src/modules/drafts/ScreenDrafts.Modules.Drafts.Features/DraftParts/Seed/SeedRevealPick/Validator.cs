@@ -14,8 +14,8 @@ internal sealed class Validator : AbstractValidator<SeedRevealPickCommand>
 
     RuleFor(x => x.ActedByPublicId)
       .NotEmpty()
-      .WithMessage("A user public ID is required.")
-      .Must(id => PublicIdGuards.IsValidWithPrefix(id, PublicIdPrefixes.User))
-      .WithMessage("The user public ID must be a valid public ID with the correct prefix.");
+      .WithMessage("A host public ID is required.")
+      .Must(id => PublicIdGuards.IsValidWithPrefix(id, PublicIdPrefixes.Host))
+      .WithMessage("The host public ID must be a valid public ID with the correct prefix.");
   }
 }

@@ -2,5 +2,5 @@
 
 internal sealed record CreatePredictionContestantRequest
 {
-  public required string PersonPublicId;
+  public string PersonPublicId { get; init; } = default!;
 }
