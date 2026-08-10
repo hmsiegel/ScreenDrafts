@@ -1,0 +1,327 @@
+{
+  "tt0081204": {
+    "found": true,
+    "rt_percent": 93,
+    "error": null
+  },
+  "tt0102703": {
+    "found": true,
+    "rt_percent": 65,
+    "error": null
+  },
+  "tt0105048": {
+    "found": true,
+    "rt_percent": 43,
+    "error": null
+  },
+  "tt0120755": {
+    "found": true,
+    "rt_percent": 58,
+    "error": null
+  },
+  "tt0059968": {
+    "found": true,
+    "rt_percent": 72,
+    "error": null
+  },
+  "tt0077270": {
+    "found": true,
+    "rt_percent": 77,
+    "error": null
+  },
+  "tt0114733": {
+    "found": true,
+    "rt_percent": 61,
+    "error": null
+  },
+  "tt0054614": {
+    "found": true,
+    "rt_percent": 70,
+    "error": null
+  },
+  "tt14444726": {
+    "found": true,
+    "rt_percent": 91,
+    "error": null
+  },
+  "tt8712204": {
+    "found": true,
+    "rt_percent": 83,
+    "error": null
+  },
+  "tt8416494": {
+    "found": true,
+    "rt_percent": 98,
+    "error": null
+  },
+  "tt6045840": {
+    "found": true,
+    "rt_percent": 92,
+    "error": null
+  },
+  "tt0067052": {
+    "found": true,
+    "rt_percent": 38,
+    "error": null
+  },
+  "tt0092879": {
+    "found": true,
+    "rt_percent": 71,
+    "error": null
+  },
+  "tt0074751": {
+    "found": false,
+    "rt_percent": null,
+    "error": "rottenTomatoes field empty (title not rated on RT, or not found)"
+  },
+  "tt15153532": {
+    "found": true,
+    "rt_percent": 54,
+    "error": null
+  },
+  "tt0079256": {
+    "found": true,
+    "rt_percent": 31,
+    "error": null
+  },
+  "tt0078764": {
+    "found": true,
+    "rt_percent": 61,
+    "error": null
+  },
+  "tt10986222": {
+    "found": true,
+    "rt_percent": 94,
+    "error": null
+  },
+  "tt0030151": {
+    "found": true,
+    "rt_percent": 57,
+    "error": null
+  },
+  "tt27566554": {
+    "found": false,
+    "rt_percent": null,
+    "error": "TvEpisode type is not valid"
+  },
+  "tt0118929": {
+    "found": true,
+    "rt_percent": 78,
+    "error": null
+  },
+  "tt0063127": {
+    "found": true,
+    "rt_percent": 92,
+    "error": null
+  },
+  "tt6111130": {
+    "found": true,
+    "rt_percent": 90,
+    "error": null
+  },
+  "tt3322312": {
+    "found": true,
+    "rt_percent": 92,
+    "error": null
+  },
+  "tt5535276": {
+    "found": true,
+    "rt_percent": 78,
+    "error": null
+  },
+  "tt0299977": {
+    "found": true,
+    "rt_percent": 94,
+    "error": null
+  },
+  "tt1109624": {
+    "found": true,
+    "rt_percent": 97,
+    "error": null
+  },
+  "tt0285930": {
+    "found": false,
+    "rt_percent": null,
+    "error": "rottenTomatoes field empty (title not rated on RT, or not found)"
+  },
+  "tt6078822": {
+    "found": false,
+    "rt_percent": null,
+    "error": "rottenTomatoes field empty (title not rated on RT, or not found)"
+  },
+  "tt0338768": {
+    "found": false,
+    "rt_percent": null,
+    "error": "rottenTomatoes field empty (title not rated on RT, or not found)"
+  },
+  "tt0283875": {
+    "found": true,
+    "rt_percent": 66,
+    "error": null
+  },
+  "tt0062082": {
+    "found": false,
+    "rt_percent": null,
+    "error": "rottenTomatoes field empty (title not rated on RT, or not found)"
+  },
+  "tt0069137": {
+    "found": true,
+    "rt_percent": 25,
+    "error": null
+  },
+  "tt0097278": {
+    "found": false,
+    "rt_percent": null,
+    "error": "rottenTomatoes field empty (title not rated on RT, or not found)"
+  },
+  "tt1321865": {
+    "found": true,
+    "rt_percent": 93,
+    "error": null
+  },
+  "tt0140379": {
+    "found": true,
+    "rt_percent": 66,
+    "error": null
+  },
+  "tt1492030": {
+    "found": false,
+    "rt_percent": null,
+    "error": "rottenTomatoes field empty (title not rated on RT, or not found)"
+  },
+  "tt0072594": {
+    "found": true,
+    "rt_percent": 53,
+    "error": null
+  },
+  "tt0454792": {
+    "found": true,
+    "rt_percent": 72,
+    "error": null
+  },
+  "tt0400525": {
+    "found": true,
+    "rt_percent": 47,
+    "error": null
+  },
+  "tt3148266": {
+    "found": true,
+    "rt_percent": 88,
+    "error": null
+  },
+  "tt0406280": {
+    "found": false,
+    "rt_percent": null,
+    "error": "rottenTomatoes field empty (title not rated on RT, or not found)"
+  },
+  "tt0176049": {
+    "found": false,
+    "rt_percent": null,
+    "error": "rottenTomatoes field empty (title not rated on RT, or not found)"
+  },
+  "tt0092933": {
+    "found": true,
+    "rt_percent": 62,
+    "error": null
+  },
+  "tt0090770": {
+    "found": true,
+    "rt_percent": 52,
+    "error": null
+  },
+  "tt0092003": {
+    "found": true,
+    "rt_percent": 42,
+    "error": null
+  },
+  "tt14781036": {
+    "found": false,
+    "rt_percent": null,
+    "error": "rottenTomatoes field empty (title not rated on RT, or not found)"
+  },
+  "tt0069442": {
+    "found": true,
+    "rt_percent": 63,
+    "error": null
+  },
+  "tt0050095": {
+    "found": true,
+    "rt_percent": 55,
+    "error": null
+  },
+  "tt0094998": {
+    "found": true,
+    "rt_percent": 29,
+    "error": null
+  },
+  "tt0076543": {
+    "found": true,
+    "rt_percent": 80,
+    "error": null
+  },
+  "tt0064602": {
+    "found": true,
+    "rt_percent": 56,
+    "error": null
+  },
+  "tt0112803": {
+    "found": false,
+    "rt_percent": null,
+    "error": "rottenTomatoes field empty (title not rated on RT, or not found)"
+  },
+  "tt14264694": {
+    "found": false,
+    "rt_percent": null,
+    "error": "rottenTomatoes field empty (title not rated on RT, or not found)"
+  },
+  "tt0024620": {
+    "found": true,
+    "rt_percent": 57,
+    "error": null
+  },
+  "tt31800329": {
+    "found": false,
+    "rt_percent": null,
+    "error": "rottenTomatoes field empty (title not rated on RT, or not found)"
+  },
+  "tt10680614": {
+    "found": true,
+    "rt_percent": 74,
+    "error": null
+  },
+  "tt0045197": {
+    "found": true,
+    "rt_percent": 65,
+    "error": null
+  },
+  "tt0076106": {
+    "found": true,
+    "rt_percent": 51,
+    "error": null
+  },
+  "tt13649314": {
+    "found": true,
+    "rt_percent": 95,
+    "error": null
+  },
+  "tt0091172": {
+    "found": false,
+    "rt_percent": null,
+    "error": "rottenTomatoes field empty (title not rated on RT, or not found)"
+  },
+  "tt1134837": {
+    "found": true,
+    "rt_percent": 100,
+    "error": null
+  },
+  "tt0307568": {
+    "found": true,
+    "rt_percent": 38,
+    "error": null
+  },
+  "tt0068920": {
+    "found": false,
+    "rt_percent": null,
+    "error": "rottenTomatoes field empty (title not rated on RT, or not found)"
+  }
+}
