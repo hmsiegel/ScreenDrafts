@@ -67,6 +67,7 @@ public static class IntegrationsModule
       {
         TmdbSettings tmdbSettings = sp.GetRequiredService<IOptions<TmdbSettings>>().Value;
         client.BaseAddress = new Uri(tmdbSettings.BaseAddress);
+        client.Timeout = TimeSpan.FromSeconds(10);
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
           "Bearer",
           tmdbSettings.AccessToken
@@ -82,6 +83,7 @@ public static class IntegrationsModule
       {
         IgdbSettings igdbSettings = sp.GetRequiredService<IOptions<IgdbSettings>>().Value;
         client.BaseAddress = new Uri(igdbSettings.BaseAddress);
+        client.Timeout = TimeSpan.FromSeconds(10);
       }
     );
 
@@ -90,6 +92,7 @@ public static class IntegrationsModule
       {
         YouTubeSettings youTubeSettings = sp.GetRequiredService<IOptions<YouTubeSettings>>().Value;
         client.BaseAddress = new Uri(youTubeSettings.BaseAddress);
+        client.Timeout = TimeSpan.FromSeconds(10);
         client.DefaultRequestHeaders.Accept.Add(
           new MediaTypeWithQualityHeaderValue("application/json")
         );

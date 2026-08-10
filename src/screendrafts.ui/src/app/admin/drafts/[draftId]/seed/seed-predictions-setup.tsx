@@ -17,13 +17,26 @@ interface Props {
   accessToken: string;
   hosts: DraftPartHost[];
   onSaved: () => void;
+  // Advances the wizard past the predictions step entirely — distinct from
+  // onSaved, which only re-fetches rules/predictors after a successful save.
+  // These were previously collapsed onto one callback (onSaved), which made
+  // Skip re-fetch instead of advance: since nothing had been saved, the
+  // re-fetch came back empty and this same screen rendered again, making
+  // Skip look like a no-op.
+  onSkip: () => void;
 }
 
 // Shown when this draft part has no prediction rules/predictors yet — reuses
 // PredictionRulesSection exactly as create-draft-form.tsx does, just against
 // an existing part instead of one being created. Once saved, the parent
 // re-fetches rules/predictors and swaps to the entries-submission view.
-export function SeedPredictionsSetup({ draftPartPublicId, accessToken, hosts, onSaved }: Props) {
+export function SeedPredictionsSetup({
+  draftPartPublicId,
+  accessToken,
+  hosts,
+  onSaved,
+  onSkip,
+}: Props) {
   const [config, setConfig] = useState<PredictionConfig>(() => ({
     ...defaultPredictionConfig(),
     enabled: true,
@@ -70,7 +83,7 @@ export function SeedPredictionsSetup({ draftPartPublicId, accessToken, hosts, on
         </button>
         <button
           type="button"
-          onClick={onSaved}
+          onClick={onSkip}
           className="text-[11px] font-mono text-sd-ink/50 uppercase tracking-widest hover:underline"
         >
           Skip — no predictions for this episode

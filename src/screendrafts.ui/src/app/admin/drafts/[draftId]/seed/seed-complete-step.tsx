@@ -3,7 +3,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { completeDraftPart, getDraftPartPredictions } from "@/services/admin/fetch-admin-drafts";
+import { completeDraftPart, getDraft, getDraftPartPredictions } from "@/services/admin/fetch-admin-drafts";
 import type { SeedDraftState } from "./seed-draft-wizard";
 
 const BTN_PRIMARY =
@@ -22,6 +22,16 @@ export function SeedCompleteStep({ draft, accessToken, onDone, alreadyComplete }
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
 
+  // alreadyComplete is a snapshot from whenever the wizard first loaded —
+  // for a Speed Draft, DraftPart.Complete() can fire automatically off the
+  // back of AllSubDraftsCompletedDomainEvent (raised when the 3rd sub-draft
+  // advances), dispatched via the outbox with its usual delay. That can
+  // land any time during this wizard session, including after this step
+  // has already rendered with alreadyComplete=false. isComplete starts from
+  // the prop but gets corrected against a fresh fetch below and again if a
+  // completion attempt fails.
+  const [isComplete, setIsComplete] = useState(!!alreadyComplete);
+
   // Standings always show exactly two contestants — Ryan and Clay. Any
   // additional predictor (a sponsor, a guest) is never an independent
   // standings entry; it must be linked as a surrogate to one of the two
@@ -37,11 +47,25 @@ export function SeedCompleteStep({ draft, accessToken, onDone, alreadyComplete }
   const [standaloneSetCount, setStandaloneSetCount] = useState<number | null>(null);
 
   useEffect(() => {
-    if (alreadyComplete) {
-      setCheckingPredictions(false);
-      return;
-    }
     (async () => {
+      if (!isComplete) {
+        // Re-check against the server rather than trusting the prop —
+        // catches the case where a Speed Draft auto-completed after this
+        // wizard was first loaded.
+        const current = await getDraft(accessToken, draft.draftPublicId);
+        const part = current?.parts.find((p) => p.partIndex === draft.partIndex);
+        if (part?.status.name === "Completed") {
+          setIsComplete(true);
+          setCheckingPredictions(false);
+          return;
+        }
+      }
+
+      if (isComplete) {
+        setCheckingPredictions(false);
+        return;
+      }
+
       const sets = await getDraftPartPredictions(accessToken, draft.draftPartPublicId);
       const surrogateSetIds = new Set(
         sets.flatMap((s) => s.surrogates.map((sur) => sur.surrogateSetPublicId))
@@ -49,7 +73,8 @@ export function SeedCompleteStep({ draft, accessToken, onDone, alreadyComplete }
       setStandaloneSetCount(sets.filter((s) => !surrogateSetIds.has(s.publicId)).length);
       setCheckingPredictions(false);
     })();
-  }, [accessToken, draft.draftPartPublicId, alreadyComplete]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const predictionsInvalid = standaloneSetCount != null && standaloneSetCount > 2;
 
@@ -62,13 +87,24 @@ export function SeedCompleteStep({ draft, accessToken, onDone, alreadyComplete }
       onDone();
       setDone(true);
     } catch (err) {
+      // "Cannot complete if it is not in progress" can mean it's already
+      // Completed (auto-completed underneath this session), not that
+      // completion actually failed — check before surfacing an error.
+      const current = await getDraft(accessToken, draft.draftPublicId);
+      const part = current?.parts.find((p) => p.partIndex === draft.partIndex);
+      if (part?.status.name === "Completed") {
+        setIsComplete(true);
+        onDone();
+        setDone(true);
+        return;
+      }
       setError(err instanceof Error ? err.message : "Failed to complete the draft part.");
     } finally {
       setCompleting(false);
     }
   }
 
-  if (alreadyComplete || done) {
+  if (isComplete || done) {
     return (
       <div className="bg-white border border-sd-ink/10 p-8 max-w-md space-y-4">
         <p className="text-sm text-sd-ink">

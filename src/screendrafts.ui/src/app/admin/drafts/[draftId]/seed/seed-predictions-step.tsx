@@ -77,6 +77,7 @@ export function SeedPredictionsStep({ draftPartPublicId, accessToken, hosts, onD
         accessToken={accessToken}
         hosts={hosts}
         onSaved={loadAll}
+        onSkip={onDone}
       />
     );
   }
