@@ -1,3 +1,4 @@
+// app/admin/drafts/[draftId]/edit/edit-draft-form.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -49,6 +50,7 @@ import {
   PREDICTION_MODE_NAMES,
   isoToDatetimeLocal,
 } from "../../new/prediction-rules-section";
+import { SurrogateAssignmentPanel } from "../../new/surrogate-assignment-panel";
 
 const LABEL = "block text-[11px] font-mono tracking-widest text-sd-ink/60 uppercase mb-1";
 const INPUT =
@@ -852,11 +854,23 @@ export default function EditDraftForm({
                           Predictions
                         </p>
                         {part.predictionsLoaded ? (
-                          <PredictionRulesSection
-                            config={part.predictionConfig}
-                            onChange={(next: PredictionConfig) => updatePredictionConfigOnPart(idx, next)}
-                            accessToken={accessToken}
-                          />
+                          <>
+                            <PredictionRulesSection
+                              config={part.predictionConfig}
+                              onChange={(next: PredictionConfig) => updatePredictionConfigOnPart(idx, next)}
+                              accessToken={accessToken}
+                              hosts={[
+                                ...(draft.parts[idx]?.primaryHost ? [draft.parts[idx].primaryHost] : []),
+                                ...(draft.parts[idx]?.coHosts ?? []),
+                              ]}
+                            />
+                            <div className="mt-4">
+                              <SurrogateAssignmentPanel
+                                draftPartPublicId={part.partPublicId}
+                                accessToken={accessToken}
+                              />
+                            </div>
+                          </>
                         ) : (
                           <p className="text-[11px] font-mono text-sd-ink/40">Loading…</p>
                         )}

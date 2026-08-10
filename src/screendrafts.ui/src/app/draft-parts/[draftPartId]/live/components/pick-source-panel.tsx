@@ -3,78 +3,9 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useLiveDraft } from '../live-draft-context';
-
-// ── Types ─────────────────────────────────────────────────────────────────────
-// Replace with dto.ts imports after NSwag regen.
-
-interface ResolvedMovie {
-  mediaPublicId: string;
-  tmdbId: number;
-  title: string;
-  year?: string | null;
-  posterUrl?: string | null;
-}
-
-// Shape returned by GET /media/by-tmdb-ids
-interface ByTmdbIdsItem {
-  publicId: string;
-  tmdbId: number;
-  title: string;
-  year?: string | null;
-  posterUrl?: string | null;
-  image?: string | null; // fallback field name
-}
-
-// ── Constants ─────────────────────────────────────────────────────────────────
+import { importAndResolve, ResolvedMovie, resolveTmdbIds } from '@/lib/movie-resolve';
 
 const API = process.env.NEXT_PUBLIC_API_URL;
-
-// ── Helpers ───────────────────────────────────────────────────────────────────
-
-async function resolveTmdbIds(
-  tmdbIds: number[],
-  accessToken: string,
-): Promise<ResolvedMovie[]> {
-  if (tmdbIds.length === 0) return [];
-  const params = tmdbIds.map((id) => `tmdbIds=${id}`).join('&');
-  const res = await fetch(`${API}/media/by-tmdb-ids?${params}`, {
-    headers: { Authorization: `Bearer ${accessToken}` },
-  });
-  if (!res.ok) return [];
-  const data = await res.json();
-  const items: ByTmdbIdsItem[] = data.items ?? data ?? [];
-  return items.map((item) => ({
-    mediaPublicId: item.publicId,
-    tmdbId: item.tmdbId,
-    title: item.title,
-    year: item.year,
-    posterUrl: item.posterUrl ?? item.image ?? null,
-  }));
-}
-
-// ── Import movie then wait for it to appear in DB ────────────────────────────
-
-async function importAndResolve(
-  tmdbId: number,
-  accessToken: string,
-  timeoutMs = 10000,
-): Promise<ResolvedMovie | null> {
-  // Trigger import
-  await fetch(`${API}/integrations/movies/import`, {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ tmdbId, mediaType: 0 }),
-  });
-
-  // Poll by-tmdb-ids until publicId appears
-  const deadline = Date.now() + timeoutMs;
-  while (Date.now() < deadline) {
-    await new Promise((r) => setTimeout(r, 600));
-    const resolved = await resolveTmdbIds([tmdbId], accessToken);
-    if (resolved.length > 0 && resolved[0].mediaPublicId) return resolved[0];
-  }
-  return null;
-}
 
 // ── Props ─────────────────────────────────────────────────────────────────────
 

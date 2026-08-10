@@ -5,6 +5,7 @@ import {
   CreatedResponse,
   GetDraftCategoryResponse,
   GetMediaByTmdbIdsResponse,
+  ListPredictionSeasonsResult,
   SearchDraftsResponse,
   SearchHostResponse,
   SeriesResponse,
@@ -212,11 +213,12 @@ export async function listAdminActiveDrafts(
   accessToken: string | undefined,
   includeDeleted = false
 ) {
-  const [created, paused] = await Promise.all([
+  const [created, inProgress, paused] = await Promise.all([
     listAdminDrafts(accessToken, 0, 1, 50, includeDeleted),
+    listAdminDrafts(accessToken, 2, 1, 50, includeDeleted),
     listAdminDrafts(accessToken, 3, 1, 50, includeDeleted),
   ]);
-  return [...created, ...paused];
+  return [...created, ...inProgress, ...paused];
 }
 
 export async function listUnreleasedDraftParts(
@@ -815,6 +817,148 @@ export async function startDraftPart(
   }
 }
 
+export async function completeDraftPart(
+  accessToken: string,
+  draftId: string,
+  partIndex: number
+): Promise<void> {
+  const res = await fetch(
+    `${apiBase}/drafts/${encodeURIComponent(draftId)}/parts/${partIndex}/status`,
+    {
+      method: "PUT",
+      headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+      // action: 2 assumed for Complete — Start is confirmed as 1 via
+      // startDraftPart above; Complete's value wasn't independently
+      // verified against DraftPartStatusAction.cs.
+      body: JSON.stringify({ action: 2 }),
+    }
+  );
+  if (!res.ok) {
+    const text = await res.text().catch(() => res.statusText);
+    throw new Error(`PUT /drafts/${draftId}/parts/${partIndex}/status failed (${res.status}): ${text}`);
+  }
+}
+
+export async function playPick(
+  accessToken: string,
+  body: {
+    draftPartId: string;
+    position: number;
+    playOrder: number;
+    participantPublicId: string | null;
+    participantKind: number;
+    moviePublicId: string;
+    movieVersionName?: string | null;
+  }
+): Promise<void> {
+  const res = await fetch(`${apiBase}/draft-parts/${body.draftPartId}/picks`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) {
+    const problem = await res.json().catch(() => null);
+    throw new Error(problem?.detail ?? `Failed to record pick: ${res.status}`);
+  }
+}
+
+// Seed-only reveal — hits the new /seed/picks/{playOrder}/reveal route added
+// alongside SeedRevealPickCommand, not the live /picks/{playOrder}/reveal
+// route (which requires the caller to resolve as the draft part's primary
+// host — wrong check for a backfilling admin).
+export async function seedRevealPick(
+  accessToken: string,
+  params: { draftPartId: string; playOrder: number; actedByPublicId: string }
+): Promise<void> {
+  const res = await fetch(
+    `${apiBase}/draft-parts/${params.draftPartId}/seed/picks/${params.playOrder}/reveal`,
+    {
+      method: "POST",
+      headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ actedByPublicId: params.actedByPublicId }),
+    }
+  );
+  if (!res.ok) {
+    const problem = await res.json().catch(() => null);
+    throw new Error(problem?.detail ?? `Failed to reveal pick: ${res.status}`);
+  }
+}
+
+// No seed variant needed — ApplyVeto resolves the caller's own identity as
+// the audit-trail actor server-side with no authorization check attached to
+// it, so calling this as the seeding admin is harmless.
+export async function applyVeto(
+  accessToken: string,
+  params: {
+    draftPartId: string;
+    playOrder: number;
+    participantPublicId: string | null;
+    participantKind: number;
+  }
+): Promise<void> {
+  const res = await fetch(
+    `${apiBase}/draft-parts/${params.draftPartId}/picks/${params.playOrder}/veto`,
+    {
+      method: "POST",
+      headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        participantPublicId: params.participantPublicId,
+        participantKind: params.participantKind,
+      }),
+    }
+  );
+  if (!res.ok) {
+    const problem = await res.json().catch(() => null);
+    throw new Error(problem?.detail ?? `Failed to apply veto: ${res.status}`);
+  }
+}
+
+// Note the field name is participantIdValue here, not participantPublicId —
+// matches ApplyVetoOverrideRequest in dto.ts exactly; the two request types
+// are inconsistent with each other, not a typo on this end.
+export async function applyVetoOverride(
+  accessToken: string,
+  params: {
+    draftPartId: string;
+    playOrder: number;
+    participantIdValue: string | null;
+    participantKind: number;
+  }
+): Promise<void> {
+  const res = await fetch(
+    `${apiBase}/draft-parts/${params.draftPartId}/veto-override/${params.playOrder}`,
+    {
+      method: "POST",
+      headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        participantIdValue: params.participantIdValue,
+        participantKind: params.participantKind,
+      }),
+    }
+  );
+  if (!res.ok) {
+    const problem = await res.json().catch(() => null);
+    throw new Error(problem?.detail ?? `Failed to apply veto override: ${res.status}`);
+  }
+}
+
+export async function applyCommissionerOverride(
+  accessToken: string,
+  params: { draftPartId: string; playOrder: number }
+): Promise<void> {
+  const res = await fetch(
+    `${apiBase}/draft-parts/${params.draftPartId}/commissioner-override/${params.playOrder}`,
+    {
+      method: "POST",
+      headers: { Authorization: `Bearer ${accessToken}` },
+    }
+  );
+  if (!res.ok) {
+    const problem = await res.json().catch(() => null);
+    throw new Error(problem?.detail ?? `Failed to apply commissioner override: ${res.status}`);
+  }
+}
+
 export async function deleteDraft(
   accessToken: string,
   draftId: string
@@ -996,6 +1140,82 @@ export async function listDraftPositions(
   );
 }
 
+export interface GameplayPick {
+  playOrder: number;
+  boardPosition: number;
+  movieTitle: string;
+  tmdbId: number | null;
+  playedById: string;
+  playedByKind: number;
+  playedByName: string;
+  wasVetoed: boolean;
+  wasVetoOverridden: boolean;
+  wasCommissionerOverride: boolean;
+  vetoedByName: string | null;
+  savedByName: string | null;
+}
+
+export interface GameplayTriviaResult {
+  participantId: string;
+  participantKind: number;
+  participantName: string;
+  questionsWon: number;
+  position: number;
+}
+
+export interface DraftPartGameplay {
+  picks: GameplayPick[];
+  triviaResults: GameplayTriviaResult[];
+}
+
+export async function getDraftPartGameplay(
+  accessToken: string | undefined,
+  draftPartId: string
+): Promise<DraftPartGameplay | null> {
+  try {
+    const res = await fetch(
+      `${apiBase}/draft-parts/${encodeURIComponent(draftPartId)}/gameplay`,
+      { headers: authHeaders(accessToken), cache: "no-store" }
+    );
+    if (!res.ok) return null;
+    const text = await res.text();
+    if (!text) return null;
+    const data = JSON.parse(text) as {
+      picks?: GameplayPick[];
+      triviaResults?: GameplayTriviaResult[];
+    };
+    return {
+      picks: data.picks ?? [],
+      triviaResults: data.triviaResults ?? []
+    };
+  } catch (err) {
+    console.error("[getDraftPartGameplay]", err);
+    return null;
+  }
+}
+
+export interface TriviaResultEntryBody {
+  participantPublicId: string;
+  kind: number;
+  position: number;
+  questionsWon: number;
+}
+
+export async function assignTriviaResults(
+  accessToken: string,
+  params: { draftPartId: string; results: TriviaResultEntryBody[] }
+): Promise<void> {
+  const res = await fetch(`${apiBase}/draft-parts/${params.draftPartId}/trivia-results`, {
+    method: "PUT",
+    headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ results: params.results }),
+  });
+  if (!res.ok) {
+    const problem = await res.json().catch(() => null);
+    throw new Error(problem?.detail ?? `Failed to assign trivia results: ${res.status}`);
+  }
+}
+
 export async function getMediaByTmdbIds(
   accessToken: string,
   tmdbIds: number[]
@@ -1019,8 +1239,10 @@ export async function getDraftPartPredictionRules(
       `${apiBase}/draft-parts/${encodeURIComponent(draftPartId)}/prediction-rules`,
       { headers: authHeaders(accessToken), cache: "no-store" }
     );
-    if (!res.ok) return null;
-    return (await res.json()) as DraftPartPredictionRulesDto | null;
+    if (!res.ok || res.status === 204) return null;
+    const text = await res.text();
+    if (!text) return null;
+    return JSON.parse(text) as DraftPartPredictionRulesDto;
   } catch (err) {
     console.error("[getDraftPartPredictionRules]", err);
     return null;
@@ -1109,6 +1331,169 @@ export async function syncPredictionConfig(
       allowedSubmitterPersonPublicId: p.allowedSubmitterPersonPublicId,
     }))
   );
+}
+
+export async function listSeasons(
+  accessToken: string | undefined
+): Promise<ListPredictionSeasonsResult["seasons"]> {
+  try {
+    const res = await fetch(`${apiBase}/prediction-seasons`, {
+      headers: authHeaders(accessToken),
+      cache: "no-store",
+    });
+    if (!res.ok) return [];
+    const data = (await res.json()) as ListPredictionSeasonsResult;
+    return data.seasons ?? [];
+  } catch (err) {
+    console.error("[listSeasons]", err);
+    return [];
+  }
+}
+
+export interface SeedPredictionEntryBody {
+  tmdbId: number;
+  mediaTitle: string;
+  orderIndex?: number | null;
+  notes?: string | null;
+}
+
+// Hits the new /seed/predictions route added alongside
+// SeedSubmitPredictionSetCommand — not /predictions (SubmitSet), which
+// requires the caller to resolve as the contestant or their designated
+// submitter. sourceKind is unconfirmed against the real PredictionSourceKind
+// enum — defaulting to 0, verify before relying on this.
+export async function seedSubmitPredictionSet(
+  accessToken: string,
+  params: {
+    draftPartId: string;
+    seasonPublicId: string;
+    contestantPublicId: string;
+    submittedByPersonPublicId?: string | null;
+    sourceKind?: number;
+    entries: SeedPredictionEntryBody[];
+  }
+): Promise<void> {
+  const res = await fetch(`${apiBase}/draft-parts/${params.draftPartId}/predictions/seed`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      seasonPublicId: params.seasonPublicId,
+      contestantPublicId: params.contestantPublicId,
+      submittedByPersonPublicId: params.submittedByPersonPublicId ?? null,
+      sourceKind: params.sourceKind ?? 0,
+      entries: params.entries,
+    }),
+  });
+  if (!res.ok) {
+    const problem = await res.json().catch(() => null);
+    throw new Error(problem?.detail ?? `Failed to submit predictions: ${res.status}`);
+  }
+}
+
+// ── Additions for fetch-admin-drafts.ts ──
+
+export interface PredictionEntrySummary {
+  tmdbId: number;
+  mediaPublicId: string | null;
+  mediaTitle: string;
+  orderIndex: number | null;
+  isCorrect: boolean | null;
+  notes: string | null;
+}
+
+export interface PredictionResultSummary {
+  correctCount: number;
+  shootsTheMoon: boolean;
+  pointsAwarded: number;
+  scoredAtUtc: string;
+}
+
+export interface SurrogateAssignmentSummary {
+  surrogateSetPublicId: string;
+  surrogateContestantDisplayName: string;
+  mergePolicy: string;
+}
+
+export interface DraftPartPrediction {
+  publicId: string;
+  contestantPublicId: string;
+  contestantDisplayName: string;
+  submittedAtUtc: string;
+  sourceKind: string;
+  isLocked: boolean;
+  lockedAtUtc: string | null;
+  entries: PredictionEntrySummary[];
+  result: PredictionResultSummary | null;
+  surrogates: SurrogateAssignmentSummary[];
+}
+
+// GetDraftPartPredictionsQuery returns IReadOnlyList<DraftPartPredictionResponse>
+// directly (not wrapped, no PagedResult envelope) — read from the C# query
+// signature, not runtime-confirmed against an actual response body yet.
+export async function getDraftPartPredictions(
+  accessToken: string | undefined,
+  draftPartId: string
+): Promise<DraftPartPrediction[]> {
+  try {
+    const res = await fetch(`${apiBase}/draft-parts/${draftPartId}/predictions`, {
+      headers: authHeaders(accessToken),
+      cache: "no-store",
+    });
+    if (!res.ok) return [];
+    const text = await res.text();
+    if (!text) return [];
+    return JSON.parse(text) as DraftPartPrediction[];
+  } catch (err) {
+    console.error("[getDraftPartPredictions]", err);
+    return [];
+  }
+}
+
+export async function assignSurrogate(
+  accessToken: string,
+  params: {
+    draftPartId: string;
+    primarySetPublicId: string;
+    surrogateSetPublicId: string;
+    mergePolicy: number;
+  }
+): Promise<void> {
+  const res = await fetch(
+    `${apiBase}/draft-parts/${params.draftPartId}/predictions/${params.primarySetPublicId}/surrogate`,
+    {
+      method: "POST",
+      headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        surrogateSetPublicId: params.surrogateSetPublicId,
+        mergePolicy: params.mergePolicy,
+      }),
+    }
+  );
+  if (!res.ok) {
+    const problem = await res.json().catch(() => null);
+    throw new Error(problem?.detail ?? `Failed to assign surrogate: ${res.status}`);
+  }
+}
+
+export async function createPredictionContestant(
+  accessToken: string,
+  personPublicId: string
+): Promise<string> {
+  const res = await fetch(`${apiBase}/prediction-contestants`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ personPublicId }),
+  });
+  if (!res.ok) {
+    const problem = await res.json().catch(() => null);
+    throw new Error(problem?.detail ?? `Failed to create contestant: ${res.status}`);
+  }
+  const text = await res.text();
+  try {
+    return JSON.parse(text) as string;
+  } catch {
+    return text;
+  }
 }
 
 export async function addSubDraft(

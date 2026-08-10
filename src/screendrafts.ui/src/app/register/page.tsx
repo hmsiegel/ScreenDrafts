@@ -1,7 +1,7 @@
 "use client";
 
 import { oswald } from "@/styles/fonts";
-import RegisterForm from "@/features/register/components/register-form";
+import RegisterForm from "@/components/features/register/register-form";
 import Image from "next/image";
 import { signIn } from "next-auth/react";
 

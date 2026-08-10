@@ -1,8 +1,14 @@
+// app/admin/drafts/new/prediction-rules-section.tsx
 "use client";
 
 import { useState, useRef, useCallback } from "react";
 import { env } from "@/lib/env";
-import { searchAllHosts, AdminHostOption } from "@/services/admin/fetch-admin-drafts";
+import {
+  searchAllHosts,
+  AdminHostOption,
+  type DraftPartHost,
+  createPredictionContestant,
+} from "@/services/admin/fetch-admin-drafts";
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -68,11 +74,14 @@ interface ContestantSearchResult {
   displayName: string;
 }
 
-// TODO: confirm this endpoint exists — mirrors /hosts/search, /drafters/search
+// TODO: confirm this endpoint exists — mirrors /hosts/search, /drafters/search.
+// Route itself is confirmed against PredictionRoutes.cs (prediction-contestants/
+// search) — the "name" query param and the { items: [...] } response shape
+// are not confirmed against the actual SearchContestants request/response.
 async function searchContestants(
   accessToken: string,
   query: string
-): Promise<ContestantSearchResult[]> {
+): Promise<{ results: ContestantSearchResult[]; error: string | null }> {
   try {
     const url = new URL(`${env.apiUrl}/prediction-contestants/search`);
     if (query.trim()) url.searchParams.set("name", query);
@@ -81,11 +90,17 @@ async function searchContestants(
       headers: { Authorization: `Bearer ${accessToken}` },
       cache: "no-store",
     });
-    if (!res.ok) return [];
+    if (!res.ok) {
+      const body = await res.text().catch(() => "");
+      return { results: [], error: `Search failed (${res.status}): ${body || res.statusText}` };
+    }
     const data = (await res.json()) as { items?: ContestantSearchResult[] };
-    return data.items ?? [];
-  } catch {
-    return [];
+    return { results: data.items ?? [], error: null };
+  } catch (err) {
+    return {
+      results: [],
+      error: err instanceof Error ? err.message : "Search failed — check the network tab.",
+    };
   }
 }
 
@@ -101,12 +116,36 @@ interface Props {
   config: PredictionConfig;
   onChange: (next: PredictionConfig) => void;
   accessToken: string;
+  // Optional — create-draft-form.tsx doesn't have real DraftPartHost data
+  // yet (hosts there are still local SelectedHost state with no
+  // personPublicId, since nothing's saved), so it doesn't pass this. Edit
+  // and seed both have real host data loaded and pass it through, which is
+  // where this actually matters — a sponsor isn't set up mid-creation.
+  hosts?: DraftPartHost[];
 }
 
-export function PredictionRulesSection({ config, onChange, accessToken }: Props) {
+export function PredictionRulesSection({ config, onChange, accessToken, hosts = [] }: Props) {
+  const eligibleHosts = hosts.filter((h) => h.personPublicId);
+  const [manualEntry, setManualEntry] = useState(false);
   const [contestantSearch, setContestantSearch] = useState("");
   const [contestantResults, setContestantResults] = useState<ContestantSearchResult[]>([]);
   const [contestantLoading, setContestantLoading] = useState(false);
+  const [contestantError, setContestantError] = useState<string | null>(null);
+
+  // For sponsors/one-off predictors not already in the system. Every
+  // registered person (guest, drafter, host, admin) has a Person record —
+  // there's no standalone "create person" action, registration IS how a
+  // Person gets created. So this takes an already-known Person public ID
+  // (the admin registers the sponsor through the normal /register page
+  // first, then looks up their Person ID via DBeaver) rather than trying to
+  // search for or register a person inline — that would need a person-search
+  // endpoint and a way to resolve a fresh registration back to a Person ID,
+  // neither of which exist yet.
+  const [showCreateContestant, setShowCreateContestant] = useState(false);
+  const [newPersonPublicId, setNewPersonPublicId] = useState("");
+  const [createContestantSubmitting, setCreateContestantSubmitting] = useState(false);
+  const [createContestantError, setCreateContestantError] = useState<string | null>(null);
+  const [createContestantSuccess, setCreateContestantSuccess] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const [surrogateModeBySlot, setSurrogateModeBySlot] = useState<Record<string, boolean>>(() => {
@@ -131,7 +170,9 @@ export function PredictionRulesSection({ config, onChange, accessToken }: Props)
     async (q: string) => {
       setContestantLoading(true);
       try {
-        setContestantResults(await searchContestants(accessToken, q));
+        const { results, error } = await searchContestants(accessToken, q);
+        setContestantResults(results);
+        setContestantError(error);
       } finally {
         setContestantLoading(false);
       }
@@ -143,6 +184,26 @@ export function PredictionRulesSection({ config, onChange, accessToken }: Props)
     setContestantSearch(value);
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => runContestantSearch(value), 300);
+  }
+
+  async function handleCreateContestant() {
+    if (!newPersonPublicId.trim() || createContestantSubmitting) return;
+    setCreateContestantSubmitting(true);
+    setCreateContestantError(null);
+    setCreateContestantSuccess(false);
+    try {
+      await createPredictionContestant(accessToken, newPersonPublicId.trim());
+      setCreateContestantSuccess(true);
+      setNewPersonPublicId("");
+      // Doesn't auto-add them as a predictor — re-search by name below to
+      // pick them up through the normal add flow now that they exist.
+    } catch (err) {
+      setCreateContestantError(
+        err instanceof Error ? err.message : "Failed to create contestant."
+      );
+    } finally {
+      setCreateContestantSubmitting(false);
+    }
   }
 
   function addPredictor(contestant: ContestantSearchResult) {
@@ -377,7 +438,10 @@ export function PredictionRulesSection({ config, onChange, accessToken }: Props)
               {contestantLoading && (
                 <p className="text-sm text-sd-ink/40 font-mono px-1 mt-1">Searching…</p>
               )}
-              {!contestantLoading && contestantResults.length > 0 && (
+              {!contestantLoading && contestantError && (
+                <p className="text-sm text-sd-red font-mono px-1 mt-1">{contestantError}</p>
+              )}
+              {!contestantLoading && !contestantError && contestantResults.length > 0 && (
                 <div className="border border-sd-ink/10 rounded overflow-hidden mt-2">
                   {contestantResults
                     .filter(
@@ -393,6 +457,93 @@ export function PredictionRulesSection({ config, onChange, accessToken }: Props)
                         + {c.displayName}
                       </button>
                     ))}
+                </div>
+              )}
+
+              <button
+                type="button"
+                onClick={() => setShowCreateContestant((v) => !v)}
+                className="text-[11px] font-mono text-sd-blue uppercase tracking-widest hover:underline mt-2"
+              >
+                {showCreateContestant ? "Cancel" : "Can't find them? Create a new contestant"}
+              </button>
+
+              {showCreateContestant && (
+                <div className="border border-sd-ink/10 rounded p-3 mt-2 space-y-2 bg-sd-paper/40">
+                  {eligibleHosts.length > 0 && !manualEntry ? (
+                    <>
+                      <p className="text-[11px] font-mono text-sd-ink/50">
+                        Sponsors are usually already a co-host on this part — pick
+                        them below.
+                      </p>
+                      <select
+                        className="border border-sd-ink/20 bg-white px-3 py-2 text-sd-ink font-sans text-sm focus:outline-none focus:ring-2 focus:ring-sd-blue rounded w-full"
+                        value={newPersonPublicId}
+                        onChange={(e) => setNewPersonPublicId(e.target.value)}
+                      >
+                        <option value="">Select a host…</option>
+                        {eligibleHosts.map((h) => (
+                          <option key={h.personPublicId} value={h.personPublicId!}>
+                            {h.displayName}
+                          </option>
+                        ))}
+                      </select>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setManualEntry(true);
+                          setNewPersonPublicId("");
+                        }}
+                        className="text-[11px] font-mono text-sd-blue uppercase tracking-widest hover:underline"
+                      >
+                        Not a host? Enter a Person ID manually
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-[11px] font-mono text-sd-ink/50">
+                        Every person needs a Person record first, which only comes from
+                        registering an account — there&apos;s no standalone way to create
+                        one. Register them through /register, look up their Person
+                        public ID in DBeaver, then enter it here.
+                      </p>
+                      <input
+                        type="text"
+                        placeholder="Person public ID (pe_...)"
+                        className="border border-sd-ink/20 bg-white px-3 py-2 text-sd-ink font-sans text-sm focus:outline-none focus:ring-2 focus:ring-sd-blue rounded w-full"
+                        value={newPersonPublicId}
+                        onChange={(e) => setNewPersonPublicId(e.target.value)}
+                      />
+                      {eligibleHosts.length > 0 && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setManualEntry(false);
+                            setNewPersonPublicId("");
+                          }}
+                          className="text-[11px] font-mono text-sd-blue uppercase tracking-widest hover:underline"
+                        >
+                          Pick from hosts instead
+                        </button>
+                      )}
+                    </>
+                  )}
+                  {createContestantError && (
+                    <p className="text-[11px] font-mono text-sd-red">{createContestantError}</p>
+                  )}
+                  {createContestantSuccess && (
+                    <p className="text-[11px] font-mono text-green-700">
+                      Created — search their name above to add them as a predictor.
+                    </p>
+                  )}
+                  <button
+                    type="button"
+                    onClick={handleCreateContestant}
+                    disabled={!newPersonPublicId.trim() || createContestantSubmitting}
+                    className="bg-sd-ink text-white font-mono text-[11px] tracking-widest uppercase px-3 py-1.5 hover:bg-sd-ink/80 disabled:opacity-50 transition-colors"
+                  >
+                    {createContestantSubmitting ? "Creating…" : "Create Contestant"}
+                  </button>
                 </div>
               )}
             </div>
