@@ -20,7 +20,7 @@ internal sealed class MediaActorConfiguration : IEntityTypeConfiguration<MediaAc
         value => PersonId.Create(value));
 
     builder.HasOne(d => d.Media)
-      .WithMany(m => m!.MediaActors)
+      .WithMany(m => m.MediaActors)
       .HasForeignKey(d => d.MediaId);
 
     builder.HasOne(ma => ma.Actor)
