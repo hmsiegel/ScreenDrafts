@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Drafts.Features.Drafts.Update;
+﻿namespace ScreenDrafts.Modules.Drafts.Features.Drafts.Update;
 
 internal sealed record UpdateDraftRequest
 {
@@ -10,5 +10,5 @@ internal sealed record UpdateDraftRequest
   public string? CampaignPublicId { get; init; } = default!;
   public IReadOnlyList<string>? PublicCategoryIds { get; init; } = [];
   public int DraftTypeValue { get; init; } = default!;
+  public string? FungibleTokenName { get; init; }
 }
-

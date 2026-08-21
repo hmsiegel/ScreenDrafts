@@ -10,7 +10,15 @@ internal sealed record GetDraftPickResponse
   public string? ActedByPublicId { get; init; }
   public Guid PlayedByParticipantIdValue { get; init; }
   public ParticipantKind PlayedByParticipantKindValue { get; init; } = default!;
-  public GetDraftVetoResponse? Veto { get; init; }
+
+  /// <summary>
+  /// This pick's full veto history, ordered by Sequence. Normally holds at most one
+  /// entry — more than one only occurs when a veto was overridden and the resulting
+  /// override was itself overridden, re-vetoing the pick (see Pick.Vetoes / Pick.CurrentVeto
+  /// on the domain side). Consumers that only care about the pick's current state want the
+  /// last entry, not the first.
+  /// </summary>
+  public Collection<GetDraftVetoResponse> Vetoes { get; init; } = [];
   public GetDraftCommissionerOverrideResponse? CommissionerOverride { get; init; }
 
   /// <summary>

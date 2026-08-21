@@ -24,13 +24,17 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<SetDraftPositionsRequest>
     var command = new SetDraftPositionsCommand
     {
       DraftPartId = req.DraftPartId,
-      Positions = [.. req.Positions.Select(p => new DraftPositionRequest
-      {
-        Name = p.Name,
-        Picks = p.Picks,
-        HasBonusVeto = p.HasBonusVeto,
-        HasBonusVetoOverride = p.HasBonusVetoOverride
-      })]
+      Positions =
+      [
+        .. req.Positions.Select(p => new DraftPositionRequest
+        {
+          Name = p.Name,
+          Picks = p.Picks,
+          HasBonusVeto = p.HasBonusVeto,
+          HasBonusVetoOverride = p.HasBonusVetoOverride,
+          HasFungibleToken = p.HasFungibleToken,
+        }),
+      ],
     };
 
     var result = await Sender.Send(command, ct);

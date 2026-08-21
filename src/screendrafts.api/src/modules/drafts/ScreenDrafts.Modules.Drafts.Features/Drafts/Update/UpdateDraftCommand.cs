@@ -9,5 +9,11 @@ internal sealed record UpdateDraftCommand : ICommand
   public string? CampaignPublicId { get; init; } = default!;
   public IReadOnlyList<string>? PublicCategoryIds { get; init; } = [];
   public int DraftTypeValue { get; init; } = default!;
-}
 
+  /// <summary>
+  /// Flavor name for this draft's fungible veto/override token. Null/omitted leaves it
+  /// unset (or clears it, if a part hasn't started yet — see UpdateDraftCommandHandler's
+  /// guard once a part has started).
+  /// </summary>
+  public string? FungibleTokenName { get; init; }
+}

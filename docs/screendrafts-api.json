@@ -1491,7 +1491,7 @@
         "operationId": "Predictions_CreateContestant",
         "requestBody": {
           "content": {
-            "*/*": {
+            "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/CreatePredictionContestantRequest"
               }
@@ -9337,7 +9337,12 @@
         }
       },
       "CreatePredictionContestantRequest": {
-        "type": "object"
+        "type": "object",
+        "properties": {
+          "personPublicId": {
+            "type": "string"
+          }
+        }
       },
       "CreatePredictionSeasonRequest": {
         "required": [
@@ -9771,7 +9776,8 @@
           "submittedAtUtc",
           "sourceKind",
           "isLocked",
-          "entries"
+          "entries",
+          "surrogates"
         ],
         "type": "object",
         "properties": {
@@ -9816,6 +9822,12 @@
                 "$ref": "#/components/schemas/PredictionResultResponse"
               }
             ]
+          },
+          "surrogates": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SurrogateAssignmentResponse"
+            }
           }
         }
       },
@@ -9917,6 +9929,9 @@
             "type": "boolean"
           },
           "hasBonusVetoOverride": {
+            "type": "boolean"
+          },
+          "hasFungibleToken": {
             "type": "boolean"
           }
         }
@@ -10599,6 +10614,9 @@
           "hasBonusVetoOverride": {
             "type": "boolean"
           },
+          "hasBonusFungibleToken": {
+            "type": "boolean"
+          },
           "assignedParticipantId": {
             "type": [
               "null",
@@ -10689,6 +10707,22 @@
             "format": "int32"
           },
           "vetoOverridesRollingIn": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "fungibleTokensRemaining": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "fungibleTokensRollingIn": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": [
               "integer",
@@ -10794,6 +10828,20 @@
               "null",
               "string"
             ]
+          },
+          "wasVetoFungible": {
+            "type": "boolean"
+          },
+          "wasVetoOverrideFungible": {
+            "type": "boolean"
+          },
+          "vetoSequence": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
           }
         }
       },
@@ -11536,6 +11584,12 @@
               "string"
             ]
           },
+          "fungibleTokenName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
           "triviaResults": {
             "type": "array",
             "items": {
@@ -11680,6 +11734,38 @@
             "format": "int32"
           },
           "commissionerOverride": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "fungibleTokens": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "rolloverFungibleTokens": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "triviaFungibleTokens": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "fungibleTokensUsed": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": [
               "integer",
@@ -12025,15 +12111,11 @@
           "playedByParticipantKindValue": {
             "$ref": "#/components/schemas/ParticipantKind"
           },
-          "veto": {
-            "oneOf": [
-              {
-                "type": "null"
-              },
-              {
-                "$ref": "#/components/schemas/GetDraftVetoResponse"
-              }
-            ]
+          "vetoes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GetDraftVetoResponse"
+            }
           },
           "commissionerOverride": {
             "oneOf": [
@@ -12147,6 +12229,12 @@
               "string"
             ]
           },
+          "fungibleTokenName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
           "categories": {
             "type": [
               "null",
@@ -12220,6 +12308,15 @@
               "null",
               "string"
             ]
+          },
+          "note": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "spentFromFungiblePool": {
+            "type": "boolean"
           }
         }
       },
@@ -12270,6 +12367,17 @@
                 "$ref": "#/components/schemas/GetDraftVetoOverrideResponse"
               }
             ]
+          },
+          "sequence": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "spentFromFungiblePool": {
+            "type": "boolean"
           }
         }
       },
@@ -18470,6 +18578,25 @@
           }
         }
       },
+      "SurrogateAssignmentResponse": {
+        "required": [
+          "surrogateSetPublicId",
+          "surrogateContestantDisplayName",
+          "mergePolicy"
+        ],
+        "type": "object",
+        "properties": {
+          "surrogateSetPublicId": {
+            "type": "string"
+          },
+          "surrogateContestantDisplayName": {
+            "type": "string"
+          },
+          "mergePolicy": {
+            "type": "string"
+          }
+        }
+      },
       "TriviaResultRequestItem": {
         "required": [
           "participantPublicId",
@@ -18760,6 +18887,12 @@
               "string"
             ],
             "format": "int32"
+          },
+          "fungibleTokenName": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },

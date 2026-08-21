@@ -13,6 +13,7 @@ internal sealed record GetDraftResponse
   public string? ImagePath { get; init; }
   public string? CampaignPublicId { get; init; }
   public string? CampaignName { get; init; }
+  public string? FungibleTokenName { get; init; }
   public IReadOnlyList<GetDraftCategoryResponse>? Categories { get; init; } = [];
   public IReadOnlyList<GetDraftPartResponse> Parts { get; init; } = [];
 }

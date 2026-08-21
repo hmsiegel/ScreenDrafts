@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Modules.Drafts.Features.DraftParts.Get;
-
-namespace ScreenDrafts.Modules.Drafts.Features.Drafts.GetDraft;
+﻿namespace ScreenDrafts.Modules.Drafts.Features.Drafts.GetDraft;
 
 internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFactory)
   : IQueryHandler<GetDraftQuery, GetDraftResponse>
@@ -26,6 +24,7 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
         d.draft_type AS {nameof(GetDraftResponse.DraftType)},
         d.draft_status AS {nameof(GetDraftResponse.DraftStatus)},
         d.image_path AS {nameof(GetDraftResponse.ImagePath)},
+        d.fungible_token_name AS {nameof(GetDraftResponse.FungibleTokenName)},
         s.public_id AS {nameof(GetDraftResponse.SeriesPublicId)},
         s.name AS {nameof(GetDraftResponse.SeriesName)},
         c.public_id AS {nameof(GetDraftResponse.CampaignPublicId)},
@@ -44,6 +43,7 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
       DraftType DraftType,
       DraftStatus DraftStatus,
       string ImagePath,
+      string? FungibleTokenName,
       string SeriesPublicId,
       string SeriesName,
       string? CampaignPublicId,
@@ -218,6 +218,14 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
       )},
         dpp.awarded_veto_overrides AS {nameof(GetDraftPartParticipantResponse.TriviaVetoOverride)},
         dpp.commissioner_overrides AS {nameof(GetDraftPartParticipantResponse.CommissionerOverride)},
+        dpp.fungible_tokens AS {nameof(GetDraftPartParticipantResponse.FungibleTokens)},
+        dpp.fungible_tokens_rolling_in AS {nameof(
+        GetDraftPartParticipantResponse.RolloverFungibleTokens
+      )},
+        dpp.awarded_fungible_tokens AS {nameof(
+        GetDraftPartParticipantResponse.TriviaFungibleTokens
+      )},
+        dpp.fungible_tokens_used AS {nameof(GetDraftPartParticipantResponse.FungibleTokensUsed)},
         COALESCE(dr.public_id, dt.public_id) AS {nameof(GetDraftPartParticipantResponse.ParticipantPublicId)},
         COALESCE(
           pe.display_name,
@@ -249,6 +257,10 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
       int RolloverVetoOverride,
       int TriviaVetoOverride,
       int CommissionerOverride,
+      int FungibleTokens,
+      int RolloverFungibleTokens,
+      int TriviaFungibleTokens,
+      int FungibleTokensUsed,
       string? ParticipantPublicId,
       string? DisplayName,
       string? PersonPublicId
@@ -273,6 +285,10 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
         RolloverVetoOverride = r.RolloverVetoOverride,
         TriviaVetoOverride = r.TriviaVetoOverride,
         CommissionerOverride = r.CommissionerOverride,
+        FungibleTokens = r.FungibleTokens,
+        RolloverFungibleTokens = r.RolloverFungibleTokens,
+        TriviaFungibleTokens = r.TriviaFungibleTokens,
+        FungibleTokensUsed = r.FungibleTokensUsed,
         ParticipantPublicId = r.ParticipantPublicId,
         DisplayName = r.DisplayName,
         PersonPublicId = r.PersonPublicId,
@@ -427,15 +443,20 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
     var pickInternalIds = pickRows.Select(r => r.PickInternalId).ToArray();
 
     // 7. Pick Vetoes
+    // A pick's veto history is now potentially more than one row — a veto that was
+    // overridden, then re-vetoed. Ordered by sequence so the pick assembly below can
+    // rebuild the full ordered history rather than assume exactly one row per pick.
     const string pickVetoSql = $"""
       SELECT
         v.target_pick_id AS PickId,
         v.id AS VetoId,
+        v.sequence AS Sequence,
         v.issued_by_participant_id AS {nameof(GetDraftVetoResponse.IssuedByParticipantId)},
         v.acted_by_public_id AS {nameof(GetDraftVetoResponse.ActedByPublicId)},
         v.is_overridden AS {nameof(GetDraftVetoResponse.IsOverridden)},
         v.note AS {nameof(GetDraftVetoResponse.Note)},
         v.occurred_on AS {nameof(GetDraftVetoResponse.OccurredOnUtc)},
+        v.spent_from_fungible_pool AS {nameof(GetDraftVetoResponse.SpentFromFungiblePool)},
         COALESCE(
           CASE WHEN dpp.participant_kind_value = 2
             THEN 'Patreon Members'
@@ -455,7 +476,8 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
       LEFT JOIN drafts.drafter_teams dt
         ON dt.id = dpp.participant_id_value
         AND dpp.participant_kind_value = 1
-      WHERE v.target_pick_id = ANY(@pickInternalIds);
+      WHERE v.target_pick_id = ANY(@pickInternalIds)
+      ORDER BY v.target_pick_id, v.sequence ASC;
       """;
 
     var vetoRows =
@@ -464,11 +486,13 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
           await connection.QueryAsync<(
             Guid PickId,
             Guid VetoId,
+            int Sequence,
             Guid IssuedByParticipantId,
             string? ActedByPublicId,
             bool IsOverriden,
             string? Note,
             DateTime OccurredOnUtc,
+            bool SpentFromFungiblePool,
             string? IssuedByDisplayName
           )>(new CommandDefinition(pickVetoSql, new { pickInternalIds }))
         ).ToList()
@@ -476,12 +500,14 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
 
     var vetoIds = vetoRows.Select(r => r.VetoId).ToArray();
 
-    // 8. Veto Overrides
+    // 8. Veto Overrides — still genuinely one-to-one with a Veto, unlike Pick-to-Veto.
     const string vetoOverrideSql = $"""
       SELECT
         vo.veto_id AS VetoId,
         vo.issued_by_participant_id AS {nameof(GetDraftVetoOverrideResponse.IssuedByParticipantId)},
         vo.acted_by_public_id AS {nameof(GetDraftVetoOverrideResponse.ActedByPublicId)},
+        vo.note AS {nameof(GetDraftVetoOverrideResponse.Note)},
+        vo.spent_from_fungible_pool AS {nameof(GetDraftVetoOverrideResponse.SpentFromFungiblePool)},
         COALESCE(
           CASE WHEN dpp.participant_kind_value = 2
             THEN 'Patreon Members'
@@ -511,6 +537,8 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
             Guid VetoId,
             Guid IssuedByParticipantId,
             string? ActedByPublicId,
+            string? Note,
+            bool SpentFromFungiblePool,
             string? IssuedByDisplayName
           )>(new CommandDefinition(vetoOverrideSql, new { vetoIds }))
         ).ToDictionary(r => r.VetoId)
@@ -741,7 +769,10 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
         .ToDictionary(g => g.Key, g => g.AsEnumerable());
     }
     // Assemble final pick responses
-    var vetoByPickId = vetoRows.ToDictionary(r => r.PickId);
+    // A lookup, not a dictionary: a pick can now have more than one veto row
+    // (veto -> override -> re-veto), so a straight ToDictionary would throw on the
+    // second row for the same pick.
+    var vetoesByPickId = vetoRows.ToLookup(r => r.PickId);
 
     foreach (var r in pickRows)
     {
@@ -750,31 +781,37 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
         continue;
       }
 
-      GetDraftVetoResponse? veto = null;
-      if (vetoByPickId.TryGetValue(r.PickInternalId, out var vetoRow))
-      {
-        GetDraftVetoOverrideResponse? vetoOverride = null;
-        if (vetoOverrideRows.TryGetValue(vetoRow.VetoId, out var ov))
+      var vetoes = vetoesByPickId[r.PickInternalId]
+        .OrderBy(v => v.Sequence)
+        .Select(vetoRow =>
         {
-          vetoOverride = new GetDraftVetoOverrideResponse
+          GetDraftVetoOverrideResponse? vetoOverride = null;
+          if (vetoOverrideRows.TryGetValue(vetoRow.VetoId, out var ov))
           {
-            IssuedByParticipantId = ov.IssuedByParticipantId,
-            ActedByPublicId = ov.ActedByPublicId,
-            IssuedByDisplayName = ov.IssuedByDisplayName,
-          };
-        }
+            vetoOverride = new GetDraftVetoOverrideResponse
+            {
+              IssuedByParticipantId = ov.IssuedByParticipantId,
+              ActedByPublicId = ov.ActedByPublicId,
+              IssuedByDisplayName = ov.IssuedByDisplayName,
+              Note = ov.Note,
+              SpentFromFungiblePool = ov.SpentFromFungiblePool,
+            };
+          }
 
-        veto = new GetDraftVetoResponse
-        {
-          IssuedByParticipantId = vetoRow.IssuedByParticipantId,
-          ActedByPublicId = vetoRow.ActedByPublicId,
-          IsOverridden = vetoRow.IsOverriden,
-          Note = vetoRow.Note,
-          OccurredOnUtc = vetoRow.OccurredOnUtc,
-          Override = vetoOverride,
-          IssuedByDisplayName = vetoRow.IssuedByDisplayName,
-        };
-      }
+          return new GetDraftVetoResponse
+          {
+            IssuedByParticipantId = vetoRow.IssuedByParticipantId,
+            ActedByPublicId = vetoRow.ActedByPublicId,
+            IsOverridden = vetoRow.IsOverriden,
+            Note = vetoRow.Note,
+            OccurredOnUtc = vetoRow.OccurredOnUtc,
+            Override = vetoOverride,
+            IssuedByDisplayName = vetoRow.IssuedByDisplayName,
+            Sequence = vetoRow.Sequence,
+            SpentFromFungiblePool = vetoRow.SpentFromFungiblePool,
+          };
+        })
+        .ToList();
 
       var commissionerOverrideResponse = commissionerOverrideRows.Contains(r.PickInternalId)
         ? new GetDraftCommissionerOverrideResponse()
@@ -792,7 +829,7 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
           PlayedByParticipantIdValue = r.PlayedByParticipantIdValue,
           PlayedByParticipantKindValue = r.PlayedByParticipantKindValue,
           SubDraftIndex = r.SubDraftIndex,
-          Veto = veto,
+          Vetoes = [.. vetoes],
           CommissionerOverride = commissionerOverrideResponse,
         }
       );
@@ -846,6 +883,7 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
       DraftType DraftType,
       DraftStatus DraftStatus,
       string? ImagePath,
+      string? FungibleTokenName,
       string SeriesPublicId,
       string SeriesName,
       string? CampaignPublicId,
@@ -863,6 +901,7 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
       DraftType = draft.DraftType,
       DraftStatus = draft.DraftStatus,
       ImagePath = draft.ImagePath,
+      FungibleTokenName = draft.FungibleTokenName,
       SeriesPublicId = draft.SeriesPublicId,
       SeriesName = draft.SeriesName,
       CampaignPublicId = draft.CampaignPublicId,

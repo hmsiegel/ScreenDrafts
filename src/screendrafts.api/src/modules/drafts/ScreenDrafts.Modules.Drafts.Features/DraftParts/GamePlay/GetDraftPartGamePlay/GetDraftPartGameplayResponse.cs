@@ -16,6 +16,8 @@ internal sealed record GetDraftPartGameplayResponse
   public bool HasCandidateList { get; init; }
   public CurrentUserRolesResponse CurrentUserRoles { get; init; } = new();
   public string? CallerParticipantId { get; init; }
+
+  public string? FungibleTokenName { get; init; }
   public IReadOnlyList<GameplayTriviaResultResponse> TriviaResults { get; init; } = [];
   public IReadOnlyList<GameplayDraftPositionResponse> DraftPositions { get; init; } = [];
   public string? NextExpectedParticipantId { get; init; }

@@ -82,6 +82,7 @@ global using ScreenDrafts.Modules.Drafts.Features.Common;
 global using ScreenDrafts.Modules.Drafts.Features.Common.BulkAdd;
 global using ScreenDrafts.Modules.Drafts.Features.Drafters.Create;
 global using ScreenDrafts.Modules.Drafts.Features.DraftParts.GamePlay.GetDraftPartGamePlay;
+global using ScreenDrafts.Modules.Drafts.Features.DraftParts.Get;
 global using ScreenDrafts.Modules.Drafts.Features.Extensions;
 global using ScreenDrafts.Modules.Drafts.Features.Helpers;
 global using ScreenDrafts.Modules.Drafts.Features.Hosts.Create;

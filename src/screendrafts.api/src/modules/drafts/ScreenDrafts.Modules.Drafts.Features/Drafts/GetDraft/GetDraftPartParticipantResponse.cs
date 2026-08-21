@@ -20,4 +20,8 @@ internal sealed record GetDraftPartParticipantResponse
   public int RolloverVetoOverride { get; init; }
   public int TriviaVetoOverride { get; init; }
   public int CommissionerOverride { get; init; }
+  public int FungibleTokens { get; init; }
+  public int RolloverFungibleTokens { get; init; }
+  public int TriviaFungibleTokens { get; init; }
+  public int FungibleTokensUsed { get; init; }
 }

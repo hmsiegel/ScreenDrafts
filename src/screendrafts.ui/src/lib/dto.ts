@@ -10929,7 +10929,7 @@ export class PredictionsClient implements IPredictionsClient {
             method: "POST",
             signal,
             headers: {
-                "Content-Type": "*/*",
+                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
@@ -11740,6 +11740,7 @@ export interface CreatePersonRequest {
 }
 
 export interface CreatePredictionContestantRequest {
+    personPublicId?: string;
 
     [key: string]: any;
 }
@@ -11894,6 +11895,7 @@ export interface DraftPartPredictionResponse {
     lockedAtUtc?: Date | undefined;
     entries: PredictionEntryResponse[];
     result?: PredictionResultResponse | undefined;
+    surrogates: SurrogateAssignmentResponse[];
 
     [key: string]: any;
 }
@@ -11927,6 +11929,7 @@ export interface DraftPositionRequestModel {
     picks?: number[];
     hasBonusVeto?: boolean;
     hasBonusVetoOverride?: boolean;
+    hasFungibleToken?: boolean;
 
     [key: string]: any;
 }
@@ -12123,6 +12126,7 @@ export interface GameplayDraftPositionResponse {
     ownedBoardSlots?: number[];
     hasBonusVeto?: boolean;
     hasBonusVetoOverride?: boolean;
+    hasBonusFungibleToken?: boolean;
     assignedParticipantId?: string | undefined;
     assignedParticipantKind?: number | undefined;
     assignedParticipantName?: string | undefined;
@@ -12148,6 +12152,8 @@ export interface GameplayParticipantResponse {
     overrideTokensRemaining?: number;
     vetoesRollingIn?: number;
     vetoOverridesRollingIn?: number;
+    fungibleTokensRemaining?: number;
+    fungibleTokensRollingIn?: number;
 
     [key: string]: any;
 }
@@ -12169,6 +12175,9 @@ export interface GameplayPickResponse {
     wasCommissionerOverride?: boolean;
     vetoedByName?: string | undefined;
     savedByName?: string | undefined;
+    wasVetoFungible?: boolean;
+    wasVetoOverrideFungible?: boolean;
+    vetoSequence?: number;
 
     [key: string]: any;
 }
@@ -12417,6 +12426,7 @@ export interface GetDraftPartGameplayResponse {
     hasCandidateList?: boolean;
     currentUserRoles?: CurrentUserRolesResponse;
     callerParticipantId?: string | undefined;
+    fungibleTokenName?: string | undefined;
     triviaResults?: GameplayTriviaResultResponse[];
     draftPositions?: GameplayDraftPositionResponse[];
     nextExpectedParticipantId?: string | undefined;
@@ -12444,6 +12454,10 @@ export interface GetDraftPartParticipantResponse {
     rolloverVetoOverride?: number;
     triviaVetoOverride?: number;
     commissionerOverride?: number;
+    fungibleTokens?: number;
+    rolloverFungibleTokens?: number;
+    triviaFungibleTokens?: number;
+    fungibleTokensUsed?: number;
 
     [key: string]: any;
 }
@@ -12527,7 +12541,7 @@ export interface GetDraftPickResponse {
     actedByPublicId?: string | undefined;
     playedByParticipantIdValue?: string;
     playedByParticipantKindValue?: ParticipantKind;
-    veto?: GetDraftVetoResponse | undefined;
+    vetoes?: GetDraftVetoResponse[];
     commissionerOverride?: GetDraftCommissionerOverrideResponse | undefined;
     subDraftIndex?: number | undefined;
 
@@ -12565,6 +12579,7 @@ export interface GetDraftResponse {
     imagePath?: string | undefined;
     campaignPublicId?: string | undefined;
     campaignName?: string | undefined;
+    fungibleTokenName?: string | undefined;
     categories?: GetDraftCategoryResponse[] | undefined;
     parts?: GetDraftPartResponse[];
 
@@ -12590,6 +12605,8 @@ export interface GetDraftVetoOverrideResponse {
     issuedByDisplayName?: string | undefined;
     actedByPublicId?: string | undefined;
     actedByDisplayName?: string | undefined;
+    note?: string | undefined;
+    spentFromFungiblePool?: boolean;
 
     [key: string]: any;
 }
@@ -12603,6 +12620,8 @@ export interface GetDraftVetoResponse {
     note?: string | undefined;
     occurredOnUtc?: Date;
     override?: GetDraftVetoOverrideResponse | undefined;
+    sequence?: number;
+    spentFromFungiblePool?: boolean;
 
     [key: string]: any;
 }
@@ -14493,6 +14512,14 @@ export interface SubmitPredictionSetRequest {
     [key: string]: any;
 }
 
+export interface SurrogateAssignmentResponse {
+    surrogateSetPublicId: string;
+    surrogateContestantDisplayName: string;
+    mergePolicy: string;
+
+    [key: string]: any;
+}
+
 export interface TriviaResultRequestItem {
     participantPublicId: string;
     kind: number;
@@ -14571,6 +14598,7 @@ export interface UpdateDraftRequest {
     campaignPublicId?: string | undefined;
     publicCategoryIds?: string[] | undefined;
     draftTypeValue?: number;
+    fungibleTokenName?: string | undefined;
 
     [key: string]: any;
 }

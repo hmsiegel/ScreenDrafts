@@ -194,6 +194,12 @@ public static partial class DraftErrors
     "Invalid image content type. Allowed content types are: image/jpeg, image/png, image/webp."
   );
 
+  public static readonly SDError CannotChangeFungibleTokenNameAfterADraftPartHasStarted =
+    SDError.Conflict(
+      "Drafts.CannotChangeFungibleTokenNameAfterADraftPartHasStarted",
+      "Cannot change a fungible token name after a draft part has started."
+    );
+
   public static SDError CampaignDoesNotBelongToThisDraft(string publicId) =>
     SDError.Problem(
       "Drafts.CampaignDoesNotBelongToThisDraft",

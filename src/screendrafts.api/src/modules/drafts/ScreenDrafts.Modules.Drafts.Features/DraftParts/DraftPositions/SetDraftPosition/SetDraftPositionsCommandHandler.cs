@@ -39,12 +39,13 @@ internal sealed class SetDraftPositionsCommandHandler(
       var publicId = _publicIdGenerator.GeneratePublicId(PublicIdPrefixes.DraftPosition);
 
       var draftPosition = DraftPosition.Create(
-        gameBoard,
-        position.Name,
-        position.Picks,
-        publicId,
-        position.HasBonusVeto,
-        position.HasBonusVetoOverride
+        gameBoard: gameBoard,
+        name: position.Name,
+        picks: position.Picks,
+        publicId: publicId,
+        hasBonusVeto: position.HasBonusVeto,
+        hasBonusVetoOverride: position.HasBonusVetoOverride,
+        hasFungibleToken: position.HasFungibleToken
       );
 
       if (draftPosition.IsFailure)

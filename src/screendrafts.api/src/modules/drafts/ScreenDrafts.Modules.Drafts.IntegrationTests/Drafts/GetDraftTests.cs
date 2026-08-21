@@ -399,7 +399,7 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
     pick.Position.Should().Be(1);
     pick.MoviePublicId.Should().Be(movie.PublicId);
     pick.MovieTitle.Should().Be(movie.MovieTitle);
-    pick.Veto.Should().BeNull();
+    pick.Vetoes.Should().BeEmpty();
     pick.CommissionerOverride.Should().BeNull();
   }
 
@@ -448,8 +448,8 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
     // Assert
     result.IsSuccess.Should().BeTrue();
     var pick = result.Value.Parts.Single().Picks.Single();
-    pick.Veto.Should().NotBeNull();
-    pick.Veto.IsOverridden.Should().BeFalse();
+    pick.Vetoes.Should().ContainSingle();
+    pick.Vetoes.Single().IsOverridden.Should().BeFalse();
   }
 
   // ─────────────────────────────────────────────────────────────────────────

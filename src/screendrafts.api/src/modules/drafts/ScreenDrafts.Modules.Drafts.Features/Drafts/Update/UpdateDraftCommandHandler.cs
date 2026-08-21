@@ -12,132 +12,136 @@ internal sealed class UpdateDraftCommandHandler(
   private readonly ICampaignRepository _campaignsRepository = campaignsRepository;
   private readonly ICategoryRepository _categoriesRepository = categoriesRepository;
 
-  public async Task<Result> Handle(
-    UpdateDraftCommand UpdateDraftRequest,
-    CancellationToken cancellationToken
-  )
+  public async Task<Result> Handle(UpdateDraftCommand request, CancellationToken cancellationToken)
   {
-    var draft = await _draftsRepository.GetDraftByPublicId(
-      UpdateDraftRequest.PublicId,
-      cancellationToken
-    );
+    var draft = await _draftsRepository.GetDraftByPublicId(request.PublicId, cancellationToken);
 
     if (draft is null)
     {
-      return Result.Failure(DraftErrors.NotFound(UpdateDraftRequest.PublicId));
+      return Result.Failure(DraftErrors.NotFound(request.PublicId));
     }
 
     if (draft.DraftStatus == DraftStatus.Completed || draft.DraftStatus == DraftStatus.Cancelled)
     {
-      return Result.Failure(
-        DraftErrors.CannotUpdateCompletedOrCancelledDraft(UpdateDraftRequest.PublicId)
-      );
+      return Result.Failure(DraftErrors.CannotUpdateCompletedOrCancelledDraft(request.PublicId));
     }
 
     var anyStartedPart = draft.Parts.Any(p => p.Status != DraftPartStatus.Created);
     if (anyStartedPart)
     {
-      if (
-        !string.Equals(
-          draft.Series.PublicId,
-          UpdateDraftRequest.SeriesPublicId,
-          StringComparison.Ordinal
-        )
-      )
+      if (!string.Equals(draft.Series.PublicId, request.SeriesPublicId, StringComparison.Ordinal))
       {
         return Result.Failure(DraftErrors.CannotChangeASeriesAfterADraftPartHasStarted);
       }
 
-      if (draft.DraftType.Value != UpdateDraftRequest.DraftTypeValue)
+      if (draft.DraftType.Value != request.DraftTypeValue)
       {
         return Result.Failure(DraftErrors.CannotChangeDraftTypeAfterADraftPartHasStarted);
       }
-    }
 
-    if (!string.IsNullOrEmpty(UpdateDraftRequest.SeriesPublicId))
-    {
+      // FungibleTokenName drives ApplyRolloversAsync's whole grant decision the moment
+      // Part 1 starts — changing it afterward would silently desync already-started parts
+      // from whatever a later part computes, the same class of problem the Series/DraftType
+      // guards above already exist to prevent.
       if (
-        !await _seriesRepository.ExistsByPublicIdAsync(
-          UpdateDraftRequest.SeriesPublicId,
-          cancellationToken
+        !string.IsNullOrWhiteSpace(request.FungibleTokenName)
+        && !string.Equals(
+          draft.FungibleTokenName,
+          request.FungibleTokenName,
+          StringComparison.Ordinal
         )
       )
       {
-        return Result.Failure(SeriesErrors.SeriesIdIsInvalid(UpdateDraftRequest.SeriesPublicId));
+        return Result.Failure(DraftErrors.CannotChangeFungibleTokenNameAfterADraftPartHasStarted);
+      }
+    }
+
+    if (!string.IsNullOrEmpty(request.SeriesPublicId))
+    {
+      if (!await _seriesRepository.ExistsByPublicIdAsync(request.SeriesPublicId, cancellationToken))
+      {
+        return Result.Failure(SeriesErrors.SeriesIdIsInvalid(request.SeriesPublicId));
       }
 
       var series = await _seriesRepository.GetByPublicIdAsync(
-        UpdateDraftRequest.SeriesPublicId,
+        request.SeriesPublicId,
         cancellationToken
       );
 
       if (series is null)
       {
-        return Result.Failure(SeriesErrors.SeriesNotFound(UpdateDraftRequest.SeriesPublicId));
+        return Result.Failure(SeriesErrors.SeriesNotFound(request.SeriesPublicId));
       }
 
       draft.LinkSeries(series);
     }
 
-    if (!string.IsNullOrEmpty(UpdateDraftRequest.CampaignPublicId))
+    if (!string.IsNullOrEmpty(request.CampaignPublicId))
     {
       if (
         !await _campaignsRepository.ExistsByPublicIdAsync(
-          UpdateDraftRequest.CampaignPublicId,
+          request.CampaignPublicId,
           cancellationToken
         )
       )
       {
-        return Result.Failure(
-          CampaignErrors.CampaignIdIsInvalid(UpdateDraftRequest.CampaignPublicId)
-        );
+        return Result.Failure(CampaignErrors.CampaignIdIsInvalid(request.CampaignPublicId));
       }
 
       var campaign = await _campaignsRepository.GetByPublicIdAsync(
-        UpdateDraftRequest.CampaignPublicId,
+        request.CampaignPublicId,
         cancellationToken
       );
 
       if (campaign is null)
       {
-        return Result.Failure(CampaignErrors.NotFound(UpdateDraftRequest.CampaignPublicId));
+        return Result.Failure(CampaignErrors.NotFound(request.CampaignPublicId));
       }
 
       draft.SetCampaign(campaign);
     }
 
-    if (UpdateDraftRequest.PublicCategoryIds is { Count: > 0 })
+    if (request.PublicCategoryIds is { Count: > 0 })
     {
       var allExist = await _categoriesRepository.AllExistByPublicIdsAsync(
-        UpdateDraftRequest.PublicCategoryIds,
+        request.PublicCategoryIds,
         cancellationToken
       );
       if (!allExist)
       {
         return Result.Failure(
-          CategoryErrors.OneOrMoreCategoryIdsAreInvalid(UpdateDraftRequest.PublicCategoryIds)
+          CategoryErrors.OneOrMoreCategoryIdsAreInvalid(request.PublicCategoryIds)
         );
       }
 
       var categories = await _categoriesRepository.GetByPublicIdsAsync(
-        UpdateDraftRequest.PublicCategoryIds,
+        request.PublicCategoryIds,
         cancellationToken
       );
 
-      if (categories.Count != UpdateDraftRequest.PublicCategoryIds.Count)
+      if (categories.Count != request.PublicCategoryIds.Count)
       {
         return Result.Failure(
-          CategoryErrors.OneOrMoreCategoryIdsAreInvalid(UpdateDraftRequest.PublicCategoryIds)
+          CategoryErrors.OneOrMoreCategoryIdsAreInvalid(request.PublicCategoryIds)
         );
       }
 
       draft.ReplaceCategories(categories);
     }
 
+    // Only sets when a non-blank value is provided — matches the Series/Campaign pattern
+    // above (apply only if present), not the always-applies Title/Description pattern
+    // below. There's deliberately no way to clear FungibleTokenName back to null through
+    // this endpoint yet; add a dedicated path if that turns out to be needed.
+    if (!string.IsNullOrWhiteSpace(request.FungibleTokenName))
+    {
+      draft.SetFungibleTokenName(request.FungibleTokenName);
+    }
+
     draft.Update(
-      title: UpdateDraftRequest.Title,
-      description: UpdateDraftRequest.Description,
-      draftTypeValue: UpdateDraftRequest.DraftTypeValue
+      title: request.Title,
+      description: request.Description,
+      draftTypeValue: request.DraftTypeValue
     );
 
     _draftsRepository.Update(draft);

@@ -18,4 +18,25 @@ internal sealed record GameplayPickResponse
   public bool WasCommissionerOverride { get; init; }
   public string? VetoedByName { get; init; }
   public string? SavedByName { get; init; }
+
+  /// <summary>
+  /// True when the pick's current veto (Pick.CurrentVeto) was paid for by a fungible
+  /// token rather than a normal veto. Meaningless when WasVetoed is false.
+  /// </summary>
+  public bool WasVetoFungible { get; init; }
+
+  /// <summary>
+  /// True when the override that saved this pick was paid for by a fungible token
+  /// rather than a normal, awarded override. Meaningless when WasVetoOverridden is false.
+  /// </summary>
+  public bool WasVetoOverrideFungible { get; init; }
+
+  /// <summary>
+  /// 1-based position of the pick's current veto within its full veto history — mirrors
+  /// Veto.Sequence. Normally 1. A value of 2 means this pick was vetoed, that veto was
+  /// overridden, and the override was itself overridden (re-vetoing the pick) — the wizard
+  /// should offer "Veto" again on a WasVetoOverridden pick when it's still the most recent
+  /// play, the same as it does for a fresh "landed" pick.
+  /// </summary>
+  public int VetoSequence { get; init; }
 }
