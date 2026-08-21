@@ -158,7 +158,7 @@ internal sealed class GetMediaQueryHandler(
           && seenProductionCompanies.Add(productionCompany.Id)
         )
           mediaEntry.AddProductionCompany(productionCompany);
-        return mediaEntry!;
+        return mediaEntry;
       },
       new { request.PublicId },
       splitOn: "Id,Id,Id,Id,Id,Id"

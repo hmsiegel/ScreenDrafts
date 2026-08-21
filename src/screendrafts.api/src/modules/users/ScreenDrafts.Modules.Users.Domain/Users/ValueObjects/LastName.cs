@@ -11,8 +11,9 @@ public class LastName(string? Value)
   public override string ToString() => Value ?? string.Empty;
 
   public static Result<LastName> Create(string lastName) =>
-    Result.Create(lastName)
+    Result
+      .Create(lastName)
       .Ensure(lastName => !string.IsNullOrWhiteSpace(lastName), LastNameErrors.Empty)
-      .Ensure(lastName => lastName!.Length <= MaxLength, LastNameErrors.TooLong)
-    .Map(e => new LastName(lastName));
+      .Ensure(lastName => lastName.Length <= MaxLength, LastNameErrors.TooLong)
+      .Map(e => new LastName(lastName));
 }

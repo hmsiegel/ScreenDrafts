@@ -65,7 +65,7 @@ internal sealed class DraftSeeder(
       .ToHashSetAsync(cancellationToken);
 
     var newDrafts = drafts.Where(draft =>
-      !draft.Id.HasValue || !existingDraftIds.Contains(DraftId.Create(draft.Id!.Value))).ToList();
+      !draft.Id.HasValue || !existingDraftIds.Contains(DraftId.Create(draft.Id.Value))).ToList();
 
     if (newDrafts.Count == 0)
     {
@@ -95,7 +95,7 @@ internal sealed class DraftSeeder(
 
       if (draft.CampaignId.HasValue)
       {
-        if (!campaignsById.TryGetValue(draft.CampaignId!.Value, out var campaign))
+        if (!campaignsById.TryGetValue(draft.CampaignId.Value, out var campaign))
         {
           throw new InvalidOperationException(
             $"Campaign with ID '{draft.CampaignId}' not found for Draft '{draft.Title}'.");

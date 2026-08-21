@@ -52,17 +52,14 @@ internal sealed class GetOnlineMediaCommandHandler(
   {
     if (command.TmdbId.HasValue)
     {
-      var detail = await _tmdbService.GetMovieDetailsAsync(
-        command.TmdbId!.Value,
-        cancellationToken
-      );
+      var detail = await _tmdbService.GetMovieDetailsAsync(command.TmdbId.Value, cancellationToken);
 
       if (detail is null)
       {
-        return Result.Failure<GetOnlineMediaResponse>(MovieErrors.NotFound(command.TmdbId!.Value));
+        return Result.Failure<GetOnlineMediaResponse>(MovieErrors.NotFound(command.TmdbId.Value));
       }
 
-      var imdbId = await _tmdbService.GetMovieImdbIdAsync(command.TmdbId!.Value, cancellationToken);
+      var imdbId = await _tmdbService.GetMovieImdbIdAsync(command.TmdbId.Value, cancellationToken);
 
       return BuildTmdbResponse(detail, imdbId, MediaType.Movie);
     }
@@ -91,10 +88,10 @@ internal sealed class GetOnlineMediaCommandHandler(
 
     if (detail is null)
     {
-      return Result.Failure<GetOnlineMediaResponse>(MovieErrors.NotFound(command.TmdbId!.Value));
+      return Result.Failure<GetOnlineMediaResponse>(MovieErrors.NotFound(command.TmdbId.Value));
     }
 
-    var imdbId = await _tmdbService.GetTvShowImdbIdAsync(command.TmdbId!.Value, cancellationToken);
+    var imdbId = await _tmdbService.GetTvShowImdbIdAsync(command.TmdbId.Value, cancellationToken);
 
     return BuildTmdbResponse(detail, imdbId, MediaType.TvShow);
   }
@@ -114,21 +111,21 @@ internal sealed class GetOnlineMediaCommandHandler(
     }
 
     var detail = await _tmdbService.GetTvEpisodeDetailsAsync(
-      command.TvSeriesTmdbId!.Value,
-      command.SeasonNumber!.Value,
-      command.EpisodeNumber!.Value,
+      command.TvSeriesTmdbId.Value,
+      command.SeasonNumber.Value,
+      command.EpisodeNumber.Value,
       cancellationToken
     );
 
     if (detail is null)
     {
       return Result.Failure<GetOnlineMediaResponse>(
-        MovieErrors.NotFound(command.TvSeriesTmdbId!.Value)
+        MovieErrors.NotFound(command.TvSeriesTmdbId.Value)
       );
     }
 
     var imdbId = await _tmdbService.GetTvShowImdbIdAsync(
-      command.TvSeriesTmdbId!.Value,
+      command.TvSeriesTmdbId.Value,
       cancellationToken
     );
 

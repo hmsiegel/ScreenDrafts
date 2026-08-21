@@ -227,7 +227,7 @@ public sealed partial class DraftPart
         draftPartPublicId: PublicId,
         draftId: DraftId.Value,
         draftPublicId: DraftPublicId,
-        tmdbId: pick.Movie.TmdbId!.Value,
+        tmdbId: pick.Movie.TmdbId.Value,
         playOrder: pick.PlayOrder,
         movieTitle: pick.Movie.MovieTitle,
         boardPosition: pick.Position,
