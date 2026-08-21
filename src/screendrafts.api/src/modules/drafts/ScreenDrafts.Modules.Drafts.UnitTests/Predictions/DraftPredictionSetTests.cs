@@ -158,7 +158,7 @@ public sealed class DraftPredictionSetTests : DraftsBaseTest
     set.IsLocked.Should().BeTrue();
     set.LockedAtUtc.Should().Be(now);
     set.RulesSnapshot.Should().NotBeNull();
-    set.RulesSnapshot!.Mode.Should().Be(PredictionMode.UnorderedAll);
+    set.RulesSnapshot.Mode.Should().Be(PredictionMode.UnorderedAll);
   }
 
   [Fact]

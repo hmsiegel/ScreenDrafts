@@ -105,10 +105,10 @@ public sealed class VetoOverrideAppliedDomainEventHandlerTests(DraftsIntegration
 
     // Assert — veto override should mark veto as overridden
     var pick = await DbContext.Picks
-      .Include(p => p.Veto)
+      .Include(p => p.Vetoes)
       .FirstAsync(p => p.PlayOrder == 1 && p.DraftPart.PublicId == draftPartPublicId, TestContext.Current.CancellationToken);
-    pick.Veto.Should().NotBeNull();
-    pick.Veto!.IsOverridden.Should().BeTrue();
+    pick.CurrentVeto.Should().NotBeNull();
+    pick.CurrentVeto.IsOverridden.Should().BeTrue();
   }
 
   // ---------------------------------------------------------------------------

@@ -52,7 +52,7 @@ public sealed class AddCarryoverTests(DraftsIntegrationTestWebAppFactory factory
       .FirstOrDefaultAsync(co => co.SeasonId == season.Id && co.ContestantId == contestant.Id, TestContext.Current.CancellationToken);
 
     carryover.Should().NotBeNull();
-    carryover!.Points.Should().Be(10);
+    carryover.Points.Should().Be(10);
   }
 
   [Fact]

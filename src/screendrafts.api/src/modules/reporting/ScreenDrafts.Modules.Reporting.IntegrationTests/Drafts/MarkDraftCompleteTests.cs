@@ -87,7 +87,7 @@ public sealed class MarkDraftCompleteTests(ReportingIntegrationTestWebAppFactory
       );
 
     summary.Should().NotBeNull();
-    summary!.IsComplete.Should().BeTrue();
+    summary.IsComplete.Should().BeTrue();
   }
 
   // -------------------------------------------------------------------------

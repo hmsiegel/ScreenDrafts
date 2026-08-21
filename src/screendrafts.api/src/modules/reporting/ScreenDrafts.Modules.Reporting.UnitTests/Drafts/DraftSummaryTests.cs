@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Reporting.UnitTests.Drafts;
+﻿namespace ScreenDrafts.Modules.Reporting.UnitTests.Drafts;
 
 public sealed class DraftSummaryTests
 {
@@ -146,7 +146,7 @@ public sealed class DraftSummaryTests
     summary.MarkComplete();
 
     summary.CompletedAtUtc.Should().NotBeNull();
-    summary.CompletedAtUtc!.Value.Should().BeOnOrAfter(before);
+    summary.CompletedAtUtc.Value.Should().BeOnOrAfter(before);
   }
 
   // -------------------------------------------------------------------------

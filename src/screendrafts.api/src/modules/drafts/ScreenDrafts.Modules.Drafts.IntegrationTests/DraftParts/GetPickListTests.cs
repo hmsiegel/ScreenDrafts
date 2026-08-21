@@ -157,7 +157,7 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
     result.IsSuccess.Should().BeTrue();
     var pick = result.Value.Picks.Single();
     pick.Veto.Should().NotBeNull();
-    pick.Veto!.IsOverridden.Should().BeFalse();
+    pick.Veto.IsOverridden.Should().BeFalse();
     pick.Veto.Override.Should().BeNull();
     pick.Veto.IssuedByParticipantKindValue.Should().Be(ParticipantKind.Drafter.Value);
   }
@@ -239,9 +239,9 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
     result.IsSuccess.Should().BeTrue();
     var pick = result.Value.Picks.Single();
     pick.Veto.Should().NotBeNull();
-    pick.Veto!.IsOverridden.Should().BeTrue();
+    pick.Veto.IsOverridden.Should().BeTrue();
     pick.Veto.Override.Should().NotBeNull();
-    pick.Veto.Override!.IssuedByParticipantKindValue.Should().Be(ParticipantKind.Drafter.Value);
+    pick.Veto.Override.IssuedByParticipantKindValue.Should().Be(ParticipantKind.Drafter.Value);
   }
 
   // -------------------------------------------------------------------------

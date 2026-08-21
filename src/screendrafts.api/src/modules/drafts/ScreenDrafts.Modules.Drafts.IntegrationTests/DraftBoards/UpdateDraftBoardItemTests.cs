@@ -78,7 +78,7 @@ public sealed class UpdateDraftBoardItemTests(DraftsIntegrationTestWebAppFactory
 
     var item = board!.Items.FirstOrDefault(i => i.TmdbId == tmdbId);
     item.Should().NotBeNull();
-    item!.Notes.Should().Be(updatedNotes);
+    item.Notes.Should().Be(updatedNotes);
     item.Priority.Should().Be(updatedPriority);
   }
 
@@ -118,7 +118,7 @@ public sealed class UpdateDraftBoardItemTests(DraftsIntegrationTestWebAppFactory
 
     var item = board!.Items.FirstOrDefault(i => i.TmdbId == tmdbId);
     item.Should().NotBeNull();
-    item!.Notes.Should().BeNull();
+    item.Notes.Should().BeNull();
     item.Priority.Should().BeNull();
   }
 

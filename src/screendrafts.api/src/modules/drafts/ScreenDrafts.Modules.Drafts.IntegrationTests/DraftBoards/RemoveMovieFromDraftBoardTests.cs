@@ -69,7 +69,7 @@ public sealed class RemoveMovieFromDraftBoardTests(DraftsIntegrationTestWebAppFa
       .FirstOrDefaultAsync(TestContext.Current.CancellationToken);
 
     board.Should().NotBeNull();
-    board!.Items.Should().NotContain(i => i.TmdbId == tmdbId);
+    board.Items.Should().NotContain(i => i.TmdbId == tmdbId);
   }
 
   // ---------------------------------------------------------------------------

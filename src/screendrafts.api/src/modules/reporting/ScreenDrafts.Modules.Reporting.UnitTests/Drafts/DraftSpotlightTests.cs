@@ -93,7 +93,7 @@ public sealed class DraftSpotlightTests
     spotlight.Activate();
 
     spotlight.ActivatedAtUtc.Should().NotBeNull();
-    spotlight.ActivatedAtUtc!.Value.Should().BeOnOrAfter(before);
+    spotlight.ActivatedAtUtc.Value.Should().BeOnOrAfter(before);
   }
 
   // -------------------------------------------------------------------------

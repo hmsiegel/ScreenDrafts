@@ -176,7 +176,7 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
     result.IsSuccess.Should().BeTrue();
     var part = result.Value.Parts.Single();
     part.PrimaryHost.Should().NotBeNull();
-    part.PrimaryHost!.HostPublicId.Should().Be(hostPublicId);
+    part.PrimaryHost.HostPublicId.Should().Be(hostPublicId);
   }
 
   [Fact]
@@ -449,7 +449,7 @@ public sealed class GetDraftTests(DraftsIntegrationTestWebAppFactory factory)
     result.IsSuccess.Should().BeTrue();
     var pick = result.Value.Parts.Single().Picks.Single();
     pick.Veto.Should().NotBeNull();
-    pick.Veto!.IsOverridden.Should().BeFalse();
+    pick.Veto.IsOverridden.Should().BeFalse();
   }
 
   // ─────────────────────────────────────────────────────────────────────────

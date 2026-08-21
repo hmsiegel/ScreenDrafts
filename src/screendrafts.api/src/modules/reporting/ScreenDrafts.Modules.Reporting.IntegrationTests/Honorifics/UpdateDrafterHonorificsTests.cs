@@ -26,7 +26,7 @@ public sealed class UpdateDrafterHonorificsTests(ReportingIntegrationTestWebAppF
       .FirstOrDefaultAsync(a => a.DrafterIdValue == drafterId, TestContext.Current.CancellationToken);
 
     appearance.Should().NotBeNull();
-    appearance!.DraftPartPublicId.Should().Be(command.DraftPartPublicId);
+    appearance.DraftPartPublicId.Should().Be(command.DraftPartPublicId);
   }
 
   // -------------------------------------------------------------------------
@@ -70,7 +70,7 @@ public sealed class UpdateDrafterHonorificsTests(ReportingIntegrationTestWebAppF
       .FirstOrDefaultAsync(h => h.DrafterIdValue == drafterId, TestContext.Current.CancellationToken);
 
     honorific.Should().NotBeNull();
-    honorific!.Honorific.Should().Be(DrafterHonorific.AllStar);
+    honorific.Honorific.Should().Be(DrafterHonorific.AllStar);
     honorific.AppearanceCount.Should().Be(5);
   }
 
@@ -90,7 +90,7 @@ public sealed class UpdateDrafterHonorificsTests(ReportingIntegrationTestWebAppF
       .FirstOrDefaultAsync(h => h.DrafterIdValue == drafterId, TestContext.Current.CancellationToken);
 
     honorific.Should().NotBeNull();
-    honorific!.Honorific.Should().Be(DrafterHonorific.HallOfFame);
+    honorific.Honorific.Should().Be(DrafterHonorific.HallOfFame);
     honorific.AppearanceCount.Should().Be(10);
   }
 
@@ -110,7 +110,7 @@ public sealed class UpdateDrafterHonorificsTests(ReportingIntegrationTestWebAppF
       .FirstOrDefaultAsync(h => h.DrafterIdValue == drafterId, TestContext.Current.CancellationToken);
 
     honorific.Should().NotBeNull();
-    honorific!.Honorific.Should().Be(DrafterHonorific.None);
+    honorific.Honorific.Should().Be(DrafterHonorific.None);
     honorific.AppearanceCount.Should().Be(4);
   }
 
@@ -147,7 +147,7 @@ public sealed class UpdateDrafterHonorificsTests(ReportingIntegrationTestWebAppF
       .FirstOrDefaultAsync(h => h.DrafterIdValue == drafterId, TestContext.Current.CancellationToken);
 
     honorific.Should().NotBeNull();
-    honorific!.Honorific.Should().Be(DrafterHonorific.None,
+    honorific.Honorific.Should().Be(DrafterHonorific.None,
       "appearances without main feed release don't count toward honorific when policy is OnMainFeed");
     honorific.AppearanceCount.Should().Be(0);
   }
@@ -180,7 +180,7 @@ public sealed class UpdateDrafterHonorificsTests(ReportingIntegrationTestWebAppF
       .FirstOrDefaultAsync(h => h.DrafterIdValue == drafterId, TestContext.Current.CancellationToken);
 
     honorific.Should().NotBeNull();
-    honorific!.Honorific.Should().Be(DrafterHonorific.AllStar);
+    honorific.Honorific.Should().Be(DrafterHonorific.AllStar);
     honorific.AppearanceCount.Should().Be(5);
   }
 

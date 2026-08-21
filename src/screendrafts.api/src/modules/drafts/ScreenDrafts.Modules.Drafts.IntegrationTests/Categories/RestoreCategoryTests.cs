@@ -139,8 +139,8 @@ public sealed class RestoreCategoryTests(DraftsIntegrationTestWebAppFactory fact
       .Set<Domain.Categories.Category>()
       .FirstOrDefaultAsync(c => c.PublicId == publicId, TestContext.Current.CancellationToken);
     restoredCategory.Should().NotBeNull();
-    restoredCategory!.ModifiedOnUtc.Should().NotBeNull();
-    restoredCategory.ModifiedOnUtc!.Value.Should().BeOnOrAfter(beforeRestore);
+    restoredCategory.ModifiedOnUtc.Should().NotBeNull();
+    restoredCategory.ModifiedOnUtc.Value.Should().BeOnOrAfter(beforeRestore);
     restoredCategory.ModifiedOnUtc.Value.Should().BeOnOrBefore(afterRestore);
   }
 }

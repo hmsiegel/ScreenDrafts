@@ -58,7 +58,7 @@ public sealed class PlayPickTests(DraftsIntegrationTestWebAppFactory factory)
       .FirstOrDefaultAsync(p => p.PlayOrder == 1 && p.DraftPart.PublicId == draftPartPublicId, TestContext.Current.CancellationToken);
 
     pick.Should().NotBeNull();
-    pick!.MovieId.Should().Be(movie.Id);
+    pick.MovieId.Should().Be(movie.Id);
     pick.Position.Should().Be(1);
   }
 

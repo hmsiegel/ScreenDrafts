@@ -268,8 +268,8 @@ public sealed class EditCategoryTests(DraftsIntegrationTestWebAppFactory factory
     var editedCategory = await DbContext.Set<Domain.Categories.Category>()
       .FirstOrDefaultAsync(c => c.PublicId == publicId, TestContext.Current.CancellationToken);
     editedCategory.Should().NotBeNull();
-    editedCategory!.ModifiedOnUtc.Should().NotBeNull();
-    editedCategory.ModifiedOnUtc!.Value.Should().BeOnOrAfter(beforeEdit);
+    editedCategory.ModifiedOnUtc.Should().NotBeNull();
+    editedCategory.ModifiedOnUtc.Value.Should().BeOnOrAfter(beforeEdit);
     editedCategory.ModifiedOnUtc.Value.Should().BeOnOrBefore(afterEdit);
   }
 }

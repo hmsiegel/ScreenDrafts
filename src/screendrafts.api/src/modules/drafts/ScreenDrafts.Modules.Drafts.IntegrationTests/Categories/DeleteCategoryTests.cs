@@ -104,8 +104,8 @@ public sealed class DeleteCategoryTests(DraftsIntegrationTestWebAppFactory facto
       .Set<Domain.Categories.Category>()
       .FirstOrDefaultAsync(c => c.PublicId == publicId, TestContext.Current.CancellationToken);
     deletedCategory.Should().NotBeNull();
-    deletedCategory!.ModifiedOnUtc.Should().NotBeNull();
-    deletedCategory.ModifiedOnUtc!.Value.Should().BeOnOrAfter(beforeDelete);
+    deletedCategory.ModifiedOnUtc.Should().NotBeNull();
+    deletedCategory.ModifiedOnUtc.Value.Should().BeOnOrAfter(beforeDelete);
     deletedCategory.ModifiedOnUtc.Value.Should().BeOnOrBefore(afterDelete);
   }
 }

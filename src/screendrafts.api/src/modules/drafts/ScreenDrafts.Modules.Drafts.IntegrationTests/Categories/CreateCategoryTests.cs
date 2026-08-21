@@ -104,7 +104,7 @@ public sealed class CreateCategoryTests(DraftsIntegrationTestWebAppFactory facto
     var createdCategory = await DbContext.Set<Domain.Categories.Category>()
       .FirstOrDefaultAsync(c => c.PublicId == result.Value, TestContext.Current.CancellationToken);
     createdCategory.Should().NotBeNull();
-    createdCategory!.CreatedOnUtc.Should().BeOnOrAfter(beforeCreation);
+    createdCategory.CreatedOnUtc.Should().BeOnOrAfter(beforeCreation);
     createdCategory.CreatedOnUtc.Should().BeOnOrBefore(afterCreation);
   }
 }

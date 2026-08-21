@@ -56,7 +56,7 @@ public sealed class ScoreDraftPartPredictionsTests(DraftsIntegrationTestWebAppFa
     );
 
     predictionResult.Should().NotBeNull();
-    predictionResult!.CorrectCount.Should().Be(3);
+    predictionResult.CorrectCount.Should().Be(3);
     predictionResult.ShootTheMoon.Should().BeTrue();
     predictionResult.PointsAwarded.Should().Be(6); // 3 × 2 for shoot-the-moon
   }
@@ -189,7 +189,7 @@ public sealed class ScoreDraftPartPredictionsTests(DraftsIntegrationTestWebAppFa
     );
 
     standing.Should().NotBeNull();
-    standing!.Points.Should().Be(6); // 3 correct × 2 for shoot-the-moon
+    standing.Points.Should().Be(6); // 3 correct × 2 for shoot-the-moon
   }
 
   [Fact]
@@ -222,7 +222,7 @@ public sealed class ScoreDraftPartPredictionsTests(DraftsIntegrationTestWebAppFa
     );
 
     predictionResult.Should().NotBeNull();
-    predictionResult!.CorrectCount.Should().Be(1);
+    predictionResult.CorrectCount.Should().Be(1);
     predictionResult.ShootTheMoon.Should().BeFalse();
     predictionResult.PointsAwarded.Should().Be(1);
   }
