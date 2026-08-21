@@ -84,7 +84,7 @@ internal sealed class MovieRepository(DraftsDbContext dbContext) : IMovieReposit
   public async Task<HashSet<int>> GetExistingIgdbIdsAsync(IReadOnlyList<int> validIgdbIds, CancellationToken cancellationToken)
   {
     var existingIds = await _dbContext.Movies
-      .Where(m => m.IgdbId != null && validIgdbIds.Contains(m.IgdbId!.Value))
+      .Where(m => m.IgdbId != null && validIgdbIds.Contains(m.IgdbId.Value))
       .Select(m => m.IgdbId!.Value)
       .ToListAsync(cancellationToken);
 
@@ -94,7 +94,7 @@ internal sealed class MovieRepository(DraftsDbContext dbContext) : IMovieReposit
   public async Task<HashSet<int>> GetExistingTmdbIdsAsync(IReadOnlyList<int> validTmdbIds, CancellationToken cancellationToken)
   {
     var existingIds = await _dbContext.Movies
-      .Where(m => m.TmdbId != null && validTmdbIds.Contains(m.TmdbId!.Value))
+      .Where(m => m.TmdbId != null && validTmdbIds.Contains(m.TmdbId.Value))
       .Select(m => m.TmdbId!.Value)
       .ToListAsync(cancellationToken);
 

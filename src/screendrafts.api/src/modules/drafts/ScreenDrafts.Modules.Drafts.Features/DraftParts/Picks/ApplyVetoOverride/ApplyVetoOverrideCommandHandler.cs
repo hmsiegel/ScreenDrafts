@@ -3,23 +3,34 @@
 internal sealed class ApplyVetoOverrideCommandHandler(
   IDraftPartRepository draftPartRepository,
   ParticipantResolver participantResolver,
-  ISeriesPolicyProvider seriesPolicyProvider)
-  : ICommandHandler<ApplyVetoOverrideCommand>
+  ISeriesPolicyProvider seriesPolicyProvider,
+  IDraftPolicyProvider draftPolicyProvider
+) : ICommandHandler<ApplyVetoOverrideCommand>
 {
   private readonly IDraftPartRepository _draftPartRepository = draftPartRepository;
   private readonly ParticipantResolver _participantResolver = participantResolver;
   private readonly ISeriesPolicyProvider _seriesPolicyProvider = seriesPolicyProvider;
+  private readonly IDraftPolicyProvider _draftPolicyProvider = draftPolicyProvider;
 
-  public async Task<Result> Handle(ApplyVetoOverrideCommand request, CancellationToken cancellationToken)
+  public async Task<Result> Handle(
+    ApplyVetoOverrideCommand request,
+    CancellationToken cancellationToken
+  )
   {
-    var draftPart = await _draftPartRepository.GetByPublicIdAsync(request.DraftPartId, cancellationToken);
+    var draftPart = await _draftPartRepository.GetByPublicIdAsync(
+      request.DraftPartId,
+      cancellationToken
+    );
 
     if (draftPart is null)
     {
       return Result.Failure(DraftPartErrors.NotFound(request.DraftPartId));
     }
 
-    var seriesPolicy = await _seriesPolicyProvider.GetSeriesAsyc(draftPart.SeriesId, cancellationToken);
+    var seriesPolicy = await _seriesPolicyProvider.GetSeriesAsyc(
+      draftPart.SeriesId,
+      cancellationToken
+    );
 
     if (seriesPolicy is null)
     {
@@ -29,7 +40,8 @@ internal sealed class ApplyVetoOverrideCommandHandler(
     var participantResult = await _participantResolver.ResolveAsync(
       request.ParticipantIdValue,
       request.ParticipantKind,
-      cancellationToken);
+      cancellationToken
+    );
 
     if (participantResult.IsFailure)
     {
@@ -45,11 +57,18 @@ internal sealed class ApplyVetoOverrideCommandHandler(
       return Result.Failure(validationResult.Errors);
     }
 
+    var draftPolicy = await _draftPolicyProvider.GetDraftPolicyAsync(
+      draftPart.DraftId,
+      cancellationToken
+    );
+
     var result = draftPart.ApplyVetoOverride(
       request.PlayOrder,
       by: participant,
       canonicalPolicyValue: CanonicalPolicy.FromValue(seriesPolicy.CanonicalPolicy),
-      actedByPublicId: request.ActorPublicId);
+      actedByPublicId: request.ActorPublicId,
+      fungibleTokenName: draftPolicy?.FungibleTokenName
+    );
 
     if (result.IsFailure)
     {

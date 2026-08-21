@@ -150,7 +150,7 @@ internal sealed class VetoAppliedDomainEventHandler(
         draftPublicId: domainEvent.DraftPublicId,
         moviePublicId: domainEvent.MoviePublicId,
         movieTitle: domainEvent.MovieTitle!,
-        tmdbId: domainEvent.TmdbId!.Value,
+        tmdbId: domainEvent.TmdbId.Value,
         boardPosition: domainEvent.BoardPosition,
         playedByParticipantId: domainEvent.PlayedByParticipantId,
         playedByParticipantKind: domainEvent.PlayedByParticipantKind,

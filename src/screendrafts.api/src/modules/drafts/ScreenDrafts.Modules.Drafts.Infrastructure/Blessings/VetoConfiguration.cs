@@ -9,38 +9,46 @@ internal sealed class VetoConfiguration : IEntityTypeConfiguration<Veto>
     // Id
     builder.HasKey(veto => veto.Id);
 
-    builder.Property(veto => veto.Id)
+    builder
+      .Property(veto => veto.Id)
       .ValueGeneratedNever()
       .HasConversion(IdConverters.VetoIdConverter);
 
     // IssuedBy
-    builder.Property(x => x.IssuedByParticipantId)
+    builder
+      .Property(x => x.IssuedByParticipantId)
       .IsRequired()
       .ValueGeneratedNever()
       .HasConversion(IdConverters.DraftPartParticipantIdConverter);
 
     // Target Pick
-    builder.Property(x => x.TargetPickId)
+    // A pick may accumulate more than one veto over its lifetime (veto -> override -> re-veto),
+    // so this is configured from this side as the "many" end. Pick no longer
+    // configures the inverse of this relationship. See <see cref="PickConfiguration"/> for more details.
+    builder
+      .Property(x => x.TargetPickId)
       .IsRequired()
       .ValueGeneratedNever()
       .HasConversion(IdConverters.DraftPickIdConverter);
 
-    builder.HasOne(x => x.TargetPick)
-      .WithOne(p => p.Veto)
-      .HasForeignKey<Veto>(x => x.TargetPickId)
+    builder
+      .HasOne(x => x.TargetPick)
+      .WithMany("_vetoes")
+      .HasForeignKey(x => x.TargetPickId)
       .OnDelete(DeleteBehavior.Cascade);
 
+    builder.Property(v => v.Sequence).IsRequired();
 
-    builder.Property(v => v.IsOverridden)
-      .IsRequired();
+    builder.Property(v => v.IsOverridden).IsRequired();
 
-    builder.Property(v => v.OccurredOn)
-      .IsRequired();
+    builder.Property(v => v.SpentFromFungiblePool).IsRequired();
 
-    builder.Property(v => v.Note)
-      .HasMaxLength(1000);
+    builder.Property(v => v.OccurredOn).IsRequired();
 
-    builder.HasOne(v => v.VetoOverride)
+    builder.Property(v => v.Note).HasMaxLength(1000);
+
+    builder
+      .HasOne(v => v.VetoOverride)
       .WithOne(vo => vo.Veto)
       .HasForeignKey<VetoOverride>(v => v.VetoId)
       .OnDelete(DeleteBehavior.Cascade);
@@ -48,9 +56,10 @@ internal sealed class VetoConfiguration : IEntityTypeConfiguration<Veto>
     builder.Ignore(v => v.DraftPart);
     builder.Ignore(v => v.DraftPartId);
 
-    builder.HasIndex(x => new {x.IssuedByParticipantId, x.TargetPickId }).IsUnique();
+    builder.HasIndex(x => new { x.TargetPickId, x.Sequence }).IsUnique();
 
-    builder.Property(v => v.SubDraftId)
+    builder
+      .Property(v => v.SubDraftId)
       .IsRequired(required: false)
       .HasConversion(IdConverters.NullableSubDraftIdConverter);
   }

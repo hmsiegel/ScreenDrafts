@@ -53,6 +53,8 @@ public sealed partial class Draft : AggregateRoot<DraftId, Guid>
   /// </summary>
   public bool GrantsStartingVetoPerPart { get; private set; }
 
+  public string? FungibleTokenName { get; private set; }
+
   // Relationships
   public IReadOnlyCollection<DraftPart> Parts => _parts.AsReadOnly();
   public IReadOnlyCollection<DraftCategory> DraftCategories => _draftCategories.AsReadOnly();
@@ -343,6 +345,21 @@ public sealed partial class Draft : AggregateRoot<DraftId, Guid>
   public void SetVetoPolicy(bool grantsStartingVetoPerPart)
   {
     GrantsStartingVetoPerPart = grantsStartingVetoPerPart;
+    UpdatedAtUtc = DateTime.UtcNow;
+  }
+
+  /// <summary>
+  /// Sets or clears this draft's fungible veto/override token flavor name. Pass null or
+  /// whitespace to clear it. Setting a non-null name doesn't by itself grant any tokens —
+  /// that happens per-part in SetDraftPartStatusCommandHandler.ApplyRolloversAsync, keyed
+  /// off Series.Kind — this is purely the display/attribution name used once a token is spent.
+  /// </summary>
+  public void SetFungibleTokenName(string? fungibleTokenName)
+  {
+    FungibleTokenName = string.IsNullOrWhiteSpace(fungibleTokenName)
+      ? null
+      : fungibleTokenName.Trim();
+
     UpdatedAtUtc = DateTime.UtcNow;
   }
 

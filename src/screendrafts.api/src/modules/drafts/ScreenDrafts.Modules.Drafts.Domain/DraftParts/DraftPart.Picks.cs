@@ -56,7 +56,7 @@ public sealed partial class DraftPart
     {
       if (
         string.IsNullOrWhiteSpace(movieVersionName)
-        || !movieVersionName!.Trim().Equals(required, StringComparison.OrdinalIgnoreCase)
+        || !movieVersionName.Trim().Equals(required, StringComparison.OrdinalIgnoreCase)
       )
       {
         return Result.Failure<PickId>(MovieErrors.VersionDoesNotMatchRequiredPolicy);
@@ -219,7 +219,12 @@ public sealed partial class DraftPart
     return Result.Success();
   }
 
-  public Result ApplyVeto(PickId pickId, Participant issuerId, string? actedByPublicId = null)
+  public Result ApplyVeto(
+    PickId pickId,
+    Participant issuerId,
+    string? actedByPublicId = null,
+    string? fungibleTokenName = null
+  )
   {
     ArgumentNullException.ThrowIfNull(pickId);
 
@@ -248,6 +253,7 @@ public sealed partial class DraftPart
     }
 
     var participant = GetParticipantRequired(issuerId);
+    var spentFromFungiblePool = false;
 
     if (issuerId.Kind != ParticipantKind.Community)
     {
@@ -256,17 +262,24 @@ public sealed partial class DraftPart
         return Result.Failure(DraftPartErrors.NoRemainingVetoes);
       }
 
-      participant.SpendVeto();
+      spentFromFungiblePool = participant.SpendVeto();
     }
 
     var vetoResult = Veto.Create(
       pick: pick,
       issuedByParticipant: participant,
-      actedByPublicId: actedByPublicId
+      actedByPublicId: actedByPublicId,
+      note: spentFromFungiblePool ? fungibleTokenName : null,
+      spentFromFungiblePool: spentFromFungiblePool
     );
 
     if (vetoResult.IsFailure)
     {
+      if (issuerId.Kind != ParticipantKind.Community)
+      {
+        participant.RefundVeto(spentFromFungiblePool);
+      }
+
       return Result.Failure(vetoResult.Errors);
     }
 
@@ -276,6 +289,10 @@ public sealed partial class DraftPart
 
     if (apply.IsFailure)
     {
+      if (issuerId.Kind != ParticipantKind.Community)
+      {
+        participant.RefundVeto(spentFromFungiblePool);
+      }
       return apply;
     }
 
@@ -320,14 +337,14 @@ public sealed partial class DraftPart
       return Result.Failure(DraftPartErrors.PickNotFound(playOrder));
     }
 
-    if (pick.Veto is null)
+    if (pick.CurrentVeto is null)
     {
       return Result.Failure(PickErrors.PickNotVetoed);
     }
 
     // Refund the veto token to the issuer before clearing the veto
     var issuerParticipant = _draftPartParticipants.FirstOrDefault(p =>
-      p.Id == pick.Veto.IssuedByParticipantId
+      p.Id == pick.CurrentVeto.IssuedByParticipantId
     );
 
     if (issuerParticipant is not null)
@@ -366,7 +383,8 @@ public sealed partial class DraftPart
     int playOrder,
     Participant by,
     int canonicalPolicyValue,
-    string? actedByPublicId = null
+    string? actedByPublicId = null,
+    string? fungibleTokenName = null
   )
   {
     if (DraftType == DraftType.SpeedDraft || DraftType == DraftType.Standard)
@@ -386,7 +404,7 @@ public sealed partial class DraftPart
       return Result.Failure(DraftPartErrors.PickNotFound(playOrder));
     }
 
-    if (pick.Veto is null)
+    if (pick.CurrentVeto is null)
     {
       return Result.Failure(DraftPartErrors.VetoNotFound(playOrder));
     }
@@ -396,10 +414,26 @@ public sealed partial class DraftPart
       return Result.Failure(DraftPartErrors.CannotOverrideOwnPick);
     }
 
-    var overrideResults = pick.Veto.Override(by, actedByPublicId);
+    var participant = GetParticipantRequired(by);
+    var budget = ResolvePartBudget(DraftType);
+
+    if (!participant.CanUseVetoOverride(budget.MaxVetoOverrides))
+    {
+      return Result.Failure(DraftPartErrors.NoRemainingVetoOverrides);
+    }
+
+    var spentFromFungiblePool = participant.SpendVetoOverride(budget.MaxVetoOverrides);
+
+    var overrideResults = pick.CurrentVeto.Override(
+      by: by,
+      actedByPublicId: actedByPublicId,
+      note: spentFromFungiblePool ? fungibleTokenName : null,
+      spentFromFungiblePool: spentFromFungiblePool
+    );
 
     if (overrideResults.IsFailure)
     {
+      participant.RefundVetoOverride(spentFromFungiblePool);
       return overrideResults;
     }
 
@@ -409,7 +443,7 @@ public sealed partial class DraftPart
         new VetoOverrideAddedDomainEvent(
           draftPartId: Id.Value,
           draftPartPublicId: PublicId,
-          tmdbId: pick.Movie.TmdbId!.Value,
+          tmdbId: pick.Movie.TmdbId.Value,
           participantId: pick.PlayedByParticipant.ParticipantId.Value,
           participantKind: pick.PlayedByParticipant.ParticipantKindValue.Value,
           draftId: DraftId.Value,
@@ -455,8 +489,8 @@ public sealed partial class DraftPart
         draftId: DraftId.Value,
         draftPublicId: DraftPublicId,
         participantKind: pick.PlayedByParticipant.ParticipantKindValue.Value,
-        moviePublicId: pick.Movie!.PublicId,
-        movieTitle: pick.Movie!.MovieTitle,
+        moviePublicId: pick.Movie.PublicId,
+        movieTitle: pick.Movie.MovieTitle,
         boardPosition: pick.Position,
         playOrder: pick.PlayOrder
       )

@@ -23,6 +23,7 @@ public static class DraftsInfrastructure
     services.AddMemoryCache();
     services.AddScoped<IDraftsApi, DraftsApi>();
     services.AddScoped<ISeriesPolicyProvider, SeriesPolicyProvider>();
+    services.AddScoped<IDraftPolicyProvider, DraftsPolicyProvider>();
 
     services.Configure<OutboxOptions>(configuration.GetSection("Drafts:Outbox"));
     services.ConfigureOptions<ConfigureProcessOutboxJob>();

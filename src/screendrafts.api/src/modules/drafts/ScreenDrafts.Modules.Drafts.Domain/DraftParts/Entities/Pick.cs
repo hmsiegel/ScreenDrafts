@@ -3,6 +3,7 @@
 public sealed class Pick : Entity<PickId>
 {
   private readonly List<PickEvent> _history = [];
+  private readonly List<Veto> _vetoes = [];
 
   private Pick(
     int position,
@@ -64,10 +65,22 @@ public sealed class Pick : Entity<PickId>
   /// </summary>
   public string? ActedByPublicId { get; private set; }
 
-  public Veto? Veto { get; private set; } = default!;
+  /// <summary>
+  /// The full, ordered veto history for this pick. Normally holds at most one entry.
+  /// Can hold more than one when a veto is overridden ant the resulting override is
+  /// iteself overridden (i.e. the pick is vetoed again). See <see cref="CurrentVeto"/>.
+  /// </summary>
+  public IReadOnlyList<Veto> Vetoes => _vetoes.AsReadOnly();
+
+  /// <summary>
+  /// The most recent veto applied to this pick, or null if the pick has never been vetoed.
+  /// All veto-state logic (IsVetoed, ApplyVetoOverride, UndoVeto) operates against this entry,
+  /// not the full history.
+  /// </summary>
+  public Veto? CurrentVeto => _vetoes.Count > 0 ? _vetoes[^1] : null;
 
   [NotMapped]
-  public VetoId? VetoId => Veto?.Id;
+  public VetoId? VetoId => CurrentVeto?.Id;
 
   public CommissionerOverride? CommissionerOverride { get; private set; } = default!;
 
@@ -77,7 +90,7 @@ public sealed class Pick : Entity<PickId>
   public bool IsActiveOnFinalBoard => !IsVetoed && !IsCommissionerOverridden;
 
   [NotMapped]
-  public bool IsVetoed => Veto is not null && !Veto.IsOverridden;
+  public bool IsVetoed => CurrentVeto is not null && !CurrentVeto.IsOverridden;
 
   [NotMapped]
   public bool IsCommissionerOverridden => CommissionerOverride is not null;
@@ -262,7 +275,7 @@ public sealed class Pick : Entity<PickId>
       return Result.Success();
     }
 
-    var trimmed = movieVersionName!.Trim();
+    var trimmed = movieVersionName.Trim();
 
     if (trimmed.Length > 100)
     {
@@ -301,7 +314,7 @@ public sealed class Pick : Entity<PickId>
       return Result.Failure(PickErrors.PickAlreadyVetoed);
     }
 
-    Veto = veto;
+    _vetoes.Add(veto);
 
     _history.Add(
       PickEvent.Veto(
@@ -330,19 +343,19 @@ public sealed class Pick : Entity<PickId>
 
   internal Result ApplyVetoOverride(Participant by, string? actedByPublicId = null)
   {
-    if (Veto is null || !IsVetoed)
+    if (CurrentVeto is null || !IsVetoed)
     {
       return Result.Failure(PickErrors.CannotOverrideAPickThatHasNotBeenVetoed);
     }
 
-    var result = Veto.Override(by, actedByPublicId);
+    var result = CurrentVeto.Override(by, actedByPublicId);
 
     if (result.IsFailure)
     {
       return result;
     }
 
-    _history.Add(PickEvent.VetoOverride(by: by, actedByPublicId: Veto.ActedByPublicId));
+    _history.Add(PickEvent.VetoOverride(by: by, actedByPublicId: CurrentVeto.ActedByPublicId));
 
     return Result.Success();
   }
@@ -368,17 +381,18 @@ public sealed class Pick : Entity<PickId>
   /// </summary>
   internal Result UndoVeto()
   {
-    if (Veto is null)
+    var current = CurrentVeto;
+    if (current is null)
     {
       return Result.Failure(PickErrors.PickNotVetoed);
     }
 
-    if (Veto.IsOverridden)
+    if (current.IsOverridden)
     {
       return Result.Failure(PickErrors.CannotUndoVetoThatHasBeenOverridden);
     }
 
-    Veto = null;
+    _vetoes.Remove(current);
 
     _history.Add(PickEvent.Played(issuer: null, actedByPublicId: null)); // log the undo
 

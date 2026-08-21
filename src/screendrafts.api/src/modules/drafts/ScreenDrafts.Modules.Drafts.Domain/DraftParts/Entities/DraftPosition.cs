@@ -161,7 +161,7 @@ public sealed class DraftPosition : Entity<DraftPositionId>
     {
       Raise(
         new DraftPositionAssignedDomainEvent(
-          draftPartId: GameBoard.DraftPartId!.Value,
+          draftPartId: GameBoard.DraftPartId.Value,
           draftPositionId: Id.Value,
           participantId: participant.Value,
           participantKind: participant.Kind.Value

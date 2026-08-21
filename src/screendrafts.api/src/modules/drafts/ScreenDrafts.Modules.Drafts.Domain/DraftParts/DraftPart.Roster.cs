@@ -87,6 +87,29 @@ public sealed partial class DraftPart
     return Result.Success();
   }
 
+  /// <summary>
+  /// Grants an extra fungible token via draft position award (post-trivia) — e.g. "one
+  /// drafter gets an extra BUV." Separate from SetParticipantAward since the fungible pool
+  /// isn't a third value of that method's isVeto bool, it's a third pool entirely.
+  /// </summary>
+  public Result SetParticipantFungibleTokenAward(Participant participant)
+  {
+    var p = GetParticipantRequired(participant);
+    p.GrantFungibleTokenAward();
+
+    UpdatedAtUtc = DateTime.UtcNow;
+    return Result.Success();
+  }
+
+  public Result RevokeParticipantFungibleTokenAward(Participant participant)
+  {
+    var p = GetParticipantRequired(participant);
+    p.RevokeFungibleTokenAward();
+
+    UpdatedAtUtc = DateTime.UtcNow;
+    return Result.Success();
+  }
+
   public Result RemoveParticipant(Participant participant)
   {
     Guard.Against.Null(participant);
@@ -105,11 +128,19 @@ public sealed partial class DraftPart
     return _draftPartParticipants.Any(dp => dp.ParticipantId == participant);
   }
 
+  /// <summary>
+  /// fungibleTokens grants a single token spendable as either a veto or a veto override,
+  /// used by Legends Super Draft-style formats in place of a normal starting veto (pass
+  /// startingVetoes: 0 alongside it — see SetDraftPartStatusCommandHandler.ApplyRolloversAsync).
+  /// Defaults to 0 for every other format.
+  /// </summary>
   public Result InitializeParticipantVetoes(
     Participant participant,
     int startingVetoes,
     int vetoesRollingIn,
-    int vetoOverridesRollingIn
+    int vetoOverridesRollingIn,
+    int fungibleTokens = 0,
+    int fungibleTokensRollingIn = 0
   )
   {
     if (!IsParticipantInThisPart(participant))
@@ -118,7 +149,13 @@ public sealed partial class DraftPart
     }
 
     var p = GetParticipantRequired(participant);
-    p.InitializeVetoes(startingVetoes, vetoesRollingIn, vetoOverridesRollingIn);
+    p.InitializeVetoes(
+      startingVetoes,
+      vetoesRollingIn,
+      vetoOverridesRollingIn,
+      fungibleTokens,
+      fungibleTokensRollingIn
+    );
 
     UpdatedAtUtc = DateTime.UtcNow;
     return Result.Success();
@@ -136,6 +173,9 @@ public sealed partial class DraftPart
       )
       : participant;
   }
+
+  public DraftPartParticipant? FindParticipant(Participant participant) =>
+    _draftPartParticipants.FirstOrDefault(dp => dp.ParticipantId == participant);
 
   // Hosts
   public Result SetPrimaryHost(Host host)

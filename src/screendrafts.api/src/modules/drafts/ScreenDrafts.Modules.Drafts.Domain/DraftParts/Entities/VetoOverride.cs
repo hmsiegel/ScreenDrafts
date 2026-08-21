@@ -6,7 +6,10 @@ public sealed class VetoOverride : Entity<VetoOverrideId>
     Veto veto,
     DraftPartParticipant issuedByParticipant,
     string actedByPublicId,
-    VetoOverrideId? id = null)
+    string? note = null,
+    bool spentFromFungiblePool = false,
+    VetoOverrideId? id = null
+  )
     : base(id ?? VetoOverrideId.CreateUnique())
   {
     Veto = veto;
@@ -16,11 +19,11 @@ public sealed class VetoOverride : Entity<VetoOverrideId>
     IssuedByParticipantId = issuedByParticipant.Id;
 
     ActedByPublicId = actedByPublicId;
+    Note = note;
+    SpentFromFungiblePool = spentFromFungiblePool;
   }
 
-  private VetoOverride()
-  {
-  }
+  private VetoOverride() { }
 
   public VetoId VetoId { get; private set; } = default!;
   public Veto Veto { get; private set; } = default!;
@@ -29,13 +32,17 @@ public sealed class VetoOverride : Entity<VetoOverrideId>
   public DraftPartParticipantId IssuedByParticipantId { get; private set; } = default!;
 
   public string? ActedByPublicId { get; private set; }
-
+  public bool SpentFromFungiblePool { get; private set; }
+  public string? Note { get; private set; }
 
   public static Result<VetoOverride> Create(
     Veto veto,
     DraftPartParticipant issuedByParticipant,
     string? actedByPublicId = null,
-    VetoOverrideId? id = null)
+    string? note = null,
+    bool spentFromFungiblePool = false,
+    VetoOverrideId? id = null
+  )
   {
     ArgumentNullException.ThrowIfNull(issuedByParticipant);
     ArgumentNullException.ThrowIfNull(veto);
@@ -54,21 +61,30 @@ public sealed class VetoOverride : Entity<VetoOverrideId>
       id: id,
       veto: veto,
       issuedByParticipant: issuedByParticipant,
-      actedByPublicId: actedByPublicId ?? string.Empty);
+      actedByPublicId: actedByPublicId ?? string.Empty,
+      note: note,
+      spentFromFungiblePool: spentFromFungiblePool
+    );
 
     return vetoOverride;
   }
 
   internal static Result<VetoOverride> SeedCreate(
-      Veto veto,
-      DraftPartParticipant issuedByParticipant,
-      VetoOverrideId? id = null)
+    Veto veto,
+    DraftPartParticipant issuedByParticipant,
+    VetoOverrideId? id = null,
+    string? note = null,
+    bool spentFromFungiblePool = false
+  )
   {
     var vetoOverride = new VetoOverride(
       id: id,
       veto: veto,
       issuedByParticipant: issuedByParticipant,
-      actedByPublicId: string.Empty);
+      actedByPublicId: string.Empty,
+      note: note,
+      spentFromFungiblePool: spentFromFungiblePool
+    );
     return vetoOverride;
   }
 }

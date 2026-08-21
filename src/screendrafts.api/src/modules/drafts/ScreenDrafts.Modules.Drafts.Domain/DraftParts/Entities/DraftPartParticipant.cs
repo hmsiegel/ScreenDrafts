@@ -58,14 +58,24 @@ public sealed class DraftPartParticipant : Entity<DraftPartParticipantId>
 
   public int CommissionerOverrides { get; private set; }
 
+  // Fungible Tokens
+  public int FungibleTokens { get; private set; }
+  public int FungibleTokensRollingIn { get; private set; }
+  public int AwardedFungibleTokens { get; private set; }
+
+  private int RemainingFungibleTokens => Math.Max(0, FungibleTokens - FungibleTokensUsed);
+
   // Usage counters
   public int VetoesUsed { get; private set; }
   public int VetoOverridesUsed { get; private set; }
+  public int FungibleTokensUsed { get; private set; }
 
   // Computed Totals
 
   public int TotalVetoes => StartingVetoes + VetoesRollingIn + AwardedVetoes;
   public int TotalVetoOverrides => VetoOverridesRollingIn + AwardedVetoOverrides;
+  public int TotalFungibleTokens =>
+    FungibleTokens + FungibleTokensRollingIn + AwardedFungibleTokens;
 
   /// <summary>
   /// How many vetoes carry forward to the next part (capped at 1)
@@ -77,11 +87,14 @@ public sealed class DraftPartParticipant : Entity<DraftPartParticipantId>
   /// </summary>
   public int VetoOverridesRollingOut => TotalVetoOverrides - VetoOverridesUsed >= 1 ? 1 : 0;
 
+  public int FungibleTokensRollingOut => TotalFungibleTokens - FungibleTokensUsed >= 1 ? 1 : 0;
+
   // Guards
-  public bool CanUseVeto() => (TotalVetoes - VetoesUsed) >= 1;
+  public bool CanUseVeto() => (TotalVetoes - VetoesUsed) >= 1 || RemainingFungibleTokens >= 1;
 
   public bool CanUseVetoOverride(int maxOverrides) =>
-    (TotalVetoOverrides - VetoOverridesUsed) >= 1 && maxOverrides > 0;
+    maxOverrides > 0 && (TotalVetoOverrides - VetoOverridesUsed) >= 1
+    || RemainingFungibleTokens >= 1;
 
   // Factory
   public static DraftPartParticipant Create(DraftPart draftPart, Participant participantId)
@@ -95,14 +108,19 @@ public sealed class DraftPartParticipant : Entity<DraftPartParticipantId>
   internal void InitializeVetoes(
     int startingVetoes,
     int vetoesRollingIn,
-    int vetoOverridesRollingIn
+    int vetoOverridesRollingIn,
+    int fungibleTokens = 0,
+    int fungibleTokensRollingIn = 0
   )
   {
     StartingVetoes = startingVetoes;
     VetoesRollingIn = vetoesRollingIn;
     VetoOverridesRollingIn = vetoOverridesRollingIn;
+    FungibleTokens = fungibleTokens;
+    FungibleTokensRollingIn = fungibleTokensRollingIn;
     VetoesUsed = 0;
     VetoOverridesUsed = 0;
+    FungibleTokensUsed = 0;
   }
 
   // Awards (granted via draft position post-trivia)
@@ -130,43 +148,77 @@ public sealed class DraftPartParticipant : Entity<DraftPartParticipantId>
     }
   }
 
+  internal void GrantFungibleTokenAward() => AwardedFungibleTokens++;
+
+  internal void RevokeFungibleTokenAward() =>
+    AwardedFungibleTokens = Math.Max(0, AwardedFungibleTokens - 1);
+
   // Commissioner override
   public void AddCommissionerOverride() => CommissionerOverrides++;
 
   // Spending
-  public void SpendVeto()
+  public bool SpendVeto()
   {
     if (!CanUseVeto())
     {
       throw new InvalidOperationException("No remaining vetoes.");
     }
 
-    VetoesUsed++;
+    if (TotalVetoes - VetoesUsed >= 1)
+    {
+      VetoesUsed++;
+      return false;
+    }
+
+    FungibleTokensUsed++;
+    return true;
   }
 
-  public void SpendVetoOverride(int maxOverrides)
+  public bool SpendVetoOverride(int maxOverrides)
   {
     if (!CanUseVetoOverride(maxOverrides))
     {
       throw new InvalidOperationException("No remaining veto overrides.");
     }
-    VetoOverridesUsed++;
+
+    if (TotalVetoOverrides - VetoOverridesUsed >= 1)
+    {
+      VetoOverridesUsed++;
+      return false;
+    }
+
+    FungibleTokensUsed++;
+    return true;
   }
 
   /// <summary>
   /// Refunds a spent veto token. Used when a veto is undone by a commissioner.
   /// </summary>
-  public void RefundVeto()
+  public void RefundVeto(bool fromFungiblePool = false)
   {
-    VetoesUsed = Math.Max(0, VetoesUsed - 1);
+    if (fromFungiblePool)
+    {
+      FungibleTokensUsed = Math.Max(0, FungibleTokensUsed - 1);
+    }
+    else
+    {
+      VetoesUsed = Math.Max(0, VetoesUsed - 1);
+    }
   }
 
   /// <summary>
   /// Refunds a spent veto override token. Used when a veto override is undone by a commissioner.
   /// </summary>
-  public void RefundVetoOverride()
+  public void RefundVetoOverride(bool fromFungiblePool = false)
   {
-    VetoOverridesUsed = Math.Max(0, VetoOverridesUsed - 1);
+    if (fromFungiblePool)
+    {
+      FungibleTokensUsed = Math.Max(0, FungibleTokensUsed - 1);
+    }
+    else
+    {
+      VetoOverridesUsed = Math.Max(0, VetoOverridesUsed - 1);
+    }
   }
 
   // Seeding (historical data import only)
@@ -178,7 +230,11 @@ public sealed class DraftPartParticipant : Entity<DraftPartParticipantId>
     int triviaVetoOverrides,
     int commissionerOverrides,
     int vetoesUsed,
-    int vetoOverridesUsed
+    int vetoOverridesUsed,
+    int fungibleTokens = 0,
+    int fungibleTokensRollingIn = 0,
+    int awardedFungibleTokens = 0,
+    int fungibleTokensUsed = 0
   )
   {
     StartingVetoes = startingVetoes;
@@ -193,5 +249,10 @@ public sealed class DraftPartParticipant : Entity<DraftPartParticipantId>
 
     VetoesUsed = vetoesUsed;
     VetoOverridesUsed = vetoOverridesUsed;
+
+    FungibleTokens = fungibleTokens;
+    FungibleTokensRollingIn = fungibleTokensRollingIn;
+    AwardedFungibleTokens = awardedFungibleTokens;
+    FungibleTokensUsed = fungibleTokensUsed;
   }
 }
