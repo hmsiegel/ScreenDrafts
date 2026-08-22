@@ -220,6 +220,7 @@ export default function EditDraftForm({
   const [title, setTitle] = useState(draft.title);
   const [description, setDescription] = useState(draft.description ?? "");
   const [selectedSeriesId, setSelectedSeriesId] = useState(draft.seriesPublicId ?? "");
+  const [fungibleTokenName, setFungibleTokenName] = useState(draft.fungibleTokenName ?? "");
   const [selectedDraftType, setSelectedDraftType] = useState<SmartEnumResponse | null>(() => {
     const series = seriesList.find((s) => s.publicId === draft.seriesPublicId);
     return (
@@ -479,6 +480,7 @@ export default function EditDraftForm({
           description: description.trim() || undefined,
           seriesPublicId: selectedSeriesId,
           draftTypeValue: selectedDraftType?.value ?? draft.draftType.value ?? 0,
+          fungibleTokenName: fungibleTokenName.trim() || undefined,
         });
       }
 
@@ -714,6 +716,27 @@ export default function EditDraftForm({
               </select>
               {anyPartStarted && (
                 <p className="text-[11px] text-sd-ink/40 mt-1 font-mono">Locked — a part has already started.</p>
+              )}
+            </div>
+
+            <div className="md:col-span-2">
+              <label className={LABEL}>Fungible Token Name (Optional)</label>
+              <input
+                type="text"
+                className={INPUT}
+                value={fungibleTokenName}
+                onChange={(e) => setFungibleTokenName(e.target.value)}
+                disabled={anyPartStarted}
+                placeholder="e.g. Blessing of Unusual Versatility"
+              />
+              {anyPartStarted ? (
+                <p className="text-[11px] text-sd-ink/40 mt-1 font-mono">Locked — a part has already started.</p>
+              ) : (
+                <p className="text-[11px] font-mono text-sd-ink/50 mt-1">
+                  Only for drafts using a fungible veto/override token (e.g. Legends Super
+                  Drafts). Leave blank for a normal draft — everyone gets a separate veto and
+                  override allotment instead. Must be set before Part 1 starts.
+                </p>
               )}
             </div>
           </div>

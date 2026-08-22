@@ -9931,7 +9931,7 @@
           "hasBonusVetoOverride": {
             "type": "boolean"
           },
-          "hasFungibleToken": {
+          "hasBonusFungibleToken": {
             "type": "boolean"
           }
         }

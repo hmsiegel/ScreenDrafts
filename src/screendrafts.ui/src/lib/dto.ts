@@ -11929,7 +11929,7 @@ export interface DraftPositionRequestModel {
     picks?: number[];
     hasBonusVeto?: boolean;
     hasBonusVetoOverride?: boolean;
-    hasFungibleToken?: boolean;
+    hasBonusFungibleToken?: boolean;
 
     [key: string]: any;
 }

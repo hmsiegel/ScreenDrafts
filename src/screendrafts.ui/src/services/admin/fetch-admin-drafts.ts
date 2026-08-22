@@ -86,6 +86,7 @@ export interface AdminDraftDetail {
   draftStatus: SmartEnumResponse;
   seriesPublicId: string | null;
   seriesName: string | null;
+  fungibleTokenName: string | null;
   episodeNumber: number | null;
   campaignPublicId: string | null;
   campaignName: string | null;
@@ -559,6 +560,7 @@ export async function updateDraft(
     campaignPublicId?: string;
     publicCategoryIds?: string[];
     draftTypeValue: number;
+    fungibleTokenName?: string;
   }
 ): Promise<void> {
   const response = await fetch(
@@ -792,6 +794,7 @@ export async function setDraftPositions(
         picks: p.picks,
         hasBonusVeto: p.hasBonusVeto,
         hasBonusVetoOverride: p.hasBonusVetoOverride,
+        hasBonusFungibleToken: p.hasBonusFungibleToken,
       })),
     }),
   });
@@ -1156,11 +1159,18 @@ export async function listDraftPositions(
   if (!res.ok) return [];
   const data = await res.json();
   return (data.positions ?? []).map(
-    (p: { name?: string; picks?: number[]; hasBonusVeto?: boolean; hasBonusVetoOverride?: boolean }) => ({
+    (p: {
+      name?: string;
+      picks?: number[];
+      hasBonusVeto?: boolean;
+      hasBonusVetoOverride?: boolean;
+      hasBonusFungibleToken?: boolean;
+    }) => ({
       name: p.name ?? "",
       picks: p.picks ?? [],
       hasBonusVeto: p.hasBonusVeto ?? false,
       hasBonusVetoOverride: p.hasBonusVetoOverride ?? false,
+      hasBonusFungibleToken: p.hasBonusFungibleToken ?? false,
     })
   );
 }
@@ -1178,6 +1188,31 @@ export interface GameplayPick {
   wasCommissionerOverride: boolean;
   vetoedByName: string | null;
   savedByName: string | null;
+  // True when the pick's current veto/override was paid for by a fungible token
+  // (BUV, Rabbit's Foot, etc.) rather than a normal veto/override. Meaningless
+  // when wasVetoed/wasVetoOverridden is false respectively.
+  wasVetoFungible: boolean;
+  wasVetoOverrideFungible: boolean;
+  // 1-based position of the current veto in the pick's full veto history.
+  // Normally 1; a value of 2 means this pick was vetoed, overridden, and then
+  // re-vetoed. 0 when the pick has never been vetoed.
+  vetoSequence: number;
+}
+
+export interface GameplayParticipant {
+  participantId: string;
+  participantPublicId: string | null;
+  participantKind: number;
+  participantName: string;
+  vetoTokensRemaining: number;
+  overrideTokensRemaining: number;
+  vetoesRollingIn: number;
+  vetoOverridesRollingIn: number;
+  // Remaining balance of this participant's fungible token, spendable as
+  // either a veto or an override. 0 for participants not on a fungible-token
+  // draft — see DraftPartGameplay.fungibleTokenName for whether one applies.
+  fungibleTokensRemaining: number;
+  fungibleTokensRollingIn: number;
 }
 
 export interface GameplayTriviaResult {
@@ -1205,6 +1240,10 @@ export interface DraftPartGameplay {
   picks: GameplayPick[];
   triviaResults: GameplayTriviaResult[];
   subDrafts: GameplaySubDraftSummary[];
+  participants: GameplayParticipant[];
+  // Flavor name for this draft's fungible veto/override token (e.g. "Blessing
+  // of Unusual Versatility"). Null for the overwhelming majority of drafts.
+  fungibleTokenName: string | null;
 }
 
 export async function getDraftPartGameplay(
@@ -1223,11 +1262,15 @@ export async function getDraftPartGameplay(
       picks?: GameplayPick[];
       triviaResults?: GameplayTriviaResult[];
       subDrafts?: GameplaySubDraftSummary[];
+      participants?: GameplayParticipant[];
+      fungibleTokenName?: string;
     };
     return {
       picks: data.picks ?? [],
       triviaResults: data.triviaResults ?? [],
       subDrafts: data.subDrafts ?? [],
+      participants: data.participants ?? [],
+      fungibleTokenName: data.fungibleTokenName ?? null,
     };
   } catch (err) {
     console.error("[getDraftPartGameplay]", err);

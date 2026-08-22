@@ -7,31 +7,32 @@ export interface PositionConfig {
   picks: number[];
   hasBonusVeto: boolean;
   hasBonusVetoOverride: boolean;
+  hasBonusFungibleToken: boolean;
 }
 
-const POSITION_NAMES = ["A", "B", "C", "D"];
+const POSITION_NAMES = ["A", "B", "C", "D", "E", "F", "G", "H"];
 
 export function getDefaultPositions(draftTypeName: string): PositionConfig[] {
   switch (draftTypeName) {
     case "Standard":
       return [
-        { name: "A", picks: [7, 6, 4, 2], hasBonusVeto: false, hasBonusVetoOverride: false },
-        { name: "B", picks: [5, 3, 1],    hasBonusVeto: false, hasBonusVetoOverride: false },
+        { name: "A", picks: [7, 6, 4, 2], hasBonusVeto: false, hasBonusVetoOverride: false, hasBonusFungibleToken: false },
+        { name: "B", picks: [5, 3, 1],    hasBonusVeto: false, hasBonusVetoOverride: false, hasBonusFungibleToken: false },
       ];
     case "MiniSuper":
       return [
-        { name: "A", picks: [5, 3, 1], hasBonusVeto: false, hasBonusVetoOverride: false },
-        { name: "B", picks: [4, 2],    hasBonusVeto: false, hasBonusVetoOverride: false },
+        { name: "A", picks: [5, 3, 1], hasBonusVeto: false, hasBonusVetoOverride: false, hasBonusFungibleToken: false },
+        { name: "B", picks: [4, 2],    hasBonusVeto: false, hasBonusVetoOverride: false, hasBonusFungibleToken: false },
       ];
     case "SpeedDraft":
       return [
-        { name: "A", picks: [7, 5, 3, 1], hasBonusVeto: false, hasBonusVetoOverride: false },
-        { name: "B", picks: [6, 4, 2],    hasBonusVeto: false, hasBonusVetoOverride: false },
+        { name: "A", picks: [7, 5, 3, 1], hasBonusVeto: false, hasBonusVetoOverride: false, hasBonusFungibleToken: false },
+        { name: "B", picks: [6, 4, 2],    hasBonusVeto: false, hasBonusVetoOverride: false, hasBonusFungibleToken: false },
       ];
     default:
       return [
-        { name: "A", picks: [], hasBonusVeto: false, hasBonusVetoOverride: false },
-        { name: "B", picks: [], hasBonusVeto: false, hasBonusVetoOverride: false },
+        { name: "A", picks: [], hasBonusVeto: false, hasBonusVetoOverride: false, hasBonusFungibleToken: false },
+        { name: "B", picks: [], hasBonusVeto: false, hasBonusVetoOverride: false, hasBonusFungibleToken: false },
       ];
   }
 }
@@ -117,7 +118,7 @@ function PositionRow({ pos, idx, canRemove, onChange, onRemove }: RowProps) {
   }
 
   return (
-    <div className="border border-sd-ink/10 p-3 bg-white grid grid-cols-[28px_1fr_auto_auto_auto] items-start gap-3">
+    <div className="border border-sd-ink/10 p-3 bg-white grid grid-cols-[28px_1fr_auto_auto_auto_auto] items-start gap-3">
       <div className="pt-2 font-oswald font-bold text-[15px] text-sd-ink">
         {pos.name}
       </div>
@@ -159,6 +160,18 @@ function PositionRow({ pos, idx, canRemove, onChange, onRemove }: RowProps) {
       </div>
 
       <div className="pt-1">
+        <label className="flex flex-col items-center gap-1 cursor-pointer select-none">
+          <span className="font-mono text-[9px] tracking-widest text-sd-ink/50 uppercase whitespace-nowrap">Token</span>
+          <input
+            type="checkbox"
+            checked={pos.hasBonusFungibleToken}
+            onChange={(e) => onChange(idx, { ...pos, hasBonusFungibleToken: e.target.checked })}
+            className="accent-sd-ink w-4 h-4"
+          />
+        </label>
+      </div>
+
+      <div className="pt-1">
         <button
           type="button"
           onClick={() => onRemove(idx)}
@@ -190,9 +203,12 @@ export function PositionsEditor({ positions, onChange, totalPicks, readonly }: P
   }
 
   function addPosition() {
-    if (positions.length >= 4) return;
+    if (positions.length >= POSITION_NAMES.length) return;
     const name = POSITION_NAMES[positions.length];
-    onChange([...positions, { name, picks: [], hasBonusVeto: false, hasBonusVetoOverride: false }]);
+    onChange([
+      ...positions,
+      { name, picks: [], hasBonusVeto: false, hasBonusVetoOverride: false, hasBonusFungibleToken: false },
+    ]);
   }
 
   function removePosition(idx: number) {
@@ -220,7 +236,7 @@ export function PositionsEditor({ positions, onChange, totalPicks, readonly }: P
         />
       ))}
 
-      {positions.length < 4 && (
+      {positions.length < POSITION_NAMES.length && (
         <button
           type="button"
           onClick={addPosition}

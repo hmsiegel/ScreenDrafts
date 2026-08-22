@@ -33,12 +33,15 @@ interface LocalPick {
   participantIdValue: string;
   participantDisplayName: string;
   status: "landed" | "vetoed" | "vetoOverridden" | "commissionerOverridden";
-  // Only populated on hydration from /gameplay — picks vetoed/overridden
-  // within the current session already show this via the issuer picker's
-  // own selection, these fields exist mainly so a resumed session (after a
-  // refresh) still shows who did it, not just that it happened.
   vetoedByName: string | null;
   savedByName: string | null;
+  // Whether the pick's current veto/override was paid for by a fungible token
+  // rather than a normal one. Only meaningful alongside the matching status.
+  // Always sourced fresh from the server (see refreshFromServer) — the
+  // frontend has no way to know client-side which pool a spend drew from,
+  // that's decided server-side by whichever budget was actually available.
+  vetoWasFungible: boolean;
+  vetoOverrideWasFungible: boolean;
 }
 
 interface Props {
@@ -65,6 +68,13 @@ export function SeedPicksStep({
   const [totalPicks, setTotalPicks] = useState<number | null>(null);
   const [picks, setPicks] = useState<LocalPick[]>([]);
   const [hydrated, setHydrated] = useState(false);
+
+  // Fungible token (BUV/Rabbit's Foot-style formats) — null for the
+  // overwhelming majority of drafts that don't use one. Remaining balances
+  // are keyed by participantIdValue, refreshed alongside picks after every
+  // mutation so they never drift from what the server actually has.
+  const [fungibleTokenName, setFungibleTokenName] = useState<string | null>(null);
+  const [fungibleRemaining, setFungibleRemaining] = useState<Map<string, number>>(new Map());
 
   // Next-pick form state
   const [position, setPosition] = useState<number | "">("");
@@ -116,6 +126,43 @@ export function SeedPicksStep({
     return "landed";
   }
 
+  // Single source of truth for picks + participant token state, called on
+  // mount and after every mutation. Replaces the old pattern of optimistic
+  // local patches after each action — those can't be correct here, since
+  // whether a spend drew from a participant's normal pool or their fungible
+  // token is decided server-side, not something the frontend can compute.
+  // Returns the fresh picks so callers can check board-completion state
+  // immediately, since setPicks itself won't be visible in this closure yet.
+  async function refreshFromServer(): Promise<LocalPick[]> {
+    const gameplay = await getDraftPartGameplay(accessToken, draft.draftPartPublicId);
+    if (!gameplay) return picks;
+
+    setFungibleTokenName(gameplay.fungibleTokenName);
+    setFungibleRemaining(
+      new Map(gameplay.participants.map((p) => [p.participantId, p.fungibleTokensRemaining]))
+    );
+
+    const nextPicks: LocalPick[] = gameplay.picks
+      .slice()
+      .sort((a, b) => a.playOrder - b.playOrder)
+      .map((p) => ({
+        playOrder: p.playOrder,
+        position: p.boardPosition,
+        movieTitle: p.movieTitle,
+        tmdbId: p.tmdbId,
+        participantIdValue: p.playedById,
+        participantDisplayName: p.playedByName,
+        status: statusFromGameplayPick(p),
+        vetoedByName: p.vetoedByName,
+        savedByName: p.savedByName,
+        vetoWasFungible: p.wasVetoFungible,
+        vetoOverrideWasFungible: p.wasVetoOverrideFungible,
+      }));
+
+    setPicks(nextPicks);
+    return nextPicks;
+  }
+
   // Hydrates from the server on mount rather than starting from an empty
   // list — this component previously tracked picks in local state only, so
   // navigating away mid-entry and coming back showed an empty board with no
@@ -123,25 +170,7 @@ export function SeedPicksStep({
   // submitted was safely recorded server-side.
   useEffect(() => {
     (async () => {
-      const gameplay = await getDraftPartGameplay(accessToken, draft.draftPartPublicId);
-      if (gameplay) {
-        setPicks(
-          gameplay.picks
-            .slice()
-            .sort((a, b) => a.playOrder - b.playOrder)
-            .map((p) => ({
-              playOrder: p.playOrder,
-              position: p.boardPosition,
-              movieTitle: p.movieTitle,
-              tmdbId: p.tmdbId,
-              participantIdValue: p.playedById,
-              participantDisplayName: p.playedByName,
-              status: statusFromGameplayPick(p),
-              vetoedByName: p.vetoedByName,
-              savedByName: p.savedByName,
-            }))
-        );
-      }
+      await refreshFromServer();
       setHydrated(true);
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -217,20 +246,11 @@ export function SeedPicksStep({
         actedByPublicId: revealedByHostId,
       });
 
-      const newPick: LocalPick = {
-        playOrder: nextPlayOrder,
-        position: Number(position),
-        movieTitle: selectedMovie.title,
-        tmdbId: selectedMovie.tmdbId,
-        participantIdValue,
-        participantDisplayName: participant.displayName ?? "—",
-        status: "landed",
-        vetoedByName: null,
-        savedByName: null,
-      };
-      setPicks((prev) => [...prev, newPick]);
+      const nextPicks = await refreshFromServer();
 
-      const newLandedCount = landedCount + 1;
+      const newLandedCount = nextPicks.filter(
+        (p) => p.status === "landed" || p.status === "vetoOverridden"
+      ).length;
       if (totalPicks != null && newLandedCount >= totalPicks) {
         onAllPositionsFilled();
       }
@@ -246,7 +266,13 @@ export function SeedPicksStep({
   }
 
   async function handleVetoLast(issuerIdValue: string) {
-    if (!lastPick || lastPick.status !== "landed" || submitting) return;
+    if (
+      !lastPick ||
+      (lastPick.status !== "landed" && lastPick.status !== "vetoOverridden") ||
+      submitting
+    ) {
+      return;
+    }
     const issuer = participants.find((p) => p.participantIdValue === issuerIdValue);
     if (!issuer || issuer.participantKindValue.value == null) {
       setError("Select who's issuing this veto.");
@@ -261,13 +287,7 @@ export function SeedPicksStep({
         participantPublicId: issuer.participantPublicId,
         participantKind: issuer.participantKindValue.value,
       });
-      setPicks((prev) =>
-        prev.map((p) =>
-          p.playOrder === lastPick.playOrder
-            ? { ...p, status: "vetoed", vetoedByName: issuer.displayName ?? null }
-            : p
-        )
-      );
+      await refreshFromServer();
       setPendingAction(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to apply veto.");
@@ -292,15 +312,11 @@ export function SeedPicksStep({
         participantIdValue: overrider.participantIdValue,
         participantKind: overrider.participantKindValue.value,
       });
-      setPicks((prev) =>
-        prev.map((p) =>
-          p.playOrder === pick.playOrder
-            ? { ...p, status: "vetoOverridden", savedByName: overrider.displayName ?? null }
-            : p
-        )
-      );
+      const nextPicks = await refreshFromServer();
       setPendingAction(null);
-      const newLandedCount = landedCount + 1;
+      const newLandedCount = nextPicks.filter(
+        (p) => p.status === "landed" || p.status === "vetoOverridden"
+      ).length;
       if (totalPicks != null && newLandedCount >= totalPicks) onAllPositionsFilled();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to apply veto override.");
@@ -318,11 +334,7 @@ export function SeedPicksStep({
         draftPartId: draft.draftPartPublicId,
         playOrder: pick.playOrder,
       });
-      setPicks((prev) =>
-        prev.map((p) =>
-          p.playOrder === pick.playOrder ? { ...p, status: "commissionerOverridden" } : p
-        )
-      );
+      await refreshFromServer();
       // Commissioner override does NOT land the pick on the board — it just
       // removes it from contention. Doesn't move landedCount, so no
       // onAllPositionsFilled check here.
@@ -350,11 +362,32 @@ export function SeedPicksStep({
         </p>
       </div>
 
+      {/* Fungible token balances — only shown for drafts that use one */}
+      {fungibleTokenName && (
+        <div className="bg-white border border-sd-ink/10 rounded p-3">
+          <p className="font-mono text-[11px] tracking-widest text-sd-ink/50 uppercase mb-2">
+            {fungibleTokenName} Remaining
+          </p>
+          <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-sd-ink/70">
+            {participants.map((p) => (
+              <span key={p.participantIdValue}>
+                {p.displayName ?? p.participantIdValue}:{" "}
+                {fungibleRemaining.get(p.participantIdValue) ?? 0}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Picks so far */}
       {picks.length > 0 && (
         <div className="bg-white border border-sd-ink/10 rounded divide-y divide-sd-ink/5">
           {picks.map((p) => {
             const showingPicker = pendingAction?.playOrder === p.playOrder;
+            const vetoNote =
+              p.vetoWasFungible && fungibleTokenName ? ` (${fungibleTokenName})` : "";
+            const overrideNote =
+              p.vetoOverrideWasFungible && fungibleTokenName ? ` (${fungibleTokenName})` : "";
             return (
               <div key={p.playOrder} className="px-4 py-2.5 text-sm">
                 <div className="flex items-center justify-between">
@@ -365,33 +398,35 @@ export function SeedPicksStep({
                     {p.status !== "landed" && (
                       <span className="ml-2 text-[10px] font-mono uppercase tracking-widest text-sd-red">
                         {p.status === "vetoed"
-                          ? `vetoed${p.vetoedByName ? ` by ${p.vetoedByName}` : ""} — slot open`
+                          ? `vetoed${p.vetoedByName ? ` by ${p.vetoedByName}` : ""}${vetoNote} — slot open`
                           : p.status === "vetoOverridden"
-                            ? `veto overridden${p.savedByName ? ` by ${p.savedByName}` : ""}`
+                            ? `veto overridden${p.savedByName ? ` by ${p.savedByName}` : ""}${overrideNote}`
                             : "commissioner override — film barred, slot still open"}
                       </span>
                     )}
                   </div>
                   {!showingPicker && (
                     <div className="flex items-center gap-2 shrink-0">
-                      {/* Veto and Commissioner Override are alternatives on
-                          the same landed pick, not a veto-then-override
-                          sequence — Veto stays restricted to the most
-                          recent pick (the domain enforces this),
-                          Commissioner Override doesn't have that
-                          restriction so it's offered on any landed pick. */}
-                      {p.status === "landed" && p.playOrder === lastPick?.playOrder && (
-                        <button
-                          type="button"
-                          onClick={() =>
-                            setPendingAction({ playOrder: p.playOrder, type: "veto", issuerIdValue: "" })
-                          }
-                          disabled={submitting}
-                          className={BTN_SECONDARY}
-                        >
-                          Veto
-                        </button>
-                      )}
+                      {/* Veto is offered on the most recent play regardless of
+                          whether it's currently "landed" or "vetoOverridden" —
+                          a veto that was overridden can be vetoed again (the
+                          override itself gets overridden), which lands as a
+                          second entry in the pick's veto history. Commissioner
+                          Override doesn't have this restriction, so it's
+                          offered on any landed pick regardless of play order. */}
+                      {(p.status === "landed" || p.status === "vetoOverridden") &&
+                        p.playOrder === lastPick?.playOrder && (
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setPendingAction({ playOrder: p.playOrder, type: "veto", issuerIdValue: "" })
+                            }
+                            disabled={submitting}
+                            className={BTN_SECONDARY}
+                          >
+                            Veto
+                          </button>
+                        )}
                       {p.status === "landed" && (
                         <button
                           type="button"
@@ -435,12 +470,18 @@ export function SeedPicksStep({
                       }
                     >
                       <option value="">Select…</option>
-                      {participants.map((participant) => (
-                        <option key={participant.participantIdValue} value={participant.participantIdValue}>
-                          {participant.displayName ?? participant.participantIdValue}
-                          {participant.participantIdValue === p.participantIdValue ? " (self)" : ""}
-                        </option>
-                      ))}
+                      {participants.map((participant) => {
+                        const remaining = fungibleRemaining.get(participant.participantIdValue);
+                        return (
+                          <option key={participant.participantIdValue} value={participant.participantIdValue}>
+                            {participant.displayName ?? participant.participantIdValue}
+                            {participant.participantIdValue === p.participantIdValue ? " (self)" : ""}
+                            {fungibleTokenName && remaining != null
+                              ? ` — ${remaining} ${fungibleTokenName} left`
+                              : ""}
+                          </option>
+                        );
+                      })}
                     </select>
                     <button
                       type="button"
