@@ -4,13 +4,15 @@ internal sealed class PlayPickCommandHandler(
   IDraftPartRepository draftPartRepository,
   IMovieRepository movieRepository,
   ParticipantResolver participantResolver,
-  ISeriesPolicyProvider seriesPolicyProvider
+  ISeriesPolicyProvider seriesPolicyProvider,
+  ITeamMembershipProvider teamMembershipProvider
 ) : ICommandHandler<PlayPickCommand, PickId>
 {
   private readonly IDraftPartRepository _draftPartRepository = draftPartRepository;
   private readonly IMovieRepository _movieRepository = movieRepository;
   private readonly ParticipantResolver _participantResolver = participantResolver;
   private readonly ISeriesPolicyProvider _seriesPolicyProvider = seriesPolicyProvider;
+  private readonly ITeamMembershipProvider _teamMembershipProvider = teamMembershipProvider;
 
   public async Task<Result<PickId>> Handle(
     PlayPickCommand request,
@@ -79,6 +81,16 @@ internal sealed class PlayPickCommandHandler(
       return Result.Failure<PickId>(validationResult.Errors);
     }
 
+    IReadOnlyList<Guid>? teamDrafterIdValues = null;
+
+    if (participant.Kind == ParticipantKind.Team)
+    {
+      teamDrafterIdValues = await _teamMembershipProvider.GetCurrentMemberDrafterIdsAsync(
+        participant.Value,
+        cancellationToken
+      );
+    }
+
     var pickResult = draftPart.PlayPick(
       movie: movie,
       draftPosition: request.Position,
@@ -86,7 +98,8 @@ internal sealed class PlayPickCommandHandler(
       participantId: participant,
       canonicalPolicyValue: CanonicalPolicy.FromValue(series.CanonicalPolicy.Value),
       movieVersionName: request.MovieVersionName,
-      actedByPublicId: request.ActedByPublicId
+      actedByPublicId: request.ActedByPublicId,
+      teamDrafterIdValues: teamDrafterIdValues
     );
 
     if (pickResult.IsFailure)

@@ -11,7 +11,8 @@ public sealed partial class DraftPart
     SubDraftId? subDraftId = null,
     string? movieVersionName = null,
     string? actedByPublicId = null,
-    Func<Guid, bool>? isMovieAlreadyPickedInWholeDraft = null
+    Func<Guid, bool>? isMovieAlreadyPickedInWholeDraft = null,
+    IReadOnlyList<Guid>? teamDrafterIdValues = null
   )
   {
     ArgumentNullException.ThrowIfNull(movie);
@@ -97,6 +98,11 @@ public sealed partial class DraftPart
     if (addResult.IsFailure)
     {
       return Result.Failure<PickId>(addResult.Errors);
+    }
+
+    if (participantId.Kind == ParticipantKind.Team)
+    {
+      pick.SetTeamPickCredits(teamDrafterIdValues);
     }
 
     if (DraftType == DraftType.SpeedDraft || participantId.Kind == ParticipantKind.Community)

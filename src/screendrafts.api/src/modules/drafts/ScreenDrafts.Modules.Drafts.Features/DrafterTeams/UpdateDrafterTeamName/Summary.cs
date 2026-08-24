@@ -1,15 +1,15 @@
 ﻿using FastEndpoints;
 
-namespace ScreenDrafts.Modules.Drafts.Features.DrafterTeams.RemoveDrafterFromTeam;
+namespace ScreenDrafts.Modules.Drafts.Features.DrafterTeams.UpdateDrafterTeamName;
 
 internal sealed class Summary : Summary<Endpoint>
 {
   public Summary()
   {
-    Summary = "Removes a drafter from a drafter team.";
+    Summary = "Updates the name of a drafter team.";
     Description =
-      "Removes a drafter from a drafter team. Requires the 'DrafterTeamMembers' permission.";
-    Response(StatusCodes.Status204NoContent, "The drafter was successfully removed from the team.");
+      "Updates the name of a drafter team. Requires the 'DrafterTeamMembers' permission.";
+    Response(StatusCodes.Status204NoContent, "The drafter team name was successfully updated.");
     Response(
       StatusCodes.Status401Unauthorized,
       "Unauthorized. The user must be authenticated to perform this action."
@@ -20,7 +20,7 @@ internal sealed class Summary : Summary<Endpoint>
     );
     Response(
       StatusCodes.Status404NotFound,
-      "Not Found. The specified drafter or drafter team does not exist."
+      "Not Found. The specified drafter team does not exist."
     );
   }
 }

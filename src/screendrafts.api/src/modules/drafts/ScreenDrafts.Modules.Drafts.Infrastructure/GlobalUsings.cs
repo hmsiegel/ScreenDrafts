@@ -69,6 +69,7 @@ global using ScreenDrafts.Modules.Drafts.Infrastructure.Database;
 global using ScreenDrafts.Modules.Drafts.Infrastructure.Drafts;
 global using ScreenDrafts.Modules.Drafts.Infrastructure.Inbox;
 global using ScreenDrafts.Modules.Drafts.Infrastructure.Outbox;
+global using ScreenDrafts.Modules.Drafts.Infrastructure.People;
 global using ScreenDrafts.Modules.Drafts.Infrastructure.PublicApi;
 global using ScreenDrafts.Modules.Drafts.Infrastructure.SeriesInfrastructure;
 global using ScreenDrafts.Modules.Drafts.PublicApi;

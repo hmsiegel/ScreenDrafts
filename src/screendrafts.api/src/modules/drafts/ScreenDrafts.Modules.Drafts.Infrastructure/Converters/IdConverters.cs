@@ -109,4 +109,7 @@ internal static class IdConverters
 
   public static ValueConverter<DraftPartAttendanceId, Guid> DraftPartAttendanceIdConverter =>
     new(v => v.Value, value => DraftPartAttendanceId.Create(value));
+
+  public static ValueConverter<TeamPickCreditId, Guid> TeamPickCreditIdConverter =>
+    new(v => v.Value, value => TeamPickCreditId.Create(value));
 }

@@ -6,30 +6,22 @@ public sealed class DrafterTeam : Entity<DrafterTeamId>
 
   public const int TeamNameMaxLength = 100;
 
-  private DrafterTeam(
-    string name,
-    string publicId,
-    DrafterTeamId? id = null)
+  private DrafterTeam(string name, string publicId, DrafterTeamId? id = null)
     : base(id ?? DrafterTeamId.CreateUnique())
   {
     Name = Guard.Against.NullOrEmpty(name);
     PublicId = publicId;
   }
 
-  private DrafterTeam()
-  {
-  }
+  private DrafterTeam() { }
 
   public string Name { get; private set; } = default!;
   public string PublicId { get; private set; } = default!;
-  public int NumberOfDrafters { get; private set; } = 2;
+  public int NumberOfDrafters => _drafters.Count;
 
   public IReadOnlyCollection<Drafter> Drafters => _drafters.AsReadOnly();
 
-  public static Result<DrafterTeam> Create(
-    string name,
-    string publicId,
-    DrafterTeamId? id = null)
+  public static Result<DrafterTeam> Create(string name, string publicId, DrafterTeamId? id = null)
   {
     if (string.IsNullOrWhiteSpace(name))
     {
@@ -41,10 +33,7 @@ public sealed class DrafterTeam : Entity<DrafterTeamId>
       return Result.Failure<DrafterTeam>(DrafterTeamErrors.InvalidPublicId);
     }
 
-    var drafterTeam = new DrafterTeam(
-      id: id,
-      name: name,
-      publicId: publicId);
+    var drafterTeam = new DrafterTeam(id: id, name: name, publicId: publicId);
     drafterTeam.Raise(new DrafterTeamCreatedDomainEvent(drafterTeam.Id.Value));
     return drafterTeam;
   }
@@ -53,7 +42,7 @@ public sealed class DrafterTeam : Entity<DrafterTeamId>
   {
     if (string.IsNullOrWhiteSpace(publicId))
     {
-       return Result.Failure(DrafterTeamErrors.InvalidPublicId);
+      return Result.Failure(DrafterTeamErrors.InvalidPublicId);
     }
     PublicId = publicId;
     return Result.Success();
@@ -112,16 +101,6 @@ public sealed class DrafterTeam : Entity<DrafterTeamId>
     }
     _drafters.Remove(existingDrafter);
     _drafters.Add(drafter);
-    return Result.Success();
-  }
-
-  public Result UpdateNumberOfDrafters(int numberOfDrafters)
-  {
-    if (numberOfDrafters < 1)
-    {
-      return Result.Failure(DrafterTeamErrors.InvalidNumberOfDrafters);
-    }
-    NumberOfDrafters = numberOfDrafters;
     return Result.Success();
   }
 }

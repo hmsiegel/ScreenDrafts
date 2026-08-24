@@ -4,6 +4,7 @@ public sealed class Pick : Entity<PickId>
 {
   private readonly List<PickEvent> _history = [];
   private readonly List<Veto> _vetoes = [];
+  private readonly List<TeamPickCredit> _teamPickCredits = [];
 
   private Pick(
     int position,
@@ -81,6 +82,15 @@ public sealed class Pick : Entity<PickId>
 
   [NotMapped]
   public VetoId? VetoId => CurrentVeto?.Id;
+
+  /// <summary>
+  /// Set only when PlayedByParticipantKindValue is Team — snapshots which individual
+  /// drafters were on the team at the moment this pick was created, so each of them gets
+  /// personal credit (film history, appearance counts) without the team itself also
+  /// accruing a separate stat line. Never recomputed from current team membership; see
+  /// TeamPickCredit's remarks for why. Empty for every non-Team pick.
+  /// </summary>
+  public IReadOnlyList<TeamPickCredit> TeamPickCredits => _teamPickCredits.AsReadOnly();
 
   public CommissionerOverride? CommissionerOverride { get; private set; } = default!;
 
@@ -305,6 +315,29 @@ public sealed class Pick : Entity<PickId>
 
     MovieVersionName = trimmed;
     return Result.Success();
+  }
+
+  /// <summary>
+  /// Snapshots individual drafter credit for a Team-played pick. Called once, right after
+  /// the pick is created, with whichever drafters are on the team at that instant — see
+  /// TeamPickCredit's remarks for why this is a one-time snapshot rather than a live
+  /// membership lookup. No-op (and safe to call) with an empty or null list; only
+  /// meaningful when PlayedByParticipantKindValue is Team, but doesn't itself enforce that
+  /// — the caller (DraftPart.PlayPick) only calls this for Team-kind picks.
+  /// </summary>
+  internal void SetTeamPickCredits(IReadOnlyCollection<Guid>? drafterIdValues)
+  {
+    _teamPickCredits.Clear();
+
+    if (drafterIdValues is null || drafterIdValues.Count == 0)
+    {
+      return;
+    }
+
+    foreach (var drafterIdValue in drafterIdValues.Distinct())
+    {
+      _teamPickCredits.Add(TeamPickCredit.Create(this, drafterIdValue));
+    }
   }
 
   internal Result ApplyVeto(Veto veto)

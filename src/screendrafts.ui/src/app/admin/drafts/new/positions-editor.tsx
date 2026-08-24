@@ -10,7 +10,7 @@ export interface PositionConfig {
   hasBonusFungibleToken: boolean;
 }
 
-const POSITION_NAMES = ["A", "B", "C", "D", "E", "F", "G", "H"];
+const POSITION_NAMES = ["A", "B", "C", "D", "E", "F", "G", "H", "I"];
 
 export function getDefaultPositions(draftTypeName: string): PositionConfig[] {
   switch (draftTypeName) {

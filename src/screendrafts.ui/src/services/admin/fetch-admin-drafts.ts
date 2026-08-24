@@ -359,6 +359,120 @@ export async function searchDrafterTeams(
   }
 }
 
+export interface DrafterTeamMember {
+  publicId: string;
+  displayName: string;
+}
+
+export interface DrafterTeamDetail {
+  publicId: string;
+  name: string;
+  numberOfDrafters: number;
+  members: DrafterTeamMember[];
+}
+
+export async function getDrafterTeam(
+  accessToken: string | undefined,
+  publicId: string
+): Promise<DrafterTeamDetail | null> {
+  try {
+    const response = await fetch(`${apiBase}/drafter-teams/${encodeURIComponent(publicId)}`, {
+      headers: authHeaders(accessToken),
+      cache: "no-store",
+    });
+    if (!response.ok) return null;
+    const data = (await response.json()) as {
+      publicId?: string;
+      name?: string;
+      numberOfDrafters?: number;
+      members?: DrafterTeamMember[];
+    };
+    if (!data.publicId || !data.name) return null;
+    return {
+      publicId: data.publicId,
+      name: data.name,
+      numberOfDrafters: data.numberOfDrafters ?? 0,
+      members: data.members ?? [],
+    };
+  } catch (err) {
+    console.error("[getDrafterTeam]", err);
+    return null;
+  }
+}
+
+// Returns the new team's publicId, mirroring CreateDrafterTeamCommand's response shape
+// (CreatedResponse { publicId }) — see the Create feature's Endpoint.cs.
+export async function createDrafterTeam(
+  accessToken: string,
+  name: string
+): Promise<string> {
+  const response = await fetch(`${apiBase}/drafter-teams`, {
+    method: "POST",
+    headers: { ...authHeaders(accessToken), "Content-Type": "application/json" },
+    body: JSON.stringify({ name }),
+  });
+  if (!response.ok) {
+    throw new Error(await response.text().catch(() => "Failed to create drafter team."));
+  }
+  const data = (await response.json()) as { publicId: string };
+  return data.publicId;
+}
+
+// NOTE: route shape (drafterTeamId in the path, drafterId in the body for add; both in
+// the path for remove) is inferred from AddDrafterToTeamCommand/RemoveDrafterFromTeamCommand
+// and the DrafterTeamRoutes.Membership / MembershipWithDrafterId naming — I don't have
+// AddDrafterToTeamRequest.cs/RemoveDrafterFromTeamRequest.cs to confirm the exact
+// [FromRoute] vs body split. Verify against those before relying on this.
+export async function addDrafterToTeam(
+  accessToken: string,
+  drafterTeamId: string,
+  drafterId: string
+): Promise<void> {
+  const response = await fetch(
+    `${apiBase}/drafter-teams/${encodeURIComponent(drafterTeamId)}/members`,
+    {
+      method: "POST",
+      headers: { ...authHeaders(accessToken), "Content-Type": "application/json" },
+      body: JSON.stringify({ drafterTeamId, drafterId }),
+    }
+  );
+  if (!response.ok) {
+    throw new Error(await response.text().catch(() => "Failed to add drafter to team."));
+  }
+}
+
+export async function removeDrafterFromTeam(
+  accessToken: string,
+  drafterTeamId: string,
+  drafterId: string
+): Promise<void> {
+  const response = await fetch(
+    `${apiBase}/drafter-teams/${encodeURIComponent(drafterTeamId)}/members/${encodeURIComponent(drafterId)}`,
+    {
+      method: "DELETE",
+      headers: authHeaders(accessToken),
+    }
+  );
+  if (!response.ok) {
+    throw new Error(await response.text().catch(() => "Failed to remove drafter from team."));
+  }
+}
+
+export async function updateDrafterTeamName(
+  accessToken: string,
+  drafterTeamId: string,
+  name: string
+): Promise<void> {
+  const response = await fetch(`${apiBase}/drafter-teams/${encodeURIComponent(drafterTeamId)}`, {
+    method: "PUT",
+    headers: { ...authHeaders(accessToken), "Content-Type": "application/json" },
+    body: JSON.stringify({ drafterTeamId, name }),
+  });
+  if (!response.ok) {
+    throw new Error(await response.text().catch(() => "Failed to rename drafter team."));
+  }
+}
+
 export async function listAllCategories(
   accessToken: string | undefined
 ): Promise<CategoryResponse[]> {

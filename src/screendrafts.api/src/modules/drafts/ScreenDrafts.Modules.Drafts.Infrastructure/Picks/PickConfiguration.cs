@@ -87,6 +87,7 @@ internal sealed class PickConfiguration : IEntityTypeConfiguration<Pick>
     builder.Ignore(p => p.Vetoes);
     builder.Ignore(p => p.CurrentVeto);
     builder.Ignore(p => p.VetoId);
+    builder.Ignore(p => p.TeamPickCredits);
     builder.Ignore(p => p.History);
 
     builder

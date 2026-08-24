@@ -108,7 +108,7 @@ internal sealed class ParticipantAddedAttendanceHandler(
   )
   {
     const string sql = """
-      SELECT p.public_id
+      SELECT pe.public_id
       FROM drafts.drafter_team_drafter dtd
       JOIN drafts.drafters d ON d.id = dtd.drafter_id
       JOIN drafts.people pe ON pe.id = d.person_id
