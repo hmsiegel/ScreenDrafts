@@ -25,6 +25,7 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
         d.draft_status AS {nameof(GetDraftResponse.DraftStatus)},
         d.image_path AS {nameof(GetDraftResponse.ImagePath)},
         d.fungible_token_name AS {nameof(GetDraftResponse.FungibleTokenName)},
+        d.is_hostless AS {nameof(GetDraftResponse.IsHostless)},
         s.public_id AS {nameof(GetDraftResponse.SeriesPublicId)},
         s.name AS {nameof(GetDraftResponse.SeriesName)},
         c.public_id AS {nameof(GetDraftResponse.CampaignPublicId)},
@@ -44,6 +45,7 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
       DraftStatus DraftStatus,
       string ImagePath,
       string? FungibleTokenName,
+      bool IsHostless,
       string SeriesPublicId,
       string SeriesName,
       string? CampaignPublicId,
@@ -54,6 +56,26 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
     {
       return Result.Failure<GetDraftResponse>(DraftErrors.NotFound(request.DraftId));
     }
+
+    // Series kind — gates the series-scoped secondary nav below. A plain "Regular"
+    // series (the main-feed default) has no meaningful "more like this" grouping, so
+    // that nav only populates for non-default kinds (Legends Super, Legends Mega,
+    // Franchise Mini-Super, etc). Fetched separately from the draft-root query above so
+    // BuildResponse's tuple shape doesn't need to change to carry a value it never uses.
+    const string seriesKindSql = """
+      SELECT s.kind
+      FROM drafts.series s
+      JOIN drafts.drafts d ON d.series_id = s.id
+      WHERE d.public_id = @DraftId
+      """;
+
+    var seriesKindValue = await connection.ExecuteScalarAsync<int>(
+      new CommandDefinition(
+        seriesKindSql,
+        new { request.DraftId },
+        cancellationToken: cancellationToken
+      )
+    );
 
     // 2. Draft Parts
     const string partSql = $"""
@@ -196,6 +218,57 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
           TargetSlot = targetSlot,
           TmdbId = tmdbId,
           Title = title,
+        }
+      );
+    }
+
+    // 4b. Booster's Champion Assignments (Legends Mega) — same shape/join pattern as
+    // Community Film Rules above, but a genuinely separate mechanism/table. NOTE: table
+    // name follows the draft_part_community_film_rules naming convention confirmed above
+    // (draft_part_ prefix, not just the bare entity name) — best guess, not confirmed
+    // against the actual migration.
+    const string boostersChampionAssignmentSql = $"""
+      SELECT
+        bca.draft_part_id AS PartId,
+        bca.public_id     AS {nameof(GetDraftBoostersChampionAssignmentResponse.PublicId)},
+        dr.public_id      AS {nameof(
+        GetDraftBoostersChampionAssignmentResponse.AssignedDrafterPublicId
+      )},
+        COALESCE(p.display_name, p.first_name || ' ' || p.last_name)
+                          AS {nameof(
+        GetDraftBoostersChampionAssignmentResponse.AssignedDrafterDisplayName
+      )},
+        bca.tmdb_id       AS {nameof(GetDraftBoostersChampionAssignmentResponse.TmdbId)},
+        m.movie_title     AS {nameof(GetDraftBoostersChampionAssignmentResponse.Title)}
+      FROM drafts.draft_part_boosters_champion_assignments bca
+      JOIN drafts.drafters dr ON dr.id = bca.assigned_drafter_id_value
+      JOIN drafts.people p ON p.id = dr.person_id
+      LEFT JOIN drafts.movies m ON m.tmdb_id = bca.tmdb_id
+      WHERE bca.draft_part_id = ANY(@partIds)
+      ORDER BY bca.public_id ASC;
+      """;
+
+    var boostersChampionAssignmentRows = await connection.QueryAsync<(
+      Guid PartId,
+      string PublicId,
+      string AssignedDrafterPublicId,
+      string AssignedDrafterDisplayName,
+      int? TmdbId,
+      string? Title
+    )>(new CommandDefinition(boostersChampionAssignmentSql, new { partIds }));
+
+    foreach (var r in boostersChampionAssignmentRows)
+    {
+      if (!partMap.TryGetValue(r.PartId, out var part))
+        continue;
+      part.AddBoostersChampionAssignment(
+        new GetDraftBoostersChampionAssignmentResponse
+        {
+          PublicId = r.PublicId,
+          AssignedDrafterPublicId = r.AssignedDrafterPublicId,
+          AssignedDrafterDisplayName = r.AssignedDrafterDisplayName,
+          TmdbId = r.TmdbId,
+          Title = r.Title,
         }
       );
     }
@@ -597,12 +670,18 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
       )
     );
 
-    // 11. Per-part adjacent drafts (ordered by part release date within the series)
+    // 11. Per-part adjacent drafts (ordered by part release date across the WHOLE main
+    // feed — NOT scoped to the current draft's series). Main-feed episode numbering runs
+    // sequentially across every series (e.g. episode 380 -> 381 regardless of whether
+    // 381 is a Legends Super Draft, a campaign entry, or a standard episode), so this nav
+    // must be global on release channel alone. Series-scoped or format-scoped "more like
+    // this" navigation (e.g. "more Legends Super Drafts") is a deliberately separate,
+    // additional nav surface — see partCampaignAdjacentSql below for the existing
+    // campaign-scoped precedent that pattern would follow.
     //
     // For each part we find:
     //   prev — the draft whose earliest allowed-channel part release date is the
-    //          largest date strictly before this part's earliest release date,
-    //          within the same series.
+    //          largest date strictly before this part's earliest release date.
     //   next — the same in the other direction.
     //
     // A single query returns all (partId, direction, draftPublicId, draftTitle) rows
@@ -618,9 +697,9 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
           AND dr.release_channel = ANY(@allowedChannelInts)
         GROUP BY dr.part_id
       ),
-      series_part_dates AS (
-        -- Earliest allowed-channel release date for every part in the same series,
-        -- excluding the parts we are currently looking up
+      main_feed_part_dates AS (
+        -- Earliest allowed-channel release date for every OTHER part on the main feed,
+        -- across all series (deliberately unscoped — see remarks above)
         SELECT
           d.id AS draft_id,
           d.public_id AS draft_public_id,
@@ -629,10 +708,6 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
         FROM drafts.draft_releases dr
         JOIN drafts.draft_parts dp ON dp.id = dr.part_id
         JOIN drafts.drafts d ON d.id = dp.draft_id
-        JOIN drafts.series s ON s.id = d.series_id
-        -- restrict to same series as the requested draft
-        JOIN drafts.drafts current_d ON current_d.public_id = @DraftId
-          AND current_d.series_id = s.id
         WHERE dr.release_channel = ANY(@allowedChannelInts)
           AND dp.id != ALL(@partIds)
         GROUP BY d.id, d.public_id, d.title
@@ -640,26 +715,26 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
       prev_ranked AS (
         SELECT
           tpd.part_id AS source_part_id,
-          spd.draft_public_id,
-          spd.draft_title,
+          mfpd.draft_public_id,
+          mfpd.draft_title,
           ROW_NUMBER() OVER (
             PARTITION BY tpd.part_id
-            ORDER BY spd.release_date DESC
+            ORDER BY mfpd.release_date DESC
           ) AS rn
         FROM this_part_dates tpd
-        JOIN series_part_dates spd ON spd.release_date < tpd.release_date
+        JOIN main_feed_part_dates mfpd ON mfpd.release_date < tpd.release_date
       ),
       next_ranked AS (
         SELECT
           tpd.part_id AS source_part_id,
-          spd.draft_public_id,
-          spd.draft_title,
+          mfpd.draft_public_id,
+          mfpd.draft_title,
           ROW_NUMBER() OVER (
             PARTITION BY tpd.part_id
-            ORDER BY spd.release_date ASC
+            ORDER BY mfpd.release_date ASC
           ) AS rn
         FROM this_part_dates tpd
-        JOIN series_part_dates spd ON spd.release_date > tpd.release_date
+        JOIN main_feed_part_dates mfpd ON mfpd.release_date > tpd.release_date
       )
       SELECT source_part_id AS PartId, 'prev' AS Direction, draft_public_id AS PublicId, draft_title AS Title
       FROM prev_ranked WHERE rn = 1
@@ -768,6 +843,96 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
         .GroupBy(r => r.PartId)
         .ToDictionary(g => g.Key, g => g.AsEnumerable());
     }
+
+    // 13. Per-part series adjacent drafts — secondary nav for non-default series (e.g.
+    // "more Legends Super Drafts"), gated so a plain Regular-kind series (the ordinary
+    // main-feed default) never gets a meaningless "more like this" section. Works across
+    // both main-feed and Patreon channels via the same allowedChannelInts used above —
+    // unlike campaign nav, series groupings aren't inherently main-feed-only.
+    Dictionary<
+      Guid,
+      IEnumerable<(Guid PartId, string Direction, string PublicId, string Title)>
+    > partSeriesAdjacentLookup = [];
+
+    if (seriesKindValue != SeriesKind.Regular.Value)
+    {
+      const string partSeriesAdjacentSql = """
+        WITH this_part_dates AS (
+          SELECT
+            dr.part_id,
+            MIN(dr.release_date) AS release_date
+          FROM drafts.draft_releases dr
+          WHERE dr.part_id = ANY(@partIds)
+            AND dr.release_channel = ANY(@allowedChannelInts)
+          GROUP BY dr.part_id
+        ),
+        series_part_dates AS (
+          SELECT
+            d.id AS draft_id,
+            d.public_id AS draft_public_id,
+            d.title AS draft_title,
+            MIN(dr.release_date) AS release_date
+          FROM drafts.draft_releases dr
+          JOIN drafts.draft_parts dp ON dp.id = dr.part_id
+          JOIN drafts.drafts d ON d.id = dp.draft_id
+          JOIN drafts.drafts current_d ON current_d.public_id = @DraftId
+            AND current_d.series_id = d.series_id
+          WHERE dr.release_channel = ANY(@allowedChannelInts)
+            AND dp.id != ALL(@partIds)
+          GROUP BY d.id, d.public_id, d.title
+        ),
+        prev_ranked AS (
+          SELECT
+            tpd.part_id AS source_part_id,
+            spd.draft_public_id,
+            spd.draft_title,
+            ROW_NUMBER() OVER (
+              PARTITION BY tpd.part_id
+              ORDER BY spd.release_date DESC
+            ) AS rn
+          FROM this_part_dates tpd
+          JOIN series_part_dates spd ON spd.release_date < tpd.release_date
+        ),
+        next_ranked AS (
+          SELECT
+            tpd.part_id AS source_part_id,
+            spd.draft_public_id,
+            spd.draft_title,
+            ROW_NUMBER() OVER (
+              PARTITION BY tpd.part_id
+              ORDER BY spd.release_date ASC
+            ) AS rn
+          FROM this_part_dates tpd
+          JOIN series_part_dates spd ON spd.release_date > tpd.release_date
+        )
+        SELECT source_part_id AS PartId, 'prev' AS Direction, draft_public_id AS PublicId, draft_title AS Title
+        FROM prev_ranked WHERE rn = 1
+        UNION ALL
+        SELECT source_part_id AS PartId, 'next' AS Direction, draft_public_id AS PublicId, draft_title AS Title
+        FROM next_ranked WHERE rn = 1;
+        """;
+
+      var partSeriesAdjacentRows = await connection.QueryAsync<(
+        Guid PartId,
+        string Direction,
+        string PublicId,
+        string Title
+      )>(
+        new CommandDefinition(
+          partSeriesAdjacentSql,
+          new
+          {
+            partIds,
+            allowedChannelInts,
+            request.DraftId,
+          }
+        )
+      );
+
+      partSeriesAdjacentLookup = partSeriesAdjacentRows
+        .GroupBy(r => r.PartId)
+        .ToDictionary(g => g.Key, g => g.AsEnumerable());
+    }
     // Assemble final pick responses
     // A lookup, not a dictionary: a pick can now have more than one veto row
     // (veto -> override -> re-veto), so a straight ToDictionary would throw on the
@@ -858,6 +1023,17 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
           nextCampaign = nc == default ? default : (nc.PublicId, nc.Title);
         }
 
+        (string PublicId, string Title) prevSeries = default;
+        (string PublicId, string Title) nextSeries = default;
+        if (partSeriesAdjacentLookup.TryGetValue(internalId, out var seriesRows))
+        {
+          var seriesList = seriesRows.ToList();
+          var ps = seriesList.FirstOrDefault(r => r.Direction == "prev");
+          var ns = seriesList.FirstOrDefault(r => r.Direction == "next");
+          prevSeries = ps == default ? default : (ps.PublicId, ps.Title);
+          nextSeries = ns == default ? default : (ns.PublicId, ns.Title);
+        }
+
         return p with
         {
           PreviousDraftPublicId = prev == default ? null : prev.PublicId,
@@ -868,6 +1044,10 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
           PreviousCampaignDraftTitle = prevCampaign == default ? null : prevCampaign.Title,
           NextCampaignDraftPublicId = nextCampaign == default ? null : nextCampaign.PublicId,
           NextCampaignDraftTitle = nextCampaign == default ? null : nextCampaign.Title,
+          PreviousSeriesDraftPublicId = prevSeries == default ? null : prevSeries.PublicId,
+          PreviousSeriesDraftTitle = prevSeries == default ? null : prevSeries.Title,
+          NextSeriesDraftPublicId = nextSeries == default ? null : nextSeries.PublicId,
+          NextSeriesDraftTitle = nextSeries == default ? null : nextSeries.Title,
         };
       })
       .ToList();
@@ -884,6 +1064,7 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
       DraftStatus DraftStatus,
       string? ImagePath,
       string? FungibleTokenName,
+      bool IsHostless,
       string SeriesPublicId,
       string SeriesName,
       string? CampaignPublicId,
@@ -902,6 +1083,7 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
       DraftStatus = draft.DraftStatus,
       ImagePath = draft.ImagePath,
       FungibleTokenName = draft.FungibleTokenName,
+      IsHostless = draft.IsHostless,
       SeriesPublicId = draft.SeriesPublicId,
       SeriesName = draft.SeriesName,
       CampaignPublicId = draft.CampaignPublicId,

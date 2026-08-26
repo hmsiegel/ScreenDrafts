@@ -12,6 +12,7 @@ import {
   type DraftPartParticipant,
   type DraftPartHost,
   type GameplayPick,
+  type GameplayVetoHistoryEntry,
 } from "@/services/admin/fetch-admin-drafts";
 import { importAndResolve, type ResolvedMovie } from "@/lib/movie-resolve";
 import { useMovieSearch } from "@/lib/use-movie-search";
@@ -42,6 +43,14 @@ interface LocalPick {
   // that's decided server-side by whichever budget was actually available.
   vetoWasFungible: boolean;
   vetoOverrideWasFungible: boolean;
+  // Only set on a hostless part — the participant this pick was "sent to,"
+  // assigned server-side at play time. Used to auto-resolve who reveals it
+  // instead of asking the seeder to pick a host that doesn't exist.
+  revealAuthorizedParticipantId: string | null;
+  revealAuthorizedByName: string | null;
+  // Full veto history for this pick — see GameplayVetoHistoryEntry. Normally holds at
+  // most one entry; a second only appears after a veto → override → re-veto sequence.
+  vetoHistory: GameplayVetoHistoryEntry[];
 }
 
 interface Props {
@@ -75,6 +84,13 @@ export function SeedPicksStep({
   // mutation so they never drift from what the server actually has.
   const [fungibleTokenName, setFungibleTokenName] = useState<string | null>(null);
   const [fungibleRemaining, setFungibleRemaining] = useState<Map<string, number>>(new Map());
+
+  // Hostless parts have no primary host to reveal picks — reveal authority
+  // instead belongs to whichever participant the just-played pick was "sent
+  // to" (Pick.RevealAuthorizedParticipant, assigned server-side at play
+  // time). See handleSubmitPick, which branches on this instead of asking
+  // for a host selection that can never be filled in.
+  const [isHostless, setIsHostless] = useState(false);
 
   // Next-pick form state
   const [position, setPosition] = useState<number | "">("");
@@ -138,6 +154,7 @@ export function SeedPicksStep({
     if (!gameplay) return picks;
 
     setFungibleTokenName(gameplay.fungibleTokenName);
+    setIsHostless(gameplay.isHostless);
     setFungibleRemaining(
       new Map(gameplay.participants.map((p) => [p.participantId, p.fungibleTokensRemaining]))
     );
@@ -157,6 +174,9 @@ export function SeedPicksStep({
         savedByName: p.savedByName,
         vetoWasFungible: p.wasVetoFungible,
         vetoOverrideWasFungible: p.wasVetoOverrideFungible,
+        revealAuthorizedParticipantId: p.revealAuthorizedParticipantId,
+        revealAuthorizedByName: p.revealAuthorizedByName,
+        vetoHistory: p.vetoHistory ?? [],
       }));
 
     setPicks(nextPicks);
@@ -218,7 +238,8 @@ export function SeedPicksStep({
   }
 
   async function handleSubmitPick() {
-    if (!selectedMovie || position === "" || !participantIdValue || !revealedByHostId || submitting) {
+    const hasRevealer = isHostless || !!revealedByHostId;
+    if (!selectedMovie || position === "" || !participantIdValue || !hasRevealer || submitting) {
       return;
     }
     const participant = participants.find((p) => p.participantIdValue === participantIdValue);
@@ -240,10 +261,35 @@ export function SeedPicksStep({
         moviePublicId: selectedMovie.mediaPublicId,
       });
 
+      // The pick is now landed on the server regardless of what happens below — clear
+      // the movie/slot selection immediately so a reveal failure doesn't leave the form
+      // stuck displaying a pick that's already been recorded.
+      setSelectedMovie(null);
+      setQuery("");
+      setPosition("");
+
+      // Hostless parts have no host to reveal picks — refetch immediately to
+      // pick up Pick.RevealAuthorizedParticipant, which the server assigned
+      // at play time, and reveal as that participant instead.
+      let actedByPublicId = revealedByHostId;
+      if (isHostless) {
+        const freshPicks = await refreshFromServer();
+        const justPlayed = freshPicks.find((p) => p.playOrder === nextPlayOrder);
+        const recipient = participants.find(
+          (p) => p.participantIdValue === justPlayed?.revealAuthorizedParticipantId
+        );
+        if (!recipient?.participantPublicId) {
+          throw new Error(
+            "Could not determine who this pick was sent to — refresh and try revealing manually."
+          );
+        }
+        actedByPublicId = recipient.participantPublicId;
+      }
+
       await seedRevealPick(accessToken, {
         draftPartId: draft.draftPartPublicId,
         playOrder: nextPlayOrder,
-        actedByPublicId: revealedByHostId,
+        actedByPublicId,
       });
 
       const nextPicks = await refreshFromServer();
@@ -254,10 +300,6 @@ export function SeedPicksStep({
       if (totalPicks != null && newLandedCount >= totalPicks) {
         onAllPositionsFilled();
       }
-
-      setSelectedMovie(null);
-      setQuery("");
-      setPosition("");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to record pick.");
     } finally {
@@ -303,13 +345,17 @@ export function SeedPicksStep({
       setError("Select who's overriding this veto.");
       return;
     }
+    if (!overrider.participantPublicId) {
+      setError("Selected overrider has no public ID on record — try re-selecting them.");
+      return;
+    }
     setSubmitting(true);
     setError(null);
     try {
       await applyVetoOverride(accessToken, {
         draftPartId: draft.draftPartPublicId,
         playOrder: pick.playOrder,
-        participantIdValue: overrider.participantIdValue,
+        participantIdValue: overrider.participantPublicId,
         participantKind: overrider.participantKindValue.value,
       });
       const nextPicks = await refreshFromServer();
@@ -384,10 +430,6 @@ export function SeedPicksStep({
         <div className="bg-white border border-sd-ink/10 rounded divide-y divide-sd-ink/5">
           {picks.map((p) => {
             const showingPicker = pendingAction?.playOrder === p.playOrder;
-            const vetoNote =
-              p.vetoWasFungible && fungibleTokenName ? ` (${fungibleTokenName})` : "";
-            const overrideNote =
-              p.vetoOverrideWasFungible && fungibleTokenName ? ` (${fungibleTokenName})` : "";
             return (
               <div key={p.playOrder} className="px-4 py-2.5 text-sm">
                 <div className="flex items-center justify-between">
@@ -398,22 +440,33 @@ export function SeedPicksStep({
                     {p.status !== "landed" && (
                       <span className="ml-2 text-[10px] font-mono uppercase tracking-widest text-sd-red">
                         {p.status === "vetoed"
-                          ? `vetoed${p.vetoedByName ? ` by ${p.vetoedByName}` : ""}${vetoNote} — slot open`
+                          ? `vetoed${p.vetoedByName ? ` by ${p.vetoedByName}` : ""} — slot open`
                           : p.status === "vetoOverridden"
-                            ? `veto overridden${p.savedByName ? ` by ${p.savedByName}` : ""}${overrideNote}`
+                            ? `veto overridden${p.savedByName ? ` by ${p.savedByName}` : ""}`
                             : "commissioner override — film barred, slot still open"}
                       </span>
+                    )}
+                    {p.vetoHistory.length > 1 && (
+                      <div className="mt-1 flex flex-wrap items-center gap-x-1 gap-y-0.5 text-[10px] font-mono text-sd-ink/40">
+                        <span className="uppercase tracking-widest text-sd-ink/30">Full history:</span>
+                        {p.vetoHistory.map((v) => (
+                          <span key={v.sequence}>
+                            {`vetoed by ${v.vetoedByName}`}
+                            {v.isOverridden && ` → overridden by ${v.overriddenByName ?? "?"} → `}
+                          </span>
+                        ))}
+                      </div>
                     )}
                   </div>
                   {!showingPicker && (
                     <div className="flex items-center gap-2 shrink-0">
-                      {/* Veto is offered on the most recent play regardless of
-                          whether it's currently "landed" or "vetoOverridden" —
-                          a veto that was overridden can be vetoed again (the
-                          override itself gets overridden), which lands as a
-                          second entry in the pick's veto history. Commissioner
-                          Override doesn't have this restriction, so it's
-                          offered on any landed pick regardless of play order. */}
+                      {/* All three actions — Veto, Commissioner Override, and Veto
+                          Override — are only offered on the most recent play. Once a
+                          later pick has been made, an earlier slot is settled and none
+                          of these should still be actionable from this form. A veto that
+                          was overridden can still be vetoed again (the override itself
+                          gets overridden), which is why "vetoOverridden" is included
+                          alongside "landed" for the Veto button below. */}
                       {(p.status === "landed" || p.status === "vetoOverridden") &&
                         p.playOrder === lastPick?.playOrder && (
                           <button
@@ -427,7 +480,7 @@ export function SeedPicksStep({
                             Veto
                           </button>
                         )}
-                      {p.status === "landed" && (
+                      {p.status === "landed" && p.playOrder === lastPick?.playOrder && (
                         <button
                           type="button"
                           onClick={() => handleCommissionerOverride(p)}
@@ -437,7 +490,7 @@ export function SeedPicksStep({
                           Commissioner Override
                         </button>
                       )}
-                      {p.status === "vetoed" && allowsOverride && (
+                      {p.status === "vetoed" && allowsOverride && p.playOrder === lastPick?.playOrder && (
                         <button
                           type="button"
                           onClick={() =>
@@ -601,20 +654,26 @@ export function SeedPicksStep({
           </div>
         </div>
 
-        <div>
-          <label className={LABEL}>Revealed By (Host)</label>
-          <select
-            className={INPUT}
-            value={revealedByHostId}
-            onChange={(e) => setRevealedByHostId(e.target.value)}
-          >
-            {allHosts.map((h) => (
-              <option key={h.hostPublicId} value={h.hostPublicId}>
-                {h.displayName}
-              </option>
-            ))}
-          </select>
-        </div>
+        {isHostless ? (
+          <p className="text-[11px] font-mono text-sd-ink/40 uppercase tracking-widest">
+            Hostless draft — reveal recipient is assigned automatically at play time.
+          </p>
+        ) : (
+          <div>
+            <label className={LABEL}>Revealed By (Host)</label>
+            <select
+              className={INPUT}
+              value={revealedByHostId}
+              onChange={(e) => setRevealedByHostId(e.target.value)}
+            >
+              {allHosts.map((h) => (
+                <option key={h.hostPublicId} value={h.hostPublicId}>
+                  {h.displayName}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
 
         {error && (
           <div className="border border-red-300 bg-red-50 text-red-800 text-sm px-4 py-3 rounded">
@@ -625,7 +684,13 @@ export function SeedPicksStep({
         <button
           type="button"
           onClick={handleSubmitPick}
-          disabled={!selectedMovie || position === "" || !participantIdValue || !revealedByHostId || submitting}
+          disabled={
+            !selectedMovie ||
+            position === "" ||
+            !participantIdValue ||
+            (!isHostless && !revealedByHostId) ||
+            submitting
+          }
           className={BTN_PRIMARY}
         >
           {submitting ? "Recording…" : "Record Pick"}

@@ -142,6 +142,21 @@ public static class DraftPartErrors
     description: "A participant cannot use a veto override to save their own pick."
   );
 
+  public static readonly SDError OnlyAssignedDrafterCanPlayBoostersPick = SDError.Conflict(
+    code: "DraftPart.OnlyAssignedDrafterCanPlayBoostersPick",
+    description: "Only the assigned drafter can play the booster pick."
+  );
+
+  public static readonly SDError OnlyBoostersChampionCanPlayThisFilm = SDError.Conflict(
+    code: "DraftPart.OnlyBoostersChampionCanPlayThisFilm",
+    description: "Only the Booster's Champion can play this film."
+  );
+
+  public static readonly SDError OnlyDesignatedRecipientCanRevealPick = SDError.Conflict(
+    code: "DraftPart.OnlyDesignatedRecipientCanRevealPick",
+    description: "Only the designated recipient can reveal the pick."
+  );
+
   public static SDError NotFound(Guid draftPartId) =>
     SDError.NotFound(
       code: "DraftPart.NotFound",

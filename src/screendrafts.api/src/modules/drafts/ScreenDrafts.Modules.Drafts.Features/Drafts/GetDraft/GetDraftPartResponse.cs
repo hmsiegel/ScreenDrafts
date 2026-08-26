@@ -11,19 +11,35 @@ internal sealed record GetDraftPartResponse
   public DateTime? ScheduledForUtc { get; init; }
   public string? PredictionSeasonPublicId { get; init; }
 
-  // Per-part adjacent navigation (ordered by this part's release date within the series)
+  // Primary nav (ordered by this part's release date, across the whole main feed —
+  // scoped by release channel only, not by series. See GetDraftQueryHandler's
+  // partAdjacentSql remarks.)
   public string? PreviousDraftPublicId { get; init; }
   public string? PreviousDraftTitle { get; init; }
   public string? NextDraftPublicId { get; init; }
   public string? NextDraftTitle { get; init; }
+
+  // Secondary nav — campaign-scoped (main-feed groupings)
   public string? PreviousCampaignDraftPublicId { get; init; }
   public string? PreviousCampaignDraftTitle { get; init; }
   public string? NextCampaignDraftPublicId { get; init; }
   public string? NextCampaignDraftTitle { get; init; }
 
+  // Secondary nav — series-scoped (e.g. "more Legends Super Drafts"). Only populated
+  // when the draft's series has a non-default SeriesKind — see
+  // GetDraftQueryHandler.partSeriesAdjacentSql's gating. Works across both main-feed
+  // and Patreon channels, unlike campaign nav, which is inherently main-feed-scoped.
+  public string? PreviousSeriesDraftPublicId { get; init; }
+  public string? PreviousSeriesDraftTitle { get; init; }
+  public string? NextSeriesDraftPublicId { get; init; }
+  public string? NextSeriesDraftTitle { get; init; }
+
   public int MaxCommunityPicks { get; init; }
   public int MaxCommunityVetoes { get; init; }
   public Collection<GetDraftCommunityFilmRuleResponse> CommunityFilmRules { get; init; } = [];
+
+  public Collection<GetDraftBoostersChampionAssignmentResponse> BoostersChampionAssignment { get; init; } =
+  [];
 
   public GetDraftHostResponse? PrimaryHost { get; private set; }
   public Collection<GetDraftHostResponse> CoHosts { get; init; } = [];
@@ -52,4 +68,8 @@ internal sealed record GetDraftPartResponse
 
   public void AddCommunityFilmRule(GetDraftCommunityFilmRuleResponse rule) =>
     CommunityFilmRules.Add(rule);
+
+  public void AddBoostersChampionAssignment(
+    GetDraftBoostersChampionAssignmentResponse assignment
+  ) => BoostersChampionAssignment.Add(assignment);
 }

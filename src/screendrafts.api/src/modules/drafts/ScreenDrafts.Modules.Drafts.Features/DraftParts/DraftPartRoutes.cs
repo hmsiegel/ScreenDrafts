@@ -88,4 +88,11 @@ internal static class DraftPartRoutes
 
   // Seed Drafts
   public const string SeedRevealPick = ById + "/seed/picks/{playOrder}/reveal";
+
+  // Boosters Champion Assignments
+  public const string BoostersChampionAssignments = ById + "/boosters-champion-assignments";
+  public const string BoostersChampionAssignmentFilm =
+    ById + "/boosters-champion-assignments/{assignmentPublicId}/film";
+  public const string BoostersChampionAssignmentById =
+    ById + "/boosters-champion-assignments/{assignmentPublicId}";
 }

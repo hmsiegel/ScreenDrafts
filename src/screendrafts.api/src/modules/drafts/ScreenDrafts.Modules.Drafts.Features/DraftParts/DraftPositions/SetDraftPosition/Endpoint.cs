@@ -32,7 +32,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<SetDraftPositionsRequest>
           Picks = p.Picks,
           HasBonusVeto = p.HasBonusVeto,
           HasBonusVetoOverride = p.HasBonusVetoOverride,
-          HasFungibleToken = p.HasBonusFungibleToken,
+          HasFungibleToken = p.HasFungibleToken,
         }),
       ],
     };

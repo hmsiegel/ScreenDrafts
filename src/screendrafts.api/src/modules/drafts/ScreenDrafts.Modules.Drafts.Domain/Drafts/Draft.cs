@@ -54,6 +54,7 @@ public sealed partial class Draft : AggregateRoot<DraftId, Guid>
   public bool GrantsStartingVetoPerPart { get; private set; }
 
   public string? FungibleTokenName { get; private set; }
+  public bool IsHostless { get; private set; }
 
   // Relationships
   public IReadOnlyCollection<DraftPart> Parts => _parts.AsReadOnly();
@@ -360,6 +361,12 @@ public sealed partial class Draft : AggregateRoot<DraftId, Guid>
       ? null
       : fungibleTokenName.Trim();
 
+    UpdatedAtUtc = DateTime.UtcNow;
+  }
+
+  public void SetIsHostless(bool isHostless)
+  {
+    IsHostless = isHostless;
     UpdatedAtUtc = DateTime.UtcNow;
   }
 

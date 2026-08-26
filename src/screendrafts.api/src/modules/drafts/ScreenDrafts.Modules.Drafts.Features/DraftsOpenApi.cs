@@ -226,6 +226,14 @@ internal static class DraftsOpenApi
 
     // Seed Drafts
     public const string DraftParts_SeedRevealPick = "DraftParts.SeedRevealPick";
-    public const string Predictions_SeedSubmitSet = "Predictions_SeedSubmitSet";
+    public const string Predictions_SeedSubmitSet = "Predictions.SeedSubmitSet";
+
+    // Boosters Champion Draft Part
+    public const string DraftParts_AddBoostersChampionAssignment =
+      "DraftParts.AddBoostersChampionAssignment";
+    public const string DraftParts_AssignFilmToBoostersChampionAssignment =
+      "DraftParts.AssignFilmToBoostersChampionAssignment";
+    public const string DraftParts_RemoveBoostersChampionAssignment =
+      "DraftParts.RemoveBoostersChampionAssignment";
   }
 }

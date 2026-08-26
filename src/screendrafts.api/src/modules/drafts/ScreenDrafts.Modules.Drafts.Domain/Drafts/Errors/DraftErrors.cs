@@ -241,4 +241,14 @@ public static partial class DraftErrors
       code: "Draft.DraftNotDeleted",
       description: $"Draft '{publicId}' is not deleted."
     );
+
+  public static readonly SDError CannotChangeIsHostlessAfterADraftPartHasStarted = SDError.Conflict(
+    "Drafts.CannotChangeIsHostlessAfterADraftPartHasStarted",
+    "Cannot change whether a draft is hostless after a draft part has started."
+  );
+
+  public static readonly SDError CannotChangeIsHostlessAfterDraftCreation = SDError.Conflict(
+    "Drafts.CannotChangeIsHostlessAfterDraftCreation",
+    "Cannot change whether a draft is hostless after draft creation."
+  );
 }

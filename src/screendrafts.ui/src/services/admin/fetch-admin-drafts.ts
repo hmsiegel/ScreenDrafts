@@ -76,6 +76,7 @@ export interface DraftPart {
   maxCommunityPicks: number;
   maxCommunityVetoes: number;
   communityFilmRules: DraftPartCommunityFilmRule[];
+  boostersChampionAssignments: AdminBoostersChampionAssignment[];
 }
 
 export interface AdminDraftDetail {
@@ -86,11 +87,14 @@ export interface AdminDraftDetail {
   draftStatus: SmartEnumResponse;
   seriesPublicId: string | null;
   seriesName: string | null;
-  fungibleTokenName: string | null;
   episodeNumber: number | null;
   campaignPublicId: string | null;
   campaignName: string | null;
   imagePath: string | null;
+  // Bug fix: edit-draft-form.tsx already reads draft.fungibleTokenName — this was never
+  // actually added to the interface, which is a compile error, not a runtime one.
+  fungibleTokenName: string | null;
+  isHostless: boolean;
   categories: GetDraftCategoryResponse[];
   parts: DraftPart[];
 }
@@ -110,6 +114,7 @@ export interface CreateDraftPositionBody {
   picks: number[];
   hasBonusVeto: boolean;
   hasBonusVetoOverride: boolean;
+  hasBonusFungibleToken: boolean;
 }
 
 export interface CreateDraftCommunityBody {
@@ -473,6 +478,83 @@ export async function updateDrafterTeamName(
   }
 }
 
+// ── Booster's Champion assignments (Legends Mega) ────────────────────────────
+// A specific film reserved for a specific drafter to play on the Legends community's
+// behalf — the drafter can play it at any board slot, but nobody else can play THAT film.
+// Unrelated to CommunityFilmRule's slot-based BoostersPick rule kind; see
+// BoostersChampionAssignment.cs's remarks on the backend for why these are separate.
+
+export interface AdminBoostersChampionAssignment {
+  publicId: string;
+  assignedDrafterPublicId: string;
+  assignedDrafterDisplayName: string;
+  tmdbId: number | null;
+  title: string | null;
+}
+
+export async function addBoostersChampionAssignment(
+  accessToken: string,
+  draftPartId: string,
+  assignedDrafterPublicId: string,
+  tmdbId: number | null
+): Promise<string> {
+  const response = await fetch(
+    `${apiBase}/draft-parts/${encodeURIComponent(draftPartId)}/boosters-champion-assignments`,
+    {
+      method: "POST",
+      headers: { ...authHeaders(accessToken), "Content-Type": "application/json" },
+      body: JSON.stringify({ draftPartId, assignedDrafterPublicId, tmdbId }),
+    }
+  );
+  if (!response.ok) {
+    throw new Error(
+      await response.text().catch(() => "Failed to add Booster's Champion assignment.")
+    );
+  }
+  const data = (await response.json()) as { publicId: string };
+  return data.publicId;
+}
+
+export async function assignFilmToBoostersChampionAssignment(
+  accessToken: string,
+  draftPartId: string,
+  assignmentPublicId: string,
+  tmdbId: number
+): Promise<void> {
+  const response = await fetch(
+    `${apiBase}/draft-parts/${encodeURIComponent(draftPartId)}/boosters-champion-assignments/${encodeURIComponent(assignmentPublicId)}/film`,
+    {
+      method: "PUT",
+      headers: { ...authHeaders(accessToken), "Content-Type": "application/json" },
+      body: JSON.stringify({ draftPartId, assignmentPublicId, tmdbId }),
+    }
+  );
+  if (!response.ok) {
+    throw new Error(
+      await response.text().catch(() => "Failed to assign the film.")
+    );
+  }
+}
+
+export async function removeBoostersChampionAssignment(
+  accessToken: string,
+  draftPartId: string,
+  assignmentPublicId: string
+): Promise<void> {
+  const response = await fetch(
+    `${apiBase}/draft-parts/${encodeURIComponent(draftPartId)}/boosters-champion-assignments/${encodeURIComponent(assignmentPublicId)}`,
+    {
+      method: "DELETE",
+      headers: authHeaders(accessToken),
+    }
+  );
+  if (!response.ok) {
+    throw new Error(
+      await response.text().catch(() => "Failed to remove the assignment.")
+    );
+  }
+}
+
 export async function listAllCategories(
   accessToken: string | undefined
 ): Promise<CategoryResponse[]> {
@@ -675,6 +757,7 @@ export async function updateDraft(
     publicCategoryIds?: string[];
     draftTypeValue: number;
     fungibleTokenName?: string;
+    isHostless?: boolean;
   }
 ): Promise<void> {
   const response = await fetch(
@@ -1311,6 +1394,25 @@ export interface GameplayPick {
   // Normally 1; a value of 2 means this pick was vetoed, overridden, and then
   // re-vetoed. 0 when the pick has never been vetoed.
   vetoSequence: number;
+  // Only set on a hostless draft (DraftPartGameplay.isHostless) — the participant this
+  // pick was "sent to," authorized to reveal it. Null on every hosted-draft pick.
+  revealAuthorizedParticipantId: string | null;
+  revealAuthorizedByName: string | null;
+  // Full veto history for this pick, in order — every veto ever issued against it, not
+  // just the current one (wasVetoed/wasVetoOverridden above still reflect only the
+  // current one, unchanged). Normally holds at most one entry; a second entry only
+  // occurs when the first veto was overridden and the resulting override was itself
+  // overridden (re-vetoing the pick).
+  vetoHistory: GameplayVetoHistoryEntry[];
+}
+
+export interface GameplayVetoHistoryEntry {
+  sequence: number;
+  vetoedByName: string;
+  wasVetoFungible: boolean;
+  isOverridden: boolean;
+  overriddenByName: string | null;
+  wasOverrideFungible: boolean;
 }
 
 export interface GameplayParticipant {
@@ -1350,6 +1452,14 @@ export interface GameplaySubDraftSummary {
   subjectImdbId: string | null;
 }
 
+export interface GameplayBoostersChampionAssignment {
+  publicId: string;
+  assignedDrafterPublicId: string;
+  assignedDrafterDisplayName: string;
+  tmdbId: number | null;
+  title: string | null;
+}
+
 export interface DraftPartGameplay {
   picks: GameplayPick[];
   triviaResults: GameplayTriviaResult[];
@@ -1358,6 +1468,12 @@ export interface DraftPartGameplay {
   // Flavor name for this draft's fungible veto/override token (e.g. "Blessing
   // of Unusual Versatility"). Null for the overwhelming majority of drafts.
   fungibleTokenName: string | null;
+  // True when this draft has no dedicated host — reveal authority for a pick then
+  // belongs to whichever participant it's sent to (see GameplayPick.revealAuthorizedParticipantId)
+  // rather than the primary host.
+  isHostless: boolean;
+  // Legends Mega only — see GameplayBoostersChampionAssignment.
+  boostersChampionAssignments: GameplayBoostersChampionAssignment[];
 }
 
 export async function getDraftPartGameplay(
@@ -1378,6 +1494,8 @@ export async function getDraftPartGameplay(
       subDrafts?: GameplaySubDraftSummary[];
       participants?: GameplayParticipant[];
       fungibleTokenName?: string;
+      isHostless?: boolean;
+      boostersChampionAssignments?: GameplayBoostersChampionAssignment[];
     };
     return {
       picks: data.picks ?? [],
@@ -1385,6 +1503,8 @@ export async function getDraftPartGameplay(
       subDrafts: data.subDrafts ?? [],
       participants: data.participants ?? [],
       fungibleTokenName: data.fungibleTokenName ?? null,
+      isHostless: data.isHostless ?? false,
+      boostersChampionAssignments: data.boostersChampionAssignments ?? [],
     };
   } catch (err) {
     console.error("[getDraftPartGameplay]", err);

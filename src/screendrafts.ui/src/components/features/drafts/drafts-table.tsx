@@ -1,8 +1,10 @@
+// src/components/features/drafts/drafts-table.tsx
+
 import DraftTypeBadge from "@/components/ui/draft-type-badge";
 import { draftTypeFromNumber } from "@/lib/draft-type-display";
 import { ListDraftsResponse } from "@/lib/dto";
 import { format } from "date-fns/format";
-import { isLastDayOfMonthWithOptions } from "date-fns/fp";
+import { parseISO } from "date-fns/parseISO";
 import Link from "next/link";
 
 interface DraftsTableProps {
@@ -14,7 +16,11 @@ interface DraftsTableProps {
 function formatAirDate(raw: Date | string | undefined): string {
    if (!raw) return "—";
    try {
-      return format(new Date(raw), "MMM dd, yyyy").toUpperCase();
+      // parseISO treats a bare date-only string as local midnight, unlike new Date(...)
+      // which treats it as UTC midnight — see drafts-sidebar.tsx's formatDate for the
+      // full explanation of the one-day-back shift this was causing.
+      const date = typeof raw === "string" ? parseISO(raw) : raw;
+      return format(date, "MMM dd, yyyy").toUpperCase();
    } catch {
       return "—";
    }

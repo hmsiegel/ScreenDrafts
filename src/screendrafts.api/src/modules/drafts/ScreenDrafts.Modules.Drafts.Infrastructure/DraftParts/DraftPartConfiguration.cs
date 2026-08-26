@@ -170,6 +170,37 @@ internal sealed class DraftPartConfiguration : IEntityTypeConfiguration<DraftPar
 
     builder.Ignore(d => d.CommunityFilmRules);
 
+    // ── Booster's Champion Assignments (Legends Mega) ──────────────────────────
+    // Same owned-entity pattern as Community Film Rules directly above — mirrored
+    // exactly, not a separate CommunityFilmRuleConfiguration-style standalone class
+    // (there is no such thing; this entity type doesn't get one either).
+    builder.OwnsMany<BoostersChampionAssignment>(
+      "_boostersChampionAssignments",
+      b =>
+      {
+        b.ToTable(Tables.DraftPartBoostersChampionAssignments);
+        b.WithOwner().HasForeignKey("draft_part_id");
+
+        b.HasKey(d => d.Id);
+
+        b.Property(d => d.Id).HasColumnName("id").IsRequired().ValueGeneratedNever();
+
+        b.Property(x => x.PublicId).IsRequired();
+
+        b.Property(x => x.AssignedDrafterIdValue)
+          .HasColumnName("assigned_drafter_id_value")
+          .IsRequired();
+
+        b.Property(x => x.TmdbId).HasColumnName("tmdb_id");
+      }
+    );
+
+    builder
+      .Navigation("_boostersChampionAssignments")
+      .UsePropertyAccessMode(PropertyAccessMode.Field);
+
+    builder.Ignore(d => d.BoostersChampionAssignments);
+
     builder.Ignore(d => d.PrimaryHost);
     builder.Ignore(d => d.CoHosts);
     builder.Ignore(d => d.TotalHosts);

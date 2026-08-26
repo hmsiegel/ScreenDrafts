@@ -6,5 +6,5 @@ internal sealed record DraftPositionRequestModel
   public IReadOnlyList<int> Picks { get; init; } = [];
   public bool HasBonusVeto { get; init; }
   public bool HasBonusVetoOverride { get; init; }
-  public bool HasBonusFungibleToken { get; init; }
+  public bool HasFungibleToken { get; init; }
 }

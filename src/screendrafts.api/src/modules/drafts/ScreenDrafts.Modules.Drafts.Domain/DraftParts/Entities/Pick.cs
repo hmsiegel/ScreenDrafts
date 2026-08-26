@@ -57,6 +57,19 @@ public sealed class Pick : Entity<PickId>
   public Guid PlayedByParticipantIdValue { get; private set; }
   public ParticipantKind PlayedByParticipantKindValue { get; private set; } = default!;
 
+  /// <summary>
+  /// Only set on picks in a hostless DraftPart (Draft.IsHostless) — the participant who
+  /// "received" this pick and is therefore the one authorized to reveal it, standing in
+  /// for host authority which doesn't exist in these drafts. Derived deterministically
+  /// ("the other drafter") when the part has exactly 2 drafters; otherwise resolved by
+  /// PlayPickCommandHandler via a random draw (the app performs the equivalent of the
+  /// offline random.org process) and passed in. Null for every hosted pick.
+  /// </summary>
+  public DraftPartParticipant? RevealAuthorizedParticipant { get; private set; }
+  public DraftPartParticipantId? RevealAuthorizedParticipantId { get; private set; }
+  public Guid? RevealAuthorizedParticipantIdValue { get; private set; }
+  public ParticipantKind? RevealAuthorizedParticipantKindValue { get; private set; }
+
   public SubDraftId? SubDraftId { get; private set; }
 
   /// <summary>
@@ -78,7 +91,8 @@ public sealed class Pick : Entity<PickId>
   /// All veto-state logic (IsVetoed, ApplyVetoOverride, UndoVeto) operates against this entry,
   /// not the full history.
   /// </summary>
-  public Veto? CurrentVeto => _vetoes.Count > 0 ? _vetoes[^1] : null;
+  public Veto? CurrentVeto =>
+    _vetoes.Count > 0 ? _vetoes.OrderByDescending(v => v.Sequence).First() : null;
 
   [NotMapped]
   public VetoId? VetoId => CurrentVeto?.Id;
@@ -339,6 +353,29 @@ public sealed class Pick : Entity<PickId>
       _teamPickCredits.Add(TeamPickCredit.Create(this, drafterIdValue));
     }
   }
+
+  /// <summary>
+  /// Sets which participant is authorized to reveal this pick — only meaningful for
+  /// hostless drafts. See RevealAuthorizedParticipant's remarks for how the value is chosen.
+  /// </summary>
+  internal void SetRevealAuthorizedParticipant(DraftPartParticipant participant)
+  {
+    RevealAuthorizedParticipant = participant;
+    RevealAuthorizedParticipantId = participant.Id;
+    RevealAuthorizedParticipantIdValue = participant.ParticipantIdValue;
+    RevealAuthorizedParticipantKindValue = participant.ParticipantKindValue;
+  }
+
+  /// <summary>
+  /// True if the given participant is this pick's designated revealer. Only meaningful
+  /// when RevealAuthorizedParticipant is set (hostless drafts) — always false otherwise,
+  /// which is correct: a hosted pick's reveal authority belongs to the primary host, not
+  /// any participant, so RevealPickCommandHandler checks host status directly in that case
+  /// and never calls this.
+  /// </summary>
+  public bool IsRevealAuthorized(Participant participant) =>
+    RevealAuthorizedParticipantIdValue == participant.Value
+    && RevealAuthorizedParticipantKindValue == participant.Kind;
 
   internal Result ApplyVeto(Veto veto)
   {

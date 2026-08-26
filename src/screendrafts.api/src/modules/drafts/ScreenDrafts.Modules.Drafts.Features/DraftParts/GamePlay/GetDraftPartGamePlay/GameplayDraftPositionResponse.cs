@@ -7,7 +7,7 @@ internal sealed record GameplayDraftPositionResponse
   public int[] OwnedBoardSlots { get; init; } = [];
   public bool HasBonusVeto { get; init; }
   public bool HasBonusVetoOverride { get; init; }
-  public bool HasBonusFungibleToken { get; init; }
+  public bool HasFungibleToken { get; init; }
   public Guid? AssignedParticipantId { get; init; }
   public int? AssignedParticipantKind { get; init; }
   public string? AssignedParticipantName { get; init; }

@@ -54,6 +54,11 @@ internal sealed class UpdateDraftCommandHandler(
       {
         return Result.Failure(DraftErrors.CannotChangeFungibleTokenNameAfterADraftPartHasStarted);
       }
+
+      if (request.IsHostless.HasValue && request.IsHostless.Value != draft.IsHostless)
+      {
+        return Result.Failure(DraftErrors.CannotChangeIsHostlessAfterADraftPartHasStarted);
+      }
     }
 
     if (!string.IsNullOrEmpty(request.SeriesPublicId))
@@ -136,6 +141,11 @@ internal sealed class UpdateDraftCommandHandler(
     if (!string.IsNullOrWhiteSpace(request.FungibleTokenName))
     {
       draft.SetFungibleTokenName(request.FungibleTokenName);
+    }
+
+    if (request.IsHostless.HasValue)
+    {
+      draft.SetIsHostless(request.IsHostless.Value);
     }
 
     draft.Update(

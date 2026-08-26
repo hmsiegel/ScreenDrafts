@@ -16,4 +16,5 @@ internal sealed record UpdateDraftCommand : ICommand
   /// guard once a part has started).
   /// </summary>
   public string? FungibleTokenName { get; init; }
+  public bool? IsHostless { get; init; }
 }

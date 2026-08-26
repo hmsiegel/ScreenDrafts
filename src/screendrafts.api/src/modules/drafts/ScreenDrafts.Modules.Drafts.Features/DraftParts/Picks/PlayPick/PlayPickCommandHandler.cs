@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.Picks.PlayPick;
+﻿using System.Security.Cryptography;
+
+namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.Picks.PlayPick;
 
 internal sealed class PlayPickCommandHandler(
   IDraftPartRepository draftPartRepository,
@@ -91,6 +93,28 @@ internal sealed class PlayPickCommandHandler(
       );
     }
 
+    // Hostless draft, more than 2 drafters total: DraftPart.PlayPick can derive "the other
+    // drafter" itself when there's exactly one candidate, but with several it needs a true
+    // random draw — which doesn't belong in a deterministic domain method, so it happens
+    // here instead (the app performing the equivalent of the offline random.org process)
+    // and gets passed in already resolved. Harmless to compute even for hosted/2-drafter
+    // parts; DraftPart.PlayPick only uses it when it actually needs to.
+    Participant? explicitRevealRecipient = null;
+
+    if (draftPart.IsHostless)
+    {
+      var otherDrafters = draftPart
+        .Participants.Where(p => p != participant && p.Kind == ParticipantKind.Drafter)
+        .ToList();
+
+      if (otherDrafters.Count > 1)
+      {
+        explicitRevealRecipient = otherDrafters[
+          RandomNumberGenerator.GetInt32(otherDrafters.Count)
+        ];
+      }
+    }
+
     var pickResult = draftPart.PlayPick(
       movie: movie,
       draftPosition: request.Position,
@@ -99,7 +123,8 @@ internal sealed class PlayPickCommandHandler(
       canonicalPolicyValue: CanonicalPolicy.FromValue(series.CanonicalPolicy.Value),
       movieVersionName: request.MovieVersionName,
       actedByPublicId: request.ActedByPublicId,
-      teamDrafterIdValues: teamDrafterIdValues
+      teamDrafterIdValues: teamDrafterIdValues,
+      explicitRevealRecipient: explicitRevealRecipient
     );
 
     if (pickResult.IsFailure)

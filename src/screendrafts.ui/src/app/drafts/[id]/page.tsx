@@ -1,6 +1,10 @@
+// src/app/drafts/[id]/page.tsx
+
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { format } from "date-fns/format";
+import { parseISO } from "date-fns/parseISO";
 import { GetDraftPartResponse, GetDraftPickResponse, TriviaResultResponse } from "@/lib/dto";
 import DraftSidebar from "@/components/features/drafts/drafts-sidebar";
 import { DraftPick } from "@/components/features/drafts/draft-pick";
@@ -14,6 +18,21 @@ import {
 } from "@/services/drafts/fetch-drafts";
 
 export const dynamic = "force-dynamic";
+
+// parseISO treats a bare date-only string ("2026-06-30") as local midnight; new Date(...)
+// treats the same string as UTC midnight, which shifts a full day backward once formatted
+// in any timezone behind UTC — see drafts-sidebar.tsx's formatDate for the full
+// explanation. Same fix applied here for the per-part release date shown in the
+// multi-part layout below.
+function formatPartReleaseDate(raw: string | Date | undefined): string {
+  if (!raw) return "";
+  try {
+    const date = typeof raw === "string" ? parseISO(raw) : raw;
+    return format(date, "MMM dd, yyyy").toUpperCase();
+  } catch {
+    return "";
+  }
+}
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -103,8 +122,15 @@ export default async function DraftDetailPage({ params }: Props) {
   );
 
   // ── Per-part structured data ───────────────────────────────────────────────
-  const isVetoed = (pick: GetDraftPickResponse) =>
-    !!pick.veto && !pick.veto.isOverriden;
+  // GetDraftPickResponse.Vetoes is the pick's full history, ordered by Sequence — there
+  // is no singular "veto" field. Current state is always the last entry; see
+  // draft-pick.tsx's identical logic and Pick.CurrentVeto on the domain side.
+  const currentVeto = (pick: GetDraftPickResponse) =>
+    pick.vetoes && pick.vetoes.length > 0 ? pick.vetoes[pick.vetoes.length - 1] : null;
+  const isVetoed = (pick: GetDraftPickResponse) => {
+    const v = currentVeto(pick);
+    return !!v && !v.isOverridden;
+  };
   const isCommissionerRemoved = (pick: GetDraftPickResponse) =>
     pick.commissionerOverride !== null && pick.commissionerOverride !== undefined;
 
@@ -270,11 +296,7 @@ export default async function DraftDetailPage({ params }: Props) {
 
                         {part.releases?.[0]?.releaseDate && (
                           <div className="font-mono text-[11px] text-sd-blue mb-4">
-                            {new Date(part.releases[0].releaseDate as string | Date).toLocaleDateString("en-US", {
-                              month: "short",
-                              day: "2-digit",
-                              year: "numeric",
-                            }).toUpperCase()}
+                            {formatPartReleaseDate(part.releases[0].releaseDate)}
                           </div>
                         )}
 

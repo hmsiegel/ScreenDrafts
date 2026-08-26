@@ -7,5 +7,6 @@ public sealed record DraftPositionResponse
   public IReadOnlyCollection<int> Picks { get; init; } = [];
   public bool HasBonusVeto { get; init; }
   public bool HasBonusVetoOverride { get; init; }
+  public bool HasFungibleToken { get; init; }
   public DraftPositionAssignmentResponse? AssignedTo { get; init; }
 }

@@ -32,6 +32,7 @@ internal sealed class DraftPartRepository(DraftsDbContext dbContext) : IDraftPar
       .Include("_picks.CommissionerOverride")
       .Include("_picks.Movie")
       .Include("_communityFilmRules")
+      .Include("_triviaResults")
       .FirstOrDefaultAsync(x => x.PublicId == draftPartId, cancellationToken);
   }
 
@@ -57,6 +58,7 @@ internal sealed class DraftPartRepository(DraftsDbContext dbContext) : IDraftPar
       .Include("_picks.Movie")
       .Include("_picks._vetoes")
       .Include("_subDrafts.GameBoard.DraftPositions")
+      .Include("triviaResults")
       .Include(dp => dp.GameBoard!)
         .ThenInclude(gb => gb.DraftPositions)
       .FirstOrDefaultAsync(x => x.PublicId == draftPartId, cancellationToken);

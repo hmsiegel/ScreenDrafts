@@ -29,6 +29,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<UpdateDraftRequest>
       PublicCategoryIds = req.PublicCategoryIds,
       DraftTypeValue = req.DraftTypeValue,
       FungibleTokenName = req.FungibleTokenName,
+      IsHostless = req.IsHostless,
     };
 
     var result = await Sender.Send(command, ct);

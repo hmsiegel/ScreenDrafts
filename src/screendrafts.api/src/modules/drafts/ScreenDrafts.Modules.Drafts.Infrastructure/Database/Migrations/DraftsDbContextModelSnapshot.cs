@@ -357,6 +357,10 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("draft_type");
 
+                    b.Property<bool>("IsHostless")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_hostless");
+
                     b.Property<int>("MaxCommunityPicks")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
@@ -903,6 +907,18 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("position");
 
+                    b.Property<Guid?>("RevealAuthorizedParticipantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("reveal_authorized_participant_id");
+
+                    b.Property<Guid?>("RevealAuthorizedParticipantIdValue")
+                        .HasColumnType("uuid")
+                        .HasColumnName("reveal_authorized_participant_id_value");
+
+                    b.Property<int?>("RevealAuthorizedParticipantKindValue")
+                        .HasColumnType("integer")
+                        .HasColumnName("reveal_authorized_participant_kind_value");
+
                     b.Property<DateTimeOffset?>("RevealedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("revealed_at");
@@ -916,6 +932,9 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
 
                     b.HasIndex("MovieId")
                         .HasDatabaseName("ix_picks_movie_id");
+
+                    b.HasIndex("RevealAuthorizedParticipantId")
+                        .HasDatabaseName("ix_picks_reveal_authorized_participant_id");
 
                     b.HasIndex("DraftPartId", "PlayOrder")
                         .IsUnique()
@@ -1312,6 +1331,10 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasColumnType("boolean")
                         .HasDefaultValue(false)
                         .HasColumnName("is_deleted");
+
+                    b.Property<bool>("IsHostless")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_hostless");
 
                     b.Property<string>("PublicId")
                         .IsRequired()
@@ -2107,6 +2130,42 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_draft_parts_drafts_draft_id");
 
+                    b.OwnsMany("ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities.BoostersChampionAssignment", "_boostersChampionAssignments", b1 =>
+                        {
+                            b1.Property<Guid>("Id")
+                                .HasColumnType("uuid")
+                                .HasColumnName("id");
+
+                            b1.Property<Guid>("AssignedDrafterIdValue")
+                                .HasColumnType("uuid")
+                                .HasColumnName("assigned_drafter_id_value");
+
+                            b1.Property<string>("PublicId")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("public_id");
+
+                            b1.Property<int?>("TmdbId")
+                                .HasColumnType("integer")
+                                .HasColumnName("tmdb_id");
+
+                            b1.Property<Guid>("draft_part_id")
+                                .HasColumnType("uuid")
+                                .HasColumnName("draft_part_id");
+
+                            b1.HasKey("Id")
+                                .HasName("pk_draft_part_boosters_champion_assignments");
+
+                            b1.HasIndex("draft_part_id")
+                                .HasDatabaseName("ix_draft_part_boosters_champion_assignments_draft_part_id");
+
+                            b1.ToTable("draft_part_boosters_champion_assignments", "drafts");
+
+                            b1.WithOwner()
+                                .HasForeignKey("draft_part_id")
+                                .HasConstraintName("fk_draft_part_boosters_champion_assignments_draft_parts_draft_");
+                        });
+
                     b.OwnsMany("ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities.CommunityFilmRule", "_communityFilmRules", b1 =>
                         {
                             b1.Property<Guid>("Id")
@@ -2185,6 +2244,8 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                                 .HasForeignKey("draft_part_id")
                                 .HasConstraintName("fk_draft_part_required_movie_versions_draft_parts_draft_part_id");
                         });
+
+                    b.Navigation("_boostersChampionAssignments");
 
                     b.Navigation("_communityFilmRules");
 
@@ -2355,11 +2416,18 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_picks_draft_part_participants_played_by_participant_id");
 
+                    b.HasOne("ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities.DraftPartParticipant", "RevealAuthorizedParticipant")
+                        .WithMany()
+                        .HasForeignKey("RevealAuthorizedParticipantId")
+                        .HasConstraintName("fk_picks_draft_part_participants_reveal_authorized_participant");
+
                     b.Navigation("DraftPart");
 
                     b.Navigation("Movie");
 
                     b.Navigation("PlayedByParticipant");
+
+                    b.Navigation("RevealAuthorizedParticipant");
                 });
 
             modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities.SubDraft", b =>

@@ -6,7 +6,8 @@ internal sealed class RevealPickCommandHandler(
   IHostRepository hostRepository,
   IPersonRepository personRepository,
   IUsersApi usersApi,
-  ISeriesPolicyProvider seriesPolicyProvider
+  ISeriesPolicyProvider seriesPolicyProvider,
+  IDrafterRepository drafterRepository
 ) : ICommandHandler<RevealPickCommand>
 {
   private readonly IDraftPartRepository _draftPartRepository = draftPartRepository;
@@ -15,6 +16,7 @@ internal sealed class RevealPickCommandHandler(
   private readonly IPersonRepository _personRepository = personRepository;
   private readonly IUsersApi _usersApi = usersApi;
   private readonly ISeriesPolicyProvider _seriesPolicyProvider = seriesPolicyProvider;
+  private readonly IDrafterRepository _drafterRepository = drafterRepository;
 
   public async Task<Result> Handle(RevealPickCommand request, CancellationToken cancellationToken)
   {
@@ -53,18 +55,48 @@ internal sealed class RevealPickCommandHandler(
       return Result.Failure(PersonErrors.NotFoundForUser(request.UserPublicId));
     }
 
-    var host = await _hostRepository.GetByPersonPublicIdAsync(person.PublicId, cancellationToken);
+    // actedByPublicId records who physically performed the reveal — a Host's public id
+    // for a hosted draft part, a Drafter's for a hostless one. Resolved by whichever
+    // branch below actually applies, since exactly one of them runs.
+    string actedByPublicId;
 
-    if (host is null)
+    if (draftPart.IsHostless)
     {
-      return Result.Failure(HostErrors.NotFoundForPerson(person.PublicId));
-    }
+      var drafter = await _drafterRepository.GetByPersonPublicIdAsync(
+        person.PublicId,
+        cancellationToken
+      );
 
-    if (!draftPart.IsPrimaryHost(host.PublicId))
+      if (drafter is null)
+      {
+        return Result.Failure(DrafterErrors.NotFoundForPerson(person.PublicId));
+      }
+
+      var callerParticipant = new Participant(drafter.Id.Value, ParticipantKind.Drafter);
+
+      if (!pick.IsRevealAuthorized(callerParticipant))
+      {
+        return Result.Failure(DraftPartErrors.OnlyDesignatedRecipientCanRevealPick);
+      }
+
+      actedByPublicId = drafter.PublicId;
+    }
+    else
     {
-      return Result.Failure(DraftPartErrors.OnlyPrimaryHostCanRevealPicks);
-    }
+      var host = await _hostRepository.GetByPersonPublicIdAsync(person.PublicId, cancellationToken);
 
+      if (host is null)
+      {
+        return Result.Failure(HostErrors.NotFoundForPerson(person.PublicId));
+      }
+
+      if (!draftPart.IsPrimaryHost(host.PublicId))
+      {
+        return Result.Failure(DraftPartErrors.OnlyPrimaryHostCanRevealPicks);
+      }
+
+      actedByPublicId = host.PublicId;
+    }
     var series = await _seriesPolicyProvider.GetSeriesAsyc(draftPart.SeriesId, cancellationToken);
 
     if (series is null)
@@ -74,7 +106,7 @@ internal sealed class RevealPickCommandHandler(
 
     var result = draftPart.RevealPick(
       playOrder: request.PlayOrder,
-      actedByPublicId: host.PublicId,
+      actedByPublicId: actedByPublicId,
       canonicalPolicyValue: CanonicalPolicy.FromValue(series.CanonicalPolicy.Value)
     );
 

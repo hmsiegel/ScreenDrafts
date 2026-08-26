@@ -4191,7 +4191,7 @@
         "tags": [
           "Predictions"
         ],
-        "operationId": "Predictions_SeedSubmitSet",
+        "operationId": "Predictions.SeedSubmitSet",
         "requestBody": {
           "content": {
             "application/json": {
@@ -5419,6 +5419,129 @@
         ]
       }
     },
+    "/draft-parts/{draftPartId}/boosters-champion-assignments/{assignmentPublicId}": {
+      "delete": {
+        "tags": [
+          "DraftParts"
+        ],
+        "operationId": "DraftParts.RemoveBoostersChampionAssignment",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/RemoveBoostersChampionAssignmentRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RemoveBoostersChampionAssignmentRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/draft-parts/{draftPartId}/boosters-champion-assignments/{assignmentPublicId}/film": {
+      "put": {
+        "tags": [
+          "DraftParts"
+        ],
+        "operationId": "DraftParts.AssignFilmToBoostersChampionAssignment",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssignFilmToBoostersChampionAssignmentRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/draft-parts/{draftPartId}/boosters-champion-assignments": {
+      "post": {
+        "tags": [
+          "DraftParts"
+        ],
+        "operationId": "DraftParts.AddBoostersChampionAssignment",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddBoostersChampionAssignmentRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
     "/draft-parts/{draftPartId}/attendances/{personPublicId}/withdraw": {
       "put": {
         "tags": [
@@ -5654,6 +5777,89 @@
         ]
       }
     },
+    "/drafter-teams/{publicId}": {
+      "put": {
+        "tags": [
+          "DrafterTeams"
+        ],
+        "operationId": "DrafterTeams.UpdateName",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateDrafterTeamNameRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        },
+        "security": [
+          { }
+        ]
+      },
+      "get": {
+        "tags": [
+          "DrafterTeams"
+        ],
+        "operationId": "DrafterTeams.GetDrafterTeam",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/GetDrafterTeamRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetDrafterTeamRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetDrafterTeamResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
     "/drafter-teams/search": {
       "get": {
         "tags": [
@@ -5734,53 +5940,6 @@
           },
           "404": {
             "description": "Not Found"
-          }
-        },
-        "security": [
-          { }
-        ]
-      }
-    },
-    "/drafter-teams/{publicId}": {
-      "get": {
-        "tags": [
-          "DrafterTeams"
-        ],
-        "operationId": "DrafterTeams.GetDrafterTeam",
-        "requestBody": {
-          "content": {
-            "*/*": {
-              "schema": {
-                "$ref": "#/components/schemas/GetDrafterTeamRequest"
-              }
-            },
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GetDrafterTeamRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetDrafterTeamResponse"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
           }
         },
         "security": [
@@ -7885,6 +8044,29 @@
           }
         }
       },
+      "AddBoostersChampionAssignmentRequest": {
+        "required": [
+          "assignedDrafterPublicId"
+        ],
+        "type": "object",
+        "properties": {
+          "draftPartId": {
+            "type": "string"
+          },
+          "assignedDrafterPublicId": {
+            "type": "string"
+          },
+          "tmdbId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
       "AddCandidateEntryRequest": {
         "required": [
           "tmdbId"
@@ -8413,6 +8595,28 @@
             ]
           },
           "participantKind": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "AssignFilmToBoostersChampionAssignmentRequest": {
+        "required": [
+          "tmdbId"
+        ],
+        "type": "object",
+        "properties": {
+          "draftPartId": {
+            "type": "string"
+          },
+          "assignmentPublicId": {
+            "type": "string"
+          },
+          "tmdbId": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": [
               "integer",
@@ -9931,7 +10135,7 @@
           "hasBonusVetoOverride": {
             "type": "boolean"
           },
-          "hasBonusFungibleToken": {
+          "hasFungibleToken": {
             "type": "boolean"
           }
         }
@@ -9960,6 +10164,9 @@
             "type": "boolean"
           },
           "hasBonusVetoOverride": {
+            "type": "boolean"
+          },
+          "hasFungibleToken": {
             "type": "boolean"
           },
           "assignedTo": {
@@ -10545,6 +10752,40 @@
           }
         }
       },
+      "GameplayBoostersChampionAssignmentResponse": {
+        "required": [
+          "publicId",
+          "assignedDrafterPublicId",
+          "assignedDrafterDisplayName"
+        ],
+        "type": "object",
+        "properties": {
+          "publicId": {
+            "type": "string"
+          },
+          "assignedDrafterPublicId": {
+            "type": "string"
+          },
+          "assignedDrafterDisplayName": {
+            "type": "string"
+          },
+          "tmdbId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "title": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
       "GameplayCommunityFilmRuleResponse": {
         "type": "object",
         "properties": {
@@ -10614,7 +10855,7 @@
           "hasBonusVetoOverride": {
             "type": "boolean"
           },
-          "hasBonusFungibleToken": {
+          "hasFungibleToken": {
             "type": "boolean"
           },
           "assignedParticipantId": {
@@ -10829,6 +11070,12 @@
               "string"
             ]
           },
+          "vetoHistory": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GameplayVetoHistoryEntryResponse"
+            }
+          },
           "wasVetoFungible": {
             "type": "boolean"
           },
@@ -10842,6 +11089,19 @@
               "string"
             ],
             "format": "int32"
+          },
+          "revealAuthorizedParticipantId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "revealAuthorizedByName": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -10923,6 +11183,37 @@
               "string"
             ],
             "format": "int32"
+          }
+        }
+      },
+      "GameplayVetoHistoryEntryResponse": {
+        "type": "object",
+        "properties": {
+          "sequence": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "vetoedByName": {
+            "type": "string"
+          },
+          "wasVetoFungible": {
+            "type": "boolean"
+          },
+          "isOverridden": {
+            "type": "boolean"
+          },
+          "overriddenByName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "wasOverrideFungible": {
+            "type": "boolean"
           }
         }
       },
@@ -11276,6 +11567,40 @@
           }
         }
       },
+      "GetDraftBoostersChampionAssignmentResponse": {
+        "required": [
+          "publicId",
+          "assignedDrafterPublicId",
+          "assignedDrafterDisplayName"
+        ],
+        "type": "object",
+        "properties": {
+          "publicId": {
+            "type": "string"
+          },
+          "assignedDrafterPublicId": {
+            "type": "string"
+          },
+          "assignedDrafterDisplayName": {
+            "type": "string"
+          },
+          "tmdbId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "title": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
       "GetDraftCategoryResponse": {
         "required": [
           "publicId",
@@ -11589,6 +11914,15 @@
               "null",
               "string"
             ]
+          },
+          "isHostless": {
+            "type": "boolean"
+          },
+          "boostersChampionAssignments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GameplayBoostersChampionAssignmentResponse"
+            }
           },
           "triviaResults": {
             "type": "array",
@@ -12021,6 +12355,12 @@
               "$ref": "#/components/schemas/GetDraftCommunityFilmRuleResponse"
             }
           },
+          "boostersChampionAssignment": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GetDraftBoostersChampionAssignmentResponse"
+            }
+          },
           "primaryHost": {
             "oneOf": [
               {
@@ -12234,6 +12574,9 @@
               "null",
               "string"
             ]
+          },
+          "isHostless": {
+            "type": "boolean"
           },
           "categories": {
             "type": [
@@ -16957,6 +17300,17 @@
           }
         }
       },
+      "RemoveBoostersChampionAssignmentRequest": {
+        "type": "object",
+        "properties": {
+          "draftPartId": {
+            "type": "string"
+          },
+          "assignmentPublicId": {
+            "type": "string"
+          }
+        }
+      },
       "RemoveCandidateListEntryRequest": {
         "type": "object",
         "properties": {
@@ -18841,6 +19195,20 @@
           }
         }
       },
+      "UpdateDrafterTeamNameRequest": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "drafterTeamId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
       "UpdateDraftRequest": {
         "type": "object",
         "properties": {
@@ -18892,6 +19260,12 @@
             "type": [
               "null",
               "string"
+            ]
+          },
+          "isHostless": {
+            "type": [
+              "null",
+              "boolean"
             ]
           }
         }

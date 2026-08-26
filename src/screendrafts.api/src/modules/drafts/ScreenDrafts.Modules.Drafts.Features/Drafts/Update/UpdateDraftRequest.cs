@@ -11,4 +11,5 @@ internal sealed record UpdateDraftRequest
   public IReadOnlyList<string>? PublicCategoryIds { get; init; } = [];
   public int DraftTypeValue { get; init; } = default!;
   public string? FungibleTokenName { get; init; }
+  public bool? IsHostless { get; init; }
 }

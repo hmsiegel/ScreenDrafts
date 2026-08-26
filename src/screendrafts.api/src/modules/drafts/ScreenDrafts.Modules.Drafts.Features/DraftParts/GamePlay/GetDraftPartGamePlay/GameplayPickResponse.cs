@@ -18,6 +18,7 @@ internal sealed record GameplayPickResponse
   public bool WasCommissionerOverride { get; init; }
   public string? VetoedByName { get; init; }
   public string? SavedByName { get; init; }
+  public IReadOnlyList<GameplayVetoHistoryEntryResponse> VetoHistory { get; init; } = [];
 
   /// <summary>
   /// True when the pick's current veto (Pick.CurrentVeto) was paid for by a fungible
@@ -39,4 +40,14 @@ internal sealed record GameplayPickResponse
   /// play, the same as it does for a fresh "landed" pick.
   /// </summary>
   public int VetoSequence { get; init; }
+
+  /// <summary>
+  /// Only set on a hostless draft (GetDraftPartGameplayResponse.IsHostless) — the
+  /// participant this pick was "sent to," who is therefore the one authorized to reveal
+  /// it. Null for every pick on a hosted draft, where reveal authority belongs to the
+  /// primary host instead. See Pick.RevealAuthorizedParticipant's remarks.
+  /// </summary>
+  public Guid? RevealAuthorizedParticipantId { get; init; }
+
+  public string? RevealAuthorizedByName { get; init; }
 }

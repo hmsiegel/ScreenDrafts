@@ -1,15 +1,23 @@
+// src/components/features/drafts/drafts-sidebar.tsx
+
 import DraftTypeBadge from "@/components/ui/draft-type-badge";
 import { draftTypeFromNumber } from "@/lib/draft-type-display";
 import { GetDraftPartResponse, GetDraftResponse, TriviaResultResponse } from "@/lib/dto";
 import Link from "next/link";
 import { Avatar } from "./draft-pick";
 import { format } from "date-fns/format";
+import { parseISO } from "date-fns/parseISO";
 import EpisodeImage from "@/components/ui/episode-image";
 
 function formatDate(raw: Date | string | undefined): string {
   if (!raw) return "—";
   try {
-    return format(new Date(raw), "MMM dd, yyyy").toUpperCase();
+    // parseISO treats a bare date-only string ("2026-06-30") as local midnight.
+    // new Date(...) treats the same string as UTC midnight, which shifts a full day
+    // backward for any timezone behind UTC once formatted in local time — that was the
+    // root cause of release dates displaying one day earlier than the database value.
+    const date = typeof raw === "string" ? parseISO(raw) : raw;
+    return format(date, "MMM dd, yyyy").toUpperCase();
   } catch {
     return "—";
   }
@@ -132,6 +140,13 @@ function partCampaignNavEntries(part: GetDraftPartResponse): NavEntry[] {
   ];
 }
 
+function partSeriesNavEntries(part: GetDraftPartResponse): NavEntry[] {
+  return [
+    ...(part.previousSeriesDraftPublicId ? [{ publicId: part.previousSeriesDraftPublicId, title: part.previousSeriesDraftTitle, direction: "prev" as const }] : []),
+    ...(part.nextSeriesDraftPublicId ? [{ publicId: part.nextSeriesDraftPublicId, title: part.nextSeriesDraftTitle, direction: "next" as const }] : []),
+  ];
+}
+
 // ── Per-part sidebar section (multi-part only) ────────────────────────────
 
 interface PartSidebarSectionProps {
@@ -200,6 +215,7 @@ function PartSidebarSection({
   const triviaResults = triviaByPart.get(part.publicId ?? "") ?? [];
   const navEntries = partNavEntries(part);
   const campaignNavEntries = partCampaignNavEntries(part);
+  const seriesNavEntries = partSeriesNavEntries(part);
 
   return (
     <div className="border-t border-sd-ink/15 pt-4 mt-4">
@@ -249,6 +265,23 @@ function PartSidebarSection({
                 key={publicId}
                 href={`/drafts/${publicId}`}
                 className={`border border-sd-blue text-sd-blue font-oswald text-[12px] tracking-wide px-3 py-2 hover:bg-sd-blue hover:text-white transition-colors ${direction === "next" ? "text-right" : "text-left"}`}
+              >
+                {direction === "prev" ? `‹ ${title ?? "Previous"}` : `${title ?? "Next"} ›`}
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {seriesNavEntries.length > 0 && (
+        <div className="mt-4">
+          <SectionLabel>IN THIS SERIES</SectionLabel>
+          <div className="flex flex-col gap-2">
+            {seriesNavEntries.map(({ publicId, title, direction }) => (
+              <Link
+                key={publicId}
+                href={`/drafts/${publicId}`}
+                className={`border border-sd-red text-sd-red font-oswald text-[12px] tracking-wide px-3 py-2 hover:bg-sd-red hover:text-white transition-colors ${direction === "next" ? "text-right" : "text-left"}`}
               >
                 {direction === "prev" ? `‹ ${title ?? "Previous"}` : `${title ?? "Next"} ›`}
               </Link>
@@ -438,6 +471,23 @@ export default function DraftSidebar({
                     key={publicId}
                     href={`/drafts/${publicId}`}
                     className={`border border-sd-blue text-sd-blue font-oswald text-[12px] tracking-wide px-3 py-2 hover:bg-sd-blue hover:text-white transition-colors ${direction === "next" ? "text-right" : "text-left"}`}
+                  >
+                    {direction === "prev" ? `‹ ${title ?? "Previous"}` : `${title ?? "Next"} ›`}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {partSeriesNavEntries(firstPart).length > 0 && (
+            <div className="border-t border-sd-ink/10 pt-4 mt-4">
+              <SectionLabel>IN THIS SERIES</SectionLabel>
+              <div className="flex flex-col gap-2">
+                {partSeriesNavEntries(firstPart).map(({ publicId, title, direction }) => (
+                  <Link
+                    key={publicId}
+                    href={`/drafts/${publicId}`}
+                    className={`border border-sd-red text-sd-red font-oswald text-[12px] tracking-wide px-3 py-2 hover:bg-sd-red hover:text-white transition-colors ${direction === "next" ? "text-right" : "text-left"}`}
                   >
                     {direction === "prev" ? `‹ ${title ?? "Previous"}` : `${title ?? "Next"} ›`}
                   </Link>

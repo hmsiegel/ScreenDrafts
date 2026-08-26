@@ -18,6 +18,21 @@ internal sealed record GetDraftPartGameplayResponse
   public string? CallerParticipantId { get; init; }
 
   public string? FungibleTokenName { get; init; }
+
+  /// <summary>
+  /// True when this draft has no dedicated host — see Draft.IsHostless's remarks. When
+  /// true, reveal authority for a pick belongs to whichever participant it's sent to
+  /// (see GameplayPickResponse.RevealAuthorizedParticipantId) rather than the primary host.
+  /// </summary>
+  public bool IsHostless { get; init; }
+
+  /// <summary>
+  /// Legends Mega's Booster's Champion pick reservations for this part — see
+  /// BoostersChampionAssignment's remarks. Deliberately separate from CommunityFilmRules;
+  /// the two are unrelated mechanisms.
+  /// </summary>
+  public IReadOnlyList<GameplayBoostersChampionAssignmentResponse> BoostersChampionAssignments { get; init; } =
+  [];
   public IReadOnlyList<GameplayTriviaResultResponse> TriviaResults { get; init; } = [];
   public IReadOnlyList<GameplayDraftPositionResponse> DraftPositions { get; init; } = [];
   public string? NextExpectedParticipantId { get; init; }

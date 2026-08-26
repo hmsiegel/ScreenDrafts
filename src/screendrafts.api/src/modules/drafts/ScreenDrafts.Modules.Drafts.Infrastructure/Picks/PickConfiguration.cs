@@ -66,6 +66,21 @@ internal sealed class PickConfiguration : IEntityTypeConfiguration<Pick>
 
     builder.Property(p => p.PlayedByParticipantIdValue).IsRequired();
 
+    // Nullable mirror of the PlayedByParticipant* mapping above — only set on hostless-
+    // draft picks. Same minimal treatment (no explicit HasOne; EF's convention already
+    // handles PlayedByParticipantId this way, so following suit rather than introducing a
+    // different configuration style for a structurally identical field).
+    builder
+      .Property(p => p.RevealAuthorizedParticipantId)
+      .ValueGeneratedNever()
+      .HasConversion(IdConverters.NullableDraftPartParticipantIdConverter);
+
+    builder
+      .Property(p => p.RevealAuthorizedParticipantKindValue)
+      .HasConversion(EnumConverters.NullableParticipantKindConverter);
+
+    builder.Property(p => p.RevealAuthorizedParticipantIdValue);
+
     builder.HasIndex(x => new
     {
       x.DraftPartId,

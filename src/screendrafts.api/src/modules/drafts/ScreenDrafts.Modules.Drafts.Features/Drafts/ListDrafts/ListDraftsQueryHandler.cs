@@ -41,8 +41,13 @@ internal sealed class ListDraftsQueryHandler(IDbConnectionFactory connectionFact
           (
             SELECT COUNT(*)
             FROM drafts.picks pk
-            LEFT JOIN drafts.vetoes v ON v.target_pick_id = pk.id
             LEFT JOIN drafts.commissioner_overrides co ON co.pick_id = pk.id
+            LEFT JOIN drafts.vetoes v ON v.id = (
+              SELECT v2.id FROM drafts.vetoes v2
+              WHERE v2.target_pick_id = pk.id
+              ORDER BY v2.sequence DESC
+              LIMIT 1
+            )
             WHERE pk.draft_part_id = dp.id
               AND co.id IS NULL
               AND (v.id IS NULL OR v.is_overridden = true)
@@ -228,8 +233,13 @@ internal sealed class ListDraftsQueryHandler(IDbConnectionFactory connectionFact
         (
           SELECT COUNT(*)
             FROM drafts.picks pk
-            LEFT JOIN drafts.vetoes v ON v.target_pick_id = pk.id
             LEFT JOIN drafts.commissioner_overrides co ON co.pick_id = pk.id
+            LEFT JOIN drafts.vetoes v ON v.id = (
+              SELECT v2.id FROM drafts.vetoes v2
+              WHERE v2.target_pick_id = pk.id
+              ORDER BY v2.sequence DESC
+              LIMIT 1
+            )
             WHERE pk.draft_part_id = dp.id
               AND co.id IS NULL
               AND (v.id IS NULL OR v.is_overridden = true)

@@ -12,7 +12,8 @@ public sealed partial class DraftPart
     string? movieVersionName = null,
     string? actedByPublicId = null,
     Func<Guid, bool>? isMovieAlreadyPickedInWholeDraft = null,
-    IReadOnlyList<Guid>? teamDrafterIdValues = null
+    IReadOnlyList<Guid>? teamDrafterIdValues = null,
+    Participant? explicitRevealRecipient = null
   )
   {
     ArgumentNullException.ThrowIfNull(movie);
@@ -66,6 +67,28 @@ public sealed partial class DraftPart
       effectiveVersionName = required;
     }
 
+    // Booster's Champion pick — checked before any mutation, same as the other early
+    // guards below. Purely a (film, drafter) reservation, independent of board position —
+    // the champion can play it wherever they choose, but nobody else can play THIS film at
+    // all. See BoostersChampionAssignment's remarks for why this isn't tied to DraftPosition.
+    if (movie.TmdbId.HasValue)
+    {
+      var boostersAssignment = _boostersChampionAssignments.FirstOrDefault(a =>
+        a.TmdbId == movie.TmdbId.Value
+      );
+
+      if (
+        boostersAssignment is not null
+        && (
+          participantId.Kind != ParticipantKind.Drafter
+          || participantId.Value != boostersAssignment.AssignedDrafterIdValue
+        )
+      )
+      {
+        return Result.Failure<PickId>(DraftPartErrors.OnlyBoostersChampionCanPlayThisFilm);
+      }
+    }
+
     var draftPartParticipant = _draftPartParticipants.FirstOrDefault(p =>
       p.ParticipantId == participantId
     );
@@ -103,6 +126,40 @@ public sealed partial class DraftPart
     if (participantId.Kind == ParticipantKind.Team)
     {
       pick.SetTeamPickCredits(teamDrafterIdValues);
+    }
+
+    if (
+      IsHostless
+      && DraftType != DraftType.SpeedDraft
+      && participantId.Kind != ParticipantKind.Community
+    )
+    {
+      var recipientParticipant = explicitRevealRecipient;
+
+      if (recipientParticipant is null)
+      {
+        var otherDrafters = _draftPartParticipants
+          .Select(p => p.ParticipantId)
+          .Where(p => p != participantId && p.Kind == ParticipantKind.Drafter)
+          .ToList();
+
+        if (otherDrafters.Count == 1)
+        {
+          recipientParticipant = otherDrafters[0];
+        }
+      }
+
+      if (recipientParticipant is not null)
+      {
+        var recipientDraftPartParticipant = _draftPartParticipants.FirstOrDefault(p =>
+          p.ParticipantId == recipientParticipant.Value
+        );
+
+        if (recipientDraftPartParticipant is not null)
+        {
+          pick.SetRevealAuthorizedParticipant(recipientDraftPartParticipant);
+        }
+      }
     }
 
     if (DraftType == DraftType.SpeedDraft || participantId.Kind == ParticipantKind.Community)

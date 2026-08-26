@@ -5,6 +5,8 @@ public sealed partial class DraftPart
   public bool IsScheduled(DateTime utcNow) =>
     Status == DraftPartStatus.Created && ScheduledForUtc.HasValue && ScheduledForUtc.Value > utcNow;
 
+  public bool IsHostless { get; private set; }
+
   public DraftPartLifecycleView GetLifecycleView(DateTime utcNow) =>
     Status switch
     {
@@ -15,7 +17,7 @@ public sealed partial class DraftPart
       _ => DraftPartLifecycleView.Cancelled,
     };
 
-  internal Result Start()
+  internal Result Start(bool isHostless = false)
   {
     if (Status != DraftPartStatus.Created)
     {
@@ -27,11 +29,12 @@ public sealed partial class DraftPart
       return Result.Failure(DraftPartErrors.CannotStartADraftWithoutAtLeastTwoParticipants);
     }
 
-    if (PrimaryHost is null || _draftHosts.Count == 0)
+    if (!isHostless && (PrimaryHost is null || _draftHosts.Count == 0))
     {
       return Result.Failure(DraftPartErrors.CannotStartDraftWithoutAllHosts);
     }
 
+    IsHostless = isHostless;
     Status = DraftPartStatus.InProgress;
 
     return Result.Success();
