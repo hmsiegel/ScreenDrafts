@@ -58,7 +58,7 @@ internal sealed class DraftPartRepository(DraftsDbContext dbContext) : IDraftPar
       .Include("_picks.Movie")
       .Include("_picks._vetoes")
       .Include("_subDrafts.GameBoard.DraftPositions")
-      .Include("triviaResults")
+      .Include("_triviaResults")
       .Include(dp => dp.GameBoard!)
         .ThenInclude(gb => gb.DraftPositions)
       .FirstOrDefaultAsync(x => x.PublicId == draftPartId, cancellationToken);

@@ -1,5 +1,4 @@
-﻿using ScreenDrafts.Common.Application.Services;
-using ScreenDrafts.Common.Infrastructure.Identity;
+﻿using ScreenDrafts.Common.Infrastructure.Identity;
 using ScreenDrafts.Modules.Users.PublicApi;
 
 namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Abstractions;

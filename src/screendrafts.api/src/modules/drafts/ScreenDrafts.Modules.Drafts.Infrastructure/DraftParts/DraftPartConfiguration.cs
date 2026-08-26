@@ -125,11 +125,15 @@ internal sealed class DraftPartConfiguration : IEntityTypeConfiguration<DraftPar
     builder.Navigation("_draftHosts").UsePropertyAccessMode(PropertyAccessMode.Field);
 
     // Trivia Results
+    builder.Ignore(d => d.TriviaResults);
+
     builder
-      .HasMany(d => d.TriviaResults)
-      .WithOne(tr => tr.DraftPart)
-      .HasForeignKey(tr => tr.DraftPartId)
+      .HasMany<TriviaResult>("_triviaResults")
+      .WithOne(dtr => dtr.DraftPart)
+      .HasForeignKey(dtr => dtr.DraftPartId)
       .OnDelete(DeleteBehavior.Cascade);
+
+    builder.Navigation("_triviaResults").UsePropertyAccessMode(PropertyAccessMode.Field);
 
     builder.Property(x => x.ScheduledForUtc);
 
