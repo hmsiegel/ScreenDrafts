@@ -19,7 +19,7 @@ internal sealed class ListDraftPositionsQueryHandler(IDbConnectionFactory dbConn
         dp.picks AS {nameof(PositionRow.Picks)},
         dp.has_bonus_veto AS {nameof(PositionRow.HasBonusVeto)},
         dp.has_bonus_veto_override AS {nameof(PositionRow.HasBonusVetoOverride)},
-        dp.has_fungible_token AS {nameof(PositionRow.HasFungibleToken)},
+        dp.has_bonus_fungible_token AS {nameof(PositionRow.HasBonusFungibleToken)},
         dp.assigned_to_id AS {nameof(PositionRow.AssignedTo_ParticipantId)},
         dp.assigned_to_kind AS {nameof(PositionRow.AssignedTo_ParticipantKind)}
       FROM
@@ -112,7 +112,7 @@ internal sealed class ListDraftPositionsQueryHandler(IDbConnectionFactory dbConn
           Picks = picks,
           HasBonusVeto = r.HasBonusVeto,
           HasBonusVetoOverride = r.HasBonusVetoOverride,
-          HasFungibleToken = r.HasFungibleToken,
+          HasBonusFungibleToken = r.HasBonusFungibleToken,
           AssignedTo = assignment,
         };
       })
@@ -128,7 +128,7 @@ internal sealed class ListDraftPositionsQueryHandler(IDbConnectionFactory dbConn
     string Picks,
     bool HasBonusVeto,
     bool HasBonusVetoOverride,
-    bool HasFungibleToken,
+    bool HasBonusFungibleToken,
     Guid? AssignedTo_ParticipantId,
     int? AssignedTo_ParticipantKind
   );

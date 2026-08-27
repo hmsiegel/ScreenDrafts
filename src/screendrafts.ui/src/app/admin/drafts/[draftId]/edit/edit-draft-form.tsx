@@ -11,6 +11,7 @@ import {
   addHostToDraftPart,
   removeHostFromDraftPart,
   addParticipantToDraftPart,
+  setDraftPartPositionRange,
   removeParticipantFromDraftPart,
   setDraftCategories,
   setDraftCampaign,
@@ -56,6 +57,8 @@ import {
 } from "../../new/prediction-rules-section";
 import { SurrogateAssignmentPanel } from "../../new/surrogate-assignment-panel";
 import { DrafterPicker } from "../../../drafter-teams/drafter-picker";
+import { MovieSearchPicker } from "../../new/movie-search-picker";
+import type { ResolvedMovie } from "@/lib/movie-resolve";
 
 const LABEL = "block text-[11px] font-mono tracking-widest text-sd-ink/60 uppercase mb-1";
 const INPUT =
@@ -84,14 +87,6 @@ function BoostersChampionSection({
 }) {
   const [assignments, setAssignments] = useState<AdminBoostersChampionAssignment[]>(
     part.boostersChampionAssignments
-  );
-  const [tmdbIdDrafts, setTmdbIdDrafts] = useState<Record<string, string>>(() =>
-    Object.fromEntries(
-      part.boostersChampionAssignments.map((a) => [
-        a.publicId,
-        a.tmdbId != null ? String(a.tmdbId) : "",
-      ])
-    )
   );
   const [pendingId, setPendingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -123,7 +118,6 @@ function BoostersChampionSection({
           title: null,
         },
       ]);
-      setTmdbIdDrafts((prev) => ({ ...prev, [publicId]: "" }));
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Failed to add Booster's Champion assignment."
@@ -147,14 +141,11 @@ function BoostersChampionSection({
     }
   }
 
-  async function handleSaveFilm(assignmentPublicId: string) {
+  // Immediate-action, same as handleAdd/handleRemove above: selecting a result saves
+  // right away rather than staging a value for a separate Save click, now that the
+  // picker (not a hand-typed ID) is the thing driving the save.
+  async function handleSelectFilm(assignmentPublicId: string, movie: ResolvedMovie) {
     if (pendingId) return;
-    const raw = tmdbIdDrafts[assignmentPublicId]?.trim();
-    const tmdbId = raw ? Number.parseInt(raw, 10) : NaN;
-    if (!Number.isFinite(tmdbId)) {
-      setError("Enter a valid TMDb ID.");
-      return;
-    }
     setPendingId(assignmentPublicId);
     setError(null);
     try {
@@ -162,10 +153,12 @@ function BoostersChampionSection({
         accessToken,
         part.partPublicId,
         assignmentPublicId,
-        tmdbId
+        movie.tmdbId
       );
       setAssignments((prev) =>
-        prev.map((a) => (a.publicId === assignmentPublicId ? { ...a, tmdbId } : a))
+        prev.map((a) =>
+          a.publicId === assignmentPublicId ? { ...a, tmdbId: movie.tmdbId, title: movie.title } : a
+        )
       );
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to assign the film.");
@@ -188,44 +181,42 @@ function BoostersChampionSection({
           {assignments.map((a) => (
             <div
               key={a.publicId}
-              className="flex items-center gap-3 border border-sd-ink/10 rounded p-3 bg-white"
+              className="border border-sd-ink/10 rounded p-3 bg-white"
             >
-              <span className="text-sm font-medium text-sd-ink flex-1">
-                {a.assignedDrafterDisplayName}
-              </span>
-              <input
-                type="number"
-                placeholder="TMDb ID"
-                className={`${INPUT} max-w-[160px]`}
-                value={tmdbIdDrafts[a.publicId] ?? ""}
-                onChange={(e) =>
-                  setTmdbIdDrafts((prev) => ({ ...prev, [a.publicId]: e.target.value }))
-                }
-                disabled={locked || pendingId === a.publicId}
-              />
-              {!locked && (
-                <button
-                  type="button"
-                  onClick={() => handleSaveFilm(a.publicId)}
+              <div className="flex items-center gap-3 mb-2">
+                <span className="text-sm font-medium text-sd-ink flex-1">
+                  {a.assignedDrafterDisplayName}
+                </span>
+                {!locked && (
+                  <button
+                    type="button"
+                    onClick={() => handleRemove(a.publicId)}
+                    disabled={pendingId === a.publicId}
+                    className="text-sd-ink/30 hover:text-sd-red text-xl leading-none disabled:opacity-40"
+                    aria-label={`Remove ${a.assignedDrafterDisplayName}`}
+                  >
+                    ×
+                  </button>
+                )}
+              </div>
+
+              {a.tmdbId ? (
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-sd-ink font-medium">{a.title}</span>
+                  <span className="text-[11px] font-mono text-sd-ink/40">
+                    TMDb #{a.tmdbId}
+                  </span>
+                </div>
+              ) : locked ? (
+                <span className="text-[11px] font-mono text-sd-ink/40 italic">
+                  No film assigned.
+                </span>
+              ) : (
+                <MovieSearchPicker
+                  accessToken={accessToken}
                   disabled={pendingId === a.publicId}
-                  className={BTN_SECONDARY}
-                >
-                  Save
-                </button>
-              )}
-              {a.title && (
-                <span className="text-[11px] font-mono text-sd-ink/40">{a.title}</span>
-              )}
-              {!locked && (
-                <button
-                  type="button"
-                  onClick={() => handleRemove(a.publicId)}
-                  disabled={pendingId === a.publicId}
-                  className="text-sd-ink/30 hover:text-sd-red text-xl leading-none disabled:opacity-40"
-                  aria-label={`Remove ${a.assignedDrafterDisplayName}`}
-                >
-                  ×
-                </button>
+                  onSelect={(movie) => handleSelectFilm(a.publicId, movie)}
+                />
               )}
             </div>
           ))}
@@ -249,6 +240,90 @@ function BoostersChampionSection({
           onSelect={handleAdd}
           disabled={pendingId !== null}
         />
+      )}
+    </div>
+  );
+}
+
+// Fixes DraftPart.MinPosition/MaxPosition directly — distinct from the
+// PositionsEditor's picks-count-derived maxPos below, which is only a local
+// validator input and has never been the actual saved value. No UI path
+// existed to view or edit this after part creation before now.
+//
+// Deliberately NOT locked on part status the way BoostersChampionSection is:
+// DraftPart.SetPartPositions has no status guard on the domain side (only
+// min>0, max>0, max>=min), and the real-world need for this is correcting a
+// wrong range on a part that's already InProgress (e.g. mid-seeding), so
+// gating it on Created-only would block the exact case it exists for.
+function PartPositionRangeSection({
+  part,
+  accessToken,
+}: {
+  part: PartEditState;
+  accessToken: string;
+}) {
+  const [minPosition, setMinPosition] = useState(part.minPosition ?? 1);
+  const [maxPosition, setMaxPosition] = useState(part.maxPosition ?? 1);
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function handleSave() {
+    if (saving) return;
+    setSaving(true);
+    setSaved(false);
+    setError(null);
+    try {
+      await setDraftPartPositionRange(accessToken, part.partPublicId, minPosition, maxPosition);
+      setSaved(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to update position range.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <div>
+      <p className="font-mono text-[11px] tracking-widest text-sd-ink/50 uppercase mb-2">
+        Position Range
+      </p>
+      <p className="text-[11px] text-sd-ink/50 mb-3 max-w-md">
+        The actual board slot range this part covers (e.g. 17–30 for a part that doesn&apos;t
+        start at slot 1) — not a count of positions. Every played pick is validated against
+        these bounds; a wrong range here is what causes &quot;Pick position is out of
+        range&quot; on an otherwise valid pick.
+      </p>
+      <div className="flex items-end gap-3">
+        <div>
+          <label className={LABEL}>Min Position</label>
+          <input
+            type="number"
+            min={1}
+            className={`${INPUT} w-24`}
+            value={minPosition}
+            onChange={(e) => setMinPosition(parseInt(e.target.value, 10) || 1)}
+          />
+        </div>
+        <div>
+          <label className={LABEL}>Max Position</label>
+          <input
+            type="number"
+            min={1}
+            className={`${INPUT} w-24`}
+            value={maxPosition}
+            onChange={(e) => setMaxPosition(parseInt(e.target.value, 10) || 1)}
+          />
+        </div>
+        <button type="button" onClick={handleSave} disabled={saving} className={BTN_SECONDARY}>
+          {saving ? "Saving…" : "Save"}
+        </button>
+        {saved && <span className="text-[11px] font-mono text-green-700">saved</span>}
+      </div>
+      {error && (
+        <div className="mt-2 border border-red-300 bg-red-50 text-red-800 text-sm px-4 py-3 rounded">
+          {error}
+        </div>
       )}
     </div>
   );
@@ -292,6 +367,12 @@ interface PartEditState {
   // Legends Mega only — see BoostersChampionSection below. Not copied through by
   // initPartState until now; this field didn't exist when that function was written.
   boostersChampionAssignments: AdminBoostersChampionAssignment[];
+  // Current saved values, straight from the backend — distinct from the
+  // PositionsEditor's picks-count-derived maxPos, which is only a local
+  // validator input and was never the actual DraftPart.MaxPosition. See
+  // PartPositionRangeSection below.
+  minPosition: number | null;
+  maxPosition: number | null;
 }
 
 interface PendingPart {
@@ -389,6 +470,8 @@ function initPartState(parts: DraftPart[]): PartEditState[] {
       predictionConfig: defaultPredictionConfig(),
       predictionsLoaded: false,
       boostersChampionAssignments: p.boostersChampionAssignments ?? [],
+      minPosition: p.minPosition ?? null,
+      maxPosition: p.maxPosition ?? null,
     };
   });
 }
@@ -1089,6 +1172,8 @@ export default function EditDraftForm({
                         initialParticipants={part.initialParticipants}
                       />
 
+                      <PartPositionRangeSection part={part} accessToken={accessToken} />
+
                       {/* Positions */}
                       <div>
                         <p className="font-mono text-[11px] tracking-widest text-sd-ink/50 uppercase mb-3">
@@ -1100,6 +1185,7 @@ export default function EditDraftForm({
                             onChange={(pos) => updatePartPositions(idx, pos)}
                             totalPicks={maxPos}
                             readonly={fixedPositions}
+                            useFungibleToken={useFungibleToken}
                           />
                         ) : (
                           <p className="text-[11px] font-mono text-sd-ink/40">Loading…</p>
@@ -1196,6 +1282,7 @@ export default function EditDraftForm({
                           onChange={(pos) => updatePendingPartPositions(pp.tempId, pos)}
                           totalPicks={pp.maxPositions}
                           readonly={ppFixed}
+                          useFungibleToken={useFungibleToken}
                         />
                       </div>
                     </div>

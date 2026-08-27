@@ -23,7 +23,7 @@ internal sealed class DraftPositionConfiguration : IEntityTypeConfiguration<Draf
 
     builder.Property(dp => dp.HasBonusVetoOverride).IsRequired();
 
-    builder.Property(dp => dp.HasFungibleToken).IsRequired();
+    builder.Property(dp => dp.HasBonusFungibleToken).IsRequired();
 
     builder.Property(dp => dp.Picks).HasListOfPicksConverter();
 

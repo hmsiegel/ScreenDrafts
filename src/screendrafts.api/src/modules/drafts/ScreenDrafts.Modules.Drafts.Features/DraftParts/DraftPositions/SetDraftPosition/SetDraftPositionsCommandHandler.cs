@@ -45,7 +45,7 @@ internal sealed class SetDraftPositionsCommandHandler(
         publicId: publicId,
         hasBonusVeto: position.HasBonusVeto,
         hasBonusVetoOverride: position.HasBonusVetoOverride,
-        hasFungibleToken: position.HasFungibleToken
+        hasBonusFungibleToken: position.HasBonusFungibleToken
       );
 
       if (draftPosition.IsFailure)

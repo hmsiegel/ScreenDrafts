@@ -67,7 +67,7 @@ internal sealed class GetDraftPartGameplayQueryHandler(
         pos.picks                       AS {nameof(PositionRow.Picks)},
         pos.has_bonus_veto              AS {nameof(PositionRow.HasBonusVeto)},
         pos.has_bonus_veto_override     AS {nameof(PositionRow.HasBonusVetoOverride)},
-        pos.has_fungible_token          AS {nameof(PositionRow.HasFungibleToken)},
+        pos.has_bonus_fungible_token    AS {nameof(PositionRow.HasBonusFungibleToken)},
         pos.assigned_to_id              AS {nameof(PositionRow.AssignedToId)},
         pos.assigned_to_kind            AS {nameof(PositionRow.AssignedToKind)}
       FROM drafts.draft_positions pos
@@ -593,7 +593,7 @@ internal sealed class GetDraftPartGameplayQueryHandler(
             OwnedBoardSlots = ParsePicks(pos.Picks),
             HasBonusVeto = pos.HasBonusVeto,
             HasBonusVetoOverride = pos.HasBonusVetoOverride,
-            HasFungibleToken = pos.HasFungibleToken,
+            HasBonusFungibleToken = pos.HasBonusFungibleToken,
             AssignedParticipantId = pos.AssignedToId,
             AssignedParticipantKind = pos.AssignedToKind.HasValue ? pos.AssignedToKind.Value : null,
             AssignedParticipantName = pos.AssignedToId.HasValue
@@ -726,7 +726,7 @@ internal sealed class GetDraftPartGameplayQueryHandler(
     string Picks,
     bool HasBonusVeto,
     bool HasBonusVetoOverride,
-    bool HasFungibleToken,
+    bool HasBonusFungibleToken,
     Guid? AssignedToId,
     int? AssignedToKind
   );

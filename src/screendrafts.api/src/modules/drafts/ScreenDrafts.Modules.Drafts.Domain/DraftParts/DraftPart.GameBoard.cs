@@ -49,7 +49,7 @@ public sealed partial class DraftPart
       }
     }
 
-    if (position.HasFungibleToken)
+    if (position.HasBonusFungibleToken)
     {
       var awardResult = SetParticipantFungibleTokenAward(participant);
       if (awardResult.IsFailure)
@@ -120,7 +120,7 @@ public sealed partial class DraftPart
         }
       }
 
-      if (position.HasFungibleToken)
+      if (position.HasBonusFungibleToken)
       {
         var revokeResult = RevokeParticipantFungibleTokenAward(participant);
         if (revokeResult.IsFailure)

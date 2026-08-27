@@ -63,7 +63,7 @@ public sealed class DraftPartParticipant : Entity<DraftPartParticipantId>
   public int FungibleTokensRollingIn { get; private set; }
   public int AwardedFungibleTokens { get; private set; }
 
-  private int RemainingFungibleTokens => Math.Max(0, FungibleTokens - FungibleTokensUsed);
+  private int RemainingFungibleTokens => Math.Max(0, TotalFungibleTokens - FungibleTokensUsed);
 
   // Usage counters
   public int VetoesUsed { get; private set; }

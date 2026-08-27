@@ -1,3 +1,4 @@
+// src/app/admin/drafts/new/positions-editor.tsx
 "use client";
 
 import { useState } from "react";
@@ -92,6 +93,7 @@ interface RowProps {
   pos: PositionConfig;
   idx: number;
   canRemove: boolean;
+  useFungibleToken?: boolean;
   onChange: (idx: number, updated: PositionConfig) => void;
   onRemove: (idx: number) => void;
 }
@@ -100,7 +102,7 @@ const LABEL = "block text-[11px] font-mono tracking-widest text-sd-ink/60 upperc
 const INPUT =
   "border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink font-sans text-sm focus:outline-none focus:ring-2 focus:ring-sd-blue w-full";
 
-function PositionRow({ pos, idx, canRemove, onChange, onRemove }: RowProps) {
+function PositionRow({ pos, idx, canRemove, useFungibleToken, onChange, onRemove }: RowProps) {
   const [picksText, setPicksText] = useState(pos.picks.join(", "));
 
   function handlePicksChange(raw: string) {
@@ -117,8 +119,18 @@ function PositionRow({ pos, idx, canRemove, onChange, onRemove }: RowProps) {
     setPicksText(pos.picks.join(", "));
   }
 
+  // Bonus Veto/Override and Bonus Fungible Token are mutually exclusive, same as the
+  // draft-level baked-in pool: on a fungible-token draft, veto/override are baked into
+  // the token itself, so those two columns are replaced by a single Bonus Token
+  // checkbox. Bonus Token only makes sense on a fungible-token draft — see
+  // create-draft-form.tsx's handleToggleFungibleToken, which clears it when the
+  // draft-level toggle turns off.
+  const gridCols = useFungibleToken
+    ? "grid-cols-[28px_1fr_auto_auto]"
+    : "grid-cols-[28px_1fr_auto_auto_auto_auto]";
+
   return (
-    <div className="border border-sd-ink/10 p-3 bg-white grid grid-cols-[28px_1fr_auto_auto_auto_auto] items-start gap-3">
+    <div className={`border border-sd-ink/10 p-3 bg-white grid ${gridCols} items-start gap-3`}>
       <div className="pt-2 font-oswald font-bold text-[15px] text-sd-ink">
         {pos.name}
       </div>
@@ -135,41 +147,47 @@ function PositionRow({ pos, idx, canRemove, onChange, onRemove }: RowProps) {
         />
       </div>
 
-      <div className="pt-1">
-        <label className="flex flex-col items-center gap-1 cursor-pointer select-none">
-          <span className="font-mono text-[9px] tracking-widest text-sd-ink/50 uppercase">Veto</span>
-          <input
-            type="checkbox"
-            checked={pos.hasBonusVeto}
-            onChange={(e) => onChange(idx, { ...pos, hasBonusVeto: e.target.checked })}
-            className="accent-sd-red w-4 h-4"
-          />
-        </label>
-      </div>
+      {!useFungibleToken && (
+        <div className="pt-1">
+          <label className="flex flex-col items-center gap-1 cursor-pointer select-none">
+            <span className="font-mono text-[9px] tracking-widest text-sd-ink/50 uppercase">Veto</span>
+            <input
+              type="checkbox"
+              checked={pos.hasBonusVeto}
+              onChange={(e) => onChange(idx, { ...pos, hasBonusVeto: e.target.checked })}
+              className="accent-sd-red w-4 h-4"
+            />
+          </label>
+        </div>
+      )}
 
-      <div className="pt-1">
-        <label className="flex flex-col items-center gap-1 cursor-pointer select-none">
-          <span className="font-mono text-[9px] tracking-widest text-sd-ink/50 uppercase whitespace-nowrap">Override</span>
-          <input
-            type="checkbox"
-            checked={pos.hasBonusVetoOverride}
-            onChange={(e) => onChange(idx, { ...pos, hasBonusVetoOverride: e.target.checked })}
-            className="accent-sd-blue w-4 h-4"
-          />
-        </label>
-      </div>
+      {!useFungibleToken && (
+        <div className="pt-1">
+          <label className="flex flex-col items-center gap-1 cursor-pointer select-none">
+            <span className="font-mono text-[9px] tracking-widest text-sd-ink/50 uppercase whitespace-nowrap">Override</span>
+            <input
+              type="checkbox"
+              checked={pos.hasBonusVetoOverride}
+              onChange={(e) => onChange(idx, { ...pos, hasBonusVetoOverride: e.target.checked })}
+              className="accent-sd-blue w-4 h-4"
+            />
+          </label>
+        </div>
+      )}
 
-      <div className="pt-1">
-        <label className="flex flex-col items-center gap-1 cursor-pointer select-none">
-          <span className="font-mono text-[9px] tracking-widest text-sd-ink/50 uppercase whitespace-nowrap">Token</span>
-          <input
-            type="checkbox"
-            checked={pos.hasBonusFungibleToken}
-            onChange={(e) => onChange(idx, { ...pos, hasBonusFungibleToken: e.target.checked })}
-            className="accent-sd-ink w-4 h-4"
-          />
-        </label>
-      </div>
+      {useFungibleToken && (
+        <div className="pt-1">
+          <label className="flex flex-col items-center gap-1 cursor-pointer select-none">
+            <span className="font-mono text-[9px] tracking-widest text-sd-ink/50 uppercase whitespace-nowrap">Bonus Token</span>
+            <input
+              type="checkbox"
+              checked={pos.hasBonusFungibleToken}
+              onChange={(e) => onChange(idx, { ...pos, hasBonusFungibleToken: e.target.checked })}
+              className="accent-sd-ink w-4 h-4"
+            />
+          </label>
+        </div>
+      )}
 
       <div className="pt-1">
         <button
@@ -193,9 +211,10 @@ interface Props {
   onChange: (positions: PositionConfig[]) => void;
   totalPicks: number;
   readonly?: boolean;
+  useFungibleToken?: boolean;
 }
 
-export function PositionsEditor({ positions, onChange, totalPicks, readonly }: Props) {
+export function PositionsEditor({ positions, onChange, totalPicks, readonly, useFungibleToken }: Props) {
   const errors = validatePositions(positions, totalPicks);
 
   function updatePosition(idx: number, updated: PositionConfig) {
@@ -231,6 +250,7 @@ export function PositionsEditor({ positions, onChange, totalPicks, readonly }: P
           pos={pos}
           idx={idx}
           canRemove={positions.length > 1}
+          useFungibleToken={useFungibleToken}
           onChange={updatePosition}
           onRemove={removePosition}
         />

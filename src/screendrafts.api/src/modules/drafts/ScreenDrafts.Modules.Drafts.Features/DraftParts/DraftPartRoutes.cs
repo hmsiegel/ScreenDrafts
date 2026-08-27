@@ -27,6 +27,7 @@ internal static class DraftPartRoutes
   public const string DraftPositions = ById + "/positions";
   public const string ParticipantDraftPosition = ById + "/positions/{positionId}/participant";
   public const string AssignTriviaResults = ById + "/trivia-results";
+  public const string PositionRange = ById + "/position-range";
 
   // Community Limits
   public const string CommunityLimits = ById + "/community-limits";

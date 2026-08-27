@@ -361,7 +361,7 @@ function SearchSource({
 
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
-    if (query.trim().length < 2) {
+    if (query.trim().length < 1) {
       setMovies([]);
       return;
     }

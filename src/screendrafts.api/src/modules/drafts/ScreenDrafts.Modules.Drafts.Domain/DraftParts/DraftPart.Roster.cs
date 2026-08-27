@@ -19,10 +19,6 @@ public sealed partial class DraftPart
   public IReadOnlyCollection<Participant> Participants =>
     _draftPartParticipants.Select(dp => dp.ParticipantId).ToList().AsReadOnly();
 
-  // ── Patch to DraftPart.Roster.cs — SetParticipants ───────────────────────────
-  // Replace existing SetParticipants with version that raises ParticipantAddedDomainEvent
-  // for each participant not previously in the list.
-
   public Result SetParticipants(IReadOnlyList<Participant> participants)
   {
     Guard.Against.Null(participants);
@@ -32,9 +28,7 @@ public sealed partial class DraftPart
     _draftPartParticipants.Clear();
     _draftPartParticipants.AddRange(participants.Select(p => DraftPartParticipant.Create(this, p)));
 
-    foreach (var participant in participants.Where(participant => !existing.Contains(participant))
-    // Raise domain events only for participants that weren't already in the list.
-    )
+    foreach (var participant in participants.Where(participant => !existing.Contains(participant)))
     {
       Raise(
         new ParticipantAddedDomainEvent(

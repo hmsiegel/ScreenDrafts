@@ -101,6 +101,13 @@ export function SeedPicksStep({
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [importing, setImporting] = useState(false);
+  // Fallback for titles TMDb's own title search can't find — e.g. "$"
+  // (TMDb 31644), which the API appears to treat as an empty/punctuation-only
+  // query and returns zero matches for, independent of any length gate on
+  // this app's side. Bypasses search entirely: goes straight through
+  // handlePickMovie's existing import path with a known TMDb ID.
+  const [manualEntryOpen, setManualEntryOpen] = useState(false);
+  const [manualTmdbId, setManualTmdbId] = useState("");
   // Which pick is currently showing an inline "who's doing this" picker,
   // and what's been selected so far. Veto and Veto Override both need an
   // explicit issuer — self-veto is a real case (the same drafter who
@@ -235,6 +242,26 @@ export function SeedPicksStep({
     } finally {
       setImporting(false);
     }
+  }
+
+  async function handleManualTmdbSubmit() {
+    const parsed = Number.parseInt(manualTmdbId.trim(), 10);
+    if (!Number.isFinite(parsed) || parsed <= 0) {
+      setError("Enter a valid TMDb ID.");
+      return;
+    }
+    // mediaPublicId/title/year/posterUrl left blank on purpose — handlePickMovie
+    // only trusts mediaPublicId to decide whether an import is needed, and
+    // importAndResolve fills in the real title/year from TMDb once it lands.
+    await handlePickMovie({
+      tmdbId: parsed,
+      mediaPublicId: "",
+      title: "",
+      year: null,
+      posterUrl: null,
+    });
+    setManualTmdbId("");
+    setManualEntryOpen(false);
   }
 
   async function handleSubmitPick() {
@@ -622,6 +649,47 @@ export function SeedPicksStep({
                     );
                   })}
                 </div>
+              )}
+
+              {manualEntryOpen ? (
+                <div className="flex items-center gap-2 mt-2">
+                  <input
+                    type="number"
+                    placeholder="TMDb ID"
+                    className={`${INPUT} max-w-[140px]`}
+                    value={manualTmdbId}
+                    onChange={(e) => setManualTmdbId(e.target.value)}
+                  />
+                  <button
+                    type="button"
+                    onClick={handleManualTmdbSubmit}
+                    disabled={importing}
+                    className="text-[11px] font-mono text-sd-blue uppercase tracking-wide hover:underline disabled:opacity-40"
+                  >
+                    Add
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setManualEntryOpen(false);
+                      setManualTmdbId("");
+                    }}
+                    className="text-[11px] font-mono text-sd-ink/40 uppercase tracking-wide hover:underline"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              ) : (
+                query.trim().length >= 1 &&
+                !searching && (
+                  <button
+                    type="button"
+                    onClick={() => setManualEntryOpen(true)}
+                    className="text-[11px] font-mono text-sd-ink/40 uppercase tracking-wide hover:underline mt-2"
+                  >
+                    Can&apos;t find it? Enter TMDb ID directly →
+                  </button>
+                )
               )}
             </>
           )}

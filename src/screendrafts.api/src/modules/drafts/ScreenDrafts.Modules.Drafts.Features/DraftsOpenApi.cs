@@ -70,6 +70,7 @@ internal static class DraftsOpenApi
     public const string DraftParts_ListDraftPositions = "DraftParts.ListDraftPositions";
     public const string DraftParts_ClearDraftPositionAssignment =
       "DraftParts.ClearDraftPositionAssignment";
+    public const string DraftParts_SetPartPositionRange = "DraftParts.SetPartPositionRange";
     public const string DraftParts_RemoveParticipant = "DraftParts.RemoveParticipant";
     public const string DraftParts_AssignTriviaResults = "DraftParts.AssignTriviaResults";
     public const string DraftParts_GetTriviaResults = "DraftParts.GetTriviaResults";

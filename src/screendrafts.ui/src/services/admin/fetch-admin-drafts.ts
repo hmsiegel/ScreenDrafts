@@ -77,6 +77,13 @@ export interface DraftPart {
   maxCommunityVetoes: number;
   communityFilmRules: DraftPartCommunityFilmRule[];
   boostersChampionAssignments: AdminBoostersChampionAssignment[];
+  // NOTE (flagged, not confirmed): getDraft does a direct `as AdminDraftDetail` cast rather
+  // than a manual field whitelist, so these were likely already present in the JSON and
+  // just untyped — but I haven't seen the backend response DTO for GET /drafts/{publicId}
+  // to confirm the exact field names/casing. If these come back undefined at runtime, the
+  // backend query needs to project MinPosition/MaxPosition too.
+  minPosition: number | null;
+  maxPosition: number | null;
 }
 
 export interface AdminDraftDetail {
@@ -1460,6 +1467,23 @@ export interface GameplayBoostersChampionAssignment {
   title: string | null;
 }
 
+// Matches GameplayDraftPositionResponse. Previously not parsed at all here —
+// getDraftPartGameplay silently dropped it the same way it was dropping
+// subDrafts before that fix. Needed so the seed wizard's position-assignment
+// step (and anything else admin-side) can see current assignment state.
+export interface GameplayDraftPosition {
+  positionPublicId: string;
+  positionName: string;
+  ownedBoardSlots: number[];
+  hasBonusVeto: boolean;
+  hasBonusVetoOverride: boolean;
+  hasBonusFungibleToken: boolean;
+  assignedParticipantId: string | null;
+  assignedParticipantKind: number | null;
+  assignedParticipantName: string | null;
+  isCommunityPosition: boolean;
+}
+
 export interface DraftPartGameplay {
   picks: GameplayPick[];
   triviaResults: GameplayTriviaResult[];
@@ -1474,6 +1498,8 @@ export interface DraftPartGameplay {
   isHostless: boolean;
   // Legends Mega only — see GameplayBoostersChampionAssignment.
   boostersChampionAssignments: GameplayBoostersChampionAssignment[];
+  // Was silently dropped before — see GameplayDraftPosition's comment.
+  draftPositions: GameplayDraftPosition[];
 }
 
 export async function getDraftPartGameplay(
@@ -1496,6 +1522,7 @@ export async function getDraftPartGameplay(
       fungibleTokenName?: string;
       isHostless?: boolean;
       boostersChampionAssignments?: GameplayBoostersChampionAssignment[];
+      draftPositions?: GameplayDraftPosition[];
     };
     return {
       picks: data.picks ?? [],
@@ -1505,6 +1532,7 @@ export async function getDraftPartGameplay(
       fungibleTokenName: data.fungibleTokenName ?? null,
       isHostless: data.isHostless ?? false,
       boostersChampionAssignments: data.boostersChampionAssignments ?? [],
+      draftPositions: data.draftPositions ?? [],
     };
   } catch (err) {
     console.error("[getDraftPartGameplay]", err);
@@ -1531,6 +1559,79 @@ export async function assignTriviaResults(
   if (!res.ok) {
     const problem = await res.json().catch(() => null);
     throw new Error(problem?.detail ?? `Failed to assign trivia results: ${res.status}`);
+  }
+}
+
+// The real live-gameplay position-assignment command — same endpoint
+// primary-host-tab.tsx's DraftPositionsForm calls during an actual draft
+// (PUT/DELETE .../positions/{positionPublicId}/participant). This is what
+// grants the bonus veto/override/fungible token on assignment
+// (DraftPart.AssignParticipantToPositionAsync on the backend) — nothing
+// seed-specific here, per the "only SeedRevealPick and
+// SeedSubmitPredictionSet are seed-only" constraint.
+export async function assignParticipantToDraftPosition(
+  accessToken: string,
+  draftPartId: string,
+  positionPublicId: string,
+  participantPublicId: string,
+  participantKind: number
+): Promise<void> {
+  const res = await fetch(
+    `${apiBase}/draft-parts/${encodeURIComponent(draftPartId)}/positions/${encodeURIComponent(positionPublicId)}/participant`,
+    {
+      method: "PUT",
+      headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ participantPublicId, participantKind }),
+    }
+  );
+  if (!res.ok) {
+    const problem = await res.json().catch(() => null);
+    throw new Error(problem?.detail ?? `Failed to assign position: ${res.status}`);
+  }
+}
+
+export async function clearDraftPositionAssignment(
+  accessToken: string,
+  draftPartId: string,
+  positionPublicId: string
+): Promise<void> {
+  const res = await fetch(
+    `${apiBase}/draft-parts/${encodeURIComponent(draftPartId)}/positions/${encodeURIComponent(positionPublicId)}/participant`,
+    {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${accessToken}` },
+    }
+  );
+  if (!res.ok) {
+    const problem = await res.json().catch(() => null);
+    throw new Error(problem?.detail ?? `Failed to clear position: ${res.status}`);
+  }
+}
+
+// Updates an existing DraftPart's min/max position range — distinct from
+// setDraftPositions (the individual position ROWS). Needed whenever a
+// part's actual board range doesn't start at 1 (e.g. Part 2 of a two-part
+// countdown draft covering slots 17-30) — Pick.Create validates every
+// played position against these bounds inclusively, so they have to match
+// the real range or PickPositionIsOutOfRange fires on perfectly valid
+// picks. No path existed to set this after creation before now.
+export async function setDraftPartPositionRange(
+  accessToken: string,
+  draftPartId: string,
+  minimumPosition: number,
+  maximumPosition: number
+): Promise<void> {
+  const res = await fetch(
+    `${apiBase}/draft-parts/${encodeURIComponent(draftPartId)}/position-range`,
+    {
+      method: "PUT",
+      headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ minimumPosition, maximumPosition }),
+    }
+  );
+  if (!res.ok) {
+    const problem = await res.json().catch(() => null);
+    throw new Error(problem?.detail ?? `Failed to update position range: ${res.status}`);
   }
 }
 

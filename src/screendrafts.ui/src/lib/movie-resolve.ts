@@ -72,7 +72,7 @@ export async function searchMovies(
   signal?: AbortSignal
 ): Promise<ResolvedMovie[]> {
   const trimmed = query.trim();
-  if (trimmed.length < 2) return [];
+  if (trimmed.length < 1) return [];
 
   const res = await fetch(`${API}/media/search?query=${encodeURIComponent(trimmed)}`, {
     headers: { Authorization: `Bearer ${accessToken}` },

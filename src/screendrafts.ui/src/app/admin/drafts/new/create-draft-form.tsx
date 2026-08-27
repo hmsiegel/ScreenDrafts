@@ -23,6 +23,8 @@ import { ParticipantsSection } from "./participants-section";
 import { CommunityConfig, CommunitySection, defaultCommunityConfig } from "./community-section";
 import { getDefaultPositions, isFixedPositionType, PositionConfig, PositionsEditor } from "./positions-editor";
 import { defaultPredictionConfig, PredictionConfig, PredictionRulesSection } from "./prediction-rules-section";
+import { MovieSearchPicker } from "./movie-search-picker";
+import type { ResolvedMovie } from "@/lib/movie-resolve";
 
 const LABEL = "block text-[11px] font-mono tracking-widest text-sd-ink/60 uppercase mb-1";
 const INPUT =
@@ -275,20 +277,52 @@ export default function CreateDraftForm({
     setUseFungibleToken(checked);
     if (!checked) {
       setFungibleTokenName("");
+      // Bonus Token only applies on a fungible-token draft — clear any stale true
+      // left over from before the toggle so it can't ride along hidden once the
+      // checkbox disappears.
+      setParts((prev) =>
+        prev.map((part) => ({
+          ...part,
+          positions: part.positions.map((p) => ({
+            ...p,
+            hasBonusFungibleToken: false,
+          })),
+        }))
+      );
+      return;
     }
+    // Veto/Override are baked into the fungible token itself on these drafts —
+    // clear any bonus veto/override left over from before the toggle so a
+    // stale true doesn't ride along hidden once those columns disappear.
+    setParts((prev) =>
+      prev.map((part) => ({
+        ...part,
+        positions: part.positions.map((p) => ({
+          ...p,
+          hasBonusVeto: false,
+          hasBonusVetoOverride: false,
+        })),
+      }))
+    );
   }
 
   // Legends Mega only — see the gated section below. A specific film reserved for a
-  // specific drafter; can be left without a TMDb ID and set later if the title isn't
-  // decided at draft-setup time (mirrors CommunityFilmRule's own TmdbId nullability).
+  // specific drafter; can be left unassigned and set later if the title isn't decided
+  // at draft-setup time (mirrors CommunityFilmRule's own TmdbId nullability). tmdbId/
+  // title are set together via MovieSearchPicker — never hand-typed.
   const [boostersChampionAssignments, setBoostersChampionAssignments] = useState<
-    { drafterPublicId: string; drafterDisplayName: string; tmdbId: string }[]
+    { drafterPublicId: string; drafterDisplayName: string; tmdbId: number | null; title: string | null }[]
   >([]);
 
   function handleAddBoostersChampion(drafter: { publicId: string; displayName: string }) {
     setBoostersChampionAssignments((prev) => [
       ...prev,
-      { drafterPublicId: drafter.publicId, drafterDisplayName: drafter.displayName, tmdbId: "" },
+      {
+        drafterPublicId: drafter.publicId,
+        drafterDisplayName: drafter.displayName,
+        tmdbId: null,
+        title: null,
+      },
     ]);
   }
 
@@ -298,9 +332,17 @@ export default function CreateDraftForm({
     );
   }
 
-  function handleBoostersChampionTmdbIdChange(drafterPublicId: string, value: string) {
+  function handleBoostersChampionFilmSelected(drafterPublicId: string, movie: ResolvedMovie) {
     setBoostersChampionAssignments((prev) =>
-      prev.map((a) => (a.drafterPublicId === drafterPublicId ? { ...a, tmdbId: value } : a))
+      prev.map((a) =>
+        a.drafterPublicId === drafterPublicId ? { ...a, tmdbId: movie.tmdbId, title: movie.title } : a
+      )
+    );
+  }
+
+  function handleBoostersChampionFilmCleared(drafterPublicId: string) {
+    setBoostersChampionAssignments((prev) =>
+      prev.map((a) => (a.drafterPublicId === drafterPublicId ? { ...a, tmdbId: null, title: null } : a))
     );
   }
   const [selectedTeamIds, setSelectedTeamIds] = useState<Set<string>>(new Set());
@@ -591,14 +633,11 @@ export default function CreateDraftForm({
         const draftPart = detail?.parts.find((dp) => dp.partIndex === 1);
         if (draftPart) {
           for (const assignment of boostersChampionAssignments) {
-            const trimmed = assignment.tmdbId.trim();
-            const parsed = trimmed ? Number.parseInt(trimmed, 10) : null;
-            const tmdbId = parsed !== null && Number.isFinite(parsed) ? parsed : null;
             await addBoostersChampionAssignment(
               accessToken,
               draftPart.publicId,
               assignment.drafterPublicId,
-              tmdbId
+              assignment.tmdbId
             );
           }
         }
@@ -782,6 +821,7 @@ export default function CreateDraftForm({
                 onChange={(pos) => updatePartPositions(0, pos)}
                 totalPicks={parts[0].maxPositions}
                 readonly={fixedPositions}
+                useFungibleToken={useFungibleToken}
               />
             </div>
           </div>
@@ -805,6 +845,7 @@ export default function CreateDraftForm({
                 positions={parts[0].positions}
                 onChange={(pos) => updatePartPositions(0, pos)}
                 totalPicks={parts[0].maxPositions}
+                useFungibleToken={useFungibleToken}
               />
             </div>
           </div>
@@ -866,6 +907,7 @@ export default function CreateDraftForm({
                         onChange={(pos) => updatePartPositions(idx, pos)}
                         totalPicks={part.maxPositions}
                         readonly={fixedPositions}
+                        useFungibleToken={useFungibleToken}
                       />
                     </div>
                   </div>
@@ -885,8 +927,8 @@ export default function CreateDraftForm({
           <p className="text-sm text-sd-ink/60 mb-4 max-w-2xl">
             Reserves a specific film for a specific drafter to play on the Legends
             community&apos;s behalf. They can play it at any board slot they choose —
-            nobody else can play that film at all. TMDb ID can be left blank and set later
-            if the title isn&apos;t decided yet.
+            nobody else can play that film at all. The film can be left unassigned and
+            set later if the title isn&apos;t decided yet.
           </p>
 
           {boostersChampionAssignments.length > 0 && (
@@ -894,28 +936,42 @@ export default function CreateDraftForm({
               {boostersChampionAssignments.map((a) => (
                 <div
                   key={a.drafterPublicId}
-                  className="flex items-center gap-3 border border-sd-ink/10 rounded p-3 bg-white"
+                  className="border border-sd-ink/10 rounded p-3 bg-white"
                 >
-                  <span className="text-sm font-medium text-sd-ink flex-1">
-                    {a.drafterDisplayName}
-                  </span>
-                  <input
-                    type="number"
-                    placeholder="TMDb ID (optional)"
-                    className={`${INPUT} max-w-[160px]`}
-                    value={a.tmdbId}
-                    onChange={(e) =>
-                      handleBoostersChampionTmdbIdChange(a.drafterPublicId, e.target.value)
-                    }
-                  />
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveBoostersChampion(a.drafterPublicId)}
-                    className="text-sd-ink/30 hover:text-sd-red text-xl leading-none"
-                    aria-label={`Remove ${a.drafterDisplayName}`}
-                  >
-                    ×
-                  </button>
+                  <div className="flex items-center gap-3 mb-2">
+                    <span className="text-sm font-medium text-sd-ink flex-1">
+                      {a.drafterDisplayName}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveBoostersChampion(a.drafterPublicId)}
+                      className="text-sd-ink/30 hover:text-sd-red text-xl leading-none"
+                      aria-label={`Remove ${a.drafterDisplayName}`}
+                    >
+                      ×
+                    </button>
+                  </div>
+
+                  {a.tmdbId ? (
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm text-sd-ink font-medium">{a.title}</span>
+                      <span className="text-[11px] font-mono text-sd-ink/40">
+                        TMDb #{a.tmdbId}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => handleBoostersChampionFilmCleared(a.drafterPublicId)}
+                        className="text-[11px] font-mono text-sd-ink/40 hover:text-sd-red ml-1"
+                      >
+                        clear film
+                      </button>
+                    </div>
+                  ) : (
+                    <MovieSearchPicker
+                      accessToken={accessToken}
+                      onSelect={(movie) => handleBoostersChampionFilmSelected(a.drafterPublicId, movie)}
+                    />
+                  )}
                 </div>
               ))}
             </div>
