@@ -22,6 +22,8 @@ internal sealed class GetDraftPartGameplayQueryHandler(
         dp.public_id                    AS {nameof(HeaderRow.DraftPartPublicId)},
         d.public_id                     AS {nameof(HeaderRow.DraftPublicId)},
         d.title                         AS {nameof(HeaderRow.DraftTitle)},
+        d.fungible_token_name           AS {nameof(HeaderRow.FungibleTokenName)},
+        d.is_hostless                   AS {nameof(HeaderRow.IsHostless)},
         dp.draft_type                   AS {nameof(HeaderRow.DraftType)},
         dp.part_index                   AS {nameof(HeaderRow.PartIndex)},
         Cast((SELECT COUNT(*) FROM drafts.draft_parts x WHERE x.draft_id = d.id) AS int4)
@@ -65,6 +67,7 @@ internal sealed class GetDraftPartGameplayQueryHandler(
         pos.picks                       AS {nameof(PositionRow.Picks)},
         pos.has_bonus_veto              AS {nameof(PositionRow.HasBonusVeto)},
         pos.has_bonus_veto_override     AS {nameof(PositionRow.HasBonusVetoOverride)},
+        pos.has_bonus_fungible_token    AS {nameof(PositionRow.HasBonusFungibleToken)},
         pos.assigned_to_id              AS {nameof(PositionRow.AssignedToId)},
         pos.assigned_to_kind            AS {nameof(PositionRow.AssignedToKind)}
       FROM drafts.draft_positions pos
@@ -100,7 +103,12 @@ internal sealed class GetDraftPartGameplayQueryHandler(
           + dpp.awarded_veto_overrides
           - dpp.veto_overrides_used)    AS {nameof(ParticipantRow.OverrideTokensRemaining)},
         dpp.vetoes_rolling_in           AS {nameof(ParticipantRow.VetoesRollingIn)},
-        dpp.veto_overrides_rolling_in   AS {nameof(ParticipantRow.VetoOverridesRollingIn)}
+        dpp.veto_overrides_rolling_in   AS {nameof(ParticipantRow.VetoOverridesRollingIn)},
+        (dpp.fungible_tokens
+          + dpp.fungible_tokens_rolling_in
+          + dpp.awarded_fungible_tokens
+          - dpp.fungible_tokens_used)   AS {nameof(ParticipantRow.FungibleTokensRemaining)},
+        dpp.fungible_tokens_rolling_in  AS {nameof(ParticipantRow.FungibleTokensRollingIn)}
       FROM drafts.draft_part_participants dpp
       JOIN drafts.draft_parts dp ON dp.id = dpp.draft_part_id
       LEFT JOIN drafts.drafters dr ON dr.id = dpp.participant_id_value
@@ -188,7 +196,17 @@ internal sealed class GetDraftPartGameplayQueryHandler(
           WHEN vo.id IS NULL THEN NULL
           WHEN dpp_vo.participant_kind_value = 2 THEN 'Patreon Members'
           ELSE COALESCE(pe_vo.first_name || ' ' || pe_vo.last_name, dt_vo.name)
-        END                             AS {nameof(PickRow.SavedByName)}
+        END                             AS {nameof(PickRow.SavedByName)},
+        COALESCE(v.spent_from_fungible_pool, FALSE)
+                                        AS {nameof(PickRow.WasVetoFungible)},
+        COALESCE(vo.spent_from_fungible_pool, FALSE)
+                                        AS {nameof(PickRow.WasVetoOverrideFungible)},
+        COALESCE(v.sequence, 0)         AS {nameof(PickRow.VetoSequence)},
+        dpp_ra.participant_id_value     AS {nameof(PickRow.RevealAuthorizedParticipantIdValue)},
+        CASE
+          WHEN dpp_ra.id IS NULL THEN NULL
+          ELSE COALESCE(pe_ra.first_name || ' ' || pe_ra.last_name, dr_ra.public_id)
+        END                             AS {nameof(PickRow.RevealAuthorizedByName)}
       FROM drafts.picks pk
       JOIN drafts.draft_parts dp ON dp.id = pk.draft_part_id
       JOIN drafts.draft_part_participants dpp ON dpp.id = pk.played_by_participant_id
@@ -198,16 +216,21 @@ internal sealed class GetDraftPartGameplayQueryHandler(
       )
       LEFT JOIN drafts.drafter_teams dt ON dt.id = dpp.participant_id_value
         AND dpp.participant_kind_value = 1
-      LEFT JOIN drafts.vetoes v ON v.target_pick_id = pk.id
+      LEFT JOIN drafts.vetoes v ON v.id = (
+        SELECT v2.id FROM drafts.vetoes v2
+        WHERE v2.target_pick_id = pk.id
+        ORDER BY v2.sequence DESC
+        LIMIT 1
+      )
       LEFT JOIN drafts.commissioner_overrides co ON co.pick_id = pk.id
-      -- VETOED BY: veto issuer
+      -- VETOED BY: current veto's issuer
       LEFT JOIN drafts.draft_part_participants dpp_v ON dpp_v.id = v.issued_by_participant_id
       LEFT JOIN drafts.people pe_v ON pe_v.id = (
         SELECT dr_v.person_id FROM drafts.drafters dr_v WHERE dr_v.id = dpp_v.participant_id_value
       )
       LEFT JOIN drafts.drafter_teams dt_v ON dt_v.id = dpp_v.participant_id_value
         AND dpp_v.participant_kind_value = 1
-      -- SAVED BY: veto-override issuer
+      -- SAVED BY: current veto's override issuer, if any
       LEFT JOIN drafts.veto_overrides vo ON vo.veto_id = v.id
       LEFT JOIN drafts.draft_part_participants dpp_vo ON dpp_vo.id = vo.issued_by_participant_id
       LEFT JOIN drafts.people pe_vo ON pe_vo.id = (
@@ -215,6 +238,13 @@ internal sealed class GetDraftPartGameplayQueryHandler(
       )
       LEFT JOIN drafts.drafter_teams dt_vo ON dt_vo.id = dpp_vo.participant_id_value
         AND dpp_vo.participant_kind_value = 1
+      -- REVEAL AUTHORIZATION: hostless-draft only (see Pick.RevealAuthorizedParticipant's
+      -- remarks) — always a Drafter by construction, so no Team/Community branch is needed
+      -- here unlike the joins above.
+      LEFT JOIN drafts.draft_part_participants dpp_ra ON dpp_ra.id = pk.reveal_authorized_participant_id
+      LEFT JOIN drafts.drafters dr_ra ON dr_ra.id = dpp_ra.participant_id_value
+        AND dpp_ra.participant_kind_value = 0
+      LEFT JOIN drafts.people pe_ra ON pe_ra.id = dr_ra.person_id
       WHERE dp.public_id = @DraftPartPublicId
         AND pk.sub_draft_id IS NULL
       ORDER BY pk.play_order
@@ -229,6 +259,65 @@ internal sealed class GetDraftPartGameplayQueryHandler(
         )
       )
     ).ToList();
+
+    // ── 5b. Full veto history per pick ─────────────────────────────────────────
+    // The pick query above intentionally only pulls the CURRENT veto (LIMIT 1 by
+    // sequence DESC) for WasVetoed/VetoedByName/etc. — that stays as-is, it drives
+    // board state. This separate query pulls every veto ever issued against a pick
+    // in this part, in order, so the wizard can display the full history (vetoed,
+    // overridden, re-vetoed, ...) instead of only the latest entry. Grouped into
+    // GameplayPickResponse.VetoHistory by PlayOrder below.
+    const string vetoHistorySql = $"""
+      SELECT
+        pk.play_order                   AS {nameof(VetoHistoryRow.PlayOrder)},
+        v.sequence                      AS {nameof(VetoHistoryRow.Sequence)},
+        CASE
+          WHEN dpp_v.participant_kind_value = 2 THEN 'Patreon Members'
+          ELSE COALESCE(pe_v.first_name || ' ' || pe_v.last_name, dt_v.name)
+        END                             AS {nameof(VetoHistoryRow.VetoedByName)},
+        v.spent_from_fungible_pool      AS {nameof(VetoHistoryRow.WasVetoFungible)},
+        v.is_overridden                 AS {nameof(VetoHistoryRow.IsOverridden)},
+        CASE
+          WHEN vo.id IS NULL THEN NULL
+          WHEN dpp_vo.participant_kind_value = 2 THEN 'Patreon Members'
+          ELSE COALESCE(pe_vo.first_name || ' ' || pe_vo.last_name, dt_vo.name)
+        END                             AS {nameof(VetoHistoryRow.OverriddenByName)},
+        COALESCE(vo.spent_from_fungible_pool, FALSE)
+                                        AS {nameof(VetoHistoryRow.WasOverrideFungible)}
+      FROM drafts.vetoes v
+      JOIN drafts.picks pk ON pk.id = v.target_pick_id
+      JOIN drafts.draft_parts dp ON dp.id = pk.draft_part_id
+      JOIN drafts.draft_part_participants dpp_v ON dpp_v.id = v.issued_by_participant_id
+      LEFT JOIN drafts.people pe_v ON pe_v.id = (
+        SELECT dr_v.person_id FROM drafts.drafters dr_v WHERE dr_v.id = dpp_v.participant_id_value
+      )
+      LEFT JOIN drafts.drafter_teams dt_v ON dt_v.id = dpp_v.participant_id_value
+        AND dpp_v.participant_kind_value = 1
+      LEFT JOIN drafts.veto_overrides vo ON vo.veto_id = v.id
+      LEFT JOIN drafts.draft_part_participants dpp_vo ON dpp_vo.id = vo.issued_by_participant_id
+      LEFT JOIN drafts.people pe_vo ON pe_vo.id = (
+        SELECT dr_vo.person_id FROM drafts.drafters dr_vo WHERE dr_vo.id = dpp_vo.participant_id_value
+      )
+      LEFT JOIN drafts.drafter_teams dt_vo ON dt_vo.id = dpp_vo.participant_id_value
+        AND dpp_vo.participant_kind_value = 1
+      WHERE dp.public_id = @DraftPartPublicId
+        AND pk.sub_draft_id IS NULL
+      ORDER BY pk.play_order, v.sequence
+      """;
+
+    var vetoHistoryRows = (
+      await connection.QueryAsync<VetoHistoryRow>(
+        new CommandDefinition(
+          vetoHistorySql,
+          new { request.DraftPartPublicId },
+          cancellationToken: cancellationToken
+        )
+      )
+    ).ToList();
+
+    var vetoHistoryByPlayOrder = vetoHistoryRows
+      .GroupBy(v => v.PlayOrder)
+      .ToDictionary(g => g.Key, g => g.ToList());
 
     // ── 6. Hosts ──────────────────────────────────────────────────────────────
     const string hostSql = $"""
@@ -423,6 +512,36 @@ internal sealed class GetDraftPartGameplayQueryHandler(
       p => (string?)p.Name
     );
 
+    // ── 8b. Booster's Champion assignments (Legends Mega) ─────────────────────
+    // Same table/join shape as GetDraftQueryHandler's admin-facing version, scoped to
+    // this single draft part instead of ANY(@partIds).
+    const string boostersChampionAssignmentSql = $"""
+      SELECT
+        bca.public_id     AS {nameof(BoostersChampionAssignmentRow.PublicId)},
+        dr.public_id      AS {nameof(BoostersChampionAssignmentRow.AssignedDrafterPublicId)},
+        COALESCE(pe.first_name || ' ' || pe.last_name, dr.public_id)
+                          AS {nameof(BoostersChampionAssignmentRow.AssignedDrafterDisplayName)},
+        bca.tmdb_id       AS {nameof(BoostersChampionAssignmentRow.TmdbId)},
+        m.movie_title     AS {nameof(BoostersChampionAssignmentRow.Title)}
+      FROM drafts.draft_part_boosters_champion_assignments bca
+      JOIN drafts.draft_parts dp ON dp.id = bca.draft_part_id
+      JOIN drafts.drafters dr ON dr.id = bca.assigned_drafter_id_value
+      JOIN drafts.people pe ON pe.id = dr.person_id
+      LEFT JOIN drafts.movies m ON m.tmdb_id = bca.tmdb_id
+      WHERE dp.public_id = @DraftPartPublicId
+      ORDER BY bca.public_id;
+      """;
+
+    var boostersChampionAssignmentRows = (
+      await connection.QueryAsync<BoostersChampionAssignmentRow>(
+        new CommandDefinition(
+          boostersChampionAssignmentSql,
+          new { request.DraftPartPublicId },
+          cancellationToken: cancellationToken
+        )
+      )
+    ).ToList();
+
     // ── 9. Assemble response ──────────────────────────────────────────────────
     return Result.Success(
       new GetDraftPartGameplayResponse
@@ -439,6 +558,21 @@ internal sealed class GetDraftPartGameplayQueryHandler(
         HasCandidateList = header.HasCandidateList,
         CurrentUserRoles = callerRoles,
         CallerParticipantId = callerParticipantId,
+        FungibleTokenName = header.FungibleTokenName,
+        IsHostless = header.IsHostless,
+        BoostersChampionAssignments =
+        [
+          .. boostersChampionAssignmentRows.Select(
+            bca => new GameplayBoostersChampionAssignmentResponse
+            {
+              PublicId = bca.PublicId,
+              AssignedDrafterPublicId = bca.AssignedDrafterPublicId,
+              AssignedDrafterDisplayName = bca.AssignedDrafterDisplayName,
+              TmdbId = bca.TmdbId,
+              Title = bca.Title,
+            }
+          ),
+        ],
         TriviaResults =
         [
           .. triviaRows.Select(t => new GameplayTriviaResultResponse
@@ -459,6 +593,7 @@ internal sealed class GetDraftPartGameplayQueryHandler(
             OwnedBoardSlots = ParsePicks(pos.Picks),
             HasBonusVeto = pos.HasBonusVeto,
             HasBonusVetoOverride = pos.HasBonusVetoOverride,
+            HasBonusFungibleToken = pos.HasBonusFungibleToken,
             AssignedParticipantId = pos.AssignedToId,
             AssignedParticipantKind = pos.AssignedToKind.HasValue ? pos.AssignedToKind.Value : null,
             AssignedParticipantName = pos.AssignedToId.HasValue
@@ -482,6 +617,10 @@ internal sealed class GetDraftPartGameplayQueryHandler(
             ParticipantName = p.Name,
             VetoTokensRemaining = p.VetoTokensRemaining,
             OverrideTokensRemaining = p.OverrideTokensRemaining,
+            VetoesRollingIn = p.VetoesRollingIn,
+            VetoOverridesRollingIn = p.VetoOverridesRollingIn,
+            FungibleTokensRemaining = p.FungibleTokensRemaining,
+            FungibleTokensRollingIn = p.FungibleTokensRollingIn,
           }),
         ],
         Picks =
@@ -502,6 +641,25 @@ internal sealed class GetDraftPartGameplayQueryHandler(
             WasCommissionerOverride = p.WasCommissionerOverride,
             VetoedByName = p.VetoedByName,
             SavedByName = p.SavedByName,
+            WasVetoFungible = p.WasVetoFungible,
+            WasVetoOverrideFungible = p.WasVetoOverrideFungible,
+            VetoSequence = p.VetoSequence,
+            RevealAuthorizedParticipantId = p.RevealAuthorizedParticipantIdValue,
+            RevealAuthorizedByName = p.RevealAuthorizedByName,
+            VetoHistory =
+            [
+              .. vetoHistoryByPlayOrder
+                .GetValueOrDefault(p.PlayOrder, [])
+                .Select(v => new GameplayVetoHistoryEntryResponse
+                {
+                  Sequence = v.Sequence,
+                  VetoedByName = v.VetoedByName,
+                  WasVetoFungible = v.WasVetoFungible,
+                  IsOverridden = v.IsOverridden,
+                  OverriddenByName = v.OverriddenByName,
+                  WasOverrideFungible = v.WasOverrideFungible,
+                }),
+            ],
           }),
         ],
         Hosts =
@@ -552,6 +710,8 @@ internal sealed class GetDraftPartGameplayQueryHandler(
     string DraftPartPublicId,
     string DraftPublicId,
     string DraftTitle,
+    string? FungibleTokenName,
+    bool IsHostless,
     int DraftType,
     int PartIndex,
     int TotalParts,
@@ -566,6 +726,7 @@ internal sealed class GetDraftPartGameplayQueryHandler(
     string Picks,
     bool HasBonusVeto,
     bool HasBonusVetoOverride,
+    bool HasBonusFungibleToken,
     Guid? AssignedToId,
     int? AssignedToKind
   );
@@ -578,7 +739,9 @@ internal sealed class GetDraftPartGameplayQueryHandler(
     int VetoTokensRemaining,
     int OverrideTokensRemaining,
     int VetoesRollingIn,
-    int VetoOverridesRollingIn
+    int VetoOverridesRollingIn,
+    int FungibleTokensRemaining,
+    int FungibleTokensRollingIn
   );
 
   private sealed record TriviaRow(
@@ -603,7 +766,30 @@ internal sealed class GetDraftPartGameplayQueryHandler(
     bool WasVetoOverridden,
     bool WasCommissionerOverride,
     string? VetoedByName,
-    string? SavedByName
+    string? SavedByName,
+    bool WasVetoFungible,
+    bool WasVetoOverrideFungible,
+    int VetoSequence,
+    Guid? RevealAuthorizedParticipantIdValue,
+    string? RevealAuthorizedByName
+  );
+
+  private sealed record VetoHistoryRow(
+    int PlayOrder,
+    int Sequence,
+    string VetoedByName,
+    bool WasVetoFungible,
+    bool IsOverridden,
+    string? OverriddenByName,
+    bool WasOverrideFungible
+  );
+
+  private sealed record BoostersChampionAssignmentRow(
+    string PublicId,
+    string AssignedDrafterPublicId,
+    string AssignedDrafterDisplayName,
+    int? TmdbId,
+    string? Title
   );
 
   private sealed record CallerRoleRow(

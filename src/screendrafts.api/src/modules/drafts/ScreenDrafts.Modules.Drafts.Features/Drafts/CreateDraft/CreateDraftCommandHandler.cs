@@ -313,7 +313,8 @@ internal sealed class CreateDraftCommandHandler(
             pos.Picks,
             posPublicId,
             pos.HasBonusVeto,
-            pos.HasBonusVetoOverride
+            pos.HasBonusVetoOverride,
+            pos.HasBonusFungibleToken
           );
           if (posResult.IsFailure)
             return Result.Failure<string>(posResult.Errors);

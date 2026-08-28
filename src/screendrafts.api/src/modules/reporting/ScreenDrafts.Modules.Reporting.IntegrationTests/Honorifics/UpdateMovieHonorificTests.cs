@@ -26,7 +26,7 @@ public sealed class UpdateMovieHonorificTests(ReportingIntegrationTestWebAppFact
       .FirstOrDefaultAsync(p => p.MoviePublicId == moviePublicId, TestContext.Current.CancellationToken);
 
     pick.Should().NotBeNull();
-    pick!.DraftPartPublicId.Should().Be(command.DraftPartPublicId);
+    pick.DraftPartPublicId.Should().Be(command.DraftPartPublicId);
     pick.BoardPosition.Should().Be(1);
   }
 
@@ -71,7 +71,7 @@ public sealed class UpdateMovieHonorificTests(ReportingIntegrationTestWebAppFact
       .FirstOrDefaultAsync(h => h.MoviePublicId == moviePublicId, TestContext.Current.CancellationToken);
 
     honorific.Should().NotBeNull();
-    honorific!.AppearanceHonorific.Should().Be(MovieHonorific.MarqueeOfFame);
+    honorific.AppearanceHonorific.Should().Be(MovieHonorific.MarqueeOfFame);
     honorific.AppearanceCount.Should().Be(2);
   }
 
@@ -91,7 +91,7 @@ public sealed class UpdateMovieHonorificTests(ReportingIntegrationTestWebAppFact
       .FirstOrDefaultAsync(h => h.MoviePublicId == moviePublicId, TestContext.Current.CancellationToken);
 
     honorific.Should().NotBeNull();
-    honorific!.AppearanceHonorific.Should().Be(MovieHonorific.HatTrick);
+    honorific.AppearanceHonorific.Should().Be(MovieHonorific.HatTrick);
   }
 
   // -------------------------------------------------------------------------
@@ -110,7 +110,7 @@ public sealed class UpdateMovieHonorificTests(ReportingIntegrationTestWebAppFact
       .FirstOrDefaultAsync(h => h.MoviePublicId == moviePublicId, TestContext.Current.CancellationToken);
 
     honorific.Should().NotBeNull();
-    honorific!.AppearanceHonorific.Should().Be(MovieHonorific.None);
+    honorific.AppearanceHonorific.Should().Be(MovieHonorific.None);
   }
 
   // -------------------------------------------------------------------------
@@ -131,7 +131,7 @@ public sealed class UpdateMovieHonorificTests(ReportingIntegrationTestWebAppFact
       .FirstOrDefaultAsync(h => h.MoviePublicId == moviePublicId, TestContext.Current.CancellationToken);
 
     honorific.Should().NotBeNull();
-    honorific!.PositionHonorific.Should().HaveFlag(MoviePositionHonorific.UnifiedNumber1);
+    honorific.PositionHonorific.Should().HaveFlag(MoviePositionHonorific.UnifiedNumber1);
   }
 
   // -------------------------------------------------------------------------
@@ -154,7 +154,7 @@ public sealed class UpdateMovieHonorificTests(ReportingIntegrationTestWebAppFact
       .FirstOrDefaultAsync(h => h.MoviePublicId == moviePublicId, TestContext.Current.CancellationToken);
 
     honorific.Should().NotBeNull();
-    honorific!.PositionHonorific.Should().HaveFlag(MoviePositionHonorific.TheCycle);
+    honorific.PositionHonorific.Should().HaveFlag(MoviePositionHonorific.TheCycle);
   }
 
   // -------------------------------------------------------------------------
@@ -176,7 +176,7 @@ public sealed class UpdateMovieHonorificTests(ReportingIntegrationTestWebAppFact
       .FirstOrDefaultAsync(h => h.MoviePublicId == moviePublicId, TestContext.Current.CancellationToken);
 
     honorific.Should().NotBeNull();
-    honorific!.PositionHonorific.Should().NotHaveFlag(MoviePositionHonorific.TheCycle);
+    honorific.PositionHonorific.Should().NotHaveFlag(MoviePositionHonorific.TheCycle);
   }
 
   // -------------------------------------------------------------------------

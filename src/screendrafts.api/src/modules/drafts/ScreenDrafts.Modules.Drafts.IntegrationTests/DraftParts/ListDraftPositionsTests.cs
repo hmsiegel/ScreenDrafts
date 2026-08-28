@@ -119,7 +119,7 @@ public sealed class ListDraftPositionsTests(DraftsIntegrationTestWebAppFactory f
     result.IsSuccess.Should().BeTrue();
     var assignedPosition = result.Value.Positions.Should().ContainSingle().Subject;
     assignedPosition.AssignedTo.Should().NotBeNull();
-    assignedPosition.AssignedTo!.ParticipantId.Should().Be(drafterInternalId);
+    assignedPosition.AssignedTo.ParticipantId.Should().Be(drafterInternalId);
     assignedPosition.AssignedTo.ParticipantKind.Should().Be(ParticipantKind.Drafter.Value);
   }
 

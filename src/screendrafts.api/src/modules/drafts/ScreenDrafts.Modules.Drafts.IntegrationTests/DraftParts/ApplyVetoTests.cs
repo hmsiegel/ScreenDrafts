@@ -54,11 +54,11 @@ public sealed class ApplyVetoTests(DraftsIntegrationTestWebAppFactory factory)
 
     // Assert — veto must be persisted in the database
     var pick = await DbContext.Picks
-      .Include(p => p.Veto)
+      .Include(p => p.Vetoes)
       .FirstAsync(p => p.PlayOrder == 1 && p.DraftPart.PublicId == draftPartPublicId, TestContext.Current.CancellationToken);
 
-    pick.Veto.Should().NotBeNull();
-    pick.Veto!.IsOverridden.Should().BeFalse();
+    pick.CurrentVeto.Should().NotBeNull();
+    pick.CurrentVeto.IsOverridden.Should().BeFalse();
   }
 
   // -------------------------------------------------------------------------

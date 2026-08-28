@@ -36,7 +36,7 @@ public sealed class CreateSpotlightTests(ReportingIntegrationTestWebAppFactory f
       );
 
     spotlight.Should().NotBeNull();
-    spotlight!.SpotlightDescription.Should().Be("A stellar episode");
+    spotlight.SpotlightDescription.Should().Be("A stellar episode");
     spotlight.IsActive.Should().BeFalse();
   }
 

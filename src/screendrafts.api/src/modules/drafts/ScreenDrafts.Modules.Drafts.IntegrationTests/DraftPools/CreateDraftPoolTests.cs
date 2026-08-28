@@ -32,7 +32,7 @@ public sealed class CreateDraftPoolTests(DraftsIntegrationTestWebAppFactory fact
     // Assert
     var pool = await DbContext.DraftPools.FirstOrDefaultAsync(TestContext.Current.CancellationToken);
     pool.Should().NotBeNull();
-    pool!.PublicId.Should().NotBeNullOrEmpty();
+    pool.PublicId.Should().NotBeNullOrEmpty();
     pool.IsLocked.Should().BeFalse();
   }
 

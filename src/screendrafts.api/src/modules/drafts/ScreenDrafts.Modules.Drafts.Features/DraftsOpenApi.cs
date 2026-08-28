@@ -70,6 +70,7 @@ internal static class DraftsOpenApi
     public const string DraftParts_ListDraftPositions = "DraftParts.ListDraftPositions";
     public const string DraftParts_ClearDraftPositionAssignment =
       "DraftParts.ClearDraftPositionAssignment";
+    public const string DraftParts_SetPartPositionRange = "DraftParts.SetPartPositionRange";
     public const string DraftParts_RemoveParticipant = "DraftParts.RemoveParticipant";
     public const string DraftParts_AssignTriviaResults = "DraftParts.AssignTriviaResults";
     public const string DraftParts_GetTriviaResults = "DraftParts.GetTriviaResults";
@@ -148,6 +149,7 @@ internal static class DraftsOpenApi
     public const string DrafterTeams_RemoveDrafterFromTeam = "DrafterTeams.RemoveDrafterFromTeam";
     public const string DrafterTeams_GetDrafterTeam = "DrafterTeams.GetDrafterTeam";
     public const string DrafterTeams_SearchDrafterTeams = "DrafterTeams.SearchDrafterTeams";
+    public const string DrafterTeams_UpdateName = "DrafterTeams.UpdateName";
 
     // Hosts
     public const string Hosts_CreateHost = "Hosts.CreateHost";
@@ -225,6 +227,14 @@ internal static class DraftsOpenApi
 
     // Seed Drafts
     public const string DraftParts_SeedRevealPick = "DraftParts.SeedRevealPick";
-    public const string Predictions_SeedSubmitSet = "Predictions_SeedSubmitSet";
+    public const string Predictions_SeedSubmitSet = "Predictions.SeedSubmitSet";
+
+    // Boosters Champion Draft Part
+    public const string DraftParts_AddBoostersChampionAssignment =
+      "DraftParts.AddBoostersChampionAssignment";
+    public const string DraftParts_AssignFilmToBoostersChampionAssignment =
+      "DraftParts.AssignFilmToBoostersChampionAssignment";
+    public const string DraftParts_RemoveBoostersChampionAssignment =
+      "DraftParts.RemoveBoostersChampionAssignment";
   }
 }

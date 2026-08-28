@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Composition;
+﻿using ScreenDrafts.Modules.Drafts.Features.Predictions;
+
+namespace ScreenDrafts.Modules.Drafts.Composition;
 
 public static class DraftsModule
 {
@@ -96,6 +98,9 @@ public static class DraftsModule
   {
     services.AddScoped(typeof(IPipelineBehavior<,>), typeof(DraftsUnitOfWorkBehavior<,>));
     services.Configure<DraftsOptions>(configuration.GetSection(DraftsOptions.SectionName));
+    services.Configure<PredictionsOptions>(
+      configuration.GetSection(PredictionsOptions.SectionName)
+    );
     services.AddScoped<ParticipantResolver>();
     services.AddScoped<DraftBoardParticipantResolver>();
     services.AddScoped<IDraftsIntegrationEventDispatcher, DraftsIntegrationEventDispatcher>();

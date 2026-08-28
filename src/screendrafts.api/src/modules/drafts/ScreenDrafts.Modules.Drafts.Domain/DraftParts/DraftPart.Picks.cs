@@ -11,7 +11,9 @@ public sealed partial class DraftPart
     SubDraftId? subDraftId = null,
     string? movieVersionName = null,
     string? actedByPublicId = null,
-    Func<Guid, bool>? isMovieAlreadyPickedInWholeDraft = null
+    Func<Guid, bool>? isMovieAlreadyPickedInWholeDraft = null,
+    IReadOnlyList<Guid>? teamDrafterIdValues = null,
+    Participant? explicitRevealRecipient = null
   )
   {
     ArgumentNullException.ThrowIfNull(movie);
@@ -56,13 +58,35 @@ public sealed partial class DraftPart
     {
       if (
         string.IsNullOrWhiteSpace(movieVersionName)
-        || !movieVersionName!.Trim().Equals(required, StringComparison.OrdinalIgnoreCase)
+        || !movieVersionName.Trim().Equals(required, StringComparison.OrdinalIgnoreCase)
       )
       {
         return Result.Failure<PickId>(MovieErrors.VersionDoesNotMatchRequiredPolicy);
       }
 
       effectiveVersionName = required;
+    }
+
+    // Booster's Champion pick — checked before any mutation, same as the other early
+    // guards below. Purely a (film, drafter) reservation, independent of board position —
+    // the champion can play it wherever they choose, but nobody else can play THIS film at
+    // all. See BoostersChampionAssignment's remarks for why this isn't tied to DraftPosition.
+    if (movie.TmdbId.HasValue)
+    {
+      var boostersAssignment = _boostersChampionAssignments.FirstOrDefault(a =>
+        a.TmdbId == movie.TmdbId.Value
+      );
+
+      if (
+        boostersAssignment is not null
+        && (
+          participantId.Kind != ParticipantKind.Drafter
+          || participantId.Value != boostersAssignment.AssignedDrafterIdValue
+        )
+      )
+      {
+        return Result.Failure<PickId>(DraftPartErrors.OnlyBoostersChampionCanPlayThisFilm);
+      }
     }
 
     var draftPartParticipant = _draftPartParticipants.FirstOrDefault(p =>
@@ -97,6 +121,45 @@ public sealed partial class DraftPart
     if (addResult.IsFailure)
     {
       return Result.Failure<PickId>(addResult.Errors);
+    }
+
+    if (participantId.Kind == ParticipantKind.Team)
+    {
+      pick.SetTeamPickCredits(teamDrafterIdValues);
+    }
+
+    if (
+      IsHostless
+      && DraftType != DraftType.SpeedDraft
+      && participantId.Kind != ParticipantKind.Community
+    )
+    {
+      var recipientParticipant = explicitRevealRecipient;
+
+      if (recipientParticipant is null)
+      {
+        var otherDrafters = _draftPartParticipants
+          .Select(p => p.ParticipantId)
+          .Where(p => p != participantId && p.Kind == ParticipantKind.Drafter)
+          .ToList();
+
+        if (otherDrafters.Count == 1)
+        {
+          recipientParticipant = otherDrafters[0];
+        }
+      }
+
+      if (recipientParticipant is not null)
+      {
+        var recipientDraftPartParticipant = _draftPartParticipants.FirstOrDefault(p =>
+          p.ParticipantId == recipientParticipant.Value
+        );
+
+        if (recipientDraftPartParticipant is not null)
+        {
+          pick.SetRevealAuthorizedParticipant(recipientDraftPartParticipant);
+        }
+      }
     }
 
     if (DraftType == DraftType.SpeedDraft || participantId.Kind == ParticipantKind.Community)
@@ -219,7 +282,12 @@ public sealed partial class DraftPart
     return Result.Success();
   }
 
-  public Result ApplyVeto(PickId pickId, Participant issuerId, string? actedByPublicId = null)
+  public Result ApplyVeto(
+    PickId pickId,
+    Participant issuerId,
+    string? actedByPublicId = null,
+    string? fungibleTokenName = null
+  )
   {
     ArgumentNullException.ThrowIfNull(pickId);
 
@@ -248,6 +316,7 @@ public sealed partial class DraftPart
     }
 
     var participant = GetParticipantRequired(issuerId);
+    var spentFromFungiblePool = false;
 
     if (issuerId.Kind != ParticipantKind.Community)
     {
@@ -256,17 +325,24 @@ public sealed partial class DraftPart
         return Result.Failure(DraftPartErrors.NoRemainingVetoes);
       }
 
-      participant.SpendVeto();
+      spentFromFungiblePool = participant.SpendVeto();
     }
 
     var vetoResult = Veto.Create(
       pick: pick,
       issuedByParticipant: participant,
-      actedByPublicId: actedByPublicId
+      actedByPublicId: actedByPublicId,
+      note: spentFromFungiblePool ? fungibleTokenName : null,
+      spentFromFungiblePool: spentFromFungiblePool
     );
 
     if (vetoResult.IsFailure)
     {
+      if (issuerId.Kind != ParticipantKind.Community)
+      {
+        participant.RefundVeto(spentFromFungiblePool);
+      }
+
       return Result.Failure(vetoResult.Errors);
     }
 
@@ -276,6 +352,10 @@ public sealed partial class DraftPart
 
     if (apply.IsFailure)
     {
+      if (issuerId.Kind != ParticipantKind.Community)
+      {
+        participant.RefundVeto(spentFromFungiblePool);
+      }
       return apply;
     }
 
@@ -320,14 +400,14 @@ public sealed partial class DraftPart
       return Result.Failure(DraftPartErrors.PickNotFound(playOrder));
     }
 
-    if (pick.Veto is null)
+    if (pick.CurrentVeto is null)
     {
       return Result.Failure(PickErrors.PickNotVetoed);
     }
 
     // Refund the veto token to the issuer before clearing the veto
     var issuerParticipant = _draftPartParticipants.FirstOrDefault(p =>
-      p.Id == pick.Veto.IssuedByParticipantId
+      p.Id == pick.CurrentVeto.IssuedByParticipantId
     );
 
     if (issuerParticipant is not null)
@@ -366,7 +446,8 @@ public sealed partial class DraftPart
     int playOrder,
     Participant by,
     int canonicalPolicyValue,
-    string? actedByPublicId = null
+    string? actedByPublicId = null,
+    string? fungibleTokenName = null
   )
   {
     if (DraftType == DraftType.SpeedDraft || DraftType == DraftType.Standard)
@@ -386,7 +467,7 @@ public sealed partial class DraftPart
       return Result.Failure(DraftPartErrors.PickNotFound(playOrder));
     }
 
-    if (pick.Veto is null)
+    if (pick.CurrentVeto is null)
     {
       return Result.Failure(DraftPartErrors.VetoNotFound(playOrder));
     }
@@ -396,10 +477,26 @@ public sealed partial class DraftPart
       return Result.Failure(DraftPartErrors.CannotOverrideOwnPick);
     }
 
-    var overrideResults = pick.Veto.Override(by, actedByPublicId);
+    var participant = GetParticipantRequired(by);
+    var budget = ResolvePartBudget(DraftType);
+
+    if (!participant.CanUseVetoOverride(budget.MaxVetoOverrides))
+    {
+      return Result.Failure(DraftPartErrors.NoRemainingVetoOverrides);
+    }
+
+    var spentFromFungiblePool = participant.SpendVetoOverride(budget.MaxVetoOverrides);
+
+    var overrideResults = pick.CurrentVeto.Override(
+      by: by,
+      actedByPublicId: actedByPublicId,
+      note: spentFromFungiblePool ? fungibleTokenName : null,
+      spentFromFungiblePool: spentFromFungiblePool
+    );
 
     if (overrideResults.IsFailure)
     {
+      participant.RefundVetoOverride(spentFromFungiblePool);
       return overrideResults;
     }
 
@@ -409,7 +506,7 @@ public sealed partial class DraftPart
         new VetoOverrideAddedDomainEvent(
           draftPartId: Id.Value,
           draftPartPublicId: PublicId,
-          tmdbId: pick.Movie.TmdbId!.Value,
+          tmdbId: pick.Movie.TmdbId.Value,
           participantId: pick.PlayedByParticipant.ParticipantId.Value,
           participantKind: pick.PlayedByParticipant.ParticipantKindValue.Value,
           draftId: DraftId.Value,
@@ -455,8 +552,8 @@ public sealed partial class DraftPart
         draftId: DraftId.Value,
         draftPublicId: DraftPublicId,
         participantKind: pick.PlayedByParticipant.ParticipantKindValue.Value,
-        moviePublicId: pick.Movie!.PublicId,
-        movieTitle: pick.Movie!.MovieTitle,
+        moviePublicId: pick.Movie.PublicId,
+        movieTitle: pick.Movie.MovieTitle,
         boardPosition: pick.Position,
         playOrder: pick.PlayOrder
       )

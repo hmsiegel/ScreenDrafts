@@ -9,7 +9,7 @@ public class PickTests : DraftsBaseTest
     var pick = PickFactory.CreatePick().Value;
 
     // Assert
-    pick.Veto.Should().BeNull();
+    pick.CurrentVeto.Should().BeNull();
     pick.VetoId.Should().BeNull();
     pick.IsVetoed.Should().BeFalse();
     pick.CommissionerOverride.Should().BeNull();

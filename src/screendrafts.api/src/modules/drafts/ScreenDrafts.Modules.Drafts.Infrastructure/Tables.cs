@@ -56,4 +56,7 @@ internal static class Tables
   internal const string DraftPartCommunityFilmRules = "draft_part_community_film_rules";
   internal const string DraftPartAttendance = "draft_part_attendances";
   internal const string DraftPartPredictors = "draft_part_predictors";
+  internal const string TeamPickCredits = "team_pick_credits";
+  internal const string DraftPartBoostersChampionAssignments =
+    "draft_part_boosters_champion_assignments";
 }

@@ -56,18 +56,22 @@ public sealed partial class Draft
   public Result StartPart(DraftPartId partId, DateTime utcNow)
   {
     ArgumentNullException.ThrowIfNull(partId);
+
     var part = FindPart(partId);
     if (part is null)
     {
       return Result.Failure(DraftErrors.DraftPartNotFound(partId.Value));
     }
-    var result = part.Start();
+
+    var result = part.Start(IsHostless);
     if (result.IsFailure)
     {
       return result;
     }
+
     DeriveDraftStatus(utcNow);
     UpdatedAtUtc = DateTime.UtcNow;
+
     Raise(
       new DraftPartStartedDomainEvent(
         draftId: Id.Value,

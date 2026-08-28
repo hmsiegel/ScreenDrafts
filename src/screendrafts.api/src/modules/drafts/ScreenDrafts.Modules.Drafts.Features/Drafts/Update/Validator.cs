@@ -19,11 +19,11 @@ internal sealed class Validator : AbstractValidator<UpdateDraftCommand>
       .MaximumLength(1000).WithMessage("Description must not exceed 1000 characters.");
 
     RuleFor(x => x.SeriesPublicId)
-      .Must(seriesPublicId => string.IsNullOrEmpty(seriesPublicId) || PublicIdGuards.IsValidWithPrefix(seriesPublicId!, PublicIdPrefixes.Series))
+      .Must(seriesPublicId => string.IsNullOrEmpty(seriesPublicId) || PublicIdGuards.IsValidWithPrefix(seriesPublicId, PublicIdPrefixes.Series))
       .WithMessage("SeriesPublicId is not valid.");
 
     RuleFor(x => x.CampaignPublicId)
-      .Must(campaignPublicId => string.IsNullOrEmpty(campaignPublicId) || PublicIdGuards.IsValidWithPrefix(campaignPublicId!, PublicIdPrefixes.Campaign))
+      .Must(campaignPublicId => string.IsNullOrEmpty(campaignPublicId) || PublicIdGuards.IsValidWithPrefix(campaignPublicId, PublicIdPrefixes.Campaign))
       .WithMessage("CampaignPublicId is not valid.");
 
     RuleFor(x => x.DraftTypeValue)

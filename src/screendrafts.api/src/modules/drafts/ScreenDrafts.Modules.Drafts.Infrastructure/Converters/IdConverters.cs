@@ -47,6 +47,15 @@ internal static class IdConverters
   public static ValueConverter<DraftPartParticipantId, Guid> DraftPartParticipantIdConverter =>
     new(v => v.Value, v => DraftPartParticipantId.Create(v));
 
+  public static ValueConverter<
+    DraftPartParticipantId?,
+    Guid?
+  > NullableDraftPartParticipantIdConverter =>
+    new(
+      v => v == null ? null : v.Value,
+      v => v == null ? null : DraftPartParticipantId.Create(v.Value)
+    );
+
   public static ValueConverter<PersonId, Guid> PersonIdConverter =>
     new(v => v.Value, v => PersonId.Create(v));
 
@@ -109,4 +118,7 @@ internal static class IdConverters
 
   public static ValueConverter<DraftPartAttendanceId, Guid> DraftPartAttendanceIdConverter =>
     new(v => v.Value, value => DraftPartAttendanceId.Create(value));
+
+  public static ValueConverter<TeamPickCreditId, Guid> TeamPickCreditIdConverter =>
+    new(v => v.Value, value => TeamPickCreditId.Create(value));
 }

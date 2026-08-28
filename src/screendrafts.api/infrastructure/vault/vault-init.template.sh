@@ -70,7 +70,8 @@ vault kv put secret/screendrafts/audit \
 echo "Writing secret/screendrafts/drafts..."
 vault kv put secret/screendrafts/drafts \
   "Shared:People:CommissionerPersonPublicIds:0"="pe_FssS7cwtd2b78SC" \
-  "Shared:People:CommissionerPersonPublicIds:1"="pe_qxaLv3nTNTjZqtF"
+  "Shared:People:CommissionerPersonPublicIds:1"="pe_qxaLv3nTNTjZqtF" \
+  "Shared:Predictions:ShootTheMoonIneligibleContestantIds:0"="7c0b0255-1139-434a-97ee-2a2c2a7078b1"
 # ---------------------------------------------------------------------------
 
 # Third-party API keys

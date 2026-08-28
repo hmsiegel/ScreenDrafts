@@ -61,7 +61,7 @@ internal sealed class PublicIdBackfillSeeder(
 
     var existing = await _dbContext.Users
       .Where(u => u.PublicId != null && u.PublicId != "")
-      .Select(u => u.PublicId!)
+      .Select(u => u.PublicId)
       .ToListAsync(cancellationToken);
 
     var used = new HashSet<string>(existing, StringComparer.Ordinal);

@@ -20,11 +20,11 @@ builder.Services.AddProblemDetails();
 var configuration = builder.Configuration;
 
 var databaseConnectionString = builder.Services.AddPostgresDatabase(configuration);
-var redisConnectionString = builder.Configuration.GetConnectionStringOrThrow("Cache")!;
+var redisConnectionString = builder.Configuration.GetConnectionStringOrThrow("Cache");
 var rabbitMqSettings = new RabbitMqSettings(
   builder.Configuration.GetConnectionStringOrThrow("Queue")
 );
-var mongoConnectionString = builder.Configuration.GetConnectionStringOrThrow("Mongo")!;
+var mongoConnectionString = builder.Configuration.GetConnectionStringOrThrow("Mongo");
 
 builder.Services.AddApplication(AssemblyReferences.FeatureAssemblies, configuration);
 

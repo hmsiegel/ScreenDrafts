@@ -42,7 +42,7 @@ internal sealed class CandidateListEntryRepository(DraftsDbContext dbContext) : 
   public async Task<Dictionary<int, Guid>> FindMoviesByTmdbIdsAsync(IReadOnlyList<int> tmdbIds, CancellationToken cancellationToken = default)
   {
     return await _dbContext.Movies
-      .Where(m => m.TmdbId != null && tmdbIds.Contains(m.TmdbId!.Value))
+      .Where(m => m.TmdbId != null && tmdbIds.Contains(m.TmdbId.Value))
       .ToDictionaryAsync(m => m.TmdbId!.Value, m => m.Id, cancellationToken);
   }
 

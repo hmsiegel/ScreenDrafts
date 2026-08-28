@@ -46,7 +46,7 @@ internal sealed class FetchMediaCommandHandler(
         tmdbId: response.TmdbId,
         igdbId: response.IgdbId,
         externalId: response.ExternalId,
-        title: response.Title!,
+        title: response.Title,
         year: response.Year,
         plot: response.Plot,
         image: response.Image,

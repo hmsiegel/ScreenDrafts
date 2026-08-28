@@ -51,7 +51,7 @@ internal sealed class CampaignSeeder(
       .ToHashSetAsync(cancellationToken);
 
     var toInsert = csvCampaigns.Where(c =>
-    !c.Id.HasValue || !existingCampaigns.Contains(c.Id!.Value)).ToList();
+    !c.Id.HasValue || !existingCampaigns.Contains(c.Id.Value)).ToList();
 
     if (toInsert.Count == 0)
     {

@@ -85,10 +85,10 @@ public sealed class VetoAppliedDomainEventHandlerTests(DraftsIntegrationTestWebA
 
     // Assert — veto should be persisted on the pick
     var pick = await DbContext.Picks
-      .Include(p => p.Veto)
+      .Include(p => p.Vetoes)
       .FirstAsync(p => p.PlayOrder == 1 && p.DraftPart.PublicId == draftPartPublicId, TestContext.Current.CancellationToken);
-    pick.Veto.Should().NotBeNull();
-    pick.Veto!.IsOverridden.Should().BeFalse();
+    pick.CurrentVeto.Should().NotBeNull();
+    pick.CurrentVeto.IsOverridden.Should().BeFalse();
   }
 
   // ---------------------------------------------------------------------------

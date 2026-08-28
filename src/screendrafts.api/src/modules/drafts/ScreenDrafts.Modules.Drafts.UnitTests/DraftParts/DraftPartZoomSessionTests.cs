@@ -45,7 +45,7 @@ public class DraftPartZoomSessionTests : DraftsBaseTest
 
     // Assert
     draftPart.UpdatedAtUtc.Should().NotBeNull();
-    draftPart.UpdatedAtUtc!.Value.Should().BeAfter(before);
+    draftPart.UpdatedAtUtc.Value.Should().BeAfter(before);
   }
 
   // ========================================
@@ -169,7 +169,7 @@ public class DraftPartZoomSessionTests : DraftsBaseTest
 
     // Assert
     draftPart.UpdatedAtUtc.Should().NotBeNull();
-    draftPart.UpdatedAtUtc!.Value.Should().BeAfter(before);
+    draftPart.UpdatedAtUtc.Value.Should().BeAfter(before);
   }
 
   // ========================================

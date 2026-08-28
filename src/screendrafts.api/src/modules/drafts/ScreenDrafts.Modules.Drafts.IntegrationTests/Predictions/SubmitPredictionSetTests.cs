@@ -62,7 +62,7 @@ public sealed class SubmitPredictionSetTests(DraftsIntegrationTestWebAppFactory 
       .FirstOrDefaultAsync(s => s.DraftPartId == draftPart.Id && s.ContestantId == contestant.Id, TestContext.Current.CancellationToken);
 
     set.Should().NotBeNull();
-    set!.Entries.Should().HaveCount(3);
+    set.Entries.Should().HaveCount(3);
   }
 
   [Fact]

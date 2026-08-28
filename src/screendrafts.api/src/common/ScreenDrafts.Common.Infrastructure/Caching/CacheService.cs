@@ -16,7 +16,12 @@ internal sealed class CacheService(IDistributedCache cache) : ICacheService
   public Task RemoveAsync(string key, CancellationToken cancellationToken = default) =>
     _cache.RemoveAsync(key, cancellationToken);
 
-  public Task SetAsync<T>(string key, T value, TimeSpan? expiration = null, CancellationToken cancellationToken = default)
+  public Task SetAsync<T>(
+    string key,
+    T value,
+    TimeSpan? expiration = null,
+    CancellationToken cancellationToken = default
+  )
   {
     var bytes = Serialize(value);
 
@@ -38,5 +43,18 @@ internal sealed class CacheService(IDistributedCache cache) : ICacheService
 
     return buffer.WrittenSpan.ToArray();
   }
-}
 
+  public bool TryGetValue<T>(string key, out T? value)
+  {
+    var bytes = _cache.Get(key);
+
+    if (bytes is null)
+    {
+      value = default;
+      return false;
+    }
+
+    value = Deserialize<T>(bytes);
+    return true;
+  }
+}

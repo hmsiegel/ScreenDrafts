@@ -76,6 +76,14 @@ export interface DraftPart {
   maxCommunityPicks: number;
   maxCommunityVetoes: number;
   communityFilmRules: DraftPartCommunityFilmRule[];
+  boostersChampionAssignments: AdminBoostersChampionAssignment[];
+  // NOTE (flagged, not confirmed): getDraft does a direct `as AdminDraftDetail` cast rather
+  // than a manual field whitelist, so these were likely already present in the JSON and
+  // just untyped — but I haven't seen the backend response DTO for GET /drafts/{publicId}
+  // to confirm the exact field names/casing. If these come back undefined at runtime, the
+  // backend query needs to project MinPosition/MaxPosition too.
+  minPosition: number | null;
+  maxPosition: number | null;
 }
 
 export interface AdminDraftDetail {
@@ -90,6 +98,10 @@ export interface AdminDraftDetail {
   campaignPublicId: string | null;
   campaignName: string | null;
   imagePath: string | null;
+  // Bug fix: edit-draft-form.tsx already reads draft.fungibleTokenName — this was never
+  // actually added to the interface, which is a compile error, not a runtime one.
+  fungibleTokenName: string | null;
+  isHostless: boolean;
   categories: GetDraftCategoryResponse[];
   parts: DraftPart[];
 }
@@ -109,6 +121,7 @@ export interface CreateDraftPositionBody {
   picks: number[];
   hasBonusVeto: boolean;
   hasBonusVetoOverride: boolean;
+  hasBonusFungibleToken: boolean;
 }
 
 export interface CreateDraftCommunityBody {
@@ -358,6 +371,197 @@ export async function searchDrafterTeams(
   }
 }
 
+export interface DrafterTeamMember {
+  publicId: string;
+  displayName: string;
+}
+
+export interface DrafterTeamDetail {
+  publicId: string;
+  name: string;
+  numberOfDrafters: number;
+  members: DrafterTeamMember[];
+}
+
+export async function getDrafterTeam(
+  accessToken: string | undefined,
+  publicId: string
+): Promise<DrafterTeamDetail | null> {
+  try {
+    const response = await fetch(`${apiBase}/drafter-teams/${encodeURIComponent(publicId)}`, {
+      headers: authHeaders(accessToken),
+      cache: "no-store",
+    });
+    if (!response.ok) return null;
+    const data = (await response.json()) as {
+      publicId?: string;
+      name?: string;
+      numberOfDrafters?: number;
+      members?: DrafterTeamMember[];
+    };
+    if (!data.publicId || !data.name) return null;
+    return {
+      publicId: data.publicId,
+      name: data.name,
+      numberOfDrafters: data.numberOfDrafters ?? 0,
+      members: data.members ?? [],
+    };
+  } catch (err) {
+    console.error("[getDrafterTeam]", err);
+    return null;
+  }
+}
+
+// Returns the new team's publicId, mirroring CreateDrafterTeamCommand's response shape
+// (CreatedResponse { publicId }) — see the Create feature's Endpoint.cs.
+export async function createDrafterTeam(
+  accessToken: string,
+  name: string
+): Promise<string> {
+  const response = await fetch(`${apiBase}/drafter-teams`, {
+    method: "POST",
+    headers: { ...authHeaders(accessToken), "Content-Type": "application/json" },
+    body: JSON.stringify({ name }),
+  });
+  if (!response.ok) {
+    throw new Error(await response.text().catch(() => "Failed to create drafter team."));
+  }
+  const data = (await response.json()) as { publicId: string };
+  return data.publicId;
+}
+
+// NOTE: route shape (drafterTeamId in the path, drafterId in the body for add; both in
+// the path for remove) is inferred from AddDrafterToTeamCommand/RemoveDrafterFromTeamCommand
+// and the DrafterTeamRoutes.Membership / MembershipWithDrafterId naming — I don't have
+// AddDrafterToTeamRequest.cs/RemoveDrafterFromTeamRequest.cs to confirm the exact
+// [FromRoute] vs body split. Verify against those before relying on this.
+export async function addDrafterToTeam(
+  accessToken: string,
+  drafterTeamId: string,
+  drafterId: string
+): Promise<void> {
+  const response = await fetch(
+    `${apiBase}/drafter-teams/${encodeURIComponent(drafterTeamId)}/members`,
+    {
+      method: "POST",
+      headers: { ...authHeaders(accessToken), "Content-Type": "application/json" },
+      body: JSON.stringify({ drafterTeamId, drafterId }),
+    }
+  );
+  if (!response.ok) {
+    throw new Error(await response.text().catch(() => "Failed to add drafter to team."));
+  }
+}
+
+export async function removeDrafterFromTeam(
+  accessToken: string,
+  drafterTeamId: string,
+  drafterId: string
+): Promise<void> {
+  const response = await fetch(
+    `${apiBase}/drafter-teams/${encodeURIComponent(drafterTeamId)}/members/${encodeURIComponent(drafterId)}`,
+    {
+      method: "DELETE",
+      headers: authHeaders(accessToken),
+    }
+  );
+  if (!response.ok) {
+    throw new Error(await response.text().catch(() => "Failed to remove drafter from team."));
+  }
+}
+
+export async function updateDrafterTeamName(
+  accessToken: string,
+  drafterTeamId: string,
+  name: string
+): Promise<void> {
+  const response = await fetch(`${apiBase}/drafter-teams/${encodeURIComponent(drafterTeamId)}`, {
+    method: "PUT",
+    headers: { ...authHeaders(accessToken), "Content-Type": "application/json" },
+    body: JSON.stringify({ drafterTeamId, name }),
+  });
+  if (!response.ok) {
+    throw new Error(await response.text().catch(() => "Failed to rename drafter team."));
+  }
+}
+
+// ── Booster's Champion assignments (Legends Mega) ────────────────────────────
+// A specific film reserved for a specific drafter to play on the Legends community's
+// behalf — the drafter can play it at any board slot, but nobody else can play THAT film.
+// Unrelated to CommunityFilmRule's slot-based BoostersPick rule kind; see
+// BoostersChampionAssignment.cs's remarks on the backend for why these are separate.
+
+export interface AdminBoostersChampionAssignment {
+  publicId: string;
+  assignedDrafterPublicId: string;
+  assignedDrafterDisplayName: string;
+  tmdbId: number | null;
+  title: string | null;
+}
+
+export async function addBoostersChampionAssignment(
+  accessToken: string,
+  draftPartId: string,
+  assignedDrafterPublicId: string,
+  tmdbId: number | null
+): Promise<string> {
+  const response = await fetch(
+    `${apiBase}/draft-parts/${encodeURIComponent(draftPartId)}/boosters-champion-assignments`,
+    {
+      method: "POST",
+      headers: { ...authHeaders(accessToken), "Content-Type": "application/json" },
+      body: JSON.stringify({ draftPartId, assignedDrafterPublicId, tmdbId }),
+    }
+  );
+  if (!response.ok) {
+    throw new Error(
+      await response.text().catch(() => "Failed to add Booster's Champion assignment.")
+    );
+  }
+  const data = (await response.json()) as { publicId: string };
+  return data.publicId;
+}
+
+export async function assignFilmToBoostersChampionAssignment(
+  accessToken: string,
+  draftPartId: string,
+  assignmentPublicId: string,
+  tmdbId: number
+): Promise<void> {
+  const response = await fetch(
+    `${apiBase}/draft-parts/${encodeURIComponent(draftPartId)}/boosters-champion-assignments/${encodeURIComponent(assignmentPublicId)}/film`,
+    {
+      method: "PUT",
+      headers: { ...authHeaders(accessToken), "Content-Type": "application/json" },
+      body: JSON.stringify({ draftPartId, assignmentPublicId, tmdbId }),
+    }
+  );
+  if (!response.ok) {
+    throw new Error(
+      await response.text().catch(() => "Failed to assign the film.")
+    );
+  }
+}
+
+export async function removeBoostersChampionAssignment(
+  accessToken: string,
+  draftPartId: string,
+  assignmentPublicId: string
+): Promise<void> {
+  const response = await fetch(
+    `${apiBase}/draft-parts/${encodeURIComponent(draftPartId)}/boosters-champion-assignments/${encodeURIComponent(assignmentPublicId)}`,
+    {
+      method: "DELETE",
+      headers: authHeaders(accessToken),
+    }
+  );
+  if (!response.ok) {
+    throw new Error(
+      await response.text().catch(() => "Failed to remove the assignment.")
+    );
+  }
+}
+
 export async function listAllCategories(
   accessToken: string | undefined
 ): Promise<CategoryResponse[]> {
@@ -559,6 +763,8 @@ export async function updateDraft(
     campaignPublicId?: string;
     publicCategoryIds?: string[];
     draftTypeValue: number;
+    fungibleTokenName?: string;
+    isHostless?: boolean;
   }
 ): Promise<void> {
   const response = await fetch(
@@ -792,6 +998,7 @@ export async function setDraftPositions(
         picks: p.picks,
         hasBonusVeto: p.hasBonusVeto,
         hasBonusVetoOverride: p.hasBonusVetoOverride,
+        hasBonusFungibleToken: p.hasBonusFungibleToken,
       })),
     }),
   });
@@ -1156,11 +1363,18 @@ export async function listDraftPositions(
   if (!res.ok) return [];
   const data = await res.json();
   return (data.positions ?? []).map(
-    (p: { name?: string; picks?: number[]; hasBonusVeto?: boolean; hasBonusVetoOverride?: boolean }) => ({
+    (p: {
+      name?: string;
+      picks?: number[];
+      hasBonusVeto?: boolean;
+      hasBonusVetoOverride?: boolean;
+      hasBonusFungibleToken?: boolean;
+    }) => ({
       name: p.name ?? "",
       picks: p.picks ?? [],
       hasBonusVeto: p.hasBonusVeto ?? false,
       hasBonusVetoOverride: p.hasBonusVetoOverride ?? false,
+      hasBonusFungibleToken: p.hasBonusFungibleToken ?? false,
     })
   );
 }
@@ -1178,6 +1392,50 @@ export interface GameplayPick {
   wasCommissionerOverride: boolean;
   vetoedByName: string | null;
   savedByName: string | null;
+  // True when the pick's current veto/override was paid for by a fungible token
+  // (BUV, Rabbit's Foot, etc.) rather than a normal veto/override. Meaningless
+  // when wasVetoed/wasVetoOverridden is false respectively.
+  wasVetoFungible: boolean;
+  wasVetoOverrideFungible: boolean;
+  // 1-based position of the current veto in the pick's full veto history.
+  // Normally 1; a value of 2 means this pick was vetoed, overridden, and then
+  // re-vetoed. 0 when the pick has never been vetoed.
+  vetoSequence: number;
+  // Only set on a hostless draft (DraftPartGameplay.isHostless) — the participant this
+  // pick was "sent to," authorized to reveal it. Null on every hosted-draft pick.
+  revealAuthorizedParticipantId: string | null;
+  revealAuthorizedByName: string | null;
+  // Full veto history for this pick, in order — every veto ever issued against it, not
+  // just the current one (wasVetoed/wasVetoOverridden above still reflect only the
+  // current one, unchanged). Normally holds at most one entry; a second entry only
+  // occurs when the first veto was overridden and the resulting override was itself
+  // overridden (re-vetoing the pick).
+  vetoHistory: GameplayVetoHistoryEntry[];
+}
+
+export interface GameplayVetoHistoryEntry {
+  sequence: number;
+  vetoedByName: string;
+  wasVetoFungible: boolean;
+  isOverridden: boolean;
+  overriddenByName: string | null;
+  wasOverrideFungible: boolean;
+}
+
+export interface GameplayParticipant {
+  participantId: string;
+  participantPublicId: string | null;
+  participantKind: number;
+  participantName: string;
+  vetoTokensRemaining: number;
+  overrideTokensRemaining: number;
+  vetoesRollingIn: number;
+  vetoOverridesRollingIn: number;
+  // Remaining balance of this participant's fungible token, spendable as
+  // either a veto or an override. 0 for participants not on a fungible-token
+  // draft — see DraftPartGameplay.fungibleTokenName for whether one applies.
+  fungibleTokensRemaining: number;
+  fungibleTokensRollingIn: number;
 }
 
 export interface GameplayTriviaResult {
@@ -1201,10 +1459,47 @@ export interface GameplaySubDraftSummary {
   subjectImdbId: string | null;
 }
 
+export interface GameplayBoostersChampionAssignment {
+  publicId: string;
+  assignedDrafterPublicId: string;
+  assignedDrafterDisplayName: string;
+  tmdbId: number | null;
+  title: string | null;
+}
+
+// Matches GameplayDraftPositionResponse. Previously not parsed at all here —
+// getDraftPartGameplay silently dropped it the same way it was dropping
+// subDrafts before that fix. Needed so the seed wizard's position-assignment
+// step (and anything else admin-side) can see current assignment state.
+export interface GameplayDraftPosition {
+  positionPublicId: string;
+  positionName: string;
+  ownedBoardSlots: number[];
+  hasBonusVeto: boolean;
+  hasBonusVetoOverride: boolean;
+  hasBonusFungibleToken: boolean;
+  assignedParticipantId: string | null;
+  assignedParticipantKind: number | null;
+  assignedParticipantName: string | null;
+  isCommunityPosition: boolean;
+}
+
 export interface DraftPartGameplay {
   picks: GameplayPick[];
   triviaResults: GameplayTriviaResult[];
   subDrafts: GameplaySubDraftSummary[];
+  participants: GameplayParticipant[];
+  // Flavor name for this draft's fungible veto/override token (e.g. "Blessing
+  // of Unusual Versatility"). Null for the overwhelming majority of drafts.
+  fungibleTokenName: string | null;
+  // True when this draft has no dedicated host — reveal authority for a pick then
+  // belongs to whichever participant it's sent to (see GameplayPick.revealAuthorizedParticipantId)
+  // rather than the primary host.
+  isHostless: boolean;
+  // Legends Mega only — see GameplayBoostersChampionAssignment.
+  boostersChampionAssignments: GameplayBoostersChampionAssignment[];
+  // Was silently dropped before — see GameplayDraftPosition's comment.
+  draftPositions: GameplayDraftPosition[];
 }
 
 export async function getDraftPartGameplay(
@@ -1223,11 +1518,21 @@ export async function getDraftPartGameplay(
       picks?: GameplayPick[];
       triviaResults?: GameplayTriviaResult[];
       subDrafts?: GameplaySubDraftSummary[];
+      participants?: GameplayParticipant[];
+      fungibleTokenName?: string;
+      isHostless?: boolean;
+      boostersChampionAssignments?: GameplayBoostersChampionAssignment[];
+      draftPositions?: GameplayDraftPosition[];
     };
     return {
       picks: data.picks ?? [],
       triviaResults: data.triviaResults ?? [],
       subDrafts: data.subDrafts ?? [],
+      participants: data.participants ?? [],
+      fungibleTokenName: data.fungibleTokenName ?? null,
+      isHostless: data.isHostless ?? false,
+      boostersChampionAssignments: data.boostersChampionAssignments ?? [],
+      draftPositions: data.draftPositions ?? [],
     };
   } catch (err) {
     console.error("[getDraftPartGameplay]", err);
@@ -1254,6 +1559,79 @@ export async function assignTriviaResults(
   if (!res.ok) {
     const problem = await res.json().catch(() => null);
     throw new Error(problem?.detail ?? `Failed to assign trivia results: ${res.status}`);
+  }
+}
+
+// The real live-gameplay position-assignment command — same endpoint
+// primary-host-tab.tsx's DraftPositionsForm calls during an actual draft
+// (PUT/DELETE .../positions/{positionPublicId}/participant). This is what
+// grants the bonus veto/override/fungible token on assignment
+// (DraftPart.AssignParticipantToPositionAsync on the backend) — nothing
+// seed-specific here, per the "only SeedRevealPick and
+// SeedSubmitPredictionSet are seed-only" constraint.
+export async function assignParticipantToDraftPosition(
+  accessToken: string,
+  draftPartId: string,
+  positionPublicId: string,
+  participantPublicId: string,
+  participantKind: number
+): Promise<void> {
+  const res = await fetch(
+    `${apiBase}/draft-parts/${encodeURIComponent(draftPartId)}/positions/${encodeURIComponent(positionPublicId)}/participant`,
+    {
+      method: "PUT",
+      headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ participantPublicId, participantKind }),
+    }
+  );
+  if (!res.ok) {
+    const problem = await res.json().catch(() => null);
+    throw new Error(problem?.detail ?? `Failed to assign position: ${res.status}`);
+  }
+}
+
+export async function clearDraftPositionAssignment(
+  accessToken: string,
+  draftPartId: string,
+  positionPublicId: string
+): Promise<void> {
+  const res = await fetch(
+    `${apiBase}/draft-parts/${encodeURIComponent(draftPartId)}/positions/${encodeURIComponent(positionPublicId)}/participant`,
+    {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${accessToken}` },
+    }
+  );
+  if (!res.ok) {
+    const problem = await res.json().catch(() => null);
+    throw new Error(problem?.detail ?? `Failed to clear position: ${res.status}`);
+  }
+}
+
+// Updates an existing DraftPart's min/max position range — distinct from
+// setDraftPositions (the individual position ROWS). Needed whenever a
+// part's actual board range doesn't start at 1 (e.g. Part 2 of a two-part
+// countdown draft covering slots 17-30) — Pick.Create validates every
+// played position against these bounds inclusively, so they have to match
+// the real range or PickPositionIsOutOfRange fires on perfectly valid
+// picks. No path existed to set this after creation before now.
+export async function setDraftPartPositionRange(
+  accessToken: string,
+  draftPartId: string,
+  minimumPosition: number,
+  maximumPosition: number
+): Promise<void> {
+  const res = await fetch(
+    `${apiBase}/draft-parts/${encodeURIComponent(draftPartId)}/position-range`,
+    {
+      method: "PUT",
+      headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ minimumPosition, maximumPosition }),
+    }
+  );
+  if (!res.ok) {
+    const problem = await res.json().catch(() => null);
+    throw new Error(problem?.detail ?? `Failed to update position range: ${res.status}`);
   }
 }
 

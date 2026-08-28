@@ -3,6 +3,8 @@
 public sealed class Pick : Entity<PickId>
 {
   private readonly List<PickEvent> _history = [];
+  private readonly List<Veto> _vetoes = [];
+  private readonly List<TeamPickCredit> _teamPickCredits = [];
 
   private Pick(
     int position,
@@ -55,6 +57,19 @@ public sealed class Pick : Entity<PickId>
   public Guid PlayedByParticipantIdValue { get; private set; }
   public ParticipantKind PlayedByParticipantKindValue { get; private set; } = default!;
 
+  /// <summary>
+  /// Only set on picks in a hostless DraftPart (Draft.IsHostless) — the participant who
+  /// "received" this pick and is therefore the one authorized to reveal it, standing in
+  /// for host authority which doesn't exist in these drafts. Derived deterministically
+  /// ("the other drafter") when the part has exactly 2 drafters; otherwise resolved by
+  /// PlayPickCommandHandler via a random draw (the app performs the equivalent of the
+  /// offline random.org process) and passed in. Null for every hosted pick.
+  /// </summary>
+  public DraftPartParticipant? RevealAuthorizedParticipant { get; private set; }
+  public DraftPartParticipantId? RevealAuthorizedParticipantId { get; private set; }
+  public Guid? RevealAuthorizedParticipantIdValue { get; private set; }
+  public ParticipantKind? RevealAuthorizedParticipantKindValue { get; private set; }
+
   public SubDraftId? SubDraftId { get; private set; }
 
   /// <summary>
@@ -64,10 +79,32 @@ public sealed class Pick : Entity<PickId>
   /// </summary>
   public string? ActedByPublicId { get; private set; }
 
-  public Veto? Veto { get; private set; } = default!;
+  /// <summary>
+  /// The full, ordered veto history for this pick. Normally holds at most one entry.
+  /// Can hold more than one when a veto is overridden ant the resulting override is
+  /// iteself overridden (i.e. the pick is vetoed again). See <see cref="CurrentVeto"/>.
+  /// </summary>
+  public IReadOnlyList<Veto> Vetoes => _vetoes.AsReadOnly();
+
+  /// <summary>
+  /// The most recent veto applied to this pick, or null if the pick has never been vetoed.
+  /// All veto-state logic (IsVetoed, ApplyVetoOverride, UndoVeto) operates against this entry,
+  /// not the full history.
+  /// </summary>
+  public Veto? CurrentVeto =>
+    _vetoes.Count > 0 ? _vetoes.OrderByDescending(v => v.Sequence).First() : null;
 
   [NotMapped]
-  public VetoId? VetoId => Veto?.Id;
+  public VetoId? VetoId => CurrentVeto?.Id;
+
+  /// <summary>
+  /// Set only when PlayedByParticipantKindValue is Team — snapshots which individual
+  /// drafters were on the team at the moment this pick was created, so each of them gets
+  /// personal credit (film history, appearance counts) without the team itself also
+  /// accruing a separate stat line. Never recomputed from current team membership; see
+  /// TeamPickCredit's remarks for why. Empty for every non-Team pick.
+  /// </summary>
+  public IReadOnlyList<TeamPickCredit> TeamPickCredits => _teamPickCredits.AsReadOnly();
 
   public CommissionerOverride? CommissionerOverride { get; private set; } = default!;
 
@@ -77,7 +114,7 @@ public sealed class Pick : Entity<PickId>
   public bool IsActiveOnFinalBoard => !IsVetoed && !IsCommissionerOverridden;
 
   [NotMapped]
-  public bool IsVetoed => Veto is not null && !Veto.IsOverridden;
+  public bool IsVetoed => CurrentVeto is not null && !CurrentVeto.IsOverridden;
 
   [NotMapped]
   public bool IsCommissionerOverridden => CommissionerOverride is not null;
@@ -262,7 +299,7 @@ public sealed class Pick : Entity<PickId>
       return Result.Success();
     }
 
-    var trimmed = movieVersionName!.Trim();
+    var trimmed = movieVersionName.Trim();
 
     if (trimmed.Length > 100)
     {
@@ -294,6 +331,52 @@ public sealed class Pick : Entity<PickId>
     return Result.Success();
   }
 
+  /// <summary>
+  /// Snapshots individual drafter credit for a Team-played pick. Called once, right after
+  /// the pick is created, with whichever drafters are on the team at that instant — see
+  /// TeamPickCredit's remarks for why this is a one-time snapshot rather than a live
+  /// membership lookup. No-op (and safe to call) with an empty or null list; only
+  /// meaningful when PlayedByParticipantKindValue is Team, but doesn't itself enforce that
+  /// — the caller (DraftPart.PlayPick) only calls this for Team-kind picks.
+  /// </summary>
+  internal void SetTeamPickCredits(IReadOnlyCollection<Guid>? drafterIdValues)
+  {
+    _teamPickCredits.Clear();
+
+    if (drafterIdValues is null || drafterIdValues.Count == 0)
+    {
+      return;
+    }
+
+    foreach (var drafterIdValue in drafterIdValues.Distinct())
+    {
+      _teamPickCredits.Add(TeamPickCredit.Create(this, drafterIdValue));
+    }
+  }
+
+  /// <summary>
+  /// Sets which participant is authorized to reveal this pick — only meaningful for
+  /// hostless drafts. See RevealAuthorizedParticipant's remarks for how the value is chosen.
+  /// </summary>
+  internal void SetRevealAuthorizedParticipant(DraftPartParticipant participant)
+  {
+    RevealAuthorizedParticipant = participant;
+    RevealAuthorizedParticipantId = participant.Id;
+    RevealAuthorizedParticipantIdValue = participant.ParticipantIdValue;
+    RevealAuthorizedParticipantKindValue = participant.ParticipantKindValue;
+  }
+
+  /// <summary>
+  /// True if the given participant is this pick's designated revealer. Only meaningful
+  /// when RevealAuthorizedParticipant is set (hostless drafts) — always false otherwise,
+  /// which is correct: a hosted pick's reveal authority belongs to the primary host, not
+  /// any participant, so RevealPickCommandHandler checks host status directly in that case
+  /// and never calls this.
+  /// </summary>
+  public bool IsRevealAuthorized(Participant participant) =>
+    RevealAuthorizedParticipantIdValue == participant.Value
+    && RevealAuthorizedParticipantKindValue == participant.Kind;
+
   internal Result ApplyVeto(Veto veto)
   {
     if (IsVetoed)
@@ -301,7 +384,7 @@ public sealed class Pick : Entity<PickId>
       return Result.Failure(PickErrors.PickAlreadyVetoed);
     }
 
-    Veto = veto;
+    _vetoes.Add(veto);
 
     _history.Add(
       PickEvent.Veto(
@@ -330,19 +413,19 @@ public sealed class Pick : Entity<PickId>
 
   internal Result ApplyVetoOverride(Participant by, string? actedByPublicId = null)
   {
-    if (Veto is null || !IsVetoed)
+    if (CurrentVeto is null || !IsVetoed)
     {
       return Result.Failure(PickErrors.CannotOverrideAPickThatHasNotBeenVetoed);
     }
 
-    var result = Veto.Override(by, actedByPublicId);
+    var result = CurrentVeto.Override(by, actedByPublicId);
 
     if (result.IsFailure)
     {
       return result;
     }
 
-    _history.Add(PickEvent.VetoOverride(by: by, actedByPublicId: Veto.ActedByPublicId));
+    _history.Add(PickEvent.VetoOverride(by: by, actedByPublicId: CurrentVeto.ActedByPublicId));
 
     return Result.Success();
   }
@@ -368,17 +451,18 @@ public sealed class Pick : Entity<PickId>
   /// </summary>
   internal Result UndoVeto()
   {
-    if (Veto is null)
+    var current = CurrentVeto;
+    if (current is null)
     {
       return Result.Failure(PickErrors.PickNotVetoed);
     }
 
-    if (Veto.IsOverridden)
+    if (current.IsOverridden)
     {
       return Result.Failure(PickErrors.CannotUndoVetoThatHasBeenOverridden);
     }
 
-    Veto = null;
+    _vetoes.Remove(current);
 
     _history.Add(PickEvent.Played(issuer: null, actedByPublicId: null)); // log the undo
 

@@ -25,4 +25,22 @@ internal sealed record GameplayParticipantResponse
   /// OverrideTokensRemaining.
   /// </summary>
   public int VetoOverridesRollingIn { get; init; }
+
+  /// <summary>
+  /// Remaining balance of this participant's fungible token (BUV/Rabbit's Foot-style),
+  /// spendable as either a veto or an override. 0 for the overwhelming majority of
+  /// participants who aren't on a fungible-token draft — see
+  /// GetDraftPartGameplayResponse.FungibleTokenName for whether one applies at all.
+  /// Mirrors VetoTokensRemaining/OverrideTokensRemaining: a net total across
+  /// starting/rolling-in/awarded/used.
+  /// </summary>
+  public int FungibleTokensRemaining { get; init; }
+
+  /// <summary>
+  /// Fungible tokens carried in from a completed prior part of this same draft. See
+  /// VetoesRollingIn for why this is exposed separately from FungibleTokensRemaining —
+  /// same provenance reasoning applies. Always 0 for single-part drafts (e.g. the Reiner
+  /// Run) since there's no prior part to roll in from.
+  /// </summary>
+  public int FungibleTokensRollingIn { get; init; }
 }

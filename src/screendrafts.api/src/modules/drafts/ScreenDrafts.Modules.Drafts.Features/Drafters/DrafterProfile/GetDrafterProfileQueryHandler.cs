@@ -103,8 +103,10 @@ internal sealed class GetDrafterProfileQueryHandler(IDbConnectionFactory dbConne
       FROM drafts.picks pk
       LEFT JOIN drafts.vetoes v ON v.target_pick_id = pk.id
       LEFT JOIN drafts.commissioner_overrides co ON co.pick_id = pk.id
-      WHERE pk.played_by_participant_id_value = @DrafterInternalId 
-        AND pk.played_by_participant_kind_value = 0
+      LEFT JOIN drafts.team_pick_credits tpc ON tpc.target_pick_id = pk.id AND tpc.drafter_id_value = DrafterInternalId
+      WHERE ((pk.played_by_participant_id_value = @DrafterInternalId 
+        AND pk.played_by_participant_kind_value = 0) 
+          OR tpc.id IS NOT NULL)
         AND co.id IS NULL
         AND (v.id IS NULL OR v.is_overridden = true);
       """;
@@ -229,8 +231,13 @@ internal sealed class GetDrafterProfileQueryHandler(IDbConnectionFactory dbConne
       LEFT JOIN drafts.drafters vodr ON vodr.id = vo.issued_by_participant_id
       LEFT JOIN drafts.people vop ON vop.id = vodr.person_id
       LEFT JOIN drafts.commissioner_overrides co ON co.pick_id = pk.id
-      WHERE pk.played_by_participant_id_value = @DrafterInternalId
-        AND pk.played_by_participant_kind_value = 0
+      WHERE (
+          (pk.played_by_participant_id_value = @DrafterInternalId AND pk.played_by_participant_kind_value = 0)
+          OR EXISTS (
+            SELECT 1 FROM drafts.team_pick_credits tpc
+            WHERE tpc.target_pick_id = pk.id AND tpc.drafter_id_value = @DrafterInternalId
+          )
+        )
       GROUP BY
         d.id, d.public_id, d.title,
         pk.id, pk.position, pk.play_order, pk.movie_version_name,
@@ -241,7 +248,6 @@ internal sealed class GetDrafterProfileQueryHandler(IDbConnectionFactory dbConne
         co.id
       ORDER BY MIN(dr.release_date) ASC, pk.play_order ASC;
       """;
-
     var pickHistory = await connection.QueryAsync<PickHistoryRow>(
       new CommandDefinition(
         pickHistorySql,

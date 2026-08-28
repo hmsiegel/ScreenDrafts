@@ -19,7 +19,7 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("drafts")
-                .HasAnnotation("ProductVersion", "10.0.9")
+                .HasAnnotation("ProductVersion", "10.0.11")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -357,6 +357,10 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("draft_type");
 
+                    b.Property<bool>("IsHostless")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_hostless");
+
                     b.Property<int>("MaxCommunityPicks")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
@@ -551,6 +555,10 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
+                    b.Property<int>("AwardedFungibleTokens")
+                        .HasColumnType("integer")
+                        .HasColumnName("awarded_fungible_tokens");
+
                     b.Property<int>("AwardedVetoOverrides")
                         .HasColumnType("integer")
                         .HasColumnName("awarded_veto_overrides");
@@ -566,6 +574,18 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                     b.Property<Guid>("DraftPartId")
                         .HasColumnType("uuid")
                         .HasColumnName("draft_part_id");
+
+                    b.Property<int>("FungibleTokens")
+                        .HasColumnType("integer")
+                        .HasColumnName("fungible_tokens");
+
+                    b.Property<int>("FungibleTokensRollingIn")
+                        .HasColumnType("integer")
+                        .HasColumnName("fungible_tokens_rolling_in");
+
+                    b.Property<int>("FungibleTokensUsed")
+                        .HasColumnType("integer")
+                        .HasColumnName("fungible_tokens_used");
 
                     b.Property<Guid>("ParticipantIdValue")
                         .HasColumnType("uuid")
@@ -697,6 +717,10 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                     b.Property<Guid>("GameBoardId")
                         .HasColumnType("uuid")
                         .HasColumnName("game_board_id");
+
+                    b.Property<bool>("HasBonusFungibleToken")
+                        .HasColumnType("boolean")
+                        .HasColumnName("has_bonus_fungible_token");
 
                     b.Property<bool>("HasBonusVeto")
                         .HasColumnType("boolean")
@@ -883,6 +907,18 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("position");
 
+                    b.Property<Guid?>("RevealAuthorizedParticipantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("reveal_authorized_participant_id");
+
+                    b.Property<Guid?>("RevealAuthorizedParticipantIdValue")
+                        .HasColumnType("uuid")
+                        .HasColumnName("reveal_authorized_participant_id_value");
+
+                    b.Property<int?>("RevealAuthorizedParticipantKindValue")
+                        .HasColumnType("integer")
+                        .HasColumnName("reveal_authorized_participant_kind_value");
+
                     b.Property<DateTimeOffset?>("RevealedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("revealed_at");
@@ -896,6 +932,9 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
 
                     b.HasIndex("MovieId")
                         .HasDatabaseName("ix_picks_movie_id");
+
+                    b.HasIndex("RevealAuthorizedParticipantId")
+                        .HasDatabaseName("ix_picks_reveal_authorized_participant_id");
 
                     b.HasIndex("DraftPartId", "PlayOrder")
                         .IsUnique()
@@ -970,6 +1009,30 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                     b.ToTable("sub_drafts", "drafts");
                 });
 
+            modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities.TeamPickCredit", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("DrafterIdValue")
+                        .HasColumnType("uuid")
+                        .HasColumnName("drafter_id_value");
+
+                    b.Property<Guid>("TargetPickId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("target_pick_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_team_pick_credits");
+
+                    b.HasIndex("TargetPickId", "DrafterIdValue")
+                        .IsUnique()
+                        .HasDatabaseName("ix_team_pick_credits_target_pick_id_drafter_id_value");
+
+                    b.ToTable("team_pick_credits", "drafts");
+                });
+
             modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities.TriviaResult", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1041,6 +1104,14 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("occurred_on");
 
+                    b.Property<int>("Sequence")
+                        .HasColumnType("integer")
+                        .HasColumnName("sequence");
+
+                    b.Property<bool>("SpentFromFungiblePool")
+                        .HasColumnType("boolean")
+                        .HasColumnName("spent_from_fungible_pool");
+
                     b.Property<Guid?>("SubDraftId")
                         .HasColumnType("uuid")
                         .HasColumnName("sub_draft_id");
@@ -1052,13 +1123,12 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                     b.HasKey("Id")
                         .HasName("pk_vetoes");
 
-                    b.HasIndex("TargetPickId")
-                        .IsUnique()
-                        .HasDatabaseName("ix_vetoes_target_pick_id");
+                    b.HasIndex("IssuedByParticipantId")
+                        .HasDatabaseName("ix_vetoes_issued_by_participant_id");
 
-                    b.HasIndex("IssuedByParticipantId", "TargetPickId")
+                    b.HasIndex("TargetPickId", "Sequence")
                         .IsUnique()
-                        .HasDatabaseName("ix_vetoes_issued_by_participant_id_target_pick_id");
+                        .HasDatabaseName("ix_vetoes_target_pick_id_sequence");
 
                     b.ToTable("vetoes", "drafts");
                 });
@@ -1076,6 +1146,15 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                     b.Property<Guid>("IssuedByParticipantId")
                         .HasColumnType("uuid")
                         .HasColumnName("issued_by_participant_id");
+
+                    b.Property<string>("Note")
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)")
+                        .HasColumnName("note");
+
+                    b.Property<bool>("SpentFromFungiblePool")
+                        .HasColumnType("boolean")
+                        .HasColumnName("spent_from_fungible_pool");
 
                     b.Property<Guid>("VetoId")
                         .HasColumnType("uuid")
@@ -1147,10 +1226,6 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)")
                         .HasColumnName("name");
-
-                    b.Property<int>("NumberOfDrafters")
-                        .HasColumnType("integer")
-                        .HasColumnName("number_of_drafters");
 
                     b.Property<string>("PublicId")
                         .IsRequired()
@@ -1236,6 +1311,11 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("draft_type");
 
+                    b.Property<string>("FungibleTokenName")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("fungible_token_name");
+
                     b.Property<bool>("GrantsStartingVetoPerPart")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("boolean")
@@ -1251,6 +1331,10 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasColumnType("boolean")
                         .HasDefaultValue(false)
                         .HasColumnName("is_deleted");
+
+                    b.Property<bool>("IsHostless")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_hostless");
 
                     b.Property<string>("PublicId")
                         .IsRequired()
@@ -2046,6 +2130,42 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_draft_parts_drafts_draft_id");
 
+                    b.OwnsMany("ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities.BoostersChampionAssignment", "_boostersChampionAssignments", b1 =>
+                        {
+                            b1.Property<Guid>("Id")
+                                .HasColumnType("uuid")
+                                .HasColumnName("id");
+
+                            b1.Property<Guid>("AssignedDrafterIdValue")
+                                .HasColumnType("uuid")
+                                .HasColumnName("assigned_drafter_id_value");
+
+                            b1.Property<string>("PublicId")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("public_id");
+
+                            b1.Property<int?>("TmdbId")
+                                .HasColumnType("integer")
+                                .HasColumnName("tmdb_id");
+
+                            b1.Property<Guid>("draft_part_id")
+                                .HasColumnType("uuid")
+                                .HasColumnName("draft_part_id");
+
+                            b1.HasKey("Id")
+                                .HasName("pk_draft_part_boosters_champion_assignments");
+
+                            b1.HasIndex("draft_part_id")
+                                .HasDatabaseName("ix_draft_part_boosters_champion_assignments_draft_part_id");
+
+                            b1.ToTable("draft_part_boosters_champion_assignments", "drafts");
+
+                            b1.WithOwner()
+                                .HasForeignKey("draft_part_id")
+                                .HasConstraintName("fk_draft_part_boosters_champion_assignments_draft_parts_draft_");
+                        });
+
                     b.OwnsMany("ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities.CommunityFilmRule", "_communityFilmRules", b1 =>
                         {
                             b1.Property<Guid>("Id")
@@ -2124,6 +2244,8 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                                 .HasForeignKey("draft_part_id")
                                 .HasConstraintName("fk_draft_part_required_movie_versions_draft_parts_draft_part_id");
                         });
+
+                    b.Navigation("_boostersChampionAssignments");
 
                     b.Navigation("_communityFilmRules");
 
@@ -2294,11 +2416,18 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_picks_draft_part_participants_played_by_participant_id");
 
+                    b.HasOne("ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities.DraftPartParticipant", "RevealAuthorizedParticipant")
+                        .WithMany()
+                        .HasForeignKey("RevealAuthorizedParticipantId")
+                        .HasConstraintName("fk_picks_draft_part_participants_reveal_authorized_participant");
+
                     b.Navigation("DraftPart");
 
                     b.Navigation("Movie");
 
                     b.Navigation("PlayedByParticipant");
+
+                    b.Navigation("RevealAuthorizedParticipant");
                 });
 
             modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities.SubDraft", b =>
@@ -2311,10 +2440,22 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasConstraintName("fk_sub_drafts_draft_parts_draft_part_id");
                 });
 
+            modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities.TeamPickCredit", b =>
+                {
+                    b.HasOne("ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities.Pick", "TargetPick")
+                        .WithMany("_teamPickCredits")
+                        .HasForeignKey("TargetPickId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_team_pick_credits_picks_target_pick_id");
+
+                    b.Navigation("TargetPick");
+                });
+
             modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities.TriviaResult", b =>
                 {
                     b.HasOne("ScreenDrafts.Modules.Drafts.Domain.DraftParts.DraftPart", "DraftPart")
-                        .WithMany("TriviaResults")
+                        .WithMany("_triviaResults")
                         .HasForeignKey("DraftPartId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
@@ -2333,8 +2474,8 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasConstraintName("fk_vetoes_draft_part_participants_issued_by_participant_id");
 
                     b.HasOne("ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities.Pick", "TargetPick")
-                        .WithOne("Veto")
-                        .HasForeignKey("ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities.Veto", "TargetPickId")
+                        .WithMany("_vetoes")
+                        .HasForeignKey("TargetPickId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_vetoes_picks_target_pick_id");
@@ -2701,8 +2842,6 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                 {
                     b.Navigation("GameBoard");
 
-                    b.Navigation("TriviaResults");
-
                     b.Navigation("_draftHosts");
 
                     b.Navigation("_draftPartParticipants");
@@ -2712,6 +2851,8 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                     b.Navigation("_releases");
 
                     b.Navigation("_subDrafts");
+
+                    b.Navigation("_triviaResults");
                 });
 
             modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities.GameBoard", b =>
@@ -2728,7 +2869,9 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                 {
                     b.Navigation("CommissionerOverride");
 
-                    b.Navigation("Veto");
+                    b.Navigation("_teamPickCredits");
+
+                    b.Navigation("_vetoes");
                 });
 
             modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities.SubDraft", b =>

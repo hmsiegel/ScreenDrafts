@@ -60,7 +60,7 @@ internal sealed class CategorySeeder(
 
     foreach (var row in toAdd)
     {
-      var id = row.Id.HasValue ? CategoryId.Create(row.Id!.Value) : CategoryId.CreateUnique();
+      var id = row.Id.HasValue ? CategoryId.Create(row.Id.Value) : CategoryId.CreateUnique();
       var publicId = _publicIdGenerator.GeneratePublicId(PublicIdPrefixes.Category);
 
       var category = Category.Create(

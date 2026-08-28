@@ -105,7 +105,7 @@ public sealed class GetDrafterProfileTests(DraftsIntegrationTestWebAppFactory fa
     result.Value.DrafterPublicId.Should().Be(drafterPublicId);
     result.Value.FilmsDrafted.Should().Be(1);
     result.Value.FirstDraft.Should().NotBeNull();
-    result.Value.FirstDraft!.DraftPublicId.Should().Be(draftPublicId);
+    result.Value.FirstDraft.DraftPublicId.Should().Be(draftPublicId);
     result.Value.MostRecentDraft.Should().NotBeNull();
     result.Value.DraftHistory.Should().HaveCount(1);
     result.Value.DraftHistory[0].Picks.Should().HaveCount(1);

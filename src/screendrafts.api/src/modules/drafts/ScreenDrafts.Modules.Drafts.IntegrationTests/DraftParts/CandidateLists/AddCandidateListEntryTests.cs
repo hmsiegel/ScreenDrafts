@@ -54,7 +54,7 @@ public sealed class AddCandidateListEntryTests(DraftsIntegrationTestWebAppFactor
     );
 
     entry.Should().NotBeNull();
-    entry!.TmdbId.Should().Be(tmdbId);
+    entry.TmdbId.Should().Be(tmdbId);
     entry.DraftPartPublicId.Should().Be(draftPartPublicId);
   }
 

@@ -2,7 +2,10 @@
 
 public sealed partial class DraftPart
 {
-  public Result AssignParticipantToPosition(DraftPosition position, Participant participant)
+  public async Task<Result> AssignParticipantToPositionAsync(
+    DraftPosition position,
+    Participant participant
+  )
   {
     ArgumentNullException.ThrowIfNull(position);
 
@@ -40,6 +43,15 @@ public sealed partial class DraftPart
     if (position.HasBonusVetoOverride)
     {
       var awardResult = SetParticipantAward(participant, isVeto: false);
+      if (awardResult.IsFailure)
+      {
+        return awardResult;
+      }
+    }
+
+    if (position.HasBonusFungibleToken)
+    {
+      var awardResult = SetParticipantFungibleTokenAward(participant);
       if (awardResult.IsFailure)
       {
         return awardResult;
@@ -102,6 +114,15 @@ public sealed partial class DraftPart
       {
         var revokeResult = RevokeParticipantAward(participant, isVeto: false);
 
+        if (revokeResult.IsFailure)
+        {
+          return revokeResult;
+        }
+      }
+
+      if (position.HasBonusFungibleToken)
+      {
+        var revokeResult = RevokeParticipantFungibleTokenAward(participant);
         if (revokeResult.IsFailure)
         {
           return revokeResult;

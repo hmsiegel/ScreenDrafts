@@ -30,7 +30,13 @@
       "Bash(dotnet restore *)",
       "Bash(xargs -I{} sh -c 'echo \"=== {} ===\"; cat {}')",
       "Bash(xargs -I{} cat {})",
-      "Bash(xargs cat)"
+      "Bash(xargs cat)",
+      "Bash(dotnet list *)",
+      "Bash(tee /c/Users/hmsie/AppData/Local/Temp/claude/C--Repos-ScreenDrafts-src-screendrafts-api/b59f1b6b-a368-476d-af10-6003dbc00c0c/scratchpad/outdated_full.txt)",
+      "WebFetch(domain:github.com)",
+      "Bash(curl *)",
+      "Bash(tee /tmp/outdated_new.txt)",
+      "Bash(dotnet nuget *)"
     ]
   }
 }

@@ -1,3 +1,5 @@
+// src/components/features/drafts/draft-pick.tsx
+
 import { GetDraftPickResponse } from "@/lib/dto";
 import Link from "next/link";
 
@@ -23,24 +25,47 @@ interface DraftPickProps {
   participantIndex: Map<string, number>;
 }
 
+type VetoNarrativeSegment =
+  | { kind: "veto"; text: string; resolved: boolean }
+  | { kind: "override"; text: string }
+  | { kind: "arrow"; text: string };
+
 export function DraftPick({ pick, position, isTopPick, participantNames, participantIndex }: DraftPickProps) {
   const playedById = pick.playedByParticipantIdValue ?? "";
   const playerName = participantNames.get(playedById) ?? pick.actedByPublicId ?? "Unknown";
   const playerIdx = participantIndex.get(playedById) ?? 0;
 
-  const hasVeto = !!pick.veto;
-  const vetoIssuerId = pick.veto?.issuedByParticipantId ?? pick.veto?.actedByPublicId ?? "";
-  const vetoerName = pick.veto?.issuedByDisplayName
-    ?? participantNames.get(vetoIssuerId)
-    ?? vetoIssuerId
-    ?? "Unknown";
-  const vetoIsOverridden = pick.veto?.isOverriden ?? !!pick.veto?.override;
+  // GetDraftPickResponse.Vetoes is the pick's full history, ordered by Sequence — there
+  // is no singular "veto" field. Current state is always the last entry. Rather than
+  // splitting the current entry from earlier ones into two separate lines, the whole
+  // chain renders as one narrative: "vetoed by A → overridden by B → vetoed by C". See
+  // Pick.CurrentVeto on the domain side for the equivalent "last by Sequence" logic.
+  const vetoes = pick.vetoes ?? [];
+  const currentVeto = vetoes.length > 0 ? vetoes[vetoes.length - 1] : null;
+  const hasVeto = !!currentVeto;
+  const vetoIsOverridden = currentVeto?.isOverridden ?? false;
 
-  const overrideIssuerId = pick.veto?.override?.issuedByParticipantId ?? pick.veto?.override?.actedByPublicId ?? "";
-  const overriderName = pick.veto?.override?.issuedByDisplayName
-    ?? participantNames.get(overrideIssuerId)
-    ?? overrideIssuerId
-    ?? "Unknown";
+  const nameFor = (participantId: string | undefined, actedByPublicId: string | undefined, displayName: string | undefined) =>
+    displayName ?? participantNames.get(participantId ?? "") ?? participantId ?? actedByPublicId ?? "Unknown";
+
+  const vetoNarrative: VetoNarrativeSegment[] = vetoes.flatMap((v, i) => {
+    const segs: VetoNarrativeSegment[] = [];
+    if (i > 0) {
+      segs.push({ kind: "arrow", text: " → " });
+    }
+    const vetoerName = nameFor(v.issuedByParticipantId, v.actedByPublicId, v.issuedByDisplayName);
+    segs.push({ kind: "veto", text: `vetoed by ${vetoerName}`, resolved: v.isOverridden ?? false });
+    if (v.isOverridden) {
+      const overriderName = nameFor(
+        v.override?.issuedByParticipantId,
+        v.override?.actedByPublicId,
+        v.override?.issuedByDisplayName
+      );
+      segs.push({ kind: "arrow", text: " → " });
+      segs.push({ kind: "override", text: `overridden by ${overriderName}` });
+    }
+    return segs;
+  });
 
   const hasCommissionerOverride = pick.commissionerOverride !== null && pick.commissionerOverride !== undefined;
 
@@ -89,35 +114,37 @@ export function DraftPick({ pick, position, isTopPick, participantNames, partici
         )}
 
         {/* By line */}
-        {/* By line */}
         <div className="text-[14px] italic text-[#5a6075]">
           <span className={(hasVeto && !vetoIsOverridden) || hasCommissionerOverride ? "line-through" : ""}>
             by{" "}
             <span className="font-sans font-semibold not-italic text-sd-ink">{playerName}</span>
           </span>
-          {hasVeto && !vetoIsOverridden && (
-            <span className="text-sd-red ml-2">(vetoed by {vetoerName})</span>
-          )}
-          {hasVeto && vetoIsOverridden && (
-            <>
-              <span className="ml-2 line-through text-sd-red/60">(vetoed by {vetoerName})</span>
-              <span className="ml-2 text-[#5a6075]">(veto overridden by {overriderName})</span>
-            </>
+          {hasVeto && (
+            <span className="ml-2 not-italic">
+              (
+              {vetoNarrative.map((seg, i) =>
+                seg.kind === "arrow" ? (
+                  <span key={i} className="text-[#5a6075]">
+                    {seg.text}
+                  </span>
+                ) : seg.kind === "veto" ? (
+                  <span key={i} className={seg.resolved ? "text-sd-red/60 line-through" : "text-sd-red"}>
+                    {seg.text}
+                  </span>
+                ) : (
+                  <span key={i} className="text-[#5a6075]">
+                    {seg.text}
+                  </span>
+                )
+              )}
+              {!vetoIsOverridden && <span className="text-sd-red"></span>}
+              )
+            </span>
           )}
           {hasCommissionerOverride && (
             <span className="text-sd-red ml-2 no-underline">removed by Commissioner Override</span>
           )}
         </div>
-
-        {/* Commissioner override note */}
-        {pick.veto?.note && (
-          <div
-            className="mt-1 pl-3 py-2 pr-3 font-serif italic text-[13px] text-sd-ink bg-sd-paper"
-            style={{ borderLeft: "3px solid #cb2032" }}
-          >
-            ★ {pick.veto.note}
-          </div>
-        )}
       </div>
     </div>
   );

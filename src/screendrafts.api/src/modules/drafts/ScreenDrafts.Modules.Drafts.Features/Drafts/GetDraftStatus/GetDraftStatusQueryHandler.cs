@@ -65,7 +65,7 @@ internal sealed class GetDraftStatusQueryHandler(
       DraftLifecycleView.Scheduled or DraftLifecycleView.Created =>
         draft.Parts
           .OrderBy(p => p.PartIndex)
-          .OrderByDescending(p => p.IsScheduled(utcNow))
+          .ThenByDescending(p => p.IsScheduled(utcNow))
           .Select(p => (int?)p.PartIndex)
           .FirstOrDefault(),
 

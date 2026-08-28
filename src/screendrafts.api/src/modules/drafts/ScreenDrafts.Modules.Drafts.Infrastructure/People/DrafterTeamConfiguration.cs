@@ -9,36 +9,40 @@ internal sealed class DrafterTeamConfiguration : IEntityTypeConfiguration<Drafte
     // Id
     builder.HasKey(x => x.Id);
 
-    builder.Property(x => x.Id)
+    builder
+      .Property(x => x.Id)
       .ValueGeneratedNever()
-      .HasConversion(
-      x => x.Value,
-      value => DrafterTeamId.Create(value));
+      .HasConversion(x => x.Value, value => DrafterTeamId.Create(value));
 
     // Name
-    builder.Property(x => x.Name)
-        .HasMaxLength(100)
-        .IsRequired();
+    builder.Property(x => x.Name).HasMaxLength(100).IsRequired();
 
-    builder.Property(x => x.PublicId)
-        .HasMaxLength(100)
-        .IsRequired();
+    builder.Property(x => x.PublicId).HasMaxLength(100).IsRequired();
 
-    builder.Property(x => x.NumberOfDrafters)
-      .IsRequired();
+    builder.Ignore(x => x.NumberOfDrafters);
 
     builder.HasIndex(x => x.PublicId).IsUnique();
 
-    builder.HasMany(dt => dt.Drafters)
+    builder
+      .HasMany(dt => dt.Drafters)
       .WithMany()
       .UsingEntity<Dictionary<string, object>>(
         Tables.DrafterTeamDrafter,
-        x => x.HasOne<Drafter>().WithMany().HasForeignKey("drafter_id").OnDelete(DeleteBehavior.Cascade),
-        x => x.HasOne<DrafterTeam>().WithMany().HasForeignKey("drafter_team_id").OnDelete(DeleteBehavior.Cascade),
+        x =>
+          x.HasOne<Drafter>()
+            .WithMany()
+            .HasForeignKey("drafter_id")
+            .OnDelete(DeleteBehavior.Cascade),
+        x =>
+          x.HasOne<DrafterTeam>()
+            .WithMany()
+            .HasForeignKey("drafter_team_id")
+            .OnDelete(DeleteBehavior.Cascade),
         x =>
         {
           x.HasKey("drafter_id", "drafter_team_id");
           x.ToTable(Tables.DrafterTeamDrafter);
-        });
+        }
+      );
   }
 }

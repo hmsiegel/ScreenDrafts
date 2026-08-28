@@ -6,12 +6,19 @@
 ///
 /// Scoring rules
 ///  - 1 point per correct prediction
-///  - "Shoot the moon": predicting every required title correctly earns double points
+///  - "Shoot the moon": predicting every required title correctly earns double points,
+///    but only for contestants eligible for the bonus (see isShootTheMoonEligible param —
+///    eligibility is a caller concern, not something this service looks up itself)
+///  - Ordered* modes require an exact position match: the entry's OrderIndex (1-based)
+///    must equal the actual 1-based slot that TmdbId landed at in finalTmdbIds
+///  - Unordered* modes only require the predicted title to appear anywhere in the
+///    scored pool (all final picks, or the top N if TopN is set)
 ///
 /// Inputs:
 ///  - The set to score (must be locked)
 ///  - The ordered list of media public Ids that made the final list
 ///  - The prediction rules to apply
+///  - Whether this contestant is eligible for the Shoot the Moon bonus
 ///  - The UTC time scoring is being performed
 ///
 /// The caller (application-layer handler) is responsibles for:
@@ -31,6 +38,7 @@ public sealed class PredictionScoringService
     DraftPredictionSet set,
     IReadOnlyList<int> finalTmdbIds,
     DraftPartPredictionRule rules,
+    bool isShootTheMoonEligible,
     DateTime scoredAtUtc
   )
   {
@@ -43,21 +51,47 @@ public sealed class PredictionScoringService
       return Result.Failure<PredictionResult>(PredictionErrors.SetAlreadyLocked);
     }
 
-    var scoringPool = rules.TopN.HasValue
-      ? [.. finalTmdbIds.Take(rules.TopN.Value)]
-      : finalTmdbIds.ToHashSet();
+    var isOrderedMode =
+      rules.PredictionMode == PredictionMode.OrderedAll
+      || rules.PredictionMode == PredictionMode.OrderedTopN;
 
-    var predictedIds = set.Entries.Select(e => e.TmdbId).ToList();
+    // Pool size = how many final slots count toward scoring. TopN modes only
+    // count picks landing at position <= TopN; *All modes count every final slot.
+    var poolSize = rules.TopN ?? finalTmdbIds.Count;
 
-    var correctCount = predictedIds.Count(predictedId => scoringPool.Contains(predictedId));
+    bool IsEntryCorrect(PredictionEntry entry)
+    {
+      if (isOrderedMode)
+      {
+        // Exact position match: the entry's predicted rank must equal the
+        // actual final-board slot holding that title, and that slot must
+        // fall within the scored pool (relevant for OrderedTopN).
+        return entry.OrderIndex.HasValue
+          && entry.OrderIndex.Value >= 1
+          && entry.OrderIndex.Value <= poolSize
+          && entry.OrderIndex.Value <= finalTmdbIds.Count
+          && finalTmdbIds[entry.OrderIndex.Value - 1] == entry.TmdbId;
+      }
 
-    var shootTheMoon = correctCount == rules.RequiredCount;
+      // Unordered: membership only — predicted anywhere in the scored pool.
+      var scoringPool = rules.TopN.HasValue
+        ? finalTmdbIds.Take(rules.TopN.Value).ToHashSet()
+        : [.. finalTmdbIds];
+
+      return scoringPool.Contains(entry.TmdbId);
+    }
+
+    var correctCount = set.Entries.Count(IsEntryCorrect);
+
+    // Shoot the Moon requires both a perfect predicted set AND bonus eligibility —
+    // some contestants are permanently excluded from the bonus regardless of score.
+    var shootTheMoon = isShootTheMoonEligible && correctCount == rules.RequiredCount;
 
     var totalPoints = shootTheMoon ? correctCount * 2 : correctCount;
 
     foreach (var entry in set.Entries)
     {
-      entry.MarkCorrect(scoringPool.Contains(entry.TmdbId));
+      entry.MarkCorrect(IsEntryCorrect(entry));
     }
 
     return PredictionResult.Create(

@@ -12,14 +12,19 @@ import {
   setSubDraftSubject,
   setSpeedDraftPositions,
   searchImdbPeople,
+  addBoostersChampionAssignment,
+  updateDraft,
   type ImdbPersonSearchResult,
 } from "@/services/admin/fetch-admin-drafts";
+import { DrafterPicker } from "../../drafter-teams/drafter-picker";
 import { CampaignResponse, CategoryResponse, SmartEnumResponse } from "@/lib/dto";
 import { formatDraftType } from "@/lib/draft-type-display";
 import { ParticipantsSection } from "./participants-section";
 import { CommunityConfig, CommunitySection, defaultCommunityConfig } from "./community-section";
 import { getDefaultPositions, isFixedPositionType, PositionConfig, PositionsEditor } from "./positions-editor";
 import { defaultPredictionConfig, PredictionConfig, PredictionRulesSection } from "./prediction-rules-section";
+import { MovieSearchPicker } from "./movie-search-picker";
+import type { ResolvedMovie } from "@/lib/movie-resolve";
 
 const LABEL = "block text-[11px] font-mono tracking-widest text-sd-ink/60 uppercase mb-1";
 const INPUT =
@@ -257,6 +262,89 @@ export default function CreateDraftForm({
   const [hosts, setHosts] = useState<SelectedHost[]>([]);
   const [hostSearch, setHostSearch] = useState("");
   const [selectedDrafterIds, setSelectedDrafterIds] = useState<Set<string>>(new Set());
+
+  // Draft-level policy flags — mirror edit-draft-form.tsx's Core Details fields exactly.
+  // Neither is in the initial createDraft() payload (CreateDraftCommand's exact shape
+  // isn't something I have visibility into), so both are set via a follow-up updateDraft()
+  // call right after creation, before anything is redirected to. Safe: UpdateDraftCommand's
+  // "locked after a part starts" guard only blocks this once a part has actually started,
+  // which nothing has at this point.
+  const [useFungibleToken, setUseFungibleToken] = useState(false);
+  const [fungibleTokenName, setFungibleTokenName] = useState("");
+  const [isHostless, setIsHostless] = useState(false);
+
+  function handleToggleFungibleToken(checked: boolean) {
+    setUseFungibleToken(checked);
+    if (!checked) {
+      setFungibleTokenName("");
+      // Bonus Token only applies on a fungible-token draft — clear any stale true
+      // left over from before the toggle so it can't ride along hidden once the
+      // checkbox disappears.
+      setParts((prev) =>
+        prev.map((part) => ({
+          ...part,
+          positions: part.positions.map((p) => ({
+            ...p,
+            hasBonusFungibleToken: false,
+          })),
+        }))
+      );
+      return;
+    }
+    // Veto/Override are baked into the fungible token itself on these drafts —
+    // clear any bonus veto/override left over from before the toggle so a
+    // stale true doesn't ride along hidden once those columns disappear.
+    setParts((prev) =>
+      prev.map((part) => ({
+        ...part,
+        positions: part.positions.map((p) => ({
+          ...p,
+          hasBonusVeto: false,
+          hasBonusVetoOverride: false,
+        })),
+      }))
+    );
+  }
+
+  // Legends Mega only — see the gated section below. A specific film reserved for a
+  // specific drafter; can be left unassigned and set later if the title isn't decided
+  // at draft-setup time (mirrors CommunityFilmRule's own TmdbId nullability). tmdbId/
+  // title are set together via MovieSearchPicker — never hand-typed.
+  const [boostersChampionAssignments, setBoostersChampionAssignments] = useState<
+    { drafterPublicId: string; drafterDisplayName: string; tmdbId: number | null; title: string | null }[]
+  >([]);
+
+  function handleAddBoostersChampion(drafter: { publicId: string; displayName: string }) {
+    setBoostersChampionAssignments((prev) => [
+      ...prev,
+      {
+        drafterPublicId: drafter.publicId,
+        drafterDisplayName: drafter.displayName,
+        tmdbId: null,
+        title: null,
+      },
+    ]);
+  }
+
+  function handleRemoveBoostersChampion(drafterPublicId: string) {
+    setBoostersChampionAssignments((prev) =>
+      prev.filter((a) => a.drafterPublicId !== drafterPublicId)
+    );
+  }
+
+  function handleBoostersChampionFilmSelected(drafterPublicId: string, movie: ResolvedMovie) {
+    setBoostersChampionAssignments((prev) =>
+      prev.map((a) =>
+        a.drafterPublicId === drafterPublicId ? { ...a, tmdbId: movie.tmdbId, title: movie.title } : a
+      )
+    );
+  }
+
+  function handleBoostersChampionFilmCleared(drafterPublicId: string) {
+    setBoostersChampionAssignments((prev) =>
+      prev.map((a) => (a.drafterPublicId === drafterPublicId ? { ...a, tmdbId: null, title: null } : a))
+    );
+  }
   const [selectedTeamIds, setSelectedTeamIds] = useState<Set<string>>(new Set());
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<Set<string>>(new Set());
   const [campaignId, setCampaignId] = useState("");
@@ -471,6 +559,7 @@ export default function CreateDraftForm({
             picks: p.picks,
             hasBonusVeto: p.hasBonusVeto,
             hasBonusVetoOverride: p.hasBonusVetoOverride,
+            hasBonusFungibleToken: p.hasBonusFungibleToken,
           })),
         })),
         hosts: hosts.map((h) => ({
@@ -482,6 +571,18 @@ export default function CreateDraftForm({
         categoryIds: [...selectedCategoryIds],
         campaignId: campaignId || null,
       });
+
+      // Draft-level policy flags — not part of the initial create payload (see the state
+      // declarations above for why), set here immediately after creation while nothing
+      // has started yet. Only call this when something's actually set, avoiding a
+      // no-op PUT on every single draft creation.
+      if (fungibleTokenName.trim() || isHostless) {
+        await updateDraft(accessToken, created.publicId, {
+          draftTypeValue: selectedDraftType!.value ?? 0,
+          fungibleTokenName: fungibleTokenName.trim() || undefined,
+          isHostless,
+        });
+      }
 
       const hasPredictions = parts.some((p) => p.predictionConfig.enabled);
       if (hasPredictions) {
@@ -524,6 +625,21 @@ export default function CreateDraftForm({
           // every round and the live page has nothing to gate the position-
           // choice picker on.
           await setSpeedDraftPositions(accessToken, draftPart.publicId);
+        }
+      }
+
+      if (boostersChampionAssignments.length > 0) {
+        const detail = await getDraft(accessToken, created.publicId);
+        const draftPart = detail?.parts.find((dp) => dp.partIndex === 1);
+        if (draftPart) {
+          for (const assignment of boostersChampionAssignments) {
+            await addBoostersChampionAssignment(
+              accessToken,
+              draftPart.publicId,
+              assignment.drafterPublicId,
+              assignment.tmdbId
+            );
+          }
         }
       }
 
@@ -623,6 +739,56 @@ export default function CreateDraftForm({
               </p>
             )}
           </div>
+
+          <div className="md:col-span-2">
+            <label className="flex items-center gap-2 cursor-pointer select-none mb-2">
+              <input
+                type="checkbox"
+                checked={useFungibleToken}
+                onChange={(e) => handleToggleFungibleToken(e.target.checked)}
+                className="accent-sd-red w-4 h-4"
+              />
+              <span className="text-[11px] font-mono tracking-widest text-sd-ink/60 uppercase">
+                Use Fungible Token
+              </span>
+            </label>
+            {useFungibleToken && (
+              <>
+                <label className={LABEL}>Token Name</label>
+                <input
+                  type="text"
+                  className={INPUT}
+                  value={fungibleTokenName}
+                  onChange={(e) => setFungibleTokenName(e.target.value)}
+                  placeholder="e.g. Blessing of Unusual Versatility"
+                  required
+                />
+              </>
+            )}
+            <p className="text-[11px] font-mono text-sd-ink/50 mt-1">
+              Only for drafts using a fungible veto/override token (e.g. Legends Super
+              Drafts) — leave unchecked for a normal draft, where everyone gets a separate
+              veto and override allotment instead.
+            </p>
+          </div>
+
+          <div className="md:col-span-2">
+            <label className="flex items-center gap-2 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={isHostless}
+                onChange={(e) => setIsHostless(e.target.checked)}
+                className="accent-sd-red w-4 h-4"
+              />
+              <span className="text-[11px] font-mono tracking-widest text-sd-ink/60 uppercase">No Dedicated Host</span>
+            </label>
+            <p className="text-[11px] font-mono text-sd-ink/50 mt-1">
+              For drafts with no host at all — e.g. the Legends Mega/Super drafts, or
+              Clay-vs-Ryan&apos;s Christmas draft. Picks get sent to another drafter to
+              reveal instead of a host: automatically to &quot;the other drafter&quot; in a
+              2-drafter draft, or a random draw among the rest in a larger one.
+            </p>
+          </div>
         </div>
       </section>
 
@@ -655,6 +821,7 @@ export default function CreateDraftForm({
                 onChange={(pos) => updatePartPositions(0, pos)}
                 totalPicks={parts[0].maxPositions}
                 readonly={fixedPositions}
+                useFungibleToken={useFungibleToken}
               />
             </div>
           </div>
@@ -678,6 +845,7 @@ export default function CreateDraftForm({
                 positions={parts[0].positions}
                 onChange={(pos) => updatePartPositions(0, pos)}
                 totalPicks={parts[0].maxPositions}
+                useFungibleToken={useFungibleToken}
               />
             </div>
           </div>
@@ -739,6 +907,7 @@ export default function CreateDraftForm({
                         onChange={(pos) => updatePartPositions(idx, pos)}
                         totalPicks={part.maxPositions}
                         readonly={fixedPositions}
+                        useFungibleToken={useFungibleToken}
                       />
                     </div>
                   </div>
@@ -748,6 +917,73 @@ export default function CreateDraftForm({
           </div>
         )}
       </section>
+
+      {/* Legends Mega only — Booster's Champion film reservation. Unrelated to the
+          slot-based Community Film Rules in CommunitySection above; see
+          BoostersChampionAssignment.cs's remarks for why they're separate mechanisms. */}
+      {selectedSeries?.kindValue === 3 && (
+        <section>
+          <h2 className={SECTION_HEADING}>Booster&apos;s Champion</h2>
+          <p className="text-sm text-sd-ink/60 mb-4 max-w-2xl">
+            Reserves a specific film for a specific drafter to play on the Legends
+            community&apos;s behalf. They can play it at any board slot they choose —
+            nobody else can play that film at all. The film can be left unassigned and
+            set later if the title isn&apos;t decided yet.
+          </p>
+
+          {boostersChampionAssignments.length > 0 && (
+            <div className="space-y-2 mb-4">
+              {boostersChampionAssignments.map((a) => (
+                <div
+                  key={a.drafterPublicId}
+                  className="border border-sd-ink/10 rounded p-3 bg-white"
+                >
+                  <div className="flex items-center gap-3 mb-2">
+                    <span className="text-sm font-medium text-sd-ink flex-1">
+                      {a.drafterDisplayName}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveBoostersChampion(a.drafterPublicId)}
+                      className="text-sd-ink/30 hover:text-sd-red text-xl leading-none"
+                      aria-label={`Remove ${a.drafterDisplayName}`}
+                    >
+                      ×
+                    </button>
+                  </div>
+
+                  {a.tmdbId ? (
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm text-sd-ink font-medium">{a.title}</span>
+                      <span className="text-[11px] font-mono text-sd-ink/40">
+                        TMDb #{a.tmdbId}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => handleBoostersChampionFilmCleared(a.drafterPublicId)}
+                        className="text-[11px] font-mono text-sd-ink/40 hover:text-sd-red ml-1"
+                      >
+                        clear film
+                      </button>
+                    </div>
+                  ) : (
+                    <MovieSearchPicker
+                      accessToken={accessToken}
+                      onSelect={(movie) => handleBoostersChampionFilmSelected(a.drafterPublicId, movie)}
+                    />
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+
+          <DrafterPicker
+            accessToken={accessToken}
+            excludeIds={new Set(boostersChampionAssignments.map((a) => a.drafterPublicId))}
+            onSelect={handleAddBoostersChampion}
+          />
+        </section>
+      )}
 
       {/* ── Section 3: Hosts ── */}
       <section>

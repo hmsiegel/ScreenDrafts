@@ -5,7 +5,8 @@ internal sealed class ScoreDraftPartPredictionsCommandHandler(
   IDraftPartPredictionRulesRepository rulesRepository,
   IDraftPredictionSetRepository setRepository,
   IPredictionResultRepository resultRepository,
-  IDateTimeProvider dateTimeProvider
+  IDateTimeProvider dateTimeProvider,
+  IOptions<PredictionsOptions> predictionOptions
 ) : ICommandHandler<ScoreDraftPartPredictionsCommand>
 {
   private readonly IDraftPartRepository _draftPartRepository = draftPartRepository;
@@ -13,6 +14,10 @@ internal sealed class ScoreDraftPartPredictionsCommandHandler(
   private readonly IDraftPredictionSetRepository _setRepository = setRepository;
   private readonly IPredictionResultRepository _resultRepository = resultRepository;
   private readonly IDateTimeProvider _dateTimeProvider = dateTimeProvider;
+  private readonly HashSet<Guid> _shootTheMoonIneligibleContestantIds =
+  [
+    .. predictionOptions.Value.ShootTheMoonIneligibleContestantIds,
+  ];
 
   public async Task<Result> Handle(
     ScoreDraftPartPredictionsCommand request,
@@ -73,11 +78,16 @@ internal sealed class ScoreDraftPartPredictionsCommandHandler(
         }
       }
 
+      var isShootTheMoonEligible = !_shootTheMoonIneligibleContestantIds.Contains(
+        set.ContestantId.Value
+      );
+
       var predictionResult = PredictionScoringService.Score(
         set: set,
         finalTmdbIds: request.FinalTmdbIds,
         rules: rules,
-        scoredAtUtc: now
+        scoredAtUtc: now,
+        isShootTheMoonEligible: isShootTheMoonEligible
       );
 
       if (predictionResult.IsFailure)

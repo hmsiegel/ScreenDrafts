@@ -28,10 +28,11 @@ internal sealed class DraftPartRepository(DraftsDbContext dbContext) : IDraftPar
       .DraftParts.Include("_draftPartParticipants")
       .Include(dp => dp.GameBoard!)
         .ThenInclude(gb => gb.DraftPositions)
-      .Include("_picks.Veto.VetoOverride")
+      .Include("_picks._vetoes.VetoOverride")
       .Include("_picks.CommissionerOverride")
       .Include("_picks.Movie")
       .Include("_communityFilmRules")
+      .Include("_triviaResults")
       .FirstOrDefaultAsync(x => x.PublicId == draftPartId, cancellationToken);
   }
 
@@ -43,7 +44,7 @@ internal sealed class DraftPartRepository(DraftsDbContext dbContext) : IDraftPar
     return await _dbContext
       .DraftParts.Include("_draftPartParticipants")
       .Include("_draftHosts.Host")
-      .Include("_picks.Veto.VetoOverride")
+      .Include("_picks._vetoes.VetoOverride")
       .FirstOrDefaultAsync(x => x.PublicId == draftPartId, cancellationToken);
   }
 
@@ -55,8 +56,9 @@ internal sealed class DraftPartRepository(DraftsDbContext dbContext) : IDraftPar
     return _dbContext
       .DraftParts.Include("_draftPartParticipants")
       .Include("_picks.Movie")
-      .Include("_picks.Veto")
+      .Include("_picks._vetoes")
       .Include("_subDrafts.GameBoard.DraftPositions")
+      .Include("_triviaResults")
       .Include(dp => dp.GameBoard!)
         .ThenInclude(gb => gb.DraftPositions)
       .FirstOrDefaultAsync(x => x.PublicId == draftPartId, cancellationToken);

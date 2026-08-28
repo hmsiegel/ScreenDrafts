@@ -575,36 +575,37 @@ public abstract class DraftScenarioBase(DraftsIntegrationTestWebAppFactory facto
   {
     var pick = await DbContext.Picks
       .Include(p => p.Movie)
+      .Include(p => p.Vetoes)
       .FirstOrDefaultAsync(p =>
         p.DraftPart.PublicId == draftPartPublicId &&
         p.Position == position &&
-        (p.Veto == null || p.Veto.IsOverridden), TestContext.Current.CancellationToken);
+        !p.Vetoes.Any(v => !v.IsOverridden), TestContext.Current.CancellationToken);
 
     pick.Should().NotBeNull($"Expected a valid pick at position {position}");
-    pick!.Movie.PublicId.Should().Be(expectedMoviePublicId,
+    pick.Movie.PublicId.Should().Be(expectedMoviePublicId,
       $"Position {position} should have movie {expectedMoviePublicId}");
   }
 
   protected async Task AssertPickVetoedAsync(string draftPartPublicId, int playOrder)
   {
     var pick = await DbContext.Picks
-      .Include(p => p.Veto)
+      .Include(p => p.Vetoes)
       .FirstAsync(p => p.DraftPart.PublicId == draftPartPublicId && p.PlayOrder == playOrder, TestContext.Current.CancellationToken);
 
-    pick.Veto.Should().NotBeNull($"Pick playOrder={playOrder} should be vetoed");
-    pick.Veto!.IsOverridden.Should().BeFalse($"Veto on playOrder={playOrder} should not be overridden");
+    pick.CurrentVeto.Should().NotBeNull($"Pick playOrder={playOrder} should be vetoed");
+    pick.CurrentVeto.IsOverridden.Should().BeFalse($"Veto on playOrder={playOrder} should not be overridden");
   }
 
   protected async Task AssertVetoOverriddenAsync(string draftPartPublicId, int playOrder)
   {
     var pick = await DbContext.Picks
-      .Include(p => p.Veto)
-        .ThenInclude(v => v!.VetoOverride)
+      .Include(p => p.Vetoes)
+        .ThenInclude(v => v.VetoOverride)
       .FirstAsync(p => p.DraftPart.PublicId == draftPartPublicId && p.PlayOrder == playOrder, TestContext.Current.CancellationToken);
 
-    pick.Veto.Should().NotBeNull($"Pick playOrder={playOrder} should have a veto");
-    pick.Veto!.IsOverridden.Should().BeTrue($"Veto on playOrder={playOrder} should be overridden");
-    pick.Veto.VetoOverride.Should().NotBeNull($"VetoOverride record should exist on playOrder={playOrder}");
+    pick.CurrentVeto.Should().NotBeNull($"Pick playOrder={playOrder} should have a veto");
+    pick.CurrentVeto.IsOverridden.Should().BeTrue($"Veto on playOrder={playOrder} should be overridden");
+    pick.CurrentVeto.VetoOverride.Should().NotBeNull($"VetoOverride record should exist on playOrder={playOrder}");
   }
 
   // ───────────────────────────────────────────────────────────────────────────

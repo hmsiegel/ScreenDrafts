@@ -62,7 +62,7 @@ public sealed class SetDraftPartPredictionRulesTests(DraftsIntegrationTestWebApp
     var rules = await DbContext.DraftPartPredictionRules
       .FirstOrDefaultAsync(r => r.DraftPartId == draftPart.Id, TestContext.Current.CancellationToken);
     rules.Should().NotBeNull();
-    rules!.RequiredCount.Should().Be(5);
+    rules.RequiredCount.Should().Be(5);
   }
 
   [Fact]
@@ -95,7 +95,7 @@ public sealed class SetDraftPartPredictionRulesTests(DraftsIntegrationTestWebApp
     var rules = await DbContext.DraftPartPredictionRules
       .FirstOrDefaultAsync(r => r.DraftPartId == draftPart.Id, TestContext.Current.CancellationToken);
     rules.Should().NotBeNull();
-    rules!.RequiredCount.Should().Be(3);
+    rules.RequiredCount.Should().Be(3);
   }
 
   [Fact]

@@ -286,7 +286,7 @@ public sealed class SearchHostsTests(DraftsIntegrationTestWebAppFactory factory)
     result.IsSuccess.Should().BeTrue();
     var item = result.Value.Items.SingleOrDefault(h => h.PublicId == hostId);
     item.Should().NotBeNull();
-    item!.HostedDraftPartCount.Should().Be(2);
+    item.HostedDraftPartCount.Should().Be(2);
   }
 
   // -------------------------------------------------------------------------

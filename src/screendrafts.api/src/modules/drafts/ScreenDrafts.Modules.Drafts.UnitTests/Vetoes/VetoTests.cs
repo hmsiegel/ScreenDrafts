@@ -83,7 +83,7 @@ public class VetoTests : DraftsBaseTest
     result.IsSuccess.Should().BeTrue();
     veto.IsOverridden.Should().BeTrue();
     veto.VetoOverride.Should().NotBeNull();
-    veto.VetoOverride!.IssuedByParticipant.ParticipantId.Should().Be(participantId);
+    veto.VetoOverride.IssuedByParticipant.ParticipantId.Should().Be(participantId);
   }
 
   [Fact]

@@ -1,6 +1,7 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Infrastructure.DraftParts;
 
-internal sealed class DraftPartParticipantConfiguration : IEntityTypeConfiguration<DraftPartParticipant>
+internal sealed class DraftPartParticipantConfiguration
+  : IEntityTypeConfiguration<DraftPartParticipant>
 {
   public void Configure(EntityTypeBuilder<DraftPartParticipant> builder)
   {
@@ -9,26 +10,29 @@ internal sealed class DraftPartParticipantConfiguration : IEntityTypeConfigurati
     // Id
     builder.HasKey(x => x.Id);
 
-    builder.Property(x => x.Id)
+    builder
+      .Property(x => x.Id)
       .ValueGeneratedNever()
       .HasConversion(IdConverters.DraftPartParticipantIdConverter);
 
     // DraftPart FK
-    builder.Property(dpp => dpp.DraftPartId)
-        .IsRequired()
-        .ValueGeneratedNever()
-        .HasConversion(IdConverters.DraftPartIdConverter);
+    builder
+      .Property(dpp => dpp.DraftPartId)
+      .IsRequired()
+      .ValueGeneratedNever()
+      .HasConversion(IdConverters.DraftPartIdConverter);
 
-    builder.HasOne(dpp => dpp.DraftPart)
-        .WithMany("_draftPartParticipants")
-        .HasForeignKey(dpp => dpp.DraftPartId)
-        .OnDelete(DeleteBehavior.Cascade);
+    builder
+      .HasOne(dpp => dpp.DraftPart)
+      .WithMany("_draftPartParticipants")
+      .HasForeignKey(dpp => dpp.DraftPartId)
+      .OnDelete(DeleteBehavior.Cascade);
 
     // Participant Polymorphic Identity
-    builder.Property(dpp => dpp.ParticipantIdValue)
-      .IsRequired();
+    builder.Property(dpp => dpp.ParticipantIdValue).IsRequired();
 
-    builder.Property(dpp => dpp.ParticipantKindValue)
+    builder
+      .Property(dpp => dpp.ParticipantKindValue)
       .IsRequired()
       .HasConversion(EnumConverters.ParticipantKindConverter);
 
@@ -37,32 +41,50 @@ internal sealed class DraftPartParticipantConfiguration : IEntityTypeConfigurati
     // Inventory Inputs
     builder.Property(x => x.StartingVetoes).IsRequired();
 
-    builder.Property(x => x.VetoesRollingIn)
-      .HasColumnName("vetoes_rolling_in")
-      .IsRequired();
+    builder.Property(x => x.VetoesRollingIn).HasColumnName("vetoes_rolling_in").IsRequired();
 
-    builder.Property(x => x.VetoOverridesRollingIn)
+    builder
+      .Property(x => x.VetoOverridesRollingIn)
       .HasColumnName("veto_overrides_rolling_in")
       .IsRequired();
 
-    builder.Property(x => x.AwardedVetoes)
-      .HasColumnName("awarded_vetoes")
-      .IsRequired();
+    builder.Property(x => x.AwardedVetoes).HasColumnName("awarded_vetoes").IsRequired();
 
-    builder.Property(x => x.AwardedVetoOverrides)
+    builder
+      .Property(x => x.AwardedVetoOverrides)
       .HasColumnName("awarded_veto_overrides")
       .IsRequired();
 
-    builder.Property(x => x.CommissionerOverrides)
+    builder
+      .Property(x => x.CommissionerOverrides)
       .HasColumnName("commissioner_overrides")
+      .IsRequired();
+
+    builder.Property(x => x.FungibleTokens).HasColumnName("fungible_tokens").IsRequired();
+
+    builder
+      .Property(x => x.FungibleTokensRollingIn)
+      .HasColumnName("fungible_tokens_rolling_in")
+      .IsRequired();
+
+    builder
+      .Property(x => x.AwardedFungibleTokens)
+      .HasColumnName("awarded_fungible_tokens")
       .IsRequired();
 
     // Usage Counters
     builder.Property(x => x.VetoesUsed).IsRequired();
     builder.Property(x => x.VetoOverridesUsed).IsRequired();
 
+    builder.Property(x => x.FungibleTokensUsed).HasColumnName("fungible_tokens_used").IsRequired();
 
-    builder.HasIndex(dpp => new { dpp.DraftPartId, dpp.ParticipantIdValue, dpp.ParticipantKindValue })
+    builder
+      .HasIndex(dpp => new
+      {
+        dpp.DraftPartId,
+        dpp.ParticipantIdValue,
+        dpp.ParticipantKindValue,
+      })
       .IsUnique()
       .HasDatabaseName("ux_draft_part_participants_unique");
 
@@ -71,6 +93,7 @@ internal sealed class DraftPartParticipantConfiguration : IEntityTypeConfigurati
     builder.Ignore(x => x.TotalVetoOverrides);
     builder.Ignore(x => x.VetoesRollingOut);
     builder.Ignore(x => x.VetoOverridesRollingOut);
+    builder.Ignore(x => x.TotalFungibleTokens);
+    builder.Ignore(x => x.FungibleTokensRollingOut);
   }
-
 }

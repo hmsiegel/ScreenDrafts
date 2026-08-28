@@ -6,6 +6,7 @@ import type { AdminDraftDetail } from "@/services/admin/fetch-admin-drafts";
 import { SeedEpisodeStep } from "./seed-episode-step";
 import { SeedStartStep } from "./seed-start-step";
 import { SeedTriviaStep } from "./seed-trivia-step";
+import { SeedPositionsStep } from "./seed-positions-step";
 import { SeedPicksStep } from "./seed-picks-step";
 import { SeedSpeedDraftStep } from "./seed-speed-draft-step";
 import { SeedPredictionsStep } from "./seed-predictions-step";
@@ -17,7 +18,7 @@ export interface SeedDraftState {
   partIndex: number;
 }
 
-type StepKey = "episode" | "predictions" | "start" | "trivia" | "picks" | "speed" | "complete";
+type StepKey = "episode" | "predictions" | "start" | "trivia" | "positions" | "picks" | "speed" | "complete";
 
 interface StepDef {
   key: StepKey;
@@ -25,16 +26,26 @@ interface StepDef {
   ready: boolean;
 }
 
-// Speed Drafts replace the separate Trivia + Picks steps with one combined
-// "speed" step that loops over all three sub-drafts internally (trivia ->
-// position choice -> picks/vetoes -> advance, repeated) — there's no
-// part-level trivia round or single flat pick board to enter for this
-// draft type.
+// Speed Drafts replace the separate Trivia + Positions + Picks steps with one
+// combined "speed" step that loops over all three sub-drafts internally
+// (trivia -> position choice -> picks/vetoes -> advance, repeated) — there's
+// no part-level trivia round or single flat pick board to enter for this
+// draft type, and AssignSubDraftPosition already handles position choice
+// per sub-draft on its own.
+//
+// Regular drafts previously went straight from Trivia to Picks — positions
+// were never assigned, so a position's bonus veto/override/fungible token
+// never got granted (that only happens inside
+// DraftPart.AssignParticipantToPositionAsync, which nothing in the old step
+// list ever called). "positions" closes that gap using the same
+// live-gameplay assign-position command primary-host-tab.tsx uses during an
+// actual draft — see SeedPositionsStep.
 const REGULAR_STEPS: StepDef[] = [
   { key: "episode", label: "Episode Info", ready: true },
   { key: "predictions", label: "Predictions", ready: true },
   { key: "start", label: "Start", ready: true },
   { key: "trivia", label: "Trivia", ready: true },
+  { key: "positions", label: "Positions", ready: true },
   { key: "picks", label: "Picks", ready: true },
   { key: "complete", label: "Complete", ready: true },
 ];
@@ -60,7 +71,9 @@ function deriveInitialStepIndex(detail: AdminDraftDetail, part: PartSummary, ste
   if (part.status.name === "InProgress") {
     // trivia/speed self-hydrates and is skippable/resumable, so landing here
     // is a fast click-through if it's already done, but won't silently skip
-    // it if it isn't.
+    // it if it isn't. Same reasoning extends to "positions" for regular
+    // drafts — always land on "trivia" first and click through; it's cheap
+    // even when both trivia and positions are already done.
     return detail.draftType.name === "SpeedDraft" ? indexOf("speed") : indexOf("trivia");
   }
   if (part.status.name === "Completed") return indexOf("complete");
@@ -167,6 +180,10 @@ export function SeedDraftWizard({ detail, accessToken }: Props) {
           accessToken={accessToken}
           onDone={advance}
         />
+      )}
+
+      {current.key === "positions" && (
+        <SeedPositionsStep draft={draft} accessToken={accessToken} onDone={advance} />
       )}
 
       {current.key === "picks" && (

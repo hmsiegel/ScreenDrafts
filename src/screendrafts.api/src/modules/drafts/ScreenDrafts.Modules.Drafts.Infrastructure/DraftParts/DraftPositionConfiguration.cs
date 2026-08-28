@@ -8,31 +8,27 @@ internal sealed class DraftPositionConfiguration : IEntityTypeConfiguration<Draf
 
     builder.HasKey(e => e.Id);
 
-    builder.Property(e => e.Id)
+    builder
+      .Property(e => e.Id)
       .ValueGeneratedNever()
       .HasConversion(IdConverters.DraftPositionIdConverter);
 
-    builder.Property(p => p.PublicId)
-      .HasMaxLength(PublicIdPrefixes.MaxPublicIdLength)
-      .IsRequired();
+    builder.Property(p => p.PublicId).HasMaxLength(PublicIdPrefixes.MaxPublicIdLength).IsRequired();
 
-    builder.HasIndex(x => x.PublicId)
-      .IsUnique();
+    builder.HasIndex(x => x.PublicId).IsUnique();
 
-    builder.Property(e => e.Name)
-      .IsRequired()
-      .HasMaxLength(DraftPosition.NameMaxLength);
+    builder.Property(e => e.Name).IsRequired().HasMaxLength(DraftPosition.NameMaxLength);
 
-    builder.Property(dp => dp.HasBonusVeto)
-      .IsRequired();
+    builder.Property(dp => dp.HasBonusVeto).IsRequired();
 
-    builder.Property(dp => dp.HasBonusVetoOverride)
-      .IsRequired();
+    builder.Property(dp => dp.HasBonusVetoOverride).IsRequired();
 
-    builder.Property(dp => dp.Picks)
-      .HasListOfPicksConverter();
+    builder.Property(dp => dp.HasBonusFungibleToken).IsRequired();
 
-    builder.HasOne(dp => dp.GameBoard)
+    builder.Property(dp => dp.Picks).HasListOfPicksConverter();
+
+    builder
+      .HasOne(dp => dp.GameBoard)
       .WithMany(gb => gb.DraftPositions)
       .HasForeignKey(dp => dp.GameBoardId)
       .OnDelete(DeleteBehavior.Cascade);

@@ -33,6 +33,10 @@ internal sealed class DraftConfiguration : IEntityTypeConfiguration<Draft>
 
     builder.Property(d => d.Description);
 
+    builder.Property(d => d.FungibleTokenName).HasMaxLength(200);
+
+    builder.Property(d => d.IsHostless).IsRequired();
+
     builder
       .HasMany(d => d.DraftCategories)
       .WithOne(dc => dc.Draft)

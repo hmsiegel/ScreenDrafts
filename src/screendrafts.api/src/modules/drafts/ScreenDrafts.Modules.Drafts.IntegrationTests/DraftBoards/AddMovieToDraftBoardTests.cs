@@ -56,7 +56,7 @@ public sealed class AddMovieToDraftBoardTests(DraftsIntegrationTestWebAppFactory
       TestContext.Current.CancellationToken
     );
     board.Should().NotBeNull();
-    board!.PublicId.Should().NotBeNullOrEmpty();
+    board.PublicId.Should().NotBeNullOrEmpty();
   }
 
   [Fact]
@@ -84,7 +84,7 @@ public sealed class AddMovieToDraftBoardTests(DraftsIntegrationTestWebAppFactory
       .FirstOrDefaultAsync(TestContext.Current.CancellationToken);
 
     board.Should().NotBeNull();
-    board!.Items.Should().ContainSingle(i => i.TmdbId == tmdbId);
+    board.Items.Should().ContainSingle(i => i.TmdbId == tmdbId);
   }
 
   [Fact]
@@ -117,7 +117,7 @@ public sealed class AddMovieToDraftBoardTests(DraftsIntegrationTestWebAppFactory
 
     var item = board!.Items.FirstOrDefault(i => i.TmdbId == tmdbId);
     item.Should().NotBeNull();
-    item!.Notes.Should().Be(notes);
+    item.Notes.Should().Be(notes);
     item.Priority.Should().Be(priority);
   }
 

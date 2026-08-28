@@ -54,7 +54,7 @@ internal sealed partial class MovieImdbSeeder(
 
     var existingTmdbPairs = tmdbIdList.Count > 0
       ? [.. (await _dbContext.Media
-          .Where(m => m.TmdbId.HasValue && tmdbIdList.Contains(m.TmdbId!.Value))
+          .Where(m => m.TmdbId.HasValue && tmdbIdList.Contains(m.TmdbId.Value))
           .Select(m => new { m.TmdbId, MediaTypeValue = m.MediaType.Value })
           .ToListAsync(cancellationToken))
           .Select(m => (m.TmdbId!.Value, m.MediaTypeValue))]
@@ -62,7 +62,7 @@ internal sealed partial class MovieImdbSeeder(
 
     var existingIgdbIds = igdbIds.Count > 0
       ? await _dbContext.Media
-          .Where(m => m.IgdbId.HasValue && igdbIds.Contains(m.IgdbId!.Value))
+          .Where(m => m.IgdbId.HasValue && igdbIds.Contains(m.IgdbId.Value))
           .Select(m => m.IgdbId!.Value)
           .ToHashSetAsync(cancellationToken)
       : [];

@@ -194,6 +194,12 @@ public static partial class DraftErrors
     "Invalid image content type. Allowed content types are: image/jpeg, image/png, image/webp."
   );
 
+  public static readonly SDError CannotChangeFungibleTokenNameAfterADraftPartHasStarted =
+    SDError.Conflict(
+      "Drafts.CannotChangeFungibleTokenNameAfterADraftPartHasStarted",
+      "Cannot change a fungible token name after a draft part has started."
+    );
+
   public static SDError CampaignDoesNotBelongToThisDraft(string publicId) =>
     SDError.Problem(
       "Drafts.CampaignDoesNotBelongToThisDraft",
@@ -235,4 +241,14 @@ public static partial class DraftErrors
       code: "Draft.DraftNotDeleted",
       description: $"Draft '{publicId}' is not deleted."
     );
+
+  public static readonly SDError CannotChangeIsHostlessAfterADraftPartHasStarted = SDError.Conflict(
+    "Drafts.CannotChangeIsHostlessAfterADraftPartHasStarted",
+    "Cannot change whether a draft is hostless after a draft part has started."
+  );
+
+  public static readonly SDError CannotChangeIsHostlessAfterDraftCreation = SDError.Conflict(
+    "Drafts.CannotChangeIsHostlessAfterDraftCreation",
+    "Cannot change whether a draft is hostless after draft creation."
+  );
 }

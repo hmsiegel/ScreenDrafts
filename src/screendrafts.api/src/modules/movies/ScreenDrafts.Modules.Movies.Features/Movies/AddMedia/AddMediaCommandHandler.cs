@@ -53,9 +53,10 @@ internal sealed class AddMediaCommandHandler(
 
       MovieLoggingMessages.MovieAlreadyExists(_logger, existingIdStr);
 
-      var error = request.IgdbId.HasValue || request.TmdbId.HasValue
-        ? MediaErrors.MediaAlreadyExists(request.IgdbId ?? request.TmdbId!.Value)
-        : MediaErrors.MediaAlreadyExists(existingIdStr);
+      var error =
+        request.IgdbId.HasValue || request.TmdbId.HasValue
+          ? MediaErrors.MediaAlreadyExists(request.IgdbId ?? request.TmdbId!.Value)
+          : MediaErrors.MediaAlreadyExists(existingIdStr);
 
       return Result.Failure<string>(error);
     }
@@ -85,7 +86,7 @@ internal sealed class AddMediaCommandHandler(
     if (mediaResult.IsFailure)
     {
       MovieLoggingMessages.CreateMovieFailed(_logger, mediaResult.Error!.ToString());
-      return Result.Failure<string>(mediaResult.Error!);
+      return Result.Failure<string>(mediaResult.Error);
     }
 
     var media = mediaResult.Value;

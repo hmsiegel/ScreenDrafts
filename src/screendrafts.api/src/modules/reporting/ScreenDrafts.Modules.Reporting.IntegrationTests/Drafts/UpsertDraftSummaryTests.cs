@@ -28,7 +28,7 @@ public sealed class UpsertDraftSummaryTests(ReportingIntegrationTestWebAppFactor
       );
 
     summary.Should().NotBeNull();
-    summary!.Title.Should().Be(command.Title);
+    summary.Title.Should().Be(command.Title);
     summary.TotalParts.Should().Be(command.TotalParts);
     summary.TotalPicks.Should().Be(command.TotalPicks);
     summary.IsPatreon.Should().Be(command.IsPatreon);

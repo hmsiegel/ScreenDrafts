@@ -57,7 +57,7 @@ internal sealed class AssignParticipantToDraftPositionCommandHandler(
       return Result.Failure(validationResult.Errors);
     }
 
-    var result = draftPart.AssignParticipantToPosition(position, participant);
+    var result = await draftPart.AssignParticipantToPositionAsync(position, participant);
 
     if (result.IsFailure)
     {

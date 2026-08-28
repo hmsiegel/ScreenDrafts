@@ -89,7 +89,7 @@ public sealed class BulkAddMoviesToDraftBoardTests(DraftsIntegrationTestWebAppFa
     // Assert
     var board = await DbContext.DraftBoards.FirstOrDefaultAsync(TestContext.Current.CancellationToken);
     board.Should().NotBeNull();
-    board!.PublicId.Should().NotBeNullOrEmpty();
+    board.PublicId.Should().NotBeNullOrEmpty();
   }
 
   [Fact]
@@ -121,7 +121,7 @@ public sealed class BulkAddMoviesToDraftBoardTests(DraftsIntegrationTestWebAppFa
       .FirstOrDefaultAsync(TestContext.Current.CancellationToken);
 
     board.Should().NotBeNull();
-    board!.Items.Should().Contain(i => i.TmdbId == tmdbId1);
+    board.Items.Should().Contain(i => i.TmdbId == tmdbId1);
     board.Items.Should().Contain(i => i.TmdbId == tmdbId2);
   }
 

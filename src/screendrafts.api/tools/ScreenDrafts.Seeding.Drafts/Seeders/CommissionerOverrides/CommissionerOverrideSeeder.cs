@@ -69,7 +69,7 @@ internal sealed class CommissionerOverrideSeeder(
 
       var overrideGuid = DeterministicIds.CommissionerOverrideIdFrom(pickGuid);
 
-      var result = CommissionerOverride.SeedCreate(pick!, overrideGuid);
+      var result = CommissionerOverride.SeedCreate(pick, overrideGuid);
 
       if (result.IsFailure)
       {

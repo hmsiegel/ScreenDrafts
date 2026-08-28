@@ -11,6 +11,7 @@ import {
   addHostToDraftPart,
   removeHostFromDraftPart,
   addParticipantToDraftPart,
+  setDraftPartPositionRange,
   removeParticipantFromDraftPart,
   setDraftCategories,
   setDraftCampaign,
@@ -30,6 +31,10 @@ import {
   getDraftPartPredictionRules,
   getDraftPartPredictors,
   syncPredictionConfig,
+  addBoostersChampionAssignment,
+  assignFilmToBoostersChampionAssignment,
+  removeBoostersChampionAssignment,
+  type AdminBoostersChampionAssignment,
 } from "@/services/admin/fetch-admin-drafts";
 import { CampaignResponse, CategoryResponse, SmartEnumResponse } from "@/lib/dto";
 import { formatDraftType } from "@/lib/draft-type-display";
@@ -51,6 +56,9 @@ import {
   isoToDatetimeLocal,
 } from "../../new/prediction-rules-section";
 import { SurrogateAssignmentPanel } from "../../new/surrogate-assignment-panel";
+import { DrafterPicker } from "../../../drafter-teams/drafter-picker";
+import { MovieSearchPicker } from "../../new/movie-search-picker";
+import type { ResolvedMovie } from "@/lib/movie-resolve";
 
 const LABEL = "block text-[11px] font-mono tracking-widest text-sd-ink/60 uppercase mb-1";
 const INPUT =
@@ -63,6 +71,263 @@ const BTN_SECONDARY =
   "border border-sd-ink/20 text-sd-ink font-sans text-sm px-4 py-2 hover:bg-sd-ink/5 disabled:opacity-50 transition-colors rounded";
 const SECTION_HEADING =
   "font-oswald font-bold text-[18px] tracking-wide uppercase text-sd-ink mb-4 pb-2 border-b border-sd-ink/10";
+
+// Legends Mega only. BoostersChampionAssignment is a child of DraftPart in the data
+// model (not Draft), so this is genuinely per-part, not hardcoded to Part 1 — rendered
+// once per part below, gated on the same selectedSeries?.kindValue check as
+// create-draft-form.tsx's version. Immediate-action pattern (each add/remove/save is its
+// own API call), matching EditDrafterTeamForm, since this edits an already-created draft
+// rather than batching changes until a final submit.
+function BoostersChampionSection({
+  part,
+  accessToken,
+}: {
+  part: PartEditState;
+  accessToken: string;
+}) {
+  const [assignments, setAssignments] = useState<AdminBoostersChampionAssignment[]>(
+    part.boostersChampionAssignments
+  );
+  const [pendingId, setPendingId] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  // Mirrors AddBoostersChampionAssignment/AssignFilmToBoostersChampionAssignment/
+  // RemoveBoostersChampionAssignment's own "Status != Created" guard on the backend.
+  // PartEditState.status is the raw numeric DraftPartStatus value, not a SmartEnumResponse
+  // — 0 is Created (see PART_STATUS_LABELS below).
+  const locked = part.status !== 0;
+
+  async function handleAdd(drafter: { publicId: string; displayName: string }) {
+    if (pendingId) return;
+    setPendingId("__adding");
+    setError(null);
+    try {
+      const publicId = await addBoostersChampionAssignment(
+        accessToken,
+        part.partPublicId,
+        drafter.publicId,
+        null
+      );
+      setAssignments((prev) => [
+        ...prev,
+        {
+          publicId,
+          assignedDrafterPublicId: drafter.publicId,
+          assignedDrafterDisplayName: drafter.displayName,
+          tmdbId: null,
+          title: null,
+        },
+      ]);
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Failed to add Booster's Champion assignment."
+      );
+    } finally {
+      setPendingId(null);
+    }
+  }
+
+  async function handleRemove(assignmentPublicId: string) {
+    if (pendingId) return;
+    setPendingId(assignmentPublicId);
+    setError(null);
+    try {
+      await removeBoostersChampionAssignment(accessToken, part.partPublicId, assignmentPublicId);
+      setAssignments((prev) => prev.filter((a) => a.publicId !== assignmentPublicId));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to remove assignment.");
+    } finally {
+      setPendingId(null);
+    }
+  }
+
+  // Immediate-action, same as handleAdd/handleRemove above: selecting a result saves
+  // right away rather than staging a value for a separate Save click, now that the
+  // picker (not a hand-typed ID) is the thing driving the save.
+  async function handleSelectFilm(assignmentPublicId: string, movie: ResolvedMovie) {
+    if (pendingId) return;
+    setPendingId(assignmentPublicId);
+    setError(null);
+    try {
+      await assignFilmToBoostersChampionAssignment(
+        accessToken,
+        part.partPublicId,
+        assignmentPublicId,
+        movie.tmdbId
+      );
+      setAssignments((prev) =>
+        prev.map((a) =>
+          a.publicId === assignmentPublicId ? { ...a, tmdbId: movie.tmdbId, title: movie.title } : a
+        )
+      );
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to assign the film.");
+    } finally {
+      setPendingId(null);
+    }
+  }
+
+  return (
+    <div>
+      <h2 className={SECTION_HEADING}>Booster&apos;s Champion</h2>
+      <p className="text-sm text-sd-ink/60 mb-4 max-w-2xl">
+        Reserves a specific film for a specific drafter to play on the Legends
+        community&apos;s behalf. They can play it at any board slot they choose — nobody
+        else can play that film at all.
+      </p>
+
+      {assignments.length > 0 && (
+        <div className="space-y-2 mb-4">
+          {assignments.map((a) => (
+            <div
+              key={a.publicId}
+              className="border border-sd-ink/10 rounded p-3 bg-white"
+            >
+              <div className="flex items-center gap-3 mb-2">
+                <span className="text-sm font-medium text-sd-ink flex-1">
+                  {a.assignedDrafterDisplayName}
+                </span>
+                {!locked && (
+                  <button
+                    type="button"
+                    onClick={() => handleRemove(a.publicId)}
+                    disabled={pendingId === a.publicId}
+                    className="text-sd-ink/30 hover:text-sd-red text-xl leading-none disabled:opacity-40"
+                    aria-label={`Remove ${a.assignedDrafterDisplayName}`}
+                  >
+                    ×
+                  </button>
+                )}
+              </div>
+
+              {a.tmdbId ? (
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-sd-ink font-medium">{a.title}</span>
+                  <span className="text-[11px] font-mono text-sd-ink/40">
+                    TMDb #{a.tmdbId}
+                  </span>
+                </div>
+              ) : locked ? (
+                <span className="text-[11px] font-mono text-sd-ink/40 italic">
+                  No film assigned.
+                </span>
+              ) : (
+                <MovieSearchPicker
+                  accessToken={accessToken}
+                  disabled={pendingId === a.publicId}
+                  onSelect={(movie) => handleSelectFilm(a.publicId, movie)}
+                />
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {error && (
+        <div className="mb-3 border border-red-300 bg-red-50 text-red-800 text-sm px-4 py-3 rounded">
+          {error}
+        </div>
+      )}
+
+      {locked ? (
+        <p className="text-[11px] text-sd-ink/40 font-mono">
+          Locked — this part has already started.
+        </p>
+      ) : (
+        <DrafterPicker
+          accessToken={accessToken}
+          excludeIds={new Set(assignments.map((a) => a.assignedDrafterPublicId))}
+          onSelect={handleAdd}
+          disabled={pendingId !== null}
+        />
+      )}
+    </div>
+  );
+}
+
+// Fixes DraftPart.MinPosition/MaxPosition directly — distinct from the
+// PositionsEditor's picks-count-derived maxPos below, which is only a local
+// validator input and has never been the actual saved value. No UI path
+// existed to view or edit this after part creation before now.
+//
+// Deliberately NOT locked on part status the way BoostersChampionSection is:
+// DraftPart.SetPartPositions has no status guard on the domain side (only
+// min>0, max>0, max>=min), and the real-world need for this is correcting a
+// wrong range on a part that's already InProgress (e.g. mid-seeding), so
+// gating it on Created-only would block the exact case it exists for.
+function PartPositionRangeSection({
+  part,
+  accessToken,
+}: {
+  part: PartEditState;
+  accessToken: string;
+}) {
+  const [minPosition, setMinPosition] = useState(part.minPosition ?? 1);
+  const [maxPosition, setMaxPosition] = useState(part.maxPosition ?? 1);
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function handleSave() {
+    if (saving) return;
+    setSaving(true);
+    setSaved(false);
+    setError(null);
+    try {
+      await setDraftPartPositionRange(accessToken, part.partPublicId, minPosition, maxPosition);
+      setSaved(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to update position range.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <div>
+      <p className="font-mono text-[11px] tracking-widest text-sd-ink/50 uppercase mb-2">
+        Position Range
+      </p>
+      <p className="text-[11px] text-sd-ink/50 mb-3 max-w-md">
+        The actual board slot range this part covers (e.g. 17–30 for a part that doesn&apos;t
+        start at slot 1) — not a count of positions. Every played pick is validated against
+        these bounds; a wrong range here is what causes &quot;Pick position is out of
+        range&quot; on an otherwise valid pick.
+      </p>
+      <div className="flex items-end gap-3">
+        <div>
+          <label className={LABEL}>Min Position</label>
+          <input
+            type="number"
+            min={1}
+            className={`${INPUT} w-24`}
+            value={minPosition}
+            onChange={(e) => setMinPosition(parseInt(e.target.value, 10) || 1)}
+          />
+        </div>
+        <div>
+          <label className={LABEL}>Max Position</label>
+          <input
+            type="number"
+            min={1}
+            className={`${INPUT} w-24`}
+            value={maxPosition}
+            onChange={(e) => setMaxPosition(parseInt(e.target.value, 10) || 1)}
+          />
+        </div>
+        <button type="button" onClick={handleSave} disabled={saving} className={BTN_SECONDARY}>
+          {saving ? "Saving…" : "Save"}
+        </button>
+        {saved && <span className="text-[11px] font-mono text-green-700">saved</span>}
+      </div>
+      {error && (
+        <div className="mt-2 border border-red-300 bg-red-50 text-red-800 text-sm px-4 py-3 rounded">
+          {error}
+        </div>
+      )}
+    </div>
+  );
+}
 
 function getMaxPositionsConfig(draftTypeName: string): { max: number; locked: boolean } {
   switch (draftTypeName) {
@@ -99,6 +364,15 @@ interface PartEditState {
   positionsLoaded: boolean;
   predictionConfig: PredictionConfig;
   predictionsLoaded: boolean;
+  // Legends Mega only — see BoostersChampionSection below. Not copied through by
+  // initPartState until now; this field didn't exist when that function was written.
+  boostersChampionAssignments: AdminBoostersChampionAssignment[];
+  // Current saved values, straight from the backend — distinct from the
+  // PositionsEditor's picks-count-derived maxPos, which is only a local
+  // validator input and was never the actual DraftPart.MaxPosition. See
+  // PartPositionRangeSection below.
+  minPosition: number | null;
+  maxPosition: number | null;
 }
 
 interface PendingPart {
@@ -195,6 +469,9 @@ function initPartState(parts: DraftPart[]): PartEditState[] {
       positionsLoaded: false,
       predictionConfig: defaultPredictionConfig(),
       predictionsLoaded: false,
+      boostersChampionAssignments: p.boostersChampionAssignments ?? [],
+      minPosition: p.minPosition ?? null,
+      maxPosition: p.maxPosition ?? null,
     };
   });
 }
@@ -220,6 +497,9 @@ export default function EditDraftForm({
   const [title, setTitle] = useState(draft.title);
   const [description, setDescription] = useState(draft.description ?? "");
   const [selectedSeriesId, setSelectedSeriesId] = useState(draft.seriesPublicId ?? "");
+  const [useFungibleToken, setUseFungibleToken] = useState(!!draft.fungibleTokenName);
+  const [fungibleTokenName, setFungibleTokenName] = useState(draft.fungibleTokenName ?? "");
+  const [isHostless, setIsHostless] = useState(draft.isHostless);
   const [selectedDraftType, setSelectedDraftType] = useState<SmartEnumResponse | null>(() => {
     const series = seriesList.find((s) => s.publicId === draft.seriesPublicId);
     return (
@@ -479,6 +759,8 @@ export default function EditDraftForm({
           description: description.trim() || undefined,
           seriesPublicId: selectedSeriesId,
           draftTypeValue: selectedDraftType?.value ?? draft.draftType.value ?? 0,
+          fungibleTokenName: fungibleTokenName.trim() || undefined,
+          isHostless,
         });
       }
 
@@ -716,6 +998,72 @@ export default function EditDraftForm({
                 <p className="text-[11px] text-sd-ink/40 mt-1 font-mono">Locked — a part has already started.</p>
               )}
             </div>
+
+            <div className="md:col-span-2">
+              <label className="flex items-center gap-2 cursor-pointer select-none mb-2">
+                <input
+                  type="checkbox"
+                  checked={useFungibleToken}
+                  onChange={(e) => {
+                    setUseFungibleToken(e.target.checked);
+                    if (!e.target.checked) setFungibleTokenName("");
+                  }}
+                  disabled={anyPartStarted}
+                  className="accent-sd-red w-4 h-4"
+                />
+                <span className="text-[11px] font-mono tracking-widest text-sd-ink/60 uppercase">
+                  Use Fungible Token
+                </span>
+              </label>
+              {useFungibleToken && (
+                <>
+                  <label className={LABEL}>Token Name</label>
+                  <input
+                    type="text"
+                    className={INPUT}
+                    value={fungibleTokenName}
+                    onChange={(e) => setFungibleTokenName(e.target.value)}
+                    disabled={anyPartStarted}
+                    placeholder="e.g. Blessing of Unusual Versatility"
+                    required
+                  />
+                </>
+              )}
+              {anyPartStarted ? (
+                <p className="text-[11px] text-sd-ink/40 mt-1 font-mono">Locked — a part has already started.</p>
+              ) : (
+                <p className="text-[11px] font-mono text-sd-ink/50 mt-1">
+                  Only for drafts using a fungible veto/override token (e.g. Legends Super
+                  Drafts) — leave unchecked for a normal draft, where everyone gets a
+                  separate veto and override allotment instead. Must be set before Part 1
+                  starts.
+                </p>
+              )}
+            </div>
+
+            <div className="md:col-span-2">
+              <label className="flex items-center gap-2 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={isHostless}
+                  onChange={(e) => setIsHostless(e.target.checked)}
+                  disabled={anyPartStarted}
+                  className="accent-sd-red w-4 h-4"
+                />
+                <span className="text-[11px] font-mono tracking-widest text-sd-ink/60 uppercase">No Dedicated Host</span>
+              </label>
+              {anyPartStarted ? (
+                <p className="text-[11px] text-sd-ink/40 mt-1 font-mono">Locked — a part has already started.</p>
+              ) : (
+                <p className="text-[11px] font-mono text-sd-ink/50 mt-1">
+                  For drafts with no host at all — e.g. the Legends Mega/Super drafts, or
+                  Clay-vs-Ryan&apos;s Christmas draft. Picks get sent to another drafter to
+                  reveal instead of a host: automatically to &quot;the other drafter&quot; in a
+                  2-drafter draft, or a random draw among the rest in a larger one. Must be
+                  set before Part 1 starts.
+                </p>
+              )}
+            </div>
           </div>
         </section>
       )}
@@ -757,6 +1105,10 @@ export default function EditDraftForm({
 
                   {isExpanded && (
                     <div className="px-4 py-4 space-y-6">
+                      {selectedSeries?.kindValue === 3 && (
+                        <BoostersChampionSection part={part} accessToken={accessToken} />
+                      )}
+
                       {/* Hosts */}
                       <div>
                         <h2 className={SECTION_HEADING}>Hosts</h2>
@@ -820,6 +1172,8 @@ export default function EditDraftForm({
                         initialParticipants={part.initialParticipants}
                       />
 
+                      <PartPositionRangeSection part={part} accessToken={accessToken} />
+
                       {/* Positions */}
                       <div>
                         <p className="font-mono text-[11px] tracking-widest text-sd-ink/50 uppercase mb-3">
@@ -831,6 +1185,7 @@ export default function EditDraftForm({
                             onChange={(pos) => updatePartPositions(idx, pos)}
                             totalPicks={maxPos}
                             readonly={fixedPositions}
+                            useFungibleToken={useFungibleToken}
                           />
                         ) : (
                           <p className="text-[11px] font-mono text-sd-ink/40">Loading…</p>
@@ -927,6 +1282,7 @@ export default function EditDraftForm({
                           onChange={(pos) => updatePendingPartPositions(pp.tempId, pos)}
                           totalPicks={pp.maxPositions}
                           readonly={ppFixed}
+                          useFungibleToken={useFungibleToken}
                         />
                       </div>
                     </div>

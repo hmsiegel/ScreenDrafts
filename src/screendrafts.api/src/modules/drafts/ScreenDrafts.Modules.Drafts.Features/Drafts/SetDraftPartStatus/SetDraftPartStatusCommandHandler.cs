@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Modules.Drafts.Domain.DraftParts;
-
-namespace ScreenDrafts.Modules.Drafts.Features.Drafts.SetDraftPartStatus;
+﻿namespace ScreenDrafts.Modules.Drafts.Features.Drafts.SetDraftPartStatus;
 
 internal sealed class SetDraftPartStatusCommandHandler(
   IDraftRepository draftsRepository,
@@ -84,7 +82,23 @@ internal sealed class SetDraftPartStatusCommandHandler(
     CancellationToken cancellationToken
   )
   {
-    var startingVetoes = (part.PartIndex == 1 || draft.GrantsStartingVetoPerPart) ? 1 : 0;
+    // Draft.FungibleTokenName is the only signal for "this draft uses a fungible token" —
+    // NOT SeriesKind. Two drafts in the same series (e.g. two different years' Legends
+    // Mega) can differ on this, as the most recent Legends Mega proved.
+    var usesFungibleToken = draft.FungibleTokenName is not null;
+
+    int startingVetoes;
+    if (usesFungibleToken)
+    {
+      startingVetoes = 0;
+    }
+    else
+    {
+      startingVetoes = (part.PartIndex == 1 || draft.GrantsStartingVetoPerPart) ? 1 : 0;
+    }
+
+    var fungibleTokensStarting =
+      usesFungibleToken && (part.PartIndex == 1 || draft.GrantsStartingVetoPerPart) ? 1 : 0;
 
     var drafterIds = part.Participants.Where(p => p.IsDrafter).Select(p => p.Value).ToArray();
 
@@ -93,11 +107,29 @@ internal sealed class SetDraftPartStatusCommandHandler(
       return Result.Success();
     }
 
+    // Fungible-token rollover is intra-draft only — a single-draft allocation that should
+    // never carry across separate drafts, even within the same series/continuity scope
+    // (last year's Legends Mega token must never leak into this year's). Computed directly
+    // off the Draft aggregate's own parts, already in memory here, independent of the
+    // ContinuityScope-driven query below, which governs the normal veto/override pools only.
+    // A single-part draft (e.g. the Reiner Run) simply has no prior part, so this is
+    // naturally 0 for it without any special-casing.
+    var priorPart = draft
+      .Parts.Where(p => p.Id != part.Id && p.Status == DraftPartStatus.Completed)
+      .OrderByDescending(p => p.PartIndex)
+      .FirstOrDefault();
+
     var continuityScope = draft.Series.ContinuityScope;
 
     if (continuityScope == ContinuityScope.None || continuityScope == ContinuityScope.SpeedDrafts)
     {
-      return ApplyZeroRollovers(part, startingVetoes, drafterIds);
+      return ApplyZeroRollovers(
+        part,
+        startingVetoes,
+        fungibleTokensStarting,
+        priorPart,
+        drafterIds
+      );
     }
 
     string scopeFilter;
@@ -156,11 +188,16 @@ internal sealed class SetDraftPartStatusCommandHandler(
     {
       rolloverByDrafter.TryGetValue(participant.Value, out var prior);
 
+      var fungibleTokensRollingIn =
+        priorPart?.FindParticipant(participant)?.FungibleTokensRollingOut ?? 0;
+
       var initResult = part.InitializeParticipantVetoes(
         participant,
         startingVetoes,
         prior?.VetoesRollingOut ?? 0,
-        prior?.VetoOverridesRollingOut ?? 0
+        prior?.VetoOverridesRollingOut ?? 0,
+        fungibleTokensStarting,
+        fungibleTokensRollingIn
       );
 
       if (initResult.IsFailure)
@@ -172,13 +209,32 @@ internal sealed class SetDraftPartStatusCommandHandler(
     return Result.Success();
   }
 
-  private static Result ApplyZeroRollovers(DraftPart part, int startingVetoes, Guid[] drafterIds)
+  private static Result ApplyZeroRollovers(
+    DraftPart part,
+    int startingVetoes,
+    int fungibleTokensStarting,
+    DraftPart? priorPart,
+    Guid[] drafterIds
+  )
   {
     foreach (
       var participant in part.Participants.Where(p => p.IsDrafter && drafterIds.Contains(p.Value))
     )
     {
-      var initResult = part.InitializeParticipantVetoes(participant, startingVetoes, 0, 0);
+      // Even when ContinuityScope blocks normal veto/override rollover (None/SpeedDrafts),
+      // fungible-token rollover still applies if this draft has a completed prior part —
+      // the two are independent mechanisms. See remarks above.
+      var fungibleTokensRollingIn =
+        priorPart?.FindParticipant(participant)?.FungibleTokensRollingOut ?? 0;
+
+      var initResult = part.InitializeParticipantVetoes(
+        participant,
+        startingVetoes,
+        0,
+        0,
+        fungibleTokensStarting,
+        fungibleTokensRollingIn
+      );
       if (initResult.IsFailure)
       {
         return initResult;

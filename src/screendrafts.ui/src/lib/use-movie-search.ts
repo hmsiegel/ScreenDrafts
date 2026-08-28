@@ -19,7 +19,11 @@ export function useMovieSearch(query: string, accessToken: string) {
   const abortRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
-    if (query.trim().length < 2) {
+    // >= 1 rather than >= 2 — a handful of real titles are a single
+    // character (e.g. "$", TMDb 31644), and those would never be
+    // searchable otherwise. Debounce + abort-on-new-query below already
+    // guard against request spam, so there's no cost to allowing it.
+    if (query.trim().length < 1) {
       abortRef.current?.abort();
       setResults([]);
       setSearching(false);

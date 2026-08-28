@@ -176,7 +176,7 @@ internal sealed class MediaRepository(MoviesDbContext context) : IMediaRepositor
     var pairSet = pairs.ToHashSet();
 
     return rows.Where(m => pairSet.Contains((m.TmdbId!.Value, m.MediaTypeValue)))
-      .ToDictionary(m => (m.TmdbId!.Value, m.MediaTypeValue), m => m.PublicId!);
+      .ToDictionary(m => (m.TmdbId!.Value, m.MediaTypeValue), m => m.PublicId);
   }
 
   public async Task<Media?> FindByTvEpisodeAsync(
@@ -261,7 +261,7 @@ internal sealed class MediaRepository(MoviesDbContext context) : IMediaRepositor
       .Select(m => new { m.ImdbId, m.PublicId })
       .ToListAsync(cancellationToken);
 
-    return rows.ToDictionary(m => m.ImdbId!, m => m.PublicId!);
+    return rows.ToDictionary(m => m.ImdbId!, m => m.PublicId);
   }
 
   public async Task<Dictionary<int, string>> GetPublicIdsByIgdbIdsAsync(
@@ -274,7 +274,7 @@ internal sealed class MediaRepository(MoviesDbContext context) : IMediaRepositor
       .Select(m => new { m.IgdbId, m.PublicId })
       .ToListAsync(cancellationToken);
 
-    return rows.ToDictionary(m => m.IgdbId!.Value, m => m.PublicId!);
+    return rows.ToDictionary(m => m.IgdbId!.Value, m => m.PublicId);
   }
 
   public async Task<Dictionary<string, string>> GetPublicIdsByExternalIdsAsync(
@@ -287,6 +287,6 @@ internal sealed class MediaRepository(MoviesDbContext context) : IMediaRepositor
       .Select(m => new { m.ExternalId, m.PublicId })
       .ToListAsync(cancellationToken);
 
-    return rows.ToDictionary(m => m.ExternalId!, m => m.PublicId!);
+    return rows.ToDictionary(m => m.ExternalId!, m => m.PublicId);
   }
 }

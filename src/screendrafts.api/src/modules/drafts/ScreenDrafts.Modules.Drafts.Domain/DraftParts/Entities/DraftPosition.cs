@@ -11,6 +11,7 @@ public sealed class DraftPosition : Entity<DraftPositionId>
     string publicId,
     bool hasBonusVeto = false,
     bool hasBonusVetoOverride = false,
+    bool hasBonusFungibleToken = false,
     DraftPositionId? id = null
   )
     : base(id ?? DraftPositionId.CreateUnique())
@@ -25,6 +26,7 @@ public sealed class DraftPosition : Entity<DraftPositionId>
 
     HasBonusVeto = hasBonusVeto;
     HasBonusVetoOverride = hasBonusVetoOverride;
+    HasBonusFungibleToken = hasBonusFungibleToken;
   }
 
   private DraftPosition() { }
@@ -37,6 +39,7 @@ public sealed class DraftPosition : Entity<DraftPositionId>
   public ICollection<int> Picks { get; init; } = [];
   public bool HasBonusVeto { get; init; }
   public bool HasBonusVetoOverride { get; init; }
+  public bool HasBonusFungibleToken { get; init; }
 
   public Guid? AssignedToId { get; private set; } = default!;
   public ParticipantKind? AssignedToKind { get; private set; } = default!;
@@ -53,6 +56,7 @@ public sealed class DraftPosition : Entity<DraftPositionId>
     string publicId,
     bool hasBonusVeto = false,
     bool hasBonusVetoOverride = false,
+    bool hasBonusFungibleToken = false,
     DraftPositionId? id = null
   )
   {
@@ -80,6 +84,7 @@ public sealed class DraftPosition : Entity<DraftPositionId>
       picks: picks,
       hasBonusVeto: hasBonusVeto,
       hasBonusVetoOverride: hasBonusVetoOverride,
+      hasBonusFungibleToken: hasBonusFungibleToken,
       publicId: publicId,
       id: id
     );
@@ -97,6 +102,7 @@ public sealed class DraftPosition : Entity<DraftPositionId>
     IReadOnlyCollection<int> picks,
     bool hasBonusVeto = false,
     bool hasBonusVetoOverride = false,
+    bool hasFungibleToken = false,
     string? publicId = null,
     Participant? assignedTo = null,
     DraftPositionId? id = null
@@ -128,6 +134,7 @@ public sealed class DraftPosition : Entity<DraftPositionId>
       picks: picks,
       hasBonusVeto: hasBonusVeto,
       hasBonusVetoOverride: hasBonusVetoOverride,
+      hasBonusFungibleToken: hasFungibleToken,
       publicId: publicId,
       id: id
     );
@@ -161,7 +168,7 @@ public sealed class DraftPosition : Entity<DraftPositionId>
     {
       Raise(
         new DraftPositionAssignedDomainEvent(
-          draftPartId: GameBoard.DraftPartId!.Value,
+          draftPartId: GameBoard.DraftPartId.Value,
           draftPositionId: Id.Value,
           participantId: participant.Value,
           participantKind: participant.Kind.Value

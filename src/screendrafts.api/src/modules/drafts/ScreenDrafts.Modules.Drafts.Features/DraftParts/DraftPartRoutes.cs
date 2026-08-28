@@ -27,6 +27,7 @@ internal static class DraftPartRoutes
   public const string DraftPositions = ById + "/positions";
   public const string ParticipantDraftPosition = ById + "/positions/{positionId}/participant";
   public const string AssignTriviaResults = ById + "/trivia-results";
+  public const string PositionRange = ById + "/position-range";
 
   // Community Limits
   public const string CommunityLimits = ById + "/community-limits";
@@ -88,4 +89,11 @@ internal static class DraftPartRoutes
 
   // Seed Drafts
   public const string SeedRevealPick = ById + "/seed/picks/{playOrder}/reveal";
+
+  // Boosters Champion Assignments
+  public const string BoostersChampionAssignments = ById + "/boosters-champion-assignments";
+  public const string BoostersChampionAssignmentFilm =
+    ById + "/boosters-champion-assignments/{assignmentPublicId}/film";
+  public const string BoostersChampionAssignmentById =
+    ById + "/boosters-champion-assignments/{assignmentPublicId}";
 }

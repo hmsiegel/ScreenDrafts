@@ -72,13 +72,13 @@ public sealed class ApplyVetoOverrideTests(DraftsIntegrationTestWebAppFactory fa
 
     // Assert — veto should be marked as overridden in the database
     var pick = await DbContext.Picks
-      .Include(p => p.Veto)
-        .ThenInclude(v => v!.VetoOverride)
+      .Include(p => p.Vetoes)
+        .ThenInclude(v => v.VetoOverride)
       .FirstAsync(p => p.PlayOrder == 1 && p.DraftPart.PublicId == draftPartPublicId, TestContext.Current.CancellationToken);
 
-    pick.Veto.Should().NotBeNull();
-    pick.Veto!.IsOverridden.Should().BeTrue();
-    pick.Veto.VetoOverride.Should().NotBeNull();
+    pick.CurrentVeto.Should().NotBeNull();
+    pick.CurrentVeto.IsOverridden.Should().BeTrue();
+    pick.CurrentVeto.VetoOverride.Should().NotBeNull();
   }
 
   // -------------------------------------------------------------------------
