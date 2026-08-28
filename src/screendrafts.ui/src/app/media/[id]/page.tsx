@@ -403,7 +403,7 @@ function AppearanceRow({ appearance }: { appearance: MediaAppearanceResponse }) 
       {/* Position badge */}
       <div className={`w-9 h-9 shrink-0 flex items-center justify-center border-2 font-oswald font-bold text-[15px] ${landed ? "border-sd-red text-sd-red" : "border-sd-ink/20 text-sd-ink/30"
         }`}>
-        {position ?? "—"}
+        {position}
       </div>
 
       <div className="flex-1 min-w-0">

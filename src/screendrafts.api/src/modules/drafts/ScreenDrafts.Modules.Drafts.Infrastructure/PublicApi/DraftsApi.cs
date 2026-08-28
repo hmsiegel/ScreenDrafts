@@ -160,7 +160,7 @@ internal sealed class DraftsApi(IDbConnectionFactory connectionFactory) : IDraft
           )
       )
 
-      ORDER BY dcr_ep.episode_number DESC NULLS LAST, pk.position ASC NULLS LAST
+      ORDER BY dcr_ep.episode_number DESC NULLS LAST, pk.position ASC 
       """;
 
     var rows = await connection.QueryAsync<MediaAppearanceRecord>(

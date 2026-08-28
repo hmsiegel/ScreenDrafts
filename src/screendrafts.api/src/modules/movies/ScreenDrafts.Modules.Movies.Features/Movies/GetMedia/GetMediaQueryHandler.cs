@@ -83,8 +83,7 @@ internal sealed class GetMediaQueryHandler(
       left join movies.people p on p.id = mp.producer_id
       left join movies.media_production_companies mpc on mpc.media_id = m.id
       left join movies.production_companies pc on pc.id = mpc.production_company_id
-      where m.public_id = @PublicId
-      group by m.id, g.id, a.id, d.id, w.id, p.id, pc.id;
+      where m.public_id = @PublicId;
       """;
 
     var mediaDictionary = new Dictionary<Guid, MediaResponse>();

@@ -13647,7 +13647,7 @@ export interface MediaAppearanceResponse {
     episodeNumber?: number | undefined;
     pickedByDisplayName: string;
     pickedByPersonPublicId?: string | undefined;
-    position?: number | undefined;
+    position?: number;
     wasVetoed: boolean;
     wasVetoOverridden: boolean;
     wasCommissionerOverride: boolean;
