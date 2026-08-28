@@ -38,7 +38,7 @@ internal sealed class ListUpcomingDraftsQueryHandler(IDbConnectionFactory dbConn
           WHEN BOOL_OR(r.release_channel = @MainFeedChannel) THEN @PublicAccessLevel
           WHEN BOOL_OR(r.release_channel = @PatreonChannel) THEN @PatreonAccessLevel
           ELSE @UnreleasedAccessLevel
-        END AS {nameof(UpcomingDraftResponse.AccessLevel)},
+        END AS {nameof(UpcomingDraftResponse.AccessLevel)}
       FROM drafts.draft_parts dp
       JOIN drafts.drafts d ON dp.draft_id = d.id
       LEFT JOIN drafts.draft_releases r ON r.part_id = dp.id

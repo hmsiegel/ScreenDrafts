@@ -72,10 +72,10 @@ export default async function MediaDetailPage({ params }: Props) {
     notFound();
   }
 
-  const directors = [...new Set(media.directors?.map((d) => d.name).filter(Boolean) as string[] ?? [])];
-  const actors = [...new Set(media.actors?.map((a) => a.name).filter(Boolean) as string[] ?? [])];
-  const writers = [...new Set(media.writers?.map((w) => w.name).filter(Boolean) as string[] ?? [])];
-  const companies = [...new Set(media.productionCompanies?.map((c) => c.name).filter(Boolean) as string[] ?? [])];
+  const directors = dedupeCredits(media.directors);
+  const actors = dedupeCredits(media.actors);
+  const writers = dedupeCredits(media.writers);
+  const companies = dedupeCredits(media.productionCompanies);
   const genres = [...new Set(media.genres?.map((g) => g.name).filter(Boolean) as string[] ?? [])];
 
   const appearances = (media.mediaAppearances ?? []) as MediaAppearanceResponse[];
@@ -150,10 +150,10 @@ export default async function MediaDetailPage({ params }: Props) {
               </div>
             )}
 
-            {directors.length > 0 && <CreditsCard title="DIRECTED BY" credits={directors} />}
-            {writers.length > 0 && <CreditsCard title="WRITTEN BY" credits={writers} />}
-            {actors.length > 0 && <CreditsCard title="CAST" credits={actors.slice(0, 5)} />}
-            {companies.length > 0 && <CreditsCard title="PRODUCTION" credits={companies} />}
+            {directors.length > 0 && <CreditsCard title="DIRECTED BY" credits={directors} kind="person" />}
+            {writers.length > 0 && <CreditsCard title="WRITTEN BY" credits={writers} kind="person" />}
+            {actors.length > 0 && <CreditsCard title="CAST" credits={actors.slice(0, 5)} kind="person" />}
+            {companies.length > 0 && <CreditsCard title="PRODUCTION" credits={companies} kind="company" />}
           </div>
 
           {/* ── Main column ── */}
@@ -278,14 +278,82 @@ function StatsCard({
 
 // ── Credits card ──────────────────────────────────────────────────────────────
 
-function CreditsCard({ title, credits }: { title: string; credits: string[] }) {
+interface CreditEntry {
+  name: string;
+  tmdbId?: number;
+  imdbId?: string;
+}
+
+// Dedupes by tmdbId when present (the reliable identity), falling back to
+// imdbId, then name, for entries missing a tmdbId.
+function dedupeCredits(
+  items: { name?: string; tmdbId?: number; imdbId?: string }[] | undefined
+): CreditEntry[] {
+  const seen = new Set<string>();
+  const result: CreditEntry[] = [];
+  for (const item of items ?? []) {
+    if (!item.name) continue;
+    const key =
+      item.tmdbId && item.tmdbId > 0
+        ? `t:${item.tmdbId}`
+        : item.imdbId
+          ? `i:${item.imdbId}`
+          : `n:${item.name}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    result.push({ name: item.name, tmdbId: item.tmdbId, imdbId: item.imdbId });
+  }
+  return result;
+}
+
+// TMDb when available, IMDb as fallback when only an IMDb id is present.
+// People and companies use different URL segments on both sites.
+function creditHref(
+  kind: "person" | "company",
+  tmdbId: number | undefined,
+  imdbId: string | undefined
+): string | null {
+  if (tmdbId && tmdbId > 0) {
+    return `https://www.themoviedb.org/${kind}/${tmdbId}`;
+  }
+  if (imdbId) {
+    const imdbSegment = kind === "person" ? "name" : "company";
+    return `https://www.imdb.com/${imdbSegment}/${imdbId}/`;
+  }
+  return null;
+}
+
+function CreditsCard({
+  title,
+  credits,
+  kind,
+}: {
+  title: string;
+  credits: CreditEntry[];
+  kind: "person" | "company";
+}) {
   return (
     <div className="bg-white border-2 border-sd-ink p-5">
       <h2 className="font-oswald font-bold text-[13px] tracking-widest text-sd-red mb-3">{title}</h2>
       <div className="flex flex-col gap-1.5">
-        {credits.map((name, i) => (
-          <span key={i} className="font-oswald text-[15px] text-sd-ink leading-tight">{name}</span>
-        ))}
+        {credits.map((credit, i) => {
+          const href = creditHref(kind, credit.tmdbId, credit.imdbId);
+          return href ? (
+            <a
+              key={i}
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-oswald text-[15px] text-sd-ink leading-tight hover:text-sd-blue transition-colors"
+            >
+              {credit.name}
+            </a>
+          ) : (
+            <span key={i} className="font-oswald text-[15px] text-sd-ink leading-tight">
+              {credit.name}
+            </span>
+          );
+        })}
       </div>
     </div>
   );

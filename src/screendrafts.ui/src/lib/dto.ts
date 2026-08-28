@@ -549,6 +549,11 @@ export interface IClient {
     /**
      * @return No Content
      */
+    draftParts_SetPartPositionRange(body: SetPartPositionRangeRequest): Promise<void>;
+
+    /**
+     * @return No Content
+     */
     draftParts_SetDraftPosition(body: SetDraftPositionsRequest): Promise<void>;
 
     /**
@@ -6535,6 +6540,60 @@ export class Client implements IClient {
     /**
      * @return No Content
      */
+    draftParts_SetPartPositionRange(body: SetPartPositionRangeRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/position-range";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDraftParts_SetPartPositionRange(_response);
+        });
+    }
+
+    protected processDraftParts_SetPartPositionRange(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
     draftParts_SetDraftPosition(body: SetDraftPositionsRequest, signal?: AbortSignal): Promise<void> {
         let url_ = this.baseUrl + "/draft-parts/{draftPartId}/positions";
         url_ = url_.replace(/[?&]$/, "");
@@ -11453,6 +11512,7 @@ export interface ActorModel {
 export interface ActorResponse {
     id?: string;
     imdbId?: string;
+    tmdbId?: number;
     name?: string;
 
     [key: string]: any;
@@ -11951,6 +12011,7 @@ export interface CreateDraftPositionRequest {
     picks: number[];
     hasBonusVeto?: boolean;
     hasBonusVetoOverride?: boolean;
+    hasBonusFungibleToken?: boolean;
 
     [key: string]: any;
 }
@@ -12062,6 +12123,7 @@ export interface DirectorModel {
 export interface DirectorResponse {
     id?: string;
     imdbId?: string;
+    tmdbId?: number;
     name?: string;
 
     [key: string]: any;
@@ -12180,7 +12242,7 @@ export interface DraftPositionRequestModel {
     picks?: number[];
     hasBonusVeto?: boolean;
     hasBonusVetoOverride?: boolean;
-    hasFungibleToken?: boolean;
+    hasBonusFungibleToken?: boolean;
 
     [key: string]: any;
 }
@@ -12191,7 +12253,7 @@ export interface DraftPositionResponse {
     picks?: number[];
     hasBonusVeto?: boolean;
     hasBonusVetoOverride?: boolean;
-    hasFungibleToken?: boolean;
+    hasBonusFungibleToken?: boolean;
     assignedTo?: DraftPositionAssignmentResponse | undefined;
 
     [key: string]: any;
@@ -12388,7 +12450,7 @@ export interface GameplayDraftPositionResponse {
     ownedBoardSlots?: number[];
     hasBonusVeto?: boolean;
     hasBonusVetoOverride?: boolean;
-    hasFungibleToken?: boolean;
+    hasBonusFungibleToken?: boolean;
     assignedParticipantId?: string | undefined;
     assignedParticipantKind?: number | undefined;
     assignedParticipantName?: string | undefined;
@@ -12807,6 +12869,10 @@ export interface GetDraftPartResponse {
     previousCampaignDraftTitle?: string | undefined;
     nextCampaignDraftPublicId?: string | undefined;
     nextCampaignDraftTitle?: string | undefined;
+    previousSeriesDraftPublicId?: string | undefined;
+    previousSeriesDraftTitle?: string | undefined;
+    nextSeriesDraftPublicId?: string | undefined;
+    nextSeriesDraftTitle?: string | undefined;
     maxCommunityPicks?: number;
     maxCommunityVetoes?: number;
     communityFilmRules?: GetDraftCommunityFilmRuleResponse[];
@@ -13946,6 +14012,13 @@ export interface PagedResultOfUserItem {
     [key: string]: any;
 }
 
+export interface PartAccessLevel {
+    name: string | undefined;
+    value: number;
+
+    [key: string]: any;
+}
+
 export interface ParticipantKind {
     name: string | undefined;
     value: number;
@@ -14172,6 +14245,7 @@ export interface ProducerModel {
 export interface ProducerResponse {
     id?: string;
     imdbId?: string;
+    tmdbId?: number;
     name?: string;
 
     [key: string]: any;
@@ -14196,6 +14270,7 @@ export interface ProductionCompanyRequest {
 export interface ProductionCompanyResponse {
     id?: string;
     imdbId?: string;
+    tmdbId?: number;
     name?: string;
 
     [key: string]: any;
@@ -14696,6 +14771,14 @@ export interface SetEpisodeNumberRequest {
     [key: string]: any;
 }
 
+export interface SetPartPositionRangeRequest {
+    draftPartId?: string;
+    minimumPosition?: number;
+    maximumPosition?: number;
+
+    [key: string]: any;
+}
+
 export interface SetReleaseDateRequest {
     draftPartId?: string;
     releaseDate?: Date;
@@ -14873,6 +14956,7 @@ export interface UpcomingDraftResponse {
     releaseDate?: Date | undefined;
     isDelete?: boolean;
     status?: DraftStatus;
+    accessLevel?: PartAccessLevel;
     capabilities?: DraftUserCapabilities;
 
     [key: string]: any;
@@ -14994,6 +15078,7 @@ export interface WriterModel {
 export interface WriterResponse {
     id?: string;
     imdbId?: string;
+    tmdbId?: number;
     name?: string;
 
     [key: string]: any;

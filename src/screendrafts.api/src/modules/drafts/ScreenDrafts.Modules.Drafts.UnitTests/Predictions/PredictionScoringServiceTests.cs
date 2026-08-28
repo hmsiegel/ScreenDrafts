@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Drafts.UnitTests.Predictions;
+﻿namespace ScreenDrafts.Modules.Drafts.UnitTests.Predictions;
 
 public sealed class PredictionScoringServiceTests : DraftsBaseTest
 {
@@ -26,7 +26,13 @@ public sealed class PredictionScoringServiceTests : DraftsBaseTest
     var finalPicks = new[] { 4, 5, 6 };
 
     // Act
-    var result = PredictionScoringService.Score(set, finalPicks, rules, DateTime.UtcNow);
+    var result = PredictionScoringService.Score(
+      set: set,
+      finalTmdbIds: finalPicks,
+      rules: rules,
+      isShootTheMoonEligible: false,
+      scoredAtUtc: DateTime.UtcNow
+    );
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -55,7 +61,13 @@ public sealed class PredictionScoringServiceTests : DraftsBaseTest
     var finalPicks = new[] { 1, 2, 999 };
 
     // Act
-    var result = PredictionScoringService.Score(set, finalPicks, rules, DateTime.UtcNow);
+    var result = PredictionScoringService.Score(
+      set: set,
+      finalTmdbIds: finalPicks,
+      rules: rules,
+      isShootTheMoonEligible: false,
+      scoredAtUtc: DateTime.UtcNow
+    );
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -84,7 +96,13 @@ public sealed class PredictionScoringServiceTests : DraftsBaseTest
     var finalPicks = new[] { 1, 2, 3 };
 
     // Act
-    var result = PredictionScoringService.Score(set, finalPicks, rules, DateTime.UtcNow);
+    var result = PredictionScoringService.Score(
+      set: set,
+      finalTmdbIds: finalPicks,
+      rules: rules,
+      isShootTheMoonEligible: false,
+      scoredAtUtc: DateTime.UtcNow
+    );
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -108,7 +126,13 @@ public sealed class PredictionScoringServiceTests : DraftsBaseTest
     var finalPicks = new[] { 1, 2, 3 };
 
     // Act
-    var result = PredictionScoringService.Score(set, finalPicks, rules, DateTime.UtcNow);
+    var result = PredictionScoringService.Score(
+      set: set,
+      finalTmdbIds: finalPicks,
+      rules: rules,
+      isShootTheMoonEligible: false,
+      scoredAtUtc: DateTime.UtcNow
+    );
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -141,7 +165,13 @@ public sealed class PredictionScoringServiceTests : DraftsBaseTest
     var finalPicks = new[] { 1, 2, 3, 4, 5 };
 
     // Act
-    var result = PredictionScoringService.Score(set, finalPicks, rules, DateTime.UtcNow);
+    var result = PredictionScoringService.Score(
+      set: set,
+      finalTmdbIds: finalPicks,
+      rules: rules,
+      isShootTheMoonEligible: false,
+      scoredAtUtc: DateTime.UtcNow
+    );
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -170,7 +200,13 @@ public sealed class PredictionScoringServiceTests : DraftsBaseTest
     var finalPicks = new[] { 1, 2, 3, 4 };
 
     // Act
-    var result = PredictionScoringService.Score(set, finalPicks, rules, DateTime.UtcNow);
+    var result = PredictionScoringService.Score(
+      set: set,
+      finalTmdbIds: finalPicks,
+      rules: rules,
+      isShootTheMoonEligible: false,
+      scoredAtUtc: DateTime.UtcNow
+    );
 
     // Assert
     result.IsSuccess.Should().BeTrue();

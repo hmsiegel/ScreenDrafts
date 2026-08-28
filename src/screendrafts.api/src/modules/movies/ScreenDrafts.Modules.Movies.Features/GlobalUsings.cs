@@ -37,3 +37,4 @@ global using ScreenDrafts.Modules.Movies.Features.Movies.Shared;
 global using ScreenDrafts.Modules.Movies.IntegrationEvents;
 global using ScreenDrafts.Modules.Movies.PublicApi;
 global using ScreenDrafts.Modules.Reporting.PublicApi;
+global using Serilog;
