@@ -1,3 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Features.Predictions.ListPredictionSeasons;
 
-internal sealed record ListPredictionSeasonsQuery : IQuery<ListPredictionSeasonsResult>;
+internal sealed record ListPredictionSeasonsQuery : IQuery<ListPredictionSeasonsResponse>
+{
+  public bool IncludePatreon { get; init; }
+}

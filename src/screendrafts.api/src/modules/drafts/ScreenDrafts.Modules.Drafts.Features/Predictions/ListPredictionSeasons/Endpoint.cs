@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Features.Predictions.ListPredictionSeasons;
 
-internal sealed class Endpoint : ScreenDraftsEndpointWithoutRequest<ListPredictionSeasonsResult>
+internal sealed class Endpoint : ScreenDraftsEndpointWithoutRequest<ListPredictionSeasonsResponse>
 {
   public override void Configure()
   {
@@ -8,15 +8,19 @@ internal sealed class Endpoint : ScreenDraftsEndpointWithoutRequest<ListPredicti
     Description(x =>
     {
       x.WithTags(DraftsOpenApi.Tags.Predictions)
-      .WithName(DraftsOpenApi.Names.Predictions_ListSeasons)
-      .Produces<ListPredictionSeasonsResult>(StatusCodes.Status200OK);
+        .WithName(DraftsOpenApi.Names.Predictions_ListSeasons)
+        .Produces<ListPredictionSeasonsResponse>(StatusCodes.Status200OK);
     });
     AllowAnonymous();
   }
 
   public override async Task HandleAsync(CancellationToken ct)
   {
-    var query = new ListPredictionSeasonsQuery();
+    var includePatreon =
+      User.Identity?.IsAuthenticated == true
+      && User.HasPermission(DraftsAuth.Permissions.DraftReadPatreon);
+
+    var query = new ListPredictionSeasonsQuery { IncludePatreon = includePatreon };
 
     var result = await Sender.Send(query, ct);
 

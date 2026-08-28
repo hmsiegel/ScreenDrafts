@@ -10565,7 +10565,7 @@ export interface IPredictionsClient {
     /**
      * @return OK
      */
-    listSeasons(): Promise<ListPredictionSeasonsResult>;
+    listSeasons(): Promise<ListPredictionSeasonsResponse>;
 
     /**
      * @return Created
@@ -11090,7 +11090,7 @@ export class PredictionsClient implements IPredictionsClient {
     /**
      * @return OK
      */
-    listSeasons(signal?: AbortSignal): Promise<ListPredictionSeasonsResult> {
+    listSeasons(signal?: AbortSignal): Promise<ListPredictionSeasonsResponse> {
         let url_ = this.baseUrl + "/prediction-seasons";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -11107,13 +11107,13 @@ export class PredictionsClient implements IPredictionsClient {
         });
     }
 
-    protected processListSeasons(response: Response): Promise<ListPredictionSeasonsResult> {
+    protected processListSeasons(response: Response): Promise<ListPredictionSeasonsResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ListPredictionSeasonsResult;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ListPredictionSeasonsResponse;
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -11121,7 +11121,7 @@ export class PredictionsClient implements IPredictionsClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ListPredictionSeasonsResult>(null as any);
+        return Promise.resolve<ListPredictionSeasonsResponse>(null as any);
     }
 
     /**
@@ -13575,8 +13575,8 @@ export interface ListPermissionsResponse {
     [key: string]: any;
 }
 
-export interface ListPredictionSeasonsResult {
-    seasons: PredictionSeasonSummaryResponse[];
+export interface ListPredictionSeasonsResponse {
+    seasons?: PredictionSeasonListItemResponse[];
 
     [key: string]: any;
 }
@@ -14180,6 +14180,35 @@ export interface PredictionResultResponse {
     shootsTheMoon: boolean;
     pointsAwarded: number;
     scoredAtUtc: Date;
+
+    [key: string]: any;
+}
+
+export interface PredictionSeasonDraftResponse {
+    draftPublicId?: string;
+    draftPartPublicId?: string;
+    label?: string;
+    episodeNumber?: number | undefined;
+    scores?: PredictionSeasonDraftScoreResponse[];
+
+    [key: string]: any;
+}
+
+export interface PredictionSeasonDraftScoreResponse {
+    contestantDisplayName?: string;
+    pointsAwarded?: number;
+
+    [key: string]: any;
+}
+
+export interface PredictionSeasonListItemResponse {
+    publicId?: string;
+    number?: number;
+    startsOn?: Date;
+    endsOn?: Date | undefined;
+    targetPoints?: number;
+    isClosed?: boolean;
+    drafts?: PredictionSeasonDraftResponse[] | undefined;
 
     [key: string]: any;
 }

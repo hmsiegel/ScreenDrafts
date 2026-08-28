@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import { DraftPartPredictionResponse, GetDraftResponse, GetTriviaResultsResponse, ListDraftsHostResponse, ListDraftsResponse, PagedResultOfListDraftsResponse, PredictionStandingsResponse } from "@/lib/dto";
+import { DraftPartPredictionResponse, GetDraftResponse, GetTriviaResultsResponse, ListDraftsHostResponse, ListDraftsResponse, ListPredictionSeasonsResponse, PagedResultOfListDraftsResponse, PredictionStandingsResponse } from "@/lib/dto";
 import { env } from "@/lib/env";
 import { PagedResult, toPagedDraftResult } from "@/types/paged-result";
 
@@ -429,5 +429,19 @@ export async function getPredictionStandings(
     return (await response.json()) as PredictionStandingsResponse;
   } catch {
     return null;
+  }
+}
+
+export async function listPredictionSeasons(): Promise<ListPredictionSeasonsResponse> {
+  const empty: ListPredictionSeasonsResponse = { seasons: [] };
+  try {
+    const response = await fetch(
+      `${apiBase}/prediction-seasons`,
+      { next: { revalidate: 0 } }
+    );
+    if (!response.ok) return empty;
+    return (await response.json()) as ListPredictionSeasonsResponse;
+  } catch {
+    return empty;
   }
 }

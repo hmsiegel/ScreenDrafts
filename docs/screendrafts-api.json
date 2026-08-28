@@ -1362,7 +1362,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ListPredictionSeasonsResult"
+                  "$ref": "#/components/schemas/ListPredictionSeasonsResponse"
                 }
               }
             }
@@ -14596,16 +14596,13 @@
           }
         }
       },
-      "ListPredictionSeasonsResult": {
-        "required": [
-          "seasons"
-        ],
+      "ListPredictionSeasonsResponse": {
         "type": "object",
         "properties": {
           "seasons": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/PredictionSeasonSummaryResponse"
+              "$ref": "#/components/schemas/PredictionSeasonListItemResponse"
             }
           }
         }
@@ -17029,6 +17026,98 @@
           "scoredAtUtc": {
             "type": "string",
             "format": "date-time"
+          }
+        }
+      },
+      "PredictionSeasonDraftResponse": {
+        "type": "object",
+        "properties": {
+          "draftPublicId": {
+            "type": "string"
+          },
+          "draftPartPublicId": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "episodeNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "scores": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PredictionSeasonDraftScoreResponse"
+            }
+          }
+        }
+      },
+      "PredictionSeasonDraftScoreResponse": {
+        "type": "object",
+        "properties": {
+          "contestantDisplayName": {
+            "type": "string"
+          },
+          "pointsAwarded": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "PredictionSeasonListItemResponse": {
+        "type": "object",
+        "properties": {
+          "publicId": {
+            "type": "string"
+          },
+          "number": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "startsOn": {
+            "type": "string",
+            "format": "date"
+          },
+          "endsOn": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
+          },
+          "targetPoints": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "isClosed": {
+            "type": "boolean"
+          },
+          "drafts": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/PredictionSeasonDraftResponse"
+            }
           }
         }
       },
