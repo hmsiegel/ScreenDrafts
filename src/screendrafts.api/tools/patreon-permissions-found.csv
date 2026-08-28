@@ -1,0 +1,6 @@
+"ConstantName","Code","File","Line"
+"DraftReadPatreon","drafts:read-patreon","src\modules\drafts\ScreenDrafts.Modules.Drafts.Features\DraftsAuth.cs","20"
+"DraftReadPatreon","drafts:read-patreon","src\modules\guest-drafts\ScreenDrafts.Modules.GuestDrafts.Features\GuestDraftsAuth.cs","20"
+"StatsReadPatreon","drafts:read-patreon","src\modules\reporting\ScreenDrafts.Modules.Reporting.Features\ReportingAuth.cs","28"
+"MediaReadPatreon","media:read-patreon","src\modules\movies\ScreenDrafts.Modules.Movies.Features\MoviesAuth.cs","14"
+"PatreonSearch","patreon:search","src\modules\drafts\ScreenDrafts.Modules.Drafts.Features\DraftsAuth.cs","121"

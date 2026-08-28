@@ -37,6 +37,7 @@ public static class DraftsModule
     SqlMapper.AddTypeHandler(new SmartEnumTypeHandler<SubDraftStatus>());
     SqlMapper.AddTypeHandler(new SmartEnumTypeHandler<ZoomRecordingFileType>());
     SqlMapper.AddTypeHandler(new SmartEnumTypeHandler<CommunityFilmRuleKind>());
+    SqlMapper.AddTypeHandler(new SmartEnumTypeHandler<PartAccessLevel>());
   }
 
   public static IServiceCollection AddDraftsSeeding(

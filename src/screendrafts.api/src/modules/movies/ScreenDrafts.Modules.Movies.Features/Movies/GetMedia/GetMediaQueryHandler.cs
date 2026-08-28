@@ -1,6 +1,4 @@
-﻿using Serilog;
-
-namespace ScreenDrafts.Modules.Movies.Features.Movies.GetMedia;
+﻿namespace ScreenDrafts.Modules.Movies.Features.Movies.GetMedia;
 
 internal sealed class GetMediaQueryHandler(
   IDbConnectionFactory dbConnectionFactory,
@@ -46,21 +44,28 @@ internal sealed class GetMediaQueryHandler(
         g.Name                                              AS {nameof(GenreResponse.Name)},
         a.id                                                AS {nameof(ActorResponse.Id)},
         a.imdb_id                                           AS {nameof(ActorResponse.ImdbId)},
+        a.tmdb_id                                           AS {nameof(ActorResponse.TmdbId)},
         a.name                                              AS {nameof(ActorResponse.Name)},
         d.id                                                AS {nameof(DirectorResponse.Id)},
         d.imdb_id                                           AS {nameof(DirectorResponse.ImdbId)},
+        d.tmdb_id                                           AS {nameof(DirectorResponse.TmdbId)},
         d.name                                              AS {nameof(DirectorResponse.Name)},
         w.id                                                AS {nameof(WriterResponse.Id)},
         w.imdb_id                                           AS {nameof(WriterResponse.ImdbId)},
+        w.tmdb_id                                           AS {nameof(WriterResponse.TmdbId)},
         w.name                                              AS {nameof(WriterResponse.Name)},
         p.id                                                AS {nameof(ProducerResponse.Id)},
         p.imdb_id                                           AS {nameof(ProducerResponse.ImdbId)},
+        p.tmdb_id                                           AS {nameof(ProducerResponse.TmdbId)},
         p.name                                              AS {nameof(ProducerResponse.Name)},
         pc.id                                               AS {nameof(
         ProductionCompanyResponse.Id
       )},
         pc.imdb_id                                            AS {nameof(
         ProductionCompanyResponse.ImdbId
+      )},
+        pc.tmdb_id                                            AS {nameof(
+        ProductionCompanyResponse.TmdbId
       )},
         pc.name                                              AS {nameof(
         ProductionCompanyResponse.Name
@@ -78,8 +83,7 @@ internal sealed class GetMediaQueryHandler(
       left join movies.people p on p.id = mp.producer_id
       left join movies.media_production_companies mpc on mpc.media_id = m.id
       left join movies.production_companies pc on pc.id = mpc.production_company_id
-      where m.public_id = @PublicId
-      group by m.id, g.id, a.id, d.id, w.id, p.id, pc.id;
+      where m.public_id = @PublicId;
       """;
 
     var mediaDictionary = new Dictionary<Guid, MediaResponse>();
@@ -122,7 +126,7 @@ internal sealed class GetMediaQueryHandler(
         if (
           actor is not null
           && actor.Id != Guid.Empty
-          && !string.IsNullOrEmpty(actor.ImdbId)
+          && (!string.IsNullOrEmpty(actor.ImdbId) || actor.TmdbId > 0)
           && seenActors.Add(actor.Id)
         )
           mediaEntry.AddActor(actor);
@@ -130,7 +134,7 @@ internal sealed class GetMediaQueryHandler(
         if (
           director is not null
           && director.Id != Guid.Empty
-          && !string.IsNullOrEmpty(director.ImdbId)
+          && (!string.IsNullOrEmpty(director.ImdbId) || director.TmdbId > 0)
           && seenDirectors.Add(director.Id)
         )
           mediaEntry.AddDirector(director);
@@ -138,7 +142,7 @@ internal sealed class GetMediaQueryHandler(
         if (
           writer is not null
           && writer.Id != Guid.Empty
-          && !string.IsNullOrEmpty(writer.ImdbId)
+          && (!string.IsNullOrEmpty(writer.ImdbId) || writer.TmdbId > 0)
           && seenWriters.Add(writer.Id)
         )
           mediaEntry.AddWriter(writer);
@@ -146,7 +150,7 @@ internal sealed class GetMediaQueryHandler(
         if (
           producer is not null
           && producer.Id != Guid.Empty
-          && !string.IsNullOrEmpty(producer.ImdbId)
+          && (!string.IsNullOrEmpty(producer.ImdbId) || producer.TmdbId > 0)
           && seenProducers.Add(producer.Id)
         )
           mediaEntry.AddProducer(producer);
@@ -154,7 +158,7 @@ internal sealed class GetMediaQueryHandler(
         if (
           productionCompany is not null
           && productionCompany.Id != Guid.Empty
-          && !string.IsNullOrEmpty(productionCompany.ImdbId)
+          && (!string.IsNullOrEmpty(productionCompany.ImdbId) || productionCompany.TmdbId > 0)
           && seenProductionCompanies.Add(productionCompany.Id)
         )
           mediaEntry.AddProductionCompany(productionCompany);

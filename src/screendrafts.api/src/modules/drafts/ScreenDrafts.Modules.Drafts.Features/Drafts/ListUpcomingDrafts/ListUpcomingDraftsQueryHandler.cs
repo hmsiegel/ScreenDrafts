@@ -10,6 +10,10 @@ internal sealed class ListUpcomingDraftsQueryHandler(IDbConnectionFactory dbConn
   private const int MainFeedChannel = 0;
   private const int PatreonChannel = 1;
 
+  private const int PublicAccessLevel = 0;
+  private const int PatreonAccessLevel = 1;
+  private const int UnreleasedAccessLevel = 2;
+
   public async Task<Result<ListUpcomingDraftsResponse>> Handle(
     ListUpcomingDraftsQuery request,
     CancellationToken cancellationToken
@@ -29,7 +33,12 @@ internal sealed class ListUpcomingDraftsQueryHandler(IDbConnectionFactory dbConn
           WHERE dp2.draft_id = d.id
         ) AS {nameof(UpcomingDraftResponse.TotalParts)},
         dp.status AS {nameof(UpcomingDraftResponse.Status)},
-        MIN(r.release_date) AS {nameof(UpcomingDraftResponse.ReleaseDate)}
+        MIN(r.release_date) AS {nameof(UpcomingDraftResponse.ReleaseDate)},
+        CASE
+          WHEN BOOL_OR(r.release_channel = @MainFeedChannel) THEN @PublicAccessLevel
+          WHEN BOOL_OR(r.release_channel = @PatreonChannel) THEN @PatreonAccessLevel
+          ELSE @UnreleasedAccessLevel
+        END AS {nameof(UpcomingDraftResponse.AccessLevel)}
       FROM drafts.draft_parts dp
       JOIN drafts.drafts d ON dp.draft_id = d.id
       LEFT JOIN drafts.draft_releases r ON r.part_id = dp.id
@@ -79,6 +88,9 @@ internal sealed class ListUpcomingDraftsQueryHandler(IDbConnectionFactory dbConn
             InProgressStatus,
             PatreonChannel,
             MainFeedChannel,
+            PublicAccessLevel,
+            PatreonAccessLevel,
+            UnreleasedAccessLevel,
             request.IncludeDeleted,
           },
           cancellationToken: cancellationToken

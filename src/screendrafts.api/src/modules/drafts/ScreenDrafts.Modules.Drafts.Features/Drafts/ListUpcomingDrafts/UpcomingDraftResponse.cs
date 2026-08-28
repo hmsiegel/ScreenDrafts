@@ -12,6 +12,8 @@ internal sealed record UpcomingDraftResponse
 
   public DraftStatus Status { get; init; } = default!;
 
+  public PartAccessLevel AccessLevel { get; init; } = PartAccessLevel.Unreleased;
+
   public DraftUserCapabilities Capabilities { get; private set; } =
     new(null, false, false, false, false, false);
 

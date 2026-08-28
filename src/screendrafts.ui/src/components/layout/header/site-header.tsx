@@ -15,7 +15,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: "DRAFTS", href: "/drafts" },
   { label: "DRAFTERS", href: "/drafters" },
   { label: "FILMS", href: "/media" },
-  { label: "PATREON", href: "/patreon" },
+  { label: "PREDICTIONS", href: "/predictions" },
 ];
 
 export default async function SiteHeader({ activePath }: { activePath?: string } = {}) {

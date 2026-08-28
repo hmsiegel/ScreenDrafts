@@ -1362,7 +1362,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ListPredictionSeasonsResult"
+                  "$ref": "#/components/schemas/ListPredictionSeasonsResponse"
                 }
               }
             }
@@ -4918,6 +4918,44 @@
         ]
       }
     },
+    "/draft-parts/{draftPartId}/position-range": {
+      "put": {
+        "tags": [
+          "DraftParts"
+        ],
+        "operationId": "DraftParts.SetPartPositionRange",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetPartPositionRangeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
     "/draft-parts/{draftPartId}/positions": {
       "put": {
         "tags": [
@@ -8014,6 +8052,14 @@
           "imdbId": {
             "type": "string"
           },
+          "tmdbId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
           "name": {
             "type": "string"
           }
@@ -9434,6 +9480,9 @@
           },
           "hasBonusVetoOverride": {
             "type": "boolean"
+          },
+          "hasBonusFungibleToken": {
+            "type": "boolean"
           }
         }
       },
@@ -9726,6 +9775,14 @@
           },
           "imdbId": {
             "type": "string"
+          },
+          "tmdbId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
           },
           "name": {
             "type": "string"
@@ -10135,7 +10192,7 @@
           "hasBonusVetoOverride": {
             "type": "boolean"
           },
-          "hasFungibleToken": {
+          "hasBonusFungibleToken": {
             "type": "boolean"
           }
         }
@@ -10166,7 +10223,7 @@
           "hasBonusVetoOverride": {
             "type": "boolean"
           },
-          "hasFungibleToken": {
+          "hasBonusFungibleToken": {
             "type": "boolean"
           },
           "assignedTo": {
@@ -10855,7 +10912,7 @@
           "hasBonusVetoOverride": {
             "type": "boolean"
           },
-          "hasFungibleToken": {
+          "hasBonusFungibleToken": {
             "type": "boolean"
           },
           "assignedParticipantId": {
@@ -12328,6 +12385,30 @@
             ]
           },
           "nextCampaignDraftTitle": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "previousSeriesDraftPublicId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "previousSeriesDraftTitle": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "nextSeriesDraftPublicId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "nextSeriesDraftTitle": {
             "type": [
               "null",
               "string"
@@ -14515,16 +14596,13 @@
           }
         }
       },
-      "ListPredictionSeasonsResult": {
-        "required": [
-          "seasons"
-        ],
+      "ListPredictionSeasonsResponse": {
         "type": "object",
         "properties": {
           "seasons": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/PredictionSeasonSummaryResponse"
+              "$ref": "#/components/schemas/PredictionSeasonListItemResponse"
             }
           }
         }
@@ -14754,7 +14832,6 @@
           "position": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": [
-              "null",
               "integer",
               "string"
             ],
@@ -16307,6 +16384,29 @@
           }
         }
       },
+      "PartAccessLevel": {
+        "required": [
+          "name",
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "value": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
       "ParticipantKind": {
         "required": [
           "name",
@@ -16928,6 +17028,98 @@
           }
         }
       },
+      "PredictionSeasonDraftResponse": {
+        "type": "object",
+        "properties": {
+          "draftPublicId": {
+            "type": "string"
+          },
+          "draftPartPublicId": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "episodeNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "scores": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PredictionSeasonDraftScoreResponse"
+            }
+          }
+        }
+      },
+      "PredictionSeasonDraftScoreResponse": {
+        "type": "object",
+        "properties": {
+          "contestantDisplayName": {
+            "type": "string"
+          },
+          "pointsAwarded": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "PredictionSeasonListItemResponse": {
+        "type": "object",
+        "properties": {
+          "publicId": {
+            "type": "string"
+          },
+          "number": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "startsOn": {
+            "type": "string",
+            "format": "date"
+          },
+          "endsOn": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
+          },
+          "targetPoints": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "isClosed": {
+            "type": "boolean"
+          },
+          "drafts": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/PredictionSeasonDraftResponse"
+            }
+          }
+        }
+      },
       "PredictionSeasonSummaryResponse": {
         "required": [
           "publicId",
@@ -17149,6 +17341,14 @@
           "imdbId": {
             "type": "string"
           },
+          "tmdbId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
           "name": {
             "type": "string"
           }
@@ -17214,6 +17414,14 @@
           },
           "imdbId": {
             "type": "string"
+          },
+          "tmdbId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
           },
           "name": {
             "type": "string"
@@ -18626,6 +18834,30 @@
           }
         }
       },
+      "SetPartPositionRangeRequest": {
+        "type": "object",
+        "properties": {
+          "draftPartId": {
+            "type": "string"
+          },
+          "minimumPosition": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "maximumPosition": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
       "SetReleaseDateRequest": {
         "type": "object",
         "properties": {
@@ -19159,6 +19391,9 @@
           "status": {
             "$ref": "#/components/schemas/DraftStatus"
           },
+          "accessLevel": {
+            "$ref": "#/components/schemas/PartAccessLevel"
+          },
           "capabilities": {
             "$ref": "#/components/schemas/DraftUserCapabilities"
           }
@@ -19492,6 +19727,14 @@
           },
           "imdbId": {
             "type": "string"
+          },
+          "tmdbId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
           },
           "name": {
             "type": "string"

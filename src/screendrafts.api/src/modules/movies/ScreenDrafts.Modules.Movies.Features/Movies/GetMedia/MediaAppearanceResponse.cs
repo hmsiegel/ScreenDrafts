@@ -7,7 +7,7 @@ public sealed record MediaAppearanceResponse
   public int? EpisodeNumber { get; init; }
   public required string PickedByDisplayName { get; init; }
   public string? PickedByPersonPublicId { get; init; }
-  public int? Position { get; init; }
+  public int Position { get; init; }
   public required bool WasVetoed { get; init; }
   public required bool WasVetoOverridden { get; init; }
   public required bool WasCommissionerOverride { get; init; }

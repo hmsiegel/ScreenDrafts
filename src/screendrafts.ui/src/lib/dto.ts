@@ -549,6 +549,11 @@ export interface IClient {
     /**
      * @return No Content
      */
+    draftParts_SetPartPositionRange(body: SetPartPositionRangeRequest): Promise<void>;
+
+    /**
+     * @return No Content
+     */
     draftParts_SetDraftPosition(body: SetDraftPositionsRequest): Promise<void>;
 
     /**
@@ -6535,6 +6540,60 @@ export class Client implements IClient {
     /**
      * @return No Content
      */
+    draftParts_SetPartPositionRange(body: SetPartPositionRangeRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/position-range";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDraftParts_SetPartPositionRange(_response);
+        });
+    }
+
+    protected processDraftParts_SetPartPositionRange(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
     draftParts_SetDraftPosition(body: SetDraftPositionsRequest, signal?: AbortSignal): Promise<void> {
         let url_ = this.baseUrl + "/draft-parts/{draftPartId}/positions";
         url_ = url_.replace(/[?&]$/, "");
@@ -10506,7 +10565,7 @@ export interface IPredictionsClient {
     /**
      * @return OK
      */
-    listSeasons(): Promise<ListPredictionSeasonsResult>;
+    listSeasons(): Promise<ListPredictionSeasonsResponse>;
 
     /**
      * @return Created
@@ -11031,7 +11090,7 @@ export class PredictionsClient implements IPredictionsClient {
     /**
      * @return OK
      */
-    listSeasons(signal?: AbortSignal): Promise<ListPredictionSeasonsResult> {
+    listSeasons(signal?: AbortSignal): Promise<ListPredictionSeasonsResponse> {
         let url_ = this.baseUrl + "/prediction-seasons";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -11048,13 +11107,13 @@ export class PredictionsClient implements IPredictionsClient {
         });
     }
 
-    protected processListSeasons(response: Response): Promise<ListPredictionSeasonsResult> {
+    protected processListSeasons(response: Response): Promise<ListPredictionSeasonsResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ListPredictionSeasonsResult;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ListPredictionSeasonsResponse;
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -11062,7 +11121,7 @@ export class PredictionsClient implements IPredictionsClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ListPredictionSeasonsResult>(null as any);
+        return Promise.resolve<ListPredictionSeasonsResponse>(null as any);
     }
 
     /**
@@ -11453,6 +11512,7 @@ export interface ActorModel {
 export interface ActorResponse {
     id?: string;
     imdbId?: string;
+    tmdbId?: number;
     name?: string;
 
     [key: string]: any;
@@ -11951,6 +12011,7 @@ export interface CreateDraftPositionRequest {
     picks: number[];
     hasBonusVeto?: boolean;
     hasBonusVetoOverride?: boolean;
+    hasBonusFungibleToken?: boolean;
 
     [key: string]: any;
 }
@@ -12062,6 +12123,7 @@ export interface DirectorModel {
 export interface DirectorResponse {
     id?: string;
     imdbId?: string;
+    tmdbId?: number;
     name?: string;
 
     [key: string]: any;
@@ -12180,7 +12242,7 @@ export interface DraftPositionRequestModel {
     picks?: number[];
     hasBonusVeto?: boolean;
     hasBonusVetoOverride?: boolean;
-    hasFungibleToken?: boolean;
+    hasBonusFungibleToken?: boolean;
 
     [key: string]: any;
 }
@@ -12191,7 +12253,7 @@ export interface DraftPositionResponse {
     picks?: number[];
     hasBonusVeto?: boolean;
     hasBonusVetoOverride?: boolean;
-    hasFungibleToken?: boolean;
+    hasBonusFungibleToken?: boolean;
     assignedTo?: DraftPositionAssignmentResponse | undefined;
 
     [key: string]: any;
@@ -12388,7 +12450,7 @@ export interface GameplayDraftPositionResponse {
     ownedBoardSlots?: number[];
     hasBonusVeto?: boolean;
     hasBonusVetoOverride?: boolean;
-    hasFungibleToken?: boolean;
+    hasBonusFungibleToken?: boolean;
     assignedParticipantId?: string | undefined;
     assignedParticipantKind?: number | undefined;
     assignedParticipantName?: string | undefined;
@@ -12807,6 +12869,10 @@ export interface GetDraftPartResponse {
     previousCampaignDraftTitle?: string | undefined;
     nextCampaignDraftPublicId?: string | undefined;
     nextCampaignDraftTitle?: string | undefined;
+    previousSeriesDraftPublicId?: string | undefined;
+    previousSeriesDraftTitle?: string | undefined;
+    nextSeriesDraftPublicId?: string | undefined;
+    nextSeriesDraftTitle?: string | undefined;
     maxCommunityPicks?: number;
     maxCommunityVetoes?: number;
     communityFilmRules?: GetDraftCommunityFilmRuleResponse[];
@@ -13509,8 +13575,8 @@ export interface ListPermissionsResponse {
     [key: string]: any;
 }
 
-export interface ListPredictionSeasonsResult {
-    seasons: PredictionSeasonSummaryResponse[];
+export interface ListPredictionSeasonsResponse {
+    seasons?: PredictionSeasonListItemResponse[];
 
     [key: string]: any;
 }
@@ -13581,7 +13647,7 @@ export interface MediaAppearanceResponse {
     episodeNumber?: number | undefined;
     pickedByDisplayName: string;
     pickedByPersonPublicId?: string | undefined;
-    position?: number | undefined;
+    position?: number;
     wasVetoed: boolean;
     wasVetoOverridden: boolean;
     wasCommissionerOverride: boolean;
@@ -13946,6 +14012,13 @@ export interface PagedResultOfUserItem {
     [key: string]: any;
 }
 
+export interface PartAccessLevel {
+    name: string | undefined;
+    value: number;
+
+    [key: string]: any;
+}
+
 export interface ParticipantKind {
     name: string | undefined;
     value: number;
@@ -14111,6 +14184,35 @@ export interface PredictionResultResponse {
     [key: string]: any;
 }
 
+export interface PredictionSeasonDraftResponse {
+    draftPublicId?: string;
+    draftPartPublicId?: string;
+    label?: string;
+    episodeNumber?: number | undefined;
+    scores?: PredictionSeasonDraftScoreResponse[];
+
+    [key: string]: any;
+}
+
+export interface PredictionSeasonDraftScoreResponse {
+    contestantDisplayName?: string;
+    pointsAwarded?: number;
+
+    [key: string]: any;
+}
+
+export interface PredictionSeasonListItemResponse {
+    publicId?: string;
+    number?: number;
+    startsOn?: Date;
+    endsOn?: Date | undefined;
+    targetPoints?: number;
+    isClosed?: boolean;
+    drafts?: PredictionSeasonDraftResponse[] | undefined;
+
+    [key: string]: any;
+}
+
 export interface PredictionSeasonSummaryResponse {
     publicId: string;
     number: number;
@@ -14172,6 +14274,7 @@ export interface ProducerModel {
 export interface ProducerResponse {
     id?: string;
     imdbId?: string;
+    tmdbId?: number;
     name?: string;
 
     [key: string]: any;
@@ -14196,6 +14299,7 @@ export interface ProductionCompanyRequest {
 export interface ProductionCompanyResponse {
     id?: string;
     imdbId?: string;
+    tmdbId?: number;
     name?: string;
 
     [key: string]: any;
@@ -14696,6 +14800,14 @@ export interface SetEpisodeNumberRequest {
     [key: string]: any;
 }
 
+export interface SetPartPositionRangeRequest {
+    draftPartId?: string;
+    minimumPosition?: number;
+    maximumPosition?: number;
+
+    [key: string]: any;
+}
+
 export interface SetReleaseDateRequest {
     draftPartId?: string;
     releaseDate?: Date;
@@ -14873,6 +14985,7 @@ export interface UpcomingDraftResponse {
     releaseDate?: Date | undefined;
     isDelete?: boolean;
     status?: DraftStatus;
+    accessLevel?: PartAccessLevel;
     capabilities?: DraftUserCapabilities;
 
     [key: string]: any;
@@ -14994,6 +15107,7 @@ export interface WriterModel {
 export interface WriterResponse {
     id?: string;
     imdbId?: string;
+    tmdbId?: number;
     name?: string;
 
     [key: string]: any;
