@@ -1,6 +1,18 @@
+// src/components/features/home/upcoming-drafts.tsx
+"use client";
+
+import { useState } from "react";
 import { MappedUpcomingDraft } from "@/services/home/fetch-home-data";
 
+const PAGE_SIZE = 5;
+
 export default function UpcomingDrafts({ drafts }: { drafts: MappedUpcomingDraft[] }) {
+  const [page, setPage] = useState(1);
+
+  const totalPages = Math.max(1, Math.ceil(drafts.length / PAGE_SIZE));
+  const start = (page - 1) * PAGE_SIZE;
+  const visibleDrafts = drafts.slice(start, start + PAGE_SIZE);
+
   return (
     <div className="bg-white border-2 border-sd-ink rounded-sm">
       <div className="bg-sd-blue text-white px-5 py-3.5">
@@ -8,7 +20,7 @@ export default function UpcomingDrafts({ drafts }: { drafts: MappedUpcomingDraft
       </div>
 
       <div className="divide-y divide-gray-100">
-        {drafts.map((draft) => (
+        {visibleDrafts.map((draft) => (
           <div
             key={draft.draftPartPublicId || draft.title}
             className={`px-5 py-3.5 relative ${draft.access === 'PATRON' ? 'bg-amber-50' : 'bg-white'}`}
@@ -23,7 +35,33 @@ export default function UpcomingDrafts({ drafts }: { drafts: MappedUpcomingDraft
             <div className="text-[11px] text-gray-500 mt-0.5 tracking-[0.06em]">{draft.type.toUpperCase()}</div>
           </div>
         ))}
+
+        {visibleDrafts.length === 0 && (
+          <div className="px-5 py-6 text-center text-[13px] text-gray-500">
+            No upcoming drafts.
+          </div>
+        )}
       </div>
+
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-1.5 px-5 py-3 border-t border-gray-100">
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+            <button
+              key={p}
+              type="button"
+              onClick={() => setPage(p)}
+              aria-current={p === page ? "page" : undefined}
+              className={`font-mono text-[11px] font-bold w-7 h-7 rounded-sm border transition-colors ${
+                p === page
+                  ? "bg-sd-blue text-white border-sd-blue"
+                  : "bg-white text-sd-ink border-gray-300 hover:border-sd-blue hover:text-sd-blue"
+              }`}
+            >
+              {p}
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

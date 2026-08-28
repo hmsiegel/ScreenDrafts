@@ -220,6 +220,10 @@ export function mapLatestDraft(draft: LatestDraftResponse): MappedRecentDraft {
   };
 }
 
+// Mirrors ScreenDrafts.Modules.Drafts.Domain.DraftParts.Enums.PartAccessLevel.Patreon.
+// Unreleased parts (no release rows yet) are treated as PUBLIC — there's no badge for that state.
+const PATREON_ACCESS_LEVEL = 1;
+
 export function mapUpcomingDraft(draft: UpcomingDraftResponse): MappedUpcomingDraft {
   const totalParts = draft.totalParts ?? 1;
   const title = totalParts > 1
@@ -231,8 +235,7 @@ export function mapUpcomingDraft(draft: UpcomingDraftResponse): MappedUpcomingDr
     date: formatDate(draft.releaseDate),
     title,
     type: draft.status?.name ?? 'Draft',
-    // TODO: wire access level when backend adds it to UpcomingDraftResponse
-    access: 'PUBLIC',
+    access: draft.accessLevel?.value === PATREON_ACCESS_LEVEL ? 'PATRON' : 'PUBLIC',
   };
 }
 
