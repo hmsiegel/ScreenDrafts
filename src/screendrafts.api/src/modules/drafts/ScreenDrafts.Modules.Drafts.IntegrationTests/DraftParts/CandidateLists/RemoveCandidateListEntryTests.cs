@@ -18,7 +18,8 @@ public sealed class RemoveCandidateListEntryTests(DraftsIntegrationTestWebAppFac
     {
       DraftPartId = draftPartPublicId,
       TmdbId = tmdbId,
-      AddedByPublicId = "u_" + Faker.Random.AlphaNumeric(17)
+      AddedByPublicId = "u_" + Faker.Random.AlphaNumeric(17),
+      MediaType = MediaType.Movie
     }, TestContext.Current.CancellationToken);
 
     var command = new RemoveCandidateListEntryCommand
@@ -45,7 +46,8 @@ public sealed class RemoveCandidateListEntryTests(DraftsIntegrationTestWebAppFac
     {
       DraftPartId = draftPartPublicId,
       TmdbId = tmdbId,
-      AddedByPublicId = "u_" + Faker.Random.AlphaNumeric(17)
+      AddedByPublicId = "u_" + Faker.Random.AlphaNumeric(17),
+      MediaType = MediaType.Movie
     }, TestContext.Current.CancellationToken);
 
     var command = new RemoveCandidateListEntryCommand
@@ -77,14 +79,16 @@ public sealed class RemoveCandidateListEntryTests(DraftsIntegrationTestWebAppFac
     {
       DraftPartId = draftPartPublicId,
       TmdbId = tmdbIdToRemove,
-      AddedByPublicId = addedByPublicId
+      AddedByPublicId = addedByPublicId,
+      MediaType = MediaType.Movie
     }, TestContext.Current.CancellationToken);
 
     await Sender.Send(new AddCandidateEntryCommand
     {
       DraftPartId = draftPartPublicId,
       TmdbId = tmdbIdToKeep,
-      AddedByPublicId = addedByPublicId
+      AddedByPublicId = addedByPublicId,
+      MediaType = MediaType.Movie
     }, TestContext.Current.CancellationToken);
 
     // Act

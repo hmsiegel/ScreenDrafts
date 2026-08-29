@@ -19,6 +19,7 @@ public sealed class AddCandidateListEntryTests(DraftsIntegrationTestWebAppFactor
       DraftPartId = draftPartPublicId,
       TmdbId = tmdbId,
       AddedByPublicId = "u_" + Faker.Random.AlphaNumeric(17),
+      MediaType = MediaType.Movie,
     };
 
     // Act
@@ -42,6 +43,7 @@ public sealed class AddCandidateListEntryTests(DraftsIntegrationTestWebAppFactor
       DraftPartId = draftPartPublicId,
       TmdbId = tmdbId,
       AddedByPublicId = "u_" + Faker.Random.AlphaNumeric(17),
+      MediaType = MediaType.Movie,
     };
 
     // Act
@@ -70,6 +72,7 @@ public sealed class AddCandidateListEntryTests(DraftsIntegrationTestWebAppFactor
       DraftPartId = draftPartPublicId,
       TmdbId = tmdbId,
       AddedByPublicId = "u_" + Faker.Random.AlphaNumeric(17),
+      MediaType = MediaType.Movie,
     };
 
     // Act
@@ -92,6 +95,7 @@ public sealed class AddCandidateListEntryTests(DraftsIntegrationTestWebAppFactor
       DraftPartId = draftPartPublicId,
       TmdbId = tmdbId,
       AddedByPublicId = "u_" + Faker.Random.AlphaNumeric(17),
+      MediaType = MediaType.Movie,
     };
 
     // Act
@@ -115,6 +119,7 @@ public sealed class AddCandidateListEntryTests(DraftsIntegrationTestWebAppFactor
       TmdbId = tmdbId,
       Notes = notes,
       AddedByPublicId = "u_" + Faker.Random.AlphaNumeric(17),
+      MediaType = MediaType.Movie,
     };
 
     // Act
@@ -146,6 +151,7 @@ public sealed class AddCandidateListEntryTests(DraftsIntegrationTestWebAppFactor
       DraftPartId = draftPartPublicId,
       TmdbId = tmdbId,
       AddedByPublicId = addedByPublicId,
+      MediaType = MediaType.Movie,
     };
 
     var first = await Sender.Send(command, TestContext.Current.CancellationToken);
@@ -178,6 +184,7 @@ public sealed class AddCandidateListEntryTests(DraftsIntegrationTestWebAppFactor
       DraftPartId = "dp_nonexistent",
       TmdbId = Faker.Random.Int(1, 1_000_000),
       AddedByPublicId = "u_" + Faker.Random.AlphaNumeric(17),
+      MediaType = MediaType.Movie,
     };
 
     // Act

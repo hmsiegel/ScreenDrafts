@@ -58,6 +58,7 @@ public sealed class SearchMoviesTests(MoviesIntegrationTestWebAppFactory factory
             Year = "1999",
             Poster = "/matrix.jpg",
             Overview = "A computer hacker discovers the truth.",
+            MediaType = MediaType.Movie,
           },
           new MediaSearchApiResult
           {
@@ -66,6 +67,7 @@ public sealed class SearchMoviesTests(MoviesIntegrationTestWebAppFactory factory
             Year = "2003",
             Poster = "/matrix2.jpg",
             Overview = "Neo and the rebels continue their fight.",
+            MediaType = MediaType.Movie,
           },
         ],
         TotalCount = 2,
@@ -121,18 +123,21 @@ public sealed class SearchMoviesTests(MoviesIntegrationTestWebAppFactory factory
             TmdbId = 1,
             Title = "The Matrix",
             Year = "1999",
+            MediaType = MediaType.Movie,
           },
           new MediaSearchApiResult
           {
             TmdbId = 2,
             Title = "The Matrix Reloaded",
             Year = "2003",
+            MediaType = MediaType.Movie,
           },
           new MediaSearchApiResult
           {
             TmdbId = 3,
             Title = "The Matrix Revolutions",
             Year = "2003",
+            MediaType = MediaType.Movie,
           },
         ],
       }
@@ -225,8 +230,8 @@ public sealed class SearchMoviesTests(MoviesIntegrationTestWebAppFactory factory
       {
         Results =
         [
-          new MediaSearchApiResult { TmdbId = 3, Title = "Film C" },
-          new MediaSearchApiResult { TmdbId = 4, Title = "Film D" },
+          new MediaSearchApiResult { TmdbId = 3, Title = "Film C", MediaType = MediaType.Movie },
+          new MediaSearchApiResult { TmdbId = 4, Title = "Film D", MediaType = MediaType.Movie },
         ],
         TotalCount = 5,
         Page = 2,

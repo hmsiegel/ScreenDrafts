@@ -207,6 +207,59 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
     // Arrange — veto overrides are not allowed in Standard drafts, so use MiniMega here
     var (draftPartPublicId, drafter1PublicId, drafter2PublicId, hostPublicId, _) =
       await SetupStartedDraftPartAsync(DraftType.MiniMega.Value);
+
+    // Veto overrides are only ever usable if explicitly granted — there is no baseline
+    // "starting" override the way there is for vetoes. SetupStartedDraftPartAsync only
+    // sets up 2 drafters (shared by many tests in this file), so add a third here and
+    // grant drafter2 a bonus override via a draft position: SeriesPolicyRules.ComputeMaxVetoOverrides
+    // grants zero overrides to exactly-2-participant Mega/Super/mini-Mega drafts.
+    var peopleFactory = new PeopleFactory(Sender, Faker);
+    var person3Id = await peopleFactory.CreateAndSavePersonAsync();
+    var drafter3PublicId = (await Sender.Send(new CreateDrafterCommand(person3Id), TestContext.Current.CancellationToken)).Value;
+    await Sender.Send(new AddParticipantToDraftPartCommand
+    {
+      DraftPartId = draftPartPublicId,
+      ParticipantPublicId = drafter3PublicId,
+      ParticipantKind = ParticipantKind.Drafter
+    }, TestContext.Current.CancellationToken);
+
+    await Sender.Send(new SetDraftPositionsCommand
+    {
+      DraftPartId = draftPartPublicId,
+      Positions =
+      [
+        new DraftPositionRequest { Name = "P1", Picks = [1] },
+        new DraftPositionRequest { Name = "P2", Picks = [2], HasBonusVetoOverride = true },
+        new DraftPositionRequest { Name = "P3", Picks = [3] },
+      ]
+    }, TestContext.Current.CancellationToken);
+
+    var p1PositionId = await GetPositionPublicIdByNameAsync(draftPartPublicId, "P1");
+    var p2PositionId = await GetPositionPublicIdByNameAsync(draftPartPublicId, "P2");
+    var p3PositionId = await GetPositionPublicIdByNameAsync(draftPartPublicId, "P3");
+
+    await Sender.Send(new AssignParticipantToDraftPositionCommand
+    {
+      DraftPartId = draftPartPublicId,
+      PositionPublicId = p1PositionId,
+      ParticipantPublicId = drafter1PublicId,
+      ParticipantKind = ParticipantKind.Drafter
+    }, TestContext.Current.CancellationToken);
+    await Sender.Send(new AssignParticipantToDraftPositionCommand
+    {
+      DraftPartId = draftPartPublicId,
+      PositionPublicId = p2PositionId,
+      ParticipantPublicId = drafter2PublicId,
+      ParticipantKind = ParticipantKind.Drafter
+    }, TestContext.Current.CancellationToken);
+    await Sender.Send(new AssignParticipantToDraftPositionCommand
+    {
+      DraftPartId = draftPartPublicId,
+      PositionPublicId = p3PositionId,
+      ParticipantPublicId = drafter3PublicId,
+      ParticipantKind = ParticipantKind.Drafter
+    }, TestContext.Current.CancellationToken);
+
     var movie = await CreateMovieAsync();
     await PlayPickAsync(draftPartPublicId, drafter1PublicId, position: 1, playOrder: 1, movie);
 
@@ -564,5 +617,18 @@ public sealed class GetPickListTests(DraftsIntegrationTestWebAppFactory factory)
 
     // CreateDraft auto-creates part index 1 (min=1, max=7) when no Parts are supplied.
     return draftResult.Value;
+  }
+
+  private async Task<string> GetPositionPublicIdByNameAsync(string draftPartPublicId, string positionName)
+  {
+    var partId = await DbContext.DraftParts
+      .Where(dp => dp.PublicId == draftPartPublicId)
+      .Select(dp => dp.Id)
+      .FirstAsync(TestContext.Current.CancellationToken);
+
+    return await DbContext.DraftPositions
+      .Where(pos => pos.GameBoard.DraftPartId == partId && pos.Name == positionName)
+      .Select(pos => pos.PublicId)
+      .FirstAsync(TestContext.Current.CancellationToken);
   }
 }

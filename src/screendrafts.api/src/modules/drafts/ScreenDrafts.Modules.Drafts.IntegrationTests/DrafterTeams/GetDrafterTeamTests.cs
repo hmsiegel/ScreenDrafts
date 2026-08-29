@@ -98,7 +98,7 @@ public sealed class GetDrafterTeamTests(DraftsIntegrationTestWebAppFactory facto
   }
 
   [Fact]
-  public async Task GetDrafterTeam_NewlyCreated_ShouldHaveDefaultCapacityAsync()
+  public async Task GetDrafterTeam_NewlyCreated_ShouldHaveNoDraftersAsync()
   {
     // Arrange
     var teamFactory = new DrafterTeamFactory(Sender, Faker);
@@ -110,7 +110,7 @@ public sealed class GetDrafterTeamTests(DraftsIntegrationTestWebAppFactory facto
     // Assert
     result.Should().NotBeNull();
     result.IsSuccess.Should().BeTrue();
-    // NumberOfDrafters is the team capacity, defaulting to 2
-    result.Value.NumberOfDrafters.Should().Be(2);
+    // NumberOfDrafters is computed from actual membership, not a stored capacity — see GetDrafterTeamQueryHandler.
+    result.Value.NumberOfDrafters.Should().Be(0);
   }
 }

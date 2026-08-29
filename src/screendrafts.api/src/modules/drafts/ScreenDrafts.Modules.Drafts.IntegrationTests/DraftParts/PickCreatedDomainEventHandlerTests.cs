@@ -108,7 +108,7 @@ public sealed class PickCreatedDomainEventHandlerTests(DraftsIntegrationTestWebA
 
     // Add movie to pool
     await CreateMovieInDbAsync(tmdbId);
-    await Sender.Send(new AddMovieToDraftPoolCommand { PublicId = draftPublicId, TmdbId = tmdbId }, TestContext.Current.CancellationToken);
+    await Sender.Send(new AddMovieToDraftPoolCommand { PublicId = draftPublicId, TmdbId = tmdbId, MediaType = MediaType.Movie }, TestContext.Current.CancellationToken);
 
     var (_, draftPartPublicId, drafter1PublicId, drafter2PublicId) = await SetupStartedPartAsync(draftPublicId);
 

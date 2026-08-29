@@ -20,7 +20,8 @@ public sealed class RemoveMovieFromDraftBoardTests(DraftsIntegrationTestWebAppFa
     {
       DraftId = draftPublicId,
       UserPublicId = userPublicId,
-      TmdbId = tmdbId
+      TmdbId = tmdbId,
+      MediaType = MediaType.Movie
     }, TestContext.Current.CancellationToken);
 
     var command = new RemoveMovieFromDraftBoardCommand
@@ -50,7 +51,8 @@ public sealed class RemoveMovieFromDraftBoardTests(DraftsIntegrationTestWebAppFa
     {
       DraftId = draftPublicId,
       UserPublicId = userPublicId,
-      TmdbId = tmdbId
+      TmdbId = tmdbId,
+      MediaType = MediaType.Movie
     }, TestContext.Current.CancellationToken);
 
     var command = new RemoveMovieFromDraftBoardCommand
@@ -116,7 +118,8 @@ public sealed class RemoveMovieFromDraftBoardTests(DraftsIntegrationTestWebAppFa
     {
       DraftId = draftPublicId,
       UserPublicId = userPublicId,
-      TmdbId = existingTmdbId
+      TmdbId = existingTmdbId,
+      MediaType = MediaType.Movie
     }, TestContext.Current.CancellationToken);
 
     // Attempt to remove a movie that was never added

@@ -85,7 +85,7 @@ public sealed class VetoAppliedDomainEventHandlerTests(DraftsIntegrationTestWebA
 
     // Assert — veto should be persisted on the pick
     var pick = await DbContext.Picks
-      .Include(p => p.Vetoes)
+      .Include("_vetoes")
       .FirstAsync(p => p.PlayOrder == 1 && p.DraftPart.PublicId == draftPartPublicId, TestContext.Current.CancellationToken);
     pick.CurrentVeto.Should().NotBeNull();
     pick.CurrentVeto.IsOverridden.Should().BeFalse();
@@ -100,7 +100,7 @@ public sealed class VetoAppliedDomainEventHandlerTests(DraftsIntegrationTestWebA
   {
     var draftPublicId = await CreateDraftWithPoolAsync();
     await CreateMovieInDbAsync(tmdbId);
-    await Sender.Send(new AddMovieToDraftPoolCommand { PublicId = draftPublicId, TmdbId = tmdbId }, TestContext.Current.CancellationToken);
+    await Sender.Send(new AddMovieToDraftPoolCommand { PublicId = draftPublicId, TmdbId = tmdbId, MediaType = MediaType.Movie }, TestContext.Current.CancellationToken);
 
     await Sender.Send(new CreateDraftPartCommand
     {

@@ -131,7 +131,8 @@ public sealed class BulkAddMoviesToDraftPoolTests(DraftsIntegrationTestWebAppFac
     await Sender.Send(new AddMovieToDraftPoolCommand
     {
       PublicId = draftPublicId,
-      TmdbId = existingTmdbId
+      TmdbId = existingTmdbId,
+      MediaType = MediaType.Movie
     }, TestContext.Current.CancellationToken);
 
     using var csvStream = BuildCsvStream(

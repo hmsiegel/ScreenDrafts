@@ -19,7 +19,8 @@ public sealed class AddMovieToDraftPoolTests(DraftsIntegrationTestWebAppFactory 
     var result = await Sender.Send(new AddMovieToDraftPoolCommand
     {
       PublicId = draftPublicId,
-      TmdbId = tmdbId
+      TmdbId = tmdbId,
+      MediaType = MediaType.Movie
     }, TestContext.Current.CancellationToken);
 
     // Assert
@@ -38,7 +39,8 @@ public sealed class AddMovieToDraftPoolTests(DraftsIntegrationTestWebAppFactory 
     await Sender.Send(new AddMovieToDraftPoolCommand
     {
       PublicId = draftPublicId,
-      TmdbId = tmdbId
+      TmdbId = tmdbId,
+      MediaType = MediaType.Movie
     }, TestContext.Current.CancellationToken);
 
     // Assert
@@ -59,7 +61,8 @@ public sealed class AddMovieToDraftPoolTests(DraftsIntegrationTestWebAppFactory 
     var result = await Sender.Send(new AddMovieToDraftPoolCommand
     {
       PublicId = draftPublicId,
-      TmdbId = tmdbId
+      TmdbId = tmdbId,
+      MediaType = MediaType.Movie
     }, TestContext.Current.CancellationToken);
 
     // Assert
@@ -81,7 +84,8 @@ public sealed class AddMovieToDraftPoolTests(DraftsIntegrationTestWebAppFactory 
     var result = await Sender.Send(new AddMovieToDraftPoolCommand
     {
       PublicId = "nonexistent",
-      TmdbId = 1
+      TmdbId = 1,
+      MediaType = MediaType.Movie
     }, TestContext.Current.CancellationToken);
 
     // Assert
@@ -102,7 +106,8 @@ public sealed class AddMovieToDraftPoolTests(DraftsIntegrationTestWebAppFactory 
     var result = await Sender.Send(new AddMovieToDraftPoolCommand
     {
       PublicId = draftPublicId,
-      TmdbId = 1
+      TmdbId = 1,
+      MediaType = MediaType.Movie
     }, TestContext.Current.CancellationToken);
 
     // Assert
@@ -120,13 +125,14 @@ public sealed class AddMovieToDraftPoolTests(DraftsIntegrationTestWebAppFactory 
     var draftPublicId = await CreateDraftWithPoolAsync();
     var tmdbId = Faker.Random.Int(1, 1_000_000);
     await CreateMovieInDbAsync(tmdbId);
-    await Sender.Send(new AddMovieToDraftPoolCommand { PublicId = draftPublicId, TmdbId = tmdbId }, TestContext.Current.CancellationToken);
+    await Sender.Send(new AddMovieToDraftPoolCommand { PublicId = draftPublicId, TmdbId = tmdbId, MediaType = MediaType.Movie }, TestContext.Current.CancellationToken);
 
     // Act — add same movie again
     var result = await Sender.Send(new AddMovieToDraftPoolCommand
     {
       PublicId = draftPublicId,
-      TmdbId = tmdbId
+      TmdbId = tmdbId,
+      MediaType = MediaType.Movie
     }, TestContext.Current.CancellationToken);
 
     // Assert

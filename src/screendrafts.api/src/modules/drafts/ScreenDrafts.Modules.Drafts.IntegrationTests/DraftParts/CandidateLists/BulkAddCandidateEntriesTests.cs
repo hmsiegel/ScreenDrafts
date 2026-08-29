@@ -113,7 +113,8 @@ public sealed class BulkAddCandidateEntriesTests(DraftsIntegrationTestWebAppFact
     {
       DraftPartId = draftPartPublicId,
       TmdbId = existingTmdbId,
-      AddedByPublicId = "u_" + Faker.Random.AlphaNumeric(17)
+      AddedByPublicId = "u_" + Faker.Random.AlphaNumeric(17),
+      MediaType = MediaType.Movie
     }, TestContext.Current.CancellationToken);
 
     using var csvStream = BuildCsvStream(

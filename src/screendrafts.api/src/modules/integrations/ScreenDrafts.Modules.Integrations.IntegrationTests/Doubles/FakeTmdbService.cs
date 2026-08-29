@@ -47,6 +47,17 @@ public sealed class FakeTmdbService : ITmdbService
     CancellationToken cancellationToken = default
   ) => Task.FromResult<TmdbMediaDetails?>(null);
 
+  public Task<string?> GetTvShowNameAsync(
+    int tmdbId,
+    CancellationToken cancellationToken = default
+  ) => Task.FromResult<string?>(null);
+
+  public Task<IReadOnlyList<TmdbSeasonEpisode>> GetSeasonEpisodesAsync(
+    int seriesTmdbId,
+    int seasonNumber,
+    CancellationToken cancellationToken = default
+  ) => Task.FromResult<IReadOnlyList<TmdbSeasonEpisode>>(Array.Empty<TmdbSeasonEpisode>());
+
   public Task<TmdbMediaDetails?> GetTvEpisodeDetailsAsync(
     int seriesTmdbId,
     int seasonNumber,

@@ -187,6 +187,6 @@ public sealed class SearchDrafterTeamsTests(DraftsIntegrationTestWebAppFactory f
     var item = result.Value.Items[0];
     item.PublicId.Should().Be(teamId);
     item.Name.Should().Be(teamName);
-    item.NumberOfDrafters.Should().Be(2); // default capacity
+    item.NumberOfDrafters.Should().Be(0); // computed from actual membership; freshly created team has none
   }
 }

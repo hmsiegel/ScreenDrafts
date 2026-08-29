@@ -100,7 +100,7 @@ public sealed class PredictionScoringServiceTests : DraftsBaseTest
       set: set,
       finalTmdbIds: finalPicks,
       rules: rules,
-      isShootTheMoonEligible: false,
+      isShootTheMoonEligible: true,
       scoredAtUtc: DateTime.UtcNow
     );
 
@@ -204,7 +204,7 @@ public sealed class PredictionScoringServiceTests : DraftsBaseTest
       set: set,
       finalTmdbIds: finalPicks,
       rules: rules,
-      isShootTheMoonEligible: false,
+      isShootTheMoonEligible: true,
       scoredAtUtc: DateTime.UtcNow
     );
 

@@ -83,7 +83,7 @@ public sealed class SubDraftTests : DraftsBaseTest
     var subDraft = CreateSubDraft();
 
     // Act
-    var result = subDraft.SetSubject(SubjectKind.Actor, "Tom Hanks");
+    var result = subDraft.SetSubject(SubjectKind.Actor, "Tom Hanks", "nm0000158");
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -126,7 +126,7 @@ public sealed class SubDraftTests : DraftsBaseTest
     var subDraft = CreateSubDraft();
 
     // Act
-    var result = subDraft.SetSubject(SubjectKind.Actor, "  Steven Spielberg  ");
+    var result = subDraft.SetSubject(SubjectKind.Actor, "  Steven Spielberg  ", "nm0000229");
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -138,10 +138,10 @@ public sealed class SubDraftTests : DraftsBaseTest
   {
     // Arrange
     var subDraft = CreateSubDraft();
-    subDraft.SetSubject(SubjectKind.Actor, "Tom Hanks");
+    subDraft.SetSubject(SubjectKind.Actor, "Tom Hanks", "nm0000158");
 
     // Act
-    var result = subDraft.SetSubject(SubjectKind.Director, "Christopher Nolan");
+    var result = subDraft.SetSubject(SubjectKind.Director, "Christopher Nolan", "nm0634240");
 
     // Assert
     result.IsSuccess.Should().BeTrue();
