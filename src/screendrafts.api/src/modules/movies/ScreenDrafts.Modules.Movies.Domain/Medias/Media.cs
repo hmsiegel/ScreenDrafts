@@ -27,6 +27,7 @@ public sealed class Media : AggregateRoot<MediaId, Guid>
     int? tvSeriesTmdbId,
     int? seasonNumber,
     int? episodeNumber,
+    string? tvSeriesTitle,
     MediaId? id = null
   )
     : base(id ?? MediaId.CreateUnique())
@@ -46,6 +47,7 @@ public sealed class Media : AggregateRoot<MediaId, Guid>
     TvSeriesTmdbId = tvSeriesTmdbId;
     SeasonNumber = seasonNumber;
     EpisodeNumber = episodeNumber;
+    TvSeriesTitle = tvSeriesTitle;
   }
 
   private Media() { }
@@ -94,15 +96,18 @@ public sealed class Media : AggregateRoot<MediaId, Guid>
   public int? SeasonNumber { get; private set; }
   public int? EpisodeNumber { get; private set; }
 
+  /// <summary>
+  /// Display name of the parent series.
+  /// Only ever set for MediaType.TvEpisode; captured once from TMDb at fetch time rather than re-derived on every read,
+  /// since TMDb's per-episode endpoint doesn't return it. Null for every other media type.
+  /// </summary>
+  public string? TvSeriesTitle { get; private set; }
+
   public IReadOnlyCollection<MediaGenre> MediaGenres => _mediaGenres.AsReadOnly();
-
   public IReadOnlyCollection<MediaActor> MediaActors => _mediaActors.AsReadOnly();
-
   public IReadOnlyCollection<MediaDirector> MediaDirectors => _mediaDirectors.AsReadOnly();
-
   public IReadOnlyCollection<MediaWriter> MediaWriters => _mediaWriters.AsReadOnly();
   public IReadOnlyCollection<MediaProducer> MediaProducers => _mediaProducers.AsReadOnly();
-
   public IReadOnlyCollection<MediaProductionCompany> MediaProductionCompanies =>
     _mediaProductionCompanies.AsReadOnly();
 
@@ -152,6 +157,7 @@ public sealed class Media : AggregateRoot<MediaId, Guid>
     int? tvSeriesTmdbId = null,
     int? seasonNumber = null,
     int? episodeNumber = null,
+    string? tvSeriesTitle = null,
     MediaId? id = null
   )
   {
@@ -213,6 +219,7 @@ public sealed class Media : AggregateRoot<MediaId, Guid>
       tvSeriesTmdbId: tvSeriesTmdbId,
       seasonNumber: seasonNumber,
       episodeNumber: episodeNumber,
+      tvSeriesTitle: tvSeriesTitle,
       id: id
     );
 

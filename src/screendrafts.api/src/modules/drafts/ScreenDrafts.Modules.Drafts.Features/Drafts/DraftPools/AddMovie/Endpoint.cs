@@ -8,10 +8,10 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<AddMovieToDraftPoolRequest
     Description(x =>
     {
       x.WithTags(DraftsOpenApi.Tags.DraftPools)
-      .WithName(DraftsOpenApi.Names.DraftPools_AddItem)
-      .Produces(StatusCodes.Status204NoContent)
-      .Produces(StatusCodes.Status400BadRequest)
-      .Produces(StatusCodes.Status404NotFound);
+        .WithName(DraftsOpenApi.Names.DraftPools_AddItem)
+        .Produces(StatusCodes.Status204NoContent)
+        .Produces(StatusCodes.Status400BadRequest)
+        .Produces(StatusCodes.Status404NotFound);
     });
     Policies(DraftsAuth.Permissions.DraftPoolUpdate);
   }
@@ -21,7 +21,11 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<AddMovieToDraftPoolRequest
     var command = new AddMovieToDraftPoolCommand
     {
       PublicId = req.PublicId,
-      TmdbId = req.TmdbId
+      TmdbId = req.TmdbId,
+      MediaType = req.MediaType,
+      TvSeriesTmdbId = req.TvSeriesTmdbId,
+      SeasonNumber = req.SeasonNumber,
+      EpisodeNumber = req.EpisodeNumber,
     };
     var result = await Sender.Send(command, ct);
 

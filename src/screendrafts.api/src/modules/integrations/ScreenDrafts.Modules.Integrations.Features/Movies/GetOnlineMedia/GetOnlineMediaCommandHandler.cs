@@ -129,7 +129,12 @@ internal sealed class GetOnlineMediaCommandHandler(
       cancellationToken
     );
 
-    return BuildTmdbResponse(detail, imdbId, MediaType.TvEpisode);
+    var seriesTitle = await _tmdbService.GetTvShowNameAsync(
+      command.TvSeriesTmdbId.Value,
+      cancellationToken
+    );
+
+    return BuildTmdbResponse(detail, imdbId, MediaType.TvEpisode, tvSeriesTitle: seriesTitle);
   }
 
   private async Task<Result<GetOnlineMediaResponse>> FetchVideoGameAsync(
@@ -271,7 +276,8 @@ internal sealed class GetOnlineMediaCommandHandler(
   private Result<GetOnlineMediaResponse> BuildTmdbResponse(
     TmdbMediaDetails detail,
     string? imdbId,
-    MediaType mediaType
+    MediaType mediaType,
+    string? tvSeriesTitle = null
   )
   {
     var posterUrl = _tmdbService.BuildPosterUrl(detail.PosterPath, "original");
@@ -317,6 +323,7 @@ internal sealed class GetOnlineMediaCommandHandler(
         TvSeriesTmdbId = detail.TVSeriesTmdbId,
         SeasonNumber = detail.SeasonNumber,
         EpisodeNumber = detail.EpisodeNumber,
+        TvSeriesTitle = tvSeriesTitle,
         Genres = [.. detail.Genres.Select(g => new GenreModel(g.Id, g.Name))],
         Actors = actors,
         Directors = directors,

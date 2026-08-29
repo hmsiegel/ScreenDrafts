@@ -13,7 +13,11 @@ public sealed class Movie : Entity
     int? igdbId,
     MediaType mediaType,
     string? year,
-    Guid id
+    Guid id,
+    int? tvSeriesTmdbId,
+    int? seasonNumber,
+    int? episodeNumber,
+    string? tvSeriesTitle
   )
     : base(id)
   {
@@ -24,6 +28,10 @@ public sealed class Movie : Entity
     IgdbId = igdbId;
     MediaType = mediaType;
     Year = year;
+    TvSeriesTmdbId = tvSeriesTmdbId;
+    SeasonNumber = seasonNumber;
+    EpisodeNumber = episodeNumber;
+    TvSeriesTitle = tvSeriesTitle;
   }
 
   private Movie() { }
@@ -35,6 +43,22 @@ public sealed class Movie : Entity
   public int? IgdbId { get; private set; }
   public MediaType MediaType { get; private set; } = default!;
   public string? Year { get; private set; }
+
+  /// <summary>
+  /// TMDb series ID. Only set when MediaType is TvEpisode — mirrors the field of
+  /// the same name on the Movies module's Media aggregate, synced across via
+  /// MediaAddedIntegrationEvent.
+  /// </summary>
+  public int? TvSeriesTmdbId { get; private set; }
+  public int? SeasonNumber { get; private set; }
+  public int? EpisodeNumber { get; private set; }
+
+  /// <summary>
+  /// Display name of the parent series (e.g. "Star Trek: The Original Series").
+  /// Only set when MediaType is TvEpisode.
+  /// </summary>
+  public string? TvSeriesTitle { get; private set; }
+
   public bool HasDefinedVersions => _versions.Count > 0;
   public IReadOnlyCollection<Pick> Picks => _picks.AsReadOnly();
   public IReadOnlyCollection<MovieVersion> Versions => _versions.AsReadOnly();
@@ -47,7 +71,11 @@ public sealed class Movie : Entity
     string? imdbId = null,
     int? tmdbId = null,
     int? igdbId = null,
-    string? year = null
+    string? year = null,
+    int? tvSeriesTmdbId = null,
+    int? seasonNumber = null,
+    int? episodeNumber = null,
+    string? tvSeriesTitle = null
   )
   {
     if (string.IsNullOrWhiteSpace(movieTitle))
@@ -68,7 +96,11 @@ public sealed class Movie : Entity
       tmdbId: tmdbId,
       igdbId: igdbId,
       mediaType: mediaType,
-      year: year
+      year: year,
+      tvSeriesTmdbId: tvSeriesTmdbId,
+      seasonNumber: seasonNumber,
+      episodeNumber: episodeNumber,
+      tvSeriesTitle: tvSeriesTitle
     );
     return movie;
   }

@@ -9,6 +9,7 @@ internal static partial class DraftRoutes
   public const string Category = ById + "/category";
   public const string CategoryById = Category + "/{categoryId}";
   public const string Campaign = ById + "/campaign";
+  public const string TvSeriesRestriction = ById + "/tv-series-restriction";
   public const string Parts = ById + "/parts";
   public const string DraftStatus = ById + "/status";
   public const string DraftPartStatus = ById + "/parts/{partIndex:int}/status";

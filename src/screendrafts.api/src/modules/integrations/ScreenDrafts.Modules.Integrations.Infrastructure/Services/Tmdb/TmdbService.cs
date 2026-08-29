@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Common.Abstractions.Exceptions;
-
-namespace ScreenDrafts.Modules.Integrations.Infrastructure.Services.Tmdb;
+﻿namespace ScreenDrafts.Modules.Integrations.Infrastructure.Services.Tmdb;
 
 internal sealed class TmdbService(HttpClient httpClient, IOptions<TmdbSettings> settings)
   : ITmdbService
@@ -473,6 +471,50 @@ internal sealed class TmdbService(HttpClient httpClient, IOptions<TmdbSettings> 
     };
   }
 
+  public async Task<string?> GetTvShowNameAsync(
+    int tmdbId,
+    CancellationToken cancellationToken = default
+  )
+  {
+    var response = await _httpClient.GetFromJsonAsync<TmdbTvNameApiResponse>(
+      $"tv/{tmdbId}",
+      cancellationToken
+    );
+
+    return response?.Name;
+  }
+
+  public async Task<IReadOnlyList<TmdbSeasonEpisode>> GetSeasonEpisodesAsync(
+    int seriesTmdbId,
+    int seasonNumber,
+    CancellationToken cancellationToken = default
+  )
+  {
+    var response = await _httpClient.GetFromJsonAsync<TmdbSeasonApiResponse>(
+      $"tv/{seriesTmdbId}/season/{seasonNumber}",
+      cancellationToken
+    );
+
+    if (response is null)
+    {
+      return [];
+    }
+
+    return response
+      .Episodes.Select(e => new TmdbSeasonEpisode
+      {
+        Id = e.Id,
+        Name = e.Name,
+        SeasonNumber = e.SeasonNumber,
+        EpisodeNumber = e.EpisodeNumber,
+        AirDate = e.AirDate,
+        Overview = e.Overview,
+        StillPath = e.StillPath,
+      })
+      .ToList()
+      .AsReadOnly();
+  }
+
   // API Response Models
 
   private sealed record TmdbSearchResponse(
@@ -517,6 +559,28 @@ internal sealed class TmdbService(HttpClient httpClient, IOptions<TmdbSettings> 
     [property: JsonPropertyName("credits")] TmdbCreditsApiResponse Credits,
     [property: JsonPropertyName("production_companies")]
       IReadOnlyList<TmdbProductionCompanyApiResponse> ProductionCompanies
+  );
+
+  private sealed record TmdbTvNameApiResponse(
+    [property: JsonPropertyName("id")] int Id,
+    [property: JsonPropertyName("name")] string Name
+  );
+
+  private sealed record TmdbSeasonApiResponse(
+    [property: JsonPropertyName("id")] int Id,
+    [property: JsonPropertyName("name")] string? Name,
+    [property: JsonPropertyName("season_number")] int SeasonNumber,
+    [property: JsonPropertyName("episodes")] IReadOnlyList<TmdbSeasonEpisodeApiResponse> Episodes
+  );
+
+  private sealed record TmdbSeasonEpisodeApiResponse(
+    [property: JsonPropertyName("id")] int Id,
+    [property: JsonPropertyName("name")] string Name,
+    [property: JsonPropertyName("season_number")] int SeasonNumber,
+    [property: JsonPropertyName("episode_number")] int EpisodeNumber,
+    [property: JsonPropertyName("air_date")] string? AirDate,
+    [property: JsonPropertyName("overview")] string? Overview,
+    [property: JsonPropertyName("still_path")] string? StillPath
   );
 
   private sealed record TmdbEpisodeDetailApiResponse(

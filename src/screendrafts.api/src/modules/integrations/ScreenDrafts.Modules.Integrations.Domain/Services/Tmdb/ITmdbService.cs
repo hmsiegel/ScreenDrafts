@@ -61,6 +61,28 @@ public interface ITmdbService
   );
 
   /// <summary>
+  /// Lightweight lookup of just a TV series' display name — GET /tv/{series_id},
+  /// with no append_to_response. Deliberately cheaper than GetTvShowDetailsAsync
+  /// (which pulls credits + videos): this is called once per episode fetch just to
+  /// stamp a human-readable series name onto the episode's Media record, and doesn't
+  /// need anything else off the series. Returns null if TMDb has no such series.
+  /// </summary>
+  Task<string?> GetTvShowNameAsync(int tmdbId, CancellationToken cancellationToken = default);
+
+  /// <summary>
+  /// Browse every episode in a season — GET /tv/{series_id}/season/{season_number}.
+  /// This is a listing, not a search: TMDb has no working keyword search over episode
+  /// titles, so candidate-list seeding for episode drafts is done by picking a season
+  /// and letting the admin choose from what's actually in it, rather than typing a
+  /// query. Returns an empty list if TMDb has no such season.
+  /// </summary>
+  Task<IReadOnlyList<TmdbSeasonEpisode>> GetSeasonEpisodesAsync(
+    int seriesTmdbId,
+    int seasonNumber,
+    CancellationToken cancellationToken = default
+  );
+
+  /// <summary>
   /// Fetch TV episode details including episode-level credits.
   /// Requires the series TMDB ID, season number and episode number to fetch the episode-level credits.
   /// </summary>

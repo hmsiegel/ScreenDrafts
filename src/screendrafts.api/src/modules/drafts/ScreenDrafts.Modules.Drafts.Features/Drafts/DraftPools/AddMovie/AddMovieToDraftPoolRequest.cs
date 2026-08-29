@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Drafts.Features.Drafts.DraftPools.AddMovie;
+﻿namespace ScreenDrafts.Modules.Drafts.Features.Drafts.DraftPools.AddMovie;
 
 internal sealed record AddMovieToDraftPoolRequest
 {
@@ -6,4 +6,8 @@ internal sealed record AddMovieToDraftPoolRequest
   public string PublicId { get; init; } = default!;
 
   public int TmdbId { get; init; }
+  public required MediaType MediaType { get; init; }
+  public int? TvSeriesTmdbId { get; init; }
+  public int? SeasonNumber { get; init; }
+  public int? EpisodeNumber { get; init; }
 }

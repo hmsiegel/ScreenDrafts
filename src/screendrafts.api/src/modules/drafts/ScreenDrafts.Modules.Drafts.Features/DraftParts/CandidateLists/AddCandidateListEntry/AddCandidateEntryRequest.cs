@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.CandidateLists.AddCandidateListEntry;
+﻿namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.CandidateLists.AddCandidateListEntry;
 
 internal sealed record AddCandidateEntryRequest
 {
@@ -7,4 +7,8 @@ internal sealed record AddCandidateEntryRequest
 
   public required int TmdbId { get; init; }
   public string? Notes { get; init; }
+  public required MediaType MediaType { get; init; }
+  public int? TvSeriesTmdbId { get; init; }
+  public int? SeasonNumber { get; init; }
+  public int? EpisodeNumber { get; init; }
 }

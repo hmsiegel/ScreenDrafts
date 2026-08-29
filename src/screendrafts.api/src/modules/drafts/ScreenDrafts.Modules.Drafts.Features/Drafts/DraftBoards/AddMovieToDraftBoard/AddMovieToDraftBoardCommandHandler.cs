@@ -8,8 +8,8 @@ internal sealed class AddMovieToDraftBoardCommandHandler(
   IPublicIdGenerator publicIdGenerator,
   DraftBoardParticipantResolver draftParticipantResolver,
   IDateTimeProvider dateTimeProvider,
-  ICacheService cacheService)
-  : ICommandHandler<AddMovieToDraftBoardCommand>
+  ICacheService cacheService
+) : ICommandHandler<AddMovieToDraftBoardCommand>
 {
   private readonly IDraftBoardRepository _draftBoardRepository = draftBoardRepository;
   private readonly IDraftRepository _draftRepository = draftRepository;
@@ -18,11 +18,18 @@ internal sealed class AddMovieToDraftBoardCommandHandler(
   private readonly IPublicIdGenerator _publicIdGenerator = publicIdGenerator;
   private readonly IDateTimeProvider _dateTimeProvider = dateTimeProvider;
   private readonly ICacheService _cacheService = cacheService;
-  private readonly DraftBoardParticipantResolver _draftBoardParticipantResolver = draftParticipantResolver;
+  private readonly DraftBoardParticipantResolver _draftBoardParticipantResolver =
+    draftParticipantResolver;
 
-  public async Task<Result> Handle(AddMovieToDraftBoardCommand request, CancellationToken cancellationToken)
+  public async Task<Result> Handle(
+    AddMovieToDraftBoardCommand request,
+    CancellationToken cancellationToken
+  )
   {
-    var resolved = await _draftBoardParticipantResolver.ResolveAsync(request.UserPublicId, cancellationToken);
+    var resolved = await _draftBoardParticipantResolver.ResolveAsync(
+      request.UserPublicId,
+      cancellationToken
+    );
 
     if (resolved is null)
     {
@@ -44,14 +51,16 @@ internal sealed class AddMovieToDraftBoardCommandHandler(
     var board = await _draftBoardRepository.GetByDraftAndParticipantAsync(
       draftId: draft.Id,
       participantId: resolved.Participant,
-      cancellationToken: cancellationToken);
+      cancellationToken: cancellationToken
+    );
 
     if (board is null)
     {
       var boardResult = DraftBoard.Create(
         draftId: draft.Id,
         participant: resolved.Participant,
-        publicId: _publicIdGenerator.GeneratePublicId(PublicIdPrefixes.DraftBoard));
+        publicId: _publicIdGenerator.GeneratePublicId(PublicIdPrefixes.DraftBoard)
+      );
 
       if (boardResult.IsFailure)
       {
@@ -65,7 +74,8 @@ internal sealed class AddMovieToDraftBoardCommandHandler(
     var addResult = board.AddItem(
       tmdbId: request.TmdbId,
       notes: request.Notes,
-      priority: request.Priority);
+      priority: request.Priority
+    );
 
     if (addResult.IsFailure)
     {
@@ -73,26 +83,28 @@ internal sealed class AddMovieToDraftBoardCommandHandler(
     }
 
     await _cacheService.RemoveAsync(
-      key: DraftsCacheKeys.DraftBoard(
-        draftPublicId: request.DraftId,
-        userId: resolved.UserId),
-      cancellationToken: cancellationToken);
+      key: DraftsCacheKeys.DraftBoard(draftPublicId: request.DraftId, userId: resolved.UserId),
+      cancellationToken: cancellationToken
+    );
 
     var existsInDb = await _movieRepository.ExistsByTmdbIdAsync(request.TmdbId, cancellationToken);
 
     if (!existsInDb)
     {
-      await _eventBus.PublishAsync(new FetchMediaRequestedIntegrationEvent(
+      await _eventBus.PublishAsync(
+        new FetchMediaRequestedIntegrationEvent(
           id: Guid.NewGuid(),
           occurredOnUtc: _dateTimeProvider.UtcNow,
           tmdbId: request.TmdbId,
           igdbId: null,
-          tvSeriesTmdbId: null,
-          episodeNumber: null,
-          seasonNumber: null,
-          mediaType: MediaType.Movie,
-          imdbId: null),
-        cancellationToken: cancellationToken);
+          tvSeriesTmdbId: request.TvSeriesTmdbId,
+          episodeNumber: request.EpisodeNumber,
+          seasonNumber: request.SeasonNumber,
+          mediaType: request.MediaType,
+          imdbId: null
+        ),
+        cancellationToken: cancellationToken
+      );
     }
 
     _draftBoardRepository.Update(board);

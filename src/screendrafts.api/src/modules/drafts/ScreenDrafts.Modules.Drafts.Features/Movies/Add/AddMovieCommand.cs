@@ -10,4 +10,8 @@ internal sealed record AddMovieCommand : ICommand<string>
   public int? IgdbId { get; init; }
   public MediaType MediaType { get; init; } = default!;
   public string? Year { get; init; } = default!;
+  public int? TvSeriesTmdbId { get; init; }
+  public int? SeasonNumber { get; init; }
+  public int? EpisodeNumber { get; init; }
+  public string? TvSeriesTitle { get; init; }
 }

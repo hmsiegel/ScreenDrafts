@@ -1,6 +1,7 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.CandidateLists.AddCandidateListEntry;
 
-internal sealed class Endpoint : ScreenDraftsEndpoint<AddCandidateEntryRequest, AddCanidateEntryResponse>
+internal sealed class Endpoint
+  : ScreenDraftsEndpoint<AddCandidateEntryRequest, AddCanidateEntryResponse>
 {
   public override void Configure()
   {
@@ -8,12 +9,12 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<AddCandidateEntryRequest, 
     Description(x =>
     {
       x.WithTags(DraftsOpenApi.Tags.CandidateLists)
-      .WithName(DraftsOpenApi.Names.CandidateLists_AddEntry)
-      .Produces<AddCanidateEntryResponse>(StatusCodes.Status200OK)
-      .Produces(StatusCodes.Status400BadRequest)
-      .Produces(StatusCodes.Status401Unauthorized)
-      .Produces(StatusCodes.Status403Forbidden)
-      .Produces(StatusCodes.Status404NotFound);
+        .WithName(DraftsOpenApi.Names.CandidateLists_AddEntry)
+        .Produces<AddCanidateEntryResponse>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status400BadRequest)
+        .Produces(StatusCodes.Status401Unauthorized)
+        .Produces(StatusCodes.Status403Forbidden)
+        .Produces(StatusCodes.Status404NotFound);
     });
     Policies(DraftsAuth.Permissions.CandidateListCreate);
   }
@@ -33,7 +34,11 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<AddCandidateEntryRequest, 
       DraftPartId = req.DraftPartId,
       TmdbId = req.TmdbId,
       Notes = req.Notes,
-      AddedByPublicId = actorPublicId
+      AddedByPublicId = actorPublicId,
+      MediaType = req.MediaType,
+      TvSeriesTmdbId = req.TvSeriesTmdbId,
+      SeasonNumber = req.SeasonNumber,
+      EpisodeNumber = req.EpisodeNumber,
     };
 
     var result = await Sender.Send(command, ct);

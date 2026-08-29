@@ -80,7 +80,8 @@ internal sealed class AddMediaCommandHandler(
       mediaType: request.MediaType,
       tvSeriesTmdbId: request.TvSeriesTmdbId,
       seasonNumber: request.SeasonNumber,
-      episodeNumber: request.EpisodeNumber
+      episodeNumber: request.EpisodeNumber,
+      tvSeriesTitle: request.TvSeriesTitle
     );
 
     if (mediaResult.IsFailure)

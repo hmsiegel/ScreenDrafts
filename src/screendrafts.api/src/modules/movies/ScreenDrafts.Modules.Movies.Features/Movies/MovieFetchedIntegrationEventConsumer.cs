@@ -30,6 +30,7 @@ internal sealed class MovieFetchedIntegrationEventConsumer(
       TvSeriesTmdbId = integrationEvent.TVSeriesTmdbId,
       SeasonNumber = integrationEvent.SeasonNumber,
       EpisodeNumber = integrationEvent.EpisodeNumber,
+      TvSeriesTitle = integrationEvent.TvSeriesTitle,
       Genres = integrationEvent
         .Genres.Select(g => new GenreRequest(g.TmdbId, g.Name))
         .ToList()

@@ -10,7 +10,11 @@ public sealed class MediaAddedIntegrationEvent(
   string publicId,
   MediaType mediaType,
   int? igdbId,
-  string? year
+  string? year,
+  int? tvSeriesTmdbId = null,
+  int? seasonNumber = null,
+  int? episodeNumber = null,
+  string? tvSeriesTitle = null
 ) : IntegrationEvent(id, occurredOnUtc)
 {
   public Guid MediaId { get; init; } = mediaId;
@@ -21,4 +25,8 @@ public sealed class MediaAddedIntegrationEvent(
   public int? IgdbId { get; init; } = igdbId;
   public MediaType MediaType { get; init; } = mediaType;
   public string? Year { get; init; } = year;
+  public int? TvSeriesTmdbId { get; init; } = tvSeriesTmdbId;
+  public int? SeasonNumber { get; init; } = seasonNumber;
+  public int? EpisodeNumber { get; init; } = episodeNumber;
+  public string? TvSeriesTitle { get; init; } = tvSeriesTitle;
 }

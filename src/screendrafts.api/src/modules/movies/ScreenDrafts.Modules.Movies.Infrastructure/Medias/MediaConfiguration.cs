@@ -36,5 +36,7 @@ internal sealed class MediaConfiguration : IEntityTypeConfiguration<Media>
     builder.Property(m => m.ExternalId);
 
     builder.HasIndex(m => m.ExternalId);
+
+    builder.Property(m => m.TvSeriesTitle).HasMaxLength(200);
   }
 }

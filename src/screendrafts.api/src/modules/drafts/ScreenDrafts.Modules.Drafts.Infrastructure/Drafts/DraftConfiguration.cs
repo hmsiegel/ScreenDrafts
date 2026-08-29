@@ -37,6 +37,8 @@ internal sealed class DraftConfiguration : IEntityTypeConfiguration<Draft>
 
     builder.Property(d => d.IsHostless).IsRequired();
 
+    builder.Property(d => d.RestrictedTvSeriesTmdbId);
+
     builder
       .HasMany(d => d.DraftCategories)
       .WithOne(dc => dc.Draft)
