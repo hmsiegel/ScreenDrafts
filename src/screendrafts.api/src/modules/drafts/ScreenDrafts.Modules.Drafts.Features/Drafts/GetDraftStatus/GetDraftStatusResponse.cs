@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Features.Drafts.GetDraftStatus;
 
-internal sealed record Response
+internal sealed record GetDraftStatusResponse
 {
   public string DraftPublicId { get; init; } = default!;
   public DraftStatus DraftStatus { get; init; } = default!;

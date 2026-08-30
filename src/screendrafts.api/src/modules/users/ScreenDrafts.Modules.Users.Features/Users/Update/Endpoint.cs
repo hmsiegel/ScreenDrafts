@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Users.Features.Users.Update;
 
-internal sealed class Endpoint : ScreenDraftsEndpoint<Request>
+internal sealed class Endpoint : ScreenDraftsEndpoint<UpdateUserRequest>
 {
   public override void Configure()
   {
@@ -17,7 +17,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<Request>
     Policies(Features.Permissions.UserUpdate);
   }
 
-  public override async Task HandleAsync(Request req, CancellationToken ct)
+  public override async Task HandleAsync(UpdateUserRequest req, CancellationToken ct)
   {
     var userId = User.GetUserPublicId();
     var command = new UpdateUserCommand(userId, req.FirstName, req.LastName, req.MiddleName);

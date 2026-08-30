@@ -4,13 +4,13 @@ internal sealed class SetDraftPartStatusCommandHandler(
   IDraftRepository draftsRepository,
   IDateTimeProvider dateTimeProvider,
   IDbConnectionFactory dbConnectionFactory
-) : ICommandHandler<SetDraftPartStatusCommand, Response>
+) : ICommandHandler<SetDraftPartStatusCommand, SetDraftPartStatusResponse>
 {
   private readonly IDraftRepository _draftsRepository = draftsRepository;
   private readonly IDateTimeProvider _dateTimeProvider = dateTimeProvider;
   private readonly IDbConnectionFactory _dbConnectionFactory = dbConnectionFactory;
 
-  public async Task<Result<Response>> Handle(
+  public async Task<Result<SetDraftPartStatusResponse>> Handle(
     SetDraftPartStatusCommand request,
     CancellationToken cancellationToken
   )
@@ -24,14 +24,16 @@ internal sealed class SetDraftPartStatusCommandHandler(
 
     if (draft is null)
     {
-      return Result<Response>.ValidationFailure(DraftErrors.NotFound(request.DraftPublicId));
+      return Result<SetDraftPartStatusResponse>.ValidationFailure(
+        DraftErrors.NotFound(request.DraftPublicId)
+      );
     }
 
     var part = draft.Parts.FirstOrDefault(p => p.PartIndex == request.PartIndex);
 
     if (part is null)
     {
-      return Result.Failure<Response>(
+      return Result.Failure<SetDraftPartStatusResponse>(
         DraftErrors.DraftPartNotFoundByIndex(request.DraftPublicId, request.PartIndex)
       );
     }
@@ -41,7 +43,7 @@ internal sealed class SetDraftPartStatusCommandHandler(
       var rolloverResult = await ApplyRolloversAsync(draft, part, cancellationToken);
       if (rolloverResult.IsFailure)
       {
-        return Result.Failure<Response>(rolloverResult.Errors[0]);
+        return Result.Failure<SetDraftPartStatusResponse>(rolloverResult.Errors[0]);
       }
     }
 
@@ -49,12 +51,12 @@ internal sealed class SetDraftPartStatusCommandHandler(
     {
       DraftPartStatusAction.Start => draft.StartPart(part.Id, utcNow),
       DraftPartStatusAction.Complete => draft.CompletePart(part.Id, utcNow),
-      _ => Result.Failure<Response>(DraftErrors.InvalidDraftPartStatusAction),
+      _ => Result.Failure<SetDraftPartStatusResponse>(DraftErrors.InvalidDraftPartStatusAction),
     };
 
     if (result.IsFailure)
     {
-      return Result.Failure<Response>(result.Errors[0]);
+      return Result.Failure<SetDraftPartStatusResponse>(result.Errors[0]);
     }
 
     _draftsRepository.Update(draft);
@@ -63,7 +65,7 @@ internal sealed class SetDraftPartStatusCommandHandler(
     var draftPartLifecycle = part.GetLifecycleView(utcNow);
 
     return Result.Success(
-      new Response
+      new SetDraftPartStatusResponse
       {
         DraftPublicId = draft.PublicId,
         PartIndex = part.PartIndex,

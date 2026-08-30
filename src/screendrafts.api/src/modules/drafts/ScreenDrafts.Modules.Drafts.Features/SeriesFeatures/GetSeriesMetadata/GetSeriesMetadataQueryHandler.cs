@@ -1,10 +1,14 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.SeriesFeatures.Metadata;
+﻿namespace ScreenDrafts.Modules.Drafts.Features.SeriesFeatures.GetSeriesMetadata;
 
-internal sealed class MetadataSeriesQueryHandler : IQueryHandler<MetadataSeriesQuery, Response>
+internal sealed class GetSeriesMetadataQueryHandler
+  : IQueryHandler<GetSeriesMetadataQuery, GetSeriesMetadataResponse>
 {
-  public Task<Result<Response>> Handle(MetadataSeriesQuery request, CancellationToken cancellationToken)
+  public Task<Result<GetSeriesMetadataResponse>> Handle(
+    GetSeriesMetadataQuery request,
+    CancellationToken cancellationToken
+  )
   {
-    var response = new Response
+    var response = new GetSeriesMetadataResponse
     {
       SeriesKinds = QueryMapping.AllSmartEnums<SeriesKind>(),
       CanonicalPolicies = QueryMapping.AllSmartEnums<CanonicalPolicy>(),
@@ -15,5 +19,3 @@ internal sealed class MetadataSeriesQueryHandler : IQueryHandler<MetadataSeriesQ
     return Task.FromResult(Result.Success(response));
   }
 }
-
-

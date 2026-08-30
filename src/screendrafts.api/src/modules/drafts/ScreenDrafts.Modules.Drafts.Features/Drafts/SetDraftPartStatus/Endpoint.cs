@@ -1,6 +1,7 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Features.Drafts.SetDraftPartStatus;
 
-internal sealed class Endpoint : ScreenDraftsEndpoint<SetDraftPartStatusRequest, Response>
+internal sealed class Endpoint
+  : ScreenDraftsEndpoint<SetDraftPartStatusRequest, SetDraftPartStatusResponse>
 {
   public override void Configure()
   {
@@ -9,7 +10,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<SetDraftPartStatusRequest,
     {
       x.WithTags(DraftsOpenApi.Tags.Drafts)
         .WithName(DraftsOpenApi.Names.Drafts_SetDraftPartStatus)
-        .Produces<Response>(StatusCodes.Status200OK)
+        .Produces<SetDraftPartStatusResponse>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status400BadRequest)
         .Produces(StatusCodes.Status401Unauthorized)
         .Produces(StatusCodes.Status403Forbidden)

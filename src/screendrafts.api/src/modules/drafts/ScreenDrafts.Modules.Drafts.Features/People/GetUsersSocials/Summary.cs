@@ -1,5 +1,4 @@
 ﻿using FastEndpoints;
-using ScreenDrafts.Modules.Drafts.Features.People.GetUsersSocials;
 
 namespace ScreenDrafts.Modules.Drafts.Features.People.GetUsersSocials;
 
@@ -10,7 +9,10 @@ internal sealed class Summary : Summary<Endpoint>
     Summary = "Get users' social media links by their person IDs.";
     Description =
       "Retrieves the social media links for multiple users based on their associated person IDs.";
-    Response<Response>(StatusCodes.Status200OK, "Returns the users' social media links.");
+    Response<GetUsersSocialsResponse>(
+      StatusCodes.Status200OK,
+      "Returns the users' social media links."
+    );
     Response(StatusCodes.Status400BadRequest, "The request was invalid.");
     Response(StatusCodes.Status401Unauthorized, "The user is not authenticated.");
     Response(

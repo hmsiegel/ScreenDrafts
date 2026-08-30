@@ -1,6 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.SeriesFeatures.Metadata;
+﻿namespace ScreenDrafts.Modules.Drafts.Features.SeriesFeatures.GetSeriesMetadata;
 
-internal sealed record Response
+internal sealed record GetSeriesMetadataResponse
 {
   public IReadOnlyList<SmartEnumResponse> SeriesKinds { get; init; } = [];
   public IReadOnlyList<SmartEnumResponse> CanonicalPolicies { get; init; } = [];

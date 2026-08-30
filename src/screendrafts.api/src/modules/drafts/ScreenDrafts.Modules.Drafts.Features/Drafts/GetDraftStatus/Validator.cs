@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Drafts.Features.Drafts.GetDraftStatus;
+﻿namespace ScreenDrafts.Modules.Drafts.Features.Drafts.GetDraftStatus;
 
 internal sealed class Validator : AbstractValidator<GetDraftStatusQuery>
 {
@@ -11,4 +11,3 @@ internal sealed class Validator : AbstractValidator<GetDraftStatusQuery>
       .WithMessage("PublicId is not valid.");
   }
 }
-

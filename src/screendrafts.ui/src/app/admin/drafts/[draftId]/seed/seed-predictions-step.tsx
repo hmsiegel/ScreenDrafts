@@ -11,7 +11,7 @@ import {
   type DraftPartPredictorDto,
   type DraftPartHost,
 } from "@/services/admin/fetch-admin-drafts";
-import { PredictionSeasonSummaryResponse } from "@/lib/dto";
+import { PredictionSeasonListItemResponse } from "@/lib/dto";
 import { type ResolvedMovie } from "@/lib/movie-resolve";
 import { useMovieSearch } from "@/lib/use-movie-search";
 import { SeedPredictionsSetup } from "./seed-predictions-setup";
@@ -25,11 +25,20 @@ const BTN_PRIMARY =
 const BTN_SECONDARY =
   "border border-sd-ink/20 text-sd-ink font-mono text-[11px] tracking-widest uppercase px-3 py-1.5 hover:bg-sd-ink/5 disabled:opacity-40 transition-colors";
 
-function seasonLabel(s: PredictionSeasonSummaryResponse): string {
-  if (s.firstEpisodeNumber != null && s.lastEpisodeNumber != null) {
-    return `Season ${s.number} (Ep ${s.firstEpisodeNumber}–${s.lastEpisodeNumber})`;
+function seasonLabel(s: PredictionSeasonListItemResponse): string {
+  const episodeNumbers = (s.drafts ?? [])
+    .map((d) => d.episodeNumber)
+    .filter((n): n is number => n != null);
+
+  if (episodeNumbers.length === 0) {
+    return `Season ${s.number}`;
   }
-  return `Season ${s.number}`;
+
+  const first = Math.min(...episodeNumbers);
+  const last = Math.max(...episodeNumbers);
+  return first === last
+    ? `Season ${s.number} (Ep ${first})`
+    : `Season ${s.number} (Ep ${first}–${last})`;
 }
 
 interface Props {
@@ -43,7 +52,7 @@ export function SeedPredictionsStep({ draftPartPublicId, accessToken, hosts, onD
   const [loading, setLoading] = useState(true);
   const [rules, setRules] = useState<DraftPartPredictionRulesDto | null>(null);
   const [predictors, setPredictors] = useState<DraftPartPredictorDto[]>([]);
-  const [seasons, setSeasons] = useState<PredictionSeasonSummaryResponse[]>([]);
+  const [seasons, setSeasons] = useState<PredictionSeasonListItemResponse[]>([]);
   const [seasonPublicId, setSeasonPublicId] = useState("");
   const [submittedContestants, setSubmittedContestants] = useState<Set<string>>(new Set());
   const [activeContestant, setActiveContestant] = useState<string | null>(null);

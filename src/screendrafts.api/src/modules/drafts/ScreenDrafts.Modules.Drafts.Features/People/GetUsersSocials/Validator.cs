@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Modules.Drafts.Features.People.GetUsersSocials;
-
-namespace ScreenDrafts.Modules.Drafts.Features.People.GetUsersSocials;
+﻿namespace ScreenDrafts.Modules.Drafts.Features.People.GetUsersSocials;
 
 internal sealed class Validator : AbstractValidator<GetUsersSocialsQuery>
 {

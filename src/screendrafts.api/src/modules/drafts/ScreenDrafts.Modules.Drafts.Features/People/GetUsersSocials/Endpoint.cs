@@ -1,6 +1,7 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Features.People.GetUsersSocials;
 
-internal sealed class Endpoint : ScreenDraftsEndpoint<Request, Response>
+internal sealed class Endpoint
+  : ScreenDraftsEndpoint<GetUsersSocialsRequest, GetUsersSocialsResponse>
 {
   public override void Configure()
   {
@@ -9,7 +10,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<Request, Response>
     {
       x.WithTags(DraftsOpenApi.Tags.People)
         .WithName(DraftsOpenApi.Names.People_GetUsersSocials)
-        .Produces<Response>(StatusCodes.Status200OK)
+        .Produces<GetUsersSocialsResponse>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status400BadRequest)
         .Produces(StatusCodes.Status401Unauthorized)
         .Produces(StatusCodes.Status403Forbidden);
@@ -17,7 +18,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<Request, Response>
     Policies(DraftsAuth.Permissions.PersonProfile);
   }
 
-  public override async Task HandleAsync(Request req, CancellationToken ct)
+  public override async Task HandleAsync(GetUsersSocialsRequest req, CancellationToken ct)
   {
     var query = new GetUsersSocialsQuery { PersonIds = req.PublicIds };
 
