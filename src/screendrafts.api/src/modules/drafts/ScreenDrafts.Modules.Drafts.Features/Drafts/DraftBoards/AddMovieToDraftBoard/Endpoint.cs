@@ -29,6 +29,10 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<AddMovieToDraftBoardReques
       TmdbId = req.TmdbId,
       Notes = req.Notes,
       Priority = req.Priority,
+      MediaType = req.MediaType,
+      TvSeriesTmdbId = req.TvSeriesTmdbId,
+      SeasonNumber = req.SeasonNumber,
+      EpisodeNumber = req.EpisodeNumber,
     };
 
     var result = await Sender.Send(command, ct);

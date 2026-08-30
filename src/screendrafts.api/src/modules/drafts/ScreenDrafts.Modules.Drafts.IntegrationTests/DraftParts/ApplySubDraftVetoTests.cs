@@ -73,7 +73,7 @@ public sealed class ApplySubDraftVetoTests(DraftsIntegrationTestWebAppFactory fa
 
     // Assert
     var pick = await DbContext.Picks
-      .Include(p => p.Vetoes)
+      .Include("_vetoes")
       .FirstAsync(p => p.PlayOrder == 1 && p.DraftPart.PublicId == draftPartPublicId, TestContext.Current.CancellationToken);
 
     pick.CurrentVeto.Should().NotBeNull();

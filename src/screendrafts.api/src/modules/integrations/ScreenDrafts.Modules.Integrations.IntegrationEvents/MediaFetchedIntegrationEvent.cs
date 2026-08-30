@@ -31,7 +31,8 @@ public sealed class MediaFetchedIntegrationEvent(
   List<WriterModel> writers,
   List<ProducerModel> producers,
   List<ProductionCompanyModel> productionCompanies,
-  string? externalId = null
+  string? externalId = null,
+  string? tvSeriesTitle = null
 ) : IntegrationEvent(id, occurredOnUtc)
 {
   public string PublicId { get; init; } = publicId;
@@ -51,6 +52,7 @@ public sealed class MediaFetchedIntegrationEvent(
   public int? TVSeriesTmdbId { get; init; } = tvSeriesTmdbId;
   public int? SeasonNumber { get; init; } = seasonNumber;
   public int? EpisodeNumber { get; init; } = episodeNumber;
+  public string? TvSeriesTitle { get; init; } = tvSeriesTitle;
 
   public List<GenreModel> Genres { get; init; } = genres;
   public List<ActorModel> Actors { get; init; } = actors;

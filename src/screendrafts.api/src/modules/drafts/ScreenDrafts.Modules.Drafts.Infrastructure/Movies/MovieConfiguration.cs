@@ -18,6 +18,15 @@ internal sealed class MovieConfiguration : IEntityTypeConfiguration<Movie>
 
     builder.HasIndex(x => x.TmdbId).IsUnique().HasFilter("tmdb_id IS NOT NULL");
 
+    // TV episode fields — only populated when MediaType is TvEpisode.
+    builder.Property(x => x.TvSeriesTmdbId);
+
+    builder.Property(x => x.SeasonNumber);
+
+    builder.Property(x => x.EpisodeNumber);
+
+    builder.Property(x => x.TvSeriesTitle).HasMaxLength(200);
+
     builder.OwnsMany(
       x => x.Versions,
       mvb =>

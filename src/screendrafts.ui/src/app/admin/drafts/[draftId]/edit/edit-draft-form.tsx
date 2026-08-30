@@ -17,6 +17,7 @@ import {
   setDraftCampaign,
   clearDraftCampaign,
   updateDraft,
+  setDraftTvSeriesRestriction,
   createDraftPart,
   removeDraftPartCommunityParticipant,
   setDraftPartCommunityLimits,
@@ -59,6 +60,10 @@ import { SurrogateAssignmentPanel } from "../../new/surrogate-assignment-panel";
 import { DrafterPicker } from "../../../drafter-teams/drafter-picker";
 import { MovieSearchPicker } from "../../new/movie-search-picker";
 import type { ResolvedMovie } from "@/lib/movie-resolve";
+import {
+  TvSeriesRestrictionField,
+  type TvSeriesRestrictionValue,
+} from "@/components/drafts/tv-series-restriction-field";
 
 const LABEL = "block text-[11px] font-mono tracking-widest text-sd-ink/60 uppercase mb-1";
 const INPUT =
@@ -500,6 +505,15 @@ export default function EditDraftForm({
   const [useFungibleToken, setUseFungibleToken] = useState(!!draft.fungibleTokenName);
   const [fungibleTokenName, setFungibleTokenName] = useState(draft.fungibleTokenName ?? "");
   const [isHostless, setIsHostless] = useState(draft.isHostless);
+
+  // Same follow-up-call pattern as fungibleTokenName/isHostless, but its own
+  // endpoint (SetTvSeriesRestriction isn't part of UpdateDraftCommand). Named
+  // setTvSeriesRestrictionValue (not setTvSeriesRestriction) to avoid
+  // colliding with the imported service function of that name.
+  const [tvSeriesRestriction, setTvSeriesRestrictionValue] = useState<TvSeriesRestrictionValue>({
+    tvSeriesTmdbId: draft.restrictedTvSeriesTmdbId ?? null,
+    tvSeriesTitle: draft.restrictedTvSeriesTitle ?? null,
+  });
   const [selectedDraftType, setSelectedDraftType] = useState<SmartEnumResponse | null>(() => {
     const series = seriesList.find((s) => s.publicId === draft.seriesPublicId);
     return (
@@ -762,6 +776,24 @@ export default function EditDraftForm({
           fungibleTokenName: fungibleTokenName.trim() || undefined,
           isHostless,
         });
+      }
+
+      // Step 1b: TV series restriction — its own endpoint, not part of
+      // UpdateDraftCommand. Only called when it actually changed, and only
+      // while unlocked (anyPartStarted mirrors "before the draft starts" at
+      // the UI level; the backend independently rejects this once
+      // DraftStatus isn't Created regardless of what the UI sends).
+      if (
+        !anyPartStarted &&
+        (tvSeriesRestriction.tvSeriesTmdbId !== (draft.restrictedTvSeriesTmdbId ?? null) ||
+          tvSeriesRestriction.tvSeriesTitle !== (draft.restrictedTvSeriesTitle ?? null))
+      ) {
+        await setDraftTvSeriesRestriction(
+          accessToken,
+          draft.publicId,
+          tvSeriesRestriction.tvSeriesTmdbId,
+          tvSeriesRestriction.tvSeriesTitle
+        );
       }
 
       // Step 2: Campaign
@@ -1063,6 +1095,15 @@ export default function EditDraftForm({
                   set before Part 1 starts.
                 </p>
               )}
+            </div>
+
+            <div className="md:col-span-2">
+              <TvSeriesRestrictionField
+                accessToken={accessToken}
+                value={tvSeriesRestriction}
+                onChange={setTvSeriesRestrictionValue}
+                locked={anyPartStarted}
+              />
             </div>
           </div>
         </section>

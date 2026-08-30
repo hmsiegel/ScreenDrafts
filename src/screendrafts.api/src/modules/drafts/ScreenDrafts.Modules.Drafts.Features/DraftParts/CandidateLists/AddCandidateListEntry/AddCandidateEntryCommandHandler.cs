@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.CandidateLists.AddCandidateListEntry;
+﻿using Microsoft.AspNetCore.Server.HttpSys;
+
+namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.CandidateLists.AddCandidateListEntry;
 
 internal sealed class AddCandidateEntryCommandHandler(
   IDraftPartRepository draftPartRepository,
@@ -76,10 +78,10 @@ internal sealed class AddCandidateEntryCommandHandler(
           occurredOnUtc: DateTime.UtcNow,
           tmdbId: request.TmdbId,
           igdbId: null,
-          tvSeriesTmdbId: null,
-          episodeNumber: null,
-          seasonNumber: null,
-          mediaType: MediaType.Movie,
+          tvSeriesTmdbId: request.TvSeriesTmdbId,
+          episodeNumber: request.EpisodeNumber,
+          seasonNumber: request.SeasonNumber,
+          mediaType: request.MediaType,
           imdbId: null
         ),
         cancellationToken

@@ -18,7 +18,7 @@ namespace ScreenDrafts.Modules.Movies.Infrastructure.Database.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("movies")
-                .HasAnnotation("ProductVersion", "10.0.9")
+                .HasAnnotation("ProductVersion", "10.0.11")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -366,6 +366,11 @@ namespace ScreenDrafts.Modules.Movies.Infrastructure.Database.Migrations
                     b.Property<int?>("TmdbId")
                         .HasColumnType("integer")
                         .HasColumnName("tmdb_id");
+
+                    b.Property<string>("TvSeriesTitle")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("tv_series_title");
 
                     b.Property<int?>("TvSeriesTmdbId")
                         .HasColumnType("integer")

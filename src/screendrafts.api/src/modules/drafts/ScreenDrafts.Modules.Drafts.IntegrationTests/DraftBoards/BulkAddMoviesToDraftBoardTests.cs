@@ -170,7 +170,8 @@ public sealed class BulkAddMoviesToDraftBoardTests(DraftsIntegrationTestWebAppFa
     {
       DraftId = draftPublicId,
       UserPublicId = userPublicId,
-      TmdbId = existingTmdbId
+      TmdbId = existingTmdbId,
+      MediaType = MediaType.Movie
     }, TestContext.Current.CancellationToken);
 
     using var csvStream = BuildCsvStream(

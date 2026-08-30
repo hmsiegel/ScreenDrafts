@@ -45,8 +45,8 @@ public sealed class GetDraftPoolTests(DraftsIntegrationTestWebAppFactory factory
     var tmdbId2 = Faker.Random.Int(500_001, 1_000_000);
     await CreateMovieInDbAsync(tmdbId1);
     await CreateMovieInDbAsync(tmdbId2);
-    await Sender.Send(new AddMovieToDraftPoolCommand { PublicId = draftPublicId, TmdbId = tmdbId1 }, TestContext.Current.CancellationToken);
-    await Sender.Send(new AddMovieToDraftPoolCommand { PublicId = draftPublicId, TmdbId = tmdbId2 }, TestContext.Current.CancellationToken);
+    await Sender.Send(new AddMovieToDraftPoolCommand { PublicId = draftPublicId, TmdbId = tmdbId1, MediaType = MediaType.Movie }, TestContext.Current.CancellationToken);
+    await Sender.Send(new AddMovieToDraftPoolCommand { PublicId = draftPublicId, TmdbId = tmdbId2, MediaType = MediaType.Movie }, TestContext.Current.CancellationToken);
 
     // Act
     var result = await Sender.Send(new GetDraftPoolQuery { PublicId = draftPublicId }, TestContext.Current.CancellationToken);

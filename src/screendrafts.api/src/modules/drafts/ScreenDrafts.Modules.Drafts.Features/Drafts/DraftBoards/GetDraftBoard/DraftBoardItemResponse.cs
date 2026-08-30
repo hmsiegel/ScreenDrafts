@@ -7,4 +7,9 @@ public sealed record DraftBoardItemResponse
   public int? Priority { get; init; }
   public string? Title { get; init; }
   public string? Year { get; init; }
+  public MediaType? MediaType { get; init; }
+  public int? TvSeriesTmdbId { get; init; }
+  public int? SeasonNumber { get; init; }
+  public int? EpisodeNumber { get; init; }
+  public string? TvSeriesTitle { get; init; }
 }

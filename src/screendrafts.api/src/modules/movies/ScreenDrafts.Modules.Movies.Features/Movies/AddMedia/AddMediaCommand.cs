@@ -17,6 +17,7 @@ internal sealed record AddMediaCommand : ICommand<string>
   public int? TvSeriesTmdbId { get; init; }
   public int? SeasonNumber { get; init; }
   public int? EpisodeNumber { get; init; }
+  public string? TvSeriesTitle { get; init; }
   public IReadOnlyCollection<GenreRequest> Genres { get; init; } = default!;
   public IReadOnlyCollection<PersonRequest> Directors { get; init; } = default!;
   public IReadOnlyCollection<PersonRequest> Actors { get; init; } = default!;

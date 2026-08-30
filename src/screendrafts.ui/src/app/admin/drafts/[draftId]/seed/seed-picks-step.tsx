@@ -1,3 +1,4 @@
+// app/admin/drafts/[draftId]/seed/seed-picks-step.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -15,7 +16,8 @@ import {
   type GameplayVetoHistoryEntry,
 } from "@/services/admin/fetch-admin-drafts";
 import { importAndResolve, type ResolvedMovie } from "@/lib/movie-resolve";
-import { useMovieSearch } from "@/lib/use-movie-search";
+import { importAndResolveEpisode, MEDIA_TYPE_TV_EPISODE } from "@/lib/tv-episode-resolve";
+import { MediaPicker, type SelectedMedia } from "@/components/drafts/media-picker";
 import type { SeedDraftState } from "./seed-draft-wizard";
 
 const LABEL = "block text-[11px] font-mono tracking-widest text-sd-ink/60 uppercase mb-1";
@@ -96,7 +98,6 @@ export function SeedPicksStep({
   const [position, setPosition] = useState<number | "">("");
   const [participantIdValue, setParticipantIdValue] = useState(participants[0]?.participantIdValue ?? "");
   const [revealedByHostId, setRevealedByHostId] = useState(primaryHost?.hostPublicId ?? "");
-  const [query, setQuery] = useState("");
   const [selectedMovie, setSelectedMovie] = useState<ResolvedMovie | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -118,8 +119,6 @@ export function SeedPicksStep({
     type: "veto" | "vetoOverride";
     issuerIdValue: string;
   } | null>(null);
-
-  const { results, searching } = useMovieSearch(query, accessToken);
 
   const allHosts = primaryHost ? [primaryHost, ...coHosts] : coHosts;
   const nextPlayOrder = picks.length + 1;
@@ -244,6 +243,55 @@ export function SeedPicksStep({
     }
   }
 
+  // Entry point for MediaPicker's onSelect — branches on mediaType since
+  // movies and TV episodes resolve differently (see tv-episode-resolve.ts).
+  // The movie branch delegates straight to handlePickMovie, unchanged.
+  async function handleMediaSelect(media: SelectedMedia) {
+    if (media.mediaType !== MEDIA_TYPE_TV_EPISODE) {
+      await handlePickMovie({
+        tmdbId: media.tmdbId,
+        mediaPublicId: "",
+        title: media.title,
+        year: media.year,
+        posterUrl: null,
+      });
+      return;
+    }
+
+    if (barredTmdbIds.has(media.tmdbId)) {
+      setError(`${media.title} was commissioner-overridden earlier in this part and can't be picked again.`);
+      return;
+    }
+    if (!media.tvSeriesTmdbId || !media.seasonNumber || !media.episodeNumber) {
+      setError("Missing episode identity — try selecting again.");
+      return;
+    }
+    setImporting(true);
+    setError(null);
+    try {
+      const publicId = await importAndResolveEpisode(
+        media.tmdbId,
+        media.tvSeriesTmdbId,
+        media.seasonNumber,
+        media.episodeNumber,
+        accessToken,
+      );
+      if (!publicId) {
+        setError("Episode could not be imported in time — try selecting it again in a moment.");
+        return;
+      }
+      setSelectedMovie({
+        mediaPublicId: publicId,
+        tmdbId: media.tmdbId,
+        title: media.title,
+        year: media.year,
+        posterUrl: null,
+      });
+    } finally {
+      setImporting(false);
+    }
+  }
+
   async function handleManualTmdbSubmit() {
     const parsed = Number.parseInt(manualTmdbId.trim(), 10);
     if (!Number.isFinite(parsed) || parsed <= 0) {
@@ -292,7 +340,6 @@ export function SeedPicksStep({
       // the movie/slot selection immediately so a reveal failure doesn't leave the form
       // stuck displaying a pick that's already been recorded.
       setSelectedMovie(null);
-      setQuery("");
       setPosition("");
 
       // Hostless parts have no host to reveal picks — refetch immediately to
@@ -609,48 +656,21 @@ export function SeedPicksStep({
             </div>
           ) : (
             <>
-              <input
-                type="text"
-                className={INPUT}
-                placeholder="Search movies…"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
+              <MediaPicker
+                accessToken={accessToken}
+                onSelect={handleMediaSelect}
+                disabled={importing}
+                fixedSeriesTmdbId={draft.restrictedTvSeriesTmdbId ?? undefined}
               />
-              {searching && <p className="text-[11px] font-mono text-sd-ink/40 mt-1">Searching…</p>}
               {importing && <p className="text-[11px] font-mono text-sd-ink/40 mt-1">Importing…</p>}
-              {results.length > 0 && (
-                <div className="border border-sd-ink/10 rounded mt-2 max-h-48 overflow-y-auto">
-                  {results.map((m) => {
-                    const barred = barredTmdbIds.has(m.tmdbId);
-                    return (
-                      <button
-                        key={`${m.tmdbId}-${m.mediaPublicId}`}
-                        type="button"
-                        onClick={() => handlePickMovie(m)}
-                        disabled={barred}
-                        className={`w-full text-left px-3 py-2 text-sm border-b border-sd-ink/5 last:border-0 ${
-                          barred
-                            ? "text-sd-ink/30 cursor-not-allowed"
-                            : "hover:bg-sd-paper/60"
-                        }`}
-                      >
-                        {m.title} {m.year ? `(${m.year})` : ""}
-                        {barred && (
-                          <span className="ml-2 text-[10px] font-mono text-sd-red uppercase">
-                            commissioner overridden
-                          </span>
-                        )}
-                        {!barred && !m.mediaPublicId && (
-                          <span className="ml-2 text-[10px] font-mono text-sd-blue uppercase">
-                            will import
-                          </span>
-                        )}
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
 
+              {/* Manual TMDb-ID fallback — movie-only. There's no episode
+                  equivalent: TMDb has no title search over episodes, so the
+                  browse-a-season flow above is already the "can't find it"
+                  answer for TV. Kept unconditionally visible (previously
+                  gated on the now-removed free-text query) rather than tied
+                  to which MediaPicker mode is active, since MediaPicker
+                  doesn't expose that upward. */}
               {manualEntryOpen ? (
                 <div className="flex items-center gap-2 mt-2">
                   <input
@@ -680,16 +700,13 @@ export function SeedPicksStep({
                   </button>
                 </div>
               ) : (
-                query.trim().length >= 1 &&
-                !searching && (
-                  <button
-                    type="button"
-                    onClick={() => setManualEntryOpen(true)}
-                    className="text-[11px] font-mono text-sd-ink/40 uppercase tracking-wide hover:underline mt-2"
-                  >
-                    Can&apos;t find it? Enter TMDb ID directly →
-                  </button>
-                )
+                <button
+                  type="button"
+                  onClick={() => setManualEntryOpen(true)}
+                  className="text-[11px] font-mono text-sd-ink/40 uppercase tracking-wide hover:underline mt-2"
+                >
+                  Movie not showing up? Enter TMDb ID directly →
+                </button>
               )}
             </>
           )}

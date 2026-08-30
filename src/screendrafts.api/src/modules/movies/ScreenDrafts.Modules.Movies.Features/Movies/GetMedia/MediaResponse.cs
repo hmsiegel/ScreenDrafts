@@ -25,6 +25,7 @@ public sealed record MediaResponse
   public int? TvSeriesTmdbId { get; init; }
   public int? SeasonNumber { get; init; }
   public int? EpisodeNumber { get; init; }
+  public string? TvSeriesTitle { get; init; }
 
   public ReadOnlyCollection<GenreResponse> Genres => _genres.AsReadOnly();
   public ReadOnlyCollection<ActorResponse> Actors => _actors.AsReadOnly();

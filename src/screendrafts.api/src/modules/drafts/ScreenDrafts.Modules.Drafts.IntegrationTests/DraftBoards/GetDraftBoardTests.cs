@@ -23,6 +23,7 @@ public sealed class GetDraftBoardTests(DraftsIntegrationTestWebAppFactory factor
         DraftId = draftPublicId,
         UserPublicId = userPublicId,
         TmdbId = tmdbId,
+        MediaType = MediaType.Movie,
       },
       TestContext.Current.CancellationToken
     );
@@ -57,6 +58,7 @@ public sealed class GetDraftBoardTests(DraftsIntegrationTestWebAppFactory factor
         TmdbId = tmdbId,
         Notes = notes,
         Priority = priority,
+        MediaType = MediaType.Movie,
       },
       TestContext.Current.CancellationToken
     );
@@ -91,6 +93,7 @@ public sealed class GetDraftBoardTests(DraftsIntegrationTestWebAppFactory factor
         DraftId = draftPublicId,
         UserPublicId = userPublicId,
         TmdbId = tmdbId,
+        MediaType = MediaType.Movie,
       },
       TestContext.Current.CancellationToken
     );
@@ -134,6 +137,7 @@ public sealed class GetDraftBoardTests(DraftsIntegrationTestWebAppFactory factor
         UserPublicId = userPublicId,
         TmdbId = 100,
         Priority = 3,
+        MediaType = MediaType.Movie,
       },
       TestContext.Current.CancellationToken
     );
@@ -145,6 +149,7 @@ public sealed class GetDraftBoardTests(DraftsIntegrationTestWebAppFactory factor
         UserPublicId = userPublicId,
         TmdbId = 200,
         Priority = 1,
+        MediaType = MediaType.Movie,
       },
       TestContext.Current.CancellationToken
     );
@@ -156,6 +161,7 @@ public sealed class GetDraftBoardTests(DraftsIntegrationTestWebAppFactory factor
         UserPublicId = userPublicId,
         TmdbId = 300,
         // no priority — should come last
+        MediaType = MediaType.Movie,
       },
       TestContext.Current.CancellationToken
     );

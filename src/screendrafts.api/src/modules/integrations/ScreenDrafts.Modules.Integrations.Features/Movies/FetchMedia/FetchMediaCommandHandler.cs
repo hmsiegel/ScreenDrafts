@@ -56,6 +56,7 @@ internal sealed class FetchMediaCommandHandler(
         tvSeriesTmdbId: response.TvSeriesTmdbId,
         seasonNumber: response.SeasonNumber,
         episodeNumber: response.EpisodeNumber,
+        tvSeriesTitle: response.TvSeriesTitle,
         genres: response.Genres,
         actors: response.Actors,
         directors: response.Directors,

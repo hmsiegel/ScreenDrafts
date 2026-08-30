@@ -5,8 +5,8 @@ internal sealed class AddMovieToDraftPoolCommandHandler(
   IDraftPoolRepository poolRepository,
   IMovieRepository movieRepository,
   IEventBus eventBus,
-  IDateTimeProvider dateTimeProvider)
-  : ICommandHandler<AddMovieToDraftPoolCommand>
+  IDateTimeProvider dateTimeProvider
+) : ICommandHandler<AddMovieToDraftPoolCommand>
 {
   private readonly IDraftRepository _repository = repository;
   private readonly IDraftPoolRepository _poolRepository = poolRepository;
@@ -14,7 +14,10 @@ internal sealed class AddMovieToDraftPoolCommandHandler(
   private readonly IEventBus _eventBus = eventBus;
   private readonly IDateTimeProvider _dateTimeProvider = dateTimeProvider;
 
-  public async Task<Result> Handle(AddMovieToDraftPoolCommand request, CancellationToken cancellationToken)
+  public async Task<Result> Handle(
+    AddMovieToDraftPoolCommand request,
+    CancellationToken cancellationToken
+  )
   {
     var draft = await _repository.GetByPublicIdAsync(request.PublicId, cancellationToken);
 
@@ -47,12 +50,14 @@ internal sealed class AddMovieToDraftPoolCommandHandler(
           occurredOnUtc: _dateTimeProvider.UtcNow,
           tmdbId: request.TmdbId,
           igdbId: null,
-          tvSeriesTmdbId: null,
-          episodeNumber: null,
-          seasonNumber: null,
-          mediaType: MediaType.Movie,
-          imdbId: null),
-        cancellationToken: cancellationToken);
+          tvSeriesTmdbId: request.TvSeriesTmdbId,
+          episodeNumber: request.EpisodeNumber,
+          seasonNumber: request.SeasonNumber,
+          mediaType: request.MediaType,
+          imdbId: null
+        ),
+        cancellationToken: cancellationToken
+      );
     }
 
     _poolRepository.Update(pool);

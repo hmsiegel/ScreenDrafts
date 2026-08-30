@@ -42,14 +42,16 @@ public sealed class GetCandidateListTests(DraftsIntegrationTestWebAppFactory fac
     {
       DraftPartId = draftPartPublicId,
       TmdbId = tmdbId1,
-      AddedByPublicId = addedByPublicId
+      AddedByPublicId = addedByPublicId,
+      MediaType = MediaType.Movie
     }, TestContext.Current.CancellationToken);
 
     await Sender.Send(new AddCandidateEntryCommand
     {
       DraftPartId = draftPartPublicId,
       TmdbId = tmdbId2,
-      AddedByPublicId = addedByPublicId
+      AddedByPublicId = addedByPublicId,
+      MediaType = MediaType.Movie
     }, TestContext.Current.CancellationToken);
 
     var query = new GetCandidateListQuery
@@ -82,7 +84,8 @@ public sealed class GetCandidateListTests(DraftsIntegrationTestWebAppFactory fac
     {
       DraftPartId = draftPartPublicId,
       TmdbId = tmdbId,
-      AddedByPublicId = addedByPublicId
+      AddedByPublicId = addedByPublicId,
+      MediaType = MediaType.Movie
     }, TestContext.Current.CancellationToken);
 
     var query = new GetCandidateListQuery
@@ -112,7 +115,8 @@ public sealed class GetCandidateListTests(DraftsIntegrationTestWebAppFactory fac
     {
       DraftPartId = draftPartPublicId,
       TmdbId = tmdbId,
-      AddedByPublicId = "u_" + Faker.Random.AlphaNumeric(17)
+      AddedByPublicId = "u_" + Faker.Random.AlphaNumeric(17),
+      MediaType = MediaType.Movie
     }, TestContext.Current.CancellationToken);
 
     var query = new GetCandidateListQuery
@@ -142,7 +146,8 @@ public sealed class GetCandidateListTests(DraftsIntegrationTestWebAppFactory fac
     {
       DraftPartId = draftPartPublicId,
       TmdbId = tmdbId,
-      AddedByPublicId = "u_" + Faker.Random.AlphaNumeric(17)
+      AddedByPublicId = "u_" + Faker.Random.AlphaNumeric(17),
+      MediaType = MediaType.Movie
     }, TestContext.Current.CancellationToken);
 
     var query = new GetCandidateListQuery
@@ -178,7 +183,8 @@ public sealed class GetCandidateListTests(DraftsIntegrationTestWebAppFactory fac
       {
         DraftPartId = draftPartPublicId,
         TmdbId = 1_000_000 + i,
-        AddedByPublicId = addedByPublicId
+        AddedByPublicId = addedByPublicId,
+        MediaType = MediaType.Movie
       }, TestContext.Current.CancellationToken);
     }
 
@@ -212,7 +218,8 @@ public sealed class GetCandidateListTests(DraftsIntegrationTestWebAppFactory fac
       {
         DraftPartId = draftPartPublicId,
         TmdbId = 2_000_000 + i,
-        AddedByPublicId = addedByPublicId
+        AddedByPublicId = addedByPublicId,
+        MediaType = MediaType.Movie
       }, TestContext.Current.CancellationToken);
     }
 

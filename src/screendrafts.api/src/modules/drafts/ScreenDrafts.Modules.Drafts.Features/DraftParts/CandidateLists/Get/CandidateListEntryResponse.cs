@@ -11,4 +11,9 @@ internal sealed record CandidateListEntryResponse
   public required DateTime CreatedOnUtc { get; init; }
 
   public required bool IsPending { get; init; }
+  public MediaType? MediaType { get; init; }
+  public int? TvSeriesTmdbId { get; init; }
+  public int? SeasonNumber { get; init; }
+  public int? EpisodeNumber { get; init; }
+  public string? TvSeriesTitle { get; init; }
 }

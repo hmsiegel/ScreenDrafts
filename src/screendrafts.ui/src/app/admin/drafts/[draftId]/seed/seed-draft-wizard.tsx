@@ -16,6 +16,7 @@ export interface SeedDraftState {
   draftPublicId: string;
   draftPartPublicId: string;
   partIndex: number;
+  restrictedTvSeriesTmdbId?: number | null;
 }
 
 type StepKey = "episode" | "predictions" | "start" | "trivia" | "positions" | "picks" | "speed" | "complete";
@@ -110,6 +111,7 @@ export function SeedDraftWizard({ detail, accessToken }: Props) {
     draftPublicId: detail.publicId,
     draftPartPublicId: part.publicId,
     partIndex: part.partIndex,
+    restrictedTvSeriesTmdbId: detail.restrictedTvSeriesTmdbId,
   };
 
   const alreadyComplete = part.status.name === "Completed";

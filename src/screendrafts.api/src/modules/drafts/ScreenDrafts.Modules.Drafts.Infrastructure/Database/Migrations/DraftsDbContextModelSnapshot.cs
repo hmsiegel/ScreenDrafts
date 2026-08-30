@@ -822,6 +822,10 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
+                    b.Property<int?>("EpisodeNumber")
+                        .HasColumnType("integer")
+                        .HasColumnName("episode_number");
+
                     b.Property<int?>("IgdbId")
                         .HasColumnType("integer")
                         .HasColumnName("igdb_id");
@@ -844,9 +848,22 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasColumnType("text")
                         .HasColumnName("public_id");
 
+                    b.Property<int?>("SeasonNumber")
+                        .HasColumnType("integer")
+                        .HasColumnName("season_number");
+
                     b.Property<int?>("TmdbId")
                         .HasColumnType("integer")
                         .HasColumnName("tmdb_id");
+
+                    b.Property<string>("TvSeriesTitle")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("tv_series_title");
+
+                    b.Property<int?>("TvSeriesTmdbId")
+                        .HasColumnType("integer")
+                        .HasColumnName("tv_series_tmdb_id");
 
                     b.Property<string>("Year")
                         .HasMaxLength(10)
@@ -1341,6 +1358,15 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasMaxLength(19)
                         .HasColumnType("character varying(19)")
                         .HasColumnName("public_id");
+
+                    b.Property<string>("RestrictedTvSeriesTitle")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("restricted_tv_series_title");
+
+                    b.Property<int?>("RestrictedTvSeriesTmdbId")
+                        .HasColumnType("integer")
+                        .HasColumnName("restricted_tv_series_tmdb_id");
 
                     b.Property<Guid>("SeriesId")
                         .HasColumnType("uuid")

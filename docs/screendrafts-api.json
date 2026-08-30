@@ -2438,6 +2438,44 @@
         ]
       }
     },
+    "/drafts/{publicId}/tv-series-restriction": {
+      "put": {
+        "tags": [
+          "Drafts"
+        ],
+        "operationId": "Drafts.SetTvSeriesRestriction",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetTvSeriesRestrictionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
     "/drafts/{publicId}/episode": {
       "put": {
         "tags": [
@@ -6829,6 +6867,50 @@
         ]
       }
     },
+    "/integrations/movies/tv/search": {
+      "get": {
+        "tags": [
+          "Movies"
+        ],
+        "operationId": "OnlineMedia.SearchTv",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchForTvShowRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchForTvShowRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchForTvShowResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
     "/integrations/movies/search": {
       "get": {
         "tags": [
@@ -6948,6 +7030,53 @@
           },
           "403": {
             "description": "Forbidden"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/integrations/movies/tv/season-episodes": {
+      "get": {
+        "tags": [
+          "Movies"
+        ],
+        "operationId": "OnlineMedia.BrowseSeasonEpisodes",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/BrowseSeasonEpisodesRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BrowseSeasonEpisodesRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BrowseSeasonEpisodesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
           }
         },
         "security": [
@@ -8115,7 +8244,8 @@
       },
       "AddCandidateEntryRequest": {
         "required": [
-          "tmdbId"
+          "tmdbId",
+          "mediaType"
         ],
         "type": "object",
         "properties": {
@@ -8135,6 +8265,36 @@
               "null",
               "string"
             ]
+          },
+          "mediaType": {
+            "$ref": "#/components/schemas/MediaType"
+          },
+          "tvSeriesTmdbId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "seasonNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "episodeNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
           }
         }
       },
@@ -8395,6 +8555,9 @@
         }
       },
       "AddMovieToDraftBoardRequest": {
+        "required": [
+          "mediaType"
+        ],
         "type": "object",
         "properties": {
           "publicId": {
@@ -8422,10 +8585,43 @@
               "string"
             ],
             "format": "int32"
+          },
+          "mediaType": {
+            "$ref": "#/components/schemas/MediaType"
+          },
+          "tvSeriesTmdbId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "seasonNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "episodeNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
           }
         }
       },
       "AddMovieToDraftPoolRequest": {
+        "required": [
+          "mediaType"
+        ],
         "type": "object",
         "properties": {
           "publicId": {
@@ -8434,6 +8630,36 @@
           "tmdbId": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "mediaType": {
+            "$ref": "#/components/schemas/MediaType"
+          },
+          "tvSeriesTmdbId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "seasonNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "episodeNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
               "integer",
               "string"
             ],
@@ -8873,6 +9099,60 @@
           }
         }
       },
+      "BrowseSeasonEpisodesRequest": {
+        "type": "object",
+        "properties": {
+          "seriesTmdbId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "seasonNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "BrowseSeasonEpisodesResponse": {
+        "type": "object",
+        "properties": {
+          "seriesTmdbId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "seriesTitle": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "seasonNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "episodes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SeasonEpisodeResult"
+            }
+          }
+        }
+      },
       "BulkAddCandidateEntriesRequest": {
         "required": [
           "file"
@@ -9076,6 +9356,49 @@
           },
           "isPending": {
             "type": "boolean"
+          },
+          "mediaType": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/MediaType"
+              }
+            ]
+          },
+          "tvSeriesTmdbId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "seasonNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "episodeNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "tvSeriesTitle": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -9856,6 +10179,49 @@
             ]
           },
           "year": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "mediaType": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/MediaType"
+              }
+            ]
+          },
+          "tvSeriesTmdbId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "seasonNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "episodeNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "tvSeriesTitle": {
             "type": [
               "null",
               "string"
@@ -11972,6 +12338,15 @@
               "string"
             ]
           },
+          "restrictedTvSeriesTmdbId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
           "isHostless": {
             "type": "boolean"
           },
@@ -12659,6 +13034,21 @@
           "isHostless": {
             "type": "boolean"
           },
+          "restrictedTvSeriesTmdbId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "restrictedTvSeriesTitle": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
           "categories": {
             "type": [
               "null",
@@ -13345,6 +13735,12 @@
               "string"
             ],
             "format": "int32"
+          },
+          "tvSeriesTitle": {
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "genres": {
             "type": "array",
@@ -15140,6 +15536,12 @@
               "string"
             ],
             "format": "int32"
+          },
+          "tvSeriesTitle": {
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "genres": {
             "type": [
@@ -18015,6 +18417,57 @@
           }
         }
       },
+      "SearchForTvShowRequest": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string"
+          },
+          "page": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "SearchForTvShowResponse": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MovieSearchResult"
+            }
+          },
+          "totalResults": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "totalPages": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "page": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
       "SearchGamesMediaRequest": {
         "required": [
           "query"
@@ -18498,6 +18951,56 @@
           }
         }
       },
+      "SeasonEpisodeResult": {
+        "type": "object",
+        "properties": {
+          "tmdbId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
+          },
+          "seasonNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "episodeNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "airDate": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "overview": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "stillUrl": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
       "SeedPredictionEntryRequest": {
         "type": "object",
         "properties": {
@@ -18917,6 +19420,29 @@
             "type": "string"
           },
           "subjectImdbId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "SetTvSeriesRestrictionRequest": {
+        "type": "object",
+        "properties": {
+          "publicId": {
+            "type": "string"
+          },
+          "tvSeriesTmdbId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "tvSeriesTitle": {
             "type": [
               "null",
               "string"

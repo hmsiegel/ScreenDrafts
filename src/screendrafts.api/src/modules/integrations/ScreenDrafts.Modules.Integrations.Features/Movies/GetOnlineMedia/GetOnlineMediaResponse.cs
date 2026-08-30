@@ -21,6 +21,7 @@ internal sealed record GetOnlineMediaResponse
   public int? TvSeriesTmdbId { get; init; }
   public int? SeasonNumber { get; init; }
   public int? EpisodeNumber { get; init; }
+  public string? TvSeriesTitle { get; init; }
   public List<GenreModel> Genres { get; init; } = default!;
   public List<ActorModel> Actors { get; init; } = default!;
   public List<DirectorModel> Directors { get; init; } = default!;

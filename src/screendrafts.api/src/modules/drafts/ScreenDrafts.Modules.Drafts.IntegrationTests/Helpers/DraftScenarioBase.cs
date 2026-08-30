@@ -362,7 +362,8 @@ public abstract class DraftScenarioBase(DraftsIntegrationTestWebAppFactory facto
     var result = await Sender.Send(new AddMovieToDraftPoolCommand
     {
       PublicId = draftPublicId,
-      TmdbId = tmdbId
+      TmdbId = tmdbId,
+      MediaType = MediaType.Movie
     }, TestContext.Current.CancellationToken);
     result.IsSuccess.Should().BeTrue($"AddMovieToPool tmdbId={tmdbId} must succeed");
   }
@@ -575,7 +576,7 @@ public abstract class DraftScenarioBase(DraftsIntegrationTestWebAppFactory facto
   {
     var pick = await DbContext.Picks
       .Include(p => p.Movie)
-      .Include(p => p.Vetoes)
+      .Include("_vetoes")
       .FirstOrDefaultAsync(p =>
         p.DraftPart.PublicId == draftPartPublicId &&
         p.Position == position &&
@@ -589,7 +590,7 @@ public abstract class DraftScenarioBase(DraftsIntegrationTestWebAppFactory facto
   protected async Task AssertPickVetoedAsync(string draftPartPublicId, int playOrder)
   {
     var pick = await DbContext.Picks
-      .Include(p => p.Vetoes)
+      .Include("_vetoes")
       .FirstAsync(p => p.DraftPart.PublicId == draftPartPublicId && p.PlayOrder == playOrder, TestContext.Current.CancellationToken);
 
     pick.CurrentVeto.Should().NotBeNull($"Pick playOrder={playOrder} should be vetoed");
@@ -599,8 +600,7 @@ public abstract class DraftScenarioBase(DraftsIntegrationTestWebAppFactory facto
   protected async Task AssertVetoOverriddenAsync(string draftPartPublicId, int playOrder)
   {
     var pick = await DbContext.Picks
-      .Include(p => p.Vetoes)
-        .ThenInclude(v => v.VetoOverride)
+      .Include("_vetoes.VetoOverride")
       .FirstAsync(p => p.DraftPart.PublicId == draftPartPublicId && p.PlayOrder == playOrder, TestContext.Current.CancellationToken);
 
     pick.CurrentVeto.Should().NotBeNull($"Pick playOrder={playOrder} should have a veto");

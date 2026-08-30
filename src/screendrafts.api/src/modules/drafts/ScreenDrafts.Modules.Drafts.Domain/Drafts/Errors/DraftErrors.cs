@@ -251,4 +251,10 @@ public static partial class DraftErrors
     "Drafts.CannotChangeIsHostlessAfterDraftCreation",
     "Cannot change whether a draft is hostless after draft creation."
   );
+
+  public static SDError TvSeriesMismatch(int expectedTvSeriesTmdbId, int? actualTvSeriesTmdbId) =>
+    SDError.Conflict(
+      "Drafts.TvSeriesMismatch",
+      $"Expected TV series TMDb ID {expectedTvSeriesTmdbId}, but got {actualTvSeriesTmdbId}."
+    );
 }

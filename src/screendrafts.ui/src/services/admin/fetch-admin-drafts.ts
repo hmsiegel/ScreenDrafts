@@ -5,7 +5,7 @@ import {
   CreatedResponse,
   GetDraftCategoryResponse,
   GetMediaByTmdbIdsResponse,
-  ListPredictionSeasonsResult,
+  ListPredictionSeasonsResponse,
   SearchDraftsResponse,
   SearchHostResponse,
   SeriesResponse,
@@ -102,6 +102,8 @@ export interface AdminDraftDetail {
   // actually added to the interface, which is a compile error, not a runtime one.
   fungibleTokenName: string | null;
   isHostless: boolean;
+  restrictedTvSeriesTmdbId?: number | null;
+  restrictedTvSeriesTitle?: string | null;
   categories: GetDraftCategoryResponse[];
   parts: DraftPart[];
 }
@@ -753,6 +755,36 @@ export async function setDraftCampaign(
   }
 }
 
+/**
+ * Calls PUT /drafts/{publicId}/tv-series-restriction. Pass both arguments as
+ * null to clear an existing restriction. The backend independently rejects
+ * this once the draft's status isn't Created (DraftErrors.
+ * CannotChangeTvSeriesRestrictionAfterStart) — this function doesn't
+ * pre-check that itself, callers (create-draft-form.tsx, edit-draft-form.tsx)
+ * already gate the UI on anyPartStarted before calling it.
+ */
+export async function setDraftTvSeriesRestriction(
+  accessToken: string,
+  draftPublicId: string,
+  tvSeriesTmdbId: number | null,
+  tvSeriesTitle: string | null
+): Promise<void> {
+  const res = await fetch(
+    `${apiBase}/drafts/${encodeURIComponent(draftPublicId)}/tv-series-restriction`,
+    {
+      method: "PUT",
+      headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ tvSeriesTmdbId, tvSeriesTitle }),
+    }
+  );
+  if (!res.ok) {
+    const text = await res.text().catch(() => res.statusText);
+    throw new Error(
+      `PUT /drafts/${draftPublicId}/tv-series-restriction failed (${res.status}): ${text}`
+    );
+  }
+}
+
 export async function updateDraft(
   accessToken: string,
   draftPublicId: string,
@@ -1299,15 +1331,24 @@ export async function createDraftPool(
   }
 }
 
+/**
+ * mediaType is required (no default) — matches the backend, which now
+ * rejects a missing MediaType outright rather than silently guessing Movie.
+ * Same note as addCandidateListEntry / addMovieToDraftBoard.
+ */
 export async function addMovieToDraftPool(
   accessToken: string,
   draftId: string,
-  tmdbId: number
+  tmdbId: number,
+  mediaType: number,
+  tvSeriesTmdbId?: number,
+  seasonNumber?: number,
+  episodeNumber?: number
 ): Promise<void> {
   const res = await fetch(`${apiBase}/drafts/${encodeURIComponent(draftId)}/pool/items`, {
     method: "POST",
     headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ tmdbId }),
+    body: JSON.stringify({ tmdbId, mediaType, tvSeriesTmdbId, seasonNumber, episodeNumber }),
   });
   if (!res.ok) {
     const text = await res.text().catch(() => res.statusText);
@@ -1754,14 +1795,14 @@ export async function syncPredictionConfig(
 
 export async function listSeasons(
   accessToken: string | undefined
-): Promise<ListPredictionSeasonsResult["seasons"]> {
+): Promise<ListPredictionSeasonsResponse["seasons"]> {
   try {
     const res = await fetch(`${apiBase}/prediction-seasons`, {
       headers: authHeaders(accessToken),
       cache: "no-store",
     });
     if (!res.ok) return [];
-    const data = (await res.json()) as ListPredictionSeasonsResult;
+    const data = (await res.json()) as ListPredictionSeasonsResponse;
     return data.seasons ?? [];
   } catch (err) {
     console.error("[listSeasons]", err);

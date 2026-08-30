@@ -40,6 +40,7 @@ internal sealed class GetMediaQueryHandler(
         m.episode_number                                    AS {nameof(
         MediaResponse.EpisodeNumber
       )},
+        m.tv_series_title                                   AS {nameof(MediaResponse.TvSeriesTitle)},
         g.id                                                AS {nameof(GenreResponse.Id)},
         g.Name                                              AS {nameof(GenreResponse.Name)},
         a.id                                                AS {nameof(ActorResponse.Id)},

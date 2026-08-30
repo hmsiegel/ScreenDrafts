@@ -20,7 +20,8 @@ public sealed class UpdateDraftBoardItemTests(DraftsIntegrationTestWebAppFactory
     {
       DraftId = draftPublicId,
       UserPublicId = userPublicId,
-      TmdbId = tmdbId
+      TmdbId = tmdbId,
+      MediaType = MediaType.Movie
     }, TestContext.Current.CancellationToken);
 
     var command = new UpdateDraftBoardItemCommand
@@ -56,7 +57,8 @@ public sealed class UpdateDraftBoardItemTests(DraftsIntegrationTestWebAppFactory
       UserPublicId = userPublicId,
       TmdbId = tmdbId,
       Notes = "Original notes",
-      Priority = 10
+      Priority = 10,
+      MediaType = MediaType.Movie
     }, TestContext.Current.CancellationToken);
 
     var command = new UpdateDraftBoardItemCommand
@@ -96,7 +98,8 @@ public sealed class UpdateDraftBoardItemTests(DraftsIntegrationTestWebAppFactory
       DraftId = draftPublicId,
       UserPublicId = userPublicId,
       TmdbId = tmdbId,
-      Notes = "Some notes"
+      Notes = "Some notes",
+      MediaType = MediaType.Movie
     }, TestContext.Current.CancellationToken);
 
     var command = new UpdateDraftBoardItemCommand

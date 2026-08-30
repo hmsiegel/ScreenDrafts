@@ -22,6 +22,7 @@ public sealed class AddMovieToDraftBoardTests(DraftsIntegrationTestWebAppFactory
       DraftId = draftPublicId,
       UserPublicId = userPublicId,
       TmdbId = tmdbId,
+      MediaType = MediaType.Movie,
     };
 
     // Act
@@ -46,6 +47,7 @@ public sealed class AddMovieToDraftBoardTests(DraftsIntegrationTestWebAppFactory
       DraftId = draftPublicId,
       UserPublicId = userPublicId,
       TmdbId = tmdbId,
+      MediaType = MediaType.Movie,
     };
 
     // Act
@@ -73,6 +75,7 @@ public sealed class AddMovieToDraftBoardTests(DraftsIntegrationTestWebAppFactory
       DraftId = draftPublicId,
       UserPublicId = userPublicId,
       TmdbId = tmdbId,
+      MediaType = MediaType.Movie,
     };
 
     // Act
@@ -105,6 +108,7 @@ public sealed class AddMovieToDraftBoardTests(DraftsIntegrationTestWebAppFactory
       TmdbId = tmdbId,
       Notes = notes,
       Priority = priority,
+      MediaType = MediaType.Movie,
     };
 
     // Act
@@ -136,6 +140,7 @@ public sealed class AddMovieToDraftBoardTests(DraftsIntegrationTestWebAppFactory
       DraftId = "nonexistent-draft-id",
       UserPublicId = userPublicId,
       TmdbId = Faker.Random.Int(1, 1_000_000),
+      MediaType = MediaType.Movie,
     };
 
     // Act
@@ -160,6 +165,7 @@ public sealed class AddMovieToDraftBoardTests(DraftsIntegrationTestWebAppFactory
       DraftId = draftPublicId,
       UserPublicId = "nonexistent-user-id",
       TmdbId = Faker.Random.Int(1, 1_000_000),
+      MediaType = MediaType.Movie,
     };
 
     // Act
@@ -187,6 +193,7 @@ public sealed class AddMovieToDraftBoardTests(DraftsIntegrationTestWebAppFactory
       DraftId = draftPublicId,
       UserPublicId = userPublicId,
       TmdbId = tmdbId,
+      MediaType = MediaType.Movie,
     };
 
     // Add first time — should succeed

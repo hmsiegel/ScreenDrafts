@@ -105,7 +105,7 @@ public sealed class VetoOverrideAppliedDomainEventHandlerTests(DraftsIntegration
 
     // Assert — veto override should mark veto as overridden
     var pick = await DbContext.Picks
-      .Include(p => p.Vetoes)
+      .Include("_vetoes")
       .FirstAsync(p => p.PlayOrder == 1 && p.DraftPart.PublicId == draftPartPublicId, TestContext.Current.CancellationToken);
     pick.CurrentVeto.Should().NotBeNull();
     pick.CurrentVeto.IsOverridden.Should().BeTrue();
@@ -120,7 +120,7 @@ public sealed class VetoOverrideAppliedDomainEventHandlerTests(DraftsIntegration
   {
     var draftPublicId = await CreateDraftWithPoolAsync();
     await CreateMovieInDbAsync(tmdbId);
-    await Sender.Send(new AddMovieToDraftPoolCommand { PublicId = draftPublicId, TmdbId = tmdbId }, TestContext.Current.CancellationToken);
+    await Sender.Send(new AddMovieToDraftPoolCommand { PublicId = draftPublicId, TmdbId = tmdbId, MediaType = MediaType.Movie }, TestContext.Current.CancellationToken);
 
     // CreateDraft auto-creates part index 1 (min=1, max=7) when no Parts are supplied.
     var draftPartId = await GetFirstDraftPartIdAsync(draftPublicId);
@@ -147,6 +147,17 @@ public sealed class VetoOverrideAppliedDomainEventHandlerTests(DraftsIntegration
       ParticipantKind = ParticipantKind.Drafter
     }, TestContext.Current.CancellationToken);
 
+    // A third drafter is required — SeriesPolicyRules.ComputeMaxVetoOverrides grants zero
+    // veto overrides to exactly-2-participant Mega/Super/mini-Mega drafts.
+    var person3Id = await peopleFactory.CreateAndSavePersonAsync();
+    var drafter3PublicId = (await Sender.Send(new CreateDrafterCommand(person3Id), TestContext.Current.CancellationToken)).Value;
+    await Sender.Send(new AddParticipantToDraftPartCommand
+    {
+      DraftPartId = draftPartPublicId,
+      ParticipantPublicId = drafter3PublicId,
+      ParticipantKind = ParticipantKind.Drafter
+    }, TestContext.Current.CancellationToken);
+
     var hostPersonId = await peopleFactory.CreateAndSavePersonAsync();
     var hostPublicId = (await Sender.Send(new CreateHostCommand { PersonPublicId = hostPersonId }, TestContext.Current.CancellationToken)).Value;
     await Sender.Send(new AddHostToDraftPartCommand
@@ -162,7 +173,60 @@ public sealed class VetoOverrideAppliedDomainEventHandlerTests(DraftsIntegration
       Action = DraftPartStatusAction.Start
     }, TestContext.Current.CancellationToken);
 
+    // Veto overrides are only ever usable if explicitly granted — there is no baseline
+    // "starting" override the way there is for vetoes. Grant drafter2 a bonus override
+    // via a draft position, mirroring how HasBonusVeto works in the Sorkin scenario.
+    await Sender.Send(new SetDraftPositionsCommand
+    {
+      DraftPartId = draftPartPublicId,
+      Positions =
+      [
+        new DraftPositionRequest { Name = "P1", Picks = [1] },
+        new DraftPositionRequest { Name = "P2", Picks = [2], HasBonusVetoOverride = true },
+        new DraftPositionRequest { Name = "P3", Picks = [3] },
+      ]
+    }, TestContext.Current.CancellationToken);
+
+    var p1PositionId = await GetPositionPublicIdByNameAsync(draftPartPublicId, "P1");
+    var p2PositionId = await GetPositionPublicIdByNameAsync(draftPartPublicId, "P2");
+    var p3PositionId = await GetPositionPublicIdByNameAsync(draftPartPublicId, "P3");
+
+    await Sender.Send(new AssignParticipantToDraftPositionCommand
+    {
+      DraftPartId = draftPartPublicId,
+      PositionPublicId = p1PositionId,
+      ParticipantPublicId = drafter1PublicId,
+      ParticipantKind = ParticipantKind.Drafter
+    }, TestContext.Current.CancellationToken);
+    await Sender.Send(new AssignParticipantToDraftPositionCommand
+    {
+      DraftPartId = draftPartPublicId,
+      PositionPublicId = p2PositionId,
+      ParticipantPublicId = drafter2PublicId,
+      ParticipantKind = ParticipantKind.Drafter
+    }, TestContext.Current.CancellationToken);
+    await Sender.Send(new AssignParticipantToDraftPositionCommand
+    {
+      DraftPartId = draftPartPublicId,
+      PositionPublicId = p3PositionId,
+      ParticipantPublicId = drafter3PublicId,
+      ParticipantKind = ParticipantKind.Drafter
+    }, TestContext.Current.CancellationToken);
+
     return (draftPublicId, draftPartPublicId, drafter1PublicId, drafter2PublicId);
+  }
+
+  private async Task<string> GetPositionPublicIdByNameAsync(string draftPartPublicId, string positionName)
+  {
+    var partId = await DbContext.DraftParts
+      .Where(dp => dp.PublicId == draftPartPublicId)
+      .Select(dp => dp.Id)
+      .FirstAsync(TestContext.Current.CancellationToken);
+
+    return await DbContext.DraftPositions
+      .Where(pos => pos.GameBoard.DraftPartId == partId && pos.Name == positionName)
+      .Select(pos => pos.PublicId)
+      .FirstAsync(TestContext.Current.CancellationToken);
   }
 
   private async Task<string> CreateDraftWithPoolAsync()

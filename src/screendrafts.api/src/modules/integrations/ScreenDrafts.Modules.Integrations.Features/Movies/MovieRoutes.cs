@@ -4,6 +4,8 @@ internal static class MovieRoutes
 {
   public const string Base = "integrations/movies";
   public const string Search = Base + "/search";
+  public const string SearchTv = Base + "/tv/search";
   public const string Import = Base + "/import";
   public const string Lookup = Base + "/lookup";
+  public const string BrowseSeasonEpisodes = Base + "/tv/season-episodes";
 }

@@ -18,7 +18,8 @@ public sealed class SetSubDraftSubjectTests(DraftsIntegrationTestWebAppFactory f
       DraftPartPublicId = draftPartPublicId,
       SubDraftPublicId = subDraftPublicId,
       SubjectKind = SubjectKind.Actor.Value,
-      SubjectName = "Tom Hanks"
+      SubjectName = "Tom Hanks",
+      SubjectImdbId = "nm0000158"
     };
 
     // Act
@@ -39,7 +40,8 @@ public sealed class SetSubDraftSubjectTests(DraftsIntegrationTestWebAppFactory f
       DraftPartPublicId = draftPartPublicId,
       SubDraftPublicId = subDraftPublicId,
       SubjectKind = SubjectKind.Director.Value,
-      SubjectName = "Christopher Nolan"
+      SubjectName = "Christopher Nolan",
+      SubjectImdbId = "nm0634240"
     };
 
     // Act

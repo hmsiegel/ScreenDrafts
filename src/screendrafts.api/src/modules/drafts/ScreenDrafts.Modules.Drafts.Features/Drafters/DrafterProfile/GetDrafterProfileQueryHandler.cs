@@ -103,7 +103,7 @@ internal sealed class GetDrafterProfileQueryHandler(IDbConnectionFactory dbConne
       FROM drafts.picks pk
       LEFT JOIN drafts.vetoes v ON v.target_pick_id = pk.id
       LEFT JOIN drafts.commissioner_overrides co ON co.pick_id = pk.id
-      LEFT JOIN drafts.team_pick_credits tpc ON tpc.target_pick_id = pk.id AND tpc.drafter_id_value = DrafterInternalId
+      LEFT JOIN drafts.team_pick_credits tpc ON tpc.target_pick_id = pk.id AND tpc.drafter_id_value = @DrafterInternalId
       WHERE ((pk.played_by_participant_id_value = @DrafterInternalId 
         AND pk.played_by_participant_kind_value = 0) 
           OR tpc.id IS NOT NULL)

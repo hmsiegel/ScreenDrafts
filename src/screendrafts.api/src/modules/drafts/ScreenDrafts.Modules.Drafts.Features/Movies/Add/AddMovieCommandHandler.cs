@@ -25,7 +25,11 @@ internal sealed class AddMovieCommandHandler(IMovieRepository movieRepository)
       tmdbId: request.TmdbId,
       igdbId: request.IgdbId,
       mediaType: request.MediaType,
-      year: request.Year
+      year: request.Year,
+      tvSeriesTmdbId: request.TvSeriesTmdbId,
+      seasonNumber: request.SeasonNumber,
+      episodeNumber: request.EpisodeNumber,
+      tvSeriesTitle: request.TvSeriesTitle
     );
 
     if (result.IsFailure)

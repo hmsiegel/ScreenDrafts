@@ -47,6 +47,17 @@ public sealed class FakeTmdbService : ITmdbService
     CancellationToken cancellationToken = default
   ) => Task.FromResult<TmdbMediaDetails?>(null);
 
+  public Task<string?> GetTvShowNameAsync(
+    int tmdbId,
+    CancellationToken cancellationToken = default
+  ) => Task.FromResult<string?>(null);
+
+  public Task<IReadOnlyList<TmdbSeasonEpisode>> GetSeasonEpisodesAsync(
+    int seriesTmdbId,
+    int seasonNumber,
+    CancellationToken cancellationToken = default
+  ) => Task.FromResult<IReadOnlyList<TmdbSeasonEpisode>>(Array.Empty<TmdbSeasonEpisode>());
+
   public Task<TmdbMediaDetails?> GetTvEpisodeDetailsAsync(
     int seriesTmdbId,
     int seasonNumber,
@@ -60,26 +71,17 @@ public sealed class FakeTmdbService : ITmdbService
   public Task<string?> GetTvShowImdbIdAsync(
     int tmdbId,
     CancellationToken cancellationToken = default
-  )
-  {
-    return Task.FromResult<string?>(null);
-  }
+  ) => Task.FromResult<string?>(null);
 
   public Task<string?> GetPersonImdbIdAsync(
     int tmdbPersonId,
     CancellationToken cancellationToken = default
-  )
-  {
-    return Task.FromResult<string?>(null);
-  }
+  ) => Task.FromResult<string?>(null);
 
   public Task<TmdbFindResult?> FindByImdbIdAsync(
     string imdbId,
     CancellationToken cancellationToken = default
-  )
-  {
-    return Task.FromResult<TmdbFindResult?>(null);
-  }
+  ) => Task.FromResult<TmdbFindResult?>(null);
 
   public Task<TmdbSearchPagedResult> SearchMoviesAsync(
     string query,
@@ -99,16 +101,25 @@ public sealed class FakeTmdbService : ITmdbService
   public Task<int?> FindPersonByImdbIdAsync(
     string imdbId,
     CancellationToken cancellationToken = default
-  )
-  {
-    return Task.FromResult<int?>(null);
-  }
+  ) => Task.FromResult<int?>(null);
 
   public Task<IReadOnlyList<TmdbPersonCredit>> GetPersonCombinedCreditsAsync(
     int tmdbPersonId,
     CancellationToken cancellationToken = default
-  )
-  {
-    return Task.FromResult<IReadOnlyList<TmdbPersonCredit>>(Array.Empty<TmdbPersonCredit>());
-  }
+  ) => Task.FromResult<IReadOnlyList<TmdbPersonCredit>>([]);
+
+  public Task<TmdbSearchPagedResult> SearchTvShowsAsync(
+    string query,
+    int page = 1,
+    CancellationToken cancellationToken = default
+  ) =>
+    Task.FromResult(
+      new TmdbSearchPagedResult
+      {
+        Results = _searchResults,
+        TotalResults = _searchResults.Count,
+        TotalPages = 1,
+        Page = page,
+      }
+    );
 }

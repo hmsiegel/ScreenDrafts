@@ -24,6 +24,10 @@ internal sealed class MediaAddedIntegrationEventConsumer(
         IgdbId = integrationEvent.IgdbId,
         MediaType = integrationEvent.MediaType,
         Year = integrationEvent.Year,
+        TvSeriesTmdbId = integrationEvent.TvSeriesTmdbId,
+        SeasonNumber = integrationEvent.SeasonNumber,
+        EpisodeNumber = integrationEvent.EpisodeNumber,
+        TvSeriesTitle = integrationEvent.TvSeriesTitle,
       },
       cancellationToken
     );

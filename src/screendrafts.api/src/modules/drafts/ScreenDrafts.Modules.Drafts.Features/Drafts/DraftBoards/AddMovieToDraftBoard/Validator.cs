@@ -24,5 +24,20 @@ internal sealed class Validator : AbstractValidator<AddMovieToDraftBoardCommand>
       .GreaterThan(0)
       .When(x => x.Priority.HasValue)
       .WithMessage("Priority must be a positive integer.");
+
+    RuleFor(x => x.TvSeriesTmdbId)
+      .NotNull()
+      .WithMessage("TvSeriesTmdbId is required for TV episodes.")
+      .When(x => x.MediaType == MediaType.TvEpisode);
+
+    RuleFor(x => x.SeasonNumber)
+      .NotNull()
+      .WithMessage("SeasonNumber is required for TV episodes.")
+      .When(x => x.MediaType == MediaType.TvEpisode);
+
+    RuleFor(x => x.EpisodeNumber)
+      .NotNull()
+      .WithMessage("EpisodeNumber is required for TV episodes.")
+      .When(x => x.MediaType == MediaType.TvEpisode);
   }
 }

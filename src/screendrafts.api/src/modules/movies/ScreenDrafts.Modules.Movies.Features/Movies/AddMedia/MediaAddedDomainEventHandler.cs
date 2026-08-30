@@ -35,7 +35,11 @@ internal sealed class MediaAddedDomainEventHandler(ISender sender, IEventBus eve
         publicId: r.PublicId,
         mediaType: r.MediaType,
         igdbId: r.IgdbId,
-        year: r.Year
+        year: r.Year,
+        tvSeriesTmdbId: r.TvSeriesTmdbId,
+        seasonNumber: r.SeasonNumber,
+        episodeNumber: r.EpisodeNumber,
+        tvSeriesTitle: r.TvSeriesTitle
       ),
       cancellationToken
     );

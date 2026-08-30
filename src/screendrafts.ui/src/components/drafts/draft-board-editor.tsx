@@ -1,55 +1,72 @@
 'use client';
 
 import { useRef, useState } from "react";
-import MovieSearchInput from "@/components/drafts/movie-search-input";
+import { MediaPicker, type SelectedMedia } from "@/components/drafts/media-picker";
 import {
   addMovieToDraftBoard,
   removeMovieFromDraftBoard,
   updateDraftBoardItem,
   updateDraftBoardOrder,
 } from "@/services/drafts/fetch-draft-board";
-import { type MovieSearchResult } from "@/services/movies/fetch-tmdb";
 import type { DraftBoardItemResponse } from "@/lib/dto";
+import { MEDIA_TYPE_TV_EPISODE } from "@/lib/tv-episode-resolve";
 
 interface DraftBoardEditorProps {
   draftId: string;
   accessToken: string;
   initialBoard: DraftBoardItemResponse[];
+  /** See the same prop on CandidateListEditor — not wired up by any caller yet. */
+  fixedSeriesTmdbId?: number;
 }
 
-interface PendingMovie {
-  movie: MovieSearchResult;
+interface PendingEntry {
+  media: SelectedMedia;
   notes: string;
   priority: string;
 }
 
-export default function DraftBoardEditor({ draftId, accessToken, initialBoard }: DraftBoardEditorProps) {
+export default function DraftBoardEditor({
+  draftId,
+  accessToken,
+  initialBoard,
+  fixedSeriesTmdbId,
+}: DraftBoardEditorProps) {
   const [board, setBoard] = useState<DraftBoardItemResponse[]>(initialBoard);
-  const [pending, setPending] = useState<PendingMovie | null>(null);
+  const [pending, setPending] = useState<PendingEntry | null>(null);
   const dragIdx = useRef<number | null>(null);
 
-  async function handleSelect(movie: MovieSearchResult) {
-    setPending({ movie, notes: "", priority: "" });
+  async function handleSelect(media: SelectedMedia) {
+    setPending({ media, notes: "", priority: "" });
   }
 
   async function confirmAdd() {
     if (!pending) return;
-    const priority = pending.priority ? parseInt(pending.priority, 10) : undefined;
+    const { media, notes, priority: priorityStr } = pending;
+    const priority = priorityStr ? parseInt(priorityStr, 10) : undefined;
     await addMovieToDraftBoard(
       accessToken,
       draftId,
-      pending.movie.tmdbId,
-      pending.notes || undefined,
-      priority
+      media.tmdbId,
+      media.mediaType,
+      notes || undefined,
+      priority,
+      media.tvSeriesTmdbId,
+      media.seasonNumber,
+      media.episodeNumber
     );
     setBoard((prev) => [
       ...prev,
       {
-        tmdbId: pending.movie.tmdbId,
-        title: pending.movie.title,
-        year: pending.movie.year ?? undefined,
-        notes: pending.notes || undefined,
+        tmdbId: media.tmdbId,
+        title: media.title,
+        year: media.year ?? undefined,
+        notes: notes || undefined,
         priority,
+        mediaType: { name: undefined, value: media.mediaType },
+        tvSeriesTmdbId: media.tvSeriesTmdbId,
+        seasonNumber: media.seasonNumber,
+        episodeNumber: media.episodeNumber,
+        tvSeriesTitle: media.tvSeriesTitle ?? undefined,
       } as DraftBoardItemResponse,
     ]);
     setPending(null);
@@ -92,16 +109,22 @@ export default function DraftBoardEditor({ draftId, accessToken, initialBoard }:
   return (
     <div className="space-y-4">
       <div className="space-y-2">
-        <MovieSearchInput
+        <MediaPicker
           onSelect={handleSelect}
           accessToken={accessToken}
-          placeholder="Search to add a film…"
+          fixedSeriesTmdbId={fixedSeriesTmdbId}
         />
         {pending && (
           <div className="border border-sd-ink/20 bg-sd-paper p-3 space-y-2">
             <p className="text-sm font-medium text-sd-ink">
-              {pending.movie.title}{" "}
-              <span className="font-mono text-xs text-sd-ink/50">{pending.movie.year ?? ""}</span>
+              <BoardEntryLabel
+                title={pending.media.title}
+                year={pending.media.year}
+                mediaType={pending.media.mediaType}
+                tvSeriesTitle={pending.media.tvSeriesTitle}
+                seasonNumber={pending.media.seasonNumber}
+                episodeNumber={pending.media.episodeNumber}
+              />
             </p>
             <div className="flex gap-2">
               <input
@@ -155,11 +178,15 @@ export default function DraftBoardEditor({ draftId, accessToken, initialBoard }:
               <span className="text-sd-ink/30 font-mono text-xs select-none">⠿</span>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-sd-ink">
-                  {movie.title ?? `TMDb #${movie.tmdbId}`}
+                  <BoardEntryLabel
+                    title={movie.title ?? `TMDb #${movie.tmdbId}`}
+                    year={movie.year}
+                    mediaType={movie.mediaType?.value}
+                    tvSeriesTitle={movie.tvSeriesTitle}
+                    seasonNumber={movie.seasonNumber}
+                    episodeNumber={movie.episodeNumber}
+                  />
                 </p>
-                {movie.year && (
-                  <p className="font-mono text-xs text-sd-ink/50">{movie.year}</p>
-                )}
                 <input
                   type="text"
                   defaultValue={movie.notes ?? ""}
@@ -188,5 +215,46 @@ export default function DraftBoardEditor({ draftId, accessToken, initialBoard }:
         </ul>
       )}
     </div>
+  );
+}
+
+/** Same rendering rule as CandidateListEditor's EntryLabel — kept as a
+ * separate small component rather than shared/exported, since the two
+ * callers' prop shapes (year required vs optional, etc.) diverge slightly
+ * and it's a handful of lines either way. */
+function BoardEntryLabel({
+  title,
+  year,
+  mediaType,
+  tvSeriesTitle,
+  seasonNumber,
+  episodeNumber,
+}: {
+  title: string;
+  year?: string | null;
+  mediaType?: number;
+  tvSeriesTitle?: string | null;
+  seasonNumber?: number;
+  episodeNumber?: number;
+}) {
+  if (mediaType === MEDIA_TYPE_TV_EPISODE) {
+    const code =
+      seasonNumber != null && episodeNumber != null
+        ? `S${String(seasonNumber).padStart(2, "0")}E${String(episodeNumber).padStart(2, "0")}`
+        : null;
+    return (
+      <>
+        {tvSeriesTitle && <span>{tvSeriesTitle} — </span>}
+        {code && <span className="font-mono text-xs text-sd-ink/50">{code} — </span>}
+        <span>{title}</span>
+      </>
+    );
+  }
+
+  return (
+    <>
+      {title}
+      {year && <span className="font-mono text-xs text-sd-ink/50"> ({year})</span>}
+    </>
   );
 }

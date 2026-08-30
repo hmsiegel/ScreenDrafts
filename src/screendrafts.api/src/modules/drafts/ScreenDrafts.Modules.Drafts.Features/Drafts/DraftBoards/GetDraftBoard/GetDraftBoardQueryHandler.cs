@@ -50,7 +50,12 @@ internal sealed class GetDraftBoardQueryHandler(
         bi.notes AS {nameof(DraftBoardItemResponse.Notes)},
         bi.priority AS {nameof(DraftBoardItemResponse.Priority)},
         m.movie_title AS {nameof(DraftBoardItemResponse.Title)},
-        m.year AS {nameof(DraftBoardItemResponse.Year)}
+        m.year AS {nameof(DraftBoardItemResponse.Year)},
+        m.media_type AS {nameof(DraftBoardItemResponse.MediaType)},
+        m.tv_series_tmdb_id AS {nameof(DraftBoardItemResponse.TvSeriesTmdbId)},
+        m.season_number AS {nameof(DraftBoardItemResponse.SeasonNumber)},
+        m.episode_number AS {nameof(DraftBoardItemResponse.EpisodeNumber)},
+        m.tv_series_title AS {nameof(DraftBoardItemResponse.TvSeriesTitle)}
       FROM drafts.draft_board_items bi
       JOIN drafts.draft_boards b ON b.id = bi.draft_board_id
       JOIN drafts.drafts d ON d.id = b.draft_id

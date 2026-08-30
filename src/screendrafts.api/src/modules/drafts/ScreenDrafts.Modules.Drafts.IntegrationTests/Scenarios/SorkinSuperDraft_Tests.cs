@@ -284,9 +284,12 @@ public sealed class SorkinSuperDraft_Tests(DraftsIntegrationTestWebAppFactory fa
   }
 
   [Fact]
-  public async Task SorkinSuperDraft_Clay_CanUseVetoOverride_AfterVetoAsync()
+  public async Task SorkinSuperDraft_Clay_CannotUseVetoOverride_TwoParticipantDraftAsync()
   {
-    // Play positions 10-9, veto position 10, then override it
+    // Play positions 10-9, veto position 10, then attempt to override it.
+    // SeriesPolicyRules.ComputeMaxVetoOverrides grants zero veto overrides to
+    // exactly-2-participant Mega/Super/mini-Mega drafts — Clay and Darren are the
+    // only two drafters here, so the override budget is 0 regardless of any bonus.
     await PlayPickAsync(
       _draftPartPublicId,
       10,
@@ -307,15 +310,21 @@ public sealed class SorkinSuperDraft_Tests(DraftsIntegrationTestWebAppFactory fa
     // Clay vetoes position 10 (starting veto)
     await ApplyVetoAsync(_draftPartPublicId, 10, _clayDrafterPublicId, ParticipantKind.Drafter);
 
-    // Clay uses bonus veto override to override the veto (keeping Darren's pick)
-    await ApplyVetoOverrideAsync(
-      _draftPartPublicId,
-      10,
-      _clayDrafterPublicId,
-      ParticipantKind.Drafter
+    // Clay attempts to use a veto override — must fail, this is a 2-participant draft
+    var result = await Sender.Send(
+      new ApplyVetoOverrideCommand
+      {
+        DraftPartId = _draftPartPublicId,
+        PlayOrder = 10,
+        ParticipantIdValue = _clayDrafterPublicId,
+        ParticipantKind = ParticipantKind.Drafter,
+        ActorPublicId = _clayDrafterPublicId,
+      },
+      TestContext.Current.CancellationToken
     );
 
-    await AssertVetoOverriddenAsync(_draftPartPublicId, 10);
+    result.IsFailure.Should().BeTrue();
+    result.Errors.Should().Contain(DraftPartErrors.NoRemainingVetoOverrides);
   }
 
   [Fact]
@@ -470,13 +479,19 @@ public sealed class SorkinSuperDraft_Tests(DraftsIntegrationTestWebAppFactory fa
   }
 
   // ─────────────────────────────────────────────────────────────────────────
-  // RealTimeUpdates: SignalR broadcast — veto and override both fire PickListUpdated
+  // RealTimeUpdates: SignalR broadcast — veto fires PickListUpdated
+  //
+  // This scenario is 2 drafters only (Clay, Darren), and
+  // SeriesPolicyRules.ComputeMaxVetoOverrides grants zero veto overrides to
+  // exactly-2-participant Mega/Super/mini-Mega drafts, so a VetoOverrideApplied
+  // broadcast can't be exercised through this scenario. That broadcast has its own
+  // dedicated coverage in RealTimeUpdatesConsumerTests (VetoOverrideAppliedConsumerTests).
   // ─────────────────────────────────────────────────────────────────────────
 
   [Fact]
-  public async Task SorkinSuperDraft_VetoAndOverride_ShouldBroadcastPickListUpdatedTwiceAsync()
+  public async Task SorkinSuperDraft_Veto_ShouldBroadcastPickListUpdatedAsync()
   {
-    // Play two picks then veto one, then override the veto.
+    // Play two picks then veto one.
     await PlayPickAsync(
       _draftPartPublicId,
       10,
@@ -494,30 +509,24 @@ public sealed class SorkinSuperDraft_Tests(DraftsIntegrationTestWebAppFactory fa
       _moviePublicIds[8]
     );
     await ApplyVetoAsync(_draftPartPublicId, 10, _clayDrafterPublicId, ParticipantKind.Drafter);
-    await ApplyVetoOverrideAsync(
-      _draftPartPublicId,
-      10,
-      _clayDrafterPublicId,
-      ParticipantKind.Drafter
-    );
 
-    // Process outbox to capture PickAdded + VetoApplied + VetoOverrideApplied events.
+    // Process outbox to capture PickAdded + VetoApplied events.
     await ProcessOutboxAsync();
 
     // Deliver to RealTimeUpdates consumers — each event fires its own broadcast.
     await DispatchIntegrationEventsAsync();
 
     // Picks fire PickAdded (PickAddedIntegrationEventConsumer) and PickSubmitted
-    // (PickSubmittedIntegrationEventConsumer). Veto fires VetoApplied. Override fires VetoOverrideApplied.
+    // (PickSubmittedIntegrationEventConsumer). Veto fires VetoApplied.
     HubCapture
       .SentMessages.Should()
-      .NotBeEmpty("pick/veto/override operations should all trigger hub broadcasts");
+      .NotBeEmpty("pick/veto operations should all trigger hub broadcasts");
     HubCapture
       .SentMessages.Should()
       .AllSatisfy(
         m =>
           m.Method.Should()
-            .BeOneOf("PickAdded", "PickSubmitted", "VetoApplied", "VetoOverrideApplied"),
+            .BeOneOf("PickAdded", "PickSubmitted", "VetoApplied"),
         "all hub broadcasts must be a recognised pick/veto method"
       );
   }
