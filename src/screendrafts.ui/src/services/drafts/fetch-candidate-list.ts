@@ -10,7 +10,6 @@ async function accessToken(): Promise<string | undefined> {
 }
 
 export async function getCandidateList(draftPartId: string): Promise<CandidateListEntryResponse[]> {
-  // TODO: confirm endpoint
   try {
     const token = await accessToken();
     const res = await fetch(
@@ -33,15 +32,25 @@ export async function addCandidateListEntry(
   accessTokenValue: string,
   draftPartId: string,
   tmdbId: number,
-  notes?: string
+  mediaType: number,
+  notes?: string,
+  tvSeriesTmdbId?: number,
+  seasonNumber?: number,
+  episodeNumber?: number
 ): Promise<void> {
-  // TODO: confirm endpoint
   const res = await fetch(
     `${apiBase}/draft-parts/${encodeURIComponent(draftPartId)}/candidate-list`,
     {
       method: "POST",
       headers: { Authorization: `Bearer ${accessTokenValue}`, "Content-Type": "application/json" },
-      body: JSON.stringify({ tmdbId, notes }),
+      body: JSON.stringify({
+        tmdbId,
+        notes,
+        mediaType,
+        tvSeriesTmdbId,
+        seasonNumber,
+        episodeNumber,
+      }),
     }
   );
   if (!res.ok) {

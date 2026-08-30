@@ -1,24 +1,33 @@
 'use client';
 
 import { useRef, useState } from "react";
-import MovieSearchInput from "@/components/drafts/movie-search-input";
+import { MediaPicker, type SelectedMedia } from "@/components/drafts/media-picker";
 import {
   addCandidateListEntry,
   bulkAddCandidateListEntries,
   removeCandidateListEntry,
 } from "@/services/drafts/fetch-candidate-list";
-import { type MovieSearchResult } from "@/services/movies/fetch-tmdb";
 import type { CandidateListEntryResponse } from "@/lib/dto";
+import { MEDIA_TYPE_TV_EPISODE } from "@/lib/tv-episode-resolve";
 
 interface CandidateListEditorProps {
   draftPartId: string;
   accessToken: string;
   initialEntries: CandidateListEntryResponse[];
   readonly?: boolean;
+  /**
+   * When the draft this part belongs to is restricted to one TV series,
+   * pass its TMDb ID here to lock the picker into TV Episode mode with that
+   * series pre-filled. Not wired up by any current caller — the Draft
+   * response doesn't expose RestrictedTvSeriesTmdbId yet (needs an NSwag
+   * regen after the backend delivery lands). Omit it and the picker falls
+   * back to the manual Movie/TV Episode toggle, which works today.
+   */
+  fixedSeriesTmdbId?: number;
 }
 
-interface PendingMovie {
-  movie: MovieSearchResult;
+interface PendingEntry {
+  media: SelectedMedia;
   notes: string;
 }
 
@@ -27,35 +36,46 @@ export default function CandidateListEditor({
   accessToken,
   initialEntries,
   readonly = false,
+  fixedSeriesTmdbId,
 }: CandidateListEditorProps) {
   const [entries, setEntries] = useState<CandidateListEntryResponse[]>(initialEntries);
-  const [pending, setPending] = useState<PendingMovie | null>(null);
+  const [pending, setPending] = useState<PendingEntry | null>(null);
   const [uploading, setUploading] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
-  async function handleSelect(movie: MovieSearchResult) {
-    setPending({ movie, notes: "" });
+  async function handleSelect(media: SelectedMedia) {
+    setPending({ media, notes: "" });
   }
 
   async function confirmAdd() {
     if (!pending) return;
+    const { media, notes } = pending;
     await addCandidateListEntry(
       accessToken,
       draftPartId,
-      pending.movie.tmdbId,
-      pending.notes || undefined
+      media.tmdbId,
+      media.mediaType,
+      notes || undefined,
+      media.tvSeriesTmdbId,
+      media.seasonNumber,
+      media.episodeNumber
     );
     setEntries((prev) => [
       ...prev,
       {
         entryId: crypto.randomUUID(),
-        tmdbId: pending.movie.tmdbId,
-        movieTitle: pending.movie.title,
+        tmdbId: media.tmdbId,
+        movieTitle: media.title,
         movieImdbId: undefined,
         addedByPublicId: "",
-        notes: pending.notes || undefined,
+        notes: notes || undefined,
         createdOnUtc: new Date(),
         isPending: false,
+        mediaType: { name: undefined, value: media.mediaType },
+        tvSeriesTmdbId: media.tvSeriesTmdbId,
+        seasonNumber: media.seasonNumber,
+        episodeNumber: media.episodeNumber,
+        tvSeriesTitle: media.tvSeriesTitle ?? undefined,
       } as CandidateListEntryResponse,
     ]);
     setPending(null);
@@ -83,16 +103,22 @@ export default function CandidateListEditor({
     <div className="space-y-4">
       {!readonly && (
         <div className="space-y-2">
-          <MovieSearchInput
+          <MediaPicker
             onSelect={handleSelect}
             accessToken={accessToken}
-            placeholder="Search to add a film…"
+            fixedSeriesTmdbId={fixedSeriesTmdbId}
           />
           {pending && (
             <div className="border border-sd-ink/20 bg-sd-paper p-3 space-y-2">
               <p className="text-sm font-medium text-sd-ink">
-                {pending.movie.title}{" "}
-                <span className="font-mono text-xs text-sd-ink/50">{pending.movie.year ?? ""}</span>
+                <EntryLabel
+                  title={pending.media.title}
+                  year={pending.media.year}
+                  mediaType={pending.media.mediaType}
+                  tvSeriesTitle={pending.media.tvSeriesTitle}
+                  seasonNumber={pending.media.seasonNumber}
+                  episodeNumber={pending.media.episodeNumber}
+                />
               </p>
               <input
                 type="text"
@@ -146,7 +172,16 @@ export default function CandidateListEditor({
           {entries.map((entry) => (
             <li key={entry.tmdbId} className="flex items-center gap-3 px-3 py-2">
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-sd-ink">{entry.movieTitle}</p>
+                <p className="text-sm font-medium text-sd-ink">
+                  <EntryLabel
+                    title={entry.movieTitle ?? `TMDb #${entry.tmdbId}`}
+                    year={undefined}
+                    mediaType={entry.mediaType?.value}
+                    tvSeriesTitle={entry.tvSeriesTitle}
+                    seasonNumber={entry.seasonNumber}
+                    episodeNumber={entry.episodeNumber}
+                  />
+                </p>
                 {entry.notes && (
                   <p className="text-xs text-sd-ink/60 mt-0.5 italic">{entry.notes}</p>
                 )}
@@ -166,5 +201,50 @@ export default function CandidateListEditor({
         </ul>
       )}
     </div>
+  );
+}
+
+/**
+ * Shared display logic for both the pending-confirmation card and the
+ * committed entry list — a TV episode entry shows "Series — SxxExx — Name"
+ * instead of just the bare episode name, since the episode title alone
+ * (e.g. "The City on the Edge of Forever") gives no clue which show it's
+ * from. Falls back to the plain title/year rendering for movies, unchanged
+ * from before this component supported episodes at all.
+ */
+function EntryLabel({
+  title,
+  year,
+  mediaType,
+  tvSeriesTitle,
+  seasonNumber,
+  episodeNumber,
+}: {
+  title: string;
+  year?: string | null;
+  mediaType?: number;
+  tvSeriesTitle?: string | null;
+  seasonNumber?: number;
+  episodeNumber?: number;
+}) {
+  if (mediaType === MEDIA_TYPE_TV_EPISODE) {
+    const code =
+      seasonNumber != null && episodeNumber != null
+        ? `S${String(seasonNumber).padStart(2, "0")}E${String(episodeNumber).padStart(2, "0")}`
+        : null;
+    return (
+      <>
+        {tvSeriesTitle && <span>{tvSeriesTitle} — </span>}
+        {code && <span className="font-mono text-xs text-sd-ink/50">{code} — </span>}
+        <span>{title}</span>
+      </>
+    );
+  }
+
+  return (
+    <>
+      {title}
+      {year && <span className="font-mono text-xs text-sd-ink/50"> ({year})</span>}
+    </>
   );
 }

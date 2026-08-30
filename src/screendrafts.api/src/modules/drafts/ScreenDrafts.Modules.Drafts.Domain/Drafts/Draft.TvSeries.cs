@@ -15,14 +15,26 @@ public sealed partial class Draft
   public int? RestrictedTvSeriesTmdbId { get; private set; }
 
   /// <summary>
+  /// Display name of the restricted series (e.g. "The Twilight Zone"), captured
+  /// once when the restriction is set — the admin already has it on hand from
+  /// whichever TV series search picked RestrictedTvSeriesTmdbId, so there's no
+  /// need to round-trip TMDb again just to show it back. Always null when
+  /// RestrictedTvSeriesTmdbId is null; not independently nullable in practice,
+  /// though the type allows it since nothing in the domain actually enforces
+  /// that pairing at the type level.
+  /// </summary>
+  public string? RestrictedTvSeriesTitle { get; private set; }
+
+  /// <summary>
   /// Sets or clears the TV series restriction. Pass null to lift it. Intended to
   /// be set once, before any candidates are added — changing it after items
   /// already exist in the pool/boards/candidate lists does not retroactively
   /// validate them.
   /// </summary>
-  public void SetTvSeriesRestriction(int? tvSeriesTmdbId)
+  public void SetTvSeriesRestriction(int? tvSeriesTmdbId, string? tvSeriesTitle)
   {
     RestrictedTvSeriesTmdbId = tvSeriesTmdbId;
+    RestrictedTvSeriesTitle = tvSeriesTitle;
     UpdatedAtUtc = DateTime.UtcNow;
   }
 }

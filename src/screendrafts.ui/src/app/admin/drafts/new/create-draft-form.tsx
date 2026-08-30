@@ -14,6 +14,7 @@ import {
   searchImdbPeople,
   addBoostersChampionAssignment,
   updateDraft,
+  setDraftTvSeriesRestriction,
   type ImdbPersonSearchResult,
 } from "@/services/admin/fetch-admin-drafts";
 import { DrafterPicker } from "../../drafter-teams/drafter-picker";
@@ -25,6 +26,10 @@ import { getDefaultPositions, isFixedPositionType, PositionConfig, PositionsEdit
 import { defaultPredictionConfig, PredictionConfig, PredictionRulesSection } from "./prediction-rules-section";
 import { MovieSearchPicker } from "./movie-search-picker";
 import type { ResolvedMovie } from "@/lib/movie-resolve";
+import {
+  TvSeriesRestrictionField,
+  type TvSeriesRestrictionValue,
+} from "@/components/drafts/tv-series-restriction-field";
 
 const LABEL = "block text-[11px] font-mono tracking-widest text-sd-ink/60 uppercase mb-1";
 const INPUT =
@@ -272,6 +277,16 @@ export default function CreateDraftForm({
   const [useFungibleToken, setUseFungibleToken] = useState(false);
   const [fungibleTokenName, setFungibleTokenName] = useState("");
   const [isHostless, setIsHostless] = useState(false);
+
+  // Same "set via a follow-up call right after creation" pattern as
+  // fungibleTokenName/isHostless just above — SetTvSeriesRestriction is its
+  // own endpoint (not part of CreateDraftCommand), and the backend enforces
+  // this can only happen while the draft is still in the Created state,
+  // which is trivially true immediately after creation.
+  const [tvSeriesRestriction, setTvSeriesRestriction] = useState<TvSeriesRestrictionValue>({
+    tvSeriesTmdbId: null,
+    tvSeriesTitle: null,
+  });
 
   function handleToggleFungibleToken(checked: boolean) {
     setUseFungibleToken(checked);
@@ -584,6 +599,15 @@ export default function CreateDraftForm({
         });
       }
 
+      if (tvSeriesRestriction.tvSeriesTmdbId) {
+        await setDraftTvSeriesRestriction(
+          accessToken,
+          created.publicId,
+          tvSeriesRestriction.tvSeriesTmdbId,
+          tvSeriesRestriction.tvSeriesTitle
+        );
+      }
+
       const hasPredictions = parts.some((p) => p.predictionConfig.enabled);
       if (hasPredictions) {
         const detail = await getDraft(accessToken, created.publicId);
@@ -766,8 +790,7 @@ export default function CreateDraftForm({
               </>
             )}
             <p className="text-[11px] font-mono text-sd-ink/50 mt-1">
-              Only for drafts using a fungible veto/override token (e.g. Legends Super
-              Drafts) — leave unchecked for a normal draft, where everyone gets a separate
+              Only for drafts using a fungible veto/override token. Leave unchecked for a normal draft, where everyone gets a separate
               veto and override allotment instead.
             </p>
           </div>
@@ -783,11 +806,18 @@ export default function CreateDraftForm({
               <span className="text-[11px] font-mono tracking-widest text-sd-ink/60 uppercase">No Dedicated Host</span>
             </label>
             <p className="text-[11px] font-mono text-sd-ink/50 mt-1">
-              For drafts with no host at all — e.g. the Legends Mega/Super drafts, or
-              Clay-vs-Ryan&apos;s Christmas draft. Picks get sent to another drafter to
+              For drafts with no dedicated host at all.  Picks get sent to another drafter to
               reveal instead of a host: automatically to &quot;the other drafter&quot; in a
               2-drafter draft, or a random draw among the rest in a larger one.
             </p>
+          </div>
+
+          <div className="md:col-span-3">
+            <TvSeriesRestrictionField
+              accessToken={accessToken}
+              value={tvSeriesRestriction}
+              onChange={setTvSeriesRestriction}
+            />
           </div>
         </div>
       </section>

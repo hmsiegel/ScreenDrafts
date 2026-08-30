@@ -25,13 +25,25 @@ export async function addMovieToDraftBoard(
   accessToken: string,
   draftId: string,
   tmdbId: number,
+  mediaType: number,
   notes?: string,
-  priority?: number
+  priority?: number,
+  tvSeriesTmdbId?: number,
+  seasonNumber?: number,
+  episodeNumber?: number
 ): Promise<void> {
   const res = await fetch(`${apiBase}/drafts/${encodeURIComponent(draftId)}/board`, {
     method: "POST",
     headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ tmdbId, notes, priority }),
+    body: JSON.stringify({
+      tmdbId,
+      notes,
+      priority,
+      mediaType,
+      tvSeriesTmdbId,
+      seasonNumber,
+      episodeNumber,
+    }),
   });
   if (!res.ok) {
     const text = await res.text().catch(() => res.statusText);

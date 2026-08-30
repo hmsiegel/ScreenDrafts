@@ -14,5 +14,15 @@ internal sealed class Validator : AbstractValidator<SetTvSeriesRestrictionReques
       .GreaterThan(0)
       .When(x => x.TvSeriesTmdbId.HasValue)
       .WithMessage("TvSeriesTmdbId must be greater than 0.");
+
+    // The domain type allows TvSeriesTitle to be set independently of
+    // TvSeriesTmdbId (Draft.SetTvSeriesRestriction doesn't enforce the
+    // pairing itself), but every real caller is a search-and-pick UI that
+    // always has both together — so this is where the pairing actually gets
+    // enforced, rather than in the domain.
+    RuleFor(x => x.TvSeriesTitle)
+      .NotEmpty()
+      .WithMessage("TvSeriesTitle is required when TvSeriesTmdbId is set.")
+      .When(x => x.TvSeriesTmdbId.HasValue);
   }
 }

@@ -139,6 +139,47 @@ internal sealed class TmdbService(HttpClient httpClient, IOptions<TmdbSettings> 
     };
   }
 
+  public async Task<TmdbSearchPagedResult> SearchTvShowsAsync(
+    string query,
+    int page = 1,
+    CancellationToken cancellationToken = default
+  )
+  {
+    var response = await _httpClient.GetFromJsonAsync<TmdbTvSearchResponse>(
+      $"search/tv?query={Uri.EscapeDataString(query)}&include_adult=true&page={page}",
+      cancellationToken
+    );
+
+    var results =
+      response
+        ?.Results.Select(r => new TmdbSearchResult
+        {
+          Id = r.Id,
+          // TMDb's TV search returns "name"/"first_air_date" rather than
+          // movie search's "title"/"release_date" — normalized onto the
+          // same TmdbSearchResult shape here so callers don't need to know
+          // the difference, same as TmdbTvResult does elsewhere.
+          Title = r.Name,
+          Overview = r.Overview ?? string.Empty,
+          ReleaseDate =
+            string.IsNullOrWhiteSpace(r.FirstAirDate) || r.FirstAirDate.Length < 4
+              ? null
+              : r.FirstAirDate,
+          PosterPath = r.PosterPath,
+        })
+        .ToList()
+        .AsReadOnly()
+      ?? (IReadOnlyList<TmdbSearchResult>)[];
+
+    return new TmdbSearchPagedResult
+    {
+      Results = results,
+      TotalResults = response?.TotalResults ?? 0,
+      TotalPages = response?.TotalPages ?? 0,
+      Page = page,
+    };
+  }
+
   // TV Shows
   public async Task<TmdbMediaDetails?> GetTvShowDetailsAsync(
     int tmdbId,
@@ -559,6 +600,20 @@ internal sealed class TmdbService(HttpClient httpClient, IOptions<TmdbSettings> 
     [property: JsonPropertyName("credits")] TmdbCreditsApiResponse Credits,
     [property: JsonPropertyName("production_companies")]
       IReadOnlyList<TmdbProductionCompanyApiResponse> ProductionCompanies
+  );
+
+  private sealed record TmdbTvSearchResponse(
+    [property: JsonPropertyName("results")] IReadOnlyList<TmdbTvSearchItem> Results,
+    [property: JsonPropertyName("total_results")] int TotalResults,
+    [property: JsonPropertyName("total_pages")] int TotalPages
+  );
+
+  private sealed record TmdbTvSearchItem(
+    [property: JsonPropertyName("id")] int Id,
+    [property: JsonPropertyName("name")] string Name,
+    [property: JsonPropertyName("overview")] string? Overview,
+    [property: JsonPropertyName("poster_path")] string? PosterPath,
+    [property: JsonPropertyName("first_air_date")] string? FirstAirDate
   );
 
   private sealed record TmdbTvNameApiResponse(

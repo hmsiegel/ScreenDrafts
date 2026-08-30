@@ -1,7 +1,6 @@
 'use client';
 
 import { useRef, useState } from "react";
-import MovieSearchInput from "@/components/drafts/movie-search-input";
 import {
   createDraftPool,
   addMovieToDraftPool,
@@ -9,13 +8,18 @@ import {
   bulkAddMoviesToDraftPool,
   type DraftPoolData,
 } from "@/services/admin/fetch-admin-drafts";
-import { type MovieSearchResult } from "@/services/movies/fetch-tmdb";
 import Link from "next/link";
+import { MediaPicker, SelectedMedia } from "@/components/drafts/media-picker";
+import { MEDIA_TYPE_TV_EPISODE } from "@/lib/tv-episode-resolve";
 
 interface PoolMovie {
   tmdbId: number;
   title: string;
   year: string | null;
+  mediaType?: number;
+  tvSeriesTitle?: string | null;
+  seasonNumber?: number;
+  episodeNumber?: number;
 }
 
 interface DraftPoolManagerProps {
@@ -50,10 +54,29 @@ export default function DraftPoolManager({
     }
   }
 
-  async function handleAddMovie(movie: MovieSearchResult) {
-    await addMovieToDraftPool(accessToken, draftId, movie.tmdbId);
-    setMovies((prev) => [...prev, { tmdbId: movie.tmdbId, title: movie.title, year: movie.year }]);
-    setPool((prev) => prev ? { ...prev, tmdbIds: [...(prev.tmdbIds ?? []), movie.tmdbId] } : prev);
+  async function handleAddMovie(media: SelectedMedia) {
+    await addMovieToDraftPool(
+      accessToken,
+      draftId,
+      media.tmdbId,
+      media.mediaType,
+      media.tvSeriesTmdbId,
+      media.seasonNumber,
+      media.episodeNumber
+    );
+    setMovies((prev) => [
+      ...prev,
+      {
+        tmdbId: media.tmdbId,
+        title: media.title,
+        year: media.year,
+        mediaType: media.mediaType,
+        tvSeriesTitle: media.tvSeriesTitle,
+        seasonNumber: media.seasonNumber,
+        episodeNumber: media.episodeNumber,
+      },
+    ]);
+    setPool((prev) => prev ? { ...prev, tmdbIds: [...(prev.tmdbIds ?? []), media.tmdbId] } : prev);
   }
 
   async function handleRemoveMovie(tmdbId: number) {
@@ -121,11 +144,7 @@ export default function DraftPoolManager({
               </div>
             ) : (
               <div className="space-y-4">
-                <MovieSearchInput
-                  onSelect={handleAddMovie}
-                  accessToken={accessToken}
-                  placeholder="Search to add a film to pool…"
-                />
+                <MediaPicker onSelect={handleAddMovie} accessToken={accessToken} />
 
                 {/* Bulk upload row */}
                 <div className="flex items-center gap-3">
@@ -153,7 +172,8 @@ export default function DraftPoolManager({
                   />
                 </div>
 
-                {/* CSV format info card */}
+                {/* CSV format info card — movie-only, unchanged. CSV bulk upload
+                    wasn't extended to episodes; see the Drafts delivery README. */}
                 {showCsvInfo && (
                   <div className="border border-sd-ink/10 bg-sd-paper px-4 py-3 space-y-2">
                     <p className="font-oswald font-bold text-xs tracking-widest uppercase text-sd-ink/60">
@@ -206,24 +226,39 @@ function PoolList({
         </tr>
       </thead>
       <tbody>
-        {movies.map((movie) => (
-          <tr key={movie.tmdbId} className="border-b border-sd-ink/5 hover:bg-sd-paper/60">
-            <td className="py-2 pr-4 font-medium text-sd-ink">{movie.title}</td>
-            <td className="py-2 pr-4 font-mono text-sd-ink/60">{movie.year ?? ""}</td>
-            <td className="py-2 text-right">
-              {onRemove && (
-                <button
-                  type="button"
-                  onClick={() => onRemove(movie.tmdbId)}
-                  className="text-sd-ink/40 hover:text-sd-red text-xl leading-none"
-                  aria-label="Remove"
-                >
-                  ×
-                </button>
-              )}
-            </td>
-          </tr>
-        ))}
+        {movies.map((movie) => {
+          const isEpisode = movie.mediaType === MEDIA_TYPE_TV_EPISODE;
+          const code =
+            isEpisode && movie.seasonNumber != null && movie.episodeNumber != null
+              ? `S${String(movie.seasonNumber).padStart(2, "0")}E${String(movie.episodeNumber).padStart(2, "0")}`
+              : null;
+          return (
+            <tr key={movie.tmdbId} className="border-b border-sd-ink/5 hover:bg-sd-paper/60">
+              <td className="py-2 pr-4 font-medium text-sd-ink">
+                {isEpisode && movie.tvSeriesTitle && (
+                  <span className="text-sd-ink/60">{movie.tvSeriesTitle} — </span>
+                )}
+                {isEpisode && code && (
+                  <span className="font-mono text-xs text-sd-ink/50">{code} — </span>
+                )}
+                {movie.title}
+              </td>
+              <td className="py-2 pr-4 font-mono text-sd-ink/60">{movie.year ?? ""}</td>
+              <td className="py-2 text-right">
+                {onRemove && (
+                  <button
+                    type="button"
+                    onClick={() => onRemove(movie.tmdbId)}
+                    className="text-sd-ink/40 hover:text-sd-red text-xl leading-none"
+                    aria-label="Remove"
+                  >
+                    ×
+                  </button>
+                )}
+              </td>
+            </tr>
+          );
+        })}
       </tbody>
     </table>
   );

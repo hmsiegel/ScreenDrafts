@@ -17,7 +17,10 @@ internal sealed class SetTvSeriesRestrictionCommandHandler(IDraftRepository draf
       return Result.Failure(DraftErrors.NotFound(request.PublicId));
     }
 
-    draft.SetTvSeriesRestriction(request.TvSeriesTmdbId);
+    draft.SetTvSeriesRestriction(
+      tvSeriesTmdbId: request.TvSeriesTmdbId,
+      tvSeriesTitle: request.TvSeriesTitle
+    );
 
     _draftRepository.Update(draft);
 

@@ -6,4 +6,5 @@ internal sealed record SetTvSeriesRestrictionRequest
   public string PublicId { get; init; } = default!;
 
   public int? TvSeriesTmdbId { get; init; }
+  public string? TvSeriesTitle { get; init; }
 }

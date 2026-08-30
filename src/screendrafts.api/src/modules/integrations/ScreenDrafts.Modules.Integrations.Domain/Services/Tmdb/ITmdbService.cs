@@ -28,6 +28,19 @@ public interface ITmdbService
   );
 
   /// <summary>
+  /// Search TMDB by title, TV shows only — GET /search/tv. Distinct from
+  /// SearchMoviesAsync's endpoint; TMDb keeps movie and TV search separate.
+  /// Used to pick which series a draft (or an episode draft's restriction)
+  /// is about — not the same thing as GetSeasonEpisodesAsync, which lists
+  /// episodes once a series is already known.
+  /// </summary>
+  Task<TmdbSearchPagedResult> SearchTvShowsAsync(
+    string query,
+    int page = 1,
+    CancellationToken cancellationToken = default
+  );
+
+  /// <summary>
   /// Find a movie by its TMDB Id.
   /// </summary>
   /// <param name="imdbId"></param>

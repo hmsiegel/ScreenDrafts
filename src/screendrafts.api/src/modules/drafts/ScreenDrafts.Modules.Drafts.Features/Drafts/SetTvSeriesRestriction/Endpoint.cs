@@ -24,6 +24,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<SetTvSeriesRestrictionRequ
     {
       PublicId = req.PublicId,
       TvSeriesTmdbId = req.TvSeriesTmdbId,
+      TvSeriesTitle = req.TvSeriesTitle,
     };
 
     var result = await Sender.Send(command, ct);

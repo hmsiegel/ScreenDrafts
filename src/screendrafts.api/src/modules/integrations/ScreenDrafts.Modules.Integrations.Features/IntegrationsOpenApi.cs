@@ -17,6 +17,7 @@ internal static class IntegrationsOpenApi
     public const string Movies_Lookup = "OnlineMedia.Lookup";
     public const string Movies_Import = "OnlineMedia.Import";
     public const string Movies_BrowseSeasonEpisodes = "OnlineMedia.BrowseSeasonEpisodes";
+    public const string Movies_SearchTv = "OnlineMedia.SearchTv";
     public const string Zoom_Webhook = "Zoom.Webhook";
     public const string YouTube_Search = "YouTube.Search";
     public const string Games_Search = "Games.Search";
