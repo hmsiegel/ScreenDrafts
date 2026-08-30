@@ -1,9 +1,12 @@
 // app/draft-parts/[draftPartId]/live/components/pick-source-panel.tsx
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useLiveDraft } from '../live-draft-context';
 import { importAndResolve, ResolvedMovie, resolveTmdbIds } from '@/lib/movie-resolve';
+import { importAndResolveEpisode, MEDIA_TYPE_TV_EPISODE } from '@/lib/tv-episode-resolve';
+import { MediaPicker, type SelectedMedia } from '@/components/drafts/media-picker';
+import { DARK_THEME } from '@/components/drafts/media-picker-theme';
 
 const API = process.env.NEXT_PUBLIC_API_URL;
 
@@ -157,6 +160,7 @@ export function PickSourcePanel({
             submitting={submitting}
             onPick={handlePick}
             disabled={slotAlreadyPicked}
+            fixedSeriesTmdbId={gameplay.restrictedTvSeriesTmdbId ?? undefined}
           />
         )}
       </div>
@@ -339,90 +343,88 @@ function CandidateListSource({
 }
 
 // ── Search ────────────────────────────────────────────────────────────────────
-// Response: { results: { items: [{ tmdbId, title, year, posterUrl, mediaPublicId, isInMediaDatabase }] } }
-// Items that are in the database already have mediaPublicId — use directly.
-// Items not in the database have no mediaPublicId — disable PICK (must be in DB first).
+// MediaPicker handles both the free-text movie search (unchanged, still hits
+// /media/search under the hood via MovieSearchInput) and the TV episode
+// browse-a-season flow. Unlike the old inline search, MediaPicker's onSelect
+// never hands back a mediaPublicId — every selection (movie or episode) is
+// resolved/imported here before being handed to onPick, which is what
+// PickSourcePanel needs anyway to submit the actual pick.
 
 function SearchSource({
   accessToken,
   submitting,
   onPick,
   disabled,
+  fixedSeriesTmdbId,
 }: {
   accessToken: string;
   submitting: string | null;
   onPick: (movie: ResolvedMovie) => void;
   disabled: boolean;
+  fixedSeriesTmdbId?: number;
 }) {
-  const [query, setQuery] = useState('');
-  const [movies, setMovies] = useState<ResolvedMovie[]>([]);
-  const [loading, setLoading] = useState(false);
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [resolving, setResolving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-    if (query.trim().length < 1) {
-      setMovies([]);
+  async function handleMediaSelect(media: SelectedMedia) {
+    setError(null);
+
+    if (media.mediaType === MEDIA_TYPE_TV_EPISODE) {
+      if (!media.tvSeriesTmdbId || !media.seasonNumber || !media.episodeNumber) {
+        setError('Missing episode identity — try selecting again.');
+        return;
+      }
+      setResolving(true);
+      try {
+        const publicId = await importAndResolveEpisode(
+          media.tmdbId,
+          media.tvSeriesTmdbId,
+          media.seasonNumber,
+          media.episodeNumber,
+          accessToken,
+        );
+        if (!publicId) {
+          setError('Episode could not be imported in time. Try again in a moment.');
+          return;
+        }
+        onPick({
+          mediaPublicId: publicId,
+          tmdbId: media.tmdbId,
+          title: media.title,
+          year: media.year,
+          posterUrl: null,
+        });
+      } finally {
+        setResolving(false);
+      }
       return;
     }
-    debounceRef.current = setTimeout(async () => {
-      setLoading(true);
-      try {
-        const res = await fetch(
-          `${API}/media/search?query=${encodeURIComponent(query.trim())}`,
-          { headers: { Authorization: `Bearer ${accessToken}` } },
-        );
-        if (!res.ok) return;
-        const data = await res.json();
-        const items: {
-          tmdbId?: number;
-          title: string;
-          year?: string;
-          posterUrl?: string;
-          mediaPublicId?: string;
-          isInMediaDatabase: boolean;
-        }[] = data.results?.items ?? data.items ?? [];
 
-        setMovies(
-          items
-            .filter((i) => i.tmdbId != null)
-            .map((i) => ({
-              mediaPublicId: i.mediaPublicId ?? '',
-              tmdbId: i.tmdbId!,
-              title: i.title,
-              year: i.year,
-              posterUrl: i.posterUrl ?? null,
-            })),
-        );
-      } finally {
-        setLoading(false);
-      }
-    }, 350);
-
-    return () => {
-      if (debounceRef.current) clearTimeout(debounceRef.current);
-    };
-  }, [query, accessToken]);
+    // Movie — leave mediaPublicId blank. handlePick (the parent's onPick)
+    // already knows how to import-then-resolve a movie by tmdbId via its
+    // own `!movie.mediaPublicId` branch, same as it always has.
+    onPick({
+      mediaPublicId: '',
+      tmdbId: media.tmdbId,
+      title: media.title,
+      year: media.year,
+      posterUrl: null,
+    });
+  }
 
   return (
     <div>
       <div className="px-3 py-2 border-b border-white/10">
-        <input
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search movies…"
-          autoFocus
-          className="w-full bg-transparent text-sd-paper text-sm font-mono placeholder:text-white/30 outline-none"
+        <MediaPicker
+          accessToken={accessToken}
+          onSelect={handleMediaSelect}
+          disabled={disabled || submitting !== null || resolving}
+          fixedSeriesTmdbId={fixedSeriesTmdbId}
+          theme={DARK_THEME}
         />
       </div>
-      {loading && <LoadingRows />}
-      {!loading && query.trim().length >= 2 && movies.length === 0 && (
-        <EmptyMessage text="No results." />
-      )}
-      {!loading && movies.length > 0 && (
-        <MovieList movies={movies} submitting={submitting} onPick={onPick} disabled={disabled} />
-      )}
+      {resolving && <LoadingRows />}
+      {error && <p className="px-4 py-2 text-sd-red text-xs font-mono">{error}</p>}
     </div>
   );
 }

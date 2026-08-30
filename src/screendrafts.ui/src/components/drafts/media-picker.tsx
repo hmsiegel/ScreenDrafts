@@ -1,3 +1,4 @@
+// components/drafts/media-picker.tsx
 "use client";
 
 import { useState } from "react";
@@ -6,6 +7,7 @@ import { EpisodeSeasonPicker } from "@/components/drafts/episode-season-picker";
 import { MEDIA_TYPE_MOVIE, MEDIA_TYPE_TV_EPISODE } from "@/lib/tv-episode-resolve";
 import type { SeasonEpisode } from "@/lib/tv-episode-resolve";
 import type { MovieSearchResult } from "@/services/movies/fetch-tmdb";
+import { LIGHT_THEME, type MediaPickerTheme } from "@/components/drafts/media-picker-theme";
 
 /**
  * Unified shape both pickers below resolve to, so the three "add a
@@ -37,6 +39,12 @@ interface Props {
    * Draft response; until then, omit this and use the manual toggle below).
    */
   fixedSeriesTmdbId?: number;
+  /**
+   * Defaults to the light admin theme (unchanged from before this prop
+   * existed). Pass DARK_THEME from media-picker-theme.ts for dark surfaces
+   * like the live draft picker (PickSourcePanel).
+   */
+  theme?: MediaPickerTheme;
 }
 
 /**
@@ -48,7 +56,13 @@ interface Props {
  * already restricted to one series — not wired up yet since that field
  * doesn't exist in dto.ts as of this delivery.
  */
-export function MediaPicker({ accessToken, onSelect, disabled, fixedSeriesTmdbId }: Props) {
+export function MediaPicker({
+  accessToken,
+  onSelect,
+  disabled,
+  fixedSeriesTmdbId,
+  theme = LIGHT_THEME,
+}: Props) {
   const [mode, setMode] = useState<"movie" | "episode">(
     fixedSeriesTmdbId !== undefined ? "episode" : "movie"
   );
@@ -83,9 +97,7 @@ export function MediaPicker({ accessToken, onSelect, disabled, fixedSeriesTmdbId
             type="button"
             onClick={() => setMode("movie")}
             className={`px-2 py-1 border ${
-              mode === "movie"
-                ? "border-sd-blue text-sd-blue bg-sd-blue/5"
-                : "border-sd-ink/20 text-sd-ink/50 hover:text-sd-ink"
+              mode === "movie" ? theme.toggleActive : theme.toggleInactive
             }`}
           >
             Movie
@@ -94,9 +106,7 @@ export function MediaPicker({ accessToken, onSelect, disabled, fixedSeriesTmdbId
             type="button"
             onClick={() => setMode("episode")}
             className={`px-2 py-1 border ${
-              mode === "episode"
-                ? "border-sd-blue text-sd-blue bg-sd-blue/5"
-                : "border-sd-ink/20 text-sd-ink/50 hover:text-sd-ink"
+              mode === "episode" ? theme.toggleActive : theme.toggleInactive
             }`}
           >
             TV Episode
@@ -109,6 +119,7 @@ export function MediaPicker({ accessToken, onSelect, disabled, fixedSeriesTmdbId
           onSelect={handleMovieSelect}
           accessToken={accessToken}
           placeholder="Search movies…"
+          theme={theme}
         />
       ) : (
         <EpisodeSeasonPicker
@@ -116,6 +127,7 @@ export function MediaPicker({ accessToken, onSelect, disabled, fixedSeriesTmdbId
           onSelect={handleEpisodeSelect}
           disabled={disabled}
           fixedSeriesTmdbId={fixedSeriesTmdbId}
+          theme={theme}
         />
       )}
     </div>

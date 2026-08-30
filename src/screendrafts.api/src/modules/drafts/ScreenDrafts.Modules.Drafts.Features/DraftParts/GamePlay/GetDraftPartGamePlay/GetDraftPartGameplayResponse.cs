@@ -19,6 +19,8 @@ internal sealed record GetDraftPartGameplayResponse
 
   public string? FungibleTokenName { get; init; }
 
+  public int? RestrictedTvSeriesTmdbId { get; init; }
+
   /// <summary>
   /// True when this draft has no dedicated host — see Draft.IsHostless's remarks. When
   /// true, reveal authority for a pick belongs to whichever participant it's sent to

@@ -24,6 +24,7 @@ internal sealed class GetDraftPartGameplayQueryHandler(
         d.title                         AS {nameof(HeaderRow.DraftTitle)},
         d.fungible_token_name           AS {nameof(HeaderRow.FungibleTokenName)},
         d.is_hostless                   AS {nameof(HeaderRow.IsHostless)},
+        d.restricted_tv_series_tmdb_id    AS {nameof(HeaderRow.RestrictedTvSeriesTmdbId)},
         dp.draft_type                   AS {nameof(HeaderRow.DraftType)},
         dp.part_index                   AS {nameof(HeaderRow.PartIndex)},
         Cast((SELECT COUNT(*) FROM drafts.draft_parts x WHERE x.draft_id = d.id) AS int4)
@@ -560,6 +561,7 @@ internal sealed class GetDraftPartGameplayQueryHandler(
         CallerParticipantId = callerParticipantId,
         FungibleTokenName = header.FungibleTokenName,
         IsHostless = header.IsHostless,
+        RestrictedTvSeriesTmdbId = header.RestrictedTvSeriesTmdbId,
         BoostersChampionAssignments =
         [
           .. boostersChampionAssignmentRows.Select(
@@ -712,6 +714,7 @@ internal sealed class GetDraftPartGameplayQueryHandler(
     string DraftTitle,
     string? FungibleTokenName,
     bool IsHostless,
+    int? RestrictedTvSeriesTmdbId,
     int DraftType,
     int PartIndex,
     int TotalParts,

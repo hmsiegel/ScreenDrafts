@@ -1,18 +1,22 @@
+// components/drafts/movie-search-input.tsx
 'use client';
 
 import { useRef, useState } from "react";
 import { searchMovies, type MovieSearchResult } from "@/services/movies/fetch-tmdb";
+import { LIGHT_THEME, MediaPickerTheme } from "./media-picker-theme";
 
 interface MovieSearchInputProps {
   onSelect: (movie: MovieSearchResult) => void;
   accessToken?: string;
   placeholder?: string;
+  theme?: MediaPickerTheme;
 }
 
 export default function MovieSearchInput({
   onSelect,
   accessToken,
   placeholder = "Search movies…",
+  theme = LIGHT_THEME,
 }: MovieSearchInputProps) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<MovieSearchResult[]>([]);
@@ -67,6 +71,9 @@ export default function MovieSearchInput({
   }
 
   const hasMore = page < totalPages;
+  const panelClass = theme.overlayPanel
+    ? `absolute z-50 left-0 right-0 top-full ${theme.panelWrapper}`
+    : `${theme.panelWrapper}`;
 
   return (
     <div className="relative">
@@ -77,19 +84,19 @@ export default function MovieSearchInput({
         onBlur={() => setTimeout(() => setOpen(false), 150)}
         onFocus={() => results.length > 0 && setOpen(true)}
         placeholder={placeholder}
-        className="w-full border border-sd-ink/20 bg-white px-3 py-2 text-sm font-mono text-sd-ink placeholder:text-sd-ink/40 focus:outline-none focus:border-sd-blue"
+        className={`w-full ${theme.input}`}
       />
       {open && (
-        <ul className="absolute z-50 left-0 right-0 top-full border border-sd-ink/20 bg-white shadow-lg max-h-64 overflow-y-auto">
+        <ul className={panelClass}>
           {results.map((movie) => (
             <li key={movie.tmdbId}>
               <button
                 type="button"
                 onMouseDown={() => handleSelect(movie)}
-                className="flex items-center gap-3 w-full px-3 py-2 text-left hover:bg-sd-paper text-sm text-sd-ink"
+                className={`flex items-center gap-3 w-full px-3 py-2 text-left text-sm ${theme.row}`}
               >
                 <span className="font-medium">{movie.title}</span>
-                <span className="font-mono text-sd-ink/50 text-xs">{movie.year ?? ""}</span>
+                <span className={theme.rowMuted}>{movie.year ?? ""}</span>
               </button>
             </li>
           ))}
@@ -99,7 +106,7 @@ export default function MovieSearchInput({
                 type="button"
                 onMouseDown={handleLoadMore}
                 disabled={loadingMore}
-                className="w-full px-3 py-2 text-center font-mono text-xs text-sd-blue hover:bg-sd-paper disabled:opacity-50 border-t border-sd-ink/10"
+                className={`w-full px-3 py-2 text-center font-mono text-xs ${theme.accentText} hover:opacity-80 disabled:opacity-50 border-t ${theme.border}`}
               >
                 {loadingMore ? "Loading…" : `Load more (page ${page + 1} of ${totalPages})`}
               </button>

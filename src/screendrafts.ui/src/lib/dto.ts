@@ -12984,6 +12984,7 @@ export interface GetDraftPartGameplayResponse {
     currentUserRoles?: CurrentUserRolesResponse;
     callerParticipantId?: string | undefined;
     fungibleTokenName?: string | undefined;
+    restrictedTvSeriesTmdbId?: number | undefined;
     isHostless?: boolean;
     boostersChampionAssignments?: GameplayBoostersChampionAssignmentResponse[];
     triviaResults?: GameplayTriviaResultResponse[];
