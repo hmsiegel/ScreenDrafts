@@ -3,4 +3,8 @@
     <ProjectReference Include="..\..\..\common\ScreenDrafts.Common.UnitTests\ScreenDrafts.Common.UnitTests.csproj" />
     <ProjectReference Include="..\ScreenDrafts.Modules.GuestDrafts.Infrastructure\ScreenDrafts.Modules.GuestDrafts.Infrastructure.csproj" />
   </ItemGroup>
+
+  <PropertyGroup>
+    <TestingPlatformCommandLineArguments>$(TestingPlatformCommandLineArguments) --ignore-exit-code 8</TestingPlatformCommandLineArguments>
+  </PropertyGroup>
 </Project>

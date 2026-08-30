@@ -2,4 +2,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\common\ScreenDrafts.Common.UnitTests\ScreenDrafts.Common.UnitTests.csproj" />
   </ItemGroup>
+  <PropertyGroup>
+    <TestingPlatformCommandLineArguments>$(TestingPlatformCommandLineArguments) --ignore-exit-code 8</TestingPlatformCommandLineArguments>
+  </PropertyGroup>
 </Project>

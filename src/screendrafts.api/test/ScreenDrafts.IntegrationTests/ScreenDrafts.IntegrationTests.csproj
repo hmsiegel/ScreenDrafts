@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
@@ -10,4 +9,7 @@
     <ProjectReference Include="..\..\src\modules\drafts\ScreenDrafts.Modules.Drafts.IntegrationTests\ScreenDrafts.Modules.Drafts.IntegrationTests.csproj" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <TestingPlatformCommandLineArguments>$(TestingPlatformCommandLineArguments) --ignore-exit-code 8</TestingPlatformCommandLineArguments>
+  </PropertyGroup>
 </Project>
