@@ -1795,7 +1795,7 @@ export async function syncPredictionConfig(
 
 export async function listSeasons(
   accessToken: string | undefined
-): Promise<ListPredictionSeasonsResponse["seasons"]> {
+): Promise<ListPredictionSeasonsResponse[]> {
   try {
     const res = await fetch(`${apiBase}/prediction-seasons`, {
       headers: authHeaders(accessToken),

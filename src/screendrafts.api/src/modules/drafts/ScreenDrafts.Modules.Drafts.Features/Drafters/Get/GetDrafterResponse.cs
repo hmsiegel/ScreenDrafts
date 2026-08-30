@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Features.Drafters.Get;
 
-internal sealed record Response
+internal sealed record GetDrafterResponse
 {
   public required string PersonId { get; init; } 
   public required string DrafterId { get; init; } 

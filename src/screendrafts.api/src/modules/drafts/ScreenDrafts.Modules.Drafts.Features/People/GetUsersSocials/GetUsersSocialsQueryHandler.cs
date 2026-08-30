@@ -1,13 +1,11 @@
-﻿using ScreenDrafts.Modules.Drafts.Features.People.GetUsersSocials;
-
-namespace ScreenDrafts.Modules.Drafts.Features.People.GetUsersSocials;
+﻿namespace ScreenDrafts.Modules.Drafts.Features.People.GetUsersSocials;
 
 internal sealed class GetUsersSocialsQueryHandler(IDbConnectionFactory connectionFactory)
-  : IQueryHandler<GetUsersSocialsQuery, Response>
+  : IQueryHandler<GetUsersSocialsQuery, GetUsersSocialsResponse>
 {
   private readonly IDbConnectionFactory _connectionFactory = connectionFactory;
 
-  public async Task<Result<Response>> Handle(
+  public async Task<Result<GetUsersSocialsResponse>> Handle(
     GetUsersSocialsQuery request,
     CancellationToken cancellationToken
   )
@@ -32,7 +30,7 @@ internal sealed class GetUsersSocialsQueryHandler(IDbConnectionFactory connectio
       new CommandDefinition(sql, new { request.PersonIds }, cancellationToken: cancellationToken)
     );
 
-    var response = new Response { Socials = [.. socials] };
+    var response = new GetUsersSocialsResponse { Socials = [.. socials] };
 
     return Result.Success(response);
   }

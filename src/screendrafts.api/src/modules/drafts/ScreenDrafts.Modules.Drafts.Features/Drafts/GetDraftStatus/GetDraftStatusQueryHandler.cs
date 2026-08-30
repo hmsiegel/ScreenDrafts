@@ -2,29 +2,37 @@
 
 internal sealed class GetDraftStatusQueryHandler(
   IDraftRepository draftsRepository,
-  IDateTimeProvider dateTimeProvider)
-  : IQueryHandler<GetDraftStatusQuery, Response>
+  IDateTimeProvider dateTimeProvider
+) : IQueryHandler<GetDraftStatusQuery, GetDraftStatusResponse>
 {
   private readonly IDraftRepository _draftsRepository = draftsRepository;
   private readonly IDateTimeProvider _dateTimeProvider = dateTimeProvider;
 
-  public async Task<Result<Response>> Handle(GetDraftStatusQuery GetDraftStatusRequest, CancellationToken cancellationToken)
+  public async Task<Result<GetDraftStatusResponse>> Handle(
+    GetDraftStatusQuery GetDraftStatusRequest,
+    CancellationToken cancellationToken
+  )
   {
     var utcNow = _dateTimeProvider.UtcNow;
 
-    var draft = await _draftsRepository.GetDraftByPublicIdWithPartsAsNoTrackingAsync(GetDraftStatusRequest.DraftPublicId, cancellationToken);
+    var draft = await _draftsRepository.GetDraftByPublicIdWithPartsAsNoTrackingAsync(
+      GetDraftStatusRequest.DraftPublicId,
+      cancellationToken
+    );
 
     if (draft is null)
     {
-      return Result.Failure<Response>(DraftErrors.NotFound(GetDraftStatusRequest.DraftPublicId));
+      return Result.Failure<GetDraftStatusResponse>(
+        DraftErrors.NotFound(GetDraftStatusRequest.DraftPublicId)
+      );
     }
 
     var draftView = draft.GetLifecycleView(utcNow);
     var actionPartIndex = ResolveActionPartIndex(draft, draftView, utcNow);
     var draftActions = ResolveDraftActions(draftView, actionPartIndex);
 
-    var parts = draft.Parts
-      .OrderBy(p => p.PartIndex)
+    var parts = draft
+      .Parts.OrderBy(p => p.PartIndex)
       .Select(p =>
       {
         var partView = p.GetLifecycleView(utcNow);
@@ -35,47 +43,49 @@ internal sealed class GetDraftStatusQueryHandler(
           Status = p.Status,
           Lifecycleview = partView.ToString(),
           ScheduledForUtc = p.ScheduledForUtc,
-          Actions = ResolvePartActions(partView)
+          Actions = ResolvePartActions(partView),
         };
       })
       .ToList();
 
-    return Result.Success(new Response
-    {
-      DraftPublicId = draft.PublicId,
-      DraftStatus = draft.DraftStatus,
-      Lifecycleview = draftView.ToString(),
-      Actions = draftActions,
-      ActionPartIndex = actionPartIndex,
-      Parts = parts
-    });
+    return Result.Success(
+      new GetDraftStatusResponse
+      {
+        DraftPublicId = draft.PublicId,
+        DraftStatus = draft.DraftStatus,
+        Lifecycleview = draftView.ToString(),
+        Actions = draftActions,
+        ActionPartIndex = actionPartIndex,
+        Parts = parts,
+      }
+    );
   }
 
-  private static int? ResolveActionPartIndex(Draft draft, DraftLifecycleView draftView, DateTime utcNow)
+  private static int? ResolveActionPartIndex(
+    Draft draft,
+    DraftLifecycleView draftView,
+    DateTime utcNow
+  )
   {
     return draftView switch
     {
-      DraftLifecycleView.Paused =>
-        draft.Parts
-          .Where(p => p.IsScheduled(utcNow))
-          .OrderBy(p => p.PartIndex)
-          .Select(p => (int?)p.PartIndex)
-          .FirstOrDefault(),
+      DraftLifecycleView.Paused => draft
+        .Parts.Where(p => p.IsScheduled(utcNow))
+        .OrderBy(p => p.PartIndex)
+        .Select(p => (int?)p.PartIndex)
+        .FirstOrDefault(),
 
-      DraftLifecycleView.Scheduled or DraftLifecycleView.Created =>
-        draft.Parts
-          .OrderBy(p => p.PartIndex)
-          .ThenByDescending(p => p.IsScheduled(utcNow))
-          .Select(p => (int?)p.PartIndex)
-          .FirstOrDefault(),
+      DraftLifecycleView.Scheduled or DraftLifecycleView.Created => draft
+        .Parts.OrderBy(p => p.PartIndex)
+        .ThenByDescending(p => p.IsScheduled(utcNow))
+        .Select(p => (int?)p.PartIndex)
+        .FirstOrDefault(),
 
-      _ => null
+      _ => null,
     };
   }
 
-  private static string[] ResolveDraftActions(
-    DraftLifecycleView view,
-    int? actionPartIndex)
+  private static string[] ResolveDraftActions(DraftLifecycleView view, int? actionPartIndex)
   {
     if (actionPartIndex is null)
     {
@@ -84,31 +94,23 @@ internal sealed class GetDraftStatusQueryHandler(
 
     return view switch
     {
-      DraftLifecycleView.Created or DraftLifecycleView.Scheduled
-        => ["Start"],
+      DraftLifecycleView.Created or DraftLifecycleView.Scheduled => ["Start"],
 
-      DraftLifecycleView.Paused
-       => ["Continue"],
+      DraftLifecycleView.Paused => ["Continue"],
 
-      _ => []
+      _ => [],
     };
   }
 
-  private static string[] ResolvePartActions(
-    DraftPartLifecycleView view)
+  private static string[] ResolvePartActions(DraftPartLifecycleView view)
   {
     return view switch
     {
-      DraftPartLifecycleView.Created or DraftPartLifecycleView.Scheduled
-        => ["Start"],
+      DraftPartLifecycleView.Created or DraftPartLifecycleView.Scheduled => ["Start"],
 
-      DraftPartLifecycleView.InProgress
-       => ["Complete"],
+      DraftPartLifecycleView.InProgress => ["Complete"],
 
-      _ => []
+      _ => [],
     };
   }
 }
-
-
-

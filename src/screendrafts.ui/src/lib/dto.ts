@@ -108,11 +108,6 @@ export interface IClient {
     /**
      * @return OK
      */
-    series_GetSeriesMetadata(): Promise<Response>;
-
-    /**
-     * @return OK
-     */
     series_ListSeries(body: ListSeriesRequest): Promise<SeriesCollectionResponse>;
 
     /**
@@ -134,6 +129,11 @@ export interface IClient {
      * @return No Content
      */
     series_DeleteSeries(): Promise<void>;
+
+    /**
+     * @return OK
+     */
+    series_GetSeriesMetadata(): Promise<GetSeriesMetadataResponse>;
 
     /**
      * @param publicId (optional) 
@@ -184,7 +184,7 @@ export interface IClient {
     /**
      * @return OK
      */
-    people_GetUsersSocials(body: Request): Promise<Response>;
+    people_GetUsersSocials(body: GetUsersSocialsRequest): Promise<GetUsersSocialsResponse>;
 
     /**
      * @return OK
@@ -245,7 +245,7 @@ export interface IClient {
     /**
      * @return OK
      */
-    drafts_SetDraftPartStatus(body: SetDraftPartStatusRequest): Promise<Response>;
+    drafts_SetDraftPartStatus(body: SetDraftPartStatusRequest): Promise<SetDraftPartStatusResponse>;
 
     /**
      * @return No Content
@@ -315,7 +315,7 @@ export interface IClient {
     /**
      * @return OK
      */
-    drafts_GetDraftStatus(body: GetDraftStatusRequest): Promise<Response>;
+    drafts_GetDraftStatus(body: GetDraftStatusRequest): Promise<GetDraftStatusResponse>;
 
     /**
      * @return No Content
@@ -886,52 +886,52 @@ export interface IClient {
     /**
      * @return OK
      */
-    spotlight:SearchCandidates(body: SearchSpotlightCandidatesRequest): Promise<SearchSpotlightCandidatesResponse>;
+    spotlight_SearchCandidates(body: SearchSpotlightCandidatesRequest): Promise<SearchSpotlightCandidatesResponse>;
 
     /**
      * @return Accepted
      */
-    spotlight:RotateSpotlight(): Promise<void>;
+    spotlight_RotateSpotlight(): Promise<void>;
 
     /**
      * @return OK
      */
-    spotlight:GetSpotlights(body: ListSpotlightDraftsRequest): Promise<PagedResultOfListSpotlightDraftsResponse>;
+    spotlight_GetSpotlights(body: ListSpotlightDraftsRequest): Promise<PagedResultOfListSpotlightDraftsResponse>;
 
     /**
      * @return Created
      */
-    spotlight:Create(body: CreateSpotlightRequest): Promise<CreateSpotlightResponse>;
+    spotlight_Create(body: CreateSpotlightRequest): Promise<CreateSpotlightResponse>;
 
     /**
      * @return OK
      */
-    stats:GetSiteStats(): Promise<GetSiteStatsResponse>;
+    stats_GetSiteStats(): Promise<GetSiteStatsResponse>;
 
     /**
      * @return OK
      */
-    spotlight:GetActive(): Promise<GetActiveSpotlightResponse>;
+    spotlight_GetActive(): Promise<GetActiveSpotlightResponse>;
 
     /**
      * @return No Content
      */
-    spotlight:Delete(body: DeleteSpotlightRequest): Promise<void>;
+    spotlight_Delete(body: DeleteSpotlightRequest): Promise<void>;
 
     /**
      * @return No Content
      */
-    spotlight:Activate(body: ActivateSpotlightRequest): Promise<void>;
+    spotlight_Activate(body: ActivateSpotlightRequest): Promise<void>;
 
     /**
      * @return No Content
      */
-    spotlight:Deactivate(body: DeactivateSpotlightRequest): Promise<void>;
+    spotlight_Deactivate(body: DeactivateSpotlightRequest): Promise<void>;
 
     /**
      * @return No Content
      */
-    users_UpdateUserProfile(body: Request): Promise<void>;
+    users_UpdateUserProfile(body: UpdateUserRequest): Promise<void>;
 
     /**
      * @return OK
@@ -1941,51 +1941,6 @@ export class Client implements IClient {
     /**
      * @return OK
      */
-    series_GetSeriesMetadata(signal?: AbortSignal): Promise<Response> {
-        let url_ = this.baseUrl + "/series/metadata";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "GET",
-            signal,
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processSeries_GetSeriesMetadata(_response);
-        });
-    }
-
-    protected processSeries_GetSeriesMetadata(response: Response): Promise<Response> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as Response;
-            return result200;
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<Response>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
     series_ListSeries(body: ListSeriesRequest, signal?: AbortSignal): Promise<SeriesCollectionResponse> {
         let url_ = this.baseUrl + "/series";
         url_ = url_.replace(/[?&]$/, "");
@@ -2240,6 +2195,51 @@ export class Client implements IClient {
             });
         }
         return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    series_GetSeriesMetadata(signal?: AbortSignal): Promise<GetSeriesMetadataResponse> {
+        let url_ = this.baseUrl + "/series/metadata";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            signal,
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processSeries_GetSeriesMetadata(_response);
+        });
+    }
+
+    protected processSeries_GetSeriesMetadata(response: Response): Promise<GetSeriesMetadataResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as GetSeriesMetadataResponse;
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<GetSeriesMetadataResponse>(null as any);
     }
 
     /**
@@ -2722,7 +2722,7 @@ export class Client implements IClient {
     /**
      * @return OK
      */
-    people_GetUsersSocials(body: Request, signal?: AbortSignal): Promise<Response> {
+    people_GetUsersSocials(body: GetUsersSocialsRequest, signal?: AbortSignal): Promise<GetUsersSocialsResponse> {
         let url_ = this.baseUrl + "/people/public-profiles/by-person-ids";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -2743,13 +2743,13 @@ export class Client implements IClient {
         });
     }
 
-    protected processPeople_GetUsersSocials(response: Response): Promise<Response> {
+    protected processPeople_GetUsersSocials(response: Response): Promise<GetUsersSocialsResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as Response;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as GetUsersSocialsResponse;
             return result200;
             });
         } else if (status === 400) {
@@ -2769,7 +2769,7 @@ export class Client implements IClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<Response>(null as any);
+        return Promise.resolve<GetUsersSocialsResponse>(null as any);
     }
 
     /**
@@ -3362,7 +3362,7 @@ export class Client implements IClient {
     /**
      * @return OK
      */
-    drafts_SetDraftPartStatus(body: SetDraftPartStatusRequest, signal?: AbortSignal): Promise<Response> {
+    drafts_SetDraftPartStatus(body: SetDraftPartStatusRequest, signal?: AbortSignal): Promise<SetDraftPartStatusResponse> {
         let url_ = this.baseUrl + "/drafts/{publicId}/parts/{partIndex}/status";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -3383,13 +3383,13 @@ export class Client implements IClient {
         });
     }
 
-    protected processDrafts_SetDraftPartStatus(response: Response): Promise<Response> {
+    protected processDrafts_SetDraftPartStatus(response: Response): Promise<SetDraftPartStatusResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as Response;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as SetDraftPartStatusResponse;
             return result200;
             });
         } else if (status === 400) {
@@ -3413,7 +3413,7 @@ export class Client implements IClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<Response>(null as any);
+        return Promise.resolve<SetDraftPartStatusResponse>(null as any);
     }
 
     /**
@@ -4054,7 +4054,7 @@ export class Client implements IClient {
     /**
      * @return OK
      */
-    drafts_GetDraftStatus(body: GetDraftStatusRequest, signal?: AbortSignal): Promise<Response> {
+    drafts_GetDraftStatus(body: GetDraftStatusRequest, signal?: AbortSignal): Promise<GetDraftStatusResponse> {
         let url_ = this.baseUrl + "/drafts/{publicId}/status";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -4075,13 +4075,13 @@ export class Client implements IClient {
         });
     }
 
-    protected processDrafts_GetDraftStatus(response: Response): Promise<Response> {
+    protected processDrafts_GetDraftStatus(response: Response): Promise<GetDraftStatusResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as Response;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as GetDraftStatusResponse;
             return result200;
             });
         } else if (status === 404) {
@@ -4101,7 +4101,7 @@ export class Client implements IClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<Response>(null as any);
+        return Promise.resolve<GetDraftStatusResponse>(null as any);
     }
 
     /**
@@ -9994,7 +9994,7 @@ export class Client implements IClient {
     /**
      * @return OK
      */
-    spotlight:SearchCandidates(body: SearchSpotlightCandidatesRequest, signal?: AbortSignal): Promise<SearchSpotlightCandidatesResponse> {
+    spotlight_SearchCandidates(body: SearchSpotlightCandidatesRequest, signal?: AbortSignal): Promise<SearchSpotlightCandidatesResponse> {
         let url_ = this.baseUrl + "/reporting/spotlights/candidates";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -10011,11 +10011,11 @@ export class Client implements IClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processSpotlight:SearchCandidates(_response);
+            return this.processSpotlight_SearchCandidates(_response);
         });
     }
 
-    protected processSpotlight:SearchCandidates(response: Response): Promise<SearchSpotlightCandidatesResponse> {
+    protected processSpotlight_SearchCandidates(response: Response): Promise<SearchSpotlightCandidatesResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -10051,7 +10051,7 @@ export class Client implements IClient {
     /**
      * @return Accepted
      */
-    spotlight:RotateSpotlight(signal?: AbortSignal): Promise<void> {
+    spotlight_RotateSpotlight(signal?: AbortSignal): Promise<void> {
         let url_ = this.baseUrl + "/reporting/spotlights/rotate";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -10063,11 +10063,11 @@ export class Client implements IClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processSpotlight:RotateSpotlight(_response);
+            return this.processSpotlight_RotateSpotlight(_response);
         });
     }
 
-    protected processSpotlight:RotateSpotlight(response: Response): Promise<void> {
+    protected processSpotlight_RotateSpotlight(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 202) {
@@ -10093,7 +10093,7 @@ export class Client implements IClient {
     /**
      * @return OK
      */
-    spotlight:GetSpotlights(body: ListSpotlightDraftsRequest, signal?: AbortSignal): Promise<PagedResultOfListSpotlightDraftsResponse> {
+    spotlight_GetSpotlights(body: ListSpotlightDraftsRequest, signal?: AbortSignal): Promise<PagedResultOfListSpotlightDraftsResponse> {
         let url_ = this.baseUrl + "/reporting/spotlights";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -10110,11 +10110,11 @@ export class Client implements IClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processSpotlight:GetSpotlights(_response);
+            return this.processSpotlight_GetSpotlights(_response);
         });
     }
 
-    protected processSpotlight:GetSpotlights(response: Response): Promise<PagedResultOfListSpotlightDraftsResponse> {
+    protected processSpotlight_GetSpotlights(response: Response): Promise<PagedResultOfListSpotlightDraftsResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -10142,7 +10142,7 @@ export class Client implements IClient {
     /**
      * @return Created
      */
-    spotlight:Create(body: CreateSpotlightRequest, signal?: AbortSignal): Promise<CreateSpotlightResponse> {
+    spotlight_Create(body: CreateSpotlightRequest, signal?: AbortSignal): Promise<CreateSpotlightResponse> {
         let url_ = this.baseUrl + "/reporting/spotlights";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -10159,11 +10159,11 @@ export class Client implements IClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processSpotlight:Create(_response);
+            return this.processSpotlight_Create(_response);
         });
     }
 
-    protected processSpotlight:Create(response: Response): Promise<CreateSpotlightResponse> {
+    protected processSpotlight_Create(response: Response): Promise<CreateSpotlightResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 201) {
@@ -10199,7 +10199,7 @@ export class Client implements IClient {
     /**
      * @return OK
      */
-    stats:GetSiteStats(signal?: AbortSignal): Promise<GetSiteStatsResponse> {
+    stats_GetSiteStats(signal?: AbortSignal): Promise<GetSiteStatsResponse> {
         let url_ = this.baseUrl + "/stats";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -10212,11 +10212,11 @@ export class Client implements IClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processStats:GetSiteStats(_response);
+            return this.processStats_GetSiteStats(_response);
         });
     }
 
-    protected processStats:GetSiteStats(response: Response): Promise<GetSiteStatsResponse> {
+    protected processStats_GetSiteStats(response: Response): Promise<GetSiteStatsResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -10236,7 +10236,7 @@ export class Client implements IClient {
     /**
      * @return OK
      */
-    spotlight:GetActive(signal?: AbortSignal): Promise<GetActiveSpotlightResponse> {
+    spotlight_GetActive(signal?: AbortSignal): Promise<GetActiveSpotlightResponse> {
         let url_ = this.baseUrl + "/spotlight";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -10249,11 +10249,11 @@ export class Client implements IClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processSpotlight:GetActive(_response);
+            return this.processSpotlight_GetActive(_response);
         });
     }
 
-    protected processSpotlight:GetActive(response: Response): Promise<GetActiveSpotlightResponse> {
+    protected processSpotlight_GetActive(response: Response): Promise<GetActiveSpotlightResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -10277,7 +10277,7 @@ export class Client implements IClient {
     /**
      * @return No Content
      */
-    spotlight:Delete(body: DeleteSpotlightRequest, signal?: AbortSignal): Promise<void> {
+    spotlight_Delete(body: DeleteSpotlightRequest, signal?: AbortSignal): Promise<void> {
         let url_ = this.baseUrl + "/reporting/spotlights/{publicId}";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -10293,11 +10293,11 @@ export class Client implements IClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processSpotlight:Delete(_response);
+            return this.processSpotlight_Delete(_response);
         });
     }
 
-    protected processSpotlight:Delete(response: Response): Promise<void> {
+    protected processSpotlight_Delete(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 204) {
@@ -10331,7 +10331,7 @@ export class Client implements IClient {
     /**
      * @return No Content
      */
-    spotlight:Activate(body: ActivateSpotlightRequest, signal?: AbortSignal): Promise<void> {
+    spotlight_Activate(body: ActivateSpotlightRequest, signal?: AbortSignal): Promise<void> {
         let url_ = this.baseUrl + "/reporting/spotlights/{publicId}";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -10347,11 +10347,11 @@ export class Client implements IClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processSpotlight:Activate(_response);
+            return this.processSpotlight_Activate(_response);
         });
     }
 
-    protected processSpotlight:Activate(response: Response): Promise<void> {
+    protected processSpotlight_Activate(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 204) {
@@ -10385,7 +10385,7 @@ export class Client implements IClient {
     /**
      * @return No Content
      */
-    spotlight:Deactivate(body: DeactivateSpotlightRequest, signal?: AbortSignal): Promise<void> {
+    spotlight_Deactivate(body: DeactivateSpotlightRequest, signal?: AbortSignal): Promise<void> {
         let url_ = this.baseUrl + "/reporting/spotlights/{publicId}/deactivate";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -10401,11 +10401,11 @@ export class Client implements IClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processSpotlight:Deactivate(_response);
+            return this.processSpotlight_Deactivate(_response);
         });
     }
 
-    protected processSpotlight:Deactivate(response: Response): Promise<void> {
+    protected processSpotlight_Deactivate(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 204) {
@@ -10439,7 +10439,7 @@ export class Client implements IClient {
     /**
      * @return No Content
      */
-    users_UpdateUserProfile(body: Request, signal?: AbortSignal): Promise<void> {
+    users_UpdateUserProfile(body: UpdateUserRequest, signal?: AbortSignal): Promise<void> {
         let url_ = this.baseUrl + "/users/profile";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -12429,6 +12429,17 @@ export interface DraftPartStatus {
     [key: string]: any;
 }
 
+export interface DraftPartStatusResponse {
+    draftPartId?: string;
+    partIndex?: number;
+    status?: DraftPartStatus;
+    lifecycleview?: string;
+    scheduledForUtc?: Date | undefined;
+    actions?: string[];
+
+    [key: string]: any;
+}
+
 export interface DraftPoolResponse {
     publicId?: string;
     draftId?: string;
@@ -13160,6 +13171,17 @@ export interface GetDraftStatusRequest {
     [key: string]: any;
 }
 
+export interface GetDraftStatusResponse {
+    draftPublicId?: string;
+    draftStatus?: DraftStatus;
+    lifecycleview?: string;
+    actions?: string[];
+    actionPartIndex?: number | undefined;
+    parts?: DraftPartStatusResponse[];
+
+    [key: string]: any;
+}
+
 export interface GetDraftSubDraftResponse {
     index?: number;
     subjectKind?: number;
@@ -13472,6 +13494,16 @@ export interface GetRolesResponse {
     [key: string]: any;
 }
 
+export interface GetSeriesMetadataResponse {
+    seriesKinds?: SmartEnumResponse[];
+    canonicalPolicies?: SmartEnumResponse[];
+    continuityScopes?: SmartEnumResponse[];
+    continuityDateRules?: SmartEnumResponse[];
+    draftTypes?: SmartEnumResponse[];
+
+    [key: string]: any;
+}
+
 export interface GetSeriesRequest {
     publicId?: string;
 
@@ -13531,6 +13563,18 @@ export interface GetUserRolesRequest {
 
 export interface GetUserRolesResponse {
     roles: string[];
+
+    [key: string]: any;
+}
+
+export interface GetUsersSocialsRequest {
+    publicIds?: string[];
+
+    [key: string]: any;
+}
+
+export interface GetUsersSocialsResponse {
+    socials?: SocialResponse[];
 
     [key: string]: any;
 }
@@ -14627,22 +14671,6 @@ export interface RemoveRoleFromUserRequest {
     [key: string]: any;
 }
 
-export interface Request {
-    publicIds?: string[];
-
-    [key: string]: any;
-}
-
-export interface Response {
-    seriesKinds?: SmartEnumResponse[];
-    canonicalPolicies?: SmartEnumResponse[];
-    continuityScopes?: SmartEnumResponse[];
-    continuityDateRules?: SmartEnumResponse[];
-    draftTypes?: SmartEnumResponse[];
-
-    [key: string]: any;
-}
-
 export interface ScoreDraftPartPredictionsRequest {
     draftPartId?: string;
     finalTmdbIds?: number[];
@@ -15027,6 +15055,18 @@ export interface SetDraftPartStatusRequest {
     [key: string]: any;
 }
 
+export interface SetDraftPartStatusResponse {
+    draftPublicId?: string;
+    partIndex?: number;
+    draftPartId?: string;
+    draftStatus?: string;
+    draftLifecylce?: string;
+    draftPartStatus?: string;
+    draftPartLifecycle?: string;
+
+    [key: string]: any;
+}
+
 export interface SetDraftPositionsRequest {
     draftPartId?: string;
     positions?: DraftPositionRequestModel[];
@@ -15091,6 +15131,17 @@ export interface SmartEnumResponse {
 }
 
 export interface SocialHandles {
+    twitter?: string | undefined;
+    instagram?: string | undefined;
+    letterboxd?: string | undefined;
+    bluesky?: string | undefined;
+    profilePicturePath?: string | undefined;
+
+    [key: string]: any;
+}
+
+export interface SocialResponse {
+    publicId: string;
     twitter?: string | undefined;
     instagram?: string | undefined;
     letterboxd?: string | undefined;
@@ -15286,6 +15337,14 @@ export interface UpdateSocialRequest {
     instagramHandle?: string | undefined;
     letterboxdHandle?: string | undefined;
     blueskyHandle?: string | undefined;
+
+    [key: string]: any;
+}
+
+export interface UpdateUserRequest {
+    firstName?: string;
+    lastName?: string;
+    middleName?: string | undefined;
 
     [key: string]: any;
 }

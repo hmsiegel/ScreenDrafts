@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Features.Drafts.SetDraftPartStatus;
 
-internal sealed record Response
+internal sealed record SetDraftPartStatusResponse
 {
   public string DraftPublicId { get; init; } = default!;
   public int PartIndex { get; init; }

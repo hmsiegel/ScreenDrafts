@@ -789,35 +789,6 @@
         ]
       }
     },
-    "/series/metadata": {
-      "get": {
-        "tags": [
-          "Series"
-        ],
-        "operationId": "Series.GetSeriesMetadata",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Response"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          }
-        },
-        "security": [
-          { }
-        ]
-      }
-    },
     "/series": {
       "get": {
         "tags": [
@@ -1005,6 +976,35 @@
           },
           "409": {
             "description": "Conflict"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/series/metadata": {
+      "get": {
+        "tags": [
+          "Series"
+        ],
+        "operationId": "Series.GetSeriesMetadata",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetSeriesMetadataResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
           }
         },
         "security": [
@@ -2025,7 +2025,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Request"
+                "$ref": "#/components/schemas/GetUsersSocialsRequest"
               }
             }
           },
@@ -2037,7 +2037,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Response"
+                  "$ref": "#/components/schemas/GetUsersSocialsResponse"
                 }
               }
             }
@@ -2536,7 +2536,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Response"
+                  "$ref": "#/components/schemas/SetDraftPartStatusResponse"
                 }
               }
             }
@@ -3069,7 +3069,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Response"
+                  "$ref": "#/components/schemas/GetDraftStatusResponse"
                 }
               }
             }
@@ -7631,7 +7631,7 @@
         "tags": [
           "Spotlight"
         ],
-        "operationId": "Spotlight:SearchCandidates",
+        "operationId": "Spotlight.SearchCandidates",
         "requestBody": {
           "content": {
             "*/*": {
@@ -7681,7 +7681,7 @@
         "tags": [
           "Spotlight"
         ],
-        "operationId": "Spotlight:RotateSpotlight",
+        "operationId": "Spotlight.RotateSpotlight",
         "responses": {
           "202": {
             "description": "Accepted"
@@ -7703,7 +7703,7 @@
         "tags": [
           "Spotlight"
         ],
-        "operationId": "Spotlight:GetSpotlights",
+        "operationId": "Spotlight.GetSpotlights",
         "requestBody": {
           "content": {
             "*/*": {
@@ -7745,7 +7745,7 @@
         "tags": [
           "Spotlight"
         ],
-        "operationId": "Spotlight:Create",
+        "operationId": "Spotlight.Create",
         "requestBody": {
           "content": {
             "application/json": {
@@ -7790,7 +7790,7 @@
         "tags": [
           "Stats"
         ],
-        "operationId": "Stats:GetSiteStats",
+        "operationId": "Stats.GetSiteStats",
         "responses": {
           "200": {
             "description": "OK",
@@ -7813,7 +7813,7 @@
         "tags": [
           "Spotlight"
         ],
-        "operationId": "Spotlight:GetActive",
+        "operationId": "Spotlight.GetActive",
         "responses": {
           "200": {
             "description": "OK",
@@ -7839,7 +7839,7 @@
         "tags": [
           "Spotlight"
         ],
-        "operationId": "Spotlight:Delete",
+        "operationId": "Spotlight.Delete",
         "requestBody": {
           "content": {
             "*/*": {
@@ -7880,7 +7880,7 @@
         "tags": [
           "Spotlight"
         ],
-        "operationId": "Spotlight:Activate",
+        "operationId": "Spotlight.Activate",
         "requestBody": {
           "content": {
             "application/json": {
@@ -7918,7 +7918,7 @@
         "tags": [
           "Spotlight"
         ],
-        "operationId": "Spotlight:Deactivate",
+        "operationId": "Spotlight.Deactivate",
         "requestBody": {
           "content": {
             "application/json": {
@@ -7961,7 +7961,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Request"
+                "$ref": "#/components/schemas/UpdateUserRequest"
               }
             }
           },
@@ -10483,6 +10483,42 @@
       },
       "DraftPartStatusAction": {
         "type": "integer"
+      },
+      "DraftPartStatusResponse": {
+        "type": "object",
+        "properties": {
+          "draftPartId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "partIndex": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "status": {
+            "$ref": "#/components/schemas/DraftPartStatus"
+          },
+          "lifecycleview": {
+            "type": "string"
+          },
+          "scheduledForUtc": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "actions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
       },
       "DraftPoolResponse": {
         "type": "object",
@@ -13074,6 +13110,41 @@
           }
         }
       },
+      "GetDraftStatusResponse": {
+        "type": "object",
+        "properties": {
+          "draftPublicId": {
+            "type": "string"
+          },
+          "draftStatus": {
+            "$ref": "#/components/schemas/DraftStatus"
+          },
+          "lifecycleview": {
+            "type": "string"
+          },
+          "actions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "actionPartIndex": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "parts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DraftPartStatusResponse"
+            }
+          }
+        }
+      },
       "GetDraftSubDraftResponse": {
         "type": "object",
         "properties": {
@@ -14008,6 +14079,41 @@
           }
         }
       },
+      "GetSeriesMetadataResponse": {
+        "type": "object",
+        "properties": {
+          "seriesKinds": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SmartEnumResponse"
+            }
+          },
+          "canonicalPolicies": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SmartEnumResponse"
+            }
+          },
+          "continuityScopes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SmartEnumResponse"
+            }
+          },
+          "continuityDateRules": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SmartEnumResponse"
+            }
+          },
+          "draftTypes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SmartEnumResponse"
+            }
+          }
+        }
+      },
       "GetSeriesRequest": {
         "type": "object",
         "properties": {
@@ -14179,6 +14285,28 @@
             "type": "array",
             "items": {
               "type": "string"
+            }
+          }
+        }
+      },
+      "GetUsersSocialsRequest": {
+        "type": "object",
+        "properties": {
+          "publicIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "GetUsersSocialsResponse": {
+        "type": "object",
+        "properties": {
+          "socials": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SocialResponse"
             }
           }
         }
@@ -18081,52 +18209,6 @@
           }
         }
       },
-      "Request": {
-        "type": "object",
-        "properties": {
-          "publicIds": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
-        }
-      },
-      "Response": {
-        "type": "object",
-        "properties": {
-          "seriesKinds": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/SmartEnumResponse"
-            }
-          },
-          "canonicalPolicies": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/SmartEnumResponse"
-            }
-          },
-          "continuityScopes": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/SmartEnumResponse"
-            }
-          },
-          "continuityDateRules": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/SmartEnumResponse"
-            }
-          },
-          "draftTypes": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/SmartEnumResponse"
-            }
-          }
-        }
-      },
       "ScoreDraftPartPredictionsRequest": {
         "type": "object",
         "properties": {
@@ -19299,6 +19381,38 @@
           }
         }
       },
+      "SetDraftPartStatusResponse": {
+        "type": "object",
+        "properties": {
+          "draftPublicId": {
+            "type": "string"
+          },
+          "partIndex": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "draftPartId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "draftStatus": {
+            "type": "string"
+          },
+          "draftLifecylce": {
+            "type": "string"
+          },
+          "draftPartStatus": {
+            "type": "string"
+          },
+          "draftPartLifecycle": {
+            "type": "string"
+          }
+        }
+      },
       "SetDraftPositionsRequest": {
         "type": "object",
         "properties": {
@@ -19469,6 +19583,47 @@
       "SocialHandles": {
         "type": "object",
         "properties": {
+          "twitter": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "instagram": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "letterboxd": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "bluesky": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "profilePicturePath": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "SocialResponse": {
+        "required": [
+          "publicId"
+        ],
+        "type": "object",
+        "properties": {
+          "publicId": {
+            "type": "string"
+          },
           "twitter": {
             "type": [
               "null",
@@ -20082,6 +20237,23 @@
             ]
           },
           "blueskyHandle": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "UpdateUserRequest": {
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "middleName": {
             "type": [
               "null",
               "string"
