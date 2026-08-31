@@ -11,7 +11,7 @@ public sealed class GuestDraftsDbContext(DbContextOptions<GuestDraftsDbContext> 
     modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     modelBuilder.ApplyConfigurationsFromAssembly(typeof(InfrastructureConfiguration).Assembly);
 
-    modelBuilder.HasDefaultSchema(Schemas.Drafts);
+    modelBuilder.HasDefaultSchema(Schemas.GuestDrafts);
   }
 
   protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
