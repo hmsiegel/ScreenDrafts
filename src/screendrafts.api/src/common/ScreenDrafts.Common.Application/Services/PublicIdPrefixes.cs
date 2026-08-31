@@ -35,4 +35,6 @@ public static class PublicIdPrefixes
   public const string Spotlight = "spl";
   public const string DraftPartPredictor = "pp";
   public const string BoostersChampionAssignment = "bca";
+  public const string GuestDraft = "gd";
+  public const string GuestDraftParticipant = "gdp";
 }

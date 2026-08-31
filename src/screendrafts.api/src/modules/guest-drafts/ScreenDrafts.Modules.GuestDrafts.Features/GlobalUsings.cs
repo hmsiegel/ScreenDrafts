@@ -1,12 +1,32 @@
 ﻿global using System.Reflection;
 global using System.Runtime.CompilerServices;
+
+global using FluentValidation;
+
 global using MediatR;
+
+global using Microsoft.AspNetCore.Builder;
+global using Microsoft.AspNetCore.Http;
+global using Microsoft.AspNetCore.Mvc;
+
+global using ScreenDrafts.Common.Abstractions.Results;
 global using ScreenDrafts.Common.Application.EventBus;
 global using ScreenDrafts.Common.Application.EventBus.Dispatchers;
 global using ScreenDrafts.Common.Application.Inbox;
 global using ScreenDrafts.Common.Application.Messaging;
 global using ScreenDrafts.Common.Application.Messaging.Dispatchers;
 global using ScreenDrafts.Common.Application.Outbox;
+global using ScreenDrafts.Common.Application.Services;
 global using ScreenDrafts.Common.Domain;
+global using ScreenDrafts.Common.Presentation.Http;
+global using ScreenDrafts.Common.Presentation.Http.Authentication;
+global using ScreenDrafts.Common.Presentation.Responses;
+global using ScreenDrafts.Common.Presentation.Results;
 global using ScreenDrafts.Modules.GuestDrafts.Domain.Abstractions.Data;
+global using ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts;
+global using ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.Enums;
+global using ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.Errors;
+global using ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.Repositories;
+global using ScreenDrafts.Modules.Users.PublicApi;
+
 global using Serilog;

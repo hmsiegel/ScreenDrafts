@@ -6,10 +6,17 @@ internal static class GuestDraftsAuth
   {
     internal const string Admin = "Administrator";
     internal const string SuperAdmin = "SuperAdministrator";
+    internal const string Guest = "Guest";
   }
 
   internal static class Permissions
   {
+    // Guest Drafts
+    internal const string GuestDraftCreate = "guest-drafts:create";
+    internal const string GuestDraftRead = "guest-drafts:read";
+    internal const string GuestDraftInviteParticipant = "guest-drafts:invite-participant";
+
+
     // Drafts
     internal const string DraftRead = "drafts:read";
     internal const string DraftList = "drafts:list";

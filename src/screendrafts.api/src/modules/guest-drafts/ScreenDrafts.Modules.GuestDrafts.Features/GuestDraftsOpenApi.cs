@@ -23,10 +23,15 @@ internal static class GuestDraftsOpenApi
     public const string Participants = "Participants";
     public const string Attendances = "Attendances";
     public const string MyDrafts = "MyDrafts";
+    public const string GuestDrafts = "GuestDrafts";
   }
 
   public static class Names
   {
+    // Guest Drafts
+    public const string GuestDrafts_CreateGuestDraft = "GuestDrafts.CreateGuestDraft";
+    public const string GuestDrafts_InviteParticipant = "GuestDrafts.InviteParticipant";
+
     // Drafts
     public const string Drafts_CreateDraft = "Drafts.CreateDraft";
     public const string Drafts_GetDraftById = "Drafts.GetDraftById";
