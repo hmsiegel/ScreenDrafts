@@ -4,6 +4,8 @@ public sealed class GuestDraftsDbContext(DbContextOptions<GuestDraftsDbContext> 
   : DbContext(options),
     IUnitOfWork
 {
+  internal DbSet<GuestDraft> GuestDrafts { get; set; }
+
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
     ArgumentNullException.ThrowIfNull(modelBuilder);

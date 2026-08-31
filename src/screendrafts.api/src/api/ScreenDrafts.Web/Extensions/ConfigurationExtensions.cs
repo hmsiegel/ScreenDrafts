@@ -1,7 +1,11 @@
 ﻿namespace ScreenDrafts.Web.Extensions;
+
 internal static class ConfigurationExtensions
 {
-  internal static void AddModuleConfiguration(this IConfigurationBuilder configurationBuilder, string[] modules)
+  internal static void AddModuleConfiguration(
+    this IConfigurationBuilder configurationBuilder,
+    string[] modules
+  )
   {
     foreach (var module in modules)
     {

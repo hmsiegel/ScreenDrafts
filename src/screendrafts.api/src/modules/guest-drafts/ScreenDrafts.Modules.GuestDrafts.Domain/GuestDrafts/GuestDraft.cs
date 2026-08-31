@@ -2,6 +2,7 @@
 
 public sealed class GuestDraft : AggregateRoot<GuestDraftId, Guid>
 {
+  public const int TitleMaxLength = 150;
   private readonly List<GuestDraftParticipant> _participants = [];
 
   private GuestDraft(

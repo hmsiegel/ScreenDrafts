@@ -1,11 +1,17 @@
 ﻿namespace ScreenDrafts.Web.Extensions;
 
-internal sealed class BearerSecuritySchemeTransformes(IAuthenticationSchemeProvider authenticationSchemeProvider)
-  : IOpenApiDocumentTransformer
+internal sealed class BearerSecuritySchemeTransformes(
+  IAuthenticationSchemeProvider authenticationSchemeProvider
+) : IOpenApiDocumentTransformer
 {
-  private readonly IAuthenticationSchemeProvider _authenticationSchemeProvider = authenticationSchemeProvider;
+  private readonly IAuthenticationSchemeProvider _authenticationSchemeProvider =
+    authenticationSchemeProvider;
 
-  public async Task TransformAsync(OpenApiDocument document, OpenApiDocumentTransformerContext context, CancellationToken cancellationToken)
+  public async Task TransformAsync(
+    OpenApiDocument document,
+    OpenApiDocumentTransformerContext context,
+    CancellationToken cancellationToken
+  )
   {
     var authenticationSchemes = await _authenticationSchemeProvider.GetAllSchemesAsync();
     if (authenticationSchemes.Any(authScheme => authScheme.Name == "Bearer"))
@@ -18,25 +24,26 @@ internal sealed class BearerSecuritySchemeTransformes(IAuthenticationSchemeProvi
           Type = SecuritySchemeType.Http,
           Scheme = "bearer", // "bearer" refers to the header name here
           In = ParameterLocation.Header,
-          BearerFormat = "JWT"
-        }
+          BearerFormat = "JWT",
+        },
       };
       document.Components ??= new OpenApiComponents();
       document.Components.SecuritySchemes = requirements;
 
       // Apply it as a requirement for all operations
-      foreach (var operation in document.Paths.Values
-        .Where(path => path.Operations != null)
-        .SelectMany(path => path.Operations!.Values))
+      foreach (
+        var operation in document
+          .Paths.Values.Where(path => path.Operations != null)
+          .SelectMany(path => path.Operations!.Values)
+      )
       {
         operation.Security ??= [];
-        operation.Security.Add(new OpenApiSecurityRequirement
-        {
+        operation.Security.Add(
+          new OpenApiSecurityRequirement
           {
-            new OpenApiSecuritySchemeReference("Bearer"),
-            new List<string>()
+            { new OpenApiSecuritySchemeReference("Bearer"), new List<string>() },
           }
-        });
+        );
       }
     }
   }

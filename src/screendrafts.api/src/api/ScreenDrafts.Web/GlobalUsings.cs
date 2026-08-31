@@ -1,26 +1,18 @@
 ﻿global using System.Diagnostics;
 global using System.Reflection;
-
 global using FastEndpoints;
 global using FastEndpoints.Swagger;
-
 global using HealthChecks.UI.Client;
-
 global using Microsoft.AspNetCore.Authentication;
 global using Microsoft.AspNetCore.Diagnostics;
 global using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 global using Microsoft.AspNetCore.OpenApi;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.OpenApi;
-
 global using MongoDB.Driver;
-
 global using Npgsql;
-
 global using RabbitMQ.Client;
-
 global using Scalar.AspNetCore;
-
 global using ScreenDrafts.Common.Application;
 global using ScreenDrafts.Common.Infrastructure;
 global using ScreenDrafts.Common.Infrastructure.Configuration;
@@ -39,6 +31,8 @@ global using ScreenDrafts.Modules.Communications.Infrastructure.Database;
 global using ScreenDrafts.Modules.Drafts.Composition;
 global using ScreenDrafts.Modules.Drafts.Infrastructure;
 global using ScreenDrafts.Modules.Drafts.Infrastructure.Database;
+global using ScreenDrafts.Modules.GuestDrafts.Composition;
+global using ScreenDrafts.Modules.GuestDrafts.Infrastructure.Database;
 global using ScreenDrafts.Modules.Integrations.Composition;
 global using ScreenDrafts.Modules.Integrations.Infrastructure;
 global using ScreenDrafts.Modules.Integrations.Infrastructure.Database;
@@ -60,8 +54,6 @@ global using ScreenDrafts.Web.Extensions;
 global using ScreenDrafts.Web.Logging;
 global using ScreenDrafts.Web.Middleware;
 global using ScreenDrafts.Web.OpenTelemetry;
-
 global using Serilog;
 global using Serilog.Context;
-
 global using VaultSharp.Extensions.Configuration;

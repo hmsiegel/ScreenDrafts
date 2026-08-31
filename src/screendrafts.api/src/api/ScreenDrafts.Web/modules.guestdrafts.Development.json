@@ -1,5 +1,5 @@
 {
-  "Drafts": {
+  "GuestDrafts": {
     "Outbox": {
       "IntervalInSeconds": 2,
       "IntervalInMilliseconds": 500,

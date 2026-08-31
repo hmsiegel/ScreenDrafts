@@ -36,6 +36,7 @@ vault kv put secret/screendrafts/connectionstrings \
   Audit="Host=screendrafts.database;Port=5432;Database=screendrafts;Username=audit_user;Password=audit_password;Include Error Detail=true" \
   Communications="Host=screendrafts.database;Port=5432;Database=screendrafts;Username=communications_user;Password=communications_password;Include Error Detail=true" \
   Drafts="Host=screendrafts.database;Port=5432;Database=screendrafts;Username=drafts_user;Password=drafts_password;Include Error Detail=true" \
+  GuestDrafts="Host=screendrafts.database;Port=5432;Database=screendrafts;Username=guest_drafts_user;Password=guest_drafts_password;Include Error Detail=true" \
   Integrations="Host=screendrafts.database;Port=5432;Database=screendrafts;Username=integrations_user;Password=integrations_password;Include Error Detail=true" \
   Movies="Host=screendrafts.database;Port=5432;Database=screendrafts;Username=movies_user;Password=movies_password;Include Error Detail=true" \
   RealTimeUpdates="Host=screendrafts.database;Port=5432;Database=screendrafts;Username=real_time_updates_user;Password=real_time_updates_password;Include Error Detail=true" \

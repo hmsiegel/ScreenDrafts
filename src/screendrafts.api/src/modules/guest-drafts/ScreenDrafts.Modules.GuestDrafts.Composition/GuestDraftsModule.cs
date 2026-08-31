@@ -1,11 +1,10 @@
-﻿using ScreenDrafts.Modules.GuestDrafts.Infrastructure.Outbox;
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.Enums;
+using ScreenDrafts.Modules.GuestDrafts.Infrastructure.Outbox;
 
 namespace ScreenDrafts.Modules.GuestDrafts.Composition;
 
 public static class GuestDraftsModule
 {
-  private static readonly string _moduleName = typeof(GuestDraftsModule).Assembly.GetName().Name!;
-
   public static IServiceCollection AddGuestDraftsModule(
     this IServiceCollection services,
     IConfiguration configuration
@@ -28,12 +27,8 @@ public static class GuestDraftsModule
 
   private static void AddTypeHandler()
   {
-    SqlMapper.AddTypeHandler(new SmartEnumTypeHandler<DraftPartStatus>());
-    SqlMapper.AddTypeHandler(new SmartEnumTypeHandler<DraftStatus>());
-    SqlMapper.AddTypeHandler(new SmartEnumTypeHandler<DraftType>());
-    SqlMapper.AddTypeHandler(new SmartEnumTypeHandler<HostRole>());
-    SqlMapper.AddTypeHandler(new SmartEnumTypeHandler<ParticipantKind>());
-    SqlMapper.AddTypeHandler(new SmartEnumTypeHandler<ZoomRecordingFileType>());
+    SqlMapper.AddTypeHandler(new SmartEnumTypeHandler<GuestDraftStatus>());
+    SqlMapper.AddTypeHandler(new SmartEnumTypeHandler<GuestDraftType>());
   }
 
   public static IServiceCollection AddGuestDraftsSeeding(
@@ -51,41 +46,7 @@ public static class GuestDraftsModule
     string instanceId
   )
   {
-    ArgumentNullException.ThrowIfNull(registrationConfigurator);
-
-    var moduleInstanceId = $"{instanceId}-{_moduleName.ToLowerInvariant()}";
-
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<UserRegisteredIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
-
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<MediaAddedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
-
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<MediaFetchedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
-
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<ZoomRecordingCompletedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
-
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<UserNameUpdatedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
-
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<UserRoleAddedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
-
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<UserRoleRemovedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
-
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<CandidateListEntryAddedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
+    // Method intentionally left empty.
   }
 
   private static void AddDraftsFeatures(this IServiceCollection services)

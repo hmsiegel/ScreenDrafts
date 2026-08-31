@@ -13,6 +13,7 @@ param(
         "Audit",
         "Communications",
         "Drafts",
+        "GuestDrafts",
         "Integrations",
         "Movies",
         "RealTimeUpdates",
@@ -30,6 +31,7 @@ $moduleConfig = @{
     Audit           = @{ Context = "AuditDbContext";           Project = ".\src\modules\audit\ScreenDrafts.Modules.Audit.Infrastructure\" }
     Communications  = @{ Context = "CommunicationsDbContext";  Project = ".\src\modules\communications\ScreenDrafts.Modules.Communications.Infrastructure\" }
     Drafts          = @{ Context = "DraftsDbContext";          Project = ".\src\modules\drafts\ScreenDrafts.Modules.Drafts.Infrastructure\" }
+    GuestDrafts     = @{ Context = "GuestDraftsDbContext";     Project = ".\src\modules\guest-drafts\ScreenDrafts.Modules.GuestDrafts.Infrastructure\" }
     Integrations    = @{ Context = "IntegrationsDbContext";    Project = ".\src\modules\integrations\ScreenDrafts.Modules.Integrations.Infrastructure\" }
     Movies          = @{ Context = "MoviesDbContext";          Project = ".\src\modules\movies\ScreenDrafts.Modules.Movies.Infrastructure\" }
     RealTimeUpdates = @{ Context = "RealTimeUpdatesDbContext"; Project = ".\src\modules\real-time-updates\ScreenDrafts.Modules.RealTimeUpdates.Infrastructure\" }

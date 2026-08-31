@@ -38,6 +38,7 @@
     <ProjectReference Include="..\..\modules\audit\ScreenDrafts.Modules.Audit.Composition\ScreenDrafts.Modules.Audit.Composition.csproj" />
     <ProjectReference Include="..\..\modules\communications\ScreenDrafts.Modules.Communications.Composition\ScreenDrafts.Modules.Communications.Composition.csproj" />
     <ProjectReference Include="..\..\modules\drafts\ScreenDrafts.Modules.Drafts.Composition\ScreenDrafts.Modules.Drafts.Composition.csproj" />
+    <ProjectReference Include="..\..\modules\guest-drafts\ScreenDrafts.Modules.GuestDrafts.Composition\ScreenDrafts.Modules.GuestDrafts.Composition.csproj" />
     <ProjectReference Include="..\..\modules\integrations\ScreenDrafts.Modules.Integrations.Composition\ScreenDrafts.Modules.Integrations.Composition.csproj" />
     <ProjectReference Include="..\..\modules\movies\ScreenDrafts.Modules.Movies.Composition\ScreenDrafts.Modules.Movies.Composition.csproj" />
     <ProjectReference Include="..\..\modules\real-time-updates\ScreenDrafts.Modules.RealTimeUpdates.Composition\ScreenDrafts.Modules.RealTimeUpdates.Composition.csproj" />
