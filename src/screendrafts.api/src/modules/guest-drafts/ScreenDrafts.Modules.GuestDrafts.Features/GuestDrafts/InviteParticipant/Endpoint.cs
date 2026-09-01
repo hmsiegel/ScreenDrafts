@@ -8,11 +8,11 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<InviteParticipantRequest>
     Description(x =>
     {
       x.WithTags(GuestDraftsOpenApi.Tags.GuestDrafts)
-      .WithName(GuestDraftsOpenApi.Names.GuestDrafts_InviteParticipant)
-      .Produces(StatusCodes.Status204NoContent)
-      .Produces(StatusCodes.Status400BadRequest)
-      .Produces(StatusCodes.Status403Forbidden)
-      .Produces(StatusCodes.Status404NotFound);
+        .WithName(GuestDraftsOpenApi.Names.GuestDrafts_InviteParticipant)
+        .Produces(StatusCodes.Status204NoContent)
+        .Produces(StatusCodes.Status400BadRequest)
+        .Produces(StatusCodes.Status403Forbidden)
+        .Produces(StatusCodes.Status404NotFound);
     });
     Policies(GuestDraftsAuth.Permissions.GuestDraftInviteParticipant);
   }
@@ -24,7 +24,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<InviteParticipantRequest>
     var command = new InviteParticipantCommand
     {
       GuestDraftPublicId = req.PublicId,
-      UserPublicId = req.UserPublicId
+      UserPublicId = req.UserPublicId,
     };
 
     var result = await Sender.Send(command, ct);

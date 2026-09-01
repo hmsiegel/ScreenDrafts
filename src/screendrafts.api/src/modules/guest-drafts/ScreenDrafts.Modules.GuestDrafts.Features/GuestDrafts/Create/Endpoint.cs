@@ -8,10 +8,10 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<CreateGuestDraftRequest, C
     Description(x =>
     {
       x.WithTags(GuestDraftsOpenApi.Tags.GuestDrafts)
-      .WithName(GuestDraftsOpenApi.Names.GuestDrafts_CreateGuestDraft)
-      .Produces<CreatedResponse>(StatusCodes.Status201Created)
-      .Produces(StatusCodes.Status400BadRequest)
-      .Produces(StatusCodes.Status403Forbidden);
+        .WithName(GuestDraftsOpenApi.Names.GuestDrafts_CreateGuestDraft)
+        .Produces<CreatedResponse>(StatusCodes.Status201Created)
+        .Produces(StatusCodes.Status400BadRequest)
+        .Produces(StatusCodes.Status403Forbidden);
     });
     Policies(GuestDraftsAuth.Permissions.GuestDraftCreate);
   }
@@ -26,7 +26,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<CreateGuestDraftRequest, C
     {
       OwnerUserPublicId = userPublicId,
       Title = req.Title,
-      Type = req.Type
+      Type = req.Type,
     };
 
     var result = await Sender.Send(command, ct);
@@ -34,6 +34,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<CreateGuestDraftRequest, C
     await this.SendCreatedAsync(
       result.Map(publicId => new CreatedResponse(publicId)),
       created => GuestDraftLocations.ById(created.PublicId),
-      ct);
+      ct
+    );
   }
 }

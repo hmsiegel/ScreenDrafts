@@ -5,7 +5,8 @@ public class FeaturesTests : BaseTest
   [Fact]
   public void Command_Should_NotBePublic()
   {
-    Types.InAssembly(FeaturesAssembly)
+    Types
+      .InAssembly(FeaturesAssembly)
       .That()
       .ImplementInterface(typeof(ICommand))
       .Or()
@@ -19,7 +20,8 @@ public class FeaturesTests : BaseTest
   [Fact]
   public void Endpoint_Should_NotBePublic()
   {
-    Types.InAssembly(FeaturesAssembly)
+    Types
+      .InAssembly(FeaturesAssembly)
       .That()
       .Inherit(typeof(ScreenDraftsEndpoint<>))
       .Should()
@@ -31,7 +33,8 @@ public class FeaturesTests : BaseTest
   [Fact]
   public void Endpoint_ShouldHave_NameEndingWith_Endpoint()
   {
-    Types.InAssembly(FeaturesAssembly)
+    Types
+      .InAssembly(FeaturesAssembly)
       .That()
       .Inherit(typeof(ScreenDraftsEndpoint<>))
       .Should()
@@ -41,9 +44,10 @@ public class FeaturesTests : BaseTest
   }
 
   [Fact]
-   public void Endpoint_Should_BeSealed()
+  public void Endpoint_Should_BeSealed()
   {
-    Types.InAssembly(FeaturesAssembly)
+    Types
+      .InAssembly(FeaturesAssembly)
       .That()
       .Inherit(typeof(ScreenDraftsEndpoint<>))
       .Should()
@@ -52,10 +56,11 @@ public class FeaturesTests : BaseTest
       .ShouldBeSuccessful();
   }
 
-    [Fact]
+  [Fact]
   public void Command_Should_BeSealed()
   {
-    Types.InAssembly(FeaturesAssembly)
+    Types
+      .InAssembly(FeaturesAssembly)
       .That()
       .ImplementInterface(typeof(ICommand))
       .Or()
@@ -69,7 +74,8 @@ public class FeaturesTests : BaseTest
   [Fact]
   public void Command_ShouldHave_NameEndingWith_Command()
   {
-    Types.InAssembly(FeaturesAssembly)
+    Types
+      .InAssembly(FeaturesAssembly)
       .That()
       .ImplementInterface(typeof(ICommand))
       .Or()
@@ -83,7 +89,8 @@ public class FeaturesTests : BaseTest
   [Fact]
   public void CommandHandler_Should_NotBePublic()
   {
-    Types.InAssembly(FeaturesAssembly)
+    Types
+      .InAssembly(FeaturesAssembly)
       .That()
       .ImplementInterface(typeof(ICommandHandler<>))
       .Or()
@@ -97,7 +104,8 @@ public class FeaturesTests : BaseTest
   [Fact]
   public void CommandHandler_ShouldHave_NameEndingWith_CommandHandler()
   {
-    Types.InAssembly(FeaturesAssembly)
+    Types
+      .InAssembly(FeaturesAssembly)
       .That()
       .ImplementInterface(typeof(ICommandHandler<>))
       .Or()
@@ -111,7 +119,8 @@ public class FeaturesTests : BaseTest
   [Fact]
   public void CommandHandler_Should_BeSealed()
   {
-    Types.InAssembly(FeaturesAssembly)
+    Types
+      .InAssembly(FeaturesAssembly)
       .That()
       .ImplementInterface(typeof(ICommandHandler<>))
       .Or()
@@ -125,7 +134,8 @@ public class FeaturesTests : BaseTest
   [Fact]
   public void Query_Should_BeSealed()
   {
-    Types.InAssembly(FeaturesAssembly)
+    Types
+      .InAssembly(FeaturesAssembly)
       .That()
       .ImplementInterface(typeof(IQuery<>))
       .Should()
@@ -137,7 +147,8 @@ public class FeaturesTests : BaseTest
   [Fact]
   public void Query_ShouldHave_NameEndingWith_Query()
   {
-    Types.InAssembly(FeaturesAssembly)
+    Types
+      .InAssembly(FeaturesAssembly)
       .That()
       .ImplementInterface(typeof(IQuery<>))
       .Should()
@@ -149,7 +160,8 @@ public class FeaturesTests : BaseTest
   [Fact]
   public void QueryHandler_Should_NotBePublic()
   {
-    Types.InAssembly(FeaturesAssembly)
+    Types
+      .InAssembly(FeaturesAssembly)
       .That()
       .ImplementInterface(typeof(IQueryHandler<,>))
       .Should()
@@ -161,7 +173,8 @@ public class FeaturesTests : BaseTest
   [Fact]
   public void QueryHandler_ShouldHave_NameEndingWith_QueryHandler()
   {
-    Types.InAssembly(FeaturesAssembly)
+    Types
+      .InAssembly(FeaturesAssembly)
       .That()
       .ImplementInterface(typeof(IQueryHandler<,>))
       .Should()
@@ -173,7 +186,8 @@ public class FeaturesTests : BaseTest
   [Fact]
   public void Validator_Should_NotBePublic()
   {
-    Types.InAssembly(FeaturesAssembly)
+    Types
+      .InAssembly(FeaturesAssembly)
       .That()
       .Inherit(typeof(AbstractValidator<>))
       .Should()
@@ -185,7 +199,8 @@ public class FeaturesTests : BaseTest
   [Fact]
   public void Validator_ShouldHave_NameEndingWith_Validator()
   {
-    Types.InAssembly(FeaturesAssembly)
+    Types
+      .InAssembly(FeaturesAssembly)
       .That()
       .Inherit(typeof(AbstractValidator<>))
       .Should()
@@ -197,7 +212,8 @@ public class FeaturesTests : BaseTest
   [Fact]
   public void Validator_Should_BeSealed()
   {
-    Types.InAssembly(FeaturesAssembly)
+    Types
+      .InAssembly(FeaturesAssembly)
       .That()
       .Inherit(typeof(AbstractValidator<>))
       .Should()
@@ -209,42 +225,45 @@ public class FeaturesTests : BaseTest
   [Fact]
   public void IntegrationEventConsumer_Should_NotBePublic()
   {
-    Types.InAssembly(FeaturesAssembly)
-        .That()
-        .ImplementInterface(typeof(IIntegrationEventHandler<>))
-        .Or()
-        .Inherit(typeof(IntegrationEventHandler<>))
-        .Should()
-        .NotBePublic()
-        .GetResult()
-        .ShouldBeSuccessful();
+    Types
+      .InAssembly(FeaturesAssembly)
+      .That()
+      .ImplementInterface(typeof(IIntegrationEventHandler<>))
+      .Or()
+      .Inherit(typeof(IntegrationEventHandler<>))
+      .Should()
+      .NotBePublic()
+      .GetResult()
+      .ShouldBeSuccessful();
   }
 
   [Fact]
   public void IntegrationEventConsumer_Should_BeSealed()
   {
-    Types.InAssembly(FeaturesAssembly)
-        .That()
-        .ImplementInterface(typeof(IIntegrationEventHandler<>))
-        .Or()
-        .Inherit(typeof(IntegrationEventHandler<>))
-        .Should()
-        .BeSealed()
-        .GetResult()
-        .ShouldBeSuccessful();
+    Types
+      .InAssembly(FeaturesAssembly)
+      .That()
+      .ImplementInterface(typeof(IIntegrationEventHandler<>))
+      .Or()
+      .Inherit(typeof(IntegrationEventHandler<>))
+      .Should()
+      .BeSealed()
+      .GetResult()
+      .ShouldBeSuccessful();
   }
 
   [Fact]
   public void IntegrationEventConsumer_ShouldHave_NameEndingWith_IntegrationEventConsumer()
   {
-    Types.InAssembly(FeaturesAssembly)
-        .That()
-        .ImplementInterface(typeof(IIntegrationEventHandler<>))
-        .Or()
-        .Inherit(typeof(IntegrationEventHandler<>))
-        .Should()
-        .HaveNameEndingWith("IntegrationEventConsumer", StringComparison.InvariantCultureIgnoreCase)
-        .GetResult()
-        .ShouldBeSuccessful();
+    Types
+      .InAssembly(FeaturesAssembly)
+      .That()
+      .ImplementInterface(typeof(IIntegrationEventHandler<>))
+      .Or()
+      .Inherit(typeof(IntegrationEventHandler<>))
+      .Should()
+      .HaveNameEndingWith("IntegrationEventConsumer", StringComparison.InvariantCultureIgnoreCase)
+      .GetResult()
+      .ShouldBeSuccessful();
   }
 }

@@ -12,13 +12,16 @@ internal sealed class CreateGuestDraftCommandHandler(
 
   public async Task<Result<string>> Handle(
     CreateGuestDraftCommand request,
-    CancellationToken cancellationToken)
+    CancellationToken cancellationToken
+  )
   {
     var owner = await _usersApi.GetUserByPublicId(request.OwnerUserPublicId, cancellationToken);
 
     if (owner is null)
     {
-      return Result.Failure<string>(UserPublicApiErrors.PublicIdNotFound(request.OwnerUserPublicId));
+      return Result.Failure<string>(
+        UserPublicApiErrors.PublicIdNotFound(request.OwnerUserPublicId)
+      );
     }
 
     if (!GuestDraftType.TryFromName(request.Type, ignoreCase: true, out var type))
@@ -28,14 +31,16 @@ internal sealed class CreateGuestDraftCommandHandler(
 
     var publicId = _publicIdGenerator.GeneratePublicId(PublicIdPrefixes.GuestDraft);
     var ownerParticipantPublicId = _publicIdGenerator.GeneratePublicId(
-      PublicIdPrefixes.GuestDraftParticipant);
+      PublicIdPrefixes.GuestDraftParticipant
+    );
 
     var result = GuestDraft.Create(
       publicId: publicId,
       ownerUserId: owner.UserId,
       ownerParticipantPublicId: ownerParticipantPublicId,
       title: request.Title,
-      guestDraftType: type);
+      guestDraftType: type
+    );
 
     if (result.IsFailure)
     {

@@ -4,23 +4,30 @@ public class ColocationTests : BaseTest
 {
   [Theory]
   [MemberData(nameof(GetHandlerAndCommandPairs))]
-  public void Handlers_ShouldBeInSameNamespacs_AsTheirCommandOrQuery(Type handlerType, Type commandOrQueryType)
+  public void Handlers_ShouldBeInSameNamespacs_AsTheirCommandOrQuery(
+    Type handlerType,
+    Type commandOrQueryType
+  )
   {
     ArgumentNullException.ThrowIfNull(handlerType);
     ArgumentNullException.ThrowIfNull(commandOrQueryType);
 
-    handlerType.Namespace.Should().Be(
-      commandOrQueryType.Namespace,
-      $"Handler {handlerType.Name} should be in the same namespace as its command or query {commandOrQueryType.Name}");
+    handlerType
+      .Namespace.Should()
+      .Be(
+        commandOrQueryType.Namespace,
+        $"Handler {handlerType.Name} should be in the same namespace as its command or query {commandOrQueryType.Name}"
+      );
   }
 
   public static TheoryData<Type, Type> GetHandlerAndCommandPairs()
   {
-    Type[] handlerInterfaces = [
+    Type[] handlerInterfaces =
+    [
       typeof(ICommandHandler<>),
       typeof(ICommandHandler<,>),
       typeof(IQueryHandler<,>),
-      ];
+    ];
 
     var pairs = new TheoryData<Type, Type>();
 

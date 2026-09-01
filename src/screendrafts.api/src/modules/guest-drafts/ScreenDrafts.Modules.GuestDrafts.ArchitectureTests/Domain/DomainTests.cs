@@ -5,44 +5,48 @@ public class DomainTests : BaseTest
   [Fact]
   public void DomainEvents_Should_BeSealed()
   {
-    Types.InAssembly(DomainAssembly)
-        .That()
-        .ImplementInterface(typeof(IDomainEvent))
-        .Or()
-        .Inherit(typeof(DomainEvent))
-        .Should()
-        .BeSealed()
-        .GetResult()
-        .ShouldBeSuccessful();
+    Types
+      .InAssembly(DomainAssembly)
+      .That()
+      .ImplementInterface(typeof(IDomainEvent))
+      .Or()
+      .Inherit(typeof(DomainEvent))
+      .Should()
+      .BeSealed()
+      .GetResult()
+      .ShouldBeSuccessful();
   }
 
   [Fact]
   public void DomainEvent_ShouldHave_DomainEventPostfix()
   {
-    Types.InAssembly(DomainAssembly)
-        .That()
-        .ImplementInterface(typeof(IDomainEvent))
-        .Or()
-        .Inherit(typeof(DomainEvent))
-        .Should()
-        .HaveNameEndingWith("DomainEvent", StringComparison.InvariantCulture)
-        .GetResult()
-        .ShouldBeSuccessful();
+    Types
+      .InAssembly(DomainAssembly)
+      .That()
+      .ImplementInterface(typeof(IDomainEvent))
+      .Or()
+      .Inherit(typeof(DomainEvent))
+      .Should()
+      .HaveNameEndingWith("DomainEvent", StringComparison.InvariantCulture)
+      .GetResult()
+      .ShouldBeSuccessful();
   }
 
   [Fact]
   public void Entities_ShouldHave_PrivateParameterlessConstructor()
   {
-    IEnumerable<Type> entityTypes = Types.InAssembly(DomainAssembly)
-        .That()
-        .Inherit(typeof(Entity))
-        .GetTypes();
+    IEnumerable<Type> entityTypes = Types
+      .InAssembly(DomainAssembly)
+      .That()
+      .Inherit(typeof(Entity))
+      .GetTypes();
 
     var failingTypes = new List<Type>();
     foreach (Type entityType in entityTypes)
     {
-      ConstructorInfo[] constructors = entityType.GetConstructors(BindingFlags.NonPublic |
-                                                                  BindingFlags.Instance);
+      ConstructorInfo[] constructors = entityType.GetConstructors(
+        BindingFlags.NonPublic | BindingFlags.Instance
+      );
 
       if (!constructors.Any(c => c.IsPrivate && c.GetParameters().Length == 0))
       {
@@ -56,16 +60,18 @@ public class DomainTests : BaseTest
   [Fact]
   public void Entities_ShouldOnlyHave_PrivateConstructors()
   {
-    IEnumerable<Type> entityTypes = Types.InAssembly(DomainAssembly)
-        .That()
-        .Inherit(typeof(Entity))
-        .GetTypes();
+    IEnumerable<Type> entityTypes = Types
+      .InAssembly(DomainAssembly)
+      .That()
+      .Inherit(typeof(Entity))
+      .GetTypes();
 
     var failingTypes = new List<Type>();
     foreach (Type entityType in entityTypes)
     {
-      ConstructorInfo[] constructors = entityType.GetConstructors(BindingFlags.Public |
-                                                                  BindingFlags.Instance);
+      ConstructorInfo[] constructors = entityType.GetConstructors(
+        BindingFlags.Public | BindingFlags.Instance
+      );
 
       if (constructors.Length != 0)
       {
@@ -79,10 +85,11 @@ public class DomainTests : BaseTest
   [Fact]
   public void DomainLayer_ShouldNotDependOn_EntityFrameworkCore()
   {
-    Types.InAssembly(DomainAssembly)
-        .Should()
-        .NotHaveDependencyOn("Microsoft.EntityFrameworkCore")
-        .GetResult()
-        .ShouldBeSuccessful();
+    Types
+      .InAssembly(DomainAssembly)
+      .Should()
+      .NotHaveDependencyOn("Microsoft.EntityFrameworkCore")
+      .GetResult()
+      .ShouldBeSuccessful();
   }
 }

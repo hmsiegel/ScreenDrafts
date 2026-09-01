@@ -1,7 +1,4 @@
-﻿using System.Globalization;
-using ScreenDrafts.Common.Domain;
-
-namespace ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.ValueObjects;
+﻿namespace ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.ValueObjects;
 
 public sealed record GuestDraftId(Guid Value) : AggregateRootId<Guid>
 {

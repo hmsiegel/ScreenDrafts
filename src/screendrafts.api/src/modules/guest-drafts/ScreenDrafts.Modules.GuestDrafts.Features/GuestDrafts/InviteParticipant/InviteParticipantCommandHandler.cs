@@ -12,11 +12,13 @@ internal sealed class InviteParticipantCommandHandler(
 
   public async Task<Result> Handle(
     InviteParticipantCommand request,
-    CancellationToken cancellationToken)
+    CancellationToken cancellationToken
+  )
   {
     var guestDraft = await _guestDraftRepository.GetByPublicIdWithParticipantsAsync(
       request.GuestDraftPublicId,
-      cancellationToken);
+      cancellationToken
+    );
 
     if (guestDraft is null)
     {
@@ -31,7 +33,8 @@ internal sealed class InviteParticipantCommandHandler(
     }
 
     var participantPublicId = _publicIdGenerator.GeneratePublicId(
-      PublicIdPrefixes.GuestDraftParticipant);
+      PublicIdPrefixes.GuestDraftParticipant
+    );
 
     var result = guestDraft.InviteParticipant(participantPublicId, user.UserId);
 

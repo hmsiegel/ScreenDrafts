@@ -4,14 +4,10 @@ internal sealed class Validator : AbstractValidator<CreateGuestDraftCommand>
 {
   public Validator()
   {
-    RuleFor(x => x.OwnerUserPublicId)
-      .NotEmpty();
+    RuleFor(x => x.OwnerUserPublicId).NotEmpty();
 
-    RuleFor(x => x.Title)
-      .NotEmpty()
-      .MaximumLength(GuestDraft.TitleMaxLength);
+    RuleFor(x => x.Title).NotEmpty().MaximumLength(GuestDraft.TitleMaxLength);
 
-    RuleFor(x => x.Type)
-      .NotEmpty();
+    RuleFor(x => x.Type).NotEmpty();
   }
 }
