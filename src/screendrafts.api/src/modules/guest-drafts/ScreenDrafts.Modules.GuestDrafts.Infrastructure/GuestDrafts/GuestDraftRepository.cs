@@ -53,4 +53,30 @@ internal sealed class GuestDraftRepository(GuestDraftsDbContext dbContext) : IGu
   {
     return _dbContext.GuestDrafts.ToListAsync(cancellationToken);
   }
+  public Task<GuestDraft?> GetByPublicIdForGameplayAsync(
+  string publicId,
+  CancellationToken cancellationToken)
+  {
+    // Owned collections (GuestDraftPick.History) are always loaded automatically by
+    // EF Core when their owner is queried -- no explicit Include needed for those.
+    return _dbContext.GuestDrafts
+      .Include(d => d.Participants)
+      .Include(d => d.GameBoard!)
+        .ThenInclude(gb => gb.Positions)
+      .Include(d => d.Picks)
+        .ThenInclude(p => p.PlayedByParticipant)
+      .Include(d => d.Picks)
+        .ThenInclude(p => p.RevealAuthorizedParticipant)
+      .Include(d => d.Picks)
+        .ThenInclude(p => p.Vetoes)
+          .ThenInclude(v => v.IssuedByParticipant)
+      .Include(d => d.Picks)
+        .ThenInclude(p => p.Vetoes)
+          .ThenInclude(v => v.VetoOverride!)
+            .ThenInclude(vo => vo.IssuedByParticipant)
+      .Include(d => d.Picks)
+        .ThenInclude(p => p.CommissionerOverride)
+      .AsSplitQuery()
+      .FirstOrDefaultAsync(d => d.PublicId == publicId, cancellationToken);
+  }
 }

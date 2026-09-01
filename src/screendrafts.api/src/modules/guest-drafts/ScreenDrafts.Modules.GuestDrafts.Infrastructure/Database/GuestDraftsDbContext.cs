@@ -5,6 +5,13 @@ public sealed class GuestDraftsDbContext(DbContextOptions<GuestDraftsDbContext> 
     IUnitOfWork
 {
   internal DbSet<GuestDraft> GuestDrafts { get; set; }
+  internal DbSet<GuestDraftParticipant> GuestDraftParticipants { get; set; }
+  internal DbSet<GuestDraftGameBoard> GuestDraftGameBoards { get; set; }
+  internal DbSet<GuestDraftPosition> GuestDraftPositions { get; set; }
+  internal DbSet<GuestDraftPick> GuestDraftPicks { get; set; }
+  internal DbSet<GuestDraftVeto> GuestDraftVetoes { get; set; }
+  internal DbSet<GuestDraftVetoOverride> GuestDraftVetoOverrides { get; set; }
+  internal DbSet<GuestDraftCommissionerOverride> GuestDraftCommissionerOverrides { get; set; }
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {

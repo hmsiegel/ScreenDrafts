@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ScreenDrafts.Modules.GuestDrafts.Infrastructure.Database;
@@ -11,9 +12,11 @@ using ScreenDrafts.Modules.GuestDrafts.Infrastructure.Database;
 namespace ScreenDrafts.Modules.GuestDrafts.Infrastructure.Database.Migrations
 {
     [DbContext(typeof(GuestDraftsDbContext))]
-    partial class GuestDraftsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260901203812_Expand_Guest_Drafts")]
+    partial class Expand_Guest_Drafts
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

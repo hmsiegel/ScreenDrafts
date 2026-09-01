@@ -3,14 +3,38 @@
 internal static class IdConverters
 {
   public static ValueConverter<GuestDraftId, Guid> GuestDraftIdConverter =>
-    new(
-      convertToProviderExpression: v => v.Value,
-      convertFromProviderExpression: v => GuestDraftId.Create(v)
-    );
+    new(v => v.Value, v => GuestDraftId.Create(v));
 
   public static ValueConverter<GuestDraftParticipantId, Guid> GuestDraftParticipantIdConverter =>
+    new(v => v.Value, v => GuestDraftParticipantId.Create(v));
+
+  public static ValueConverter<
+    GuestDraftParticipantId?,
+    Guid?
+  > NullableGuestDraftParticipantIdConverter =>
     new(
-      convertToProviderExpression: v => v.Value,
-      convertFromProviderExpression: v => GuestDraftParticipantId.Create(v)
+      v => v == null ? null : v.Value,
+      v => v == null ? null : GuestDraftParticipantId.Create(v.Value)
     );
+
+  public static ValueConverter<GuestDraftGameBoardId, Guid> GuestDraftGameBoardIdConverter =>
+    new(v => v.Value, v => GuestDraftGameBoardId.Create(v));
+
+  public static ValueConverter<GuestDraftPositionId, Guid> GuestDraftPositionIdConverter =>
+    new(v => v.Value, v => GuestDraftPositionId.Create(v));
+
+  public static ValueConverter<GuestDraftPickId, Guid> GuestDraftPickIdConverter =>
+    new(v => v.Value, v => GuestDraftPickId.Create(v));
+
+  public static ValueConverter<GuestDraftVetoId, Guid> GuestDraftVetoIdConverter =>
+    new(v => v.Value, v => GuestDraftVetoId.Create(v));
+
+  public static ValueConverter<GuestDraftVetoOverrideId, Guid> GuestDraftVetoOverrideIdConverter =>
+    new(v => v.Value, v => GuestDraftVetoOverrideId.Create(v));
+
+  public static ValueConverter<
+    GuestDraftCommissionerOverrideId,
+    Guid
+  > GuestDraftCommissionerOverrideIdConverter =>
+    new(v => v.Value, v => GuestDraftCommissionerOverrideId.Create(v));
 }
