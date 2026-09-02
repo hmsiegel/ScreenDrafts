@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts;
+﻿using OpenTelemetry.Trace;
+
+namespace ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts;
 
 public sealed class GuestDraft : Entity<GuestDraftId>
 {
@@ -13,7 +15,8 @@ public sealed class GuestDraft : Entity<GuestDraftId>
     string title,
     GuestDraftType guestDraftType,
     DateTime createdOnUtc,
-    GuestDraftId? id = null)
+    GuestDraftId? id = null
+  )
     : base(id ?? GuestDraftId.CreateUnique())
   {
     PublicId = publicId;
@@ -24,9 +27,7 @@ public sealed class GuestDraft : Entity<GuestDraftId>
     CreatedOnUtc = createdOnUtc;
   }
 
-  private GuestDraft()
-  {
-  }
+  private GuestDraft() { }
 
   public string PublicId { get; private set; } = default!;
   public Guid OwnerUserId { get; private set; }
@@ -52,7 +53,8 @@ public sealed class GuestDraft : Entity<GuestDraftId>
     Guid ownerUserId,
     string ownerParticipantPublicId,
     string title,
-    GuestDraftType guestDraftType)
+    GuestDraftType guestDraftType
+  )
   {
     if (string.IsNullOrWhiteSpace(title))
     {
@@ -64,14 +66,17 @@ public sealed class GuestDraft : Entity<GuestDraftId>
       ownerUserId: ownerUserId,
       title: title,
       guestDraftType: guestDraftType,
-      createdOnUtc: DateTime.UtcNow);
+      createdOnUtc: DateTime.UtcNow
+    );
 
     guestDraft._participants.Add(
       GuestDraftParticipant.Create(
         publicId: ownerParticipantPublicId,
         guestDraftId: guestDraft.Id,
         userId: ownerUserId,
-        isOwner: true));
+        isOwner: true
+      )
+    );
 
     return Result.Success(guestDraft);
   }
@@ -86,14 +91,16 @@ public sealed class GuestDraft : Entity<GuestDraftId>
     if (_participants.Any(p => p.UserId == userId))
     {
       return Result.Failure<GuestDraftParticipant>(
-        GuestDraftErrors.ParticipantAlreadyAdded(userId));
+        GuestDraftErrors.ParticipantAlreadyAdded(userId)
+      );
     }
 
     var participant = GuestDraftParticipant.Create(
       publicId: participantPublicId,
       guestDraftId: Id,
       userId: userId,
-      isOwner: false);
+      isOwner: false
+    );
 
     _participants.Add(participant);
     UpdatedOnUtc = DateTime.UtcNow;
@@ -103,14 +110,18 @@ public sealed class GuestDraft : Entity<GuestDraftId>
 
   // ── Participant lookup ───────────────────────────────────────────────────
 
-  public bool HasParticipant(Guid participantId) => _participants.Any(p => p.Id.Value == participantId);
+  public bool HasParticipant(Guid participantId) =>
+    _participants.Any(p => p.Id.Value == participantId);
 
   public GuestDraftParticipant? FindParticipant(Guid participantId) =>
     _participants.FirstOrDefault(p => p.Id.Value == participantId);
 
   internal GuestDraftParticipant GetParticipantRequired(Guid participantId) =>
     FindParticipant(participantId)
-      ?? throw new ArgumentException($"Participant not found: {participantId}", nameof(participantId));
+    ?? throw new ArgumentException(
+      $"Participant not found: {participantId}",
+      nameof(participantId)
+    );
 
   // ── Board setup ──────────────────────────────────────────────────────────
 
@@ -137,12 +148,9 @@ public sealed class GuestDraft : Entity<GuestDraftId>
     }
 
     var positions = template
-      .Select(t => (
-        t.Name,
-        t.Picks,
-        t.HasBonusVeto,
-        t.HasBonusVetoOverride,
-        t.HasBonusFungibleToken))
+      .Select(t =>
+        (t.Name, t.Picks, t.HasBonusVeto, t.HasBonusVetoOverride, t.HasBonusFungibleToken)
+      )
       .ToList();
 
     return SetPositions(positions, positionPublicIdGenerator);
@@ -161,7 +169,8 @@ public sealed class GuestDraft : Entity<GuestDraftId>
       bool HasBonusVetoOverride,
       bool HasBonusFungibleToken
     )> positions,
-    Func<string, string> positionPublicIdGenerator)
+    Func<string, string> positionPublicIdGenerator
+  )
   {
     ArgumentNullException.ThrowIfNull(positions);
     ArgumentNullException.ThrowIfNull(positionPublicIdGenerator);
@@ -187,7 +196,8 @@ public sealed class GuestDraft : Entity<GuestDraftId>
       bool HasBonusVetoOverride,
       bool HasBonusFungibleToken
     )> positions,
-    Func<string, string> positionPublicIdGenerator)
+    Func<string, string> positionPublicIdGenerator
+  )
   {
     GameBoard ??= GuestDraftGameBoard.Create(Id);
 
@@ -202,7 +212,8 @@ public sealed class GuestDraft : Entity<GuestDraftId>
         picks: p.Picks,
         hasBonusVeto: p.HasBonusVeto,
         hasBonusVetoOverride: p.HasBonusVetoOverride,
-        hasBonusFungibleToken: p.HasBonusFungibleToken);
+        hasBonusFungibleToken: p.HasBonusFungibleToken
+      );
 
       if (positionResult.IsFailure)
       {
@@ -333,7 +344,8 @@ public sealed class GuestDraft : Entity<GuestDraftId>
     int playOrder,
     Guid participantId,
     string? actedByPublicId = null,
-    GuestDraftParticipantId? explicitRevealRecipientId = null)
+    GuestDraftParticipantId? explicitRevealRecipientId = null
+  )
   {
     if (GuestDraftStatus != GuestDraftStatus.InProgress)
     {
@@ -358,7 +370,8 @@ public sealed class GuestDraft : Entity<GuestDraftId>
       playOrder: playOrder,
       moviePublicId: moviePublicId,
       playedByParticipant: participant,
-      actedByPublicId: actedByPublicId);
+      actedByPublicId: actedByPublicId
+    );
 
     if (pickResult.IsFailure)
     {
@@ -449,7 +462,8 @@ public sealed class GuestDraft : Entity<GuestDraftId>
     GuestDraftPickId pickId,
     Guid issuerParticipantId,
     string? actedByPublicId = null,
-    string? note = null)
+    string? note = null
+  )
   {
     ArgumentNullException.ThrowIfNull(pickId);
 
@@ -486,7 +500,8 @@ public sealed class GuestDraft : Entity<GuestDraftId>
       issuedByParticipant: participant,
       actedByPublicId: actedByPublicId,
       note: spentFromFungiblePool ? note : null,
-      spentFromFungiblePool: spentFromFungiblePool);
+      spentFromFungiblePool: spentFromFungiblePool
+    );
 
     if (vetoResult.IsFailure)
     {
@@ -526,13 +541,17 @@ public sealed class GuestDraft : Entity<GuestDraftId>
       return Result.Failure(GuestDraftErrors.PickNotFound(pickId.Value));
     }
 
-    if (pick.CurrentVeto is null)
+    var currentVeto = pick.CurrentVeto;
+
+    if (currentVeto is null)
     {
       return Result.Failure(GuestDraftErrors.PickNotVetoed);
     }
 
-    var issuer = FindParticipant(pick.CurrentVeto.IssuedByParticipantId.Value);
-    issuer?.RefundVeto();
+    // Capture before mutating -- pick.UndoVeto() below removes the veto from
+    // pick.Vetoes, so CurrentVeto would no longer be available afterward.
+    var issuerParticipantId = currentVeto.IssuedByParticipantId.Value;
+    var spentFromFungiblePool = currentVeto.SpentFromFungiblePool;
 
     var result = pick.UndoVeto();
 
@@ -540,6 +559,9 @@ public sealed class GuestDraft : Entity<GuestDraftId>
     {
       return result;
     }
+
+    var issuer = FindParticipant(issuerParticipantId);
+    issuer?.RefundVeto(spentFromFungiblePool);
 
     UpdatedOnUtc = DateTime.UtcNow;
     return Result.Success();
@@ -555,7 +577,8 @@ public sealed class GuestDraft : Entity<GuestDraftId>
     GuestDraftPickId pickId,
     Guid byParticipantId,
     string? actedByPublicId = null,
-    string? note = null)
+    string? note = null
+  )
   {
     ArgumentNullException.ThrowIfNull(pickId);
 
@@ -600,7 +623,8 @@ public sealed class GuestDraft : Entity<GuestDraftId>
       by: participant,
       actedByPublicId: actedByPublicId,
       note: spentFromFungiblePool ? note : null,
-      spentFromFungiblePool: spentFromFungiblePool);
+      spentFromFungiblePool: spentFromFungiblePool
+    );
 
     if (overrideResult.IsFailure)
     {

@@ -1,0 +1,340 @@
+namespace ScreenDrafts.Modules.GuestDrafts.UnitTests.GuestDrafts;
+
+public class GuestDraftBoardSetupTests : GuestDraftsBaseTest
+{
+  // ── UseFixedBoardLayout ────────────────────────────────────────────────────
+
+  [Fact]
+  public void UseFixedBoardLayout_ShouldApplyStandardTemplateExactly_ForStandardDraftType()
+  {
+    // Arrange
+    var guestDraft = CreateGuestDraft(GuestDraftType.Standard);
+    InviteParticipant(guestDraft);
+
+    // Act
+    var result = guestDraft.UseFixedBoardLayout(GeneratePositionPublicId);
+
+    // Assert
+    result.IsSuccess.Should().BeTrue();
+    guestDraft.GameBoard.Should().NotBeNull();
+    var positions = guestDraft.GameBoard.Positions;
+    positions.Should().HaveCount(2);
+    positions.Single(p => p.Name == "A").Picks.Should().BeEquivalentTo([7, 6, 4, 2]);
+    positions.Single(p => p.Name == "B").Picks.Should().BeEquivalentTo([5, 3, 1]);
+  }
+
+  [Fact]
+  public void UseFixedBoardLayout_ShouldApplyMiniSuperTemplateExactly_ForMiniSuperDraftType()
+  {
+    // Arrange
+    var guestDraft = CreateGuestDraft(GuestDraftType.MiniSuper);
+    InviteParticipant(guestDraft);
+
+    // Act
+    var result = guestDraft.UseFixedBoardLayout(GeneratePositionPublicId);
+
+    // Assert
+    result.IsSuccess.Should().BeTrue();
+    var positions = guestDraft.GameBoard!.Positions;
+    positions.Should().HaveCount(2);
+    positions.Single(p => p.Name == "A").Picks.Should().BeEquivalentTo([5, 3, 1]);
+    positions.Single(p => p.Name == "B").Picks.Should().BeEquivalentTo([4, 2]);
+  }
+
+  [Theory]
+  [MemberData(nameof(NonFixedDraftTypes))]
+  public void UseFixedBoardLayout_ShouldReturnFailure_ForNonFixedDraftTypes(GuestDraftType guestDraftType)
+  {
+    ArgumentNullException.ThrowIfNull(guestDraftType);
+
+    // Arrange
+    var guestDraft = CreateGuestDraft(guestDraftType);
+    InviteParticipant(guestDraft);
+
+    // Act
+    var result = guestDraft.UseFixedBoardLayout(GeneratePositionPublicId);
+
+    // Assert
+    result.IsFailure.Should().BeTrue();
+    result.Errors[0].Should().Be(GuestDraftErrors.DraftTypeDoesNotHaveAFixedLayout(guestDraftType.Name));
+    guestDraft.GameBoard.Should().BeNull();
+  }
+
+  [Fact]
+  public void UseFixedBoardLayout_ShouldReturnFailure_WhenStatusIsNotCreated()
+  {
+    // Arrange
+    var (guestDraft, _, _) = CreateInProgressStandardGuestDraft();
+
+    // Act
+    var result = guestDraft.UseFixedBoardLayout(GeneratePositionPublicId);
+
+    // Assert
+    result.IsFailure.Should().BeTrue();
+    result.Errors[0].Should().Be(GuestDraftErrors.CannotChangeBoardAfterStart);
+  }
+
+  public static TheoryData<GuestDraftType> NonFixedDraftTypes() =>
+    new()
+    {
+      GuestDraftType.MiniMega,
+      GuestDraftType.Super,
+      GuestDraftType.Mega,
+    };
+
+  // ── SetCustomPositions ───────────────────────────────────────────────────
+
+  [Fact]
+  public void SetCustomPositions_ShouldSucceed_WhenValidPositionsAreProvidedForACustomDraftType()
+  {
+    // Arrange
+    var guestDraft = CreateGuestDraft(GuestDraftType.MiniMega);
+    InviteParticipant(guestDraft);
+    var positions = TwoCustomPositions();
+
+    // Act
+    var result = guestDraft.SetCustomPositions(positions, GeneratePositionPublicId);
+
+    // Assert
+    result.IsSuccess.Should().BeTrue();
+    guestDraft.GameBoard!.Positions.Should().HaveCount(2);
+  }
+
+  [Theory]
+  [MemberData(nameof(FixedDraftTypes))]
+  public void SetCustomPositions_ShouldReturnFailure_ForFixedDraftTypes(GuestDraftType guestDraftType)
+  {
+    ArgumentNullException.ThrowIfNull(guestDraftType);
+
+    // Arrange
+    var guestDraft = CreateGuestDraft(guestDraftType);
+    InviteParticipant(guestDraft);
+    var positions = TwoCustomPositions();
+
+    // Act
+    var result = guestDraft.SetCustomPositions(positions, GeneratePositionPublicId);
+
+    // Assert
+    result.IsFailure.Should().BeTrue();
+    result.Errors[0].Should().Be(GuestDraftErrors.DraftTypeHasAFixedLayout(guestDraftType.Name));
+  }
+
+  public static TheoryData<GuestDraftType> FixedDraftTypes() =>
+    new()
+    {
+      GuestDraftType.Standard,
+      GuestDraftType.MiniSuper,
+    };
+
+  [Fact]
+  public void SetCustomPositions_ShouldReturnFailure_WhenStatusIsNotCreated()
+  {
+    // Arrange
+    var (guestDraft, _, _) = CreateInProgressCustomGuestDraft(2);
+
+    // Act
+    var result = guestDraft.SetCustomPositions(TwoCustomPositions(), GeneratePositionPublicId);
+
+    // Assert
+    result.IsFailure.Should().BeTrue();
+    result.Errors[0].Should().Be(GuestDraftErrors.CannotChangeBoardAfterStart);
+  }
+
+  [Fact]
+  public void SetCustomPositions_ShouldReturnFailure_WhenPositionCountDoesNotMatchParticipantCount()
+  {
+    // Arrange -- 3 participants, only 2 positions supplied
+    var guestDraft = CreateGuestDraft(GuestDraftType.MiniMega);
+    InviteParticipant(guestDraft);
+    InviteParticipant(guestDraft);
+
+    // Act
+    var result = guestDraft.SetCustomPositions(TwoCustomPositions(), GeneratePositionPublicId);
+
+    // Assert
+    result.IsFailure.Should().BeTrue();
+    result.Errors[0].Should().Be(GuestDraftErrors.InvalidNumberOfPositions);
+  }
+
+  [Fact]
+  public void SetCustomPositions_ShouldReturnFailure_WhenPickSlotsAreDuplicatedAcrossPositions()
+  {
+    // Arrange
+    var guestDraft = CreateGuestDraft(GuestDraftType.MiniMega);
+    InviteParticipant(guestDraft);
+
+    List<(string Name, IReadOnlyList<int> Picks, bool HasBonusVeto, bool HasBonusVetoOverride, bool HasBonusFungibleToken)> positions =
+    [
+      ("A", [1], false, false, false),
+      ("B", [1], false, false, false),
+    ];
+
+    // Act
+    var result = guestDraft.SetCustomPositions(positions, GeneratePositionPublicId);
+
+    // Assert
+    result.IsFailure.Should().BeTrue();
+    result.Errors[0].Should().Be(GuestDraftErrors.DuplicatePickSlots);
+  }
+
+  // ── AssignParticipantToPosition ──────────────────────────────────────────
+
+  [Fact]
+  public void AssignParticipantToPosition_ShouldSucceed_WhenPositionIsUnassignedAndBelongsToTheBoard()
+  {
+    // Arrange
+    var guestDraft = CreateGuestDraft(GuestDraftType.Standard);
+    var owner = guestDraft.Participants.Single();
+    InviteParticipant(guestDraft);
+    guestDraft.UseFixedBoardLayout(GeneratePositionPublicId);
+    var position = guestDraft.GameBoard!.Positions.First();
+
+    // Act
+    var result = guestDraft.AssignParticipantToPosition(position, owner.Id.Value);
+
+    // Assert
+    result.IsSuccess.Should().BeTrue();
+    position.AssignedToParticipantId.Should().Be(owner.Id.Value);
+  }
+
+  [Fact]
+  public void AssignParticipantToPosition_ShouldReturnFailure_WhenPositionIsAlreadyAssigned()
+  {
+    // Arrange
+    var guestDraft = CreateGuestDraft(GuestDraftType.Standard);
+    var owner = guestDraft.Participants.Single();
+    var other = InviteParticipant(guestDraft);
+    guestDraft.UseFixedBoardLayout(GeneratePositionPublicId);
+    var position = guestDraft.GameBoard!.Positions.First();
+    guestDraft.AssignParticipantToPosition(position, owner.Id.Value);
+
+    // Act
+    var result = guestDraft.AssignParticipantToPosition(position, other.Id.Value);
+
+    // Assert
+    result.IsFailure.Should().BeTrue();
+    result.Errors[0].Should().Be(GuestDraftErrors.PositionAlreadyAssigned);
+  }
+
+  [Fact]
+  public void AssignParticipantToPosition_ShouldReturnFailure_WhenPositionBelongsToADifferentBoard()
+  {
+    // Arrange
+    var guestDraft = CreateGuestDraft(GuestDraftType.Standard);
+    var owner = guestDraft.Participants.Single();
+    InviteParticipant(guestDraft);
+    guestDraft.UseFixedBoardLayout(GeneratePositionPublicId);
+
+    var otherGuestDraft = CreateGuestDraft(GuestDraftType.Standard);
+    InviteParticipant(otherGuestDraft);
+    otherGuestDraft.UseFixedBoardLayout(GeneratePositionPublicId);
+    var foreignPosition = otherGuestDraft.GameBoard!.Positions.First();
+
+    // Act
+    var result = guestDraft.AssignParticipantToPosition(foreignPosition, owner.Id.Value);
+
+    // Assert
+    result.IsFailure.Should().BeTrue();
+    result.Errors[0].Should().Be(GuestDraftErrors.PositionDoesNotBelongToThisBoard);
+  }
+
+  [Fact]
+  public void AssignParticipantToPosition_ShouldReturnFailure_WhenParticipantIsNotInTheDraft()
+  {
+    // Arrange
+    var guestDraft = CreateGuestDraft(GuestDraftType.Standard);
+    InviteParticipant(guestDraft);
+    guestDraft.UseFixedBoardLayout(GeneratePositionPublicId);
+    var position = guestDraft.GameBoard!.Positions.First();
+    var strangerId = Guid.NewGuid();
+
+    // Act
+    var result = guestDraft.AssignParticipantToPosition(position, strangerId);
+
+    // Assert
+    result.IsFailure.Should().BeTrue();
+    result.Errors[0].Should().Be(GuestDraftErrors.ParticipantNotFound(strangerId));
+  }
+
+  [Fact]
+  public void AssignParticipantToPosition_ShouldGrantBonusVeto_WhenPositionHasBonusVeto()
+  {
+    // Arrange
+    var guestDraft = CreateGuestDraft(GuestDraftType.MiniMega);
+    var owner = guestDraft.Participants.Single();
+    InviteParticipant(guestDraft);
+
+    List<(string Name, IReadOnlyList<int> Picks, bool HasBonusVeto, bool HasBonusVetoOverride, bool HasBonusFungibleToken)> positions =
+    [
+      ("A", [1], true, false, false),
+      ("B", [2], false, false, false),
+    ];
+    guestDraft.SetCustomPositions(positions, GeneratePositionPublicId);
+    var positionA = guestDraft.GameBoard!.Positions.Single(p => p.Name == "A");
+
+    // Act
+    guestDraft.AssignParticipantToPosition(positionA, owner.Id.Value);
+
+    // Assert
+    owner.AwardedVetoes.Should().Be(1);
+    owner.AwardedVetoOverrides.Should().Be(0);
+    owner.AwardedFungibleTokens.Should().Be(0);
+  }
+
+  [Fact]
+  public void AssignParticipantToPosition_ShouldGrantBonusVetoOverride_WhenPositionHasBonusVetoOverride()
+  {
+    // Arrange
+    var guestDraft = CreateGuestDraft(GuestDraftType.MiniMega);
+    var owner = guestDraft.Participants.Single();
+    InviteParticipant(guestDraft);
+
+    List<(string Name, IReadOnlyList<int> Picks, bool HasBonusVeto, bool HasBonusVetoOverride, bool HasBonusFungibleToken)> positions =
+    [
+      ("A", [1], false, true, false),
+      ("B", [2], false, false, false),
+    ];
+    guestDraft.SetCustomPositions(positions, GeneratePositionPublicId);
+    var positionA = guestDraft.GameBoard!.Positions.Single(p => p.Name == "A");
+
+    // Act
+    guestDraft.AssignParticipantToPosition(positionA, owner.Id.Value);
+
+    // Assert
+    owner.AwardedVetoOverrides.Should().Be(1);
+    owner.AwardedVetoes.Should().Be(0);
+    owner.AwardedFungibleTokens.Should().Be(0);
+  }
+
+  [Fact]
+  public void AssignParticipantToPosition_ShouldGrantBonusFungibleToken_WhenPositionHasBonusFungibleToken()
+  {
+    // Arrange
+    var guestDraft = CreateGuestDraft(GuestDraftType.MiniMega);
+    var owner = guestDraft.Participants.Single();
+    InviteParticipant(guestDraft);
+
+    List<(string Name, IReadOnlyList<int> Picks, bool HasBonusVeto, bool HasBonusVetoOverride, bool HasBonusFungibleToken)> positions =
+    [
+      ("A", [1], false, false, true),
+      ("B", [2], false, false, false),
+    ];
+    guestDraft.SetCustomPositions(positions, GeneratePositionPublicId);
+    var positionA = guestDraft.GameBoard!.Positions.Single(p => p.Name == "A");
+
+    // Act
+    guestDraft.AssignParticipantToPosition(positionA, owner.Id.Value);
+
+    // Assert
+    owner.AwardedFungibleTokens.Should().Be(1);
+    owner.AwardedVetoes.Should().Be(0);
+    owner.AwardedVetoOverrides.Should().Be(0);
+  }
+
+  private static List<(string Name, IReadOnlyList<int> Picks, bool HasBonusVeto, bool HasBonusVetoOverride, bool HasBonusFungibleToken)>
+    TwoCustomPositions() =>
+    [
+      ("A", [1], false, false, false),
+      ("B", [2], false, false, false),
+    ];
+}
