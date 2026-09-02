@@ -1,23 +1,22 @@
-﻿namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.InviteParticipant;
+﻿namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.Positions.SetCustomPositions;
 
-internal sealed class Endpoint : ScreenDraftsEndpoint<InviteParticipantRequest>
+internal sealed class Endpoint : ScreenDraftsEndpoint<SetCustomPositionsRequest>
 {
   public override void Configure()
   {
-    Post(GuestDraftsRoutes.Participants);
+    Post(GuestDraftsRoutes.CustomBoardLayout);
     Description(x =>
-    {
       x.WithTags(GuestDraftsOpenApi.Tags.GuestDrafts)
-        .WithName(GuestDraftsOpenApi.Names.GuestDrafts_InviteParticipant)
+        .WithName(GuestDraftsOpenApi.Names.GuestDrafts_SetCustomPositions)
         .Produces(StatusCodes.Status204NoContent)
         .Produces(StatusCodes.Status400BadRequest)
         .Produces(StatusCodes.Status403Forbidden)
-        .Produces(StatusCodes.Status404NotFound);
-    });
-    Policies(GuestDraftsAuth.Permissions.GuestDraftInviteParticipant);
+        .Produces(StatusCodes.Status404NotFound)
+    );
+    Policies(GuestDraftsAuth.Permissions.GuestDraftSetBoard);
   }
 
-  public override async Task HandleAsync(InviteParticipantRequest req, CancellationToken ct)
+  public override async Task HandleAsync(SetCustomPositionsRequest req, CancellationToken ct)
   {
     ArgumentNullException.ThrowIfNull(req);
 
@@ -29,11 +28,11 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<InviteParticipantRequest>
       return;
     }
 
-    var command = new InviteParticipantCommand
+    var command = new SetCustomPositionsCommand
     {
       GuestDraftPublicId = req.PublicId,
       CallerUserPublicId = userPublicId,
-      InviteeUserPublicId = req.InviteeUserPublicId
+      Positions = req.Positions,
     };
 
     var result = await Sender.Send(command, ct);

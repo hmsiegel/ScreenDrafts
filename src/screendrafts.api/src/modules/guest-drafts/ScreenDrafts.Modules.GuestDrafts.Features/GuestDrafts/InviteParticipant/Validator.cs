@@ -10,10 +10,16 @@ internal sealed class Validator : AbstractValidator<InviteParticipantCommand>
       .Must(id => PublicIdGuards.IsValidWithPrefix(id, PublicIdPrefixes.GuestDraft))
       .WithMessage("Guest draft public ID is invalid.");
 
-    RuleFor(x => x.UserPublicId)
+    RuleFor(x => x.InviteeUserPublicId)
       .NotEmpty()
-      .WithMessage("User public ID is required.")
+      .WithMessage("Invitee user public ID is required.")
       .Must(id => PublicIdGuards.IsValidWithPrefix(id, PublicIdPrefixes.User))
-      .WithMessage("User public ID is invalid.");
+      .WithMessage("Invitee user public ID is invalid.");
+
+    RuleFor(x => x.CallerUserPublicId)
+      .NotEmpty()
+      .WithMessage("Caller user public ID is required.")
+      .Must(id => PublicIdGuards.IsValidWithPrefix(id, PublicIdPrefixes.User))
+      .WithMessage("Caller user public ID is invalid.");
   }
 }

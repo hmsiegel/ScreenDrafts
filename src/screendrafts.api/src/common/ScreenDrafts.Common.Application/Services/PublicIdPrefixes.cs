@@ -37,4 +37,5 @@ public static class PublicIdPrefixes
   public const string BoostersChampionAssignment = "bca";
   public const string GuestDraft = "gd";
   public const string GuestDraftParticipant = "gdp";
+  public const string GuestDraftPosition = "gpo";
 }

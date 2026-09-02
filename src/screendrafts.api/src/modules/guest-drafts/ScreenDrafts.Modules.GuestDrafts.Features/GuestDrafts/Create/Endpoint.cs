@@ -4,7 +4,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<CreateGuestDraftRequest, C
 {
   public override void Configure()
   {
-    Post(GuestDraftsRoutes.GuestDrafts);
+    Post(GuestDraftsRoutes.Base);
     Description(x =>
     {
       x.WithTags(GuestDraftsOpenApi.Tags.GuestDrafts)

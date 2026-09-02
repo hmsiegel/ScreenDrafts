@@ -1,5 +1,6 @@
 ﻿global using System.Reflection;
 global using System.Runtime.CompilerServices;
+global using System.Security.Cryptography;
 global using FluentValidation;
 global using MediatR;
 global using Microsoft.AspNetCore.Builder;
@@ -20,8 +21,11 @@ global using ScreenDrafts.Common.Presentation.Responses;
 global using ScreenDrafts.Common.Presentation.Results;
 global using ScreenDrafts.Modules.GuestDrafts.Domain.Abstractions.Data;
 global using ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts;
+global using ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.Entities;
 global using ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.Enums;
 global using ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.Errors;
 global using ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.Repositories;
+global using ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.ValueObjects;
+global using ScreenDrafts.Modules.Movies.PublicApi;
 global using ScreenDrafts.Modules.Users.PublicApi;
 global using Serilog;
