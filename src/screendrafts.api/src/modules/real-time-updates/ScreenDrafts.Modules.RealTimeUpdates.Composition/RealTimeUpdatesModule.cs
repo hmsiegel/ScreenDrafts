@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.RealTimeUpdates.Composition;
+﻿using ScreenDrafts.Modules.GuestDrafts.IntegrationEvents;
+
+namespace ScreenDrafts.Modules.RealTimeUpdates.Composition;
 
 public static class RealTimeUpdatesModule
 {
@@ -123,6 +125,36 @@ public static class RealTimeUpdatesModule
 
     registrationConfigurator
       .AddConsumer<IntegrationEventConsumer<SubDraftUpdatedIntegrationEvent>>()
+      .Endpoint(c => c.InstanceId = moduleInstanceId);
+
+    registrationConfigurator
+      .AddConsumer<
+        IntegrationEventConsumer<GuestDraftCommissionerOverrideAppliedIntegrationEvent>
+      >()
+      .Endpoint(c => c.InstanceId = moduleInstanceId);
+
+    registrationConfigurator
+      .AddConsumer<IntegrationEventConsumer<GuestDraftPickRevealedIntegrationEvent>>()
+      .Endpoint(c => c.InstanceId = moduleInstanceId);
+
+    registrationConfigurator
+      .AddConsumer<IntegrationEventConsumer<GuestDraftPickSubmittedIntegrationEvent>>()
+      .Endpoint(c => c.InstanceId = moduleInstanceId);
+
+    registrationConfigurator
+      .AddConsumer<IntegrationEventConsumer<GuestDraftPickUndoneIntegrationEvent>>()
+      .Endpoint(c => c.InstanceId = moduleInstanceId);
+
+    registrationConfigurator
+      .AddConsumer<IntegrationEventConsumer<GuestDraftVetoAppliedIntegrationEvent>>()
+      .Endpoint(c => c.InstanceId = moduleInstanceId);
+
+    registrationConfigurator
+      .AddConsumer<IntegrationEventConsumer<GuestDraftVetoOverrideAppliedIntegrationEvent>>()
+      .Endpoint(c => c.InstanceId = moduleInstanceId);
+
+    registrationConfigurator
+      .AddConsumer<IntegrationEventConsumer<GuestDraftVetoUndoneIntegrationEvent>>()
       .Endpoint(c => c.InstanceId = moduleInstanceId);
   }
 

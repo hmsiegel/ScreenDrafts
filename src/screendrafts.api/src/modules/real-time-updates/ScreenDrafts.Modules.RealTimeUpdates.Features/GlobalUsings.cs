@@ -11,4 +11,5 @@ global using ScreenDrafts.Common.Application.Messaging.Dispatchers;
 global using ScreenDrafts.Common.Application.Outbox;
 global using ScreenDrafts.Common.Domain;
 global using ScreenDrafts.Modules.Drafts.IntegrationEvents;
+global using ScreenDrafts.Modules.GuestDrafts.IntegrationEvents;
 global using ScreenDrafts.Modules.Reporting.IntegrationEvents;

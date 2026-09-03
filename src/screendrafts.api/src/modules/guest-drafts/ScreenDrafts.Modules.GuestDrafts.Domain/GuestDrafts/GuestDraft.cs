@@ -1,4 +1,5 @@
 ﻿using OpenTelemetry.Trace;
+using ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.DomainEvents;
 
 namespace ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts;
 
@@ -308,6 +309,14 @@ public sealed class GuestDraft : Entity<GuestDraftId>
     GuestDraftStatus = GuestDraftStatus.InProgress;
     UpdatedOnUtc = DateTime.UtcNow;
 
+    Raise(
+      new GuestDraftStartedDomainEvent(
+        guestDraftId: Id.Value,
+        guestDraftPublicId: PublicId,
+        participantCount: _participants.Count
+      )
+    );
+
     return Result.Success();
   }
 
@@ -332,6 +341,17 @@ public sealed class GuestDraft : Entity<GuestDraftId>
 
     GuestDraftStatus = GuestDraftStatus.Completed;
     UpdatedOnUtc = DateTime.UtcNow;
+
+    var vetoCount = _picks.Sum(p => p.Vetoes.Count);
+
+    Raise(
+      new GuestDraftCompletedDomainEvent(
+        guestDraftId: Id.Value,
+        guestDraftPublicId: PublicId,
+        totalPicks: totalPicks,
+        vetoCount: vetoCount
+      )
+    );
 
     return Result.Success();
   }
@@ -407,6 +427,20 @@ public sealed class GuestDraft : Entity<GuestDraftId>
       pick.SetRevealAuthorizedParticipant(recipient);
     }
 
+    Raise(
+      new GuestDraftPickPlayedDomainEvent(
+        guestDraftId: Id.Value,
+        guestDraftPublicId: PublicId,
+        pickId: pick.Id.Value,
+        playOrder: pick.PlayOrder,
+        boardPosition: pick.Position,
+        moviePublicId: pick.MoviePublicId,
+        playedByParticipantId: participant.Id.Value,
+        actedByPublicId: actedByPublicId,
+        revealAuthorizedParticipantId: recipient?.Id.Value
+      )
+    );
+
     UpdatedOnUtc = DateTime.UtcNow;
 
     return Result.Success(pick.Id);
@@ -423,6 +457,16 @@ public sealed class GuestDraft : Entity<GuestDraftId>
 
     _picks.Remove(pick);
     UpdatedOnUtc = DateTime.UtcNow;
+
+    Raise(
+      new GuestDraftPickUndoneDomainEvent(
+        guestDraftId: Id.Value,
+        guestDraftPublicId: PublicId,
+        playOrder: playOrder,
+        boardPosition: pick.Position,
+        moviePublicId: pick.MoviePublicId
+      )
+    );
 
     return Result.Success();
   }
@@ -448,6 +492,18 @@ public sealed class GuestDraft : Entity<GuestDraftId>
     {
       return result;
     }
+
+    Raise(
+      new GuestDraftPickRevealedDomainEvent(
+        guestDraftId: Id.Value,
+        guestDraftPublicId: PublicId,
+        pickId: pick.Id.Value,
+        playOrder: pick.PlayOrder,
+        boardPosition: pick.Position,
+        moviePublicId: pick.MoviePublicId,
+        playedByParticipantId: pick.PlayedByParticipantId.Value
+      )
+    );
 
     UpdatedOnUtc = DateTime.UtcNow;
     return Result.Success();
@@ -517,6 +573,20 @@ public sealed class GuestDraft : Entity<GuestDraftId>
       return apply;
     }
 
+    Raise(
+      new GuestDraftVetoAppliedDomainEvent(
+        guestDraftId: Id.Value,
+        guestDraftPublicId: PublicId,
+        pickId: pick.Id.Value,
+        playOrder: pick.PlayOrder,
+        moviePublicId: pick.MoviePublicId,
+        vetoedByParticipantId: participant.Id.Value,
+        playedByParticipantId: pick.PlayedByParticipantId.Value,
+        vetoTokensRemaining: participant.TotalVetoes - participant.VetoesUsed,
+        overrideTokensRemaining: participant.TotalVetoOverrides - participant.VetoOverridesUsed
+      )
+    );
+
     UpdatedOnUtc = DateTime.UtcNow;
     return Result.Success();
   }
@@ -562,6 +632,21 @@ public sealed class GuestDraft : Entity<GuestDraftId>
 
     var issuer = FindParticipant(issuerParticipantId);
     issuer?.RefundVeto(spentFromFungiblePool);
+
+    Raise(
+      new GuestDraftVetoUndoneDomainEvent(
+        guestDraftId: Id.Value,
+        guestDraftPublicId: PublicId,
+        pickId: pick.Id.Value,
+        playOrder: pick.PlayOrder,
+        moviePublicId: pick.MoviePublicId,
+        refundedToParticipantId: issuer?.Id.Value,
+        vetoTokensRemaining: issuer is null ? null : issuer.TotalVetoes - issuer.VetoesUsed,
+        overrideTokensRemaining: issuer is null
+          ? null
+          : issuer.TotalVetoOverrides - issuer.VetoOverridesUsed
+      )
+    );
 
     UpdatedOnUtc = DateTime.UtcNow;
     return Result.Success();
@@ -632,6 +717,19 @@ public sealed class GuestDraft : Entity<GuestDraftId>
       return overrideResult;
     }
 
+    Raise(
+      new GuestDraftVetoOverriddenDomainEvent(
+        guestDraftId: Id.Value,
+        guestDraftPublicId: PublicId,
+        pickId: pick.Id.Value,
+        playOrder: pick.PlayOrder,
+        moviePublicId: pick.MoviePublicId,
+        overriddenByParticipantId: participant.Id.Value,
+        vetoTokensRemaining: participant.TotalVetoes - participant.VetoesUsed,
+        overrideTokensRemaining: participant.TotalVetoOverrides - participant.VetoOverridesUsed
+      )
+    );
+
     UpdatedOnUtc = DateTime.UtcNow;
     return Result.Success();
   }
@@ -675,6 +773,20 @@ public sealed class GuestDraft : Entity<GuestDraftId>
 
     var playedBy = GetParticipantRequired(pick.PlayedByParticipantId.Value);
     playedBy.AddCommissionerOverride();
+
+    Raise(
+      new GuestDraftCommissionerOverrideAppliedDomainEvent(
+        guestDraftId: Id.Value,
+        guestDraftPublicId: PublicId,
+        pickId: pick.Id.Value,
+        playOrder: pick.PlayOrder,
+        boardPosition: pick.Position,
+        moviePublicId: pick.MoviePublicId,
+        playedByParticipantId: playedBy.Id.Value,
+        vetoTokensRemaining: playedBy.TotalVetoes - playedBy.VetoesUsed,
+        overrideTokensRemaining: playedBy.TotalVetoOverrides - playedBy.VetoOverridesUsed
+      )
+    );
 
     UpdatedOnUtc = DateTime.UtcNow;
     return Result.Success();
