@@ -38,6 +38,12 @@ public static class GuestDraftErrors
       $"Participant with id {participantId} was not found in this guest draft."
     );
 
+  public static SDError ParticipantNotFound(string participantPublicId) =>
+    SDError.NotFound(
+      "GuestDrafts.ParticipantNotFound",
+      $"Participant with public id {participantPublicId} was not found in this guest draft."
+    );
+
   // ── Board / positions ─────────────────────────────────────────────────────
 
   public static readonly SDError CannotChangeBoardAfterStart = SDError.Problem(
@@ -249,5 +255,10 @@ public static class GuestDraftErrors
   public static readonly SDError InvalidStatusAction = SDError.Problem(
     "GuestDrafts.InvalidStatusAction",
     "Invalid status action."
+  );
+
+  public static readonly SDError NotRevealAuthorized = SDError.Problem(
+    "GuestDrafts.NotRevealAuthorized",
+    "You are not authorized to reveal this pick."
   );
 }

@@ -32,6 +32,7 @@ global using ScreenDrafts.Modules.Drafts.Composition;
 global using ScreenDrafts.Modules.Drafts.Infrastructure;
 global using ScreenDrafts.Modules.Drafts.Infrastructure.Database;
 global using ScreenDrafts.Modules.GuestDrafts.Composition;
+global using ScreenDrafts.Modules.GuestDrafts.Infrastructure;
 global using ScreenDrafts.Modules.GuestDrafts.Infrastructure.Database;
 global using ScreenDrafts.Modules.Integrations.Composition;
 global using ScreenDrafts.Modules.Integrations.Infrastructure;

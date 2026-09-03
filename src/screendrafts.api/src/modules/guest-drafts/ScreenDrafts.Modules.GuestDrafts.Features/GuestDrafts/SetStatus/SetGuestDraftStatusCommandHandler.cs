@@ -10,29 +10,35 @@ internal sealed class SetGuestDraftStatusCommandHandler(
 
   public async Task<Result<SetGuestDraftStatusResponse>> Handle(
     SetGuestDraftStatusCommand request,
-    CancellationToken cancellationToken)
+    CancellationToken cancellationToken
+  )
   {
     var guestDraft = await _guestDraftRepository.GetByPublicIdForGameplayAsync(
       request.GuestDraftPublicId,
-      cancellationToken);
+      cancellationToken
+    );
 
     if (guestDraft is null)
     {
       return Result.Failure<SetGuestDraftStatusResponse>(
-        GuestDraftErrors.NotFound(request.GuestDraftPublicId));
+        GuestDraftErrors.NotFound(request.GuestDraftPublicId)
+      );
     }
 
-    var caller = await _usersApi.GetUserByPublicId(request.CallerUserPublicId, ct);
+    var caller = await _usersApi.GetUserByPublicId(request.CallerUserPublicId, cancellationToken);
 
     if (caller is null)
     {
       return Result.Failure<SetGuestDraftStatusResponse>(
-        UserPublicApiErrors.PublicIdNotFound(request.CallerUserPublicId));
+        UserPublicApiErrors.PublicIdNotFound(request.CallerUserPublicId)
+      );
     }
 
     if (caller.UserId != guestDraft.OwnerUserId)
     {
-      return Result.Failure<SetGuestDraftStatusResponse>(GuestDraftErrors.OnlyOwnerCanPerformThisAction);
+      return Result.Failure<SetGuestDraftStatusResponse>(
+        GuestDraftErrors.OnlyOwnerCanPerformThisAction
+      );
     }
 
     var result = request.Action switch
@@ -49,10 +55,12 @@ internal sealed class SetGuestDraftStatusCommandHandler(
 
     _guestDraftRepository.Update(guestDraft);
 
-    return Result.Success(new SetGuestDraftStatusResponse
-    {
-      GuestDraftPublicId = guestDraft.PublicId,
-      Status = guestDraft.GuestDraftStatus.Name
-    });
+    return Result.Success(
+      new SetGuestDraftStatusResponse
+      {
+        GuestDraftPublicId = guestDraft.PublicId,
+        Status = guestDraft.GuestDraftStatus.Name,
+      }
+    );
   }
 }

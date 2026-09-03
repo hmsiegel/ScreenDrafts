@@ -41,6 +41,7 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
     Environment.SetEnvironmentVariable("ConnectionStrings__Audit", dbConnectionString);
     Environment.SetEnvironmentVariable("ConnectionStrings__Communications", dbConnectionString);
     Environment.SetEnvironmentVariable("ConnectionStrings__Drafts", dbConnectionString);
+    Environment.SetEnvironmentVariable("ConnectionStrings__GuestDrafts", dbConnectionString);
     Environment.SetEnvironmentVariable("ConnectionStrings__Integrations", dbConnectionString);
     Environment.SetEnvironmentVariable("ConnectionStrings__Movies", dbConnectionString);
     Environment.SetEnvironmentVariable("ConnectionStrings__RealTimeUpdates", dbConnectionString);

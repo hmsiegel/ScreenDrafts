@@ -20,13 +20,6 @@ internal sealed class RevealPickCommandHandler(
       return Result.Failure(GuestDraftErrors.NotFound(request.GuestDraftPublicId));
     }
 
-    var pick = guestDraft.Picks.FirstOrDefault(p => p.PlayOrder == request.PlayOrder);
-
-    if (pick is null)
-    {
-      return Result.Failure(GuestDraftErrors.PickNotFoundByPlayOrder(request.PlayOrder));
-    }
-
     var caller = await _usersApi.GetUserByPublicId(request.CallerUserPublicId, cancellationToken);
 
     if (caller is null)
@@ -41,8 +34,18 @@ internal sealed class RevealPickCommandHandler(
       return Result.Failure(GuestDraftErrors.CallerNotAParticipant);
     }
 
-    // Mirrors canonical RevealPickCommandHandler's hostless branch exactly -- every
-    // guest draft is hostless, so this check always applies, no primary-host branch.
+    if (guestDraft.GuestDraftStatus != GuestDraftStatus.InProgress)
+    {
+      return Result.Failure(GuestDraftErrors.DraftNotStarted);
+    }
+
+    var pick = guestDraft.Picks.FirstOrDefault(p => p.PlayOrder == request.PlayOrder);
+
+    if (pick is null)
+    {
+      return Result.Failure(GuestDraftErrors.PickNotFoundByPlayOrder(request.PlayOrder));
+    }
+
     if (!pick.IsRevealAuthorized(revealer.Id.Value))
     {
       return Result.Failure(GuestDraftErrors.NotRevealAuthorized);

@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.SetFixedBoardLayout;
-
-namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.Positions.SetFixedBoardLayout;
+﻿namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.Positions.SetFixedBoardLayout;
 
 internal sealed class Endpoint : ScreenDraftsEndpointWithoutRequest
 {

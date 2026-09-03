@@ -1,7 +1,6 @@
 ﻿using FastEndpoints;
-using ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.Picks.UndoPick;
 
-namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.UndoPick;
+namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.Picks.UndoPick;
 
 internal sealed class Summary : Summary<Endpoint>
 {

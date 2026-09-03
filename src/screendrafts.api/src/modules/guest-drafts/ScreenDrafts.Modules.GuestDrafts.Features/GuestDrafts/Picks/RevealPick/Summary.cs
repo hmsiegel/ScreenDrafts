@@ -1,7 +1,6 @@
 ﻿using FastEndpoints;
-using ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.Picks.RevealPick;
 
-namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.RevealPick;
+namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.Picks.RevealPick;
 
 internal sealed class Summary : Summary<Endpoint>
 {

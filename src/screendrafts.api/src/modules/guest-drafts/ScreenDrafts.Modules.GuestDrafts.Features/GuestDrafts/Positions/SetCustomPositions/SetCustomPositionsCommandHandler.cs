@@ -25,7 +25,7 @@ internal sealed class SetCustomPositionsCommandHandler(
       return Result.Failure(GuestDraftErrors.NotFound(request.GuestDraftPublicId));
     }
 
-    var caller = await _usersApi.GetUserByPublicId(request.CallerUserPublicId, ct);
+    var caller = await _usersApi.GetUserByPublicId(request.CallerUserPublicId, cancellationToken);
 
     if (caller is null)
     {
