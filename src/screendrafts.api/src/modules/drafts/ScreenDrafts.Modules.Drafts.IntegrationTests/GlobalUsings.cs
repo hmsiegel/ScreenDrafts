@@ -1,4 +1,5 @@
-﻿global using Bogus;
+﻿global using System.Collections.Concurrent;
+global using Bogus;
 global using Dapper;
 global using FluentAssertions;
 global using MediatR;
@@ -113,5 +114,6 @@ global using ScreenDrafts.Modules.Integrations.IntegrationEvents;
 global using ScreenDrafts.Modules.Integrations.PublicApi;
 global using ScreenDrafts.Modules.RealTimeUpdates.Features;
 global using ScreenDrafts.Modules.Users.Infrastructure.Database;
+global using ScreenDrafts.Modules.Users.PublicApi;
 global using Testcontainers.Keycloak;
 global using Xunit;

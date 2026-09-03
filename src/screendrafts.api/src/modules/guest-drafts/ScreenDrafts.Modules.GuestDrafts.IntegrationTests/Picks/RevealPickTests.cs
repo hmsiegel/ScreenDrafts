@@ -115,4 +115,27 @@ public sealed class RevealPickTests(GuestDraftsIntegrationTestWebAppFactory fact
     result.IsFailure.Should().BeTrue();
     result.Errors.Should().Contain(e => e.Code == GuestDraftErrors.PickNotFoundByPlayOrder(99).Code);
   }
+
+  /// <summary>
+  /// Guards the handler-ordering fix: the handler must check Status before
+  /// resolving PlayOrder -> pick, otherwise this would surface
+  /// PickNotFoundByPlayOrder (no picks exist yet, since the draft never started)
+  /// instead of the real DraftNotStarted result.
+  /// </summary>
+  [Fact]
+  public async Task RevealPick_WhenTheDraftIsNotInProgress_ShouldFailAsync()
+  {
+    // Arrange -- still Created, never started
+    var owner = CreateUser();
+    var other = CreateUser();
+    var guestDraftPublicId = await CreateGuestDraftAsync(owner);
+    await InviteParticipantAsync(guestDraftPublicId, owner, other);
+
+    // Act
+    var result = await RevealPickAsync(guestDraftPublicId, 1, other);
+
+    // Assert
+    result.IsFailure.Should().BeTrue();
+    result.Errors.Should().Contain(e => e.Code == GuestDraftErrors.DraftNotStarted.Code);
+  }
 }

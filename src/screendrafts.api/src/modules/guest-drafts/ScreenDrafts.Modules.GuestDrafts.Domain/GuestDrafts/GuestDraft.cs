@@ -647,6 +647,18 @@ public sealed class GuestDraft : Entity<GuestDraftId>
       return Result.Failure(GuestDraftErrors.PickNotFound(pickId.Value));
     }
 
+    var maxPlayOrder = _picks.Max(p => p.PlayOrder);
+
+    if (pick.PlayOrder != maxPlayOrder)
+    {
+      return Result.Failure(GuestDraftErrors.CommissionerOverrideNotOnMostRecentPick);
+    }
+
+    if (GuestDraftStatus != GuestDraftStatus.InProgress)
+    {
+      return Result.Failure(GuestDraftErrors.DraftNotStarted);
+    }
+
     var overrideResult = GuestDraftCommissionerOverride.Create(pick);
 
     if (overrideResult.IsFailure)

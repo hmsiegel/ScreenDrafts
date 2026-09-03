@@ -261,4 +261,9 @@ public static class GuestDraftErrors
     "GuestDrafts.NotRevealAuthorized",
     "You are not authorized to reveal this pick."
   );
+
+  public static readonly SDError CommissionerOverrideNotOnMostRecentPick = SDError.Problem(
+    "GuestDrafts.CommissionerOverrideNotOnMostRecentPick",
+    "A commissioner override may only be applied to the most recently played pick."
+  );
 }

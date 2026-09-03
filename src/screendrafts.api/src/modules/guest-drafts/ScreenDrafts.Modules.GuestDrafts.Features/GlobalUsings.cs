@@ -1,12 +1,14 @@
 ﻿global using System.Reflection;
 global using System.Runtime.CompilerServices;
 global using System.Security.Cryptography;
+global using Dapper;
 global using FluentValidation;
 global using MediatR;
 global using Microsoft.AspNetCore.Builder;
 global using Microsoft.AspNetCore.Http;
 global using Microsoft.AspNetCore.Mvc;
 global using ScreenDrafts.Common.Abstractions.Results;
+global using ScreenDrafts.Common.Application.Data;
 global using ScreenDrafts.Common.Application.EventBus;
 global using ScreenDrafts.Common.Application.EventBus.Dispatchers;
 global using ScreenDrafts.Common.Application.Inbox;

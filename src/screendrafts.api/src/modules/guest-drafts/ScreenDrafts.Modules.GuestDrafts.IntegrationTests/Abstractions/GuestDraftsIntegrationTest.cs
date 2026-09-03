@@ -438,4 +438,134 @@ public abstract class GuestDraftsIntegrationTest(GuestDraftsIntegrationTestWebAp
       TestContext.Current.CancellationToken
     );
   }
+
+  protected async Task<Result> ApplyVetoOverrideAsync(
+    string guestDraftPublicId,
+    int playOrder,
+    string callerUserPublicId,
+    string? note = null
+  )
+  {
+    return await Sender.Send(
+      new ApplyVetoOverrideCommand
+      {
+        GuestDraftPublicId = guestDraftPublicId,
+        PlayOrder = playOrder,
+        CallerUserPublicId = callerUserPublicId,
+        Note = note,
+      },
+      TestContext.Current.CancellationToken
+    );
+  }
+
+  internal async Task<Result<GetGuestDraftGameplayResponse>> GetGameplayAsync(
+    string guestDraftPublicId,
+    string callerUserPublicId
+  )
+  {
+    return await Sender.Send(
+      new GetGuestDraftGameplayQuery
+      {
+        GuestDraftPublicId = guestDraftPublicId,
+        CallerUserPublicId = callerUserPublicId,
+      },
+      TestContext.Current.CancellationToken
+    );
+  }
+
+  /// <summary>
+  /// Custom MiniMega guest draft (4 participants: Owner, B, C, D) with five distinct
+  /// pick slots exercising every pick state GetGuestDraftGameplay needs to shape a
+  /// response around:
+  ///   - slot1: plain landed pick, left for the caller to reveal or not
+  ///   - slot2: plain landed pick, left unrevealed
+  ///   - slot3: commissioner-overridden (not landed)
+  ///   - slot4: vetoed by B then overridden by C (landed via the override)
+  ///   - slot5: vetoed by D, D self-overrides, then C vetoes again -- ends up
+  ///     vetoed (not landed) with a 2-entry VetoHistory ordered by Sequence
+  /// Owner plays every pick (mirrors FullDraftFlowTests' single-picker pattern).
+  /// Positions: Owner->[1,2], B->[3], C->[4] (HasBonusVetoOverride), D->[5]
+  /// (HasBonusVetoOverride). The draft is left InProgress -- callers decide whether
+  /// and how to reveal slot1/slot2 themselves.
+  /// </summary>
+  protected async Task<(
+    string GuestDraftPublicId,
+    string OwnerUserPublicId,
+    string BUserPublicId,
+    string CUserPublicId,
+    string DUserPublicId
+  )> CreateGuestDraftWithMixedPickStatesAsync()
+  {
+    var ct = TestContext.Current.CancellationToken;
+    var owner = CreateUser();
+    var b = CreateUser();
+    var c = CreateUser();
+    var d = CreateUser();
+
+    var guestDraftPublicId = await CreateGuestDraftAsync(owner, GuestDraftType.MiniMega);
+    (await InviteParticipantAsync(guestDraftPublicId, owner, b)).IsSuccess.Should().BeTrue();
+    (await InviteParticipantAsync(guestDraftPublicId, owner, c)).IsSuccess.Should().BeTrue();
+    (await InviteParticipantAsync(guestDraftPublicId, owner, d)).IsSuccess.Should().BeTrue();
+
+    List<PositionInput> positions =
+    [
+      new() { Name = "Owner", Picks = [1, 2] },
+      new() { Name = "B", Picks = [3] },
+      new() { Name = "C", Picks = [4], HasBonusVetoOverride = true },
+      new() { Name = "D", Picks = [5], HasBonusVetoOverride = true },
+    ];
+    (await SetCustomPositionsAsync(guestDraftPublicId, owner, positions)).IsSuccess.Should().BeTrue();
+
+    var guestDraft = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
+    var boardPositions = guestDraft.GameBoard!.Positions.ToList();
+    var ownerUserId = (await FakeUsersApi.GetUserByPublicId(owner, ct))!.UserId;
+    var bUserId = (await FakeUsersApi.GetUserByPublicId(b, ct))!.UserId;
+    var cUserId = (await FakeUsersApi.GetUserByPublicId(c, ct))!.UserId;
+    var dUserId = (await FakeUsersApi.GetUserByPublicId(d, ct))!.UserId;
+    var ownerParticipant = guestDraft.Participants.Single(p => p.UserId == ownerUserId);
+    var bParticipant = guestDraft.Participants.Single(p => p.UserId == bUserId);
+    var cParticipant = guestDraft.Participants.Single(p => p.UserId == cUserId);
+    var dParticipant = guestDraft.Participants.Single(p => p.UserId == dUserId);
+
+    (await AssignParticipantAsync(guestDraftPublicId, owner, boardPositions.Single(p => p.Name == "Owner").PublicId, ownerParticipant.PublicId))
+      .IsSuccess.Should().BeTrue();
+    (await AssignParticipantAsync(guestDraftPublicId, owner, boardPositions.Single(p => p.Name == "B").PublicId, bParticipant.PublicId))
+      .IsSuccess.Should().BeTrue();
+    (await AssignParticipantAsync(guestDraftPublicId, owner, boardPositions.Single(p => p.Name == "C").PublicId, cParticipant.PublicId))
+      .IsSuccess.Should().BeTrue();
+    (await AssignParticipantAsync(guestDraftPublicId, owner, boardPositions.Single(p => p.Name == "D").PublicId, dParticipant.PublicId))
+      .IsSuccess.Should().BeTrue();
+
+    (await SetGuestDraftStatusAsync(guestDraftPublicId, owner, GuestDraftStatusAction.Start))
+      .IsSuccess.Should().BeTrue();
+
+    // slot1 (playOrder1): plain landed, left for the caller to reveal (or not).
+    (await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), 1, 1)).IsSuccess.Should().BeTrue();
+
+    // slot2 (playOrder2): plain landed, left unrevealed.
+    (await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), 2, 2)).IsSuccess.Should().BeTrue();
+
+    // slot3 (playOrder3): commissioner-overridden. Must happen immediately -- the
+    // scope guard requires this to still be the most-recently-played pick.
+    (await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), 3, 3)).IsSuccess.Should().BeTrue();
+    (await ApplyCommissionerOverrideAsync(guestDraftPublicId, 3, owner)).IsSuccess.Should().BeTrue();
+
+    // slot4 (playOrder4): vetoed by B, then overridden by C. ApplyVeto's scope guard
+    // requires this to happen immediately (most-recently-played pick); the override
+    // itself has no such guard.
+    (await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), 4, 4)).IsSuccess.Should().BeTrue();
+    (await ApplyVetoAsync(guestDraftPublicId, 4, b)).IsSuccess.Should().BeTrue();
+    (await ApplyVetoOverrideAsync(guestDraftPublicId, 4, c)).IsSuccess.Should().BeTrue();
+
+    // slot5 (playOrder5): vetoed by D (seq1), D self-overrides (seq1 overridden),
+    // then C vetoes again (seq2, still active) -- both ApplyVeto calls must happen
+    // while slot5 remains the most-recently-played pick, i.e. before anything else
+    // is played.
+    (await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), 5, 5)).IsSuccess.Should().BeTrue();
+    (await ApplyVetoAsync(guestDraftPublicId, 5, d)).IsSuccess.Should().BeTrue();
+    (await ApplyVetoOverrideAsync(guestDraftPublicId, 5, d)).IsSuccess.Should().BeTrue();
+    (await ApplyVetoAsync(guestDraftPublicId, 5, c)).IsSuccess.Should().BeTrue();
+
+    return (guestDraftPublicId, owner, b, c, d);
+  }
 }

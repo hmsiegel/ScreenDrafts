@@ -1,13 +1,21 @@
 ﻿namespace ScreenDrafts.Modules.Users.IntegrationTests.Users;
 
-[System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2234:Pass system uri objects instead of strings", Justification = "Reviewed")]
-public class GetUserProfileTests(UsersIntegrationTestWebAppFactory factory) : UsersIntegrationTest(factory)
+[System.Diagnostics.CodeAnalysis.SuppressMessage(
+  "Usage",
+  "CA2234:Pass system uri objects instead of strings",
+  Justification = "Reviewed"
+)]
+public class GetUserProfileTests(UsersIntegrationTestWebAppFactory factory)
+  : UsersIntegrationTest(factory)
 {
   [Fact]
   public async Task Should_ReturnUnauthorized_WhenAccessTokenNotProvidedAsync()
   {
     // Act
-    HttpResponseMessage response = await HttpClient.GetAsync("users/profile", TestContext.Current.CancellationToken);
+    HttpResponseMessage response = await HttpClient.GetAsync(
+      "users/profile",
+      TestContext.Current.CancellationToken
+    );
 
     // Assert
     response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
@@ -28,19 +36,26 @@ public class GetUserProfileTests(UsersIntegrationTestWebAppFactory factory) : Us
       FROM users.users
       WHERE email = {0}
       """,
-      email);
+      email
+    );
 
     HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
-        JwtBearerDefaults.AuthenticationScheme,
-        accessToken);
+      JwtBearerDefaults.AuthenticationScheme,
+      accessToken
+    );
 
     // Act
-    HttpResponseMessage response = await HttpClient.GetAsync("users/profile", TestContext.Current.CancellationToken);
+    HttpResponseMessage response = await HttpClient.GetAsync(
+      "users/profile",
+      TestContext.Current.CancellationToken
+    );
 
     // Assert
     response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-    UserResponse? user = await response.Content.ReadFromJsonAsync<UserResponse>(TestContext.Current.CancellationToken);
+    UserPublicApiResponse? user = await response.Content.ReadFromJsonAsync<UserPublicApiResponse>(
+      TestContext.Current.CancellationToken
+    );
     user.Should().NotBeNull();
   }
 
@@ -51,7 +66,7 @@ public class GetUserProfileTests(UsersIntegrationTestWebAppFactory factory) : Us
       Email = email,
       Password = password,
       FirstName = Faker.Name.FirstName(),
-      LastName = Faker.Name.LastName()
+      LastName = Faker.Name.LastName(),
     };
 
     var registerResponse = await HttpClient.PostAsJsonAsync("users/register", request);

@@ -25,5 +25,6 @@ internal static class GuestDraftsOpenApi
       "GuestDrafts.ApplyCommissionerOverride";
     public const string GuestDrafts_UndoVeto = "GuestDrafts.UndoVeto";
     public const string GuestDrafts_RevealPick = "GuestDrafts.RevealPick";
+    public const string GuestDrafts_GetGameplay = "GuestDrafts.GetGameplay";
   }
 }

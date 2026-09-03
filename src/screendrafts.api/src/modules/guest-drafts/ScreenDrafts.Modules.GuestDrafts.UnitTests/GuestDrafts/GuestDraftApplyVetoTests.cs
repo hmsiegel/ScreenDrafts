@@ -147,6 +147,25 @@ public class GuestDraftApplyVetoTests : GuestDraftsBaseTest
   }
 
   [Fact]
+  public void UndoVeto_ShouldNotRefundAnyPool_WhenTheUndoItselfFails()
+  {
+    // Arrange -- guards the ordering fix: the refund must only happen after
+    // pick.UndoVeto() has actually succeeded, never unconditionally beforehand.
+    var (guestDraft, _, other, pickId) = CreateVetoedPickWhereOtherCanOverride();
+    guestDraft.ApplyVetoOverride(pickId, other.Id.Value);
+    var vetoesUsedBeforeFailedUndo = other.VetoesUsed;
+    var fungibleTokensUsedBeforeFailedUndo = other.FungibleTokensUsed;
+
+    // Act
+    var result = guestDraft.UndoVeto(pickId);
+
+    // Assert
+    result.IsFailure.Should().BeTrue();
+    other.VetoesUsed.Should().Be(vetoesUsedBeforeFailedUndo, "a failed undo must not refund the normal pool");
+    other.FungibleTokensUsed.Should().Be(fungibleTokensUsedBeforeFailedUndo, "a failed undo must not refund the fungible pool");
+  }
+
+  [Fact]
   public void UndoVeto_ShouldSucceedAndRefundTheNormalPool_WhenTheVetoHasNotBeenOverridden()
   {
     // Arrange

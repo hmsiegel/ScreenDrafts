@@ -1,8 +1,4 @@
-using System.Collections.Concurrent;
-
-using ScreenDrafts.Modules.Users.PublicApi;
-
-namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.Abstractions;
+﻿namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.Abstractions;
 
 /// <summary>
 /// In-memory replacement for <see cref="IUsersApi"/> used by GuestDrafts integration
@@ -17,21 +13,26 @@ namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.Abstractions;
 /// </summary>
 public sealed class FakeUsersApi : IUsersApi
 {
-  private readonly ConcurrentDictionary<string, UserResponse> _usersByPublicId = new();
-  private readonly ConcurrentDictionary<Guid, UserResponse> _usersById = new();
+  private readonly ConcurrentDictionary<string, UserPublicApiResponse> _usersByPublicId = new();
+  private readonly ConcurrentDictionary<Guid, UserPublicApiResponse> _usersById = new();
 
   /// <summary>
   /// Registers a fake user and returns the UserPublicId so the test can pass
   /// it straight into a command (e.g. CreateGuestDraftCommand.OwnerUserPublicId).
   /// </summary>
-  public string RegisterUser(Guid userId, string userPublicId, string firstName = "Test", string lastName = "User")
+  public string RegisterUser(
+    Guid userId,
+    string userPublicId,
+    string firstName = "Test",
+    string lastName = "User"
+  )
   {
-    var response = new UserResponse
+    var response = new UserPublicApiResponse
     {
       UserId = userId,
       FirstName = firstName,
       LastName = lastName,
-      MiddleName = null
+      MiddleName = null,
     };
 
     _usersByPublicId[userPublicId] = response;
@@ -46,20 +47,38 @@ public sealed class FakeUsersApi : IUsersApi
     _usersById.Clear();
   }
 
-  public Task<UserResponse?> GetUserById(Guid userId, CancellationToken cancellationToken)
+  public Task<UserPublicApiResponse?> GetUserById(Guid userId, CancellationToken cancellationToken)
   {
     _usersById.TryGetValue(userId, out var user);
     return Task.FromResult(user);
   }
 
-  public Task<UserResponse?> GetUserByPublicId(string publicId, CancellationToken cancellationToken)
+  public Task<UserPublicApiResponse?> GetUserByPublicId(
+    string publicId,
+    CancellationToken cancellationToken
+  )
   {
     _usersByPublicId.TryGetValue(publicId, out var user);
     return Task.FromResult(user);
   }
 
-  public Task<IReadOnlyList<UserResponse>> GetAllUsersAsync(string? search, CancellationToken cancellationToken)
+  public Task<IReadOnlyList<UserPublicApiResponse>> GetAllUsersAsync(
+    string? search,
+    CancellationToken cancellationToken
+  )
   {
-    return Task.FromResult((IReadOnlyList<UserResponse>)[.. _usersById.Values]);
+    return Task.FromResult((IReadOnlyList<UserPublicApiResponse>)[.. _usersById.Values]);
+  }
+
+  public Task<IReadOnlyList<UserPublicApiResponse>> GetUsersByIds(
+    IReadOnlyList<Guid> userIds,
+    CancellationToken cancellationToken
+  )
+  {
+    var users = userIds
+      .Select(id => _usersById.TryGetValue(id, out var user) ? user : null)
+      .Where(user => user != null)
+      .ToList();
+    return Task.FromResult((IReadOnlyList<UserPublicApiResponse>)users);
   }
 }

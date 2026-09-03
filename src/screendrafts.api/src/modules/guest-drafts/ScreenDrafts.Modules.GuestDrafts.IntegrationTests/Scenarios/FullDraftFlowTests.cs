@@ -5,11 +5,12 @@ namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.Scenarios;
 /// entirely through the command layer (matching every other GuestDrafts integration
 /// test in this project).
 ///
-/// Neither flow includes a veto-override step: ApplyVetoOverride has no Features-layer
-/// endpoint/command/handler yet (route, permission, and OpenAPI name are defined, but
-/// nothing wires them up -- see the domain-level coverage in
-/// ScreenDrafts.Modules.GuestDrafts.UnitTests instead). Both flows still exercise
-/// ApplyVeto/UndoVeto and ApplyCommissionerOverride/UndoPick in full.
+/// Only the MiniMega (3-participant) flow exercises ApplyVetoOverride -- Standard
+/// blocks veto overrides outright (GuestDraftErrors.VetoOverridesNotAllowedForThisDraftType,
+/// covered directly in ApplyVetoOverrideTests), so the Standard (2-participant) flow
+/// deliberately leaves that step out rather than exercising a call that can only fail.
+/// Both flows still exercise ApplyVeto/UndoVeto and ApplyCommissionerOverride/UndoPick
+/// in full.
 /// </summary>
 public sealed class FullDraftFlowTests(GuestDraftsIntegrationTestWebAppFactory factory)
   : GuestDraftsIntegrationTest(factory)
@@ -103,11 +104,13 @@ public sealed class FullDraftFlowTests(GuestDraftsIntegrationTestWebAppFactory f
     (await InviteParticipantAsync(guestDraftPublicId, a, b)).IsSuccess.Should().BeTrue();
     (await InviteParticipantAsync(guestDraftPublicId, a, c)).IsSuccess.Should().BeTrue();
 
-    // 2. Set up a custom board layout, one position per participant
+    // 2. Set up a custom board layout, one position per participant. Pos2 (B)
+    // carries a bonus veto-override -- MiniMega, unlike Standard, allows
+    // ApplyVetoOverride, and B uses this bonus in step 11 below.
     List<PositionInput> positions =
     [
       new() { Name = "Pos1", Picks = [1] },
-      new() { Name = "Pos2", Picks = [2] },
+      new() { Name = "Pos2", Picks = [2], HasBonusVetoOverride = true },
       new() { Name = "Pos3", Picks = [3] },
     ];
     (await SetCustomPositionsAsync(guestDraftPublicId, a, positions)).IsSuccess.Should().BeTrue();
@@ -159,11 +162,21 @@ public sealed class FullDraftFlowTests(GuestDraftsIntegrationTestWebAppFactory f
 
     (await RevealPickAsync(guestDraftPublicId, 1, revealerUserPublicId)).IsSuccess.Should().BeTrue();
 
-    // 10. Land the remaining slots (2, 3) so the board can complete
+    // 10. Land slot 2
     (await PlayPickAsync(guestDraftPublicId, a, CreateMovie(), 2, 3)).IsSuccess.Should().BeTrue();
-    (await PlayPickAsync(guestDraftPublicId, a, CreateMovie(), 3, 4)).IsSuccess.Should().BeTrue();
 
-    // 11. Complete
+    // 11. Land slot 3 via a veto override -- C vetoes it, then B (holding the bonus
+    // override from Pos2) overrides that veto, landing the pick without a re-pick.
+    // Both calls happen immediately: ApplyVeto's scope guard requires slot 3 to
+    // still be the most-recently-played pick; ApplyVetoOverride has no such guard.
+    (await PlayPickAsync(guestDraftPublicId, a, CreateMovie(), 3, 4)).IsSuccess.Should().BeTrue();
+    (await ApplyVetoAsync(guestDraftPublicId, 4, c)).IsSuccess.Should().BeTrue();
+    (await ApplyVetoOverrideAsync(guestDraftPublicId, 4, b)).IsSuccess.Should().BeTrue();
+
+    var afterVetoOverride = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
+    afterVetoOverride.Picks.Single(p => p.PlayOrder == 4).IsActiveOnFinalBoard.Should().BeTrue();
+
+    // 12. Complete
     var completeResult = await SetGuestDraftStatusAsync(guestDraftPublicId, a, GuestDraftStatusAction.Complete);
     completeResult.IsSuccess.Should().BeTrue();
     completeResult.Value.GuestDraftPublicId.Should().Be(guestDraftPublicId);
