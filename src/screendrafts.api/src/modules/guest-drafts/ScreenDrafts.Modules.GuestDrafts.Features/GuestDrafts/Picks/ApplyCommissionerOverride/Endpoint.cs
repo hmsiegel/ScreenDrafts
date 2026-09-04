@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.Picks.ApplyCommissionerOverride;
 
-internal sealed class Endpoint : ScreenDraftsEndpointWithoutRequest
+internal sealed class Endpoint : ScreenDraftsEndpoint<ApplyGuestDraftCommissionerOverrideRequest>
 {
   public override void Configure()
   {
@@ -16,17 +16,12 @@ internal sealed class Endpoint : ScreenDraftsEndpointWithoutRequest
     Policies(GuestDraftsAuth.Permissions.GuestDraftApplyCommissionerOverride);
   }
 
-  public override async Task HandleAsync(CancellationToken ct)
+  public override async Task HandleAsync(
+    ApplyGuestDraftCommissionerOverrideRequest req,
+    CancellationToken ct
+  )
   {
     var userPublicId = User.GetUserPublicId();
-    var publicId = Route<string>("publicId");
-    var playOrder = Route<int>("playOrder");
-
-    if (string.IsNullOrWhiteSpace(publicId))
-    {
-      await Send.ErrorsAsync(StatusCodes.Status400BadRequest, cancellation: ct);
-      return;
-    }
 
     if (userPublicId is null)
     {
@@ -36,8 +31,8 @@ internal sealed class Endpoint : ScreenDraftsEndpointWithoutRequest
 
     var command = new ApplyCommissionerOverrideCommand
     {
-      GuestDraftPublicId = publicId,
-      PlayOrder = playOrder,
+      GuestDraftPublicId = req.PublicId,
+      PlayOrder = req.PlayOrder,
       CallerUserPublicId = userPublicId,
     };
 

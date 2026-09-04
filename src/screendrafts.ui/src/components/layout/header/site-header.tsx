@@ -1,3 +1,4 @@
+// src/components/layout/header/site-header.tsx
 import Image from "next/image";
 import Link from "next/link";
 import { auth } from "@/auth";
@@ -8,6 +9,12 @@ import AdminDropdown from "./admin-dropdown";
 // Must match administration.roles.name exactly.
 // Run: SELECT name FROM administration.roles WHERE name ILIKE '%admin%';
 const ADMIN_ROLES = ["Administrator", "SuperAdministrator"];
+
+// Every account gets the Guest role (per administration.roles) — gating on
+// it rather than just "session exists" keeps this consistent with how
+// ADMIN_ROLES/isDrafter already check real role names below, and is what
+// actually keeps someone with no account out.
+const GUEST_ROLE = "Guest";
 
 type NavItem = { label: string; href: string; external?: boolean; className?: string };
 
@@ -22,6 +29,8 @@ export default async function SiteHeader({ activePath }: { activePath?: string }
   const session = await auth();
   const isAdmin = session?.roles?.some(r => ADMIN_ROLES.includes(r)) ?? false;
   const isDrafter = session?.roles?.includes("Drafter") ?? false;
+  const isGuest = session?.roles?.includes(GUEST_ROLE) ?? false;
+  const isGuestDraftsActive = activePath?.startsWith("/guest-drafts") ?? false;
 
   return (
     <header className="bg-white border-b-4 border-sd-red px-8 py-5 flex items-center justify-between">
@@ -59,6 +68,17 @@ export default async function SiteHeader({ activePath }: { activePath?: string }
             </Link>
           );
         })}
+        {isGuest && (
+          <Link
+            href="/guest-drafts"
+            className={`pb-0.5 transition-colors hover:text-sd-red ${isGuestDraftsActive
+              ? "border-b-[3px] border-sd-red text-sd-ink"
+              : "text-sd-ink"
+              }`}
+          >
+            GUEST DRAFTS
+          </Link>
+        )}
         {isAdmin && <AdminDropdown />}
 
         {session ? (

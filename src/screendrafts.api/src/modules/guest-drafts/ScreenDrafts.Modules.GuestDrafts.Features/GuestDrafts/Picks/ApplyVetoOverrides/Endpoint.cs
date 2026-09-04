@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.Picks.ApplyVetoOverrides;
 
-internal sealed class Endpoint : ScreenDraftsEndpoint<ApplyVetoOverrideRequest>
+internal sealed class Endpoint : ScreenDraftsEndpoint<ApplyGuestDraftVetoOverrideRequest>
 {
   public override void Configure()
   {
@@ -16,7 +16,10 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<ApplyVetoOverrideRequest>
     Policies(GuestDraftsAuth.Permissions.GuestDraftApplyVetoOverride);
   }
 
-  public override async Task HandleAsync(ApplyVetoOverrideRequest req, CancellationToken ct)
+  public override async Task HandleAsync(
+    ApplyGuestDraftVetoOverrideRequest req,
+    CancellationToken ct
+  )
   {
     ArgumentNullException.ThrowIfNull(req);
 

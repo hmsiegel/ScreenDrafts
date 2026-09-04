@@ -1,6 +1,6 @@
-﻿namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.Picks.ApplyVeto;
+﻿namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.Picks.ApplyVetoOverrides;
 
-internal sealed record ApplyVetoRequest
+internal sealed record ApplyGuestDraftVetoOverrideRequest
 {
   [FromRoute(Name = "publicId")]
   public string PublicId { get; init; } = default!;

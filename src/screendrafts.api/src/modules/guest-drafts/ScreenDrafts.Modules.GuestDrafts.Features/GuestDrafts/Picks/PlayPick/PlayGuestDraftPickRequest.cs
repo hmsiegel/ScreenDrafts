@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.Picks.PlayPick;
 
-internal sealed record PlayPickRequest
+internal sealed record PlayGuestDraftPickRequest
 {
   [FromRoute(Name = "publicId")]
   public string PublicId { get; init; } = default!;

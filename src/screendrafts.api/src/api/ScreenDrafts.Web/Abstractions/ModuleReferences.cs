@@ -1,11 +1,14 @@
 ﻿namespace ScreenDrafts.Web.Abstractions;
+
 internal static class ModuleReferences
 {
-  private static readonly string[] _modules = [
+  private static readonly string[] _modules =
+  [
     "administration",
     "audit",
     "communications",
     "drafts",
+    "guestdrafts",
     "integrations",
     "movies",
     "realtimeupdates",

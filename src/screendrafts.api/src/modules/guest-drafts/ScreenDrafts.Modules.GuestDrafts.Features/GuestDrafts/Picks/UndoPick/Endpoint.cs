@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.Picks.UndoPick;
 
-internal sealed class Endpoint : ScreenDraftsEndpointWithoutRequest
+internal sealed class Endpoint : ScreenDraftsEndpoint<UndoGuestDraftPickRequest>
 {
   public override void Configure()
   {
@@ -15,17 +15,9 @@ internal sealed class Endpoint : ScreenDraftsEndpointWithoutRequest
     Policies(GuestDraftsAuth.Permissions.GuestDraftUndoPick);
   }
 
-  public override async Task HandleAsync(CancellationToken ct)
+  public override async Task HandleAsync(UndoGuestDraftPickRequest req, CancellationToken ct)
   {
     var userPublicId = User.GetUserPublicId();
-    var publicId = Route<string>("publicId");
-    var playOrder = Route<int>("playOrder");
-
-    if (string.IsNullOrWhiteSpace(publicId))
-    {
-      await Send.ErrorsAsync(StatusCodes.Status400BadRequest, cancellation: ct);
-      return;
-    }
 
     if (userPublicId is null)
     {
@@ -35,8 +27,8 @@ internal sealed class Endpoint : ScreenDraftsEndpointWithoutRequest
 
     var command = new UndoPickCommand
     {
-      GuestDraftPublicId = publicId,
-      PlayOrder = playOrder,
+      GuestDraftPublicId = req.PublicId,
+      PlayOrder = req.PlayOrder,
       CallerUserPublicId = userPublicId,
     };
 

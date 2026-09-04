@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.Picks.PlayPick;
 
-internal sealed class Endpoint : ScreenDraftsEndpoint<PlayPickRequest>
+internal sealed class Endpoint : ScreenDraftsEndpoint<PlayGuestDraftPickRequest>
 {
   public override void Configure()
   {
@@ -16,7 +16,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<PlayPickRequest>
     Policies(GuestDraftsAuth.Permissions.GuestDraftPlayPick);
   }
 
-  public override async Task HandleAsync(PlayPickRequest req, CancellationToken ct)
+  public override async Task HandleAsync(PlayGuestDraftPickRequest req, CancellationToken ct)
   {
     ArgumentNullException.ThrowIfNull(req);
 
