@@ -266,4 +266,9 @@ public static class GuestDraftErrors
     "GuestDrafts.CommissionerOverrideNotOnMostRecentPick",
     "A commissioner override may only be applied to the most recently played pick."
   );
+
+  public static readonly SDError CannotAddParticipantAfterStart = SDError.Problem(
+    "GuestDrafts.CannotAddParticipantAfterStart",
+    "Cannot add a participant after the draft has started."
+  );
 }

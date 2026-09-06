@@ -1,7 +1,4 @@
-﻿using OpenTelemetry.Trace;
-using ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.DomainEvents;
-
-namespace ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts;
+﻿namespace ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts;
 
 public sealed class GuestDraft : Entity<GuestDraftId>
 {
@@ -16,6 +13,7 @@ public sealed class GuestDraft : Entity<GuestDraftId>
     string title,
     GuestDraftType guestDraftType,
     DateTime createdOnUtc,
+    DateOnly? dateOnly = null,
     GuestDraftId? id = null
   )
     : base(id ?? GuestDraftId.CreateUnique())
@@ -25,6 +23,7 @@ public sealed class GuestDraft : Entity<GuestDraftId>
     Title = title;
     GuestDraftType = guestDraftType;
     GuestDraftStatus = GuestDraftStatus.Created;
+    DraftDate = dateOnly;
     CreatedOnUtc = createdOnUtc;
   }
 
@@ -43,6 +42,7 @@ public sealed class GuestDraft : Entity<GuestDraftId>
 
   public DateTime CreatedOnUtc { get; private set; }
   public DateTime? UpdatedOnUtc { get; private set; }
+  public DateOnly? DraftDate { get; private set; }
 
   public GuestDraftGameBoard? GameBoard { get; private set; }
 
@@ -54,7 +54,8 @@ public sealed class GuestDraft : Entity<GuestDraftId>
     Guid ownerUserId,
     string ownerParticipantPublicId,
     string title,
-    GuestDraftType guestDraftType
+    GuestDraftType guestDraftType,
+    DateOnly? draftDate = null
   )
   {
     if (string.IsNullOrWhiteSpace(title))
@@ -67,46 +68,44 @@ public sealed class GuestDraft : Entity<GuestDraftId>
       ownerUserId: ownerUserId,
       title: title,
       guestDraftType: guestDraftType,
-      createdOnUtc: DateTime.UtcNow
-    );
-
-    guestDraft._participants.Add(
-      GuestDraftParticipant.Create(
-        publicId: ownerParticipantPublicId,
-        guestDraftId: guestDraft.Id,
-        userId: ownerUserId,
-        isOwner: true
-      )
+      createdOnUtc: DateTime.UtcNow,
+      dateOnly: draftDate
     );
 
     return Result.Success(guestDraft);
   }
 
-  public Result<GuestDraftParticipant> InviteParticipant(string participantPublicId, Guid userId)
+  public Result SetDraftDate(DateOnly? draftDate)
+  {
+    DraftDate = draftDate;
+    UpdatedOnUtc = DateTime.UtcNow;
+    return Result.Success();
+  }
+
+  public Result<GuestDraftParticipant> AddParticipant(GuestParticipant participant, bool isOwner)
   {
     if (GuestDraftStatus != GuestDraftStatus.Created)
     {
-      return Result.Failure<GuestDraftParticipant>(GuestDraftErrors.CannotInviteAfterStart);
+      return Result.Failure<GuestDraftParticipant>(GuestDraftErrors.CannotAddParticipantAfterStart);
     }
 
-    if (_participants.Any(p => p.UserId == userId))
+    if (_participants.Any(p => p.ParticipantId == participant))
     {
       return Result.Failure<GuestDraftParticipant>(
-        GuestDraftErrors.ParticipantAlreadyAdded(userId)
+        GuestDraftErrors.ParticipantAlreadyAdded(participant.Value)
       );
     }
 
-    var participant = GuestDraftParticipant.Create(
-      publicId: participantPublicId,
+    var newParticipant = GuestDraftParticipant.Create(
       guestDraftId: Id,
-      userId: userId,
-      isOwner: false
+      participantId: participant,
+      isOwner: isOwner
     );
 
-    _participants.Add(participant);
+    _participants.Add(newParticipant);
     UpdatedOnUtc = DateTime.UtcNow;
 
-    return Result.Success(participant);
+    return Result.Success(newParticipant);
   }
 
   // ── Participant lookup ───────────────────────────────────────────────────
@@ -123,6 +122,9 @@ public sealed class GuestDraft : Entity<GuestDraftId>
       $"Participant not found: {participantId}",
       nameof(participantId)
     );
+
+  public GuestDraftParticipant? FindByParticipantRef(GuestParticipant participant) =>
+    _participants.FirstOrDefault(p => p.ParticipantId == participant);
 
   // ── Board setup ──────────────────────────────────────────────────────────
 

@@ -1,48 +1,63 @@
-﻿namespace ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.Entities;
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Participants;
 
+namespace ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts;
+
+/// <summary>
+/// Redesigned to mirror canonical DraftPartParticipant exactly: participants are
+/// referenced by a raw (Guid Value, Kind) pair, not a direct navigation to
+/// GuestDrafter/GuestDrafterTeam (those are separate aggregates -- no cross-
+/// aggregate EF navigation, same as DraftPartParticipant has none to Drafter).
+/// No PublicId of its own either, matching DraftPartParticipant -- "which
+/// participant" is addressed via the underlying GuestDrafter's/GuestDrafterTeam's
+/// own PublicId, resolved through GuestParticipantResolver at the Features layer,
+/// not stored redundantly here.
+/// </summary>
 public sealed class GuestDraftParticipant : Entity<GuestDraftParticipantId>
 {
   private GuestDraftParticipant(
-    string publicId,
     GuestDraftId guestDraftId,
-    Guid userId,
+    GuestParticipant participantId,
     bool isOwner,
     DateTime joinedOnUtc,
-    GuestDraftParticipantId? id = null)
+    GuestDraftParticipantId? id = null
+  )
     : base(id ?? GuestDraftParticipantId.CreateUnique())
   {
-    PublicId = publicId;
     GuestDraftId = guestDraftId;
-    UserId = userId;
+    ParticipantIdValue = participantId.Value;
+    ParticipantKindValue = participantId.Kind;
     IsOwner = isOwner;
     JoinedOnUtc = joinedOnUtc;
   }
 
-  private GuestDraftParticipant()
-  {
-  }
+  private GuestDraftParticipant() { }
 
-  public string PublicId { get; private set; } = default!;
   public GuestDraftId GuestDraftId { get; private set; } = default!;
-  public Guid UserId { get; private set; }
+
+  public Guid ParticipantIdValue { get; private set; }
+  public GuestParticipantKind ParticipantKindValue { get; private set; } = default!;
+
+  public GuestParticipant ParticipantId => new(ParticipantIdValue, ParticipantKindValue);
+
+  /// <summary>
+  /// Set at add-time by the handler (caller.UserId == guestDraft.OwnerUserId at
+  /// the moment this participant is added) -- not implied automatically the way
+  /// it used to be. The owner is a commissioner/manager role independent of
+  /// playing; they only get this flag on their own participant row if and when
+  /// they add themselves like anyone else.
+  /// </summary>
   public bool IsOwner { get; private set; }
+
   public DateTime JoinedOnUtc { get; private set; }
 
   public GuestDraft GuestDraft { get; private set; } = default!;
 
-  // ── Veto / override / fungible-token economy ────────────────────────────
-  // Mirrors DraftPartParticipant's inventory model, minus the *RollingIn fields
-  // and *RollingOut properties -- a guest draft is always single-part, so there's
-  // no cross-part carryover to model.
+  // ── Veto / override / fungible-token economy -- unchanged from the prior
+  // design; none of this depended on how a participant's identity was stored. ──
 
   public int StartingVetoes { get; private set; } = 1;
-
-  /// <summary>Extra vetoes granted via a position's bonus flag, post-assignment.</summary>
   public int AwardedVetoes { get; private set; }
-
-  /// <summary>Extra veto overrides granted via a position's bonus flag.</summary>
   public int AwardedVetoOverrides { get; private set; }
-
   public int CommissionerOverrides { get; private set; }
 
   public int FungibleTokens { get; private set; }
@@ -65,17 +80,17 @@ public sealed class GuestDraftParticipant : Entity<GuestDraftParticipantId>
     || RemainingFungibleTokens >= 1;
 
   internal static GuestDraftParticipant Create(
-    string publicId,
     GuestDraftId guestDraftId,
-    Guid userId,
-    bool isOwner)
+    GuestParticipant participantId,
+    bool isOwner
+  )
   {
     return new GuestDraftParticipant(
-      publicId: publicId,
       guestDraftId: guestDraftId,
-      userId: userId,
+      participantId: participantId,
       isOwner: isOwner,
-      joinedOnUtc: DateTime.UtcNow);
+      joinedOnUtc: DateTime.UtcNow
+    );
   }
 
   internal void InitializeVetoes(int startingVetoes, int fungibleTokens = 0)
