@@ -7,9 +7,11 @@ public sealed class SetCustomPositionsTests(GuestDraftsIntegrationTestWebAppFact
   public async Task SetCustomPositions_ForACustomDraftType_ShouldSucceedAsync()
   {
     // Arrange
-    var owner = CreateUser();
-    var guestDraftPublicId = await CreateGuestDraftAsync(owner, GuestDraftType.MiniMega);
-    await InviteParticipantAsync(guestDraftPublicId, owner, CreateUser());
+    var owner = await CreateUserAsync();
+    var other = await CreateUserAsync();
+    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, GuestDraftType.MiniMega);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, other.GuestDrafterPublicId);
 
     List<PositionInput> positions =
     [
@@ -18,7 +20,7 @@ public sealed class SetCustomPositionsTests(GuestDraftsIntegrationTestWebAppFact
     ];
 
     // Act
-    var result = await SetCustomPositionsAsync(guestDraftPublicId, owner, positions);
+    var result = await SetCustomPositionsAsync(guestDraftPublicId, owner.UserPublicId, positions);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -33,9 +35,11 @@ public sealed class SetCustomPositionsTests(GuestDraftsIntegrationTestWebAppFact
   {
     // Arrange
     GuestDraftType.TryFromName(typeName, ignoreCase: true, out var type).Should().BeTrue();
-    var owner = CreateUser();
-    var guestDraftPublicId = await CreateGuestDraftAsync(owner, type);
-    await InviteParticipantAsync(guestDraftPublicId, owner, CreateUser());
+    var owner = await CreateUserAsync();
+    var other = await CreateUserAsync();
+    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, type);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, other.GuestDrafterPublicId);
 
     List<PositionInput> positions =
     [
@@ -44,7 +48,7 @@ public sealed class SetCustomPositionsTests(GuestDraftsIntegrationTestWebAppFact
     ];
 
     // Act
-    var result = await SetCustomPositionsAsync(guestDraftPublicId, owner, positions);
+    var result = await SetCustomPositionsAsync(guestDraftPublicId, owner.UserPublicId, positions);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -55,10 +59,11 @@ public sealed class SetCustomPositionsTests(GuestDraftsIntegrationTestWebAppFact
   public async Task SetCustomPositions_WhenCallerIsNotTheOwner_ShouldFailAsync()
   {
     // Arrange
-    var owner = CreateUser();
-    var other = CreateUser();
-    var guestDraftPublicId = await CreateGuestDraftAsync(owner, GuestDraftType.MiniMega);
-    await InviteParticipantAsync(guestDraftPublicId, owner, other);
+    var owner = await CreateUserAsync();
+    var other = await CreateUserAsync();
+    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, GuestDraftType.MiniMega);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, other.GuestDrafterPublicId);
 
     List<PositionInput> positions =
     [
@@ -67,7 +72,7 @@ public sealed class SetCustomPositionsTests(GuestDraftsIntegrationTestWebAppFact
     ];
 
     // Act
-    var result = await SetCustomPositionsAsync(guestDraftPublicId, other, positions);
+    var result = await SetCustomPositionsAsync(guestDraftPublicId, other.UserPublicId, positions);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -78,8 +83,8 @@ public sealed class SetCustomPositionsTests(GuestDraftsIntegrationTestWebAppFact
   public async Task SetCustomPositions_AfterTheDraftHasStarted_ShouldFailAsync()
   {
     // Arrange
-    var (guestDraftPublicId, users, _) = await CreateInProgressCustomGuestDraftAsync(2);
-    var owner = users[0];
+    var (guestDraftPublicId, users) = await CreateInProgressCustomGuestDraftAsync(2);
+    var owner = users[0].UserPublicId;
 
     List<PositionInput> positions =
     [
@@ -99,10 +104,11 @@ public sealed class SetCustomPositionsTests(GuestDraftsIntegrationTestWebAppFact
   public async Task SetCustomPositions_WhenPositionCountDoesNotMatchParticipantCount_ShouldFailAsync()
   {
     // Arrange -- 3 participants, only 2 positions supplied
-    var owner = CreateUser();
-    var guestDraftPublicId = await CreateGuestDraftAsync(owner, GuestDraftType.MiniMega);
-    await InviteParticipantAsync(guestDraftPublicId, owner, CreateUser());
-    await InviteParticipantAsync(guestDraftPublicId, owner, CreateUser());
+    var owner = await CreateUserAsync();
+    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, GuestDraftType.MiniMega);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, (await CreateUserAsync()).GuestDrafterPublicId);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, (await CreateUserAsync()).GuestDrafterPublicId);
 
     List<PositionInput> positions =
     [
@@ -111,7 +117,7 @@ public sealed class SetCustomPositionsTests(GuestDraftsIntegrationTestWebAppFact
     ];
 
     // Act
-    var result = await SetCustomPositionsAsync(guestDraftPublicId, owner, positions);
+    var result = await SetCustomPositionsAsync(guestDraftPublicId, owner.UserPublicId, positions);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -122,9 +128,11 @@ public sealed class SetCustomPositionsTests(GuestDraftsIntegrationTestWebAppFact
   public async Task SetCustomPositions_WhenPickSlotsAreDuplicatedAcrossPositions_ShouldFailAsync()
   {
     // Arrange
-    var owner = CreateUser();
-    var guestDraftPublicId = await CreateGuestDraftAsync(owner, GuestDraftType.MiniMega);
-    await InviteParticipantAsync(guestDraftPublicId, owner, CreateUser());
+    var owner = await CreateUserAsync();
+    var other = await CreateUserAsync();
+    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, GuestDraftType.MiniMega);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, other.GuestDrafterPublicId);
 
     List<PositionInput> positions =
     [
@@ -133,7 +141,7 @@ public sealed class SetCustomPositionsTests(GuestDraftsIntegrationTestWebAppFact
     ];
 
     // Act
-    var result = await SetCustomPositionsAsync(guestDraftPublicId, owner, positions);
+    var result = await SetCustomPositionsAsync(guestDraftPublicId, owner.UserPublicId, positions);
 
     // Assert
     result.IsFailure.Should().BeTrue();

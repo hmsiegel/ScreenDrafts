@@ -205,7 +205,7 @@ public class GuestDraftApplyVetoTests : GuestDraftsBaseTest
   {
     // Arrange -- checked before any pick lookup, so no picks need to exist
     var guestDraft = CreateGuestDraft(GuestDraftType.Standard);
-    InviteParticipant(guestDraft);
+    AddParticipant(guestDraft);
     var anyPickId = GuestDraftPickId.CreateUnique();
 
     // Act
@@ -241,8 +241,8 @@ public class GuestDraftApplyVetoTests : GuestDraftsBaseTest
     CreateDraftWhereOtherHasExhaustedNormalVetoesButHasOneFungibleToken()
   {
     var guestDraft = CreateGuestDraft(GuestDraftType.MiniMega);
-    var owner = guestDraft.Participants.Single();
-    var other = InviteParticipant(guestDraft);
+    var owner = AddParticipant(guestDraft, isOwner: true);
+    var other = AddParticipant(guestDraft);
 
     List<(string Name, IReadOnlyList<int> Picks, bool HasBonusVeto, bool HasBonusVetoOverride, bool HasBonusFungibleToken)> positions =
     [
@@ -271,8 +271,8 @@ public class GuestDraftApplyVetoTests : GuestDraftsBaseTest
     CreateVetoedPickWhereOtherCanOverride()
   {
     var guestDraft = CreateGuestDraft(GuestDraftType.MiniMega);
-    var picker = guestDraft.Participants.Single();
-    var other = InviteParticipant(guestDraft);
+    var picker = AddParticipant(guestDraft, isOwner: true);
+    var other = AddParticipant(guestDraft);
 
     List<(string Name, IReadOnlyList<int> Picks, bool HasBonusVeto, bool HasBonusVetoOverride, bool HasBonusFungibleToken)> positions =
     [

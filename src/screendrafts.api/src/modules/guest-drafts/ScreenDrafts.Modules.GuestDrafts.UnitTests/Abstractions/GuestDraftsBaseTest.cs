@@ -8,8 +8,8 @@ public abstract class GuestDraftsBaseTest : BaseTest
     string? title = null) =>
     GuestDraftScenarioFactory.CreateGuestDraft(guestDraftType, ownerUserId, title);
 
-  protected static GuestDraftParticipant InviteParticipant(GuestDraft guestDraft, Guid? userId = null) =>
-    GuestDraftScenarioFactory.InviteParticipant(guestDraft, userId);
+  protected static GuestDraftParticipant AddParticipant(GuestDraft guestDraft, bool isOwner = false) =>
+    GuestDraftScenarioFactory.AddParticipant(guestDraft, isOwner);
 
   protected static string GeneratePositionPublicId(string name) =>
     GuestDraftScenarioFactory.GeneratePositionPublicId(name);

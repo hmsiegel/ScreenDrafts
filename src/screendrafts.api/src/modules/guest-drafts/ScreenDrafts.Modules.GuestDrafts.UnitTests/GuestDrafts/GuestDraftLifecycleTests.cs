@@ -21,7 +21,7 @@ public class GuestDraftLifecycleTests : GuestDraftsBaseTest
   [Fact]
   public void Start_ShouldReturnFailure_WhenFewerThanTwoParticipants()
   {
-    // Arrange -- only the owner, nobody invited
+    // Arrange -- nobody added at all
     var guestDraft = CreateGuestDraft();
 
     // Act
@@ -37,7 +37,8 @@ public class GuestDraftLifecycleTests : GuestDraftsBaseTest
   {
     // Arrange
     var guestDraft = CreateGuestDraft();
-    InviteParticipant(guestDraft);
+    AddParticipant(guestDraft, isOwner: true);
+    AddParticipant(guestDraft);
 
     // Act
     var result = guestDraft.Start();
@@ -51,11 +52,12 @@ public class GuestDraftLifecycleTests : GuestDraftsBaseTest
   public void Start_ShouldReturnFailure_WhenPositionCountDoesNotMatchParticipantCount()
   {
     // Arrange -- Standard's fixed layout always has 2 positions, but a 3rd
-    // participant is invited after the board is set up.
+    // participant is added after the board is set up.
     var guestDraft = CreateGuestDraft(GuestDraftType.Standard);
-    InviteParticipant(guestDraft);
+    AddParticipant(guestDraft, isOwner: true);
+    AddParticipant(guestDraft);
     guestDraft.UseFixedBoardLayout(GeneratePositionPublicId);
-    InviteParticipant(guestDraft);
+    AddParticipant(guestDraft);
 
     // Act
     var result = guestDraft.Start();
@@ -70,8 +72,8 @@ public class GuestDraftLifecycleTests : GuestDraftsBaseTest
   {
     // Arrange
     var guestDraft = CreateGuestDraft(GuestDraftType.Standard);
-    var owner = guestDraft.Participants.Single();
-    InviteParticipant(guestDraft);
+    var owner = AddParticipant(guestDraft, isOwner: true);
+    AddParticipant(guestDraft);
     guestDraft.UseFixedBoardLayout(GeneratePositionPublicId);
     var position = guestDraft.GameBoard!.Positions.First();
     guestDraft.AssignParticipantToPosition(position, owner.Id.Value);
@@ -89,8 +91,8 @@ public class GuestDraftLifecycleTests : GuestDraftsBaseTest
   {
     // Arrange
     var guestDraft = CreateGuestDraft(GuestDraftType.Standard);
-    var owner = guestDraft.Participants.Single();
-    var other = InviteParticipant(guestDraft);
+    var owner = AddParticipant(guestDraft, isOwner: true);
+    var other = AddParticipant(guestDraft);
     guestDraft.UseFixedBoardLayout(GeneratePositionPublicId);
     var positions = guestDraft.GameBoard!.Positions.ToList();
     guestDraft.AssignParticipantToPosition(positions[0], owner.Id.Value);
@@ -115,7 +117,7 @@ public class GuestDraftLifecycleTests : GuestDraftsBaseTest
   {
     // Arrange -- still Created, never started
     var guestDraft = CreateGuestDraft();
-    InviteParticipant(guestDraft);
+    AddParticipant(guestDraft);
 
     // Act
     var result = guestDraft.Complete();

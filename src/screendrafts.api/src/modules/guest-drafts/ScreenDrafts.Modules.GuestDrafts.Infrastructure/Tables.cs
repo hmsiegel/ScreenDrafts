@@ -11,4 +11,7 @@ internal static class Tables
   internal const string GuestDraftVetoes = "guest_draft_vetoes";
   internal const string GuestDraftVetoOverrides = "guest_draft_veto_overrides";
   internal const string GuestDraftCommissionerOverrides = "guest_draft_commissioner_overrides";
+  internal const string GuestDrafters = "guest_drafters";
+  internal const string GuestDrafterTeams = "guest_drafter_teams";
+  internal const string GuestDrafterTeamMembers = "guest_drafter_team_members";
 }

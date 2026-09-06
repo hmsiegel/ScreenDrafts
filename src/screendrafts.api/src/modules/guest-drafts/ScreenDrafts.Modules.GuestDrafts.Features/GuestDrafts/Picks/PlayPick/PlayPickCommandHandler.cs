@@ -2,11 +2,13 @@
 
 internal sealed class PlayPickCommandHandler(
   IGuestDraftRepository guestDraftRepository,
+  IGuestDrafterRepository guestDrafterRepository,
   IUsersApi usersApi,
   IMovieTitleReader movieTitleReader
 ) : ICommandHandler<PlayPickCommand>
 {
   private readonly IGuestDraftRepository _guestDraftRepository = guestDraftRepository;
+  private readonly IGuestDrafterRepository _guestDrafterRepository = guestDrafterRepository;
   private readonly IUsersApi _usersApi = usersApi;
   private readonly IMovieTitleReader _movieTitleReader = movieTitleReader;
 
@@ -29,7 +31,17 @@ internal sealed class PlayPickCommandHandler(
       return Result.Failure(UserPublicApiErrors.PublicIdNotFound(request.CallerUserPublicId));
     }
 
-    var participant = guestDraft.Participants.FirstOrDefault(p => p.UserId == caller.UserId);
+    var callerDrafter = await _guestDrafterRepository.GetByUserIdAsync(
+      caller.UserId,
+      cancellationToken
+    );
+
+    if (callerDrafter is null)
+    {
+      return Result.Failure(GuestDrafterErrors.NotFoundForUser(caller.UserId));
+    }
+
+    var participant = guestDraft.FindByParticipantRef(GuestParticipant.From(callerDrafter.Id));
 
     if (participant is null)
     {
@@ -50,8 +62,7 @@ internal sealed class PlayPickCommandHandler(
     // participant" itself when there's exactly one candidate, but with more than
     // one it needs a true random draw, which doesn't belong in a deterministic
     // domain method -- same reasoning as canonical PlayPickCommandHandler's
-    // RandomNumberGenerator usage. Harmless to compute even when there's only one
-    // other participant; GuestDraft.PlayPick only uses it when it actually needs to.
+    // RandomNumberGenerator usage.
     GuestDraftParticipantId? explicitRevealRecipientId = null;
 
     var others = guestDraft.Participants.Where(p => p.Id != participant.Id).ToList();
@@ -66,7 +77,7 @@ internal sealed class PlayPickCommandHandler(
       position: request.Position,
       playOrder: request.PlayOrder,
       participantId: participant.Id.Value,
-      actedByPublicId: participant.PublicId,
+      actedByPublicId: callerDrafter.PublicId,
       explicitRevealRecipientId: explicitRevealRecipientId
     );
 

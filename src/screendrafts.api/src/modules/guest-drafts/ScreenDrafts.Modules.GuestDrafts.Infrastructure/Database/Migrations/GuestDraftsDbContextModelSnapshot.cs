@@ -23,6 +23,25 @@ namespace ScreenDrafts.Modules.GuestDrafts.Infrastructure.Database.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("GuestDrafterGuestDrafterTeam", b =>
+                {
+                    b.Property<Guid>("DraftersId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("drafters_id");
+
+                    b.Property<Guid>("GuestDrafterTeamId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("guest_drafter_team_id");
+
+                    b.HasKey("DraftersId", "GuestDrafterTeamId")
+                        .HasName("pk_guest_drafter_team_members");
+
+                    b.HasIndex("GuestDrafterTeamId")
+                        .HasDatabaseName("ix_guest_drafter_team_members_guest_drafter_team_id");
+
+                    b.ToTable("guest_drafter_team_members", "guest_drafts");
+                });
+
             modelBuilder.Entity("ScreenDrafts.Common.Infrastructure.Inbox.InboxMessage", b =>
                 {
                     b.Property<Guid>("Id")
@@ -129,6 +148,76 @@ namespace ScreenDrafts.Modules.GuestDrafts.Infrastructure.Database.Migrations
                     b.ToTable("outbox_message_consumers", "guest_drafts");
                 });
 
+            modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafterTeams.GuestDrafterTeam", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("name");
+
+                    b.Property<string>("PublicId")
+                        .IsRequired()
+                        .HasMaxLength(19)
+                        .HasColumnType("character varying(19)")
+                        .HasColumnName("public_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_guest_drafter_teams");
+
+                    b.HasIndex("PublicId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_guest_drafter_teams_public_id");
+
+                    b.ToTable("guest_drafter_teams", "guest_drafts");
+                });
+
+            modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafters.GuestDrafter", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("first_name");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("last_name");
+
+                    b.Property<string>("PublicId")
+                        .IsRequired()
+                        .HasMaxLength(19)
+                        .HasColumnType("character varying(19)")
+                        .HasColumnName("public_id");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_guest_drafters");
+
+                    b.HasIndex("PublicId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_guest_drafters_public_id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_guest_drafters_user_id");
+
+                    b.ToTable("guest_drafters", "guest_drafts");
+                });
+
             modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.Entities.GuestDraftCommissionerOverride", b =>
                 {
                     b.Property<Guid>("Id")
@@ -167,102 +256,6 @@ namespace ScreenDrafts.Modules.GuestDrafts.Infrastructure.Database.Migrations
                         .HasDatabaseName("ix_guest_draft_game_boards_guest_draft_id");
 
                     b.ToTable("guest_draft_game_boards", "guest_drafts");
-                });
-
-            modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.Entities.GuestDraftParticipant", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<int>("AwardedFungibleTokens")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasDefaultValue(0)
-                        .HasColumnName("awarded_fungible_tokens");
-
-                    b.Property<int>("AwardedVetoOverrides")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasDefaultValue(0)
-                        .HasColumnName("awarded_veto_overrides");
-
-                    b.Property<int>("AwardedVetoes")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasDefaultValue(0)
-                        .HasColumnName("awarded_vetoes");
-
-                    b.Property<int>("CommissionerOverrides")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasDefaultValue(0)
-                        .HasColumnName("commissioner_overrides");
-
-                    b.Property<int>("FungibleTokens")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasDefaultValue(0)
-                        .HasColumnName("fungible_tokens");
-
-                    b.Property<int>("FungibleTokensUsed")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasDefaultValue(0)
-                        .HasColumnName("fungible_tokens_used");
-
-                    b.Property<Guid>("GuestDraftId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("guest_draft_id");
-
-                    b.Property<bool>("IsOwner")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_owner");
-
-                    b.Property<DateTime>("JoinedOnUtc")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("joined_on_utc");
-
-                    b.Property<string>("PublicId")
-                        .IsRequired()
-                        .HasMaxLength(19)
-                        .HasColumnType("character varying(19)")
-                        .HasColumnName("public_id");
-
-                    b.Property<int>("StartingVetoes")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasDefaultValue(1)
-                        .HasColumnName("starting_vetoes");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("user_id");
-
-                    b.Property<int>("VetoOverridesUsed")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasDefaultValue(0)
-                        .HasColumnName("veto_overrides_used");
-
-                    b.Property<int>("VetoesUsed")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasDefaultValue(0)
-                        .HasColumnName("vetoes_used");
-
-                    b.HasKey("Id")
-                        .HasName("pk_guest_draft_participants");
-
-                    b.HasIndex("PublicId")
-                        .IsUnique()
-                        .HasDatabaseName("ix_guest_draft_participants_public_id");
-
-                    b.HasIndex("GuestDraftId", "UserId")
-                        .IsUnique()
-                        .HasDatabaseName("ix_guest_draft_participants_guest_draft_id_user_id");
-
-                    b.ToTable("guest_draft_participants", "guest_drafts");
                 });
 
             modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.Entities.GuestDraftPick", b =>
@@ -481,6 +474,10 @@ namespace ScreenDrafts.Modules.GuestDrafts.Infrastructure.Database.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_on_utc");
 
+                    b.Property<DateOnly?>("DraftDate")
+                        .HasColumnType("date")
+                        .HasColumnName("draft_date");
+
                     b.Property<int>("GuestDraftStatus")
                         .HasColumnType("integer")
                         .HasColumnName("guest_draft_status");
@@ -529,6 +526,113 @@ namespace ScreenDrafts.Modules.GuestDrafts.Infrastructure.Database.Migrations
                     b.ToTable("guest_drafts", "guest_drafts");
                 });
 
+            modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.GuestDraftParticipant", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<int>("AwardedFungibleTokens")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0)
+                        .HasColumnName("awarded_fungible_tokens");
+
+                    b.Property<int>("AwardedVetoOverrides")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0)
+                        .HasColumnName("awarded_veto_overrides");
+
+                    b.Property<int>("AwardedVetoes")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0)
+                        .HasColumnName("awarded_vetoes");
+
+                    b.Property<int>("CommissionerOverrides")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0)
+                        .HasColumnName("commissioner_overrides");
+
+                    b.Property<int>("FungibleTokens")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0)
+                        .HasColumnName("fungible_tokens");
+
+                    b.Property<int>("FungibleTokensUsed")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0)
+                        .HasColumnName("fungible_tokens_used");
+
+                    b.Property<Guid>("GuestDraftId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("guest_draft_id");
+
+                    b.Property<bool>("IsOwner")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_owner");
+
+                    b.Property<DateTime>("JoinedOnUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("joined_on_utc");
+
+                    b.Property<Guid>("ParticipantIdValue")
+                        .HasColumnType("uuid")
+                        .HasColumnName("participant_id_value");
+
+                    b.Property<int>("ParticipantKindValue")
+                        .HasColumnType("integer")
+                        .HasColumnName("participant_kind_value");
+
+                    b.Property<int>("StartingVetoes")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(1)
+                        .HasColumnName("starting_vetoes");
+
+                    b.Property<int>("VetoOverridesUsed")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0)
+                        .HasColumnName("veto_overrides_used");
+
+                    b.Property<int>("VetoesUsed")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0)
+                        .HasColumnName("vetoes_used");
+
+                    b.HasKey("Id")
+                        .HasName("pk_guest_draft_participants");
+
+                    b.HasIndex("GuestDraftId", "ParticipantIdValue", "ParticipantKindValue")
+                        .IsUnique()
+                        .HasDatabaseName("ix_guest_draft_participants_guest_draft_id_participant_id_valu");
+
+                    b.ToTable("guest_draft_participants", "guest_drafts");
+                });
+
+            modelBuilder.Entity("GuestDrafterGuestDrafterTeam", b =>
+                {
+                    b.HasOne("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafters.GuestDrafter", null)
+                        .WithMany()
+                        .HasForeignKey("DraftersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_guest_drafter_team_members_guest_drafters_drafters_id");
+
+                    b.HasOne("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafterTeams.GuestDrafterTeam", null)
+                        .WithMany()
+                        .HasForeignKey("GuestDrafterTeamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_guest_drafter_team_members_guest_drafter_teams_guest_drafte");
+                });
+
             modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.Entities.GuestDraftCommissionerOverride", b =>
                 {
                     b.HasOne("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.Entities.GuestDraftPick", "Pick")
@@ -551,18 +655,6 @@ namespace ScreenDrafts.Modules.GuestDrafts.Infrastructure.Database.Migrations
                         .HasConstraintName("fk_guest_draft_game_boards_guest_drafts_guest_draft_id");
                 });
 
-            modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.Entities.GuestDraftParticipant", b =>
-                {
-                    b.HasOne("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.GuestDraft", "GuestDraft")
-                        .WithMany("Participants")
-                        .HasForeignKey("GuestDraftId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_guest_draft_participants_guest_drafts_guest_draft_id");
-
-                    b.Navigation("GuestDraft");
-                });
-
             modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.Entities.GuestDraftPick", b =>
                 {
                     b.HasOne("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.GuestDraft", null)
@@ -572,14 +664,14 @@ namespace ScreenDrafts.Modules.GuestDrafts.Infrastructure.Database.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_guest_draft_picks_guest_drafts_guest_draft_id");
 
-                    b.HasOne("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.Entities.GuestDraftParticipant", "PlayedByParticipant")
+                    b.HasOne("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.GuestDraftParticipant", "PlayedByParticipant")
                         .WithMany()
                         .HasForeignKey("PlayedByParticipantId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
                         .HasConstraintName("fk_guest_draft_picks_guest_draft_participants_played_by_partic");
 
-                    b.HasOne("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.Entities.GuestDraftParticipant", "RevealAuthorizedParticipant")
+                    b.HasOne("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.GuestDraftParticipant", "RevealAuthorizedParticipant")
                         .WithMany()
                         .HasForeignKey("RevealAuthorizedParticipantId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -649,7 +741,7 @@ namespace ScreenDrafts.Modules.GuestDrafts.Infrastructure.Database.Migrations
 
             modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.Entities.GuestDraftVeto", b =>
                 {
-                    b.HasOne("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.Entities.GuestDraftParticipant", "IssuedByParticipant")
+                    b.HasOne("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.GuestDraftParticipant", "IssuedByParticipant")
                         .WithMany()
                         .HasForeignKey("IssuedByParticipantId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -670,7 +762,7 @@ namespace ScreenDrafts.Modules.GuestDrafts.Infrastructure.Database.Migrations
 
             modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.Entities.GuestDraftVetoOverride", b =>
                 {
-                    b.HasOne("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.Entities.GuestDraftParticipant", "IssuedByParticipant")
+                    b.HasOne("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.GuestDraftParticipant", "IssuedByParticipant")
                         .WithMany()
                         .HasForeignKey("IssuedByParticipantId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -687,6 +779,18 @@ namespace ScreenDrafts.Modules.GuestDrafts.Infrastructure.Database.Migrations
                     b.Navigation("IssuedByParticipant");
 
                     b.Navigation("Veto");
+                });
+
+            modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.GuestDraftParticipant", b =>
+                {
+                    b.HasOne("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.GuestDraft", "GuestDraft")
+                        .WithMany("Participants")
+                        .HasForeignKey("GuestDraftId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_guest_draft_participants_guest_drafts_guest_draft_id");
+
+                    b.Navigation("GuestDraft");
                 });
 
             modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.Entities.GuestDraftGameBoard", b =>

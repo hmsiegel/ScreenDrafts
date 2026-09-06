@@ -7,12 +7,14 @@ public sealed class SetFixedBoardLayoutTests(GuestDraftsIntegrationTestWebAppFac
   public async Task SetFixedBoardLayout_ForStandard_ShouldApplyTheStandardTemplateExactlyAsync()
   {
     // Arrange
-    var owner = CreateUser();
-    var guestDraftPublicId = await CreateGuestDraftAsync(owner, GuestDraftType.Standard);
-    await InviteParticipantAsync(guestDraftPublicId, owner, CreateUser());
+    var owner = await CreateUserAsync();
+    var other = await CreateUserAsync();
+    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, GuestDraftType.Standard);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, other.GuestDrafterPublicId);
 
     // Act
-    var result = await SetFixedBoardLayoutAsync(guestDraftPublicId, owner);
+    var result = await SetFixedBoardLayoutAsync(guestDraftPublicId, owner.UserPublicId);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -27,12 +29,14 @@ public sealed class SetFixedBoardLayoutTests(GuestDraftsIntegrationTestWebAppFac
   public async Task SetFixedBoardLayout_ForMiniSuper_ShouldApplyTheMiniSuperTemplateExactlyAsync()
   {
     // Arrange
-    var owner = CreateUser();
-    var guestDraftPublicId = await CreateGuestDraftAsync(owner, GuestDraftType.MiniSuper);
-    await InviteParticipantAsync(guestDraftPublicId, owner, CreateUser());
+    var owner = await CreateUserAsync();
+    var other = await CreateUserAsync();
+    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, GuestDraftType.MiniSuper);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, other.GuestDrafterPublicId);
 
     // Act
-    var result = await SetFixedBoardLayoutAsync(guestDraftPublicId, owner);
+    var result = await SetFixedBoardLayoutAsync(guestDraftPublicId, owner.UserPublicId);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -51,12 +55,14 @@ public sealed class SetFixedBoardLayoutTests(GuestDraftsIntegrationTestWebAppFac
   {
     // Arrange
     GuestDraftType.TryFromName(typeName, ignoreCase: true, out var type).Should().BeTrue();
-    var owner = CreateUser();
-    var guestDraftPublicId = await CreateGuestDraftAsync(owner, type);
-    await InviteParticipantAsync(guestDraftPublicId, owner, CreateUser());
+    var owner = await CreateUserAsync();
+    var other = await CreateUserAsync();
+    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, type);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, other.GuestDrafterPublicId);
 
     // Act
-    var result = await SetFixedBoardLayoutAsync(guestDraftPublicId, owner);
+    var result = await SetFixedBoardLayoutAsync(guestDraftPublicId, owner.UserPublicId);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -67,13 +73,14 @@ public sealed class SetFixedBoardLayoutTests(GuestDraftsIntegrationTestWebAppFac
   public async Task SetFixedBoardLayout_WhenCallerIsNotTheOwner_ShouldFailAsync()
   {
     // Arrange
-    var owner = CreateUser();
-    var other = CreateUser();
-    var guestDraftPublicId = await CreateGuestDraftAsync(owner, GuestDraftType.Standard);
-    await InviteParticipantAsync(guestDraftPublicId, owner, other);
+    var owner = await CreateUserAsync();
+    var other = await CreateUserAsync();
+    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, GuestDraftType.Standard);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, other.GuestDrafterPublicId);
 
     // Act
-    var result = await SetFixedBoardLayoutAsync(guestDraftPublicId, other);
+    var result = await SetFixedBoardLayoutAsync(guestDraftPublicId, other.UserPublicId);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -84,7 +91,7 @@ public sealed class SetFixedBoardLayoutTests(GuestDraftsIntegrationTestWebAppFac
   public async Task SetFixedBoardLayout_AfterTheDraftHasStarted_ShouldFailAsync()
   {
     // Arrange
-    var (guestDraftPublicId, owner, _, _, _) = await CreateInProgressStandardGuestDraftAsync();
+    var (guestDraftPublicId, owner, _) = await CreateInProgressStandardGuestDraftAsync();
 
     // Act
     var result = await SetFixedBoardLayoutAsync(guestDraftPublicId, owner);

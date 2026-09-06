@@ -12,6 +12,8 @@ public sealed class GuestDraftsDbContext(DbContextOptions<GuestDraftsDbContext> 
   internal DbSet<GuestDraftVeto> GuestDraftVetoes { get; set; }
   internal DbSet<GuestDraftVetoOverride> GuestDraftVetoOverrides { get; set; }
   internal DbSet<GuestDraftCommissionerOverride> GuestDraftCommissionerOverrides { get; set; }
+  internal DbSet<GuestDrafter> GuestDrafters { get; set; }
+  internal DbSet<GuestDrafterTeam> GuestDrafterTeams { get; set; }
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {

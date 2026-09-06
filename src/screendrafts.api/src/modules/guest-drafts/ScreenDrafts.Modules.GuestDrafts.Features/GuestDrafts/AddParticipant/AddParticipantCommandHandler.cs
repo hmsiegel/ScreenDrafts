@@ -1,0 +1,68 @@
+﻿namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.AddParticipant;
+
+internal sealed class AddParticipantCommandHandler(
+  IGuestDraftRepository guestDraftRepository,
+  IGuestDrafterRepository guestDrafterRepository,
+  IUsersApi usersApi
+) : ICommandHandler<AddParticipantCommand>
+{
+  private readonly IGuestDraftRepository _guestDraftRepository = guestDraftRepository;
+  private readonly IGuestDrafterRepository _guestDrafterRepository = guestDrafterRepository;
+  private readonly IUsersApi _usersApi = usersApi;
+
+  public async Task<Result> Handle(
+    AddParticipantCommand request,
+    CancellationToken cancellationToken
+  )
+  {
+    var guestDraft = await _guestDraftRepository.GetByPublicIdWithParticipantsAsync(
+      request.GuestDraftPublicId,
+      cancellationToken
+    );
+
+    if (guestDraft is null)
+    {
+      return Result.Failure(GuestDraftErrors.NotFound(request.GuestDraftPublicId));
+    }
+
+    var caller = await _usersApi.GetUserByPublicId(request.CallerUserPublicId, cancellationToken);
+
+    if (caller is null)
+    {
+      return Result.Failure(UserPublicApiErrors.PublicIdNotFound(request.CallerUserPublicId));
+    }
+
+    if (caller.UserId != guestDraft.OwnerUserId)
+    {
+      return Result.Failure(GuestDraftErrors.OnlyOwnerCanPerformThisAction);
+    }
+
+    var guestDrafter = await _guestDrafterRepository.GetByPublicIdAsync(
+      request.GuestDrafterPublicId,
+      cancellationToken
+    );
+
+    if (guestDrafter is null)
+    {
+      return Result.Failure(GuestDrafterErrors.NotFound(request.GuestDrafterPublicId));
+    }
+
+    var participant = GuestParticipant.From(guestDrafter.Id);
+
+    // Computed here, not assumed: this tells us whether the GuestDrafter being
+    // added IS the owner (adding themselves), not just whether the caller
+    // happens to be the owner (already confirmed above -- AddParticipant is
+    // owner-only regardless of who's being added).
+    var isOwner = guestDrafter.UserId == guestDraft.OwnerUserId;
+
+    var result = guestDraft.AddParticipant(participant, isOwner);
+
+    if (result.IsFailure)
+    {
+      return Result.Failure(result.Errors);
+    }
+
+    _guestDraftRepository.Update(guestDraft);
+    return Result.Success();
+  }
+}

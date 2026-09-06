@@ -32,4 +32,10 @@ public static class GuestDrafterErrors
       "GuestDrafters.AlreadyAdded",
       $"Guest drafter with id {guestDrafterId} has already been added to this team."
     );
+
+  public static SDError AlreadyExistsForUser(Guid userId) =>
+    SDError.Conflict(
+      "GuestDrafters.AlreadyExistsForUser",
+      $"A guest drafter already exists for user {userId}."
+    );
 }

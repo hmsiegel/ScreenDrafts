@@ -11,7 +11,7 @@ internal static class GuestDraftsOpenApi
   {
     // Guest Drafts
     public const string GuestDrafts_CreateGuestDraft = "GuestDrafts.CreateGuestDraft";
-    public const string GuestDrafts_InviteParticipant = "GuestDrafts.InviteParticipant";
+    public const string GuestDrafts_AddParticipant = "GuestDrafts.AddParticipant";
     public const string GuestDrafts_SetFixedBoardLayout = "GuestDrafts.SetFixedBoardLayout";
     public const string GuestDrafts_SetCustomPositions = "GuestDrafts.SetCustomPositions";
     public const string GuestDrafts_AssignParticipantToPosition =

@@ -1,4 +1,7 @@
-﻿namespace ScreenDrafts.Modules.GuestDrafts.Infrastructure.Converters;
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafters;
+using ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafterTeams;
+
+namespace ScreenDrafts.Modules.GuestDrafts.Infrastructure.Converters;
 
 internal static class IdConverters
 {
@@ -37,4 +40,10 @@ internal static class IdConverters
     Guid
   > GuestDraftCommissionerOverrideIdConverter =>
     new(v => v.Value, v => GuestDraftCommissionerOverrideId.Create(v));
+
+  public static ValueConverter<GuestDrafterId, Guid> GuestDrafterIdConverter =>
+    new(v => v.Value, v => GuestDrafterId.Create(v));
+
+  public static ValueConverter<GuestDrafterTeamId, Guid> GuestDrafterTeamIdConverter =>
+    new(v => v.Value, v => GuestDrafterTeamId.Create(v));
 }

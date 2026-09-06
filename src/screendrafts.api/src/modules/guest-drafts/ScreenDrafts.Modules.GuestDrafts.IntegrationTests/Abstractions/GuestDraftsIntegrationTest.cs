@@ -1,4 +1,16 @@
-﻿namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.Abstractions;
+namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.Abstractions;
+
+/// <summary>
+/// A user created for a test, together with the GuestDrafter record that must now
+/// exist before the user can be added as a participant to any guest draft.
+/// UserPublicId is what CallerUserPublicId/OwnerUserPublicId still expect;
+/// GuestDrafterPublicId is what AddParticipant/AssignParticipantToPosition expect
+/// instead of a user or (now-deleted) participant public id; GuestDrafterId is the
+/// GuestDrafter's own internal id, needed only to match a loaded
+/// GuestDraftParticipant back to this user via ParticipantIdValue (which stores
+/// GuestDrafter ids now, not UserIds).
+/// </summary>
+public sealed record TestUser(string UserPublicId, string GuestDrafterPublicId, Guid GuestDrafterId);
 
 [Collection(nameof(GuestDraftsIntegrationTestCollection))]
 [System.Diagnostics.CodeAnalysis.SuppressMessage(
@@ -31,7 +43,8 @@ public abstract class GuestDraftsIntegrationTest(GuestDraftsIntegrationTestWebAp
         guest_drafts.guest_draft_positions,
         guest_drafts.guest_draft_game_boards,
         guest_drafts.guest_draft_participants,
-        guest_drafts.guest_drafts
+        guest_drafts.guest_drafts,
+        guest_drafts.guest_drafters
       RESTART IDENTITY CASCADE;
       """
     );
@@ -41,12 +54,39 @@ public abstract class GuestDraftsIntegrationTest(GuestDraftsIntegrationTestWebAp
   }
 
   /// <summary>
-  /// Registers a fake user and returns its UserPublicId -- the value every
-  /// GuestDrafts command expects (OwnerUserPublicId, CallerUserPublicId,
-  /// InviteeUserPublicId, ...).
+  /// Registers a fake user AND its GuestDrafter record -- GuestDrafter rows are
+  /// normally created by consuming UserRegisteredIntegrationEvent in production,
+  /// but publishing a real event through the outbox/inbox here would be slow and
+  /// flaky, so this sends CreateGuestDrafterCommand directly instead. Every
+  /// GuestDrafts command still expects UserPublicId (OwnerUserPublicId,
+  /// CallerUserPublicId, ...); AddParticipant/AssignParticipantToPosition expect
+  /// GuestDrafterPublicId instead.
   /// </summary>
-  protected string CreateUser() =>
-    FakeUsersApi.RegisterUser(Guid.NewGuid(), $"u_{Faker.Random.AlphaNumeric(15)}");
+  protected async Task<TestUser> CreateUserAsync()
+  {
+    var ct = TestContext.Current.CancellationToken;
+    var userId = Guid.NewGuid();
+    var userPublicId = FakeUsersApi.RegisterUser(userId, $"u_{Faker.Random.AlphaNumeric(15)}");
+
+    var createResult = await Sender.Send(
+      new CreateGuestDrafterCommand
+      {
+        UserId = userId,
+        FirstName = "Test",
+        LastName = "User",
+      },
+      ct
+    );
+
+    createResult.IsSuccess.Should().BeTrue("test setup must be able to create a guest drafter for the new user");
+
+    var guestDrafterPublicId = createResult.Value;
+    var guestDrafterId = (
+      await DbContext.GuestDrafters.FirstAsync(d => d.PublicId == guestDrafterPublicId, ct)
+    ).Id.Value;
+
+    return new TestUser(userPublicId, guestDrafterPublicId, guestDrafterId);
+  }
 
   /// <summary>
   /// Registers a fake movie and returns its MoviePublicId -- the value
@@ -78,18 +118,18 @@ public abstract class GuestDraftsIntegrationTest(GuestDraftsIntegrationTestWebAp
     return result.Value;
   }
 
-  protected async Task<Result> InviteParticipantAsync(
+  protected async Task<Result> AddParticipantAsync(
     string guestDraftPublicId,
     string callerUserPublicId,
-    string inviteeUserPublicId
+    string guestDrafterPublicId
   )
   {
     return await Sender.Send(
-      new InviteParticipantCommand
+      new AddParticipantCommand
       {
         GuestDraftPublicId = guestDraftPublicId,
         CallerUserPublicId = callerUserPublicId,
-        InviteeUserPublicId = inviteeUserPublicId,
+        GuestDrafterPublicId = guestDrafterPublicId,
       },
       TestContext.Current.CancellationToken
     );
@@ -99,7 +139,7 @@ public abstract class GuestDraftsIntegrationTest(GuestDraftsIntegrationTestWebAp
     string guestDraftPublicId,
     string callerUserPublicId,
     string positionPublicId,
-    string participantPublicId
+    string guestDrafterPublicId
   )
   {
     return await Sender.Send(
@@ -108,10 +148,24 @@ public abstract class GuestDraftsIntegrationTest(GuestDraftsIntegrationTestWebAp
         GuestDraftPublicId = guestDraftPublicId,
         PositionPublicId = positionPublicId,
         CallerUserPublicId = callerUserPublicId,
-        ParticipantPublicId = participantPublicId,
+        GuestDrafterPublicId = guestDrafterPublicId,
       },
       TestContext.Current.CancellationToken
     );
+  }
+
+  /// <summary>
+  /// Resolves the internal GuestDrafter id behind a UserPublicId -- needed to
+  /// match a loaded GuestDraftParticipant back to a specific user via
+  /// ParticipantIdValue, when all a test has on hand is the UserPublicId string
+  /// returned by CreateInProgressStandardGuestDraftAsync/
+  /// CreateInProgressCustomGuestDraftAsync rather than a TestUser.
+  /// </summary>
+  protected async Task<Guid> GetGuestDrafterIdAsync(string userPublicId)
+  {
+    var ct = TestContext.Current.CancellationToken;
+    var userId = (await FakeUsersApi.GetUserByPublicId(userPublicId, ct))!.UserId;
+    return (await DbContext.GuestDrafters.FirstAsync(d => d.UserId == userId, ct)).Id.Value;
   }
 
   protected async Task<GuestDraft> GetGuestDraftWithBoardAsync(string guestDraftPublicId)
@@ -126,49 +180,47 @@ public abstract class GuestDraftsIntegrationTest(GuestDraftsIntegrationTestWebAp
   /// <summary>
   /// Two-participant Standard guest draft with the fixed layout applied, both
   /// positions assigned (owner -> "A" [7,6,4,2], other -> "B" [5,3,1]), and started.
+  /// Create no longer auto-adds the owner as a participant, so both the owner and
+  /// the other user are added explicitly, exactly the same way.
   /// </summary>
   protected async Task<(
     string GuestDraftPublicId,
     string OwnerUserPublicId,
-    string OtherUserPublicId,
-    string OwnerParticipantPublicId,
-    string OtherParticipantPublicId
+    string OtherUserPublicId
   )> CreateInProgressStandardGuestDraftAsync()
   {
     var ct = TestContext.Current.CancellationToken;
-    var owner = CreateUser();
-    var other = CreateUser();
+    var owner = await CreateUserAsync();
+    var other = await CreateUserAsync();
 
-    var guestDraftPublicId = await CreateGuestDraftAsync(owner, GuestDraftType.Standard);
-    (await InviteParticipantAsync(guestDraftPublicId, owner, other))
+    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, GuestDraftType.Standard);
+    (await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId))
       .IsSuccess.Should()
-      .BeTrue("test setup must be able to invite the second participant");
+      .BeTrue("test setup must be able to add the owner as a participant");
+    (await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, other.GuestDrafterPublicId))
+      .IsSuccess.Should()
+      .BeTrue("test setup must be able to add the second participant");
 
     var layoutResult = await Sender.Send(
       new SetFixedBoardLayoutCommand
       {
         GuestDraftPublicId = guestDraftPublicId,
-        CallerUserPublicId = owner,
+        CallerUserPublicId = owner.UserPublicId,
       },
       ct
     );
     layoutResult.IsSuccess.Should().BeTrue("test setup must be able to set the fixed board layout");
 
-    var ownerUserId = (await FakeUsersApi.GetUserByPublicId(owner, ct))!.UserId;
-    var otherUserId = (await FakeUsersApi.GetUserByPublicId(other, ct))!.UserId;
-
     var guestDraft = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
-    var ownerParticipant = guestDraft.Participants.Single(p => p.UserId == ownerUserId);
-    var otherParticipant = guestDraft.Participants.Single(p => p.UserId == otherUserId);
     var positionA = guestDraft.GameBoard!.Positions.Single(p => p.Name == "A");
     var positionB = guestDraft.GameBoard.Positions.Single(p => p.Name == "B");
 
     (
       await AssignParticipantAsync(
         guestDraftPublicId,
-        owner,
+        owner.UserPublicId,
         positionA.PublicId,
-        ownerParticipant.PublicId
+        owner.GuestDrafterPublicId
       )
     )
       .IsSuccess.Should()
@@ -176,9 +228,9 @@ public abstract class GuestDraftsIntegrationTest(GuestDraftsIntegrationTestWebAp
     (
       await AssignParticipantAsync(
         guestDraftPublicId,
-        owner,
+        owner.UserPublicId,
         positionB.PublicId,
-        otherParticipant.PublicId
+        other.GuestDrafterPublicId
       )
     )
       .IsSuccess.Should()
@@ -188,44 +240,44 @@ public abstract class GuestDraftsIntegrationTest(GuestDraftsIntegrationTestWebAp
       new SetGuestDraftStatusCommand
       {
         GuestDraftPublicId = guestDraftPublicId,
-        CallerUserPublicId = owner,
+        CallerUserPublicId = owner.UserPublicId,
         Action = GuestDraftStatusAction.Start,
       },
       ct
     );
     startResult.IsSuccess.Should().BeTrue("test setup must be able to start the guest draft");
 
-    return (guestDraftPublicId, owner, other, ownerParticipant.PublicId, otherParticipant.PublicId);
+    return (guestDraftPublicId, owner.UserPublicId, other.UserPublicId);
   }
 
   /// <summary>
   /// Custom-layout guest draft (MiniMega by default) with one position per
   /// participant, each carrying a single unique pick slot, fully assigned and
   /// started. Used for scenarios that need more than two participants. The first
-  /// user in the returned list is always the owner.
+  /// user in the returned list is always the owner; every participant, owner
+  /// included, is added explicitly since Create no longer auto-adds the owner.
   /// </summary>
   protected async Task<(
     string GuestDraftPublicId,
-    IReadOnlyList<string> UserPublicIds,
-    IReadOnlyList<string> ParticipantPublicIds
+    IReadOnlyList<TestUser> Users
   )> CreateInProgressCustomGuestDraftAsync(int participantCount, GuestDraftType? type = null)
   {
     var ct = TestContext.Current.CancellationToken;
-    var users = new List<string> { CreateUser() };
+    var users = new List<TestUser>();
 
-    for (var i = 1; i < participantCount; i++)
+    for (var i = 0; i < participantCount; i++)
     {
-      users.Add(CreateUser());
+      users.Add(await CreateUserAsync());
     }
 
     var owner = users[0];
-    var guestDraftPublicId = await CreateGuestDraftAsync(owner, type ?? GuestDraftType.MiniMega);
+    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, type ?? GuestDraftType.MiniMega);
 
-    for (var i = 1; i < users.Count; i++)
+    foreach (var user in users)
     {
-      (await InviteParticipantAsync(guestDraftPublicId, owner, users[i]))
+      (await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, user.GuestDrafterPublicId))
         .IsSuccess.Should()
-        .BeTrue("test setup must be able to invite every participant");
+        .BeTrue("test setup must be able to add every participant, including the owner");
     }
 
     var positions = Enumerable
@@ -237,7 +289,7 @@ public abstract class GuestDraftsIntegrationTest(GuestDraftsIntegrationTestWebAp
       new SetCustomPositionsCommand
       {
         GuestDraftPublicId = guestDraftPublicId,
-        CallerUserPublicId = owner,
+        CallerUserPublicId = owner.UserPublicId,
         Positions = positions,
       },
       ct
@@ -246,20 +298,15 @@ public abstract class GuestDraftsIntegrationTest(GuestDraftsIntegrationTestWebAp
 
     var guestDraft = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
     var boardPositions = guestDraft.GameBoard!.Positions.ToList();
-    var participantPublicIds = new List<string>();
 
     for (var i = 0; i < users.Count; i++)
     {
-      var userId = (await FakeUsersApi.GetUserByPublicId(users[i], ct))!.UserId;
-      var participant = guestDraft.Participants.Single(p => p.UserId == userId);
-      participantPublicIds.Add(participant.PublicId);
-
       (
         await AssignParticipantAsync(
           guestDraftPublicId,
-          owner,
+          owner.UserPublicId,
           boardPositions[i].PublicId,
-          participant.PublicId
+          users[i].GuestDrafterPublicId
         )
       )
         .IsSuccess.Should()
@@ -270,14 +317,14 @@ public abstract class GuestDraftsIntegrationTest(GuestDraftsIntegrationTestWebAp
       new SetGuestDraftStatusCommand
       {
         GuestDraftPublicId = guestDraftPublicId,
-        CallerUserPublicId = owner,
+        CallerUserPublicId = owner.UserPublicId,
         Action = GuestDraftStatusAction.Start,
       },
       ct
     );
     startResult.IsSuccess.Should().BeTrue("test setup must be able to start the guest draft");
 
-    return (guestDraftPublicId, users, participantPublicIds);
+    return (guestDraftPublicId, users);
   }
 
   // ── Thin per-command wrappers ────────────────────────────────────────────
@@ -490,22 +537,22 @@ public abstract class GuestDraftsIntegrationTest(GuestDraftsIntegrationTestWebAp
   /// </summary>
   protected async Task<(
     string GuestDraftPublicId,
-    string OwnerUserPublicId,
-    string BUserPublicId,
-    string CUserPublicId,
-    string DUserPublicId
+    TestUser Owner,
+    TestUser B,
+    TestUser C,
+    TestUser D
   )> CreateGuestDraftWithMixedPickStatesAsync()
   {
-    var ct = TestContext.Current.CancellationToken;
-    var owner = CreateUser();
-    var b = CreateUser();
-    var c = CreateUser();
-    var d = CreateUser();
+    var owner = await CreateUserAsync();
+    var b = await CreateUserAsync();
+    var c = await CreateUserAsync();
+    var d = await CreateUserAsync();
 
-    var guestDraftPublicId = await CreateGuestDraftAsync(owner, GuestDraftType.MiniMega);
-    (await InviteParticipantAsync(guestDraftPublicId, owner, b)).IsSuccess.Should().BeTrue();
-    (await InviteParticipantAsync(guestDraftPublicId, owner, c)).IsSuccess.Should().BeTrue();
-    (await InviteParticipantAsync(guestDraftPublicId, owner, d)).IsSuccess.Should().BeTrue();
+    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, GuestDraftType.MiniMega);
+    (await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId)).IsSuccess.Should().BeTrue();
+    (await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, b.GuestDrafterPublicId)).IsSuccess.Should().BeTrue();
+    (await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, c.GuestDrafterPublicId)).IsSuccess.Should().BeTrue();
+    (await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, d.GuestDrafterPublicId)).IsSuccess.Should().BeTrue();
 
     List<PositionInput> positions =
     [
@@ -514,57 +561,49 @@ public abstract class GuestDraftsIntegrationTest(GuestDraftsIntegrationTestWebAp
       new() { Name = "C", Picks = [4], HasBonusVetoOverride = true },
       new() { Name = "D", Picks = [5], HasBonusVetoOverride = true },
     ];
-    (await SetCustomPositionsAsync(guestDraftPublicId, owner, positions)).IsSuccess.Should().BeTrue();
+    (await SetCustomPositionsAsync(guestDraftPublicId, owner.UserPublicId, positions)).IsSuccess.Should().BeTrue();
 
     var guestDraft = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
     var boardPositions = guestDraft.GameBoard!.Positions.ToList();
-    var ownerUserId = (await FakeUsersApi.GetUserByPublicId(owner, ct))!.UserId;
-    var bUserId = (await FakeUsersApi.GetUserByPublicId(b, ct))!.UserId;
-    var cUserId = (await FakeUsersApi.GetUserByPublicId(c, ct))!.UserId;
-    var dUserId = (await FakeUsersApi.GetUserByPublicId(d, ct))!.UserId;
-    var ownerParticipant = guestDraft.Participants.Single(p => p.UserId == ownerUserId);
-    var bParticipant = guestDraft.Participants.Single(p => p.UserId == bUserId);
-    var cParticipant = guestDraft.Participants.Single(p => p.UserId == cUserId);
-    var dParticipant = guestDraft.Participants.Single(p => p.UserId == dUserId);
 
-    (await AssignParticipantAsync(guestDraftPublicId, owner, boardPositions.Single(p => p.Name == "Owner").PublicId, ownerParticipant.PublicId))
+    (await AssignParticipantAsync(guestDraftPublicId, owner.UserPublicId, boardPositions.Single(p => p.Name == "Owner").PublicId, owner.GuestDrafterPublicId))
       .IsSuccess.Should().BeTrue();
-    (await AssignParticipantAsync(guestDraftPublicId, owner, boardPositions.Single(p => p.Name == "B").PublicId, bParticipant.PublicId))
+    (await AssignParticipantAsync(guestDraftPublicId, owner.UserPublicId, boardPositions.Single(p => p.Name == "B").PublicId, b.GuestDrafterPublicId))
       .IsSuccess.Should().BeTrue();
-    (await AssignParticipantAsync(guestDraftPublicId, owner, boardPositions.Single(p => p.Name == "C").PublicId, cParticipant.PublicId))
+    (await AssignParticipantAsync(guestDraftPublicId, owner.UserPublicId, boardPositions.Single(p => p.Name == "C").PublicId, c.GuestDrafterPublicId))
       .IsSuccess.Should().BeTrue();
-    (await AssignParticipantAsync(guestDraftPublicId, owner, boardPositions.Single(p => p.Name == "D").PublicId, dParticipant.PublicId))
+    (await AssignParticipantAsync(guestDraftPublicId, owner.UserPublicId, boardPositions.Single(p => p.Name == "D").PublicId, d.GuestDrafterPublicId))
       .IsSuccess.Should().BeTrue();
 
-    (await SetGuestDraftStatusAsync(guestDraftPublicId, owner, GuestDraftStatusAction.Start))
+    (await SetGuestDraftStatusAsync(guestDraftPublicId, owner.UserPublicId, GuestDraftStatusAction.Start))
       .IsSuccess.Should().BeTrue();
 
     // slot1 (playOrder1): plain landed, left for the caller to reveal (or not).
-    (await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), 1, 1)).IsSuccess.Should().BeTrue();
+    (await PlayPickAsync(guestDraftPublicId, owner.UserPublicId, CreateMovie(), 1, 1)).IsSuccess.Should().BeTrue();
 
     // slot2 (playOrder2): plain landed, left unrevealed.
-    (await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), 2, 2)).IsSuccess.Should().BeTrue();
+    (await PlayPickAsync(guestDraftPublicId, owner.UserPublicId, CreateMovie(), 2, 2)).IsSuccess.Should().BeTrue();
 
     // slot3 (playOrder3): commissioner-overridden. Must happen immediately -- the
     // scope guard requires this to still be the most-recently-played pick.
-    (await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), 3, 3)).IsSuccess.Should().BeTrue();
-    (await ApplyCommissionerOverrideAsync(guestDraftPublicId, 3, owner)).IsSuccess.Should().BeTrue();
+    (await PlayPickAsync(guestDraftPublicId, owner.UserPublicId, CreateMovie(), 3, 3)).IsSuccess.Should().BeTrue();
+    (await ApplyCommissionerOverrideAsync(guestDraftPublicId, 3, owner.UserPublicId)).IsSuccess.Should().BeTrue();
 
     // slot4 (playOrder4): vetoed by B, then overridden by C. ApplyVeto's scope guard
     // requires this to happen immediately (most-recently-played pick); the override
     // itself has no such guard.
-    (await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), 4, 4)).IsSuccess.Should().BeTrue();
-    (await ApplyVetoAsync(guestDraftPublicId, 4, b)).IsSuccess.Should().BeTrue();
-    (await ApplyVetoOverrideAsync(guestDraftPublicId, 4, c)).IsSuccess.Should().BeTrue();
+    (await PlayPickAsync(guestDraftPublicId, owner.UserPublicId, CreateMovie(), 4, 4)).IsSuccess.Should().BeTrue();
+    (await ApplyVetoAsync(guestDraftPublicId, 4, b.UserPublicId)).IsSuccess.Should().BeTrue();
+    (await ApplyVetoOverrideAsync(guestDraftPublicId, 4, c.UserPublicId)).IsSuccess.Should().BeTrue();
 
     // slot5 (playOrder5): vetoed by D (seq1), D self-overrides (seq1 overridden),
     // then C vetoes again (seq2, still active) -- both ApplyVeto calls must happen
     // while slot5 remains the most-recently-played pick, i.e. before anything else
     // is played.
-    (await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), 5, 5)).IsSuccess.Should().BeTrue();
-    (await ApplyVetoAsync(guestDraftPublicId, 5, d)).IsSuccess.Should().BeTrue();
-    (await ApplyVetoOverrideAsync(guestDraftPublicId, 5, d)).IsSuccess.Should().BeTrue();
-    (await ApplyVetoAsync(guestDraftPublicId, 5, c)).IsSuccess.Should().BeTrue();
+    (await PlayPickAsync(guestDraftPublicId, owner.UserPublicId, CreateMovie(), 5, 5)).IsSuccess.Should().BeTrue();
+    (await ApplyVetoAsync(guestDraftPublicId, 5, d.UserPublicId)).IsSuccess.Should().BeTrue();
+    (await ApplyVetoOverrideAsync(guestDraftPublicId, 5, d.UserPublicId)).IsSuccess.Should().BeTrue();
+    (await ApplyVetoAsync(guestDraftPublicId, 5, c.UserPublicId)).IsSuccess.Should().BeTrue();
 
     return (guestDraftPublicId, owner, b, c, d);
   }

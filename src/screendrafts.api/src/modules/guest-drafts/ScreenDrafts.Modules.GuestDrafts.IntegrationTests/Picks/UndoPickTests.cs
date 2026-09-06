@@ -7,7 +7,7 @@ public sealed class UndoPickTests(GuestDraftsIntegrationTestWebAppFactory factor
   public async Task UndoPick_ByTheOwner_ShouldRemoveThePickAsync()
   {
     // Arrange
-    var (guestDraftPublicId, owner, _, _, _) = await CreateInProgressStandardGuestDraftAsync();
+    var (guestDraftPublicId, owner, _) = await CreateInProgressStandardGuestDraftAsync();
     await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), 7, 1);
 
     // Act
@@ -23,7 +23,7 @@ public sealed class UndoPickTests(GuestDraftsIntegrationTestWebAppFactory factor
   public async Task UndoPick_WhenCallerIsNotTheOwner_ShouldFailAsync()
   {
     // Arrange
-    var (guestDraftPublicId, owner, other, _, _) = await CreateInProgressStandardGuestDraftAsync();
+    var (guestDraftPublicId, owner, other) = await CreateInProgressStandardGuestDraftAsync();
     await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), 7, 1);
 
     // Act
@@ -39,7 +39,7 @@ public sealed class UndoPickTests(GuestDraftsIntegrationTestWebAppFactory factor
   {
     // Arrange -- mirrors canonical DraftPart.UndoPick: no pick at that play order
     // is still a success, not a failure.
-    var (guestDraftPublicId, owner, _, _, _) = await CreateInProgressStandardGuestDraftAsync();
+    var (guestDraftPublicId, owner, _) = await CreateInProgressStandardGuestDraftAsync();
     await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), 7, 1);
 
     // Act

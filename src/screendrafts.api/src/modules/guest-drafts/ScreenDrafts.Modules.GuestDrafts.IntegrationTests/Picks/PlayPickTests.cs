@@ -1,4 +1,4 @@
-﻿namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.Picks;
+namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.Picks;
 
 public sealed class PlayPickTests(GuestDraftsIntegrationTestWebAppFactory factory)
   : GuestDraftsIntegrationTest(factory)
@@ -7,7 +7,7 @@ public sealed class PlayPickTests(GuestDraftsIntegrationTestWebAppFactory factor
   public async Task PlayPick_WithValidData_ShouldSucceedAsync()
   {
     // Arrange
-    var (guestDraftPublicId, owner, _, _, _) = await CreateInProgressStandardGuestDraftAsync();
+    var (guestDraftPublicId, owner, _) = await CreateInProgressStandardGuestDraftAsync();
 
     // Act
     var result = await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), 7, 1);
@@ -20,14 +20,15 @@ public sealed class PlayPickTests(GuestDraftsIntegrationTestWebAppFactory factor
   public async Task PlayPick_BeforeTheDraftHasStarted_ShouldFailAsync()
   {
     // Arrange
-    var owner = CreateUser();
-    var other = CreateUser();
-    var guestDraftPublicId = await CreateGuestDraftAsync(owner, GuestDraftType.Standard);
-    await InviteParticipantAsync(guestDraftPublicId, owner, other);
-    await SetFixedBoardLayoutAsync(guestDraftPublicId, owner);
+    var owner = await CreateUserAsync();
+    var other = await CreateUserAsync();
+    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, GuestDraftType.Standard);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, other.GuestDrafterPublicId);
+    await SetFixedBoardLayoutAsync(guestDraftPublicId, owner.UserPublicId);
 
     // Act
-    var result = await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), 7, 1);
+    var result = await PlayPickAsync(guestDraftPublicId, owner.UserPublicId, CreateMovie(), 7, 1);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -38,7 +39,7 @@ public sealed class PlayPickTests(GuestDraftsIntegrationTestWebAppFactory factor
   public async Task PlayPick_AfterTheDraftHasCompleted_ShouldFailAsync()
   {
     // Arrange
-    var (guestDraftPublicId, owner, _, _, _) = await CreateInProgressStandardGuestDraftAsync();
+    var (guestDraftPublicId, owner, _) = await CreateInProgressStandardGuestDraftAsync();
     int[] pickSlots = [7, 6, 4, 2, 5, 3, 1];
 
     for (var i = 0; i < pickSlots.Length; i++)
@@ -60,11 +61,11 @@ public sealed class PlayPickTests(GuestDraftsIntegrationTestWebAppFactory factor
   public async Task PlayPick_WhenCallerIsNotAParticipant_ShouldFailAsync()
   {
     // Arrange
-    var (guestDraftPublicId, _, _, _, _) = await CreateInProgressStandardGuestDraftAsync();
-    var stranger = CreateUser();
+    var (guestDraftPublicId, _, _) = await CreateInProgressStandardGuestDraftAsync();
+    var stranger = await CreateUserAsync();
 
     // Act
-    var result = await PlayPickAsync(guestDraftPublicId, stranger, CreateMovie(), 7, 1);
+    var result = await PlayPickAsync(guestDraftPublicId, stranger.UserPublicId, CreateMovie(), 7, 1);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -75,7 +76,7 @@ public sealed class PlayPickTests(GuestDraftsIntegrationTestWebAppFactory factor
   public async Task PlayPick_WithANonExistentMovie_ShouldFailAsync()
   {
     // Arrange
-    var (guestDraftPublicId, owner, _, _, _) = await CreateInProgressStandardGuestDraftAsync();
+    var (guestDraftPublicId, owner, _) = await CreateInProgressStandardGuestDraftAsync();
     var unregisteredMoviePublicId = $"m_{Faker.Random.AlphaNumeric(15)}";
 
     // Act
@@ -92,7 +93,7 @@ public sealed class PlayPickTests(GuestDraftsIntegrationTestWebAppFactory factor
   public async Task PlayPick_WithTheSameMovieTwice_ShouldFailAsync()
   {
     // Arrange
-    var (guestDraftPublicId, owner, _, _, _) = await CreateInProgressStandardGuestDraftAsync();
+    var (guestDraftPublicId, owner, _) = await CreateInProgressStandardGuestDraftAsync();
     var movie = CreateMovie();
     await PlayPickAsync(guestDraftPublicId, owner, movie, 7, 1);
 
@@ -108,7 +109,7 @@ public sealed class PlayPickTests(GuestDraftsIntegrationTestWebAppFactory factor
   public async Task PlayPick_IntoAPositionThatAlreadyHasALandedPick_ShouldFailAsync()
   {
     // Arrange
-    var (guestDraftPublicId, owner, _, _, _) = await CreateInProgressStandardGuestDraftAsync();
+    var (guestDraftPublicId, owner, _) = await CreateInProgressStandardGuestDraftAsync();
     await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), 7, 1);
 
     // Act -- same position, different movie
@@ -129,7 +130,7 @@ public sealed class PlayPickTests(GuestDraftsIntegrationTestWebAppFactory factor
   public async Task PlayPick_RePickingAPositionThatWasVetoedAndNotOverridden_ShouldSucceedAsync()
   {
     // Arrange
-    var (guestDraftPublicId, owner, other, _, _) = await CreateInProgressStandardGuestDraftAsync();
+    var (guestDraftPublicId, owner, other) = await CreateInProgressStandardGuestDraftAsync();
     var movie = CreateMovie();
     await PlayPickAsync(guestDraftPublicId, owner, movie, 7, 1);
     await ApplyVetoAsync(guestDraftPublicId, 1, other);
@@ -145,7 +146,7 @@ public sealed class PlayPickTests(GuestDraftsIntegrationTestWebAppFactory factor
   public async Task PlayPick_WithAPlayOrderOfZero_ShouldFailAsync()
   {
     // Arrange
-    var (guestDraftPublicId, owner, _, _, _) = await CreateInProgressStandardGuestDraftAsync();
+    var (guestDraftPublicId, owner, _) = await CreateInProgressStandardGuestDraftAsync();
 
     // Act
     var result = await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), 7, 0);

@@ -1,23 +1,30 @@
-﻿namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.InviteParticipant;
+﻿namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.AddParticipant;
 
-internal sealed class Endpoint : ScreenDraftsEndpoint<InviteParticipantRequest>
+internal sealed record AddParticipantRequest
+{
+  [FromRoute(Name = "publicId")]
+  public string PublicId { get; init; } = default!;
+
+  public required string GuestDrafterPublicId { get; init; }
+}
+
+internal sealed class Endpoint : ScreenDraftsEndpoint<AddParticipantRequest>
 {
   public override void Configure()
   {
     Post(GuestDraftsRoutes.Participants);
     Description(x =>
-    {
       x.WithTags(GuestDraftsOpenApi.Tags.GuestDrafts)
-        .WithName(GuestDraftsOpenApi.Names.GuestDrafts_InviteParticipant)
+        .WithName(GuestDraftsOpenApi.Names.GuestDrafts_AddParticipant)
         .Produces(StatusCodes.Status204NoContent)
         .Produces(StatusCodes.Status400BadRequest)
         .Produces(StatusCodes.Status403Forbidden)
-        .Produces(StatusCodes.Status404NotFound);
-    });
-    Policies(GuestDraftsAuth.Permissions.GuestDraftInviteParticipant);
+        .Produces(StatusCodes.Status404NotFound)
+    );
+    Policies(GuestDraftsAuth.Permissions.GuestDraftAddParticipant);
   }
 
-  public override async Task HandleAsync(InviteParticipantRequest req, CancellationToken ct)
+  public override async Task HandleAsync(AddParticipantRequest req, CancellationToken ct)
   {
     ArgumentNullException.ThrowIfNull(req);
 
@@ -29,11 +36,11 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<InviteParticipantRequest>
       return;
     }
 
-    var command = new InviteParticipantCommand
+    var command = new AddParticipantCommand
     {
       GuestDraftPublicId = req.PublicId,
       CallerUserPublicId = userPublicId,
-      InviteeUserPublicId = req.InviteeUserPublicId
+      GuestDrafterPublicId = req.GuestDrafterPublicId,
     };
 
     var result = await Sender.Send(command, ct);

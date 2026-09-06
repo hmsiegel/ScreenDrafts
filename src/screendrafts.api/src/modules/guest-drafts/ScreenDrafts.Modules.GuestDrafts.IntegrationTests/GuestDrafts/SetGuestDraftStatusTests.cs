@@ -9,23 +9,20 @@ public sealed class SetGuestDraftStatusTests(GuestDraftsIntegrationTestWebAppFac
   public async Task Start_WithValidBoardAndParticipants_ShouldSucceedAndReturnInProgressStatusAsync()
   {
     // Arrange
-    var owner = CreateUser();
-    var other = CreateUser();
-    var guestDraftPublicId = await CreateGuestDraftAsync(owner, GuestDraftType.Standard);
-    await InviteParticipantAsync(guestDraftPublicId, owner, other);
-    await SetFixedBoardLayoutAsync(guestDraftPublicId, owner);
+    var owner = await CreateUserAsync();
+    var other = await CreateUserAsync();
+    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, GuestDraftType.Standard);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, other.GuestDrafterPublicId);
+    await SetFixedBoardLayoutAsync(guestDraftPublicId, owner.UserPublicId);
 
     var guestDraft = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
     var positions = guestDraft.GameBoard!.Positions.ToList();
-    var ownerUserId = (await FakeUsersApi.GetUserByPublicId(owner, TestContext.Current.CancellationToken))!.UserId;
-    var otherUserId = (await FakeUsersApi.GetUserByPublicId(other, TestContext.Current.CancellationToken))!.UserId;
-    var ownerParticipant = guestDraft.Participants.Single(p => p.UserId == ownerUserId);
-    var otherParticipant = guestDraft.Participants.Single(p => p.UserId == otherUserId);
-    await AssignParticipantAsync(guestDraftPublicId, owner, positions[0].PublicId, ownerParticipant.PublicId);
-    await AssignParticipantAsync(guestDraftPublicId, owner, positions[1].PublicId, otherParticipant.PublicId);
+    await AssignParticipantAsync(guestDraftPublicId, owner.UserPublicId, positions[0].PublicId, owner.GuestDrafterPublicId);
+    await AssignParticipantAsync(guestDraftPublicId, owner.UserPublicId, positions[1].PublicId, other.GuestDrafterPublicId);
 
     // Act
-    var result = await SetGuestDraftStatusAsync(guestDraftPublicId, owner, GuestDraftStatusAction.Start);
+    var result = await SetGuestDraftStatusAsync(guestDraftPublicId, owner.UserPublicId, GuestDraftStatusAction.Start);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -37,14 +34,15 @@ public sealed class SetGuestDraftStatusTests(GuestDraftsIntegrationTestWebAppFac
   public async Task Start_WhenCallerIsNotTheOwner_ShouldFailAsync()
   {
     // Arrange
-    var owner = CreateUser();
-    var other = CreateUser();
-    var guestDraftPublicId = await CreateGuestDraftAsync(owner);
-    await InviteParticipantAsync(guestDraftPublicId, owner, other);
-    await SetFixedBoardLayoutAsync(guestDraftPublicId, owner);
+    var owner = await CreateUserAsync();
+    var other = await CreateUserAsync();
+    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, other.GuestDrafterPublicId);
+    await SetFixedBoardLayoutAsync(guestDraftPublicId, owner.UserPublicId);
 
     // Act
-    var result = await SetGuestDraftStatusAsync(guestDraftPublicId, other, GuestDraftStatusAction.Start);
+    var result = await SetGuestDraftStatusAsync(guestDraftPublicId, other.UserPublicId, GuestDraftStatusAction.Start);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -55,11 +53,12 @@ public sealed class SetGuestDraftStatusTests(GuestDraftsIntegrationTestWebAppFac
   public async Task Start_WithFewerThanTwoParticipants_ShouldFailAsync()
   {
     // Arrange
-    var owner = CreateUser();
-    var guestDraftPublicId = await CreateGuestDraftAsync(owner);
+    var owner = await CreateUserAsync();
+    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId);
 
     // Act
-    var result = await SetGuestDraftStatusAsync(guestDraftPublicId, owner, GuestDraftStatusAction.Start);
+    var result = await SetGuestDraftStatusAsync(guestDraftPublicId, owner.UserPublicId, GuestDraftStatusAction.Start);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -70,13 +69,14 @@ public sealed class SetGuestDraftStatusTests(GuestDraftsIntegrationTestWebAppFac
   public async Task Start_WhenBoardHasNotBeenSetUp_ShouldFailAsync()
   {
     // Arrange
-    var owner = CreateUser();
-    var other = CreateUser();
-    var guestDraftPublicId = await CreateGuestDraftAsync(owner);
-    await InviteParticipantAsync(guestDraftPublicId, owner, other);
+    var owner = await CreateUserAsync();
+    var other = await CreateUserAsync();
+    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, other.GuestDrafterPublicId);
 
     // Act
-    var result = await SetGuestDraftStatusAsync(guestDraftPublicId, owner, GuestDraftStatusAction.Start);
+    var result = await SetGuestDraftStatusAsync(guestDraftPublicId, owner.UserPublicId, GuestDraftStatusAction.Start);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -89,7 +89,7 @@ public sealed class SetGuestDraftStatusTests(GuestDraftsIntegrationTestWebAppFac
   public async Task Complete_AfterEveryPositionHasLanded_ShouldSucceedAndReturnCompletedStatusAsync()
   {
     // Arrange
-    var (guestDraftPublicId, owner, _, _, _) = await CreateInProgressStandardGuestDraftAsync();
+    var (guestDraftPublicId, owner, _) = await CreateInProgressStandardGuestDraftAsync();
     int[] pickSlots = [7, 6, 4, 2, 5, 3, 1];
 
     for (var i = 0; i < pickSlots.Length; i++)
@@ -112,7 +112,7 @@ public sealed class SetGuestDraftStatusTests(GuestDraftsIntegrationTestWebAppFac
   public async Task Complete_BeforeEveryPositionHasLanded_ShouldFailAsync()
   {
     // Arrange
-    var (guestDraftPublicId, owner, _, _, _) = await CreateInProgressStandardGuestDraftAsync();
+    var (guestDraftPublicId, owner, _) = await CreateInProgressStandardGuestDraftAsync();
     await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), 7, 1);
 
     // Act
@@ -127,7 +127,7 @@ public sealed class SetGuestDraftStatusTests(GuestDraftsIntegrationTestWebAppFac
   public async Task Complete_WhenCallerIsNotTheOwner_ShouldFailAsync()
   {
     // Arrange
-    var (guestDraftPublicId, _, other, _, _) = await CreateInProgressStandardGuestDraftAsync();
+    var (guestDraftPublicId, _, other) = await CreateInProgressStandardGuestDraftAsync();
 
     // Act
     var result = await SetGuestDraftStatusAsync(guestDraftPublicId, other, GuestDraftStatusAction.Complete);
@@ -141,13 +141,14 @@ public sealed class SetGuestDraftStatusTests(GuestDraftsIntegrationTestWebAppFac
   public async Task Complete_WhenStatusIsNotInProgress_ShouldFailAsync()
   {
     // Arrange -- still Created, never started
-    var owner = CreateUser();
-    var other = CreateUser();
-    var guestDraftPublicId = await CreateGuestDraftAsync(owner);
-    await InviteParticipantAsync(guestDraftPublicId, owner, other);
+    var owner = await CreateUserAsync();
+    var other = await CreateUserAsync();
+    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, other.GuestDrafterPublicId);
 
     // Act
-    var result = await SetGuestDraftStatusAsync(guestDraftPublicId, owner, GuestDraftStatusAction.Complete);
+    var result = await SetGuestDraftStatusAsync(guestDraftPublicId, owner.UserPublicId, GuestDraftStatusAction.Complete);
 
     // Assert
     result.IsFailure.Should().BeTrue();

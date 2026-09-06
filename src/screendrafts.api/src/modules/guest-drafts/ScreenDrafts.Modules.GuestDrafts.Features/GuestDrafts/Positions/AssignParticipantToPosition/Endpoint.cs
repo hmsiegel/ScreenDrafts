@@ -36,7 +36,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<AssignParticipantToPositio
       GuestDraftPublicId = req.PublicId,
       PositionPublicId = req.PositionPublicId,
       CallerUserPublicId = userPublicId,
-      ParticipantPublicId = req.ParticipantPublicId,
+      GuestDrafterPublicId = req.GuestDrafterPublicId,
     };
 
     var result = await Sender.Send(command, ct);

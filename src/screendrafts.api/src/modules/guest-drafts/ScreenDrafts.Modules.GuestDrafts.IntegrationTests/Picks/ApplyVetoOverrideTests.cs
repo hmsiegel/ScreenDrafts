@@ -25,13 +25,14 @@ public sealed class ApplyVetoOverrideTests(GuestDraftsIntegrationTestWebAppFacto
     // Arrange -- Standard blocks overrides outright, before anything else is
     // checked: this draft isn't even started and has no picks or vetoes at all,
     // yet the Standard-type guard must still fire first.
-    var owner = CreateUser();
-    var other = CreateUser();
-    var guestDraftPublicId = await CreateGuestDraftAsync(owner, GuestDraftType.Standard);
-    await InviteParticipantAsync(guestDraftPublicId, owner, other);
+    var owner = await CreateUserAsync();
+    var other = await CreateUserAsync();
+    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, GuestDraftType.Standard);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, other.GuestDrafterPublicId);
 
     // Act
-    var result = await ApplyVetoOverrideAsync(guestDraftPublicId, 1, owner);
+    var result = await ApplyVetoOverrideAsync(guestDraftPublicId, 1, owner.UserPublicId);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -59,12 +60,13 @@ public sealed class ApplyVetoOverrideTests(GuestDraftsIntegrationTestWebAppFacto
     // Arrange -- two participants, each with their own override budget, so the
     // second attempt reaches the "already overridden" check on its own merits
     // rather than tripping the budget check first.
-    var owner = CreateUser();
-    var firstOverrider = CreateUser();
-    var secondOverrider = CreateUser();
-    var guestDraftPublicId = await CreateGuestDraftAsync(owner, GuestDraftType.MiniMega);
-    await InviteParticipantAsync(guestDraftPublicId, owner, firstOverrider);
-    await InviteParticipantAsync(guestDraftPublicId, owner, secondOverrider);
+    var owner = await CreateUserAsync();
+    var firstOverrider = await CreateUserAsync();
+    var secondOverrider = await CreateUserAsync();
+    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, GuestDraftType.MiniMega);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, firstOverrider.GuestDrafterPublicId);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, secondOverrider.GuestDrafterPublicId);
 
     List<PositionInput> positions =
     [
@@ -72,24 +74,21 @@ public sealed class ApplyVetoOverrideTests(GuestDraftsIntegrationTestWebAppFacto
       new() { Name = "B", Picks = [2], HasBonusVetoOverride = true },
       new() { Name = "C", Picks = [3], HasBonusVetoOverride = true },
     ];
-    await SetCustomPositionsAsync(guestDraftPublicId, owner, positions);
+    await SetCustomPositionsAsync(guestDraftPublicId, owner.UserPublicId, positions);
 
     var guestDraft = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
     var boardPositions = guestDraft.GameBoard!.Positions.ToList();
-    var ownerUserId = (await FakeUsersApi.GetUserByPublicId(owner, TestContext.Current.CancellationToken))!.UserId;
-    var firstUserId = (await FakeUsersApi.GetUserByPublicId(firstOverrider, TestContext.Current.CancellationToken))!.UserId;
-    var secondUserId = (await FakeUsersApi.GetUserByPublicId(secondOverrider, TestContext.Current.CancellationToken))!.UserId;
-    await AssignParticipantAsync(guestDraftPublicId, owner, boardPositions.Single(p => p.Name == "A").PublicId, guestDraft.Participants.Single(p => p.UserId == ownerUserId).PublicId);
-    await AssignParticipantAsync(guestDraftPublicId, owner, boardPositions.Single(p => p.Name == "B").PublicId, guestDraft.Participants.Single(p => p.UserId == firstUserId).PublicId);
-    await AssignParticipantAsync(guestDraftPublicId, owner, boardPositions.Single(p => p.Name == "C").PublicId, guestDraft.Participants.Single(p => p.UserId == secondUserId).PublicId);
-    await SetGuestDraftStatusAsync(guestDraftPublicId, owner, GuestDraftStatusAction.Start);
+    await AssignParticipantAsync(guestDraftPublicId, owner.UserPublicId, boardPositions.Single(p => p.Name == "A").PublicId, owner.GuestDrafterPublicId);
+    await AssignParticipantAsync(guestDraftPublicId, owner.UserPublicId, boardPositions.Single(p => p.Name == "B").PublicId, firstOverrider.GuestDrafterPublicId);
+    await AssignParticipantAsync(guestDraftPublicId, owner.UserPublicId, boardPositions.Single(p => p.Name == "C").PublicId, secondOverrider.GuestDrafterPublicId);
+    await SetGuestDraftStatusAsync(guestDraftPublicId, owner.UserPublicId, GuestDraftStatusAction.Start);
 
-    await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), 1, 1);
-    await ApplyVetoAsync(guestDraftPublicId, 1, firstOverrider);
-    await ApplyVetoOverrideAsync(guestDraftPublicId, 1, firstOverrider);
+    await PlayPickAsync(guestDraftPublicId, owner.UserPublicId, CreateMovie(), 1, 1);
+    await ApplyVetoAsync(guestDraftPublicId, 1, firstOverrider.UserPublicId);
+    await ApplyVetoOverrideAsync(guestDraftPublicId, 1, firstOverrider.UserPublicId);
 
     // Act
-    var result = await ApplyVetoOverrideAsync(guestDraftPublicId, 1, secondOverrider);
+    var result = await ApplyVetoOverrideAsync(guestDraftPublicId, 1, secondOverrider.UserPublicId);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -134,9 +133,10 @@ public sealed class ApplyVetoOverrideTests(GuestDraftsIntegrationTestWebAppFacto
     // Arrange -- exhaust "other"'s one awarded override on a first pick, then have
     // the picker veto their own second pick so "other"'s fungible token (not their
     // override pool) is the only thing left to pay for the second override with.
-    var (guestDraftPublicId, picker, other) = await CreateInProgressMiniMegaDraftAsync(
+    var (guestDraftPublicId, picker, otherUser) = await CreateInProgressMiniMegaDraftAsyncWithUser(
       otherHasBonusOverride: true,
       otherHasBonusFungibleToken: true);
+    var other = otherUser.UserPublicId;
 
     await PlayPickAsync(guestDraftPublicId, picker, CreateMovie(), 1, 1);
     await ApplyVetoAsync(guestDraftPublicId, 1, other);
@@ -151,8 +151,7 @@ public sealed class ApplyVetoOverrideTests(GuestDraftsIntegrationTestWebAppFacto
     // Assert
     result.IsSuccess.Should().BeTrue();
     var guestDraft = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
-    var otherUserId = (await FakeUsersApi.GetUserByPublicId(other, TestContext.Current.CancellationToken))!.UserId;
-    var otherParticipant = guestDraft.Participants.Single(p => p.UserId == otherUserId);
+    var otherParticipant = guestDraft.Participants.Single(p => p.ParticipantIdValue == otherUser.GuestDrafterId);
     otherParticipant.VetoOverridesUsed.Should().Be(1, "the normal override pool was already exhausted and must stay untouched");
     otherParticipant.FungibleTokensUsed.Should().Be(1);
   }
@@ -164,13 +163,14 @@ public sealed class ApplyVetoOverrideTests(GuestDraftsIntegrationTestWebAppFacto
     // Type check passes through to the Status check; the handler must check
     // Status before resolving PlayOrder -> pick, otherwise this would surface
     // PickNotFoundByPlayOrder (no picks exist yet) instead of DraftNotStarted.
-    var owner = CreateUser();
-    var other = CreateUser();
-    var guestDraftPublicId = await CreateGuestDraftAsync(owner, GuestDraftType.MiniMega);
-    await InviteParticipantAsync(guestDraftPublicId, owner, other);
+    var owner = await CreateUserAsync();
+    var other = await CreateUserAsync();
+    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, GuestDraftType.MiniMega);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, other.GuestDrafterPublicId);
 
     // Act
-    var result = await ApplyVetoOverrideAsync(guestDraftPublicId, 1, other);
+    var result = await ApplyVetoOverrideAsync(guestDraftPublicId, 1, other.UserPublicId);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -184,10 +184,10 @@ public sealed class ApplyVetoOverrideTests(GuestDraftsIntegrationTestWebAppFacto
     var (guestDraftPublicId, picker, other) = await CreateInProgressMiniMegaDraftAsync();
     await PlayPickAsync(guestDraftPublicId, picker, CreateMovie(), 1, 1);
     await ApplyVetoAsync(guestDraftPublicId, 1, other);
-    var stranger = CreateUser();
+    var stranger = await CreateUserAsync();
 
     // Act
-    var result = await ApplyVetoOverrideAsync(guestDraftPublicId, 1, stranger);
+    var result = await ApplyVetoOverrideAsync(guestDraftPublicId, 1, stranger.UserPublicId);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -203,10 +203,21 @@ public sealed class ApplyVetoOverrideTests(GuestDraftsIntegrationTestWebAppFacto
     bool otherHasBonusOverride = false,
     bool otherHasBonusFungibleToken = false)
   {
-    var picker = CreateUser();
-    var other = CreateUser();
-    var guestDraftPublicId = await CreateGuestDraftAsync(picker, GuestDraftType.MiniMega);
-    await InviteParticipantAsync(guestDraftPublicId, picker, other);
+    var (guestDraftPublicId, picker, other) = await CreateInProgressMiniMegaDraftAsyncWithUser(
+      otherHasBonusOverride,
+      otherHasBonusFungibleToken);
+    return (guestDraftPublicId, picker, other.UserPublicId);
+  }
+
+  private async Task<(string GuestDraftPublicId, string Picker, TestUser Other)> CreateInProgressMiniMegaDraftAsyncWithUser(
+    bool otherHasBonusOverride = false,
+    bool otherHasBonusFungibleToken = false)
+  {
+    var picker = await CreateUserAsync();
+    var other = await CreateUserAsync();
+    var guestDraftPublicId = await CreateGuestDraftAsync(picker.UserPublicId, GuestDraftType.MiniMega);
+    await AddParticipantAsync(guestDraftPublicId, picker.UserPublicId, picker.GuestDrafterPublicId);
+    await AddParticipantAsync(guestDraftPublicId, picker.UserPublicId, other.GuestDrafterPublicId);
 
     List<PositionInput> positions =
     [
@@ -219,19 +230,15 @@ public sealed class ApplyVetoOverrideTests(GuestDraftsIntegrationTestWebAppFacto
         HasBonusFungibleToken = otherHasBonusFungibleToken,
       },
     ];
-    await SetCustomPositionsAsync(guestDraftPublicId, picker, positions);
+    await SetCustomPositionsAsync(guestDraftPublicId, picker.UserPublicId, positions);
 
     var guestDraft = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
     var boardPositions = guestDraft.GameBoard!.Positions.ToList();
-    var pickerUserId = (await FakeUsersApi.GetUserByPublicId(picker, TestContext.Current.CancellationToken))!.UserId;
-    var otherUserId = (await FakeUsersApi.GetUserByPublicId(other, TestContext.Current.CancellationToken))!.UserId;
-    var pickerParticipant = guestDraft.Participants.Single(p => p.UserId == pickerUserId);
-    var otherParticipant = guestDraft.Participants.Single(p => p.UserId == otherUserId);
 
-    await AssignParticipantAsync(guestDraftPublicId, picker, boardPositions.Single(p => p.Name == "A").PublicId, pickerParticipant.PublicId);
-    await AssignParticipantAsync(guestDraftPublicId, picker, boardPositions.Single(p => p.Name == "B").PublicId, otherParticipant.PublicId);
-    await SetGuestDraftStatusAsync(guestDraftPublicId, picker, GuestDraftStatusAction.Start);
+    await AssignParticipantAsync(guestDraftPublicId, picker.UserPublicId, boardPositions.Single(p => p.Name == "A").PublicId, picker.GuestDrafterPublicId);
+    await AssignParticipantAsync(guestDraftPublicId, picker.UserPublicId, boardPositions.Single(p => p.Name == "B").PublicId, other.GuestDrafterPublicId);
+    await SetGuestDraftStatusAsync(guestDraftPublicId, picker.UserPublicId, GuestDraftStatusAction.Start);
 
-    return (guestDraftPublicId, picker, other);
+    return (guestDraftPublicId, picker.UserPublicId, other);
   }
 }

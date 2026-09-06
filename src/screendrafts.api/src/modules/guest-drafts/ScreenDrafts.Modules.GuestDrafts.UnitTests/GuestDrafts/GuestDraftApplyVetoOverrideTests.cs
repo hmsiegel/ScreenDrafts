@@ -21,7 +21,7 @@ public class GuestDraftApplyVetoOverrideTests : GuestDraftsBaseTest
   {
     // Arrange
     var guestDraft = CreateGuestDraft(GuestDraftType.MiniMega);
-    InviteParticipant(guestDraft);
+    AddParticipant(guestDraft);
 
     // Act
     var result = guestDraft.ApplyVetoOverride(GuestDraftPickId.CreateUnique(), Guid.NewGuid());
@@ -68,9 +68,9 @@ public class GuestDraftApplyVetoOverrideTests : GuestDraftsBaseTest
     // second attempt reaches the "already overridden" check on its own merits
     // rather than tripping the budget check first.
     var guestDraft = CreateGuestDraft(GuestDraftType.MiniMega);
-    var picker = guestDraft.Participants.Single();
-    var firstOverrider = InviteParticipant(guestDraft);
-    var secondOverrider = InviteParticipant(guestDraft);
+    var picker = AddParticipant(guestDraft, isOwner: true);
+    var firstOverrider = AddParticipant(guestDraft);
+    var secondOverrider = AddParticipant(guestDraft);
 
     List<(string Name, IReadOnlyList<int> Picks, bool HasBonusVeto, bool HasBonusVetoOverride, bool HasBonusFungibleToken)> positions =
     [
@@ -183,8 +183,8 @@ public class GuestDraftApplyVetoOverrideTests : GuestDraftsBaseTest
     bool otherHasBonusFungibleToken = false)
   {
     var guestDraft = CreateGuestDraft(GuestDraftType.MiniMega);
-    var picker = guestDraft.Participants.Single();
-    var other = InviteParticipant(guestDraft);
+    var picker = AddParticipant(guestDraft, isOwner: true);
+    var other = AddParticipant(guestDraft);
 
     List<(string Name, IReadOnlyList<int> Picks, bool HasBonusVeto, bool HasBonusVetoOverride, bool HasBonusFungibleToken)> positions =
     [

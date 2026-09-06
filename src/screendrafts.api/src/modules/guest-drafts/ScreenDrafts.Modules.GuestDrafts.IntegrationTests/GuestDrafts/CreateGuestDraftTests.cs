@@ -7,10 +7,10 @@ public sealed class CreateGuestDraftTests(GuestDraftsIntegrationTestWebAppFactor
   public async Task CreateGuestDraft_WithValidData_ShouldReturnPublicIdAsync()
   {
     // Arrange
-    var owner = CreateUser();
+    var owner = await CreateUserAsync();
     var command = new CreateGuestDraftCommand
     {
-      OwnerUserPublicId = owner,
+      OwnerUserPublicId = owner.UserPublicId,
       Title = "Weekend Guest Draft",
       Type = GuestDraftType.Standard.Name,
     };
@@ -24,15 +24,16 @@ public sealed class CreateGuestDraftTests(GuestDraftsIntegrationTestWebAppFactor
   }
 
   [Fact]
-  public async Task CreateGuestDraft_ShouldPersistWithOwnerAsTheOnlyParticipantAsync()
+  public async Task CreateGuestDraft_ShouldPersistWithNoParticipantsAsync()
   {
-    // Arrange
-    var owner = CreateUser();
-    var ownerUserId = (await FakeUsersApi.GetUserByPublicId(owner, TestContext.Current.CancellationToken))!.UserId;
+    // Arrange -- Create no longer auto-adds the owner as a participant; they must
+    // be added explicitly via AddParticipant, exactly like everyone else.
+    var owner = await CreateUserAsync();
+    var ownerUserId = (await FakeUsersApi.GetUserByPublicId(owner.UserPublicId, TestContext.Current.CancellationToken))!.UserId;
 
     var command = new CreateGuestDraftCommand
     {
-      OwnerUserPublicId = owner,
+      OwnerUserPublicId = owner.UserPublicId,
       Title = "Weekend Guest Draft",
       Type = GuestDraftType.Standard.Name,
     };
@@ -44,10 +45,7 @@ public sealed class CreateGuestDraftTests(GuestDraftsIntegrationTestWebAppFactor
     var guestDraft = await GetGuestDraftWithBoardAsync(result.Value);
     guestDraft.OwnerUserId.Should().Be(ownerUserId);
     guestDraft.GuestDraftStatus.Should().Be(GuestDraftStatus.Created);
-    guestDraft.Participants.Should().HaveCount(1);
-    var owningParticipant = guestDraft.Participants.Single();
-    owningParticipant.UserId.Should().Be(ownerUserId);
-    owningParticipant.IsOwner.Should().BeTrue();
+    guestDraft.Participants.Should().BeEmpty();
   }
 
   [Fact]
@@ -56,7 +54,7 @@ public sealed class CreateGuestDraftTests(GuestDraftsIntegrationTestWebAppFactor
     // Arrange
     var command = new CreateGuestDraftCommand
     {
-      OwnerUserPublicId = CreateUser(),
+      OwnerUserPublicId = (await CreateUserAsync()).UserPublicId,
       Title = string.Empty,
       Type = GuestDraftType.Standard.Name,
     };
@@ -75,7 +73,7 @@ public sealed class CreateGuestDraftTests(GuestDraftsIntegrationTestWebAppFactor
     // Arrange
     var command = new CreateGuestDraftCommand
     {
-      OwnerUserPublicId = CreateUser(),
+      OwnerUserPublicId = (await CreateUserAsync()).UserPublicId,
       Title = "Weekend Guest Draft",
       Type = "NotARealDraftType",
     };

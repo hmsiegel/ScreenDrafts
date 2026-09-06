@@ -8,7 +8,7 @@ public sealed class RevealPickTests(GuestDraftsIntegrationTestWebAppFactory fact
   {
     // Arrange -- with exactly 2 participants, the other participant auto-assigns
     // as revealer.
-    var (guestDraftPublicId, owner, other, _, _) = await CreateInProgressStandardGuestDraftAsync();
+    var (guestDraftPublicId, owner, other) = await CreateInProgressStandardGuestDraftAsync();
     await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), 7, 1);
 
     // Act
@@ -22,7 +22,7 @@ public sealed class RevealPickTests(GuestDraftsIntegrationTestWebAppFactory fact
   public async Task RevealPick_ByThePickerThemselves_ShouldFailAsync()
   {
     // Arrange
-    var (guestDraftPublicId, owner, _, _, _) = await CreateInProgressStandardGuestDraftAsync();
+    var (guestDraftPublicId, owner, _) = await CreateInProgressStandardGuestDraftAsync();
     await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), 7, 1);
 
     // Act
@@ -43,20 +43,18 @@ public sealed class RevealPickTests(GuestDraftsIntegrationTestWebAppFactory fact
   public async Task RevealPick_ByTheDesignatedRevealer_WithMoreThanTwoParticipants_ShouldSucceedAsync()
   {
     // Arrange
-    var (guestDraftPublicId, users, participantPublicIds) = await CreateInProgressCustomGuestDraftAsync(3);
+    var (guestDraftPublicId, users) = await CreateInProgressCustomGuestDraftAsync(3);
     var owner = users[0];
-    await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), 1, 1);
+    await PlayPickAsync(guestDraftPublicId, owner.UserPublicId, CreateMovie(), 1, 1);
 
     var guestDraft = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
     var pick = guestDraft.Picks.Single(p => p.PlayOrder == 1);
     pick.RevealAuthorizedParticipantId.Should().NotBeNull();
-    var revealerIndex = participantPublicIds.ToList().FindIndex(id =>
-      guestDraft.Participants.Single(p => p.PublicId == id).Id == pick.RevealAuthorizedParticipantId);
-    revealerIndex.Should().BeGreaterThanOrEqualTo(0);
-    var revealerUserPublicId = users[revealerIndex];
+    var revealerParticipant = guestDraft.Participants.Single(p => p.Id == pick.RevealAuthorizedParticipantId);
+    var revealer = users.Single(u => u.GuestDrafterId == revealerParticipant.ParticipantIdValue);
 
     // Act
-    var result = await RevealPickAsync(guestDraftPublicId, 1, revealerUserPublicId);
+    var result = await RevealPickAsync(guestDraftPublicId, 1, revealer.UserPublicId);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -66,20 +64,18 @@ public sealed class RevealPickTests(GuestDraftsIntegrationTestWebAppFactory fact
   public async Task RevealPick_ByAnUnauthorizedParticipant_WithMoreThanTwoParticipants_ShouldFailAsync()
   {
     // Arrange
-    var (guestDraftPublicId, users, participantPublicIds) = await CreateInProgressCustomGuestDraftAsync(3);
+    var (guestDraftPublicId, users) = await CreateInProgressCustomGuestDraftAsync(3);
     var owner = users[0];
-    await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), 1, 1);
+    await PlayPickAsync(guestDraftPublicId, owner.UserPublicId, CreateMovie(), 1, 1);
 
     var guestDraft = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
     var pick = guestDraft.Picks.Single(p => p.PlayOrder == 1);
-    var revealerIndex = participantPublicIds.ToList().FindIndex(id =>
-      guestDraft.Participants.Single(p => p.PublicId == id).Id == pick.RevealAuthorizedParticipantId);
-    var pickerIndex = 0;
-    var unauthorizedIndex = Enumerable.Range(0, users.Count)
-      .First(i => i != revealerIndex && i != pickerIndex);
+    var revealerParticipant = guestDraft.Participants.Single(p => p.Id == pick.RevealAuthorizedParticipantId);
+    var revealer = users.Single(u => u.GuestDrafterId == revealerParticipant.ParticipantIdValue);
+    var unauthorized = users.Single(u => u != owner && u != revealer);
 
     // Act
-    var result = await RevealPickAsync(guestDraftPublicId, 1, users[unauthorizedIndex]);
+    var result = await RevealPickAsync(guestDraftPublicId, 1, unauthorized.UserPublicId);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -90,7 +86,7 @@ public sealed class RevealPickTests(GuestDraftsIntegrationTestWebAppFactory fact
   public async Task RevealPick_WhenAlreadyRevealed_ShouldFailAsync()
   {
     // Arrange
-    var (guestDraftPublicId, owner, other, _, _) = await CreateInProgressStandardGuestDraftAsync();
+    var (guestDraftPublicId, owner, other) = await CreateInProgressStandardGuestDraftAsync();
     await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), 7, 1);
     await RevealPickAsync(guestDraftPublicId, 1, other);
 
@@ -106,7 +102,7 @@ public sealed class RevealPickTests(GuestDraftsIntegrationTestWebAppFactory fact
   public async Task RevealPick_WithANonExistentPlayOrder_ShouldFailAsync()
   {
     // Arrange
-    var (guestDraftPublicId, _, other, _, _) = await CreateInProgressStandardGuestDraftAsync();
+    var (guestDraftPublicId, _, other) = await CreateInProgressStandardGuestDraftAsync();
 
     // Act
     var result = await RevealPickAsync(guestDraftPublicId, 99, other);
@@ -126,13 +122,14 @@ public sealed class RevealPickTests(GuestDraftsIntegrationTestWebAppFactory fact
   public async Task RevealPick_WhenTheDraftIsNotInProgress_ShouldFailAsync()
   {
     // Arrange -- still Created, never started
-    var owner = CreateUser();
-    var other = CreateUser();
-    var guestDraftPublicId = await CreateGuestDraftAsync(owner);
-    await InviteParticipantAsync(guestDraftPublicId, owner, other);
+    var owner = await CreateUserAsync();
+    var other = await CreateUserAsync();
+    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, other.GuestDrafterPublicId);
 
     // Act
-    var result = await RevealPickAsync(guestDraftPublicId, 1, other);
+    var result = await RevealPickAsync(guestDraftPublicId, 1, other.UserPublicId);
 
     // Assert
     result.IsFailure.Should().BeTrue();

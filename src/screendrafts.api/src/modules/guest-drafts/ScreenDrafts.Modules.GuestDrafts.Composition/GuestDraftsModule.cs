@@ -1,10 +1,9 @@
-﻿using ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.Enums;
-using ScreenDrafts.Modules.GuestDrafts.Infrastructure.Outbox;
-
-namespace ScreenDrafts.Modules.GuestDrafts.Composition;
+﻿namespace ScreenDrafts.Modules.GuestDrafts.Composition;
 
 public static class GuestDraftsModule
 {
+  private static readonly string _moduleName = typeof(GuestDraftsModule).Assembly.GetName().Name!;
+
   public static IServiceCollection AddGuestDraftsModule(
     this IServiceCollection services,
     IConfiguration configuration
@@ -29,6 +28,7 @@ public static class GuestDraftsModule
   {
     SqlMapper.AddTypeHandler(new SmartEnumTypeHandler<GuestDraftStatus>());
     SqlMapper.AddTypeHandler(new SmartEnumTypeHandler<GuestDraftType>());
+    SqlMapper.AddTypeHandler(new SmartEnumTypeHandler<GuestParticipantKind>());
   }
 
   public static IServiceCollection AddGuestDraftsSeeding(
@@ -46,7 +46,17 @@ public static class GuestDraftsModule
     string instanceId
   )
   {
-    // Method intentionally left empty.
+    ArgumentNullException.ThrowIfNull(registrationConfigurator);
+
+    var moduleInstanceId = $"{instanceId}-{_moduleName.ToLowerInvariant()}";
+
+    registrationConfigurator
+      .AddConsumer<IntegrationEventConsumer<UserRegisteredIntegrationEvent>>()
+      .Endpoint(c => c.InstanceId = moduleInstanceId);
+
+    registrationConfigurator
+      .AddConsumer<IntegrationEventConsumer<UserNameUpdatedIntegrationEvent>>()
+      .Endpoint(c => c.InstanceId = moduleInstanceId);
   }
 
   private static void AddDraftsFeatures(this IServiceCollection services)

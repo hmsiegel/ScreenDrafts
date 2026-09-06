@@ -29,24 +29,19 @@ public class GuestDraftCreationTests : GuestDraftsBaseTest
   }
 
   [Fact]
-  public void Create_ShouldAddOwnerAsFirstParticipant_WithIsOwnerTrue()
+  public void Create_ShouldNotAddAnyParticipants()
   {
-    // Arrange
-    var ownerUserId = Guid.NewGuid();
-
-    // Act
+    // Arrange & Act -- the owner is no longer auto-added; they must be added
+    // explicitly via AddParticipant, exactly like everyone else.
     var guestDraft = GuestDraft.Create(
       Faker.Random.AlphaNumeric(10),
-      ownerUserId,
+      Guid.NewGuid(),
       Faker.Random.AlphaNumeric(10),
       "Weekend Guest Draft",
       GuestDraftType.Standard).Value;
 
     // Assert
-    guestDraft.Participants.Should().HaveCount(1);
-    var owner = guestDraft.Participants.Single();
-    owner.UserId.Should().Be(ownerUserId);
-    owner.IsOwner.Should().BeTrue();
+    guestDraft.Participants.Should().BeEmpty();
   }
 
   [Fact]
@@ -82,51 +77,69 @@ public class GuestDraftCreationTests : GuestDraftsBaseTest
   }
 
   [Fact]
-  public void InviteParticipant_ShouldAddParticipant_WhenDraftIsCreated()
+  public void AddParticipant_ShouldAddParticipant_WhenDraftIsCreated()
   {
     // Arrange
     var guestDraft = CreateGuestDraft();
-    var userId = Guid.NewGuid();
+    var guestDrafterId = Guid.NewGuid();
+    var participant = GuestParticipant.From(GuestDrafterId.Create(guestDrafterId));
 
     // Act
-    var result = guestDraft.InviteParticipant(Faker.Random.AlphaNumeric(10), userId);
+    var result = guestDraft.AddParticipant(participant, isOwner: false);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
-    result.Value.UserId.Should().Be(userId);
+    result.Value.ParticipantIdValue.Should().Be(guestDrafterId);
     result.Value.IsOwner.Should().BeFalse();
-    guestDraft.Participants.Should().HaveCount(2);
+    guestDraft.Participants.Should().HaveCount(1);
   }
 
   [Fact]
-  public void InviteParticipant_ShouldReturnFailure_WhenUserIdIsAlreadyAParticipant()
+  public void AddParticipant_ShouldSetIsOwnerTrue_WhenCalledWithIsOwnerTrue()
   {
     // Arrange
     var guestDraft = CreateGuestDraft();
-    var userId = Guid.NewGuid();
-    guestDraft.InviteParticipant(Faker.Random.AlphaNumeric(10), userId);
+    var participant = GuestParticipant.From(GuestDrafterId.Create(Guid.NewGuid()));
 
     // Act
-    var result = guestDraft.InviteParticipant(Faker.Random.AlphaNumeric(10), userId);
+    var result = guestDraft.AddParticipant(participant, isOwner: true);
 
     // Assert
-    result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDraftErrors.ParticipantAlreadyAdded(userId));
-    guestDraft.Participants.Should().HaveCount(2);
+    result.IsSuccess.Should().BeTrue();
+    result.Value.IsOwner.Should().BeTrue();
   }
 
   [Fact]
-  public void InviteParticipant_ShouldReturnFailure_WhenStatusIsNotCreated()
+  public void AddParticipant_ShouldReturnFailure_WhenTheSameParticipantIsAlreadyAdded()
   {
     // Arrange
-    var (guestDraft, _, _) = CreateInProgressStandardGuestDraft();
+    var guestDraft = CreateGuestDraft();
+    var guestDrafterId = Guid.NewGuid();
+    var participant = GuestParticipant.From(GuestDrafterId.Create(guestDrafterId));
+    guestDraft.AddParticipant(participant, isOwner: false);
 
     // Act
-    var result = guestDraft.InviteParticipant(Faker.Random.AlphaNumeric(10), Guid.NewGuid());
+    var result = guestDraft.AddParticipant(participant, isOwner: false);
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDraftErrors.CannotInviteAfterStart);
+    result.Errors[0].Should().Be(GuestDraftErrors.ParticipantAlreadyAdded(guestDrafterId));
+    guestDraft.Participants.Should().HaveCount(1);
+  }
+
+  [Fact]
+  public void AddParticipant_ShouldReturnFailure_WhenStatusIsNotCreated()
+  {
+    // Arrange
+    var (guestDraft, _, _) = CreateInProgressStandardGuestDraft();
+    var participant = GuestParticipant.From(GuestDrafterId.Create(Guid.NewGuid()));
+
+    // Act
+    var result = guestDraft.AddParticipant(participant, isOwner: false);
+
+    // Assert
+    result.IsFailure.Should().BeTrue();
+    result.Errors[0].Should().Be(GuestDraftErrors.CannotAddParticipantAfterStart);
   }
 
   [Fact]
@@ -134,7 +147,7 @@ public class GuestDraftCreationTests : GuestDraftsBaseTest
   {
     // Arrange
     var guestDraft = CreateGuestDraft();
-    var owner = guestDraft.Participants.Single();
+    var owner = AddParticipant(guestDraft, isOwner: true);
 
     // Act & Assert
     guestDraft.HasParticipant(owner.Id.Value).Should().BeTrue();

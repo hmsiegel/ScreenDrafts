@@ -14,7 +14,7 @@ internal static class GuestDraftsAuth
     // Guest Drafts
     internal const string GuestDraftCreate = "guest-drafts:create";
     internal const string GuestDraftRead = "guest-drafts:read";
-    internal const string GuestDraftInviteParticipant = "guest-drafts:invite-participant";
+    internal const string GuestDraftAddParticipant = "guest-drafts:add-participant";
     internal const string GuestDraftSetBoard = "guest-drafts:set-board";
     internal const string GuestDraftAssignPosition = "guest-drafts:assign-position";
     internal const string GuestDraftSetStatus = "guest-drafts:set-status";

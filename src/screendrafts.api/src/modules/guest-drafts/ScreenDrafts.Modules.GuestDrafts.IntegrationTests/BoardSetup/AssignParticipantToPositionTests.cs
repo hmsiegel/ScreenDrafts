@@ -7,18 +7,18 @@ public sealed class AssignParticipantToPositionTests(GuestDraftsIntegrationTestW
   public async Task AssignParticipantToPosition_WithValidData_ShouldSucceedAsync()
   {
     // Arrange
-    var owner = CreateUser();
-    var guestDraftPublicId = await CreateGuestDraftAsync(owner, GuestDraftType.Standard);
-    await InviteParticipantAsync(guestDraftPublicId, owner, CreateUser());
-    await SetFixedBoardLayoutAsync(guestDraftPublicId, owner);
+    var owner = await CreateUserAsync();
+    var other = await CreateUserAsync();
+    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, GuestDraftType.Standard);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, other.GuestDrafterPublicId);
+    await SetFixedBoardLayoutAsync(guestDraftPublicId, owner.UserPublicId);
 
     var guestDraft = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
     var position = guestDraft.GameBoard!.Positions.First();
-    var ownerUserId = (await FakeUsersApi.GetUserByPublicId(owner, TestContext.Current.CancellationToken))!.UserId;
-    var ownerParticipant = guestDraft.Participants.Single(p => p.UserId == ownerUserId);
 
     // Act
-    var result = await AssignParticipantAsync(guestDraftPublicId, owner, position.PublicId, ownerParticipant.PublicId);
+    var result = await AssignParticipantAsync(guestDraftPublicId, owner.UserPublicId, position.PublicId, owner.GuestDrafterPublicId);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -28,19 +28,18 @@ public sealed class AssignParticipantToPositionTests(GuestDraftsIntegrationTestW
   public async Task AssignParticipantToPosition_WhenCallerIsNotTheOwner_ShouldFailAsync()
   {
     // Arrange
-    var owner = CreateUser();
-    var other = CreateUser();
-    var guestDraftPublicId = await CreateGuestDraftAsync(owner, GuestDraftType.Standard);
-    await InviteParticipantAsync(guestDraftPublicId, owner, other);
-    await SetFixedBoardLayoutAsync(guestDraftPublicId, owner);
+    var owner = await CreateUserAsync();
+    var other = await CreateUserAsync();
+    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, GuestDraftType.Standard);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, other.GuestDrafterPublicId);
+    await SetFixedBoardLayoutAsync(guestDraftPublicId, owner.UserPublicId);
 
     var guestDraft = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
     var position = guestDraft.GameBoard!.Positions.First();
-    var otherUserId = (await FakeUsersApi.GetUserByPublicId(other, TestContext.Current.CancellationToken))!.UserId;
-    var otherParticipant = guestDraft.Participants.Single(p => p.UserId == otherUserId);
 
     // Act -- other is a genuine participant, but not the owner
-    var result = await AssignParticipantAsync(guestDraftPublicId, other, position.PublicId, otherParticipant.PublicId);
+    var result = await AssignParticipantAsync(guestDraftPublicId, other.UserPublicId, position.PublicId, other.GuestDrafterPublicId);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -51,22 +50,19 @@ public sealed class AssignParticipantToPositionTests(GuestDraftsIntegrationTestW
   public async Task AssignParticipantToPosition_WhenPositionIsAlreadyAssigned_ShouldFailAsync()
   {
     // Arrange
-    var owner = CreateUser();
-    var other = CreateUser();
-    var guestDraftPublicId = await CreateGuestDraftAsync(owner, GuestDraftType.Standard);
-    await InviteParticipantAsync(guestDraftPublicId, owner, other);
-    await SetFixedBoardLayoutAsync(guestDraftPublicId, owner);
+    var owner = await CreateUserAsync();
+    var other = await CreateUserAsync();
+    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, GuestDraftType.Standard);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, other.GuestDrafterPublicId);
+    await SetFixedBoardLayoutAsync(guestDraftPublicId, owner.UserPublicId);
 
     var guestDraft = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
     var position = guestDraft.GameBoard!.Positions.First();
-    var ownerUserId = (await FakeUsersApi.GetUserByPublicId(owner, TestContext.Current.CancellationToken))!.UserId;
-    var otherUserId = (await FakeUsersApi.GetUserByPublicId(other, TestContext.Current.CancellationToken))!.UserId;
-    var ownerParticipant = guestDraft.Participants.Single(p => p.UserId == ownerUserId);
-    var otherParticipant = guestDraft.Participants.Single(p => p.UserId == otherUserId);
-    await AssignParticipantAsync(guestDraftPublicId, owner, position.PublicId, ownerParticipant.PublicId);
+    await AssignParticipantAsync(guestDraftPublicId, owner.UserPublicId, position.PublicId, owner.GuestDrafterPublicId);
 
     // Act
-    var result = await AssignParticipantAsync(guestDraftPublicId, owner, position.PublicId, otherParticipant.PublicId);
+    var result = await AssignParticipantAsync(guestDraftPublicId, owner.UserPublicId, position.PublicId, other.GuestDrafterPublicId);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -74,52 +70,76 @@ public sealed class AssignParticipantToPositionTests(GuestDraftsIntegrationTestW
   }
 
   [Fact]
-  public async Task AssignParticipantToPosition_WithNonExistentParticipant_ShouldFailAsync()
+  public async Task AssignParticipantToPosition_WithNonExistentGuestDrafter_ShouldFailAsync()
   {
     // Arrange
-    var owner = CreateUser();
-    var guestDraftPublicId = await CreateGuestDraftAsync(owner, GuestDraftType.Standard);
-    await InviteParticipantAsync(guestDraftPublicId, owner, CreateUser());
-    await SetFixedBoardLayoutAsync(guestDraftPublicId, owner);
+    var owner = await CreateUserAsync();
+    var other = await CreateUserAsync();
+    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, GuestDraftType.Standard);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, other.GuestDrafterPublicId);
+    await SetFixedBoardLayoutAsync(guestDraftPublicId, owner.UserPublicId);
 
     var guestDraft = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
     var position = guestDraft.GameBoard!.Positions.First();
-    var nonExistentParticipantPublicId = $"gdp_{Faker.Random.AlphaNumeric(15)}";
+    var nonExistentGuestDrafterPublicId = $"{PublicIdPrefixes.GuestDrafter}_{Faker.Random.AlphaNumeric(15)}";
 
     // Act
-    var result = await AssignParticipantAsync(guestDraftPublicId, owner, position.PublicId, nonExistentParticipantPublicId);
+    var result = await AssignParticipantAsync(guestDraftPublicId, owner.UserPublicId, position.PublicId, nonExistentGuestDrafterPublicId);
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors.Should().Contain(e => e.Code == GuestDraftErrors.ParticipantNotFound(nonExistentParticipantPublicId).Code);
+    result.Errors.Should().Contain(e => e.Code == GuestDrafterErrors.NotFound(nonExistentGuestDrafterPublicId).Code);
+  }
+
+  [Fact]
+  public async Task AssignParticipantToPosition_WithAGuestDrafterNeverAddedToThisDraft_ShouldFailAsync()
+  {
+    // Arrange -- a real, registered GuestDrafter, but never added as a participant
+    // of THIS guest draft via AddParticipant.
+    var owner = await CreateUserAsync();
+    var neverAdded = await CreateUserAsync();
+    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, GuestDraftType.Standard);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId);
+    await SetFixedBoardLayoutAsync(guestDraftPublicId, owner.UserPublicId);
+
+    var guestDraft = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
+    var position = guestDraft.GameBoard!.Positions.First();
+
+    // Act
+    var result = await AssignParticipantAsync(guestDraftPublicId, owner.UserPublicId, position.PublicId, neverAdded.GuestDrafterPublicId);
+
+    // Assert
+    result.IsFailure.Should().BeTrue();
+    result.Errors.Should().Contain(e => e.Code == GuestDraftErrors.ParticipantNotFound(neverAdded.GuestDrafterPublicId).Code);
   }
 
   [Fact]
   public async Task AssignParticipantToPosition_ShouldGrantBonusAwards_WhenThePositionCarriesThemAsync()
   {
     // Arrange
-    var owner = CreateUser();
-    var guestDraftPublicId = await CreateGuestDraftAsync(owner, GuestDraftType.MiniMega);
-    await InviteParticipantAsync(guestDraftPublicId, owner, CreateUser());
+    var owner = await CreateUserAsync();
+    var other = await CreateUserAsync();
+    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, GuestDraftType.MiniMega);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, other.GuestDrafterPublicId);
 
     List<PositionInput> positions =
     [
       new() { Name = "A", Picks = [1], HasBonusVeto = true, HasBonusVetoOverride = true, HasBonusFungibleToken = true },
       new() { Name = "B", Picks = [2] },
     ];
-    await SetCustomPositionsAsync(guestDraftPublicId, owner, positions);
+    await SetCustomPositionsAsync(guestDraftPublicId, owner.UserPublicId, positions);
 
     var guestDraft = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
     var positionA = guestDraft.GameBoard!.Positions.Single(p => p.Name == "A");
-    var ownerUserId = (await FakeUsersApi.GetUserByPublicId(owner, TestContext.Current.CancellationToken))!.UserId;
-    var ownerParticipant = guestDraft.Participants.Single(p => p.UserId == ownerUserId);
 
     // Act
-    await AssignParticipantAsync(guestDraftPublicId, owner, positionA.PublicId, ownerParticipant.PublicId);
+    await AssignParticipantAsync(guestDraftPublicId, owner.UserPublicId, positionA.PublicId, owner.GuestDrafterPublicId);
 
     // Assert
     var updatedGuestDraft = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
-    var updatedOwnerParticipant = updatedGuestDraft.Participants.Single(p => p.UserId == ownerUserId);
+    var updatedOwnerParticipant = updatedGuestDraft.Participants.Single(p => p.ParticipantIdValue == owner.GuestDrafterId);
     updatedOwnerParticipant.AwardedVetoes.Should().Be(1);
     updatedOwnerParticipant.AwardedVetoOverrides.Should().Be(1);
     updatedOwnerParticipant.AwardedFungibleTokens.Should().Be(1);

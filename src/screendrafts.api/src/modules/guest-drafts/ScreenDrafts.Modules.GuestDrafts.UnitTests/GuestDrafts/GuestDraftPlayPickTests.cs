@@ -7,8 +7,8 @@ public class GuestDraftPlayPickTests : GuestDraftsBaseTest
   {
     // Arrange -- board set up but never started
     var guestDraft = CreateGuestDraft(GuestDraftType.Standard);
-    var owner = guestDraft.Participants.Single();
-    InviteParticipant(guestDraft);
+    var owner = AddParticipant(guestDraft, isOwner: true);
+    AddParticipant(guestDraft);
     guestDraft.UseFixedBoardLayout(GeneratePositionPublicId);
 
     // Act

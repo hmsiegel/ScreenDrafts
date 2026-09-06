@@ -16,10 +16,10 @@ internal sealed class Validator : AbstractValidator<AssignParticipantToPositionC
       .Must(id => PublicIdGuards.IsValidWithPrefix(id, PublicIdPrefixes.GuestDraftPosition))
       .WithMessage("PositionPublicId must be a valid public ID with the correct prefix.");
 
-    RuleFor(x => x.ParticipantPublicId)
+    RuleFor(x => x.GuestDrafterPublicId)
       .NotEmpty()
-      .WithMessage("ParticipantPublicId is required.")
-      .Must(id => PublicIdGuards.IsValidWithPrefix(id, PublicIdPrefixes.GuestDraftParticipant))
-      .WithMessage("ParticipantPublicId must be a valid public ID with the correct prefix.");
+      .WithMessage("GuestDrafterPublicId is required.")
+      .Must(id => PublicIdGuards.IsValidWithPrefix(id, PublicIdPrefixes.GuestDrafter))
+      .WithMessage("GuestDrafterPublicId must be a valid public ID with the correct prefix.");
   }
 }

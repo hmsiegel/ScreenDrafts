@@ -36,8 +36,8 @@ public class GuestDraftParticipantTests : GuestDraftsBaseTest
   {
     // Arrange
     var guestDraft = CreateGuestDraft(GuestDraftType.MiniMega);
-    var owner = guestDraft.Participants.Single();
-    var other = InviteParticipant(guestDraft);
+    var owner = AddParticipant(guestDraft, isOwner: true);
+    var other = AddParticipant(guestDraft);
 
     List<(string Name, IReadOnlyList<int> Picks, bool HasBonusVeto, bool HasBonusVetoOverride, bool HasBonusFungibleToken)> positions =
     [
@@ -72,8 +72,8 @@ public class GuestDraftParticipantTests : GuestDraftsBaseTest
   {
     // Arrange
     var guestDraft = CreateGuestDraft(GuestDraftType.MiniMega);
-    var owner = guestDraft.Participants.Single();
-    var other = InviteParticipant(guestDraft);
+    var owner = AddParticipant(guestDraft, isOwner: true);
+    var other = AddParticipant(guestDraft);
 
     List<(string Name, IReadOnlyList<int> Picks, bool HasBonusVeto, bool HasBonusVetoOverride, bool HasBonusFungibleToken)> positions =
     [
@@ -95,8 +95,8 @@ public class GuestDraftParticipantTests : GuestDraftsBaseTest
   {
     // Arrange
     var guestDraft = CreateGuestDraft(GuestDraftType.MiniMega);
-    var owner = guestDraft.Participants.Single();
-    var other = InviteParticipant(guestDraft);
+    var owner = AddParticipant(guestDraft, isOwner: true);
+    var other = AddParticipant(guestDraft);
 
     List<(string Name, IReadOnlyList<int> Picks, bool HasBonusVeto, bool HasBonusVetoOverride, bool HasBonusFungibleToken)> positions =
     [
@@ -118,8 +118,8 @@ public class GuestDraftParticipantTests : GuestDraftsBaseTest
   {
     // Arrange
     var guestDraft = CreateGuestDraft(GuestDraftType.MiniMega);
-    var owner = guestDraft.Participants.Single();
-    var other = InviteParticipant(guestDraft);
+    var owner = AddParticipant(guestDraft, isOwner: true);
+    var other = AddParticipant(guestDraft);
 
     List<(string Name, IReadOnlyList<int> Picks, bool HasBonusVeto, bool HasBonusVetoOverride, bool HasBonusFungibleToken)> positions =
     [
@@ -141,8 +141,8 @@ public class GuestDraftParticipantTests : GuestDraftsBaseTest
   {
     // Arrange
     var guestDraft = CreateGuestDraft(GuestDraftType.MiniMega);
-    var owner = guestDraft.Participants.Single();
-    var other = InviteParticipant(guestDraft);
+    var owner = AddParticipant(guestDraft, isOwner: true);
+    var other = AddParticipant(guestDraft);
 
     List<(string Name, IReadOnlyList<int> Picks, bool HasBonusVeto, bool HasBonusVetoOverride, bool HasBonusFungibleToken)> positions =
     [

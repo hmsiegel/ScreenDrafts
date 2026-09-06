@@ -8,5 +8,5 @@ internal sealed record AssignParticipantToPositionRequest
   [FromRoute(Name = "positionPublicId")]
   public string PositionPublicId { get; init; } = default!;
 
-  public required string ParticipantPublicId { get; init; }
+  public required string GuestDrafterPublicId { get; init; }
 }

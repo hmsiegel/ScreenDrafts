@@ -2,10 +2,12 @@
 
 internal sealed class AssignParticipantToPositionCommandHandler(
   IGuestDraftRepository guestDraftRepository,
+  IGuestDrafterRepository guestDrafterRepository,
   IUsersApi usersApi
 ) : ICommandHandler<AssignParticipantToPositionCommand>
 {
   private readonly IGuestDraftRepository _guestDraftRepository = guestDraftRepository;
+  private readonly IGuestDrafterRepository _guestDrafterRepository = guestDrafterRepository;
   private readonly IUsersApi _usersApi = usersApi;
 
   public async Task<Result> Handle(
@@ -44,13 +46,23 @@ internal sealed class AssignParticipantToPositionCommandHandler(
       return Result.Failure(GuestDraftErrors.PositionDoesNotBelongToThisBoard);
     }
 
-    var participant = guestDraft.Participants.FirstOrDefault(p =>
-      p.PublicId == request.ParticipantPublicId
+    var guestDrafter = await _guestDrafterRepository.GetByPublicIdAsync(
+      request.GuestDrafterPublicId,
+      cancellationToken
     );
+
+    if (guestDrafter is null)
+    {
+      return Result.Failure(GuestDrafterErrors.NotFound(request.GuestDrafterPublicId));
+    }
+
+    // Must already be an added participant of THIS draft (via AddParticipant)
+    // -- being a registered GuestDrafter isn't enough on its own.
+    var participant = guestDraft.FindByParticipantRef(GuestParticipant.From(guestDrafter.Id));
 
     if (participant is null)
     {
-      return Result.Failure(GuestDraftErrors.ParticipantNotFound(request.ParticipantPublicId));
+      return Result.Failure(GuestDraftErrors.ParticipantNotFound(request.GuestDrafterPublicId));
     }
 
     var result = guestDraft.AssignParticipantToPosition(position, participant.Id.Value);

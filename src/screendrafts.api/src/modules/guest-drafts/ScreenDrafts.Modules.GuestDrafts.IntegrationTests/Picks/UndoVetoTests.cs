@@ -7,7 +7,7 @@ public sealed class UndoVetoTests(GuestDraftsIntegrationTestWebAppFactory factor
   public async Task UndoVeto_ByTheOwner_ShouldSucceedAndRefundTheNormalPoolAsync()
   {
     // Arrange
-    var (guestDraftPublicId, owner, other, _, _) = await CreateInProgressStandardGuestDraftAsync();
+    var (guestDraftPublicId, owner, other) = await CreateInProgressStandardGuestDraftAsync();
     await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), 7, 1);
     await ApplyVetoAsync(guestDraftPublicId, 1, other);
 
@@ -16,16 +16,16 @@ public sealed class UndoVetoTests(GuestDraftsIntegrationTestWebAppFactory factor
 
     // Assert
     result.IsSuccess.Should().BeTrue();
+    var otherGuestDrafterId = await GetGuestDrafterIdAsync(other);
     var guestDraft = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
-    var otherUserId = (await FakeUsersApi.GetUserByPublicId(other, TestContext.Current.CancellationToken))!.UserId;
-    guestDraft.Participants.Single(p => p.UserId == otherUserId).VetoesUsed.Should().Be(0);
+    guestDraft.Participants.Single(p => p.ParticipantIdValue == otherGuestDrafterId).VetoesUsed.Should().Be(0);
   }
 
   [Fact]
   public async Task UndoVeto_WhenCallerIsNotTheOwner_ShouldFailAsync()
   {
     // Arrange
-    var (guestDraftPublicId, owner, other, _, _) = await CreateInProgressStandardGuestDraftAsync();
+    var (guestDraftPublicId, owner, other) = await CreateInProgressStandardGuestDraftAsync();
     await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), 7, 1);
     await ApplyVetoAsync(guestDraftPublicId, 1, other);
 
@@ -41,7 +41,7 @@ public sealed class UndoVetoTests(GuestDraftsIntegrationTestWebAppFactory factor
   public async Task UndoVeto_WhenThePickIsNotVetoed_ShouldFailAsync()
   {
     // Arrange
-    var (guestDraftPublicId, owner, _, _, _) = await CreateInProgressStandardGuestDraftAsync();
+    var (guestDraftPublicId, owner, _) = await CreateInProgressStandardGuestDraftAsync();
     await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), 7, 1);
 
     // Act
@@ -56,13 +56,14 @@ public sealed class UndoVetoTests(GuestDraftsIntegrationTestWebAppFactory factor
   public async Task UndoVeto_WhenTheDraftIsNotInProgress_ShouldFailAsync()
   {
     // Arrange -- still Created, never started
-    var owner = CreateUser();
-    var other = CreateUser();
-    var guestDraftPublicId = await CreateGuestDraftAsync(owner);
-    await InviteParticipantAsync(guestDraftPublicId, owner, other);
+    var owner = await CreateUserAsync();
+    var other = await CreateUserAsync();
+    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, other.GuestDrafterPublicId);
 
     // Act
-    var result = await UndoVetoAsync(guestDraftPublicId, 1, owner);
+    var result = await UndoVetoAsync(guestDraftPublicId, 1, owner.UserPublicId);
 
     // Assert
     result.IsFailure.Should().BeTrue();
@@ -73,7 +74,7 @@ public sealed class UndoVetoTests(GuestDraftsIntegrationTestWebAppFactory factor
   public async Task UndoVeto_WithANonExistentPlayOrder_ShouldFailAsync()
   {
     // Arrange
-    var (guestDraftPublicId, owner, _, _, _) = await CreateInProgressStandardGuestDraftAsync();
+    var (guestDraftPublicId, owner, _) = await CreateInProgressStandardGuestDraftAsync();
 
     // Act
     var result = await UndoVetoAsync(guestDraftPublicId, 99, owner);
@@ -87,17 +88,16 @@ public sealed class UndoVetoTests(GuestDraftsIntegrationTestWebAppFactory factor
   public async Task UndoVeto_ByTheOwner_ShouldRefundTheFungiblePool_WhenTheVetoWasSpentFromItAsync()
   {
     // Arrange
-    var (guestDraftPublicId, owner, other, _) =
+    var (guestDraftPublicId, owner, other) =
       await CreateDraftWhereOtherHasExhaustedNormalVetoesButHasOneFungibleTokenAsync();
 
     // Act
-    var result = await UndoVetoAsync(guestDraftPublicId, 2, owner);
+    var result = await UndoVetoAsync(guestDraftPublicId, 2, owner.UserPublicId);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
     var guestDraft = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
-    var otherUserId = (await FakeUsersApi.GetUserByPublicId(other, TestContext.Current.CancellationToken))!.UserId;
-    var otherParticipant = guestDraft.Participants.Single(p => p.UserId == otherUserId);
+    var otherParticipant = guestDraft.Participants.Single(p => p.ParticipantIdValue == other.GuestDrafterId);
     otherParticipant.FungibleTokensUsed.Should().Be(0);
     otherParticipant.VetoesUsed.Should().Be(1, "only the fungible pool was spent on this veto, the normal pool refund is untouched");
   }
@@ -107,43 +107,40 @@ public sealed class UndoVetoTests(GuestDraftsIntegrationTestWebAppFactory factor
   {
     // Arrange -- guards the ordering fix: the refund must only happen after the
     // undo itself has actually succeeded, never unconditionally beforehand.
-    var owner = CreateUser();
-    var other = CreateUser();
-    var guestDraftPublicId = await CreateGuestDraftAsync(owner, GuestDraftType.MiniMega);
-    await InviteParticipantAsync(guestDraftPublicId, owner, other);
+    var owner = await CreateUserAsync();
+    var other = await CreateUserAsync();
+    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, GuestDraftType.MiniMega);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, other.GuestDrafterPublicId);
 
     List<PositionInput> positions =
     [
       new() { Name = "A", Picks = [1] },
       new() { Name = "B", Picks = [2], HasBonusVetoOverride = true },
     ];
-    await SetCustomPositionsAsync(guestDraftPublicId, owner, positions);
+    await SetCustomPositionsAsync(guestDraftPublicId, owner.UserPublicId, positions);
 
     var guestDraft = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
     var boardPositions = guestDraft.GameBoard!.Positions.ToList();
-    var ownerUserId = (await FakeUsersApi.GetUserByPublicId(owner, TestContext.Current.CancellationToken))!.UserId;
-    var otherUserId = (await FakeUsersApi.GetUserByPublicId(other, TestContext.Current.CancellationToken))!.UserId;
-    var ownerParticipant = guestDraft.Participants.Single(p => p.UserId == ownerUserId);
-    var otherParticipant = guestDraft.Participants.Single(p => p.UserId == otherUserId);
-    await AssignParticipantAsync(guestDraftPublicId, owner, boardPositions.Single(p => p.Name == "A").PublicId, ownerParticipant.PublicId);
-    await AssignParticipantAsync(guestDraftPublicId, owner, boardPositions.Single(p => p.Name == "B").PublicId, otherParticipant.PublicId);
-    await SetGuestDraftStatusAsync(guestDraftPublicId, owner, GuestDraftStatusAction.Start);
+    await AssignParticipantAsync(guestDraftPublicId, owner.UserPublicId, boardPositions.Single(p => p.Name == "A").PublicId, owner.GuestDrafterPublicId);
+    await AssignParticipantAsync(guestDraftPublicId, owner.UserPublicId, boardPositions.Single(p => p.Name == "B").PublicId, other.GuestDrafterPublicId);
+    await SetGuestDraftStatusAsync(guestDraftPublicId, owner.UserPublicId, GuestDraftStatusAction.Start);
 
-    await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), 1, 1);
-    await ApplyVetoAsync(guestDraftPublicId, 1, other);
-    await ApplyVetoOverrideAsync(guestDraftPublicId, 1, other);
+    await PlayPickAsync(guestDraftPublicId, owner.UserPublicId, CreateMovie(), 1, 1);
+    await ApplyVetoAsync(guestDraftPublicId, 1, other.UserPublicId);
+    await ApplyVetoOverrideAsync(guestDraftPublicId, 1, other.UserPublicId);
 
     var beforeFailedUndo = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
-    var vetoesUsedBeforeFailedUndo = beforeFailedUndo.Participants.Single(p => p.UserId == otherUserId).VetoesUsed;
+    var vetoesUsedBeforeFailedUndo = beforeFailedUndo.Participants.Single(p => p.ParticipantIdValue == other.GuestDrafterId).VetoesUsed;
 
     // Act -- the veto is already overridden, so this must fail
-    var result = await UndoVetoAsync(guestDraftPublicId, 1, owner);
+    var result = await UndoVetoAsync(guestDraftPublicId, 1, owner.UserPublicId);
 
     // Assert
     result.IsFailure.Should().BeTrue();
     result.Errors.Should().Contain(e => e.Code == GuestDraftErrors.CannotUndoVetoThatHasBeenOverridden.Code);
     var afterFailedUndo = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
-    afterFailedUndo.Participants.Single(p => p.UserId == otherUserId).VetoesUsed
+    afterFailedUndo.Participants.Single(p => p.ParticipantIdValue == other.GuestDrafterId).VetoesUsed
       .Should().Be(vetoesUsedBeforeFailedUndo, "a failed undo must not refund any pool");
   }
 
@@ -153,38 +150,35 @@ public sealed class UndoVetoTests(GuestDraftsIntegrationTestWebAppFactory factor
   /// awarded a bonus fungible token, and a fresh, most-recent, un-vetoed pick
   /// (play order 2) has since been vetoed from that fungible pool.
   /// </summary>
-  private async Task<(string GuestDraftPublicId, string Owner, string Other, string SecondPickMoviePublicId)>
+  private async Task<(string GuestDraftPublicId, TestUser Owner, TestUser Other)>
     CreateDraftWhereOtherHasExhaustedNormalVetoesButHasOneFungibleTokenAsync()
   {
-    var owner = CreateUser();
-    var other = CreateUser();
-    var guestDraftPublicId = await CreateGuestDraftAsync(owner, GuestDraftType.MiniMega);
-    await InviteParticipantAsync(guestDraftPublicId, owner, other);
+    var owner = await CreateUserAsync();
+    var other = await CreateUserAsync();
+    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, GuestDraftType.MiniMega);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, other.GuestDrafterPublicId);
 
     List<PositionInput> positions =
     [
       new() { Name = "A", Picks = [1] },
       new() { Name = "B", Picks = [2], HasBonusFungibleToken = true },
     ];
-    await SetCustomPositionsAsync(guestDraftPublicId, owner, positions);
+    await SetCustomPositionsAsync(guestDraftPublicId, owner.UserPublicId, positions);
 
     var guestDraft = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
     var boardPositions = guestDraft.GameBoard!.Positions.ToList();
-    var ownerUserId = (await FakeUsersApi.GetUserByPublicId(owner, TestContext.Current.CancellationToken))!.UserId;
-    var otherUserId = (await FakeUsersApi.GetUserByPublicId(other, TestContext.Current.CancellationToken))!.UserId;
-    var ownerParticipant = guestDraft.Participants.Single(p => p.UserId == ownerUserId);
-    var otherParticipant = guestDraft.Participants.Single(p => p.UserId == otherUserId);
 
-    await AssignParticipantAsync(guestDraftPublicId, owner, boardPositions.Single(p => p.Name == "A").PublicId, ownerParticipant.PublicId);
-    await AssignParticipantAsync(guestDraftPublicId, owner, boardPositions.Single(p => p.Name == "B").PublicId, otherParticipant.PublicId);
-    await SetGuestDraftStatusAsync(guestDraftPublicId, owner, GuestDraftStatusAction.Start);
+    await AssignParticipantAsync(guestDraftPublicId, owner.UserPublicId, boardPositions.Single(p => p.Name == "A").PublicId, owner.GuestDrafterPublicId);
+    await AssignParticipantAsync(guestDraftPublicId, owner.UserPublicId, boardPositions.Single(p => p.Name == "B").PublicId, other.GuestDrafterPublicId);
+    await SetGuestDraftStatusAsync(guestDraftPublicId, owner.UserPublicId, GuestDraftStatusAction.Start);
 
-    await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), 1, 1);
-    await ApplyVetoAsync(guestDraftPublicId, 1, other);
+    await PlayPickAsync(guestDraftPublicId, owner.UserPublicId, CreateMovie(), 1, 1);
+    await ApplyVetoAsync(guestDraftPublicId, 1, other.UserPublicId);
     var secondMovie = CreateMovie();
-    await PlayPickAsync(guestDraftPublicId, owner, secondMovie, 1, 2);
-    await ApplyVetoAsync(guestDraftPublicId, 2, other);
+    await PlayPickAsync(guestDraftPublicId, owner.UserPublicId, secondMovie, 1, 2);
+    await ApplyVetoAsync(guestDraftPublicId, 2, other.UserPublicId);
 
-    return (guestDraftPublicId, owner, other, secondMovie);
+    return (guestDraftPublicId, owner, other);
   }
 }
