@@ -285,5 +285,8 @@ public static class GuestDraftErrors
     "Positions must exactly cover the number of picks."
   );
 
-  public static SDError CannotChangeDraftTypeAfterStart { get; internal set; }
+  public static readonly SDError CannotChangeDraftTypeAfterStart = SDError.Problem(
+    "GuestDrafts.CannotChangeDraftTypeAfterStart",
+    "Cannot change the draft type after the draft has started."
+  );
 }

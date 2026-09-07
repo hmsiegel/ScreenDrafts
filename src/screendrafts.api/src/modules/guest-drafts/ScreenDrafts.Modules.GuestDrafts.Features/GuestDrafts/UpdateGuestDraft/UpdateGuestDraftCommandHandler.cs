@@ -62,7 +62,7 @@ internal sealed class UpdateGuestDraftCommandHandler(
         return Result.Failure(GuestDraftErrors.InvalidType(request.Type));
       }
 
-      if (newType != guestDraft.Type)
+      if (newType != guestDraft.GuestDraftType)
       {
         var changeTypeResult = guestDraft.ChangeType(newType);
 
@@ -91,28 +91,19 @@ internal sealed class UpdateGuestDraftCommandHandler(
             return Result.Failure(GuestDraftErrors.NumberOfPicksMustBeGreaterThanZero);
           }
 
-          if (request.Positions.Count == 0)
-          {
-            return Result.Failure(GuestDraftErrors.PositionsAreRequiredForThisDraftType);
-          }
+          var coverageResult = GuestDraftPositionCoverage.Validate(
+            [.. request.Positions.Select(p => p.Picks)],
+            numberOfPicks
+          );
 
-          var allSlots = request.Positions.SelectMany(p => p.Picks).ToList();
-          var expectedSlots = Enumerable.Range(1, numberOfPicks).ToHashSet();
-
-          if (allSlots.Count != allSlots.Distinct().Count() || !expectedSlots.SetEquals(allSlots))
+          if (coverageResult.IsFailure)
           {
-            return Result.Failure(GuestDraftErrors.PositionsMustExactlyCoverTheNumberOfPicks);
+            return Result.Failure(coverageResult.Errors);
           }
 
           var positions = request
             .Positions.Select(p =>
-              (
-                p.Name,
-                (IReadOnlyList<int>)p.Picks,
-                p.HasBonusVeto,
-                p.HasBonusVetoOverride,
-                p.HasBonusFungibleToken
-              )
+              (p.Name, p.Picks, p.HasBonusVeto, p.HasBonusVetoOverride, p.HasBonusFungibleToken)
             )
             .ToList();
 

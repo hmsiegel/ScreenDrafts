@@ -120,16 +120,20 @@ public sealed class ApplyVetoTests(GuestDraftsIntegrationTestWebAppFactory facto
   {
     var owner = await CreateUserAsync();
     var other = await CreateUserAsync();
-    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, GuestDraftType.MiniMega);
-    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId);
-    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, other.GuestDrafterPublicId);
 
-    List<PositionInput> positions =
+    List<CreateGuestDraftPositionInput> positions =
     [
       new() { Name = "A", Picks = [1] },
       new() { Name = "B", Picks = [2], HasBonusFungibleToken = true },
     ];
-    await SetCustomPositionsAsync(guestDraftPublicId, owner.UserPublicId, positions);
+    var guestDraftPublicId = await CreateGuestDraftAsync(
+      owner.UserPublicId,
+      GuestDraftType.MiniMega,
+      numberOfPicks: 2,
+      positions: positions
+    );
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, other.GuestDrafterPublicId);
 
     var guestDraft = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
     var boardPositions = guestDraft.GameBoard!.Positions.ToList();

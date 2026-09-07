@@ -18,7 +18,6 @@ public static class GuestDraftScenarioFactory
     return GuestDraft.Create(
       publicId: _faker.Random.AlphaNumeric(10),
       ownerUserId: ownerUserId ?? Guid.NewGuid(),
-      ownerParticipantPublicId: _faker.Random.AlphaNumeric(10),
       title: title ?? _faker.Lorem.Sentence(3),
       guestDraftType: guestDraftType ?? GuestDraftType.Standard).Value;
   }

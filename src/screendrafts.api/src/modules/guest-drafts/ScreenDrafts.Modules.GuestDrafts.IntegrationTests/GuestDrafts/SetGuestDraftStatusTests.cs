@@ -14,7 +14,6 @@ public sealed class SetGuestDraftStatusTests(GuestDraftsIntegrationTestWebAppFac
     var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, GuestDraftType.Standard);
     await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId);
     await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, other.GuestDrafterPublicId);
-    await SetFixedBoardLayoutAsync(guestDraftPublicId, owner.UserPublicId);
 
     var guestDraft = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
     var positions = guestDraft.GameBoard!.Positions.ToList();
@@ -39,7 +38,6 @@ public sealed class SetGuestDraftStatusTests(GuestDraftsIntegrationTestWebAppFac
     var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId);
     await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId);
     await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, other.GuestDrafterPublicId);
-    await SetFixedBoardLayoutAsync(guestDraftPublicId, owner.UserPublicId);
 
     // Act
     var result = await SetGuestDraftStatusAsync(guestDraftPublicId, other.UserPublicId, GuestDraftStatusAction.Start);
@@ -66,12 +64,37 @@ public sealed class SetGuestDraftStatusTests(GuestDraftsIntegrationTestWebAppFac
   }
 
   [Fact]
-  public async Task Start_WhenBoardHasNotBeenSetUp_ShouldFailAsync()
+  public async Task Start_WhenPositionCountDoesNotMatchParticipantCount_ShouldFailAsync()
   {
-    // Arrange
+    // Arrange -- Standard's fixed layout always has 2 positions, but a 3rd
+    // participant is added after Create already established the board. Create
+    // now always establishes a board on success (fixed template or valid custom
+    // positions), so a null-board scenario is no longer reachable -- a count
+    // mismatch is the only remaining path to this error.
     var owner = await CreateUserAsync();
     var other = await CreateUserAsync();
-    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId);
+    var third = await CreateUserAsync();
+    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, GuestDraftType.Standard);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, other.GuestDrafterPublicId);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, third.GuestDrafterPublicId);
+
+    // Act
+    var result = await SetGuestDraftStatusAsync(guestDraftPublicId, owner.UserPublicId, GuestDraftStatusAction.Start);
+
+    // Assert
+    result.IsFailure.Should().BeTrue();
+    result.Errors.Should().Contain(e => e.Code == GuestDraftErrors.BoardMustBeFullySetUpBeforeStarting.Code);
+  }
+
+  [Fact]
+  public async Task Start_WhenNotAllPositionsAreAssigned_ShouldFailAsync()
+  {
+    // Arrange -- board exists (Create auto-applied the fixed layout) and
+    // participant count matches, but nobody has been assigned to a position yet.
+    var owner = await CreateUserAsync();
+    var other = await CreateUserAsync();
+    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, GuestDraftType.Standard);
     await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId);
     await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, other.GuestDrafterPublicId);
 
@@ -80,7 +103,7 @@ public sealed class SetGuestDraftStatusTests(GuestDraftsIntegrationTestWebAppFac
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors.Should().Contain(e => e.Code == GuestDraftErrors.BoardMustBeFullySetUpBeforeStarting.Code);
+    result.Errors.Should().Contain(e => e.Code == GuestDraftErrors.AllPositionsMustBeAssignedBeforeStarting.Code);
   }
 
   // ── Complete ─────────────────────────────────────────────────────────────

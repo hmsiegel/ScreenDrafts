@@ -6,13 +6,12 @@ public sealed class AssignParticipantToPositionTests(GuestDraftsIntegrationTestW
   [Fact]
   public async Task AssignParticipantToPosition_WithValidData_ShouldSucceedAsync()
   {
-    // Arrange
+    // Arrange -- Standard is a fixed type, so Create applies its template automatically
     var owner = await CreateUserAsync();
     var other = await CreateUserAsync();
     var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, GuestDraftType.Standard);
     await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId);
     await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, other.GuestDrafterPublicId);
-    await SetFixedBoardLayoutAsync(guestDraftPublicId, owner.UserPublicId);
 
     var guestDraft = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
     var position = guestDraft.GameBoard!.Positions.First();
@@ -33,7 +32,6 @@ public sealed class AssignParticipantToPositionTests(GuestDraftsIntegrationTestW
     var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, GuestDraftType.Standard);
     await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId);
     await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, other.GuestDrafterPublicId);
-    await SetFixedBoardLayoutAsync(guestDraftPublicId, owner.UserPublicId);
 
     var guestDraft = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
     var position = guestDraft.GameBoard!.Positions.First();
@@ -55,7 +53,6 @@ public sealed class AssignParticipantToPositionTests(GuestDraftsIntegrationTestW
     var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, GuestDraftType.Standard);
     await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId);
     await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, other.GuestDrafterPublicId);
-    await SetFixedBoardLayoutAsync(guestDraftPublicId, owner.UserPublicId);
 
     var guestDraft = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
     var position = guestDraft.GameBoard!.Positions.First();
@@ -78,7 +75,6 @@ public sealed class AssignParticipantToPositionTests(GuestDraftsIntegrationTestW
     var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, GuestDraftType.Standard);
     await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId);
     await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, other.GuestDrafterPublicId);
-    await SetFixedBoardLayoutAsync(guestDraftPublicId, owner.UserPublicId);
 
     var guestDraft = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
     var position = guestDraft.GameBoard!.Positions.First();
@@ -101,7 +97,6 @@ public sealed class AssignParticipantToPositionTests(GuestDraftsIntegrationTestW
     var neverAdded = await CreateUserAsync();
     var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, GuestDraftType.Standard);
     await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId);
-    await SetFixedBoardLayoutAsync(guestDraftPublicId, owner.UserPublicId);
 
     var guestDraft = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
     var position = guestDraft.GameBoard!.Positions.First();
@@ -117,19 +112,23 @@ public sealed class AssignParticipantToPositionTests(GuestDraftsIntegrationTestW
   [Fact]
   public async Task AssignParticipantToPosition_ShouldGrantBonusAwards_WhenThePositionCarriesThemAsync()
   {
-    // Arrange
+    // Arrange -- MiniMega is a non-fixed type, so custom positions are supplied at Create time
     var owner = await CreateUserAsync();
     var other = await CreateUserAsync();
-    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, GuestDraftType.MiniMega);
-    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId);
-    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, other.GuestDrafterPublicId);
 
-    List<PositionInput> positions =
+    List<CreateGuestDraftPositionInput> positions =
     [
       new() { Name = "A", Picks = [1], HasBonusVeto = true, HasBonusVetoOverride = true, HasBonusFungibleToken = true },
       new() { Name = "B", Picks = [2] },
     ];
-    await SetCustomPositionsAsync(guestDraftPublicId, owner.UserPublicId, positions);
+    var guestDraftPublicId = await CreateGuestDraftAsync(
+      owner.UserPublicId,
+      GuestDraftType.MiniMega,
+      numberOfPicks: 2,
+      positions: positions
+    );
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, other.GuestDrafterPublicId);
 
     var guestDraft = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
     var positionA = guestDraft.GameBoard!.Positions.Single(p => p.Name == "A");

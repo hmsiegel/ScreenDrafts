@@ -13,6 +13,12 @@ internal sealed class GetGuestDraftGameplayQueryHandler(
     CancellationToken cancellationToken
   )
   {
+    // Still needed via IUsersApi -- resolving the CALLER's own identity is a
+    // cross-module concern regardless (GuestDrafter is local, but "who is
+    // this JWT" is still a Users-module question). Participant/pick display
+    // names below no longer need IUsersApi at all, though -- see the
+    // participant query's JOIN to guest_drafters, now that it's a real
+    // local, same-schema entity.
     var caller = await usersApi.GetUserByPublicId(request.CallerUserPublicId, cancellationToken);
 
     if (caller is null)
@@ -24,6 +30,7 @@ internal sealed class GetGuestDraftGameplayQueryHandler(
 
     await using var connection = await dbConnectionFactory.OpenConnectionAsync(cancellationToken);
 
+    // ── 1. Header ────────────────────────────────────────────────────────────
     const string headerSql = $"""
       SELECT
         gd.public_id          AS {nameof(HeaderRow.GuestDraftPublicId)},
@@ -51,23 +58,33 @@ internal sealed class GetGuestDraftGameplayQueryHandler(
       );
     }
 
-    // ── 2. Participants (with computed token balances) ──────────────────────
+    // ── 2. Participants -- joins directly to guest_drafters, since it's a
+    // real local entity in the same schema. Team support deferred -- the
+    // LEFT JOIN only matches ParticipantKindValue = 0 (Drafter) for now; add
+    // an equivalent LEFT JOIN to guest_drafter_teams for KindValue = 1 when
+    // Teams ship. ──────────────────────────────────────────────────────────
     const string participantSql = $"""
       SELECT
-        gdp.id                            AS {nameof(ParticipantRow.Id)},
-        gdp.public_id                     AS {nameof(ParticipantRow.PublicId)},
-        gdp.user_id                       AS {nameof(ParticipantRow.UserId)},
-        gdp.is_owner                      AS {nameof(ParticipantRow.IsOwner)},
+        gdp.id                      AS {nameof(ParticipantRow.Id)},
+        gdp.participant_id_value    AS {nameof(ParticipantRow.ParticipantIdValue)},
+        gdp.participant_kind_value  AS {nameof(ParticipantRow.ParticipantKindValue)},
+        gdp.is_owner                AS {nameof(ParticipantRow.IsOwner)},
+        gd.public_id                AS {nameof(ParticipantRow.DrafterPublicId)},
+        gd.user_id                  AS {nameof(ParticipantRow.DrafterUserId)},
+        gd.first_name               AS {nameof(ParticipantRow.DrafterFirstName)},
+        gd.last_name                AS {nameof(ParticipantRow.DrafterLastName)},
         (gdp.starting_vetoes + gdp.awarded_vetoes - gdp.vetoes_used)
-                                          AS {nameof(ParticipantRow.VetoTokensRemaining)},
+                                    AS {nameof(ParticipantRow.VetoTokensRemaining)},
         (gdp.awarded_veto_overrides - gdp.veto_overrides_used)
-                                          AS {nameof(ParticipantRow.OverrideTokensRemaining)},
+                                    AS {nameof(ParticipantRow.OverrideTokensRemaining)},
         (gdp.fungible_tokens + gdp.awarded_fungible_tokens - gdp.fungible_tokens_used)
-                                          AS {nameof(ParticipantRow.FungibleTokensRemaining)},
-        gdp.commissioner_overrides         AS {nameof(ParticipantRow.CommissionerOverridesUsed)}
+                                    AS {nameof(ParticipantRow.FungibleTokensRemaining)},
+        gdp.commissioner_overrides   AS {nameof(ParticipantRow.CommissionerOverridesUsed)}
       FROM guest_drafts.guest_draft_participants gdp
-      JOIN guest_drafts.guest_drafts gd ON gd.id = gdp.guest_draft_id
-      WHERE gd.public_id = @GuestDraftPublicId
+      JOIN guest_drafts.guest_drafts gd2 ON gd2.id = gdp.guest_draft_id
+      LEFT JOIN guest_drafts.guest_drafters gd
+        ON gd.id = gdp.participant_id_value AND gdp.participant_kind_value = 0
+      WHERE gd2.public_id = @GuestDraftPublicId
       """;
 
     var participantRows = (
@@ -81,9 +98,6 @@ internal sealed class GetGuestDraftGameplayQueryHandler(
     ).ToList();
 
     // ── 3. Positions ─────────────────────────────────────────────────────────
-    // Picks is a genuine Postgres integer[] column (unlike canonical's
-    // comma-delimited text column) -- Npgsql maps it straight to int[], no
-    // manual ParsePicks(string) step needed.
     const string positionSql = $"""
       SELECT
         pos.public_id                    AS {nameof(PositionRow.PublicId)},
@@ -111,6 +125,10 @@ internal sealed class GetGuestDraftGameplayQueryHandler(
     ).ToList();
 
     // ── 4. Picks (current veto/override/commissioner-override state) ───────
+    // PlayedByParticipantId/RevealAuthorizedParticipantId are the internal
+    // GuestDraftParticipant.id -- the same Guid the domain events raise and
+    // DraftHub groups by, now passed through to the response unchanged
+    // instead of being translated into a PublicId string (see item #1).
     const string pickSql = $"""
       SELECT
         pk.play_order                              AS {nameof(PickRow.PlayOrder)},
@@ -155,10 +173,7 @@ internal sealed class GetGuestDraftGameplayQueryHandler(
       )
     ).ToList();
 
-    // ── 5. Full veto history per pick ────────────────────────────────────────
-    // Same split as canonical: the pick query above only carries the CURRENT veto
-    // (drives board state); this pulls every veto ever issued against a pick, in
-    // order, grouped by PlayOrder below into GameplayPickResponse.VetoHistory.
+    // ── 5. Full veto history per pick (unchanged) ────────────────────────────
     const string vetoHistorySql = $"""
       SELECT
         pk.play_order                    AS {nameof(VetoHistoryRow.PlayOrder)},
@@ -191,27 +206,23 @@ internal sealed class GetGuestDraftGameplayQueryHandler(
       .GroupBy(v => v.PlayOrder)
       .ToDictionary(g => g.Key, g => g.ToList());
 
-    var users = await usersApi.GetUsersByIds(
-      [.. participantRows.Select(p => p.UserId).Distinct()],
-      cancellationToken
+    // ── 6. Resolve display names -- pure C# lookups against the participant
+    // rows, no cross-module calls needed. Only display names are resolved
+    // here now; identifiers are passed through as raw Guids directly from
+    // the row data (see PlayedByParticipantId/RevealAuthorizedParticipantId
+    // in the assembly step below) -- the PublicId lookup this used to need
+    // is gone entirely. ─────────────────────────────────────────────────────
+    var participantIdToDisplayName = participantRows.ToDictionary(
+      p => p.Id,
+      p =>
+        string.IsNullOrEmpty(p.DrafterFirstName)
+          ? "Unknown"
+          : $"{p.DrafterFirstName} {p.DrafterLastName}".Trim()
     );
-
-    var displayNameByUserId = users.ToDictionary(
-      u => u.UserId,
-      u => $"{u.FirstName} {u.LastName}".Trim()
-    );
-    var participantIdToUserId = participantRows.ToDictionary(p => p.Id, p => p.UserId);
-    var participantIdToPublicId = participantRows.ToDictionary(p => p.Id, p => p.PublicId);
 
     string? DisplayNameFor(Guid? participantId) =>
       participantId.HasValue
-      && participantIdToUserId.TryGetValue(participantId.Value, out var userId)
-        ? displayNameByUserId.GetValueOrDefault(userId)
-        : null;
-
-    string? PublicIdFor(Guid? participantId) =>
-      participantId.HasValue
-        ? participantIdToPublicId.GetValueOrDefault(participantId.Value)
+        ? participantIdToDisplayName.GetValueOrDefault(participantId.Value)
         : null;
 
     // ── 7. Resolve movie titles ──────────────────────────────────────────────
@@ -221,15 +232,11 @@ internal sealed class GetGuestDraftGameplayQueryHandler(
     );
 
     // ── 8. Caller context ────────────────────────────────────────────────────
-    // No People/Drafters indirection needed here, unlike canonical -- a guest
-    // draft participant's UserId is the caller's own resolved Guid directly.
     var isOwner = caller.UserId == header.OwnerUserId;
-    var callerParticipant = participantRows.FirstOrDefault(p => p.UserId == caller.UserId);
+    var callerParticipant = participantRows.FirstOrDefault(p => p.DrafterUserId == caller.UserId);
 
     if (!isOwner && callerParticipant is null)
     {
-      // Private by default, no share-token feature yet -- NotFound rather than
-      // Forbidden, so a non-participant can't confirm a private draft even exists.
       return Result.Failure<GetGuestDraftGameplayResponse>(
         GuestDraftErrors.NotFound(request.GuestDraftPublicId)
       );
@@ -239,7 +246,8 @@ internal sealed class GetGuestDraftGameplayQueryHandler(
     {
       IsOwner = isOwner,
       IsParticipant = callerParticipant is not null,
-      ParticipantPublicId = callerParticipant?.PublicId,
+      ParticipantId = callerParticipant?.Id,
+      ParticipantPublicId = callerParticipant?.DrafterPublicId,
     };
 
     // ── 9. Assemble response ─────────────────────────────────────────────────
@@ -262,7 +270,7 @@ internal sealed class GetGuestDraftGameplayQueryHandler(
             HasBonusVeto = pos.HasBonusVeto,
             HasBonusVetoOverride = pos.HasBonusVetoOverride,
             HasBonusFungibleToken = pos.HasBonusFungibleToken,
-            AssignedParticipantPublicId = PublicIdFor(pos.AssignedToParticipantId),
+            AssignedParticipantId = pos.AssignedToParticipantId,
             AssignedParticipantDisplayName = DisplayNameFor(pos.AssignedToParticipantId),
           }),
         ],
@@ -270,9 +278,12 @@ internal sealed class GetGuestDraftGameplayQueryHandler(
         [
           .. participantRows.Select(p => new GameplayParticipantResponse
           {
-            ParticipantPublicId = p.PublicId,
+            ParticipantId = p.Id,
+            ParticipantPublicId = p.DrafterPublicId ?? string.Empty,
             IsOwner = p.IsOwner,
-            DisplayName = displayNameByUserId.GetValueOrDefault(p.UserId, "Unknown"),
+            DisplayName = string.IsNullOrEmpty(p.DrafterFirstName)
+              ? "Unknown"
+              : $"{p.DrafterFirstName} {p.DrafterLastName}".Trim(),
             VetoTokensRemaining = p.VetoTokensRemaining,
             OverrideTokensRemaining = p.OverrideTokensRemaining,
             FungibleTokensRemaining = p.FungibleTokensRemaining,
@@ -297,7 +308,7 @@ internal sealed class GetGuestDraftGameplayQueryHandler(
               Position = p.Position,
               MoviePublicId = canSeeMovie ? p.MoviePublicId : null,
               MovieTitle = canSeeMovie ? movieTitles.GetValueOrDefault(p.MoviePublicId) : null,
-              PlayedByParticipantPublicId = PublicIdFor(p.PlayedByParticipantId) ?? string.Empty,
+              PlayedByParticipantId = p.PlayedByParticipantId,
               PlayedByDisplayName = DisplayNameFor(p.PlayedByParticipantId) ?? "Unknown",
               IsRevealed = isRevealed,
               WasVetoed = p.WasVetoed,
@@ -310,7 +321,7 @@ internal sealed class GetGuestDraftGameplayQueryHandler(
               WasVetoFungible = p.WasVetoFungible,
               WasVetoOverrideFungible = p.WasVetoOverrideFungible,
               VetoSequence = p.VetoSequence,
-              RevealAuthorizedParticipantPublicId = PublicIdFor(p.RevealAuthorizedParticipantId),
+              RevealAuthorizedParticipantId = p.RevealAuthorizedParticipantId,
               RevealAuthorizedByDisplayName = DisplayNameFor(p.RevealAuthorizedParticipantId),
               VetoHistory =
               [
@@ -333,7 +344,7 @@ internal sealed class GetGuestDraftGameplayQueryHandler(
     );
   }
 
-  // ── Row types (positional records for Dapper) ────────────────────────────
+  // ── Row types ────────────────────────────────────────────────────────────
 
   private sealed record HeaderRow(
     string GuestDraftPublicId,
@@ -346,9 +357,13 @@ internal sealed class GetGuestDraftGameplayQueryHandler(
 
   private sealed record ParticipantRow(
     Guid Id,
-    string PublicId,
-    Guid UserId,
+    Guid ParticipantIdValue,
+    int ParticipantKindValue,
     bool IsOwner,
+    string? DrafterPublicId,
+    Guid? DrafterUserId,
+    string? DrafterFirstName,
+    string? DrafterLastName,
     int VetoTokensRemaining,
     int OverrideTokensRemaining,
     int FungibleTokensRemaining,
@@ -363,7 +378,7 @@ internal sealed class GetGuestDraftGameplayQueryHandler(
     public bool HasBonusVeto { get; init; } = default!;
     public bool HasBonusVetoOverride { get; init; } = default!;
     public bool HasBonusFungibleToken { get; init; } = default!;
-    public Guid? AssignedToParticipantId { get; init; } = Guid.Empty;
+    public Guid? AssignedToParticipantId { get; init; } = default!;
   }
 
   private sealed record PickRow
@@ -372,13 +387,13 @@ internal sealed class GetGuestDraftGameplayQueryHandler(
     public int Position { get; init; } = default!;
     public string MoviePublicId { get; init; } = default!;
     public Guid PlayedByParticipantId { get; init; } = Guid.Empty;
-    public Guid? RevealAuthorizedParticipantId { get; init; } = Guid.Empty;
+    public Guid? RevealAuthorizedParticipantId { get; init; } = default!;
     public DateTimeOffset? RevealedAt { get; init; } = default!;
     public bool WasVetoed { get; init; } = default!;
     public bool WasVetoOverridden { get; init; } = default!;
     public bool WasCommissionerOverride { get; init; } = default!;
-    public Guid? VetoedByParticipantId { get; init; } = Guid.Empty;
-    public Guid? SavedByParticipantId { get; init; } = Guid.Empty;
+    public Guid? VetoedByParticipantId { get; init; } = default!;
+    public Guid? SavedByParticipantId { get; init; } = default!;
     public bool WasVetoFungible { get; init; } = default!;
     public bool WasVetoOverrideFungible { get; init; } = default!;
     public int VetoSequence { get; init; } = default!;
@@ -391,7 +406,7 @@ internal sealed class GetGuestDraftGameplayQueryHandler(
     public Guid VetoedByParticipantId { get; init; } = Guid.Empty;
     public bool WasVetoFungible { get; init; } = default!;
     public bool IsOverridden { get; init; } = default!;
-    public Guid? OverriddenByParticipantId { get; init; } = Guid.Empty;
+    public Guid? OverriddenByParticipantId { get; init; } = default!;
     public bool WasOverrideFungible { get; init; } = default!;
   }
 }

@@ -63,18 +63,22 @@ public sealed class ApplyVetoOverrideTests(GuestDraftsIntegrationTestWebAppFacto
     var owner = await CreateUserAsync();
     var firstOverrider = await CreateUserAsync();
     var secondOverrider = await CreateUserAsync();
-    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, GuestDraftType.MiniMega);
-    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId);
-    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, firstOverrider.GuestDrafterPublicId);
-    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, secondOverrider.GuestDrafterPublicId);
 
-    List<PositionInput> positions =
+    List<CreateGuestDraftPositionInput> positions =
     [
       new() { Name = "A", Picks = [1] },
       new() { Name = "B", Picks = [2], HasBonusVetoOverride = true },
       new() { Name = "C", Picks = [3], HasBonusVetoOverride = true },
     ];
-    await SetCustomPositionsAsync(guestDraftPublicId, owner.UserPublicId, positions);
+    var guestDraftPublicId = await CreateGuestDraftAsync(
+      owner.UserPublicId,
+      GuestDraftType.MiniMega,
+      numberOfPicks: 3,
+      positions: positions
+    );
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, firstOverrider.GuestDrafterPublicId);
+    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, secondOverrider.GuestDrafterPublicId);
 
     var guestDraft = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
     var boardPositions = guestDraft.GameBoard!.Positions.ToList();
@@ -165,7 +169,12 @@ public sealed class ApplyVetoOverrideTests(GuestDraftsIntegrationTestWebAppFacto
     // PickNotFoundByPlayOrder (no picks exist yet) instead of DraftNotStarted.
     var owner = await CreateUserAsync();
     var other = await CreateUserAsync();
-    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, GuestDraftType.MiniMega);
+    var guestDraftPublicId = await CreateGuestDraftAsync(
+      owner.UserPublicId,
+      GuestDraftType.MiniMega,
+      numberOfPicks: 1,
+      positions: [new CreateGuestDraftPositionInput { Name = "A", Picks = [1] }]
+    );
     await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId);
     await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, other.GuestDrafterPublicId);
 
@@ -215,11 +224,8 @@ public sealed class ApplyVetoOverrideTests(GuestDraftsIntegrationTestWebAppFacto
   {
     var picker = await CreateUserAsync();
     var other = await CreateUserAsync();
-    var guestDraftPublicId = await CreateGuestDraftAsync(picker.UserPublicId, GuestDraftType.MiniMega);
-    await AddParticipantAsync(guestDraftPublicId, picker.UserPublicId, picker.GuestDrafterPublicId);
-    await AddParticipantAsync(guestDraftPublicId, picker.UserPublicId, other.GuestDrafterPublicId);
 
-    List<PositionInput> positions =
+    List<CreateGuestDraftPositionInput> positions =
     [
       new() { Name = "A", Picks = [1] },
       new()
@@ -230,7 +236,14 @@ public sealed class ApplyVetoOverrideTests(GuestDraftsIntegrationTestWebAppFacto
         HasBonusFungibleToken = otherHasBonusFungibleToken,
       },
     ];
-    await SetCustomPositionsAsync(guestDraftPublicId, picker.UserPublicId, positions);
+    var guestDraftPublicId = await CreateGuestDraftAsync(
+      picker.UserPublicId,
+      GuestDraftType.MiniMega,
+      numberOfPicks: 2,
+      positions: positions
+    );
+    await AddParticipantAsync(guestDraftPublicId, picker.UserPublicId, picker.GuestDrafterPublicId);
+    await AddParticipantAsync(guestDraftPublicId, picker.UserPublicId, other.GuestDrafterPublicId);
 
     var guestDraft = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
     var boardPositions = guestDraft.GameBoard!.Positions.ToList();

@@ -85,6 +85,24 @@ public class GuestDraftBoardSetupTests : GuestDraftsBaseTest
       GuestDraftType.Mega,
     };
 
+  [Fact]
+  public void UseFixedBoardLayout_ShouldSucceed_WhenCalledImmediatelyAfterCreateWithZeroParticipants()
+  {
+    // Arrange -- regression test: AssignPositions used to require positions.Count ==
+    // participantCount, which was impossible to satisfy at board-setup time now that
+    // Create no longer auto-adds any participants. The participantCount parameter
+    // was removed entirely; board setup must succeed with zero participants added.
+    var guestDraft = CreateGuestDraft(GuestDraftType.Standard);
+
+    // Act
+    var result = guestDraft.UseFixedBoardLayout(GeneratePositionPublicId);
+
+    // Assert
+    result.IsSuccess.Should().BeTrue();
+    guestDraft.Participants.Should().BeEmpty();
+    guestDraft.GameBoard!.Positions.Should().HaveCount(2);
+  }
+
   // ── SetCustomPositions ───────────────────────────────────────────────────
 
   [Fact]
@@ -147,20 +165,21 @@ public class GuestDraftBoardSetupTests : GuestDraftsBaseTest
   }
 
   [Fact]
-  public void SetCustomPositions_ShouldReturnFailure_WhenPositionCountDoesNotMatchParticipantCount()
+  public void SetCustomPositions_ShouldSucceed_WhenCalledImmediatelyAfterCreateWithZeroParticipants()
   {
-    // Arrange -- 3 participants, only 2 positions supplied
+    // Arrange -- regression test: AssignPositions used to require positions.Count ==
+    // participantCount, which was impossible to satisfy at board-setup time now that
+    // Create no longer auto-adds any participants. The participantCount parameter
+    // was removed entirely; board setup must succeed with zero participants added.
     var guestDraft = CreateGuestDraft(GuestDraftType.MiniMega);
-    AddParticipant(guestDraft, isOwner: true);
-    AddParticipant(guestDraft);
-    AddParticipant(guestDraft);
 
     // Act
     var result = guestDraft.SetCustomPositions(TwoCustomPositions(), GeneratePositionPublicId);
 
     // Assert
-    result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDraftErrors.InvalidNumberOfPositions);
+    result.IsSuccess.Should().BeTrue();
+    guestDraft.Participants.Should().BeEmpty();
+    guestDraft.GameBoard!.Positions.Should().HaveCount(2);
   }
 
   [Fact]

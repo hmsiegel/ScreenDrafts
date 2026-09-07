@@ -25,7 +25,6 @@ public sealed class PlayPickTests(GuestDraftsIntegrationTestWebAppFactory factor
     var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, GuestDraftType.Standard);
     await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId);
     await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, other.GuestDrafterPublicId);
-    await SetFixedBoardLayoutAsync(guestDraftPublicId, owner.UserPublicId);
 
     // Act
     var result = await PlayPickAsync(guestDraftPublicId, owner.UserPublicId, CreateMovie(), 7, 1);

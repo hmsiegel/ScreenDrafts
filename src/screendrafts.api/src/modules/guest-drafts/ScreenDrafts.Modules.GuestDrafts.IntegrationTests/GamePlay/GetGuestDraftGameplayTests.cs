@@ -11,30 +11,27 @@ public sealed class GetGuestDraftGameplayTests(GuestDraftsIntegrationTestWebAppF
     // Arrange
     var (guestDraftPublicId, owner, b, c, d) = await CreateGuestDraftWithMixedPickStatesAsync();
 
-    // Reveal slot1 -- resolve the auto-assigned revealer dynamically (random draw
-    // among B/C/D with >2 participants), same pattern as RevealPickTests. Resolved
-    // from the domain aggregate rather than the response's
-    // RevealAuthorizedParticipantPublicId: GetGuestDraftGameplay's Dapper query
-    // still resolves participant-identity fields via the deleted
-    // GuestDraftParticipant.PublicId/UserId concept (known, already-flagged bug),
-    // so that field isn't trustworthy for driving test logic, only for a
-    // non-null presence check below.
+    // Reveal slot1 -- resolve the auto-assigned revealer from the response itself
+    // (random draw among B/C/D with >2 participants). The participant-identity bug
+    // is fixed: RevealAuthorizedParticipantId now matches a real participant's
+    // ParticipantId in the same response, which cross-references back to a real
+    // GuestDrafterPublicId -- no need to fall back to the domain aggregate.
     var beforeReveal = await GetGameplayAsync(guestDraftPublicId, owner.UserPublicId);
     beforeReveal.IsSuccess.Should().BeTrue();
     var slot1Pick = beforeReveal.Value.Picks.Single(p => p.PlayOrder == 1);
-    slot1Pick.RevealAuthorizedParticipantPublicId.Should().NotBeNull();
+    slot1Pick.RevealAuthorizedParticipantId.Should().NotBeNull();
 
-    var guestDraft = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
-    var slot1DomainPick = guestDraft.Picks.Single(p => p.PlayOrder == 1);
-    slot1DomainPick.RevealAuthorizedParticipantId.Should().NotBeNull();
-    var revealerParticipant = guestDraft.Participants.Single(p => p.Id == slot1DomainPick.RevealAuthorizedParticipantId);
-    var candidates = new Dictionary<Guid, string>
+    var revealerFromResponse = beforeReveal.Value.Participants.Single(p =>
+      p.ParticipantId == slot1Pick.RevealAuthorizedParticipantId
+    );
+    var candidates = new Dictionary<string, string>
     {
-      [b.GuestDrafterId] = b.UserPublicId,
-      [c.GuestDrafterId] = c.UserPublicId,
-      [d.GuestDrafterId] = d.UserPublicId,
+      [b.GuestDrafterPublicId] = b.UserPublicId,
+      [c.GuestDrafterPublicId] = c.UserPublicId,
+      [d.GuestDrafterPublicId] = d.UserPublicId,
     };
-    var revealerUserPublicId = candidates[revealerParticipant.ParticipantIdValue];
+    revealerFromResponse.ParticipantPublicId.Should().BeOneOf(candidates.Keys);
+    var revealerUserPublicId = candidates[revealerFromResponse.ParticipantPublicId];
     (await RevealPickAsync(guestDraftPublicId, 1, revealerUserPublicId)).IsSuccess.Should().BeTrue();
 
     // Act
@@ -50,30 +47,53 @@ public sealed class GetGuestDraftGameplayTests(GuestDraftsIntegrationTestWebAppF
     response.ShareToken.Should().BeNull("no sharing feature exists yet, so the underlying column is always null");
     response.CallerContext.IsOwner.Should().BeTrue();
     response.CallerContext.IsParticipant.Should().BeTrue();
-    response.CallerContext.ParticipantPublicId.Should().NotBeNullOrEmpty();
+    response.CallerContext.ParticipantPublicId.Should().Be(owner.GuestDrafterPublicId);
 
-    // Assert -- positions, including AssignedParticipantDisplayName resolved via
-    // the real IUsersApi fake
+    // Assert -- participants: every ParticipantPublicId/DisplayName resolves to a
+    // real, known GuestDrafter (the identity bug's core fix).
+    response.Participants.Should().HaveCount(4);
+    var knownGuestDrafterPublicIds = new[]
+    {
+      owner.GuestDrafterPublicId,
+      b.GuestDrafterPublicId,
+      c.GuestDrafterPublicId,
+      d.GuestDrafterPublicId,
+    };
+    foreach (var participant in response.Participants)
+    {
+      participant.ParticipantPublicId.Should().BeOneOf(knownGuestDrafterPublicIds);
+      participant.DisplayName.Should().Be("Test User");
+    }
+    var ownerParticipantResponse = response.Participants.Single(p => p.IsOwner);
+    ownerParticipantResponse.ParticipantPublicId.Should().Be(owner.GuestDrafterPublicId);
+
+    // Assert -- positions: AssignedParticipantId resolves to a real participant
+    // whose PublicId is one of the four known GuestDrafters.
     response.Positions.Should().HaveCount(4);
     foreach (var position in response.Positions)
     {
-      position.AssignedParticipantPublicId.Should().NotBeNullOrEmpty();
+      position.AssignedParticipantId.Should().NotBeNull();
+      var assignedParticipant = response.Participants.Single(p => p.ParticipantId == position.AssignedParticipantId);
+      assignedParticipant.ParticipantPublicId.Should().BeOneOf(knownGuestDrafterPublicIds);
       position.AssignedParticipantDisplayName.Should().Be("Test User");
     }
-
-    // Assert -- participants
-    response.Participants.Should().HaveCount(4);
 
     // Assert -- picks, one per designed state
     response.Picks.Should().HaveCount(5);
 
+    // Owner played every pick -- PlayedByParticipantId/PlayedByDisplayName must
+    // resolve back to the owner's own participant, not just "some" participant.
     var slot1 = response.Picks.Single(p => p.Position == 1);
+    slot1.PlayedByParticipantId.Should().Be(ownerParticipantResponse.ParticipantId);
+    slot1.PlayedByDisplayName.Should().Be("Test User");
     slot1.IsRevealed.Should().BeTrue();
     slot1.MoviePublicId.Should().NotBeNull();
     slot1.WasVetoed.Should().BeFalse();
     slot1.WasVetoOverridden.Should().BeFalse();
     slot1.WasCommissionerOverride.Should().BeFalse();
     slot1.IsActiveOnFinalBoard.Should().BeTrue();
+    slot1.RevealAuthorizedParticipantId.Should().Be(revealerFromResponse.ParticipantId);
+    slot1.RevealAuthorizedByDisplayName.Should().Be("Test User");
 
     var slot2 = response.Picks.Single(p => p.Position == 2);
     slot2.IsRevealed.Should().BeFalse();
@@ -84,13 +104,20 @@ public sealed class GetGuestDraftGameplayTests(GuestDraftsIntegrationTestWebAppF
     slot3.WasCommissionerOverride.Should().BeTrue();
     slot3.IsActiveOnFinalBoard.Should().BeFalse();
 
+    // slot4: vetoed by B, then overridden by C -- VetoedByDisplayName/
+    // SavedByDisplayName must both resolve to a real name (never null/"Unknown"),
+    // proving the JOIN to guest_drafters works for both roles.
     var slot4 = response.Picks.Single(p => p.Position == 4);
     slot4.WasVetoed.Should().BeFalse();
     slot4.WasVetoOverridden.Should().BeTrue();
     slot4.IsActiveOnFinalBoard.Should().BeTrue();
+    slot4.VetoedByDisplayName.Should().Be("Test User");
+    slot4.SavedByDisplayName.Should().Be("Test User");
     slot4.VetoHistory.Should().HaveCount(1);
     slot4.VetoHistory[0].Sequence.Should().Be(1);
     slot4.VetoHistory[0].IsOverridden.Should().BeTrue();
+    slot4.VetoHistory[0].VetoedByDisplayName.Should().Be("Test User");
+    slot4.VetoHistory[0].OverriddenByDisplayName.Should().Be("Test User");
 
     var slot5 = response.Picks.Single(p => p.Position == 5);
     slot5.WasVetoed.Should().BeTrue();
@@ -108,18 +135,18 @@ public sealed class GetGuestDraftGameplayTests(GuestDraftsIntegrationTestWebAppF
   {
     // Arrange
     var (guestDraftPublicId, owner, _) = await CreateInProgressStandardGuestDraftAsync();
+    var ownerGuestDrafterPublicId = await GetGuestDrafterPublicIdAsync(owner);
 
     // Act
     var result = await GetGameplayAsync(guestDraftPublicId, owner);
 
-    // Assert -- ParticipantPublicId's exact value can't be asserted: GuestDraft
-    // participants no longer have a public id of their own (known, already-flagged
-    // bug in the underlying query, which still resolves this via the deleted
-    // GuestDraftParticipant.PublicId concept), so only presence is checked here.
+    // Assert -- the identity bug is fixed: CallerContext.ParticipantPublicId now
+    // resolves via a direct DrafterUserId comparison, so the exact value can be
+    // asserted against the real, known GuestDrafter public id.
     result.IsSuccess.Should().BeTrue();
     result.Value.CallerContext.IsOwner.Should().BeTrue();
     result.Value.CallerContext.IsParticipant.Should().BeTrue();
-    result.Value.CallerContext.ParticipantPublicId.Should().NotBeNullOrEmpty();
+    result.Value.CallerContext.ParticipantPublicId.Should().Be(ownerGuestDrafterPublicId);
   }
 
   [Fact]
@@ -127,15 +154,18 @@ public sealed class GetGuestDraftGameplayTests(GuestDraftsIntegrationTestWebAppF
   {
     // Arrange
     var (guestDraftPublicId, _, other) = await CreateInProgressStandardGuestDraftAsync();
+    var otherGuestDrafterPublicId = await GetGuestDrafterPublicIdAsync(other);
 
     // Act
     var result = await GetGameplayAsync(guestDraftPublicId, other);
 
-    // Assert -- see the ParticipantPublicId note in GetGameplay_AsOwner_... above.
+    // Assert -- this specifically used to require a broken cross-referencing step
+    // (the deleted GuestDraftParticipant.PublicId concept); it is now a direct
+    // DrafterUserId comparison, confirmed here against a real value.
     result.IsSuccess.Should().BeTrue();
     result.Value.CallerContext.IsOwner.Should().BeFalse();
     result.Value.CallerContext.IsParticipant.Should().BeTrue();
-    result.Value.CallerContext.ParticipantPublicId.Should().NotBeNullOrEmpty();
+    result.Value.CallerContext.ParticipantPublicId.Should().Be(otherGuestDrafterPublicId);
   }
 
   [Fact]

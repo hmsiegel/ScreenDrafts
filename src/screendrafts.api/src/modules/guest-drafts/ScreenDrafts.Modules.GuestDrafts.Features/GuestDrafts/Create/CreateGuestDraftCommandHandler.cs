@@ -61,17 +61,14 @@ internal sealed class CreateGuestDraftCommandHandler(
     }
     else
     {
-      if (request.Positions.Count == 0)
-      {
-        return Result.Failure<string>(GuestDraftErrors.PositionsAreRequiredForThisDraftType);
-      }
+      var coverageResult = GuestDraftPositionCoverage.Validate(
+        [.. request.Positions.Select(p => p.Picks)],
+        request.NumberOfPicks
+      );
 
-      var allSlots = request.Positions.SelectMany(p => p.Picks).ToList();
-      var expectedSlots = Enumerable.Range(1, request.NumberOfPicks).ToHashSet();
-
-      if (allSlots.Count != allSlots.Distinct().Count() || !expectedSlots.SetEquals(allSlots))
+      if (coverageResult.IsFailure)
       {
-        return Result.Failure<string>(GuestDraftErrors.PositionsMustExactlyCoverTheNumberOfPicks);
+        return Result.Failure<string>(coverageResult.Errors);
       }
 
       var positions = request

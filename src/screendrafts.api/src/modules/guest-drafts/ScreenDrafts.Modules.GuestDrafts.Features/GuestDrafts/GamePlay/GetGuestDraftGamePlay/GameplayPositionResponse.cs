@@ -1,5 +1,10 @@
 ﻿namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.GamePlay.GetGuestDraftGamePlay;
 
+/// <summary>
+/// A board position and its pick slots. AssignedParticipantId is the raw
+/// GuestDraftParticipant id, not the GuestDrafter's own PublicId -- look the
+/// participant up in Participants by this id if the PublicId is needed.
+/// </summary>
 internal sealed record GameplayPositionResponse
 {
   public string PositionPublicId { get; init; } = default!;
@@ -8,6 +13,6 @@ internal sealed record GameplayPositionResponse
   public bool HasBonusVeto { get; init; }
   public bool HasBonusVetoOverride { get; init; }
   public bool HasBonusFungibleToken { get; init; }
-  public string? AssignedParticipantPublicId { get; init; }
+  public Guid? AssignedParticipantId { get; init; }
   public string? AssignedParticipantDisplayName { get; init; }
 }

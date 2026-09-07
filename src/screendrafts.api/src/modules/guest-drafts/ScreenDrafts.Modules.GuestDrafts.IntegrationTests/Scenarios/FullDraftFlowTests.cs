@@ -26,9 +26,7 @@ public sealed class FullDraftFlowTests(GuestDraftsIntegrationTestWebAppFactory f
     (await AddParticipantAsync(guestDraftPublicId, a.UserPublicId, a.GuestDrafterPublicId)).IsSuccess.Should().BeTrue();
     (await AddParticipantAsync(guestDraftPublicId, a.UserPublicId, b.GuestDrafterPublicId)).IsSuccess.Should().BeTrue();
 
-    // 2. Set up the fixed board layout
-    (await SetFixedBoardLayoutAsync(guestDraftPublicId, a.UserPublicId)).IsSuccess.Should().BeTrue();
-
+    // 2. Standard is a fixed type -- Create already applied its template automatically
     var guestDraft = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
     var positions = guestDraft.GameBoard!.Positions;
     positions.Single(p => p.Name == "A").Picks.Should().BeEquivalentTo([7, 6, 4, 2]);
@@ -94,21 +92,27 @@ public sealed class FullDraftFlowTests(GuestDraftsIntegrationTestWebAppFactory f
     var a = await CreateUserAsync();
     var b = await CreateUserAsync();
     var c = await CreateUserAsync();
-    var guestDraftPublicId = await CreateGuestDraftAsync(a.UserPublicId, GuestDraftType.MiniMega, "Three-Way MiniMega Draft");
-    (await AddParticipantAsync(guestDraftPublicId, a.UserPublicId, a.GuestDrafterPublicId)).IsSuccess.Should().BeTrue();
-    (await AddParticipantAsync(guestDraftPublicId, a.UserPublicId, b.GuestDrafterPublicId)).IsSuccess.Should().BeTrue();
-    (await AddParticipantAsync(guestDraftPublicId, a.UserPublicId, c.GuestDrafterPublicId)).IsSuccess.Should().BeTrue();
 
-    // 2. Set up a custom board layout, one position per participant. Pos2 (B)
-    // carries a bonus veto-override -- MiniMega, unlike Standard, allows
-    // ApplyVetoOverride, and B uses this bonus in step 11 below.
-    List<PositionInput> positions =
+    // 2. Custom board layout, one position per participant, supplied at Create
+    // time (MiniMega is a non-fixed type). Pos2 (B) carries a bonus
+    // veto-override -- MiniMega, unlike Standard, allows ApplyVetoOverride, and
+    // B uses this bonus in step 11 below.
+    List<CreateGuestDraftPositionInput> positions =
     [
       new() { Name = "Pos1", Picks = [1] },
       new() { Name = "Pos2", Picks = [2], HasBonusVetoOverride = true },
       new() { Name = "Pos3", Picks = [3] },
     ];
-    (await SetCustomPositionsAsync(guestDraftPublicId, a.UserPublicId, positions)).IsSuccess.Should().BeTrue();
+    var guestDraftPublicId = await CreateGuestDraftAsync(
+      a.UserPublicId,
+      GuestDraftType.MiniMega,
+      "Three-Way MiniMega Draft",
+      numberOfPicks: 3,
+      positions: positions
+    );
+    (await AddParticipantAsync(guestDraftPublicId, a.UserPublicId, a.GuestDrafterPublicId)).IsSuccess.Should().BeTrue();
+    (await AddParticipantAsync(guestDraftPublicId, a.UserPublicId, b.GuestDrafterPublicId)).IsSuccess.Should().BeTrue();
+    (await AddParticipantAsync(guestDraftPublicId, a.UserPublicId, c.GuestDrafterPublicId)).IsSuccess.Should().BeTrue();
 
     var guestDraft = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
     var boardPositions = guestDraft.GameBoard!.Positions.ToList();

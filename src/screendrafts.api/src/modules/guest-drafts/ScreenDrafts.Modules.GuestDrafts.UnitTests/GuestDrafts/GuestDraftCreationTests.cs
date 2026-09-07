@@ -8,14 +8,12 @@ public class GuestDraftCreationTests : GuestDraftsBaseTest
     // Arrange
     var publicId = Faker.Random.AlphaNumeric(10);
     var ownerUserId = Guid.NewGuid();
-    var ownerParticipantPublicId = Faker.Random.AlphaNumeric(10);
     var title = "Weekend Guest Draft";
 
     // Act
     var result = GuestDraft.Create(
       publicId,
       ownerUserId,
-      ownerParticipantPublicId,
       title,
       GuestDraftType.Standard);
 
@@ -36,7 +34,6 @@ public class GuestDraftCreationTests : GuestDraftsBaseTest
     var guestDraft = GuestDraft.Create(
       Faker.Random.AlphaNumeric(10),
       Guid.NewGuid(),
-      Faker.Random.AlphaNumeric(10),
       "Weekend Guest Draft",
       GuestDraftType.Standard).Value;
 
@@ -51,7 +48,6 @@ public class GuestDraftCreationTests : GuestDraftsBaseTest
     var result = GuestDraft.Create(
       Faker.Random.AlphaNumeric(10),
       Guid.NewGuid(),
-      Faker.Random.AlphaNumeric(10),
       string.Empty,
       GuestDraftType.Standard);
 
@@ -67,7 +63,6 @@ public class GuestDraftCreationTests : GuestDraftsBaseTest
     var result = GuestDraft.Create(
       Faker.Random.AlphaNumeric(10),
       Guid.NewGuid(),
-      Faker.Random.AlphaNumeric(10),
       "   ",
       GuestDraftType.Standard);
 
@@ -171,5 +166,122 @@ public class GuestDraftCreationTests : GuestDraftsBaseTest
 
     // Act & Assert
     guestDraft.FindParticipant(Guid.NewGuid()).Should().BeNull();
+  }
+
+  [Fact]
+  public void FindByParticipantRef_ShouldReturnTheParticipant_WhenItExists()
+  {
+    // Arrange
+    var guestDraft = CreateGuestDraft();
+    var guestDrafterId = Guid.NewGuid();
+    var participantRef = GuestParticipant.From(GuestDrafterId.Create(guestDrafterId));
+    var added = guestDraft.AddParticipant(participantRef, isOwner: false).Value;
+
+    // Act
+    var found = guestDraft.FindByParticipantRef(participantRef);
+
+    // Assert
+    found.Should().Be(added);
+  }
+
+  [Fact]
+  public void FindByParticipantRef_ShouldReturnNull_WhenItDoesNotExist()
+  {
+    // Arrange
+    var guestDraft = CreateGuestDraft();
+    var participantRef = GuestParticipant.From(GuestDrafterId.Create(Guid.NewGuid()));
+
+    // Act & Assert
+    guestDraft.FindByParticipantRef(participantRef).Should().BeNull();
+  }
+
+  // ── SetDraftDate ─────────────────────────────────────────────────────────
+
+  [Fact]
+  public void SetDraftDate_ShouldSucceed_BeforeTheDraftHasStarted()
+  {
+    // Arrange
+    var guestDraft = CreateGuestDraft();
+    var draftDate = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(7));
+
+    // Act
+    var result = guestDraft.SetDraftDate(draftDate);
+
+    // Assert
+    result.IsSuccess.Should().BeTrue();
+    guestDraft.DraftDate.Should().Be(draftDate);
+  }
+
+  [Fact]
+  public void SetDraftDate_ShouldSucceed_AfterTheDraftHasStarted()
+  {
+    // Arrange -- confirmed no status lock at all
+    var (guestDraft, _, _) = CreateInProgressStandardGuestDraft();
+    var draftDate = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(7));
+
+    // Act
+    var result = guestDraft.SetDraftDate(draftDate);
+
+    // Assert
+    result.IsSuccess.Should().BeTrue();
+    guestDraft.DraftDate.Should().Be(draftDate);
+  }
+
+  // ── SetTitle ─────────────────────────────────────────────────────────────
+
+  [Fact]
+  public void SetTitle_ShouldReturnFailure_WhenTitleIsEmpty()
+  {
+    // Arrange
+    var guestDraft = CreateGuestDraft();
+
+    // Act
+    var result = guestDraft.SetTitle(string.Empty);
+
+    // Assert
+    result.IsFailure.Should().BeTrue();
+    result.Errors[0].Should().Be(GuestDraftErrors.TitleIsRequired);
+  }
+
+  [Fact]
+  public void SetTitle_ShouldReturnFailure_WhenTitleIsWhitespace()
+  {
+    // Arrange
+    var guestDraft = CreateGuestDraft();
+
+    // Act
+    var result = guestDraft.SetTitle("   ");
+
+    // Assert
+    result.IsFailure.Should().BeTrue();
+    result.Errors[0].Should().Be(GuestDraftErrors.TitleIsRequired);
+  }
+
+  [Fact]
+  public void SetTitle_ShouldSucceed_BeforeTheDraftHasStarted()
+  {
+    // Arrange
+    var guestDraft = CreateGuestDraft();
+
+    // Act
+    var result = guestDraft.SetTitle("New Title");
+
+    // Assert
+    result.IsSuccess.Should().BeTrue();
+    guestDraft.Title.Should().Be("New Title");
+  }
+
+  [Fact]
+  public void SetTitle_ShouldSucceed_AfterTheDraftHasStarted()
+  {
+    // Arrange -- confirmed no status lock, matching SetDraftDate's pattern
+    var (guestDraft, _, _) = CreateInProgressStandardGuestDraft();
+
+    // Act
+    var result = guestDraft.SetTitle("New Title");
+
+    // Assert
+    result.IsSuccess.Should().BeTrue();
+    guestDraft.Title.Should().Be("New Title");
   }
 }

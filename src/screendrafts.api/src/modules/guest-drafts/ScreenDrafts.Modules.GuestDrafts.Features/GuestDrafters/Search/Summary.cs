@@ -1,7 +1,6 @@
 ﻿using FastEndpoints;
-using ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafters.Search;
 
-namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafters.SearchGuestDrafters;
+namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafters.Search;
 
 internal sealed class Summary : Summary<Endpoint>
 {
