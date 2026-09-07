@@ -1,14 +1,10 @@
 ﻿namespace ScreenDrafts.Modules.Users.Features.PublicApi;
 
-using ScreenDrafts.Modules.Users.Features.Users.GetByUserId;
-using ScreenDrafts.Modules.Users.Features.Users.ListUsers;
-using UserResponse = UserResponse;
-
 internal sealed class UsersApi(ISender sender) : IUsersApi
 {
   private readonly ISender _sender = sender;
 
-  public async Task<IReadOnlyList<UserResponse>> GetAllUsersAsync(
+  public async Task<IReadOnlyList<UserPublicApiResponse>> GetAllUsersAsync(
     string? search,
     CancellationToken cancellationToken
   )
@@ -24,7 +20,7 @@ internal sealed class UsersApi(ISender sender) : IUsersApi
 
     return
     [
-      .. result.Value.Users.Select(r => new UserResponse
+      .. result.Value.Users.Select(r => new UserPublicApiResponse
       {
         UserId = r.UserId,
         PublicId = r.PublicId,
@@ -37,7 +33,10 @@ internal sealed class UsersApi(ISender sender) : IUsersApi
     ];
   }
 
-  public async Task<UserResponse?> GetUserById(Guid userId, CancellationToken cancellationToken)
+  public async Task<UserPublicApiResponse?> GetUserById(
+    Guid userId,
+    CancellationToken cancellationToken
+  )
   {
     var query = new GetByUserIdQuery(userId);
 
@@ -51,7 +50,7 @@ internal sealed class UsersApi(ISender sender) : IUsersApi
     return Map(result.Value);
   }
 
-  public async Task<UserResponse?> GetUserByPublicId(
+  public async Task<UserPublicApiResponse?> GetUserByPublicId(
     string publicId,
     CancellationToken cancellationToken
   )
@@ -68,7 +67,29 @@ internal sealed class UsersApi(ISender sender) : IUsersApi
     return Map(result.Value);
   }
 
-  private static UserResponse Map(Users.GetByUserId.GetByUserIdResponse r) =>
+  public async Task<IReadOnlyList<UserPublicApiResponse>> GetUsersByIds(
+    IReadOnlyList<Guid> userIds,
+    CancellationToken cancellationToken
+  )
+  {
+    if (userIds.Count == 0)
+    {
+      return [];
+    }
+
+    var query = new GetUsersByIdsQuery(userIds);
+
+    var result = await _sender.Send(query, cancellationToken: cancellationToken);
+
+    if (result.IsFailure)
+    {
+      return [];
+    }
+
+    return [.. result.Value.Users.Select(Map)];
+  }
+
+  private static UserPublicApiResponse Map(GetByUserIdResponse r) =>
     new()
     {
       UserId = r.UserId,
@@ -80,7 +101,7 @@ internal sealed class UsersApi(ISender sender) : IUsersApi
       IdentityId = r.IdentityId,
     };
 
-  private static UserResponse Map(GetByPublicIdResponse r) =>
+  private static UserPublicApiResponse Map(GetByPublicIdResponse r) =>
     new()
     {
       UserId = r.UserId,

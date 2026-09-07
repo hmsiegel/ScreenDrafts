@@ -9,6 +9,7 @@ internal static class MigrationsExtensions
     ApplyMigration<AuditDbContext>(scope);
     ApplyMigration<CommunicationsDbContext>(scope);
     ApplyMigration<DraftsDbContext>(scope);
+    ApplyMigration<GuestDraftsDbContext>(scope);
     ApplyMigration<IntegrationsDbContext>(scope);
     ApplyMigration<MoviesDbContext>(scope);
     ApplyMigration<RealTimeUpdatesDbContext>(scope);

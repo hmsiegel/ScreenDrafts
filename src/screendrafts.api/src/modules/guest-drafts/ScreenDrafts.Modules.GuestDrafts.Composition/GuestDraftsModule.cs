@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Modules.GuestDrafts.Infrastructure.Outbox;
-
-namespace ScreenDrafts.Modules.GuestDrafts.Composition;
+﻿namespace ScreenDrafts.Modules.GuestDrafts.Composition;
 
 public static class GuestDraftsModule
 {
@@ -28,12 +26,9 @@ public static class GuestDraftsModule
 
   private static void AddTypeHandler()
   {
-    SqlMapper.AddTypeHandler(new SmartEnumTypeHandler<DraftPartStatus>());
-    SqlMapper.AddTypeHandler(new SmartEnumTypeHandler<DraftStatus>());
-    SqlMapper.AddTypeHandler(new SmartEnumTypeHandler<DraftType>());
-    SqlMapper.AddTypeHandler(new SmartEnumTypeHandler<HostRole>());
-    SqlMapper.AddTypeHandler(new SmartEnumTypeHandler<ParticipantKind>());
-    SqlMapper.AddTypeHandler(new SmartEnumTypeHandler<ZoomRecordingFileType>());
+    SqlMapper.AddTypeHandler(new SmartEnumTypeHandler<GuestDraftStatus>());
+    SqlMapper.AddTypeHandler(new SmartEnumTypeHandler<GuestDraftType>());
+    SqlMapper.AddTypeHandler(new SmartEnumTypeHandler<GuestParticipantKind>());
   }
 
   public static IServiceCollection AddGuestDraftsSeeding(
@@ -60,31 +55,7 @@ public static class GuestDraftsModule
       .Endpoint(c => c.InstanceId = moduleInstanceId);
 
     registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<MediaAddedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
-
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<MediaFetchedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
-
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<ZoomRecordingCompletedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
-
-    registrationConfigurator
       .AddConsumer<IntegrationEventConsumer<UserNameUpdatedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
-
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<UserRoleAddedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
-
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<UserRoleRemovedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
-
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<CandidateListEntryAddedIntegrationEvent>>()
       .Endpoint(c => c.InstanceId = moduleInstanceId);
   }
 

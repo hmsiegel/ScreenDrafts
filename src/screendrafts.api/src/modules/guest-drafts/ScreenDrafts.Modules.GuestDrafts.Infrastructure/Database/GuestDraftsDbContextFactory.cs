@@ -9,7 +9,7 @@ internal sealed class GuestDraftsDbContextFactory
     Justification = "Dev Only"
   )]
   private const string ConnectionString =
-    "Host=screendrafts.database;Port=5432;Database=screendrafts;Username=drafts_user;Password=drafts_password;Include Error Detail=true";
+    "Host=screendrafts.database;Port=5432;Database=screendrafts;Username=guest_drafts_user;Password=guest_drafts_password;Include Error Detail=true";
 
   public GuestDraftsDbContext CreateDbContext(string[] args)
   {
@@ -17,7 +17,7 @@ internal sealed class GuestDraftsDbContextFactory
     optionsBuilder
       .UseNpgsql(
         ConnectionString,
-        npgsql => npgsql.MigrationsHistoryTable(HistoryRepository.DefaultTableName, "drafts")
+        npgsql => npgsql.MigrationsHistoryTable(HistoryRepository.DefaultTableName, "guest_drafts")
       )
       .UseSnakeCaseNamingConvention();
     return new GuestDraftsDbContext(optionsBuilder.Options);

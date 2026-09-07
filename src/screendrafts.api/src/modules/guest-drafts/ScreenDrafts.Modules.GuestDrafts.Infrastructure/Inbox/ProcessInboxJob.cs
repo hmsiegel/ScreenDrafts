@@ -24,8 +24,12 @@ internal sealed class ProcessInboxJob(
   {
     InboxLoggingMessages.BeginningToProcessInboxMessages(_logger, ModuleName);
 
-    await using DbConnection connection = await _dbConnectionFactory.OpenConnectionAsync(context.CancellationToken);
-    await using DbTransaction transaction = await connection.BeginTransactionAsync(context.CancellationToken);
+    await using DbConnection connection = await _dbConnectionFactory.OpenConnectionAsync(
+      context.CancellationToken
+    );
+    await using DbTransaction transaction = await connection.BeginTransactionAsync(
+      context.CancellationToken
+    );
 
     IReadOnlyList<InboxMessageResponse> inboxMessages = await GetInboxMessagesAsync(
       connection,
@@ -74,7 +78,7 @@ internal sealed class ProcessInboxJob(
       SELECT
          id AS {nameof(InboxMessageResponse.Id)},
          content AS {nameof(InboxMessageResponse.Content)}
-      FROM drafts.inbox_messages
+      FROM guest_drafts.inbox_messages
       WHERE processed_on_utc IS NULL
       ORDER BY occurred_on_utc
       LIMIT @batchSize

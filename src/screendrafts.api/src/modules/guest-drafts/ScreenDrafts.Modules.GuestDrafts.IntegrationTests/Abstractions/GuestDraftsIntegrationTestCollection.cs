@@ -1,0 +1,4 @@
+namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.Abstractions;
+
+[CollectionDefinition(nameof(GuestDraftsIntegrationTestCollection))]
+public sealed class GuestDraftsIntegrationTestCollection : ICollectionFixture<GuestDraftsIntegrationTestWebAppFactory>;

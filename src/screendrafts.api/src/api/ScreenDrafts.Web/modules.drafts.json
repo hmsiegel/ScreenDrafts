@@ -1,12 +1,14 @@
 {
   "Drafts": {
     "Outbox": {
-      "IntervalInSeconds": 5,
-      "BatchSize": 50
+      "IntervalInSeconds": 2,
+      "IntervalInMilliseconds": 500,
+      "BatchSize": 20
     },
     "Inbox": {
-      "IntervalInSeconds": 5,
-      "BatchSize": 50
+      "IntervalInSeconds": 2,
+      "IntervalInMilliseconds": 500,
+      "BatchSize": 20
     }
   }
 }

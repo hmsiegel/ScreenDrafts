@@ -36,6 +36,7 @@ builder.Services.AddInfrastructure(
     AuditModule.ConfigureConsumers,
     CommunicationsModule.ConfigureConsumers,
     DraftsModule.ConfigureConsumers,
+    GuestDraftsModule.ConfigureConsumers,
     IntegrationsModule.ConfigureConsumers,
     MoviesModule.ConfigureConsumers,
     ReportingModule.ConfigureConsumers,

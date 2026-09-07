@@ -31,6 +31,7 @@ public sealed partial class Draft
 
     var landedTmdbIds = part
       .Picks.Where(p => p.IsActiveOnFinalBoard && p.Movie.TmdbId.HasValue)
+      .OrderBy(p => p.Position)
       .Select(p => p.Movie.TmdbId!.Value)
       .Distinct()
       .ToList();

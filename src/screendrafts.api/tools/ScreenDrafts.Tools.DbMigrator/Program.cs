@@ -40,6 +40,7 @@ try
     ("Audit", "Audit", "audit"),
     ("Communications", "Communications", "communications"),
     ("Drafts", "Drafts", "drafts"),
+    ("GuestDrafts", "GuestDrafts", "guest_drafts"),
     ("Integrations", "Integrations", "integrations"),
     ("Movies", "Movies", "movies"),
     ("RealTimeUpdates", "RealTimeUpdates", "real_time_updates"),
@@ -94,6 +95,8 @@ try
 
     Log.Information("{Module} migration successful.", module);
   }
+
+  Log.Information("=== Migrating Cross -Schema Scripts ===");
 
   // Cross-shema scripts - run as postgres superuser so they can read across module schema boundaries.
   var crossSchemaResult = DeployChanges.To

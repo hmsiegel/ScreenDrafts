@@ -1,0 +1,14 @@
+{
+  "GuestDrafts": {
+    "Outbox": {
+      "IntervalInSeconds": 2,
+      "IntervalInMilliseconds": 500,
+      "BatchSize": 20
+    },
+    "Inbox": {
+      "IntervalInSeconds": 2,
+      "IntervalInMilliseconds": 500,
+      "BatchSize": 20
+    }
+  }
+}

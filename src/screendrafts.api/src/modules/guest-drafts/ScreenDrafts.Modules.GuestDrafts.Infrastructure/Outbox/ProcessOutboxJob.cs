@@ -23,8 +23,12 @@ internal sealed class ProcessOutboxJob(
   {
     OutboxLoggingMessages.BeginningToProcessOutboxMessages(_logger, ModuleName);
 
-    await using DbConnection connection = await _dbConnectionFactory.OpenConnectionAsync(context.CancellationToken);
-    await using DbTransaction transaction = await connection.BeginTransactionAsync(context.CancellationToken);
+    await using DbConnection connection = await _dbConnectionFactory.OpenConnectionAsync(
+      context.CancellationToken
+    );
+    await using DbTransaction transaction = await connection.BeginTransactionAsync(
+      context.CancellationToken
+    );
 
     IReadOnlyList<OutboxMessageResponse> outboxMessages = await GetOutboxMessagesAsync(
       connection,
@@ -86,7 +90,7 @@ internal sealed class ProcessOutboxJob(
       transaction: transaction
     );
 
-    return outboxMessages.ToList();
+    return [.. outboxMessages];
   }
 
   private async Task UpdateOutboxMessageAsync(

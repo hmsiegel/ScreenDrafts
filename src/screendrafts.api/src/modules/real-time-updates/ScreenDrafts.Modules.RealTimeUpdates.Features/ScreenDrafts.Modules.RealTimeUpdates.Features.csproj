@@ -7,6 +7,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\common\ScreenDrafts.Common.Application\ScreenDrafts.Common.Application.csproj" />
     <ProjectReference Include="..\..\..\common\ScreenDrafts.Common.Presentation\ScreenDrafts.Common.Presentation.csproj" />
+    <ProjectReference Include="..\..\guest-drafts\ScreenDrafts.Modules.GuestDrafts.IntegrationEvents\ScreenDrafts.Modules.GuestDrafts.IntegrationEvents.csproj" />
     <ProjectReference Include="..\..\reporting\ScreenDrafts.Modules.Reporting.IntegrationEvents\ScreenDrafts.Modules.Reporting.IntegrationEvents.csproj" />
     <ProjectReference Include="..\ScreenDrafts.Modules.RealTimeUpdates.Domain\ScreenDrafts.Modules.RealTimeUpdates.Domain.csproj" />
     <ProjectReference Include="..\ScreenDrafts.Modules.RealTimeUpdates.IntegrationEvents\ScreenDrafts.Modules.RealTimeUpdates.IntegrationEvents.csproj" />

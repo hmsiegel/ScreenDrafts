@@ -9,6 +9,48 @@ public sealed class DraftHub : Hub
   public static string SubDraftGroupName(string draftPartId, string subDraftId) =>
     $"draft-part:{draftPartId}:sub-draft:{subDraftId}";
 
+  // ── GuestDrafts groups ────────────────────────────────────────────────────
+  // GuestDrafts has no host role, so there is no static "host group" to mirror
+  // canonical's HostGroupName. Instead, reveal authority is per-pick
+  // (GuestDraftPick.RevealAuthorizedParticipantId), so each participant joins
+  // their OWN group once at connection time, and the PickSubmitted broadcast
+  // targets whichever participant's group matches that pick's authorized
+  // revealer -- see GuestDraftPickSubmittedIntegrationEventConsumer.
+
+  public static string GuestDraftGroupName(string guestDraftId) => $"guest-draft:{guestDraftId}";
+
+  public static string GuestDraftParticipantGroupName(string guestDraftId, string participantId) =>
+    $"guest-draft:{guestDraftId}:participant:{participantId}";
+
+  /// <summary>
+  /// Joins both the flat guest-draft group and this caller's own participant
+  /// group. Trust is handled by JWT auth on the hub, same bar as
+  /// StartCountdownAsync below -- but note the stakes here are higher: unlike
+  /// the host-impersonation gap already accepted there, a client claiming a
+  /// participantId that isn't theirs can read another player's pending pick
+  /// (movie title) before it's revealed, which breaks the core draft mechanic,
+  /// not just a UI permission. Validating participantId against the JWT-resolved
+  /// caller identity (via IUsersApi) before joining is a flagged follow-up, not
+  /// done here.
+  /// </summary>
+  public async Task JoinGuestDraftAsync(string guestDraftId, string participantId)
+  {
+    await Groups.AddToGroupAsync(Context.ConnectionId, GuestDraftGroupName(guestDraftId));
+    await Groups.AddToGroupAsync(
+      Context.ConnectionId,
+      GuestDraftParticipantGroupName(guestDraftId, participantId)
+    );
+  }
+
+  public async Task LeaveGuestDraftAsync(string guestDraftId, string participantId)
+  {
+    await Groups.RemoveFromGroupAsync(Context.ConnectionId, GuestDraftGroupName(guestDraftId));
+    await Groups.RemoveFromGroupAsync(
+      Context.ConnectionId,
+      GuestDraftParticipantGroupName(guestDraftId, participantId)
+    );
+  }
+
   public async Task JoinDraftPartAsync(string draftPartId)
   {
     await Groups.AddToGroupAsync(Context.ConnectionId, GroupName(draftPartId));

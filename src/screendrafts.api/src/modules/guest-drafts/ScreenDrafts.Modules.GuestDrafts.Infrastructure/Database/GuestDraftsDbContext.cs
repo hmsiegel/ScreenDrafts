@@ -4,6 +4,17 @@ public sealed class GuestDraftsDbContext(DbContextOptions<GuestDraftsDbContext> 
   : DbContext(options),
     IUnitOfWork
 {
+  internal DbSet<GuestDraft> GuestDrafts { get; set; }
+  internal DbSet<GuestDraftParticipant> GuestDraftParticipants { get; set; }
+  internal DbSet<GuestDraftGameBoard> GuestDraftGameBoards { get; set; }
+  internal DbSet<GuestDraftPosition> GuestDraftPositions { get; set; }
+  internal DbSet<GuestDraftPick> GuestDraftPicks { get; set; }
+  internal DbSet<GuestDraftVeto> GuestDraftVetoes { get; set; }
+  internal DbSet<GuestDraftVetoOverride> GuestDraftVetoOverrides { get; set; }
+  internal DbSet<GuestDraftCommissionerOverride> GuestDraftCommissionerOverrides { get; set; }
+  internal DbSet<GuestDrafter> GuestDrafters { get; set; }
+  internal DbSet<GuestDrafterTeam> GuestDrafterTeams { get; set; }
+
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
     ArgumentNullException.ThrowIfNull(modelBuilder);
@@ -11,7 +22,7 @@ public sealed class GuestDraftsDbContext(DbContextOptions<GuestDraftsDbContext> 
     modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     modelBuilder.ApplyConfigurationsFromAssembly(typeof(InfrastructureConfiguration).Assembly);
 
-    modelBuilder.HasDefaultSchema(Schemas.Drafts);
+    modelBuilder.HasDefaultSchema(Schemas.GuestDrafts);
   }
 
   protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)

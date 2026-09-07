@@ -1,4 +1,5 @@
 ﻿namespace ScreenDrafts.Web.Extensions;
+
 internal static class ModuleServiceExtensions
 {
   public static void AddModules(IServiceCollection services, IConfiguration configuration)
@@ -7,6 +8,7 @@ internal static class ModuleServiceExtensions
     services.AddAuditModule(configuration);
     services.AddCommunicationsModule(configuration);
     services.AddDraftsModule(configuration);
+    services.AddGuestDraftsModule(configuration);
     services.AddIntegrationsModule(configuration);
     services.AddMoviesModule(configuration);
     services.AddRealTimeUpdatesModule(configuration);

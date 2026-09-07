@@ -14,7 +14,7 @@ public static class GuestDraftsInfrastructure
     services.AddDbContext<GuestDraftsDbContext>(
       (sp, options) =>
       {
-        options.UseModuleDefaults(ModuleName, Schemas.Drafts, sp);
+        options.UseModuleDefaults(ModuleName, Schemas.GuestDrafts, sp);
       }
     );
 

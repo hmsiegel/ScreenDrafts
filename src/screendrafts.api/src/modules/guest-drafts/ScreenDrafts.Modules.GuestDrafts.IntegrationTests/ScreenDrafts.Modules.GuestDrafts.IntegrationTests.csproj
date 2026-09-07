@@ -5,10 +5,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None
-      Include="..\..\users\ScreenDrafts.Modules.Users.IntegrationTests\screendrafts-realm-export.json"
-      Link="screendrafts-realm-export.json"
-    >
+    <None Include="..\..\users\ScreenDrafts.Modules.Users.IntegrationTests\screendrafts-realm-export.json" Link="screendrafts-realm-export.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
