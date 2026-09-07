@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts;
+﻿using OpenTelemetry.Trace;
+
+namespace ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts;
 
 public sealed class GuestDraft : Entity<GuestDraftId>
 {
@@ -52,7 +54,6 @@ public sealed class GuestDraft : Entity<GuestDraftId>
   public static Result<GuestDraft> Create(
     string publicId,
     Guid ownerUserId,
-    string ownerParticipantPublicId,
     string title,
     GuestDraftType guestDraftType,
     DateOnly? draftDate = null
@@ -80,6 +81,77 @@ public sealed class GuestDraft : Entity<GuestDraftId>
     DraftDate = draftDate;
     UpdatedOnUtc = DateTime.UtcNow;
     return Result.Success();
+  }
+
+  public Result SetTitle(string title)
+  {
+    if (string.IsNullOrWhiteSpace(title))
+    {
+      return Result.Failure(GuestDraftErrors.TitleIsRequired);
+    }
+
+    Title = title;
+    UpdatedOnUtc = DateTime.UtcNow;
+    return Result.Success();
+  }
+
+  public Result ChangeType(GuestDraftType newType)
+  {
+    if (GuestDraftStatus != GuestDraftStatus.Created)
+    {
+      return Result.Failure(GuestDraftErrors.CannotChangeDraftTypeAfterStart);
+    }
+
+    if (GuestDraftType == newType)
+    {
+      return Result.Success();
+    }
+
+    ClearBoard();
+    GuestDraftType = newType;
+    UpdatedOnUtc = DateTime.UtcNow;
+
+    return Result.Success();
+  }
+
+  private void ClearBoard()
+  {
+    if (GameBoard is null)
+    {
+      return;
+    }
+
+    foreach (var position in GameBoard.Positions)
+    {
+      if (position.AssignedToParticipantId is not { } assignedId)
+      {
+        continue;
+      }
+
+      var participant = FindParticipant(assignedId);
+
+      if (participant is null)
+      {
+        continue;
+      }
+
+      if (position.HasBonusVeto)
+      {
+        participant.RevokeAward(isVeto: true);
+      }
+
+      if (position.HasBonusVetoOverride)
+      {
+        participant.RevokeAward(isVeto: false);
+      }
+
+      if (position.HasBonusFungibleToken)
+      {
+        participant.RevokeFungibleTokenAward();
+      }
+    }
+
+    GameBoard = null;
   }
 
   public Result<GuestDraftParticipant> AddParticipant(GuestParticipant participant, bool isOwner)
@@ -226,7 +298,7 @@ public sealed class GuestDraft : Entity<GuestDraftId>
       created.Add(positionResult.Value);
     }
 
-    var assignResult = GameBoard.AssignPositions(created, _participants.Count);
+    var assignResult = GameBoard.AssignPositions(created);
 
     if (assignResult.IsFailure)
     {

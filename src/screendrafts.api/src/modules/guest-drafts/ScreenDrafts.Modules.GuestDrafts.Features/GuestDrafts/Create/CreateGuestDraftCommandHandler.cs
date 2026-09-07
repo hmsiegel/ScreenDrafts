@@ -29,26 +29,70 @@ internal sealed class CreateGuestDraftCommandHandler(
       return Result.Failure<string>(GuestDraftErrors.InvalidType(request.Type));
     }
 
-    var publicId = _publicIdGenerator.GeneratePublicId(PublicIdPrefixes.GuestDraft);
-    var ownerParticipantPublicId = _publicIdGenerator.GeneratePublicId(
-      PublicIdPrefixes.GuestDraftParticipant
-    );
-
-    var result = GuestDraft.Create(
-      publicId: publicId,
-      ownerUserId: owner.UserId,
-      ownerParticipantPublicId: ownerParticipantPublicId,
-      title: request.Title,
-      guestDraftType: type
-    );
-
-    if (result.IsFailure)
+    if (request.NumberOfPicks < 1)
     {
-      return Result.Failure<string>(result.Error!);
+      return Result.Failure<string>(GuestDraftErrors.NumberOfPicksMustBeGreaterThanZero);
     }
 
-    _guestDraftRepository.Add(result.Value);
+    var publicId = _publicIdGenerator.GeneratePublicId(PublicIdPrefixes.GuestDraft);
 
-    return Result.Success(result.Value.PublicId);
+    var createResult = GuestDraft.Create(
+      publicId: publicId,
+      ownerUserId: owner.UserId,
+      title: request.Title,
+      guestDraftType: type,
+      draftDate: request.DraftDate
+    );
+
+    if (createResult.IsFailure)
+    {
+      return Result.Failure<string>(createResult.Errors);
+    }
+
+    var guestDraft = createResult.Value;
+
+    Result boardResult;
+
+    if (GuestDraftBoardTemplates.IsFixed(type))
+    {
+      boardResult = guestDraft.UseFixedBoardLayout(_ =>
+        _publicIdGenerator.GeneratePublicId(PublicIdPrefixes.GuestDraftPosition)
+      );
+    }
+    else
+    {
+      if (request.Positions.Count == 0)
+      {
+        return Result.Failure<string>(GuestDraftErrors.PositionsAreRequiredForThisDraftType);
+      }
+
+      var allSlots = request.Positions.SelectMany(p => p.Picks).ToList();
+      var expectedSlots = Enumerable.Range(1, request.NumberOfPicks).ToHashSet();
+
+      if (allSlots.Count != allSlots.Distinct().Count() || !expectedSlots.SetEquals(allSlots))
+      {
+        return Result.Failure<string>(GuestDraftErrors.PositionsMustExactlyCoverTheNumberOfPicks);
+      }
+
+      var positions = request
+        .Positions.Select(p =>
+          (p.Name, p.Picks, p.HasBonusVeto, p.HasBonusVetoOverride, p.HasBonusFungibleToken)
+        )
+        .ToList();
+
+      boardResult = guestDraft.SetCustomPositions(
+        positions,
+        _ => _publicIdGenerator.GeneratePublicId(PublicIdPrefixes.GuestDraftPosition)
+      );
+    }
+
+    if (boardResult.IsFailure)
+    {
+      return Result.Failure<string>(boardResult.Errors);
+    }
+
+    _guestDraftRepository.Add(guestDraft);
+
+    return Result.Success(guestDraft.PublicId);
   }
 }

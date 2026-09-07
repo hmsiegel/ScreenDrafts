@@ -5,6 +5,7 @@ internal static class GuestDraftsOpenApi
   public static class Tags
   {
     public const string GuestDrafts = "GuestDrafts";
+    public const string GuestDrafters = "GuestDrafters";
   }
 
   public static class Names
@@ -12,8 +13,6 @@ internal static class GuestDraftsOpenApi
     // Guest Drafts
     public const string GuestDrafts_CreateGuestDraft = "GuestDrafts.CreateGuestDraft";
     public const string GuestDrafts_AddParticipant = "GuestDrafts.AddParticipant";
-    public const string GuestDrafts_SetFixedBoardLayout = "GuestDrafts.SetFixedBoardLayout";
-    public const string GuestDrafts_SetCustomPositions = "GuestDrafts.SetCustomPositions";
     public const string GuestDrafts_AssignParticipantToPosition =
       "GuestDrafts.AssignParticipantToPosition";
     public const string GuestDrafts_SetStatus = "GuestDrafts.SetStatus";
@@ -26,5 +25,7 @@ internal static class GuestDraftsOpenApi
     public const string GuestDrafts_UndoVeto = "GuestDrafts.UndoVeto";
     public const string GuestDrafts_RevealPick = "GuestDrafts.RevealPick";
     public const string GuestDrafts_GetGameplay = "GuestDrafts.GetGameplay";
+    public const string GuestDrafts_UpdateGuestDraft = "GuestDrafts.UpdateGuestDraft";
+    public const string GuestDrafters_Search = "GuestDrafters.Search";
   }
 }

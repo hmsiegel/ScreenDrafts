@@ -18,11 +18,11 @@ public sealed class GuestDraftGameBoard : Entity<GuestDraftGameBoardId>
 
   internal static GuestDraftGameBoard Create(GuestDraftId guestDraftId) => new(guestDraftId);
 
-  internal Result AssignPositions(ICollection<GuestDraftPosition> positions, int participantCount)
+  internal Result AssignPositions(ICollection<GuestDraftPosition> positions)
   {
     ArgumentNullException.ThrowIfNull(positions);
 
-    if (positions.Count == 0 || positions.Count != participantCount)
+    if (positions.Count == 0)
     {
       return Result.Failure(GuestDraftErrors.InvalidNumberOfPositions);
     }

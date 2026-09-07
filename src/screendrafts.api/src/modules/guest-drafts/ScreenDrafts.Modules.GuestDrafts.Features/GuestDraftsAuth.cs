@@ -15,7 +15,6 @@ internal static class GuestDraftsAuth
     internal const string GuestDraftCreate = "guest-drafts:create";
     internal const string GuestDraftRead = "guest-drafts:read";
     internal const string GuestDraftAddParticipant = "guest-drafts:add-participant";
-    internal const string GuestDraftSetBoard = "guest-drafts:set-board";
     internal const string GuestDraftAssignPosition = "guest-drafts:assign-position";
     internal const string GuestDraftSetStatus = "guest-drafts:set-status";
     internal const string GuestDraftPlayPick = "guest-drafts:play-pick";
@@ -26,5 +25,7 @@ internal static class GuestDraftsAuth
       "guest-drafts:apply-commissioner-override";
     internal const string GuestDraftUndoVeto = "guest-drafts:undo-veto";
     internal const string GuestDraftRevealPick = "guest-drafts:reveal-pick";
+    internal const string GuestDraftUpdate = "guest-drafts:update";
+    internal const string GuestDrafterSearch = "guest-drafters:search";
   }
 }

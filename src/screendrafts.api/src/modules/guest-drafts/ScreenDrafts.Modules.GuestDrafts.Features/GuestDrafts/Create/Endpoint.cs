@@ -22,13 +22,21 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<CreateGuestDraftRequest, C
 
     var userPublicId = User.GetUserPublicId();
 
+    if (userPublicId is null)
+    {
+      await Send.ErrorsAsync(StatusCodes.Status403Forbidden, cancellation: ct);
+      return;
+    }
+
     var command = new CreateGuestDraftCommand
     {
       OwnerUserPublicId = userPublicId,
       Title = req.Title,
       Type = req.Type,
+      DraftDate = req.DraftDate,
+      NumberOfPicks = req.NumberOfPicks,
+      Positions = req.Positions,
     };
-
     var result = await Sender.Send(command, ct);
 
     await this.SendCreatedAsync(

@@ -50,29 +50,4 @@ internal sealed class GuestDrafterRepository(GuestDraftsDbContext dbContext)
   {
     return _dbContext.GuestDrafters.ToListAsync(cancellationToken);
   }
-
-  // NOTE: 50-result cap and ILike-based matching are reasonable defaults, not
-  // confirmed against an existing canonical SearchDrafters implementation (I
-  // haven't seen one) -- flag if you want pagination or a different limit.
-  public async Task<IReadOnlyList<GuestDrafter>> SearchAsync(
-    string? search,
-    CancellationToken cancellationToken
-  )
-  {
-    var query = _dbContext.GuestDrafters.AsQueryable();
-
-    if (!string.IsNullOrWhiteSpace(search))
-    {
-      var pattern = $"%{search.Trim()}%";
-      query = query.Where(d =>
-        EF.Functions.ILike(d.FirstName, pattern) || EF.Functions.ILike(d.LastName, pattern)
-      );
-    }
-
-    return await query
-      .OrderBy(d => d.LastName)
-      .ThenBy(d => d.FirstName)
-      .Take(50)
-      .ToListAsync(cancellationToken);
-  }
 }

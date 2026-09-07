@@ -30,6 +30,7 @@ global using ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.DomainEvents;
 global using ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.Entities;
 global using ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.Enums;
 global using ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.Errors;
+global using ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.Helpers;
 global using ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.Repositories;
 global using ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.ValueObjects;
 global using ScreenDrafts.Modules.GuestDrafts.Domain.Participants;

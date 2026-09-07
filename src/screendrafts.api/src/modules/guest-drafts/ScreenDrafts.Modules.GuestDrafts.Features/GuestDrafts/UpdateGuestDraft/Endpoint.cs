@@ -1,22 +1,22 @@
-﻿namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.Positions.SetCustomPositions;
+﻿namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.UpdateGuestDraft;
 
-internal sealed class Endpoint : ScreenDraftsEndpoint<SetCustomPositionsRequest>
+internal sealed class Endpoint : ScreenDraftsEndpoint<UpdateGuestDraftRequest>
 {
   public override void Configure()
   {
-    Post(GuestDraftsRoutes.CustomBoardLayout);
+    Put(GuestDraftsRoutes.ById);
     Description(x =>
       x.WithTags(GuestDraftsOpenApi.Tags.GuestDrafts)
-        .WithName(GuestDraftsOpenApi.Names.GuestDrafts_SetCustomPositions)
+        .WithName(GuestDraftsOpenApi.Names.GuestDrafts_UpdateGuestDraft)
         .Produces(StatusCodes.Status204NoContent)
         .Produces(StatusCodes.Status400BadRequest)
         .Produces(StatusCodes.Status403Forbidden)
         .Produces(StatusCodes.Status404NotFound)
     );
-    Policies(GuestDraftsAuth.Permissions.GuestDraftSetBoard);
+    Policies(GuestDraftsAuth.Permissions.GuestDraftUpdate);
   }
 
-  public override async Task HandleAsync(SetCustomPositionsRequest req, CancellationToken ct)
+  public override async Task HandleAsync(UpdateGuestDraftRequest req, CancellationToken ct)
   {
     ArgumentNullException.ThrowIfNull(req);
 
@@ -28,10 +28,14 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<SetCustomPositionsRequest>
       return;
     }
 
-    var command = new SetCustomPositionsCommand
+    var command = new UpdateGuestDraftCommand
     {
       GuestDraftPublicId = req.PublicId,
       CallerUserPublicId = userPublicId,
+      Title = req.Title,
+      DraftDate = req.DraftDate,
+      Type = req.Type,
+      NumberOfPicks = req.NumberOfPicks,
       Positions = req.Positions,
     };
 

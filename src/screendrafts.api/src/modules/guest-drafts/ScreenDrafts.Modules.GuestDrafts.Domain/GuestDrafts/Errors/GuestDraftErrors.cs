@@ -271,4 +271,19 @@ public static class GuestDraftErrors
     "GuestDrafts.CannotAddParticipantAfterStart",
     "Cannot add a participant after the draft has started."
   );
+
+  public static readonly SDError NumberOfPicksMustBeGreaterThanZero = SDError.Problem(
+    "GuestDrafts.NumberOfPicksMustBeGreaterThanZero",
+    "The number of picks must be greater than zero."
+  );
+  public static readonly SDError PositionsAreRequiredForThisDraftType = SDError.Problem(
+    "GuestDrafts.PositionsAreRequiredForThisDraftType",
+    "Positions are required for this draft type."
+  );
+  public static readonly SDError PositionsMustExactlyCoverTheNumberOfPicks = SDError.Problem(
+    "GuestDrafts.PositionsMustExactlyCoverTheNumberOfPicks",
+    "Positions must exactly cover the number of picks."
+  );
+
+  public static SDError CannotChangeDraftTypeAfterStart { get; internal set; }
 }
