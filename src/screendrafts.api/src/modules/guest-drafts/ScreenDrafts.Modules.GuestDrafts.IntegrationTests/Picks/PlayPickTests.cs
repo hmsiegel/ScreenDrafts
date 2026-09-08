@@ -1,3 +1,6 @@
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Enums;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Errors;
+
 namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.Picks;
 
 public sealed class PlayPickTests(GuestDraftsIntegrationTestWebAppFactory factory)
@@ -22,16 +25,22 @@ public sealed class PlayPickTests(GuestDraftsIntegrationTestWebAppFactory factor
     // Arrange
     var owner = await CreateUserAsync();
     var other = await CreateUserAsync();
-    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, GuestDraftType.Standard);
+    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, DraftType.Standard);
     await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId);
     await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, other.GuestDrafterPublicId);
 
     // Act
-    var result = await PlayPickAsync(guestDraftPublicId, owner.UserPublicId, await CreateMovieAsync(), 7, 1);
+    var result = await PlayPickAsync(
+      guestDraftPublicId,
+      owner.UserPublicId,
+      await CreateMovieAsync(),
+      7,
+      1
+    );
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors.Should().Contain(e => e.Code == GuestDraftErrors.DraftNotStarted.Code);
+    result.Errors.Should().Contain(e => e.Code == DraftErrors.DraftNotStarted.Code);
   }
 
   [Fact]
@@ -53,7 +62,7 @@ public sealed class PlayPickTests(GuestDraftsIntegrationTestWebAppFactory factor
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors.Should().Contain(e => e.Code == GuestDraftErrors.DraftNotStarted.Code);
+    result.Errors.Should().Contain(e => e.Code == DraftErrors.DraftNotStarted.Code);
   }
 
   [Fact]
@@ -64,11 +73,17 @@ public sealed class PlayPickTests(GuestDraftsIntegrationTestWebAppFactory factor
     var stranger = await CreateUserAsync();
 
     // Act
-    var result = await PlayPickAsync(guestDraftPublicId, stranger.UserPublicId, await CreateMovieAsync(), 7, 1);
+    var result = await PlayPickAsync(
+      guestDraftPublicId,
+      stranger.UserPublicId,
+      await CreateMovieAsync(),
+      7,
+      1
+    );
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors.Should().Contain(e => e.Code == GuestDraftErrors.CallerNotAParticipant.Code);
+    result.Errors.Should().Contain(e => e.Code == DraftErrors.CallerNotAParticipant.Code);
   }
 
   [Fact]
@@ -85,7 +100,7 @@ public sealed class PlayPickTests(GuestDraftsIntegrationTestWebAppFactory factor
     result.IsFailure.Should().BeTrue();
     result
       .Errors.Should()
-      .Contain(e => e.Code == GuestDraftErrors.MovieNotFound(unregisteredMoviePublicId).Code);
+      .Contain(e => e.Code == DraftErrors.MovieNotFound(unregisteredMoviePublicId).Code);
   }
 
   [Fact]
@@ -101,7 +116,7 @@ public sealed class PlayPickTests(GuestDraftsIntegrationTestWebAppFactory factor
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors.Should().Contain(e => e.Code == GuestDraftErrors.MovieAlreadyPicked.Code);
+    result.Errors.Should().Contain(e => e.Code == DraftErrors.MovieAlreadyPicked.Code);
   }
 
   [Fact]
@@ -116,9 +131,7 @@ public sealed class PlayPickTests(GuestDraftsIntegrationTestWebAppFactory factor
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result
-      .Errors.Should()
-      .Contain(e => e.Code == GuestDraftErrors.PickPositionAlreadyExists(7).Code);
+    result.Errors.Should().Contain(e => e.Code == DraftErrors.PickPositionAlreadyExists(7).Code);
   }
 
   /// <summary>

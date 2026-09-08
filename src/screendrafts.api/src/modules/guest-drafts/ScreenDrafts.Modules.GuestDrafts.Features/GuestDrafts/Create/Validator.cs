@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.Create;
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts;
+
+namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.Create;
 
 internal sealed class Validator : AbstractValidator<CreateGuestDraftCommand>
 {
@@ -10,7 +12,7 @@ internal sealed class Validator : AbstractValidator<CreateGuestDraftCommand>
       .Must(id => PublicIdGuards.IsValidWithPrefix(id, PublicIdPrefixes.User))
       .WithMessage("OwnerUserPublicId must be a valid public ID with the correct prefix.");
 
-    RuleFor(x => x.Title).NotEmpty().MaximumLength(GuestDraft.TitleMaxLength);
+    RuleFor(x => x.Title).NotEmpty().MaximumLength(Draft.TitleMaxLength);
 
     RuleFor(x => x.Type).NotEmpty();
   }

@@ -1,3 +1,6 @@
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Enums;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Errors;
+
 namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.GuestDrafts;
 
 public sealed class UpdateGuestDraftTests(GuestDraftsIntegrationTestWebAppFactory factory)
@@ -8,10 +11,14 @@ public sealed class UpdateGuestDraftTests(GuestDraftsIntegrationTestWebAppFactor
   {
     // Arrange
     var owner = await CreateUserAsync();
-    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, GuestDraftType.Standard);
+    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, DraftType.Standard);
 
     // Act
-    var result = await UpdateGuestDraftAsync(guestDraftPublicId, owner.UserPublicId, title: "New Title");
+    var result = await UpdateGuestDraftAsync(
+      guestDraftPublicId,
+      owner.UserPublicId,
+      title: "New Title"
+    );
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -25,11 +32,19 @@ public sealed class UpdateGuestDraftTests(GuestDraftsIntegrationTestWebAppFactor
   {
     // Arrange
     var owner = await CreateUserAsync();
-    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, GuestDraftType.Standard, "Original Title");
+    var guestDraftPublicId = await CreateGuestDraftAsync(
+      owner.UserPublicId,
+      DraftType.Standard,
+      "Original Title"
+    );
     var draftDate = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(7));
 
     // Act
-    var result = await UpdateGuestDraftAsync(guestDraftPublicId, owner.UserPublicId, draftDate: draftDate);
+    var result = await UpdateGuestDraftAsync(
+      guestDraftPublicId,
+      owner.UserPublicId,
+      draftDate: draftDate
+    );
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -60,14 +75,18 @@ public sealed class UpdateGuestDraftTests(GuestDraftsIntegrationTestWebAppFactor
     // Arrange
     var owner = await CreateUserAsync();
     var other = await CreateUserAsync();
-    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, GuestDraftType.Standard);
+    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, DraftType.Standard);
 
     // Act
-    var result = await UpdateGuestDraftAsync(guestDraftPublicId, other.UserPublicId, title: "New Title");
+    var result = await UpdateGuestDraftAsync(
+      guestDraftPublicId,
+      other.UserPublicId,
+      title: "New Title"
+    );
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors.Should().Contain(e => e.Code == GuestDraftErrors.OnlyOwnerCanPerformThisAction.Code);
+    result.Errors.Should().Contain(e => e.Code == DraftErrors.OnlyOwnerCanPerformThisAction.Code);
   }
 
   [Fact]
@@ -75,15 +94,19 @@ public sealed class UpdateGuestDraftTests(GuestDraftsIntegrationTestWebAppFactor
   {
     // Arrange -- Standard -> MiniSuper, both fixed
     var owner = await CreateUserAsync();
-    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, GuestDraftType.Standard);
+    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, DraftType.Standard);
 
     // Act
-    var result = await UpdateGuestDraftAsync(guestDraftPublicId, owner.UserPublicId, type: GuestDraftType.MiniSuper);
+    var result = await UpdateGuestDraftAsync(
+      guestDraftPublicId,
+      owner.UserPublicId,
+      type: DraftType.MiniSuper
+    );
 
     // Assert
     result.IsSuccess.Should().BeTrue();
     var guestDraft = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
-    guestDraft.GuestDraftType.Should().Be(GuestDraftType.MiniSuper);
+    guestDraft.GuestDraftType.Should().Be(DraftType.MiniSuper);
     var positions = guestDraft.GameBoard!.Positions;
     positions.Should().HaveCount(2);
     positions.Single(p => p.Name == "A").Picks.Should().BeEquivalentTo([5, 3, 1]);
@@ -95,17 +118,22 @@ public sealed class UpdateGuestDraftTests(GuestDraftsIntegrationTestWebAppFactor
   {
     // Arrange
     var owner = await CreateUserAsync();
-    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, GuestDraftType.MiniMega, numberOfPicks: 2, positions:
-    [
-      new CreateGuestDraftPositionInput { Name = "A", Picks = [1] },
-      new CreateGuestDraftPositionInput { Name = "B", Picks = [2] },
-    ]);
+    var guestDraftPublicId = await CreateGuestDraftAsync(
+      owner.UserPublicId,
+      DraftType.MiniMega,
+      numberOfPicks: 2,
+      positions:
+      [
+        new CreateGuestDraftPositionInput { Name = "A", Picks = [1] },
+        new CreateGuestDraftPositionInput { Name = "B", Picks = [2] },
+      ]
+    );
 
     // Act
     var result = await UpdateGuestDraftAsync(
       guestDraftPublicId,
       owner.UserPublicId,
-      type: GuestDraftType.Super,
+      type: DraftType.Super,
       numberOfPicks: 3,
       positions:
       [
@@ -117,7 +145,7 @@ public sealed class UpdateGuestDraftTests(GuestDraftsIntegrationTestWebAppFactor
     // Assert
     result.IsSuccess.Should().BeTrue();
     var guestDraft = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
-    guestDraft.GuestDraftType.Should().Be(GuestDraftType.Super);
+    guestDraft.GuestDraftType.Should().Be(DraftType.Super);
     guestDraft.GameBoard!.Positions.Select(p => p.Name).Should().BeEquivalentTo("X", "Y");
   }
 
@@ -126,14 +154,20 @@ public sealed class UpdateGuestDraftTests(GuestDraftsIntegrationTestWebAppFactor
   {
     // Arrange
     var owner = await CreateUserAsync();
-    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, GuestDraftType.Standard);
+    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, DraftType.Standard);
 
     // Act -- no NumberOfPicks/Positions supplied for the new non-fixed type
-    var result = await UpdateGuestDraftAsync(guestDraftPublicId, owner.UserPublicId, type: GuestDraftType.MiniMega);
+    var result = await UpdateGuestDraftAsync(
+      guestDraftPublicId,
+      owner.UserPublicId,
+      type: DraftType.MiniMega
+    );
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors.Should().Contain(e => e.Code == GuestDraftErrors.NumberOfPicksMustBeGreaterThanZero.Code);
+    result
+      .Errors.Should()
+      .Contain(e => e.Code == DraftErrors.NumberOfPicksMustBeGreaterThanZero.Code);
   }
 
   [Fact]
@@ -145,14 +179,17 @@ public sealed class UpdateGuestDraftTests(GuestDraftsIntegrationTestWebAppFactor
     var positionPublicIdsBefore = boardBefore.GameBoard!.Positions.Select(p => p.PublicId).ToList();
 
     // Act
-    var result = await UpdateGuestDraftAsync(guestDraftPublicId, owner, type: GuestDraftType.Mega);
+    var result = await UpdateGuestDraftAsync(guestDraftPublicId, owner, type: DraftType.Mega);
 
     // Assert -- fails, and the board must not have been touched at all
     result.IsFailure.Should().BeTrue();
     var boardAfter = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
-    boardAfter.GuestDraftType.Should().Be(GuestDraftType.Standard);
+    boardAfter.GuestDraftType.Should().Be(DraftType.Standard);
     boardAfter.GameBoard.Should().NotBeNull();
-    boardAfter.GameBoard.Positions.Select(p => p.PublicId).Should().BeEquivalentTo(positionPublicIdsBefore);
+    boardAfter
+      .GameBoard.Positions.Select(p => p.PublicId)
+      .Should()
+      .BeEquivalentTo(positionPublicIdsBefore);
   }
 
   [Fact]
@@ -161,21 +198,35 @@ public sealed class UpdateGuestDraftTests(GuestDraftsIntegrationTestWebAppFactor
     // Arrange -- assign both participants to the Standard fixed layout while still Created
     var owner = await CreateUserAsync();
     var other = await CreateUserAsync();
-    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, GuestDraftType.Standard);
+    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, DraftType.Standard);
     await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId);
     await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, other.GuestDrafterPublicId);
 
     var boardBefore = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
     var positionA = boardBefore.GameBoard!.Positions.Single(p => p.Name == "A");
     var positionB = boardBefore.GameBoard.Positions.Single(p => p.Name == "B");
-    await AssignParticipantAsync(guestDraftPublicId, owner.UserPublicId, positionA.PublicId, owner.GuestDrafterPublicId);
-    await AssignParticipantAsync(guestDraftPublicId, owner.UserPublicId, positionB.PublicId, other.GuestDrafterPublicId);
+    await AssignParticipantAsync(
+      guestDraftPublicId,
+      owner.UserPublicId,
+      positionA.PublicId,
+      owner.GuestDrafterPublicId
+    );
+    await AssignParticipantAsync(
+      guestDraftPublicId,
+      owner.UserPublicId,
+      positionB.PublicId,
+      other.GuestDrafterPublicId
+    );
 
     // Act -- switch to MiniSuper, whose fixed template also happens to name its
     // positions "A"/"B" -- proving the old assignment doesn't magically carry over
     // to the same-named new position requires checking assignment state directly,
     // not just position names.
-    var result = await UpdateGuestDraftAsync(guestDraftPublicId, owner.UserPublicId, type: GuestDraftType.MiniSuper);
+    var result = await UpdateGuestDraftAsync(
+      guestDraftPublicId,
+      owner.UserPublicId,
+      type: DraftType.MiniSuper
+    );
 
     // Assert
     result.IsSuccess.Should().BeTrue();

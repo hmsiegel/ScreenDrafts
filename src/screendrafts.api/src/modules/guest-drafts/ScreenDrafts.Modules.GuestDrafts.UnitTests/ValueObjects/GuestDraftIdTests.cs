@@ -1,3 +1,5 @@
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.ValueObjects;
+
 namespace ScreenDrafts.Modules.GuestDrafts.UnitTests.ValueObjects;
 
 public class GuestDraftIdTests
@@ -6,8 +8,8 @@ public class GuestDraftIdTests
   public void CreateUnique_ShouldGenerateDifferentValues_OnEachCall()
   {
     // Act
-    var first = GuestDraftId.CreateUnique();
-    var second = GuestDraftId.CreateUnique();
+    var first = DraftId.CreateUnique();
+    var second = DraftId.CreateUnique();
 
     // Assert
     first.Should().NotBe(second);
@@ -20,7 +22,7 @@ public class GuestDraftIdTests
     var value = Guid.NewGuid();
 
     // Act
-    var id = GuestDraftId.Create(value);
+    var id = DraftId.Create(value);
 
     // Assert
     id.Value.Should().Be(value);
@@ -30,10 +32,10 @@ public class GuestDraftIdTests
   public void FromString_ShouldRoundTrip_WithTheOriginalValue()
   {
     // Arrange
-    var original = GuestDraftId.CreateUnique();
+    var original = DraftId.CreateUnique();
 
     // Act
-    var roundTripped = GuestDraftId.FromString(original.Value.ToString());
+    var roundTripped = DraftId.FromString(original.Value.ToString());
 
     // Assert
     roundTripped.Should().Be(original);
@@ -43,7 +45,7 @@ public class GuestDraftIdTests
   public void Empty_ShouldHaveAnEmptyGuidValue()
   {
     // Act & Assert
-    GuestDraftId.Empty.Value.Should().Be(Guid.Empty);
+    DraftId.Empty.Value.Should().Be(Guid.Empty);
   }
 
   [Fact]
@@ -53,13 +55,13 @@ public class GuestDraftIdTests
     var value = Guid.NewGuid();
 
     // Act & Assert
-    GuestDraftId.Create(value).Should().Be(GuestDraftId.Create(value));
+    DraftId.Create(value).Should().Be(DraftId.Create(value));
   }
 
   [Fact]
   public void Equality_ShouldReturnFalse_WhenValuesDiffer()
   {
     // Act & Assert
-    GuestDraftId.CreateUnique().Should().NotBe(GuestDraftId.CreateUnique());
+    DraftId.CreateUnique().Should().NotBe(DraftId.CreateUnique());
   }
 }

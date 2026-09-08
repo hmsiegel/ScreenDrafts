@@ -1,12 +1,18 @@
-﻿namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.Create;
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Enums;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Errors;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Helpers;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Repositories;
+
+namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.Create;
 
 internal sealed class CreateGuestDraftCommandHandler(
-  IGuestDraftRepository guestDraftRepository,
+  IDraftRepository guestDraftRepository,
   IUsersApi usersApi,
   IPublicIdGenerator publicIdGenerator
 ) : ICommandHandler<CreateGuestDraftCommand, string>
 {
-  private readonly IGuestDraftRepository _guestDraftRepository = guestDraftRepository;
+  private readonly IDraftRepository _guestDraftRepository = guestDraftRepository;
   private readonly IUsersApi _usersApi = usersApi;
   private readonly IPublicIdGenerator _publicIdGenerator = publicIdGenerator;
 
@@ -24,19 +30,19 @@ internal sealed class CreateGuestDraftCommandHandler(
       );
     }
 
-    if (!GuestDraftType.TryFromName(request.Type, ignoreCase: true, out var type))
+    if (!DraftType.TryFromName(request.Type, ignoreCase: true, out var type))
     {
-      return Result.Failure<string>(GuestDraftErrors.InvalidType(request.Type));
+      return Result.Failure<string>(DraftErrors.InvalidType(request.Type));
     }
 
     if (request.NumberOfPicks < 1)
     {
-      return Result.Failure<string>(GuestDraftErrors.NumberOfPicksMustBeGreaterThanZero);
+      return Result.Failure<string>(DraftErrors.NumberOfPicksMustBeGreaterThanZero);
     }
 
     var publicId = _publicIdGenerator.GeneratePublicId(PublicIdPrefixes.GuestDraft);
 
-    var createResult = GuestDraft.Create(
+    var createResult = Draft.Create(
       publicId: publicId,
       ownerUserId: owner.UserId,
       title: request.Title,
@@ -53,7 +59,7 @@ internal sealed class CreateGuestDraftCommandHandler(
 
     Result boardResult;
 
-    if (GuestDraftBoardTemplates.IsFixed(type))
+    if (GameBoardTemplates.IsFixed(type))
     {
       boardResult = guestDraft.UseFixedBoardLayout(_ =>
         _publicIdGenerator.GeneratePublicId(PublicIdPrefixes.GuestDraftPosition)

@@ -1,8 +1,10 @@
-﻿namespace ScreenDrafts.Modules.GuestDrafts.Infrastructure.GuestDrafterTeams;
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.DrafterTeams;
 
-internal sealed class GuestDrafterTeamConfiguration : IEntityTypeConfiguration<GuestDrafterTeam>
+namespace ScreenDrafts.Modules.GuestDrafts.Infrastructure.GuestDrafterTeams;
+
+internal sealed class GuestDrafterTeamConfiguration : IEntityTypeConfiguration<DrafterTeam>
 {
-  public void Configure(EntityTypeBuilder<GuestDrafterTeam> builder)
+  public void Configure(EntityTypeBuilder<DrafterTeam> builder)
   {
     builder.ToTable(Tables.GuestDrafterTeams);
 
@@ -18,7 +20,7 @@ internal sealed class GuestDrafterTeamConfiguration : IEntityTypeConfiguration<G
 
     builder.HasIndex(t => t.PublicId).IsUnique();
 
-    builder.Property(t => t.Name).IsRequired().HasMaxLength(GuestDrafterTeam.TeamNameMaxLength);
+    builder.Property(t => t.Name).IsRequired().HasMaxLength(DrafterTeam.TeamNameMaxLength);
 
     // Many-to-many, no payload on the join -- plain join table, matching
     // canonical DrafterTeamDrafter's shape.

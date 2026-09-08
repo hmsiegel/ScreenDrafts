@@ -1,8 +1,12 @@
-﻿namespace ScreenDrafts.Modules.GuestDrafts.Infrastructure.GuestDrafts;
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Entities;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Enums;
 
-internal sealed class GuestDraftConfiguration : IEntityTypeConfiguration<GuestDraft>
+namespace ScreenDrafts.Modules.GuestDrafts.Infrastructure.GuestDrafts;
+
+internal sealed class GuestDraftConfiguration : IEntityTypeConfiguration<Draft>
 {
-  public void Configure(EntityTypeBuilder<GuestDraft> builder)
+  public void Configure(EntityTypeBuilder<Draft> builder)
   {
     builder.ToTable(Tables.GuestDrafts);
 
@@ -20,17 +24,17 @@ internal sealed class GuestDraftConfiguration : IEntityTypeConfiguration<GuestDr
 
     builder.Property(d => d.OwnerUserId).IsRequired();
 
-    builder.Property(d => d.Title).IsRequired().HasMaxLength(GuestDraft.TitleMaxLength);
+    builder.Property(d => d.Title).IsRequired().HasMaxLength(Draft.TitleMaxLength);
 
     builder
       .Property(d => d.GuestDraftType)
       .IsRequired()
-      .HasConversion(t => t.Value, v => GuestDraftType.FromValue(v));
+      .HasConversion(t => t.Value, v => DraftType.FromValue(v));
 
     builder
       .Property(d => d.GuestDraftStatus)
       .IsRequired()
-      .HasConversion(s => s.Value, v => GuestDraftStatus.FromValue(v));
+      .HasConversion(s => s.Value, v => DraftStatus.FromValue(v));
 
     builder.Property(d => d.ShareToken).HasMaxLength(PublicIdPrefixes.MaxPublicIdLength);
 
@@ -45,8 +49,8 @@ internal sealed class GuestDraftConfiguration : IEntityTypeConfiguration<GuestDr
     // Participants -- containment, cascades.
     builder
       .HasMany(d => d.Participants)
-      .WithOne(p => p.GuestDraft)
-      .HasForeignKey(p => p.GuestDraftId)
+      .WithOne(p => p.Draft)
+      .HasForeignKey(p => p.DraftId)
       .OnDelete(DeleteBehavior.Cascade);
 
     builder.Navigation(d => d.Participants).UsePropertyAccessMode(PropertyAccessMode.Field);
@@ -56,7 +60,7 @@ internal sealed class GuestDraftConfiguration : IEntityTypeConfiguration<GuestDr
     builder
       .HasOne(d => d.GameBoard)
       .WithOne()
-      .HasForeignKey<GuestDraftGameBoard>(gb => gb.GuestDraftId)
+      .HasForeignKey<GameBoard>(gb => gb.GuestDraftId)
       .OnDelete(DeleteBehavior.Cascade);
 
     // Picks -- containment, cascades. GuestDraftPick has no back-reference nav

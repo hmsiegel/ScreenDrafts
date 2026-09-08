@@ -1,11 +1,14 @@
-﻿namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.SetStatus;
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Errors;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Repositories;
+
+namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.SetStatus;
 
 internal sealed class SetGuestDraftStatusCommandHandler(
-  IGuestDraftRepository guestDraftRepository,
+  IDraftRepository guestDraftRepository,
   IUsersApi usersApi
 ) : ICommandHandler<SetGuestDraftStatusCommand, SetGuestDraftStatusResponse>
 {
-  private readonly IGuestDraftRepository _guestDraftRepository = guestDraftRepository;
+  private readonly IDraftRepository _guestDraftRepository = guestDraftRepository;
   private readonly IUsersApi _usersApi = usersApi;
 
   public async Task<Result<SetGuestDraftStatusResponse>> Handle(
@@ -21,7 +24,7 @@ internal sealed class SetGuestDraftStatusCommandHandler(
     if (guestDraft is null)
     {
       return Result.Failure<SetGuestDraftStatusResponse>(
-        GuestDraftErrors.NotFound(request.GuestDraftPublicId)
+        DraftErrors.NotFound(request.GuestDraftPublicId)
       );
     }
 
@@ -36,16 +39,14 @@ internal sealed class SetGuestDraftStatusCommandHandler(
 
     if (caller.UserId != guestDraft.OwnerUserId)
     {
-      return Result.Failure<SetGuestDraftStatusResponse>(
-        GuestDraftErrors.OnlyOwnerCanPerformThisAction
-      );
+      return Result.Failure<SetGuestDraftStatusResponse>(DraftErrors.OnlyOwnerCanPerformThisAction);
     }
 
     var result = request.Action switch
     {
       GuestDraftStatusAction.Start => guestDraft.Start(),
       GuestDraftStatusAction.Complete => guestDraft.Complete(),
-      _ => Result.Failure(GuestDraftErrors.InvalidStatusAction),
+      _ => Result.Failure(DraftErrors.InvalidStatusAction),
     };
 
     if (result.IsFailure)

@@ -1,16 +1,18 @@
 ﻿// Suggested location: Features/GuestDrafts/SetGuestDraftStatus/GuestDraftCompletedDomainEventHandler.cs
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.DomainEvents;
+
 namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.SetStatus;
 
 internal sealed class GuestDraftCompletedDomainEventHandler(
   IEventBus eventBus,
   IDateTimeProvider dateTimeProvider
-) : DomainEventHandler<GuestDraftCompletedDomainEvent>
+) : DomainEventHandler<DraftCompletedDomainEvent>
 {
   private readonly IEventBus _eventBus = eventBus;
   private readonly IDateTimeProvider _dateTimeProvider = dateTimeProvider;
 
   public override async Task Handle(
-    GuestDraftCompletedDomainEvent domainEvent,
+    DraftCompletedDomainEvent domainEvent,
     CancellationToken cancellationToken = default
   )
   {
@@ -18,8 +20,8 @@ internal sealed class GuestDraftCompletedDomainEventHandler(
       new GuestDraftCompletedIntegrationEvent(
         id: Guid.NewGuid(),
         occurredOnUtc: _dateTimeProvider.UtcNow,
-        guestDraftId: domainEvent.GuestDraftId,
-        guestDraftPublicId: domainEvent.GuestDraftPublicId,
+        guestDraftId: domainEvent.DraftId,
+        guestDraftPublicId: domainEvent.DraftPublicId,
         totalPicks: domainEvent.TotalPicks,
         vetoCount: domainEvent.VetoCount
       ),

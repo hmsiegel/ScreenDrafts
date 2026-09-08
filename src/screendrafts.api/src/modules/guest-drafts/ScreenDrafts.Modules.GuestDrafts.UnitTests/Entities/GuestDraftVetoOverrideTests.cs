@@ -1,3 +1,5 @@
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Entities;
+
 namespace ScreenDrafts.Modules.GuestDrafts.UnitTests.Entities;
 
 public class GuestDraftVetoOverrideTests : GuestDraftsBaseTest
@@ -10,7 +12,7 @@ public class GuestDraftVetoOverrideTests : GuestDraftsBaseTest
     var issuer = veto.TargetPick.PlayedByParticipant;
 
     // Act
-    var result = GuestDraftVetoOverride.Create(veto, issuer);
+    var result = VetoOverride.Create(veto, issuer);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -25,10 +27,10 @@ public class GuestDraftVetoOverrideTests : GuestDraftsBaseTest
   {
     // Arrange
     var veto = GuestDraftVetoFactory.CreateVeto().Value;
-    GuestDraftVeto? nullVeto = null;
+    Veto? nullVeto = null;
 
     // Act
-    Action act = () => GuestDraftVetoOverride.Create(nullVeto!, veto.TargetPick.PlayedByParticipant);
+    Action act = () => VetoOverride.Create(nullVeto!, veto.TargetPick.PlayedByParticipant);
 
     // Assert
     act.Should().Throw<ArgumentNullException>();
@@ -39,10 +41,10 @@ public class GuestDraftVetoOverrideTests : GuestDraftsBaseTest
   {
     // Arrange
     var veto = GuestDraftVetoFactory.CreateVeto().Value;
-    GuestDraftParticipant? issuer = null;
+    DraftParticipant? issuer = null;
 
     // Act
-    Action act = () => GuestDraftVetoOverride.Create(veto, issuer!);
+    Action act = () => VetoOverride.Create(veto, issuer!);
 
     // Assert
     act.Should().Throw<ArgumentNullException>();
@@ -56,7 +58,7 @@ public class GuestDraftVetoOverrideTests : GuestDraftsBaseTest
     var note = "Overridden after a rewatch";
 
     // Act
-    var result = GuestDraftVetoOverride.Create(veto, veto.TargetPick.PlayedByParticipant, note: note);
+    var result = VetoOverride.Create(veto, veto.TargetPick.PlayedByParticipant, note: note);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -70,10 +72,11 @@ public class GuestDraftVetoOverrideTests : GuestDraftsBaseTest
     var veto = GuestDraftVetoFactory.CreateVeto().Value;
 
     // Act
-    var result = GuestDraftVetoOverride.Create(
+    var result = VetoOverride.Create(
       veto,
       veto.TargetPick.PlayedByParticipant,
-      spentFromFungiblePool: true);
+      spentFromFungiblePool: true
+    );
 
     // Assert
     result.IsSuccess.Should().BeTrue();

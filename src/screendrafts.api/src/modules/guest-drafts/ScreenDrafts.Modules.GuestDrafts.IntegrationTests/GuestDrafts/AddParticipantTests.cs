@@ -1,3 +1,6 @@
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafters;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Errors;
+
 namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.GuestDrafts;
 
 public sealed class AddParticipantTests(GuestDraftsIntegrationTestWebAppFactory factory)
@@ -11,12 +14,19 @@ public sealed class AddParticipantTests(GuestDraftsIntegrationTestWebAppFactory 
     var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId);
 
     // Act
-    var result = await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId);
+    var result = await AddParticipantAsync(
+      guestDraftPublicId,
+      owner.UserPublicId,
+      owner.GuestDrafterPublicId
+    );
 
     // Assert
     result.IsSuccess.Should().BeTrue();
     var guestDraft = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
-    guestDraft.Participants.Single(p => p.ParticipantIdValue == owner.GuestDrafterId).IsOwner.Should().BeTrue();
+    guestDraft
+      .Participants.Single(p => p.ParticipantIdValue == owner.GuestDrafterId)
+      .IsOwner.Should()
+      .BeTrue();
   }
 
   [Fact]
@@ -28,12 +38,19 @@ public sealed class AddParticipantTests(GuestDraftsIntegrationTestWebAppFactory 
     var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId);
 
     // Act
-    var result = await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, other.GuestDrafterPublicId);
+    var result = await AddParticipantAsync(
+      guestDraftPublicId,
+      owner.UserPublicId,
+      other.GuestDrafterPublicId
+    );
 
     // Assert
     result.IsSuccess.Should().BeTrue();
     var guestDraft = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
-    guestDraft.Participants.Single(p => p.ParticipantIdValue == other.GuestDrafterId).IsOwner.Should().BeFalse();
+    guestDraft
+      .Participants.Single(p => p.ParticipantIdValue == other.GuestDrafterId)
+      .IsOwner.Should()
+      .BeFalse();
   }
 
   [Fact]
@@ -42,14 +59,21 @@ public sealed class AddParticipantTests(GuestDraftsIntegrationTestWebAppFactory 
     // Arrange
     var owner = await CreateUserAsync();
     var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId);
-    var nonExistentGuestDrafterPublicId = $"{PublicIdPrefixes.GuestDrafter}_{Faker.Random.AlphaNumeric(15)}";
+    var nonExistentGuestDrafterPublicId =
+      $"{PublicIdPrefixes.GuestDrafter}_{Faker.Random.AlphaNumeric(15)}";
 
     // Act
-    var result = await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, nonExistentGuestDrafterPublicId);
+    var result = await AddParticipantAsync(
+      guestDraftPublicId,
+      owner.UserPublicId,
+      nonExistentGuestDrafterPublicId
+    );
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors.Should().Contain(e => e.Code == GuestDrafterErrors.NotFound(nonExistentGuestDrafterPublicId).Code);
+    result
+      .Errors.Should()
+      .Contain(e => e.Code == DrafterErrors.NotFound(nonExistentGuestDrafterPublicId).Code);
   }
 
   [Fact]
@@ -61,11 +85,15 @@ public sealed class AddParticipantTests(GuestDraftsIntegrationTestWebAppFactory 
     var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId);
 
     // Act
-    var result = await AddParticipantAsync(guestDraftPublicId, other.UserPublicId, other.GuestDrafterPublicId);
+    var result = await AddParticipantAsync(
+      guestDraftPublicId,
+      other.UserPublicId,
+      other.GuestDrafterPublicId
+    );
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors.Should().Contain(e => e.Code == GuestDraftErrors.OnlyOwnerCanPerformThisAction.Code);
+    result.Errors.Should().Contain(e => e.Code == DraftErrors.OnlyOwnerCanPerformThisAction.Code);
   }
 
   [Fact]
@@ -73,14 +101,21 @@ public sealed class AddParticipantTests(GuestDraftsIntegrationTestWebAppFactory 
   {
     // Arrange
     var owner = await CreateUserAsync();
-    var nonExistentGuestDraftPublicId = $"{PublicIdPrefixes.GuestDraft}_{Faker.Random.AlphaNumeric(15)}";
+    var nonExistentGuestDraftPublicId =
+      $"{PublicIdPrefixes.GuestDraft}_{Faker.Random.AlphaNumeric(15)}";
 
     // Act
-    var result = await AddParticipantAsync(nonExistentGuestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId);
+    var result = await AddParticipantAsync(
+      nonExistentGuestDraftPublicId,
+      owner.UserPublicId,
+      owner.GuestDrafterPublicId
+    );
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors.Should().Contain(e => e.Code == GuestDraftErrors.NotFound(nonExistentGuestDraftPublicId).Code);
+    result
+      .Errors.Should()
+      .Contain(e => e.Code == DraftErrors.NotFound(nonExistentGuestDraftPublicId).Code);
   }
 
   [Fact]
@@ -93,11 +128,17 @@ public sealed class AddParticipantTests(GuestDraftsIntegrationTestWebAppFactory 
     await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, other.GuestDrafterPublicId);
 
     // Act
-    var result = await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, other.GuestDrafterPublicId);
+    var result = await AddParticipantAsync(
+      guestDraftPublicId,
+      owner.UserPublicId,
+      other.GuestDrafterPublicId
+    );
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors.Should().Contain(e => e.Code == GuestDraftErrors.ParticipantAlreadyAdded(other.GuestDrafterId).Code);
+    result
+      .Errors.Should()
+      .Contain(e => e.Code == DraftErrors.ParticipantAlreadyAdded(other.GuestDrafterId).Code);
   }
 
   [Fact]
@@ -108,10 +149,14 @@ public sealed class AddParticipantTests(GuestDraftsIntegrationTestWebAppFactory 
     var stranger = await CreateUserAsync();
 
     // Act
-    var result = await AddParticipantAsync(guestDraftPublicId, owner, stranger.GuestDrafterPublicId);
+    var result = await AddParticipantAsync(
+      guestDraftPublicId,
+      owner,
+      stranger.GuestDrafterPublicId
+    );
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors.Should().Contain(e => e.Code == GuestDraftErrors.CannotAddParticipantAfterStart.Code);
+    result.Errors.Should().Contain(e => e.Code == DraftErrors.CannotAddParticipantAfterStart.Code);
   }
 }

@@ -1,18 +1,24 @@
-﻿namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafters.UpdateGuestDrafterName;
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafters;
+
+namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafters.UpdateGuestDrafterName;
 
 internal sealed class UpdateGuestDrafterNameCommandHandler(
-  IGuestDrafterRepository guestDrafterRepository,
+  IDrafterRepository guestDrafterRepository,
   IPublicIdGenerator publicIdGenerator
 ) : ICommandHandler<UpdateGuestDrafterNameCommand>
 {
-  private readonly IGuestDrafterRepository _guestDrafterRepository = guestDrafterRepository;
+  private readonly IDrafterRepository _guestDrafterRepository = guestDrafterRepository;
   private readonly IPublicIdGenerator _publicIdGenerator = publicIdGenerator;
 
   public async Task<Result> Handle(
     UpdateGuestDrafterNameCommand request,
-    CancellationToken cancellationToken)
+    CancellationToken cancellationToken
+  )
   {
-    var guestDrafter = await _guestDrafterRepository.GetByUserIdAsync(request.UserId, cancellationToken);
+    var guestDrafter = await _guestDrafterRepository.GetByUserIdAsync(
+      request.UserId,
+      cancellationToken
+    );
 
     if (guestDrafter is null)
     {
@@ -23,11 +29,12 @@ internal sealed class UpdateGuestDrafterNameCommandHandler(
       // create the row here rather than silently dropping the update.
       var publicId = _publicIdGenerator.GeneratePublicId(PublicIdPrefixes.GuestDrafter);
 
-      var createResult = GuestDrafter.Create(
+      var createResult = Drafter.Create(
         publicId,
         request.UserId,
         request.FirstName,
-        request.LastName);
+        request.LastName
+      );
 
       if (createResult.IsFailure)
       {

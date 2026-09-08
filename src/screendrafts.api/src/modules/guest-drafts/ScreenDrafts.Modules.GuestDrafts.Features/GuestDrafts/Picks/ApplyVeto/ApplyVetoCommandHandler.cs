@@ -1,13 +1,17 @@
-﻿namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.Picks.ApplyVeto;
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafters;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Errors;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Repositories;
+
+namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.Picks.ApplyVeto;
 
 internal sealed class ApplyVetoCommandHandler(
-  IGuestDraftRepository guestDraftRepository,
-  IGuestDrafterRepository guestDrafterRepository,
+  IDraftRepository guestDraftRepository,
+  IDrafterRepository guestDrafterRepository,
   IUsersApi usersApi
 ) : ICommandHandler<ApplyVetoCommand>
 {
-  private readonly IGuestDraftRepository _guestDraftRepository = guestDraftRepository;
-  private readonly IGuestDrafterRepository _guestDrafterRepository = guestDrafterRepository;
+  private readonly IDraftRepository _guestDraftRepository = guestDraftRepository;
+  private readonly IDrafterRepository _guestDrafterRepository = guestDrafterRepository;
   private readonly IUsersApi _usersApi = usersApi;
 
   public async Task<Result> Handle(ApplyVetoCommand request, CancellationToken cancellationToken)
@@ -19,14 +23,14 @@ internal sealed class ApplyVetoCommandHandler(
 
     if (guestDraft is null)
     {
-      return Result.Failure(GuestDraftErrors.NotFound(request.GuestDraftPublicId));
+      return Result.Failure(DraftErrors.NotFound(request.GuestDraftPublicId));
     }
 
     var pick = guestDraft.Picks.FirstOrDefault(p => p.PlayOrder == request.PlayOrder);
 
     if (pick is null)
     {
-      return Result.Failure(GuestDraftErrors.PickNotFoundByPlayOrder(request.PlayOrder));
+      return Result.Failure(DraftErrors.PickNotFoundByPlayOrder(request.PlayOrder));
     }
 
     var caller = await _usersApi.GetUserByPublicId(request.CallerUserPublicId, cancellationToken);
@@ -43,14 +47,14 @@ internal sealed class ApplyVetoCommandHandler(
 
     if (callerDrafter is null)
     {
-      return Result.Failure(GuestDrafterErrors.NotFoundForUser(caller.UserId));
+      return Result.Failure(DrafterErrors.NotFoundForUser(caller.UserId));
     }
 
-    var issuer = guestDraft.FindByParticipantRef(GuestParticipant.From(callerDrafter.Id));
+    var issuer = guestDraft.FindByParticipantRef(Participant.From(callerDrafter.Id));
 
     if (issuer is null)
     {
-      return Result.Failure(GuestDraftErrors.CallerNotAParticipant);
+      return Result.Failure(DraftErrors.CallerNotAParticipant);
     }
 
     var result = guestDraft.ApplyVeto(

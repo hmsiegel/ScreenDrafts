@@ -1,3 +1,8 @@
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafters;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Enums;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Errors;
+
 namespace ScreenDrafts.Modules.GuestDrafts.UnitTests.GuestDrafts;
 
 public class GuestDraftCreationTests : GuestDraftsBaseTest
@@ -11,19 +16,15 @@ public class GuestDraftCreationTests : GuestDraftsBaseTest
     var title = "Weekend Guest Draft";
 
     // Act
-    var result = GuestDraft.Create(
-      publicId,
-      ownerUserId,
-      title,
-      GuestDraftType.Standard);
+    var result = Draft.Create(publicId, ownerUserId, title, DraftType.Standard);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
     result.Value.PublicId.Should().Be(publicId);
     result.Value.OwnerUserId.Should().Be(ownerUserId);
     result.Value.Title.Should().Be(title);
-    result.Value.GuestDraftType.Should().Be(GuestDraftType.Standard);
-    result.Value.GuestDraftStatus.Should().Be(GuestDraftStatus.Created);
+    result.Value.GuestDraftType.Should().Be(DraftType.Standard);
+    result.Value.GuestDraftStatus.Should().Be(DraftStatus.Created);
   }
 
   [Fact]
@@ -31,11 +32,14 @@ public class GuestDraftCreationTests : GuestDraftsBaseTest
   {
     // Arrange & Act -- the owner is no longer auto-added; they must be added
     // explicitly via AddParticipant, exactly like everyone else.
-    var guestDraft = GuestDraft.Create(
-      Faker.Random.AlphaNumeric(10),
-      Guid.NewGuid(),
-      "Weekend Guest Draft",
-      GuestDraftType.Standard).Value;
+    var guestDraft = Draft
+      .Create(
+        Faker.Random.AlphaNumeric(10),
+        Guid.NewGuid(),
+        "Weekend Guest Draft",
+        DraftType.Standard
+      )
+      .Value;
 
     // Assert
     guestDraft.Participants.Should().BeEmpty();
@@ -45,30 +49,32 @@ public class GuestDraftCreationTests : GuestDraftsBaseTest
   public void Create_ShouldReturnFailure_WhenTitleIsEmpty()
   {
     // Arrange & Act
-    var result = GuestDraft.Create(
+    var result = Draft.Create(
       Faker.Random.AlphaNumeric(10),
       Guid.NewGuid(),
       string.Empty,
-      GuestDraftType.Standard);
+      DraftType.Standard
+    );
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDraftErrors.TitleIsRequired);
+    result.Errors[0].Should().Be(DraftErrors.TitleIsRequired);
   }
 
   [Fact]
   public void Create_ShouldReturnFailure_WhenTitleIsWhitespace()
   {
     // Arrange & Act
-    var result = GuestDraft.Create(
+    var result = Draft.Create(
       Faker.Random.AlphaNumeric(10),
       Guid.NewGuid(),
       "   ",
-      GuestDraftType.Standard);
+      DraftType.Standard
+    );
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDraftErrors.TitleIsRequired);
+    result.Errors[0].Should().Be(DraftErrors.TitleIsRequired);
   }
 
   [Fact]
@@ -77,7 +83,7 @@ public class GuestDraftCreationTests : GuestDraftsBaseTest
     // Arrange
     var guestDraft = CreateGuestDraft();
     var guestDrafterId = Guid.NewGuid();
-    var participant = GuestParticipant.From(GuestDrafterId.Create(guestDrafterId));
+    var participant = Participant.From(DrafterId.Create(guestDrafterId));
 
     // Act
     var result = guestDraft.AddParticipant(participant, isOwner: false);
@@ -94,7 +100,7 @@ public class GuestDraftCreationTests : GuestDraftsBaseTest
   {
     // Arrange
     var guestDraft = CreateGuestDraft();
-    var participant = GuestParticipant.From(GuestDrafterId.Create(Guid.NewGuid()));
+    var participant = Participant.From(DrafterId.Create(Guid.NewGuid()));
 
     // Act
     var result = guestDraft.AddParticipant(participant, isOwner: true);
@@ -110,7 +116,7 @@ public class GuestDraftCreationTests : GuestDraftsBaseTest
     // Arrange
     var guestDraft = CreateGuestDraft();
     var guestDrafterId = Guid.NewGuid();
-    var participant = GuestParticipant.From(GuestDrafterId.Create(guestDrafterId));
+    var participant = Participant.From(DrafterId.Create(guestDrafterId));
     guestDraft.AddParticipant(participant, isOwner: false);
 
     // Act
@@ -118,7 +124,7 @@ public class GuestDraftCreationTests : GuestDraftsBaseTest
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDraftErrors.ParticipantAlreadyAdded(guestDrafterId));
+    result.Errors[0].Should().Be(DraftErrors.ParticipantAlreadyAdded(guestDrafterId));
     guestDraft.Participants.Should().HaveCount(1);
   }
 
@@ -127,14 +133,14 @@ public class GuestDraftCreationTests : GuestDraftsBaseTest
   {
     // Arrange
     var (guestDraft, _, _) = CreateInProgressStandardGuestDraft();
-    var participant = GuestParticipant.From(GuestDrafterId.Create(Guid.NewGuid()));
+    var participant = Participant.From(DrafterId.Create(Guid.NewGuid()));
 
     // Act
     var result = guestDraft.AddParticipant(participant, isOwner: false);
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDraftErrors.CannotAddParticipantAfterStart);
+    result.Errors[0].Should().Be(DraftErrors.CannotAddParticipantAfterStart);
   }
 
   [Fact]
@@ -174,7 +180,7 @@ public class GuestDraftCreationTests : GuestDraftsBaseTest
     // Arrange
     var guestDraft = CreateGuestDraft();
     var guestDrafterId = Guid.NewGuid();
-    var participantRef = GuestParticipant.From(GuestDrafterId.Create(guestDrafterId));
+    var participantRef = Participant.From(DrafterId.Create(guestDrafterId));
     var added = guestDraft.AddParticipant(participantRef, isOwner: false).Value;
 
     // Act
@@ -189,7 +195,7 @@ public class GuestDraftCreationTests : GuestDraftsBaseTest
   {
     // Arrange
     var guestDraft = CreateGuestDraft();
-    var participantRef = GuestParticipant.From(GuestDrafterId.Create(Guid.NewGuid()));
+    var participantRef = Participant.From(DrafterId.Create(Guid.NewGuid()));
 
     // Act & Assert
     guestDraft.FindByParticipantRef(participantRef).Should().BeNull();
@@ -240,7 +246,7 @@ public class GuestDraftCreationTests : GuestDraftsBaseTest
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDraftErrors.TitleIsRequired);
+    result.Errors[0].Should().Be(DraftErrors.TitleIsRequired);
   }
 
   [Fact]
@@ -254,7 +260,7 @@ public class GuestDraftCreationTests : GuestDraftsBaseTest
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDraftErrors.TitleIsRequired);
+    result.Errors[0].Should().Be(DraftErrors.TitleIsRequired);
   }
 
   [Fact]

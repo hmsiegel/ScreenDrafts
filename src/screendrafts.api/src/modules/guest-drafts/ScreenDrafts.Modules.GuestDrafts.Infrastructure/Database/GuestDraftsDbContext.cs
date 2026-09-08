@@ -1,20 +1,25 @@
-﻿namespace ScreenDrafts.Modules.GuestDrafts.Infrastructure.Database;
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafters;
+using ScreenDrafts.Modules.GuestDrafts.Domain.DrafterTeams;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Entities;
+
+namespace ScreenDrafts.Modules.GuestDrafts.Infrastructure.Database;
 
 public sealed class GuestDraftsDbContext(DbContextOptions<GuestDraftsDbContext> options)
   : DbContext(options),
     IUnitOfWork
 {
-  internal DbSet<GuestDraft> GuestDrafts { get; set; }
-  internal DbSet<GuestDraftParticipant> GuestDraftParticipants { get; set; }
-  internal DbSet<GuestDraftGameBoard> GuestDraftGameBoards { get; set; }
-  internal DbSet<GuestDraftPosition> GuestDraftPositions { get; set; }
-  internal DbSet<GuestDraftPick> GuestDraftPicks { get; set; }
-  internal DbSet<GuestDraftVeto> GuestDraftVetoes { get; set; }
-  internal DbSet<GuestDraftVetoOverride> GuestDraftVetoOverrides { get; set; }
-  internal DbSet<GuestDraftCommissionerOverride> GuestDraftCommissionerOverrides { get; set; }
-  internal DbSet<GuestDrafter> GuestDrafters { get; set; }
-  internal DbSet<GuestDrafterTeam> GuestDrafterTeams { get; set; }
-  internal DbSet<GuestDraftMovie> GuestDraftMovies { get; set; }
+  internal DbSet<Draft> GuestDrafts { get; set; }
+  internal DbSet<DraftParticipant> GuestDraftParticipants { get; set; }
+  internal DbSet<GameBoard> GuestDraftGameBoards { get; set; }
+  internal DbSet<DraftPosition> GuestDraftPositions { get; set; }
+  internal DbSet<Pick> GuestDraftPicks { get; set; }
+  internal DbSet<Veto> GuestDraftVetoes { get; set; }
+  internal DbSet<VetoOverride> GuestDraftVetoOverrides { get; set; }
+  internal DbSet<CommissionerOverride> GuestDraftCommissionerOverrides { get; set; }
+  internal DbSet<Drafter> GuestDrafters { get; set; }
+  internal DbSet<DrafterTeam> GuestDrafterTeams { get; set; }
+  internal DbSet<Movie> GuestDraftMovies { get; set; }
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {

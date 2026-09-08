@@ -1,20 +1,24 @@
-﻿namespace ScreenDrafts.Modules.GuestDrafts.Infrastructure.GuestDrafts;
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Entities;
+
+namespace ScreenDrafts.Modules.GuestDrafts.Infrastructure.GuestDrafts;
 
 internal sealed class GuestDraftCommissionerOverrideConfiguration
-  : IEntityTypeConfiguration<GuestDraftCommissionerOverride>
+  : IEntityTypeConfiguration<CommissionerOverride>
 {
-  public void Configure(EntityTypeBuilder<GuestDraftCommissionerOverride> builder)
+  public void Configure(EntityTypeBuilder<CommissionerOverride> builder)
   {
     builder.ToTable(Tables.GuestDraftCommissionerOverrides);
 
     builder.HasKey(co => co.Id);
 
-    builder.Property(co => co.Id)
+    builder
+      .Property(co => co.Id)
       .ValueGeneratedNever()
       .HasColumnName("id")
       .HasConversion(IdConverters.GuestDraftCommissionerOverrideIdConverter);
 
-    builder.Property(co => co.PickId)
+    builder
+      .Property(co => co.PickId)
       .IsRequired()
       .HasConversion(IdConverters.GuestDraftPickIdConverter);
 

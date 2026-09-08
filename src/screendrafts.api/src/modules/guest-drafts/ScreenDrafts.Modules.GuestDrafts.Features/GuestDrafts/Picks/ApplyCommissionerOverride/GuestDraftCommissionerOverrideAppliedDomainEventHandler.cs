@@ -1,16 +1,17 @@
-﻿// Suggested location: Features/GuestDrafts/ApplyCommissionerOverride/GuestDraftCommissionerOverrideAppliedDomainEventHandler.cs
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.DomainEvents;
+
 namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.Picks.ApplyCommissionerOverride;
 
 internal sealed class GuestDraftCommissionerOverrideAppliedDomainEventHandler(
   IEventBus eventBus,
   IDateTimeProvider dateTimeProvider
-) : DomainEventHandler<GuestDraftCommissionerOverrideAppliedDomainEvent>
+) : DomainEventHandler<CommissionerOverrideAppliedDomainEvent>
 {
   private readonly IEventBus _eventBus = eventBus;
   private readonly IDateTimeProvider _dateTimeProvider = dateTimeProvider;
 
   public override async Task Handle(
-    GuestDraftCommissionerOverrideAppliedDomainEvent domainEvent,
+    CommissionerOverrideAppliedDomainEvent domainEvent,
     CancellationToken cancellationToken = default
   )
   {

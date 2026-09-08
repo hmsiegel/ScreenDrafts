@@ -1,3 +1,5 @@
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Enums;
+
 namespace ScreenDrafts.Modules.GuestDrafts.UnitTests.GuestDrafts;
 
 public class GuestDraftChangeTypeTests : GuestDraftsBaseTest
@@ -9,26 +11,26 @@ public class GuestDraftChangeTypeTests : GuestDraftsBaseTest
     var (guestDraft, _, _) = CreateInProgressStandardGuestDraft();
 
     // Act
-    var result = guestDraft.ChangeType(GuestDraftType.Mega);
+    var result = guestDraft.ChangeType(DraftType.Mega);
 
     // Assert -- not asserting the specific error identity: GuestDraftErrors.
     // CannotChangeDraftTypeAfterStart is currently a broken uninitialized
     // property (always null), a pre-existing domain bug outside this pass's scope.
     result.IsFailure.Should().BeTrue();
-    guestDraft.GuestDraftType.Should().Be(GuestDraftType.Standard);
+    guestDraft.GuestDraftType.Should().Be(DraftType.Standard);
   }
 
   [Fact]
   public void ChangeType_ShouldSucceedAsANoOp_WhenNewTypeEqualsCurrentType()
   {
     // Arrange
-    var guestDraft = CreateGuestDraft(GuestDraftType.Standard);
+    var guestDraft = CreateGuestDraft(DraftType.Standard);
     guestDraft.UseFixedBoardLayout(GeneratePositionPublicId);
     var gameBoardBefore = guestDraft.GameBoard;
     var positionNamesBefore = gameBoardBefore!.Positions.Select(p => p.Name).ToList();
 
     // Act
-    var result = guestDraft.ChangeType(GuestDraftType.Standard);
+    var result = guestDraft.ChangeType(DraftType.Standard);
 
     // Assert -- same-type "change" must not clear the board
     result.IsSuccess.Should().BeTrue();
@@ -40,15 +42,15 @@ public class GuestDraftChangeTypeTests : GuestDraftsBaseTest
   public void ChangeType_ShouldDiscardTheExistingGameBoardEntirely_WhenNewTypeDiffers()
   {
     // Arrange
-    var guestDraft = CreateGuestDraft(GuestDraftType.Standard);
+    var guestDraft = CreateGuestDraft(DraftType.Standard);
     guestDraft.UseFixedBoardLayout(GeneratePositionPublicId);
 
     // Act
-    var result = guestDraft.ChangeType(GuestDraftType.Mega);
+    var result = guestDraft.ChangeType(DraftType.Mega);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
-    guestDraft.GuestDraftType.Should().Be(GuestDraftType.Mega);
+    guestDraft.GuestDraftType.Should().Be(DraftType.Mega);
     guestDraft.GameBoard.Should().BeNull();
   }
 
@@ -58,13 +60,16 @@ public class GuestDraftChangeTypeTests : GuestDraftsBaseTest
     // Arrange -- one position carrying all three bonus flags, assigned to a
     // participant while the draft is still Created (AssignParticipantToPosition
     // has no status restriction).
-    var guestDraft = CreateGuestDraft(GuestDraftType.MiniMega);
+    var guestDraft = CreateGuestDraft(DraftType.MiniMega);
     var participant = AddParticipant(guestDraft, isOwner: true);
 
-    List<(string Name, IReadOnlyList<int> Picks, bool HasBonusVeto, bool HasBonusVetoOverride, bool HasBonusFungibleToken)> positions =
-    [
-      ("A", [1], true, true, true),
-    ];
+    List<(
+      string Name,
+      IReadOnlyList<int> Picks,
+      bool HasBonusVeto,
+      bool HasBonusVetoOverride,
+      bool HasBonusFungibleToken
+    )> positions = [("A", [1], true, true, true)];
     guestDraft.SetCustomPositions(positions, GeneratePositionPublicId);
     var position = guestDraft.GameBoard!.Positions.Single();
     guestDraft.AssignParticipantToPosition(position, participant.Id.Value);
@@ -77,7 +82,7 @@ public class GuestDraftChangeTypeTests : GuestDraftsBaseTest
     var vetoesUsedBefore = participant.VetoesUsed;
 
     // Act
-    var result = guestDraft.ChangeType(GuestDraftType.Super);
+    var result = guestDraft.ChangeType(DraftType.Super);
 
     // Assert -- awards tied to the discarded board's assignments are revoked
     result.IsSuccess.Should().BeTrue();
@@ -94,7 +99,7 @@ public class GuestDraftChangeTypeTests : GuestDraftsBaseTest
   public void ChangeType_ShouldNotAffectParticipants_OnlyTheirPositionAssignments()
   {
     // Arrange
-    var guestDraft = CreateGuestDraft(GuestDraftType.Standard);
+    var guestDraft = CreateGuestDraft(DraftType.Standard);
     var owner = AddParticipant(guestDraft, isOwner: true);
     var other = AddParticipant(guestDraft);
     guestDraft.UseFixedBoardLayout(GeneratePositionPublicId);
@@ -103,7 +108,7 @@ public class GuestDraftChangeTypeTests : GuestDraftsBaseTest
     guestDraft.AssignParticipantToPosition(positions[1], other.Id.Value);
 
     // Act
-    var result = guestDraft.ChangeType(GuestDraftType.Mega);
+    var result = guestDraft.ChangeType(DraftType.Mega);
 
     // Assert -- participants themselves survive; only assignments (the whole board) go
     result.IsSuccess.Should().BeTrue();

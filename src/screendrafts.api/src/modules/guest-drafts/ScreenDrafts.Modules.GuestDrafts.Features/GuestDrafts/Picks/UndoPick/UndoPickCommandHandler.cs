@@ -1,11 +1,14 @@
-﻿namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.Picks.UndoPick;
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Errors;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Repositories;
+
+namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.Picks.UndoPick;
 
 internal sealed class UndoPickCommandHandler(
-  IGuestDraftRepository guestDraftRepository,
+  IDraftRepository guestDraftRepository,
   IUsersApi usersApi
 ) : ICommandHandler<UndoPickCommand>
 {
-  private readonly IGuestDraftRepository _guestDraftRepository = guestDraftRepository;
+  private readonly IDraftRepository _guestDraftRepository = guestDraftRepository;
   private readonly IUsersApi _usersApi = usersApi;
 
   public async Task<Result> Handle(UndoPickCommand request, CancellationToken cancellationToken)
@@ -17,7 +20,7 @@ internal sealed class UndoPickCommandHandler(
 
     if (guestDraft is null)
     {
-      return Result.Failure(GuestDraftErrors.NotFound(request.GuestDraftPublicId));
+      return Result.Failure(DraftErrors.NotFound(request.GuestDraftPublicId));
     }
 
     var caller = await _usersApi.GetUserByPublicId(request.CallerUserPublicId, cancellationToken);
@@ -29,7 +32,7 @@ internal sealed class UndoPickCommandHandler(
 
     if (caller.UserId != guestDraft.OwnerUserId)
     {
-      return Result.Failure(GuestDraftErrors.OnlyOwnerCanPerformThisAction);
+      return Result.Failure(DraftErrors.OnlyOwnerCanPerformThisAction);
     }
 
     // GuestDraft.UndoPick takes playOrder directly rather than a resolved

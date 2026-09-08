@@ -1,8 +1,10 @@
-﻿namespace ScreenDrafts.Modules.GuestDrafts.Infrastructure.GuestDrafters;
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafters;
 
-internal sealed class GuestDrafterConfiguration : IEntityTypeConfiguration<GuestDrafter>
+namespace ScreenDrafts.Modules.GuestDrafts.Infrastructure.GuestDrafters;
+
+internal sealed class GuestDrafterConfiguration : IEntityTypeConfiguration<Drafter>
 {
-  public void Configure(EntityTypeBuilder<GuestDrafter> builder)
+  public void Configure(EntityTypeBuilder<Drafter> builder)
   {
     builder.ToTable(Tables.GuestDrafters);
 

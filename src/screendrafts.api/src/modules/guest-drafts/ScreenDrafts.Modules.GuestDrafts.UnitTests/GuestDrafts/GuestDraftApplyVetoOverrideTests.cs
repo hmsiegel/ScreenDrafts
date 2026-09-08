@@ -1,3 +1,9 @@
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Entities;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Enums;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Errors;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.ValueObjects;
+
 namespace ScreenDrafts.Modules.GuestDrafts.UnitTests.GuestDrafts;
 
 public class GuestDraftApplyVetoOverrideTests : GuestDraftsBaseTest
@@ -6,29 +12,29 @@ public class GuestDraftApplyVetoOverrideTests : GuestDraftsBaseTest
   public void ApplyVetoOverride_ShouldReturnFailure_ForStandardDraftType()
   {
     // Arrange -- Standard blocks overrides outright, before anything else is checked
-    var guestDraft = CreateGuestDraft(GuestDraftType.Standard);
+    var guestDraft = CreateGuestDraft(DraftType.Standard);
 
     // Act
-    var result = guestDraft.ApplyVetoOverride(GuestDraftPickId.CreateUnique(), Guid.NewGuid());
+    var result = guestDraft.ApplyVetoOverride(PickId.CreateUnique(), Guid.NewGuid());
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDraftErrors.VetoOverridesNotAllowedForThisDraftType);
+    result.Errors[0].Should().Be(DraftErrors.VetoOverridesNotAllowedForThisDraftType);
   }
 
   [Fact]
   public void ApplyVetoOverride_ShouldReturnFailure_WhenStatusIsNotInProgress()
   {
     // Arrange
-    var guestDraft = CreateGuestDraft(GuestDraftType.MiniMega);
+    var guestDraft = CreateGuestDraft(DraftType.MiniMega);
     AddParticipant(guestDraft);
 
     // Act
-    var result = guestDraft.ApplyVetoOverride(GuestDraftPickId.CreateUnique(), Guid.NewGuid());
+    var result = guestDraft.ApplyVetoOverride(PickId.CreateUnique(), Guid.NewGuid());
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDraftErrors.DraftNotStarted);
+    result.Errors[0].Should().Be(DraftErrors.DraftNotStarted);
   }
 
   [Fact]
@@ -36,14 +42,14 @@ public class GuestDraftApplyVetoOverrideTests : GuestDraftsBaseTest
   {
     // Arrange
     var (guestDraft, _, _) = CreateInProgressMiniMegaDraft();
-    var missingPickId = GuestDraftPickId.CreateUnique();
+    var missingPickId = PickId.CreateUnique();
 
     // Act
     var result = guestDraft.ApplyVetoOverride(missingPickId, Guid.NewGuid());
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDraftErrors.PickNotFound(missingPickId.Value));
+    result.Errors[0].Should().Be(DraftErrors.PickNotFound(missingPickId.Value));
   }
 
   [Fact]
@@ -51,14 +57,16 @@ public class GuestDraftApplyVetoOverrideTests : GuestDraftsBaseTest
   {
     // Arrange
     var (guestDraft, picker, other) = CreateInProgressMiniMegaDraft();
-    var pickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 1, 1, picker.Id.Value).Value;
+    var pickId = guestDraft
+      .PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 1, 1, picker.Id.Value)
+      .Value;
 
     // Act
     var result = guestDraft.ApplyVetoOverride(pickId, other.Id.Value);
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDraftErrors.VetoNotFound(pickId.Value));
+    result.Errors[0].Should().Be(DraftErrors.VetoNotFound(pickId.Value));
   }
 
   [Fact]
@@ -67,12 +75,18 @@ public class GuestDraftApplyVetoOverrideTests : GuestDraftsBaseTest
     // Arrange -- two participants, each with their own override budget, so the
     // second attempt reaches the "already overridden" check on its own merits
     // rather than tripping the budget check first.
-    var guestDraft = CreateGuestDraft(GuestDraftType.MiniMega);
+    var guestDraft = CreateGuestDraft(DraftType.MiniMega);
     var picker = AddParticipant(guestDraft, isOwner: true);
     var firstOverrider = AddParticipant(guestDraft);
     var secondOverrider = AddParticipant(guestDraft);
 
-    List<(string Name, IReadOnlyList<int> Picks, bool HasBonusVeto, bool HasBonusVetoOverride, bool HasBonusFungibleToken)> positions =
+    List<(
+      string Name,
+      IReadOnlyList<int> Picks,
+      bool HasBonusVeto,
+      bool HasBonusVetoOverride,
+      bool HasBonusFungibleToken
+    )> positions =
     [
       ("A", [1], false, false, false),
       ("B", [2], false, true, false),
@@ -80,12 +94,23 @@ public class GuestDraftApplyVetoOverrideTests : GuestDraftsBaseTest
     ];
     guestDraft.SetCustomPositions(positions, GeneratePositionPublicId);
     var boardPositions = guestDraft.GameBoard!.Positions.ToList();
-    guestDraft.AssignParticipantToPosition(boardPositions.Single(p => p.Name == "A"), picker.Id.Value);
-    guestDraft.AssignParticipantToPosition(boardPositions.Single(p => p.Name == "B"), firstOverrider.Id.Value);
-    guestDraft.AssignParticipantToPosition(boardPositions.Single(p => p.Name == "C"), secondOverrider.Id.Value);
+    guestDraft.AssignParticipantToPosition(
+      boardPositions.Single(p => p.Name == "A"),
+      picker.Id.Value
+    );
+    guestDraft.AssignParticipantToPosition(
+      boardPositions.Single(p => p.Name == "B"),
+      firstOverrider.Id.Value
+    );
+    guestDraft.AssignParticipantToPosition(
+      boardPositions.Single(p => p.Name == "C"),
+      secondOverrider.Id.Value
+    );
     guestDraft.Start();
 
-    var pickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 1, 1, picker.Id.Value).Value;
+    var pickId = guestDraft
+      .PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 1, 1, picker.Id.Value)
+      .Value;
     guestDraft.ApplyVeto(pickId, firstOverrider.Id.Value);
     guestDraft.ApplyVetoOverride(pickId, firstOverrider.Id.Value);
 
@@ -94,7 +119,7 @@ public class GuestDraftApplyVetoOverrideTests : GuestDraftsBaseTest
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDraftErrors.VetoOverrideAlreadyUsed);
+    result.Errors[0].Should().Be(DraftErrors.VetoOverrideAlreadyUsed);
   }
 
   [Fact]
@@ -102,7 +127,9 @@ public class GuestDraftApplyVetoOverrideTests : GuestDraftsBaseTest
   {
     // Arrange
     var (guestDraft, picker, other) = CreateInProgressMiniMegaDraft();
-    var pickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 1, 1, picker.Id.Value).Value;
+    var pickId = guestDraft
+      .PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 1, 1, picker.Id.Value)
+      .Value;
     guestDraft.ApplyVeto(pickId, other.Id.Value);
 
     // Act
@@ -110,7 +137,7 @@ public class GuestDraftApplyVetoOverrideTests : GuestDraftsBaseTest
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDraftErrors.CannotOverrideOwnPick);
+    result.Errors[0].Should().Be(DraftErrors.CannotOverrideOwnPick);
   }
 
   [Fact]
@@ -118,7 +145,9 @@ public class GuestDraftApplyVetoOverrideTests : GuestDraftsBaseTest
   {
     // Arrange -- "other" is not awarded any override budget
     var (guestDraft, picker, other) = CreateInProgressMiniMegaDraft();
-    var pickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 1, 1, picker.Id.Value).Value;
+    var pickId = guestDraft
+      .PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 1, 1, picker.Id.Value)
+      .Value;
     guestDraft.ApplyVeto(pickId, other.Id.Value);
 
     // Act
@@ -126,7 +155,7 @@ public class GuestDraftApplyVetoOverrideTests : GuestDraftsBaseTest
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDraftErrors.NoRemainingVetoOverrides);
+    result.Errors[0].Should().Be(DraftErrors.NoRemainingVetoOverrides);
   }
 
   [Fact]
@@ -134,7 +163,9 @@ public class GuestDraftApplyVetoOverrideTests : GuestDraftsBaseTest
   {
     // Arrange
     var (guestDraft, picker, other) = CreateInProgressMiniMegaDraft(otherHasBonusOverride: true);
-    var pickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 1, 1, picker.Id.Value).Value;
+    var pickId = guestDraft
+      .PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 1, 1, picker.Id.Value)
+      .Value;
     guestDraft.ApplyVeto(pickId, other.Id.Value);
 
     // Act
@@ -154,13 +185,18 @@ public class GuestDraftApplyVetoOverrideTests : GuestDraftsBaseTest
     // veto pool) is the only thing left to pay for the second override with.
     var (guestDraft, picker, other) = CreateInProgressMiniMegaDraft(
       otherHasBonusOverride: true,
-      otherHasBonusFungibleToken: true);
+      otherHasBonusFungibleToken: true
+    );
 
-    var firstPickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 1, 1, picker.Id.Value).Value;
+    var firstPickId = guestDraft
+      .PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 1, 1, picker.Id.Value)
+      .Value;
     guestDraft.ApplyVeto(firstPickId, other.Id.Value);
     guestDraft.ApplyVetoOverride(firstPickId, other.Id.Value);
 
-    var secondPickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 2, 2, picker.Id.Value).Value;
+    var secondPickId = guestDraft
+      .PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 2, 2, picker.Id.Value)
+      .Value;
     guestDraft.ApplyVeto(secondPickId, picker.Id.Value);
 
     // Act
@@ -168,9 +204,14 @@ public class GuestDraftApplyVetoOverrideTests : GuestDraftsBaseTest
 
     // Assert
     result.IsSuccess.Should().BeTrue();
-    other.VetoOverridesUsed.Should().Be(1, "the normal override pool was already exhausted and must stay untouched");
+    other
+      .VetoOverridesUsed.Should()
+      .Be(1, "the normal override pool was already exhausted and must stay untouched");
     other.FungibleTokensUsed.Should().Be(1);
-    guestDraft.Picks.Single(p => p.Id == secondPickId).CurrentVeto!.VetoOverride!.SpentFromFungiblePool.Should().BeTrue();
+    guestDraft
+      .Picks.Single(p => p.Id == secondPickId)
+      .CurrentVeto!.VetoOverride!.SpentFromFungiblePool.Should()
+      .BeTrue();
   }
 
   /// <summary>
@@ -178,15 +219,26 @@ public class GuestDraftApplyVetoOverrideTests : GuestDraftsBaseTest
   /// holds position "B" ([2]), optionally with bonus veto-override / fungible-token
   /// awards, started and ready for picks.
   /// </summary>
-  private static (GuestDraft GuestDraft, GuestDraftParticipant Picker, GuestDraftParticipant Other) CreateInProgressMiniMegaDraft(
+  private static (
+    Draft GuestDraft,
+    DraftParticipant Picker,
+    DraftParticipant Other
+  ) CreateInProgressMiniMegaDraft(
     bool otherHasBonusOverride = false,
-    bool otherHasBonusFungibleToken = false)
+    bool otherHasBonusFungibleToken = false
+  )
   {
-    var guestDraft = CreateGuestDraft(GuestDraftType.MiniMega);
+    var guestDraft = CreateGuestDraft(DraftType.MiniMega);
     var picker = AddParticipant(guestDraft, isOwner: true);
     var other = AddParticipant(guestDraft);
 
-    List<(string Name, IReadOnlyList<int> Picks, bool HasBonusVeto, bool HasBonusVetoOverride, bool HasBonusFungibleToken)> positions =
+    List<(
+      string Name,
+      IReadOnlyList<int> Picks,
+      bool HasBonusVeto,
+      bool HasBonusVetoOverride,
+      bool HasBonusFungibleToken
+    )> positions =
     [
       ("A", [1], false, false, false),
       ("B", [2], false, otherHasBonusOverride, otherHasBonusFungibleToken),
@@ -194,8 +246,14 @@ public class GuestDraftApplyVetoOverrideTests : GuestDraftsBaseTest
     guestDraft.SetCustomPositions(positions, GeneratePositionPublicId);
 
     var boardPositions = guestDraft.GameBoard!.Positions.ToList();
-    guestDraft.AssignParticipantToPosition(boardPositions.Single(p => p.Name == "A"), picker.Id.Value);
-    guestDraft.AssignParticipantToPosition(boardPositions.Single(p => p.Name == "B"), other.Id.Value);
+    guestDraft.AssignParticipantToPosition(
+      boardPositions.Single(p => p.Name == "A"),
+      picker.Id.Value
+    );
+    guestDraft.AssignParticipantToPosition(
+      boardPositions.Single(p => p.Name == "B"),
+      other.Id.Value
+    );
     guestDraft.Start();
 
     return (guestDraft, picker, other);

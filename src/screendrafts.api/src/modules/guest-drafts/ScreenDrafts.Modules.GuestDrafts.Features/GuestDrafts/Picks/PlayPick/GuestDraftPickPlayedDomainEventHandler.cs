@@ -1,16 +1,18 @@
 ﻿// Suggested location: Features/GuestDrafts/PlayPick/GuestDraftPickPlayedDomainEventHandler.cs
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.DomainEvents;
+
 namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.Picks.PlayPick;
 
 internal sealed class GuestDraftPickPlayedDomainEventHandler(
   IEventBus eventBus,
   IDateTimeProvider dateTimeProvider
-) : DomainEventHandler<GuestDraftPickPlayedDomainEvent>
+) : DomainEventHandler<PickPlayedDomainEvent>
 {
   private readonly IEventBus _eventBus = eventBus;
   private readonly IDateTimeProvider _dateTimeProvider = dateTimeProvider;
 
   public override async Task Handle(
-    GuestDraftPickPlayedDomainEvent domainEvent,
+    PickPlayedDomainEvent domainEvent,
     CancellationToken cancellationToken = default
   )
   {

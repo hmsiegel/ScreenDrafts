@@ -1,9 +1,13 @@
-﻿namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDraftMovies.AddGuestDraftMovie;
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Entities;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Errors;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Repositories;
 
-internal sealed class AddGuestDraftMovieCommandHandler(IGuestDraftMovieRepository movieRepository)
+namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDraftMovies.AddGuestDraftMovie;
+
+internal sealed class AddGuestDraftMovieCommandHandler(IMovieRepository movieRepository)
   : ICommandHandler<AddGuestDraftMovieCommand, string>
 {
-  private readonly IGuestDraftMovieRepository _movieRepository = movieRepository;
+  private readonly IMovieRepository _movieRepository = movieRepository;
 
   public async Task<Result<string>> Handle(
     AddGuestDraftMovieCommand request,
@@ -18,10 +22,10 @@ internal sealed class AddGuestDraftMovieCommandHandler(IGuestDraftMovieRepositor
       // redelivered (outbox/inbox at-least-once), so this is an expected,
       // non-error outcome, not a real failure. Mirrors AddMovieCommandHandler's
       // MovieAlreadyExists handling, which the consumer logs and swallows.
-      return Result.Failure<string>(GuestDraftMovieErrors.MovieAlreadyExists(request.PublicId));
+      return Result.Failure<string>(MovieErrors.MovieAlreadyExists(request.PublicId));
     }
 
-    var result = GuestDraftMovie.Create(
+    var result = Movie.Create(
       movieTitle: request.Title,
       publicId: request.PublicId,
       id: request.Id,

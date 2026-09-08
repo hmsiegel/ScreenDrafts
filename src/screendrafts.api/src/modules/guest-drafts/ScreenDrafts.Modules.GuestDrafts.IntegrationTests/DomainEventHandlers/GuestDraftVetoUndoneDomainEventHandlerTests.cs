@@ -1,7 +1,11 @@
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.DomainEvents;
+
 namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.DomainEventHandlers;
 
 [Collection(nameof(GuestDraftsIntegrationTestCollection))]
-public sealed class GuestDraftVetoUndoneDomainEventHandlerTests(GuestDraftsIntegrationTestWebAppFactory factory)
+public sealed class GuestDraftVetoUndoneDomainEventHandlerTests(
+  GuestDraftsIntegrationTestWebAppFactory factory
+)
 {
   private readonly GuestDraftsIntegrationTestWebAppFactory _factory = factory;
 
@@ -11,7 +15,7 @@ public sealed class GuestDraftVetoUndoneDomainEventHandlerTests(GuestDraftsInteg
     // Arrange -- "fully populated" here includes the nullable refund/token fields,
     // since GuestDraftVetoUndoneDomainEvent's normal (non-edge-case) path always has
     // a resolvable issuer -- only FindParticipant returning null makes them null.
-    var domainEvent = new GuestDraftVetoUndoneDomainEvent(
+    var domainEvent = new VetoUndoneDomainEvent(
       guestDraftId: Guid.NewGuid(),
       guestDraftPublicId: $"gd_{TestFakerProvider.Faker.Random.AlphaNumeric(15)}",
       pickId: Guid.NewGuid(),
@@ -23,14 +27,21 @@ public sealed class GuestDraftVetoUndoneDomainEventHandlerTests(GuestDraftsInteg
     );
     var fixedUtcNow = new DateTime(2026, 1, 1, 12, 0, 0, DateTimeKind.Utc);
     var eventBus = new CapturingEventBus();
-    var handler = new GuestDraftVetoUndoneDomainEventHandler(eventBus, new FakeDateTimeProvider(fixedUtcNow));
+    var handler = new GuestDraftVetoUndoneDomainEventHandler(
+      eventBus,
+      new FakeDateTimeProvider(fixedUtcNow)
+    );
 
     // Act
     await handler.Handle(domainEvent, CancellationToken.None);
 
     // Assert
     eventBus.CapturedEvents.Should().ContainSingle();
-    var published = eventBus.CapturedEvents.Single().Should().BeOfType<GuestDraftVetoUndoneIntegrationEvent>().Subject;
+    var published = eventBus
+      .CapturedEvents.Single()
+      .Should()
+      .BeOfType<GuestDraftVetoUndoneIntegrationEvent>()
+      .Subject;
 
     published.Id.Should().NotBe(Guid.Empty);
     published.OccurredOnUtc.Should().Be(fixedUtcNow);
@@ -50,7 +61,7 @@ public sealed class GuestDraftVetoUndoneDomainEventHandlerTests(GuestDraftsInteg
     // Arrange -- the domain comment on GuestDraftVetoUndoneDomainEvent calls this
     // out explicitly: a null pair means "no token update available," not zero, so
     // the handler must pass the nulls through rather than coercing them.
-    var domainEvent = new GuestDraftVetoUndoneDomainEvent(
+    var domainEvent = new VetoUndoneDomainEvent(
       guestDraftId: Guid.NewGuid(),
       guestDraftPublicId: $"gd_{TestFakerProvider.Faker.Random.AlphaNumeric(15)}",
       pickId: Guid.NewGuid(),
@@ -61,13 +72,20 @@ public sealed class GuestDraftVetoUndoneDomainEventHandlerTests(GuestDraftsInteg
       overrideTokensRemaining: null
     );
     var eventBus = new CapturingEventBus();
-    var handler = new GuestDraftVetoUndoneDomainEventHandler(eventBus, new FakeDateTimeProvider(DateTime.UtcNow));
+    var handler = new GuestDraftVetoUndoneDomainEventHandler(
+      eventBus,
+      new FakeDateTimeProvider(DateTime.UtcNow)
+    );
 
     // Act
     await handler.Handle(domainEvent, CancellationToken.None);
 
     // Assert
-    var published = eventBus.CapturedEvents.Single().Should().BeOfType<GuestDraftVetoUndoneIntegrationEvent>().Subject;
+    var published = eventBus
+      .CapturedEvents.Single()
+      .Should()
+      .BeOfType<GuestDraftVetoUndoneIntegrationEvent>()
+      .Subject;
     published.RefundedToParticipantId.Should().BeNull();
     published.VetoTokensRemaining.Should().BeNull();
     published.OverrideTokensRemaining.Should().BeNull();
@@ -77,7 +95,7 @@ public sealed class GuestDraftVetoUndoneDomainEventHandlerTests(GuestDraftsInteg
   public async Task Handle_ShouldGenerateAFreshIdOnEachCallAsync()
   {
     // Arrange
-    var domainEvent = new GuestDraftVetoUndoneDomainEvent(
+    var domainEvent = new VetoUndoneDomainEvent(
       guestDraftId: Guid.NewGuid(),
       guestDraftPublicId: $"gd_{TestFakerProvider.Faker.Random.AlphaNumeric(15)}",
       pickId: Guid.NewGuid(),
@@ -88,7 +106,10 @@ public sealed class GuestDraftVetoUndoneDomainEventHandlerTests(GuestDraftsInteg
       overrideTokensRemaining: 0
     );
     var eventBus = new CapturingEventBus();
-    var handler = new GuestDraftVetoUndoneDomainEventHandler(eventBus, new FakeDateTimeProvider(DateTime.UtcNow));
+    var handler = new GuestDraftVetoUndoneDomainEventHandler(
+      eventBus,
+      new FakeDateTimeProvider(DateTime.UtcNow)
+    );
 
     // Act
     await handler.Handle(domainEvent, CancellationToken.None);
@@ -108,6 +129,6 @@ public sealed class GuestDraftVetoUndoneDomainEventHandlerTests(GuestDraftsInteg
     var handler = scope.ServiceProvider.GetService(typeof(GuestDraftVetoUndoneDomainEventHandler));
 
     handler.Should().NotBeNull();
-    handler.Should().BeAssignableTo<IDomainEventHandler<GuestDraftVetoUndoneDomainEvent>>();
+    handler.Should().BeAssignableTo<IDomainEventHandler<VetoUndoneDomainEvent>>();
   }
 }

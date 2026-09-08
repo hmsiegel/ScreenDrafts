@@ -1,13 +1,18 @@
-﻿namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.Picks.RevealPick;
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafters;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Enums;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Errors;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Repositories;
+
+namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.Picks.RevealPick;
 
 internal sealed class RevealPickCommandHandler(
-  IGuestDraftRepository guestDraftRepository,
-  IGuestDrafterRepository guestDrafterRepository,
+  IDraftRepository guestDraftRepository,
+  IDrafterRepository guestDrafterRepository,
   IUsersApi usersApi
 ) : ICommandHandler<RevealPickCommand>
 {
-  private readonly IGuestDraftRepository _guestDraftRepository = guestDraftRepository;
-  private readonly IGuestDrafterRepository _guestDrafterRepository = guestDrafterRepository;
+  private readonly IDraftRepository _guestDraftRepository = guestDraftRepository;
+  private readonly IDrafterRepository _guestDrafterRepository = guestDrafterRepository;
   private readonly IUsersApi _usersApi = usersApi;
 
   public async Task<Result> Handle(RevealPickCommand request, CancellationToken cancellationToken)
@@ -19,7 +24,7 @@ internal sealed class RevealPickCommandHandler(
 
     if (guestDraft is null)
     {
-      return Result.Failure(GuestDraftErrors.NotFound(request.GuestDraftPublicId));
+      return Result.Failure(DraftErrors.NotFound(request.GuestDraftPublicId));
     }
 
     var caller = await _usersApi.GetUserByPublicId(request.CallerUserPublicId, cancellationToken);
@@ -36,35 +41,35 @@ internal sealed class RevealPickCommandHandler(
 
     if (callerDrafter is null)
     {
-      return Result.Failure(GuestDrafterErrors.NotFoundForUser(caller.UserId));
+      return Result.Failure(DrafterErrors.NotFoundForUser(caller.UserId));
     }
 
-    var revealer = guestDraft.FindByParticipantRef(GuestParticipant.From(callerDrafter.Id));
+    var revealer = guestDraft.FindByParticipantRef(Participant.From(callerDrafter.Id));
 
     if (revealer is null)
     {
-      return Result.Failure(GuestDraftErrors.CallerNotAParticipant);
+      return Result.Failure(DraftErrors.CallerNotAParticipant);
     }
 
     // GuestDraft.RevealPick checks Status != InProgress before it ever looks for
     // the pick -- same handler-ordering fix as UndoVeto's.
-    if (guestDraft.GuestDraftStatus != GuestDraftStatus.InProgress)
+    if (guestDraft.GuestDraftStatus != DraftStatus.InProgress)
     {
-      return Result.Failure(GuestDraftErrors.DraftNotStarted);
+      return Result.Failure(DraftErrors.DraftNotStarted);
     }
 
     var pick = guestDraft.Picks.FirstOrDefault(p => p.PlayOrder == request.PlayOrder);
 
     if (pick is null)
     {
-      return Result.Failure(GuestDraftErrors.PickNotFoundByPlayOrder(request.PlayOrder));
+      return Result.Failure(DraftErrors.PickNotFoundByPlayOrder(request.PlayOrder));
     }
 
     // Mirrors canonical RevealPickCommandHandler's hostless branch exactly -- every
     // guest draft is hostless, so this check always applies, no primary-host branch.
     if (!pick.IsRevealAuthorized(revealer.Id.Value))
     {
-      return Result.Failure(GuestDraftErrors.NotRevealAuthorized);
+      return Result.Failure(DraftErrors.NotRevealAuthorized);
     }
 
     var result = guestDraft.RevealPick(pick.Id);

@@ -1,16 +1,18 @@
 ﻿// Suggested location: Features/GuestDrafts/UndoVeto/GuestDraftVetoUndoneDomainEventHandler.cs
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.DomainEvents;
+
 namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.Picks.UndoVeto;
 
 internal sealed class GuestDraftVetoUndoneDomainEventHandler(
   IEventBus eventBus,
   IDateTimeProvider dateTimeProvider
-) : DomainEventHandler<GuestDraftVetoUndoneDomainEvent>
+) : DomainEventHandler<VetoUndoneDomainEvent>
 {
   private readonly IEventBus _eventBus = eventBus;
   private readonly IDateTimeProvider _dateTimeProvider = dateTimeProvider;
 
   public override async Task Handle(
-    GuestDraftVetoUndoneDomainEvent domainEvent,
+    VetoUndoneDomainEvent domainEvent,
     CancellationToken cancellationToken = default
   )
   {

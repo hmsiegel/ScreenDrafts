@@ -1,4 +1,5 @@
-﻿using ScreenDrafts.Modules.Movies.IntegrationEvents;
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Enums;
+using ScreenDrafts.Modules.Movies.IntegrationEvents;
 
 namespace ScreenDrafts.Modules.GuestDrafts.Composition;
 
@@ -28,9 +29,9 @@ public static class GuestDraftsModule
 
   private static void AddTypeHandler()
   {
-    SqlMapper.AddTypeHandler(new SmartEnumTypeHandler<GuestDraftStatus>());
-    SqlMapper.AddTypeHandler(new SmartEnumTypeHandler<GuestDraftType>());
-    SqlMapper.AddTypeHandler(new SmartEnumTypeHandler<GuestParticipantKind>());
+    SqlMapper.AddTypeHandler(new SmartEnumTypeHandler<DraftStatus>());
+    SqlMapper.AddTypeHandler(new SmartEnumTypeHandler<DraftType>());
+    SqlMapper.AddTypeHandler(new SmartEnumTypeHandler<ParticipantKind>());
   }
 
   public static IServiceCollection AddGuestDraftsSeeding(

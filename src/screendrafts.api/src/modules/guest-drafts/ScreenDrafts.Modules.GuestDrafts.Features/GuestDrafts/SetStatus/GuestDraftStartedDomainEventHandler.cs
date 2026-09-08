@@ -1,16 +1,18 @@
 ﻿// Suggested location: Features/GuestDrafts/SetGuestDraftStatus/GuestDraftStartedDomainEventHandler.cs
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.DomainEvents;
+
 namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.SetStatus;
 
 internal sealed class GuestDraftStartedDomainEventHandler(
   IEventBus eventBus,
   IDateTimeProvider dateTimeProvider
-) : DomainEventHandler<GuestDraftStartedDomainEvent>
+) : DomainEventHandler<DraftStartedDomainEvent>
 {
   private readonly IEventBus _eventBus = eventBus;
   private readonly IDateTimeProvider _dateTimeProvider = dateTimeProvider;
 
   public override async Task Handle(
-    GuestDraftStartedDomainEvent domainEvent,
+    DraftStartedDomainEvent domainEvent,
     CancellationToken cancellationToken = default
   )
   {
@@ -18,8 +20,8 @@ internal sealed class GuestDraftStartedDomainEventHandler(
       new GuestDraftStartedIntegrationEvent(
         id: Guid.NewGuid(),
         occurredOnUtc: _dateTimeProvider.UtcNow,
-        guestDraftId: domainEvent.GuestDraftId,
-        guestDraftPublicId: domainEvent.GuestDraftPublicId,
+        guestDraftId: domainEvent.DraftId,
+        guestDraftPublicId: domainEvent.DraftPublicId,
         participantCount: domainEvent.ParticipantCount
       ),
       cancellationToken

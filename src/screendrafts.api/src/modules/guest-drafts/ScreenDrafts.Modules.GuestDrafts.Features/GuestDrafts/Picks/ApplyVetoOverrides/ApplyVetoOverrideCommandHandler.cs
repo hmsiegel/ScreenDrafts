@@ -1,13 +1,18 @@
-﻿namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.Picks.ApplyVetoOverrides;
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafters;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Enums;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Errors;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Repositories;
+
+namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.Picks.ApplyVetoOverrides;
 
 internal sealed class ApplyVetoOverrideCommandHandler(
-  IGuestDraftRepository guestDraftRepository,
-  IGuestDrafterRepository guestDrafterRepository,
+  IDraftRepository guestDraftRepository,
+  IDrafterRepository guestDrafterRepository,
   IUsersApi usersApi
 ) : ICommandHandler<ApplyVetoOverrideCommand>
 {
-  private readonly IGuestDraftRepository _guestDraftRepository = guestDraftRepository;
-  private readonly IGuestDrafterRepository _guestDrafterRepository = guestDrafterRepository;
+  private readonly IDraftRepository _guestDraftRepository = guestDraftRepository;
+  private readonly IDrafterRepository _guestDrafterRepository = guestDrafterRepository;
   private readonly IUsersApi _usersApi = usersApi;
 
   public async Task<Result> Handle(
@@ -22,7 +27,7 @@ internal sealed class ApplyVetoOverrideCommandHandler(
 
     if (guestDraft is null)
     {
-      return Result.Failure(GuestDraftErrors.NotFound(request.GuestDraftPublicId));
+      return Result.Failure(DraftErrors.NotFound(request.GuestDraftPublicId));
     }
 
     var caller = await _usersApi.GetUserByPublicId(request.CallerUserPublicId, cancellationToken);
@@ -39,34 +44,34 @@ internal sealed class ApplyVetoOverrideCommandHandler(
 
     if (callerDrafter is null)
     {
-      return Result.Failure(GuestDrafterErrors.NotFoundForUser(caller.UserId));
+      return Result.Failure(DrafterErrors.NotFoundForUser(caller.UserId));
     }
 
-    var by = guestDraft.FindByParticipantRef(GuestParticipant.From(callerDrafter.Id));
+    var by = guestDraft.FindByParticipantRef(Participant.From(callerDrafter.Id));
 
     if (by is null)
     {
-      return Result.Failure(GuestDraftErrors.CallerNotAParticipant);
+      return Result.Failure(DraftErrors.CallerNotAParticipant);
     }
 
     // Type/Status checks happen before the pick lookup, mirroring
     // GuestDraft.ApplyVetoOverride's own precedence -- same reasoning as the
     // handler-ordering fix applied to UndoVeto/RevealPick.
-    if (guestDraft.GuestDraftType == GuestDraftType.Standard)
+    if (guestDraft.GuestDraftType == DraftType.Standard)
     {
-      return Result.Failure(GuestDraftErrors.VetoOverridesNotAllowedForThisDraftType);
+      return Result.Failure(DraftErrors.VetoOverridesNotAllowedForThisDraftType);
     }
 
-    if (guestDraft.GuestDraftStatus != GuestDraftStatus.InProgress)
+    if (guestDraft.GuestDraftStatus != DraftStatus.InProgress)
     {
-      return Result.Failure(GuestDraftErrors.DraftNotStarted);
+      return Result.Failure(DraftErrors.DraftNotStarted);
     }
 
     var pick = guestDraft.Picks.FirstOrDefault(p => p.PlayOrder == request.PlayOrder);
 
     if (pick is null)
     {
-      return Result.Failure(GuestDraftErrors.PickNotFoundByPlayOrder(request.PlayOrder));
+      return Result.Failure(DraftErrors.PickNotFoundByPlayOrder(request.PlayOrder));
     }
 
     var result = guestDraft.ApplyVetoOverride(

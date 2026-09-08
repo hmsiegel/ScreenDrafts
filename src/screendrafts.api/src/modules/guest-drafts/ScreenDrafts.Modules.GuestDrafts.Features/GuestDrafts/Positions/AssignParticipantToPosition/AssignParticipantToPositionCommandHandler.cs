@@ -1,13 +1,17 @@
-﻿namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.Positions.AssignParticipantToPosition;
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafters;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Errors;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Repositories;
+
+namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.Positions.AssignParticipantToPosition;
 
 internal sealed class AssignParticipantToPositionCommandHandler(
-  IGuestDraftRepository guestDraftRepository,
-  IGuestDrafterRepository guestDrafterRepository,
+  IDraftRepository guestDraftRepository,
+  IDrafterRepository guestDrafterRepository,
   IUsersApi usersApi
 ) : ICommandHandler<AssignParticipantToPositionCommand>
 {
-  private readonly IGuestDraftRepository _guestDraftRepository = guestDraftRepository;
-  private readonly IGuestDrafterRepository _guestDrafterRepository = guestDrafterRepository;
+  private readonly IDraftRepository _guestDraftRepository = guestDraftRepository;
+  private readonly IDrafterRepository _guestDrafterRepository = guestDrafterRepository;
   private readonly IUsersApi _usersApi = usersApi;
 
   public async Task<Result> Handle(
@@ -22,7 +26,7 @@ internal sealed class AssignParticipantToPositionCommandHandler(
 
     if (guestDraft is null)
     {
-      return Result.Failure(GuestDraftErrors.NotFound(request.GuestDraftPublicId));
+      return Result.Failure(DraftErrors.NotFound(request.GuestDraftPublicId));
     }
 
     var caller = await _usersApi.GetUserByPublicId(request.CallerUserPublicId, cancellationToken);
@@ -34,7 +38,7 @@ internal sealed class AssignParticipantToPositionCommandHandler(
 
     if (caller.UserId != guestDraft.OwnerUserId)
     {
-      return Result.Failure(GuestDraftErrors.OnlyOwnerCanPerformThisAction);
+      return Result.Failure(DraftErrors.OnlyOwnerCanPerformThisAction);
     }
 
     var position = guestDraft.GameBoard?.Positions.FirstOrDefault(p =>
@@ -43,7 +47,7 @@ internal sealed class AssignParticipantToPositionCommandHandler(
 
     if (position is null)
     {
-      return Result.Failure(GuestDraftErrors.PositionDoesNotBelongToThisBoard);
+      return Result.Failure(DraftErrors.PositionDoesNotBelongToThisBoard);
     }
 
     var guestDrafter = await _guestDrafterRepository.GetByPublicIdAsync(
@@ -53,16 +57,16 @@ internal sealed class AssignParticipantToPositionCommandHandler(
 
     if (guestDrafter is null)
     {
-      return Result.Failure(GuestDrafterErrors.NotFound(request.GuestDrafterPublicId));
+      return Result.Failure(DrafterErrors.NotFound(request.GuestDrafterPublicId));
     }
 
     // Must already be an added participant of THIS draft (via AddParticipant)
     // -- being a registered GuestDrafter isn't enough on its own.
-    var participant = guestDraft.FindByParticipantRef(GuestParticipant.From(guestDrafter.Id));
+    var participant = guestDraft.FindByParticipantRef(Participant.From(guestDrafter.Id));
 
     if (participant is null)
     {
-      return Result.Failure(GuestDraftErrors.ParticipantNotFound(request.GuestDrafterPublicId));
+      return Result.Failure(DraftErrors.ParticipantNotFound(request.GuestDrafterPublicId));
     }
 
     var result = guestDraft.AssignParticipantToPosition(position, participant.Id.Value);

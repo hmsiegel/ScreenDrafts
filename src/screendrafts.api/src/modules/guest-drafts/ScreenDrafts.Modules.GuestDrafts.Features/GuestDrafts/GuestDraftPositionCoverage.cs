@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts;
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Errors;
+
+namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts;
 
 /// <summary>
 /// Validates that a set of owner-supplied board positions exactly covers
@@ -24,14 +26,14 @@ internal static class GuestDraftPositionCoverage
 
     if (positionPickSlots.Count == 0)
     {
-      return Result.Failure(GuestDraftErrors.PositionsAreRequiredForThisDraftType);
+      return Result.Failure(DraftErrors.PositionsAreRequiredForThisDraftType);
     }
 
     var allSlots = positionPickSlots.SelectMany(picks => picks).ToList();
     var expectedSlots = Enumerable.Range(1, numberOfPicks).ToHashSet();
 
     return allSlots.Count != allSlots.Distinct().Count() || !expectedSlots.SetEquals(allSlots)
-      ? Result.Failure(GuestDraftErrors.PositionsMustExactlyCoverTheNumberOfPicks)
+      ? Result.Failure(DraftErrors.PositionsMustExactlyCoverTheNumberOfPicks)
       : Result.Success();
   }
 }

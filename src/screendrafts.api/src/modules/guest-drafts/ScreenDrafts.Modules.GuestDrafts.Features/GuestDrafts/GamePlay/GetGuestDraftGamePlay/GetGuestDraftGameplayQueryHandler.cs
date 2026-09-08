@@ -1,4 +1,7 @@
-﻿namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.GamePlay.GetGuestDraftGamePlay;
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Enums;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Errors;
+
+namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.GamePlay.GetGuestDraftGamePlay;
 
 // ── Query Handler ─────────────────────────────────────────────────────────
 
@@ -53,7 +56,7 @@ internal sealed class GetGuestDraftGameplayQueryHandler(
     if (header is null)
     {
       return Result.Failure<GetGuestDraftGameplayResponse>(
-        GuestDraftErrors.NotFound(request.GuestDraftPublicId)
+        DraftErrors.NotFound(request.GuestDraftPublicId)
       );
     }
 
@@ -238,7 +241,7 @@ internal sealed class GetGuestDraftGameplayQueryHandler(
     if (!isOwner && callerParticipant is null)
     {
       return Result.Failure<GetGuestDraftGameplayResponse>(
-        GuestDraftErrors.NotFound(request.GuestDraftPublicId)
+        DraftErrors.NotFound(request.GuestDraftPublicId)
       );
     }
 
@@ -256,8 +259,8 @@ internal sealed class GetGuestDraftGameplayQueryHandler(
       {
         GuestDraftPublicId = header.GuestDraftPublicId,
         Title = header.Title,
-        Type = GuestDraftType.FromValue(header.Type).Name,
-        Status = GuestDraftStatus.FromValue(header.Status).Name,
+        Type = DraftType.FromValue(header.Type).Name,
+        Status = DraftStatus.FromValue(header.Status).Name,
         ShareToken = isOwner ? header.ShareToken : null,
         CallerContext = callerContext,
         Positions =

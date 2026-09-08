@@ -1,8 +1,10 @@
-﻿namespace ScreenDrafts.Modules.GuestDrafts.Infrastructure.GuestDrafts;
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Entities;
 
-internal sealed class GuestDraftPickConfiguration : IEntityTypeConfiguration<GuestDraftPick>
+namespace ScreenDrafts.Modules.GuestDrafts.Infrastructure.GuestDrafts;
+
+internal sealed class GuestDraftPickConfiguration : IEntityTypeConfiguration<Pick>
 {
-  public void Configure(EntityTypeBuilder<GuestDraftPick> builder)
+  public void Configure(EntityTypeBuilder<Pick> builder)
   {
     builder.ToTable(Tables.GuestDraftPicks);
 
@@ -40,7 +42,7 @@ internal sealed class GuestDraftPickConfiguration : IEntityTypeConfiguration<Gue
     builder.Property(p => p.MovieId).IsRequired();
 
     builder
-      .HasOne<GuestDraftMovie>()
+      .HasOne<Movie>()
       .WithMany()
       .HasForeignKey(p => p.MovieId)
       .OnDelete(DeleteBehavior.Restrict);
@@ -84,7 +86,7 @@ internal sealed class GuestDraftPickConfiguration : IEntityTypeConfiguration<Gue
     builder
       .HasOne(p => p.CommissionerOverride)
       .WithOne(co => co.Pick)
-      .HasForeignKey<GuestDraftCommissionerOverride>(co => co.PickId)
+      .HasForeignKey<CommissionerOverride>(co => co.PickId)
       .OnDelete(DeleteBehavior.Cascade);
 
     builder.Property(p => p.RevealedAt);

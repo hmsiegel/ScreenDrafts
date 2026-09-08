@@ -1,7 +1,11 @@
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.DomainEvents;
+
 namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.DomainEventHandlers;
 
 [Collection(nameof(GuestDraftsIntegrationTestCollection))]
-public sealed class GuestDraftCommissionerOverrideAppliedDomainEventHandlerTests(GuestDraftsIntegrationTestWebAppFactory factory)
+public sealed class GuestDraftCommissionerOverrideAppliedDomainEventHandlerTests(
+  GuestDraftsIntegrationTestWebAppFactory factory
+)
 {
   private readonly GuestDraftsIntegrationTestWebAppFactory _factory = factory;
 
@@ -9,7 +13,7 @@ public sealed class GuestDraftCommissionerOverrideAppliedDomainEventHandlerTests
   public async Task Handle_ShouldPublishExactlyOneCorrectlyMappedGuestDraftCommissionerOverrideAppliedIntegrationEventAsync()
   {
     // Arrange
-    var domainEvent = new GuestDraftCommissionerOverrideAppliedDomainEvent(
+    var domainEvent = new CommissionerOverrideAppliedDomainEvent(
       guestDraftId: Guid.NewGuid(),
       guestDraftPublicId: $"gd_{TestFakerProvider.Faker.Random.AlphaNumeric(15)}",
       pickId: Guid.NewGuid(),
@@ -22,14 +26,21 @@ public sealed class GuestDraftCommissionerOverrideAppliedDomainEventHandlerTests
     );
     var fixedUtcNow = new DateTime(2026, 1, 1, 12, 0, 0, DateTimeKind.Utc);
     var eventBus = new CapturingEventBus();
-    var handler = new GuestDraftCommissionerOverrideAppliedDomainEventHandler(eventBus, new FakeDateTimeProvider(fixedUtcNow));
+    var handler = new GuestDraftCommissionerOverrideAppliedDomainEventHandler(
+      eventBus,
+      new FakeDateTimeProvider(fixedUtcNow)
+    );
 
     // Act
     await handler.Handle(domainEvent, CancellationToken.None);
 
     // Assert
     eventBus.CapturedEvents.Should().ContainSingle();
-    var published = eventBus.CapturedEvents.Single().Should().BeOfType<GuestDraftCommissionerOverrideAppliedIntegrationEvent>().Subject;
+    var published = eventBus
+      .CapturedEvents.Single()
+      .Should()
+      .BeOfType<GuestDraftCommissionerOverrideAppliedIntegrationEvent>()
+      .Subject;
 
     published.Id.Should().NotBe(Guid.Empty);
     published.OccurredOnUtc.Should().Be(fixedUtcNow);
@@ -48,7 +59,7 @@ public sealed class GuestDraftCommissionerOverrideAppliedDomainEventHandlerTests
   public async Task Handle_ShouldGenerateAFreshIdOnEachCallAsync()
   {
     // Arrange
-    var domainEvent = new GuestDraftCommissionerOverrideAppliedDomainEvent(
+    var domainEvent = new CommissionerOverrideAppliedDomainEvent(
       guestDraftId: Guid.NewGuid(),
       guestDraftPublicId: $"gd_{TestFakerProvider.Faker.Random.AlphaNumeric(15)}",
       pickId: Guid.NewGuid(),
@@ -60,7 +71,10 @@ public sealed class GuestDraftCommissionerOverrideAppliedDomainEventHandlerTests
       overrideTokensRemaining: 0
     );
     var eventBus = new CapturingEventBus();
-    var handler = new GuestDraftCommissionerOverrideAppliedDomainEventHandler(eventBus, new FakeDateTimeProvider(DateTime.UtcNow));
+    var handler = new GuestDraftCommissionerOverrideAppliedDomainEventHandler(
+      eventBus,
+      new FakeDateTimeProvider(DateTime.UtcNow)
+    );
 
     // Act
     await handler.Handle(domainEvent, CancellationToken.None);
@@ -77,9 +91,11 @@ public sealed class GuestDraftCommissionerOverrideAppliedDomainEventHandlerTests
   {
     // Assert
     using var scope = _factory.Services.CreateScope();
-    var handler = scope.ServiceProvider.GetService(typeof(GuestDraftCommissionerOverrideAppliedDomainEventHandler));
+    var handler = scope.ServiceProvider.GetService(
+      typeof(GuestDraftCommissionerOverrideAppliedDomainEventHandler)
+    );
 
     handler.Should().NotBeNull();
-    handler.Should().BeAssignableTo<IDomainEventHandler<GuestDraftCommissionerOverrideAppliedDomainEvent>>();
+    handler.Should().BeAssignableTo<IDomainEventHandler<CommissionerOverrideAppliedDomainEvent>>();
   }
 }

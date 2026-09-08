@@ -1,16 +1,18 @@
 ﻿// Suggested location: Features/GuestDrafts/RevealPick/GuestDraftPickRevealedDomainEventHandler.cs
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.DomainEvents;
+
 namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.Picks.RevealPick;
 
 internal sealed class GuestDraftPickRevealedDomainEventHandler(
   IEventBus eventBus,
   IDateTimeProvider dateTimeProvider
-) : DomainEventHandler<GuestDraftPickRevealedDomainEvent>
+) : DomainEventHandler<PickRevealedDomainEvent>
 {
   private readonly IEventBus _eventBus = eventBus;
   private readonly IDateTimeProvider _dateTimeProvider = dateTimeProvider;
 
   public override async Task Handle(
-    GuestDraftPickRevealedDomainEvent domainEvent,
+    PickRevealedDomainEvent domainEvent,
     CancellationToken cancellationToken = default
   )
   {

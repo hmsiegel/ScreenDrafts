@@ -1,16 +1,18 @@
 ﻿// Suggested location: Features/GuestDrafts/ApplyVetoOverride/GuestDraftVetoOverriddenDomainEventHandler.cs
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.DomainEvents;
+
 namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.Picks.ApplyVetoOverrides;
 
 internal sealed class GuestDraftVetoOverriddenDomainEventHandler(
   IEventBus eventBus,
   IDateTimeProvider dateTimeProvider
-) : DomainEventHandler<GuestDraftVetoOverriddenDomainEvent>
+) : DomainEventHandler<VetoOverriddenDomainEvent>
 {
   private readonly IEventBus _eventBus = eventBus;
   private readonly IDateTimeProvider _dateTimeProvider = dateTimeProvider;
 
   public override async Task Handle(
-    GuestDraftVetoOverriddenDomainEvent domainEvent,
+    VetoOverriddenDomainEvent domainEvent,
     CancellationToken cancellationToken = default
   )
   {

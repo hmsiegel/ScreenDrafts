@@ -1,3 +1,6 @@
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Enums;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Errors;
+
 namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.Picks;
 
 public sealed class ApplyVetoTests(GuestDraftsIntegrationTestWebAppFactory factory)
@@ -31,7 +34,7 @@ public sealed class ApplyVetoTests(GuestDraftsIntegrationTestWebAppFactory facto
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors.Should().Contain(e => e.Code == GuestDraftErrors.VetoNotOnMostRecentPick.Code);
+    result.Errors.Should().Contain(e => e.Code == DraftErrors.VetoNotOnMostRecentPick.Code);
   }
 
   [Fact]
@@ -49,7 +52,7 @@ public sealed class ApplyVetoTests(GuestDraftsIntegrationTestWebAppFactory facto
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors.Should().Contain(e => e.Code == GuestDraftErrors.NoRemainingVetoes.Code);
+    result.Errors.Should().Contain(e => e.Code == DraftErrors.NoRemainingVetoes.Code);
   }
 
   [Fact]
@@ -65,8 +68,12 @@ public sealed class ApplyVetoTests(GuestDraftsIntegrationTestWebAppFactory facto
     // Assert
     result.IsSuccess.Should().BeTrue();
     var guestDraft = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
-    var otherParticipant = guestDraft.Participants.Single(p => p.ParticipantIdValue == other.GuestDrafterId);
-    otherParticipant.VetoesUsed.Should().Be(1, "the normal pool was already exhausted and must stay untouched");
+    var otherParticipant = guestDraft.Participants.Single(p =>
+      p.ParticipantIdValue == other.GuestDrafterId
+    );
+    otherParticipant
+      .VetoesUsed.Should()
+      .Be(1, "the normal pool was already exhausted and must stay untouched");
     otherParticipant.FungibleTokensUsed.Should().Be(1);
   }
 
@@ -83,7 +90,7 @@ public sealed class ApplyVetoTests(GuestDraftsIntegrationTestWebAppFactory facto
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors.Should().Contain(e => e.Code == GuestDraftErrors.PickAlreadyVetoed.Code);
+    result.Errors.Should().Contain(e => e.Code == DraftErrors.PickAlreadyVetoed.Code);
   }
 
   [Fact]
@@ -106,7 +113,7 @@ public sealed class ApplyVetoTests(GuestDraftsIntegrationTestWebAppFactory facto
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors.Should().Contain(e => e.Code == GuestDraftErrors.DraftNotStarted.Code);
+    result.Errors.Should().Contain(e => e.Code == DraftErrors.DraftNotStarted.Code);
   }
 
   /// <summary>
@@ -115,8 +122,12 @@ public sealed class ApplyVetoTests(GuestDraftsIntegrationTestWebAppFactory facto
   /// awarded a bonus fungible token, and a fresh, most-recent, un-vetoed pick
   /// (play order 2) is waiting to be vetoed from that fungible pool.
   /// </summary>
-  private async Task<(string GuestDraftPublicId, TestUser Owner, TestUser Other, string SecondPickMoviePublicId)>
-    CreateDraftWhereOtherHasExhaustedNormalVetoesButHasOneFungibleTokenAsync()
+  private async Task<(
+    string GuestDraftPublicId,
+    TestUser Owner,
+    TestUser Other,
+    string SecondPickMoviePublicId
+  )> CreateDraftWhereOtherHasExhaustedNormalVetoesButHasOneFungibleTokenAsync()
   {
     var owner = await CreateUserAsync();
     var other = await CreateUserAsync();
@@ -124,11 +135,16 @@ public sealed class ApplyVetoTests(GuestDraftsIntegrationTestWebAppFactory facto
     List<CreateGuestDraftPositionInput> positions =
     [
       new() { Name = "A", Picks = [1] },
-      new() { Name = "B", Picks = [2], HasBonusFungibleToken = true },
+      new()
+      {
+        Name = "B",
+        Picks = [2],
+        HasBonusFungibleToken = true,
+      },
     ];
     var guestDraftPublicId = await CreateGuestDraftAsync(
       owner.UserPublicId,
-      GuestDraftType.MiniMega,
+      DraftType.MiniMega,
       numberOfPicks: 2,
       positions: positions
     );
@@ -138,9 +154,23 @@ public sealed class ApplyVetoTests(GuestDraftsIntegrationTestWebAppFactory facto
     var guestDraft = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
     var boardPositions = guestDraft.GameBoard!.Positions.ToList();
 
-    await AssignParticipantAsync(guestDraftPublicId, owner.UserPublicId, boardPositions.Single(p => p.Name == "A").PublicId, owner.GuestDrafterPublicId);
-    await AssignParticipantAsync(guestDraftPublicId, owner.UserPublicId, boardPositions.Single(p => p.Name == "B").PublicId, other.GuestDrafterPublicId);
-    await SetGuestDraftStatusAsync(guestDraftPublicId, owner.UserPublicId, GuestDraftStatusAction.Start);
+    await AssignParticipantAsync(
+      guestDraftPublicId,
+      owner.UserPublicId,
+      boardPositions.Single(p => p.Name == "A").PublicId,
+      owner.GuestDrafterPublicId
+    );
+    await AssignParticipantAsync(
+      guestDraftPublicId,
+      owner.UserPublicId,
+      boardPositions.Single(p => p.Name == "B").PublicId,
+      other.GuestDrafterPublicId
+    );
+    await SetGuestDraftStatusAsync(
+      guestDraftPublicId,
+      owner.UserPublicId,
+      GuestDraftStatusAction.Start
+    );
 
     await PlayPickAsync(guestDraftPublicId, owner.UserPublicId, await CreateMovieAsync(), 1, 1);
     await ApplyVetoAsync(guestDraftPublicId, 1, other.UserPublicId);

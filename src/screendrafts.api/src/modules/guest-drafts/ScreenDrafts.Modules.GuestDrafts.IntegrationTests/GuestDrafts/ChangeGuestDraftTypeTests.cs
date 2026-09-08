@@ -1,4 +1,5 @@
-﻿using ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.UpdateGuestDraft;
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Enums;
+using ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.UpdateGuestDraft;
 
 namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.GuestDrafts;
 
@@ -43,7 +44,7 @@ public sealed class ChangeGuestDraftTypeTests(GuestDraftsIntegrationTestWebAppFa
 
     var guestDraftPublicId = await CreateGuestDraftAsync(
       owner.UserPublicId,
-      GuestDraftType.MiniMega,
+      DraftType.MiniMega,
       numberOfPicks: 2,
       positions: initialPositions
     );
@@ -121,7 +122,7 @@ public sealed class ChangeGuestDraftTypeTests(GuestDraftsIntegrationTestWebAppFa
       {
         GuestDraftPublicId = guestDraftPublicId,
         CallerUserPublicId = owner.UserPublicId,
-        Type = GuestDraftType.Super.Name,
+        Type = DraftType.Super.Name,
         NumberOfPicks = 2,
         Positions =
         [
@@ -159,7 +160,7 @@ public sealed class ChangeGuestDraftTypeTests(GuestDraftsIntegrationTestWebAppFa
 
     // ── Assert: a fresh board for the new type was actually built ──────────────
     var draftAfterChange = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
-    draftAfterChange.GuestDraftType.Should().Be(GuestDraftType.Super);
+    draftAfterChange.GuestDraftType.Should().Be(DraftType.Super);
     draftAfterChange.GameBoard.Should().NotBeNull();
     draftAfterChange
       .GameBoard.Id.Should()

@@ -1,3 +1,5 @@
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafters;
+
 namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.GuestDrafters;
 
 /// <summary>
@@ -43,18 +45,28 @@ public sealed class CreateGuestDrafterTests(GuestDraftsIntegrationTestWebAppFact
     // Arrange
     var userId = Guid.NewGuid();
     await Sender.Send(
-      new CreateGuestDrafterCommand { UserId = userId, FirstName = "Ada", LastName = "Lovelace" },
+      new CreateGuestDrafterCommand
+      {
+        UserId = userId,
+        FirstName = "Ada",
+        LastName = "Lovelace",
+      },
       TestContext.Current.CancellationToken
     );
 
     // Act
     var result = await Sender.Send(
-      new CreateGuestDrafterCommand { UserId = userId, FirstName = "Ada", LastName = "Lovelace" },
+      new CreateGuestDrafterCommand
+      {
+        UserId = userId,
+        FirstName = "Ada",
+        LastName = "Lovelace",
+      },
       TestContext.Current.CancellationToken
     );
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors.Should().Contain(e => e.Code == GuestDrafterErrors.AlreadyExistsForUser(userId).Code);
+    result.Errors.Should().Contain(e => e.Code == DrafterErrors.AlreadyExistsForUser(userId).Code);
   }
 }

@@ -1,7 +1,11 @@
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.DomainEvents;
+
 namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.DomainEventHandlers;
 
 [Collection(nameof(GuestDraftsIntegrationTestCollection))]
-public sealed class GuestDraftPickUndoneDomainEventHandlerTests(GuestDraftsIntegrationTestWebAppFactory factory)
+public sealed class GuestDraftPickUndoneDomainEventHandlerTests(
+  GuestDraftsIntegrationTestWebAppFactory factory
+)
 {
   private readonly GuestDraftsIntegrationTestWebAppFactory _factory = factory;
 
@@ -9,7 +13,7 @@ public sealed class GuestDraftPickUndoneDomainEventHandlerTests(GuestDraftsInteg
   public async Task Handle_ShouldPublishExactlyOneCorrectlyMappedGuestDraftPickUndoneIntegrationEventAsync()
   {
     // Arrange
-    var domainEvent = new GuestDraftPickUndoneDomainEvent(
+    var domainEvent = new PickUndoneDomainEvent(
       guestDraftId: Guid.NewGuid(),
       guestDraftPublicId: $"gd_{TestFakerProvider.Faker.Random.AlphaNumeric(15)}",
       playOrder: 3,
@@ -18,14 +22,21 @@ public sealed class GuestDraftPickUndoneDomainEventHandlerTests(GuestDraftsInteg
     );
     var fixedUtcNow = new DateTime(2026, 1, 1, 12, 0, 0, DateTimeKind.Utc);
     var eventBus = new CapturingEventBus();
-    var handler = new GuestDraftPickUndoneDomainEventHandler(eventBus, new FakeDateTimeProvider(fixedUtcNow));
+    var handler = new GuestDraftPickUndoneDomainEventHandler(
+      eventBus,
+      new FakeDateTimeProvider(fixedUtcNow)
+    );
 
     // Act
     await handler.Handle(domainEvent, CancellationToken.None);
 
     // Assert
     eventBus.CapturedEvents.Should().ContainSingle();
-    var published = eventBus.CapturedEvents.Single().Should().BeOfType<GuestDraftPickUndoneIntegrationEvent>().Subject;
+    var published = eventBus
+      .CapturedEvents.Single()
+      .Should()
+      .BeOfType<GuestDraftPickUndoneIntegrationEvent>()
+      .Subject;
 
     published.Id.Should().NotBe(Guid.Empty);
     published.OccurredOnUtc.Should().Be(fixedUtcNow);
@@ -40,7 +51,7 @@ public sealed class GuestDraftPickUndoneDomainEventHandlerTests(GuestDraftsInteg
   public async Task Handle_ShouldGenerateAFreshIdOnEachCallAsync()
   {
     // Arrange
-    var domainEvent = new GuestDraftPickUndoneDomainEvent(
+    var domainEvent = new PickUndoneDomainEvent(
       guestDraftId: Guid.NewGuid(),
       guestDraftPublicId: $"gd_{TestFakerProvider.Faker.Random.AlphaNumeric(15)}",
       playOrder: 1,
@@ -48,7 +59,10 @@ public sealed class GuestDraftPickUndoneDomainEventHandlerTests(GuestDraftsInteg
       moviePublicId: $"m_{TestFakerProvider.Faker.Random.AlphaNumeric(15)}"
     );
     var eventBus = new CapturingEventBus();
-    var handler = new GuestDraftPickUndoneDomainEventHandler(eventBus, new FakeDateTimeProvider(DateTime.UtcNow));
+    var handler = new GuestDraftPickUndoneDomainEventHandler(
+      eventBus,
+      new FakeDateTimeProvider(DateTime.UtcNow)
+    );
 
     // Act
     await handler.Handle(domainEvent, CancellationToken.None);
@@ -68,6 +82,6 @@ public sealed class GuestDraftPickUndoneDomainEventHandlerTests(GuestDraftsInteg
     var handler = scope.ServiceProvider.GetService(typeof(GuestDraftPickUndoneDomainEventHandler));
 
     handler.Should().NotBeNull();
-    handler.Should().BeAssignableTo<IDomainEventHandler<GuestDraftPickUndoneDomainEvent>>();
+    handler.Should().BeAssignableTo<IDomainEventHandler<PickUndoneDomainEvent>>();
   }
 }

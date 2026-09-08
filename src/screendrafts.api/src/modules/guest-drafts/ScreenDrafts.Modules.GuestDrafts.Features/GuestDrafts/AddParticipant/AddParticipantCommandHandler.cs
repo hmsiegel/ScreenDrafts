@@ -1,13 +1,17 @@
-﻿namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.AddParticipant;
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafters;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Errors;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Repositories;
+
+namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.AddParticipant;
 
 internal sealed class AddParticipantCommandHandler(
-  IGuestDraftRepository guestDraftRepository,
-  IGuestDrafterRepository guestDrafterRepository,
+  IDraftRepository guestDraftRepository,
+  IDrafterRepository guestDrafterRepository,
   IUsersApi usersApi
 ) : ICommandHandler<AddParticipantCommand>
 {
-  private readonly IGuestDraftRepository _guestDraftRepository = guestDraftRepository;
-  private readonly IGuestDrafterRepository _guestDrafterRepository = guestDrafterRepository;
+  private readonly IDraftRepository _guestDraftRepository = guestDraftRepository;
+  private readonly IDrafterRepository _guestDrafterRepository = guestDrafterRepository;
   private readonly IUsersApi _usersApi = usersApi;
 
   public async Task<Result> Handle(
@@ -22,7 +26,7 @@ internal sealed class AddParticipantCommandHandler(
 
     if (guestDraft is null)
     {
-      return Result.Failure(GuestDraftErrors.NotFound(request.GuestDraftPublicId));
+      return Result.Failure(DraftErrors.NotFound(request.GuestDraftPublicId));
     }
 
     var caller = await _usersApi.GetUserByPublicId(request.CallerUserPublicId, cancellationToken);
@@ -34,7 +38,7 @@ internal sealed class AddParticipantCommandHandler(
 
     if (caller.UserId != guestDraft.OwnerUserId)
     {
-      return Result.Failure(GuestDraftErrors.OnlyOwnerCanPerformThisAction);
+      return Result.Failure(DraftErrors.OnlyOwnerCanPerformThisAction);
     }
 
     var guestDrafter = await _guestDrafterRepository.GetByPublicIdAsync(
@@ -44,10 +48,10 @@ internal sealed class AddParticipantCommandHandler(
 
     if (guestDrafter is null)
     {
-      return Result.Failure(GuestDrafterErrors.NotFound(request.GuestDrafterPublicId));
+      return Result.Failure(DrafterErrors.NotFound(request.GuestDrafterPublicId));
     }
 
-    var participant = GuestParticipant.From(guestDrafter.Id);
+    var participant = Participant.From(guestDrafter.Id);
 
     // Computed here, not assumed: this tells us whether the GuestDrafter being
     // added IS the owner (adding themselves), not just whether the caller

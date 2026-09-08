@@ -1,9 +1,11 @@
-﻿namespace ScreenDrafts.Modules.GuestDrafts.Infrastructure.GuestDrafts;
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Entities;
+
+namespace ScreenDrafts.Modules.GuestDrafts.Infrastructure.GuestDrafts;
 
 internal sealed class GuestDraftParticipantConfiguration
-  : IEntityTypeConfiguration<GuestDraftParticipant>
+  : IEntityTypeConfiguration<DraftParticipant>
 {
-  public void Configure(EntityTypeBuilder<GuestDraftParticipant> builder)
+  public void Configure(EntityTypeBuilder<DraftParticipant> builder)
   {
     builder.ToTable(Tables.GuestDraftParticipants);
 
@@ -15,22 +17,19 @@ internal sealed class GuestDraftParticipantConfiguration
       .HasColumnName("id")
       .HasConversion(IdConverters.GuestDraftParticipantIdConverter);
 
-    builder
-      .Property(p => p.GuestDraftId)
-      .IsRequired()
-      .HasConversion(IdConverters.GuestDraftIdConverter);
+    builder.Property(p => p.DraftId).IsRequired().HasConversion(IdConverters.GuestDraftIdConverter);
 
     builder.Property(p => p.ParticipantIdValue).IsRequired();
 
     builder
       .Property(p => p.ParticipantKindValue)
       .IsRequired()
-      .HasConversion(k => k.Value, v => GuestParticipantKind.FromValue(v));
+      .HasConversion(k => k.Value, v => ParticipantKind.FromValue(v));
 
     builder
       .HasIndex(p => new
       {
-        p.GuestDraftId,
+        p.DraftId,
         p.ParticipantIdValue,
         p.ParticipantKindValue,
       })

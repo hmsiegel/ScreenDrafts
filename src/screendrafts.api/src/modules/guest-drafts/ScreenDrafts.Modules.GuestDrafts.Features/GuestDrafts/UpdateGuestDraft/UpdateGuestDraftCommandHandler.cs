@@ -1,12 +1,17 @@
-﻿namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.UpdateGuestDraft;
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Enums;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Errors;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Helpers;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Repositories;
+
+namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.UpdateGuestDraft;
 
 internal sealed class UpdateGuestDraftCommandHandler(
-  IGuestDraftRepository guestDraftRepository,
+  IDraftRepository guestDraftRepository,
   IUsersApi usersApi,
   IPublicIdGenerator publicIdGenerator
 ) : ICommandHandler<UpdateGuestDraftCommand>
 {
-  private readonly IGuestDraftRepository _guestDraftRepository = guestDraftRepository;
+  private readonly IDraftRepository _guestDraftRepository = guestDraftRepository;
   private readonly IUsersApi _usersApi = usersApi;
   private readonly IPublicIdGenerator _publicIdGenerator = publicIdGenerator;
 
@@ -25,7 +30,7 @@ internal sealed class UpdateGuestDraftCommandHandler(
 
     if (guestDraft is null)
     {
-      return Result.Failure(GuestDraftErrors.NotFound(request.GuestDraftPublicId));
+      return Result.Failure(DraftErrors.NotFound(request.GuestDraftPublicId));
     }
 
     var caller = await _usersApi.GetUserByPublicId(request.CallerUserPublicId, cancellationToken);
@@ -37,7 +42,7 @@ internal sealed class UpdateGuestDraftCommandHandler(
 
     if (caller.UserId != guestDraft.OwnerUserId)
     {
-      return Result.Failure(GuestDraftErrors.OnlyOwnerCanPerformThisAction);
+      return Result.Failure(DraftErrors.OnlyOwnerCanPerformThisAction);
     }
 
     if (!string.IsNullOrWhiteSpace(request.Title))
@@ -57,9 +62,9 @@ internal sealed class UpdateGuestDraftCommandHandler(
 
     if (!string.IsNullOrWhiteSpace(request.Type))
     {
-      if (!GuestDraftType.TryFromName(request.Type, ignoreCase: true, out var newType))
+      if (!DraftType.TryFromName(request.Type, ignoreCase: true, out var newType))
       {
-        return Result.Failure(GuestDraftErrors.InvalidType(request.Type));
+        return Result.Failure(DraftErrors.InvalidType(request.Type));
       }
 
       if (newType != guestDraft.GuestDraftType)
@@ -78,7 +83,7 @@ internal sealed class UpdateGuestDraftCommandHandler(
         // that doesn't otherwise exist in this feature set.
         Result boardResult;
 
-        if (GuestDraftBoardTemplates.IsFixed(newType))
+        if (GameBoardTemplates.IsFixed(newType))
         {
           boardResult = guestDraft.UseFixedBoardLayout(_ =>
             _publicIdGenerator.GeneratePublicId(PublicIdPrefixes.GuestDraftPosition)
@@ -88,7 +93,7 @@ internal sealed class UpdateGuestDraftCommandHandler(
         {
           if (request.NumberOfPicks is not { } numberOfPicks || numberOfPicks < 1)
           {
-            return Result.Failure(GuestDraftErrors.NumberOfPicksMustBeGreaterThanZero);
+            return Result.Failure(DraftErrors.NumberOfPicksMustBeGreaterThanZero);
           }
 
           var coverageResult = GuestDraftPositionCoverage.Validate(

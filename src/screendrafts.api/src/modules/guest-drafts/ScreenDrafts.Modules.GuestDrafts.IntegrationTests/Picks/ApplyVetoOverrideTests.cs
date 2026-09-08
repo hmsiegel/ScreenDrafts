@@ -1,3 +1,6 @@
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Enums;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Errors;
+
 namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.Picks;
 
 public sealed class ApplyVetoOverrideTests(GuestDraftsIntegrationTestWebAppFactory factory)
@@ -7,8 +10,9 @@ public sealed class ApplyVetoOverrideTests(GuestDraftsIntegrationTestWebAppFacto
   public async Task ApplyVetoOverride_ByTheCallerNotThePicker_OnANonStandardDraftType_ShouldSucceedAsync()
   {
     // Arrange
-    var (guestDraftPublicId, picker, other) =
-      await CreateInProgressMiniMegaDraftAsync(otherHasBonusOverride: true);
+    var (guestDraftPublicId, picker, other) = await CreateInProgressMiniMegaDraftAsync(
+      otherHasBonusOverride: true
+    );
     await PlayPickAsync(guestDraftPublicId, picker, await CreateMovieAsync(), 1, 1);
     await ApplyVetoAsync(guestDraftPublicId, 1, other);
 
@@ -27,7 +31,7 @@ public sealed class ApplyVetoOverrideTests(GuestDraftsIntegrationTestWebAppFacto
     // yet the Standard-type guard must still fire first.
     var owner = await CreateUserAsync();
     var other = await CreateUserAsync();
-    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, GuestDraftType.Standard);
+    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, DraftType.Standard);
     await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId);
     await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, other.GuestDrafterPublicId);
 
@@ -36,7 +40,9 @@ public sealed class ApplyVetoOverrideTests(GuestDraftsIntegrationTestWebAppFacto
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors.Should().Contain(e => e.Code == GuestDraftErrors.VetoOverridesNotAllowedForThisDraftType.Code);
+    result
+      .Errors.Should()
+      .Contain(e => e.Code == DraftErrors.VetoOverridesNotAllowedForThisDraftType.Code);
   }
 
   [Fact]
@@ -67,25 +73,62 @@ public sealed class ApplyVetoOverrideTests(GuestDraftsIntegrationTestWebAppFacto
     List<CreateGuestDraftPositionInput> positions =
     [
       new() { Name = "A", Picks = [1] },
-      new() { Name = "B", Picks = [2], HasBonusVetoOverride = true },
-      new() { Name = "C", Picks = [3], HasBonusVetoOverride = true },
+      new()
+      {
+        Name = "B",
+        Picks = [2],
+        HasBonusVetoOverride = true,
+      },
+      new()
+      {
+        Name = "C",
+        Picks = [3],
+        HasBonusVetoOverride = true,
+      },
     ];
     var guestDraftPublicId = await CreateGuestDraftAsync(
       owner.UserPublicId,
-      GuestDraftType.MiniMega,
+      DraftType.MiniMega,
       numberOfPicks: 3,
       positions: positions
     );
     await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId);
-    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, firstOverrider.GuestDrafterPublicId);
-    await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, secondOverrider.GuestDrafterPublicId);
+    await AddParticipantAsync(
+      guestDraftPublicId,
+      owner.UserPublicId,
+      firstOverrider.GuestDrafterPublicId
+    );
+    await AddParticipantAsync(
+      guestDraftPublicId,
+      owner.UserPublicId,
+      secondOverrider.GuestDrafterPublicId
+    );
 
     var guestDraft = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
     var boardPositions = guestDraft.GameBoard!.Positions.ToList();
-    await AssignParticipantAsync(guestDraftPublicId, owner.UserPublicId, boardPositions.Single(p => p.Name == "A").PublicId, owner.GuestDrafterPublicId);
-    await AssignParticipantAsync(guestDraftPublicId, owner.UserPublicId, boardPositions.Single(p => p.Name == "B").PublicId, firstOverrider.GuestDrafterPublicId);
-    await AssignParticipantAsync(guestDraftPublicId, owner.UserPublicId, boardPositions.Single(p => p.Name == "C").PublicId, secondOverrider.GuestDrafterPublicId);
-    await SetGuestDraftStatusAsync(guestDraftPublicId, owner.UserPublicId, GuestDraftStatusAction.Start);
+    await AssignParticipantAsync(
+      guestDraftPublicId,
+      owner.UserPublicId,
+      boardPositions.Single(p => p.Name == "A").PublicId,
+      owner.GuestDrafterPublicId
+    );
+    await AssignParticipantAsync(
+      guestDraftPublicId,
+      owner.UserPublicId,
+      boardPositions.Single(p => p.Name == "B").PublicId,
+      firstOverrider.GuestDrafterPublicId
+    );
+    await AssignParticipantAsync(
+      guestDraftPublicId,
+      owner.UserPublicId,
+      boardPositions.Single(p => p.Name == "C").PublicId,
+      secondOverrider.GuestDrafterPublicId
+    );
+    await SetGuestDraftStatusAsync(
+      guestDraftPublicId,
+      owner.UserPublicId,
+      GuestDraftStatusAction.Start
+    );
 
     await PlayPickAsync(guestDraftPublicId, owner.UserPublicId, await CreateMovieAsync(), 1, 1);
     await ApplyVetoAsync(guestDraftPublicId, 1, firstOverrider.UserPublicId);
@@ -96,7 +139,7 @@ public sealed class ApplyVetoOverrideTests(GuestDraftsIntegrationTestWebAppFacto
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors.Should().Contain(e => e.Code == GuestDraftErrors.VetoOverrideAlreadyUsed.Code);
+    result.Errors.Should().Contain(e => e.Code == DraftErrors.VetoOverrideAlreadyUsed.Code);
   }
 
   [Fact]
@@ -112,7 +155,7 @@ public sealed class ApplyVetoOverrideTests(GuestDraftsIntegrationTestWebAppFacto
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors.Should().Contain(e => e.Code == GuestDraftErrors.CannotOverrideOwnPick.Code);
+    result.Errors.Should().Contain(e => e.Code == DraftErrors.CannotOverrideOwnPick.Code);
   }
 
   [Fact]
@@ -128,7 +171,7 @@ public sealed class ApplyVetoOverrideTests(GuestDraftsIntegrationTestWebAppFacto
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors.Should().Contain(e => e.Code == GuestDraftErrors.NoRemainingVetoOverrides.Code);
+    result.Errors.Should().Contain(e => e.Code == DraftErrors.NoRemainingVetoOverrides.Code);
   }
 
   [Fact]
@@ -139,7 +182,8 @@ public sealed class ApplyVetoOverrideTests(GuestDraftsIntegrationTestWebAppFacto
     // override pool) is the only thing left to pay for the second override with.
     var (guestDraftPublicId, picker, otherUser) = await CreateInProgressMiniMegaDraftAsyncWithUser(
       otherHasBonusOverride: true,
-      otherHasBonusFungibleToken: true);
+      otherHasBonusFungibleToken: true
+    );
     var other = otherUser.UserPublicId;
 
     await PlayPickAsync(guestDraftPublicId, picker, await CreateMovieAsync(), 1, 1);
@@ -155,8 +199,12 @@ public sealed class ApplyVetoOverrideTests(GuestDraftsIntegrationTestWebAppFacto
     // Assert
     result.IsSuccess.Should().BeTrue();
     var guestDraft = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
-    var otherParticipant = guestDraft.Participants.Single(p => p.ParticipantIdValue == otherUser.GuestDrafterId);
-    otherParticipant.VetoOverridesUsed.Should().Be(1, "the normal override pool was already exhausted and must stay untouched");
+    var otherParticipant = guestDraft.Participants.Single(p =>
+      p.ParticipantIdValue == otherUser.GuestDrafterId
+    );
+    otherParticipant
+      .VetoOverridesUsed.Should()
+      .Be(1, "the normal override pool was already exhausted and must stay untouched");
     otherParticipant.FungibleTokensUsed.Should().Be(1);
   }
 
@@ -171,7 +219,7 @@ public sealed class ApplyVetoOverrideTests(GuestDraftsIntegrationTestWebAppFacto
     var other = await CreateUserAsync();
     var guestDraftPublicId = await CreateGuestDraftAsync(
       owner.UserPublicId,
-      GuestDraftType.MiniMega,
+      DraftType.MiniMega,
       numberOfPicks: 1,
       positions: [new CreateGuestDraftPositionInput { Name = "A", Picks = [1] }]
     );
@@ -183,7 +231,7 @@ public sealed class ApplyVetoOverrideTests(GuestDraftsIntegrationTestWebAppFacto
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors.Should().Contain(e => e.Code == GuestDraftErrors.DraftNotStarted.Code);
+    result.Errors.Should().Contain(e => e.Code == DraftErrors.DraftNotStarted.Code);
   }
 
   [Fact]
@@ -200,7 +248,7 @@ public sealed class ApplyVetoOverrideTests(GuestDraftsIntegrationTestWebAppFacto
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors.Should().Contain(e => e.Code == GuestDraftErrors.CallerNotAParticipant.Code);
+    result.Errors.Should().Contain(e => e.Code == DraftErrors.CallerNotAParticipant.Code);
   }
 
   /// <summary>
@@ -208,19 +256,30 @@ public sealed class ApplyVetoOverrideTests(GuestDraftsIntegrationTestWebAppFacto
   /// holds position "B" ([2]), optionally with bonus veto-override / fungible-token
   /// awards, started and ready for picks.
   /// </summary>
-  private async Task<(string GuestDraftPublicId, string Picker, string Other)> CreateInProgressMiniMegaDraftAsync(
+  private async Task<(
+    string GuestDraftPublicId,
+    string Picker,
+    string Other
+  )> CreateInProgressMiniMegaDraftAsync(
     bool otherHasBonusOverride = false,
-    bool otherHasBonusFungibleToken = false)
+    bool otherHasBonusFungibleToken = false
+  )
   {
     var (guestDraftPublicId, picker, other) = await CreateInProgressMiniMegaDraftAsyncWithUser(
       otherHasBonusOverride,
-      otherHasBonusFungibleToken);
+      otherHasBonusFungibleToken
+    );
     return (guestDraftPublicId, picker, other.UserPublicId);
   }
 
-  private async Task<(string GuestDraftPublicId, string Picker, TestUser Other)> CreateInProgressMiniMegaDraftAsyncWithUser(
+  private async Task<(
+    string GuestDraftPublicId,
+    string Picker,
+    TestUser Other
+  )> CreateInProgressMiniMegaDraftAsyncWithUser(
     bool otherHasBonusOverride = false,
-    bool otherHasBonusFungibleToken = false)
+    bool otherHasBonusFungibleToken = false
+  )
   {
     var picker = await CreateUserAsync();
     var other = await CreateUserAsync();
@@ -238,7 +297,7 @@ public sealed class ApplyVetoOverrideTests(GuestDraftsIntegrationTestWebAppFacto
     ];
     var guestDraftPublicId = await CreateGuestDraftAsync(
       picker.UserPublicId,
-      GuestDraftType.MiniMega,
+      DraftType.MiniMega,
       numberOfPicks: 2,
       positions: positions
     );
@@ -248,9 +307,23 @@ public sealed class ApplyVetoOverrideTests(GuestDraftsIntegrationTestWebAppFacto
     var guestDraft = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
     var boardPositions = guestDraft.GameBoard!.Positions.ToList();
 
-    await AssignParticipantAsync(guestDraftPublicId, picker.UserPublicId, boardPositions.Single(p => p.Name == "A").PublicId, picker.GuestDrafterPublicId);
-    await AssignParticipantAsync(guestDraftPublicId, picker.UserPublicId, boardPositions.Single(p => p.Name == "B").PublicId, other.GuestDrafterPublicId);
-    await SetGuestDraftStatusAsync(guestDraftPublicId, picker.UserPublicId, GuestDraftStatusAction.Start);
+    await AssignParticipantAsync(
+      guestDraftPublicId,
+      picker.UserPublicId,
+      boardPositions.Single(p => p.Name == "A").PublicId,
+      picker.GuestDrafterPublicId
+    );
+    await AssignParticipantAsync(
+      guestDraftPublicId,
+      picker.UserPublicId,
+      boardPositions.Single(p => p.Name == "B").PublicId,
+      other.GuestDrafterPublicId
+    );
+    await SetGuestDraftStatusAsync(
+      guestDraftPublicId,
+      picker.UserPublicId,
+      GuestDraftStatusAction.Start
+    );
 
     return (guestDraftPublicId, picker.UserPublicId, other);
   }

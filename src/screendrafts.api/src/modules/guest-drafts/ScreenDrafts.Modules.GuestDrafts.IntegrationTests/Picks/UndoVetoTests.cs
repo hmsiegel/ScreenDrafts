@@ -1,3 +1,6 @@
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Enums;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Errors;
+
 namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.Picks;
 
 public sealed class UndoVetoTests(GuestDraftsIntegrationTestWebAppFactory factory)
@@ -18,7 +21,10 @@ public sealed class UndoVetoTests(GuestDraftsIntegrationTestWebAppFactory factor
     result.IsSuccess.Should().BeTrue();
     var otherGuestDrafterId = await GetGuestDrafterIdAsync(other);
     var guestDraft = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
-    guestDraft.Participants.Single(p => p.ParticipantIdValue == otherGuestDrafterId).VetoesUsed.Should().Be(0);
+    guestDraft
+      .Participants.Single(p => p.ParticipantIdValue == otherGuestDrafterId)
+      .VetoesUsed.Should()
+      .Be(0);
   }
 
   [Fact]
@@ -34,7 +40,7 @@ public sealed class UndoVetoTests(GuestDraftsIntegrationTestWebAppFactory factor
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors.Should().Contain(e => e.Code == GuestDraftErrors.OnlyOwnerCanPerformThisAction.Code);
+    result.Errors.Should().Contain(e => e.Code == DraftErrors.OnlyOwnerCanPerformThisAction.Code);
   }
 
   [Fact]
@@ -49,7 +55,7 @@ public sealed class UndoVetoTests(GuestDraftsIntegrationTestWebAppFactory factor
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors.Should().Contain(e => e.Code == GuestDraftErrors.PickNotVetoed.Code);
+    result.Errors.Should().Contain(e => e.Code == DraftErrors.PickNotVetoed.Code);
   }
 
   [Fact]
@@ -67,7 +73,7 @@ public sealed class UndoVetoTests(GuestDraftsIntegrationTestWebAppFactory factor
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors.Should().Contain(e => e.Code == GuestDraftErrors.DraftNotStarted.Code);
+    result.Errors.Should().Contain(e => e.Code == DraftErrors.DraftNotStarted.Code);
   }
 
   [Fact]
@@ -81,7 +87,7 @@ public sealed class UndoVetoTests(GuestDraftsIntegrationTestWebAppFactory factor
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors.Should().Contain(e => e.Code == GuestDraftErrors.PickNotFoundByPlayOrder(99).Code);
+    result.Errors.Should().Contain(e => e.Code == DraftErrors.PickNotFoundByPlayOrder(99).Code);
   }
 
   [Fact]
@@ -97,9 +103,13 @@ public sealed class UndoVetoTests(GuestDraftsIntegrationTestWebAppFactory factor
     // Assert
     result.IsSuccess.Should().BeTrue();
     var guestDraft = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
-    var otherParticipant = guestDraft.Participants.Single(p => p.ParticipantIdValue == other.GuestDrafterId);
+    var otherParticipant = guestDraft.Participants.Single(p =>
+      p.ParticipantIdValue == other.GuestDrafterId
+    );
     otherParticipant.FungibleTokensUsed.Should().Be(0);
-    otherParticipant.VetoesUsed.Should().Be(1, "only the fungible pool was spent on this veto, the normal pool refund is untouched");
+    otherParticipant
+      .VetoesUsed.Should()
+      .Be(1, "only the fungible pool was spent on this veto, the normal pool refund is untouched");
   }
 
   [Fact]
@@ -113,11 +123,16 @@ public sealed class UndoVetoTests(GuestDraftsIntegrationTestWebAppFactory factor
     List<CreateGuestDraftPositionInput> positions =
     [
       new() { Name = "A", Picks = [1] },
-      new() { Name = "B", Picks = [2], HasBonusVetoOverride = true },
+      new()
+      {
+        Name = "B",
+        Picks = [2],
+        HasBonusVetoOverride = true,
+      },
     ];
     var guestDraftPublicId = await CreateGuestDraftAsync(
       owner.UserPublicId,
-      GuestDraftType.MiniMega,
+      DraftType.MiniMega,
       numberOfPicks: 2,
       positions: positions
     );
@@ -126,26 +141,46 @@ public sealed class UndoVetoTests(GuestDraftsIntegrationTestWebAppFactory factor
 
     var guestDraft = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
     var boardPositions = guestDraft.GameBoard!.Positions.ToList();
-    await AssignParticipantAsync(guestDraftPublicId, owner.UserPublicId, boardPositions.Single(p => p.Name == "A").PublicId, owner.GuestDrafterPublicId);
-    await AssignParticipantAsync(guestDraftPublicId, owner.UserPublicId, boardPositions.Single(p => p.Name == "B").PublicId, other.GuestDrafterPublicId);
-    await SetGuestDraftStatusAsync(guestDraftPublicId, owner.UserPublicId, GuestDraftStatusAction.Start);
+    await AssignParticipantAsync(
+      guestDraftPublicId,
+      owner.UserPublicId,
+      boardPositions.Single(p => p.Name == "A").PublicId,
+      owner.GuestDrafterPublicId
+    );
+    await AssignParticipantAsync(
+      guestDraftPublicId,
+      owner.UserPublicId,
+      boardPositions.Single(p => p.Name == "B").PublicId,
+      other.GuestDrafterPublicId
+    );
+    await SetGuestDraftStatusAsync(
+      guestDraftPublicId,
+      owner.UserPublicId,
+      GuestDraftStatusAction.Start
+    );
 
     await PlayPickAsync(guestDraftPublicId, owner.UserPublicId, await CreateMovieAsync(), 1, 1);
     await ApplyVetoAsync(guestDraftPublicId, 1, other.UserPublicId);
     await ApplyVetoOverrideAsync(guestDraftPublicId, 1, other.UserPublicId);
 
     var beforeFailedUndo = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
-    var vetoesUsedBeforeFailedUndo = beforeFailedUndo.Participants.Single(p => p.ParticipantIdValue == other.GuestDrafterId).VetoesUsed;
+    var vetoesUsedBeforeFailedUndo = beforeFailedUndo
+      .Participants.Single(p => p.ParticipantIdValue == other.GuestDrafterId)
+      .VetoesUsed;
 
     // Act -- the veto is already overridden, so this must fail
     var result = await UndoVetoAsync(guestDraftPublicId, 1, owner.UserPublicId);
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors.Should().Contain(e => e.Code == GuestDraftErrors.CannotUndoVetoThatHasBeenOverridden.Code);
+    result
+      .Errors.Should()
+      .Contain(e => e.Code == DraftErrors.CannotUndoVetoThatHasBeenOverridden.Code);
     var afterFailedUndo = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
-    afterFailedUndo.Participants.Single(p => p.ParticipantIdValue == other.GuestDrafterId).VetoesUsed
-      .Should().Be(vetoesUsedBeforeFailedUndo, "a failed undo must not refund any pool");
+    afterFailedUndo
+      .Participants.Single(p => p.ParticipantIdValue == other.GuestDrafterId)
+      .VetoesUsed.Should()
+      .Be(vetoesUsedBeforeFailedUndo, "a failed undo must not refund any pool");
   }
 
   /// <summary>
@@ -154,8 +189,11 @@ public sealed class UndoVetoTests(GuestDraftsIntegrationTestWebAppFactory factor
   /// awarded a bonus fungible token, and a fresh, most-recent, un-vetoed pick
   /// (play order 2) has since been vetoed from that fungible pool.
   /// </summary>
-  private async Task<(string GuestDraftPublicId, TestUser Owner, TestUser Other)>
-    CreateDraftWhereOtherHasExhaustedNormalVetoesButHasOneFungibleTokenAsync()
+  private async Task<(
+    string GuestDraftPublicId,
+    TestUser Owner,
+    TestUser Other
+  )> CreateDraftWhereOtherHasExhaustedNormalVetoesButHasOneFungibleTokenAsync()
   {
     var owner = await CreateUserAsync();
     var other = await CreateUserAsync();
@@ -163,11 +201,16 @@ public sealed class UndoVetoTests(GuestDraftsIntegrationTestWebAppFactory factor
     List<CreateGuestDraftPositionInput> positions =
     [
       new() { Name = "A", Picks = [1] },
-      new() { Name = "B", Picks = [2], HasBonusFungibleToken = true },
+      new()
+      {
+        Name = "B",
+        Picks = [2],
+        HasBonusFungibleToken = true,
+      },
     ];
     var guestDraftPublicId = await CreateGuestDraftAsync(
       owner.UserPublicId,
-      GuestDraftType.MiniMega,
+      DraftType.MiniMega,
       numberOfPicks: 2,
       positions: positions
     );
@@ -177,9 +220,23 @@ public sealed class UndoVetoTests(GuestDraftsIntegrationTestWebAppFactory factor
     var guestDraft = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
     var boardPositions = guestDraft.GameBoard!.Positions.ToList();
 
-    await AssignParticipantAsync(guestDraftPublicId, owner.UserPublicId, boardPositions.Single(p => p.Name == "A").PublicId, owner.GuestDrafterPublicId);
-    await AssignParticipantAsync(guestDraftPublicId, owner.UserPublicId, boardPositions.Single(p => p.Name == "B").PublicId, other.GuestDrafterPublicId);
-    await SetGuestDraftStatusAsync(guestDraftPublicId, owner.UserPublicId, GuestDraftStatusAction.Start);
+    await AssignParticipantAsync(
+      guestDraftPublicId,
+      owner.UserPublicId,
+      boardPositions.Single(p => p.Name == "A").PublicId,
+      owner.GuestDrafterPublicId
+    );
+    await AssignParticipantAsync(
+      guestDraftPublicId,
+      owner.UserPublicId,
+      boardPositions.Single(p => p.Name == "B").PublicId,
+      other.GuestDrafterPublicId
+    );
+    await SetGuestDraftStatusAsync(
+      guestDraftPublicId,
+      owner.UserPublicId,
+      GuestDraftStatusAction.Start
+    );
 
     await PlayPickAsync(guestDraftPublicId, owner.UserPublicId, await CreateMovieAsync(), 1, 1);
     await ApplyVetoAsync(guestDraftPublicId, 1, other.UserPublicId);

@@ -1,3 +1,5 @@
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Errors;
+
 namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.Picks;
 
 public sealed class ApplyCommissionerOverrideTests(GuestDraftsIntegrationTestWebAppFactory factory)
@@ -15,9 +17,7 @@ public sealed class ApplyCommissionerOverrideTests(GuestDraftsIntegrationTestWeb
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result
-      .Errors.Should()
-      .Contain(e => e.Code == GuestDraftErrors.OnlyOwnerCanPerformThisAction.Code);
+    result.Errors.Should().Contain(e => e.Code == DraftErrors.OnlyOwnerCanPerformThisAction.Code);
   }
 
   [Fact]
@@ -35,7 +35,7 @@ public sealed class ApplyCommissionerOverrideTests(GuestDraftsIntegrationTestWeb
     result.IsFailure.Should().BeTrue();
     result
       .Errors.Should()
-      .Contain(e => e.Code == GuestDraftErrors.CommissionerOverrideAlreadyApplied.Code);
+      .Contain(e => e.Code == DraftErrors.CommissionerOverrideAlreadyApplied.Code);
   }
 
   [Fact]
@@ -49,9 +49,7 @@ public sealed class ApplyCommissionerOverrideTests(GuestDraftsIntegrationTestWeb
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result
-      .Errors.Should()
-      .Contain(e => e.Code == GuestDraftErrors.PickNotFoundByPlayOrder(99).Code);
+    result.Errors.Should().Contain(e => e.Code == DraftErrors.PickNotFoundByPlayOrder(99).Code);
   }
 
   [Fact]
@@ -74,7 +72,7 @@ public sealed class ApplyCommissionerOverrideTests(GuestDraftsIntegrationTestWeb
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors.Should().Contain(e => e.Code == GuestDraftErrors.DraftNotStarted.Code);
+    result.Errors.Should().Contain(e => e.Code == DraftErrors.DraftNotStarted.Code);
   }
 
   [Fact]
@@ -94,6 +92,6 @@ public sealed class ApplyCommissionerOverrideTests(GuestDraftsIntegrationTestWeb
     result.IsFailure.Should().BeTrue();
     result
       .Errors.Should()
-      .Contain(e => e.Code == GuestDraftErrors.CommissionerOverrideNotOnMostRecentPick.Code);
+      .Contain(e => e.Code == DraftErrors.CommissionerOverrideNotOnMostRecentPick.Code);
   }
 }

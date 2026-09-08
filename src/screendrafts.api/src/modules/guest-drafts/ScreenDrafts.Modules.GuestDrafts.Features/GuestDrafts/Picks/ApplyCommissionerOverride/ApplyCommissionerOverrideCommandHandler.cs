@@ -1,14 +1,20 @@
-﻿namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.Picks.ApplyCommissionerOverride;
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Errors;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Repositories;
+
+namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.Picks.ApplyCommissionerOverride;
 
 internal sealed class ApplyCommissionerOverrideCommandHandler(
-  IGuestDraftRepository guestDraftRepository,
+  IDraftRepository guestDraftRepository,
   IUsersApi usersApi
 ) : ICommandHandler<ApplyCommissionerOverrideCommand>
 {
-  private readonly IGuestDraftRepository _guestDraftRepository = guestDraftRepository;
+  private readonly IDraftRepository _guestDraftRepository = guestDraftRepository;
   private readonly IUsersApi _usersApi = usersApi;
 
-  public async Task<Result> Handle(ApplyCommissionerOverrideCommand request, CancellationToken cancellationToken)
+  public async Task<Result> Handle(
+    ApplyCommissionerOverrideCommand request,
+    CancellationToken cancellationToken
+  )
   {
     var guestDraft = await _guestDraftRepository.GetByPublicIdForGameplayAsync(
       request.GuestDraftPublicId,
@@ -17,14 +23,14 @@ internal sealed class ApplyCommissionerOverrideCommandHandler(
 
     if (guestDraft is null)
     {
-      return Result.Failure(GuestDraftErrors.NotFound(request.GuestDraftPublicId));
+      return Result.Failure(DraftErrors.NotFound(request.GuestDraftPublicId));
     }
 
     var pick = guestDraft.Picks.FirstOrDefault(p => p.PlayOrder == request.PlayOrder);
 
     if (pick is null)
     {
-      return Result.Failure(GuestDraftErrors.PickNotFoundByPlayOrder(request.PlayOrder));
+      return Result.Failure(DraftErrors.PickNotFoundByPlayOrder(request.PlayOrder));
     }
 
     var caller = await _usersApi.GetUserByPublicId(request.CallerUserPublicId, cancellationToken);
@@ -36,7 +42,7 @@ internal sealed class ApplyCommissionerOverrideCommandHandler(
 
     if (caller.UserId != guestDraft.OwnerUserId)
     {
-      return Result.Failure(GuestDraftErrors.OnlyOwnerCanPerformThisAction);
+      return Result.Failure(DraftErrors.OnlyOwnerCanPerformThisAction);
     }
 
     var result = guestDraft.ApplyCommissionerOverride(pick.Id);

@@ -1,8 +1,10 @@
-﻿namespace ScreenDrafts.Modules.GuestDrafts.Infrastructure.GuestDrafts;
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Entities;
 
-internal sealed class GuestDraftMovieConfiguration : IEntityTypeConfiguration<GuestDraftMovie>
+namespace ScreenDrafts.Modules.GuestDrafts.Infrastructure.GuestDrafts;
+
+internal sealed class GuestDraftMovieConfiguration : IEntityTypeConfiguration<Movie>
 {
-  public void Configure(EntityTypeBuilder<GuestDraftMovie> builder)
+  public void Configure(EntityTypeBuilder<Movie> builder)
   {
     builder.ToTable(Tables.GuestDraftMovies);
 

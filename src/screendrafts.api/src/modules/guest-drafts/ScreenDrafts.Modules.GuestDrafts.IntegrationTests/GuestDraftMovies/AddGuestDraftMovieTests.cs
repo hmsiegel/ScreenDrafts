@@ -1,3 +1,5 @@
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Errors;
+
 namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.GuestDraftMovies;
 
 public sealed class AddGuestDraftMovieTests(GuestDraftsIntegrationTestWebAppFactory factory)
@@ -50,12 +52,17 @@ public sealed class AddGuestDraftMovieTests(GuestDraftsIntegrationTestWebAppFact
     (await Sender.Send(command, TestContext.Current.CancellationToken)).IsSuccess.Should().BeTrue();
 
     // Act -- redelivered with a different Id, same PublicId
-    var duplicate = command with { Id = Guid.NewGuid() };
+    var duplicate = command with
+    {
+      Id = Guid.NewGuid(),
+    };
     var result = await Sender.Send(duplicate, TestContext.Current.CancellationToken);
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors.Should().Contain(e => e.Code == GuestDraftMovieErrors.MovieAlreadyExists(command.PublicId).Code);
+    result
+      .Errors.Should()
+      .Contain(e => e.Code == MovieErrors.MovieAlreadyExists(command.PublicId).Code);
 
     var movieCount = await DbContext.GuestDraftMovies.CountAsync(
       m => m.PublicId == command.PublicId,

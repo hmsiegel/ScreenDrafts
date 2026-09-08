@@ -1,3 +1,6 @@
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Entities;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Errors;
+
 namespace ScreenDrafts.Modules.GuestDrafts.UnitTests.GuestDraftMovies;
 
 public class GuestDraftMovieTests : GuestDraftsBaseTest
@@ -6,30 +9,32 @@ public class GuestDraftMovieTests : GuestDraftsBaseTest
   public void Create_ShouldReturnFailure_WhenMovieTitleIsBlank()
   {
     // Act
-    var result = GuestDraftMovie.Create(
+    var result = Movie.Create(
       movieTitle: "  ",
       publicId: $"m_{Faker.Random.AlphaNumeric(15)}",
       mediaType: MediaType.Movie,
-      id: Guid.NewGuid());
+      id: Guid.NewGuid()
+    );
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDraftMovieErrors.InvalidMovieTitle);
+    result.Errors[0].Should().Be(MovieErrors.InvalidMovieTitle);
   }
 
   [Fact]
   public void Create_ShouldReturnFailure_WhenPublicIdIsBlank()
   {
     // Act
-    var result = GuestDraftMovie.Create(
+    var result = Movie.Create(
       movieTitle: Faker.Company.CompanyName(),
       publicId: "  ",
       mediaType: MediaType.Movie,
-      id: Guid.NewGuid());
+      id: Guid.NewGuid()
+    );
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDraftMovieErrors.InvalidPublicId);
+    result.Errors[0].Should().Be(MovieErrors.InvalidPublicId);
   }
 
   [Fact]
@@ -41,7 +46,7 @@ public class GuestDraftMovieTests : GuestDraftsBaseTest
     var title = Faker.Company.CompanyName();
 
     // Act
-    var result = GuestDraftMovie.Create(
+    var result = Movie.Create(
       movieTitle: title,
       publicId: publicId,
       mediaType: MediaType.Movie,
@@ -49,7 +54,8 @@ public class GuestDraftMovieTests : GuestDraftsBaseTest
       imdbId: "tt1234567",
       tmdbId: 42,
       igdbId: 7,
-      year: "1999");
+      year: "1999"
+    );
 
     // Assert
     result.IsSuccess.Should().BeTrue();

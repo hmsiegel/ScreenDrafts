@@ -1,3 +1,7 @@
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Entities;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Enums;
+
 namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.Abstractions;
 
 /// <summary>
@@ -10,7 +14,11 @@ namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.Abstractions;
 /// GuestDraftParticipant back to this user via ParticipantIdValue (which stores
 /// GuestDrafter ids now, not UserIds).
 /// </summary>
-public sealed record TestUser(string UserPublicId, string GuestDrafterPublicId, Guid GuestDrafterId);
+public sealed record TestUser(
+  string UserPublicId,
+  string GuestDrafterPublicId,
+  Guid GuestDrafterId
+);
 
 [Collection(nameof(GuestDraftsIntegrationTestCollection))]
 [System.Diagnostics.CodeAnalysis.SuppressMessage(
@@ -76,12 +84,16 @@ public abstract class GuestDraftsIntegrationTest(GuestDraftsIntegrationTestWebAp
       ct
     );
 
-    createResult.IsSuccess.Should().BeTrue("test setup must be able to create a guest drafter for the new user");
+    createResult
+      .IsSuccess.Should()
+      .BeTrue("test setup must be able to create a guest drafter for the new user");
 
     var guestDrafterPublicId = createResult.Value;
     var guestDrafterId = (
       await DbContext.GuestDrafters.FirstAsync(d => d.PublicId == guestDrafterPublicId, ct)
-    ).Id.Value;
+    )
+      .Id
+      .Value;
 
     return new TestUser(userPublicId, guestDrafterPublicId, guestDrafterId);
   }
@@ -100,15 +112,17 @@ public abstract class GuestDraftsIntegrationTest(GuestDraftsIntegrationTestWebAp
     string? year = null
   )
   {
-    var movie = GuestDraftMovie.Create(
-      movieTitle: title ?? Faker.Company.CompanyName(),
-      publicId: $"m_{Faker.Random.AlphaNumeric(15)}",
-      mediaType: MediaType.Movie,
-      id: Guid.NewGuid(),
-      imdbId: imdbId,
-      tmdbId: tmdbId,
-      year: year
-    ).Value;
+    var movie = Movie
+      .Create(
+        movieTitle: title ?? Faker.Company.CompanyName(),
+        publicId: $"m_{Faker.Random.AlphaNumeric(15)}",
+        mediaType: MediaType.Movie,
+        id: Guid.NewGuid(),
+        imdbId: imdbId,
+        tmdbId: tmdbId,
+        year: year
+      )
+      .Value;
 
     DbContext.GuestDraftMovies.Add(movie);
     await DbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
@@ -118,7 +132,7 @@ public abstract class GuestDraftsIntegrationTest(GuestDraftsIntegrationTestWebAp
 
   internal async Task<string> CreateGuestDraftAsync(
     string ownerUserPublicId,
-    GuestDraftType? type = null,
+    DraftType? type = null,
     string? title = null,
     DateOnly? draftDate = null,
     int numberOfPicks = 1,
@@ -130,7 +144,7 @@ public abstract class GuestDraftsIntegrationTest(GuestDraftsIntegrationTestWebAp
       {
         OwnerUserPublicId = ownerUserPublicId,
         Title = title ?? Faker.Company.CompanyName(),
-        Type = (type ?? GuestDraftType.Standard).Name,
+        Type = (type ?? DraftType.Standard).Name,
         DraftDate = draftDate,
         NumberOfPicks = numberOfPicks,
         Positions = positions ?? [],
@@ -206,7 +220,7 @@ public abstract class GuestDraftsIntegrationTest(GuestDraftsIntegrationTestWebAp
     return (await DbContext.GuestDrafters.FirstAsync(d => d.UserId == userId, ct)).PublicId;
   }
 
-  protected async Task<GuestDraft> GetGuestDraftWithBoardAsync(string guestDraftPublicId)
+  protected async Task<Draft> GetGuestDraftWithBoardAsync(string guestDraftPublicId)
   {
     return await DbContext
       .GuestDrafts.Include(gd => gd.Participants)
@@ -233,7 +247,7 @@ public abstract class GuestDraftsIntegrationTest(GuestDraftsIntegrationTestWebAp
 
     // Standard is a fixed draft type -- Create applies its template automatically,
     // no separate board-setup step needed.
-    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, GuestDraftType.Standard);
+    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, DraftType.Standard);
     (await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId))
       .IsSuccess.Should()
       .BeTrue("test setup must be able to add the owner as a participant");
@@ -290,7 +304,7 @@ public abstract class GuestDraftsIntegrationTest(GuestDraftsIntegrationTestWebAp
   protected async Task<(
     string GuestDraftPublicId,
     IReadOnlyList<TestUser> Users
-  )> CreateInProgressCustomGuestDraftAsync(int participantCount, GuestDraftType? type = null)
+  )> CreateInProgressCustomGuestDraftAsync(int participantCount, DraftType? type = null)
   {
     var ct = TestContext.Current.CancellationToken;
     var users = new List<TestUser>();
@@ -304,12 +318,16 @@ public abstract class GuestDraftsIntegrationTest(GuestDraftsIntegrationTestWebAp
 
     var positions = Enumerable
       .Range(0, participantCount)
-      .Select(i => new CreateGuestDraftPositionInput { Name = $"Position {i + 1}", Picks = [i + 1] })
+      .Select(i => new CreateGuestDraftPositionInput
+      {
+        Name = $"Position {i + 1}",
+        Picks = [i + 1],
+      })
       .ToList();
 
     var guestDraftPublicId = await CreateGuestDraftAsync(
       owner.UserPublicId,
-      type ?? GuestDraftType.MiniMega,
+      type ?? DraftType.MiniMega,
       numberOfPicks: participantCount,
       positions: positions
     );
@@ -359,7 +377,7 @@ public abstract class GuestDraftsIntegrationTest(GuestDraftsIntegrationTestWebAp
     string callerUserPublicId,
     string? title = null,
     DateOnly? draftDate = null,
-    GuestDraftType? type = null,
+    DraftType? type = null,
     int? numberOfPicks = null,
     IReadOnlyList<UpdateGuestDraftPositionInput>? positions = null
   )
@@ -570,61 +588,136 @@ public abstract class GuestDraftsIntegrationTest(GuestDraftsIntegrationTestWebAp
     [
       new() { Name = "Owner", Picks = [1, 2] },
       new() { Name = "B", Picks = [3] },
-      new() { Name = "C", Picks = [4], HasBonusVetoOverride = true },
-      new() { Name = "D", Picks = [5], HasBonusVetoOverride = true },
+      new()
+      {
+        Name = "C",
+        Picks = [4],
+        HasBonusVetoOverride = true,
+      },
+      new()
+      {
+        Name = "D",
+        Picks = [5],
+        HasBonusVetoOverride = true,
+      },
     ];
 
     var guestDraftPublicId = await CreateGuestDraftAsync(
       owner.UserPublicId,
-      GuestDraftType.MiniMega,
+      DraftType.MiniMega,
       numberOfPicks: 5,
       positions: positions
     );
-    (await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId)).IsSuccess.Should().BeTrue();
-    (await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, b.GuestDrafterPublicId)).IsSuccess.Should().BeTrue();
-    (await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, c.GuestDrafterPublicId)).IsSuccess.Should().BeTrue();
-    (await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, d.GuestDrafterPublicId)).IsSuccess.Should().BeTrue();
+    (await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId))
+      .IsSuccess.Should()
+      .BeTrue();
+    (await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, b.GuestDrafterPublicId))
+      .IsSuccess.Should()
+      .BeTrue();
+    (await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, c.GuestDrafterPublicId))
+      .IsSuccess.Should()
+      .BeTrue();
+    (await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, d.GuestDrafterPublicId))
+      .IsSuccess.Should()
+      .BeTrue();
 
     var guestDraft = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
     var boardPositions = guestDraft.GameBoard!.Positions.ToList();
 
-    (await AssignParticipantAsync(guestDraftPublicId, owner.UserPublicId, boardPositions.Single(p => p.Name == "Owner").PublicId, owner.GuestDrafterPublicId))
-      .IsSuccess.Should().BeTrue();
-    (await AssignParticipantAsync(guestDraftPublicId, owner.UserPublicId, boardPositions.Single(p => p.Name == "B").PublicId, b.GuestDrafterPublicId))
-      .IsSuccess.Should().BeTrue();
-    (await AssignParticipantAsync(guestDraftPublicId, owner.UserPublicId, boardPositions.Single(p => p.Name == "C").PublicId, c.GuestDrafterPublicId))
-      .IsSuccess.Should().BeTrue();
-    (await AssignParticipantAsync(guestDraftPublicId, owner.UserPublicId, boardPositions.Single(p => p.Name == "D").PublicId, d.GuestDrafterPublicId))
-      .IsSuccess.Should().BeTrue();
+    (
+      await AssignParticipantAsync(
+        guestDraftPublicId,
+        owner.UserPublicId,
+        boardPositions.Single(p => p.Name == "Owner").PublicId,
+        owner.GuestDrafterPublicId
+      )
+    )
+      .IsSuccess.Should()
+      .BeTrue();
+    (
+      await AssignParticipantAsync(
+        guestDraftPublicId,
+        owner.UserPublicId,
+        boardPositions.Single(p => p.Name == "B").PublicId,
+        b.GuestDrafterPublicId
+      )
+    )
+      .IsSuccess.Should()
+      .BeTrue();
+    (
+      await AssignParticipantAsync(
+        guestDraftPublicId,
+        owner.UserPublicId,
+        boardPositions.Single(p => p.Name == "C").PublicId,
+        c.GuestDrafterPublicId
+      )
+    )
+      .IsSuccess.Should()
+      .BeTrue();
+    (
+      await AssignParticipantAsync(
+        guestDraftPublicId,
+        owner.UserPublicId,
+        boardPositions.Single(p => p.Name == "D").PublicId,
+        d.GuestDrafterPublicId
+      )
+    )
+      .IsSuccess.Should()
+      .BeTrue();
 
-    (await SetGuestDraftStatusAsync(guestDraftPublicId, owner.UserPublicId, GuestDraftStatusAction.Start))
-      .IsSuccess.Should().BeTrue();
+    (
+      await SetGuestDraftStatusAsync(
+        guestDraftPublicId,
+        owner.UserPublicId,
+        GuestDraftStatusAction.Start
+      )
+    )
+      .IsSuccess.Should()
+      .BeTrue();
 
     // slot1 (playOrder1): plain landed, left for the caller to reveal (or not).
-    (await PlayPickAsync(guestDraftPublicId, owner.UserPublicId, await CreateMovieAsync(), 1, 1)).IsSuccess.Should().BeTrue();
+    (await PlayPickAsync(guestDraftPublicId, owner.UserPublicId, await CreateMovieAsync(), 1, 1))
+      .IsSuccess.Should()
+      .BeTrue();
 
     // slot2 (playOrder2): plain landed, left unrevealed.
-    (await PlayPickAsync(guestDraftPublicId, owner.UserPublicId, await CreateMovieAsync(), 2, 2)).IsSuccess.Should().BeTrue();
+    (await PlayPickAsync(guestDraftPublicId, owner.UserPublicId, await CreateMovieAsync(), 2, 2))
+      .IsSuccess.Should()
+      .BeTrue();
 
     // slot3 (playOrder3): commissioner-overridden. Must happen immediately -- the
     // scope guard requires this to still be the most-recently-played pick.
-    (await PlayPickAsync(guestDraftPublicId, owner.UserPublicId, await CreateMovieAsync(), 3, 3)).IsSuccess.Should().BeTrue();
-    (await ApplyCommissionerOverrideAsync(guestDraftPublicId, 3, owner.UserPublicId)).IsSuccess.Should().BeTrue();
+    (await PlayPickAsync(guestDraftPublicId, owner.UserPublicId, await CreateMovieAsync(), 3, 3))
+      .IsSuccess.Should()
+      .BeTrue();
+    (await ApplyCommissionerOverrideAsync(guestDraftPublicId, 3, owner.UserPublicId))
+      .IsSuccess.Should()
+      .BeTrue();
 
     // slot4 (playOrder4): vetoed by B, then overridden by C. ApplyVeto's scope guard
     // requires this to happen immediately (most-recently-played pick); the override
     // itself has no such guard.
-    (await PlayPickAsync(guestDraftPublicId, owner.UserPublicId, await CreateMovieAsync(), 4, 4)).IsSuccess.Should().BeTrue();
+    (await PlayPickAsync(guestDraftPublicId, owner.UserPublicId, await CreateMovieAsync(), 4, 4))
+      .IsSuccess.Should()
+      .BeTrue();
     (await ApplyVetoAsync(guestDraftPublicId, 4, b.UserPublicId)).IsSuccess.Should().BeTrue();
-    (await ApplyVetoOverrideAsync(guestDraftPublicId, 4, c.UserPublicId)).IsSuccess.Should().BeTrue();
+    (await ApplyVetoOverrideAsync(guestDraftPublicId, 4, c.UserPublicId))
+      .IsSuccess.Should()
+      .BeTrue();
 
     // slot5 (playOrder5): vetoed by D (seq1), D self-overrides (seq1 overridden),
     // then C vetoes again (seq2, still active) -- both ApplyVeto calls must happen
     // while slot5 remains the most-recently-played pick, i.e. before anything else
     // is played.
-    (await PlayPickAsync(guestDraftPublicId, owner.UserPublicId, await CreateMovieAsync(), 5, 5)).IsSuccess.Should().BeTrue();
+    (
+      await PlayPickAsync(guestDraftPublicId, owner.UserPublicId, await CreateMovieAsync(), 5, 5)
+    )
+      .IsSuccess.Should()
+      .BeTrue();
     (await ApplyVetoAsync(guestDraftPublicId, 5, d.UserPublicId)).IsSuccess.Should().BeTrue();
-    (await ApplyVetoOverrideAsync(guestDraftPublicId, 5, d.UserPublicId)).IsSuccess.Should().BeTrue();
+    (await ApplyVetoOverrideAsync(guestDraftPublicId, 5, d.UserPublicId))
+      .IsSuccess.Should()
+      .BeTrue();
     (await ApplyVetoAsync(guestDraftPublicId, 5, c.UserPublicId)).IsSuccess.Should().BeTrue();
 
     return (guestDraftPublicId, owner, b, c, d);

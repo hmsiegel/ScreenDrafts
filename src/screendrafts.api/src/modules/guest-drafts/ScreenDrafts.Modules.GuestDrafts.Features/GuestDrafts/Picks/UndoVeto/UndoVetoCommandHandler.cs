@@ -1,11 +1,15 @@
-﻿namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.Picks.UndoVeto;
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Enums;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Errors;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Repositories;
+
+namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.Picks.UndoVeto;
 
 internal sealed class UndoVetoCommandHandler(
-  IGuestDraftRepository guestDraftRepository,
+  IDraftRepository guestDraftRepository,
   IUsersApi usersApi
 ) : ICommandHandler<UndoVetoCommand>
 {
-  private readonly IGuestDraftRepository _guestDraftRepository = guestDraftRepository;
+  private readonly IDraftRepository _guestDraftRepository = guestDraftRepository;
   private readonly IUsersApi _usersApi = usersApi;
 
   public async Task<Result> Handle(UndoVetoCommand request, CancellationToken cancellationToken)
@@ -17,7 +21,7 @@ internal sealed class UndoVetoCommandHandler(
 
     if (guestDraft is null)
     {
-      return Result.Failure(GuestDraftErrors.NotFound(request.GuestDraftPublicId));
+      return Result.Failure(DraftErrors.NotFound(request.GuestDraftPublicId));
     }
 
     var caller = await _usersApi.GetUserByPublicId(request.CallerUserPublicId, cancellationToken);
@@ -29,19 +33,19 @@ internal sealed class UndoVetoCommandHandler(
 
     if (caller.UserId != guestDraft.OwnerUserId)
     {
-      return Result.Failure(GuestDraftErrors.OnlyOwnerCanPerformThisAction);
+      return Result.Failure(DraftErrors.OnlyOwnerCanPerformThisAction);
     }
 
-    if (guestDraft.GuestDraftStatus != GuestDraftStatus.InProgress)
+    if (guestDraft.GuestDraftStatus != DraftStatus.InProgress)
     {
-      return Result.Failure(GuestDraftErrors.DraftNotStarted);
+      return Result.Failure(DraftErrors.DraftNotStarted);
     }
 
     var pick = guestDraft.Picks.FirstOrDefault(p => p.PlayOrder == request.PlayOrder);
 
     if (pick is null)
     {
-      return Result.Failure(GuestDraftErrors.PickNotFoundByPlayOrder(request.PlayOrder));
+      return Result.Failure(DraftErrors.PickNotFoundByPlayOrder(request.PlayOrder));
     }
 
     var result = guestDraft.UndoVeto(pick.Id);

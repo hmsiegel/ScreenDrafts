@@ -1,3 +1,5 @@
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.ValueObjects;
+
 namespace ScreenDrafts.Modules.GuestDrafts.UnitTests.ValueObjects;
 
 /// <summary>
@@ -13,21 +15,21 @@ public class SimpleIdentifierTests
   [Fact]
   public void GuestDraftParticipantId_CreateUnique_ShouldGenerateDifferentValues()
   {
-    GuestDraftParticipantId.CreateUnique().Should().NotBe(GuestDraftParticipantId.CreateUnique());
+    DraftParticipantId.CreateUnique().Should().NotBe(DraftParticipantId.CreateUnique());
   }
 
   [Fact]
   public void GuestDraftParticipantId_Create_ShouldSetValue()
   {
     var value = Guid.NewGuid();
-    GuestDraftParticipantId.Create(value).Value.Should().Be(value);
+    DraftParticipantId.Create(value).Value.Should().Be(value);
   }
 
   [Fact]
   public void GuestDraftParticipantId_FromString_ShouldRoundTrip()
   {
-    var original = GuestDraftParticipantId.CreateUnique();
-    GuestDraftParticipantId.FromString(original.Value.ToString()).Should().Be(original);
+    var original = DraftParticipantId.CreateUnique();
+    DraftParticipantId.FromString(original.Value.ToString()).Should().Be(original);
   }
 
   // ── GuestDraftPickId ─────────────────────────────────────────────────────
@@ -35,27 +37,27 @@ public class SimpleIdentifierTests
   [Fact]
   public void GuestDraftPickId_CreateUnique_ShouldGenerateDifferentValues()
   {
-    GuestDraftPickId.CreateUnique().Should().NotBe(GuestDraftPickId.CreateUnique());
+    PickId.CreateUnique().Should().NotBe(PickId.CreateUnique());
   }
 
   [Fact]
   public void GuestDraftPickId_Create_ShouldSetValue()
   {
     var value = Guid.NewGuid();
-    GuestDraftPickId.Create(value).Value.Should().Be(value);
+    PickId.Create(value).Value.Should().Be(value);
   }
 
   [Fact]
   public void GuestDraftPickId_FromString_ShouldRoundTrip()
   {
-    var original = GuestDraftPickId.CreateUnique();
-    GuestDraftPickId.FromString(original.Value.ToString()).Should().Be(original);
+    var original = PickId.CreateUnique();
+    PickId.FromString(original.Value.ToString()).Should().Be(original);
   }
 
   [Fact]
   public void GuestDraftPickId_Empty_ShouldHaveAnEmptyGuidValue()
   {
-    GuestDraftPickId.Empty.Value.Should().Be(Guid.Empty);
+    PickId.Empty.Value.Should().Be(Guid.Empty);
   }
 
   // ── GuestDraftPositionId ─────────────────────────────────────────────────
@@ -63,21 +65,21 @@ public class SimpleIdentifierTests
   [Fact]
   public void GuestDraftPositionId_CreateUnique_ShouldGenerateDifferentValues()
   {
-    GuestDraftPositionId.CreateUnique().Should().NotBe(GuestDraftPositionId.CreateUnique());
+    DraftPositionId.CreateUnique().Should().NotBe(DraftPositionId.CreateUnique());
   }
 
   [Fact]
   public void GuestDraftPositionId_Create_ShouldSetValue()
   {
     var value = Guid.NewGuid();
-    GuestDraftPositionId.Create(value).Value.Should().Be(value);
+    DraftPositionId.Create(value).Value.Should().Be(value);
   }
 
   [Fact]
   public void GuestDraftPositionId_FromString_ShouldRoundTrip()
   {
-    var original = GuestDraftPositionId.CreateUnique();
-    GuestDraftPositionId.FromString(original.Value.ToString()).Should().Be(original);
+    var original = DraftPositionId.CreateUnique();
+    DraftPositionId.FromString(original.Value.ToString()).Should().Be(original);
   }
 
   // ── GuestDraftVetoId ─────────────────────────────────────────────────────
@@ -85,21 +87,21 @@ public class SimpleIdentifierTests
   [Fact]
   public void GuestDraftVetoId_CreateUnique_ShouldGenerateDifferentValues()
   {
-    GuestDraftVetoId.CreateUnique().Should().NotBe(GuestDraftVetoId.CreateUnique());
+    VetoId.CreateUnique().Should().NotBe(VetoId.CreateUnique());
   }
 
   [Fact]
   public void GuestDraftVetoId_Create_ShouldSetValue()
   {
     var value = Guid.NewGuid();
-    GuestDraftVetoId.Create(value).Value.Should().Be(value);
+    VetoId.Create(value).Value.Should().Be(value);
   }
 
   [Fact]
   public void GuestDraftVetoId_FromString_ShouldRoundTrip()
   {
-    var original = GuestDraftVetoId.CreateUnique();
-    GuestDraftVetoId.FromString(original.Value.ToString()).Should().Be(original);
+    var original = VetoId.CreateUnique();
+    VetoId.FromString(original.Value.ToString()).Should().Be(original);
   }
 
   // ── GuestDraftVetoOverrideId ─────────────────────────────────────────────
@@ -107,21 +109,21 @@ public class SimpleIdentifierTests
   [Fact]
   public void GuestDraftVetoOverrideId_CreateUnique_ShouldGenerateDifferentValues()
   {
-    GuestDraftVetoOverrideId.CreateUnique().Should().NotBe(GuestDraftVetoOverrideId.CreateUnique());
+    VetoOverrideId.CreateUnique().Should().NotBe(VetoOverrideId.CreateUnique());
   }
 
   [Fact]
   public void GuestDraftVetoOverrideId_Create_ShouldSetValue()
   {
     var value = Guid.NewGuid();
-    GuestDraftVetoOverrideId.Create(value).Value.Should().Be(value);
+    VetoOverrideId.Create(value).Value.Should().Be(value);
   }
 
   [Fact]
   public void GuestDraftVetoOverrideId_FromString_ShouldRoundTrip()
   {
-    var original = GuestDraftVetoOverrideId.CreateUnique();
-    GuestDraftVetoOverrideId.FromString(original.Value.ToString()).Should().Be(original);
+    var original = VetoOverrideId.CreateUnique();
+    VetoOverrideId.FromString(original.Value.ToString()).Should().Be(original);
   }
 
   // ── GuestDraftCommissionerOverrideId ─────────────────────────────────────
@@ -129,21 +131,21 @@ public class SimpleIdentifierTests
   [Fact]
   public void GuestDraftCommissionerOverrideId_CreateUnique_ShouldGenerateDifferentValues()
   {
-    GuestDraftCommissionerOverrideId.CreateUnique().Should().NotBe(GuestDraftCommissionerOverrideId.CreateUnique());
+    CommissionerOverrideId.CreateUnique().Should().NotBe(CommissionerOverrideId.CreateUnique());
   }
 
   [Fact]
   public void GuestDraftCommissionerOverrideId_Create_ShouldSetValue()
   {
     var value = Guid.NewGuid();
-    GuestDraftCommissionerOverrideId.Create(value).Value.Should().Be(value);
+    CommissionerOverrideId.Create(value).Value.Should().Be(value);
   }
 
   [Fact]
   public void GuestDraftCommissionerOverrideId_FromString_ShouldRoundTrip()
   {
-    var original = GuestDraftCommissionerOverrideId.CreateUnique();
-    GuestDraftCommissionerOverrideId.FromString(original.Value.ToString()).Should().Be(original);
+    var original = CommissionerOverrideId.CreateUnique();
+    CommissionerOverrideId.FromString(original.Value.ToString()).Should().Be(original);
   }
 
   // ── GuestDraftGameBoardId ────────────────────────────────────────────────
@@ -151,20 +153,20 @@ public class SimpleIdentifierTests
   [Fact]
   public void GuestDraftGameBoardId_CreateUnique_ShouldGenerateDifferentValues()
   {
-    GuestDraftGameBoardId.CreateUnique().Should().NotBe(GuestDraftGameBoardId.CreateUnique());
+    GameBoardId.CreateUnique().Should().NotBe(GameBoardId.CreateUnique());
   }
 
   [Fact]
   public void GuestDraftGameBoardId_Create_ShouldSetValue()
   {
     var value = Guid.NewGuid();
-    GuestDraftGameBoardId.Create(value).Value.Should().Be(value);
+    GameBoardId.Create(value).Value.Should().Be(value);
   }
 
   [Fact]
   public void GuestDraftGameBoardId_FromString_ShouldRoundTrip()
   {
-    var original = GuestDraftGameBoardId.CreateUnique();
-    GuestDraftGameBoardId.FromString(original.Value.ToString()).Should().Be(original);
+    var original = GameBoardId.CreateUnique();
+    GameBoardId.FromString(original.Value.ToString()).Should().Be(original);
   }
 }
