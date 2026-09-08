@@ -8,7 +8,7 @@ public sealed class ApplyVetoTests(GuestDraftsIntegrationTestWebAppFactory facto
   {
     // Arrange
     var (guestDraftPublicId, owner, other) = await CreateInProgressStandardGuestDraftAsync();
-    await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), 7, 1);
+    await PlayPickAsync(guestDraftPublicId, owner, await CreateMovieAsync(), 7, 1);
 
     // Act
     var result = await ApplyVetoAsync(guestDraftPublicId, 1, other);
@@ -23,8 +23,8 @@ public sealed class ApplyVetoTests(GuestDraftsIntegrationTestWebAppFactory facto
     // Arrange -- the older pick is untouched (unvetoed), but that alone doesn't
     // make it eligible: only the most recent pick, by play order, can be vetoed.
     var (guestDraftPublicId, owner, other) = await CreateInProgressStandardGuestDraftAsync();
-    await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), 7, 1);
-    await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), 6, 2);
+    await PlayPickAsync(guestDraftPublicId, owner, await CreateMovieAsync(), 7, 1);
+    await PlayPickAsync(guestDraftPublicId, owner, await CreateMovieAsync(), 6, 2);
 
     // Act
     var result = await ApplyVetoAsync(guestDraftPublicId, 1, other);
@@ -40,9 +40,9 @@ public sealed class ApplyVetoTests(GuestDraftsIntegrationTestWebAppFactory facto
     // Arrange -- spend the participant's one starting veto, then try again on the
     // (now re-pickable) most recent pick.
     var (guestDraftPublicId, owner, other) = await CreateInProgressStandardGuestDraftAsync();
-    await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), 7, 1);
+    await PlayPickAsync(guestDraftPublicId, owner, await CreateMovieAsync(), 7, 1);
     await ApplyVetoAsync(guestDraftPublicId, 1, other);
-    await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), 7, 2);
+    await PlayPickAsync(guestDraftPublicId, owner, await CreateMovieAsync(), 7, 2);
 
     // Act
     var result = await ApplyVetoAsync(guestDraftPublicId, 2, other);
@@ -75,7 +75,7 @@ public sealed class ApplyVetoTests(GuestDraftsIntegrationTestWebAppFactory facto
   {
     // Arrange
     var (guestDraftPublicId, owner, other) = await CreateInProgressStandardGuestDraftAsync();
-    await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), 7, 1);
+    await PlayPickAsync(guestDraftPublicId, owner, await CreateMovieAsync(), 7, 1);
     await ApplyVetoAsync(guestDraftPublicId, 1, other);
 
     // Act -- owner still has their full veto budget; the pick is simply already vetoed
@@ -96,7 +96,7 @@ public sealed class ApplyVetoTests(GuestDraftsIntegrationTestWebAppFactory facto
 
     for (var i = 0; i < pickSlots.Length; i++)
     {
-      await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), pickSlots[i], i + 1);
+      await PlayPickAsync(guestDraftPublicId, owner, await CreateMovieAsync(), pickSlots[i], i + 1);
     }
 
     await SetGuestDraftStatusAsync(guestDraftPublicId, owner, GuestDraftStatusAction.Complete);
@@ -142,9 +142,9 @@ public sealed class ApplyVetoTests(GuestDraftsIntegrationTestWebAppFactory facto
     await AssignParticipantAsync(guestDraftPublicId, owner.UserPublicId, boardPositions.Single(p => p.Name == "B").PublicId, other.GuestDrafterPublicId);
     await SetGuestDraftStatusAsync(guestDraftPublicId, owner.UserPublicId, GuestDraftStatusAction.Start);
 
-    await PlayPickAsync(guestDraftPublicId, owner.UserPublicId, CreateMovie(), 1, 1);
+    await PlayPickAsync(guestDraftPublicId, owner.UserPublicId, await CreateMovieAsync(), 1, 1);
     await ApplyVetoAsync(guestDraftPublicId, 1, other.UserPublicId);
-    var secondMovie = CreateMovie();
+    var secondMovie = await CreateMovieAsync();
     await PlayPickAsync(guestDraftPublicId, owner.UserPublicId, secondMovie, 1, 2);
 
     return (guestDraftPublicId, owner, other, secondMovie);

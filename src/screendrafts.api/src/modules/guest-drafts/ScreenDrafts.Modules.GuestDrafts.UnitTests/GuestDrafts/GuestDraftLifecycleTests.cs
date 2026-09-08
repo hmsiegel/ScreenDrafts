@@ -133,7 +133,7 @@ public class GuestDraftLifecycleTests : GuestDraftsBaseTest
     // Arrange -- the Standard board has seven pick slots across its two positions
     // in total; only one of them has landed here.
     var (guestDraft, owner, _) = CreateInProgressStandardGuestDraft();
-    guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), 7, 1, owner.Id.Value);
+    guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 7, 1, owner.Id.Value);
 
     // Act
     var result = guestDraft.Complete();
@@ -152,7 +152,7 @@ public class GuestDraftLifecycleTests : GuestDraftsBaseTest
 
     for (var i = 0; i < pickSlots.Length; i++)
     {
-      guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), pickSlots[i], i + 1, owner.Id.Value);
+      guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), pickSlots[i], i + 1, owner.Id.Value);
     }
 
     // Act

@@ -9,13 +9,15 @@ public static class GuestDraftPickFactory
     GuestDraftParticipant playedBy,
     int position = 1,
     int playOrder = 1,
-    string? moviePublicId = null)
+    string? moviePublicId = null,
+    Guid? movieId = null)
   {
     ArgumentNullException.ThrowIfNull(guestDraft);
     ArgumentNullException.ThrowIfNull(playedBy);
 
     var result = guestDraft.PlayPick(
       moviePublicId: moviePublicId ?? _faker.Random.AlphaNumeric(10),
+      movieId: movieId ?? Guid.NewGuid(),
       position: position,
       playOrder: playOrder,
       participantId: playedBy.Id.Value);

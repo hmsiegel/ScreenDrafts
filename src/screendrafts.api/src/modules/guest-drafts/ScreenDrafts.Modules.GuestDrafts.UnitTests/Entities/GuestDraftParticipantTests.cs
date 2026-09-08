@@ -24,7 +24,7 @@ public class GuestDraftParticipantTests : GuestDraftsBaseTest
   {
     // Arrange
     var (guestDraft, owner, other) = CreateInProgressStandardGuestDraft();
-    var pickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), 7, 1, owner.Id.Value).Value;
+    var pickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 7, 1, owner.Id.Value).Value;
     guestDraft.ApplyVeto(pickId, other.Id.Value);
 
     // Act & Assert
@@ -50,7 +50,7 @@ public class GuestDraftParticipantTests : GuestDraftsBaseTest
     guestDraft.AssignParticipantToPosition(boardPositions.Single(p => p.Name == "B"), other.Id.Value);
     guestDraft.Start();
 
-    var pickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), 1, 1, owner.Id.Value).Value;
+    var pickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 1, 1, owner.Id.Value).Value;
     guestDraft.ApplyVeto(pickId, other.Id.Value);
 
     // Act & Assert -- normal pool now spent, but the awarded fungible token remains

@@ -4,8 +4,7 @@
 
 internal sealed class GetGuestDraftGameplayQueryHandler(
   IDbConnectionFactory dbConnectionFactory,
-  IUsersApi usersApi,
-  IMovieTitleReader movieTitleReader
+  IUsersApi usersApi
 ) : IQueryHandler<GetGuestDraftGameplayQuery, GetGuestDraftGameplayResponse>
 {
   public async Task<Result<GetGuestDraftGameplayResponse>> Handle(
@@ -134,6 +133,12 @@ internal sealed class GetGuestDraftGameplayQueryHandler(
         pk.play_order                              AS {nameof(PickRow.PlayOrder)},
         pk.position                                AS {nameof(PickRow.Position)},
         pk.movie_public_id                         AS {nameof(PickRow.MoviePublicId)},
+        m.movie_title                              AS {nameof(PickRow.MovieTitle)},
+        m.year                                     AS {nameof(PickRow.MovieYear)},
+        m.tmdb_id                                  AS {nameof(PickRow.TmdbId)},
+        m.imdb_id                                  AS {nameof(PickRow.ImdbId)},
+        m.igdb_id                                  AS {nameof(PickRow.IgdbId)},
+        m.media_type                               AS {nameof(PickRow.MediaType)},
         pk.played_by_participant_id                AS {nameof(PickRow.PlayedByParticipantId)},
         pk.reveal_authorized_participant_id        AS {nameof(
         PickRow.RevealAuthorizedParticipantId
@@ -151,6 +156,7 @@ internal sealed class GetGuestDraftGameplayQueryHandler(
         COALESCE(v.sequence, 0)                    AS {nameof(PickRow.VetoSequence)}
       FROM guest_drafts.guest_draft_picks pk
       JOIN guest_drafts.guest_drafts gd ON gd.id = pk.guest_draft_id
+      JOIN guest_drafts.movies m ON m.id = pk.movie_id
       LEFT JOIN guest_drafts.guest_draft_vetoes v ON v.id = (
         SELECT v2.id FROM guest_drafts.guest_draft_vetoes v2
         WHERE v2.target_pick_id = pk.id
@@ -225,12 +231,6 @@ internal sealed class GetGuestDraftGameplayQueryHandler(
         ? participantIdToDisplayName.GetValueOrDefault(participantId.Value)
         : null;
 
-    // ── 7. Resolve movie titles ──────────────────────────────────────────────
-    var movieTitles = await movieTitleReader.GetTitlesByPublicIdsAsync(
-      pickRows.Select(p => p.MoviePublicId).Distinct(),
-      cancellationToken
-    );
-
     // ── 8. Caller context ────────────────────────────────────────────────────
     var isOwner = caller.UserId == header.OwnerUserId;
     var callerParticipant = participantRows.FirstOrDefault(p => p.DrafterUserId == caller.UserId);
@@ -262,7 +262,7 @@ internal sealed class GetGuestDraftGameplayQueryHandler(
         CallerContext = callerContext,
         Positions =
         [
-          .. positionRows.Select(pos => new GameplayPositionResponse
+          .. positionRows.Select(pos => new GuestDraftGameplayPositionResponse
           {
             PositionPublicId = pos.PublicId,
             Name = pos.Name,
@@ -276,7 +276,7 @@ internal sealed class GetGuestDraftGameplayQueryHandler(
         ],
         Participants =
         [
-          .. participantRows.Select(p => new GameplayParticipantResponse
+          .. participantRows.Select(p => new GuestDraftGameplayParticipantResponse
           {
             ParticipantId = p.Id,
             ParticipantPublicId = p.DrafterPublicId ?? string.Empty,
@@ -302,12 +302,17 @@ internal sealed class GetGuestDraftGameplayQueryHandler(
               && p.RevealAuthorizedParticipantId == callerParticipant.Id;
             var canSeeMovie = isRevealed || isOwner || callerIsPicker || callerIsRevealer;
 
-            return new GameplayPickResponse
+            return new GuestDraftGameplayPickResponse
             {
               PlayOrder = p.PlayOrder,
               Position = p.Position,
               MoviePublicId = canSeeMovie ? p.MoviePublicId : null,
-              MovieTitle = canSeeMovie ? movieTitles.GetValueOrDefault(p.MoviePublicId) : null,
+              MovieTitle = canSeeMovie ? p.MovieTitle : null,
+              MovieYear = canSeeMovie ? p.MovieYear : null,
+              TmdbId = canSeeMovie ? p.TmdbId : null,
+              ImdbId = canSeeMovie ? p.ImdbId : null,
+              IgdbId = canSeeMovie ? p.IgdbId : null,
+              MediaType = canSeeMovie ? p.MediaType : null,
               PlayedByParticipantId = p.PlayedByParticipantId,
               PlayedByDisplayName = DisplayNameFor(p.PlayedByParticipantId) ?? "Unknown",
               IsRevealed = isRevealed,
@@ -327,7 +332,7 @@ internal sealed class GetGuestDraftGameplayQueryHandler(
               [
                 .. vetoHistoryByPlayOrder
                   .GetValueOrDefault(p.PlayOrder, [])
-                  .Select(v => new GameplayVetoHistoryEntryResponse
+                  .Select(v => new GuestDraftGameplayVetoHistoryEntryResponse
                   {
                     Sequence = v.Sequence,
                     VetoedByDisplayName = DisplayNameFor(v.VetoedByParticipantId) ?? "Unknown",
@@ -386,6 +391,12 @@ internal sealed class GetGuestDraftGameplayQueryHandler(
     public int PlayOrder { get; init; } = default!;
     public int Position { get; init; } = default!;
     public string MoviePublicId { get; init; } = default!;
+    public string MovieTitle { get; init; } = default!;
+    public string? MovieYear { get; init; } = default!;
+    public int? TmdbId { get; init; } = default!;
+    public string? ImdbId { get; init; } = default!;
+    public int? IgdbId { get; init; } = default!;
+    public int? MediaType { get; init; } = default!;
     public Guid PlayedByParticipantId { get; init; } = Guid.Empty;
     public Guid? RevealAuthorizedParticipantId { get; init; } = default!;
     public DateTimeOffset? RevealedAt { get; init; } = default!;

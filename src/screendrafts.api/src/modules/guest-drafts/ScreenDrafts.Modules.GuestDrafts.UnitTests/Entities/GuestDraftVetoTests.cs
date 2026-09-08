@@ -84,7 +84,7 @@ public class GuestDraftVetoTests : GuestDraftsBaseTest
   {
     // Arrange -- go through the aggregate once so the pick already carries a veto
     var (guestDraft, owner, other) = CreateInProgressStandardGuestDraft();
-    var pickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), 7, 1, owner.Id.Value).Value;
+    var pickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 7, 1, owner.Id.Value).Value;
     guestDraft.ApplyVeto(pickId, other.Id.Value);
     var pick = guestDraft.Picks.Single(p => p.Id == pickId);
 

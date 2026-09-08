@@ -6,7 +6,7 @@
 /// GuestDrafter's own PublicId -- every pick/position reference elsewhere
 /// carries ParticipantId alone, matching GetDraftPartGameplayResponse's shape.
 /// </summary>
-internal sealed record GameplayParticipantResponse
+internal sealed record GuestDraftGameplayParticipantResponse
 {
   public Guid ParticipantId { get; init; }
   public string ParticipantPublicId { get; init; } = default!;

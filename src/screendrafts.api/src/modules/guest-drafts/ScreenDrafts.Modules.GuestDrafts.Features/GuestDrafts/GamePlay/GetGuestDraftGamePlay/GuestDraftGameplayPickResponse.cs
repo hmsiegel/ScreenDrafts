@@ -6,12 +6,17 @@
 /// SignalR broadcasts carry, so the frontend matches a pick to "is this mine
 /// to reveal" with a Guid comparison against CallerContextResponse.ParticipantId.
 /// </summary>
-internal sealed record GameplayPickResponse
+internal sealed record GuestDraftGameplayPickResponse
 {
   public int PlayOrder { get; init; }
   public int Position { get; init; }
   public string? MoviePublicId { get; init; }
   public string? MovieTitle { get; init; }
+  public string? MovieYear { get; init; }
+  public int? TmdbId { get; init; }
+  public string? ImdbId { get; init; }
+  public int? IgdbId { get; init; }
+  public int? MediaType { get; init; }
   public Guid PlayedByParticipantId { get; init; }
   public string PlayedByDisplayName { get; init; } = default!;
   public bool IsRevealed { get; init; }
@@ -27,5 +32,5 @@ internal sealed record GameplayPickResponse
   public int VetoSequence { get; init; }
   public Guid? RevealAuthorizedParticipantId { get; init; }
   public string? RevealAuthorizedByDisplayName { get; init; }
-  public IReadOnlyList<GameplayVetoHistoryEntryResponse> VetoHistory { get; init; } = [];
+  public IReadOnlyList<GuestDraftGameplayVetoHistoryEntryResponse> VetoHistory { get; init; } = [];
 }

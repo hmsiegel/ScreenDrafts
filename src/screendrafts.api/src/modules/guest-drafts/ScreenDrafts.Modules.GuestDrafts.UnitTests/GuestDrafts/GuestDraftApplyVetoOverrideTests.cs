@@ -51,7 +51,7 @@ public class GuestDraftApplyVetoOverrideTests : GuestDraftsBaseTest
   {
     // Arrange
     var (guestDraft, picker, other) = CreateInProgressMiniMegaDraft();
-    var pickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), 1, 1, picker.Id.Value).Value;
+    var pickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 1, 1, picker.Id.Value).Value;
 
     // Act
     var result = guestDraft.ApplyVetoOverride(pickId, other.Id.Value);
@@ -85,7 +85,7 @@ public class GuestDraftApplyVetoOverrideTests : GuestDraftsBaseTest
     guestDraft.AssignParticipantToPosition(boardPositions.Single(p => p.Name == "C"), secondOverrider.Id.Value);
     guestDraft.Start();
 
-    var pickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), 1, 1, picker.Id.Value).Value;
+    var pickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 1, 1, picker.Id.Value).Value;
     guestDraft.ApplyVeto(pickId, firstOverrider.Id.Value);
     guestDraft.ApplyVetoOverride(pickId, firstOverrider.Id.Value);
 
@@ -102,7 +102,7 @@ public class GuestDraftApplyVetoOverrideTests : GuestDraftsBaseTest
   {
     // Arrange
     var (guestDraft, picker, other) = CreateInProgressMiniMegaDraft();
-    var pickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), 1, 1, picker.Id.Value).Value;
+    var pickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 1, 1, picker.Id.Value).Value;
     guestDraft.ApplyVeto(pickId, other.Id.Value);
 
     // Act
@@ -118,7 +118,7 @@ public class GuestDraftApplyVetoOverrideTests : GuestDraftsBaseTest
   {
     // Arrange -- "other" is not awarded any override budget
     var (guestDraft, picker, other) = CreateInProgressMiniMegaDraft();
-    var pickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), 1, 1, picker.Id.Value).Value;
+    var pickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 1, 1, picker.Id.Value).Value;
     guestDraft.ApplyVeto(pickId, other.Id.Value);
 
     // Act
@@ -134,7 +134,7 @@ public class GuestDraftApplyVetoOverrideTests : GuestDraftsBaseTest
   {
     // Arrange
     var (guestDraft, picker, other) = CreateInProgressMiniMegaDraft(otherHasBonusOverride: true);
-    var pickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), 1, 1, picker.Id.Value).Value;
+    var pickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 1, 1, picker.Id.Value).Value;
     guestDraft.ApplyVeto(pickId, other.Id.Value);
 
     // Act
@@ -156,11 +156,11 @@ public class GuestDraftApplyVetoOverrideTests : GuestDraftsBaseTest
       otherHasBonusOverride: true,
       otherHasBonusFungibleToken: true);
 
-    var firstPickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), 1, 1, picker.Id.Value).Value;
+    var firstPickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 1, 1, picker.Id.Value).Value;
     guestDraft.ApplyVeto(firstPickId, other.Id.Value);
     guestDraft.ApplyVetoOverride(firstPickId, other.Id.Value);
 
-    var secondPickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), 2, 2, picker.Id.Value).Value;
+    var secondPickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 2, 2, picker.Id.Value).Value;
     guestDraft.ApplyVeto(secondPickId, picker.Id.Value);
 
     // Act

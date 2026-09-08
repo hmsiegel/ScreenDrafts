@@ -14,4 +14,5 @@ internal static class Tables
   internal const string GuestDrafters = "guest_drafters";
   internal const string GuestDrafterTeams = "guest_drafter_teams";
   internal const string GuestDrafterTeamMembers = "guest_drafter_team_members";
+  internal const string GuestDraftMovies = "movies";
 }

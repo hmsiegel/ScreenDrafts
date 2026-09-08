@@ -7,7 +7,7 @@ public class GuestDraftRevealPickTests : GuestDraftsBaseTest
   {
     // Arrange
     var (guestDraft, owner, _) = CreateInProgressStandardGuestDraft();
-    var pickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), 7, 1, owner.Id.Value).Value;
+    var pickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 7, 1, owner.Id.Value).Value;
 
     // Act
     var result = guestDraft.RevealPick(pickId);
@@ -22,7 +22,7 @@ public class GuestDraftRevealPickTests : GuestDraftsBaseTest
   {
     // Arrange
     var (guestDraft, owner, _) = CreateInProgressStandardGuestDraft();
-    var pickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), 7, 1, owner.Id.Value).Value;
+    var pickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 7, 1, owner.Id.Value).Value;
     guestDraft.RevealPick(pickId);
 
     // Act
@@ -55,7 +55,7 @@ public class GuestDraftRevealPickTests : GuestDraftsBaseTest
     var (guestDraft, owner, _) = CreateInProgressStandardGuestDraft();
     int[] pickSlots = [7, 6, 4, 2, 5, 3, 1];
     var pickIds = pickSlots
-      .Select((slot, index) => guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), slot, index + 1, owner.Id.Value).Value)
+      .Select((slot, index) => guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), slot, index + 1, owner.Id.Value).Value)
       .ToList();
     guestDraft.Complete();
 
@@ -72,7 +72,7 @@ public class GuestDraftRevealPickTests : GuestDraftsBaseTest
   {
     // Arrange -- exactly 2 participants, so the other participant auto-assigns
     var (guestDraft, owner, other) = CreateInProgressStandardGuestDraft();
-    var pickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), 7, 1, owner.Id.Value).Value;
+    var pickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 7, 1, owner.Id.Value).Value;
     var pick = guestDraft.Picks.Single(p => p.Id == pickId);
 
     // Act & Assert
@@ -84,7 +84,7 @@ public class GuestDraftRevealPickTests : GuestDraftsBaseTest
   {
     // Arrange
     var (guestDraft, owner, _) = CreateInProgressStandardGuestDraft();
-    var pickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), 7, 1, owner.Id.Value).Value;
+    var pickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 7, 1, owner.Id.Value).Value;
     var pick = guestDraft.Picks.Single(p => p.Id == pickId);
 
     // Act & Assert
@@ -97,7 +97,7 @@ public class GuestDraftRevealPickTests : GuestDraftsBaseTest
     // Arrange
     var (guestDraft, participants, _) = CreateInProgressCustomGuestDraft(3);
     var picker = participants[0];
-    var pickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), 1, 1, picker.Id.Value).Value;
+    var pickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 1, 1, picker.Id.Value).Value;
     var pick = guestDraft.Picks.Single(p => p.Id == pickId);
 
     // Act & Assert -- no explicit recipient was given, so nobody is authorized

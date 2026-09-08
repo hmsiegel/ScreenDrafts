@@ -1,6 +1,4 @@
-﻿using OpenTelemetry.Trace;
-
-namespace ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts;
+﻿namespace ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts;
 
 public sealed class GuestDraft : Entity<GuestDraftId>
 {
@@ -434,6 +432,7 @@ public sealed class GuestDraft : Entity<GuestDraftId>
 
   public Result<GuestDraftPickId> PlayPick(
     string moviePublicId,
+    Guid movieId,
     int position,
     int playOrder,
     Guid participantId,
@@ -463,6 +462,7 @@ public sealed class GuestDraft : Entity<GuestDraftId>
       position: position,
       playOrder: playOrder,
       moviePublicId: moviePublicId,
+      movieId: movieId,
       playedByParticipant: participant,
       actedByPublicId: actedByPublicId
     );

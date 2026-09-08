@@ -324,6 +324,30 @@ public sealed class GetGuestDraftGameplayTests(GuestDraftsIntegrationTestWebAppF
     pick.MovieTitle.Should().NotBeNull();
   }
 
+  [Fact]
+  public async Task GetGameplay_RevealedPick_ShouldIncludeMovieDetailsFromTheLocalCacheAsync()
+  {
+    // Arrange -- TmdbId/MovieYear/ImdbId come from the guest_drafts.movies JOIN,
+    // not a cross-module lookup, so they must reflect whatever was cached there.
+    // With exactly two participants, PlayPick auto-assigns "other" as the
+    // designated revealer, not the picker themselves.
+    var (guestDraftPublicId, owner, other) = await CreateInProgressStandardGuestDraftAsync();
+    var moviePublicId = await CreateMovieAsync(tmdbId: 42, imdbId: "tt1234567", year: "1999");
+    (await PlayPickAsync(guestDraftPublicId, owner, moviePublicId, 7, 1)).IsSuccess.Should().BeTrue();
+    (await RevealPickAsync(guestDraftPublicId, 1, other)).IsSuccess.Should().BeTrue();
+
+    // Act
+    var result = await GetGameplayAsync(guestDraftPublicId, owner);
+
+    // Assert
+    result.IsSuccess.Should().BeTrue();
+    var pick = result.Value.Picks.Single(p => p.PlayOrder == 1);
+    pick.MoviePublicId.Should().Be(moviePublicId);
+    pick.TmdbId.Should().Be(42);
+    pick.ImdbId.Should().Be("tt1234567");
+    pick.MovieYear.Should().Be("1999");
+  }
+
   // ── Participant token balances ───────────────────────────────────────────
 
   [Fact]
@@ -331,7 +355,7 @@ public sealed class GetGuestDraftGameplayTests(GuestDraftsIntegrationTestWebAppF
   {
     // Arrange -- "other" spends their one starting veto; owner stays untouched
     var (guestDraftPublicId, owner, other) = await CreateInProgressStandardGuestDraftAsync();
-    await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), 7, 1);
+    await PlayPickAsync(guestDraftPublicId, owner, await CreateMovieAsync(), 7, 1);
     await ApplyVetoAsync(guestDraftPublicId, 1, other);
 
     // Act
@@ -382,7 +406,7 @@ public sealed class GetGuestDraftGameplayTests(GuestDraftsIntegrationTestWebAppF
     while (true)
     {
       attempt++;
-      moviePublicId = CreateMovie();
+      moviePublicId = await CreateMovieAsync();
       (await PlayPickAsync(guestDraftPublicId, picker.UserPublicId, moviePublicId, position, playOrder))
         .IsSuccess.Should().BeTrue();
 

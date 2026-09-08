@@ -37,12 +37,10 @@ export function PickSourcePanel({
   const [error, setError] = useState<string | null>(null);
 
   // Prevent picking if the slot is already filled (e.g. a SignalR update
-  // landing mid-submit).
+  // landing mid-submit). isActiveOnFinalBoard already applies the Landed
+  // formula server-side (see GuestDraftGameplayPickResponse's remarks).
   const slotAlreadyPicked = picks.some(
-    (p) =>
-      p.boardPosition === activeSlot &&
-      !p.wasCommissionerOverride &&
-      (!p.wasVetoed || p.wasVetoOverridden),
+    (p) => p.position === activeSlot && p.isActiveOnFinalBoard,
   );
 
   async function handlePick(movie: ResolvedMovie) {

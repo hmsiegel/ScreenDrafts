@@ -23,8 +23,6 @@ public abstract class GuestDraftsIntegrationTest(GuestDraftsIntegrationTestWebAp
 {
   protected FakeUsersApi FakeUsersApi { get; } =
     factory.Services.GetRequiredService<FakeUsersApi>();
-  protected FakeMovieTitleReader FakeMovieTitleReader { get; } =
-    factory.Services.GetRequiredService<FakeMovieTitleReader>();
 
   protected override async Task ClearDatabaseAsync()
   {
@@ -44,13 +42,13 @@ public abstract class GuestDraftsIntegrationTest(GuestDraftsIntegrationTestWebAp
         guest_drafts.guest_draft_game_boards,
         guest_drafts.guest_draft_participants,
         guest_drafts.guest_drafts,
-        guest_drafts.guest_drafters
+        guest_drafts.guest_drafters,
+        guest_drafts.movies
       RESTART IDENTITY CASCADE;
       """
     );
 
     FakeUsersApi.Reset();
-    FakeMovieTitleReader.Reset();
   }
 
   /// <summary>
@@ -89,14 +87,34 @@ public abstract class GuestDraftsIntegrationTest(GuestDraftsIntegrationTestWebAp
   }
 
   /// <summary>
-  /// Registers a fake movie and returns its MoviePublicId -- the value
-  /// PlayPickCommand.MoviePublicId expects.
+  /// Seeds a GuestDraftMovie directly into the local movie cache and returns its
+  /// PublicId -- the value PlayPickCommand.MoviePublicId expects. Mirrors
+  /// canonical Drafts' CreateMovieInDbAsync: PlayPickCommandHandler now resolves
+  /// movies from guest_drafts.movies via IGuestDraftMovieRepository instead of a
+  /// cross-module title lookup, so a pick's movie must already be cached here.
   /// </summary>
-  protected string CreateMovie(string? title = null) =>
-    FakeMovieTitleReader.RegisterMovie(
-      $"m_{Faker.Random.AlphaNumeric(15)}",
-      title ?? Faker.Company.CompanyName()
-    );
+  protected async Task<string> CreateMovieAsync(
+    string? title = null,
+    int? tmdbId = null,
+    string? imdbId = null,
+    string? year = null
+  )
+  {
+    var movie = GuestDraftMovie.Create(
+      movieTitle: title ?? Faker.Company.CompanyName(),
+      publicId: $"m_{Faker.Random.AlphaNumeric(15)}",
+      mediaType: MediaType.Movie,
+      id: Guid.NewGuid(),
+      imdbId: imdbId,
+      tmdbId: tmdbId,
+      year: year
+    ).Value;
+
+    DbContext.GuestDraftMovies.Add(movie);
+    await DbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+    return movie.PublicId;
+  }
 
   internal async Task<string> CreateGuestDraftAsync(
     string ownerUserPublicId,
@@ -583,20 +601,20 @@ public abstract class GuestDraftsIntegrationTest(GuestDraftsIntegrationTestWebAp
       .IsSuccess.Should().BeTrue();
 
     // slot1 (playOrder1): plain landed, left for the caller to reveal (or not).
-    (await PlayPickAsync(guestDraftPublicId, owner.UserPublicId, CreateMovie(), 1, 1)).IsSuccess.Should().BeTrue();
+    (await PlayPickAsync(guestDraftPublicId, owner.UserPublicId, await CreateMovieAsync(), 1, 1)).IsSuccess.Should().BeTrue();
 
     // slot2 (playOrder2): plain landed, left unrevealed.
-    (await PlayPickAsync(guestDraftPublicId, owner.UserPublicId, CreateMovie(), 2, 2)).IsSuccess.Should().BeTrue();
+    (await PlayPickAsync(guestDraftPublicId, owner.UserPublicId, await CreateMovieAsync(), 2, 2)).IsSuccess.Should().BeTrue();
 
     // slot3 (playOrder3): commissioner-overridden. Must happen immediately -- the
     // scope guard requires this to still be the most-recently-played pick.
-    (await PlayPickAsync(guestDraftPublicId, owner.UserPublicId, CreateMovie(), 3, 3)).IsSuccess.Should().BeTrue();
+    (await PlayPickAsync(guestDraftPublicId, owner.UserPublicId, await CreateMovieAsync(), 3, 3)).IsSuccess.Should().BeTrue();
     (await ApplyCommissionerOverrideAsync(guestDraftPublicId, 3, owner.UserPublicId)).IsSuccess.Should().BeTrue();
 
     // slot4 (playOrder4): vetoed by B, then overridden by C. ApplyVeto's scope guard
     // requires this to happen immediately (most-recently-played pick); the override
     // itself has no such guard.
-    (await PlayPickAsync(guestDraftPublicId, owner.UserPublicId, CreateMovie(), 4, 4)).IsSuccess.Should().BeTrue();
+    (await PlayPickAsync(guestDraftPublicId, owner.UserPublicId, await CreateMovieAsync(), 4, 4)).IsSuccess.Should().BeTrue();
     (await ApplyVetoAsync(guestDraftPublicId, 4, b.UserPublicId)).IsSuccess.Should().BeTrue();
     (await ApplyVetoOverrideAsync(guestDraftPublicId, 4, c.UserPublicId)).IsSuccess.Should().BeTrue();
 
@@ -604,7 +622,7 @@ public abstract class GuestDraftsIntegrationTest(GuestDraftsIntegrationTestWebAp
     // then C vetoes again (seq2, still active) -- both ApplyVeto calls must happen
     // while slot5 remains the most-recently-played pick, i.e. before anything else
     // is played.
-    (await PlayPickAsync(guestDraftPublicId, owner.UserPublicId, CreateMovie(), 5, 5)).IsSuccess.Should().BeTrue();
+    (await PlayPickAsync(guestDraftPublicId, owner.UserPublicId, await CreateMovieAsync(), 5, 5)).IsSuccess.Should().BeTrue();
     (await ApplyVetoAsync(guestDraftPublicId, 5, d.UserPublicId)).IsSuccess.Should().BeTrue();
     (await ApplyVetoOverrideAsync(guestDraftPublicId, 5, d.UserPublicId)).IsSuccess.Should().BeTrue();
     (await ApplyVetoAsync(guestDraftPublicId, 5, c.UserPublicId)).IsSuccess.Should().BeTrue();

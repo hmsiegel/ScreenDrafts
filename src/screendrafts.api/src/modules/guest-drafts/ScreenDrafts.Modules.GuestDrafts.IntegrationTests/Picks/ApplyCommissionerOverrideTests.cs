@@ -8,7 +8,7 @@ public sealed class ApplyCommissionerOverrideTests(GuestDraftsIntegrationTestWeb
   {
     // Arrange
     var (guestDraftPublicId, owner, other) = await CreateInProgressStandardGuestDraftAsync();
-    await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), 7, 1);
+    await PlayPickAsync(guestDraftPublicId, owner, await CreateMovieAsync(), 7, 1);
 
     // Act
     var result = await ApplyCommissionerOverrideAsync(guestDraftPublicId, 1, other);
@@ -25,7 +25,7 @@ public sealed class ApplyCommissionerOverrideTests(GuestDraftsIntegrationTestWeb
   {
     // Arrange
     var (guestDraftPublicId, owner, _) = await CreateInProgressStandardGuestDraftAsync();
-    await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), 7, 1);
+    await PlayPickAsync(guestDraftPublicId, owner, await CreateMovieAsync(), 7, 1);
     await ApplyCommissionerOverrideAsync(guestDraftPublicId, 1, owner);
 
     // Act
@@ -64,7 +64,7 @@ public sealed class ApplyCommissionerOverrideTests(GuestDraftsIntegrationTestWeb
 
     for (var i = 0; i < pickSlots.Length; i++)
     {
-      await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), pickSlots[i], i + 1);
+      await PlayPickAsync(guestDraftPublicId, owner, await CreateMovieAsync(), pickSlots[i], i + 1);
     }
 
     await SetGuestDraftStatusAsync(guestDraftPublicId, owner, GuestDraftStatusAction.Complete);
@@ -84,8 +84,8 @@ public sealed class ApplyCommissionerOverrideTests(GuestDraftsIntegrationTestWeb
     // eligible: only the most recent pick, by play order, can be commissioner
     // overridden.
     var (guestDraftPublicId, owner, _) = await CreateInProgressStandardGuestDraftAsync();
-    await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), 7, 1);
-    await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), 6, 2);
+    await PlayPickAsync(guestDraftPublicId, owner, await CreateMovieAsync(), 7, 1);
+    await PlayPickAsync(guestDraftPublicId, owner, await CreateMovieAsync(), 6, 2);
 
     // Act
     var result = await ApplyCommissionerOverrideAsync(guestDraftPublicId, 1, owner);

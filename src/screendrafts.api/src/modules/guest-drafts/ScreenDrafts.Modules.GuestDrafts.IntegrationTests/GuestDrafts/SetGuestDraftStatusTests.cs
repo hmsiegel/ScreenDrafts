@@ -117,7 +117,7 @@ public sealed class SetGuestDraftStatusTests(GuestDraftsIntegrationTestWebAppFac
 
     for (var i = 0; i < pickSlots.Length; i++)
     {
-      var movie = CreateMovie();
+      var movie = await CreateMovieAsync();
       (await PlayPickAsync(guestDraftPublicId, owner, movie, pickSlots[i], i + 1)).IsSuccess
         .Should().BeTrue("test setup must be able to play every pick");
     }
@@ -136,7 +136,7 @@ public sealed class SetGuestDraftStatusTests(GuestDraftsIntegrationTestWebAppFac
   {
     // Arrange
     var (guestDraftPublicId, owner, _) = await CreateInProgressStandardGuestDraftAsync();
-    await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), 7, 1);
+    await PlayPickAsync(guestDraftPublicId, owner, await CreateMovieAsync(), 7, 1);
 
     // Act
     var result = await SetGuestDraftStatusAsync(guestDraftPublicId, owner, GuestDraftStatusAction.Complete);

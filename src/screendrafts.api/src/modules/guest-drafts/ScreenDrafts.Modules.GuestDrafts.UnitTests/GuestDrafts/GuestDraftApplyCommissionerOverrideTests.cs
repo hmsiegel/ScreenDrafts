@@ -7,7 +7,7 @@ public class GuestDraftApplyCommissionerOverrideTests : GuestDraftsBaseTest
   {
     // Arrange
     var (guestDraft, owner, _) = CreateInProgressStandardGuestDraft();
-    var pickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), 7, 1, owner.Id.Value).Value;
+    var pickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 7, 1, owner.Id.Value).Value;
 
     // Act
     var result = guestDraft.ApplyCommissionerOverride(pickId);
@@ -23,7 +23,7 @@ public class GuestDraftApplyCommissionerOverrideTests : GuestDraftsBaseTest
   {
     // Arrange
     var (guestDraft, owner, _) = CreateInProgressStandardGuestDraft();
-    var pickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), 7, 1, owner.Id.Value).Value;
+    var pickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 7, 1, owner.Id.Value).Value;
     guestDraft.ApplyCommissionerOverride(pickId);
 
     // Act
@@ -61,7 +61,7 @@ public class GuestDraftApplyCommissionerOverrideTests : GuestDraftsBaseTest
 
     for (var i = 0; i < pickSlots.Length; i++)
     {
-      lastPickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), pickSlots[i], i + 1, owner.Id.Value).Value;
+      lastPickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), pickSlots[i], i + 1, owner.Id.Value).Value;
     }
 
     guestDraft.Complete();
@@ -80,8 +80,8 @@ public class GuestDraftApplyCommissionerOverrideTests : GuestDraftsBaseTest
     // Arrange -- the older pick is untouched, but only the most recent pick, by
     // play order, is eligible for a commissioner override.
     var (guestDraft, owner, _) = CreateInProgressStandardGuestDraft();
-    var olderPickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), 7, 1, owner.Id.Value).Value;
-    guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), 6, 2, owner.Id.Value);
+    var olderPickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 7, 1, owner.Id.Value).Value;
+    guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 6, 2, owner.Id.Value);
 
     // Act
     var result = guestDraft.ApplyCommissionerOverride(olderPickId);

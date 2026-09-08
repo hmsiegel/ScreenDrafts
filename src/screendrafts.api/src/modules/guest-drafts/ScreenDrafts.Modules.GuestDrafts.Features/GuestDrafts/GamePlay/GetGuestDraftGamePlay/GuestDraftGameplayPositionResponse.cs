@@ -5,7 +5,7 @@
 /// GuestDraftParticipant id, not the GuestDrafter's own PublicId -- look the
 /// participant up in Participants by this id if the PublicId is needed.
 /// </summary>
-internal sealed record GameplayPositionResponse
+internal sealed record GuestDraftGameplayPositionResponse
 {
   public string PositionPublicId { get; init; } = default!;
   public string Name { get; init; } = default!;

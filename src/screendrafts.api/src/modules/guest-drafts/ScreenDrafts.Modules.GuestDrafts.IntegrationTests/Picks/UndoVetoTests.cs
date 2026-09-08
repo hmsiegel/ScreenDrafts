@@ -8,7 +8,7 @@ public sealed class UndoVetoTests(GuestDraftsIntegrationTestWebAppFactory factor
   {
     // Arrange
     var (guestDraftPublicId, owner, other) = await CreateInProgressStandardGuestDraftAsync();
-    await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), 7, 1);
+    await PlayPickAsync(guestDraftPublicId, owner, await CreateMovieAsync(), 7, 1);
     await ApplyVetoAsync(guestDraftPublicId, 1, other);
 
     // Act
@@ -26,7 +26,7 @@ public sealed class UndoVetoTests(GuestDraftsIntegrationTestWebAppFactory factor
   {
     // Arrange
     var (guestDraftPublicId, owner, other) = await CreateInProgressStandardGuestDraftAsync();
-    await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), 7, 1);
+    await PlayPickAsync(guestDraftPublicId, owner, await CreateMovieAsync(), 7, 1);
     await ApplyVetoAsync(guestDraftPublicId, 1, other);
 
     // Act -- other is a genuine participant, but not the owner
@@ -42,7 +42,7 @@ public sealed class UndoVetoTests(GuestDraftsIntegrationTestWebAppFactory factor
   {
     // Arrange
     var (guestDraftPublicId, owner, _) = await CreateInProgressStandardGuestDraftAsync();
-    await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), 7, 1);
+    await PlayPickAsync(guestDraftPublicId, owner, await CreateMovieAsync(), 7, 1);
 
     // Act
     var result = await UndoVetoAsync(guestDraftPublicId, 1, owner);
@@ -130,7 +130,7 @@ public sealed class UndoVetoTests(GuestDraftsIntegrationTestWebAppFactory factor
     await AssignParticipantAsync(guestDraftPublicId, owner.UserPublicId, boardPositions.Single(p => p.Name == "B").PublicId, other.GuestDrafterPublicId);
     await SetGuestDraftStatusAsync(guestDraftPublicId, owner.UserPublicId, GuestDraftStatusAction.Start);
 
-    await PlayPickAsync(guestDraftPublicId, owner.UserPublicId, CreateMovie(), 1, 1);
+    await PlayPickAsync(guestDraftPublicId, owner.UserPublicId, await CreateMovieAsync(), 1, 1);
     await ApplyVetoAsync(guestDraftPublicId, 1, other.UserPublicId);
     await ApplyVetoOverrideAsync(guestDraftPublicId, 1, other.UserPublicId);
 
@@ -181,9 +181,9 @@ public sealed class UndoVetoTests(GuestDraftsIntegrationTestWebAppFactory factor
     await AssignParticipantAsync(guestDraftPublicId, owner.UserPublicId, boardPositions.Single(p => p.Name == "B").PublicId, other.GuestDrafterPublicId);
     await SetGuestDraftStatusAsync(guestDraftPublicId, owner.UserPublicId, GuestDraftStatusAction.Start);
 
-    await PlayPickAsync(guestDraftPublicId, owner.UserPublicId, CreateMovie(), 1, 1);
+    await PlayPickAsync(guestDraftPublicId, owner.UserPublicId, await CreateMovieAsync(), 1, 1);
     await ApplyVetoAsync(guestDraftPublicId, 1, other.UserPublicId);
-    var secondMovie = CreateMovie();
+    var secondMovie = await CreateMovieAsync();
     await PlayPickAsync(guestDraftPublicId, owner.UserPublicId, secondMovie, 1, 2);
     await ApplyVetoAsync(guestDraftPublicId, 2, other.UserPublicId);
 

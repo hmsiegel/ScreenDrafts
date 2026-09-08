@@ -13,7 +13,7 @@ internal sealed record GetGuestDraftGameplayResponse
   public string? ShareToken { get; init; }
 
   public CallerContextResponse CallerContext { get; init; } = new();
-  public IReadOnlyList<GameplayPositionResponse> Positions { get; init; } = [];
-  public IReadOnlyList<GameplayParticipantResponse> Participants { get; init; } = [];
-  public IReadOnlyList<GameplayPickResponse> Picks { get; init; } = [];
+  public IReadOnlyList<GuestDraftGameplayPositionResponse> Positions { get; init; } = [];
+  public IReadOnlyList<GuestDraftGameplayParticipantResponse> Participants { get; init; } = [];
+  public IReadOnlyList<GuestDraftGameplayPickResponse> Picks { get; init; } = [];
 }

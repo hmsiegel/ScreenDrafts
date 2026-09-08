@@ -9,7 +9,7 @@ public sealed class ApplyVetoOverrideTests(GuestDraftsIntegrationTestWebAppFacto
     // Arrange
     var (guestDraftPublicId, picker, other) =
       await CreateInProgressMiniMegaDraftAsync(otherHasBonusOverride: true);
-    await PlayPickAsync(guestDraftPublicId, picker, CreateMovie(), 1, 1);
+    await PlayPickAsync(guestDraftPublicId, picker, await CreateMovieAsync(), 1, 1);
     await ApplyVetoAsync(guestDraftPublicId, 1, other);
 
     // Act
@@ -44,7 +44,7 @@ public sealed class ApplyVetoOverrideTests(GuestDraftsIntegrationTestWebAppFacto
   {
     // Arrange
     var (guestDraftPublicId, picker, other) = await CreateInProgressMiniMegaDraftAsync();
-    await PlayPickAsync(guestDraftPublicId, picker, CreateMovie(), 1, 1);
+    await PlayPickAsync(guestDraftPublicId, picker, await CreateMovieAsync(), 1, 1);
 
     // Act
     var result = await ApplyVetoOverrideAsync(guestDraftPublicId, 1, other);
@@ -87,7 +87,7 @@ public sealed class ApplyVetoOverrideTests(GuestDraftsIntegrationTestWebAppFacto
     await AssignParticipantAsync(guestDraftPublicId, owner.UserPublicId, boardPositions.Single(p => p.Name == "C").PublicId, secondOverrider.GuestDrafterPublicId);
     await SetGuestDraftStatusAsync(guestDraftPublicId, owner.UserPublicId, GuestDraftStatusAction.Start);
 
-    await PlayPickAsync(guestDraftPublicId, owner.UserPublicId, CreateMovie(), 1, 1);
+    await PlayPickAsync(guestDraftPublicId, owner.UserPublicId, await CreateMovieAsync(), 1, 1);
     await ApplyVetoAsync(guestDraftPublicId, 1, firstOverrider.UserPublicId);
     await ApplyVetoOverrideAsync(guestDraftPublicId, 1, firstOverrider.UserPublicId);
 
@@ -104,7 +104,7 @@ public sealed class ApplyVetoOverrideTests(GuestDraftsIntegrationTestWebAppFacto
   {
     // Arrange
     var (guestDraftPublicId, picker, other) = await CreateInProgressMiniMegaDraftAsync();
-    await PlayPickAsync(guestDraftPublicId, picker, CreateMovie(), 1, 1);
+    await PlayPickAsync(guestDraftPublicId, picker, await CreateMovieAsync(), 1, 1);
     await ApplyVetoAsync(guestDraftPublicId, 1, other);
 
     // Act
@@ -120,7 +120,7 @@ public sealed class ApplyVetoOverrideTests(GuestDraftsIntegrationTestWebAppFacto
   {
     // Arrange -- "other" is not awarded any override budget
     var (guestDraftPublicId, picker, other) = await CreateInProgressMiniMegaDraftAsync();
-    await PlayPickAsync(guestDraftPublicId, picker, CreateMovie(), 1, 1);
+    await PlayPickAsync(guestDraftPublicId, picker, await CreateMovieAsync(), 1, 1);
     await ApplyVetoAsync(guestDraftPublicId, 1, other);
 
     // Act
@@ -142,11 +142,11 @@ public sealed class ApplyVetoOverrideTests(GuestDraftsIntegrationTestWebAppFacto
       otherHasBonusFungibleToken: true);
     var other = otherUser.UserPublicId;
 
-    await PlayPickAsync(guestDraftPublicId, picker, CreateMovie(), 1, 1);
+    await PlayPickAsync(guestDraftPublicId, picker, await CreateMovieAsync(), 1, 1);
     await ApplyVetoAsync(guestDraftPublicId, 1, other);
     await ApplyVetoOverrideAsync(guestDraftPublicId, 1, other);
 
-    await PlayPickAsync(guestDraftPublicId, picker, CreateMovie(), 2, 2);
+    await PlayPickAsync(guestDraftPublicId, picker, await CreateMovieAsync(), 2, 2);
     await ApplyVetoAsync(guestDraftPublicId, 2, picker);
 
     // Act
@@ -191,7 +191,7 @@ public sealed class ApplyVetoOverrideTests(GuestDraftsIntegrationTestWebAppFacto
   {
     // Arrange
     var (guestDraftPublicId, picker, other) = await CreateInProgressMiniMegaDraftAsync();
-    await PlayPickAsync(guestDraftPublicId, picker, CreateMovie(), 1, 1);
+    await PlayPickAsync(guestDraftPublicId, picker, await CreateMovieAsync(), 1, 1);
     await ApplyVetoAsync(guestDraftPublicId, 1, other);
     var stranger = await CreateUserAsync();
 

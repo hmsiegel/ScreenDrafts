@@ -47,14 +47,14 @@ public sealed class FullDraftFlowTests(GuestDraftsIntegrationTestWebAppFactory f
     startResult.Value.Status.Should().Be(GuestDraftStatus.InProgress.Name);
 
     // 5. Play a pick, veto it
-    (await PlayPickAsync(guestDraftPublicId, a.UserPublicId, CreateMovie(), 7, 1)).IsSuccess.Should().BeTrue();
+    (await PlayPickAsync(guestDraftPublicId, a.UserPublicId, await CreateMovieAsync(), 7, 1)).IsSuccess.Should().BeTrue();
     (await ApplyVetoAsync(guestDraftPublicId, 1, b.UserPublicId)).IsSuccess.Should().BeTrue();
 
     var afterVeto = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
     afterVeto.Picks.Single(p => p.PlayOrder == 1).IsVetoed.Should().BeTrue();
 
     // 6. Play another pick, apply a commissioner override to it
-    (await PlayPickAsync(guestDraftPublicId, a.UserPublicId, CreateMovie(), 6, 2)).IsSuccess.Should().BeTrue();
+    (await PlayPickAsync(guestDraftPublicId, a.UserPublicId, await CreateMovieAsync(), 6, 2)).IsSuccess.Should().BeTrue();
     (await ApplyCommissionerOverrideAsync(guestDraftPublicId, 2, a.UserPublicId)).IsSuccess.Should().BeTrue();
 
     // 7. Undo the veto -- restores slot 7 to landed
@@ -71,12 +71,12 @@ public sealed class FullDraftFlowTests(GuestDraftsIntegrationTestWebAppFactory f
     (await RevealPickAsync(guestDraftPublicId, 1, b.UserPublicId)).IsSuccess.Should().BeTrue();
 
     // 10. Land every remaining slot (6, 4, 2, 5, 3, 1) so the board can complete
-    (await PlayPickAsync(guestDraftPublicId, a.UserPublicId, CreateMovie(), 6, 3)).IsSuccess.Should().BeTrue();
-    (await PlayPickAsync(guestDraftPublicId, a.UserPublicId, CreateMovie(), 4, 4)).IsSuccess.Should().BeTrue();
-    (await PlayPickAsync(guestDraftPublicId, a.UserPublicId, CreateMovie(), 2, 5)).IsSuccess.Should().BeTrue();
-    (await PlayPickAsync(guestDraftPublicId, a.UserPublicId, CreateMovie(), 5, 6)).IsSuccess.Should().BeTrue();
-    (await PlayPickAsync(guestDraftPublicId, a.UserPublicId, CreateMovie(), 3, 7)).IsSuccess.Should().BeTrue();
-    (await PlayPickAsync(guestDraftPublicId, a.UserPublicId, CreateMovie(), 1, 8)).IsSuccess.Should().BeTrue();
+    (await PlayPickAsync(guestDraftPublicId, a.UserPublicId, await CreateMovieAsync(), 6, 3)).IsSuccess.Should().BeTrue();
+    (await PlayPickAsync(guestDraftPublicId, a.UserPublicId, await CreateMovieAsync(), 4, 4)).IsSuccess.Should().BeTrue();
+    (await PlayPickAsync(guestDraftPublicId, a.UserPublicId, await CreateMovieAsync(), 2, 5)).IsSuccess.Should().BeTrue();
+    (await PlayPickAsync(guestDraftPublicId, a.UserPublicId, await CreateMovieAsync(), 5, 6)).IsSuccess.Should().BeTrue();
+    (await PlayPickAsync(guestDraftPublicId, a.UserPublicId, await CreateMovieAsync(), 3, 7)).IsSuccess.Should().BeTrue();
+    (await PlayPickAsync(guestDraftPublicId, a.UserPublicId, await CreateMovieAsync(), 1, 8)).IsSuccess.Should().BeTrue();
 
     // 11. Complete
     var completeResult = await SetGuestDraftStatusAsync(guestDraftPublicId, a.UserPublicId, GuestDraftStatusAction.Complete);
@@ -131,11 +131,11 @@ public sealed class FullDraftFlowTests(GuestDraftsIntegrationTestWebAppFactory f
     startResult.Value.Status.Should().Be(GuestDraftStatus.InProgress.Name);
 
     // 5. Play a pick, veto it
-    (await PlayPickAsync(guestDraftPublicId, a.UserPublicId, CreateMovie(), 1, 1)).IsSuccess.Should().BeTrue();
+    (await PlayPickAsync(guestDraftPublicId, a.UserPublicId, await CreateMovieAsync(), 1, 1)).IsSuccess.Should().BeTrue();
     (await ApplyVetoAsync(guestDraftPublicId, 1, b.UserPublicId)).IsSuccess.Should().BeTrue();
 
     // 6. Play another pick, apply a commissioner override to it
-    (await PlayPickAsync(guestDraftPublicId, a.UserPublicId, CreateMovie(), 2, 2)).IsSuccess.Should().BeTrue();
+    (await PlayPickAsync(guestDraftPublicId, a.UserPublicId, await CreateMovieAsync(), 2, 2)).IsSuccess.Should().BeTrue();
     (await ApplyCommissionerOverrideAsync(guestDraftPublicId, 2, a.UserPublicId)).IsSuccess.Should().BeTrue();
 
     // 7. Undo the veto -- restores slot 1 to landed
@@ -156,13 +156,13 @@ public sealed class FullDraftFlowTests(GuestDraftsIntegrationTestWebAppFactory f
     (await RevealPickAsync(guestDraftPublicId, 1, revealerUserPublicId)).IsSuccess.Should().BeTrue();
 
     // 10. Land slot 2
-    (await PlayPickAsync(guestDraftPublicId, a.UserPublicId, CreateMovie(), 2, 3)).IsSuccess.Should().BeTrue();
+    (await PlayPickAsync(guestDraftPublicId, a.UserPublicId, await CreateMovieAsync(), 2, 3)).IsSuccess.Should().BeTrue();
 
     // 11. Land slot 3 via a veto override -- C vetoes it, then B (holding the bonus
     // override from Pos2) overrides that veto, landing the pick without a re-pick.
     // Both calls happen immediately: ApplyVeto's scope guard requires slot 3 to
     // still be the most-recently-played pick; ApplyVetoOverride has no such guard.
-    (await PlayPickAsync(guestDraftPublicId, a.UserPublicId, CreateMovie(), 3, 4)).IsSuccess.Should().BeTrue();
+    (await PlayPickAsync(guestDraftPublicId, a.UserPublicId, await CreateMovieAsync(), 3, 4)).IsSuccess.Should().BeTrue();
     (await ApplyVetoAsync(guestDraftPublicId, 4, c.UserPublicId)).IsSuccess.Should().BeTrue();
     (await ApplyVetoOverrideAsync(guestDraftPublicId, 4, b.UserPublicId)).IsSuccess.Should().BeTrue();
 

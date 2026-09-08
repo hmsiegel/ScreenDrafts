@@ -1,18 +1,11 @@
 // app/guest-drafts/[guestDraftId]/live/gameplay-fetchers.ts
-// Regenerate NSwag after backend changes — types below come from dto.ts.
-//
-// The generated NSwag client is not used here. Its guestDrafts_UndoVeto /
-// guestDrafts_UndoPick / guestDrafts_RevealPick / guestDrafts_ApplyCommissionerOverride
-// methods build a URL from the route template ("/guest-drafts/{publicId}/picks/{playOrder}/...")
-// but never substitute publicId/playOrder into it — the literal "{publicId}" and
-// "{playOrder}" placeholders go out on the wire. Same pattern gameplay-fetchers.ts
-// already uses for DraftParts: raw fetch, types borrowed from dto.ts for shape only.
 
 import {
   CreatedResponse,
+  CreateGuestDraftPositionInput,
   GetGuestDraftGameplayResponse,
+  GuestDrafterSummaryResponse,
   MediaResponse,
-  PositionInput,
   SetGuestDraftStatusResponse,
 } from '@/lib/dto';
 
@@ -183,33 +176,26 @@ export async function fetchMediaByPublicId(
   return res.json();
 }
 
-// ── Setup / creation ─────────────────────────────────────────────────────────
-// GuestDraftType.cs has 5 values. Per GuestDraftBoardTemplates.cs, only
-// Standard and MiniSuper are fixed (setFixedGuestDraftBoardLayout, no body —
-// the backend already knows both templates: Standard is A[7,6,4,2]/B[5,3,1],
-// MiniSuper is A[5,3,1]/B[4,2]). MiniMega, Super, and Mega are owner-defined
-// custom layouts — setCustomGuestDraftPositions below, PositionInput[] body,
-// which matches positions-editor.tsx's PositionConfig shape field-for-field.
-
-export async function setCustomGuestDraftPositions(
-  accessToken: string,
-  guestDraftId: string,
-  positions: PositionInput[],
-): Promise<void> {
-  const res = await fetch(`${API_BASE}/guest-drafts/${guestDraftId}/board/custom-layout`, {
-    method: 'POST',
-    headers: authHeaders(accessToken),
-    body: JSON.stringify({ positions }),
-  });
-  if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`setCustomGuestDraftPositions failed: ${res.status} - ${body}`);
-  }
-}
+// ── Creation ──────────────────────────────────────────────────────────────────
+// CreateGuestDraftCommandHandler now builds the board INSIDE the create call —
+// UseFixedBoardLayout/SetCustomPositions both run synchronously in the handler
+// off request.Positions/request.NumberOfPicks. There is no separate
+// "set board" step anymore; the two calls that used to do that
+// (setFixedGuestDraftBoardLayout, setCustomGuestDraftPositions) are gone.
+// Fixed types (Standard/MiniSuper) ignore `positions`/`numberOfPicks` entirely
+// server-side (GuestDraftBoardTemplates supplies the real layout) — send an
+// empty array and 0 for those rather than omitting the fields, since
+// CreateGuestDraftRequest.NumberOfPicks is `required`.
 
 export async function createGuestDraft(
   accessToken: string,
-  args: { title: string; type: string },
+  args: {
+    title: string;
+    type: string;
+    draftDate?: string | null; // yyyy-MM-dd, matches DateOnly? on the wire
+    numberOfPicks: number;
+    positions: CreateGuestDraftPositionInput[];
+  },
 ): Promise<CreatedResponse> {
   const res = await fetch(`${API_BASE}/guest-drafts`, {
     method: 'POST',
@@ -223,36 +209,27 @@ export async function createGuestDraft(
   return res.json();
 }
 
-export async function setFixedGuestDraftBoardLayout(
-  accessToken: string,
-  guestDraftId: string,
-): Promise<void> {
-  const res = await fetch(`${API_BASE}/guest-drafts/${guestDraftId}/board/fixed-layout`, {
-    method: 'POST',
-    headers: authHeadersGet(accessToken),
-  });
-  if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`setFixedGuestDraftBoardLayout failed: ${res.status} - ${body}`);
-  }
-}
+// ── Participants ──────────────────────────────────────────────────────────────
+// Both endpoints take a GuestDrafterPublicId — the registered GuestDrafter's
+// own public id, the same value that shows up as
+// GameplayParticipantResponse.participantPublicId once someone's been added.
+// Teams aren't supported by either command yet (GuestDrafterPublicId only,
+// per AddParticipantCommand.cs/AssignParticipantToPositionCommand.cs's own
+// comments) — no kind field to pass.
 
-// Takes a raw user public id, not a username — there's no backend search
-// endpoint yet to back a proper typeahead (flagged previously; still open).
-// This is the stopgap until that exists.
-export async function inviteGuestDraftParticipant(
+export async function addGuestDraftParticipant(
   accessToken: string,
   guestDraftId: string,
-  inviteeUserPublicId: string,
+  guestDrafterPublicId: string,
 ): Promise<void> {
   const res = await fetch(`${API_BASE}/guest-drafts/${guestDraftId}/participants`, {
     method: 'POST',
     headers: authHeaders(accessToken),
-    body: JSON.stringify({ inviteeUserPublicId }),
+    body: JSON.stringify({ guestDrafterPublicId }),
   });
   if (!res.ok) {
     const body = await res.text();
-    throw new Error(`inviteGuestDraftParticipant failed: ${res.status} - ${body}`);
+    throw new Error(`addGuestDraftParticipant failed: ${res.status} - ${body}`);
   }
 }
 
@@ -260,20 +237,45 @@ export async function assignGuestDraftParticipantToPosition(
   accessToken: string,
   guestDraftId: string,
   positionPublicId: string,
-  participantPublicId: string,
+  guestDrafterPublicId: string,
 ): Promise<void> {
   const res = await fetch(
     `${API_BASE}/guest-drafts/${guestDraftId}/positions/${positionPublicId}/assign`,
     {
       method: 'POST',
       headers: authHeaders(accessToken),
-      body: JSON.stringify({ participantPublicId }),
+      body: JSON.stringify({ guestDrafterPublicId }),
     },
   );
   if (!res.ok) {
     const body = await res.text();
     throw new Error(`assignGuestDraftParticipantToPosition failed: ${res.status} - ${body}`);
   }
+}
+
+// Replaces the paste-a-user-id stopgap now that SearchGuestDraftersQuery
+// exists. GET-only, one query param (`search`), returns { publicId,
+// displayName }[] — no retired flag, no team results (GuestDrafters.Search
+// is GuestDrafter-only, matching AddParticipant's scope).
+//
+// ASSUMPTION: GuestDrafterRoutes.Search resolves to "/guest-drafters/search" —
+// inferred from the module's route-naming convention (GuestDraftsRoutes.
+// Participants -> "/guest-drafts/{publicId}/participants", etc.), not
+// confirmed against the actual route constant. Fix this one line if it
+// resolves differently.
+export async function searchGuestDrafters(
+  accessToken: string,
+  search?: string,
+): Promise<GuestDrafterSummaryResponse[]> {
+  const params = search ? `?search=${encodeURIComponent(search)}` : '';
+  const res = await fetch(`${API_BASE}/guest-drafters/search${params}`, {
+    headers: authHeadersGet(accessToken),
+  });
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`searchGuestDrafters failed: ${res.status} - ${body}`);
+  }
+  return res.json();
 }
 
 // `action` is GuestDraftStatusAction.cs's raw int: Start = 1, Complete = 2.

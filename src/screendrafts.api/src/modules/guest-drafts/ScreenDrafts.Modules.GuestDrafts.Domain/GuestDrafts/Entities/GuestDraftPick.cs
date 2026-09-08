@@ -10,6 +10,7 @@ public sealed class GuestDraftPick : Entity<GuestDraftPickId>
     int position,
     int playOrder,
     string moviePublicId,
+    Guid movieId,
     GuestDraftParticipant playedByParticipant,
     string? actedByPublicId,
     GuestDraftPickId? id = null
@@ -20,6 +21,7 @@ public sealed class GuestDraftPick : Entity<GuestDraftPickId>
     Position = position;
     PlayOrder = playOrder;
     MoviePublicId = moviePublicId;
+    MovieId = movieId;
     PlayedByParticipant = playedByParticipant;
     PlayedByParticipantId = playedByParticipant.Id;
     ActedByPublicId = actedByPublicId;
@@ -33,11 +35,23 @@ public sealed class GuestDraftPick : Entity<GuestDraftPickId>
   public int PlayOrder { get; private set; }
 
   /// <summary>
-  /// Movie referenced by public id only -- no local Movie cache, unlike canonical
-  /// Drafts. Resolved live via IMovieTitleReader by whatever reads this pick, per
-  /// the "use the existing public APIs" decision.
+  /// Movie's PublicId -- unchanged from before: every domain event, integration
+  /// event, and SignalR payload that references a pick's movie keys off this,
+  /// not MovieId, so nothing downstream needs to change.
   /// </summary>
   public string MoviePublicId { get; private set; } = default!;
+
+  /// <summary>
+  /// FK into GuestDraftMovie (guest_drafts.movies) -- the local movie cache
+  /// GuestDrafts now maintains, same pattern as canonical's Movie/Pick.MovieId.
+  /// Added purely so GetGuestDraftGameplayQueryHandler can JOIN for
+  /// TmdbId/MovieYear/ImdbId instead of round-tripping through IMovieTitleReader.
+  /// Resolved once at play-time by PlayPickCommandHandler via
+  /// IGuestDraftMovieRepository -- the movie must already be locally cached
+  /// (i.e. already imported+synced via MediaAddedIntegrationEvent) before a
+  /// pick can reference it, same constraint canonical has.
+  /// </summary>
+  public Guid MovieId { get; private set; }
 
   public GuestDraftParticipant PlayedByParticipant { get; private set; } = default!;
   public GuestDraftParticipantId PlayedByParticipantId { get; private set; } = default!;
@@ -85,6 +99,7 @@ public sealed class GuestDraftPick : Entity<GuestDraftPickId>
     int position,
     int playOrder,
     string moviePublicId,
+    Guid movieId,
     GuestDraftParticipant playedByParticipant,
     string? actedByPublicId = null,
     GuestDraftPickId? id = null
@@ -112,6 +127,7 @@ public sealed class GuestDraftPick : Entity<GuestDraftPickId>
       position: position,
       playOrder: playOrder,
       moviePublicId: moviePublicId,
+      movieId: movieId,
       playedByParticipant: playedByParticipant,
       actedByPublicId: actedByPublicId,
       id: id

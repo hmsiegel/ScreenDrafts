@@ -1,5 +1,4 @@
 using ScreenDrafts.Common.Infrastructure.Identity;
-using ScreenDrafts.Modules.Movies.PublicApi;
 using ScreenDrafts.Modules.Users.PublicApi;
 using Testcontainers.Keycloak;
 
@@ -127,10 +126,6 @@ public class GuestDraftsIntegrationTestWebAppFactory : IntegrationTestWebAppFact
     services.AddSingleton<FakeUsersApi>();
     services.AddSingleton<IUsersApi>(sp => sp.GetRequiredService<FakeUsersApi>());
 
-    services.RemoveAll<IMovieTitleReader>();
-    services.AddSingleton<FakeMovieTitleReader>();
-    services.AddSingleton<IMovieTitleReader>(sp => sp.GetRequiredService<FakeMovieTitleReader>());
-
     if (_keycloakContainer is null)
     {
       return;
@@ -151,9 +146,10 @@ public class GuestDraftsIntegrationTestWebAppFactory : IntegrationTestWebAppFact
 
   protected override IEnumerable<Type> GetDbContextTypes()
   {
-    // Only migrate the schema needed for GuestDrafts tests. IUsersApi and
-    // IMovieTitleReader are faked (see ConfigureModuleServices), so neither the
-    // Users nor the Movies schema needs to exist for these tests to run.
+    // Only migrate the schema needed for GuestDrafts tests. IUsersApi is faked
+    // (see ConfigureModuleServices), and movies are cached locally in
+    // guest_drafts.movies, so neither the Users nor the Movies schema needs to
+    // exist for these tests to run.
     var needed = new[]
     {
       "ScreenDrafts.Modules.GuestDrafts.Infrastructure.Database.GuestDraftsDbContext",

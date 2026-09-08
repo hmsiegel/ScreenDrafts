@@ -4,6 +4,7 @@ global using FluentAssertions;
 
 global using ScreenDrafts.Common.Abstractions.Exceptions;
 global using ScreenDrafts.Common.Abstractions.Results;
+global using ScreenDrafts.Common.Domain;
 global using ScreenDrafts.Common.UnitTests;
 global using ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafterTeams;
 global using ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafters;

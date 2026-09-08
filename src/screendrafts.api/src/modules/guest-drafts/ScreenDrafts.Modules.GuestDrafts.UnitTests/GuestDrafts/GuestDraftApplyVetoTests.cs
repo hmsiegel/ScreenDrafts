@@ -10,8 +10,8 @@ public class GuestDraftApplyVetoTests : GuestDraftsBaseTest
     // Arrange -- the older pick is untouched (unvetoed), but that alone doesn't
     // make it eligible: only the most recent pick, by play order, can be vetoed.
     var (guestDraft, owner, other) = CreateInProgressStandardGuestDraft();
-    var olderPickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), 7, 1, owner.Id.Value).Value;
-    guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), 6, 2, owner.Id.Value);
+    var olderPickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 7, 1, owner.Id.Value).Value;
+    guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 6, 2, owner.Id.Value);
 
     // Act
     var result = guestDraft.ApplyVeto(olderPickId, other.Id.Value);
@@ -26,7 +26,7 @@ public class GuestDraftApplyVetoTests : GuestDraftsBaseTest
   {
     // Arrange
     var (guestDraft, owner, other) = CreateInProgressStandardGuestDraft();
-    var pickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), 7, 1, owner.Id.Value).Value;
+    var pickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 7, 1, owner.Id.Value).Value;
 
     // Act
     var result = guestDraft.ApplyVeto(pickId, other.Id.Value);
@@ -45,9 +45,9 @@ public class GuestDraftApplyVetoTests : GuestDraftsBaseTest
     // Arrange -- spend the participant's one starting veto, then try again on the
     // (now re-pickable) most recent pick.
     var (guestDraft, owner, other) = CreateInProgressStandardGuestDraft();
-    var firstPickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), 7, 1, owner.Id.Value).Value;
+    var firstPickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 7, 1, owner.Id.Value).Value;
     guestDraft.ApplyVeto(firstPickId, other.Id.Value);
-    var secondPickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), 7, 2, owner.Id.Value).Value;
+    var secondPickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 7, 2, owner.Id.Value).Value;
 
     // Act
     var result = guestDraft.ApplyVeto(secondPickId, other.Id.Value);
@@ -78,7 +78,7 @@ public class GuestDraftApplyVetoTests : GuestDraftsBaseTest
   {
     // Arrange
     var (guestDraft, owner, other) = CreateInProgressStandardGuestDraft();
-    var pickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), 7, 1, owner.Id.Value).Value;
+    var pickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 7, 1, owner.Id.Value).Value;
     guestDraft.ApplyVeto(pickId, other.Id.Value);
 
     // Act -- owner still has their full veto budget; the pick is simply already vetoed
@@ -101,7 +101,7 @@ public class GuestDraftApplyVetoTests : GuestDraftsBaseTest
 
     for (var i = 0; i < pickSlots.Length; i++)
     {
-      lastPickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), pickSlots[i], i + 1, owner.Id.Value).Value;
+      lastPickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), pickSlots[i], i + 1, owner.Id.Value).Value;
     }
 
     guestDraft.Complete();
@@ -121,7 +121,7 @@ public class GuestDraftApplyVetoTests : GuestDraftsBaseTest
   {
     // Arrange
     var (guestDraft, owner, _) = CreateInProgressStandardGuestDraft();
-    var pickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), 7, 1, owner.Id.Value).Value;
+    var pickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 7, 1, owner.Id.Value).Value;
 
     // Act
     var result = guestDraft.UndoVeto(pickId);
@@ -170,7 +170,7 @@ public class GuestDraftApplyVetoTests : GuestDraftsBaseTest
   {
     // Arrange
     var (guestDraft, owner, other) = CreateInProgressStandardGuestDraft();
-    var pickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), 7, 1, owner.Id.Value).Value;
+    var pickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 7, 1, owner.Id.Value).Value;
     guestDraft.ApplyVeto(pickId, other.Id.Value);
 
     // Act
@@ -256,9 +256,9 @@ public class GuestDraftApplyVetoTests : GuestDraftsBaseTest
     guestDraft.AssignParticipantToPosition(boardPositions.Single(p => p.Name == "B"), other.Id.Value);
     guestDraft.Start();
 
-    var firstPickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), 1, 1, owner.Id.Value).Value;
+    var firstPickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 1, 1, owner.Id.Value).Value;
     guestDraft.ApplyVeto(firstPickId, other.Id.Value);
-    var secondPickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), 1, 2, owner.Id.Value).Value;
+    var secondPickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 1, 2, owner.Id.Value).Value;
 
     return (guestDraft, owner, other, secondPickId);
   }
@@ -286,7 +286,7 @@ public class GuestDraftApplyVetoTests : GuestDraftsBaseTest
     guestDraft.AssignParticipantToPosition(boardPositions.Single(p => p.Name == "B"), other.Id.Value);
     guestDraft.Start();
 
-    var pickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), 1, 1, picker.Id.Value).Value;
+    var pickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 1, 1, picker.Id.Value).Value;
     guestDraft.ApplyVeto(pickId, other.Id.Value);
 
     return (guestDraft, picker, other, pickId);

@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.GuestDrafts.Composition;
+﻿using ScreenDrafts.Modules.Movies.IntegrationEvents;
+
+namespace ScreenDrafts.Modules.GuestDrafts.Composition;
 
 public static class GuestDraftsModule
 {
@@ -56,6 +58,10 @@ public static class GuestDraftsModule
 
     registrationConfigurator
       .AddConsumer<IntegrationEventConsumer<UserNameUpdatedIntegrationEvent>>()
+      .Endpoint(c => c.InstanceId = moduleInstanceId);
+
+    registrationConfigurator
+      .AddConsumer<IntegrationEventConsumer<MediaAddedIntegrationEvent>>()
       .Endpoint(c => c.InstanceId = moduleInstanceId);
   }
 

@@ -4,13 +4,14 @@ internal sealed class PlayPickCommandHandler(
   IGuestDraftRepository guestDraftRepository,
   IGuestDrafterRepository guestDrafterRepository,
   IUsersApi usersApi,
-  IMovieTitleReader movieTitleReader
+  IGuestDraftMovieRepository guestDraftMovieRepository
 ) : ICommandHandler<PlayPickCommand>
 {
   private readonly IGuestDraftRepository _guestDraftRepository = guestDraftRepository;
   private readonly IGuestDrafterRepository _guestDrafterRepository = guestDrafterRepository;
   private readonly IUsersApi _usersApi = usersApi;
-  private readonly IMovieTitleReader _movieTitleReader = movieTitleReader;
+  private readonly IGuestDraftMovieRepository _guestDraftMovieRepository =
+    guestDraftMovieRepository;
 
   public async Task<Result> Handle(PlayPickCommand request, CancellationToken cancellationToken)
   {
@@ -48,12 +49,12 @@ internal sealed class PlayPickCommandHandler(
       return Result.Failure(GuestDraftErrors.CallerNotAParticipant);
     }
 
-    var titles = await _movieTitleReader.GetTitlesByPublicIdsAsync(
-      [request.MoviePublicId],
+    var movie = await _guestDraftMovieRepository.GetByPublicIdAsync(
+      request.MoviePublicId,
       cancellationToken
     );
 
-    if (!titles.ContainsKey(request.MoviePublicId))
+    if (movie is null)
     {
       return Result.Failure(GuestDraftErrors.MovieNotFound(request.MoviePublicId));
     }
@@ -74,6 +75,7 @@ internal sealed class PlayPickCommandHandler(
 
     var result = guestDraft.PlayPick(
       moviePublicId: request.MoviePublicId,
+      movieId: movie.Id,
       position: request.Position,
       playOrder: request.PlayOrder,
       participantId: participant.Id.Value,

@@ -1,6 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.GamePlay.GetGuestDraftGamePlay;
 
-internal sealed record GameplayVetoHistoryEntryResponse
+internal sealed record GuestDraftGameplayVetoHistoryEntryResponse
 {
   public int Sequence { get; init; }
   public string VetoedByDisplayName { get; init; } = default!;
