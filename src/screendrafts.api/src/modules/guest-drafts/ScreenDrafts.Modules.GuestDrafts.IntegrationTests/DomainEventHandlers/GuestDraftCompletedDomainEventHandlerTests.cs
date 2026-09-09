@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.DomainEvents;
-
-namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.DomainEventHandlers;
+﻿namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.DomainEventHandlers;
 
 [Collection(nameof(GuestDraftsIntegrationTestCollection))]
 public sealed class GuestDraftCompletedDomainEventHandlerTests(
@@ -21,7 +19,7 @@ public sealed class GuestDraftCompletedDomainEventHandlerTests(
     );
     var fixedUtcNow = new DateTime(2026, 1, 1, 12, 0, 0, DateTimeKind.Utc);
     var eventBus = new CapturingEventBus();
-    var handler = new GuestDraftCompletedDomainEventHandler(
+    var handler = new DraftCompletedDomainEventHandler(
       eventBus,
       new FakeDateTimeProvider(fixedUtcNow)
     );
@@ -62,7 +60,7 @@ public sealed class GuestDraftCompletedDomainEventHandlerTests(
       vetoCount: 1
     );
     var eventBus = new CapturingEventBus();
-    var handler = new GuestDraftCompletedDomainEventHandler(
+    var handler = new DraftCompletedDomainEventHandler(
       eventBus,
       new FakeDateTimeProvider(DateTime.UtcNow)
     );
@@ -82,7 +80,7 @@ public sealed class GuestDraftCompletedDomainEventHandlerTests(
   {
     // Assert
     using var scope = _factory.Services.CreateScope();
-    var handler = scope.ServiceProvider.GetService(typeof(GuestDraftCompletedDomainEventHandler));
+    var handler = scope.ServiceProvider.GetService(typeof(DraftCompletedDomainEventHandler));
 
     handler.Should().NotBeNull();
     handler.Should().BeAssignableTo<IDomainEventHandler<DraftCompletedDomainEvent>>();

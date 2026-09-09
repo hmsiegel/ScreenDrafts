@@ -13105,22 +13105,12 @@ export interface CreatedResponse {
     [key: string]: any;
 }
 
-export interface CreateGuestDraftPositionInput {
-    name: string;
-    picks: number[];
-    hasBonusVeto?: boolean;
-    hasBonusVetoOverride?: boolean;
-    hasBonusFungibleToken?: boolean;
-
-    [key: string]: any;
-}
-
 export interface CreateGuestDraftRequest {
     title: string;
     type: string;
     draftDate?: Date | undefined;
     numberOfPicks: number;
-    positions?: CreateGuestDraftPositionInput[];
+    positions?: GuestDraftPositionInput[];
 
     [key: string]: any;
 }
@@ -14515,6 +14505,11 @@ export interface GuestDraftGameplayPickResponse {
     position?: number;
     moviePublicId?: string | undefined;
     movieTitle?: string | undefined;
+    movieYear?: string | undefined;
+    tmdbId?: number | undefined;
+    imdbId?: string | undefined;
+    igdbId?: number | undefined;
+    mediaType?: number | undefined;
     playedByParticipantId?: string;
     playedByDisplayName?: string;
     isRevealed?: boolean;
@@ -14555,6 +14550,16 @@ export interface GuestDraftGameplayVetoHistoryEntryResponse {
     isOverridden?: boolean;
     overriddenByDisplayName?: string | undefined;
     wasOverrideFungible?: boolean;
+
+    [key: string]: any;
+}
+
+export interface GuestDraftPositionInput {
+    name: string;
+    picks: number[];
+    hasBonusVeto?: boolean;
+    hasBonusVetoOverride?: boolean;
+    hasBonusFungibleToken?: boolean;
 
     [key: string]: any;
 }
@@ -16346,23 +16351,13 @@ export interface UpdateDraftRequest {
     [key: string]: any;
 }
 
-export interface UpdateGuestDraftPositionInput {
-    name: string;
-    picks: number[];
-    hasBonusVeto?: boolean;
-    hasBonusVetoOverride?: boolean;
-    hasBonusFungibleToken?: boolean;
-
-    [key: string]: any;
-}
-
 export interface UpdateGuestDraftRequest {
     publicId?: string;
     title?: string | undefined;
     draftDate?: Date | undefined;
     type?: string | undefined;
     numberOfPicks?: number | undefined;
-    positions?: UpdateGuestDraftPositionInput[];
+    positions?: GuestDraftPositionInput[];
 
     [key: string]: any;
 }

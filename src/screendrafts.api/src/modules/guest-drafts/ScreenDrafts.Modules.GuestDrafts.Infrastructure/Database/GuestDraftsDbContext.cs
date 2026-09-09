@@ -1,25 +1,20 @@
-﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafters;
-using ScreenDrafts.Modules.GuestDrafts.Domain.DrafterTeams;
-using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts;
-using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Entities;
-
-namespace ScreenDrafts.Modules.GuestDrafts.Infrastructure.Database;
+﻿namespace ScreenDrafts.Modules.GuestDrafts.Infrastructure.Database;
 
 public sealed class GuestDraftsDbContext(DbContextOptions<GuestDraftsDbContext> options)
   : DbContext(options),
     IUnitOfWork
 {
-  internal DbSet<Draft> GuestDrafts { get; set; }
-  internal DbSet<DraftParticipant> GuestDraftParticipants { get; set; }
-  internal DbSet<GameBoard> GuestDraftGameBoards { get; set; }
-  internal DbSet<DraftPosition> GuestDraftPositions { get; set; }
-  internal DbSet<Pick> GuestDraftPicks { get; set; }
-  internal DbSet<Veto> GuestDraftVetoes { get; set; }
-  internal DbSet<VetoOverride> GuestDraftVetoOverrides { get; set; }
-  internal DbSet<CommissionerOverride> GuestDraftCommissionerOverrides { get; set; }
-  internal DbSet<Drafter> GuestDrafters { get; set; }
-  internal DbSet<DrafterTeam> GuestDrafterTeams { get; set; }
-  internal DbSet<Movie> GuestDraftMovies { get; set; }
+  internal DbSet<Draft> Drafts { get; set; }
+  internal DbSet<DraftParticipant> DraftParticipants { get; set; }
+  internal DbSet<GameBoard> GameBoards { get; set; }
+  internal DbSet<DraftPosition> DraftPositions { get; set; }
+  internal DbSet<Pick> Picks { get; set; }
+  internal DbSet<Veto> Vetoes { get; set; }
+  internal DbSet<VetoOverride> VetoOverrides { get; set; }
+  internal DbSet<CommissionerOverride> CommissionerOverrides { get; set; }
+  internal DbSet<Drafter> Drafters { get; set; }
+  internal DbSet<DrafterTeam> DrafterTeams { get; set; }
+  internal DbSet<Movie> Movies { get; set; }
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {

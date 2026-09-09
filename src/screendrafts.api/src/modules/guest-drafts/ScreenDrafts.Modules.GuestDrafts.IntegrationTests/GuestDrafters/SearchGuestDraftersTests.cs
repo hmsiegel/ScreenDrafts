@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.GuestDrafters;
+﻿namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.GuestDrafters;
 
 /// <summary>
 /// SearchGuestDraftersQueryHandler goes through IDbConnectionFactory/Dapper
@@ -17,7 +17,7 @@ public sealed class SearchGuestDraftersTests(GuestDraftsIntegrationTestWebAppFac
 
     // Act
     var result = await Sender.Send(
-      new SearchGuestDraftersQuery { Search = "Zephy" },
+      new SearchDraftersQuery { Search = "Zephy" },
       TestContext.Current.CancellationToken
     );
 
@@ -35,7 +35,7 @@ public sealed class SearchGuestDraftersTests(GuestDraftsIntegrationTestWebAppFac
 
     // Act
     var result = await Sender.Send(
-      new SearchGuestDraftersQuery { Search = "Okonkwo" },
+      new SearchDraftersQuery { Search = "Okonkwo" },
       TestContext.Current.CancellationToken
     );
 
@@ -52,7 +52,7 @@ public sealed class SearchGuestDraftersTests(GuestDraftsIntegrationTestWebAppFac
 
     // Act
     var result = await Sender.Send(
-      new SearchGuestDraftersQuery { Search = "quillFEATHER" },
+      new SearchDraftersQuery { Search = "quillFEATHER" },
       TestContext.Current.CancellationToken
     );
 
@@ -70,7 +70,7 @@ public sealed class SearchGuestDraftersTests(GuestDraftsIntegrationTestWebAppFac
 
     // Act
     var result = await Sender.Send(
-      new SearchGuestDraftersQuery { Search = string.Empty },
+      new SearchDraftersQuery { Search = string.Empty },
       TestContext.Current.CancellationToken
     );
 
@@ -88,7 +88,7 @@ public sealed class SearchGuestDraftersTests(GuestDraftsIntegrationTestWebAppFac
 
     // Act
     var result = await Sender.Send(
-      new SearchGuestDraftersQuery { Search = null },
+      new SearchDraftersQuery { Search = null },
       TestContext.Current.CancellationToken
     );
 
@@ -105,7 +105,7 @@ public sealed class SearchGuestDraftersTests(GuestDraftsIntegrationTestWebAppFac
 
     // Act
     var result = await Sender.Send(
-      new SearchGuestDraftersQuery { Search = "ZzzNoSuchNameZzz" },
+      new SearchDraftersQuery { Search = "ZzzNoSuchNameZzz" },
       TestContext.Current.CancellationToken
     );
 
@@ -117,7 +117,12 @@ public sealed class SearchGuestDraftersTests(GuestDraftsIntegrationTestWebAppFac
   private async Task<string> CreateGuestDrafterAsync(string firstName, string lastName)
   {
     var result = await Sender.Send(
-      new CreateGuestDrafterCommand { UserId = Guid.NewGuid(), FirstName = firstName, LastName = lastName },
+      new CreateDrafterCommand
+      {
+        UserId = Guid.NewGuid(),
+        FirstName = firstName,
+        LastName = lastName,
+      },
       TestContext.Current.CancellationToken
     );
     result.IsSuccess.Should().BeTrue("test setup must be able to create a guest drafter");

@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.DomainEvents;
-
-namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.DomainEventHandlers;
+﻿namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.DomainEventHandlers;
 
 [Collection(nameof(GuestDraftsIntegrationTestCollection))]
 public sealed class GuestDraftVetoAppliedDomainEventHandlerTests(
@@ -26,7 +24,7 @@ public sealed class GuestDraftVetoAppliedDomainEventHandlerTests(
     );
     var fixedUtcNow = new DateTime(2026, 1, 1, 12, 0, 0, DateTimeKind.Utc);
     var eventBus = new CapturingEventBus();
-    var handler = new GuestDraftVetoAppliedDomainEventHandler(
+    var handler = new VetoAppliedDomainEventHandler(
       eventBus,
       new FakeDateTimeProvider(fixedUtcNow)
     );
@@ -77,7 +75,7 @@ public sealed class GuestDraftVetoAppliedDomainEventHandlerTests(
       overrideTokensRemaining: 0
     );
     var eventBus = new CapturingEventBus();
-    var handler = new GuestDraftVetoAppliedDomainEventHandler(
+    var handler = new VetoAppliedDomainEventHandler(
       eventBus,
       new FakeDateTimeProvider(DateTime.UtcNow)
     );
@@ -97,7 +95,7 @@ public sealed class GuestDraftVetoAppliedDomainEventHandlerTests(
   {
     // Assert
     using var scope = _factory.Services.CreateScope();
-    var handler = scope.ServiceProvider.GetService(typeof(GuestDraftVetoAppliedDomainEventHandler));
+    var handler = scope.ServiceProvider.GetService(typeof(VetoAppliedDomainEventHandler));
 
     handler.Should().NotBeNull();
     handler.Should().BeAssignableTo<IDomainEventHandler<VetoAppliedDomainEvent>>();

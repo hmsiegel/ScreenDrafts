@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Enums;
-
-namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.Scenarios;
+﻿namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.Scenarios;
 
 /// <summary>
 /// End-to-end happy-path coverage through the full GuestDraft lifecycle, exercised
@@ -71,7 +69,7 @@ public sealed class FullDraftFlowTests(GuestDraftsIntegrationTestWebAppFactory f
     var startResult = await SetGuestDraftStatusAsync(
       guestDraftPublicId,
       a.UserPublicId,
-      GuestDraftStatusAction.Start
+      DraftStatusAction.Start
     );
     startResult.IsSuccess.Should().BeTrue();
     startResult.Value.Status.Should().Be(DraftStatus.InProgress.Name);
@@ -136,7 +134,7 @@ public sealed class FullDraftFlowTests(GuestDraftsIntegrationTestWebAppFactory f
     var completeResult = await SetGuestDraftStatusAsync(
       guestDraftPublicId,
       a.UserPublicId,
-      GuestDraftStatusAction.Complete
+      DraftStatusAction.Complete
     );
     completeResult.IsSuccess.Should().BeTrue();
     completeResult.Value.GuestDraftPublicId.Should().Be(guestDraftPublicId);
@@ -155,7 +153,7 @@ public sealed class FullDraftFlowTests(GuestDraftsIntegrationTestWebAppFactory f
     // time (MiniMega is a non-fixed type). Pos2 (B) carries a bonus
     // veto-override -- MiniMega, unlike Standard, allows ApplyVetoOverride, and
     // B uses this bonus in step 11 below.
-    List<CreateGuestDraftPositionInput> positions =
+    List<GuestDraftPositionInput> positions =
     [
       new() { Name = "Pos1", Picks = [1] },
       new()
@@ -222,7 +220,7 @@ public sealed class FullDraftFlowTests(GuestDraftsIntegrationTestWebAppFactory f
     var startResult = await SetGuestDraftStatusAsync(
       guestDraftPublicId,
       a.UserPublicId,
-      GuestDraftStatusAction.Start
+      DraftStatusAction.Start
     );
     startResult.IsSuccess.Should().BeTrue();
     startResult.Value.Status.Should().Be(DraftStatus.InProgress.Name);
@@ -290,7 +288,7 @@ public sealed class FullDraftFlowTests(GuestDraftsIntegrationTestWebAppFactory f
     var completeResult = await SetGuestDraftStatusAsync(
       guestDraftPublicId,
       a.UserPublicId,
-      GuestDraftStatusAction.Complete
+      DraftStatusAction.Complete
     );
     completeResult.IsSuccess.Should().BeTrue();
     completeResult.Value.GuestDraftPublicId.Should().Be(guestDraftPublicId);

@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.DomainEvents;
-
-namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.DomainEventHandlers;
+﻿namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.DomainEventHandlers;
 
 [Collection(nameof(GuestDraftsIntegrationTestCollection))]
 public sealed class GuestDraftPickRevealedDomainEventHandlerTests(
@@ -24,7 +22,7 @@ public sealed class GuestDraftPickRevealedDomainEventHandlerTests(
     );
     var fixedUtcNow = new DateTime(2026, 1, 1, 12, 0, 0, DateTimeKind.Utc);
     var eventBus = new CapturingEventBus();
-    var handler = new GuestDraftPickRevealedDomainEventHandler(
+    var handler = new PickRevealedDomainEventHandler(
       eventBus,
       new FakeDateTimeProvider(fixedUtcNow)
     );
@@ -65,7 +63,7 @@ public sealed class GuestDraftPickRevealedDomainEventHandlerTests(
       playedByParticipantId: Guid.NewGuid()
     );
     var eventBus = new CapturingEventBus();
-    var handler = new GuestDraftPickRevealedDomainEventHandler(
+    var handler = new PickRevealedDomainEventHandler(
       eventBus,
       new FakeDateTimeProvider(DateTime.UtcNow)
     );
@@ -85,9 +83,7 @@ public sealed class GuestDraftPickRevealedDomainEventHandlerTests(
   {
     // Assert
     using var scope = _factory.Services.CreateScope();
-    var handler = scope.ServiceProvider.GetService(
-      typeof(GuestDraftPickRevealedDomainEventHandler)
-    );
+    var handler = scope.ServiceProvider.GetService(typeof(PickRevealedDomainEventHandler));
 
     handler.Should().NotBeNull();
     handler.Should().BeAssignableTo<IDomainEventHandler<PickRevealedDomainEvent>>();

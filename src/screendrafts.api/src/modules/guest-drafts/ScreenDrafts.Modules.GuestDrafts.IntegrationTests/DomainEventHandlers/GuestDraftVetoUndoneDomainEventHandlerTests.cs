@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.DomainEvents;
-
-namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.DomainEventHandlers;
+﻿namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.DomainEventHandlers;
 
 [Collection(nameof(GuestDraftsIntegrationTestCollection))]
 public sealed class GuestDraftVetoUndoneDomainEventHandlerTests(
@@ -27,10 +25,7 @@ public sealed class GuestDraftVetoUndoneDomainEventHandlerTests(
     );
     var fixedUtcNow = new DateTime(2026, 1, 1, 12, 0, 0, DateTimeKind.Utc);
     var eventBus = new CapturingEventBus();
-    var handler = new GuestDraftVetoUndoneDomainEventHandler(
-      eventBus,
-      new FakeDateTimeProvider(fixedUtcNow)
-    );
+    var handler = new VetoUndoneDomainEventHandler(eventBus, new FakeDateTimeProvider(fixedUtcNow));
 
     // Act
     await handler.Handle(domainEvent, CancellationToken.None);
@@ -72,7 +67,7 @@ public sealed class GuestDraftVetoUndoneDomainEventHandlerTests(
       overrideTokensRemaining: null
     );
     var eventBus = new CapturingEventBus();
-    var handler = new GuestDraftVetoUndoneDomainEventHandler(
+    var handler = new VetoUndoneDomainEventHandler(
       eventBus,
       new FakeDateTimeProvider(DateTime.UtcNow)
     );
@@ -106,7 +101,7 @@ public sealed class GuestDraftVetoUndoneDomainEventHandlerTests(
       overrideTokensRemaining: 0
     );
     var eventBus = new CapturingEventBus();
-    var handler = new GuestDraftVetoUndoneDomainEventHandler(
+    var handler = new VetoUndoneDomainEventHandler(
       eventBus,
       new FakeDateTimeProvider(DateTime.UtcNow)
     );
@@ -126,7 +121,7 @@ public sealed class GuestDraftVetoUndoneDomainEventHandlerTests(
   {
     // Assert
     using var scope = _factory.Services.CreateScope();
-    var handler = scope.ServiceProvider.GetService(typeof(GuestDraftVetoUndoneDomainEventHandler));
+    var handler = scope.ServiceProvider.GetService(typeof(VetoUndoneDomainEventHandler));
 
     handler.Should().NotBeNull();
     handler.Should().BeAssignableTo<IDomainEventHandler<VetoUndoneDomainEvent>>();

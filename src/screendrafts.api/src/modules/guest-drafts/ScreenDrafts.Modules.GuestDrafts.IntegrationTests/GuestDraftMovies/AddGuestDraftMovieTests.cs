@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Errors;
-
-namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.GuestDraftMovies;
+﻿namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.GuestDraftMovies;
 
 public sealed class AddGuestDraftMovieTests(GuestDraftsIntegrationTestWebAppFactory factory)
   : GuestDraftsIntegrationTest(factory)
@@ -9,7 +7,7 @@ public sealed class AddGuestDraftMovieTests(GuestDraftsIntegrationTestWebAppFact
   public async Task AddGuestDraftMovie_WithValidData_ShouldPersistAndReturnPublicIdAsync()
   {
     // Arrange
-    var command = new AddGuestDraftMovieCommand
+    var command = new AddMovieCommand
     {
       Id = Guid.NewGuid(),
       PublicId = $"m_{Faker.Random.AlphaNumeric(15)}",
@@ -27,7 +25,7 @@ public sealed class AddGuestDraftMovieTests(GuestDraftsIntegrationTestWebAppFact
     result.IsSuccess.Should().BeTrue();
     result.Value.Should().Be(command.PublicId);
 
-    var movie = await DbContext.GuestDraftMovies.SingleAsync(
+    var movie = await DbContext.Movies.SingleAsync(
       m => m.PublicId == command.PublicId,
       TestContext.Current.CancellationToken
     );
@@ -42,7 +40,7 @@ public sealed class AddGuestDraftMovieTests(GuestDraftsIntegrationTestWebAppFact
   public async Task AddGuestDraftMovie_WhenPublicIdAlreadyExists_ShouldFailIdempotentlyAsync()
   {
     // Arrange
-    var command = new AddGuestDraftMovieCommand
+    var command = new AddMovieCommand
     {
       Id = Guid.NewGuid(),
       PublicId = $"m_{Faker.Random.AlphaNumeric(15)}",
@@ -64,7 +62,7 @@ public sealed class AddGuestDraftMovieTests(GuestDraftsIntegrationTestWebAppFact
       .Errors.Should()
       .Contain(e => e.Code == MovieErrors.MovieAlreadyExists(command.PublicId).Code);
 
-    var movieCount = await DbContext.GuestDraftMovies.CountAsync(
+    var movieCount = await DbContext.Movies.CountAsync(
       m => m.PublicId == command.PublicId,
       TestContext.Current.CancellationToken
     );

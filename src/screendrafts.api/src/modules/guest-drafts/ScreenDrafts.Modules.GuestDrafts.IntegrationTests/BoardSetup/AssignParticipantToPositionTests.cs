@@ -1,8 +1,4 @@
-﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafters;
-using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Enums;
-using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Errors;
-
-namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.BoardSetup;
+﻿namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.BoardSetup;
 
 public sealed class AssignParticipantToPositionTests(
   GuestDraftsIntegrationTestWebAppFactory factory
@@ -158,7 +154,7 @@ public sealed class AssignParticipantToPositionTests(
     var owner = await CreateUserAsync();
     var other = await CreateUserAsync();
 
-    List<CreateGuestDraftPositionInput> positions =
+    List<GuestDraftPositionInput> positions =
     [
       new()
       {

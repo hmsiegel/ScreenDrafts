@@ -1,7 +1,8 @@
-namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.GuestDraftMovies;
+﻿namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.GuestDraftMovies;
 
-public sealed class MediaAddedIntegrationEventConsumerTests(GuestDraftsIntegrationTestWebAppFactory factory)
-  : GuestDraftsIntegrationTest(factory)
+public sealed class MediaAddedIntegrationEventConsumerTests(
+  GuestDraftsIntegrationTestWebAppFactory factory
+) : GuestDraftsIntegrationTest(factory)
 {
   private static MediaAddedIntegrationEvent CreateEvent(Guid mediaId, string publicId) =>
     new(
@@ -33,7 +34,7 @@ public sealed class MediaAddedIntegrationEventConsumerTests(GuestDraftsIntegrati
     await consumer.Handle(integrationEvent, TestContext.Current.CancellationToken);
 
     // Assert
-    var movie = await DbContext.GuestDraftMovies.SingleAsync(
+    var movie = await DbContext.Movies.SingleAsync(
       m => m.PublicId == publicId,
       TestContext.Current.CancellationToken
     );
@@ -65,7 +66,7 @@ public sealed class MediaAddedIntegrationEventConsumerTests(GuestDraftsIntegrati
     // Assert
     await act.Should().NotThrowAsync();
 
-    var movieCount = await DbContext.GuestDraftMovies.CountAsync(
+    var movieCount = await DbContext.Movies.CountAsync(
       m => m.PublicId == publicId,
       TestContext.Current.CancellationToken
     );

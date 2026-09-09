@@ -1,7 +1,4 @@
-﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Enums;
-using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Errors;
-
-namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.Picks;
+﻿namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.Picks;
 
 public sealed class ApplyVetoOverrideTests(GuestDraftsIntegrationTestWebAppFactory factory)
   : GuestDraftsIntegrationTest(factory)
@@ -70,7 +67,7 @@ public sealed class ApplyVetoOverrideTests(GuestDraftsIntegrationTestWebAppFacto
     var firstOverrider = await CreateUserAsync();
     var secondOverrider = await CreateUserAsync();
 
-    List<CreateGuestDraftPositionInput> positions =
+    List<GuestDraftPositionInput> positions =
     [
       new() { Name = "A", Picks = [1] },
       new()
@@ -124,11 +121,7 @@ public sealed class ApplyVetoOverrideTests(GuestDraftsIntegrationTestWebAppFacto
       boardPositions.Single(p => p.Name == "C").PublicId,
       secondOverrider.GuestDrafterPublicId
     );
-    await SetGuestDraftStatusAsync(
-      guestDraftPublicId,
-      owner.UserPublicId,
-      GuestDraftStatusAction.Start
-    );
+    await SetGuestDraftStatusAsync(guestDraftPublicId, owner.UserPublicId, DraftStatusAction.Start);
 
     await PlayPickAsync(guestDraftPublicId, owner.UserPublicId, await CreateMovieAsync(), 1, 1);
     await ApplyVetoAsync(guestDraftPublicId, 1, firstOverrider.UserPublicId);
@@ -180,10 +173,11 @@ public sealed class ApplyVetoOverrideTests(GuestDraftsIntegrationTestWebAppFacto
     // Arrange -- exhaust "other"'s one awarded override on a first pick, then have
     // the picker veto their own second pick so "other"'s fungible token (not their
     // override pool) is the only thing left to pay for the second override with.
-    var (guestDraftPublicId, picker, otherUser) = await CreateInProgressMiniMegaDraftAsyncWithUser(
-      otherHasBonusOverride: true,
-      otherHasBonusFungibleToken: true
-    );
+    var (guestDraftPublicId, picker, otherUser) =
+      await CreateInProgressMiniMegaDraftAsyncWithUserAsync(
+        otherHasBonusOverride: true,
+        otherHasBonusFungibleToken: true
+      );
     var other = otherUser.UserPublicId;
 
     await PlayPickAsync(guestDraftPublicId, picker, await CreateMovieAsync(), 1, 1);
@@ -221,7 +215,7 @@ public sealed class ApplyVetoOverrideTests(GuestDraftsIntegrationTestWebAppFacto
       owner.UserPublicId,
       DraftType.MiniMega,
       numberOfPicks: 1,
-      positions: [new CreateGuestDraftPositionInput { Name = "A", Picks = [1] }]
+      positions: [new GuestDraftPositionInput { Name = "A", Picks = [1] }]
     );
     await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId);
     await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, other.GuestDrafterPublicId);
@@ -265,7 +259,7 @@ public sealed class ApplyVetoOverrideTests(GuestDraftsIntegrationTestWebAppFacto
     bool otherHasBonusFungibleToken = false
   )
   {
-    var (guestDraftPublicId, picker, other) = await CreateInProgressMiniMegaDraftAsyncWithUser(
+    var (guestDraftPublicId, picker, other) = await CreateInProgressMiniMegaDraftAsyncWithUserAsync(
       otherHasBonusOverride,
       otherHasBonusFungibleToken
     );
@@ -276,7 +270,7 @@ public sealed class ApplyVetoOverrideTests(GuestDraftsIntegrationTestWebAppFacto
     string GuestDraftPublicId,
     string Picker,
     TestUser Other
-  )> CreateInProgressMiniMegaDraftAsyncWithUser(
+  )> CreateInProgressMiniMegaDraftAsyncWithUserAsync(
     bool otherHasBonusOverride = false,
     bool otherHasBonusFungibleToken = false
   )
@@ -284,7 +278,7 @@ public sealed class ApplyVetoOverrideTests(GuestDraftsIntegrationTestWebAppFacto
     var picker = await CreateUserAsync();
     var other = await CreateUserAsync();
 
-    List<CreateGuestDraftPositionInput> positions =
+    List<GuestDraftPositionInput> positions =
     [
       new() { Name = "A", Picks = [1] },
       new()
@@ -322,7 +316,7 @@ public sealed class ApplyVetoOverrideTests(GuestDraftsIntegrationTestWebAppFacto
     await SetGuestDraftStatusAsync(
       guestDraftPublicId,
       picker.UserPublicId,
-      GuestDraftStatusAction.Start
+      DraftStatusAction.Start
     );
 
     return (guestDraftPublicId, picker.UserPublicId, other);

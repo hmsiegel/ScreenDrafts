@@ -1,7 +1,4 @@
-﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Enums;
-using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Errors;
-
-namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.Picks;
+﻿namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.Picks;
 
 public sealed class PlayPickTests(GuestDraftsIntegrationTestWebAppFactory factory)
   : GuestDraftsIntegrationTest(factory)
@@ -55,7 +52,7 @@ public sealed class PlayPickTests(GuestDraftsIntegrationTestWebAppFactory factor
       await PlayPickAsync(guestDraftPublicId, owner, await CreateMovieAsync(), pickSlots[i], i + 1);
     }
 
-    await SetGuestDraftStatusAsync(guestDraftPublicId, owner, GuestDraftStatusAction.Complete);
+    await SetGuestDraftStatusAsync(guestDraftPublicId, owner, DraftStatusAction.Complete);
 
     // Act
     var result = await PlayPickAsync(guestDraftPublicId, owner, await CreateMovieAsync(), 7, 8);

@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Errors;
-
-namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.Picks;
+﻿namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.Picks;
 
 public sealed class ApplyCommissionerOverrideTests(GuestDraftsIntegrationTestWebAppFactory factory)
   : GuestDraftsIntegrationTest(factory)
@@ -65,7 +63,7 @@ public sealed class ApplyCommissionerOverrideTests(GuestDraftsIntegrationTestWeb
       await PlayPickAsync(guestDraftPublicId, owner, await CreateMovieAsync(), pickSlots[i], i + 1);
     }
 
-    await SetGuestDraftStatusAsync(guestDraftPublicId, owner, GuestDraftStatusAction.Complete);
+    await SetGuestDraftStatusAsync(guestDraftPublicId, owner, DraftStatusAction.Complete);
 
     // Act
     var result = await ApplyCommissionerOverrideAsync(guestDraftPublicId, 7, owner);

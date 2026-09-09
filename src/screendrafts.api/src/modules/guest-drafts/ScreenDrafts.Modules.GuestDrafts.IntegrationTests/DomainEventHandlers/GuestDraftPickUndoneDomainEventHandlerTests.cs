@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.DomainEvents;
-
-namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.DomainEventHandlers;
+﻿namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.DomainEventHandlers;
 
 [Collection(nameof(GuestDraftsIntegrationTestCollection))]
 public sealed class GuestDraftPickUndoneDomainEventHandlerTests(
@@ -22,10 +20,7 @@ public sealed class GuestDraftPickUndoneDomainEventHandlerTests(
     );
     var fixedUtcNow = new DateTime(2026, 1, 1, 12, 0, 0, DateTimeKind.Utc);
     var eventBus = new CapturingEventBus();
-    var handler = new GuestDraftPickUndoneDomainEventHandler(
-      eventBus,
-      new FakeDateTimeProvider(fixedUtcNow)
-    );
+    var handler = new PickUndoneDomainEventHandler(eventBus, new FakeDateTimeProvider(fixedUtcNow));
 
     // Act
     await handler.Handle(domainEvent, CancellationToken.None);
@@ -59,7 +54,7 @@ public sealed class GuestDraftPickUndoneDomainEventHandlerTests(
       moviePublicId: $"m_{TestFakerProvider.Faker.Random.AlphaNumeric(15)}"
     );
     var eventBus = new CapturingEventBus();
-    var handler = new GuestDraftPickUndoneDomainEventHandler(
+    var handler = new PickUndoneDomainEventHandler(
       eventBus,
       new FakeDateTimeProvider(DateTime.UtcNow)
     );
@@ -79,7 +74,7 @@ public sealed class GuestDraftPickUndoneDomainEventHandlerTests(
   {
     // Assert
     using var scope = _factory.Services.CreateScope();
-    var handler = scope.ServiceProvider.GetService(typeof(GuestDraftPickUndoneDomainEventHandler));
+    var handler = scope.ServiceProvider.GetService(typeof(PickUndoneDomainEventHandler));
 
     handler.Should().NotBeNull();
     handler.Should().BeAssignableTo<IDomainEventHandler<PickUndoneDomainEvent>>();

@@ -1,25 +1,22 @@
-﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Errors;
-using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.ValueObjects;
-
-namespace ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Entities;
+﻿namespace ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Entities;
 
 public sealed class GameBoard : Entity<GameBoardId>
 {
   private readonly List<DraftPosition> _positions = [];
 
-  private GameBoard(DraftId guestDraftId, GameBoardId? id = null)
+  private GameBoard(DraftId draftId, GameBoardId? id = null)
     : base(id ?? GameBoardId.CreateUnique())
   {
-    GuestDraftId = guestDraftId;
+    DraftId = draftId;
   }
 
   private GameBoard() { }
 
-  public DraftId GuestDraftId { get; private set; } = default!;
+  public DraftId DraftId { get; private set; } = default!;
 
   public IReadOnlyCollection<DraftPosition> Positions => _positions.AsReadOnly();
 
-  internal static GameBoard Create(DraftId guestDraftId) => new(guestDraftId);
+  internal static GameBoard Create(DraftId draftId) => new(draftId);
 
   internal Result AssignPositions(ICollection<DraftPosition> positions)
   {

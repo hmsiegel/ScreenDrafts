@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafters;
-
-namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.GuestDrafters;
+﻿namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.GuestDrafters;
 
 /// <summary>
 /// GuestDrafter itself has no dedicated unit-test coverage yet, and its one-per-user
@@ -18,7 +16,7 @@ public sealed class CreateGuestDrafterTests(GuestDraftsIntegrationTestWebAppFact
   {
     // Arrange
     var userId = Guid.NewGuid();
-    var command = new CreateGuestDrafterCommand
+    var command = new CreateDrafterCommand
     {
       UserId = userId,
       FirstName = "Ada",
@@ -31,7 +29,7 @@ public sealed class CreateGuestDrafterTests(GuestDraftsIntegrationTestWebAppFact
     // Assert
     result.IsSuccess.Should().BeTrue();
     result.Value.Should().NotBeNullOrEmpty();
-    var guestDrafter = await DbContext.GuestDrafters.FirstAsync(
+    var guestDrafter = await DbContext.Drafters.FirstAsync(
       d => d.PublicId == result.Value,
       TestContext.Current.CancellationToken
     );
@@ -45,7 +43,7 @@ public sealed class CreateGuestDrafterTests(GuestDraftsIntegrationTestWebAppFact
     // Arrange
     var userId = Guid.NewGuid();
     await Sender.Send(
-      new CreateGuestDrafterCommand
+      new CreateDrafterCommand
       {
         UserId = userId,
         FirstName = "Ada",
@@ -56,7 +54,7 @@ public sealed class CreateGuestDrafterTests(GuestDraftsIntegrationTestWebAppFact
 
     // Act
     var result = await Sender.Send(
-      new CreateGuestDrafterCommand
+      new CreateDrafterCommand
       {
         UserId = userId,
         FirstName = "Ada",

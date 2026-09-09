@@ -1,7 +1,4 @@
-﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Enums;
-using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Errors;
-
-namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.GuestDrafts;
+﻿namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.GuestDrafts;
 
 public sealed class UpdateGuestDraftTests(GuestDraftsIntegrationTestWebAppFactory factory)
   : GuestDraftsIntegrationTest(factory)
@@ -124,8 +121,8 @@ public sealed class UpdateGuestDraftTests(GuestDraftsIntegrationTestWebAppFactor
       numberOfPicks: 2,
       positions:
       [
-        new CreateGuestDraftPositionInput { Name = "A", Picks = [1] },
-        new CreateGuestDraftPositionInput { Name = "B", Picks = [2] },
+        new GuestDraftPositionInput { Name = "A", Picks = [1] },
+        new GuestDraftPositionInput { Name = "B", Picks = [2] },
       ]
     );
 
@@ -137,8 +134,8 @@ public sealed class UpdateGuestDraftTests(GuestDraftsIntegrationTestWebAppFactor
       numberOfPicks: 3,
       positions:
       [
-        new UpdateGuestDraftPositionInput { Name = "X", Picks = [1] },
-        new UpdateGuestDraftPositionInput { Name = "Y", Picks = [2, 3] },
+        new GuestDraftPositionInput { Name = "X", Picks = [1] },
+        new GuestDraftPositionInput { Name = "Y", Picks = [2, 3] },
       ]
     );
 

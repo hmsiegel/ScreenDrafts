@@ -1,7 +1,4 @@
-﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Enums;
-using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Errors;
-
-namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.Picks;
+﻿namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.Picks;
 
 public sealed class ApplyVetoTests(GuestDraftsIntegrationTestWebAppFactory factory)
   : GuestDraftsIntegrationTest(factory)
@@ -106,7 +103,7 @@ public sealed class ApplyVetoTests(GuestDraftsIntegrationTestWebAppFactory facto
       await PlayPickAsync(guestDraftPublicId, owner, await CreateMovieAsync(), pickSlots[i], i + 1);
     }
 
-    await SetGuestDraftStatusAsync(guestDraftPublicId, owner, GuestDraftStatusAction.Complete);
+    await SetGuestDraftStatusAsync(guestDraftPublicId, owner, DraftStatusAction.Complete);
 
     // Act
     var result = await ApplyVetoAsync(guestDraftPublicId, 7, other);
@@ -132,7 +129,7 @@ public sealed class ApplyVetoTests(GuestDraftsIntegrationTestWebAppFactory facto
     var owner = await CreateUserAsync();
     var other = await CreateUserAsync();
 
-    List<CreateGuestDraftPositionInput> positions =
+    List<GuestDraftPositionInput> positions =
     [
       new() { Name = "A", Picks = [1] },
       new()
@@ -166,11 +163,7 @@ public sealed class ApplyVetoTests(GuestDraftsIntegrationTestWebAppFactory facto
       boardPositions.Single(p => p.Name == "B").PublicId,
       other.GuestDrafterPublicId
     );
-    await SetGuestDraftStatusAsync(
-      guestDraftPublicId,
-      owner.UserPublicId,
-      GuestDraftStatusAction.Start
-    );
+    await SetGuestDraftStatusAsync(guestDraftPublicId, owner.UserPublicId, DraftStatusAction.Start);
 
     await PlayPickAsync(guestDraftPublicId, owner.UserPublicId, await CreateMovieAsync(), 1, 1);
     await ApplyVetoAsync(guestDraftPublicId, 1, other.UserPublicId);

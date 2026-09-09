@@ -10556,38 +10556,6 @@
           }
         }
       },
-      "CreateGuestDraftPositionInput": {
-        "required": [
-          "name",
-          "picks"
-        ],
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "picks": {
-            "type": "array",
-            "items": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
-              "format": "int32"
-            }
-          },
-          "hasBonusVeto": {
-            "type": "boolean"
-          },
-          "hasBonusVetoOverride": {
-            "type": "boolean"
-          },
-          "hasBonusFungibleToken": {
-            "type": "boolean"
-          }
-        }
-      },
       "CreateGuestDraftRequest": {
         "required": [
           "title",
@@ -10620,7 +10588,7 @@
           "positions": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/CreateGuestDraftPositionInput"
+              "$ref": "#/components/schemas/GuestDraftPositionInput"
             }
           }
         }
@@ -11407,6 +11375,9 @@
             "format": "int32"
           }
         }
+      },
+      "DraftStatusAction": {
+        "type": "integer"
       },
       "DraftType": {
         "required": [
@@ -15215,6 +15186,45 @@
               "string"
             ]
           },
+          "movieYear": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "tmdbId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "imdbId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "igdbId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "mediaType": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
           "playedByParticipantId": {
             "type": "string",
             "format": "uuid"
@@ -15362,8 +15372,37 @@
           }
         }
       },
-      "GuestDraftStatusAction": {
-        "type": "integer"
+      "GuestDraftPositionInput": {
+        "required": [
+          "name",
+          "picks"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "picks": {
+            "type": "array",
+            "items": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          "hasBonusVeto": {
+            "type": "boolean"
+          },
+          "hasBonusVetoOverride": {
+            "type": "boolean"
+          },
+          "hasBonusFungibleToken": {
+            "type": "boolean"
+          }
+        }
       },
       "HonorificResponse": {
         "required": [
@@ -20560,7 +20599,7 @@
             "type": "string"
           },
           "action": {
-            "$ref": "#/components/schemas/GuestDraftStatusAction"
+            "$ref": "#/components/schemas/DraftStatusAction"
           }
         }
       },
@@ -21342,38 +21381,6 @@
           }
         }
       },
-      "UpdateGuestDraftPositionInput": {
-        "required": [
-          "name",
-          "picks"
-        ],
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "picks": {
-            "type": "array",
-            "items": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
-              "format": "int32"
-            }
-          },
-          "hasBonusVeto": {
-            "type": "boolean"
-          },
-          "hasBonusVetoOverride": {
-            "type": "boolean"
-          },
-          "hasBonusFungibleToken": {
-            "type": "boolean"
-          }
-        }
-      },
       "UpdateGuestDraftRequest": {
         "type": "object",
         "properties": {
@@ -21411,7 +21418,7 @@
           "positions": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/UpdateGuestDraftPositionInput"
+              "$ref": "#/components/schemas/GuestDraftPositionInput"
             }
           }
         }

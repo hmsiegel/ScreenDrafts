@@ -1,7 +1,4 @@
-﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Enums;
-using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Errors;
-
-namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.GuestDrafts;
+﻿namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.GuestDrafts;
 
 public sealed class SetGuestDraftStatusTests(GuestDraftsIntegrationTestWebAppFactory factory)
   : GuestDraftsIntegrationTest(factory)
@@ -37,7 +34,7 @@ public sealed class SetGuestDraftStatusTests(GuestDraftsIntegrationTestWebAppFac
     var result = await SetGuestDraftStatusAsync(
       guestDraftPublicId,
       owner.UserPublicId,
-      GuestDraftStatusAction.Start
+      DraftStatusAction.Start
     );
 
     // Assert
@@ -60,7 +57,7 @@ public sealed class SetGuestDraftStatusTests(GuestDraftsIntegrationTestWebAppFac
     var result = await SetGuestDraftStatusAsync(
       guestDraftPublicId,
       other.UserPublicId,
-      GuestDraftStatusAction.Start
+      DraftStatusAction.Start
     );
 
     // Assert
@@ -80,7 +77,7 @@ public sealed class SetGuestDraftStatusTests(GuestDraftsIntegrationTestWebAppFac
     var result = await SetGuestDraftStatusAsync(
       guestDraftPublicId,
       owner.UserPublicId,
-      GuestDraftStatusAction.Start
+      DraftStatusAction.Start
     );
 
     // Assert
@@ -110,7 +107,7 @@ public sealed class SetGuestDraftStatusTests(GuestDraftsIntegrationTestWebAppFac
     var result = await SetGuestDraftStatusAsync(
       guestDraftPublicId,
       owner.UserPublicId,
-      GuestDraftStatusAction.Start
+      DraftStatusAction.Start
     );
 
     // Assert
@@ -135,7 +132,7 @@ public sealed class SetGuestDraftStatusTests(GuestDraftsIntegrationTestWebAppFac
     var result = await SetGuestDraftStatusAsync(
       guestDraftPublicId,
       owner.UserPublicId,
-      GuestDraftStatusAction.Start
+      DraftStatusAction.Start
     );
 
     // Assert
@@ -166,7 +163,7 @@ public sealed class SetGuestDraftStatusTests(GuestDraftsIntegrationTestWebAppFac
     var result = await SetGuestDraftStatusAsync(
       guestDraftPublicId,
       owner,
-      GuestDraftStatusAction.Complete
+      DraftStatusAction.Complete
     );
 
     // Assert
@@ -186,7 +183,7 @@ public sealed class SetGuestDraftStatusTests(GuestDraftsIntegrationTestWebAppFac
     var result = await SetGuestDraftStatusAsync(
       guestDraftPublicId,
       owner,
-      GuestDraftStatusAction.Complete
+      DraftStatusAction.Complete
     );
 
     // Assert
@@ -204,7 +201,7 @@ public sealed class SetGuestDraftStatusTests(GuestDraftsIntegrationTestWebAppFac
     var result = await SetGuestDraftStatusAsync(
       guestDraftPublicId,
       other,
-      GuestDraftStatusAction.Complete
+      DraftStatusAction.Complete
     );
 
     // Assert
@@ -226,7 +223,7 @@ public sealed class SetGuestDraftStatusTests(GuestDraftsIntegrationTestWebAppFac
     var result = await SetGuestDraftStatusAsync(
       guestDraftPublicId,
       owner.UserPublicId,
-      GuestDraftStatusAction.Complete
+      DraftStatusAction.Complete
     );
 
     // Assert

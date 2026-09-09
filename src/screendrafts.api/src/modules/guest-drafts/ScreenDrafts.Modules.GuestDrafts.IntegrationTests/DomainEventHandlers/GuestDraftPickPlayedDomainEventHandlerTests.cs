@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.DomainEvents;
-
-namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.DomainEventHandlers;
+﻿namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.DomainEventHandlers;
 
 [Collection(nameof(GuestDraftsIntegrationTestCollection))]
 public sealed class GuestDraftPickPlayedDomainEventHandlerTests(
@@ -26,10 +24,7 @@ public sealed class GuestDraftPickPlayedDomainEventHandlerTests(
     );
     var fixedUtcNow = new DateTime(2026, 1, 1, 12, 0, 0, DateTimeKind.Utc);
     var eventBus = new CapturingEventBus();
-    var handler = new GuestDraftPickPlayedDomainEventHandler(
-      eventBus,
-      new FakeDateTimeProvider(fixedUtcNow)
-    );
+    var handler = new PickPlayedDomainEventHandler(eventBus, new FakeDateTimeProvider(fixedUtcNow));
 
     // Act
     await handler.Handle(domainEvent, CancellationToken.None);
@@ -71,7 +66,7 @@ public sealed class GuestDraftPickPlayedDomainEventHandlerTests(
       revealAuthorizedParticipantId: null
     );
     var eventBus = new CapturingEventBus();
-    var handler = new GuestDraftPickPlayedDomainEventHandler(
+    var handler = new PickPlayedDomainEventHandler(
       eventBus,
       new FakeDateTimeProvider(DateTime.UtcNow)
     );
@@ -93,7 +88,7 @@ public sealed class GuestDraftPickPlayedDomainEventHandlerTests(
     // DI container catches a handler that's silently never registered, which a
     // hand-constructed `new Handler(...)` call in the tests above cannot.
     using var scope = _factory.Services.CreateScope();
-    var handler = scope.ServiceProvider.GetService(typeof(GuestDraftPickPlayedDomainEventHandler));
+    var handler = scope.ServiceProvider.GetService(typeof(PickPlayedDomainEventHandler));
 
     handler.Should().NotBeNull();
     handler.Should().BeAssignableTo<IDomainEventHandler<PickPlayedDomainEvent>>();

@@ -1,7 +1,4 @@
-﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Enums;
-using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Errors;
-
-namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.GuestDrafts;
+﻿namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.GuestDrafts;
 
 public sealed class CreateGuestDraftTests(GuestDraftsIntegrationTestWebAppFactory factory)
   : GuestDraftsIntegrationTest(factory)
@@ -11,7 +8,7 @@ public sealed class CreateGuestDraftTests(GuestDraftsIntegrationTestWebAppFactor
   {
     // Arrange
     var owner = await CreateUserAsync();
-    var command = new CreateGuestDraftCommand
+    var command = new CreateDraftCommand
     {
       OwnerUserPublicId = owner.UserPublicId,
       Title = "Weekend Guest Draft",
@@ -40,7 +37,7 @@ public sealed class CreateGuestDraftTests(GuestDraftsIntegrationTestWebAppFactor
       )
     )!.UserId;
 
-    var command = new CreateGuestDraftCommand
+    var command = new CreateDraftCommand
     {
       OwnerUserPublicId = owner.UserPublicId,
       Title = "Weekend Guest Draft",
@@ -62,7 +59,7 @@ public sealed class CreateGuestDraftTests(GuestDraftsIntegrationTestWebAppFactor
   public async Task CreateGuestDraft_WithEmptyTitle_ShouldReturnErrorAsync()
   {
     // Arrange
-    var command = new CreateGuestDraftCommand
+    var command = new CreateDraftCommand
     {
       OwnerUserPublicId = (await CreateUserAsync()).UserPublicId,
       Title = string.Empty,
@@ -82,7 +79,7 @@ public sealed class CreateGuestDraftTests(GuestDraftsIntegrationTestWebAppFactor
   public async Task CreateGuestDraft_WithInvalidType_ShouldReturnErrorAsync()
   {
     // Arrange
-    var command = new CreateGuestDraftCommand
+    var command = new CreateDraftCommand
     {
       OwnerUserPublicId = (await CreateUserAsync()).UserPublicId,
       Title = "Weekend Guest Draft",
@@ -105,7 +102,7 @@ public sealed class CreateGuestDraftTests(GuestDraftsIntegrationTestWebAppFactor
   {
     // Arrange
     var nonExistentOwner = $"u_{Faker.Random.AlphaNumeric(16)}";
-    var command = new CreateGuestDraftCommand
+    var command = new CreateDraftCommand
     {
       OwnerUserPublicId = nonExistentOwner,
       Title = "Weekend Guest Draft",
@@ -148,7 +145,7 @@ public sealed class CreateGuestDraftTests(GuestDraftsIntegrationTestWebAppFactor
   {
     // Arrange
     var owner = await CreateUserAsync();
-    List<CreateGuestDraftPositionInput> positions =
+    List<GuestDraftPositionInput> positions =
     [
       new() { Name = "A", Picks = [1] },
       new() { Name = "B", Picks = [2] },
@@ -172,7 +169,7 @@ public sealed class CreateGuestDraftTests(GuestDraftsIntegrationTestWebAppFactor
   public async Task CreateGuestDraft_WithNumberOfPicksLessThanOrEqualToZero_ShouldReturnErrorAsync()
   {
     // Arrange
-    var command = new CreateGuestDraftCommand
+    var command = new CreateDraftCommand
     {
       OwnerUserPublicId = (await CreateUserAsync()).UserPublicId,
       Title = "Weekend Guest Draft",
@@ -194,7 +191,7 @@ public sealed class CreateGuestDraftTests(GuestDraftsIntegrationTestWebAppFactor
   public async Task CreateGuestDraft_ForANonFixedType_WithNoPositions_ShouldReturnErrorAsync()
   {
     // Arrange
-    var command = new CreateGuestDraftCommand
+    var command = new CreateDraftCommand
     {
       OwnerUserPublicId = (await CreateUserAsync()).UserPublicId,
       Title = "Weekend Guest Draft",
@@ -216,7 +213,7 @@ public sealed class CreateGuestDraftTests(GuestDraftsIntegrationTestWebAppFactor
   public async Task CreateGuestDraft_WhenPositionsHaveAGapInPickCoverage_ShouldReturnErrorAsync()
   {
     // Arrange -- NumberOfPicks=3, but positions only cover {1, 2} -- slot 3 is missing
-    var command = new CreateGuestDraftCommand
+    var command = new CreateDraftCommand
     {
       OwnerUserPublicId = (await CreateUserAsync()).UserPublicId,
       Title = "Weekend Guest Draft",
@@ -239,7 +236,7 @@ public sealed class CreateGuestDraftTests(GuestDraftsIntegrationTestWebAppFactor
   public async Task CreateGuestDraft_WhenPositionsOverlapWithADuplicatePickSlot_ShouldReturnErrorAsync()
   {
     // Arrange -- NumberOfPicks=2, but slot 1 is claimed by both positions
-    var command = new CreateGuestDraftCommand
+    var command = new CreateDraftCommand
     {
       OwnerUserPublicId = (await CreateUserAsync()).UserPublicId,
       Title = "Weekend Guest Draft",

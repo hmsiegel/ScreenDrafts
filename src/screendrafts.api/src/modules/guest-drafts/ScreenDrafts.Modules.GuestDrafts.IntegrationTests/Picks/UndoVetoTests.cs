@@ -1,7 +1,4 @@
-﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Enums;
-using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Errors;
-
-namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.Picks;
+﻿namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.Picks;
 
 public sealed class UndoVetoTests(GuestDraftsIntegrationTestWebAppFactory factory)
   : GuestDraftsIntegrationTest(factory)
@@ -120,7 +117,7 @@ public sealed class UndoVetoTests(GuestDraftsIntegrationTestWebAppFactory factor
     var owner = await CreateUserAsync();
     var other = await CreateUserAsync();
 
-    List<CreateGuestDraftPositionInput> positions =
+    List<GuestDraftPositionInput> positions =
     [
       new() { Name = "A", Picks = [1] },
       new()
@@ -153,11 +150,7 @@ public sealed class UndoVetoTests(GuestDraftsIntegrationTestWebAppFactory factor
       boardPositions.Single(p => p.Name == "B").PublicId,
       other.GuestDrafterPublicId
     );
-    await SetGuestDraftStatusAsync(
-      guestDraftPublicId,
-      owner.UserPublicId,
-      GuestDraftStatusAction.Start
-    );
+    await SetGuestDraftStatusAsync(guestDraftPublicId, owner.UserPublicId, DraftStatusAction.Start);
 
     await PlayPickAsync(guestDraftPublicId, owner.UserPublicId, await CreateMovieAsync(), 1, 1);
     await ApplyVetoAsync(guestDraftPublicId, 1, other.UserPublicId);
@@ -198,7 +191,7 @@ public sealed class UndoVetoTests(GuestDraftsIntegrationTestWebAppFactory factor
     var owner = await CreateUserAsync();
     var other = await CreateUserAsync();
 
-    List<CreateGuestDraftPositionInput> positions =
+    List<GuestDraftPositionInput> positions =
     [
       new() { Name = "A", Picks = [1] },
       new()
@@ -232,11 +225,7 @@ public sealed class UndoVetoTests(GuestDraftsIntegrationTestWebAppFactory factor
       boardPositions.Single(p => p.Name == "B").PublicId,
       other.GuestDrafterPublicId
     );
-    await SetGuestDraftStatusAsync(
-      guestDraftPublicId,
-      owner.UserPublicId,
-      GuestDraftStatusAction.Start
-    );
+    await SetGuestDraftStatusAsync(guestDraftPublicId, owner.UserPublicId, DraftStatusAction.Start);
 
     await PlayPickAsync(guestDraftPublicId, owner.UserPublicId, await CreateMovieAsync(), 1, 1);
     await ApplyVetoAsync(guestDraftPublicId, 1, other.UserPublicId);

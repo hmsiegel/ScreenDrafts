@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.DomainEvents;
-
-namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.DomainEventHandlers;
+﻿namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.DomainEventHandlers;
 
 [Collection(nameof(GuestDraftsIntegrationTestCollection))]
 public sealed class GuestDraftCommissionerOverrideAppliedDomainEventHandlerTests(
@@ -26,7 +24,7 @@ public sealed class GuestDraftCommissionerOverrideAppliedDomainEventHandlerTests
     );
     var fixedUtcNow = new DateTime(2026, 1, 1, 12, 0, 0, DateTimeKind.Utc);
     var eventBus = new CapturingEventBus();
-    var handler = new GuestDraftCommissionerOverrideAppliedDomainEventHandler(
+    var handler = new CommissionerOverrideAppliedDomainEventHandler(
       eventBus,
       new FakeDateTimeProvider(fixedUtcNow)
     );
@@ -71,7 +69,7 @@ public sealed class GuestDraftCommissionerOverrideAppliedDomainEventHandlerTests
       overrideTokensRemaining: 0
     );
     var eventBus = new CapturingEventBus();
-    var handler = new GuestDraftCommissionerOverrideAppliedDomainEventHandler(
+    var handler = new CommissionerOverrideAppliedDomainEventHandler(
       eventBus,
       new FakeDateTimeProvider(DateTime.UtcNow)
     );
@@ -92,7 +90,7 @@ public sealed class GuestDraftCommissionerOverrideAppliedDomainEventHandlerTests
     // Assert
     using var scope = _factory.Services.CreateScope();
     var handler = scope.ServiceProvider.GetService(
-      typeof(GuestDraftCommissionerOverrideAppliedDomainEventHandler)
+      typeof(CommissionerOverrideAppliedDomainEventHandler)
     );
 
     handler.Should().NotBeNull();
