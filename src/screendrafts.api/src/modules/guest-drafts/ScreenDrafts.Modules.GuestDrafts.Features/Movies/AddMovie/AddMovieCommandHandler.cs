@@ -10,15 +10,11 @@ internal sealed class AddMovieCommandHandler(IMovieRepository movieRepository)
     CancellationToken cancellationToken
   )
   {
-    var exists = await _movieRepository.ExistsByPublicIdAsync(request.PublicId, cancellationToken);
+    var existing = await _movieRepository.GetByPublicIdAsync(request.PublicId, cancellationToken);
 
-    if (exists)
+    if (existing is not null)
     {
-      // Idempotent skip -- MediaAddedIntegrationEvent can legitimately be
-      // redelivered (outbox/inbox at-least-once), so this is an expected,
-      // non-error outcome, not a real failure. Mirrors AddMovieCommandHandler's
-      // MovieAlreadyExists handling, which the consumer logs and swallows.
-      return Result.Failure<string>(MovieErrors.MovieAlreadyExists(request.PublicId));
+      return Result.Success(existing.PublicId);
     }
 
     var result = Movie.Create(

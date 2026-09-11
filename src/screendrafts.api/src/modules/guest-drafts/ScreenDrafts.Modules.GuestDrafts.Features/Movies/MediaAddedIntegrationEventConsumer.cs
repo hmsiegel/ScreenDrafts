@@ -36,14 +36,14 @@ internal sealed partial class MediaAddedIntegrationEventConsumer(
 
     if (result.IsFailure)
     {
-      LogGuestDraftMovieAlreadyExists(_logger, integrationEvent.PublicId);
+      LogAddFailed(_logger, integrationEvent.PublicId, result.Errors);
     }
   }
 
   [LoggerMessage(
     EventId = 0,
     Level = LogLevel.Information,
-    Message = "GuestDraftMovie already exists for {PublicId}, skipping"
+    Message = "Failed to add Movies {PublicId} with errors {Errors}"
   )]
-  private static partial void LogGuestDraftMovieAlreadyExists(ILogger logger, string publicId);
+  private static partial void LogAddFailed(ILogger logger, string publicId, object errors);
 }
