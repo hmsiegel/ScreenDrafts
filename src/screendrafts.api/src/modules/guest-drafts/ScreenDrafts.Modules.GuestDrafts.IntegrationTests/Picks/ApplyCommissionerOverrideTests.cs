@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.Picks;
+﻿namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.Picks;
 
 public sealed class ApplyCommissionerOverrideTests(GuestDraftsIntegrationTestWebAppFactory factory)
   : GuestDraftsIntegrationTest(factory)
@@ -8,16 +8,14 @@ public sealed class ApplyCommissionerOverrideTests(GuestDraftsIntegrationTestWeb
   {
     // Arrange
     var (guestDraftPublicId, owner, other) = await CreateInProgressStandardGuestDraftAsync();
-    await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), 7, 1);
+    await PlayPickAsync(guestDraftPublicId, owner, await CreateMovieAsync(), 7, 1);
 
     // Act
     var result = await ApplyCommissionerOverrideAsync(guestDraftPublicId, 1, other);
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result
-      .Errors.Should()
-      .Contain(e => e.Code == GuestDraftErrors.OnlyOwnerCanPerformThisAction.Code);
+    result.Errors.Should().Contain(e => e.Code == DraftErrors.OnlyOwnerCanPerformThisAction.Code);
   }
 
   [Fact]
@@ -25,7 +23,7 @@ public sealed class ApplyCommissionerOverrideTests(GuestDraftsIntegrationTestWeb
   {
     // Arrange
     var (guestDraftPublicId, owner, _) = await CreateInProgressStandardGuestDraftAsync();
-    await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), 7, 1);
+    await PlayPickAsync(guestDraftPublicId, owner, await CreateMovieAsync(), 7, 1);
     await ApplyCommissionerOverrideAsync(guestDraftPublicId, 1, owner);
 
     // Act
@@ -35,7 +33,7 @@ public sealed class ApplyCommissionerOverrideTests(GuestDraftsIntegrationTestWeb
     result.IsFailure.Should().BeTrue();
     result
       .Errors.Should()
-      .Contain(e => e.Code == GuestDraftErrors.CommissionerOverrideAlreadyApplied.Code);
+      .Contain(e => e.Code == DraftErrors.CommissionerOverrideAlreadyApplied.Code);
   }
 
   [Fact]
@@ -49,9 +47,7 @@ public sealed class ApplyCommissionerOverrideTests(GuestDraftsIntegrationTestWeb
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result
-      .Errors.Should()
-      .Contain(e => e.Code == GuestDraftErrors.PickNotFoundByPlayOrder(99).Code);
+    result.Errors.Should().Contain(e => e.Code == DraftErrors.PickNotFoundByPlayOrder(99).Code);
   }
 
   [Fact]
@@ -64,17 +60,17 @@ public sealed class ApplyCommissionerOverrideTests(GuestDraftsIntegrationTestWeb
 
     for (var i = 0; i < pickSlots.Length; i++)
     {
-      await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), pickSlots[i], i + 1);
+      await PlayPickAsync(guestDraftPublicId, owner, await CreateMovieAsync(), pickSlots[i], i + 1);
     }
 
-    await SetGuestDraftStatusAsync(guestDraftPublicId, owner, GuestDraftStatusAction.Complete);
+    await SetGuestDraftStatusAsync(guestDraftPublicId, owner, DraftStatusAction.Complete);
 
     // Act
     var result = await ApplyCommissionerOverrideAsync(guestDraftPublicId, 7, owner);
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors.Should().Contain(e => e.Code == GuestDraftErrors.DraftNotStarted.Code);
+    result.Errors.Should().Contain(e => e.Code == DraftErrors.DraftNotStarted.Code);
   }
 
   [Fact]
@@ -84,8 +80,8 @@ public sealed class ApplyCommissionerOverrideTests(GuestDraftsIntegrationTestWeb
     // eligible: only the most recent pick, by play order, can be commissioner
     // overridden.
     var (guestDraftPublicId, owner, _) = await CreateInProgressStandardGuestDraftAsync();
-    await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), 7, 1);
-    await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), 6, 2);
+    await PlayPickAsync(guestDraftPublicId, owner, await CreateMovieAsync(), 7, 1);
+    await PlayPickAsync(guestDraftPublicId, owner, await CreateMovieAsync(), 6, 2);
 
     // Act
     var result = await ApplyCommissionerOverrideAsync(guestDraftPublicId, 1, owner);
@@ -94,6 +90,6 @@ public sealed class ApplyCommissionerOverrideTests(GuestDraftsIntegrationTestWeb
     result.IsFailure.Should().BeTrue();
     result
       .Errors.Should()
-      .Contain(e => e.Code == GuestDraftErrors.CommissionerOverrideNotOnMostRecentPick.Code);
+      .Contain(e => e.Code == DraftErrors.CommissionerOverrideNotOnMostRecentPick.Code);
   }
 }

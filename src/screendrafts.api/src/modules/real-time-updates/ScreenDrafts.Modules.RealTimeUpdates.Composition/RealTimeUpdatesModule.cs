@@ -156,6 +156,14 @@ public static class RealTimeUpdatesModule
     registrationConfigurator
       .AddConsumer<IntegrationEventConsumer<GuestDraftVetoUndoneIntegrationEvent>>()
       .Endpoint(c => c.InstanceId = moduleInstanceId);
+
+    registrationConfigurator
+      .AddConsumer<IntegrationEventConsumer<GuestDraftCompletedIntegrationEvent>>()
+      .Endpoint(c => c.InstanceId = moduleInstanceId);
+
+    registrationConfigurator
+      .AddConsumer<IntegrationEventConsumer<GuestDraftStartedIntegrationEvent>>()
+      .Endpoint(c => c.InstanceId = moduleInstanceId);
   }
 
   private static void AddDomainEventHandlers(this IServiceCollection services)

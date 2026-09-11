@@ -8,7 +8,6 @@ global using ScreenDrafts.Common.Application.EventBus;
 global using ScreenDrafts.Common.Application.EventBus.Dispatchers;
 global using ScreenDrafts.Common.Application.Messaging;
 global using ScreenDrafts.Common.Application.Messaging.Dispatchers;
-global using ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.Enums;
 global using ScreenDrafts.Modules.GuestDrafts.Domain.Participants;
 global using ScreenDrafts.Modules.GuestDrafts.Features.Behaviors;
 global using ScreenDrafts.Modules.GuestDrafts.Features.Inbox;

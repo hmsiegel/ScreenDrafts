@@ -12,19 +12,20 @@ import {
 import * as signalR from '@microsoft/signalr';
 import { fetchGuestDraftGameplay, fetchMediaByPublicId } from './gameplay-fetchers';
 import {
-  GameplayParticipantResponse,
-  GameplayPickResponse,
-  GameplayPositionResponse,
   GetGuestDraftGameplayResponse,
+  GuestDraftGameplayParticipantResponse,
+  GuestDraftGameplayPickResponse,
+  GuestDraftGameplayPositionResponse,
 } from '@/lib/dto';
 
 // ── Position shape normalization ────────────────────────────────────────────
-// GuestDrafts' GameplayPositionResponse has different field names than
-// canonical's GameplayDraftPositionResponse (name vs positionName, picks vs
-// ownedBoardSlots, assignedParticipantPublicId vs assignedParticipantId) and
-// no participant-kind field at all — GuestDrafts has no Team-kind concept.
-// Normalizing once here, at the context boundary, is what lets draft-board.tsx
-// and veto-status-bar.tsx port over with only their import line changed.
+// GuestDrafts' GameplayPositionResponse field names now match canonical's
+// closely but not exactly (name vs positionName, picks vs ownedBoardSlots),
+// and assignedParticipantId is a raw Guid, not a PublicId string -- there is
+// no PublicId at all on a position's assignment anymore (see item #1's
+// rewrite: PublicId only survives on the participant list and CallerContext).
+// Normalizing once here is what lets draft-board.tsx and veto-status-bar.tsx
+// stay ported with only their import line changed.
 export interface GuestDraftPositionView {
   positionPublicId?: string;
   positionName?: string;
@@ -32,11 +33,11 @@ export interface GuestDraftPositionView {
   hasBonusVeto?: boolean;
   hasBonusVetoOverride?: boolean;
   hasBonusFungibleToken?: boolean;
-  assignedParticipantId?: string;
+  assignedParticipantId?: string; // raw Guid (as string), not a PublicId
   assignedParticipantName?: string;
 }
 
-function toPositionView(p: GameplayPositionResponse): GuestDraftPositionView {
+function toPositionView(p: GuestDraftGameplayPositionResponse): GuestDraftPositionView {
   return {
     positionPublicId: p.positionPublicId,
     positionName: p.name,
@@ -44,7 +45,7 @@ function toPositionView(p: GameplayPositionResponse): GuestDraftPositionView {
     hasBonusVeto: p.hasBonusVeto,
     hasBonusVetoOverride: p.hasBonusVetoOverride,
     hasBonusFungibleToken: p.hasBonusFungibleToken,
-    assignedParticipantId: p.assignedParticipantPublicId,
+    assignedParticipantId: p.assignedParticipantId,
     assignedParticipantName: p.assignedParticipantDisplayName,
   };
 }
@@ -80,21 +81,20 @@ export interface GuestDraftCompletionSummary {
 
 interface GuestDraftLiveContextValue {
   gameplay: GetGuestDraftGameplayResponse;
-  participants: GameplayParticipantResponse[];
-  picks: GameplayPickResponse[];
+  participants: GuestDraftGameplayParticipantResponse[];
+  picks: GuestDraftGameplayPickResponse[];
   draftPositions: GuestDraftPositionView[];
   isOwner: boolean;
   isParticipant: boolean;
-  // The caller's own participant public id (from callerContext.participantPublicId),
-  // null if the caller isn't a participant (e.g. an owner who didn't also join).
-  // ASSUMPTION, flagged for confirmation: GuestDraft participant matching keys
-  // off participantPublicId end-to-end — GameplayPositionResponse.assignedParticipantPublicId,
-  // callerContext.participantPublicId, and GameplayParticipantResponse.participantPublicId
-  // all share that name, so that's the field this context matches on. Canonical
-  // used participantId (a different field) for the same purpose — verify picks'
-  // playedById is actually populated with participantPublicId for GuestDrafts
-  // before trusting turn-taking/ownership comparisons built on this.
+  // The caller's own participant Guid (from callerContext.participantId) —
+  // the actual matching key throughout gameplay (picks' playedByParticipantId/
+  // revealAuthorizedParticipantId, positions' assignedParticipantId, and
+  // DraftHub's per-participant SignalR group all key off this same Guid).
+  // Null if the caller isn't a participant (e.g. an owner who didn't also
+  // join). callerParticipantPublicId is kept alongside it only for display —
+  // gameplay comparisons should use callerParticipantId, not this.
   callerParticipantId: string | null;
+  callerParticipantPublicId: string | null;
   pendingReveal: GuestDraftPendingReveal | null;
   completionSummary: GuestDraftCompletionSummary | null;
   connectionState: signalR.HubConnectionState;
@@ -134,7 +134,8 @@ export function GuestDraftLiveProvider({
 
   const isOwner = initialGameplay.callerContext?.isOwner ?? false;
   const isParticipant = initialGameplay.callerContext?.isParticipant ?? false;
-  const callerParticipantId = initialGameplay.callerContext?.participantPublicId ?? null;
+  const callerParticipantId = initialGameplay.callerContext?.participantId ?? null;
+  const callerParticipantPublicId = initialGameplay.callerContext?.participantPublicId ?? null;
 
   const [connectionState, setConnectionState] = useState<signalR.HubConnectionState>(
     signalR.HubConnectionState.Disconnected,
@@ -189,7 +190,8 @@ export function GuestDraftLiveProvider({
   // group everyone gets, and "guest-draft:{id}:participant:{id}" which routes
   // PickSubmitted to whoever's authorized to reveal that specific pending pick.
   // Both joins happen through one hub method, JoinGuestDraftAsync(guestDraftId,
-  // participantId), confirmed from the GuestDrafts real-time pipeline summary.
+  // participantId) — participantId here is the raw Guid (callerParticipantId),
+  // the same one DraftHub groups by, not the PublicId.
   //
   // PickSubmitted's shape came from GuestDraftPickSubmittedIntegrationEventConsumer.cs.
   // All 9 broadcast events now have confirmed shapes (from their matching
@@ -233,12 +235,14 @@ export function GuestDraftLiveProvider({
       ) => {
         setPicks((prev) =>
           prev.map((p) =>
-            p.playOrder === playOrder ? { ...p, wasCommissionerOverride: true } : p,
+            p.playOrder === playOrder
+              ? { ...p, wasCommissionerOverride: true, isActiveOnFinalBoard: false }
+              : p,
           ),
         );
         setParticipants((prev) =>
           prev.map((p) =>
-            p.participantPublicId === playedByParticipantId
+            p.participantId === playedByParticipantId
               ? { ...p, vetoTokensRemaining, overrideTokensRemaining }
               : p,
           ),
@@ -270,9 +274,9 @@ export function GuestDraftLiveProvider({
 
     // [GuestDraftPublicId, PlayOrder, BoardPosition, MoviePublicId, PlayedByParticipantId] —
     // GuestDraftPickRevealedIntegrationEventConsumer.cs. Same shape as
-    // PickSubmitted, sent to everyone this time. No title in the payload, so
-    // resolve the movie before adding it to `picks`; if that lookup fails,
-    // fall back to a refetch rather than show a half-built pick.
+    // PickSubmitted, sent to everyone this time. No title/tmdbId/year in the
+    // payload, so resolve the movie before adding it to `picks`; if that
+    // lookup fails, fall back to a refetch rather than show a half-built pick.
     connection.on(
       'PickRevealed',
       async (
@@ -286,19 +290,30 @@ export function GuestDraftLiveProvider({
           const movie = await fetchMediaByPublicId(accessToken, moviePublicId);
           setPicks((prev) => {
             if (prev.some((p) => p.playOrder === playOrder)) return prev;
-            const revealed: GameplayPickResponse = {
+            const revealed: GuestDraftGameplayPickResponse = {
               playOrder,
-              boardPosition,
+              position: boardPosition,
+              moviePublicId,
               movieTitle: movie.title,
               movieYear: movie.year,
               tmdbId: movie.tmdbId,
-              playedById: playedByParticipantId,
-              playedByName: participantsRef.current.find(
-                (p) => p.participantPublicId === playedByParticipantId,
-              )?.participantName,
+              imdbId: movie.imdbId,
+              igdbId: movie.igdbId,
+              mediaType: movie.mediaType?.value,
+              playedByParticipantId,
+              playedByDisplayName:
+                participantsRef.current.find((p) => p.participantId === playedByParticipantId)
+                  ?.displayName ?? 'Unknown',
+              isRevealed: true,
               wasVetoed: false,
               wasVetoOverridden: false,
               wasCommissionerOverride: false,
+              isActiveOnFinalBoard: true,
+              isEligibleForRePick: false,
+              wasVetoFungible: false,
+              wasVetoOverrideFungible: false,
+              vetoSequence: 0,
+              vetoHistory: [],
             };
             return [...prev, revealed];
           });
@@ -335,16 +350,24 @@ export function GuestDraftLiveProvider({
         overrideTokensRemaining: number,
       ) => {
         const vetoerName = participantsRef.current.find(
-          (p) => p.participantPublicId === vetoedByParticipantId,
-        )?.participantName;
+          (p) => p.participantId === vetoedByParticipantId,
+        )?.displayName;
         setPicks((prev) =>
           prev.map((p) =>
-            p.playOrder === playOrder ? { ...p, wasVetoed: true, vetoedByName: vetoerName } : p,
+            p.playOrder === playOrder
+              ? {
+                  ...p,
+                  wasVetoed: true,
+                  vetoedByDisplayName: vetoerName,
+                  isActiveOnFinalBoard: false,
+                  isEligibleForRePick: true,
+                }
+              : p,
           ),
         );
         setParticipants((prev) =>
           prev.map((p) =>
-            p.participantPublicId === vetoedByParticipantId
+            p.participantId === vetoedByParticipantId
               ? { ...p, vetoTokensRemaining, overrideTokensRemaining }
               : p,
           ),
@@ -367,18 +390,24 @@ export function GuestDraftLiveProvider({
         overrideTokensRemaining: number,
       ) => {
         const overriderName = participantsRef.current.find(
-          (p) => p.participantPublicId === overriddenByParticipantId,
-        )?.participantName;
+          (p) => p.participantId === overriddenByParticipantId,
+        )?.displayName;
         setPicks((prev) =>
           prev.map((p) =>
             p.playOrder === playOrder
-              ? { ...p, wasVetoOverridden: true, savedByName: overriderName }
+              ? {
+                  ...p,
+                  wasVetoOverridden: true,
+                  savedByDisplayName: overriderName,
+                  isActiveOnFinalBoard: true,
+                  isEligibleForRePick: false,
+                }
               : p,
           ),
         );
         setParticipants((prev) =>
           prev.map((p) =>
-            p.participantPublicId === overriddenByParticipantId
+            p.participantId === overriddenByParticipantId
               ? { ...p, vetoTokensRemaining, overrideTokensRemaining }
               : p,
           ),
@@ -390,7 +419,7 @@ export function GuestDraftLiveProvider({
     //  OverrideTokensRemaining] — GuestDraftVetoUndoneIntegrationEventConsumer.cs.
     // Unlike VetoApplied/VetoOverrideApplied, this payload carries no
     // participant id, so there's no safe way to know whose token counts
-    // these two numbers belong to (matching on the pick's vetoedByName
+    // these two numbers belong to (matching on the pick's vetoedByDisplayName
     // string back to a participant would be a name-collision bug waiting to
     // happen). Patch the pick locally — that part's unambiguous, keyed by
     // playOrder — and refetch for the participant token sync.
@@ -403,9 +432,11 @@ export function GuestDraftLiveProvider({
               ? {
                   ...p,
                   wasVetoed: false,
-                  vetoedByName: undefined,
+                  vetoedByDisplayName: undefined,
                   wasVetoOverridden: false,
-                  savedByName: undefined,
+                  savedByDisplayName: undefined,
+                  isActiveOnFinalBoard: true,
+                  isEligibleForRePick: false,
                 }
               : p,
           ),
@@ -492,6 +523,7 @@ export function GuestDraftLiveProvider({
         isOwner,
         isParticipant,
         callerParticipantId,
+        callerParticipantPublicId,
         pendingReveal,
         completionSummary,
         connectionState,

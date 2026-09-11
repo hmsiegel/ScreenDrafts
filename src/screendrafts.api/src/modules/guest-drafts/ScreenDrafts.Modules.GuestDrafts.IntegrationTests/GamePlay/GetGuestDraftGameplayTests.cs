@@ -1,3 +1,6 @@
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Enums;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Errors;
+
 namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.GamePlay;
 
 public sealed class GetGuestDraftGameplayTests(GuestDraftsIntegrationTestWebAppFactory factory)
@@ -32,7 +35,9 @@ public sealed class GetGuestDraftGameplayTests(GuestDraftsIntegrationTestWebAppF
     };
     revealerFromResponse.ParticipantPublicId.Should().BeOneOf(candidates.Keys);
     var revealerUserPublicId = candidates[revealerFromResponse.ParticipantPublicId];
-    (await RevealPickAsync(guestDraftPublicId, 1, revealerUserPublicId)).IsSuccess.Should().BeTrue();
+    (await RevealPickAsync(guestDraftPublicId, 1, revealerUserPublicId))
+      .IsSuccess.Should()
+      .BeTrue();
 
     // Act
     var result = await GetGameplayAsync(guestDraftPublicId, owner.UserPublicId);
@@ -42,9 +47,11 @@ public sealed class GetGuestDraftGameplayTests(GuestDraftsIntegrationTestWebAppF
     var response = result.Value;
     response.GuestDraftPublicId.Should().Be(guestDraftPublicId);
     response.Title.Should().NotBeNullOrWhiteSpace();
-    response.Type.Should().Be(GuestDraftType.MiniMega.Name);
-    response.Status.Should().Be(GuestDraftStatus.InProgress.Name);
-    response.ShareToken.Should().BeNull("no sharing feature exists yet, so the underlying column is always null");
+    response.Type.Should().Be(DraftType.MiniMega.Name);
+    response.Status.Should().Be(DraftStatus.InProgress.Name);
+    response
+      .ShareToken.Should()
+      .BeNull("no sharing feature exists yet, so the underlying column is always null");
     response.CallerContext.IsOwner.Should().BeTrue();
     response.CallerContext.IsParticipant.Should().BeTrue();
     response.CallerContext.ParticipantPublicId.Should().Be(owner.GuestDrafterPublicId);
@@ -73,7 +80,9 @@ public sealed class GetGuestDraftGameplayTests(GuestDraftsIntegrationTestWebAppF
     foreach (var position in response.Positions)
     {
       position.AssignedParticipantId.Should().NotBeNull();
-      var assignedParticipant = response.Participants.Single(p => p.ParticipantId == position.AssignedParticipantId);
+      var assignedParticipant = response.Participants.Single(p =>
+        p.ParticipantId == position.AssignedParticipantId
+      );
       assignedParticipant.ParticipantPublicId.Should().BeOneOf(knownGuestDrafterPublicIds);
       position.AssignedParticipantDisplayName.Should().Be("Test User");
     }
@@ -97,7 +106,9 @@ public sealed class GetGuestDraftGameplayTests(GuestDraftsIntegrationTestWebAppF
 
     var slot2 = response.Picks.Single(p => p.Position == 2);
     slot2.IsRevealed.Should().BeFalse();
-    slot2.MoviePublicId.Should().NotBeNull("the owner can always see a pick's movie, revealed or not");
+    slot2
+      .MoviePublicId.Should()
+      .NotBeNull("the owner can always see a pick's movie, revealed or not");
     slot2.IsActiveOnFinalBoard.Should().BeTrue();
 
     var slot3 = response.Picks.Single(p => p.Position == 3);
@@ -122,7 +133,9 @@ public sealed class GetGuestDraftGameplayTests(GuestDraftsIntegrationTestWebAppF
     var slot5 = response.Picks.Single(p => p.Position == 5);
     slot5.WasVetoed.Should().BeTrue();
     slot5.IsActiveOnFinalBoard.Should().BeFalse();
-    slot5.VetoHistory.Should().HaveCount(2, "veto seq1 was overridden, then D self-overrode, then C vetoed again as seq2");
+    slot5
+      .VetoHistory.Should()
+      .HaveCount(2, "veto seq1 was overridden, then D self-overrode, then C vetoed again as seq2");
     slot5.VetoHistory.Select(v => v.Sequence).Should().ContainInOrder(1, 2);
     slot5.VetoHistory[0].IsOverridden.Should().BeTrue();
     slot5.VetoHistory[1].IsOverridden.Should().BeFalse();
@@ -181,7 +194,7 @@ public sealed class GetGuestDraftGameplayTests(GuestDraftsIntegrationTestWebAppF
     // Assert -- NotFound, not Forbidden, so a non-participant can't confirm a
     // private draft even exists
     result.IsFailure.Should().BeTrue();
-    result.Errors.Should().Contain(e => e.Code == GuestDraftErrors.NotFound(guestDraftPublicId).Code);
+    result.Errors.Should().Contain(e => e.Code == DraftErrors.NotFound(guestDraftPublicId).Code);
   }
 
   [Fact]
@@ -196,7 +209,9 @@ public sealed class GetGuestDraftGameplayTests(GuestDraftsIntegrationTestWebAppF
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors.Should().Contain(e => e.Code == UserPublicApiErrors.PublicIdNotFound(nonExistentCaller).Code);
+    result
+      .Errors.Should()
+      .Contain(e => e.Code == UserPublicApiErrors.PublicIdNotFound(nonExistentCaller).Code);
   }
 
   [Fact]
@@ -211,7 +226,9 @@ public sealed class GetGuestDraftGameplayTests(GuestDraftsIntegrationTestWebAppF
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors.Should().Contain(e => e.Code == GuestDraftErrors.NotFound(nonExistentGuestDraftPublicId).Code);
+    result
+      .Errors.Should()
+      .Contain(e => e.Code == DraftErrors.NotFound(nonExistentGuestDraftPublicId).Code);
   }
 
   // ── ShareToken ────────────────────────────────────────────────────────────
@@ -324,6 +341,32 @@ public sealed class GetGuestDraftGameplayTests(GuestDraftsIntegrationTestWebAppF
     pick.MovieTitle.Should().NotBeNull();
   }
 
+  [Fact]
+  public async Task GetGameplay_RevealedPick_ShouldIncludeMovieDetailsFromTheLocalCacheAsync()
+  {
+    // Arrange -- TmdbId/MovieYear/ImdbId come from the guest_drafts.movies JOIN,
+    // not a cross-module lookup, so they must reflect whatever was cached there.
+    // With exactly two participants, PlayPick auto-assigns "other" as the
+    // designated revealer, not the picker themselves.
+    var (guestDraftPublicId, owner, other) = await CreateInProgressStandardGuestDraftAsync();
+    var moviePublicId = await CreateMovieAsync(tmdbId: 42, imdbId: "tt1234567", year: "1999");
+    (await PlayPickAsync(guestDraftPublicId, owner, moviePublicId, 7, 1))
+      .IsSuccess.Should()
+      .BeTrue();
+    (await RevealPickAsync(guestDraftPublicId, 1, other)).IsSuccess.Should().BeTrue();
+
+    // Act
+    var result = await GetGameplayAsync(guestDraftPublicId, owner);
+
+    // Assert
+    result.IsSuccess.Should().BeTrue();
+    var pick = result.Value.Picks.Single(p => p.PlayOrder == 1);
+    pick.MoviePublicId.Should().Be(moviePublicId);
+    pick.TmdbId.Should().Be(42);
+    pick.ImdbId.Should().Be("tt1234567");
+    pick.MovieYear.Should().Be("1999");
+  }
+
   // ── Participant token balances ───────────────────────────────────────────
 
   [Fact]
@@ -331,7 +374,7 @@ public sealed class GetGuestDraftGameplayTests(GuestDraftsIntegrationTestWebAppF
   {
     // Arrange -- "other" spends their one starting veto; owner stays untouched
     var (guestDraftPublicId, owner, other) = await CreateInProgressStandardGuestDraftAsync();
-    await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), 7, 1);
+    await PlayPickAsync(guestDraftPublicId, owner, await CreateMovieAsync(), 7, 1);
     await ApplyVetoAsync(guestDraftPublicId, 1, other);
 
     // Act
@@ -345,7 +388,9 @@ public sealed class GetGuestDraftGameplayTests(GuestDraftsIntegrationTestWebAppF
     ownerParticipant.FungibleTokensRemaining.Should().Be(0);
 
     var otherParticipant = result.Value.Participants.Single(p => !p.IsOwner);
-    otherParticipant.VetoTokensRemaining.Should().Be(0, "StartingVetoes(1) + AwardedVetoes(0) - VetoesUsed(1)");
+    otherParticipant
+      .VetoTokensRemaining.Should()
+      .Be(0, "StartingVetoes(1) + AwardedVetoes(0) - VetoesUsed(1)");
     otherParticipant.OverrideTokensRemaining.Should().Be(0);
     otherParticipant.FungibleTokensRemaining.Should().Be(0);
   }
@@ -369,7 +414,10 @@ public sealed class GetGuestDraftGameplayTests(GuestDraftsIntegrationTestWebAppF
     string MoviePublicId
   )> CreatePickWithDistinctRolesAsync()
   {
-    var (guestDraftPublicId, users) = await CreateInProgressCustomGuestDraftAsync(4, GuestDraftType.MiniMega);
+    var (guestDraftPublicId, users) = await CreateInProgressCustomGuestDraftAsync(
+      4,
+      DraftType.MiniMega
+    );
     var owner = users[0];
     var picker = users[1];
 
@@ -382,13 +430,24 @@ public sealed class GetGuestDraftGameplayTests(GuestDraftsIntegrationTestWebAppF
     while (true)
     {
       attempt++;
-      moviePublicId = CreateMovie();
-      (await PlayPickAsync(guestDraftPublicId, picker.UserPublicId, moviePublicId, position, playOrder))
-        .IsSuccess.Should().BeTrue();
+      moviePublicId = await CreateMovieAsync();
+      (
+        await PlayPickAsync(
+          guestDraftPublicId,
+          picker.UserPublicId,
+          moviePublicId,
+          position,
+          playOrder
+        )
+      )
+        .IsSuccess.Should()
+        .BeTrue();
 
       var guestDraft = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
       var pick = guestDraft.Picks.Single(p => p.PlayOrder == playOrder);
-      var revealerParticipant = guestDraft.Participants.Single(p => p.Id == pick.RevealAuthorizedParticipantId);
+      var revealerParticipant = guestDraft.Participants.Single(p =>
+        p.Id == pick.RevealAuthorizedParticipantId
+      );
       revealer = users.Single(u => u.GuestDrafterId == revealerParticipant.ParticipantIdValue);
 
       if (revealer != owner)
@@ -396,12 +455,27 @@ public sealed class GetGuestDraftGameplayTests(GuestDraftsIntegrationTestWebAppF
         break;
       }
 
-      attempt.Should().BeLessThan(25, "the random draw excluding Owner should resolve within a handful of retries");
-      (await UndoPickAsync(guestDraftPublicId, playOrder, owner.UserPublicId)).IsSuccess.Should().BeTrue();
+      attempt
+        .Should()
+        .BeLessThan(
+          25,
+          "the random draw excluding Owner should resolve within a handful of retries"
+        );
+      (await UndoPickAsync(guestDraftPublicId, playOrder, owner.UserPublicId))
+        .IsSuccess.Should()
+        .BeTrue();
     }
 
     var other = users.Single(u => u != owner && u != picker && u != revealer);
 
-    return (guestDraftPublicId, owner.UserPublicId, picker.UserPublicId, revealer.UserPublicId, other.UserPublicId, playOrder, moviePublicId);
+    return (
+      guestDraftPublicId,
+      owner.UserPublicId,
+      picker.UserPublicId,
+      revealer.UserPublicId,
+      other.UserPublicId,
+      playOrder,
+      moviePublicId
+    );
   }
 }

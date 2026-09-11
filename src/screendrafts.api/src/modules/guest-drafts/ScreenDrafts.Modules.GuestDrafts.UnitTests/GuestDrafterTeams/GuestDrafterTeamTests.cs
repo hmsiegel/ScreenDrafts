@@ -1,3 +1,6 @@
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafters;
+using ScreenDrafts.Modules.GuestDrafts.Domain.DrafterTeams;
+
 namespace ScreenDrafts.Modules.GuestDrafts.UnitTests.GuestDrafterTeams;
 
 public class GuestDrafterTeamTests : GuestDraftsBaseTest
@@ -10,7 +13,7 @@ public class GuestDrafterTeamTests : GuestDraftsBaseTest
     var publicId = Faker.Random.AlphaNumeric(10);
 
     // Act
-    var result = GuestDrafterTeam.Create(name, publicId);
+    var result = DrafterTeam.Create(name, publicId);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -23,51 +26,51 @@ public class GuestDrafterTeamTests : GuestDraftsBaseTest
   public void Create_ShouldReturnFailure_WhenNameIsEmpty()
   {
     // Act
-    var result = GuestDrafterTeam.Create(string.Empty, Faker.Random.AlphaNumeric(10));
+    var result = DrafterTeam.Create(string.Empty, Faker.Random.AlphaNumeric(10));
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDrafterTeamErrors.InvalidName);
+    result.Errors[0].Should().Be(DrafterTeamErrors.InvalidName);
   }
 
   [Fact]
   public void Create_ShouldReturnFailure_WhenNameIsWhitespace()
   {
     // Act
-    var result = GuestDrafterTeam.Create("   ", Faker.Random.AlphaNumeric(10));
+    var result = DrafterTeam.Create("   ", Faker.Random.AlphaNumeric(10));
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDrafterTeamErrors.InvalidName);
+    result.Errors[0].Should().Be(DrafterTeamErrors.InvalidName);
   }
 
   [Fact]
   public void Create_ShouldReturnFailure_WhenPublicIdIsEmpty()
   {
     // Act
-    var result = GuestDrafterTeam.Create("The Contenders", string.Empty);
+    var result = DrafterTeam.Create("The Contenders", string.Empty);
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDrafterTeamErrors.InvalidPublicId);
+    result.Errors[0].Should().Be(DrafterTeamErrors.InvalidPublicId);
   }
 
   [Fact]
   public void Create_ShouldReturnFailure_WhenPublicIdIsWhitespace()
   {
     // Act
-    var result = GuestDrafterTeam.Create("The Contenders", "   ");
+    var result = DrafterTeam.Create("The Contenders", "   ");
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDrafterTeamErrors.InvalidPublicId);
+    result.Errors[0].Should().Be(DrafterTeamErrors.InvalidPublicId);
   }
 
   [Fact]
   public void AddDrafter_ShouldSucceed_WhenDrafterIsNotAlreadyOnTheTeam()
   {
     // Arrange
-    var team = GuestDrafterTeam.Create("The Contenders", Faker.Random.AlphaNumeric(10)).Value;
+    var team = DrafterTeam.Create("The Contenders", Faker.Random.AlphaNumeric(10)).Value;
     var drafter = CreateGuestDrafter();
 
     // Act
@@ -83,7 +86,7 @@ public class GuestDrafterTeamTests : GuestDraftsBaseTest
   public void AddDrafter_ShouldReturnFailure_WhenDrafterIsADuplicate()
   {
     // Arrange
-    var team = GuestDrafterTeam.Create("The Contenders", Faker.Random.AlphaNumeric(10)).Value;
+    var team = DrafterTeam.Create("The Contenders", Faker.Random.AlphaNumeric(10)).Value;
     var drafter = CreateGuestDrafter();
     team.AddDrafter(drafter);
 
@@ -92,7 +95,7 @@ public class GuestDrafterTeamTests : GuestDraftsBaseTest
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDrafterErrors.AlreadyAdded(drafter.Id.Value));
+    result.Errors[0].Should().Be(DrafterErrors.AlreadyAdded(drafter.Id.Value));
     team.NumberOfDrafters.Should().Be(1);
   }
 
@@ -100,7 +103,7 @@ public class GuestDrafterTeamTests : GuestDraftsBaseTest
   public void RemoveDrafter_ShouldReturnFailure_WhenItWouldLeaveTheTeamWithZeroDrafters()
   {
     // Arrange
-    var team = GuestDrafterTeam.Create("The Contenders", Faker.Random.AlphaNumeric(10)).Value;
+    var team = DrafterTeam.Create("The Contenders", Faker.Random.AlphaNumeric(10)).Value;
     var drafter = CreateGuestDrafter();
     team.AddDrafter(drafter);
 
@@ -109,7 +112,7 @@ public class GuestDrafterTeamTests : GuestDraftsBaseTest
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDrafterTeamErrors.NotEnoughDrafters);
+    result.Errors[0].Should().Be(DrafterTeamErrors.NotEnoughDrafters);
     team.NumberOfDrafters.Should().Be(1);
   }
 
@@ -117,7 +120,7 @@ public class GuestDrafterTeamTests : GuestDraftsBaseTest
   public void RemoveDrafter_ShouldSucceed_WhenAtLeastOneDrafterWouldRemain()
   {
     // Arrange
-    var team = GuestDrafterTeam.Create("The Contenders", Faker.Random.AlphaNumeric(10)).Value;
+    var team = DrafterTeam.Create("The Contenders", Faker.Random.AlphaNumeric(10)).Value;
     var first = CreateGuestDrafter();
     var second = CreateGuestDrafter();
     team.AddDrafter(first);
@@ -136,7 +139,7 @@ public class GuestDrafterTeamTests : GuestDraftsBaseTest
   public void RemoveDrafter_ShouldReturnFailure_WhenDrafterIsNotOnTheTeam()
   {
     // Arrange
-    var team = GuestDrafterTeam.Create("The Contenders", Faker.Random.AlphaNumeric(10)).Value;
+    var team = DrafterTeam.Create("The Contenders", Faker.Random.AlphaNumeric(10)).Value;
     team.AddDrafter(CreateGuestDrafter());
     var stranger = CreateGuestDrafter();
 
@@ -145,21 +148,21 @@ public class GuestDrafterTeamTests : GuestDraftsBaseTest
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDrafterErrors.NotFound(stranger.Id.Value));
+    result.Errors[0].Should().Be(DrafterErrors.NotFound(stranger.Id.Value));
   }
 
   [Fact]
   public void UpdateName_ShouldReturnFailure_WhenNameIsEmpty()
   {
     // Arrange
-    var team = GuestDrafterTeam.Create("The Contenders", Faker.Random.AlphaNumeric(10)).Value;
+    var team = DrafterTeam.Create("The Contenders", Faker.Random.AlphaNumeric(10)).Value;
 
     // Act
     var result = team.UpdateName(string.Empty);
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDrafterTeamErrors.InvalidName);
+    result.Errors[0].Should().Be(DrafterTeamErrors.InvalidName);
     team.Name.Should().Be("The Contenders");
   }
 
@@ -167,21 +170,21 @@ public class GuestDrafterTeamTests : GuestDraftsBaseTest
   public void UpdateName_ShouldReturnFailure_WhenNameIsWhitespace()
   {
     // Arrange
-    var team = GuestDrafterTeam.Create("The Contenders", Faker.Random.AlphaNumeric(10)).Value;
+    var team = DrafterTeam.Create("The Contenders", Faker.Random.AlphaNumeric(10)).Value;
 
     // Act
     var result = team.UpdateName("   ");
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDrafterTeamErrors.InvalidName);
+    result.Errors[0].Should().Be(DrafterTeamErrors.InvalidName);
   }
 
   [Fact]
   public void UpdateName_ShouldSucceed_WhenNameIsValid()
   {
     // Arrange
-    var team = GuestDrafterTeam.Create("The Contenders", Faker.Random.AlphaNumeric(10)).Value;
+    var team = DrafterTeam.Create("The Contenders", Faker.Random.AlphaNumeric(10)).Value;
 
     // Act
     var result = team.UpdateName("The Champions");
@@ -191,10 +194,13 @@ public class GuestDrafterTeamTests : GuestDraftsBaseTest
     team.Name.Should().Be("The Champions");
   }
 
-  private static GuestDrafter CreateGuestDrafter() =>
-    GuestDrafter.Create(
-      Faker.Random.AlphaNumeric(10),
-      Guid.NewGuid(),
-      Faker.Name.FirstName(),
-      Faker.Name.LastName()).Value;
+  private static Drafter CreateGuestDrafter() =>
+    Drafter
+      .Create(
+        Faker.Random.AlphaNumeric(10),
+        Guid.NewGuid(),
+        Faker.Name.FirstName(),
+        Faker.Name.LastName()
+      )
+      .Value;
 }

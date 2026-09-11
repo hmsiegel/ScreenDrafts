@@ -1,3 +1,6 @@
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Enums;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Errors;
+
 namespace ScreenDrafts.Modules.GuestDrafts.UnitTests.GuestDrafts;
 
 public class GuestDraftLifecycleTests : GuestDraftsBaseTest
@@ -15,7 +18,7 @@ public class GuestDraftLifecycleTests : GuestDraftsBaseTest
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDraftErrors.DraftCanOnlyBeStartedIfCreated);
+    result.Errors[0].Should().Be(DraftErrors.DraftCanOnlyBeStartedIfCreated);
   }
 
   [Fact]
@@ -29,7 +32,7 @@ public class GuestDraftLifecycleTests : GuestDraftsBaseTest
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDraftErrors.CannotStartWithoutAtLeastTwoParticipants);
+    result.Errors[0].Should().Be(DraftErrors.CannotStartWithoutAtLeastTwoParticipants);
   }
 
   [Fact]
@@ -45,7 +48,7 @@ public class GuestDraftLifecycleTests : GuestDraftsBaseTest
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDraftErrors.BoardMustBeFullySetUpBeforeStarting);
+    result.Errors[0].Should().Be(DraftErrors.BoardMustBeFullySetUpBeforeStarting);
   }
 
   [Fact]
@@ -53,7 +56,7 @@ public class GuestDraftLifecycleTests : GuestDraftsBaseTest
   {
     // Arrange -- Standard's fixed layout always has 2 positions, but a 3rd
     // participant is added after the board is set up.
-    var guestDraft = CreateGuestDraft(GuestDraftType.Standard);
+    var guestDraft = CreateGuestDraft(DraftType.Standard);
     AddParticipant(guestDraft, isOwner: true);
     AddParticipant(guestDraft);
     guestDraft.UseFixedBoardLayout(GeneratePositionPublicId);
@@ -64,14 +67,14 @@ public class GuestDraftLifecycleTests : GuestDraftsBaseTest
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDraftErrors.BoardMustBeFullySetUpBeforeStarting);
+    result.Errors[0].Should().Be(DraftErrors.BoardMustBeFullySetUpBeforeStarting);
   }
 
   [Fact]
   public void Start_ShouldReturnFailure_WhenNotAllPositionsAreAssigned()
   {
     // Arrange
-    var guestDraft = CreateGuestDraft(GuestDraftType.Standard);
+    var guestDraft = CreateGuestDraft(DraftType.Standard);
     var owner = AddParticipant(guestDraft, isOwner: true);
     AddParticipant(guestDraft);
     guestDraft.UseFixedBoardLayout(GeneratePositionPublicId);
@@ -83,14 +86,14 @@ public class GuestDraftLifecycleTests : GuestDraftsBaseTest
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDraftErrors.AllPositionsMustBeAssignedBeforeStarting);
+    result.Errors[0].Should().Be(DraftErrors.AllPositionsMustBeAssignedBeforeStarting);
   }
 
   [Fact]
   public void Start_ShouldSucceedAndInitializeVetoBudgets_WhenParticipantsAndBoardAreValid()
   {
     // Arrange
-    var guestDraft = CreateGuestDraft(GuestDraftType.Standard);
+    var guestDraft = CreateGuestDraft(DraftType.Standard);
     var owner = AddParticipant(guestDraft, isOwner: true);
     var other = AddParticipant(guestDraft);
     guestDraft.UseFixedBoardLayout(GeneratePositionPublicId);
@@ -103,7 +106,7 @@ public class GuestDraftLifecycleTests : GuestDraftsBaseTest
 
     // Assert
     result.IsSuccess.Should().BeTrue();
-    guestDraft.GuestDraftStatus.Should().Be(GuestDraftStatus.InProgress);
+    guestDraft.GuestDraftStatus.Should().Be(DraftStatus.InProgress);
     owner.StartingVetoes.Should().Be(1);
     other.StartingVetoes.Should().Be(1);
     owner.CanUseVeto().Should().BeTrue();
@@ -124,7 +127,7 @@ public class GuestDraftLifecycleTests : GuestDraftsBaseTest
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDraftErrors.CannotCompleteIfNotInProgress);
+    result.Errors[0].Should().Be(DraftErrors.CannotCompleteIfNotInProgress);
   }
 
   [Fact]
@@ -133,14 +136,14 @@ public class GuestDraftLifecycleTests : GuestDraftsBaseTest
     // Arrange -- the Standard board has seven pick slots across its two positions
     // in total; only one of them has landed here.
     var (guestDraft, owner, _) = CreateInProgressStandardGuestDraft();
-    guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), 7, 1, owner.Id.Value);
+    guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 7, 1, owner.Id.Value);
 
     // Act
     var result = guestDraft.Complete();
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDraftErrors.CannotCompleteWithoutAllPicks);
+    result.Errors[0].Should().Be(DraftErrors.CannotCompleteWithoutAllPicks);
   }
 
   [Fact]
@@ -152,7 +155,13 @@ public class GuestDraftLifecycleTests : GuestDraftsBaseTest
 
     for (var i = 0; i < pickSlots.Length; i++)
     {
-      guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), pickSlots[i], i + 1, owner.Id.Value);
+      guestDraft.PlayPick(
+        Faker.Random.AlphaNumeric(10),
+        Guid.NewGuid(),
+        pickSlots[i],
+        i + 1,
+        owner.Id.Value
+      );
     }
 
     // Act
@@ -160,6 +169,6 @@ public class GuestDraftLifecycleTests : GuestDraftsBaseTest
 
     // Assert
     result.IsSuccess.Should().BeTrue();
-    guestDraft.GuestDraftStatus.Should().Be(GuestDraftStatus.Completed);
+    guestDraft.GuestDraftStatus.Should().Be(DraftStatus.Completed);
   }
 }

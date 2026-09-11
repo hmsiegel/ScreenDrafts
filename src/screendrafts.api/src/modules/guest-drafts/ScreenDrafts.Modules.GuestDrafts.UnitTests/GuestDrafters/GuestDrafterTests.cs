@@ -1,3 +1,5 @@
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafters;
+
 namespace ScreenDrafts.Modules.GuestDrafts.UnitTests.GuestDrafters;
 
 public class GuestDrafterTests : GuestDraftsBaseTest
@@ -12,7 +14,7 @@ public class GuestDrafterTests : GuestDraftsBaseTest
     var lastName = "Doe";
 
     // Act
-    var result = GuestDrafter.Create(publicId, userId, firstName, lastName);
+    var result = Drafter.Create(publicId, userId, firstName, lastName);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -27,58 +29,65 @@ public class GuestDrafterTests : GuestDraftsBaseTest
   public void Create_ShouldReturnFailure_WhenFirstNameIsEmpty()
   {
     // Act
-    var result = GuestDrafter.Create(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), string.Empty, "Doe");
+    var result = Drafter.Create(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), string.Empty, "Doe");
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDrafterErrors.InvalidFirstName);
+    result.Errors[0].Should().Be(DrafterErrors.InvalidFirstName);
   }
 
   [Fact]
   public void Create_ShouldReturnFailure_WhenFirstNameIsWhitespace()
   {
     // Act
-    var result = GuestDrafter.Create(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), "   ", "Doe");
+    var result = Drafter.Create(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), "   ", "Doe");
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDrafterErrors.InvalidFirstName);
+    result.Errors[0].Should().Be(DrafterErrors.InvalidFirstName);
   }
 
   [Fact]
   public void Create_ShouldReturnFailure_WhenLastNameIsEmpty()
   {
     // Act
-    var result = GuestDrafter.Create(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), "Jane", string.Empty);
+    var result = Drafter.Create(
+      Faker.Random.AlphaNumeric(10),
+      Guid.NewGuid(),
+      "Jane",
+      string.Empty
+    );
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDrafterErrors.InvalidLastName);
+    result.Errors[0].Should().Be(DrafterErrors.InvalidLastName);
   }
 
   [Fact]
   public void Create_ShouldReturnFailure_WhenLastNameIsWhitespace()
   {
     // Act
-    var result = GuestDrafter.Create(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), "Jane", "   ");
+    var result = Drafter.Create(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), "Jane", "   ");
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDrafterErrors.InvalidLastName);
+    result.Errors[0].Should().Be(DrafterErrors.InvalidLastName);
   }
 
   [Fact]
   public void UpdateName_ShouldReturnFailure_WhenFirstNameIsEmpty()
   {
     // Arrange
-    var guestDrafter = GuestDrafter.Create(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), "Jane", "Doe").Value;
+    var guestDrafter = Drafter
+      .Create(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), "Jane", "Doe")
+      .Value;
 
     // Act
     var result = guestDrafter.UpdateName(string.Empty, "Smith");
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDrafterErrors.InvalidFirstName);
+    result.Errors[0].Should().Be(DrafterErrors.InvalidFirstName);
     guestDrafter.FirstName.Should().Be("Jane");
   }
 
@@ -86,14 +95,16 @@ public class GuestDrafterTests : GuestDraftsBaseTest
   public void UpdateName_ShouldReturnFailure_WhenLastNameIsWhitespace()
   {
     // Arrange
-    var guestDrafter = GuestDrafter.Create(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), "Jane", "Doe").Value;
+    var guestDrafter = Drafter
+      .Create(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), "Jane", "Doe")
+      .Value;
 
     // Act
     var result = guestDrafter.UpdateName("Janet", "   ");
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDrafterErrors.InvalidLastName);
+    result.Errors[0].Should().Be(DrafterErrors.InvalidLastName);
     guestDrafter.LastName.Should().Be("Doe");
   }
 
@@ -101,7 +112,9 @@ public class GuestDrafterTests : GuestDraftsBaseTest
   public void UpdateName_ShouldUpdateFirstAndLastNameAndDisplayName_WhenValid()
   {
     // Arrange
-    var guestDrafter = GuestDrafter.Create(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), "Jane", "Doe").Value;
+    var guestDrafter = Drafter
+      .Create(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), "Jane", "Doe")
+      .Value;
 
     // Act
     var result = guestDrafter.UpdateName("Janet", "Smith");

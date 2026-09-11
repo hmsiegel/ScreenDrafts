@@ -1,3 +1,9 @@
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Entities;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Enums;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Errors;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.ValueObjects;
+
 namespace ScreenDrafts.Modules.GuestDrafts.UnitTests.GuestDrafts;
 
 public class GuestDraftApplyVetoTests : GuestDraftsBaseTest
@@ -10,15 +16,17 @@ public class GuestDraftApplyVetoTests : GuestDraftsBaseTest
     // Arrange -- the older pick is untouched (unvetoed), but that alone doesn't
     // make it eligible: only the most recent pick, by play order, can be vetoed.
     var (guestDraft, owner, other) = CreateInProgressStandardGuestDraft();
-    var olderPickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), 7, 1, owner.Id.Value).Value;
-    guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), 6, 2, owner.Id.Value);
+    var olderPickId = guestDraft
+      .PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 7, 1, owner.Id.Value)
+      .Value;
+    guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 6, 2, owner.Id.Value);
 
     // Act
     var result = guestDraft.ApplyVeto(olderPickId, other.Id.Value);
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDraftErrors.VetoNotOnMostRecentPick);
+    result.Errors[0].Should().Be(DraftErrors.VetoNotOnMostRecentPick);
   }
 
   [Fact]
@@ -26,7 +34,9 @@ public class GuestDraftApplyVetoTests : GuestDraftsBaseTest
   {
     // Arrange
     var (guestDraft, owner, other) = CreateInProgressStandardGuestDraft();
-    var pickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), 7, 1, owner.Id.Value).Value;
+    var pickId = guestDraft
+      .PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 7, 1, owner.Id.Value)
+      .Value;
 
     // Act
     var result = guestDraft.ApplyVeto(pickId, other.Id.Value);
@@ -45,32 +55,42 @@ public class GuestDraftApplyVetoTests : GuestDraftsBaseTest
     // Arrange -- spend the participant's one starting veto, then try again on the
     // (now re-pickable) most recent pick.
     var (guestDraft, owner, other) = CreateInProgressStandardGuestDraft();
-    var firstPickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), 7, 1, owner.Id.Value).Value;
+    var firstPickId = guestDraft
+      .PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 7, 1, owner.Id.Value)
+      .Value;
     guestDraft.ApplyVeto(firstPickId, other.Id.Value);
-    var secondPickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), 7, 2, owner.Id.Value).Value;
+    var secondPickId = guestDraft
+      .PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 7, 2, owner.Id.Value)
+      .Value;
 
     // Act
     var result = guestDraft.ApplyVeto(secondPickId, other.Id.Value);
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDraftErrors.NoRemainingVetoes);
+    result.Errors[0].Should().Be(DraftErrors.NoRemainingVetoes);
   }
 
   [Fact]
   public void ApplyVeto_ShouldSpendFromTheFungiblePool_WhenTheNormalPoolIsExhaustedButAFungibleTokenExists()
   {
     // Arrange
-    var (guestDraft, _, other, pickId) = CreateDraftWhereOtherHasExhaustedNormalVetoesButHasOneFungibleToken();
+    var (guestDraft, _, other, pickId) =
+      CreateDraftWhereOtherHasExhaustedNormalVetoesButHasOneFungibleToken();
 
     // Act
     var result = guestDraft.ApplyVeto(pickId, other.Id.Value);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
-    other.VetoesUsed.Should().Be(1, "the normal pool was already exhausted and must stay untouched");
+    other
+      .VetoesUsed.Should()
+      .Be(1, "the normal pool was already exhausted and must stay untouched");
     other.FungibleTokensUsed.Should().Be(1);
-    guestDraft.Picks.Single(p => p.Id == pickId).CurrentVeto!.SpentFromFungiblePool.Should().BeTrue();
+    guestDraft
+      .Picks.Single(p => p.Id == pickId)
+      .CurrentVeto!.SpentFromFungiblePool.Should()
+      .BeTrue();
   }
 
   [Fact]
@@ -78,7 +98,9 @@ public class GuestDraftApplyVetoTests : GuestDraftsBaseTest
   {
     // Arrange
     var (guestDraft, owner, other) = CreateInProgressStandardGuestDraft();
-    var pickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), 7, 1, owner.Id.Value).Value;
+    var pickId = guestDraft
+      .PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 7, 1, owner.Id.Value)
+      .Value;
     guestDraft.ApplyVeto(pickId, other.Id.Value);
 
     // Act -- owner still has their full veto budget; the pick is simply already vetoed
@@ -86,8 +108,10 @@ public class GuestDraftApplyVetoTests : GuestDraftsBaseTest
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDraftErrors.PickAlreadyVetoed);
-    owner.VetoesUsed.Should().Be(0, "the spent veto must be refunded when applying it to the pick fails");
+    result.Errors[0].Should().Be(DraftErrors.PickAlreadyVetoed);
+    owner
+      .VetoesUsed.Should()
+      .Be(0, "the spent veto must be refunded when applying it to the pick fails");
   }
 
   [Fact]
@@ -97,11 +121,19 @@ public class GuestDraftApplyVetoTests : GuestDraftsBaseTest
     // recent) pick.
     var (guestDraft, owner, other) = CreateInProgressStandardGuestDraft();
     int[] pickSlots = [7, 6, 4, 2, 5, 3, 1];
-    GuestDraftPickId lastPickId = null!;
+    PickId lastPickId = null!;
 
     for (var i = 0; i < pickSlots.Length; i++)
     {
-      lastPickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), pickSlots[i], i + 1, owner.Id.Value).Value;
+      lastPickId = guestDraft
+        .PlayPick(
+          Faker.Random.AlphaNumeric(10),
+          Guid.NewGuid(),
+          pickSlots[i],
+          i + 1,
+          owner.Id.Value
+        )
+        .Value;
     }
 
     guestDraft.Complete();
@@ -111,7 +143,7 @@ public class GuestDraftApplyVetoTests : GuestDraftsBaseTest
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDraftErrors.DraftNotStarted);
+    result.Errors[0].Should().Be(DraftErrors.DraftNotStarted);
   }
 
   // ── UndoVeto ─────────────────────────────────────────────────────────────
@@ -121,14 +153,16 @@ public class GuestDraftApplyVetoTests : GuestDraftsBaseTest
   {
     // Arrange
     var (guestDraft, owner, _) = CreateInProgressStandardGuestDraft();
-    var pickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), 7, 1, owner.Id.Value).Value;
+    var pickId = guestDraft
+      .PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 7, 1, owner.Id.Value)
+      .Value;
 
     // Act
     var result = guestDraft.UndoVeto(pickId);
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDraftErrors.PickNotVetoed);
+    result.Errors[0].Should().Be(DraftErrors.PickNotVetoed);
   }
 
   [Fact]
@@ -143,7 +177,7 @@ public class GuestDraftApplyVetoTests : GuestDraftsBaseTest
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDraftErrors.CannotUndoVetoThatHasBeenOverridden);
+    result.Errors[0].Should().Be(DraftErrors.CannotUndoVetoThatHasBeenOverridden);
   }
 
   [Fact]
@@ -161,8 +195,12 @@ public class GuestDraftApplyVetoTests : GuestDraftsBaseTest
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    other.VetoesUsed.Should().Be(vetoesUsedBeforeFailedUndo, "a failed undo must not refund the normal pool");
-    other.FungibleTokensUsed.Should().Be(fungibleTokensUsedBeforeFailedUndo, "a failed undo must not refund the fungible pool");
+    other
+      .VetoesUsed.Should()
+      .Be(vetoesUsedBeforeFailedUndo, "a failed undo must not refund the normal pool");
+    other
+      .FungibleTokensUsed.Should()
+      .Be(fungibleTokensUsedBeforeFailedUndo, "a failed undo must not refund the fungible pool");
   }
 
   [Fact]
@@ -170,7 +208,9 @@ public class GuestDraftApplyVetoTests : GuestDraftsBaseTest
   {
     // Arrange
     var (guestDraft, owner, other) = CreateInProgressStandardGuestDraft();
-    var pickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), 7, 1, owner.Id.Value).Value;
+    var pickId = guestDraft
+      .PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 7, 1, owner.Id.Value)
+      .Value;
     guestDraft.ApplyVeto(pickId, other.Id.Value);
 
     // Act
@@ -188,7 +228,8 @@ public class GuestDraftApplyVetoTests : GuestDraftsBaseTest
   public void UndoVeto_ShouldRefundTheFungiblePool_WhenTheVetoWasSpentFromIt()
   {
     // Arrange
-    var (guestDraft, _, other, pickId) = CreateDraftWhereOtherHasExhaustedNormalVetoesButHasOneFungibleToken();
+    var (guestDraft, _, other, pickId) =
+      CreateDraftWhereOtherHasExhaustedNormalVetoesButHasOneFungibleToken();
     guestDraft.ApplyVeto(pickId, other.Id.Value);
 
     // Act
@@ -197,23 +238,25 @@ public class GuestDraftApplyVetoTests : GuestDraftsBaseTest
     // Assert
     result.IsSuccess.Should().BeTrue();
     other.FungibleTokensUsed.Should().Be(0);
-    other.VetoesUsed.Should().Be(1, "only the fungible pool was spent on this veto, the normal pool refund is untouched");
+    other
+      .VetoesUsed.Should()
+      .Be(1, "only the fungible pool was spent on this veto, the normal pool refund is untouched");
   }
 
   [Fact]
   public void UndoVeto_ShouldReturnFailure_WhenStatusIsNotInProgress()
   {
     // Arrange -- checked before any pick lookup, so no picks need to exist
-    var guestDraft = CreateGuestDraft(GuestDraftType.Standard);
+    var guestDraft = CreateGuestDraft(DraftType.Standard);
     AddParticipant(guestDraft);
-    var anyPickId = GuestDraftPickId.CreateUnique();
+    var anyPickId = PickId.CreateUnique();
 
     // Act
     var result = guestDraft.UndoVeto(anyPickId);
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDraftErrors.DraftNotStarted);
+    result.Errors[0].Should().Be(DraftErrors.DraftNotStarted);
   }
 
   [Fact]
@@ -221,14 +264,14 @@ public class GuestDraftApplyVetoTests : GuestDraftsBaseTest
   {
     // Arrange
     var (guestDraft, _, _) = CreateInProgressStandardGuestDraft();
-    var missingPickId = GuestDraftPickId.CreateUnique();
+    var missingPickId = PickId.CreateUnique();
 
     // Act
     var result = guestDraft.UndoVeto(missingPickId);
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDraftErrors.PickNotFound(missingPickId.Value));
+    result.Errors[0].Should().Be(DraftErrors.PickNotFound(missingPickId.Value));
   }
 
   /// <summary>
@@ -237,28 +280,44 @@ public class GuestDraftApplyVetoTests : GuestDraftsBaseTest
   /// awarded a bonus fungible token, and a fresh, most-recent, un-vetoed pick is
   /// waiting to be vetoed from that fungible pool.
   /// </summary>
-  private static (GuestDraft GuestDraft, GuestDraftParticipant Owner, GuestDraftParticipant Other, GuestDraftPickId MostRecentPickId)
-    CreateDraftWhereOtherHasExhaustedNormalVetoesButHasOneFungibleToken()
+  private static (
+    Draft GuestDraft,
+    DraftParticipant Owner,
+    DraftParticipant Other,
+    PickId MostRecentPickId
+  ) CreateDraftWhereOtherHasExhaustedNormalVetoesButHasOneFungibleToken()
   {
-    var guestDraft = CreateGuestDraft(GuestDraftType.MiniMega);
+    var guestDraft = CreateGuestDraft(DraftType.MiniMega);
     var owner = AddParticipant(guestDraft, isOwner: true);
     var other = AddParticipant(guestDraft);
 
-    List<(string Name, IReadOnlyList<int> Picks, bool HasBonusVeto, bool HasBonusVetoOverride, bool HasBonusFungibleToken)> positions =
-    [
-      ("A", [1], false, false, false),
-      ("B", [2], false, false, true),
-    ];
+    List<(
+      string Name,
+      IReadOnlyList<int> Picks,
+      bool HasBonusVeto,
+      bool HasBonusVetoOverride,
+      bool HasBonusFungibleToken
+    )> positions = [("A", [1], false, false, false), ("B", [2], false, false, true)];
     guestDraft.SetCustomPositions(positions, GeneratePositionPublicId);
 
     var boardPositions = guestDraft.GameBoard!.Positions.ToList();
-    guestDraft.AssignParticipantToPosition(boardPositions.Single(p => p.Name == "A"), owner.Id.Value);
-    guestDraft.AssignParticipantToPosition(boardPositions.Single(p => p.Name == "B"), other.Id.Value);
+    guestDraft.AssignParticipantToPosition(
+      boardPositions.Single(p => p.Name == "A"),
+      owner.Id.Value
+    );
+    guestDraft.AssignParticipantToPosition(
+      boardPositions.Single(p => p.Name == "B"),
+      other.Id.Value
+    );
     guestDraft.Start();
 
-    var firstPickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), 1, 1, owner.Id.Value).Value;
+    var firstPickId = guestDraft
+      .PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 1, 1, owner.Id.Value)
+      .Value;
     guestDraft.ApplyVeto(firstPickId, other.Id.Value);
-    var secondPickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), 1, 2, owner.Id.Value).Value;
+    var secondPickId = guestDraft
+      .PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 1, 2, owner.Id.Value)
+      .Value;
 
     return (guestDraft, owner, other, secondPickId);
   }
@@ -267,26 +326,40 @@ public class GuestDraftApplyVetoTests : GuestDraftsBaseTest
   /// Two-participant MiniMega draft where "other" has been awarded a bonus veto
   /// override and has already vetoed the picker's most recent pick.
   /// </summary>
-  private static (GuestDraft GuestDraft, GuestDraftParticipant Picker, GuestDraftParticipant Other, GuestDraftPickId PickId)
-    CreateVetoedPickWhereOtherCanOverride()
+  private static (
+    Draft GuestDraft,
+    DraftParticipant Picker,
+    DraftParticipant Other,
+    PickId PickId
+  ) CreateVetoedPickWhereOtherCanOverride()
   {
-    var guestDraft = CreateGuestDraft(GuestDraftType.MiniMega);
+    var guestDraft = CreateGuestDraft(DraftType.MiniMega);
     var picker = AddParticipant(guestDraft, isOwner: true);
     var other = AddParticipant(guestDraft);
 
-    List<(string Name, IReadOnlyList<int> Picks, bool HasBonusVeto, bool HasBonusVetoOverride, bool HasBonusFungibleToken)> positions =
-    [
-      ("A", [1], false, false, false),
-      ("B", [2], false, true, false),
-    ];
+    List<(
+      string Name,
+      IReadOnlyList<int> Picks,
+      bool HasBonusVeto,
+      bool HasBonusVetoOverride,
+      bool HasBonusFungibleToken
+    )> positions = [("A", [1], false, false, false), ("B", [2], false, true, false)];
     guestDraft.SetCustomPositions(positions, GeneratePositionPublicId);
 
     var boardPositions = guestDraft.GameBoard!.Positions.ToList();
-    guestDraft.AssignParticipantToPosition(boardPositions.Single(p => p.Name == "A"), picker.Id.Value);
-    guestDraft.AssignParticipantToPosition(boardPositions.Single(p => p.Name == "B"), other.Id.Value);
+    guestDraft.AssignParticipantToPosition(
+      boardPositions.Single(p => p.Name == "A"),
+      picker.Id.Value
+    );
+    guestDraft.AssignParticipantToPosition(
+      boardPositions.Single(p => p.Name == "B"),
+      other.Id.Value
+    );
     guestDraft.Start();
 
-    var pickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), 1, 1, picker.Id.Value).Value;
+    var pickId = guestDraft
+      .PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 1, 1, picker.Id.Value)
+      .Value;
     guestDraft.ApplyVeto(pickId, other.Id.Value);
 
     return (guestDraft, picker, other, pickId);

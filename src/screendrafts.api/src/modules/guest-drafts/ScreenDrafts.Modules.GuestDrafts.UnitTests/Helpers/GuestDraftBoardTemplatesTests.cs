@@ -1,35 +1,29 @@
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Enums;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Helpers;
+
 namespace ScreenDrafts.Modules.GuestDrafts.UnitTests.Helpers;
 
 public class GuestDraftBoardTemplatesTests
 {
   [Theory]
   [MemberData(nameof(FixedTypes))]
-  public void IsFixed_ShouldReturnTrue_ForStandardAndMiniSuper(GuestDraftType guestDraftType)
+  public void IsFixed_ShouldReturnTrue_ForStandardAndMiniSuper(DraftType guestDraftType)
   {
     // Act & Assert
-    GuestDraftBoardTemplates.IsFixed(guestDraftType).Should().BeTrue();
+    GameBoardTemplates.IsFixed(guestDraftType).Should().BeTrue();
   }
 
   [Theory]
   [MemberData(nameof(NonFixedTypes))]
-  public void IsFixed_ShouldReturnFalse_ForMiniMegaSuperAndMega(GuestDraftType guestDraftType)
+  public void IsFixed_ShouldReturnFalse_ForMiniMegaSuperAndMega(DraftType guestDraftType)
   {
     // Act & Assert
-    GuestDraftBoardTemplates.IsFixed(guestDraftType).Should().BeFalse();
+    GameBoardTemplates.IsFixed(guestDraftType).Should().BeFalse();
   }
 
-  public static TheoryData<GuestDraftType> FixedTypes() =>
-    new()
-    {
-      GuestDraftType.Standard,
-      GuestDraftType.MiniSuper,
-    };
+  public static TheoryData<DraftType> FixedTypes() =>
+    new() { DraftType.Standard, DraftType.MiniSuper };
 
-  public static TheoryData<GuestDraftType> NonFixedTypes() =>
-    new()
-    {
-      GuestDraftType.MiniMega,
-      GuestDraftType.Super,
-      GuestDraftType.Mega,
-    };
+  public static TheoryData<DraftType> NonFixedTypes() =>
+    new() { DraftType.MiniMega, DraftType.Super, DraftType.Mega };
 }

@@ -1,3 +1,6 @@
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Enums;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Errors;
+
 namespace ScreenDrafts.Modules.GuestDrafts.UnitTests.GuestDrafts;
 
 public class GuestDraftPlayPickTests : GuestDraftsBaseTest
@@ -6,17 +9,23 @@ public class GuestDraftPlayPickTests : GuestDraftsBaseTest
   public void PlayPick_ShouldReturnFailure_WhenStatusIsNotInProgress()
   {
     // Arrange -- board set up but never started
-    var guestDraft = CreateGuestDraft(GuestDraftType.Standard);
+    var guestDraft = CreateGuestDraft(DraftType.Standard);
     var owner = AddParticipant(guestDraft, isOwner: true);
     AddParticipant(guestDraft);
     guestDraft.UseFixedBoardLayout(GeneratePositionPublicId);
 
     // Act
-    var result = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), 7, 1, owner.Id.Value);
+    var result = guestDraft.PlayPick(
+      Faker.Random.AlphaNumeric(10),
+      Guid.NewGuid(),
+      7,
+      1,
+      owner.Id.Value
+    );
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDraftErrors.DraftNotStarted);
+    result.Errors[0].Should().Be(DraftErrors.DraftNotStarted);
   }
 
   [Fact]
@@ -27,11 +36,17 @@ public class GuestDraftPlayPickTests : GuestDraftsBaseTest
     var strangerId = Guid.NewGuid();
 
     // Act
-    var result = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), 7, 1, strangerId);
+    var result = guestDraft.PlayPick(
+      Faker.Random.AlphaNumeric(10),
+      Guid.NewGuid(),
+      7,
+      1,
+      strangerId
+    );
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDraftErrors.ParticipantNotFound(strangerId));
+    result.Errors[0].Should().Be(DraftErrors.ParticipantNotFound(strangerId));
   }
 
   [Fact]
@@ -40,14 +55,14 @@ public class GuestDraftPlayPickTests : GuestDraftsBaseTest
     // Arrange
     var (guestDraft, owner, _) = CreateInProgressStandardGuestDraft();
     var moviePublicId = Faker.Random.AlphaNumeric(10);
-    guestDraft.PlayPick(moviePublicId, 7, 1, owner.Id.Value);
+    guestDraft.PlayPick(moviePublicId, Guid.NewGuid(), 7, 1, owner.Id.Value);
 
     // Act -- different position, same movie
-    var result = guestDraft.PlayPick(moviePublicId, 6, 2, owner.Id.Value);
+    var result = guestDraft.PlayPick(moviePublicId, Guid.NewGuid(), 6, 2, owner.Id.Value);
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDraftErrors.MovieAlreadyPicked);
+    result.Errors[0].Should().Be(DraftErrors.MovieAlreadyPicked);
   }
 
   [Fact]
@@ -55,14 +70,20 @@ public class GuestDraftPlayPickTests : GuestDraftsBaseTest
   {
     // Arrange
     var (guestDraft, owner, _) = CreateInProgressStandardGuestDraft();
-    guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), 7, 1, owner.Id.Value);
+    guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 7, 1, owner.Id.Value);
 
     // Act -- same position, different movie
-    var result = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), 7, 2, owner.Id.Value);
+    var result = guestDraft.PlayPick(
+      Faker.Random.AlphaNumeric(10),
+      Guid.NewGuid(),
+      7,
+      2,
+      owner.Id.Value
+    );
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDraftErrors.PickPositionAlreadyExists(7));
+    result.Errors[0].Should().Be(DraftErrors.PickPositionAlreadyExists(7));
   }
 
   [Fact]
@@ -72,11 +93,11 @@ public class GuestDraftPlayPickTests : GuestDraftsBaseTest
     // neither its position nor its movie.
     var (guestDraft, owner, other) = CreateInProgressStandardGuestDraft();
     var moviePublicId = Faker.Random.AlphaNumeric(10);
-    var firstPick = guestDraft.PlayPick(moviePublicId, 7, 1, owner.Id.Value).Value;
+    var firstPick = guestDraft.PlayPick(moviePublicId, Guid.NewGuid(), 7, 1, owner.Id.Value).Value;
     guestDraft.ApplyVeto(firstPick, other.Id.Value);
 
     // Act -- same position, same movie
-    var result = guestDraft.PlayPick(moviePublicId, 7, 2, owner.Id.Value);
+    var result = guestDraft.PlayPick(moviePublicId, Guid.NewGuid(), 7, 2, owner.Id.Value);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -89,7 +110,9 @@ public class GuestDraftPlayPickTests : GuestDraftsBaseTest
     var (guestDraft, owner, other) = CreateInProgressStandardGuestDraft();
 
     // Act
-    var pickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), 7, 1, owner.Id.Value).Value;
+    var pickId = guestDraft
+      .PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 7, 1, owner.Id.Value)
+      .Value;
 
     // Assert
     var pick = guestDraft.Picks.Single(p => p.Id == pickId);
@@ -108,10 +131,12 @@ public class GuestDraftPlayPickTests : GuestDraftsBaseTest
     var pickId = guestDraft
       .PlayPick(
         Faker.Random.AlphaNumeric(10),
+        Guid.NewGuid(),
         1,
         1,
         picker.Id.Value,
-        explicitRevealRecipientId: explicitRecipient.Id)
+        explicitRevealRecipientId: explicitRecipient.Id
+      )
       .Value;
 
     // Assert
@@ -128,7 +153,9 @@ public class GuestDraftPlayPickTests : GuestDraftsBaseTest
     var picker = participants[0];
 
     // Act
-    var pickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), 1, 1, picker.Id.Value).Value;
+    var pickId = guestDraft
+      .PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 1, 1, picker.Id.Value)
+      .Value;
 
     // Assert
     var pick = guestDraft.Picks.Single(p => p.Id == pickId);
@@ -140,7 +167,7 @@ public class GuestDraftPlayPickTests : GuestDraftsBaseTest
   {
     // Arrange
     var (guestDraft, owner, _) = CreateInProgressStandardGuestDraft();
-    guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), 7, 1, owner.Id.Value);
+    guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 7, 1, owner.Id.Value);
 
     // Act
     var result = guestDraft.UndoPick(1);
@@ -155,7 +182,7 @@ public class GuestDraftPlayPickTests : GuestDraftsBaseTest
   {
     // Arrange
     var (guestDraft, owner, _) = CreateInProgressStandardGuestDraft();
-    guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), 7, 1, owner.Id.Value);
+    guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 7, 1, owner.Id.Value);
 
     // Act
     var result = guestDraft.UndoPick(99);

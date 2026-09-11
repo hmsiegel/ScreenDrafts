@@ -4,7 +4,7 @@
 import { useState } from 'react';
 import { useGuestDraftLive } from '../guest-draft-context';
 import { playGuestDraftPick } from '../gameplay-fetchers';
-import { importAndResolve, ResolvedMovie } from '@/lib/movie-resolve';
+import { importAndResolve, ResolvedMovie, resolveTmdbIds } from '@/lib/movie-resolve';
 import { importAndResolveEpisode, MEDIA_TYPE_TV_EPISODE } from '@/lib/tv-episode-resolve';
 import { MediaPicker, type SelectedMedia } from '@/components/drafts/media-picker';
 import { DARK_THEME } from '@/components/drafts/media-picker-theme';
@@ -37,12 +37,10 @@ export function PickSourcePanel({
   const [error, setError] = useState<string | null>(null);
 
   // Prevent picking if the slot is already filled (e.g. a SignalR update
-  // landing mid-submit).
+  // landing mid-submit). isActiveOnFinalBoard already applies the Landed
+  // formula server-side (see GuestDraftGameplayPickResponse's remarks).
   const slotAlreadyPicked = picks.some(
-    (p) =>
-      p.boardPosition === activeSlot &&
-      !p.wasCommissionerOverride &&
-      (!p.wasVetoed || p.wasVetoOverridden),
+    (p) => p.position === activeSlot && p.isActiveOnFinalBoard,
   );
 
   async function handlePick(movie: ResolvedMovie) {
@@ -151,16 +149,28 @@ function SearchSource({
       return;
     }
 
-    // Movie — leave mediaPublicId blank. handlePick (the parent's onPick)
-    // already knows how to import-then-resolve a movie by tmdbId via its
-    // own `!movie.mediaPublicId` branch.
-    onPick({
-      mediaPublicId: '',
-      tmdbId: media.tmdbId,
-      title: media.title,
-      year: media.year,
-      posterUrl: null,
-    });
+    // Movie — check whether it's already locally cached before assuming an
+    // import is needed. This was the actual bug: /integrations/movies/search
+    // (fetch-tmdb.ts) is a pure TMDb passthrough with zero awareness of
+    // movies.media, so there was never a mediaPublicId to carry through from
+    // search results in the first place — the fix isn't plumbing a field
+    // through MediaPicker, it's doing the same cheap existence check
+    // PoolSource/BoardSource/CandidateListSource already do via
+    // resolveTmdbIds (GET /media/by-tmdb-ids) before falling back to a full
+    // TMDb import.
+    setResolving(true);
+    try {
+      const alreadyCached = await resolveTmdbIds([media.tmdbId], accessToken);
+      onPick({
+        mediaPublicId: alreadyCached[0]?.mediaPublicId ?? '',
+        tmdbId: media.tmdbId,
+        title: media.title,
+        year: media.year,
+        posterUrl: null,
+      });
+    } finally {
+      setResolving(false);
+    }
   }
 
   return (

@@ -23,23 +23,23 @@ namespace ScreenDrafts.Modules.GuestDrafts.Infrastructure.Database.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("GuestDrafterGuestDrafterTeam", b =>
+            modelBuilder.Entity("DrafterDrafterTeam", b =>
                 {
+                    b.Property<Guid>("DrafterTeamId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("drafter_team_id");
+
                     b.Property<Guid>("DraftersId")
                         .HasColumnType("uuid")
                         .HasColumnName("drafters_id");
 
-                    b.Property<Guid>("GuestDrafterTeamId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("guest_drafter_team_id");
+                    b.HasKey("DrafterTeamId", "DraftersId")
+                        .HasName("pk_drafter_team_members");
 
-                    b.HasKey("DraftersId", "GuestDrafterTeamId")
-                        .HasName("pk_guest_drafter_team_members");
+                    b.HasIndex("DraftersId")
+                        .HasDatabaseName("ix_drafter_team_members_drafters_id");
 
-                    b.HasIndex("GuestDrafterTeamId")
-                        .HasDatabaseName("ix_guest_drafter_team_members_guest_drafter_team_id");
-
-                    b.ToTable("guest_drafter_team_members", "guest_drafts");
+                    b.ToTable("drafter_team_members", "guest_drafts");
                 });
 
             modelBuilder.Entity("ScreenDrafts.Common.Infrastructure.Inbox.InboxMessage", b =>
@@ -148,7 +148,7 @@ namespace ScreenDrafts.Modules.GuestDrafts.Infrastructure.Database.Migrations
                     b.ToTable("outbox_message_consumers", "guest_drafts");
                 });
 
-            modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafterTeams.GuestDrafterTeam", b =>
+            modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.DrafterTeams.DrafterTeam", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid")
@@ -167,16 +167,16 @@ namespace ScreenDrafts.Modules.GuestDrafts.Infrastructure.Database.Migrations
                         .HasColumnName("public_id");
 
                     b.HasKey("Id")
-                        .HasName("pk_guest_drafter_teams");
+                        .HasName("pk_drafter_teams");
 
                     b.HasIndex("PublicId")
                         .IsUnique()
-                        .HasDatabaseName("ix_guest_drafter_teams_public_id");
+                        .HasDatabaseName("ix_drafter_teams_public_id");
 
-                    b.ToTable("guest_drafter_teams", "guest_drafts");
+                    b.ToTable("drafter_teams", "guest_drafts");
                 });
 
-            modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafters.GuestDrafter", b =>
+            modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.Drafters.Drafter", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid")
@@ -205,266 +205,20 @@ namespace ScreenDrafts.Modules.GuestDrafts.Infrastructure.Database.Migrations
                         .HasColumnName("user_id");
 
                     b.HasKey("Id")
-                        .HasName("pk_guest_drafters");
+                        .HasName("pk_drafters");
 
                     b.HasIndex("PublicId")
                         .IsUnique()
-                        .HasDatabaseName("ix_guest_drafters_public_id");
+                        .HasDatabaseName("ix_drafters_public_id");
 
                     b.HasIndex("UserId")
                         .IsUnique()
-                        .HasDatabaseName("ix_guest_drafters_user_id");
+                        .HasDatabaseName("ix_drafters_user_id");
 
-                    b.ToTable("guest_drafters", "guest_drafts");
+                    b.ToTable("drafters", "guest_drafts");
                 });
 
-            modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.Entities.GuestDraftCommissionerOverride", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<Guid>("PickId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("pick_id");
-
-                    b.HasKey("Id")
-                        .HasName("pk_guest_draft_commissioner_overrides");
-
-                    b.HasIndex("PickId")
-                        .IsUnique()
-                        .HasDatabaseName("ix_guest_draft_commissioner_overrides_pick_id");
-
-                    b.ToTable("guest_draft_commissioner_overrides", "guest_drafts");
-                });
-
-            modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.Entities.GuestDraftGameBoard", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<Guid>("GuestDraftId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("guest_draft_id");
-
-                    b.HasKey("Id")
-                        .HasName("pk_guest_draft_game_boards");
-
-                    b.HasIndex("GuestDraftId")
-                        .IsUnique()
-                        .HasDatabaseName("ix_guest_draft_game_boards_guest_draft_id");
-
-                    b.ToTable("guest_draft_game_boards", "guest_drafts");
-                });
-
-            modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.Entities.GuestDraftPick", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<string>("ActedByPublicId")
-                        .HasMaxLength(19)
-                        .HasColumnType("character varying(19)")
-                        .HasColumnName("acted_by_public_id");
-
-                    b.Property<Guid>("GuestDraftId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("guest_draft_id");
-
-                    b.Property<string>("MoviePublicId")
-                        .IsRequired()
-                        .HasMaxLength(19)
-                        .HasColumnType("character varying(19)")
-                        .HasColumnName("movie_public_id");
-
-                    b.Property<int>("PlayOrder")
-                        .HasColumnType("integer")
-                        .HasColumnName("play_order");
-
-                    b.Property<Guid>("PlayedByParticipantId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("played_by_participant_id");
-
-                    b.Property<int>("Position")
-                        .HasColumnType("integer")
-                        .HasColumnName("position");
-
-                    b.Property<Guid?>("RevealAuthorizedParticipantId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("reveal_authorized_participant_id");
-
-                    b.Property<DateTimeOffset?>("RevealedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("revealed_at");
-
-                    b.HasKey("Id")
-                        .HasName("pk_guest_draft_picks");
-
-                    b.HasIndex("PlayedByParticipantId")
-                        .HasDatabaseName("ix_guest_draft_picks_played_by_participant_id");
-
-                    b.HasIndex("RevealAuthorizedParticipantId")
-                        .HasDatabaseName("ix_guest_draft_picks_reveal_authorized_participant_id");
-
-                    b.HasIndex("GuestDraftId", "PlayOrder")
-                        .HasDatabaseName("ix_guest_draft_picks_guest_draft_id_play_order");
-
-                    b.ToTable("guest_draft_picks", "guest_drafts");
-                });
-
-            modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.Entities.GuestDraftPosition", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<Guid?>("AssignedToParticipantId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("assigned_to_participant_id");
-
-                    b.Property<Guid>("GameBoardId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("game_board_id");
-
-                    b.Property<bool>("HasBonusFungibleToken")
-                        .HasColumnType("boolean")
-                        .HasColumnName("has_bonus_fungible_token");
-
-                    b.Property<bool>("HasBonusVeto")
-                        .HasColumnType("boolean")
-                        .HasColumnName("has_bonus_veto");
-
-                    b.Property<bool>("HasBonusVetoOverride")
-                        .HasColumnType("boolean")
-                        .HasColumnName("has_bonus_veto_override");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
-                        .HasColumnName("name");
-
-                    b.PrimitiveCollection<int[]>("Picks")
-                        .IsRequired()
-                        .HasColumnType("integer[]")
-                        .HasColumnName("picks");
-
-                    b.Property<string>("PublicId")
-                        .IsRequired()
-                        .HasMaxLength(19)
-                        .HasColumnType("character varying(19)")
-                        .HasColumnName("public_id");
-
-                    b.HasKey("Id")
-                        .HasName("pk_guest_draft_positions");
-
-                    b.HasIndex("GameBoardId")
-                        .HasDatabaseName("ix_guest_draft_positions_game_board_id");
-
-                    b.HasIndex("PublicId")
-                        .IsUnique()
-                        .HasDatabaseName("ix_guest_draft_positions_public_id");
-
-                    b.ToTable("guest_draft_positions", "guest_drafts");
-                });
-
-            modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.Entities.GuestDraftVeto", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<string>("ActedByPublicId")
-                        .HasMaxLength(19)
-                        .HasColumnType("character varying(19)")
-                        .HasColumnName("acted_by_public_id");
-
-                    b.Property<bool>("IsOverridden")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_overridden");
-
-                    b.Property<Guid>("IssuedByParticipantId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("issued_by_participant_id");
-
-                    b.Property<string>("Note")
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)")
-                        .HasColumnName("note");
-
-                    b.Property<DateTime>("OccurredOn")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("occurred_on");
-
-                    b.Property<int>("Sequence")
-                        .HasColumnType("integer")
-                        .HasColumnName("sequence");
-
-                    b.Property<bool>("SpentFromFungiblePool")
-                        .HasColumnType("boolean")
-                        .HasColumnName("spent_from_fungible_pool");
-
-                    b.Property<Guid>("TargetPickId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("target_pick_id");
-
-                    b.HasKey("Id")
-                        .HasName("pk_guest_draft_vetoes");
-
-                    b.HasIndex("IssuedByParticipantId")
-                        .HasDatabaseName("ix_guest_draft_vetoes_issued_by_participant_id");
-
-                    b.HasIndex("TargetPickId", "Sequence")
-                        .IsUnique()
-                        .HasDatabaseName("ix_guest_draft_vetoes_target_pick_id_sequence");
-
-                    b.ToTable("guest_draft_vetoes", "guest_drafts");
-                });
-
-            modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.Entities.GuestDraftVetoOverride", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<string>("ActedByPublicId")
-                        .HasMaxLength(19)
-                        .HasColumnType("character varying(19)")
-                        .HasColumnName("acted_by_public_id");
-
-                    b.Property<Guid>("IssuedByParticipantId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("issued_by_participant_id");
-
-                    b.Property<string>("Note")
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)")
-                        .HasColumnName("note");
-
-                    b.Property<bool>("SpentFromFungiblePool")
-                        .HasColumnType("boolean")
-                        .HasColumnName("spent_from_fungible_pool");
-
-                    b.Property<Guid>("VetoId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("veto_id");
-
-                    b.HasKey("Id")
-                        .HasName("pk_guest_draft_veto_overrides");
-
-                    b.HasIndex("IssuedByParticipantId")
-                        .HasDatabaseName("ix_guest_draft_veto_overrides_issued_by_participant_id");
-
-                    b.HasIndex("VetoId")
-                        .IsUnique()
-                        .HasDatabaseName("ix_guest_draft_veto_overrides_veto_id");
-
-                    b.ToTable("guest_draft_veto_overrides", "guest_drafts");
-                });
-
-            modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.GuestDraft", b =>
+            modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Draft", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid")
@@ -512,21 +266,41 @@ namespace ScreenDrafts.Modules.GuestDrafts.Infrastructure.Database.Migrations
                         .HasColumnName("updated_on_utc");
 
                     b.HasKey("Id")
-                        .HasName("pk_guest_drafts");
+                        .HasName("pk_drafts");
 
                     b.HasIndex("PublicId")
                         .IsUnique()
-                        .HasDatabaseName("ix_guest_drafts_public_id");
+                        .HasDatabaseName("ix_drafts_public_id");
 
                     b.HasIndex("ShareToken")
                         .IsUnique()
-                        .HasDatabaseName("ix_guest_drafts_share_token")
+                        .HasDatabaseName("ix_drafts_share_token")
                         .HasFilter("share_token IS NOT NULL");
 
-                    b.ToTable("guest_drafts", "guest_drafts");
+                    b.ToTable("drafts", "guest_drafts");
                 });
 
-            modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.GuestDraftParticipant", b =>
+            modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Entities.CommissionerOverride", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("PickId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("pick_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_commissioner_overrides");
+
+                    b.HasIndex("PickId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_commissioner_overrides_pick_id");
+
+                    b.ToTable("commissioner_overrides", "guest_drafts");
+                });
+
+            modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Entities.DraftParticipant", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid")
@@ -556,6 +330,10 @@ namespace ScreenDrafts.Modules.GuestDrafts.Infrastructure.Database.Migrations
                         .HasDefaultValue(0)
                         .HasColumnName("commissioner_overrides");
 
+                    b.Property<Guid>("DraftId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("draft_id");
+
                     b.Property<int>("FungibleTokens")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
@@ -567,10 +345,6 @@ namespace ScreenDrafts.Modules.GuestDrafts.Infrastructure.Database.Migrations
                         .HasColumnType("integer")
                         .HasDefaultValue(0)
                         .HasColumnName("fungible_tokens_used");
-
-                    b.Property<Guid>("GuestDraftId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("guest_draft_id");
 
                     b.Property<bool>("IsOwner")
                         .HasColumnType("boolean")
@@ -607,77 +381,409 @@ namespace ScreenDrafts.Modules.GuestDrafts.Infrastructure.Database.Migrations
                         .HasColumnName("vetoes_used");
 
                     b.HasKey("Id")
-                        .HasName("pk_guest_draft_participants");
+                        .HasName("pk_draft_participants");
 
-                    b.HasIndex("GuestDraftId", "ParticipantIdValue", "ParticipantKindValue")
+                    b.HasIndex("DraftId", "ParticipantIdValue", "ParticipantKindValue")
                         .IsUnique()
-                        .HasDatabaseName("ix_guest_draft_participants_guest_draft_id_participant_id_valu");
+                        .HasDatabaseName("ix_draft_participants_draft_id_participant_id_value_participan");
 
-                    b.ToTable("guest_draft_participants", "guest_drafts");
+                    b.ToTable("draft_participants", "guest_drafts");
                 });
 
-            modelBuilder.Entity("GuestDrafterGuestDrafterTeam", b =>
+            modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Entities.DraftPosition", b =>
                 {
-                    b.HasOne("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafters.GuestDrafter", null)
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid?>("AssignedToParticipantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("assigned_to_participant_id");
+
+                    b.Property<Guid>("GameBoardId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("game_board_id");
+
+                    b.Property<bool>("HasBonusFungibleToken")
+                        .HasColumnType("boolean")
+                        .HasColumnName("has_bonus_fungible_token");
+
+                    b.Property<bool>("HasBonusVeto")
+                        .HasColumnType("boolean")
+                        .HasColumnName("has_bonus_veto");
+
+                    b.Property<bool>("HasBonusVetoOverride")
+                        .HasColumnType("boolean")
+                        .HasColumnName("has_bonus_veto_override");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("name");
+
+                    b.PrimitiveCollection<int[]>("Picks")
+                        .IsRequired()
+                        .HasColumnType("integer[]")
+                        .HasColumnName("picks");
+
+                    b.Property<string>("PublicId")
+                        .IsRequired()
+                        .HasMaxLength(19)
+                        .HasColumnType("character varying(19)")
+                        .HasColumnName("public_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_draft_positions");
+
+                    b.HasIndex("GameBoardId")
+                        .HasDatabaseName("ix_draft_positions_game_board_id");
+
+                    b.HasIndex("PublicId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_draft_positions_public_id");
+
+                    b.ToTable("draft_positions", "guest_drafts");
+                });
+
+            modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Entities.GameBoard", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("DraftId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("draft_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_game_boards");
+
+                    b.HasIndex("DraftId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_game_boards_draft_id");
+
+                    b.ToTable("game_boards", "guest_drafts");
+                });
+
+            modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Entities.Movie", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<int?>("EpisodeNumber")
+                        .HasColumnType("integer")
+                        .HasColumnName("episode_number");
+
+                    b.Property<int?>("IgdbId")
+                        .HasColumnType("integer")
+                        .HasColumnName("igdb_id");
+
+                    b.Property<string>("ImdbId")
+                        .HasColumnType("text")
+                        .HasColumnName("imdb_id");
+
+                    b.Property<int>("MediaType")
+                        .HasColumnType("integer")
+                        .HasColumnName("media_type");
+
+                    b.Property<string>("MovieTitle")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("movie_title");
+
+                    b.Property<string>("PublicId")
+                        .IsRequired()
+                        .HasMaxLength(19)
+                        .HasColumnType("character varying(19)")
+                        .HasColumnName("public_id");
+
+                    b.Property<int?>("SeasonNumber")
+                        .HasColumnType("integer")
+                        .HasColumnName("season_number");
+
+                    b.Property<int?>("TmdbId")
+                        .HasColumnType("integer")
+                        .HasColumnName("tmdb_id");
+
+                    b.Property<string>("TvSeriesTitle")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("tv_series_title");
+
+                    b.Property<int?>("TvSeriesTmdbId")
+                        .HasColumnType("integer")
+                        .HasColumnName("tv_series_tmdb_id");
+
+                    b.Property<string>("Year")
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("year");
+
+                    b.HasKey("Id")
+                        .HasName("pk_movies");
+
+                    b.HasIndex("PublicId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_movies_public_id");
+
+                    b.HasIndex("TmdbId", "MediaType")
+                        .IsUnique()
+                        .HasDatabaseName("ix_movies_tmdb_id_media_type")
+                        .HasFilter("tmdb_id IS NOT NULL");
+
+                    b.ToTable("movies", "guest_drafts");
+                });
+
+            modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Entities.Pick", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("ActedByPublicId")
+                        .HasMaxLength(19)
+                        .HasColumnType("character varying(19)")
+                        .HasColumnName("acted_by_public_id");
+
+                    b.Property<Guid>("GuestDraftId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("guest_draft_id");
+
+                    b.Property<Guid>("MovieId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("movie_id");
+
+                    b.Property<string>("MoviePublicId")
+                        .IsRequired()
+                        .HasMaxLength(19)
+                        .HasColumnType("character varying(19)")
+                        .HasColumnName("movie_public_id");
+
+                    b.Property<int>("PlayOrder")
+                        .HasColumnType("integer")
+                        .HasColumnName("play_order");
+
+                    b.Property<Guid>("PlayedByParticipantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("played_by_participant_id");
+
+                    b.Property<int>("Position")
+                        .HasColumnType("integer")
+                        .HasColumnName("position");
+
+                    b.Property<Guid?>("RevealAuthorizedParticipantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("reveal_authorized_participant_id");
+
+                    b.Property<DateTimeOffset?>("RevealedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("revealed_at");
+
+                    b.HasKey("Id")
+                        .HasName("pk_picks");
+
+                    b.HasIndex("MovieId")
+                        .HasDatabaseName("ix_picks_movie_id");
+
+                    b.HasIndex("PlayedByParticipantId")
+                        .HasDatabaseName("ix_picks_played_by_participant_id");
+
+                    b.HasIndex("RevealAuthorizedParticipantId")
+                        .HasDatabaseName("ix_picks_reveal_authorized_participant_id");
+
+                    b.HasIndex("GuestDraftId", "PlayOrder")
+                        .HasDatabaseName("ix_picks_guest_draft_id_play_order");
+
+                    b.ToTable("picks", "guest_drafts");
+                });
+
+            modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Entities.Veto", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("ActedByPublicId")
+                        .HasMaxLength(19)
+                        .HasColumnType("character varying(19)")
+                        .HasColumnName("acted_by_public_id");
+
+                    b.Property<bool>("IsOverridden")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_overridden");
+
+                    b.Property<Guid>("IssuedByParticipantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("issued_by_participant_id");
+
+                    b.Property<string>("Note")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("note");
+
+                    b.Property<DateTime>("OccurredOn")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("occurred_on");
+
+                    b.Property<int>("Sequence")
+                        .HasColumnType("integer")
+                        .HasColumnName("sequence");
+
+                    b.Property<bool>("SpentFromFungiblePool")
+                        .HasColumnType("boolean")
+                        .HasColumnName("spent_from_fungible_pool");
+
+                    b.Property<Guid>("TargetPickId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("target_pick_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_vetoes");
+
+                    b.HasIndex("IssuedByParticipantId")
+                        .HasDatabaseName("ix_vetoes_issued_by_participant_id");
+
+                    b.HasIndex("TargetPickId", "Sequence")
+                        .IsUnique()
+                        .HasDatabaseName("ix_vetoes_target_pick_id_sequence");
+
+                    b.ToTable("vetoes", "guest_drafts");
+                });
+
+            modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Entities.VetoOverride", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("ActedByPublicId")
+                        .HasMaxLength(19)
+                        .HasColumnType("character varying(19)")
+                        .HasColumnName("acted_by_public_id");
+
+                    b.Property<Guid>("IssuedByParticipantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("issued_by_participant_id");
+
+                    b.Property<string>("Note")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("note");
+
+                    b.Property<bool>("SpentFromFungiblePool")
+                        .HasColumnType("boolean")
+                        .HasColumnName("spent_from_fungible_pool");
+
+                    b.Property<Guid>("VetoId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("veto_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_veto_overrides");
+
+                    b.HasIndex("IssuedByParticipantId")
+                        .HasDatabaseName("ix_veto_overrides_issued_by_participant_id");
+
+                    b.HasIndex("VetoId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_veto_overrides_veto_id");
+
+                    b.ToTable("veto_overrides", "guest_drafts");
+                });
+
+            modelBuilder.Entity("DrafterDrafterTeam", b =>
+                {
+                    b.HasOne("ScreenDrafts.Modules.GuestDrafts.Domain.DrafterTeams.DrafterTeam", null)
+                        .WithMany()
+                        .HasForeignKey("DrafterTeamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_drafter_team_members_drafter_teams_drafter_team_id");
+
+                    b.HasOne("ScreenDrafts.Modules.GuestDrafts.Domain.Drafters.Drafter", null)
                         .WithMany()
                         .HasForeignKey("DraftersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_guest_drafter_team_members_guest_drafters_drafters_id");
-
-                    b.HasOne("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafterTeams.GuestDrafterTeam", null)
-                        .WithMany()
-                        .HasForeignKey("GuestDrafterTeamId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_guest_drafter_team_members_guest_drafter_teams_guest_drafte");
+                        .HasConstraintName("fk_drafter_team_members_drafters_drafters_id");
                 });
 
-            modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.Entities.GuestDraftCommissionerOverride", b =>
+            modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Entities.CommissionerOverride", b =>
                 {
-                    b.HasOne("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.Entities.GuestDraftPick", "Pick")
+                    b.HasOne("ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Entities.Pick", "Pick")
                         .WithOne("CommissionerOverride")
-                        .HasForeignKey("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.Entities.GuestDraftCommissionerOverride", "PickId")
+                        .HasForeignKey("ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Entities.CommissionerOverride", "PickId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_guest_draft_commissioner_overrides_guest_draft_picks_pick_id");
+                        .HasConstraintName("fk_commissioner_overrides_picks_pick_id");
 
                     b.Navigation("Pick");
                 });
 
-            modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.Entities.GuestDraftGameBoard", b =>
+            modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Entities.DraftParticipant", b =>
                 {
-                    b.HasOne("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.GuestDraft", null)
-                        .WithOne("GameBoard")
-                        .HasForeignKey("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.Entities.GuestDraftGameBoard", "GuestDraftId")
+                    b.HasOne("ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Draft", "Draft")
+                        .WithMany("Participants")
+                        .HasForeignKey("DraftId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_guest_draft_game_boards_guest_drafts_guest_draft_id");
+                        .HasConstraintName("fk_draft_participants_drafts_draft_id");
+
+                    b.Navigation("Draft");
                 });
 
-            modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.Entities.GuestDraftPick", b =>
+            modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Entities.DraftPosition", b =>
                 {
-                    b.HasOne("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.GuestDraft", null)
+                    b.HasOne("ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Entities.GameBoard", null)
+                        .WithMany("Positions")
+                        .HasForeignKey("GameBoardId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_draft_positions_game_boards_game_board_id");
+                });
+
+            modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Entities.GameBoard", b =>
+                {
+                    b.HasOne("ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Draft", null)
+                        .WithOne("GameBoard")
+                        .HasForeignKey("ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Entities.GameBoard", "DraftId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_game_boards_drafts_draft_id");
+                });
+
+            modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Entities.Pick", b =>
+                {
+                    b.HasOne("ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Draft", null)
                         .WithMany("Picks")
                         .HasForeignKey("GuestDraftId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_guest_draft_picks_guest_drafts_guest_draft_id");
+                        .HasConstraintName("fk_picks_drafts_guest_draft_id");
 
-                    b.HasOne("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.GuestDraftParticipant", "PlayedByParticipant")
+                    b.HasOne("ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Entities.Movie", null)
+                        .WithMany()
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_picks_movies_movie_id");
+
+                    b.HasOne("ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Entities.DraftParticipant", "PlayedByParticipant")
                         .WithMany()
                         .HasForeignKey("PlayedByParticipantId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
-                        .HasConstraintName("fk_guest_draft_picks_guest_draft_participants_played_by_partic");
+                        .HasConstraintName("fk_picks_draft_participants_played_by_participant_id");
 
-                    b.HasOne("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.GuestDraftParticipant", "RevealAuthorizedParticipant")
+                    b.HasOne("ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Entities.DraftParticipant", "RevealAuthorizedParticipant")
                         .WithMany()
                         .HasForeignKey("RevealAuthorizedParticipantId")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .HasConstraintName("fk_guest_draft_picks_guest_draft_participants_reveal_authorize");
+                        .HasConstraintName("fk_picks_draft_participants_reveal_authorized_participant_id");
 
-                    b.OwnsMany("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.Entities.GuestDraftPickEvent", "History", b1 =>
+                    b.OwnsMany("ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Entities.GuestDraftPickEvent", "History", b1 =>
                         {
                             b1.Property<int>("Id")
                                 .ValueGeneratedOnAdd()
@@ -685,10 +791,6 @@ namespace ScreenDrafts.Modules.GuestDrafts.Infrastructure.Database.Migrations
                                 .HasColumnName("id");
 
                             NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b1.Property<int>("Id"));
-
-                            b1.Property<Guid>("GuestDraftPickId")
-                                .HasColumnType("uuid")
-                                .HasColumnName("guest_draft_pick_id");
 
                             b1.Property<Guid?>("IssuerParticipantId")
                                 .HasColumnType("uuid")
@@ -709,17 +811,21 @@ namespace ScreenDrafts.Modules.GuestDrafts.Infrastructure.Database.Migrations
                                 .HasColumnType("timestamp with time zone")
                                 .HasColumnName("occurred_on_utc");
 
+                            b1.Property<Guid>("PickId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("pick_id");
+
                             b1.HasKey("Id")
-                                .HasName("pk_guest_draft_pick_history");
+                                .HasName("pk_pick_history");
 
-                            b1.HasIndex("GuestDraftPickId")
-                                .HasDatabaseName("ix_guest_draft_pick_history_guest_draft_pick_id");
+                            b1.HasIndex("PickId")
+                                .HasDatabaseName("ix_pick_history_pick_id");
 
-                            b1.ToTable("guest_draft_pick_history", "guest_drafts");
+                            b1.ToTable("pick_history", "guest_drafts");
 
                             b1.WithOwner()
-                                .HasForeignKey("GuestDraftPickId")
-                                .HasConstraintName("fk_guest_draft_pick_history_guest_draft_picks_guest_draft_pick");
+                                .HasForeignKey("PickId")
+                                .HasConstraintName("fk_pick_history_picks_pick_id");
                         });
 
                     b.Navigation("History");
@@ -729,94 +835,72 @@ namespace ScreenDrafts.Modules.GuestDrafts.Infrastructure.Database.Migrations
                     b.Navigation("RevealAuthorizedParticipant");
                 });
 
-            modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.Entities.GuestDraftPosition", b =>
+            modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Entities.Veto", b =>
                 {
-                    b.HasOne("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.Entities.GuestDraftGameBoard", null)
-                        .WithMany("Positions")
-                        .HasForeignKey("GameBoardId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_guest_draft_positions_guest_draft_game_boards_game_board_id");
-                });
-
-            modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.Entities.GuestDraftVeto", b =>
-                {
-                    b.HasOne("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.GuestDraftParticipant", "IssuedByParticipant")
+                    b.HasOne("ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Entities.DraftParticipant", "IssuedByParticipant")
                         .WithMany()
                         .HasForeignKey("IssuedByParticipantId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
-                        .HasConstraintName("fk_guest_draft_vetoes_guest_draft_participants_issued_by_parti");
+                        .HasConstraintName("fk_vetoes_draft_participants_issued_by_participant_id");
 
-                    b.HasOne("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.Entities.GuestDraftPick", "TargetPick")
+                    b.HasOne("ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Entities.Pick", "TargetPick")
                         .WithMany("Vetoes")
                         .HasForeignKey("TargetPickId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_guest_draft_vetoes_guest_draft_picks_target_pick_id");
+                        .HasConstraintName("fk_vetoes_picks_target_pick_id");
 
                     b.Navigation("IssuedByParticipant");
 
                     b.Navigation("TargetPick");
                 });
 
-            modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.Entities.GuestDraftVetoOverride", b =>
+            modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Entities.VetoOverride", b =>
                 {
-                    b.HasOne("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.GuestDraftParticipant", "IssuedByParticipant")
+                    b.HasOne("ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Entities.DraftParticipant", "IssuedByParticipant")
                         .WithMany()
                         .HasForeignKey("IssuedByParticipantId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
-                        .HasConstraintName("fk_guest_draft_veto_overrides_guest_draft_participants_issued_");
+                        .HasConstraintName("fk_veto_overrides_draft_participants_issued_by_participant_id");
 
-                    b.HasOne("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.Entities.GuestDraftVeto", "Veto")
+                    b.HasOne("ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Entities.Veto", "Veto")
                         .WithOne("VetoOverride")
-                        .HasForeignKey("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.Entities.GuestDraftVetoOverride", "VetoId")
+                        .HasForeignKey("ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Entities.VetoOverride", "VetoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_guest_draft_veto_overrides_guest_draft_vetoes_veto_id");
+                        .HasConstraintName("fk_veto_overrides_vetoes_veto_id");
 
                     b.Navigation("IssuedByParticipant");
 
                     b.Navigation("Veto");
                 });
 
-            modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.GuestDraftParticipant", b =>
-                {
-                    b.HasOne("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.GuestDraft", "GuestDraft")
-                        .WithMany("Participants")
-                        .HasForeignKey("GuestDraftId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_guest_draft_participants_guest_drafts_guest_draft_id");
-
-                    b.Navigation("GuestDraft");
-                });
-
-            modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.Entities.GuestDraftGameBoard", b =>
-                {
-                    b.Navigation("Positions");
-                });
-
-            modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.Entities.GuestDraftPick", b =>
-                {
-                    b.Navigation("CommissionerOverride");
-
-                    b.Navigation("Vetoes");
-                });
-
-            modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.Entities.GuestDraftVeto", b =>
-                {
-                    b.Navigation("VetoOverride");
-                });
-
-            modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafts.GuestDraft", b =>
+            modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Draft", b =>
                 {
                     b.Navigation("GameBoard");
 
                     b.Navigation("Participants");
 
                     b.Navigation("Picks");
+                });
+
+            modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Entities.GameBoard", b =>
+                {
+                    b.Navigation("Positions");
+                });
+
+            modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Entities.Pick", b =>
+                {
+                    b.Navigation("CommissionerOverride");
+
+                    b.Navigation("Vetoes");
+                });
+
+            modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Entities.Veto", b =>
+                {
+                    b.Navigation("VetoOverride");
                 });
 #pragma warning restore 612, 618
         }

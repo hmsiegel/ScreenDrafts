@@ -9,7 +9,7 @@ import {
   fetchMediaByPublicId,
   revealGuestDraftPick,
 } from '../gameplay-fetchers';
-import type { GameplayPickResponse, MediaResponse } from '@/lib/dto';
+import type { GuestDraftGameplayPickResponse, MediaResponse } from '@/lib/dto';
 import { DraftPickList } from './draft-pick-list';
 import { DraftBoard } from './draft-board';
 import { PickSourcePanel } from './pick-source-panel';
@@ -53,10 +53,10 @@ export function DrafterTab({ accessToken, guestDraftId }: Props) {
     (pos) => pos.assignedParticipantId === callerParticipantId,
   );
 
+  // isActiveOnFinalBoard comes straight from the response now (backend
+  // applies the Landed formula) instead of being re-derived locally.
   const landedPositions = new Set(
-    picks
-      .filter((p) => !p.wasCommissionerOverride && (!p.wasVetoed || p.wasVetoOverridden))
-      .map((p) => p.boardPosition),
+    picks.filter((p) => p.isActiveOnFinalBoard).map((p) => p.position),
   );
   // Next open slot in my own position — highest slot number first, matching
   // the serpentine pick order (e.g. position A picks 7, then 6, then 4...).
@@ -76,10 +76,8 @@ export function DrafterTab({ accessToken, guestDraftId }: Props) {
       .sort((a, b) => b - a)
       .find((s) => !landedPositions.has(s)) ?? null;
 
-  const myParticipant = participants.find(
-    (p) => p.participantPublicId === callerParticipantId,
-  );
-  const mostRecentPick = picks.reduce<GameplayPickResponse | null>(
+  const myParticipant = participants.find((p) => p.participantId === callerParticipantId);
+  const mostRecentPick = picks.reduce<GuestDraftGameplayPickResponse | null>(
     (acc, p) => (!acc || (p.playOrder ?? 0) > (acc.playOrder ?? 0) ? p : acc),
     null,
   );
@@ -92,16 +90,13 @@ export function DrafterTab({ accessToken, guestDraftId }: Props) {
     !mostRecentPick.wasVetoed &&
     (myParticipant?.vetoTokensRemaining ?? 0) > 0;
 
-  // Same participantPublicId assumption as the position/participant match
-  // above — mostRecentPick.playedById needs to actually be populated with
-  // participantPublicId for this "not my own pick" check to hold.
   const canOverride =
     !roundIsOver &&
     callerParticipantId != null &&
     mostRecentPick !== null &&
     mostRecentPick.wasVetoed === true &&
     !mostRecentPick.wasVetoOverridden &&
-    mostRecentPick.playedById !== callerParticipantId &&
+    mostRecentPick.playedByParticipantId !== callerParticipantId &&
     (myParticipant?.overrideTokensRemaining ?? 0) > 0;
 
   async function handleVeto() {
@@ -126,7 +121,7 @@ export function DrafterTab({ accessToken, guestDraftId }: Props) {
 
   // Inline action buttons rendered directly on the board row for the most
   // recently played pick — only shown if this drafter is eligible to act.
-  function renderBoardActions(pick: GameplayPickResponse) {
+  function renderBoardActions(pick: GuestDraftGameplayPickResponse) {
     if (pick.playOrder !== mostRecentPick?.playOrder) return null;
     if (!canVeto && !canOverride) return null;
 
@@ -195,8 +190,8 @@ export function DrafterTab({ accessToken, guestDraftId }: Props) {
   }
 
   const revealSubmittedByName = pendingReveal
-    ? participants.find((p) => p.participantPublicId === pendingReveal.playedByParticipantId)
-        ?.participantName ?? 'another drafter'
+    ? participants.find((p) => p.participantId === pendingReveal.playedByParticipantId)
+        ?.displayName ?? 'another drafter'
     : null;
 
   return (

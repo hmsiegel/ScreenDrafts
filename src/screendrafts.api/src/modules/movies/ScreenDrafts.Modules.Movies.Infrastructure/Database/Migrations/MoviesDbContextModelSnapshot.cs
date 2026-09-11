@@ -401,8 +401,10 @@ namespace ScreenDrafts.Modules.Movies.Infrastructure.Database.Migrations
                         .IsUnique()
                         .HasDatabaseName("ux_media_public_id");
 
-                    b.HasIndex("TmdbId")
-                        .HasDatabaseName("ix_media_tmdb_id");
+                    b.HasIndex("TmdbId", "MediaType")
+                        .IsUnique()
+                        .HasDatabaseName("ix_media_tmdb_id_media_type")
+                        .HasFilter("tmdb_id IS NOT NULL");
 
                     b.ToTable("media", "movies");
                 });

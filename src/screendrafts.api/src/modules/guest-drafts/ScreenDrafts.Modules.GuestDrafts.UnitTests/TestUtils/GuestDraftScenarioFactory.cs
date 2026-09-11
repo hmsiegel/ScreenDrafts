@@ -1,3 +1,8 @@
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafters;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Entities;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Enums;
+
 namespace ScreenDrafts.Modules.GuestDrafts.UnitTests.TestUtils;
 
 /// <summary>
@@ -10,16 +15,20 @@ public static class GuestDraftScenarioFactory
 {
   private static readonly Faker _faker = new();
 
-  public static GuestDraft CreateGuestDraft(
-    GuestDraftType? guestDraftType = null,
+  public static Draft CreateGuestDraft(
+    DraftType? guestDraftType = null,
     Guid? ownerUserId = null,
-    string? title = null)
+    string? title = null
+  )
   {
-    return GuestDraft.Create(
-      publicId: _faker.Random.AlphaNumeric(10),
-      ownerUserId: ownerUserId ?? Guid.NewGuid(),
-      title: title ?? _faker.Lorem.Sentence(3),
-      guestDraftType: guestDraftType ?? GuestDraftType.Standard).Value;
+    return Draft
+      .Create(
+        publicId: _faker.Random.AlphaNumeric(10),
+        ownerUserId: ownerUserId ?? Guid.NewGuid(),
+        title: title ?? _faker.Lorem.Sentence(3),
+        guestDraftType: guestDraftType ?? DraftType.Standard
+      )
+      .Value;
   }
 
   /// <summary>
@@ -29,14 +38,15 @@ public static class GuestDraftScenarioFactory
   /// AddParticipantCommandHandler, not here -- so a raw Guid stands in fine for
   /// domain-level tests.
   /// </summary>
-  public static GuestDraftParticipant AddParticipant(
-    GuestDraft guestDraft,
+  public static DraftParticipant AddParticipant(
+    Draft guestDraft,
     bool isOwner = false,
-    Guid? guestDrafterId = null)
+    Guid? guestDrafterId = null
+  )
   {
     ArgumentNullException.ThrowIfNull(guestDraft);
 
-    var participant = GuestParticipant.From(GuestDrafterId.Create(guestDrafterId ?? Guid.NewGuid()));
+    var participant = Participant.From(DrafterId.Create(guestDrafterId ?? Guid.NewGuid()));
     return guestDraft.AddParticipant(participant, isOwner).Value;
   }
 
@@ -47,10 +57,13 @@ public static class GuestDraftScenarioFactory
   /// assigned (owner -> "A" [7,6,4,2], other -> "B" [5,3,1]), and started. Create no
   /// longer auto-adds the owner, so both are added explicitly, exactly the same way.
   /// </summary>
-  public static (GuestDraft GuestDraft, GuestDraftParticipant Owner, GuestDraftParticipant Other)
-    CreateInProgressStandardGuestDraft()
+  public static (
+    Draft GuestDraft,
+    DraftParticipant Owner,
+    DraftParticipant Other
+  ) CreateInProgressStandardGuestDraft()
   {
-    var guestDraft = CreateGuestDraft(GuestDraftType.Standard);
+    var guestDraft = CreateGuestDraft(DraftType.Standard);
     var owner = AddParticipant(guestDraft, isOwner: true);
     var other = AddParticipant(guestDraft);
 
@@ -75,11 +88,14 @@ public static class GuestDraftScenarioFactory
   /// participant in the returned list is always the owner, added explicitly like
   /// everyone else.
   /// </summary>
-  public static (GuestDraft GuestDraft, IReadOnlyList<GuestDraftParticipant> Participants, IReadOnlyList<GuestDraftPosition> Positions)
-    CreateInProgressCustomGuestDraft(int participantCount, GuestDraftType? guestDraftType = null)
+  public static (
+    Draft GuestDraft,
+    IReadOnlyList<DraftParticipant> Participants,
+    IReadOnlyList<DraftPosition> Positions
+  ) CreateInProgressCustomGuestDraft(int participantCount, DraftType? guestDraftType = null)
   {
-    var guestDraft = CreateGuestDraft(guestDraftType ?? GuestDraftType.MiniMega);
-    var participants = new List<GuestDraftParticipant> { AddParticipant(guestDraft, isOwner: true) };
+    var guestDraft = CreateGuestDraft(guestDraftType ?? DraftType.MiniMega);
+    var participants = new List<DraftParticipant> { AddParticipant(guestDraft, isOwner: true) };
 
     for (var i = 1; i < participantCount; i++)
     {
@@ -87,12 +103,16 @@ public static class GuestDraftScenarioFactory
     }
 
     var customPositions = participants
-      .Select((_, index) => (
-        Name: $"Position {index + 1}",
-        Picks: (IReadOnlyList<int>)new List<int> { index + 1 },
-        HasBonusVeto: false,
-        HasBonusVetoOverride: false,
-        HasBonusFungibleToken: false))
+      .Select(
+        (_, index) =>
+          (
+            Name: $"Position {index + 1}",
+            Picks: (IReadOnlyList<int>)new List<int> { index + 1 },
+            HasBonusVeto: false,
+            HasBonusVetoOverride: false,
+            HasBonusFungibleToken: false
+          )
+      )
       .ToList();
 
     guestDraft.SetCustomPositions(customPositions, GeneratePositionPublicId);

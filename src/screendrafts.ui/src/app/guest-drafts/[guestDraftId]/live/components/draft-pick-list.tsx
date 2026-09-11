@@ -1,5 +1,4 @@
-// app/guest-drafts/[guestDraftId]/live/components/draft-pick-list.tsx
-'use client';
+// app/guest-drafts/[guestDraftId]/live/components/draft-pick-list.tsx 'use client';
 
 import { useGuestDraftLive } from '../guest-draft-context';
 
@@ -19,49 +18,67 @@ export function DraftPickList() {
 
   return (
     <div className="divide-y divide-white/10">
-      {sorted.map((pick) => (
-        <div key={pick.playOrder} className="flex items-center gap-3 py-2">
-          <span className="font-mono text-white/30 text-xs w-6 text-right shrink-0">
-            {pick.playOrder}
-          </span>
-          <span className="font-oswald text-white/30 text-xs w-6 text-center shrink-0">
-            {pick.boardPosition}
-          </span>
-          <div className="flex-1 min-w-0">
-            <a
-              href={`https://www.themoviedb.org/movie/${pick.tmdbId}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`font-oswald text-sm transition-colors hover:text-light-blue ${
-                (pick.wasVetoed && !pick.wasVetoOverridden) || pick.wasCommissionerOverride
-                  ? 'line-through text-white/30'
-                  : 'text-sd-paper'
-              }`}
-            >
-              {pick.movieTitle}
-              {pick.movieYear && (
-                <span className="text-white/40 ml-1 text-xs">({pick.movieYear})</span>
+      {sorted.map((pick) => {
+        const isStruck =
+          (pick.wasVetoed && !pick.wasVetoOverridden) || pick.wasCommissionerOverride;
+
+        return (
+          <div key={pick.playOrder} className="flex items-center gap-3 py-2">
+            <span className="font-mono text-white/30 text-xs w-6 text-right shrink-0">
+              {pick.playOrder}
+            </span>
+            <span className="font-oswald text-white/30 text-xs w-6 text-center shrink-0">
+              {pick.position}
+            </span>
+            <div className="flex-1 min-w-0">
+              {pick.tmdbId ? (
+                <a
+                  href={`https://www.themoviedb.org/movie/${pick.tmdbId}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`font-oswald text-sm transition-colors hover:text-light-blue ${
+                    isStruck ? 'line-through text-white/30' : 'text-sd-paper'
+                  }`}
+                >
+                  {pick.movieTitle}
+                  {pick.movieYear && (
+                    <span className="text-white/40 ml-1 text-xs">({pick.movieYear})</span>
+                  )}
+                </a>
+              ) : (
+                <span
+                  className={`font-oswald text-sm ${
+                    isStruck ? 'line-through text-white/30' : 'text-sd-paper'
+                  }`}
+                >
+                  {pick.movieTitle}
+                  {pick.movieYear && (
+                    <span className="text-white/40 ml-1 text-xs">({pick.movieYear})</span>
+                  )}
+                </span>
               )}
-            </a>
-            <span className="block text-[11px] text-white/40 font-mono">{pick.playedByName}</span>
+              <span className="block text-[11px] text-white/40 font-mono">
+                {pick.playedByDisplayName}
+              </span>
+            </div>
+            {pick.wasVetoed && !pick.wasVetoOverridden && (
+              <span className="text-[10px] bg-sd-red/20 text-sd-red px-1.5 py-0.5 font-oswald tracking-wider shrink-0">
+                VETOED{pick.vetoedByDisplayName ? ` BY ${pick.vetoedByDisplayName.toUpperCase()}` : ''}
+              </span>
+            )}
+            {pick.wasVetoOverridden && (
+              <span className="text-[10px] bg-light-blue/20 text-light-blue px-1.5 py-0.5 font-oswald tracking-wider shrink-0">
+                SAVED{pick.savedByDisplayName ? ` BY ${pick.savedByDisplayName.toUpperCase()}` : ''}
+              </span>
+            )}
+            {pick.wasCommissionerOverride && (
+              <span className="text-[10px] bg-white/10 text-white/50 px-1.5 py-0.5 font-oswald tracking-wider shrink-0">
+                REMOVED
+              </span>
+            )}
           </div>
-          {pick.wasVetoed && !pick.wasVetoOverridden && (
-            <span className="text-[10px] bg-sd-red/20 text-sd-red px-1.5 py-0.5 font-oswald tracking-wider shrink-0">
-              VETOED{pick.vetoedByName ? ` BY ${pick.vetoedByName.toUpperCase()}` : ''}
-            </span>
-          )}
-          {pick.wasVetoOverridden && (
-            <span className="text-[10px] bg-light-blue/20 text-light-blue px-1.5 py-0.5 font-oswald tracking-wider shrink-0">
-              SAVED{pick.savedByName ? ` BY ${pick.savedByName.toUpperCase()}` : ''}
-            </span>
-          )}
-          {pick.wasCommissionerOverride && (
-            <span className="text-[10px] bg-white/10 text-white/50 px-1.5 py-0.5 font-oswald tracking-wider shrink-0">
-              REMOVED
-            </span>
-          )}
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }

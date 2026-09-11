@@ -1,3 +1,5 @@
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Enums;
+
 namespace ScreenDrafts.Modules.GuestDrafts.UnitTests.Entities;
 
 /// <summary>
@@ -24,7 +26,9 @@ public class GuestDraftParticipantTests : GuestDraftsBaseTest
   {
     // Arrange
     var (guestDraft, owner, other) = CreateInProgressStandardGuestDraft();
-    var pickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), 7, 1, owner.Id.Value).Value;
+    var pickId = guestDraft
+      .PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 7, 1, owner.Id.Value)
+      .Value;
     guestDraft.ApplyVeto(pickId, other.Id.Value);
 
     // Act & Assert
@@ -35,22 +39,32 @@ public class GuestDraftParticipantTests : GuestDraftsBaseTest
   public void CanUseVeto_ShouldReturnTrue_WhenTheNormalPoolIsUsedUpButAFungibleTokenIsAvailable()
   {
     // Arrange
-    var guestDraft = CreateGuestDraft(GuestDraftType.MiniMega);
+    var guestDraft = CreateGuestDraft(DraftType.MiniMega);
     var owner = AddParticipant(guestDraft, isOwner: true);
     var other = AddParticipant(guestDraft);
 
-    List<(string Name, IReadOnlyList<int> Picks, bool HasBonusVeto, bool HasBonusVetoOverride, bool HasBonusFungibleToken)> positions =
-    [
-      ("A", [1], false, false, false),
-      ("B", [2], false, false, true),
-    ];
+    List<(
+      string Name,
+      IReadOnlyList<int> Picks,
+      bool HasBonusVeto,
+      bool HasBonusVetoOverride,
+      bool HasBonusFungibleToken
+    )> positions = [("A", [1], false, false, false), ("B", [2], false, false, true)];
     guestDraft.SetCustomPositions(positions, GeneratePositionPublicId);
     var boardPositions = guestDraft.GameBoard!.Positions.ToList();
-    guestDraft.AssignParticipantToPosition(boardPositions.Single(p => p.Name == "A"), owner.Id.Value);
-    guestDraft.AssignParticipantToPosition(boardPositions.Single(p => p.Name == "B"), other.Id.Value);
+    guestDraft.AssignParticipantToPosition(
+      boardPositions.Single(p => p.Name == "A"),
+      owner.Id.Value
+    );
+    guestDraft.AssignParticipantToPosition(
+      boardPositions.Single(p => p.Name == "B"),
+      other.Id.Value
+    );
     guestDraft.Start();
 
-    var pickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), 1, 1, owner.Id.Value).Value;
+    var pickId = guestDraft
+      .PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 1, 1, owner.Id.Value)
+      .Value;
     guestDraft.ApplyVeto(pickId, other.Id.Value);
 
     // Act & Assert -- normal pool now spent, but the awarded fungible token remains
@@ -71,19 +85,27 @@ public class GuestDraftParticipantTests : GuestDraftsBaseTest
   public void CanUseVetoOverride_ShouldReturnFalse_WhenMaxOverridesIsZero_EvenWithAnAwardedOverride()
   {
     // Arrange
-    var guestDraft = CreateGuestDraft(GuestDraftType.MiniMega);
+    var guestDraft = CreateGuestDraft(DraftType.MiniMega);
     var owner = AddParticipant(guestDraft, isOwner: true);
     var other = AddParticipant(guestDraft);
 
-    List<(string Name, IReadOnlyList<int> Picks, bool HasBonusVeto, bool HasBonusVetoOverride, bool HasBonusFungibleToken)> positions =
-    [
-      ("A", [1], false, true, false),
-      ("B", [2], false, false, false),
-    ];
+    List<(
+      string Name,
+      IReadOnlyList<int> Picks,
+      bool HasBonusVeto,
+      bool HasBonusVetoOverride,
+      bool HasBonusFungibleToken
+    )> positions = [("A", [1], false, true, false), ("B", [2], false, false, false)];
     guestDraft.SetCustomPositions(positions, GeneratePositionPublicId);
     var boardPositions = guestDraft.GameBoard!.Positions.ToList();
-    guestDraft.AssignParticipantToPosition(boardPositions.Single(p => p.Name == "A"), owner.Id.Value);
-    guestDraft.AssignParticipantToPosition(boardPositions.Single(p => p.Name == "B"), other.Id.Value);
+    guestDraft.AssignParticipantToPosition(
+      boardPositions.Single(p => p.Name == "A"),
+      owner.Id.Value
+    );
+    guestDraft.AssignParticipantToPosition(
+      boardPositions.Single(p => p.Name == "B"),
+      other.Id.Value
+    );
     guestDraft.Start();
 
     // Act & Assert -- the awarded override is real, but a zero cap still blocks it
@@ -94,19 +116,27 @@ public class GuestDraftParticipantTests : GuestDraftsBaseTest
   public void CanUseVetoOverride_ShouldReturnTrue_WhenAnOverrideIsAwardedAndMaxOverridesIsPositive()
   {
     // Arrange
-    var guestDraft = CreateGuestDraft(GuestDraftType.MiniMega);
+    var guestDraft = CreateGuestDraft(DraftType.MiniMega);
     var owner = AddParticipant(guestDraft, isOwner: true);
     var other = AddParticipant(guestDraft);
 
-    List<(string Name, IReadOnlyList<int> Picks, bool HasBonusVeto, bool HasBonusVetoOverride, bool HasBonusFungibleToken)> positions =
-    [
-      ("A", [1], false, true, false),
-      ("B", [2], false, false, false),
-    ];
+    List<(
+      string Name,
+      IReadOnlyList<int> Picks,
+      bool HasBonusVeto,
+      bool HasBonusVetoOverride,
+      bool HasBonusFungibleToken
+    )> positions = [("A", [1], false, true, false), ("B", [2], false, false, false)];
     guestDraft.SetCustomPositions(positions, GeneratePositionPublicId);
     var boardPositions = guestDraft.GameBoard!.Positions.ToList();
-    guestDraft.AssignParticipantToPosition(boardPositions.Single(p => p.Name == "A"), owner.Id.Value);
-    guestDraft.AssignParticipantToPosition(boardPositions.Single(p => p.Name == "B"), other.Id.Value);
+    guestDraft.AssignParticipantToPosition(
+      boardPositions.Single(p => p.Name == "A"),
+      owner.Id.Value
+    );
+    guestDraft.AssignParticipantToPosition(
+      boardPositions.Single(p => p.Name == "B"),
+      other.Id.Value
+    );
     guestDraft.Start();
 
     // Act & Assert
@@ -117,19 +147,27 @@ public class GuestDraftParticipantTests : GuestDraftsBaseTest
   public void CanUseVetoOverride_ShouldReturnTrue_WhenAFungibleTokenIsAvailable_EvenIfMaxOverridesIsZero()
   {
     // Arrange
-    var guestDraft = CreateGuestDraft(GuestDraftType.MiniMega);
+    var guestDraft = CreateGuestDraft(DraftType.MiniMega);
     var owner = AddParticipant(guestDraft, isOwner: true);
     var other = AddParticipant(guestDraft);
 
-    List<(string Name, IReadOnlyList<int> Picks, bool HasBonusVeto, bool HasBonusVetoOverride, bool HasBonusFungibleToken)> positions =
-    [
-      ("A", [1], false, false, true),
-      ("B", [2], false, false, false),
-    ];
+    List<(
+      string Name,
+      IReadOnlyList<int> Picks,
+      bool HasBonusVeto,
+      bool HasBonusVetoOverride,
+      bool HasBonusFungibleToken
+    )> positions = [("A", [1], false, false, true), ("B", [2], false, false, false)];
     guestDraft.SetCustomPositions(positions, GeneratePositionPublicId);
     var boardPositions = guestDraft.GameBoard!.Positions.ToList();
-    guestDraft.AssignParticipantToPosition(boardPositions.Single(p => p.Name == "A"), owner.Id.Value);
-    guestDraft.AssignParticipantToPosition(boardPositions.Single(p => p.Name == "B"), other.Id.Value);
+    guestDraft.AssignParticipantToPosition(
+      boardPositions.Single(p => p.Name == "A"),
+      owner.Id.Value
+    );
+    guestDraft.AssignParticipantToPosition(
+      boardPositions.Single(p => p.Name == "B"),
+      other.Id.Value
+    );
     guestDraft.Start();
 
     // Act & Assert -- fungible-pool fallback is independent of maxOverrides entirely
@@ -140,19 +178,27 @@ public class GuestDraftParticipantTests : GuestDraftsBaseTest
   public void TotalVetoes_ShouldBeStartingPlusAwarded()
   {
     // Arrange
-    var guestDraft = CreateGuestDraft(GuestDraftType.MiniMega);
+    var guestDraft = CreateGuestDraft(DraftType.MiniMega);
     var owner = AddParticipant(guestDraft, isOwner: true);
     var other = AddParticipant(guestDraft);
 
-    List<(string Name, IReadOnlyList<int> Picks, bool HasBonusVeto, bool HasBonusVetoOverride, bool HasBonusFungibleToken)> positions =
-    [
-      ("A", [1], true, false, false),
-      ("B", [2], false, false, false),
-    ];
+    List<(
+      string Name,
+      IReadOnlyList<int> Picks,
+      bool HasBonusVeto,
+      bool HasBonusVetoOverride,
+      bool HasBonusFungibleToken
+    )> positions = [("A", [1], true, false, false), ("B", [2], false, false, false)];
     guestDraft.SetCustomPositions(positions, GeneratePositionPublicId);
     var boardPositions = guestDraft.GameBoard!.Positions.ToList();
-    guestDraft.AssignParticipantToPosition(boardPositions.Single(p => p.Name == "A"), owner.Id.Value);
-    guestDraft.AssignParticipantToPosition(boardPositions.Single(p => p.Name == "B"), other.Id.Value);
+    guestDraft.AssignParticipantToPosition(
+      boardPositions.Single(p => p.Name == "A"),
+      owner.Id.Value
+    );
+    guestDraft.AssignParticipantToPosition(
+      boardPositions.Single(p => p.Name == "B"),
+      other.Id.Value
+    );
 
     // Act
     guestDraft.Start();

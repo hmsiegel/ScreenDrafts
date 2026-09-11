@@ -400,16 +400,27 @@ function SearchSource({
       return;
     }
 
-    // Movie — leave mediaPublicId blank. handlePick (the parent's onPick)
-    // already knows how to import-then-resolve a movie by tmdbId via its
-    // own `!movie.mediaPublicId` branch, same as it always has.
-    onPick({
-      mediaPublicId: '',
-      tmdbId: media.tmdbId,
-      title: media.title,
-      year: media.year,
-      posterUrl: null,
-    });
+    // Movie — check whether it's already locally cached before assuming an
+    // import is needed. fetch-tmdb.ts's searchMovies (MovieSearchResult) has
+    // no mediaPublicId/isInMediaDatabase field at all — /integrations/movies/search
+    // is a pure TMDb passthrough with zero awareness of movies.media — so
+    // there was never a flag to plumb through from search results in the
+    // first place. Same cheap existence check PoolSource/BoardSource/
+    // CandidateListSource already do via resolveTmdbIds, just applied here
+    // too before falling back to a full TMDb import.
+    setResolving(true);
+    try {
+      const alreadyCached = await resolveTmdbIds([media.tmdbId], accessToken);
+      onPick({
+        mediaPublicId: alreadyCached[0]?.mediaPublicId ?? '',
+        tmdbId: media.tmdbId,
+        title: media.title,
+        year: media.year,
+        posterUrl: null,
+      });
+    } finally {
+      setResolving(false);
+    }
   }
 
   return (

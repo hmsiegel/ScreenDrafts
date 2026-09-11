@@ -2,7 +2,4 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\common\ScreenDrafts.Common.Domain\ScreenDrafts.Common.Domain.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="GuestDrafts\DomainEvents\" />
-  </ItemGroup>
 </Project>

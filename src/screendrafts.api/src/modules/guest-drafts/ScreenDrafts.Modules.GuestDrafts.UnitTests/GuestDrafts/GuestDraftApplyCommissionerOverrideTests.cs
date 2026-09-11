@@ -1,3 +1,6 @@
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Errors;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.ValueObjects;
+
 namespace ScreenDrafts.Modules.GuestDrafts.UnitTests.GuestDrafts;
 
 public class GuestDraftApplyCommissionerOverrideTests : GuestDraftsBaseTest
@@ -7,7 +10,9 @@ public class GuestDraftApplyCommissionerOverrideTests : GuestDraftsBaseTest
   {
     // Arrange
     var (guestDraft, owner, _) = CreateInProgressStandardGuestDraft();
-    var pickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), 7, 1, owner.Id.Value).Value;
+    var pickId = guestDraft
+      .PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 7, 1, owner.Id.Value)
+      .Value;
 
     // Act
     var result = guestDraft.ApplyCommissionerOverride(pickId);
@@ -23,7 +28,9 @@ public class GuestDraftApplyCommissionerOverrideTests : GuestDraftsBaseTest
   {
     // Arrange
     var (guestDraft, owner, _) = CreateInProgressStandardGuestDraft();
-    var pickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), 7, 1, owner.Id.Value).Value;
+    var pickId = guestDraft
+      .PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 7, 1, owner.Id.Value)
+      .Value;
     guestDraft.ApplyCommissionerOverride(pickId);
 
     // Act
@@ -31,7 +38,7 @@ public class GuestDraftApplyCommissionerOverrideTests : GuestDraftsBaseTest
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDraftErrors.CommissionerOverrideAlreadyApplied);
+    result.Errors[0].Should().Be(DraftErrors.CommissionerOverrideAlreadyApplied);
     owner.CommissionerOverrides.Should().Be(1, "a failed re-application must not double-count");
   }
 
@@ -40,14 +47,14 @@ public class GuestDraftApplyCommissionerOverrideTests : GuestDraftsBaseTest
   {
     // Arrange
     var (guestDraft, _, _) = CreateInProgressStandardGuestDraft();
-    var missingPickId = GuestDraftPickId.CreateUnique();
+    var missingPickId = PickId.CreateUnique();
 
     // Act
     var result = guestDraft.ApplyCommissionerOverride(missingPickId);
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDraftErrors.PickNotFound(missingPickId.Value));
+    result.Errors[0].Should().Be(DraftErrors.PickNotFound(missingPickId.Value));
   }
 
   [Fact]
@@ -57,11 +64,19 @@ public class GuestDraftApplyCommissionerOverrideTests : GuestDraftsBaseTest
     // most recent) pick.
     var (guestDraft, owner, _) = CreateInProgressStandardGuestDraft();
     int[] pickSlots = [7, 6, 4, 2, 5, 3, 1];
-    GuestDraftPickId lastPickId = null!;
+    PickId lastPickId = null!;
 
     for (var i = 0; i < pickSlots.Length; i++)
     {
-      lastPickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), pickSlots[i], i + 1, owner.Id.Value).Value;
+      lastPickId = guestDraft
+        .PlayPick(
+          Faker.Random.AlphaNumeric(10),
+          Guid.NewGuid(),
+          pickSlots[i],
+          i + 1,
+          owner.Id.Value
+        )
+        .Value;
     }
 
     guestDraft.Complete();
@@ -71,7 +86,7 @@ public class GuestDraftApplyCommissionerOverrideTests : GuestDraftsBaseTest
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDraftErrors.DraftNotStarted);
+    result.Errors[0].Should().Be(DraftErrors.DraftNotStarted);
   }
 
   [Fact]
@@ -80,14 +95,16 @@ public class GuestDraftApplyCommissionerOverrideTests : GuestDraftsBaseTest
     // Arrange -- the older pick is untouched, but only the most recent pick, by
     // play order, is eligible for a commissioner override.
     var (guestDraft, owner, _) = CreateInProgressStandardGuestDraft();
-    var olderPickId = guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), 7, 1, owner.Id.Value).Value;
-    guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), 6, 2, owner.Id.Value);
+    var olderPickId = guestDraft
+      .PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 7, 1, owner.Id.Value)
+      .Value;
+    guestDraft.PlayPick(Faker.Random.AlphaNumeric(10), Guid.NewGuid(), 6, 2, owner.Id.Value);
 
     // Act
     var result = guestDraft.ApplyCommissionerOverride(olderPickId);
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDraftErrors.CommissionerOverrideNotOnMostRecentPick);
+    result.Errors[0].Should().Be(DraftErrors.CommissionerOverrideNotOnMostRecentPick);
   }
 }

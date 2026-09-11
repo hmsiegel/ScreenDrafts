@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.GuestDrafters;
+﻿namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.GuestDrafters;
 
 /// <summary>
 /// GuestDrafter itself has no dedicated unit-test coverage yet, and its one-per-user
@@ -16,7 +16,7 @@ public sealed class CreateGuestDrafterTests(GuestDraftsIntegrationTestWebAppFact
   {
     // Arrange
     var userId = Guid.NewGuid();
-    var command = new CreateGuestDrafterCommand
+    var command = new CreateDrafterCommand
     {
       UserId = userId,
       FirstName = "Ada",
@@ -29,7 +29,7 @@ public sealed class CreateGuestDrafterTests(GuestDraftsIntegrationTestWebAppFact
     // Assert
     result.IsSuccess.Should().BeTrue();
     result.Value.Should().NotBeNullOrEmpty();
-    var guestDrafter = await DbContext.GuestDrafters.FirstAsync(
+    var guestDrafter = await DbContext.Drafters.FirstAsync(
       d => d.PublicId == result.Value,
       TestContext.Current.CancellationToken
     );
@@ -43,18 +43,28 @@ public sealed class CreateGuestDrafterTests(GuestDraftsIntegrationTestWebAppFact
     // Arrange
     var userId = Guid.NewGuid();
     await Sender.Send(
-      new CreateGuestDrafterCommand { UserId = userId, FirstName = "Ada", LastName = "Lovelace" },
+      new CreateDrafterCommand
+      {
+        UserId = userId,
+        FirstName = "Ada",
+        LastName = "Lovelace",
+      },
       TestContext.Current.CancellationToken
     );
 
     // Act
     var result = await Sender.Send(
-      new CreateGuestDrafterCommand { UserId = userId, FirstName = "Ada", LastName = "Lovelace" },
+      new CreateDrafterCommand
+      {
+        UserId = userId,
+        FirstName = "Ada",
+        LastName = "Lovelace",
+      },
       TestContext.Current.CancellationToken
     );
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors.Should().Contain(e => e.Code == GuestDrafterErrors.AlreadyExistsForUser(userId).Code);
+    result.Errors.Should().Contain(e => e.Code == DrafterErrors.AlreadyExistsForUser(userId).Code);
   }
 }

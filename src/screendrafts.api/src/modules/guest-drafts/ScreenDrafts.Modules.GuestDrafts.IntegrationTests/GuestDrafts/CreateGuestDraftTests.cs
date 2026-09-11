@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.GuestDrafts;
+﻿namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.GuestDrafts;
 
 public sealed class CreateGuestDraftTests(GuestDraftsIntegrationTestWebAppFactory factory)
   : GuestDraftsIntegrationTest(factory)
@@ -8,11 +8,11 @@ public sealed class CreateGuestDraftTests(GuestDraftsIntegrationTestWebAppFactor
   {
     // Arrange
     var owner = await CreateUserAsync();
-    var command = new CreateGuestDraftCommand
+    var command = new CreateDraftCommand
     {
       OwnerUserPublicId = owner.UserPublicId,
       Title = "Weekend Guest Draft",
-      Type = GuestDraftType.Standard.Name,
+      Type = DraftType.Standard.Name,
       NumberOfPicks = 1,
     };
 
@@ -30,13 +30,18 @@ public sealed class CreateGuestDraftTests(GuestDraftsIntegrationTestWebAppFactor
     // Arrange -- Create no longer auto-adds the owner as a participant; they must
     // be added explicitly via AddParticipant, exactly like everyone else.
     var owner = await CreateUserAsync();
-    var ownerUserId = (await FakeUsersApi.GetUserByPublicId(owner.UserPublicId, TestContext.Current.CancellationToken))!.UserId;
+    var ownerUserId = (
+      await FakeUsersApi.GetUserByPublicId(
+        owner.UserPublicId,
+        TestContext.Current.CancellationToken
+      )
+    )!.UserId;
 
-    var command = new CreateGuestDraftCommand
+    var command = new CreateDraftCommand
     {
       OwnerUserPublicId = owner.UserPublicId,
       Title = "Weekend Guest Draft",
-      Type = GuestDraftType.Standard.Name,
+      Type = DraftType.Standard.Name,
       NumberOfPicks = 1,
     };
 
@@ -46,7 +51,7 @@ public sealed class CreateGuestDraftTests(GuestDraftsIntegrationTestWebAppFactor
     // Assert
     var guestDraft = await GetGuestDraftWithBoardAsync(result.Value);
     guestDraft.OwnerUserId.Should().Be(ownerUserId);
-    guestDraft.GuestDraftStatus.Should().Be(GuestDraftStatus.Created);
+    guestDraft.GuestDraftStatus.Should().Be(DraftStatus.Created);
     guestDraft.Participants.Should().BeEmpty();
   }
 
@@ -54,11 +59,11 @@ public sealed class CreateGuestDraftTests(GuestDraftsIntegrationTestWebAppFactor
   public async Task CreateGuestDraft_WithEmptyTitle_ShouldReturnErrorAsync()
   {
     // Arrange
-    var command = new CreateGuestDraftCommand
+    var command = new CreateDraftCommand
     {
       OwnerUserPublicId = (await CreateUserAsync()).UserPublicId,
       Title = string.Empty,
-      Type = GuestDraftType.Standard.Name,
+      Type = DraftType.Standard.Name,
       NumberOfPicks = 1,
     };
 
@@ -74,7 +79,7 @@ public sealed class CreateGuestDraftTests(GuestDraftsIntegrationTestWebAppFactor
   public async Task CreateGuestDraft_WithInvalidType_ShouldReturnErrorAsync()
   {
     // Arrange
-    var command = new CreateGuestDraftCommand
+    var command = new CreateDraftCommand
     {
       OwnerUserPublicId = (await CreateUserAsync()).UserPublicId,
       Title = "Weekend Guest Draft",
@@ -87,7 +92,9 @@ public sealed class CreateGuestDraftTests(GuestDraftsIntegrationTestWebAppFactor
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors.Should().Contain(e => e.Code == GuestDraftErrors.InvalidType("NotARealDraftType").Code);
+    result
+      .Errors.Should()
+      .Contain(e => e.Code == DraftErrors.InvalidType("NotARealDraftType").Code);
   }
 
   [Fact]
@@ -95,11 +102,11 @@ public sealed class CreateGuestDraftTests(GuestDraftsIntegrationTestWebAppFactor
   {
     // Arrange
     var nonExistentOwner = $"u_{Faker.Random.AlphaNumeric(16)}";
-    var command = new CreateGuestDraftCommand
+    var command = new CreateDraftCommand
     {
       OwnerUserPublicId = nonExistentOwner,
       Title = "Weekend Guest Draft",
-      Type = GuestDraftType.Standard.Name,
+      Type = DraftType.Standard.Name,
       NumberOfPicks = 1,
     };
 
@@ -108,16 +115,20 @@ public sealed class CreateGuestDraftTests(GuestDraftsIntegrationTestWebAppFactor
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors.Should().Contain(e => e.Code == UserPublicApiErrors.PublicIdNotFound(nonExistentOwner).Code);
+    result
+      .Errors.Should()
+      .Contain(e => e.Code == UserPublicApiErrors.PublicIdNotFound(nonExistentOwner).Code);
   }
 
   [Theory]
   [InlineData("Standard")]
   [InlineData("MiniSuper")]
-  public async Task CreateGuestDraft_ForAFixedType_ShouldApplyTheFixedTemplateAutomaticallyAsync(string typeName)
+  public async Task CreateGuestDraft_ForAFixedType_ShouldApplyTheFixedTemplateAutomaticallyAsync(
+    string typeName
+  )
   {
     // Arrange -- Positions omitted entirely; the fixed template is applied regardless
-    GuestDraftType.TryFromName(typeName, ignoreCase: true, out var type).Should().BeTrue();
+    DraftType.TryFromName(typeName, ignoreCase: true, out var type).Should().BeTrue();
     var owner = await CreateUserAsync();
 
     // Act
@@ -134,7 +145,7 @@ public sealed class CreateGuestDraftTests(GuestDraftsIntegrationTestWebAppFactor
   {
     // Arrange
     var owner = await CreateUserAsync();
-    List<CreateGuestDraftPositionInput> positions =
+    List<GuestDraftPositionInput> positions =
     [
       new() { Name = "A", Picks = [1] },
       new() { Name = "B", Picks = [2] },
@@ -143,7 +154,7 @@ public sealed class CreateGuestDraftTests(GuestDraftsIntegrationTestWebAppFactor
     // Act
     var guestDraftPublicId = await CreateGuestDraftAsync(
       owner.UserPublicId,
-      GuestDraftType.MiniMega,
+      DraftType.MiniMega,
       numberOfPicks: 2,
       positions: positions
     );
@@ -158,11 +169,11 @@ public sealed class CreateGuestDraftTests(GuestDraftsIntegrationTestWebAppFactor
   public async Task CreateGuestDraft_WithNumberOfPicksLessThanOrEqualToZero_ShouldReturnErrorAsync()
   {
     // Arrange
-    var command = new CreateGuestDraftCommand
+    var command = new CreateDraftCommand
     {
       OwnerUserPublicId = (await CreateUserAsync()).UserPublicId,
       Title = "Weekend Guest Draft",
-      Type = GuestDraftType.MiniMega.Name,
+      Type = DraftType.MiniMega.Name,
       NumberOfPicks = 0,
     };
 
@@ -171,18 +182,20 @@ public sealed class CreateGuestDraftTests(GuestDraftsIntegrationTestWebAppFactor
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors.Should().Contain(e => e.Code == GuestDraftErrors.NumberOfPicksMustBeGreaterThanZero.Code);
+    result
+      .Errors.Should()
+      .Contain(e => e.Code == DraftErrors.NumberOfPicksMustBeGreaterThanZero.Code);
   }
 
   [Fact]
   public async Task CreateGuestDraft_ForANonFixedType_WithNoPositions_ShouldReturnErrorAsync()
   {
     // Arrange
-    var command = new CreateGuestDraftCommand
+    var command = new CreateDraftCommand
     {
       OwnerUserPublicId = (await CreateUserAsync()).UserPublicId,
       Title = "Weekend Guest Draft",
-      Type = GuestDraftType.MiniMega.Name,
+      Type = DraftType.MiniMega.Name,
       NumberOfPicks = 2,
     };
 
@@ -191,24 +204,22 @@ public sealed class CreateGuestDraftTests(GuestDraftsIntegrationTestWebAppFactor
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors.Should().Contain(e => e.Code == GuestDraftErrors.PositionsAreRequiredForThisDraftType.Code);
+    result
+      .Errors.Should()
+      .Contain(e => e.Code == DraftErrors.PositionsAreRequiredForThisDraftType.Code);
   }
 
   [Fact]
   public async Task CreateGuestDraft_WhenPositionsHaveAGapInPickCoverage_ShouldReturnErrorAsync()
   {
     // Arrange -- NumberOfPicks=3, but positions only cover {1, 2} -- slot 3 is missing
-    var command = new CreateGuestDraftCommand
+    var command = new CreateDraftCommand
     {
       OwnerUserPublicId = (await CreateUserAsync()).UserPublicId,
       Title = "Weekend Guest Draft",
-      Type = GuestDraftType.MiniMega.Name,
+      Type = DraftType.MiniMega.Name,
       NumberOfPicks = 3,
-      Positions =
-      [
-        new() { Name = "A", Picks = [1] },
-        new() { Name = "B", Picks = [2] },
-      ],
+      Positions = [new() { Name = "A", Picks = [1] }, new() { Name = "B", Picks = [2] }],
     };
 
     // Act
@@ -216,24 +227,22 @@ public sealed class CreateGuestDraftTests(GuestDraftsIntegrationTestWebAppFactor
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors.Should().Contain(e => e.Code == GuestDraftErrors.PositionsMustExactlyCoverTheNumberOfPicks.Code);
+    result
+      .Errors.Should()
+      .Contain(e => e.Code == DraftErrors.PositionsMustExactlyCoverTheNumberOfPicks.Code);
   }
 
   [Fact]
   public async Task CreateGuestDraft_WhenPositionsOverlapWithADuplicatePickSlot_ShouldReturnErrorAsync()
   {
     // Arrange -- NumberOfPicks=2, but slot 1 is claimed by both positions
-    var command = new CreateGuestDraftCommand
+    var command = new CreateDraftCommand
     {
       OwnerUserPublicId = (await CreateUserAsync()).UserPublicId,
       Title = "Weekend Guest Draft",
-      Type = GuestDraftType.MiniMega.Name,
+      Type = DraftType.MiniMega.Name,
       NumberOfPicks = 2,
-      Positions =
-      [
-        new() { Name = "A", Picks = [1] },
-        new() { Name = "B", Picks = [1] },
-      ],
+      Positions = [new() { Name = "A", Picks = [1] }, new() { Name = "B", Picks = [1] }],
     };
 
     // Act
@@ -241,7 +250,9 @@ public sealed class CreateGuestDraftTests(GuestDraftsIntegrationTestWebAppFactor
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors.Should().Contain(e => e.Code == GuestDraftErrors.PositionsMustExactlyCoverTheNumberOfPicks.Code);
+    result
+      .Errors.Should()
+      .Contain(e => e.Code == DraftErrors.PositionsMustExactlyCoverTheNumberOfPicks.Code);
   }
 
   [Fact]

@@ -774,19 +774,24 @@ export interface IClient {
     campaigns_DeleteCampaign(): Promise<void>;
 
     /**
+     * @return No Content
+     */
+    guestDrafts_UpdateGuestDraft(body: UpdateGuestDraftRequest): Promise<void>;
+
+    /**
+     * @return OK
+     */
+    guestDrafts_GetGameplay(body: GetGuestDraftGameplayRequest): Promise<GetGuestDraftGameplayResponse>;
+
+    /**
      * @return OK
      */
     guestDrafts_SetStatus(body: SetGuestDraftStatusRequest): Promise<SetGuestDraftStatusResponse>;
 
     /**
-     * @return No Content
+     * @return OK
      */
-    guestDrafts_SetFixedBoardLayout(): Promise<void>;
-
-    /**
-     * @return No Content
-     */
-    guestDrafts_SetCustomPositions(body: SetCustomPositionsRequest): Promise<void>;
+    guestDrafts_Search(body: SearchGuestDraftsRequest): Promise<PagedResultOfGuestDraftSummaryResponse>;
 
     /**
      * @return No Content
@@ -829,19 +834,24 @@ export interface IClient {
     guestDrafts_ApplyCommissionerOverride(body: ApplyGuestDraftCommissionerOverrideRequest): Promise<void>;
 
     /**
-     * @return No Content
-     */
-    guestDrafts_InviteParticipant(body: InviteParticipantRequest): Promise<void>;
-
-    /**
      * @return OK
      */
-    guestDrafts_GetGameplay(body: GetGuestDraftGameplayRequest): Promise<GetGuestDraftGameplayResponse>;
+    guestDrafts_GetDetails(body: GetGuestDraftDetailsRequest): Promise<GuestDraftDetailResponse>;
 
     /**
      * @return Created
      */
     guestDrafts_CreateGuestDraft(body: CreateGuestDraftRequest): Promise<CreatedResponse>;
+
+    /**
+     * @return No Content
+     */
+    guestDrafts_AddParticipant(body: AddParticipantRequest): Promise<void>;
+
+    /**
+     * @return OK
+     */
+    guestDrafters_Search(body: SearchGuestDraftersRequest): Promise<GuestDrafterSummaryResponse[]>;
 
     /**
      * @return OK
@@ -9018,6 +9028,113 @@ export class Client implements IClient {
     }
 
     /**
+     * @return No Content
+     */
+    guestDrafts_UpdateGuestDraft(body: UpdateGuestDraftRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/guest-drafts/{publicId}";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGuestDrafts_UpdateGuestDraft(_response);
+        });
+    }
+
+    protected processGuestDrafts_UpdateGuestDraft(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    guestDrafts_GetGameplay(body: GetGuestDraftGameplayRequest, signal?: AbortSignal): Promise<GetGuestDraftGameplayResponse> {
+        let url_ = this.baseUrl + "/guest-drafts/{publicId}";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGuestDrafts_GetGameplay(_response);
+        });
+    }
+
+    protected processGuestDrafts_GetGameplay(response: Response): Promise<GetGuestDraftGameplayResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as GetGuestDraftGameplayResponse;
+            return result200;
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<GetGuestDraftGameplayResponse>(null as any);
+    }
+
+    /**
      * @return OK
      */
     guestDrafts_SetStatus(body: SetGuestDraftStatusRequest, signal?: AbortSignal): Promise<SetGuestDraftStatusResponse> {
@@ -9075,96 +9192,41 @@ export class Client implements IClient {
     }
 
     /**
-     * @return No Content
+     * @return OK
      */
-    guestDrafts_SetFixedBoardLayout(signal?: AbortSignal): Promise<void> {
-        let url_ = this.baseUrl + "/guest-drafts/{publicId}/board/fixed-layout";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "POST",
-            signal,
-            headers: {
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGuestDrafts_SetFixedBoardLayout(_response);
-        });
-    }
-
-    protected processGuestDrafts_SetFixedBoardLayout(response: Response): Promise<void> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 204) {
-            return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status === 400) {
-            return response.text().then((_responseText) => {
-            return throwException("Bad Request", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<void>(null as any);
-    }
-
-    /**
-     * @return No Content
-     */
-    guestDrafts_SetCustomPositions(body: SetCustomPositionsRequest, signal?: AbortSignal): Promise<void> {
-        let url_ = this.baseUrl + "/guest-drafts/{publicId}/board/custom-layout";
+    guestDrafts_Search(body: SearchGuestDraftsRequest, signal?: AbortSignal): Promise<PagedResultOfGuestDraftSummaryResponse> {
+        let url_ = this.baseUrl + "/guest-drafts/search";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
 
         let options_: RequestInit = {
             body: content_,
-            method: "POST",
+            method: "GET",
             signal,
             headers: {
-                "Content-Type": "application/json",
+                "Content-Type": "*/*",
+                "Accept": "application/json"
             }
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGuestDrafts_SetCustomPositions(_response);
+            return this.processGuestDrafts_Search(_response);
         });
     }
 
-    protected processGuestDrafts_SetCustomPositions(response: Response): Promise<void> {
+    protected processGuestDrafts_Search(response: Response): Promise<PagedResultOfGuestDraftSummaryResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 204) {
+        if (status === 200) {
             return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status === 400) {
-            return response.text().then((_responseText) => {
-            return throwException("Bad Request", status, _responseText, _headers);
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as PagedResultOfGuestDraftSummaryResponse;
+            return result200;
             });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
             });
         } else if (status === 401) {
             return response.text().then((_responseText) => {
@@ -9175,7 +9237,7 @@ export class Client implements IClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<PagedResultOfGuestDraftSummaryResponse>(null as any);
     }
 
     /**
@@ -9607,64 +9669,10 @@ export class Client implements IClient {
     }
 
     /**
-     * @return No Content
-     */
-    guestDrafts_InviteParticipant(body: InviteParticipantRequest, signal?: AbortSignal): Promise<void> {
-        let url_ = this.baseUrl + "/guest-drafts/{publicId}/participants";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            signal,
-            headers: {
-                "Content-Type": "application/json",
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGuestDrafts_InviteParticipant(_response);
-        });
-    }
-
-    protected processGuestDrafts_InviteParticipant(response: Response): Promise<void> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 204) {
-            return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status === 400) {
-            return response.text().then((_responseText) => {
-            return throwException("Bad Request", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<void>(null as any);
-    }
-
-    /**
      * @return OK
      */
-    guestDrafts_GetGameplay(body: GetGuestDraftGameplayRequest, signal?: AbortSignal): Promise<GetGuestDraftGameplayResponse> {
-        let url_ = this.baseUrl + "/guest-drafts/{publicId}";
+    guestDrafts_GetDetails(body: GetGuestDraftDetailsRequest, signal?: AbortSignal): Promise<GuestDraftDetailResponse> {
+        let url_ = this.baseUrl + "/guest-drafts/{publicId}/summary";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -9680,17 +9688,17 @@ export class Client implements IClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGuestDrafts_GetGameplay(_response);
+            return this.processGuestDrafts_GetDetails(_response);
         });
     }
 
-    protected processGuestDrafts_GetGameplay(response: Response): Promise<GetGuestDraftGameplayResponse> {
+    protected processGuestDrafts_GetDetails(response: Response): Promise<GuestDraftDetailResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as GetGuestDraftGameplayResponse;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as GuestDraftDetailResponse;
             return result200;
             });
         } else if (status === 403) {
@@ -9710,7 +9718,7 @@ export class Client implements IClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<GetGuestDraftGameplayResponse>(null as any);
+        return Promise.resolve<GuestDraftDetailResponse>(null as any);
     }
 
     /**
@@ -9764,6 +9772,109 @@ export class Client implements IClient {
             });
         }
         return Promise.resolve<CreatedResponse>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    guestDrafts_AddParticipant(body: AddParticipantRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/guest-drafts/{publicId}/participants";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGuestDrafts_AddParticipant(_response);
+        });
+    }
+
+    protected processGuestDrafts_AddParticipant(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    guestDrafters_Search(body: SearchGuestDraftersRequest, signal?: AbortSignal): Promise<GuestDrafterSummaryResponse[]> {
+        let url_ = this.baseUrl + "/guest-drafters/search";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGuestDrafters_Search(_response);
+        });
+    }
+
+    protected processGuestDrafters_Search(response: Response): Promise<GuestDrafterSummaryResponse[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as GuestDrafterSummaryResponse[];
+            return result200;
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<GuestDrafterSummaryResponse[]>(null as any);
     }
 
     /**
@@ -12634,6 +12745,13 @@ export interface AddMovieToDraftPoolRequest {
     [key: string]: any;
 }
 
+export interface AddParticipantRequest {
+    publicId?: string;
+    guestDrafterPublicId: string;
+
+    [key: string]: any;
+}
+
 export interface AddParticipantToDraftPartRequest {
     draftPartId?: string;
     participantPublicId?: string | undefined;
@@ -12768,7 +12886,7 @@ export interface AssignParticipantToDraftPositionRequest {
 export interface AssignParticipantToPositionRequest {
     publicId?: string;
     positionPublicId?: string;
-    participantPublicId: string;
+    guestDrafterPublicId: string;
 
     [key: string]: any;
 }
@@ -12889,6 +13007,7 @@ export interface BulkAddMoviesToDraftPoolRequest {
 export interface CallerContextResponse {
     isOwner?: boolean;
     isParticipant?: boolean;
+    participantId?: string | undefined;
     participantPublicId?: string | undefined;
 
     [key: string]: any;
@@ -13101,6 +13220,9 @@ export interface CreatedResponse {
 export interface CreateGuestDraftRequest {
     title: string;
     type: string;
+    draftDate?: Date | undefined;
+    numberOfPicks: number;
+    positions?: GuestDraftPositionInput[];
 
     [key: string]: any;
 }
@@ -13594,19 +13716,6 @@ export interface GameplayPickResponse {
     [key: string]: any;
 }
 
-export interface GameplayPositionResponse {
-    positionPublicId?: string;
-    name?: string;
-    picks?: number[];
-    hasBonusVeto?: boolean;
-    hasBonusVetoOverride?: boolean;
-    hasBonusFungibleToken?: boolean;
-    assignedParticipantPublicId?: string | undefined;
-    assignedParticipantDisplayName?: string | undefined;
-
-    [key: string]: any;
-}
-
 export interface GameplaySubDraftSummaryResponse {
     publicId?: string;
     index?: number;
@@ -14094,6 +14203,12 @@ export interface GetDraftVetoResponse {
     [key: string]: any;
 }
 
+export interface GetGuestDraftDetailsRequest {
+    publicId?: string;
+
+    [key: string]: any;
+}
+
 export interface GetGuestDraftGameplayRequest {
     publicId?: string;
 
@@ -14107,9 +14222,9 @@ export interface GetGuestDraftGameplayResponse {
     status?: string;
     shareToken?: string | undefined;
     callerContext?: CallerContextResponse;
-    positions?: GameplayPositionResponse[];
-    participants?: GameplayParticipantResponse[];
-    picks?: GameplayPickResponse[];
+    positions?: GuestDraftGameplayPositionResponse[];
+    participants?: GuestDraftGameplayParticipantResponse[];
+    picks?: GuestDraftGameplayPickResponse[];
 
     [key: string]: any;
 }
@@ -14483,6 +14598,138 @@ export interface GetZoomSessionTokenRequest {
     [key: string]: any;
 }
 
+export interface GuestDraftDetailPickResponse {
+    position?: number;
+    moviePublicId?: string | undefined;
+    movieTitle?: string | undefined;
+    movieYear?: string | undefined;
+    tmdbId?: number | undefined;
+    playedByDisplayName?: string | undefined;
+    wasVetoed?: boolean;
+    wasVetoOverridden?: boolean;
+    wasCommissionerOverride?: boolean;
+    isActiveOnFinalBoard?: boolean;
+    vetoedByDisplayName?: string | undefined;
+    savedByDisplayName?: string | undefined;
+
+    [key: string]: any;
+}
+
+export interface GuestDraftDetailPositionResponse {
+    name: string;
+    picks?: number[];
+    assignedParticipantDisplayName?: string | undefined;
+
+    [key: string]: any;
+}
+
+export interface GuestDraftDetailResponse {
+    publicId: string;
+    title: string;
+    type: string;
+    status: string;
+    draftDate?: Date | undefined;
+    positions?: GuestDraftDetailPositionResponse[];
+    picks?: GuestDraftDetailPickResponse[];
+
+    [key: string]: any;
+}
+
+export interface GuestDrafterSummaryResponse {
+    publicId: string;
+    displayName: string;
+
+    [key: string]: any;
+}
+
+export interface GuestDraftGameplayParticipantResponse {
+    participantId?: string;
+    participantPublicId?: string;
+    isOwner?: boolean;
+    displayName?: string;
+    vetoTokensRemaining?: number;
+    overrideTokensRemaining?: number;
+    fungibleTokensRemaining?: number;
+    commissionerOverridesUsed?: number;
+
+    [key: string]: any;
+}
+
+export interface GuestDraftGameplayPickResponse {
+    playOrder?: number;
+    position?: number;
+    moviePublicId?: string | undefined;
+    movieTitle?: string | undefined;
+    movieYear?: string | undefined;
+    tmdbId?: number | undefined;
+    imdbId?: string | undefined;
+    igdbId?: number | undefined;
+    mediaType?: number | undefined;
+    playedByParticipantId?: string;
+    playedByDisplayName?: string;
+    isRevealed?: boolean;
+    wasVetoed?: boolean;
+    wasVetoOverridden?: boolean;
+    wasCommissionerOverride?: boolean;
+    isActiveOnFinalBoard?: boolean;
+    isEligibleForRePick?: boolean;
+    vetoedByDisplayName?: string | undefined;
+    savedByDisplayName?: string | undefined;
+    wasVetoFungible?: boolean;
+    wasVetoOverrideFungible?: boolean;
+    vetoSequence?: number;
+    revealAuthorizedParticipantId?: string | undefined;
+    revealAuthorizedByDisplayName?: string | undefined;
+    vetoHistory?: GuestDraftGameplayVetoHistoryEntryResponse[];
+
+    [key: string]: any;
+}
+
+export interface GuestDraftGameplayPositionResponse {
+    positionPublicId?: string;
+    name?: string;
+    picks?: number[];
+    hasBonusVeto?: boolean;
+    hasBonusVetoOverride?: boolean;
+    hasBonusFungibleToken?: boolean;
+    assignedParticipantId?: string | undefined;
+    assignedParticipantDisplayName?: string | undefined;
+
+    [key: string]: any;
+}
+
+export interface GuestDraftGameplayVetoHistoryEntryResponse {
+    sequence?: number;
+    vetoedByDisplayName?: string;
+    wasVetoFungible?: boolean;
+    isOverridden?: boolean;
+    overriddenByDisplayName?: string | undefined;
+    wasOverrideFungible?: boolean;
+
+    [key: string]: any;
+}
+
+export interface GuestDraftPositionInput {
+    name: string;
+    picks: number[];
+    hasBonusVeto?: boolean;
+    hasBonusVetoOverride?: boolean;
+    hasBonusFungibleToken?: boolean;
+
+    [key: string]: any;
+}
+
+export interface GuestDraftSummaryResponse {
+    publicId: string;
+    title: string;
+    type: string;
+    status: string;
+    draftDate?: Date | undefined;
+    isOwner?: boolean;
+
+    [key: string]: any;
+}
+
 export interface HonorificResponse {
     honorificValue: number;
     honorificName: string;
@@ -14537,13 +14784,6 @@ export interface ImdbPersonSearchResult {
     name?: string;
     description?: string | undefined;
     photoUrl?: string | undefined;
-
-    [key: string]: any;
-}
-
-export interface InviteParticipantRequest {
-    publicId?: string;
-    inviteeUserPublicId: string;
 
     [key: string]: any;
 }
@@ -15019,6 +15259,18 @@ export interface PagedResultOfDrafterListItem {
     [key: string]: any;
 }
 
+export interface PagedResultOfGuestDraftSummaryResponse {
+    items: GuestDraftSummaryResponse[];
+    totalCount: number;
+    page: number;
+    pageSize: number;
+    totalPages?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+
+    [key: string]: any;
+}
+
 export interface PagedResultOfListDraftsResponse {
     items: ListDraftsResponse[];
     totalCount: number;
@@ -15323,16 +15575,6 @@ export interface PlaySubDraftPickRequest {
     playOrder: number;
     participantPublicId: string;
     participantKind: number;
-
-    [key: string]: any;
-}
-
-export interface PositionInput {
-    name: string;
-    picks: number[];
-    hasBonusVeto?: boolean;
-    hasBonusVetoOverride?: boolean;
-    hasBonusFungibleToken?: boolean;
 
     [key: string]: any;
 }
@@ -15728,6 +15970,20 @@ export interface SearchGamesResponse {
     [key: string]: any;
 }
 
+export interface SearchGuestDraftersRequest {
+    search?: string | undefined;
+
+    [key: string]: any;
+}
+
+export interface SearchGuestDraftsRequest {
+    page?: number;
+    pageSize?: number;
+    status?: string | undefined;
+
+    [key: string]: any;
+}
+
 export interface SearchHostRequest {
     name?: string | undefined;
     page?: number | undefined;
@@ -15957,13 +16213,6 @@ export interface SetCommunityLimitsRequest {
     draftPartId?: string;
     maxCommunityPicks?: number;
     maxCommunityVetoes?: number;
-
-    [key: string]: any;
-}
-
-export interface SetCustomPositionsRequest {
-    publicId?: string;
-    positions: PositionInput[];
 
     [key: string]: any;
 }
@@ -16284,6 +16533,17 @@ export interface UpdateDraftRequest {
     draftTypeValue?: number;
     fungibleTokenName?: string | undefined;
     isHostless?: boolean | undefined;
+
+    [key: string]: any;
+}
+
+export interface UpdateGuestDraftRequest {
+    publicId?: string;
+    title?: string | undefined;
+    draftDate?: Date | undefined;
+    type?: string | undefined;
+    numberOfPicks?: number | undefined;
+    positions?: GuestDraftPositionInput[];
 
     [key: string]: any;
 }

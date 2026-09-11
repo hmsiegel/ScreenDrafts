@@ -1,3 +1,6 @@
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Entities;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Errors;
+
 namespace ScreenDrafts.Modules.GuestDrafts.UnitTests.Entities;
 
 public class GuestDraftCommissionerOverrideTests : GuestDraftsBaseTest
@@ -10,7 +13,7 @@ public class GuestDraftCommissionerOverrideTests : GuestDraftsBaseTest
     var pick = CreatePick(guestDraft, owner);
 
     // Act
-    var result = GuestDraftCommissionerOverride.Create(pick);
+    var result = CommissionerOverride.Create(pick);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -22,10 +25,10 @@ public class GuestDraftCommissionerOverrideTests : GuestDraftsBaseTest
   public void Create_ShouldReturnFailure_WhenPickIsNull()
   {
     // Arrange & Act
-    var result = GuestDraftCommissionerOverride.Create(null!);
+    var result = CommissionerOverride.Create(null!);
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDraftErrors.PickRequiredForOverride);
+    result.Errors[0].Should().Be(DraftErrors.PickRequiredForOverride);
   }
 }

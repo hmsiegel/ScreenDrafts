@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.Picks;
+﻿namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.Picks;
 
 public sealed class PlayPickTests(GuestDraftsIntegrationTestWebAppFactory factory)
   : GuestDraftsIntegrationTest(factory)
@@ -10,7 +10,7 @@ public sealed class PlayPickTests(GuestDraftsIntegrationTestWebAppFactory factor
     var (guestDraftPublicId, owner, _) = await CreateInProgressStandardGuestDraftAsync();
 
     // Act
-    var result = await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), 7, 1);
+    var result = await PlayPickAsync(guestDraftPublicId, owner, await CreateMovieAsync(), 7, 1);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
@@ -22,16 +22,22 @@ public sealed class PlayPickTests(GuestDraftsIntegrationTestWebAppFactory factor
     // Arrange
     var owner = await CreateUserAsync();
     var other = await CreateUserAsync();
-    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, GuestDraftType.Standard);
+    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, DraftType.Standard);
     await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, owner.GuestDrafterPublicId);
     await AddParticipantAsync(guestDraftPublicId, owner.UserPublicId, other.GuestDrafterPublicId);
 
     // Act
-    var result = await PlayPickAsync(guestDraftPublicId, owner.UserPublicId, CreateMovie(), 7, 1);
+    var result = await PlayPickAsync(
+      guestDraftPublicId,
+      owner.UserPublicId,
+      await CreateMovieAsync(),
+      7,
+      1
+    );
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors.Should().Contain(e => e.Code == GuestDraftErrors.DraftNotStarted.Code);
+    result.Errors.Should().Contain(e => e.Code == DraftErrors.DraftNotStarted.Code);
   }
 
   [Fact]
@@ -43,17 +49,17 @@ public sealed class PlayPickTests(GuestDraftsIntegrationTestWebAppFactory factor
 
     for (var i = 0; i < pickSlots.Length; i++)
     {
-      await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), pickSlots[i], i + 1);
+      await PlayPickAsync(guestDraftPublicId, owner, await CreateMovieAsync(), pickSlots[i], i + 1);
     }
 
-    await SetGuestDraftStatusAsync(guestDraftPublicId, owner, GuestDraftStatusAction.Complete);
+    await SetGuestDraftStatusAsync(guestDraftPublicId, owner, DraftStatusAction.Complete);
 
     // Act
-    var result = await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), 7, 8);
+    var result = await PlayPickAsync(guestDraftPublicId, owner, await CreateMovieAsync(), 7, 8);
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors.Should().Contain(e => e.Code == GuestDraftErrors.DraftNotStarted.Code);
+    result.Errors.Should().Contain(e => e.Code == DraftErrors.DraftNotStarted.Code);
   }
 
   [Fact]
@@ -64,11 +70,17 @@ public sealed class PlayPickTests(GuestDraftsIntegrationTestWebAppFactory factor
     var stranger = await CreateUserAsync();
 
     // Act
-    var result = await PlayPickAsync(guestDraftPublicId, stranger.UserPublicId, CreateMovie(), 7, 1);
+    var result = await PlayPickAsync(
+      guestDraftPublicId,
+      stranger.UserPublicId,
+      await CreateMovieAsync(),
+      7,
+      1
+    );
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors.Should().Contain(e => e.Code == GuestDraftErrors.CallerNotAParticipant.Code);
+    result.Errors.Should().Contain(e => e.Code == DraftErrors.CallerNotAParticipant.Code);
   }
 
   [Fact]
@@ -85,7 +97,7 @@ public sealed class PlayPickTests(GuestDraftsIntegrationTestWebAppFactory factor
     result.IsFailure.Should().BeTrue();
     result
       .Errors.Should()
-      .Contain(e => e.Code == GuestDraftErrors.MovieNotFound(unregisteredMoviePublicId).Code);
+      .Contain(e => e.Code == DraftErrors.MovieNotFound(unregisteredMoviePublicId).Code);
   }
 
   [Fact]
@@ -93,7 +105,7 @@ public sealed class PlayPickTests(GuestDraftsIntegrationTestWebAppFactory factor
   {
     // Arrange
     var (guestDraftPublicId, owner, _) = await CreateInProgressStandardGuestDraftAsync();
-    var movie = CreateMovie();
+    var movie = await CreateMovieAsync();
     await PlayPickAsync(guestDraftPublicId, owner, movie, 7, 1);
 
     // Act -- different position, same movie
@@ -101,7 +113,7 @@ public sealed class PlayPickTests(GuestDraftsIntegrationTestWebAppFactory factor
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors.Should().Contain(e => e.Code == GuestDraftErrors.MovieAlreadyPicked.Code);
+    result.Errors.Should().Contain(e => e.Code == DraftErrors.MovieAlreadyPicked.Code);
   }
 
   [Fact]
@@ -109,16 +121,14 @@ public sealed class PlayPickTests(GuestDraftsIntegrationTestWebAppFactory factor
   {
     // Arrange
     var (guestDraftPublicId, owner, _) = await CreateInProgressStandardGuestDraftAsync();
-    await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), 7, 1);
+    await PlayPickAsync(guestDraftPublicId, owner, await CreateMovieAsync(), 7, 1);
 
     // Act -- same position, different movie
-    var result = await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), 7, 2);
+    var result = await PlayPickAsync(guestDraftPublicId, owner, await CreateMovieAsync(), 7, 2);
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result
-      .Errors.Should()
-      .Contain(e => e.Code == GuestDraftErrors.PickPositionAlreadyExists(7).Code);
+    result.Errors.Should().Contain(e => e.Code == DraftErrors.PickPositionAlreadyExists(7).Code);
   }
 
   /// <summary>
@@ -130,7 +140,7 @@ public sealed class PlayPickTests(GuestDraftsIntegrationTestWebAppFactory factor
   {
     // Arrange
     var (guestDraftPublicId, owner, other) = await CreateInProgressStandardGuestDraftAsync();
-    var movie = CreateMovie();
+    var movie = await CreateMovieAsync();
     await PlayPickAsync(guestDraftPublicId, owner, movie, 7, 1);
     await ApplyVetoAsync(guestDraftPublicId, 1, other);
 
@@ -148,7 +158,7 @@ public sealed class PlayPickTests(GuestDraftsIntegrationTestWebAppFactory factor
     var (guestDraftPublicId, owner, _) = await CreateInProgressStandardGuestDraftAsync();
 
     // Act
-    var result = await PlayPickAsync(guestDraftPublicId, owner, CreateMovie(), 7, 0);
+    var result = await PlayPickAsync(guestDraftPublicId, owner, await CreateMovieAsync(), 7, 0);
 
     // Assert
     result.IsFailure.Should().BeTrue();

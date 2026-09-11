@@ -1,49 +1,40 @@
-﻿using ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafters;
-using ScreenDrafts.Modules.GuestDrafts.Domain.GuestDrafterTeams;
-
-namespace ScreenDrafts.Modules.GuestDrafts.Infrastructure.Converters;
+﻿namespace ScreenDrafts.Modules.GuestDrafts.Infrastructure.Converters;
 
 internal static class IdConverters
 {
-  public static ValueConverter<GuestDraftId, Guid> GuestDraftIdConverter =>
-    new(v => v.Value, v => GuestDraftId.Create(v));
+  public static ValueConverter<DraftId, Guid> DraftIdConverter =>
+    new(v => v.Value, v => DraftId.Create(v));
 
-  public static ValueConverter<GuestDraftParticipantId, Guid> GuestDraftParticipantIdConverter =>
-    new(v => v.Value, v => GuestDraftParticipantId.Create(v));
+  public static ValueConverter<DraftParticipantId, Guid> DraftParticipantIdConverter =>
+    new(v => v.Value, v => DraftParticipantId.Create(v));
 
-  public static ValueConverter<
-    GuestDraftParticipantId?,
-    Guid?
-  > NullableGuestDraftParticipantIdConverter =>
+  public static ValueConverter<DraftParticipantId?, Guid?> NullableDraftParticipantIdConverter =>
     new(
       v => v == null ? null : v.Value,
-      v => v == null ? null : GuestDraftParticipantId.Create(v.Value)
+      v => v == null ? null : DraftParticipantId.Create(v.Value)
     );
 
-  public static ValueConverter<GuestDraftGameBoardId, Guid> GuestDraftGameBoardIdConverter =>
-    new(v => v.Value, v => GuestDraftGameBoardId.Create(v));
+  public static ValueConverter<GameBoardId, Guid> GameBoardIdConverter =>
+    new(v => v.Value, v => GameBoardId.Create(v));
 
-  public static ValueConverter<GuestDraftPositionId, Guid> GuestDraftPositionIdConverter =>
-    new(v => v.Value, v => GuestDraftPositionId.Create(v));
+  public static ValueConverter<DraftPositionId, Guid> DraftPositionIdConverter =>
+    new(v => v.Value, v => DraftPositionId.Create(v));
 
-  public static ValueConverter<GuestDraftPickId, Guid> GuestDraftPickIdConverter =>
-    new(v => v.Value, v => GuestDraftPickId.Create(v));
+  public static ValueConverter<PickId, Guid> PickIdConverter =>
+    new(v => v.Value, v => PickId.Create(v));
 
-  public static ValueConverter<GuestDraftVetoId, Guid> GuestDraftVetoIdConverter =>
-    new(v => v.Value, v => GuestDraftVetoId.Create(v));
+  public static ValueConverter<VetoId, Guid> VetoIdConverter =>
+    new(v => v.Value, v => VetoId.Create(v));
 
-  public static ValueConverter<GuestDraftVetoOverrideId, Guid> GuestDraftVetoOverrideIdConverter =>
-    new(v => v.Value, v => GuestDraftVetoOverrideId.Create(v));
+  public static ValueConverter<VetoOverrideId, Guid> VetoOverrideIdConverter =>
+    new(v => v.Value, v => VetoOverrideId.Create(v));
 
-  public static ValueConverter<
-    GuestDraftCommissionerOverrideId,
-    Guid
-  > GuestDraftCommissionerOverrideIdConverter =>
-    new(v => v.Value, v => GuestDraftCommissionerOverrideId.Create(v));
+  public static ValueConverter<CommissionerOverrideId, Guid> CommissionerOverrideIdConverter =>
+    new(v => v.Value, v => CommissionerOverrideId.Create(v));
 
-  public static ValueConverter<GuestDrafterId, Guid> GuestDrafterIdConverter =>
-    new(v => v.Value, v => GuestDrafterId.Create(v));
+  public static ValueConverter<DrafterId, Guid> DrafterIdConverter =>
+    new(v => v.Value, v => DrafterId.Create(v));
 
-  public static ValueConverter<GuestDrafterTeamId, Guid> GuestDrafterTeamIdConverter =>
-    new(v => v.Value, v => GuestDrafterTeamId.Create(v));
+  public static ValueConverter<DrafterTeamId, Guid> DrafterTeamIdConverter =>
+    new(v => v.Value, v => DrafterTeamId.Create(v));
 }

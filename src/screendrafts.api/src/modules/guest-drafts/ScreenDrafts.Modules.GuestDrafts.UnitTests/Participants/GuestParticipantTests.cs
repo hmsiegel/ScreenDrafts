@@ -1,3 +1,6 @@
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafters;
+using ScreenDrafts.Modules.GuestDrafts.Domain.DrafterTeams;
+
 namespace ScreenDrafts.Modules.GuestDrafts.UnitTests.Participants;
 
 public class GuestParticipantTests : GuestDraftsBaseTest
@@ -6,14 +9,14 @@ public class GuestParticipantTests : GuestDraftsBaseTest
   public void From_GuestDrafterId_ShouldProduceDrafterKind()
   {
     // Arrange
-    var id = GuestDrafterId.CreateUnique();
+    var id = DrafterId.CreateUnique();
 
     // Act
-    var participant = GuestParticipant.From(id);
+    var participant = Participant.From(id);
 
     // Assert
     participant.Value.Should().Be(id.Value);
-    participant.Kind.Should().Be(GuestParticipantKind.Drafter);
+    participant.Kind.Should().Be(ParticipantKind.Drafter);
     participant.IsDrafter.Should().BeTrue();
     participant.IsTeam.Should().BeFalse();
   }
@@ -22,14 +25,14 @@ public class GuestParticipantTests : GuestDraftsBaseTest
   public void From_GuestDrafterTeamId_ShouldProduceTeamKind()
   {
     // Arrange
-    var id = GuestDrafterTeamId.CreateUnique();
+    var id = DrafterTeamId.CreateUnique();
 
     // Act
-    var participant = GuestParticipant.From(id);
+    var participant = Participant.From(id);
 
     // Assert
     participant.Value.Should().Be(id.Value);
-    participant.Kind.Should().Be(GuestParticipantKind.Team);
+    participant.Kind.Should().Be(ParticipantKind.Team);
     participant.IsTeam.Should().BeTrue();
     participant.IsDrafter.Should().BeFalse();
   }
@@ -38,7 +41,7 @@ public class GuestParticipantTests : GuestDraftsBaseTest
   public void HasNoValue_ShouldReturnTrue_WhenValueIsEmpty()
   {
     // Arrange
-    var participant = new GuestParticipant(Guid.Empty, GuestParticipantKind.Drafter);
+    var participant = new Participant(Guid.Empty, ParticipantKind.Drafter);
 
     // Act & Assert
     participant.HasNoValue.Should().BeTrue();
@@ -48,7 +51,7 @@ public class GuestParticipantTests : GuestDraftsBaseTest
   public void HasNoValue_ShouldReturnFalse_WhenValueIsNotEmpty()
   {
     // Arrange
-    var participant = GuestParticipant.From(GuestDrafterId.CreateUnique());
+    var participant = Participant.From(DrafterId.CreateUnique());
 
     // Act & Assert
     participant.HasNoValue.Should().BeFalse();
@@ -58,8 +61,8 @@ public class GuestParticipantTests : GuestDraftsBaseTest
   public void AsGuestDrafterId_ShouldReturnTheId_WhenKindIsDrafter()
   {
     // Arrange
-    var id = GuestDrafterId.CreateUnique();
-    var participant = GuestParticipant.From(id);
+    var id = DrafterId.CreateUnique();
+    var participant = Participant.From(id);
 
     // Act & Assert
     participant.AsGuestDrafterId().Should().Be(id);
@@ -69,7 +72,7 @@ public class GuestParticipantTests : GuestDraftsBaseTest
   public void AsGuestDrafterId_ShouldThrow_WhenKindIsTeam()
   {
     // Arrange
-    var participant = GuestParticipant.From(GuestDrafterTeamId.CreateUnique());
+    var participant = Participant.From(DrafterTeamId.CreateUnique());
 
     // Act
     Action act = () => participant.AsGuestDrafterId();
@@ -82,8 +85,8 @@ public class GuestParticipantTests : GuestDraftsBaseTest
   public void AsGuestDrafterTeamId_ShouldReturnTheId_WhenKindIsTeam()
   {
     // Arrange
-    var id = GuestDrafterTeamId.CreateUnique();
-    var participant = GuestParticipant.From(id);
+    var id = DrafterTeamId.CreateUnique();
+    var participant = Participant.From(id);
 
     // Act & Assert
     participant.AsGuestDrafterTeamId().Should().Be(id);
@@ -93,7 +96,7 @@ public class GuestParticipantTests : GuestDraftsBaseTest
   public void AsGuestDrafterTeamId_ShouldThrow_WhenKindIsDrafter()
   {
     // Arrange
-    var participant = GuestParticipant.From(GuestDrafterId.CreateUnique());
+    var participant = Participant.From(DrafterId.CreateUnique());
 
     // Act
     Action act = () => participant.AsGuestDrafterTeamId();
@@ -106,21 +109,21 @@ public class GuestParticipantTests : GuestDraftsBaseTest
   public void Validate_ShouldReturnFailure_WhenValueIsEmpty()
   {
     // Arrange
-    var participant = new GuestParticipant(Guid.Empty, GuestParticipantKind.Drafter);
+    var participant = new Participant(Guid.Empty, ParticipantKind.Drafter);
 
     // Act
     var result = participant.Validate();
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestParticipantErrors.EmptyValue);
+    result.Errors[0].Should().Be(ParticipantErrors.EmptyValue);
   }
 
   [Fact]
   public void Validate_ShouldSucceed_WhenValueAndKindAreValid()
   {
     // Arrange
-    var participant = GuestParticipant.From(GuestDrafterId.CreateUnique());
+    var participant = Participant.From(DrafterId.CreateUnique());
 
     // Act
     var result = participant.Validate();

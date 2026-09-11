@@ -132,7 +132,7 @@ function PartActionButton({
     if (isFinished) {
       return (
         <Link
-          href={`/draft-parts/${draftPartPublicId}/live`}
+          href={`/drafts/${draftPublicId}`}
           className="border border-sd-ink/20 text-sd-ink font-oswald font-medium uppercase tracking-wide text-xs px-3 py-1.5 hover:bg-sd-ink/5 shrink-0"
         >
           View
@@ -201,7 +201,7 @@ function PartActionButton({
   if (isFinished) {
     return (
       <Link
-        href={`/draft-parts/${draftPartPublicId}/live`}
+        href={`/drafts/${draftPublicId}`}
         className="border border-sd-ink/20 text-sd-ink font-oswald font-medium uppercase tracking-wide text-xs px-3 py-1.5 hover:bg-sd-ink/5 shrink-0"
       >
         View
@@ -238,7 +238,7 @@ function CompletedDraftCard({ draft }: { draft: MyDraftSummary }) {
 
   return (
     <Link
-      href={`/my-drafts/${draft.draftPublicId ?? ""}`}
+      href={`/drafts/${draft.draftPublicId ?? ""}`}
       className="block bg-white border border-sd-ink/10 hover:border-sd-ink/30 transition-colors"
     >
       <div className="flex items-center gap-3 px-4 py-3 border-b border-sd-ink/10">

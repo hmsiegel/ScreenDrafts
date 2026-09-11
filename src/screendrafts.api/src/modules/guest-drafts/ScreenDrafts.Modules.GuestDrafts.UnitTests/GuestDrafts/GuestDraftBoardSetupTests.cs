@@ -1,3 +1,6 @@
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Enums;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Errors;
+
 namespace ScreenDrafts.Modules.GuestDrafts.UnitTests.GuestDrafts;
 
 public class GuestDraftBoardSetupTests : GuestDraftsBaseTest
@@ -9,7 +12,7 @@ public class GuestDraftBoardSetupTests : GuestDraftsBaseTest
   {
     // Arrange -- the fixed Standard template always produces 2 positions, so the
     // board needs exactly 2 participants at apply time.
-    var guestDraft = CreateGuestDraft(GuestDraftType.Standard);
+    var guestDraft = CreateGuestDraft(DraftType.Standard);
     AddParticipant(guestDraft, isOwner: true);
     AddParticipant(guestDraft);
 
@@ -29,7 +32,7 @@ public class GuestDraftBoardSetupTests : GuestDraftsBaseTest
   public void UseFixedBoardLayout_ShouldApplyMiniSuperTemplateExactly_ForMiniSuperDraftType()
   {
     // Arrange
-    var guestDraft = CreateGuestDraft(GuestDraftType.MiniSuper);
+    var guestDraft = CreateGuestDraft(DraftType.MiniSuper);
     AddParticipant(guestDraft, isOwner: true);
     AddParticipant(guestDraft);
 
@@ -46,7 +49,9 @@ public class GuestDraftBoardSetupTests : GuestDraftsBaseTest
 
   [Theory]
   [MemberData(nameof(NonFixedDraftTypes))]
-  public void UseFixedBoardLayout_ShouldReturnFailure_ForNonFixedDraftTypes(GuestDraftType guestDraftType)
+  public void UseFixedBoardLayout_ShouldReturnFailure_ForNonFixedDraftTypes(
+    DraftType guestDraftType
+  )
   {
     ArgumentNullException.ThrowIfNull(guestDraftType);
 
@@ -59,7 +64,7 @@ public class GuestDraftBoardSetupTests : GuestDraftsBaseTest
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDraftErrors.DraftTypeDoesNotHaveAFixedLayout(guestDraftType.Name));
+    result.Errors[0].Should().Be(DraftErrors.DraftTypeDoesNotHaveAFixedLayout(guestDraftType.Name));
     guestDraft.GameBoard.Should().BeNull();
   }
 
@@ -74,16 +79,11 @@ public class GuestDraftBoardSetupTests : GuestDraftsBaseTest
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDraftErrors.CannotChangeBoardAfterStart);
+    result.Errors[0].Should().Be(DraftErrors.CannotChangeBoardAfterStart);
   }
 
-  public static TheoryData<GuestDraftType> NonFixedDraftTypes() =>
-    new()
-    {
-      GuestDraftType.MiniMega,
-      GuestDraftType.Super,
-      GuestDraftType.Mega,
-    };
+  public static TheoryData<DraftType> NonFixedDraftTypes() =>
+    new() { DraftType.MiniMega, DraftType.Super, DraftType.Mega };
 
   [Fact]
   public void UseFixedBoardLayout_ShouldSucceed_WhenCalledImmediatelyAfterCreateWithZeroParticipants()
@@ -92,7 +92,7 @@ public class GuestDraftBoardSetupTests : GuestDraftsBaseTest
     // participantCount, which was impossible to satisfy at board-setup time now that
     // Create no longer auto-adds any participants. The participantCount parameter
     // was removed entirely; board setup must succeed with zero participants added.
-    var guestDraft = CreateGuestDraft(GuestDraftType.Standard);
+    var guestDraft = CreateGuestDraft(DraftType.Standard);
 
     // Act
     var result = guestDraft.UseFixedBoardLayout(GeneratePositionPublicId);
@@ -110,7 +110,7 @@ public class GuestDraftBoardSetupTests : GuestDraftsBaseTest
   {
     // Arrange -- 2 positions supplied below, so the board needs exactly 2
     // participants at apply time.
-    var guestDraft = CreateGuestDraft(GuestDraftType.MiniMega);
+    var guestDraft = CreateGuestDraft(DraftType.MiniMega);
     AddParticipant(guestDraft, isOwner: true);
     AddParticipant(guestDraft);
     var positions = TwoCustomPositions();
@@ -125,7 +125,7 @@ public class GuestDraftBoardSetupTests : GuestDraftsBaseTest
 
   [Theory]
   [MemberData(nameof(FixedDraftTypes))]
-  public void SetCustomPositions_ShouldReturnFailure_ForFixedDraftTypes(GuestDraftType guestDraftType)
+  public void SetCustomPositions_ShouldReturnFailure_ForFixedDraftTypes(DraftType guestDraftType)
   {
     ArgumentNullException.ThrowIfNull(guestDraftType);
 
@@ -140,15 +140,11 @@ public class GuestDraftBoardSetupTests : GuestDraftsBaseTest
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDraftErrors.DraftTypeHasAFixedLayout(guestDraftType.Name));
+    result.Errors[0].Should().Be(DraftErrors.DraftTypeHasAFixedLayout(guestDraftType.Name));
   }
 
-  public static TheoryData<GuestDraftType> FixedDraftTypes() =>
-    new()
-    {
-      GuestDraftType.Standard,
-      GuestDraftType.MiniSuper,
-    };
+  public static TheoryData<DraftType> FixedDraftTypes() =>
+    new() { DraftType.Standard, DraftType.MiniSuper };
 
   [Fact]
   public void SetCustomPositions_ShouldReturnFailure_WhenStatusIsNotCreated()
@@ -161,7 +157,7 @@ public class GuestDraftBoardSetupTests : GuestDraftsBaseTest
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDraftErrors.CannotChangeBoardAfterStart);
+    result.Errors[0].Should().Be(DraftErrors.CannotChangeBoardAfterStart);
   }
 
   [Fact]
@@ -171,7 +167,7 @@ public class GuestDraftBoardSetupTests : GuestDraftsBaseTest
     // participantCount, which was impossible to satisfy at board-setup time now that
     // Create no longer auto-adds any participants. The participantCount parameter
     // was removed entirely; board setup must succeed with zero participants added.
-    var guestDraft = CreateGuestDraft(GuestDraftType.MiniMega);
+    var guestDraft = CreateGuestDraft(DraftType.MiniMega);
 
     // Act
     var result = guestDraft.SetCustomPositions(TwoCustomPositions(), GeneratePositionPublicId);
@@ -188,22 +184,24 @@ public class GuestDraftBoardSetupTests : GuestDraftsBaseTest
     // Arrange -- 2 positions supplied below; participant count must match (2) for
     // the duplicate-pick-slots check to be reached at all, rather than tripping
     // InvalidNumberOfPositions first.
-    var guestDraft = CreateGuestDraft(GuestDraftType.MiniMega);
+    var guestDraft = CreateGuestDraft(DraftType.MiniMega);
     AddParticipant(guestDraft, isOwner: true);
     AddParticipant(guestDraft);
 
-    List<(string Name, IReadOnlyList<int> Picks, bool HasBonusVeto, bool HasBonusVetoOverride, bool HasBonusFungibleToken)> positions =
-    [
-      ("A", [1], false, false, false),
-      ("B", [1], false, false, false),
-    ];
+    List<(
+      string Name,
+      IReadOnlyList<int> Picks,
+      bool HasBonusVeto,
+      bool HasBonusVetoOverride,
+      bool HasBonusFungibleToken
+    )> positions = [("A", [1], false, false, false), ("B", [1], false, false, false)];
 
     // Act
     var result = guestDraft.SetCustomPositions(positions, GeneratePositionPublicId);
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDraftErrors.DuplicatePickSlots);
+    result.Errors[0].Should().Be(DraftErrors.DuplicatePickSlots);
   }
 
   // ── AssignParticipantToPosition ──────────────────────────────────────────
@@ -212,7 +210,7 @@ public class GuestDraftBoardSetupTests : GuestDraftsBaseTest
   public void AssignParticipantToPosition_ShouldSucceed_WhenPositionIsUnassignedAndBelongsToTheBoard()
   {
     // Arrange
-    var guestDraft = CreateGuestDraft(GuestDraftType.Standard);
+    var guestDraft = CreateGuestDraft(DraftType.Standard);
     var owner = AddParticipant(guestDraft, isOwner: true);
     AddParticipant(guestDraft);
     guestDraft.UseFixedBoardLayout(GeneratePositionPublicId);
@@ -230,7 +228,7 @@ public class GuestDraftBoardSetupTests : GuestDraftsBaseTest
   public void AssignParticipantToPosition_ShouldReturnFailure_WhenPositionIsAlreadyAssigned()
   {
     // Arrange
-    var guestDraft = CreateGuestDraft(GuestDraftType.Standard);
+    var guestDraft = CreateGuestDraft(DraftType.Standard);
     var owner = AddParticipant(guestDraft, isOwner: true);
     var other = AddParticipant(guestDraft);
     guestDraft.UseFixedBoardLayout(GeneratePositionPublicId);
@@ -242,19 +240,19 @@ public class GuestDraftBoardSetupTests : GuestDraftsBaseTest
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDraftErrors.PositionAlreadyAssigned);
+    result.Errors[0].Should().Be(DraftErrors.PositionAlreadyAssigned);
   }
 
   [Fact]
   public void AssignParticipantToPosition_ShouldReturnFailure_WhenPositionBelongsToADifferentBoard()
   {
     // Arrange
-    var guestDraft = CreateGuestDraft(GuestDraftType.Standard);
+    var guestDraft = CreateGuestDraft(DraftType.Standard);
     var owner = AddParticipant(guestDraft, isOwner: true);
     AddParticipant(guestDraft);
     guestDraft.UseFixedBoardLayout(GeneratePositionPublicId);
 
-    var otherGuestDraft = CreateGuestDraft(GuestDraftType.Standard);
+    var otherGuestDraft = CreateGuestDraft(DraftType.Standard);
     AddParticipant(otherGuestDraft, isOwner: true);
     AddParticipant(otherGuestDraft);
     otherGuestDraft.UseFixedBoardLayout(GeneratePositionPublicId);
@@ -265,14 +263,14 @@ public class GuestDraftBoardSetupTests : GuestDraftsBaseTest
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDraftErrors.PositionDoesNotBelongToThisBoard);
+    result.Errors[0].Should().Be(DraftErrors.PositionDoesNotBelongToThisBoard);
   }
 
   [Fact]
   public void AssignParticipantToPosition_ShouldReturnFailure_WhenParticipantIsNotInTheDraft()
   {
     // Arrange
-    var guestDraft = CreateGuestDraft(GuestDraftType.Standard);
+    var guestDraft = CreateGuestDraft(DraftType.Standard);
     AddParticipant(guestDraft, isOwner: true);
     AddParticipant(guestDraft);
     guestDraft.UseFixedBoardLayout(GeneratePositionPublicId);
@@ -284,22 +282,24 @@ public class GuestDraftBoardSetupTests : GuestDraftsBaseTest
 
     // Assert
     result.IsFailure.Should().BeTrue();
-    result.Errors[0].Should().Be(GuestDraftErrors.ParticipantNotFound(strangerId));
+    result.Errors[0].Should().Be(DraftErrors.ParticipantNotFound(strangerId));
   }
 
   [Fact]
   public void AssignParticipantToPosition_ShouldGrantBonusVeto_WhenPositionHasBonusVeto()
   {
     // Arrange
-    var guestDraft = CreateGuestDraft(GuestDraftType.MiniMega);
+    var guestDraft = CreateGuestDraft(DraftType.MiniMega);
     var owner = AddParticipant(guestDraft, isOwner: true);
     AddParticipant(guestDraft);
 
-    List<(string Name, IReadOnlyList<int> Picks, bool HasBonusVeto, bool HasBonusVetoOverride, bool HasBonusFungibleToken)> positions =
-    [
-      ("A", [1], true, false, false),
-      ("B", [2], false, false, false),
-    ];
+    List<(
+      string Name,
+      IReadOnlyList<int> Picks,
+      bool HasBonusVeto,
+      bool HasBonusVetoOverride,
+      bool HasBonusFungibleToken
+    )> positions = [("A", [1], true, false, false), ("B", [2], false, false, false)];
     guestDraft.SetCustomPositions(positions, GeneratePositionPublicId);
     var positionA = guestDraft.GameBoard!.Positions.Single(p => p.Name == "A");
 
@@ -316,15 +316,17 @@ public class GuestDraftBoardSetupTests : GuestDraftsBaseTest
   public void AssignParticipantToPosition_ShouldGrantBonusVetoOverride_WhenPositionHasBonusVetoOverride()
   {
     // Arrange
-    var guestDraft = CreateGuestDraft(GuestDraftType.MiniMega);
+    var guestDraft = CreateGuestDraft(DraftType.MiniMega);
     var owner = AddParticipant(guestDraft, isOwner: true);
     AddParticipant(guestDraft);
 
-    List<(string Name, IReadOnlyList<int> Picks, bool HasBonusVeto, bool HasBonusVetoOverride, bool HasBonusFungibleToken)> positions =
-    [
-      ("A", [1], false, true, false),
-      ("B", [2], false, false, false),
-    ];
+    List<(
+      string Name,
+      IReadOnlyList<int> Picks,
+      bool HasBonusVeto,
+      bool HasBonusVetoOverride,
+      bool HasBonusFungibleToken
+    )> positions = [("A", [1], false, true, false), ("B", [2], false, false, false)];
     guestDraft.SetCustomPositions(positions, GeneratePositionPublicId);
     var positionA = guestDraft.GameBoard!.Positions.Single(p => p.Name == "A");
 
@@ -341,15 +343,17 @@ public class GuestDraftBoardSetupTests : GuestDraftsBaseTest
   public void AssignParticipantToPosition_ShouldGrantBonusFungibleToken_WhenPositionHasBonusFungibleToken()
   {
     // Arrange
-    var guestDraft = CreateGuestDraft(GuestDraftType.MiniMega);
+    var guestDraft = CreateGuestDraft(DraftType.MiniMega);
     var owner = AddParticipant(guestDraft, isOwner: true);
     AddParticipant(guestDraft);
 
-    List<(string Name, IReadOnlyList<int> Picks, bool HasBonusVeto, bool HasBonusVetoOverride, bool HasBonusFungibleToken)> positions =
-    [
-      ("A", [1], false, false, true),
-      ("B", [2], false, false, false),
-    ];
+    List<(
+      string Name,
+      IReadOnlyList<int> Picks,
+      bool HasBonusVeto,
+      bool HasBonusVetoOverride,
+      bool HasBonusFungibleToken
+    )> positions = [("A", [1], false, false, true), ("B", [2], false, false, false)];
     guestDraft.SetCustomPositions(positions, GeneratePositionPublicId);
     var positionA = guestDraft.GameBoard!.Positions.Single(p => p.Name == "A");
 
@@ -362,10 +366,11 @@ public class GuestDraftBoardSetupTests : GuestDraftsBaseTest
     owner.AwardedVetoOverrides.Should().Be(0);
   }
 
-  private static List<(string Name, IReadOnlyList<int> Picks, bool HasBonusVeto, bool HasBonusVetoOverride, bool HasBonusFungibleToken)>
-    TwoCustomPositions() =>
-    [
-      ("A", [1], false, false, false),
-      ("B", [2], false, false, false),
-    ];
+  private static List<(
+    string Name,
+    IReadOnlyList<int> Picks,
+    bool HasBonusVeto,
+    bool HasBonusVetoOverride,
+    bool HasBonusFungibleToken
+  )> TwoCustomPositions() => [("A", [1], false, false, false), ("B", [2], false, false, false)];
 }

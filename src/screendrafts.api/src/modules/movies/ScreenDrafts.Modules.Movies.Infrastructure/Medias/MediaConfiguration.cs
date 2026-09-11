@@ -25,7 +25,10 @@ internal sealed class MediaConfiguration : IEntityTypeConfiguration<Media>
 
     builder.Property(m => m.TmdbId);
 
-    builder.HasIndex(m => m.TmdbId);
+    builder
+      .HasIndex(m => new { m.TmdbId, m.MediaType })
+      .IsUnique()
+      .HasFilter("tmdb_id IS NOT NULL");
 
     builder.Property(m => m.IgdbId);
 

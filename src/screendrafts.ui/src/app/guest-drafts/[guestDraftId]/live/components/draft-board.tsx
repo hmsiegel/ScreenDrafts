@@ -2,14 +2,14 @@
 'use client';
 
 import { useGuestDraftLive } from '../guest-draft-context';
-import type { GameplayPickResponse } from '@/lib/dto';
+import type { GuestDraftGameplayPickResponse } from '@/lib/dto';
 
 interface DraftBoardProps {
   activeSlot?: number | null; // highlighted slot (drafter's current turn)
   // Render action buttons (veto / override / commissioner-override / undo)
   // for the most recently played pick at a given slot. Only called for the
   // single most recent play_order in the whole draft.
-  renderActions?: (pick: GameplayPickResponse) => React.ReactNode;
+  renderActions?: (pick: GuestDraftGameplayPickResponse) => React.ReactNode;
 }
 
 export function DraftBoard({ activeSlot, renderActions }: DraftBoardProps) {
@@ -21,7 +21,7 @@ export function DraftBoard({ activeSlot, renderActions }: DraftBoardProps) {
     (_, i) => maxPosition - i,
   );
 
-  const mostRecentPick = picks.reduce<GameplayPickResponse | null>(
+  const mostRecentPick = picks.reduce<GuestDraftGameplayPickResponse | null>(
     (acc, p) => (!acc || (p.playOrder ?? 0) > (acc.playOrder ?? 0) ? p : acc),
     null,
   );
@@ -29,18 +29,19 @@ export function DraftBoard({ activeSlot, renderActions }: DraftBoardProps) {
   return (
     <div className="grid gap-px bg-white/10 border border-white/10">
       {slots.map((slot) => {
-        // A slot can hold either a landed pick (counts toward the board) or
-        // the most recent pick even if vetoed-and-not-saved, so whoever can
-        // act on it (override / undo) still sees it right where it happened.
+        // isActiveOnFinalBoard/isEligibleForRePick now come straight from the
+        // response instead of being re-derived from wasVetoed/wasVetoOverridden/
+        // wasCommissionerOverride locally — the backend already applies the
+        // Landed formula (see GuestDraftGameplayPickResponse's remarks).
         const landedPick = picks.find(
-          (p) =>
-            p.boardPosition === slot &&
-            !p.wasCommissionerOverride &&
-            (!p.wasVetoed || p.wasVetoOverridden),
+          (p) => p.position === slot && p.isActiveOnFinalBoard,
         );
+        // A slot can also hold the most recent pick even if vetoed-and-not-
+        // saved, so whoever can act on it (override/undo) still sees it right
+        // where it happened.
         const vetoedRecentPick =
           !landedPick &&
-          mostRecentPick?.boardPosition === slot &&
+          mostRecentPick?.position === slot &&
           mostRecentPick.wasVetoed &&
           !mostRecentPick.wasVetoOverridden
             ? mostRecentPick
@@ -48,7 +49,8 @@ export function DraftBoard({ activeSlot, renderActions }: DraftBoardProps) {
 
         const displayPick = landedPick ?? vetoedRecentPick;
         const isActive = activeSlot === slot;
-        const isMostRecent = mostRecentPick?.boardPosition === slot && mostRecentPick.playOrder === displayPick?.playOrder;
+        const isMostRecent =
+          mostRecentPick?.position === slot && mostRecentPick.playOrder === displayPick?.playOrder;
 
         return (
           <div
@@ -63,22 +65,39 @@ export function DraftBoard({ activeSlot, renderActions }: DraftBoardProps) {
             {displayPick ? (
               <>
                 <div className="flex-1 min-w-0">
-                  <a
-                    href={`https://www.themoviedb.org/movie/${displayPick.tmdbId}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`font-oswald transition-colors truncate block ${
-                      displayPick.wasVetoed && !displayPick.wasVetoOverridden
-                        ? 'line-through text-white/30 hover:text-white/50'
-                        : 'text-sd-paper hover:text-light-blue'
-                    }`}
-                  >
-                    {displayPick.movieTitle}
-                    {displayPick.movieYear && (
-                      <span className="text-white/40 ml-2 text-sm">({displayPick.movieYear})</span>
-                    )}
-                  </a>
-                  <span className="text-xs text-white/40 font-mono">{displayPick.playedByName}</span>
+                  {displayPick.tmdbId ? (
+                    <a
+                      href={`https://www.themoviedb.org/movie/${displayPick.tmdbId}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`font-oswald transition-colors truncate block ${
+                        displayPick.wasVetoed && !displayPick.wasVetoOverridden
+                          ? 'line-through text-white/30 hover:text-white/50'
+                          : 'text-sd-paper hover:text-light-blue'
+                      }`}
+                    >
+                      {displayPick.movieTitle}
+                      {displayPick.movieYear && (
+                        <span className="text-white/40 ml-2 text-sm">({displayPick.movieYear})</span>
+                      )}
+                    </a>
+                  ) : (
+                    <span
+                      className={`font-oswald truncate block ${
+                        displayPick.wasVetoed && !displayPick.wasVetoOverridden
+                          ? 'line-through text-white/30'
+                          : 'text-sd-paper'
+                      }`}
+                    >
+                      {displayPick.movieTitle}
+                      {displayPick.movieYear && (
+                        <span className="text-white/40 ml-2 text-sm">({displayPick.movieYear})</span>
+                      )}
+                    </span>
+                  )}
+                  <span className="text-xs text-white/40 font-mono">
+                    {displayPick.playedByDisplayName}
+                  </span>
                   {displayPick.wasVetoOverridden && (
                     <span className="ml-2 text-[10px] bg-light-blue/20 text-light-blue px-1.5 py-0.5 font-oswald tracking-wider">
                       SAVED

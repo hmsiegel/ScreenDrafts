@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafts.UpdateGuestDraft;
-
-namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.GuestDrafts;
+﻿namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.GuestDrafts;
 
 /// <summary>
 /// Proves the two things flagged as unverified for ChangeType/ClearBoard:
@@ -28,7 +26,7 @@ public sealed class ChangeGuestDraftTypeTests(GuestDraftsIntegrationTestWebAppFa
     // "Bonus" carries all three award flags so the revocation loop has to fire
     // for every kind, not just one -- a partial fix would still pass a
     // single-flag test.
-    List<CreateGuestDraftPositionInput> initialPositions =
+    List<GuestDraftPositionInput> initialPositions =
     [
       new()
       {
@@ -43,7 +41,7 @@ public sealed class ChangeGuestDraftTypeTests(GuestDraftsIntegrationTestWebAppFa
 
     var guestDraftPublicId = await CreateGuestDraftAsync(
       owner.UserPublicId,
-      GuestDraftType.MiniMega,
+      DraftType.MiniMega,
       numberOfPicks: 2,
       positions: initialPositions
     );
@@ -117,16 +115,16 @@ public sealed class ChangeGuestDraftTypeTests(GuestDraftsIntegrationTestWebAppFa
 
     // ── Act: switch to a different custom-layout type while still Created ──────
     var updateResult = await Sender.Send(
-      new UpdateGuestDraftCommand
+      new UpdateDraftCommand
       {
         GuestDraftPublicId = guestDraftPublicId,
         CallerUserPublicId = owner.UserPublicId,
-        Type = GuestDraftType.Super.Name,
+        Type = DraftType.Super.Name,
         NumberOfPicks = 2,
         Positions =
         [
-          new UpdateGuestDraftPositionInput { Name = "X", Picks = [1] },
-          new UpdateGuestDraftPositionInput { Name = "Y", Picks = [2] },
+          new GuestDraftPositionInput { Name = "X", Picks = [1] },
+          new GuestDraftPositionInput { Name = "Y", Picks = [2] },
         ],
       },
       ct
@@ -138,7 +136,7 @@ public sealed class ChangeGuestDraftTypeTests(GuestDraftsIntegrationTestWebAppFa
 
     // ── Assert: old board + positions are gone at the DB level, not just
     // detached from the in-memory graph. ────────────────────────────────────
-    var oldBoardStillExists = await DbContext.GuestDraftGameBoards.AnyAsync(
+    var oldBoardStillExists = await DbContext.GameBoards.AnyAsync(
       gb => gb.Id == oldGameBoardId,
       ct
     );
@@ -149,7 +147,7 @@ public sealed class ChangeGuestDraftTypeTests(GuestDraftsIntegrationTestWebAppFa
       );
 
     var oldPositionsStillExist = await DbContext
-      .GuestDraftPositions.Where(p => oldPositionIds.Contains(p.Id))
+      .DraftPositions.Where(p => oldPositionIds.Contains(p.Id))
       .AnyAsync(ct);
     oldPositionsStillExist
       .Should()
@@ -159,7 +157,7 @@ public sealed class ChangeGuestDraftTypeTests(GuestDraftsIntegrationTestWebAppFa
 
     // ── Assert: a fresh board for the new type was actually built ──────────────
     var draftAfterChange = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
-    draftAfterChange.GuestDraftType.Should().Be(GuestDraftType.Super);
+    draftAfterChange.GuestDraftType.Should().Be(DraftType.Super);
     draftAfterChange.GameBoard.Should().NotBeNull();
     draftAfterChange
       .GameBoard.Id.Should()

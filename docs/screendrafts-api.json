@@ -6716,6 +6716,89 @@
         ]
       }
     },
+    "/guest-drafts/{publicId}": {
+      "put": {
+        "tags": [
+          "GuestDrafts"
+        ],
+        "operationId": "GuestDrafts.UpdateGuestDraft",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateGuestDraftRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          { }
+        ]
+      },
+      "get": {
+        "tags": [
+          "GuestDrafts"
+        ],
+        "operationId": "GuestDrafts.GetGameplay",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/GetGuestDraftGameplayRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetGuestDraftGameplayRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetGuestDraftGameplayResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
     "/guest-drafts/{publicId}/status": {
       "put": {
         "tags": [
@@ -6761,62 +6844,40 @@
         ]
       }
     },
-    "/guest-drafts/{publicId}/board/fixed-layout": {
-      "post": {
+    "/guest-drafts/search": {
+      "get": {
         "tags": [
           "GuestDrafts"
         ],
-        "operationId": "GuestDrafts.SetFixedBoardLayout",
-        "responses": {
-          "204": {
-            "description": "No Content"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "401": {
-            "description": "Unauthorized"
-          }
-        },
-        "security": [
-          { }
-        ]
-      }
-    },
-    "/guest-drafts/{publicId}/board/custom-layout": {
-      "post": {
-        "tags": [
-          "GuestDrafts"
-        ],
-        "operationId": "GuestDrafts.SetCustomPositions",
+        "operationId": "GuestDrafts.Search",
         "requestBody": {
           "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchGuestDraftsRequest"
+              }
+            },
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/SetCustomPositionsRequest"
+                "$ref": "#/components/schemas/SearchGuestDraftsRequest"
               }
             }
           },
           "required": true
         },
         "responses": {
-          "204": {
-            "description": "No Content"
-          },
-          "400": {
-            "description": "Bad Request"
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultOfGuestDraftSummaryResponse"
+                }
+              }
+            }
           },
           "403": {
             "description": "Forbidden"
-          },
-          "404": {
-            "description": "Not Found"
           },
           "401": {
             "description": "Unauthorized"
@@ -7133,60 +7194,22 @@
         ]
       }
     },
-    "/guest-drafts/{publicId}/participants": {
-      "post": {
-        "tags": [
-          "GuestDrafts"
-        ],
-        "operationId": "GuestDrafts.InviteParticipant",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/InviteParticipantRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "204": {
-            "description": "No Content"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "401": {
-            "description": "Unauthorized"
-          }
-        },
-        "security": [
-          { }
-        ]
-      }
-    },
-    "/guest-drafts/{publicId}": {
+    "/guest-drafts/{publicId}/summary": {
       "get": {
         "tags": [
           "GuestDrafts"
         ],
-        "operationId": "GuestDrafts.GetGameplay",
+        "operationId": "GuestDrafts.GetDetails",
         "requestBody": {
           "content": {
             "*/*": {
               "schema": {
-                "$ref": "#/components/schemas/GetGuestDraftGameplayRequest"
+                "$ref": "#/components/schemas/GetGuestDraftDetailsRequest"
               }
             },
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/GetGuestDraftGameplayRequest"
+                "$ref": "#/components/schemas/GetGuestDraftDetailsRequest"
               }
             }
           },
@@ -7198,7 +7221,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetGuestDraftGameplayResponse"
+                  "$ref": "#/components/schemas/GuestDraftDetailResponse"
                 }
               }
             }
@@ -7247,6 +7270,91 @@
           },
           "400": {
             "description": "Bad Request"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/guest-drafts/{publicId}/participants": {
+      "post": {
+        "tags": [
+          "GuestDrafts"
+        ],
+        "operationId": "GuestDrafts.AddParticipant",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddParticipantRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/guest-drafters/search": {
+      "get": {
+        "tags": [
+          "GuestDrafters"
+        ],
+        "operationId": "GuestDrafters.Search",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchGuestDraftersRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchGuestDraftersRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GuestDrafterSummaryResponse"
+                  }
+                }
+              }
+            }
           },
           "403": {
             "description": "Forbidden"
@@ -9211,6 +9319,20 @@
           }
         }
       },
+      "AddParticipantRequest": {
+        "required": [
+          "guestDrafterPublicId"
+        ],
+        "type": "object",
+        "properties": {
+          "publicId": {
+            "type": "string"
+          },
+          "guestDrafterPublicId": {
+            "type": "string"
+          }
+        }
+      },
       "AddParticipantToDraftPartRequest": {
         "type": "object",
         "properties": {
@@ -9551,7 +9673,7 @@
       },
       "AssignParticipantToPositionRequest": {
         "required": [
-          "participantPublicId"
+          "guestDrafterPublicId"
         ],
         "type": "object",
         "properties": {
@@ -9561,7 +9683,7 @@
           "positionPublicId": {
             "type": "string"
           },
-          "participantPublicId": {
+          "guestDrafterPublicId": {
             "type": "string"
           }
         }
@@ -9900,6 +10022,13 @@
           },
           "isParticipant": {
             "type": "boolean"
+          },
+          "participantId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
           },
           "participantPublicId": {
             "type": [
@@ -10521,7 +10650,8 @@
       "CreateGuestDraftRequest": {
         "required": [
           "title",
-          "type"
+          "type",
+          "numberOfPicks"
         ],
         "type": "object",
         "properties": {
@@ -10530,6 +10660,27 @@
           },
           "type": {
             "type": "string"
+          },
+          "draftDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
+          },
+          "numberOfPicks": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "positions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GuestDraftPositionInput"
+            }
           }
         }
       },
@@ -11315,6 +11466,9 @@
             "format": "int32"
           }
         }
+      },
+      "DraftStatusAction": {
+        "type": "integer"
       },
       "DraftType": {
         "required": [
@@ -12210,49 +12364,6 @@
             "format": "uuid"
           },
           "revealAuthorizedByName": {
-            "type": [
-              "null",
-              "string"
-            ]
-          }
-        }
-      },
-      "GameplayPositionResponse": {
-        "type": "object",
-        "properties": {
-          "positionPublicId": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          },
-          "picks": {
-            "type": "array",
-            "items": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
-              "format": "int32"
-            }
-          },
-          "hasBonusVeto": {
-            "type": "boolean"
-          },
-          "hasBonusVetoOverride": {
-            "type": "boolean"
-          },
-          "hasBonusFungibleToken": {
-            "type": "boolean"
-          },
-          "assignedParticipantPublicId": {
-            "type": [
-              "null",
-              "string"
-            ]
-          },
-          "assignedParticipantDisplayName": {
             "type": [
               "null",
               "string"
@@ -13962,6 +14073,14 @@
           }
         }
       },
+      "GetGuestDraftDetailsRequest": {
+        "type": "object",
+        "properties": {
+          "publicId": {
+            "type": "string"
+          }
+        }
+      },
       "GetGuestDraftGameplayRequest": {
         "type": "object",
         "properties": {
@@ -13997,19 +14116,19 @@
           "positions": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/GameplayPositionResponse"
+              "$ref": "#/components/schemas/GuestDraftGameplayPositionResponse"
             }
           },
           "participants": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/GameplayParticipantResponse"
+              "$ref": "#/components/schemas/GuestDraftGameplayParticipantResponse"
             }
           },
           "picks": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/GameplayPickResponse"
+              "$ref": "#/components/schemas/GuestDraftGameplayPickResponse"
             }
           }
         }
@@ -15070,8 +15189,492 @@
           }
         }
       },
-      "GuestDraftStatusAction": {
-        "type": "integer"
+      "GuestDraftDetailPickResponse": {
+        "type": "object",
+        "properties": {
+          "position": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "moviePublicId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "movieTitle": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "movieYear": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "tmdbId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "playedByDisplayName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "wasVetoed": {
+            "type": "boolean"
+          },
+          "wasVetoOverridden": {
+            "type": "boolean"
+          },
+          "wasCommissionerOverride": {
+            "type": "boolean"
+          },
+          "isActiveOnFinalBoard": {
+            "type": "boolean"
+          },
+          "vetoedByDisplayName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "savedByDisplayName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "GuestDraftDetailPositionResponse": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "picks": {
+            "type": "array",
+            "items": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          "assignedParticipantDisplayName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "GuestDraftDetailResponse": {
+        "required": [
+          "publicId",
+          "title",
+          "type",
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "publicId": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "draftDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
+          },
+          "positions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GuestDraftDetailPositionResponse"
+            }
+          },
+          "picks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GuestDraftDetailPickResponse"
+            }
+          }
+        }
+      },
+      "GuestDrafterSummaryResponse": {
+        "required": [
+          "publicId",
+          "displayName"
+        ],
+        "type": "object",
+        "properties": {
+          "publicId": {
+            "type": "string"
+          },
+          "displayName": {
+            "type": "string"
+          }
+        }
+      },
+      "GuestDraftGameplayParticipantResponse": {
+        "type": "object",
+        "properties": {
+          "participantId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "participantPublicId": {
+            "type": "string"
+          },
+          "isOwner": {
+            "type": "boolean"
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "vetoTokensRemaining": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "overrideTokensRemaining": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "fungibleTokensRemaining": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "commissionerOverridesUsed": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "GuestDraftGameplayPickResponse": {
+        "type": "object",
+        "properties": {
+          "playOrder": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "position": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "moviePublicId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "movieTitle": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "movieYear": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "tmdbId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "imdbId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "igdbId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "mediaType": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "playedByParticipantId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "playedByDisplayName": {
+            "type": "string"
+          },
+          "isRevealed": {
+            "type": "boolean"
+          },
+          "wasVetoed": {
+            "type": "boolean"
+          },
+          "wasVetoOverridden": {
+            "type": "boolean"
+          },
+          "wasCommissionerOverride": {
+            "type": "boolean"
+          },
+          "isActiveOnFinalBoard": {
+            "type": "boolean"
+          },
+          "isEligibleForRePick": {
+            "type": "boolean"
+          },
+          "vetoedByDisplayName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "savedByDisplayName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "wasVetoFungible": {
+            "type": "boolean"
+          },
+          "wasVetoOverrideFungible": {
+            "type": "boolean"
+          },
+          "vetoSequence": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "revealAuthorizedParticipantId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "revealAuthorizedByDisplayName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "vetoHistory": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GuestDraftGameplayVetoHistoryEntryResponse"
+            }
+          }
+        }
+      },
+      "GuestDraftGameplayPositionResponse": {
+        "type": "object",
+        "properties": {
+          "positionPublicId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "picks": {
+            "type": "array",
+            "items": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          "hasBonusVeto": {
+            "type": "boolean"
+          },
+          "hasBonusVetoOverride": {
+            "type": "boolean"
+          },
+          "hasBonusFungibleToken": {
+            "type": "boolean"
+          },
+          "assignedParticipantId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "assignedParticipantDisplayName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "GuestDraftGameplayVetoHistoryEntryResponse": {
+        "type": "object",
+        "properties": {
+          "sequence": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "vetoedByDisplayName": {
+            "type": "string"
+          },
+          "wasVetoFungible": {
+            "type": "boolean"
+          },
+          "isOverridden": {
+            "type": "boolean"
+          },
+          "overriddenByDisplayName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "wasOverrideFungible": {
+            "type": "boolean"
+          }
+        }
+      },
+      "GuestDraftPositionInput": {
+        "required": [
+          "name",
+          "picks"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "picks": {
+            "type": "array",
+            "items": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          "hasBonusVeto": {
+            "type": "boolean"
+          },
+          "hasBonusVetoOverride": {
+            "type": "boolean"
+          },
+          "hasBonusFungibleToken": {
+            "type": "boolean"
+          }
+        }
+      },
+      "GuestDraftSummaryResponse": {
+        "required": [
+          "publicId",
+          "title",
+          "type",
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "publicId": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "draftDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
+          },
+          "isOwner": {
+            "type": "boolean"
+          }
+        }
       },
       "HonorificResponse": {
         "required": [
@@ -15271,20 +15874,6 @@
               "null",
               "string"
             ]
-          }
-        }
-      },
-      "InviteParticipantRequest": {
-        "required": [
-          "inviteeUserPublicId"
-        ],
-        "type": "object",
-        "properties": {
-          "publicId": {
-            "type": "string"
-          },
-          "inviteeUserPublicId": {
-            "type": "string"
           }
         }
       },
@@ -16964,6 +17553,61 @@
           }
         }
       },
+      "PagedResultOfGuestDraftSummaryResponse": {
+        "required": [
+          "items",
+          "totalCount",
+          "page",
+          "pageSize"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GuestDraftSummaryResponse"
+            }
+          },
+          "totalCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "page": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "pageSize": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "totalPages": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "hasPreviousPage": {
+            "type": "boolean"
+          },
+          "hasNextPage": {
+            "type": "boolean"
+          }
+        }
+      },
       "PagedResultOfListDraftsResponse": {
         "required": [
           "items",
@@ -18243,38 +18887,6 @@
           }
         }
       },
-      "PositionInput": {
-        "required": [
-          "name",
-          "picks"
-        ],
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "picks": {
-            "type": "array",
-            "items": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
-              "format": "int32"
-            }
-          },
-          "hasBonusVeto": {
-            "type": "boolean"
-          },
-          "hasBonusVetoOverride": {
-            "type": "boolean"
-          },
-          "hasBonusFungibleToken": {
-            "type": "boolean"
-          }
-        }
-      },
       "PredictionEntryRequest": {
         "type": "object",
         "properties": {
@@ -19455,6 +20067,44 @@
           }
         }
       },
+      "SearchGuestDraftersRequest": {
+        "type": "object",
+        "properties": {
+          "search": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "SearchGuestDraftsRequest": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "pageSize": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "status": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
       "SearchHostRequest": {
         "type": "object",
         "properties": {
@@ -20150,23 +20800,6 @@
           }
         }
       },
-      "SetCustomPositionsRequest": {
-        "required": [
-          "positions"
-        ],
-        "type": "object",
-        "properties": {
-          "publicId": {
-            "type": "string"
-          },
-          "positions": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/PositionInput"
-            }
-          }
-        }
-      },
       "SetDraftPartPredictionRulesRequest": {
         "type": "object",
         "properties": {
@@ -20320,7 +20953,7 @@
             "type": "string"
           },
           "action": {
-            "$ref": "#/components/schemas/GuestDraftStatusAction"
+            "$ref": "#/components/schemas/DraftStatusAction"
           }
         }
       },
@@ -21102,6 +21735,48 @@
           }
         }
       },
+      "UpdateGuestDraftRequest": {
+        "type": "object",
+        "properties": {
+          "publicId": {
+            "type": "string"
+          },
+          "title": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "draftDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
+          },
+          "type": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "numberOfPicks": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "positions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GuestDraftPositionInput"
+            }
+          }
+        }
+      },
       "UpdateProfileRequest": {
         "type": "object",
         "properties": {
@@ -21494,6 +22169,9 @@
     },
     {
       "name": "GuestDrafts"
+    },
+    {
+      "name": "GuestDrafters"
     },
     {
       "name": "Zoom"
