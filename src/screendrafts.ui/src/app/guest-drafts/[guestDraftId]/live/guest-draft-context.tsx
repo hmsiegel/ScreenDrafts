@@ -299,7 +299,7 @@ export function GuestDraftLiveProvider({
               tmdbId: movie.tmdbId,
               imdbId: movie.imdbId,
               igdbId: movie.igdbId,
-              mediaType: movie.mediaType,
+              mediaType: movie.mediaType?.value,
               playedByParticipantId,
               playedByDisplayName:
                 participantsRef.current.find((p) => p.participantId === playedByParticipantId)

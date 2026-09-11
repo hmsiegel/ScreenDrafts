@@ -1,13 +1,15 @@
 // app/guest-drafts/[guestDraftId]/live/gameplay-fetchers.ts
-
 import {
   CreatedResponse,
-  CreateGuestDraftPositionInput,
   GetGuestDraftGameplayResponse,
+  GuestDraftDetailResponse,
   GuestDrafterSummaryResponse,
+  GuestDraftSummaryResponse,
   MediaResponse,
+  GuestDraftPositionInput,
   SetGuestDraftStatusResponse,
 } from '@/lib/dto';
+import { PagedResult } from '@/types/paged-result';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 
@@ -102,9 +104,15 @@ export async function applyGuestDraftCommissionerOverride(
   guestDraftId: string,
   playOrder: number,
 ): Promise<void> {
+  // Content-Type + an empty JSON body, not authHeadersGet — a POST/DELETE
+  // with no Content-Type at all can 415 in FastEndpoints' model binding
+  // before the request ever reaches the handler, even when the request DTO
+  // is entirely route-bound. This bit us on revealGuestDraftPick below; same
+  // fix applied to every other call in this file that previously sent
+  // neither a Content-Type nor a body.
   const res = await fetch(
     `${API_BASE}/guest-drafts/${guestDraftId}/picks/${playOrder}/commissioner-override`,
-    { method: 'POST', headers: authHeadersGet(accessToken) },
+    { method: 'POST', headers: authHeaders(accessToken), body: JSON.stringify({}) },
   );
   if (!res.ok) {
     const body = await res.text();
@@ -119,7 +127,7 @@ export async function revealGuestDraftPick(
 ): Promise<void> {
   const res = await fetch(
     `${API_BASE}/guest-drafts/${guestDraftId}/picks/${playOrder}/reveal`,
-    { method: 'POST', headers: authHeadersGet(accessToken) },
+    { method: 'POST', headers: authHeaders(accessToken), body: JSON.stringify({}) },
   );
   if (!res.ok) {
     const body = await res.text();
@@ -134,7 +142,7 @@ export async function undoGuestDraftVeto(
 ): Promise<void> {
   const res = await fetch(
     `${API_BASE}/guest-drafts/${guestDraftId}/picks/${playOrder}/undo-veto`,
-    { method: 'POST', headers: authHeadersGet(accessToken) },
+    { method: 'POST', headers: authHeaders(accessToken), body: JSON.stringify({}) },
   );
   if (!res.ok) {
     const body = await res.text();
@@ -147,9 +155,12 @@ export async function undoGuestDraftPick(
   guestDraftId: string,
   playOrder: number,
 ): Promise<void> {
+  // DELETE requests with a body are unusual but harmless here — this is
+  // purely to dodge the same 415, not because the endpoint needs any data;
+  // everything it needs is already in the route.
   const res = await fetch(
     `${API_BASE}/guest-drafts/${guestDraftId}/picks/${playOrder}`,
-    { method: 'DELETE', headers: authHeadersGet(accessToken) },
+    { method: 'DELETE', headers: authHeaders(accessToken), body: JSON.stringify({}) },
   );
   if (!res.ok) {
     const body = await res.text();
@@ -194,7 +205,7 @@ export async function createGuestDraft(
     type: string;
     draftDate?: string | null; // yyyy-MM-dd, matches DateOnly? on the wire
     numberOfPicks: number;
-    positions: CreateGuestDraftPositionInput[];
+    positions: GuestDraftPositionInput[];
   },
 ): Promise<CreatedResponse> {
   const res = await fetch(`${API_BASE}/guest-drafts`, {
@@ -212,7 +223,7 @@ export async function createGuestDraft(
 // ── Participants ──────────────────────────────────────────────────────────────
 // Both endpoints take a GuestDrafterPublicId — the registered GuestDrafter's
 // own public id, the same value that shows up as
-// GameplayParticipantResponse.participantPublicId once someone's been added.
+// GuestDraftGameplayParticipantResponse.participantPublicId once someone's been added.
 // Teams aren't supported by either command yet (GuestDrafterPublicId only,
 // per AddParticipantCommand.cs/AssignParticipantToPositionCommand.cs's own
 // comments) — no kind field to pass.
@@ -292,6 +303,55 @@ export async function setGuestDraftStatus(
   if (!res.ok) {
     const body = await res.text();
     throw new Error(`setGuestDraftStatus failed: ${res.status} - ${body}`);
+  }
+  return res.json();
+}
+
+// ── Standalone details (completed-draft summary page) ────────────────────────
+// Separate from fetchGuestDraftGameplay above — that one is the live-session
+// endpoint (CallerContext, veto token counts, reveal-authorization state).
+// This is GetGuestDraftDetailsQuery, a new lighter read with none of that,
+// meant for /summary, not /live.
+//
+// ASSUMPTION: route is GuestDraftsRoutes.Summary → "/guest-drafts/{publicId}/summary",
+// not yet confirmed against the real route constant.
+export async function fetchGuestDraftDetails(
+  accessToken: string,
+  guestDraftId: string,
+): Promise<GuestDraftDetailResponse> {
+  const res = await fetch(`${API_BASE}/guest-drafts/${guestDraftId}/summary`, {
+    headers: authHeadersGet(accessToken),
+    cache: 'no-store',
+  });
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`fetchGuestDraftDetails failed: ${res.status} - ${body}`);
+  }
+  return res.json();
+}
+
+// ── My guest drafts (landing list) ───────────────────────────────────────────
+// GET-only, caller-scoped server-side (owner-or-participant) — no arbitrary
+// owner/user filter exists or should exist here. `status` is optional
+// (GuestDraftStatus's SmartEnum name); omitted here since the landing page
+// fetches everything once and buckets client-side into Upcoming/In Progress/
+// Completed, same pattern as listAdminActiveDrafts.
+//
+// ASSUMPTION: route resolves to "/guest-drafts/search" — same flagged-guess
+// pattern as searchGuestDrafters above, not confirmed against the real route
+// constant.
+export async function searchMyGuestDrafts(
+  accessToken: string,
+  page = 1,
+  pageSize = 100,
+): Promise<PagedResult<GuestDraftSummaryResponse>> {
+  const params = new URLSearchParams({ page: String(page), pageSize: String(pageSize) });
+  const res = await fetch(`${API_BASE}/guest-drafts/search?${params}`, {
+    headers: authHeadersGet(accessToken),
+  });
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`searchMyGuestDrafts failed: ${res.status} - ${body}`);
   }
   return res.json();
 }

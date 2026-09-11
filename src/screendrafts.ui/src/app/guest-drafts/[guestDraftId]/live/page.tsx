@@ -10,30 +10,31 @@ export const metadata: Metadata = { title: 'Guest Draft' };
 export const dynamic = 'force-dynamic';
 
 interface Props {
-  params: { guestDraftId: string };
+  params: Promise<{ guestDraftId: string }>;
 }
 
 export default async function GuestDraftLivePage({ params }: Props) {
+  const { guestDraftId } = await params;
   const session = await auth();
   if (!session?.accessToken) redirect('/');
 
-  const gameplay = await fetchGuestDraftGameplay(session.accessToken, params.guestDraftId);
+  const gameplay = await fetchGuestDraftGameplay(session.accessToken, guestDraftId);
 
   // Nothing to play yet — no participants/board assignment happens on this
   // screen (see CreateGuestDraftCommandHandler's remarks: creation no longer
   // adds any participants, not even the owner). Send the owner back to setup
   // rather than rendering an empty board.
   if (gameplay.status === 'Created') {
-    redirect(`/guest-drafts/${params.guestDraftId}/setup`);
+    redirect(`/guest-drafts/${guestDraftId}/setup`);
   }
 
   return (
     <GuestDraftLiveProvider
-      guestDraftId={params.guestDraftId}
+      guestDraftId={guestDraftId}
       accessToken={session.accessToken}
       initialGameplay={gameplay}
     >
-      <LiveGuestDraftView accessToken={session.accessToken} guestDraftId={params.guestDraftId} />
+      <LiveGuestDraftView accessToken={session.accessToken} guestDraftId={guestDraftId} />
     </GuestDraftLiveProvider>
   );
 }

@@ -22,7 +22,10 @@ internal sealed class MovieConfiguration : IEntityTypeConfiguration<Movie>
 
     builder.Property(x => x.Year).HasMaxLength(10);
 
-    builder.HasIndex(x => x.TmdbId).IsUnique().HasFilter("tmdb_id IS NOT NULL");
+    builder
+      .HasIndex(m => new { m.TmdbId, m.MediaType })
+      .IsUnique()
+      .HasFilter("tmdb_id IS NOT NULL");
 
     // TV episode fields — only populated when MediaType is TvEpisode.
     builder.Property(x => x.TvSeriesTmdbId);

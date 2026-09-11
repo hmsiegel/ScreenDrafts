@@ -1,6 +1,8 @@
-﻿global using System.Reflection;
+﻿global using System.Data;
+global using System.Reflection;
 global using System.Runtime.CompilerServices;
 global using System.Security.Cryptography;
+global using System.Text;
 global using Dapper;
 global using FluentValidation;
 global using MediatR;
@@ -35,7 +37,6 @@ global using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Repositories;
 global using ScreenDrafts.Modules.GuestDrafts.Domain.Participants;
 global using ScreenDrafts.Modules.GuestDrafts.Features.Drafters.CreateDrafter;
 global using ScreenDrafts.Modules.GuestDrafts.Features.Drafters.UpdateDrafterName;
-global using ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafters;
 global using ScreenDrafts.Modules.GuestDrafts.Features.Movies.AddMovie;
 global using ScreenDrafts.Modules.GuestDrafts.IntegrationEvents;
 global using ScreenDrafts.Modules.Movies.IntegrationEvents;

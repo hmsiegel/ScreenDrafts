@@ -6844,6 +6844,50 @@
         ]
       }
     },
+    "/guest-drafts/search": {
+      "get": {
+        "tags": [
+          "GuestDrafts"
+        ],
+        "operationId": "GuestDrafts.Search",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchGuestDraftsRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchGuestDraftsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultOfGuestDraftSummaryResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
     "/guest-drafts/{publicId}/positions/{positionPublicId}/assign": {
       "post": {
         "tags": [
@@ -7134,6 +7178,53 @@
           },
           "400": {
             "description": "Bad Request"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/guest-drafts/{publicId}/summary": {
+      "get": {
+        "tags": [
+          "GuestDrafts"
+        ],
+        "operationId": "GuestDrafts.GetDetails",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/GetGuestDraftDetailsRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetGuestDraftDetailsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GuestDraftDetailResponse"
+                }
+              }
+            }
           },
           "403": {
             "description": "Forbidden"
@@ -13982,6 +14073,14 @@
           }
         }
       },
+      "GetGuestDraftDetailsRequest": {
+        "type": "object",
+        "properties": {
+          "publicId": {
+            "type": "string"
+          }
+        }
+      },
       "GetGuestDraftGameplayRequest": {
         "type": "object",
         "properties": {
@@ -15090,6 +15189,146 @@
           }
         }
       },
+      "GuestDraftDetailPickResponse": {
+        "type": "object",
+        "properties": {
+          "position": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "moviePublicId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "movieTitle": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "movieYear": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "tmdbId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "playedByDisplayName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "wasVetoed": {
+            "type": "boolean"
+          },
+          "wasVetoOverridden": {
+            "type": "boolean"
+          },
+          "wasCommissionerOverride": {
+            "type": "boolean"
+          },
+          "isActiveOnFinalBoard": {
+            "type": "boolean"
+          },
+          "vetoedByDisplayName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "savedByDisplayName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "GuestDraftDetailPositionResponse": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "picks": {
+            "type": "array",
+            "items": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          "assignedParticipantDisplayName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "GuestDraftDetailResponse": {
+        "required": [
+          "publicId",
+          "title",
+          "type",
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "publicId": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "draftDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
+          },
+          "positions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GuestDraftDetailPositionResponse"
+            }
+          },
+          "picks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GuestDraftDetailPickResponse"
+            }
+          }
+        }
+      },
       "GuestDrafterSummaryResponse": {
         "required": [
           "publicId",
@@ -15400,6 +15639,39 @@
             "type": "boolean"
           },
           "hasBonusFungibleToken": {
+            "type": "boolean"
+          }
+        }
+      },
+      "GuestDraftSummaryResponse": {
+        "required": [
+          "publicId",
+          "title",
+          "type",
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "publicId": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "draftDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
+          },
+          "isOwner": {
             "type": "boolean"
           }
         }
@@ -17239,6 +17511,61 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/DrafterListItem"
+            }
+          },
+          "totalCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "page": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "pageSize": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "totalPages": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "hasPreviousPage": {
+            "type": "boolean"
+          },
+          "hasNextPage": {
+            "type": "boolean"
+          }
+        }
+      },
+      "PagedResultOfGuestDraftSummaryResponse": {
+        "required": [
+          "items",
+          "totalCount",
+          "page",
+          "pageSize"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GuestDraftSummaryResponse"
             }
           },
           "totalCount": {
@@ -19744,6 +20071,33 @@
         "type": "object",
         "properties": {
           "search": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "SearchGuestDraftsRequest": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "pageSize": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "status": {
             "type": [
               "null",
               "string"

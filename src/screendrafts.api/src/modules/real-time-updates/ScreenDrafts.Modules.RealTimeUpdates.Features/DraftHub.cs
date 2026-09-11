@@ -23,6 +23,24 @@ public sealed class DraftHub : Hub
     $"guest-draft:{guestDraftId}:participant:{participantId}";
 
   /// <summary>
+  /// Flat-group-only join, mirroring JoinDraftPartAsync's shape — for
+  /// contexts that only care about draft-wide broadcasts (e.g. DraftStarted,
+  /// so the guest-drafts landing list can move a card from "Waiting..." to
+  /// "In Progress" live) and have no participantId to join per-participant
+  /// reveal routing with in the first place, since JoinGuestDraftAsync below
+  /// requires one for that half.
+  /// </summary>
+  public async Task JoinGuestDraftFlatAsync(string guestDraftId)
+  {
+    await Groups.AddToGroupAsync(Context.ConnectionId, GuestDraftGroupName(guestDraftId));
+  }
+
+  public async Task LeaveGuestDraftFlatAsync(string guestDraftId)
+  {
+    await Groups.RemoveFromGroupAsync(Context.ConnectionId, GuestDraftGroupName(guestDraftId));
+  }
+
+  /// <summary>
   /// Joins both the flat guest-draft group and this caller's own participant
   /// group. Trust is handled by JWT auth on the hub, same bar as
   /// StartCountdownAsync below -- but note the stakes here are higher: unlike

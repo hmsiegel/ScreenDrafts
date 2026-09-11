@@ -528,9 +528,9 @@ namespace ScreenDrafts.Modules.GuestDrafts.Infrastructure.Database.Migrations
                         .IsUnique()
                         .HasDatabaseName("ix_movies_public_id");
 
-                    b.HasIndex("TmdbId")
+                    b.HasIndex("TmdbId", "MediaType")
                         .IsUnique()
-                        .HasDatabaseName("ix_movies_tmdb_id")
+                        .HasDatabaseName("ix_movies_tmdb_id_media_type")
                         .HasFilter("tmdb_id IS NOT NULL");
 
                     b.ToTable("movies", "guest_drafts");

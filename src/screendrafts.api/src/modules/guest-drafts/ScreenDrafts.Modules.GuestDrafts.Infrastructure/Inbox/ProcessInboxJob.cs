@@ -7,7 +7,7 @@ internal sealed class ProcessInboxJob(
   IDateTimeProvider dateTimeProvider,
   IOptions<InboxOptions> inboxOptions,
   ILogger<ProcessInboxJob> logger,
-  IDraftsIntegrationEventDispatcher integrationEventDispatcher
+  IGuestDraftsIntegrationEventDispatcher integrationEventDispatcher
 ) : IJob
 {
   private const string ModuleName = "Drafts";
@@ -17,7 +17,7 @@ internal sealed class ProcessInboxJob(
   private readonly IDateTimeProvider _dateTimeProvider = dateTimeProvider;
   private readonly ILogger<ProcessInboxJob> _logger = logger;
   private readonly InboxOptions _inboxOptions = inboxOptions.Value;
-  private readonly IDraftsIntegrationEventDispatcher _integrationEventDispatcher =
+  private readonly IGuestDraftsIntegrationEventDispatcher _integrationEventDispatcher =
     integrationEventDispatcher;
 
   public async Task Execute(IJobExecutionContext context)

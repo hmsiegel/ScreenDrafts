@@ -1,7 +1,4 @@
-﻿using ScreenDrafts.Modules.GuestDrafts.Features.Drafts;
-using ScreenDrafts.Modules.GuestDrafts.Features.Drafts.GamePlay.GetGuestDraftGamePlay;
-
-namespace ScreenDrafts.Modules.GuestDrafts.Features.Drafts.GamePlay.GetGuestDraftGamePlay;
+﻿namespace ScreenDrafts.Modules.GuestDrafts.Features.Drafts.GamePlay.GetGuestDraftGamePlay;
 
 // ── Endpoint ──────────────────────────────────────────────────────────────
 

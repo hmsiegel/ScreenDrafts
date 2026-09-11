@@ -1,4 +1,4 @@
-﻿namespace ScreenDrafts.Modules.GuestDrafts.Features.GuestDrafters;
+﻿namespace ScreenDrafts.Modules.GuestDrafts.Features.Drafters;
 
 internal static class GuestDrafterRoutes
 {

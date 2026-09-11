@@ -5,6 +5,7 @@ internal static class GuestDraftsRoutes
   internal const string Base = "/guest-drafts";
   internal const string ById = Base + "/{publicId}";
   internal const string Search = Base + "/search";
+  internal const string Summary = ById + "/summary";
   internal const string Participants = ById + "/participants";
   internal const string GuestDraftStatus = ById + "/status";
   internal const string FixedBoardLayout = ById + "/board/fixed-layout";

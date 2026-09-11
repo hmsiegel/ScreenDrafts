@@ -80,7 +80,7 @@ internal sealed class GetDraftGameplayQueryHandler(
                                     AS {nameof(ParticipantRow.FungibleTokensRemaining)},
         gdp.commissioner_overrides   AS {nameof(ParticipantRow.CommissionerOverridesUsed)}
       FROM guest_drafts.draft_participants gdp
-      JOIN guest_drafts.drafts gd2 ON gd2.id = gdp.guest_draft_id
+      JOIN guest_drafts.drafts gd2 ON gd2.id = gdp.draft_id
       LEFT JOIN guest_drafts.drafters gd
         ON gd.id = gdp.participant_id_value AND gdp.participant_kind_value = 0
       WHERE gd2.public_id = @GuestDraftPublicId
@@ -108,7 +108,7 @@ internal sealed class GetDraftGameplayQueryHandler(
         pos.assigned_to_participant_id   AS {nameof(PositionRow.AssignedToParticipantId)}
       FROM guest_drafts.draft_positions pos
       JOIN guest_drafts.game_boards gb ON gb.id = pos.game_board_id
-      JOIN guest_drafts.drafts gd ON gd.id = gb.guest_draft_id
+      JOIN guest_drafts.drafts gd ON gd.id = gb.draft_id
       WHERE gd.public_id = @GuestDraftPublicId
       ORDER BY pos.name
       """;

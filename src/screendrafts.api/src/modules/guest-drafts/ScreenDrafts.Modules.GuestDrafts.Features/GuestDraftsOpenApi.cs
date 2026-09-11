@@ -27,5 +27,7 @@ internal static class GuestDraftsOpenApi
     public const string GuestDrafts_GetGameplay = "GuestDrafts.GetGameplay";
     public const string GuestDrafts_UpdateGuestDraft = "GuestDrafts.UpdateGuestDraft";
     public const string GuestDrafters_Search = "GuestDrafters.Search";
+    public const string GuestDrafts_Search = "GuestDrafts.Search";
+    public const string GuestDrafts_GetDetails = "GuestDrafts.GetDetails";
   }
 }
