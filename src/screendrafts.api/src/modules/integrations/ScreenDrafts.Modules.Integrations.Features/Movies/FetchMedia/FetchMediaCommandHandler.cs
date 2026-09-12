@@ -30,7 +30,11 @@ internal sealed class FetchMediaCommandHandler(
 
     if (responseResult.IsFailure)
     {
-      return Result.Failure(MovieErrors.NotFound(command.TmdbId!.Value));
+      // Propagate GetOnlineMediaCommandHandler's own error rather than
+      // manufacturing a new one here: command.TmdbId is null for video games,
+      // music videos, short films, and Imdb-only movie lookups, so assuming a
+      // TmdbId-shaped failure crashed those paths instead of failing cleanly.
+      return Result.Failure(responseResult.Errors);
     }
 
     var response = responseResult.Value;

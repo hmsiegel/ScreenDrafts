@@ -20,7 +20,9 @@ global using ScreenDrafts.Modules.Administration.Features.Users.AddRoleToUser;
 global using ScreenDrafts.Modules.Administration.Features.Users.GetPermissionByCode;
 global using ScreenDrafts.Modules.Administration.Features.Users.GetUserRoles;
 global using ScreenDrafts.Modules.Administration.Features.Users.ListPermissions;
+global using ScreenDrafts.Modules.Administration.Features.Users.ListUsers;
 global using ScreenDrafts.Modules.Administration.Features.Users.RemoveRoleFromUser;
+global using ScreenDrafts.Modules.Administration.Features.Users.SendPasswordReset;
 global using ScreenDrafts.Modules.Administration.Infrastructure.Database;
 global using ScreenDrafts.Modules.Administration.IntegrationTests.Abstractions;
 

@@ -257,5 +257,264 @@ public sealed class MovieTests : BaseTest
     domainEvent.MediaId.Should().Be(movie.Value.Id.Value);
   }
 
+  [Fact]
+  public void Create_ShouldReturnFailure_WhenPublicIdIsEmpty()
+  {
+    // Arrange, Act
+    var result = Media.Create(
+      publicId: string.Empty,
+      title: Faker.Company.CompanyName(),
+      year: Faker.Date.Past().Year.ToString(CultureInfo.InvariantCulture),
+      plot: Faker.Lorem.Paragraph(),
+      image: Faker.Image.PicsumUrl(),
+      releaseDate: Faker.Date.Past().ToString(CultureInfo.InvariantCulture),
+      youtubeTrailerUrl: new Uri(Faker.Internet.Url()),
+      imdbId: Faker.Random.AlphaNumeric(9),
+      tmdbId: Faker.Random.Int(1, 10000),
+      igdbId: null,
+      externalId: null,
+      mediaType: MediaType.Movie);
+
+    // Assert
+    result.IsFailure.Should().BeTrue();
+    result.Error.Should().Be(MediaErrors.PublicIdRequired);
+  }
+
+  [Fact]
+  public void Create_ShouldReturnFailure_WhenTmdbIdIsMissingForAMovie()
+  {
+    // Arrange, Act -- Movie is neither VideoGame nor MusicVideo, so TmdbId is required.
+    var result = Media.Create(
+      publicId: Faker.Random.AlphaNumeric(10),
+      title: Faker.Company.CompanyName(),
+      year: Faker.Date.Past().Year.ToString(CultureInfo.InvariantCulture),
+      plot: Faker.Lorem.Paragraph(),
+      image: Faker.Image.PicsumUrl(),
+      releaseDate: Faker.Date.Past().ToString(CultureInfo.InvariantCulture),
+      youtubeTrailerUrl: new Uri(Faker.Internet.Url()),
+      imdbId: Faker.Random.AlphaNumeric(9),
+      tmdbId: null,
+      igdbId: null,
+      externalId: null,
+      mediaType: MediaType.Movie);
+
+    // Assert
+    result.IsFailure.Should().BeTrue();
+    result.Error.Should().Be(MediaErrors.TmdbIdRequired);
+  }
+
+  [Fact]
+  public void Create_ShouldReturnFailure_WhenVideoGameIsMissingIgdbId()
+  {
+    // Arrange, Act
+    var result = Media.Create(
+      publicId: Faker.Random.AlphaNumeric(10),
+      title: Faker.Company.CompanyName(),
+      year: Faker.Date.Past().Year.ToString(CultureInfo.InvariantCulture),
+      plot: null,
+      image: null,
+      releaseDate: null,
+      youtubeTrailerUrl: null,
+      imdbId: null,
+      tmdbId: null,
+      igdbId: null,
+      externalId: null,
+      mediaType: MediaType.VideoGame);
+
+    // Assert
+    result.IsFailure.Should().BeTrue();
+    result.Error.Should().Be(MediaErrors.IgdbIdRequiredForVideoGames);
+  }
+
+  [Fact]
+  public void Create_ShouldSucceed_WhenVideoGameHasIgdbIdAndNoTmdbId()
+  {
+    // Arrange, Act -- VideoGame is exempt from the TmdbIdRequired rule.
+    var result = Media.Create(
+      publicId: Faker.Random.AlphaNumeric(10),
+      title: Faker.Company.CompanyName(),
+      year: Faker.Date.Past().Year.ToString(CultureInfo.InvariantCulture),
+      plot: null,
+      image: null,
+      releaseDate: null,
+      youtubeTrailerUrl: null,
+      imdbId: null,
+      tmdbId: null,
+      igdbId: Faker.Random.Int(1, 10000),
+      externalId: null,
+      mediaType: MediaType.VideoGame);
+
+    // Assert
+    result.IsSuccess.Should().BeTrue();
+    result.Value.MediaType.Should().Be(MediaType.VideoGame);
+    result.Value.TmdbId.Should().BeNull();
+  }
+
+  [Fact]
+  public void Create_ShouldReturnFailure_WhenShortFilmIsMissingExternalId()
+  {
+    // Arrange, Act
+    var result = Media.Create(
+      publicId: Faker.Random.AlphaNumeric(10),
+      title: Faker.Company.CompanyName(),
+      year: Faker.Date.Past().Year.ToString(CultureInfo.InvariantCulture),
+      plot: null,
+      image: null,
+      releaseDate: null,
+      youtubeTrailerUrl: null,
+      imdbId: null,
+      tmdbId: Faker.Random.Int(1, 10000),
+      igdbId: null,
+      externalId: null,
+      mediaType: MediaType.ShortFilm);
+
+    // Assert
+    result.IsFailure.Should().BeTrue();
+    result.Error.Should().Be(MediaErrors.ExternalIdsRequiredForShorts);
+  }
+
+  [Fact]
+  public void Create_ShouldSucceed_WhenShortFilmHasExternalId()
+  {
+    // Arrange, Act
+    var result = Media.Create(
+      publicId: Faker.Random.AlphaNumeric(10),
+      title: Faker.Company.CompanyName(),
+      year: Faker.Date.Past().Year.ToString(CultureInfo.InvariantCulture),
+      plot: null,
+      image: null,
+      releaseDate: null,
+      youtubeTrailerUrl: null,
+      imdbId: null,
+      tmdbId: Faker.Random.Int(1, 10000),
+      igdbId: null,
+      externalId: Faker.Random.AlphaNumeric(15),
+      mediaType: MediaType.ShortFilm);
+
+    // Assert
+    result.IsSuccess.Should().BeTrue();
+    result.Value.MediaType.Should().Be(MediaType.ShortFilm);
+  }
+
+  [Fact]
+  public void Create_ShouldReturnFailure_WhenMusicVideoIsMissingBothImdbIdAndExternalId()
+  {
+    // Arrange, Act
+    var result = Media.Create(
+      publicId: Faker.Random.AlphaNumeric(10),
+      title: Faker.Company.CompanyName(),
+      year: Faker.Date.Past().Year.ToString(CultureInfo.InvariantCulture),
+      plot: null,
+      image: null,
+      releaseDate: null,
+      youtubeTrailerUrl: null,
+      imdbId: null,
+      tmdbId: null,
+      igdbId: null,
+      externalId: null,
+      mediaType: MediaType.MusicVideo);
+
+    // Assert
+    result.IsFailure.Should().BeTrue();
+    result.Error.Should().Be(MediaErrors.ImdbOrExternalIdRequiredForMusicVideos);
+  }
+
+  [Fact]
+  public void Create_ShouldSucceed_WhenMusicVideoHasOnlyImdbId()
+  {
+    // Arrange, Act -- MusicVideo is exempt from TmdbIdRequired, and only needs one of
+    // ImdbId/ExternalId, not both.
+    var result = Media.Create(
+      publicId: Faker.Random.AlphaNumeric(10),
+      title: Faker.Company.CompanyName(),
+      year: Faker.Date.Past().Year.ToString(CultureInfo.InvariantCulture),
+      plot: null,
+      image: null,
+      releaseDate: null,
+      youtubeTrailerUrl: null,
+      imdbId: Faker.Random.AlphaNumeric(9),
+      tmdbId: null,
+      igdbId: null,
+      externalId: null,
+      mediaType: MediaType.MusicVideo);
+
+    // Assert
+    result.IsSuccess.Should().BeTrue();
+  }
+
+  [Fact]
+  public void Create_ShouldSucceed_WhenMusicVideoHasOnlyExternalId()
+  {
+    // Arrange, Act
+    var result = Media.Create(
+      publicId: Faker.Random.AlphaNumeric(10),
+      title: Faker.Company.CompanyName(),
+      year: Faker.Date.Past().Year.ToString(CultureInfo.InvariantCulture),
+      plot: null,
+      image: null,
+      releaseDate: null,
+      youtubeTrailerUrl: null,
+      imdbId: null,
+      tmdbId: null,
+      igdbId: null,
+      externalId: Faker.Random.AlphaNumeric(15),
+      mediaType: MediaType.MusicVideo);
+
+    // Assert
+    result.IsSuccess.Should().BeTrue();
+  }
+
+  [Fact]
+  public void Create_ShouldReturnFailure_WhenTvEpisodeIsMissingEpisodeFields()
+  {
+    // Arrange, Act
+    var result = Media.Create(
+      publicId: Faker.Random.AlphaNumeric(10),
+      title: Faker.Company.CompanyName(),
+      year: Faker.Date.Past().Year.ToString(CultureInfo.InvariantCulture),
+      plot: null,
+      image: null,
+      releaseDate: null,
+      youtubeTrailerUrl: null,
+      imdbId: null,
+      tmdbId: Faker.Random.Int(1, 10000),
+      igdbId: null,
+      externalId: null,
+      mediaType: MediaType.TvEpisode);
+
+    // Assert
+    result.IsFailure.Should().BeTrue();
+    result.Error.Should().Be(MediaErrors.EpisodeFieldsRequired);
+  }
+
+  [Fact]
+  public void Create_ShouldSucceed_WhenTvEpisodeHasAllEpisodeFields()
+  {
+    // Arrange, Act
+    var result = Media.Create(
+      publicId: Faker.Random.AlphaNumeric(10),
+      title: Faker.Company.CompanyName(),
+      year: Faker.Date.Past().Year.ToString(CultureInfo.InvariantCulture),
+      plot: null,
+      image: null,
+      releaseDate: null,
+      youtubeTrailerUrl: null,
+      imdbId: null,
+      tmdbId: Faker.Random.Int(1, 10000),
+      igdbId: null,
+      externalId: null,
+      mediaType: MediaType.TvEpisode,
+      tvSeriesTmdbId: Faker.Random.Int(1, 10000),
+      seasonNumber: 1,
+      episodeNumber: 3,
+      tvSeriesTitle: Faker.Company.CompanyName());
+
+    // Assert
+    result.IsSuccess.Should().BeTrue();
+    result.Value.TvSeriesTmdbId.Should().NotBeNull();
+    result.Value.SeasonNumber.Should().Be(1);
+    result.Value.EpisodeNumber.Should().Be(3);
+  }
+
   private static string ExceptionMessage(string parameter) => $"Required input {parameter} was empty. (Parameter '{parameter}')";
 }

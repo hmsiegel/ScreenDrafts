@@ -5,6 +5,7 @@ public abstract class IntegrationsIntegrationTest(IntegrationsIntegrationTestWeb
   : BaseIntegrationTest<IntegrationsDbContext>(factory)
 {
   protected FakeTmdbService FakeTmdbService => factory.FakeTmdbService;
+  protected FakeOmdbService FakeOmdbService => factory.FakeOmdbService;
 
   protected override async Task ClearDatabaseAsync()
   {
@@ -19,5 +20,6 @@ public abstract class IntegrationsIntegrationTest(IntegrationsIntegrationTestWeb
       """);
 
     FakeTmdbService.Reset();
+    FakeOmdbService.Reset();
   }
 }
