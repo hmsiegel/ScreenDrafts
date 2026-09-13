@@ -55,12 +55,21 @@ internal sealed class MediaPeopleAttacher(
       return person;
     }
 
+    // The per-role added-* HashSets catch duplicates within this one request's own
+    // role list; the per-role "already attached" check below catches a person
+    // attached from a prior call (e.g. a resync) -- without both, a resync that
+    // re-includes an already-attached person throws a unique-constraint violation
+    // instead of being the no-op it's meant to be.
     if (directors is not null)
     {
       foreach (var d in directors)
       {
         var person = await GetOrCreatePersonAsync(d.Name, d.ImdbId, d.TmdbId);
-        if (person is not null && addedDirectors.Add(person.Id.Value))
+        if (
+          person is not null
+          && addedDirectors.Add(person.Id.Value)
+          && media.MediaDirectors.All(md => md.DirectorId != person.Id)
+        )
         {
           _mediaRepository.AddMediaDirector(media, person);
         }
@@ -72,7 +81,11 @@ internal sealed class MediaPeopleAttacher(
       foreach (var a in actors)
       {
         var person = await GetOrCreatePersonAsync(a.Name, a.ImdbId, a.TmdbId);
-        if (person is not null && addedActors.Add(person.Id.Value))
+        if (
+          person is not null
+          && addedActors.Add(person.Id.Value)
+          && media.MediaActors.All(ma => ma.ActorId != person.Id)
+        )
         {
           _mediaRepository.AddMediaActor(media, person);
         }
@@ -84,7 +97,11 @@ internal sealed class MediaPeopleAttacher(
       foreach (var w in writers)
       {
         var person = await GetOrCreatePersonAsync(w.Name, w.ImdbId, w.TmdbId);
-        if (person is not null && addedWriters.Add(person.Id.Value))
+        if (
+          person is not null
+          && addedWriters.Add(person.Id.Value)
+          && media.MediaWriters.All(mw => mw.WriterId != person.Id)
+        )
         {
           _mediaRepository.AddMediaWriter(media, person);
         }
@@ -96,7 +113,11 @@ internal sealed class MediaPeopleAttacher(
       foreach (var p in producers)
       {
         var person = await GetOrCreatePersonAsync(p.Name, p.ImdbId, p.TmdbId);
-        if (person is not null && addedProducers.Add(person.Id.Value))
+        if (
+          person is not null
+          && addedProducers.Add(person.Id.Value)
+          && media.MediaProducers.All(mp => mp.ProducerId != person.Id)
+        )
         {
           _mediaRepository.AddMediaProducer(media, person);
         }

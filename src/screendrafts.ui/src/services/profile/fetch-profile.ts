@@ -1,15 +1,7 @@
 import { env } from "@/lib/env";
+import { GetUserResponse } from "@/lib/dto";
 
 const apiBase = env.apiUrl;
-
-export interface UserProfile {
-  publicId: string;
-  email: string;
-  firstName: string;
-  middleName?: string;
-  lastName: string;
-  personPublicId?: string;
-}
 
 // Matches the actual GET /participants/{personPublicId} response shape.
 interface SocialHandles {
@@ -28,7 +20,7 @@ interface PersonProfile {
   socialHandles?: SocialHandles;
 }
 
-export interface MergedProfile extends UserProfile {
+export interface MergedProfile extends GetUserResponse {
   displayName?: string;
   biography?: string;
   location?: string;
@@ -43,7 +35,7 @@ export async function fetchProfile(accessToken: string): Promise<MergedProfile |
   const headers: HeadersInit = { Authorization: `Bearer ${accessToken}` };
 
   // Step 1: user record
-  let userProfile: UserProfile | null = null;
+  let userProfile: GetUserResponse | null = null;
   try {
     const res = await fetch(`${apiBase}/users/profile`, {
       headers,
@@ -53,7 +45,7 @@ export async function fetchProfile(accessToken: string): Promise<MergedProfile |
       console.error(`[fetchProfile] users/profile ${res.status}`);
       return null;
     }
-    userProfile = await res.json() as UserProfile;
+    userProfile = await res.json() as GetUserResponse;
   } catch (err) {
     console.error("[fetchProfile] users/profile error:", err);
     return null;

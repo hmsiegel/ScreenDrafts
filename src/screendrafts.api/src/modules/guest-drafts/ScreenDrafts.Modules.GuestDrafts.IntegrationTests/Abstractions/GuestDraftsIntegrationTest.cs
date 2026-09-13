@@ -548,6 +548,40 @@ public abstract class GuestDraftsIntegrationTest(GuestDraftsIntegrationTestWebAp
     );
   }
 
+  internal async Task<Result<GuestDraftDetailResponse>> GetGuestDraftDetailsAsync(
+    string guestDraftPublicId,
+    string callerUserPublicId
+  )
+  {
+    return await Sender.Send(
+      new GetGuestDraftDetailsQuery
+      {
+        GuestDraftPublicId = guestDraftPublicId,
+        CallerUserPublicId = callerUserPublicId,
+      },
+      TestContext.Current.CancellationToken
+    );
+  }
+
+  internal async Task<Result<PagedResult<GuestDraftSummaryResponse>>> SearchDraftsAsync(
+    string callerUserPublicId,
+    int page = 1,
+    int pageSize = 20,
+    string? status = null
+  )
+  {
+    return await Sender.Send(
+      new SearchDraftsQuery
+      {
+        CallerUserPublicId = callerUserPublicId,
+        Page = page,
+        PageSize = pageSize,
+        Status = status,
+      },
+      TestContext.Current.CancellationToken
+    );
+  }
+
   /// <summary>
   /// Custom MiniMega guest draft (4 participants: Owner, B, C, D) with five distinct
   /// pick slots exercising every pick state GetGuestDraftGameplay needs to shape a

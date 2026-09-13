@@ -879,3 +879,10 @@ FodyWeavers.xsd
 /src/screendrafts.api/src/api/ScreenDrafts.Web/wwwroot/drafts/d_L6AVX1Paw9P2zQw.jpg
 /src/screendrafts.api/src/api/ScreenDrafts.Web/wwwroot/drafts/d_NnwX8y86nAJYfzb.jpg
 /src/screendrafts.api/src/api/ScreenDrafts.Web/wwwroot/drafts/d_OzmJo4Mtzm5xfrH.jpg
+/infrastructure/hetzner-private-key.ppk
+/infrastructure/hetzner-ssh-private-key
+/infrastructure/vps-setup.sh
+*.dump
+/src/screendrafts.api/screendrafts-deploy-key
+/src/screendrafts.api/screendrafts-deploy-key.pub
+/db-setup.txt

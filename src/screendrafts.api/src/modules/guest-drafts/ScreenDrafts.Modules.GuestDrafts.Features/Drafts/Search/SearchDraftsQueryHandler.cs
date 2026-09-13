@@ -65,8 +65,19 @@ internal sealed class SearchDraftsQueryHandler(
 
     if (!string.IsNullOrWhiteSpace(request.Status))
     {
+      // gd.guest_draft_status is an integer column (the SmartEnum's Value) --
+      // the request carries the enum's Name, so it must be resolved before
+      // binding, not passed through as text (Postgres has no integer = text
+      // operator and would throw at query time).
+      if (!DraftStatus.TryFromName(request.Status, ignoreCase: true, out var status))
+      {
+        return Result.Failure<PagedResult<GuestDraftSummaryResponse>>(
+          DraftErrors.InvalidStatus(request.Status)
+        );
+      }
+
       sqlBuilder.Append(" AND gd.guest_draft_status = @Status");
-      parameters.Add("Status", request.Status);
+      parameters.Add("Status", status.Value, DbType.Int32);
     }
 
     sqlBuilder.Append(" ORDER BY gd.draft_date DESC NULLS LAST, gd.title ASC");

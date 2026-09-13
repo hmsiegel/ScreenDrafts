@@ -78,27 +78,3 @@ export async function fetchAdminRoles(
     return [];
   }
 }
-
-export async function fetchRolePermissions(
-  accessToken: string | undefined,
-  roleName: string
-): Promise<string[]> {
-  try {
-    const response = await fetch(
-      `${apiBase}/admin/roles/${encodeURIComponent(roleName)}/permissions`,
-      {
-        headers: authHeaders(accessToken),
-        cache: "no-store",
-      }
-    );
-    if (!response.ok) {
-      console.error(`[fetchRolePermissions] ${response.status}`);
-      return [];
-    }
-    const data = await response.json() as { permissions?: string[] };
-    return data.permissions ?? [];
-  } catch (err) {
-    console.error("[fetchRolePermissions] error:", err);
-    return [];
-  }
-}

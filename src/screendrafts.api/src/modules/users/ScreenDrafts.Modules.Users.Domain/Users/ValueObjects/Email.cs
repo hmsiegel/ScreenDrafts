@@ -10,11 +10,9 @@ public sealed record Email(string? Value)
 
   public static Result<Email> Create(string? email) =>
     Result
-      .Ensure(
-        email,
-        (e => !string.IsNullOrWhiteSpace(e), EmailErrors.Empty),
-        (e => e.Length <= MaxLength, EmailErrors.TooLong),
-        (e => e.Split('@').Length == 2, EmailErrors.Invalid)
-      )
+      .Create(email)
+      .Ensure(e => !string.IsNullOrWhiteSpace(e), EmailErrors.Empty)
+      .Ensure(e => e!.Length <= MaxLength, EmailErrors.TooLong)
+      .Ensure(e => e!.Split('@').Length == 2, EmailErrors.Invalid)
       .Map(e => new Email(e));
 }

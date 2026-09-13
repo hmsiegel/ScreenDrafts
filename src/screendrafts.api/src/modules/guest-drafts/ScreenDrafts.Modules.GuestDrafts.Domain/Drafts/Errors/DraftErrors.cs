@@ -23,6 +23,9 @@ public static class DraftErrors
   public static SDError InvalidType(string type) =>
     SDError.Problem("Drafts.InvalidType", $"'{type}' is not a valid guest draft type.");
 
+  public static SDError InvalidStatus(string status) =>
+    SDError.Problem("Drafts.InvalidStatus", $"'{status}' is not a valid guest draft status.");
+
   public static SDError ParticipantAlreadyAdded(Guid userId) =>
     SDError.Conflict(
       "Drafts.ParticipantAlreadyAdded",

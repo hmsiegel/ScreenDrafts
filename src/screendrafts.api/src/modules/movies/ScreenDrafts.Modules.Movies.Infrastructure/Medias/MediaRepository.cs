@@ -208,10 +208,16 @@ internal sealed class MediaRepository(MoviesDbContext context) : IMediaRepositor
     CancellationToken cancellationToken = default
   )
   {
-    return await _context.Media.SingleOrDefaultAsync(
-      m => m.TmdbId == tmdbId && m.MediaType == mediaType,
-      cancellationToken
-    );
+    // Cast/company collections must be loaded here (unlike a plain lookup) because
+    // SyncMediaPeopleCommandHandler feeds this into MediaPeopleAttacher, which needs
+    // to see what's already attached to stay idempotent across resyncs.
+    return await _context
+      .Media.Include(m => m.MediaActors)
+      .Include(m => m.MediaDirectors)
+      .Include(m => m.MediaWriters)
+      .Include(m => m.MediaProducers)
+      .Include(m => m.MediaProductionCompanies)
+      .SingleOrDefaultAsync(m => m.TmdbId == tmdbId && m.MediaType == mediaType, cancellationToken);
   }
 
   public async Task<Media?> FindByTvEpisodeForUpdateAsync(
@@ -221,13 +227,19 @@ internal sealed class MediaRepository(MoviesDbContext context) : IMediaRepositor
     CancellationToken cancellationToken = default
   )
   {
-    return await _context.Media.SingleOrDefaultAsync(
-      m =>
-        m.TvSeriesTmdbId == tvSeriesTmdbId
-        && m.SeasonNumber == seasonNumber
-        && m.EpisodeNumber == episodeNumber,
-      cancellationToken
-    );
+    return await _context
+      .Media.Include(m => m.MediaActors)
+      .Include(m => m.MediaDirectors)
+      .Include(m => m.MediaWriters)
+      .Include(m => m.MediaProducers)
+      .Include(m => m.MediaProductionCompanies)
+      .SingleOrDefaultAsync(
+        m =>
+          m.TvSeriesTmdbId == tvSeriesTmdbId
+          && m.SeasonNumber == seasonNumber
+          && m.EpisodeNumber == episodeNumber,
+        cancellationToken
+      );
   }
 
   public async Task<bool> ExistsByExternalIdAsync(

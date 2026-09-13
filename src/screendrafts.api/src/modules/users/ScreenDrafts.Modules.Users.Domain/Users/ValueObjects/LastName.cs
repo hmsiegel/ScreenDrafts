@@ -2,7 +2,7 @@
 
 namespace ScreenDrafts.Modules.Users.Domain.Users.ValueObjects;
 
-public class LastName(string? Value)
+public sealed record LastName(string? Value)
 {
   public const int MaxLength = 50;
 

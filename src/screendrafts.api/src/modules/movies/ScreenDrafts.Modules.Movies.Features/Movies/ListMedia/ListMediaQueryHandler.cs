@@ -3,15 +3,6 @@
 internal sealed class ListMediaQueryHandler(IDbConnectionFactory dbConnectionFactory)
   : IQueryHandler<ListMediaQuery, ListMediaResponse>
 {
-  private static readonly Dictionary<int, string> _mediaTypeNames = new()
-  {
-    { 0, "Movie" },
-    { 1, "TvShow" },
-    { 2, "TvEpisode" },
-    { 3, "VideoGame" },
-    { 4, "MusicVideo" },
-  };
-
   public async Task<Result<ListMediaResponse>> Handle(
     ListMediaQuery request,
     CancellationToken cancellationToken
@@ -63,7 +54,7 @@ internal sealed class ListMediaQueryHandler(IDbConnectionFactory dbConnectionFac
         Title = r.Title,
         Year = r.Year,
         MediaTypeValue = r.MediaTypeValue,
-        MediaTypeName = _mediaTypeNames.GetValueOrDefault(r.MediaTypeValue, "Movie"),
+        MediaTypeName = MediaType.FromValue(r.MediaTypeValue).Name,
         Image = r.Image,
         ImdbId = r.ImdbId,
         TmdbId = r.TmdbId,

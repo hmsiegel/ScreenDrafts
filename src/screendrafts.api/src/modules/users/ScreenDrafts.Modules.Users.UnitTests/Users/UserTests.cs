@@ -82,4 +82,80 @@ public class UserTests : BaseTest
     // Assert
     user.Value.DomainEvents.Should().BeEmpty();
   }
+
+  [Fact]
+  public void Update_WithFreshInstancesCarryingTheSameValues_ShouldNotRaiseDomainEvent()
+  {
+    // Arrange -- regression: UpdateUserCommandHandler always builds FirstName/LastName
+    // fresh from the request (FirstName.Create(command.FirstName).Value), never reusing
+    // user.FirstName/user.LastName. Before FirstName/LastName became records, the
+    // no-op guard in Update compared by reference, so this exact scenario -- a
+    // resubmission of unchanged data -- would incorrectly raise the domain event
+    // every time.
+    var firstNameValue = Faker.Name.FirstName();
+    var lastNameValue = Faker.Name.LastName();
+    var user = User.Create(
+        Email.Create(Faker.Internet.Email()).Value,
+        FirstName.Create(firstNameValue).Value,
+        LastName.Create(lastNameValue).Value,
+        Guid.NewGuid().ToString(),
+        _publicId);
+
+    user.Value.ClearDomainEvents();
+
+    // Act -- distinct FirstName/LastName instances, same underlying values
+    user.Value.Update(FirstName.Create(firstNameValue).Value, LastName.Create(lastNameValue).Value);
+
+    // Assert
+    user.Value.DomainEvents.Should().BeEmpty();
+  }
+
+  [Fact]
+  public void LinkPerson_WhenNotPreviouslyLinked_ShouldSetPersonAndRaiseDomainEvent()
+  {
+    // Arrange
+    var user = User.Create(
+        Email.Create(Faker.Internet.Email()).Value,
+        FirstName.Create(Faker.Name.FirstName()).Value,
+        LastName.Create(Faker.Name.LastName()).Value,
+        Guid.NewGuid().ToString(),
+        _publicId);
+    user.Value.ClearDomainEvents();
+
+    var personId = Guid.NewGuid();
+    var personPublicId = $"p_{Nanoid.Generate(size: 15)}";
+
+    // Act
+    user.Value.LinkPerson(personId, personPublicId);
+
+    // Assert
+    user.Value.PersonId.Should().Be(personId);
+    user.Value.PersonPublicId.Should().Be(personPublicId);
+    var domainEvent = AssertDomainEventWasPublished<UserLinkedToPersonDomainEvent>(user.Value);
+    domainEvent.UserId.Should().Be(user.Value.Id.Value);
+    domainEvent.PersonId.Should().Be(personId);
+    domainEvent.PersonPublicId.Should().Be(personPublicId);
+  }
+
+  [Fact]
+  public void LinkPerson_WhenAlreadyLinkedToTheSamePerson_ShouldNotRaiseDomainEvent()
+  {
+    // Arrange
+    var user = User.Create(
+        Email.Create(Faker.Internet.Email()).Value,
+        FirstName.Create(Faker.Name.FirstName()).Value,
+        LastName.Create(Faker.Name.LastName()).Value,
+        Guid.NewGuid().ToString(),
+        _publicId);
+    var personId = Guid.NewGuid();
+    var personPublicId = $"p_{Nanoid.Generate(size: 15)}";
+    user.Value.LinkPerson(personId, personPublicId);
+    user.Value.ClearDomainEvents();
+
+    // Act -- re-linking to the exact same person should be a no-op
+    user.Value.LinkPerson(personId, personPublicId);
+
+    // Assert
+    user.Value.DomainEvents.Should().BeEmpty();
+  }
 }
