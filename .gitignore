@@ -882,3 +882,4 @@ FodyWeavers.xsd
 /infrastructure/hetzner-private-key.ppk
 /infrastructure/hetzner-ssh-private-key
 /infrastructure/vps-setup.sh
+*.dump
