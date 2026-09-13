@@ -1,4 +1,4 @@
-import { ListDraftsResponse, PagedResultOfListDraftsResponse, PagedResultOfPersonResponse, PersonResponse } from "../lib/dto";
+import { ListDraftsResponse, PagedResultOfListDraftsResponse } from "../lib/dto";
 
 export interface PagedResult<T> {
    items: T[];
@@ -10,17 +10,6 @@ export interface PagedResult<T> {
 export function toPagedDraftResult(
    api: PagedResultOfListDraftsResponse
 ): PagedResult<ListDraftsResponse> {
-   return {
-      items: api.items ?? [],
-      total: api.totalCount ?? 0,
-      page: api.page ?? 1,
-      pageSize: api.pageSize ?? 10,
-   };
-}
-
-export function toPagedPeopleResult(
-   api: PagedResultOfPersonResponse
-): PagedResult<PersonResponse> {
    return {
       items: api.items ?? [],
       total: api.totalCount ?? 0,

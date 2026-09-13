@@ -1,32 +1,6 @@
 import { env } from "@/lib/env";
-import { auth } from "@/auth";
-import { CandidateListEntryResponse } from "@/lib/dto";
 
 const apiBase = env.apiUrl;
-
-async function accessToken(): Promise<string | undefined> {
-  const session = await auth();
-  return session?.accessToken;
-}
-
-export async function getCandidateList(draftPartId: string): Promise<CandidateListEntryResponse[]> {
-  try {
-    const token = await accessToken();
-    const res = await fetch(
-      `${apiBase}/draft-parts/${encodeURIComponent(draftPartId)}/candidate-list`,
-      {
-        headers: token ? { Authorization: `Bearer ${token}` } : {},
-        cache: "no-store",
-      }
-    );
-    if (!res.ok) return [];
-    const data = (await res.json()) as { items?: CandidateListEntryResponse[] };
-    return data.items ?? [];
-  } catch (err) {
-    console.error("[getCandidateList]", err);
-    return [];
-  }
-}
 
 export async function addCandidateListEntry(
   accessTokenValue: string,

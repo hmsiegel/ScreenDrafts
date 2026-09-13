@@ -4,6 +4,7 @@ import {
   CategoryResponse,
   CreatedResponse,
   GetDraftCategoryResponse,
+  GetDrafterTeamMemberResponse,
   GetMediaByTmdbIdsResponse,
   ListPredictionSeasonsResponse,
   SearchDraftsResponse,
@@ -373,16 +374,11 @@ export async function searchDrafterTeams(
   }
 }
 
-export interface DrafterTeamMember {
-  publicId: string;
-  displayName: string;
-}
-
 export interface DrafterTeamDetail {
   publicId: string;
   name: string;
   numberOfDrafters: number;
-  members: DrafterTeamMember[];
+  members: GetDrafterTeamMemberResponse[];
 }
 
 export async function getDrafterTeam(
@@ -399,7 +395,7 @@ export async function getDrafterTeam(
       publicId?: string;
       name?: string;
       numberOfDrafters?: number;
-      members?: DrafterTeamMember[];
+      members?: GetDrafterTeamMemberResponse[];
     };
     if (!data.publicId || !data.name) return null;
     return {
