@@ -1,10 +1,13 @@
 ﻿namespace ScreenDrafts.Modules.Users.Infrastructure.Database;
 
 public sealed class UsersDbContext(DbContextOptions<UsersDbContext> options)
-  : DbContext(options), IUnitOfWork
+  : DbContext(options),
+    IUnitOfWork
 {
   internal DbSet<User> Users { get; set; } = default!;
   internal DbSet<UserPermissions> UserPermissions { get; set; } = default!;
+  internal DbSet<EmailChangeToken> EmailChangeTokens { get; set; } = default!;
+  internal DbSet<EmailBootstrapClaim> EmailBootstrapClaims { get; set; } = default!;
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {

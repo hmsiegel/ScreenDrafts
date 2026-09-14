@@ -35,6 +35,7 @@ global using ScreenDrafts.Common.Infrastructure.Serialization;
 global using ScreenDrafts.Modules.Users.Domain.Abstractions.Data;
 global using ScreenDrafts.Modules.Users.Domain.Abstractions.Identity;
 global using ScreenDrafts.Modules.Users.Domain.Bootstraps;
+global using ScreenDrafts.Modules.Users.Domain.EmailChange;
 global using ScreenDrafts.Modules.Users.Domain.Users;
 global using ScreenDrafts.Modules.Users.Domain.Users.ValueObjects;
 global using ScreenDrafts.Modules.Users.Infrastructure.Database;

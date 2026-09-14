@@ -9,20 +9,19 @@ internal sealed class EmailBootstrapClaimRepository(UsersDbContext dbContext)
     UserId userId,
     CancellationToken cancellationToken = default
   ) =>
-    await _dbContext
-      .Set<EmailBootstrapClaim>()
-      .SingleOrDefaultAsync(x => x.UserId == userId, cancellationToken);
+    await _dbContext.EmailBootstrapClaims.SingleOrDefaultAsync(
+      x => x.UserId == userId,
+      cancellationToken
+    );
 
   public async Task<IReadOnlyList<EmailBootstrapClaim>> GetUnclaimedAsync(
     CancellationToken cancellationToken = default
   ) =>
     await _dbContext
-      .Set<EmailBootstrapClaim>()
-      .Where(x => x.ClaimedAt == null)
+      .EmailBootstrapClaims.Where(x => x.ClaimedAt == null)
       .ToListAsync(cancellationToken);
 
-  public void Add(EmailBootstrapClaim claim) => _dbContext.Set<EmailBootstrapClaim>().Add(claim);
+  public void Add(EmailBootstrapClaim claim) => _dbContext.EmailBootstrapClaims.Add(claim);
 
-  public void Update(EmailBootstrapClaim claim) =>
-    _dbContext.Set<EmailBootstrapClaim>().Update(claim);
+  public void Update(EmailBootstrapClaim claim) => _dbContext.EmailBootstrapClaims.Update(claim);
 }

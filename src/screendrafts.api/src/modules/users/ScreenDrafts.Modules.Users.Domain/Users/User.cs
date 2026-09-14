@@ -102,6 +102,19 @@ public sealed class User : AggregateRoot<UserId, Guid>
     Raise(new UserEmailChangedDomainEvent(Id.Value, newEmail.Value!));
   }
 
+  /// <summary>
+  /// Steady-state email change, step 1: records intent and raises the event
+  /// that triggers the confirmation email. Does not mutate Email — that only
+  /// happens once the user confirms via ChangeEmail.
+  /// </summary>
+  public void RequestEmailChange(string newEmail, string confirmationLink)
+  {
+    ArgumentException.ThrowIfNullOrWhiteSpace(newEmail);
+    ArgumentException.ThrowIfNullOrWhiteSpace(confirmationLink);
+
+    Raise(new UserEmailChangeRequestedDomainEvent(Id.Value, newEmail, confirmationLink));
+  }
+
   public void LinkPerson(Guid personId, string personPublicId)
   {
     if (PersonId == personId && PersonPublicId == personPublicId)

@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Users.Composition;
+﻿using ScreenDrafts.Modules.Users.Features.Users.EmailChange;
+
+namespace ScreenDrafts.Modules.Users.Composition;
 
 public static class UsersModule
 {
@@ -69,6 +71,11 @@ public static class UsersModule
     services.Configure<EmailBootstrapOptions>(
       configuration.GetSection(EmailBootstrapOptions.SectionName)
     );
+
+    services.Configure<EmailChangeOptions>(
+      configuration.GetSection(EmailChangeOptions.SectionName)
+    );
+
     services.AddScoped<IUsersApi, UsersApi>();
     services.AddScoped<IUsersDomainEventDispatcher, UsersDomainEventDispatcher>();
     services.AddScoped<IUsersIntegrationEventDispatcher, UsersIntegrationEventDispatcher>();

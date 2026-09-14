@@ -9,4 +9,5 @@ internal static class Tables
   internal const string RolePermissions = "role_permissions";
   internal const string UserPermissions = "user_permissions";
   internal const string EmailBootstrapClaims = "email_bootstrap_claims";
+  internal const string EmailChangeTokens = "email_change_tokens";
 }

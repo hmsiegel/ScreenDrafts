@@ -9,7 +9,11 @@
       "BatchSize": 20
     },
     "EmailBootstrap": {
-      "DefaultExpiryHours":  72
-   }
+      "DefaultExpiryHours": 72
+    },
+    "EmailChange": {
+      "ConfirmationBaseUrl": "",
+      "TokenExpiryHours": 1
+    }
   }
 }

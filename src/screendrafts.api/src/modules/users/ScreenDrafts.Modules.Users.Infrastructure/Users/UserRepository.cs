@@ -16,27 +16,49 @@ internal sealed class UserRepository(UsersDbContext dbContext) : IUserRepository
 
   public async Task<User?> GetAsync(UserId id, CancellationToken cancellationToken = default)
   {
-    return await _dbContext.Users
-      .SingleOrDefaultAsync(x => x.Id == id, cancellationToken);
+    return await _dbContext.Users.SingleOrDefaultAsync(x => x.Id == id, cancellationToken);
   }
 
-  public async Task<User?> GetByEmailAsync(Email email, CancellationToken cancellationToken = default)
+  public async Task<User?> GetByEmailAsync(
+    Email email,
+    CancellationToken cancellationToken = default
+  )
   {
     return await _dbContext.Users.SingleOrDefaultAsync(x => x.Email == email, cancellationToken);
   }
 
-  public async Task<bool> IsEmailUniqueAsync(Email email, CancellationToken cancellationToken = default)
+  public async Task<bool> IsEmailUniqueAsync(
+    Email email,
+    CancellationToken cancellationToken = default
+  )
   {
     return !await _dbContext.Users.AnyAsync(x => x.Email == email, cancellationToken);
   }
 
-  public Task<User?> GetByPublicIdAsync(string publicId, CancellationToken cancellationToken = default)
+  public async Task<User?> GetByPublicIdAsync(
+    string publicId,
+    CancellationToken cancellationToken = default
+  )
   {
-    return _dbContext.Users.SingleOrDefaultAsync(x => x.PublicId == publicId, cancellationToken);
+    return await _dbContext.Users.SingleOrDefaultAsync(
+      x => x.PublicId == publicId,
+      cancellationToken
+    );
   }
 
-  public Task<User?> GetByIdentityIdAsync(string identityId, CancellationToken cancellationToken = default)
+  public async Task<User?> GetByIdentityIdAsync(
+    string identityId,
+    CancellationToken cancellationToken = default
+  )
   {
-    return _dbContext.Users.SingleOrDefaultAsync(x => x.IdentityId == identityId, cancellationToken);
+    return await _dbContext.Users.SingleOrDefaultAsync(
+      x => x.IdentityId == identityId,
+      cancellationToken
+    );
+  }
+
+  public async Task<IReadOnlyList<User>> GetAllAsync(CancellationToken cancellationToken = default)
+  {
+    return await _dbContext.Users.ToListAsync(cancellationToken);
   }
 }

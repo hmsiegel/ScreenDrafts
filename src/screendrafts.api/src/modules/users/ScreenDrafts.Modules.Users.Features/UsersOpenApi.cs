@@ -18,5 +18,10 @@ internal static class UsersOpenApi
     public const string Users_GetUsersProfiles = "Users.GetUsersProfiles";
     public const string Users_RegisterSocialUser = "Users.RegisterSocialUser";
     public const string Users_UpdateUserPassword = "Users.UpdateUserPassword";
+    public const string Users_GenerateEmailBootstrapTokens = "Users.GenerateEmailBootstrapTokens";
+    public const string Users_ValidateEmailBootstrapToken = "Users.ValidateEmailBootstrapToken";
+    public const string Users_ClaimEmailBootstrapToken = "Users.ClaimEmailBootstrapToken";
+    public const string Users_RequestEmailChange = "Users.RequestEmailChange";
+    public const string Users_ConfirmEmailChange = "Users.ConfirmEmailChange";
   }
 }
