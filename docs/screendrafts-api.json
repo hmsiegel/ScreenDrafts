@@ -8750,6 +8750,215 @@
         ]
       }
     },
+    "/users/email-change/bootstrap/validate": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "Users.ValidateEmailBootstrapToken",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/ValidateEmailBootstrapTokenRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ValidateEmailBootstrapTokenRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmailBootstrapTokenValidationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/users/email-change/request": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "Users.RequestEmailChange",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestEmailChangeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/users/email-change/bootstrap/generate": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "Users.GenerateEmailBootstrapTokens",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateEmailBootstrapTokensRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EmailBootstrapTokenResponse"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/users/email-change/confirm": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "Users.ConfirmEmailChange",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfirmEmailChangeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/users/email-change/bootstrap/claim": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "Users.ClaimEmailBootstrapToken",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClaimEmailBootstrapRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
     "/users/profile/password": {
       "post": {
         "tags": [
@@ -10224,6 +10433,17 @@
           }
         }
       },
+      "ClaimEmailBootstrapRequest": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string"
+          },
+          "newEmail": {
+            "type": "string"
+          }
+        }
+      },
       "ClearCampaignDraftRequest": {
         "required": [
           "draftId"
@@ -10288,6 +10508,17 @@
             "type": "string"
           },
           "personPublicId": {
+            "type": "string"
+          }
+        }
+      },
+      "ConfirmEmailChangeRequest": {
+        "required": [
+          "token"
+        ],
+        "type": "object",
+        "properties": {
+          "token": {
             "type": "string"
           }
         }
@@ -11654,6 +11885,44 @@
           }
         }
       },
+      "EmailBootstrapTokenResponse": {
+        "type": "object",
+        "properties": {
+          "userPublicId": {
+            "type": "string"
+          },
+          "currentEmail": {
+            "type": "string"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "isPatreon": {
+            "type": "boolean"
+          },
+          "token": {
+            "type": "string"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "EmailBootstrapTokenValidationResponse": {
+        "type": "object",
+        "properties": {
+          "isValid": {
+            "type": "boolean"
+          },
+          "userPublicId": {
+            "type": "string"
+          }
+        }
+      },
       "EndZoomSessionRequest": {
         "type": "object",
         "properties": {
@@ -12508,6 +12777,34 @@
               "null",
               "string"
             ]
+          }
+        }
+      },
+      "GenerateEmailBootstrapTokensRequest": {
+        "type": "object",
+        "properties": {
+          "userPublicIds": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "batchLabel": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "expiryHours": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
           }
         }
       },
@@ -19650,6 +19947,17 @@
           }
         }
       },
+      "RequestEmailChangeRequest": {
+        "required": [
+          "newEmail"
+        ],
+        "type": "object",
+        "properties": {
+          "newEmail": {
+            "type": "string"
+          }
+        }
+      },
       "RevealGuestDraftPickRequest": {
         "type": "object",
         "properties": {
@@ -21907,6 +22215,14 @@
             "items": {
               "type": "string"
             }
+          }
+        }
+      },
+      "ValidateEmailBootstrapTokenRequest": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string"
           }
         }
       },

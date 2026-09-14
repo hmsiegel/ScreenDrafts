@@ -10,7 +10,7 @@ internal sealed class ProcessOutboxJob(
   IGuestDraftsDomainEventDispatcher domainEventDispatcher
 ) : IJob
 {
-  private const string ModuleName = "Drafts";
+  private const string ModuleName = "GuestDrafts";
 
   private readonly IDbConnectionFactory _dbConnectionFactory = dbConnectionFactory;
   private readonly IServiceScopeFactory _serviceScopeFactory = serviceScopeFactory;

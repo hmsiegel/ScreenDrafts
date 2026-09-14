@@ -39,5 +39,6 @@ global using ScreenDrafts.Modules.Users.Domain.EmailChange;
 global using ScreenDrafts.Modules.Users.Domain.Users;
 global using ScreenDrafts.Modules.Users.Domain.Users.ValueObjects;
 global using ScreenDrafts.Modules.Users.Infrastructure.Database;
+global using ScreenDrafts.Modules.Users.Infrastructure.Identity;
 global using ScreenDrafts.Modules.Users.Infrastructure.Inbox;
 global using ScreenDrafts.Modules.Users.Infrastructure.Outbox;

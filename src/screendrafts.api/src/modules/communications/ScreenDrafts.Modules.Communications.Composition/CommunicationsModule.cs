@@ -69,6 +69,14 @@ public static class CommunicationsModule
     registrationConfigurator
       .AddConsumer<IntegrationEventConsumer<DraftCreatedIntegrationEvent>>()
       .Endpoint(x => x.InstanceId = moduleInstanceId);
+
+    registrationConfigurator
+      .AddConsumer<IntegrationEventConsumer<UserEmailChangedIntegrationEvent>>()
+      .Endpoint(x => x.InstanceId = moduleInstanceId);
+
+    registrationConfigurator
+      .AddConsumer<IntegrationEventConsumer<EmailChangeConfirmationRequestedIntegrationEvent>>()
+      .Endpoint(x => x.InstanceId = moduleInstanceId);
   }
 
   private static void AddDomainEventHandlers(this IServiceCollection services)
