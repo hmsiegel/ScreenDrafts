@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Common.Abstractions.Errors;
-
-namespace ScreenDrafts.Modules.Users.Domain.Abstractions.Identity;
+﻿namespace ScreenDrafts.Modules.Users.Domain.Abstractions.Identity;
 
 public static class IdentityProviderErrors
 {

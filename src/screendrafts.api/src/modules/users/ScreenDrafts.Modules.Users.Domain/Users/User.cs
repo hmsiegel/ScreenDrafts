@@ -83,6 +83,25 @@ public sealed class User : AggregateRoot<UserId, Guid>
     Raise(new UserProfileUpdatedDomainEvent(Id.Value, firstName.Value!, lastName.Value!));
   }
 
+  /// <summary>
+  /// Updates the module's own copy of the email — this must be called any time
+  /// the Keycloak-side email changes (bootstrap claim, or steady-state confirm),
+  /// or the app keeps showing/using the old address while Keycloak has the new one.
+  /// </summary>
+  public void ChangeEmail(Email newEmail)
+  {
+    ArgumentNullException.ThrowIfNull(newEmail);
+
+    if (Email == newEmail)
+    {
+      return;
+    }
+
+    Email = newEmail;
+
+    Raise(new UserEmailChangedDomainEvent(Id.Value, newEmail.Value!));
+  }
+
   public void LinkPerson(Guid personId, string personPublicId)
   {
     if (PersonId == personId && PersonPublicId == personPublicId)
