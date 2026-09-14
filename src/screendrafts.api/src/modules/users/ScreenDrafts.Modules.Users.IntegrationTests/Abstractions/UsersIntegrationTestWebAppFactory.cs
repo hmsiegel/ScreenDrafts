@@ -93,6 +93,13 @@ public class UsersIntegrationTestWebAppFactory : IntegrationTestWebAppFactory
       ["Users__KeyCloak__ConfidentialClientId"] = "screendrafts-confidential-client",
       ["Users__KeyCloak__ConfidentialClientSecret"] = "oRL4la55pi1uMlJMKSlg3hrhLfvKrZsg",
       ["Users__KeyCloak__PublicClientId"] = "screendrafts-public-client",
+
+      // Users:EmailBootstrap:Secret has no value in modules.users.json / .Development.json
+      // (correctly, for a real HMAC secret) and nothing else supplies one for the test
+      // host either -- EmailBootstrapTokenService's constructor throws immediately on
+      // resolution without it. Test-only value; real environments must supply this via
+      // user-secrets/environment/Key Vault, which is currently not wired up anywhere.
+      ["Users__EmailBootstrap__Secret"] = "integration-test-only-secret-do-not-use-in-prod",
     };
 
     foreach (var (key, value) in envVars)
@@ -136,20 +143,21 @@ public class UsersIntegrationTestWebAppFactory : IntegrationTestWebAppFactory
 
   protected override IEnumerable<Type> GetDbContextTypes()
   {
-    var auditContextType = AppDomain
+    var extraContextTypeNames = new[]
+    {
+      "ScreenDrafts.Modules.Audit.Infrastructure.Database.AuditDbContext",
+      // GenerateEmailBootstrapTokensCommandHandler calls IAdministrationApi, which
+      // queries administration.user_roles directly — that schema must be migrated
+      // here too, or the query throws (missing table) rather than failing gracefully.
+      "ScreenDrafts.Modules.Administration.Infrastructure.Database.AdministrationDbContext",
+    };
+
+    var extraContextTypes = AppDomain
       .CurrentDomain.GetAssemblies()
       .SelectMany(a => a.GetTypes())
-      .FirstOrDefault(t =>
-        string.Equals(
-          t.FullName,
-          "ScreenDrafts.Modules.Audit.Infrastructure.Database.AuditDbContext",
-          StringComparison.Ordinal
-        )
-      );
+      .Where(t => extraContextTypeNames.Contains(t.FullName, StringComparer.Ordinal));
 
-    return auditContextType is null
-      ? [typeof(UsersDbContext)]
-      : [typeof(UsersDbContext), auditContextType];
+    return [typeof(UsersDbContext), .. extraContextTypes];
   }
 
   protected override async Task ApplyMigrationsAsync()
@@ -223,6 +231,51 @@ public class UsersIntegrationTestWebAppFactory : IntegrationTestWebAppFactory
           details          jsonb,
           CONSTRAINT pk_auth_audit_logs PRIMARY KEY (id)
       );
+      """
+    );
+
+    // administration.user_roles is queried by GenerateEmailBootstrapTokensCommandHandler
+    // (via IAdministrationApi) but isn't EF-migrated -- mirrors
+    // AdministrationIntegrationTestWebAppFactory.CreateAdministrationTablesAsync exactly,
+    // including the roles/role_permissions tables the FK on user_roles depends on.
+    await connection.ExecuteAsync(
+      """
+      CREATE TABLE IF NOT EXISTS administration.permissions (
+          code VARCHAR(100) NOT NULL,
+          CONSTRAINT pk_permissions PRIMARY KEY (code)
+      );
+
+      CREATE TABLE IF NOT EXISTS administration.roles (
+          name VARCHAR(50) NOT NULL,
+          CONSTRAINT pk_roles PRIMARY KEY (name)
+      );
+
+      CREATE TABLE IF NOT EXISTS administration.role_permissions (
+          permission_code VARCHAR(100) NOT NULL,
+          role_name       VARCHAR(50)  NOT NULL,
+          CONSTRAINT pk_role_permissions PRIMARY KEY (permission_code, role_name),
+          CONSTRAINT fk_role_permissions_permission_code
+              FOREIGN KEY (permission_code) REFERENCES administration.permissions (code)
+              ON DELETE CASCADE,
+          CONSTRAINT fk_role_permissions_role_name
+              FOREIGN KEY (role_name) REFERENCES administration.roles (name)
+              ON DELETE CASCADE
+      );
+
+      CREATE INDEX IF NOT EXISTS ix_role_permissions_role_name
+          ON administration.role_permissions (role_name);
+
+      CREATE TABLE IF NOT EXISTS administration.user_roles (
+          user_id   UUID        NOT NULL,
+          role_name VARCHAR(50) NOT NULL,
+          CONSTRAINT pk_user_roles PRIMARY KEY (user_id, role_name),
+          CONSTRAINT fk_user_roles_role_name
+              FOREIGN KEY (role_name) REFERENCES administration.roles (name)
+              ON DELETE CASCADE
+      );
+
+      CREATE INDEX IF NOT EXISTS ix_user_roles_user_id
+          ON administration.user_roles (user_id);
       """
     );
   }
