@@ -11,7 +11,8 @@ public sealed class User : AggregateRoot<UserId, Guid>
     string publicId,
     Guid? personId,
     string? personPublicId,
-    string? middleName = null
+    string? middleName = null,
+    bool isSocialLogin = false
   )
     : base(id)
   {
@@ -24,6 +25,7 @@ public sealed class User : AggregateRoot<UserId, Guid>
     PublicId = publicId;
     PersonId = personId;
     PersonPublicId = personPublicId;
+    IsSocialLogin = isSocialLogin;
   }
 
   private User() { }
@@ -37,6 +39,14 @@ public sealed class User : AggregateRoot<UserId, Guid>
   public Guid? PersonId { get; private set; } = default!;
   public string? PersonPublicId { get; private set; } = default!;
 
+  /// <summary>
+  /// True if this account was created through a social/federated login
+  /// (Register/Social) rather than local email+password registration. Fixed
+  /// at creation — never changes after the fact, so there's no setter.
+  /// Existing accounts default to false.
+  /// </summary>
+  public bool IsSocialLogin { get; private set; }
+
   public static Result<User> Create(
     Email email,
     FirstName firstName,
@@ -46,7 +56,8 @@ public sealed class User : AggregateRoot<UserId, Guid>
     string? middleName = null,
     UserId? id = null,
     Guid? personId = null,
-    string? personPublicId = null
+    string? personPublicId = null,
+    bool isSocialLogin = false
   )
   {
     var user = new User(
@@ -58,7 +69,8 @@ public sealed class User : AggregateRoot<UserId, Guid>
       personId: personId,
       personPublicId: personPublicId,
       publicId: publicId,
-      id: id ?? UserId.CreateUnique()
+      id: id ?? UserId.CreateUnique(),
+      isSocialLogin: isSocialLogin
     );
 
     user.Raise(new UserRegisteredDomainEvent(user.Id.Value));

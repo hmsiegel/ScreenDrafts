@@ -37,51 +37,35 @@ public sealed class AddGuestDraftMovieTests(GuestDraftsIntegrationTestWebAppFact
   }
 
   [Fact]
-  public async Task AddGuestDraftMovie_WhenPublicIdAlreadyExists_ShouldSucceedIdempotentlyAsync()
+  public async Task AddGuestDraftMovie_WithDuplicatePublicId_ShouldReturnErrorAsync()
   {
     // Arrange
-    var command = new AddMovieCommand
+    var publicId = $"m_{Faker.Random.AlphaNumeric(15)}";
+    var firstCommand = new AddMovieCommand
     {
       Id = Guid.NewGuid(),
-      PublicId = $"m_{Faker.Random.AlphaNumeric(15)}",
+      PublicId = publicId,
       Title = Faker.Company.CompanyName(),
       MediaType = MediaType.Movie,
     };
-    (await Sender.Send(command, TestContext.Current.CancellationToken)).IsSuccess.Should().BeTrue();
+    (await Sender.Send(firstCommand, TestContext.Current.CancellationToken)).IsSuccess.Should().BeTrue();
 
-    // Act -- redelivered with a different Id, same PublicId. A redundant
-    // delivery of something already synced is success, not an error --
-    // MediaAddedIntegrationEvent can legitimately arrive more than once
-    // (outbox/inbox at-least-once), and treating a redelivery as a failure
-    // is what let a single redelivered message get stuck in a permanent
-    // retry loop, blocking every message queued behind it.
-    var duplicate = command with
+    // Act
+    var secondCommand = firstCommand with
     {
       Id = Guid.NewGuid(),
     };
-    var result = await Sender.Send(duplicate, TestContext.Current.CancellationToken);
+    var result = await Sender.Send(secondCommand, TestContext.Current.CancellationToken);
 
     // Assert
-    result.IsSuccess.Should().BeTrue();
-    result
-      .Value.Should()
-      .Be(
-        command.PublicId,
-        "a redundant delivery returns the existing row's identity, not a new one"
-      );
-
-    var movie = await DbContext.Movies.SingleAsync(
-      m => m.PublicId == command.PublicId,
-      TestContext.Current.CancellationToken
-    );
-    movie
-      .Id.Should()
-      .Be(command.Id, "the redelivered duplicate must not overwrite the original row");
+    result.IsFailure.Should().BeTrue();
+    result.Errors.Should().NotBeEmpty();
+    result.Errors[0].Should().Be(MovieErrors.MovieAlreadyExists(publicId));
 
     var movieCount = await DbContext.Movies.CountAsync(
-      m => m.PublicId == command.PublicId,
+      m => m.PublicId == publicId,
       TestContext.Current.CancellationToken
     );
-    movieCount.Should().Be(1, "a redelivered duplicate must not create a second row");
+    movieCount.Should().Be(1);
   }
 }

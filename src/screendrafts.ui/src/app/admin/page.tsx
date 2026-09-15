@@ -6,6 +6,7 @@ import RolesAccordion from "./roles-accordion";
 import AdminTabs from "./admin-tabs";
 import { Metadata } from "next";
 import { env } from "@/lib/env";
+import EmailBootstrapPanel from "./email-bootstrap-panel";
 
 export const metadata: Metadata = { title: "Administration" };
 export const dynamic = "force-dynamic";
@@ -62,6 +63,11 @@ export default async function AdminPage() {
           rolesPanel={
             <AdminCard title="Roles & Permissions">
               <RolesAccordion roles={roles} accessToken={session?.accessToken} apiBase={apiBase} />
+            </AdminCard>
+          }
+          emailMigrationPanel={
+            <AdminCard title="Email Migration">
+              <EmailBootstrapPanel accessToken={session?.accessToken} apiBase={apiBase} />
             </AdminCard>
           }
         />

@@ -60,6 +60,11 @@ internal sealed class GenerateEmailBootstrapTokensCommandHandler(
         continue;
       }
 
+      if (user.IsSocialLogin)
+      {
+        continue;
+      }
+
       if (existingClaim is null)
       {
         _claimRepository.Add(

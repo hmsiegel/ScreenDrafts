@@ -63,6 +63,11 @@ internal sealed class ClaimEmailBootstrapCommandHandler(
       return Result.Failure(UserErrors.NotFound(payloadResult.Value.UserId.Value));
     }
 
+    if (user.IsSocialLogin)
+    {
+      return Result.Failure(EmailBootstrapClaimErrors.SocialLoginNotEligible);
+    }
+
     var updateEmailResult = await _identityProviderService.UpdateEmailAsync(
       user.IdentityId,
       emailResult.Value.Value!,

@@ -244,6 +244,10 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                         .HasColumnType("character varying(255)")
                         .HasColumnName("identity_id");
 
+                    b.Property<bool>("IsSocialLogin")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_social_login");
+
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasMaxLength(50)

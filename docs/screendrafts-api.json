@@ -8836,6 +8836,53 @@
         ]
       }
     },
+    "/users/email-change/bootstrap/candidates": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "Users.ListEmailBootstrapCandidates",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/ListEmailBootstrapCandidatesRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ListEmailBootstrapCandidatesRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultOfEmailBootstrapCandidateItem"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
     "/users/email-change/bootstrap/generate": {
       "post": {
         "tags": [
@@ -11882,6 +11929,36 @@
               "string"
             ],
             "format": "int32"
+          }
+        }
+      },
+      "EmailBootstrapCandidateItem": {
+        "type": "object",
+        "properties": {
+          "userPublicId": {
+            "type": "string"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "currentEmail": {
+            "type": "string"
+          },
+          "isPatreon": {
+            "type": "boolean"
+          },
+          "hasActiveToken": {
+            "type": "boolean"
+          },
+          "tokenExpiresAt": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
           }
         }
       },
@@ -16586,6 +16663,33 @@
           }
         }
       },
+      "ListEmailBootstrapCandidatesRequest": {
+        "type": "object",
+        "properties": {
+          "search": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "page": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "pageSize": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
       "ListLatestDraftsResponse": {
         "required": [
           "drafts"
@@ -17808,6 +17912,61 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/DrafterListItem"
+            }
+          },
+          "totalCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "page": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "pageSize": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "totalPages": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "hasPreviousPage": {
+            "type": "boolean"
+          },
+          "hasNextPage": {
+            "type": "boolean"
+          }
+        }
+      },
+      "PagedResultOfEmailBootstrapCandidateItem": {
+        "required": [
+          "items",
+          "totalCount",
+          "page",
+          "pageSize"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EmailBootstrapCandidateItem"
             }
           },
           "totalCount": {

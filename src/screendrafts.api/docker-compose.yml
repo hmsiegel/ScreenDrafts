@@ -91,6 +91,8 @@ services:
     command: start-dev --import-realm
     container_name: screendrafts.identity
     environment:
+      - KC_HOSTNAME=http://localhost:18080
+      - KC_HOSTNAME_BACKCHANNEL_DYNAMIC=true
       - KC_DB=postgres
       - KC_DB_URL=jdbc:postgresql://keycloak-db:5432/keycloak
       - KC_DB_USERNAME=keycloak

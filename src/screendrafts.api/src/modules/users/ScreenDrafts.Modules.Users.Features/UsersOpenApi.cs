@@ -23,5 +23,6 @@ internal static class UsersOpenApi
     public const string Users_ClaimEmailBootstrapToken = "Users.ClaimEmailBootstrapToken";
     public const string Users_RequestEmailChange = "Users.RequestEmailChange";
     public const string Users_ConfirmEmailChange = "Users.ConfirmEmailChange";
+    public const string Users_ListEmailBootstrapCandidates = "Users.ListEmailBootstrapCandidates";
   }
 }

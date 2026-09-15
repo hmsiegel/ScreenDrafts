@@ -27,4 +27,9 @@ public static class EmailBootstrapClaimErrors
     "EmailBootstrapClaim.CannotReissueClaimed",
     "A token cannot be reissued for a user who has already claimed their email."
   );
+
+  public static readonly SDError SocialLoginNotEligible = SDError.Failure(
+    "EmailBootstrapClaim.SocialLoginNotEligible",
+    "This account uses social login and doesn't need an email migration."
+  );
 }
