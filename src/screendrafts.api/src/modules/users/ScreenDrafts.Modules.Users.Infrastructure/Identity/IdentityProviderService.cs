@@ -87,11 +87,86 @@ internal sealed partial class IdentityProviderService(
     return Result.Success();
   }
 
+  public async Task<Result> UpdateEmailAsync(
+    string identityId,
+    string newEmail,
+    CancellationToken cancellationToken = default
+  )
+  {
+    try
+    {
+      await _keyCloakClient.UpdateEmailAsync(identityId, newEmail, cancellationToken);
+      return Result.Success();
+    }
+    catch (HttpRequestException exception) when (exception.StatusCode == HttpStatusCode.Conflict)
+    {
+      EmailUpdateConflict(_logger, identityId, newEmail);
+
+      // Reusing EmailIsNotUnique rather than inventing a new IdentityProviderErrors
+      // member sight-unseen — I don't have that file, only the two members already
+      // used elsewhere in this class. Add a dedicated error there if you'd rather
+      // distinguish "email in use at registration" from "email in use at claim".
+      return Result.Failure(IdentityProviderErrors.EmailIsNotUnique);
+    }
+    catch (HttpRequestException exception)
+    {
+      EmailUpdateFailed(_logger, identityId, exception);
+      return Result.Failure(IdentityProviderErrors.PasswordChangeFailed);
+    }
+  }
+
+  public async Task<Result> TriggerPasswordResetAsync(
+    string identityId,
+    CancellationToken cancellationToken = default
+  )
+  {
+    try
+    {
+      await _keyCloakClient.SendPasswordResetEmailAsync(identityId, cancellationToken);
+      return Result.Success();
+    }
+    catch (HttpRequestException exception)
+    {
+      PasswordResetTriggerFailed(_logger, identityId, exception);
+      return Result.Failure(IdentityProviderErrors.PasswordChangeFailed);
+    }
+  }
+
   [LoggerMessage(
     Level = LogLevel.Error,
     Message = "Failed to change password for identity {IdentityId}."
   )]
-  public static partial void PasswordChangeFailed(
+  private static partial void PasswordChangeFailed(
+    ILogger<IdentityProviderService> logger,
+    string identityId,
+    Exception ex
+  );
+
+  [LoggerMessage(
+    Level = LogLevel.Warning,
+    Message = "Email update for identity {IdentityId} to {NewEmail} conflicted — already in use."
+  )]
+  private static partial void EmailUpdateConflict(
+    ILogger<IdentityProviderService> logger,
+    string identityId,
+    string newEmail
+  );
+
+  [LoggerMessage(
+    Level = LogLevel.Error,
+    Message = "Failed to update email for identity {IdentityId}."
+  )]
+  private static partial void EmailUpdateFailed(
+    ILogger<IdentityProviderService> logger,
+    string identityId,
+    Exception ex
+  );
+
+  [LoggerMessage(
+    Level = LogLevel.Error,
+    Message = "Failed to trigger password reset email for identity {IdentityId}."
+  )]
+  private static partial void PasswordResetTriggerFailed(
     ILogger<IdentityProviderService> logger,
     string identityId,
     Exception ex

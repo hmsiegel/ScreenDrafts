@@ -2,6 +2,8 @@
 
 public class GuestDraftsIntegrationEventDispatcher : IGuestDraftsIntegrationEventDispatcher
 {
+  private const string ModuleName = "GuestDrafts";
+
   public async Task DispatchAsync(IIntegrationEvent integrationEvent, IServiceProvider provider)
   {
     ArgumentNullException.ThrowIfNull(integrationEvent);
@@ -13,8 +15,9 @@ public class GuestDraftsIntegrationEventDispatcher : IGuestDraftsIntegrationEven
     );
 
     Log.Information(
-      "Dispatching integration event {IntegrationEventType}",
-      integrationEvent.GetType().Name
+      "Dispatching integration event {IntegrationEventType} in {ModuleName}",
+      integrationEvent.GetType().Name,
+      ModuleName
     );
 
     foreach (var handler in handlers)

@@ -2,17 +2,21 @@
 
 internal sealed class RegisterSocialUserCommandHandler(
   IUserRepository userRepository,
-  IPublicIdGenerator publicIdGenerator)
-  : ICommandHandler<RegisterSocialUserCommand, string>
+  IPublicIdGenerator publicIdGenerator
+) : ICommandHandler<RegisterSocialUserCommand, string>
 {
   private readonly IUserRepository _userRepository = userRepository;
   private readonly IPublicIdGenerator _publicIdGenerator = publicIdGenerator;
 
   public async Task<Result<string>> Handle(
     RegisterSocialUserCommand request,
-    CancellationToken cancellationToken)
+    CancellationToken cancellationToken
+  )
   {
-    var existing = await _userRepository.GetByIdentityIdAsync(request.IdentityId, cancellationToken);
+    var existing = await _userRepository.GetByIdentityIdAsync(
+      request.IdentityId,
+      cancellationToken
+    );
 
     if (existing is not null)
     {
@@ -25,13 +29,11 @@ internal sealed class RegisterSocialUserCommandHandler(
       return Result.Failure<string>(emailResult.Errors[0]);
     }
 
-    var firstName = string.IsNullOrWhiteSpace(request.FirstName)
-        ? "User"
-        : request.FirstName;
+    var firstName = string.IsNullOrWhiteSpace(request.FirstName) ? "User" : request.FirstName;
 
     var lastName = string.IsNullOrWhiteSpace(request.LastName)
-        ? request.Email.Split('@')[0]
-        : request.LastName;
+      ? request.Email.Split('@')[0]
+      : request.LastName;
 
     var firstNameResult = FirstName.Create(firstName);
     var lastNameResult = LastName.Create(lastName);
@@ -48,7 +50,9 @@ internal sealed class RegisterSocialUserCommandHandler(
       firstNameResult.Value,
       lastNameResult.Value,
       request.IdentityId,
-      publicId);
+      publicId,
+      isSocialLogin: true
+    );
 
     if (userResult.IsFailure)
     {

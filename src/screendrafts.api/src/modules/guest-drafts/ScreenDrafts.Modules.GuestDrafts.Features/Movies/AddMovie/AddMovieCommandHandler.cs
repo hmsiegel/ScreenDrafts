@@ -10,11 +10,11 @@ internal sealed class AddMovieCommandHandler(IMovieRepository movieRepository)
     CancellationToken cancellationToken
   )
   {
-    var existing = await _movieRepository.GetByPublicIdAsync(request.PublicId, cancellationToken);
+    var exists = await _movieRepository.ExistsByPublicIdAsync(request.PublicId, cancellationToken);
 
-    if (existing is not null)
+    if (exists)
     {
-      return Result.Success(existing.PublicId);
+      return Result.Failure<string>(MovieErrors.MovieAlreadyExists(request.PublicId));
     }
 
     var result = Movie.Create(

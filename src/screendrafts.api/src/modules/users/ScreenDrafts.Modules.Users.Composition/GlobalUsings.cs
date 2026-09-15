@@ -9,6 +9,7 @@ global using ScreenDrafts.Common.Application.EventBus.Dispatchers;
 global using ScreenDrafts.Common.Application.Messaging;
 global using ScreenDrafts.Common.Application.Messaging.Dispatchers;
 global using ScreenDrafts.Common.Infrastructure.Identity;
+global using ScreenDrafts.Modules.Drafts.IntegrationEvents;
 global using ScreenDrafts.Modules.Users.Domain.Abstractions.Identity;
 global using ScreenDrafts.Modules.Users.Features.Authorization;
 global using ScreenDrafts.Modules.Users.Features.Behaviors;

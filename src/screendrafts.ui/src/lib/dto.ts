@@ -1029,6 +1029,36 @@ export interface IClient {
     users_RegisterSocialUser(body: RegisterSocialUserRequest): Promise<string>;
 
     /**
+     * @return OK
+     */
+    users_ValidateEmailBootstrapToken(body: ValidateEmailBootstrapTokenRequest): Promise<EmailBootstrapTokenValidationResponse>;
+
+    /**
+     * @return No Content
+     */
+    users_RequestEmailChange(body: RequestEmailChangeRequest): Promise<void>;
+
+    /**
+     * @return OK
+     */
+    users_ListEmailBootstrapCandidates(body: ListEmailBootstrapCandidatesRequest): Promise<PagedResultOfEmailBootstrapCandidateItem>;
+
+    /**
+     * @return OK
+     */
+    users_GenerateEmailBootstrapTokens(body: GenerateEmailBootstrapTokensRequest): Promise<EmailBootstrapTokenResponse[]>;
+
+    /**
+     * @return No Content
+     */
+    users_ConfirmEmailChange(body: ConfirmEmailChangeRequest): Promise<void>;
+
+    /**
+     * @return No Content
+     */
+    users_ClaimEmailBootstrapToken(body: ClaimEmailBootstrapRequest): Promise<void>;
+
+    /**
      * @return No Content
      */
     users_UpdateUserPassword(body: ChangePasswordRequest): Promise<void>;
@@ -11562,6 +11592,309 @@ export class Client implements IClient {
     }
 
     /**
+     * @return OK
+     */
+    users_ValidateEmailBootstrapToken(body: ValidateEmailBootstrapTokenRequest, signal?: AbortSignal): Promise<EmailBootstrapTokenValidationResponse> {
+        let url_ = this.baseUrl + "/users/email-change/bootstrap/validate";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processUsers_ValidateEmailBootstrapToken(_response);
+        });
+    }
+
+    protected processUsers_ValidateEmailBootstrapToken(response: Response): Promise<EmailBootstrapTokenValidationResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as EmailBootstrapTokenValidationResponse;
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 500) {
+            return response.text().then((_responseText) => {
+            let result500: any = null;
+            result500 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
+            return throwException("Internal Server Error", status, _responseText, _headers, result500);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<EmailBootstrapTokenValidationResponse>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    users_RequestEmailChange(body: RequestEmailChangeRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/users/email-change/request";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processUsers_RequestEmailChange(_response);
+        });
+    }
+
+    protected processUsers_RequestEmailChange(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    users_ListEmailBootstrapCandidates(body: ListEmailBootstrapCandidatesRequest, signal?: AbortSignal): Promise<PagedResultOfEmailBootstrapCandidateItem> {
+        let url_ = this.baseUrl + "/users/email-change/bootstrap/candidates";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processUsers_ListEmailBootstrapCandidates(_response);
+        });
+    }
+
+    protected processUsers_ListEmailBootstrapCandidates(response: Response): Promise<PagedResultOfEmailBootstrapCandidateItem> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as PagedResultOfEmailBootstrapCandidateItem;
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<PagedResultOfEmailBootstrapCandidateItem>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    users_GenerateEmailBootstrapTokens(body: GenerateEmailBootstrapTokensRequest, signal?: AbortSignal): Promise<EmailBootstrapTokenResponse[]> {
+        let url_ = this.baseUrl + "/users/email-change/bootstrap/generate";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processUsers_GenerateEmailBootstrapTokens(_response);
+        });
+    }
+
+    protected processUsers_GenerateEmailBootstrapTokens(response: Response): Promise<EmailBootstrapTokenResponse[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as EmailBootstrapTokenResponse[];
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 500) {
+            return response.text().then((_responseText) => {
+            let result500: any = null;
+            result500 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
+            return throwException("Internal Server Error", status, _responseText, _headers, result500);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<EmailBootstrapTokenResponse[]>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    users_ConfirmEmailChange(body: ConfirmEmailChangeRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/users/email-change/confirm";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processUsers_ConfirmEmailChange(_response);
+        });
+    }
+
+    protected processUsers_ConfirmEmailChange(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    users_ClaimEmailBootstrapToken(body: ClaimEmailBootstrapRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/users/email-change/bootstrap/claim";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processUsers_ClaimEmailBootstrapToken(_response);
+        });
+    }
+
+    protected processUsers_ClaimEmailBootstrapToken(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 500) {
+            return response.text().then((_responseText) => {
+            let result500: any = null;
+            result500 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
+            return throwException("Internal Server Error", status, _responseText, _headers, result500);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
      * @return No Content
      */
     users_UpdateUserPassword(body: ChangePasswordRequest, signal?: AbortSignal): Promise<void> {
@@ -13069,6 +13402,13 @@ export interface ChangePasswordRequest {
     [key: string]: any;
 }
 
+export interface ClaimEmailBootstrapRequest {
+    token?: string;
+    newEmail?: string;
+
+    [key: string]: any;
+}
+
 export interface ClearCampaignDraftRequest {
     draftId: string;
 
@@ -13099,6 +13439,12 @@ export interface CommunityFilmRuleKind {
 export interface ConfirmAttendanceRequest {
     draftPartId?: string;
     personPublicId?: string;
+
+    [key: string]: any;
+}
+
+export interface ConfirmEmailChangeRequest {
+    token: string;
 
     [key: string]: any;
 }
@@ -13530,6 +13876,37 @@ export interface EditSeriesRequest {
     [key: string]: any;
 }
 
+export interface EmailBootstrapCandidateItem {
+    userPublicId?: string;
+    firstName?: string;
+    lastName?: string;
+    currentEmail?: string;
+    isPatreon?: boolean;
+    hasActiveToken?: boolean;
+    tokenExpiresAt?: Date | undefined;
+
+    [key: string]: any;
+}
+
+export interface EmailBootstrapTokenResponse {
+    userPublicId?: string;
+    currentEmail?: string;
+    firstName?: string;
+    lastName?: string;
+    isPatreon?: boolean;
+    token?: string;
+    expiresAt?: Date;
+
+    [key: string]: any;
+}
+
+export interface EmailBootstrapTokenValidationResponse {
+    isValid?: boolean;
+    userPublicId?: string;
+
+    [key: string]: any;
+}
+
 export interface EndZoomSessionRequest {
     draftPartId?: string;
 
@@ -13753,6 +14130,14 @@ export interface GameSearchResult {
     title?: string;
     year?: string | undefined;
     posterUrl?: string | undefined;
+
+    [key: string]: any;
+}
+
+export interface GenerateEmailBootstrapTokensRequest {
+    userPublicIds?: string[] | undefined;
+    batchLabel?: string | undefined;
+    expiryHours?: number;
 
     [key: string]: any;
 }
@@ -14924,6 +15309,14 @@ export interface ListDraftsResponse {
     [key: string]: any;
 }
 
+export interface ListEmailBootstrapCandidatesRequest {
+    search?: string | undefined;
+    page?: number;
+    pageSize?: number;
+
+    [key: string]: any;
+}
+
 export interface ListLatestDraftsResponse {
     drafts: LatestDraftResponse[];
 
@@ -15249,6 +15642,18 @@ export interface PagedResultOfCandidateListEntryResponse {
 
 export interface PagedResultOfDrafterListItem {
     items: DrafterListItem[];
+    totalCount: number;
+    page: number;
+    pageSize: number;
+    totalPages?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+
+    [key: string]: any;
+}
+
+export interface PagedResultOfEmailBootstrapCandidateItem {
+    items: EmailBootstrapCandidateItem[];
     totalCount: number;
     page: number;
     pageSize: number;
@@ -15833,6 +16238,12 @@ export interface RemoveParticipantFromDraftPartRequest {
 export interface RemoveRoleFromUserRequest {
     roleName?: string;
     publicId?: string;
+
+    [key: string]: any;
+}
+
+export interface RequestEmailChangeRequest {
+    newEmail: string;
 
     [key: string]: any;
 }
@@ -16604,6 +17015,12 @@ export interface UserItem {
     displayName?: string;
     email?: string;
     roles?: string[];
+
+    [key: string]: any;
+}
+
+export interface ValidateEmailBootstrapTokenRequest {
+    token?: string;
 
     [key: string]: any;
 }

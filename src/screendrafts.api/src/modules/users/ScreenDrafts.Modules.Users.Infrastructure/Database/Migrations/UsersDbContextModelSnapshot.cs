@@ -18,7 +18,7 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("users")
-                .HasAnnotation("ProductVersion", "10.0.9")
+                .HasAnnotation("ProductVersion", "10.0.11")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -129,6 +129,97 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                     b.ToTable("outbox_message_consumers", "users");
                 });
 
+            modelBuilder.Entity("ScreenDrafts.Modules.Users.Domain.Bootstraps.EmailBootstrapClaim", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("BatchLabel")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("batch_label");
+
+                    b.Property<DateTimeOffset?>("ClaimedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("claimed_at");
+
+                    b.Property<string>("ClaimedEmail")
+                        .HasMaxLength(320)
+                        .HasColumnType("character varying(320)")
+                        .HasColumnName("claimed_email");
+
+                    b.Property<DateTimeOffset>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("expires_at");
+
+                    b.Property<DateTimeOffset>("IssuedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("issued_at");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_email_bootstrap_claims");
+
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_email_bootstrap_claims_user_id");
+
+                    b.ToTable("email_bootstrap_claims", "users");
+                });
+
+            modelBuilder.Entity("ScreenDrafts.Modules.Users.Domain.EmailChange.EmailChangeToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTimeOffset>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("expires_at");
+
+                    b.Property<DateTimeOffset>("IssuedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("issued_at");
+
+                    b.Property<string>("NewEmail")
+                        .IsRequired()
+                        .HasMaxLength(320)
+                        .HasColumnType("character varying(320)")
+                        .HasColumnName("new_email");
+
+                    b.Property<string>("TokenHash")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("token_hash");
+
+                    b.Property<DateTimeOffset?>("UsedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("used_at");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_email_change_tokens");
+
+                    b.HasIndex("TokenHash")
+                        .IsUnique()
+                        .HasDatabaseName("ix_email_change_tokens_token_hash");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_email_change_tokens_user_id");
+
+                    b.ToTable("email_change_tokens", "users");
+                });
+
             modelBuilder.Entity("ScreenDrafts.Modules.Users.Domain.Users.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -152,6 +243,10 @@ namespace ScreenDrafts.Modules.Users.Infrastructure.Database.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)")
                         .HasColumnName("identity_id");
+
+                    b.Property<bool>("IsSocialLogin")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_social_login");
 
                     b.Property<string>("LastName")
                         .IsRequired()

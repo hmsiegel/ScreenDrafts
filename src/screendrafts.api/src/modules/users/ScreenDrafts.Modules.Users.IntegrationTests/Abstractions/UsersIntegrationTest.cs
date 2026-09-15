@@ -21,9 +21,79 @@ public abstract class UsersIntegrationTest : BaseIntegrationTest<UsersDbContext>
       """
       TRUNCATE TABLE
         users.user_permissions,
+        users.email_bootstrap_claims,
+        users.email_change_tokens,
         users.users
       RESTART IDENTITY CASCADE;
       """
+    );
+
+    await DbContext.Database.ExecuteSqlRawAsync(
+      """
+      TRUNCATE TABLE administration.user_roles RESTART IDENTITY CASCADE;
+      """
+    );
+  }
+
+  protected async Task<GetByUserIdResponse> RegisterUserAsync(
+    string? email = null,
+    string password = "Test@123456"
+  )
+  {
+    var registerResult = await Sender.Send(
+      new RegisterUserCommand
+      {
+        Email = email ?? Faker.Internet.Email(),
+        Password = password,
+        FirstName = Faker.Name.FirstName(),
+        LastName = Faker.Name.LastName(),
+      },
+      TestContext.Current.CancellationToken
+    );
+
+    var userResult = await Sender.Send(
+      new GetByUserIdQuery(registerResult.Value),
+      TestContext.Current.CancellationToken
+    );
+
+    return userResult.Value;
+  }
+
+  protected async Task GrantPermissionAsync(string publicId, string permissionCode)
+  {
+    await DbContext.Database.ExecuteSqlRawAsync(
+      """
+      INSERT INTO users.user_permissions (user_id, permission_code)
+      SELECT id, {1}
+      FROM users.users
+      WHERE public_id = {0}
+      """,
+      publicId,
+      permissionCode
+    );
+  }
+
+  protected async Task GrantRoleAsync(string publicId, string roleName)
+  {
+    // administration.user_roles.role_name has an FK to administration.roles(name).
+    await DbContext.Database.ExecuteSqlRawAsync(
+      """
+      INSERT INTO administration.roles (name)
+      VALUES ({0})
+      ON CONFLICT (name) DO NOTHING
+      """,
+      roleName
+    );
+
+    await DbContext.Database.ExecuteSqlRawAsync(
+      """
+      INSERT INTO administration.user_roles (user_id, role_name)
+      SELECT id, {1}
+      FROM users.users
+      WHERE public_id = {0}
+      """,
+      publicId,
+      roleName
     );
   }
 

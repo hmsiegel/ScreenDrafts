@@ -1,4 +1,4 @@
-﻿using ScreenDrafts.Modules.Drafts.IntegrationEvents;
+﻿using ScreenDrafts.Modules.Users.Features.Users.EmailChange;
 
 namespace ScreenDrafts.Modules.Users.Composition;
 
@@ -15,7 +15,7 @@ public static class UsersModule
 
     services.AddIdentity(configuration);
 
-    services.AddUsersFeatures();
+    services.AddUsersFeatures(configuration);
 
     services.AddDomainEventHandlers();
 
@@ -63,8 +63,19 @@ public static class UsersModule
       .Endpoint(c => c.InstanceId = moduleInstanceId);
   }
 
-  private static void AddUsersFeatures(this IServiceCollection services)
+  private static void AddUsersFeatures(
+    this IServiceCollection services,
+    IConfiguration configuration
+  )
   {
+    services.Configure<EmailBootstrapOptions>(
+      configuration.GetSection(EmailBootstrapOptions.SectionName)
+    );
+
+    services.Configure<EmailChangeOptions>(
+      configuration.GetSection(EmailChangeOptions.SectionName)
+    );
+
     services.AddScoped<IUsersApi, UsersApi>();
     services.AddScoped<IUsersDomainEventDispatcher, UsersDomainEventDispatcher>();
     services.AddScoped<IUsersIntegrationEventDispatcher, UsersIntegrationEventDispatcher>();

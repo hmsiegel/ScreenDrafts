@@ -18,7 +18,8 @@ async function publicFetch(url: string, init: RequestInit = {}) {
       throw new Error(
          `Request failed with status ${res.status}: ${res.statusText} - ${body}`);
    }
-   return res.json();
+   const text = await res.text();
+   return text ? JSON.parse(text) : (undefined as unknown);
 }
 
 export async function publicApiRequest<T = unknown>(

@@ -13,4 +13,17 @@ public interface IIdentityProviderService
     string userEmail,
     CancellationToken cancellationToken = default
   );
+
+  /// <summary>Updates the email on the Keycloak side and marks it verified.</summary>
+  Task<Result> UpdateEmailAsync(
+    string identityId,
+    string newEmail,
+    CancellationToken cancellationToken = default
+  );
+
+  /// <summary>Fires Keycloak's native UPDATE_PASSWORD action email.</summary>
+  Task<Result> TriggerPasswordResetAsync(
+    string identityId,
+    CancellationToken cancellationToken = default
+  );
 }

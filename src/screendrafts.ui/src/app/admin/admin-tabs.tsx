@@ -2,17 +2,18 @@
 
 import { useState } from "react";
 
-type Tab = "USERS" | "PASSWORD RESET" | "ROLES & PERMISSIONS";
+type Tab = "USERS" | "PASSWORD RESET" | "ROLES & PERMISSIONS" | "EMAIL MIGRATION";
 
-const TABS: Tab[] = ["USERS", "PASSWORD RESET", "ROLES & PERMISSIONS"];
+const TABS: Tab[] = ["USERS", "PASSWORD RESET", "ROLES & PERMISSIONS", "EMAIL MIGRATION"];
 
 interface Props {
   usersPanel: React.ReactNode;
   passwordPanel: React.ReactNode;
   rolesPanel: React.ReactNode;
+  emailMigrationPanel: React.ReactNode;
 }
 
-export default function AdminTabs({ usersPanel, passwordPanel, rolesPanel }: Props) {
+export default function AdminTabs({ usersPanel, passwordPanel, rolesPanel, emailMigrationPanel }: Props) {
   const [active, setActive] = useState<Tab>("USERS");
 
   return (
@@ -36,6 +37,7 @@ export default function AdminTabs({ usersPanel, passwordPanel, rolesPanel }: Pro
       {active === "USERS" && usersPanel}
       {active === "PASSWORD RESET" && passwordPanel}
       {active === "ROLES & PERMISSIONS" && rolesPanel}
+      {active === "EMAIL MIGRATION" && emailMigrationPanel}
     </div>
   );
 }

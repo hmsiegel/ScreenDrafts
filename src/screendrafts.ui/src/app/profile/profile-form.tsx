@@ -1,10 +1,11 @@
+// app/profile/profile-form.tsx
 'use client';
 
 import { useState } from "react";
 import { MergedProfile } from "@/services/profile/fetch-profile";
 import AvatarUpload from "./avatar-upload";
 
-type Tab = 'personal' | 'password' | 'social' | 'avatar';
+type Tab = 'personal' | 'email' | 'password' | 'social' | 'avatar';
 
 interface ProfileFormProps {
   profile: MergedProfile | null;
@@ -129,6 +130,63 @@ function PersonalTab({ profile, accessToken, apiBase }: ProfileFormProps) {
       <div className="pt-1 flex items-center gap-4">
         <button className={BTN_PRIMARY} onClick={handleSave} disabled={saving}>
           {saving ? 'SAVING…' : 'SAVE CHANGES'}
+        </button>
+        <Feedback status={status} />
+      </div>
+    </div>
+  );
+}
+
+function EmailTab({ profile, accessToken, apiBase }: ProfileFormProps) {
+  const [newEmail, setNewEmail] = useState('');
+  const [status, setStatus] = useState<Status>(null);
+  const [saving, setSaving] = useState(false);
+
+  async function handleSave() {
+    setSaving(true);
+    setStatus(null);
+    try {
+      const res = await fetch(`${apiBase}/users/email-change/request`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+        },
+        body: JSON.stringify({ newEmail }),
+      });
+      if (!res.ok) throw new Error(`${res.status}`);
+      // Confirmation goes to the CURRENT email on file, not the new address —
+      // make that explicit so it doesn't read like the change already happened.
+      setStatus({
+        type: 'success',
+        message: `A confirmation link has been sent to your current email${profile?.email ? ` (${profile.email})` : ''}. Your address won't change until you click it.`,
+      });
+      setNewEmail('');
+    } catch {
+      setStatus({ type: 'error', message: 'Failed to request email change. Please try again.' });
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <div className="space-y-5">
+      <p className="text-[12px] text-sd-ink/40 font-mono">
+        Current email: {profile?.email ?? 'unknown'}
+      </p>
+      <Field label="New Email Address">
+        <input
+          type="email"
+          className={INPUT}
+          value={newEmail}
+          onChange={e => setNewEmail(e.target.value)}
+          placeholder="you@example.com"
+          autoComplete="off"
+        />
+      </Field>
+      <div className="pt-1 flex items-center gap-4">
+        <button className={BTN_PRIMARY} onClick={handleSave} disabled={saving || !newEmail}>
+          {saving ? 'SENDING…' : 'REQUEST EMAIL CHANGE'}
         </button>
         <Feedback status={status} />
       </div>
@@ -263,6 +321,7 @@ function SocialTab({ profile, accessToken, apiBase }: ProfileFormProps) {
 
 const TABS: { id: Tab; label: string }[] = [
   { id: 'personal', label: 'Personal Info' },
+  { id: 'email', label: 'Email' },
   { id: 'password', label: 'Password' },
   { id: 'social', label: 'Social Profiles' },
   { id: 'avatar', label: 'Avatar' },
@@ -291,6 +350,9 @@ export default function ProfileForm({ profile, accessToken, apiBase }: ProfileFo
       <div className="p-7 border-b border-sd-ink/10 min-h-[320px]">
         {activeTab === 'personal' && (
           <PersonalTab profile={profile} accessToken={accessToken} apiBase={apiBase} />
+        )}
+        {activeTab === 'email' && (
+          <EmailTab profile={profile} accessToken={accessToken} apiBase={apiBase} />
         )}
         {activeTab === 'password' && (
           <PasswordTab accessToken={accessToken} apiBase={apiBase} />

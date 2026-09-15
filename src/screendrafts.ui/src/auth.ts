@@ -1,3 +1,4 @@
+// src/auth.ts
 import NextAuth, { type DefaultSession } from "next-auth";
 import KeycloakProvider from "next-auth/providers/keycloak";
 import type { JWT } from "next-auth/jwt";
@@ -92,6 +93,19 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           const userRes = await fetch(`${API_BASE}/users/profile`, {
             headers: { Authorization: `Bearer ${account.access_token}` },
           });
+
+          if (!userRes.ok) {
+            // NEW: this used to fail silently — now logs exactly what came
+            // back, which is the first thing to check if menus disappear
+            // again. A 404 here specifically means /users/profile couldn't
+            // resolve the JWT's identity to a users.users row.
+            console.error(
+              "[auth] /users/profile failed:",
+              userRes.status,
+              await userRes.text()
+            );
+          }
+
           if (userRes.ok) {
             const user = (await userRes.json()) as { publicId?: string; personPublicId?: string };
             if (user.publicId) {
@@ -105,11 +119,23 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
               if (rolesRes.ok) {
                 const data = (await rolesRes.json()) as { roles: string[] };
                 appToken.roles = data.roles;
+              } else {
+                // NEW: same visibility for the roles call.
+                console.error(
+                  "[auth] /admin/users/{publicId}/roles failed:",
+                  rolesRes.status,
+                  await rolesRes.text()
+                );
               }
+            } else {
+              // NEW: profile came back OK but had no publicId — worth
+              // knowing that distinct case too.
+              console.error("[auth] /users/profile returned no publicId:", user);
             }
           }
-        } catch {
-          // Role fetching failed — proceed with empty roles.
+        } catch (e) {
+          // NEW: log what actually threw, instead of discarding it.
+          console.error("[auth] Role fetching threw:", e);
         }
 
         return appToken;

@@ -1,7 +1,4 @@
-﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Enums;
-using ScreenDrafts.Modules.Movies.IntegrationEvents;
-
-namespace ScreenDrafts.Modules.GuestDrafts.Composition;
+﻿namespace ScreenDrafts.Modules.GuestDrafts.Composition;
 
 public static class GuestDraftsModule
 {

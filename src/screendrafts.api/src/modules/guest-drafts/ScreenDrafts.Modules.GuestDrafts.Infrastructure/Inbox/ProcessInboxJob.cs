@@ -10,7 +10,7 @@ internal sealed class ProcessInboxJob(
   IGuestDraftsIntegrationEventDispatcher integrationEventDispatcher
 ) : IJob
 {
-  private const string ModuleName = "Drafts";
+  private const string ModuleName = "GuestDrafts";
 
   private readonly IDbConnectionFactory _dbConnectionFactory = dbConnectionFactory;
   private readonly IServiceScopeFactory _serviceScopeFactory = serviceScopeFactory;
@@ -91,7 +91,7 @@ internal sealed class ProcessInboxJob(
       transaction: transaction
     );
 
-    return inboxMessages.ToList();
+    return [.. inboxMessages];
   }
 
   private async Task UpdateInboxMessageAsync(
@@ -102,7 +102,7 @@ internal sealed class ProcessInboxJob(
   )
   {
     const string sql = """
-      UPDATE drafts.inbox_messages
+      UPDATE guest_drafts.inbox_messages
       SET processed_on_utc = @ProcessedOnUtc,
           error = @Error
       WHERE id = @Id

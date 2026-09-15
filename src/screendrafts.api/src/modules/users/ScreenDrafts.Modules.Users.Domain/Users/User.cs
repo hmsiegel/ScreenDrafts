@@ -11,7 +11,8 @@ public sealed class User : AggregateRoot<UserId, Guid>
     string publicId,
     Guid? personId,
     string? personPublicId,
-    string? middleName = null
+    string? middleName = null,
+    bool isSocialLogin = false
   )
     : base(id)
   {
@@ -24,6 +25,7 @@ public sealed class User : AggregateRoot<UserId, Guid>
     PublicId = publicId;
     PersonId = personId;
     PersonPublicId = personPublicId;
+    IsSocialLogin = isSocialLogin;
   }
 
   private User() { }
@@ -37,6 +39,14 @@ public sealed class User : AggregateRoot<UserId, Guid>
   public Guid? PersonId { get; private set; } = default!;
   public string? PersonPublicId { get; private set; } = default!;
 
+  /// <summary>
+  /// True if this account was created through a social/federated login
+  /// (Register/Social) rather than local email+password registration. Fixed
+  /// at creation — never changes after the fact, so there's no setter.
+  /// Existing accounts default to false.
+  /// </summary>
+  public bool IsSocialLogin { get; private set; }
+
   public static Result<User> Create(
     Email email,
     FirstName firstName,
@@ -46,7 +56,8 @@ public sealed class User : AggregateRoot<UserId, Guid>
     string? middleName = null,
     UserId? id = null,
     Guid? personId = null,
-    string? personPublicId = null
+    string? personPublicId = null,
+    bool isSocialLogin = false
   )
   {
     var user = new User(
@@ -58,7 +69,8 @@ public sealed class User : AggregateRoot<UserId, Guid>
       personId: personId,
       personPublicId: personPublicId,
       publicId: publicId,
-      id: id ?? UserId.CreateUnique()
+      id: id ?? UserId.CreateUnique(),
+      isSocialLogin: isSocialLogin
     );
 
     user.Raise(new UserRegisteredDomainEvent(user.Id.Value));
@@ -81,6 +93,38 @@ public sealed class User : AggregateRoot<UserId, Guid>
     MiddleName = middleName;
 
     Raise(new UserProfileUpdatedDomainEvent(Id.Value, firstName.Value!, lastName.Value!));
+  }
+
+  /// <summary>
+  /// Updates the module's own copy of the email — this must be called any time
+  /// the Keycloak-side email changes (bootstrap claim, or steady-state confirm),
+  /// or the app keeps showing/using the old address while Keycloak has the new one.
+  /// </summary>
+  public void ChangeEmail(Email newEmail)
+  {
+    ArgumentNullException.ThrowIfNull(newEmail);
+
+    if (Email == newEmail)
+    {
+      return;
+    }
+
+    Email = newEmail;
+
+    Raise(new UserEmailChangedDomainEvent(Id.Value, newEmail.Value!));
+  }
+
+  /// <summary>
+  /// Steady-state email change, step 1: records intent and raises the event
+  /// that triggers the confirmation email. Does not mutate Email — that only
+  /// happens once the user confirms via ChangeEmail.
+  /// </summary>
+  public void RequestEmailChange(string newEmail, string confirmationLink)
+  {
+    ArgumentException.ThrowIfNullOrWhiteSpace(newEmail);
+    ArgumentException.ThrowIfNullOrWhiteSpace(confirmationLink);
+
+    Raise(new UserEmailChangeRequestedDomainEvent(Id.Value, newEmail, confirmationLink));
   }
 
   public void LinkPerson(Guid personId, string personPublicId)

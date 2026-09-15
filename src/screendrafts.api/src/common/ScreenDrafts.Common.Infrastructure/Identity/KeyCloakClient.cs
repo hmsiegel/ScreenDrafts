@@ -132,6 +132,30 @@ public sealed class KeyCloakClient(HttpClient httpClient, IOptions<KeyCloakOptio
     response.EnsureSuccessStatusCode();
   }
 
+  public async Task UpdateEmailAsync(
+    string identityId,
+    string newEmail,
+    CancellationToken cancellationToken = default
+  )
+  {
+    var body = new UserEmailUpdateRepresentation(newEmail, true);
+
+    var response = await _httpClient.PutAsJsonAsync($"users/{identityId}", body, cancellationToken);
+
+    if (!response.IsSuccessStatusCode)
+    {
+      var responseBody = await response.Content.ReadAsStringAsync(cancellationToken);
+      Log.Error(
+        "Failed to update email for identity {IdentityId}. Status: {Status}, Body: {Body}",
+        identityId,
+        response.StatusCode,
+        responseBody
+      );
+    }
+
+    response.EnsureSuccessStatusCode();
+  }
+
   private static string ExtractIdentityIdFromLocationHeader(HttpResponseMessage httpResponseMessage)
   {
     const string usersSegmentName = "users/";
