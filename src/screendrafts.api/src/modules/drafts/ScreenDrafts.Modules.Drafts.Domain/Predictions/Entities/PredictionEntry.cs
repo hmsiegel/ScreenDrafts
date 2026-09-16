@@ -60,7 +60,8 @@ public sealed class PredictionEntry : Entity<PredictionEntryId>
     string mediaTitle,
     int? orderIndex = null,
     string? notes = null,
-    bool? isCorrect = null
+    bool? isCorrect = null,
+    string? mediaPublicId = null
   )
   {
     ArgumentNullException.ThrowIfNull(predictionSet);
@@ -72,7 +73,8 @@ public sealed class PredictionEntry : Entity<PredictionEntryId>
       mediaTitle: mediaTitle,
       orderIndex: orderIndex,
       notes: notes,
-      isCorrect: isCorrect
+      isCorrect: isCorrect,
+      mediaPublicId: mediaPublicId
     );
   }
 

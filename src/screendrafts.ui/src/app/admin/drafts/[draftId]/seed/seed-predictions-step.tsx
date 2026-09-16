@@ -12,8 +12,8 @@ import {
   type DraftPartHost,
 } from "@/services/admin/fetch-admin-drafts";
 import { PredictionSeasonListItemResponse } from "@/lib/dto";
-import { type ResolvedMovie } from "@/lib/movie-resolve";
-import { useMovieSearch } from "@/lib/use-movie-search";
+import { MediaPicker, type SelectedMedia } from "@/components/drafts/media-picker";
+import { MEDIA_TYPE_TV_EPISODE, importAndResolveEpisode } from "@/lib/tv-episode-resolve";
 import { SeedPredictionsSetup } from "./seed-predictions-setup";
 import { SurrogateAssignmentPanel } from "../../new/surrogate-assignment-panel";
 
@@ -46,9 +46,19 @@ interface Props {
   accessToken: string;
   hosts: DraftPartHost[];
   onDone: () => void;
+  // Same field seed-picks-step.tsx already receives from the wizard page —
+  // thread it through the same way. Locks MediaPicker to episode mode for
+  // TV-restricted drafts instead of a plain movie search.
+  restrictedTvSeriesTmdbId?: number | null;
 }
 
-export function SeedPredictionsStep({ draftPartPublicId, accessToken, hosts, onDone }: Props) {
+export function SeedPredictionsStep({
+  draftPartPublicId,
+  accessToken,
+  hosts,
+  onDone,
+  restrictedTvSeriesTmdbId,
+}: Props) {
   const [loading, setLoading] = useState(true);
   const [rules, setRules] = useState<DraftPartPredictionRulesDto | null>(null);
   const [predictors, setPredictors] = useState<DraftPartPredictorDto[]>([]);
@@ -131,6 +141,7 @@ export function SeedPredictionsStep({ draftPartPublicId, accessToken, hosts, onD
             seasonPublicId={seasonPublicId}
             draftPartPublicId={draftPartPublicId}
             accessToken={accessToken}
+            restrictedTvSeriesTmdbId={restrictedTvSeriesTmdbId}
             submitted={submittedContestants.has(p.contestantPublicId)}
             active={activeContestant === p.contestantPublicId}
             onActivate={() => setActiveContestant(p.contestantPublicId)}
@@ -158,6 +169,7 @@ interface RowProps {
   seasonPublicId: string;
   draftPartPublicId: string;
   accessToken: string;
+  restrictedTvSeriesTmdbId?: number | null;
   submitted: boolean;
   active: boolean;
   onActivate: () => void;
@@ -166,7 +178,13 @@ interface RowProps {
 
 interface RankedEntry {
   rank: number;
-  movie: ResolvedMovie;
+  tmdbId: number;
+  title: string;
+  year: string | null;
+  // Set only for a resolved TV episode — see addEntry. Null for a movie
+  // entry, matching PredictionEntryDto.MediaPublicId's meaning on the
+  // backend.
+  mediaPublicId: string | null;
 }
 
 function nextAvailableRank(entries: RankedEntry[], requiredCount: number): number {
@@ -183,6 +201,7 @@ function ContestantEntryRow({
   seasonPublicId,
   draftPartPublicId,
   accessToken,
+  restrictedTvSeriesTmdbId,
   submitted,
   active,
   onActivate,
@@ -190,47 +209,81 @@ function ContestantEntryRow({
 }: RowProps) {
   const [entries, setEntries] = useState<RankedEntry[]>([]);
   const [pendingRank, setPendingRank] = useState(1);
-  const [query, setQuery] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [resolving, setResolving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [rankError, setRankError] = useState<string | null>(null);
 
-  // Passing "" while inactive rather than adding an active flag to the hook
-  // — useMovieSearch already treats anything under 2 chars as "no search",
-  // so this keeps the row from searching while collapsed without needing a
-  // second gating mechanism.
-  const { results, searching } = useMovieSearch(active ? query : "", accessToken);
-
-  function addEntry(movie: ResolvedMovie) {
+  async function addEntry(media: SelectedMedia) {
     setRankError(null);
     if (entries.length >= requiredCount) return;
-    if (entries.some((e) => e.movie.tmdbId === movie.tmdbId)) return;
+    if (entries.some((e) => e.tmdbId === media.tmdbId)) return;
     if (entries.some((e) => e.rank === pendingRank)) {
       setRankError(`Rank ${pendingRank} is already used — pick a different rank first.`);
       return;
     }
-    const next = [...entries, { rank: pendingRank, movie }].sort((a, b) => a.rank - b.rank);
+
+    if (media.mediaType === MEDIA_TYPE_TV_EPISODE) {
+      if (
+        media.tvSeriesTmdbId == null ||
+        media.seasonNumber == null ||
+        media.episodeNumber == null
+      ) {
+        return;
+      }
+
+      setError(null);
+      setResolving(true);
+      try {
+        const mediaPublicId = await importAndResolveEpisode(
+          media.tmdbId,
+          media.tvSeriesTmdbId,
+          media.seasonNumber,
+          media.episodeNumber,
+          accessToken
+        );
+
+        if (!mediaPublicId) {
+          setError("Couldn't resolve that episode — please try again.");
+          return;
+        }
+
+        const next = [
+          ...entries,
+          { rank: pendingRank, tmdbId: media.tmdbId, title: media.title, year: media.year, mediaPublicId },
+        ].sort((a, b) => a.rank - b.rank);
+        setEntries(next);
+        setPendingRank(nextAvailableRank(next, requiredCount));
+      } finally {
+        setResolving(false);
+      }
+      return;
+    }
+
+    const next = [
+      ...entries,
+      { rank: pendingRank, tmdbId: media.tmdbId, title: media.title, year: media.year, mediaPublicId: null },
+    ].sort((a, b) => a.rank - b.rank);
     setEntries(next);
-    setQuery("");
     setPendingRank(nextAvailableRank(next, requiredCount));
   }
 
   function removeEntry(tmdbId: number) {
-    const next = entries.filter((e) => e.movie.tmdbId !== tmdbId);
+    const next = entries.filter((e) => e.tmdbId !== tmdbId);
     setEntries(next);
     setPendingRank(nextAvailableRank(next, requiredCount));
   }
 
   function updateRank(tmdbId: number, newRank: number) {
     if (newRank < 1 || newRank > requiredCount) return;
-    if (entries.some((e) => e.movie.tmdbId !== tmdbId && e.rank === newRank)) {
+    if (entries.some((e) => e.tmdbId !== tmdbId && e.rank === newRank)) {
       setRankError(`Rank ${newRank} is already used by another entry.`);
       return;
     }
     setRankError(null);
     setEntries((prev) =>
       prev
-        .map((e) => (e.movie.tmdbId === tmdbId ? { ...e, rank: newRank } : e))
+        .map((e) => (e.tmdbId === tmdbId ? { ...e, rank: newRank } : e))
         .sort((a, b) => a.rank - b.rank)
     );
   }
@@ -246,9 +299,10 @@ function ContestantEntryRow({
         contestantPublicId: predictor.contestantPublicId,
         submittedByPersonPublicId: null,
         entries: entries.map((e) => ({
-          tmdbId: e.movie.tmdbId,
-          mediaTitle: e.movie.title,
+          tmdbId: e.tmdbId,
+          mediaTitle: e.title,
           orderIndex: e.rank,
+          mediaPublicId: e.mediaPublicId,
         })),
       });
       onSubmitted();
@@ -289,21 +343,21 @@ function ContestantEntryRow({
           {entries.length > 0 && (
             <ol className="space-y-1">
               {entries.map((e) => (
-                <li key={e.movie.tmdbId} className="flex items-center gap-3 text-sm">
+                <li key={e.tmdbId} className="flex items-center gap-3 text-sm">
                   <input
                     type="number"
                     min={1}
                     max={requiredCount}
                     value={e.rank}
-                    onChange={(ev) => updateRank(e.movie.tmdbId, parseInt(ev.target.value, 10) || e.rank)}
+                    onChange={(ev) => updateRank(e.tmdbId, parseInt(ev.target.value, 10) || e.rank)}
                     className="w-14 border border-sd-ink/20 bg-sd-paper px-2 py-1 text-sm rounded text-center"
                   />
                   <span className="flex-1">
-                    {e.movie.title} {e.movie.year ? `(${e.movie.year})` : ""}
+                    {e.title} {e.year ? `(${e.year})` : ""}
                   </span>
                   <button
                     type="button"
-                    onClick={() => removeEntry(e.movie.tmdbId)}
+                    onClick={() => removeEntry(e.tmdbId)}
                     className="text-sd-ink/30 hover:text-sd-red"
                   >
                     ×
@@ -329,30 +383,15 @@ function ContestantEntryRow({
                 />
               </div>
               <div className="flex-1">
-                <label className={LABEL}>Movie</label>
-                <input
-                  type="text"
-                  className={INPUT}
-                  placeholder="Search movies…"
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
+                <label className={LABEL}>{restrictedTvSeriesTmdbId ? "Episode" : "Movie"}</label>
+                <MediaPicker
+                  accessToken={accessToken}
+                  onSelect={addEntry}
+                  disabled={resolving}
+                  fixedSeriesTmdbId={restrictedTvSeriesTmdbId ?? undefined}
                 />
-                {searching && (
-                  <p className="text-[11px] font-mono text-sd-ink/40 mt-1">Searching…</p>
-                )}
-                {results.length > 0 && (
-                  <div className="border border-sd-ink/10 rounded mt-2 max-h-40 overflow-y-auto">
-                    {results.map((m) => (
-                      <button
-                        key={m.tmdbId}
-                        type="button"
-                        onClick={() => addEntry(m)}
-                        className="w-full text-left px-3 py-2 text-sm hover:bg-sd-paper/60 border-b border-sd-ink/5 last:border-0"
-                      >
-                        {m.title} {m.year ? `(${m.year})` : ""}
-                      </button>
-                    ))}
-                  </div>
+                {resolving && (
+                  <p className="text-[11px] font-mono text-sd-ink/40 mt-1">Resolving episode…</p>
                 )}
               </div>
             </div>
@@ -367,7 +406,7 @@ function ContestantEntryRow({
           <button
             type="button"
             onClick={handleSubmit}
-            disabled={!seasonPublicId || entries.length === 0 || submitting}
+            disabled={!seasonPublicId || entries.length === 0 || submitting || resolving}
             className={BTN_SECONDARY}
           >
             {submitting ? "Submitting…" : `Submit ${predictor.contestantDisplayName}'s Predictions`}

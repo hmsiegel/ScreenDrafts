@@ -1,3 +1,4 @@
+// src/services/drafts/fetch-my-drafts.ts
 import { GetMyDraftDetailResponse, GetMyDraftsResponse } from "@/lib/dto";
 import { env } from "@/lib/env";
 
@@ -18,6 +19,7 @@ export interface SubmitPredictionEntry {
   mediaTitle: string;
   orderIndex: number | null;
   notes: string | null;
+  mediaPublicId: string | null;
 }
 
 export interface PredictionEntryDto {

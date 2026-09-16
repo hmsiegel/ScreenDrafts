@@ -18,9 +18,11 @@ internal sealed class GetMyDraftDetailQueryHandler(IDbConnectionFactory dbConnec
 
     const string headerSql = $"""
       SELECT
-        d.public_id  AS {nameof(DraftHeaderRow.DraftPublicId)},
-        d.title      AS {nameof(DraftHeaderRow.Title)},
-        d.draft_type AS {nameof(DraftHeaderRow.DraftType)},
+        d.public_id                       AS {nameof(DraftHeaderRow.DraftPublicId)},
+        d.title                           AS {nameof(DraftHeaderRow.Title)},
+        d.draft_type                      AS {nameof(DraftHeaderRow.DraftType)},
+        d.restricted_tv_series_tmdb_id    AS {nameof(DraftHeaderRow.RestrictedTvSeriesTmdbId)},
+        d.restricted_tv_series_title      AS {nameof(DraftHeaderRow.RestrictedTvSeriesTitle)},
         CASE WHEN pool.id IS NOT NULL THEN true ELSE false END AS {nameof(DraftHeaderRow.HasPool)}
       FROM drafts.drafts d
       LEFT JOIN drafts.draft_pools pool ON pool.draft_id = d.id
@@ -257,6 +259,8 @@ internal sealed class GetMyDraftDetailQueryHandler(IDbConnectionFactory dbConnec
         IsSurrogate = isSurrogate,
         MyRoles = roles,
         Parts = parts,
+        RestrictedTvSeriesTmdbId = header.RestrictedTvSeriesTmdbId,
+        RestrictedTvSeriesTitle = header.RestrictedTvSeriesTitle,
       }
     );
   }
@@ -265,6 +269,8 @@ internal sealed class GetMyDraftDetailQueryHandler(IDbConnectionFactory dbConnec
     string DraftPublicId,
     string Title,
     int DraftType,
+    int? RestrictedTvSeriesTmdbId,
+    string? RestrictedTvSeriesTitle,
     bool HasPool
   );
 

@@ -14,4 +14,7 @@ internal sealed record GetMyDraftDetailResponse
   public IReadOnlyList<string> MyRoles { get; init; } = [];
 
   public IReadOnlyList<MyDraftPartDetail> Parts { get; init; } = [];
+
+  public int? RestrictedTvSeriesTmdbId { get; init; }
+  public string? RestrictedTvSeriesTitle { get; init; }
 }

@@ -7,7 +7,7 @@ const handler = auth((req) => {
 
   // If the refresh token has expired, force re-authentication.
   if (session?.error === "RefreshTokenExpired") {
-    const signInUrl = new URL("/api/auth/signin", req.url);
+    const signInUrl = new URL("/force-signin", req.url);
     signInUrl.searchParams.set("callbackUrl", req.url);
     return NextResponse.redirect(signInUrl);
   }
@@ -19,5 +19,5 @@ export { handler as proxy };
 
 export const config = {
   // Run on all routes except Next.js internals and static files.
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|api/auth).*)"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|api/auth|force-signin).*)"],
 };

@@ -143,7 +143,8 @@ internal sealed class SeedSubmitPredictionSetCommandHandler(
             tmdbId: dto.TmdbId,
             mediaTitle: dto.MediaTitle,
             orderIndex: dto.OrderIndex,
-            notes: dto.Notes
+            notes: dto.Notes,
+            mediaPublicId: dto.MediaPublicId
           )
         )
         .ToList();
@@ -197,7 +198,8 @@ internal sealed class SeedSubmitPredictionSetCommandHandler(
           tmdbId: dto.TmdbId,
           mediaTitle: dto.MediaTitle,
           orderIndex: dto.OrderIndex,
-          notes: dto.Notes
+          notes: dto.Notes,
+          mediaPublicId: dto.MediaPublicId
         )
       )
       .ToList();

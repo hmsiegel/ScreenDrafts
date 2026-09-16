@@ -1,3 +1,4 @@
+// src/app/admin/drafts/new/create-draft-form.tsx
 "use client";
 
 import { useState, useEffect, useRef } from "react";
@@ -533,11 +534,36 @@ export default function CreateDraftForm({
       (!PERSON_SUBJECT_KINDS.has(s.subjectKind) || !!s.subjectImdbId)
   );
 
+  // GameBoard.AssignDraftPositions requires draftPositions.Count to exactly
+  // equal TotalDrafters + TotalDrafterTeams for a part, and rejects Count==0
+  // even when the participant count is also 0. Two valid states follow:
+  // nobody selected yet (skip positions entirely, add both later via edit —
+  // CreateDraftCommandHandler already skips AssignDraftPositions when a
+  // part's Positions array is empty) or a full, matching roster. Anything
+  // in between — some participants picked but not enough to fill every
+  // part's position slots — can never be saved, so it's caught here with a
+  // clear message instead of surfacing GameBoard.InvalidNumberOfParticipants.
+  const totalParticipants = selectedDrafterIds.size + selectedTeamIds.size;
+  const partialParticipantParts = isSpeedDraft
+    ? []
+    : parts.filter((p) => p.positions.length > 0 && totalParticipants !== p.positions.length);
+  const hasPartialParticipants = totalParticipants > 0 && partialParticipantParts.length > 0;
+  const partialParticipantMessage = hasPartialParticipants
+    ? partialParticipantParts.length === 1
+      ? `${totalParticipants} participant${totalParticipants !== 1 ? "s" : ""} selected, but ` +
+        `Part ${partialParticipantParts[0].partIndex} has ${partialParticipantParts[0].positions.length} position${partialParticipantParts[0].positions.length !== 1 ? "s" : ""} defined. ` +
+        `Select exactly ${partialParticipantParts[0].positions.length}, or clear all participants and add them later.`
+      : `${totalParticipants} participant${totalParticipants !== 1 ? "s" : ""} selected, but these parts don't have a matching number of positions: ` +
+        `${partialParticipantParts.map((p) => `Part ${p.partIndex} (${p.positions.length})`).join(", ")}. ` +
+        `Select a matching count, or clear all participants and add them later.`
+    : null;
+
   const canSubmit =
     title.trim() !== "" &&
     selectedSeriesId !== "" &&
     selectedDraftType !== null &&
     hasPrimaryHost &&
+    !hasPartialParticipants &&
     (!isSpeedDraft ||
       (speedDraftHasValidRoster && hasAtLeastOneHost && speedDraftSubjectsFilled));
 
@@ -569,13 +595,21 @@ export default function CreateDraftForm({
                 })),
             }
             : null,
-          positions: part.positions.map((p) => ({
-            name: p.name,
-            picks: p.picks,
-            hasBonusVeto: p.hasBonusVeto,
-            hasBonusVetoOverride: p.hasBonusVetoOverride,
-            hasBonusFungibleToken: p.hasBonusFungibleToken,
-          })),
+          // totalParticipants === 0 means nobody's been added yet — send no
+          // positions so CreateDraftCommandHandler skips AssignDraftPositions
+          // entirely (it only calls it when Positions.Count > 0) rather than
+          // failing on a 0-vs-N mismatch. canSubmit blocks every other
+          // mismatch, so any non-zero selection here is already a match.
+          positions:
+            totalParticipants === 0 && !isSpeedDraft
+              ? []
+              : part.positions.map((p) => ({
+                  name: p.name,
+                  picks: p.picks,
+                  hasBonusVeto: p.hasBonusVeto,
+                  hasBonusVetoOverride: p.hasBonusVetoOverride,
+                  hasBonusFungibleToken: p.hasBonusFungibleToken,
+                })),
         })),
         hosts: hosts.map((h) => ({
           hostPublicId: h.publicId,
@@ -1302,6 +1336,12 @@ export default function CreateDraftForm({
             ))}
           </div>
         </section>
+      )}
+
+      {partialParticipantMessage && (
+        <div className="border border-red-300 bg-red-50 text-red-800 text-sm px-4 py-3 rounded">
+          {partialParticipantMessage}
+        </div>
       )}
 
       {error && (

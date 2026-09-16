@@ -125,7 +125,7 @@ public sealed class DraftCompletedConsumerTests
     await consumer.Handle(BuildEvent(isPatreon: true), CancellationToken.None);
 
     // Assert
-    emailService.SentEmails.Single().HtmlBody.Should().Contain("PATREON EXCLUSIVE");
+    emailService.SentEmails.Single().HtmlBody.Should().Contain("Patreon Exclusive");
   }
 
   // -------------------------------------------------------------------------
