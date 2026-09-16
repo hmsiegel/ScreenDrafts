@@ -167,6 +167,7 @@ export function SeedDraftWizard({ detail, accessToken }: Props) {
           draftPartPublicId={draft.draftPartPublicId}
           accessToken={accessToken}
           hosts={[...(part.primaryHost ? [part.primaryHost] : []), ...part.coHosts]}
+          restrictedTvSeriesTmdbId={draft.restrictedTvSeriesTmdbId}
           onDone={advance}
         />
       )}

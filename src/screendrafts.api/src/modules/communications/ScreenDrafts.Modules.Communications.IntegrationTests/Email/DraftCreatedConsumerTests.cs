@@ -87,7 +87,7 @@ public sealed class DraftCreatedConsumerTests
     await consumer.Handle(BuildEvent(isPatreon: false), CancellationToken.None);
 
     // Assert
-    emailService.SentEmails.Single().HtmlBody.Should().NotContain("PATREON EXCLUSIVE");
+    emailService.SentEmails.Single().HtmlBody.Should().NotContain("Patreon Exclusive");
   }
 
   // -------------------------------------------------------------------------
@@ -126,7 +126,7 @@ public sealed class DraftCreatedConsumerTests
     await consumer.Handle(BuildEvent(isPatreon: true), CancellationToken.None);
 
     // Assert
-    emailService.SentEmails.Single().HtmlBody.Should().Contain("PATREON EXCLUSIVE");
+    emailService.SentEmails.Single().HtmlBody.Should().Contain("Patreon Exclusive");
   }
 
   // -------------------------------------------------------------------------

@@ -1,3 +1,4 @@
+// src/app/my-drafts/[draftId]/my-draft-tabs.tsx
 "use client";
 
 import { useState, useEffect } from "react";
@@ -214,6 +215,7 @@ export default function MyDraftTabs({ detail, accessToken }: MyDraftTabsProps) {
               draftPartId={predictorParts[selectedPredictionPartIdx].draftPartPublicId ?? ""}
               contestantPublicId={predictorParts[selectedPredictionPartIdx].contestantPublicId ?? ""}
               hasSubmitted={predictorParts[selectedPredictionPartIdx].hasSubmittedPrediction ?? false}
+              restrictedTvSeriesTmdbId={detail.restrictedTvSeriesTmdbId ?? null}
             />
           )}
         </div>

@@ -129,7 +129,7 @@ export async function importAndResolveEpisode(
   const deadline = Date.now() + timeoutMs;
   while (Date.now() < deadline) {
     await new Promise((r) => setTimeout(r, 600));
-    const res = await fetch(`${API}/media/by-tmdb-ids?tmdbIds=${tmdbId}`, {
+    const res = await fetch(`${API}/media/by-tmdb-ids?tmdbIds=${tmdbId}&mediaType=${MEDIA_TYPE_TV_EPISODE}`, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
     if (res.ok) {

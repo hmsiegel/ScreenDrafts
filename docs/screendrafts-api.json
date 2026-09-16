@@ -14863,6 +14863,21 @@
             "items": {
               "$ref": "#/components/schemas/MyDraftPartDetail"
             }
+          },
+          "restrictedTvSeriesTmdbId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "restrictedTvSeriesTitle": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -19371,6 +19386,12 @@
               "null",
               "string"
             ]
+          },
+          "mediaPublicId": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -21069,6 +21090,12 @@
             "format": "int32"
           },
           "notes": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "mediaPublicId": {
             "type": [
               "null",
               "string"

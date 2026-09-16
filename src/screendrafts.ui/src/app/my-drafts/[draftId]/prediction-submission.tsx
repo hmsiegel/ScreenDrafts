@@ -1,9 +1,10 @@
+// src/app/my-drafts/[draftId]/prediction-submission.tsx
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import * as signalR from "@microsoft/signalr";
-import MovieSearchInput from "@/components/drafts/movie-search-input";
-import { type MovieSearchResult } from "@/services/movies/fetch-tmdb";
+import { MediaPicker, type SelectedMedia } from "@/components/drafts/media-picker";
+import { MEDIA_TYPE_TV_EPISODE, importAndResolveEpisode } from "@/lib/tv-episode-resolve";
 import {
   getCurrentPredictionSeason,
   getDraftPartPredictionRules,
@@ -20,6 +21,10 @@ interface Props {
   // Kept for backward compatibility with my-draft-tabs.tsx — not the
   // source of truth, just an initial hint for the loading-state label.
   hasSubmitted: boolean;
+  // From GetMyDraftDetailResponse.RestrictedTvSeriesTmdbId — when set, this
+  // draft's predictions are episodes of one series, not films. Locks
+  // MediaPicker into TV Episode mode the same way pick-source-panel does.
+  restrictedTvSeriesTmdbId?: number | null;
 }
 
 const LABEL = "block text-[11px] font-mono tracking-widest text-sd-ink/60 uppercase mb-1";
@@ -40,6 +45,7 @@ export default function PredictionSubmission({
   draftPartId,
   contestantPublicId,
   hasSubmitted,
+  restrictedTvSeriesTmdbId,
 }: Props) {
   const [rules, setRules] = useState<{
     predictionMode: number;
@@ -52,6 +58,7 @@ export default function PredictionSubmission({
 
   const [entries, setEntries] = useState<SubmitPredictionEntry[]>([]);
   const [saving, setSaving] = useState(false);
+  const [resolving, setResolving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isLocked, setIsLocked] = useState(false);
   const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
@@ -78,6 +85,7 @@ export default function PredictionSubmission({
             mediaTitle: e.mediaTitle,
             orderIndex: e.orderIndex,
             notes: e.notes,
+            mediaPublicId: e.mediaPublicId ?? null,
           }))
       );
     }
@@ -135,15 +143,58 @@ export default function PredictionSubmission({
     };
   }, [accessToken, draftPartId, loadState]);
 
-  function handleSelect(movie: MovieSearchResult) {
+  async function handleSelect(media: SelectedMedia) {
     if (!rules) return;
-    if (entries.some((e) => e.tmdbId === movie.tmdbId)) return;
+    if (entries.some((e) => e.tmdbId === media.tmdbId)) return;
     if (entries.length >= rules.requiredCount) return;
+
+    if (media.mediaType === MEDIA_TYPE_TV_EPISODE) {
+      if (
+        media.tvSeriesTmdbId == null ||
+        media.seasonNumber == null ||
+        media.episodeNumber == null
+      ) {
+        return;
+      }
+
+      setError(null);
+      setResolving(true);
+      try {
+        const mediaPublicId = await importAndResolveEpisode(
+          media.tmdbId,
+          media.tvSeriesTmdbId,
+          media.seasonNumber,
+          media.episodeNumber,
+          accessToken
+        );
+
+        if (!mediaPublicId) {
+          setError("Couldn't resolve that episode — please try again.");
+          return;
+        }
+
+        setEntries((prev) => [
+          ...prev,
+          {
+            tmdbId: media.tmdbId,
+            mediaTitle: media.title,
+            mediaPublicId,
+            orderIndex: isOrderedMode(rules.predictionMode) ? prev.length + 1 : null,
+            notes: null,
+          },
+        ]);
+      } finally {
+        setResolving(false);
+      }
+      return;
+    }
+
     setEntries([
       ...entries,
       {
-        tmdbId: movie.tmdbId,
-        mediaTitle: movie.title,
+        tmdbId: media.tmdbId,
+        mediaTitle: media.title,
+        mediaPublicId: null,
         orderIndex: isOrderedMode(rules.predictionMode) ? entries.length + 1 : null,
         notes: null,
       },
@@ -291,13 +342,17 @@ export default function PredictionSubmission({
           {entries.length < rules.requiredCount && (
             <div>
               <label className={LABEL}>
-                Add Film ({entries.length}/{rules.requiredCount})
+                Add {restrictedTvSeriesTmdbId ? "Episode" : "Film"} ({entries.length}/{rules.requiredCount})
               </label>
-              <MovieSearchInput
-                onSelect={handleSelect}
+              <MediaPicker
                 accessToken={accessToken}
-                placeholder="Search to predict a film…"
+                onSelect={handleSelect}
+                disabled={resolving}
+                fixedSeriesTmdbId={restrictedTvSeriesTmdbId ?? undefined}
               />
+              {resolving && (
+                <p className="text-[11px] font-mono text-sd-ink/40 mt-1">Resolving episode…</p>
+              )}
             </div>
           )}
 
@@ -307,7 +362,7 @@ export default function PredictionSubmission({
             <button
               type="button"
               onClick={handleSave}
-              disabled={entries.length === 0 || saving}
+              disabled={entries.length === 0 || saving || resolving}
               className="bg-sd-red text-white font-oswald font-medium uppercase tracking-wide text-xs px-4 py-2 hover:bg-sd-red/90 disabled:opacity-50"
             >
               {saving ? "Saving…" : complete ? "Save Final Picks" : "Save Progress"}

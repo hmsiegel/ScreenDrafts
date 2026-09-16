@@ -1811,6 +1811,7 @@ export interface SeedPredictionEntryBody {
   mediaTitle: string;
   orderIndex?: number | null;
   notes?: string | null;
+  mediaPublicId?: string | null;
 }
 
 // Hits the new /seed/predictions route added alongside

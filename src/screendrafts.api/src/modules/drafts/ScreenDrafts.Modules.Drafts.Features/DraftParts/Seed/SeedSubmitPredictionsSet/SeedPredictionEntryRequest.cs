@@ -6,4 +6,5 @@ internal sealed record SeedPredictionEntryRequest
   public string MediaTitle { get; init; } = default!;
   public int? OrderIndex { get; init; }
   public string? Notes { get; init; }
+  public string? MediaPublicId { get; init; }
 }

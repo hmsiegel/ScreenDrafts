@@ -14742,6 +14742,8 @@ export interface GetMyDraftDetailResponse {
     isSurrogate?: boolean;
     myRoles?: string[];
     parts?: MyDraftPartDetail[];
+    restrictedTvSeriesTmdbId?: number | undefined;
+    restrictedTvSeriesTitle?: string | undefined;
 
     [key: string]: any;
 }
@@ -15989,6 +15991,7 @@ export interface PredictionEntryRequest {
     mediaTitle?: string;
     orderIndex?: number | undefined;
     notes?: string | undefined;
+    mediaPublicId?: string | undefined;
 
     [key: string]: any;
 }
@@ -16548,6 +16551,7 @@ export interface SeedPredictionEntryRequest {
     mediaTitle?: string;
     orderIndex?: number | undefined;
     notes?: string | undefined;
+    mediaPublicId?: string | undefined;
 
     [key: string]: any;
 }

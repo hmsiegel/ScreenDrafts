@@ -39,6 +39,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<SubmitPredictionSetRequest
           MediaTitle = e.MediaTitle,
           OrderIndex = e.OrderIndex,
           Notes = e.Notes,
+          MediaPublicId = e.MediaPublicId
         }),
       ],
     };
