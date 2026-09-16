@@ -143,6 +143,7 @@ background-image:
   outline: none;
   transition: border-color 0.18s, box-shadow 0.18s;
   -webkit-appearance: none;
+  appearance: none;
 }
 .sd-input::placeholder { color: #94a3b8;}
 .sd-input:focus {
@@ -312,4 +313,120 @@ background-image:
 @media (max-width: 480px) {
   .sd-card { padding: 24px 20px 22px; }
   .sd-page { padding: 16px 12px 40px; }
+}
+
+/* ──────────────────────────────────────────────
+   Template.tsx chrome — shared shell for every
+   fallback page (password update, verify email,
+   error, terms, OTP setup, WebAuthn, etc.)
+   ────────────────────────────────────────────── */
+
+/* alert title text inside .sd-alert (Template renders summary here) */
+.sd-alert-title { display: block; }
+
+/* "* denotes a required field" note, shown above the header on some pages */
+.sd-tpl-required-note {
+  font-size: 12px;
+  color: #64748b;
+  margin-bottom: 12px;
+}
+.sd-tpl-required-note .required { color: var(--sd-red); margin-right: 2px; }
+
+/* language switcher, top-right of the card */
+.sd-tpl-locale { display: flex; justify-content: flex-end; margin-bottom: 12px; }
+.sd-tpl-locale-toggle {
+  background: none;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--sd-radius);
+  color: #475569;
+  font-size: 12px;
+  padding: 4px 10px;
+  cursor: pointer;
+}
+.sd-tpl-locale-toggle:hover { border-color: #94a3b8; color: #1a1a2e; }
+.sd-tpl-locale-list {
+  list-style: none;
+  position: absolute;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--sd-radius);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  margin-top: 4px;
+  min-width: 120px;
+  z-index: 10;
+}
+.sd-tpl-locale-list a {
+  display: block;
+  padding: 8px 12px;
+  font-size: 13px;
+  color: #1a1a2e;
+  text-decoration: none;
+}
+.sd-tpl-locale-list a:hover { background: #f8fafc; }
+
+/* secondary button — "cancel" / "back" actions on fallback pages */
+.sd-btn-secondary {
+  display: block;
+  width: 100%;
+  background: #fff;
+  color: #1a1a2e;
+  font-family: 'Oswald', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border: 1.5px solid #cbd5e1;
+  border-radius: var(--sd-radius);
+  padding: 11px 20px;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: border-color 0.15s, background 0.15s;
+}
+.sd-btn-secondary:hover { border-color: #94a3b8; background: #f8fafc; }
+
+/* password-visibility toggle (LoginUpdatePassword, LoginPassword) —
+   Keycloak's default CSS normally supplies an icon-font glyph for the
+   <i> inside this button; with doUseDefaultCss={false} that font never
+   loads, so this replaces it with a plain text toggle instead of an
+   icon that depends on a stylesheet we're not including. */
+.sd-pw-group { position: relative; }
+.sd-pw-group .sd-input { padding-right: 60px; }
+.sd-pw-toggle {
+  position: absolute;
+  top: 50%;
+  right: 4px;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #64748b;
+  border-radius: 4px;
+}
+.sd-pw-toggle:hover { color: #1a1a2e; background: #f1f5f9; }
+.sd-pw-toggle:focus-visible { outline: 2px solid var(--sd-blue); outline-offset: 1px; }
+
+.sd-pw-icon-show, .sd-pw-icon-hide {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background-color: currentColor;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
+.sd-pw-icon-show {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E");
+}
+.sd-pw-icon-hide {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3Cline x1='2' y1='2' x2='22' y2='22'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3Cline x1='2' y1='2' x2='22' y2='22'/%3E%3C/svg%3E");
 }
