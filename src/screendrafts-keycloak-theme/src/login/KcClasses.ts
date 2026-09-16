@@ -23,5 +23,9 @@ export const classes = {
     kcButtonSecondaryClass: "sd-btn-secondary",
     kcInputClassCheckboxLabel: "sd-remember-label",
     kcFormSocialAccountListClass: "sd-social-list",
-    kcFormSocialAccountListButtonClass: "sd-social-btn"
+    kcFormSocialAccountListButtonClass: "sd-social-btn",
+    kcInputGroup: "sd-pw-group",
+    kcFormPasswordVisibilityButtonClass: "sd-pw-toggle",
+    kcFormPasswordVisibilityIconShow: "sd-pw-icon-show",
+    kcFormPasswordVisibilityIconHide: "sd-pw-icon-hide"
 } satisfies Partial<Record<ClassKey, string>>;
