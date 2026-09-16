@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Communications.Composition;
+﻿using ScreenDrafts.Modules.Communications.Features.Email;
+
+namespace ScreenDrafts.Modules.Communications.Composition;
 
 public static class CommunicationsModule
 {
@@ -33,6 +35,9 @@ public static class CommunicationsModule
 
     services.Configure<SmtpSettings>(configuration.GetSection(SmtpSettings.SectionName));
     services.AddScoped<IEmailService, SmtpEmailService>();
+
+    EmailTemplates.AssestsBasePath =
+      configuration["Communications:PublicAssetsBasePath"] ?? EmailTemplates.AssestsBasePath;
 
     services.AddScoped<
       ICommunicationsIntegrationEventDispatcher,

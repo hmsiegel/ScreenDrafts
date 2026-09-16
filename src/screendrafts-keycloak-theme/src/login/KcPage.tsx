@@ -1,11 +1,15 @@
 import { Suspense, lazy } from "react";
-import type { ClassKey } from "keycloakify/login";
 import type { KcContext } from "./KcContext";
 import { useI18n } from "./i18n";
 import DefaultPage from "keycloakify/login/DefaultPage";
-import BuiltinTemplate from "keycloakify/login/Template";
+import Template from "./Template";
 import "./screendrafts.css";
 import RegisterPage from "./pages/RegisterPage";
+import { classes as defaultClasses } from "./KcClasses";
+
+// login.ftl and register.ftl build their own markup and never consult this —
+// see LoginPage.tsx / RegisterPage.tsx.
+const emptyClasses = {};
 
 const UserProfileFormFields = lazy(
     () => import("keycloakify/login/UserProfileFormFields")
@@ -28,8 +32,8 @@ export default function KcPage(props: { kcContext: KcContext }) {
                             <LoginPage
                                 kcContext={kcContext}
                                 i18n={i18n}
-                                classes={classes}
-                                Template={BuiltinTemplate}
+                                classes={emptyClasses}
+                                Template={Template}
                                 doUseDefaultCss={false}
                             />
                         );
@@ -38,8 +42,8 @@ export default function KcPage(props: { kcContext: KcContext }) {
                             <RegisterPage
                                 kcContext={kcContext}
                                 i18n={i18n}
-                                classes={classes}
-                                Template={BuiltinTemplate}
+                                classes={emptyClasses}
+                                Template={Template}
                                 doUseDefaultCss={false}
                                 UserProfileFormFields={UserProfileFormFields}
                                 doMakeUserConfirmPassword={doMakeUserConfirmPassword}
@@ -50,9 +54,9 @@ export default function KcPage(props: { kcContext: KcContext }) {
                             <DefaultPage
                                 kcContext={kcContext}
                                 i18n={i18n}
-                                classes={classes}
-                                Template={BuiltinTemplate}
-                                doUseDefaultCss={true}
+                                classes={defaultClasses}
+                                Template={Template}
+                                doUseDefaultCss={false}
                                 UserProfileFormFields={UserProfileFormFields}
                                 doMakeUserConfirmPassword={doMakeUserConfirmPassword}
                             />
@@ -62,5 +66,3 @@ export default function KcPage(props: { kcContext: KcContext }) {
         </Suspense>
     );
 }
-
-const classes = {} satisfies { [key in ClassKey]?: string };

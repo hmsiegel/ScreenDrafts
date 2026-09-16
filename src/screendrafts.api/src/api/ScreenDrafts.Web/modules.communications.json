@@ -8,6 +8,7 @@
       "IntervalInSeconds": 5,
       "BatchSize": 50
     },
+    "PublicAssetsBasePath": "https://www.screen-drafts.com",
     "Smtp": {
       "Host": "",
       "Port": 25,

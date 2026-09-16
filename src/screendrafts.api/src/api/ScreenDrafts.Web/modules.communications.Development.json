@@ -8,6 +8,7 @@
       "IntervalInSeconds": 5,
       "BatchSize": 20
     },
+    "PublicAssetsBasePath": "http://localhost:5000",
     "Smtp": {
       "Host": "screendrafts.email",
       "Port": 25,
