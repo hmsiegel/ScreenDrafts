@@ -26,9 +26,13 @@ var configuration = builder.Configuration;
 
 var databaseConnectionString = builder.Services.AddPostgresDatabase(configuration);
 var redisConnectionString = builder.Configuration.GetConnectionStringOrThrow("Cache");
+
 var rabbitMqSettings = new RabbitMqSettings(
-  builder.Configuration.GetConnectionStringOrThrow("Queue")
+  Host: builder.Configuration.GetConnectionStringOrThrow("Queue"),
+  UserName: builder.Configuration["RabbitMq:Username"] ?? "guest",
+  Password: builder.Configuration["RabbitMq:Password"] ?? "guest"
 );
+
 var mongoConnectionString = builder.Configuration.GetConnectionStringOrThrow("Mongo");
 
 builder.Services.AddApplication(AssemblyReferences.FeatureAssemblies, configuration);
@@ -73,7 +77,12 @@ var keyCloakHealthUrl = builder.Configuration.GetKeyCloakHealthUrl();
 builder
   .Services.AddSingleton(sp =>
   {
-    var factory = new ConnectionFactory { Uri = new Uri(rabbitMqSettings.Host) };
+    var factory = new ConnectionFactory
+    {
+      Uri = new Uri(rabbitMqSettings.Host),
+      UserName = rabbitMqSettings.UserName,
+      Password = rabbitMqSettings.Password,
+    };
     return factory.CreateConnectionAsync().GetAwaiter().GetResult();
   })
   .AddSingleton(sp => new MongoClient(mongoConnectionString))
