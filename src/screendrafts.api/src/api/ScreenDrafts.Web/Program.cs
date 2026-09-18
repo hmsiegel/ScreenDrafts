@@ -14,6 +14,11 @@ if (!builder.Environment.IsEnvironment("Testing"))
   );
 }
 
+if (builder.Environment.IsProduction())
+{
+  builder.Configuration.AddKeyPerFile(directoryPath: "/run/secrets", optional: true);
+}
+
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 

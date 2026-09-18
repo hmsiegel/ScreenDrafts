@@ -1,9 +1,10 @@
-namespace ScreenDrafts.Modules.Users.UnitTests.Identity;
+﻿namespace ScreenDrafts.Modules.Users.UnitTests.Identity;
 
 public class EmailBootstrapTokenServiceTests : BaseTest
 {
-  private static EmailBootstrapTokenService CreateService(string secret = "unit-test-secret-please-change") =>
-    new(Options.Create(new EmailBootstrapOptions { Secret = secret, DefaultExpiryHours = 72 }));
+  private static EmailBootstrapTokenService CreateService(
+    string secret = "unit-test-secret-please-change"
+  ) => new(Options.Create(new EmailBootstrapOptions { Secret = secret, DefaultExpiryHours = 72 }));
 
   [Fact]
   public void GenerateToken_ThenValidateToken_ShouldRoundTrip_ReturningUserIdAndExpiresAt()
@@ -20,7 +21,9 @@ public class EmailBootstrapTokenServiceTests : BaseTest
     // Assert
     result.IsSuccess.Should().BeTrue();
     result.Value.UserId.Should().Be(userId);
-    result.Value.ExpiresAt.Should().Be(DateTimeOffset.FromUnixTimeSeconds(expiresAt.ToUnixTimeSeconds()));
+    result
+      .Value.ExpiresAt.Should()
+      .Be(DateTimeOffset.FromUnixTimeSeconds(expiresAt.ToUnixTimeSeconds()));
   }
 
   [Fact]
@@ -80,7 +83,9 @@ public class EmailBootstrapTokenServiceTests : BaseTest
   [InlineData("no-dot-separator")]
   [InlineData("too.many.dots")]
   [InlineData("!!!invalid-base64!!!.!!!invalid-base64!!!")]
-  public void ValidateToken_WithMalformedInput_ShouldFailCleanlyWithoutThrowing(string malformedToken)
+  public void ValidateToken_WithMalformedInput_ShouldFailCleanlyWithoutThrowing(
+    string malformedToken
+  )
   {
     // Arrange
     var service = CreateService();
@@ -97,10 +102,22 @@ public class EmailBootstrapTokenServiceTests : BaseTest
 
   private static string FlipLastChar(string base64UrlSegment)
   {
-    const string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
-    var lastChar = base64UrlSegment[^1];
-    var replacement = alphabet.First(c => c != lastChar);
+    // Flip the bits of the decoded last byte, not the base64 character itself.
+    // The final base64 character of a segment can encode padding bits that
+    // get discarded on decode, so swapping the character alone doesn't
+    // guarantee the decoded bytes actually change. Flipping the byte and
+    // re-encoding does.
+    var padded = base64UrlSegment.Replace('-', '+').Replace('_', '/');
+    padded = (padded.Length % 4) switch
+    {
+      2 => padded + "==",
+      3 => padded + "=",
+      _ => padded,
+    };
 
-    return base64UrlSegment[..^1] + replacement;
+    var bytes = Convert.FromBase64String(padded);
+    bytes[^1] ^= 0xFF;
+
+    return Convert.ToBase64String(bytes).TrimEnd('=').Replace('+', '-').Replace('/', '_');
   }
 }
