@@ -886,3 +886,6 @@ FodyWeavers.xsd
 /src/screendrafts.api/screendrafts-deploy-key
 /src/screendrafts.api/screendrafts-deploy-key.pub
 /db-setup.txt
+/infrastructure/secrets/provision-secrets.txt
+/src/screendrafts.api/keycloak-export
+/infrastructure/client_secret_354343429917-efjhrvjpg0re3acsa6rrl11ij1t83ies.apps.googleusercontent.com.json

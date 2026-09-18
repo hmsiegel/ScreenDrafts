@@ -24,7 +24,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
     secrets:
-      - db_connection_string
+      - ConnectionStrings__Database
     networks:
       - screendrafts
     depends_on:
@@ -38,31 +38,33 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
     secrets:
-      - db_connection_string
-      - db_connection_administration
-      - db_connection_audit
-      - db_connection_communications
-      - db_connection_drafts
-      - db_connection_integrations
-      - db_connection_movies
-      - db_connection_realtimeupdates
-      - db_connection_reporting
-      - db_connection_users
-      - redis_connection_string
-      - rabbitmq_connection_string
-      - mongo_connection_string
-      - mediatr_license_key
-      - keycloak_confidential_client_secret
-      - keycloak_registration_secret
-      - tmdb_access_token
-      - imdb_key
-      - omdb_key
-      - igdb_client_id
-      - igdb_client_secret
-      - zoom_account_id
-      - zoom_client_id
-      - zoom_client_secret
-      - zoom_webhook_secret_token
+      - ConnectionStrings__Database
+      - ConnectionStrings__Administration
+      - ConnectionStrings__Audit
+      - ConnectionStrings__Communications
+      - ConnectionStrings__Drafts
+      - ConnectionStrings__GuestDrafts
+      - ConnectionStrings__Integrations
+      - ConnectionStrings__Movies
+      - ConnectionStrings__RealTimeUpdates
+      - ConnectionStrings__Reporting
+      - ConnectionStrings__Users
+      - ConnectionStrings__Cache
+      - ConnectionStrings__Queue
+      - ConnectionStrings__Mongo
+      - MediatR__LicenseKey
+      - KeycloakRegistation__Secret
+      - Audit__KeycloakPoller__ConfidentialClientSecret
+      - Integrations__Tmdb__AccessToken
+      - Integrations__Imdb__Key
+      - Integrations__Omdb__Key
+      - Integrations__Igdb__ClientId
+      - Integrations__Igdb__ClientSecret
+      - Integrations__Zoom__AccountId
+      - Integrations__Zoom__ClientId
+      - Integrations__Zoom__ClientSecret
+      - Integrations__Zoom__WebhookSecretToken
+      - Users__EmailBootstrap__Secret
     volumes:
       - wwwroot:/app/wwwroot
     networks:
@@ -83,7 +85,7 @@ services:
 
   # ── PostgreSQL (app) ───────────────────────────────────────────────────────
   screendrafts.database:
-    image: postgres:16
+    image: postgres:18
     restart: unless-stopped
     environment:
       POSTGRES_DB: screendrafts
@@ -102,6 +104,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    ports:
+      - "127.0.0.1:5432:5432"
 
   # ── Keycloak ───────────────────────────────────────────────────────────────
   screendrafts.identity:
@@ -118,7 +122,7 @@ services:
       - KC_PROXY=edge
       - KEYCLOAK_ADMIN_FILE=/run/secrets/keycloak_admin_user
       - KEYCLOAK_ADMIN_PASSWORD_FILE=/run/secrets/keycloak_admin_password
-      - SD_API_URL=https://api.screen-drafts.com
+      - SD_API_URL=http://screendrafts.web:8080
       - SD_KEYCLOAK_SECRET_FILE=/run/secrets/keycloak_registration_secret
       - REGISTER_URL=https://www.screen-drafts.com/register
     secrets:
@@ -139,7 +143,7 @@ services:
 
   # ── Keycloak DB ────────────────────────────────────────────────────────────
   keycloak-db:
-    image: postgres:16
+    image: postgres:18
     restart: unless-stopped
     environment:
       POSTGRES_DB: keycloak
@@ -203,7 +207,7 @@ services:
 
   # ── PostgreSQL Backup ──────────────────────────────────────────────────────
   screendrafts.backup:
-    image: postgres:16
+    image: postgres:18
     restart: unless-stopped
     environment:
       PGHOST: screendrafts.database
@@ -229,58 +233,56 @@ services:
         condition: service_healthy
 
 # ── Secrets ────────────────────────────────────────────────────────────────
+# File paths intentionally match the secret name so the mounted filename
+# under /run/secrets/ is identical to what AddKeyPerFile expects.
 secrets:
-  # PostgreSQL superuser
   pg_superuser:
     file: ./secrets/pg_superuser.txt
   pg_superpassword:
     file: ./secrets/pg_superpassword.txt
 
-  # Per-module DB connection strings
-  db_connection_string:
-    file: ./secrets/db_connection_string.txt
-  db_connection_administration:
-    file: ./secrets/db_connection_administration.txt
-  db_connection_audit:
-    file: ./secrets/db_connection_audit.txt
-  db_connection_communications:
-    file: ./secrets/db_connection_communications.txt
-  db_connection_drafts:
-    file: ./secrets/db_connection_drafts.txt
-  db_connection_integrations:
-    file: ./secrets/db_connection_integrations.txt
-  db_connection_movies:
-    file: ./secrets/db_connection_movies.txt
-  db_connection_realtimeupdates:
-    file: ./secrets/db_connection_realtimeupdates.txt
-  db_connection_reporting:
-    file: ./secrets/db_connection_reporting.txt
-  db_connection_users:
-    file: ./secrets/db_connection_users.txt
+  ConnectionStrings__Database:
+    file: ./secrets/ConnectionStrings__Database.txt
+  ConnectionStrings__Administration:
+    file: ./secrets/ConnectionStrings__Administration.txt
+  ConnectionStrings__Audit:
+    file: ./secrets/ConnectionStrings__Audit.txt
+  ConnectionStrings__Communications:
+    file: ./secrets/ConnectionStrings__Communications.txt
+  ConnectionStrings__Drafts:
+    file: ./secrets/ConnectionStrings__Drafts.txt
+  ConnectionStrings__GuestDrafts:
+    file: ./secrets/ConnectionStrings__GuestDrafts.txt
+  ConnectionStrings__Integrations:
+    file: ./secrets/ConnectionStrings__Integrations.txt
+  ConnectionStrings__Movies:
+    file: ./secrets/ConnectionStrings__Movies.txt
+  ConnectionStrings__RealTimeUpdates:
+    file: ./secrets/ConnectionStrings__RealTimeUpdates.txt
+  ConnectionStrings__Reporting:
+    file: ./secrets/ConnectionStrings__Reporting.txt
+  ConnectionStrings__Users:
+    file: ./secrets/ConnectionStrings__Users.txt
 
-  # Redis
   redis_password:
     file: ./secrets/redis_password.txt
-  redis_connection_string:
-    file: ./secrets/redis_connection_string.txt
+  ConnectionStrings__Cache:
+    file: ./secrets/ConnectionStrings__Cache.txt
 
-  # RabbitMQ
   rabbitmq_user:
     file: ./secrets/rabbitmq_user.txt
   rabbitmq_password:
     file: ./secrets/rabbitmq_password.txt
-  rabbitmq_connection_string:
-    file: ./secrets/rabbitmq_connection_string.txt
+  ConnectionStrings__Queue:
+    file: ./secrets/ConnectionStrings__Queue.txt
 
-  # MongoDB
   mongo_user:
     file: ./secrets/mongo_user.txt
   mongo_password:
     file: ./secrets/mongo_password.txt
-  mongo_connection_string:
-    file: ./secrets/mongo_connection_string.txt
+  ConnectionStrings__Mongo:
+    file: ./secrets/ConnectionStrings__Mongo.txt
 
-  # Keycloak
   keycloak_db_user:
     file: ./secrets/keycloak_db_user.txt
   keycloak_db_password:
@@ -289,34 +291,37 @@ secrets:
     file: ./secrets/keycloak_admin_user.txt
   keycloak_admin_password:
     file: ./secrets/keycloak_admin_password.txt
-  keycloak_confidential_client_secret:
-    file: ./secrets/keycloak_confidential_client_secret.txt
   keycloak_registration_secret:
     file: ./secrets/keycloak_registration_secret.txt
+  KeycloakRegistation__Secret:
+    file: ./secrets/KeycloakRegistation__Secret.txt
+  Audit__KeycloakPoller__ConfidentialClientSecret:
+    file: ./secrets/Audit__KeycloakPoller__ConfidentialClientSecret.txt
 
-  # External APIs
-  mediatr_license_key:
-    file: ./secrets/mediatr_license_key.txt
-  tmdb_access_token:
-    file: ./secrets/tmdb_access_token.txt
-  imdb_key:
-    file: ./secrets/imdb_key.txt
-  omdb_key:
-    file: ./secrets/omdb_key.txt
-  igdb_client_id:
-    file: ./secrets/igdb_client_id.txt
-  igdb_client_secret:
-    file: ./secrets/igdb_client_secret.txt
-  zoom_account_id:
-    file: ./secrets/zoom_account_id.txt
-  zoom_client_id:
-    file: ./secrets/zoom_client_id.txt
-  zoom_client_secret:
-    file: ./secrets/zoom_client_secret.txt
-  zoom_webhook_secret_token:
-    file: ./secrets/zoom_webhook_secret_token.txt
+  MediatR__LicenseKey:
+    file: ./secrets/MediatR__LicenseKey.txt
+  Integrations__Tmdb__AccessToken:
+    file: ./secrets/Integrations__Tmdb__AccessToken.txt
+  Integrations__Imdb__Key:
+    file: ./secrets/Integrations__Imdb__Key.txt
+  Integrations__Omdb__Key:
+    file: ./secrets/Integrations__Omdb__Key.txt
+  Integrations__Igdb__ClientId:
+    file: ./secrets/Integrations__Igdb__ClientId.txt
+  Integrations__Igdb__ClientSecret:
+    file: ./secrets/Integrations__Igdb__ClientSecret.txt
+  Integrations__Zoom__AccountId:
+    file: ./secrets/Integrations__Zoom__AccountId.txt
+  Integrations__Zoom__ClientId:
+    file: ./secrets/Integrations__Zoom__ClientId.txt
+  Integrations__Zoom__ClientSecret:
+    file: ./secrets/Integrations__Zoom__ClientSecret.txt
+  Integrations__Zoom__WebhookSecretToken:
+    file: ./secrets/Integrations__Zoom__WebhookSecretToken.txt
 
-  # Backup
+  Users__EmailBootstrap__Secret:
+    file: ./secrets/Users__EmailBootstrap__Secret.txt
+
   backup_s3_key:
     file: ./secrets/backup_s3_key.txt
   backup_s3_secret:
