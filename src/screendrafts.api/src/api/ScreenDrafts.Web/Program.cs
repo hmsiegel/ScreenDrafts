@@ -4,7 +4,7 @@ builder.Host.UseSerilog((context, config) => config.ReadFrom.Configuration(conte
 
 var vaultSection = builder.Configuration.GetSection("Vault");
 
-if (!builder.Environment.IsEnvironment("Testing"))
+if (builder.Environment.IsDevelopment())
 {
   builder.Configuration.AddVaultConfiguration(
     () =>
