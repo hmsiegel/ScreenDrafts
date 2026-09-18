@@ -1,16 +1,17 @@
 ﻿var basePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
 
 var config = new ConfigurationBuilder()
-    .SetBasePath(basePath)
-    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-    .AddJsonFile("appsettings.Development.json", optional: true, reloadOnChange: true)
-    .AddEnvironmentVariables()
-    .Build();
+  .SetBasePath(basePath)
+  .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+  .AddJsonFile("appsettings.Development.json", optional: true, reloadOnChange: true)
+  .AddKeyPerFile(directoryPath: "/run/secrets", optional: true)
+  .AddEnvironmentVariables()
+  .Build();
 
 Log.Logger = new LoggerConfiguration()
-    .ReadFrom.Configuration(config)
-    .Enrich.FromLogContext()
-    .CreateLogger();
+  .ReadFrom.Configuration(config)
+  .Enrich.FromLogContext()
+  .CreateLogger();
 
 try
 {
@@ -18,10 +19,12 @@ try
 
   Log.Information("=== Bootstrapping Schemas ===");
 
-  var bootstrapResult = DeployChanges.To
-    .PostgresqlDatabase(bootstrapConnectionString)
-    .WithScriptsEmbeddedInAssembly(typeof(Program).Assembly,
-    s => s.EndsWith("0001_create_schema.sql", StringComparison.OrdinalIgnoreCase))
+  var bootstrapResult = DeployChanges
+    .To.PostgresqlDatabase(bootstrapConnectionString)
+    .WithScriptsEmbeddedInAssembly(
+      typeof(Program).Assembly,
+      s => s.EndsWith("0001_create_schema.sql", StringComparison.OrdinalIgnoreCase)
+    )
     .WithTransaction()
     .JournalToPostgresqlTable("public", "schema_versions_bootstrap")
     .LogToConsole()
@@ -45,7 +48,7 @@ try
     ("Movies", "Movies", "movies"),
     ("RealTimeUpdates", "RealTimeUpdates", "real_time_updates"),
     ("Reporting", "Reporting", "reporting"),
-    ("Users", "Users", "users")
+    ("Users", "Users", "users"),
   };
 
   foreach (var (module, connectionKey, schema) in modules)
@@ -55,11 +58,16 @@ try
     Log.Information("=== Migrating {Module} ===", module);
 
     // Run the EF baseline script with no transaction wrapping.
-    var efResult = DeployChanges.To
-      .PostgresqlDatabase(connectionString)
-      .WithScriptsEmbeddedInAssembly(typeof(Program).Assembly,
-      s => s.StartsWith($"ScreenDrafts.Tools.DbMigrator.Scripts.{module}.", StringComparison.OrdinalIgnoreCase)
-                && s.Contains("_ef_", StringComparison.OrdinalIgnoreCase))
+    var efResult = DeployChanges
+      .To.PostgresqlDatabase(connectionString)
+      .WithScriptsEmbeddedInAssembly(
+        typeof(Program).Assembly,
+        s =>
+          s.StartsWith(
+            $"ScreenDrafts.Tools.DbMigrator.Scripts.{module}.",
+            StringComparison.OrdinalIgnoreCase
+          ) && s.Contains("_ef_", StringComparison.OrdinalIgnoreCase)
+      )
       .WithoutTransaction()
       .WithVariablesDisabled()
       .JournalToPostgresqlTable(schema, "schema_versions")
@@ -73,12 +81,18 @@ try
       return 1;
     }
 
-    var sqlResult = DeployChanges.To
-      .PostgresqlDatabase(connectionString)
-      .WithScriptsEmbeddedInAssembly(typeof(Program).Assembly,
-      s => s.StartsWith($"ScreenDrafts.Tools.DbMigrator.Scripts.{module}.", StringComparison.OrdinalIgnoreCase)
-              && !s.Contains("_ef_", StringComparison.OrdinalIgnoreCase)
-              && !s.EndsWith("0001_create_schema.sql", StringComparison.OrdinalIgnoreCase))
+    var sqlResult = DeployChanges
+      .To.PostgresqlDatabase(connectionString)
+      .WithScriptsEmbeddedInAssembly(
+        typeof(Program).Assembly,
+        s =>
+          s.StartsWith(
+            $"ScreenDrafts.Tools.DbMigrator.Scripts.{module}.",
+            StringComparison.OrdinalIgnoreCase
+          )
+          && !s.Contains("_ef_", StringComparison.OrdinalIgnoreCase)
+          && !s.EndsWith("0001_create_schema.sql", StringComparison.OrdinalIgnoreCase)
+      )
       .WithTransaction()
       .WithVariablesDisabled()
       .JournalToPostgresqlTable(schema, "schema_versions")
@@ -92,17 +106,18 @@ try
       return 1;
     }
 
-
     Log.Information("{Module} migration successful.", module);
   }
 
   Log.Information("=== Migrating Cross -Schema Scripts ===");
 
   // Cross-shema scripts - run as postgres superuser so they can read across module schema boundaries.
-  var crossSchemaResult = DeployChanges.To
-    .PostgresqlDatabase(bootstrapConnectionString)
-    .WithScriptsEmbeddedInAssembly(typeof(Program).Assembly,
-    s => s.Contains("_crossschema_", StringComparison.OrdinalIgnoreCase))
+  var crossSchemaResult = DeployChanges
+    .To.PostgresqlDatabase(bootstrapConnectionString)
+    .WithScriptsEmbeddedInAssembly(
+      typeof(Program).Assembly,
+      s => s.Contains("_crossschema_", StringComparison.OrdinalIgnoreCase)
+    )
     .WithTransaction()
     .WithVariablesDisabled()
     .JournalToPostgresqlTable("public", "schema_versions_cross_schema")
@@ -127,6 +142,4 @@ catch (ScreenDraftsException ex)
 finally
 {
   await Log.CloseAndFlushAsync();
-
 }
-
