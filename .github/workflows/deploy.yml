@@ -39,7 +39,7 @@ jobs:
         with:
           images: ${{ env.IMAGE_API }}
           tags: |
-            type=sha,prefix=
+            type=sha,format=long,prefix=
             type=raw,value=latest,enable={{is_default_branch}}
 
       - name: Extract metadata (Migrator)
@@ -48,7 +48,7 @@ jobs:
         with:
           images: ${{ env.IMAGE_MIGRATOR }}
           tags: |
-            type=sha,prefix=
+            type=sha,format=long,prefix=
             type=raw,value=latest,enable={{is_default_branch}}
 
       - name: Set up Docker Buildx
@@ -90,6 +90,7 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
+            set -e
             cd /opt/screendrafts
             echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u hmsiegel --password-stdin
             IMAGE_TAG=${{ github.sha }} docker compose -f docker-compose.production.yml pull
