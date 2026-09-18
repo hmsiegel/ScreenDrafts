@@ -57,8 +57,8 @@ jobs:
       - name: Build and push API image
         uses: docker/build-push-action@v5
         with:
-          context: .
-          file: src/api/ScreenDrafts.Web/Dockerfile
+          context: src/screendrafts.api
+          file: src/screendrafts.api/src/api/ScreenDrafts.Web/Dockerfile
           push: true
           tags: ${{ steps.meta-api.outputs.tags }}
           labels: ${{ steps.meta-api.outputs.labels }}
@@ -68,8 +68,8 @@ jobs:
       - name: Build and push Migrator image
         uses: docker/build-push-action@v5
         with:
-          context: .
-          file: tools/ScreenDrafts.Tools.DbMigrator/Dockerfile
+          context: src/screendrafts.api
+          file: src/screendrafts.api/tools/ScreenDrafts.Tools.DbMigrator/Dockerfile
           push: true
           tags: ${{ steps.meta-migrator.outputs.tags }}
           labels: ${{ steps.meta-migrator.outputs.labels }}
