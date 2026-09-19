@@ -2,6 +2,7 @@
 global using System.Data;
 global using System.Globalization;
 global using System.Reflection;
+global using System.Security.Cryptography;
 global using System.Text;
 global using System.Text.Json;
 global using Ardalis.SmartEnum;
@@ -29,6 +30,7 @@ global using ScreenDrafts.Common.Application.Logging;
 global using ScreenDrafts.Common.Application.Messaging;
 global using ScreenDrafts.Common.Application.Outbox;
 global using ScreenDrafts.Common.Application.Services;
+global using ScreenDrafts.Common.Application.Storage;
 global using ScreenDrafts.Common.Domain;
 global using ScreenDrafts.Common.Presentation.Http;
 global using ScreenDrafts.Common.Presentation.Http.Authentication;

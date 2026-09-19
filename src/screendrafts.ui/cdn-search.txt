@@ -1,0 +1,253 @@
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\admin\campaigns\campaign-manager.tsx:48: const apiBase = process.env.NEXT_PUBLIC_API_URL;
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\admin\campaigns\campaign-manager.tsx:177: const apiBase = process.env.NEXT_PUBLIC_API_URL;
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\admin\campaigns\campaign-manager.tsx:210: const apiBase = process.env.NEXT_PUBLIC_API_URL;
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\admin\campaigns\campaign-manager.tsx:229: const apiBase = process.env.NEXT_PUBLIC_API_URL;
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\admin\categories\category-manager.tsx:48: const apiBase = process.env.NEXT_PUBLIC_API_URL;
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\admin\categories\category-manager.tsx:174: const apiBase = process.env.NEXT_PUBLIC_API_URL;
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\admin\categories\category-manager.tsx:206: const apiBase = process.env.NEXT_PUBLIC_API_URL;
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\admin\categories\category-manager.tsx:225: const apiBase = process.env.NEXT_PUBLIC_API_URL;
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\admin\drafts\[draftId]\attendances\page.tsx:1: // src/app/admin/drafts/[draftId]/attendances/page.tsx
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\admin\drafts\[draftId]\attendances\page.tsx:31: redirect(`/admin/drafts/${draftId}/parts/${parts[0].publicId}/attendances`);
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\admin\drafts\[draftId]\attendances\page.tsx:60: href={`/admin/drafts/${draftId}/parts/${part.publicId}/attendances`}
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\admin\drafts\[draftId]\edit\edit-draft-form.tsx:1: // app/admin/drafts/[draftId]/edit/edit-draft-form.tsx
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\admin\drafts\[draftId]\edit\edit-draft-form.tsx:43: import DraftImageUpload from "@/components/features/drafts/draft-image-upload";
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\admin\drafts\[draftId]\edit\edit-draft-form.tsx:66: } from "@/components/drafts/tv-series-restriction-field";
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\admin\drafts\[draftId]\edit\edit-draft-form.tsx:990: currentImagePath={draft.imagePath}
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\admin\drafts\[draftId]\edit-meta\edit-meta-form.tsx:15: import DraftImageUpload from "@/components/features/drafts/draft-image-upload";
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\admin\drafts\[draftId]\edit-meta\edit-meta-form.tsx:26: const API_URL = process.env.NEXT_PUBLIC_API_URL;
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\admin\drafts\[draftId]\edit-meta\edit-meta-form.tsx:246: currentImagePath={draft.imagePath}
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\admin\drafts\[draftId]\edit-meta\edit-meta-form.tsx:248: apiBase={API_URL!}
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\admin\drafts\[draftId]\edit-meta\edit-meta-form.tsx:290: <a href={`/drafts/${draft.publicId}`} className={BTN_SECONDARY}>Back to Draft</a>
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\admin\drafts\[draftId]\edit-meta\page.tsx:41: <Link href={`/drafts/${draftId}`} className="hover:text-sd-ink/70 truncate">
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\admin\drafts\[draftId]\parts\[draftPartId]\attendances\attendance-manager.tsx:1: // src/app/admin/drafts/[draftId]/parts/[draftPartId]/attendances/attendance-manager.tsx
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\admin\drafts\[draftId]\parts\[draftPartId]\attendances\attendance-manager.tsx:50: `${process.env.NEXT_PUBLIC_API_URL}/draft-parts/${draftPartId}/attendances`,
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\admin\drafts\[draftId]\parts\[draftPartId]\attendances\page.tsx:1: // src/app/admin/drafts/[draftId]/parts/[draftPartId]/attendances/page.tsx
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\admin\drafts\[draftId]\pool\draft-pool-manager.tsx:12: import { MediaPicker, SelectedMedia } from "@/components/drafts/media-picker";
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\admin\drafts\[draftId]\seed\seed-complete-step.tsx:1: // app/admin/drafts/[draftId]/seed/seed-complete-step.tsx
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\admin\drafts\[draftId]\seed\seed-draft-wizard.tsx:1: // app/admin/drafts/[draftId]/seed/seed-draft-wizard.tsx
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\admin\drafts\[draftId]\seed\seed-picks-step.tsx:1: // app/admin/drafts/[draftId]/seed/seed-picks-step.tsx
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\admin\drafts\[draftId]\seed\seed-picks-step.tsx:20: import { MediaPicker, type SelectedMedia } from "@/components/drafts/media-picker";
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\admin\drafts\[draftId]\seed\seed-positions-step.tsx:1: // app/admin/drafts/[draftId]/seed/seed-positions-step.tsx
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\admin\drafts\[draftId]\seed\seed-predictions-setup.tsx:1: // app/admin/drafts/[draftId]/seed/seed-predictions-setup.tsx
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\admin\drafts\[draftId]\seed\seed-predictions-step.tsx:1: // app/admin/drafts/[draftId]/seed/seed-predictions-step.tsx
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\admin\drafts\[draftId]\seed\seed-predictions-step.tsx:15: import { MediaPicker, type SelectedMedia } from "@/components/drafts/media-picker";
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\admin\drafts\[draftId]\seed\seed-speed-draft-step.tsx:1: // app/admin/drafts/[draftId]/seed/seed-speed-draft-step.tsx
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\admin\drafts\[draftId]\seed\seed-speed-draft-step.tsx:40: const API = process.env.NEXT_PUBLIC_API_URL;
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\admin\drafts\new\create-draft-form.tsx:1: // src/app/admin/drafts/new/create-draft-form.tsx
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\admin\drafts\new\create-draft-form.tsx:33: } from "@/components/drafts/tv-series-restriction-field";
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\admin\drafts\new\movie-search-picker.tsx:1: // app/admin/drafts/new/movie-search-picker.tsx
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\admin\drafts\new\positions-editor.tsx:1: // src/app/admin/drafts/new/positions-editor.tsx
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\admin\drafts\new\prediction-rules-section.tsx:1: // app/admin/drafts/new/prediction-rules-section.tsx
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\admin\drafts\new\prediction-rules-section.tsx:77: // TODO: confirm this endpoint exists — mirrors /hosts/search, /drafters/search.
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\admin\drafts\in-progress-draft-actions.tsx:18: href={`/admin/drafts/${draft.publicId}/attendances`}
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\admin\drafts\in-progress-draft-actions.tsx:24: href={`/admin/drafts/${draft.publicId}/seed`}
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\admin\drafts\in-progress-draft-actions.tsx:30: href={`/admin/drafts/${draft.publicId}/edit`}
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\admin\drafts\page.tsx:52: href="/admin/drafts/new"
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\admin\drafts\unreleased-parts-list.tsx:46: href={`/admin/drafts/${p.draftPublicId}/edit-meta`}
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\admin\drafts\upcoming-draft-actions.tsx:117: href={`/admin/drafts/${draft.publicId}/pool`}
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\admin\drafts\upcoming-draft-actions.tsx:124: href={`/admin/drafts/${draft.publicId}/attendances`}
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\admin\drafts\upcoming-draft-actions.tsx:138: href={`/admin/drafts/${draft.publicId}/edit`}
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\admin\drafts\upcoming-draft-actions.tsx:151: href={`/admin/drafts/${draft.publicId}/seed`}
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\admin\series\series-manager.tsx:176: const apiBase = process.env.NEXT_PUBLIC_API_URL;
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\admin\series\series-manager.tsx:372: const apiBase = process.env.NEXT_PUBLIC_API_URL;
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\admin\series\series-manager.tsx:406: const apiBase = process.env.NEXT_PUBLIC_API_URL;
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\admin\series\series-manager.tsx:422: const apiBase = process.env.NEXT_PUBLIC_API_URL;
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\admin\spotlight\spotlight-fetcher.ts:9: const API_BASE = process.env.NEXT_PUBLIC_API_URL;
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\draft-parts\[draftPartId]\live\components\tabs\co-host-tab.tsx:44: `${process.env.NEXT_PUBLIC_API_URL}/draft-parts/${draftPartId}/commissioner-override/${mostRecentPick.playOrder}`,
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\draft-parts\[draftPartId]\live\components\tabs\drafter-tab.tsx:129: `${process.env.NEXT_PUBLIC_API_URL}/draft-parts/${draftPartId}/picks/${mostRecentPick.playOrder}/veto`,
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\draft-parts\[draftPartId]\live\components\tabs\drafter-tab.tsx:145: `${process.env.NEXT_PUBLIC_API_URL}/draft-parts/${draftPartId}/veto-override/${mostRecentPick.playOrder}`,
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\draft-parts\[draftPartId]\live\components\tabs\primary-host-tab.tsx:9: import { completeDraftPart } from '@/services/drafts/fetch-my-drafts';
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\draft-parts\[draftPartId]\live\components\tabs\primary-host-tab.tsx:229: `${process.env.NEXT_PUBLIC_API_URL}/draft-parts/${draftPartId}/positions/${positionPublicId}/participant`,
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\draft-parts\[draftPartId]\live\components\tabs\primary-host-tab.tsx:256: `${process.env.NEXT_PUBLIC_API_URL}/draft-parts/${draftPartId}/positions/${positionPublicId}/participant`,
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\draft-parts\[draftPartId]\live\components\tabs\primary-host-tab.tsx:416: `${process.env.NEXT_PUBLIC_API_URL}/draft-parts/${draftPartId}/picks/${playOrder}`,
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\draft-parts\[draftPartId]\live\components\tabs\primary-host-tab.tsx:433: `${process.env.NEXT_PUBLIC_API_URL}/draft-parts/${draftPartId}/picks/${playOrder}/undo-veto`,
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\draft-parts\[draftPartId]\live\components\tabs\primary-host-tab.tsx:450: `${process.env.NEXT_PUBLIC_API_URL}/draft-parts/${draftPartId}/commissioner-override/${playOrder}`,
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\draft-parts\[draftPartId]\live\components\tabs\primary-host-tab.tsx:478: `${process.env.NEXT_PUBLIC_API_URL}/draft-parts/${draftPartId}/picks`,
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\draft-parts\[draftPartId]\live\components\pick-source-panel.tsx:8: import { MediaPicker, type SelectedMedia } from '@/components/drafts/media-picker';
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\draft-parts\[draftPartId]\live\components\pick-source-panel.tsx:9: import { DARK_THEME } from '@/components/drafts/media-picker-theme';
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\draft-parts\[draftPartId]\live\components\pick-source-panel.tsx:11: const API = process.env.NEXT_PUBLIC_API_URL;
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\draft-parts\[draftPartId]\live\components\pick-source-panel.tsx:194: const res = await fetch(`${API}/drafts/${draftId}/pool`, {
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\draft-parts\[draftPartId]\live\components\pick-source-panel.tsx:236: const res = await fetch(`${API}/drafts/${draftId}/board`, {
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\draft-parts\[draftPartId]\live\components\speed-draft-pick-panel.tsx:31: const API = process.env.NEXT_PUBLIC_API_URL;
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\draft-parts\[draftPartId]\live\components\speed-draft-tabs.tsx:96: const API = process.env.NEXT_PUBLIC_API_URL;
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\draft-parts\[draftPartId]\live\gameplay-fetchers.ts:6: const API_BASE = process.env.NEXT_PUBLIC_API_URL;
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\draft-parts\[draftPartId]\live\live-draft-context.tsx:463: `${process.env.NEXT_PUBLIC_API_URL}/draft-parts/${draftPartId}/picks/${playOrder}/reveal`,
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\draft-parts\[draftPartId]\live\live-draft-context.tsx:483: const hubUrl = `${process.env.NEXT_PUBLIC_API_URL}/drafts/hub`;
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\draft-parts\[draftPartId]\live\live-draft-context.tsx:858: window.location.href = `/drafts/${initialGameplay.draftId}`;
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\drafters\[id]\page.tsx:172: picturePath={profile.socialHandles?.profilePicturePath}
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\drafters\[id]\page.tsx:270: href={`/drafts/${stats.firstDraft.draftPublicId}`} />
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\drafters\[id]\page.tsx:274: href={`/drafts/${stats.mostRecentDraft.draftPublicId}`} />
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\drafters\[id]\page.tsx:317: href={`/drafts/${stats.firstHostedDraft.draftPublicId}`} />
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\drafters\[id]\page.tsx:321: href={`/drafts/${stats.mostRecentHostedDraft.draftPublicId}`} />
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\drafters\[id]\page.tsx:479: href={`/drafts/${draft.draftPublicId}`}
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\drafters\[id]\page.tsx:562: href={`/drafters/${pick.vetoedByPublicId}`}
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\drafters\[id]\page.tsx:586: href={`/drafters/${pick.overrideByPublicId}`}
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\drafters\[id]\page.tsx:629: href={`/drafters/${veto.targetDrafterPublicId}`}
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\drafters\[id]\page.tsx:647: href={`/drafters/${veto.overrideByPublicId}`}
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\drafts\[id]\page.tsx:1: // src/app/drafts/[id]/page.tsx
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\drafts\[id]\page.tsx:9: import DraftSidebar from "@/components/features/drafts/drafts-sidebar";
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\drafts\[id]\page.tsx:10: import { DraftPick } from "@/components/features/drafts/draft-pick";
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\drafts\[id]\page.tsx:11: import { SpeedDraftLayout } from "@/components/features/drafts/speed-draft-layout";
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\drafts\[id]\page.tsx:12: import { DraftPartPredictionData, PredictionsSection } from "@/components/features/drafts/predictions-section";
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\drafts\[id]\page.tsx:18: } from "@/services/drafts/fetch-drafts";
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\drafts\page.tsx:1: import DraftsFilter from "@/components/features/drafts/drafts-filter";
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\drafts\page.tsx:2: import { listDrafts } from "@/services/drafts/fetch-drafts";
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\drafts\page.tsx:6: import { DraftsTable } from "@/components/features/drafts/drafts-table";
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\drafts\page.tsx:7: import { listCampaigns } from "@/services/drafts/fetch-campaigns";
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\drafts\page.tsx:9: import { listCategories } from "@/services/drafts/fetch-categrories";
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\guest-drafts\[guestDraftId]\live\components\guest-draft-summary-content.tsx:17: // Flat pick list, not a board grid — matches canonical's /drafts/[id] page
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\guest-drafts\[guestDraftId]\live\components\pick-source-panel.tsx:9: import { MediaPicker, type SelectedMedia } from '@/components/drafts/media-picker';
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\guest-drafts\[guestDraftId]\live\components\pick-source-panel.tsx:10: import { DARK_THEME } from '@/components/drafts/media-picker-theme';
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\guest-drafts\[guestDraftId]\live\gameplay-fetchers.ts:14: const API_BASE = process.env.NEXT_PUBLIC_API_URL;
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\guest-drafts\[guestDraftId]\live\guest-draft-context.tsx:203: const hubUrl = `${API_BASE_URL()}/drafts/hub`;
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\guest-drafts\[guestDraftId]\live\guest-draft-context.tsx:540: return process.env.NEXT_PUBLIC_API_URL;
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\guest-drafts\new\create-guest-draft-form.tsx:15: // the file's own header comment (src/app/admin/drafts/new/positions-editor.tsx) —
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\guest-drafts\new\create-guest-draft-form.tsx:22: } from '@/app/admin/drafts/new/positions-editor';
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\guest-drafts\guest-drafts-realtime-refresher.tsx:30: const hubUrl = `${process.env.NEXT_PUBLIC_API_URL}/drafts/hub`;
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\media\[id]\page.tsx:206: 1: "/artifacts/Marquee_of_Fame_Banner.webp",
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\media\[id]\page.tsx:207: 2: "/artifacts/Hat_Trick_Banner.webp",
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\media\[id]\page.tsx:208: 3: "/artifacts/Grand_Slam_Banner.webp",
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\media\[id]\page.tsx:209: 4: "/artifacts/High_Five_Banner.webp",
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\media\[id]\page.tsx:213: unifiedNo1: "/artifacts/Unified_No._1_Banner.webp",
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\media\[id]\page.tsx:214: theCycle: "/artifacts/The_Cycle_Banner.webp",
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\media\[id]\page.tsx:413: href={`/drafts/${draftPublicId}`}
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\media\[id]\page.tsx:428: <Link href={`/drafters/${pickedByPersonPublicId}`} className={`font-mono text-[11px] tracking-widest hover:text-sd-ink transition-colors ${landed ? "text-[#5a6075]" : "text-sd-ink/30 line-through"}`}>
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\my-drafts\[draftId]\my-draft-tabs.tsx:6: import DraftBoardEditor from "@/components/drafts/draft-board-editor";
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\my-drafts\[draftId]\my-draft-tabs.tsx:7: import CandidateListEditor from "@/components/drafts/candidate-list-editor";
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\my-drafts\[draftId]\my-draft-tabs.tsx:9: import { getDraftBoard } from "@/services/drafts/fetch-draft-board";
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\my-drafts\[draftId]\page.tsx:4: import { getMyDraftDetail, joinDraftPart, startDraftPart } from "@/services/drafts/fetch-my-drafts";
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\my-drafts\[draftId]\prediction-submission.tsx:6: import { MediaPicker, type SelectedMedia } from "@/components/drafts/media-picker";
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\my-drafts\[draftId]\prediction-submission.tsx:14: } from "@/services/drafts/fetch-my-drafts";
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\my-drafts\[draftId]\prediction-submission.tsx:106: const hubUrl = `${process.env.NEXT_PUBLIC_API_URL}/drafts/hub`;
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\my-drafts\my-drafts-realtime-refresher.tsx:23: const hubUrl = `${process.env.NEXT_PUBLIC_API_URL}/drafts/hub`;
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\my-drafts\page.tsx:4: import { getMyDrafts, joinDraftPart, startDraftPart } from "@/services/drafts/fetch-my-drafts";
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\my-drafts\page.tsx:135: href={`/drafts/${draftPublicId}`}
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\my-drafts\page.tsx:204: href={`/drafts/${draftPublicId}`}
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\my-drafts\page.tsx:241: href={`/drafts/${draft.draftPublicId ?? ""}`}
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\predictions\page.tsx:2: import { listPredictionSeasons } from "@/services/drafts/fetch-drafts";
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\predictions\predictions-list.tsx:128: href={`/drafts/${draft.draftPublicId}`}
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\profile\avatar-upload.tsx:61: if (data.avatarPath) setAvatarUrl(`${apiBase}/drafters/${data.avatarPath}`);
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\profile\page.tsx:51: {profile?.profilePicturePath ? (
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\profile\page.tsx:53: src={profile.profilePicturePath}
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\app\profile\profile-form.tsx:365: currentAvatarUrl={profile?.profilePicturePath}
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\components\drafts\candidate-list-editor.tsx:4: import { MediaPicker, type SelectedMedia } from "@/components/drafts/media-picker";
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\components\drafts\candidate-list-editor.tsx:9: } from "@/services/drafts/fetch-candidate-list";
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\components\drafts\draft-board-editor.tsx:4: import { MediaPicker, type SelectedMedia } from "@/components/drafts/media-picker";
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\components\drafts\draft-board-editor.tsx:10: } from "@/services/drafts/fetch-draft-board";
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\components\drafts\episode-season-picker.tsx:1: // components/drafts/episode-season-picker.tsx
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\components\drafts\media-picker-theme.ts:1: // components/drafts/media-picker-theme.ts
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\components\drafts\media-picker.tsx:1: // components/drafts/media-picker.tsx
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\components\drafts\media-picker.tsx:5: import MovieSearchInput from "@/components/drafts/movie-search-input";
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\components\drafts\media-picker.tsx:6: import { EpisodeSeasonPicker } from "@/components/drafts/episode-season-picker";
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\components\drafts\media-picker.tsx:10: import { LIGHT_THEME, type MediaPickerTheme } from "@/components/drafts/media-picker-theme";
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\components\drafts\movie-search-input.tsx:1: // components/drafts/movie-search-input.tsx
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\components\drafts\tv-series-restriction-field.tsx:4: import { TvSeriesSearchPicker } from "@/components/drafts/tv-series-search-picker";
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\components\features\drafts\draft-image-upload.tsx:12: currentImagePath: string | null | undefined;
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\components\features\drafts\draft-image-upload.tsx:20: currentImagePath,
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\components\features\drafts\draft-image-upload.tsx:31: const displayPath = successPath ?? currentImagePath;
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\components\features\drafts\draft-image-upload.tsx:33: ? `${apiBase}/drafts/${displayPath}`
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\components\features\drafts\draft-image-upload.tsx:55: `${apiBase}/drafts/${encodeURIComponent(draftPublicId)}/image`,
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\components\features\drafts\draft-image-upload.tsx:68: const data = (await response.json()) as { imagePath: string };
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\components\features\drafts\draft-image-upload.tsx:69: setSuccessPath(data.imagePath);
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\components\features\drafts\draft-image-upload.tsx:72: onUploaded?.(data.imagePath);
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\components\features\drafts\draft-pick.tsx:1: // src/components/features/drafts/draft-pick.tsx
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\components\features\drafts\drafts-sidebar.tsx:1: // src/components/features/drafts/drafts-sidebar.tsx
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\components\features\drafts\drafts-sidebar.tsx:59: <Link href={`/drafters/${personPublicId}`} className="hover:text-sd-blue transition-colors">
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\components\features\drafts\drafts-sidebar.tsx:116: href={`/drafts/${publicId}`}
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\components\features\drafts\drafts-sidebar.tsx:266: href={`/drafts/${publicId}`}
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\components\features\drafts\drafts-sidebar.tsx:283: href={`/drafts/${publicId}`}
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\components\features\drafts\drafts-sidebar.tsx:405: <EpisodeImage imagePath={draft.imagePath} title={draft.title} />
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\components\features\drafts\drafts-sidebar.tsx:472: href={`/drafts/${publicId}`}
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\components\features\drafts\drafts-sidebar.tsx:489: href={`/drafts/${publicId}`}
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\components\features\drafts\drafts-table.tsx:1: // src/components/features/drafts/drafts-table.tsx
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\components\features\drafts\drafts-table.tsx:163: href={`/drafts/${draft.draftPublicId}`}
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\components\features\drafts\drafts-table.tsx:202: href={`/admin/drafts/${draft.draftPublicId}/edit-meta`}
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\components\features\drafts\speed-draft-layout.tsx:19: import { DraftPick, Avatar } from "@/components/features/drafts/draft-pick";
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\components\features\drafts\speed-draft-layout.tsx:20: import { DraftPartPredictionData, PredictionsSection } from "@/components/features/drafts/predictions-section";
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\components\features\drafts\speed-draft-layout.tsx:81: <Link href={`/drafters/${personPublicId}`} className="hover:text-sd-blue transition-colors">
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\components\features\drafts\speed-draft-layout.tsx:107: href={`/drafts/${publicId}`}
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\components\features\drafts\speed-draft-layout.tsx:284: <EpisodeImage imagePath={draft.imagePath} title={draft.title} />
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\components\features\drafts\speed-draft-layout.tsx:372: href={`/drafts/${publicId}`}
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\components\features\home\recent-drafts.tsx:34: href={`/drafts/${draft.publicId}`}
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\components\features\home\spotlight-hero.tsx:40: href={`/drafts/${spotlight.draftPublicId}`}
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\components\features\home\spotlight-hero.tsx:80: href={`/drafts/${spotlight.draftPublicId}`}
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\components\features\participants\honorific-banner.tsx:7: 0: { src: "/artifacts/Guest_G.M._Banner.webp", alt: "Guest G.M."},
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\components\features\participants\honorific-banner.tsx:8: 1: { src: "/artifacts/All-Star_Banner.webp",    alt: "All-Star" },
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\components\features\participants\honorific-banner.tsx:9: 2: { src: "/artifacts/Hall_of_Fame_Banner.webp", alt: "Hall of Famer" },
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\components\features\participants\honorific-banner.tsx:10: 3: { src: "/artifacts/MVP_Banner.webp",          alt: "MVP" },
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\components\features\participants\honorific-banner.tsx:11: 4: { src: "/artifacts/Legends_Banner.webp",       alt: "Legend" },
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\components\features\participants\participant-card.tsx:40: href={`/drafters/${participant.personPublicId}`}
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\components\ui\episode-image.tsx:3: const API_URL = process.env.NEXT_PUBLIC_API_URL;
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\components\ui\episode-image.tsx:6: /** publicId-based filename e.g. "d_abc123.jpg" — from API imagePath field */
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\components\ui\episode-image.tsx:7: imagePath?: string | null;
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\components\ui\episode-image.tsx:12: export default function EpisodeImage({ imagePath, title }: EpisodeImageProps) {
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\components\ui\episode-image.tsx:14: // If we have an imagePath from the API, serve from the API static files
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\components\ui\episode-image.tsx:16: const primarySrc = imagePath
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\components\ui\episode-image.tsx:17: ? `${API_URL}/drafts/${imagePath}`
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\components\ui\episode-image.tsx:23: if (imagePath) {
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\components\ui\episode-image.tsx:25: const base = `${API_URL}/drafts/${imagePath.replace(/\.(jpg|png|webp)$/, "")}`;
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\lib\env.ts:8: apiUrl: process.env.NEXT_PUBLIC_API_URL,
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\lib\movie-resolve.ts:26: const API = process.env.NEXT_PUBLIC_API_URL;
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\lib\tv-episode-resolve.ts:16: const API = process.env.NEXT_PUBLIC_API_URL;
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\lib\tv-show-resolve.ts:10: const API = process.env.NEXT_PUBLIC_API_URL;
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\admin\fetch-admin-drafts.ts:15: import { PositionConfig } from "@/app/admin/drafts/new/positions-editor";
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\admin\fetch-admin-drafts.ts:16: import { PREDICTION_MODE_VALUES, PredictionConfig } from "@/app/admin/drafts/new/prediction-rules-section";
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\admin\fetch-admin-drafts.ts:83: // just untyped — but I haven't seen the backend response DTO for GET /drafts/{publicId}
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\admin\fetch-admin-drafts.ts:101: imagePath: string | null;
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\admin\fetch-admin-drafts.ts:202: const url = new URL(`${apiBase}/drafts/search`);
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\admin\fetch-admin-drafts.ts:326: const url = new URL(`${apiBase}/drafters/search`);
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\admin\fetch-admin-drafts.ts:603: `${apiBase}/drafts/${encodeURIComponent(draftPublicId)}`,
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\admin\fetch-admin-drafts.ts:643: const response = await fetch(`${apiBase}/drafts/${encodeURIComponent(draftPublicId)}/parts`, {
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\admin\fetch-admin-drafts.ts:653: throw new Error(`POST /drafts/${draftPublicId}/parts failed (${response.status}): ${text}`);
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\admin\fetch-admin-drafts.ts:712: `${apiBase}/drafts/${encodeURIComponent(draftPublicId)}/categories`,
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\admin\fetch-admin-drafts.ts:725: `PUT /drafts/${draftPublicId}/categories failed (${response.status}): ${text}`
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\admin\fetch-admin-drafts.ts:736: `${apiBase}/drafts/${encodeURIComponent(draftPublicId)}/campaign`,
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\admin\fetch-admin-drafts.ts:749: `POST /drafts/${draftPublicId}/campaign failed (${response.status}): ${text}`
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\admin\fetch-admin-drafts.ts:755: * Calls PUT /drafts/{publicId}/tv-series-restriction. Pass both arguments as
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\admin\fetch-admin-drafts.ts:769: `${apiBase}/drafts/${encodeURIComponent(draftPublicId)}/tv-series-restriction`,
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\admin\fetch-admin-drafts.ts:779: `PUT /drafts/${draftPublicId}/tv-series-restriction failed (${res.status}): ${text}`
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\admin\fetch-admin-drafts.ts:799: `${apiBase}/drafts/${encodeURIComponent(draftPublicId)}`,
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\admin\fetch-admin-drafts.ts:811: throw new Error(`PUT /drafts/${draftPublicId} failed (${response.status}): ${text}`);
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\admin\fetch-admin-drafts.ts:864: `${apiBase}/drafts/${encodeURIComponent(draftPublicId)}/campaign`,
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\admin\fetch-admin-drafts.ts:873: `DELETE /drafts/${draftPublicId}/campaign failed (${response.status}): ${text}`
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\admin\fetch-admin-drafts.ts:1042: `${apiBase}/drafts/${encodeURIComponent(draftId)}/parts/${partIndex}/status`,
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\admin\fetch-admin-drafts.ts:1051: throw new Error(`PUT /drafts/${draftId}/parts/${partIndex}/status failed (${res.status}): ${text}`);
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\admin\fetch-admin-drafts.ts:1061: `${apiBase}/drafts/${encodeURIComponent(draftId)}/parts/${partIndex}/status`,
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\admin\fetch-admin-drafts.ts:1073: throw new Error(`PUT /drafts/${draftId}/parts/${partIndex}/status failed (${res.status}): ${text}`);
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\admin\fetch-admin-drafts.ts:1226: const res = await fetch(`${apiBase}/drafts/${encodeURIComponent(draftId)}`, {
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\admin\fetch-admin-drafts.ts:1232: throw new Error(`DELETE /drafts/${draftId} failed (${res.status}): ${text}`);
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\admin\fetch-admin-drafts.ts:1240: const res = await fetch(`${apiBase}/drafts/${encodeURIComponent(draftId)}/restore`, {
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\admin\fetch-admin-drafts.ts:1246: throw new Error(`POST /drafts/${draftId}/restore failed (${res.status}): ${text}`);
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\admin\fetch-admin-drafts.ts:1277: `${apiBase}/drafts/${encodeURIComponent(draftPublicId)}/episode`,
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\admin\fetch-admin-drafts.ts:1286: throw new Error(`PUT /drafts/${draftPublicId}/episode failed (${res.status}): ${text}`);
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\admin\fetch-admin-drafts.ts:1302: const res = await fetch(`${apiBase}/drafts/${encodeURIComponent(draftId)}/pool`, {
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\admin\fetch-admin-drafts.ts:1319: const res = await fetch(`${apiBase}/drafts/${encodeURIComponent(draftId)}/pool`, {
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\admin\fetch-admin-drafts.ts:1326: throw new Error(`POST /drafts/${draftId}/pool failed (${res.status}): ${text}`);
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\admin\fetch-admin-drafts.ts:1344: const res = await fetch(`${apiBase}/drafts/${encodeURIComponent(draftId)}/pool/items`, {
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\admin\fetch-admin-drafts.ts:1351: throw new Error(`POST /drafts/${draftId}/pool/items failed (${res.status}): ${text}`);
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\admin\fetch-admin-drafts.ts:1360: // TODO: confirm DELETE /drafts/{draftId}/pool/items/{tmdbId} endpoint
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\admin\fetch-admin-drafts.ts:1362: `${apiBase}/drafts/${encodeURIComponent(draftId)}/pool/items/${tmdbId}`,
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\admin\fetch-admin-drafts.ts:1370: throw new Error(`DELETE /drafts/${draftId}/pool/items/${tmdbId} failed (${res.status}): ${text}`);
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\admin\fetch-admin-drafts.ts:1381: const res = await fetch(`${apiBase}/drafts/${encodeURIComponent(draftId)}/pool/bulk`, {
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\admin\fetch-admin-drafts.ts:1388: throw new Error(`POST /drafts/${draftId}/pool/bulk failed (${res.status}): ${text}`);
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\admin\fetch-attendances.ts:3: const API_BASE = process.env.NEXT_PUBLIC_API_URL;
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\drafts\fetch-categrories.ts:1: // src/services/drafts/fetch-categories.ts
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\drafts\fetch-draft-board.ts:11: const res = await fetch(`${apiBase}/drafts/${encodeURIComponent(draftId)}/board`, {
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\drafts\fetch-draft-board.ts:35: const res = await fetch(`${apiBase}/drafts/${encodeURIComponent(draftId)}/board`, {
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\drafts\fetch-draft-board.ts:50: throw new Error(`POST /drafts/${draftId}/board failed (${res.status}): ${text}`);
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\drafts\fetch-draft-board.ts:60: `${apiBase}/drafts/${encodeURIComponent(draftId)}/board/${tmdbId}`,
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\drafts\fetch-draft-board.ts:68: throw new Error(`DELETE /drafts/${draftId}/board/${tmdbId} failed (${res.status}): ${text}`);
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\drafts\fetch-draft-board.ts:81: `${apiBase}/drafts/${encodeURIComponent(draftId)}/board/${tmdbId}`,
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\drafts\fetch-draft-board.ts:90: throw new Error(`PUT /drafts/${draftId}/board/${tmdbId} failed (${res.status}): ${text}`);
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\drafts\fetch-drafts.ts:371: const url = `${apiBase}/drafts/${id}`;
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\drafts\fetch-my-drafts.ts:1: // src/services/drafts/fetch-my-drafts.ts
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\drafts\fetch-my-drafts.ts:111: `${apiBase}/drafts/${draftPublicId}/parts/${partIndex}/status`,
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\drafts\fetch-my-drafts.ts:133: `${apiBase}/drafts/${draftPublicId}/parts/${partIndex}/status`,
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\home\fetch-home-data.ts:13: const API_BASE = process.env.NEXT_PUBLIC_API_URL;
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\home\fetch-home-data.ts:77: const res = await fetch(`${API_BASE}/drafts/latest`, {
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\home\fetch-home-data.ts:90: const res = await fetch(`${API_BASE}/drafts/upcoming`, {
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\profile\fetch-profile.ts:12: profilePicturePath?: string | null;
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\profile\fetch-profile.ts:27: profilePicturePath?: string;
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\profile\fetch-profile.ts:85: profilePicturePath: handles?.profilePicturePath
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\services\profile\fetch-profile.ts:86: ? `${apiBase}/drafters/${handles.profilePicturePath}`
+C:\Repos\ScreenDrafts\src\screendrafts.ui\src\auth.ts:17: const API_BASE = process.env.NEXT_PUBLIC_API_URL;
