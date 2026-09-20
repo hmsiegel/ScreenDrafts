@@ -210,7 +210,7 @@ services:
   # Runs once on `docker compose up`, seeds all secrets, then exits.
   # screendrafts.web depends on this completing successfully before it starts.
   vault-init:
-    image: hashicorp/vault:1.13.3
+    image: hashicorp/vault:2.1.1
     environment:
       - VAULT_DEV_ROOT_TOKEN_ID=screendrafts-dev-root-token
     volumes:
@@ -228,7 +228,7 @@ services:
   # Secrets survive container restarts only while the container is running;
   # vault-init re-seeds on every fresh `docker compose up`.
   screendrafts.vault:
-    image: hashicorp/vault:1.13.3
+    image: hashicorp/vault:2.1.1
     container_name: screendrafts.vault
     command: vault server -dev
     environment:
