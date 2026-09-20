@@ -1,17 +1,15 @@
-﻿using Microsoft.Extensions.Hosting;
-
-using ScreenDrafts.Common.Application.Storage;
-
-namespace ScreenDrafts.Common.Infrastructure.Storage;
+﻿namespace ScreenDrafts.Common.Infrastructure.Storage;
 
 /// <summary>
 /// Development/Testing fallback: writes into wwwroot, which the API already
 /// serves with UseStaticFiles() and docker-compose bind-mounts on the host.
 /// </summary>
-internal sealed class LocalFileStorage(IHostEnvironment environment) : IFileStorage
+internal sealed class LocalFileStorage(IWebHostEnvironment environment) : IFileStorage
 {
-  private readonly string _root = Path.GetFullPath(
-    Path.Combine(environment.ContentRootPath, "wwwroot")
+  private readonly string _root = Path.TrimEndingDirectorySeparator(
+    Path.GetFullPath(
+      environment.WebRootPath ?? Path.Combine(environment.ContentRootPath, "wwwroot")
+    )
   );
 
   public async Task UploadAsync(

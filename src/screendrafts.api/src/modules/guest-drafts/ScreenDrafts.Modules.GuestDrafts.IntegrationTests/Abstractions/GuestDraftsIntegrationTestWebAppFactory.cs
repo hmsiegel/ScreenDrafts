@@ -1,5 +1,4 @@
-using ScreenDrafts.Common.Infrastructure.Identity;
-using ScreenDrafts.Modules.Users.PublicApi;
+﻿using ScreenDrafts.Common.Infrastructure.Identity;
 using Testcontainers.Keycloak;
 
 namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.Abstractions;
@@ -106,10 +105,15 @@ public class GuestDraftsIntegrationTestWebAppFactory : IntegrationTestWebAppFact
     // shares one physical Postgres database/container (split only by schema), so
     // this just points GuestDrafts at the same connection string every other
     // module already got from ConnectionStrings__Database.
-    var databaseConnectionString = Environment.GetEnvironmentVariable("ConnectionStrings__Database");
+    var databaseConnectionString = Environment.GetEnvironmentVariable(
+      "ConnectionStrings__Database"
+    );
     if (!string.IsNullOrEmpty(databaseConnectionString))
     {
-      Environment.SetEnvironmentVariable("ConnectionStrings__GuestDrafts", databaseConnectionString);
+      Environment.SetEnvironmentVariable(
+        "ConnectionStrings__GuestDrafts",
+        databaseConnectionString
+      );
     }
 
     builder.UseUrls("http://localhost:0");
