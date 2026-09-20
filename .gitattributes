@@ -1,0 +1,4 @@
+# Keeps shell scripts and hooks LF,
+# because CRLF breaks them on Linux and in Git Bash.
+*.sh text eol=lf
+.githooks/* text eol=lf

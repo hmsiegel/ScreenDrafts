@@ -1,3 +1,4 @@
+# .github/workflows/build-api.yml
 name: Build API
 
 on:
@@ -15,6 +16,15 @@ on:
       - 'src/screendrafts.api/**'
       - 'tools/**'
 
+# Least privilege: this workflow only reads the repo.
+permissions:
+  contents: read
+
+# A new push to a PR cancels its older run. Runs on main are never cancelled,
+# so every main push reaches the Deploy workflow.
+concurrency:
+  group: build-api-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 env:
   DOTNET_VERSION: "10.x"
@@ -22,16 +32,19 @@ env:
 jobs:
   build-api:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
 
     defaults:
       run:
         working-directory: src/screendrafts.api
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 

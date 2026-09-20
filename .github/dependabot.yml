@@ -1,0 +1,54 @@
+# .github/dependabot.yml
+version: 2
+
+updates:
+  # .NET: Directory.Packages.props at this root drives every project's versions.
+  - package-ecosystem: nuget
+    directory: /src/screendrafts.api
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    groups:
+      dotnet-minor-patch:
+        update-types: [minor, patch]
+
+  - package-ecosystem: npm
+    directories:
+      - /src/screendrafts.ui
+      - /src/screendrafts-keycloak-theme
+      - /tools/draft-scraper
+      - /tools/drafter-scraper
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    groups:
+      npm-minor-patch:
+        update-types: [minor, patch]
+
+  # Base images in the Dockerfiles that ship to production.
+  - package-ecosystem: docker
+    directories:
+      - /src/screendrafts.api/src/api/ScreenDrafts.Web
+      - /src/screendrafts.api/src/api/ScreenDrafts.Gateway
+      - /src/screendrafts.api/tools/ScreenDrafts.Tools.DbMigrator
+    schedule:
+      interval: weekly
+      day: monday
+
+  # Images pinned in the compose files (Keycloak, Postgres, Caddy, ...).
+  - package-ecosystem: docker-compose
+    directories:
+      - /infrastructure/compose
+      - /src/screendrafts.api
+    schedule:
+      interval: weekly
+      day: monday
+
+  # Keeps the SHA-pinned actions current.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday

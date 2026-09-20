@@ -23,8 +23,24 @@ api.screen-drafts.com {
 
 # Keycloak
 auth.screen-drafts.com {
-	reverse_proxy screendrafts.identity:8080 {
-		header_up X-Real-IP {http.request.header.CF-Connecting-IP}
-		header_up X-Forwarded-Proto {scheme}
+	# Keycloak management surfaces (admin console + REST, master realm login/account):
+	# home IP only. Everything else (screendrafts realm login, Google broker, static
+	# resources) stays public. The API reaches the admin REST API over the internal
+	# Docker network (screendrafts.identity:8080), not through this block.
+	# remote_ip is the real client IP only while auth.* is DNS-only (grey cloud) in
+	# Cloudflare. If it is ever proxied, switch to client_ip + trusted_proxies.
+	@management {
+		path /admin /admin/* /realms/master /realms/master/*
+		not remote_ip 104.14.94.128
+	}
+	handle @management {
+		respond "Forbidden" 403
+	}
+
+	handle {
+		reverse_proxy screendrafts.identity:8080 {
+			header_up X-Real-IP {http.request.header.CF-Connecting-IP}
+			header_up X-Forwarded-Proto {scheme}
+		}
 	}
 }

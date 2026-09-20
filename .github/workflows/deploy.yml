@@ -1,3 +1,4 @@
+# .github/workflows/deploy.yml
 name: Deploy
 
 on:
@@ -8,6 +9,14 @@ on:
     branches:
       - main
 
+# Nothing by default; the job below grants only what it needs.
+permissions: {}
+
+# Two deploys never overlap; a second one waits for the first.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
 env:
   REGISTRY: ghcr.io
   IMAGE_API: ghcr.io/hmsiegel/screendrafts/api
@@ -17,17 +26,28 @@ jobs:
   deploy:
     name: Build, Push, Deploy
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    timeout-minutes: 30
+    # Secrets live in this environment, which only main can deploy to.
+    environment:
+      name: production
+    # Only deploy a green push to main, never a PR-triggered Build API run.
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push' }}
     permissions:
       contents: read
       packages: write
+    env:
+      # The exact commit whose tests passed, not whatever main is by now.
+      DEPLOY_SHA: ${{ github.event.workflow_run.head_sha }}
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          persist-credentials: false
 
       - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v3
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
@@ -35,27 +55,27 @@ jobs:
 
       - name: Extract metadata (API)
         id: meta-api
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # v5
         with:
           images: ${{ env.IMAGE_API }}
           tags: |
-            type=sha,format=long,prefix=
-            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=${{ github.event.workflow_run.head_sha }}
+            type=raw,value=latest
 
       - name: Extract metadata (Migrator)
         id: meta-migrator
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # v5
         with:
           images: ${{ env.IMAGE_MIGRATOR }}
           tags: |
-            type=sha,format=long,prefix=
-            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=${{ github.event.workflow_run.head_sha }}
+            type=raw,value=latest
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
 
       - name: Build and push API image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@ca052bb54ab0790a636c9b5f226502c73d547a25 # v5
         with:
           context: src/screendrafts.api
           file: src/screendrafts.api/src/api/ScreenDrafts.Web/Dockerfile
@@ -66,7 +86,7 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Build and push Migrator image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@ca052bb54ab0790a636c9b5f226502c73d547a25 # v5
         with:
           context: src/screendrafts.api
           file: src/screendrafts.api/tools/ScreenDrafts.Tools.DbMigrator/Dockerfile
@@ -77,22 +97,28 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Connect to Tailscale
-        uses: tailscale/github-action@v3
+        uses: tailscale/github-action@6cae46e2d796f265265cfcf628b72a32b4d7cade # v3
         with:
           oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
           oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
           tags: tag:ci
 
       - name: Deploy to VPS
-        uses: appleboy/ssh-action@v1
+        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1
+        env:
+          # Passed as environment variables, not templated into the script text.
+          GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
+          IMAGE_TAG: ${{ github.event.workflow_run.head_sha }}
         with:
           host: ${{ secrets.VPS_TAILSCALE_IP }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
+          envs: GHCR_TOKEN,IMAGE_TAG
           script: |
             set -e
             cd /opt/screendrafts
-            echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u hmsiegel --password-stdin
-            IMAGE_TAG=${{ github.sha }} docker compose -f docker-compose.production.yml pull
-            IMAGE_TAG=${{ github.sha }} docker compose -f docker-compose.production.yml up -d --remove-orphans
+            echo "$GHCR_TOKEN" | docker login ghcr.io -u hmsiegel --password-stdin
+            export IMAGE_TAG
+            docker compose -f docker-compose.production.yml pull
+            docker compose -f docker-compose.production.yml up -d --remove-orphans
             docker image prune -f

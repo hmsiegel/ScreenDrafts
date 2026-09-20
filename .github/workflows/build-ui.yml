@@ -1,3 +1,4 @@
+# .github/workflows/build-ui.yml
 name: Build UI
 
 on:
@@ -13,22 +14,32 @@ on:
     paths:
       - 'src/screendrafts.ui/**'
 
+permissions:
+  contents: read
+
+concurrency:
+  group: build-ui-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 env:
   NODE_VERSION: "22"
 
 jobs:
   build-ui:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     defaults:
       run:
         working-directory: src/screendrafts.ui
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: "npm"
