@@ -202,7 +202,7 @@ services:
 
   # ── MongoDB ────────────────────────────────────────────────────────────────
   screendrafts.mongo:
-    image: mongo:7
+    image: mongo:8
     restart: unless-stopped
     environment:
       MONGO_INITDB_ROOT_USERNAME_FILE: /run/secrets/mongo_user
