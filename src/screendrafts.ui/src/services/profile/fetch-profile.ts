@@ -1,5 +1,6 @@
 import { env } from "@/lib/env";
 import { GetUserResponse } from "@/lib/dto";
+import { cdnUrl } from "@/lib/cdn";
 
 const apiBase = env.apiUrl;
 
@@ -82,12 +83,10 @@ export async function fetchProfile(accessToken: string): Promise<MergedProfile |
     displayName: personProfile.displayName,
     biography: personProfile.biography,
     location: personProfile.location,
-    profilePicturePath: handles?.profilePicturePath
-      ? `${apiBase}/drafters/${handles.profilePicturePath}`
-      : undefined,
-    twitterHandle:   handles?.twitter    ?? undefined,
-    instagramHandle: handles?.instagram  ?? undefined,
+    profilePicturePath: cdnUrl("drafters", handles?.profilePicturePath),
+    twitterHandle: handles?.twitter ?? undefined,
+    instagramHandle: handles?.instagram ?? undefined,
     letterboxdHandle: handles?.letterboxd ?? undefined,
-    blueskyHandle:   handles?.bluesky    ?? undefined,
+    blueskyHandle: handles?.bluesky ?? undefined,
   };
 }

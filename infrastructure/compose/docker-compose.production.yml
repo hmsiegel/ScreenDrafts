@@ -25,6 +25,16 @@ services:
       - ASPNETCORE_ENVIRONMENT=Production
     secrets:
       - ConnectionStrings__Database
+      - ConnectionStrings__Administration
+      - ConnectionStrings__Audit
+      - ConnectionStrings__Communications
+      - ConnectionStrings__Drafts
+      - ConnectionStrings__GuestDrafts
+      - ConnectionStrings__Integrations
+      - ConnectionStrings__Movies
+      - ConnectionStrings__RealTimeUpdates
+      - ConnectionStrings__Reporting
+      - ConnectionStrings__Users
     networks:
       - screendrafts
     depends_on:
@@ -37,6 +47,7 @@ services:
     restart: unless-stopped
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
+      - KeycloakRegistration__Secret=${KEYCLOAK_REGISTRATION_SECRET}
     secrets:
       - ConnectionStrings__Database
       - ConnectionStrings__Administration
@@ -53,8 +64,8 @@ services:
       - ConnectionStrings__Queue
       - ConnectionStrings__Mongo
       - MediatR__LicenseKey
-      - KeycloakRegistation__Secret
       - Audit__KeycloakPoller__ConfidentialClientSecret
+      - Users__KeyCloak__ConfidentialClientSecret
       - Integrations__Tmdb__AccessToken
       - Integrations__Imdb__Key
       - Integrations__Omdb__Key
@@ -65,6 +76,8 @@ services:
       - Integrations__Zoom__ClientSecret
       - Integrations__Zoom__WebhookSecretToken
       - Users__EmailBootstrap__Secret
+      - RabbitMq__UserName
+      - RabbitMq__Password
     volumes:
       - wwwroot:/app/wwwroot
     networks:
@@ -115,19 +128,18 @@ services:
     environment:
       - KC_DB=postgres
       - KC_DB_URL=jdbc:postgresql://keycloak-db:5432/keycloak
-      - KC_DB_USERNAME_FILE=/run/secrets/keycloak_db_user
-      - KC_DB_PASSWORD_FILE=/run/secrets/keycloak_db_password
+      - KC_DB_USERNAME=${KEYCLOAK_DB_USER}
+      - KC_DB_PASSWORD=${KEYCLOAK_DB_PASSWORD}
       - KC_HEALTH_ENABLED=true
       - KC_HOSTNAME=https://auth.screen-drafts.com
-      - KC_PROXY=edge
+      - KC_HTTP_ENABLED=true
+      - KC_PROXY_HEADER=xforwarded
       - KEYCLOAK_ADMIN_FILE=/run/secrets/keycloak_admin_user
       - KEYCLOAK_ADMIN_PASSWORD_FILE=/run/secrets/keycloak_admin_password
       - SD_API_URL=http://screendrafts.web:8080
       - SD_KEYCLOAK_SECRET_FILE=/run/secrets/keycloak_registration_secret
       - REGISTER_URL=https://www.screen-drafts.com/register
     secrets:
-      - keycloak_db_user
-      - keycloak_db_password
       - keycloak_admin_user
       - keycloak_admin_password
       - keycloak_registration_secret
@@ -149,6 +161,7 @@ services:
       POSTGRES_DB: keycloak
       POSTGRES_USER_FILE: /run/secrets/keycloak_db_user
       POSTGRES_PASSWORD_FILE: /run/secrets/keycloak_db_password
+      PGDATA: /var/lib/postgresql/data
     secrets:
       - keycloak_db_user
       - keycloak_db_password
@@ -166,7 +179,7 @@ services:
   screendrafts.redis:
     image: redis:7-alpine
     restart: unless-stopped
-    command: redis-server --requirepass-file /run/secrets/redis_password
+    command: sh -c 'redis-server --requirepass "$$(cat /run/secrets/redis_password)"'
     secrets:
       - redis_password
     volumes:
@@ -180,11 +193,8 @@ services:
     restart: unless-stopped
     hostname: screendrafts-queue
     environment:
-      RABBITMQ_DEFAULT_USER_FILE: /run/secrets/rabbitmq_user
-      RABBITMQ_DEFAULT_PASS_FILE: /run/secrets/rabbitmq_password
-    secrets:
-      - rabbitmq_user
-      - rabbitmq_password
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
     networks:
@@ -221,11 +231,21 @@ services:
     secrets:
       - pg_superuser
       - pg_superpassword
+      - keycloak_db_user
+      - keycloak_db_password
       - backup_s3_key
       - backup_s3_secret
     volumes:
       - ./infrastructure/backup/backup.sh:/backup.sh:ro
-    entrypoint: ["sh", "-c", "crond -f -d 8 & sh /backup.sh"]
+    entrypoint: 
+      - sh
+      - -c
+      - |
+        apt-get update && apt-get install -y --no-install-recommends awscli && rm -rf /var/lib/apt/lists/* 
+        while true; do
+          sh /backup.sh
+          sleep 86400
+        done
     networks:
       - screendrafts
     depends_on:
@@ -293,10 +313,10 @@ secrets:
     file: ./secrets/keycloak_admin_password.txt
   keycloak_registration_secret:
     file: ./secrets/keycloak_registration_secret.txt
-  KeycloakRegistation__Secret:
-    file: ./secrets/KeycloakRegistation__Secret.txt
   Audit__KeycloakPoller__ConfidentialClientSecret:
     file: ./secrets/Audit__KeycloakPoller__ConfidentialClientSecret.txt
+  Users__KeyCloak__ConfidentialClientSecret:
+    file: ./secrets/Users__KeyCloak__ConfidentialClientSecret.txt
 
   MediatR__LicenseKey:
     file: ./secrets/MediatR__LicenseKey.txt
@@ -321,6 +341,11 @@ secrets:
 
   Users__EmailBootstrap__Secret:
     file: ./secrets/Users__EmailBootstrap__Secret.txt
+
+  RabbitMq__UserName:
+    file: ./secrets/RabbitMq__UserName.txt
+  RabbitMq__Password:
+    file: ./secrets/RabbitMq__Password.txt
 
   backup_s3_key:
     file: ./secrets/backup_s3_key.txt

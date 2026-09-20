@@ -1,4 +1,6 @@
-﻿var builder = WebApplication.CreateBuilder(args);
+﻿using ScreenDrafts.Common.Infrastructure.Storage;
+
+var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog((context, config) => config.ReadFrom.Configuration(context.Configuration));
 
@@ -60,6 +62,7 @@ builder.Services.AddInfrastructure(
   AssemblyReferences.InfrastructureAssemblies
 );
 builder.Services.AddPresentation();
+builder.Services.AddFileStorage(configuration: configuration, environment: builder.Environment);
 
 builder
   .Services.AddFastEndpoints(opt =>

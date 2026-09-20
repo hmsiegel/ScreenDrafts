@@ -1,5 +1,6 @@
 'use client';
 
+import { cdnUrl } from "@/lib/cdn";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 
@@ -58,7 +59,7 @@ export default function AvatarUpload({ currentAvatarUrl, displayName, accessToke
       });
       if (!res.ok) throw new Error(`${res.status}`);
       const data = await res.json() as { avatarPath?: string };
-      if (data.avatarPath) setAvatarUrl(`${apiBase}/drafters/${data.avatarPath}`);
+      if (data.avatarPath) setAvatarUrl(cdnUrl("drafters", data.avatarPath));
       setStatus('success');
       router.refresh();
     } catch (err) {

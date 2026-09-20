@@ -15,6 +15,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import ProfileAvatar from "@/components/features/participants/profile-avatar";
+import { cdnUrl } from "@/lib/cdn";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -169,7 +170,7 @@ function ProfileCard({
         {/* Avatar — profile picture or initials fallback */}
         <ProfileAvatar
           displayName={profile.displayName}
-          picturePath={profile.socialHandles?.profilePicturePath}
+          picturePath={cdnUrl("drafters", profile.socialHandles?.profilePicturePath)}
         />
         <div className="text-center">
           <div className="font-oswald font-bold text-[22px] text-sd-ink leading-tight">

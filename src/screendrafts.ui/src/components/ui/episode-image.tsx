@@ -1,43 +1,40 @@
 "use client";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+import { cdnUrl } from "@/lib/cdn";
 
 interface EpisodeImageProps {
-  /** publicId-based filename e.g. "d_abc123.jpg" — from API imagePath field */
+  /** publicId-based filename e.g. "d_abc123-1a2b3c4d.jpg" — from API imagePath field */
   imagePath?: string | null;
   /** Fallback: draft title for legacy title-based lookup */
   title: string;
 }
 
-export default function EpisodeImage({ imagePath, title }: EpisodeImageProps) {
+const DEFAULT_IMAGE = "/screen-drafts.jpg";
 
-  // If we have an imagePath from the API, serve from the API static files
-  // Otherwise fall back to the legacy title-based lookup in the UI public folder
+export default function EpisodeImage({ imagePath, title }: EpisodeImageProps) {
+  // imagePath from the API -> CDN (drafts/).
+  // Otherwise the legacy title-based lookup in the UI public folder.
   const primarySrc = imagePath
-    ? `${API_URL}/drafts/${imagePath}`
+    ? cdnUrl("drafts", imagePath)
     : `/episodes/${encodeURIComponent(title)}.jpg`;
 
   function handleError(e: React.SyntheticEvent<HTMLImageElement>) {
     const img = e.currentTarget;
 
+    // Already on the default: stop, or a missing default loops forever.
+    if (img.src.endsWith(DEFAULT_IMAGE)) return;
+
+    // The API stores the exact filename, so an API-served image has nothing to retry.
     if (imagePath) {
-      // Cycle through extensions for API-served images
-      const base = `${API_URL}/drafts/${imagePath.replace(/\.(jpg|png|webp)$/, "")}`;
-      if (img.src.endsWith(".jpg")) {
-        img.src = base + ".webp";
-      } else if (img.src.endsWith(".webp")) {
-        img.src = base + ".png";
-      } else {
-        img.src = "/screen-drafts.jpg";
-      }
+      img.src = DEFAULT_IMAGE;
+      return;
+    }
+
+    // Legacy: .jpg -> .webp -> default
+    if (img.src.includes("/episodes/") && img.src.endsWith(".jpg")) {
+      img.src = `/episodes/${encodeURIComponent(title)}.webp`;
     } else {
-      // Legacy fallback chain
-      const encoded = encodeURIComponent(title);
-      if (img.src.includes("/episodes/") && img.src.endsWith(".jpg")) {
-        img.src = `/episodes/${encoded}.webp`;
-      } else {
-        img.src = "/screen-drafts.jpg";
-      }
+      img.src = DEFAULT_IMAGE;
     }
   }
 

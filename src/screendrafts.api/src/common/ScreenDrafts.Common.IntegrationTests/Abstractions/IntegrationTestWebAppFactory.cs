@@ -86,6 +86,7 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
       "ScreenDrafts.Modules.Audit.Infrastructure.Database.AuditDbContext",
       "ScreenDrafts.Modules.Communications.Infrastructure.Database.CommunicationsDbContext",
       "ScreenDrafts.Modules.Drafts.Infrastructure.Database.DraftsDbContext",
+      "ScreenDrafts.Modules.GuestDrafts.Infrastructure.Database.GuestDraftsDbContext",
       "ScreenDrafts.Modules.Integrations.Infrastructure.Database.IntegrationsDbContext",
       "ScreenDrafts.Modules.Movies.Infrastructure.Database.MoviesDbContext",
       "ScreenDrafts.Modules.RealTimeUpdates.Infrastructure.Database.RealTimeUpdatesDbContext",

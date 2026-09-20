@@ -2,20 +2,19 @@
 
 internal sealed class UploadAvatarCommandHandler(
   IPersonRepository personRepository,
-  IWebHostEnvironment webHostEnvironment
+  IFileStorage fileStorage
 ) : ICommandHandler<UploadAvatarCommand, UploadAvatarResponse>
 {
   private readonly IPersonRepository _personRepository = personRepository;
-  private readonly IWebHostEnvironment _webHostEnvironment = webHostEnvironment;
-
-  private static readonly string[] _allowedExtensions = ["image/jpeg", "image/png", "image/webp"];
+  private readonly IFileStorage _fileStorage = fileStorage;
 
   public async Task<Result<UploadAvatarResponse>> Handle(
     UploadAvatarCommand request,
     CancellationToken cancellationToken
   )
   {
-    if (!_allowedExtensions.Contains(request.ContentType, StringComparer.OrdinalIgnoreCase))
+    var ext = ImageUpload.GetExtension(request.ContentType);
+    if (ext is null)
     {
       return Result.Failure<UploadAvatarResponse>(PersonErrors.InvalidAvatarContentType);
     }
@@ -26,22 +25,15 @@ internal sealed class UploadAvatarCommandHandler(
       return Result.Failure<UploadAvatarResponse>(PersonErrors.NotFound(request.PublicId));
     }
 
-    var ext = request.ContentType switch
-    {
-      "image/jpeg" => "jpg",
-      "image/png" => "png",
-      "image/webp" => "webp",
-      _ => throw new InvalidOperationException("Unsupported content type."),
-    };
+    var fileName = ImageUpload.BuildFileName(request.PublicId, ext);
 
-    var fileName = $"{request.PublicId}.{ext}";
-    var physialDir = Path.Combine(_webHostEnvironment.WebRootPath, "drafters");
-
-    Directory.CreateDirectory(physialDir);
-
-    var physicalPath = Path.Combine(physialDir, fileName);
-    await using var fileStream = File.Create(physicalPath);
-    await request.FileStream.CopyToAsync(fileStream, cancellationToken);
+    await _fileStorage.UploadAsync(
+      $"{ImageUpload.DraftersFolder}/{fileName}",
+      request.FileStream,
+      request.ContentType,
+      ImageUpload.CacheControl,
+      cancellationToken
+    );
 
     person.UpdateProfilePicture(fileName);
     _personRepository.Update(person);

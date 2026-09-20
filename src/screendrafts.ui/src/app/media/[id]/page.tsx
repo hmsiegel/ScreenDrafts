@@ -3,6 +3,7 @@ import { fetchMediaDetail } from "@/services/media/fetch-media-detail";
 import { MediaResponse, MediaType, MediaAppearanceResponse, MediaStatsResponse, MediaHonorificResponse } from "@/lib/dto";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { artifactUrl } from "@/lib/cdn";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -203,15 +204,15 @@ function PosterCard({ media }: { media: MediaResponse }) {
 // ── Honorific banner filenames ────────────────────────────────────────────────
 
 const APPEARANCE_HONORIFIC_BANNERS: Record<number, string> = {
-  1: "/artifacts/Marquee_of_Fame_Banner.webp",
-  2: "/artifacts/Hat_Trick_Banner.webp",
-  3: "/artifacts/Grand_Slam_Banner.webp",
-  4: "/artifacts/High_Five_Banner.webp",
+  1: artifactUrl("Marquee_of_Fame_Banner.webp"),
+  2: artifactUrl("Hat_Trick_Banner.webp"),
+  3: artifactUrl("Grand_Slam_Banner.webp"),
+  4: artifactUrl("High_Five_Banner.webp"),
 };
 
 const POSITION_HONORIFIC_BANNERS: Record<string, string> = {
-  unifiedNo1: "/artifacts/Unified_No._1_Banner.webp",
-  theCycle: "/artifacts/The_Cycle_Banner.webp",
+  unifiedNo1: artifactUrl("Unified_No._1_Banner.webp"),
+  theCycle: artifactUrl("The_Cycle_Banner.webp"),
 };
 
 // ── Stats card ────────────────────────────────────────────────────────────────

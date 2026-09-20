@@ -5,6 +5,7 @@
     <PackageReference Include="AspNetCore.HealthChecks.NpgSql" />
     <PackageReference Include="AspNetCore.HealthChecks.RabbitMQ" />
     <PackageReference Include="AspNetCore.HealthChecks.Redis" />
+    <PackageReference Include="AWSSDK.S3" />
     <PackageReference Include="CsvHelper" />
     <PackageReference Include="EFCore.NamingConventions" />
     <PackageReference Include="FastEndpoints" />
