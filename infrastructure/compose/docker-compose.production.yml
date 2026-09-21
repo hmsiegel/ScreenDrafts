@@ -2,7 +2,7 @@ services:
 
   # ── Reverse Proxy ──────────────────────────────────────────────────────────
   caddy:
-    image: caddy:latest
+    image: caddy:2.11.4
     restart: unless-stopped
     ports:
       - "80:80"
@@ -78,8 +78,6 @@ services:
       - Users__EmailBootstrap__Secret
       - RabbitMq__UserName
       - RabbitMq__Password
-    volumes:
-      - wwwroot:/app/wwwroot
     networks:
       - screendrafts
     depends_on:
@@ -122,7 +120,7 @@ services:
 
   # ── Keycloak ───────────────────────────────────────────────────────────────
   screendrafts.identity:
-    image: quay.io/keycloak/keycloak:latest
+    image: quay.io/keycloak/keycloak:26.1.0
     restart: unless-stopped
     command: start --import-realm
     environment:
@@ -237,11 +235,11 @@ services:
       - backup_s3_secret
     volumes:
       - ./infrastructure/backup/backup.sh:/backup.sh:ro
-    entrypoint: 
+    entrypoint:
       - sh
       - -c
       - |
-        apt-get update && apt-get install -y --no-install-recommends awscli && rm -rf /var/lib/apt/lists/* 
+        apt-get update && apt-get install -y --no-install-recommends awscli && rm -rf /var/lib/apt/lists/*
         while true; do
           sh /backup.sh
           sleep 86400
@@ -361,7 +359,6 @@ volumes:
   mongo_data:
   caddy_data:
   caddy_config:
-  wwwroot:
 
 # ── Networks ───────────────────────────────────────────────────────────────
 networks:

@@ -34,8 +34,10 @@ updates:
       - /src/screendrafts.api/src/api/ScreenDrafts.Gateway
       - /src/screendrafts.api/tools/ScreenDrafts.Tools.DbMigrator
     schedule:
-      interval: weekly
-      day: monday
+      interval: monthly
+    groups:
+      docker-images:
+        patterns: ["*"]
 
   # Images pinned in the compose files (Keycloak, Postgres, Caddy, ...).
   - package-ecosystem: docker-compose
@@ -43,12 +45,32 @@ updates:
       - /infrastructure/compose
       - /src/screendrafts.api
     schedule:
-      interval: weekly
-      day: monday
+      interval: monthly
+    groups:
+      compose-images:
+        patterns: ["*"]
+    ignore:
+      # Stateful services: a major bump can need a data or schema migration.
+      # Upgrade these by hand, with a backup. (Keycloak: the realm import and
+      # theme/authenticator JARs are also version-sensitive.)
+      - dependency-name: "quay.io/keycloak/keycloak"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "mongo"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "postgres"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "redis"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "rabbitmq"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "hashicorp/vault"
+        update-types: ["version-update:semver-major"]
 
   # Keeps the SHA-pinned actions current.
   - package-ecosystem: github-actions
     directory: /
     schedule:
-      interval: weekly
-      day: monday
+      interval: monthly
+    groups:
+      actions:
+        patterns: ["*"]
