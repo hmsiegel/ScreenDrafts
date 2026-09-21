@@ -29,9 +29,12 @@ auth.screen-drafts.com {
 	# Docker network (screendrafts.identity:8080), not through this block.
 	# remote_ip is the real client IP only while auth.* is DNS-only (grey cloud) in
 	# Cloudflare. If it is ever proxied, switch to client_ip + trusted_proxies.
+	# ADMIN_IP comes from the caddy service's environment (.env), so the address stays
+	# out of this public repo. If it is unset the default is a documentation address
+	# nobody uses, which fails closed (management paths stay blocked).
 	@management {
 		path /admin /admin/* /realms/master /realms/master/*
-		not remote_ip 104.14.94.128
+		not remote_ip {$ADMIN_IP:192.0.2.1}
 	}
 	handle @management {
 		respond "Forbidden" 403
