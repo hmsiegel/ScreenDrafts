@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <img alt="Build status" src="https://img.shields.io/github/actions/workflow/status/hmsiegel/ScreenDrafts/build.yml">
+  <img alt="Build status" src="https://img.shields.io/github/actions/workflow/status/hmsiegel/ScreenDrafts/build-api.yml">
   <img alt=".NET target" src="https://img.shields.io/badge/dynamic/xml?url=https%3A%2F%2Fraw.githubusercontent.com%2Fhmsiegel%2FScreenDrafts%2Frefs%2Fheads%2Fmain%2Fsrc%2Fscreendrafts.api%2FDirectory.Build.props&query=%2F%2FTargetFramework%5B1%5D&logo=.net&label=target&color=%23512bd4">
   <img alt="Next.js version" src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fhmsiegel%2FScreenDrafts%2Frefs%2Fheads%2Fmain%2Fsrc%2Fscreendrafts.ui%2Fpackage.json&query=%24.dependencies.next&logo=nextdotjs&label=NextJS">
 </p>

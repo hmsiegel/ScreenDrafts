@@ -1,6 +1,4 @@
-using ScreenDrafts.Common.Application.EventBus;
-
-namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.Abstractions;
+﻿namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.Abstractions;
 
 /// <summary>
 /// Hand-rolled IEventBus test double -- no mocking library is referenced anywhere
