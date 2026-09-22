@@ -1,7 +1,4 @@
-﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Enums;
-using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Errors;
-
-namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.GamePlay;
+﻿namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.GamePlay;
 
 public sealed class GetGuestDraftGameplayTests(GuestDraftsIntegrationTestWebAppFactory factory)
   : GuestDraftsIntegrationTest(factory)
