@@ -33,6 +33,15 @@ function extractHandle(url, platform) {
       : parts.at(-1)?.replace("@", "") || "";
 }
 
+function hrefHostMatches(href, domain) {
+   try {
+      const host = new URL(href).hostname;
+      return host === domain || host.endsWith(`.${domain}`);
+   } catch {
+      return false;
+   }
+}
+
 async function delay(ms) {
    return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -95,15 +104,16 @@ async function scrapeDrafterProfile(url, retries = 0) {
 
       links.each((_, link) => {
          const href = $(link).attr('href');
+         if (!href) return;
 
-         if (href.includes('twitter.com') && !href.includes("getfandom")) {
-            socialHandles.twitter ??= href
-         } else if (href.includes('instagram.com')) {
-            socialHandles.instagram ??= href
-         } else if (href.includes('letterboxd.com')) {
-            socialHandles.letterboxd ??= href
-         } else if (href.includes('bsky.app') || href.includes('bluesky.social')) {
-            socialHandles.blueSky ??= href
+         if (hrefHostMatches(href, 'twitter.com') || hrefHostMatches(href, 'x.com')) {
+            if (!href.includes('getfandom')) socialHandles.twitter ??= href;
+         } else if (hrefHostMatches(href, 'instagram.com')) {
+            socialHandles.instagram ??= href;
+         } else if (hrefHostMatches(href, 'letterboxd.com')) {
+            socialHandles.letterboxd ??= href;
+         } else if (hrefHostMatches(href, 'bsky.app') || hrefHostMatches(href, 'bluesky.social')) {
+            socialHandles.blueSky ??= href;
          }
       });
 
