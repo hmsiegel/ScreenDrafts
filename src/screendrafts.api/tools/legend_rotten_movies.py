@@ -244,8 +244,9 @@ class OmdbClient:
             status = resp.status_code
             data = resp.json()
         except requests.RequestException as exc:
-            self._debug(f"[network error] imdb_id={imdb_id} exc={exc}")
-            return OmdbResult(found=False, error=str(exc))
+            safe_exc = str(exc).replace(self.api_key, "***REDACTED***")
+            self._debug(f"[network error] imdb_id={imdb_id} exc={safe_exc}")
+            return OmdbResult(found=False, error=safe_exc)
         except ValueError as exc:
             self._debug(f"[bad json] imdb_id={imdb_id} status={status} body={resp.text[:200]!r}")
             return OmdbResult(found=False, error=f"non-JSON response: {exc}")
@@ -330,7 +331,8 @@ class TvApiClient:
             resp = requests.get(url, timeout=10)
             data = resp.json()
         except (requests.RequestException, ValueError) as exc:
-            return TvApiResult(found=False, error=str(exc))
+            safe_message = str(exc).replaces(self.api_key, "***REDACTED***")
+            return TvApiResult(found=False, error=safe_message)
 
         self._debug(f"imdb_id={imdb_id} status={resp.status_code} raw={data}")
 

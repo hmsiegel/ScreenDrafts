@@ -13,7 +13,7 @@ function extractYouTubeId(url: string): string | null {
     if (v) return v;
     const segments = u.pathname.split("/");
     const embedIdx = segments.indexOf("embed");
-    if (embedIdx !== -1 && !u.hostname.includes("imdb")) return segments[embedIdx + 1] || null;
+    if (embedIdx !== -1 && !isImdbUrl(url)) return segments[embedIdx + 1] || null;
     return null;
   } catch {
     return null;
@@ -22,7 +22,8 @@ function extractYouTubeId(url: string): string | null {
 
 function isImdbUrl(url: string): boolean {
   try {
-    return new URL(url).hostname.includes("imdb.com");
+    const hostname = new URL(url).hostname;
+    return hostname === "imdb.com" || hostname.endsWith(".imdb.com");
   } catch {
     return false;
   }

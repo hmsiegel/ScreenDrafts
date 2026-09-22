@@ -31,6 +31,15 @@ HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
 }
 
+def is_trusted_podcast_host(link):
+    try:
+        host = urllib.parse.urlparse(link).hostname or ""
+    except ValueError:
+        return False
+    return (
+        host == "libsyn.com" or host.endswith(".libsyn.com")
+        or host == "screendrafts.com" or host.endswith(".screendrafts.com")
+    )
 
 def fetch_url(url, timeout=30):
     """Fetch a URL and return text content."""
@@ -260,7 +269,7 @@ def main():
             rss_title_map[t] = ep["spotify_url"]
         # Store link for fallback
         link = ep.get("link") or ep.get("guid", "")
-        if link and "libsyn.com" in link:
+        if link and is_trusted_podcast_host(link):
             rss_link_map[t] = link
 
     print(f"\nRSS title->spotify map has {len(rss_title_map)} entries")
@@ -301,7 +310,7 @@ def main():
     pages_to_fetch = {}  # rss_title -> link
     for ep in episodes_needing_pages:
         link = ep.get("link") or ep.get("guid", "")
-        if link and ("libsyn.com" in link or "screendrafts" in link):
+        if link and is_trusted_podcast_host(link):
             pages_to_fetch[ep["title"]] = link
 
     print(f"  RSS episodes with fetchable pages (no Spotify URL): {len(pages_to_fetch)}")
