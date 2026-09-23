@@ -861,8 +861,13 @@ export default function EditDraftForm({
             await addParticipantToDraftPart(accessToken, partPublicId, { draftPartId: partPublicId, participantPublicId: id, participantKind: 1 });
           }
 
-          // Positions — always resend (idempotent)
-          if (part.positionsLoaded) {
+          // Positions — resend only if the part actually has configured positions.
+          // A part whose positions were never touched still carries the blank
+          // placeholder from getDefaultPositions' variable-type fallback
+          // ([{name:"A",picks:[]}, {name:"B",picks:[]}]) — sending that as-is
+          // throws DraftPosition.PicksAreRequired.
+          const hasConfiguredPositions = part.positions.some((p) => p.picks.length > 0);
+          if (part.positionsLoaded && hasConfiguredPositions) {
             await setDraftPositions(accessToken, partPublicId, part.positions);
           }
 

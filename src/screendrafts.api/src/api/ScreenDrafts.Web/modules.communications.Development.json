@@ -11,10 +11,10 @@
     "PublicAssetsBasePath": "http://localhost:5000",
     "Smtp": {
       "Host": "screendrafts.email",
-      "Port": 25,
-      "EnableSsl": false,
+      "Port": 2525,
+      "SecureSocketOptions":  "None",
       "FromAddress": "no-reply@screendrafts.com",
-      "FromName": "ScreenDrafts",
+      "FromName": "Screen Drafts",
       "Username": "",
       "Password": ""
     }

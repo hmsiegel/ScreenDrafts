@@ -10,12 +10,12 @@
     },
     "PublicAssetsBasePath": "https://www.screen-drafts.com",
     "Smtp": {
-      "Host": "",
-      "Port": 25,
-      "EnableSsl": false,
-      "FromAddress": "",
-      "FromName": "",
-      "Username": "",
+      "Host": "smtp.resend.com",
+      "Port": 867,
+      "SecureSocketOptions":  "StartTls",
+      "FromAddress": "noreply@screen-drafts.com",
+      "FromName": "Screen Drafts",
+      "Username": "resend",
       "Password": ""
     }
   }
