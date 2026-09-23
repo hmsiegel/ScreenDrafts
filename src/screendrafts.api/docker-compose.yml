@@ -202,7 +202,7 @@ services:
     image: changemakerstudiosus/papercut-smtp:latest
     ports:
       - "8084:80"
-      - "25:25"
+      - "2525:2525"
     networks:
       - screendrafts
 

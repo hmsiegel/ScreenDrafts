@@ -48,6 +48,8 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - KeycloakRegistration__Secret=${KEYCLOAK_REGISTRATION_SECRET}
+      - R2__AccountId=${R2_ACCOUNT_ID}
+      - R2_BucketName=${R2_BUCKET_NAME}
     secrets:
       - ConnectionStrings__Database
       - ConnectionStrings__Administration
@@ -78,6 +80,12 @@ services:
       - Users__EmailBootstrap__Secret
       - RabbitMq__UserName
       - RabbitMq__Password
+      - R2__AccessKeyId
+      - R2__SecretAccessKey
+      - Shared__People__CommissionerPersonPublicIds__0
+      - Shared__People__CommissionerPersonPublicIds__1
+      - Shared__Predictions__ShootTheMoonIneligibleContestantIds__0
+      - Communications__Smtp__Password
     networks:
       - screendrafts
     depends_on:
@@ -131,7 +139,7 @@ services:
       - KC_HEALTH_ENABLED=true
       - KC_HOSTNAME=https://auth.screen-drafts.com
       - KC_HTTP_ENABLED=true
-      - KC_PROXY_HEADER=xforwarded
+      - KC_PROXY_HEADERS=xforwarded
       - KEYCLOAK_ADMIN_FILE=/run/secrets/keycloak_admin_user
       - KEYCLOAK_ADMIN_PASSWORD_FILE=/run/secrets/keycloak_admin_password
       - SD_API_URL=http://screendrafts.web:8080
@@ -316,6 +324,9 @@ secrets:
   Users__KeyCloak__ConfidentialClientSecret:
     file: ./secrets/Users__KeyCloak__ConfidentialClientSecret.txt
 
+  Communications__Smtp__Password:
+    file: ./secrets/Communications__Smtp__Password.txt
+
   MediatR__LicenseKey:
     file: ./secrets/MediatR__LicenseKey.txt
   Integrations__Tmdb__AccessToken:
@@ -349,6 +360,18 @@ secrets:
     file: ./secrets/backup_s3_key.txt
   backup_s3_secret:
     file: ./secrets/backup_s3_secret.txt
+
+  R2__AccessKeyId:
+    file: ./secrets/R2__AccessKeyId.txt
+  R2__SecretAccessKey:
+    file: ./secrets/R2__SecretAccessKey.txt
+
+  Shared__People__CommissionerPersonPublicIds__0:
+    file: ./secrets/Shared__People__CommissionerPersonPublicIds__0.txt
+  Shared__People__CommissionerPersonPublicIds__1:
+    file: ./secrets/Shared__People__CommissionerPersonPublicIds__1.txt
+  Shared__Predictions__ShootTheMoonIneligibleContestantIds__0:
+    file: ./secrets/Shared__Predictions__ShootTheMoonIneligibleContestantIds__0.txt
 
 # ── Volumes ────────────────────────────────────────────────────────────────
 volumes:
