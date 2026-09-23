@@ -49,7 +49,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Production
       - KeycloakRegistration__Secret=${KEYCLOAK_REGISTRATION_SECRET}
       - R2__AccountId=${R2_ACCOUNT_ID}
-      - R2_BucketName=${R2_BUCKET_NAME}
+      - R2__BucketName=${R2_BUCKET_NAME}
     secrets:
       - ConnectionStrings__Database
       - ConnectionStrings__Administration

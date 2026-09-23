@@ -11,7 +11,7 @@
     "PublicAssetsBasePath": "https://www.screen-drafts.com",
     "Smtp": {
       "Host": "smtp.resend.com",
-      "Port": 867,
+      "Port": 587,
       "SecureSocketOptions":  "StartTls",
       "FromAddress": "noreply@screen-drafts.com",
       "FromName": "Screen Drafts",
