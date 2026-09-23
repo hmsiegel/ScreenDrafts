@@ -10,7 +10,7 @@
     },
     "KeycloakPoller": {
       "IntervalInSeconds": 60,
-      "Realm": ""
+      "Realm": "screendrafts"
     }
   }
 }

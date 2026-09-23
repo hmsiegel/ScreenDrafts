@@ -1,11 +1,13 @@
 {
   "Movies": {
     "Outbox": {
-      "IntervalInSeconds": 5,
+      "IntervalInSeconds": 2,
+      "IntervalInMilliseconds": 500,
       "BatchSize": 50
     },
     "Inbox": {
-      "IntervalInSeconds": 5,
+      "IntervalInSeconds": 2,
+      "IntervalInMilliseconds": 500,
       "BatchSize": 50
     }
   }

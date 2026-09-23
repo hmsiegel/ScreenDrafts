@@ -73,7 +73,10 @@ builder
 
 builder.Services.ConfigureOpenApi(builder.Configuration);
 
-builder.Configuration.AddModuleConfiguration(ModuleReferences.Modules);
+builder.Configuration.AddModuleConfiguration(
+  ModuleReferences.Modules,
+  builder.Environment.EnvironmentName
+);
 
 var keyCloakHealthUrl = builder.Configuration.GetKeyCloakHealthUrl();
 

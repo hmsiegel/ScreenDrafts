@@ -1,17 +1,19 @@
 {
   "Integrations": {
     "Outbox": {
-      "IntervalInSeconds": 5,
+      "IntervalInSeconds": 2,
+      "IntervalInMilliseconds": 500,
       "BatchSize": 50
     },
     "Inbox": {
-      "IntervalInSeconds": 5,
+      "IntervalInSeconds": 2,
+      "IntervalInMilliseconds": 500,
       "BatchSize": 50
     },
     "Tmdb": {
-      "BaseImageAddress": "",
-      "BaseAddress": "",
-      "TrailerPlaceholder": ""
+      "BaseImageAddress": "https://image.tmdb.org/t/p/",
+      "BaseAddress": "https://api.themoviedb.org/3/",
+      "TrailerPlaceholder": "https://via.placeholder.com/500x750?text=No+Trailer"
     },
     "Igdb": {
       "BaseAddress": "https://api.igdb.com/v4/",
