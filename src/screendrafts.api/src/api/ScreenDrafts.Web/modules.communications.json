@@ -15,8 +15,7 @@
       "SecureSocketOptions":  "StartTls",
       "FromAddress": "noreply@screen-drafts.com",
       "FromName": "Screen Drafts",
-      "Username": "resend",
-      "Password": ""
+      "Username": "resend"
     }
   }
 }
