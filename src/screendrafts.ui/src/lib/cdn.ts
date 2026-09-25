@@ -23,3 +23,31 @@ export function cdnUrl(folder: CdnFolder, path: string | null | undefined): stri
 export function artifactUrl(fileName: string): string {
   return `${CDN_URL}/artifacts/${fileName}`;
 }
+
+/**
+ * The Screen Drafts logo, shown when a draft has no image. CDN copy first,
+ * then the copy bundled in the UI's public folder in case the CDN is unreachable.
+ */
+export const DRAFT_IMAGE_FALLBACKS: readonly string[] = [
+  artifactUrl("logo.jpg"),
+  "/screen-drafts.jpg",
+];
+
+/**
+ * Every URL a draft's image might live at, most specific first. Deduplicated.
+ *
+ * - New uploads: imagePath is `{publicId}-{8 hex}.{ext}`, so the first URL resolves.
+ * - Pre-CDN images were copied to R2 as `{publicId}.jpg` or `{publicId}.webp`, with no
+ *   hex suffix. Their imagePath may be missing or carry the other extension, so both
+ *   legacy names follow as fallbacks.
+ */
+export function draftImageCandidates(
+  publicId: string | null | undefined,
+  imagePath: string | null | undefined
+): string[] {
+  const names = [imagePath, publicId ? `${publicId}.jpg` : null, publicId ? `${publicId}.webp` : null];
+  const urls = names
+    .filter((name): name is string => !!name)
+    .map((name) => cdnUrl("drafts", name));
+  return [...new Set(urls)];
+}

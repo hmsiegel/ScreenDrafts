@@ -9,6 +9,9 @@ const handler = auth((req) => {
   if (session?.error === "RefreshTokenExpired") {
     const signInUrl = new URL("/force-signin", req.url);
     signInUrl.searchParams.set("callbackUrl", req.url);
+    const response = NextResponse.redirect(signInUrl);
+    response.cookies.delete("authjs.session-token");
+    response.cookies.delete("__Secure-authjs.session-tokenk");
     return NextResponse.redirect(signInUrl);
   }
 

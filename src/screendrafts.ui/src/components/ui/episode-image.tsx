@@ -1,51 +1,35 @@
 "use client";
 
-import { cdnUrl } from "@/lib/cdn";
+import { DRAFT_IMAGE_FALLBACKS, draftImageCandidates } from "@/lib/cdn";
+import FallbackImage from "@/components/features/drafts/fallback-image";
 
 interface EpisodeImageProps {
-  /** publicId-based filename e.g. "d_abc123-1a2b3c4d.jpg" — from API imagePath field */
+  /** Exact filename from the API's imagePath field, e.g. "d_abc123-1a2b3c4d.webp". */
   imagePath?: string | null;
-  /** Fallback: draft title for legacy title-based lookup */
+  /** Draft publicId. Finds pre-CDN images stored in R2 as "{publicId}.jpg" / ".webp". */
+  publicId?: string | null;
+  /** Alt text, and the key for the legacy title-based lookup in the UI public folder. */
   title: string;
 }
 
 const DEFAULT_IMAGE = "/screen-drafts.jpg";
 
-export default function EpisodeImage({ imagePath, title }: EpisodeImageProps) {
-  // imagePath from the API -> CDN (drafts/).
-  // Otherwise the legacy title-based lookup in the UI public folder.
-  const primarySrc = imagePath
-    ? cdnUrl("drafts", imagePath)
-    : `/episodes/${encodeURIComponent(title)}.jpg`;
+export default function EpisodeImage({ imagePath, publicId, title }: EpisodeImageProps) {
+  const cdnSources = draftImageCandidates(publicId, imagePath);
 
-  function handleError(e: React.SyntheticEvent<HTMLImageElement>) {
-    const img = e.currentTarget;
-
-    // Already on the default: stop, or a missing default loops forever.
-    if (img.src.endsWith(DEFAULT_IMAGE)) return;
-
-    // The API stores the exact filename, so an API-served image has nothing to retry.
-    if (imagePath) {
-      img.src = DEFAULT_IMAGE;
-      return;
-    }
-
-    // Legacy: .jpg -> .webp -> default
-    if (img.src.includes("/episodes/") && img.src.endsWith(".jpg")) {
-      img.src = `/episodes/${encodeURIComponent(title)}.webp`;
-    } else {
-      img.src = DEFAULT_IMAGE;
-    }
-  }
+  // With nothing to look up in R2, fall back to the old title-based files.
+  const sources =
+    cdnSources.length > 0
+      ? [...cdnSources, ...DRAFT_IMAGE_FALLBACKS]
+      : [
+          `/episodes/${encodeURIComponent(title)}.jpg`,
+          `/episodes/${encodeURIComponent(title)}.webp`,
+          ...DRAFT_IMAGE_FALLBACKS,
+        ];
 
   return (
     <div className="mt-4 mb-4 border border-sd-ink/10 overflow-hidden">
-      <img
-        src={primarySrc}
-        alt={title}
-        className="w-full object-cover"
-        onError={handleError}
-      />
+      <FallbackImage sources={sources} alt={title} className="w-full object-cover" />
     </div>
   );
 }
