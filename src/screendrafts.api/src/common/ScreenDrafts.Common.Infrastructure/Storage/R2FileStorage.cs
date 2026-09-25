@@ -1,9 +1,4 @@
-﻿using Amazon.S3;
-using Amazon.S3.Model;
-
-using ScreenDrafts.Common.Application.Storage;
-
-namespace ScreenDrafts.Common.Infrastructure.Storage;
+﻿namespace ScreenDrafts.Common.Infrastructure.Storage;
 
 internal sealed class R2FileStorage(IAmazonS3 s3, R2Settings settings) : IFileStorage
 {

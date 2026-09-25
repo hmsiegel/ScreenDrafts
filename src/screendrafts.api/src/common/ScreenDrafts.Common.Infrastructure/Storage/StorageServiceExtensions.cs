@@ -1,9 +1,4 @@
-﻿using Amazon.Runtime;
-using Amazon.S3;
-using Microsoft.Extensions.Hosting;
-using ScreenDrafts.Common.Application.Storage;
-
-namespace ScreenDrafts.Common.Infrastructure.Storage;
+﻿namespace ScreenDrafts.Common.Infrastructure.Storage;
 
 public static class StorageServiceExtensions
 {
