@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Communications.IntegrationTests.Email;
+﻿namespace ScreenDrafts.Modules.Communications.IntegrationTests.Email;
 
 public sealed class DraftCompletedConsumerTests
 {
@@ -16,7 +16,13 @@ public sealed class DraftCompletedConsumerTests
     factory.EnqueueEmptyResult();
 
     var emailService = new RecordingEmailService();
-    var consumer = new DraftCompletedIntegrationEventConsumer(factory, emailService);
+    var fixedUtcNow = new DateTime(2026, 1, 1, 12, 0, 0, DateTimeKind.Utc);
+    var dateTimeProvider = new FakeDateTimeProvider(fixedUtcNow);
+    var consumer = new DraftCompletedIntegrationEventConsumer(
+      factory,
+      emailService,
+      dateTimeProvider
+    );
 
     // Act
     await consumer.Handle(BuildEvent(), CancellationToken.None);
@@ -34,20 +40,30 @@ public sealed class DraftCompletedConsumerTests
   {
     // Arrange
     var factory = new FakeDbConnectionFactory();
-    factory.EnqueueQueryResult(RecipientColumns,
+    factory.EnqueueQueryResult(
+      RecipientColumns,
       ["alice@example.com", "Alice"],
-      ["bob@example.com", "Bob"]);
+      ["bob@example.com", "Bob"]
+    );
 
     var emailService = new RecordingEmailService();
-    var consumer = new DraftCompletedIntegrationEventConsumer(factory, emailService);
+    var fixedUtcNow = new DateTime(2026, 1, 1, 12, 0, 0, DateTimeKind.Utc);
+    var dateTimeProvider = new FakeDateTimeProvider(fixedUtcNow);
+    var consumer = new DraftCompletedIntegrationEventConsumer(
+      factory,
+      emailService,
+      dateTimeProvider
+    );
 
     // Act
     await consumer.Handle(BuildEvent(), CancellationToken.None);
 
     // Assert
     emailService.SentEmails.Should().HaveCount(2);
-    emailService.SentEmails.Select(e => e.ToAddress)
-      .Should().BeEquivalentTo("alice@example.com", "bob@example.com");
+    emailService
+      .SentEmails.Select(e => e.ToAddress)
+      .Should()
+      .BeEquivalentTo("alice@example.com", "bob@example.com");
   }
 
   // -------------------------------------------------------------------------
@@ -62,14 +78,22 @@ public sealed class DraftCompletedConsumerTests
     factory.EnqueueQueryResult(RecipientColumns, ["user@example.com", "User"]);
 
     var emailService = new RecordingEmailService();
-    var consumer = new DraftCompletedIntegrationEventConsumer(factory, emailService);
+    var fixedUtcNow = new DateTime(2026, 1, 1, 12, 0, 0, DateTimeKind.Utc);
+    var dateTimeProvider = new FakeDateTimeProvider(fixedUtcNow);
+    var consumer = new DraftCompletedIntegrationEventConsumer(
+      factory,
+      emailService,
+      dateTimeProvider
+    );
 
     // Act
-    await consumer.Handle(BuildEvent(draftTitle: "Best Noirs", isPatreon: false), CancellationToken.None);
+    await consumer.Handle(
+      BuildEvent(draftTitle: "Best Noirs", isPatreon: false),
+      CancellationToken.None
+    );
 
     // Assert
-    emailService.SentEmails.Single().Subject
-      .Should().Be("New Draft incoming: Best Noirs");
+    emailService.SentEmails.Single().Subject.Should().Be("Draft Completed: Best Noirs");
   }
 
   [Fact]
@@ -80,7 +104,13 @@ public sealed class DraftCompletedConsumerTests
     factory.EnqueueQueryResult(RecipientColumns, ["user@example.com", "User"]);
 
     var emailService = new RecordingEmailService();
-    var consumer = new DraftCompletedIntegrationEventConsumer(factory, emailService);
+    var fixedUtcNow = new DateTime(2026, 1, 1, 12, 0, 0, DateTimeKind.Utc);
+    var dateTimeProvider = new FakeDateTimeProvider(fixedUtcNow);
+    var consumer = new DraftCompletedIntegrationEventConsumer(
+      factory,
+      emailService,
+      dateTimeProvider
+    );
 
     // Act
     await consumer.Handle(BuildEvent(), CancellationToken.None);
@@ -101,14 +131,25 @@ public sealed class DraftCompletedConsumerTests
     factory.EnqueueQueryResult(RecipientColumns, ["user@example.com", "User"]);
 
     var emailService = new RecordingEmailService();
-    var consumer = new DraftCompletedIntegrationEventConsumer(factory, emailService);
+    var fixedUtcNow = new DateTime(2026, 1, 1, 12, 0, 0, DateTimeKind.Utc);
+    var dateTimeProvider = new FakeDateTimeProvider(fixedUtcNow);
+    var consumer = new DraftCompletedIntegrationEventConsumer(
+      factory,
+      emailService,
+      dateTimeProvider
+    );
 
     // Act
-    await consumer.Handle(BuildEvent(draftTitle: "Best Noirs", isPatreon: true), CancellationToken.None);
+    await consumer.Handle(
+      BuildEvent(draftTitle: "Best Noirs", isPatreon: true),
+      CancellationToken.None
+    );
 
     // Assert
-    emailService.SentEmails.Single().Subject
-      .Should().Be("[Patreon] New Draft incoming: Best Noirs");
+    emailService
+      .SentEmails.Single()
+      .Subject.Should()
+      .Be("[Patreon] Draft Completed: Best Noirs");
   }
 
   [Fact]
@@ -119,7 +160,13 @@ public sealed class DraftCompletedConsumerTests
     factory.EnqueueQueryResult(RecipientColumns, ["user@example.com", "User"]);
 
     var emailService = new RecordingEmailService();
-    var consumer = new DraftCompletedIntegrationEventConsumer(factory, emailService);
+    var fixedUtcNow = new DateTime(2026, 1, 1, 12, 0, 0, DateTimeKind.Utc);
+    var dateTimeProvider = new FakeDateTimeProvider(fixedUtcNow);
+    var consumer = new DraftCompletedIntegrationEventConsumer(
+      factory,
+      emailService,
+      dateTimeProvider
+    );
 
     // Act
     await consumer.Handle(BuildEvent(isPatreon: true), CancellationToken.None);
@@ -134,13 +181,15 @@ public sealed class DraftCompletedConsumerTests
 
   private static DraftCompletedIntegrationEvent BuildEvent(
     string draftTitle = "Test Draft",
-    bool isPatreon = false)
+    bool isPatreon = false
+  )
   {
     return new DraftCompletedIntegrationEvent(
       id: Guid.NewGuid(),
       occurredOnUtc: DateTime.UtcNow,
       draftId: Guid.NewGuid(),
       draftTitle: draftTitle,
-      isPatreon: isPatreon);
+      isPatreon: isPatreon
+    );
   }
 }

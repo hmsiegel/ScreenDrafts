@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Modules.Communications.Features.Email;
-
-namespace ScreenDrafts.Modules.Communications.Composition;
+﻿namespace ScreenDrafts.Modules.Communications.Composition;
 
 public static class CommunicationsModule
 {
@@ -81,6 +79,14 @@ public static class CommunicationsModule
 
     registrationConfigurator
       .AddConsumer<IntegrationEventConsumer<EmailChangeConfirmationRequestedIntegrationEvent>>()
+      .Endpoint(x => x.InstanceId = moduleInstanceId);
+
+    registrationConfigurator
+      .AddConsumer<IntegrationEventConsumer<UserRoleAddedIntegrationEvent>>()
+      .Endpoint(x => x.InstanceId = moduleInstanceId);
+
+    registrationConfigurator
+      .AddConsumer<IntegrationEventConsumer<UserRoleRemovedIntegrationEvent>>()
       .Endpoint(x => x.InstanceId = moduleInstanceId);
   }
 

@@ -48,15 +48,8 @@ public static class StorageServiceExtensions
       ResponseChecksumValidation = ResponseChecksumValidation.WHEN_REQUIRED,
     };
 
-    using (
-      var client = new AmazonS3Client(
-        new BasicAWSCredentials(settings.AccessKeyId, settings.SecretAccessKey),
-        s3Config
-      )
-    )
-    {
-      services.TryAddSingleton<IAmazonS3>(client);
-    }
+    var credentials = new BasicAWSCredentials(settings.AccessKeyId, settings.SecretAccessKey);
+    services.TryAddSingleton<IAmazonS3>(_ => new AmazonS3Client(credentials, s3Config));
 
     services.TryAddSingleton(settings);
     services.TryAddSingleton<IFileStorage, R2FileStorage>();

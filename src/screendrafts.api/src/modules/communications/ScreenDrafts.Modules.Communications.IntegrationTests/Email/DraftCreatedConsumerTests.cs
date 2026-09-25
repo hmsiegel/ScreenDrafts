@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Communications.IntegrationTests.Email;
+﻿namespace ScreenDrafts.Modules.Communications.IntegrationTests.Email;
 
 public sealed class DraftCreatedConsumerTests
 {
@@ -16,7 +16,13 @@ public sealed class DraftCreatedConsumerTests
     factory.EnqueueEmptyResult();
 
     var emailService = new RecordingEmailService();
-    var consumer = new DraftCreatedIntegrationEventConsumer(factory, emailService);
+    var fixedUtcNow = new DateTime(2026, 1, 1, 12, 0, 0, DateTimeKind.Utc);
+    var dateTimeProvider = new FakeDateTimeProvider(fixedUtcNow);
+    var consumer = new DraftCreatedIntegrationEventConsumer(
+      factory,
+      emailService,
+      dateTimeProvider
+    );
 
     // Act
     await consumer.Handle(BuildEvent(), CancellationToken.None);
@@ -34,21 +40,31 @@ public sealed class DraftCreatedConsumerTests
   {
     // Arrange
     var factory = new FakeDbConnectionFactory();
-    factory.EnqueueQueryResult(RecipientColumns,
+    factory.EnqueueQueryResult(
+      RecipientColumns,
       ["alice@example.com", "Alice"],
       ["bob@example.com", "Bob"],
-      ["carol@example.com", "Carol"]);
+      ["carol@example.com", "Carol"]
+    );
 
     var emailService = new RecordingEmailService();
-    var consumer = new DraftCreatedIntegrationEventConsumer(factory, emailService);
+    var fixedUtcNow = new DateTime(2026, 1, 1, 12, 0, 0, DateTimeKind.Utc);
+    var dateTimeProvider = new FakeDateTimeProvider(fixedUtcNow);
+    var consumer = new DraftCreatedIntegrationEventConsumer(
+      factory,
+      emailService,
+      dateTimeProvider
+    );
 
     // Act
     await consumer.Handle(BuildEvent(draftTitle: "Best Directors"), CancellationToken.None);
 
     // Assert
     emailService.SentEmails.Should().HaveCount(3);
-    emailService.SentEmails.Select(e => e.ToAddress)
-      .Should().BeEquivalentTo("alice@example.com", "bob@example.com", "carol@example.com");
+    emailService
+      .SentEmails.Select(e => e.ToAddress)
+      .Should()
+      .BeEquivalentTo("alice@example.com", "bob@example.com", "carol@example.com");
   }
 
   // -------------------------------------------------------------------------
@@ -63,14 +79,22 @@ public sealed class DraftCreatedConsumerTests
     factory.EnqueueQueryResult(RecipientColumns, ["user@example.com", "User"]);
 
     var emailService = new RecordingEmailService();
-    var consumer = new DraftCreatedIntegrationEventConsumer(factory, emailService);
+    var fixedUtcNow = new DateTime(2026, 1, 1, 12, 0, 0, DateTimeKind.Utc);
+    var dateTimeProvider = new FakeDateTimeProvider(fixedUtcNow);
+    var consumer = new DraftCreatedIntegrationEventConsumer(
+      factory,
+      emailService,
+      dateTimeProvider
+    );
 
     // Act
-    await consumer.Handle(BuildEvent(draftTitle: "Classic Horror", isPatreon: false), CancellationToken.None);
+    await consumer.Handle(
+      BuildEvent(draftTitle: "Classic Horror", isPatreon: false),
+      CancellationToken.None
+    );
 
     // Assert
-    emailService.SentEmails.Single().Subject
-      .Should().Be("New Draft incoming: Classic Horror");
+    emailService.SentEmails.Single().Subject.Should().Be("New Draft incoming: Classic Horror");
   }
 
   [Fact]
@@ -81,7 +105,13 @@ public sealed class DraftCreatedConsumerTests
     factory.EnqueueQueryResult(RecipientColumns, ["user@example.com", "User"]);
 
     var emailService = new RecordingEmailService();
-    var consumer = new DraftCreatedIntegrationEventConsumer(factory, emailService);
+    var fixedUtcNow = new DateTime(2026, 1, 1, 12, 0, 0, DateTimeKind.Utc);
+    var dateTimeProvider = new FakeDateTimeProvider(fixedUtcNow);
+    var consumer = new DraftCreatedIntegrationEventConsumer(
+      factory,
+      emailService,
+      dateTimeProvider
+    );
 
     // Act
     await consumer.Handle(BuildEvent(isPatreon: false), CancellationToken.None);
@@ -102,14 +132,25 @@ public sealed class DraftCreatedConsumerTests
     factory.EnqueueQueryResult(RecipientColumns, ["user@example.com", "User"]);
 
     var emailService = new RecordingEmailService();
-    var consumer = new DraftCreatedIntegrationEventConsumer(factory, emailService);
+    var fixedUtcNow = new DateTime(2026, 1, 1, 12, 0, 0, DateTimeKind.Utc);
+    var dateTimeProvider = new FakeDateTimeProvider(fixedUtcNow);
+    var consumer = new DraftCreatedIntegrationEventConsumer(
+      factory,
+      emailService,
+      dateTimeProvider
+    );
 
     // Act
-    await consumer.Handle(BuildEvent(draftTitle: "Classic Horror", isPatreon: true), CancellationToken.None);
+    await consumer.Handle(
+      BuildEvent(draftTitle: "Classic Horror", isPatreon: true),
+      CancellationToken.None
+    );
 
     // Assert
-    emailService.SentEmails.Single().Subject
-      .Should().Be("[Patreon] New Draft incoming: Classic Horror");
+    emailService
+      .SentEmails.Single()
+      .Subject.Should()
+      .Be("[Patreon] New Draft incoming: Classic Horror");
   }
 
   [Fact]
@@ -120,7 +161,13 @@ public sealed class DraftCreatedConsumerTests
     factory.EnqueueQueryResult(RecipientColumns, ["user@example.com", "User"]);
 
     var emailService = new RecordingEmailService();
-    var consumer = new DraftCreatedIntegrationEventConsumer(factory, emailService);
+    var fixedUtcNow = new DateTime(2026, 1, 1, 12, 0, 0, DateTimeKind.Utc);
+    var dateTimeProvider = new FakeDateTimeProvider(fixedUtcNow);
+    var consumer = new DraftCreatedIntegrationEventConsumer(
+      factory,
+      emailService,
+      dateTimeProvider
+    );
 
     // Act
     await consumer.Handle(BuildEvent(isPatreon: true), CancellationToken.None);
@@ -135,13 +182,15 @@ public sealed class DraftCreatedConsumerTests
 
   private static DraftCreatedIntegrationEvent BuildEvent(
     string draftTitle = "Test Draft",
-    bool isPatreon = false)
+    bool isPatreon = false
+  )
   {
     return new DraftCreatedIntegrationEvent(
       id: Guid.NewGuid(),
       occurredOnUtc: DateTime.UtcNow,
       draftId: Guid.NewGuid(),
       draftTitle: draftTitle,
-      isPatreon: isPatreon);
+      isPatreon: isPatreon
+    );
   }
 }
