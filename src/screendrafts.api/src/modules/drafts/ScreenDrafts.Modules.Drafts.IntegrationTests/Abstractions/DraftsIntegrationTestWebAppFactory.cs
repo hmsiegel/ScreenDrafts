@@ -209,7 +209,7 @@ public class DraftsIntegrationTestWebAppFactory : IntegrationTestWebAppFactory
   {
     await base.ApplyMigrationsAsync();
 
-    // communications.user_emails is created by the DbMigrator SQL scripts, not by EF Core
+    // communications.user_emails and email_deliveries are created by the DbMigrator SQL scripts, not by EF Core
     // migrations, so MigrateAsync() alone won't create it. Run the DDL directly here so that
     // Communications consumers (DraftCreatedIntegrationEventConsumer, etc.) can query it in
     // scenario tests that call DispatchIntegrationEventsAsync.
@@ -230,6 +230,14 @@ public class DraftsIntegrationTestWebAppFactory : IntegrationTestWebAppFactory
           full_name     varchar(500) NOT NULL,
           is_patreon    boolean      NOT NULL DEFAULT false,
           CONSTRAINT pk_user_emails PRIMARY KEY (user_id)
+      );
+
+      CREATE TABLE IF NOT EXISTS communications.email_deliveries
+      (
+          event_id      uuid                     NOT NULL,
+          email_address text                     NOT NULL,
+          sent_on_utc   timestamp with time zone NOT NULL,
+          CONSTRAINT pk_email_deliveries PRIMARY KEY (event_id, email_address)
       );
       """
     );

@@ -1,3 +1,5 @@
+using ScreenDrafts.Common.Application.Clock;
+
 namespace ScreenDrafts.Modules.Communications.IntegrationTests.Inbox;
 
 /// <summary>
@@ -28,6 +30,7 @@ public sealed class IntegrationEventDispatcherTests
     var services = new ServiceCollection();
     services.AddSingleton<IDbConnectionFactory>(connectionFactory);
     services.AddSingleton<IEmailService>(emailService);
+    services.AddSingleton<IDateTimeProvider>(new FakeDateTimeProvider(DateTime.UtcNow));
     services.AddScoped<DraftCreatedIntegrationEventConsumer>();
     await using var provider = services.BuildServiceProvider();
 

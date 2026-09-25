@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.Abstractions;
+﻿using ScreenDrafts.Common.Application.Clock;
+
+namespace ScreenDrafts.Modules.Communications.IntegrationTests.Doubles;
 
 /// <summary>
 /// Hand-rolled IDateTimeProvider test double -- no mocking library is referenced
