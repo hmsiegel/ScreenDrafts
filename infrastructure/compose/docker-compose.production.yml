@@ -4,6 +4,8 @@ services:
   caddy:
     image: caddy:2.11.4
     restart: unless-stopped
+    environment:
+      - ADMIN_IP=${ADMIN_IP}
     ports:
       - "80:80"
       - "443:443"
