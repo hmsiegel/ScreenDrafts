@@ -7,8 +7,8 @@ import SiteFooter from "@/components/layout/footer/site-footer";
 
 export const metadata: Metadata = {
   title: {
-    template: "%s | ScreenDrafts",
-    default: "ScreenDrafts",
+    template: "%s | Screen Drafts",
+    default: "Screen Drafts",
   },
   description: 'Where experts and enthusiasts competitively collaborate in the creation of screen-centric "Best Of" lists',
 };

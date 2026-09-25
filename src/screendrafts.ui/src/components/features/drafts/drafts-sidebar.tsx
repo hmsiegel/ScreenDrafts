@@ -402,7 +402,7 @@ export default function DraftSidebar({
       </div>
 
       {/* Artwork */}
-      <EpisodeImage imagePath={draft.imagePath} title={draft.title} />
+      <EpisodeImage imagePath={draft.imagePath} title={draft.title} publicId={draft.publicId} />
 
       {/* Title */}
       <div className="font-oswald font-semibold text-[22px] text-sd-ink leading-[1.15] tracking-tight mb-3">
