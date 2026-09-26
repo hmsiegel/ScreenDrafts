@@ -19,6 +19,18 @@ internal sealed class GetPredictionStandingsQueryHandler(IDbConnectionFactory co
     //
     // When not supplied (e.g. homepage), prediction_standings.points is used —
     // the full authoritative season total.
+    //
+    // CHANGED — the AsOf branch used to sum prediction_results.points_awarded
+    // straight per contestant, which double-counted a surrogate's score as its
+    // own standalone entry instead of folding it into the primary contestant it
+    // was assigned to. episode_sets now (a) drops any set that is itself a
+    // surrogate (surrogate_set_id in surrogate_assignments) from the grouping
+    // entirely, and (b) for a primary set with a surrogate assignment, resolves
+    // its points via the same merge policy ScoreDraftPartPredictionsCommandHandler
+    // applies at scoring time (UseHigherScore -> GREATEST, UseBothScores -> sum),
+    // instead of its own raw result. Only handles a single surrogate per primary,
+    // matching the current scoring handler's own limitation — a primary with more
+    // than one surrogate assignment isn't correctly resolved there either yet.
 
     string sql;
 
@@ -32,19 +44,38 @@ internal sealed class GetPredictionStandingsQueryHandler(IDbConnectionFactory co
                                        AND dr.release_channel = @MainFeedReleaseChannel
           WHERE dp.public_id = @AsOfDraftPartPublicId
         ),
-        episode_points AS (
+        episode_sets AS (
           SELECT
             dps.season_id,
             dps.contestant_id,
-            COALESCE(SUM(pr.points_awarded), 0) AS Points
+            dps.draft_part_id,
+            CASE
+              WHEN sa.merge_policy = 1 THEN pr.points_awarded + COALESCE(surr_pr.points_awarded, 0)
+              WHEN sa.merge_policy = 0 THEN GREATEST(pr.points_awarded, COALESCE(surr_pr.points_awarded, 0))
+              ELSE pr.points_awarded
+            END AS effective_points
           FROM drafts.draft_prediction_sets dps
-          JOIN drafts.prediction_results    pr  ON pr.set_id         = dps.id
-          JOIN drafts.draft_parts           dp2 ON dp2.id            = dps.draft_part_id
-          JOIN drafts.draft_releases        dr2 ON dr2.part_id       = dp2.id
-                                               AND dr2.release_channel = @MainFeedReleaseChannel
+          JOIN drafts.prediction_results    pr  ON pr.set_id = dps.id
+          LEFT JOIN drafts.surrogate_assignments sa      ON sa.primary_set_id = dps.id
+          LEFT JOIN drafts.prediction_results    surr_pr ON surr_pr.set_id    = sa.surrogate_set_id
+          WHERE NOT EXISTS (
+            SELECT 1
+            FROM drafts.surrogate_assignments sa2
+            WHERE sa2.surrogate_set_id = dps.id
+          )
+        ),
+        episode_points AS (
+          SELECT
+            es.season_id,
+            es.contestant_id,
+            COALESCE(SUM(es.effective_points), 0) AS Points
+          FROM episode_sets           es
+          JOIN drafts.draft_parts     dp2 ON dp2.id            = es.draft_part_id
+          JOIN drafts.draft_releases  dr2 ON dr2.part_id       = dp2.id
+                                          AND dr2.release_channel = @MainFeedReleaseChannel
           CROSS JOIN as_of_date aod
           WHERE dr2.release_date <= aod.cutoff
-          GROUP BY dps.season_id, dps.contestant_id
+          GROUP BY es.season_id, es.contestant_id
         )
         SELECT
           ps.public_id                                          AS SeasonPublicId,

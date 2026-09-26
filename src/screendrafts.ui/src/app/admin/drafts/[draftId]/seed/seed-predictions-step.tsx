@@ -5,11 +5,13 @@ import { useEffect, useState } from "react";
 import {
   getDraftPartPredictionRules,
   getDraftPartPredictors,
+  getDraftPartPredictions,
   listSeasons,
   seedSubmitPredictionSet,
   type DraftPartPredictionRulesDto,
   type DraftPartPredictorDto,
   type DraftPartHost,
+  type DraftPartPrediction,
 } from "@/services/admin/fetch-admin-drafts";
 import { PredictionSeasonListItemResponse } from "@/lib/dto";
 import { MediaPicker, type SelectedMedia } from "@/components/drafts/media-picker";
@@ -64,6 +66,11 @@ export function SeedPredictionsStep({
   const [predictors, setPredictors] = useState<DraftPartPredictorDto[]>([]);
   const [seasons, setSeasons] = useState<PredictionSeasonListItemResponse[]>([]);
   const [seasonPublicId, setSeasonPublicId] = useState("");
+  // CHANGED — new. Keyed by contestantPublicId. Populated from
+  // getDraftPartPredictions in loadAll below and used to prefill each
+  // ContestantEntryRow so already-submitted picks survive navigating away
+  // from this step and back, instead of every row starting blank again.
+  const [existingSets, setExistingSets] = useState<Record<string, DraftPartPrediction>>({});
   const [submittedContestants, setSubmittedContestants] = useState<Set<string>>(new Set());
   const [activeContestant, setActiveContestant] = useState<string | null>(null);
 
@@ -77,6 +84,29 @@ export function SeedPredictionsStep({
     setRules(rulesResult);
     setPredictors(predictorsResult);
     setSeasons(seasonsResult);
+
+    // CHANGED — previously nothing here ever checked what's already been
+    // submitted. submittedContestants and each row's entries are local
+    // component state, so remounting this step (e.g. clicking back to it
+    // from Start) always rendered a blank slate even when the sets were
+    // intact in the DB. That also silently hid SurrogateAssignmentPanel
+    // below, since it was gated on this same local state instead of on
+    // whether sets actually exist.
+    if (predictorsResult.length > 0) {
+      const sets = await getDraftPartPredictions(accessToken, draftPartPublicId);
+      const byContestant: Record<string, DraftPartPrediction> = {};
+      const submitted = new Set<string>();
+      for (const set of sets) {
+        byContestant[set.contestantPublicId] = set;
+        submitted.add(set.contestantPublicId);
+      }
+      setExistingSets(byContestant);
+      setSubmittedContestants(submitted);
+    } else {
+      setExistingSets({});
+      setSubmittedContestants(new Set());
+    }
+
     setLoading(false);
   }
 
@@ -133,28 +163,49 @@ export function SeedPredictionsStep({
       </div>
 
       <div className="space-y-3">
-        {predictors.map((p) => (
-          <ContestantEntryRow
-            key={p.contestantPublicId}
-            predictor={p}
-            requiredCount={rules.requiredCount}
-            seasonPublicId={seasonPublicId}
-            draftPartPublicId={draftPartPublicId}
-            accessToken={accessToken}
-            restrictedTvSeriesTmdbId={restrictedTvSeriesTmdbId}
-            submitted={submittedContestants.has(p.contestantPublicId)}
-            active={activeContestant === p.contestantPublicId}
-            onActivate={() => setActiveContestant(p.contestantPublicId)}
-            onSubmitted={() =>
-              setSubmittedContestants((prev) => new Set(prev).add(p.contestantPublicId))
-            }
-          />
-        ))}
+        {predictors.map((p) => {
+          const existing = existingSets[p.contestantPublicId];
+          return (
+            <ContestantEntryRow
+              key={p.contestantPublicId}
+              predictor={p}
+              requiredCount={rules.requiredCount}
+              seasonPublicId={seasonPublicId}
+              draftPartPublicId={draftPartPublicId}
+              accessToken={accessToken}
+              restrictedTvSeriesTmdbId={restrictedTvSeriesTmdbId}
+              submitted={submittedContestants.has(p.contestantPublicId)}
+              isLocked={existing?.isLocked ?? false}
+              // CHANGED — new. Seeds the row's entries from whatever was
+              // already persisted, so reopening this step shows real data
+              // instead of an empty form.
+              initialEntries={
+                existing?.entries.map((e, idx) => ({
+                  rank: e.orderIndex ?? idx + 1,
+                  tmdbId: e.tmdbId,
+                  title: e.mediaTitle,
+                  year: null,
+                  mediaPublicId: e.mediaPublicId ?? null,
+                })) ?? []
+              }
+              active={activeContestant === p.contestantPublicId}
+              onActivate={() => setActiveContestant(p.contestantPublicId)}
+              onSubmitted={() =>
+                setSubmittedContestants((prev) => new Set(prev).add(p.contestantPublicId))
+              }
+            />
+          );
+        })}
       </div>
 
-      {submittedContestants.size > 0 && (
-        <SurrogateAssignmentPanel draftPartPublicId={draftPartPublicId} accessToken={accessToken} />
-      )}
+      {/* CHANGED — no longer gated on submittedContestants.size > 0. That
+          local state resets to empty on every remount of this step, which
+          made the panel disappear entirely as soon as you navigated away
+          and back, regardless of what's actually in the DB. The panel does
+          its own getDraftPartPredictions fetch and shows its own "need at
+          least two submitted sets" message, so it can decide that for
+          itself once real predictors exist. */}
+      <SurrogateAssignmentPanel draftPartPublicId={draftPartPublicId} accessToken={accessToken} />
 
       <button type="button" onClick={onDone} className={BTN_PRIMARY}>
         Continue →
@@ -171,6 +222,9 @@ interface RowProps {
   accessToken: string;
   restrictedTvSeriesTmdbId?: number | null;
   submitted: boolean;
+  // CHANGED — new.
+  isLocked: boolean;
+  initialEntries: RankedEntry[];
   active: boolean;
   onActivate: () => void;
   onSubmitted: () => void;
@@ -203,12 +257,18 @@ function ContestantEntryRow({
   accessToken,
   restrictedTvSeriesTmdbId,
   submitted,
+  isLocked,
+  initialEntries,
   active,
   onActivate,
   onSubmitted,
 }: RowProps) {
-  const [entries, setEntries] = useState<RankedEntry[]>([]);
-  const [pendingRank, setPendingRank] = useState(1);
+  // CHANGED — lazy-initialized from initialEntries instead of always [].
+  // Runs once at first mount; by the time this component renders, the
+  // parent's loadAll() has already resolved (loading gates the whole
+  // step), so initialEntries is real data, not a stale empty default.
+  const [entries, setEntries] = useState<RankedEntry[]>(() => initialEntries);
+  const [pendingRank, setPendingRank] = useState(() => nextAvailableRank(initialEntries, requiredCount));
   const [submitting, setSubmitting] = useState(false);
   const [resolving, setResolving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -289,7 +349,7 @@ function ContestantEntryRow({
   }
 
   async function handleSubmit() {
-    if (!seasonPublicId || entries.length === 0 || submitting) return;
+    if (!seasonPublicId || entries.length === 0 || submitting || isLocked) return;
     setSubmitting(true);
     setError(null);
     try {
@@ -322,6 +382,11 @@ function ContestantEntryRow({
       >
         <span className="text-sm font-medium text-sd-ink">{predictor.contestantDisplayName}</span>
         <span className="flex items-center gap-2">
+          {isLocked && (
+            <span className="text-[10px] font-mono uppercase tracking-widest text-sd-ink/40">
+              locked
+            </span>
+          )}
           {submitted && (
             <span className="text-[10px] font-mono uppercase tracking-widest text-green-700">
               submitted
@@ -349,19 +414,22 @@ function ContestantEntryRow({
                     min={1}
                     max={requiredCount}
                     value={e.rank}
+                    disabled={isLocked}
                     onChange={(ev) => updateRank(e.tmdbId, parseInt(ev.target.value, 10) || e.rank)}
-                    className="w-14 border border-sd-ink/20 bg-sd-paper px-2 py-1 text-sm rounded text-center"
+                    className="w-14 border border-sd-ink/20 bg-sd-paper px-2 py-1 text-sm rounded text-center disabled:opacity-50"
                   />
                   <span className="flex-1">
                     {e.title} {e.year ? `(${e.year})` : ""}
                   </span>
-                  <button
-                    type="button"
-                    onClick={() => removeEntry(e.tmdbId)}
-                    className="text-sd-ink/30 hover:text-sd-red"
-                  >
-                    ×
-                  </button>
+                  {!isLocked && (
+                    <button
+                      type="button"
+                      onClick={() => removeEntry(e.tmdbId)}
+                      className="text-sd-ink/30 hover:text-sd-red"
+                    >
+                      ×
+                    </button>
+                  )}
                 </li>
               ))}
             </ol>
@@ -369,7 +437,7 @@ function ContestantEntryRow({
 
           {rankError && <p className="text-[11px] font-mono text-sd-red">{rankError}</p>}
 
-          {entries.length < requiredCount && (
+          {!isLocked && entries.length < requiredCount && (
             <div className="flex items-start gap-3">
               <div className="shrink-0">
                 <label className={LABEL}>Rank</label>
@@ -403,16 +471,24 @@ function ContestantEntryRow({
             </div>
           )}
 
-          <button
-            type="button"
-            onClick={handleSubmit}
-            disabled={!seasonPublicId || entries.length === 0 || submitting || resolving}
-            className={BTN_SECONDARY}
-          >
-            {submitting ? "Submitting…" : `Submit ${predictor.contestantDisplayName}'s Predictions`}
-          </button>
-          {!seasonPublicId && (
-            <p className="text-[11px] font-mono text-sd-red">Select a season above first.</p>
+          {isLocked ? (
+            <p className="text-[11px] font-mono text-sd-ink/40">
+              Locked — this set was scored already and can&apos;t be edited here.
+            </p>
+          ) : (
+            <>
+              <button
+                type="button"
+                onClick={handleSubmit}
+                disabled={!seasonPublicId || entries.length === 0 || submitting || resolving}
+                className={BTN_SECONDARY}
+              >
+                {submitting ? "Submitting…" : `Submit ${predictor.contestantDisplayName}'s Predictions`}
+              </button>
+              {!seasonPublicId && (
+                <p className="text-[11px] font-mono text-sd-red">Select a season above first.</p>
+              )}
+            </>
           )}
         </div>
       )}
