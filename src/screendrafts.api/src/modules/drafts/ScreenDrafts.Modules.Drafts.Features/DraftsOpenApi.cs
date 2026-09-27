@@ -60,6 +60,7 @@ internal static class DraftsOpenApi
     public const string DraftParts_UndoPick = "DraftParts.UndoPick";
     public const string DraftParts_UndoVeto = "DraftParts.UndoVeto";
     public const string DraftParts_SetReleaseDate = "DraftParts.SetReleaseDate";
+    public const string DraftParts_SetSchedule = "DraftParts.SetSchedule";
     public const string DraftParts_ApplyVeto = "DraftParts.ApplyVeto";
     public const string DraftParts_ApplyVetoOverride = "DraftParts.ApplyVetoOverride";
     public const string DraftParts_ApplyCommissionerOverride =

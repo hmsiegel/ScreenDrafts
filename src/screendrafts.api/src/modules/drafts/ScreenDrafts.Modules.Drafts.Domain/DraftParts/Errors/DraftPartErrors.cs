@@ -97,6 +97,11 @@ public static class DraftPartErrors
     description: "Game board not found."
   );
 
+  public static readonly SDError InvalidStatusForScheduling = SDError.Conflict(
+    code: "DraftPart.InvalidStatusForScheduling",
+    description: "Draft part can only be scheduled while Created or Paused."
+  );
+
   public static readonly SDError InvalidStatusForTriviaAssignment = SDError.Conflict(
     code: "DraftPart.InvalidStatusForTriviaAssignment",
     description: "Invalid status for trivia assignment."

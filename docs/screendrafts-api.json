@@ -4186,6 +4186,47 @@
         ]
       }
     },
+    "/draft-parts/{draftPartId}/schedule": {
+      "put": {
+        "tags": [
+          "DraftParts"
+        ],
+        "operationId": "DraftParts.SetSchedule",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetDraftPartScheduleRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
     "/draft-parts/{draftPartId}/community-limits": {
       "put": {
         "tags": [
@@ -17820,6 +17861,13 @@
               "string"
             ],
             "format": "date"
+          },
+          "scheduledForUtc": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
           }
         }
       },
@@ -21348,6 +21396,21 @@
             "items": {
               "$ref": "#/components/schemas/PredictorEntryRequest"
             }
+          }
+        }
+      },
+      "SetDraftPartScheduleRequest": {
+        "required": [
+          "scheduledForUtc"
+        ],
+        "type": "object",
+        "properties": {
+          "draftPartId": {
+            "type": "string"
+          },
+          "scheduledForUtc": {
+            "type": "string",
+            "format": "date-time"
           }
         }
       },

@@ -272,6 +272,21 @@ public sealed partial class DraftPart : AggregateRoot<DraftPartId, Guid>
     GameBoard = gameBoard;
   }
 
+  public Result SetScheduledFor(DateTime scheduledForUtc)
+  {
+    if (Status != DraftPartStatus.Created)
+    {
+      return Result.Failure(DraftPartErrors.InvalidStatusForScheduling);
+    }
+
+    ScheduledForUtc = scheduledForUtc;
+    UpdatedAtUtc = DateTime.UtcNow;
+
+    Raise(new DraftPartScheduledDomainEvent(Id.Value, PublicId, scheduledForUtc));
+
+    return Result.Success();
+  }
+
   public Result SetPartPositions(int minPosition, int maxPosition)
   {
     if (minPosition <= 0)

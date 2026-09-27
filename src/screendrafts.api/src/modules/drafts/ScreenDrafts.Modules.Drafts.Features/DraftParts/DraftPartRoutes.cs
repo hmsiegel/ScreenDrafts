@@ -8,6 +8,7 @@ internal static class DraftPartRoutes
 
   // Status
   public const string Status = ById + "/status";
+  public const string Schedule = ById + "/schedule";
 
   // Releases
   public const string Releases = ById + "/releases";
