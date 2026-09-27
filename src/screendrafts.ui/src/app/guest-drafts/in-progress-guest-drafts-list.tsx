@@ -2,17 +2,15 @@
 'use client';
 
 import Link from 'next/link';
-import type { GuestDraftSummaryResponse } from '@/lib/dto';
+import type { MyGuestDraftSummary } from '@/lib/dto';
 import { guestDraftTypeLabel } from './guest-draft-type-labels';
 
 interface Props {
-  drafts: GuestDraftSummaryResponse[];
+  drafts: MyGuestDraftSummary[];
 }
 
 export function InProgressGuestDraftsList({ drafts }: Props) {
-  const inProgress = drafts.filter((d) => d.status === 'InProgress');
-
-  if (inProgress.length === 0) {
+  if (drafts.length === 0) {
     return <p className="text-sd-ink/50 text-sm font-mono">Nothing in progress right now.</p>;
   }
 
@@ -32,7 +30,7 @@ export function InProgressGuestDraftsList({ drafts }: Props) {
           </tr>
         </thead>
         <tbody>
-          {inProgress.map((d) => (
+          {drafts.map((d) => (
             <tr
               key={d.publicId}
               className="border-b border-sd-ink/5 hover:bg-sd-paper/60 transition-colors"

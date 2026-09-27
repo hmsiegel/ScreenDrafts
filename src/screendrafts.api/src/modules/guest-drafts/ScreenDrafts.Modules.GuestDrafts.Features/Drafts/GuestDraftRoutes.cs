@@ -8,6 +8,7 @@ internal static class GuestDraftsRoutes
   internal const string Summary = ById + "/summary";
   internal const string Participants = ById + "/participants";
   internal const string GuestDraftStatus = ById + "/status";
+  internal const string Schedule = ById + "/schedule";
   internal const string FixedBoardLayout = ById + "/board/fixed-layout";
   internal const string CustomBoardLayout = ById + "/board/custom-layout";
   internal const string PositionAssign = ById + "/positions/{positionPublicId}/assign";

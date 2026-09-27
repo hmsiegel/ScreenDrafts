@@ -3,7 +3,7 @@ import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { Metadata } from 'next';
-import { searchMyGuestDrafts } from './[guestDraftId]/live/gameplay-fetchers';
+import { getMyGuestDrafts } from './[guestDraftId]/live/gameplay-fetchers';
 import { UpcomingGuestDraftsList } from './upcoming-guest-drafts-list';
 import { InProgressGuestDraftsList } from './in-progress-guest-drafts-list';
 import { CompletedGuestDraftsList } from './completed-guest-drafts-list';
@@ -30,18 +30,12 @@ export default async function GuestDraftsPage() {
   const session = await auth();
   if (!session?.accessToken) redirect('/');
 
-  // pageSize 100 — a personal list, not the admin-wide table; large enough
-  // in practice to just be "all of mine" in one call. SearchGuestDraftsQuery
-  // is caller-scoped server-side (owner-or-participant), so there's no
-  // separate "mine vs everyone's" filter to apply here.
-  const result = await searchMyGuestDrafts(session.accessToken);
-  const drafts = result.items;
+  const { upcoming, inProgress, completed } = await getMyGuestDrafts(session.accessToken);
 
-  // Same "watched" idea as my-drafts-realtime-refresher.tsx — only drafts
-  // currently sitting in Created status can transition to InProgress while
-  // someone's looking at this list, so those are the only ones worth a live
-  // connection for.
-  const watchedGuestDraftIds = drafts
+  // Only "Created" status parts can transition to InProgress while someone's
+  // looking at this list — "Paused" also lands in the upcoming bucket
+  // server-side but isn't watchable the same way, so filter it back out here.
+  const watchedGuestDraftIds = upcoming
     .filter((d) => d.status === 'Created')
     .map((d) => d.publicId);
 
@@ -69,15 +63,15 @@ export default async function GuestDraftsPage() {
         </div>
 
         <GuestDraftsCard title="Upcoming">
-          <UpcomingGuestDraftsList drafts={drafts} />
+          <UpcomingGuestDraftsList drafts={upcoming} />
         </GuestDraftsCard>
 
         <GuestDraftsCard title="In Progress">
-          <InProgressGuestDraftsList drafts={drafts} />
+          <InProgressGuestDraftsList drafts={inProgress} />
         </GuestDraftsCard>
 
         <GuestDraftsCard title="Completed">
-          <CompletedGuestDraftsList drafts={drafts} />
+          <CompletedGuestDraftsList drafts={completed} />
         </GuestDraftsCard>
       </div>
     </div>

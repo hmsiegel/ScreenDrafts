@@ -29,7 +29,7 @@ internal sealed class GetGuestDraftDetailsQueryHandler(
         gd.title              AS {nameof(HeaderRow.Title)},
         gd.guest_draft_type   AS {nameof(HeaderRow.Type)},
         gd.guest_draft_status AS {nameof(HeaderRow.Status)},
-        gd.draft_date         AS {nameof(HeaderRow.DraftDate)}
+        gd.scheduled_for_utc  AS {nameof(HeaderRow.ScheduledForUtc)}
       FROM guest_drafts.drafts gd
       WHERE gd.public_id = @GuestDraftPublicId
       """;
@@ -184,7 +184,7 @@ internal sealed class GetGuestDraftDetailsQueryHandler(
         Title = header.Title,
         Type = DraftType.FromValue(header.Type).Name,
         Status = DraftStatus.FromValue(header.Status).Name,
-        DraftDate = header.DraftDate,
+        ScheduledForUtc = header.ScheduledForUtc,
         Positions =
         [
           .. positionRows.Select(pos => new GuestDraftDetailPositionResponse
@@ -222,7 +222,7 @@ internal sealed class GetGuestDraftDetailsQueryHandler(
     string Title,
     int Type,
     int Status,
-    DateOnly? DraftDate
+    DateTime? ScheduledForUtc
   );
 
   private sealed record ParticipantRow(

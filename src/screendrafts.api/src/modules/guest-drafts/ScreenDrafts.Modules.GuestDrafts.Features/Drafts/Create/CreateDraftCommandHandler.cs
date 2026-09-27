@@ -41,7 +41,7 @@ internal sealed class CreateDraftCommandHandler(
       ownerUserId: owner.UserId,
       title: request.Title,
       guestDraftType: type,
-      draftDate: request.DraftDate
+      scheduledForUtc: request.ScheduledForUtc
     );
 
     if (createResult.IsFailure)

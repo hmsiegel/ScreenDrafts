@@ -47,9 +47,9 @@ internal sealed class UpdateDraftCommandHandler(
       }
     }
 
-    if (request.DraftDate.HasValue)
+    if (request.ScheduledForUtc.HasValue)
     {
-      draft.SetDraftDate(request.DraftDate);
+      draft.SetScheduledForUtc(request.ScheduledForUtc.Value);
     }
 
     if (!string.IsNullOrWhiteSpace(request.Type))

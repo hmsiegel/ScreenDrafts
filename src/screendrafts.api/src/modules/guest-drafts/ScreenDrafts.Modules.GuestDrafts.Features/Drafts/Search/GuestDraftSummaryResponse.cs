@@ -7,7 +7,7 @@ internal sealed record GuestDraftSummaryResponse
   public required string Type { get; init; }
   public required string Status { get; init; }
 
-  public DateOnly? DraftDate { get; init; }
+  public DateTime? ScheduledForUtc { get; init; }
 
   /// <summary>
   /// True when the caller is this draft's owner. False for a caller who's

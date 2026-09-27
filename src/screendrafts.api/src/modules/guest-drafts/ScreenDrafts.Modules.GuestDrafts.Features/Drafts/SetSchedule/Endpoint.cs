@@ -1,22 +1,24 @@
-﻿namespace ScreenDrafts.Modules.GuestDrafts.Features.Drafts.UpdateDraft;
+﻿namespace ScreenDrafts.Modules.GuestDrafts.Features.Drafts.SetSchedule;
 
-internal sealed class Endpoint : ScreenDraftsEndpoint<UpdateGuestDraftRequest>
+// ── Endpoint ──────────────────────────────────────────────────────────────────
+internal sealed class Endpoint : ScreenDraftsEndpoint<SetDraftScheduleRequest>
 {
   public override void Configure()
   {
-    Put(GuestDraftsRoutes.ById);
+    Put(GuestDraftsRoutes.Schedule);
     Description(x =>
       x.WithTags(GuestDraftsOpenApi.Tags.GuestDrafts)
-        .WithName(GuestDraftsOpenApi.Names.GuestDrafts_UpdateGuestDraft)
+        .WithName(GuestDraftsOpenApi.Names.GuestDrafts_SetSchedule)
         .Produces(StatusCodes.Status204NoContent)
         .Produces(StatusCodes.Status400BadRequest)
         .Produces(StatusCodes.Status403Forbidden)
         .Produces(StatusCodes.Status404NotFound)
+        .Produces(StatusCodes.Status409Conflict)
     );
     Policies(GuestDraftsAuth.Permissions.GuestDraftUpdate);
   }
 
-  public override async Task HandleAsync(UpdateGuestDraftRequest req, CancellationToken ct)
+  public override async Task HandleAsync(SetDraftScheduleRequest req, CancellationToken ct)
   {
     ArgumentNullException.ThrowIfNull(req);
 
@@ -28,15 +30,11 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<UpdateGuestDraftRequest>
       return;
     }
 
-    var command = new UpdateDraftCommand
+    var command = new SetDraftScheduleCommand
     {
       GuestDraftPublicId = req.PublicId,
       CallerUserPublicId = userPublicId,
-      Title = req.Title,
       ScheduledForUtc = req.ScheduledForUtc,
-      Type = req.Type,
-      NumberOfPicks = req.NumberOfPicks,
-      Positions = req.Positions,
     };
 
     var result = await Sender.Send(command, ct);
