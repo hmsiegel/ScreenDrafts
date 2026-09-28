@@ -185,6 +185,7 @@ internal sealed class GetGuestDraftDetailsQueryHandler(
         Type = DraftType.FromValue(header.Type).Name,
         Status = DraftStatus.FromValue(header.Status).Name,
         ScheduledForUtc = header.ScheduledForUtc,
+        IsOwner = isOwner,
         Positions =
         [
           .. positionRows.Select(pos => new GuestDraftDetailPositionResponse

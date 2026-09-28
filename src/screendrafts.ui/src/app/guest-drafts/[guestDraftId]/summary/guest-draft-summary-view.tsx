@@ -2,12 +2,14 @@
 import Link from 'next/link';
 import type { GuestDraftDetailResponse } from '@/lib/dto';
 import { GuestDraftSummaryContent } from '../live/components/guest-draft-summary-content';
+import { GuestDraftScheduleEditor } from '../../guest-draft-schedule-editor';
 
 interface Props {
   detail: GuestDraftDetailResponse;
+  accessToken: string;
 }
 
-export function GuestDraftSummaryView({ detail }: Props) {
+export function GuestDraftSummaryView({ detail, accessToken }: Props) {
   // detail.picks is typed as possibly undefined in dto.ts — the same NSwag
   // quirk seen elsewhere in this module: a C# IReadOnlyList<T> property with
   // a `= []` default doesn't come through as required in the generated TS
@@ -19,6 +21,22 @@ export function GuestDraftSummaryView({ detail }: Props) {
 
   return (
     <div className="min-h-screen bg-sd-ink px-6 py-10">
+      {/* Owners can correct the date after the fact (backend allows it at any
+          status); everyone else only sees it if one was ever set. This page is
+          server-rendered with no live context, so the editor falls back to
+          router.refresh() after a save. */}
+      {(detail.isOwner || detail.scheduledForUtc) && (
+        <div className="max-w-3xl mx-auto mb-8">
+          <GuestDraftScheduleEditor
+            tone="dark"
+            accessToken={accessToken}
+            guestDraftId={detail.publicId}
+            scheduledForUtc={detail.scheduledForUtc}
+            isOwner={detail.isOwner}
+          />
+        </div>
+      )}
+
       <GuestDraftSummaryContent
         title={detail.title}
         totalPicks={totalPicks}

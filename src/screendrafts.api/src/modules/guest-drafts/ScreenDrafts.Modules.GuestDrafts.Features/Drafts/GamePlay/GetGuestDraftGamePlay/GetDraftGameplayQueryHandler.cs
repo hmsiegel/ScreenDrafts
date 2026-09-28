@@ -37,7 +37,9 @@ internal sealed class GetDraftGameplayQueryHandler(
         gd.title              AS {nameof(HeaderRow.Title)},
         gd.guest_draft_type   AS {nameof(HeaderRow.Type)},
         gd.guest_draft_status AS {nameof(HeaderRow.Status)},
-        gd.share_token        AS {nameof(HeaderRow.ShareToken)}
+        gd.share_token        AS {nameof(HeaderRow.ShareToken)},
+        gd.scheduled_for_utc   AS {nameof(HeaderRow.ScheduledForUtc)}
+
       FROM guest_drafts.drafts gd
       WHERE gd.public_id = @GuestDraftPublicId
       """;
@@ -259,6 +261,7 @@ internal sealed class GetDraftGameplayQueryHandler(
         Type = DraftType.FromValue(header.Type).Name,
         Status = DraftStatus.FromValue(header.Status).Name,
         ShareToken = isOwner ? header.ShareToken : null,
+        ScheduledForUtc = header.ScheduledForUtc,
         CallerContext = callerContext,
         Positions =
         [
@@ -357,7 +360,8 @@ internal sealed class GetDraftGameplayQueryHandler(
     string Title,
     int Type,
     int Status,
-    string? ShareToken
+    string? ShareToken,
+    DateTime? ScheduledForUtc
   );
 
   private sealed record ParticipantRow(

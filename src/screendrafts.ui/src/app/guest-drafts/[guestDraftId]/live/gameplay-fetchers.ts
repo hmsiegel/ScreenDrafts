@@ -306,6 +306,25 @@ export async function setGuestDraftStatus(
   return res.json();
 }
 
+// ── Reschedule (owner only, Created status only) ─────────────────────────────
+// PUT /guest-drafts/{publicId}/schedule. Takes a real UTC datetime. There is
+// no "clear schedule" call: the command's ScheduledForUtc is non-nullable.
+export async function setGuestDraftSchedule(
+  accessToken: string,
+  guestDraftId: string,
+  scheduledForUtc: string, // ISO UTC, e.g. new Date(localValue).toISOString()
+): Promise<void> {
+  const res = await fetch(`${API_BASE}/guest-drafts/${guestDraftId}/schedule`, {
+    method: 'PUT',
+    headers: authHeaders(accessToken),
+    body: JSON.stringify({ scheduledForUtc }),
+  });
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`setGuestDraftSchedule failed: ${res.status} - ${body}`);
+  }
+}
+
 // ── Standalone details (completed-draft summary page) ────────────────────────
 // Separate from fetchGuestDraftGameplay above — that one is the live-session
 // endpoint (CallerContext, veto token counts, reveal-authorization state).

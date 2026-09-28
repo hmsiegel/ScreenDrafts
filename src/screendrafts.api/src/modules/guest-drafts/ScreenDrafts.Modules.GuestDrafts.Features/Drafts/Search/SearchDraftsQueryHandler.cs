@@ -80,7 +80,7 @@ internal sealed class SearchDraftsQueryHandler(
       parameters.Add("Status", status.Value, DbType.Int32);
     }
 
-    sqlBuilder.Append(" ORDER BY gd.draft_date DESC NULLS LAST, gd.title ASC");
+    sqlBuilder.Append(" ORDER BY gd.scheduled_for_utc DESC NULLS LAST, gd.title ASC");
 
     // S2077: sqlBuilder is our own app-built query text (fixed literal clauses only); all values are bound via Dapper parameters above.
 #pragma warning disable S2077

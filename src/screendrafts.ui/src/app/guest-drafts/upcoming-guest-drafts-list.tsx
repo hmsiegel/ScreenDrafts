@@ -4,6 +4,7 @@
 import type { MyGuestDraftSummary } from '@/lib/dto';
 import { guestDraftTypeLabel } from './guest-draft-type-labels';
 import { UpcomingGuestDraftActions } from './upcoming-guest-draft-actions';
+import AddToCalendarButton from '@/components/ui/add-to-calendar-button';
 
 interface Props {
   drafts: MyGuestDraftSummary[];
@@ -49,7 +50,16 @@ export function UpcomingGuestDraftsList({ drafts }: Props) {
                 </span>
               </td>
               <td className="py-3">
-                <UpcomingGuestDraftActions draft={d} />
+                <div className="flex items-center justify-end gap-2">
+                  <AddToCalendarButton
+                    uid={d.publicId}
+                    title={d.title}
+                    scheduledForUtc={d.scheduledForUtc}
+                    draftType={d.type}
+                    path={`/guest-drafts/${d.publicId}/live`}
+                  />
+                  <UpcomingGuestDraftActions draft={d} />
+                </div>
               </td>
             </tr>
           ))}

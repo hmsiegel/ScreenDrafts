@@ -130,7 +130,7 @@ public abstract class GuestDraftsIntegrationTest(GuestDraftsIntegrationTestWebAp
     string ownerUserPublicId,
     DraftType? type = null,
     string? title = null,
-    DateOnly? draftDate = null,
+    DateTime? scheduledForUtc = null,
     int numberOfPicks = 1,
     IReadOnlyList<GuestDraftPositionInput>? positions = null
   )
@@ -141,7 +141,7 @@ public abstract class GuestDraftsIntegrationTest(GuestDraftsIntegrationTestWebAp
         OwnerUserPublicId = ownerUserPublicId,
         Title = title ?? Faker.Company.CompanyName(),
         Type = (type ?? DraftType.Standard).Name,
-        DraftDate = draftDate,
+        ScheduledForUtc = scheduledForUtc,
         NumberOfPicks = numberOfPicks,
         Positions = positions ?? [],
       },
@@ -368,7 +368,7 @@ public abstract class GuestDraftsIntegrationTest(GuestDraftsIntegrationTestWebAp
     string guestDraftPublicId,
     string callerUserPublicId,
     string? title = null,
-    DateOnly? draftDate = null,
+    DateTime? scheduledForUtc = null,
     DraftType? type = null,
     int? numberOfPicks = null,
     IReadOnlyList<GuestDraftPositionInput>? positions = null
@@ -380,10 +380,27 @@ public abstract class GuestDraftsIntegrationTest(GuestDraftsIntegrationTestWebAp
         GuestDraftPublicId = guestDraftPublicId,
         CallerUserPublicId = callerUserPublicId,
         Title = title,
-        DraftDate = draftDate,
+        ScheduledForUtc = scheduledForUtc,
         Type = type?.Name,
         NumberOfPicks = numberOfPicks,
         Positions = positions ?? [],
+      },
+      TestContext.Current.CancellationToken
+    );
+  }
+
+  internal async Task<Result> SetGuestDraftScheduleAsync(
+    string guestDraftPublicId,
+    string callerUserPublicId,
+    DateTime scheduledForUtc
+  )
+  {
+    return await Sender.Send(
+      new SetDraftScheduleCommand
+      {
+        GuestDraftPublicId = guestDraftPublicId,
+        CallerUserPublicId = callerUserPublicId,
+        ScheduledForUtc = scheduledForUtc,
       },
       TestContext.Current.CancellationToken
     );
@@ -559,6 +576,14 @@ public abstract class GuestDraftsIntegrationTest(GuestDraftsIntegrationTestWebAp
         GuestDraftPublicId = guestDraftPublicId,
         CallerUserPublicId = callerUserPublicId,
       },
+      TestContext.Current.CancellationToken
+    );
+  }
+
+  internal async Task<Result<GetMyGuestDraftsResponse>> GetMyDraftsAsync(string callerUserPublicId)
+  {
+    return await Sender.Send(
+      new GetMyDraftsQuery { CallerUserPublicId = callerUserPublicId },
       TestContext.Current.CancellationToken
     );
   }

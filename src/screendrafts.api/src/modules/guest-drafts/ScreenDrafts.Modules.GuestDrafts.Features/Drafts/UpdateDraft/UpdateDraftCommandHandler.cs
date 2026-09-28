@@ -49,7 +49,12 @@ internal sealed class UpdateDraftCommandHandler(
 
     if (request.ScheduledForUtc.HasValue)
     {
-      draft.SetScheduledForUtc(request.ScheduledForUtc.Value);
+      var scheduleResult = draft.SetScheduledForUtc(request.ScheduledForUtc.Value);
+
+      if (scheduleResult.IsFailure)
+      {
+        return scheduleResult;
+      }
     }
 
     if (!string.IsNullOrWhiteSpace(request.Type))

@@ -13,6 +13,7 @@ import {
 } from '../live/gameplay-fetchers';
 import type { GuestDrafterSummaryResponse } from '@/lib/dto';
 import { GUEST_DRAFT_STATUS_ACTION } from '../../guest-draft-status-actions';
+import { GuestDraftScheduleEditor } from '../../guest-draft-schedule-editor';
 
 
 const INPUT =
@@ -31,7 +32,7 @@ interface Props {
 // positions whenever, and hit Start whenever they're actually ready.
 export function SetupPanel({ accessToken, guestDraftId }: Props) {
   const router = useRouter();
-  const { gameplay, participants, draftPositions, refetch } = useGuestDraftLive();
+  const { gameplay, participants, draftPositions, isOwner, refetch } = useGuestDraftLive();
 
   const [assigningPosition, setAssigningPosition] = useState<string | null>(null);
   const [selectedParticipant, setSelectedParticipant] = useState<Record<string, string>>({});
@@ -88,6 +89,17 @@ export function SetupPanel({ accessToken, guestDraftId }: Props) {
           ← My Guest Drafts
         </Link>
       </div>
+
+      <section>
+        <h2 className={SECTION_HEADING}>Schedule</h2>
+        <GuestDraftScheduleEditor
+          accessToken={accessToken}
+          guestDraftId={guestDraftId}
+          scheduledForUtc={gameplay.scheduledForUtc}
+          isOwner={isOwner}
+          onSaved={refetch}
+        />
+      </section>
 
       <AddParticipantsSection accessToken={accessToken} guestDraftId={guestDraftId} />
 

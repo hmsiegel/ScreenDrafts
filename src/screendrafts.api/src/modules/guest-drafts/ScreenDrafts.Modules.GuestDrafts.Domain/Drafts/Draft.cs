@@ -76,11 +76,6 @@ public sealed class Draft : Entity<DraftId>
 
   public Result SetScheduledForUtc(DateTime scheduledForUtc)
   {
-    if (GuestDraftStatus != DraftStatus.Created)
-    {
-      return Result.Failure(DraftErrors.InvalidStatusForScheduling);
-    }
-
     ScheduledForUtc = scheduledForUtc;
     UpdatedOnUtc = DateTime.UtcNow;
 

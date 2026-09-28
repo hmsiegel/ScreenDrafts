@@ -14777,6 +14777,7 @@ export interface GetGuestDraftGameplayResponse {
     title?: string;
     type?: string;
     status?: string;
+    scheduledForUtc?: Date | undefined;
     shareToken?: string | undefined;
     callerContext?: CallerContextResponse;
     positions?: GuestDraftGameplayPositionResponse[];
@@ -15195,6 +15196,7 @@ export interface GuestDraftDetailResponse {
     title: string;
     type: string;
     status: string;
+    isOwner: boolean;
     scheduledForUtc?: Date | undefined;
     positions?: GuestDraftDetailPositionResponse[];
     picks?: GuestDraftDetailPickResponse[];

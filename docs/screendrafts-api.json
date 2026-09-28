@@ -14586,6 +14586,13 @@
           "status": {
             "type": "string"
           },
+          "scheduledForUtc": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
           "shareToken": {
             "type": [
               "null",
@@ -15817,7 +15824,8 @@
           "publicId",
           "title",
           "type",
-          "status"
+          "status",
+          "isOwner"
         ],
         "type": "object",
         "properties": {
@@ -15832,6 +15840,9 @@
           },
           "status": {
             "type": "string"
+          },
+          "isOwner": {
+            "type": "boolean"
           },
           "scheduledForUtc": {
             "type": [

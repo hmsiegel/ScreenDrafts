@@ -338,9 +338,11 @@ function PartPositionRangeSection({
 function PartScheduleSection({
   part,
   accessToken,
+  label
 }: {
   part: PartEditState;
   accessToken: string;
+  label?: string;
 }) {
   const [scheduledForUtc, setScheduledForUtc] = useState(
     part.scheduledForUtc ? isoToDatetimeLocal(part.scheduledForUtc) : ""
@@ -369,7 +371,7 @@ function PartScheduleSection({
   return (
     <div>
       <p className="font-mono text-[11px] tracking-widest text-sd-ink/50 uppercase mb-2">
-        Schedule
+        {label}
       </p>
       {locked ? (
         <p className="text-[11px] text-sd-ink/50 max-w-md">
@@ -1064,6 +1066,28 @@ export default function EditDraftForm({
               />
             </div>
 
+            {/* Schedule — one row per saved part. Lives up here (not inside the
+                collapsed part accordion) so it's easy to find. */}
+            {partStates.length > 0 && (
+              <div className="md:col-span-2">
+                <h2 className={SECTION_HEADING}>Schedule</h2>
+                <div className="space-y-4">
+                  {partStates.map((part) => (
+                    <PartScheduleSection
+                      key={part.partPublicId}
+                      part={part}
+                      accessToken={accessToken}
+                      label={
+                        partStates.length + pendingParts.length > 1
+                          ? `Part ${part.partIndex}`
+                          : undefined
+                      }
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+
             <div className="md:col-span-2">
               <DraftImageUpload
                 draftPublicId={draft.publicId}
@@ -1294,8 +1318,6 @@ export default function EditDraftForm({
                       />
 
                       <PartPositionRangeSection part={part} accessToken={accessToken} />
-
-                      <PartScheduleSection part={part} accessToken={accessToken} />
 
                       {/* Positions */}
                       <div>

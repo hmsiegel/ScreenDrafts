@@ -100,11 +100,6 @@ public static class DraftErrors
 
   // ── Lifecycle ─────────────────────────────────────────────────────────────
 
-  public static readonly SDError InvalidStatusForScheduling = SDError.Problem(
-    "Drafts.InvalidStatusForScheduling",
-    "The guest draft can only be scheduled while it is in the Created state."
-  );
-
   public static readonly SDError DraftCanOnlyBeStartedIfCreated = SDError.Problem(
     "Drafts.DraftCanOnlyBeStartedIfCreated",
     "The guest draft can only be started while it is in the Created state."
