@@ -29,5 +29,5 @@ export default async function GuestDraftSummaryPage({ params }: Props) {
     redirect(`/guest-drafts/${guestDraftId}/live`);
   }
 
-  return <GuestDraftSummaryView detail={detail} />;
+  return <GuestDraftSummaryView detail={detail} accessToken={session.accessToken} />;
 }
