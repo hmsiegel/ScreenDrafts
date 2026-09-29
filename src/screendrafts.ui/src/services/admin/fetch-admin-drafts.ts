@@ -78,13 +78,9 @@ export interface DraftPart {
   maxCommunityVetoes: number;
   communityFilmRules: DraftPartCommunityFilmRule[];
   boostersChampionAssignments: AdminBoostersChampionAssignment[];
-  // NOTE (flagged, not confirmed): getDraft does a direct `as AdminDraftDetail` cast rather
-  // than a manual field whitelist, so these were likely already present in the JSON and
-  // just untyped — but I haven't seen the backend response DTO for GET /drafts/{publicId}
-  // to confirm the exact field names/casing. If these come back undefined at runtime, the
-  // backend query needs to project MinPosition/MaxPosition too.
   minPosition: number | null;
   maxPosition: number | null;
+  scheduledForUtc: string | null;
 }
 
 export interface AdminDraftDetail {
@@ -1669,6 +1665,25 @@ export async function setDraftPartPositionRange(
   if (!res.ok) {
     const problem = await res.json().catch(() => null);
     throw new Error(problem?.detail ?? `Failed to update position range: ${res.status}`);
+  }
+}
+
+export async function setDraftPartSchedule(
+  accessToken: string,
+  draftPartId: string,
+  scheduledForUtc: string | null
+): Promise<void> {
+  const res = await fetch(
+    `${apiBase}/draft-parts/${encodeURIComponent(draftPartId)}/schedule`,
+    {
+      method: "PUT",
+      headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ scheduledForUtc: toUtcIso(scheduledForUtc) }),
+    }
+  );
+  if (!res.ok) {
+    const problem = await res.json().catch(() => null);
+    throw new Error(problem?.detail ?? `Failed to update schedule: ${res.status}`);
   }
 }
 

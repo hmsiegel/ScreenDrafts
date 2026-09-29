@@ -9,4 +9,5 @@ internal sealed record MyDraftPartSummary
   public bool IsDrafter { get; init; }
   public string? AttendanceStatus { get; init; }
   public DateOnly? ReleaseDate { get; init; }
+  public DateTime? ScheduledForUtc { get; init; }
 }

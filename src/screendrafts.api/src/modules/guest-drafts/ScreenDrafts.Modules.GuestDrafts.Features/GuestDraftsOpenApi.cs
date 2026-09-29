@@ -6,6 +6,7 @@ internal static class GuestDraftsOpenApi
   {
     public const string GuestDrafts = "GuestDrafts";
     public const string GuestDrafters = "GuestDrafters";
+    public const string MyDrafts = "MyDrafts";
   }
 
   public static class Names
@@ -29,5 +30,7 @@ internal static class GuestDraftsOpenApi
     public const string GuestDrafters_Search = "GuestDrafters.Search";
     public const string GuestDrafts_Search = "GuestDrafts.Search";
     public const string GuestDrafts_GetDetails = "GuestDrafts.GetDetails";
+    public const string GuestDrafts_SetSchedule = "GuestDrafts.SetSchedule";
+    public const string GuestDrafts_GetMyDrafts = "GuestDrafts.GetMyDrafts";
   }
 }

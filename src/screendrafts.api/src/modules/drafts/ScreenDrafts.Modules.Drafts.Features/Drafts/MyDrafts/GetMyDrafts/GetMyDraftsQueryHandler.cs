@@ -77,12 +77,13 @@ internal sealed class GetMyDraftsQueryHandler(IDbConnectionFactory dbConnectionF
         dp.public_id  AS {nameof(PartRow.DraftPartPublicId)},
         dp.part_index AS {nameof(PartRow.PartIndex)},
         dp.status     AS {nameof(PartRow.Status)},
+        dp.scheduled_for_utc AS {nameof(PartRow.ScheduledForUtc)},
         MIN(r.release_date) AS {nameof(PartRow.ReleaseDate)}
       FROM drafts.draft_parts dp
       JOIN drafts.drafts d ON d.id = dp.draft_id
       LEFT JOIN drafts.draft_releases r ON r.part_id = dp.id
       WHERE d.public_id = ANY(@DraftPublicIds)
-      GROUP BY d.public_id, dp.public_id, dp.part_index, dp.status
+      GROUP BY d.public_id, dp.public_id, dp.part_index, dp.status, dp.scheduled_for_utc
       ORDER BY dp.part_index ASC;
       """;
 
@@ -231,6 +232,7 @@ internal sealed class GetMyDraftsQueryHandler(IDbConnectionFactory dbConnectionF
     string DraftPartPublicId,
     int PartIndex,
     int Status,
+    DateTime? ScheduledForUtc,
     DateOnly? ReleaseDate
   );
 }

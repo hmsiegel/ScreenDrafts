@@ -39,7 +39,7 @@ internal sealed class SearchDraftsQueryHandler(
         gd.title      AS {nameof(DraftRow.Title)},
         gd.guest_draft_type       AS {nameof(DraftRow.Type)},
         gd.guest_draft_status     AS {nameof(DraftRow.Status)},
-        gd.draft_date AS {nameof(DraftRow.DraftDate)},
+        gd.scheduled_for_utc AS {nameof(DraftRow.ScheduledForUtc)},
         (gd.owner_user_id = @CallerUserId) AS {nameof(DraftRow.IsOwner)}
       FROM guest_drafts.drafts gd
       WHERE (
@@ -80,7 +80,7 @@ internal sealed class SearchDraftsQueryHandler(
       parameters.Add("Status", status.Value, DbType.Int32);
     }
 
-    sqlBuilder.Append(" ORDER BY gd.draft_date DESC NULLS LAST, gd.title ASC");
+    sqlBuilder.Append(" ORDER BY gd.scheduled_for_utc DESC NULLS LAST, gd.title ASC");
 
     // S2077: sqlBuilder is our own app-built query text (fixed literal clauses only); all values are bound via Dapper parameters above.
 #pragma warning disable S2077
@@ -116,7 +116,7 @@ internal sealed class SearchDraftsQueryHandler(
         Title = r.Title,
         Type = DraftType.FromValue(r.Type).Name,
         Status = DraftStatus.FromValue(r.Status).Name,
-        DraftDate = r.DraftDate,
+        ScheduledForUtc = r.ScheduledForUtc,
         IsOwner = r.IsOwner,
       })
       .ToList();
@@ -138,7 +138,7 @@ internal sealed class SearchDraftsQueryHandler(
     public string Title { get; init; } = default!;
     public int Type { get; init; } = default!;
     public int Status { get; init; } = default!;
-    public DateOnly? DraftDate { get; init; } = default!;
+    public DateTime? ScheduledForUtc { get; init; } = default!;
     public bool IsOwner { get; init; } = default!;
   }
 }

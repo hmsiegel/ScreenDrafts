@@ -1,7 +1,4 @@
-﻿using ScreenDrafts.Modules.GuestDrafts.Features.Drafts;
-using ScreenDrafts.Modules.GuestDrafts.Features.Drafts.Create;
-
-namespace ScreenDrafts.Modules.GuestDrafts.Features.Drafts.Create;
+﻿namespace ScreenDrafts.Modules.GuestDrafts.Features.Drafts.Create;
 
 internal sealed class Endpoint : ScreenDraftsEndpoint<CreateGuestDraftRequest, CreatedResponse>
 {
@@ -36,7 +33,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<CreateGuestDraftRequest, C
       OwnerUserPublicId = userPublicId,
       Title = req.Title,
       Type = req.Type,
-      DraftDate = req.DraftDate,
+      ScheduledForUtc = req.ScheduledForUtc,
       NumberOfPicks = req.NumberOfPicks,
       Positions = req.Positions,
     };

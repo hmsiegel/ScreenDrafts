@@ -228,10 +228,6 @@ namespace ScreenDrafts.Modules.GuestDrafts.Infrastructure.Database.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_on_utc");
 
-                    b.Property<DateOnly?>("DraftDate")
-                        .HasColumnType("date")
-                        .HasColumnName("draft_date");
-
                     b.Property<int>("GuestDraftStatus")
                         .HasColumnType("integer")
                         .HasColumnName("guest_draft_status");
@@ -249,6 +245,10 @@ namespace ScreenDrafts.Modules.GuestDrafts.Infrastructure.Database.Migrations
                         .HasMaxLength(19)
                         .HasColumnType("character varying(19)")
                         .HasColumnName("public_id");
+
+                    b.Property<DateTime?>("ScheduledForUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("scheduled_for_utc");
 
                     b.Property<string>("ShareToken")
                         .HasMaxLength(19)

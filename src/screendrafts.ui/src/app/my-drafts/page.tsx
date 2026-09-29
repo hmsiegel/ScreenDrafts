@@ -8,6 +8,7 @@ import { draftTypeFromNumber } from "@/lib/draft-type-display";
 import { Metadata } from "next";
 import type { MyDraftSummary, MyDraftPartSummary } from "@/lib/dto";
 import MyDraftsRealtimeRefresher from "./my-drafts-realtime-refresher";
+import AddToCalendarButton from "@/components/ui/add-to-calendar-button";
 
 export const metadata: Metadata = { title: "My Drafts" };
 export const dynamic = "force-dynamic";
@@ -44,9 +45,11 @@ function RoleBadge({ isDrafter, isHost }: { isDrafter: boolean; isHost: boolean 
 function DraftListRow({
   draft,
   accessToken,
+  showCalendar = false,
 }: {
   draft: MyDraftSummary;
   accessToken: string;
+  showCalendar?: boolean;
 }) {
   const parts = draft.parts ?? [];
   const multiPart = parts.length > 1;
@@ -73,11 +76,22 @@ function DraftListRow({
         </div>
         <DraftTypeBadge type={draftTypeFromNumber(draft.draftType)} />
         {!multiPart && parts[0] && (
-          <PartActionButton
-            draftPublicId={draft.draftPublicId ?? ""}
-            part={parts[0]}
-            accessToken={accessToken}
-          />
+          <>
+            {showCalendar && (
+              <AddToCalendarButton
+                uid={parts[0].draftPartPublicId ?? draft.draftPublicId ?? ""}
+                title={draft.title ?? ""}
+                scheduledForUtc={parts[0].scheduledForUtc}
+                draftType={draft.draftType}
+                path={`/my-drafts/${draft.draftPublicId ?? ""}`}
+              />
+            )}
+            <PartActionButton
+              draftPublicId={draft.draftPublicId ?? ""}
+              part={parts[0]}
+              accessToken={accessToken}
+            />
+          </>
         )}
       </div>
 
@@ -98,11 +112,22 @@ function DraftListRow({
                   </p>
                 )}
               </div>
-              <PartActionButton
-                draftPublicId={draft.draftPublicId ?? ""}
-                part={part}
-                accessToken={accessToken}
-              />
+              <div className="flex items-center gap-2">
+                {showCalendar && (
+                  <AddToCalendarButton
+                    uid={part.draftPartPublicId ?? ""}
+                    title={`${draft.title ?? ""} — Part ${part.partIndex}`}
+                    scheduledForUtc={part.scheduledForUtc}
+                    draftType={draft.draftType}
+                    path={`/my-drafts/${draft.draftPublicId ?? ""}`}
+                  />
+                )}
+                <PartActionButton
+                  draftPublicId={draft.draftPublicId ?? ""}
+                  part={part}
+                  accessToken={accessToken}
+                />
+              </div>
             </div>
           ))}
         </div>
@@ -307,7 +332,11 @@ export default async function MyDraftsPage({
           ) : (
             <div className="space-y-2">
               {(upcoming ?? []).map((d) => (
-                <DraftListRow key={d.draftPublicId ?? ""} draft={d} accessToken={session.accessToken!} />
+                <DraftListRow
+                  key={d.draftPublicId ?? ""}
+                  draft={d}
+                  accessToken={session.accessToken!}
+                  showCalendar />
               ))}
             </div>
           )}

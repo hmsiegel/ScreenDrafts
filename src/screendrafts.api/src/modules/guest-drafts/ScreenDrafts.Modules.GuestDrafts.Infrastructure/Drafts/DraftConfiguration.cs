@@ -40,7 +40,7 @@ internal sealed class DraftConfiguration : IEntityTypeConfiguration<Draft>
 
     builder.Property(d => d.UpdatedOnUtc);
 
-    builder.Property(d => d.DraftDate);
+    builder.Property(d => d.ScheduledForUtc);
 
     // Participants -- containment, cascades.
     builder

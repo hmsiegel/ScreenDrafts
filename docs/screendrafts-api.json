@@ -4186,6 +4186,47 @@
         ]
       }
     },
+    "/draft-parts/{draftPartId}/schedule": {
+      "put": {
+        "tags": [
+          "DraftParts"
+        ],
+        "operationId": "DraftParts.SetSchedule",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetDraftPartScheduleRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
     "/draft-parts/{draftPartId}/community-limits": {
       "put": {
         "tags": [
@@ -6844,6 +6885,47 @@
         ]
       }
     },
+    "/guest-drafts/{publicId}/schedule": {
+      "put": {
+        "tags": [
+          "GuestDrafts"
+        ],
+        "operationId": "GuestDrafts.SetSchedule",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetDraftScheduleRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "409": {
+            "description": "Conflict"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
     "/guest-drafts/search": {
       "get": {
         "tags": [
@@ -7184,6 +7266,32 @@
           },
           "404": {
             "description": "Not Found"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/my-guest-drafts": {
+      "get": {
+        "tags": [
+          "MyDrafts"
+        ],
+        "operationId": "GuestDrafts.GetMyDrafts",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMyGuestDraftsResponse"
+                }
+              }
+            }
           },
           "401": {
             "description": "Unauthorized"
@@ -10939,12 +11047,12 @@
           "type": {
             "type": "string"
           },
-          "draftDate": {
+          "scheduledForUtc": {
             "type": [
               "null",
               "string"
             ],
-            "format": "date"
+            "format": "date-time"
           },
           "numberOfPicks": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
@@ -14478,6 +14586,13 @@
           "status": {
             "type": "string"
           },
+          "scheduledForUtc": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
           "shareToken": {
             "type": [
               "null",
@@ -14900,6 +15015,34 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/MyDraftSummary"
+            }
+          }
+        }
+      },
+      "GetMyGuestDraftsResponse": {
+        "required": [
+          "upcoming",
+          "inProgress",
+          "completed"
+        ],
+        "type": "object",
+        "properties": {
+          "upcoming": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MyGuestDraftSummary"
+            }
+          },
+          "inProgress": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MyGuestDraftSummary"
+            }
+          },
+          "completed": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MyGuestDraftSummary"
             }
           }
         }
@@ -15681,7 +15824,8 @@
           "publicId",
           "title",
           "type",
-          "status"
+          "status",
+          "isOwner"
         ],
         "type": "object",
         "properties": {
@@ -15697,12 +15841,15 @@
           "status": {
             "type": "string"
           },
-          "draftDate": {
+          "isOwner": {
+            "type": "boolean"
+          },
+          "scheduledForUtc": {
             "type": [
               "null",
               "string"
             ],
-            "format": "date"
+            "format": "date-time"
           },
           "positions": {
             "type": "array",
@@ -16053,12 +16200,12 @@
           "status": {
             "type": "string"
           },
-          "draftDate": {
+          "scheduledForUtc": {
             "type": [
               "null",
               "string"
             ],
-            "format": "date"
+            "format": "date-time"
           },
           "isOwner": {
             "type": "boolean"
@@ -17820,6 +17967,13 @@
               "string"
             ],
             "format": "date"
+          },
+          "scheduledForUtc": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
           }
         }
       },
@@ -17856,6 +18010,39 @@
             "items": {
               "$ref": "#/components/schemas/MyDraftPartSummary"
             }
+          }
+        }
+      },
+      "MyGuestDraftSummary": {
+        "required": [
+          "publicId",
+          "title",
+          "type",
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "publicId": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "scheduledForUtc": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "isOwner": {
+            "type": "boolean"
           }
         }
       },
@@ -21351,6 +21538,21 @@
           }
         }
       },
+      "SetDraftPartScheduleRequest": {
+        "required": [
+          "scheduledForUtc"
+        ],
+        "type": "object",
+        "properties": {
+          "draftPartId": {
+            "type": "string"
+          },
+          "scheduledForUtc": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
       "SetDraftPartStatusRequest": {
         "type": "object",
         "properties": {
@@ -21413,6 +21615,21 @@
             "items": {
               "$ref": "#/components/schemas/DraftPositionRequestModel"
             }
+          }
+        }
+      },
+      "SetDraftScheduleRequest": {
+        "required": [
+          "scheduledForUtc"
+        ],
+        "type": "object",
+        "properties": {
+          "publicId": {
+            "type": "string"
+          },
+          "scheduledForUtc": {
+            "type": "string",
+            "format": "date-time"
           }
         }
       },
@@ -22241,12 +22458,12 @@
               "string"
             ]
           },
-          "draftDate": {
+          "scheduledForUtc": {
             "type": [
               "null",
               "string"
             ],
-            "format": "date"
+            "format": "date-time"
           },
           "type": {
             "type": [

@@ -46,7 +46,7 @@ export function CreateGuestDraftForm({ accessToken }: Props) {
 
   const [title, setTitle] = useState('');
   const [type, setType] = useState<(typeof GUEST_DRAFT_TYPES)[number]>('Standard');
-  const [draftDate, setDraftDate] = useState('');
+  const [scheduledFor, setScheduledFor] = useState('');
 
   // Positions are shown at all times, same as canonical — read-only summary
   // for fixed types (positions-editor.tsx's own FixedSummary branch), fully
@@ -86,12 +86,12 @@ export function CreateGuestDraftForm({ accessToken }: Props) {
       const body: GuestDraftPositionInput[] = isFixed
         ? []
         : positions.map((p) => ({
-            name: p.name,
-            picks: p.picks,
-            hasBonusVeto: p.hasBonusVeto,
-            hasBonusVetoOverride: p.hasBonusVetoOverride,
-            hasBonusFungibleToken: p.hasBonusFungibleToken,
-          }));
+          name: p.name,
+          picks: p.picks,
+          hasBonusVeto: p.hasBonusVeto,
+          hasBonusVetoOverride: p.hasBonusVetoOverride,
+          hasBonusFungibleToken: p.hasBonusFungibleToken,
+        }));
 
       // CreateGuestDraftCommandHandler's NumberOfPicks < 1 check runs
       // unconditionally, before the fixed-vs-custom branch — fixed types
@@ -105,7 +105,7 @@ export function CreateGuestDraftForm({ accessToken }: Props) {
       const created = await createGuestDraft(accessToken, {
         title: title.trim(),
         type,
-        draftDate: draftDate || null,
+        scheduledForUtc: scheduledFor ? new Date(scheduledFor).toISOString() : null,
         numberOfPicks,
         positions: body,
       });
@@ -162,12 +162,12 @@ export function CreateGuestDraftForm({ accessToken }: Props) {
             />
           </div>
           <div>
-            <label className={LABEL}>Draft Date (optional)</label>
+            <label className={LABEL}>Scheduled For Date (optional, your local time)</label>
             <input
-              type="date"
+              type="datetime-local"
               className={`${INPUT} max-w-[200px]`}
-              value={draftDate}
-              onChange={(e) => setDraftDate(e.target.value)}
+              value={scheduledFor}
+              onChange={(e) => setScheduledFor(e.target.value)}
             />
           </div>
           <div>

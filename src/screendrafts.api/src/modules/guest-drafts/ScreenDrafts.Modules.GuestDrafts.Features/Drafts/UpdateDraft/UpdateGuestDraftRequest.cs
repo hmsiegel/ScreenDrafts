@@ -6,7 +6,7 @@ internal sealed record UpdateGuestDraftRequest
   public string PublicId { get; init; } = default!;
 
   public string? Title { get; init; }
-  public DateOnly? DraftDate { get; init; }
+  public DateTime? ScheduledForUtc { get; init; }
   public string? Type { get; init; }
   public int? NumberOfPicks { get; init; }
   public IReadOnlyList<GuestDraftPositionInput> Positions { get; init; } = [];

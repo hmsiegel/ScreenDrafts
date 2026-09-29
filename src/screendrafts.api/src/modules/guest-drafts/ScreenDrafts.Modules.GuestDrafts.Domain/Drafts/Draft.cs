@@ -13,8 +13,8 @@ public sealed class Draft : Entity<DraftId>
     string title,
     DraftType guestDraftType,
     DateTime createdOnUtc,
-    DateOnly? dateOnly = null,
-    DraftId? id = null
+    DraftId? id = null,
+    DateTime? scheduledForUtc = null
   )
     : base(id ?? DraftId.CreateUnique())
   {
@@ -23,8 +23,8 @@ public sealed class Draft : Entity<DraftId>
     Title = title;
     GuestDraftType = guestDraftType;
     GuestDraftStatus = DraftStatus.Created;
-    DraftDate = dateOnly;
     CreatedOnUtc = createdOnUtc;
+    ScheduledForUtc = scheduledForUtc;
   }
 
   private Draft() { }
@@ -42,7 +42,7 @@ public sealed class Draft : Entity<DraftId>
 
   public DateTime CreatedOnUtc { get; private set; }
   public DateTime? UpdatedOnUtc { get; private set; }
-  public DateOnly? DraftDate { get; private set; }
+  public DateTime? ScheduledForUtc { get; private set; }
 
   public GameBoard? GameBoard { get; private set; }
 
@@ -54,7 +54,7 @@ public sealed class Draft : Entity<DraftId>
     Guid ownerUserId,
     string title,
     DraftType guestDraftType,
-    DateOnly? draftDate = null
+    DateTime? scheduledForUtc = null
   )
   {
     if (string.IsNullOrWhiteSpace(title))
@@ -68,16 +68,25 @@ public sealed class Draft : Entity<DraftId>
       title: title,
       guestDraftType: guestDraftType,
       createdOnUtc: DateTime.UtcNow,
-      dateOnly: draftDate
+      scheduledForUtc: scheduledForUtc
     );
 
     return Result.Success(guestDraft);
   }
 
-  public Result SetDraftDate(DateOnly? draftDate)
+  public Result SetScheduledForUtc(DateTime scheduledForUtc)
   {
-    DraftDate = draftDate;
+    ScheduledForUtc = scheduledForUtc;
     UpdatedOnUtc = DateTime.UtcNow;
+
+    Raise(
+      new DraftScheduledDomainEvent(
+        draftId: Id.Value,
+        draftPublicId: PublicId,
+        scheduledForUtc: scheduledForUtc
+      )
+    );
+
     return Result.Success();
   }
 

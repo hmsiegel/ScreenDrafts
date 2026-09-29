@@ -1,5 +1,6 @@
 ﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafters;
 using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts;
+using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.DomainEvents;
 using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Enums;
 using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Errors;
 
@@ -201,36 +202,82 @@ public class GuestDraftCreationTests : GuestDraftsBaseTest
     guestDraft.FindByParticipantRef(participantRef).Should().BeNull();
   }
 
-  // ── SetDraftDate ─────────────────────────────────────────────────────────
+  // ── SetScheduledForUtc ───────────────────────────────────────────────────
 
   [Fact]
-  public void SetDraftDate_ShouldSucceed_BeforeTheDraftHasStarted()
+  public void SetScheduledForUtc_ShouldSucceed_BeforeTheDraftHasStarted()
   {
     // Arrange
     var guestDraft = CreateGuestDraft();
-    var draftDate = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(7));
+    var scheduledForUtc = new DateTime(2030, 1, 15, 18, 30, 0, DateTimeKind.Utc);
 
     // Act
-    var result = guestDraft.SetDraftDate(draftDate);
+    var result = guestDraft.SetScheduledForUtc(scheduledForUtc);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
-    guestDraft.DraftDate.Should().Be(draftDate);
+    guestDraft.ScheduledForUtc.Should().Be(scheduledForUtc);
   }
 
   [Fact]
-  public void SetDraftDate_ShouldSucceed_AfterTheDraftHasStarted()
+  public void SetScheduledForUtc_ShouldSucceed_AfterTheDraftHasStarted()
   {
     // Arrange -- confirmed no status lock at all
     var (guestDraft, _, _) = CreateInProgressStandardGuestDraft();
-    var draftDate = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(7));
+    var scheduledForUtc = new DateTime(2030, 1, 15, 18, 30, 0, DateTimeKind.Utc);
 
     // Act
-    var result = guestDraft.SetDraftDate(draftDate);
+    var result = guestDraft.SetScheduledForUtc(scheduledForUtc);
 
     // Assert
     result.IsSuccess.Should().BeTrue();
-    guestDraft.DraftDate.Should().Be(draftDate);
+    guestDraft.ScheduledForUtc.Should().Be(scheduledForUtc);
+  }
+
+  [Fact]
+  public void SetScheduledForUtc_ShouldRaiseDraftScheduledDomainEvent()
+  {
+    // Arrange
+    var guestDraft = CreateGuestDraft();
+    var scheduledForUtc = new DateTime(2030, 1, 15, 18, 30, 0, DateTimeKind.Utc);
+
+    // Act
+    guestDraft.SetScheduledForUtc(scheduledForUtc);
+
+    // Assert
+    var domainEvent = guestDraft.DomainEvents.OfType<DraftScheduledDomainEvent>().Single();
+    domainEvent.DraftId.Should().Be(guestDraft.Id.Value);
+    domainEvent.DraftPublicId.Should().Be(guestDraft.PublicId);
+    domainEvent.ScheduledForUtc.Should().Be(scheduledForUtc);
+  }
+
+  [Fact]
+  public void SetScheduledForUtc_ShouldSetUpdatedOnUtc()
+  {
+    // Arrange
+    var guestDraft = CreateGuestDraft();
+
+    // Act
+    guestDraft.SetScheduledForUtc(new DateTime(2030, 1, 15, 18, 30, 0, DateTimeKind.Utc));
+
+    // Assert
+    guestDraft.UpdatedOnUtc.Should().NotBeNull();
+  }
+
+  [Fact]
+  public void SetScheduledForUtc_ShouldReplaceAPreviousValue()
+  {
+    // Arrange
+    var guestDraft = CreateGuestDraft();
+    guestDraft.SetScheduledForUtc(new DateTime(2030, 1, 15, 18, 30, 0, DateTimeKind.Utc));
+    var newScheduledForUtc = new DateTime(2030, 2, 1, 12, 0, 0, DateTimeKind.Utc);
+
+    // Act
+    var result = guestDraft.SetScheduledForUtc(newScheduledForUtc);
+
+    // Assert
+    result.IsSuccess.Should().BeTrue();
+    guestDraft.ScheduledForUtc.Should().Be(newScheduledForUtc);
   }
 
   // ── SetTitle ─────────────────────────────────────────────────────────────
@@ -280,7 +327,7 @@ public class GuestDraftCreationTests : GuestDraftsBaseTest
   [Fact]
   public void SetTitle_ShouldSucceed_AfterTheDraftHasStarted()
   {
-    // Arrange -- confirmed no status lock, matching SetDraftDate's pattern
+    // Arrange -- confirmed no status lock, matching SetScheduledForUtc's pattern
     var (guestDraft, _, _) = CreateInProgressStandardGuestDraft();
 
     // Act

@@ -36,6 +36,7 @@ import {
   assignFilmToBoostersChampionAssignment,
   removeBoostersChampionAssignment,
   type AdminBoostersChampionAssignment,
+  setDraftPartSchedule,
 } from "@/services/admin/fetch-admin-drafts";
 import { CampaignResponse, CategoryResponse, SmartEnumResponse } from "@/lib/dto";
 import { formatDraftType } from "@/lib/draft-type-display";
@@ -334,6 +335,80 @@ function PartPositionRangeSection({
   );
 }
 
+function PartScheduleSection({
+  part,
+  accessToken,
+  label
+}: {
+  part: PartEditState;
+  accessToken: string;
+  label?: string;
+}) {
+  const [scheduledForUtc, setScheduledForUtc] = useState(
+    part.scheduledForUtc ? isoToDatetimeLocal(part.scheduledForUtc) : ""
+  );
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const locked = part.status !== 0;
+
+  async function handleSave() {
+    if (saving || !scheduledForUtc) return;
+    setSaving(true);
+    setSaved(false);
+    setError(null);
+    try {
+      await setDraftPartSchedule(accessToken, part.partPublicId, scheduledForUtc);
+      setSaved(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to update schedule.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <div>
+      <p className="font-mono text-[11px] tracking-widest text-sd-ink/50 uppercase mb-2">
+        {label}
+      </p>
+      {locked ? (
+        <p className="text-[11px] text-sd-ink/50 max-w-md">
+          This part is {PART_STATUS_LABELS[part.status] ?? "in progress or later"} —
+          scheduling is only available while a part is Created.
+        </p>
+      ) : (
+        <div className="flex items-end gap-3">
+          <div>
+            <label className={LABEL}>Scheduled For (your local time)</label>
+            <input
+              type="datetime-local"
+              className={`${INPUT} w-56`}
+              value={scheduledForUtc}
+              onChange={(e) => setScheduledForUtc(e.target.value)}
+            />
+          </div>
+          <button
+            type="button"
+            onClick={handleSave}
+            disabled={saving || !scheduledForUtc}
+            className={BTN_SECONDARY}
+          >
+            {saving ? "Saving…" : "Save"}
+          </button>
+          {saved && <span className="text-[11px] font-mono text-green-700">saved</span>}
+        </div>
+      )}
+      {error && (
+        <div className="mt-2 border border-red-300 bg-red-50 text-red-800 text-sm px-4 py-3 rounded">
+          {error}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function getMaxPositionsConfig(draftTypeName: string): { max: number; locked: boolean } {
   switch (draftTypeName) {
     case "Standard": return { max: 7, locked: true };
@@ -378,6 +453,7 @@ interface PartEditState {
   // PartPositionRangeSection below.
   minPosition: number | null;
   maxPosition: number | null;
+  scheduledForUtc: string | null;
 }
 
 interface PendingPart {
@@ -477,6 +553,7 @@ function initPartState(parts: DraftPart[]): PartEditState[] {
       boostersChampionAssignments: p.boostersChampionAssignments ?? [],
       minPosition: p.minPosition ?? null,
       maxPosition: p.maxPosition ?? null,
+      scheduledForUtc: p.scheduledForUtc ?? null,
     };
   });
 }
@@ -576,18 +653,18 @@ export default function EditDraftForm({
       ]).then(([rules, predictors]) => {
         const config: PredictionConfig = rules
           ? {
-              enabled: true,
-              mode: PREDICTION_MODE_NAMES[rules.predictionMode] ?? "UnorderedAll",
-              requiredCount: rules.requiredCount,
-              topN: rules.topN,
-              deadlineUtc: rules.deadlineUtc ? isoToDatetimeLocal(rules.deadlineUtc) : null,
-              predictors: predictors.map((p) => ({
-                contestantPublicId: p.contestantPublicId,
-                contestantDisplayName: p.contestantDisplayName,
-                allowedSubmitterPersonPublicId: p.allowedSubmitterPersonPublicId,
-                allowedSubmitterDisplayName: p.allowedSubmitterDisplayName,
-              })),
-            }
+            enabled: true,
+            mode: PREDICTION_MODE_NAMES[rules.predictionMode] ?? "UnorderedAll",
+            requiredCount: rules.requiredCount,
+            topN: rules.topN,
+            deadlineUtc: rules.deadlineUtc ? isoToDatetimeLocal(rules.deadlineUtc) : null,
+            predictors: predictors.map((p) => ({
+              contestantPublicId: p.contestantPublicId,
+              contestantDisplayName: p.contestantDisplayName,
+              allowedSubmitterPersonPublicId: p.allowedSubmitterPersonPublicId,
+              allowedSubmitterDisplayName: p.allowedSubmitterDisplayName,
+            })),
+          }
           : defaultPredictionConfig();
 
         setPartStates((prev) =>
@@ -988,6 +1065,28 @@ export default function EditDraftForm({
                 placeholder="Optional description"
               />
             </div>
+
+            {/* Schedule — one row per saved part. Lives up here (not inside the
+                collapsed part accordion) so it's easy to find. */}
+            {partStates.length > 0 && (
+              <div className="md:col-span-2">
+                <h2 className={SECTION_HEADING}>Schedule</h2>
+                <div className="space-y-4">
+                  {partStates.map((part) => (
+                    <PartScheduleSection
+                      key={part.partPublicId}
+                      part={part}
+                      accessToken={accessToken}
+                      label={
+                        partStates.length + pendingParts.length > 1
+                          ? `Part ${part.partIndex}`
+                          : undefined
+                      }
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
 
             <div className="md:col-span-2">
               <DraftImageUpload

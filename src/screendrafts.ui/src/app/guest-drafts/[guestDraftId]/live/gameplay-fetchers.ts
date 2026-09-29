@@ -4,12 +4,11 @@ import {
   GetGuestDraftGameplayResponse,
   GuestDraftDetailResponse,
   GuestDrafterSummaryResponse,
-  GuestDraftSummaryResponse,
   MediaResponse,
   GuestDraftPositionInput,
   SetGuestDraftStatusResponse,
+  GetMyGuestDraftsResponse,
 } from '@/lib/dto';
-import { PagedResult } from '@/types/paged-result';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 
@@ -203,7 +202,7 @@ export async function createGuestDraft(
   args: {
     title: string;
     type: string;
-    draftDate?: string | null; // yyyy-MM-dd, matches DateOnly? on the wire
+    scheduledForUtc?: string | null;
     numberOfPicks: number;
     positions: GuestDraftPositionInput[];
   },
@@ -307,6 +306,25 @@ export async function setGuestDraftStatus(
   return res.json();
 }
 
+// ── Reschedule (owner only, Created status only) ─────────────────────────────
+// PUT /guest-drafts/{publicId}/schedule. Takes a real UTC datetime. There is
+// no "clear schedule" call: the command's ScheduledForUtc is non-nullable.
+export async function setGuestDraftSchedule(
+  accessToken: string,
+  guestDraftId: string,
+  scheduledForUtc: string, // ISO UTC, e.g. new Date(localValue).toISOString()
+): Promise<void> {
+  const res = await fetch(`${API_BASE}/guest-drafts/${guestDraftId}/schedule`, {
+    method: 'PUT',
+    headers: authHeaders(accessToken),
+    body: JSON.stringify({ scheduledForUtc }),
+  });
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`setGuestDraftSchedule failed: ${res.status} - ${body}`);
+  }
+}
+
 // ── Standalone details (completed-draft summary page) ────────────────────────
 // Separate from fetchGuestDraftGameplay above — that one is the live-session
 // endpoint (CallerContext, veto token counts, reveal-authorization state).
@@ -331,27 +349,22 @@ export async function fetchGuestDraftDetails(
 }
 
 // ── My guest drafts (landing list) ───────────────────────────────────────────
-// GET-only, caller-scoped server-side (owner-or-participant) — no arbitrary
-// owner/user filter exists or should exist here. `status` is optional
-// (GuestDraftStatus's SmartEnum name); omitted here since the landing page
-// fetches everything once and buckets client-side into Upcoming/In Progress/
-// Completed, same pattern as listAdminActiveDrafts.
-//
-// ASSUMPTION: route resolves to "/guest-drafts/search" — same flagged-guess
-// pattern as searchGuestDrafters above, not confirmed against the real route
-// constant.
-export async function searchMyGuestDrafts(
+// GET-only, caller-scoped server-side (owner-or-participant), bucketed into
+// Upcoming/InProgress/Completed server-side — no client-side status filter
+// needed anymore. Replaces the old searchMyGuestDrafts (which hit the
+// generic /guest-drafts/search endpoint and cost a COUNT + paged SELECT +
+// two identity lookups just to render three buckets that were filtered
+// client-side anyway).
+export async function getMyGuestDrafts(
   accessToken: string,
-  page = 1,
-  pageSize = 100,
-): Promise<PagedResult<GuestDraftSummaryResponse>> {
-  const params = new URLSearchParams({ page: String(page), pageSize: String(pageSize) });
-  const res = await fetch(`${API_BASE}/guest-drafts/search?${params}`, {
+): Promise<GetMyGuestDraftsResponse> {
+  const res = await fetch(`${API_BASE}/my-guest-drafts`, {
     headers: authHeadersGet(accessToken),
+    cache: 'no-store',
   });
   if (!res.ok) {
     const body = await res.text();
-    throw new Error(`searchMyGuestDrafts failed: ${res.status} - ${body}`);
+    throw new Error(`getMyGuestDrafts failed: ${res.status} - ${body}`);
   }
   return res.json();
 }

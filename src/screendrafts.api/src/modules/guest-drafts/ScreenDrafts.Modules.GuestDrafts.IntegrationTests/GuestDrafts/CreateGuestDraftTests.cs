@@ -256,22 +256,25 @@ public sealed class CreateGuestDraftTests(GuestDraftsIntegrationTestWebAppFactor
   }
 
   [Fact]
-  public async Task CreateGuestDraft_WithADraftDateSupplied_ShouldPersistItAsync()
+  public async Task CreateGuestDraft_WithAScheduledForUtcSupplied_ShouldPersistItAsync()
   {
     // Arrange
     var owner = await CreateUserAsync();
-    var draftDate = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(7));
+    var scheduledForUtc = new DateTime(2030, 1, 15, 18, 30, 0, DateTimeKind.Utc);
 
     // Act
-    var guestDraftPublicId = await CreateGuestDraftAsync(owner.UserPublicId, draftDate: draftDate);
+    var guestDraftPublicId = await CreateGuestDraftAsync(
+      owner.UserPublicId,
+      scheduledForUtc: scheduledForUtc
+    );
 
     // Assert
     var guestDraft = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
-    guestDraft.DraftDate.Should().Be(draftDate);
+    guestDraft.ScheduledForUtc.Should().Be(scheduledForUtc);
   }
 
   [Fact]
-  public async Task CreateGuestDraft_WithoutADraftDate_ShouldPersistNullAsync()
+  public async Task CreateGuestDraft_WithoutAScheduledForUtc_ShouldPersistNullAsync()
   {
     // Arrange
     var owner = await CreateUserAsync();
@@ -281,6 +284,6 @@ public sealed class CreateGuestDraftTests(GuestDraftsIntegrationTestWebAppFactor
 
     // Assert
     var guestDraft = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
-    guestDraft.DraftDate.Should().BeNull();
+    guestDraft.ScheduledForUtc.Should().BeNull();
   }
 }

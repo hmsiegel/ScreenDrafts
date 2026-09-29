@@ -33,7 +33,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<UpdateGuestDraftRequest>
       GuestDraftPublicId = req.PublicId,
       CallerUserPublicId = userPublicId,
       Title = req.Title,
-      DraftDate = req.DraftDate,
+      ScheduledForUtc = req.ScheduledForUtc,
       Type = req.Type,
       NumberOfPicks = req.NumberOfPicks,
       Positions = req.Positions,

@@ -459,6 +459,11 @@ export interface IClient {
     /**
      * @return No Content
      */
+    draftParts_SetSchedule(body: SetDraftPartScheduleRequest): Promise<void>;
+
+    /**
+     * @return No Content
+     */
     draftParts_SetCommunityLimits(body: SetCommunityLimitsRequest): Promise<void>;
 
     /**
@@ -789,6 +794,11 @@ export interface IClient {
     guestDrafts_SetStatus(body: SetGuestDraftStatusRequest): Promise<SetGuestDraftStatusResponse>;
 
     /**
+     * @return No Content
+     */
+    guestDrafts_SetSchedule(body: SetDraftScheduleRequest): Promise<void>;
+
+    /**
      * @return OK
      */
     guestDrafts_Search(body: SearchGuestDraftsRequest): Promise<PagedResultOfGuestDraftSummaryResponse>;
@@ -832,6 +842,11 @@ export interface IClient {
      * @return No Content
      */
     guestDrafts_ApplyCommissionerOverride(body: ApplyGuestDraftCommissionerOverrideRequest): Promise<void>;
+
+    /**
+     * @return OK
+     */
+    guestDrafts_GetMyDrafts(): Promise<GetMyGuestDraftsResponse>;
 
     /**
      * @return OK
@@ -5694,6 +5709,64 @@ export class Client implements IClient {
     /**
      * @return No Content
      */
+    draftParts_SetSchedule(body: SetDraftPartScheduleRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/draft-parts/{draftPartId}/schedule";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDraftParts_SetSchedule(_response);
+        });
+    }
+
+    protected processDraftParts_SetSchedule(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status === 409) {
+            return response.text().then((_responseText) => {
+            return throwException("Conflict", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
     draftParts_SetCommunityLimits(body: SetCommunityLimitsRequest, signal?: AbortSignal): Promise<void> {
         let url_ = this.baseUrl + "/draft-parts/{draftPartId}/community-limits";
         url_ = url_.replace(/[?&]$/, "");
@@ -9222,6 +9295,64 @@ export class Client implements IClient {
     }
 
     /**
+     * @return No Content
+     */
+    guestDrafts_SetSchedule(body: SetDraftScheduleRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/guest-drafts/{publicId}/schedule";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGuestDrafts_SetSchedule(_response);
+        });
+    }
+
+    protected processGuestDrafts_SetSchedule(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status === 409) {
+            return response.text().then((_responseText) => {
+            return throwException("Conflict", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
      * @return OK
      */
     guestDrafts_Search(body: SearchGuestDraftsRequest, signal?: AbortSignal): Promise<PagedResultOfGuestDraftSummaryResponse> {
@@ -9696,6 +9827,47 @@ export class Client implements IClient {
             });
         }
         return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    guestDrafts_GetMyDrafts(signal?: AbortSignal): Promise<GetMyGuestDraftsResponse> {
+        let url_ = this.baseUrl + "/my-guest-drafts";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            signal,
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGuestDrafts_GetMyDrafts(_response);
+        });
+    }
+
+    protected processGuestDrafts_GetMyDrafts(response: Response): Promise<GetMyGuestDraftsResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as GetMyGuestDraftsResponse;
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<GetMyGuestDraftsResponse>(null as any);
     }
 
     /**
@@ -13566,7 +13738,7 @@ export interface CreatedResponse {
 export interface CreateGuestDraftRequest {
     title: string;
     type: string;
-    draftDate?: Date | undefined;
+    scheduledForUtc?: Date | undefined;
     numberOfPicks: number;
     positions?: GuestDraftPositionInput[];
 
@@ -14605,6 +14777,7 @@ export interface GetGuestDraftGameplayResponse {
     title?: string;
     type?: string;
     status?: string;
+    scheduledForUtc?: Date | undefined;
     shareToken?: string | undefined;
     callerContext?: CallerContextResponse;
     positions?: GuestDraftGameplayPositionResponse[];
@@ -14752,6 +14925,14 @@ export interface GetMyDraftsResponse {
     upcoming?: MyDraftSummary[];
     inProgress?: MyDraftSummary[];
     completed?: MyDraftSummary[];
+
+    [key: string]: any;
+}
+
+export interface GetMyGuestDraftsResponse {
+    upcoming: MyGuestDraftSummary[];
+    inProgress: MyGuestDraftSummary[];
+    completed: MyGuestDraftSummary[];
 
     [key: string]: any;
 }
@@ -15015,7 +15196,8 @@ export interface GuestDraftDetailResponse {
     title: string;
     type: string;
     status: string;
-    draftDate?: Date | undefined;
+    isOwner: boolean;
+    scheduledForUtc?: Date | undefined;
     positions?: GuestDraftDetailPositionResponse[];
     picks?: GuestDraftDetailPickResponse[];
 
@@ -15111,7 +15293,7 @@ export interface GuestDraftSummaryResponse {
     title: string;
     type: string;
     status: string;
-    draftDate?: Date | undefined;
+    scheduledForUtc?: Date | undefined;
     isOwner?: boolean;
 
     [key: string]: any;
@@ -15615,6 +15797,7 @@ export interface MyDraftPartSummary {
     isDrafter?: boolean;
     attendanceStatus?: string | undefined;
     releaseDate?: Date | undefined;
+    scheduledForUtc?: Date | undefined;
 
     [key: string]: any;
 }
@@ -15626,6 +15809,17 @@ export interface MyDraftSummary {
     hasPool?: boolean;
     draftStatus?: number;
     parts?: MyDraftPartSummary[];
+
+    [key: string]: any;
+}
+
+export interface MyGuestDraftSummary {
+    publicId: string;
+    title: string;
+    type: string;
+    status: string;
+    scheduledForUtc?: Date | undefined;
+    isOwner?: boolean;
 
     [key: string]: any;
 }
@@ -16649,6 +16843,13 @@ export interface SetDraftPartPredictorsRequest {
     [key: string]: any;
 }
 
+export interface SetDraftPartScheduleRequest {
+    draftPartId?: string;
+    scheduledForUtc: Date;
+
+    [key: string]: any;
+}
+
 export interface SetDraftPartStatusRequest {
     publicId?: string;
     partIndex?: number;
@@ -16672,6 +16873,13 @@ export interface SetDraftPartStatusResponse {
 export interface SetDraftPositionsRequest {
     draftPartId?: string;
     positions?: DraftPositionRequestModel[];
+
+    [key: string]: any;
+}
+
+export interface SetDraftScheduleRequest {
+    publicId?: string;
+    scheduledForUtc: Date;
 
     [key: string]: any;
 }
@@ -16955,7 +17163,7 @@ export interface UpdateDraftRequest {
 export interface UpdateGuestDraftRequest {
     publicId?: string;
     title?: string | undefined;
-    draftDate?: Date | undefined;
+    scheduledForUtc?: Date | undefined;
     type?: string | undefined;
     numberOfPicks?: number | undefined;
     positions?: GuestDraftPositionInput[];

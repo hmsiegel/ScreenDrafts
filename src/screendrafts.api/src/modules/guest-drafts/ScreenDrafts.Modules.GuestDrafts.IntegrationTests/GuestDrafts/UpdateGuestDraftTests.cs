@@ -4,7 +4,7 @@ public sealed class UpdateGuestDraftTests(GuestDraftsIntegrationTestWebAppFactor
   : GuestDraftsIntegrationTest(factory)
 {
   [Fact]
-  public async Task UpdateGuestDraft_Title_ShouldUpdateIndependentlyOfDraftDateAsync()
+  public async Task UpdateGuestDraft_Title_ShouldUpdateIndependentlyOfScheduledForUtcAsync()
   {
     // Arrange
     var owner = await CreateUserAsync();
@@ -21,11 +21,11 @@ public sealed class UpdateGuestDraftTests(GuestDraftsIntegrationTestWebAppFactor
     result.IsSuccess.Should().BeTrue();
     var guestDraft = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
     guestDraft.Title.Should().Be("New Title");
-    guestDraft.DraftDate.Should().BeNull();
+    guestDraft.ScheduledForUtc.Should().BeNull();
   }
 
   [Fact]
-  public async Task UpdateGuestDraft_DraftDate_ShouldUpdateIndependentlyOfTitleAsync()
+  public async Task UpdateGuestDraft_ScheduledForUtc_ShouldUpdateIndependentlyOfTitleAsync()
   {
     // Arrange
     var owner = await CreateUserAsync();
@@ -34,36 +34,69 @@ public sealed class UpdateGuestDraftTests(GuestDraftsIntegrationTestWebAppFactor
       DraftType.Standard,
       "Original Title"
     );
-    var draftDate = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(7));
+    var scheduledForUtc = new DateTime(2030, 1, 15, 18, 30, 0, DateTimeKind.Utc);
 
     // Act
     var result = await UpdateGuestDraftAsync(
       guestDraftPublicId,
       owner.UserPublicId,
-      draftDate: draftDate
+      scheduledForUtc: scheduledForUtc
     );
 
     // Assert
     result.IsSuccess.Should().BeTrue();
     var guestDraft = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
-    guestDraft.DraftDate.Should().Be(draftDate);
+    guestDraft.ScheduledForUtc.Should().Be(scheduledForUtc);
     guestDraft.Title.Should().Be("Original Title");
   }
 
   [Fact]
-  public async Task UpdateGuestDraft_DraftDate_ShouldSucceedEvenAfterTheDraftHasStartedAsync()
+  public async Task UpdateGuestDraft_ScheduledForUtc_ShouldSucceedEvenAfterTheDraftHasStartedAsync()
   {
-    // Arrange -- confirmed no status lock on DraftDate
+    // Arrange -- confirmed no status lock on ScheduledForUtc
     var (guestDraftPublicId, owner, _) = await CreateInProgressStandardGuestDraftAsync();
-    var draftDate = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(7));
+    var scheduledForUtc = new DateTime(2030, 1, 15, 18, 30, 0, DateTimeKind.Utc);
 
     // Act
-    var result = await UpdateGuestDraftAsync(guestDraftPublicId, owner, draftDate: draftDate);
+    var result = await UpdateGuestDraftAsync(
+      guestDraftPublicId,
+      owner,
+      scheduledForUtc: scheduledForUtc
+    );
 
     // Assert
     result.IsSuccess.Should().BeTrue();
     var guestDraft = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
-    guestDraft.DraftDate.Should().Be(draftDate);
+    guestDraft.ScheduledForUtc.Should().Be(scheduledForUtc);
+  }
+
+  [Fact]
+  public async Task UpdateGuestDraft_ScheduledForUtc_ShouldSucceedAfterTheDraftHasCompletedAsync()
+  {
+    // Arrange -- owner may correct the scheduled time even on a finished draft.
+    var (guestDraftPublicId, owner, _) = await CreateInProgressStandardGuestDraftAsync();
+    int[] pickSlots = [7, 6, 4, 2, 5, 3, 1];
+
+    for (var i = 0; i < pickSlots.Length; i++)
+    {
+      await PlayPickAsync(guestDraftPublicId, owner, await CreateMovieAsync(), pickSlots[i], i + 1);
+    }
+
+    await SetGuestDraftStatusAsync(guestDraftPublicId, owner, DraftStatusAction.Complete);
+    var scheduledForUtc = new DateTime(2030, 1, 15, 18, 30, 0, DateTimeKind.Utc);
+
+    // Act
+    var result = await UpdateGuestDraftAsync(
+      guestDraftPublicId,
+      owner,
+      scheduledForUtc: scheduledForUtc
+    );
+
+    // Assert
+    result.IsSuccess.Should().BeTrue();
+    var guestDraft = await GetGuestDraftWithBoardAsync(guestDraftPublicId);
+    guestDraft.GuestDraftStatus.Should().Be(DraftStatus.Completed);
+    guestDraft.ScheduledForUtc.Should().Be(scheduledForUtc);
   }
 
   [Fact]

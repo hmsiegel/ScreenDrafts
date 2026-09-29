@@ -9,6 +9,7 @@ import { DrafterTab } from './components/drafter-tab';
 import { DraftBoard } from './components/draft-board';
 import { GuestDraftCompletionModal } from './components/guest-draft-completion-modal';
 import { GUEST_DRAFT_STATUS_ACTION } from '../../guest-draft-status-actions';
+import { GuestDraftScheduleEditor } from '../../guest-draft-schedule-editor';
 
 interface Props {
   accessToken: string;
@@ -76,6 +77,19 @@ export function LiveGuestDraftView({ accessToken, guestDraftId }: Props) {
           <p className="text-xs text-white/40 font-mono mt-1">
             {gameplay.type} · {gameplay.status}
           </p>
+          {/* Owners can edit at any status; participants only see it if one is set. */}
+          {(isOwner || gameplay.scheduledForUtc) && (
+            <div className="mt-3">
+              <GuestDraftScheduleEditor
+                tone="dark"
+                accessToken={accessToken}
+                guestDraftId={guestDraftId}
+                scheduledForUtc={gameplay.scheduledForUtc}
+                isOwner={isOwner}
+                onSaved={refetch}
+              />
+            </div>
+          )}
         </div>
 
         {reconnecting && (

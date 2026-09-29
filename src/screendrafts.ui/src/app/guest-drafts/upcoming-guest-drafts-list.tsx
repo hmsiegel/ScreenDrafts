@@ -1,22 +1,20 @@
 // app/guest-drafts/upcoming-guest-drafts-list.tsx
 'use client';
 
-import type { GuestDraftSummaryResponse } from '@/lib/dto';
+import type { MyGuestDraftSummary } from '@/lib/dto';
 import { guestDraftTypeLabel } from './guest-draft-type-labels';
 import { UpcomingGuestDraftActions } from './upcoming-guest-draft-actions';
+import AddToCalendarButton from '@/components/ui/add-to-calendar-button';
 
 interface Props {
-  drafts: GuestDraftSummaryResponse[];
+  drafts: MyGuestDraftSummary[];
 }
 
-// Status "Created" — GuestDraftStatus's SmartEnum name, confirmed via
-// GetGuestDraftGameplayResponse.Status using the same string convention.
-// Filtered client-side off one fetched array, same pattern as canonical's
-// upcoming-drafts-list.tsx / in-progress-drafts-list.tsx split.
+// No more client-side status filter — GetMyGuestDrafts buckets Created and
+// Paused into this list server-side already (mirrors canonical's own
+// Draft-level bucketing).
 export function UpcomingGuestDraftsList({ drafts }: Props) {
-  const upcoming = drafts.filter((d) => d.status === 'Created');
-
-  if (upcoming.length === 0) {
+  if (drafts.length === 0) {
     return <p className="text-sd-ink/50 text-sm font-mono">Nothing upcoming right now.</p>;
   }
 
@@ -36,7 +34,7 @@ export function UpcomingGuestDraftsList({ drafts }: Props) {
           </tr>
         </thead>
         <tbody>
-          {upcoming.map((d) => (
+          {drafts.map((d) => (
             <tr
               key={d.publicId}
               className="border-b border-sd-ink/5 hover:bg-sd-paper/60 transition-colors"
@@ -44,11 +42,7 @@ export function UpcomingGuestDraftsList({ drafts }: Props) {
               <td className="py-3 pr-4 font-medium text-sd-ink">{d.title}</td>
               <td className="py-3 pr-4 text-sd-ink/70">{guestDraftTypeLabel(d.type)}</td>
               <td className="py-3 pr-4 text-sd-ink/70">
-                {d.draftDate
-                  ? d.draftDate instanceof Date
-                    ? d.draftDate.toLocaleDateString()
-                    : d.draftDate
-                  : '—'}
+                {d.scheduledForUtc ? new Date(d.scheduledForUtc).toLocaleString() : '—'}
               </td>
               <td className="py-3 pr-4">
                 <span className="font-mono text-[10px] tracking-widest uppercase text-sd-ink/50">
@@ -56,7 +50,16 @@ export function UpcomingGuestDraftsList({ drafts }: Props) {
                 </span>
               </td>
               <td className="py-3">
-                <UpcomingGuestDraftActions draft={d} />
+                <div className="flex items-center justify-end gap-2">
+                  <AddToCalendarButton
+                    uid={d.publicId}
+                    title={d.title}
+                    scheduledForUtc={d.scheduledForUtc}
+                    draftType={d.type}
+                    path={`/guest-drafts/${d.publicId}/live`}
+                  />
+                  <UpcomingGuestDraftActions draft={d} />
+                </div>
               </td>
             </tr>
           ))}

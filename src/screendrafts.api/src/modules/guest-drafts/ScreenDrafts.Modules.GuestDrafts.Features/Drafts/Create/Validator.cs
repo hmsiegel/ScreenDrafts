@@ -1,7 +1,4 @@
-﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts;
-using ScreenDrafts.Modules.GuestDrafts.Features.Drafts.Create;
-
-namespace ScreenDrafts.Modules.GuestDrafts.Features.Drafts.Create;
+﻿namespace ScreenDrafts.Modules.GuestDrafts.Features.Drafts.Create;
 
 internal sealed class Validator : AbstractValidator<CreateDraftCommand>
 {

@@ -2,17 +2,15 @@
 'use client';
 
 import Link from 'next/link';
-import type { GuestDraftSummaryResponse } from '@/lib/dto';
+import type { MyGuestDraftSummary } from '@/lib/dto';
 import { guestDraftTypeLabel } from './guest-draft-type-labels';
 
 interface Props {
-  drafts: GuestDraftSummaryResponse[];
+  drafts: MyGuestDraftSummary[];
 }
 
 export function CompletedGuestDraftsList({ drafts }: Props) {
-  const completed = drafts.filter((d) => d.status === 'Completed');
-
-  if (completed.length === 0) {
+  if (drafts.length === 0) {
     return <p className="text-sd-ink/50 text-sm font-mono">Nothing completed yet.</p>;
   }
 
@@ -32,12 +30,12 @@ export function CompletedGuestDraftsList({ drafts }: Props) {
           </tr>
         </thead>
         <tbody>
-          {completed.map((d) => (
+          {drafts.map((d) => (
             <tr key={d.publicId} className="border-b border-sd-ink/5 hover:bg-sd-paper/60 transition-colors">
               <td className="py-3 pr-4 font-medium text-sd-ink">{d.title}</td>
               <td className="py-3 pr-4 text-sd-ink/70">{guestDraftTypeLabel(d.type)}</td>
               <td className="py-3 pr-4 text-sd-ink/70">
-                {d.draftDate ? new Date(d.draftDate).toLocaleDateString() : '—'}
+                {d.scheduledForUtc ? new Date(d.scheduledForUtc).toLocaleDateString() : '—'}
               </td>
               <td className="py-3">
                 <div className="flex items-center justify-end">

@@ -5,7 +5,7 @@ internal sealed record CreateDraftCommand : ICommand<string>
   public required string OwnerUserPublicId { get; init; }
   public required string Title { get; init; }
   public required string Type { get; init; }
-  public DateOnly? DraftDate { get; init; }
+  public DateTime? ScheduledForUtc { get; init; }
   public required int NumberOfPicks { get; init; }
 
   /// <summary>
