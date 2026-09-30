@@ -122,4 +122,9 @@ public sealed class FakeTmdbService : ITmdbService
         Page = page,
       }
     );
+
+  public Task<IReadOnlyList<TmdbTvSeason>> GetTvSeasonsAsync(
+    int seriesTmdbId,
+    CancellationToken cancellationToken = default
+  ) => Task.FromResult<IReadOnlyList<TmdbTvSeason>>([]);
 }
