@@ -911,6 +911,11 @@ export interface IClient {
     /**
      * @return OK
      */
+    onlineMedia_BrowseTvSeasons(body: BrowseTvSeasonsRequest): Promise<BrowseTvSeasonsResponse>;
+
+    /**
+     * @return OK
+     */
     onlineMedia_BrowseSeasonEpisodes(body: BrowseSeasonEpisodesRequest): Promise<BrowseSeasonEpisodesResponse>;
 
     /**
@@ -10468,6 +10473,59 @@ export class Client implements IClient {
     /**
      * @return OK
      */
+    onlineMedia_BrowseTvSeasons(body: BrowseTvSeasonsRequest, signal?: AbortSignal): Promise<BrowseTvSeasonsResponse> {
+        let url_ = this.baseUrl + "/integrations/movies/tv/seasons";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processOnlineMedia_BrowseTvSeasons(_response);
+        });
+    }
+
+    protected processOnlineMedia_BrowseTvSeasons(response: Response): Promise<BrowseTvSeasonsResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as BrowseTvSeasonsResponse;
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<BrowseTvSeasonsResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
     onlineMedia_BrowseSeasonEpisodes(body: BrowseSeasonEpisodesRequest, signal?: AbortSignal): Promise<BrowseSeasonEpisodesResponse> {
         let url_ = this.baseUrl + "/integrations/movies/tv/season-episodes";
         url_ = url_.replace(/[?&]$/, "");
@@ -13466,6 +13524,20 @@ export interface BrowseSeasonEpisodesResponse {
     seriesTitle?: string | undefined;
     seasonNumber?: number;
     episodes?: SeasonEpisodeResult[];
+
+    [key: string]: any;
+}
+
+export interface BrowseTvSeasonsRequest {
+    seriesTmdbId?: number;
+
+    [key: string]: any;
+}
+
+export interface BrowseTvSeasonsResponse {
+    seriesTmdbId?: number;
+    seriesTitle?: string | undefined;
+    seasons?: TvSeasonResult[];
 
     [key: string]: any;
 }
@@ -17069,6 +17141,15 @@ export interface TriviaResultResponse {
     participantDisplayName: string;
     participantKind: string;
     subDraftIndex?: number | undefined;
+
+    [key: string]: any;
+}
+
+export interface TvSeasonResult {
+    seasonNumber?: number;
+    name?: string;
+    episodeCount?: number;
+    airDate?: string | undefined;
 
     [key: string]: any;
 }

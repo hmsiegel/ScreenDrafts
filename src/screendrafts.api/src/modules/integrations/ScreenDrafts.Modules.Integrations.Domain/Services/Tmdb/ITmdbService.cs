@@ -149,5 +149,15 @@ public interface ITmdbService
     CancellationToken cancellationToken = default
   );
 
+  /// <summary>
+  /// List a series' seasons — GET /tv/{series_id}, read from its "seasons" array.
+  /// Feeds the season dropdown in the episode picker so nobody has to type a season
+  /// number. Includes TMDb's season 0 ("Specials") when present; callers filter it.
+  /// </summary>
+  Task<IReadOnlyList<TmdbTvSeason>> GetTvSeasonsAsync(
+    int seriesTmdbId,
+    CancellationToken cancellationToken = default
+  );
+
   Uri? BuildPosterUrl(string? posterPath, string size = "w500");
 }

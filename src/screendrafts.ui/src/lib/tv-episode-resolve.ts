@@ -1,3 +1,4 @@
+// lib/tv-episode-resolve.ts
 // New. Sibling to movie-resolve.ts, but for TV episodes. Two structural
 // differences from the movie flow, both forced by what TMDb actually offers:
 //
@@ -12,6 +13,8 @@
 //    have it from whichever SeasonEpisode the person clicked in the browse
 //    step, and should carry it forward themselves (see SelectedMedia in
 //    media-picker.tsx) rather than expect it back from this function.
+
+import type { BrowseTvSeasonsResponse, TvSeasonResult } from "@/lib/dto";
 
 const API = process.env.NEXT_PUBLIC_API_URL;
 
@@ -94,6 +97,52 @@ export async function browseSeasonEpisodes(
   } catch (err) {
     if (!(err instanceof DOMException && err.name === "AbortError")) {
       console.error("[browseSeasonEpisodes]", err);
+    }
+    return empty;
+  }
+}
+
+export interface TvSeasonsBrowseResult {
+  seriesTitle: string | null;
+  seasons: TvSeasonResult[];
+}
+
+/**
+ * Lists a series' seasons (TMDb season 0, "Specials", is filtered out
+ * server-side). Feeds the season dropdown in EpisodeSeasonPicker so nobody
+ * types a season number by hand. Response types come from the NSwag-generated
+ * dto.ts, not local interfaces.
+ */
+export async function browseTvSeasons(
+  seriesTmdbId: number,
+  accessToken: string,
+  signal?: AbortSignal
+): Promise<TvSeasonsBrowseResult> {
+  const empty: TvSeasonsBrowseResult = { seriesTitle: null, seasons: [] };
+
+  if (!seriesTmdbId) return empty;
+
+  try {
+    const url = new URL(`${API}/integrations/movies/tv/seasons`);
+    url.searchParams.set("seriesTmdbId", String(seriesTmdbId));
+
+    const res = await fetch(url.toString(), {
+      headers: { Authorization: `Bearer ${accessToken}` },
+      cache: "no-store",
+      signal,
+    });
+
+    if (!res.ok) return empty;
+
+    const data = (await res.json()) as BrowseTvSeasonsResponse;
+
+    return {
+      seriesTitle: data.seriesTitle ?? null,
+      seasons: data.seasons ?? [],
+    };
+  } catch (err) {
+    if (!(err instanceof DOMException && err.name === "AbortError")) {
+      console.error("[browseTvSeasons]", err);
     }
     return empty;
   }

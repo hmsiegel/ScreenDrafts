@@ -76,13 +76,13 @@ export function MediaPicker({
     });
   }
 
-  function handleEpisodeSelect(episode: SeasonEpisode, seriesTitle: string | null) {
+  function handleEpisodeSelect(episode: SeasonEpisode, seriesTitle: string | null, seriesTmdbId: number) {
     onSelect({
       tmdbId: episode.tmdbId,
       title: episode.name,
       year: episode.airDate?.slice(0, 4) ?? null,
       mediaType: MEDIA_TYPE_TV_EPISODE,
-      tvSeriesTmdbId: fixedSeriesTmdbId,
+      tvSeriesTmdbId: seriesTmdbId,
       seasonNumber: episode.seasonNumber,
       episodeNumber: episode.episodeNumber,
       tvSeriesTitle: seriesTitle,
