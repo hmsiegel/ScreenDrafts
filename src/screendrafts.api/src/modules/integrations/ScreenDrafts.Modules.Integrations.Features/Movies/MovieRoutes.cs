@@ -8,4 +8,5 @@ internal static class MovieRoutes
   public const string Import = Base + "/import";
   public const string Lookup = Base + "/lookup";
   public const string BrowseSeasonEpisodes = Base + "/tv/season-episodes";
+  public const string BrowseTvSeasons = Base + "/tv/seasons";
 }

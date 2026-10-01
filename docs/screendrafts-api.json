@@ -7797,6 +7797,53 @@
         ]
       }
     },
+    "/integrations/movies/tv/seasons": {
+      "get": {
+        "tags": [
+          "Movies"
+        ],
+        "operationId": "OnlineMedia.BrowseTvSeasons",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/BrowseTvSeasonsRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BrowseTvSeasonsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BrowseTvSeasonsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
     "/integrations/movies/tv/season-episodes": {
       "get": {
         "tags": [
@@ -10256,6 +10303,44 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/SeasonEpisodeResult"
+            }
+          }
+        }
+      },
+      "BrowseTvSeasonsRequest": {
+        "type": "object",
+        "properties": {
+          "seriesTmdbId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "BrowseTvSeasonsResponse": {
+        "type": "object",
+        "properties": {
+          "seriesTmdbId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "seriesTitle": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "seasons": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TvSeasonResult"
             }
           }
         }
@@ -22169,6 +22254,36 @@
               "string"
             ],
             "format": "int32"
+          }
+        }
+      },
+      "TvSeasonResult": {
+        "type": "object",
+        "properties": {
+          "seasonNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
+          },
+          "episodeCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "airDate": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },

@@ -556,6 +556,33 @@ internal sealed class TmdbService(HttpClient httpClient, IOptions<TmdbSettings> 
       .AsReadOnly();
   }
 
+  public async Task<IReadOnlyList<TmdbTvSeason>> GetTvSeasonsAsync(
+    int seriesTmdbId,
+    CancellationToken cancellationToken = default
+  )
+  {
+    var response = await _httpClient.GetFromJsonAsync<TmdbTvSeasonsApiResponse>(
+      $"tv/{seriesTmdbId}",
+      cancellationToken
+    );
+
+    if (response is null)
+    {
+      return [];
+    }
+
+    return response
+      .Seasons.Select(s => new TmdbTvSeason
+      {
+        SeasonNumber = s.SeasonNumber,
+        Name = s.Name ?? $"Season {s.SeasonNumber}",
+        EpisodeCount = s.EpisodeCount,
+        AirDate = s.AirDate,
+      })
+      .ToList()
+      .AsReadOnly();
+  }
+
   // API Response Models
 
   private sealed record TmdbSearchResponse(
@@ -636,6 +663,17 @@ internal sealed class TmdbService(HttpClient httpClient, IOptions<TmdbSettings> 
     [property: JsonPropertyName("air_date")] string? AirDate,
     [property: JsonPropertyName("overview")] string? Overview,
     [property: JsonPropertyName("still_path")] string? StillPath
+  );
+
+  private sealed record TmdbTvSeasonsApiResponse(
+    [property: JsonPropertyName("seasons")] IReadOnlyList<TmdbTvSeasonApiItem> Seasons
+  );
+
+  private sealed record TmdbTvSeasonApiItem(
+    [property: JsonPropertyName("season_number")] int SeasonNumber,
+    [property: JsonPropertyName("name")] string? Name,
+    [property: JsonPropertyName("episode_count")] int EpisodeCount,
+    [property: JsonPropertyName("air_date")] string? AirDate
   );
 
   private sealed record TmdbEpisodeDetailApiResponse(

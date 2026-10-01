@@ -1,12 +1,10 @@
 'use client';
 
 import { publicApiRequest } from "@/services/api";
-import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react"
 import { ChangeEvent, ChangeEventHandler, useState } from "react";
 
 export default function RegisterForm() {
-   const router = useRouter();
-
    const [formData, setFormData] = useState({
       firstName: "",
       lastName: "",
@@ -43,7 +41,7 @@ export default function RegisterForm() {
                password: formData.password,
             }),
          });
-         router.push("/login");
+         await signIn("keycloak", { callbackUrl: "/" });
       } catch (err) {
          setError((err as Error).message ?? "An error occurred");
       } finally {
