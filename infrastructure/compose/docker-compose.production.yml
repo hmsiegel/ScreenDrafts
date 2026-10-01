@@ -130,7 +130,7 @@ services:
 
   # ── Keycloak ───────────────────────────────────────────────────────────────
   screendrafts.identity:
-    image: quay.io/keycloak/keycloak:26.7.4
+    image: quay.io/keycloak/keycloak:26.8.0
     restart: unless-stopped
     command: start --import-realm
     environment:
