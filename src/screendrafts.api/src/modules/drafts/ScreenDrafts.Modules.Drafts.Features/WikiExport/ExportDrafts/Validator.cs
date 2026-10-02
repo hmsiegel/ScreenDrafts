@@ -13,7 +13,7 @@ internal sealed class Validator : AbstractValidator<ExportDraftsWikiQuery>
     RuleFor(x => x.DraftPublicIds)
       .NotEmpty()
       .WithMessage("Select at least one draft.")
-      .Must(ids => ids.Count <= WikiText.MaxSelection)
+      .Must(ids => ids is null || ids.Count <= WikiText.MaxSelection)
       .WithMessage($"Select at most {WikiText.MaxSelection} drafts per export.");
 
     RuleForEach(x => x.DraftPublicIds)
