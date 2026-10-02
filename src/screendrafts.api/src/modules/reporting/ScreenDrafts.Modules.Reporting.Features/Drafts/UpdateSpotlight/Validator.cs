@@ -17,7 +17,10 @@ internal sealed class Validator : AbstractValidator<UpdateSpotlightCommand>
       .WithMessage("Spotlight description is required and must not exceed 1000 characters.");
 
     RuleFor(x => x.SpotifyUrl)
-      .Must(url => Uri.TryCreate(url, UriKind.Absolute, out _))
+      .Must(url =>
+        Uri.TryCreate(url, UriKind.Absolute, out var uri)
+        && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps)
+      )
       .When(x => !string.IsNullOrWhiteSpace(x.SpotifyUrl))
       .WithMessage("Spotify URL must be a valid absolute URL.");
   }
