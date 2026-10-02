@@ -40,6 +40,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   try {
     const draft = await getDraftDetails(id);
+    if (!draft) return { title: "Draft" };
     return {
       title: draft.title,
       description: draft.description ?? undefined,
@@ -52,12 +53,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function DraftDetailPage({ params }: Props) {
   const { id } = await params;
 
-  let draft;
-  try {
-    draft = await getDraftDetails(id);
-  } catch {
-    notFound();
-  }
+  // null = no such draft. Any other failure throws through to app/error.tsx instead of
+  // being reported as "not found".
+  const draft = await getDraftDetails(id);
+  if (!draft) notFound();
 
   const parts: GetDraftPartResponse[] = draft.parts ?? [];
   const isMultiPart = parts.length > 1;

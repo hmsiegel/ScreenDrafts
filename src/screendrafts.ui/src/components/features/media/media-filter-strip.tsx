@@ -62,8 +62,8 @@ export default function MediaFilterStrip({ mediaType, sort, q, year }: MediaFilt
           />
         </form>
 
-        {/* Sort — own row on phones */}
-        <div className="flex items-center gap-2 w-full sm:w-auto">
+        {/* Sort — hidden on phones, where the list's pinned sort strip replaces it */}
+        <div className="hidden sm:flex items-center gap-2">
           <span className="font-mono text-[10px] tracking-widest text-sd-blue shrink-0">
             SORT BY
           </span>

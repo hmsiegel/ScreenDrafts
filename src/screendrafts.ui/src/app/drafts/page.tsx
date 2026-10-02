@@ -4,11 +4,12 @@ import { listDrafts } from "@/services/drafts/fetch-drafts";
 import { fetchSiteStats } from "@/services/home/fetch-home-data";
 import { Metadata } from "next";
 import { Suspense } from "react";
-import { DraftsTable } from "@/components/features/drafts/drafts-table";
 import { listCampaigns } from "@/services/drafts/fetch-campaigns";
 import { auth } from "@/auth";
 import { listCategories } from "@/services/drafts/fetch-categrories";
 import { WikiExportScope } from "@/components/features/wiki-export/wiki-export";
+import { draftsQuery, listCacheKey, type QueryRecord } from "@/lib/list-queries";
+import { DraftsInfiniteList } from "./drafts-infinite-list";
 
 export const metadata: Metadata = {
    title: "The Archive",
@@ -18,21 +19,7 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic"
 const ADMIN_ROLES = ["Administrator", "SuperAdministrator"];
 
-type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
-
-function asNumber(v: string | string[] | undefined): number | undefined {
-   if (!v) return undefined;
-   const n = Number(Array.isArray(v) ? v[0] : v);
-   return isNaN(n) ? undefined : n;
-}
-function asString(v: string | string[] | undefined): string | undefined {
-   if (!v) return undefined;
-   return Array.isArray(v) ? v[0] : v;
-}
-function asStringArray(v: string | string[] | undefined): string[] {
-   if (!v) return [];
-   return Array.isArray(v) ? v : [v];
-}
+type SearchParams = Promise<QueryRecord>;
 
 function formatStat(n: number | undefined): string {
    if (n == null) return "—";
@@ -44,35 +31,17 @@ export default async function DraftsPage(props: { searchParams: SearchParams }) 
    const isAdmin = session?.roles?.some(r => ADMIN_ROLES.includes(r)) ?? false;
    const qp = await props.searchParams;
 
-   const page = asNumber(qp.page) ?? 1;
-   const pageSize = asNumber(qp.pageSize) ?? 25;
-   const draftType = asNumber(qp.draftType);
-
-   const sort = asString(qp.sort) ?? "date";
-   const dir = (asString(qp.dir) ?? "desc") as "asc" | "desc";
-   const categoryPublicIds = asStringArray(qp.categoryPublicIds);
+   const { page, pageSize, args } = draftsQuery(qp);
 
    const [draftsResult, stats, campaigns, categories] = await Promise.all([
-      listDrafts({
-         q: asString(qp.q),
-         fromDate: asString(qp.fromDate),
-         toDate: asString(qp.toDate),
-         draftType,
-         minDrafters: asNumber(qp.minDrafters),
-         maxDrafters: asNumber(qp.maxDrafters),
-         page,
-         pageSize,
-         campaignPublicId: asString(qp.campaignPublicId),
-         categoryPublicIds,
-         sort,
-         dir,
-      }),
+      listDrafts({ ...args, page }),
       fetchSiteStats(),
       listCampaigns(),
       listCategories(),
    ]);
 
    const totalPages = Math.ceil(draftsResult.total / pageSize);
+   const cacheKey = listCacheKey("drafts", qp);
 
    return (
       <div className="min-h-screen bg-light-blue">
@@ -89,13 +58,13 @@ export default async function DraftsPage(props: { searchParams: SearchParams }) 
                </p>
             </div>
 
-            {/* Stat strip — 2×2 on phones, one row from sm up. */}
+            {/* Stat strip — 2×2 on phones, one row from sm up. stats is null if /stats failed; each value shows "—". */}
             <div className="grid grid-cols-2 gap-x-6 gap-y-5 sm:flex sm:gap-10 mt-8 lg:mt-10 border-t border-white/10 pt-6 lg:pt-8">
                {[
-                  { label: "EPISODES", value: formatStat(stats.episodesProduced) },
-                  { label: "FILMS DRAFTED", value: formatStat(stats.filmsDrafted) },
-                  { label: "VETOES", value: formatStat(stats.vetoesDeployed) },
-                  { label: "GUEST G.M.S", value: formatStat(stats.guestGMs) },
+                  { label: "EPISODES", value: formatStat(stats?.episodesProduced) },
+                  { label: "FILMS DRAFTED", value: formatStat(stats?.filmsDrafted) },
+                  { label: "VETOES", value: formatStat(stats?.vetoesDeployed) },
+                  { label: "GUEST G.M.S", value: formatStat(stats?.guestGMs) },
                ].map(({ label, value }) => (
                   <div key={label} className="flex flex-col gap-1">
                      <span className="font-oswald font-bold text-[24px] lg:text-[28px] text-sd-red leading-none">{value}</span>
@@ -110,27 +79,30 @@ export default async function DraftsPage(props: { searchParams: SearchParams }) 
             <DraftsFilter campaigns={campaigns} categories={categories} />
          </Suspense>
 
-         {/* Table container — pb-24 keeps the last row and pager clear of the fixed wiki-export bar. */}
-         <div className="page-x pt-0 pb-24">
+         {/* List — pt-6 separates it from the filter strip. pb-24 keeps the last row and
+             pager clear of the fixed wiki-export bar. */}
+         <div className="page-x pt-6 pb-24">
             <WikiExportScope enabled={isAdmin} kind="drafts" accessToken={session?.accessToken ?? ""} >
-               <DraftsTable drafts={draftsResult.items} searchParams={qp} isAdmin={isAdmin} />
+               {/* Remounts (key) whenever filters, sort or page change, so infinite scroll restarts cleanly. */}
+               <DraftsInfiniteList
+                  key={cacheKey}
+                  cacheKey={cacheKey}
+                  query={qp}
+                  initialItems={draftsResult.items}
+                  initialPage={page}
+                  total={draftsResult.total}
+                  totalPages={totalPages}
+                  isAdmin={isAdmin}
+                  paginator={totalPages > 1 ? <Paginator page={page} totalPages={totalPages} searchParams={qp} /> : null}
+               />
             </WikiExportScope>
-
-            {/* Pagination — pager above the count on phones so it sits under the thumb. */}
-            <div className="flex flex-col-reverse items-start gap-3 sm:flex-row sm:items-center sm:justify-between mt-4">
-               <span className="font-mono text-[11px] text-sd-ink/60">
-                  SHOWING {draftsResult.items.length} OF {draftsResult.total.toLocaleString("en-US")} EPISODES
-               </span>
-               {totalPages > 1 && (
-                  <Paginator page={page} totalPages={totalPages} total={draftsResult.total} pageSize={pageSize} searchParams={qp} />
-               )}
-            </div>
          </div>
 
       </div>
    );
 }
 
+// Desktop only — below lg the list scrolls infinitely instead.
 function Paginator({
    page,
    totalPages,
@@ -138,9 +110,7 @@ function Paginator({
 }: {
    page: number;
    totalPages: number;
-   total: number;
-   pageSize: number;
-   searchParams: { [key: string]: string | string[] | undefined };
+   searchParams: QueryRecord;
 }) {
    function pageHref(p: number): string {
       const qs = new URLSearchParams();
@@ -155,14 +125,10 @@ function Paginator({
 
    const pages = buildPageRange(page, totalPages);
 
-   // 36px square cells below sm (touch); original compact cells from sm up.
-   const cell =
-      "inline-flex items-center justify-center min-w-9 h-9 sm:min-w-0 sm:h-auto px-2.5 sm:py-1 border transition-colors";
-
    return (
-      <nav aria-label="Pagination" className="flex flex-wrap items-center gap-1 font-mono text-[11px]">
+      <nav aria-label="Pagination" className="flex items-center gap-1 font-mono text-[11px]">
          {page > 1 && (
-            <a href={pageHref(page - 1)} aria-label="Previous page" className={`${cell} border-sd-ink text-sd-ink hover:bg-sd-ink hover:text-white`}>
+            <a href={pageHref(page - 1)} aria-label="Previous page" className="px-2.5 py-1 border border-sd-ink text-sd-ink hover:bg-sd-ink hover:text-white transition-colors">
                ‹
             </a>
          )}
@@ -174,7 +140,7 @@ function Paginator({
                   key={p}
                   href={pageHref(p as number)}
                   aria-current={p === page ? "page" : undefined}
-                  className={`${cell} ${p === page
+                  className={`px-2.5 py-1 border transition-colors ${p === page
                      ? "bg-sd-ink text-white border-sd-ink"
                      : "border-sd-ink text-sd-ink hover:bg-sd-ink hover:text-white"
                      }`}
@@ -184,7 +150,7 @@ function Paginator({
             )
          )}
          {page < totalPages && (
-            <a href={pageHref(page + 1)} aria-label="Next page" className={`${cell} border-sd-ink text-sd-ink hover:bg-sd-ink hover:text-white`}>
+            <a href={pageHref(page + 1)} aria-label="Next page" className="px-2.5 py-1 border border-sd-ink text-sd-ink hover:bg-sd-ink hover:text-white transition-colors">
                ›
             </a>
          )}

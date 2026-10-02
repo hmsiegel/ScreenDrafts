@@ -1,10 +1,10 @@
 // app/media/page.tsx
 import MediaFilterStrip from "@/components/features/media/media-filter-strip";
 import { fetchMedia } from "@/services/media/fetch-media";
-import { MediaListItemResponse } from "@/lib/dto";
 import { Metadata } from "next";
 import { Suspense } from "react";
-import Link from "next/link";
+import { listCacheKey, mediaQuery, type QueryRecord } from "@/lib/list-queries";
+import { MediaInfiniteList } from "./media-infinite-list";
 
 export const metadata: Metadata = {
   title: "The Vault",
@@ -13,39 +13,16 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
-
-function asNumber(v: string | string[] | undefined): number | undefined {
-  if (!v) return undefined;
-  const n = Number(Array.isArray(v) ? v[0] : v);
-  return isNaN(n) ? undefined : n;
-}
-
-function asString(v: string | string[] | undefined): string | undefined {
-  if (!v) return undefined;
-  return Array.isArray(v) ? v[0] : v;
-}
-
-const MEDIA_TYPE_LABELS: Record<number, string> = {
-  0: "Movie",
-  1: "TV Show",
-  2: "TV Episode",
-  3: "Video Game",
-  4: "Music Video",
-};
+type SearchParams = Promise<QueryRecord>;
 
 export default async function MediaPage(props: { searchParams: SearchParams }) {
   const qp = await props.searchParams;
 
-  const page     = asNumber(qp.page)    ?? 1;
-  const pageSize = asNumber(qp.pageSize) ?? 50;
-  const sort     = asString(qp.sort)    ?? "title_asc";
-  const search   = asString(qp.q);
-  const mediaType = asNumber(qp.mediaType);
-  const year     = asString(qp.year);
+  const { page, sort, search, mediaType, year, args } = mediaQuery(qp);
 
-  const result = await fetchMedia({ page, pageSize, sort, search, mediaType, year });
+  const result = await fetchMedia({ ...args, page });
   const totalPages = result.totalPages ?? 0;
+  const cacheKey = listCacheKey("media", qp);
 
   return (
     <div className="min-h-screen bg-light-blue">
@@ -70,96 +47,27 @@ export default async function MediaPage(props: { searchParams: SearchParams }) {
         />
       </Suspense>
 
-      {/* Table */}
-      <div className="page-x pt-0 pb-16">
-        {result.totalCount === 0 ? (
-          <div className="text-center font-mono text-sm text-sd-ink/50 py-16">
-            Nothing in the Vault yet.
-          </div>
-        ) : (
-          <MediaTable items={result.items} />
-        )}
-
-        {/* Pagination — pager above the count on phones so it sits under the thumb. */}
-        <div className="flex flex-col-reverse items-start gap-3 sm:flex-row sm:items-center sm:justify-between mt-4">
-          <span className="font-mono text-[11px] text-sd-ink/60">
-            SHOWING {result.items.length} OF {result.totalCount.toLocaleString("en-US")} TITLES
-          </span>
-          {totalPages > 1 && (
-            <Paginator page={page} totalPages={totalPages} searchParams={qp} />
-          )}
-        </div>
+      {/* List — pt-6 separates it from the filter strip */}
+      <div className="page-x pt-6 pb-16">
+        {/* Remounts (key) whenever filters, sort or page change, so infinite scroll restarts cleanly. */}
+        <MediaInfiniteList
+          key={cacheKey}
+          cacheKey={cacheKey}
+          query={qp}
+          sort={sort}
+          initialItems={result.items ?? []}
+          initialPage={page}
+          total={result.totalCount ?? 0}
+          totalPages={totalPages}
+          paginator={totalPages > 1 ? <Paginator page={page} totalPages={totalPages} searchParams={qp} /> : null}
+        />
       </div>
 
     </div>
   );
 }
 
-// ── Table ─────────────────────────────────────────────────────────────────────
-
-// From sm up: the original four-column table. Below sm each row stacks into a card —
-// title on top (up to two lines), year and type beneath, arrow on the right. The
-// table's fixed columns take 224px, which on a phone left the title ~115px.
-const ROW_COLS = "grid-cols-[minmax(0,1fr)_24px] sm:grid-cols-[minmax(0,1fr)_80px_120px_24px]";
-
-function MediaTable({ items }: { items: MediaListItemResponse[] }) {
-  return (
-    <div className="bg-white border-2 border-sd-ink border-t-0">
-      {/* Header — the cards need none. Sorting lives in the filter strip. */}
-      <div className={`hidden sm:grid ${ROW_COLS} bg-sd-ink text-white font-mono text-[10px] tracking-wide`}>
-        <div className="px-4 py-3 text-white/60">TITLE</div>
-        <div className="px-4 py-3 text-white/60">YEAR</div>
-        <div className="px-4 py-3 text-white/60">TYPE</div>
-        <div className="px-2 py-3" />
-      </div>
-
-      {items.map((item) => (
-        <MediaRow key={item.publicId} item={item} />
-      ))}
-    </div>
-  );
-}
-
-function MediaRow({ item }: { item: MediaListItemResponse }) {
-  const typeLabel = MEDIA_TYPE_LABELS[item.mediaTypeValue] ?? item.mediaTypeName;
-  const isMovie   = item.mediaTypeValue === 0;
-
-  return (
-    <Link
-      href={`/media/${item.publicId}`}
-      className={`group grid ${ROW_COLS} border-t border-sd-ink/10 hover:bg-sd-paper transition-colors duration-100 cursor-pointer`}
-    >
-      {/* No `block` here: Tailwind emits it after line-clamp's -webkit-box and would cancel the clamp. */}
-      <div className="px-4 pt-4 pb-1.5 sm:py-4 self-center overflow-hidden">
-        <span className="font-oswald font-semibold text-[17px] text-sd-ink group-hover:text-sd-red transition-colors line-clamp-2 [overflow-wrap:anywhere] sm:line-clamp-none sm:truncate">
-          {item.title}
-        </span>
-      </div>
-
-      {/* Below sm this wrapper is a meta line under the title; from sm `contents`
-          dissolves it so year and type fall back into their own table columns. */}
-      <div className="col-start-1 row-start-2 flex items-center gap-3 px-4 pb-4 sm:contents">
-        <div className="sm:px-4 sm:py-4 sm:self-center font-mono text-[12px] text-sd-ink/60">
-          {item.year ?? "—"}
-        </div>
-
-        <div className="sm:px-4 sm:py-4 sm:self-center">
-          <span className={`inline-block font-mono text-[9px] tracking-widest px-2 py-0.5 rounded-sm ${
-            isMovie ? "bg-sd-blue/10 text-sd-blue" : "bg-sd-ink/10 text-sd-ink/60"
-          }`}>
-            {typeLabel}
-          </span>
-        </div>
-      </div>
-
-      <div className="col-start-2 row-span-2 row-start-1 sm:col-start-auto sm:row-span-1 sm:row-start-auto px-2 py-4 self-center text-sd-ink/30 group-hover:text-sd-red transition-colors text-center">
-        ›
-      </div>
-    </Link>
-  );
-}
-
-// ── Pagination ────────────────────────────────────────────────────────────────
+// ── Pagination — desktop only; below lg the list scrolls infinitely ──────────
 
 function Paginator({
   page,
@@ -168,7 +76,7 @@ function Paginator({
 }: {
   page: number;
   totalPages: number;
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: QueryRecord;
 }) {
   function pageHref(p: number): string {
     const qs = new URLSearchParams();
@@ -183,14 +91,10 @@ function Paginator({
 
   const pages = buildPageRange(page, totalPages);
 
-  // 36px square cells below sm (touch); original compact cells from sm up.
-  const cell =
-    "inline-flex items-center justify-center min-w-9 h-9 sm:min-w-0 sm:h-auto px-2.5 sm:py-1 border transition-colors";
-
   return (
-    <nav aria-label="Pagination" className="flex flex-wrap items-center gap-1 font-mono text-[11px]">
+    <nav aria-label="Pagination" className="flex items-center gap-1 font-mono text-[11px]">
       {page > 1 && (
-        <a href={pageHref(page - 1)} aria-label="Previous page" className={`${cell} border-sd-ink text-sd-ink hover:bg-sd-ink hover:text-white`}>‹</a>
+        <a href={pageHref(page - 1)} aria-label="Previous page" className="px-2.5 py-1 border border-sd-ink text-sd-ink hover:bg-sd-ink hover:text-white transition-colors">‹</a>
       )}
       {pages.map((p, i) =>
         p === "…" ? (
@@ -200,7 +104,7 @@ function Paginator({
             key={p}
             href={pageHref(p as number)}
             aria-current={p === page ? "page" : undefined}
-            className={`${cell} ${
+            className={`px-2.5 py-1 border transition-colors ${
               p === page
                 ? "bg-sd-ink text-white border-sd-ink"
                 : "border-sd-ink text-sd-ink hover:bg-sd-ink hover:text-white"
@@ -211,7 +115,7 @@ function Paginator({
         )
       )}
       {page < totalPages && (
-        <a href={pageHref(page + 1)} aria-label="Next page" className={`${cell} border-sd-ink text-sd-ink hover:bg-sd-ink hover:text-white`}>›</a>
+        <a href={pageHref(page + 1)} aria-label="Next page" className="px-2.5 py-1 border border-sd-ink text-sd-ink hover:bg-sd-ink hover:text-white transition-colors">›</a>
       )}
     </nav>
   );

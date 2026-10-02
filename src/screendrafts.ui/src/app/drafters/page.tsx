@@ -1,11 +1,12 @@
 // app/drafters/page.tsx
 import { auth } from "@/auth";
 import DraftersFilterStrip from "@/components/features/participants/drafters-filter-strip";
-import ParticipantCard from "@/components/features/participants/participant-card";
-import { WikiExportScope, WikiSelectCheckbox } from "@/components/features/wiki-export/wiki-export";
+import { WikiExportScope } from "@/components/features/wiki-export/wiki-export";
 import { listParticipants } from "@/services/participants/fetch-participants";
+import { draftersQuery, listCacheKey, type QueryRecord } from "@/lib/list-queries";
 import { Metadata } from "next";
 import { Suspense } from "react";
+import { DraftersInfiniteGrid } from "./drafters-infinite-grid";
 
 export const metadata: Metadata = {
   title: "The Roster",
@@ -15,49 +16,19 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 const ADMIN_ROLES = ["Administrator", "SuperAdministrator"];
 
-type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
-
-function asNumber(v: string | string[] | undefined): number | undefined {
-  if (!v) return undefined;
-  const n = Number(Array.isArray(v) ? v[0] : v);
-  return isNaN(n) ? undefined : n;
-}
-function asString(v: string | string[] | undefined): string | undefined {
-  if (!v) return undefined;
-  return Array.isArray(v) ? v[0] : v;
-}
+type SearchParams = Promise<QueryRecord>;
 
 export default async function ParticipantsPage(props: { searchParams: SearchParams }) {
   const session = await auth();
   const isAdmin = session?.roles?.some((r) => ADMIN_ROLES.includes(r)) ?? false;
   const qp = await props.searchParams;
 
-  const page = asNumber(qp.page) ?? 1;
-  const pageSize = asNumber(qp.pageSize) ?? 24;
-  const sort = asString(qp.sort) ?? "name";
-  const q = asString(qp.q);
-  const honorific = asString(qp.honorific) ?? "";
+  const { page, pageSize, sort, q, honorific, filter, args } = draftersQuery(qp);
 
-  const filter = honorific ? "all" : (asString(qp.filter) ?? "all");
-
-  // Map UI filter tab → API role param
-  const role =
-  honorific ? undefined
-    : filter === "commissioners" ? "commissioner"
-    : filter === "gms" ? "gm"
-    : filter === "hosts" ? "host"
-    : undefined;
-
-  const result = await listParticipants({
-    q,
-    role,
-    sort,
-    page,
-    pageSize,
-    honorific: honorific || undefined,
-  });
+  const result = await listParticipants({ ...args, page });
 
   const totalPages = Math.ceil(result.total / pageSize);
+  const cacheKey = listCacheKey("drafters", qp);
 
   return (
     <div className="min-h-screen bg-light-blue">
@@ -84,50 +55,29 @@ export default async function ParticipantsPage(props: { searchParams: SearchPara
           honorific={honorific} />
       </Suspense>
 
-      {/* Grid — 1 column on phones, 2 from sm, 3 from lg. pb-24 keeps the last
-          row and pager clear of the fixed wiki-export bar. */}
+      {/* Grid — pb-24 keeps the last row and pager clear of the fixed wiki-export bar. */}
       <div className="page-x pt-6 pb-24 lg:pt-10">
         <WikiExportScope enabled={isAdmin} kind="drafters" accessToken={session?.accessToken ?? ""}>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-[22px]">
-            {result.items.map((participant, i) => (
-              <div key={participant.personPublicId} className="relative min-w-0">
-                <ParticipantCard
-                  participant={participant}
-                  index={i}
-                  honorific={participant.honorific ?? null}
-                />
-                {/* Outside the card link so ticking never navigates; the label widens the touch target. */}
-                {isAdmin && participant.drafterPublicId && (
-                  <label className="absolute bottom-3 right-3 z-10 bg-white/90 p-2 cursor-pointer">
-                    <WikiSelectCheckbox id={participant.drafterPublicId} />
-                  </label>
-                )}
-              </div>
-            ))}
-          </div>
+          {/* Remounts (key) whenever filters, sort or page change, so infinite scroll restarts cleanly. */}
+          <DraftersInfiniteGrid
+            key={cacheKey}
+            cacheKey={cacheKey}
+            query={qp}
+            initialItems={result.items}
+            initialPage={page}
+            total={result.total}
+            totalPages={totalPages}
+            isAdmin={isAdmin}
+            paginator={totalPages > 1 ? <Paginator page={page} totalPages={totalPages} searchParams={qp} /> : null}
+          />
         </WikiExportScope>
-
-        {result.items.length === 0 && (
-          <div className="text-center font-mono text-sm text-sd-ink/50 py-16">
-            No participants found.
-          </div>
-        )}
-
-        {/* Pagination — pager above the count on phones so it sits under the thumb. */}
-        <div className="flex flex-col-reverse items-start gap-3 sm:flex-row sm:items-center sm:justify-between mt-8">
-          <span className="font-mono text-[11px] text-sd-ink/60">
-            SHOWING {result.items.length} OF {result.total.toLocaleString("en-US")} PARTICIPANTS
-          </span>
-          {totalPages > 1 && (
-            <Paginator page={page} totalPages={totalPages} searchParams={qp} />
-          )}
-        </div>
       </div>
 
     </div>
   );
 }
 
+// Desktop only — below lg the grid scrolls infinitely instead.
 function Paginator({
   page,
   totalPages,
@@ -135,7 +85,7 @@ function Paginator({
 }: {
   page: number;
   totalPages: number;
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: QueryRecord;
 }) {
   function pageHref(p: number): string {
     const qs = new URLSearchParams();
@@ -150,17 +100,13 @@ function Paginator({
 
   const pages = buildPageRange(page, totalPages);
 
-  // 36px square cells below sm (touch); original compact cells from sm up.
-  const cell =
-    "inline-flex items-center justify-center min-w-9 h-9 sm:min-w-0 sm:h-auto px-2.5 sm:py-1 border transition-colors";
-
   return (
-    <nav aria-label="Pagination" className="flex flex-wrap items-center gap-1 font-mono text-[11px]">
+    <nav aria-label="Pagination" className="flex items-center gap-1 font-mono text-[11px]">
       {page > 1 && (
         <a
           href={pageHref(page - 1)}
           aria-label="Previous page"
-          className={`${cell} border-sd-ink text-sd-ink hover:bg-sd-ink hover:text-white`}
+          className="px-2.5 py-1 border border-sd-ink text-sd-ink hover:bg-sd-ink hover:text-white transition-colors"
         >
           ‹
         </a>
@@ -175,7 +121,7 @@ function Paginator({
             key={p}
             href={pageHref(p as number)}
             aria-current={p === page ? "page" : undefined}
-            className={`${cell} ${
+            className={`px-2.5 py-1 border transition-colors ${
               p === page
                 ? "bg-sd-ink text-white border-sd-ink"
                 : "border-sd-ink text-sd-ink hover:bg-sd-ink hover:text-white"
@@ -189,7 +135,7 @@ function Paginator({
         <a
           href={pageHref(page + 1)}
           aria-label="Next page"
-          className={`${cell} border-sd-ink text-sd-ink hover:bg-sd-ink hover:text-white`}
+          className="px-2.5 py-1 border border-sd-ink text-sd-ink hover:bg-sd-ink hover:text-white transition-colors"
         >
           ›
         </a>

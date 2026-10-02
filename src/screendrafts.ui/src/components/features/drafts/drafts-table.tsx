@@ -148,9 +148,10 @@ interface LayoutProps {
 
 function CardList({ rows, isAdmin, selectableIds, sortProps }: LayoutProps) {
    return (
-      <div className="lg:hidden bg-white border-2 border-sd-ink border-t-0">
-         {/* Sort strip stands in for the table's sortable headers. */}
-         <div className="flex flex-wrap items-center gap-x-5 gap-y-1 bg-sd-ink text-white font-mono text-[10px] tracking-wide px-4 py-1">
+      <div className="lg:hidden bg-white border-2 border-sd-ink">
+         {/* Sort strip stands in for the table's sortable headers. Pinned to the top of the
+             screen while the list scrolls under it; releases at the end of the list. */}
+         <div className="sticky top-0 z-20 flex flex-wrap items-center gap-x-5 gap-y-1 bg-sd-ink text-white font-mono text-[10px] tracking-wide px-4 py-1">
             {isAdmin && (
                <label className="flex items-center gap-2 py-2 cursor-pointer text-white/60">
                   <WikiSelectAll ids={selectableIds} />
@@ -185,7 +186,7 @@ function CardList({ rows, isAdmin, selectableIds, sortProps }: LayoutProps) {
                            {row.episodeNumber ?? "—"}
                         </span>
                         <span className="min-w-0 flex-1">
-                           <span className="block font-sans font-semibold text-[16px] leading-snug text-sd-ink line-clamp-2 [overflow-wrap:anywhere]">
+                           <span className="font-sans font-semibold text-[16px] leading-snug text-sd-ink line-clamp-2 [overflow-wrap:anywhere]">
                               {row.label}
                            </span>
                            <span className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1.5">
@@ -233,10 +234,10 @@ function WideTable({ rows, isAdmin, selectableIds, sortProps }: LayoutProps) {
       : "90px minmax(160px, 1.5fr) 130px minmax(160px, 1fr) 90px 130px 28px";
 
    return (
-      <div className="hidden lg:block bg-white border-2 border-sd-ink border-t-0">
-         {/* Header */}
+      <div className="hidden lg:block bg-white border-2 border-sd-ink">
+         {/* Header — pinned while the rows scroll under it */}
          <div
-            className="grid bg-sd-ink text-white font-mono text-[10px] tracking-wide"
+            className="sticky top-0 z-20 grid bg-sd-ink text-white font-mono text-[10px] tracking-wide"
             style={{ gridTemplateColumns: gridCols }}
          >
             {isAdmin && (
