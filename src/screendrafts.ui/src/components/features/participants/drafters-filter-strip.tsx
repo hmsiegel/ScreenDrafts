@@ -1,3 +1,4 @@
+// components/features/participants/drafters-filter-strip.tsx
 import Link from "next/link";
 import HonorificDropdown from "./honorific-dropdown";
 
@@ -44,15 +45,17 @@ export default function DraftersFilterStrip({
     return `?${qs.toString()}`;
   }
 
+  // Below xl: tabs on their own row (scrolling sideways on narrow phones), controls wrap beneath.
+  // xl+: the original single row — below 1280 the four tabs plus three controls don't fit.
   return (
-    <div className="bg-white border-b border-sd-ink/20 px-10 py-4 flex items-center justify-between gap-6">
+    <div className="bg-white border-b border-sd-ink/20 page-x py-4 flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between xl:gap-6">
       {/* Role tabs */}
-      <div className="flex gap-1">
+      <div className="flex gap-1 overflow-x-auto overscroll-x-contain [scrollbar-width:none] -mx-4 px-4 sm:mx-0 sm:px-0">
         {TABS.map((tab) => (
           <Link
             key={tab.value}
             href={tabHref(tab.value)}
-            className={`px-4 py-2 font-oswald text-[12px] tracking-wide transition-colors ${
+            className={`shrink-0 whitespace-nowrap px-4 py-2.5 xl:py-2 font-oswald text-[12px] tracking-wide transition-colors ${
               activeFilter === tab.value
                 ? "bg-sd-ink text-white"
                 : "text-sd-ink hover:bg-sd-ink/5"
@@ -63,9 +66,9 @@ export default function DraftersFilterStrip({
         ))}
       </div>
 
-      <div className="flex items-center gap-4">
-        {/* Search */}
-        <form method="get" action="">
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
+        {/* Search — full width on phones */}
+        <form method="get" action="" className="w-full sm:w-auto">
           <input type="hidden" name="filter" value={filter} />
           <input type="hidden" name="sort" value={sort} />
           <input type="hidden" name="page" value="1" />
@@ -74,7 +77,7 @@ export default function DraftersFilterStrip({
             name="q"
             defaultValue={q ?? ""}
             placeholder="Search…"
-            className="border border-sd-ink/30 px-3 py-1.5 font-mono text-[11px] text-sd-ink placeholder:text-sd-ink/40 focus:outline-none focus:border-sd-ink w-40"
+            className="border border-sd-ink/30 px-3 py-1.5 font-mono text-[11px] text-sd-ink placeholder:text-sd-ink/40 focus:outline-none focus:border-sd-ink w-full sm:w-40"
           />
         </form>
 
@@ -91,7 +94,7 @@ export default function DraftersFilterStrip({
               <Link
                 key={opt.value}
                 href={sortHref(opt.value)}
-                className={`px-3 py-1.5 font-mono text-[11px] transition-colors border ${
+                className={`whitespace-nowrap px-3 py-2 xl:py-1.5 font-mono text-[11px] transition-colors border ${
                   sort === opt.value
                     ? "bg-sd-ink text-white border-sd-ink"
                     : "border-sd-ink/30 text-sd-ink hover:border-sd-ink"

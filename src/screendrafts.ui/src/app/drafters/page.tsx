@@ -61,14 +61,14 @@ export default async function ParticipantsPage(props: { searchParams: SearchPara
 
   return (
     <div className="min-h-screen bg-light-blue">
-      {/* Banner */}
-      <div className="bg-sd-ink text-white" style={{ padding: "56px 40px 44px" }}>
+      {/* Banner — stacks below lg; title and blurb sit side by side from lg up. */}
+      <div className="bg-sd-ink text-white page-x pt-10 pb-8 lg:pt-14 lg:pb-11">
         <p className="font-mono text-[11px] tracking-widest text-light-blue mb-3">/ DRAFTERS</p>
-        <div className="flex items-end justify-between gap-8">
-          <h1 className="font-oswald font-bold text-[72px] leading-[0.95] text-white">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between lg:gap-8">
+          <h1 className="font-oswald font-bold text-[44px] sm:text-[56px] lg:text-[72px] leading-[0.95] text-white">
             THE ROSTER
           </h1>
-          <p className="font-serif italic text-[17px] leading-relaxed text-white/70 max-w-[480px] text-right">
+          <p className="font-serif italic text-[15px] lg:text-[17px] leading-relaxed text-white/70 max-w-[480px] lg:text-right">
             Two commissioners. A revolving cast of guest General Managers. Every drafter who&rsquo;s
             ever filled out a ballot.
           </p>
@@ -84,24 +84,23 @@ export default async function ParticipantsPage(props: { searchParams: SearchPara
           honorific={honorific} />
       </Suspense>
 
-      {/* Grid */}
-      <div className="px-10 py-10">
+      {/* Grid — 1 column on phones, 2 from sm, 3 from lg. pb-24 keeps the last
+          row and pager clear of the fixed wiki-export bar. */}
+      <div className="page-x pt-6 pb-24 lg:pt-10">
         <WikiExportScope enabled={isAdmin} kind="drafters" accessToken={session?.accessToken ?? ""}>
-          <div
-            className="grid gap-[22px]"
-            style={{ gridTemplateColumns: "repeat(3, 1fr)" }}
-          >
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-[22px]">
             {result.items.map((participant, i) => (
-              <div key={participant.personPublicId} className="relative">
+              <div key={participant.personPublicId} className="relative min-w-0">
                 <ParticipantCard
                   participant={participant}
                   index={i}
                   honorific={participant.honorific ?? null}
                 />
+                {/* Outside the card link so ticking never navigates; the label widens the touch target. */}
                 {isAdmin && participant.drafterPublicId && (
-                  <div className="absolute bottom-3 right-3 z-10 bg-white/90 p-1">
+                  <label className="absolute bottom-3 right-3 z-10 bg-white/90 p-2 cursor-pointer">
                     <WikiSelectCheckbox id={participant.drafterPublicId} />
-                  </div>
+                  </label>
                 )}
               </div>
             ))}
@@ -114,8 +113,8 @@ export default async function ParticipantsPage(props: { searchParams: SearchPara
           </div>
         )}
 
-        {/* Pagination */}
-        <div className="flex items-center justify-between mt-8">
+        {/* Pagination — pager above the count on phones so it sits under the thumb. */}
+        <div className="flex flex-col-reverse items-start gap-3 sm:flex-row sm:items-center sm:justify-between mt-8">
           <span className="font-mono text-[11px] text-sd-ink/60">
             SHOWING {result.items.length} OF {result.total.toLocaleString("en-US")} PARTICIPANTS
           </span>
@@ -151,12 +150,17 @@ function Paginator({
 
   const pages = buildPageRange(page, totalPages);
 
+  // 36px square cells below sm (touch); original compact cells from sm up.
+  const cell =
+    "inline-flex items-center justify-center min-w-9 h-9 sm:min-w-0 sm:h-auto px-2.5 sm:py-1 border transition-colors";
+
   return (
-    <nav className="flex items-center gap-1 font-mono text-[11px]">
+    <nav aria-label="Pagination" className="flex flex-wrap items-center gap-1 font-mono text-[11px]">
       {page > 1 && (
         <a
           href={pageHref(page - 1)}
-          className="px-2.5 py-1 border border-sd-ink text-sd-ink hover:bg-sd-ink hover:text-white transition-colors"
+          aria-label="Previous page"
+          className={`${cell} border-sd-ink text-sd-ink hover:bg-sd-ink hover:text-white`}
         >
           ‹
         </a>
@@ -170,7 +174,8 @@ function Paginator({
           <a
             key={p}
             href={pageHref(p as number)}
-            className={`px-2.5 py-1 border transition-colors ${
+            aria-current={p === page ? "page" : undefined}
+            className={`${cell} ${
               p === page
                 ? "bg-sd-ink text-white border-sd-ink"
                 : "border-sd-ink text-sd-ink hover:bg-sd-ink hover:text-white"
@@ -183,7 +188,8 @@ function Paginator({
       {page < totalPages && (
         <a
           href={pageHref(page + 1)}
-          className="px-2.5 py-1 border border-sd-ink text-sd-ink hover:bg-sd-ink hover:text-white transition-colors"
+          aria-label="Next page"
+          className={`${cell} border-sd-ink text-sd-ink hover:bg-sd-ink hover:text-white`}
         >
           ›
         </a>

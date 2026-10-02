@@ -1,3 +1,4 @@
+// app/media/page.tsx
 import MediaFilterStrip from "@/components/features/media/media-filter-strip";
 import { fetchMedia } from "@/services/media/fetch-media";
 import { MediaListItemResponse } from "@/lib/dto";
@@ -48,12 +49,12 @@ export default async function MediaPage(props: { searchParams: SearchParams }) {
 
   return (
     <div className="min-h-screen bg-light-blue">
-      {/* Banner */}
-      <div className="bg-sd-ink text-white" style={{ padding: "56px 40px 44px" }}>
+      {/* Banner — stacks below lg; title and blurb sit side by side from lg up. */}
+      <div className="bg-sd-ink text-white page-x pt-10 pb-8 lg:pt-14 lg:pb-11">
         <p className="font-mono text-[11px] tracking-widest text-light-blue mb-3">/ MEDIA</p>
-        <div className="flex items-end justify-between gap-8">
-          <h1 className="font-oswald font-bold text-[72px] leading-[0.95] text-white">THE VAULT</h1>
-          <p className="font-serif italic text-[17px] leading-relaxed text-white/70 max-w-[480px] text-right">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between lg:gap-8">
+          <h1 className="font-oswald font-bold text-[44px] sm:text-[56px] lg:text-[72px] leading-[0.95] text-white">THE VAULT</h1>
+          <p className="font-serif italic text-[15px] lg:text-[17px] leading-relaxed text-white/70 max-w-[480px] lg:text-right">
             Every film, series, and game that has ever touched a ScreenDrafts board.
           </p>
         </div>
@@ -70,7 +71,7 @@ export default async function MediaPage(props: { searchParams: SearchParams }) {
       </Suspense>
 
       {/* Table */}
-      <div className="px-10 pt-0 pb-16">
+      <div className="page-x pt-0 pb-16">
         {result.totalCount === 0 ? (
           <div className="text-center font-mono text-sm text-sd-ink/50 py-16">
             Nothing in the Vault yet.
@@ -79,7 +80,8 @@ export default async function MediaPage(props: { searchParams: SearchParams }) {
           <MediaTable items={result.items} />
         )}
 
-        <div className="flex items-center justify-between mt-4">
+        {/* Pagination — pager above the count on phones so it sits under the thumb. */}
+        <div className="flex flex-col-reverse items-start gap-3 sm:flex-row sm:items-center sm:justify-between mt-4">
           <span className="font-mono text-[11px] text-sd-ink/60">
             SHOWING {result.items.length} OF {result.totalCount.toLocaleString("en-US")} TITLES
           </span>
@@ -95,12 +97,16 @@ export default async function MediaPage(props: { searchParams: SearchParams }) {
 
 // ── Table ─────────────────────────────────────────────────────────────────────
 
+// From sm up: the original four-column table. Below sm each row stacks into a card —
+// title on top (up to two lines), year and type beneath, arrow on the right. The
+// table's fixed columns take 224px, which on a phone left the title ~115px.
+const ROW_COLS = "grid-cols-[minmax(0,1fr)_24px] sm:grid-cols-[minmax(0,1fr)_80px_120px_24px]";
+
 function MediaTable({ items }: { items: MediaListItemResponse[] }) {
   return (
     <div className="bg-white border-2 border-sd-ink border-t-0">
-      {/* Header */}
-      <div className="grid bg-sd-ink text-white font-mono text-[10px] tracking-wide"
-        style={{ gridTemplateColumns: "1fr 80px 120px 24px" }}>
+      {/* Header — the cards need none. Sorting lives in the filter strip. */}
+      <div className={`hidden sm:grid ${ROW_COLS} bg-sd-ink text-white font-mono text-[10px] tracking-wide`}>
         <div className="px-4 py-3 text-white/60">TITLE</div>
         <div className="px-4 py-3 text-white/60">YEAR</div>
         <div className="px-4 py-3 text-white/60">TYPE</div>
@@ -121,28 +127,32 @@ function MediaRow({ item }: { item: MediaListItemResponse }) {
   return (
     <Link
       href={`/media/${item.publicId}`}
-      className="group grid border-t border-sd-ink/10 hover:bg-sd-paper transition-colors duration-100 cursor-pointer"
-      style={{ gridTemplateColumns: "1fr 80px 120px 24px" }}
+      className={`group grid ${ROW_COLS} border-t border-sd-ink/10 hover:bg-sd-paper transition-colors duration-100 cursor-pointer`}
     >
-      <div className="px-4 py-4 self-center overflow-hidden">
-        <span className="block font-oswald font-semibold text-[17px] text-sd-ink group-hover:text-sd-red transition-colors truncate">
+      {/* No `block` here: Tailwind emits it after line-clamp's -webkit-box and would cancel the clamp. */}
+      <div className="px-4 pt-4 pb-1.5 sm:py-4 self-center overflow-hidden">
+        <span className="font-oswald font-semibold text-[17px] text-sd-ink group-hover:text-sd-red transition-colors line-clamp-2 [overflow-wrap:anywhere] sm:line-clamp-none sm:truncate">
           {item.title}
         </span>
       </div>
 
-      <div className="px-4 py-4 self-center font-mono text-[12px] text-sd-ink/60">
-        {item.year ?? "—"}
+      {/* Below sm this wrapper is a meta line under the title; from sm `contents`
+          dissolves it so year and type fall back into their own table columns. */}
+      <div className="col-start-1 row-start-2 flex items-center gap-3 px-4 pb-4 sm:contents">
+        <div className="sm:px-4 sm:py-4 sm:self-center font-mono text-[12px] text-sd-ink/60">
+          {item.year ?? "—"}
+        </div>
+
+        <div className="sm:px-4 sm:py-4 sm:self-center">
+          <span className={`inline-block font-mono text-[9px] tracking-widest px-2 py-0.5 rounded-sm ${
+            isMovie ? "bg-sd-blue/10 text-sd-blue" : "bg-sd-ink/10 text-sd-ink/60"
+          }`}>
+            {typeLabel}
+          </span>
+        </div>
       </div>
 
-      <div className="px-4 py-4 self-center">
-        <span className={`inline-block font-mono text-[9px] tracking-widest px-2 py-0.5 rounded-sm ${
-          isMovie ? "bg-sd-blue/10 text-sd-blue" : "bg-sd-ink/10 text-sd-ink/60"
-        }`}>
-          {typeLabel}
-        </span>
-      </div>
-
-      <div className="px-2 py-4 self-center text-sd-ink/30 group-hover:text-sd-red transition-colors text-center">
+      <div className="col-start-2 row-span-2 row-start-1 sm:col-start-auto sm:row-span-1 sm:row-start-auto px-2 py-4 self-center text-sd-ink/30 group-hover:text-sd-red transition-colors text-center">
         ›
       </div>
     </Link>
@@ -173,10 +183,14 @@ function Paginator({
 
   const pages = buildPageRange(page, totalPages);
 
+  // 36px square cells below sm (touch); original compact cells from sm up.
+  const cell =
+    "inline-flex items-center justify-center min-w-9 h-9 sm:min-w-0 sm:h-auto px-2.5 sm:py-1 border transition-colors";
+
   return (
-    <nav className="flex items-center gap-1 font-mono text-[11px]">
+    <nav aria-label="Pagination" className="flex flex-wrap items-center gap-1 font-mono text-[11px]">
       {page > 1 && (
-        <a href={pageHref(page - 1)} className="px-2.5 py-1 border border-sd-ink text-sd-ink hover:bg-sd-ink hover:text-white transition-colors">‹</a>
+        <a href={pageHref(page - 1)} aria-label="Previous page" className={`${cell} border-sd-ink text-sd-ink hover:bg-sd-ink hover:text-white`}>‹</a>
       )}
       {pages.map((p, i) =>
         p === "…" ? (
@@ -185,7 +199,8 @@ function Paginator({
           <a
             key={p}
             href={pageHref(p as number)}
-            className={`px-2.5 py-1 border transition-colors ${
+            aria-current={p === page ? "page" : undefined}
+            className={`${cell} ${
               p === page
                 ? "bg-sd-ink text-white border-sd-ink"
                 : "border-sd-ink text-sd-ink hover:bg-sd-ink hover:text-white"
@@ -196,7 +211,7 @@ function Paginator({
         )
       )}
       {page < totalPages && (
-        <a href={pageHref(page + 1)} className="px-2.5 py-1 border border-sd-ink text-sd-ink hover:bg-sd-ink hover:text-white transition-colors">›</a>
+        <a href={pageHref(page + 1)} aria-label="Next page" className={`${cell} border-sd-ink text-sd-ink hover:bg-sd-ink hover:text-white`}>›</a>
       )}
     </nav>
   );

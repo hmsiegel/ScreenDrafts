@@ -1,3 +1,4 @@
+// components/features/media/media-type-tabs.tsx
 "use client";
 
 import { useRouter } from "next/navigation";
@@ -28,12 +29,12 @@ export default function MediaTypeTabs({ mediaType, sort, q, year }: MediaTypeTab
   }
 
   return (
-    <div className="flex gap-1">
+    <div className="flex gap-1 overflow-x-auto overscroll-x-contain [scrollbar-width:none] -mx-4 px-4 sm:mx-0 sm:px-0">
       {TABS.map((tab) => (
         <button
           key={tab.value}
           onClick={() => handleTab(tab.value)}
-          className={`px-4 py-2 font-oswald text-[12px] tracking-wide transition-colors ${
+          className={`shrink-0 whitespace-nowrap px-4 py-2.5 xl:py-2 font-oswald text-[12px] tracking-wide transition-colors ${
             mediaType === tab.value
               ? "bg-sd-ink text-white"
               : "text-sd-ink hover:bg-sd-ink/5"

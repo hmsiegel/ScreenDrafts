@@ -168,13 +168,13 @@ export default async function DraftDetailPage({ params }: Props) {
 
     return (
       <div className="min-h-screen bg-light-blue">
-        <div style={{ padding: "40px 40px 64px" }}>
-          <nav className="font-mono text-[11px] mb-8 flex items-center gap-1.5">
+        <div className="page-x pt-6 pb-12 lg:pt-10 lg:pb-16">
+          <nav className="font-mono text-[11px] mb-6 lg:mb-8 flex items-center gap-1.5 min-w-0">
             <Link href="/drafts" className="text-sd-blue hover:underline">
               / DRAFTS
             </Link>
             <span className="text-sd-ink/30">/</span>
-            <span className="text-sd-ink/60 truncate max-w-[400px]">{draft.title}</span>
+            <span className="text-sd-ink/60 truncate min-w-0 max-w-[400px]">{draft.title}</span>
           </nav>
 
           <SpeedDraftLayout
@@ -193,21 +193,20 @@ export default async function DraftDetailPage({ params }: Props) {
   // ── Standard layout (single-part non-SpeedDraft + all multi-part) ──────────
   return (
     <div className="min-h-screen bg-light-blue">
-      <div style={{ padding: "40px 40px 64px" }}>
+      <div className="page-x pt-6 pb-12 lg:pt-10 lg:pb-16">
         {/* Breadcrumb */}
-        <nav className="font-mono text-[11px] mb-8 flex items-center gap-1.5">
+        <nav className="font-mono text-[11px] mb-6 lg:mb-8 flex items-center gap-1.5 min-w-0">
           <Link href="/drafts" className="text-sd-blue hover:underline">
             / DRAFTS
           </Link>
           <span className="text-sd-ink/30">/</span>
-          <span className="text-sd-ink/60 truncate max-w-[400px]">{draft.title}</span>
+          <span className="text-sd-ink/60 truncate min-w-0 max-w-[400px]">{draft.title}</span>
         </nav>
 
         {/* Two-column grid */}
-        <div
-          className="grid gap-10 mx-auto"
-          style={{ gridTemplateColumns: "380px 1fr", maxWidth: 1400 }}
-        >
+        {/* One column below lg (article first, sidebar after — see DraftSidebar's order-last),
+            capped at 720px so tablets don't stretch the sidebar art. Two columns from lg. */}
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[380px_minmax(0,1fr)] lg:gap-10 mx-auto max-w-[720px] lg:max-w-[1400px]">
           {/* Left sidebar */}
           <DraftSidebar
             draft={draft}
@@ -217,18 +216,18 @@ export default async function DraftDetailPage({ params }: Props) {
           />
 
           {/* Right column */}
-          <div className="bg-white border-2 border-sd-ink" style={{ padding: "40px 48px", maxWidth: 720 }}>
+          <div className="bg-white border-2 border-sd-ink min-w-0 lg:max-w-[720px] px-5 py-8 sm:px-8 lg:px-12 lg:py-10">
             <article>
               <div className="font-mono text-[11px] tracking-widest text-sd-red font-bold mb-3">
                 ★ THE EPISODE
               </div>
 
-              <h1 className="font-oswald font-bold text-[56px] text-sd-ink leading-[1] mb-6">
+              <h1 className="font-oswald font-bold text-[36px] sm:text-[48px] lg:text-[56px] text-sd-ink leading-[1] mb-6 [overflow-wrap:anywhere]">
                 {draft.title}
               </h1>
 
               {draft.description && (
-                <p className="font-serif text-[18px] leading-[1.55] text-[#2a2f44] mb-10 max-w-[680px]">
+                <p className="font-serif text-[16px] sm:text-[18px] leading-[1.55] text-[#2a2f44] mb-8 lg:mb-10 max-w-[680px]">
                   {draft.description}
                 </p>
               )}
@@ -239,7 +238,7 @@ export default async function DraftDetailPage({ params }: Props) {
                 return (
                   <>
                     <div className="flex items-center gap-4 mb-2">
-                      <h2 className="font-oswald font-bold text-[32px] text-sd-ink whitespace-nowrap">
+                      <h2 className="font-oswald font-bold text-[26px] sm:text-[32px] text-sd-ink whitespace-nowrap">
                         THE FINAL LIST
                       </h2>
                       <div className="flex-1 h-0.5 bg-sd-ink" />
@@ -272,7 +271,7 @@ export default async function DraftDetailPage({ params }: Props) {
               {isMultiPart && (
                 <>
                   <div className="flex items-center gap-4 mb-8">
-                    <h2 className="font-oswald font-bold text-[32px] text-sd-ink whitespace-nowrap">
+                    <h2 className="font-oswald font-bold text-[26px] sm:text-[32px] text-sd-ink whitespace-nowrap">
                       THE FINAL LIST
                     </h2>
                     <div className="flex-1 h-0.5 bg-sd-ink" />

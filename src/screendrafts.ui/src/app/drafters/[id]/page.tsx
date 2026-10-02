@@ -1,3 +1,4 @@
+// app/drafters/[id]/page.tsx
 import { getParticipantProfile } from "@/services/participants/fetch-participants";
 import { HonorificBanner } from "@/components/features/participants/honorific-banner";
 import {
@@ -16,6 +17,15 @@ import Link from "next/link";
 import Image from "next/image";
 import ProfileAvatar from "@/components/features/participants/profile-avatar";
 import { cdnUrl } from "@/lib/cdn";
+import { parseISO } from "date-fns/parseISO";
+
+// DraftBrief.releaseDates is typed Date[] but arrives over JSON as bare "yyyy-MM-dd"
+// strings. new Date() reads those as UTC midnight, which lands on the previous day —
+// or the previous year, for a January 1 release — anywhere west of UTC. parseISO reads
+// them as local midnight. Same fix as drafts-sidebar.tsx's formatDate.
+function toLocalDate(raw: Date | string): Date {
+  return typeof raw === "string" ? parseISO(raw) : raw;
+}
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -73,7 +83,7 @@ export default async function DrafterProfilePage({ params }: Props) {
   return (
     <div className="min-h-screen bg-light-blue">
       {/* Page header */}
-      <div className="bg-sd-ink text-white px-10 py-12">
+      <div className="bg-sd-ink text-white page-x py-8 lg:py-12">
         <p className="font-mono text-[11px] tracking-widest text-light-blue mb-3">
           <Link href="/drafters" className="hover:text-white transition-colors">
             / DRAFTERS
@@ -81,9 +91,9 @@ export default async function DrafterProfilePage({ params }: Props) {
           <span className="text-white/40"> / </span>
           <span>{profile.displayName.toUpperCase()}</span>
         </p>
-        <div className="flex items-start justify-between gap-8">
-          <div>
-            <h1 className="font-oswald font-bold text-[64px] leading-[0.95] text-white">
+        <div className="flex flex-col-reverse items-start gap-2 sm:flex-row sm:justify-between sm:gap-8">
+          <div className="min-w-0">
+            <h1 className="font-oswald font-bold text-[40px] sm:text-[52px] lg:text-[64px] leading-[0.95] text-white [overflow-wrap:anywhere]">
               {profile.displayName.toUpperCase()}
             </h1>
             {honorificLabel && (
@@ -93,7 +103,7 @@ export default async function DrafterProfilePage({ params }: Props) {
             )}
           </div>
           {profile.isCommissioner && (
-            <span className="font-mono text-[11px] tracking-widest text-sd-red font-bold mt-2">
+            <span className="shrink-0 font-mono text-[11px] tracking-widest text-sd-red font-bold sm:mt-2">
               ★ COMMISSIONER
             </span>
           )}
@@ -104,11 +114,12 @@ export default async function DrafterProfilePage({ params }: Props) {
       <div className="h-1 bg-sd-red" />
 
       {/* Content */}
-      <div className="px-10 py-10 max-w-[1400px] mx-auto">
-        <div className="grid gap-10" style={{ gridTemplateColumns: "320px 1fr" }}>
+      <div className="page-x py-6 lg:py-10 max-w-[1400px] mx-auto">
+        {/* One column below lg; 320px sidebar + content from lg. */}
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[320px_minmax(0,1fr)] lg:gap-10">
 
-          {/* ── Left sidebar ── */}
-          <div className="flex flex-col gap-6">
+          {/* ── Left sidebar ── side-by-side cards on tablets, a stack on phones and in the lg sidebar. */}
+          <div className="flex flex-col gap-6 md:grid md:grid-cols-2 md:items-start lg:flex">
             <ProfileCard profile={profile} honorific={honorific} />
             {profile.drafterStats && (
               <DrafterStatsCard stats={profile.drafterStats} />
@@ -119,9 +130,9 @@ export default async function DrafterProfilePage({ params }: Props) {
           </div>
 
           {/* ── Right column ── */}
-          <div className="flex flex-col gap-10">
+          <div className="flex flex-col gap-6 lg:gap-10 min-w-0">
             {profile.biography && (
-              <div className="bg-white border-2 border-sd-ink p-6">
+              <div className="bg-white border-2 border-sd-ink p-5 sm:p-6">
                 <h2 className="font-oswald font-bold text-[13px] tracking-widest text-sd-red mb-4">
                   BIOGRAPHY
                 </h2>
@@ -260,7 +271,7 @@ function SocialLinks({ handles }: { handles: SocialHandles }) {
 
 function DrafterStatsCard({ stats }: { stats: DrafterStatsResponse }) {
   return (
-    <div className="bg-white border-2 border-sd-ink p-6">
+    <div className="bg-white border-2 border-sd-ink p-5 sm:p-6">
       <h2 className="font-oswald font-bold text-[13px] tracking-widest text-sd-red mb-4">
         DRAFTER STATS
       </h2>
@@ -307,7 +318,7 @@ function DrafterStatsCard({ stats }: { stats: DrafterStatsResponse }) {
 
 function HostStatsCard({ stats }: { stats: HostStatsResponse }) {
   return (
-    <div className="bg-white border-2 border-sd-ink p-6">
+    <div className="bg-white border-2 border-sd-ink p-5 sm:p-6">
       <h2 className="font-oswald font-bold text-[13px] tracking-widest text-sd-red mb-4">
         HOST STATS
       </h2>
@@ -373,14 +384,14 @@ function TableOfContents({
   vetosByDraft: Map<string, VetoHistoryItem[]>;
 }) {
   return (
-    <div className="bg-white border-2 border-sd-ink p-6">
+    <div className="bg-white border-2 border-sd-ink p-5 sm:p-6">
       <h2 className="font-oswald font-bold text-[13px] tracking-widest text-sd-red mb-4">
         DRAFT HISTORY
         <span className="text-sd-ink/40 ml-2 font-normal text-[12px]">
           ({draftIds.length})
         </span>
       </h2>
-      <div className="columns-2 gap-6">
+      <div className="columns-1 sm:columns-2 gap-6">
         {draftIds.map((draftId) => {
           const item = picksByDraft.get(draftId);
           const vetoes = vetosByDraft.get(draftId) ?? [];
@@ -398,7 +409,7 @@ function TableOfContents({
                 {draft.draftTitle}
               </span>
               <span className="font-mono text-[10px] tracking-widest text-[#5a6075] shrink-0">
-                {releaseDate ? new Date(releaseDate).getFullYear() : "TBD"}
+                {releaseDate ? toLocalDate(releaseDate).getFullYear() : "TBD"}
               </span>
             </a>
           );
@@ -475,20 +486,20 @@ function DraftBlock({
       className="bg-white border-2 border-sd-ink scroll-mt-6"
     >
       {/* Header */}
-      <div className="bg-sd-ink px-6 py-5 flex items-center justify-between gap-4">
+      <div className="bg-sd-ink px-4 py-4 sm:px-6 sm:py-5 flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
         <Link
           href={`/drafts/${draft.draftPublicId}`}
-          className="font-oswald font-bold text-[22px] text-white hover:text-sd-red transition-colors leading-tight"
+          className="font-oswald font-bold text-[19px] sm:text-[22px] text-white hover:text-sd-red transition-colors leading-tight [overflow-wrap:anywhere]"
         >
           {draft.draftTitle}
         </Link>
-        <div className="flex items-center gap-6 shrink-0">
+        <div className="flex items-center gap-4 sm:gap-6 shrink-0">
           <span className="font-mono text-[12px] tracking-widest text-white/80">
             {finalPicks.length} FILM{finalPicks.length !== 1 ? "S" : ""}
           </span>
           {releaseDate && (
             <span className="font-mono text-[12px] tracking-widest text-white/80">
-              {new Date(releaseDate as unknown as string).toLocaleDateString("en-US", {
+              {toLocalDate(releaseDate).toLocaleDateString("en-US", {
                 year: "numeric",
                 month: "short",
                 day: "numeric",
@@ -525,7 +536,7 @@ function PickRow({ pick }: { pick: PickItem }) {
   const isStruck = isVetoed || isCommissionerOverridden;
 
   return (
-    <div className="px-6 py-4 flex items-center gap-4">
+    <div className="px-4 sm:px-6 py-4 flex items-center gap-3 sm:gap-4">
       <div
         className={`w-9 h-9 shrink-0 flex items-center justify-center border-2 font-oswald font-bold text-[15px] ${isStruck
             ? "border-sd-ink/20 text-sd-ink/30"
@@ -610,7 +621,7 @@ function PickRow({ pick }: { pick: PickItem }) {
 
 function VetoIssuedRow({ veto }: { veto: VetoHistoryItem }) {
   return (
-    <div className="px-6 py-4 flex items-center gap-4 bg-sd-red/[0.03]">
+    <div className="px-4 sm:px-6 py-4 flex items-center gap-3 sm:gap-4 bg-sd-red/[0.03]">
       <div className="w-9 h-9 shrink-0 flex items-center justify-center border-2 border-sd-red font-oswald font-bold text-[15px] text-sd-red">
         <span className="line-through">{veto.position}</span>
       </div>
@@ -639,7 +650,7 @@ function VetoIssuedRow({ veto }: { veto: VetoHistoryItem }) {
           )}
         </div>
         {veto.wasVetoOverridden && (
-          <div className="mt-1 font-mono text-[11px] tracking-widests text-sd-blue">
+          <div className="mt-1 font-mono text-[11px] tracking-widest text-sd-blue">
             ↩ VETO OVERRIDDEN
             {veto.overrideByDisplayName && veto.overrideByPublicId && (
               <span className="font-normal">

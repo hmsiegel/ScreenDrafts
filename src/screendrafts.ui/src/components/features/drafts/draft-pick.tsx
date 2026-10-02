@@ -72,8 +72,8 @@ export function DraftPick({ pick, position, isTopPick, participantNames, partici
   // Access possibly-present year via index signature
   const movieYear = (pick as Record<string, unknown>).movieYear as string | undefined;
 
-  const titleSize = isTopPick ? "text-[30px]" : "text-[22px]";
-  const numSize = isTopPick ? "text-[56px] text-sd-red" : "text-[40px] text-sd-blue";
+  const titleSize = isTopPick ? "text-[24px] sm:text-[30px]" : "text-[19px] sm:text-[22px]";
+  const numSize = isTopPick ? "text-[40px] sm:text-[56px] text-sd-red" : "text-[30px] sm:text-[40px] text-sd-blue";
 
   const filmLink = pick.moviePublicId
     ? `/media/${pick.moviePublicId}`
@@ -81,7 +81,7 @@ export function DraftPick({ pick, position, isTopPick, participantNames, partici
 
   const titleEl = (
     <span
-      className={`font-sans font-bold ${titleSize} leading-tight ${(hasVeto && !vetoIsOverridden) || hasCommissionerOverride
+      className={`font-sans font-bold ${titleSize} leading-tight [overflow-wrap:anywhere] ${(hasVeto && !vetoIsOverridden) || hasCommissionerOverride
           ? "line-through text-sd-red"
           : "text-sd-ink"
         }`}
@@ -94,10 +94,8 @@ export function DraftPick({ pick, position, isTopPick, participantNames, partici
   );
 
   return (
-    <div
-      className="grid py-5 border-t border-sd-ink/10 first:border-t-0"
-      style={{ gridTemplateColumns: "76px 1fr" }}
-    >
+    // Number column narrows on phones; minmax(0,1fr) lets long titles wrap instead of widening the row.
+    <div className="grid grid-cols-[52px_minmax(0,1fr)] sm:grid-cols-[76px_minmax(0,1fr)] py-5 border-t border-sd-ink/10 first:border-t-0">
       {/* Position number */}
       <div className={`font-oswald font-bold ${numSize} leading-none pt-1`}>
         {position}

@@ -1,3 +1,4 @@
+// src/components/features/drafts/speed-draft-layout.tsx
 "use client";
 
 /**
@@ -265,23 +266,22 @@ export function SpeedDraftLayout({
   // ── Render ────────────────────────────────────────────────────────────────
 
   return (
-    <div
-      className="grid gap-10 mx-auto"
-      style={{ gridTemplateColumns: "380px 1fr", maxWidth: 1400 }}
-    >
+    // One column below lg (article first, sidebar after), capped at 720px; two columns from lg.
+    <div className="grid grid-cols-1 gap-6 lg:grid-cols-[380px_minmax(0,1fr)] lg:gap-10 mx-auto max-w-[720px] lg:max-w-[1400px]">
       {/* ── Left sidebar ───────────────────────────────────────────────── */}
       <aside
-        className="bg-white border-2 border-sd-ink sticky top-6 self-start"
-        style={{ padding: "28px 24px" }}
+        className="order-last lg:order-none bg-white border-2 border-sd-ink lg:sticky lg:top-6 self-start px-5 py-6 lg:px-6 lg:py-7"
       >
         <div className="font-mono text-[10px] tracking-widest text-sd-blue font-bold mb-1">
           EPISODE
         </div>
-        <div className="font-oswald font-bold text-[88px] text-sd-red leading-[0.92] mb-2">
+        <div className="font-oswald font-bold text-[64px] lg:text-[88px] text-sd-red leading-[0.92] mb-2">
           {episodeNumber ?? "—"}
         </div>
 
-        <EpisodeImage imagePath={draft.imagePath} title={draft.title} publicId={draft.publicId}/>
+        <div className="max-w-[332px]">
+          <EpisodeImage imagePath={draft.imagePath} title={draft.title} publicId={draft.publicId}/>
+        </div>
 
         <div className="font-oswald font-semibold text-[22px] text-sd-ink leading-[1.15] tracking-tight mb-3">
           {draft.title}
@@ -395,37 +395,39 @@ export function SpeedDraftLayout({
 
       {/* ── Right column ───────────────────────────────────────────────── */}
       <div
-        className="bg-white border-2 border-sd-ink"
-        style={{ padding: "40px 48px", maxWidth: 720 }}
+        className="bg-white border-2 border-sd-ink min-w-0 lg:max-w-[720px] px-5 py-8 sm:px-8 lg:px-12 lg:py-10"
       >
         <article>
           <div className="font-mono text-[11px] tracking-widest text-sd-red font-bold mb-3">
             ★ THE EPISODE
           </div>
 
-          <h1 className="font-oswald font-bold text-[56px] text-sd-ink leading-[1] mb-6">
+          <h1 className="font-oswald font-bold text-[36px] sm:text-[48px] lg:text-[56px] text-sd-ink leading-[1] mb-6 [overflow-wrap:anywhere]">
             {draft.title}
           </h1>
 
           {draft.description && (
-            <p className="font-serif text-[18px] leading-[1.55] text-[#2a2f44] mb-10 max-w-[680px]">
+            <p className="font-serif text-[16px] sm:text-[18px] leading-[1.55] text-[#2a2f44] mb-8 lg:mb-10 max-w-[680px]">
               {draft.description}
             </p>
           )}
 
-          <h2 className="font-oswald font-bold text-[32px] text-sd-ink mb-6">
+          <h2 className="font-oswald font-bold text-[26px] sm:text-[32px] text-sd-ink mb-6">
             THE FINAL LIST
           </h2>
 
-          {/* Tab bar */}
-          <div className="flex items-end gap-0 border-b-2 border-sd-ink mb-0">
+          {/* Tab bar — tabs scroll sideways when they outrun the column. The -2px overlap that
+              lets the active tab sit on the rule lives on the scroller, not the tabs: a scroll
+              container clips vertically too, so a per-tab negative margin would be cut off. */}
+          <div className="sm:flex sm:items-end border-b-2 border-sd-ink">
+            <div className="flex overflow-x-auto overscroll-x-contain [scrollbar-width:none] -mb-[2px]">
             {tabs.map((tab) => {
               const isActive = tab.index === activeIndex;
               return (
                 <button
                   key={tab.index}
                   onClick={() => setActiveIndex(tab.index)}
-                  className={`font-oswald font-bold text-[13px] tracking-wide px-5 py-2.5 transition-colors border-t-2 border-l-2 border-r-2 -mb-[2px] ${
+                  className={`shrink-0 whitespace-nowrap font-oswald font-bold text-[13px] tracking-wide px-4 sm:px-5 py-2.5 transition-colors border-t-2 border-l-2 border-r-2 ${
                     isActive
                       ? "bg-sd-ink text-white border-sd-ink"
                       : "bg-white text-sd-ink/50 border-sd-ink/20 hover:text-sd-ink hover:border-sd-ink/50"
@@ -435,9 +437,14 @@ export function SpeedDraftLayout({
                 </button>
               );
             })}
-            <div className="ml-auto pb-2 font-mono text-[11px] text-sd-ink/50 self-end">
+            </div>
+            <div className="hidden sm:block ml-auto pl-4 pb-2 shrink-0 font-mono text-[11px] text-sd-ink/50 self-end">
               {totalFinalPicks} PICKS TOTAL · {activeFinalPicks.length} HERE
             </div>
+          </div>
+          {/* Phones: the count drops below the rule so the tabs keep the full width. */}
+          <div className="sm:hidden mt-2 font-mono text-[11px] text-sd-ink/50">
+            {totalFinalPicks} PICKS TOTAL · {activeFinalPicks.length} HERE
           </div>
 
           {/* Active sub-draft picks */}

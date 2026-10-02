@@ -1,3 +1,4 @@
+// components/features/media/youtube-embed.tsx
 "use client";
 
 interface YouTubeEmbedProps {
@@ -42,11 +43,11 @@ function LinkCard({ url, title }: { url: string; title: string }) {
           <path d="M8 5v14l11-7z" />
         </svg>
       </div>
-      <div className="flex flex-col">
+      <div className="flex flex-col min-w-0">
         <span className="font-oswald font-semibold text-[14px] text-sd-ink group-hover:text-sd-red transition-colors">
           WATCH TRAILER
         </span>
-        <span className="font-mono text-[9px] tracking-widest text-sd-ink/40">
+        <span className="font-mono text-[9px] tracking-widest text-sd-ink/40 [overflow-wrap:anywhere]">
           {title.toUpperCase()}
         </span>
       </div>
