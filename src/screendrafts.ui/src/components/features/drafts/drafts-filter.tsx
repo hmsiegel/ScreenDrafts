@@ -1,7 +1,8 @@
+// components/features/drafts/drafts-filter.tsx
 'use client';
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useId, useRef } from "react";
 
 interface CampaignOption {
   publicId: string;
@@ -80,21 +81,22 @@ function CategoryDropdown({ categories, selected, onChange }: CategoryDropdownPr
       <button
         type="button"
         onClick={() => setOpen(v => !v)}
+        aria-expanded={open}
         className="w-full border border-sd-ink/30 rounded px-3 py-2 text-sm text-sd-ink bg-white focus:outline-none focus:border-sd-blue text-left flex items-center justify-between gap-2"
       >
-        <span className={selected.size === 0 ? "text-sd-ink/40" : ""}>{label}</span>
+        <span className={`truncate ${selected.size === 0 ? "text-sd-ink/40" : ""}`}>{label}</span>
         <span className="text-sd-ink/40 text-xs">{open ? "▲" : "▼"}</span>
       </button>
 
       {open && (
-        <div className="absolute z-20 top-full left-0 mt-1 w-full min-w-[200px] bg-white border border-sd-ink/20 shadow-lg max-h-60 overflow-y-auto">
+        <div className="absolute z-20 top-full left-0 mt-1 w-full min-w-[200px] bg-white border border-sd-ink/20 shadow-lg max-h-60 overflow-y-auto overscroll-contain">
           {categories.length === 0 && (
             <p className="px-3 py-2 font-mono text-[11px] text-sd-ink/40">No categories.</p>
           )}
           {categories.map(c => (
             <label
               key={c.publicId}
-              className="flex items-center gap-2.5 px-3 py-2 cursor-pointer hover:bg-sd-paper/60 select-none"
+              className="flex items-center gap-2.5 px-3 py-2.5 lg:py-2 cursor-pointer hover:bg-sd-paper/60 select-none"
             >
               <input
                 type="checkbox"
@@ -111,7 +113,7 @@ function CategoryDropdown({ categories, selected, onChange }: CategoryDropdownPr
               <button
                 type="button"
                 onClick={() => onChange(new Set())}
-                className="w-full text-left px-3 py-2 font-mono text-[10px] tracking-widest text-sd-red hover:bg-red-50"
+                className="w-full text-left px-3 py-2.5 lg:py-2 font-mono text-[10px] tracking-widest text-sd-red hover:bg-red-50"
               >
                 CLEAR
               </button>
@@ -123,9 +125,17 @@ function CategoryDropdown({ categories, selected, onChange }: CategoryDropdownPr
   );
 }
 
+// Layout by width:
+//   < lg      Search plus a FILTERS toggle; the other fields fold into a panel
+//             (1 column on phones, 2 from sm).
+//   lg – 2xl  Always open, 4-column grid: search + dates, then the four selects,
+//             then the button on its own row, right-aligned.
+//   >= 2xl    The original single row. Below 1536 the two native date inputs
+//             (~125px each) don't fit in one row beside everything else.
 export default function DraftsFilter({ campaigns, categories }: DraftsFilterProps) {
   const router = useRouter();
   const params = useSearchParams();
+  const panelId = useId();
 
   const [search, setSearch] = useState(params.get("q") ?? "");
   const [fromDate, setFromDate] = useState(params.get("fromDate") ?? "");
@@ -142,6 +152,7 @@ export default function DraftsFilter({ campaigns, categories }: DraftsFilterProp
     const d = params.get("dir") ?? "desc";
     return `${s}-${d}`;
   });
+  const [panelOpen, setPanelOpen] = useState(false);
 
   useEffect(() => {
     setSearch(params.get("q") ?? "");
@@ -156,6 +167,14 @@ export default function DraftsFilter({ campaigns, categories }: DraftsFilterProp
     setSort(`${s}-${d}`);
   }, [params]);
 
+  // Counts what's applied in the URL, not unsaved edits, so the badge matches the results shown.
+  const appliedFilterCount =
+    (params.get("fromDate") || params.get("toDate") ? 1 : 0) +
+    (params.get("draftType") ? 1 : 0) +
+    (params.get("campaignPublicId") ? 1 : 0) +
+    (params.getAll("categoryPublicIds").length > 0 ? 1 : 0) +
+    (params.get("minDrafters") ? 1 : 0);
+
   const apply = () => {
     const qs = new URLSearchParams();
     if (search) qs.set("q", search);
@@ -169,109 +188,134 @@ export default function DraftsFilter({ campaigns, categories }: DraftsFilterProp
     if (sortField) qs.set("sort", sortField);
     if (sortDir) qs.set("dir", sortDir);
     qs.set("page", "1");
+    setPanelOpen(false);
     router.push(`?${qs.toString()}`);
   };
 
   const labelCls = "block font-mono text-[9px] tracking-widest text-sd-blue font-bold mb-1.5 uppercase";
   const inputCls =
-    "w-full border border-sd-ink/30 rounded px-3 py-2 text-sm text-sd-ink focus:outline-none focus:border-sd-blue";
+    "w-full min-w-0 border border-sd-ink/30 rounded px-3 py-2 text-sm text-sd-ink focus:outline-none focus:border-sd-blue";
   const selectCls =
-    "w-full border border-sd-ink/30 rounded px-3 py-2 text-sm text-sd-ink focus:outline-none focus:border-sd-blue bg-white";
+    "w-full min-w-0 border border-sd-ink/30 rounded px-3 py-2 text-sm text-sd-ink focus:outline-none focus:border-sd-blue bg-white";
 
   return (
-    <div
-      className="bg-white border-b border-sd-ink/20 px-10 py-6 flex items-end gap-6"
-      style={{ borderBottomWidth: "1.5px" }}
-    >
-      {/* Search */}
-      <div className="flex-[2]">
-        <label className={labelCls}>SEARCH THE ARCHIVE</label>
-        <input
-          type="text"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && apply()}
-          placeholder="Search by title, drafter, or film…"
-          className={inputCls}
-        />
-      </div>
+    <div className="bg-white border-b-[1.5px] border-sd-ink/20 page-x py-4 lg:py-6">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-4 lg:items-end lg:gap-x-6 2xl:grid-cols-[minmax(0,2fr)_minmax(0,2fr)_repeat(4,minmax(0,1fr))_auto]">
+        {/* Search — always visible. Below lg the FILTERS toggle rides beside it. */}
+        <div className="lg:col-span-2 2xl:col-span-1">
+          <label className={labelCls}>SEARCH THE ARCHIVE</label>
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && apply()}
+              placeholder="Search by title, drafter, or film…"
+              enterKeyHint="search"
+              className={inputCls}
+            />
+            <button
+              type="button"
+              onClick={() => setPanelOpen(v => !v)}
+              aria-expanded={panelOpen}
+              aria-controls={panelId}
+              className={`lg:hidden shrink-0 rounded border px-3 font-oswald text-xs tracking-widest transition-colors ${
+                panelOpen || appliedFilterCount > 0
+                  ? "border-sd-ink bg-sd-ink text-white"
+                  : "border-sd-ink/30 text-sd-ink"
+              }`}
+            >
+              FILTERS{appliedFilterCount > 0 ? ` (${appliedFilterCount})` : ""}
+            </button>
+          </div>
+        </div>
 
-      {/* Date range */}
-      <div className="flex-1">
-        <label className={labelCls}>DATE RANGE</label>
-        <div className="flex gap-2">
-          <input
-            type="date"
-            value={fromDate}
-            onChange={(e) => setFromDate(e.target.value)}
-            className={inputCls}
-            title="From"
-          />
-          <input
-            type="date"
-            value={toDate}
-            onChange={(e) => setToDate(e.target.value)}
-            className={inputCls}
-            title="To"
-          />
+        {/* Collapsible below lg. From lg, `contents` dissolves this wrapper so its
+            children drop straight into the outer grid. */}
+        <div
+          id={panelId}
+          className={`${panelOpen ? "grid" : "hidden"} grid-cols-1 sm:grid-cols-2 gap-4 lg:contents`}
+        >
+          {/* Date range */}
+          <div className="sm:col-span-2 2xl:col-span-1">
+            <label className={labelCls}>DATE RANGE</label>
+            <div className="grid grid-cols-2 gap-2">
+              <input
+                type="date"
+                value={fromDate}
+                onChange={(e) => setFromDate(e.target.value)}
+                className={inputCls}
+                title="From"
+                aria-label="From date"
+              />
+              <input
+                type="date"
+                value={toDate}
+                onChange={(e) => setToDate(e.target.value)}
+                className={inputCls}
+                title="To"
+                aria-label="To date"
+              />
+            </div>
+          </div>
+
+          {/* Draft type */}
+          <div>
+            <label className={labelCls}>DRAFT TYPE</label>
+            <select value={draftType} onChange={(e) => setDraftType(e.target.value)} className={selectCls}>
+              <option value="">All types</option>
+              {DRAFT_TYPE_OPTIONS.map((o) => (
+                <option key={o.id} value={String(o.id)}>
+                  {o.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Campaign */}
+          <div>
+            <label className={labelCls}>CAMPAIGN</label>
+            <select value={campaign} onChange={(e) => setCampaign(e.target.value)} className={selectCls}>
+              <option value="">All campaigns</option>
+              {campaigns.map((c) => (
+                <option key={c.publicId} value={c.publicId}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Category multi-select */}
+          <div className="min-w-0">
+            <label className={labelCls}>CATEGORIES</label>
+            <CategoryDropdown
+              categories={categories}
+              selected={selectedCategories}
+              onChange={setSelectedCategories}
+            />
+          </div>
+
+          {/* Drafter count */}
+          <div>
+            <label className={labelCls}>DRAFTER COUNT</label>
+            <select value={minDrafters} onChange={(e) => setMinDrafters(e.target.value)} className={selectCls}>
+              {DRAFTER_COUNT_OPTIONS.map((o) => (
+                <option key={o.value} value={o.value}>
+                  {o.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Apply — full width in the panel, right-aligned on its own row at lg, inline at 2xl. */}
+          <button
+            onClick={apply}
+            className="min-h-11 lg:min-h-0 sm:col-span-2 lg:col-span-4 lg:justify-self-end 2xl:col-span-1 bg-sd-red text-white font-oswald text-xs tracking-wide px-5 py-2.5 hover:bg-red-700 transition-colors"
+          >
+            FILTER →
+          </button>
         </div>
       </div>
-
-      {/* Draft type */}
-      <div className="flex-1">
-        <label className={labelCls}>DRAFT TYPE</label>
-        <select value={draftType} onChange={(e) => setDraftType(e.target.value)} className={selectCls}>
-          <option value="">All types</option>
-          {DRAFT_TYPE_OPTIONS.map((o) => (
-            <option key={o.id} value={String(o.id)}>
-              {o.label}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {/* Campaign */}
-      <div className="flex-1">
-        <label className={labelCls}>CAMPAIGN</label>
-        <select value={campaign} onChange={(e) => setCampaign(e.target.value)} className={selectCls}>
-          <option value="">All campaigns</option>
-          {campaigns.map((c) => (
-            <option key={c.publicId} value={c.publicId}>
-              {c.name}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {/* Category multi-select */}
-      <div className="flex-1 min-w-[160px]">
-        <label className={labelCls}>CATEGORIES</label>
-        <CategoryDropdown
-          categories={categories}
-          selected={selectedCategories}
-          onChange={setSelectedCategories}
-        />
-      </div>
-
-      {/* Drafter count */}
-      <div className="flex-1">
-        <label className={labelCls}>DRAFTER COUNT</label>
-        <select value={minDrafters} onChange={(e) => setMinDrafters(e.target.value)} className={selectCls}>
-          {DRAFTER_COUNT_OPTIONS.map((o) => (
-            <option key={o.value} value={o.value}>
-              {o.label}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {/* Apply button */}
-      <button
-        onClick={apply}
-        className="shrink-0 bg-sd-red text-white font-oswald text-xs tracking-wide px-5 py-2.5 hover:bg-red-700 transition-colors"
-      >
-        FILTER →
-      </button>
     </div>
   );
 }
