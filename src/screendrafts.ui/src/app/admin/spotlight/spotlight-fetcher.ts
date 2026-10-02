@@ -77,6 +77,20 @@ export async function createSpotlight(
   return res.json();
 }
 
+export async function updateSpotlight(
+  accessToken: string,
+  publicId: string,
+  spotlightDescription: string,
+  spotifyUrl: string | null
+): Promise<void> {
+  const res = await fetch(`${API_BASE}/reporting/spotlights/${publicId}`, {
+    method: 'PUT',
+    headers: authHeaders(accessToken),
+    body: JSON.stringify({ spotlightDescription, spotifyUrl: spotifyUrl || null }),
+  });
+  if (!res.ok) throw new Error(`updateSpotlight failed: ${res.status}`);
+}
+
 export async function activateSpotlight(
   accessToken: string,
   publicId: string

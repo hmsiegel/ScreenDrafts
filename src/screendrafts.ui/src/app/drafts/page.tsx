@@ -7,6 +7,7 @@ import { DraftsTable } from "@/components/features/drafts/drafts-table";
 import { listCampaigns } from "@/services/drafts/fetch-campaigns";
 import { auth } from "@/auth";
 import { listCategories } from "@/services/drafts/fetch-categrories";
+import { WikiExportScope } from "@/components/features/wiki-export/wiki-export";
 
 export const metadata: Metadata = {
    title: "The Archive",
@@ -28,8 +29,8 @@ function asString(v: string | string[] | undefined): string | undefined {
    return Array.isArray(v) ? v[0] : v;
 }
 function asStringArray(v: string | string[] | undefined): string[] {
-  if (!v) return [];
-  return Array.isArray(v) ? v : [v];
+   if (!v) return [];
+   return Array.isArray(v) ? v : [v];
 }
 
 function formatStat(n: number | undefined): string {
@@ -105,12 +106,14 @@ export default async function DraftsPage(props: { searchParams: SearchParams }) 
 
          {/* Filter strip */}
          <Suspense>
-            <DraftsFilter campaigns={campaigns} categories={categories}/>
+            <DraftsFilter campaigns={campaigns} categories={categories} />
          </Suspense>
 
          {/* Table container */}
          <div className="px-10 pt-0 pb-16">
-            <DraftsTable drafts={draftsResult.items} searchParams={qp} isAdmin={isAdmin} />
+            <WikiExportScope enabled={isAdmin} kind="drafts" accessToken={session?.accessToken ?? ""} >
+               <DraftsTable drafts={draftsResult.items} searchParams={qp} isAdmin={isAdmin} />
+            </WikiExportScope>
 
             {/* Pagination */}
             <div className="flex items-center justify-between mt-4">

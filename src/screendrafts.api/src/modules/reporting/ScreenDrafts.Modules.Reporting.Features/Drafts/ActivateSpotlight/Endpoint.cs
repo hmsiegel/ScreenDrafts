@@ -4,7 +4,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<ActivateSpotlightRequest>
 {
   public override void Configure()
   {
-    Put(DraftReportingRoutes.ById);
+    Put(DraftReportingRoutes.Activate);
     Description(x =>
     {
       x.WithName(ReportingOpenApi.Names.Spotlight_Activate)

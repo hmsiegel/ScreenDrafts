@@ -101,6 +101,16 @@ export interface IClient {
     audit_ExportAuthAuditLogs(body: ExportAuthAuditLogsRequest): Promise<FileResult>;
 
     /**
+     * @return OK
+     */
+    wikiExport_Drafts(body: ExportDraftsWikiRequest): Promise<ExportWikiResponse>;
+
+    /**
+     * @return OK
+     */
+    wikiExport_Drafters(body: ExportDraftersWikiRequest): Promise<ExportWikiResponse>;
+
+    /**
      * @return No Content
      */
     series_RestoreSeries(): Promise<void>;
@@ -984,6 +994,16 @@ export interface IClient {
     media_GetByExternalIds(body: GetMediaByExternalIdsRequest): Promise<GetMediaByExternalIdsResponse>;
 
     /**
+     * @return No Content
+     */
+    spotlight_Update(body: UpdateSpotlightRequest): Promise<void>;
+
+    /**
+     * @return No Content
+     */
+    spotlight_Delete(body: DeleteSpotlightRequest): Promise<void>;
+
+    /**
      * @return OK
      */
     spotlight_SearchCandidates(body: SearchSpotlightCandidatesRequest): Promise<SearchSpotlightCandidatesResponse>;
@@ -1016,17 +1036,12 @@ export interface IClient {
     /**
      * @return No Content
      */
-    spotlight_Delete(body: DeleteSpotlightRequest): Promise<void>;
+    spotlight_Deactivate(body: DeactivateSpotlightRequest): Promise<void>;
 
     /**
      * @return No Content
      */
     spotlight_Activate(body: ActivateSpotlightRequest): Promise<void>;
-
-    /**
-     * @return No Content
-     */
-    spotlight_Deactivate(body: DeactivateSpotlightRequest): Promise<void>;
 
     /**
      * @return No Content
@@ -2016,6 +2031,120 @@ export class Client implements IClient {
             });
         }
         return Promise.resolve<FileResult>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    wikiExport_Drafts(body: ExportDraftsWikiRequest, signal?: AbortSignal): Promise<ExportWikiResponse> {
+        let url_ = this.baseUrl + "/wiki-exports/drafts";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processWikiExport_Drafts(_response);
+        });
+    }
+
+    protected processWikiExport_Drafts(response: Response): Promise<ExportWikiResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ExportWikiResponse;
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ExportWikiResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    wikiExport_Drafters(body: ExportDraftersWikiRequest, signal?: AbortSignal): Promise<ExportWikiResponse> {
+        let url_ = this.baseUrl + "/wiki-exports/drafters";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processWikiExport_Drafters(_response);
+        });
+    }
+
+    protected processWikiExport_Drafters(response: Response): Promise<ExportWikiResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ExportWikiResponse;
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ExportWikiResponse>(null as any);
     }
 
     /**
@@ -11182,6 +11311,114 @@ export class Client implements IClient {
     }
 
     /**
+     * @return No Content
+     */
+    spotlight_Update(body: UpdateSpotlightRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/reporting/spotlights/{publicId}";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processSpotlight_Update(_response);
+        });
+    }
+
+    protected processSpotlight_Update(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    spotlight_Delete(body: DeleteSpotlightRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/reporting/spotlights/{publicId}";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "DELETE",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processSpotlight_Delete(_response);
+        });
+    }
+
+    protected processSpotlight_Delete(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
      * @return OK
      */
     spotlight_SearchCandidates(body: SearchSpotlightCandidatesRequest, signal?: AbortSignal): Promise<SearchSpotlightCandidatesResponse> {
@@ -11467,27 +11704,27 @@ export class Client implements IClient {
     /**
      * @return No Content
      */
-    spotlight_Delete(body: DeleteSpotlightRequest, signal?: AbortSignal): Promise<void> {
-        let url_ = this.baseUrl + "/reporting/spotlights/{publicId}";
+    spotlight_Deactivate(body: DeactivateSpotlightRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/reporting/spotlights/{publicId}/deactivate";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
 
         let options_: RequestInit = {
             body: content_,
-            method: "DELETE",
+            method: "PUT",
             signal,
             headers: {
-                "Content-Type": "*/*",
+                "Content-Type": "application/json",
             }
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processSpotlight_Delete(_response);
+            return this.processSpotlight_Deactivate(_response);
         });
     }
 
-    protected processSpotlight_Delete(response: Response): Promise<void> {
+    protected processSpotlight_Deactivate(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 204) {
@@ -11522,7 +11759,7 @@ export class Client implements IClient {
      * @return No Content
      */
     spotlight_Activate(body: ActivateSpotlightRequest, signal?: AbortSignal): Promise<void> {
-        let url_ = this.baseUrl + "/reporting/spotlights/{publicId}";
+        let url_ = this.baseUrl + "/reporting/spotlights/{publicId}/activate";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -11542,60 +11779,6 @@ export class Client implements IClient {
     }
 
     protected processSpotlight_Activate(response: Response): Promise<void> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 204) {
-            return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status === 400) {
-            return response.text().then((_responseText) => {
-            return throwException("Bad Request", status, _responseText, _headers);
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            return throwException("Not Found", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<void>(null as any);
-    }
-
-    /**
-     * @return No Content
-     */
-    spotlight_Deactivate(body: DeactivateSpotlightRequest, signal?: AbortSignal): Promise<void> {
-        let url_ = this.baseUrl + "/reporting/spotlights/{publicId}/deactivate";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "PUT",
-            signal,
-            headers: {
-                "Content-Type": "application/json",
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processSpotlight_Deactivate(_response);
-        });
-    }
-
-    protected processSpotlight_Deactivate(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 204) {
@@ -14183,12 +14366,32 @@ export interface ExportDomainEventAuditLogsRequest {
     [key: string]: any;
 }
 
+export interface ExportDraftersWikiRequest {
+    drafterPublicIds: string[];
+
+    [key: string]: any;
+}
+
+export interface ExportDraftsWikiRequest {
+    draftPublicIds: string[];
+
+    [key: string]: any;
+}
+
 export interface ExportHttpAuditLogsRequest {
     actorId?: string | undefined;
     from?: Date | undefined;
     to?: Date | undefined;
     statusCode?: number | undefined;
     endpoint?: string | undefined;
+
+    [key: string]: any;
+}
+
+export interface ExportWikiResponse {
+    fileName: string;
+    content: string;
+    pageCount: number;
 
     [key: string]: any;
 }
@@ -17267,6 +17470,14 @@ export interface UpdateSocialRequest {
     instagramHandle?: string | undefined;
     letterboxdHandle?: string | undefined;
     blueskyHandle?: string | undefined;
+
+    [key: string]: any;
+}
+
+export interface UpdateSpotlightRequest {
+    publicId?: string;
+    spotlightDescription: string;
+    spotifyUrl?: string | undefined;
 
     [key: string]: any;
 }

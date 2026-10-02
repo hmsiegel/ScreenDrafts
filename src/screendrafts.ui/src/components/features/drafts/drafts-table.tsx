@@ -6,6 +6,7 @@ import { ListDraftsResponse } from "@/lib/dto";
 import { format } from "date-fns/format";
 import { parseISO } from "date-fns/parseISO";
 import Link from "next/link";
+import { WikiSelectAll, WikiSelectCheckbox } from "@/components/features/wiki-export/wiki-export";
 
 interface DraftsTableProps {
    drafts: ListDraftsResponse[];
@@ -90,9 +91,10 @@ export function DraftsTable({ drafts, searchParams, isAdmin = false }: DraftsTab
   const currentSort = searchParams.sort as string | undefined;
   const currentDir = searchParams.dir as string | undefined;
 
-  // When isAdmin, the last column is split: arrow (28px) + edit link (56px)
+  // When isAdmin, a 36px wiki-export checkbox column leads and the last column is split:
+  // arrow (28px) + edit link (56px)
   const gridCols = isAdmin
-    ? "90px minmax(160px, 1.5fr) 130px minmax(160px, 1fr) 90px 130px 28px 56px"
+    ? "36px 90px minmax(160px, 1.5fr) 130px minmax(160px, 1fr) 90px 130px 28px 56px"
     : "90px minmax(160px, 1.5fr) 130px minmax(160px, 1fr) 90px 130px 28px";
 
   return (
@@ -102,6 +104,15 @@ export function DraftsTable({ drafts, searchParams, isAdmin = false }: DraftsTab
         className="grid bg-sd-ink text-white font-mono text-[10px] tracking-wide"
         style={{ gridTemplateColumns: gridCols }}
       >
+        {isAdmin && (
+          <div className="px-2 py-3 flex items-center justify-center">
+            <WikiSelectAll
+              ids={Array.from(
+                new Set(drafts.map((d) => d.draftPublicId).filter((id): id is string => Boolean(id)))
+              )}
+            />
+          </div>
+        )}
         <div className="px-4 py-3">
           <SortableHeader
             field="episodenumber"
@@ -158,7 +169,14 @@ export function DraftsTable({ drafts, searchParams, isAdmin = false }: DraftsTab
               className="group grid border-t border-sd-ink/10 hover:bg-sd-paper transition-colors duration-100"
               style={{ gridTemplateColumns: gridCols }}
             >
-              {/* Clickable draft link — spans all columns except the admin edit slot */}
+              {/* Wiki export checkbox — outside the draft link so ticking it never navigates */}
+              {isAdmin && (
+                <div className="px-2 py-4 self-center flex items-center justify-center">
+                  {draft.draftPublicId && <WikiSelectCheckbox id={draft.draftPublicId} />}
+                </div>
+              )}
+
+              {/* Clickable draft link — spans all columns except the checkbox and admin edit slots */}
               <Link
                 href={`/drafts/${draft.draftPublicId}`}
                 className="contents"

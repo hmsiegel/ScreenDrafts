@@ -1,5 +1,8 @@
+// app/drafters/page.tsx
+import { auth } from "@/auth";
 import DraftersFilterStrip from "@/components/features/participants/drafters-filter-strip";
 import ParticipantCard from "@/components/features/participants/participant-card";
+import { WikiExportScope, WikiSelectCheckbox } from "@/components/features/wiki-export/wiki-export";
 import { listParticipants } from "@/services/participants/fetch-participants";
 import { Metadata } from "next";
 import { Suspense } from "react";
@@ -10,6 +13,7 @@ export const metadata: Metadata = {
 };
 
 export const dynamic = "force-dynamic";
+const ADMIN_ROLES = ["Administrator", "SuperAdministrator"];
 
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
 
@@ -24,6 +28,8 @@ function asString(v: string | string[] | undefined): string | undefined {
 }
 
 export default async function ParticipantsPage(props: { searchParams: SearchParams }) {
+  const session = await auth();
+  const isAdmin = session?.roles?.some((r) => ADMIN_ROLES.includes(r)) ?? false;
   const qp = await props.searchParams;
 
   const page = asNumber(qp.page) ?? 1;
@@ -80,19 +86,27 @@ export default async function ParticipantsPage(props: { searchParams: SearchPara
 
       {/* Grid */}
       <div className="px-10 py-10">
-        <div
-          className="grid gap-[22px]"
-          style={{ gridTemplateColumns: "repeat(3, 1fr)" }}
-        >
-          {result.items.map((participant, i) => (
-            <ParticipantCard
-              key={participant.personPublicId}
-              participant={participant}
-              index={i}
-              honorific={participant.honorific ?? null}
-            />
-          ))}
-        </div>
+        <WikiExportScope enabled={isAdmin} kind="drafters" accessToken={session?.accessToken ?? ""}>
+          <div
+            className="grid gap-[22px]"
+            style={{ gridTemplateColumns: "repeat(3, 1fr)" }}
+          >
+            {result.items.map((participant, i) => (
+              <div key={participant.personPublicId} className="relative">
+                <ParticipantCard
+                  participant={participant}
+                  index={i}
+                  honorific={participant.honorific ?? null}
+                />
+                {isAdmin && participant.drafterPublicId && (
+                  <div className="absolute bottom-3 right-3 z-10 bg-white/90 p-1">
+                    <WikiSelectCheckbox id={participant.drafterPublicId} />
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </WikiExportScope>
 
         {result.items.length === 0 && (
           <div className="text-center font-mono text-sm text-sd-ink/50 py-16">

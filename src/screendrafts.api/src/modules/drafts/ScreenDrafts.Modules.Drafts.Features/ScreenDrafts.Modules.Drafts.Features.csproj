@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
     <InternalsVisibleTo Include="ScreenDrafts.Modules.Drafts.IntegrationTests" />
+    <InternalsVisibleTo Include="ScreenDrafts.Modules.Drafts.UnitTests" />
   </ItemGroup>
 
   <ItemGroup>
