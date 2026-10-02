@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
     <InternalsVisibleTo Include="ScreenDrafts.Modules.Reporting.IntegrationTests" />
+    <InternalsVisibleTo Include="ScreenDrafts.Modules.Reporting.UnitTests" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Quartz" />

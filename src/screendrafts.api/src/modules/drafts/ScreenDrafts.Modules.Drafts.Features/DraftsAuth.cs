@@ -144,5 +144,7 @@ internal static class DraftsAuth
     internal const string AttendanceWithdraw = "attendances:withdraw";
 
     internal const string DraftSeed = "drafts:seed";
+
+    internal const string WikiExport = "wiki:export";
   }
 }

@@ -5,6 +5,7 @@ global using Bogus;
 global using FluentAssertions;
 
 global using ScreenDrafts.Common.Abstractions.Results;
+global using ScreenDrafts.Common.Application.Services;
 global using ScreenDrafts.Common.Domain;
 global using ScreenDrafts.Common.UnitTests;
 global using ScreenDrafts.Modules.Drafts.Domain.Campaigns;
@@ -42,6 +43,7 @@ global using ScreenDrafts.Modules.Drafts.Domain.Predictions.Services;
 global using ScreenDrafts.Modules.Drafts.Domain.Predictions.ValueObjects;
 global using ScreenDrafts.Modules.Drafts.Domain.SeriesAggregate;
 global using ScreenDrafts.Modules.Drafts.Domain.SeriesAggregate.Enums;
+global using ScreenDrafts.Modules.Drafts.Features.WikiExport.Common;
 global using ScreenDrafts.Modules.Drafts.UnitTests.Abstractions;
 global using ScreenDrafts.Modules.Drafts.UnitTests.TestUtils;
 

@@ -1,4 +1,5 @@
 ﻿using ScreenDrafts.Common.Infrastructure.Identity;
+using ScreenDrafts.Modules.Reporting.PublicApi;
 using ScreenDrafts.Modules.Users.PublicApi;
 
 namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Abstractions;
@@ -141,6 +142,16 @@ public class DraftsIntegrationTestWebAppFactory : IntegrationTestWebAppFactory
     services.RemoveAll<IUsersApi>();
     services.AddSingleton<FakeUsersApi>();
     services.AddSingleton<IUsersApi>(sp => sp.GetRequiredService<FakeUsersApi>());
+
+    // Reporting's schema is not migrated here, so honorific lookups (wiki drafter export,
+    // participant profile) go to an in-memory stub instead of reporting.drafter_honorifics.
+    services.RemoveAll<IReportingApi>();
+    services.AddSingleton<FakeReportingApi>();
+    services.AddSingleton<IReportingApi>(sp => sp.GetRequiredService<FakeReportingApi>());
+
+    // HTTP-level tests authenticate with permissions supplied directly on the request, and the
+    // audit writer is stubbed, so neither Keycloak tokens nor the Users/Audit schemas are needed.
+    services.AddTestAuthentication().AddNoOpAuditWriter();
 
     // Replace the real email service with the in-memory capture for all tests.
     services.RemoveAll<IEmailService>();

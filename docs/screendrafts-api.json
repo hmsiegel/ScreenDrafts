@@ -761,6 +761,96 @@
         ]
       }
     },
+    "/wiki-exports/drafts": {
+      "post": {
+        "tags": [
+          "WikiExport"
+        ],
+        "operationId": "WikiExport.Drafts",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExportDraftsWikiRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExportWikiResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/wiki-exports/drafters": {
+      "post": {
+        "tags": [
+          "WikiExport"
+        ],
+        "operationId": "WikiExport.Drafters",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExportDraftersWikiRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExportWikiResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
     "/series/{publicId}/restore": {
       "post": {
         "tags": [
@@ -8433,6 +8523,85 @@
         ]
       }
     },
+    "/reporting/spotlights/{publicId}": {
+      "put": {
+        "tags": [
+          "Spotlight"
+        ],
+        "operationId": "Spotlight.Update",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateSpotlightRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          { }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Spotlight"
+        ],
+        "operationId": "Spotlight.Delete",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteSpotlightRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteSpotlightRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
     "/reporting/spotlights/candidates": {
       "get": {
         "tags": [
@@ -8641,58 +8810,17 @@
         ]
       }
     },
-    "/reporting/spotlights/{publicId}": {
-      "delete": {
-        "tags": [
-          "Spotlight"
-        ],
-        "operationId": "Spotlight.Delete",
-        "requestBody": {
-          "content": {
-            "*/*": {
-              "schema": {
-                "$ref": "#/components/schemas/DeleteSpotlightRequest"
-              }
-            },
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/DeleteSpotlightRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "204": {
-            "description": "No Content"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "404": {
-            "description": "Not Found"
-          }
-        },
-        "security": [
-          { }
-        ]
-      },
+    "/reporting/spotlights/{publicId}/deactivate": {
       "put": {
         "tags": [
           "Spotlight"
         ],
-        "operationId": "Spotlight.Activate",
+        "operationId": "Spotlight.Deactivate",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ActivateSpotlightRequest"
+                "$ref": "#/components/schemas/DeactivateSpotlightRequest"
               }
             }
           },
@@ -8720,17 +8848,17 @@
         ]
       }
     },
-    "/reporting/spotlights/{publicId}/deactivate": {
+    "/reporting/spotlights/{publicId}/activate": {
       "put": {
         "tags": [
           "Spotlight"
         ],
-        "operationId": "Spotlight.Deactivate",
+        "operationId": "Spotlight.Activate",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/DeactivateSpotlightRequest"
+                "$ref": "#/components/schemas/ActivateSpotlightRequest"
               }
             }
           },
@@ -12280,6 +12408,34 @@
           }
         }
       },
+      "ExportDraftersWikiRequest": {
+        "required": [
+          "drafterPublicIds"
+        ],
+        "type": "object",
+        "properties": {
+          "drafterPublicIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "ExportDraftsWikiRequest": {
+        "required": [
+          "draftPublicIds"
+        ],
+        "type": "object",
+        "properties": {
+          "draftPublicIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
       "ExportHttpAuditLogsRequest": {
         "type": "object",
         "properties": {
@@ -12317,6 +12473,30 @@
               "null",
               "string"
             ]
+          }
+        }
+      },
+      "ExportWikiResponse": {
+        "required": [
+          "fileName",
+          "content",
+          "pageCount"
+        ],
+        "type": "object",
+        "properties": {
+          "fileName": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "pageCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
           }
         }
       },
@@ -22661,6 +22841,26 @@
           }
         }
       },
+      "UpdateSpotlightRequest": {
+        "required": [
+          "spotlightDescription"
+        ],
+        "type": "object",
+        "properties": {
+          "publicId": {
+            "type": "string"
+          },
+          "spotlightDescription": {
+            "type": "string"
+          },
+          "spotifyUrl": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
       "UpdateUserRequest": {
         "type": "object",
         "properties": {
@@ -22949,6 +23149,9 @@
     },
     {
       "name": "Audit"
+    },
+    {
+      "name": "WikiExport"
     },
     {
       "name": "Series"

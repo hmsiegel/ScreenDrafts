@@ -1,3 +1,4 @@
+// app/admin/spotlight/spotlight-manager.tsx
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -9,6 +10,7 @@ import {
   fetchSpotlights,
   rotateSpotlight,
   searchSpotlightCandidates,
+  updateSpotlight,
 } from './spotlight-fetcher';
 import { ListSpotlightDraftsResponse, PagedResultOfListSpotlightDraftsResponse, SpotlightCandidateItem } from '@/lib/dto';
 
@@ -16,11 +18,11 @@ import { ListSpotlightDraftsResponse, PagedResultOfListSpotlightDraftsResponse, 
 
 const PAGE_SIZE = 5;
 
-const DRAFT_TYPES: {value: string; label: string}[] = [
-  { value: 'Mega', label: 'Mega'},
-  { value: 'MiniMega', label: 'mini-Mega'},
-  { value: 'Standard', label: 'Standard'},
-  { value: 'Super', label: 'Super'},
+const DRAFT_TYPES: { value: string; label: string }[] = [
+  { value: 'Mega', label: 'Mega' },
+  { value: 'MiniMega', label: 'mini-Mega' },
+  { value: 'Standard', label: 'Standard' },
+  { value: 'Super', label: 'Super' },
 ]
 
 // ── Helpers ───────────────────────────────────────────────────────────────
@@ -45,6 +47,87 @@ function PinnedBadge() {
     <span className="border border-sd-blue/40 text-sd-blue text-[10px] font-bold tracking-[0.2em] px-2 py-0.5">
       PINNED
     </span>
+  );
+}
+
+// ── Edit form ─────────────────────────────────────────────────────────────
+
+interface EditSpotlightFormProps {
+  accessToken: string;
+  item: ListSpotlightDraftsResponse;
+  onSaved: () => void;
+  onCancel: () => void;
+}
+
+function EditSpotlightForm({ accessToken, item, onSaved, onCancel }: EditSpotlightFormProps) {
+  const [description, setDescription] = useState(item.spotlightDescription ?? '');
+  const [spotifyUrl, setSpotifyUrl] = useState(item.spotifyUrl ?? '');
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const unchanged =
+    description.trim() === (item.spotlightDescription ?? '').trim() &&
+    spotifyUrl.trim() === (item.spotifyUrl ?? '').trim();
+
+  async function handleSave() {
+    if (!description.trim() || unchanged) return;
+    setSaving(true);
+    setError(null);
+    try {
+      await updateSpotlight(accessToken, item.publicId, description.trim(), spotifyUrl.trim() || null);
+      onSaved();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Failed to update spotlight.');
+      setSaving(false);
+    }
+  }
+
+  return (
+    <div className="mt-2.5">
+      <label className="block text-[10px] tracking-[0.18em] font-bold text-sd-ink/50 mb-1.5">
+        SPOTLIGHT DESCRIPTION
+      </label>
+      <textarea
+        value={description}
+        onChange={e => setDescription(e.target.value)}
+        rows={4}
+        maxLength={1000}
+        className="w-full border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sm text-sd-ink focus:outline-none focus:border-sd-blue resize-none"
+      />
+      <p className="text-[11px] text-sd-ink/40 mt-1 text-right">{description.length}/1000</p>
+
+      <label className="block text-[10px] tracking-[0.18em] font-bold text-sd-ink/50 mb-1.5 mt-2">
+        SPOTIFY EPISODE URL <span className="font-normal opacity-60">(optional)</span>
+      </label>
+      <input
+        type="url"
+        value={spotifyUrl}
+        onChange={e => setSpotifyUrl(e.target.value)}
+        placeholder="https://open.spotify.com/episode/…"
+        className="w-full border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sm text-sd-ink placeholder:text-sd-ink/30 focus:outline-none focus:border-sd-blue"
+      />
+
+      {error && <p className="text-sd-red text-sm mt-2">{error}</p>}
+
+      <div className="flex items-center gap-2 mt-3">
+        <button
+          type="button"
+          onClick={handleSave}
+          disabled={!description.trim() || unchanged || saving}
+          className="bg-sd-ink text-white font-oswald font-bold tracking-[0.14em] text-xs px-4 py-1.5 hover:bg-sd-ink/80 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+        >
+          {saving ? 'SAVING…' : 'SAVE'}
+        </button>
+        <button
+          type="button"
+          onClick={onCancel}
+          disabled={saving}
+          className="text-sd-ink/40 text-xs font-bold tracking-[0.1em] hover:text-sd-ink transition-colors disabled:opacity-40"
+        >
+          CANCEL
+        </button>
+      </div>
+    </div>
   );
 }
 
@@ -204,6 +287,7 @@ export default function SpotlightManager({ accessToken }: SpotlightManagerProps)
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [rotating, setRotating] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
 
   const librarySearchRef = useRef(librarySearch);
   const draftTypeFilterRef = useRef(draftTypeFilter);
@@ -312,6 +396,11 @@ export default function SpotlightManager({ accessToken }: SpotlightManagerProps)
     }
   }
 
+  async function handleEdited() {
+    setEditingId(null);
+    await refresh();
+  }
+
   const libraryItems = library?.items ?? [];
   const totalLibraryCount = library?.totalCount ?? 0;
   const totalPages = library?.totalPages ?? 1;
@@ -328,7 +417,7 @@ export default function SpotlightManager({ accessToken }: SpotlightManagerProps)
         </h2>
         {active ? (
           <div className="bg-white border border-sd-ink/10 border-l-4 border-l-sd-red px-6 py-5 flex items-start justify-between gap-6">
-            <div>
+            <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2.5 mb-2">
                 <LiveBadge />
                 {active.isPinned && <PinnedBadge />}
@@ -340,17 +429,33 @@ export default function SpotlightManager({ accessToken }: SpotlightManagerProps)
                 {active.episodeNumber != null ? `EP. ${active.episodeNumber} · ` : ''}
                 {active.draftType?.toUpperCase()}
               </p>
-              <p className="text-sm text-sd-ink/65 mt-2.5 max-w-xl leading-relaxed">
-                {active.spotlightDescription}
-              </p>
-              {active.spotifyUrl && (
-                <a href={active.spotifyUrl} target="_blank" rel="noopener noreferrer"
-                  className="text-[11px] tracking-[0.16em] text-sd-blue font-bold mt-2 block">
-                  SPOTIFY EPISODE ↗
-                </a>
+              {editingId === active.publicId ? (
+                <EditSpotlightForm
+                  accessToken={accessToken}
+                  item={active}
+                  onSaved={handleEdited}
+                  onCancel={() => setEditingId(null)}
+                />
+              ) : (
+                <>
+                  <p className="text-sm text-sd-ink/65 mt-2.5 max-w-xl leading-relaxed">
+                    {active.spotlightDescription}
+                  </p>
+                  {active.spotifyUrl && (
+                    <a href={active.spotifyUrl} target="_blank" rel="noopener noreferrer"
+                      className="text-[11px] tracking-[0.16em] text-sd-blue font-bold mt-2 block">
+                      SPOTIFY EPISODE ↗
+                    </a>
+                  )}
+                </>
               )}
             </div>
             <div className="shrink-0 flex flex-col gap-2">
+              <button type="button" onClick={() => setEditingId(active.publicId!)}
+                disabled={editingId !== null || pendingId !== null || rotating}
+                className="border border-sd-ink/20 text-sd-ink font-oswald font-bold tracking-[0.14em] text-xs px-4 py-2 hover:border-sd-blue hover:text-sd-blue transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
+                EDIT
+              </button>
               <button type="button" onClick={() => handleDeactivate(active.publicId!)}
                 disabled={pendingId === active.publicId || rotating}
                 className="border border-sd-ink/20 text-sd-ink font-oswald font-bold tracking-[0.14em] text-xs px-4 py-2 hover:border-sd-red hover:text-sd-red transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
@@ -441,12 +546,21 @@ export default function SpotlightManager({ accessToken }: SpotlightManagerProps)
                       {item.episodeNumber != null ? `EP. ${item.episodeNumber} · ` : ''}
                       {item.draftType?.toUpperCase()}
                     </p>
-                    <p className="text-xs text-sd-ink/55 mt-1.5 line-clamp-1 leading-relaxed">
-                      {item.spotlightDescription}
-                    </p>
+                    {editingId === item.publicId ? (
+                      <EditSpotlightForm
+                        accessToken={accessToken}
+                        item={item}
+                        onSaved={handleEdited}
+                        onCancel={() => setEditingId(null)}
+                      />
+                    ) : (
+                      <p className="text-xs text-sd-ink/55 mt-1.5 line-clamp-1 leading-relaxed">
+                        {item.spotlightDescription}
+                      </p>
+                    )}
                   </div>
                   <div className="flex items-center gap-2 shrink-0 pt-0.5">
-                    {deleteConfirmId === item.publicId ? (
+                    {editingId === item.publicId ? null : deleteConfirmId === item.publicId ? (
                       <>
                         <span className="text-xs text-sd-red font-bold tracking-[0.1em]">DELETE?</span>
                         <button type="button" onClick={() => handleDelete(item.publicId!)}
@@ -461,6 +575,11 @@ export default function SpotlightManager({ accessToken }: SpotlightManagerProps)
                       </>
                     ) : (
                       <>
+                        <button type="button" onClick={() => setEditingId(item.publicId!)}
+                          disabled={editingId !== null || pendingId === item.publicId}
+                          className="border border-sd-ink/15 text-sd-ink/60 font-oswald font-bold tracking-[0.14em] text-xs px-3 py-1.5 hover:border-sd-blue hover:text-sd-blue transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
+                          EDIT
+                        </button>
                         <button type="button" onClick={() => handleActivate(item.publicId!)}
                           disabled={pendingId === item.publicId}
                           className="bg-sd-blue text-white font-oswald font-bold tracking-[0.14em] text-xs px-4 py-1.5 hover:bg-sd-blue/80 transition-colors disabled:opacity-40 disabled:cursor-not-allowed">

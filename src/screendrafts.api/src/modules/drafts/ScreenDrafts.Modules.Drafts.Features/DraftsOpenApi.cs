@@ -25,6 +25,7 @@ internal static class DraftsOpenApi
     public const string Participants = "Participants";
     public const string Attendances = "Attendances";
     public const string MyDrafts = "MyDrafts";
+    public const string WikiExport = "WikiExport";
   }
 
   public static class Names
@@ -238,5 +239,9 @@ internal static class DraftsOpenApi
       "DraftParts.AssignFilmToBoostersChampionAssignment";
     public const string DraftParts_RemoveBoostersChampionAssignment =
       "DraftParts.RemoveBoostersChampionAssignment";
+
+    // Wiki Export
+    public const string WikiExport_Drafts = "WikiExport.Drafts";
+    public const string WikiExport_Drafters = "WikiExport.Drafters";
   }
 }

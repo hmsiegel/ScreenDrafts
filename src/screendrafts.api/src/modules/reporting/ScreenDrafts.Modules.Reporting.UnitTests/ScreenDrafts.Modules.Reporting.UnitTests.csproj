@@ -3,6 +3,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\common\ScreenDrafts.Common.UnitTests\ScreenDrafts.Common.UnitTests.csproj" />
     <ProjectReference Include="..\ScreenDrafts.Modules.Reporting.Domain\ScreenDrafts.Modules.Reporting.Domain.csproj" />
+    <ProjectReference Include="..\ScreenDrafts.Modules.Reporting.Features\ScreenDrafts.Modules.Reporting.Features.csproj" />
   </ItemGroup>
 
 </Project>

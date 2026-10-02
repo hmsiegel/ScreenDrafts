@@ -6,4 +6,13 @@ public class ReportingIntegrationTestWebAppFactory : IntegrationTestWebAppFactor
   {
     return [typeof(ReportingDbContext)];
   }
+
+  protected override void ConfigureModuleServices(IServiceCollection services)
+  {
+    base.ConfigureModuleServices(services);
+
+    // HTTP-level tests authenticate with permissions supplied directly on the request, and the
+    // audit writer is stubbed, so neither Keycloak nor the Users/Audit schemas are required.
+    services.AddTestAuthentication().AddNoOpAuditWriter();
+  }
 }
