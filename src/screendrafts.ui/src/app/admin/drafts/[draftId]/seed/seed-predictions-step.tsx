@@ -133,7 +133,7 @@ export function SeedPredictionsStep({
 
   if (predictors.length === 0) {
     return (
-      <div className="bg-white border border-sd-ink/10 rounded p-8 max-w-md space-y-4 text-center">
+      <div className="bg-white border border-sd-ink/10 rounded p-4 sm:p-8 max-w-md space-y-4 text-center">
         <p className="text-sm text-sd-ink/60">
           Rules are set but no predictors are configured — nothing to submit.
         </p>

@@ -1,6 +1,8 @@
 "use client";
+// app/admin/drafter-teams/drafter-teams-list.tsx
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import Link from "next/link";
 import { searchDrafterTeams } from "@/services/admin/fetch-admin-drafts";
 
 const INPUT =
@@ -58,9 +60,9 @@ export function DrafterTeamsList({ accessToken }: Props) {
           value={query}
           onChange={(e) => handleQueryChange(e.target.value)}
         />
-        <a href="/admin/drafter-teams/new" className={`${BTN_PRIMARY} shrink-0 whitespace-nowrap`}>
+        <Link href="/admin/drafter-teams/new" className={`${BTN_PRIMARY} shrink-0 whitespace-nowrap`}>
           New Team
-        </a>
+        </Link>
       </div>
 
       <div className="bg-white border border-sd-ink/10 rounded divide-y divide-sd-ink/5">
@@ -73,9 +75,9 @@ export function DrafterTeamsList({ accessToken }: Props) {
             <a
               key={t.publicId}
               href={`/admin/drafter-teams/${encodeURIComponent(t.publicId)}`}
-              className="flex items-center justify-between px-4 py-3 text-sm hover:bg-sd-paper/60 transition-colors"
+              className="flex items-center justify-between gap-4 px-4 py-3 text-sm hover:bg-sd-paper/60 transition-colors"
             >
-              <span className="font-medium text-sd-ink">{t.name}</span>
+              <span className="font-medium text-sd-ink min-w-0 [overflow-wrap:anywhere]">{t.name}</span>
               <span className="font-mono text-[11px] text-sd-ink/40">
                 {t.numberOfDrafters} member{t.numberOfDrafters !== 1 ? "s" : ""}
               </span>

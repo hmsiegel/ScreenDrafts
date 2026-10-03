@@ -189,7 +189,7 @@ function AddSpotlightForm({ accessToken, onCreated }: AddSpotlightFormProps) {
 
   return (
     <section>
-      <div className="bg-white border border-sd-ink/10 p-6">
+      <div className="bg-white border border-sd-ink/10 p-4 sm:p-6">
         <h2 className="font-oswald font-bold text-base tracking-[0.1em] text-sd-ink mb-5">
           ADD TO LIBRARY
         </h2>
@@ -416,7 +416,7 @@ export default function SpotlightManager({ accessToken }: SpotlightManagerProps)
           ACTIVE SPOTLIGHT
         </h2>
         {active ? (
-          <div className="bg-white border border-sd-ink/10 border-l-4 border-l-sd-red px-6 py-5 flex items-start justify-between gap-6">
+          <div className="bg-white border border-sd-ink/10 border-l-4 border-l-sd-red px-4 sm:px-6 py-5 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 sm:gap-6">
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2.5 mb-2">
                 <LiveBadge />
@@ -450,7 +450,7 @@ export default function SpotlightManager({ accessToken }: SpotlightManagerProps)
                 </>
               )}
             </div>
-            <div className="shrink-0 flex flex-col gap-2">
+            <div className="shrink-0 flex flex-row flex-wrap sm:flex-col gap-2">
               <button type="button" onClick={() => setEditingId(active.publicId!)}
                 disabled={editingId !== null || pendingId !== null || rotating}
                 className="border border-sd-ink/20 text-sd-ink font-oswald font-bold tracking-[0.14em] text-xs px-4 py-2 hover:border-sd-blue hover:text-sd-blue transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
@@ -469,7 +469,7 @@ export default function SpotlightManager({ accessToken }: SpotlightManagerProps)
             </div>
           </div>
         ) : (
-          <div className="bg-white border border-dashed border-sd-ink/20 px-6 py-5 flex items-center justify-between gap-6">
+          <div className="bg-white border border-dashed border-sd-ink/20 px-4 sm:px-6 py-5 flex flex-col items-start sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-6">
             <p className="text-sd-ink/40 text-sm">
               No active spotlight — the home page is showing the fallback. Activate one from the
               library, or rotate to a random pick.
@@ -487,7 +487,7 @@ export default function SpotlightManager({ accessToken }: SpotlightManagerProps)
 
       {/* ── Library ── */}
       <section>
-        <div className="flex items-center justify-between mb-3">
+        <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
           <h2 className="font-oswald font-bold text-base tracking-[0.1em] text-sd-ink/50">
             SPOTLIGHT LIBRARY
             {totalLibraryCount > 0 && (
@@ -498,13 +498,13 @@ export default function SpotlightManager({ accessToken }: SpotlightManagerProps)
         </div>
 
         {/* Search + filter bar */}
-        <div className="bg-white border border-sd-ink/10 border-b-0 px-4 py-3 flex items-center gap-3">
+        <div className="bg-white border border-sd-ink/10 border-b-0 px-4 py-3 flex flex-wrap items-center gap-3">
           <input
             type="text"
             value={librarySearch}
             onChange={e => setLibrarySearch(e.target.value)}
             placeholder="Search library…"
-            className="flex-1 border border-sd-ink/15 bg-sd-paper px-3 py-1.5 text-sm text-sd-ink placeholder:text-sd-ink/30 focus:outline-none focus:border-sd-blue"
+            className="flex-1 min-w-[12rem] border border-sd-ink/15 bg-sd-paper px-3 py-1.5 text-sm text-sd-ink placeholder:text-sd-ink/30 focus:outline-none focus:border-sd-blue"
           />
           <select
             value={draftTypeFilter}
@@ -537,7 +537,7 @@ export default function SpotlightManager({ accessToken }: SpotlightManagerProps)
           ) : (
             <div className="divide-y divide-sd-ink/8">
               {libraryItems.map(item => (
-                <div key={item.publicId} className="flex items-start gap-4 px-5 py-4 hover:bg-sd-paper/60 transition-colors">
+                <div key={item.publicId} className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-4 px-4 sm:px-5 py-4 hover:bg-sd-paper/60 transition-colors">
                   <div className="flex-1 min-w-0">
                     <p className="font-oswald font-semibold text-sd-ink tracking-[0.02em] truncate">
                       {item.title}
@@ -599,7 +599,7 @@ export default function SpotlightManager({ accessToken }: SpotlightManagerProps)
 
           {/* Pagination — inside the white box, separated by a top border */}
           {totalLibraryCount > PAGE_SIZE && (
-            <div className="flex items-center justify-between px-5 py-3 border-t border-sd-ink/8 bg-sd-paper/40">
+            <div className="flex flex-wrap items-center justify-between gap-2 px-4 sm:px-5 py-3 border-t border-sd-ink/8 bg-sd-paper/40">
               <p className="text-[11px] tracking-[0.14em] text-sd-ink/40 font-bold">
                 PAGE {page} OF {totalPages}
               </p>

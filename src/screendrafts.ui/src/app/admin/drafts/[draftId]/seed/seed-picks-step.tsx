@@ -471,7 +471,7 @@ export function SeedPicksStep({
 
   return (
     <div className="space-y-6 max-w-2xl">
-      <div className="bg-white border border-sd-ink/10 rounded p-4 flex items-center justify-between">
+      <div className="bg-white border border-sd-ink/10 rounded p-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
         <p className="text-sm text-sd-ink/70">
           {totalPicks == null
             ? "Loading board…"
@@ -506,7 +506,7 @@ export function SeedPicksStep({
             const showingPicker = pendingAction?.playOrder === p.playOrder;
             return (
               <div key={p.playOrder} className="px-4 py-2.5 text-sm">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
                   <div className="min-w-0">
                     <span className="font-mono text-[11px] text-sd-ink/40 mr-2">#{p.playOrder}</span>
                     <span className="font-medium text-sd-ink">{p.movieTitle}</span>

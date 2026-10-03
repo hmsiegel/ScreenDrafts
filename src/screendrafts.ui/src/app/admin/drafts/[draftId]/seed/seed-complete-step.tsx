@@ -106,7 +106,7 @@ export function SeedCompleteStep({ draft, accessToken, onDone, alreadyComplete }
 
   if (isComplete || done) {
     return (
-      <div className="bg-white border border-sd-ink/10 p-8 max-w-md space-y-4">
+      <div className="bg-white border border-sd-ink/10 p-4 sm:p-8 max-w-md space-y-4">
         <p className="text-sm text-sd-ink">
           {done
             ? "Draft part marked complete. Honorifics and prediction scoring will run from here automatically."
@@ -124,7 +124,7 @@ export function SeedCompleteStep({ draft, accessToken, onDone, alreadyComplete }
   }
 
   return (
-    <div className="bg-white border border-sd-ink/10 p-8 max-w-md space-y-4">
+    <div className="bg-white border border-sd-ink/10 p-4 sm:p-8 max-w-md space-y-4">
       <p className="text-sm text-sd-ink/70">
         Completing requires every board position to be filled by a landed pick
         (or, for Speed Drafts, all three sub-drafts completed).

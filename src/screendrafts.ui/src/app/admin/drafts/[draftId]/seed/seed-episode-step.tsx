@@ -1,4 +1,5 @@
 "use client";
+// app/admin/drafts/[draftId]/seed/seed-episode-step.tsx
 
 import { useState } from "react";
 import { setDraftEpisodeNumber } from "@/services/admin/fetch-admin-drafts";
@@ -48,7 +49,7 @@ export function SeedEpisodeStep({ draft, accessToken, onDone }: Props) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white border border-sd-ink/10 p-8 space-y-6 max-w-md">
+    <form onSubmit={handleSubmit} className="bg-white border border-sd-ink/10 p-4 sm:p-8 space-y-6 max-w-md">
       <div>
         <label className={LABEL}>
           Episode Number <span className="text-sd-red">*</span>

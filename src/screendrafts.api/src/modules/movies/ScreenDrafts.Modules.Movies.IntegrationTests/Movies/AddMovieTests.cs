@@ -1,8 +1,7 @@
-﻿using ScreenDrafts.Modules.Movies.Features.Movies.AddMedia;
+﻿namespace ScreenDrafts.Modules.Movies.IntegrationTests.Movies;
 
-namespace ScreenDrafts.Modules.Movies.IntegrationTests.Movies;
-
-public sealed class AddMovieTests(MoviesIntegrationTestWebAppFactory factory) : MoviesIntegrationTest(factory)
+public sealed class AddMovieTests(MoviesIntegrationTestWebAppFactory factory)
+  : MoviesIntegrationTest(factory)
 {
   // -------------------------------------------------------------------------
   // Happy path
@@ -71,7 +70,14 @@ public sealed class AddMovieTests(MoviesIntegrationTestWebAppFactory factory) : 
       Directors = [.. directors.Select(x => new PersonRequest(x.Name, x.ImdbId, x.TmdbId))],
       Writers = [.. writers.Select(x => new PersonRequest(x.Name, x.ImdbId, x.TmdbId))],
       Producers = [.. producers.Select(x => new PersonRequest(x.Name, x.ImdbId, x.TmdbId))],
-      ProductionCompanies = [.. productionCompanies.Select(x => new ProductionCompanyRequest(x.Name, x.ImdbId, x.TmdbId))]
+      ProductionCompanies =
+      [
+        .. productionCompanies.Select(x => new ProductionCompanyRequest(
+          x.Name,
+          x.ImdbId,
+          x.TmdbId
+        )),
+      ],
     };
 
     // Act
@@ -109,7 +115,7 @@ public sealed class AddMovieTests(MoviesIntegrationTestWebAppFactory factory) : 
       Directors = [],
       Writers = [],
       Producers = [],
-      ProductionCompanies = []
+      ProductionCompanies = [],
     };
 
     // Act
@@ -148,7 +154,7 @@ public sealed class AddMovieTests(MoviesIntegrationTestWebAppFactory factory) : 
       Directors = [],
       Writers = [],
       Producers = [],
-      ProductionCompanies = []
+      ProductionCompanies = [],
     };
     await Sender.Send(command, TestContext.Current.CancellationToken);
 
