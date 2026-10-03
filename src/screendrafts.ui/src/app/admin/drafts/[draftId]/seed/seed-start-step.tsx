@@ -1,4 +1,5 @@
 "use client";
+// app/admin/drafts/[draftId]/seed/seed-start-step.tsx
 
 import { useState } from "react";
 import { startDraftPart } from "@/services/admin/fetch-admin-drafts";
@@ -31,7 +32,7 @@ export function SeedStartStep({ draft, accessToken, onDone }: Props) {
   }
 
   return (
-    <div className="bg-white border border-sd-ink/10 p-8 max-w-md space-y-4">
+    <div className="bg-white border border-sd-ink/10 p-4 sm:p-8 max-w-md space-y-4">
       <p className="text-sm text-sd-ink/70">
         Starting locks in hosts, participants, and positions, and computes veto
         rollovers from any prior completed parts for these drafters. Predictions

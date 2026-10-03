@@ -34,16 +34,17 @@ export default async function GuestDraftSetupPage({ params }: Props) {
       initialGameplay={gameplay}
     >
       <div className="min-h-screen bg-light-blue">
-        <div className="px-6 md:px-10 py-10 max-w-[900px] mx-auto">
+        <div className="page-x py-8 lg:py-10 max-w-[900px] mx-auto">
           <p className="font-mono text-[11px] tracking-widest text-sd-ink/50 mb-6">
             <Link href="/guest-drafts" className="hover:text-sd-ink transition-colors">
               / GUEST DRAFTS
             </Link> / SETUP
           </p>
-          <h1 className="font-oswald font-bold text-[40px] leading-none text-sd-ink mb-8">
+          <h1 className="font-oswald font-bold text-[30px] sm:text-[40px] leading-none text-sd-ink mb-6 sm:mb-8 [overflow-wrap:anywhere]">
             {gameplay.title}
           </h1>
-          <div className="bg-white border border-sd-ink/10 p-8">
+          {/* p-4 on phones: 32px of padding each side left the panel about 260px wide on a 375px screen. */}
+          <div className="bg-white border border-sd-ink/10 p-4 sm:p-8">
             <SetupPanel accessToken={session.accessToken} guestDraftId={guestDraftId} />
           </div>
         </div>

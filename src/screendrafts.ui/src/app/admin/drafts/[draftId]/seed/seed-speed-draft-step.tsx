@@ -205,7 +205,7 @@ export function SeedSpeedDraftStep({ draft, participants, accessToken, onDone }:
 
   return (
     <div className="space-y-6 max-w-2xl">
-      <ol className="flex gap-2">
+      <ol className="flex flex-wrap gap-2">
         {subDrafts.map((s) => (
           <li
             key={s.publicId}
@@ -350,7 +350,7 @@ function SpeedDraftTriviaSection({
   }
 
   return (
-    <div className="bg-white border border-sd-ink/10 rounded p-8 space-y-6">
+    <div className="bg-white border border-sd-ink/10 rounded p-4 sm:p-8 space-y-6">
       <p className="text-sm text-sd-ink/60">
         Position is finishing place for this sub-draft — 1 for whoever won and gets to
         choose a board slot next.
@@ -474,7 +474,7 @@ function SpeedDraftPositionSection({
   }
 
   return (
-    <div className="bg-white border border-sd-ink/10 rounded p-8 space-y-6">
+    <div className="bg-white border border-sd-ink/10 rounded p-4 sm:p-8 space-y-6">
       <p className="text-sm text-sd-ink/60">
         <span className="font-medium text-sd-ink">
           {winner.displayName ?? winnerTrivia.participantId}
@@ -745,7 +745,7 @@ function SpeedDraftPicksSection({
 
   return (
     <div className="space-y-6">
-      <div className="bg-white border border-sd-ink/10 rounded p-4 flex items-center justify-between">
+      <div className="bg-white border border-sd-ink/10 rounded p-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
         <p className="text-sm text-sd-ink/70">{landedCount} of {totalPicks} positions landed</p>
         <p className="font-mono text-[11px] text-sd-ink/40 uppercase tracking-widest">
           Next: Play Order {nextPlayOrder}
@@ -758,7 +758,7 @@ function SpeedDraftPicksSection({
             const showingPicker = pendingVeto?.playOrder === p.playOrder;
             return (
               <div key={p.playOrder} className="px-4 py-2.5 text-sm">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
                   <div className="min-w-0">
                     <span className="font-mono text-[11px] text-sd-ink/40 mr-2">#{p.playOrder}</span>
                     <span className="font-medium text-sd-ink">{p.movieTitle}</span>

@@ -1,4 +1,4 @@
-// src/app/my-drafts/[draftId]/my-draft-tabs.tsx
+// app/my-drafts/[draftId]/my-draft-tabs.tsx
 "use client";
 
 import { useState, useEffect } from "react";
@@ -77,14 +77,15 @@ export default function MyDraftTabs({ detail, accessToken }: MyDraftTabsProps) {
 
   return (
     <div>
-      {/* Tab bar */}
-      <div className="flex border-b border-sd-ink/10 mb-6">
+      {/* Tab bar — up to four tabs; on phones they scroll sideways instead of overflowing.
+          InfoTooltip renders in a portal, so the scroll container can't clip it. */}
+      <div className="flex border-b border-sd-ink/10 mb-6 overflow-x-auto overscroll-x-contain [scrollbar-width:none] -mx-4 px-4 sm:mx-0 sm:px-0">
         {tabs.map((tab) => (
           <button
             key={tab}
             type="button"
             onClick={() => setActiveTab(tab)}
-            className={`font-oswald font-bold text-sm uppercase tracking-wide px-5 py-3 transition-colors ${activeTab === tab
+            className={`shrink-0 whitespace-nowrap font-oswald font-bold text-sm uppercase tracking-wide px-4 sm:px-5 py-3 transition-colors ${activeTab === tab
                 ? "border-b-2 border-sd-red text-sd-ink"
                 : "text-sd-ink/40 hover:text-sd-ink/70"
               }`}
@@ -98,13 +99,13 @@ export default function MyDraftTabs({ detail, accessToken }: MyDraftTabsProps) {
       {activeTab === "MY BOARD" && isDrafter && (
         <div>
           {drafterParts.length > 1 && (
-            <div className="flex gap-2 mb-4">
+            <div className="flex flex-wrap gap-2 mb-4">
               {drafterParts.map((p, i) => (
                 <button
                   key={p.draftPartPublicId ?? ""}
                   type="button"
                   onClick={() => setSelectedPartIdx(i)}
-                  className={`font-mono text-xs uppercase px-3 py-1.5 border ${selectedPartIdx === i
+                  className={`font-mono text-xs uppercase px-3 py-2 sm:py-1.5 border ${selectedPartIdx === i
                       ? "border-sd-blue bg-sd-blue text-white"
                       : "border-sd-ink/20 text-sd-ink/60 hover:border-sd-ink/40"
                     }`}
@@ -132,13 +133,13 @@ export default function MyDraftTabs({ detail, accessToken }: MyDraftTabsProps) {
       {activeTab === "CANDIDATE LIST" && isDrafter && (
         <div>
           {drafterParts.length > 1 && (
-            <div className="flex gap-2 mb-4">
+            <div className="flex flex-wrap gap-2 mb-4">
               {drafterParts.map((p, i) => (
                 <button
                   key={p.draftPartPublicId ?? ""}
                   type="button"
                   onClick={() => setSelectedPartIdx(i)}
-                  className={`font-mono text-xs uppercase px-3 py-1.5 border ${selectedPartIdx === i
+                  className={`font-mono text-xs uppercase px-3 py-2 sm:py-1.5 border ${selectedPartIdx === i
                       ? "border-sd-blue bg-sd-blue text-white"
                       : "border-sd-ink/20 text-sd-ink/60 hover:border-sd-ink/40"
                     }`}
@@ -170,16 +171,16 @@ export default function MyDraftTabs({ detail, accessToken }: MyDraftTabsProps) {
             hostParts.map((p) => (
               <div
                 key={p.draftPartPublicId ?? ""}
-                className="flex items-center justify-between border border-sd-ink/10 px-4 py-3"
+                className="flex items-center justify-between gap-4 border border-sd-ink/10 px-4 py-3"
               >
-                <div>
+                <div className="min-w-0">
                   <p className="font-oswald font-bold text-sm uppercase tracking-wide text-sd-ink">
                     {parts.length > 1 ? `Part ${p.partIndex}` : detail.title}
                   </p>
                 </div>
                 <Link
                   href={`/draft-parts/${p.draftPartPublicId ?? ""}/live`}
-                  className="bg-sd-blue text-white font-oswald font-medium uppercase tracking-wide text-xs px-4 py-2 hover:bg-sd-blue/90"
+                  className="shrink-0 bg-sd-blue text-white font-oswald font-medium uppercase tracking-wide text-xs px-4 py-2.5 sm:py-2 hover:bg-sd-blue/90"
                 >
                   Open
                 </Link>
@@ -193,13 +194,13 @@ export default function MyDraftTabs({ detail, accessToken }: MyDraftTabsProps) {
       {activeTab === "PREDICTIONS" && hasPredictorRole && (
         <div>
           {predictorParts.length > 1 && (
-            <div className="flex gap-2 mb-4">
+            <div className="flex flex-wrap gap-2 mb-4">
               {predictorParts.map((p, i) => (
                 <button
                   key={p.draftPartPublicId ?? ""}
                   type="button"
                   onClick={() => setSelectedPredictionPartIdx(i)}
-                  className={`font-mono text-xs uppercase px-3 py-1.5 border ${selectedPredictionPartIdx === i
+                  className={`font-mono text-xs uppercase px-3 py-2 sm:py-1.5 border ${selectedPredictionPartIdx === i
                       ? "border-sd-blue bg-sd-blue text-white"
                       : "border-sd-ink/20 text-sd-ink/60 hover:border-sd-ink/40"
                     }`}

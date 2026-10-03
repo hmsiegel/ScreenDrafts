@@ -1,4 +1,6 @@
+// services/home/fetch-home-data.ts
 import { formatDraftType } from '@/lib/draft-type-display';
+import { parseISO } from 'date-fns/parseISO';
 import type {
   LatestDraftResponse,
   ListLatestDraftsResponse,
@@ -12,126 +14,52 @@ import type {
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 
-// ── Fallbacks ──────────────────────────────────────────────────────────────
+// ── Fetchers ───────────────────────────────────────────────────────────────
+//
+// Each section of the home page loads independently. A failed fetch logs and returns
+// an empty result ([] or null) so that one section renders its empty state instead
+// of the whole page failing — the page awaits all five together.
 
-const FALLBACK_LATEST: LatestDraftResponse[] = [
-  { episodeNumber: 307, title: '1999 mini-Mega', participants: [{ displayName: 'Clay' }, { displayName: 'Ryan' }, { displayName: 'Nick' }] },
-  { episodeNumber: 306, title: 'Whit Stillman mini-Super', participants: [{ displayName: 'Clay' }, { displayName: 'Ryan' }, { displayName: 'Matt Z. Seitz' }] },
-  { episodeNumber: 305, title: 'Charlie Kaufman Super', participants: [{ displayName: 'Clay' }, { displayName: 'Ryan' }, { displayName: 'Griffin Newman' }] },
-  { episodeNumber: 304, title: 'Holiday Horror', participants: [{ displayName: 'Clay' }, { displayName: 'Ryan' }, { displayName: 'Emily Edwards' }] },
-  { episodeNumber: 303, title: 'François Truffaut Super', participants: [{ displayName: 'Clay' }, { displayName: 'Ryan' }, { displayName: 'Bilge Ebiri' }] },
-];
+const REVALIDATE = process.env.NODE_ENV === 'development' ? 0 : 3600;
 
-const FALLBACK_UPCOMING: UpcomingDraftResponse[] = [
-  { title: 'A24 Mega-Draft' },
-  { title: 'Patreon: Hidden Gems Vol. IV' },
-  { title: 'Christopher Guest Super' },
-  { title: 'Legends Invitational 2026' },
-];
-
-const FALLBACK_STANDINGS: PredictionSeasonSummaryResponse = {
-  number: 3,
-  firstEpisodeNumber: 34,
-  lastEpisodeNumber: 65,
-  targetPoints: 100,
-  isClosed: false,
-  publicId: '',
-  startDate: new Date(),
-  endDate: undefined,
-  standings: [
-    { contestantPublicId: '', displayName: 'Clay', points: 91, hasCrossedTarget: false, carryoverPoints: 0, totalPoints: 91 },
-    { contestantPublicId: '', displayName: 'Ryan', points: 85, hasCrossedTarget: false, carryoverPoints: 5, totalPoints: 90 },
-  ],
+async function getJson<T>(path: string): Promise<T | null> {
+  try {
+    const res = await fetch(`${API_BASE}${path}`, { next: { revalidate: REVALIDATE } });
+    if (!res.ok) {
+      // 404 is an expected empty state for some endpoints (e.g. no active spotlight).
+      if (res.status !== 404) console.error(`[home] GET ${path} failed: ${res.status} ${res.statusText}`);
+      return null;
+    }
+    return (await res.json()) as T;
+  } catch (err) {
+    console.error(`[home] GET ${path} failed:`, err);
+    return null;
+  }
 }
 
-const FALLBACK_SPOTLIGHT: GetActiveSpotlightResponse = {
-  draftPublicId: '',
-  title: 'Martin Scorsese',
-  episodeNumber: 264,
-  draftType: 'Super',
-  totalParts: 3,
-  totalPicks: 30,
-  spotlightDescription: `Nine drafters. Twenty-nine theatrical releases (plus No Direction Home, advanced from the Patreon). Multiple veto overrides — including the first-ever override of a Patreon-awarded veto. The Age of Innocence made the largest leap from a vetoed pick in show history.`,
-  topPicks: [
-    { position: 1, mediaTitle: 'Goodfellas', mediaPublicId: '' },
-    { position: 2, mediaTitle: 'Taxi Driver', mediaPublicId: '' },
-    { position: 3, mediaTitle: 'Raging Bull', mediaPublicId: '' },
-    { position: 4, mediaTitle: 'The Departed', mediaPublicId: '' },
-    { position: 5, mediaTitle: 'Casino', mediaPublicId: '' },
-  ],
-  spotifyUrl: ''
-};
-
-const FALLBACK_STATS: GetSiteStatsResponse = {
-  episodesProduced: 317,
-  filmsDrafted: 2140,
-  guestGMs: 186,
-  vetoesDeployed: 418,
-  legends: 6
-};
-
-// ── Fetchers ───────────────────────────────────────────────────────────────
-
 export async function fetchLatestDrafts(): Promise<LatestDraftResponse[]> {
-  try {
-    const res = await fetch(`${API_BASE}/drafts/latest`, {
-      next: { revalidate: process.env.NODE_ENV === 'development' ? 0 : 3600 },
-    });
-    if (!res.ok) return FALLBACK_LATEST;
-    const data = await res.json() as ListLatestDraftsResponse;
-    return data.drafts ?? FALLBACK_LATEST;
-  } catch {
-    return FALLBACK_LATEST;
-  }
+  const data = await getJson<ListLatestDraftsResponse>('/drafts/latest');
+  return data?.drafts ?? [];
 }
 
 export async function fetchUpcomingDrafts(): Promise<UpcomingDraftResponse[]> {
-  try {
-    const res = await fetch(`${API_BASE}/drafts/upcoming`, {
-      next: { revalidate: process.env.NODE_ENV === 'development' ? 0 : 3600 },
-    });
-    if (!res.ok) return FALLBACK_UPCOMING;
-    const data = await res.json() as ListUpcomingDraftsResponse;
-    return data.drafts ?? FALLBACK_UPCOMING;
-  } catch (e) {
-    return FALLBACK_UPCOMING;
-  }
+  const data = await getJson<ListUpcomingDraftsResponse>('/drafts/upcoming');
+  return data?.drafts ?? [];
 }
 
-export async function fetchCurrentStandings(): Promise<PredictionSeasonSummaryResponse> {
-  try {
-    const res = await fetch(`${API_BASE}/prediction-seasons/current`, {
-      next: { revalidate: process.env.NODE_ENV === 'development' ? 0 : 3600 },
-    });
-    if (!res.ok) return FALLBACK_STANDINGS;
-    return await res.json() as PredictionSeasonSummaryResponse;
-  } catch {
-    return FALLBACK_STANDINGS;
-  }
+/** Null when there is no current season or the request failed. */
+export async function fetchCurrentStandings(): Promise<PredictionSeasonSummaryResponse | null> {
+  return getJson<PredictionSeasonSummaryResponse>('/prediction-seasons/current');
 }
 
-export async function fetchSpotlight(): Promise<GetActiveSpotlightResponse> {
-  try {
-    const res = await fetch(`${API_BASE}/spotlight`, {
-      next: { revalidate: process.env.NODE_ENV === 'development' ? 0 : 3600 },
-    });
-    if (!res.ok) return FALLBACK_SPOTLIGHT;
-    return await res.json() as GetActiveSpotlightResponse;
-  } catch {
-    return FALLBACK_SPOTLIGHT;
-  }
+/** Null when no spotlight is active or the request failed. */
+export async function fetchSpotlight(): Promise<GetActiveSpotlightResponse | null> {
+  return getJson<GetActiveSpotlightResponse>('/spotlight');
 }
 
-export async function fetchSiteStats(): Promise<GetSiteStatsResponse> {
-  try {
-    const res = await fetch(`${API_BASE}/stats`, {
-      next: { revalidate: process.env.NODE_ENV === 'development' ? 0 : 3600 },
-    });
-    if (!res.ok) return FALLBACK_STATS;
-    return await res.json() as GetSiteStatsResponse;
-  } catch {
-    return FALLBACK_STATS;
-  }
+/** Null when the request failed. Also used by the drafts list banner. */
+export async function fetchSiteStats(): Promise<GetSiteStatsResponse | null> {
+  return getJson<GetSiteStatsResponse>('/stats');
 }
 
 // ── Mappers ────────────────────────────────────────────────────────────────
@@ -187,10 +115,15 @@ export interface MappedStat {
   label: string;
 }
 
+// parseISO, not new Date(): release dates arrive as bare "yyyy-MM-dd" strings, which
+// new Date() reads as UTC midnight — a day early anywhere west of UTC. Same fix as
+// drafts-sidebar.tsx's formatDate.
 function formatDate(raw: Date | string | undefined): string {
   if (!raw) return 'TBA';
   try {
-    return new Date(raw).toLocaleDateString('en-US', {
+    const date = typeof raw === 'string' ? parseISO(raw) : raw;
+    if (isNaN(date.getTime())) return 'TBA';
+    return date.toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',
       year: 'numeric',

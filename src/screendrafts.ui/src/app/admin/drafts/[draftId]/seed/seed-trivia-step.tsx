@@ -1,4 +1,5 @@
 "use client";
+// app/admin/drafts/[draftId]/seed/seed-trivia-step.tsx
 
 import { useEffect, useState } from "react";
 import {
@@ -120,7 +121,7 @@ export function SeedTriviaStep({ draft, participants, accessToken, onDone }: Pro
 
   if (rows.length === 0) {
     return (
-      <div className="bg-white border border-sd-ink/10 rounded p-8 max-w-md text-center space-y-4">
+      <div className="bg-white border border-sd-ink/10 rounded p-4 sm:p-8 max-w-md text-center space-y-4">
         <p className="text-sm text-sd-ink/60">No participants on this part to assign trivia to.</p>
         <button type="button" onClick={onDone} className={BTN_PRIMARY}>
           Continue →
@@ -130,7 +131,7 @@ export function SeedTriviaStep({ draft, participants, accessToken, onDone }: Pro
   }
 
   return (
-    <div className="bg-white border border-sd-ink/10 rounded p-8 max-w-md space-y-6">
+    <div className="bg-white border border-sd-ink/10 rounded p-4 sm:p-8 max-w-md space-y-6">
       <p className="text-sm text-sd-ink/60">
         Position is finishing place — 1 for whoever won trivia. Two participants
         can&apos;t share a position.
@@ -180,7 +181,7 @@ export function SeedTriviaStep({ draft, participants, accessToken, onDone }: Pro
         </div>
       )}
 
-      <div className="flex items-center gap-4">
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
         <button
           type="button"
           onClick={handleSubmit}

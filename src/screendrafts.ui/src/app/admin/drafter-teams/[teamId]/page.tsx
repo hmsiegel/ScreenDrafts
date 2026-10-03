@@ -1,3 +1,4 @@
+// app/admin/drafter-teams/[teamId]/page.tsx
 import { auth } from "@/auth";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
@@ -24,7 +25,7 @@ export default async function EditDrafterTeamPage({ params }: Props) {
 
   return (
     <div className="min-h-screen bg-light-blue">
-      <div className="px-6 md:px-10 py-10 max-w-[900px] mx-auto">
+      <div className="page-x py-8 lg:py-10 max-w-[900px] mx-auto">
         <p className="font-mono text-[11px] tracking-widest text-sd-ink/50 mb-6">
           <Link href="/admin" className="hover:text-sd-ink/70">ADMIN</Link>
           {" / "}
@@ -33,7 +34,7 @@ export default async function EditDrafterTeamPage({ params }: Props) {
           {team.name.toUpperCase()}
         </p>
 
-        <h1 className="font-oswald font-bold text-[40px] leading-none text-sd-ink mb-2">
+        <h1 className="font-oswald font-bold text-[30px] sm:text-[40px] leading-none text-sd-ink mb-2 [overflow-wrap:anywhere]">
           {team.name.toUpperCase()}
         </h1>
         <p className="text-sm text-sd-ink/60 mb-10 max-w-2xl">

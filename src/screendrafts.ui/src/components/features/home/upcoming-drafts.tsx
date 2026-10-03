@@ -1,4 +1,4 @@
-// src/components/features/home/upcoming-drafts.tsx
+// components/features/home/upcoming-drafts.tsx
 "use client";
 
 import { useState } from "react";
@@ -14,9 +14,9 @@ export default function UpcomingDrafts({ drafts }: { drafts: MappedUpcomingDraft
   const visibleDrafts = drafts.slice(start, start + PAGE_SIZE);
 
   return (
-    <div className="bg-white border-2 border-sd-ink rounded-sm">
+    <div className="bg-white border-2 border-sd-ink rounded-sm min-w-0">
       <div className="bg-sd-blue text-white px-5 py-3.5">
-        <div className="font-oswald font-bold text-[22px] tracking-[0.06em]">UPCOMING DRAFTS</div>
+        <div className="font-oswald font-bold text-[19px] sm:text-[22px] tracking-[0.06em]">UPCOMING DRAFTS</div>
       </div>
 
       <div className="divide-y divide-gray-100">
@@ -31,7 +31,7 @@ export default function UpcomingDrafts({ drafts }: { drafts: MappedUpcomingDraft
               </span>
             )}
             <div className="font-mono text-[11px] text-sd-blue font-bold">{draft.date}</div>
-            <div className="font-semibold text-[15px] mt-1 pr-14 leading-snug">{draft.title}</div>
+            <div className="font-semibold text-[15px] mt-1 pr-14 leading-snug [overflow-wrap:anywhere]">{draft.title}</div>
             <div className="text-[11px] text-gray-500 mt-0.5 tracking-[0.06em]">{draft.type.toUpperCase()}</div>
           </div>
         ))}

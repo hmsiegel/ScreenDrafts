@@ -1,3 +1,4 @@
+// app/admin/spotlight/page.tsx
 import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
 import SpotlightManager from './spotlight-manager';
@@ -9,12 +10,12 @@ export default async function AdminSpotlightPage() {
   if (!session?.accessToken) redirect('/login');
 
  return (
-    <div className="max-w-4xl mx-auto px-6 py-10">
+    <div className="max-w-4xl mx-auto page-x py-8 lg:py-10">
       <div className="mb-8 pb-6 border-b border-sd-ink/10">
         <p className="font-mono text-[11px] tracking-widest text-sd-ink/50 mb-6">
           ADMIN / SPOTLIGHT
         </p>
-        <h1 className="font-oswald font-bold text-[56px] leading-none text-sd-ink">
+        <h1 className="font-oswald font-bold text-[36px] sm:text-[48px] lg:text-[56px] leading-none text-sd-ink">
           DRAFT SPOTLIGHT
         </h1>
         <p className="text-sm text-sd-ink/100 mt-2 leading-relaxed max-w-lg">

@@ -388,8 +388,7 @@ export default function DraftSidebar({
 
   return (
     <aside
-      className="bg-white border-2 border-sd-ink sticky top-6 self-start"
-      style={{ padding: "28px 24px" }}
+      className="order-last lg:order-none bg-white border-2 border-sd-ink lg:sticky lg:top-6 self-start px-5 py-6 lg:px-6 lg:py-7"
     >
       {/* Episode label */}
       <div className="font-mono text-[10px] tracking-widest text-sd-blue font-bold mb-1">
@@ -397,12 +396,15 @@ export default function DraftSidebar({
       </div>
 
       {/* Episode number */}
-      <div className="font-oswald font-bold text-[88px] text-sd-red leading-[0.92] mb-2">
+      <div className="font-oswald font-bold text-[64px] lg:text-[88px] text-sd-red leading-[0.92] mb-2">
         {episodeNumber ?? "—"}
       </div>
 
       {/* Artwork */}
-      <EpisodeImage imagePath={draft.imagePath} title={draft.title} publicId={draft.publicId} />
+      {/* Capped at the desktop sidebar's inner width so a full-width tablet column doesn't blow the art up. */}
+      <div className="max-w-[332px]">
+        <EpisodeImage imagePath={draft.imagePath} title={draft.title} publicId={draft.publicId} />
+      </div>
 
       {/* Title */}
       <div className="font-oswald font-semibold text-[22px] text-sd-ink leading-[1.15] tracking-tight mb-3">

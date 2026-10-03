@@ -300,7 +300,7 @@ function PartPositionRangeSection({
         these bounds; a wrong range here is what causes &quot;Pick position is out of
         range&quot; on an otherwise valid pick.
       </p>
-      <div className="flex items-end gap-3">
+      <div className="flex flex-wrap items-end gap-3">
         <div>
           <label className={LABEL}>Min Position</label>
           <input
@@ -379,7 +379,7 @@ function PartScheduleSection({
           scheduling is only available while a part is Created.
         </p>
       ) : (
-        <div className="flex items-end gap-3">
+        <div className="flex flex-wrap items-end gap-3">
           <div>
             <label className={LABEL}>Scheduled For (your local time)</label>
             <input

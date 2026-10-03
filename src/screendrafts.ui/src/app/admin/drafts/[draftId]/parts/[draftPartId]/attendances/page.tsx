@@ -32,7 +32,7 @@ export default async function AttendancePage({ params }: Props) {
 
   return (
     <div className="min-h-screen bg-light-blue">
-      <div className="px-6 md:px-10 py-10 max-w-3xl mx-auto space-y-8">
+      <div className="page-x py-8 lg:py-10 max-w-3xl mx-auto space-y-8">
         {/* Breadcrumb */}
         <p className="font-mono text-[11px] tracking-widest text-sd-ink/50">
           <Link href="/admin/drafts" className="hover:text-sd-ink/70">
@@ -44,7 +44,7 @@ export default async function AttendancePage({ params }: Props) {
         </p>
 
         <div>
-          <h1 className="font-oswald font-bold text-[48px] leading-none text-sd-ink">
+          <h1 className="font-oswald font-bold text-[32px] sm:text-[48px] leading-none text-sd-ink">
             ATTENDANCE
           </h1>
           <p className="text-sd-ink/60 font-oswald text-lg mt-1">{draft.title}</p>

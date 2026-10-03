@@ -1,3 +1,4 @@
+// app/media/[id]/page.tsx
 import YouTubeEmbed from "@/components/features/media/youtube-embed";
 import { fetchMediaDetail } from "@/services/media/fetch-media-detail";
 import { MediaResponse, MediaType, MediaAppearanceResponse, MediaStatsResponse, MediaHonorificResponse } from "@/lib/dto";
@@ -86,7 +87,7 @@ export default async function MediaDetailPage({ params }: Props) {
   return (
     <div className="min-h-screen bg-light-blue">
       {/* Hero */}
-      <div className="relative bg-sd-ink overflow-hidden" style={{ minHeight: 360 }}>
+      <div className="relative bg-sd-ink overflow-hidden min-h-[240px] lg:min-h-[360px]">
         {media.image && (
           <img
             src={media.image}
@@ -94,14 +95,14 @@ export default async function MediaDetailPage({ params }: Props) {
             className="absolute inset-0 w-full h-full object-cover opacity-25"
           />
         )}
-        <div className="relative px-10 py-16">
+        <div className="relative page-x py-10 lg:py-16">
           <p className="font-mono text-[11px] tracking-widest text-light-blue mb-3">
             <Link href="/media" className="hover:text-white transition-colors">/ MEDIA</Link>
             <span className="text-white/40"> / </span>
             <span>{(media.title ?? "").toUpperCase()}</span>
           </p>
 
-          <h1 className="font-oswald font-bold text-[64px] leading-[0.95] text-white mb-4">
+          <h1 className="font-oswald font-bold text-[40px] sm:text-[52px] lg:text-[64px] leading-[0.95] text-white mb-4 [overflow-wrap:anywhere]">
             {(media.title ?? "").toUpperCase()}
           </h1>
 
@@ -129,11 +130,15 @@ export default async function MediaDetailPage({ params }: Props) {
       <div className="h-1 bg-sd-red" />
 
       {/* Content */}
-      <div className="px-10 py-10 max-w-[1400px] mx-auto">
-        <div className="grid gap-10" style={{ gridTemplateColumns: "300px 1fr" }}>
+      <div className="page-x py-6 lg:py-10 max-w-[1400px] mx-auto">
+        {/* One column below lg, 300px sidebar + appearances from lg.
+            Below lg the sidebar wrapper dissolves (`contents`) so its cards become grid
+            items and can be reordered: poster, stats, appearances, then trailer and credits.
+            Otherwise phones scroll past four credit cards before reaching the appearances. */}
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[300px_minmax(0,1fr)] lg:gap-10">
 
           {/* ── Sidebar ── */}
-          <div className="flex flex-col gap-6">
+          <div className="contents lg:flex lg:flex-col lg:gap-6">
             <PosterCard media={media} />
 
             {/* Stats summary */}
@@ -143,7 +148,7 @@ export default async function MediaDetailPage({ params }: Props) {
 
             {/* Trailer */}
             {media.youTubeTrailer && (
-              <div className="bg-white border-2 border-sd-ink overflow-hidden">
+              <div className="order-2 lg:order-none bg-white border-2 border-sd-ink overflow-hidden">
                 <div className="bg-sd-ink px-5 py-3">
                   <h2 className="font-oswald font-bold text-[13px] tracking-widest text-sd-red">TRAILER</h2>
                 </div>
@@ -158,7 +163,7 @@ export default async function MediaDetailPage({ params }: Props) {
           </div>
 
           {/* ── Main column ── */}
-          <div className="flex flex-col gap-8">
+          <div className="order-1 lg:order-none flex flex-col gap-8 min-w-0">
             <AppearancesSection appearances={appearances} />
           </div>
         </div>
@@ -172,17 +177,19 @@ export default async function MediaDetailPage({ params }: Props) {
 
 function PosterCard({ media }: { media: MediaResponse }) {
   return (
-    <div className="bg-white border-2 border-sd-ink overflow-hidden">
-      <div className="relative w-full bg-sd-ink overflow-hidden" style={{ aspectRatio: "2 / 3" }}>
+    // Below lg the poster sits beside the plot instead of filling the column — full width
+    // on a phone it would be ~500px tall.
+    <div className="bg-white border-2 border-sd-ink overflow-hidden flex items-start lg:block">
+      <div className="relative w-28 sm:w-44 lg:w-full shrink-0 bg-sd-ink overflow-hidden" style={{ aspectRatio: "2 / 3" }}>
         {media.image ? (
           <img src={media.image} alt={media.title ?? ""} className="w-full h-full object-cover" />
         ) : (
-          <div className="w-full h-full flex items-center justify-center font-oswald font-bold text-[48px] text-white/30 select-none">
+          <div className="w-full h-full flex items-center justify-center font-oswald font-bold text-[32px] lg:text-[48px] text-white/30 select-none">
             {posterInitials(media.title ?? "")}
           </div>
         )}
       </div>
-      <div className="p-5 flex flex-col gap-4">
+      <div className="flex-1 min-w-0 p-4 sm:p-5 flex flex-col gap-4">
         {media.plot && (
           <p className="font-serif text-[15px] italic leading-relaxed text-sd-ink/75">{media.plot}</p>
         )}
@@ -334,7 +341,7 @@ function CreditsCard({
   kind: "person" | "company";
 }) {
   return (
-    <div className="bg-white border-2 border-sd-ink p-5">
+    <div className="order-2 lg:order-none bg-white border-2 border-sd-ink p-5">
       <h2 className="font-oswald font-bold text-[13px] tracking-widest text-sd-red mb-3">{title}</h2>
       <div className="flex flex-col gap-1.5">
         {credits.map((credit, i) => {
@@ -365,7 +372,7 @@ function CreditsCard({
 function AppearancesSection({ appearances }: { appearances: MediaAppearanceResponse[] }) {
   return (
     <div className="bg-white border-2 border-sd-ink">
-      <div className="bg-sd-ink px-6 py-5 flex items-center gap-3">
+      <div className="bg-sd-ink px-4 py-4 sm:px-6 sm:py-5 flex items-center gap-3">
         <span className="block w-1 h-4 bg-sd-red shrink-0" />
         <h2 className="font-oswald font-bold text-[13px] tracking-widest text-sd-red">
           DRAFT APPEARANCES
@@ -400,7 +407,7 @@ function AppearanceRow({ appearance }: { appearance: MediaAppearanceResponse }) 
   const landed = (!wasVetoed || wasVetoOverridden) && !wasCommissionerOverride;
 
   return (
-    <div className="px-6 py-4 flex items-start gap-4">
+    <div className="px-4 sm:px-6 py-4 flex items-start gap-3 sm:gap-4">
       {/* Position badge */}
       <div className={`w-9 h-9 shrink-0 flex items-center justify-center border-2 font-oswald font-bold text-[15px] ${landed ? "border-sd-red text-sd-red" : "border-sd-ink/20 text-sd-ink/30"
         }`}>

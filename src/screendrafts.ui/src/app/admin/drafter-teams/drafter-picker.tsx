@@ -1,4 +1,5 @@
 "use client";
+// app/admin/drafter-teams/drafter-picker.tsx
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { searchDrafters } from "@/services/admin/fetch-admin-drafts";
@@ -78,7 +79,7 @@ export function DrafterPicker({ accessToken, excludeIds, onSelect, disabled }: P
               key={d.publicId}
               onClick={() => onSelect({ publicId: d.publicId, displayName: d.displayName })}
               disabled={disabled}
-              className="flex items-center gap-2 w-full text-left px-3 py-1.5 text-sm text-sd-ink hover:bg-sd-ink/5 rounded disabled:opacity-40"
+              className="flex items-center gap-2 w-full text-left px-3 py-2.5 sm:py-1.5 text-sm text-sd-ink hover:bg-sd-ink/5 rounded disabled:opacity-40"
             >
               <span className={d.isRetired ? "text-sd-ink/40 line-through" : ""}>
                 {d.displayName}

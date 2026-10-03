@@ -1,3 +1,4 @@
+// app/page.tsx
 import SpotlightHero from "@/components/features/home/spotlight-hero";
 import StatBar from "@/components/features/home/stat-bar";
 import RecentDrafts from "@/components/features/home/recent-drafts";
@@ -20,6 +21,8 @@ import {
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
+  // None of these throw: a failed fetch comes back empty ([] or null) and only its
+  // own section changes — the hero and stat bar disappear, the cards show an empty line.
   const [latestDrafts, upcomingDrafts, currentStandings, spotlightData, statsData] = await Promise.all([
     fetchLatestDrafts(),
     fetchUpcomingDrafts(),
@@ -30,19 +33,24 @@ export default async function Home() {
 
   const recentDrafts = latestDrafts.map(mapLatestDraft);
   const upcoming = upcomingDrafts.map(mapUpcomingDraft);
-  const standings = mapStandings(currentStandings);
-  const spotlight = mapSpotlight(spotlightData);
-  const stats = mapSiteStats(statsData);
+  const standings = currentStandings ? mapStandings(currentStandings) : null;
+  const spotlight = spotlightData ? mapSpotlight(spotlightData) : null;
+  const stats = statsData ? mapSiteStats(statsData) : null;
 
   return (
     <div className="bg-light-blue min-h-screen font-sans">
-      <SpotlightHero spotlight={spotlight} />
-      <StatBar stats={stats} />
+      {spotlight && <SpotlightHero spotlight={spotlight} />}
+      {stats && <StatBar stats={stats} />}
 
-      <section className="grid grid-cols-3 gap-6 px-8 py-10">
+      {/* Phones: one column. md: two, with Upcoming spanning the second row.
+          xl: three across — at lg each card would be ~300px, too narrow for the
+          recent-drafts columns. */}
+      <section className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 page-x py-8 lg:py-10">
         <RecentDrafts drafts={recentDrafts} />
         <CommissionerStandings standings={standings} />
-        <UpcomingDrafts drafts={upcoming} />
+        <div className="md:col-span-2 xl:col-span-1 min-w-0 [&>*]:h-full">
+          <UpcomingDrafts drafts={upcoming} />
+        </div>
       </section>
 
       <AuthStrip />

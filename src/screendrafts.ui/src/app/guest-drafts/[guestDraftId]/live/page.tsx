@@ -2,6 +2,7 @@
 import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
 import { Metadata } from 'next';
+import { LargeScreenGate } from '@/components/ui/large-screen-gate';
 import { fetchGuestDraftGameplay } from './gameplay-fetchers';
 import { GuestDraftLiveProvider } from './guest-draft-context';
 import { LiveGuestDraftView } from './live-guest-draft-view';
@@ -28,13 +29,17 @@ export default async function GuestDraftLivePage({ params }: Props) {
     redirect(`/guest-drafts/${guestDraftId}/setup`);
   }
 
+  // Tablets and up only. The gate sits outside the provider so a phone never
+  // opens the SignalR connection.
   return (
-    <GuestDraftLiveProvider
-      guestDraftId={guestDraftId}
-      accessToken={session.accessToken}
-      initialGameplay={gameplay}
-    >
-      <LiveGuestDraftView accessToken={session.accessToken} guestDraftId={guestDraftId} />
-    </GuestDraftLiveProvider>
+    <LargeScreenGate backHref="/guest-drafts" backLabel="My Guest Drafts">
+      <GuestDraftLiveProvider
+        guestDraftId={guestDraftId}
+        accessToken={session.accessToken}
+        initialGameplay={gameplay}
+      >
+        <LiveGuestDraftView accessToken={session.accessToken} guestDraftId={guestDraftId} />
+      </GuestDraftLiveProvider>
+    </LargeScreenGate>
   );
 }

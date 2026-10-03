@@ -1,4 +1,4 @@
-// src/app/my-drafts/[draftId]/prediction-submission.tsx
+// app/my-drafts/[draftId]/prediction-submission.tsx
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
@@ -299,21 +299,22 @@ export default function PredictionSubmission({
               {entries.map((e, i) => (
                 <div
                   key={e.tmdbId}
-                  className="flex items-center gap-2 border border-sd-ink/10 rounded px-3 py-1.5 bg-sd-paper"
+                  className="flex items-center gap-1 sm:gap-2 border border-sd-ink/10 rounded pl-3 pr-1 sm:px-3 py-1 sm:py-1.5 bg-sd-paper"
                 >
                   {ordered && (
                     <span className="text-[11px] font-mono text-sd-ink/40 w-5">
                       {e.orderIndex}
                     </span>
                   )}
-                  <span className="text-sm text-sd-ink flex-1">{e.mediaTitle}</span>
+                  <span className="text-sm text-sd-ink flex-1 min-w-0 [overflow-wrap:anywhere]">{e.mediaTitle}</span>
                   {ordered && (
                     <>
                       <button
                         type="button"
                         onClick={() => moveEntry(i, -1)}
                         disabled={i === 0}
-                        className="text-sd-ink/40 hover:text-sd-ink disabled:opacity-30 text-xs px-1"
+                        aria-label="Move up"
+                        className="shrink-0 w-9 h-9 sm:w-auto sm:h-auto flex items-center justify-center text-sd-ink/40 hover:text-sd-ink disabled:opacity-30 text-xs sm:px-1"
                       >
                         ▲
                       </button>
@@ -321,7 +322,8 @@ export default function PredictionSubmission({
                         type="button"
                         onClick={() => moveEntry(i, 1)}
                         disabled={i === entries.length - 1}
-                        className="text-sd-ink/40 hover:text-sd-ink disabled:opacity-30 text-xs px-1"
+                        aria-label="Move down"
+                        className="shrink-0 w-9 h-9 sm:w-auto sm:h-auto flex items-center justify-center text-sd-ink/40 hover:text-sd-ink disabled:opacity-30 text-xs sm:px-1"
                       >
                         ▼
                       </button>
@@ -330,7 +332,8 @@ export default function PredictionSubmission({
                   <button
                     type="button"
                     onClick={() => removeEntry(e.tmdbId)}
-                    className="text-sd-ink/40 hover:text-sd-red text-lg leading-none"
+                    aria-label="Remove"
+                    className="shrink-0 w-9 h-9 sm:w-auto sm:h-auto flex items-center justify-center text-sd-ink/40 hover:text-sd-red text-lg leading-none"
                   >
                     ×
                   </button>
@@ -363,7 +366,7 @@ export default function PredictionSubmission({
               type="button"
               onClick={handleSave}
               disabled={entries.length === 0 || saving || resolving}
-              className="bg-sd-red text-white font-oswald font-medium uppercase tracking-wide text-xs px-4 py-2 hover:bg-sd-red/90 disabled:opacity-50"
+              className="min-h-11 sm:min-h-0 bg-sd-red text-white font-oswald font-medium uppercase tracking-wide text-xs px-4 py-2 hover:bg-sd-red/90 disabled:opacity-50"
             >
               {saving ? "Saving…" : complete ? "Save Final Picks" : "Save Progress"}
             </button>

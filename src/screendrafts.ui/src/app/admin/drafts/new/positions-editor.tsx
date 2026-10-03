@@ -1,4 +1,4 @@
-// src/app/admin/drafts/new/positions-editor.tsx
+// app/admin/drafts/new/positions-editor.tsx
 "use client";
 
 import { useState } from "react";
@@ -125,12 +125,16 @@ function PositionRow({ pos, idx, canRemove, useFungibleToken, onChange, onRemove
   // checkbox. Bonus Token only makes sense on a fungible-token draft — see
   // create-draft-form.tsx's handleToggleFungibleToken, which clears it when the
   // draft-level toggle turns off.
+  //
+  // Phones: three columns — name, picks, remove — with the checkboxes on a second row
+  // under the picks input (their wrapper below is `sm:contents`). Four or six columns
+  // on one row left the picks input about 110px on a phone.
   const gridCols = useFungibleToken
-    ? "grid-cols-[28px_1fr_auto_auto]"
-    : "grid-cols-[28px_1fr_auto_auto_auto_auto]";
+    ? "sm:grid-cols-[28px_1fr_auto_auto]"
+    : "sm:grid-cols-[28px_1fr_auto_auto_auto_auto]";
 
   return (
-    <div className={`border border-sd-ink/10 p-3 bg-white grid ${gridCols} items-start gap-3`}>
+    <div className={`border border-sd-ink/10 p-3 bg-white grid grid-cols-[28px_minmax(0,1fr)_auto] ${gridCols} items-start gap-x-3 gap-y-1 sm:gap-3`}>
       <div className="pt-2 font-oswald font-bold text-[15px] text-sd-ink">
         {pos.name}
       </div>
@@ -147,9 +151,12 @@ function PositionRow({ pos, idx, canRemove, useFungibleToken, onChange, onRemove
         />
       </div>
 
+      {/* Below sm: one row of checkboxes under the picks input. sm+: `contents` dissolves
+          this wrapper so each checkbox takes its own grid column again. */}
+      <div className="col-start-2 row-start-2 flex flex-wrap gap-x-5 sm:contents">
       {!useFungibleToken && (
-        <div className="pt-1">
-          <label className="flex flex-col items-center gap-1 cursor-pointer select-none">
+        <div className="sm:pt-1">
+          <label className="flex flex-row-reverse sm:flex-col items-center gap-2 sm:gap-1 py-1 sm:py-0 cursor-pointer select-none">
             <span className="font-mono text-[9px] tracking-widest text-sd-ink/50 uppercase">Veto</span>
             <input
               type="checkbox"
@@ -162,8 +169,8 @@ function PositionRow({ pos, idx, canRemove, useFungibleToken, onChange, onRemove
       )}
 
       {!useFungibleToken && (
-        <div className="pt-1">
-          <label className="flex flex-col items-center gap-1 cursor-pointer select-none">
+        <div className="sm:pt-1">
+          <label className="flex flex-row-reverse sm:flex-col items-center gap-2 sm:gap-1 py-1 sm:py-0 cursor-pointer select-none">
             <span className="font-mono text-[9px] tracking-widest text-sd-ink/50 uppercase whitespace-nowrap">Override</span>
             <input
               type="checkbox"
@@ -176,8 +183,8 @@ function PositionRow({ pos, idx, canRemove, useFungibleToken, onChange, onRemove
       )}
 
       {useFungibleToken && (
-        <div className="pt-1">
-          <label className="flex flex-col items-center gap-1 cursor-pointer select-none">
+        <div className="sm:pt-1">
+          <label className="flex flex-row-reverse sm:flex-col items-center gap-2 sm:gap-1 py-1 sm:py-0 cursor-pointer select-none">
             <span className="font-mono text-[9px] tracking-widest text-sd-ink/50 uppercase whitespace-nowrap">Bonus Token</span>
             <input
               type="checkbox"
@@ -189,12 +196,14 @@ function PositionRow({ pos, idx, canRemove, useFungibleToken, onChange, onRemove
         </div>
       )}
 
-      <div className="pt-1">
+      </div>
+
+      <div className="col-start-3 row-start-1 sm:col-start-auto sm:row-start-auto pt-1">
         <button
           type="button"
           onClick={() => onRemove(idx)}
           disabled={!canRemove}
-          className="text-sd-ink/30 hover:text-sd-red disabled:opacity-0 text-xl leading-none mt-5"
+          className="w-8 h-8 sm:w-auto sm:h-auto flex items-center justify-center text-sd-ink/30 hover:text-sd-red disabled:opacity-0 text-xl leading-none mt-4 sm:mt-5"
           aria-label={`Remove position ${pos.name}`}
         >
           ×
@@ -260,7 +269,7 @@ export function PositionsEditor({ positions, onChange, totalPicks, readonly, use
         <button
           type="button"
           onClick={addPosition}
-          className="text-[11px] font-mono tracking-widest text-sd-blue hover:text-sd-ink uppercase"
+          className="py-2 sm:py-0 text-[11px] font-mono tracking-widest text-sd-blue hover:text-sd-ink uppercase"
         >
           + Add Position
         </button>

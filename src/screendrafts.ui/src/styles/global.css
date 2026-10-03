@@ -180,3 +180,26 @@ focus:border-sd-blue
 .sd-alert-error {
   @apply bg-red-50 border border-red-300 text-red-800;
 }
+
+@layer components {
+  /* Page gutter. Use instead of ad-hoc px-8 / px-10 on page wrappers. */
+  .page-x { @apply px-4 sm:px-6 lg:px-10; }
+}
+
+/* iOS Safari zooms the whole page when it focuses a field set below 16px.
+   Most inputs here are text-sm (14px). !important is needed to beat the utility layer. */
+@media (max-width: 1023px) and (pointer: coarse) {
+  input:not([type="checkbox"]):not([type="radio"]), select, textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* Phones: 32px side padding left the form ~224px wide on a 320px screen. */
+@media (max-width: 639px) {
+  .sd-register-card { padding: 24px 20px 20px; }
+}
+
+/* Overflowing content widens the mobile layout viewport, dragging the header off-screen
+   and exposing the body gradient. clip, not hidden: hidden turns body into a scroll
+   container and breaks position: sticky. */
+html, body { overflow-x: clip; }

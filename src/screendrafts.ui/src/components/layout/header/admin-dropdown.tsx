@@ -1,18 +1,9 @@
 'use client';
 
+import { ADMIN_NAV_ITEMS as ADMIN_ITEMS } from "../nav-items";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-
-const ADMIN_ITEMS = [
-  { label: "User Management", href: "/admin" },
-  { label: "Draft Management", href: "/admin/drafts" },
-  { label: "Drafter Teams", href: "/admin/drafter-teams"},
-  { label: "Spotlight Management", href: "/admin/spotlight"},
-  { label: "Campaigns", href: "/admin/campaigns" },
-  { label: "Categories", href: "/admin/categories" },
-  { label: "Series", href: "/admin/series" },
-];
 
 export default function AdminDropdown() {
   const [open, setOpen] = useState(false);

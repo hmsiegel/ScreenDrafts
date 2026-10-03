@@ -1,3 +1,4 @@
+// app/admin/drafts/page.tsx
 import { auth } from "@/auth";
 import Link from "next/link";
 import { listAdminActiveDrafts, listUnreleasedDraftParts } from "@/services/admin/fetch-admin-drafts";
@@ -12,13 +13,13 @@ export const dynamic = "force-dynamic";
 function AdminCard({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="bg-white border border-sd-ink/10">
-      <div className="flex items-center gap-3 px-6 py-4 border-b border-sd-ink/10 bg-sd-ink">
+      <div className="flex items-center gap-3 px-4 sm:px-6 py-4 border-b border-sd-ink/10 bg-sd-ink">
         <div className="w-1 h-5 bg-sd-red shrink-0" />
         <h2 className="font-oswald font-bold text-[16px] tracking-wide uppercase text-white">
           {title}
         </h2>
       </div>
-      <div className="p-6">{children}</div>
+      <div className="px-4 py-2 sm:p-6">{children}</div>
     </div>
   );
 }
@@ -39,13 +40,13 @@ export default async function AdminDraftsPage() {
 
   return (
     <div className="min-h-screen bg-light-blue">
-      <div className="px-6 md:px-10 py-10 max-w-[1200px] mx-auto">
+      <div className="page-x py-8 lg:py-10 max-w-[1200px] mx-auto">
         <p className="font-mono text-[11px] tracking-widest text-sd-ink/50 mb-6">
           / ADMIN / DRAFTS
         </p>
 
-        <div className="flex items-end justify-between mb-10">
-          <h1 className="font-oswald font-bold text-[56px] leading-none text-sd-ink">
+        <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-end sm:justify-between mb-8 lg:mb-10">
+          <h1 className="font-oswald font-bold text-[36px] sm:text-[48px] lg:text-[56px] leading-none text-sd-ink">
             DRAFT MANAGEMENT
           </h1>
           <Link

@@ -1,3 +1,4 @@
+// app/admin/drafts/new/page.tsx
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
@@ -27,7 +28,7 @@ export default async function CreateDraftPage() {
 
   return (
     <div className="min-h-screen bg-light-blue">
-      <div className="px-6 md:px-10 py-10 max-w-[900px] mx-auto">
+      <div className="page-x py-8 lg:py-10 max-w-[900px] mx-auto">
         <p className="font-mono text-[11px] tracking-widest text-sd-ink/50 mb-6">
           <Link href="/admin" className="hover:text-sd-ink/70">ADMIN</Link>
           {" / "}
@@ -35,11 +36,11 @@ export default async function CreateDraftPage() {
           {" / NEW"}
         </p>
 
-        <h1 className="font-oswald font-bold text-[48px] leading-none text-sd-ink mb-10">
+        <h1 className="font-oswald font-bold text-[32px] sm:text-[48px] leading-none text-sd-ink mb-6 sm:mb-10">
           CREATE DRAFT
         </h1>
 
-        <div className="bg-white border border-sd-ink/10 p-8">
+        <div className="bg-white border border-sd-ink/10 p-4 sm:p-8">
           <CreateDraftForm
             seriesList={seriesList}
             hostList={hostList}

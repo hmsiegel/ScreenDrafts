@@ -39,7 +39,7 @@ export function HonorificBanner({
         alt={banner.alt}
         fill
         unoptimized
-        className="object-cover object-center"
+        className={`object-center ${size === "card" ? "object-contain" : "object-cover"}`}
       />
     </div>
   );

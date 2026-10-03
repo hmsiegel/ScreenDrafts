@@ -209,7 +209,7 @@ export default function EmailBootstrapPanel({ accessToken, apiBase }: EmailBoots
     <div className="space-y-8">
       {/* Candidates list */}
       <div className="space-y-3">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col-reverse items-stretch gap-2 sm:flex-row sm:items-center sm:justify-between">
           <p className="font-mono text-[10px] tracking-widest text-sd-ink/50 uppercase">
             {loadingCandidates ? "Loading…" : `${candidates?.totalCount ?? 0} users still need migrating`}
           </p>
@@ -218,13 +218,23 @@ export default function EmailBootstrapPanel({ accessToken, apiBase }: EmailBoots
             value={search}
             onChange={(e) => handleSearch(e.target.value)}
             placeholder="Search name or email…"
-            className="border border-sd-ink/20 bg-sd-paper px-3 py-1.5 text-sd-ink text-sm focus:outline-none focus:ring-2 focus:ring-sd-blue rounded w-[220px]"
+            className="border border-sd-ink/20 bg-sd-paper px-3 py-1.5 text-sd-ink text-sm focus:outline-none focus:ring-2 focus:ring-sd-blue rounded w-full sm:w-[220px]"
           />
         </div>
 
-        <div className="border border-sd-ink/20 overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
+        {/* Table from sm up. Below sm each user is a card, checkbox on the left; the
+            column headers (and their select-all box) give way to a select-all strip. */}
+        <div className="border border-sd-ink/20 sm:overflow-x-auto">
+          <label className="sm:hidden flex items-center gap-3 px-4 py-3 bg-sd-ink text-white font-mono text-[10px] tracking-widest uppercase cursor-pointer">
+            <input
+              type="checkbox"
+              checked={allVisibleSelected}
+              onChange={toggleSelectAllVisible}
+            />
+            Select all on this page
+          </label>
+          <table className="block sm:table w-full sm:min-w-[640px] text-sm">
+            <thead className="hidden sm:table-header-group">
               <tr className="bg-sd-ink text-white">
                 <th className="px-4 py-3 w-[36px]">
                   <input
@@ -240,10 +250,10 @@ export default function EmailBootstrapPanel({ accessToken, apiBase }: EmailBoots
                 <th className="text-left px-4 py-3 font-mono text-[10px] tracking-widest uppercase">Token Status</th>
               </tr>
             </thead>
-            <tbody className={loadingCandidates ? "opacity-50" : ""}>
+            <tbody className={`block sm:table-row-group ${loadingCandidates ? "opacity-50" : ""}`}>
               {!candidates || candidates.items.length === 0 ? (
-                <tr>
-                  <td colSpan={5} className="px-4 py-6 text-center text-sd-ink/40 text-[13px] italic">
+                <tr className="block sm:table-row">
+                  <td colSpan={5} className="block sm:table-cell px-4 py-6 text-center text-sd-ink/40 text-[13px] italic">
                     {candidates ? "No users need migrating." : "Loading…"}
                   </td>
                 </tr>
@@ -251,11 +261,11 @@ export default function EmailBootstrapPanel({ accessToken, apiBase }: EmailBoots
                 candidates.items.map((c, i) => (
                   <tr
                     key={c.userPublicId}
-                    className={`border-t border-sd-ink/10 hover:bg-sd-paper transition-colors ${
+                    className={`grid grid-cols-[auto_minmax(0,1fr)] gap-x-3 gap-y-1 px-4 py-3 sm:table-row sm:p-0 border-t border-sd-ink/10 hover:bg-sd-paper transition-colors ${
                       i % 2 === 1 ? "bg-sd-ink/[0.02]" : "bg-white"
                     }`}
                   >
-                    <td className="px-4 py-3">
+                    <td className="row-span-4 pt-0.5 sm:table-cell sm:px-4 sm:py-3">
                       <input
                         type="checkbox"
                         checked={selectedIds.has(c.userPublicId!)}
@@ -263,20 +273,20 @@ export default function EmailBootstrapPanel({ accessToken, apiBase }: EmailBoots
                         aria-label={`Select ${c.firstName} ${c.lastName}`}
                       />
                     </td>
-                    <td className="px-4 py-3 font-medium text-sd-ink">
+                    <td className="sm:table-cell sm:px-4 sm:py-3 font-medium text-sd-ink [overflow-wrap:anywhere]">
                       {c.firstName} {c.lastName}
                     </td>
-                    <td className="px-4 py-3 font-mono text-[12px] text-sd-ink/70">{c.currentEmail}</td>
-                    <td className="px-4 py-3">
+                    <td className="sm:table-cell sm:px-4 sm:py-3 font-mono text-[12px] text-sd-ink/70 break-all">{c.currentEmail}</td>
+                    <td className="sm:table-cell sm:px-4 sm:py-3">
                       {c.isPatreon ? (
                         <span className="font-mono text-xs px-2 py-0.5 rounded-full text-white bg-sd-red">
                           Patreon
                         </span>
                       ) : (
-                        <span className="text-sd-ink/30 text-[12px]">—</span>
+                        <span className="hidden sm:inline text-sd-ink/30 text-[12px]">—</span>
                       )}
                     </td>
-                    <td className="px-4 py-3 font-mono text-[12px] text-sd-ink/70">
+                    <td className="sm:table-cell sm:px-4 sm:py-3 font-mono text-[12px] text-sd-ink/70">
                       {c.hasActiveToken
                         ? `Issued — expires ${c.tokenExpiresAt ? new Date(c.tokenExpiresAt).toLocaleString() : "?"}`
                         : "Not yet generated"}
@@ -313,8 +323,8 @@ export default function EmailBootstrapPanel({ accessToken, apiBase }: EmailBoots
 
       {/* Generate form */}
       <div className="space-y-4 border-t border-sd-ink/10 pt-6">
-        <div className="flex gap-4">
-          <div className="flex-1">
+        <div className="flex flex-col gap-4 sm:flex-row">
+          <div className="flex-1 min-w-0">
             <label className="block font-mono text-[10px] tracking-widest text-sd-ink/50 uppercase mb-1">
               Batch Label
             </label>
@@ -326,7 +336,7 @@ export default function EmailBootstrapPanel({ accessToken, apiBase }: EmailBoots
               className="w-full border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink text-sm focus:outline-none focus:ring-2 focus:ring-sd-blue rounded"
             />
           </div>
-          <div className="w-[140px]">
+          <div className="sm:w-[140px]">
             <label className="block font-mono text-[10px] tracking-widest text-sd-ink/50 uppercase mb-1">
               Expiry (hours)
             </label>
@@ -340,7 +350,7 @@ export default function EmailBootstrapPanel({ accessToken, apiBase }: EmailBoots
           </div>
         </div>
 
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-3">
           <button
             onClick={() => generate(Array.from(selectedIds))}
             disabled={generating || selectedIds.size === 0}
@@ -379,9 +389,11 @@ export default function EmailBootstrapPanel({ accessToken, apiBase }: EmailBoots
             </button>
           </div>
 
-          <div className="border border-sd-ink/20 overflow-x-auto max-h-[500px] overflow-y-auto">
-            <table className="w-full text-sm">
-              <thead className="sticky top-0">
+          {/* Table from sm up (scrolling within 500px). Below sm each token is a card
+              and the list just runs down the page — no scroll box inside a phone screen. */}
+          <div className="border border-sd-ink/20 sm:overflow-x-auto sm:max-h-[500px] sm:overflow-y-auto">
+            <table className="block sm:table w-full sm:min-w-[640px] text-sm">
+              <thead className="hidden sm:table-header-group sticky top-0">
                 <tr className="bg-sd-ink text-white">
                   <th className="text-left px-4 py-3 font-mono text-[10px] tracking-widest uppercase">Name</th>
                   <th className="text-left px-4 py-3 font-mono text-[10px] tracking-widest uppercase">Current Email</th>
@@ -390,32 +402,33 @@ export default function EmailBootstrapPanel({ accessToken, apiBase }: EmailBoots
                   <th className="px-4 py-3 font-mono text-[10px] tracking-widest uppercase text-right">Link</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="block sm:table-row-group">
                 {results.map((r, i) => (
                   <tr
                     key={r.userPublicId ?? i}
-                    className={`border-t border-sd-ink/10 ${i % 2 === 1 ? "bg-sd-ink/[0.02]" : "bg-white"}`}
+                    className={`flex flex-col gap-1 px-4 py-3 sm:table-row sm:p-0 border-t first:border-t-0 sm:first:border-t border-sd-ink/10 ${i % 2 === 1 ? "bg-sd-ink/[0.02]" : "bg-white"}`}
                   >
-                    <td className="px-4 py-3 font-medium text-sd-ink">
+                    <td className="sm:table-cell sm:px-4 sm:py-3 font-medium text-sd-ink [overflow-wrap:anywhere]">
                       {r.firstName} {r.lastName}
                     </td>
-                    <td className="px-4 py-3 font-mono text-[12px] text-sd-ink/70">{r.currentEmail}</td>
-                    <td className="px-4 py-3">
+                    <td className="sm:table-cell sm:px-4 sm:py-3 font-mono text-[12px] text-sd-ink/70 break-all">{r.currentEmail}</td>
+                    <td className="sm:table-cell sm:px-4 sm:py-3">
                       {r.isPatreon ? (
                         <span className="font-mono text-xs px-2 py-0.5 rounded-full text-white bg-sd-red">
                           Patreon
                         </span>
                       ) : (
-                        <span className="text-sd-ink/30 text-[12px]">—</span>
+                        <span className="hidden sm:inline text-sd-ink/30 text-[12px]">—</span>
                       )}
                     </td>
-                    <td className="px-4 py-3 font-mono text-[12px] text-sd-ink/70">
+                    <td className="sm:table-cell sm:px-4 sm:py-3 font-mono text-[12px] text-sd-ink/70">
+                      <span className="sm:hidden">Expires </span>
                       {r.expiresAt ? new Date(r.expiresAt).toLocaleString() : "—"}
                     </td>
-                    <td className="px-4 py-3 text-right">
+                    <td className="sm:table-cell sm:px-4 sm:py-3 sm:text-right">
                       <button
                         onClick={() => r.token && copyLink(r.token)}
-                        className="font-mono text-[11px] text-sd-blue hover:underline"
+                        className="min-h-9 sm:min-h-0 font-mono text-[11px] text-sd-blue hover:underline"
                       >
                         {copiedToken === r.token ? "Copied!" : "Copy link"}
                       </button>

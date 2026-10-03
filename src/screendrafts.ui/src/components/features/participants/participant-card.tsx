@@ -1,3 +1,4 @@
+// components/features/participants/participant-card.tsx
 import { HonorificResponse, ParticipantListItem } from "@/lib/dto";
 import Link from "next/link";
 import { HonorificBanner } from "./honorific-banner";
@@ -40,7 +41,7 @@ export default function ParticipantCard({ participant, index, honorific }: Parti
       href={`/drafters/${participant.personPublicId}`}
       className="group block bg-white border-2 border-sd-ink relative transition-all duration-[140ms] hover:-translate-y-[3px] hover:shadow-[6px_6px_0_#0d1430]"
     >
-      <div className="p-6">
+      <div className="p-5 sm:p-6">
         {participant.isCommissioner && (
           <div className="absolute top-4 right-4 font-mono text-[9px] tracking-widest text-sd-red font-bold">
             ★ COMMISSIONER
@@ -69,19 +70,16 @@ export default function ParticipantCard({ participant, index, honorific }: Parti
         </div>
 
         {/* Name */}
-        <div className="font-oswald font-bold text-[24px] text-sd-ink leading-tight mb-3">
+        <div className="font-oswald font-bold text-[24px] text-sd-ink leading-tight mb-3 [overflow-wrap:anywhere]">
           {participant.displayName}
         </div>
 
         {/* Stats */}
+        {/* Tailwind's grid-cols-N are minmax(0,1fr) tracks, so a long label can't widen the card. */}
         <div
-          className="grid border-t border-sd-ink/10 pt-3 mt-3 gap-2"
-          style={{
-            gridTemplateColumns:
-              isGM && isHost ? "repeat(4, 1fr)"
-                : isGM ? "repeat(3, 1fr)"
-                  : "1fr",
-          }}
+          className={`grid border-t border-sd-ink/10 pt-3 mt-3 gap-2 ${
+            isGM && isHost ? "grid-cols-4" : isGM ? "grid-cols-3" : "grid-cols-1"
+          }`}
         >
           {isGM && (
             <>

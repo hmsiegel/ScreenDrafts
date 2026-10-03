@@ -92,7 +92,7 @@ export function SeedPositionsStep({ draft, accessToken, onDone }: Props) {
 
   if (positions.length === 0) {
     return (
-      <div className="bg-white border border-sd-ink/10 rounded p-8 max-w-md text-center space-y-4">
+      <div className="bg-white border border-sd-ink/10 rounded p-4 sm:p-8 max-w-md text-center space-y-4">
         <p className="text-sm text-sd-ink/60">
           No positions to assign on this part — Set Draft Positions wasn&apos;t run, or
           this part has none.
@@ -107,7 +107,7 @@ export function SeedPositionsStep({ draft, accessToken, onDone }: Props) {
   const allAssigned = positions.every((p) => p.assignedParticipantId !== null);
 
   return (
-    <div className="bg-white border border-sd-ink/10 rounded p-8 max-w-lg space-y-6">
+    <div className="bg-white border border-sd-ink/10 rounded p-4 sm:p-8 max-w-lg space-y-6">
       <p className="text-sm text-sd-ink/60">
         Who plays each position — this is what actually grants a position&apos;s bonus
         veto, override, or fungible token, so it has to happen even when seeding.
@@ -115,7 +115,7 @@ export function SeedPositionsStep({ draft, accessToken, onDone }: Props) {
 
       <div className="space-y-3">
         {positions.map((pos) => (
-          <div key={pos.positionPublicId} className="flex items-center gap-4">
+          <div key={pos.positionPublicId} className="flex flex-wrap items-center gap-x-4 gap-y-2">
             <div className="w-28 shrink-0">
               <span className="font-oswald text-sd-red font-bold">{pos.positionName}</span>
               <span className="block text-[11px] text-sd-ink/40 font-mono">
@@ -183,7 +183,7 @@ export function SeedPositionsStep({ draft, accessToken, onDone }: Props) {
         </div>
       )}
 
-      <div className="flex items-center gap-4">
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
         <button
           type="button"
           onClick={onDone}

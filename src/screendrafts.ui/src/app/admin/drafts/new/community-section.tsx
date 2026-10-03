@@ -1,4 +1,5 @@
 "use client";
+// app/admin/drafts/new/community-section.tsx
 
 import { useState, useRef, useCallback } from "react";
 import { env } from "@/lib/env";
@@ -258,9 +259,9 @@ export function CommunitySection({ config, onChange }: Props) {
                     )}
 
                     {/* Assigned film */}
-                    <div className="flex items-center gap-3">
+                    <div className="flex flex-wrap items-center gap-3">
                       {rule.tmdbId ? (
-                        <div className="flex items-center gap-2 flex-1">
+                        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 flex-1 min-w-0">
                           <span className="text-sm text-sd-ink font-medium">{rule.title}</span>
                           <span className="text-[11px] font-mono text-sd-ink/40">
                             TMDb #{rule.tmdbId}
@@ -333,7 +334,7 @@ export function CommunitySection({ config, onChange }: Props) {
                     {filmResults.map((film) => (
                       <div
                         key={film.tmdbId}
-                        className="flex items-center justify-between px-3 py-2 text-sm text-sd-ink hover:bg-sd-ink/5 border-b border-sd-ink/5 last:border-0"
+                        className="flex flex-wrap items-center justify-between gap-2 px-3 py-2 text-sm text-sd-ink hover:bg-sd-ink/5 border-b border-sd-ink/5 last:border-0"
                       >
                         <span>
                           {film.title}
@@ -343,7 +344,7 @@ export function CommunitySection({ config, onChange }: Props) {
                             </span>
                           )}
                         </span>
-                        <div className="flex gap-1.5 ml-4 shrink-0">
+                        <div className="flex flex-wrap gap-1.5 sm:ml-4 shrink-0">
                           {visibleRules.filter((r) => !r.tmdbId).map((rule) => (
                             <button
                               key={rule.localId}
@@ -353,7 +354,7 @@ export function CommunitySection({ config, onChange }: Props) {
                                 setFilmSearch("");
                                 setFilmResults([]);
                               }}
-                              className="text-[11px] font-mono border border-sd-ink/20 px-2 py-0.5 rounded hover:bg-sd-ink/5 text-sd-ink/70"
+                              className="text-[11px] font-mono border border-sd-ink/20 px-2 py-1.5 sm:py-0.5 rounded hover:bg-sd-ink/5 text-sd-ink/70"
                             >
                               {visibleRules.filter((r) => !r.tmdbId).length > 1
                                 ? `Assign to Rule ${visibleRules.indexOf(rule) + 1}`

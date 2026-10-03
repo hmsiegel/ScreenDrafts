@@ -3,6 +3,7 @@ import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
 import { fetchGameplay } from './gameplay-fetchers';
 import { LiveDraftPage } from './live-draft-page';
+import { LargeScreenGate } from '@/components/ui/large-screen-gate';
 
 interface Props {
   params: Promise<{ draftPartId: string }>;
@@ -28,16 +29,20 @@ export default async function Page({ params }: Props) {
   // will come from a separate query or session attribute at that point.
   const isPredictions = false;
 
+  // Tablets and up only. The gate keeps LiveDraftPage — and its SignalR
+  // provider — from mounting on phones at all.
   return (
-    <LiveDraftPage
-      draftPartId={draftPartId}
-      accessToken={session.accessToken}
-      initialGameplay={gameplay}
-      isPrimaryHost={isPrimaryHost}
-      isCoHost={isCoHost}
-      isParticipant={isParticipant}
-      isCommissioner={isCommissioner}
-      isPredictions={isPredictions}
-    />
+    <LargeScreenGate backHref="/my-drafts" backLabel="My Drafts">
+      <LiveDraftPage
+        draftPartId={draftPartId}
+        accessToken={session.accessToken}
+        initialGameplay={gameplay}
+        isPrimaryHost={isPrimaryHost}
+        isCoHost={isCoHost}
+        isParticipant={isParticipant}
+        isCommissioner={isCommissioner}
+        isPredictions={isPredictions}
+      />
+    </LargeScreenGate>
   );
 }

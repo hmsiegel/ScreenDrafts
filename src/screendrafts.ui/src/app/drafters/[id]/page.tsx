@@ -1,3 +1,4 @@
+// app/drafters/[id]/page.tsx
 import { getParticipantProfile } from "@/services/participants/fetch-participants";
 import { HonorificBanner } from "@/components/features/participants/honorific-banner";
 import {
@@ -16,6 +17,16 @@ import Link from "next/link";
 import Image from "next/image";
 import ProfileAvatar from "@/components/features/participants/profile-avatar";
 import { cdnUrl } from "@/lib/cdn";
+import { parseISO } from "date-fns/parseISO";
+import { socialUrl } from "@/lib/social-links";
+
+// DraftBrief.releaseDates is typed Date[] but arrives over JSON as bare "yyyy-MM-dd"
+// strings. new Date() reads those as UTC midnight, which lands on the previous day —
+// or the previous year, for a January 1 release — anywhere west of UTC. parseISO reads
+// them as local midnight. Same fix as drafts-sidebar.tsx's formatDate.
+function toLocalDate(raw: Date | string): Date {
+  return typeof raw === "string" ? parseISO(raw) : raw;
+}
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -73,7 +84,7 @@ export default async function DrafterProfilePage({ params }: Props) {
   return (
     <div className="min-h-screen bg-light-blue">
       {/* Page header */}
-      <div className="bg-sd-ink text-white px-10 py-12">
+      <div className="bg-sd-ink text-white page-x py-8 lg:py-12">
         <p className="font-mono text-[11px] tracking-widest text-light-blue mb-3">
           <Link href="/drafters" className="hover:text-white transition-colors">
             / DRAFTERS
@@ -81,9 +92,9 @@ export default async function DrafterProfilePage({ params }: Props) {
           <span className="text-white/40"> / </span>
           <span>{profile.displayName.toUpperCase()}</span>
         </p>
-        <div className="flex items-start justify-between gap-8">
-          <div>
-            <h1 className="font-oswald font-bold text-[64px] leading-[0.95] text-white">
+        <div className="flex flex-col-reverse items-start gap-2 sm:flex-row sm:justify-between sm:gap-8">
+          <div className="min-w-0">
+            <h1 className="font-oswald font-bold text-[40px] sm:text-[52px] lg:text-[64px] leading-[0.95] text-white [overflow-wrap:anywhere]">
               {profile.displayName.toUpperCase()}
             </h1>
             {honorificLabel && (
@@ -93,7 +104,7 @@ export default async function DrafterProfilePage({ params }: Props) {
             )}
           </div>
           {profile.isCommissioner && (
-            <span className="font-mono text-[11px] tracking-widest text-sd-red font-bold mt-2">
+            <span className="shrink-0 font-mono text-[11px] tracking-widest text-sd-red font-bold sm:mt-2">
               ★ COMMISSIONER
             </span>
           )}
@@ -104,11 +115,12 @@ export default async function DrafterProfilePage({ params }: Props) {
       <div className="h-1 bg-sd-red" />
 
       {/* Content */}
-      <div className="px-10 py-10 max-w-[1400px] mx-auto">
-        <div className="grid gap-10" style={{ gridTemplateColumns: "320px 1fr" }}>
+      <div className="page-x py-6 lg:py-10 max-w-[1400px] mx-auto">
+        {/* One column below lg; 320px sidebar + content from lg. */}
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[320px_minmax(0,1fr)] lg:gap-10">
 
-          {/* ── Left sidebar ── */}
-          <div className="flex flex-col gap-6">
+          {/* ── Left sidebar ── side-by-side cards on tablets, a stack on phones and in the lg sidebar. */}
+          <div className="flex flex-col gap-6 md:grid md:grid-cols-2 md:items-start lg:flex">
             <ProfileCard profile={profile} honorific={honorific} />
             {profile.drafterStats && (
               <DrafterStatsCard stats={profile.drafterStats} />
@@ -119,9 +131,9 @@ export default async function DrafterProfilePage({ params }: Props) {
           </div>
 
           {/* ── Right column ── */}
-          <div className="flex flex-col gap-10">
+          <div className="flex flex-col gap-6 lg:gap-10 min-w-0">
             {profile.biography && (
-              <div className="bg-white border-2 border-sd-ink p-6">
+              <div className="bg-white border-2 border-sd-ink p-5 sm:p-6">
                 <h2 className="font-oswald font-bold text-[13px] tracking-widest text-sd-red mb-4">
                   BIOGRAPHY
                 </h2>
@@ -195,12 +207,14 @@ function ProfileCard({
 }
 
 // ── Social links with SVG icons ───────────────────────────────────────────────
+// The API returns stored handles, not URLs — socialUrl() builds each profile link.
+// Used directly as an href, a bare handle became a relative link back into this site.
 
 function SocialLinks({ handles }: { handles: SocialHandles }) {
   const links = [
     {
       label: "Letterboxd",
-      url: handles.letterboxd,
+      url: socialUrl("letterboxd", handles.letterboxd),
       icon: (
         <svg viewBox="0 0 24 24" className="w-5 h-5" fill="currentColor">
           <path d="M10.5 0C4.7 0 0 4.7 0 10.5S4.7 21 10.5 21 21 16.3 21 10.5 16.3 0 10.5 0zm0 19.1C5.7 19.1 1.9 15.3 1.9 10.5S5.7 1.9 10.5 1.9s8.6 3.8 8.6 8.6-3.8 8.6-8.6 8.6zM7.4 7.4h1.7v6.2H7.4zm3.4 0h1.7l1.7 3.1 1.7-3.1h1.7l-2.6 4.6 2.6 4.6h-1.7l-1.7-3.1-1.7 3.1h-1.7l2.6-4.6z" />
@@ -209,7 +223,7 @@ function SocialLinks({ handles }: { handles: SocialHandles }) {
     },
     {
       label: "Twitter / X",
-      url: handles.twitter,
+      url: socialUrl("twitter", handles.twitter),
       icon: (
         <svg viewBox="0 0 24 24" className="w-5 h-5" fill="currentColor">
           <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
@@ -218,7 +232,7 @@ function SocialLinks({ handles }: { handles: SocialHandles }) {
     },
     {
       label: "Bluesky",
-      url: handles.bluesky,
+      url: socialUrl("bluesky", handles.bluesky),
       icon: (
         <svg viewBox="0 0 24 24" className="w-5 h-5" fill="currentColor">
           <path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364.136-.02.275-.039.415-.056-.138.022-.276.04-.415.056-3.912.58-7.387 2.005-2.83 7.078 5.013 5.19 6.87-1.113 7.823-4.308.953 3.195 2.05 9.271 7.733 4.308 4.267-4.308 1.172-6.498-2.74-7.078a8.741 8.741 0 0 1-.415-.056c.14.017.279.036.415.056 2.67.297 5.568-.628 6.383-3.364.246-.828.624-5.79.624-6.478 0-.69-.139-1.861-.902-2.204-.659-.299-1.664-.62-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8z" />
@@ -227,7 +241,7 @@ function SocialLinks({ handles }: { handles: SocialHandles }) {
     },
     {
       label: "Instagram",
-      url: handles.instagram,
+      url: socialUrl("instagram", handles.instagram),
       icon: (
         <svg viewBox="0 0 24 24" className="w-5 h-5" fill="currentColor">
           <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
@@ -260,7 +274,7 @@ function SocialLinks({ handles }: { handles: SocialHandles }) {
 
 function DrafterStatsCard({ stats }: { stats: DrafterStatsResponse }) {
   return (
-    <div className="bg-white border-2 border-sd-ink p-6">
+    <div className="bg-white border-2 border-sd-ink p-5 sm:p-6">
       <h2 className="font-oswald font-bold text-[13px] tracking-widest text-sd-red mb-4">
         DRAFTER STATS
       </h2>
@@ -307,7 +321,7 @@ function DrafterStatsCard({ stats }: { stats: DrafterStatsResponse }) {
 
 function HostStatsCard({ stats }: { stats: HostStatsResponse }) {
   return (
-    <div className="bg-white border-2 border-sd-ink p-6">
+    <div className="bg-white border-2 border-sd-ink p-5 sm:p-6">
       <h2 className="font-oswald font-bold text-[13px] tracking-widest text-sd-red mb-4">
         HOST STATS
       </h2>
@@ -373,14 +387,14 @@ function TableOfContents({
   vetosByDraft: Map<string, VetoHistoryItem[]>;
 }) {
   return (
-    <div className="bg-white border-2 border-sd-ink p-6">
+    <div className="bg-white border-2 border-sd-ink p-5 sm:p-6">
       <h2 className="font-oswald font-bold text-[13px] tracking-widest text-sd-red mb-4">
         DRAFT HISTORY
         <span className="text-sd-ink/40 ml-2 font-normal text-[12px]">
           ({draftIds.length})
         </span>
       </h2>
-      <div className="columns-2 gap-6">
+      <div className="columns-1 sm:columns-2 gap-6">
         {draftIds.map((draftId) => {
           const item = picksByDraft.get(draftId);
           const vetoes = vetosByDraft.get(draftId) ?? [];
@@ -398,7 +412,7 @@ function TableOfContents({
                 {draft.draftTitle}
               </span>
               <span className="font-mono text-[10px] tracking-widest text-[#5a6075] shrink-0">
-                {releaseDate ? new Date(releaseDate).getFullYear() : "TBD"}
+                {releaseDate ? toLocalDate(releaseDate).getFullYear() : "TBD"}
               </span>
             </a>
           );
@@ -475,20 +489,20 @@ function DraftBlock({
       className="bg-white border-2 border-sd-ink scroll-mt-6"
     >
       {/* Header */}
-      <div className="bg-sd-ink px-6 py-5 flex items-center justify-between gap-4">
+      <div className="bg-sd-ink px-4 py-4 sm:px-6 sm:py-5 flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
         <Link
           href={`/drafts/${draft.draftPublicId}`}
-          className="font-oswald font-bold text-[22px] text-white hover:text-sd-red transition-colors leading-tight"
+          className="font-oswald font-bold text-[19px] sm:text-[22px] text-white hover:text-sd-red transition-colors leading-tight [overflow-wrap:anywhere]"
         >
           {draft.draftTitle}
         </Link>
-        <div className="flex items-center gap-6 shrink-0">
+        <div className="flex items-center gap-4 sm:gap-6 shrink-0">
           <span className="font-mono text-[12px] tracking-widest text-white/80">
             {finalPicks.length} FILM{finalPicks.length !== 1 ? "S" : ""}
           </span>
           {releaseDate && (
             <span className="font-mono text-[12px] tracking-widest text-white/80">
-              {new Date(releaseDate as unknown as string).toLocaleDateString("en-US", {
+              {toLocalDate(releaseDate).toLocaleDateString("en-US", {
                 year: "numeric",
                 month: "short",
                 day: "numeric",
@@ -525,7 +539,7 @@ function PickRow({ pick }: { pick: PickItem }) {
   const isStruck = isVetoed || isCommissionerOverridden;
 
   return (
-    <div className="px-6 py-4 flex items-center gap-4">
+    <div className="px-4 sm:px-6 py-4 flex items-center gap-3 sm:gap-4">
       <div
         className={`w-9 h-9 shrink-0 flex items-center justify-center border-2 font-oswald font-bold text-[15px] ${isStruck
             ? "border-sd-ink/20 text-sd-ink/30"
@@ -610,7 +624,7 @@ function PickRow({ pick }: { pick: PickItem }) {
 
 function VetoIssuedRow({ veto }: { veto: VetoHistoryItem }) {
   return (
-    <div className="px-6 py-4 flex items-center gap-4 bg-sd-red/[0.03]">
+    <div className="px-4 sm:px-6 py-4 flex items-center gap-3 sm:gap-4 bg-sd-red/[0.03]">
       <div className="w-9 h-9 shrink-0 flex items-center justify-center border-2 border-sd-red font-oswald font-bold text-[15px] text-sd-red">
         <span className="line-through">{veto.position}</span>
       </div>
@@ -639,7 +653,7 @@ function VetoIssuedRow({ veto }: { veto: VetoHistoryItem }) {
           )}
         </div>
         {veto.wasVetoOverridden && (
-          <div className="mt-1 font-mono text-[11px] tracking-widests text-sd-blue">
+          <div className="mt-1 font-mono text-[11px] tracking-widest text-sd-blue">
             ↩ VETO OVERRIDDEN
             {veto.overrideByDisplayName && veto.overrideByPublicId && (
               <span className="font-normal">

@@ -1,7 +1,9 @@
 'use client';
+// app/admin/drafts/upcoming-draft-actions.tsx
 
 import { useState } from "react";
 import Link from "next/link";
+import { LargeScreenOnly, StartOnLargeScreenNote } from "@/components/ui/large-screen-only";
 import {
   getDraft,
   startDraftPart,
@@ -74,7 +76,7 @@ export default function UpcomingDraftActions({
 
   if (draft.isDeleted) {
     return (
-      <div className="flex items-center justify-end">
+      <div className="flex items-center sm:justify-end">
         <button
           type="button"
           onClick={handleRestore}
@@ -89,7 +91,7 @@ export default function UpcomingDraftActions({
 
   if (confirmDelete) {
     return (
-      <div className="flex items-center gap-2 justify-end">
+      <div className="flex flex-wrap items-center gap-2 sm:justify-end">
         <span className="text-xs font-mono text-sd-ink/70">Confirm delete?</span>
         <button
           type="button"
@@ -111,45 +113,48 @@ export default function UpcomingDraftActions({
   }
 
   return (
-    <div className="flex items-center gap-3 justify-end">
+    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 sm:gap-3 sm:justify-end">
       {isSuper && (
         <Link
           href={`/admin/drafts/${draft.publicId}/pool`}
-          className="text-sd-blue text-xs font-mono uppercase tracking-wide hover:underline"
+          className="inline-flex items-center min-h-9 sm:min-h-0 text-sd-blue text-xs font-mono uppercase tracking-wide hover:underline"
         >
           Manage Pool
         </Link>
       )}
       <Link
         href={`/admin/drafts/${draft.publicId}/attendances`}
-        className="text-sd-blue text-xs font-mono uppercase tracking-wide hover:underline"
+        className="inline-flex items-center min-h-9 sm:min-h-0 text-sd-blue text-xs font-mono uppercase tracking-wide hover:underline"
       >
         Attendance
       </Link>
+      {/* Tablets and computers only, like a host's START. */}
+      <LargeScreenOnly fallback={<StartOnLargeScreenNote />}>
       <button
         type="button"
         onClick={handleStart}
         disabled={starting}
-        className="bg-sd-blue text-white font-oswald font-medium uppercase tracking-wide text-xs px-3 py-1.5 hover:bg-sd-blue/90 disabled:opacity-50"
+        className="inline-flex items-center min-h-9 sm:min-h-0 bg-sd-blue text-white font-oswald font-medium uppercase tracking-wide text-xs px-3 py-1.5 hover:bg-sd-blue/90 disabled:opacity-50"
       >
         {starting ? "Starting…" : "Start"}
       </button>
+      </LargeScreenOnly>
       <Link
         href={`/admin/drafts/${draft.publicId}/edit`}
-        className="text-sd-blue text-sm font-medium hover:underline"
+        className="inline-flex items-center min-h-9 sm:min-h-0 text-sd-blue text-sm font-medium hover:underline"
       >
         Edit
       </Link>
       <button
         type="button"
         onClick={() => setConfirmDelete(true)}
-        className="text-sd-ink/40 text-sm hover:text-sd-red"
+        className="inline-flex items-center min-h-9 sm:min-h-0 text-sd-ink/40 text-sm hover:text-sd-red"
       >
         Delete
       </button>
       <Link
         href={`/admin/drafts/${draft.publicId}/seed`}
-        className="text-sd-blue text-xs font-mono uppercase tracking-wide hover:underline"
+        className="inline-flex items-center min-h-9 sm:min-h-0 text-sd-blue text-xs font-mono uppercase tracking-wide hover:underline"
       >
         Seed
       </Link>

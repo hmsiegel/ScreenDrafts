@@ -1,4 +1,5 @@
 'use client';
+// app/admin/drafts/upcoming-drafts-list.tsx
 
 import { useCallback, useState } from "react";
 import DraftTypeBadge from "@/components/ui/draft-type-badge";
@@ -66,9 +67,9 @@ export default function UpcomingDraftsList({ initialDrafts, accessToken }: Upcom
       {visibleDrafts.length === 0 ? (
         <p className="text-sd-ink/50 text-sm font-mono">No drafts found.</p>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
+        <div className="sm:overflow-x-auto">
+          <table className="block sm:table w-full text-sm">
+            <thead className="hidden sm:table-header-group">
               <tr className="border-b border-sd-ink/10">
                 {["Title", "Type", "Series", "Status", ""].map((col) => (
                   <th
@@ -80,20 +81,20 @@ export default function UpcomingDraftsList({ initialDrafts, accessToken }: Upcom
                 ))}
               </tr>
             </thead>
-            <tbody>
+            <tbody className="block sm:table-row-group">
               {visibleDrafts.map((d) => (
                 <tr
                   key={d.publicId}
-                  className={`border-b border-sd-ink/5 transition-colors ${
+                  className={`flex flex-wrap items-center gap-x-3 gap-y-1 py-3 sm:table-row sm:py-0 border-b border-sd-ink/5 transition-colors ${
                     d.isDeleted ? "opacity-50" : "hover:bg-sd-paper/60"
                   }`}
                 >
-                  <td className="py-3 pr-4 font-medium text-sd-ink">{d.title}</td>
-                  <td className="py-3 pr-4 text-sd-ink/70">
+                  <td className="w-full sm:w-auto sm:table-cell sm:py-3 sm:pr-4 font-medium text-sd-ink [overflow-wrap:anywhere]">{d.title}</td>
+                  <td className="sm:table-cell sm:py-3 sm:pr-4 text-xs sm:text-sm text-sd-ink/70">
                     <DraftTypeBadge type={draftTypeFromNumber(d.draftType)} />
                   </td>
-                  <td className="py-3 pr-4 text-sd-ink/70">{d.seriesName ?? "—"}</td>
-                  <td className="py-3 pr-4">
+                  <td className="sm:table-cell sm:py-3 sm:pr-4 text-xs sm:text-sm text-sd-ink/70">{d.seriesName ?? "—"}</td>
+                  <td className="sm:table-cell sm:py-3 sm:pr-4">
                     {d.isDeleted ? (
                       <span className="font-mono text-[10px] tracking-widest text-sd-red uppercase">
                         Deleted
@@ -112,7 +113,7 @@ export default function UpcomingDraftsList({ initialDrafts, accessToken }: Upcom
                       </span>
                     )}
                   </td>
-                  <td className="py-3">
+                  <td className="w-full sm:w-auto sm:table-cell sm:py-3 pt-2">
                     <UpcomingDraftActions
                       draft={d}
                       accessToken={accessToken}

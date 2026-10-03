@@ -1,4 +1,6 @@
+// app/my-drafts/page.tsx
 import { auth } from "@/auth";
+import { parseISO } from "date-fns/parseISO";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getMyDrafts, joinDraftPart, startDraftPart } from "@/services/drafts/fetch-my-drafts";
@@ -9,6 +11,7 @@ import { Metadata } from "next";
 import type { MyDraftSummary, MyDraftPartSummary } from "@/lib/dto";
 import MyDraftsRealtimeRefresher from "./my-drafts-realtime-refresher";
 import AddToCalendarButton from "@/components/ui/add-to-calendar-button";
+import { LargeScreenOnly, StartOnLargeScreenNote } from "@/components/ui/large-screen-only";
 
 export const metadata: Metadata = { title: "My Drafts" };
 export const dynamic = "force-dynamic";
@@ -58,12 +61,16 @@ function DraftListRow({
 
   return (
     <div className="bg-white border border-sd-ink/10">
-      <div className="flex items-center gap-4 px-4 py-3">
+      {/* Phones: title on its own line, badge and buttons on a second line indented past
+          the red bar (pl-5 = bar + gap). sm+: one row. On a phone the badge, calendar and
+          action buttons left the title about 70px. */}
+      <div className="flex flex-wrap sm:flex-nowrap items-center gap-x-4 gap-y-2 px-4 py-3">
+        <div className="flex items-center gap-4 min-w-0 basis-full sm:basis-auto sm:flex-1">
         <div className="w-1 h-8 bg-sd-red shrink-0" />
         <div className="flex-1 min-w-0">
           <Link
             href={`/my-drafts/${draft.draftPublicId ?? ""}`}
-            className="font-oswald font-bold text-[15px] uppercase tracking-wide text-sd-ink hover:text-sd-blue transition-colors truncate block"
+            className="font-oswald font-bold text-[15px] uppercase tracking-wide text-sd-ink hover:text-sd-blue transition-colors line-clamp-2 [overflow-wrap:anywhere] sm:line-clamp-none sm:truncate"
           >
             {draft.title}
           </Link>
@@ -74,6 +81,8 @@ function DraftListRow({
             )}
           </div>
         </div>
+        </div>
+        <div className="flex flex-wrap items-center gap-2 sm:gap-4 pl-5 sm:pl-0 sm:shrink-0">
         <DraftTypeBadge type={draftTypeFromNumber(draft.draftType)} />
         {!multiPart && parts[0] && (
           <>
@@ -93,6 +102,7 @@ function DraftListRow({
             />
           </>
         )}
+        </div>
       </div>
 
       {multiPart && (
@@ -100,7 +110,7 @@ function DraftListRow({
           {parts.map((part) => (
             <div
               key={part.draftPartPublicId ?? ""}
-              className="flex items-center justify-between px-8 py-2 border-b border-sd-ink/5 last:border-b-0"
+              className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 px-5 sm:px-8 py-2 border-b border-sd-ink/5 last:border-b-0"
             >
               <div className="flex items-center gap-3">
                 <p className="font-mono text-xs text-sd-ink/60 uppercase tracking-wide">
@@ -108,7 +118,8 @@ function DraftListRow({
                 </p>
                 {part.releaseDate && (
                   <p className="font-mono text-xs text-sd-ink/40">
-                    {new Date(part.releaseDate).toLocaleDateString()}
+                    {/* parseISO: a bare "yyyy-MM-dd" through new Date() lands a day early west of UTC. */}
+                    {(typeof part.releaseDate === "string" ? parseISO(part.releaseDate) : part.releaseDate).toLocaleDateString()}
                   </p>
                 )}
               </div>
@@ -158,7 +169,7 @@ function PartActionButton({
       return (
         <Link
           href={`/drafts/${draftPublicId}`}
-          className="border border-sd-ink/20 text-sd-ink font-oswald font-medium uppercase tracking-wide text-xs px-3 py-1.5 hover:bg-sd-ink/5 shrink-0"
+          className="border border-sd-ink/20 text-sd-ink inline-flex items-center min-h-9 sm:min-h-0 font-oswald font-medium uppercase tracking-wide text-xs px-3 py-1.5 hover:bg-sd-ink/5 shrink-0"
         >
           View
         </Link>
@@ -168,14 +179,16 @@ function PartActionButton({
       return (
         <Link
           href={`/draft-parts/${draftPartPublicId}/live`}
-          className="bg-sd-ink text-white font-oswald font-medium uppercase tracking-wide text-xs px-3 py-1.5 hover:bg-sd-ink/80 shrink-0"
+          className="bg-sd-ink text-white inline-flex items-center min-h-9 sm:min-h-0 font-oswald font-medium uppercase tracking-wide text-xs px-3 py-1.5 hover:bg-sd-ink/80 shrink-0"
         >
           Open
         </Link>
       );
     }
-    // Created — START button
+    // Created — START button. Tablets and computers only: starting drops the host
+    // straight into the live draft, which phones can't open.
     return (
+      <LargeScreenOnly fallback={<StartOnLargeScreenNote />}>
       <form
         action={async () => {
           "use server";
@@ -190,11 +203,12 @@ function PartActionButton({
       >
         <button
           type="submit"
-          className="bg-sd-red text-white font-oswald font-medium uppercase tracking-wide text-xs px-3 py-1.5 hover:bg-sd-red/90 shrink-0"
+          className="bg-sd-red text-white inline-flex items-center min-h-9 sm:min-h-0 font-oswald font-medium uppercase tracking-wide text-xs px-3 py-1.5 hover:bg-sd-red/90 shrink-0"
         >
           Start
         </button>
       </form>
+      </LargeScreenOnly>
     );
   }
 
@@ -215,7 +229,7 @@ function PartActionButton({
       >
         <button
           type="submit"
-          className="bg-sd-blue text-white font-oswald font-medium uppercase tracking-wide text-xs px-3 py-1.5 hover:bg-sd-blue/90 shrink-0"
+          className="bg-sd-blue text-white inline-flex items-center min-h-9 sm:min-h-0 font-oswald font-medium uppercase tracking-wide text-xs px-3 py-1.5 hover:bg-sd-blue/90 shrink-0"
         >
           Join
         </button>
@@ -227,7 +241,7 @@ function PartActionButton({
     return (
       <Link
         href={`/drafts/${draftPublicId}`}
-        className="border border-sd-ink/20 text-sd-ink font-oswald font-medium uppercase tracking-wide text-xs px-3 py-1.5 hover:bg-sd-ink/5 shrink-0"
+        className="border border-sd-ink/20 text-sd-ink inline-flex items-center min-h-9 sm:min-h-0 font-oswald font-medium uppercase tracking-wide text-xs px-3 py-1.5 hover:bg-sd-ink/5 shrink-0"
       >
         View
       </Link>
@@ -238,7 +252,7 @@ function PartActionButton({
     return (
       <Link
         href={`/draft-parts/${draftPartPublicId}/live`}
-        className="bg-sd-ink text-white font-oswald font-medium uppercase tracking-wide text-xs px-3 py-1.5 hover:bg-sd-ink/80 shrink-0"
+        className="bg-sd-ink text-white inline-flex items-center min-h-9 sm:min-h-0 font-oswald font-medium uppercase tracking-wide text-xs px-3 py-1.5 hover:bg-sd-ink/80 shrink-0"
       >
         Open
       </Link>
@@ -249,7 +263,7 @@ function PartActionButton({
   return (
     <Link
       href={`/my-drafts/${draftPublicId}`}
-      className="bg-sd-ink text-white font-oswald font-medium uppercase tracking-wide text-xs px-3 py-1.5 hover:bg-sd-ink/80 shrink-0"
+      className="bg-sd-ink text-white inline-flex items-center min-h-9 sm:min-h-0 font-oswald font-medium uppercase tracking-wide text-xs px-3 py-1.5 hover:bg-sd-ink/80 shrink-0"
     >
       Open
     </Link>
@@ -307,9 +321,9 @@ export default async function MyDraftsPage({
         watchedDraftPartIds={watchedDraftPartIds}
       />
 
-      <div className="px-6 md:px-10 py-10 max-w-[1200px] mx-auto space-y-12">
+      <div className="page-x py-8 lg:py-10 max-w-[1200px] mx-auto space-y-10 lg:space-y-12">
         <p className="font-mono text-[11px] tracking-widest text-sd-ink/50">/ MY DRAFTS</p>
-        <h1 className="font-oswald font-bold text-[56px] leading-none text-sd-ink -mt-4">
+        <h1 className="font-oswald font-bold text-[40px] sm:text-[56px] leading-none text-sd-ink -mt-4">
           MY DRAFTS
         </h1>
 

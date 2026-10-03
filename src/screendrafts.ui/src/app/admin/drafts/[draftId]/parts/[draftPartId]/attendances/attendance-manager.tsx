@@ -120,10 +120,10 @@ export function AttendanceManager({ initialItems, accessToken, draftPartId }: Pr
           return (
             <div
               key={item.publicId}
-              className="flex items-center gap-4 px-4 py-3 bg-white hover:bg-slate-400 transition-colors"
+              className="flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3 bg-white hover:bg-slate-400 transition-colors"
             >
               {/* Name */}
-              <span className="font-oswald text-sm text-sd-ink flex-1 truncate">
+              <span className="font-oswald text-sm text-sd-ink flex-1 min-w-0 truncate">
                 {item.personName ?? item.personPublicId}
               </span>
 
@@ -136,7 +136,7 @@ export function AttendanceManager({ initialItems, accessToken, draftPartId }: Pr
                   <button
                     onClick={() => handleConfirm(item)}
                     disabled={isBusy}
-                    className="px-3 py-1 bg-sd-blue text-white font-oswald text-xs tracking-wider hover:bg-sd-blue/80 disabled:opacity-40 transition-colors"
+                    className="min-h-9 sm:min-h-0 px-3 py-1 bg-sd-blue text-white font-oswald text-xs tracking-wider hover:bg-sd-blue/80 disabled:opacity-40 transition-colors"
                   >
                     {isBusy ? '…' : 'CONFIRM'}
                   </button>
@@ -145,7 +145,7 @@ export function AttendanceManager({ initialItems, accessToken, draftPartId }: Pr
                   <button
                     onClick={() => handleWithdraw(item)}
                     disabled={isBusy}
-                    className="px-3 py-1 border border-sd-red/40 text-sd-red font-oswald text-xs tracking-wider hover:border-sd-red disabled:opacity-40 transition-colors"
+                    className="min-h-9 sm:min-h-0 px-3 py-1 border border-sd-red/40 text-sd-red font-oswald text-xs tracking-wider hover:border-sd-red disabled:opacity-40 transition-colors"
                   >
                     {isBusy ? '…' : 'WITHDRAW'}
                   </button>
@@ -154,7 +154,7 @@ export function AttendanceManager({ initialItems, accessToken, draftPartId }: Pr
                   <button
                     onClick={() => handleReinstate(item)}
                     disabled={isBusy}
-                    className="px-3 py-1 border border-sd-ink/20 text-sd-ink/50 font-oswald text-xs tracking-wider hover:border-sd-ink/40 hover:text-sd-ink/70 disabled:opacity-40 transition-colors"
+                    className="min-h-9 sm:min-h-0 px-3 py-1 border border-sd-ink/20 text-sd-ink/50 font-oswald text-xs tracking-wider hover:border-sd-ink/40 hover:text-sd-ink/70 disabled:opacity-40 transition-colors"
                   >
                     {isBusy ? '…' : 'REINSTATE'}
                   </button>

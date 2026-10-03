@@ -1,4 +1,5 @@
 'use client';
+// app/admin/password-reset-card.tsx
 
 import { useState, useEffect, useRef } from "react";
 import { AdminUserItem } from "@/services/admin/fetch-admin";
@@ -99,7 +100,7 @@ export default function PasswordResetCard({ accessToken, apiBase }: PasswordRese
                   className="w-full text-left px-4 py-2.5 hover:bg-sd-paper border-b border-sd-ink/5 last:border-0 transition-colors"
                 >
                   <p className="text-[13px] font-medium text-sd-ink">{user.displayName}</p>
-                  <p className="font-mono text-[11px] text-sd-ink/50">{user.email}</p>
+                  <p className="font-mono text-[11px] text-sd-ink/50 break-all">{user.email}</p>
                 </button>
               ))}
             </div>
@@ -107,14 +108,14 @@ export default function PasswordResetCard({ accessToken, apiBase }: PasswordRese
         </div>
       ) : (
         <div className="space-y-4">
-          <div className="flex items-center justify-between p-4 border border-sd-ink/10 bg-sd-paper/50">
-            <div>
+          <div className="flex items-center justify-between gap-4 p-4 border border-sd-ink/10 bg-sd-paper/50">
+            <div className="min-w-0">
               <p className="font-medium text-sd-ink">{selected.displayName}</p>
-              <p className="font-mono text-[12px] text-sd-ink/50">{selected.email}</p>
+              <p className="font-mono text-[12px] text-sd-ink/50 break-all">{selected.email}</p>
             </div>
             <button
               onClick={() => { setSelected(null); setStatus(null); }}
-              className="text-[12px] font-mono text-sd-ink/40 hover:text-sd-ink underline"
+              className="shrink-0 py-2 text-[12px] font-mono text-sd-ink/40 hover:text-sd-ink underline"
             >
               change
             </button>
@@ -122,7 +123,7 @@ export default function PasswordResetCard({ accessToken, apiBase }: PasswordRese
           <button
             onClick={sendReset}
             disabled={sending}
-            className="bg-sd-red text-white font-oswald tracking-wide uppercase px-4 py-2 hover:bg-sd-red/90 disabled:opacity-50 transition-colors"
+            className="w-full sm:w-auto min-h-11 sm:min-h-0 bg-sd-red text-white font-oswald tracking-wide uppercase px-4 py-2 hover:bg-sd-red/90 disabled:opacity-50 transition-colors"
           >
             {sending ? 'SENDING…' : 'SEND PASSWORD RESET EMAIL'}
           </button>

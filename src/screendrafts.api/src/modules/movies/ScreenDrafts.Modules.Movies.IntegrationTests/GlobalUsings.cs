@@ -11,6 +11,7 @@ global using ScreenDrafts.Modules.Movies.Domain.Medias.Entities;
 global using ScreenDrafts.Modules.Movies.Domain.Medias.Errors;
 global using ScreenDrafts.Modules.Movies.Features.Movies.AddMedia;
 global using ScreenDrafts.Modules.Movies.Features.Movies.GetMedia;
+global using ScreenDrafts.Modules.Movies.Features.Movies.GetMediaSummary;
 global using ScreenDrafts.Modules.Movies.Features.Movies.ListMedia;
 global using ScreenDrafts.Modules.Movies.Features.Movies.SyncMediaPeople;
 global using ScreenDrafts.Modules.Movies.Infrastructure.Database;

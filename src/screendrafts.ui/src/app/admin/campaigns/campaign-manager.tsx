@@ -1,4 +1,5 @@
 'use client';
+// app/admin/campaigns/campaign-manager.tsx
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { CampaignListItem } from "@/services/admin/fetch-admin-campaigns";
@@ -98,9 +99,9 @@ function SlideOver({ mode, item, onClose, onSaved, accessToken }: SlideOverProps
         role="dialog"
         aria-modal="true"
         aria-label={mode === "create" ? "New Campaign" : "Edit Campaign"}
-        className="fixed right-0 top-0 h-full w-[400px] bg-sd-paper border-l border-sd-ink z-50 flex flex-col shadow-xl"
+        className="fixed right-0 top-0 h-full w-full sm:w-[400px] bg-sd-paper sm:border-l border-sd-ink z-50 flex flex-col shadow-xl"
       >
-        <div className="px-6 py-5 border-b border-sd-ink/10 flex items-center justify-between">
+        <div className="px-4 sm:px-6 py-5 border-b border-sd-ink/10 flex items-center justify-between gap-4">
           <h2 className="font-oswald font-bold text-[20px] text-sd-ink uppercase tracking-wide">
             {mode === "create" ? "New Campaign" : "Edit Campaign"}
           </h2>
@@ -258,7 +259,7 @@ export default function CampaignManager({ initialData, accessToken }: Props) {
         />
       )}
 
-      <div className="flex items-center justify-between mb-5">
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
         <label className="flex items-center gap-2 font-mono text-[11px] tracking-widest text-sd-ink/60 cursor-pointer select-none">
           <input
             type="checkbox"
@@ -277,9 +278,11 @@ export default function CampaignManager({ initialData, accessToken }: Props) {
         </button>
       </div>
 
-      <div className="bg-white border border-sd-ink/10 overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead>
+      {/* Table from sm up; below sm each row is a card (name, details, then actions) —
+          same markup, display types switch at sm. */}
+      <div className="bg-white border border-sd-ink/10 sm:overflow-x-auto">
+        <table className="block sm:table w-full text-sm">
+          <thead className="hidden sm:table-header-group">
             <tr className="border-b border-sd-ink/10 bg-sd-ink">
               {["Name", "Description", "Status", ""].map(col => (
                 <th
@@ -291,10 +294,10 @@ export default function CampaignManager({ initialData, accessToken }: Props) {
               ))}
             </tr>
           </thead>
-          <tbody>
+          <tbody className="block sm:table-row-group">
             {visible.length === 0 && (
-              <tr>
-                <td colSpan={4} className="px-4 py-8 text-center font-mono text-[12px] text-sd-ink/40">
+              <tr className="block sm:table-row">
+                <td colSpan={4} className="block sm:table-cell px-4 py-8 text-center font-mono text-[12px] text-sd-ink/40">
                   No campaigns found.
                 </td>
               </tr>
@@ -302,20 +305,20 @@ export default function CampaignManager({ initialData, accessToken }: Props) {
             {visible.map(item => (
               <tr
                 key={item.publicId}
-                className={`border-b border-sd-ink/5 transition-colors ${item.isDeleted ? "opacity-50" : "hover:bg-sd-paper/60"}`}
+                className={`flex flex-wrap items-center gap-x-3 gap-y-1 px-4 py-3 sm:table-row sm:p-0 border-b border-sd-ink/5 transition-colors ${item.isDeleted ? "opacity-50" : "hover:bg-sd-paper/60"}`}
               >
-                <td className="px-4 py-3 font-medium text-sd-ink">{item.name}</td>
-                <td className="px-4 py-3 text-sd-ink/60">—</td>
-                <td className="px-4 py-3">
+                <td className="w-full sm:w-auto sm:table-cell sm:px-4 sm:py-3 font-medium text-sd-ink [overflow-wrap:anywhere]">{item.name}</td>
+                <td className="hidden sm:table-cell sm:px-4 sm:py-3 text-sd-ink/60">—</td>
+                <td className="sm:table-cell sm:px-4 sm:py-3">
                   {item.isDeleted && (
                     <span className="font-mono text-[10px] tracking-widest text-sd-red uppercase">
                       Retired
                     </span>
                   )}
                 </td>
-                <td className="px-4 py-3 text-right whitespace-nowrap">
+                <td className="w-full sm:w-auto sm:table-cell sm:px-4 sm:py-3 pt-1 sm:text-right sm:whitespace-nowrap">
                   {!item.isDeleted ? (
-                    <span className="flex items-center justify-end gap-3">
+                    <span className="flex flex-wrap items-center gap-x-4 gap-y-1 sm:justify-end sm:gap-3">
                       <button
                         onClick={() => setSlideOver({ mode: "edit", item })}
                         className="text-sd-blue text-sm font-medium hover:underline"
@@ -323,7 +326,7 @@ export default function CampaignManager({ initialData, accessToken }: Props) {
                         Edit
                       </button>
                       {confirming === item.publicId ? (
-                        <span className="flex items-center gap-2 font-mono text-[11px]">
+                        <span className="flex flex-wrap items-center gap-2 font-mono text-[11px]">
                           <span className="text-sd-ink/70">Retire {item.name}?</span>
                           <button
                             onClick={() => handleRetire(item.publicId)}

@@ -58,7 +58,7 @@ export function SeedPredictionsSetup({
   }
 
   return (
-    <div className="bg-white border border-sd-ink/10 p-8 space-y-6">
+    <div className="bg-white border border-sd-ink/10 p-4 sm:p-8 space-y-6">
       <p className="text-sm text-sd-ink/60">
         No prediction rules exist for this part yet — set them up before entering
         historical picks. If this episode had no predictions at all, use Skip below.
@@ -77,7 +77,7 @@ export function SeedPredictionsSetup({
         </div>
       )}
 
-      <div className="flex items-center gap-4">
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
         <button type="button" onClick={handleSave} disabled={saving} className={BTN_PRIMARY}>
           {saving ? "Saving…" : "Save Rules & Continue"}
         </button>

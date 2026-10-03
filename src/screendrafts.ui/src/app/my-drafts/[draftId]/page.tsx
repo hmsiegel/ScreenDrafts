@@ -1,3 +1,4 @@
+// app/my-drafts/[draftId]/page.tsx
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
@@ -8,6 +9,7 @@ import { draftTypeFromNumber } from "@/lib/draft-type-display";
 import MyDraftTabs from "./my-draft-tabs";
 import { Metadata } from "next";
 import type { MyDraftPartDetail } from "@/lib/dto";
+import { LargeScreenOnly, StartOnLargeScreenNote } from "@/components/ui/large-screen-only";
 
 export const dynamic = "force-dynamic";
 
@@ -53,7 +55,7 @@ export default async function MyDraftDetailPage({
 
   return (
     <div className="min-h-screen bg-light-blue">
-      <div className="px-6 md:px-10 py-10 max-w-[1100px] mx-auto">
+      <div className="page-x py-8 lg:py-10 max-w-[1100px] mx-auto">
         <p className="font-mono text-[11px] tracking-widest text-sd-ink/50 mb-6">
           <Link href="/my-drafts" className="hover:text-sd-ink transition-colors">
             / MY DRAFTS
@@ -76,7 +78,7 @@ export default async function MyDraftDetailPage({
 
         <div className="mb-8">
           <div className="flex items-start gap-4 flex-wrap mb-3">
-            <h1 className="font-oswald font-bold text-[48px] leading-none text-sd-ink">
+            <h1 className="font-oswald font-bold text-[32px] sm:text-[48px] leading-none text-sd-ink [overflow-wrap:anywhere] min-w-0">
               {detail.title}
             </h1>
             <DraftTypeBadge type={draftTypeFromNumber(detail.draftType)} />
@@ -144,7 +146,7 @@ function PartAction({
       return (
         <Link
           href={`/draft-parts/${draftPartPublicId}/live`}
-          className="border border-sd-ink/20 text-sd-ink font-oswald font-medium uppercase tracking-wide text-xs px-3 py-1.5 hover:bg-sd-ink/5"
+          className="border border-sd-ink/20 text-sd-ink inline-flex items-center min-h-9 sm:min-h-0 font-oswald font-medium uppercase tracking-wide text-xs px-3 py-1.5 hover:bg-sd-ink/5"
         >
           View
         </Link>
@@ -154,13 +156,16 @@ function PartAction({
       return (
         <Link
           href={`/draft-parts/${draftPartPublicId}/live`}
-          className="bg-sd-ink text-white font-oswald font-medium uppercase tracking-wide text-xs px-3 py-1.5 hover:bg-sd-ink/80"
+          className="bg-sd-ink text-white inline-flex items-center min-h-9 sm:min-h-0 font-oswald font-medium uppercase tracking-wide text-xs px-3 py-1.5 hover:bg-sd-ink/80"
         >
           Open
         </Link>
       );
     }
+    // START — tablets and computers only: it drops the host straight into the
+    // live draft, which phones can't open.
     return (
+      <LargeScreenOnly fallback={<StartOnLargeScreenNote />}>
       <form
         action={async () => {
           "use server";
@@ -175,11 +180,12 @@ function PartAction({
       >
         <button
           type="submit"
-          className="bg-sd-red text-white font-oswald font-medium uppercase tracking-wide text-xs px-3 py-1.5 hover:bg-sd-red/90"
+          className="bg-sd-red text-white inline-flex items-center min-h-9 sm:min-h-0 font-oswald font-medium uppercase tracking-wide text-xs px-3 py-1.5 hover:bg-sd-red/90"
         >
           Start
         </button>
       </form>
+      </LargeScreenOnly>
     );
   }
 
@@ -199,7 +205,7 @@ function PartAction({
       >
         <button
           type="submit"
-          className="bg-sd-blue text-white font-oswald font-medium uppercase tracking-wide text-xs px-3 py-1.5 hover:bg-sd-blue/90"
+          className="bg-sd-blue text-white inline-flex items-center min-h-9 sm:min-h-0 font-oswald font-medium uppercase tracking-wide text-xs px-3 py-1.5 hover:bg-sd-blue/90"
         >
           Join
         </button>
@@ -211,7 +217,7 @@ function PartAction({
     return (
       <Link
         href={`/draft-parts/${draftPartPublicId}/live`}
-        className="border border-sd-ink/20 text-sd-ink font-oswald font-medium uppercase tracking-wide text-xs px-3 py-1.5 hover:bg-sd-ink/5"
+        className="border border-sd-ink/20 text-sd-ink inline-flex items-center min-h-9 sm:min-h-0 font-oswald font-medium uppercase tracking-wide text-xs px-3 py-1.5 hover:bg-sd-ink/5"
       >
         View
       </Link>
@@ -222,7 +228,7 @@ function PartAction({
     return (
       <Link
         href={`/draft-parts/${draftPartPublicId}/live`}
-        className="bg-sd-ink text-white font-oswald font-medium uppercase tracking-wide text-xs px-3 py-1.5 hover:bg-sd-ink/80"
+        className="bg-sd-ink text-white inline-flex items-center min-h-9 sm:min-h-0 font-oswald font-medium uppercase tracking-wide text-xs px-3 py-1.5 hover:bg-sd-ink/80"
       >
         Open
       </Link>
@@ -233,7 +239,7 @@ function PartAction({
   return (
     <Link
       href={`/my-drafts/${draftId}`}
-      className="bg-sd-ink text-white font-oswald font-medium uppercase tracking-wide text-xs px-3 py-1.5 hover:bg-sd-ink/80"
+      className="bg-sd-ink text-white inline-flex items-center min-h-9 sm:min-h-0 font-oswald font-medium uppercase tracking-wide text-xs px-3 py-1.5 hover:bg-sd-ink/80"
     >
       Open
     </Link>

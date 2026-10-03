@@ -1,4 +1,4 @@
-// src/components/features/wiki-export/wiki-export.tsx
+// components/features/wiki-export/wiki-export.tsx
 'use client';
 
 import { createContext, useCallback, useContext, useMemo, useState } from 'react';
@@ -178,6 +178,8 @@ export function WikiSelectAll({ ids }: { ids: string[] }) {
 
 // ── Bar ───────────────────────────────────────────────────────────────────
 
+// Phones: pinned edge to edge with a 16px inset, clear of the iOS home indicator.
+// sm+: the original centered floating bar.
 function WikiExportBar() {
   const { kind, selected, exporting, error, notice, clear, exportSelected } = useWikiExport();
 
@@ -187,30 +189,32 @@ function WikiExportBar() {
   const noun = kind === 'drafts' ? 'DRAFT' : 'DRAFTER';
 
   return (
-    <div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2">
-      <div className="flex items-center gap-4 border-2 border-sd-ink bg-sd-ink px-5 py-3 font-mono text-[11px] tracking-widest text-white shadow-lg">
+    <div className="fixed inset-x-4 bottom-[max(1rem,env(safe-area-inset-bottom))] z-50 sm:inset-x-auto sm:left-1/2 sm:bottom-6 sm:-translate-x-1/2">
+      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-2 border-sd-ink bg-sd-ink px-4 py-3 sm:px-5 font-mono text-[11px] tracking-widest text-white shadow-lg">
         <span>
           {selected.size} {noun}
           {selected.size === 1 ? '' : 'S'} SELECTED
         </span>
 
-        <button
-          type="button"
-          onClick={exportSelected}
-          disabled={exporting || tooMany}
-          className="bg-sd-red px-4 py-1.5 font-oswald font-bold tracking-[0.14em] text-xs text-white transition-colors hover:bg-sd-red/80 disabled:cursor-not-allowed disabled:opacity-40"
-        >
-          {exporting ? 'EXPORTING…' : 'EXPORT TO WIKI'}
-        </button>
+        <div className="flex items-center gap-4">
+          <button
+            type="button"
+            onClick={exportSelected}
+            disabled={exporting || tooMany}
+            className="min-h-10 sm:min-h-0 bg-sd-red px-4 py-1.5 font-oswald font-bold tracking-[0.14em] text-xs text-white transition-colors hover:bg-sd-red/80 disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            {exporting ? 'EXPORTING…' : 'EXPORT TO WIKI'}
+          </button>
 
-        <button
-          type="button"
-          onClick={clear}
-          disabled={exporting}
-          className="text-white/60 transition-colors hover:text-white disabled:opacity-40"
-        >
-          CLEAR
-        </button>
+          <button
+            type="button"
+            onClick={clear}
+            disabled={exporting}
+            className="min-h-10 sm:min-h-0 text-white/60 transition-colors hover:text-white disabled:opacity-40"
+          >
+            CLEAR
+          </button>
+        </div>
       </div>
 
       {tooMany && (

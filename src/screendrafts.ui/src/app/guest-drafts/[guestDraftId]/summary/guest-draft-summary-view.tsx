@@ -20,7 +20,7 @@ export function GuestDraftSummaryView({ detail, accessToken }: Props) {
   const vetoCount = picks.filter((p) => p.wasVetoed).length;
 
   return (
-    <div className="min-h-screen bg-sd-ink px-6 py-10">
+    <div className="min-h-screen bg-sd-ink page-x py-8 lg:py-10">
       {/* Owners can correct the date after the fact (backend allows it at any
           status); everyone else only sees it if one was ever set. This page is
           server-rendered with no live context, so the editor falls back to
@@ -45,7 +45,7 @@ export function GuestDraftSummaryView({ detail, accessToken }: Props) {
         action={
           <Link
             href="/guest-drafts"
-            className="inline-block px-12 py-3 bg-sd-blue text-white font-oswald text-sm tracking-[0.2em] uppercase hover:bg-sd-blue/80 transition-colors"
+            className="inline-block px-6 sm:px-12 py-3 bg-sd-blue text-white font-oswald text-sm tracking-[0.12em] sm:tracking-[0.2em] uppercase hover:bg-sd-blue/80 transition-colors"
           >
             Back to My Guest Drafts
           </Link>
