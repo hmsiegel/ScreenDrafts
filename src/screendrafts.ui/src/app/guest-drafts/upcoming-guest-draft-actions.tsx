@@ -16,17 +16,17 @@ interface Props {
 export function UpcomingGuestDraftActions({ draft }: Props) {
   if (!draft.isOwner) {
     return (
-      <div className="flex items-center justify-end">
+      <div className="flex items-center sm:justify-end">
         <span className="text-xs font-mono text-sd-ink/40">Waiting to start</span>
       </div>
     );
   }
 
   return (
-    <div className="flex items-center justify-end">
+    <div className="flex items-center sm:justify-end">
       <Link
         href={`/guest-drafts/${draft.publicId}/setup`}
-        className="bg-sd-blue text-white font-oswald font-medium uppercase tracking-wide text-xs px-3 py-1.5 hover:bg-sd-blue/90"
+        className="inline-flex items-center min-h-9 sm:min-h-0 bg-sd-blue text-white font-oswald font-medium uppercase tracking-wide text-xs px-3 py-1.5 hover:bg-sd-blue/90"
       >
         Setup
       </Link>

@@ -1,4 +1,4 @@
-// src/app/predictions/page.tsx
+// app/predictions/page.tsx
 import { listPredictionSeasons } from "@/services/drafts/fetch-drafts";
 import { Metadata } from "next";
 import { PredictionsList } from "./predictions-list";
@@ -15,20 +15,20 @@ export default async function PredictionsPage() {
 
   return (
     <div className="min-h-screen bg-light-blue">
-      {/* Banner */}
-      <div className="bg-sd-ink text-white" style={{ padding: "56px 40px 44px" }}>
+      {/* Banner — stacks below lg; title and blurb sit side by side from lg up. */}
+      <div className="bg-sd-ink text-white page-x pt-10 pb-8 lg:pt-14 lg:pb-11">
         <p className="font-mono text-[11px] tracking-widest text-light-blue mb-3">/ PREDICTIONS</p>
-        <div className="flex items-end justify-between gap-8">
-          <h1 className="font-oswald font-bold text-[72px] leading-[0.95] text-white">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between lg:gap-8">
+          <h1 className="font-oswald font-bold text-[44px] sm:text-[56px] lg:text-[72px] leading-[0.95] text-white">
             PREDICTIONS
           </h1>
-          <p className="font-serif italic text-[17px] leading-relaxed text-white/70 max-w-[480px] text-right">
+          <p className="font-serif italic text-[15px] lg:text-[17px] leading-relaxed text-white/70 max-w-[480px] lg:text-right">
             Every season, every set of picks locked in before the board was ever built.
           </p>
         </div>
       </div>
 
-      <div className="px-10 py-10 max-w-[1000px] mx-auto">
+      <div className="page-x py-6 lg:py-10 max-w-[1000px] mx-auto">
         <PredictionsList seasons={seasons ?? []} />
       </div>
     </div>

@@ -1,4 +1,4 @@
-// src/components/ui/add-to-calendar-button.tsx
+// components/ui/add-to-calendar-button.tsx
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
@@ -25,9 +25,9 @@ interface Props {
 }
 
 const TRIGGER =
-  'border border-sd-ink/20 text-sd-ink font-oswald font-medium uppercase tracking-wide text-xs px-3 py-1.5 hover:bg-sd-ink/5 shrink-0';
+  'inline-flex items-center min-h-9 sm:min-h-0 border border-sd-ink/20 text-sd-ink font-oswald font-medium uppercase tracking-wide text-xs px-3 py-1.5 hover:bg-sd-ink/5 shrink-0';
 const ITEM =
-  'block w-full text-left px-4 py-2 font-mono text-[11px] tracking-widest uppercase text-sd-ink hover:bg-sd-ink/5';
+  'block w-full text-left px-4 py-3 sm:py-2 font-mono text-[11px] tracking-widest uppercase text-sd-ink hover:bg-sd-ink/5';
 
 // The menu renders in a portal with fixed positioning because the guest
 // draft lists sit inside an `overflow-x-auto` wrapper, which would clip or

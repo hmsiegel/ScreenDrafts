@@ -1,4 +1,5 @@
 'use client';
+// components/drafts/candidate-list-editor.tsx
 
 import { useRef, useState } from "react";
 import { MediaPicker, type SelectedMedia } from "@/components/drafts/media-picker";
@@ -131,14 +132,14 @@ export default function CandidateListEditor({
                 <button
                   type="button"
                   onClick={confirmAdd}
-                  className="bg-sd-blue text-white font-oswald font-medium uppercase tracking-wide px-4 py-1.5 text-sm hover:bg-sd-blue/90"
+                  className="min-h-10 sm:min-h-0 bg-sd-blue text-white font-oswald font-medium uppercase tracking-wide px-4 py-1.5 text-sm hover:bg-sd-blue/90"
                 >
                   Add
                 </button>
                 <button
                   type="button"
                   onClick={() => setPending(null)}
-                  className="border border-sd-ink/20 text-sd-ink font-mono text-sm px-4 py-1.5 hover:bg-sd-ink/5"
+                  className="min-h-10 sm:min-h-0 border border-sd-ink/20 text-sd-ink font-mono text-sm px-4 py-1.5 hover:bg-sd-ink/5"
                 >
                   Cancel
                 </button>
@@ -170,9 +171,9 @@ export default function CandidateListEditor({
       ) : (
         <ul className="divide-y divide-sd-ink/10 border border-sd-ink/10">
           {entries.map((entry) => (
-            <li key={entry.tmdbId} className="flex items-center gap-3 px-3 py-2">
+            <li key={entry.tmdbId} className="flex items-center gap-3 pl-3 pr-1 sm:px-3 py-2">
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-sd-ink">
+                <p className="text-sm font-medium text-sd-ink [overflow-wrap:anywhere]">
                   <EntryLabel
                     title={entry.movieTitle ?? `TMDb #${entry.tmdbId}`}
                     year={undefined}
@@ -190,7 +191,7 @@ export default function CandidateListEditor({
                 <button
                   type="button"
                   onClick={() => handleRemove(entry.tmdbId ?? 0)}
-                  className="text-sd-ink/40 hover:text-sd-red text-lg leading-none shrink-0"
+                  className="shrink-0 w-9 h-9 sm:w-auto sm:h-auto flex items-center justify-center text-sd-ink/40 hover:text-sd-red text-lg leading-none"
                   aria-label="Remove"
                 >
                   ×

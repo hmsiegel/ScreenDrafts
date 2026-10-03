@@ -1,4 +1,4 @@
-// src/components/features/predictions/predictions-list.tsx
+// app/predictions/predictions-list.tsx
 "use client";
 
 import { useState } from "react";
@@ -81,7 +81,7 @@ function SeasonDrawer({
         type="button"
         onClick={onToggle}
         aria-expanded={isOpen}
-        className="w-full bg-sd-ink px-6 py-5 flex items-center gap-3 flex-wrap text-left hover:bg-sd-ink/90 transition-colors"
+        className="w-full bg-sd-ink px-4 py-4 sm:px-6 sm:py-5 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-left hover:bg-sd-ink/90 transition-colors"
       >
         <span
           className={`font-mono text-sm text-white/50 transition-transform duration-150 ${isOpen ? "rotate-90" : ""}`}
@@ -97,9 +97,11 @@ function SeasonDrawer({
             OPEN
           </span>
         )}
-        <span className="font-mono text-[11px] text-white/50 ml-auto">{dateRange}</span>
-        <span className="font-mono text-[11px] text-white/50">
-          TARGET: {season.targetPoints} PTS
+        {/* Phones: dates and target drop to a second line, indented under the title
+            (pl-9 clears the chevron, red bar and their gaps). sm+: pushed right on one line. */}
+        <span className="w-full pl-9 sm:w-auto sm:pl-0 sm:ml-auto flex flex-wrap gap-x-3 gap-y-1 font-mono text-[11px] text-white/50">
+          <span>{dateRange}</span>
+          <span>TARGET: {season.targetPoints} PTS</span>
         </span>
       </button>
 
@@ -126,21 +128,25 @@ function DraftRow({ draft }: { draft: PredictionSeasonDraftResponse }) {
   return (
     <Link
       href={`/drafts/${draft.draftPublicId}`}
-      className="group px-6 py-4 flex items-center gap-4 hover:bg-sd-paper transition-colors"
+      className="group px-4 sm:px-6 py-4 flex items-center gap-3 sm:gap-4 hover:bg-sd-paper transition-colors"
     >
-      <div className="w-16 shrink-0 font-mono text-[11px] text-sd-blue font-bold">
+      <div className="w-14 sm:w-16 shrink-0 font-mono text-[11px] text-sd-blue font-bold">
         {draft.episodeNumber ? `EP. ${draft.episodeNumber}` : "—"}
       </div>
-      <div className="flex-1 min-w-0 font-oswald font-semibold text-[16px] text-sd-ink truncate">
-        {draft.label}
-      </div>
-      {scores.length > 0 && (
-        <div className="shrink-0 font-mono text-[11px] text-sd-ink/60 whitespace-nowrap">
-          {scores
-            .map((s) => `${s.contestantDisplayName}: ${s.pointsAwarded} PTS`)
-            .join(" · ")}
+      {/* Phones: scores wrap under the title. sm+: one line, scores right-aligned and unbroken.
+          The nowrap scores used to take ~250px on a phone and squeeze the title to nothing. */}
+      <div className="flex-1 min-w-0 sm:flex sm:items-center sm:gap-4">
+        <div className="font-oswald font-semibold text-[16px] text-sd-ink line-clamp-2 [overflow-wrap:anywhere] sm:line-clamp-none sm:truncate sm:flex-1 sm:min-w-0">
+          {draft.label}
         </div>
-      )}
+        {scores.length > 0 && (
+          <div className="mt-1 sm:mt-0 sm:shrink-0 font-mono text-[11px] text-sd-ink/60 sm:whitespace-nowrap">
+            {scores
+              .map((s) => `${s.contestantDisplayName}: ${s.pointsAwarded} PTS`)
+              .join(" · ")}
+          </div>
+        )}
+      </div>
       <div className="text-sd-ink/30 group-hover:text-sd-red transition-colors">›</div>
     </Link>
   );

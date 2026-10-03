@@ -1,4 +1,5 @@
 'use client';
+// components/drafts/draft-board-editor.tsx
 
 import { useRef, useState } from "react";
 import { MediaPicker, type SelectedMedia } from "@/components/drafts/media-picker";
@@ -106,6 +107,17 @@ export default function DraftBoardEditor({
     await updateDraftBoardOrder(accessToken, draftId, board.map((m) => m.tmdbId ?? 0));
   }
 
+  // Touch reordering. HTML5 drag-and-drop doesn't fire from touch on most phones, so
+  // touch screens get up/down buttons in place of the drag handle.
+  async function moveItem(idx: number, direction: -1 | 1) {
+    const target = idx + direction;
+    if (target < 0 || target >= board.length) return;
+    const next = [...board];
+    [next[idx], next[target]] = [next[target], next[idx]];
+    setBoard(next);
+    await updateDraftBoardOrder(accessToken, draftId, next.map((m) => m.tmdbId ?? 0));
+  }
+
   return (
     <div className="space-y-4">
       <div className="space-y-2">
@@ -132,7 +144,7 @@ export default function DraftBoardEditor({
                 value={pending.notes}
                 onChange={(e) => setPending((p) => p && { ...p, notes: e.target.value })}
                 placeholder="Notes (optional)"
-                className="flex-1 border border-sd-ink/20 bg-white px-3 py-1.5 text-sm font-mono text-sd-ink placeholder:text-sd-ink/40 focus:outline-none focus:border-sd-blue"
+                className="flex-1 min-w-0 border border-sd-ink/20 bg-white px-3 py-1.5 text-sm font-mono text-sd-ink placeholder:text-sd-ink/40 focus:outline-none focus:border-sd-blue"
               />
               <input
                 type="number"
@@ -146,14 +158,14 @@ export default function DraftBoardEditor({
               <button
                 type="button"
                 onClick={confirmAdd}
-                className="bg-sd-blue text-white font-oswald font-medium uppercase tracking-wide px-4 py-1.5 text-sm hover:bg-sd-blue/90"
+                className="min-h-10 sm:min-h-0 bg-sd-blue text-white font-oswald font-medium uppercase tracking-wide px-4 py-1.5 text-sm hover:bg-sd-blue/90"
               >
                 Add
               </button>
               <button
                 type="button"
                 onClick={() => setPending(null)}
-                className="border border-sd-ink/20 text-sd-ink font-mono text-sm px-4 py-1.5 hover:bg-sd-ink/5"
+                className="min-h-10 sm:min-h-0 border border-sd-ink/20 text-sd-ink font-mono text-sm px-4 py-1.5 hover:bg-sd-ink/5"
               >
                 Cancel
               </button>
@@ -173,11 +185,32 @@ export default function DraftBoardEditor({
               onDragStart={() => handleDragStart(idx)}
               onDragOver={(e) => handleDragOver(e, idx)}
               onDrop={handleDrop}
-              className="flex items-center gap-3 px-3 py-2 bg-white hover:bg-sd-paper/40 cursor-grab active:cursor-grabbing"
+              className="flex items-center gap-2 sm:gap-3 pl-1 pr-1 sm:px-3 py-2 bg-white hover:bg-sd-paper/40 cursor-grab active:cursor-grabbing"
             >
-              <span className="text-sd-ink/30 font-mono text-xs select-none">⠿</span>
+              {/* Mouse: drag handle. Touch: stacked up/down buttons. */}
+              <span className="text-sd-ink/30 font-mono text-xs select-none pl-2 sm:pl-0 [@media(pointer:coarse)]:hidden">⠿</span>
+              <span className="hidden [@media(pointer:coarse)]:flex flex-col shrink-0">
+                <button
+                  type="button"
+                  onClick={() => moveItem(idx, -1)}
+                  disabled={idx === 0}
+                  aria-label="Move up"
+                  className="w-8 h-7 flex items-center justify-center text-sd-ink/40 disabled:opacity-30 text-xs"
+                >
+                  ▲
+                </button>
+                <button
+                  type="button"
+                  onClick={() => moveItem(idx, 1)}
+                  disabled={idx === board.length - 1}
+                  aria-label="Move down"
+                  className="w-8 h-7 flex items-center justify-center text-sd-ink/40 disabled:opacity-30 text-xs"
+                >
+                  ▼
+                </button>
+              </span>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-sd-ink">
+                <p className="text-sm font-medium text-sd-ink [overflow-wrap:anywhere]">
                   <BoardEntryLabel
                     title={movie.title ?? `TMDb #${movie.tmdbId}`}
                     year={movie.year}
@@ -200,12 +233,12 @@ export default function DraftBoardEditor({
                 defaultValue={movie.priority ?? ""}
                 onBlur={(e) => handlePriorityChange(movie.tmdbId ?? 0, e.target.value)}
                 placeholder="Pri"
-                className="w-16 border border-sd-ink/20 bg-white px-2 py-1 text-xs font-mono text-center text-sd-ink focus:outline-none focus:border-sd-blue"
+                className="w-14 sm:w-16 shrink-0 border border-sd-ink/20 bg-white px-2 py-1 text-xs font-mono text-center text-sd-ink focus:outline-none focus:border-sd-blue"
               />
               <button
                 type="button"
                 onClick={() => handleRemove(movie.tmdbId ?? 0)}
-                className="text-sd-ink/40 hover:text-sd-red text-lg leading-none shrink-0"
+                className="shrink-0 w-9 h-9 sm:w-auto sm:h-auto flex items-center justify-center text-sd-ink/40 hover:text-sd-red text-lg leading-none"
                 aria-label="Remove"
               >
                 ×

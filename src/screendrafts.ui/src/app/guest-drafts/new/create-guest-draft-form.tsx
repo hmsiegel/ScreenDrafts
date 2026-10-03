@@ -172,9 +172,9 @@ export function CreateGuestDraftForm({ accessToken }: Props) {
           </div>
           <div>
             <label className={LABEL}>Type</label>
-            <div className="flex gap-4">
+            <div className="flex flex-wrap gap-x-4 gap-y-2">
               {GUEST_DRAFT_TYPES.map((t) => (
-                <label key={t} className="flex items-center gap-2 text-sm text-sd-ink cursor-pointer">
+                <label key={t} className="flex items-center gap-2 py-1 sm:py-0 text-sm text-sd-ink cursor-pointer">
                   <input
                     type="radio"
                     checked={type === t}
@@ -249,7 +249,7 @@ export function CreateGuestDraftForm({ accessToken }: Props) {
         type="button"
         onClick={handleCreate}
         disabled={!canSubmit || creating}
-        className="px-6 py-2.5 bg-sd-ink text-white font-oswald text-sm tracking-widest uppercase hover:bg-sd-ink/80 disabled:opacity-40 transition-colors"
+        className="w-full sm:w-auto min-h-11 sm:min-h-0 px-6 py-2.5 bg-sd-ink text-white font-oswald text-sm tracking-widest uppercase hover:bg-sd-ink/80 disabled:opacity-40 transition-colors"
       >
         {creating ? 'CREATING…' : 'CREATE'}
       </button>
@@ -332,7 +332,7 @@ function ParticipantsSection({
               <button
                 type="button"
                 onClick={() => onToggle(id)}
-                className="ml-0.5 hover:text-sd-red leading-none"
+                className="ml-0.5 p-1 -m-1 hover:text-sd-red leading-none"
                 aria-label="Remove"
               >
                 ×
@@ -359,7 +359,7 @@ function ParticipantsSection({
             results.map((d) => (
               <label
                 key={d.publicId}
-                className="flex items-center gap-2 px-3 py-1.5 text-sm text-sd-ink hover:bg-sd-ink/5 rounded cursor-pointer"
+                className="flex items-center gap-2 px-3 py-2.5 sm:py-1.5 text-sm text-sd-ink hover:bg-sd-ink/5 rounded cursor-pointer"
               >
                 <input
                   type="checkbox"

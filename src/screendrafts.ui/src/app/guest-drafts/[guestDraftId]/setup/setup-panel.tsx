@@ -14,6 +14,7 @@ import {
 import type { GuestDrafterSummaryResponse } from '@/lib/dto';
 import { GUEST_DRAFT_STATUS_ACTION } from '../../guest-draft-status-actions';
 import { GuestDraftScheduleEditor } from '../../guest-draft-schedule-editor';
+import { LargeScreenOnly, StartOnLargeScreenNote } from '@/components/ui/large-screen-only';
 
 
 const INPUT =
@@ -78,7 +79,7 @@ export function SetupPanel({ accessToken, guestDraftId }: Props) {
 
   return (
     <div className="space-y-8">
-      <div className="p-3 bg-sd-ink/5 border border-sd-ink/10 flex items-center justify-between">
+      <div className="p-3 bg-sd-ink/5 border border-sd-ink/10 flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
         <p className="text-xs text-sd-ink/50 font-mono">
           {gameplay.type} · {gameplay.status}
         </p>
@@ -110,7 +111,7 @@ export function SetupPanel({ accessToken, guestDraftId }: Props) {
           {draftPositions.map((pos) => (
             <div
               key={pos.positionPublicId}
-              className="flex items-center gap-3 border border-sd-ink/10 p-3"
+              className="flex flex-wrap items-center gap-x-3 gap-y-2 border border-sd-ink/10 p-3"
             >
               <span className="font-oswald font-bold text-sd-ink w-8 shrink-0">
                 {pos.positionName}
@@ -118,15 +119,15 @@ export function SetupPanel({ accessToken, guestDraftId }: Props) {
               <span className="text-[11px] text-sd-ink/50 font-mono shrink-0">
                 picks {pos.ownedBoardSlots?.slice().sort((a, b) => b - a).join(', ')}
               </span>
-              <div className="flex-1" />
+              <div className="hidden sm:block flex-1" />
               {pos.assignedParticipantName ? (
-                <span className="text-sm text-sd-ink font-mono">
+                <span className="text-sm text-sd-ink font-mono [overflow-wrap:anywhere]">
                   {pos.assignedParticipantName}
                 </span>
               ) : (
-                <>
+                <div className="flex items-center gap-2 w-full sm:w-auto">
                   <select
-                    className={`${INPUT} w-auto`}
+                    className={`${INPUT} flex-1 min-w-0 sm:flex-none sm:w-auto`}
                     value={selectedParticipant[pos.positionPublicId ?? ''] ?? ''}
                     onChange={(e) =>
                       setSelectedParticipant((prev) => ({
@@ -149,11 +150,11 @@ export function SetupPanel({ accessToken, guestDraftId }: Props) {
                       !selectedParticipant[pos.positionPublicId ?? ''] ||
                       assigningPosition === pos.positionPublicId
                     }
-                    className="shrink-0 px-3 py-1.5 border border-sd-red text-sd-red font-oswald text-xs tracking-widest hover:bg-sd-red hover:text-white disabled:opacity-40 transition-colors"
+                    className="shrink-0 px-3 py-2.5 sm:py-1.5 border border-sd-red text-sd-red font-oswald text-xs tracking-widest hover:bg-sd-red hover:text-white disabled:opacity-40 transition-colors"
                   >
                     {assigningPosition === pos.positionPublicId ? '…' : 'ASSIGN'}
                   </button>
-                </>
+                </div>
               )}
             </div>
           ))}
@@ -165,18 +166,21 @@ export function SetupPanel({ accessToken, guestDraftId }: Props) {
         {!canStart && (
           <p className="text-xs text-sd-ink/50 font-mono mb-3">
             Needs at least 2 participants and every position assigned before starting. Nothing
-            here has to happen right now — come back whenever you're ready.
+            here has to happen right now — come back whenever you&apos;re ready.
           </p>
         )}
         {startError && <p className="text-sd-red text-xs font-mono mb-3">{startError}</p>}
+        {/* Tablets and computers only — starting opens the live draft, which phones can't. */}
+        <LargeScreenOnly fallback={<StartOnLargeScreenNote className="block" />}>
         <button
           type="button"
           onClick={handleStart}
           disabled={starting || !canStart}
-          className="px-6 py-2.5 bg-sd-ink text-white font-oswald text-sm tracking-widest uppercase hover:bg-sd-ink/80 disabled:opacity-40 transition-colors"
+          className="w-full sm:w-auto min-h-11 sm:min-h-0 px-6 py-2.5 bg-sd-ink text-white font-oswald text-sm tracking-widest uppercase hover:bg-sd-ink/80 disabled:opacity-40 transition-colors"
         >
           {starting ? 'STARTING…' : 'START DRAFT'}
         </button>
+        </LargeScreenOnly>
       </section>
     </div>
   );
@@ -285,12 +289,12 @@ function AddParticipantsSection({
                   key={d.publicId}
                   className="flex items-center justify-between gap-2 px-3 py-1.5 text-sm text-sd-ink hover:bg-sd-ink/5 rounded"
                 >
-                  <span>{d.displayName}</span>
+                  <span className="min-w-0 [overflow-wrap:anywhere]">{d.displayName}</span>
                   <button
                     type="button"
                     onClick={() => handleAdd(d.publicId)}
                     disabled={isAdded || adding === d.publicId}
-                    className="shrink-0 px-2.5 py-1 border border-sd-blue text-sd-blue font-oswald text-[11px] tracking-widest hover:bg-sd-blue hover:text-white disabled:opacity-40 transition-colors"
+                    className="shrink-0 px-2.5 py-2 sm:py-1 border border-sd-blue text-sd-blue font-oswald text-[11px] tracking-widest hover:bg-sd-blue hover:text-white disabled:opacity-40 transition-colors"
                   >
                     {isAdded ? 'ADDED' : adding === d.publicId ? '…' : '+ ADD'}
                   </button>
