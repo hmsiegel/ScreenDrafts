@@ -4,6 +4,7 @@
 import { useState } from "react";
 import { MergedProfile } from "@/services/profile/fetch-profile";
 import AvatarUpload from "./avatar-upload";
+import { normalizeSocialHandle } from "@/lib/social-links";
 
 type Tab = 'personal' | 'email' | 'password' | 'social' | 'avatar';
 
@@ -127,7 +128,7 @@ function PersonalTab({ profile, accessToken, apiBase }: ProfileFormProps) {
           Display name, biography and location are available once your account is linked to a participant profile.
         </p>
       )}
-      <div className="pt-1 flex items-center gap-4">
+      <div className="pt-1 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:gap-4">
         <button className={BTN_PRIMARY} onClick={handleSave} disabled={saving}>
           {saving ? 'SAVING…' : 'SAVE CHANGES'}
         </button>
@@ -184,7 +185,7 @@ function EmailTab({ profile, accessToken, apiBase }: ProfileFormProps) {
           autoComplete="off"
         />
       </Field>
-      <div className="pt-1 flex items-center gap-4">
+      <div className="pt-1 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:gap-4">
         <button className={BTN_PRIMARY} onClick={handleSave} disabled={saving || !newEmail}>
           {saving ? 'SENDING…' : 'REQUEST EMAIL CHANGE'}
         </button>
@@ -242,7 +243,7 @@ function PasswordTab({ accessToken, apiBase }: { accessToken: string | undefined
       <Field label="Confirm New Password">
         <input type="password" className={INPUT} value={confirm} onChange={e => setConfirm(e.target.value)} autoComplete="new-password" />
       </Field>
-      <div className="pt-1 flex items-center gap-4">
+      <div className="pt-1 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:gap-4">
         <button className={BTN_PRIMARY} onClick={handleSave} disabled={saving}>
           {saving ? 'SAVING…' : 'CHANGE PASSWORD'}
         </button>
@@ -265,6 +266,14 @@ function SocialTab({ profile, accessToken, apiBase }: ProfileFormProps) {
       setStatus({ type: 'error', message: 'Account not linked to a participant profile.' });
       return;
     }
+    // Store bare handles only. People paste "@name" or a full profile URL as often
+    // as the handle itself; the public drafter page builds the link from the handle.
+    const handles = {
+      twitterHandle: normalizeSocialHandle('twitter', twitter),
+      instagramHandle: normalizeSocialHandle('instagram', instagram),
+      letterboxdHandle: normalizeSocialHandle('letterboxd', letterboxd),
+      blueskyHandle: normalizeSocialHandle('bluesky', bluesky),
+    };
     setSaving(true);
     setStatus(null);
     try {
@@ -274,14 +283,14 @@ function SocialTab({ profile, accessToken, apiBase }: ProfileFormProps) {
           'Content-Type': 'application/json',
           ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
         },
-        body: JSON.stringify({
-          twitterHandle: twitter || null,
-          instagramHandle: instagram || null,
-          letterboxdHandle: letterboxd || null,
-          blueskyHandle: bluesky || null,
-        }),
+        body: JSON.stringify(handles),
       });
       if (!res.ok) throw new Error(`${res.status}`);
+      // Show what was actually saved.
+      setTwitter(handles.twitterHandle ?? '');
+      setInstagram(handles.instagramHandle ?? '');
+      setLetterboxd(handles.letterboxdHandle ?? '');
+      setBluesky(handles.blueskyHandle ?? '');
       setStatus({ type: 'success', message: 'Social profiles updated.' });
     } catch {
       setStatus({ type: 'error', message: 'Failed to save. Please try again.' });
@@ -297,19 +306,22 @@ function SocialTab({ profile, accessToken, apiBase }: ProfileFormProps) {
           Social profiles are available once your account is linked to a participant profile.
         </p>
       )}
-      <Field label="Twitter / X (without @)">
+      <Field label="Twitter / X handle">
         <input className={INPUT} value={twitter} onChange={e => setTwitter(e.target.value)} placeholder="yourhandle" disabled={!profile?.personPublicId} />
       </Field>
-      <Field label="Instagram">
+      <Field label="Instagram handle">
         <input className={INPUT} value={instagram} onChange={e => setInstagram(e.target.value)} placeholder="yourhandle" disabled={!profile?.personPublicId} />
       </Field>
-      <Field label="Letterboxd">
+      <Field label="Letterboxd username">
         <input className={INPUT} value={letterboxd} onChange={e => setLetterboxd(e.target.value)} placeholder="yourusername" disabled={!profile?.personPublicId} />
       </Field>
-      <Field label="Bluesky">
-        <input className={INPUT} value={bluesky} onChange={e => setBluesky(e.target.value)} placeholder="yourhandle" disabled={!profile?.personPublicId} />
+      <Field label="Bluesky handle">
+        <input className={INPUT} value={bluesky} onChange={e => setBluesky(e.target.value)} placeholder="name.bsky.social" disabled={!profile?.personPublicId} />
       </Field>
-      <div className="pt-1 flex items-center gap-4">
+      <p className="text-[12px] text-sd-ink/40 font-mono">
+        Just the handle. A pasted profile link or a leading @ is trimmed to the handle when you save.
+      </p>
+      <div className="pt-1 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:gap-4">
         <button className={BTN_PRIMARY} onClick={handleSave} disabled={saving || !profile?.personPublicId}>
           {saving ? 'SAVING…' : 'SAVE SOCIAL PROFILES'}
         </button>
@@ -332,12 +344,13 @@ export default function ProfileForm({ profile, accessToken, apiBase }: ProfileFo
 
   return (
     <div className="bg-white border border-sd-ink/10">
-      <div className="flex border-b border-sd-ink/10">
+      {/* Five tabs need ~600px; on phones they scroll sideways instead of overflowing the card. */}
+      <div className="flex border-b border-sd-ink/10 overflow-x-auto overscroll-x-contain [scrollbar-width:none]">
         {TABS.map(({ id, label }) => (
           <button
             key={id}
             onClick={() => setActiveTab(id)}
-            className={`px-5 py-3.5 font-oswald text-[13px] tracking-wide uppercase transition-colors border-b-2 -mb-px ${activeTab === id
+            className={`shrink-0 whitespace-nowrap px-4 sm:px-5 py-3.5 font-oswald text-[13px] tracking-wide uppercase transition-colors border-b-2 -mb-px ${activeTab === id
               ? 'border-sd-red text-sd-ink font-semibold'
               : 'border-transparent text-sd-ink/40 hover:text-sd-ink'
               }`}
@@ -347,7 +360,7 @@ export default function ProfileForm({ profile, accessToken, apiBase }: ProfileFo
         ))}
       </div>
 
-      <div className="p-7 border-b border-sd-ink/10 min-h-[320px]">
+      <div className="p-4 sm:p-7 border-b border-sd-ink/10 min-h-[320px]">
         {activeTab === 'personal' && (
           <PersonalTab profile={profile} accessToken={accessToken} apiBase={apiBase} />
         )}

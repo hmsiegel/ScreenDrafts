@@ -1,4 +1,5 @@
 'use client';
+// app/admin/manage-roles-panel.tsx
 
 import { useState } from "react";
 import { AdminUserItem, AdminRoleItem } from "@/services/admin/fetch-admin";
@@ -26,7 +27,6 @@ export default function ManageRolesPanel({
   const [busy, setBusy] = useState(false);
 
   const available = allRoles.filter(r => !roles.includes(r.name));
-  const headers = accessToken ? { Authorization: `Bearer ${accessToken}` } : {};
 
   function showToast(type: 'success' | 'error', message: string) {
     setToast({ type, message });
@@ -100,16 +100,17 @@ export default function ManageRolesPanel({
       />
 
       {/* Panel */}
-      <aside className="fixed right-0 top-0 bottom-0 w-[420px] bg-sd-paper border-l border-sd-ink z-50 flex flex-col shadow-xl">
+      {/* Full width on phones; a 420px side panel from sm up. */}
+      <aside className="fixed right-0 top-0 bottom-0 w-full sm:w-[420px] bg-sd-paper sm:border-l border-sd-ink z-50 flex flex-col shadow-xl">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-5 border-b border-sd-ink/10 bg-sd-ink">
-          <div>
-            <p className="font-oswald font-bold text-[18px] text-white leading-tight">{user.displayName}</p>
-            <p className="font-mono text-[11px] text-light-blue mt-0.5">{user.email}</p>
+        <div className="flex items-center justify-between gap-4 px-4 sm:px-6 py-5 border-b border-sd-ink/10 bg-sd-ink">
+          <div className="min-w-0">
+            <p className="font-oswald font-bold text-[18px] text-white leading-tight [overflow-wrap:anywhere]">{user.displayName}</p>
+            <p className="font-mono text-[11px] text-light-blue mt-0.5 break-all">{user.email}</p>
           </div>
           <button
             onClick={onClose}
-            className="text-white/60 hover:text-white text-[24px] leading-none"
+            className="shrink-0 w-10 h-10 -mr-2 flex items-center justify-center text-white/60 hover:text-white text-[24px] leading-none"
             aria-label="Close panel"
           >
             ×
@@ -117,7 +118,7 @@ export default function ManageRolesPanel({
         </div>
 
         {/* Body */}
-        <div className="flex-1 overflow-y-auto px-6 py-6 space-y-7">
+        <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-6 space-y-7">
           {/* Current roles */}
           <section>
             <p className="font-mono text-[10px] tracking-widest text-sd-ink/50 uppercase mb-3">Current Roles</p>
@@ -135,7 +136,7 @@ export default function ManageRolesPanel({
                     <button
                       onClick={() => removeRole(role)}
                       disabled={busy}
-                      className="leading-none opacity-70 hover:opacity-100 text-[14px]"
+                      className="leading-none opacity-70 hover:opacity-100 text-[14px] p-1 -m-1"
                       aria-label={`Remove ${role}`}
                     >
                       ×
@@ -153,7 +154,7 @@ export default function ManageRolesPanel({
               <select
                 value={selectedRole}
                 onChange={e => setSelectedRole(e.target.value)}
-                className="flex-1 border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink text-sm focus:outline-none focus:ring-2 focus:ring-sd-blue rounded"
+                className="flex-1 min-w-0 border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink text-sm focus:outline-none focus:ring-2 focus:ring-sd-blue rounded"
               >
                 <option value="">Select a role…</option>
                 {available.map(r => (
@@ -173,7 +174,7 @@ export default function ManageRolesPanel({
 
         {/* Toast */}
         {toast && (
-          <div className={`px-6 py-3 text-[13px] font-mono ${toast.type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-50 text-sd-red'}`}>
+          <div className={`px-4 sm:px-6 py-3 text-[13px] font-mono ${toast.type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-50 text-sd-red'}`}>
             {toast.message}
           </div>
         )}

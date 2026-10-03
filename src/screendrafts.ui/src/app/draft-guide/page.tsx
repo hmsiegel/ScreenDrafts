@@ -14,13 +14,14 @@ interface SectionProps {
 function Section({ number, title, subtitle, children }: SectionProps) {
   return (
     <section className="border-t border-sd-ink/10 pt-10">
-      <div className="flex items-start gap-6">
-        <span className="font-oswald font-bold text-[56px] leading-none text-sd-ink/10 select-none w-14 shrink-0">
+      {/* Phones: the section number sits above the heading instead of taking a 56px column. */}
+      <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:gap-6">
+        <span className="font-oswald font-bold text-[40px] sm:text-[56px] leading-none text-sd-ink/10 select-none sm:w-14 shrink-0">
           {number}
         </span>
-        <div className="flex-1">
+        <div className="flex-1 min-w-0">
           <p className="text-[10px] tracking-[0.28em] font-bold text-sd-red mb-1">{subtitle}</p>
-          <h2 className="font-oswald font-bold text-3xl tracking-[0.03em] text-sd-ink mb-4">
+          <h2 className="font-oswald font-bold text-2xl sm:text-3xl tracking-[0.03em] text-sd-ink mb-4">
             {title}
           </h2>
           <div className="space-y-3 text-sd-ink/70 leading-relaxed text-[15px]">
@@ -43,15 +44,15 @@ function Callout({ children }: { children: React.ReactNode }) {
 export default function DraftGuidePage() {
   return (
     <div className="min-h-screen bg-light-blue">
-      <div className="max-w-2xl mx-auto px-6 py-12">
+      <div className="max-w-2xl mx-auto page-x py-8 lg:py-12">
 
         {/* Header */}
-        <div className="mb-12">
+        <div className="mb-8 sm:mb-12">
           <p className="text-[10px] tracking-[0.28em] font-bold text-sd-ink/35 mb-2">
             <Link href="/" className="hover:text-sd-ink transition-colors">HOME</Link>
             {' / '}DRAFT GUIDE
           </p>
-          <h1 className="font-oswald font-bold text-[52px] leading-none tracking-[-0.01em] text-sd-ink mb-4">
+          <h1 className="font-oswald font-bold text-[36px] sm:text-[52px] leading-none tracking-[-0.01em] text-sd-ink mb-4">
             DRAFT GUIDE
           </h1>
           <p className="text-sd-ink/55 leading-relaxed text-[15px] max-w-lg">
@@ -62,7 +63,7 @@ export default function DraftGuidePage() {
         </div>
 
         {/* Rule that applies to all */}
-        <div className="bg-sd-ink text-white px-6 py-5 mb-12">
+        <div className="bg-sd-ink text-white px-4 py-4 sm:px-6 sm:py-5 mb-8 sm:mb-12">
           <p className="text-[10px] tracking-[0.28em] font-bold text-sd-red mb-2">UNIVERSAL RULE</p>
           <p className="font-oswald font-bold text-lg tracking-[0.03em] leading-snug">
             Once a title has been played in a draft, it cannot be played again.

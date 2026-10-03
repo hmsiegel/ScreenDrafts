@@ -1017,7 +1017,7 @@ export default function CreateDraftForm({
                   </div>
 
                   {a.tmdbId ? (
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
                       <span className="text-sm text-sd-ink font-medium">{a.title}</span>
                       <span className="text-[11px] font-mono text-sd-ink/40">
                         TMDb #{a.tmdbId}
@@ -1267,7 +1267,7 @@ export default function CreateDraftForm({
             {subDraftSubjects.map((subject, idx) => (
               <div
                 key={subject.index}
-                className="border border-sd-ink/10 rounded p-4 bg-white grid grid-cols-[80px_160px_1fr] gap-3 items-end"
+                className="border border-sd-ink/10 rounded p-4 bg-white grid grid-cols-1 sm:grid-cols-[80px_160px_1fr] gap-3 sm:items-end"
               >
                 <div className="font-oswald font-bold text-sd-ink pb-2">
                   Subject {subject.index}

@@ -1,3 +1,4 @@
+// app/admin/drafts/[draftId]/edit-meta/page.tsx
 import { auth } from "@/auth";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
@@ -34,7 +35,7 @@ export default async function EditMetaPage({
 
   return (
     <div className="min-h-screen bg-light-blue">
-      <div className="px-6 md:px-10 py-10 max-w-[700px] mx-auto">
+      <div className="page-x py-8 lg:py-10 max-w-[700px] mx-auto">
         <p className="font-mono text-[11px] tracking-widest text-sd-ink/50 mb-6">
           <Link href="/drafts" className="hover:text-sd-ink/70">DRAFTS</Link>
           {" / "}
@@ -44,12 +45,12 @@ export default async function EditMetaPage({
           {" / EDIT"}
         </p>
 
-        <h1 className="font-oswald font-bold text-[40px] leading-none text-sd-ink mb-2">
+        <h1 className="font-oswald font-bold text-[30px] sm:text-[40px] leading-none text-sd-ink mb-2">
           EDIT CAMPAIGN & CATEGORIES
         </h1>
-        <p className="font-mono text-lg text-sd-ink/50 mb-10">{draft.title}</p>
+        <p className="font-mono text-lg text-sd-ink/50 mb-6 sm:mb-10 [overflow-wrap:anywhere]">{draft.title}</p>
 
-        <div className="bg-white border border-sd-ink/10 p-8">
+        <div className="bg-white border border-sd-ink/10 p-4 sm:p-8">
           <EditMetaForm
             draft={draft}
             categoryList={categoryList}

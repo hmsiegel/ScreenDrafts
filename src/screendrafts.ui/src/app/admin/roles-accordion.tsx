@@ -1,4 +1,5 @@
 'use client';
+// app/admin/roles-accordion.tsx
 
 import { useState } from "react";
 import { AdminRoleItem } from "@/services/admin/fetch-admin";
@@ -51,17 +52,18 @@ function RoleRow({ role, accessToken, apiBase }: RoleRowProps) {
     <div className="border-b border-sd-ink/10 last:border-0">
       <button
         onClick={toggle}
-        className="w-full flex items-center justify-between px-4 py-3.5 hover:bg-sd-paper/60 transition-colors text-left"
+        className="w-full flex items-center justify-between gap-3 px-4 py-3.5 hover:bg-sd-paper/60 transition-colors text-left"
       >
-        <div className="flex items-center gap-3">
-          <span className={`font-mono text-xs px-2 py-0.5 rounded-full text-white ${isAdmin ? 'bg-sd-red' : 'bg-sd-blue'}`}>
+        {/* Description wraps under the badge on narrow screens instead of pushing the +/− off the row. */}
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 min-w-0">
+          <span className={`shrink-0 font-mono text-xs px-2 py-0.5 rounded-full text-white ${isAdmin ? 'bg-sd-red' : 'bg-sd-blue'}`}>
             {role.name}
           </span>
           {role.description && (
             <span className="text-[12px] text-sd-ink/50">{role.description}</span>
           )}
         </div>
-        <span className="text-sd-ink/40 text-[18px] leading-none select-none">{open ? '−' : '+'}</span>
+        <span className="shrink-0 text-sd-ink/40 text-[18px] leading-none select-none">{open ? '−' : '+'}</span>
       </button>
 
       {open && (
@@ -73,7 +75,7 @@ function RoleRow({ role, accessToken, apiBase }: RoleRowProps) {
           ) : (
             <div className="flex flex-wrap gap-1.5">
               {permissions.map(perm => (
-                <span key={perm} className="font-mono text-[11px] px-2 py-0.5 bg-sd-ink/5 border border-sd-ink/15 text-sd-ink rounded">
+                <span key={perm} className="font-mono text-[11px] px-2 py-0.5 bg-sd-ink/5 border border-sd-ink/15 text-sd-ink rounded break-all">
                   {perm}
                 </span>
               ))}

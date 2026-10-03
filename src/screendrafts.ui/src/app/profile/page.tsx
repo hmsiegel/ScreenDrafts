@@ -1,9 +1,11 @@
+// app/profile/page.tsx
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { fetchProfile } from "@/services/profile/fetch-profile";
 import ProfileForm from "./profile-form";
 import { Metadata } from "next";
 import { env } from "@/lib/env";
+import { normalizeSocialHandle } from "@/lib/social-links";
 
 export const metadata: Metadata = { title: "Profile" };
 export const dynamic = "force-dynamic";
@@ -37,13 +39,13 @@ export default async function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-light-blue">
-      <div className="px-6 md:px-10 py-10 max-w-[1100px] mx-auto">
+      <div className="page-x py-8 lg:py-10 max-w-[1100px] mx-auto">
         <p className="font-mono text-[11px] tracking-widest text-sd-ink/50 mb-6">/ PROFILE</p>
-        <h1 className="font-oswald font-bold text-[48px] leading-none text-sd-ink mb-10">
+        <h1 className="font-oswald font-bold text-[32px] sm:text-[48px] leading-none text-sd-ink mb-6 sm:mb-10">
           YOUR PROFILE
         </h1>
 
-        <div className="flex flex-col md:flex-row gap-8">
+        <div className="flex flex-col md:flex-row gap-6 md:gap-8">
           {/* Sidebar */}
           <aside className="md:w-[260px] shrink-0">
             <div className="bg-white border border-sd-ink/10 p-6 space-y-5">
@@ -69,16 +71,16 @@ export default async function ProfilePage() {
               {(profile?.twitterHandle || profile?.instagramHandle || profile?.letterboxdHandle || profile?.blueskyHandle) && (
                 <div className="border-t border-sd-ink/10 pt-4 space-y-1">
                   {profile.twitterHandle && (
-                    <p className="font-mono text-[11px] text-sd-ink/60">𝕏 @{profile.twitterHandle}</p>
+                    <p className="font-mono text-[11px] text-sd-ink/60 break-all">𝕏 @{normalizeSocialHandle("twitter", profile.twitterHandle)}</p>
                   )}
                   {profile.instagramHandle && (
-                    <p className="font-mono text-[11px] text-sd-ink/60">IG @{profile.instagramHandle}</p>
+                    <p className="font-mono text-[11px] text-sd-ink/60 break-all">IG @{normalizeSocialHandle("instagram", profile.instagramHandle)}</p>
                   )}
                   {profile.letterboxdHandle && (
-                    <p className="font-mono text-[11px] text-sd-ink/60">LB {profile.letterboxdHandle}</p>
+                    <p className="font-mono text-[11px] text-sd-ink/60 break-all">LB {normalizeSocialHandle("letterboxd", profile.letterboxdHandle)}</p>
                   )}
                   {profile.blueskyHandle && (
-                    <p className="font-mono text-[11px] text-sd-ink/60">BSky {profile.blueskyHandle}</p>
+                    <p className="font-mono text-[11px] text-sd-ink/60 break-all">BSky {normalizeSocialHandle("bluesky", profile.blueskyHandle)}</p>
                   )}
                 </div>
               )}
@@ -86,7 +88,7 @@ export default async function ProfilePage() {
           </aside>
 
           {/* Main content */}
-          <main className="flex-1">
+          <main className="flex-1 min-w-0">
             <ProfileForm
               profile={profile}
               accessToken={session.accessToken}

@@ -1,4 +1,5 @@
 'use client';
+// app/admin/drafts/in-progress-drafts-list.tsx
 
 import DraftTypeBadge from "@/components/ui/draft-type-badge";
 import { draftTypeFromNumber } from "@/lib/draft-type-display";
@@ -23,9 +24,9 @@ export default function InProgressDraftsList({ drafts }: InProgressDraftsListPro
   }
 
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full text-sm">
-        <thead>
+    <div className="sm:overflow-x-auto">
+      <table className="block sm:table w-full text-sm">
+        <thead className="hidden sm:table-header-group">
           <tr className="border-b border-sd-ink/10">
             {["Title", "Type", "Series", ""].map((col) => (
               <th
@@ -37,15 +38,15 @@ export default function InProgressDraftsList({ drafts }: InProgressDraftsListPro
             ))}
           </tr>
         </thead>
-        <tbody>
+        <tbody className="block sm:table-row-group">
           {inProgress.map((d) => (
-            <tr key={d.publicId} className="border-b border-sd-ink/5 hover:bg-sd-paper/60 transition-colors">
-              <td className="py-3 pr-4 font-medium text-sd-ink">{d.title}</td>
-              <td className="py-3 pr-4 text-sd-ink/70">
+            <tr key={d.publicId} className="flex flex-wrap items-center gap-x-3 gap-y-1 py-3 sm:table-row sm:py-0 border-b border-sd-ink/5 hover:bg-sd-paper/60 transition-colors">
+              <td className="w-full sm:w-auto sm:table-cell sm:py-3 sm:pr-4 font-medium text-sd-ink [overflow-wrap:anywhere]">{d.title}</td>
+              <td className="sm:table-cell sm:py-3 sm:pr-4 text-xs sm:text-sm text-sd-ink/70">
                 <DraftTypeBadge type={draftTypeFromNumber(d.draftType)} />
               </td>
-              <td className="py-3 pr-4 text-sd-ink/70">{d.seriesName ?? "—"}</td>
-              <td className="py-3">
+              <td className="sm:table-cell sm:py-3 sm:pr-4 text-xs sm:text-sm text-sd-ink/70">{d.seriesName ?? "—"}</td>
+              <td className="w-full sm:w-auto sm:table-cell sm:py-3 pt-2">
                 <InProgressDraftActions draft={d} />
               </td>
             </tr>

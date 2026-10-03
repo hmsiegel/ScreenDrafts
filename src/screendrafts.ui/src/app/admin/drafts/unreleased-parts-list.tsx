@@ -1,4 +1,5 @@
 'use client';
+// app/admin/drafts/unreleased-parts-list.tsx
 
 import Link from "next/link";
 import DraftTypeBadge from "@/components/ui/draft-type-badge";
@@ -15,9 +16,9 @@ export default function UnreleasedPartsList({ parts }: UnreleasedPartsListProps)
   }
 
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full text-sm">
-        <thead>
+    <div className="sm:overflow-x-auto">
+      <table className="block sm:table w-full text-sm">
+        <thead className="hidden sm:table-header-group">
           <tr className="border-b border-sd-ink/10">
             {["Draft", "Part", "Series", "Type", ""].map((col) => (
               <th
@@ -29,22 +30,22 @@ export default function UnreleasedPartsList({ parts }: UnreleasedPartsListProps)
             ))}
           </tr>
         </thead>
-        <tbody>
+        <tbody className="block sm:table-row-group">
           {parts.map((p) => (
             <tr
               key={p.draftPartPublicId}
-              className="border-b border-sd-ink/5 hover:bg-sd-paper/60 transition-colors"
+              className="flex flex-wrap items-center gap-x-3 gap-y-1 py-3 sm:table-row sm:py-0 border-b border-sd-ink/5 hover:bg-sd-paper/60 transition-colors"
             >
-              <td className="py-3 pr-4 font-medium text-sd-ink">{p.draftTitle}</td>
-              <td className="py-3 pr-4 text-sd-ink/70">Part {p.partIndex}</td>
-              <td className="py-3 pr-4 text-sd-ink/70">{p.seriesName ?? "—"}</td>
-              <td className="py-3 pr-4 text-sd-ink/70">
+              <td className="w-full sm:w-auto sm:table-cell sm:py-3 sm:pr-4 font-medium text-sd-ink [overflow-wrap:anywhere]">{p.draftTitle}</td>
+              <td className="sm:table-cell sm:py-3 sm:pr-4 text-xs sm:text-sm text-sd-ink/70">Part {p.partIndex}</td>
+              <td className="sm:table-cell sm:py-3 sm:pr-4 text-xs sm:text-sm text-sd-ink/70">{p.seriesName ?? "—"}</td>
+              <td className="sm:table-cell sm:py-3 sm:pr-4 text-xs sm:text-sm text-sd-ink/70">
                 <DraftTypeBadge type={draftTypeFromNumber(p.draftType)} />
               </td>
-              <td className="py-3">
+              <td className="w-full sm:w-auto sm:table-cell sm:py-3 pt-2">
                 <Link
                   href={`/admin/drafts/${p.draftPublicId}/edit-meta`}
-                  className="font-mono text-[11px] tracking-widest uppercase text-sd-blue hover:underline"
+                  className="inline-flex items-center min-h-9 sm:min-h-0 font-mono text-[11px] tracking-widest uppercase text-sd-blue hover:underline"
                 >
                   Set Release →
                 </Link>

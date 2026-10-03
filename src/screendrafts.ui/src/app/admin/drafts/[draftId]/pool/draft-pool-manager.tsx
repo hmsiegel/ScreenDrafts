@@ -1,4 +1,5 @@
 'use client';
+// app/admin/drafts/[draftId]/pool/draft-pool-manager.tsx
 
 import { useRef, useState } from "react";
 import {
@@ -100,7 +101,7 @@ export default function DraftPoolManager({
 
   return (
     <div className="min-h-screen bg-light-blue">
-      <div className="px-6 md:px-10 py-10 max-w-[900px] mx-auto">
+      <div className="page-x py-8 lg:py-10 max-w-[900px] mx-auto">
         <p className="font-mono text-[11px] tracking-widest text-sd-ink/50 mb-6">
           <Link href="/admin/drafts" className="hover:text-sd-ink transition-colors">
             / ADMIN / DRAFTS
@@ -108,20 +109,20 @@ export default function DraftPoolManager({
           {" / "}{draftName.toUpperCase()} / POOL
         </p>
 
-        <div className="flex items-end justify-between mb-10">
-          <h1 className="font-oswald font-bold text-[48px] leading-none text-sd-ink">
+        <div className="flex items-end justify-between mb-6 sm:mb-10">
+          <h1 className="font-oswald font-bold text-[32px] sm:text-[48px] leading-none text-sd-ink [overflow-wrap:anywhere]">
             {draftName} — DRAFT POOL
           </h1>
         </div>
 
         <div className="bg-white border border-sd-ink/10">
-          <div className="flex items-center gap-3 px-6 py-4 border-b border-sd-ink/10 bg-sd-ink">
+          <div className="flex items-center gap-3 px-4 sm:px-6 py-4 border-b border-sd-ink/10 bg-sd-ink">
             <div className="w-1 h-5 bg-sd-red shrink-0" />
             <h2 className="font-oswald font-bold text-[16px] tracking-wide uppercase text-white">
               Pool
             </h2>
           </div>
-          <div className="p-6">
+          <div className="p-4 sm:p-6">
             {!pool ? (
               <div className="text-center py-8 space-y-4">
                 <p className="text-sd-ink/60 font-mono text-sm">No pool created yet for this draft.</p>
@@ -147,7 +148,7 @@ export default function DraftPoolManager({
                 <MediaPicker onSelect={handleAddMovie} accessToken={accessToken} />
 
                 {/* Bulk upload row */}
-                <div className="flex items-center gap-3">
+                <div className="flex flex-wrap items-center gap-3">
                   <button
                     type="button"
                     onClick={() => fileRef.current?.click()}
@@ -182,7 +183,7 @@ export default function DraftPoolManager({
                     <p className="font-mono text-xs text-sd-ink/70 leading-relaxed">
                       No header row. Each line should be:
                     </p>
-                    <pre className="font-mono text-xs text-sd-ink bg-white border border-sd-ink/10 px-3 py-2 leading-relaxed">
+                    <pre className="font-mono text-xs text-sd-ink bg-white border border-sd-ink/10 px-3 py-2 leading-relaxed overflow-x-auto">
 {`603,The Matrix
 680,Pulp Fiction
 424,Schindler's List`}
@@ -234,7 +235,7 @@ function PoolList({
               : null;
           return (
             <tr key={movie.tmdbId} className="border-b border-sd-ink/5 hover:bg-sd-paper/60">
-              <td className="py-2 pr-4 font-medium text-sd-ink">
+              <td className="py-2 pr-4 font-medium text-sd-ink [overflow-wrap:anywhere]">
                 {isEpisode && movie.tvSeriesTitle && (
                   <span className="text-sd-ink/60">{movie.tvSeriesTitle} — </span>
                 )}
@@ -249,7 +250,7 @@ function PoolList({
                   <button
                     type="button"
                     onClick={() => onRemove(movie.tmdbId)}
-                    className="text-sd-ink/40 hover:text-sd-red text-xl leading-none"
+                    className="w-9 h-9 sm:w-auto sm:h-auto inline-flex items-center justify-center text-sd-ink/40 hover:text-sd-red text-xl leading-none"
                     aria-label="Remove"
                   >
                     ×
