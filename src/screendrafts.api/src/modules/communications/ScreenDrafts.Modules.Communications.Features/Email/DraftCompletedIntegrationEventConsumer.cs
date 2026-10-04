@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Common.Application.Clock;
-
-namespace ScreenDrafts.Modules.Communications.Features.Email;
+﻿namespace ScreenDrafts.Modules.Communications.Features.Email;
 
 internal sealed class DraftCompletedIntegrationEventConsumer(
   IDbConnectionFactory connectionFactory,

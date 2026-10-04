@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ScreenDrafts.Modules.Reporting.Infrastructure.Database;
@@ -11,9 +12,11 @@ using ScreenDrafts.Modules.Reporting.Infrastructure.Database;
 namespace ScreenDrafts.Modules.Reporting.Infrastructure.Database.Migrations
 {
     [DbContext(typeof(ReportingDbContext))]
-    partial class ReportingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20261004131944_Add_Record_Book_Facts")]
+    partial class Add_Record_Book_Facts
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -139,10 +142,6 @@ namespace ScreenDrafts.Modules.Reporting.Infrastructure.Database.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("appeared_at");
 
-                    b.Property<Guid>("DraftId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("draft_id");
-
                     b.Property<string>("DraftPartPublicId")
                         .IsRequired()
                         .HasMaxLength(19)
@@ -162,9 +161,6 @@ namespace ScreenDrafts.Modules.Reporting.Infrastructure.Database.Migrations
 
                     b.HasIndex("DrafterIdValue")
                         .HasDatabaseName("ix_drafter_canonical_appearances_drafter_id_value");
-
-                    b.HasIndex("DraftId", "DrafterIdValue")
-                        .HasDatabaseName("ix_drafter_canonical_appearances_draft_id_drafter_id");
 
                     b.HasIndex("DrafterIdValue", "DraftPartPublicId")
                         .IsUnique()

@@ -12,4 +12,7 @@ internal static class Tables
   public const string DraftPartReleases = "draft_part_releases";
   public const string DraftSpotlights = "draft_spotlights";
   public const string SiteStats = "site_stats";
+  public const string PickFacts = "pick_facts";
+  public const string VetoFacts = "veto_facts";
+  public const string PickCreditFacts = "pick_credit_facts";
 }

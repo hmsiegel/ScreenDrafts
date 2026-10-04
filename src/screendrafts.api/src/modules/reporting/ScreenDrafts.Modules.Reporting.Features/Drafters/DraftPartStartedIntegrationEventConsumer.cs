@@ -2,13 +2,16 @@
 
 internal sealed partial class DraftPartStartedIntegrationEventConsumer(
   ISender sender,
-  ILogger<DraftPartStartedIntegrationEventConsumer> logger)
-  : IntegrationEventHandler<DraftPartStartedIntegrationEvent>
+  ILogger<DraftPartStartedIntegrationEventConsumer> logger
+) : IntegrationEventHandler<DraftPartStartedIntegrationEvent>
 {
   private readonly ISender _sender = sender;
   private readonly ILogger<DraftPartStartedIntegrationEventConsumer> _logger = logger;
 
-  public override async Task Handle(DraftPartStartedIntegrationEvent integrationEvent, CancellationToken cancellationToken = default)
+  public override async Task Handle(
+    DraftPartStartedIntegrationEvent integrationEvent,
+    CancellationToken cancellationToken = default
+  )
   {
     if (integrationEvent.CanonicalPolicyValue == 1)
     {
@@ -25,9 +28,10 @@ internal sealed partial class DraftPartStartedIntegrationEventConsumer(
       var command = new UpdateDrafterHonorificsCommand
       {
         DrafterIdValue = participant.ParticipantIdValue,
+        DraftId = integrationEvent.DraftId,
         DraftPartPublicId = integrationEvent.DraftPartPublicId,
         CanonicalPolicyValue = integrationEvent.CanonicalPolicyValue,
-        HasMainFeedRelease = integrationEvent.HasMainFeedRelease
+        HasMainFeedRelease = integrationEvent.HasMainFeedRelease,
       };
 
       var result = await _sender.Send(command, cancellationToken);
@@ -38,7 +42,8 @@ internal sealed partial class DraftPartStartedIntegrationEventConsumer(
           _logger,
           participant.ParticipantIdValue,
           integrationEvent.DraftPartPublicId,
-          string.Join(", ", result.Errors.Select(e => e.Description)));
+          string.Join(", ", result.Errors.Select(e => e.Description))
+        );
       }
     }
   }
@@ -46,6 +51,12 @@ internal sealed partial class DraftPartStartedIntegrationEventConsumer(
   [LoggerMessage(
     EventId = 0,
     Level = LogLevel.Error,
-    Message = "Failed to update honorifics for drafter {DrafterId} on part {DraftPartPublicId}: {Error}")]
-  private static partial void Log_FailedToUpdateDrafterHonorifics(ILogger logger, Guid drafterId, string draftPartPublicId, string error);
+    Message = "Failed to update honorifics for drafter {DrafterId} on part {DraftPartPublicId}: {Error}"
+  )]
+  private static partial void Log_FailedToUpdateDrafterHonorifics(
+    ILogger logger,
+    Guid drafterId,
+    string draftPartPublicId,
+    string error
+  );
 }

@@ -14,6 +14,9 @@ public sealed class ReportingDbContext(DbContextOptions<ReportingDbContext> opti
   internal DbSet<DraftSpotlight> DraftSpotlights { get; set; } = default!;
   internal DbSet<DraftSummary> DraftSummaries { get; set; } = default!;
   internal DbSet<SiteStats> SiteStats { get; set; } = default!;
+  internal DbSet<PickFact> PickFacts { get; set; } = default!;
+  internal DbSet<VetoFact> VetoFacts { get; set; } = default!;
+  internal DbSet<PickCreditFact> PickCreditFacts { get; set; } = default!;
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
