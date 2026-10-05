@@ -15,6 +15,7 @@ public sealed class PickCreditFact : Entity
     string draftPartPublicId,
     Guid drafterIdValue,
     string drafterPublicId,
+    string drafterPersonPublicId,
     string drafterName,
     DateTime recordedAtUtc
   )
@@ -25,6 +26,7 @@ public sealed class PickCreditFact : Entity
     DraftPartPublicId = draftPartPublicId;
     DrafterIdValue = drafterIdValue;
     DrafterPublicId = drafterPublicId;
+    DrafterPersonPublicId = drafterPersonPublicId;
     DrafterName = drafterName;
     RecordedAtUtc = recordedAtUtc;
   }
@@ -36,6 +38,9 @@ public sealed class PickCreditFact : Entity
   public string DraftPartPublicId { get; private set; } = default!;
   public Guid DrafterIdValue { get; private set; }
   public string DrafterPublicId { get; private set; } = default!;
+
+  /// <summary>drafts.people.public_id. The site's drafter pages are keyed by this id, not the drafter id.</summary>
+  public string DrafterPersonPublicId { get; private set; } = default!;
   public string DrafterName { get; private set; } = default!;
   public DateTime RecordedAtUtc { get; private set; }
 
@@ -46,6 +51,7 @@ public sealed class PickCreditFact : Entity
     string draftPartPublicId,
     Guid drafterIdValue,
     string drafterPublicId,
+    string drafterPersonPublicId,
     string drafterName,
     DateTime recordedAtUtc
   ) =>
@@ -56,6 +62,7 @@ public sealed class PickCreditFact : Entity
       draftPartPublicId,
       drafterIdValue,
       drafterPublicId,
+      drafterPersonPublicId,
       drafterName,
       recordedAtUtc
     );

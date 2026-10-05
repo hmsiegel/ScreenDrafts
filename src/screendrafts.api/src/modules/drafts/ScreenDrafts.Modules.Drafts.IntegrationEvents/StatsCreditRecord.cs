@@ -7,5 +7,6 @@
 public sealed record StatsCreditRecord(
   Guid DrafterIdValue,
   string DrafterPublicId,
+  string PersonPublicId,
   string DrafterName
 );

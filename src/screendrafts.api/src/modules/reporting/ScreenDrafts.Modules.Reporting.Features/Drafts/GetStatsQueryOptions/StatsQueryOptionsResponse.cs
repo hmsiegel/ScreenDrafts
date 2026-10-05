@@ -2,6 +2,9 @@
 
 internal sealed record StatsQueryOptionsResponse
 {
+  /// <summary>True when the caller may include Patreon and Speed drafts (the includeAll toggle takes effect).</summary>
+  public bool CanIncludeAll { get; init; }
+
   public IReadOnlyList<StatsMetricOption> Metrics { get; init; } = [];
   public IReadOnlyList<StatsGroupByOption> GroupBys { get; init; } = [];
   public IReadOnlyList<string> Series { get; init; } = [];

@@ -22739,6 +22739,9 @@
       "StatsQueryOptionsResponse": {
         "type": "object",
         "properties": {
+          "canIncludeAll": {
+            "type": "boolean"
+          },
           "metrics": {
             "type": "array",
             "items": {

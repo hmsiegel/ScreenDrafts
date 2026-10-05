@@ -424,12 +424,12 @@ internal static class DrafterRecordsCalculator
         .Select(g =>
         {
           var appeared = g.Where(r => r.Appeared).ToList();
-          var first = g.FirstOrDefault(r => r.DrafterName.Length > 0) ?? g.First();
+          var first = g.FirstOrDefault(r => r.DrafterPersonPublicId.Length > 0) ?? g.First();
 
           return new DrafterSummary
           {
             Id = g.Key,
-            PublicId = first.DrafterPublicId,
+            PublicId = first.DrafterPersonPublicId,
             Name = first.DrafterName,
             Appearances = appeared.Count,
             TitlesDrafted = g.Sum(r => r.PicksLanded),
@@ -476,7 +476,7 @@ internal static class DrafterRecordsCalculator
     {
       Kind = "drafter",
       Name = s.DrafterName,
-      PublicId = s.DrafterPublicId,
+      PublicId = s.DrafterPersonPublicId,
       Context = $"No. {s.Position}, {s.DraftTitle}",
     };
 
@@ -485,7 +485,7 @@ internal static class DrafterRecordsCalculator
     {
       Kind = "drafter",
       Name = t.Sample.DrafterName,
-      PublicId = t.Sample.DrafterPublicId,
+      PublicId = t.Sample.DrafterPersonPublicId,
       Context = withDraft ? t.Sample.DraftTitle : null,
     };
 
@@ -513,7 +513,7 @@ internal static class DrafterRecordsCalculator
     {
       Kind = "drafter",
       Name = r.DrafterName,
-      PublicId = r.DrafterPublicId,
+      PublicId = r.DrafterPersonPublicId,
       Context = r.DraftTitle,
     };
 

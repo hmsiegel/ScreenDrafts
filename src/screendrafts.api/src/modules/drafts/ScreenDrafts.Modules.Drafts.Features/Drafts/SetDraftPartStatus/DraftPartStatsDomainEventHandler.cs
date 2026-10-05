@@ -176,7 +176,7 @@ internal sealed partial class DraftPartStatsDomainEventHandler(
       .Distinct()
       .ToArray();
 
-    var drafterMap = new Dictionary<Guid, NamedRow>();
+    var drafterMap = new Dictionary<Guid, DrafterRow>();
     var teamMap = new Dictionary<Guid, NamedRow>();
 
     if (drafterIds.Length > 0)
@@ -185,6 +185,7 @@ internal sealed partial class DraftPartStatsDomainEventHandler(
         SELECT
           dr.id          AS Id,
           dr.public_id   AS PublicId,
+          pe.public_id   AS PersonPublicId,
           COALESCE(
             NULLIF(pe.display_name, ''),
             NULLIF(TRIM(CONCAT_WS(' ', pe.first_name, pe.last_name)), ''),
@@ -195,7 +196,7 @@ internal sealed partial class DraftPartStatsDomainEventHandler(
         WHERE dr.id = ANY(@Ids)
         """;
 
-      var rows = await connection.QueryAsync<NamedRow>(
+      var rows = await connection.QueryAsync<DrafterRow>(
         new CommandDefinition(
           draftersSql,
           new { Ids = drafterIds },
@@ -282,7 +283,7 @@ internal sealed partial class DraftPartStatsDomainEventHandler(
       {
         DrafterKind when drafterMap.TryGetValue(pick.PlayedByIdValue, out var solo) =>
         [
-          new StatsCreditRecord(solo.Id, solo.PublicId, solo.Name),
+          new StatsCreditRecord(solo.Id, solo.PublicId, solo.PersonPublicId, solo.Name),
         ],
         TeamKind =>
         [
@@ -291,7 +292,12 @@ internal sealed partial class DraftPartStatsDomainEventHandler(
             .Select(c =>
             {
               var member = drafterMap[c.DrafterIdValue];
-              return new StatsCreditRecord(member.Id, member.PublicId, member.Name);
+              return new StatsCreditRecord(
+                member.Id,
+                member.PublicId,
+                member.PersonPublicId,
+                member.Name
+              );
             }),
         ],
         _ => [],
@@ -391,4 +397,6 @@ internal sealed partial class DraftPartStatsDomainEventHandler(
   private sealed record MovieRow(Guid Id, string PublicId, string Title);
 
   private sealed record NamedRow(Guid Id, string PublicId, string Name);
+
+  private sealed record DrafterRow(Guid Id, string PublicId, string PersonPublicId, string Name);
 }

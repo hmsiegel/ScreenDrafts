@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Reporting.Features.Drafts.GetRecordBook;
+﻿namespace ScreenDrafts.Modules.Reporting.Features.Drafts.GetRecordBook;
 
 /// <summary>
 /// Reads the Record Book source rows from the Reporting fact tables.
@@ -27,180 +27,198 @@ internal static class RecordBookDataLoader
     )
     """;
 
-  private const string CreditedPicksSql = ScopedPicksCte + """
+  private const string CreditedPicksSql =
+    ScopedPicksCte
+    + """
 
-    SELECT
-      c.drafter_id_value              AS DrafterId,
-      MAX(c.drafter_public_id)        AS DrafterPublicId,
-      MAX(c.drafter_name)             AS DrafterName,
-      sp.draft_id                     AS DraftId,
-      MAX(sp.draft_public_id)         AS DraftPublicId,
-      MAX(sp.draft_title)             AS DraftTitle,
-      (SELECT MIN(ds.episode_number)
-       FROM reporting.draft_summaries ds
-       WHERE ds.draft_id = sp.draft_id) AS EpisodeNumber,
-      COUNT(*)::int                   AS PicksPlayed,
-      COUNT(*) FILTER (
-        WHERE NOT sp.was_commissioner_overridden
-          AND NOT (sp.was_vetoed AND NOT sp.was_veto_overridden)
-      )::int                          AS PicksLanded,
-      COUNT(*) FILTER (
-        WHERE sp.was_vetoed AND NOT sp.was_veto_overridden
-      )::int                          AS PicksVetoed,
-      COUNT(*) FILTER (
-        WHERE sp.was_vetoed AND sp.was_veto_overridden
-      )::int                          AS PicksSaved,
-      COUNT(*) FILTER (
-        WHERE sp.was_commissioner_overridden
-      )::int                          AS PicksRemovedByCommissioner,
-      COUNT(*) FILTER (
-        WHERE sp.position = 1
-          AND NOT sp.was_commissioner_overridden
-          AND NOT (sp.was_vetoed AND NOT sp.was_veto_overridden)
-      )::int                          AS No1Landed,
-      COUNT(*) FILTER (
-        WHERE sp.position = 1
-          AND sp.was_vetoed AND NOT sp.was_veto_overridden
-      )::int                          AS No1Vetoed
-    FROM scoped_picks sp
-    JOIN reporting.pick_credit_facts c ON c.pick_id = sp.id
-    GROUP BY c.drafter_id_value, sp.draft_id
-    """;
-
-  private const string VetoesIssuedSql = ScopedPicksCte + """
-
-    SELECT
-      v.issued_by_id_value            AS DrafterId,
-      MAX(v.issued_by_public_id)      AS DrafterPublicId,
-      MAX(v.issued_by_name)           AS DrafterName,
-      sp.draft_id                     AS DraftId,
-      MAX(sp.draft_public_id)         AS DraftPublicId,
-      MAX(sp.draft_title)             AS DraftTitle,
-      COUNT(*)::int                   AS VetoesUsed,
-      COUNT(*) FILTER (WHERE v.is_overridden)::int                          AS VetoesOverridden,
-      COUNT(*) FILTER (WHERE v.is_self_veto AND NOT v.is_overridden)::int   AS SelfVetoes,
-      COUNT(*) FILTER (WHERE sp.position = 1)::int                          AS No1VetoesUsed
-    FROM reporting.veto_facts v
-    JOIN scoped_picks sp ON sp.id = v.pick_id
-    WHERE v.issued_by_kind = 0
-    GROUP BY v.issued_by_id_value, sp.draft_id
-    """;
-
-  private const string OverridesDeployedSql = ScopedPicksCte + """
-
-    SELECT
-      v.overridden_by_id_value        AS DrafterId,
-      MAX(v.overridden_by_public_id)  AS DrafterPublicId,
-      MAX(v.overridden_by_name)       AS DrafterName,
-      sp.draft_id                     AS DraftId,
-      MAX(sp.draft_public_id)         AS DraftPublicId,
-      MAX(sp.draft_title)             AS DraftTitle,
-      COUNT(*)::int                   AS OverridesDeployed
-    FROM reporting.veto_facts v
-    JOIN scoped_picks sp ON sp.id = v.pick_id
-    WHERE v.is_overridden = true
-      AND v.overridden_by_kind = 0
-    GROUP BY v.overridden_by_id_value, sp.draft_id
-    """;
-
-  private const string PartsSql = ScopedPicksCte + """
-
-    SELECT
-      sp.draft_id                       AS DraftId,
-      MAX(sp.draft_public_id)           AS DraftPublicId,
-      MAX(sp.draft_title)               AS DraftTitle,
-      MAX(sp.draft_type)                AS DraftType,
-      sp.draft_part_public_id           AS PartPublicId,
-      MAX(sp.part_index)                AS PartIndex,
-      COUNT(*)::int                     AS PicksPlayed,
-      COUNT(*) FILTER (
-        WHERE NOT sp.was_commissioner_overridden
-          AND NOT (sp.was_vetoed AND NOT sp.was_veto_overridden)
-      )::int                            AS PicksLanded,
-      COUNT(DISTINCT sp.media_public_id)::int AS UniqueTitlesPlayed,
-      COUNT(*) FILTER (
-        WHERE sp.was_vetoed AND NOT sp.was_veto_overridden
-      )::int                            AS PicksVetoed,
-      COUNT(*) FILTER (
-        WHERE sp.position = 1
-          AND sp.was_vetoed AND NOT sp.was_veto_overridden
-      )::int                            AS No1Vetoed,
-      COUNT(*) FILTER (WHERE sp.was_commissioner_overridden)::int AS CommissionerOverrides,
-      COALESCE(SUM(vf.vetoes), 0)::int     AS VetoesIssued,
-      COALESCE(SUM(vf.overridden), 0)::int AS VetoesOverridden
-    FROM scoped_picks sp
-    LEFT JOIN (
       SELECT
-        pick_id,
-        COUNT(*)                                  AS vetoes,
-        COUNT(*) FILTER (WHERE is_overridden)     AS overridden
-      FROM reporting.veto_facts
-      GROUP BY pick_id
-    ) vf ON vf.pick_id = sp.id
-    GROUP BY sp.draft_id, sp.draft_part_public_id
-    """;
+        c.drafter_id_value              AS DrafterId,
+        MAX(c.drafter_public_id)        AS DrafterPublicId,
+        MAX(c.drafter_person_public_id) AS DrafterPersonPublicId,
+        MAX(c.drafter_name)             AS DrafterName,
+        sp.draft_id                     AS DraftId,
+        MAX(sp.draft_public_id)         AS DraftPublicId,
+        MAX(sp.draft_title)             AS DraftTitle,
+        (SELECT MIN(ds.episode_number)
+         FROM reporting.draft_summaries ds
+         WHERE ds.draft_id = sp.draft_id) AS EpisodeNumber,
+        COUNT(*)::int                   AS PicksPlayed,
+        COUNT(*) FILTER (
+          WHERE NOT sp.was_commissioner_overridden
+            AND NOT (sp.was_vetoed AND NOT sp.was_veto_overridden)
+        )::int                          AS PicksLanded,
+        COUNT(*) FILTER (
+          WHERE sp.was_vetoed AND NOT sp.was_veto_overridden
+        )::int                          AS PicksVetoed,
+        COUNT(*) FILTER (
+          WHERE sp.was_vetoed AND sp.was_veto_overridden
+        )::int                          AS PicksSaved,
+        COUNT(*) FILTER (
+          WHERE sp.was_commissioner_overridden
+        )::int                          AS PicksRemovedByCommissioner,
+        COUNT(*) FILTER (
+          WHERE sp.position = 1
+            AND NOT sp.was_commissioner_overridden
+            AND NOT (sp.was_vetoed AND NOT sp.was_veto_overridden)
+        )::int                          AS No1Landed,
+        COUNT(*) FILTER (
+          WHERE sp.position = 1
+            AND sp.was_vetoed AND NOT sp.was_veto_overridden
+        )::int                          AS No1Vetoed
+      FROM scoped_picks sp
+      JOIN reporting.pick_credit_facts c ON c.pick_id = sp.id
+      GROUP BY c.drafter_id_value, sp.draft_id
+      """;
 
-  private const string DraftTitlesSql = ScopedPicksCte + """
+  private const string VetoesIssuedSql =
+    ScopedPicksCte
+    + """
 
-    SELECT
-      sp.draft_id                             AS DraftId,
-      COUNT(DISTINCT sp.media_public_id)::int AS UniqueTitlesPlayed
-    FROM scoped_picks sp
-    GROUP BY sp.draft_id
-    """;
+      SELECT
+        v.issued_by_id_value            AS DrafterId,
+        MAX(v.issued_by_public_id)      AS DrafterPublicId,
+        MAX(v.issued_by_name)           AS DrafterName,
+        sp.draft_id                     AS DraftId,
+        MAX(sp.draft_public_id)         AS DraftPublicId,
+        MAX(sp.draft_title)             AS DraftTitle,
+        COUNT(*)::int                   AS VetoesUsed,
+        COUNT(*) FILTER (WHERE v.is_overridden)::int                          AS VetoesOverridden,
+        COUNT(*) FILTER (WHERE v.is_self_veto AND NOT v.is_overridden)::int   AS SelfVetoes,
+        COUNT(*) FILTER (WHERE sp.position = 1)::int                          AS No1VetoesUsed
+      FROM reporting.veto_facts v
+      JOIN scoped_picks sp ON sp.id = v.pick_id
+      WHERE v.issued_by_kind = 0
+      GROUP BY v.issued_by_id_value, sp.draft_id
+      """;
 
-  private const string MediaSql = ScopedPicksCte + """
+  private const string OverridesDeployedSql =
+    ScopedPicksCte
+    + """
 
-    SELECT
-      sp.media_public_id                AS MediaPublicId,
-      MAX(sp.media_title)               AS MediaTitle,
-      COUNT(*) FILTER (
+      SELECT
+        v.overridden_by_id_value        AS DrafterId,
+        MAX(v.overridden_by_public_id)  AS DrafterPublicId,
+        MAX(v.overridden_by_name)       AS DrafterName,
+        sp.draft_id                     AS DraftId,
+        MAX(sp.draft_public_id)         AS DraftPublicId,
+        MAX(sp.draft_title)             AS DraftTitle,
+        COUNT(*)::int                   AS OverridesDeployed
+      FROM reporting.veto_facts v
+      JOIN scoped_picks sp ON sp.id = v.pick_id
+      WHERE v.is_overridden = true
+        AND v.overridden_by_kind = 0
+      GROUP BY v.overridden_by_id_value, sp.draft_id
+      """;
+
+  private const string PartsSql =
+    ScopedPicksCte
+    + """
+
+      SELECT
+        sp.draft_id                       AS DraftId,
+        MAX(sp.draft_public_id)           AS DraftPublicId,
+        MAX(sp.draft_title)               AS DraftTitle,
+        MAX(sp.draft_type)                AS DraftType,
+        sp.draft_part_public_id           AS PartPublicId,
+        MAX(sp.part_index)                AS PartIndex,
+        COUNT(*)::int                     AS PicksPlayed,
+        COUNT(*) FILTER (
+          WHERE NOT sp.was_commissioner_overridden
+            AND NOT (sp.was_vetoed AND NOT sp.was_veto_overridden)
+        )::int                            AS PicksLanded,
+        COUNT(DISTINCT sp.media_public_id)::int AS UniqueTitlesPlayed,
+        COUNT(*) FILTER (
+          WHERE sp.was_vetoed AND NOT sp.was_veto_overridden
+        )::int                            AS PicksVetoed,
+        COUNT(*) FILTER (
+          WHERE sp.position = 1
+            AND sp.was_vetoed AND NOT sp.was_veto_overridden
+        )::int                            AS No1Vetoed,
+        COUNT(*) FILTER (WHERE sp.was_commissioner_overridden)::int AS CommissionerOverrides,
+        COALESCE(SUM(vf.vetoes), 0)::int     AS VetoesIssued,
+        COALESCE(SUM(vf.overridden), 0)::int AS VetoesOverridden
+      FROM scoped_picks sp
+      LEFT JOIN (
+        SELECT
+          pick_id,
+          COUNT(*)                                  AS vetoes,
+          COUNT(*) FILTER (WHERE is_overridden)     AS overridden
+        FROM reporting.veto_facts
+        GROUP BY pick_id
+      ) vf ON vf.pick_id = sp.id
+      GROUP BY sp.draft_id, sp.draft_part_public_id
+      """;
+
+  private const string DraftTitlesSql =
+    ScopedPicksCte
+    + """
+
+      SELECT
+        sp.draft_id                             AS DraftId,
+        COUNT(DISTINCT sp.media_public_id)::int AS UniqueTitlesPlayed
+      FROM scoped_picks sp
+      GROUP BY sp.draft_id
+      """;
+
+  private const string MediaSql =
+    ScopedPicksCte
+    + """
+
+      SELECT
+        sp.media_public_id                AS MediaPublicId,
+        MAX(sp.media_title)               AS MediaTitle,
+        COUNT(*) FILTER (
+          WHERE NOT sp.was_commissioner_overridden
+            AND NOT (sp.was_vetoed AND NOT sp.was_veto_overridden)
+        )::int                            AS TimesDrafted,
+        COUNT(*) FILTER (
+          WHERE sp.position = 1
+            AND NOT sp.was_commissioner_overridden
+            AND NOT (sp.was_vetoed AND NOT sp.was_veto_overridden)
+        )::int                            AS TimesDraftedNo1
+      FROM scoped_picks sp
+      GROUP BY sp.media_public_id
+      HAVING COUNT(*) FILTER (
         WHERE NOT sp.was_commissioner_overridden
           AND NOT (sp.was_vetoed AND NOT sp.was_veto_overridden)
-      )::int                            AS TimesDrafted,
-      COUNT(*) FILTER (
-        WHERE sp.position = 1
-          AND NOT sp.was_commissioner_overridden
-          AND NOT (sp.was_vetoed AND NOT sp.was_veto_overridden)
-      )::int                            AS TimesDraftedNo1
-    FROM scoped_picks sp
-    GROUP BY sp.media_public_id
-    HAVING COUNT(*) FILTER (
-      WHERE NOT sp.was_commissioner_overridden
-        AND NOT (sp.was_vetoed AND NOT sp.was_veto_overridden)
-    ) > 0
-    """;
+      ) > 0
+      """;
 
-  private const string PickSlotsSql = ScopedPicksCte + """
+  private const string PickSlotsSql =
+    ScopedPicksCte
+    + """
 
-    SELECT
-      c.drafter_id_value              AS DrafterId,
-      MAX(c.drafter_public_id)        AS DrafterPublicId,
-      MAX(c.drafter_name)             AS DrafterName,
-      sp.draft_id                     AS DraftId,
-      MAX(sp.draft_public_id)         AS DraftPublicId,
-      MAX(sp.draft_title)             AS DraftTitle,
-      sp.draft_part_public_id         AS PartPublicId,
-      sp.sub_draft_index              AS SubDraftIndex,
-      sp.position                     AS Position,
-      COUNT(*) FILTER (
-        WHERE sp.was_vetoed AND NOT sp.was_veto_overridden
-      )::int                          AS TimesVetoed
-    FROM scoped_picks sp
-    JOIN reporting.pick_credit_facts c ON c.pick_id = sp.id
-    GROUP BY c.drafter_id_value, sp.draft_id, sp.draft_part_public_id, sp.sub_draft_index, sp.position
-    HAVING COUNT(*) FILTER (WHERE sp.was_vetoed AND NOT sp.was_veto_overridden) > 0
-    """;
+      SELECT
+        c.drafter_id_value              AS DrafterId,
+        MAX(c.drafter_public_id)        AS DrafterPublicId,
+        MAX(c.drafter_person_public_id) AS DrafterPersonPublicId,
+        MAX(c.drafter_name)             AS DrafterName,
+        sp.draft_id                     AS DraftId,
+        MAX(sp.draft_public_id)         AS DraftPublicId,
+        MAX(sp.draft_title)             AS DraftTitle,
+        sp.draft_part_public_id         AS PartPublicId,
+        sp.sub_draft_index              AS SubDraftIndex,
+        sp.position                     AS Position,
+        COUNT(*) FILTER (
+          WHERE sp.was_vetoed AND NOT sp.was_veto_overridden
+        )::int                          AS TimesVetoed
+      FROM scoped_picks sp
+      JOIN reporting.pick_credit_facts c ON c.pick_id = sp.id
+      GROUP BY c.drafter_id_value, sp.draft_id, sp.draft_part_public_id, sp.sub_draft_index, sp.position
+      HAVING COUNT(*) FILTER (WHERE sp.was_vetoed AND NOT sp.was_veto_overridden) > 0
+      """;
 
-  private const string VetoTotalsSql = ScopedPicksCte + """
+  private const string VetoTotalsSql =
+    ScopedPicksCte
+    + """
 
-    SELECT
-      COUNT(*) FILTER (WHERE NOT v.is_overridden)::int                         AS VetoesStood,
-      COUNT(*) FILTER (WHERE v.is_overridden)::int                             AS VetoesOverridden,
-      COUNT(*) FILTER (WHERE v.is_self_veto AND NOT v.is_overridden)::int      AS SelfVetoesStood
-    FROM reporting.veto_facts v
-    JOIN scoped_picks sp ON sp.id = v.pick_id
-    """;
+      SELECT
+        COUNT(*) FILTER (WHERE NOT v.is_overridden)::int                         AS VetoesStood,
+        COUNT(*) FILTER (WHERE v.is_overridden)::int                             AS VetoesOverridden,
+        COUNT(*) FILTER (WHERE v.is_self_veto AND NOT v.is_overridden)::int      AS SelfVetoesStood
+      FROM reporting.veto_facts v
+      JOIN scoped_picks sp ON sp.id = v.pick_id
+      """;
 
   // Title honorifics are always canonical, so this ignores the scope.
   private const string TitleHonorificTotalsSql = """
@@ -214,7 +232,8 @@ internal static class RecordBookDataLoader
   public static async Task<RecordBookData> LoadAsync(
     System.Data.Common.DbConnection connection,
     bool includeAll,
-    CancellationToken cancellationToken)
+    CancellationToken cancellationToken
+  )
   {
     ArgumentNullException.ThrowIfNull(connection);
 
@@ -305,7 +324,8 @@ internal static class RecordBookDataLoader
 
   private static DrafterDraftRow GetOrAdd(
     Dictionary<(Guid DrafterId, Guid DraftId), DrafterDraftRow> rows,
-    DrafterDraftRow source)
+    DrafterDraftRow source
+  )
   {
     var key = (source.DrafterId, source.DraftId);
 

@@ -14,6 +14,7 @@ internal sealed class PickCreditFactConfiguration : IEntityTypeConfiguration<Pic
     builder.Property(x => x.DraftPartPublicId);
     builder.Property(x => x.DrafterIdValue);
     builder.Property(x => x.DrafterPublicId);
+    builder.Property(x => x.DrafterPersonPublicId);
     builder.Property(x => x.DrafterName);
     builder.Property(x => x.RecordedAtUtc);
 

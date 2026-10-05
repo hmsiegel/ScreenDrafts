@@ -84,6 +84,7 @@ internal sealed class RecordPartStatsCommandHandler(
           stats.DraftPartPublicId,
           c.DrafterIdValue,
           c.DrafterPublicId,
+          DrafterPersonPublicId = c.PersonPublicId ?? string.Empty,
           c.DrafterName,
           RecordedAtUtc = recordedAtUtc,
         })
@@ -140,10 +141,10 @@ internal sealed class RecordPartStatsCommandHandler(
     const string insertCreditSql = """
       INSERT INTO reporting.pick_credit_facts
         (id, pick_id, draft_id, draft_part_public_id, drafter_id_value,
-         drafter_public_id, drafter_name, recorded_at_utc)
+         drafter_public_id, drafter_person_public_id, drafter_name, recorded_at_utc)
       VALUES
         (@Id, @PickId, @DraftId, @DraftPartPublicId, @DrafterIdValue,
-         @DrafterPublicId, @DrafterName, @RecordedAtUtc);
+         @DrafterPublicId, @DrafterPersonPublicId, @DrafterName, @RecordedAtUtc);
       """;
 
     await connection.ExecuteAsync(
@@ -175,7 +176,10 @@ internal sealed class RecordPartStatsCommandHandler(
 
     await transaction.CommitAsync(cancellationToken);
 
-    await _cacheService.RemoveAsync(ReportingCacheKeys.RecordBookCanonicalCacheKey, cancellationToken);
+    await _cacheService.RemoveAsync(
+      ReportingCacheKeys.RecordBookCanonicalCacheKey,
+      cancellationToken
+    );
     await _cacheService.RemoveAsync(ReportingCacheKeys.RecordBookAllCacheKey, cancellationToken);
 
     return Result.Success();

@@ -17,7 +17,12 @@ internal sealed class Endpoint : ScreenDraftsEndpointWithoutRequest<StatsQueryOp
 
   public override async Task HandleAsync(CancellationToken ct)
   {
-    var result = await Sender.Send(new GetStatsQueryOptionsQuery(), ct);
+    var isPatreonMember = User.HasPermission(ReportingAuth.Permissions.StatsReadPatreon);
+
+    var result = await Sender.Send(
+      new GetStatsQueryOptionsQuery { IncludeAll = isPatreonMember },
+      ct
+    );
 
     await this.SendOkAsync(result, ct);
   }

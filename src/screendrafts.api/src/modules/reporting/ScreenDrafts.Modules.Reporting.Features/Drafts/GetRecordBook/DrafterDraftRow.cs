@@ -13,6 +13,7 @@ internal sealed class DrafterDraftRow
 {
   public Guid DrafterId { get; set; }
   public string DrafterPublicId { get; set; } = string.Empty;
+  public string DrafterPersonPublicId { get; set; } = string.Empty;
   public string DrafterName { get; set; } = string.Empty;
   public Guid DraftId { get; set; }
   public string DraftPublicId { get; set; } = string.Empty;
