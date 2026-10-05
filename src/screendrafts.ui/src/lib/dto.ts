@@ -17555,6 +17555,7 @@ export interface StatsMetricOption {
 }
 
 export interface StatsQueryOptionsResponse {
+    canIncludeAll?: boolean;
     metrics?: StatsMetricOption[];
     groupBys?: StatsGroupByOption[];
     series?: string[];
