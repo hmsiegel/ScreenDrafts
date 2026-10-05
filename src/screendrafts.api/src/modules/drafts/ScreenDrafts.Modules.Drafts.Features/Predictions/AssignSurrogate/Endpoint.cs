@@ -1,7 +1,6 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Features.Predictions.AssignSurrogate;
 
-internal sealed class Endpoint
-  : ScreenDraftsEndpoint<AssignSurrogateRequest>
+internal sealed class Endpoint : ScreenDraftsEndpoint<AssignSurrogateRequest>
 {
   public override void Configure()
   {
@@ -21,12 +20,21 @@ internal sealed class Endpoint
 
   public override async Task HandleAsync(AssignSurrogateRequest req, CancellationToken ct)
   {
+    var draftPartId = Route<string>(PredictionRoutes.DraftPartId);
+    var setId = Route<string>(PredictionRoutes.SetId);
+
+    if (string.IsNullOrWhiteSpace(draftPartId) || string.IsNullOrWhiteSpace(setId))
+    {
+      await Send.ErrorsAsync(StatusCodes.Status400BadRequest, ct);
+      return;
+    }
+
     var command = new AssignSurrogateCommand
     {
-      DraftPartPublicId = req.DraftPartPublicId,
-      PrimarySetPublicId = req.PrimarySetPublicId,
+      DraftPartPublicId = draftPartId,
+      PrimarySetPublicId = setId,
       SurrogateSetPublicId = req.SurrogateSetPublicId,
-      MergePolicy = req.MergePolicy
+      MergePolicy = req.MergePolicy,
     };
 
     var result = await Sender.Send(command, ct);

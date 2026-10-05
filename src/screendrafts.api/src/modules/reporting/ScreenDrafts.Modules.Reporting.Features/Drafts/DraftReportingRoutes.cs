@@ -10,4 +10,5 @@ internal static class DraftReportingRoutes
   internal const string Deactivate = ById + "/deactivate";
   internal const string Candidates = Spotlights + "/candidates";
   internal const string Rotate = Spotlights + "/rotate";
+  internal const string RecordBook = "/stats/record-book";
 }
