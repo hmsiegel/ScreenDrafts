@@ -8674,6 +8674,52 @@
         ]
       }
     },
+    "/stats/query": {
+      "post": {
+        "tags": [
+          "Stats"
+        ],
+        "operationId": "Stats.Query",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QueryStatsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QueryStatsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
     "/reporting/spotlights": {
       "get": {
         "tags": [
@@ -8761,6 +8807,32 @@
         ]
       }
     },
+    "/stats/query/options": {
+      "get": {
+        "tags": [
+          "Stats"
+        ],
+        "operationId": "Stats.GetQueryOptions",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatsQueryOptionsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
     "/stats": {
       "get": {
         "tags": [
@@ -8774,6 +8846,44 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/GetSiteStatsResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/stats/record-book": {
+      "get": {
+        "tags": [
+          "Stats"
+        ],
+        "operationId": "Stats.GetRecordBook",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/GetRecordBookRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetRecordBookRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetRecordBookResponse"
                 }
               }
             }
@@ -10272,12 +10382,6 @@
       "AssignSurrogateRequest": {
         "type": "object",
         "properties": {
-          "draftPartPublicId": {
-            "type": "string"
-          },
-          "primarySetPublicId": {
-            "type": "string"
-          },
           "surrogateSetPublicId": {
             "type": "string"
           },
@@ -15713,6 +15817,42 @@
           }
         }
       },
+      "GetRecordBookRequest": {
+        "type": "object",
+        "properties": {
+          "includeAll": {
+            "type": "boolean"
+          }
+        }
+      },
+      "GetRecordBookResponse": {
+        "required": [
+          "generatedAtUtc",
+          "includesNonCanonical"
+        ],
+        "type": "object",
+        "properties": {
+          "generatedAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "includesNonCanonical": {
+            "type": "boolean"
+          },
+          "totals": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RecordBookTotal"
+            }
+          },
+          "sections": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RecordBookSection"
+            }
+          }
+        }
+      },
       "GetRolePermissionsRequest": {
         "type": "object",
         "properties": {
@@ -20328,6 +20468,297 @@
           }
         }
       },
+      "QueryStatsRequest": {
+        "type": "object",
+        "properties": {
+          "metric": {
+            "type": "string"
+          },
+          "groupBy": {
+            "type": "string"
+          },
+          "series": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "draftTypes": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "episodeFrom": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "episodeTo": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "minAppearances": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "ascending": {
+            "type": "boolean"
+          },
+          "limit": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "includeAll": {
+            "type": "boolean"
+          }
+        }
+      },
+      "QueryStatsResponse": {
+        "required": [
+          "metric",
+          "metricLabel",
+          "groupBy",
+          "format",
+          "includesNonCanonical",
+          "totalGroups",
+          "truncated"
+        ],
+        "type": "object",
+        "properties": {
+          "metric": {
+            "type": "string"
+          },
+          "metricLabel": {
+            "type": "string"
+          },
+          "groupBy": {
+            "type": "string"
+          },
+          "format": {
+            "type": "string"
+          },
+          "includesNonCanonical": {
+            "type": "boolean"
+          },
+          "totalGroups": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "truncated": {
+            "type": "boolean"
+          },
+          "rows": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/QueryStatsRow"
+            }
+          }
+        }
+      },
+      "QueryStatsRow": {
+        "required": [
+          "rank",
+          "name",
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "rank": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
+          },
+          "publicId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "value": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "context": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "RecordBookGroup": {
+        "required": [
+          "key",
+          "title"
+        ],
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "records": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RecordItem"
+            }
+          }
+        }
+      },
+      "RecordBookSection": {
+        "required": [
+          "key",
+          "title"
+        ],
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "groups": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RecordBookGroup"
+            }
+          }
+        }
+      },
+      "RecordBookTotal": {
+        "required": [
+          "code",
+          "label",
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "value": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "RecordHolder": {
+        "required": [
+          "kind",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "publicId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "context": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "RecordItem": {
+        "required": [
+          "code",
+          "label",
+          "format",
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "format": {
+            "type": "string"
+          },
+          "value": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "qualifier": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "holders": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RecordHolder"
+            }
+          }
+        }
+      },
       "RegisterSocialUserRequest": {
         "required": [
           "email",
@@ -22257,6 +22688,98 @@
           },
           "token": {
             "type": "string"
+          }
+        }
+      },
+      "StatsGroupByOption": {
+        "required": [
+          "code",
+          "label"
+        ],
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          }
+        }
+      },
+      "StatsMetricOption": {
+        "required": [
+          "code",
+          "label",
+          "format",
+          "description",
+          "groupBys"
+        ],
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "format": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "groupBys": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "StatsQueryOptionsResponse": {
+        "type": "object",
+        "properties": {
+          "metrics": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StatsMetricOption"
+            }
+          },
+          "groupBys": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StatsGroupByOption"
+            }
+          },
+          "series": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "draftTypes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "minEpisode": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "maxEpisode": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
           }
         }
       },

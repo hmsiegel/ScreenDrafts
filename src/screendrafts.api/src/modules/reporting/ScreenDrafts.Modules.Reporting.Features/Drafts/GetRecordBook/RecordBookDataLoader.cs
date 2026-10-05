@@ -9,7 +9,7 @@ namespace ScreenDrafts.Modules.Reporting.Features.Drafts.GetRecordBook;
 /// </summary>
 internal static class RecordBookDataLoader
 {
-  private const string ScopedPicksCte = """
+  internal const string ScopedPicksCte = """
     WITH scoped_picks AS (
       SELECT pf.*
       FROM reporting.pick_facts pf
@@ -36,6 +36,9 @@ internal static class RecordBookDataLoader
       sp.draft_id                     AS DraftId,
       MAX(sp.draft_public_id)         AS DraftPublicId,
       MAX(sp.draft_title)             AS DraftTitle,
+      (SELECT MIN(ds.episode_number)
+       FROM reporting.draft_summaries ds
+       WHERE ds.draft_id = sp.draft_id) AS EpisodeNumber,
       COUNT(*)::int                   AS PicksPlayed,
       COUNT(*) FILTER (
         WHERE NOT sp.was_commissioner_overridden
@@ -135,6 +138,15 @@ internal static class RecordBookDataLoader
       GROUP BY pick_id
     ) vf ON vf.pick_id = sp.id
     GROUP BY sp.draft_id, sp.draft_part_public_id
+    """;
+
+  private const string DraftTitlesSql = ScopedPicksCte + """
+
+    SELECT
+      sp.draft_id                             AS DraftId,
+      COUNT(DISTINCT sp.media_public_id)::int AS UniqueTitlesPlayed
+    FROM scoped_picks sp
+    GROUP BY sp.draft_id
     """;
 
   private const string MediaSql = ScopedPicksCte + """
@@ -249,6 +261,12 @@ internal static class RecordBookDataLoader
       )
     ).ToList();
 
+    var uniqueTitlesByDraft = (
+      await connection.QueryAsync<DraftTitleCountRow>(
+        new CommandDefinition(DraftTitlesSql, parameters, cancellationToken: cancellationToken)
+      )
+    ).ToDictionary(r => r.DraftId, r => r.UniqueTitlesPlayed);
+
     var media = (
       await connection.QueryAsync<MediaRow>(
         new CommandDefinition(MediaSql, parameters, cancellationToken: cancellationToken)
@@ -273,6 +291,7 @@ internal static class RecordBookDataLoader
     {
       DrafterDrafts = [.. rows.Values],
       Parts = parts,
+      UniqueTitlesPlayedByDraft = uniqueTitlesByDraft,
       Media = media,
       PickSlots = pickSlots,
       VetoesStood = vetoTotals.VetoesStood,
@@ -301,6 +320,8 @@ internal static class RecordBookDataLoader
     rows[key] = source;
     return source;
   }
+
+  private sealed record DraftTitleCountRow(Guid DraftId, int UniqueTitlesPlayed);
 
   private sealed record VetoTotalsRow(int VetoesStood, int VetoesOverridden, int SelfVetoesStood);
 

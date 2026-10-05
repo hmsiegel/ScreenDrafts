@@ -7,14 +7,16 @@ internal static class DraftRecordsCalculator
 
   public static RecordBookSection Build(
     IReadOnlyList<DraftPartRow> parts,
+    IReadOnlyDictionary<Guid, int> uniqueTitlesPlayedByDraft,
     IReadOnlySet<Guid> copaceticDraftIds
   )
   {
     ArgumentNullException.ThrowIfNull(parts);
+    ArgumentNullException.ThrowIfNull(uniqueTitlesPlayedByDraft);
     ArgumentNullException.ThrowIfNull(copaceticDraftIds);
 
     var partCounts = parts.GroupBy(p => p.DraftId).ToDictionary(g => g.Key, g => g.Count());
-    var drafts = Summarize(parts);
+    var drafts = Summarize(parts, uniqueTitlesPlayedByDraft);
 
     return new RecordBookSection
     {
@@ -186,7 +188,10 @@ internal static class DraftRecordsCalculator
       }
     );
 
-  private static List<DraftSummaryRow> Summarize(IReadOnlyList<DraftPartRow> parts) =>
+  private static List<DraftSummaryRow> Summarize(
+    IReadOnlyList<DraftPartRow> parts,
+    IReadOnlyDictionary<Guid, int> uniqueTitlesPlayedByDraft
+  ) =>
     [
       .. parts
         .GroupBy(p => p.DraftId)
@@ -197,7 +202,7 @@ internal static class DraftRecordsCalculator
           DraftTitle = g.First().DraftTitle,
           DraftType = g.First().DraftType,
           PicksLanded = g.Sum(p => p.PicksLanded),
-          UniqueTitlesPlayed = g.Sum(p => p.UniqueTitlesPlayed),
+          UniqueTitlesPlayed = uniqueTitlesPlayedByDraft.GetValueOrDefault(g.Key),
           PicksVetoed = g.Sum(p => p.PicksVetoed),
           No1Vetoed = g.Sum(p => p.No1Vetoed),
           CommissionerOverrides = g.Sum(p => p.CommissionerOverrides),

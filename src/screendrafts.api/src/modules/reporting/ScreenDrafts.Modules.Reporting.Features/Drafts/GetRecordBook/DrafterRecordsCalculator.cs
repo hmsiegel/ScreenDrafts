@@ -366,10 +366,10 @@ internal static class DrafterRecordsCalculator
       ),
       RecordRanker.Build(
         "guest-gm.most-appearances-without-a-commissioner-override",
-        "Most appearances without a commissioner override",
+        "Most consecutive appearances without a commissioner override",
         RecordRanker.Count,
         d,
-        x => x.Appearances - x.DraftsWithCommissionerOverride,
+        x => x.LongestRunWithoutCommissionerOverride,
         true,
         Holder
       ),
@@ -446,10 +446,29 @@ internal static class DrafterRecordsCalculator
             DraftsWithVetoAgainst = appeared.Count(r => r.PicksVetoed > 0),
             DraftsWithCommissionerOverride = appeared.Count(r => r.PicksRemovedByCommissioner > 0),
             CopaceticDrafts = appeared.Count(r => copaceticDraftIds.Contains(r.DraftId)),
+            LongestRunWithoutCommissionerOverride = LongestRunWithoutOverride(appeared),
           };
         })
         .Where(s => s.Appearances > 0),
     ];
+  }
+
+  private static int LongestRunWithoutOverride(IEnumerable<DrafterDraftRow> appeared)
+  {
+    var best = 0;
+    var current = 0;
+
+    foreach (
+      var row in appeared
+        .OrderBy(r => r.EpisodeNumber ?? int.MaxValue)
+        .ThenBy(r => r.DraftTitle, StringComparer.Ordinal)
+    )
+    {
+      current = row.PicksRemovedByCommissioner > 0 ? 0 : current + 1;
+      best = Math.Max(best, current);
+    }
+
+    return best;
   }
 
   private static RecordHolder SlotHolder(PickSlotRow s) =>

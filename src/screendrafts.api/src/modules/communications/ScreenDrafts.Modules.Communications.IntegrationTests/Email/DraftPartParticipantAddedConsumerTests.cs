@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Communications.IntegrationTests.Email;
+﻿namespace ScreenDrafts.Modules.Communications.IntegrationTests.Email;
 
 public sealed class DraftPartParticipantAddedConsumerTests
 {
@@ -16,7 +16,12 @@ public sealed class DraftPartParticipantAddedConsumerTests
     factory.EnqueueEmptyResult();
 
     var emailService = new RecordingEmailService();
-    var consumer = new DraftPartParticipantAddedIntegrationEventConsumer(factory, emailService);
+    var dateTimeProvider = new FakeDateTimeProvider(DateTime.UtcNow);
+    var consumer = new DraftPartParticipantAddedIntegrationEventConsumer(
+      factory,
+      emailService,
+      dateTimeProvider
+    );
     var integrationEvent = BuildEvent(kind: ParticipantAddedNotificationKind.Added);
 
     // Act
@@ -38,10 +43,16 @@ public sealed class DraftPartParticipantAddedConsumerTests
     factory.EnqueueQueryResult(RecipientColumns, ["bob@example.com", "Bob Smith"]);
 
     var emailService = new RecordingEmailService();
-    var consumer = new DraftPartParticipantAddedIntegrationEventConsumer(factory, emailService);
+    var dateTimeProvider = new FakeDateTimeProvider(DateTime.UtcNow);
+    var consumer = new DraftPartParticipantAddedIntegrationEventConsumer(
+      factory,
+      emailService,
+      dateTimeProvider
+    );
     var integrationEvent = BuildEvent(
       draftName: "Top Directors",
-      kind: ParticipantAddedNotificationKind.Added);
+      kind: ParticipantAddedNotificationKind.Added
+    );
 
     // Act
     await consumer.Handle(integrationEvent, CancellationToken.None);
@@ -60,18 +71,22 @@ public sealed class DraftPartParticipantAddedConsumerTests
     factory.EnqueueQueryResult(RecipientColumns, ["bob@example.com", "Bob Smith"]);
 
     var emailService = new RecordingEmailService();
-    var consumer = new DraftPartParticipantAddedIntegrationEventConsumer(factory, emailService);
+    var dateTimeProvider = new FakeDateTimeProvider(DateTime.UtcNow);
+    var consumer = new DraftPartParticipantAddedIntegrationEventConsumer(
+      factory,
+      emailService,
+      dateTimeProvider
+    );
     var integrationEvent = BuildEvent(
       kind: ParticipantAddedNotificationKind.Added,
-      coParticipantNames: ["Alice", "Carol"]);
+      coParticipantNames: ["Alice", "Carol"]
+    );
 
     // Act
     await consumer.Handle(integrationEvent, CancellationToken.None);
 
     // Assert
-    emailService.SentEmails.Single().HtmlBody
-      .Should().Contain("Alice")
-      .And.Contain("Carol");
+    emailService.SentEmails.Single().HtmlBody.Should().Contain("Alice").And.Contain("Carol");
   }
 
   // -------------------------------------------------------------------------
@@ -86,11 +101,17 @@ public sealed class DraftPartParticipantAddedConsumerTests
     factory.EnqueueQueryResult(RecipientColumns, ["carol@example.com", "Carol Jones"]);
 
     var emailService = new RecordingEmailService();
-    var consumer = new DraftPartParticipantAddedIntegrationEventConsumer(factory, emailService);
+    var dateTimeProvider = new FakeDateTimeProvider(DateTime.UtcNow);
+    var consumer = new DraftPartParticipantAddedIntegrationEventConsumer(
+      factory,
+      emailService,
+      dateTimeProvider
+    );
     var integrationEvent = BuildEvent(
       draftName: "Top Directors",
       kind: ParticipantAddedNotificationKind.CoParticipantNotification,
-      newParticipantName: "Dave New");
+      newParticipantName: "Dave New"
+    );
 
     // Act
     await consumer.Handle(integrationEvent, CancellationToken.None);
@@ -109,18 +130,26 @@ public sealed class DraftPartParticipantAddedConsumerTests
     factory.EnqueueQueryResult(RecipientColumns, ["carol@example.com", "Carol Jones"]);
 
     var emailService = new RecordingEmailService();
-    var consumer = new DraftPartParticipantAddedIntegrationEventConsumer(factory, emailService);
+    var dateTimeProvider = new FakeDateTimeProvider(DateTime.UtcNow);
+    var consumer = new DraftPartParticipantAddedIntegrationEventConsumer(
+      factory,
+      emailService,
+      dateTimeProvider
+    );
     var integrationEvent = BuildEvent(
       kind: ParticipantAddedNotificationKind.CoParticipantNotification,
       coParticipantNames: ["Alice", "Bob", "Dave New"],
-      newParticipantName: "Dave New");
+      newParticipantName: "Dave New"
+    );
 
     // Act
     await consumer.Handle(integrationEvent, CancellationToken.None);
 
     // Assert
-    emailService.SentEmails.Single().HtmlBody
-      .Should().Contain("Alice")
+    emailService
+      .SentEmails.Single()
+      .HtmlBody.Should()
+      .Contain("Alice")
       .And.Contain("Bob")
       .And.Contain("Dave New");
   }
@@ -133,7 +162,8 @@ public sealed class DraftPartParticipantAddedConsumerTests
     string draftName = "Test Draft",
     ParticipantAddedNotificationKind kind = ParticipantAddedNotificationKind.Added,
     string newParticipantName = "New Person",
-    IReadOnlyList<string>? coParticipantNames = null)
+    IReadOnlyList<string>? coParticipantNames = null
+  )
   {
     return new DraftPartParticipantAddedIntegrationEvent(
       id: Guid.NewGuid(),
@@ -142,6 +172,7 @@ public sealed class DraftPartParticipantAddedConsumerTests
       draftName: draftName,
       coParticipantNames: coParticipantNames ?? [],
       kind: kind,
-      newParticipantName: newParticipantName);
+      newParticipantName: newParticipantName
+    );
   }
 }

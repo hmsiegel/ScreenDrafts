@@ -11,4 +11,6 @@ internal static class DraftReportingRoutes
   internal const string Candidates = Spotlights + "/candidates";
   internal const string Rotate = Spotlights + "/rotate";
   internal const string RecordBook = "/stats/record-book";
+  internal const string StatsQuery = "/stats/query";
+  internal const string StatsQueryOptions = StatsQuery + "/options";
 }

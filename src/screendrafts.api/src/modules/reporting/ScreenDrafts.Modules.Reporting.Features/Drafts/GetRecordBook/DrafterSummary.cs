@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Reporting.Features.Drafts.GetRecordBook;
+﻿namespace ScreenDrafts.Modules.Reporting.Features.Drafts.GetRecordBook;
 
 /// <summary>One drafter's career totals, rolled up from their per-draft rows.</summary>
 internal sealed class DrafterSummary
@@ -26,4 +26,7 @@ internal sealed class DrafterSummary
   public int DraftsWithVetoAgainst { get; init; }
   public int DraftsWithCommissionerOverride { get; init; }
   public int CopaceticDrafts { get; init; }
+
+  /// <summary>Longest run of consecutive appearances, in episode order, with no commissioner override.</summary>
+  public int LongestRunWithoutCommissionerOverride { get; init; }
 }

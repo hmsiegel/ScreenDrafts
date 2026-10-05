@@ -1,11 +1,12 @@
-namespace ScreenDrafts.Modules.Reporting.Features.Drafts.GetRecordBook;
+﻿namespace ScreenDrafts.Modules.Reporting.Features.Drafts.GetRecordBook;
 
 internal static class RecordBookBuilder
 {
   public static GetRecordBookResponse Build(
     RecordBookData data,
     bool includesNonCanonical,
-    DateTime generatedAtUtc)
+    DateTime generatedAtUtc
+  )
   {
     ArgumentNullException.ThrowIfNull(data);
 
@@ -19,7 +20,7 @@ internal static class RecordBookBuilder
       Sections =
       [
         DrafterRecordsCalculator.Build(data.DrafterDrafts, data.PickSlots, copacetic),
-        DraftRecordsCalculator.Build(data.Parts, copacetic),
+        DraftRecordsCalculator.Build(data.Parts, data.UniqueTitlesPlayedByDraft, copacetic),
         TitleRecordsCalculator.Build(data.Media),
       ],
     };

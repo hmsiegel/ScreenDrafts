@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Reporting.Features.Drafts.GetRecordBook;
+﻿namespace ScreenDrafts.Modules.Reporting.Features.Drafts.GetRecordBook;
 
 /// <summary>One draft's numbers, summed over its parts.</summary>
 internal sealed class DraftSummaryRow
@@ -9,7 +9,7 @@ internal sealed class DraftSummaryRow
   public string DraftType { get; init; } = string.Empty;
   public int PicksLanded { get; init; }
 
-  /// <summary>Summed over parts. A title drafted in two parts of one draft would count twice.</summary>
+  /// <summary>Distinct titles played across the whole draft, vetoed picks included.</summary>
   public int UniqueTitlesPlayed { get; init; }
 
   public int PicksVetoed { get; init; }

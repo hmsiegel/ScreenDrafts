@@ -1,8 +1,8 @@
-namespace ScreenDrafts.Modules.Communications.IntegrationTests.Email;
+﻿namespace ScreenDrafts.Modules.Communications.IntegrationTests.Email;
 
 public sealed class DraftPartHostAddedConsumerTests
 {
-  private static readonly string[] RecipientColumns = ["EmailAddress", "FullName"];
+  private static readonly string[] _recipientColumns = ["EmailAddress", "FullName"];
 
   // -------------------------------------------------------------------------
   // Sends email to host
@@ -13,18 +13,26 @@ public sealed class DraftPartHostAddedConsumerTests
   {
     // Arrange
     var factory = new FakeDbConnectionFactory();
-    factory.EnqueueQueryResult(RecipientColumns, ["alice@example.com", "Alice Doe"]);
+    var dateTimeProvider = new FakeDateTimeProvider(DateTime.UtcNow);
+    factory.EnqueueQueryResult(_recipientColumns, ["alice@example.com", "Alice Doe"]);
 
     var emailService = new RecordingEmailService();
-    var consumer = new DraftPartHostAddedIntegrationEventConsumer(factory, emailService);
+    var consumer = new DraftPartHostAddedIntegrationEventConsumer(
+      factory,
+      emailService,
+      dateTimeProvider
+    );
     var integrationEvent = BuildEvent(draftName: "Best Films Ever");
 
     // Act
     await consumer.Handle(integrationEvent, CancellationToken.None);
 
     // Assert
-    emailService.SentEmails.Should().ContainSingle()
-      .Which.ToAddress.Should().Be("alice@example.com");
+    emailService
+      .SentEmails.Should()
+      .ContainSingle()
+      .Which.ToAddress.Should()
+      .Be("alice@example.com");
   }
 
   [Fact]
@@ -32,18 +40,25 @@ public sealed class DraftPartHostAddedConsumerTests
   {
     // Arrange
     var factory = new FakeDbConnectionFactory();
-    factory.EnqueueQueryResult(RecipientColumns, ["alice@example.com", "Alice Doe"]);
+    factory.EnqueueQueryResult(_recipientColumns, ["alice@example.com", "Alice Doe"]);
 
     var emailService = new RecordingEmailService();
-    var consumer = new DraftPartHostAddedIntegrationEventConsumer(factory, emailService);
+    var dateTimeProvider = new FakeDateTimeProvider(DateTime.UtcNow);
+    var consumer = new DraftPartHostAddedIntegrationEventConsumer(
+      factory,
+      emailService,
+      dateTimeProvider
+    );
     var integrationEvent = BuildEvent(draftName: "Best Films Ever");
 
     // Act
     await consumer.Handle(integrationEvent, CancellationToken.None);
 
     // Assert
-    emailService.SentEmails.Single().Subject
-      .Should().Be("You've been added as a host to Best Films Ever");
+    emailService
+      .SentEmails.Single()
+      .Subject.Should()
+      .Be("You've been added as a host to Best Films Ever");
   }
 
   [Fact]
@@ -51,10 +66,15 @@ public sealed class DraftPartHostAddedConsumerTests
   {
     // Arrange
     var factory = new FakeDbConnectionFactory();
-    factory.EnqueueQueryResult(RecipientColumns, ["alice@example.com", "Alice Doe"]);
+    factory.EnqueueQueryResult(_recipientColumns, ["alice@example.com", "Alice Doe"]);
 
     var emailService = new RecordingEmailService();
-    var consumer = new DraftPartHostAddedIntegrationEventConsumer(factory, emailService);
+    var dateTimeProvider = new FakeDateTimeProvider(DateTime.UtcNow);
+    var consumer = new DraftPartHostAddedIntegrationEventConsumer(
+      factory,
+      emailService,
+      dateTimeProvider
+    );
     var integrationEvent = BuildEvent();
 
     // Act
@@ -71,18 +91,25 @@ public sealed class DraftPartHostAddedConsumerTests
   {
     // Arrange
     var factory = new FakeDbConnectionFactory();
-    factory.EnqueueQueryResult(RecipientColumns, ["alice@example.com", "Alice Doe"]);
+    factory.EnqueueQueryResult(_recipientColumns, ["alice@example.com", "Alice Doe"]);
 
     var emailService = new RecordingEmailService();
-    var consumer = new DraftPartHostAddedIntegrationEventConsumer(factory, emailService);
+    var dateTimeProvider = new FakeDateTimeProvider(DateTime.UtcNow);
+    var consumer = new DraftPartHostAddedIntegrationEventConsumer(
+      factory,
+      emailService,
+      dateTimeProvider
+    );
     var integrationEvent = BuildEvent(coHostNames: ["Bob Smith", "Carol Jones"]);
 
     // Act
     await consumer.Handle(integrationEvent, CancellationToken.None);
 
     // Assert
-    emailService.SentEmails.Single().HtmlBody
-      .Should().Contain("Bob Smith")
+    emailService
+      .SentEmails.Single()
+      .HtmlBody.Should()
+      .Contain("Bob Smith")
       .And.Contain("Carol Jones");
   }
 
@@ -91,18 +118,22 @@ public sealed class DraftPartHostAddedConsumerTests
   {
     // Arrange
     var factory = new FakeDbConnectionFactory();
-    factory.EnqueueQueryResult(RecipientColumns, ["alice@example.com", "Alice Doe"]);
+    factory.EnqueueQueryResult(_recipientColumns, ["alice@example.com", "Alice Doe"]);
 
     var emailService = new RecordingEmailService();
-    var consumer = new DraftPartHostAddedIntegrationEventConsumer(factory, emailService);
+    var dateTimeProvider = new FakeDateTimeProvider(DateTime.UtcNow);
+    var consumer = new DraftPartHostAddedIntegrationEventConsumer(
+      factory,
+      emailService,
+      dateTimeProvider
+    );
     var integrationEvent = BuildEvent(coHostNames: []);
 
     // Act
     await consumer.Handle(integrationEvent, CancellationToken.None);
 
     // Assert
-    emailService.SentEmails.Single().HtmlBody
-      .Should().Contain("sole host");
+    emailService.SentEmails.Single().HtmlBody.Should().Contain("sole host");
   }
 
   // -------------------------------------------------------------------------
@@ -111,13 +142,15 @@ public sealed class DraftPartHostAddedConsumerTests
 
   private static DraftPartHostAddedIntegrationEvent BuildEvent(
     string draftName = "Test Draft",
-    IReadOnlyList<string>? coHostNames = null)
+    IReadOnlyList<string>? coHostNames = null
+  )
   {
     return new DraftPartHostAddedIntegrationEvent(
       id: Guid.NewGuid(),
       occurredOnUtc: DateTime.UtcNow,
       recipientUserId: Guid.NewGuid(),
       draftName: draftName,
-      coHostNames: coHostNames ?? ["Co-Host One"]);
+      coHostNames: coHostNames ?? ["Co-Host One"]
+    );
   }
 }

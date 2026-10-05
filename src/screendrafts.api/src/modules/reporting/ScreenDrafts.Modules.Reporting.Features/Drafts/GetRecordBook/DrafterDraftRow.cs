@@ -1,10 +1,14 @@
-namespace ScreenDrafts.Modules.Reporting.Features.Drafts.GetRecordBook;
+﻿namespace ScreenDrafts.Modules.Reporting.Features.Drafts.GetRecordBook;
 
 /// <summary>
 /// One drafter's numbers in one draft. Filled from three queries and merged, so Dapper needs
 /// settable properties. Appeared is true only when the drafter was credited on a pick in the draft.
 /// </summary>
-[System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1812:Avoid uninstantiated internal classes", Justification = "Instantiated by Dapper.")]
+[System.Diagnostics.CodeAnalysis.SuppressMessage(
+  "Performance",
+  "CA1812:Avoid uninstantiated internal classes",
+  Justification = "Instantiated by Dapper."
+)]
 internal sealed class DrafterDraftRow
 {
   public Guid DrafterId { get; set; }
@@ -14,6 +18,9 @@ internal sealed class DrafterDraftRow
   public string DraftPublicId { get; set; } = string.Empty;
   public string DraftTitle { get; set; } = string.Empty;
   public bool Appeared { get; set; }
+
+  /// <summary>The site's episode number for the draft (lowest across its parts). Orders streak records.</summary>
+  public int? EpisodeNumber { get; set; }
 
   public int PicksPlayed { get; set; }
   public int PicksLanded { get; set; }
