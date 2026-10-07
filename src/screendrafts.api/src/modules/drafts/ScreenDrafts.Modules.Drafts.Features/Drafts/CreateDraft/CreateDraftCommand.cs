@@ -12,4 +12,5 @@ internal sealed record CreateDraftCommand : ICommand<string>
   public IReadOnlyList<string> TeamIds { get; init; } = [];
   public IReadOnlyList<string> CategoryIds { get; init; } = [];
   public string? CampaignId { get; init; }
+  public int? ReleaseChannel { get; init; }
 }

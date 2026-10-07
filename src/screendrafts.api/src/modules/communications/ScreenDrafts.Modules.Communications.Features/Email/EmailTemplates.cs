@@ -11,15 +11,6 @@ internal static class EmailTemplates
   private const string HeadFont = "'Oswald', 'Arial Narrow', Arial, sans-serif";
   private const string BodyFont = "'Inter', Helvetica, Arial, sans-serif";
 
-  private const string LogoPath = "artifacts/logo.jpg";
-
-  // Set once at startup from configuration (Communications:PublicAssetsBaseUrl) —
-  // http://localhost:5000 in dev, https://screen-drafts.com in prod. Static because
-  // EmailTemplates is a pure string-formatting class with no DI; the class has no
-  // other environment-dependent state, so one settable property beats threading a
-  // new parameter through every public method and every call site.
-  public static string AssestsBasePath { get; set; } = "https://screen-drafts.com";
-
   private const string DraftFooter =
     "You received this because you're part of a Screen Drafts draft.";
   private const string AccountFooter =
@@ -102,7 +93,11 @@ internal static class EmailTemplates
       $"A new draft has been announced: <strong>{Encode(draftName)}</strong>",
       $"""
       {PatreonBadge(isPatreon)}
-      <p style="margin:0;">A new Screen Drafts episode is in the works. Stay tuned!</p>
+      <p style="margin:0;">{(
+        isPatreon
+          ? "A new Patreon exclusive episode is in the works. Stay tuned!"
+          : "A new Screen Drafts episode is in the works. Stay tuned!"
+      )}</p>
       """,
       DraftFooter
     );
@@ -190,7 +185,7 @@ internal static class EmailTemplates
               <table class="sd-container" width="600" cellpadding="0" cellspacing="0" role="presentation" style="background:#ffffff;border-radius:8px;overflow:hidden;border:1px solid #e8e4d8;">
                 <tr>
                   <td style="background:{{Navy}};border-bottom:4px solid {{Red}};padding:20px 32px;text-align:center;">
-                    <img src="{{AssestsBasePath}}/{{LogoPath}}" alt="Screen Drafts" height="52" style="height:52px;width:auto;display:inline-block;border:0;" />
+                    <img src="cid:{{EmailMessage.LogoContentId}}" alt="Screen Drafts" height="52" style="height:52px;width:auto;display:inline-block;border:0;" />
                   </td>
                 </tr>
                 <tr>

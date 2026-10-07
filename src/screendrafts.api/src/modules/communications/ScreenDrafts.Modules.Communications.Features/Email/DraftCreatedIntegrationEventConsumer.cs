@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Common.Application.Clock;
-
-namespace ScreenDrafts.Modules.Communications.Features.Email;
+﻿namespace ScreenDrafts.Modules.Communications.Features.Email;
 
 internal sealed class DraftCreatedIntegrationEventConsumer(
   IDbConnectionFactory connectionFactory,
@@ -25,7 +23,7 @@ internal sealed class DraftCreatedIntegrationEventConsumer(
         ue.full_name AS FullName
       FROM communications.user_emails ue
       WHERE (@IsPatreon = false OR ue.is_patreon = true)
-        AND ue.email_address NOT ILIKE '%@screendrafts.fake'
+        AND (@AllowPlaceholderRecipients OR ue.email_address NOT ILIKE '%@screendrafts.fake')
         AND NOT EXISTS (
           SELECT 1
           FROM communications.email_deliveries
@@ -42,7 +40,12 @@ internal sealed class DraftCreatedIntegrationEventConsumer(
     var recipients = await connection.QueryAsync<RecipientRow>(
       new CommandDefinition(
         commandText: sql,
-        parameters: new { integrationEvent.IsPatreon, EventId = integrationEvent.Id },
+        parameters: new
+        {
+          integrationEvent.IsPatreon,
+          EventId = integrationEvent.Id,
+          _emailService.AllowPlaceholderRecipients,
+        },
         cancellationToken: cancellationToken
       )
     );

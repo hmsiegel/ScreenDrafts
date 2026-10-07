@@ -8,7 +8,6 @@
       "IntervalInSeconds": 5,
       "BatchSize": 20
     },
-    "PublicAssetsBasePath": "http://localhost:5000",
     "Smtp": {
       "Host": "screendrafts.email",
       "Port": 2525,
@@ -16,7 +15,8 @@
       "FromAddress": "no-reply@screendrafts.com",
       "FromName": "Screen Drafts",
       "Username": "",
-      "Password": ""
+      "Password": "",
+      "AllowPlaceholderRecipients": true
     }
   }
 }

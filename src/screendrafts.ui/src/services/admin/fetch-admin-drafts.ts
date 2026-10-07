@@ -151,6 +151,7 @@ export interface CreateDraftBody {
   teamIds: string[];
   categoryIds: string[];
   campaignId: string | null;
+  releaseChannel: number; // 0 = MainFeed, 1 = Patreon
 }
 
 export interface DraftPartPredictionRulesDto {

@@ -35,4 +35,9 @@ public static class AdministrationErrors
 
   public static SDError RoleAlreadyExists(string roleName) =>
     SDError.Conflict("Administration.RoleAlreadyExists", $"Role '{roleName}' already exists.");
+
+  public static readonly SDError PasswordResetEmailUndeliverable = SDError.Problem(
+    "Administration.PasswordResetEmailUndeliverable",
+    "This user still has a placeholder email address. Migrate them to a real address first."
+  );
 }
